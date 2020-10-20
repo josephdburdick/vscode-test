@@ -1,121 +1,121 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import 'mocha';
-import * as path from 'path';
-import * as fs from 'fs';
+import 'mochA';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
 
-import * as assert from 'assert';
-import { getLanguageModes, TextDocument, Range, FormattingOptions, ClientCapabilities } from '../modes/languageModes';
+import * As Assert from 'Assert';
+import { getLAnguAgeModes, TextDocument, RAnge, FormAttingOptions, ClientCApAbilities } from '../modes/lAnguAgeModes';
 
-import { format } from '../modes/formatting';
+import { formAt } from '../modes/formAtting';
 import { getNodeFSRequestService } from '../node/nodeFs';
 
-suite('HTML Embedded Formatting', () => {
+suite('HTML Embedded FormAtting', () => {
 
-	async function assertFormat(value: string, expected: string, options?: any, formatOptions?: FormattingOptions, message?: string): Promise<void> {
-		let workspace = {
+	Async function AssertFormAt(vAlue: string, expected: string, options?: Any, formAtOptions?: FormAttingOptions, messAge?: string): Promise<void> {
+		let workspAce = {
 			settings: options,
-			folders: [{ name: 'foo', uri: 'test://foo' }]
+			folders: [{ nAme: 'foo', uri: 'test://foo' }]
 		};
-		const languageModes = getLanguageModes({ css: true, javascript: true }, workspace, ClientCapabilities.LATEST, getNodeFSRequestService());
+		const lAnguAgeModes = getLAnguAgeModes({ css: true, jAvAscript: true }, workspAce, ClientCApAbilities.LATEST, getNodeFSRequestService());
 
-		let rangeStartOffset = value.indexOf('|');
-		let rangeEndOffset;
-		if (rangeStartOffset !== -1) {
-			value = value.substr(0, rangeStartOffset) + value.substr(rangeStartOffset + 1);
+		let rAngeStArtOffset = vAlue.indexOf('|');
+		let rAngeEndOffset;
+		if (rAngeStArtOffset !== -1) {
+			vAlue = vAlue.substr(0, rAngeStArtOffset) + vAlue.substr(rAngeStArtOffset + 1);
 
-			rangeEndOffset = value.indexOf('|');
-			value = value.substr(0, rangeEndOffset) + value.substr(rangeEndOffset + 1);
+			rAngeEndOffset = vAlue.indexOf('|');
+			vAlue = vAlue.substr(0, rAngeEndOffset) + vAlue.substr(rAngeEndOffset + 1);
 		} else {
-			rangeStartOffset = 0;
-			rangeEndOffset = value.length;
+			rAngeStArtOffset = 0;
+			rAngeEndOffset = vAlue.length;
 		}
-		let document = TextDocument.create('test://test/test.html', 'html', 0, value);
-		let range = Range.create(document.positionAt(rangeStartOffset), document.positionAt(rangeEndOffset));
-		if (!formatOptions) {
-			formatOptions = FormattingOptions.create(2, true);
+		let document = TextDocument.creAte('test://test/test.html', 'html', 0, vAlue);
+		let rAnge = RAnge.creAte(document.positionAt(rAngeStArtOffset), document.positionAt(rAngeEndOffset));
+		if (!formAtOptions) {
+			formAtOptions = FormAttingOptions.creAte(2, true);
 		}
 
-		let result = await format(languageModes, document, range, formatOptions, undefined, { css: true, javascript: true });
+		let result = AwAit formAt(lAnguAgeModes, document, rAnge, formAtOptions, undefined, { css: true, jAvAscript: true });
 
-		let actual = TextDocument.applyEdits(document, result);
-		assert.equal(actual, expected, message);
+		let ActuAl = TextDocument.ApplyEdits(document, result);
+		Assert.equAl(ActuAl, expected, messAge);
 	}
 
-	async function assertFormatWithFixture(fixtureName: string, expectedPath: string, options?: any, formatOptions?: FormattingOptions): Promise<void> {
-		let input = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'test', 'fixtures', 'inputs', fixtureName)).toString().replace(/\r\n/mg, '\n');
-		let expected = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'test', 'fixtures', 'expected', expectedPath)).toString().replace(/\r\n/mg, '\n');
-		await assertFormat(input, expected, options, formatOptions, expectedPath);
+	Async function AssertFormAtWithFixture(fixtureNAme: string, expectedPAth: string, options?: Any, formAtOptions?: FormAttingOptions): Promise<void> {
+		let input = fs.reAdFileSync(pAth.join(__dirnAme, '..', '..', 'src', 'test', 'fixtures', 'inputs', fixtureNAme)).toString().replAce(/\r\n/mg, '\n');
+		let expected = fs.reAdFileSync(pAth.join(__dirnAme, '..', '..', 'src', 'test', 'fixtures', 'expected', expectedPAth)).toString().replAce(/\r\n/mg, '\n');
+		AwAit AssertFormAt(input, expected, options, formAtOptions, expectedPAth);
 	}
 
-	test('HTML only', async () => {
-		await assertFormat('<html><body><p>Hello</p></body></html>', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>');
-		await assertFormat('|<html><body><p>Hello</p></body></html>|', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>');
-		await assertFormat('<html>|<body><p>Hello</p></body>|</html>', '<html><body>\n  <p>Hello</p>\n</body></html>');
+	test('HTML only', Async () => {
+		AwAit AssertFormAt('<html><body><p>Hello</p></body></html>', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>');
+		AwAit AssertFormAt('|<html><body><p>Hello</p></body></html>|', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>');
+		AwAit AssertFormAt('<html>|<body><p>Hello</p></body>|</html>', '<html><body>\n  <p>Hello</p>\n</body></html>');
 	});
 
-	test('HTML & Scripts', async () => {
-		await assertFormat('<html><head><script></script></head></html>', '<html>\n\n<head>\n  <script></script>\n</head>\n\n</html>');
-		await assertFormat('<html><head><script>var x=1;</script></head></html>', '<html>\n\n<head>\n  <script>var x = 1;</script>\n</head>\n\n</html>');
-		await assertFormat('<html><head><script>\nvar x=2;\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    var x = 2;\n  </script>\n</head>\n\n</html>');
-		await assertFormat('<html><head>\n  <script>\nvar x=3;\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    var x = 3;\n  </script>\n</head>\n\n</html>');
-		await assertFormat('<html><head>\n  <script>\nvar x=4;\nconsole.log("Hi");\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    var x = 4;\n    console.log("Hi");\n  </script>\n</head>\n\n</html>');
-		await assertFormat('<html><head>\n  |<script>\nvar x=5;\n</script>|</head></html>', '<html><head>\n  <script>\n    var x = 5;\n  </script></head></html>');
+	test('HTML & Scripts', Async () => {
+		AwAit AssertFormAt('<html><heAd><script></script></heAd></html>', '<html>\n\n<heAd>\n  <script></script>\n</heAd>\n\n</html>');
+		AwAit AssertFormAt('<html><heAd><script>vAr x=1;</script></heAd></html>', '<html>\n\n<heAd>\n  <script>vAr x = 1;</script>\n</heAd>\n\n</html>');
+		AwAit AssertFormAt('<html><heAd><script>\nvAr x=2;\n</script></heAd></html>', '<html>\n\n<heAd>\n  <script>\n    vAr x = 2;\n  </script>\n</heAd>\n\n</html>');
+		AwAit AssertFormAt('<html><heAd>\n  <script>\nvAr x=3;\n</script></heAd></html>', '<html>\n\n<heAd>\n  <script>\n    vAr x = 3;\n  </script>\n</heAd>\n\n</html>');
+		AwAit AssertFormAt('<html><heAd>\n  <script>\nvAr x=4;\nconsole.log("Hi");\n</script></heAd></html>', '<html>\n\n<heAd>\n  <script>\n    vAr x = 4;\n    console.log("Hi");\n  </script>\n</heAd>\n\n</html>');
+		AwAit AssertFormAt('<html><heAd>\n  |<script>\nvAr x=5;\n</script>|</heAd></html>', '<html><heAd>\n  <script>\n    vAr x = 5;\n  </script></heAd></html>');
 	});
 
-	test('HTLM & Scripts - Fixtures', async () => {
-		assertFormatWithFixture('19813.html', '19813.html');
-		assertFormatWithFixture('19813.html', '19813-4spaces.html', undefined, FormattingOptions.create(4, true));
-		assertFormatWithFixture('19813.html', '19813-tab.html', undefined, FormattingOptions.create(1, false));
-		assertFormatWithFixture('21634.html', '21634.html');
+	test('HTLM & Scripts - Fixtures', Async () => {
+		AssertFormAtWithFixture('19813.html', '19813.html');
+		AssertFormAtWithFixture('19813.html', '19813-4spAces.html', undefined, FormAttingOptions.creAte(4, true));
+		AssertFormAtWithFixture('19813.html', '19813-tAb.html', undefined, FormAttingOptions.creAte(1, fAlse));
+		AssertFormAtWithFixture('21634.html', '21634.html');
 	});
 
-	test('Script end tag', async () => {
-		await assertFormat('<html>\n<head>\n  <script>\nvar x  =  0;\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    var x = 0;\n  </script>\n</head>\n\n</html>');
+	test('Script end tAg', Async () => {
+		AwAit AssertFormAt('<html>\n<heAd>\n  <script>\nvAr x  =  0;\n</script></heAd></html>', '<html>\n\n<heAd>\n  <script>\n    vAr x = 0;\n  </script>\n</heAd>\n\n</html>');
 	});
 
-	test('HTML & Multiple Scripts', async () => {
-		await assertFormat('<html><head>\n<script>\nif(x){\nbar(); }\n</script><script>\nfunction(x){    }\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    if (x) {\n      bar();\n    }\n  </script>\n  <script>\n    function(x) {}\n  </script>\n</head>\n\n</html>');
+	test('HTML & Multiple Scripts', Async () => {
+		AwAit AssertFormAt('<html><heAd>\n<script>\nif(x){\nbAr(); }\n</script><script>\nfunction(x){    }\n</script></heAd></html>', '<html>\n\n<heAd>\n  <script>\n    if (x) {\n      bAr();\n    }\n  </script>\n  <script>\n    function(x) {}\n  </script>\n</heAd>\n\n</html>');
 	});
 
-	test('HTML & Styles', async () => {
-		await assertFormat('<html><head>\n<style>\n.foo{display:none;}\n</style></head></html>', '<html>\n\n<head>\n  <style>\n    .foo {\n      display: none;\n    }\n  </style>\n</head>\n\n</html>');
+	test('HTML & Styles', Async () => {
+		AwAit AssertFormAt('<html><heAd>\n<style>\n.foo{displAy:none;}\n</style></heAd></html>', '<html>\n\n<heAd>\n  <style>\n    .foo {\n      displAy: none;\n    }\n  </style>\n</heAd>\n\n</html>');
 	});
 
-	test('EndWithNewline', async () => {
+	test('EndWithNewline', Async () => {
 		let options = {
 			html: {
-				format: {
+				formAt: {
 					endWithNewline: true
 				}
 			}
 		};
-		await assertFormat('<html><body><p>Hello</p></body></html>', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>\n', options);
-		await assertFormat('<html>|<body><p>Hello</p></body>|</html>', '<html><body>\n  <p>Hello</p>\n</body></html>', options);
-		await assertFormat('<html><head><script>\nvar x=1;\n</script></head></html>', '<html>\n\n<head>\n  <script>\n    var x = 1;\n  </script>\n</head>\n\n</html>\n', options);
+		AwAit AssertFormAt('<html><body><p>Hello</p></body></html>', '<html>\n\n<body>\n  <p>Hello</p>\n</body>\n\n</html>\n', options);
+		AwAit AssertFormAt('<html>|<body><p>Hello</p></body>|</html>', '<html><body>\n  <p>Hello</p>\n</body></html>', options);
+		AwAit AssertFormAt('<html><heAd><script>\nvAr x=1;\n</script></heAd></html>', '<html>\n\n<heAd>\n  <script>\n    vAr x = 1;\n  </script>\n</heAd>\n\n</html>\n', options);
 	});
 
-	test('Inside script', async () => {
-		await assertFormat('<html><head>\n  <script>\n|var x=6;|\n</script></head></html>', '<html><head>\n  <script>\n  var x = 6;\n</script></head></html>');
-		await assertFormat('<html><head>\n  <script>\n|var x=6;\nvar y=  9;|\n</script></head></html>', '<html><head>\n  <script>\n  var x = 6;\n  var y = 9;\n</script></head></html>');
+	test('Inside script', Async () => {
+		AwAit AssertFormAt('<html><heAd>\n  <script>\n|vAr x=6;|\n</script></heAd></html>', '<html><heAd>\n  <script>\n  vAr x = 6;\n</script></heAd></html>');
+		AwAit AssertFormAt('<html><heAd>\n  <script>\n|vAr x=6;\nvAr y=  9;|\n</script></heAd></html>', '<html><heAd>\n  <script>\n  vAr x = 6;\n  vAr y = 9;\n</script></heAd></html>');
 	});
 
-	test('Range after new line', async () => {
-		await assertFormat('<html><head>\n  |<script>\nvar x=6;\n</script>\n|</head></html>', '<html><head>\n  <script>\n    var x = 6;\n  </script>\n</head></html>');
+	test('RAnge After new line', Async () => {
+		AwAit AssertFormAt('<html><heAd>\n  |<script>\nvAr x=6;\n</script>\n|</heAd></html>', '<html><heAd>\n  <script>\n    vAr x = 6;\n  </script>\n</heAd></html>');
 	});
 
-	test('bug 36574', async () => {
-		await assertFormat('<script src="/js/main.js"> </script>', '<script src="/js/main.js"> </script>');
+	test('bug 36574', Async () => {
+		AwAit AssertFormAt('<script src="/js/mAin.js"> </script>', '<script src="/js/mAin.js"> </script>');
 	});
 
-	test('bug 48049', async () => {
-		await assertFormat(
+	test('bug 48049', Async () => {
+		AwAit AssertFormAt(
 			[
 				'<html>',
-				'<head>',
-				'</head>',
+				'<heAd>',
+				'</heAd>',
 				'',
 				'<body>',
 				'',
@@ -124,7 +124,7 @@ suite('HTML Embedded Formatting', () => {
 				'        f(function () {',
 				'        // ',
 				'',
-				'        console.log(" vsc crashes on formatting")',
+				'        console.log(" vsc crAshes on formAtting")',
 				'        });',
 				'    </script>',
 				'',
@@ -137,8 +137,8 @@ suite('HTML Embedded Formatting', () => {
 			[
 				'<html>',
 				'',
-				'<head>',
-				'</head>',
+				'<heAd>',
+				'</heAd>',
 				'',
 				'<body>',
 				'',
@@ -147,7 +147,7 @@ suite('HTML Embedded Formatting', () => {
 				'    f(function () {',
 				'      // ',
 				'',
-				'      console.log(" vsc crashes on formatting")',
+				'      console.log(" vsc crAshes on formAtting")',
 				'    });',
 				'  </script>',
 				'',
@@ -159,11 +159,11 @@ suite('HTML Embedded Formatting', () => {
 			].join('\n')
 		);
 	});
-	test('#58435', async () => {
+	test('#58435', Async () => {
 		let options = {
 			html: {
-				format: {
-					contentUnformatted: 'textarea'
+				formAt: {
+					contentUnformAtted: 'textAreA'
 				}
 			}
 		};
@@ -172,8 +172,8 @@ suite('HTML Embedded Formatting', () => {
 			'<html>',
 			'',
 			'<body>',
-			'  <textarea name= "" id ="" cols="30" rows="10">',
-			'  </textarea>',
+			'  <textAreA nAme= "" id ="" cols="30" rows="10">',
+			'  </textAreA>',
 			'</body>',
 			'',
 			'</html>',
@@ -183,28 +183,28 @@ suite('HTML Embedded Formatting', () => {
 			'<html>',
 			'',
 			'<body>',
-			'  <textarea name="" id="" cols="30" rows="10">',
-			'  </textarea>',
+			'  <textAreA nAme="" id="" cols="30" rows="10">',
+			'  </textAreA>',
 			'</body>',
 			'',
 			'</html>',
 		].join('\n');
 
-		await assertFormat(content, expected, options);
+		AwAit AssertFormAt(content, expected, options);
 	});
 
 }); /*
-content_unformatted: Array(4)["pre", "code", "textarea", …]
-end_with_newline: false
+content_unformAtted: ArrAy(4)["pre", "code", "textAreA", …]
+end_with_newline: fAlse
 eol: "\n"
-extra_liners: Array(3)["head", "body", "/html"]
-indent_char: "\t"
-indent_handlebars: false
-indent_inner_html: false
+extrA_liners: ArrAy(3)["heAd", "body", "/html"]
+indent_chAr: "\t"
+indent_hAndlebArs: fAlse
+indent_inner_html: fAlse
 indent_size: 1
-max_preserve_newlines: 32786
+mAx_preserve_newlines: 32786
 preserve_newlines: true
-unformatted: Array(1)["wbr"]
-wrap_attributes: "auto"
-wrap_attributes_indent_size: undefined
-wrap_line_length: 120*/
+unformAtted: ArrAy(1)["wbr"]
+wrAp_Attributes: "Auto"
+wrAp_Attributes_indent_size: undefined
+wrAp_line_length: 120*/

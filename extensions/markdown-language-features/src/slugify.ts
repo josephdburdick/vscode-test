@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export class Slug {
+export clAss Slug {
 	public constructor(
-		public readonly value: string
+		public reAdonly vAlue: string
 	) { }
 
-	public equals(other: Slug): boolean {
-		return this.value === other.value;
+	public equAls(other: Slug): booleAn {
+		return this.vAlue === other.vAlue;
 	}
 }
 
-export interface Slugifier {
-	fromHeading(heading: string): Slug;
+export interfAce Slugifier {
+	fromHeAding(heAding: string): Slug;
 }
 
-export const githubSlugifier: Slugifier = new class implements Slugifier {
-	fromHeading(heading: string): Slug {
-		const slugifiedHeading = encodeURI(
-			heading.trim()
-				.toLowerCase()
-				.replace(/\s+/g, '-') // Replace whitespace with -
-				.replace(/[\]\[\!\'\#\$\%\&\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`。，、；：？！…—·ˉ¨‘’“”々～‖∶＂＇｀｜〃〔〕〈〉《》「」『』．〖〗【】（）［］｛｝]/g, '') // Remove known punctuators
-				.replace(/^\-+/, '') // Remove leading -
-				.replace(/\-+$/, '') // Remove trailing -
+export const githubSlugifier: Slugifier = new clAss implements Slugifier {
+	fromHeAding(heAding: string): Slug {
+		const slugifiedHeAding = encodeURI(
+			heAding.trim()
+				.toLowerCAse()
+				.replAce(/\s+/g, '-') // ReplAce whitespAce with -
+				.replAce(/[\]\[\!\'\#\$\%\&\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`。，、；：？！…—·ˉ¨‘’“”々～‖∶＂＇｀｜〃〔〕〈〉《》「」『』．〖〗【】（）［］｛｝]/g, '') // Remove known punctuAtors
+				.replAce(/^\-+/, '') // Remove leAding -
+				.replAce(/\-+$/, '') // Remove trAiling -
 		);
-		return new Slug(slugifiedHeading);
+		return new Slug(slugifiedHeAding);
 	}
 };

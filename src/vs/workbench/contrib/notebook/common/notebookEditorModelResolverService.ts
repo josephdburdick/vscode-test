@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { creAteDecorAtor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
 import { INotebookEditorModel } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 import { NotebookEditorModel } from 'vs/workbench/contrib/notebook/common/notebookEditorModel';
-import { DisposableStore, IDisposable, IReference, ReferenceCollection } from 'vs/base/common/lifecycle';
+import { DisposAbleStore, IDisposAble, IReference, ReferenceCollection } from 'vs/bAse/common/lifecycle';
 import { INotebookService } from 'vs/workbench/contrib/notebook/common/notebookService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { Event } from 'vs/base/common/event';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { Event } from 'vs/bAse/common/event';
 
-export const INotebookEditorModelResolverService = createDecorator<INotebookEditorModelResolverService>('INotebookModelResolverService');
+export const INotebookEditorModelResolverService = creAteDecorAtor<INotebookEditorModelResolverService>('INotebookModelResolverService');
 
-export interface INotebookEditorModelResolverService {
-	readonly _serviceBrand: undefined;
+export interfAce INotebookEditorModelResolverService {
+	reAdonly _serviceBrAnd: undefined;
 	resolve(resource: URI, viewType?: string): Promise<IReference<INotebookEditorModel>>;
 }
 
 
-export class NotebookModelReferenceCollection extends ReferenceCollection<Promise<INotebookEditorModel>> {
+export clAss NotebookModelReferenceCollection extends ReferenceCollection<Promise<INotebookEditorModel>> {
 
 	constructor(
-		@IInstantiationService readonly _instantiationService: IInstantiationService,
-		@INotebookService private readonly _notebookService: INotebookService,
-		@ILogService private readonly _logService: ILogService,
+		@IInstAntiAtionService reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@INotebookService privAte reAdonly _notebookService: INotebookService,
+		@ILogService privAte reAdonly _logService: ILogService,
 	) {
 		super();
 	}
 
-	protected createReferencedObject(key: string, viewType: string): Promise<INotebookEditorModel> {
-		const uri = URI.parse(key);
-		const model = this._instantiationService.createInstance(NotebookEditorModel, uri, viewType);
-		const promise = model.load();
+	protected creAteReferencedObject(key: string, viewType: string): Promise<INotebookEditorModel> {
+		const uri = URI.pArse(key);
+		const model = this._instAntiAtionService.creAteInstAnce(NotebookEditorModel, uri, viewType);
+		const promise = model.loAd();
 		return promise;
 	}
 
@@ -41,26 +41,26 @@ export class NotebookModelReferenceCollection extends ReferenceCollection<Promis
 		object.then(model => {
 			this._notebookService.destoryNotebookDocument(model.viewType, model.notebook);
 			model.dispose();
-		}).catch(err => {
-			this._logService.critical('FAILED to destory notebook', err);
+		}).cAtch(err => {
+			this._logService.criticAl('FAILED to destory notebook', err);
 		});
 	}
 }
 
-export class NotebookModelResolverService implements INotebookEditorModelResolverService {
+export clAss NotebookModelResolverService implements INotebookEditorModelResolverService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private readonly _data: NotebookModelReferenceCollection;
+	privAte reAdonly _dAtA: NotebookModelReferenceCollection;
 
 	constructor(
-		@IInstantiationService instantiationService: IInstantiationService,
-		@INotebookService private readonly _notebookService: INotebookService
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@INotebookService privAte reAdonly _notebookService: INotebookService
 	) {
-		this._data = instantiationService.createInstance(NotebookModelReferenceCollection);
+		this._dAtA = instAntiAtionService.creAteInstAnce(NotebookModelReferenceCollection);
 	}
 
-	async resolve(resource: URI, viewType?: string): Promise<IReference<INotebookEditorModel>> {
+	Async resolve(resource: URI, viewType?: string): Promise<IReference<INotebookEditorModel>> {
 
 		const existingViewType = this._notebookService.getNotebookTextModel(resource)?.viewType;
 		if (!viewType) {
@@ -78,26 +78,26 @@ export class NotebookModelResolverService implements INotebookEditorModelResolve
 		}
 
 		if (existingViewType && existingViewType !== viewType) {
-			throw new Error(`A notebook with view type '${existingViewType}' already exists for '${resource}', CANNOT create another notebook with view type ${viewType}`);
+			throw new Error(`A notebook with view type '${existingViewType}' AlreAdy exists for '${resource}', CANNOT creAte Another notebook with view type ${viewType}`);
 		}
 
-		const reference = this._data.acquire(resource.toString(), viewType);
-		const model = await reference.object;
-		NotebookModelResolverService._autoReferenceDirtyModel(model, () => this._data.acquire(resource.toString(), viewType));
+		const reference = this._dAtA.Acquire(resource.toString(), viewType);
+		const model = AwAit reference.object;
+		NotebookModelResolverService._AutoReferenceDirtyModel(model, () => this._dAtA.Acquire(resource.toString(), viewType));
 		return {
 			object: model,
 			dispose() { reference.dispose(); }
 		};
 	}
 
-	private static _autoReferenceDirtyModel(model: INotebookEditorModel, ref: () => IDisposable) {
+	privAte stAtic _AutoReferenceDirtyModel(model: INotebookEditorModel, ref: () => IDisposAble) {
 
-		const references = new DisposableStore();
-		const listener = model.onDidChangeDirty(() => {
+		const references = new DisposAbleStore();
+		const listener = model.onDidChAngeDirty(() => {
 			if (model.isDirty()) {
-				references.add(ref());
+				references.Add(ref());
 			} else {
-				references.clear();
+				references.cleAr();
 			}
 		});
 

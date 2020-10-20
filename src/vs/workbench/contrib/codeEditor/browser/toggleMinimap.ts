@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { CATEGORIES, Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
+import * As nls from 'vs/nls';
+import { Action } from 'vs/bAse/common/Actions';
+import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { ConfigurAtionTArget, IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { CATEGORIES, Extensions As ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/Actions';
 
-export class ToggleMinimapAction extends Action {
-	public static readonly ID = 'editor.action.toggleMinimap';
-	public static readonly LABEL = nls.localize('toggleMinimap', "Toggle Minimap");
+export clAss ToggleMinimApAction extends Action {
+	public stAtic reAdonly ID = 'editor.Action.toggleMinimAp';
+	public stAtic reAdonly LABEL = nls.locAlize('toggleMinimAp', "Toggle MinimAp");
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	public run(): Promise<any> {
-		const newValue = !this._configurationService.getValue<boolean>('editor.minimap.enabled');
-		return this._configurationService.updateValue('editor.minimap.enabled', newValue, ConfigurationTarget.USER);
+	public run(): Promise<Any> {
+		const newVAlue = !this._configurAtionService.getVAlue<booleAn>('editor.minimAp.enAbled');
+		return this._configurAtionService.updAteVAlue('editor.minimAp.enAbled', newVAlue, ConfigurAtionTArget.USER);
 	}
 }
 
-const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleMinimapAction), 'View: Toggle Minimap', CATEGORIES.View.value);
+const registry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleMinimApAction), 'View: Toggle MinimAp', CATEGORIES.View.vAlue);
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArViewMenu, {
 	group: '5_editor',
-	command: {
-		id: ToggleMinimapAction.ID,
-		title: nls.localize({ key: 'miShowMinimap', comment: ['&& denotes a mnemonic'] }, "Show &&Minimap"),
-		toggled: ContextKeyExpr.equals('config.editor.minimap.enabled', true)
+	commAnd: {
+		id: ToggleMinimApAction.ID,
+		title: nls.locAlize({ key: 'miShowMinimAp', comment: ['&& denotes A mnemonic'] }, "Show &&MinimAp"),
+		toggled: ContextKeyExpr.equAls('config.editor.minimAp.enAbled', true)
 	},
 	order: 2
 });

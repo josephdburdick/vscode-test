@@ -1,189 +1,189 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { isMacintosh, isLinux, isWindows } from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { isMAcintosh, isLinux, isWindows } from 'vs/bAse/common/plAtform';
 
-function createContext(ctx: any) {
+function creAteContext(ctx: Any) {
 	return {
-		getValue: (key: string) => {
+		getVAlue: (key: string) => {
 			return ctx[key];
 		}
 	};
 }
 
 suite('ContextKeyExpr', () => {
-	test('ContextKeyExpr.equals', () => {
-		let a = ContextKeyExpr.and(
-			ContextKeyExpr.has('a1'),
-			ContextKeyExpr.and(ContextKeyExpr.has('and.a')),
-			ContextKeyExpr.has('a2'),
+	test('ContextKeyExpr.equAls', () => {
+		let A = ContextKeyExpr.And(
+			ContextKeyExpr.hAs('A1'),
+			ContextKeyExpr.And(ContextKeyExpr.hAs('And.A')),
+			ContextKeyExpr.hAs('A2'),
 			ContextKeyExpr.regex('d3', /d.*/),
 			ContextKeyExpr.regex('d4', /\*\*3*/),
-			ContextKeyExpr.equals('b1', 'bb1'),
-			ContextKeyExpr.equals('b2', 'bb2'),
-			ContextKeyExpr.notEquals('c1', 'cc1'),
-			ContextKeyExpr.notEquals('c2', 'cc2'),
+			ContextKeyExpr.equAls('b1', 'bb1'),
+			ContextKeyExpr.equAls('b2', 'bb2'),
+			ContextKeyExpr.notEquAls('c1', 'cc1'),
+			ContextKeyExpr.notEquAls('c2', 'cc2'),
 			ContextKeyExpr.not('d1'),
 			ContextKeyExpr.not('d2')
 		)!;
-		let b = ContextKeyExpr.and(
-			ContextKeyExpr.equals('b2', 'bb2'),
-			ContextKeyExpr.notEquals('c1', 'cc1'),
+		let b = ContextKeyExpr.And(
+			ContextKeyExpr.equAls('b2', 'bb2'),
+			ContextKeyExpr.notEquAls('c1', 'cc1'),
 			ContextKeyExpr.not('d1'),
 			ContextKeyExpr.regex('d4', /\*\*3*/),
-			ContextKeyExpr.notEquals('c2', 'cc2'),
-			ContextKeyExpr.has('a2'),
-			ContextKeyExpr.equals('b1', 'bb1'),
+			ContextKeyExpr.notEquAls('c2', 'cc2'),
+			ContextKeyExpr.hAs('A2'),
+			ContextKeyExpr.equAls('b1', 'bb1'),
 			ContextKeyExpr.regex('d3', /d.*/),
-			ContextKeyExpr.has('a1'),
-			ContextKeyExpr.and(ContextKeyExpr.equals('and.a', true)),
+			ContextKeyExpr.hAs('A1'),
+			ContextKeyExpr.And(ContextKeyExpr.equAls('And.A', true)),
 			ContextKeyExpr.not('d2')
 		)!;
-		assert(a.equals(b), 'expressions should be equal');
+		Assert(A.equAls(b), 'expressions should be equAl');
 	});
 
-	test('normalize', () => {
-		let key1IsTrue = ContextKeyExpr.equals('key1', true);
-		let key1IsNotFalse = ContextKeyExpr.notEquals('key1', false);
-		let key1IsFalse = ContextKeyExpr.equals('key1', false);
-		let key1IsNotTrue = ContextKeyExpr.notEquals('key1', true);
+	test('normAlize', () => {
+		let key1IsTrue = ContextKeyExpr.equAls('key1', true);
+		let key1IsNotFAlse = ContextKeyExpr.notEquAls('key1', fAlse);
+		let key1IsFAlse = ContextKeyExpr.equAls('key1', fAlse);
+		let key1IsNotTrue = ContextKeyExpr.notEquAls('key1', true);
 
-		assert.ok(key1IsTrue.equals(ContextKeyExpr.has('key1')));
-		assert.ok(key1IsNotFalse.equals(ContextKeyExpr.has('key1')));
-		assert.ok(key1IsFalse.equals(ContextKeyExpr.not('key1')));
-		assert.ok(key1IsNotTrue.equals(ContextKeyExpr.not('key1')));
+		Assert.ok(key1IsTrue.equAls(ContextKeyExpr.hAs('key1')));
+		Assert.ok(key1IsNotFAlse.equAls(ContextKeyExpr.hAs('key1')));
+		Assert.ok(key1IsFAlse.equAls(ContextKeyExpr.not('key1')));
+		Assert.ok(key1IsNotTrue.equAls(ContextKeyExpr.not('key1')));
 	});
 
-	test('evaluate', () => {
-		let context = createContext({
-			'a': true,
-			'b': false,
+	test('evAluAte', () => {
+		let context = creAteContext({
+			'A': true,
+			'b': fAlse,
 			'c': '5',
 			'd': 'd'
 		});
-		function testExpression(expr: string, expected: boolean): void {
+		function testExpression(expr: string, expected: booleAn): void {
 			// console.log(expr + ' ' + expected);
-			let rules = ContextKeyExpr.deserialize(expr);
-			assert.equal(rules!.evaluate(context), expected, expr);
+			let rules = ContextKeyExpr.deseriAlize(expr);
+			Assert.equAl(rules!.evAluAte(context), expected, expr);
 		}
-		function testBatch(expr: string, value: any): void {
-			/* eslint-disable eqeqeq */
-			testExpression(expr, !!value);
-			testExpression(expr + ' == true', !!value);
-			testExpression(expr + ' != true', !value);
-			testExpression(expr + ' == false', !value);
-			testExpression(expr + ' != false', !!value);
-			testExpression(expr + ' == 5', value == <any>'5');
-			testExpression(expr + ' != 5', value != <any>'5');
-			testExpression('!' + expr, !value);
-			testExpression(expr + ' =~ /d.*/', /d.*/.test(value));
-			testExpression(expr + ' =~ /D/i', /D/i.test(value));
-			/* eslint-enable eqeqeq */
+		function testBAtch(expr: string, vAlue: Any): void {
+			/* eslint-disAble eqeqeq */
+			testExpression(expr, !!vAlue);
+			testExpression(expr + ' == true', !!vAlue);
+			testExpression(expr + ' != true', !vAlue);
+			testExpression(expr + ' == fAlse', !vAlue);
+			testExpression(expr + ' != fAlse', !!vAlue);
+			testExpression(expr + ' == 5', vAlue == <Any>'5');
+			testExpression(expr + ' != 5', vAlue != <Any>'5');
+			testExpression('!' + expr, !vAlue);
+			testExpression(expr + ' =~ /d.*/', /d.*/.test(vAlue));
+			testExpression(expr + ' =~ /D/i', /D/i.test(vAlue));
+			/* eslint-enAble eqeqeq */
 		}
 
-		testBatch('a', true);
-		testBatch('b', false);
-		testBatch('c', '5');
-		testBatch('d', 'd');
-		testBatch('z', undefined);
+		testBAtch('A', true);
+		testBAtch('b', fAlse);
+		testBAtch('c', '5');
+		testBAtch('d', 'd');
+		testBAtch('z', undefined);
 
 		testExpression('true', true);
-		testExpression('false', false);
-		testExpression('a && !b', true && !false);
-		testExpression('a && b', true && false);
-		testExpression('a && !b && c == 5', true && !false && '5' === '5');
-		testExpression('d =~ /e.*/', false);
+		testExpression('fAlse', fAlse);
+		testExpression('A && !b', true && !fAlse);
+		testExpression('A && b', true && fAlse);
+		testExpression('A && !b && c == 5', true && !fAlse && '5' === '5');
+		testExpression('d =~ /e.*/', fAlse);
 
-		// precedence test: false && true || true === true because && is evaluated first
-		testExpression('b && a || a', true);
+		// precedence test: fAlse && true || true === true becAuse && is evAluAted first
+		testExpression('b && A || A', true);
 
-		testExpression('a || b', true);
-		testExpression('b || b', false);
-		testExpression('b && a || a && b', false);
+		testExpression('A || b', true);
+		testExpression('b || b', fAlse);
+		testExpression('b && A || A && b', fAlse);
 	});
 
-	test('negate', () => {
-		function testNegate(expr: string, expected: string): void {
-			const actual = ContextKeyExpr.deserialize(expr)!.negate().serialize();
-			assert.strictEqual(actual, expected);
+	test('negAte', () => {
+		function testNegAte(expr: string, expected: string): void {
+			const ActuAl = ContextKeyExpr.deseriAlize(expr)!.negAte().seriAlize();
+			Assert.strictEquAl(ActuAl, expected);
 		}
-		testNegate('true', 'false');
-		testNegate('false', 'true');
-		testNegate('a', '!a');
-		testNegate('a && b || c', '!a && !c || !b && !c');
-		testNegate('a && b || c || d', '!a && !c && !d || !b && !c && !d');
-		testNegate('!a && !b || !c && !d', 'a && c || a && d || b && c || b && d');
-		testNegate('!a && !b || !c && !d || !e && !f', 'a && c && e || a && c && f || a && d && e || a && d && f || b && c && e || b && c && f || b && d && e || b && d && f');
+		testNegAte('true', 'fAlse');
+		testNegAte('fAlse', 'true');
+		testNegAte('A', '!A');
+		testNegAte('A && b || c', '!A && !c || !b && !c');
+		testNegAte('A && b || c || d', '!A && !c && !d || !b && !c && !d');
+		testNegAte('!A && !b || !c && !d', 'A && c || A && d || b && c || b && d');
+		testNegAte('!A && !b || !c && !d || !e && !f', 'A && c && e || A && c && f || A && d && e || A && d && f || b && c && e || b && c && f || b && d && e || b && d && f');
 	});
 
-	test('false, true', () => {
-		function testNormalize(expr: string, expected: string): void {
-			const actual = ContextKeyExpr.deserialize(expr)!.serialize();
-			assert.strictEqual(actual, expected);
+	test('fAlse, true', () => {
+		function testNormAlize(expr: string, expected: string): void {
+			const ActuAl = ContextKeyExpr.deseriAlize(expr)!.seriAlize();
+			Assert.strictEquAl(ActuAl, expected);
 		}
-		testNormalize('true', 'true');
-		testNormalize('!true', 'false');
-		testNormalize('false', 'false');
-		testNormalize('!false', 'true');
-		testNormalize('a && true', 'a');
-		testNormalize('a && false', 'false');
-		testNormalize('a || true', 'true');
-		testNormalize('a || false', 'a');
-		testNormalize('isMac', isMacintosh ? 'true' : 'false');
-		testNormalize('isLinux', isLinux ? 'true' : 'false');
-		testNormalize('isWindows', isWindows ? 'true' : 'false');
+		testNormAlize('true', 'true');
+		testNormAlize('!true', 'fAlse');
+		testNormAlize('fAlse', 'fAlse');
+		testNormAlize('!fAlse', 'true');
+		testNormAlize('A && true', 'A');
+		testNormAlize('A && fAlse', 'fAlse');
+		testNormAlize('A || true', 'true');
+		testNormAlize('A || fAlse', 'A');
+		testNormAlize('isMAc', isMAcintosh ? 'true' : 'fAlse');
+		testNormAlize('isLinux', isLinux ? 'true' : 'fAlse');
+		testNormAlize('isWindows', isWindows ? 'true' : 'fAlse');
 	});
 
 	test('issue #101015: distribute OR', () => {
 		function t(expr1: string, expr2: string, expected: string | undefined): void {
-			const e1 = ContextKeyExpr.deserialize(expr1);
-			const e2 = ContextKeyExpr.deserialize(expr2);
-			const actual = ContextKeyExpr.and(e1, e2)?.serialize();
-			assert.strictEqual(actual, expected);
+			const e1 = ContextKeyExpr.deseriAlize(expr1);
+			const e2 = ContextKeyExpr.deseriAlize(expr2);
+			const ActuAl = ContextKeyExpr.And(e1, e2)?.seriAlize();
+			Assert.strictEquAl(ActuAl, expected);
 		}
-		t('a', 'b', 'a && b');
-		t('a || b', 'c', 'a && c || b && c');
-		t('a || b', 'c || d', 'a && c || a && d || b && c || b && d');
-		t('a || b', 'c && d', 'a && c && d || b && c && d');
-		t('a || b', 'c && d || e', 'a && e || b && e || a && c && d || b && c && d');
+		t('A', 'b', 'A && b');
+		t('A || b', 'c', 'A && c || b && c');
+		t('A || b', 'c || d', 'A && c || A && d || b && c || b && d');
+		t('A || b', 'c && d', 'A && c && d || b && c && d');
+		t('A || b', 'c && d || e', 'A && e || b && e || A && c && d || b && c && d');
 	});
 
 	test('ContextKeyInExpr', () => {
-		const ainb = ContextKeyExpr.deserialize('a in b')!;
-		assert.equal(ainb.evaluate(createContext({ 'a': 3, 'b': [3, 2, 1] })), true);
-		assert.equal(ainb.evaluate(createContext({ 'a': 3, 'b': [1, 2, 3] })), true);
-		assert.equal(ainb.evaluate(createContext({ 'a': 3, 'b': [1, 2] })), false);
-		assert.equal(ainb.evaluate(createContext({ 'a': 3 })), false);
-		assert.equal(ainb.evaluate(createContext({ 'a': 3, 'b': null })), false);
-		assert.equal(ainb.evaluate(createContext({ 'a': 'x', 'b': ['x'] })), true);
-		assert.equal(ainb.evaluate(createContext({ 'a': 'x', 'b': ['y'] })), false);
-		assert.equal(ainb.evaluate(createContext({ 'a': 'x', 'b': {} })), false);
-		assert.equal(ainb.evaluate(createContext({ 'a': 'x', 'b': { 'x': false } })), true);
-		assert.equal(ainb.evaluate(createContext({ 'a': 'x', 'b': { 'x': true } })), true);
-		assert.equal(ainb.evaluate(createContext({ 'a': 'prototype', 'b': {} })), false);
+		const Ainb = ContextKeyExpr.deseriAlize('A in b')!;
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 3, 'b': [3, 2, 1] })), true);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 3, 'b': [1, 2, 3] })), true);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 3, 'b': [1, 2] })), fAlse);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 3 })), fAlse);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 3, 'b': null })), fAlse);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 'x', 'b': ['x'] })), true);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 'x', 'b': ['y'] })), fAlse);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 'x', 'b': {} })), fAlse);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 'x', 'b': { 'x': fAlse } })), true);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 'x', 'b': { 'x': true } })), true);
+		Assert.equAl(Ainb.evAluAte(creAteContext({ 'A': 'prototype', 'b': {} })), fAlse);
 	});
 
-	test('issue #106524: distributing AND should normalize', () => {
-		const actual = ContextKeyExpr.and(
+	test('issue #106524: distributing AND should normAlize', () => {
+		const ActuAl = ContextKeyExpr.And(
 			ContextKeyExpr.or(
-				ContextKeyExpr.has('a'),
-				ContextKeyExpr.has('b')
+				ContextKeyExpr.hAs('A'),
+				ContextKeyExpr.hAs('b')
 			),
-			ContextKeyExpr.has('c')
+			ContextKeyExpr.hAs('c')
 		);
 		const expected = ContextKeyExpr.or(
-			ContextKeyExpr.and(
-				ContextKeyExpr.has('a'),
-				ContextKeyExpr.has('c')
+			ContextKeyExpr.And(
+				ContextKeyExpr.hAs('A'),
+				ContextKeyExpr.hAs('c')
 			),
-			ContextKeyExpr.and(
-				ContextKeyExpr.has('b'),
-				ContextKeyExpr.has('c')
+			ContextKeyExpr.And(
+				ContextKeyExpr.hAs('b'),
+				ContextKeyExpr.hAs('c')
 			)
 		);
-		assert.equal(actual!.equals(expected!), true);
+		Assert.equAl(ActuAl!.equAls(expected!), true);
 	});
 });

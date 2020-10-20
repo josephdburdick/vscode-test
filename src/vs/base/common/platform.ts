@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const LANGUAGE_DEFAULT = 'en';
 
-let _isWindows = false;
-let _isMacintosh = false;
-let _isLinux = false;
-let _isNative = false;
-let _isWeb = false;
-let _isIOS = false;
-let _locale: string | undefined = undefined;
-let _language: string = LANGUAGE_DEFAULT;
-let _translationsConfigFile: string | undefined = undefined;
+let _isWindows = fAlse;
+let _isMAcintosh = fAlse;
+let _isLinux = fAlse;
+let _isNAtive = fAlse;
+let _isWeb = fAlse;
+let _isIOS = fAlse;
+let _locAle: string | undefined = undefined;
+let _lAnguAge: string = LANGUAGE_DEFAULT;
+let _trAnslAtionsConfigFile: string | undefined = undefined;
 let _userAgent: string | undefined = undefined;
 
-interface NLSConfig {
-	locale: string;
-	availableLanguages: { [key: string]: string; };
-	_translationsConfigFile: string;
+interfAce NLSConfig {
+	locAle: string;
+	AvAilAbleLAnguAges: { [key: string]: string; };
+	_trAnslAtionsConfigFile: string;
 }
 
-export interface IProcessEnvironment {
+export interfAce IProcessEnvironment {
 	[key: string]: string;
 }
 
-export interface INodeProcess {
-	platform: 'win32' | 'linux' | 'darwin';
+export interfAce INodeProcess {
+	plAtform: 'win32' | 'linux' | 'dArwin';
 	env: IProcessEnvironment;
 	nextTick: Function;
 	versions?: {
@@ -37,208 +37,208 @@ export interface INodeProcess {
 	getuid(): number;
 	cwd(): string;
 }
-declare const process: INodeProcess;
-declare const global: any;
+declAre const process: INodeProcess;
+declAre const globAl: Any;
 
-interface INavigator {
+interfAce INAvigAtor {
 	userAgent: string;
-	language: string;
-	maxTouchPoints?: number;
+	lAnguAge: string;
+	mAxTouchPoints?: number;
 }
-declare const navigator: INavigator;
-declare const self: any;
+declAre const nAvigAtor: INAvigAtor;
+declAre const self: Any;
 
-const _globals = (typeof self === 'object' ? self : typeof global === 'object' ? global : {} as any);
+const _globAls = (typeof self === 'object' ? self : typeof globAl === 'object' ? globAl : {} As Any);
 
 let nodeProcess: INodeProcess | undefined = undefined;
 if (typeof process !== 'undefined') {
-	// Native environment (non-sandboxed)
+	// NAtive environment (non-sAndboxed)
 	nodeProcess = process;
-} else if (typeof _globals.vscode !== 'undefined') {
-	// Native envionment (sandboxed)
-	nodeProcess = _globals.vscode.process;
+} else if (typeof _globAls.vscode !== 'undefined') {
+	// NAtive envionment (sAndboxed)
+	nodeProcess = _globAls.vscode.process;
 }
 
 const isElectronRenderer = typeof nodeProcess?.versions?.electron === 'string' && nodeProcess.type === 'renderer';
 
 // Web environment
-if (typeof navigator === 'object' && !isElectronRenderer) {
-	_userAgent = navigator.userAgent;
+if (typeof nAvigAtor === 'object' && !isElectronRenderer) {
+	_userAgent = nAvigAtor.userAgent;
 	_isWindows = _userAgent.indexOf('Windows') >= 0;
-	_isMacintosh = _userAgent.indexOf('Macintosh') >= 0;
-	_isIOS = (_userAgent.indexOf('Macintosh') >= 0 || _userAgent.indexOf('iPad') >= 0 || _userAgent.indexOf('iPhone') >= 0) && !!navigator.maxTouchPoints && navigator.maxTouchPoints > 0;
+	_isMAcintosh = _userAgent.indexOf('MAcintosh') >= 0;
+	_isIOS = (_userAgent.indexOf('MAcintosh') >= 0 || _userAgent.indexOf('iPAd') >= 0 || _userAgent.indexOf('iPhone') >= 0) && !!nAvigAtor.mAxTouchPoints && nAvigAtor.mAxTouchPoints > 0;
 	_isLinux = _userAgent.indexOf('Linux') >= 0;
 	_isWeb = true;
-	_locale = navigator.language;
-	_language = _locale;
+	_locAle = nAvigAtor.lAnguAge;
+	_lAnguAge = _locAle;
 }
 
-// Native environment
+// NAtive environment
 else if (typeof nodeProcess === 'object') {
-	_isWindows = (nodeProcess.platform === 'win32');
-	_isMacintosh = (nodeProcess.platform === 'darwin');
-	_isLinux = (nodeProcess.platform === 'linux');
-	_locale = LANGUAGE_DEFAULT;
-	_language = LANGUAGE_DEFAULT;
-	const rawNlsConfig = nodeProcess.env['VSCODE_NLS_CONFIG'];
-	if (rawNlsConfig) {
+	_isWindows = (nodeProcess.plAtform === 'win32');
+	_isMAcintosh = (nodeProcess.plAtform === 'dArwin');
+	_isLinux = (nodeProcess.plAtform === 'linux');
+	_locAle = LANGUAGE_DEFAULT;
+	_lAnguAge = LANGUAGE_DEFAULT;
+	const rAwNlsConfig = nodeProcess.env['VSCODE_NLS_CONFIG'];
+	if (rAwNlsConfig) {
 		try {
-			const nlsConfig: NLSConfig = JSON.parse(rawNlsConfig);
-			const resolved = nlsConfig.availableLanguages['*'];
-			_locale = nlsConfig.locale;
-			// VSCode's default language is 'en'
-			_language = resolved ? resolved : LANGUAGE_DEFAULT;
-			_translationsConfigFile = nlsConfig._translationsConfigFile;
-		} catch (e) {
+			const nlsConfig: NLSConfig = JSON.pArse(rAwNlsConfig);
+			const resolved = nlsConfig.AvAilAbleLAnguAges['*'];
+			_locAle = nlsConfig.locAle;
+			// VSCode's defAult lAnguAge is 'en'
+			_lAnguAge = resolved ? resolved : LANGUAGE_DEFAULT;
+			_trAnslAtionsConfigFile = nlsConfig._trAnslAtionsConfigFile;
+		} cAtch (e) {
 		}
 	}
-	_isNative = true;
+	_isNAtive = true;
 }
 
 // Unknown environment
 else {
-	console.error('Unable to resolve platform.');
+	console.error('UnAble to resolve plAtform.');
 }
 
-export const enum Platform {
+export const enum PlAtform {
 	Web,
-	Mac,
+	MAc,
 	Linux,
 	Windows
 }
-export function PlatformToString(platform: Platform) {
-	switch (platform) {
-		case Platform.Web: return 'Web';
-		case Platform.Mac: return 'Mac';
-		case Platform.Linux: return 'Linux';
-		case Platform.Windows: return 'Windows';
+export function PlAtformToString(plAtform: PlAtform) {
+	switch (plAtform) {
+		cAse PlAtform.Web: return 'Web';
+		cAse PlAtform.MAc: return 'MAc';
+		cAse PlAtform.Linux: return 'Linux';
+		cAse PlAtform.Windows: return 'Windows';
 	}
 }
 
-let _platform: Platform = Platform.Web;
-if (_isMacintosh) {
-	_platform = Platform.Mac;
+let _plAtform: PlAtform = PlAtform.Web;
+if (_isMAcintosh) {
+	_plAtform = PlAtform.MAc;
 } else if (_isWindows) {
-	_platform = Platform.Windows;
+	_plAtform = PlAtform.Windows;
 } else if (_isLinux) {
-	_platform = Platform.Linux;
+	_plAtform = PlAtform.Linux;
 }
 
 export const isWindows = _isWindows;
-export const isMacintosh = _isMacintosh;
+export const isMAcintosh = _isMAcintosh;
 export const isLinux = _isLinux;
-export const isNative = _isNative;
+export const isNAtive = _isNAtive;
 export const isWeb = _isWeb;
 export const isIOS = _isIOS;
-export const platform = _platform;
+export const plAtform = _plAtform;
 export const userAgent = _userAgent;
 
-export function isRootUser(): boolean {
+export function isRootUser(): booleAn {
 	return !!nodeProcess && !_isWindows && (nodeProcess.getuid() === 0);
 }
 
 /**
- * The language used for the user interface. The format of
- * the string is all lower case (e.g. zh-tw for Traditional
+ * The lAnguAge used for the user interfAce. The formAt of
+ * the string is All lower cAse (e.g. zh-tw for TrAditionAl
  * Chinese)
  */
-export const language = _language;
+export const lAnguAge = _lAnguAge;
 
-export namespace Language {
+export nAmespAce LAnguAge {
 
-	export function value(): string {
-		return language;
+	export function vAlue(): string {
+		return lAnguAge;
 	}
 
-	export function isDefaultVariant(): boolean {
-		if (language.length === 2) {
-			return language === 'en';
-		} else if (language.length >= 3) {
-			return language[0] === 'e' && language[1] === 'n' && language[2] === '-';
+	export function isDefAultVAriAnt(): booleAn {
+		if (lAnguAge.length === 2) {
+			return lAnguAge === 'en';
+		} else if (lAnguAge.length >= 3) {
+			return lAnguAge[0] === 'e' && lAnguAge[1] === 'n' && lAnguAge[2] === '-';
 		} else {
-			return false;
+			return fAlse;
 		}
 	}
 
-	export function isDefault(): boolean {
-		return language === 'en';
+	export function isDefAult(): booleAn {
+		return lAnguAge === 'en';
 	}
 }
 
 /**
- * The OS locale or the locale specified by --locale. The format of
- * the string is all lower case (e.g. zh-tw for Traditional
- * Chinese). The UI is not necessarily shown in the provided locale.
+ * The OS locAle or the locAle specified by --locAle. The formAt of
+ * the string is All lower cAse (e.g. zh-tw for TrAditionAl
+ * Chinese). The UI is not necessArily shown in the provided locAle.
  */
-export const locale = _locale;
+export const locAle = _locAle;
 
 /**
- * The translatios that are available through language packs.
+ * The trAnslAtios thAt Are AvAilAble through lAnguAge pAcks.
  */
-export const translationsConfigFile = _translationsConfigFile;
+export const trAnslAtionsConfigFile = _trAnslAtionsConfigFile;
 
-export const globals: any = _globals;
+export const globAls: Any = _globAls;
 
-interface ISetImmediate {
-	(callback: (...args: any[]) => void): void;
+interfAce ISetImmediAte {
+	(cAllbAck: (...Args: Any[]) => void): void;
 }
 
-export const setImmediate: ISetImmediate = (function defineSetImmediate() {
-	if (globals.setImmediate) {
-		return globals.setImmediate.bind(globals);
+export const setImmediAte: ISetImmediAte = (function defineSetImmediAte() {
+	if (globAls.setImmediAte) {
+		return globAls.setImmediAte.bind(globAls);
 	}
-	if (typeof globals.postMessage === 'function' && !globals.importScripts) {
-		interface IQueueElement {
+	if (typeof globAls.postMessAge === 'function' && !globAls.importScripts) {
+		interfAce IQueueElement {
 			id: number;
-			callback: () => void;
+			cAllbAck: () => void;
 		}
 		let pending: IQueueElement[] = [];
-		globals.addEventListener('message', (e: MessageEvent) => {
-			if (e.data && e.data.vscodeSetImmediateId) {
+		globAls.AddEventListener('messAge', (e: MessAgeEvent) => {
+			if (e.dAtA && e.dAtA.vscodeSetImmediAteId) {
 				for (let i = 0, len = pending.length; i < len; i++) {
-					const candidate = pending[i];
-					if (candidate.id === e.data.vscodeSetImmediateId) {
+					const cAndidAte = pending[i];
+					if (cAndidAte.id === e.dAtA.vscodeSetImmediAteId) {
 						pending.splice(i, 1);
-						candidate.callback();
+						cAndidAte.cAllbAck();
 						return;
 					}
 				}
 			}
 		});
-		let lastId = 0;
-		return (callback: () => void) => {
-			const myId = ++lastId;
+		let lAstId = 0;
+		return (cAllbAck: () => void) => {
+			const myId = ++lAstId;
 			pending.push({
 				id: myId,
-				callback: callback
+				cAllbAck: cAllbAck
 			});
-			globals.postMessage({ vscodeSetImmediateId: myId }, '*');
+			globAls.postMessAge({ vscodeSetImmediAteId: myId }, '*');
 		};
 	}
 	if (nodeProcess) {
 		return nodeProcess.nextTick.bind(nodeProcess);
 	}
 	const _promise = Promise.resolve();
-	return (callback: (...args: any[]) => void) => _promise.then(callback);
+	return (cAllbAck: (...Args: Any[]) => void) => _promise.then(cAllbAck);
 })();
 
-export const enum OperatingSystem {
+export const enum OperAtingSystem {
 	Windows = 1,
-	Macintosh = 2,
+	MAcintosh = 2,
 	Linux = 3
 }
-export const OS = (_isMacintosh || _isIOS ? OperatingSystem.Macintosh : (_isWindows ? OperatingSystem.Windows : OperatingSystem.Linux));
+export const OS = (_isMAcintosh || _isIOS ? OperAtingSystem.MAcintosh : (_isWindows ? OperAtingSystem.Windows : OperAtingSystem.Linux));
 
-let _isLittleEndian = true;
-let _isLittleEndianComputed = false;
-export function isLittleEndian(): boolean {
-	if (!_isLittleEndianComputed) {
-		_isLittleEndianComputed = true;
-		const test = new Uint8Array(2);
+let _isLittleEndiAn = true;
+let _isLittleEndiAnComputed = fAlse;
+export function isLittleEndiAn(): booleAn {
+	if (!_isLittleEndiAnComputed) {
+		_isLittleEndiAnComputed = true;
+		const test = new Uint8ArrAy(2);
 		test[0] = 1;
 		test[1] = 2;
-		const view = new Uint16Array(test.buffer);
-		_isLittleEndian = (view[0] === (2 << 8) + 1);
+		const view = new Uint16ArrAy(test.buffer);
+		_isLittleEndiAn = (view[0] === (2 << 8) + 1);
 	}
-	return _isLittleEndian;
+	return _isLittleEndiAn;
 }

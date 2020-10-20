@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Client } from 'vs/base/parts/ipc/electron-sandbox/ipc.electron-sandbox';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { IChAnnel, IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Client } from 'vs/bAse/pArts/ipc/electron-sAndbox/ipc.electron-sAndbox';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IMainProcessService = createDecorator<IMainProcessService>('mainProcessService');
+export const IMAinProcessService = creAteDecorAtor<IMAinProcessService>('mAinProcessService');
 
-export interface IMainProcessService {
+export interfAce IMAinProcessService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	getChannel(channelName: string): IChannel;
+	getChAnnel(chAnnelNAme: string): IChAnnel;
 
-	registerChannel(channelName: string, channel: IServerChannel<string>): void;
+	registerChAnnel(chAnnelNAme: string, chAnnel: IServerChAnnel<string>): void;
 }
 
-export class MainProcessService extends Disposable implements IMainProcessService {
+export clAss MAinProcessService extends DisposAble implements IMAinProcessService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private mainProcessConnection: Client;
+	privAte mAinProcessConnection: Client;
 
 	constructor(
 		windowId: number
 	) {
 		super();
 
-		this.mainProcessConnection = this._register(new Client(`window:${windowId}`));
+		this.mAinProcessConnection = this._register(new Client(`window:${windowId}`));
 	}
 
-	getChannel(channelName: string): IChannel {
-		return this.mainProcessConnection.getChannel(channelName);
+	getChAnnel(chAnnelNAme: string): IChAnnel {
+		return this.mAinProcessConnection.getChAnnel(chAnnelNAme);
 	}
 
-	registerChannel(channelName: string, channel: IServerChannel<string>): void {
-		this.mainProcessConnection.registerChannel(channelName, channel);
+	registerChAnnel(chAnnelNAme: string, chAnnel: IServerChAnnel<string>): void {
+		this.mAinProcessConnection.registerChAnnel(chAnnelNAme, chAnnel);
 	}
 }

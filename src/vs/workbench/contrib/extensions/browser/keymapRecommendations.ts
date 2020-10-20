@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { ExtensionRecommendAtions, ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
 
-export class KeymapRecommendations extends ExtensionRecommendations {
+export clAss KeymApRecommendAtions extends ExtensionRecommendAtions {
 
-	private _recommendations: ExtensionRecommendation[] = [];
-	get recommendations(): ReadonlyArray<ExtensionRecommendation> { return this._recommendations; }
+	privAte _recommendAtions: ExtensionRecommendAtion[] = [];
+	get recommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._recommendAtions; }
 
 	constructor(
-		@IProductService private readonly productService: IProductService,
+		@IProductService privAte reAdonly productService: IProductService,
 	) {
 		super();
 	}
 
-	protected async doActivate(): Promise<void> {
-		if (this.productService.keymapExtensionTips) {
-			this._recommendations = this.productService.keymapExtensionTips.map(extensionId => (<ExtensionRecommendation>{
-				extensionId: extensionId.toLowerCase(),
-				reason: {
-					reasonId: ExtensionRecommendationReason.Application,
-					reasonText: ''
+	protected Async doActivAte(): Promise<void> {
+		if (this.productService.keymApExtensionTips) {
+			this._recommendAtions = this.productService.keymApExtensionTips.mAp(extensionId => (<ExtensionRecommendAtion>{
+				extensionId: extensionId.toLowerCAse(),
+				reAson: {
+					reAsonId: ExtensionRecommendAtionReAson.ApplicAtion,
+					reAsonText: ''
 				}
 			}));
 		}

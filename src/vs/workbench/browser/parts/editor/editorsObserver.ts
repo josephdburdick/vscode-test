@@ -1,356 +1,356 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEditorInput, IEditorInputFactoryRegistry, IEditorIdentifier, GroupIdentifier, Extensions, IEditorPartOptionsChangeEvent, EditorsOrder, EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
-import { dispose, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IEditorGroupsService, IEditorGroup, GroupChangeKind, GroupsOrder } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { coalesce } from 'vs/base/common/arrays';
-import { LinkedMap, Touch, ResourceMap } from 'vs/base/common/map';
-import { equals } from 'vs/base/common/objects';
-import { URI } from 'vs/base/common/uri';
+import { IEditorInput, IEditorInputFActoryRegistry, IEditorIdentifier, GroupIdentifier, Extensions, IEditorPArtOptionsChAngeEvent, EditorsOrder, EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
+import { dispose, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IEditorGroupsService, IEditorGroup, GroupChAngeKind, GroupsOrder } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { LinkedMAp, Touch, ResourceMAp } from 'vs/bAse/common/mAp';
+import { equAls } from 'vs/bAse/common/objects';
+import { URI } from 'vs/bAse/common/uri';
 
-interface ISerializedEditorsList {
-	entries: ISerializedEditorIdentifier[];
+interfAce ISeriAlizedEditorsList {
+	entries: ISeriAlizedEditorIdentifier[];
 }
 
-interface ISerializedEditorIdentifier {
+interfAce ISeriAlizedEditorIdentifier {
 	groupId: GroupIdentifier;
 	index: number;
 }
 
 /**
- * A observer of opened editors across all editor groups by most recently used.
+ * A observer of opened editors Across All editor groups by most recently used.
  * Rules:
- * - the last editor in the list is the one most recently activated
- * - the first editor in the list is the one that was activated the longest time ago
- * - an editor that opens inactive will be placed behind the currently active editor
+ * - the lAst editor in the list is the one most recently ActivAted
+ * - the first editor in the list is the one thAt wAs ActivAted the longest time Ago
+ * - An editor thAt opens inActive will be plAced behind the currently Active editor
  *
- * The observer may start to close editors based on the workbench.editor.limit setting.
+ * The observer mAy stArt to close editors bAsed on the workbench.editor.limit setting.
  */
-export class EditorsObserver extends Disposable {
+export clAss EditorsObserver extends DisposAble {
 
-	private static readonly STORAGE_KEY = 'editors.mru';
+	privAte stAtic reAdonly STORAGE_KEY = 'editors.mru';
 
-	private readonly keyMap = new Map<GroupIdentifier, Map<IEditorInput, IEditorIdentifier>>();
-	private readonly mostRecentEditorsMap = new LinkedMap<IEditorIdentifier, IEditorIdentifier>();
-	private readonly editorResourcesMap = new ResourceMap<number>();
+	privAte reAdonly keyMAp = new MAp<GroupIdentifier, MAp<IEditorInput, IEditorIdentifier>>();
+	privAte reAdonly mostRecentEditorsMAp = new LinkedMAp<IEditorIdentifier, IEditorIdentifier>();
+	privAte reAdonly editorResourcesMAp = new ResourceMAp<number>();
 
-	private readonly _onDidMostRecentlyActiveEditorsChange = this._register(new Emitter<void>());
-	readonly onDidMostRecentlyActiveEditorsChange = this._onDidMostRecentlyActiveEditorsChange.event;
+	privAte reAdonly _onDidMostRecentlyActiveEditorsChAnge = this._register(new Emitter<void>());
+	reAdonly onDidMostRecentlyActiveEditorsChAnge = this._onDidMostRecentlyActiveEditorsChAnge.event;
 
 	get count(): number {
-		return this.mostRecentEditorsMap.size;
+		return this.mostRecentEditorsMAp.size;
 	}
 
 	get editors(): IEditorIdentifier[] {
-		return [...this.mostRecentEditorsMap.values()];
+		return [...this.mostRecentEditorsMAp.vAlues()];
 	}
 
-	hasEditor(resource: URI): boolean {
-		return this.editorResourcesMap.has(resource);
+	hAsEditor(resource: URI): booleAn {
+		return this.editorResourcesMAp.hAs(resource);
 	}
 
 	constructor(
-		@IEditorGroupsService private editorGroupsService: IEditorGroupsService,
-		@IStorageService private readonly storageService: IStorageService
+		@IEditorGroupsService privAte editorGroupsService: IEditorGroupsService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this._register(this.storageService.onWillSaveState(() => this.saveState()));
+	privAte registerListeners(): void {
+		this._register(this.storAgeService.onWillSAveStAte(() => this.sAveStAte()));
 		this._register(this.editorGroupsService.onDidAddGroup(group => this.onGroupAdded(group)));
-		this._register(this.editorGroupsService.onDidEditorPartOptionsChange(e => this.onDidEditorPartOptionsChange(e)));
+		this._register(this.editorGroupsService.onDidEditorPArtOptionsChAnge(e => this.onDidEditorPArtOptionsChAnge(e)));
 
-		this.editorGroupsService.whenRestored.then(() => this.loadState());
+		this.editorGroupsService.whenRestored.then(() => this.loAdStAte());
 	}
 
-	private onGroupAdded(group: IEditorGroup): void {
+	privAte onGroupAdded(group: IEditorGroup): void {
 
-		// Make sure to add any already existing editor
+		// MAke sure to Add Any AlreAdy existing editor
 		// of the new group into our list in LRU order
 		const groupEditorsMru = group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE);
 		for (let i = groupEditorsMru.length - 1; i >= 0; i--) {
-			this.addMostRecentEditor(group, groupEditorsMru[i], false /* is not active */, true /* is new */);
+			this.AddMostRecentEditor(group, groupEditorsMru[i], fAlse /* is not Active */, true /* is new */);
 		}
 
-		// Make sure that active editor is put as first if group is active
-		if (this.editorGroupsService.activeGroup === group && group.activeEditor) {
-			this.addMostRecentEditor(group, group.activeEditor, true /* is active */, false /* already added before */);
+		// MAke sure thAt Active editor is put As first if group is Active
+		if (this.editorGroupsService.ActiveGroup === group && group.ActiveEditor) {
+			this.AddMostRecentEditor(group, group.ActiveEditor, true /* is Active */, fAlse /* AlreAdy Added before */);
 		}
 
 		// Group Listeners
 		this.registerGroupListeners(group);
 	}
 
-	private registerGroupListeners(group: IEditorGroup): void {
-		const groupDisposables = new DisposableStore();
-		groupDisposables.add(group.onDidGroupChange(e => {
+	privAte registerGroupListeners(group: IEditorGroup): void {
+		const groupDisposAbles = new DisposAbleStore();
+		groupDisposAbles.Add(group.onDidGroupChAnge(e => {
 			switch (e.kind) {
 
-				// Group gets active: put active editor as most recent
-				case GroupChangeKind.GROUP_ACTIVE: {
-					if (this.editorGroupsService.activeGroup === group && group.activeEditor) {
-						this.addMostRecentEditor(group, group.activeEditor, true /* is active */, false /* editor already opened */);
+				// Group gets Active: put Active editor As most recent
+				cAse GroupChAngeKind.GROUP_ACTIVE: {
+					if (this.editorGroupsService.ActiveGroup === group && group.ActiveEditor) {
+						this.AddMostRecentEditor(group, group.ActiveEditor, true /* is Active */, fAlse /* editor AlreAdy opened */);
 					}
 
-					break;
+					breAk;
 				}
 
-				// Editor gets active: put active editor as most recent
-				// if group is active, otherwise second most recent
-				case GroupChangeKind.EDITOR_ACTIVE: {
+				// Editor gets Active: put Active editor As most recent
+				// if group is Active, otherwise second most recent
+				cAse GroupChAngeKind.EDITOR_ACTIVE: {
 					if (e.editor) {
-						this.addMostRecentEditor(group, e.editor, this.editorGroupsService.activeGroup === group, false /* editor already opened */);
+						this.AddMostRecentEditor(group, e.editor, this.editorGroupsService.ActiveGroup === group, fAlse /* editor AlreAdy opened */);
 					}
 
-					break;
+					breAk;
 				}
 
-				// Editor opens: put it as second most recent
+				// Editor opens: put it As second most recent
 				//
-				// Also check for maximum allowed number of editors and
-				// start to close oldest ones if needed.
-				case GroupChangeKind.EDITOR_OPEN: {
+				// Also check for mAximum Allowed number of editors And
+				// stArt to close oldest ones if needed.
+				cAse GroupChAngeKind.EDITOR_OPEN: {
 					if (e.editor) {
-						this.addMostRecentEditor(group, e.editor, false /* is not active */, true /* is new */);
+						this.AddMostRecentEditor(group, e.editor, fAlse /* is not Active */, true /* is new */);
 						this.ensureOpenedEditorsLimit({ groupId: group.id, editor: e.editor }, group.id);
 					}
 
-					break;
+					breAk;
 				}
 
 				// Editor closes: remove from recently opened
-				case GroupChangeKind.EDITOR_CLOSE: {
+				cAse GroupChAngeKind.EDITOR_CLOSE: {
 					if (e.editor) {
 						this.removeMostRecentEditor(group, e.editor);
 					}
 
-					break;
+					breAk;
 				}
 			}
 		}));
 
-		// Make sure to cleanup on dispose
-		Event.once(group.onWillDispose)(() => dispose(groupDisposables));
+		// MAke sure to cleAnup on dispose
+		Event.once(group.onWillDispose)(() => dispose(groupDisposAbles));
 	}
 
-	private onDidEditorPartOptionsChange(event: IEditorPartOptionsChangeEvent): void {
-		if (!equals(event.newPartOptions.limit, event.oldPartOptions.limit)) {
-			const activeGroup = this.editorGroupsService.activeGroup;
+	privAte onDidEditorPArtOptionsChAnge(event: IEditorPArtOptionsChAngeEvent): void {
+		if (!equAls(event.newPArtOptions.limit, event.oldPArtOptions.limit)) {
+			const ActiveGroup = this.editorGroupsService.ActiveGroup;
 			let exclude: IEditorIdentifier | undefined = undefined;
-			if (activeGroup.activeEditor) {
-				exclude = { editor: activeGroup.activeEditor, groupId: activeGroup.id };
+			if (ActiveGroup.ActiveEditor) {
+				exclude = { editor: ActiveGroup.ActiveEditor, groupId: ActiveGroup.id };
 			}
 
 			this.ensureOpenedEditorsLimit(exclude);
 		}
 	}
 
-	private addMostRecentEditor(group: IEditorGroup, editor: IEditorInput, isActive: boolean, isNew: boolean): void {
+	privAte AddMostRecentEditor(group: IEditorGroup, editor: IEditorInput, isActive: booleAn, isNew: booleAn): void {
 		const key = this.ensureKey(group, editor);
-		const mostRecentEditor = this.mostRecentEditorsMap.first;
+		const mostRecentEditor = this.mostRecentEditorsMAp.first;
 
-		// Active or first entry: add to end of map
+		// Active or first entry: Add to end of mAp
 		if (isActive || !mostRecentEditor) {
-			this.mostRecentEditorsMap.set(key, key, mostRecentEditor ? Touch.AsOld /* make first */ : undefined);
+			this.mostRecentEditorsMAp.set(key, key, mostRecentEditor ? Touch.AsOld /* mAke first */ : undefined);
 		}
 
 		// Otherwise: insert before most recent
 		else {
-			// we have most recent editors. as such we
+			// we hAve most recent editors. As such we
 			// put this newly opened editor right before
-			// the current most recent one because it cannot
-			// be the most recently active one unless
-			// it becomes active. but it is still more
-			// active then any other editor in the list.
-			this.mostRecentEditorsMap.set(key, key, Touch.AsOld /* make first */);
-			this.mostRecentEditorsMap.set(mostRecentEditor, mostRecentEditor, Touch.AsOld /* make first */);
+			// the current most recent one becAuse it cAnnot
+			// be the most recently Active one unless
+			// it becomes Active. but it is still more
+			// Active then Any other editor in the list.
+			this.mostRecentEditorsMAp.set(key, key, Touch.AsOld /* mAke first */);
+			this.mostRecentEditorsMAp.set(mostRecentEditor, mostRecentEditor, Touch.AsOld /* mAke first */);
 		}
 
-		// Update in resource map if this is a new editor
+		// UpdAte in resource mAp if this is A new editor
 		if (isNew) {
-			this.updateEditorResourcesMap(editor, true);
+			this.updAteEditorResourcesMAp(editor, true);
 		}
 
 		// Event
-		this._onDidMostRecentlyActiveEditorsChange.fire();
+		this._onDidMostRecentlyActiveEditorsChAnge.fire();
 	}
 
-	private updateEditorResourcesMap(editor: IEditorInput, add: boolean): void {
-		const resource = EditorResourceAccessor.getCanonicalUri(editor, { supportSideBySide: SideBySideEditor.PRIMARY });
+	privAte updAteEditorResourcesMAp(editor: IEditorInput, Add: booleAn): void {
+		const resource = EditorResourceAccessor.getCAnonicAlUri(editor, { supportSideBySide: SideBySideEditor.PRIMARY });
 		if (!resource) {
-			return; // require a resource
+			return; // require A resource
 		}
 
-		if (add) {
-			this.editorResourcesMap.set(resource, (this.editorResourcesMap.get(resource) ?? 0) + 1);
+		if (Add) {
+			this.editorResourcesMAp.set(resource, (this.editorResourcesMAp.get(resource) ?? 0) + 1);
 		} else {
-			const counter = this.editorResourcesMap.get(resource) ?? 0;
+			const counter = this.editorResourcesMAp.get(resource) ?? 0;
 			if (counter > 1) {
-				this.editorResourcesMap.set(resource, counter - 1);
+				this.editorResourcesMAp.set(resource, counter - 1);
 			} else {
-				this.editorResourcesMap.delete(resource);
+				this.editorResourcesMAp.delete(resource);
 			}
 		}
 	}
 
-	private removeMostRecentEditor(group: IEditorGroup, editor: IEditorInput): void {
+	privAte removeMostRecentEditor(group: IEditorGroup, editor: IEditorInput): void {
 
-		// Update in resource map
-		this.updateEditorResourcesMap(editor, false);
+		// UpdAte in resource mAp
+		this.updAteEditorResourcesMAp(editor, fAlse);
 
-		// Update in MRU list
+		// UpdAte in MRU list
 		const key = this.findKey(group, editor);
 		if (key) {
 
 			// Remove from most recent editors
-			this.mostRecentEditorsMap.delete(key);
+			this.mostRecentEditorsMAp.delete(key);
 
-			// Remove from key map
-			const map = this.keyMap.get(group.id);
-			if (map && map.delete(key.editor) && map.size === 0) {
-				this.keyMap.delete(group.id);
+			// Remove from key mAp
+			const mAp = this.keyMAp.get(group.id);
+			if (mAp && mAp.delete(key.editor) && mAp.size === 0) {
+				this.keyMAp.delete(group.id);
 			}
 
 			// Event
-			this._onDidMostRecentlyActiveEditorsChange.fire();
+			this._onDidMostRecentlyActiveEditorsChAnge.fire();
 		}
 	}
 
-	private findKey(group: IEditorGroup, editor: IEditorInput): IEditorIdentifier | undefined {
-		const groupMap = this.keyMap.get(group.id);
-		if (!groupMap) {
+	privAte findKey(group: IEditorGroup, editor: IEditorInput): IEditorIdentifier | undefined {
+		const groupMAp = this.keyMAp.get(group.id);
+		if (!groupMAp) {
 			return undefined;
 		}
 
-		return groupMap.get(editor);
+		return groupMAp.get(editor);
 	}
 
-	private ensureKey(group: IEditorGroup, editor: IEditorInput): IEditorIdentifier {
-		let groupMap = this.keyMap.get(group.id);
-		if (!groupMap) {
-			groupMap = new Map();
+	privAte ensureKey(group: IEditorGroup, editor: IEditorInput): IEditorIdentifier {
+		let groupMAp = this.keyMAp.get(group.id);
+		if (!groupMAp) {
+			groupMAp = new MAp();
 
-			this.keyMap.set(group.id, groupMap);
+			this.keyMAp.set(group.id, groupMAp);
 		}
 
-		let key = groupMap.get(editor);
+		let key = groupMAp.get(editor);
 		if (!key) {
 			key = { groupId: group.id, editor };
-			groupMap.set(editor, key);
+			groupMAp.set(editor, key);
 		}
 
 		return key;
 	}
 
-	private async ensureOpenedEditorsLimit(exclude: IEditorIdentifier | undefined, groupId?: GroupIdentifier): Promise<void> {
+	privAte Async ensureOpenedEditorsLimit(exclude: IEditorIdentifier | undefined, groupId?: GroupIdentifier): Promise<void> {
 		if (
-			!this.editorGroupsService.partOptions.limit?.enabled ||
-			typeof this.editorGroupsService.partOptions.limit.value !== 'number' ||
-			this.editorGroupsService.partOptions.limit.value <= 0
+			!this.editorGroupsService.pArtOptions.limit?.enAbled ||
+			typeof this.editorGroupsService.pArtOptions.limit.vAlue !== 'number' ||
+			this.editorGroupsService.pArtOptions.limit.vAlue <= 0
 		) {
-			return; // return early if not enabled or invalid
+			return; // return eArly if not enAbled or invAlid
 		}
 
-		const limit = this.editorGroupsService.partOptions.limit.value;
+		const limit = this.editorGroupsService.pArtOptions.limit.vAlue;
 
 		// In editor group
-		if (this.editorGroupsService.partOptions.limit?.perEditorGroup) {
+		if (this.editorGroupsService.pArtOptions.limit?.perEditorGroup) {
 
 			// For specific editor groups
 			if (typeof groupId === 'number') {
 				const group = this.editorGroupsService.getGroup(groupId);
 				if (group) {
-					await this.doEnsureOpenedEditorsLimit(limit, group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).map(editor => ({ editor, groupId })), exclude);
+					AwAit this.doEnsureOpenedEditorsLimit(limit, group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).mAp(editor => ({ editor, groupId })), exclude);
 				}
 			}
 
-			// For all editor groups
+			// For All editor groups
 			else {
 				for (const group of this.editorGroupsService.groups) {
-					await this.ensureOpenedEditorsLimit(exclude, group.id);
+					AwAit this.ensureOpenedEditorsLimit(exclude, group.id);
 				}
 			}
 		}
 
-		// Across all editor groups
+		// Across All editor groups
 		else {
-			await this.doEnsureOpenedEditorsLimit(limit, [...this.mostRecentEditorsMap.values()], exclude);
+			AwAit this.doEnsureOpenedEditorsLimit(limit, [...this.mostRecentEditorsMAp.vAlues()], exclude);
 		}
 	}
 
-	private async doEnsureOpenedEditorsLimit(limit: number, mostRecentEditors: IEditorIdentifier[], exclude?: IEditorIdentifier): Promise<void> {
+	privAte Async doEnsureOpenedEditorsLimit(limit: number, mostRecentEditors: IEditorIdentifier[], exclude?: IEditorIdentifier): Promise<void> {
 		if (limit >= mostRecentEditors.length) {
-			return; // only if opened editors exceed setting and is valid and enabled
+			return; // only if opened editors exceed setting And is vAlid And enAbled
 		}
 
-		// Extract least recently used editors that can be closed
-		const leastRecentlyClosableEditors = mostRecentEditors.reverse().filter(({ editor, groupId }) => {
-			if (editor.isDirty() && !editor.isSaving()) {
-				return false; // not dirty editors (unless in the process of saving)
+		// ExtrAct leAst recently used editors thAt cAn be closed
+		const leAstRecentlyClosAbleEditors = mostRecentEditors.reverse().filter(({ editor, groupId }) => {
+			if (editor.isDirty() && !editor.isSAving()) {
+				return fAlse; // not dirty editors (unless in the process of sAving)
 			}
 
 			if (exclude && editor === exclude.editor && groupId === exclude.groupId) {
-				return false; // never the editor that should be excluded
+				return fAlse; // never the editor thAt should be excluded
 			}
 
 			if (this.editorGroupsService.getGroup(groupId)?.isSticky(editor)) {
-				return false; // never sticky editors
+				return fAlse; // never sticky editors
 			}
 
 			return true;
 		});
 
-		// Close editors until we reached the limit again
+		// Close editors until we reAched the limit AgAin
 		let editorsToCloseCount = mostRecentEditors.length - limit;
-		const mapGroupToEditorsToClose = new Map<GroupIdentifier, IEditorInput[]>();
-		for (const { groupId, editor } of leastRecentlyClosableEditors) {
-			let editorsInGroupToClose = mapGroupToEditorsToClose.get(groupId);
+		const mApGroupToEditorsToClose = new MAp<GroupIdentifier, IEditorInput[]>();
+		for (const { groupId, editor } of leAstRecentlyClosAbleEditors) {
+			let editorsInGroupToClose = mApGroupToEditorsToClose.get(groupId);
 			if (!editorsInGroupToClose) {
 				editorsInGroupToClose = [];
-				mapGroupToEditorsToClose.set(groupId, editorsInGroupToClose);
+				mApGroupToEditorsToClose.set(groupId, editorsInGroupToClose);
 			}
 
 			editorsInGroupToClose.push(editor);
 			editorsToCloseCount--;
 
 			if (editorsToCloseCount === 0) {
-				break; // limit reached
+				breAk; // limit reAched
 			}
 		}
 
-		for (const [groupId, editors] of mapGroupToEditorsToClose) {
+		for (const [groupId, editors] of mApGroupToEditorsToClose) {
 			const group = this.editorGroupsService.getGroup(groupId);
 			if (group) {
-				await group.closeEditors(editors, { preserveFocus: true });
+				AwAit group.closeEditors(editors, { preserveFocus: true });
 			}
 		}
 	}
 
-	private saveState(): void {
-		if (this.mostRecentEditorsMap.isEmpty()) {
-			this.storageService.remove(EditorsObserver.STORAGE_KEY, StorageScope.WORKSPACE);
+	privAte sAveStAte(): void {
+		if (this.mostRecentEditorsMAp.isEmpty()) {
+			this.storAgeService.remove(EditorsObserver.STORAGE_KEY, StorAgeScope.WORKSPACE);
 		} else {
-			this.storageService.store(EditorsObserver.STORAGE_KEY, JSON.stringify(this.serialize()), StorageScope.WORKSPACE);
+			this.storAgeService.store(EditorsObserver.STORAGE_KEY, JSON.stringify(this.seriAlize()), StorAgeScope.WORKSPACE);
 		}
 	}
 
-	private serialize(): ISerializedEditorsList {
-		const registry = Registry.as<IEditorInputFactoryRegistry>(Extensions.EditorInputFactories);
+	privAte seriAlize(): ISeriAlizedEditorsList {
+		const registry = Registry.As<IEditorInputFActoryRegistry>(Extensions.EditorInputFActories);
 
-		const entries = [...this.mostRecentEditorsMap.values()];
-		const mapGroupToSerializableEditorsOfGroup = new Map<IEditorGroup, IEditorInput[]>();
+		const entries = [...this.mostRecentEditorsMAp.vAlues()];
+		const mApGroupToSeriAlizAbleEditorsOfGroup = new MAp<IEditorGroup, IEditorInput[]>();
 
 		return {
-			entries: coalesce(entries.map(({ editor, groupId }) => {
+			entries: coAlesce(entries.mAp(({ editor, groupId }) => {
 
 				// Find group for entry
 				const group = this.editorGroupsService.getGroup(groupId);
@@ -358,20 +358,20 @@ export class EditorsObserver extends Disposable {
 					return undefined;
 				}
 
-				// Find serializable editors of group
-				let serializableEditorsOfGroup = mapGroupToSerializableEditorsOfGroup.get(group);
-				if (!serializableEditorsOfGroup) {
-					serializableEditorsOfGroup = group.getEditors(EditorsOrder.SEQUENTIAL).filter(editor => {
-						const factory = registry.getEditorInputFactory(editor.getTypeId());
+				// Find seriAlizAble editors of group
+				let seriAlizAbleEditorsOfGroup = mApGroupToSeriAlizAbleEditorsOfGroup.get(group);
+				if (!seriAlizAbleEditorsOfGroup) {
+					seriAlizAbleEditorsOfGroup = group.getEditors(EditorsOrder.SEQUENTIAL).filter(editor => {
+						const fActory = registry.getEditorInputFActory(editor.getTypeId());
 
-						return factory?.canSerialize(editor);
+						return fActory?.cAnSeriAlize(editor);
 					});
-					mapGroupToSerializableEditorsOfGroup.set(group, serializableEditorsOfGroup);
+					mApGroupToSeriAlizAbleEditorsOfGroup.set(group, seriAlizAbleEditorsOfGroup);
 				}
 
-				// Only store the index of the editor of that group
-				// which can be undefined if the editor is not serializable
-				const index = serializableEditorsOfGroup.indexOf(editor);
+				// Only store the index of the editor of thAt group
+				// which cAn be undefined if the editor is not seriAlizAble
+				const index = seriAlizAbleEditorsOfGroup.indexOf(editor);
 				if (index === -1) {
 					return undefined;
 				}
@@ -381,17 +381,17 @@ export class EditorsObserver extends Disposable {
 		};
 	}
 
-	private loadState(): void {
-		const serialized = this.storageService.get(EditorsObserver.STORAGE_KEY, StorageScope.WORKSPACE);
+	privAte loAdStAte(): void {
+		const seriAlized = this.storAgeService.get(EditorsObserver.STORAGE_KEY, StorAgeScope.WORKSPACE);
 
-		// Previous state:
-		if (serialized) {
+		// Previous stAte:
+		if (seriAlized) {
 
-			// Load editors map from persisted state
-			this.deserialize(JSON.parse(serialized));
+			// LoAd editors mAp from persisted stAte
+			this.deseriAlize(JSON.pArse(seriAlized));
 		}
 
-		// No previous state: best we can do is add each editor
+		// No previous stAte: best we cAn do is Add eAch editor
 		// from oldest to most recently used editor group
 		else {
 			const groups = this.editorGroupsService.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
@@ -399,21 +399,21 @@ export class EditorsObserver extends Disposable {
 				const group = groups[i];
 				const groupEditorsMru = group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE);
 				for (let i = groupEditorsMru.length - 1; i >= 0; i--) {
-					this.addMostRecentEditor(group, groupEditorsMru[i], true /* enforce as active to preserve order */, true /* is new */);
+					this.AddMostRecentEditor(group, groupEditorsMru[i], true /* enforce As Active to preserve order */, true /* is new */);
 				}
 			}
 		}
 
-		// Ensure we listen on group changes for those that exist on startup
+		// Ensure we listen on group chAnges for those thAt exist on stArtup
 		for (const group of this.editorGroupsService.groups) {
 			this.registerGroupListeners(group);
 		}
 	}
 
-	private deserialize(serialized: ISerializedEditorsList): void {
-		const mapValues: [IEditorIdentifier, IEditorIdentifier][] = [];
+	privAte deseriAlize(seriAlized: ISeriAlizedEditorsList): void {
+		const mApVAlues: [IEditorIdentifier, IEditorIdentifier][] = [];
 
-		for (const { groupId, index } of serialized.entries) {
+		for (const { groupId, index } of seriAlized.entries) {
 
 			// Find group for entry
 			const group = this.editorGroupsService.getGroup(groupId);
@@ -427,15 +427,15 @@ export class EditorsObserver extends Disposable {
 				continue;
 			}
 
-			// Make sure key is registered as well
+			// MAke sure key is registered As well
 			const editorIdentifier = this.ensureKey(group, editor);
-			mapValues.push([editorIdentifier, editorIdentifier]);
+			mApVAlues.push([editorIdentifier, editorIdentifier]);
 
-			// Update in resource map
-			this.updateEditorResourcesMap(editor, true);
+			// UpdAte in resource mAp
+			this.updAteEditorResourcesMAp(editor, true);
 		}
 
-		// Fill map with deserialized values
-		this.mostRecentEditorsMap.fromJSON(mapValues);
+		// Fill mAp with deseriAlized vAlues
+		this.mostRecentEditorsMAp.fromJSON(mApVAlues);
 	}
 }

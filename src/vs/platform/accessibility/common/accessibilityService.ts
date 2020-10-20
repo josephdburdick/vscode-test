@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IAccessibilityService, AccessibilitySupport, CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessibility/common/accessibility';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IAccessibilityService, AccessibilitySupport, CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 
-export class AccessibilityService extends Disposable implements IAccessibilityService {
-	declare readonly _serviceBrand: undefined;
+export clAss AccessibilityService extends DisposAble implements IAccessibilityService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _accessibilityModeEnabledContext: IContextKey<boolean>;
-	protected _accessibilitySupport = AccessibilitySupport.Unknown;
-	protected readonly _onDidChangeScreenReaderOptimized = new Emitter<void>();
+	privAte _AccessibilityModeEnAbledContext: IContextKey<booleAn>;
+	protected _AccessibilitySupport = AccessibilitySupport.Unknown;
+	protected reAdonly _onDidChAngeScreenReAderOptimized = new Emitter<void>();
 
 	constructor(
-		@IContextKeyService private readonly _contextKeyService: IContextKeyService,
-		@IConfigurationService protected readonly _configurationService: IConfigurationService,
+		@IContextKeyService privAte reAdonly _contextKeyService: IContextKeyService,
+		@IConfigurAtionService protected reAdonly _configurAtionService: IConfigurAtionService,
 	) {
 		super();
-		this._accessibilityModeEnabledContext = CONTEXT_ACCESSIBILITY_MODE_ENABLED.bindTo(this._contextKeyService);
-		const updateContextKey = () => this._accessibilityModeEnabledContext.set(this.isScreenReaderOptimized());
-		this._register(this._configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('editor.accessibilitySupport')) {
-				updateContextKey();
-				this._onDidChangeScreenReaderOptimized.fire();
+		this._AccessibilityModeEnAbledContext = CONTEXT_ACCESSIBILITY_MODE_ENABLED.bindTo(this._contextKeyService);
+		const updAteContextKey = () => this._AccessibilityModeEnAbledContext.set(this.isScreenReAderOptimized());
+		this._register(this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('editor.AccessibilitySupport')) {
+				updAteContextKey();
+				this._onDidChAngeScreenReAderOptimized.fire();
 			}
 		}));
-		updateContextKey();
-		this.onDidChangeScreenReaderOptimized(() => updateContextKey());
+		updAteContextKey();
+		this.onDidChAngeScreenReAderOptimized(() => updAteContextKey());
 	}
 
-	get onDidChangeScreenReaderOptimized(): Event<void> {
-		return this._onDidChangeScreenReaderOptimized.event;
+	get onDidChAngeScreenReAderOptimized(): Event<void> {
+		return this._onDidChAngeScreenReAderOptimized.event;
 	}
 
-	isScreenReaderOptimized(): boolean {
-		const config = this._configurationService.getValue('editor.accessibilitySupport');
-		return config === 'on' || (config === 'auto' && this._accessibilitySupport === AccessibilitySupport.Enabled);
+	isScreenReAderOptimized(): booleAn {
+		const config = this._configurAtionService.getVAlue('editor.AccessibilitySupport');
+		return config === 'on' || (config === 'Auto' && this._AccessibilitySupport === AccessibilitySupport.EnAbled);
 	}
 
 	getAccessibilitySupport(): AccessibilitySupport {
-		return this._accessibilitySupport;
+		return this._AccessibilitySupport;
 	}
 
-	alwaysUnderlineAccessKeys(): Promise<boolean> {
-		return Promise.resolve(false);
+	AlwAysUnderlineAccessKeys(): Promise<booleAn> {
+		return Promise.resolve(fAlse);
 	}
 
-	setAccessibilitySupport(accessibilitySupport: AccessibilitySupport): void {
-		if (this._accessibilitySupport === accessibilitySupport) {
+	setAccessibilitySupport(AccessibilitySupport: AccessibilitySupport): void {
+		if (this._AccessibilitySupport === AccessibilitySupport) {
 			return;
 		}
 
-		this._accessibilitySupport = accessibilitySupport;
-		this._onDidChangeScreenReaderOptimized.fire();
+		this._AccessibilitySupport = AccessibilitySupport;
+		this._onDidChAngeScreenReAderOptimized.fire();
 	}
 }

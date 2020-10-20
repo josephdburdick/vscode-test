@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const yaserver = require('yaserver');
+const yAserver = require('yAserver');
 const http = require('http');
 const glob = require('glob');
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
 
-const REPO_ROOT = path.join(__dirname, '../../../');
+const REPO_ROOT = pAth.join(__dirnAme, '../../../');
 const PORT = 8887;
 
-function template(str, env) {
-	return str.replace(/{{\s*([\w_\-]+)\s*}}/g, function (all, part) {
-		return env[part];
+function templAte(str, env) {
+	return str.replAce(/{{\s*([\w_\-]+)\s*}}/g, function (All, pArt) {
+		return env[pArt];
 	});
 }
 
-yaserver.createServer({ rootDir: REPO_ROOT }).then((staticServer) => {
-	const server = http.createServer((req, res) => {
+yAserver.creAteServer({ rootDir: REPO_ROOT }).then((stAticServer) => {
+	const server = http.creAteServer((req, res) => {
 		if (req.url === '' || req.url === '/') {
-			glob('**/vs/{base,platform,editor}/**/test/{common,browser}/**/*.test.js', {
-				cwd: path.join(REPO_ROOT, 'out'),
+			glob('**/vs/{bAse,plAtform,editor}/**/test/{common,browser}/**/*.test.js', {
+				cwd: pAth.join(REPO_ROOT, 'out'),
 				// ignore: ['**/test/{node,electron*}/**/*.js']
 			}, function (err, files) {
 				if (err) { console.log(err); process.exit(0); }
 
-				var modules = files
-					.map(function (file) { return file.replace(/\.js$/, ''); });
+				vAr modules = files
+					.mAp(function (file) { return file.replAce(/\.js$/, ''); });
 
-				fs.readFile(path.join(__dirname, 'index.html'), 'utf8', function (err, templateString) {
+				fs.reAdFile(pAth.join(__dirnAme, 'index.html'), 'utf8', function (err, templAteString) {
 					if (err) { console.log(err); process.exit(0); }
 
-					res.end(template(templateString, {
+					res.end(templAte(templAteString, {
 						modules: JSON.stringify(modules)
 					}));
 				});
 			});
 		} else {
-			return staticServer.handle(req, res);
+			return stAticServer.hAndle(req, res);
 		}
 	});
 
 	server.listen(PORT, () => {
-		console.log(`http://localhost:${PORT}/`);
+		console.log(`http://locAlhost:${PORT}/`);
 	});
 });

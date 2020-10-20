@@ -1,109 +1,109 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI as uri } from 'vs/base/common/uri';
-import { FileChangeType, isParent, IFileChange } from 'vs/platform/files/common/files';
-import { isLinux } from 'vs/base/common/platform';
+import { URI As uri } from 'vs/bAse/common/uri';
+import { FileChAngeType, isPArent, IFileChAnge } from 'vs/plAtform/files/common/files';
+import { isLinux } from 'vs/bAse/common/plAtform';
 
-export interface IDiskFileChange {
-	type: FileChangeType;
-	path: string;
+export interfAce IDiskFileChAnge {
+	type: FileChAngeType;
+	pAth: string;
 }
 
-export interface ILogMessage {
-	type: 'trace' | 'warn' | 'error';
-	message: string;
+export interfAce ILogMessAge {
+	type: 'trAce' | 'wArn' | 'error';
+	messAge: string;
 }
 
-export function toFileChanges(changes: IDiskFileChange[]): IFileChange[] {
-	return changes.map(change => ({
-		type: change.type,
-		resource: uri.file(change.path)
+export function toFileChAnges(chAnges: IDiskFileChAnge[]): IFileChAnge[] {
+	return chAnges.mAp(chAnge => ({
+		type: chAnge.type,
+		resource: uri.file(chAnge.pAth)
 	}));
 }
 
-export function normalizeFileChanges(changes: IDiskFileChange[]): IDiskFileChange[] {
+export function normAlizeFileChAnges(chAnges: IDiskFileChAnge[]): IDiskFileChAnge[] {
 
-	// Build deltas
-	const normalizer = new EventNormalizer();
-	for (const event of changes) {
-		normalizer.processEvent(event);
+	// Build deltAs
+	const normAlizer = new EventNormAlizer();
+	for (const event of chAnges) {
+		normAlizer.processEvent(event);
 	}
 
-	return normalizer.normalize();
+	return normAlizer.normAlize();
 }
 
-class EventNormalizer {
-	private normalized: IDiskFileChange[] = [];
-	private mapPathToChange: Map<string, IDiskFileChange> = new Map();
+clAss EventNormAlizer {
+	privAte normAlized: IDiskFileChAnge[] = [];
+	privAte mApPAthToChAnge: MAp<string, IDiskFileChAnge> = new MAp();
 
-	processEvent(event: IDiskFileChange): void {
-		const existingEvent = this.mapPathToChange.get(event.path);
+	processEvent(event: IDiskFileChAnge): void {
+		const existingEvent = this.mApPAthToChAnge.get(event.pAth);
 
-		// Event path already exists
+		// Event pAth AlreAdy exists
 		if (existingEvent) {
-			const currentChangeType = existingEvent.type;
-			const newChangeType = event.type;
+			const currentChAngeType = existingEvent.type;
+			const newChAngeType = event.type;
 
 			// ignore CREATE followed by DELETE in one go
-			if (currentChangeType === FileChangeType.ADDED && newChangeType === FileChangeType.DELETED) {
-				this.mapPathToChange.delete(event.path);
-				this.normalized.splice(this.normalized.indexOf(existingEvent), 1);
+			if (currentChAngeType === FileChAngeType.ADDED && newChAngeType === FileChAngeType.DELETED) {
+				this.mApPAthToChAnge.delete(event.pAth);
+				this.normAlized.splice(this.normAlized.indexOf(existingEvent), 1);
 			}
 
-			// flatten DELETE followed by CREATE into CHANGE
-			else if (currentChangeType === FileChangeType.DELETED && newChangeType === FileChangeType.ADDED) {
-				existingEvent.type = FileChangeType.UPDATED;
+			// flAtten DELETE followed by CREATE into CHANGE
+			else if (currentChAngeType === FileChAngeType.DELETED && newChAngeType === FileChAngeType.ADDED) {
+				existingEvent.type = FileChAngeType.UPDATED;
 			}
 
-			// Do nothing. Keep the created event
-			else if (currentChangeType === FileChangeType.ADDED && newChangeType === FileChangeType.UPDATED) { }
+			// Do nothing. Keep the creAted event
+			else if (currentChAngeType === FileChAngeType.ADDED && newChAngeType === FileChAngeType.UPDATED) { }
 
-			// Otherwise apply change type
+			// Otherwise Apply chAnge type
 			else {
-				existingEvent.type = newChangeType;
+				existingEvent.type = newChAngeType;
 			}
 		}
 
 		// Otherwise store new
 		else {
-			this.normalized.push(event);
-			this.mapPathToChange.set(event.path, event);
+			this.normAlized.push(event);
+			this.mApPAthToChAnge.set(event.pAth, event);
 		}
 	}
 
-	normalize(): IDiskFileChange[] {
-		const addedChangeEvents: IDiskFileChange[] = [];
-		const deletedPaths: string[] = [];
+	normAlize(): IDiskFileChAnge[] {
+		const AddedChAngeEvents: IDiskFileChAnge[] = [];
+		const deletedPAths: string[] = [];
 
-		// This algorithm will remove all DELETE events up to the root folder
-		// that got deleted if any. This ensures that we are not producing
-		// DELETE events for each file inside a folder that gets deleted.
+		// This Algorithm will remove All DELETE events up to the root folder
+		// thAt got deleted if Any. This ensures thAt we Are not producing
+		// DELETE events for eAch file inside A folder thAt gets deleted.
 		//
-		// 1.) split ADD/CHANGE and DELETED events
-		// 2.) sort short deleted paths to the top
-		// 3.) for each DELETE, check if there is a deleted parent and ignore the event in that case
-		return this.normalized.filter(e => {
-			if (e.type !== FileChangeType.DELETED) {
-				addedChangeEvents.push(e);
+		// 1.) split ADD/CHANGE And DELETED events
+		// 2.) sort short deleted pAths to the top
+		// 3.) for eAch DELETE, check if there is A deleted pArent And ignore the event in thAt cAse
+		return this.normAlized.filter(e => {
+			if (e.type !== FileChAngeType.DELETED) {
+				AddedChAngeEvents.push(e);
 
-				return false; // remove ADD / CHANGE
+				return fAlse; // remove ADD / CHANGE
 			}
 
 			return true; // keep DELETE
 		}).sort((e1, e2) => {
-			return e1.path.length - e2.path.length; // shortest path first
+			return e1.pAth.length - e2.pAth.length; // shortest pAth first
 		}).filter(e => {
-			if (deletedPaths.some(d => isParent(e.path, d, !isLinux /* ignorecase */))) {
-				return false; // DELETE is ignored if parent is deleted already
+			if (deletedPAths.some(d => isPArent(e.pAth, d, !isLinux /* ignorecAse */))) {
+				return fAlse; // DELETE is ignored if pArent is deleted AlreAdy
 			}
 
-			// otherwise mark as deleted
-			deletedPaths.push(e.path);
+			// otherwise mArk As deleted
+			deletedPAths.push(e.pAth);
 
 			return true;
-		}).concat(addedChangeEvents);
+		}).concAt(AddedChAngeEvents);
 	}
 }

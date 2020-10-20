@@ -1,123 +1,123 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as pLimit from 'p-limit';
-import * as path from 'path';
-import * as vscode from 'vscode';
-import { Disposable } from './dispose';
+import * As pLimit from 'p-limit';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
+import { DisposAble } from './dispose';
 
-export namespace Testing {
-	export const abcEditorContentChangeCommand = '_abcEditor.contentChange';
-	export const abcEditorTypeCommand = '_abcEditor.type';
+export nAmespAce Testing {
+	export const AbcEditorContentChAngeCommAnd = '_AbcEditor.contentChAnge';
+	export const AbcEditorTypeCommAnd = '_AbcEditor.type';
 
-	export interface CustomEditorContentChangeEvent {
-		readonly content: string;
-		readonly source: vscode.Uri;
+	export interfAce CustomEditorContentChAngeEvent {
+		reAdonly content: string;
+		reAdonly source: vscode.Uri;
 	}
 }
 
-export class AbcTextEditorProvider implements vscode.CustomTextEditorProvider {
+export clAss AbcTextEditorProvider implements vscode.CustomTextEditorProvider {
 
-	public static readonly viewType = 'testWebviewEditor.abc';
+	public stAtic reAdonly viewType = 'testWebviewEditor.Abc';
 
-	private activeEditor?: AbcEditor;
+	privAte ActiveEditor?: AbcEditor;
 
 	public constructor(
-		private readonly context: vscode.ExtensionContext,
+		privAte reAdonly context: vscode.ExtensionContext,
 	) { }
 
-	public register(): vscode.Disposable {
+	public register(): vscode.DisposAble {
 		const provider = vscode.window.registerCustomEditorProvider(AbcTextEditorProvider.viewType, this);
 
-		const commands: vscode.Disposable[] = [];
-		commands.push(vscode.commands.registerCommand(Testing.abcEditorTypeCommand, (content: string) => {
-			this.activeEditor?.testing_fakeInput(content);
+		const commAnds: vscode.DisposAble[] = [];
+		commAnds.push(vscode.commAnds.registerCommAnd(Testing.AbcEditorTypeCommAnd, (content: string) => {
+			this.ActiveEditor?.testing_fAkeInput(content);
 		}));
 
-		return vscode.Disposable.from(provider, ...commands);
+		return vscode.DisposAble.from(provider, ...commAnds);
 	}
 
-	public async resolveCustomTextEditor(document: vscode.TextDocument, panel: vscode.WebviewPanel) {
-		const editor = new AbcEditor(document, this.context.extensionPath, panel);
+	public Async resolveCustomTextEditor(document: vscode.TextDocument, pAnel: vscode.WebviewPAnel) {
+		const editor = new AbcEditor(document, this.context.extensionPAth, pAnel);
 
-		this.activeEditor = editor;
+		this.ActiveEditor = editor;
 
-		panel.onDidChangeViewState(({ webviewPanel }) => {
-			if (this.activeEditor === editor && !webviewPanel.active) {
-				this.activeEditor = undefined;
+		pAnel.onDidChAngeViewStAte(({ webviewPAnel }) => {
+			if (this.ActiveEditor === editor && !webviewPAnel.Active) {
+				this.ActiveEditor = undefined;
 			}
-			if (webviewPanel.active) {
-				this.activeEditor = editor;
+			if (webviewPAnel.Active) {
+				this.ActiveEditor = editor;
 			}
 		});
 	}
 }
 
-class AbcEditor extends Disposable {
+clAss AbcEditor extends DisposAble {
 
-	public readonly _onDispose = this._register(new vscode.EventEmitter<void>());
-	public readonly onDispose = this._onDispose.event;
+	public reAdonly _onDispose = this._register(new vscode.EventEmitter<void>());
+	public reAdonly onDispose = this._onDispose.event;
 
-	private readonly limit = pLimit(1);
-	private syncedVersion: number = -1;
-	private currentWorkspaceEdit?: Thenable<void>;
+	privAte reAdonly limit = pLimit(1);
+	privAte syncedVersion: number = -1;
+	privAte currentWorkspAceEdit?: ThenAble<void>;
 
 	constructor(
-		private readonly document: vscode.TextDocument,
-		private readonly _extensionPath: string,
-		private readonly panel: vscode.WebviewPanel,
+		privAte reAdonly document: vscode.TextDocument,
+		privAte reAdonly _extensionPAth: string,
+		privAte reAdonly pAnel: vscode.WebviewPAnel,
 	) {
 		super();
 
-		panel.webview.options = {
-			enableScripts: true,
+		pAnel.webview.options = {
+			enAbleScripts: true,
 		};
-		panel.webview.html = this.html;
+		pAnel.webview.html = this.html;
 
-		this._register(vscode.workspace.onDidChangeTextDocument(e => {
+		this._register(vscode.workspAce.onDidChAngeTextDocument(e => {
 			if (e.document === this.document) {
-				this.update();
+				this.updAte();
 			}
 		}));
 
-		this._register(panel.webview.onDidReceiveMessage(message => {
-			switch (message.type) {
-				case 'edit':
-					this.doEdit(message.value);
-					break;
+		this._register(pAnel.webview.onDidReceiveMessAge(messAge => {
+			switch (messAge.type) {
+				cAse 'edit':
+					this.doEdit(messAge.vAlue);
+					breAk;
 
-				case 'didChangeContent':
-					vscode.commands.executeCommand(Testing.abcEditorContentChangeCommand, {
-						content: message.value,
+				cAse 'didChAngeContent':
+					vscode.commAnds.executeCommAnd(Testing.AbcEditorContentChAngeCommAnd, {
+						content: messAge.vAlue,
 						source: document.uri,
-					} as Testing.CustomEditorContentChangeEvent);
-					break;
+					} As Testing.CustomEditorContentChAngeEvent);
+					breAk;
 			}
 		}));
 
-		this._register(panel.onDidDispose(() => { this.dispose(); }));
+		this._register(pAnel.onDidDispose(() => { this.dispose(); }));
 
-		this.update();
+		this.updAte();
 	}
 
-	public testing_fakeInput(value: string) {
-		this.panel.webview.postMessage({
-			type: 'fakeInput',
-			value: value,
+	public testing_fAkeInput(vAlue: string) {
+		this.pAnel.webview.postMessAge({
+			type: 'fAkeInput',
+			vAlue: vAlue,
 		});
 	}
 
-	private async doEdit(value: string) {
-		const edit = new vscode.WorkspaceEdit();
-		edit.replace(this.document.uri, this.document.validateRange(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(999999, 999999))), value);
+	privAte Async doEdit(vAlue: string) {
+		const edit = new vscode.WorkspAceEdit();
+		edit.replAce(this.document.uri, this.document.vAlidAteRAnge(new vscode.RAnge(new vscode.Position(0, 0), new vscode.Position(999999, 999999))), vAlue);
 		this.limit(() => {
-			this.currentWorkspaceEdit = vscode.workspace.applyEdit(edit).then(() => {
+			this.currentWorkspAceEdit = vscode.workspAce.ApplyEdit(edit).then(() => {
 				this.syncedVersion = this.document.version;
-				this.currentWorkspaceEdit = undefined;
+				this.currentWorkspAceEdit = undefined;
 			});
-			return this.currentWorkspaceEdit;
+			return this.currentWorkspAceEdit;
 		});
 	}
 
@@ -130,35 +130,35 @@ class AbcEditor extends Disposable {
 		super.dispose();
 	}
 
-	private get html() {
-		const contentRoot = path.join(this._extensionPath, 'customEditorMedia');
-		const scriptUri = vscode.Uri.file(path.join(contentRoot, 'textEditor.js'));
-		const nonce = Date.now() + '';
+	privAte get html() {
+		const contentRoot = pAth.join(this._extensionPAth, 'customEditorMediA');
+		const scriptUri = vscode.Uri.file(pAth.join(contentRoot, 'textEditor.js'));
+		const nonce = DAte.now() + '';
 		return /* html */`<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline';">
+			<html lAng="en">
+			<heAd>
+				<metA chArset="UTF-8">
+				<metA nAme="viewport" content="width=device-width, initiAl-scAle=1.0">
+				<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsAfe-inline';">
 				<title>Document</title>
-			</head>
+			</heAd>
 			<body>
-				<textarea style="width: 300px; height: 300px;"></textarea>
-				<script nonce=${nonce} src="${this.panel.webview.asWebviewUri(scriptUri)}"></script>
+				<textAreA style="width: 300px; height: 300px;"></textAreA>
+				<script nonce=${nonce} src="${this.pAnel.webview.AsWebviewUri(scriptUri)}"></script>
 			</body>
 			</html>`;
 	}
 
-	public async update() {
-		await this.currentWorkspaceEdit;
+	public Async updAte() {
+		AwAit this.currentWorkspAceEdit;
 
 		if (this.isDisposed || this.syncedVersion >= this.document.version) {
 			return;
 		}
 
-		this.panel.webview.postMessage({
-			type: 'setValue',
-			value: this.document.getText(),
+		this.pAnel.webview.postMessAge({
+			type: 'setVAlue',
+			vAlue: this.document.getText(),
 		});
 		this.syncedVersion = this.document.version;
 	}

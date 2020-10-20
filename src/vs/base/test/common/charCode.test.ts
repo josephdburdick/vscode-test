@@ -1,121 +1,121 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { CharCode } from 'vs/base/common/charCode';
+import * As Assert from 'Assert';
+import { ChArCode } from 'vs/bAse/common/chArCode';
 
-suite('CharCode', () => {
-	test('has good values', () => {
+suite('ChArCode', () => {
+	test('hAs good vAlues', () => {
 
-		function assertValue(actual: CharCode, expected: string): void {
-			assert.equal(actual, expected.charCodeAt(0), 'char code ok for <<' + expected + '>>');
+		function AssertVAlue(ActuAl: ChArCode, expected: string): void {
+			Assert.equAl(ActuAl, expected.chArCodeAt(0), 'chAr code ok for <<' + expected + '>>');
 		}
 
-		assertValue(CharCode.Tab, '\t');
-		assertValue(CharCode.LineFeed, '\n');
-		assertValue(CharCode.CarriageReturn, '\r');
-		assertValue(CharCode.Space, ' ');
-		assertValue(CharCode.ExclamationMark, '!');
-		assertValue(CharCode.DoubleQuote, '"');
-		assertValue(CharCode.Hash, '#');
-		assertValue(CharCode.DollarSign, '$');
-		assertValue(CharCode.PercentSign, '%');
-		assertValue(CharCode.Ampersand, '&');
-		assertValue(CharCode.SingleQuote, '\'');
-		assertValue(CharCode.OpenParen, '(');
-		assertValue(CharCode.CloseParen, ')');
-		assertValue(CharCode.Asterisk, '*');
-		assertValue(CharCode.Plus, '+');
-		assertValue(CharCode.Comma, ',');
-		assertValue(CharCode.Dash, '-');
-		assertValue(CharCode.Period, '.');
-		assertValue(CharCode.Slash, '/');
+		AssertVAlue(ChArCode.TAb, '\t');
+		AssertVAlue(ChArCode.LineFeed, '\n');
+		AssertVAlue(ChArCode.CArriAgeReturn, '\r');
+		AssertVAlue(ChArCode.SpAce, ' ');
+		AssertVAlue(ChArCode.ExclAmAtionMArk, '!');
+		AssertVAlue(ChArCode.DoubleQuote, '"');
+		AssertVAlue(ChArCode.HAsh, '#');
+		AssertVAlue(ChArCode.DollArSign, '$');
+		AssertVAlue(ChArCode.PercentSign, '%');
+		AssertVAlue(ChArCode.AmpersAnd, '&');
+		AssertVAlue(ChArCode.SingleQuote, '\'');
+		AssertVAlue(ChArCode.OpenPAren, '(');
+		AssertVAlue(ChArCode.ClosePAren, ')');
+		AssertVAlue(ChArCode.Asterisk, '*');
+		AssertVAlue(ChArCode.Plus, '+');
+		AssertVAlue(ChArCode.CommA, ',');
+		AssertVAlue(ChArCode.DAsh, '-');
+		AssertVAlue(ChArCode.Period, '.');
+		AssertVAlue(ChArCode.SlAsh, '/');
 
-		assertValue(CharCode.Digit0, '0');
-		assertValue(CharCode.Digit1, '1');
-		assertValue(CharCode.Digit2, '2');
-		assertValue(CharCode.Digit3, '3');
-		assertValue(CharCode.Digit4, '4');
-		assertValue(CharCode.Digit5, '5');
-		assertValue(CharCode.Digit6, '6');
-		assertValue(CharCode.Digit7, '7');
-		assertValue(CharCode.Digit8, '8');
-		assertValue(CharCode.Digit9, '9');
+		AssertVAlue(ChArCode.Digit0, '0');
+		AssertVAlue(ChArCode.Digit1, '1');
+		AssertVAlue(ChArCode.Digit2, '2');
+		AssertVAlue(ChArCode.Digit3, '3');
+		AssertVAlue(ChArCode.Digit4, '4');
+		AssertVAlue(ChArCode.Digit5, '5');
+		AssertVAlue(ChArCode.Digit6, '6');
+		AssertVAlue(ChArCode.Digit7, '7');
+		AssertVAlue(ChArCode.Digit8, '8');
+		AssertVAlue(ChArCode.Digit9, '9');
 
-		assertValue(CharCode.Colon, ':');
-		assertValue(CharCode.Semicolon, ';');
-		assertValue(CharCode.LessThan, '<');
-		assertValue(CharCode.Equals, '=');
-		assertValue(CharCode.GreaterThan, '>');
-		assertValue(CharCode.QuestionMark, '?');
-		assertValue(CharCode.AtSign, '@');
+		AssertVAlue(ChArCode.Colon, ':');
+		AssertVAlue(ChArCode.Semicolon, ';');
+		AssertVAlue(ChArCode.LessThAn, '<');
+		AssertVAlue(ChArCode.EquAls, '=');
+		AssertVAlue(ChArCode.GreAterThAn, '>');
+		AssertVAlue(ChArCode.QuestionMArk, '?');
+		AssertVAlue(ChArCode.AtSign, '@');
 
-		assertValue(CharCode.A, 'A');
-		assertValue(CharCode.B, 'B');
-		assertValue(CharCode.C, 'C');
-		assertValue(CharCode.D, 'D');
-		assertValue(CharCode.E, 'E');
-		assertValue(CharCode.F, 'F');
-		assertValue(CharCode.G, 'G');
-		assertValue(CharCode.H, 'H');
-		assertValue(CharCode.I, 'I');
-		assertValue(CharCode.J, 'J');
-		assertValue(CharCode.K, 'K');
-		assertValue(CharCode.L, 'L');
-		assertValue(CharCode.M, 'M');
-		assertValue(CharCode.N, 'N');
-		assertValue(CharCode.O, 'O');
-		assertValue(CharCode.P, 'P');
-		assertValue(CharCode.Q, 'Q');
-		assertValue(CharCode.R, 'R');
-		assertValue(CharCode.S, 'S');
-		assertValue(CharCode.T, 'T');
-		assertValue(CharCode.U, 'U');
-		assertValue(CharCode.V, 'V');
-		assertValue(CharCode.W, 'W');
-		assertValue(CharCode.X, 'X');
-		assertValue(CharCode.Y, 'Y');
-		assertValue(CharCode.Z, 'Z');
+		AssertVAlue(ChArCode.A, 'A');
+		AssertVAlue(ChArCode.B, 'B');
+		AssertVAlue(ChArCode.C, 'C');
+		AssertVAlue(ChArCode.D, 'D');
+		AssertVAlue(ChArCode.E, 'E');
+		AssertVAlue(ChArCode.F, 'F');
+		AssertVAlue(ChArCode.G, 'G');
+		AssertVAlue(ChArCode.H, 'H');
+		AssertVAlue(ChArCode.I, 'I');
+		AssertVAlue(ChArCode.J, 'J');
+		AssertVAlue(ChArCode.K, 'K');
+		AssertVAlue(ChArCode.L, 'L');
+		AssertVAlue(ChArCode.M, 'M');
+		AssertVAlue(ChArCode.N, 'N');
+		AssertVAlue(ChArCode.O, 'O');
+		AssertVAlue(ChArCode.P, 'P');
+		AssertVAlue(ChArCode.Q, 'Q');
+		AssertVAlue(ChArCode.R, 'R');
+		AssertVAlue(ChArCode.S, 'S');
+		AssertVAlue(ChArCode.T, 'T');
+		AssertVAlue(ChArCode.U, 'U');
+		AssertVAlue(ChArCode.V, 'V');
+		AssertVAlue(ChArCode.W, 'W');
+		AssertVAlue(ChArCode.X, 'X');
+		AssertVAlue(ChArCode.Y, 'Y');
+		AssertVAlue(ChArCode.Z, 'Z');
 
-		assertValue(CharCode.OpenSquareBracket, '[');
-		assertValue(CharCode.Backslash, '\\');
-		assertValue(CharCode.CloseSquareBracket, ']');
-		assertValue(CharCode.Caret, '^');
-		assertValue(CharCode.Underline, '_');
-		assertValue(CharCode.BackTick, '`');
+		AssertVAlue(ChArCode.OpenSquAreBrAcket, '[');
+		AssertVAlue(ChArCode.BAckslAsh, '\\');
+		AssertVAlue(ChArCode.CloseSquAreBrAcket, ']');
+		AssertVAlue(ChArCode.CAret, '^');
+		AssertVAlue(ChArCode.Underline, '_');
+		AssertVAlue(ChArCode.BAckTick, '`');
 
-		assertValue(CharCode.a, 'a');
-		assertValue(CharCode.b, 'b');
-		assertValue(CharCode.c, 'c');
-		assertValue(CharCode.d, 'd');
-		assertValue(CharCode.e, 'e');
-		assertValue(CharCode.f, 'f');
-		assertValue(CharCode.g, 'g');
-		assertValue(CharCode.h, 'h');
-		assertValue(CharCode.i, 'i');
-		assertValue(CharCode.j, 'j');
-		assertValue(CharCode.k, 'k');
-		assertValue(CharCode.l, 'l');
-		assertValue(CharCode.m, 'm');
-		assertValue(CharCode.n, 'n');
-		assertValue(CharCode.o, 'o');
-		assertValue(CharCode.p, 'p');
-		assertValue(CharCode.q, 'q');
-		assertValue(CharCode.r, 'r');
-		assertValue(CharCode.s, 's');
-		assertValue(CharCode.t, 't');
-		assertValue(CharCode.u, 'u');
-		assertValue(CharCode.v, 'v');
-		assertValue(CharCode.w, 'w');
-		assertValue(CharCode.x, 'x');
-		assertValue(CharCode.y, 'y');
-		assertValue(CharCode.z, 'z');
+		AssertVAlue(ChArCode.A, 'A');
+		AssertVAlue(ChArCode.b, 'b');
+		AssertVAlue(ChArCode.c, 'c');
+		AssertVAlue(ChArCode.d, 'd');
+		AssertVAlue(ChArCode.e, 'e');
+		AssertVAlue(ChArCode.f, 'f');
+		AssertVAlue(ChArCode.g, 'g');
+		AssertVAlue(ChArCode.h, 'h');
+		AssertVAlue(ChArCode.i, 'i');
+		AssertVAlue(ChArCode.j, 'j');
+		AssertVAlue(ChArCode.k, 'k');
+		AssertVAlue(ChArCode.l, 'l');
+		AssertVAlue(ChArCode.m, 'm');
+		AssertVAlue(ChArCode.n, 'n');
+		AssertVAlue(ChArCode.o, 'o');
+		AssertVAlue(ChArCode.p, 'p');
+		AssertVAlue(ChArCode.q, 'q');
+		AssertVAlue(ChArCode.r, 'r');
+		AssertVAlue(ChArCode.s, 's');
+		AssertVAlue(ChArCode.t, 't');
+		AssertVAlue(ChArCode.u, 'u');
+		AssertVAlue(ChArCode.v, 'v');
+		AssertVAlue(ChArCode.w, 'w');
+		AssertVAlue(ChArCode.x, 'x');
+		AssertVAlue(ChArCode.y, 'y');
+		AssertVAlue(ChArCode.z, 'z');
 
-		assertValue(CharCode.OpenCurlyBrace, '{');
-		assertValue(CharCode.Pipe, '|');
-		assertValue(CharCode.CloseCurlyBrace, '}');
-		assertValue(CharCode.Tilde, '~');
+		AssertVAlue(ChArCode.OpenCurlyBrAce, '{');
+		AssertVAlue(ChArCode.Pipe, '|');
+		AssertVAlue(ChArCode.CloseCurlyBrAce, '}');
+		AssertVAlue(ChArCode.Tilde, '~');
 	});
 });

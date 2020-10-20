@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import {
-	Connection, TextDocuments, InitializeParams, InitializeResult, ServerCapabilities, ConfigurationRequest, WorkspaceFolder, TextDocumentSyncKind, NotificationType
-} from 'vscode-languageserver';
+	Connection, TextDocuments, InitiAlizePArAms, InitiAlizeResult, ServerCApAbilities, ConfigurAtionRequest, WorkspAceFolder, TextDocumentSyncKind, NotificAtionType
+} from 'vscode-lAnguAgeserver';
 import { URI } from 'vscode-uri';
-import { getCSSLanguageService, getSCSSLanguageService, getLESSLanguageService, LanguageSettings, LanguageService, Stylesheet, TextDocument, Position } from 'vscode-css-languageservice';
-import { getLanguageModelCache } from './languageModelCache';
-import { formatError, runSafeAsync } from './utils/runner';
+import { getCSSLAnguAgeService, getSCSSLAnguAgeService, getLESSLAnguAgeService, LAnguAgeSettings, LAnguAgeService, Stylesheet, TextDocument, Position } from 'vscode-css-lAnguAgeservice';
+import { getLAnguAgeModelCAche } from './lAnguAgeModelCAche';
+import { formAtError, runSAfeAsync } from './utils/runner';
 import { getDocumentContext } from './utils/documentContext';
-import { fetchDataProviders } from './customData';
+import { fetchDAtAProviders } from './customDAtA';
 import { RequestService, getRequestService } from './requests';
 
-namespace CustomDataChangedNotification {
-	export const type: NotificationType<string[]> = new NotificationType('css/customDataChanged');
+nAmespAce CustomDAtAChAngedNotificAtion {
+	export const type: NotificAtionType<string[]> = new NotificAtionType('css/customDAtAChAnged');
 }
 
-export interface Settings {
-	css: LanguageSettings;
-	less: LanguageSettings;
-	scss: LanguageSettings;
+export interfAce Settings {
+	css: LAnguAgeSettings;
+	less: LAnguAgeSettings;
+	scss: LAnguAgeSettings;
 }
 
-export interface RuntimeEnvironment {
+export interfAce RuntimeEnvironment {
 	file?: RequestService;
 	http?: RequestService
 }
 
-export function startServer(connection: Connection, runtime: RuntimeEnvironment) {
+export function stArtServer(connection: Connection, runtime: RuntimeEnvironment) {
 
-	// Create a text document manager.
+	// CreAte A text document mAnAger.
 	const documents = new TextDocuments(TextDocument);
-	// Make the text document manager listen on the connection
-	// for open, change and close text document events
+	// MAke the text document mAnAger listen on the connection
+	// for open, chAnge And close text document events
 	documents.listen(connection);
 
-	const stylesheets = getLanguageModelCache<Stylesheet>(10, 60, document => getLanguageService(document).parseStylesheet(document));
+	const stylesheets = getLAnguAgeModelCAche<Stylesheet>(10, 60, document => getLAnguAgeService(document).pArseStylesheet(document));
 	documents.onDidClose(e => {
 		stylesheets.onDocumentRemoved(e.document);
 	});
@@ -45,89 +45,89 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		stylesheets.dispose();
 	});
 
-	let scopedSettingsSupport = false;
-	let foldingRangeLimit = Number.MAX_VALUE;
-	let workspaceFolders: WorkspaceFolder[];
+	let scopedSettingsSupport = fAlse;
+	let foldingRAngeLimit = Number.MAX_VALUE;
+	let workspAceFolders: WorkspAceFolder[];
 
-	let dataProvidersReady: Promise<any> = Promise.resolve();
+	let dAtAProvidersReAdy: Promise<Any> = Promise.resolve();
 
-	const languageServices: { [id: string]: LanguageService } = {};
+	const lAnguAgeServices: { [id: string]: LAnguAgeService } = {};
 
-	const notReady = () => Promise.reject('Not Ready');
-	let requestService: RequestService = { getContent: notReady, stat: notReady, readDirectory: notReady };
+	const notReAdy = () => Promise.reject('Not ReAdy');
+	let requestService: RequestService = { getContent: notReAdy, stAt: notReAdy, reAdDirectory: notReAdy };
 
-	// After the server has started the client sends an initialize request. The server receives
-	// in the passed params the rootPath of the workspace plus the client capabilities.
-	connection.onInitialize((params: InitializeParams): InitializeResult => {
-		workspaceFolders = (<any>params).workspaceFolders;
-		if (!Array.isArray(workspaceFolders)) {
-			workspaceFolders = [];
-			if (params.rootPath) {
-				workspaceFolders.push({ name: '', uri: URI.file(params.rootPath).toString() });
+	// After the server hAs stArted the client sends An initiAlize request. The server receives
+	// in the pAssed pArAms the rootPAth of the workspAce plus the client cApAbilities.
+	connection.onInitiAlize((pArAms: InitiAlizePArAms): InitiAlizeResult => {
+		workspAceFolders = (<Any>pArAms).workspAceFolders;
+		if (!ArrAy.isArrAy(workspAceFolders)) {
+			workspAceFolders = [];
+			if (pArAms.rootPAth) {
+				workspAceFolders.push({ nAme: '', uri: URI.file(pArAms.rootPAth).toString() });
 			}
 		}
 
-		requestService = getRequestService(params.initializationOptions?.handledSchemas || ['file'], connection, runtime);
+		requestService = getRequestService(pArAms.initiAlizAtionOptions?.hAndledSchemAs || ['file'], connection, runtime);
 
-		function getClientCapability<T>(name: string, def: T) {
-			const keys = name.split('.');
-			let c: any = params.capabilities;
+		function getClientCApAbility<T>(nAme: string, def: T) {
+			const keys = nAme.split('.');
+			let c: Any = pArAms.cApAbilities;
 			for (let i = 0; c && i < keys.length; i++) {
-				if (!c.hasOwnProperty(keys[i])) {
+				if (!c.hAsOwnProperty(keys[i])) {
 					return def;
 				}
 				c = c[keys[i]];
 			}
 			return c;
 		}
-		const snippetSupport = !!getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
-		scopedSettingsSupport = !!getClientCapability('workspace.configuration', false);
-		foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
+		const snippetSupport = !!getClientCApAbility('textDocument.completion.completionItem.snippetSupport', fAlse);
+		scopedSettingsSupport = !!getClientCApAbility('workspAce.configurAtion', fAlse);
+		foldingRAngeLimit = getClientCApAbility('textDocument.foldingRAnge.rAngeLimit', Number.MAX_VALUE);
 
-		languageServices.css = getCSSLanguageService({ fileSystemProvider: requestService, clientCapabilities: params.capabilities });
-		languageServices.scss = getSCSSLanguageService({ fileSystemProvider: requestService, clientCapabilities: params.capabilities });
-		languageServices.less = getLESSLanguageService({ fileSystemProvider: requestService, clientCapabilities: params.capabilities });
+		lAnguAgeServices.css = getCSSLAnguAgeService({ fileSystemProvider: requestService, clientCApAbilities: pArAms.cApAbilities });
+		lAnguAgeServices.scss = getSCSSLAnguAgeService({ fileSystemProvider: requestService, clientCApAbilities: pArAms.cApAbilities });
+		lAnguAgeServices.less = getLESSLAnguAgeService({ fileSystemProvider: requestService, clientCApAbilities: pArAms.cApAbilities });
 
-		const capabilities: ServerCapabilities = {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
-			completionProvider: snippetSupport ? { resolveProvider: false, triggerCharacters: ['/', '-'] } : undefined,
+		const cApAbilities: ServerCApAbilities = {
+			textDocumentSync: TextDocumentSyncKind.IncrementAl,
+			completionProvider: snippetSupport ? { resolveProvider: fAlse, triggerChArActers: ['/', '-'] } : undefined,
 			hoverProvider: true,
 			documentSymbolProvider: true,
 			referencesProvider: true,
 			definitionProvider: true,
 			documentHighlightProvider: true,
 			documentLinkProvider: {
-				resolveProvider: false
+				resolveProvider: fAlse
 			},
 			codeActionProvider: true,
-			renameProvider: true,
+			renAmeProvider: true,
 			colorProvider: {},
-			foldingRangeProvider: true,
-			selectionRangeProvider: true
+			foldingRAngeProvider: true,
+			selectionRAngeProvider: true
 		};
-		return { capabilities };
+		return { cApAbilities };
 	});
 
-	function getLanguageService(document: TextDocument) {
-		let service = languageServices[document.languageId];
+	function getLAnguAgeService(document: TextDocument) {
+		let service = lAnguAgeServices[document.lAnguAgeId];
 		if (!service) {
-			connection.console.log('Document type is ' + document.languageId + ', using css instead.');
-			service = languageServices['css'];
+			connection.console.log('Document type is ' + document.lAnguAgeId + ', using css insteAd.');
+			service = lAnguAgeServices['css'];
 		}
 		return service;
 	}
 
-	let documentSettings: { [key: string]: Thenable<LanguageSettings | undefined> } = {};
+	let documentSettings: { [key: string]: ThenAble<LAnguAgeSettings | undefined> } = {};
 	// remove document settings on close
 	documents.onDidClose(e => {
 		delete documentSettings[e.document.uri];
 	});
-	function getDocumentSettings(textDocument: TextDocument): Thenable<LanguageSettings | undefined> {
+	function getDocumentSettings(textDocument: TextDocument): ThenAble<LAnguAgeSettings | undefined> {
 		if (scopedSettingsSupport) {
 			let promise = documentSettings[textDocument.uri];
 			if (!promise) {
-				const configRequestParam = { items: [{ scopeUri: textDocument.uri, section: textDocument.languageId }] };
-				promise = connection.sendRequest(ConfigurationRequest.type, configRequestParam).then(s => s[0]);
+				const configRequestPArAm = { items: [{ scopeUri: textDocument.uri, section: textDocument.lAnguAgeId }] };
+				promise = connection.sendRequest(ConfigurAtionRequest.type, configRequestPArAm).then(s => s[0]);
 				documentSettings[textDocument.uri] = promise;
 			}
 			return promise;
@@ -135,235 +135,235 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		return Promise.resolve(undefined);
 	}
 
-	// The settings have changed. Is send on server activation as well.
-	connection.onDidChangeConfiguration(change => {
-		updateConfiguration(<Settings>change.settings);
+	// The settings hAve chAnged. Is send on server ActivAtion As well.
+	connection.onDidChAngeConfigurAtion(chAnge => {
+		updAteConfigurAtion(<Settings>chAnge.settings);
 	});
 
-	function updateConfiguration(settings: Settings) {
-		for (const languageId in languageServices) {
-			languageServices[languageId].configure((settings as any)[languageId]);
+	function updAteConfigurAtion(settings: Settings) {
+		for (const lAnguAgeId in lAnguAgeServices) {
+			lAnguAgeServices[lAnguAgeId].configure((settings As Any)[lAnguAgeId]);
 		}
-		// reset all document settings
+		// reset All document settings
 		documentSettings = {};
-		// Revalidate any open text documents
-		documents.all().forEach(triggerValidation);
+		// RevAlidAte Any open text documents
+		documents.All().forEAch(triggerVAlidAtion);
 	}
 
-	const pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
-	const validationDelayMs = 500;
+	const pendingVAlidAtionRequests: { [uri: string]: NodeJS.Timer } = {};
+	const vAlidAtionDelAyMs = 500;
 
-	// The content of a text document has changed. This event is emitted
-	// when the text document first opened or when its content has changed.
-	documents.onDidChangeContent(change => {
-		triggerValidation(change.document);
+	// The content of A text document hAs chAnged. This event is emitted
+	// when the text document first opened or when its content hAs chAnged.
+	documents.onDidChAngeContent(chAnge => {
+		triggerVAlidAtion(chAnge.document);
 	});
 
-	// a document has closed: clear all diagnostics
+	// A document hAs closed: cleAr All diAgnostics
 	documents.onDidClose(event => {
-		cleanPendingValidation(event.document);
-		connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
+		cleAnPendingVAlidAtion(event.document);
+		connection.sendDiAgnostics({ uri: event.document.uri, diAgnostics: [] });
 	});
 
-	function cleanPendingValidation(textDocument: TextDocument): void {
-		const request = pendingValidationRequests[textDocument.uri];
+	function cleAnPendingVAlidAtion(textDocument: TextDocument): void {
+		const request = pendingVAlidAtionRequests[textDocument.uri];
 		if (request) {
-			clearTimeout(request);
-			delete pendingValidationRequests[textDocument.uri];
+			cleArTimeout(request);
+			delete pendingVAlidAtionRequests[textDocument.uri];
 		}
 	}
 
-	function triggerValidation(textDocument: TextDocument): void {
-		cleanPendingValidation(textDocument);
-		pendingValidationRequests[textDocument.uri] = setTimeout(() => {
-			delete pendingValidationRequests[textDocument.uri];
-			validateTextDocument(textDocument);
-		}, validationDelayMs);
+	function triggerVAlidAtion(textDocument: TextDocument): void {
+		cleAnPendingVAlidAtion(textDocument);
+		pendingVAlidAtionRequests[textDocument.uri] = setTimeout(() => {
+			delete pendingVAlidAtionRequests[textDocument.uri];
+			vAlidAteTextDocument(textDocument);
+		}, vAlidAtionDelAyMs);
 	}
 
-	function validateTextDocument(textDocument: TextDocument): void {
+	function vAlidAteTextDocument(textDocument: TextDocument): void {
 		const settingsPromise = getDocumentSettings(textDocument);
-		Promise.all([settingsPromise, dataProvidersReady]).then(async ([settings]) => {
+		Promise.All([settingsPromise, dAtAProvidersReAdy]).then(Async ([settings]) => {
 			const stylesheet = stylesheets.get(textDocument);
-			const diagnostics = getLanguageService(textDocument).doValidation(textDocument, stylesheet, settings);
-			// Send the computed diagnostics to VSCode.
-			connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+			const diAgnostics = getLAnguAgeService(textDocument).doVAlidAtion(textDocument, stylesheet, settings);
+			// Send the computed diAgnostics to VSCode.
+			connection.sendDiAgnostics({ uri: textDocument.uri, diAgnostics });
 		}, e => {
-			connection.console.error(formatError(`Error while validating ${textDocument.uri}`, e));
+			connection.console.error(formAtError(`Error while vAlidAting ${textDocument.uri}`, e));
 		});
 	}
 
 
-	function updateDataProviders(dataPaths: string[]) {
-		dataProvidersReady = fetchDataProviders(dataPaths, requestService).then(customDataProviders => {
-			for (const lang in languageServices) {
-				languageServices[lang].setDataProviders(true, customDataProviders);
+	function updAteDAtAProviders(dAtAPAths: string[]) {
+		dAtAProvidersReAdy = fetchDAtAProviders(dAtAPAths, requestService).then(customDAtAProviders => {
+			for (const lAng in lAnguAgeServices) {
+				lAnguAgeServices[lAng].setDAtAProviders(true, customDAtAProviders);
 			}
 		});
 	}
 
 	connection.onCompletion((textDocumentPosition, token) => {
-		return runSafeAsync(async () => {
+		return runSAfeAsync(Async () => {
 			const document = documents.get(textDocumentPosition.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const styleSheet = stylesheets.get(document);
-				const documentContext = getDocumentContext(document.uri, workspaceFolders);
-				return getLanguageService(document).doComplete2(document, textDocumentPosition.position, styleSheet, documentContext);
+				const documentContext = getDocumentContext(document.uri, workspAceFolders);
+				return getLAnguAgeService(document).doComplete2(document, textDocumentPosition.position, styleSheet, documentContext);
 			}
 			return null;
 		}, null, `Error while computing completions for ${textDocumentPosition.textDocument.uri}`, token);
 	});
 
 	connection.onHover((textDocumentPosition, token) => {
-		return runSafeAsync(async () => {
+		return runSAfeAsync(Async () => {
 			const document = documents.get(textDocumentPosition.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const styleSheet = stylesheets.get(document);
-				return getLanguageService(document).doHover(document, textDocumentPosition.position, styleSheet);
+				return getLAnguAgeService(document).doHover(document, textDocumentPosition.position, styleSheet);
 			}
 			return null;
 		}, null, `Error while computing hover for ${textDocumentPosition.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentSymbol((documentSymbolParams, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(documentSymbolParams.textDocument.uri);
+	connection.onDocumentSymbol((documentSymbolPArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(documentSymbolPArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findDocumentSymbols(document, stylesheet);
+				return getLAnguAgeService(document).findDocumentSymbols(document, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing document symbols for ${documentSymbolParams.textDocument.uri}`, token);
+		}, [], `Error while computing document symbols for ${documentSymbolPArAms.textDocument.uri}`, token);
 	});
 
-	connection.onDefinition((documentDefinitionParams, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(documentDefinitionParams.textDocument.uri);
+	connection.onDefinition((documentDefinitionPArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(documentDefinitionPArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findDefinition(document, documentDefinitionParams.position, stylesheet);
+				return getLAnguAgeService(document).findDefinition(document, documentDefinitionPArAms.position, stylesheet);
 			}
 			return null;
-		}, null, `Error while computing definitions for ${documentDefinitionParams.textDocument.uri}`, token);
+		}, null, `Error while computing definitions for ${documentDefinitionPArAms.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentHighlight((documentHighlightParams, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(documentHighlightParams.textDocument.uri);
+	connection.onDocumentHighlight((documentHighlightPArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(documentHighlightPArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findDocumentHighlights(document, documentHighlightParams.position, stylesheet);
+				return getLAnguAgeService(document).findDocumentHighlights(document, documentHighlightPArAms.position, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing document highlights for ${documentHighlightParams.textDocument.uri}`, token);
+		}, [], `Error while computing document highlights for ${documentHighlightPArAms.textDocument.uri}`, token);
 	});
 
 
-	connection.onDocumentLinks(async (documentLinkParams, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(documentLinkParams.textDocument.uri);
+	connection.onDocumentLinks(Async (documentLinkPArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(documentLinkPArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
-				const documentContext = getDocumentContext(document.uri, workspaceFolders);
+				AwAit dAtAProvidersReAdy;
+				const documentContext = getDocumentContext(document.uri, workspAceFolders);
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findDocumentLinks2(document, stylesheet, documentContext);
+				return getLAnguAgeService(document).findDocumentLinks2(document, stylesheet, documentContext);
 			}
 			return [];
-		}, [], `Error while computing document links for ${documentLinkParams.textDocument.uri}`, token);
+		}, [], `Error while computing document links for ${documentLinkPArAms.textDocument.uri}`, token);
 	});
 
 
-	connection.onReferences((referenceParams, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(referenceParams.textDocument.uri);
+	connection.onReferences((referencePArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(referencePArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findReferences(document, referenceParams.position, stylesheet);
+				return getLAnguAgeService(document).findReferences(document, referencePArAms.position, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing references for ${referenceParams.textDocument.uri}`, token);
+		}, [], `Error while computing references for ${referencePArAms.textDocument.uri}`, token);
 	});
 
-	connection.onCodeAction((codeActionParams, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(codeActionParams.textDocument.uri);
+	connection.onCodeAction((codeActionPArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(codeActionPArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).doCodeActions(document, codeActionParams.range, codeActionParams.context, stylesheet);
+				return getLAnguAgeService(document).doCodeActions(document, codeActionPArAms.rAnge, codeActionPArAms.context, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing code actions for ${codeActionParams.textDocument.uri}`, token);
+		}, [], `Error while computing code Actions for ${codeActionPArAms.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentColor((params, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onDocumentColor((pArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).findDocumentColors(document, stylesheet);
+				return getLAnguAgeService(document).findDocumentColors(document, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing document colors for ${params.textDocument.uri}`, token);
+		}, [], `Error while computing document colors for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onColorPresentation((params, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onColorPresentAtion((pArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).getColorPresentations(document, stylesheet, params.color, params.range);
+				return getLAnguAgeService(document).getColorPresentAtions(document, stylesheet, pArAms.color, pArAms.rAnge);
 			}
 			return [];
-		}, [], `Error while computing color presentations for ${params.textDocument.uri}`, token);
+		}, [], `Error while computing color presentAtions for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onRenameRequest((renameParameters, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(renameParameters.textDocument.uri);
+	connection.onRenAmeRequest((renAmePArAmeters, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(renAmePArAmeters.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).doRename(document, renameParameters.position, renameParameters.newName, stylesheet);
+				return getLAnguAgeService(document).doRenAme(document, renAmePArAmeters.position, renAmePArAmeters.newNAme, stylesheet);
 			}
 			return null;
-		}, null, `Error while computing renames for ${renameParameters.textDocument.uri}`, token);
+		}, null, `Error while computing renAmes for ${renAmePArAmeters.textDocument.uri}`, token);
 	});
 
-	connection.onFoldingRanges((params, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onFoldingRAnges((pArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				await dataProvidersReady;
-				return getLanguageService(document).getFoldingRanges(document, { rangeLimit: foldingRangeLimit });
+				AwAit dAtAProvidersReAdy;
+				return getLAnguAgeService(document).getFoldingRAnges(document, { rAngeLimit: foldingRAngeLimit });
 			}
 			return null;
-		}, null, `Error while computing folding ranges for ${params.textDocument.uri}`, token);
+		}, null, `Error while computing folding rAnges for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onSelectionRanges((params, token) => {
-		return runSafeAsync(async () => {
-			const document = documents.get(params.textDocument.uri);
-			const positions: Position[] = params.positions;
+	connection.onSelectionRAnges((pArAms, token) => {
+		return runSAfeAsync(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
+			const positions: Position[] = pArAms.positions;
 
 			if (document) {
-				await dataProvidersReady;
+				AwAit dAtAProvidersReAdy;
 				const stylesheet = stylesheets.get(document);
-				return getLanguageService(document).getSelectionRanges(document, positions, stylesheet);
+				return getLAnguAgeService(document).getSelectionRAnges(document, positions, stylesheet);
 			}
 			return [];
-		}, [], `Error while computing selection ranges for ${params.textDocument.uri}`, token);
+		}, [], `Error while computing selection rAnges for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onNotification(CustomDataChangedNotification.type, updateDataProviders);
+	connection.onNotificAtion(CustomDAtAChAngedNotificAtion.type, updAteDAtAProviders);
 
 	// Listen on the connection
 	connection.listen();

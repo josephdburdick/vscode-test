@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { OS } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import { OS } from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import * as nls from 'vs/nls';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import * As nls from 'vs/nls';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { EditorInput, SideBySideEditorInput, Verbosity } from 'vs/workbench/common/editor';
 import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
 import { KeybindingsEditorModel } from 'vs/workbench/services/preferences/common/keybindingsEditorModel';
@@ -16,88 +16,88 @@ import { Settings2EditorModel } from 'vs/workbench/services/preferences/common/p
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { Schemas } from 'vs/base/common/network';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class PreferencesEditorInput extends SideBySideEditorInput {
-	static readonly ID: string = 'workbench.editorinputs.preferencesEditorInput';
+export clAss PreferencesEditorInput extends SideBySideEditorInput {
+	stAtic reAdonly ID: string = 'workbench.editorinputs.preferencesEditorInput';
 
 	getTypeId(): string {
 		return PreferencesEditorInput.ID;
 	}
 
 	getTitle(verbosity: Verbosity): string {
-		return this.primary.getTitle(verbosity);
+		return this.primAry.getTitle(verbosity);
 	}
 }
 
-export class DefaultPreferencesEditorInput extends ResourceEditorInput {
-	static readonly ID = 'workbench.editorinputs.defaultpreferences';
+export clAss DefAultPreferencesEditorInput extends ResourceEditorInput {
+	stAtic reAdonly ID = 'workbench.editorinputs.defAultpreferences';
 	constructor(
-		defaultSettingsResource: URI,
+		defAultSettingsResource: URI,
 		@ITextModelService textModelResolverService: ITextModelService,
 		@ITextFileService textFileService: ITextFileService,
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IFileService fileService: IFileService,
-		@ILabelService labelService: ILabelService,
-		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
+		@ILAbelService lAbelService: ILAbelService,
+		@IFilesConfigurAtionService filesConfigurAtionService: IFilesConfigurAtionService
 	) {
-		super(defaultSettingsResource, nls.localize('settingsEditorName', "Default Settings"), '', undefined, textModelResolverService, textFileService, editorService, editorGroupService, fileService, labelService, filesConfigurationService);
+		super(defAultSettingsResource, nls.locAlize('settingsEditorNAme', "DefAult Settings"), '', undefined, textModelResolverService, textFileService, editorService, editorGroupService, fileService, lAbelService, filesConfigurAtionService);
 	}
 
 	getTypeId(): string {
-		return DefaultPreferencesEditorInput.ID;
+		return DefAultPreferencesEditorInput.ID;
 	}
 
-	matches(other: unknown): boolean {
-		if (other instanceof DefaultPreferencesEditorInput) {
+	mAtches(other: unknown): booleAn {
+		if (other instAnceof DefAultPreferencesEditorInput) {
 			return true;
 		}
-		if (!super.matches(other)) {
-			return false;
+		if (!super.mAtches(other)) {
+			return fAlse;
 		}
 		return true;
 	}
 }
 
-export interface IKeybindingsEditorSearchOptions {
-	searchValue: string;
-	recordKeybindings: boolean;
-	sortByPrecedence: boolean;
+export interfAce IKeybindingsEditorSeArchOptions {
+	seArchVAlue: string;
+	recordKeybindings: booleAn;
+	sortByPrecedence: booleAn;
 }
 
-export class KeybindingsEditorInput extends EditorInput {
+export clAss KeybindingsEditorInput extends EditorInput {
 
-	static readonly ID: string = 'workbench.input.keybindings';
-	readonly keybindingsModel: KeybindingsEditorModel;
+	stAtic reAdonly ID: string = 'workbench.input.keybindings';
+	reAdonly keybindingsModel: KeybindingsEditorModel;
 
-	searchOptions: IKeybindingsEditorSearchOptions | null = null;
+	seArchOptions: IKeybindingsEditorSeArchOptions | null = null;
 
-	readonly resource = undefined;
+	reAdonly resource = undefined;
 
-	constructor(@IInstantiationService instantiationService: IInstantiationService) {
+	constructor(@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService) {
 		super();
 
-		this.keybindingsModel = instantiationService.createInstance(KeybindingsEditorModel, OS);
+		this.keybindingsModel = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OS);
 	}
 
 	getTypeId(): string {
 		return KeybindingsEditorInput.ID;
 	}
 
-	getName(): string {
-		return nls.localize('keybindingsInputName', "Keyboard Shortcuts");
+	getNAme(): string {
+		return nls.locAlize('keybindingsInputNAme', "KeyboArd Shortcuts");
 	}
 
-	async resolve(): Promise<KeybindingsEditorModel> {
+	Async resolve(): Promise<KeybindingsEditorModel> {
 		return this.keybindingsModel;
 	}
 
-	matches(otherInput: unknown): boolean {
-		return otherInput instanceof KeybindingsEditorInput;
+	mAtches(otherInput: unknown): booleAn {
+		return otherInput instAnceof KeybindingsEditorInput;
 	}
 
 	dispose(): void {
@@ -107,14 +107,14 @@ export class KeybindingsEditorInput extends EditorInput {
 	}
 }
 
-export class SettingsEditor2Input extends EditorInput {
+export clAss SettingsEditor2Input extends EditorInput {
 
-	static readonly ID: string = 'workbench.input.settings2';
-	private readonly _settingsModel: Settings2EditorModel;
+	stAtic reAdonly ID: string = 'workbench.input.settings2';
+	privAte reAdonly _settingsModel: Settings2EditorModel;
 
-	readonly resource: URI = URI.from({
-		scheme: Schemas.vscodeSettings,
-		path: `settingseditor`
+	reAdonly resource: URI = URI.from({
+		scheme: SchemAs.vscodeSettings,
+		pAth: `settingseditor`
 	});
 
 	constructor(
@@ -122,22 +122,22 @@ export class SettingsEditor2Input extends EditorInput {
 	) {
 		super();
 
-		this._settingsModel = _preferencesService.createSettings2EditorModel();
+		this._settingsModel = _preferencesService.creAteSettings2EditorModel();
 	}
 
-	matches(otherInput: unknown): boolean {
-		return otherInput instanceof SettingsEditor2Input;
+	mAtches(otherInput: unknown): booleAn {
+		return otherInput instAnceof SettingsEditor2Input;
 	}
 
 	getTypeId(): string {
 		return SettingsEditor2Input.ID;
 	}
 
-	getName(): string {
-		return nls.localize('settingsEditor2InputName', "Settings");
+	getNAme(): string {
+		return nls.locAlize('settingsEditor2InputNAme', "Settings");
 	}
 
-	async resolve(): Promise<Settings2EditorModel> {
+	Async resolve(): Promise<Settings2EditorModel> {
 		return this._settingsModel;
 	}
 

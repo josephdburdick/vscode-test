@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { mergeSort } from 'vs/base/common/arrays';
-import { dispose, IDisposable, IReference } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { mergeSort } from 'vs/bAse/common/ArrAys';
+import { dispose, IDisposAble, IReference } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
-import { Range } from 'vs/editor/common/core/range';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { EndOfLineSequence, IIdentifiedSingleEditOperation, ITextModel } from 'vs/editor/common/model';
+import { EndOfLineSequence, IIdentifiedSingleEditOperAtion, ITextModel } from 'vs/editor/common/model';
 import { ITextModelService, IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
-import { IProgress } from 'vs/platform/progress/common/progress';
+import { IProgress } from 'vs/plAtform/progress/common/progress';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { IUndoRedoService, UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
-import { SingleModelEditStackElement, MultiModelEditStackElement } from 'vs/editor/common/model/editStack';
-import { ResourceMap } from 'vs/base/common/map';
+import { IUndoRedoService, UndoRedoGroup } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { SingleModelEditStAckElement, MultiModelEditStAckElement } from 'vs/editor/common/model/editStAck';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
 
-type ValidationResult = { canApply: true } | { canApply: false, reason: URI };
+type VAlidAtionResult = { cAnApply: true } | { cAnApply: fAlse, reAson: URI };
 
-class ModelEditTask implements IDisposable {
+clAss ModelEditTAsk implements IDisposAble {
 
-	readonly model: ITextModel;
+	reAdonly model: ITextModel;
 
-	private _expectedModelVersionId: number | undefined;
-	protected _edits: IIdentifiedSingleEditOperation[];
+	privAte _expectedModelVersionId: number | undefined;
+	protected _edits: IIdentifiedSingleEditOperAtion[];
 	protected _newEol: EndOfLineSequence | undefined;
 
-	constructor(private readonly _modelReference: IReference<IResolvedTextEditorModel>) {
+	constructor(privAte reAdonly _modelReference: IReference<IResolvedTextEditorModel>) {
 		this.model = this._modelReference.object.textEditorModel;
 		this._edits = [];
 	}
@@ -39,48 +39,48 @@ class ModelEditTask implements IDisposable {
 		this._modelReference.dispose();
 	}
 
-	addEdit(resourceEdit: ResourceTextEdit): void {
+	AddEdit(resourceEdit: ResourceTextEdit): void {
 		this._expectedModelVersionId = resourceEdit.versionId;
 		const { textEdit } = resourceEdit;
 
 		if (typeof textEdit.eol === 'number') {
-			// honor eol-change
+			// honor eol-chAnge
 			this._newEol = textEdit.eol;
 		}
-		if (!textEdit.range && !textEdit.text) {
-			// lacks both a range and the text
+		if (!textEdit.rAnge && !textEdit.text) {
+			// lAcks both A rAnge And the text
 			return;
 		}
-		if (Range.isEmpty(textEdit.range) && !textEdit.text) {
-			// no-op edit (replace empty range with empty text)
+		if (RAnge.isEmpty(textEdit.rAnge) && !textEdit.text) {
+			// no-op edit (replAce empty rAnge with empty text)
 			return;
 		}
 
-		// create edit operation
-		let range: Range;
-		if (!textEdit.range) {
-			range = this.model.getFullModelRange();
+		// creAte edit operAtion
+		let rAnge: RAnge;
+		if (!textEdit.rAnge) {
+			rAnge = this.model.getFullModelRAnge();
 		} else {
-			range = Range.lift(textEdit.range);
+			rAnge = RAnge.lift(textEdit.rAnge);
 		}
-		this._edits.push(EditOperation.replaceMove(range, textEdit.text));
+		this._edits.push(EditOperAtion.replAceMove(rAnge, textEdit.text));
 	}
 
-	validate(): ValidationResult {
+	vAlidAte(): VAlidAtionResult {
 		if (typeof this._expectedModelVersionId === 'undefined' || this.model.getVersionId() === this._expectedModelVersionId) {
-			return { canApply: true };
+			return { cAnApply: true };
 		}
-		return { canApply: false, reason: this.model.uri };
+		return { cAnApply: fAlse, reAson: this.model.uri };
 	}
 
-	getBeforeCursorState(): Selection[] | null {
+	getBeforeCursorStAte(): Selection[] | null {
 		return null;
 	}
 
-	apply(): void {
+	Apply(): void {
 		if (this._edits.length > 0) {
-			this._edits = mergeSort(this._edits, (a, b) => Range.compareRangesUsingStarts(a.range, b.range));
-			this.model.pushEditOperations(null, this._edits, () => null);
+			this._edits = mergeSort(this._edits, (A, b) => RAnge.compAreRAngesUsingStArts(A.rAnge, b.rAnge));
+			this.model.pushEditOperAtions(null, this._edits, () => null);
 		}
 		if (this._newEol !== undefined) {
 			this.model.pushEOL(this._newEol);
@@ -88,158 +88,158 @@ class ModelEditTask implements IDisposable {
 	}
 }
 
-class EditorEditTask extends ModelEditTask {
+clAss EditorEditTAsk extends ModelEditTAsk {
 
-	private _editor: ICodeEditor;
+	privAte _editor: ICodeEditor;
 
 	constructor(modelReference: IReference<IResolvedTextEditorModel>, editor: ICodeEditor) {
 		super(modelReference);
 		this._editor = editor;
 	}
 
-	getBeforeCursorState(): Selection[] | null {
+	getBeforeCursorStAte(): Selection[] | null {
 		return this._editor.getSelections();
 	}
 
-	apply(): void {
+	Apply(): void {
 		if (this._edits.length > 0) {
-			this._edits = mergeSort(this._edits, (a, b) => Range.compareRangesUsingStarts(a.range, b.range));
+			this._edits = mergeSort(this._edits, (A, b) => RAnge.compAreRAngesUsingStArts(A.rAnge, b.rAnge));
 			this._editor.executeEdits('', this._edits);
 		}
 		if (this._newEol !== undefined) {
-			if (this._editor.hasModel()) {
+			if (this._editor.hAsModel()) {
 				this._editor.getModel().pushEOL(this._newEol);
 			}
 		}
 	}
 }
 
-export class BulkTextEdits {
+export clAss BulkTextEdits {
 
-	private readonly _edits = new ResourceMap<ResourceTextEdit[]>();
+	privAte reAdonly _edits = new ResourceMAp<ResourceTextEdit[]>();
 
 	constructor(
-		private readonly _label: string,
-		private readonly _editor: ICodeEditor | undefined,
-		private readonly _undoRedoGroup: UndoRedoGroup,
-		private readonly _progress: IProgress<void>,
+		privAte reAdonly _lAbel: string,
+		privAte reAdonly _editor: ICodeEditor | undefined,
+		privAte reAdonly _undoRedoGroup: UndoRedoGroup,
+		privAte reAdonly _progress: IProgress<void>,
 		edits: ResourceTextEdit[],
-		@IEditorWorkerService private readonly _editorWorker: IEditorWorkerService,
-		@IModelService private readonly _modelService: IModelService,
-		@ITextModelService private readonly _textModelResolverService: ITextModelService,
-		@IUndoRedoService private readonly _undoRedoService: IUndoRedoService
+		@IEditorWorkerService privAte reAdonly _editorWorker: IEditorWorkerService,
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@ITextModelService privAte reAdonly _textModelResolverService: ITextModelService,
+		@IUndoRedoService privAte reAdonly _undoRedoService: IUndoRedoService
 	) {
 
 		for (const edit of edits) {
-			let array = this._edits.get(edit.resource);
-			if (!array) {
-				array = [];
-				this._edits.set(edit.resource, array);
+			let ArrAy = this._edits.get(edit.resource);
+			if (!ArrAy) {
+				ArrAy = [];
+				this._edits.set(edit.resource, ArrAy);
 			}
-			array.push(edit);
+			ArrAy.push(edit);
 		}
 	}
 
-	private _validateBeforePrepare(): void {
-		// First check if loaded models were not changed in the meantime
-		for (const array of this._edits.values()) {
-			for (let edit of array) {
+	privAte _vAlidAteBeforePrepAre(): void {
+		// First check if loAded models were not chAnged in the meAntime
+		for (const ArrAy of this._edits.vAlues()) {
+			for (let edit of ArrAy) {
 				if (typeof edit.versionId === 'number') {
 					let model = this._modelService.getModel(edit.resource);
 					if (model && model.getVersionId() !== edit.versionId) {
-						// model changed in the meantime
-						throw new Error(`${model.uri.toString()} has changed in the meantime`);
+						// model chAnged in the meAntime
+						throw new Error(`${model.uri.toString()} hAs chAnged in the meAntime`);
 					}
 				}
 			}
 		}
 	}
 
-	private async _createEditsTasks(): Promise<ModelEditTask[]> {
+	privAte Async _creAteEditsTAsks(): Promise<ModelEditTAsk[]> {
 
-		const tasks: ModelEditTask[] = [];
-		const promises: Promise<any>[] = [];
+		const tAsks: ModelEditTAsk[] = [];
+		const promises: Promise<Any>[] = [];
 
-		for (let [key, value] of this._edits) {
-			const promise = this._textModelResolverService.createModelReference(key).then(async ref => {
-				let task: ModelEditTask;
-				let makeMinimal = false;
+		for (let [key, vAlue] of this._edits) {
+			const promise = this._textModelResolverService.creAteModelReference(key).then(Async ref => {
+				let tAsk: ModelEditTAsk;
+				let mAkeMinimAl = fAlse;
 				if (this._editor?.getModel()?.uri.toString() === ref.object.textEditorModel.uri.toString()) {
-					task = new EditorEditTask(ref, this._editor);
-					makeMinimal = true;
+					tAsk = new EditorEditTAsk(ref, this._editor);
+					mAkeMinimAl = true;
 				} else {
-					task = new ModelEditTask(ref);
+					tAsk = new ModelEditTAsk(ref);
 				}
 
-				for (const edit of value) {
-					if (makeMinimal) {
-						const newEdits = await this._editorWorker.computeMoreMinimalEdits(edit.resource, [edit.textEdit]);
+				for (const edit of vAlue) {
+					if (mAkeMinimAl) {
+						const newEdits = AwAit this._editorWorker.computeMoreMinimAlEdits(edit.resource, [edit.textEdit]);
 						if (!newEdits) {
-							task.addEdit(edit);
+							tAsk.AddEdit(edit);
 						} else {
-							for (let moreMinialEdit of newEdits) {
-								task.addEdit(new ResourceTextEdit(edit.resource, moreMinialEdit, edit.versionId, edit.metadata));
+							for (let moreMiniAlEdit of newEdits) {
+								tAsk.AddEdit(new ResourceTextEdit(edit.resource, moreMiniAlEdit, edit.versionId, edit.metAdAtA));
 							}
 						}
 					} else {
-						task.addEdit(edit);
+						tAsk.AddEdit(edit);
 					}
 				}
 
-				tasks.push(task);
+				tAsks.push(tAsk);
 			});
 			promises.push(promise);
 		}
 
-		await Promise.all(promises);
-		return tasks;
+		AwAit Promise.All(promises);
+		return tAsks;
 	}
 
-	private _validateTasks(tasks: ModelEditTask[]): ValidationResult {
-		for (const task of tasks) {
-			const result = task.validate();
-			if (!result.canApply) {
+	privAte _vAlidAteTAsks(tAsks: ModelEditTAsk[]): VAlidAtionResult {
+		for (const tAsk of tAsks) {
+			const result = tAsk.vAlidAte();
+			if (!result.cAnApply) {
 				return result;
 			}
 		}
-		return { canApply: true };
+		return { cAnApply: true };
 	}
 
-	async apply(): Promise<void> {
+	Async Apply(): Promise<void> {
 
-		this._validateBeforePrepare();
-		const tasks = await this._createEditsTasks();
+		this._vAlidAteBeforePrepAre();
+		const tAsks = AwAit this._creAteEditsTAsks();
 
 		try {
 
-			const validation = this._validateTasks(tasks);
-			if (!validation.canApply) {
-				throw new Error(`${validation.reason.toString()} has changed in the meantime`);
+			const vAlidAtion = this._vAlidAteTAsks(tAsks);
+			if (!vAlidAtion.cAnApply) {
+				throw new Error(`${vAlidAtion.reAson.toString()} hAs chAnged in the meAntime`);
 			}
-			if (tasks.length === 1) {
-				// This edit touches a single model => keep things simple
-				const task = tasks[0];
-				const singleModelEditStackElement = new SingleModelEditStackElement(task.model, task.getBeforeCursorState());
-				this._undoRedoService.pushElement(singleModelEditStackElement, this._undoRedoGroup);
-				task.apply();
-				singleModelEditStackElement.close();
+			if (tAsks.length === 1) {
+				// This edit touches A single model => keep things simple
+				const tAsk = tAsks[0];
+				const singleModelEditStAckElement = new SingleModelEditStAckElement(tAsk.model, tAsk.getBeforeCursorStAte());
+				this._undoRedoService.pushElement(singleModelEditStAckElement, this._undoRedoGroup);
+				tAsk.Apply();
+				singleModelEditStAckElement.close();
 				this._progress.report(undefined);
 			} else {
-				// prepare multi model undo element
-				const multiModelEditStackElement = new MultiModelEditStackElement(
-					this._label,
-					tasks.map(t => new SingleModelEditStackElement(t.model, t.getBeforeCursorState()))
+				// prepAre multi model undo element
+				const multiModelEditStAckElement = new MultiModelEditStAckElement(
+					this._lAbel,
+					tAsks.mAp(t => new SingleModelEditStAckElement(t.model, t.getBeforeCursorStAte()))
 				);
-				this._undoRedoService.pushElement(multiModelEditStackElement, this._undoRedoGroup);
-				for (const task of tasks) {
-					task.apply();
+				this._undoRedoService.pushElement(multiModelEditStAckElement, this._undoRedoGroup);
+				for (const tAsk of tAsks) {
+					tAsk.Apply();
 					this._progress.report(undefined);
 				}
-				multiModelEditStackElement.close();
+				multiModelEditStAckElement.close();
 			}
 
-		} finally {
-			dispose(tasks);
+		} finAlly {
+			dispose(tAsks);
 		}
 	}
 }

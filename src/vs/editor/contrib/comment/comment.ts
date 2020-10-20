@@ -1,148 +1,148 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { KeyChord, KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import * As nls from 'vs/nls';
+import { KeyChord, KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, IActionOptions, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
-import { ICommand } from 'vs/editor/common/editorCommon';
+import { ICommAnd } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { BlockCommentCommand } from 'vs/editor/contrib/comment/blockCommentCommand';
-import { LineCommentCommand, Type } from 'vs/editor/contrib/comment/lineCommentCommand';
-import { MenuId } from 'vs/platform/actions/common/actions';
+import { BlockCommentCommAnd } from 'vs/editor/contrib/comment/blockCommentCommAnd';
+import { LineCommentCommAnd, Type } from 'vs/editor/contrib/comment/lineCommentCommAnd';
+import { MenuId } from 'vs/plAtform/Actions/common/Actions';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 
-abstract class CommentLineAction extends EditorAction {
+AbstrAct clAss CommentLineAction extends EditorAction {
 
-	private readonly _type: Type;
+	privAte reAdonly _type: Type;
 
 	constructor(type: Type, opts: IActionOptions) {
 		super(opts);
 		this._type = type;
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (!editor.hasModel()) {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
 		const model = editor.getModel();
-		const commands: ICommand[] = [];
+		const commAnds: ICommAnd[] = [];
 		const selections = editor.getSelections();
 		const modelOptions = model.getOptions();
 		const commentsOptions = editor.getOption(EditorOption.comments);
 
 		for (const selection of selections) {
-			commands.push(new LineCommentCommand(
+			commAnds.push(new LineCommentCommAnd(
 				selection,
-				modelOptions.tabSize,
+				modelOptions.tAbSize,
 				this._type,
-				commentsOptions.insertSpace,
+				commentsOptions.insertSpAce,
 				commentsOptions.ignoreEmptyLines
 			));
 		}
 
 		editor.pushUndoStop();
-		editor.executeCommands(this.id, commands);
+		editor.executeCommAnds(this.id, commAnds);
 		editor.pushUndoStop();
 	}
 
 }
 
-class ToggleCommentLineAction extends CommentLineAction {
+clAss ToggleCommentLineAction extends CommentLineAction {
 	constructor() {
 		super(Type.Toggle, {
-			id: 'editor.action.commentLine',
-			label: nls.localize('comment.line', "Toggle Line Comment"),
-			alias: 'Toggle Line Comment',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.commentLine',
+			lAbel: nls.locAlize('comment.line', "Toggle Line Comment"),
+			AliAs: 'Toggle Line Comment',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.CtrlCmd | KeyCode.US_SLASH,
+				primAry: KeyMod.CtrlCmd | KeyCode.US_SLASH,
 				weight: KeybindingWeight.EditorContrib
 			},
 			menuOpts: {
-				menuId: MenuId.MenubarEditMenu,
+				menuId: MenuId.MenubArEditMenu,
 				group: '5_insert',
-				title: nls.localize({ key: 'miToggleLineComment', comment: ['&& denotes a mnemonic'] }, "&&Toggle Line Comment"),
+				title: nls.locAlize({ key: 'miToggleLineComment', comment: ['&& denotes A mnemonic'] }, "&&Toggle Line Comment"),
 				order: 1
 			}
 		});
 	}
 }
 
-class AddLineCommentAction extends CommentLineAction {
+clAss AddLineCommentAction extends CommentLineAction {
 	constructor() {
 		super(Type.ForceAdd, {
-			id: 'editor.action.addCommentLine',
-			label: nls.localize('comment.line.add', "Add Line Comment"),
-			alias: 'Add Line Comment',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.AddCommentLine',
+			lAbel: nls.locAlize('comment.line.Add', "Add Line Comment"),
+			AliAs: 'Add Line Comment',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_C),
+				primAry: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_C),
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-class RemoveLineCommentAction extends CommentLineAction {
+clAss RemoveLineCommentAction extends CommentLineAction {
 	constructor() {
 		super(Type.ForceRemove, {
-			id: 'editor.action.removeCommentLine',
-			label: nls.localize('comment.line.remove', "Remove Line Comment"),
-			alias: 'Remove Line Comment',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.removeCommentLine',
+			lAbel: nls.locAlize('comment.line.remove', "Remove Line Comment"),
+			AliAs: 'Remove Line Comment',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_U),
+				primAry: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_U),
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-class BlockCommentAction extends EditorAction {
+clAss BlockCommentAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.blockComment',
-			label: nls.localize('comment.block', "Toggle Block Comment"),
-			alias: 'Toggle Block Comment',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.blockComment',
+			lAbel: nls.locAlize('comment.block', "Toggle Block Comment"),
+			AliAs: 'Toggle Block Comment',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_A,
-				linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_A },
+				primAry: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_A,
+				linux: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_A },
 				weight: KeybindingWeight.EditorContrib
 			},
 			menuOpts: {
-				menuId: MenuId.MenubarEditMenu,
+				menuId: MenuId.MenubArEditMenu,
 				group: '5_insert',
-				title: nls.localize({ key: 'miToggleBlockComment', comment: ['&& denotes a mnemonic'] }, "Toggle &&Block Comment"),
+				title: nls.locAlize({ key: 'miToggleBlockComment', comment: ['&& denotes A mnemonic'] }, "Toggle &&Block Comment"),
 				order: 2
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (!editor.hasModel()) {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
 		const commentsOptions = editor.getOption(EditorOption.comments);
-		const commands: ICommand[] = [];
+		const commAnds: ICommAnd[] = [];
 		const selections = editor.getSelections();
 		for (const selection of selections) {
-			commands.push(new BlockCommentCommand(selection, commentsOptions.insertSpace));
+			commAnds.push(new BlockCommentCommAnd(selection, commentsOptions.insertSpAce));
 		}
 
 		editor.pushUndoStop();
-		editor.executeCommands(this.id, commands);
+		editor.executeCommAnds(this.id, commAnds);
 		editor.pushUndoStop();
 	}
 }

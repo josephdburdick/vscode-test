@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en.win'; // 40%
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/es-latin.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-in.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/de.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-uk.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/fr.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pt-br.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/es.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-intl.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/ru.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pl.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/it.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/sv.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/tr.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/pt.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/dk.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/no.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/thai.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/hu.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/de-swiss.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/en-belgian.win';
-import 'vs/workbench/services/keybinding/browser/keyboardLayouts/cz.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/en.win'; // 40%
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/es-lAtin.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/en-in.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/de.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/en-uk.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/fr.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/pt-br.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/es.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/en-intl.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/ru.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/pl.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/it.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/sv.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/tr.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/pt.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/dk.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/no.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/thAi.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/hu.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/de-swiss.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/en-belgiAn.win';
+import 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/cz.win';
 
-export { KeyboardLayoutContribution } from 'vs/workbench/services/keybinding/browser/keyboardLayouts/_.contribution';
+export { KeyboArdLAyoutContribution } from 'vs/workbench/services/keybinding/browser/keyboArdLAyouts/_.contribution';

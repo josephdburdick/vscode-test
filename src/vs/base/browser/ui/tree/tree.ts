@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IListRenderer, IListDragOverReaction, IListDragAndDrop, ListDragOverEffect } from 'vs/base/browser/ui/list/list';
-import { IDragAndDropData } from 'vs/base/browser/dnd';
+import { Event } from 'vs/bAse/common/event';
+import { IListRenderer, IListDrAgOverReAction, IListDrAgAndDrop, ListDrAgOverEffect } from 'vs/bAse/browser/ui/list/list';
+import { IDrAgAndDropDAtA } from 'vs/bAse/browser/dnd';
 
 export const enum TreeVisibility {
 
@@ -20,200 +20,200 @@ export const enum TreeVisibility {
 	Visible,
 
 	/**
-	 * The tree node should be visible if any of its descendants is visible.
+	 * The tree node should be visible if Any of its descendAnts is visible.
 	 */
 	Recurse
 }
 
 /**
- * A composed filter result containing the visibility result as well as
- * metadata.
+ * A composed filter result contAining the visibility result As well As
+ * metAdAtA.
  */
-export interface ITreeFilterDataResult<TFilterData> {
+export interfAce ITreeFilterDAtAResult<TFilterDAtA> {
 
 	/**
 	 * Whether the node should be visible.
 	 */
-	visibility: boolean | TreeVisibility;
+	visibility: booleAn | TreeVisibility;
 
 	/**
-	 * Metadata about the element's visibility which gets forwarded to the
+	 * MetAdAtA About the element's visibility which gets forwArded to the
 	 * renderer once the element gets rendered.
 	 */
-	data: TFilterData;
+	dAtA: TFilterDAtA;
 }
 
 /**
- * The result of a filter call can be a boolean value indicating whether
- * the element should be visible or not, a value of type `TreeVisibility` or
- * an object composed of the visibility result as well as additional metadata
- * which gets forwarded to the renderer once the element gets rendered.
+ * The result of A filter cAll cAn be A booleAn vAlue indicAting whether
+ * the element should be visible or not, A vAlue of type `TreeVisibility` or
+ * An object composed of the visibility result As well As AdditionAl metAdAtA
+ * which gets forwArded to the renderer once the element gets rendered.
  */
-export type TreeFilterResult<TFilterData> = boolean | TreeVisibility | ITreeFilterDataResult<TFilterData>;
+export type TreeFilterResult<TFilterDAtA> = booleAn | TreeVisibility | ITreeFilterDAtAResult<TFilterDAtA>;
 
 /**
  * A tree filter is responsible for controlling the visibility of
- * elements in a tree.
+ * elements in A tree.
  */
-export interface ITreeFilter<T, TFilterData = void> {
+export interfAce ITreeFilter<T, TFilterDAtA = void> {
 
 	/**
-	 * Returns whether this elements should be visible and, if affirmative,
-	 * additional metadata which gets forwarded to the renderer once the element
+	 * Returns whether this elements should be visible And, if AffirmAtive,
+	 * AdditionAl metAdAtA which gets forwArded to the renderer once the element
 	 * gets rendered.
 	 *
-	 * @param element The tree element.
+	 * @pArAm element The tree element.
 	 */
-	filter(element: T, parentVisibility: TreeVisibility): TreeFilterResult<TFilterData>;
+	filter(element: T, pArentVisibility: TreeVisibility): TreeFilterResult<TFilterDAtA>;
 }
 
-export interface ITreeSorter<T> {
-	compare(element: T, otherElement: T): number;
+export interfAce ITreeSorter<T> {
+	compAre(element: T, otherElement: T): number;
 }
 
-export interface ITreeElement<T> {
-	readonly element: T;
-	readonly children?: Iterable<ITreeElement<T>>;
-	readonly collapsible?: boolean;
-	readonly collapsed?: boolean;
+export interfAce ITreeElement<T> {
+	reAdonly element: T;
+	reAdonly children?: IterAble<ITreeElement<T>>;
+	reAdonly collApsible?: booleAn;
+	reAdonly collApsed?: booleAn;
 }
 
-export interface ITreeNode<T, TFilterData = void> {
-	readonly element: T;
-	readonly children: ITreeNode<T, TFilterData>[];
-	readonly depth: number;
-	readonly visibleChildrenCount: number;
-	readonly visibleChildIndex: number;
-	readonly collapsible: boolean;
-	readonly collapsed: boolean;
-	readonly visible: boolean;
-	readonly filterData: TFilterData | undefined;
+export interfAce ITreeNode<T, TFilterDAtA = void> {
+	reAdonly element: T;
+	reAdonly children: ITreeNode<T, TFilterDAtA>[];
+	reAdonly depth: number;
+	reAdonly visibleChildrenCount: number;
+	reAdonly visibleChildIndex: number;
+	reAdonly collApsible: booleAn;
+	reAdonly collApsed: booleAn;
+	reAdonly visible: booleAn;
+	reAdonly filterDAtA: TFilterDAtA | undefined;
 }
 
-export interface ICollapseStateChangeEvent<T, TFilterData> {
-	node: ITreeNode<T, TFilterData>;
-	deep: boolean;
+export interfAce ICollApseStAteChAngeEvent<T, TFilterDAtA> {
+	node: ITreeNode<T, TFilterDAtA>;
+	deep: booleAn;
 }
 
-export interface ITreeModelSpliceEvent<T, TFilterData> {
-	insertedNodes: ITreeNode<T, TFilterData>[];
-	deletedNodes: ITreeNode<T, TFilterData>[];
+export interfAce ITreeModelSpliceEvent<T, TFilterDAtA> {
+	insertedNodes: ITreeNode<T, TFilterDAtA>[];
+	deletedNodes: ITreeNode<T, TFilterDAtA>[];
 }
 
-export interface ITreeModel<T, TFilterData, TRef> {
-	readonly rootRef: TRef;
+export interfAce ITreeModel<T, TFilterDAtA, TRef> {
+	reAdonly rootRef: TRef;
 
-	readonly onDidSplice: Event<ITreeModelSpliceEvent<T, TFilterData>>;
-	readonly onDidChangeCollapseState: Event<ICollapseStateChangeEvent<T, TFilterData>>;
-	readonly onDidChangeRenderNodeCount: Event<ITreeNode<T, TFilterData>>;
+	reAdonly onDidSplice: Event<ITreeModelSpliceEvent<T, TFilterDAtA>>;
+	reAdonly onDidChAngeCollApseStAte: Event<ICollApseStAteChAngeEvent<T, TFilterDAtA>>;
+	reAdonly onDidChAngeRenderNodeCount: Event<ITreeNode<T, TFilterDAtA>>;
 
-	has(location: TRef): boolean;
+	hAs(locAtion: TRef): booleAn;
 
-	getListIndex(location: TRef): number;
-	getListRenderCount(location: TRef): number;
-	getNode(location?: TRef): ITreeNode<T, any>;
-	getNodeLocation(node: ITreeNode<T, any>): TRef;
-	getParentNodeLocation(location: TRef): TRef | undefined;
+	getListIndex(locAtion: TRef): number;
+	getListRenderCount(locAtion: TRef): number;
+	getNode(locAtion?: TRef): ITreeNode<T, Any>;
+	getNodeLocAtion(node: ITreeNode<T, Any>): TRef;
+	getPArentNodeLocAtion(locAtion: TRef): TRef | undefined;
 
-	getFirstElementChild(location: TRef): T | undefined;
-	getLastElementAncestor(location?: TRef): T | undefined;
+	getFirstElementChild(locAtion: TRef): T | undefined;
+	getLAstElementAncestor(locAtion?: TRef): T | undefined;
 
-	isCollapsible(location: TRef): boolean;
-	setCollapsible(location: TRef, collapsible?: boolean): boolean;
-	isCollapsed(location: TRef): boolean;
-	setCollapsed(location: TRef, collapsed?: boolean, recursive?: boolean): boolean;
-	expandTo(location: TRef): void;
+	isCollApsible(locAtion: TRef): booleAn;
+	setCollApsible(locAtion: TRef, collApsible?: booleAn): booleAn;
+	isCollApsed(locAtion: TRef): booleAn;
+	setCollApsed(locAtion: TRef, collApsed?: booleAn, recursive?: booleAn): booleAn;
+	expAndTo(locAtion: TRef): void;
 
-	rerender(location: TRef): void;
+	rerender(locAtion: TRef): void;
 	refilter(): void;
 }
 
-export interface ITreeRenderer<T, TFilterData = void, TTemplateData = void> extends IListRenderer<ITreeNode<T, TFilterData>, TTemplateData> {
+export interfAce ITreeRenderer<T, TFilterDAtA = void, TTemplAteDAtA = void> extends IListRenderer<ITreeNode<T, TFilterDAtA>, TTemplAteDAtA> {
 	renderTwistie?(element: T, twistieElement: HTMLElement): void;
-	onDidChangeTwistieState?: Event<T>;
+	onDidChAngeTwistieStAte?: Event<T>;
 }
 
-export interface ITreeEvent<T> {
+export interfAce ITreeEvent<T> {
 	elements: T[];
 	browserEvent?: UIEvent;
 }
 
-export enum TreeMouseEventTarget {
+export enum TreeMouseEventTArget {
 	Unknown,
 	Twistie,
 	Element
 }
 
-export interface ITreeMouseEvent<T> {
+export interfAce ITreeMouseEvent<T> {
 	browserEvent: MouseEvent;
 	element: T | null;
-	target: TreeMouseEventTarget;
+	tArget: TreeMouseEventTArget;
 }
 
-export interface ITreeContextMenuEvent<T> {
+export interfAce ITreeContextMenuEvent<T> {
 	browserEvent: UIEvent;
 	element: T | null;
-	anchor: HTMLElement | { x: number; y: number; };
+	Anchor: HTMLElement | { x: number; y: number; };
 }
 
-export interface ITreeNavigator<T> {
+export interfAce ITreeNAvigAtor<T> {
 	current(): T | null;
 	previous(): T | null;
 	first(): T | null;
-	last(): T | null;
+	lAst(): T | null;
 	next(): T | null;
 }
 
-export interface IDataSource<TInput, T> {
-	hasChildren?(element: TInput | T): boolean;
-	getChildren(element: TInput | T): Iterable<T>;
+export interfAce IDAtASource<TInput, T> {
+	hAsChildren?(element: TInput | T): booleAn;
+	getChildren(element: TInput | T): IterAble<T>;
 }
 
-export interface IAsyncDataSource<TInput, T> {
-	hasChildren(element: TInput | T): boolean;
-	getChildren(element: TInput | T): Iterable<T> | Promise<Iterable<T>>;
+export interfAce IAsyncDAtASource<TInput, T> {
+	hAsChildren(element: TInput | T): booleAn;
+	getChildren(element: TInput | T): IterAble<T> | Promise<IterAble<T>>;
 }
 
-export const enum TreeDragOverBubble {
+export const enum TreeDrAgOverBubble {
 	Down,
 	Up
 }
 
-export interface ITreeDragOverReaction extends IListDragOverReaction {
-	bubble?: TreeDragOverBubble;
-	autoExpand?: boolean;
+export interfAce ITreeDrAgOverReAction extends IListDrAgOverReAction {
+	bubble?: TreeDrAgOverBubble;
+	AutoExpAnd?: booleAn;
 }
 
-export const TreeDragOverReactions = {
-	acceptBubbleUp(): ITreeDragOverReaction { return { accept: true, bubble: TreeDragOverBubble.Up }; },
-	acceptBubbleDown(autoExpand = false): ITreeDragOverReaction { return { accept: true, bubble: TreeDragOverBubble.Down, autoExpand }; },
-	acceptCopyBubbleUp(): ITreeDragOverReaction { return { accept: true, bubble: TreeDragOverBubble.Up, effect: ListDragOverEffect.Copy }; },
-	acceptCopyBubbleDown(autoExpand = false): ITreeDragOverReaction { return { accept: true, bubble: TreeDragOverBubble.Down, effect: ListDragOverEffect.Copy, autoExpand }; }
+export const TreeDrAgOverReActions = {
+	AcceptBubbleUp(): ITreeDrAgOverReAction { return { Accept: true, bubble: TreeDrAgOverBubble.Up }; },
+	AcceptBubbleDown(AutoExpAnd = fAlse): ITreeDrAgOverReAction { return { Accept: true, bubble: TreeDrAgOverBubble.Down, AutoExpAnd }; },
+	AcceptCopyBubbleUp(): ITreeDrAgOverReAction { return { Accept: true, bubble: TreeDrAgOverBubble.Up, effect: ListDrAgOverEffect.Copy }; },
+	AcceptCopyBubbleDown(AutoExpAnd = fAlse): ITreeDrAgOverReAction { return { Accept: true, bubble: TreeDrAgOverBubble.Down, effect: ListDrAgOverEffect.Copy, AutoExpAnd }; }
 };
 
-export interface ITreeDragAndDrop<T> extends IListDragAndDrop<T> {
-	onDragOver(data: IDragAndDropData, targetElement: T | undefined, targetIndex: number | undefined, originalEvent: DragEvent): boolean | ITreeDragOverReaction;
+export interfAce ITreeDrAgAndDrop<T> extends IListDrAgAndDrop<T> {
+	onDrAgOver(dAtA: IDrAgAndDropDAtA, tArgetElement: T | undefined, tArgetIndex: number | undefined, originAlEvent: DrAgEvent): booleAn | ITreeDrAgOverReAction;
 }
 
-export class TreeError extends Error {
+export clAss TreeError extends Error {
 
-	constructor(user: string, message: string) {
-		super(`TreeError [${user}] ${message}`);
+	constructor(user: string, messAge: string) {
+		super(`TreeError [${user}] ${messAge}`);
 	}
 }
 
-export class WeakMapper<K extends object, V> {
+export clAss WeAkMApper<K extends object, V> {
 
-	constructor(private fn: (k: K) => V) { }
+	constructor(privAte fn: (k: K) => V) { }
 
-	private _map = new WeakMap<K, V>();
+	privAte _mAp = new WeAkMAp<K, V>();
 
-	map(key: K): V {
-		let result = this._map.get(key);
+	mAp(key: K): V {
+		let result = this._mAp.get(key);
 
 		if (!result) {
 			result = this.fn(key);
-			this._map.set(key, result);
+			this._mAp.set(key, result);
 		}
 
 		return result;

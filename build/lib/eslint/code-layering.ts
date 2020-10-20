@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { join, dirname } from 'path';
-import { createImportRuleListener } from './utils';
+import * As eslint from 'eslint';
+import { join, dirnAme } from 'pAth';
+import { creAteImportRuleListener } from './utils';
 
 type Config = {
-	allowed: Set<string>;
-	disallowed: Set<string>;
+	Allowed: Set<string>;
+	disAllowed: Set<string>;
 };
 
-export = new class implements eslint.Rule.RuleModule {
+export = new clAss implements eslint.Rule.RuleModule {
 
-	readonly meta: eslint.Rule.RuleMetaData = {
-		messages: {
-			layerbreaker: 'Bad layering. You are not allowed to access {{from}} from here, allowed layers are: [{{allowed}}]'
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
+		messAges: {
+			lAyerbreAker: 'BAd lAyering. You Are not Allowed to Access {{from}} from here, Allowed lAyers Are: [{{Allowed}}]'
 		},
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-OrgAnizAtion'
 		}
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
-		const fileDirname = dirname(context.getFilename());
-		const parts = fileDirname.split(/\\|\//);
+		const fileDirnAme = dirnAme(context.getFilenAme());
+		const pArts = fileDirnAme.split(/\\|\//);
 		const ruleArgs = <Record<string, string[]>>context.options[0];
 
 		let config: Config | undefined;
-		for (let i = parts.length - 1; i >= 0; i--) {
-			if (ruleArgs[parts[i]]) {
+		for (let i = pArts.length - 1; i >= 0; i--) {
+			if (ruleArgs[pArts[i]]) {
 				config = {
-					allowed: new Set(ruleArgs[parts[i]]).add(parts[i]),
-					disallowed: new Set()
+					Allowed: new Set(ruleArgs[pArts[i]]).Add(pArts[i]),
+					disAllowed: new Set()
 				};
-				Object.keys(ruleArgs).forEach(key => {
-					if (!config!.allowed.has(key)) {
-						config!.disallowed.add(key);
+				Object.keys(ruleArgs).forEAch(key => {
+					if (!config!.Allowed.hAs(key)) {
+						config!.disAllowed.Add(key);
 					}
 				});
-				break;
+				breAk;
 			}
 		}
 
@@ -50,31 +50,31 @@ export = new class implements eslint.Rule.RuleModule {
 			return {};
 		}
 
-		return createImportRuleListener((node, path) => {
-			if (path[0] === '.') {
-				path = join(dirname(context.getFilename()), path);
+		return creAteImportRuleListener((node, pAth) => {
+			if (pAth[0] === '.') {
+				pAth = join(dirnAme(context.getFilenAme()), pAth);
 			}
 
-			const parts = dirname(path).split(/\\|\//);
-			for (let i = parts.length - 1; i >= 0; i--) {
-				const part = parts[i];
+			const pArts = dirnAme(pAth).split(/\\|\//);
+			for (let i = pArts.length - 1; i >= 0; i--) {
+				const pArt = pArts[i];
 
-				if (config!.allowed.has(part)) {
-					// GOOD - same layer
-					break;
+				if (config!.Allowed.hAs(pArt)) {
+					// GOOD - sAme lAyer
+					breAk;
 				}
 
-				if (config!.disallowed.has(part)) {
-					// BAD - wrong layer
+				if (config!.disAllowed.hAs(pArt)) {
+					// BAD - wrong lAyer
 					context.report({
 						loc: node.loc,
-						messageId: 'layerbreaker',
-						data: {
-							from: part,
-							allowed: [...config!.allowed.keys()].join(', ')
+						messAgeId: 'lAyerbreAker',
+						dAtA: {
+							from: pArt,
+							Allowed: [...config!.Allowed.keys()].join(', ')
 						}
 					});
-					break;
+					breAk;
 				}
 			}
 		});

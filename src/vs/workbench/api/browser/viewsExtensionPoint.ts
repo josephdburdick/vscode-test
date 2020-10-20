@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { forEach } from 'vs/base/common/collections';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import * as resources from 'vs/base/common/resources';
-import { ExtensionMessageCollector, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { ViewContainer, IViewsRegistry, ITreeViewDescriptor, IViewContainersRegistry, Extensions as ViewContainerExtensions, TEST_VIEW_CONTAINER_ID, IViewDescriptor, ViewContainerLocation } from 'vs/workbench/common/views';
-import { TreeViewPane } from 'vs/workbench/browser/parts/views/treeView';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { coalesce, } from 'vs/base/common/arrays';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { VIEWLET_ID as EXPLORER } from 'vs/workbench/contrib/files/common/files';
-import { VIEWLET_ID as SCM } from 'vs/workbench/contrib/scm/common/scm';
-import { VIEWLET_ID as DEBUG } from 'vs/workbench/contrib/debug/common/debug';
-import { VIEWLET_ID as REMOTE } from 'vs/workbench/contrib/remote/browser/remoteExplorer';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { URI } from 'vs/base/common/uri';
-import { ViewletRegistry, Extensions as ViewletExtensions, ShowViewletAction } from 'vs/workbench/browser/viewlet';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
+import { locAlize } from 'vs/nls';
+import { forEAch } from 'vs/bAse/common/collections';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import * As resources from 'vs/bAse/common/resources';
+import { ExtensionMessAgeCollector, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { ViewContAiner, IViewsRegistry, ITreeViewDescriptor, IViewContAinersRegistry, Extensions As ViewContAinerExtensions, TEST_VIEW_CONTAINER_ID, IViewDescriptor, ViewContAinerLocAtion } from 'vs/workbench/common/views';
+import { TreeViewPAne } from 'vs/workbench/browser/pArts/views/treeView';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { coAlesce, } from 'vs/bAse/common/ArrAys';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { VIEWLET_ID As EXPLORER } from 'vs/workbench/contrib/files/common/files';
+import { VIEWLET_ID As SCM } from 'vs/workbench/contrib/scm/common/scm';
+import { VIEWLET_ID As DEBUG } from 'vs/workbench/contrib/debug/common/debug';
+import { VIEWLET_ID As REMOTE } from 'vs/workbench/contrib/remote/browser/remoteExplorer';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { URI } from 'vs/bAse/common/uri';
+import { ViewletRegistry, Extensions As ViewletExtensions, ShowViewletAction } from 'vs/workbench/browser/viewlet';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { Codicon } from 'vs/base/common/codicons';
+import { IWorkbenchActionRegistry, Extensions As ActionExtensions, CATEGORIES } from 'vs/workbench/common/Actions';
+import { SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { ViewPAneContAiner } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { Codicon } from 'vs/bAse/common/codicons';
 import { CustomTreeView } from 'vs/workbench/contrib/views/browser/treeView';
-import { WebviewViewPane } from 'vs/workbench/contrib/webviewView/browser/webviewViewPane';
+import { WebviewViewPAne } from 'vs/workbench/contrib/webviewView/browser/webviewViewPAne';
 
-export interface IUserFriendlyViewsContainerDescriptor {
+export interfAce IUserFriendlyViewsContAinerDescriptor {
 	id: string;
 	title: string;
 	icon: string;
 }
 
-const viewsContainerSchema: IJSONSchema = {
+const viewsContAinerSchemA: IJSONSchemA = {
 	type: 'object',
 	properties: {
 		id: {
-			description: localize({ key: 'vscode.extension.contributes.views.containers.id', comment: ['Contribution refers to those that an extension contributes to VS Code through an extension/contribution point. '] }, "Unique id used to identify the container in which views can be contributed using 'views' contribution point"),
+			description: locAlize({ key: 'vscode.extension.contributes.views.contAiners.id', comment: ['Contribution refers to those thAt An extension contributes to VS Code through An extension/contribution point. '] }, "Unique id used to identify the contAiner in which views cAn be contributed using 'views' contribution point"),
 			type: 'string',
-			pattern: '^[a-zA-Z0-9_-]+$'
+			pAttern: '^[A-zA-Z0-9_-]+$'
 		},
 		title: {
-			description: localize('vscode.extension.contributes.views.containers.title', 'Human readable string used to render the container'),
+			description: locAlize('vscode.extension.contributes.views.contAiners.title', 'HumAn reAdAble string used to render the contAiner'),
 			type: 'string'
 		},
 		icon: {
-			description: localize('vscode.extension.contributes.views.containers.icon', "Path to the container icon. Icons are 24x24 centered on a 50x40 block and have a fill color of 'rgb(215, 218, 224)' or '#d7dae0'. It is recommended that icons be in SVG, though any image file type is accepted."),
+			description: locAlize('vscode.extension.contributes.views.contAiners.icon', "PAth to the contAiner icon. Icons Are 24x24 centered on A 50x40 block And hAve A fill color of 'rgb(215, 218, 224)' or '#d7dAe0'. It is recommended thAt icons be in SVG, though Any imAge file type is Accepted."),
 			type: 'string'
 		}
 	},
 	required: ['id', 'title', 'icon']
 };
 
-export const viewsContainersContribution: IJSONSchema = {
-	description: localize('vscode.extension.contributes.viewsContainers', 'Contributes views containers to the editor'),
+export const viewsContAinersContribution: IJSONSchemA = {
+	description: locAlize('vscode.extension.contributes.viewsContAiners', 'Contributes views contAiners to the editor'),
 	type: 'object',
 	properties: {
-		'activitybar': {
-			description: localize('views.container.activitybar', "Contribute views containers to Activity Bar"),
-			type: 'array',
-			items: viewsContainerSchema
+		'ActivitybAr': {
+			description: locAlize('views.contAiner.ActivitybAr', "Contribute views contAiners to Activity BAr"),
+			type: 'ArrAy',
+			items: viewsContAinerSchemA
 		},
-		'panel': {
-			description: localize('views.container.panel', "Contribute views containers to Panel"),
-			type: 'array',
-			items: viewsContainerSchema
+		'pAnel': {
+			description: locAlize('views.contAiner.pAnel', "Contribute views contAiners to PAnel"),
+			type: 'ArrAy',
+			items: viewsContAinerSchemA
 		}
 	}
 };
@@ -83,436 +83,436 @@ enum ViewType {
 }
 
 
-interface IUserFriendlyViewDescriptor {
+interfAce IUserFriendlyViewDescriptor {
 	type?: ViewType;
 
 	id: string;
-	name: string;
+	nAme: string;
 	when?: string;
 
 	icon?: string;
-	contextualTitle?: string;
+	contextuAlTitle?: string;
 	visibility?: string;
 
 	// From 'remoteViewDescriptor' type
 	group?: string;
-	remoteName?: string | string[];
+	remoteNAme?: string | string[];
 }
 
-enum InitialVisibility {
+enum InitiAlVisibility {
 	Visible = 'visible',
 	Hidden = 'hidden',
-	Collapsed = 'collapsed'
+	CollApsed = 'collApsed'
 }
 
-const viewDescriptor: IJSONSchema = {
+const viewDescriptor: IJSONSchemA = {
 	type: 'object',
-	required: ['id', 'name'],
-	defaultSnippets: [{ body: { id: '${1:id}', name: '${2:name}' } }],
+	required: ['id', 'nAme'],
+	defAultSnippets: [{ body: { id: '${1:id}', nAme: '${2:nAme}' } }],
 	properties: {
 		type: {
-			markdownDescription: localize('vscode.extension.contributes.view.type', "Type of the the view. This can either be `tree` for a tree view based view or `webview` for a webview based view. The default is `tree`."),
+			mArkdownDescription: locAlize('vscode.extension.contributes.view.type', "Type of the the view. This cAn either be `tree` for A tree view bAsed view or `webview` for A webview bAsed view. The defAult is `tree`."),
 			type: 'string',
 			enum: [
 				'tree',
 				'webview',
 			],
-			markdownEnumDescriptions: [
-				localize('vscode.extension.contributes.view.tree', "The view is backed by a `TreeView` created by `createTreeView`."),
-				localize('vscode.extension.contributes.view.webview', "The view is backed by a `WebviewView` registered by `registerWebviewViewProvider`."),
+			mArkdownEnumDescriptions: [
+				locAlize('vscode.extension.contributes.view.tree', "The view is bAcked by A `TreeView` creAted by `creAteTreeView`."),
+				locAlize('vscode.extension.contributes.view.webview', "The view is bAcked by A `WebviewView` registered by `registerWebviewViewProvider`."),
 			]
 		},
 		id: {
-			markdownDescription: localize('vscode.extension.contributes.view.id', 'Identifier of the view. This should be unique across all views. It is recommended to include your extension id as part of the view id. Use this to register a data provider through `vscode.window.registerTreeDataProviderForView` API. Also to trigger activating your extension by registering `onView:${id}` event to `activationEvents`.'),
+			mArkdownDescription: locAlize('vscode.extension.contributes.view.id', 'Identifier of the view. This should be unique Across All views. It is recommended to include your extension id As pArt of the view id. Use this to register A dAtA provider through `vscode.window.registerTreeDAtAProviderForView` API. Also to trigger ActivAting your extension by registering `onView:${id}` event to `ActivAtionEvents`.'),
 			type: 'string'
 		},
-		name: {
-			description: localize('vscode.extension.contributes.view.name', 'The human-readable name of the view. Will be shown'),
+		nAme: {
+			description: locAlize('vscode.extension.contributes.view.nAme', 'The humAn-reAdAble nAme of the view. Will be shown'),
 			type: 'string'
 		},
 		when: {
-			description: localize('vscode.extension.contributes.view.when', 'Condition which must be true to show this view'),
+			description: locAlize('vscode.extension.contributes.view.when', 'Condition which must be true to show this view'),
 			type: 'string'
 		},
 		icon: {
-			description: localize('vscode.extension.contributes.view.icon', "Path to the view icon. View icons are displayed when the name of the view cannot be shown. It is recommended that icons be in SVG, though any image file type is accepted."),
+			description: locAlize('vscode.extension.contributes.view.icon', "PAth to the view icon. View icons Are displAyed when the nAme of the view cAnnot be shown. It is recommended thAt icons be in SVG, though Any imAge file type is Accepted."),
 			type: 'string'
 		},
-		contextualTitle: {
-			description: localize('vscode.extension.contributes.view.contextualTitle', "Human-readable context for when the view is moved out of its original location. By default, the view's container name will be used. Will be shown"),
+		contextuAlTitle: {
+			description: locAlize('vscode.extension.contributes.view.contextuAlTitle', "HumAn-reAdAble context for when the view is moved out of its originAl locAtion. By defAult, the view's contAiner nAme will be used. Will be shown"),
 			type: 'string'
 		},
 		visibility: {
-			description: localize('vscode.extension.contributes.view.initialState', "Initial state of the view when the extension is first installed. Once the user has changed the view state by collapsing, moving, or hiding the view, the initial state will not be used again."),
+			description: locAlize('vscode.extension.contributes.view.initiAlStAte', "InitiAl stAte of the view when the extension is first instAlled. Once the user hAs chAnged the view stAte by collApsing, moving, or hiding the view, the initiAl stAte will not be used AgAin."),
 			type: 'string',
 			enum: [
 				'visible',
 				'hidden',
-				'collapsed'
+				'collApsed'
 			],
-			default: 'visible',
+			defAult: 'visible',
 			enumDescriptions: [
-				localize('vscode.extension.contributes.view.initialState.visible', "The default initial state for the view. In most containers the view will be expanded, however; some built-in containers (explorer, scm, and debug) show all contributed views collapsed regardless of the `visibility`."),
-				localize('vscode.extension.contributes.view.initialState.hidden', "The view will not be shown in the view container, but will be discoverable through the views menu and other view entry points and can be un-hidden by the user."),
-				localize('vscode.extension.contributes.view.initialState.collapsed', "The view will show in the view container, but will be collapsed.")
+				locAlize('vscode.extension.contributes.view.initiAlStAte.visible', "The defAult initiAl stAte for the view. In most contAiners the view will be expAnded, however; some built-in contAiners (explorer, scm, And debug) show All contributed views collApsed regArdless of the `visibility`."),
+				locAlize('vscode.extension.contributes.view.initiAlStAte.hidden', "The view will not be shown in the view contAiner, but will be discoverAble through the views menu And other view entry points And cAn be un-hidden by the user."),
+				locAlize('vscode.extension.contributes.view.initiAlStAte.collApsed', "The view will show in the view contAiner, but will be collApsed.")
 			]
 		}
 	}
 };
 
-const remoteViewDescriptor: IJSONSchema = {
+const remoteViewDescriptor: IJSONSchemA = {
 	type: 'object',
 	properties: {
 		id: {
-			description: localize('vscode.extension.contributes.view.id', 'Identifier of the view. This should be unique across all views. It is recommended to include your extension id as part of the view id. Use this to register a data provider through `vscode.window.registerTreeDataProviderForView` API. Also to trigger activating your extension by registering `onView:${id}` event to `activationEvents`.'),
+			description: locAlize('vscode.extension.contributes.view.id', 'Identifier of the view. This should be unique Across All views. It is recommended to include your extension id As pArt of the view id. Use this to register A dAtA provider through `vscode.window.registerTreeDAtAProviderForView` API. Also to trigger ActivAting your extension by registering `onView:${id}` event to `ActivAtionEvents`.'),
 			type: 'string'
 		},
-		name: {
-			description: localize('vscode.extension.contributes.view.name', 'The human-readable name of the view. Will be shown'),
+		nAme: {
+			description: locAlize('vscode.extension.contributes.view.nAme', 'The humAn-reAdAble nAme of the view. Will be shown'),
 			type: 'string'
 		},
 		when: {
-			description: localize('vscode.extension.contributes.view.when', 'Condition which must be true to show this view'),
+			description: locAlize('vscode.extension.contributes.view.when', 'Condition which must be true to show this view'),
 			type: 'string'
 		},
 		group: {
-			description: localize('vscode.extension.contributes.view.group', 'Nested group in the viewlet'),
+			description: locAlize('vscode.extension.contributes.view.group', 'Nested group in the viewlet'),
 			type: 'string'
 		},
-		remoteName: {
-			description: localize('vscode.extension.contributes.view.remoteName', 'The name of the remote type associated with this view'),
-			type: ['string', 'array'],
+		remoteNAme: {
+			description: locAlize('vscode.extension.contributes.view.remoteNAme', 'The nAme of the remote type AssociAted with this view'),
+			type: ['string', 'ArrAy'],
 			items: {
 				type: 'string'
 			}
 		}
 	}
 };
-const viewsContribution: IJSONSchema = {
-	description: localize('vscode.extension.contributes.views', "Contributes views to the editor"),
+const viewsContribution: IJSONSchemA = {
+	description: locAlize('vscode.extension.contributes.views', "Contributes views to the editor"),
 	type: 'object',
 	properties: {
 		'explorer': {
-			description: localize('views.explorer', "Contributes views to Explorer container in the Activity bar"),
-			type: 'array',
+			description: locAlize('views.explorer', "Contributes views to Explorer contAiner in the Activity bAr"),
+			type: 'ArrAy',
 			items: viewDescriptor,
-			default: []
+			defAult: []
 		},
 		'debug': {
-			description: localize('views.debug', "Contributes views to Debug container in the Activity bar"),
-			type: 'array',
+			description: locAlize('views.debug', "Contributes views to Debug contAiner in the Activity bAr"),
+			type: 'ArrAy',
 			items: viewDescriptor,
-			default: []
+			defAult: []
 		},
 		'scm': {
-			description: localize('views.scm', "Contributes views to SCM container in the Activity bar"),
-			type: 'array',
+			description: locAlize('views.scm', "Contributes views to SCM contAiner in the Activity bAr"),
+			type: 'ArrAy',
 			items: viewDescriptor,
-			default: []
+			defAult: []
 		},
 		'test': {
-			description: localize('views.test', "Contributes views to Test container in the Activity bar"),
-			type: 'array',
+			description: locAlize('views.test', "Contributes views to Test contAiner in the Activity bAr"),
+			type: 'ArrAy',
 			items: viewDescriptor,
-			default: []
+			defAult: []
 		},
 		'remote': {
-			description: localize('views.remote', "Contributes views to Remote container in the Activity bar. To contribute to this container, enableProposedApi needs to be turned on"),
-			type: 'array',
+			description: locAlize('views.remote', "Contributes views to Remote contAiner in the Activity bAr. To contribute to this contAiner, enAbleProposedApi needs to be turned on"),
+			type: 'ArrAy',
 			items: remoteViewDescriptor,
-			default: []
+			defAult: []
 		}
 	},
-	additionalProperties: {
-		description: localize('views.contributed', "Contributes views to contributed views container"),
-		type: 'array',
+	AdditionAlProperties: {
+		description: locAlize('views.contributed', "Contributes views to contributed views contAiner"),
+		type: 'ArrAy',
 		items: viewDescriptor,
-		default: []
+		defAult: []
 	}
 };
 
-export interface ICustomTreeViewDescriptor extends ITreeViewDescriptor {
-	readonly extensionId: ExtensionIdentifier;
-	readonly originalContainerId: string;
+export interfAce ICustomTreeViewDescriptor extends ITreeViewDescriptor {
+	reAdonly extensionId: ExtensionIdentifier;
+	reAdonly originAlContAinerId: string;
 }
 
-export interface ICustomWebviewViewDescriptor extends IViewDescriptor {
-	readonly extensionId: ExtensionIdentifier;
-	readonly originalContainerId: string;
+export interfAce ICustomWebviewViewDescriptor extends IViewDescriptor {
+	reAdonly extensionId: ExtensionIdentifier;
+	reAdonly originAlContAinerId: string;
 }
 
 export type ICustomViewDescriptor = ICustomTreeViewDescriptor | ICustomWebviewViewDescriptor;
 
-type ViewContainerExtensionPointType = { [loc: string]: IUserFriendlyViewsContainerDescriptor[] };
-const viewsContainersExtensionPoint: IExtensionPoint<ViewContainerExtensionPointType> = ExtensionsRegistry.registerExtensionPoint<ViewContainerExtensionPointType>({
-	extensionPoint: 'viewsContainers',
-	jsonSchema: viewsContainersContribution
+type ViewContAinerExtensionPointType = { [loc: string]: IUserFriendlyViewsContAinerDescriptor[] };
+const viewsContAinersExtensionPoint: IExtensionPoint<ViewContAinerExtensionPointType> = ExtensionsRegistry.registerExtensionPoint<ViewContAinerExtensionPointType>({
+	extensionPoint: 'viewsContAiners',
+	jsonSchemA: viewsContAinersContribution
 });
 
 type ViewExtensionPointType = { [loc: string]: IUserFriendlyViewDescriptor[] };
 const viewsExtensionPoint: IExtensionPoint<ViewExtensionPointType> = ExtensionsRegistry.registerExtensionPoint<ViewExtensionPointType>({
 	extensionPoint: 'views',
-	deps: [viewsContainersExtensionPoint],
-	jsonSchema: viewsContribution
+	deps: [viewsContAinersExtensionPoint],
+	jsonSchemA: viewsContribution
 });
 
 const TEST_VIEW_CONTAINER_ORDER = 6;
-class ViewsExtensionHandler implements IWorkbenchContribution {
+clAss ViewsExtensionHAndler implements IWorkbenchContribution {
 
-	private viewContainersRegistry: IViewContainersRegistry;
-	private viewsRegistry: IViewsRegistry;
+	privAte viewContAinersRegistry: IViewContAinersRegistry;
+	privAte viewsRegistry: IViewsRegistry;
 
 	constructor(
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
-		this.viewContainersRegistry = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry);
-		this.viewsRegistry = Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry);
-		this.handleAndRegisterCustomViewContainers();
-		this.handleAndRegisterCustomViews();
+		this.viewContAinersRegistry = Registry.As<IViewContAinersRegistry>(ViewContAinerExtensions.ViewContAinersRegistry);
+		this.viewsRegistry = Registry.As<IViewsRegistry>(ViewContAinerExtensions.ViewsRegistry);
+		this.hAndleAndRegisterCustomViewContAiners();
+		this.hAndleAndRegisterCustomViews();
 	}
 
-	private handleAndRegisterCustomViewContainers() {
-		this.registerTestViewContainer();
-		viewsContainersExtensionPoint.setHandler((extensions, { added, removed }) => {
+	privAte hAndleAndRegisterCustomViewContAiners() {
+		this.registerTestViewContAiner();
+		viewsContAinersExtensionPoint.setHAndler((extensions, { Added, removed }) => {
 			if (removed.length) {
-				this.removeCustomViewContainers(removed);
+				this.removeCustomViewContAiners(removed);
 			}
-			if (added.length) {
-				this.addCustomViewContainers(added, this.viewContainersRegistry.all);
+			if (Added.length) {
+				this.AddCustomViewContAiners(Added, this.viewContAinersRegistry.All);
 			}
 		});
 	}
 
-	private addCustomViewContainers(extensionPoints: readonly IExtensionPointUser<ViewContainerExtensionPointType>[], existingViewContainers: ViewContainer[]): void {
-		const viewContainersRegistry = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry);
-		let activityBarOrder = TEST_VIEW_CONTAINER_ORDER + viewContainersRegistry.all.filter(v => !!v.extensionId && viewContainersRegistry.getViewContainerLocation(v) === ViewContainerLocation.Sidebar).length + 1;
-		let panelOrder = 5 + viewContainersRegistry.all.filter(v => !!v.extensionId && viewContainersRegistry.getViewContainerLocation(v) === ViewContainerLocation.Panel).length + 1;
-		for (let { value, collector, description } of extensionPoints) {
-			forEach(value, entry => {
-				if (!this.isValidViewsContainer(entry.value, collector)) {
+	privAte AddCustomViewContAiners(extensionPoints: reAdonly IExtensionPointUser<ViewContAinerExtensionPointType>[], existingViewContAiners: ViewContAiner[]): void {
+		const viewContAinersRegistry = Registry.As<IViewContAinersRegistry>(ViewContAinerExtensions.ViewContAinersRegistry);
+		let ActivityBArOrder = TEST_VIEW_CONTAINER_ORDER + viewContAinersRegistry.All.filter(v => !!v.extensionId && viewContAinersRegistry.getViewContAinerLocAtion(v) === ViewContAinerLocAtion.SidebAr).length + 1;
+		let pAnelOrder = 5 + viewContAinersRegistry.All.filter(v => !!v.extensionId && viewContAinersRegistry.getViewContAinerLocAtion(v) === ViewContAinerLocAtion.PAnel).length + 1;
+		for (let { vAlue, collector, description } of extensionPoints) {
+			forEAch(vAlue, entry => {
+				if (!this.isVAlidViewsContAiner(entry.vAlue, collector)) {
 					return;
 				}
 				switch (entry.key) {
-					case 'activitybar':
-						activityBarOrder = this.registerCustomViewContainers(entry.value, description, activityBarOrder, existingViewContainers, ViewContainerLocation.Sidebar);
-						break;
-					case 'panel':
-						panelOrder = this.registerCustomViewContainers(entry.value, description, panelOrder, existingViewContainers, ViewContainerLocation.Panel);
-						break;
+					cAse 'ActivitybAr':
+						ActivityBArOrder = this.registerCustomViewContAiners(entry.vAlue, description, ActivityBArOrder, existingViewContAiners, ViewContAinerLocAtion.SidebAr);
+						breAk;
+					cAse 'pAnel':
+						pAnelOrder = this.registerCustomViewContAiners(entry.vAlue, description, pAnelOrder, existingViewContAiners, ViewContAinerLocAtion.PAnel);
+						breAk;
 				}
 			});
 		}
 	}
 
-	private removeCustomViewContainers(extensionPoints: readonly IExtensionPointUser<ViewContainerExtensionPointType>[]): void {
-		const viewContainersRegistry = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry);
-		const removedExtensions: Set<string> = extensionPoints.reduce((result, e) => { result.add(ExtensionIdentifier.toKey(e.description.identifier)); return result; }, new Set<string>());
-		for (const viewContainer of viewContainersRegistry.all) {
-			if (viewContainer.extensionId && removedExtensions.has(ExtensionIdentifier.toKey(viewContainer.extensionId))) {
-				// move only those views that do not belong to the removed extension
-				const views = this.viewsRegistry.getViews(viewContainer).filter(view => !removedExtensions.has(ExtensionIdentifier.toKey((view as ICustomViewDescriptor).extensionId)));
+	privAte removeCustomViewContAiners(extensionPoints: reAdonly IExtensionPointUser<ViewContAinerExtensionPointType>[]): void {
+		const viewContAinersRegistry = Registry.As<IViewContAinersRegistry>(ViewContAinerExtensions.ViewContAinersRegistry);
+		const removedExtensions: Set<string> = extensionPoints.reduce((result, e) => { result.Add(ExtensionIdentifier.toKey(e.description.identifier)); return result; }, new Set<string>());
+		for (const viewContAiner of viewContAinersRegistry.All) {
+			if (viewContAiner.extensionId && removedExtensions.hAs(ExtensionIdentifier.toKey(viewContAiner.extensionId))) {
+				// move only those views thAt do not belong to the removed extension
+				const views = this.viewsRegistry.getViews(viewContAiner).filter(view => !removedExtensions.hAs(ExtensionIdentifier.toKey((view As ICustomViewDescriptor).extensionId)));
 				if (views.length) {
-					this.viewsRegistry.moveViews(views, this.getDefaultViewContainer());
+					this.viewsRegistry.moveViews(views, this.getDefAultViewContAiner());
 				}
-				this.deregisterCustomViewContainer(viewContainer);
+				this.deregisterCustomViewContAiner(viewContAiner);
 			}
 		}
 	}
 
-	private registerTestViewContainer(): void {
-		const title = localize('test', "Test");
-		const icon = Codicon.beaker.classNames;
+	privAte registerTestViewContAiner(): void {
+		const title = locAlize('test', "Test");
+		const icon = Codicon.beAker.clAssNAmes;
 
-		this.registerCustomViewContainer(TEST_VIEW_CONTAINER_ID, title, icon, TEST_VIEW_CONTAINER_ORDER, undefined, ViewContainerLocation.Sidebar);
+		this.registerCustomViewContAiner(TEST_VIEW_CONTAINER_ID, title, icon, TEST_VIEW_CONTAINER_ORDER, undefined, ViewContAinerLocAtion.SidebAr);
 	}
 
-	private isValidViewsContainer(viewsContainersDescriptors: IUserFriendlyViewsContainerDescriptor[], collector: ExtensionMessageCollector): boolean {
-		if (!Array.isArray(viewsContainersDescriptors)) {
-			collector.error(localize('viewcontainer requirearray', "views containers must be an array"));
-			return false;
+	privAte isVAlidViewsContAiner(viewsContAinersDescriptors: IUserFriendlyViewsContAinerDescriptor[], collector: ExtensionMessAgeCollector): booleAn {
+		if (!ArrAy.isArrAy(viewsContAinersDescriptors)) {
+			collector.error(locAlize('viewcontAiner requireArrAy', "views contAiners must be An ArrAy"));
+			return fAlse;
 		}
 
-		for (let descriptor of viewsContainersDescriptors) {
+		for (let descriptor of viewsContAinersDescriptors) {
 			if (typeof descriptor.id !== 'string') {
-				collector.error(localize('requireidstring', "property `{0}` is mandatory and must be of type `string`. Only alphanumeric characters, '_', and '-' are allowed.", 'id'));
-				return false;
+				collector.error(locAlize('requireidstring', "property `{0}` is mAndAtory And must be of type `string`. Only AlphAnumeric chArActers, '_', And '-' Are Allowed.", 'id'));
+				return fAlse;
 			}
-			if (!(/^[a-z0-9_-]+$/i.test(descriptor.id))) {
-				collector.error(localize('requireidstring', "property `{0}` is mandatory and must be of type `string`. Only alphanumeric characters, '_', and '-' are allowed.", 'id'));
-				return false;
+			if (!(/^[A-z0-9_-]+$/i.test(descriptor.id))) {
+				collector.error(locAlize('requireidstring', "property `{0}` is mAndAtory And must be of type `string`. Only AlphAnumeric chArActers, '_', And '-' Are Allowed.", 'id'));
+				return fAlse;
 			}
 			if (typeof descriptor.title !== 'string') {
-				collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'title'));
-				return false;
+				collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'title'));
+				return fAlse;
 			}
 			if (typeof descriptor.icon !== 'string') {
-				collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'icon'));
-				return false;
+				collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'icon'));
+				return fAlse;
 			}
 		}
 
 		return true;
 	}
 
-	private registerCustomViewContainers(containers: IUserFriendlyViewsContainerDescriptor[], extension: IExtensionDescription, order: number, existingViewContainers: ViewContainer[], location: ViewContainerLocation): number {
-		containers.forEach(descriptor => {
-			const icon = resources.joinPath(extension.extensionLocation, descriptor.icon);
+	privAte registerCustomViewContAiners(contAiners: IUserFriendlyViewsContAinerDescriptor[], extension: IExtensionDescription, order: number, existingViewContAiners: ViewContAiner[], locAtion: ViewContAinerLocAtion): number {
+		contAiners.forEAch(descriptor => {
+			const icon = resources.joinPAth(extension.extensionLocAtion, descriptor.icon);
 			const id = `workbench.view.extension.${descriptor.id}`;
-			const viewContainer = this.registerCustomViewContainer(id, descriptor.title, icon, order++, extension.identifier, location);
+			const viewContAiner = this.registerCustomViewContAiner(id, descriptor.title, icon, order++, extension.identifier, locAtion);
 
-			// Move those views that belongs to this container
-			if (existingViewContainers.length) {
+			// Move those views thAt belongs to this contAiner
+			if (existingViewContAiners.length) {
 				const viewsToMove: IViewDescriptor[] = [];
-				for (const existingViewContainer of existingViewContainers) {
-					if (viewContainer !== existingViewContainer) {
-						viewsToMove.push(...this.viewsRegistry.getViews(existingViewContainer).filter(view => (view as ICustomViewDescriptor).originalContainerId === descriptor.id));
+				for (const existingViewContAiner of existingViewContAiners) {
+					if (viewContAiner !== existingViewContAiner) {
+						viewsToMove.push(...this.viewsRegistry.getViews(existingViewContAiner).filter(view => (view As ICustomViewDescriptor).originAlContAinerId === descriptor.id));
 					}
 				}
 				if (viewsToMove.length) {
-					this.viewsRegistry.moveViews(viewsToMove, viewContainer);
+					this.viewsRegistry.moveViews(viewsToMove, viewContAiner);
 				}
 			}
 		});
 		return order;
 	}
 
-	private registerCustomViewContainer(id: string, title: string, icon: URI | string, order: number, extensionId: ExtensionIdentifier | undefined, location: ViewContainerLocation): ViewContainer {
-		let viewContainer = this.viewContainersRegistry.get(id);
+	privAte registerCustomViewContAiner(id: string, title: string, icon: URI | string, order: number, extensionId: ExtensionIdentifier | undefined, locAtion: ViewContAinerLocAtion): ViewContAiner {
+		let viewContAiner = this.viewContAinersRegistry.get(id);
 
-		if (!viewContainer) {
+		if (!viewContAiner) {
 
-			viewContainer = this.viewContainersRegistry.registerViewContainer({
+			viewContAiner = this.viewContAinersRegistry.registerViewContAiner({
 				id,
-				name: title, extensionId,
+				nAme: title, extensionId,
 				ctorDescriptor: new SyncDescriptor(
-					ViewPaneContainer,
-					[id, { mergeViewWithContainerWhenSingleView: true }]
+					ViewPAneContAiner,
+					[id, { mergeViewWithContAinerWhenSingleView: true }]
 				),
 				hideIfEmpty: true,
 				order,
 				icon,
-			}, location);
+			}, locAtion);
 
 			// Register Action to Open Viewlet
-			class OpenCustomViewletAction extends ShowViewletAction {
+			clAss OpenCustomViewletAction extends ShowViewletAction {
 				constructor(
-					id: string, label: string,
+					id: string, lAbel: string,
 					@IViewletService viewletService: IViewletService,
 					@IEditorGroupsService editorGroupService: IEditorGroupsService,
-					@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService
+					@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService
 				) {
-					super(id, label, id, viewletService, editorGroupService, layoutService);
+					super(id, lAbel, id, viewletService, editorGroupService, lAyoutService);
 				}
 			}
-			const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+			const registry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
 			registry.registerWorkbenchAction(
-				SyncActionDescriptor.create(OpenCustomViewletAction, id, localize('showViewlet', "Show {0}", title)),
+				SyncActionDescriptor.creAte(OpenCustomViewletAction, id, locAlize('showViewlet', "Show {0}", title)),
 				`View: Show ${title}`,
-				CATEGORIES.View.value
+				CATEGORIES.View.vAlue
 			);
 		}
 
-		return viewContainer;
+		return viewContAiner;
 	}
 
-	private deregisterCustomViewContainer(viewContainer: ViewContainer): void {
-		this.viewContainersRegistry.deregisterViewContainer(viewContainer);
-		Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).deregisterViewlet(viewContainer.id);
+	privAte deregisterCustomViewContAiner(viewContAiner: ViewContAiner): void {
+		this.viewContAinersRegistry.deregisterViewContAiner(viewContAiner);
+		Registry.As<ViewletRegistry>(ViewletExtensions.Viewlets).deregisterViewlet(viewContAiner.id);
 	}
 
-	private handleAndRegisterCustomViews() {
-		viewsExtensionPoint.setHandler((extensions, { added, removed }) => {
+	privAte hAndleAndRegisterCustomViews() {
+		viewsExtensionPoint.setHAndler((extensions, { Added, removed }) => {
 			if (removed.length) {
 				this.removeViews(removed);
 			}
-			if (added.length) {
-				this.addViews(added);
+			if (Added.length) {
+				this.AddViews(Added);
 			}
 		});
 	}
 
-	private addViews(extensions: readonly IExtensionPointUser<ViewExtensionPointType>[]): void {
+	privAte AddViews(extensions: reAdonly IExtensionPointUser<ViewExtensionPointType>[]): void {
 		const viewIds: Set<string> = new Set<string>();
-		const allViewDescriptors: { views: IViewDescriptor[], viewContainer: ViewContainer }[] = [];
+		const AllViewDescriptors: { views: IViewDescriptor[], viewContAiner: ViewContAiner }[] = [];
 
 		for (const extension of extensions) {
-			const { value, collector } = extension;
+			const { vAlue, collector } = extension;
 
-			forEach(value, entry => {
-				if (!this.isValidViewDescriptors(entry.value, collector)) {
+			forEAch(vAlue, entry => {
+				if (!this.isVAlidViewDescriptors(entry.vAlue, collector)) {
 					return;
 				}
 
-				if (entry.key === 'remote' && !extension.description.enableProposedApi) {
-					collector.warn(localize('ViewContainerRequiresProposedAPI', "View container '{0}' requires 'enableProposedApi' turned on to be added to 'Remote'.", entry.key));
+				if (entry.key === 'remote' && !extension.description.enAbleProposedApi) {
+					collector.wArn(locAlize('ViewContAinerRequiresProposedAPI', "View contAiner '{0}' requires 'enAbleProposedApi' turned on to be Added to 'Remote'.", entry.key));
 					return;
 				}
 
-				const viewContainer = this.getViewContainer(entry.key);
-				if (!viewContainer) {
-					collector.warn(localize('ViewContainerDoesnotExist', "View container '{0}' does not exist and all views registered to it will be added to 'Explorer'.", entry.key));
+				const viewContAiner = this.getViewContAiner(entry.key);
+				if (!viewContAiner) {
+					collector.wArn(locAlize('ViewContAinerDoesnotExist', "View contAiner '{0}' does not exist And All views registered to it will be Added to 'Explorer'.", entry.key));
 				}
-				const container = viewContainer || this.getDefaultViewContainer();
-				const viewDescriptors = coalesce(entry.value.map((item, index) => {
-					// validate
-					if (viewIds.has(item.id)) {
-						collector.error(localize('duplicateView1', "Cannot register multiple views with same id `{0}`", item.id));
+				const contAiner = viewContAiner || this.getDefAultViewContAiner();
+				const viewDescriptors = coAlesce(entry.vAlue.mAp((item, index) => {
+					// vAlidAte
+					if (viewIds.hAs(item.id)) {
+						collector.error(locAlize('duplicAteView1', "CAnnot register multiple views with sAme id `{0}`", item.id));
 						return null;
 					}
 					if (this.viewsRegistry.getView(item.id) !== null) {
-						collector.error(localize('duplicateView2', "A view with id `{0}` is already registered.", item.id));
+						collector.error(locAlize('duplicAteView2', "A view with id `{0}` is AlreAdy registered.", item.id));
 						return null;
 					}
 
-					const order = ExtensionIdentifier.equals(extension.description.identifier, container.extensionId)
+					const order = ExtensionIdentifier.equAls(extension.description.identifier, contAiner.extensionId)
 						? index + 1
-						: container.viewOrderDelegate
-							? container.viewOrderDelegate.getOrder(item.group)
+						: contAiner.viewOrderDelegAte
+							? contAiner.viewOrderDelegAte.getOrder(item.group)
 							: undefined;
 
-					const icon = item.icon ? resources.joinPath(extension.description.extensionLocation, item.icon) : undefined;
-					const initialVisibility = this.convertInitialVisibility(item.visibility);
+					const icon = item.icon ? resources.joinPAth(extension.description.extensionLocAtion, item.icon) : undefined;
+					const initiAlVisibility = this.convertInitiAlVisibility(item.visibility);
 
 					const type = this.getViewType(item.type);
 					if (!type) {
-						collector.error(localize('unknownViewType', "Unknown view type `{0}`.", item.type));
+						collector.error(locAlize('unknownViewType', "Unknown view type `{0}`.", item.type));
 						return null;
 					}
 
 					const viewDescriptor = <ICustomTreeViewDescriptor>{
 						type: type,
-						ctorDescriptor: type === ViewType.Tree ? new SyncDescriptor(TreeViewPane) : new SyncDescriptor(WebviewViewPane),
+						ctorDescriptor: type === ViewType.Tree ? new SyncDescriptor(TreeViewPAne) : new SyncDescriptor(WebviewViewPAne),
 						id: item.id,
-						name: item.name,
-						when: ContextKeyExpr.deserialize(item.when),
-						containerIcon: icon || viewContainer?.icon,
-						containerTitle: item.contextualTitle || viewContainer?.name,
-						canToggleVisibility: true,
-						canMoveView: viewContainer?.id !== REMOTE,
-						treeView: type === ViewType.Tree ? this.instantiationService.createInstance(CustomTreeView, item.id, item.name) : undefined,
-						collapsed: this.showCollapsed(container) || initialVisibility === InitialVisibility.Collapsed,
+						nAme: item.nAme,
+						when: ContextKeyExpr.deseriAlize(item.when),
+						contAinerIcon: icon || viewContAiner?.icon,
+						contAinerTitle: item.contextuAlTitle || viewContAiner?.nAme,
+						cAnToggleVisibility: true,
+						cAnMoveView: viewContAiner?.id !== REMOTE,
+						treeView: type === ViewType.Tree ? this.instAntiAtionService.creAteInstAnce(CustomTreeView, item.id, item.nAme) : undefined,
+						collApsed: this.showCollApsed(contAiner) || initiAlVisibility === InitiAlVisibility.CollApsed,
 						order: order,
 						extensionId: extension.description.identifier,
-						originalContainerId: entry.key,
+						originAlContAinerId: entry.key,
 						group: item.group,
-						remoteAuthority: item.remoteName || (<any>item).remoteAuthority, // TODO@roblou - delete after remote extensions are updated
-						hideByDefault: initialVisibility === InitialVisibility.Hidden
+						remoteAuthority: item.remoteNAme || (<Any>item).remoteAuthority, // TODO@roblou - delete After remote extensions Are updAted
+						hideByDefAult: initiAlVisibility === InitiAlVisibility.Hidden
 					};
 
 
-					viewIds.add(viewDescriptor.id);
+					viewIds.Add(viewDescriptor.id);
 					return viewDescriptor;
 				}));
 
-				allViewDescriptors.push({ viewContainer: container, views: viewDescriptors });
+				AllViewDescriptors.push({ viewContAiner: contAiner, views: viewDescriptors });
 
 			});
 		}
 
-		this.viewsRegistry.registerViews2(allViewDescriptors);
+		this.viewsRegistry.registerViews2(AllViewDescriptors);
 	}
 
-	private getViewType(type: string | undefined): ViewType | undefined {
+	privAte getViewType(type: string | undefined): ViewType | undefined {
 		if (type === ViewType.Webview) {
 			return ViewType.Webview;
 		}
@@ -522,83 +522,83 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 		return undefined;
 	}
 
-	private getDefaultViewContainer(): ViewContainer {
-		return this.viewContainersRegistry.get(EXPLORER)!;
+	privAte getDefAultViewContAiner(): ViewContAiner {
+		return this.viewContAinersRegistry.get(EXPLORER)!;
 	}
 
-	private removeViews(extensions: readonly IExtensionPointUser<ViewExtensionPointType>[]): void {
-		const removedExtensions: Set<string> = extensions.reduce((result, e) => { result.add(ExtensionIdentifier.toKey(e.description.identifier)); return result; }, new Set<string>());
-		for (const viewContainer of this.viewContainersRegistry.all) {
-			const removedViews = this.viewsRegistry.getViews(viewContainer).filter(v => (v as ICustomViewDescriptor).extensionId && removedExtensions.has(ExtensionIdentifier.toKey((v as ICustomViewDescriptor).extensionId)));
+	privAte removeViews(extensions: reAdonly IExtensionPointUser<ViewExtensionPointType>[]): void {
+		const removedExtensions: Set<string> = extensions.reduce((result, e) => { result.Add(ExtensionIdentifier.toKey(e.description.identifier)); return result; }, new Set<string>());
+		for (const viewContAiner of this.viewContAinersRegistry.All) {
+			const removedViews = this.viewsRegistry.getViews(viewContAiner).filter(v => (v As ICustomViewDescriptor).extensionId && removedExtensions.hAs(ExtensionIdentifier.toKey((v As ICustomViewDescriptor).extensionId)));
 			if (removedViews.length) {
-				this.viewsRegistry.deregisterViews(removedViews, viewContainer);
+				this.viewsRegistry.deregisterViews(removedViews, viewContAiner);
 			}
 		}
 	}
 
-	private convertInitialVisibility(value: any): InitialVisibility | undefined {
-		if (Object.values(InitialVisibility).includes(value)) {
-			return value;
+	privAte convertInitiAlVisibility(vAlue: Any): InitiAlVisibility | undefined {
+		if (Object.vAlues(InitiAlVisibility).includes(vAlue)) {
+			return vAlue;
 		}
 		return undefined;
 	}
 
-	private isValidViewDescriptors(viewDescriptors: IUserFriendlyViewDescriptor[], collector: ExtensionMessageCollector): boolean {
-		if (!Array.isArray(viewDescriptors)) {
-			collector.error(localize('requirearray', "views must be an array"));
-			return false;
+	privAte isVAlidViewDescriptors(viewDescriptors: IUserFriendlyViewDescriptor[], collector: ExtensionMessAgeCollector): booleAn {
+		if (!ArrAy.isArrAy(viewDescriptors)) {
+			collector.error(locAlize('requireArrAy', "views must be An ArrAy"));
+			return fAlse;
 		}
 
 		for (let descriptor of viewDescriptors) {
 			if (typeof descriptor.id !== 'string') {
-				collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'id'));
-				return false;
+				collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'id'));
+				return fAlse;
 			}
-			if (typeof descriptor.name !== 'string') {
-				collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'name'));
-				return false;
+			if (typeof descriptor.nAme !== 'string') {
+				collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'nAme'));
+				return fAlse;
 			}
 			if (descriptor.when && typeof descriptor.when !== 'string') {
-				collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'when'));
-				return false;
+				collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'when'));
+				return fAlse;
 			}
 			if (descriptor.icon && typeof descriptor.icon !== 'string') {
-				collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'icon'));
-				return false;
+				collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'icon'));
+				return fAlse;
 			}
-			if (descriptor.contextualTitle && typeof descriptor.contextualTitle !== 'string') {
-				collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'contextualTitle'));
-				return false;
+			if (descriptor.contextuAlTitle && typeof descriptor.contextuAlTitle !== 'string') {
+				collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'contextuAlTitle'));
+				return fAlse;
 			}
-			if (descriptor.visibility && !this.convertInitialVisibility(descriptor.visibility)) {
-				collector.error(localize('optenum', "property `{0}` can be omitted or must be one of {1}", 'visibility', Object.values(InitialVisibility).join(', ')));
-				return false;
+			if (descriptor.visibility && !this.convertInitiAlVisibility(descriptor.visibility)) {
+				collector.error(locAlize('optenum', "property `{0}` cAn be omitted or must be one of {1}", 'visibility', Object.vAlues(InitiAlVisibility).join(', ')));
+				return fAlse;
 			}
 		}
 
 		return true;
 	}
 
-	private getViewContainer(value: string): ViewContainer | undefined {
-		switch (value) {
-			case 'explorer': return this.viewContainersRegistry.get(EXPLORER);
-			case 'debug': return this.viewContainersRegistry.get(DEBUG);
-			case 'scm': return this.viewContainersRegistry.get(SCM);
-			case 'remote': return this.viewContainersRegistry.get(REMOTE);
-			default: return this.viewContainersRegistry.get(`workbench.view.extension.${value}`);
+	privAte getViewContAiner(vAlue: string): ViewContAiner | undefined {
+		switch (vAlue) {
+			cAse 'explorer': return this.viewContAinersRegistry.get(EXPLORER);
+			cAse 'debug': return this.viewContAinersRegistry.get(DEBUG);
+			cAse 'scm': return this.viewContAinersRegistry.get(SCM);
+			cAse 'remote': return this.viewContAinersRegistry.get(REMOTE);
+			defAult: return this.viewContAinersRegistry.get(`workbench.view.extension.${vAlue}`);
 		}
 	}
 
-	private showCollapsed(container: ViewContainer): boolean {
-		switch (container.id) {
-			case EXPLORER:
-			case SCM:
-			case DEBUG:
+	privAte showCollApsed(contAiner: ViewContAiner): booleAn {
+		switch (contAiner.id) {
+			cAse EXPLORER:
+			cAse SCM:
+			cAse DEBUG:
 				return true;
 		}
-		return false;
+		return fAlse;
 	}
 }
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(ViewsExtensionHandler, LifecyclePhase.Starting);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(ViewsExtensionHAndler, LifecyclePhAse.StArting);

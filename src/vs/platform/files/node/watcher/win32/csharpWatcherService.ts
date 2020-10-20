@@ -1,140 +1,140 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as cp from 'child_process';
-import { FileChangeType } from 'vs/platform/files/common/files';
-import * as decoder from 'vs/base/node/decoder';
-import * as glob from 'vs/base/common/glob';
-import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
-import { FileAccess } from 'vs/base/common/network';
+import * As cp from 'child_process';
+import { FileChAngeType } from 'vs/plAtform/files/common/files';
+import * As decoder from 'vs/bAse/node/decoder';
+import * As glob from 'vs/bAse/common/glob';
+import { IDiskFileChAnge, ILogMessAge } from 'vs/plAtform/files/node/wAtcher/wAtcher';
+import { FileAccess } from 'vs/bAse/common/network';
 
-export class OutOfProcessWin32FolderWatcher {
+export clAss OutOfProcessWin32FolderWAtcher {
 
-	private static readonly MAX_RESTARTS = 5;
+	privAte stAtic reAdonly MAX_RESTARTS = 5;
 
-	private static changeTypeMap: FileChangeType[] = [FileChangeType.UPDATED, FileChangeType.ADDED, FileChangeType.DELETED];
+	privAte stAtic chAngeTypeMAp: FileChAngeType[] = [FileChAngeType.UPDATED, FileChAngeType.ADDED, FileChAngeType.DELETED];
 
-	private ignored: glob.ParsedPattern[];
+	privAte ignored: glob.PArsedPAttern[];
 
-	private handle: cp.ChildProcess | undefined;
-	private restartCounter: number;
+	privAte hAndle: cp.ChildProcess | undefined;
+	privAte restArtCounter: number;
 
 	constructor(
-		private watchedFolder: string,
+		privAte wAtchedFolder: string,
 		ignored: string[],
-		private eventCallback: (events: IDiskFileChange[]) => void,
-		private logCallback: (message: ILogMessage) => void,
-		private verboseLogging: boolean
+		privAte eventCAllbAck: (events: IDiskFileChAnge[]) => void,
+		privAte logCAllbAck: (messAge: ILogMessAge) => void,
+		privAte verboseLogging: booleAn
 	) {
-		this.restartCounter = 0;
+		this.restArtCounter = 0;
 
-		if (Array.isArray(ignored)) {
-			this.ignored = ignored.map(i => glob.parse(i));
+		if (ArrAy.isArrAy(ignored)) {
+			this.ignored = ignored.mAp(i => glob.pArse(i));
 		} else {
 			this.ignored = [];
 		}
 
 		// Logging
 		if (this.verboseLogging) {
-			this.log(`Start watching: ${watchedFolder}`);
+			this.log(`StArt wAtching: ${wAtchedFolder}`);
 		}
 
-		this.startWatcher();
+		this.stArtWAtcher();
 	}
 
-	private startWatcher(): void {
-		const args = [this.watchedFolder];
+	privAte stArtWAtcher(): void {
+		const Args = [this.wAtchedFolder];
 		if (this.verboseLogging) {
-			args.push('-verbose');
+			Args.push('-verbose');
 		}
 
-		this.handle = cp.spawn(FileAccess.asFileUri('vs/platform/files/node/watcher/win32/CodeHelper.exe', require).fsPath, args);
+		this.hAndle = cp.spAwn(FileAccess.AsFileUri('vs/plAtform/files/node/wAtcher/win32/CodeHelper.exe', require).fsPAth, Args);
 
 		const stdoutLineDecoder = new decoder.LineDecoder();
 
 		// Events over stdout
-		this.handle.stdout!.on('data', (data: Buffer) => {
+		this.hAndle.stdout!.on('dAtA', (dAtA: Buffer) => {
 
-			// Collect raw events from output
-			const rawEvents: IDiskFileChange[] = [];
-			stdoutLineDecoder.write(data).forEach((line) => {
-				const eventParts = line.split('|');
-				if (eventParts.length === 2) {
-					const changeType = Number(eventParts[0]);
-					const absolutePath = eventParts[1];
+			// Collect rAw events from output
+			const rAwEvents: IDiskFileChAnge[] = [];
+			stdoutLineDecoder.write(dAtA).forEAch((line) => {
+				const eventPArts = line.split('|');
+				if (eventPArts.length === 2) {
+					const chAngeType = Number(eventPArts[0]);
+					const AbsolutePAth = eventPArts[1];
 
-					// File Change Event (0 Changed, 1 Created, 2 Deleted)
-					if (changeType >= 0 && changeType < 3) {
+					// File ChAnge Event (0 ChAnged, 1 CreAted, 2 Deleted)
+					if (chAngeType >= 0 && chAngeType < 3) {
 
 						// Support ignores
-						if (this.ignored && this.ignored.some(ignore => ignore(absolutePath))) {
+						if (this.ignored && this.ignored.some(ignore => ignore(AbsolutePAth))) {
 							if (this.verboseLogging) {
-								this.log(absolutePath);
+								this.log(AbsolutePAth);
 							}
 
 							return;
 						}
 
-						// Otherwise record as event
-						rawEvents.push({
-							type: OutOfProcessWin32FolderWatcher.changeTypeMap[changeType],
-							path: absolutePath
+						// Otherwise record As event
+						rAwEvents.push({
+							type: OutOfProcessWin32FolderWAtcher.chAngeTypeMAp[chAngeType],
+							pAth: AbsolutePAth
 						});
 					}
 
 					// 3 Logging
 					else {
-						this.log(eventParts[1]);
+						this.log(eventPArts[1]);
 					}
 				}
 			});
 
-			// Trigger processing of events through the delayer to batch them up properly
-			if (rawEvents.length > 0) {
-				this.eventCallback(rawEvents);
+			// Trigger processing of events through the delAyer to bAtch them up properly
+			if (rAwEvents.length > 0) {
+				this.eventCAllbAck(rAwEvents);
 			}
 		});
 
 		// Errors
-		this.handle.on('error', (error: Error) => this.onError(error));
-		this.handle.stderr!.on('data', (data: Buffer) => this.onError(data));
+		this.hAndle.on('error', (error: Error) => this.onError(error));
+		this.hAndle.stderr!.on('dAtA', (dAtA: Buffer) => this.onError(dAtA));
 
 		// Exit
-		this.handle.on('exit', (code: number, signal: string) => this.onExit(code, signal));
+		this.hAndle.on('exit', (code: number, signAl: string) => this.onExit(code, signAl));
 	}
 
-	private onError(error: Error | Buffer): void {
+	privAte onError(error: Error | Buffer): void {
 		this.error('process error: ' + error.toString());
 	}
 
-	private onExit(code: number, signal: string): void {
-		if (this.handle) { // exit while not yet being disposed is unexpected!
-			this.error(`terminated unexpectedly (code: ${code}, signal: ${signal})`);
+	privAte onExit(code: number, signAl: string): void {
+		if (this.hAndle) { // exit while not yet being disposed is unexpected!
+			this.error(`terminAted unexpectedly (code: ${code}, signAl: ${signAl})`);
 
-			if (this.restartCounter <= OutOfProcessWin32FolderWatcher.MAX_RESTARTS) {
-				this.error('is restarted again...');
-				this.restartCounter++;
-				this.startWatcher(); // restart
+			if (this.restArtCounter <= OutOfProcessWin32FolderWAtcher.MAX_RESTARTS) {
+				this.error('is restArted AgAin...');
+				this.restArtCounter++;
+				this.stArtWAtcher(); // restArt
 			} else {
-				this.error('Watcher failed to start after retrying for some time, giving up. Please report this as a bug report!');
+				this.error('WAtcher fAiled to stArt After retrying for some time, giving up. PleAse report this As A bug report!');
 			}
 		}
 	}
 
-	private error(message: string) {
-		this.logCallback({ type: 'error', message: `[File Watcher (C#)] ${message}` });
+	privAte error(messAge: string) {
+		this.logCAllbAck({ type: 'error', messAge: `[File WAtcher (C#)] ${messAge}` });
 	}
 
-	private log(message: string) {
-		this.logCallback({ type: 'trace', message: `[File Watcher (C#)] ${message}` });
+	privAte log(messAge: string) {
+		this.logCAllbAck({ type: 'trAce', messAge: `[File WAtcher (C#)] ${messAge}` });
 	}
 
 	dispose(): void {
-		if (this.handle) {
-			this.handle.kill();
-			this.handle = undefined;
+		if (this.hAndle) {
+			this.hAndle.kill();
+			this.hAndle = undefined;
 		}
 	}
 }

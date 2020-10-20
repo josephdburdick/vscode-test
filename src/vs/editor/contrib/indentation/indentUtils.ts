@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export function getSpaceCnt(str: string, tabSize: number) {
-	let spacesCnt = 0;
+export function getSpAceCnt(str: string, tAbSize: number) {
+	let spAcesCnt = 0;
 
 	for (let i = 0; i < str.length; i++) {
-		if (str.charAt(i) === '\t') {
-			spacesCnt += tabSize;
+		if (str.chArAt(i) === '\t') {
+			spAcesCnt += tAbSize;
 		} else {
-			spacesCnt++;
+			spAcesCnt++;
 		}
 	}
 
-	return spacesCnt;
+	return spAcesCnt;
 }
 
-export function generateIndent(spacesCnt: number, tabSize: number, insertSpaces: boolean) {
-	spacesCnt = spacesCnt < 0 ? 0 : spacesCnt;
+export function generAteIndent(spAcesCnt: number, tAbSize: number, insertSpAces: booleAn) {
+	spAcesCnt = spAcesCnt < 0 ? 0 : spAcesCnt;
 
 	let result = '';
-	if (!insertSpaces) {
-		let tabsCnt = Math.floor(spacesCnt / tabSize);
-		spacesCnt = spacesCnt % tabSize;
-		for (let i = 0; i < tabsCnt; i++) {
+	if (!insertSpAces) {
+		let tAbsCnt = MAth.floor(spAcesCnt / tAbSize);
+		spAcesCnt = spAcesCnt % tAbSize;
+		for (let i = 0; i < tAbsCnt; i++) {
 			result += '\t';
 		}
 	}
 
-	for (let i = 0; i < spacesCnt; i++) {
+	for (let i = 0; i < spAcesCnt; i++) {
 		result += ' ';
 	}
 

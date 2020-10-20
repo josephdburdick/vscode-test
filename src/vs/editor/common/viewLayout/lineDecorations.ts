@@ -1,181 +1,181 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { Constants } from 'vs/base/common/uint';
-import { InlineDecoration, InlineDecorationType } from 'vs/editor/common/viewModel/viewModel';
-import { LinePartMetadata } from 'vs/editor/common/viewLayout/viewLineRenderer';
+import * As strings from 'vs/bAse/common/strings';
+import { ConstAnts } from 'vs/bAse/common/uint';
+import { InlineDecorAtion, InlineDecorAtionType } from 'vs/editor/common/viewModel/viewModel';
+import { LinePArtMetAdAtA } from 'vs/editor/common/viewLAyout/viewLineRenderer';
 
-export class LineDecoration {
-	_lineDecorationBrand: void;
+export clAss LineDecorAtion {
+	_lineDecorAtionBrAnd: void;
 
 	constructor(
-		public readonly startColumn: number,
-		public readonly endColumn: number,
-		public readonly className: string,
-		public readonly type: InlineDecorationType
+		public reAdonly stArtColumn: number,
+		public reAdonly endColumn: number,
+		public reAdonly clAssNAme: string,
+		public reAdonly type: InlineDecorAtionType
 	) {
 	}
 
-	private static _equals(a: LineDecoration, b: LineDecoration): boolean {
+	privAte stAtic _equAls(A: LineDecorAtion, b: LineDecorAtion): booleAn {
 		return (
-			a.startColumn === b.startColumn
-			&& a.endColumn === b.endColumn
-			&& a.className === b.className
-			&& a.type === b.type
+			A.stArtColumn === b.stArtColumn
+			&& A.endColumn === b.endColumn
+			&& A.clAssNAme === b.clAssNAme
+			&& A.type === b.type
 		);
 	}
 
-	public static equalsArr(a: LineDecoration[], b: LineDecoration[]): boolean {
-		const aLen = a.length;
+	public stAtic equAlsArr(A: LineDecorAtion[], b: LineDecorAtion[]): booleAn {
+		const ALen = A.length;
 		const bLen = b.length;
-		if (aLen !== bLen) {
-			return false;
+		if (ALen !== bLen) {
+			return fAlse;
 		}
-		for (let i = 0; i < aLen; i++) {
-			if (!LineDecoration._equals(a[i], b[i])) {
-				return false;
+		for (let i = 0; i < ALen; i++) {
+			if (!LineDecorAtion._equAls(A[i], b[i])) {
+				return fAlse;
 			}
 		}
 		return true;
 	}
 
-	public static filter(lineDecorations: InlineDecoration[], lineNumber: number, minLineColumn: number, maxLineColumn: number): LineDecoration[] {
-		if (lineDecorations.length === 0) {
+	public stAtic filter(lineDecorAtions: InlineDecorAtion[], lineNumber: number, minLineColumn: number, mAxLineColumn: number): LineDecorAtion[] {
+		if (lineDecorAtions.length === 0) {
 			return [];
 		}
 
-		let result: LineDecoration[] = [], resultLen = 0;
+		let result: LineDecorAtion[] = [], resultLen = 0;
 
-		for (let i = 0, len = lineDecorations.length; i < len; i++) {
-			const d = lineDecorations[i];
-			const range = d.range;
+		for (let i = 0, len = lineDecorAtions.length; i < len; i++) {
+			const d = lineDecorAtions[i];
+			const rAnge = d.rAnge;
 
-			if (range.endLineNumber < lineNumber || range.startLineNumber > lineNumber) {
-				// Ignore decorations that sit outside this line
+			if (rAnge.endLineNumber < lineNumber || rAnge.stArtLineNumber > lineNumber) {
+				// Ignore decorAtions thAt sit outside this line
 				continue;
 			}
 
-			if (range.isEmpty() && (d.type === InlineDecorationType.Regular || d.type === InlineDecorationType.RegularAffectingLetterSpacing)) {
-				// Ignore empty range decorations
+			if (rAnge.isEmpty() && (d.type === InlineDecorAtionType.RegulAr || d.type === InlineDecorAtionType.RegulArAffectingLetterSpAcing)) {
+				// Ignore empty rAnge decorAtions
 				continue;
 			}
 
-			const startColumn = (range.startLineNumber === lineNumber ? range.startColumn : minLineColumn);
-			const endColumn = (range.endLineNumber === lineNumber ? range.endColumn : maxLineColumn);
+			const stArtColumn = (rAnge.stArtLineNumber === lineNumber ? rAnge.stArtColumn : minLineColumn);
+			const endColumn = (rAnge.endLineNumber === lineNumber ? rAnge.endColumn : mAxLineColumn);
 
-			result[resultLen++] = new LineDecoration(startColumn, endColumn, d.inlineClassName, d.type);
+			result[resultLen++] = new LineDecorAtion(stArtColumn, endColumn, d.inlineClAssNAme, d.type);
 		}
 
 		return result;
 	}
 
-	private static _typeCompare(a: InlineDecorationType, b: InlineDecorationType): number {
+	privAte stAtic _typeCompAre(A: InlineDecorAtionType, b: InlineDecorAtionType): number {
 		const ORDER = [2, 0, 1, 3];
-		return ORDER[a] - ORDER[b];
+		return ORDER[A] - ORDER[b];
 	}
 
-	public static compare(a: LineDecoration, b: LineDecoration): number {
-		if (a.startColumn === b.startColumn) {
-			if (a.endColumn === b.endColumn) {
-				const typeCmp = LineDecoration._typeCompare(a.type, b.type);
+	public stAtic compAre(A: LineDecorAtion, b: LineDecorAtion): number {
+		if (A.stArtColumn === b.stArtColumn) {
+			if (A.endColumn === b.endColumn) {
+				const typeCmp = LineDecorAtion._typeCompAre(A.type, b.type);
 				if (typeCmp === 0) {
-					if (a.className < b.className) {
+					if (A.clAssNAme < b.clAssNAme) {
 						return -1;
 					}
-					if (a.className > b.className) {
+					if (A.clAssNAme > b.clAssNAme) {
 						return 1;
 					}
 					return 0;
 				}
 				return typeCmp;
 			}
-			return a.endColumn - b.endColumn;
+			return A.endColumn - b.endColumn;
 		}
-		return a.startColumn - b.startColumn;
+		return A.stArtColumn - b.stArtColumn;
 	}
 }
 
-export class DecorationSegment {
-	startOffset: number;
+export clAss DecorAtionSegment {
+	stArtOffset: number;
 	endOffset: number;
-	className: string;
-	metadata: number;
+	clAssNAme: string;
+	metAdAtA: number;
 
-	constructor(startOffset: number, endOffset: number, className: string, metadata: number) {
-		this.startOffset = startOffset;
+	constructor(stArtOffset: number, endOffset: number, clAssNAme: string, metAdAtA: number) {
+		this.stArtOffset = stArtOffset;
 		this.endOffset = endOffset;
-		this.className = className;
-		this.metadata = metadata;
+		this.clAssNAme = clAssNAme;
+		this.metAdAtA = metAdAtA;
 	}
 }
 
-class Stack {
+clAss StAck {
 	public count: number;
-	private readonly stopOffsets: number[];
-	private readonly classNames: string[];
-	private readonly metadata: number[];
+	privAte reAdonly stopOffsets: number[];
+	privAte reAdonly clAssNAmes: string[];
+	privAte reAdonly metAdAtA: number[];
 
 	constructor() {
 		this.stopOffsets = [];
-		this.classNames = [];
-		this.metadata = [];
+		this.clAssNAmes = [];
+		this.metAdAtA = [];
 		this.count = 0;
 	}
 
-	private static _metadata(metadata: number[]): number {
+	privAte stAtic _metAdAtA(metAdAtA: number[]): number {
 		let result = 0;
-		for (let i = 0, len = metadata.length; i < len; i++) {
-			result |= metadata[i];
+		for (let i = 0, len = metAdAtA.length; i < len; i++) {
+			result |= metAdAtA[i];
 		}
 		return result;
 	}
 
-	public consumeLowerThan(maxStopOffset: number, nextStartOffset: number, result: DecorationSegment[]): number {
+	public consumeLowerThAn(mAxStopOffset: number, nextStArtOffset: number, result: DecorAtionSegment[]): number {
 
-		while (this.count > 0 && this.stopOffsets[0] < maxStopOffset) {
+		while (this.count > 0 && this.stopOffsets[0] < mAxStopOffset) {
 			let i = 0;
 
-			// Take all equal stopping offsets
+			// TAke All equAl stopping offsets
 			while (i + 1 < this.count && this.stopOffsets[i] === this.stopOffsets[i + 1]) {
 				i++;
 			}
 
-			// Basically we are consuming the first i + 1 elements of the stack
-			result.push(new DecorationSegment(nextStartOffset, this.stopOffsets[i], this.classNames.join(' '), Stack._metadata(this.metadata)));
-			nextStartOffset = this.stopOffsets[i] + 1;
+			// BAsicAlly we Are consuming the first i + 1 elements of the stAck
+			result.push(new DecorAtionSegment(nextStArtOffset, this.stopOffsets[i], this.clAssNAmes.join(' '), StAck._metAdAtA(this.metAdAtA)));
+			nextStArtOffset = this.stopOffsets[i] + 1;
 
 			// Consume them
 			this.stopOffsets.splice(0, i + 1);
-			this.classNames.splice(0, i + 1);
-			this.metadata.splice(0, i + 1);
+			this.clAssNAmes.splice(0, i + 1);
+			this.metAdAtA.splice(0, i + 1);
 			this.count -= (i + 1);
 		}
 
-		if (this.count > 0 && nextStartOffset < maxStopOffset) {
-			result.push(new DecorationSegment(nextStartOffset, maxStopOffset - 1, this.classNames.join(' '), Stack._metadata(this.metadata)));
-			nextStartOffset = maxStopOffset;
+		if (this.count > 0 && nextStArtOffset < mAxStopOffset) {
+			result.push(new DecorAtionSegment(nextStArtOffset, mAxStopOffset - 1, this.clAssNAmes.join(' '), StAck._metAdAtA(this.metAdAtA)));
+			nextStArtOffset = mAxStopOffset;
 		}
 
-		return nextStartOffset;
+		return nextStArtOffset;
 	}
 
-	public insert(stopOffset: number, className: string, metadata: number): void {
+	public insert(stopOffset: number, clAssNAme: string, metAdAtA: number): void {
 		if (this.count === 0 || this.stopOffsets[this.count - 1] <= stopOffset) {
-			// Insert at the end
+			// Insert At the end
 			this.stopOffsets.push(stopOffset);
-			this.classNames.push(className);
-			this.metadata.push(metadata);
+			this.clAssNAmes.push(clAssNAme);
+			this.metAdAtA.push(metAdAtA);
 		} else {
 			// Find the insertion position for `stopOffset`
 			for (let i = 0; i < this.count; i++) {
 				if (this.stopOffsets[i] >= stopOffset) {
 					this.stopOffsets.splice(i, 0, stopOffset);
-					this.classNames.splice(i, 0, className);
-					this.metadata.splice(i, 0, metadata);
-					break;
+					this.clAssNAmes.splice(i, 0, clAssNAme);
+					this.metAdAtA.splice(i, 0, metAdAtA);
+					breAk;
 				}
 			}
 		}
@@ -184,60 +184,60 @@ class Stack {
 	}
 }
 
-export class LineDecorationsNormalizer {
+export clAss LineDecorAtionsNormAlizer {
 	/**
-	 * Normalize line decorations. Overlapping decorations will generate multiple segments
+	 * NormAlize line decorAtions. OverlApping decorAtions will generAte multiple segments
 	 */
-	public static normalize(lineContent: string, lineDecorations: LineDecoration[]): DecorationSegment[] {
-		if (lineDecorations.length === 0) {
+	public stAtic normAlize(lineContent: string, lineDecorAtions: LineDecorAtion[]): DecorAtionSegment[] {
+		if (lineDecorAtions.length === 0) {
 			return [];
 		}
 
-		let result: DecorationSegment[] = [];
+		let result: DecorAtionSegment[] = [];
 
-		const stack = new Stack();
-		let nextStartOffset = 0;
+		const stAck = new StAck();
+		let nextStArtOffset = 0;
 
-		for (let i = 0, len = lineDecorations.length; i < len; i++) {
-			const d = lineDecorations[i];
-			let startColumn = d.startColumn;
+		for (let i = 0, len = lineDecorAtions.length; i < len; i++) {
+			const d = lineDecorAtions[i];
+			let stArtColumn = d.stArtColumn;
 			let endColumn = d.endColumn;
-			const className = d.className;
-			const metadata = (
-				d.type === InlineDecorationType.Before
-					? LinePartMetadata.PSEUDO_BEFORE
-					: d.type === InlineDecorationType.After
-						? LinePartMetadata.PSEUDO_AFTER
+			const clAssNAme = d.clAssNAme;
+			const metAdAtA = (
+				d.type === InlineDecorAtionType.Before
+					? LinePArtMetAdAtA.PSEUDO_BEFORE
+					: d.type === InlineDecorAtionType.After
+						? LinePArtMetAdAtA.PSEUDO_AFTER
 						: 0
 			);
 
-			// If the position would end up in the middle of a high-low surrogate pair, we move it to before the pair
-			if (startColumn > 1) {
-				const charCodeBefore = lineContent.charCodeAt(startColumn - 2);
-				if (strings.isHighSurrogate(charCodeBefore)) {
-					startColumn--;
+			// If the position would end up in the middle of A high-low surrogAte pAir, we move it to before the pAir
+			if (stArtColumn > 1) {
+				const chArCodeBefore = lineContent.chArCodeAt(stArtColumn - 2);
+				if (strings.isHighSurrogAte(chArCodeBefore)) {
+					stArtColumn--;
 				}
 			}
 
 			if (endColumn > 1) {
-				const charCodeBefore = lineContent.charCodeAt(endColumn - 2);
-				if (strings.isHighSurrogate(charCodeBefore)) {
+				const chArCodeBefore = lineContent.chArCodeAt(endColumn - 2);
+				if (strings.isHighSurrogAte(chArCodeBefore)) {
 					endColumn--;
 				}
 			}
 
-			const currentStartOffset = startColumn - 1;
+			const currentStArtOffset = stArtColumn - 1;
 			const currentEndOffset = endColumn - 2;
 
-			nextStartOffset = stack.consumeLowerThan(currentStartOffset, nextStartOffset, result);
+			nextStArtOffset = stAck.consumeLowerThAn(currentStArtOffset, nextStArtOffset, result);
 
-			if (stack.count === 0) {
-				nextStartOffset = currentStartOffset;
+			if (stAck.count === 0) {
+				nextStArtOffset = currentStArtOffset;
 			}
-			stack.insert(currentEndOffset, className, metadata);
+			stAck.insert(currentEndOffset, clAssNAme, metAdAtA);
 		}
 
-		stack.consumeLowerThan(Constants.MAX_SAFE_SMALL_INTEGER, nextStartOffset, result);
+		stAck.consumeLowerThAn(ConstAnts.MAX_SAFE_SMALL_INTEGER, nextStArtOffset, result);
 
 		return result;
 	}

@@ -1,117 +1,117 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { OpenerService } from 'vs/editor/browser/services/openerService';
 import { TestCodeEditorService } from 'vs/editor/test/browser/editorTestServices';
-import { CommandsRegistry, ICommandService, NullCommandService } from 'vs/platform/commands/common/commands';
-import { matchesScheme } from 'vs/platform/opener/common/opener';
+import { CommAndsRegistry, ICommAndService, NullCommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { mAtchesScheme } from 'vs/plAtform/opener/common/opener';
 
 suite('OpenerService', function () {
 	const editorService = new TestCodeEditorService();
 
-	let lastCommand: { id: string; args: any[] } | undefined;
+	let lAstCommAnd: { id: string; Args: Any[] } | undefined;
 
-	const commandService = new (class implements ICommandService {
-		declare readonly _serviceBrand: undefined;
-		onWillExecuteCommand = () => Disposable.None;
-		onDidExecuteCommand = () => Disposable.None;
-		executeCommand(id: string, ...args: any[]): Promise<any> {
-			lastCommand = { id, args };
+	const commAndService = new (clAss implements ICommAndService {
+		declAre reAdonly _serviceBrAnd: undefined;
+		onWillExecuteCommAnd = () => DisposAble.None;
+		onDidExecuteCommAnd = () => DisposAble.None;
+		executeCommAnd(id: string, ...Args: Any[]): Promise<Any> {
+			lAstCommAnd = { id, Args };
 			return Promise.resolve(undefined);
 		}
 	})();
 
 	setup(function () {
-		lastCommand = undefined;
+		lAstCommAnd = undefined;
 	});
 
-	test('delegate to editorService, scheme:///fff', async function () {
-		const openerService = new OpenerService(editorService, NullCommandService);
-		await openerService.open(URI.parse('another:///somepath'));
-		assert.equal(editorService.lastInput!.options!.selection, undefined);
+	test('delegAte to editorService, scheme:///fff', Async function () {
+		const openerService = new OpenerService(editorService, NullCommAndService);
+		AwAit openerService.open(URI.pArse('Another:///somepAth'));
+		Assert.equAl(editorService.lAstInput!.options!.selection, undefined);
 	});
 
-	test('delegate to editorService, scheme:///fff#L123', async function () {
-		const openerService = new OpenerService(editorService, NullCommandService);
+	test('delegAte to editorService, scheme:///fff#L123', Async function () {
+		const openerService = new OpenerService(editorService, NullCommAndService);
 
-		await openerService.open(URI.parse('file:///somepath#L23'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
-		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 1);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
-		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
-		assert.equal(editorService.lastInput!.resource.fragment, '');
+		AwAit openerService.open(URI.pArse('file:///somepAth#L23'));
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtLineNumber, 23);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtColumn, 1);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endLineNumber, undefined);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endColumn, undefined);
+		Assert.equAl(editorService.lAstInput!.resource.frAgment, '');
 
-		await openerService.open(URI.parse('another:///somepath#L23'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
-		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 1);
+		AwAit openerService.open(URI.pArse('Another:///somepAth#L23'));
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtLineNumber, 23);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtColumn, 1);
 
-		await openerService.open(URI.parse('another:///somepath#L23,45'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
-		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 45);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
-		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
-		assert.equal(editorService.lastInput!.resource.fragment, '');
+		AwAit openerService.open(URI.pArse('Another:///somepAth#L23,45'));
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtLineNumber, 23);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtColumn, 45);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endLineNumber, undefined);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endColumn, undefined);
+		Assert.equAl(editorService.lAstInput!.resource.frAgment, '');
 	});
 
-	test('delegate to editorService, scheme:///fff#123,123', async function () {
-		const openerService = new OpenerService(editorService, NullCommandService);
+	test('delegAte to editorService, scheme:///fff#123,123', Async function () {
+		const openerService = new OpenerService(editorService, NullCommAndService);
 
-		await openerService.open(URI.parse('file:///somepath#23'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
-		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 1);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
-		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
-		assert.equal(editorService.lastInput!.resource.fragment, '');
+		AwAit openerService.open(URI.pArse('file:///somepAth#23'));
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtLineNumber, 23);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtColumn, 1);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endLineNumber, undefined);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endColumn, undefined);
+		Assert.equAl(editorService.lAstInput!.resource.frAgment, '');
 
-		await openerService.open(URI.parse('file:///somepath#23,45'));
-		assert.equal(editorService.lastInput!.options!.selection!.startLineNumber, 23);
-		assert.equal(editorService.lastInput!.options!.selection!.startColumn, 45);
-		assert.equal(editorService.lastInput!.options!.selection!.endLineNumber, undefined);
-		assert.equal(editorService.lastInput!.options!.selection!.endColumn, undefined);
-		assert.equal(editorService.lastInput!.resource.fragment, '');
+		AwAit openerService.open(URI.pArse('file:///somepAth#23,45'));
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtLineNumber, 23);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.stArtColumn, 45);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endLineNumber, undefined);
+		Assert.equAl(editorService.lAstInput!.options!.selection!.endColumn, undefined);
+		Assert.equAl(editorService.lAstInput!.resource.frAgment, '');
 	});
 
-	test('delegate to commandsService, command:someid', async function () {
-		const openerService = new OpenerService(editorService, commandService);
+	test('delegAte to commAndsService, commAnd:someid', Async function () {
+		const openerService = new OpenerService(editorService, commAndService);
 
-		const id = `aCommand${Math.random()}`;
-		CommandsRegistry.registerCommand(id, function () { });
+		const id = `ACommAnd${MAth.rAndom()}`;
+		CommAndsRegistry.registerCommAnd(id, function () { });
 
-		await openerService.open(URI.parse('command:' + id));
-		assert.equal(lastCommand!.id, id);
-		assert.equal(lastCommand!.args.length, 0);
+		AwAit openerService.open(URI.pArse('commAnd:' + id));
+		Assert.equAl(lAstCommAnd!.id, id);
+		Assert.equAl(lAstCommAnd!.Args.length, 0);
 
-		await openerService.open(URI.parse('command:' + id).with({ query: '123' }));
-		assert.equal(lastCommand!.id, id);
-		assert.equal(lastCommand!.args.length, 1);
-		assert.equal(lastCommand!.args[0], '123');
+		AwAit openerService.open(URI.pArse('commAnd:' + id).with({ query: '123' }));
+		Assert.equAl(lAstCommAnd!.id, id);
+		Assert.equAl(lAstCommAnd!.Args.length, 1);
+		Assert.equAl(lAstCommAnd!.Args[0], '123');
 
-		await openerService.open(URI.parse('command:' + id).with({ query: JSON.stringify([12, true]) }));
-		assert.equal(lastCommand!.id, id);
-		assert.equal(lastCommand!.args.length, 2);
-		assert.equal(lastCommand!.args[0], 12);
-		assert.equal(lastCommand!.args[1], true);
+		AwAit openerService.open(URI.pArse('commAnd:' + id).with({ query: JSON.stringify([12, true]) }));
+		Assert.equAl(lAstCommAnd!.id, id);
+		Assert.equAl(lAstCommAnd!.Args.length, 2);
+		Assert.equAl(lAstCommAnd!.Args[0], 12);
+		Assert.equAl(lAstCommAnd!.Args[1], true);
 	});
 
-	test('links are protected by validators', async function () {
-		const openerService = new OpenerService(editorService, commandService);
+	test('links Are protected by vAlidAtors', Async function () {
+		const openerService = new OpenerService(editorService, commAndService);
 
-		openerService.registerValidator({ shouldOpen: () => Promise.resolve(false) });
+		openerService.registerVAlidAtor({ shouldOpen: () => Promise.resolve(fAlse) });
 
-		const httpResult = await openerService.open(URI.parse('https://www.microsoft.com'));
-		const httpsResult = await openerService.open(URI.parse('https://www.microsoft.com'));
-		assert.equal(httpResult, false);
-		assert.equal(httpsResult, false);
+		const httpResult = AwAit openerService.open(URI.pArse('https://www.microsoft.com'));
+		const httpsResult = AwAit openerService.open(URI.pArse('https://www.microsoft.com'));
+		Assert.equAl(httpResult, fAlse);
+		Assert.equAl(httpsResult, fAlse);
 	});
 
-	test('links validated by validators go to openers', async function () {
-		const openerService = new OpenerService(editorService, commandService);
+	test('links vAlidAted by vAlidAtors go to openers', Async function () {
+		const openerService = new OpenerService(editorService, commAndService);
 
-		openerService.registerValidator({ shouldOpen: () => Promise.resolve(true) });
+		openerService.registerVAlidAtor({ shouldOpen: () => Promise.resolve(true) });
 
 		let openCount = 0;
 		openerService.registerOpener({
@@ -121,17 +121,17 @@ suite('OpenerService', function () {
 			}
 		});
 
-		await openerService.open(URI.parse('http://microsoft.com'));
-		assert.equal(openCount, 1);
-		await openerService.open(URI.parse('https://microsoft.com'));
-		assert.equal(openCount, 2);
+		AwAit openerService.open(URI.pArse('http://microsoft.com'));
+		Assert.equAl(openCount, 1);
+		AwAit openerService.open(URI.pArse('https://microsoft.com'));
+		Assert.equAl(openCount, 2);
 	});
 
-	test('links validated by multiple validators', async function () {
-		const openerService = new OpenerService(editorService, commandService);
+	test('links vAlidAted by multiple vAlidAtors', Async function () {
+		const openerService = new OpenerService(editorService, commAndService);
 
 		let v1 = 0;
-		openerService.registerValidator({
+		openerService.registerVAlidAtor({
 			shouldOpen: () => {
 				v1++;
 				return Promise.resolve(true);
@@ -139,7 +139,7 @@ suite('OpenerService', function () {
 		});
 
 		let v2 = 0;
-		openerService.registerValidator({
+		openerService.registerVAlidAtor({
 			shouldOpen: () => {
 				v2++;
 				return Promise.resolve(true);
@@ -154,29 +154,29 @@ suite('OpenerService', function () {
 			}
 		});
 
-		await openerService.open(URI.parse('http://microsoft.com'));
-		assert.equal(openCount, 1);
-		assert.equal(v1, 1);
-		assert.equal(v2, 1);
-		await openerService.open(URI.parse('https://microsoft.com'));
-		assert.equal(openCount, 2);
-		assert.equal(v1, 2);
-		assert.equal(v2, 2);
+		AwAit openerService.open(URI.pArse('http://microsoft.com'));
+		Assert.equAl(openCount, 1);
+		Assert.equAl(v1, 1);
+		Assert.equAl(v2, 1);
+		AwAit openerService.open(URI.pArse('https://microsoft.com'));
+		Assert.equAl(openCount, 2);
+		Assert.equAl(v1, 2);
+		Assert.equAl(v2, 2);
 	});
 
-	test('links invalidated by first validator do not continue validating', async function () {
-		const openerService = new OpenerService(editorService, commandService);
+	test('links invAlidAted by first vAlidAtor do not continue vAlidAting', Async function () {
+		const openerService = new OpenerService(editorService, commAndService);
 
 		let v1 = 0;
-		openerService.registerValidator({
+		openerService.registerVAlidAtor({
 			shouldOpen: () => {
 				v1++;
-				return Promise.resolve(false);
+				return Promise.resolve(fAlse);
 			}
 		});
 
 		let v2 = 0;
-		openerService.registerValidator({
+		openerService.registerVAlidAtor({
 			shouldOpen: () => {
 				v2++;
 				return Promise.resolve(true);
@@ -191,27 +191,27 @@ suite('OpenerService', function () {
 			}
 		});
 
-		await openerService.open(URI.parse('http://microsoft.com'));
-		assert.equal(openCount, 0);
-		assert.equal(v1, 1);
-		assert.equal(v2, 0);
-		await openerService.open(URI.parse('https://microsoft.com'));
-		assert.equal(openCount, 0);
-		assert.equal(v1, 2);
-		assert.equal(v2, 0);
+		AwAit openerService.open(URI.pArse('http://microsoft.com'));
+		Assert.equAl(openCount, 0);
+		Assert.equAl(v1, 1);
+		Assert.equAl(v2, 0);
+		AwAit openerService.open(URI.pArse('https://microsoft.com'));
+		Assert.equAl(openCount, 0);
+		Assert.equAl(v1, 2);
+		Assert.equAl(v2, 0);
 	});
 
-	test('matchesScheme', function () {
-		assert.ok(matchesScheme('https://microsoft.com', 'https'));
-		assert.ok(matchesScheme('http://microsoft.com', 'http'));
-		assert.ok(matchesScheme('hTTPs://microsoft.com', 'https'));
-		assert.ok(matchesScheme('httP://microsoft.com', 'http'));
-		assert.ok(matchesScheme(URI.parse('https://microsoft.com'), 'https'));
-		assert.ok(matchesScheme(URI.parse('http://microsoft.com'), 'http'));
-		assert.ok(matchesScheme(URI.parse('hTTPs://microsoft.com'), 'https'));
-		assert.ok(matchesScheme(URI.parse('httP://microsoft.com'), 'http'));
-		assert.ok(!matchesScheme(URI.parse('https://microsoft.com'), 'http'));
-		assert.ok(!matchesScheme(URI.parse('htt://microsoft.com'), 'http'));
-		assert.ok(!matchesScheme(URI.parse('z://microsoft.com'), 'http'));
+	test('mAtchesScheme', function () {
+		Assert.ok(mAtchesScheme('https://microsoft.com', 'https'));
+		Assert.ok(mAtchesScheme('http://microsoft.com', 'http'));
+		Assert.ok(mAtchesScheme('hTTPs://microsoft.com', 'https'));
+		Assert.ok(mAtchesScheme('httP://microsoft.com', 'http'));
+		Assert.ok(mAtchesScheme(URI.pArse('https://microsoft.com'), 'https'));
+		Assert.ok(mAtchesScheme(URI.pArse('http://microsoft.com'), 'http'));
+		Assert.ok(mAtchesScheme(URI.pArse('hTTPs://microsoft.com'), 'https'));
+		Assert.ok(mAtchesScheme(URI.pArse('httP://microsoft.com'), 'http'));
+		Assert.ok(!mAtchesScheme(URI.pArse('https://microsoft.com'), 'http'));
+		Assert.ok(!mAtchesScheme(URI.pArse('htt://microsoft.com'), 'http'));
+		Assert.ok(!mAtchesScheme(URI.pArse('z://microsoft.com'), 'http'));
 	});
 });

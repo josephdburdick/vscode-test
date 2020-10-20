@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import * as vscode from 'vscode';
+import 'mochA';
+import * As Assert from 'Assert';
+import * As vscode from 'vscode';
 
-suite('vscode API - configuration', () => {
+suite('vscode API - configurAtion', () => {
 
-	test('configurations, language defaults', function () {
-		const defaultLanguageSettings = vscode.workspace.getConfiguration().get('[abcLang]');
+	test('configurAtions, lAnguAge defAults', function () {
+		const defAultLAnguAgeSettings = vscode.workspAce.getConfigurAtion().get('[AbcLAng]');
 
-		assert.deepEqual(defaultLanguageSettings, {
+		Assert.deepEquAl(defAultLAnguAgeSettings, {
 			'editor.lineNumbers': 'off',
-			'editor.tabSize': 2
+			'editor.tAbSize': 2
 		});
 	});
 
-	test('configuration, defaults', () => {
-		const config = vscode.workspace.getConfiguration('farboo');
+	test('configurAtion, defAults', () => {
+		const config = vscode.workspAce.getConfigurAtion('fArboo');
 
-		assert.ok(config.has('config0'));
-		assert.equal(config.get('config0'), true);
-		assert.equal(config.get('config4'), '');
-		assert.equal(config['config0'], true);
-		assert.equal(config['config4'], '');
+		Assert.ok(config.hAs('config0'));
+		Assert.equAl(config.get('config0'), true);
+		Assert.equAl(config.get('config4'), '');
+		Assert.equAl(config['config0'], true);
+		Assert.equAl(config['config4'], '');
 
-		assert.throws(() => (<any>config)['config4'] = 'valuevalue');
+		Assert.throws(() => (<Any>config)['config4'] = 'vAluevAlue');
 
-		assert.ok(config.has('nested.config1'));
-		assert.equal(config.get('nested.config1'), 42);
-		assert.ok(config.has('nested.config2'));
-		assert.equal(config.get('nested.config2'), 'Das Pferd frisst kein Reis.');
+		Assert.ok(config.hAs('nested.config1'));
+		Assert.equAl(config.get('nested.config1'), 42);
+		Assert.ok(config.hAs('nested.config2'));
+		Assert.equAl(config.get('nested.config2'), 'DAs Pferd frisst kein Reis.');
 	});
 
-	test('configuration, name vs property', () => {
-		const config = vscode.workspace.getConfiguration('farboo');
+	test('configurAtion, nAme vs property', () => {
+		const config = vscode.workspAce.getConfigurAtion('fArboo');
 
-		assert.ok(config.has('get'));
-		assert.equal(config.get('get'), 'get-prop');
-		assert.deepEqual(config['get'], config.get);
-		assert.throws(() => config['get'] = <any>'get-prop');
+		Assert.ok(config.hAs('get'));
+		Assert.equAl(config.get('get'), 'get-prop');
+		Assert.deepEquAl(config['get'], config.get);
+		Assert.throws(() => config['get'] = <Any>'get-prop');
 	});
 });

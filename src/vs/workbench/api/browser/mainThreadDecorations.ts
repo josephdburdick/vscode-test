@@ -1,123 +1,123 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { Emitter } from 'vs/base/common/event';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { ExtHostContext, MainContext, IExtHostContext, MainThreadDecorationsShape, ExtHostDecorationsShape, DecorationData, DecorationRequest } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDecorationsService, IDecorationData } from 'vs/workbench/services/decorations/browser/decorations';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { Emitter } from 'vs/bAse/common/event';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { ExtHostContext, MAinContext, IExtHostContext, MAinThreAdDecorAtionsShApe, ExtHostDecorAtionsShApe, DecorAtionDAtA, DecorAtionRequest } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { IDecorAtionsService, IDecorAtionDAtA } from 'vs/workbench/services/decorAtions/browser/decorAtions';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-class DecorationRequestsQueue {
+clAss DecorAtionRequestsQueue {
 
-	private _idPool = 0;
-	private _requests = new Map<number, DecorationRequest>();
-	private _resolver = new Map<number, (data: DecorationData) => any>();
+	privAte _idPool = 0;
+	privAte _requests = new MAp<number, DecorAtionRequest>();
+	privAte _resolver = new MAp<number, (dAtA: DecorAtionDAtA) => Any>();
 
-	private _timer: any;
+	privAte _timer: Any;
 
 	constructor(
-		private readonly _proxy: ExtHostDecorationsShape,
-		private readonly _handle: number
+		privAte reAdonly _proxy: ExtHostDecorAtionsShApe,
+		privAte reAdonly _hAndle: number
 	) {
 		//
 	}
 
-	enqueue(uri: URI, token: CancellationToken): Promise<DecorationData> {
+	enqueue(uri: URI, token: CAncellAtionToken): Promise<DecorAtionDAtA> {
 		const id = ++this._idPool;
-		const result = new Promise<DecorationData>(resolve => {
+		const result = new Promise<DecorAtionDAtA>(resolve => {
 			this._requests.set(id, { id, uri });
 			this._resolver.set(id, resolve);
 			this._processQueue();
 		});
-		token.onCancellationRequested(() => {
+		token.onCAncellAtionRequested(() => {
 			this._requests.delete(id);
 			this._resolver.delete(id);
 		});
 		return result;
 	}
 
-	private _processQueue(): void {
+	privAte _processQueue(): void {
 		if (typeof this._timer === 'number') {
-			// already queued
+			// AlreAdy queued
 			return;
 		}
 		this._timer = setTimeout(() => {
-			// make request
+			// mAke request
 			const requests = this._requests;
 			const resolver = this._resolver;
-			this._proxy.$provideDecorations(this._handle, [...requests.values()], CancellationToken.None).then(data => {
+			this._proxy.$provideDecorAtions(this._hAndle, [...requests.vAlues()], CAncellAtionToken.None).then(dAtA => {
 				for (let [id, resolve] of resolver) {
-					resolve(data[id]);
+					resolve(dAtA[id]);
 				}
 			});
 
 			// reset
-			this._requests = new Map();
-			this._resolver = new Map();
+			this._requests = new MAp();
+			this._resolver = new MAp();
 			this._timer = undefined;
 		}, 0);
 	}
 }
 
-@extHostNamedCustomer(MainContext.MainThreadDecorations)
-export class MainThreadDecorations implements MainThreadDecorationsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdDecorAtions)
+export clAss MAinThreAdDecorAtions implements MAinThreAdDecorAtionsShApe {
 
-	private readonly _provider = new Map<number, [Emitter<URI[]>, IDisposable]>();
-	private readonly _proxy: ExtHostDecorationsShape;
+	privAte reAdonly _provider = new MAp<number, [Emitter<URI[]>, IDisposAble]>();
+	privAte reAdonly _proxy: ExtHostDecorAtionsShApe;
 
 	constructor(
 		context: IExtHostContext,
-		@IDecorationsService private readonly _decorationsService: IDecorationsService
+		@IDecorAtionsService privAte reAdonly _decorAtionsService: IDecorAtionsService
 	) {
-		this._proxy = context.getProxy(ExtHostContext.ExtHostDecorations);
+		this._proxy = context.getProxy(ExtHostContext.ExtHostDecorAtions);
 	}
 
 	dispose() {
-		this._provider.forEach(value => dispose(value));
-		this._provider.clear();
+		this._provider.forEAch(vAlue => dispose(vAlue));
+		this._provider.cleAr();
 	}
 
-	$registerDecorationProvider(handle: number, label: string): void {
+	$registerDecorAtionProvider(hAndle: number, lAbel: string): void {
 		const emitter = new Emitter<URI[]>();
-		const queue = new DecorationRequestsQueue(this._proxy, handle);
-		const registration = this._decorationsService.registerDecorationsProvider({
-			label,
-			onDidChange: emitter.event,
-			provideDecorations: async (uri, token) => {
-				const data = await queue.enqueue(uri, token);
-				if (!data) {
+		const queue = new DecorAtionRequestsQueue(this._proxy, hAndle);
+		const registrAtion = this._decorAtionsService.registerDecorAtionsProvider({
+			lAbel,
+			onDidChAnge: emitter.event,
+			provideDecorAtions: Async (uri, token) => {
+				const dAtA = AwAit queue.enqueue(uri, token);
+				if (!dAtA) {
 					return undefined;
 				}
-				const [bubble, tooltip, letter, themeColor] = data;
-				return <IDecorationData>{
+				const [bubble, tooltip, letter, themeColor] = dAtA;
+				return <IDecorAtionDAtA>{
 					weight: 10,
-					bubble: bubble ?? false,
+					bubble: bubble ?? fAlse,
 					color: themeColor?.id,
 					tooltip,
 					letter
 				};
 			}
 		});
-		this._provider.set(handle, [emitter, registration]);
+		this._provider.set(hAndle, [emitter, registrAtion]);
 	}
 
-	$onDidChange(handle: number, resources: UriComponents[]): void {
-		const provider = this._provider.get(handle);
+	$onDidChAnge(hAndle: number, resources: UriComponents[]): void {
+		const provider = this._provider.get(hAndle);
 		if (provider) {
 			const [emitter] = provider;
-			emitter.fire(resources && resources.map(r => URI.revive(r)));
+			emitter.fire(resources && resources.mAp(r => URI.revive(r)));
 		}
 	}
 
-	$unregisterDecorationProvider(handle: number): void {
-		const provider = this._provider.get(handle);
+	$unregisterDecorAtionProvider(hAndle: number): void {
+		const provider = this._provider.get(hAndle);
 		if (provider) {
 			dispose(provider);
-			this._provider.delete(handle);
+			this._provider.delete(hAndle);
 		}
 	}
 }

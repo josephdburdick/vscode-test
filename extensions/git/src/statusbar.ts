@@ -1,207 +1,207 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, Command, EventEmitter, Event, workspace, Uri } from 'vscode';
-import { Repository, Operation } from './repository';
-import { anyEvent, dispose, filterEvent } from './util';
-import * as nls from 'vscode-nls';
-import { Branch, RemoteSourceProvider } from './api/git';
+import { DisposAble, CommAnd, EventEmitter, Event, workspAce, Uri } from 'vscode';
+import { Repository, OperAtion } from './repository';
+import { AnyEvent, dispose, filterEvent } from './util';
+import * As nls from 'vscode-nls';
+import { BrAnch, RemoteSourceProvider } from './Api/git';
 import { IRemoteSourceProviderRegistry } from './remoteProvider';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-class CheckoutStatusBar {
+clAss CheckoutStAtusBAr {
 
-	private _onDidChange = new EventEmitter<void>();
-	get onDidChange(): Event<void> { return this._onDidChange.event; }
-	private disposables: Disposable[] = [];
+	privAte _onDidChAnge = new EventEmitter<void>();
+	get onDidChAnge(): Event<void> { return this._onDidChAnge.event; }
+	privAte disposAbles: DisposAble[] = [];
 
-	constructor(private repository: Repository) {
-		repository.onDidRunGitStatus(this._onDidChange.fire, this._onDidChange, this.disposables);
+	constructor(privAte repository: Repository) {
+		repository.onDidRunGitStAtus(this._onDidChAnge.fire, this._onDidChAnge, this.disposAbles);
 	}
 
-	get command(): Command | undefined {
-		const rebasing = !!this.repository.rebaseCommit;
-		const title = `$(git-branch) ${this.repository.headLabel}${rebasing ? ` (${localize('rebasing', 'Rebasing')})` : ''}`;
+	get commAnd(): CommAnd | undefined {
+		const rebAsing = !!this.repository.rebAseCommit;
+		const title = `$(git-brAnch) ${this.repository.heAdLAbel}${rebAsing ? ` (${locAlize('rebAsing', 'RebAsing')})` : ''}`;
 
 		return {
-			command: 'git.checkout',
-			tooltip: `${this.repository.headLabel}`,
+			commAnd: 'git.checkout',
+			tooltip: `${this.repository.heAdLAbel}`,
 			title,
-			arguments: [this.repository.sourceControl]
+			Arguments: [this.repository.sourceControl]
 		};
 	}
 
 	dispose(): void {
-		this.disposables.forEach(d => d.dispose());
+		this.disposAbles.forEAch(d => d.dispose());
 	}
 }
 
-interface SyncStatusBarState {
-	readonly enabled: boolean;
-	readonly isSyncRunning: boolean;
-	readonly hasRemotes: boolean;
-	readonly HEAD: Branch | undefined;
-	readonly remoteSourceProviders: RemoteSourceProvider[];
+interfAce SyncStAtusBArStAte {
+	reAdonly enAbled: booleAn;
+	reAdonly isSyncRunning: booleAn;
+	reAdonly hAsRemotes: booleAn;
+	reAdonly HEAD: BrAnch | undefined;
+	reAdonly remoteSourceProviders: RemoteSourceProvider[];
 }
 
-class SyncStatusBar {
+clAss SyncStAtusBAr {
 
-	private _onDidChange = new EventEmitter<void>();
-	get onDidChange(): Event<void> { return this._onDidChange.event; }
-	private disposables: Disposable[] = [];
+	privAte _onDidChAnge = new EventEmitter<void>();
+	get onDidChAnge(): Event<void> { return this._onDidChAnge.event; }
+	privAte disposAbles: DisposAble[] = [];
 
-	private _state: SyncStatusBarState;
-	private get state() { return this._state; }
-	private set state(state: SyncStatusBarState) {
-		this._state = state;
-		this._onDidChange.fire();
+	privAte _stAte: SyncStAtusBArStAte;
+	privAte get stAte() { return this._stAte; }
+	privAte set stAte(stAte: SyncStAtusBArStAte) {
+		this._stAte = stAte;
+		this._onDidChAnge.fire();
 	}
 
-	constructor(private repository: Repository, private remoteSourceProviderRegistry: IRemoteSourceProviderRegistry) {
-		this._state = {
-			enabled: true,
-			isSyncRunning: false,
-			hasRemotes: false,
+	constructor(privAte repository: Repository, privAte remoteSourceProviderRegistry: IRemoteSourceProviderRegistry) {
+		this._stAte = {
+			enAbled: true,
+			isSyncRunning: fAlse,
+			hAsRemotes: fAlse,
 			HEAD: undefined,
 			remoteSourceProviders: this.remoteSourceProviderRegistry.getRemoteProviders()
 				.filter(p => !!p.publishRepository)
 		};
 
-		repository.onDidRunGitStatus(this.onDidRunGitStatus, this, this.disposables);
-		repository.onDidChangeOperations(this.onDidChangeOperations, this, this.disposables);
+		repository.onDidRunGitStAtus(this.onDidRunGitStAtus, this, this.disposAbles);
+		repository.onDidChAngeOperAtions(this.onDidChAngeOperAtions, this, this.disposAbles);
 
-		anyEvent(remoteSourceProviderRegistry.onDidAddRemoteSourceProvider, remoteSourceProviderRegistry.onDidRemoveRemoteSourceProvider)
-			(this.onDidChangeRemoteSourceProviders, this, this.disposables);
+		AnyEvent(remoteSourceProviderRegistry.onDidAddRemoteSourceProvider, remoteSourceProviderRegistry.onDidRemoveRemoteSourceProvider)
+			(this.onDidChAngeRemoteSourceProviders, this, this.disposAbles);
 
-		const onEnablementChange = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.enableStatusBarSync'));
-		onEnablementChange(this.updateEnablement, this, this.disposables);
-		this.updateEnablement();
+		const onEnAblementChAnge = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git.enAbleStAtusBArSync'));
+		onEnAblementChAnge(this.updAteEnAblement, this, this.disposAbles);
+		this.updAteEnAblement();
 	}
 
-	private updateEnablement(): void {
-		const config = workspace.getConfiguration('git', Uri.file(this.repository.root));
-		const enabled = config.get<boolean>('enableStatusBarSync', true);
+	privAte updAteEnAblement(): void {
+		const config = workspAce.getConfigurAtion('git', Uri.file(this.repository.root));
+		const enAbled = config.get<booleAn>('enAbleStAtusBArSync', true);
 
-		this.state = { ... this.state, enabled };
+		this.stAte = { ... this.stAte, enAbled };
 	}
 
-	private onDidChangeOperations(): void {
-		const isSyncRunning = this.repository.operations.isRunning(Operation.Sync) ||
-			this.repository.operations.isRunning(Operation.Push) ||
-			this.repository.operations.isRunning(Operation.Pull);
+	privAte onDidChAngeOperAtions(): void {
+		const isSyncRunning = this.repository.operAtions.isRunning(OperAtion.Sync) ||
+			this.repository.operAtions.isRunning(OperAtion.Push) ||
+			this.repository.operAtions.isRunning(OperAtion.Pull);
 
-		this.state = { ...this.state, isSyncRunning };
+		this.stAte = { ...this.stAte, isSyncRunning };
 	}
 
-	private onDidRunGitStatus(): void {
-		this.state = {
-			...this.state,
-			hasRemotes: this.repository.remotes.length > 0,
+	privAte onDidRunGitStAtus(): void {
+		this.stAte = {
+			...this.stAte,
+			hAsRemotes: this.repository.remotes.length > 0,
 			HEAD: this.repository.HEAD
 		};
 	}
 
-	private onDidChangeRemoteSourceProviders(): void {
-		this.state = {
-			...this.state,
+	privAte onDidChAngeRemoteSourceProviders(): void {
+		this.stAte = {
+			...this.stAte,
 			remoteSourceProviders: this.remoteSourceProviderRegistry.getRemoteProviders()
 				.filter(p => !!p.publishRepository)
 		};
 	}
 
-	get command(): Command | undefined {
-		if (!this.state.enabled) {
+	get commAnd(): CommAnd | undefined {
+		if (!this.stAte.enAbled) {
 			return;
 		}
 
-		if (!this.state.hasRemotes) {
-			if (this.state.remoteSourceProviders.length === 0) {
+		if (!this.stAte.hAsRemotes) {
+			if (this.stAte.remoteSourceProviders.length === 0) {
 				return;
 			}
 
-			const tooltip = this.state.remoteSourceProviders.length === 1
-				? localize('publish to', "Publish to {0}", this.state.remoteSourceProviders[0].name)
-				: localize('publish to...', "Publish to...");
+			const tooltip = this.stAte.remoteSourceProviders.length === 1
+				? locAlize('publish to', "Publish to {0}", this.stAte.remoteSourceProviders[0].nAme)
+				: locAlize('publish to...', "Publish to...");
 
 			return {
-				command: 'git.publish',
-				title: `$(cloud-upload)`,
+				commAnd: 'git.publish',
+				title: `$(cloud-uploAd)`,
 				tooltip,
-				arguments: [this.repository.sourceControl]
+				Arguments: [this.repository.sourceControl]
 			};
 		}
 
-		const HEAD = this.state.HEAD;
+		const HEAD = this.stAte.HEAD;
 		let icon = '$(sync)';
 		let text = '';
-		let command = '';
+		let commAnd = '';
 		let tooltip = '';
 
-		if (HEAD && HEAD.name && HEAD.commit) {
-			if (HEAD.upstream) {
-				if (HEAD.ahead || HEAD.behind) {
-					text += this.repository.syncLabel;
+		if (HEAD && HEAD.nAme && HEAD.commit) {
+			if (HEAD.upstreAm) {
+				if (HEAD.AheAd || HEAD.behind) {
+					text += this.repository.syncLAbel;
 				}
 
-				const config = workspace.getConfiguration('git', Uri.file(this.repository.root));
-				const rebaseWhenSync = config.get<string>('rebaseWhenSync');
+				const config = workspAce.getConfigurAtion('git', Uri.file(this.repository.root));
+				const rebAseWhenSync = config.get<string>('rebAseWhenSync');
 
-				command = rebaseWhenSync ? 'git.syncRebase' : 'git.sync';
-				tooltip = localize('sync changes', "Synchronize Changes");
+				commAnd = rebAseWhenSync ? 'git.syncRebAse' : 'git.sync';
+				tooltip = locAlize('sync chAnges', "Synchronize ChAnges");
 			} else {
-				icon = '$(cloud-upload)';
-				command = 'git.publish';
-				tooltip = localize('publish changes', "Publish Changes");
+				icon = '$(cloud-uploAd)';
+				commAnd = 'git.publish';
+				tooltip = locAlize('publish chAnges', "Publish ChAnges");
 			}
 		} else {
-			command = '';
+			commAnd = '';
 			tooltip = '';
 		}
 
-		if (this.state.isSyncRunning) {
+		if (this.stAte.isSyncRunning) {
 			icon = '$(sync~spin)';
-			command = '';
-			tooltip = localize('syncing changes', "Synchronizing Changes...");
+			commAnd = '';
+			tooltip = locAlize('syncing chAnges', "Synchronizing ChAnges...");
 		}
 
 		return {
-			command,
+			commAnd,
 			title: [icon, text].join(' ').trim(),
 			tooltip,
-			arguments: [this.repository.sourceControl]
+			Arguments: [this.repository.sourceControl]
 		};
 	}
 
 	dispose(): void {
-		this.disposables.forEach(d => d.dispose());
+		this.disposAbles.forEAch(d => d.dispose());
 	}
 }
 
-export class StatusBarCommands {
+export clAss StAtusBArCommAnds {
 
-	readonly onDidChange: Event<void>;
+	reAdonly onDidChAnge: Event<void>;
 
-	private syncStatusBar: SyncStatusBar;
-	private checkoutStatusBar: CheckoutStatusBar;
-	private disposables: Disposable[] = [];
+	privAte syncStAtusBAr: SyncStAtusBAr;
+	privAte checkoutStAtusBAr: CheckoutStAtusBAr;
+	privAte disposAbles: DisposAble[] = [];
 
 	constructor(repository: Repository, remoteSourceProviderRegistry: IRemoteSourceProviderRegistry) {
-		this.syncStatusBar = new SyncStatusBar(repository, remoteSourceProviderRegistry);
-		this.checkoutStatusBar = new CheckoutStatusBar(repository);
-		this.onDidChange = anyEvent(this.syncStatusBar.onDidChange, this.checkoutStatusBar.onDidChange);
+		this.syncStAtusBAr = new SyncStAtusBAr(repository, remoteSourceProviderRegistry);
+		this.checkoutStAtusBAr = new CheckoutStAtusBAr(repository);
+		this.onDidChAnge = AnyEvent(this.syncStAtusBAr.onDidChAnge, this.checkoutStAtusBAr.onDidChAnge);
 	}
 
-	get commands(): Command[] {
-		return [this.checkoutStatusBar.command, this.syncStatusBar.command]
-			.filter((c): c is Command => !!c);
+	get commAnds(): CommAnd[] {
+		return [this.checkoutStAtusBAr.commAnd, this.syncStAtusBAr.commAnd]
+			.filter((c): c is CommAnd => !!c);
 	}
 
 	dispose(): void {
-		this.syncStatusBar.dispose();
-		this.checkoutStatusBar.dispose();
-		this.disposables = dispose(this.disposables);
+		this.syncStAtusBAr.dispose();
+		this.checkoutStAtusBAr.dispose();
+		this.disposAbles = dispose(this.disposAbles);
 	}
 }

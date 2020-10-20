@@ -1,283 +1,283 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { Disposable, IDisposable, toDisposable, DisposableStore, dispose } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
-import { ISaveOptions, IRevertOptions } from 'vs/workbench/common/editor';
-import { ITextSnapshot } from 'vs/editor/common/model';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAble, IDisposAble, toDisposAble, DisposAbleStore, dispose } from 'vs/bAse/common/lifecycle';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { ISAveOptions, IRevertOptions } from 'vs/workbench/common/editor';
+import { ITextSnApshot } from 'vs/editor/common/model';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export const enum WorkingCopyCapabilities {
+export const enum WorkingCopyCApAbilities {
 
 	/**
-	 * Signals no specific capability for the working copy.
+	 * SignAls no specific cApAbility for the working copy.
 	 */
 	None = 0,
 
 	/**
-	 * Signals that the working copy requires
-	 * additional input when saving, e.g. an
-	 * associated path to save to.
+	 * SignAls thAt the working copy requires
+	 * AdditionAl input when sAving, e.g. An
+	 * AssociAted pAth to sAve to.
 	 */
 	Untitled = 1 << 1
 }
 
 /**
- * Data to be associated with working copy backups. Use
- * `IBackupFileService.resolve(workingCopy.resource)` to
- * retrieve the backup when loading the working copy.
+ * DAtA to be AssociAted with working copy bAckups. Use
+ * `IBAckupFileService.resolve(workingCopy.resource)` to
+ * retrieve the bAckup when loAding the working copy.
  */
-export interface IWorkingCopyBackup<MetaType = object> {
+export interfAce IWorkingCopyBAckup<MetAType = object> {
 
 	/**
-	 * Any serializable metadata to be associated with the backup.
+	 * Any seriAlizAble metAdAtA to be AssociAted with the bAckup.
 	 */
-	meta?: MetaType;
+	metA?: MetAType;
 
 	/**
-	 * Use this for larger textual content of the backup.
+	 * Use this for lArger textuAl content of the bAckup.
 	 */
-	content?: ITextSnapshot;
+	content?: ITextSnApshot;
 }
 
-export interface IWorkingCopy {
+export interfAce IWorkingCopy {
 
 	/**
-	 * The unique resource of the working copy. There can only be one
-	 * working copy in the system with the same URI.
+	 * The unique resource of the working copy. There cAn only be one
+	 * working copy in the system with the sAme URI.
 	 */
-	readonly resource: URI;
+	reAdonly resource: URI;
 
 	/**
-	 * Human readable name of the working copy.
+	 * HumAn reAdAble nAme of the working copy.
 	 */
-	readonly name: string;
+	reAdonly nAme: string;
 
 	/**
-	 * The capabilities of the working copy.
+	 * The cApAbilities of the working copy.
 	 */
-	readonly capabilities: WorkingCopyCapabilities;
+	reAdonly cApAbilities: WorkingCopyCApAbilities;
 
 
 	//#region Events
 
 	/**
-	 * Used by the workbench to signal if the working copy
-	 * is dirty or not. Typically a working copy is dirty
-	 * once changed until saved or reverted.
+	 * Used by the workbench to signAl if the working copy
+	 * is dirty or not. TypicAlly A working copy is dirty
+	 * once chAnged until sAved or reverted.
 	 */
-	readonly onDidChangeDirty: Event<void>;
+	reAdonly onDidChAngeDirty: Event<void>;
 
 	/**
-	 * Used by the workbench e.g. to trigger auto-save
-	 * (unless this working copy is untitled) and backups.
+	 * Used by the workbench e.g. to trigger Auto-sAve
+	 * (unless this working copy is untitled) And bAckups.
 	 */
-	readonly onDidChangeContent: Event<void>;
+	reAdonly onDidChAngeContent: Event<void>;
 
 	//#endregion
 
 
-	//#region Dirty Tracking
+	//#region Dirty TrAcking
 
-	isDirty(): boolean;
+	isDirty(): booleAn;
 
 	//#endregion
 
 
-	//#region Save / Backup
+	//#region SAve / BAckup
 
 	/**
-	 * The workbench may call this method often after it receives
-	 * the `onDidChangeContent` event for the working copy. The motivation
-	 * is to allow to quit VSCode with dirty working copies present.
+	 * The workbench mAy cAll this method often After it receives
+	 * the `onDidChAngeContent` event for the working copy. The motivAtion
+	 * is to Allow to quit VSCode with dirty working copies present.
 	 *
-	 * Providers of working copies should use `IBackupFileService.resolve(workingCopy.resource)`
-	 * to retrieve the backup metadata associated when loading the working copy.
+	 * Providers of working copies should use `IBAckupFileService.resolve(workingCopy.resource)`
+	 * to retrieve the bAckup metAdAtA AssociAted when loAding the working copy.
 	 *
-	 * @param token support for cancellation
+	 * @pArAm token support for cAncellAtion
 	 */
-	backup(token: CancellationToken): Promise<IWorkingCopyBackup>;
+	bAckup(token: CAncellAtionToken): Promise<IWorkingCopyBAckup>;
 
 	/**
-	 * Asks the working copy to save. If the working copy was dirty, it is
-	 * expected to be non-dirty after this operation has finished.
+	 * Asks the working copy to sAve. If the working copy wAs dirty, it is
+	 * expected to be non-dirty After this operAtion hAs finished.
 	 *
-	 * @returns `true` if the operation was successful and `false` otherwise.
+	 * @returns `true` if the operAtion wAs successful And `fAlse` otherwise.
 	 */
-	save(options?: ISaveOptions): Promise<boolean>;
+	sAve(options?: ISAveOptions): Promise<booleAn>;
 
 	/**
-	 * Asks the working copy to revert. If the working copy was dirty, it is
-	 * expected to be non-dirty after this operation has finished.
+	 * Asks the working copy to revert. If the working copy wAs dirty, it is
+	 * expected to be non-dirty After this operAtion hAs finished.
 	 */
 	revert(options?: IRevertOptions): Promise<void>;
 
 	//#endregion
 }
 
-export const IWorkingCopyService = createDecorator<IWorkingCopyService>('workingCopyService');
+export const IWorkingCopyService = creAteDecorAtor<IWorkingCopyService>('workingCopyService');
 
-export interface IWorkingCopyService {
+export interfAce IWorkingCopyService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 
 	//#region Events
 
-	readonly onDidRegister: Event<IWorkingCopy>;
+	reAdonly onDidRegister: Event<IWorkingCopy>;
 
-	readonly onDidUnregister: Event<IWorkingCopy>;
+	reAdonly onDidUnregister: Event<IWorkingCopy>;
 
-	readonly onDidChangeDirty: Event<IWorkingCopy>;
+	reAdonly onDidChAngeDirty: Event<IWorkingCopy>;
 
-	readonly onDidChangeContent: Event<IWorkingCopy>;
+	reAdonly onDidChAngeContent: Event<IWorkingCopy>;
 
 	//#endregion
 
 
-	//#region Dirty Tracking
+	//#region Dirty TrAcking
 
-	readonly dirtyCount: number;
+	reAdonly dirtyCount: number;
 
-	readonly dirtyWorkingCopies: IWorkingCopy[];
+	reAdonly dirtyWorkingCopies: IWorkingCopy[];
 
-	readonly hasDirty: boolean;
+	reAdonly hAsDirty: booleAn;
 
-	isDirty(resource: URI): boolean;
+	isDirty(resource: URI): booleAn;
 
 	//#endregion
 
 
 	//#region Registry
 
-	readonly workingCopies: IWorkingCopy[];
+	reAdonly workingCopies: IWorkingCopy[];
 
 	/**
-	 * Register a new working copy with the service. This method will
-	 * throw if you try to register a working copy with a resource
-	 * that was already registered before. There can only be 1 working
+	 * Register A new working copy with the service. This method will
+	 * throw if you try to register A working copy with A resource
+	 * thAt wAs AlreAdy registered before. There cAn only be 1 working
 	 * copy per resource registered to the service.
 	 */
-	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposable;
+	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposAble;
 
 	//#endregion
 }
 
-export class WorkingCopyService extends Disposable implements IWorkingCopyService {
+export clAss WorkingCopyService extends DisposAble implements IWorkingCopyService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	//#region Events
 
-	private readonly _onDidRegister = this._register(new Emitter<IWorkingCopy>());
-	readonly onDidRegister = this._onDidRegister.event;
+	privAte reAdonly _onDidRegister = this._register(new Emitter<IWorkingCopy>());
+	reAdonly onDidRegister = this._onDidRegister.event;
 
-	private readonly _onDidUnregister = this._register(new Emitter<IWorkingCopy>());
-	readonly onDidUnregister = this._onDidUnregister.event;
+	privAte reAdonly _onDidUnregister = this._register(new Emitter<IWorkingCopy>());
+	reAdonly onDidUnregister = this._onDidUnregister.event;
 
-	private readonly _onDidChangeDirty = this._register(new Emitter<IWorkingCopy>());
-	readonly onDidChangeDirty = this._onDidChangeDirty.event;
+	privAte reAdonly _onDidChAngeDirty = this._register(new Emitter<IWorkingCopy>());
+	reAdonly onDidChAngeDirty = this._onDidChAngeDirty.event;
 
-	private readonly _onDidChangeContent = this._register(new Emitter<IWorkingCopy>());
-	readonly onDidChangeContent = this._onDidChangeContent.event;
+	privAte reAdonly _onDidChAngeContent = this._register(new Emitter<IWorkingCopy>());
+	reAdonly onDidChAngeContent = this._onDidChAngeContent.event;
 
 	//#endregion
 
 
 	//#region Registry
 
-	get workingCopies(): IWorkingCopy[] { return Array.from(this._workingCopies.values()); }
-	private _workingCopies = new Set<IWorkingCopy>();
+	get workingCopies(): IWorkingCopy[] { return ArrAy.from(this._workingCopies.vAlues()); }
+	privAte _workingCopies = new Set<IWorkingCopy>();
 
-	private readonly mapResourceToWorkingCopy = new ResourceMap<IWorkingCopy>();
+	privAte reAdonly mApResourceToWorkingCopy = new ResourceMAp<IWorkingCopy>();
 
-	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposable {
-		if (this.mapResourceToWorkingCopy.has(workingCopy.resource)) {
-			throw new Error(`Cannot register more than one working copy with the same resource ${workingCopy.resource.toString(true)}.`);
+	registerWorkingCopy(workingCopy: IWorkingCopy): IDisposAble {
+		if (this.mApResourceToWorkingCopy.hAs(workingCopy.resource)) {
+			throw new Error(`CAnnot register more thAn one working copy with the sAme resource ${workingCopy.resource.toString(true)}.`);
 		}
 
-		const disposables = new DisposableStore();
+		const disposAbles = new DisposAbleStore();
 
 		// Registry
-		this._workingCopies.add(workingCopy);
-		this.mapResourceToWorkingCopy.set(workingCopy.resource, workingCopy);
+		this._workingCopies.Add(workingCopy);
+		this.mApResourceToWorkingCopy.set(workingCopy.resource, workingCopy);
 
 		// Wire in Events
-		disposables.add(workingCopy.onDidChangeContent(() => this._onDidChangeContent.fire(workingCopy)));
-		disposables.add(workingCopy.onDidChangeDirty(() => this._onDidChangeDirty.fire(workingCopy)));
+		disposAbles.Add(workingCopy.onDidChAngeContent(() => this._onDidChAngeContent.fire(workingCopy)));
+		disposAbles.Add(workingCopy.onDidChAngeDirty(() => this._onDidChAngeDirty.fire(workingCopy)));
 
-		// Send some initial events
+		// Send some initiAl events
 		this._onDidRegister.fire(workingCopy);
 		if (workingCopy.isDirty()) {
-			this._onDidChangeDirty.fire(workingCopy);
+			this._onDidChAngeDirty.fire(workingCopy);
 		}
 
-		return toDisposable(() => {
+		return toDisposAble(() => {
 			this.unregisterWorkingCopy(workingCopy);
-			dispose(disposables);
+			dispose(disposAbles);
 
-			// Signal as event
+			// SignAl As event
 			this._onDidUnregister.fire(workingCopy);
 		});
 	}
 
-	private unregisterWorkingCopy(workingCopy: IWorkingCopy): void {
+	privAte unregisterWorkingCopy(workingCopy: IWorkingCopy): void {
 
 		// Remove from registry
 		this._workingCopies.delete(workingCopy);
-		this.mapResourceToWorkingCopy.delete(workingCopy.resource);
+		this.mApResourceToWorkingCopy.delete(workingCopy.resource);
 
-		// If copy is dirty, ensure to fire an event to signal the dirty change
-		// (a disposed working copy cannot account for being dirty in our model)
+		// If copy is dirty, ensure to fire An event to signAl the dirty chAnge
+		// (A disposed working copy cAnnot Account for being dirty in our model)
 		if (workingCopy.isDirty()) {
-			this._onDidChangeDirty.fire(workingCopy);
+			this._onDidChAngeDirty.fire(workingCopy);
 		}
 	}
 
 	//#endregion
 
 
-	//#region Dirty Tracking
+	//#region Dirty TrAcking
 
-	get hasDirty(): boolean {
+	get hAsDirty(): booleAn {
 		for (const workingCopy of this._workingCopies) {
 			if (workingCopy.isDirty()) {
 				return true;
 			}
 		}
 
-		return false;
+		return fAlse;
 	}
 
 	get dirtyCount(): number {
-		let totalDirtyCount = 0;
+		let totAlDirtyCount = 0;
 
 		for (const workingCopy of this._workingCopies) {
 			if (workingCopy.isDirty()) {
-				totalDirtyCount++;
+				totAlDirtyCount++;
 			}
 		}
 
-		return totalDirtyCount;
+		return totAlDirtyCount;
 	}
 
 	get dirtyWorkingCopies(): IWorkingCopy[] {
 		return this.workingCopies.filter(workingCopy => workingCopy.isDirty());
 	}
 
-	isDirty(resource: URI): boolean {
-		const workingCopy = this.mapResourceToWorkingCopy.get(resource);
+	isDirty(resource: URI): booleAn {
+		const workingCopy = this.mApResourceToWorkingCopy.get(resource);
 		if (workingCopy) {
 			return workingCopy.isDirty();
 		}
 
-		return false;
+		return fAlse;
 	}
 
 	//#endregion

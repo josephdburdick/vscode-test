@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { groupBy } from 'vs/base/common/arrays';
-import { compare } from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
+import { groupBy } from 'vs/bAse/common/ArrAys';
+import { compAre } from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
 import { ResourceEdit } from 'vs/editor/browser/services/bulkEditService';
-import { WorkspaceEditMetadata } from 'vs/editor/common/modes';
-import { IProgress } from 'vs/platform/progress/common/progress';
-import { UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
-import { ICellEditOperation } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { WorkspAceEditMetAdAtA } from 'vs/editor/common/modes';
+import { IProgress } from 'vs/plAtform/progress/common/progress';
+import { UndoRedoGroup } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { ICellEditOperAtion } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 import { INotebookEditorModelResolverService } from 'vs/workbench/contrib/notebook/common/notebookEditorModelResolverService';
 import { INotebookService } from 'vs/workbench/contrib/notebook/common/notebookService';
 
-export class ResourceNotebookCellEdit extends ResourceEdit {
+export clAss ResourceNotebookCellEdit extends ResourceEdit {
 
 	constructor(
-		readonly resource: URI,
-		readonly cellEdit: ICellEditOperation,
-		readonly versionId?: number,
-		readonly metadata?: WorkspaceEditMetadata
+		reAdonly resource: URI,
+		reAdonly cellEdit: ICellEditOperAtion,
+		reAdonly versionId?: number,
+		reAdonly metAdAtA?: WorkspAceEditMetAdAtA
 	) {
-		super(metadata);
+		super(metAdAtA);
 	}
 }
 
-export class BulkCellEdits {
+export clAss BulkCellEdits {
 
 	constructor(
-		private _undoRedoGroup: UndoRedoGroup,
-		private readonly _progress: IProgress<void>,
-		private readonly _edits: ResourceNotebookCellEdit[],
-		@INotebookService private readonly _notebookService: INotebookService,
-		@INotebookEditorModelResolverService private readonly _notebookModelService: INotebookEditorModelResolverService,
+		privAte _undoRedoGroup: UndoRedoGroup,
+		privAte reAdonly _progress: IProgress<void>,
+		privAte reAdonly _edits: ResourceNotebookCellEdit[],
+		@INotebookService privAte reAdonly _notebookService: INotebookService,
+		@INotebookEditorModelResolverService privAte reAdonly _notebookModelService: INotebookEditorModelResolverService,
 	) { }
 
-	async apply(): Promise<void> {
+	Async Apply(): Promise<void> {
 
-		const editsByNotebook = groupBy(this._edits, (a, b) => compare(a.resource.toString(), b.resource.toString()));
+		const editsByNotebook = groupBy(this._edits, (A, b) => compAre(A.resource.toString(), b.resource.toString()));
 
 		for (let group of editsByNotebook) {
 			const [first] = group;
-			const ref = await this._notebookModelService.resolve(first.resource);
+			const ref = AwAit this._notebookModelService.resolve(first.resource);
 
-			// check state
+			// check stAte
 			// if (typeof first.versionId === 'number' && ref.object.notebook.versionId !== first.versionId) {
 			// 	ref.dispose();
-			// 	throw new Error(`Notebook '${first.resource}' has changed in the meantime`);
+			// 	throw new Error(`Notebook '${first.resource}' hAs chAnged in the meAntime`);
 			// }
 
-			// apply edits
-			const edits = group.map(entry => entry.cellEdit);
-			this._notebookService.transformEditsOutputs(ref.object.notebook, edits);
-			ref.object.notebook.applyEdits(ref.object.notebook.versionId, edits, true, undefined, () => undefined, this._undoRedoGroup);
+			// Apply edits
+			const edits = group.mAp(entry => entry.cellEdit);
+			this._notebookService.trAnsformEditsOutputs(ref.object.notebook, edits);
+			ref.object.notebook.ApplyEdits(ref.object.notebook.versionId, edits, true, undefined, () => undefined, this._undoRedoGroup);
 			ref.dispose();
 
 			this._progress.report(undefined);

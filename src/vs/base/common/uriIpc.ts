@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { MarshalledObject } from 'vs/base/common/marshalling';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { MArshAlledObject } from 'vs/bAse/common/mArshAlling';
 
-export interface IURITransformer {
-	transformIncoming(uri: UriComponents): UriComponents;
-	transformOutgoing(uri: UriComponents): UriComponents;
-	transformOutgoingURI(uri: URI): URI;
-	transformOutgoingScheme(scheme: string): string;
+export interfAce IURITrAnsformer {
+	trAnsformIncoming(uri: UriComponents): UriComponents;
+	trAnsformOutgoing(uri: UriComponents): UriComponents;
+	trAnsformOutgoingURI(uri: URI): URI;
+	trAnsformOutgoingScheme(scheme: string): string;
 }
 
-export interface UriParts {
+export interfAce UriPArts {
 	scheme: string;
-	authority?: string;
-	path?: string;
+	Authority?: string;
+	pAth?: string;
 }
 
-export interface IRawURITransformer {
-	transformIncoming(uri: UriParts): UriParts;
-	transformOutgoing(uri: UriParts): UriParts;
-	transformOutgoingScheme(scheme: string): string;
+export interfAce IRAwURITrAnsformer {
+	trAnsformIncoming(uri: UriPArts): UriPArts;
+	trAnsformOutgoing(uri: UriPArts): UriPArts;
+	trAnsformOutgoingScheme(scheme: string): string;
 }
 
 function toJSON(uri: URI): UriComponents {
-	return <UriComponents><any>uri.toJSON();
+	return <UriComponents><Any>uri.toJSON();
 }
 
-export class URITransformer implements IURITransformer {
+export clAss URITrAnsformer implements IURITrAnsformer {
 
-	private readonly _uriTransformer: IRawURITransformer;
+	privAte reAdonly _uriTrAnsformer: IRAwURITrAnsformer;
 
-	constructor(uriTransformer: IRawURITransformer) {
-		this._uriTransformer = uriTransformer;
+	constructor(uriTrAnsformer: IRAwURITrAnsformer) {
+		this._uriTrAnsformer = uriTrAnsformer;
 	}
 
-	public transformIncoming(uri: UriComponents): UriComponents {
-		const result = this._uriTransformer.transformIncoming(uri);
+	public trAnsformIncoming(uri: UriComponents): UriComponents {
+		const result = this._uriTrAnsformer.trAnsformIncoming(uri);
 		return (result === uri ? uri : toJSON(URI.from(result)));
 	}
 
-	public transformOutgoing(uri: UriComponents): UriComponents {
-		const result = this._uriTransformer.transformOutgoing(uri);
+	public trAnsformOutgoing(uri: UriComponents): UriComponents {
+		const result = this._uriTrAnsformer.trAnsformOutgoing(uri);
 		return (result === uri ? uri : toJSON(URI.from(result)));
 	}
 
-	public transformOutgoingURI(uri: URI): URI {
-		const result = this._uriTransformer.transformOutgoing(uri);
+	public trAnsformOutgoingURI(uri: URI): URI {
+		const result = this._uriTrAnsformer.trAnsformOutgoing(uri);
 		return (result === uri ? uri : URI.from(result));
 	}
 
-	public transformOutgoingScheme(scheme: string): string {
-		return this._uriTransformer.transformOutgoingScheme(scheme);
+	public trAnsformOutgoingScheme(scheme: string): string {
+		return this._uriTrAnsformer.trAnsformOutgoingScheme(scheme);
 	}
 }
 
-export const DefaultURITransformer: IURITransformer = new class {
-	transformIncoming(uri: UriComponents) {
+export const DefAultURITrAnsformer: IURITrAnsformer = new clAss {
+	trAnsformIncoming(uri: UriComponents) {
 		return uri;
 	}
 
-	transformOutgoing(uri: UriComponents): UriComponents {
+	trAnsformOutgoing(uri: UriComponents): UriComponents {
 		return uri;
 	}
 
-	transformOutgoingURI(uri: URI): URI {
+	trAnsformOutgoingURI(uri: URI): URI {
 		return uri;
 	}
 
-	transformOutgoingScheme(scheme: string): string {
+	trAnsformOutgoingScheme(scheme: string): string {
 		return scheme;
 	}
 };
 
-function _transformOutgoingURIs(obj: any, transformer: IURITransformer, depth: number): any {
+function _trAnsformOutgoingURIs(obj: Any, trAnsformer: IURITrAnsformer, depth: number): Any {
 
 	if (!obj || depth > 200) {
 		return null;
 	}
 
 	if (typeof obj === 'object') {
-		if (obj instanceof URI) {
-			return transformer.transformOutgoing(obj);
+		if (obj instAnceof URI) {
+			return trAnsformer.trAnsformOutgoing(obj);
 		}
 
-		// walk object (or array)
+		// wAlk object (or ArrAy)
 		for (let key in obj) {
-			if (Object.hasOwnProperty.call(obj, key)) {
-				const r = _transformOutgoingURIs(obj[key], transformer, depth + 1);
+			if (Object.hAsOwnProperty.cAll(obj, key)) {
+				const r = _trAnsformOutgoingURIs(obj[key], trAnsformer, depth + 1);
 				if (r !== null) {
 					obj[key] = r;
 				}
@@ -100,17 +100,17 @@ function _transformOutgoingURIs(obj: any, transformer: IURITransformer, depth: n
 	return null;
 }
 
-export function transformOutgoingURIs<T>(obj: T, transformer: IURITransformer): T {
-	const result = _transformOutgoingURIs(obj, transformer, 0);
+export function trAnsformOutgoingURIs<T>(obj: T, trAnsformer: IURITrAnsformer): T {
+	const result = _trAnsformOutgoingURIs(obj, trAnsformer, 0);
 	if (result === null) {
-		// no change
+		// no chAnge
 		return obj;
 	}
 	return result;
 }
 
 
-function _transformIncomingURIs(obj: any, transformer: IURITransformer, revive: boolean, depth: number): any {
+function _trAnsformIncomingURIs(obj: Any, trAnsformer: IURITrAnsformer, revive: booleAn, depth: number): Any {
 
 	if (!obj || depth > 200) {
 		return null;
@@ -118,14 +118,14 @@ function _transformIncomingURIs(obj: any, transformer: IURITransformer, revive: 
 
 	if (typeof obj === 'object') {
 
-		if ((<MarshalledObject>obj).$mid === 1) {
-			return revive ? URI.revive(transformer.transformIncoming(obj)) : transformer.transformIncoming(obj);
+		if ((<MArshAlledObject>obj).$mid === 1) {
+			return revive ? URI.revive(trAnsformer.trAnsformIncoming(obj)) : trAnsformer.trAnsformIncoming(obj);
 		}
 
-		// walk object (or array)
+		// wAlk object (or ArrAy)
 		for (let key in obj) {
-			if (Object.hasOwnProperty.call(obj, key)) {
-				const r = _transformIncomingURIs(obj[key], transformer, revive, depth + 1);
+			if (Object.hAsOwnProperty.cAll(obj, key)) {
+				const r = _trAnsformIncomingURIs(obj[key], trAnsformer, revive, depth + 1);
 				if (r !== null) {
 					obj[key] = r;
 				}
@@ -136,19 +136,19 @@ function _transformIncomingURIs(obj: any, transformer: IURITransformer, revive: 
 	return null;
 }
 
-export function transformIncomingURIs<T>(obj: T, transformer: IURITransformer): T {
-	const result = _transformIncomingURIs(obj, transformer, false, 0);
+export function trAnsformIncomingURIs<T>(obj: T, trAnsformer: IURITrAnsformer): T {
+	const result = _trAnsformIncomingURIs(obj, trAnsformer, fAlse, 0);
 	if (result === null) {
-		// no change
+		// no chAnge
 		return obj;
 	}
 	return result;
 }
 
-export function transformAndReviveIncomingURIs<T>(obj: T, transformer: IURITransformer): T {
-	const result = _transformIncomingURIs(obj, transformer, true, 0);
+export function trAnsformAndReviveIncomingURIs<T>(obj: T, trAnsformer: IURITrAnsformer): T {
+	const result = _trAnsformIncomingURIs(obj, trAnsformer, true, 0);
 	if (result === null) {
-		// no change
+		// no chAnge
 		return obj;
 	}
 	return result;

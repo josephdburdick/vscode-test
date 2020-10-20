@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { CodeAction, CodeActionTriggerType } from 'vs/editor/common/modes';
 import { Position } from 'vs/editor/common/core/position';
 
-export class CodeActionKind {
-	private static readonly sep = '.';
+export clAss CodeActionKind {
+	privAte stAtic reAdonly sep = '.';
 
-	public static readonly None = new CodeActionKind('@@none@@'); // Special code action that contains nothing
-	public static readonly Empty = new CodeActionKind('');
-	public static readonly QuickFix = new CodeActionKind('quickfix');
-	public static readonly Refactor = new CodeActionKind('refactor');
-	public static readonly Source = new CodeActionKind('source');
-	public static readonly SourceOrganizeImports = CodeActionKind.Source.append('organizeImports');
-	public static readonly SourceFixAll = CodeActionKind.Source.append('fixAll');
+	public stAtic reAdonly None = new CodeActionKind('@@none@@'); // SpeciAl code Action thAt contAins nothing
+	public stAtic reAdonly Empty = new CodeActionKind('');
+	public stAtic reAdonly QuickFix = new CodeActionKind('quickfix');
+	public stAtic reAdonly RefActor = new CodeActionKind('refActor');
+	public stAtic reAdonly Source = new CodeActionKind('source');
+	public stAtic reAdonly SourceOrgAnizeImports = CodeActionKind.Source.Append('orgAnizeImports');
+	public stAtic reAdonly SourceFixAll = CodeActionKind.Source.Append('fixAll');
 
 	constructor(
-		public readonly value: string
+		public reAdonly vAlue: string
 	) { }
 
-	public equals(other: CodeActionKind): boolean {
-		return this.value === other.value;
+	public equAls(other: CodeActionKind): booleAn {
+		return this.vAlue === other.vAlue;
 	}
 
-	public contains(other: CodeActionKind): boolean {
-		return this.equals(other) || this.value === '' || other.value.startsWith(this.value + CodeActionKind.sep);
+	public contAins(other: CodeActionKind): booleAn {
+		return this.equAls(other) || this.vAlue === '' || other.vAlue.stArtsWith(this.vAlue + CodeActionKind.sep);
 	}
 
-	public intersects(other: CodeActionKind): boolean {
-		return this.contains(other) || other.contains(this);
+	public intersects(other: CodeActionKind): booleAn {
+		return this.contAins(other) || other.contAins(this);
 	}
 
-	public append(part: string): CodeActionKind {
-		return new CodeActionKind(this.value + CodeActionKind.sep + part);
+	public Append(pArt: string): CodeActionKind {
+		return new CodeActionKind(this.vAlue + CodeActionKind.sep + pArt);
 	}
 }
 
@@ -44,121 +44,121 @@ export const enum CodeActionAutoApply {
 	Never = 'never',
 }
 
-export interface CodeActionFilter {
-	readonly include?: CodeActionKind;
-	readonly excludes?: readonly CodeActionKind[];
-	readonly includeSourceActions?: boolean;
-	readonly onlyIncludePreferredActions?: boolean;
+export interfAce CodeActionFilter {
+	reAdonly include?: CodeActionKind;
+	reAdonly excludes?: reAdonly CodeActionKind[];
+	reAdonly includeSourceActions?: booleAn;
+	reAdonly onlyIncludePreferredActions?: booleAn;
 }
 
-export function mayIncludeActionsOfKind(filter: CodeActionFilter, providedKind: CodeActionKind): boolean {
-	// A provided kind may be a subset or superset of our filtered kind.
+export function mAyIncludeActionsOfKind(filter: CodeActionFilter, providedKind: CodeActionKind): booleAn {
+	// A provided kind mAy be A subset or superset of our filtered kind.
 	if (filter.include && !filter.include.intersects(providedKind)) {
-		return false;
+		return fAlse;
 	}
 
 	if (filter.excludes) {
 		if (filter.excludes.some(exclude => excludesAction(providedKind, exclude, filter.include))) {
-			return false;
+			return fAlse;
 		}
 	}
 
-	// Don't return source actions unless they are explicitly requested
-	if (!filter.includeSourceActions && CodeActionKind.Source.contains(providedKind)) {
-		return false;
+	// Don't return source Actions unless they Are explicitly requested
+	if (!filter.includeSourceActions && CodeActionKind.Source.contAins(providedKind)) {
+		return fAlse;
 	}
 
 	return true;
 }
 
-export function filtersAction(filter: CodeActionFilter, action: CodeAction): boolean {
-	const actionKind = action.kind ? new CodeActionKind(action.kind) : undefined;
+export function filtersAction(filter: CodeActionFilter, Action: CodeAction): booleAn {
+	const ActionKind = Action.kind ? new CodeActionKind(Action.kind) : undefined;
 
-	// Filter out actions by kind
+	// Filter out Actions by kind
 	if (filter.include) {
-		if (!actionKind || !filter.include.contains(actionKind)) {
-			return false;
+		if (!ActionKind || !filter.include.contAins(ActionKind)) {
+			return fAlse;
 		}
 	}
 
 	if (filter.excludes) {
-		if (actionKind && filter.excludes.some(exclude => excludesAction(actionKind, exclude, filter.include))) {
-			return false;
+		if (ActionKind && filter.excludes.some(exclude => excludesAction(ActionKind, exclude, filter.include))) {
+			return fAlse;
 		}
 	}
 
-	// Don't return source actions unless they are explicitly requested
+	// Don't return source Actions unless they Are explicitly requested
 	if (!filter.includeSourceActions) {
-		if (actionKind && CodeActionKind.Source.contains(actionKind)) {
-			return false;
+		if (ActionKind && CodeActionKind.Source.contAins(ActionKind)) {
+			return fAlse;
 		}
 	}
 
 	if (filter.onlyIncludePreferredActions) {
-		if (!action.isPreferred) {
-			return false;
+		if (!Action.isPreferred) {
+			return fAlse;
 		}
 	}
 
 	return true;
 }
 
-function excludesAction(providedKind: CodeActionKind, exclude: CodeActionKind, include: CodeActionKind | undefined): boolean {
-	if (!exclude.contains(providedKind)) {
-		return false;
+function excludesAction(providedKind: CodeActionKind, exclude: CodeActionKind, include: CodeActionKind | undefined): booleAn {
+	if (!exclude.contAins(providedKind)) {
+		return fAlse;
 	}
-	if (include && exclude.contains(include)) {
+	if (include && exclude.contAins(include)) {
 		// The include is more specific, don't filter out
-		return false;
+		return fAlse;
 	}
 	return true;
 }
 
-export interface CodeActionTrigger {
-	readonly type: CodeActionTriggerType;
-	readonly filter?: CodeActionFilter;
-	readonly autoApply?: CodeActionAutoApply;
-	readonly context?: {
-		readonly notAvailableMessage: string;
-		readonly position: Position;
+export interfAce CodeActionTrigger {
+	reAdonly type: CodeActionTriggerType;
+	reAdonly filter?: CodeActionFilter;
+	reAdonly AutoApply?: CodeActionAutoApply;
+	reAdonly context?: {
+		reAdonly notAvAilAbleMessAge: string;
+		reAdonly position: Position;
 	};
 }
 
-export class CodeActionCommandArgs {
-	public static fromUser(arg: any, defaults: { kind: CodeActionKind, apply: CodeActionAutoApply }): CodeActionCommandArgs {
-		if (!arg || typeof arg !== 'object') {
-			return new CodeActionCommandArgs(defaults.kind, defaults.apply, false);
+export clAss CodeActionCommAndArgs {
+	public stAtic fromUser(Arg: Any, defAults: { kind: CodeActionKind, Apply: CodeActionAutoApply }): CodeActionCommAndArgs {
+		if (!Arg || typeof Arg !== 'object') {
+			return new CodeActionCommAndArgs(defAults.kind, defAults.Apply, fAlse);
 		}
-		return new CodeActionCommandArgs(
-			CodeActionCommandArgs.getKindFromUser(arg, defaults.kind),
-			CodeActionCommandArgs.getApplyFromUser(arg, defaults.apply),
-			CodeActionCommandArgs.getPreferredUser(arg));
+		return new CodeActionCommAndArgs(
+			CodeActionCommAndArgs.getKindFromUser(Arg, defAults.kind),
+			CodeActionCommAndArgs.getApplyFromUser(Arg, defAults.Apply),
+			CodeActionCommAndArgs.getPreferredUser(Arg));
 	}
 
-	private static getApplyFromUser(arg: any, defaultAutoApply: CodeActionAutoApply) {
-		switch (typeof arg.apply === 'string' ? arg.apply.toLowerCase() : '') {
-			case 'first': return CodeActionAutoApply.First;
-			case 'never': return CodeActionAutoApply.Never;
-			case 'ifsingle': return CodeActionAutoApply.IfSingle;
-			default: return defaultAutoApply;
+	privAte stAtic getApplyFromUser(Arg: Any, defAultAutoApply: CodeActionAutoApply) {
+		switch (typeof Arg.Apply === 'string' ? Arg.Apply.toLowerCAse() : '') {
+			cAse 'first': return CodeActionAutoApply.First;
+			cAse 'never': return CodeActionAutoApply.Never;
+			cAse 'ifsingle': return CodeActionAutoApply.IfSingle;
+			defAult: return defAultAutoApply;
 		}
 	}
 
-	private static getKindFromUser(arg: any, defaultKind: CodeActionKind) {
-		return typeof arg.kind === 'string'
-			? new CodeActionKind(arg.kind)
-			: defaultKind;
+	privAte stAtic getKindFromUser(Arg: Any, defAultKind: CodeActionKind) {
+		return typeof Arg.kind === 'string'
+			? new CodeActionKind(Arg.kind)
+			: defAultKind;
 	}
 
-	private static getPreferredUser(arg: any): boolean {
-		return typeof arg.preferred === 'boolean'
-			? arg.preferred
-			: false;
+	privAte stAtic getPreferredUser(Arg: Any): booleAn {
+		return typeof Arg.preferred === 'booleAn'
+			? Arg.preferred
+			: fAlse;
 	}
 
-	private constructor(
-		public readonly kind: CodeActionKind,
-		public readonly apply: CodeActionAutoApply,
-		public readonly preferred: boolean,
+	privAte constructor(
+		public reAdonly kind: CodeActionKind,
+		public reAdonly Apply: CodeActionAutoApply,
+		public reAdonly preferred: booleAn,
 	) { }
 }

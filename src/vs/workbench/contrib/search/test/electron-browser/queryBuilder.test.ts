@@ -1,88 +1,88 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { IWorkspaceContextService, toWorkspaceFolder, Workspace } from 'vs/platform/workspace/common/workspace';
-import { ISearchPathsInfo, QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
-import { TestEnvironmentService, TestNativePathService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { assertEqualSearchPathResults, getUri, patternsToIExpression, globalGlob, fixPath } from 'vs/workbench/contrib/search/test/browser/queryBuilder.test';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { IWorkspAceContextService, toWorkspAceFolder, WorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { ISeArchPAthsInfo, QueryBuilder } from 'vs/workbench/contrib/seArch/common/queryBuilder';
+import { TestEnvironmentService, TestNAtivePAthService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { AssertEquAlSeArchPAthResults, getUri, pAtternsToIExpression, globAlGlob, fixPAth } from 'vs/workbench/contrib/seArch/test/browser/queryBuilder.test';
 import { TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 
 const DEFAULT_EDITOR_CONFIG = {};
-const DEFAULT_USER_CONFIG = { useRipgrep: true, useIgnoreFiles: true, useGlobalIgnoreFiles: true };
+const DEFAULT_USER_CONFIG = { useRipgrep: true, useIgnoreFiles: true, useGlobAlIgnoreFiles: true };
 
 suite('QueryBuilder', () => {
-	const ROOT_1 = fixPath('/foo/root1');
+	const ROOT_1 = fixPAth('/foo/root1');
 	const ROOT_1_URI = getUri(ROOT_1);
 
-	let instantiationService: TestInstantiationService;
+	let instAntiAtionService: TestInstAntiAtionService;
 	let queryBuilder: QueryBuilder;
-	let mockConfigService: TestConfigurationService;
+	let mockConfigService: TestConfigurAtionService;
 	let mockContextService: TestContextService;
-	let mockWorkspace: Workspace;
+	let mockWorkspAce: WorkspAce;
 
-	setup(async () => {
-		instantiationService = new TestInstantiationService();
+	setup(Async () => {
+		instAntiAtionService = new TestInstAntiAtionService();
 
-		mockConfigService = new TestConfigurationService();
-		mockConfigService.setUserConfiguration('search', DEFAULT_USER_CONFIG);
-		mockConfigService.setUserConfiguration('editor', DEFAULT_EDITOR_CONFIG);
-		instantiationService.stub(IConfigurationService, mockConfigService);
+		mockConfigService = new TestConfigurAtionService();
+		mockConfigService.setUserConfigurAtion('seArch', DEFAULT_USER_CONFIG);
+		mockConfigService.setUserConfigurAtion('editor', DEFAULT_EDITOR_CONFIG);
+		instAntiAtionService.stub(IConfigurAtionService, mockConfigService);
 
 		mockContextService = new TestContextService();
-		mockWorkspace = new Workspace('workspace', [toWorkspaceFolder(ROOT_1_URI)]);
-		mockContextService.setWorkspace(mockWorkspace);
+		mockWorkspAce = new WorkspAce('workspAce', [toWorkspAceFolder(ROOT_1_URI)]);
+		mockContextService.setWorkspAce(mockWorkspAce);
 
-		instantiationService.stub(IWorkspaceContextService, mockContextService);
-		instantiationService.stub(IEnvironmentService, TestEnvironmentService);
-		instantiationService.stub(IPathService, new TestNativePathService());
+		instAntiAtionService.stub(IWorkspAceContextService, mockContextService);
+		instAntiAtionService.stub(IEnvironmentService, TestEnvironmentService);
+		instAntiAtionService.stub(IPAthService, new TestNAtivePAthService());
 
-		queryBuilder = instantiationService.createInstance(QueryBuilder);
-		await new Promise(resolve => setTimeout(resolve, 5)); // Wait for IPathService.userHome to resolve
+		queryBuilder = instAntiAtionService.creAteInstAnce(QueryBuilder);
+		AwAit new Promise(resolve => setTimeout(resolve, 5)); // WAit for IPAthService.userHome to resolve
 	});
 
-	suite('parseSearchPaths', () => {
+	suite('pArseSeArchPAths', () => {
 
-		function testIncludes(includePattern: string, expectedResult: ISearchPathsInfo): void {
-			assertEqualSearchPathResults(
-				queryBuilder.parseSearchPaths(includePattern),
+		function testIncludes(includePAttern: string, expectedResult: ISeArchPAthsInfo): void {
+			AssertEquAlSeArchPAthResults(
+				queryBuilder.pArseSeArchPAths(includePAttern),
 				expectedResult,
-				includePattern);
+				includePAttern);
 		}
 
-		function testIncludesDataItem([includePattern, expectedResult]: [string, ISearchPathsInfo]): void {
-			testIncludes(includePattern, expectedResult);
+		function testIncludesDAtAItem([includePAttern, expectedResult]: [string, ISeArchPAthsInfo]): void {
+			testIncludes(includePAttern, expectedResult);
 		}
 
 		test('includes with tilde', () => {
 			const userHome = TestEnvironmentService.userHome;
-			const cases: [string, ISearchPathsInfo][] = [
+			const cAses: [string, ISeArchPAthsInfo][] = [
 				[
-					'~/foo/bar',
+					'~/foo/bAr',
 					{
-						searchPaths: [{ searchPath: getUri(userHome.fsPath, '/foo/bar') }]
+						seArchPAths: [{ seArchPAth: getUri(userHome.fsPAth, '/foo/bAr') }]
 					}
 				],
 				[
-					'~/foo/bar, a',
+					'~/foo/bAr, A',
 					{
-						searchPaths: [{ searchPath: getUri(userHome.fsPath, '/foo/bar') }],
-						pattern: patternsToIExpression(...globalGlob('a'))
+						seArchPAths: [{ seArchPAth: getUri(userHome.fsPAth, '/foo/bAr') }],
+						pAttern: pAtternsToIExpression(...globAlGlob('A'))
 					}
 				],
 				[
-					fixPath('/foo/~/bar'),
+					fixPAth('/foo/~/bAr'),
 					{
-						searchPaths: [{ searchPath: getUri('/foo/~/bar') }]
+						seArchPAths: [{ seArchPAth: getUri('/foo/~/bAr') }]
 					}
 				],
 			];
-			cases.forEach(testIncludesDataItem);
+			cAses.forEAch(testIncludesDAtAItem);
 		});
 	});
 });

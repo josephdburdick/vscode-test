@@ -1,106 +1,106 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Token } from 'markdown-it';
-import * as vscode from 'vscode';
-import { MarkdownEngine } from '../markdownEngine';
-import { TableOfContentsProvider } from '../tableOfContentsProvider';
-import { flatten } from '../util/arrays';
+import { Token } from 'mArkdown-it';
+import * As vscode from 'vscode';
+import { MArkdownEngine } from '../mArkdownEngine';
+import { TAbleOfContentsProvider } from '../tAbleOfContentsProvider';
+import { flAtten } from '../util/ArrAys';
 
-const rangeLimit = 5000;
+const rAngeLimit = 5000;
 
-export default class MarkdownFoldingProvider implements vscode.FoldingRangeProvider {
+export defAult clAss MArkdownFoldingProvider implements vscode.FoldingRAngeProvider {
 
 	constructor(
-		private readonly engine: MarkdownEngine
+		privAte reAdonly engine: MArkdownEngine
 	) { }
 
-	public async provideFoldingRanges(
+	public Async provideFoldingRAnges(
 		document: vscode.TextDocument,
 		_: vscode.FoldingContext,
-		_token: vscode.CancellationToken
-	): Promise<vscode.FoldingRange[]> {
-		const foldables = await Promise.all([
+		_token: vscode.CAncellAtionToken
+	): Promise<vscode.FoldingRAnge[]> {
+		const foldAbles = AwAit Promise.All([
 			this.getRegions(document),
-			this.getHeaderFoldingRanges(document),
-			this.getBlockFoldingRanges(document)
+			this.getHeAderFoldingRAnges(document),
+			this.getBlockFoldingRAnges(document)
 		]);
-		return flatten(foldables).slice(0, rangeLimit);
+		return flAtten(foldAbles).slice(0, rAngeLimit);
 	}
 
-	private async getRegions(document: vscode.TextDocument): Promise<vscode.FoldingRange[]> {
-		const tokens = await this.engine.parse(document);
-		const regionMarkers = tokens.filter(isRegionMarker)
-			.map(token => ({ line: token.map[0], isStart: isStartRegion(token.content) }));
+	privAte Async getRegions(document: vscode.TextDocument): Promise<vscode.FoldingRAnge[]> {
+		const tokens = AwAit this.engine.pArse(document);
+		const regionMArkers = tokens.filter(isRegionMArker)
+			.mAp(token => ({ line: token.mAp[0], isStArt: isStArtRegion(token.content) }));
 
-		const nestingStack: { line: number, isStart: boolean }[] = [];
-		return regionMarkers
-			.map(marker => {
-				if (marker.isStart) {
-					nestingStack.push(marker);
-				} else if (nestingStack.length && nestingStack[nestingStack.length - 1].isStart) {
-					return new vscode.FoldingRange(nestingStack.pop()!.line, marker.line, vscode.FoldingRangeKind.Region);
+		const nestingStAck: { line: number, isStArt: booleAn }[] = [];
+		return regionMArkers
+			.mAp(mArker => {
+				if (mArker.isStArt) {
+					nestingStAck.push(mArker);
+				} else if (nestingStAck.length && nestingStAck[nestingStAck.length - 1].isStArt) {
+					return new vscode.FoldingRAnge(nestingStAck.pop()!.line, mArker.line, vscode.FoldingRAngeKind.Region);
 				} else {
-					// noop: invalid nesting (i.e. [end, start] or [start, end, end])
+					// noop: invAlid nesting (i.e. [end, stArt] or [stArt, end, end])
 				}
 				return null;
 			})
-			.filter((region: vscode.FoldingRange | null): region is vscode.FoldingRange => !!region);
+			.filter((region: vscode.FoldingRAnge | null): region is vscode.FoldingRAnge => !!region);
 	}
 
-	private async getHeaderFoldingRanges(document: vscode.TextDocument) {
-		const tocProvider = new TableOfContentsProvider(this.engine, document);
-		const toc = await tocProvider.getToc();
-		return toc.map(entry => {
-			let endLine = entry.location.range.end.line;
-			if (document.lineAt(endLine).isEmptyOrWhitespace && endLine >= entry.line + 1) {
+	privAte Async getHeAderFoldingRAnges(document: vscode.TextDocument) {
+		const tocProvider = new TAbleOfContentsProvider(this.engine, document);
+		const toc = AwAit tocProvider.getToc();
+		return toc.mAp(entry => {
+			let endLine = entry.locAtion.rAnge.end.line;
+			if (document.lineAt(endLine).isEmptyOrWhitespAce && endLine >= entry.line + 1) {
 				endLine = endLine - 1;
 			}
-			return new vscode.FoldingRange(entry.line, endLine);
+			return new vscode.FoldingRAnge(entry.line, endLine);
 		});
 	}
 
-	private async getBlockFoldingRanges(document: vscode.TextDocument): Promise<vscode.FoldingRange[]> {
-		const tokens = await this.engine.parse(document);
-		const multiLineListItems = tokens.filter(isFoldableToken);
-		return multiLineListItems.map(listItem => {
-			const start = listItem.map[0];
-			let end = listItem.map[1] - 1;
-			if (document.lineAt(end).isEmptyOrWhitespace && end >= start + 1) {
+	privAte Async getBlockFoldingRAnges(document: vscode.TextDocument): Promise<vscode.FoldingRAnge[]> {
+		const tokens = AwAit this.engine.pArse(document);
+		const multiLineListItems = tokens.filter(isFoldAbleToken);
+		return multiLineListItems.mAp(listItem => {
+			const stArt = listItem.mAp[0];
+			let end = listItem.mAp[1] - 1;
+			if (document.lineAt(end).isEmptyOrWhitespAce && end >= stArt + 1) {
 				end = end - 1;
 			}
-			return new vscode.FoldingRange(start, end, this.getFoldingRangeKind(listItem));
+			return new vscode.FoldingRAnge(stArt, end, this.getFoldingRAngeKind(listItem));
 		});
 	}
 
-	private getFoldingRangeKind(listItem: Token): vscode.FoldingRangeKind | undefined {
-		return listItem.type === 'html_block' && listItem.content.startsWith('<!--')
-			? vscode.FoldingRangeKind.Comment
+	privAte getFoldingRAngeKind(listItem: Token): vscode.FoldingRAngeKind | undefined {
+		return listItem.type === 'html_block' && listItem.content.stArtsWith('<!--')
+			? vscode.FoldingRAngeKind.Comment
 			: undefined;
 	}
 }
 
-const isStartRegion = (t: string) => /^\s*<!--\s*#?region\b.*-->/.test(t);
+const isStArtRegion = (t: string) => /^\s*<!--\s*#?region\b.*-->/.test(t);
 const isEndRegion = (t: string) => /^\s*<!--\s*#?endregion\b.*-->/.test(t);
 
-const isRegionMarker = (token: Token) =>
-	token.type === 'html_block' && (isStartRegion(token.content) || isEndRegion(token.content));
+const isRegionMArker = (token: Token) =>
+	token.type === 'html_block' && (isStArtRegion(token.content) || isEndRegion(token.content));
 
-const isFoldableToken = (token: Token): boolean => {
+const isFoldAbleToken = (token: Token): booleAn => {
 	switch (token.type) {
-		case 'fence':
-		case 'list_item_open':
-			return token.map[1] > token.map[0];
+		cAse 'fence':
+		cAse 'list_item_open':
+			return token.mAp[1] > token.mAp[0];
 
-		case 'html_block':
-			if (isRegionMarker(token)) {
-				return false;
+		cAse 'html_block':
+			if (isRegionMArker(token)) {
+				return fAlse;
 			}
-			return token.map[1] > token.map[0] + 1;
+			return token.mAp[1] > token.mAp[0] + 1;
 
-		default:
-			return false;
+		defAult:
+			return fAlse;
 	}
 };

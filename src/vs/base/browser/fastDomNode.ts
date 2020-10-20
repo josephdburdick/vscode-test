@@ -1,64 +1,64 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export class FastDomNode<T extends HTMLElement> {
+export clAss FAstDomNode<T extends HTMLElement> {
 
-	public readonly domNode: T;
-	private _maxWidth: number;
-	private _width: number;
-	private _height: number;
-	private _top: number;
-	private _left: number;
-	private _bottom: number;
-	private _right: number;
-	private _fontFamily: string;
-	private _fontWeight: string;
-	private _fontSize: number;
-	private _fontFeatureSettings: string;
-	private _lineHeight: number;
-	private _letterSpacing: number;
-	private _className: string;
-	private _display: string;
-	private _position: string;
-	private _visibility: string;
-	private _backgroundColor: string;
-	private _layerHint: boolean;
-	private _contain: 'none' | 'strict' | 'content' | 'size' | 'layout' | 'style' | 'paint';
-	private _boxShadow: string;
+	public reAdonly domNode: T;
+	privAte _mAxWidth: number;
+	privAte _width: number;
+	privAte _height: number;
+	privAte _top: number;
+	privAte _left: number;
+	privAte _bottom: number;
+	privAte _right: number;
+	privAte _fontFAmily: string;
+	privAte _fontWeight: string;
+	privAte _fontSize: number;
+	privAte _fontFeAtureSettings: string;
+	privAte _lineHeight: number;
+	privAte _letterSpAcing: number;
+	privAte _clAssNAme: string;
+	privAte _displAy: string;
+	privAte _position: string;
+	privAte _visibility: string;
+	privAte _bAckgroundColor: string;
+	privAte _lAyerHint: booleAn;
+	privAte _contAin: 'none' | 'strict' | 'content' | 'size' | 'lAyout' | 'style' | 'pAint';
+	privAte _boxShAdow: string;
 
 	constructor(domNode: T) {
 		this.domNode = domNode;
-		this._maxWidth = -1;
+		this._mAxWidth = -1;
 		this._width = -1;
 		this._height = -1;
 		this._top = -1;
 		this._left = -1;
 		this._bottom = -1;
 		this._right = -1;
-		this._fontFamily = '';
+		this._fontFAmily = '';
 		this._fontWeight = '';
 		this._fontSize = -1;
-		this._fontFeatureSettings = '';
+		this._fontFeAtureSettings = '';
 		this._lineHeight = -1;
-		this._letterSpacing = -100;
-		this._className = '';
-		this._display = '';
+		this._letterSpAcing = -100;
+		this._clAssNAme = '';
+		this._displAy = '';
 		this._position = '';
 		this._visibility = '';
-		this._backgroundColor = '';
-		this._layerHint = false;
-		this._contain = 'none';
-		this._boxShadow = '';
+		this._bAckgroundColor = '';
+		this._lAyerHint = fAlse;
+		this._contAin = 'none';
+		this._boxShAdow = '';
 	}
 
-	public setMaxWidth(maxWidth: number): void {
-		if (this._maxWidth === maxWidth) {
+	public setMAxWidth(mAxWidth: number): void {
+		if (this._mAxWidth === mAxWidth) {
 			return;
 		}
-		this._maxWidth = maxWidth;
-		this.domNode.style.maxWidth = this._maxWidth + 'px';
+		this._mAxWidth = mAxWidth;
+		this.domNode.style.mAxWidth = this._mAxWidth + 'px';
 	}
 
 	public setWidth(width: number): void {
@@ -117,12 +117,12 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.right = this._right + 'px';
 	}
 
-	public setFontFamily(fontFamily: string): void {
-		if (this._fontFamily === fontFamily) {
+	public setFontFAmily(fontFAmily: string): void {
+		if (this._fontFAmily === fontFAmily) {
 			return;
 		}
-		this._fontFamily = fontFamily;
-		this.domNode.style.fontFamily = this._fontFamily;
+		this._fontFAmily = fontFAmily;
+		this.domNode.style.fontFAmily = this._fontFAmily;
 	}
 
 	public setFontWeight(fontWeight: string): void {
@@ -141,12 +141,12 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.fontSize = this._fontSize + 'px';
 	}
 
-	public setFontFeatureSettings(fontFeatureSettings: string): void {
-		if (this._fontFeatureSettings === fontFeatureSettings) {
+	public setFontFeAtureSettings(fontFeAtureSettings: string): void {
+		if (this._fontFeAtureSettings === fontFeAtureSettings) {
 			return;
 		}
-		this._fontFeatureSettings = fontFeatureSettings;
-		this.domNode.style.fontFeatureSettings = this._fontFeatureSettings;
+		this._fontFeAtureSettings = fontFeAtureSettings;
+		this.domNode.style.fontFeAtureSettings = this._fontFeAtureSettings;
 	}
 
 	public setLineHeight(lineHeight: number): void {
@@ -157,33 +157,33 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.lineHeight = this._lineHeight + 'px';
 	}
 
-	public setLetterSpacing(letterSpacing: number): void {
-		if (this._letterSpacing === letterSpacing) {
+	public setLetterSpAcing(letterSpAcing: number): void {
+		if (this._letterSpAcing === letterSpAcing) {
 			return;
 		}
-		this._letterSpacing = letterSpacing;
-		this.domNode.style.letterSpacing = this._letterSpacing + 'px';
+		this._letterSpAcing = letterSpAcing;
+		this.domNode.style.letterSpAcing = this._letterSpAcing + 'px';
 	}
 
-	public setClassName(className: string): void {
-		if (this._className === className) {
+	public setClAssNAme(clAssNAme: string): void {
+		if (this._clAssNAme === clAssNAme) {
 			return;
 		}
-		this._className = className;
-		this.domNode.className = this._className;
+		this._clAssNAme = clAssNAme;
+		this.domNode.clAssNAme = this._clAssNAme;
 	}
 
-	public toggleClassName(className: string, shouldHaveIt?: boolean): void {
-		this.domNode.classList.toggle(className, shouldHaveIt);
-		this._className = this.domNode.className;
+	public toggleClAssNAme(clAssNAme: string, shouldHAveIt?: booleAn): void {
+		this.domNode.clAssList.toggle(clAssNAme, shouldHAveIt);
+		this._clAssNAme = this.domNode.clAssNAme;
 	}
 
-	public setDisplay(display: string): void {
-		if (this._display === display) {
+	public setDisplAy(displAy: string): void {
+		if (this._displAy === displAy) {
 			return;
 		}
-		this._display = display;
-		this.domNode.style.display = this._display;
+		this._displAy = displAy;
+		this.domNode.style.displAy = this._displAy;
 	}
 
 	public setPosition(position: string): void {
@@ -202,55 +202,55 @@ export class FastDomNode<T extends HTMLElement> {
 		this.domNode.style.visibility = this._visibility;
 	}
 
-	public setBackgroundColor(backgroundColor: string): void {
-		if (this._backgroundColor === backgroundColor) {
+	public setBAckgroundColor(bAckgroundColor: string): void {
+		if (this._bAckgroundColor === bAckgroundColor) {
 			return;
 		}
-		this._backgroundColor = backgroundColor;
-		this.domNode.style.backgroundColor = this._backgroundColor;
+		this._bAckgroundColor = bAckgroundColor;
+		this.domNode.style.bAckgroundColor = this._bAckgroundColor;
 	}
 
-	public setLayerHinting(layerHint: boolean): void {
-		if (this._layerHint === layerHint) {
+	public setLAyerHinting(lAyerHint: booleAn): void {
+		if (this._lAyerHint === lAyerHint) {
 			return;
 		}
-		this._layerHint = layerHint;
-		this.domNode.style.transform = this._layerHint ? 'translate3d(0px, 0px, 0px)' : '';
+		this._lAyerHint = lAyerHint;
+		this.domNode.style.trAnsform = this._lAyerHint ? 'trAnslAte3d(0px, 0px, 0px)' : '';
 	}
 
-	public setBoxShadow(boxShadow: string): void {
-		if (this._boxShadow === boxShadow) {
+	public setBoxShAdow(boxShAdow: string): void {
+		if (this._boxShAdow === boxShAdow) {
 			return;
 		}
-		this._boxShadow = boxShadow;
-		this.domNode.style.boxShadow = boxShadow;
+		this._boxShAdow = boxShAdow;
+		this.domNode.style.boxShAdow = boxShAdow;
 	}
 
-	public setContain(contain: 'none' | 'strict' | 'content' | 'size' | 'layout' | 'style' | 'paint'): void {
-		if (this._contain === contain) {
+	public setContAin(contAin: 'none' | 'strict' | 'content' | 'size' | 'lAyout' | 'style' | 'pAint'): void {
+		if (this._contAin === contAin) {
 			return;
 		}
-		this._contain = contain;
-		(<any>this.domNode.style).contain = this._contain;
+		this._contAin = contAin;
+		(<Any>this.domNode.style).contAin = this._contAin;
 	}
 
-	public setAttribute(name: string, value: string): void {
-		this.domNode.setAttribute(name, value);
+	public setAttribute(nAme: string, vAlue: string): void {
+		this.domNode.setAttribute(nAme, vAlue);
 	}
 
-	public removeAttribute(name: string): void {
-		this.domNode.removeAttribute(name);
+	public removeAttribute(nAme: string): void {
+		this.domNode.removeAttribute(nAme);
 	}
 
-	public appendChild(child: FastDomNode<T>): void {
-		this.domNode.appendChild(child.domNode);
+	public AppendChild(child: FAstDomNode<T>): void {
+		this.domNode.AppendChild(child.domNode);
 	}
 
-	public removeChild(child: FastDomNode<T>): void {
+	public removeChild(child: FAstDomNode<T>): void {
 		this.domNode.removeChild(child.domNode);
 	}
 }
 
-export function createFastDomNode<T extends HTMLElement>(domNode: T): FastDomNode<T> {
-	return new FastDomNode(domNode);
+export function creAteFAstDomNode<T extends HTMLElement>(domNode: T): FAstDomNode<T> {
+	return new FAstDomNode(domNode);
 }

@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { join } from 'vs/base/common/path';
-import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IExtensionManagementService, DidInstallExtensionEvent, DidUninstallExtensionEvent } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { MANIFEST_CACHE_FOLDER, USER_MANIFEST_CACHE_FILE } from 'vs/platform/extensions/common/extensions';
-import * as pfs from 'vs/base/node/pfs';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { join } from 'vs/bAse/common/pAth';
+import { INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { IExtensionMAnAgementService, DidInstAllExtensionEvent, DidUninstAllExtensionEvent } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { MANIFEST_CACHE_FOLDER, USER_MANIFEST_CACHE_FILE } from 'vs/plAtform/extensions/common/extensions';
+import * As pfs from 'vs/bAse/node/pfs';
 
-export class ExtensionsManifestCache extends Disposable {
+export clAss ExtensionsMAnifestCAche extends DisposAble {
 
-	private extensionsManifestCache = join(this.environmentService.userDataPath, MANIFEST_CACHE_FOLDER, USER_MANIFEST_CACHE_FILE);
+	privAte extensionsMAnifestCAche = join(this.environmentService.userDAtAPAth, MANIFEST_CACHE_FOLDER, USER_MANIFEST_CACHE_FILE);
 
 	constructor(
-		private readonly environmentService: INativeEnvironmentService,
-		extensionsManagementService: IExtensionManagementService
+		privAte reAdonly environmentService: INAtiveEnvironmentService,
+		extensionsMAnAgementService: IExtensionMAnAgementService
 	) {
 		super();
-		this._register(extensionsManagementService.onDidInstallExtension(e => this.onDidInstallExtension(e)));
-		this._register(extensionsManagementService.onDidUninstallExtension(e => this.onDidUnInstallExtension(e)));
+		this._register(extensionsMAnAgementService.onDidInstAllExtension(e => this.onDidInstAllExtension(e)));
+		this._register(extensionsMAnAgementService.onDidUninstAllExtension(e => this.onDidUnInstAllExtension(e)));
 	}
 
-	private onDidInstallExtension(e: DidInstallExtensionEvent): void {
+	privAte onDidInstAllExtension(e: DidInstAllExtensionEvent): void {
 		if (!e.error) {
-			this.invalidate();
+			this.invAlidAte();
 		}
 	}
 
-	private onDidUnInstallExtension(e: DidUninstallExtensionEvent): void {
+	privAte onDidUnInstAllExtension(e: DidUninstAllExtensionEvent): void {
 		if (!e.error) {
-			this.invalidate();
+			this.invAlidAte();
 		}
 	}
 
-	invalidate(): void {
-		pfs.rimraf(this.extensionsManifestCache, pfs.RimRafMode.MOVE).then(() => { }, () => { });
+	invAlidAte(): void {
+		pfs.rimrAf(this.extensionsMAnifestCAche, pfs.RimRAfMode.MOVE).then(() => { }, () => { });
 	}
 }

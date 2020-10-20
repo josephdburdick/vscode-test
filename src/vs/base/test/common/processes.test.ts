@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as processes from 'vs/base/common/processes';
+import * As Assert from 'Assert';
+import * As processes from 'vs/bAse/common/processes';
 
 suite('Processes', () => {
-	test('sanitizeProcessEnvironment', () => {
+	test('sAnitizeProcessEnvironment', () => {
 		let env = {
-			FOO: 'bar',
+			FOO: 'bAr',
 			ELECTRON_ENABLE_STACK_DUMPING: 'x',
 			ELECTRON_ENABLE_LOGGING: 'x',
 			ELECTRON_NO_ASAR: 'x',
@@ -26,8 +26,8 @@ suite('Processes', () => {
 			VSCODE_NODE_CACHED_DATA_DIR: 'x',
 			VSCODE_NEW_VAR: 'x'
 		};
-		processes.sanitizeProcessEnvironment(env);
-		assert.equal(env['FOO'], 'bar');
-		assert.equal(Object.keys(env).length, 1);
+		processes.sAnitizeProcessEnvironment(env);
+		Assert.equAl(env['FOO'], 'bAr');
+		Assert.equAl(Object.keys(env).length, 1);
 	});
 });

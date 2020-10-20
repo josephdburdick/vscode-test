@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { flatten } from 'vs/base/common/arrays';
-import { Emitter } from 'vs/base/common/event';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { codeActionCommandId, refactorCommandId, sourceActionCommandId } from 'vs/editor/contrib/codeAction/codeAction';
+import { flAtten } from 'vs/bAse/common/ArrAys';
+import { Emitter } from 'vs/bAse/common/event';
+import { IJSONSchemA, IJSONSchemAMAp } from 'vs/bAse/common/jsonSchemA';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { codeActionCommAndId, refActorCommAndId, sourceActionCommAndId } from 'vs/editor/contrib/codeAction/codeAction';
 import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
-import * as nls from 'vs/nls';
-import { Extensions, IConfigurationNode, IConfigurationRegistry, ConfigurationScope, IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { Registry } from 'vs/platform/registry/common/platform';
+import * As nls from 'vs/nls';
+import { Extensions, IConfigurAtionNode, IConfigurAtionRegistry, ConfigurAtionScope, IConfigurAtionPropertySchemA } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { CodeActionsExtensionPoint, ContributedCodeAction } from 'vs/workbench/contrib/codeActions/common/codeActionsExtensionPoint';
 import { IExtensionPoint } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { editorConfigurationBaseNode } from 'vs/editor/common/config/commonEditorConfig';
+import { editorConfigurAtionBAseNode } from 'vs/editor/common/config/commonEditorConfig';
 
-const codeActionsOnSaveDefaultProperties = Object.freeze<IJSONSchemaMap>({
+const codeActionsOnSAveDefAultProperties = Object.freeze<IJSONSchemAMAp>({
 	'source.fixAll': {
-		type: 'boolean',
-		description: nls.localize('codeActionsOnSave.fixAll', "Controls whether auto fix action should be run on file save.")
+		type: 'booleAn',
+		description: nls.locAlize('codeActionsOnSAve.fixAll', "Controls whether Auto fix Action should be run on file sAve.")
 	}
 });
 
-const codeActionsOnSaveSchema: IConfigurationPropertySchema = {
+const codeActionsOnSAveSchemA: IConfigurAtionPropertySchemA = {
 	oneOf: [
 		{
 			type: 'object',
-			properties: codeActionsOnSaveDefaultProperties,
-			additionalProperties: {
-				type: 'boolean'
+			properties: codeActionsOnSAveDefAultProperties,
+			AdditionAlProperties: {
+				type: 'booleAn'
 			},
 		},
 		{
-			type: 'array',
+			type: 'ArrAy',
 			items: { type: 'string' }
 		}
 	],
-	default: {},
-	description: nls.localize('codeActionsOnSave', "Code action kinds to be run on save."),
-	scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
+	defAult: {},
+	description: nls.locAlize('codeActionsOnSAve', "Code Action kinds to be run on sAve."),
+	scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
 };
 
-export const editorConfiguration = Object.freeze<IConfigurationNode>({
-	...editorConfigurationBaseNode,
+export const editorConfigurAtion = Object.freeze<IConfigurAtionNode>({
+	...editorConfigurAtionBAseNode,
 	properties: {
-		'editor.codeActionsOnSave': codeActionsOnSaveSchema
+		'editor.codeActionsOnSAve': codeActionsOnSAveSchemA
 	}
 });
 
-export class CodeActionsContribution extends Disposable implements IWorkbenchContribution {
+export clAss CodeActionsContribution extends DisposAble implements IWorkbenchContribution {
 
-	private _contributedCodeActions: CodeActionsExtensionPoint[] = [];
+	privAte _contributedCodeActions: CodeActionsExtensionPoint[] = [];
 
-	private readonly _onDidChangeContributions = this._register(new Emitter<void>());
+	privAte reAdonly _onDidChAngeContributions = this._register(new Emitter<void>());
 
 	constructor(
 		codeActionsExtensionPoint: IExtensionPoint<CodeActionsExtensionPoint[]>,
@@ -63,66 +63,66 @@ export class CodeActionsContribution extends Disposable implements IWorkbenchCon
 	) {
 		super();
 
-		codeActionsExtensionPoint.setHandler(extensionPoints => {
-			this._contributedCodeActions = flatten(extensionPoints.map(x => x.value));
-			this.updateConfigurationSchema(this._contributedCodeActions);
-			this._onDidChangeContributions.fire();
+		codeActionsExtensionPoint.setHAndler(extensionPoints => {
+			this._contributedCodeActions = flAtten(extensionPoints.mAp(x => x.vAlue));
+			this.updAteConfigurAtionSchemA(this._contributedCodeActions);
+			this._onDidChAngeContributions.fire();
 		});
 
-		keybindingService.registerSchemaContribution({
-			getSchemaAdditions: () => this.getSchemaAdditions(),
-			onDidChange: this._onDidChangeContributions.event,
+		keybindingService.registerSchemAContribution({
+			getSchemAAdditions: () => this.getSchemAAdditions(),
+			onDidChAnge: this._onDidChAngeContributions.event,
 		});
 	}
 
-	private updateConfigurationSchema(codeActionContributions: readonly CodeActionsExtensionPoint[]) {
-		const newProperties: IJSONSchemaMap = { ...codeActionsOnSaveDefaultProperties };
+	privAte updAteConfigurAtionSchemA(codeActionContributions: reAdonly CodeActionsExtensionPoint[]) {
+		const newProperties: IJSONSchemAMAp = { ...codeActionsOnSAveDefAultProperties };
 		for (const [sourceAction, props] of this.getSourceActions(codeActionContributions)) {
 			newProperties[sourceAction] = {
-				type: 'boolean',
-				description: nls.localize('codeActionsOnSave.generic', "Controls whether '{0}' actions should be run on file save.", props.title)
+				type: 'booleAn',
+				description: nls.locAlize('codeActionsOnSAve.generic', "Controls whether '{0}' Actions should be run on file sAve.", props.title)
 			};
 		}
-		codeActionsOnSaveSchema.properties = newProperties;
-		Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-			.notifyConfigurationSchemaUpdated(editorConfiguration);
+		codeActionsOnSAveSchemA.properties = newProperties;
+		Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion)
+			.notifyConfigurAtionSchemAUpdAted(editorConfigurAtion);
 	}
 
-	private getSourceActions(contributions: readonly CodeActionsExtensionPoint[]) {
-		const defaultKinds = Object.keys(codeActionsOnSaveDefaultProperties).map(value => new CodeActionKind(value));
-		const sourceActions = new Map<string, { readonly title: string }>();
+	privAte getSourceActions(contributions: reAdonly CodeActionsExtensionPoint[]) {
+		const defAultKinds = Object.keys(codeActionsOnSAveDefAultProperties).mAp(vAlue => new CodeActionKind(vAlue));
+		const sourceActions = new MAp<string, { reAdonly title: string }>();
 		for (const contribution of contributions) {
-			for (const action of contribution.actions) {
-				const kind = new CodeActionKind(action.kind);
-				if (CodeActionKind.Source.contains(kind)
-					// Exclude any we already included by default
-					&& !defaultKinds.some(defaultKind => defaultKind.contains(kind))
+			for (const Action of contribution.Actions) {
+				const kind = new CodeActionKind(Action.kind);
+				if (CodeActionKind.Source.contAins(kind)
+					// Exclude Any we AlreAdy included by defAult
+					&& !defAultKinds.some(defAultKind => defAultKind.contAins(kind))
 				) {
-					sourceActions.set(kind.value, action);
+					sourceActions.set(kind.vAlue, Action);
 				}
 			}
 		}
 		return sourceActions;
 	}
 
-	private getSchemaAdditions(): IJSONSchema[] {
-		const conditionalSchema = (command: string, actions: readonly ContributedCodeAction[]): IJSONSchema => {
+	privAte getSchemAAdditions(): IJSONSchemA[] {
+		const conditionAlSchemA = (commAnd: string, Actions: reAdonly ContributedCodeAction[]): IJSONSchemA => {
 			return {
 				if: {
 					properties: {
-						'command': { const: command }
+						'commAnd': { const: commAnd }
 					}
 				},
 				then: {
 					properties: {
-						'args': {
+						'Args': {
 							required: ['kind'],
 							properties: {
 								'kind': {
-									anyOf: [
+									AnyOf: [
 										{
-											enum: actions.map(action => action.kind),
-											enumDescriptions: actions.map(action => action.description ?? action.title),
+											enum: Actions.mAp(Action => Action.kind),
+											enumDescriptions: Actions.mAp(Action => Action.description ?? Action.title),
 										},
 										{ type: 'string' },
 									]
@@ -135,21 +135,21 @@ export class CodeActionsContribution extends Disposable implements IWorkbenchCon
 		};
 
 		const getActions = (ofKind: CodeActionKind): ContributedCodeAction[] => {
-			const allActions = flatten(this._contributedCodeActions.map(desc => desc.actions.slice()));
+			const AllActions = flAtten(this._contributedCodeActions.mAp(desc => desc.Actions.slice()));
 
-			const out = new Map<string, ContributedCodeAction>();
-			for (const action of allActions) {
-				if (!out.has(action.kind) && ofKind.contains(new CodeActionKind(action.kind))) {
-					out.set(action.kind, action);
+			const out = new MAp<string, ContributedCodeAction>();
+			for (const Action of AllActions) {
+				if (!out.hAs(Action.kind) && ofKind.contAins(new CodeActionKind(Action.kind))) {
+					out.set(Action.kind, Action);
 				}
 			}
-			return Array.from(out.values());
+			return ArrAy.from(out.vAlues());
 		};
 
 		return [
-			conditionalSchema(codeActionCommandId, getActions(CodeActionKind.Empty)),
-			conditionalSchema(refactorCommandId, getActions(CodeActionKind.Refactor)),
-			conditionalSchema(sourceActionCommandId, getActions(CodeActionKind.Source)),
+			conditionAlSchemA(codeActionCommAndId, getActions(CodeActionKind.Empty)),
+			conditionAlSchemA(refActorCommAndId, getActions(CodeActionKind.RefActor)),
+			conditionAlSchemA(sourceActionCommAndId, getActions(CodeActionKind.Source)),
 		];
 	}
 }

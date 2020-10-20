@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { Range } from 'vs/editor/common/core/range';
-import { DefaultEndOfLine, ITextBuffer, ITextBufferBuilder, ValidAnnotatedEditOperation } from 'vs/editor/common/model';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { DefAultEndOfLine, ITextBuffer, ITextBufferBuilder, VAlidAnnotAtedEditOperAtion } from 'vs/editor/common/model';
 
-export function getRandomInt(min: number, max: number): number {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+export function getRAndomInt(min: number, mAx: number): number {
+	return MAth.floor(MAth.rAndom() * (mAx - min + 1)) + min;
 }
 
-export function getRandomEOLSequence(): string {
-	let rnd = getRandomInt(1, 3);
+export function getRAndomEOLSequence(): string {
+	let rnd = getRAndomInt(1, 3);
 	if (rnd === 1) {
 		return '\n';
 	}
@@ -22,16 +22,16 @@ export function getRandomEOLSequence(): string {
 	return '\r\n';
 }
 
-export function getRandomString(minLength: number, maxLength: number): string {
-	let length = getRandomInt(minLength, maxLength);
+export function getRAndomString(minLength: number, mAxLength: number): string {
+	let length = getRAndomInt(minLength, mAxLength);
 	let r = '';
 	for (let i = 0; i < length; i++) {
-		r += String.fromCharCode(getRandomInt(CharCode.a, CharCode.z));
+		r += String.fromChArCode(getRAndomInt(ChArCode.A, ChArCode.z));
 	}
 	return r;
 }
 
-export function generateRandomEdits(chunks: string[], editCnt: number): ValidAnnotatedEditOperation[] {
+export function generAteRAndomEdits(chunks: string[], editCnt: number): VAlidAnnotAtedEditOperAtion[] {
 	let lines: string[] = [];
 	for (const chunk of chunks) {
 		let newLines = chunk.split(/\r\n|\r|\n/);
@@ -43,25 +43,25 @@ export function generateRandomEdits(chunks: string[], editCnt: number): ValidAnn
 		}
 	}
 
-	let ops: ValidAnnotatedEditOperation[] = [];
+	let ops: VAlidAnnotAtedEditOperAtion[] = [];
 
 	for (let i = 0; i < editCnt; i++) {
-		let line = getRandomInt(1, lines.length);
-		let startColumn = getRandomInt(1, Math.max(lines[line - 1].length, 1));
-		let endColumn = getRandomInt(startColumn, Math.max(lines[line - 1].length, startColumn));
+		let line = getRAndomInt(1, lines.length);
+		let stArtColumn = getRAndomInt(1, MAth.mAx(lines[line - 1].length, 1));
+		let endColumn = getRAndomInt(stArtColumn, MAth.mAx(lines[line - 1].length, stArtColumn));
 		let text: string = '';
-		if (Math.random() < 0.5) {
-			text = getRandomString(5, 10);
+		if (MAth.rAndom() < 0.5) {
+			text = getRAndomString(5, 10);
 		}
 
-		ops.push(new ValidAnnotatedEditOperation(null, new Range(line, startColumn, line, endColumn), text, false, false, false));
-		lines[line - 1] = lines[line - 1].substring(0, startColumn - 1) + text + lines[line - 1].substring(endColumn - 1);
+		ops.push(new VAlidAnnotAtedEditOperAtion(null, new RAnge(line, stArtColumn, line, endColumn), text, fAlse, fAlse, fAlse));
+		lines[line - 1] = lines[line - 1].substring(0, stArtColumn - 1) + text + lines[line - 1].substring(endColumn - 1);
 	}
 
 	return ops;
 }
 
-export function generateSequentialInserts(chunks: string[], editCnt: number): ValidAnnotatedEditOperation[] {
+export function generAteSequentiAlInserts(chunks: string[], editCnt: number): VAlidAnnotAtedEditOperAtion[] {
 	let lines: string[] = [];
 	for (const chunk of chunks) {
 		let newLines = chunk.split(/\r\n|\r|\n/);
@@ -73,27 +73,27 @@ export function generateSequentialInserts(chunks: string[], editCnt: number): Va
 		}
 	}
 
-	let ops: ValidAnnotatedEditOperation[] = [];
+	let ops: VAlidAnnotAtedEditOperAtion[] = [];
 
 	for (let i = 0; i < editCnt; i++) {
 		let line = lines.length;
 		let column = lines[line - 1].length + 1;
 		let text: string = '';
-		if (Math.random() < 0.5) {
+		if (MAth.rAndom() < 0.5) {
 			text = '\n';
 			lines.push('');
 		} else {
-			text = getRandomString(1, 2);
+			text = getRAndomString(1, 2);
 			lines[line - 1] += text;
 		}
 
-		ops.push(new ValidAnnotatedEditOperation(null, new Range(line, column, line, column), text, false, false, false));
+		ops.push(new VAlidAnnotAtedEditOperAtion(null, new RAnge(line, column, line, column), text, fAlse, fAlse, fAlse));
 	}
 
 	return ops;
 }
 
-export function generateRandomReplaces(chunks: string[], editCnt: number, searchStringLen: number, replaceStringLen: number): ValidAnnotatedEditOperation[] {
+export function generAteRAndomReplAces(chunks: string[], editCnt: number, seArchStringLen: number, replAceStringLen: number): VAlidAnnotAtedEditOperAtion[] {
 	let lines: string[] = [];
 	for (const chunk of chunks) {
 		let newLines = chunk.split(/\r\n|\r|\n/);
@@ -105,55 +105,55 @@ export function generateRandomReplaces(chunks: string[], editCnt: number, search
 		}
 	}
 
-	let ops: ValidAnnotatedEditOperation[] = [];
-	let chunkSize = Math.max(1, Math.floor(lines.length / editCnt));
-	let chunkCnt = Math.floor(lines.length / chunkSize);
-	let replaceString = getRandomString(replaceStringLen, replaceStringLen);
+	let ops: VAlidAnnotAtedEditOperAtion[] = [];
+	let chunkSize = MAth.mAx(1, MAth.floor(lines.length / editCnt));
+	let chunkCnt = MAth.floor(lines.length / chunkSize);
+	let replAceString = getRAndomString(replAceStringLen, replAceStringLen);
 
 	let previousChunksLength = 0;
 	for (let i = 0; i < chunkCnt; i++) {
-		let startLine = previousChunksLength + 1;
+		let stArtLine = previousChunksLength + 1;
 		let endLine = previousChunksLength + chunkSize;
-		let line = getRandomInt(startLine, endLine);
-		let maxColumn = lines[line - 1].length + 1;
-		let startColumn = getRandomInt(1, maxColumn);
-		let endColumn = Math.min(maxColumn, startColumn + searchStringLen);
+		let line = getRAndomInt(stArtLine, endLine);
+		let mAxColumn = lines[line - 1].length + 1;
+		let stArtColumn = getRAndomInt(1, mAxColumn);
+		let endColumn = MAth.min(mAxColumn, stArtColumn + seArchStringLen);
 
-		ops.push(new ValidAnnotatedEditOperation(null, new Range(line, startColumn, line, endColumn), replaceString, false, false, false));
+		ops.push(new VAlidAnnotAtedEditOperAtion(null, new RAnge(line, stArtColumn, line, endColumn), replAceString, fAlse, fAlse, fAlse));
 		previousChunksLength = endLine;
 	}
 
 	return ops;
 }
 
-export function createMockText(lineCount: number, minColumn: number, maxColumn: number) {
-	let fixedEOL = getRandomEOLSequence();
+export function creAteMockText(lineCount: number, minColumn: number, mAxColumn: number) {
+	let fixedEOL = getRAndomEOLSequence();
 	let lines: string[] = [];
 	for (let i = 0; i < lineCount; i++) {
 		if (i !== 0) {
 			lines.push(fixedEOL);
 		}
-		lines.push(getRandomString(minColumn, maxColumn));
+		lines.push(getRAndomString(minColumn, mAxColumn));
 	}
 	return lines.join('');
 }
 
-export function createMockBuffer(str: string, bufferBuilder: ITextBufferBuilder): ITextBuffer {
-	bufferBuilder.acceptChunk(str);
-	let bufferFactory = bufferBuilder.finish();
-	let buffer = bufferFactory.create(DefaultEndOfLine.LF);
+export function creAteMockBuffer(str: string, bufferBuilder: ITextBufferBuilder): ITextBuffer {
+	bufferBuilder.AcceptChunk(str);
+	let bufferFActory = bufferBuilder.finish();
+	let buffer = bufferFActory.creAte(DefAultEndOfLine.LF);
 	return buffer;
 }
 
-export function generateRandomChunkWithLF(minLength: number, maxLength: number): string {
-	let length = getRandomInt(minLength, maxLength);
+export function generAteRAndomChunkWithLF(minLength: number, mAxLength: number): string {
+	let length = getRAndomInt(minLength, mAxLength);
 	let r = '';
 	for (let i = 0; i < length; i++) {
-		let randomI = getRandomInt(0, CharCode.z - CharCode.a + 1);
-		if (randomI === 0 && Math.random() < 0.3) {
+		let rAndomI = getRAndomInt(0, ChArCode.z - ChArCode.A + 1);
+		if (rAndomI === 0 && MAth.rAndom() < 0.3) {
 			r += '\n';
 		} else {
-			r += String.fromCharCode(randomI + CharCode.a - 1);
+			r += String.fromChArCode(rAndomI + ChArCode.A - 1);
 		}
 	}
 	return r;

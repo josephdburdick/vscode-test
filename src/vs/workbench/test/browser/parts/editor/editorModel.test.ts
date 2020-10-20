@@ -1,94 +1,94 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
+import * As Assert from 'Assert';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
 import { EditorModel } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
+import { BAseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
-import { ITextBufferFactory } from 'vs/editor/common/model';
-import { URI } from 'vs/base/common/uri';
-import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
-import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { ITextBufferFActory } from 'vs/editor/common/model';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteTextBufferFActory } from 'vs/editor/common/model/textModel';
+import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurAtionService';
+import { IUndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { UndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedoService';
+import { TestDiAlogService } from 'vs/plAtform/diAlogs/test/common/testDiAlogService';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { TestTextResourcePropertiesService } from 'vs/workbench/test/common/workbenchTestServices';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
 
-class MyEditorModel extends EditorModel { }
-class MyTextEditorModel extends BaseTextEditorModel {
-	createTextEditorModel(value: ITextBufferFactory, resource?: URI, preferredMode?: string) {
-		return super.createTextEditorModel(value, resource, preferredMode);
+clAss MyEditorModel extends EditorModel { }
+clAss MyTextEditorModel extends BAseTextEditorModel {
+	creAteTextEditorModel(vAlue: ITextBufferFActory, resource?: URI, preferredMode?: string) {
+		return super.creAteTextEditorModel(vAlue, resource, preferredMode);
 	}
 
-	isReadonly(): boolean {
-		return false;
+	isReAdonly(): booleAn {
+		return fAlse;
 	}
 }
 
 suite('Workbench editor model', () => {
 
-	let instantiationService: TestInstantiationService;
+	let instAntiAtionService: TestInstAntiAtionService;
 	let modeService: IModeService;
 
 	setup(() => {
-		instantiationService = new TestInstantiationService();
-		modeService = instantiationService.stub(IModeService, ModeServiceImpl);
+		instAntiAtionService = new TestInstAntiAtionService();
+		modeService = instAntiAtionService.stub(IModeService, ModeServiceImpl);
 	});
 
-	test('EditorModel', async () => {
+	test('EditorModel', Async () => {
 		let counter = 0;
 
 		let m = new MyEditorModel();
 
 		m.onDispose(() => {
-			assert(true);
+			Assert(true);
 			counter++;
 		});
 
-		const model = await m.load();
-		assert(model === m);
-		assert.equal(model.isDisposed(), false);
-		assert.strictEqual(m.isResolved(), true);
+		const model = AwAit m.loAd();
+		Assert(model === m);
+		Assert.equAl(model.isDisposed(), fAlse);
+		Assert.strictEquAl(m.isResolved(), true);
 		m.dispose();
-		assert.equal(counter, 1);
-		assert.equal(model.isDisposed(), true);
+		Assert.equAl(counter, 1);
+		Assert.equAl(model.isDisposed(), true);
 	});
 
-	test('BaseTextEditorModel', async () => {
-		let modelService = stubModelService(instantiationService);
+	test('BAseTextEditorModel', Async () => {
+		let modelService = stubModelService(instAntiAtionService);
 
 		let m = new MyTextEditorModel(modelService, modeService);
-		const model = await m.load() as MyTextEditorModel;
+		const model = AwAit m.loAd() As MyTextEditorModel;
 
-		assert(model === m);
-		model.createTextEditorModel(createTextBufferFactory('foo'), null!, 'text/plain');
-		assert.strictEqual(m.isResolved(), true);
+		Assert(model === m);
+		model.creAteTextEditorModel(creAteTextBufferFActory('foo'), null!, 'text/plAin');
+		Assert.strictEquAl(m.isResolved(), true);
 		m.dispose();
 	});
 
-	function stubModelService(instantiationService: TestInstantiationService): IModelService {
-		const dialogService = new TestDialogService();
-		const notificationService = new TestNotificationService();
-		const undoRedoService = new UndoRedoService(dialogService, notificationService);
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
-		instantiationService.stub(ITextResourcePropertiesService, new TestTextResourcePropertiesService(instantiationService.get(IConfigurationService)));
-		instantiationService.stub(IDialogService, dialogService);
-		instantiationService.stub(INotificationService, notificationService);
-		instantiationService.stub(IUndoRedoService, undoRedoService);
-		instantiationService.stub(IThemeService, new TestThemeService());
-		return instantiationService.createInstance(ModelServiceImpl);
+	function stubModelService(instAntiAtionService: TestInstAntiAtionService): IModelService {
+		const diAlogService = new TestDiAlogService();
+		const notificAtionService = new TestNotificAtionService();
+		const undoRedoService = new UndoRedoService(diAlogService, notificAtionService);
+		instAntiAtionService.stub(IConfigurAtionService, new TestConfigurAtionService());
+		instAntiAtionService.stub(ITextResourcePropertiesService, new TestTextResourcePropertiesService(instAntiAtionService.get(IConfigurAtionService)));
+		instAntiAtionService.stub(IDiAlogService, diAlogService);
+		instAntiAtionService.stub(INotificAtionService, notificAtionService);
+		instAntiAtionService.stub(IUndoRedoService, undoRedoService);
+		instAntiAtionService.stub(IThemeService, new TestThemeService());
+		return instAntiAtionService.creAteInstAnce(ModelServiceImpl);
 	}
 });

@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { $ } from 'vs/base/browser/dom';
-import { MenuBar } from 'vs/base/browser/ui/menu/menubar';
+import * As Assert from 'Assert';
+import { $ } from 'vs/bAse/browser/dom';
+import { MenuBAr } from 'vs/bAse/browser/ui/menu/menubAr';
 
-function getButtonElementByAriaLabel(menubarElement: HTMLElement, ariaLabel: string): HTMLElement | null {
+function getButtonElementByAriALAbel(menubArElement: HTMLElement, AriALAbel: string): HTMLElement | null {
 	let i;
-	for (i = 0; i < menubarElement.childElementCount; i++) {
+	for (i = 0; i < menubArElement.childElementCount; i++) {
 
-		if (menubarElement.children[i].getAttribute('aria-label') === ariaLabel) {
-			return menubarElement.children[i] as HTMLElement;
+		if (menubArElement.children[i].getAttribute('AriA-lAbel') === AriALAbel) {
+			return menubArElement.children[i] As HTMLElement;
 		}
 	}
 
@@ -22,8 +22,8 @@ function getButtonElementByAriaLabel(menubarElement: HTMLElement, ariaLabel: str
 function getTitleDivFromButtonDiv(menuButtonElement: HTMLElement): HTMLElement | null {
 	let i;
 	for (i = 0; i < menuButtonElement.childElementCount; i++) {
-		if (menuButtonElement.children[i].classList.contains('menubar-menu-title')) {
-			return menuButtonElement.children[i] as HTMLElement;
+		if (menuButtonElement.children[i].clAssList.contAins('menubAr-menu-title')) {
+			return menuButtonElement.children[i] As HTMLElement;
 		}
 	}
 
@@ -33,7 +33,7 @@ function getTitleDivFromButtonDiv(menuButtonElement: HTMLElement): HTMLElement |
 function getMnemonicFromTitleDiv(menuTitleDiv: HTMLElement): string | null {
 	let i;
 	for (i = 0; i < menuTitleDiv.childElementCount; i++) {
-		if (menuTitleDiv.children[i].tagName.toLocaleLowerCase() === 'mnemonic') {
+		if (menuTitleDiv.children[i].tAgNAme.toLocAleLowerCAse() === 'mnemonic') {
 			return menuTitleDiv.children[i].textContent;
 		}
 	}
@@ -41,41 +41,41 @@ function getMnemonicFromTitleDiv(menuTitleDiv: HTMLElement): string | null {
 	return null;
 }
 
-function validateMenuBarItem(menubar: MenuBar, menubarContainer: HTMLElement, label: string, readableLabel: string, mnemonic: string) {
-	menubar.push([
+function vAlidAteMenuBArItem(menubAr: MenuBAr, menubArContAiner: HTMLElement, lAbel: string, reAdAbleLAbel: string, mnemonic: string) {
+	menubAr.push([
 		{
-			actions: [],
-			label: label
+			Actions: [],
+			lAbel: lAbel
 		}
 	]);
 
-	const buttonElement = getButtonElementByAriaLabel(menubarContainer, readableLabel);
-	assert(buttonElement !== null, `Button element not found for ${readableLabel} button.`);
+	const buttonElement = getButtonElementByAriALAbel(menubArContAiner, reAdAbleLAbel);
+	Assert(buttonElement !== null, `Button element not found for ${reAdAbleLAbel} button.`);
 
 	const titleDiv = getTitleDivFromButtonDiv(buttonElement!);
-	assert(titleDiv !== null, `Title div not found for ${readableLabel} button.`);
+	Assert(titleDiv !== null, `Title div not found for ${reAdAbleLAbel} button.`);
 
 	const mnem = getMnemonicFromTitleDiv(titleDiv!);
-	assert.equal(mnem, mnemonic, 'Mnemonic not correct');
+	Assert.equAl(mnem, mnemonic, 'Mnemonic not correct');
 }
 
-suite('Menubar', () => {
-	const container = $('.container');
+suite('MenubAr', () => {
+	const contAiner = $('.contAiner');
 
-	const menubar = new MenuBar(container, {
-		enableMnemonics: true,
+	const menubAr = new MenuBAr(contAiner, {
+		enAbleMnemonics: true,
 		visibility: 'visible'
 	});
 
 	test('English File menu renders mnemonics', function () {
-		validateMenuBarItem(menubar, container, '&File', 'File', 'F');
+		vAlidAteMenuBArItem(menubAr, contAiner, '&File', 'File', 'F');
 	});
 
-	test('Russian File menu renders mnemonics', function () {
-		validateMenuBarItem(menubar, container, '&Файл', 'Файл', 'Ф');
+	test('RussiAn File menu renders mnemonics', function () {
+		vAlidAteMenuBArItem(menubAr, contAiner, '&Файл', 'Файл', 'Ф');
 	});
 
 	test('Chinese File menu renders mnemonics', function () {
-		validateMenuBarItem(menubar, container, '文件(&F)', '文件', 'F');
+		vAlidAteMenuBArItem(menubAr, contAiner, '文件(&F)', '文件', 'F');
 	});
 });

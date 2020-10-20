@@ -1,182 +1,182 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { ICommandQuickPick, CommandsHistory } from 'vs/platform/quickinput/browser/commandsQuickAccess';
+import { locAlize } from 'vs/nls';
+import { ICommAndQuickPick, CommAndsHistory } from 'vs/plAtform/quickinput/browser/commAndsQuickAccess';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IMenuService, MenuId, MenuItemAction, SubmenuItemAction, Action2 } from 'vs/platform/actions/common/actions';
+import { IMenuService, MenuId, MenuItemAction, SubmenuItemAction, Action2 } from 'vs/plAtform/Actions/common/Actions';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { timeout } from 'vs/base/common/async';
-import { DisposableStore, toDisposable, dispose } from 'vs/base/common/lifecycle';
-import { AbstractEditorCommandsQuickAccessProvider } from 'vs/editor/contrib/quickAccess/commandsQuickAccess';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { timeout } from 'vs/bAse/common/Async';
+import { DisposAbleStore, toDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { AbstrActEditorCommAndsQuickAccessProvider } from 'vs/editor/contrib/quickAccess/commAndsQuickAccess';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { Language } from 'vs/base/common/platform';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { DefaultQuickAccessFilterValue } from 'vs/platform/quickinput/common/quickAccess';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchQuickAccessConfiguration } from 'vs/workbench/browser/quickaccess';
-import { stripCodicons } from 'vs/base/common/codicons';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
+import { LAnguAge } from 'vs/bAse/common/plAtform';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { DefAultQuickAccessFilterVAlue } from 'vs/plAtform/quickinput/common/quickAccess';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWorkbenchQuickAccessConfigurAtion } from 'vs/workbench/browser/quickAccess';
+import { stripCodicons } from 'vs/bAse/common/codicons';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 
-export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAccessProvider {
+export clAss CommAndsQuickAccessProvider extends AbstrActEditorCommAndsQuickAccessProvider {
 
-	// If extensions are not yet registered, we wait for a little moment to give them
-	// a chance to register so that the complete set of commands shows up as result
-	// We do not want to delay functionality beyond that time though to keep the commands
-	// functional.
-	private readonly extensionRegistrationRace = Promise.race([
+	// If extensions Are not yet registered, we wAit for A little moment to give them
+	// A chAnce to register so thAt the complete set of commAnds shows up As result
+	// We do not wAnt to delAy functionAlity beyond thAt time though to keep the commAnds
+	// functionAl.
+	privAte reAdonly extensionRegistrAtionRAce = Promise.rAce([
 		timeout(800),
-		this.extensionService.whenInstalledExtensionsRegistered()
+		this.extensionService.whenInstAlledExtensionsRegistered()
 	]);
 
-	protected get activeTextEditorControl(): IEditor | undefined { return this.editorService.activeTextEditorControl; }
+	protected get ActiveTextEditorControl(): IEditor | undefined { return this.editorService.ActiveTextEditorControl; }
 
-	get defaultFilterValue(): DefaultQuickAccessFilterValue | undefined {
-		if (this.configuration.preserveInput) {
-			return DefaultQuickAccessFilterValue.LAST;
+	get defAultFilterVAlue(): DefAultQuickAccessFilterVAlue | undefined {
+		if (this.configurAtion.preserveInput) {
+			return DefAultQuickAccessFilterVAlue.LAST;
 		}
 
 		return undefined;
 	}
 
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@IMenuService private readonly menuService: IMenuService,
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IMenuService privAte reAdonly menuService: IMenuService,
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@ICommandService commandService: ICommandService,
+		@ICommAndService commAndService: ICommAndService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@INotificationService notificationService: INotificationService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IEditorGroupsService private readonly editorGroupService: IEditorGroupsService
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IEditorGroupsService privAte reAdonly editorGroupService: IEditorGroupsService
 	) {
 		super({
-			showAlias: !Language.isDefaultVariant(),
+			showAliAs: !LAnguAge.isDefAultVAriAnt(),
 			noResultsPick: {
-				label: localize('noCommandResults', "No matching commands"),
-				commandId: ''
+				lAbel: locAlize('noCommAndResults', "No mAtching commAnds"),
+				commAndId: ''
 			}
-		}, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		}, instAntiAtionService, keybindingService, commAndService, telemetryService, notificAtionService);
 	}
 
-	private get configuration() {
-		const commandPaletteConfig = this.configurationService.getValue<IWorkbenchQuickAccessConfiguration>().workbench.commandPalette;
+	privAte get configurAtion() {
+		const commAndPAletteConfig = this.configurAtionService.getVAlue<IWorkbenchQuickAccessConfigurAtion>().workbench.commAndPAlette;
 
 		return {
-			preserveInput: commandPaletteConfig.preserveInput
+			preserveInput: commAndPAletteConfig.preserveInput
 		};
 	}
 
-	protected async getCommandPicks(disposables: DisposableStore, token: CancellationToken): Promise<Array<ICommandQuickPick>> {
+	protected Async getCommAndPicks(disposAbles: DisposAbleStore, token: CAncellAtionToken): Promise<ArrAy<ICommAndQuickPick>> {
 
-		// wait for extensions registration or 800ms once
-		await this.extensionRegistrationRace;
+		// wAit for extensions registrAtion or 800ms once
+		AwAit this.extensionRegistrAtionRAce;
 
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return [];
 		}
 
 		return [
-			...this.getCodeEditorCommandPicks(),
-			...this.getGlobalCommandPicks(disposables)
+			...this.getCodeEditorCommAndPicks(),
+			...this.getGlobAlCommAndPicks(disposAbles)
 		];
 	}
 
-	private getGlobalCommandPicks(disposables: DisposableStore): ICommandQuickPick[] {
-		const globalCommandPicks: ICommandQuickPick[] = [];
-		const scopedContextKeyService = this.editorService.activeEditorPane?.scopedContextKeyService || this.editorGroupService.activeGroup.scopedContextKeyService;
-		const globalCommandsMenu = this.menuService.createMenu(MenuId.CommandPalette, scopedContextKeyService);
-		const globalCommandsMenuActions = globalCommandsMenu.getActions()
-			.reduce((r, [, actions]) => [...r, ...actions], <Array<MenuItemAction | SubmenuItemAction | string>>[])
-			.filter(action => action instanceof MenuItemAction) as MenuItemAction[];
+	privAte getGlobAlCommAndPicks(disposAbles: DisposAbleStore): ICommAndQuickPick[] {
+		const globAlCommAndPicks: ICommAndQuickPick[] = [];
+		const scopedContextKeyService = this.editorService.ActiveEditorPAne?.scopedContextKeyService || this.editorGroupService.ActiveGroup.scopedContextKeyService;
+		const globAlCommAndsMenu = this.menuService.creAteMenu(MenuId.CommAndPAlette, scopedContextKeyService);
+		const globAlCommAndsMenuActions = globAlCommAndsMenu.getActions()
+			.reduce((r, [, Actions]) => [...r, ...Actions], <ArrAy<MenuItemAction | SubmenuItemAction | string>>[])
+			.filter(Action => Action instAnceof MenuItemAction) As MenuItemAction[];
 
-		for (const action of globalCommandsMenuActions) {
+		for (const Action of globAlCommAndsMenuActions) {
 
-			// Label
-			let label = (typeof action.item.title === 'string' ? action.item.title : action.item.title.value) || action.item.id;
+			// LAbel
+			let lAbel = (typeof Action.item.title === 'string' ? Action.item.title : Action.item.title.vAlue) || Action.item.id;
 
-			// Category
-			const category = typeof action.item.category === 'string' ? action.item.category : action.item.category?.value;
-			if (category) {
-				label = localize('commandWithCategory', "{0}: {1}", category, label);
+			// CAtegory
+			const cAtegory = typeof Action.item.cAtegory === 'string' ? Action.item.cAtegory : Action.item.cAtegory?.vAlue;
+			if (cAtegory) {
+				lAbel = locAlize('commAndWithCAtegory', "{0}: {1}", cAtegory, lAbel);
 			}
 
-			// Alias
-			const aliasLabel = typeof action.item.title !== 'string' ? action.item.title.original : undefined;
-			const aliasCategory = (category && action.item.category && typeof action.item.category !== 'string') ? action.item.category.original : undefined;
-			const commandAlias = (aliasLabel && category) ?
-				aliasCategory ? `${aliasCategory}: ${aliasLabel}` : `${category}: ${aliasLabel}` :
-				aliasLabel;
+			// AliAs
+			const AliAsLAbel = typeof Action.item.title !== 'string' ? Action.item.title.originAl : undefined;
+			const AliAsCAtegory = (cAtegory && Action.item.cAtegory && typeof Action.item.cAtegory !== 'string') ? Action.item.cAtegory.originAl : undefined;
+			const commAndAliAs = (AliAsLAbel && cAtegory) ?
+				AliAsCAtegory ? `${AliAsCAtegory}: ${AliAsLAbel}` : `${cAtegory}: ${AliAsLAbel}` :
+				AliAsLAbel;
 
-			globalCommandPicks.push({
-				commandId: action.item.id,
-				commandAlias,
-				label: stripCodicons(label)
+			globAlCommAndPicks.push({
+				commAndId: Action.item.id,
+				commAndAliAs,
+				lAbel: stripCodicons(lAbel)
 			});
 		}
 
-		// Cleanup
-		globalCommandsMenu.dispose();
-		disposables.add(toDisposable(() => dispose(globalCommandsMenuActions)));
+		// CleAnup
+		globAlCommAndsMenu.dispose();
+		disposAbles.Add(toDisposAble(() => dispose(globAlCommAndsMenuActions)));
 
-		return globalCommandPicks;
+		return globAlCommAndPicks;
 	}
 }
 
 //#region Actions
 
-export class ShowAllCommandsAction extends Action2 {
+export clAss ShowAllCommAndsAction extends Action2 {
 
-	static readonly ID = 'workbench.action.showCommands';
+	stAtic reAdonly ID = 'workbench.Action.showCommAnds';
 
 	constructor() {
 		super({
-			id: ShowAllCommandsAction.ID,
-			title: { value: localize('showTriggerActions', "Show All Commands"), original: 'Show All Commands' },
+			id: ShowAllCommAndsAction.ID,
+			title: { vAlue: locAlize('showTriggerActions', "Show All CommAnds"), originAl: 'Show All CommAnds' },
 			f1: true,
 			keybinding: {
 				weight: KeybindingWeight.WorkbenchContrib,
 				when: undefined,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_P,
-				secondary: [KeyCode.F1]
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_P,
+				secondAry: [KeyCode.F1]
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		accessor.get(IQuickInputService).quickAccess.show(CommandsQuickAccessProvider.PREFIX);
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		Accessor.get(IQuickInputService).quickAccess.show(CommAndsQuickAccessProvider.PREFIX);
 	}
 }
 
-export class ClearCommandHistoryAction extends Action2 {
+export clAss CleArCommAndHistoryAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.clearCommandHistory',
-			title: { value: localize('clearCommandHistory', "Clear Command History"), original: 'Clear Command History' },
+			id: 'workbench.Action.cleArCommAndHistory',
+			title: { vAlue: locAlize('cleArCommAndHistory', "CleAr CommAnd History"), originAl: 'CleAr CommAnd History' },
 			f1: true
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const configurationService = accessor.get(IConfigurationService);
-		const storageService = accessor.get(IStorageService);
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const configurAtionService = Accessor.get(IConfigurAtionService);
+		const storAgeService = Accessor.get(IStorAgeService);
 
-		const commandHistoryLength = CommandsHistory.getConfiguredCommandHistoryLength(configurationService);
-		if (commandHistoryLength > 0) {
-			CommandsHistory.clearHistory(configurationService, storageService);
+		const commAndHistoryLength = CommAndsHistory.getConfiguredCommAndHistoryLength(configurAtionService);
+		if (commAndHistoryLength > 0) {
+			CommAndsHistory.cleArHistory(configurAtionService, storAgeService);
 		}
 	}
 }

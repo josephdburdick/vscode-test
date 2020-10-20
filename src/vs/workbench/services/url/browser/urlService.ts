@@ -1,69 +1,69 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IURLService } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractURLService } from 'vs/platform/url/common/urlService';
-import { Event } from 'vs/base/common/event';
+import { IURLService } from 'vs/plAtform/url/common/url';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { AbstrActURLService } from 'vs/plAtform/url/common/urlService';
+import { Event } from 'vs/bAse/common/event';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
-export interface IURLCallbackProvider {
+export interfAce IURLCAllbAckProvider {
 
 	/**
-	 * Indicates that a Uri has been opened outside of VSCode. The Uri
-	 * will be forwarded to all installed Uri handlers in the system.
+	 * IndicAtes thAt A Uri hAs been opened outside of VSCode. The Uri
+	 * will be forwArded to All instAlled Uri hAndlers in the system.
 	 */
-	readonly onCallback: Event<URI>;
+	reAdonly onCAllbAck: Event<URI>;
 
 	/**
-	 * Creates a Uri that - if opened in a browser - must result in
-	 * the `onCallback` to fire.
+	 * CreAtes A Uri thAt - if opened in A browser - must result in
+	 * the `onCAllbAck` to fire.
 	 *
-	 * The optional `Partial<UriComponents>` must be properly restored for
-	 * the Uri passed to the `onCallback` handler.
+	 * The optionAl `PArtiAl<UriComponents>` must be properly restored for
+	 * the Uri pAssed to the `onCAllbAck` hAndler.
 	 *
-	 * For example: if a Uri is to be created with `scheme:"vscode"`,
-	 * `authority:"foo"` and `path:"bar"` the `onCallback` should fire
-	 * with a Uri `vscode://foo/bar`.
+	 * For exAmple: if A Uri is to be creAted with `scheme:"vscode"`,
+	 * `Authority:"foo"` And `pAth:"bAr"` the `onCAllbAck` should fire
+	 * with A Uri `vscode://foo/bAr`.
 	 *
-	 * If there are additional `query` values in the Uri, they should
-	 * be added to the list of provided `query` arguments from the
-	 * `Partial<UriComponents>`.
+	 * If there Are AdditionAl `query` vAlues in the Uri, they should
+	 * be Added to the list of provided `query` Arguments from the
+	 * `PArtiAl<UriComponents>`.
 	 */
-	create(options?: Partial<UriComponents>): URI;
+	creAte(options?: PArtiAl<UriComponents>): URI;
 }
 
-export class BrowserURLService extends AbstractURLService {
+export clAss BrowserURLService extends AbstrActURLService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private provider: IURLCallbackProvider | undefined;
+	privAte provider: IURLCAllbAckProvider | undefined;
 
 	constructor(
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 
-		this.provider = environmentService.options?.urlCallbackProvider;
+		this.provider = environmentService.options?.urlCAllbAckProvider;
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 		if (this.provider) {
-			this._register(this.provider.onCallback(uri => this.open(uri, { trusted: true })));
+			this._register(this.provider.onCAllbAck(uri => this.open(uri, { trusted: true })));
 		}
 	}
 
-	create(options?: Partial<UriComponents>): URI {
+	creAte(options?: PArtiAl<UriComponents>): URI {
 		if (this.provider) {
-			return this.provider.create(options);
+			return this.provider.creAte(options);
 		}
 
-		return URI.parse('unsupported://');
+		return URI.pArse('unsupported://');
 	}
 }
 

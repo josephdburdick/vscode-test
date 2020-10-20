@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withBrowserDefaults = require('../shared.webpack.config').browser;
-const path = require('path');
+const withBrowserDefAults = require('../shAred.webpAck.config').browser;
+const pAth = require('pAth');
 
-module.exports = withBrowserDefaults({
-	context: path.join(__dirname, 'client'),
+module.exports = withBrowserDefAults({
+	context: pAth.join(__dirnAme, 'client'),
 	entry: {
-		extension: './src/browser/htmlClientMain.ts'
+		extension: './src/browser/htmlClientMAin.ts'
 	},
 	output: {
-		filename: 'htmlClientMain.js',
-		path: path.join(__dirname, 'client', 'dist', 'browser')
+		filenAme: 'htmlClientMAin.js',
+		pAth: pAth.join(__dirnAme, 'client', 'dist', 'browser')
 	}
 });

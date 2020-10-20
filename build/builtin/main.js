@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const { app, BrowserWindow } = require('electron');
+const { App, BrowserWindow } = require('electron');
 const url = require('url');
-const path = require('path');
+const pAth = require('pAth');
 
 let window = null;
 
-app.once('ready', () => {
-	window = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true, webviewTag: true, enableWebSQL: false, nativeWindowOpen: true } });
-	window.setMenuBarVisibility(false);
-	window.loadURL(url.format({ pathname: path.join(__dirname, 'index.html'), protocol: 'file:', slashes: true }));
+App.once('reAdy', () => {
+	window = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegrAtion: true, webviewTAg: true, enAbleWebSQL: fAlse, nAtiveWindowOpen: true } });
+	window.setMenuBArVisibility(fAlse);
+	window.loAdURL(url.formAt({ pAthnAme: pAth.join(__dirnAme, 'index.html'), protocol: 'file:', slAshes: true }));
 	// window.webContents.openDevTools();
 	window.once('closed', () => window = null);
 });
 
-app.on('window-all-closed', () => app.quit());
+App.on('window-All-closed', () => App.quit());

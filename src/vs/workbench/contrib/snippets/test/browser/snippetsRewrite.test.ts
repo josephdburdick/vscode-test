@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { Snippet, SnippetSource } from 'vs/workbench/contrib/snippets/browser/snippetsFile';
 
 suite('SnippetRewrite', function () {
 
-	function assertRewrite(input: string, expected: string | boolean): void {
-		const actual = new Snippet(['foo'], 'foo', 'foo', 'foo', input, 'foo', SnippetSource.User);
-		if (typeof expected === 'boolean') {
-			assert.equal(actual.codeSnippet, input);
+	function AssertRewrite(input: string, expected: string | booleAn): void {
+		const ActuAl = new Snippet(['foo'], 'foo', 'foo', 'foo', input, 'foo', SnippetSource.User);
+		if (typeof expected === 'booleAn') {
+			Assert.equAl(ActuAl.codeSnippet, input);
 		} else {
-			assert.equal(actual.codeSnippet, expected);
+			Assert.equAl(ActuAl.codeSnippet, expected);
 		}
 	}
 
-	test('bogous variable rewrite', function () {
+	test('bogous vAriAble rewrite', function () {
 
-		assertRewrite('foo', false);
-		assertRewrite('hello $1 world$0', false);
+		AssertRewrite('foo', fAlse);
+		AssertRewrite('hello $1 world$0', fAlse);
 
-		assertRewrite('$foo and $foo', '${1:foo} and ${1:foo}');
-		assertRewrite('$1 and $SELECTION and $foo', '$1 and ${SELECTION} and ${2:foo}');
+		AssertRewrite('$foo And $foo', '${1:foo} And ${1:foo}');
+		AssertRewrite('$1 And $SELECTION And $foo', '$1 And ${SELECTION} And ${2:foo}');
 
 
-		assertRewrite(
+		AssertRewrite(
 			[
-				'for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {',
-				'\tvar ${element} = ${array}[${index}];',
+				'for (vAr ${index} = 0; ${index} < ${ArrAy}.length; ${index}++) {',
+				'\tvAr ${element} = ${ArrAy}[${index}];',
 				'\t$0',
 				'}'
 			].join('\n'),
 			[
-				'for (var ${1:index} = 0; ${1:index} < ${2:array}.length; ${1:index}++) {',
-				'\tvar ${3:element} = ${2:array}[${1:index}];',
+				'for (vAr ${1:index} = 0; ${1:index} < ${2:ArrAy}.length; ${1:index}++) {',
+				'\tvAr ${3:element} = ${2:ArrAy}[${1:index}];',
 				'\t$0',
 				'\\}'
 			].join('\n')
 		);
 	});
 
-	test('Snippet choices: unable to escape comma and pipe, #31521', function () {
-		assertRewrite('console.log(${1|not\\, not, five, 5, 1   23|});', false);
+	test('Snippet choices: unAble to escApe commA And pipe, #31521', function () {
+		AssertRewrite('console.log(${1|not\\, not, five, 5, 1   23|});', fAlse);
 	});
 
-	test('lazy bogous variable rewrite', function () {
-		const snippet = new Snippet(['fooLang'], 'foo', 'prefix', 'desc', 'This is ${bogous} because it is a ${var}', 'source', SnippetSource.Extension);
-		assert.equal(snippet.body, 'This is ${bogous} because it is a ${var}');
-		assert.equal(snippet.codeSnippet, 'This is ${1:bogous} because it is a ${2:var}');
-		assert.equal(snippet.isBogous, true);
+	test('lAzy bogous vAriAble rewrite', function () {
+		const snippet = new Snippet(['fooLAng'], 'foo', 'prefix', 'desc', 'This is ${bogous} becAuse it is A ${vAr}', 'source', SnippetSource.Extension);
+		Assert.equAl(snippet.body, 'This is ${bogous} becAuse it is A ${vAr}');
+		Assert.equAl(snippet.codeSnippet, 'This is ${1:bogous} becAuse it is A ${2:vAr}');
+		Assert.equAl(snippet.isBogous, true);
 	});
 });

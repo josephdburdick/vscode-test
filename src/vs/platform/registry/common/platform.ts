@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Types from 'vs/base/common/types';
-import * as Assert from 'vs/base/common/assert';
+import * As Types from 'vs/bAse/common/types';
+import * As Assert from 'vs/bAse/common/Assert';
 
-export interface IRegistry {
-
-	/**
-	 * Adds the extension functions and properties defined by data to the
-	 * platform. The provided id must be unique.
-	 * @param id a unique identifier
-	 * @param data a contribution
-	 */
-	add(id: string, data: any): void;
+export interfAce IRegistry {
 
 	/**
-	 * Returns true iff there is an extension with the provided id.
-	 * @param id an extension identifier
+	 * Adds the extension functions And properties defined by dAtA to the
+	 * plAtform. The provided id must be unique.
+	 * @pArAm id A unique identifier
+	 * @pArAm dAtA A contribution
 	 */
-	knows(id: string): boolean;
+	Add(id: string, dAtA: Any): void;
 
 	/**
-	 * Returns the extension functions and properties defined by the specified key or null.
-	 * @param id an extension identifier
+	 * Returns true iff there is An extension with the provided id.
+	 * @pArAm id An extension identifier
 	 */
-	as<T>(id: string): T;
+	knows(id: string): booleAn;
+
+	/**
+	 * Returns the extension functions And properties defined by the specified key or null.
+	 * @pArAm id An extension identifier
+	 */
+	As<T>(id: string): T;
 }
 
-class RegistryImpl implements IRegistry {
+clAss RegistryImpl implements IRegistry {
 
-	private readonly data = new Map<string, any>();
+	privAte reAdonly dAtA = new MAp<string, Any>();
 
-	public add(id: string, data: any): void {
+	public Add(id: string, dAtA: Any): void {
 		Assert.ok(Types.isString(id));
-		Assert.ok(Types.isObject(data));
-		Assert.ok(!this.data.has(id), 'There is already an extension with this id');
+		Assert.ok(Types.isObject(dAtA));
+		Assert.ok(!this.dAtA.hAs(id), 'There is AlreAdy An extension with this id');
 
-		this.data.set(id, data);
+		this.dAtA.set(id, dAtA);
 	}
 
-	public knows(id: string): boolean {
-		return this.data.has(id);
+	public knows(id: string): booleAn {
+		return this.dAtA.hAs(id);
 	}
 
-	public as(id: string): any {
-		return this.data.get(id) || null;
+	public As(id: string): Any {
+		return this.dAtA.get(id) || null;
 	}
 }
 

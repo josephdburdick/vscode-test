@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 'use strict';
 
 (function () {
-	const bootstrap = bootstrapLib();
-	const bootstrapWindow = bootstrapWindowLib();
+	const bootstrAp = bootstrApLib();
+	const bootstrApWindow = bootstrApWindowLib();
 
-	// Avoid Monkey Patches from Application Insights
-	bootstrap.avoidMonkeyPatchFromAppInsights();
+	// Avoid Monkey PAtches from ApplicAtion Insights
+	bootstrAp.AvoidMonkeyPAtchFromAppInsights();
 
-	// Load shared process into window
-	bootstrapWindow.load(['vs/code/electron-browser/sharedProcess/sharedProcessMain'], function (sharedProcess, configuration) {
-		sharedProcess.startup({
-			machineId: configuration.machineId,
-			windowId: configuration.windowId
+	// LoAd shAred process into window
+	bootstrApWindow.loAd(['vs/code/electron-browser/shAredProcess/shAredProcessMAin'], function (shAredProcess, configurAtion) {
+		shAredProcess.stArtup({
+			mAchineId: configurAtion.mAchineId,
+			windowId: configurAtion.windowId
 		});
 	});
 
 
-	//#region Globals
+	//#region GlobAls
 
 	/**
-	 * @returns {{ avoidMonkeyPatchFromAppInsights: () => void; }}
+	 * @returns {{ AvoidMonkeyPAtchFromAppInsights: () => void; }}
 	 */
-	function bootstrapLib() {
-		// @ts-ignore (defined in bootstrap.js)
-		return window.MonacoBootstrap;
+	function bootstrApLib() {
+		// @ts-ignore (defined in bootstrAp.js)
+		return window.MonAcoBootstrAp;
 	}
 
 	/**
-	 * @returns {{ load: (modules: string[], resultCallback: (result, configuration: object) => any, options?: object) => unknown }}
+	 * @returns {{ loAd: (modules: string[], resultCAllbAck: (result, configurAtion: object) => Any, options?: object) => unknown }}
 	 */
-	function bootstrapWindowLib() {
-		// @ts-ignore (defined in bootstrap-window.js)
-		return window.MonacoBootstrapWindow;
+	function bootstrApWindowLib() {
+		// @ts-ignore (defined in bootstrAp-window.js)
+		return window.MonAcoBootstrApWindow;
 	}
 
 	//#endregion

@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import * as dom from 'vs/base/browser/dom';
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
-import { IDebugService, State, IStackFrame, IDebugSession, IThread, CONTEXT_CALLSTACK_ITEM_TYPE, IDebugModel } from 'vs/workbench/contrib/debug/common/debug';
-import { Thread, StackFrame, ThreadAndSessionIds } from 'vs/workbench/contrib/debug/common/debugModel';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { MenuId, IMenu, IMenuService, MenuItemAction, SubmenuItemAction } from 'vs/platform/actions/common/actions';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { renderViewTree } from 'vs/workbench/contrib/debug/browser/baseDebugView';
-import { IAction, Action } from 'vs/base/common/actions';
+import * As nls from 'vs/nls';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import * As dom from 'vs/bAse/browser/dom';
+import { IViewletViewOptions } from 'vs/workbench/browser/pArts/views/viewsViewlet';
+import { IDebugService, StAte, IStAckFrAme, IDebugSession, IThreAd, CONTEXT_CALLSTACK_ITEM_TYPE, IDebugModel } from 'vs/workbench/contrib/debug/common/debug';
+import { ThreAd, StAckFrAme, ThreAdAndSessionIds } from 'vs/workbench/contrib/debug/common/debugModel';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { MenuId, IMenu, IMenuService, MenuItemAction, SubmenuItemAction } from 'vs/plAtform/Actions/common/Actions';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { renderViewTree } from 'vs/workbench/contrib/debug/browser/bAseDebugView';
+import { IAction, Action } from 'vs/bAse/common/Actions';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import { createAndFillInContextMenuActions, createAndFillInActionBarActions, MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
-import { ITreeNode, ITreeContextMenuEvent, IAsyncDataSource } from 'vs/base/browser/ui/tree/tree';
-import { WorkbenchCompressibleAsyncDataTree } from 'vs/platform/list/browser/listService';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
-import { createMatches, FuzzyScore, IMatch } from 'vs/base/common/filters';
-import { Event } from 'vs/base/common/event';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { isSessionAttach } from 'vs/workbench/contrib/debug/common/debugUtils';
-import { STOP_ID, STOP_LABEL, DISCONNECT_ID, DISCONNECT_LABEL, RESTART_SESSION_ID, RESTART_LABEL, STEP_OVER_ID, STEP_OVER_LABEL, STEP_INTO_LABEL, STEP_INTO_ID, STEP_OUT_LABEL, STEP_OUT_ID, PAUSE_ID, PAUSE_LABEL, CONTINUE_ID, CONTINUE_LABEL } from 'vs/workbench/contrib/debug/browser/debugCommands';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { CollapseAction } from 'vs/workbench/browser/viewlet';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { ViewPAne } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
+import { creAteAndFillInContextMenuActions, creAteAndFillInActionBArActions, MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { IListVirtuAlDelegAte } from 'vs/bAse/browser/ui/list/list';
+import { ITreeNode, ITreeContextMenuEvent, IAsyncDAtASource } from 'vs/bAse/browser/ui/tree/tree';
+import { WorkbenchCompressibleAsyncDAtATree } from 'vs/plAtform/list/browser/listService';
+import { HighlightedLAbel } from 'vs/bAse/browser/ui/highlightedlAbel/highlightedLAbel';
+import { creAteMAtches, FuzzyScore, IMAtch } from 'vs/bAse/common/filters';
+import { Event } from 'vs/bAse/common/event';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { isSessionAttAch } from 'vs/workbench/contrib/debug/common/debugUtils';
+import { STOP_ID, STOP_LABEL, DISCONNECT_ID, DISCONNECT_LABEL, RESTART_SESSION_ID, RESTART_LABEL, STEP_OVER_ID, STEP_OVER_LABEL, STEP_INTO_LABEL, STEP_INTO_ID, STEP_OUT_LABEL, STEP_OUT_ID, PAUSE_ID, PAUSE_LABEL, CONTINUE_ID, CONTINUE_LABEL } from 'vs/workbench/contrib/debug/browser/debugCommAnds';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { CollApseAction } from 'vs/workbench/browser/viewlet';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
-import { textLinkForeground } from 'vs/platform/theme/common/colorRegistry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { commonSuffixLength } from 'vs/base/common/strings';
-import { posix } from 'vs/base/common/path';
-import { ITreeCompressionDelegate } from 'vs/base/browser/ui/tree/asyncDataTree';
-import { ICompressibleTreeRenderer } from 'vs/base/browser/ui/tree/objectTree';
-import { ICompressedTreeNode } from 'vs/base/browser/ui/tree/compressedObjectTreeModel';
+import { textLinkForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { commonSuffixLength } from 'vs/bAse/common/strings';
+import { posix } from 'vs/bAse/common/pAth';
+import { ITreeCompressionDelegAte } from 'vs/bAse/browser/ui/tree/AsyncDAtATree';
+import { ICompressibleTreeRenderer } from 'vs/bAse/browser/ui/tree/objectTree';
+import { ICompressedTreeNode } from 'vs/bAse/browser/ui/tree/compressedObjectTreeModel';
 
 const $ = dom.$;
 
-type CallStackItem = IStackFrame | IThread | IDebugSession | string | ThreadAndSessionIds | IStackFrame[];
+type CAllStAckItem = IStAckFrAme | IThreAd | IDebugSession | string | ThreAdAndSessionIds | IStAckFrAme[];
 
-export function getContext(element: CallStackItem | null): any {
-	return element instanceof StackFrame ? {
-		sessionId: element.thread.session.getId(),
-		threadId: element.thread.getId(),
-		frameId: element.getId()
-	} : element instanceof Thread ? {
+export function getContext(element: CAllStAckItem | null): Any {
+	return element instAnceof StAckFrAme ? {
+		sessionId: element.threAd.session.getId(),
+		threAdId: element.threAd.getId(),
+		frAmeId: element.getId()
+	} : element instAnceof ThreAd ? {
 		sessionId: element.session.getId(),
-		threadId: element.getId()
+		threAdId: element.getId()
 	} : isDebugSession(element) ? {
 		sessionId: element.getId()
 	} : undefined;
 }
 
-// Extensions depend on this context, should not be changed even though it is not fully deterministic
-export function getContextForContributedActions(element: CallStackItem | null): string | number {
-	if (element instanceof StackFrame) {
+// Extensions depend on this context, should not be chAnged even though it is not fully deterministic
+export function getContextForContributedActions(element: CAllStAckItem | null): string | number {
+	if (element instAnceof StAckFrAme) {
 		if (element.source.inMemory) {
-			return element.source.raw.path || element.source.reference || element.source.name;
+			return element.source.rAw.pAth || element.source.reference || element.source.nAme;
 		}
 
 		return element.source.uri.toString();
 	}
-	if (element instanceof Thread) {
-		return element.threadId;
+	if (element instAnceof ThreAd) {
+		return element.threAdId;
 	}
 	if (isDebugSession(element)) {
 		return element.getId();
@@ -83,812 +83,812 @@ export function getContextForContributedActions(element: CallStackItem | null): 
 	return '';
 }
 
-export function getSpecificSourceName(stackFrame: IStackFrame): string {
-	// To reduce flashing of the path name and the way we fetch stack frames
-	// We need to compute the source name based on the other frames in the stale call stack
-	let callStack = (<Thread>stackFrame.thread).getStaleCallStack();
-	callStack = callStack.length > 0 ? callStack : stackFrame.thread.getCallStack();
-	const otherSources = callStack.map(sf => sf.source).filter(s => s !== stackFrame.source);
+export function getSpecificSourceNAme(stAckFrAme: IStAckFrAme): string {
+	// To reduce flAshing of the pAth nAme And the wAy we fetch stAck frAmes
+	// We need to compute the source nAme bAsed on the other frAmes in the stAle cAll stAck
+	let cAllStAck = (<ThreAd>stAckFrAme.threAd).getStAleCAllStAck();
+	cAllStAck = cAllStAck.length > 0 ? cAllStAck : stAckFrAme.threAd.getCAllStAck();
+	const otherSources = cAllStAck.mAp(sf => sf.source).filter(s => s !== stAckFrAme.source);
 	let suffixLength = 0;
-	otherSources.forEach(s => {
-		if (s.name === stackFrame.source.name) {
-			suffixLength = Math.max(suffixLength, commonSuffixLength(stackFrame.source.uri.path, s.uri.path));
+	otherSources.forEAch(s => {
+		if (s.nAme === stAckFrAme.source.nAme) {
+			suffixLength = MAth.mAx(suffixLength, commonSuffixLength(stAckFrAme.source.uri.pAth, s.uri.pAth));
 		}
 	});
 	if (suffixLength === 0) {
-		return stackFrame.source.name;
+		return stAckFrAme.source.nAme;
 	}
 
-	const from = Math.max(0, stackFrame.source.uri.path.lastIndexOf(posix.sep, stackFrame.source.uri.path.length - suffixLength - 1));
-	return (from > 0 ? '...' : '') + stackFrame.source.uri.path.substr(from);
+	const from = MAth.mAx(0, stAckFrAme.source.uri.pAth.lAstIndexOf(posix.sep, stAckFrAme.source.uri.pAth.length - suffixLength - 1));
+	return (from > 0 ? '...' : '') + stAckFrAme.source.uri.pAth.substr(from);
 }
 
-async function expandTo(session: IDebugSession, tree: WorkbenchCompressibleAsyncDataTree<IDebugModel, CallStackItem, FuzzyScore>): Promise<void> {
-	if (session.parentSession) {
-		await expandTo(session.parentSession, tree);
+Async function expAndTo(session: IDebugSession, tree: WorkbenchCompressibleAsyncDAtATree<IDebugModel, CAllStAckItem, FuzzyScore>): Promise<void> {
+	if (session.pArentSession) {
+		AwAit expAndTo(session.pArentSession, tree);
 	}
-	await tree.expand(session);
+	AwAit tree.expAnd(session);
 }
 
-export class CallStackView extends ViewPane {
-	private stateMessage!: HTMLSpanElement;
-	private stateMessageLabel!: HTMLSpanElement;
-	private onCallStackChangeScheduler: RunOnceScheduler;
-	private needsRefresh = false;
-	private ignoreSelectionChangedEvent = false;
-	private ignoreFocusStackFrameEvent = false;
-	private callStackItemType: IContextKey<string>;
-	private dataSource!: CallStackDataSource;
-	private tree!: WorkbenchCompressibleAsyncDataTree<IDebugModel, CallStackItem, FuzzyScore>;
-	private menu: IMenu;
-	private autoExpandedSessions = new Set<IDebugSession>();
-	private selectionNeedsUpdate = false;
+export clAss CAllStAckView extends ViewPAne {
+	privAte stAteMessAge!: HTMLSpAnElement;
+	privAte stAteMessAgeLAbel!: HTMLSpAnElement;
+	privAte onCAllStAckChAngeScheduler: RunOnceScheduler;
+	privAte needsRefresh = fAlse;
+	privAte ignoreSelectionChAngedEvent = fAlse;
+	privAte ignoreFocusStAckFrAmeEvent = fAlse;
+	privAte cAllStAckItemType: IContextKey<string>;
+	privAte dAtASource!: CAllStAckDAtASource;
+	privAte tree!: WorkbenchCompressibleAsyncDAtATree<IDebugModel, CAllStAckItem, FuzzyScore>;
+	privAte menu: IMenu;
+	privAte AutoExpAndedSessions = new Set<IDebugSession>();
+	privAte selectionNeedsUpdAte = fAlse;
 
 	constructor(
-		private options: IViewletViewOptions,
+		privAte options: IViewletViewOptions,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IDebugService private readonly debugService: IDebugService,
+		@IDebugService privAte reAdonly debugService: IDebugService,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IMenuService menuService: IMenuService,
-		@IContextKeyService readonly contextKeyService: IContextKeyService,
+		@IContextKeyService reAdonly contextKeyService: IContextKeyService,
 		@IOpenerService openerService: IOpenerService,
 		@IThemeService themeService: IThemeService,
 		@ITelemetryService telemetryService: ITelemetryService
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
-		this.callStackItemType = CONTEXT_CALLSTACK_ITEM_TYPE.bindTo(contextKeyService);
+		super(options, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
+		this.cAllStAckItemType = CONTEXT_CALLSTACK_ITEM_TYPE.bindTo(contextKeyService);
 
-		this.menu = menuService.createMenu(MenuId.DebugCallStackContext, contextKeyService);
+		this.menu = menuService.creAteMenu(MenuId.DebugCAllStAckContext, contextKeyService);
 		this._register(this.menu);
 
-		// Create scheduler to prevent unnecessary flashing of tree when reacting to changes
-		this.onCallStackChangeScheduler = new RunOnceScheduler(async () => {
-			// Only show the global pause message if we do not display threads.
-			// Otherwise there will be a pause message per thread and there is no need for a global one.
+		// CreAte scheduler to prevent unnecessAry flAshing of tree when reActing to chAnges
+		this.onCAllStAckChAngeScheduler = new RunOnceScheduler(Async () => {
+			// Only show the globAl pAuse messAge if we do not displAy threAds.
+			// Otherwise there will be A pAuse messAge per threAd And there is no need for A globAl one.
 			const sessions = this.debugService.getModel().getSessions();
 			if (sessions.length === 0) {
-				this.autoExpandedSessions.clear();
+				this.AutoExpAndedSessions.cleAr();
 			}
 
-			const thread = sessions.length === 1 && sessions[0].getAllThreads().length === 1 ? sessions[0].getAllThreads()[0] : undefined;
-			if (thread && thread.stoppedDetails) {
-				this.stateMessageLabel.textContent = thread.stateLabel;
-				this.stateMessageLabel.title = thread.stateLabel;
-				this.stateMessageLabel.classList.toggle('exception', thread.stoppedDetails.reason === 'exception');
-				this.stateMessage.hidden = false;
-			} else if (sessions.length === 1 && sessions[0].state === State.Running) {
-				this.stateMessageLabel.textContent = nls.localize({ key: 'running', comment: ['indicates state'] }, "Running");
-				this.stateMessageLabel.title = sessions[0].getLabel();
-				this.stateMessageLabel.classList.remove('exception');
-				this.stateMessage.hidden = false;
+			const threAd = sessions.length === 1 && sessions[0].getAllThreAds().length === 1 ? sessions[0].getAllThreAds()[0] : undefined;
+			if (threAd && threAd.stoppedDetAils) {
+				this.stAteMessAgeLAbel.textContent = threAd.stAteLAbel;
+				this.stAteMessAgeLAbel.title = threAd.stAteLAbel;
+				this.stAteMessAgeLAbel.clAssList.toggle('exception', threAd.stoppedDetAils.reAson === 'exception');
+				this.stAteMessAge.hidden = fAlse;
+			} else if (sessions.length === 1 && sessions[0].stAte === StAte.Running) {
+				this.stAteMessAgeLAbel.textContent = nls.locAlize({ key: 'running', comment: ['indicAtes stAte'] }, "Running");
+				this.stAteMessAgeLAbel.title = sessions[0].getLAbel();
+				this.stAteMessAgeLAbel.clAssList.remove('exception');
+				this.stAteMessAge.hidden = fAlse;
 			} else {
-				this.stateMessage.hidden = true;
+				this.stAteMessAge.hidden = true;
 			}
-			this.updateActions();
+			this.updAteActions();
 
-			this.needsRefresh = false;
-			this.dataSource.deemphasizedStackFramesToShow = [];
-			await this.tree.updateChildren();
+			this.needsRefresh = fAlse;
+			this.dAtASource.deemphAsizedStAckFrAmesToShow = [];
+			AwAit this.tree.updAteChildren();
 			try {
-				const toExpand = new Set<IDebugSession>();
-				sessions.forEach(s => {
-					// Automatically expand sessions that have children, but only do this once.
-					if (s.parentSession && !this.autoExpandedSessions.has(s.parentSession)) {
-						toExpand.add(s.parentSession);
+				const toExpAnd = new Set<IDebugSession>();
+				sessions.forEAch(s => {
+					// AutomAticAlly expAnd sessions thAt hAve children, but only do this once.
+					if (s.pArentSession && !this.AutoExpAndedSessions.hAs(s.pArentSession)) {
+						toExpAnd.Add(s.pArentSession);
 					}
 				});
-				for (let session of toExpand) {
-					await expandTo(session, this.tree);
-					this.autoExpandedSessions.add(session);
+				for (let session of toExpAnd) {
+					AwAit expAndTo(session, this.tree);
+					this.AutoExpAndedSessions.Add(session);
 				}
-			} catch (e) {
-				// Ignore tree expand errors if element no longer present
+			} cAtch (e) {
+				// Ignore tree expAnd errors if element no longer present
 			}
-			if (this.selectionNeedsUpdate) {
-				this.selectionNeedsUpdate = false;
-				await this.updateTreeSelection();
+			if (this.selectionNeedsUpdAte) {
+				this.selectionNeedsUpdAte = fAlse;
+				AwAit this.updAteTreeSelection();
 			}
 		}, 50);
 	}
 
-	protected renderHeaderTitle(container: HTMLElement): void {
-		const titleContainer = dom.append(container, $('.debug-call-stack-title'));
-		super.renderHeaderTitle(titleContainer, this.options.title);
+	protected renderHeAderTitle(contAiner: HTMLElement): void {
+		const titleContAiner = dom.Append(contAiner, $('.debug-cAll-stAck-title'));
+		super.renderHeAderTitle(titleContAiner, this.options.title);
 
-		this.stateMessage = dom.append(titleContainer, $('span.state-message'));
-		this.stateMessage.hidden = true;
-		this.stateMessageLabel = dom.append(this.stateMessage, $('span.label'));
+		this.stAteMessAge = dom.Append(titleContAiner, $('spAn.stAte-messAge'));
+		this.stAteMessAge.hidden = true;
+		this.stAteMessAgeLAbel = dom.Append(this.stAteMessAge, $('spAn.lAbel'));
 	}
 
 	getActions(): IAction[] {
-		if (this.stateMessage.hidden) {
-			return [new CollapseAction(() => this.tree, true, 'explorer-action codicon-collapse-all')];
+		if (this.stAteMessAge.hidden) {
+			return [new CollApseAction(() => this.tree, true, 'explorer-Action codicon-collApse-All')];
 		}
 
 		return [];
 	}
 
-	renderBody(container: HTMLElement): void {
-		super.renderBody(container);
-		this.element.classList.add('debug-pane');
-		container.classList.add('debug-call-stack');
-		const treeContainer = renderViewTree(container);
+	renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
+		this.element.clAssList.Add('debug-pAne');
+		contAiner.clAssList.Add('debug-cAll-stAck');
+		const treeContAiner = renderViewTree(contAiner);
 
-		this.dataSource = new CallStackDataSource(this.debugService);
-		const sessionsRenderer = this.instantiationService.createInstance(SessionsRenderer, this.menu);
-		this.tree = <WorkbenchCompressibleAsyncDataTree<IDebugModel, CallStackItem, FuzzyScore>>this.instantiationService.createInstance(WorkbenchCompressibleAsyncDataTree, 'CallStackView', treeContainer, new CallStackDelegate(), new CallStackCompressionDelegate(this.debugService), [
+		this.dAtASource = new CAllStAckDAtASource(this.debugService);
+		const sessionsRenderer = this.instAntiAtionService.creAteInstAnce(SessionsRenderer, this.menu);
+		this.tree = <WorkbenchCompressibleAsyncDAtATree<IDebugModel, CAllStAckItem, FuzzyScore>>this.instAntiAtionService.creAteInstAnce(WorkbenchCompressibleAsyncDAtATree, 'CAllStAckView', treeContAiner, new CAllStAckDelegAte(), new CAllStAckCompressionDelegAte(this.debugService), [
 			sessionsRenderer,
-			new ThreadsRenderer(this.instantiationService),
-			this.instantiationService.createInstance(StackFramesRenderer),
+			new ThreAdsRenderer(this.instAntiAtionService),
+			this.instAntiAtionService.creAteInstAnce(StAckFrAmesRenderer),
 			new ErrorsRenderer(),
-			new LoadAllRenderer(this.themeService),
+			new LoAdAllRenderer(this.themeService),
 			new ShowMoreRenderer(this.themeService)
-		], this.dataSource, {
-			accessibilityProvider: new CallStackAccessibilityProvider(),
-			compressionEnabled: true,
-			autoExpandSingleChildren: true,
+		], this.dAtASource, {
+			AccessibilityProvider: new CAllStAckAccessibilityProvider(),
+			compressionEnAbled: true,
+			AutoExpAndSingleChildren: true,
 			identityProvider: {
-				getId: (element: CallStackItem) => {
+				getId: (element: CAllStAckItem) => {
 					if (typeof element === 'string') {
 						return element;
 					}
-					if (element instanceof Array) {
+					if (element instAnceof ArrAy) {
 						return `showMore ${element[0].getId()}`;
 					}
 
 					return element.getId();
 				}
 			},
-			keyboardNavigationLabelProvider: {
-				getKeyboardNavigationLabel: (e: CallStackItem) => {
+			keyboArdNAvigAtionLAbelProvider: {
+				getKeyboArdNAvigAtionLAbel: (e: CAllStAckItem) => {
 					if (isDebugSession(e)) {
-						return e.getLabel();
+						return e.getLAbel();
 					}
-					if (e instanceof Thread) {
-						return `${e.name} ${e.stateLabel}`;
+					if (e instAnceof ThreAd) {
+						return `${e.nAme} ${e.stAteLAbel}`;
 					}
-					if (e instanceof StackFrame || typeof e === 'string') {
+					if (e instAnceof StAckFrAme || typeof e === 'string') {
 						return e;
 					}
-					if (e instanceof ThreadAndSessionIds) {
-						return LoadAllRenderer.LABEL;
+					if (e instAnceof ThreAdAndSessionIds) {
+						return LoAdAllRenderer.LABEL;
 					}
 
-					return nls.localize('showMoreStackFrames2', "Show More Stack Frames");
+					return nls.locAlize('showMoreStAckFrAmes2', "Show More StAck FrAmes");
 				},
-				getCompressedNodeKeyboardNavigationLabel: (e: CallStackItem[]) => {
+				getCompressedNodeKeyboArdNAvigAtionLAbel: (e: CAllStAckItem[]) => {
 					const firstItem = e[0];
 					if (isDebugSession(firstItem)) {
-						return firstItem.getLabel();
+						return firstItem.getLAbel();
 					}
 					return '';
 				}
 			},
-			expandOnlyOnTwistieClick: true,
+			expAndOnlyOnTwistieClick: true,
 			overrideStyles: {
-				listBackground: this.getBackgroundColor()
+				listBAckground: this.getBAckgroundColor()
 			}
 		});
 
 		this.tree.setInput(this.debugService.getModel());
 
-		this._register(this.tree.onDidOpen(async e => {
-			if (this.ignoreSelectionChangedEvent) {
+		this._register(this.tree.onDidOpen(Async e => {
+			if (this.ignoreSelectionChAngedEvent) {
 				return;
 			}
 
-			const focusStackFrame = (stackFrame: IStackFrame | undefined, thread: IThread | undefined, session: IDebugSession) => {
-				this.ignoreFocusStackFrameEvent = true;
+			const focusStAckFrAme = (stAckFrAme: IStAckFrAme | undefined, threAd: IThreAd | undefined, session: IDebugSession) => {
+				this.ignoreFocusStAckFrAmeEvent = true;
 				try {
-					this.debugService.focusStackFrame(stackFrame, thread, session, true);
-				} finally {
-					this.ignoreFocusStackFrameEvent = false;
+					this.debugService.focusStAckFrAme(stAckFrAme, threAd, session, true);
+				} finAlly {
+					this.ignoreFocusStAckFrAmeEvent = fAlse;
 				}
 			};
 
 			const element = e.element;
-			if (element instanceof StackFrame) {
-				focusStackFrame(element, element.thread, element.thread.session);
+			if (element instAnceof StAckFrAme) {
+				focusStAckFrAme(element, element.threAd, element.threAd.session);
 				element.openInEditor(this.editorService, e.editorOptions.preserveFocus, e.sideBySide, e.editorOptions.pinned);
 			}
-			if (element instanceof Thread) {
-				focusStackFrame(undefined, element, element.session);
+			if (element instAnceof ThreAd) {
+				focusStAckFrAme(undefined, element, element.session);
 			}
 			if (isDebugSession(element)) {
-				focusStackFrame(undefined, undefined, element);
+				focusStAckFrAme(undefined, undefined, element);
 			}
-			if (element instanceof ThreadAndSessionIds) {
+			if (element instAnceof ThreAdAndSessionIds) {
 				const session = this.debugService.getModel().getSession(element.sessionId);
-				const thread = session && session.getThread(element.threadId);
-				if (thread) {
-					const totalFrames = thread.stoppedDetails?.totalFrames;
-					const remainingFramesCount = typeof totalFrames === 'number' ? (totalFrames - thread.getCallStack().length) : undefined;
-					// Get all the remaining frames
-					await (<Thread>thread).fetchCallStack(remainingFramesCount);
-					await this.tree.updateChildren();
+				const threAd = session && session.getThreAd(element.threAdId);
+				if (threAd) {
+					const totAlFrAmes = threAd.stoppedDetAils?.totAlFrAmes;
+					const remAiningFrAmesCount = typeof totAlFrAmes === 'number' ? (totAlFrAmes - threAd.getCAllStAck().length) : undefined;
+					// Get All the remAining frAmes
+					AwAit (<ThreAd>threAd).fetchCAllStAck(remAiningFrAmesCount);
+					AwAit this.tree.updAteChildren();
 				}
 			}
-			if (element instanceof Array) {
-				this.dataSource.deemphasizedStackFramesToShow.push(...element);
-				this.tree.updateChildren();
+			if (element instAnceof ArrAy) {
+				this.dAtASource.deemphAsizedStAckFrAmesToShow.push(...element);
+				this.tree.updAteChildren();
 			}
 		}));
 
-		this._register(this.debugService.getModel().onDidChangeCallStack(() => {
+		this._register(this.debugService.getModel().onDidChAngeCAllStAck(() => {
 			if (!this.isBodyVisible()) {
 				this.needsRefresh = true;
 				return;
 			}
 
-			if (!this.onCallStackChangeScheduler.isScheduled()) {
-				this.onCallStackChangeScheduler.schedule();
+			if (!this.onCAllStAckChAngeScheduler.isScheduled()) {
+				this.onCAllStAckChAngeScheduler.schedule();
 			}
 		}));
-		const onFocusChange = Event.any<any>(this.debugService.getViewModel().onDidFocusStackFrame, this.debugService.getViewModel().onDidFocusSession);
-		this._register(onFocusChange(async () => {
-			if (this.ignoreFocusStackFrameEvent) {
+		const onFocusChAnge = Event.Any<Any>(this.debugService.getViewModel().onDidFocusStAckFrAme, this.debugService.getViewModel().onDidFocusSession);
+		this._register(onFocusChAnge(Async () => {
+			if (this.ignoreFocusStAckFrAmeEvent) {
 				return;
 			}
 			if (!this.isBodyVisible()) {
 				this.needsRefresh = true;
 				return;
 			}
-			if (this.onCallStackChangeScheduler.isScheduled()) {
-				this.selectionNeedsUpdate = true;
+			if (this.onCAllStAckChAngeScheduler.isScheduled()) {
+				this.selectionNeedsUpdAte = true;
 				return;
 			}
 
-			await this.updateTreeSelection();
+			AwAit this.updAteTreeSelection();
 		}));
 		this._register(this.tree.onContextMenu(e => this.onContextMenu(e)));
 
-		// Schedule the update of the call stack tree if the viewlet is opened after a session started #14684
-		if (this.debugService.state === State.Stopped) {
-			this.onCallStackChangeScheduler.schedule(0);
+		// Schedule the updAte of the cAll stAck tree if the viewlet is opened After A session stArted #14684
+		if (this.debugService.stAte === StAte.Stopped) {
+			this.onCAllStAckChAngeScheduler.schedule(0);
 		}
 
-		this._register(this.onDidChangeBodyVisibility(visible => {
+		this._register(this.onDidChAngeBodyVisibility(visible => {
 			if (visible && this.needsRefresh) {
-				this.onCallStackChangeScheduler.schedule();
+				this.onCAllStAckChAngeScheduler.schedule();
 			}
 		}));
 
 		this._register(this.debugService.onDidNewSession(s => {
-			const sessionListeners: IDisposable[] = [];
-			sessionListeners.push(s.onDidChangeName(() => this.tree.rerender(s)));
-			sessionListeners.push(s.onDidEndAdapter(() => dispose(sessionListeners)));
-			if (s.parentSession) {
-				// A session we already expanded has a new child session, allow to expand it again.
-				this.autoExpandedSessions.delete(s.parentSession);
+			const sessionListeners: IDisposAble[] = [];
+			sessionListeners.push(s.onDidChAngeNAme(() => this.tree.rerender(s)));
+			sessionListeners.push(s.onDidEndAdApter(() => dispose(sessionListeners)));
+			if (s.pArentSession) {
+				// A session we AlreAdy expAnded hAs A new child session, Allow to expAnd it AgAin.
+				this.AutoExpAndedSessions.delete(s.pArentSession);
 			}
 		}));
 	}
 
-	layoutBody(height: number, width: number): void {
-		super.layoutBody(height, width);
-		this.tree.layout(height, width);
+	lAyoutBody(height: number, width: number): void {
+		super.lAyoutBody(height, width);
+		this.tree.lAyout(height, width);
 	}
 
 	focus(): void {
 		this.tree.domFocus();
 	}
 
-	private async updateTreeSelection(): Promise<void> {
+	privAte Async updAteTreeSelection(): Promise<void> {
 		if (!this.tree || !this.tree.getInput()) {
-			// Tree not initialized yet
+			// Tree not initiAlized yet
 			return;
 		}
 
-		const updateSelectionAndReveal = (element: IStackFrame | IDebugSession) => {
-			this.ignoreSelectionChangedEvent = true;
+		const updAteSelectionAndReveAl = (element: IStAckFrAme | IDebugSession) => {
+			this.ignoreSelectionChAngedEvent = true;
 			try {
 				this.tree.setSelection([element]);
 				// If the element is outside of the screen bounds,
 				// position it in the middle
-				if (this.tree.getRelativeTop(element) === null) {
-					this.tree.reveal(element, 0.5);
+				if (this.tree.getRelAtiveTop(element) === null) {
+					this.tree.reveAl(element, 0.5);
 				} else {
-					this.tree.reveal(element);
+					this.tree.reveAl(element);
 				}
-			} catch (e) { }
-			finally {
-				this.ignoreSelectionChangedEvent = false;
+			} cAtch (e) { }
+			finAlly {
+				this.ignoreSelectionChAngedEvent = fAlse;
 			}
 		};
 
-		const thread = this.debugService.getViewModel().focusedThread;
+		const threAd = this.debugService.getViewModel().focusedThreAd;
 		const session = this.debugService.getViewModel().focusedSession;
-		const stackFrame = this.debugService.getViewModel().focusedStackFrame;
-		if (!thread) {
+		const stAckFrAme = this.debugService.getViewModel().focusedStAckFrAme;
+		if (!threAd) {
 			if (!session) {
 				this.tree.setSelection([]);
 			} else {
-				updateSelectionAndReveal(session);
+				updAteSelectionAndReveAl(session);
 			}
 		} else {
-			// Ignore errors from this expansions because we are not aware if we rendered the threads and sessions or we hide them to declutter the view
+			// Ignore errors from this expAnsions becAuse we Are not AwAre if we rendered the threAds And sessions or we hide them to declutter the view
 			try {
-				await expandTo(thread.session, this.tree);
-			} catch (e) { }
+				AwAit expAndTo(threAd.session, this.tree);
+			} cAtch (e) { }
 			try {
-				await this.tree.expand(thread);
-			} catch (e) { }
+				AwAit this.tree.expAnd(threAd);
+			} cAtch (e) { }
 
-			const toReveal = stackFrame || session;
-			if (toReveal) {
-				updateSelectionAndReveal(toReveal);
+			const toReveAl = stAckFrAme || session;
+			if (toReveAl) {
+				updAteSelectionAndReveAl(toReveAl);
 			}
 		}
 	}
 
-	private onContextMenu(e: ITreeContextMenuEvent<CallStackItem>): void {
+	privAte onContextMenu(e: ITreeContextMenuEvent<CAllStAckItem>): void {
 		const element = e.element;
 		if (isDebugSession(element)) {
-			this.callStackItemType.set('session');
-		} else if (element instanceof Thread) {
-			this.callStackItemType.set('thread');
-		} else if (element instanceof StackFrame) {
-			this.callStackItemType.set('stackFrame');
+			this.cAllStAckItemType.set('session');
+		} else if (element instAnceof ThreAd) {
+			this.cAllStAckItemType.set('threAd');
+		} else if (element instAnceof StAckFrAme) {
+			this.cAllStAckItemType.set('stAckFrAme');
 		} else {
-			this.callStackItemType.reset();
+			this.cAllStAckItemType.reset();
 		}
 
 
-		const primary: IAction[] = [];
-		const secondary: IAction[] = [];
-		const result = { primary, secondary };
-		const actionsDisposable = createAndFillInContextMenuActions(this.menu, { arg: getContextForContributedActions(element), shouldForwardArgs: true }, result, this.contextMenuService, g => /^inline/.test(g));
+		const primAry: IAction[] = [];
+		const secondAry: IAction[] = [];
+		const result = { primAry, secondAry };
+		const ActionsDisposAble = creAteAndFillInContextMenuActions(this.menu, { Arg: getContextForContributedActions(element), shouldForwArdArgs: true }, result, this.contextMenuService, g => /^inline/.test(g));
 
 		this.contextMenuService.showContextMenu({
-			getAnchor: () => e.anchor,
-			getActions: () => result.secondary,
+			getAnchor: () => e.Anchor,
+			getActions: () => result.secondAry,
 			getActionsContext: () => getContext(element),
-			onHide: () => dispose(actionsDisposable)
+			onHide: () => dispose(ActionsDisposAble)
 		});
 	}
 }
 
-interface IThreadTemplateData {
-	thread: HTMLElement;
-	name: HTMLElement;
-	stateLabel: HTMLSpanElement;
-	label: HighlightedLabel;
-	actionBar: ActionBar;
+interfAce IThreAdTemplAteDAtA {
+	threAd: HTMLElement;
+	nAme: HTMLElement;
+	stAteLAbel: HTMLSpAnElement;
+	lAbel: HighlightedLAbel;
+	ActionBAr: ActionBAr;
 }
 
-interface ISessionTemplateData {
+interfAce ISessionTemplAteDAtA {
 	session: HTMLElement;
-	name: HTMLElement;
-	stateLabel: HTMLSpanElement;
-	label: HighlightedLabel;
-	actionBar: ActionBar;
-	elementDisposable: IDisposable[];
+	nAme: HTMLElement;
+	stAteLAbel: HTMLSpAnElement;
+	lAbel: HighlightedLAbel;
+	ActionBAr: ActionBAr;
+	elementDisposAble: IDisposAble[];
 }
 
-interface IErrorTemplateData {
-	label: HTMLElement;
+interfAce IErrorTemplAteDAtA {
+	lAbel: HTMLElement;
 }
 
-interface ILabelTemplateData {
-	label: HTMLElement;
-	toDispose: IDisposable;
+interfAce ILAbelTemplAteDAtA {
+	lAbel: HTMLElement;
+	toDispose: IDisposAble;
 }
 
-interface IStackFrameTemplateData {
-	stackFrame: HTMLElement;
+interfAce IStAckFrAmeTemplAteDAtA {
+	stAckFrAme: HTMLElement;
 	file: HTMLElement;
-	fileName: HTMLElement;
+	fileNAme: HTMLElement;
 	lineNumber: HTMLElement;
-	label: HighlightedLabel;
-	actionBar: ActionBar;
+	lAbel: HighlightedLAbel;
+	ActionBAr: ActionBAr;
 }
 
-class SessionsRenderer implements ICompressibleTreeRenderer<IDebugSession, FuzzyScore, ISessionTemplateData> {
-	static readonly ID = 'session';
+clAss SessionsRenderer implements ICompressibleTreeRenderer<IDebugSession, FuzzyScore, ISessionTemplAteDAtA> {
+	stAtic reAdonly ID = 'session';
 
 	constructor(
-		private menu: IMenu,
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		privAte menu: IMenu,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) { }
 
-	get templateId(): string {
+	get templAteId(): string {
 		return SessionsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): ISessionTemplateData {
-		const session = dom.append(container, $('.session'));
-		dom.append(session, $('.codicon.codicon-bug'));
-		const name = dom.append(session, $('.name'));
-		const stateLabel = dom.append(session, $('span.state.label.monaco-count-badge.long'));
-		const label = new HighlightedLabel(name, false);
-		const actionBar = new ActionBar(session, {
-			actionViewItemProvider: action => {
-				if (action instanceof MenuItemAction) {
-					return this.instantiationService.createInstance(MenuEntryActionViewItem, action);
-				} else if (action instanceof SubmenuItemAction) {
-					return this.instantiationService.createInstance(SubmenuEntryActionViewItem, action);
+	renderTemplAte(contAiner: HTMLElement): ISessionTemplAteDAtA {
+		const session = dom.Append(contAiner, $('.session'));
+		dom.Append(session, $('.codicon.codicon-bug'));
+		const nAme = dom.Append(session, $('.nAme'));
+		const stAteLAbel = dom.Append(session, $('spAn.stAte.lAbel.monAco-count-bAdge.long'));
+		const lAbel = new HighlightedLAbel(nAme, fAlse);
+		const ActionBAr = new ActionBAr(session, {
+			ActionViewItemProvider: Action => {
+				if (Action instAnceof MenuItemAction) {
+					return this.instAntiAtionService.creAteInstAnce(MenuEntryActionViewItem, Action);
+				} else if (Action instAnceof SubmenuItemAction) {
+					return this.instAntiAtionService.creAteInstAnce(SubmenuEntryActionViewItem, Action);
 				}
 
 				return undefined;
 			}
 		});
 
-		return { session, name, stateLabel, label, actionBar, elementDisposable: [] };
+		return { session, nAme, stAteLAbel, lAbel, ActionBAr, elementDisposAble: [] };
 	}
 
-	renderElement(element: ITreeNode<IDebugSession, FuzzyScore>, _: number, data: ISessionTemplateData): void {
-		this.doRenderElement(element.element, createMatches(element.filterData), data);
+	renderElement(element: ITreeNode<IDebugSession, FuzzyScore>, _: number, dAtA: ISessionTemplAteDAtA): void {
+		this.doRenderElement(element.element, creAteMAtches(element.filterDAtA), dAtA);
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IDebugSession>, FuzzyScore>, index: number, templateData: ISessionTemplateData, height: number | undefined): void {
-		const lastElement = node.element.elements[node.element.elements.length - 1];
-		const matches = createMatches(node.filterData);
-		this.doRenderElement(lastElement, matches, templateData);
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IDebugSession>, FuzzyScore>, index: number, templAteDAtA: ISessionTemplAteDAtA, height: number | undefined): void {
+		const lAstElement = node.element.elements[node.element.elements.length - 1];
+		const mAtches = creAteMAtches(node.filterDAtA);
+		this.doRenderElement(lAstElement, mAtches, templAteDAtA);
 	}
 
-	private doRenderElement(session: IDebugSession, matches: IMatch[], data: ISessionTemplateData): void {
-		data.session.title = nls.localize({ key: 'session', comment: ['Session is a noun'] }, "Session");
-		data.label.set(session.getLabel(), matches);
-		const thread = session.getAllThreads().find(t => t.stopped);
+	privAte doRenderElement(session: IDebugSession, mAtches: IMAtch[], dAtA: ISessionTemplAteDAtA): void {
+		dAtA.session.title = nls.locAlize({ key: 'session', comment: ['Session is A noun'] }, "Session");
+		dAtA.lAbel.set(session.getLAbel(), mAtches);
+		const threAd = session.getAllThreAds().find(t => t.stopped);
 
-		const setActionBar = () => {
-			const actions = getActions(this.instantiationService, session);
+		const setActionBAr = () => {
+			const Actions = getActions(this.instAntiAtionService, session);
 
-			const primary: IAction[] = actions;
-			const secondary: IAction[] = [];
-			const result = { primary, secondary };
-			data.elementDisposable.push(createAndFillInActionBarActions(this.menu, { arg: getContextForContributedActions(session), shouldForwardArgs: true }, result, g => /^inline/.test(g)));
+			const primAry: IAction[] = Actions;
+			const secondAry: IAction[] = [];
+			const result = { primAry, secondAry };
+			dAtA.elementDisposAble.push(creAteAndFillInActionBArActions(this.menu, { Arg: getContextForContributedActions(session), shouldForwArdArgs: true }, result, g => /^inline/.test(g)));
 
-			data.actionBar.clear();
-			data.actionBar.push(primary, { icon: true, label: false });
+			dAtA.ActionBAr.cleAr();
+			dAtA.ActionBAr.push(primAry, { icon: true, lAbel: fAlse });
 		};
-		setActionBar();
-		data.elementDisposable.push(this.menu.onDidChange(() => setActionBar()));
-		data.stateLabel.style.display = '';
+		setActionBAr();
+		dAtA.elementDisposAble.push(this.menu.onDidChAnge(() => setActionBAr()));
+		dAtA.stAteLAbel.style.displAy = '';
 
-		if (thread && thread.stoppedDetails) {
-			data.stateLabel.textContent = thread.stateLabel;
-			if (thread.stoppedDetails.text) {
-				data.session.title = thread.stoppedDetails.text;
+		if (threAd && threAd.stoppedDetAils) {
+			dAtA.stAteLAbel.textContent = threAd.stAteLAbel;
+			if (threAd.stoppedDetAils.text) {
+				dAtA.session.title = threAd.stoppedDetAils.text;
 			}
 		} else {
-			data.stateLabel.textContent = nls.localize({ key: 'running', comment: ['indicates state'] }, "Running");
+			dAtA.stAteLAbel.textContent = nls.locAlize({ key: 'running', comment: ['indicAtes stAte'] }, "Running");
 		}
 	}
 
-	disposeTemplate(templateData: ISessionTemplateData): void {
-		templateData.actionBar.dispose();
+	disposeTemplAte(templAteDAtA: ISessionTemplAteDAtA): void {
+		templAteDAtA.ActionBAr.dispose();
 	}
 
-	disposeElement(_element: ITreeNode<IDebugSession, FuzzyScore>, _: number, templateData: ISessionTemplateData): void {
-		dispose(templateData.elementDisposable);
+	disposeElement(_element: ITreeNode<IDebugSession, FuzzyScore>, _: number, templAteDAtA: ISessionTemplAteDAtA): void {
+		dispose(templAteDAtA.elementDisposAble);
 	}
 }
 
-class ThreadsRenderer implements ICompressibleTreeRenderer<IThread, FuzzyScore, IThreadTemplateData> {
-	static readonly ID = 'thread';
+clAss ThreAdsRenderer implements ICompressibleTreeRenderer<IThreAd, FuzzyScore, IThreAdTemplAteDAtA> {
+	stAtic reAdonly ID = 'threAd';
 
-	constructor(private readonly instantiationService: IInstantiationService) { }
+	constructor(privAte reAdonly instAntiAtionService: IInstAntiAtionService) { }
 
-	get templateId(): string {
-		return ThreadsRenderer.ID;
+	get templAteId(): string {
+		return ThreAdsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IThreadTemplateData {
-		const thread = dom.append(container, $('.thread'));
-		const name = dom.append(thread, $('.name'));
-		const stateLabel = dom.append(thread, $('span.state.label.monaco-count-badge.long'));
-		const label = new HighlightedLabel(name, false);
-		const actionBar = new ActionBar(thread);
+	renderTemplAte(contAiner: HTMLElement): IThreAdTemplAteDAtA {
+		const threAd = dom.Append(contAiner, $('.threAd'));
+		const nAme = dom.Append(threAd, $('.nAme'));
+		const stAteLAbel = dom.Append(threAd, $('spAn.stAte.lAbel.monAco-count-bAdge.long'));
+		const lAbel = new HighlightedLAbel(nAme, fAlse);
+		const ActionBAr = new ActionBAr(threAd);
 
-		return { thread, name, stateLabel, label, actionBar };
+		return { threAd, nAme, stAteLAbel, lAbel, ActionBAr };
 	}
 
-	renderElement(element: ITreeNode<IThread, FuzzyScore>, index: number, data: IThreadTemplateData): void {
-		const thread = element.element;
-		data.thread.title = nls.localize('thread', "Thread");
-		data.label.set(thread.name, createMatches(element.filterData));
-		data.stateLabel.textContent = thread.stateLabel;
+	renderElement(element: ITreeNode<IThreAd, FuzzyScore>, index: number, dAtA: IThreAdTemplAteDAtA): void {
+		const threAd = element.element;
+		dAtA.threAd.title = nls.locAlize('threAd', "ThreAd");
+		dAtA.lAbel.set(threAd.nAme, creAteMAtches(element.filterDAtA));
+		dAtA.stAteLAbel.textContent = threAd.stAteLAbel;
 
-		data.actionBar.clear();
-		const actions = getActions(this.instantiationService, thread);
-		data.actionBar.push(actions, { icon: true, label: false });
+		dAtA.ActionBAr.cleAr();
+		const Actions = getActions(this.instAntiAtionService, threAd);
+		dAtA.ActionBAr.push(Actions, { icon: true, lAbel: fAlse });
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IThread>, FuzzyScore>, index: number, templateData: IThreadTemplateData, height: number | undefined): void {
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IThreAd>, FuzzyScore>, index: number, templAteDAtA: IThreAdTemplAteDAtA, height: number | undefined): void {
 		throw new Error('Method not implemented.');
 	}
 
-	disposeTemplate(templateData: IThreadTemplateData): void {
-		templateData.actionBar.dispose();
+	disposeTemplAte(templAteDAtA: IThreAdTemplAteDAtA): void {
+		templAteDAtA.ActionBAr.dispose();
 	}
 }
 
-class StackFramesRenderer implements ICompressibleTreeRenderer<IStackFrame, FuzzyScore, IStackFrameTemplateData> {
-	static readonly ID = 'stackFrame';
+clAss StAckFrAmesRenderer implements ICompressibleTreeRenderer<IStAckFrAme, FuzzyScore, IStAckFrAmeTemplAteDAtA> {
+	stAtic reAdonly ID = 'stAckFrAme';
 
 	constructor(
-		@ILabelService private readonly labelService: ILabelService,
-		@INotificationService private readonly notificationService: INotificationService
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService
 	) { }
 
-	get templateId(): string {
-		return StackFramesRenderer.ID;
+	get templAteId(): string {
+		return StAckFrAmesRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IStackFrameTemplateData {
-		const stackFrame = dom.append(container, $('.stack-frame'));
-		const labelDiv = dom.append(stackFrame, $('span.label.expression'));
-		const file = dom.append(stackFrame, $('.file'));
-		const fileName = dom.append(file, $('span.file-name'));
-		const wrapper = dom.append(file, $('span.line-number-wrapper'));
-		const lineNumber = dom.append(wrapper, $('span.line-number.monaco-count-badge'));
-		const label = new HighlightedLabel(labelDiv, false);
-		const actionBar = new ActionBar(stackFrame);
+	renderTemplAte(contAiner: HTMLElement): IStAckFrAmeTemplAteDAtA {
+		const stAckFrAme = dom.Append(contAiner, $('.stAck-frAme'));
+		const lAbelDiv = dom.Append(stAckFrAme, $('spAn.lAbel.expression'));
+		const file = dom.Append(stAckFrAme, $('.file'));
+		const fileNAme = dom.Append(file, $('spAn.file-nAme'));
+		const wrApper = dom.Append(file, $('spAn.line-number-wrApper'));
+		const lineNumber = dom.Append(wrApper, $('spAn.line-number.monAco-count-bAdge'));
+		const lAbel = new HighlightedLAbel(lAbelDiv, fAlse);
+		const ActionBAr = new ActionBAr(stAckFrAme);
 
-		return { file, fileName, label, lineNumber, stackFrame, actionBar };
+		return { file, fileNAme, lAbel, lineNumber, stAckFrAme, ActionBAr };
 	}
 
-	renderElement(element: ITreeNode<IStackFrame, FuzzyScore>, index: number, data: IStackFrameTemplateData): void {
-		const stackFrame = element.element;
-		data.stackFrame.classList.toggle('disabled', !stackFrame.source || !stackFrame.source.available || isDeemphasized(stackFrame));
-		data.stackFrame.classList.toggle('label', stackFrame.presentationHint === 'label');
-		data.stackFrame.classList.toggle('subtle', stackFrame.presentationHint === 'subtle');
-		const hasActions = !!stackFrame.thread.session.capabilities.supportsRestartFrame && stackFrame.presentationHint !== 'label' && stackFrame.presentationHint !== 'subtle';
-		data.stackFrame.classList.toggle('has-actions', hasActions);
+	renderElement(element: ITreeNode<IStAckFrAme, FuzzyScore>, index: number, dAtA: IStAckFrAmeTemplAteDAtA): void {
+		const stAckFrAme = element.element;
+		dAtA.stAckFrAme.clAssList.toggle('disAbled', !stAckFrAme.source || !stAckFrAme.source.AvAilAble || isDeemphAsized(stAckFrAme));
+		dAtA.stAckFrAme.clAssList.toggle('lAbel', stAckFrAme.presentAtionHint === 'lAbel');
+		dAtA.stAckFrAme.clAssList.toggle('subtle', stAckFrAme.presentAtionHint === 'subtle');
+		const hAsActions = !!stAckFrAme.threAd.session.cApAbilities.supportsRestArtFrAme && stAckFrAme.presentAtionHint !== 'lAbel' && stAckFrAme.presentAtionHint !== 'subtle';
+		dAtA.stAckFrAme.clAssList.toggle('hAs-Actions', hAsActions);
 
-		data.file.title = stackFrame.source.inMemory ? stackFrame.source.uri.path : this.labelService.getUriLabel(stackFrame.source.uri);
-		if (stackFrame.source.raw.origin) {
-			data.file.title += `\n${stackFrame.source.raw.origin}`;
+		dAtA.file.title = stAckFrAme.source.inMemory ? stAckFrAme.source.uri.pAth : this.lAbelService.getUriLAbel(stAckFrAme.source.uri);
+		if (stAckFrAme.source.rAw.origin) {
+			dAtA.file.title += `\n${stAckFrAme.source.rAw.origin}`;
 		}
-		data.label.set(stackFrame.name, createMatches(element.filterData), stackFrame.name);
-		data.fileName.textContent = getSpecificSourceName(stackFrame);
-		if (stackFrame.range.startLineNumber !== undefined) {
-			data.lineNumber.textContent = `${stackFrame.range.startLineNumber}`;
-			if (stackFrame.range.startColumn) {
-				data.lineNumber.textContent += `:${stackFrame.range.startColumn}`;
+		dAtA.lAbel.set(stAckFrAme.nAme, creAteMAtches(element.filterDAtA), stAckFrAme.nAme);
+		dAtA.fileNAme.textContent = getSpecificSourceNAme(stAckFrAme);
+		if (stAckFrAme.rAnge.stArtLineNumber !== undefined) {
+			dAtA.lineNumber.textContent = `${stAckFrAme.rAnge.stArtLineNumber}`;
+			if (stAckFrAme.rAnge.stArtColumn) {
+				dAtA.lineNumber.textContent += `:${stAckFrAme.rAnge.stArtColumn}`;
 			}
-			data.lineNumber.classList.remove('unavailable');
+			dAtA.lineNumber.clAssList.remove('unAvAilAble');
 		} else {
-			data.lineNumber.classList.add('unavailable');
+			dAtA.lineNumber.clAssList.Add('unAvAilAble');
 		}
 
-		data.actionBar.clear();
-		if (hasActions) {
-			const action = new Action('debug.callStack.restartFrame', nls.localize('restartFrame', "Restart Frame"), 'codicon-debug-restart-frame', true, async () => {
+		dAtA.ActionBAr.cleAr();
+		if (hAsActions) {
+			const Action = new Action('debug.cAllStAck.restArtFrAme', nls.locAlize('restArtFrAme', "RestArt FrAme"), 'codicon-debug-restArt-frAme', true, Async () => {
 				try {
-					await stackFrame.restart();
-				} catch (e) {
-					this.notificationService.error(e);
+					AwAit stAckFrAme.restArt();
+				} cAtch (e) {
+					this.notificAtionService.error(e);
 				}
 			});
-			data.actionBar.push(action, { icon: true, label: false });
+			dAtA.ActionBAr.push(Action, { icon: true, lAbel: fAlse });
 		}
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IStackFrame>, FuzzyScore>, index: number, templateData: IStackFrameTemplateData, height: number | undefined): void {
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IStAckFrAme>, FuzzyScore>, index: number, templAteDAtA: IStAckFrAmeTemplAteDAtA, height: number | undefined): void {
 		throw new Error('Method not implemented.');
 	}
 
-	disposeTemplate(templateData: IStackFrameTemplateData): void {
-		templateData.actionBar.dispose();
+	disposeTemplAte(templAteDAtA: IStAckFrAmeTemplAteDAtA): void {
+		templAteDAtA.ActionBAr.dispose();
 	}
 }
 
-class ErrorsRenderer implements ICompressibleTreeRenderer<string, FuzzyScore, IErrorTemplateData> {
-	static readonly ID = 'error';
+clAss ErrorsRenderer implements ICompressibleTreeRenderer<string, FuzzyScore, IErrorTemplAteDAtA> {
+	stAtic reAdonly ID = 'error';
 
-	get templateId(): string {
+	get templAteId(): string {
 		return ErrorsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IErrorTemplateData {
-		const label = dom.append(container, $('.error'));
+	renderTemplAte(contAiner: HTMLElement): IErrorTemplAteDAtA {
+		const lAbel = dom.Append(contAiner, $('.error'));
 
-		return { label };
+		return { lAbel };
 	}
 
-	renderElement(element: ITreeNode<string, FuzzyScore>, index: number, data: IErrorTemplateData): void {
+	renderElement(element: ITreeNode<string, FuzzyScore>, index: number, dAtA: IErrorTemplAteDAtA): void {
 		const error = element.element;
-		data.label.textContent = error;
-		data.label.title = error;
+		dAtA.lAbel.textContent = error;
+		dAtA.lAbel.title = error;
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<string>, FuzzyScore>, index: number, templateData: IErrorTemplateData, height: number | undefined): void {
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<string>, FuzzyScore>, index: number, templAteDAtA: IErrorTemplAteDAtA, height: number | undefined): void {
 		throw new Error('Method not implemented.');
 	}
 
-	disposeTemplate(templateData: IErrorTemplateData): void {
+	disposeTemplAte(templAteDAtA: IErrorTemplAteDAtA): void {
 		// noop
 	}
 }
 
-class LoadAllRenderer implements ICompressibleTreeRenderer<ThreadAndSessionIds, FuzzyScore, ILabelTemplateData> {
-	static readonly ID = 'loadAll';
-	static readonly LABEL = nls.localize('loadAllStackFrames', "Load All Stack Frames");
+clAss LoAdAllRenderer implements ICompressibleTreeRenderer<ThreAdAndSessionIds, FuzzyScore, ILAbelTemplAteDAtA> {
+	stAtic reAdonly ID = 'loAdAll';
+	stAtic reAdonly LABEL = nls.locAlize('loAdAllStAckFrAmes', "LoAd All StAck FrAmes");
 
-	constructor(private readonly themeService: IThemeService) { }
+	constructor(privAte reAdonly themeService: IThemeService) { }
 
-	get templateId(): string {
-		return LoadAllRenderer.ID;
+	get templAteId(): string {
+		return LoAdAllRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): ILabelTemplateData {
-		const label = dom.append(container, $('.load-all'));
-		const toDispose = attachStylerCallback(this.themeService, { textLinkForeground }, colors => {
+	renderTemplAte(contAiner: HTMLElement): ILAbelTemplAteDAtA {
+		const lAbel = dom.Append(contAiner, $('.loAd-All'));
+		const toDispose = AttAchStylerCAllbAck(this.themeService, { textLinkForeground }, colors => {
 			if (colors.textLinkForeground) {
-				label.style.color = colors.textLinkForeground.toString();
+				lAbel.style.color = colors.textLinkForeground.toString();
 			}
 		});
 
-		return { label, toDispose };
+		return { lAbel, toDispose };
 	}
 
-	renderElement(element: ITreeNode<ThreadAndSessionIds, FuzzyScore>, index: number, data: ILabelTemplateData): void {
-		data.label.textContent = LoadAllRenderer.LABEL;
+	renderElement(element: ITreeNode<ThreAdAndSessionIds, FuzzyScore>, index: number, dAtA: ILAbelTemplAteDAtA): void {
+		dAtA.lAbel.textContent = LoAdAllRenderer.LABEL;
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<ThreadAndSessionIds>, FuzzyScore>, index: number, templateData: ILabelTemplateData, height: number | undefined): void {
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<ThreAdAndSessionIds>, FuzzyScore>, index: number, templAteDAtA: ILAbelTemplAteDAtA, height: number | undefined): void {
 		throw new Error('Method not implemented.');
 	}
 
-	disposeTemplate(templateData: ILabelTemplateData): void {
-		templateData.toDispose.dispose();
+	disposeTemplAte(templAteDAtA: ILAbelTemplAteDAtA): void {
+		templAteDAtA.toDispose.dispose();
 	}
 }
 
-class ShowMoreRenderer implements ICompressibleTreeRenderer<IStackFrame[], FuzzyScore, ILabelTemplateData> {
-	static readonly ID = 'showMore';
+clAss ShowMoreRenderer implements ICompressibleTreeRenderer<IStAckFrAme[], FuzzyScore, ILAbelTemplAteDAtA> {
+	stAtic reAdonly ID = 'showMore';
 
-	constructor(private readonly themeService: IThemeService) { }
+	constructor(privAte reAdonly themeService: IThemeService) { }
 
 
-	get templateId(): string {
+	get templAteId(): string {
 		return ShowMoreRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): ILabelTemplateData {
-		const label = dom.append(container, $('.show-more'));
-		const toDispose = attachStylerCallback(this.themeService, { textLinkForeground }, colors => {
+	renderTemplAte(contAiner: HTMLElement): ILAbelTemplAteDAtA {
+		const lAbel = dom.Append(contAiner, $('.show-more'));
+		const toDispose = AttAchStylerCAllbAck(this.themeService, { textLinkForeground }, colors => {
 			if (colors.textLinkForeground) {
-				label.style.color = colors.textLinkForeground.toString();
+				lAbel.style.color = colors.textLinkForeground.toString();
 			}
 		});
 
-		return { label, toDispose };
+		return { lAbel, toDispose };
 	}
 
-	renderElement(element: ITreeNode<IStackFrame[], FuzzyScore>, index: number, data: ILabelTemplateData): void {
-		const stackFrames = element.element;
-		if (stackFrames.every(sf => !!(sf.source && sf.source.origin && sf.source.origin === stackFrames[0].source.origin))) {
-			data.label.textContent = nls.localize('showMoreAndOrigin', "Show {0} More: {1}", stackFrames.length, stackFrames[0].source.origin);
+	renderElement(element: ITreeNode<IStAckFrAme[], FuzzyScore>, index: number, dAtA: ILAbelTemplAteDAtA): void {
+		const stAckFrAmes = element.element;
+		if (stAckFrAmes.every(sf => !!(sf.source && sf.source.origin && sf.source.origin === stAckFrAmes[0].source.origin))) {
+			dAtA.lAbel.textContent = nls.locAlize('showMoreAndOrigin', "Show {0} More: {1}", stAckFrAmes.length, stAckFrAmes[0].source.origin);
 		} else {
-			data.label.textContent = nls.localize('showMoreStackFrames', "Show {0} More Stack Frames", stackFrames.length);
+			dAtA.lAbel.textContent = nls.locAlize('showMoreStAckFrAmes', "Show {0} More StAck FrAmes", stAckFrAmes.length);
 		}
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IStackFrame[]>, FuzzyScore>, index: number, templateData: ILabelTemplateData, height: number | undefined): void {
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<IStAckFrAme[]>, FuzzyScore>, index: number, templAteDAtA: ILAbelTemplAteDAtA, height: number | undefined): void {
 		throw new Error('Method not implemented.');
 	}
 
-	disposeTemplate(templateData: ILabelTemplateData): void {
-		templateData.toDispose.dispose();
+	disposeTemplAte(templAteDAtA: ILAbelTemplAteDAtA): void {
+		templAteDAtA.toDispose.dispose();
 	}
 }
 
-class CallStackDelegate implements IListVirtualDelegate<CallStackItem> {
+clAss CAllStAckDelegAte implements IListVirtuAlDelegAte<CAllStAckItem> {
 
-	getHeight(element: CallStackItem): number {
-		if (element instanceof StackFrame && element.presentationHint === 'label') {
+	getHeight(element: CAllStAckItem): number {
+		if (element instAnceof StAckFrAme && element.presentAtionHint === 'lAbel') {
 			return 16;
 		}
-		if (element instanceof ThreadAndSessionIds || element instanceof Array) {
+		if (element instAnceof ThreAdAndSessionIds || element instAnceof ArrAy) {
 			return 16;
 		}
 
 		return 22;
 	}
 
-	getTemplateId(element: CallStackItem): string {
+	getTemplAteId(element: CAllStAckItem): string {
 		if (isDebugSession(element)) {
 			return SessionsRenderer.ID;
 		}
-		if (element instanceof Thread) {
-			return ThreadsRenderer.ID;
+		if (element instAnceof ThreAd) {
+			return ThreAdsRenderer.ID;
 		}
-		if (element instanceof StackFrame) {
-			return StackFramesRenderer.ID;
+		if (element instAnceof StAckFrAme) {
+			return StAckFrAmesRenderer.ID;
 		}
 		if (typeof element === 'string') {
 			return ErrorsRenderer.ID;
 		}
-		if (element instanceof ThreadAndSessionIds) {
-			return LoadAllRenderer.ID;
+		if (element instAnceof ThreAdAndSessionIds) {
+			return LoAdAllRenderer.ID;
 		}
 
-		// element instanceof Array
+		// element instAnceof ArrAy
 		return ShowMoreRenderer.ID;
 	}
 }
 
-function isDebugModel(obj: any): obj is IDebugModel {
+function isDebugModel(obj: Any): obj is IDebugModel {
 	return typeof obj.getSessions === 'function';
 }
 
-function isDebugSession(obj: any): obj is IDebugSession {
-	return obj && typeof obj.getAllThreads === 'function';
+function isDebugSession(obj: Any): obj is IDebugSession {
+	return obj && typeof obj.getAllThreAds === 'function';
 }
 
-function isDeemphasized(frame: IStackFrame): boolean {
-	return frame.source.presentationHint === 'deemphasize' || frame.presentationHint === 'deemphasize';
+function isDeemphAsized(frAme: IStAckFrAme): booleAn {
+	return frAme.source.presentAtionHint === 'deemphAsize' || frAme.presentAtionHint === 'deemphAsize';
 }
 
-class CallStackDataSource implements IAsyncDataSource<IDebugModel, CallStackItem> {
-	deemphasizedStackFramesToShow: IStackFrame[] = [];
+clAss CAllStAckDAtASource implements IAsyncDAtASource<IDebugModel, CAllStAckItem> {
+	deemphAsizedStAckFrAmesToShow: IStAckFrAme[] = [];
 
-	constructor(private debugService: IDebugService) { }
+	constructor(privAte debugService: IDebugService) { }
 
-	hasChildren(element: IDebugModel | CallStackItem): boolean {
+	hAsChildren(element: IDebugModel | CAllStAckItem): booleAn {
 		if (isDebugSession(element)) {
-			const threads = element.getAllThreads();
-			return (threads.length > 1) || (threads.length === 1 && threads[0].stopped) || !!(this.debugService.getModel().getSessions().find(s => s.parentSession === element));
+			const threAds = element.getAllThreAds();
+			return (threAds.length > 1) || (threAds.length === 1 && threAds[0].stopped) || !!(this.debugService.getModel().getSessions().find(s => s.pArentSession === element));
 		}
 
-		return isDebugModel(element) || (element instanceof Thread && element.stopped);
+		return isDebugModel(element) || (element instAnceof ThreAd && element.stopped);
 	}
 
-	async getChildren(element: IDebugModel | CallStackItem): Promise<CallStackItem[]> {
+	Async getChildren(element: IDebugModel | CAllStAckItem): Promise<CAllStAckItem[]> {
 		if (isDebugModel(element)) {
 			const sessions = element.getSessions();
 			if (sessions.length === 0) {
 				return Promise.resolve([]);
 			}
 			if (sessions.length > 1 || this.debugService.getViewModel().isMultiSessionView()) {
-				return Promise.resolve(sessions.filter(s => !s.parentSession));
+				return Promise.resolve(sessions.filter(s => !s.pArentSession));
 			}
 
-			const threads = sessions[0].getAllThreads();
-			// Only show the threads in the call stack if there is more than 1 thread.
-			return threads.length === 1 ? this.getThreadChildren(<Thread>threads[0]) : Promise.resolve(threads);
+			const threAds = sessions[0].getAllThreAds();
+			// Only show the threAds in the cAll stAck if there is more thAn 1 threAd.
+			return threAds.length === 1 ? this.getThreAdChildren(<ThreAd>threAds[0]) : Promise.resolve(threAds);
 		} else if (isDebugSession(element)) {
-			const childSessions = this.debugService.getModel().getSessions().filter(s => s.parentSession === element);
-			const threads: CallStackItem[] = element.getAllThreads();
-			if (threads.length === 1) {
-				// Do not show thread when there is only one to be compact.
-				const children = await this.getThreadChildren(<Thread>threads[0]);
-				return children.concat(childSessions);
+			const childSessions = this.debugService.getModel().getSessions().filter(s => s.pArentSession === element);
+			const threAds: CAllStAckItem[] = element.getAllThreAds();
+			if (threAds.length === 1) {
+				// Do not show threAd when there is only one to be compAct.
+				const children = AwAit this.getThreAdChildren(<ThreAd>threAds[0]);
+				return children.concAt(childSessions);
 			}
 
-			return Promise.resolve(threads.concat(childSessions));
+			return Promise.resolve(threAds.concAt(childSessions));
 		} else {
-			return this.getThreadChildren(<Thread>element);
+			return this.getThreAdChildren(<ThreAd>element);
 		}
 	}
 
-	private getThreadChildren(thread: Thread): Promise<CallStackItem[]> {
-		return this.getThreadCallstack(thread).then(children => {
-			// Check if some stack frames should be hidden under a parent element since they are deemphasized
-			const result: CallStackItem[] = [];
-			children.forEach((child, index) => {
-				if (child instanceof StackFrame && child.source && isDeemphasized(child)) {
-					// Check if the user clicked to show the deemphasized source
-					if (this.deemphasizedStackFramesToShow.indexOf(child) === -1) {
+	privAte getThreAdChildren(threAd: ThreAd): Promise<CAllStAckItem[]> {
+		return this.getThreAdCAllstAck(threAd).then(children => {
+			// Check if some stAck frAmes should be hidden under A pArent element since they Are deemphAsized
+			const result: CAllStAckItem[] = [];
+			children.forEAch((child, index) => {
+				if (child instAnceof StAckFrAme && child.source && isDeemphAsized(child)) {
+					// Check if the user clicked to show the deemphAsized source
+					if (this.deemphAsizedStAckFrAmesToShow.indexOf(child) === -1) {
 						if (result.length) {
-							const last = result[result.length - 1];
-							if (last instanceof Array) {
-								// Collect all the stackframes that will be "collapsed"
-								last.push(child);
+							const lAst = result[result.length - 1];
+							if (lAst instAnceof ArrAy) {
+								// Collect All the stAckfrAmes thAt will be "collApsed"
+								lAst.push(child);
 								return;
 							}
 						}
 
 						const nextChild = index < children.length - 1 ? children[index + 1] : undefined;
-						if (nextChild instanceof StackFrame && nextChild.source && isDeemphasized(nextChild)) {
-							// Start collecting stackframes that will be "collapsed"
+						if (nextChild instAnceof StAckFrAme && nextChild.source && isDeemphAsized(nextChild)) {
+							// StArt collecting stAckfrAmes thAt will be "collApsed"
 							result.push([child]);
 							return;
 						}
@@ -902,216 +902,216 @@ class CallStackDataSource implements IAsyncDataSource<IDebugModel, CallStackItem
 		});
 	}
 
-	private async getThreadCallstack(thread: Thread): Promise<Array<IStackFrame | string | ThreadAndSessionIds>> {
-		let callStack: any[] = thread.getCallStack();
-		if (!callStack || !callStack.length) {
-			await thread.fetchCallStack();
-			callStack = thread.getCallStack();
+	privAte Async getThreAdCAllstAck(threAd: ThreAd): Promise<ArrAy<IStAckFrAme | string | ThreAdAndSessionIds>> {
+		let cAllStAck: Any[] = threAd.getCAllStAck();
+		if (!cAllStAck || !cAllStAck.length) {
+			AwAit threAd.fetchCAllStAck();
+			cAllStAck = threAd.getCAllStAck();
 		}
 
-		if (callStack.length === 1 && thread.session.capabilities.supportsDelayedStackTraceLoading && thread.stoppedDetails && thread.stoppedDetails.totalFrames && thread.stoppedDetails.totalFrames > 1) {
-			// To reduce flashing of the call stack view simply append the stale call stack
-			// once we have the correct data the tree will refresh and we will no longer display it.
-			callStack = callStack.concat(thread.getStaleCallStack().slice(1));
+		if (cAllStAck.length === 1 && threAd.session.cApAbilities.supportsDelAyedStAckTrAceLoAding && threAd.stoppedDetAils && threAd.stoppedDetAils.totAlFrAmes && threAd.stoppedDetAils.totAlFrAmes > 1) {
+			// To reduce flAshing of the cAll stAck view simply Append the stAle cAll stAck
+			// once we hAve the correct dAtA the tree will refresh And we will no longer displAy it.
+			cAllStAck = cAllStAck.concAt(threAd.getStAleCAllStAck().slice(1));
 		}
 
-		if (thread.stoppedDetails && thread.stoppedDetails.framesErrorMessage) {
-			callStack = callStack.concat([thread.stoppedDetails.framesErrorMessage]);
+		if (threAd.stoppedDetAils && threAd.stoppedDetAils.frAmesErrorMessAge) {
+			cAllStAck = cAllStAck.concAt([threAd.stoppedDetAils.frAmesErrorMessAge]);
 		}
-		if (thread.stoppedDetails && thread.stoppedDetails.totalFrames && thread.stoppedDetails.totalFrames > callStack.length && callStack.length > 1) {
-			callStack = callStack.concat([new ThreadAndSessionIds(thread.session.getId(), thread.threadId)]);
+		if (threAd.stoppedDetAils && threAd.stoppedDetAils.totAlFrAmes && threAd.stoppedDetAils.totAlFrAmes > cAllStAck.length && cAllStAck.length > 1) {
+			cAllStAck = cAllStAck.concAt([new ThreAdAndSessionIds(threAd.session.getId(), threAd.threAdId)]);
 		}
 
-		return callStack;
+		return cAllStAck;
 	}
 }
 
-class CallStackAccessibilityProvider implements IListAccessibilityProvider<CallStackItem> {
+clAss CAllStAckAccessibilityProvider implements IListAccessibilityProvider<CAllStAckItem> {
 
-	getWidgetAriaLabel(): string {
-		return nls.localize({ comment: ['Debug is a noun in this context, not a verb.'], key: 'callStackAriaLabel' }, "Debug Call Stack");
+	getWidgetAriALAbel(): string {
+		return nls.locAlize({ comment: ['Debug is A noun in this context, not A verb.'], key: 'cAllStAckAriALAbel' }, "Debug CAll StAck");
 	}
 
-	getAriaLabel(element: CallStackItem): string {
-		if (element instanceof Thread) {
-			return nls.localize('threadAriaLabel', "Thread {0} {1}", element.name, element.stateLabel);
+	getAriALAbel(element: CAllStAckItem): string {
+		if (element instAnceof ThreAd) {
+			return nls.locAlize('threAdAriALAbel', "ThreAd {0} {1}", element.nAme, element.stAteLAbel);
 		}
-		if (element instanceof StackFrame) {
-			return nls.localize('stackFrameAriaLabel', "Stack Frame {0}, line {1}, {2}", element.name, element.range.startLineNumber, getSpecificSourceName(element));
+		if (element instAnceof StAckFrAme) {
+			return nls.locAlize('stAckFrAmeAriALAbel', "StAck FrAme {0}, line {1}, {2}", element.nAme, element.rAnge.stArtLineNumber, getSpecificSourceNAme(element));
 		}
 		if (isDebugSession(element)) {
-			const thread = element.getAllThreads().find(t => t.stopped);
-			const state = thread ? thread.stateLabel : nls.localize({ key: 'running', comment: ['indicates state'] }, "Running");
-			return nls.localize('sessionLabel', "Session {0} {1}", element.getLabel(), state);
+			const threAd = element.getAllThreAds().find(t => t.stopped);
+			const stAte = threAd ? threAd.stAteLAbel : nls.locAlize({ key: 'running', comment: ['indicAtes stAte'] }, "Running");
+			return nls.locAlize('sessionLAbel', "Session {0} {1}", element.getLAbel(), stAte);
 		}
 		if (typeof element === 'string') {
 			return element;
 		}
-		if (element instanceof Array) {
-			return nls.localize('showMoreStackFrames', "Show {0} More Stack Frames", element.length);
+		if (element instAnceof ArrAy) {
+			return nls.locAlize('showMoreStAckFrAmes', "Show {0} More StAck FrAmes", element.length);
 		}
 
-		// element instanceof ThreadAndSessionIds
-		return LoadAllRenderer.LABEL;
+		// element instAnceof ThreAdAndSessionIds
+		return LoAdAllRenderer.LABEL;
 	}
 }
 
-function getActions(instantiationService: IInstantiationService, element: IDebugSession | IThread): IAction[] {
-	const getThreadActions = (thread: IThread): IAction[] => {
+function getActions(instAntiAtionService: IInstAntiAtionService, element: IDebugSession | IThreAd): IAction[] {
+	const getThreAdActions = (threAd: IThreAd): IAction[] => {
 		return [
-			thread.stopped ? instantiationService.createInstance(ContinueAction, thread) : instantiationService.createInstance(PauseAction, thread),
-			instantiationService.createInstance(StepOverAction, thread),
-			instantiationService.createInstance(StepIntoAction, thread),
-			instantiationService.createInstance(StepOutAction, thread)
+			threAd.stopped ? instAntiAtionService.creAteInstAnce(ContinueAction, threAd) : instAntiAtionService.creAteInstAnce(PAuseAction, threAd),
+			instAntiAtionService.creAteInstAnce(StepOverAction, threAd),
+			instAntiAtionService.creAteInstAnce(StepIntoAction, threAd),
+			instAntiAtionService.creAteInstAnce(StepOutAction, threAd)
 		];
 	};
 
-	if (element instanceof Thread) {
-		return getThreadActions(element);
+	if (element instAnceof ThreAd) {
+		return getThreAdActions(element);
 	}
 
 	const session = <IDebugSession>element;
-	const stopOrDisconectAction = isSessionAttach(session) ? instantiationService.createInstance(DisconnectAction, session) : instantiationService.createInstance(StopAction, session);
-	const restartAction = instantiationService.createInstance(RestartAction, session);
-	const threads = session.getAllThreads();
-	if (threads.length === 1) {
-		return getThreadActions(threads[0]).concat([
-			restartAction,
+	const stopOrDisconectAction = isSessionAttAch(session) ? instAntiAtionService.creAteInstAnce(DisconnectAction, session) : instAntiAtionService.creAteInstAnce(StopAction, session);
+	const restArtAction = instAntiAtionService.creAteInstAnce(RestArtAction, session);
+	const threAds = session.getAllThreAds();
+	if (threAds.length === 1) {
+		return getThreAdActions(threAds[0]).concAt([
+			restArtAction,
 			stopOrDisconectAction
 		]);
 	}
 
 	return [
-		restartAction,
+		restArtAction,
 		stopOrDisconectAction
 	];
 }
 
 
-class StopAction extends Action {
+clAss StopAction extends Action {
 
 	constructor(
-		private readonly session: IDebugSession,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly session: IDebugSession,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${STOP_ID}`, STOP_LABEL, 'debug-action codicon-debug-stop');
+		super(`Action.${STOP_ID}`, STOP_LABEL, 'debug-Action codicon-debug-stop');
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(STOP_ID, undefined, getContext(this.session));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(STOP_ID, undefined, getContext(this.session));
 	}
 }
 
-class DisconnectAction extends Action {
+clAss DisconnectAction extends Action {
 
 	constructor(
-		private readonly session: IDebugSession,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly session: IDebugSession,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${DISCONNECT_ID}`, DISCONNECT_LABEL, 'debug-action codicon-debug-disconnect');
+		super(`Action.${DISCONNECT_ID}`, DISCONNECT_LABEL, 'debug-Action codicon-debug-disconnect');
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(DISCONNECT_ID, undefined, getContext(this.session));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(DISCONNECT_ID, undefined, getContext(this.session));
 	}
 }
 
-class RestartAction extends Action {
+clAss RestArtAction extends Action {
 
 	constructor(
-		private readonly session: IDebugSession,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly session: IDebugSession,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${RESTART_SESSION_ID}`, RESTART_LABEL, 'debug-action codicon-debug-restart');
+		super(`Action.${RESTART_SESSION_ID}`, RESTART_LABEL, 'debug-Action codicon-debug-restArt');
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(RESTART_SESSION_ID, undefined, getContext(this.session));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(RESTART_SESSION_ID, undefined, getContext(this.session));
 	}
 }
 
-class StepOverAction extends Action {
+clAss StepOverAction extends Action {
 
 	constructor(
-		private readonly thread: IThread,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly threAd: IThreAd,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${STEP_OVER_ID}`, STEP_OVER_LABEL, 'debug-action codicon-debug-step-over', thread.stopped);
+		super(`Action.${STEP_OVER_ID}`, STEP_OVER_LABEL, 'debug-Action codicon-debug-step-over', threAd.stopped);
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(STEP_OVER_ID, undefined, getContext(this.thread));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(STEP_OVER_ID, undefined, getContext(this.threAd));
 	}
 }
 
-class StepIntoAction extends Action {
+clAss StepIntoAction extends Action {
 
 	constructor(
-		private readonly thread: IThread,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly threAd: IThreAd,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${STEP_INTO_ID}`, STEP_INTO_LABEL, 'debug-action codicon-debug-step-into', thread.stopped);
+		super(`Action.${STEP_INTO_ID}`, STEP_INTO_LABEL, 'debug-Action codicon-debug-step-into', threAd.stopped);
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(STEP_INTO_ID, undefined, getContext(this.thread));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(STEP_INTO_ID, undefined, getContext(this.threAd));
 	}
 }
 
-class StepOutAction extends Action {
+clAss StepOutAction extends Action {
 
 	constructor(
-		private readonly thread: IThread,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly threAd: IThreAd,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${STEP_OUT_ID}`, STEP_OUT_LABEL, 'debug-action codicon-debug-step-out', thread.stopped);
+		super(`Action.${STEP_OUT_ID}`, STEP_OUT_LABEL, 'debug-Action codicon-debug-step-out', threAd.stopped);
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(STEP_OUT_ID, undefined, getContext(this.thread));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(STEP_OUT_ID, undefined, getContext(this.threAd));
 	}
 }
 
-class PauseAction extends Action {
+clAss PAuseAction extends Action {
 
 	constructor(
-		private readonly thread: IThread,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly threAd: IThreAd,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${PAUSE_ID}`, PAUSE_LABEL, 'debug-action codicon-debug-pause', !thread.stopped);
+		super(`Action.${PAUSE_ID}`, PAUSE_LABEL, 'debug-Action codicon-debug-pAuse', !threAd.stopped);
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(PAUSE_ID, undefined, getContext(this.thread));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(PAUSE_ID, undefined, getContext(this.threAd));
 	}
 }
 
-class ContinueAction extends Action {
+clAss ContinueAction extends Action {
 
 	constructor(
-		private readonly thread: IThread,
-		@ICommandService private readonly commandService: ICommandService
+		privAte reAdonly threAd: IThreAd,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(`action.${CONTINUE_ID}`, CONTINUE_LABEL, 'debug-action codicon-debug-continue', thread.stopped);
+		super(`Action.${CONTINUE_ID}`, CONTINUE_LABEL, 'debug-Action codicon-debug-continue', threAd.stopped);
 	}
 
-	public run(): Promise<any> {
-		return this.commandService.executeCommand(CONTINUE_ID, undefined, getContext(this.thread));
+	public run(): Promise<Any> {
+		return this.commAndService.executeCommAnd(CONTINUE_ID, undefined, getContext(this.threAd));
 	}
 }
 
-class CallStackCompressionDelegate implements ITreeCompressionDelegate<CallStackItem> {
+clAss CAllStAckCompressionDelegAte implements ITreeCompressionDelegAte<CAllStAckItem> {
 
-	constructor(private readonly debugService: IDebugService) { }
+	constructor(privAte reAdonly debugService: IDebugService) { }
 
-	isIncompressible(stat: CallStackItem): boolean {
-		if (isDebugSession(stat)) {
-			if (stat.compact) {
-				return false;
+	isIncompressible(stAt: CAllStAckItem): booleAn {
+		if (isDebugSession(stAt)) {
+			if (stAt.compAct) {
+				return fAlse;
 			}
 			const sessions = this.debugService.getModel().getSessions();
-			if (sessions.some(s => s.parentSession === stat && s.compact)) {
-				return false;
+			if (sessions.some(s => s.pArentSession === stAt && s.compAct)) {
+				return fAlse;
 			}
 
 			return true;

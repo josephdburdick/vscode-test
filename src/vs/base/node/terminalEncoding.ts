@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * This code is also used by standalone cli's. Avoid adding dependencies to keep the size of the cli small.
+ * This code is Also used by stAndAlone cli's. Avoid Adding dependencies to keep the size of the cli smAll.
  */
 import { exec } from 'child_process';
-import { isWindows } from 'vs/base/common/platform';
+import { isWindows } from 'vs/bAse/common/plAtform';
 
-const windowsTerminalEncodings = {
-	'437': 'cp437', // United States
-	'850': 'cp850', // Multilingual(Latin I)
-	'852': 'cp852', // Slavic(Latin II)
-	'855': 'cp855', // Cyrillic(Russian)
+const windowsTerminAlEncodings = {
+	'437': 'cp437', // United StAtes
+	'850': 'cp850', // MultilinguAl(LAtin I)
+	'852': 'cp852', // SlAvic(LAtin II)
+	'855': 'cp855', // Cyrillic(RussiAn)
 	'857': 'cp857', // Turkish
 	'860': 'cp860', // Portuguese
-	'861': 'cp861', // Icelandic
-	'863': 'cp863', // Canadian - French
+	'861': 'cp861', // IcelAndic
+	'863': 'cp863', // CAnAdiAn - French
 	'865': 'cp865', // Nordic
-	'866': 'cp866', // Russian
+	'866': 'cp866', // RussiAn
 	'869': 'cp869', // Modern Greek
 	'936': 'cp936', // Simplified Chinese
-	'1252': 'cp1252' // West European Latin
+	'1252': 'cp1252' // West EuropeAn LAtin
 };
 
-function toIconvLiteEncoding(encodingName: string): string {
-	const normalizedEncodingName = encodingName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-	const mapped = JSCHARDET_TO_ICONV_ENCODINGS[normalizedEncodingName];
+function toIconvLiteEncoding(encodingNAme: string): string {
+	const normAlizedEncodingNAme = encodingNAme.replAce(/[^A-zA-Z0-9]/g, '').toLowerCAse();
+	const mApped = JSCHARDET_TO_ICONV_ENCODINGS[normAlizedEncodingNAme];
 
-	return mapped || normalizedEncodingName;
+	return mApped || normAlizedEncodingNAme;
 }
 
-const JSCHARDET_TO_ICONV_ENCODINGS: { [name: string]: string } = {
+const JSCHARDET_TO_ICONV_ENCODINGS: { [nAme: string]: string } = {
 	'ibm866': 'cp866',
 	'big5': 'cp950'
 };
 
 const UTF8 = 'utf8';
 
-export async function resolveTerminalEncoding(verbose?: boolean): Promise<string> {
-	let rawEncodingPromise: Promise<string | undefined>;
+export Async function resolveTerminAlEncoding(verbose?: booleAn): Promise<string> {
+	let rAwEncodingPromise: Promise<string | undefined>;
 
-	// Support a global environment variable to win over other mechanics
+	// Support A globAl environment vAriAble to win over other mechAnics
 	const cliEncodingEnv = process.env['VSCODE_CLI_ENCODING'];
 	if (cliEncodingEnv) {
 		if (verbose) {
-			console.log(`Found VSCODE_CLI_ENCODING variable: ${cliEncodingEnv}`);
+			console.log(`Found VSCODE_CLI_ENCODING vAriAble: ${cliEncodingEnv}`);
 		}
 
-		rawEncodingPromise = Promise.resolve(cliEncodingEnv);
+		rAwEncodingPromise = Promise.resolve(cliEncodingEnv);
 	}
 
-	// Windows: educated guess
+	// Windows: educAted guess
 	else if (isWindows) {
-		rawEncodingPromise = new Promise<string | undefined>(resolve => {
+		rAwEncodingPromise = new Promise<string | undefined>(resolve => {
 			if (verbose) {
-				console.log('Running "chcp" to detect terminal encoding...');
+				console.log('Running "chcp" to detect terminAl encoding...');
 			}
 
 			exec('chcp', (err, stdout, stderr) => {
 				if (stdout) {
 					if (verbose) {
-						console.log(`Output from "chcp" command is: ${stdout}`);
+						console.log(`Output from "chcp" commAnd is: ${stdout}`);
 					}
 
-					const windowsTerminalEncodingKeys = Object.keys(windowsTerminalEncodings) as Array<keyof typeof windowsTerminalEncodings>;
-					for (const key of windowsTerminalEncodingKeys) {
+					const windowsTerminAlEncodingKeys = Object.keys(windowsTerminAlEncodings) As ArrAy<keyof typeof windowsTerminAlEncodings>;
+					for (const key of windowsTerminAlEncodingKeys) {
 						if (stdout.indexOf(key) >= 0) {
-							return resolve(windowsTerminalEncodings[key]);
+							return resolve(windowsTerminAlEncodings[key]);
 						}
 					}
 				}
@@ -77,25 +77,25 @@ export async function resolveTerminalEncoding(verbose?: boolean): Promise<string
 			});
 		});
 	}
-	// Linux/Mac: use "locale charmap" command
+	// Linux/MAc: use "locAle chArmAp" commAnd
 	else {
-		rawEncodingPromise = new Promise<string>(resolve => {
+		rAwEncodingPromise = new Promise<string>(resolve => {
 			if (verbose) {
-				console.log('Running "locale charmap" to detect terminal encoding...');
+				console.log('Running "locAle chArmAp" to detect terminAl encoding...');
 			}
 
-			exec('locale charmap', (err, stdout, stderr) => resolve(stdout));
+			exec('locAle chArmAp', (err, stdout, stderr) => resolve(stdout));
 		});
 	}
 
-	const rawEncoding = await rawEncodingPromise;
+	const rAwEncoding = AwAit rAwEncodingPromise;
 	if (verbose) {
-		console.log(`Detected raw terminal encoding: ${rawEncoding}`);
+		console.log(`Detected rAw terminAl encoding: ${rAwEncoding}`);
 	}
 
-	if (!rawEncoding || rawEncoding.toLowerCase() === 'utf-8' || rawEncoding.toLowerCase() === UTF8) {
+	if (!rAwEncoding || rAwEncoding.toLowerCAse() === 'utf-8' || rAwEncoding.toLowerCAse() === UTF8) {
 		return UTF8;
 	}
 
-	return toIconvLiteEncoding(rawEncoding);
+	return toIconvLiteEncoding(rAwEncoding);
 }

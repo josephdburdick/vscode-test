@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./standalone-tokens';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import 'vs/css!./stAndAlone-tokens';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { OpenerService } from 'vs/editor/browser/services/openerService';
-import { DiffNavigator, IDiffNavigator } from 'vs/editor/browser/widget/diffNavigator';
-import { EditorOptions, ConfigurationChangedEvent } from 'vs/editor/common/config/editorOptions';
-import { BareFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
+import { DiffNAvigAtor, IDiffNAvigAtor } from 'vs/editor/browser/widget/diffNAvigAtor';
+import { EditorOptions, ConfigurAtionChAngedEvent } from 'vs/editor/common/config/editorOptions';
+import { BAreFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
 import { Token } from 'vs/editor/common/core/token';
 import { IEditor, EditorType } from 'vs/editor/common/editorCommon';
-import { FindMatch, ITextModel, TextModelResolvedOptions } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
+import { FindMAtch, ITextModel, TextModelResolvedOptions } from 'vs/editor/common/model';
+import * As modes from 'vs/editor/common/modes';
 import { NULL_STATE, nullTokenize } from 'vs/editor/common/modes/nullMode';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { ILanguageSelection } from 'vs/editor/common/services/modeService';
+import { ILAnguAgeSelection } from 'vs/editor/common/services/modeService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { IWebWorkerOptions, MonacoWebWorker, createWebWorker as actualCreateWebWorker } from 'vs/editor/common/services/webWorker';
-import * as standaloneEnums from 'vs/editor/common/standalone/standaloneEnums';
-import { Colorizer, IColorizerElementOptions, IColorizerOptions } from 'vs/editor/standalone/browser/colorizer';
-import { SimpleEditorModelResolverService } from 'vs/editor/standalone/browser/simpleServices';
-import { IDiffEditorConstructionOptions, IStandaloneEditorConstructionOptions, IStandaloneCodeEditor, IStandaloneDiffEditor, StandaloneDiffEditor, StandaloneEditor } from 'vs/editor/standalone/browser/standaloneCodeEditor';
-import { DynamicStandaloneServices, IEditorOverrideServices, StaticServices } from 'vs/editor/standalone/browser/standaloneServices';
-import { IStandaloneThemeData, IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextViewService, IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IMarker, IMarkerData } from 'vs/platform/markers/common/markers';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { clearAllFontInfos } from 'vs/editor/browser/config/configuration';
-import { IEditorProgressService } from 'vs/platform/progress/common/progress';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { StandaloneThemeServiceImpl } from 'vs/editor/standalone/browser/standaloneThemeServiceImpl';
+import { IWebWorkerOptions, MonAcoWebWorker, creAteWebWorker As ActuAlCreAteWebWorker } from 'vs/editor/common/services/webWorker';
+import * As stAndAloneEnums from 'vs/editor/common/stAndAlone/stAndAloneEnums';
+import { Colorizer, IColorizerElementOptions, IColorizerOptions } from 'vs/editor/stAndAlone/browser/colorizer';
+import { SimpleEditorModelResolverService } from 'vs/editor/stAndAlone/browser/simpleServices';
+import { IDiffEditorConstructionOptions, IStAndAloneEditorConstructionOptions, IStAndAloneCodeEditor, IStAndAloneDiffEditor, StAndAloneDiffEditor, StAndAloneEditor } from 'vs/editor/stAndAlone/browser/stAndAloneCodeEditor';
+import { DynAmicStAndAloneServices, IEditorOverrideServices, StAticServices } from 'vs/editor/stAndAlone/browser/stAndAloneServices';
+import { IStAndAloneThemeDAtA, IStAndAloneThemeService } from 'vs/editor/stAndAlone/common/stAndAloneThemeService';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextViewService, IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IMArker, IMArkerDAtA } from 'vs/plAtform/mArkers/common/mArkers';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IAccessibilityService } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { cleArAllFontInfos } from 'vs/editor/browser/config/configurAtion';
+import { IEditorProgressService } from 'vs/plAtform/progress/common/progress';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { StAndAloneThemeServiceImpl } from 'vs/editor/stAndAlone/browser/stAndAloneThemeServiceImpl';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-function withAllStandaloneServices<T extends IEditor>(domElement: HTMLElement, override: IEditorOverrideServices, callback: (services: DynamicStandaloneServices) => T): T {
-	let services = new DynamicStandaloneServices(domElement, override);
+function withAllStAndAloneServices<T extends IEditor>(domElement: HTMLElement, override: IEditorOverrideServices, cAllbAck: (services: DynAmicStAndAloneServices) => T): T {
+	let services = new DynAmicStAndAloneServices(domElement, override);
 
 	let simpleEditorModelResolverService: SimpleEditorModelResolverService | null = null;
-	if (!services.has(ITextModelService)) {
-		simpleEditorModelResolverService = new SimpleEditorModelResolverService(StaticServices.modelService.get());
+	if (!services.hAs(ITextModelService)) {
+		simpleEditorModelResolverService = new SimpleEditorModelResolverService(StAticServices.modelService.get());
 		services.set(ITextModelService, simpleEditorModelResolverService);
 	}
 
-	if (!services.has(IOpenerService)) {
-		services.set(IOpenerService, new OpenerService(services.get(ICodeEditorService), services.get(ICommandService)));
+	if (!services.hAs(IOpenerService)) {
+		services.set(IOpenerService, new OpenerService(services.get(ICodeEditorService), services.get(ICommAndService)));
 	}
 
-	let result = callback(services);
+	let result = cAllbAck(services);
 
 	if (simpleEditorModelResolverService) {
 		simpleEditorModelResolverService.setEditor(result);
@@ -67,324 +67,324 @@ function withAllStandaloneServices<T extends IEditor>(domElement: HTMLElement, o
 }
 
 /**
- * Create a new editor under `domElement`.
- * `domElement` should be empty (not contain other dom nodes).
- * The editor will read the size of `domElement`.
+ * CreAte A new editor under `domElement`.
+ * `domElement` should be empty (not contAin other dom nodes).
+ * The editor will reAd the size of `domElement`.
  */
-export function create(domElement: HTMLElement, options?: IStandaloneEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneCodeEditor {
-	return withAllStandaloneServices(domElement, override || {}, (services) => {
-		return new StandaloneEditor(
+export function creAte(domElement: HTMLElement, options?: IStAndAloneEditorConstructionOptions, override?: IEditorOverrideServices): IStAndAloneCodeEditor {
+	return withAllStAndAloneServices(domElement, override || {}, (services) => {
+		return new StAndAloneEditor(
 			domElement,
 			options,
 			services,
-			services.get(IInstantiationService),
+			services.get(IInstAntiAtionService),
 			services.get(ICodeEditorService),
-			services.get(ICommandService),
+			services.get(ICommAndService),
 			services.get(IContextKeyService),
 			services.get(IKeybindingService),
 			services.get(IContextViewService),
-			services.get(IStandaloneThemeService),
-			services.get(INotificationService),
-			services.get(IConfigurationService),
+			services.get(IStAndAloneThemeService),
+			services.get(INotificAtionService),
+			services.get(IConfigurAtionService),
 			services.get(IAccessibilityService)
 		);
 	});
 }
 
 /**
- * Emitted when an editor is created.
- * Creating a diff editor might cause this listener to be invoked with the two editors.
+ * Emitted when An editor is creAted.
+ * CreAting A diff editor might cAuse this listener to be invoked with the two editors.
  * @event
  */
-export function onDidCreateEditor(listener: (codeEditor: ICodeEditor) => void): IDisposable {
-	return StaticServices.codeEditorService.get().onCodeEditorAdd((editor) => {
+export function onDidCreAteEditor(listener: (codeEditor: ICodeEditor) => void): IDisposAble {
+	return StAticServices.codeEditorService.get().onCodeEditorAdd((editor) => {
 		listener(<ICodeEditor>editor);
 	});
 }
 
 /**
- * Create a new diff editor under `domElement`.
- * `domElement` should be empty (not contain other dom nodes).
- * The editor will read the size of `domElement`.
+ * CreAte A new diff editor under `domElement`.
+ * `domElement` should be empty (not contAin other dom nodes).
+ * The editor will reAd the size of `domElement`.
  */
-export function createDiffEditor(domElement: HTMLElement, options?: IDiffEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneDiffEditor {
-	return withAllStandaloneServices(domElement, override || {}, (services) => {
-		return new StandaloneDiffEditor(
+export function creAteDiffEditor(domElement: HTMLElement, options?: IDiffEditorConstructionOptions, override?: IEditorOverrideServices): IStAndAloneDiffEditor {
+	return withAllStAndAloneServices(domElement, override || {}, (services) => {
+		return new StAndAloneDiffEditor(
 			domElement,
 			options,
 			services,
-			services.get(IInstantiationService),
+			services.get(IInstAntiAtionService),
 			services.get(IContextKeyService),
 			services.get(IKeybindingService),
 			services.get(IContextViewService),
 			services.get(IEditorWorkerService),
 			services.get(ICodeEditorService),
-			services.get(IStandaloneThemeService),
-			services.get(INotificationService),
-			services.get(IConfigurationService),
+			services.get(IStAndAloneThemeService),
+			services.get(INotificAtionService),
+			services.get(IConfigurAtionService),
 			services.get(IContextMenuService),
 			services.get(IEditorProgressService),
-			services.get(IClipboardService)
+			services.get(IClipboArdService)
 		);
 	});
 }
 
-export interface IDiffNavigatorOptions {
-	readonly followsCaret?: boolean;
-	readonly ignoreCharChanges?: boolean;
-	readonly alwaysRevealFirst?: boolean;
+export interfAce IDiffNAvigAtorOptions {
+	reAdonly followsCAret?: booleAn;
+	reAdonly ignoreChArChAnges?: booleAn;
+	reAdonly AlwAysReveAlFirst?: booleAn;
 }
 
-export function createDiffNavigator(diffEditor: IStandaloneDiffEditor, opts?: IDiffNavigatorOptions): IDiffNavigator {
-	return new DiffNavigator(diffEditor, opts);
+export function creAteDiffNAvigAtor(diffEditor: IStAndAloneDiffEditor, opts?: IDiffNAvigAtorOptions): IDiffNAvigAtor {
+	return new DiffNAvigAtor(diffEditor, opts);
 }
 
-function doCreateModel(value: string, languageSelection: ILanguageSelection, uri?: URI): ITextModel {
-	return StaticServices.modelService.get().createModel(value, languageSelection, uri);
+function doCreAteModel(vAlue: string, lAnguAgeSelection: ILAnguAgeSelection, uri?: URI): ITextModel {
+	return StAticServices.modelService.get().creAteModel(vAlue, lAnguAgeSelection, uri);
 }
 
 /**
- * Create a new editor model.
- * You can specify the language that should be set for this model or let the language be inferred from the `uri`.
+ * CreAte A new editor model.
+ * You cAn specify the lAnguAge thAt should be set for this model or let the lAnguAge be inferred from the `uri`.
  */
-export function createModel(value: string, language?: string, uri?: URI): ITextModel {
-	value = value || '';
+export function creAteModel(vAlue: string, lAnguAge?: string, uri?: URI): ITextModel {
+	vAlue = vAlue || '';
 
-	if (!language) {
-		let firstLF = value.indexOf('\n');
-		let firstLine = value;
+	if (!lAnguAge) {
+		let firstLF = vAlue.indexOf('\n');
+		let firstLine = vAlue;
 		if (firstLF !== -1) {
-			firstLine = value.substring(0, firstLF);
+			firstLine = vAlue.substring(0, firstLF);
 		}
 
-		return doCreateModel(value, StaticServices.modeService.get().createByFilepathOrFirstLine(uri || null, firstLine), uri);
+		return doCreAteModel(vAlue, StAticServices.modeService.get().creAteByFilepAthOrFirstLine(uri || null, firstLine), uri);
 	}
-	return doCreateModel(value, StaticServices.modeService.get().create(language), uri);
+	return doCreAteModel(vAlue, StAticServices.modeService.get().creAte(lAnguAge), uri);
 }
 
 /**
- * Change the language for a model.
+ * ChAnge the lAnguAge for A model.
  */
-export function setModelLanguage(model: ITextModel, languageId: string): void {
-	StaticServices.modelService.get().setMode(model, StaticServices.modeService.get().create(languageId));
+export function setModelLAnguAge(model: ITextModel, lAnguAgeId: string): void {
+	StAticServices.modelService.get().setMode(model, StAticServices.modeService.get().creAte(lAnguAgeId));
 }
 
 /**
- * Set the markers for a model.
+ * Set the mArkers for A model.
  */
-export function setModelMarkers(model: ITextModel, owner: string, markers: IMarkerData[]): void {
+export function setModelMArkers(model: ITextModel, owner: string, mArkers: IMArkerDAtA[]): void {
 	if (model) {
-		StaticServices.markerService.get().changeOne(owner, model.uri, markers);
+		StAticServices.mArkerService.get().chAngeOne(owner, model.uri, mArkers);
 	}
 }
 
 /**
- * Get markers for owner and/or resource
+ * Get mArkers for owner And/or resource
  *
- * @returns list of markers
+ * @returns list of mArkers
  */
-export function getModelMarkers(filter: { owner?: string, resource?: URI, take?: number }): IMarker[] {
-	return StaticServices.markerService.get().read(filter);
+export function getModelMArkers(filter: { owner?: string, resource?: URI, tAke?: number }): IMArker[] {
+	return StAticServices.mArkerService.get().reAd(filter);
 }
 
 /**
- * Get the model that has `uri` if it exists.
+ * Get the model thAt hAs `uri` if it exists.
  */
 export function getModel(uri: URI): ITextModel | null {
-	return StaticServices.modelService.get().getModel(uri);
+	return StAticServices.modelService.get().getModel(uri);
 }
 
 /**
- * Get all the created models.
+ * Get All the creAted models.
  */
 export function getModels(): ITextModel[] {
-	return StaticServices.modelService.get().getModels();
+	return StAticServices.modelService.get().getModels();
 }
 
 /**
- * Emitted when a model is created.
+ * Emitted when A model is creAted.
  * @event
  */
-export function onDidCreateModel(listener: (model: ITextModel) => void): IDisposable {
-	return StaticServices.modelService.get().onModelAdded(listener);
+export function onDidCreAteModel(listener: (model: ITextModel) => void): IDisposAble {
+	return StAticServices.modelService.get().onModelAdded(listener);
 }
 
 /**
- * Emitted right before a model is disposed.
+ * Emitted right before A model is disposed.
  * @event
  */
-export function onWillDisposeModel(listener: (model: ITextModel) => void): IDisposable {
-	return StaticServices.modelService.get().onModelRemoved(listener);
+export function onWillDisposeModel(listener: (model: ITextModel) => void): IDisposAble {
+	return StAticServices.modelService.get().onModelRemoved(listener);
 }
 
 /**
- * Emitted when a different language is set to a model.
+ * Emitted when A different lAnguAge is set to A model.
  * @event
  */
-export function onDidChangeModelLanguage(listener: (e: { readonly model: ITextModel; readonly oldLanguage: string; }) => void): IDisposable {
-	return StaticServices.modelService.get().onModelModeChanged((e) => {
+export function onDidChAngeModelLAnguAge(listener: (e: { reAdonly model: ITextModel; reAdonly oldLAnguAge: string; }) => void): IDisposAble {
+	return StAticServices.modelService.get().onModelModeChAnged((e) => {
 		listener({
 			model: e.model,
-			oldLanguage: e.oldModeId
+			oldLAnguAge: e.oldModeId
 		});
 	});
 }
 
 /**
- * Create a new web worker that has model syncing capabilities built in.
- * Specify an AMD module to load that will `create` an object that will be proxied.
+ * CreAte A new web worker thAt hAs model syncing cApAbilities built in.
+ * Specify An AMD module to loAd thAt will `creAte` An object thAt will be proxied.
  */
-export function createWebWorker<T>(opts: IWebWorkerOptions): MonacoWebWorker<T> {
-	return actualCreateWebWorker<T>(StaticServices.modelService.get(), opts);
+export function creAteWebWorker<T>(opts: IWebWorkerOptions): MonAcoWebWorker<T> {
+	return ActuAlCreAteWebWorker<T>(StAticServices.modelService.get(), opts);
 }
 
 /**
- * Colorize the contents of `domNode` using attribute `data-lang`.
+ * Colorize the contents of `domNode` using Attribute `dAtA-lAng`.
  */
 export function colorizeElement(domNode: HTMLElement, options: IColorizerElementOptions): Promise<void> {
-	const themeService = <StandaloneThemeServiceImpl>StaticServices.standaloneThemeService.get();
-	themeService.registerEditorContainer(domNode);
-	return Colorizer.colorizeElement(themeService, StaticServices.modeService.get(), domNode, options);
+	const themeService = <StAndAloneThemeServiceImpl>StAticServices.stAndAloneThemeService.get();
+	themeService.registerEditorContAiner(domNode);
+	return Colorizer.colorizeElement(themeService, StAticServices.modeService.get(), domNode, options);
 }
 
 /**
- * Colorize `text` using language `languageId`.
+ * Colorize `text` using lAnguAge `lAnguAgeId`.
  */
-export function colorize(text: string, languageId: string, options: IColorizerOptions): Promise<string> {
-	const themeService = <StandaloneThemeServiceImpl>StaticServices.standaloneThemeService.get();
-	themeService.registerEditorContainer(document.body);
-	return Colorizer.colorize(StaticServices.modeService.get(), text, languageId, options);
+export function colorize(text: string, lAnguAgeId: string, options: IColorizerOptions): Promise<string> {
+	const themeService = <StAndAloneThemeServiceImpl>StAticServices.stAndAloneThemeService.get();
+	themeService.registerEditorContAiner(document.body);
+	return Colorizer.colorize(StAticServices.modeService.get(), text, lAnguAgeId, options);
 }
 
 /**
- * Colorize a line in a model.
+ * Colorize A line in A model.
  */
-export function colorizeModelLine(model: ITextModel, lineNumber: number, tabSize: number = 4): string {
-	const themeService = <StandaloneThemeServiceImpl>StaticServices.standaloneThemeService.get();
-	themeService.registerEditorContainer(document.body);
-	return Colorizer.colorizeModelLine(model, lineNumber, tabSize);
+export function colorizeModelLine(model: ITextModel, lineNumber: number, tAbSize: number = 4): string {
+	const themeService = <StAndAloneThemeServiceImpl>StAticServices.stAndAloneThemeService.get();
+	themeService.registerEditorContAiner(document.body);
+	return Colorizer.colorizeModelLine(model, lineNumber, tAbSize);
 }
 
 /**
- * @internal
+ * @internAl
  */
-function getSafeTokenizationSupport(language: string): Omit<modes.ITokenizationSupport, 'tokenize2'> {
-	let tokenizationSupport = modes.TokenizationRegistry.get(language);
-	if (tokenizationSupport) {
-		return tokenizationSupport;
+function getSAfeTokenizAtionSupport(lAnguAge: string): Omit<modes.ITokenizAtionSupport, 'tokenize2'> {
+	let tokenizAtionSupport = modes.TokenizAtionRegistry.get(lAnguAge);
+	if (tokenizAtionSupport) {
+		return tokenizAtionSupport;
 	}
 	return {
-		getInitialState: () => NULL_STATE,
-		tokenize: (line: string, state: modes.IState, deltaOffset: number) => nullTokenize(language, line, state, deltaOffset)
+		getInitiAlStAte: () => NULL_STATE,
+		tokenize: (line: string, stAte: modes.IStAte, deltAOffset: number) => nullTokenize(lAnguAge, line, stAte, deltAOffset)
 	};
 }
 
 /**
- * Tokenize `text` using language `languageId`
+ * Tokenize `text` using lAnguAge `lAnguAgeId`
  */
-export function tokenize(text: string, languageId: string): Token[][] {
-	let modeService = StaticServices.modeService.get();
+export function tokenize(text: string, lAnguAgeId: string): Token[][] {
+	let modeService = StAticServices.modeService.get();
 	// Needed in order to get the mode registered for subsequent look-ups
-	modeService.triggerMode(languageId);
+	modeService.triggerMode(lAnguAgeId);
 
-	let tokenizationSupport = getSafeTokenizationSupport(languageId);
+	let tokenizAtionSupport = getSAfeTokenizAtionSupport(lAnguAgeId);
 	let lines = text.split(/\r\n|\r|\n/);
 	let result: Token[][] = [];
-	let state = tokenizationSupport.getInitialState();
+	let stAte = tokenizAtionSupport.getInitiAlStAte();
 	for (let i = 0, len = lines.length; i < len; i++) {
 		let line = lines[i];
-		let tokenizationResult = tokenizationSupport.tokenize(line, state, 0);
+		let tokenizAtionResult = tokenizAtionSupport.tokenize(line, stAte, 0);
 
-		result[i] = tokenizationResult.tokens;
-		state = tokenizationResult.endState;
+		result[i] = tokenizAtionResult.tokens;
+		stAte = tokenizAtionResult.endStAte;
 	}
 	return result;
 }
 
 /**
- * Define a new theme or update an existing theme.
+ * Define A new theme or updAte An existing theme.
  */
-export function defineTheme(themeName: string, themeData: IStandaloneThemeData): void {
-	StaticServices.standaloneThemeService.get().defineTheme(themeName, themeData);
+export function defineTheme(themeNAme: string, themeDAtA: IStAndAloneThemeDAtA): void {
+	StAticServices.stAndAloneThemeService.get().defineTheme(themeNAme, themeDAtA);
 }
 
 /**
- * Switches to a theme.
+ * Switches to A theme.
  */
-export function setTheme(themeName: string): void {
-	StaticServices.standaloneThemeService.get().setTheme(themeName);
+export function setTheme(themeNAme: string): void {
+	StAticServices.stAndAloneThemeService.get().setTheme(themeNAme);
 }
 
 /**
- * Clears all cached font measurements and triggers re-measurement.
+ * CleArs All cAched font meAsurements And triggers re-meAsurement.
  */
-export function remeasureFonts(): void {
-	clearAllFontInfos();
+export function remeAsureFonts(): void {
+	cleArAllFontInfos();
 }
 
 /**
- * @internal
+ * @internAl
  */
-export function createMonacoEditorAPI(): typeof monaco.editor {
+export function creAteMonAcoEditorAPI(): typeof monAco.editor {
 	return {
 		// methods
-		create: <any>create,
-		onDidCreateEditor: <any>onDidCreateEditor,
-		createDiffEditor: <any>createDiffEditor,
-		createDiffNavigator: <any>createDiffNavigator,
+		creAte: <Any>creAte,
+		onDidCreAteEditor: <Any>onDidCreAteEditor,
+		creAteDiffEditor: <Any>creAteDiffEditor,
+		creAteDiffNAvigAtor: <Any>creAteDiffNAvigAtor,
 
-		createModel: <any>createModel,
-		setModelLanguage: <any>setModelLanguage,
-		setModelMarkers: <any>setModelMarkers,
-		getModelMarkers: <any>getModelMarkers,
-		getModels: <any>getModels,
-		getModel: <any>getModel,
-		onDidCreateModel: <any>onDidCreateModel,
-		onWillDisposeModel: <any>onWillDisposeModel,
-		onDidChangeModelLanguage: <any>onDidChangeModelLanguage,
+		creAteModel: <Any>creAteModel,
+		setModelLAnguAge: <Any>setModelLAnguAge,
+		setModelMArkers: <Any>setModelMArkers,
+		getModelMArkers: <Any>getModelMArkers,
+		getModels: <Any>getModels,
+		getModel: <Any>getModel,
+		onDidCreAteModel: <Any>onDidCreAteModel,
+		onWillDisposeModel: <Any>onWillDisposeModel,
+		onDidChAngeModelLAnguAge: <Any>onDidChAngeModelLAnguAge,
 
 
-		createWebWorker: <any>createWebWorker,
-		colorizeElement: <any>colorizeElement,
-		colorize: <any>colorize,
-		colorizeModelLine: <any>colorizeModelLine,
-		tokenize: <any>tokenize,
-		defineTheme: <any>defineTheme,
-		setTheme: <any>setTheme,
-		remeasureFonts: remeasureFonts,
+		creAteWebWorker: <Any>creAteWebWorker,
+		colorizeElement: <Any>colorizeElement,
+		colorize: <Any>colorize,
+		colorizeModelLine: <Any>colorizeModelLine,
+		tokenize: <Any>tokenize,
+		defineTheme: <Any>defineTheme,
+		setTheme: <Any>setTheme,
+		remeAsureFonts: remeAsureFonts,
 
 		// enums
-		AccessibilitySupport: standaloneEnums.AccessibilitySupport,
-		ContentWidgetPositionPreference: standaloneEnums.ContentWidgetPositionPreference,
-		CursorChangeReason: standaloneEnums.CursorChangeReason,
-		DefaultEndOfLine: standaloneEnums.DefaultEndOfLine,
-		EditorAutoIndentStrategy: standaloneEnums.EditorAutoIndentStrategy,
-		EditorOption: standaloneEnums.EditorOption,
-		EndOfLinePreference: standaloneEnums.EndOfLinePreference,
-		EndOfLineSequence: standaloneEnums.EndOfLineSequence,
-		MinimapPosition: standaloneEnums.MinimapPosition,
-		MouseTargetType: standaloneEnums.MouseTargetType,
-		OverlayWidgetPositionPreference: standaloneEnums.OverlayWidgetPositionPreference,
-		OverviewRulerLane: standaloneEnums.OverviewRulerLane,
-		RenderLineNumbersType: standaloneEnums.RenderLineNumbersType,
-		RenderMinimap: standaloneEnums.RenderMinimap,
-		ScrollbarVisibility: standaloneEnums.ScrollbarVisibility,
-		ScrollType: standaloneEnums.ScrollType,
-		TextEditorCursorBlinkingStyle: standaloneEnums.TextEditorCursorBlinkingStyle,
-		TextEditorCursorStyle: standaloneEnums.TextEditorCursorStyle,
-		TrackedRangeStickiness: standaloneEnums.TrackedRangeStickiness,
-		WrappingIndent: standaloneEnums.WrappingIndent,
+		AccessibilitySupport: stAndAloneEnums.AccessibilitySupport,
+		ContentWidgetPositionPreference: stAndAloneEnums.ContentWidgetPositionPreference,
+		CursorChAngeReAson: stAndAloneEnums.CursorChAngeReAson,
+		DefAultEndOfLine: stAndAloneEnums.DefAultEndOfLine,
+		EditorAutoIndentStrAtegy: stAndAloneEnums.EditorAutoIndentStrAtegy,
+		EditorOption: stAndAloneEnums.EditorOption,
+		EndOfLinePreference: stAndAloneEnums.EndOfLinePreference,
+		EndOfLineSequence: stAndAloneEnums.EndOfLineSequence,
+		MinimApPosition: stAndAloneEnums.MinimApPosition,
+		MouseTArgetType: stAndAloneEnums.MouseTArgetType,
+		OverlAyWidgetPositionPreference: stAndAloneEnums.OverlAyWidgetPositionPreference,
+		OverviewRulerLAne: stAndAloneEnums.OverviewRulerLAne,
+		RenderLineNumbersType: stAndAloneEnums.RenderLineNumbersType,
+		RenderMinimAp: stAndAloneEnums.RenderMinimAp,
+		ScrollbArVisibility: stAndAloneEnums.ScrollbArVisibility,
+		ScrollType: stAndAloneEnums.ScrollType,
+		TextEditorCursorBlinkingStyle: stAndAloneEnums.TextEditorCursorBlinkingStyle,
+		TextEditorCursorStyle: stAndAloneEnums.TextEditorCursorStyle,
+		TrAckedRAngeStickiness: stAndAloneEnums.TrAckedRAngeStickiness,
+		WrAppingIndent: stAndAloneEnums.WrAppingIndent,
 
-		// classes
-		ConfigurationChangedEvent: <any>ConfigurationChangedEvent,
-		BareFontInfo: <any>BareFontInfo,
-		FontInfo: <any>FontInfo,
-		TextModelResolvedOptions: <any>TextModelResolvedOptions,
-		FindMatch: <any>FindMatch,
+		// clAsses
+		ConfigurAtionChAngedEvent: <Any>ConfigurAtionChAngedEvent,
+		BAreFontInfo: <Any>BAreFontInfo,
+		FontInfo: <Any>FontInfo,
+		TextModelResolvedOptions: <Any>TextModelResolvedOptions,
+		FindMAtch: <Any>FindMAtch,
 
-		// vars
+		// vArs
 		EditorType: EditorType,
-		EditorOptions: <any>EditorOptions
+		EditorOptions: <Any>EditorOptions
 
 	};
 }

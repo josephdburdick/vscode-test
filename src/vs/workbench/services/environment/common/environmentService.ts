@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWindowConfiguration } from 'vs/platform/windows/common/windows';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import type { IWorkbenchConstructionOptions as IWorkbenchOptions } from 'vs/workbench/workbench.web.api';
-import { URI } from 'vs/base/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWindowConfigurAtion } from 'vs/plAtform/windows/common/windows';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import type { IWorkbenchConstructionOptions As IWorkbenchOptions } from 'vs/workbench/workbench.web.Api';
+import { URI } from 'vs/bAse/common/uri';
 
-export const IWorkbenchEnvironmentService = createDecorator<IWorkbenchEnvironmentService>('environmentService');
+export const IWorkbenchEnvironmentService = creAteDecorAtor<IWorkbenchEnvironmentService>('environmentService');
 
-export interface IWorkbenchConfiguration extends IWindowConfiguration { }
+export interfAce IWorkbenchConfigurAtion extends IWindowConfigurAtion { }
 
 /**
- * A workbench specific environment service that is only present in workbench
- * layer.
+ * A workbench specific environment service thAt is only present in workbench
+ * lAyer.
  */
-export interface IWorkbenchEnvironmentService extends IEnvironmentService {
+export interfAce IWorkbenchEnvironmentService extends IEnvironmentService {
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// NOTE: KEEP THIS INTERFACE AS SMALL AS POSSIBLE. AS SUCH:
@@ -25,37 +25,37 @@ export interface IWorkbenchEnvironmentService extends IEnvironmentService {
 	//       ENVIRONMENT SERVICE
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly options?: IWorkbenchOptions;
+	reAdonly options?: IWorkbenchOptions;
 
-	readonly remoteAuthority?: string;
+	reAdonly remoteAuthority?: string;
 
-	readonly sessionId: string;
+	reAdonly sessionId: string;
 
-	readonly logFile: URI;
-	readonly backupWorkspaceHome?: URI;
+	reAdonly logFile: URI;
+	reAdonly bAckupWorkspAceHome?: URI;
 
-	readonly extHostLogsPath: URI;
-	readonly logExtensionHostCommunication?: boolean;
-	readonly extensionEnabledProposedApi?: string[];
+	reAdonly extHostLogsPAth: URI;
+	reAdonly logExtensionHostCommunicAtion?: booleAn;
+	reAdonly extensionEnAbledProposedApi?: string[];
 
-	readonly webviewExternalEndpoint: string;
-	readonly webviewResourceRoot: string;
-	readonly webviewCspSource: string;
+	reAdonly webviewExternAlEndpoint: string;
+	reAdonly webviewResourceRoot: string;
+	reAdonly webviewCspSource: string;
 
-	readonly skipReleaseNotes: boolean;
+	reAdonly skipReleAseNotes: booleAn;
 
-	readonly debugRenderer: boolean;
+	reAdonly debugRenderer: booleAn;
 
 	/**
-	 * @deprecated this property will go away eventually as it
-	 * duplicates many properties of the environment service
+	 * @deprecAted this property will go AwAy eventuAlly As it
+	 * duplicAtes mAny properties of the environment service
 	 *
-	 * Please consider using the environment service directly
-	 * if you can.
+	 * PleAse consider using the environment service directly
+	 * if you cAn.
 	 */
-	readonly configuration: IWorkbenchConfiguration;
+	reAdonly configurAtion: IWorkbenchConfigurAtion;
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// NOTE: KEEP THIS INTERFACE AS SMALL AS POSSIBLE. AS SUCH:

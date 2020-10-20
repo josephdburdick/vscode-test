@@ -1,206 +1,206 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ActiveLineMarker } from './activeLineMarker';
-import { onceDocumentLoaded } from './events';
-import { createPosterForVsCode } from './messaging';
-import { getEditorLineNumberForPageOffset, scrollToRevealSourceLine, getLineElementForFragment } from './scroll-sync';
-import { getSettings, getData } from './settings';
-import throttle = require('lodash.throttle');
+import { ActiveLineMArker } from './ActiveLineMArker';
+import { onceDocumentLoAded } from './events';
+import { creAtePosterForVsCode } from './messAging';
+import { getEditorLineNumberForPAgeOffset, scrollToReveAlSourceLine, getLineElementForFrAgment } from './scroll-sync';
+import { getSettings, getDAtA } from './settings';
+import throttle = require('lodAsh.throttle');
 
-declare let acquireVsCodeApi: any;
+declAre let AcquireVsCodeApi: Any;
 
-let scrollDisabled = true;
-const marker = new ActiveLineMarker();
+let scrollDisAbled = true;
+const mArker = new ActiveLineMArker();
 const settings = getSettings();
 
-const vscode = acquireVsCodeApi();
+const vscode = AcquireVsCodeApi();
 
-const originalState = vscode.getState();
+const originAlStAte = vscode.getStAte();
 
-const state = {
-	...(typeof originalState === 'object' ? originalState : {}),
-	...getData<any>('data-state')
+const stAte = {
+	...(typeof originAlStAte === 'object' ? originAlStAte : {}),
+	...getDAtA<Any>('dAtA-stAte')
 };
 
-// Make sure to sync VS Code state here
-vscode.setState(state);
+// MAke sure to sync VS Code stAte here
+vscode.setStAte(stAte);
 
-const messaging = createPosterForVsCode(vscode);
+const messAging = creAtePosterForVsCode(vscode);
 
-window.cspAlerter.setPoster(messaging);
-window.styleLoadingMonitor.setPoster(messaging);
+window.cspAlerter.setPoster(messAging);
+window.styleLoAdingMonitor.setPoster(messAging);
 
-window.onload = () => {
-	updateImageSizes();
+window.onloAd = () => {
+	updAteImAgeSizes();
 };
 
-onceDocumentLoaded(() => {
-	const scrollProgress = state.scrollProgress;
+onceDocumentLoAded(() => {
+	const scrollProgress = stAte.scrollProgress;
 
-	if (typeof scrollProgress === 'number' && !settings.fragment) {
-		setImmediate(() => {
-			scrollDisabled = true;
+	if (typeof scrollProgress === 'number' && !settings.frAgment) {
+		setImmediAte(() => {
+			scrollDisAbled = true;
 			window.scrollTo(0, scrollProgress * document.body.clientHeight);
 		});
 		return;
 	}
 
 	if (settings.scrollPreviewWithEditor) {
-		setImmediate(() => {
-			// Try to scroll to fragment if available
-			if (settings.fragment) {
-				state.fragment = undefined;
-				vscode.setState(state);
+		setImmediAte(() => {
+			// Try to scroll to frAgment if AvAilAble
+			if (settings.frAgment) {
+				stAte.frAgment = undefined;
+				vscode.setStAte(stAte);
 
-				const element = getLineElementForFragment(settings.fragment);
+				const element = getLineElementForFrAgment(settings.frAgment);
 				if (element) {
-					scrollDisabled = true;
-					scrollToRevealSourceLine(element.line);
+					scrollDisAbled = true;
+					scrollToReveAlSourceLine(element.line);
 				}
 			} else {
-				if (!isNaN(settings.line!)) {
-					scrollDisabled = true;
-					scrollToRevealSourceLine(settings.line!);
+				if (!isNAN(settings.line!)) {
+					scrollDisAbled = true;
+					scrollToReveAlSourceLine(settings.line!);
 				}
 			}
 		});
 	}
 });
 
-const onUpdateView = (() => {
+const onUpdAteView = (() => {
 	const doScroll = throttle((line: number) => {
-		scrollDisabled = true;
-		scrollToRevealSourceLine(line);
+		scrollDisAbled = true;
+		scrollToReveAlSourceLine(line);
 	}, 50);
 
 	return (line: number) => {
-		if (!isNaN(line)) {
-			state.line = line;
+		if (!isNAN(line)) {
+			stAte.line = line;
 
 			doScroll(line);
 		}
 	};
 })();
 
-let updateImageSizes = throttle(() => {
-	const imageInfo: { id: string, height: number, width: number; }[] = [];
-	let images = document.getElementsByTagName('img');
-	if (images) {
+let updAteImAgeSizes = throttle(() => {
+	const imAgeInfo: { id: string, height: number, width: number; }[] = [];
+	let imAges = document.getElementsByTAgNAme('img');
+	if (imAges) {
 		let i;
-		for (i = 0; i < images.length; i++) {
-			const img = images[i];
+		for (i = 0; i < imAges.length; i++) {
+			const img = imAges[i];
 
-			if (img.classList.contains('loading')) {
-				img.classList.remove('loading');
+			if (img.clAssList.contAins('loAding')) {
+				img.clAssList.remove('loAding');
 			}
 
-			imageInfo.push({
+			imAgeInfo.push({
 				id: img.id,
 				height: img.height,
 				width: img.width
 			});
 		}
 
-		messaging.postMessage('cacheImageSizes', imageInfo);
+		messAging.postMessAge('cAcheImAgeSizes', imAgeInfo);
 	}
 }, 50);
 
-window.addEventListener('resize', () => {
-	scrollDisabled = true;
-	updateScrollProgress();
-	updateImageSizes();
+window.AddEventListener('resize', () => {
+	scrollDisAbled = true;
+	updAteScrollProgress();
+	updAteImAgeSizes();
 }, true);
 
-window.addEventListener('message', event => {
-	if (event.data.source !== settings.source) {
+window.AddEventListener('messAge', event => {
+	if (event.dAtA.source !== settings.source) {
 		return;
 	}
 
-	switch (event.data.type) {
-		case 'onDidChangeTextEditorSelection':
-			marker.onDidChangeTextEditorSelection(event.data.line);
-			break;
+	switch (event.dAtA.type) {
+		cAse 'onDidChAngeTextEditorSelection':
+			mArker.onDidChAngeTextEditorSelection(event.dAtA.line);
+			breAk;
 
-		case 'updateView':
-			onUpdateView(event.data.line);
-			break;
+		cAse 'updAteView':
+			onUpdAteView(event.dAtA.line);
+			breAk;
 	}
-}, false);
+}, fAlse);
 
-document.addEventListener('dblclick', event => {
+document.AddEventListener('dblclick', event => {
 	if (!settings.doubleClickToSwitchToEditor) {
 		return;
 	}
 
 	// Ignore clicks on links
-	for (let node = event.target as HTMLElement; node; node = node.parentNode as HTMLElement) {
-		if (node.tagName === 'A') {
+	for (let node = event.tArget As HTMLElement; node; node = node.pArentNode As HTMLElement) {
+		if (node.tAgNAme === 'A') {
 			return;
 		}
 	}
 
-	const offset = event.pageY;
-	const line = getEditorLineNumberForPageOffset(offset);
-	if (typeof line === 'number' && !isNaN(line)) {
-		messaging.postMessage('didClick', { line: Math.floor(line) });
+	const offset = event.pAgeY;
+	const line = getEditorLineNumberForPAgeOffset(offset);
+	if (typeof line === 'number' && !isNAN(line)) {
+		messAging.postMessAge('didClick', { line: MAth.floor(line) });
 	}
 });
 
-const passThroughLinkSchemes = ['http:', 'https:', 'mailto:', 'vscode:', 'vscode-insiders:'];
+const pAssThroughLinkSchemes = ['http:', 'https:', 'mAilto:', 'vscode:', 'vscode-insiders:'];
 
-document.addEventListener('click', event => {
+document.AddEventListener('click', event => {
 	if (!event) {
 		return;
 	}
 
-	let node: any = event.target;
+	let node: Any = event.tArget;
 	while (node) {
-		if (node.tagName && node.tagName === 'A' && node.href) {
-			if (node.getAttribute('href').startsWith('#')) {
+		if (node.tAgNAme && node.tAgNAme === 'A' && node.href) {
+			if (node.getAttribute('href').stArtsWith('#')) {
 				return;
 			}
 
-			let hrefText = node.getAttribute('data-href');
+			let hrefText = node.getAttribute('dAtA-href');
 			if (!hrefText) {
-				// Pass through known schemes
-				if (passThroughLinkSchemes.some(scheme => node.href.startsWith(scheme))) {
+				// PAss through known schemes
+				if (pAssThroughLinkSchemes.some(scheme => node.href.stArtsWith(scheme))) {
 					return;
 				}
 				hrefText = node.getAttribute('href');
 			}
 
-			// If original link doesn't look like a url, delegate back to VS Code to resolve
-			if (!/^[a-z\-]+:/i.test(hrefText)) {
-				messaging.postMessage('openLink', { href: hrefText });
-				event.preventDefault();
-				event.stopPropagation();
+			// If originAl link doesn't look like A url, delegAte bAck to VS Code to resolve
+			if (!/^[A-z\-]+:/i.test(hrefText)) {
+				messAging.postMessAge('openLink', { href: hrefText });
+				event.preventDefAult();
+				event.stopPropAgAtion();
 				return;
 			}
 
 			return;
 		}
-		node = node.parentNode;
+		node = node.pArentNode;
 	}
 }, true);
 
-window.addEventListener('scroll', throttle(() => {
-	updateScrollProgress();
+window.AddEventListener('scroll', throttle(() => {
+	updAteScrollProgress();
 
-	if (scrollDisabled) {
-		scrollDisabled = false;
+	if (scrollDisAbled) {
+		scrollDisAbled = fAlse;
 	} else {
-		const line = getEditorLineNumberForPageOffset(window.scrollY);
-		if (typeof line === 'number' && !isNaN(line)) {
-			messaging.postMessage('revealLine', { line });
+		const line = getEditorLineNumberForPAgeOffset(window.scrollY);
+		if (typeof line === 'number' && !isNAN(line)) {
+			messAging.postMessAge('reveAlLine', { line });
 		}
 	}
 }, 50));
 
-function updateScrollProgress() {
-	state.scrollProgress = window.scrollY / document.body.clientHeight;
-	vscode.setState(state);
+function updAteScrollProgress() {
+	stAte.scrollProgress = window.scrollY / document.body.clientHeight;
+	vscode.setStAte(stAte);
 }
 

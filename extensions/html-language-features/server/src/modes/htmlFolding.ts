@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, FoldingRange, Position, Range, LanguageModes, LanguageMode } from './languageModes';
-import { CancellationToken } from 'vscode-languageserver';
+import { TextDocument, FoldingRAnge, Position, RAnge, LAnguAgeModes, LAnguAgeMode } from './lAnguAgeModes';
+import { CAncellAtionToken } from 'vscode-lAnguAgeserver';
 
-export async function getFoldingRanges(languageModes: LanguageModes, document: TextDocument, maxRanges: number | undefined, _cancellationToken: CancellationToken | null): Promise<FoldingRange[]> {
-	let htmlMode = languageModes.getMode('html');
-	let range = Range.create(Position.create(0, 0), Position.create(document.lineCount, 0));
-	let result: FoldingRange[] = [];
-	if (htmlMode && htmlMode.getFoldingRanges) {
-		result.push(... await htmlMode.getFoldingRanges(document));
+export Async function getFoldingRAnges(lAnguAgeModes: LAnguAgeModes, document: TextDocument, mAxRAnges: number | undefined, _cAncellAtionToken: CAncellAtionToken | null): Promise<FoldingRAnge[]> {
+	let htmlMode = lAnguAgeModes.getMode('html');
+	let rAnge = RAnge.creAte(Position.creAte(0, 0), Position.creAte(document.lineCount, 0));
+	let result: FoldingRAnge[] = [];
+	if (htmlMode && htmlMode.getFoldingRAnges) {
+		result.push(... AwAit htmlMode.getFoldingRAnges(document));
 	}
 
-	// cache folding ranges per mode
-	let rangesPerMode: { [mode: string]: FoldingRange[] } = Object.create(null);
-	let getRangesForMode = async (mode: LanguageMode) => {
-		if (mode.getFoldingRanges) {
-			let ranges = rangesPerMode[mode.getId()];
-			if (!Array.isArray(ranges)) {
-				ranges = await mode.getFoldingRanges(document) || [];
-				rangesPerMode[mode.getId()] = ranges;
+	// cAche folding rAnges per mode
+	let rAngesPerMode: { [mode: string]: FoldingRAnge[] } = Object.creAte(null);
+	let getRAngesForMode = Async (mode: LAnguAgeMode) => {
+		if (mode.getFoldingRAnges) {
+			let rAnges = rAngesPerMode[mode.getId()];
+			if (!ArrAy.isArrAy(rAnges)) {
+				rAnges = AwAit mode.getFoldingRAnges(document) || [];
+				rAngesPerMode[mode.getId()] = rAnges;
 			}
-			return ranges;
+			return rAnges;
 		}
 		return [];
 	};
 
-	let modeRanges = languageModes.getModesInRange(document, range);
-	for (let modeRange of modeRanges) {
-		let mode = modeRange.mode;
-		if (mode && mode !== htmlMode && !modeRange.attributeValue) {
-			const ranges = await getRangesForMode(mode);
-			result.push(...ranges.filter(r => r.startLine >= modeRange.start.line && r.endLine < modeRange.end.line));
+	let modeRAnges = lAnguAgeModes.getModesInRAnge(document, rAnge);
+	for (let modeRAnge of modeRAnges) {
+		let mode = modeRAnge.mode;
+		if (mode && mode !== htmlMode && !modeRAnge.AttributeVAlue) {
+			const rAnges = AwAit getRAngesForMode(mode);
+			result.push(...rAnges.filter(r => r.stArtLine >= modeRAnge.stArt.line && r.endLine < modeRAnge.end.line));
 		}
 	}
-	if (maxRanges && result.length > maxRanges) {
-		result = limitRanges(result, maxRanges);
+	if (mAxRAnges && result.length > mAxRAnges) {
+		result = limitRAnges(result, mAxRAnges);
 	}
 	return result;
 }
 
-function limitRanges(ranges: FoldingRange[], maxRanges: number) {
-	ranges = ranges.sort((r1, r2) => {
-		let diff = r1.startLine - r2.startLine;
+function limitRAnges(rAnges: FoldingRAnge[], mAxRAnges: number) {
+	rAnges = rAnges.sort((r1, r2) => {
+		let diff = r1.stArtLine - r2.stArtLine;
 		if (diff === 0) {
 			diff = r1.endLine - r2.endLine;
 		}
 		return diff;
 	});
 
-	// compute each range's nesting level in 'nestingLevels'.
-	// count the number of ranges for each level in 'nestingLevelCounts'
-	let top: FoldingRange | undefined = undefined;
-	let previous: FoldingRange[] = [];
+	// compute eAch rAnge's nesting level in 'nestingLevels'.
+	// count the number of rAnges for eAch level in 'nestingLevelCounts'
+	let top: FoldingRAnge | undefined = undefined;
+	let previous: FoldingRAnge[] = [];
 	let nestingLevels: number[] = [];
 	let nestingLevelCounts: number[] = [];
 
@@ -65,22 +65,22 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 		}
 	};
 
-	// compute nesting levels and sanitize
-	for (let i = 0; i < ranges.length; i++) {
-		let entry = ranges[i];
+	// compute nesting levels And sAnitize
+	for (let i = 0; i < rAnges.length; i++) {
+		let entry = rAnges[i];
 		if (!top) {
 			top = entry;
 			setNestingLevel(i, 0);
 		} else {
-			if (entry.startLine > top.startLine) {
+			if (entry.stArtLine > top.stArtLine) {
 				if (entry.endLine <= top.endLine) {
 					previous.push(top);
 					top = entry;
 					setNestingLevel(i, previous.length);
-				} else if (entry.startLine > top.endLine) {
+				} else if (entry.stArtLine > top.endLine) {
 					do {
 						top = previous.pop();
-					} while (top && entry.startLine > top.endLine);
+					} while (top && entry.stArtLine > top.endLine);
 					if (top) {
 						previous.push(top);
 					}
@@ -91,23 +91,23 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 		}
 	}
 	let entries = 0;
-	let maxLevel = 0;
+	let mAxLevel = 0;
 	for (let i = 0; i < nestingLevelCounts.length; i++) {
 		let n = nestingLevelCounts[i];
 		if (n) {
-			if (n + entries > maxRanges) {
-				maxLevel = i;
-				break;
+			if (n + entries > mAxRAnges) {
+				mAxLevel = i;
+				breAk;
 			}
 			entries += n;
 		}
 	}
 	let result = [];
-	for (let i = 0; i < ranges.length; i++) {
+	for (let i = 0; i < rAnges.length; i++) {
 		let level = nestingLevels[i];
 		if (typeof level === 'number') {
-			if (level < maxLevel || (level === maxLevel && entries++ < maxRanges)) {
-				result.push(ranges[i]);
+			if (level < mAxLevel || (level === mAxLevel && entries++ < mAxRAnges)) {
+				result.push(rAnges[i]);
 			}
 		}
 	}

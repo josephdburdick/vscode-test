@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { HtmlNode } from 'EmmetNode';
-import { getHtmlNode, parseDocument, validate, getEmmetMode, getEmmetConfiguration } from './util';
+import { getHtmlNode, pArseDocument, vAlidAte, getEmmetMode, getEmmetConfigurAtion } from './util';
 
-export function splitJoinTag() {
-	if (!validate(false) || !vscode.window.activeTextEditor) {
+export function splitJoinTAg() {
+	if (!vAlidAte(fAlse) || !vscode.window.ActiveTextEditor) {
 		return;
 	}
 
-	const editor = vscode.window.activeTextEditor;
-	let rootNode = <HtmlNode>parseDocument(editor.document);
+	const editor = vscode.window.ActiveTextEditor;
+	let rootNode = <HtmlNode>pArseDocument(editor.document);
 	if (!rootNode) {
 		return;
 	}
 
 	return editor.edit(editBuilder => {
-		editor.selections.reverse().forEach(selection => {
-			let nodeToUpdate = getHtmlNode(editor.document, rootNode, selection.start, true);
-			if (nodeToUpdate) {
-				let textEdit = getRangesToReplace(editor.document, nodeToUpdate);
-				editBuilder.replace(textEdit.range, textEdit.newText);
+		editor.selections.reverse().forEAch(selection => {
+			let nodeToUpdAte = getHtmlNode(editor.document, rootNode, selection.stArt, true);
+			if (nodeToUpdAte) {
+				let textEdit = getRAngesToReplAce(editor.document, nodeToUpdAte);
+				editBuilder.replAce(textEdit.rAnge, textEdit.newText);
 			}
 		});
 	});
 }
 
-function getRangesToReplace(document: vscode.TextDocument, nodeToUpdate: HtmlNode): vscode.TextEdit {
-	let rangeToReplace: vscode.Range;
-	let textToReplaceWith: string;
+function getRAngesToReplAce(document: vscode.TextDocument, nodeToUpdAte: HtmlNode): vscode.TextEdit {
+	let rAngeToReplAce: vscode.RAnge;
+	let textToReplAceWith: string;
 
-	if (!nodeToUpdate.close) {
-		// Split Tag
-		let nodeText = document.getText(new vscode.Range(nodeToUpdate.start, nodeToUpdate.end));
-		let m = nodeText.match(/(\s*\/)?>$/);
-		let end = <vscode.Position>nodeToUpdate.end;
-		let start = m ? end.translate(0, -m[0].length) : end;
+	if (!nodeToUpdAte.close) {
+		// Split TAg
+		let nodeText = document.getText(new vscode.RAnge(nodeToUpdAte.stArt, nodeToUpdAte.end));
+		let m = nodeText.mAtch(/(\s*\/)?>$/);
+		let end = <vscode.Position>nodeToUpdAte.end;
+		let stArt = m ? end.trAnslAte(0, -m[0].length) : end;
 
-		rangeToReplace = new vscode.Range(start, end);
-		textToReplaceWith = `></${nodeToUpdate.name}>`;
+		rAngeToReplAce = new vscode.RAnge(stArt, end);
+		textToReplAceWith = `></${nodeToUpdAte.nAme}>`;
 	} else {
-		// Join Tag
-		let start = (<vscode.Position>nodeToUpdate.open.end).translate(0, -1);
-		let end = <vscode.Position>nodeToUpdate.end;
-		rangeToReplace = new vscode.Range(start, end);
-		textToReplaceWith = '/>';
+		// Join TAg
+		let stArt = (<vscode.Position>nodeToUpdAte.open.end).trAnslAte(0, -1);
+		let end = <vscode.Position>nodeToUpdAte.end;
+		rAngeToReplAce = new vscode.RAnge(stArt, end);
+		textToReplAceWith = '/>';
 
-		const emmetMode = getEmmetMode(document.languageId, []) || '';
-		const emmetConfig = getEmmetConfiguration(emmetMode);
-		if (emmetMode && emmetConfig.syntaxProfiles[emmetMode] &&
-			(emmetConfig.syntaxProfiles[emmetMode]['selfClosingStyle'] === 'xhtml' || emmetConfig.syntaxProfiles[emmetMode]['self_closing_tag'] === 'xhtml')) {
-			textToReplaceWith = ' ' + textToReplaceWith;
+		const emmetMode = getEmmetMode(document.lAnguAgeId, []) || '';
+		const emmetConfig = getEmmetConfigurAtion(emmetMode);
+		if (emmetMode && emmetConfig.syntAxProfiles[emmetMode] &&
+			(emmetConfig.syntAxProfiles[emmetMode]['selfClosingStyle'] === 'xhtml' || emmetConfig.syntAxProfiles[emmetMode]['self_closing_tAg'] === 'xhtml')) {
+			textToReplAceWith = ' ' + textToReplAceWith;
 		}
 
 	}
 
-	return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
+	return new vscode.TextEdit(rAngeToReplAce, textToReplAceWith);
 }

@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withBrowserDefaults = require('../shared.webpack.config').browser;
+const withBrowserDefAults = require('../shAred.webpAck.config').browser;
 
-module.exports = withBrowserDefaults({
-	context: __dirname,
+module.exports = withBrowserDefAults({
+	context: __dirnAme,
 	entry: {
-		extension: './src/configurationEditingMain.ts'
+		extension: './src/configurAtionEditingMAin.ts'
 	},
 	output: {
-		filename: 'configurationEditingMain.js'
+		filenAme: 'configurAtionEditingMAin.js'
 	}
 });
 

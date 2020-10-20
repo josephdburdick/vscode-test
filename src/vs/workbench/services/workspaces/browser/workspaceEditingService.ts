@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IJSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditing';
-import { IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
-import { WorkspaceService } from 'vs/workbench/services/configuration/browser/configurationService';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IFileService } from 'vs/platform/files/common/files';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IJSONEditingService } from 'vs/workbench/services/configurAtion/common/jsonEditing';
+import { IWorkspAcesService } from 'vs/plAtform/workspAces/common/workspAces';
+import { WorkspAceService } from 'vs/workbench/services/configurAtion/browser/configurAtionService';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IFileService } from 'vs/plAtform/files/common/files';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IFileDialogService, IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IFileDiAlogService, IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { AbstractWorkspaceEditingService } from 'vs/workbench/services/workspaces/browser/abstractWorkspaceEditingService';
-import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { URI } from 'vs/base/common/uri';
+import { AbstrActWorkspAceEditingService } from 'vs/workbench/services/workspAces/browser/AbstrActWorkspAceEditingService';
+import { IWorkspAceEditingService } from 'vs/workbench/services/workspAces/common/workspAceEditing';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { URI } from 'vs/bAse/common/uri';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
-export class BrowserWorkspaceEditingService extends AbstractWorkspaceEditingService {
+export clAss BrowserWorkspAceEditingService extends AbstrActWorkspAceEditingService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
 		@IJSONEditingService jsonEditingService: IJSONEditingService,
-		@IWorkspaceContextService contextService: WorkspaceService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@INotificationService notificationService: INotificationService,
-		@ICommandService commandService: ICommandService,
+		@IWorkspAceContextService contextService: WorkspAceService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@ICommAndService commAndService: ICommAndService,
 		@IFileService fileService: IFileService,
 		@ITextFileService textFileService: ITextFileService,
-		@IWorkspacesService workspacesService: IWorkspacesService,
+		@IWorkspAcesService workspAcesService: IWorkspAcesService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
-		@IFileDialogService fileDialogService: IFileDialogService,
-		@IDialogService dialogService: IDialogService,
+		@IFileDiAlogService fileDiAlogService: IFileDiAlogService,
+		@IDiAlogService diAlogService: IDiAlogService,
 		@IHostService hostService: IHostService,
 		@IUriIdentityService uriIdentityService: IUriIdentityService
 	) {
-		super(jsonEditingService, contextService, configurationService, notificationService, commandService, fileService, textFileService, workspacesService, environmentService, fileDialogService, dialogService, hostService, uriIdentityService);
+		super(jsonEditingService, contextService, configurAtionService, notificAtionService, commAndService, fileService, textFileService, workspAcesService, environmentService, fileDiAlogService, diAlogService, hostService, uriIdentityService);
 	}
 
-	async enterWorkspace(path: URI): Promise<void> {
-		const result = await this.doEnterWorkspace(path);
+	Async enterWorkspAce(pAth: URI): Promise<void> {
+		const result = AwAit this.doEnterWorkspAce(pAth);
 		if (result) {
 
-			// Open workspace in same window
-			await this.hostService.openWindow([{ workspaceUri: path }], { forceReuseWindow: true });
+			// Open workspAce in sAme window
+			AwAit this.hostService.openWindow([{ workspAceUri: pAth }], { forceReuseWindow: true });
 		}
 	}
 }
 
-registerSingleton(IWorkspaceEditingService, BrowserWorkspaceEditingService, true);
+registerSingleton(IWorkspAceEditingService, BrowserWorkspAceEditingService, true);

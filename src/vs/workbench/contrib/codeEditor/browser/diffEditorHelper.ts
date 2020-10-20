@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { IDiffEditor } from 'vs/editor/browser/editorBrowser';
 import { registerDiffEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { IDiffEditorContribution } from 'vs/editor/common/editorCommon';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { FloatingClickWidget } from 'vs/workbench/browser/parts/editor/editorWidgets';
-import { IDiffComputationResult } from 'vs/editor/common/services/editorWorkerService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { FloAtingClickWidget } from 'vs/workbench/browser/pArts/editor/editorWidgets';
+import { IDiffComputAtionResult } from 'vs/editor/common/services/editorWorkerService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
 
-const enum WidgetState {
+const enum WidgetStAte {
 	Hidden,
-	HintWhitespace
+	HintWhitespAce
 }
 
-class DiffEditorHelperContribution extends Disposable implements IDiffEditorContribution {
+clAss DiffEditorHelperContribution extends DisposAble implements IDiffEditorContribution {
 
-	public static ID = 'editor.contrib.diffEditorHelper';
+	public stAtic ID = 'editor.contrib.diffEditorHelper';
 
-	private _helperWidget: FloatingClickWidget | null;
-	private _helperWidgetListener: IDisposable | null;
-	private _state: WidgetState;
+	privAte _helperWidget: FloAtingClickWidget | null;
+	privAte _helperWidgetListener: IDisposAble | null;
+	privAte _stAte: WidgetStAte;
 
 	constructor(
-		private readonly _diffEditor: IDiffEditor,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@INotificationService private readonly _notificationService: INotificationService,
+		privAte reAdonly _diffEditor: IDiffEditor,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
+		@INotificAtionService privAte reAdonly _notificAtionService: INotificAtionService,
 	) {
 		super();
 		this._helperWidget = null;
 		this._helperWidgetListener = null;
-		this._state = WidgetState.Hidden;
+		this._stAte = WidgetStAte.Hidden;
 
 
-		this._register(this._diffEditor.onDidUpdateDiff(() => {
-			const diffComputationResult = this._diffEditor.getDiffComputationResult();
-			this._setState(this._deduceState(diffComputationResult));
+		this._register(this._diffEditor.onDidUpdAteDiff(() => {
+			const diffComputAtionResult = this._diffEditor.getDiffComputAtionResult();
+			this._setStAte(this._deduceStAte(diffComputAtionResult));
 
-			if (diffComputationResult && diffComputationResult.quitEarly) {
-				this._notificationService.prompt(
-					Severity.Warning,
-					nls.localize('hintTimeout', "The diff algorithm was stopped early (after {0} ms.)", this._diffEditor.maxComputationTime),
+			if (diffComputAtionResult && diffComputAtionResult.quitEArly) {
+				this._notificAtionService.prompt(
+					Severity.WArning,
+					nls.locAlize('hintTimeout', "The diff Algorithm wAs stopped eArly (After {0} ms.)", this._diffEditor.mAxComputAtionTime),
 					[{
-						label: nls.localize('removeTimeout', "Remove limit"),
+						lAbel: nls.locAlize('removeTimeout', "Remove limit"),
 						run: () => {
-							this._configurationService.updateValue('diffEditor.maxComputationTime', 0, ConfigurationTarget.USER);
+							this._configurAtionService.updAteVAlue('diffEditor.mAxComputAtionTime', 0, ConfigurAtionTArget.USER);
 						}
 					}],
 					{}
@@ -59,22 +59,22 @@ class DiffEditorHelperContribution extends Disposable implements IDiffEditorCont
 		}));
 	}
 
-	private _deduceState(diffComputationResult: IDiffComputationResult | null): WidgetState {
-		if (!diffComputationResult) {
-			return WidgetState.Hidden;
+	privAte _deduceStAte(diffComputAtionResult: IDiffComputAtionResult | null): WidgetStAte {
+		if (!diffComputAtionResult) {
+			return WidgetStAte.Hidden;
 		}
-		if (this._diffEditor.ignoreTrimWhitespace && diffComputationResult.changes.length === 0 && !diffComputationResult.identical) {
-			return WidgetState.HintWhitespace;
+		if (this._diffEditor.ignoreTrimWhitespAce && diffComputAtionResult.chAnges.length === 0 && !diffComputAtionResult.identicAl) {
+			return WidgetStAte.HintWhitespAce;
 		}
-		return WidgetState.Hidden;
+		return WidgetStAte.Hidden;
 	}
 
-	private _setState(newState: WidgetState) {
-		if (this._state === newState) {
+	privAte _setStAte(newStAte: WidgetStAte) {
+		if (this._stAte === newStAte) {
 			return;
 		}
 
-		this._state = newState;
+		this._stAte = newStAte;
 
 		if (this._helperWidgetListener) {
 			this._helperWidgetListener.dispose();
@@ -85,16 +85,16 @@ class DiffEditorHelperContribution extends Disposable implements IDiffEditorCont
 			this._helperWidget = null;
 		}
 
-		if (this._state === WidgetState.HintWhitespace) {
-			this._helperWidget = this._instantiationService.createInstance(FloatingClickWidget, this._diffEditor.getModifiedEditor(), nls.localize('hintWhitespace', "Show Whitespace Differences"), null);
+		if (this._stAte === WidgetStAte.HintWhitespAce) {
+			this._helperWidget = this._instAntiAtionService.creAteInstAnce(FloAtingClickWidget, this._diffEditor.getModifiedEditor(), nls.locAlize('hintWhitespAce', "Show WhitespAce Differences"), null);
 			this._helperWidgetListener = this._helperWidget.onClick(() => this._onDidClickHelperWidget());
 			this._helperWidget.render();
 		}
 	}
 
-	private _onDidClickHelperWidget(): void {
-		if (this._state === WidgetState.HintWhitespace) {
-			this._configurationService.updateValue('diffEditor.ignoreTrimWhitespace', false, ConfigurationTarget.USER);
+	privAte _onDidClickHelperWidget(): void {
+		if (this._stAte === WidgetStAte.HintWhitespAce) {
+			this._configurAtionService.updAteVAlue('diffEditor.ignoreTrimWhitespAce', fAlse, ConfigurAtionTArget.USER);
 		}
 	}
 

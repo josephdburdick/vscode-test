@@ -1,157 +1,157 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./actionbar';
-import * as platform from 'vs/base/common/platform';
-import * as nls from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { SelectBox, ISelectOptionItem, ISelectBoxOptions } from 'vs/base/browser/ui/selectBox/selectBox';
-import { IAction, IActionRunner, Action, IActionChangeEvent, ActionRunner, Separator, IActionViewItem } from 'vs/base/common/actions';
-import * as types from 'vs/base/common/types';
-import { EventType as TouchEventType, Gesture } from 'vs/base/browser/touch';
-import { IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
-import { DataTransfers } from 'vs/base/browser/dnd';
-import { isFirefox } from 'vs/base/browser/browser';
-import { $, addDisposableListener, append, EventHelper, EventLike, EventType, removeTabIndexAndUpdateFocus } from 'vs/base/browser/dom';
+import 'vs/css!./ActionbAr';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As nls from 'vs/nls';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { SelectBox, ISelectOptionItem, ISelectBoxOptions } from 'vs/bAse/browser/ui/selectBox/selectBox';
+import { IAction, IActionRunner, Action, IActionChAngeEvent, ActionRunner, SepArAtor, IActionViewItem } from 'vs/bAse/common/Actions';
+import * As types from 'vs/bAse/common/types';
+import { EventType As TouchEventType, Gesture } from 'vs/bAse/browser/touch';
+import { IContextViewProvider } from 'vs/bAse/browser/ui/contextview/contextview';
+import { DAtATrAnsfers } from 'vs/bAse/browser/dnd';
+import { isFirefox } from 'vs/bAse/browser/browser';
+import { $, AddDisposAbleListener, Append, EventHelper, EventLike, EventType, removeTAbIndexAndUpdAteFocus } from 'vs/bAse/browser/dom';
 
-export interface IBaseActionViewItemOptions {
-	draggable?: boolean;
-	isMenu?: boolean;
-	useEventAsContext?: boolean;
+export interfAce IBAseActionViewItemOptions {
+	drAggAble?: booleAn;
+	isMenu?: booleAn;
+	useEventAsContext?: booleAn;
 }
 
-export class BaseActionViewItem extends Disposable implements IActionViewItem {
+export clAss BAseActionViewItem extends DisposAble implements IActionViewItem {
 
 	element: HTMLElement | undefined;
 
-	_context: any;
-	_action: IAction;
+	_context: Any;
+	_Action: IAction;
 
-	private _actionRunner: IActionRunner | undefined;
+	privAte _ActionRunner: IActionRunner | undefined;
 
-	constructor(context: any, action: IAction, protected options: IBaseActionViewItemOptions = {}) {
+	constructor(context: Any, Action: IAction, protected options: IBAseActionViewItemOptions = {}) {
 		super();
 
 		this._context = context || this;
-		this._action = action;
+		this._Action = Action;
 
-		if (action instanceof Action) {
-			this._register(action.onDidChange(event => {
+		if (Action instAnceof Action) {
+			this._register(Action.onDidChAnge(event => {
 				if (!this.element) {
-					// we have not been rendered yet, so there
-					// is no point in updating the UI
+					// we hAve not been rendered yet, so there
+					// is no point in updAting the UI
 					return;
 				}
 
-				this.handleActionChangeEvent(event);
+				this.hAndleActionChAngeEvent(event);
 			}));
 		}
 	}
 
-	private handleActionChangeEvent(event: IActionChangeEvent): void {
-		if (event.enabled !== undefined) {
-			this.updateEnabled();
+	privAte hAndleActionChAngeEvent(event: IActionChAngeEvent): void {
+		if (event.enAbled !== undefined) {
+			this.updAteEnAbled();
 		}
 
 		if (event.checked !== undefined) {
-			this.updateChecked();
+			this.updAteChecked();
 		}
 
-		if (event.class !== undefined) {
-			this.updateClass();
+		if (event.clAss !== undefined) {
+			this.updAteClAss();
 		}
 
-		if (event.label !== undefined) {
-			this.updateLabel();
-			this.updateTooltip();
+		if (event.lAbel !== undefined) {
+			this.updAteLAbel();
+			this.updAteTooltip();
 		}
 
 		if (event.tooltip !== undefined) {
-			this.updateTooltip();
+			this.updAteTooltip();
 		}
 	}
 
-	get actionRunner(): IActionRunner {
-		if (!this._actionRunner) {
-			this._actionRunner = this._register(new ActionRunner());
+	get ActionRunner(): IActionRunner {
+		if (!this._ActionRunner) {
+			this._ActionRunner = this._register(new ActionRunner());
 		}
 
-		return this._actionRunner;
+		return this._ActionRunner;
 	}
 
-	set actionRunner(actionRunner: IActionRunner) {
-		this._actionRunner = actionRunner;
+	set ActionRunner(ActionRunner: IActionRunner) {
+		this._ActionRunner = ActionRunner;
 	}
 
 	getAction(): IAction {
-		return this._action;
+		return this._Action;
 	}
 
-	isEnabled(): boolean {
-		return this._action.enabled;
+	isEnAbled(): booleAn {
+		return this._Action.enAbled;
 	}
 
 	setActionContext(newContext: unknown): void {
 		this._context = newContext;
 	}
 
-	render(container: HTMLElement): void {
-		const element = this.element = container;
-		this._register(Gesture.addTarget(container));
+	render(contAiner: HTMLElement): void {
+		const element = this.element = contAiner;
+		this._register(Gesture.AddTArget(contAiner));
 
-		const enableDragging = this.options && this.options.draggable;
-		if (enableDragging) {
-			container.draggable = true;
+		const enAbleDrAgging = this.options && this.options.drAggAble;
+		if (enAbleDrAgging) {
+			contAiner.drAggAble = true;
 
 			if (isFirefox) {
-				// Firefox: requires to set a text data transfer to get going
-				this._register(addDisposableListener(container, EventType.DRAG_START, e => e.dataTransfer?.setData(DataTransfers.TEXT, this._action.label)));
+				// Firefox: requires to set A text dAtA trAnsfer to get going
+				this._register(AddDisposAbleListener(contAiner, EventType.DRAG_START, e => e.dAtATrAnsfer?.setDAtA(DAtATrAnsfers.TEXT, this._Action.lAbel)));
 			}
 		}
 
-		this._register(addDisposableListener(element, TouchEventType.Tap, e => this.onClick(e)));
+		this._register(AddDisposAbleListener(element, TouchEventType.TAp, e => this.onClick(e)));
 
-		this._register(addDisposableListener(element, EventType.MOUSE_DOWN, e => {
-			if (!enableDragging) {
-				EventHelper.stop(e, true); // do not run when dragging is on because that would disable it
+		this._register(AddDisposAbleListener(element, EventType.MOUSE_DOWN, e => {
+			if (!enAbleDrAgging) {
+				EventHelper.stop(e, true); // do not run when drAgging is on becAuse thAt would disAble it
 			}
 
-			if (this._action.enabled && e.button === 0) {
-				element.classList.add('active');
+			if (this._Action.enAbled && e.button === 0) {
+				element.clAssList.Add('Active');
 			}
 		}));
 
-		if (platform.isMacintosh) {
-			// macOS: allow to trigger the button when holding Ctrl+key and pressing the
-			// main mouse button. This is for scenarios where e.g. some interaction forces
-			// the Ctrl+key to be pressed and hold but the user still wants to interact
-			// with the actions (for example quick access in quick navigation mode).
-			this._register(addDisposableListener(element, EventType.CONTEXT_MENU, e => {
+		if (plAtform.isMAcintosh) {
+			// mAcOS: Allow to trigger the button when holding Ctrl+key And pressing the
+			// mAin mouse button. This is for scenArios where e.g. some interAction forces
+			// the Ctrl+key to be pressed And hold but the user still wAnts to interAct
+			// with the Actions (for exAmple quick Access in quick nAvigAtion mode).
+			this._register(AddDisposAbleListener(element, EventType.CONTEXT_MENU, e => {
 				if (e.button === 0 && e.ctrlKey === true) {
 					this.onClick(e);
 				}
 			}));
 		}
 
-		this._register(addDisposableListener(element, EventType.CLICK, e => {
+		this._register(AddDisposAbleListener(element, EventType.CLICK, e => {
 			EventHelper.stop(e, true);
 
 			// menus do not use the click event
 			if (!(this.options && this.options.isMenu)) {
-				platform.setImmediate(() => this.onClick(e));
+				plAtform.setImmediAte(() => this.onClick(e));
 			}
 		}));
 
-		this._register(addDisposableListener(element, EventType.DBLCLICK, e => {
+		this._register(AddDisposAbleListener(element, EventType.DBLCLICK, e => {
 			EventHelper.stop(e, true);
 		}));
 
-		[EventType.MOUSE_UP, EventType.MOUSE_OUT].forEach(event => {
-			this._register(addDisposableListener(element, event, e => {
+		[EventType.MOUSE_UP, EventType.MOUSE_OUT].forEAch(event => {
+			this._register(AddDisposAbleListener(element, event, e => {
 				EventHelper.stop(e);
-				element.classList.remove('active');
+				element.clAssList.remove('Active');
 			}));
 		});
 	}
@@ -160,41 +160,41 @@ export class BaseActionViewItem extends Disposable implements IActionViewItem {
 		EventHelper.stop(event, true);
 
 		const context = types.isUndefinedOrNull(this._context) ? this.options?.useEventAsContext ? event : undefined : this._context;
-		this.actionRunner.run(this._action, context);
+		this.ActionRunner.run(this._Action, context);
 	}
 
 	focus(): void {
 		if (this.element) {
 			this.element.focus();
-			this.element.classList.add('focused');
+			this.element.clAssList.Add('focused');
 		}
 	}
 
 	blur(): void {
 		if (this.element) {
 			this.element.blur();
-			this.element.classList.remove('focused');
+			this.element.clAssList.remove('focused');
 		}
 	}
 
-	protected updateEnabled(): void {
-		// implement in subclass
+	protected updAteEnAbled(): void {
+		// implement in subclAss
 	}
 
-	protected updateLabel(): void {
-		// implement in subclass
+	protected updAteLAbel(): void {
+		// implement in subclAss
 	}
 
-	protected updateTooltip(): void {
-		// implement in subclass
+	protected updAteTooltip(): void {
+		// implement in subclAss
 	}
 
-	protected updateClass(): void {
-		// implement in subclass
+	protected updAteClAss(): void {
+		// implement in subclAss
 	}
 
-	protected updateChecked(): void {
-		// implement in subclass
+	protected updAteChecked(): void {
+		// implement in subclAss
 	}
 
 	dispose(): void {
@@ -207,154 +207,154 @@ export class BaseActionViewItem extends Disposable implements IActionViewItem {
 	}
 }
 
-export interface IActionViewItemOptions extends IBaseActionViewItemOptions {
-	icon?: boolean;
-	label?: boolean;
+export interfAce IActionViewItemOptions extends IBAseActionViewItemOptions {
+	icon?: booleAn;
+	lAbel?: booleAn;
 	keybinding?: string | null;
 }
 
-export class ActionViewItem extends BaseActionViewItem {
+export clAss ActionViewItem extends BAseActionViewItem {
 
-	protected label: HTMLElement | undefined;
+	protected lAbel: HTMLElement | undefined;
 	protected options: IActionViewItemOptions;
 
-	private cssClass?: string;
+	privAte cssClAss?: string;
 
-	constructor(context: unknown, action: IAction, options: IActionViewItemOptions = {}) {
-		super(context, action, options);
+	constructor(context: unknown, Action: IAction, options: IActionViewItemOptions = {}) {
+		super(context, Action, options);
 
 		this.options = options;
-		this.options.icon = options.icon !== undefined ? options.icon : false;
-		this.options.label = options.label !== undefined ? options.label : true;
-		this.cssClass = '';
+		this.options.icon = options.icon !== undefined ? options.icon : fAlse;
+		this.options.lAbel = options.lAbel !== undefined ? options.lAbel : true;
+		this.cssClAss = '';
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
 
 		if (this.element) {
-			this.label = append(this.element, $('a.action-label'));
+			this.lAbel = Append(this.element, $('A.Action-lAbel'));
 		}
 
-		if (this.label) {
-			if (this._action.id === Separator.ID) {
-				this.label.setAttribute('role', 'presentation'); // A separator is a presentation item
+		if (this.lAbel) {
+			if (this._Action.id === SepArAtor.ID) {
+				this.lAbel.setAttribute('role', 'presentAtion'); // A sepArAtor is A presentAtion item
 			} else {
 				if (this.options.isMenu) {
-					this.label.setAttribute('role', 'menuitem');
+					this.lAbel.setAttribute('role', 'menuitem');
 				} else {
-					this.label.setAttribute('role', 'button');
+					this.lAbel.setAttribute('role', 'button');
 				}
 			}
 		}
 
-		if (this.options.label && this.options.keybinding && this.element) {
-			append(this.element, $('span.keybinding')).textContent = this.options.keybinding;
+		if (this.options.lAbel && this.options.keybinding && this.element) {
+			Append(this.element, $('spAn.keybinding')).textContent = this.options.keybinding;
 		}
 
-		this.updateClass();
-		this.updateLabel();
-		this.updateTooltip();
-		this.updateEnabled();
-		this.updateChecked();
+		this.updAteClAss();
+		this.updAteLAbel();
+		this.updAteTooltip();
+		this.updAteEnAbled();
+		this.updAteChecked();
 	}
 
 	focus(): void {
 		super.focus();
 
-		if (this.label) {
-			this.label.focus();
+		if (this.lAbel) {
+			this.lAbel.focus();
 		}
 	}
 
-	updateLabel(): void {
-		if (this.options.label && this.label) {
-			this.label.textContent = this.getAction().label;
+	updAteLAbel(): void {
+		if (this.options.lAbel && this.lAbel) {
+			this.lAbel.textContent = this.getAction().lAbel;
 		}
 	}
 
-	updateTooltip(): void {
+	updAteTooltip(): void {
 		let title: string | null = null;
 
 		if (this.getAction().tooltip) {
 			title = this.getAction().tooltip;
 
-		} else if (!this.options.label && this.getAction().label && this.options.icon) {
-			title = this.getAction().label;
+		} else if (!this.options.lAbel && this.getAction().lAbel && this.options.icon) {
+			title = this.getAction().lAbel;
 
 			if (this.options.keybinding) {
-				title = nls.localize({ key: 'titleLabel', comment: ['action title', 'action keybinding'] }, "{0} ({1})", title, this.options.keybinding);
+				title = nls.locAlize({ key: 'titleLAbel', comment: ['Action title', 'Action keybinding'] }, "{0} ({1})", title, this.options.keybinding);
 			}
 		}
 
-		if (title && this.label) {
-			this.label.title = title;
+		if (title && this.lAbel) {
+			this.lAbel.title = title;
 		}
 	}
 
-	updateClass(): void {
-		if (this.cssClass && this.label) {
-			this.label.classList.remove(...this.cssClass.split(' '));
+	updAteClAss(): void {
+		if (this.cssClAss && this.lAbel) {
+			this.lAbel.clAssList.remove(...this.cssClAss.split(' '));
 		}
 
 		if (this.options.icon) {
-			this.cssClass = this.getAction().class;
+			this.cssClAss = this.getAction().clAss;
 
-			if (this.label) {
-				this.label.classList.add('codicon');
-				if (this.cssClass) {
-					this.label.classList.add(...this.cssClass.split(' '));
+			if (this.lAbel) {
+				this.lAbel.clAssList.Add('codicon');
+				if (this.cssClAss) {
+					this.lAbel.clAssList.Add(...this.cssClAss.split(' '));
 				}
 			}
 
-			this.updateEnabled();
+			this.updAteEnAbled();
 		} else {
-			if (this.label) {
-				this.label.classList.remove('codicon');
+			if (this.lAbel) {
+				this.lAbel.clAssList.remove('codicon');
 			}
 		}
 	}
 
-	updateEnabled(): void {
-		if (this.getAction().enabled) {
-			if (this.label) {
-				this.label.removeAttribute('aria-disabled');
-				this.label.classList.remove('disabled');
-				this.label.tabIndex = 0;
+	updAteEnAbled(): void {
+		if (this.getAction().enAbled) {
+			if (this.lAbel) {
+				this.lAbel.removeAttribute('AriA-disAbled');
+				this.lAbel.clAssList.remove('disAbled');
+				this.lAbel.tAbIndex = 0;
 			}
 
 			if (this.element) {
-				this.element.classList.remove('disabled');
+				this.element.clAssList.remove('disAbled');
 			}
 		} else {
-			if (this.label) {
-				this.label.setAttribute('aria-disabled', 'true');
-				this.label.classList.add('disabled');
-				removeTabIndexAndUpdateFocus(this.label);
+			if (this.lAbel) {
+				this.lAbel.setAttribute('AriA-disAbled', 'true');
+				this.lAbel.clAssList.Add('disAbled');
+				removeTAbIndexAndUpdAteFocus(this.lAbel);
 			}
 
 			if (this.element) {
-				this.element.classList.add('disabled');
+				this.element.clAssList.Add('disAbled');
 			}
 		}
 	}
 
-	updateChecked(): void {
-		if (this.label) {
+	updAteChecked(): void {
+		if (this.lAbel) {
 			if (this.getAction().checked) {
-				this.label.classList.add('checked');
+				this.lAbel.clAssList.Add('checked');
 			} else {
-				this.label.classList.remove('checked');
+				this.lAbel.clAssList.remove('checked');
 			}
 		}
 	}
 }
 
-export class SelectActionViewItem extends BaseActionViewItem {
+export clAss SelectActionViewItem extends BAseActionViewItem {
 	protected selectBox: SelectBox;
 
-	constructor(ctx: unknown, action: IAction, options: ISelectOptionItem[], selected: number, contextViewProvider: IContextViewProvider, selectBoxOptions?: ISelectBoxOptions) {
-		super(ctx, action);
+	constructor(ctx: unknown, Action: IAction, options: ISelectOptionItem[], selected: number, contextViewProvider: IContextViewProvider, selectBoxOptions?: ISelectBoxOptions) {
+		super(ctx, Action);
 
 		this.selectBox = new SelectBox(options, selected, contextViewProvider, undefined, selectBoxOptions);
 
@@ -370,9 +370,9 @@ export class SelectActionViewItem extends BaseActionViewItem {
 		this.selectBox.select(index);
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 		this._register(this.selectBox.onDidSelect(e => {
-			this.actionRunner.run(this._action, this.getActionContext(e.selected, e.index));
+			this.ActionRunner.run(this._Action, this.getActionContext(e.selected, e.index));
 		}));
 	}
 
@@ -392,7 +392,7 @@ export class SelectActionViewItem extends BaseActionViewItem {
 		}
 	}
 
-	render(container: HTMLElement): void {
-		this.selectBox.render(container);
+	render(contAiner: HTMLElement): void {
+		this.selectBox.render(contAiner);
 	}
 }

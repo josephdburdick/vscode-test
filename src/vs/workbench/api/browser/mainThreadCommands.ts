@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICommandService, CommandsRegistry, ICommandHandlerDescription } from 'vs/platform/commands/common/commands';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { ExtHostContext, MainThreadCommandsShape, ExtHostCommandsShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { revive } from 'vs/base/common/marshalling';
+import { ICommAndService, CommAndsRegistry, ICommAndHAndlerDescription } from 'vs/plAtform/commAnds/common/commAnds';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { ExtHostContext, MAinThreAdCommAndsShApe, ExtHostCommAndsShApe, MAinContext, IExtHostContext } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { revive } from 'vs/bAse/common/mArshAlling';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 
-@extHostNamedCustomer(MainContext.MainThreadCommands)
-export class MainThreadCommands implements MainThreadCommandsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdCommAnds)
+export clAss MAinThreAdCommAnds implements MAinThreAdCommAndsShApe {
 
-	private readonly _commandRegistrations = new Map<string, IDisposable>();
-	private readonly _generateCommandsDocumentationRegistration: IDisposable;
-	private readonly _proxy: ExtHostCommandsShape;
+	privAte reAdonly _commAndRegistrAtions = new MAp<string, IDisposAble>();
+	privAte reAdonly _generAteCommAndsDocumentAtionRegistrAtion: IDisposAble;
+	privAte reAdonly _proxy: ExtHostCommAndsShApe;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@ICommandService private readonly _commandService: ICommandService,
-		@IExtensionService private readonly _extensionService: IExtensionService,
+		@ICommAndService privAte reAdonly _commAndService: ICommAndService,
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
 	) {
-		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostCommands);
+		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostCommAnds);
 
-		this._generateCommandsDocumentationRegistration = CommandsRegistry.registerCommand('_generateCommandsDocumentation', () => this._generateCommandsDocumentation());
+		this._generAteCommAndsDocumentAtionRegistrAtion = CommAndsRegistry.registerCommAnd('_generAteCommAndsDocumentAtion', () => this._generAteCommAndsDocumentAtion());
 	}
 
 	dispose() {
-		dispose(this._commandRegistrations.values());
-		this._commandRegistrations.clear();
+		dispose(this._commAndRegistrAtions.vAlues());
+		this._commAndRegistrAtions.cleAr();
 
-		this._generateCommandsDocumentationRegistration.dispose();
+		this._generAteCommAndsDocumentAtionRegistrAtion.dispose();
 	}
 
-	private _generateCommandsDocumentation(): Promise<void> {
-		return this._proxy.$getContributedCommandHandlerDescriptions().then(result => {
-			// add local commands
-			const commands = CommandsRegistry.getCommands();
-			for (const [id, command] of commands) {
-				if (command.description) {
-					result[id] = command.description;
+	privAte _generAteCommAndsDocumentAtion(): Promise<void> {
+		return this._proxy.$getContributedCommAndHAndlerDescriptions().then(result => {
+			// Add locAl commAnds
+			const commAnds = CommAndsRegistry.getCommAnds();
+			for (const [id, commAnd] of commAnds) {
+				if (commAnd.description) {
+					result[id] = commAnd.description;
 				}
 			}
 
-			// print all as markdown
-			const all: string[] = [];
+			// print All As mArkdown
+			const All: string[] = [];
 			for (let id in result) {
-				all.push('`' + id + '` - ' + _generateMarkdown(result[id]));
+				All.push('`' + id + '` - ' + _generAteMArkdown(result[id]));
 			}
-			console.log(all.join('\n'));
+			console.log(All.join('\n'));
 		});
 	}
 
-	$registerCommand(id: string): void {
-		this._commandRegistrations.set(
+	$registerCommAnd(id: string): void {
+		this._commAndRegistrAtions.set(
 			id,
-			CommandsRegistry.registerCommand(id, (accessor, ...args) => {
-				return this._proxy.$executeContributedCommand(id, ...args).then(result => {
+			CommAndsRegistry.registerCommAnd(id, (Accessor, ...Args) => {
+				return this._proxy.$executeContributedCommAnd(id, ...Args).then(result => {
 					return revive(result);
 				});
 			})
 		);
 	}
 
-	$unregisterCommand(id: string): void {
-		const command = this._commandRegistrations.get(id);
-		if (command) {
-			command.dispose();
-			this._commandRegistrations.delete(id);
+	$unregisterCommAnd(id: string): void {
+		const commAnd = this._commAndRegistrAtions.get(id);
+		if (commAnd) {
+			commAnd.dispose();
+			this._commAndRegistrAtions.delete(id);
 		}
 	}
 
-	async $executeCommand<T>(id: string, args: any[], retry: boolean): Promise<T | undefined> {
-		for (let i = 0; i < args.length; i++) {
-			args[i] = revive(args[i]);
+	Async $executeCommAnd<T>(id: string, Args: Any[], retry: booleAn): Promise<T | undefined> {
+		for (let i = 0; i < Args.length; i++) {
+			Args[i] = revive(Args[i]);
 		}
-		if (retry && args.length > 0 && !CommandsRegistry.getCommand(id)) {
-			await this._extensionService.activateByEvent(`onCommand:${id}`);
-			throw new Error('$executeCommand:retry');
+		if (retry && Args.length > 0 && !CommAndsRegistry.getCommAnd(id)) {
+			AwAit this._extensionService.ActivAteByEvent(`onCommAnd:${id}`);
+			throw new Error('$executeCommAnd:retry');
 		}
-		return this._commandService.executeCommand<T>(id, ...args);
+		return this._commAndService.executeCommAnd<T>(id, ...Args);
 	}
 
-	$getCommands(): Promise<string[]> {
-		return Promise.resolve([...CommandsRegistry.getCommands().keys()]);
+	$getCommAnds(): Promise<string[]> {
+		return Promise.resolve([...CommAndsRegistry.getCommAnds().keys()]);
 	}
 }
 
-// --- command doc
+// --- commAnd doc
 
-function _generateMarkdown(description: string | ICommandHandlerDescription): string {
+function _generAteMArkdown(description: string | ICommAndHAndlerDescription): string {
 	if (typeof description === 'string') {
 		return description;
 	} else {
-		const parts = [description.description];
-		parts.push('\n\n');
-		if (description.args) {
-			for (let arg of description.args) {
-				parts.push(`* _${arg.name}_ - ${arg.description || ''}\n`);
+		const pArts = [description.description];
+		pArts.push('\n\n');
+		if (description.Args) {
+			for (let Arg of description.Args) {
+				pArts.push(`* _${Arg.nAme}_ - ${Arg.description || ''}\n`);
 			}
 		}
 		if (description.returns) {
-			parts.push(`* _(returns)_ - ${description.returns}`);
+			pArts.push(`* _(returns)_ - ${description.returns}`);
 		}
-		parts.push('\n\n');
-		return parts.join('');
+		pArts.push('\n\n');
+		return pArts.join('');
 	}
 }

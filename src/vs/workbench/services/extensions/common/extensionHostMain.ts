@@ -1,151 +1,151 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { timeout } from 'vs/base/common/async';
-import * as errors from 'vs/base/common/errors';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IURITransformer } from 'vs/base/common/uriIpc';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { IInitData, MainContext, MainThreadConsoleShape } from 'vs/workbench/api/common/extHost.protocol';
+import { timeout } from 'vs/bAse/common/Async';
+import * As errors from 'vs/bAse/common/errors';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IURITrAnsformer } from 'vs/bAse/common/uriIpc';
+import { IMessAgePAssingProtocol } from 'vs/bAse/pArts/ipc/common/ipc';
+import { IInitDAtA, MAinContext, MAinThreAdConsoleShApe } from 'vs/workbench/Api/common/extHost.protocol';
 import { RPCProtocol } from 'vs/workbench/services/extensions/common/rpcProtocol';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
-import { getSingletonServiceDescriptors } from 'vs/platform/instantiation/common/extensions';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService, ExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { IURITransformerService, URITransformerService } from 'vs/workbench/api/common/extHostUriTransformerService';
-import { IExtHostExtensionService, IHostUtils } from 'vs/workbench/api/common/extHostExtensionService';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { getSingletonServiceDescriptors } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostRpcService, ExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { IURITrAnsformerService, URITrAnsformerService } from 'vs/workbench/Api/common/extHostUriTrAnsformerService';
+import { IExtHostExtensionService, IHostUtils } from 'vs/workbench/Api/common/extHostExtensionService';
+import { IExtHostTerminAlService } from 'vs/workbench/Api/common/extHostTerminAlService';
 
-export interface IExitFn {
-	(code?: number): any;
+export interfAce IExitFn {
+	(code?: number): Any;
 }
 
-export interface IConsolePatchFn {
-	(mainThreadConsole: MainThreadConsoleShape): any;
+export interfAce IConsolePAtchFn {
+	(mAinThreAdConsole: MAinThreAdConsoleShApe): Any;
 }
 
-export class ExtensionHostMain {
+export clAss ExtensionHostMAin {
 
-	private _isTerminating: boolean;
-	private readonly _hostUtils: IHostUtils;
-	private readonly _extensionService: IExtHostExtensionService;
-	private readonly _disposables = new DisposableStore();
+	privAte _isTerminAting: booleAn;
+	privAte reAdonly _hostUtils: IHostUtils;
+	privAte reAdonly _extensionService: IExtHostExtensionService;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
 	constructor(
-		protocol: IMessagePassingProtocol,
-		initData: IInitData,
+		protocol: IMessAgePAssingProtocol,
+		initDAtA: IInitDAtA,
 		hostUtils: IHostUtils,
-		uriTransformer: IURITransformer | null
+		uriTrAnsformer: IURITrAnsformer | null
 	) {
-		this._isTerminating = false;
+		this._isTerminAting = fAlse;
 		this._hostUtils = hostUtils;
-		const rpcProtocol = new RPCProtocol(protocol, null, uriTransformer);
+		const rpcProtocol = new RPCProtocol(protocol, null, uriTrAnsformer);
 
-		// ensure URIs are transformed and revived
-		initData = ExtensionHostMain._transform(initData, rpcProtocol);
+		// ensure URIs Are trAnsformed And revived
+		initDAtA = ExtensionHostMAin._trAnsform(initDAtA, rpcProtocol);
 
-		// bootstrap services
+		// bootstrAp services
 		const services = new ServiceCollection(...getSingletonServiceDescriptors());
-		services.set(IExtHostInitDataService, { _serviceBrand: undefined, ...initData });
+		services.set(IExtHostInitDAtAService, { _serviceBrAnd: undefined, ...initDAtA });
 		services.set(IExtHostRpcService, new ExtHostRpcService(rpcProtocol));
-		services.set(IURITransformerService, new URITransformerService(uriTransformer));
+		services.set(IURITrAnsformerService, new URITrAnsformerService(uriTrAnsformer));
 		services.set(IHostUtils, hostUtils);
 
-		const instaService: IInstantiationService = new InstantiationService(services, true);
+		const instAService: IInstAntiAtionService = new InstAntiAtionService(services, true);
 
 		// todo@joh
 		// ugly self - inject
-		const terminalService = instaService.invokeFunction(accessor => accessor.get(IExtHostTerminalService));
-		this._disposables.add(terminalService);
+		const terminAlService = instAService.invokeFunction(Accessor => Accessor.get(IExtHostTerminAlService));
+		this._disposAbles.Add(terminAlService);
 
-		const logService = instaService.invokeFunction(accessor => accessor.get(ILogService));
-		this._disposables.add(logService);
+		const logService = instAService.invokeFunction(Accessor => Accessor.get(ILogService));
+		this._disposAbles.Add(logService);
 
-		logService.info('extension host started');
-		logService.trace('initData', initData);
+		logService.info('extension host stArted');
+		logService.trAce('initDAtA', initDAtA);
 
 		// todo@joh
 		// ugly self - inject
-		// must call initialize *after* creating the extension service
-		// because `initialize` itself creates instances that depend on it
-		this._extensionService = instaService.invokeFunction(accessor => accessor.get(IExtHostExtensionService));
-		this._extensionService.initialize();
+		// must cAll initiAlize *After* creAting the extension service
+		// becAuse `initiAlize` itself creAtes instAnces thAt depend on it
+		this._extensionService = instAService.invokeFunction(Accessor => Accessor.get(IExtHostExtensionService));
+		this._extensionService.initiAlize();
 
-		// error forwarding and stack trace scanning
-		Error.stackTraceLimit = 100; // increase number of stack frames (from 10, https://github.com/v8/v8/wiki/Stack-Trace-API)
-		const extensionErrors = new WeakMap<Error, IExtensionDescription | undefined>();
-		this._extensionService.getExtensionPathIndex().then(map => {
-			(<any>Error).prepareStackTrace = (error: Error, stackTrace: errors.V8CallSite[]) => {
-				let stackTraceMessage = '';
+		// error forwArding And stAck trAce scAnning
+		Error.stAckTrAceLimit = 100; // increAse number of stAck frAmes (from 10, https://github.com/v8/v8/wiki/StAck-TrAce-API)
+		const extensionErrors = new WeAkMAp<Error, IExtensionDescription | undefined>();
+		this._extensionService.getExtensionPAthIndex().then(mAp => {
+			(<Any>Error).prepAreStAckTrAce = (error: Error, stAckTrAce: errors.V8CAllSite[]) => {
+				let stAckTrAceMessAge = '';
 				let extension: IExtensionDescription | undefined;
-				let fileName: string;
-				for (const call of stackTrace) {
-					stackTraceMessage += `\n\tat ${call.toString()}`;
-					fileName = call.getFileName();
-					if (!extension && fileName) {
-						extension = map.findSubstr(fileName);
+				let fileNAme: string;
+				for (const cAll of stAckTrAce) {
+					stAckTrAceMessAge += `\n\tAt ${cAll.toString()}`;
+					fileNAme = cAll.getFileNAme();
+					if (!extension && fileNAme) {
+						extension = mAp.findSubstr(fileNAme);
 					}
 
 				}
 				extensionErrors.set(error, extension);
-				return `${error.name || 'Error'}: ${error.message || ''}${stackTraceMessage}`;
+				return `${error.nAme || 'Error'}: ${error.messAge || ''}${stAckTrAceMessAge}`;
 			};
 		});
 
-		const mainThreadExtensions = rpcProtocol.getProxy(MainContext.MainThreadExtensionService);
-		const mainThreadErrors = rpcProtocol.getProxy(MainContext.MainThreadErrors);
-		errors.setUnexpectedErrorHandler(err => {
-			const data = errors.transformErrorForSerialization(err);
+		const mAinThreAdExtensions = rpcProtocol.getProxy(MAinContext.MAinThreAdExtensionService);
+		const mAinThreAdErrors = rpcProtocol.getProxy(MAinContext.MAinThreAdErrors);
+		errors.setUnexpectedErrorHAndler(err => {
+			const dAtA = errors.trAnsformErrorForSeriAlizAtion(err);
 			const extension = extensionErrors.get(err);
 			if (extension) {
-				mainThreadExtensions.$onExtensionRuntimeError(extension.identifier, data);
+				mAinThreAdExtensions.$onExtensionRuntimeError(extension.identifier, dAtA);
 			} else {
-				mainThreadErrors.$onUnexpectedError(data);
+				mAinThreAdErrors.$onUnexpectedError(dAtA);
 			}
 		});
 	}
 
-	terminate(): void {
-		if (this._isTerminating) {
-			// we are already shutting down...
+	terminAte(): void {
+		if (this._isTerminAting) {
+			// we Are AlreAdy shutting down...
 			return;
 		}
-		this._isTerminating = true;
+		this._isTerminAting = true;
 
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 
-		errors.setUnexpectedErrorHandler((err) => {
-			// TODO: write to log once we have one
+		errors.setUnexpectedErrorHAndler((err) => {
+			// TODO: write to log once we hAve one
 		});
 
-		const extensionsDeactivated = this._extensionService.deactivateAll();
+		const extensionsDeActivAted = this._extensionService.deActivAteAll();
 
-		// Give extensions 1 second to wrap up any async dispose, then exit in at most 4 seconds
+		// Give extensions 1 second to wrAp up Any Async dispose, then exit in At most 4 seconds
 		setTimeout(() => {
-			Promise.race([timeout(4000), extensionsDeactivated]).finally(() => this._hostUtils.exit());
+			Promise.rAce([timeout(4000), extensionsDeActivAted]).finAlly(() => this._hostUtils.exit());
 		}, 1000);
 	}
 
-	private static _transform(initData: IInitData, rpcProtocol: RPCProtocol): IInitData {
-		initData.extensions.forEach((ext) => (<any>ext).extensionLocation = URI.revive(rpcProtocol.transformIncomingURIs(ext.extensionLocation)));
-		initData.environment.appRoot = URI.revive(rpcProtocol.transformIncomingURIs(initData.environment.appRoot));
-		const extDevLocs = initData.environment.extensionDevelopmentLocationURI;
+	privAte stAtic _trAnsform(initDAtA: IInitDAtA, rpcProtocol: RPCProtocol): IInitDAtA {
+		initDAtA.extensions.forEAch((ext) => (<Any>ext).extensionLocAtion = URI.revive(rpcProtocol.trAnsformIncomingURIs(ext.extensionLocAtion)));
+		initDAtA.environment.AppRoot = URI.revive(rpcProtocol.trAnsformIncomingURIs(initDAtA.environment.AppRoot));
+		const extDevLocs = initDAtA.environment.extensionDevelopmentLocAtionURI;
 		if (extDevLocs) {
-			initData.environment.extensionDevelopmentLocationURI = extDevLocs.map(url => URI.revive(rpcProtocol.transformIncomingURIs(url)));
+			initDAtA.environment.extensionDevelopmentLocAtionURI = extDevLocs.mAp(url => URI.revive(rpcProtocol.trAnsformIncomingURIs(url)));
 		}
-		initData.environment.extensionTestsLocationURI = URI.revive(rpcProtocol.transformIncomingURIs(initData.environment.extensionTestsLocationURI));
-		initData.environment.globalStorageHome = URI.revive(rpcProtocol.transformIncomingURIs(initData.environment.globalStorageHome));
-		initData.environment.workspaceStorageHome = URI.revive(rpcProtocol.transformIncomingURIs(initData.environment.workspaceStorageHome));
-		initData.logsLocation = URI.revive(rpcProtocol.transformIncomingURIs(initData.logsLocation));
-		initData.logFile = URI.revive(rpcProtocol.transformIncomingURIs(initData.logFile));
-		initData.workspace = rpcProtocol.transformIncomingURIs(initData.workspace);
-		return initData;
+		initDAtA.environment.extensionTestsLocAtionURI = URI.revive(rpcProtocol.trAnsformIncomingURIs(initDAtA.environment.extensionTestsLocAtionURI));
+		initDAtA.environment.globAlStorAgeHome = URI.revive(rpcProtocol.trAnsformIncomingURIs(initDAtA.environment.globAlStorAgeHome));
+		initDAtA.environment.workspAceStorAgeHome = URI.revive(rpcProtocol.trAnsformIncomingURIs(initDAtA.environment.workspAceStorAgeHome));
+		initDAtA.logsLocAtion = URI.revive(rpcProtocol.trAnsformIncomingURIs(initDAtA.logsLocAtion));
+		initDAtA.logFile = URI.revive(rpcProtocol.trAnsformIncomingURIs(initDAtA.logFile));
+		initDAtA.workspAce = rpcProtocol.trAnsformIncomingURIs(initDAtA.workspAce);
+		return initDAtA;
 	}
 }

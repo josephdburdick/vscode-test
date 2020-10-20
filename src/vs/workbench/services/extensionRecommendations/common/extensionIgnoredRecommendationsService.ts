@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { distinct } from 'vs/base/common/arrays';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IStorageService, IWorkspaceStorageChangeEvent, StorageScope } from 'vs/platform/storage/common/storage';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { IExtensionIgnoredRecommendationsService, IgnoredRecommendationChangeNotification } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { IWorkpsaceExtensionsConfigService } from 'vs/workbench/services/extensionRecommendations/common/workspaceExtensionsConfig';
+import { distinct } from 'vs/bAse/common/ArrAys';
+import { Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IStorAgeService, IWorkspAceStorAgeChAngeEvent, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { IExtensionIgnoredRecommendAtionsService, IgnoredRecommendAtionChAngeNotificAtion } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { IWorkpsAceExtensionsConfigService } from 'vs/workbench/services/extensionRecommendAtions/common/workspAceExtensionsConfig';
 
-const ignoredRecommendationsStorageKey = 'extensionsAssistant/ignored_recommendations';
+const ignoredRecommendAtionsStorAgeKey = 'extensionsAssistAnt/ignored_recommendAtions';
 
-export class ExtensionIgnoredRecommendationsService extends Disposable implements IExtensionIgnoredRecommendationsService {
+export clAss ExtensionIgnoredRecommendAtionsService extends DisposAble implements IExtensionIgnoredRecommendAtionsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _onDidChangeIgnoredRecommendations = this._register(new Emitter<void>());
-	readonly onDidChangeIgnoredRecommendations = this._onDidChangeIgnoredRecommendations.event;
+	privAte _onDidChAngeIgnoredRecommendAtions = this._register(new Emitter<void>());
+	reAdonly onDidChAngeIgnoredRecommendAtions = this._onDidChAngeIgnoredRecommendAtions.event;
 
-	// Global Ignored Recommendations
-	private _globalIgnoredRecommendations: string[] = [];
-	get globalIgnoredRecommendations(): string[] { return [...this._globalIgnoredRecommendations]; }
-	private _onDidChangeGlobalIgnoredRecommendation = this._register(new Emitter<IgnoredRecommendationChangeNotification>());
-	readonly onDidChangeGlobalIgnoredRecommendation = this._onDidChangeGlobalIgnoredRecommendation.event;
+	// GlobAl Ignored RecommendAtions
+	privAte _globAlIgnoredRecommendAtions: string[] = [];
+	get globAlIgnoredRecommendAtions(): string[] { return [...this._globAlIgnoredRecommendAtions]; }
+	privAte _onDidChAngeGlobAlIgnoredRecommendAtion = this._register(new Emitter<IgnoredRecommendAtionChAngeNotificAtion>());
+	reAdonly onDidChAngeGlobAlIgnoredRecommendAtion = this._onDidChAngeGlobAlIgnoredRecommendAtion.event;
 
-	// Ignored Workspace Recommendations
-	private ignoredWorkspaceRecommendations: string[] = [];
+	// Ignored WorkspAce RecommendAtions
+	privAte ignoredWorkspAceRecommendAtions: string[] = [];
 
-	get ignoredRecommendations(): string[] { return distinct([...this.globalIgnoredRecommendations, ...this.ignoredWorkspaceRecommendations]); }
+	get ignoredRecommendAtions(): string[] { return distinct([...this.globAlIgnoredRecommendAtions, ...this.ignoredWorkspAceRecommendAtions]); }
 
 	constructor(
-		@IWorkpsaceExtensionsConfigService private readonly workpsaceExtensionsConfigService: IWorkpsaceExtensionsConfigService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
+		@IWorkpsAceExtensionsConfigService privAte reAdonly workpsAceExtensionsConfigService: IWorkpsAceExtensionsConfigService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
 	) {
 		super();
-		storageKeysSyncRegistryService.registerStorageKey({ key: ignoredRecommendationsStorageKey, version: 1 });
-		this._globalIgnoredRecommendations = this.getCachedIgnoredRecommendations();
-		this._register(this.storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: ignoredRecommendAtionsStorAgeKey, version: 1 });
+		this._globAlIgnoredRecommendAtions = this.getCAchedIgnoredRecommendAtions();
+		this._register(this.storAgeService.onDidChAngeStorAge(e => this.onDidStorAgeChAnge(e)));
 
-		this.initIgnoredWorkspaceRecommendations();
+		this.initIgnoredWorkspAceRecommendAtions();
 	}
 
-	private async initIgnoredWorkspaceRecommendations(): Promise<void> {
-		this.ignoredWorkspaceRecommendations = await this.workpsaceExtensionsConfigService.getUnwantedRecommendations();
-		this._onDidChangeIgnoredRecommendations.fire();
-		this._register(this.workpsaceExtensionsConfigService.onDidChangeExtensionsConfigs(async () => {
-			this.ignoredWorkspaceRecommendations = await this.workpsaceExtensionsConfigService.getUnwantedRecommendations();
-			this._onDidChangeIgnoredRecommendations.fire();
+	privAte Async initIgnoredWorkspAceRecommendAtions(): Promise<void> {
+		this.ignoredWorkspAceRecommendAtions = AwAit this.workpsAceExtensionsConfigService.getUnwAntedRecommendAtions();
+		this._onDidChAngeIgnoredRecommendAtions.fire();
+		this._register(this.workpsAceExtensionsConfigService.onDidChAngeExtensionsConfigs(Async () => {
+			this.ignoredWorkspAceRecommendAtions = AwAit this.workpsAceExtensionsConfigService.getUnwAntedRecommendAtions();
+			this._onDidChAngeIgnoredRecommendAtions.fire();
 		}));
 	}
 
-	toggleGlobalIgnoredRecommendation(extensionId: string, shouldIgnore: boolean): void {
-		extensionId = extensionId.toLowerCase();
-		const ignored = this._globalIgnoredRecommendations.indexOf(extensionId) !== -1;
+	toggleGlobAlIgnoredRecommendAtion(extensionId: string, shouldIgnore: booleAn): void {
+		extensionId = extensionId.toLowerCAse();
+		const ignored = this._globAlIgnoredRecommendAtions.indexOf(extensionId) !== -1;
 		if (ignored === shouldIgnore) {
 			return;
 		}
 
-		this._globalIgnoredRecommendations = shouldIgnore ? [...this._globalIgnoredRecommendations, extensionId] : this._globalIgnoredRecommendations.filter(id => id !== extensionId);
-		this.storeCachedIgnoredRecommendations(this._globalIgnoredRecommendations);
-		this._onDidChangeGlobalIgnoredRecommendation.fire({ extensionId, isRecommended: !shouldIgnore });
-		this._onDidChangeIgnoredRecommendations.fire();
+		this._globAlIgnoredRecommendAtions = shouldIgnore ? [...this._globAlIgnoredRecommendAtions, extensionId] : this._globAlIgnoredRecommendAtions.filter(id => id !== extensionId);
+		this.storeCAchedIgnoredRecommendAtions(this._globAlIgnoredRecommendAtions);
+		this._onDidChAngeGlobAlIgnoredRecommendAtion.fire({ extensionId, isRecommended: !shouldIgnore });
+		this._onDidChAngeIgnoredRecommendAtions.fire();
 	}
 
-	private getCachedIgnoredRecommendations(): string[] {
-		const ignoredRecommendations: string[] = JSON.parse(this.ignoredRecommendationsValue);
-		return ignoredRecommendations.map(e => e.toLowerCase());
+	privAte getCAchedIgnoredRecommendAtions(): string[] {
+		const ignoredRecommendAtions: string[] = JSON.pArse(this.ignoredRecommendAtionsVAlue);
+		return ignoredRecommendAtions.mAp(e => e.toLowerCAse());
 	}
 
-	private onDidStorageChange(e: IWorkspaceStorageChangeEvent): void {
-		if (e.key === ignoredRecommendationsStorageKey && e.scope === StorageScope.GLOBAL
-			&& this.ignoredRecommendationsValue !== this.getStoredIgnoredRecommendationsValue() /* This checks if current window changed the value or not */) {
-			this._ignoredRecommendationsValue = undefined;
-			this._globalIgnoredRecommendations = this.getCachedIgnoredRecommendations();
-			this._onDidChangeIgnoredRecommendations.fire();
+	privAte onDidStorAgeChAnge(e: IWorkspAceStorAgeChAngeEvent): void {
+		if (e.key === ignoredRecommendAtionsStorAgeKey && e.scope === StorAgeScope.GLOBAL
+			&& this.ignoredRecommendAtionsVAlue !== this.getStoredIgnoredRecommendAtionsVAlue() /* This checks if current window chAnged the vAlue or not */) {
+			this._ignoredRecommendAtionsVAlue = undefined;
+			this._globAlIgnoredRecommendAtions = this.getCAchedIgnoredRecommendAtions();
+			this._onDidChAngeIgnoredRecommendAtions.fire();
 		}
 	}
 
-	private storeCachedIgnoredRecommendations(ignoredRecommendations: string[]): void {
-		this.ignoredRecommendationsValue = JSON.stringify(ignoredRecommendations);
+	privAte storeCAchedIgnoredRecommendAtions(ignoredRecommendAtions: string[]): void {
+		this.ignoredRecommendAtionsVAlue = JSON.stringify(ignoredRecommendAtions);
 	}
 
-	private _ignoredRecommendationsValue: string | undefined;
-	private get ignoredRecommendationsValue(): string {
-		if (!this._ignoredRecommendationsValue) {
-			this._ignoredRecommendationsValue = this.getStoredIgnoredRecommendationsValue();
+	privAte _ignoredRecommendAtionsVAlue: string | undefined;
+	privAte get ignoredRecommendAtionsVAlue(): string {
+		if (!this._ignoredRecommendAtionsVAlue) {
+			this._ignoredRecommendAtionsVAlue = this.getStoredIgnoredRecommendAtionsVAlue();
 		}
 
-		return this._ignoredRecommendationsValue;
+		return this._ignoredRecommendAtionsVAlue;
 	}
 
-	private set ignoredRecommendationsValue(ignoredRecommendationsValue: string) {
-		if (this.ignoredRecommendationsValue !== ignoredRecommendationsValue) {
-			this._ignoredRecommendationsValue = ignoredRecommendationsValue;
-			this.setStoredIgnoredRecommendationsValue(ignoredRecommendationsValue);
+	privAte set ignoredRecommendAtionsVAlue(ignoredRecommendAtionsVAlue: string) {
+		if (this.ignoredRecommendAtionsVAlue !== ignoredRecommendAtionsVAlue) {
+			this._ignoredRecommendAtionsVAlue = ignoredRecommendAtionsVAlue;
+			this.setStoredIgnoredRecommendAtionsVAlue(ignoredRecommendAtionsVAlue);
 		}
 	}
 
-	private getStoredIgnoredRecommendationsValue(): string {
-		return this.storageService.get(ignoredRecommendationsStorageKey, StorageScope.GLOBAL, '[]');
+	privAte getStoredIgnoredRecommendAtionsVAlue(): string {
+		return this.storAgeService.get(ignoredRecommendAtionsStorAgeKey, StorAgeScope.GLOBAL, '[]');
 	}
 
-	private setStoredIgnoredRecommendationsValue(value: string): void {
-		this.storageService.store(ignoredRecommendationsStorageKey, value, StorageScope.GLOBAL);
+	privAte setStoredIgnoredRecommendAtionsVAlue(vAlue: string): void {
+		this.storAgeService.store(ignoredRecommendAtionsStorAgeKey, vAlue, StorAgeScope.GLOBAL);
 	}
 
 }
 
-registerSingleton(IExtensionIgnoredRecommendationsService, ExtensionIgnoredRecommendationsService);
+registerSingleton(IExtensionIgnoredRecommendAtionsService, ExtensionIgnoredRecommendAtionsService);

@@ -1,6031 +1,6031 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 // THIS IS GENERATED FILE. DO NOT MODIFY.
 
-import { IEntries } from './phpGlobals';
+import { IEntries } from './phpGlobAls';
 
-export const globalfunctions: IEntries = {
-	debug_backtrace: {
-		description: 'Generates a backtrace',
-		signature: '([ int $options = DEBUG_BACKTRACE_PROVIDE_OBJECT [, int $limit = 0 ]]): array'
+export const globAlfunctions: IEntries = {
+	debug_bAcktrAce: {
+		description: 'GenerAtes A bAcktrAce',
+		signAture: '([ int $options = DEBUG_BACKTRACE_PROVIDE_OBJECT [, int $limit = 0 ]]): ArrAy'
 	},
-	debug_print_backtrace: {
-		description: 'Prints a backtrace',
-		signature: '([ int $options = 0 [, int $limit = 0 ]]): void'
+	debug_print_bAcktrAce: {
+		description: 'Prints A bAcktrAce',
+		signAture: '([ int $options = 0 [, int $limit = 0 ]]): void'
 	},
-	error_clear_last: {
-		description: 'Clear the most recent error',
-		signature: '(void): void'
+	error_cleAr_lAst: {
+		description: 'CleAr the most recent error',
+		signAture: '(void): void'
 	},
-	error_get_last: {
-		description: 'Get the last occurred error',
-		signature: '(void): array'
+	error_get_lAst: {
+		description: 'Get the lAst occurred error',
+		signAture: '(void): ArrAy'
 	},
 	error_log: {
-		description: 'Send an error message to the defined error handling routines',
-		signature: '( string $message [, int $message_type = 0 [, string $destination [, string $extra_headers ]]]): bool'
+		description: 'Send An error messAge to the defined error hAndling routines',
+		signAture: '( string $messAge [, int $messAge_type = 0 [, string $destinAtion [, string $extrA_heAders ]]]): bool'
 	},
 	error_reporting: {
-		description: 'Sets which PHP errors are reported',
-		signature: '([ int $level ]): int'
+		description: 'Sets which PHP errors Are reported',
+		signAture: '([ int $level ]): int'
 	},
-	restore_error_handler: {
-		description: 'Restores the previous error handler function',
-		signature: '(void): bool'
+	restore_error_hAndler: {
+		description: 'Restores the previous error hAndler function',
+		signAture: '(void): bool'
 	},
-	restore_exception_handler: {
-		description: 'Restores the previously defined exception handler function',
-		signature: '(void): bool'
+	restore_exception_hAndler: {
+		description: 'Restores the previously defined exception hAndler function',
+		signAture: '(void): bool'
 	},
-	set_error_handler: {
-		description: 'Sets a user-defined error handler function',
-		signature: '( callable $error_handler [, int $error_types = E_ALL | E_STRICT ]): mixed'
+	set_error_hAndler: {
+		description: 'Sets A user-defined error hAndler function',
+		signAture: '( cAllAble $error_hAndler [, int $error_types = E_ALL | E_STRICT ]): mixed'
 	},
-	set_exception_handler: {
-		description: 'Sets a user-defined exception handler function',
-		signature: '( callable $exception_handler ): callable'
+	set_exception_hAndler: {
+		description: 'Sets A user-defined exception hAndler function',
+		signAture: '( cAllAble $exception_hAndler ): cAllAble'
 	},
 	trigger_error: {
-		description: 'Generates a user-level error/warning/notice message',
-		signature: '( string $error_msg [, int $error_type = E_USER_NOTICE ]): bool'
+		description: 'GenerAtes A user-level error/wArning/notice messAge',
+		signAture: '( string $error_msg [, int $error_type = E_USER_NOTICE ]): bool'
 	},
 	user_error: {
-		description: 'Alias of trigger_error',
+		description: 'AliAs of trigger_error',
 	},
-	opcache_compile_file: {
-		description: 'Compiles and caches a PHP script without executing it',
-		signature: '( string $file ): bool'
+	opcAche_compile_file: {
+		description: 'Compiles And cAches A PHP script without executing it',
+		signAture: '( string $file ): bool'
 	},
-	opcache_get_configuration: {
-		description: 'Get configuration information about the cache',
-		signature: '(void): array'
+	opcAche_get_configurAtion: {
+		description: 'Get configurAtion informAtion About the cAche',
+		signAture: '(void): ArrAy'
 	},
-	opcache_get_status: {
-		description: 'Get status information about the cache',
-		signature: '([ bool $get_scripts ]): array'
+	opcAche_get_stAtus: {
+		description: 'Get stAtus informAtion About the cAche',
+		signAture: '([ bool $get_scripts ]): ArrAy'
 	},
-	opcache_invalidate: {
-		description: 'Invalidates a cached script',
-		signature: '( string $script [, bool $force ]): bool'
+	opcAche_invAlidAte: {
+		description: 'InvAlidAtes A cAched script',
+		signAture: '( string $script [, bool $force ]): bool'
 	},
-	opcache_is_script_cached: {
-		description: 'Tells whether a script is cached in OPCache',
-		signature: '( string $file ): bool'
+	opcAche_is_script_cAched: {
+		description: 'Tells whether A script is cAched in OPCAche',
+		signAture: '( string $file ): bool'
 	},
-	opcache_reset: {
-		description: 'Resets the contents of the opcode cache',
-		signature: '(void): bool'
+	opcAche_reset: {
+		description: 'Resets the contents of the opcode cAche',
+		signAture: '(void): bool'
 	},
 	flush: {
 		description: 'Flush system output buffer',
-		signature: '(void): void'
+		signAture: '(void): void'
 	},
-	ob_clean: {
-		description: 'Clean (erase) the output buffer',
-		signature: '(void): void'
+	ob_cleAn: {
+		description: 'CleAn (erAse) the output buffer',
+		signAture: '(void): void'
 	},
-	ob_end_clean: {
-		description: 'Clean (erase) the output buffer and turn off output buffering',
-		signature: '(void): bool'
+	ob_end_cleAn: {
+		description: 'CleAn (erAse) the output buffer And turn off output buffering',
+		signAture: '(void): bool'
 	},
 	ob_end_flush: {
-		description: 'Flush (send) the output buffer and turn off output buffering',
-		signature: '(void): bool'
+		description: 'Flush (send) the output buffer And turn off output buffering',
+		signAture: '(void): bool'
 	},
 	ob_flush: {
 		description: 'Flush (send) the output buffer',
-		signature: '(void): void'
+		signAture: '(void): void'
 	},
-	ob_get_clean: {
-		description: 'Get current buffer contents and delete current output buffer',
-		signature: '(void): string'
+	ob_get_cleAn: {
+		description: 'Get current buffer contents And delete current output buffer',
+		signAture: '(void): string'
 	},
 	ob_get_contents: {
 		description: 'Return the contents of the output buffer',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
 	ob_get_flush: {
-		description: 'Flush the output buffer, return it as a string and turn off output buffering',
-		signature: '(void): string'
+		description: 'Flush the output buffer, return it As A string And turn off output buffering',
+		signAture: '(void): string'
 	},
 	ob_get_length: {
 		description: 'Return the length of the output buffer',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	ob_get_level: {
-		description: 'Return the nesting level of the output buffering mechanism',
-		signature: '(void): int'
+		description: 'Return the nesting level of the output buffering mechAnism',
+		signAture: '(void): int'
 	},
-	ob_get_status: {
-		description: 'Get status of output buffers',
-		signature: '([ bool $full_status = FALSE ]): array'
+	ob_get_stAtus: {
+		description: 'Get stAtus of output buffers',
+		signAture: '([ bool $full_stAtus = FALSE ]): ArrAy'
 	},
-	ob_gzhandler: {
-		description: 'ob_start callback function to gzip output buffer',
-		signature: '( string $buffer , int $mode ): string'
+	ob_gzhAndler: {
+		description: 'ob_stArt cAllbAck function to gzip output buffer',
+		signAture: '( string $buffer , int $mode ): string'
 	},
 	ob_implicit_flush: {
 		description: 'Turn implicit flush on/off',
-		signature: '([ int $flag = 1 ]): void'
+		signAture: '([ int $flAg = 1 ]): void'
 	},
-	ob_list_handlers: {
-		description: 'List all output handlers in use',
-		signature: '(void): array'
+	ob_list_hAndlers: {
+		description: 'List All output hAndlers in use',
+		signAture: '(void): ArrAy'
 	},
-	ob_start: {
+	ob_stArt: {
 		description: 'Turn on output buffering',
-		signature: '([ callable $output_callback [, int $chunk_size = 0 [, int $flags ]]]): bool'
+		signAture: '([ cAllAble $output_cAllbAck [, int $chunk_size = 0 [, int $flAgs ]]]): bool'
 	},
-	output_add_rewrite_var: {
-		description: 'Add URL rewriter values',
-		signature: '( string $name , string $value ): bool'
+	output_Add_rewrite_vAr: {
+		description: 'Add URL rewriter vAlues',
+		signAture: '( string $nAme , string $vAlue ): bool'
 	},
-	output_reset_rewrite_vars: {
-		description: 'Reset URL rewriter values',
-		signature: '(void): bool'
+	output_reset_rewrite_vArs: {
+		description: 'Reset URL rewriter vAlues',
+		signAture: '(void): bool'
 	},
-	assert_options: {
-		description: 'Set/get the various assert flags',
-		signature: '( int $what [, mixed $value ]): mixed'
+	Assert_options: {
+		description: 'Set/get the vArious Assert flAgs',
+		signAture: '( int $whAt [, mixed $vAlue ]): mixed'
 	},
-	assert: {
-		description: 'Checks if assertion is FALSE',
-		signature: '( mixed $assertion [, string $description [, Throwable $exception ]]): bool'
+	Assert: {
+		description: 'Checks if Assertion is FALSE',
+		signAture: '( mixed $Assertion [, string $description [, ThrowAble $exception ]]): bool'
 	},
 	cli_get_process_title: {
 		description: 'Returns the current process title',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
 	cli_set_process_title: {
 		description: 'Sets the process title',
-		signature: '( string $title ): bool'
+		signAture: '( string $title ): bool'
 	},
 	dl: {
-		description: 'Loads a PHP extension at runtime',
-		signature: '( string $library ): bool'
+		description: 'LoAds A PHP extension At runtime',
+		signAture: '( string $librAry ): bool'
 	},
-	extension_loaded: {
-		description: 'Find out whether an extension is loaded',
-		signature: '( string $name ): bool'
+	extension_loAded: {
+		description: 'Find out whether An extension is loAded',
+		signAture: '( string $nAme ): bool'
 	},
 	gc_collect_cycles: {
-		description: 'Forces collection of any existing garbage cycles',
-		signature: '(void): int'
+		description: 'Forces collection of Any existing gArbAge cycles',
+		signAture: '(void): int'
 	},
-	gc_disable: {
-		description: 'Deactivates the circular reference collector',
-		signature: '(void): void'
+	gc_disAble: {
+		description: 'DeActivAtes the circulAr reference collector',
+		signAture: '(void): void'
 	},
-	gc_enable: {
-		description: 'Activates the circular reference collector',
-		signature: '(void): void'
+	gc_enAble: {
+		description: 'ActivAtes the circulAr reference collector',
+		signAture: '(void): void'
 	},
-	gc_enabled: {
-		description: 'Returns status of the circular reference collector',
-		signature: '(void): bool'
+	gc_enAbled: {
+		description: 'Returns stAtus of the circulAr reference collector',
+		signAture: '(void): bool'
 	},
-	gc_mem_caches: {
-		description: 'Reclaims memory used by the Zend Engine memory manager',
-		signature: '(void): int'
+	gc_mem_cAches: {
+		description: 'ReclAims memory used by the Zend Engine memory mAnAger',
+		signAture: '(void): int'
 	},
-	gc_status: {
-		description: 'Gets information about the garbage collector',
-		signature: '(void): array'
+	gc_stAtus: {
+		description: 'Gets informAtion About the gArbAge collector',
+		signAture: '(void): ArrAy'
 	},
-	get_cfg_var: {
-		description: 'Gets the value of a PHP configuration option',
-		signature: '( string $option ): mixed'
+	get_cfg_vAr: {
+		description: 'Gets the vAlue of A PHP configurAtion option',
+		signAture: '( string $option ): mixed'
 	},
 	get_current_user: {
-		description: 'Gets the name of the owner of the current PHP script',
-		signature: '(void): string'
+		description: 'Gets the nAme of the owner of the current PHP script',
+		signAture: '(void): string'
 	},
-	get_defined_constants: {
-		description: 'Returns an associative array with the names of all the constants and their values',
-		signature: '([ bool $categorize ]): array'
+	get_defined_constAnts: {
+		description: 'Returns An AssociAtive ArrAy with the nAmes of All the constAnts And their vAlues',
+		signAture: '([ bool $cAtegorize ]): ArrAy'
 	},
 	get_extension_funcs: {
-		description: 'Returns an array with the names of the functions of a module',
-		signature: '( string $module_name ): array'
+		description: 'Returns An ArrAy with the nAmes of the functions of A module',
+		signAture: '( string $module_nAme ): ArrAy'
 	},
-	get_include_path: {
-		description: 'Gets the current include_path configuration option',
-		signature: '(void): string'
+	get_include_pAth: {
+		description: 'Gets the current include_pAth configurAtion option',
+		signAture: '(void): string'
 	},
 	get_included_files: {
-		description: 'Returns an array with the names of included or required files',
-		signature: '(void): array'
+		description: 'Returns An ArrAy with the nAmes of included or required files',
+		signAture: '(void): ArrAy'
 	},
-	get_loaded_extensions: {
-		description: 'Returns an array with the names of all modules compiled and loaded',
-		signature: '([ bool $zend_extensions ]): array'
+	get_loAded_extensions: {
+		description: 'Returns An ArrAy with the nAmes of All modules compiled And loAded',
+		signAture: '([ bool $zend_extensions ]): ArrAy'
 	},
-	get_magic_quotes_gpc: {
-		description: 'Gets the current configuration setting of magic_quotes_gpc',
-		signature: '(void): bool'
+	get_mAgic_quotes_gpc: {
+		description: 'Gets the current configurAtion setting of mAgic_quotes_gpc',
+		signAture: '(void): bool'
 	},
-	get_magic_quotes_runtime: {
-		description: 'Gets the current active configuration setting of magic_quotes_runtime',
-		signature: '(void): bool'
+	get_mAgic_quotes_runtime: {
+		description: 'Gets the current Active configurAtion setting of mAgic_quotes_runtime',
+		signAture: '(void): bool'
 	},
 	get_required_files: {
-		description: 'Alias of get_included_files',
+		description: 'AliAs of get_included_files',
 	},
 	get_resources: {
-		description: 'Returns active resources',
-		signature: '([ string $type ]): resource'
+		description: 'Returns Active resources',
+		signAture: '([ string $type ]): resource'
 	},
 	getenv: {
-		description: 'Gets the value of an environment variable',
-		signature: '( string $varname [, bool $local_only ]): array'
+		description: 'Gets the vAlue of An environment vAriAble',
+		signAture: '( string $vArnAme [, bool $locAl_only ]): ArrAy'
 	},
-	getlastmod: {
-		description: 'Gets time of last page modification',
-		signature: '(void): int'
+	getlAstmod: {
+		description: 'Gets time of lAst pAge modificAtion',
+		signAture: '(void): int'
 	},
 	getmygid: {
 		description: 'Get PHP script owner\'s GID',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	getmyinode: {
 		description: 'Gets the inode of the current script',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	getmypid: {
 		description: 'Gets PHP\'s process ID',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	getmyuid: {
 		description: 'Gets PHP script owner\'s UID',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	getopt: {
-		description: 'Gets options from the command line argument list',
-		signature: '( string $options [, array $longopts [, int $optind ]]): array'
+		description: 'Gets options from the commAnd line Argument list',
+		signAture: '( string $options [, ArrAy $longopts [, int $optind ]]): ArrAy'
 	},
-	getrusage: {
-		description: 'Gets the current resource usages',
-		signature: '([ int $who = 0 ]): array'
+	getrusAge: {
+		description: 'Gets the current resource usAges',
+		signAture: '([ int $who = 0 ]): ArrAy'
 	},
-	ini_alter: {
-		description: 'Alias of ini_set',
+	ini_Alter: {
+		description: 'AliAs of ini_set',
 	},
-	ini_get_all: {
-		description: 'Gets all configuration options',
-		signature: '([ string $extension [, bool $details ]]): array'
+	ini_get_All: {
+		description: 'Gets All configurAtion options',
+		signAture: '([ string $extension [, bool $detAils ]]): ArrAy'
 	},
 	ini_get: {
-		description: 'Gets the value of a configuration option',
-		signature: '( string $varname ): string'
+		description: 'Gets the vAlue of A configurAtion option',
+		signAture: '( string $vArnAme ): string'
 	},
 	ini_restore: {
-		description: 'Restores the value of a configuration option',
-		signature: '( string $varname ): void'
+		description: 'Restores the vAlue of A configurAtion option',
+		signAture: '( string $vArnAme ): void'
 	},
 	ini_set: {
-		description: 'Sets the value of a configuration option',
-		signature: '( string $varname , string $newvalue ): string'
+		description: 'Sets the vAlue of A configurAtion option',
+		signAture: '( string $vArnAme , string $newvAlue ): string'
 	},
-	magic_quotes_runtime: {
-		description: 'Alias of set_magic_quotes_runtime',
+	mAgic_quotes_runtime: {
+		description: 'AliAs of set_mAgic_quotes_runtime',
 	},
-	main: {
-		description: 'Dummy for main',
+	mAin: {
+		description: 'Dummy for mAin',
 	},
-	memory_get_peak_usage: {
-		description: 'Returns the peak of memory allocated by PHP',
-		signature: '([ bool $real_usage ]): int'
+	memory_get_peAk_usAge: {
+		description: 'Returns the peAk of memory AllocAted by PHP',
+		signAture: '([ bool $reAl_usAge ]): int'
 	},
-	memory_get_usage: {
-		description: 'Returns the amount of memory allocated to PHP',
-		signature: '([ bool $real_usage ]): int'
+	memory_get_usAge: {
+		description: 'Returns the Amount of memory AllocAted to PHP',
+		signAture: '([ bool $reAl_usAge ]): int'
 	},
-	php_ini_loaded_file: {
-		description: 'Retrieve a path to the loaded php.ini file',
-		signature: '(void): string'
+	php_ini_loAded_file: {
+		description: 'Retrieve A pAth to the loAded php.ini file',
+		signAture: '(void): string'
 	},
-	php_ini_scanned_files: {
-		description: 'Return a list of .ini files parsed from the additional ini dir',
-		signature: '(void): string'
+	php_ini_scAnned_files: {
+		description: 'Return A list of .ini files pArsed from the AdditionAl ini dir',
+		signAture: '(void): string'
 	},
 	php_logo_guid: {
 		description: 'Gets the logo guid',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
-	php_sapi_name: {
-		description: 'Returns the type of interface between web server and PHP',
-		signature: '(void): string'
+	php_sApi_nAme: {
+		description: 'Returns the type of interfAce between web server And PHP',
+		signAture: '(void): string'
 	},
-	php_uname: {
-		description: 'Returns information about the operating system PHP is running on',
-		signature: '([ string $mode = "a" ]): string'
+	php_unAme: {
+		description: 'Returns informAtion About the operAting system PHP is running on',
+		signAture: '([ string $mode = "A" ]): string'
 	},
 	phpcredits: {
 		description: 'Prints out the credits for PHP',
-		signature: '([ int $flag = CREDITS_ALL ]): bool'
+		signAture: '([ int $flAg = CREDITS_ALL ]): bool'
 	},
 	phpinfo: {
-		description: 'Outputs information about PHP\'s configuration',
-		signature: '([ int $what = INFO_ALL ]): bool'
+		description: 'Outputs informAtion About PHP\'s configurAtion',
+		signAture: '([ int $whAt = INFO_ALL ]): bool'
 	},
 	phpversion: {
 		description: 'Gets the current PHP version',
-		signature: '([ string $extension ]): string'
+		signAture: '([ string $extension ]): string'
 	},
 	putenv: {
-		description: 'Sets the value of an environment variable',
-		signature: '( string $setting ): bool'
+		description: 'Sets the vAlue of An environment vAriAble',
+		signAture: '( string $setting ): bool'
 	},
-	restore_include_path: {
-		description: 'Restores the value of the include_path configuration option',
-		signature: '(void): void'
+	restore_include_pAth: {
+		description: 'Restores the vAlue of the include_pAth configurAtion option',
+		signAture: '(void): void'
 	},
-	set_include_path: {
-		description: 'Sets the include_path configuration option',
-		signature: '( string $new_include_path ): string'
+	set_include_pAth: {
+		description: 'Sets the include_pAth configurAtion option',
+		signAture: '( string $new_include_pAth ): string'
 	},
-	set_magic_quotes_runtime: {
-		description: 'Sets the current active configuration setting of magic_quotes_runtime',
-		signature: '( bool $new_setting ): bool'
+	set_mAgic_quotes_runtime: {
+		description: 'Sets the current Active configurAtion setting of mAgic_quotes_runtime',
+		signAture: '( bool $new_setting ): bool'
 	},
 	set_time_limit: {
-		description: 'Limits the maximum execution time',
-		signature: '( int $seconds ): bool'
+		description: 'Limits the mAximum execution time',
+		signAture: '( int $seconds ): bool'
 	},
 	sys_get_temp_dir: {
-		description: 'Returns directory path used for temporary files',
-		signature: '(void): string'
+		description: 'Returns directory pAth used for temporAry files',
+		signAture: '(void): string'
 	},
-	version_compare: {
-		description: 'Compares two "PHP-standardized" version number strings',
-		signature: '( string $version1 , string $version2 , string $operator ): bool'
+	version_compAre: {
+		description: 'CompAres two "PHP-stAndArdized" version number strings',
+		signAture: '( string $version1 , string $version2 , string $operAtor ): bool'
 	},
 	zend_logo_guid: {
 		description: 'Gets the Zend guid',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
-	zend_thread_id: {
-		description: 'Returns a unique identifier for the current thread',
-		signature: '(void): int'
+	zend_threAd_id: {
+		description: 'Returns A unique identifier for the current threAd',
+		signAture: '(void): int'
 	},
 	zend_version: {
 		description: 'Gets the version of the current Zend engine',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
 	bzclose: {
-		description: 'Close a bzip2 file',
-		signature: '( resource $bz ): int'
+		description: 'Close A bzip2 file',
+		signAture: '( resource $bz ): int'
 	},
 	bzcompress: {
-		description: 'Compress a string into bzip2 encoded data',
-		signature: '( string $source [, int $blocksize = 4 [, int $workfactor = 0 ]]): mixed'
+		description: 'Compress A string into bzip2 encoded dAtA',
+		signAture: '( string $source [, int $blocksize = 4 [, int $workfActor = 0 ]]): mixed'
 	},
 	bzdecompress: {
-		description: 'Decompresses bzip2 encoded data',
-		signature: '( string $source [, int $small = 0 ]): mixed'
+		description: 'Decompresses bzip2 encoded dAtA',
+		signAture: '( string $source [, int $smAll = 0 ]): mixed'
 	},
 	bzerrno: {
-		description: 'Returns a bzip2 error number',
-		signature: '( resource $bz ): int'
+		description: 'Returns A bzip2 error number',
+		signAture: '( resource $bz ): int'
 	},
 	bzerror: {
-		description: 'Returns the bzip2 error number and error string in an array',
-		signature: '( resource $bz ): array'
+		description: 'Returns the bzip2 error number And error string in An ArrAy',
+		signAture: '( resource $bz ): ArrAy'
 	},
 	bzerrstr: {
-		description: 'Returns a bzip2 error string',
-		signature: '( resource $bz ): string'
+		description: 'Returns A bzip2 error string',
+		signAture: '( resource $bz ): string'
 	},
 	bzflush: {
-		description: 'Force a write of all buffered data',
-		signature: '( resource $bz ): bool'
+		description: 'Force A write of All buffered dAtA',
+		signAture: '( resource $bz ): bool'
 	},
 	bzopen: {
-		description: 'Opens a bzip2 compressed file',
-		signature: '( mixed $file , string $mode ): resource'
+		description: 'Opens A bzip2 compressed file',
+		signAture: '( mixed $file , string $mode ): resource'
 	},
-	bzread: {
-		description: 'Binary safe bzip2 file read',
-		signature: '( resource $bz [, int $length = 1024 ]): string'
+	bzreAd: {
+		description: 'BinAry sAfe bzip2 file reAd',
+		signAture: '( resource $bz [, int $length = 1024 ]): string'
 	},
 	bzwrite: {
-		description: 'Binary safe bzip2 file write',
-		signature: '( resource $bz , string $data [, int $length ]): int'
+		description: 'BinAry sAfe bzip2 file write',
+		signAture: '( resource $bz , string $dAtA [, int $length ]): int'
 	},
-	PharException: {
-		description: 'The PharException class provides a phar-specific exception class    for try/catch blocks',
+	PhArException: {
+		description: 'The PhArException clAss provides A phAr-specific exception clAss    for try/cAtch blocks',
 	},
 	zip_close: {
-		description: 'Close a ZIP file archive',
-		signature: '( resource $zip ): void'
+		description: 'Close A ZIP file Archive',
+		signAture: '( resource $zip ): void'
 	},
 	zip_entry_close: {
-		description: 'Close a directory entry',
-		signature: '( resource $zip_entry ): bool'
+		description: 'Close A directory entry',
+		signAture: '( resource $zip_entry ): bool'
 	},
 	zip_entry_compressedsize: {
-		description: 'Retrieve the compressed size of a directory entry',
-		signature: '( resource $zip_entry ): int'
+		description: 'Retrieve the compressed size of A directory entry',
+		signAture: '( resource $zip_entry ): int'
 	},
 	zip_entry_compressionmethod: {
-		description: 'Retrieve the compression method of a directory entry',
-		signature: '( resource $zip_entry ): string'
+		description: 'Retrieve the compression method of A directory entry',
+		signAture: '( resource $zip_entry ): string'
 	},
 	zip_entry_filesize: {
-		description: 'Retrieve the actual file size of a directory entry',
-		signature: '( resource $zip_entry ): int'
+		description: 'Retrieve the ActuAl file size of A directory entry',
+		signAture: '( resource $zip_entry ): int'
 	},
-	zip_entry_name: {
-		description: 'Retrieve the name of a directory entry',
-		signature: '( resource $zip_entry ): string'
+	zip_entry_nAme: {
+		description: 'Retrieve the nAme of A directory entry',
+		signAture: '( resource $zip_entry ): string'
 	},
 	zip_entry_open: {
-		description: 'Open a directory entry for reading',
-		signature: '( resource $zip , resource $zip_entry [, string $mode ]): bool'
+		description: 'Open A directory entry for reAding',
+		signAture: '( resource $zip , resource $zip_entry [, string $mode ]): bool'
 	},
-	zip_entry_read: {
-		description: 'Read from an open directory entry',
-		signature: '( resource $zip_entry [, int $length = 1024 ]): string'
+	zip_entry_reAd: {
+		description: 'ReAd from An open directory entry',
+		signAture: '( resource $zip_entry [, int $length = 1024 ]): string'
 	},
 	zip_open: {
-		description: 'Open a ZIP file archive',
-		signature: '( string $filename ): resource'
+		description: 'Open A ZIP file Archive',
+		signAture: '( string $filenAme ): resource'
 	},
-	zip_read: {
-		description: 'Read next entry in a ZIP file archive',
-		signature: '( resource $zip ): resource'
+	zip_reAd: {
+		description: 'ReAd next entry in A ZIP file Archive',
+		signAture: '( resource $zip ): resource'
 	},
-	deflate_add: {
-		description: 'Incrementally deflate data',
-		signature: '( resource $context , string $data [, int $flush_mode = ZLIB_SYNC_FLUSH ]): string'
+	deflAte_Add: {
+		description: 'IncrementAlly deflAte dAtA',
+		signAture: '( resource $context , string $dAtA [, int $flush_mode = ZLIB_SYNC_FLUSH ]): string'
 	},
-	deflate_init: {
-		description: 'Initialize an incremental deflate context',
-		signature: '( int $encoding [, array $options = array() ]): resource'
+	deflAte_init: {
+		description: 'InitiAlize An incrementAl deflAte context',
+		signAture: '( int $encoding [, ArrAy $options = ArrAy() ]): resource'
 	},
 	gzclose: {
-		description: 'Close an open gz-file pointer',
-		signature: '( resource $zp ): bool'
+		description: 'Close An open gz-file pointer',
+		signAture: '( resource $zp ): bool'
 	},
 	gzcompress: {
-		description: 'Compress a string',
-		signature: '( string $data [, int $level = -1 [, int $encoding = ZLIB_ENCODING_DEFLATE ]]): string'
+		description: 'Compress A string',
+		signAture: '( string $dAtA [, int $level = -1 [, int $encoding = ZLIB_ENCODING_DEFLATE ]]): string'
 	},
 	gzdecode: {
-		description: 'Decodes a gzip compressed string',
-		signature: '( string $data [, int $length ]): string'
+		description: 'Decodes A gzip compressed string',
+		signAture: '( string $dAtA [, int $length ]): string'
 	},
-	gzdeflate: {
-		description: 'Deflate a string',
-		signature: '( string $data [, int $level = -1 [, int $encoding = ZLIB_ENCODING_RAW ]]): string'
+	gzdeflAte: {
+		description: 'DeflAte A string',
+		signAture: '( string $dAtA [, int $level = -1 [, int $encoding = ZLIB_ENCODING_RAW ]]): string'
 	},
 	gzencode: {
-		description: 'Create a gzip compressed string',
-		signature: '( string $data [, int $level = -1 [, int $encoding_mode = FORCE_GZIP ]]): string'
+		description: 'CreAte A gzip compressed string',
+		signAture: '( string $dAtA [, int $level = -1 [, int $encoding_mode = FORCE_GZIP ]]): string'
 	},
 	gzeof: {
-		description: 'Test for EOF on a gz-file pointer',
-		signature: '( resource $zp ): int'
+		description: 'Test for EOF on A gz-file pointer',
+		signAture: '( resource $zp ): int'
 	},
 	gzfile: {
-		description: 'Read entire gz-file into an array',
-		signature: '( string $filename [, int $use_include_path = 0 ]): array'
+		description: 'ReAd entire gz-file into An ArrAy',
+		signAture: '( string $filenAme [, int $use_include_pAth = 0 ]): ArrAy'
 	},
 	gzgetc: {
-		description: 'Get character from gz-file pointer',
-		signature: '( resource $zp ): string'
+		description: 'Get chArActer from gz-file pointer',
+		signAture: '( resource $zp ): string'
 	},
 	gzgets: {
 		description: 'Get line from file pointer',
-		signature: '( resource $zp [, int $length ]): string'
+		signAture: '( resource $zp [, int $length ]): string'
 	},
 	gzgetss: {
-		description: 'Get line from gz-file pointer and strip HTML tags',
-		signature: '( resource $zp , int $length [, string $allowable_tags ]): string'
+		description: 'Get line from gz-file pointer And strip HTML tAgs',
+		signAture: '( resource $zp , int $length [, string $AllowAble_tAgs ]): string'
 	},
-	gzinflate: {
-		description: 'Inflate a deflated string',
-		signature: '( string $data [, int $length = 0 ]): string'
+	gzinflAte: {
+		description: 'InflAte A deflAted string',
+		signAture: '( string $dAtA [, int $length = 0 ]): string'
 	},
 	gzopen: {
 		description: 'Open gz-file',
-		signature: '( string $filename , string $mode [, int $use_include_path = 0 ]): resource'
+		signAture: '( string $filenAme , string $mode [, int $use_include_pAth = 0 ]): resource'
 	},
-	gzpassthru: {
-		description: 'Output all remaining data on a gz-file pointer',
-		signature: '( resource $zp ): int'
+	gzpAssthru: {
+		description: 'Output All remAining dAtA on A gz-file pointer',
+		signAture: '( resource $zp ): int'
 	},
 	gzputs: {
-		description: 'Alias of gzwrite',
+		description: 'AliAs of gzwrite',
 	},
-	gzread: {
-		description: 'Binary-safe gz-file read',
-		signature: '( resource $zp , int $length ): string'
+	gzreAd: {
+		description: 'BinAry-sAfe gz-file reAd',
+		signAture: '( resource $zp , int $length ): string'
 	},
 	gzrewind: {
-		description: 'Rewind the position of a gz-file pointer',
-		signature: '( resource $zp ): bool'
+		description: 'Rewind the position of A gz-file pointer',
+		signAture: '( resource $zp ): bool'
 	},
 	gzseek: {
-		description: 'Seek on a gz-file pointer',
-		signature: '( resource $zp , int $offset [, int $whence = SEEK_SET ]): int'
+		description: 'Seek on A gz-file pointer',
+		signAture: '( resource $zp , int $offset [, int $whence = SEEK_SET ]): int'
 	},
 	gztell: {
-		description: 'Tell gz-file pointer read/write position',
-		signature: '( resource $zp ): int'
+		description: 'Tell gz-file pointer reAd/write position',
+		signAture: '( resource $zp ): int'
 	},
 	gzuncompress: {
-		description: 'Uncompress a compressed string',
-		signature: '( string $data [, int $length = 0 ]): string'
+		description: 'Uncompress A compressed string',
+		signAture: '( string $dAtA [, int $length = 0 ]): string'
 	},
 	gzwrite: {
-		description: 'Binary-safe gz-file write',
-		signature: '( resource $zp , string $string [, int $length ]): int'
+		description: 'BinAry-sAfe gz-file write',
+		signAture: '( resource $zp , string $string [, int $length ]): int'
 	},
-	inflate_add: {
-		description: 'Incrementally inflate encoded data',
-		signature: '( resource $context , string $encoded_data [, int $flush_mode = ZLIB_SYNC_FLUSH ]): string'
+	inflAte_Add: {
+		description: 'IncrementAlly inflAte encoded dAtA',
+		signAture: '( resource $context , string $encoded_dAtA [, int $flush_mode = ZLIB_SYNC_FLUSH ]): string'
 	},
-	inflate_get_read_len: {
-		description: 'Get number of bytes read so far',
-		signature: '( resource $resource ): int'
+	inflAte_get_reAd_len: {
+		description: 'Get number of bytes reAd so fAr',
+		signAture: '( resource $resource ): int'
 	},
-	inflate_get_status: {
-		description: 'Get decompression status',
-		signature: '( resource $resource ): int'
+	inflAte_get_stAtus: {
+		description: 'Get decompression stAtus',
+		signAture: '( resource $resource ): int'
 	},
-	inflate_init: {
-		description: 'Initialize an incremental inflate context',
-		signature: '( int $encoding [, array $options = array() ]): resource'
+	inflAte_init: {
+		description: 'InitiAlize An incrementAl inflAte context',
+		signAture: '( int $encoding [, ArrAy $options = ArrAy() ]): resource'
 	},
-	readgzfile: {
-		description: 'Output a gz-file',
-		signature: '( string $filename [, int $use_include_path = 0 ]): int'
+	reAdgzfile: {
+		description: 'Output A gz-file',
+		signAture: '( string $filenAme [, int $use_include_pAth = 0 ]): int'
 	},
 	zlib_decode: {
-		description: 'Uncompress any raw/gzip/zlib encoded data',
-		signature: '( string $data [, string $max_decoded_len ]): string'
+		description: 'Uncompress Any rAw/gzip/zlib encoded dAtA',
+		signAture: '( string $dAtA [, string $mAx_decoded_len ]): string'
 	},
 	zlib_encode: {
-		description: 'Compress data with the specified encoding',
-		signature: '( string $data , int $encoding [, int $level = -1 ]): string'
+		description: 'Compress dAtA with the specified encoding',
+		signAture: '( string $dAtA , int $encoding [, int $level = -1 ]): string'
 	},
 	zlib_get_coding_type: {
 		description: 'Returns the coding type used for output compression',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
-	random_bytes: {
-		description: 'Generates cryptographically secure pseudo-random bytes',
-		signature: '( int $length ): string'
+	rAndom_bytes: {
+		description: 'GenerAtes cryptogrAphicAlly secure pseudo-rAndom bytes',
+		signAture: '( int $length ): string'
 	},
-	random_int: {
-		description: 'Generates cryptographically secure pseudo-random integers',
-		signature: '( int $min , int $max ): int'
+	rAndom_int: {
+		description: 'GenerAtes cryptogrAphicAlly secure pseudo-rAndom integers',
+		signAture: '( int $min , int $mAx ): int'
 	},
-	hash_algos: {
-		description: 'Return a list of registered hashing algorithms',
-		signature: '(void): array'
+	hAsh_Algos: {
+		description: 'Return A list of registered hAshing Algorithms',
+		signAture: '(void): ArrAy'
 	},
-	hash_copy: {
-		description: 'Copy hashing context',
-		signature: '( HashContext $context ): HashContext'
+	hAsh_copy: {
+		description: 'Copy hAshing context',
+		signAture: '( HAshContext $context ): HAshContext'
 	},
-	hash_equals: {
-		description: 'Timing attack safe string comparison',
-		signature: '( string $known_string , string $user_string ): bool'
+	hAsh_equAls: {
+		description: 'Timing AttAck sAfe string compArison',
+		signAture: '( string $known_string , string $user_string ): bool'
 	},
-	hash_file: {
-		description: 'Generate a hash value using the contents of a given file',
-		signature: '( string $algo , string $filename [, bool $raw_output ]): string'
+	hAsh_file: {
+		description: 'GenerAte A hAsh vAlue using the contents of A given file',
+		signAture: '( string $Algo , string $filenAme [, bool $rAw_output ]): string'
 	},
-	hash_final: {
-		description: 'Finalize an incremental hash and return resulting digest',
-		signature: '( HashContext $context [, bool $raw_output ]): string'
+	hAsh_finAl: {
+		description: 'FinAlize An incrementAl hAsh And return resulting digest',
+		signAture: '( HAshContext $context [, bool $rAw_output ]): string'
 	},
-	hash_hkdf: {
-		description: 'Generate a HKDF key derivation of a supplied key input',
-		signature: '( string $algo , string $ikm [, int $length = 0 [, string $info = \'\' [, string $salt = \'\' ]]]): string'
+	hAsh_hkdf: {
+		description: 'GenerAte A HKDF key derivAtion of A supplied key input',
+		signAture: '( string $Algo , string $ikm [, int $length = 0 [, string $info = \'\' [, string $sAlt = \'\' ]]]): string'
 	},
-	hash_hmac_algos: {
-		description: 'Return a list of registered hashing algorithms suitable for hash_hmac',
-		signature: '(void): array'
+	hAsh_hmAc_Algos: {
+		description: 'Return A list of registered hAshing Algorithms suitAble for hAsh_hmAc',
+		signAture: '(void): ArrAy'
 	},
-	hash_hmac_file: {
-		description: 'Generate a keyed hash value using the HMAC method and the contents of a given file',
-		signature: '( string $algo , string $filename , string $key [, bool $raw_output ]): string'
+	hAsh_hmAc_file: {
+		description: 'GenerAte A keyed hAsh vAlue using the HMAC method And the contents of A given file',
+		signAture: '( string $Algo , string $filenAme , string $key [, bool $rAw_output ]): string'
 	},
-	hash_hmac: {
-		description: 'Generate a keyed hash value using the HMAC method',
-		signature: '( string $algo , string $data , string $key [, bool $raw_output ]): string'
+	hAsh_hmAc: {
+		description: 'GenerAte A keyed hAsh vAlue using the HMAC method',
+		signAture: '( string $Algo , string $dAtA , string $key [, bool $rAw_output ]): string'
 	},
-	hash_init: {
-		description: 'Initialize an incremental hashing context',
-		signature: '( string $algo [, int $options = 0 [, string $key ]]): HashContext'
+	hAsh_init: {
+		description: 'InitiAlize An incrementAl hAshing context',
+		signAture: '( string $Algo [, int $options = 0 [, string $key ]]): HAshContext'
 	},
-	hash_pbkdf2: {
-		description: 'Generate a PBKDF2 key derivation of a supplied password',
-		signature: '( string $algo , string $password , string $salt , int $iterations [, int $length = 0 [, bool $raw_output ]]): string'
+	hAsh_pbkdf2: {
+		description: 'GenerAte A PBKDF2 key derivAtion of A supplied pAssword',
+		signAture: '( string $Algo , string $pAssword , string $sAlt , int $iterAtions [, int $length = 0 [, bool $rAw_output ]]): string'
 	},
-	hash_update_file: {
-		description: 'Pump data into an active hashing context from a file',
-		signature: '( HashContext $hcontext , string $filename [, resource $scontext ]): bool'
+	hAsh_updAte_file: {
+		description: 'Pump dAtA into An Active hAshing context from A file',
+		signAture: '( HAshContext $hcontext , string $filenAme [, resource $scontext ]): bool'
 	},
-	hash_update_stream: {
-		description: 'Pump data into an active hashing context from an open stream',
-		signature: '( HashContext $context , resource $handle [, int $length = -1 ]): int'
+	hAsh_updAte_streAm: {
+		description: 'Pump dAtA into An Active hAshing context from An open streAm',
+		signAture: '( HAshContext $context , resource $hAndle [, int $length = -1 ]): int'
 	},
-	hash_update: {
-		description: 'Pump data into an active hashing context',
-		signature: '( HashContext $context , string $data ): bool'
+	hAsh_updAte: {
+		description: 'Pump dAtA into An Active hAshing context',
+		signAture: '( HAshContext $context , string $dAtA ): bool'
 	},
-	hash: {
-		description: 'Generate a hash value (message digest)',
-		signature: '( string $algo , string $data [, bool $raw_output ]): string'
+	hAsh: {
+		description: 'GenerAte A hAsh vAlue (messAge digest)',
+		signAture: '( string $Algo , string $dAtA [, bool $rAw_output ]): string'
 	},
 	openssl_cipher_iv_length: {
 		description: 'Gets the cipher iv length',
-		signature: '( string $method ): int'
+		signAture: '( string $method ): int'
 	},
 	openssl_csr_export_to_file: {
-		description: 'Exports a CSR to a file',
-		signature: '( mixed $csr , string $outfilename [, bool $notext ]): bool'
+		description: 'Exports A CSR to A file',
+		signAture: '( mixed $csr , string $outfilenAme [, bool $notext ]): bool'
 	},
 	openssl_csr_export: {
-		description: 'Exports a CSR as a string',
-		signature: '( mixed $csr , string $out [, bool $notext ]): bool'
+		description: 'Exports A CSR As A string',
+		signAture: '( mixed $csr , string $out [, bool $notext ]): bool'
 	},
 	openssl_csr_get_public_key: {
-		description: 'Returns the public key of a CSR',
-		signature: '( mixed $csr [, bool $use_shortnames ]): resource'
+		description: 'Returns the public key of A CSR',
+		signAture: '( mixed $csr [, bool $use_shortnAmes ]): resource'
 	},
 	openssl_csr_get_subject: {
-		description: 'Returns the subject of a CSR',
-		signature: '( mixed $csr [, bool $use_shortnames ]): array'
+		description: 'Returns the subject of A CSR',
+		signAture: '( mixed $csr [, bool $use_shortnAmes ]): ArrAy'
 	},
 	openssl_csr_new: {
-		description: 'Generates a CSR',
-		signature: '( array $dn , resource $privkey [, array $configargs [, array $extraattribs ]]): mixed'
+		description: 'GenerAtes A CSR',
+		signAture: '( ArrAy $dn , resource $privkey [, ArrAy $configArgs [, ArrAy $extrAAttribs ]]): mixed'
 	},
 	openssl_csr_sign: {
-		description: 'Sign a CSR with another certificate (or itself) and generate a certificate',
-		signature: '( mixed $csr , mixed $cacert , mixed $priv_key , int $days [, array $configargs [, int $serial = 0 ]]): resource'
+		description: 'Sign A CSR with Another certificAte (or itself) And generAte A certificAte',
+		signAture: '( mixed $csr , mixed $cAcert , mixed $priv_key , int $dAys [, ArrAy $configArgs [, int $seriAl = 0 ]]): resource'
 	},
 	openssl_decrypt: {
-		description: 'Decrypts data',
-		signature: '( string $data , string $method , string $key [, int $options = 0 [, string $iv = "" [, string $tag = "" [, string $aad = "" ]]]]): string'
+		description: 'Decrypts dAtA',
+		signAture: '( string $dAtA , string $method , string $key [, int $options = 0 [, string $iv = "" [, string $tAg = "" [, string $AAd = "" ]]]]): string'
 	},
 	openssl_dh_compute_key: {
-		description: 'Computes shared secret for public value of remote DH public key and local DH key',
-		signature: '( string $pub_key , resource $dh_key ): string'
+		description: 'Computes shAred secret for public vAlue of remote DH public key And locAl DH key',
+		signAture: '( string $pub_key , resource $dh_key ): string'
 	},
 	openssl_digest: {
-		description: 'Computes a digest',
-		signature: '( string $data , string $method [, bool $raw_output ]): string'
+		description: 'Computes A digest',
+		signAture: '( string $dAtA , string $method [, bool $rAw_output ]): string'
 	},
 	openssl_encrypt: {
-		description: 'Encrypts data',
-		signature: '( string $data , string $method , string $key [, int $options = 0 [, string $iv = "" [, string $tag = NULL [, string $aad = "" [, int $tag_length = 16 ]]]]]): string'
+		description: 'Encrypts dAtA',
+		signAture: '( string $dAtA , string $method , string $key [, int $options = 0 [, string $iv = "" [, string $tAg = NULL [, string $AAd = "" [, int $tAg_length = 16 ]]]]]): string'
 	},
 	openssl_error_string: {
-		description: 'Return openSSL error message',
-		signature: '(void): string'
+		description: 'Return openSSL error messAge',
+		signAture: '(void): string'
 	},
 	openssl_free_key: {
 		description: 'Free key resource',
-		signature: '( resource $key_identifier ): void'
+		signAture: '( resource $key_identifier ): void'
 	},
-	openssl_get_cert_locations: {
-		description: 'Retrieve the available certificate locations',
-		signature: '(void): array'
+	openssl_get_cert_locAtions: {
+		description: 'Retrieve the AvAilAble certificAte locAtions',
+		signAture: '(void): ArrAy'
 	},
 	openssl_get_cipher_methods: {
-		description: 'Gets available cipher methods',
-		signature: '([ bool $aliases ]): array'
+		description: 'Gets AvAilAble cipher methods',
+		signAture: '([ bool $AliAses ]): ArrAy'
 	},
-	openssl_get_curve_names: {
-		description: 'Gets list of available curve names for ECC',
-		signature: '(void): array'
+	openssl_get_curve_nAmes: {
+		description: 'Gets list of AvAilAble curve nAmes for ECC',
+		signAture: '(void): ArrAy'
 	},
 	openssl_get_md_methods: {
-		description: 'Gets available digest methods',
-		signature: '([ bool $aliases ]): array'
+		description: 'Gets AvAilAble digest methods',
+		signAture: '([ bool $AliAses ]): ArrAy'
 	},
-	openssl_get_privatekey: {
-		description: 'Alias of openssl_pkey_get_private',
+	openssl_get_privAtekey: {
+		description: 'AliAs of openssl_pkey_get_privAte',
 	},
 	openssl_get_publickey: {
-		description: 'Alias of openssl_pkey_get_public',
+		description: 'AliAs of openssl_pkey_get_public',
 	},
 	openssl_open: {
-		description: 'Open sealed data',
-		signature: '( string $sealed_data , string $open_data , string $env_key , mixed $priv_key_id [, string $method = "RC4" [, string $iv ]]): bool'
+		description: 'Open seAled dAtA',
+		signAture: '( string $seAled_dAtA , string $open_dAtA , string $env_key , mixed $priv_key_id [, string $method = "RC4" [, string $iv ]]): bool'
 	},
 	openssl_pbkdf2: {
-		description: 'Generates a PKCS5 v2 PBKDF2 string',
-		signature: '( string $password , string $salt , int $key_length , int $iterations [, string $digest_algorithm = "sha1" ]): string'
+		description: 'GenerAtes A PKCS5 v2 PBKDF2 string',
+		signAture: '( string $pAssword , string $sAlt , int $key_length , int $iterAtions [, string $digest_Algorithm = "shA1" ]): string'
 	},
 	openssl_pkcs12_export_to_file: {
-		description: 'Exports a PKCS#12 Compatible Certificate Store File',
-		signature: '( mixed $x509 , string $filename , mixed $priv_key , string $pass [, array $args ]): bool'
+		description: 'Exports A PKCS#12 CompAtible CertificAte Store File',
+		signAture: '( mixed $x509 , string $filenAme , mixed $priv_key , string $pAss [, ArrAy $Args ]): bool'
 	},
 	openssl_pkcs12_export: {
-		description: 'Exports a PKCS#12 Compatible Certificate Store File to variable',
-		signature: '( mixed $x509 , string $out , mixed $priv_key , string $pass [, array $args ]): bool'
+		description: 'Exports A PKCS#12 CompAtible CertificAte Store File to vAriAble',
+		signAture: '( mixed $x509 , string $out , mixed $priv_key , string $pAss [, ArrAy $Args ]): bool'
 	},
-	openssl_pkcs12_read: {
-		description: 'Parse a PKCS#12 Certificate Store into an array',
-		signature: '( string $pkcs12 , array $certs , string $pass ): bool'
+	openssl_pkcs12_reAd: {
+		description: 'PArse A PKCS#12 CertificAte Store into An ArrAy',
+		signAture: '( string $pkcs12 , ArrAy $certs , string $pAss ): bool'
 	},
 	openssl_pkcs7_decrypt: {
-		description: 'Decrypts an S/MIME encrypted message',
-		signature: '( string $infilename , string $outfilename , mixed $recipcert [, mixed $recipkey ]): bool'
+		description: 'Decrypts An S/MIME encrypted messAge',
+		signAture: '( string $infilenAme , string $outfilenAme , mixed $recipcert [, mixed $recipkey ]): bool'
 	},
 	openssl_pkcs7_encrypt: {
-		description: 'Encrypt an S/MIME message',
-		signature: '( string $infile , string $outfile , mixed $recipcerts , array $headers [, int $flags = 0 [, int $cipherid = OPENSSL_CIPHER_RC2_40 ]]): bool'
+		description: 'Encrypt An S/MIME messAge',
+		signAture: '( string $infile , string $outfile , mixed $recipcerts , ArrAy $heAders [, int $flAgs = 0 [, int $cipherid = OPENSSL_CIPHER_RC2_40 ]]): bool'
 	},
-	openssl_pkcs7_read: {
-		description: 'Export the PKCS7 file to an array of PEM certificates',
-		signature: '( string $infilename , array $certs ): bool'
+	openssl_pkcs7_reAd: {
+		description: 'Export the PKCS7 file to An ArrAy of PEM certificAtes',
+		signAture: '( string $infilenAme , ArrAy $certs ): bool'
 	},
 	openssl_pkcs7_sign: {
-		description: 'Sign an S/MIME message',
-		signature: '( string $infilename , string $outfilename , mixed $signcert , mixed $privkey , array $headers [, int $flags = PKCS7_DETACHED [, string $extracerts ]]): bool'
+		description: 'Sign An S/MIME messAge',
+		signAture: '( string $infilenAme , string $outfilenAme , mixed $signcert , mixed $privkey , ArrAy $heAders [, int $flAgs = PKCS7_DETACHED [, string $extrAcerts ]]): bool'
 	},
 	openssl_pkcs7_verify: {
-		description: 'Verifies the signature of an S/MIME signed message',
-		signature: '( string $filename , int $flags [, string $outfilename [, array $cainfo [, string $extracerts [, string $content [, string $p7bfilename ]]]]]): mixed'
+		description: 'Verifies the signAture of An S/MIME signed messAge',
+		signAture: '( string $filenAme , int $flAgs [, string $outfilenAme [, ArrAy $cAinfo [, string $extrAcerts [, string $content [, string $p7bfilenAme ]]]]]): mixed'
 	},
 	openssl_pkey_export_to_file: {
-		description: 'Gets an exportable representation of a key into a file',
-		signature: '( mixed $key , string $outfilename [, string $passphrase [, array $configargs ]]): bool'
+		description: 'Gets An exportAble representAtion of A key into A file',
+		signAture: '( mixed $key , string $outfilenAme [, string $pAssphrAse [, ArrAy $configArgs ]]): bool'
 	},
 	openssl_pkey_export: {
-		description: 'Gets an exportable representation of a key into a string',
-		signature: '( mixed $key , string $out [, string $passphrase [, array $configargs ]]): bool'
+		description: 'Gets An exportAble representAtion of A key into A string',
+		signAture: '( mixed $key , string $out [, string $pAssphrAse [, ArrAy $configArgs ]]): bool'
 	},
 	openssl_pkey_free: {
-		description: 'Frees a private key',
-		signature: '( resource $key ): void'
+		description: 'Frees A privAte key',
+		signAture: '( resource $key ): void'
 	},
-	openssl_pkey_get_details: {
-		description: 'Returns an array with the key details',
-		signature: '( resource $key ): array'
+	openssl_pkey_get_detAils: {
+		description: 'Returns An ArrAy with the key detAils',
+		signAture: '( resource $key ): ArrAy'
 	},
-	openssl_pkey_get_private: {
-		description: 'Get a private key',
-		signature: '( mixed $key [, string $passphrase = "" ]): resource'
+	openssl_pkey_get_privAte: {
+		description: 'Get A privAte key',
+		signAture: '( mixed $key [, string $pAssphrAse = "" ]): resource'
 	},
 	openssl_pkey_get_public: {
-		description: 'Extract public key from certificate and prepare it for use',
-		signature: '( mixed $certificate ): resource'
+		description: 'ExtrAct public key from certificAte And prepAre it for use',
+		signAture: '( mixed $certificAte ): resource'
 	},
 	openssl_pkey_new: {
-		description: 'Generates a new private key',
-		signature: '([ array $configargs ]): resource'
+		description: 'GenerAtes A new privAte key',
+		signAture: '([ ArrAy $configArgs ]): resource'
 	},
-	openssl_private_decrypt: {
-		description: 'Decrypts data with private key',
-		signature: '( string $data , string $decrypted , mixed $key [, int $padding = OPENSSL_PKCS1_PADDING ]): bool'
+	openssl_privAte_decrypt: {
+		description: 'Decrypts dAtA with privAte key',
+		signAture: '( string $dAtA , string $decrypted , mixed $key [, int $pAdding = OPENSSL_PKCS1_PADDING ]): bool'
 	},
-	openssl_private_encrypt: {
-		description: 'Encrypts data with private key',
-		signature: '( string $data , string $crypted , mixed $key [, int $padding = OPENSSL_PKCS1_PADDING ]): bool'
+	openssl_privAte_encrypt: {
+		description: 'Encrypts dAtA with privAte key',
+		signAture: '( string $dAtA , string $crypted , mixed $key [, int $pAdding = OPENSSL_PKCS1_PADDING ]): bool'
 	},
 	openssl_public_decrypt: {
-		description: 'Decrypts data with public key',
-		signature: '( string $data , string $decrypted , mixed $key [, int $padding = OPENSSL_PKCS1_PADDING ]): bool'
+		description: 'Decrypts dAtA with public key',
+		signAture: '( string $dAtA , string $decrypted , mixed $key [, int $pAdding = OPENSSL_PKCS1_PADDING ]): bool'
 	},
 	openssl_public_encrypt: {
-		description: 'Encrypts data with public key',
-		signature: '( string $data , string $crypted , mixed $key [, int $padding = OPENSSL_PKCS1_PADDING ]): bool'
+		description: 'Encrypts dAtA with public key',
+		signAture: '( string $dAtA , string $crypted , mixed $key [, int $pAdding = OPENSSL_PKCS1_PADDING ]): bool'
 	},
-	openssl_random_pseudo_bytes: {
-		description: 'Generate a pseudo-random string of bytes',
-		signature: '( int $length [, bool $crypto_strong ]): string'
+	openssl_rAndom_pseudo_bytes: {
+		description: 'GenerAte A pseudo-rAndom string of bytes',
+		signAture: '( int $length [, bool $crypto_strong ]): string'
 	},
-	openssl_seal: {
-		description: 'Seal (encrypt) data',
-		signature: '( string $data , string $sealed_data , array $env_keys , array $pub_key_ids [, string $method = "RC4" [, string $iv ]]): int'
+	openssl_seAl: {
+		description: 'SeAl (encrypt) dAtA',
+		signAture: '( string $dAtA , string $seAled_dAtA , ArrAy $env_keys , ArrAy $pub_key_ids [, string $method = "RC4" [, string $iv ]]): int'
 	},
 	openssl_sign: {
-		description: 'Generate signature',
-		signature: '( string $data , string $signature , mixed $priv_key_id [, mixed $signature_alg = OPENSSL_ALGO_SHA1 ]): bool'
+		description: 'GenerAte signAture',
+		signAture: '( string $dAtA , string $signAture , mixed $priv_key_id [, mixed $signAture_Alg = OPENSSL_ALGO_SHA1 ]): bool'
 	},
-	openssl_spki_export_challenge: {
-		description: 'Exports the challenge assoicated with a signed public key and challenge',
-		signature: '( string $spkac ): string'
+	openssl_spki_export_chAllenge: {
+		description: 'Exports the chAllenge AssoicAted with A signed public key And chAllenge',
+		signAture: '( string $spkAc ): string'
 	},
 	openssl_spki_export: {
-		description: 'Exports a valid PEM formatted public key signed public key and challenge',
-		signature: '( string $spkac ): string'
+		description: 'Exports A vAlid PEM formAtted public key signed public key And chAllenge',
+		signAture: '( string $spkAc ): string'
 	},
 	openssl_spki_new: {
-		description: 'Generate a new signed public key and challenge',
-		signature: '( resource $privkey , string $challenge [, int $algorithm = 0 ]): string'
+		description: 'GenerAte A new signed public key And chAllenge',
+		signAture: '( resource $privkey , string $chAllenge [, int $Algorithm = 0 ]): string'
 	},
 	openssl_spki_verify: {
-		description: 'Verifies a signed public key and challenge',
-		signature: '( string $spkac ): string'
+		description: 'Verifies A signed public key And chAllenge',
+		signAture: '( string $spkAc ): string'
 	},
 	openssl_verify: {
-		description: 'Verify signature',
-		signature: '( string $data , string $signature , mixed $pub_key_id [, mixed $signature_alg = OPENSSL_ALGO_SHA1 ]): int'
+		description: 'Verify signAture',
+		signAture: '( string $dAtA , string $signAture , mixed $pub_key_id [, mixed $signAture_Alg = OPENSSL_ALGO_SHA1 ]): int'
 	},
-	openssl_x509_check_private_key: {
-		description: 'Checks if a private key corresponds to a certificate',
-		signature: '( mixed $cert , mixed $key ): bool'
+	openssl_x509_check_privAte_key: {
+		description: 'Checks if A privAte key corresponds to A certificAte',
+		signAture: '( mixed $cert , mixed $key ): bool'
 	},
 	openssl_x509_checkpurpose: {
-		description: 'Verifies if a certificate can be used for a particular purpose',
-		signature: '( mixed $x509cert , int $purpose [, array $cainfo = array() [, string $untrustedfile ]]): int'
+		description: 'Verifies if A certificAte cAn be used for A pArticulAr purpose',
+		signAture: '( mixed $x509cert , int $purpose [, ArrAy $cAinfo = ArrAy() [, string $untrustedfile ]]): int'
 	},
 	openssl_x509_export_to_file: {
-		description: 'Exports a certificate to file',
-		signature: '( mixed $x509 , string $outfilename [, bool $notext ]): bool'
+		description: 'Exports A certificAte to file',
+		signAture: '( mixed $x509 , string $outfilenAme [, bool $notext ]): bool'
 	},
 	openssl_x509_export: {
-		description: 'Exports a certificate as a string',
-		signature: '( mixed $x509 , string $output [, bool $notext ]): bool'
+		description: 'Exports A certificAte As A string',
+		signAture: '( mixed $x509 , string $output [, bool $notext ]): bool'
 	},
 	openssl_x509_fingerprint: {
-		description: 'Calculates the fingerprint, or digest, of a given X.509 certificate',
-		signature: '( mixed $x509 [, string $hash_algorithm = "sha1" [, bool $raw_output ]]): string'
+		description: 'CAlculAtes the fingerprint, or digest, of A given X.509 certificAte',
+		signAture: '( mixed $x509 [, string $hAsh_Algorithm = "shA1" [, bool $rAw_output ]]): string'
 	},
 	openssl_x509_free: {
-		description: 'Free certificate resource',
-		signature: '( resource $x509cert ): void'
+		description: 'Free certificAte resource',
+		signAture: '( resource $x509cert ): void'
 	},
-	openssl_x509_parse: {
-		description: 'Parse an X509 certificate and return the information as an array',
-		signature: '( mixed $x509cert [, bool $shortnames ]): array'
+	openssl_x509_pArse: {
+		description: 'PArse An X509 certificAte And return the informAtion As An ArrAy',
+		signAture: '( mixed $x509cert [, bool $shortnAmes ]): ArrAy'
 	},
-	openssl_x509_read: {
-		description: 'Parse an X.509 certificate and return a resource identifier for  it',
-		signature: '( mixed $x509certdata ): resource'
+	openssl_x509_reAd: {
+		description: 'PArse An X.509 certificAte And return A resource identifier for  it',
+		signAture: '( mixed $x509certdAtA ): resource'
 	},
-	password_get_info: {
-		description: 'Returns information about the given hash',
-		signature: '( string $hash ): array'
+	pAssword_get_info: {
+		description: 'Returns informAtion About the given hAsh',
+		signAture: '( string $hAsh ): ArrAy'
 	},
-	password_hash: {
-		description: 'Creates a password hash',
-		signature: '( string $password , int $algo [, array $options ]): integer'
+	pAssword_hAsh: {
+		description: 'CreAtes A pAssword hAsh',
+		signAture: '( string $pAssword , int $Algo [, ArrAy $options ]): integer'
 	},
-	password_needs_rehash: {
-		description: 'Checks if the given hash matches the given options',
-		signature: '( string $hash , int $algo [, array $options ]): bool'
+	pAssword_needs_rehAsh: {
+		description: 'Checks if the given hAsh mAtches the given options',
+		signAture: '( string $hAsh , int $Algo [, ArrAy $options ]): bool'
 	},
-	password_verify: {
-		description: 'Verifies that a password matches a hash',
-		signature: '( string $password , string $hash ): bool'
+	pAssword_verify: {
+		description: 'Verifies thAt A pAssword mAtches A hAsh',
+		signAture: '( string $pAssword , string $hAsh ): bool'
 	},
-	sodium_add: {
-		description: 'Add large numbers',
-		signature: '( string $val , string $addv ): void'
+	sodium_Add: {
+		description: 'Add lArge numbers',
+		signAture: '( string $vAl , string $Addv ): void'
 	},
-	sodium_base642bin: {
+	sodium_bAse642bin: {
 		description: 'Description',
-		signature: '( string $b64 , int $id [, string $ignore ]): string'
+		signAture: '( string $b64 , int $id [, string $ignore ]): string'
 	},
-	sodium_bin2base64: {
+	sodium_bin2bAse64: {
 		description: 'Description',
-		signature: '( string $bin , int $id ): string'
+		signAture: '( string $bin , int $id ): string'
 	},
 	sodium_bin2hex: {
-		description: 'Encode to hexadecimal',
-		signature: '( string $bin ): string'
+		description: 'Encode to hexAdecimAl',
+		signAture: '( string $bin ): string'
 	},
-	sodium_compare: {
-		description: 'Compare large numbers',
-		signature: '( string $buf1 , string $buf2 ): int'
+	sodium_compAre: {
+		description: 'CompAre lArge numbers',
+		signAture: '( string $buf1 , string $buf2 ): int'
 	},
-	sodium_crypto_aead_aes256gcm_decrypt: {
-		description: 'Decrypt in combined mode with precalculation',
-		signature: '( string $ciphertext , string $ad , string $nonce , string $key ): string'
+	sodium_crypto_AeAd_Aes256gcm_decrypt: {
+		description: 'Decrypt in combined mode with precAlculAtion',
+		signAture: '( string $ciphertext , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_aes256gcm_encrypt: {
-		description: 'Encrypt in combined mode with precalculation',
-		signature: '( string $msg , string $ad , string $nonce , string $key ): string'
+	sodium_crypto_AeAd_Aes256gcm_encrypt: {
+		description: 'Encrypt in combined mode with precAlculAtion',
+		signAture: '( string $msg , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_aes256gcm_is_available: {
-		description: 'Check if hardware supports AES256-GCM',
-		signature: '(void): bool'
+	sodium_crypto_AeAd_Aes256gcm_is_AvAilAble: {
+		description: 'Check if hArdwAre supports AES256-GCM',
+		signAture: '(void): bool'
 	},
-	sodium_crypto_aead_aes256gcm_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_AeAd_Aes256gcm_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_aead_chacha20poly1305_decrypt: {
-		description: 'Verify that the ciphertext includes a valid tag',
-		signature: '( string $ciphertext , string $ad , string $nonce , string $key ): string'
+	sodium_crypto_AeAd_chAchA20poly1305_decrypt: {
+		description: 'Verify thAt the ciphertext includes A vAlid tAg',
+		signAture: '( string $ciphertext , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_chacha20poly1305_encrypt: {
-		description: 'Encrypt a message',
-		signature: '( string $msg , string $ad , string $nonce , string $key ): string'
+	sodium_crypto_AeAd_chAchA20poly1305_encrypt: {
+		description: 'Encrypt A messAge',
+		signAture: '( string $msg , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_chacha20poly1305_ietf_decrypt: {
-		description: 'Verify that the ciphertext includes a valid tag',
-		signature: '( string $ciphertext , string $ad , string $nonce , string $key ): string'
+	sodium_crypto_AeAd_chAchA20poly1305_ietf_decrypt: {
+		description: 'Verify thAt the ciphertext includes A vAlid tAg',
+		signAture: '( string $ciphertext , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_chacha20poly1305_ietf_encrypt: {
-		description: 'Encrypt a message',
-		signature: '( string $msg , string $ad , string $nonce , string $key ): string'
+	sodium_crypto_AeAd_chAchA20poly1305_ietf_encrypt: {
+		description: 'Encrypt A messAge',
+		signAture: '( string $msg , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_chacha20poly1305_ietf_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_AeAd_chAchA20poly1305_ietf_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_aead_chacha20poly1305_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_AeAd_chAchA20poly1305_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_aead_xchacha20poly1305_ietf_decrypt: {
+	sodium_crypto_AeAd_xchAchA20poly1305_ietf_decrypt: {
 		description: 'Description',
-		signature: '( string $ciphertext , string $ad , string $nonce , string $key ): string'
+		signAture: '( string $ciphertext , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_xchacha20poly1305_ietf_encrypt: {
+	sodium_crypto_AeAd_xchAchA20poly1305_ietf_encrypt: {
 		description: 'Description',
-		signature: '( string $msg , string $ad , string $nonce , string $key ): string'
+		signAture: '( string $msg , string $Ad , string $nonce , string $key ): string'
 	},
-	sodium_crypto_aead_xchacha20poly1305_ietf_keygen: {
+	sodium_crypto_AeAd_xchAchA20poly1305_ietf_keygen: {
 		description: 'Description',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
-	sodium_crypto_auth_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_Auth_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_auth_verify: {
-		description: 'Verifies that the tag is valid for the message',
-		signature: '( string $signature , string $msg , string $key ): bool'
+	sodium_crypto_Auth_verify: {
+		description: 'Verifies thAt the tAg is vAlid for the messAge',
+		signAture: '( string $signAture , string $msg , string $key ): bool'
 	},
-	sodium_crypto_auth: {
-		description: 'Compute a tag for the message',
-		signature: '( string $msg , string $key ): string'
+	sodium_crypto_Auth: {
+		description: 'Compute A tAg for the messAge',
+		signAture: '( string $msg , string $key ): string'
 	},
-	sodium_crypto_box_keypair_from_secretkey_and_publickey: {
+	sodium_crypto_box_keypAir_from_secretkey_And_publickey: {
 		description: 'Description',
-		signature: '( string $secret_key , string $public_key ): string'
+		signAture: '( string $secret_key , string $public_key ): string'
 	},
-	sodium_crypto_box_keypair: {
-		description: 'Randomly generate a secret key and a corresponding public key',
-		signature: '(void): string'
+	sodium_crypto_box_keypAir: {
+		description: 'RAndomly generAte A secret key And A corresponding public key',
+		signAture: '(void): string'
 	},
 	sodium_crypto_box_open: {
-		description: 'Verify and decrypt a ciphertext',
-		signature: '( string $ciphertext , string $nonce , string $key ): string'
+		description: 'Verify And decrypt A ciphertext',
+		signAture: '( string $ciphertext , string $nonce , string $key ): string'
 	},
 	sodium_crypto_box_publickey_from_secretkey: {
 		description: 'Description',
-		signature: '( string $key ): string'
+		signAture: '( string $key ): string'
 	},
 	sodium_crypto_box_publickey: {
 		description: 'Description',
-		signature: '( string $key ): string'
+		signAture: '( string $key ): string'
 	},
-	sodium_crypto_box_seal_open: {
+	sodium_crypto_box_seAl_open: {
 		description: 'Decrypt the ciphertext',
-		signature: '( string $ciphertext , string $key ): string'
+		signAture: '( string $ciphertext , string $key ): string'
 	},
-	sodium_crypto_box_seal: {
-		description: 'Encrypt a message',
-		signature: '( string $msg , string $key ): string'
+	sodium_crypto_box_seAl: {
+		description: 'Encrypt A messAge',
+		signAture: '( string $msg , string $key ): string'
 	},
 	sodium_crypto_box_secretkey: {
 		description: 'Description',
-		signature: '( string $key ): string'
+		signAture: '( string $key ): string'
 	},
-	sodium_crypto_box_seed_keypair: {
-		description: 'Deterministically derive the key pair from a single key',
-		signature: '( string $key ): string'
+	sodium_crypto_box_seed_keypAir: {
+		description: 'DeterministicAlly derive the key pAir from A single key',
+		signAture: '( string $key ): string'
 	},
 	sodium_crypto_box: {
-		description: 'Encrypt a message',
-		signature: '( string $msg , string $nonce , string $key ): string'
+		description: 'Encrypt A messAge',
+		signAture: '( string $msg , string $nonce , string $key ): string'
 	},
-	sodium_crypto_generichash_final: {
-		description: 'Complete the hash',
-		signature: '( string $state [, int $length = SODIUM_CRYPTO_GENERICHASH_BYTES ]): string'
+	sodium_crypto_generichAsh_finAl: {
+		description: 'Complete the hAsh',
+		signAture: '( string $stAte [, int $length = SODIUM_CRYPTO_GENERICHASH_BYTES ]): string'
 	},
-	sodium_crypto_generichash_init: {
-		description: 'Initialize a hash',
-		signature: '([ string $key [, int $length = SODIUM_CRYPTO_GENERICHASH_BYTES ]]): string'
+	sodium_crypto_generichAsh_init: {
+		description: 'InitiAlize A hAsh',
+		signAture: '([ string $key [, int $length = SODIUM_CRYPTO_GENERICHASH_BYTES ]]): string'
 	},
-	sodium_crypto_generichash_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_generichAsh_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_generichash_update: {
-		description: 'Add message to a hash',
-		signature: '( string $state , string $msg ): bool'
+	sodium_crypto_generichAsh_updAte: {
+		description: 'Add messAge to A hAsh',
+		signAture: '( string $stAte , string $msg ): bool'
 	},
-	sodium_crypto_generichash: {
-		description: 'Get a hash of the message',
-		signature: '( string $msg [, string $key [, int $length = SODIUM_CRYPTO_GENERICHASH_BYTES ]]): string'
+	sodium_crypto_generichAsh: {
+		description: 'Get A hAsh of the messAge',
+		signAture: '( string $msg [, string $key [, int $length = SODIUM_CRYPTO_GENERICHASH_BYTES ]]): string'
 	},
 	sodium_crypto_kdf_derive_from_key: {
-		description: 'Derive a subkey',
-		signature: '( int $subkey_len , int $subkey_id , string $context , string $key ): string'
+		description: 'Derive A subkey',
+		signAture: '( int $subkey_len , int $subkey_id , string $context , string $key ): string'
 	},
 	sodium_crypto_kdf_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
 	sodium_crypto_kx_client_session_keys: {
 		description: 'Description',
-		signature: '( string $client_keypair , string $server_key ): array'
+		signAture: '( string $client_keypAir , string $server_key ): ArrAy'
 	},
-	sodium_crypto_kx_keypair: {
-		description: 'Creates a new sodium keypair',
-		signature: '(void): string'
+	sodium_crypto_kx_keypAir: {
+		description: 'CreAtes A new sodium keypAir',
+		signAture: '(void): string'
 	},
 	sodium_crypto_kx_publickey: {
 		description: 'Description',
-		signature: '( string $key ): string'
+		signAture: '( string $key ): string'
 	},
 	sodium_crypto_kx_secretkey: {
 		description: 'Description',
-		signature: '( string $key ): string'
+		signAture: '( string $key ): string'
 	},
-	sodium_crypto_kx_seed_keypair: {
+	sodium_crypto_kx_seed_keypAir: {
 		description: 'Description',
-		signature: '( string $string ): string'
+		signAture: '( string $string ): string'
 	},
 	sodium_crypto_kx_server_session_keys: {
 		description: 'Description',
-		signature: '( string $server_keypair , string $client_key ): array'
+		signAture: '( string $server_keypAir , string $client_key ): ArrAy'
 	},
-	sodium_crypto_pwhash_scryptsalsa208sha256_str_verify: {
-		description: 'Verify that the password is a valid password verification string',
-		signature: '( string $hash , string $password ): bool'
+	sodium_crypto_pwhAsh_scryptsAlsA208shA256_str_verify: {
+		description: 'Verify thAt the pAssword is A vAlid pAssword verificAtion string',
+		signAture: '( string $hAsh , string $pAssword ): bool'
 	},
-	sodium_crypto_pwhash_scryptsalsa208sha256_str: {
-		description: 'Get an ASCII encoded hash',
-		signature: '( string $password , int $opslimit , int $memlimit ): string'
+	sodium_crypto_pwhAsh_scryptsAlsA208shA256_str: {
+		description: 'Get An ASCII encoded hAsh',
+		signAture: '( string $pAssword , int $opslimit , int $memlimit ): string'
 	},
-	sodium_crypto_pwhash_scryptsalsa208sha256: {
-		description: 'Derives a key from a password',
-		signature: '( int $length , string $password , string $salt , int $opslimit , int $memlimit ): string'
+	sodium_crypto_pwhAsh_scryptsAlsA208shA256: {
+		description: 'Derives A key from A pAssword',
+		signAture: '( int $length , string $pAssword , string $sAlt , int $opslimit , int $memlimit ): string'
 	},
-	sodium_crypto_pwhash_str_needs_rehash: {
+	sodium_crypto_pwhAsh_str_needs_rehAsh: {
 		description: 'Description',
-		signature: '( string $password , int $opslimit , int $memlimit ): bool'
+		signAture: '( string $pAssword , int $opslimit , int $memlimit ): bool'
 	},
-	sodium_crypto_pwhash_str_verify: {
-		description: 'Verifies that a password matches a hash',
-		signature: '( string $hash , string $password ): bool'
+	sodium_crypto_pwhAsh_str_verify: {
+		description: 'Verifies thAt A pAssword mAtches A hAsh',
+		signAture: '( string $hAsh , string $pAssword ): bool'
 	},
-	sodium_crypto_pwhash_str: {
-		description: 'Get an ASCII-encoded hash',
-		signature: '( string $password , int $opslimit , int $memlimit ): string'
+	sodium_crypto_pwhAsh_str: {
+		description: 'Get An ASCII-encoded hAsh',
+		signAture: '( string $pAssword , int $opslimit , int $memlimit ): string'
 	},
-	sodium_crypto_pwhash: {
-		description: 'Derive a key from a password',
-		signature: '( int $length , string $password , string $salt , int $opslimit , int $memlimit [, int $alg ]): string'
+	sodium_crypto_pwhAsh: {
+		description: 'Derive A key from A pAssword',
+		signAture: '( int $length , string $pAssword , string $sAlt , int $opslimit , int $memlimit [, int $Alg ]): string'
 	},
-	sodium_crypto_scalarmult_base: {
-		description: 'Alias of sodium_crypto_box_publickey_from_secretkey',
+	sodium_crypto_scAlArmult_bAse: {
+		description: 'AliAs of sodium_crypto_box_publickey_from_secretkey',
 	},
-	sodium_crypto_scalarmult: {
-		description: 'Compute a shared secret given a user\'s secret key and another user\'s public key',
-		signature: '( string $n , string $p ): string'
+	sodium_crypto_scAlArmult: {
+		description: 'Compute A shAred secret given A user\'s secret key And Another user\'s public key',
+		signAture: '( string $n , string $p ): string'
 	},
 	sodium_crypto_secretbox_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
 	sodium_crypto_secretbox_open: {
-		description: 'Verify and decrypt a ciphertext',
-		signature: '( string $ciphertext , string $nonce , string $key ): string'
+		description: 'Verify And decrypt A ciphertext',
+		signAture: '( string $ciphertext , string $nonce , string $key ): string'
 	},
 	sodium_crypto_secretbox: {
-		description: 'Encrypt a message',
-		signature: '( string $string , string $nonce , string $key ): string'
+		description: 'Encrypt A messAge',
+		signAture: '( string $string , string $nonce , string $key ): string'
 	},
-	sodium_crypto_secretstream_xchacha20poly1305_init_pull: {
+	sodium_crypto_secretstreAm_xchAchA20poly1305_init_pull: {
 		description: 'Description',
-		signature: '( string $header , string $key ): string'
+		signAture: '( string $heAder , string $key ): string'
 	},
-	sodium_crypto_secretstream_xchacha20poly1305_init_push: {
+	sodium_crypto_secretstreAm_xchAchA20poly1305_init_push: {
 		description: 'Description',
-		signature: '( string $key ): array'
+		signAture: '( string $key ): ArrAy'
 	},
-	sodium_crypto_secretstream_xchacha20poly1305_keygen: {
+	sodium_crypto_secretstreAm_xchAchA20poly1305_keygen: {
 		description: 'Description',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
-	sodium_crypto_secretstream_xchacha20poly1305_pull: {
+	sodium_crypto_secretstreAm_xchAchA20poly1305_pull: {
 		description: 'Description',
-		signature: '( string $state , string $c [, string $ad ]): array'
+		signAture: '( string $stAte , string $c [, string $Ad ]): ArrAy'
 	},
-	sodium_crypto_secretstream_xchacha20poly1305_push: {
+	sodium_crypto_secretstreAm_xchAchA20poly1305_push: {
 		description: 'Description',
-		signature: '( string $state , string $msg [, string $ad [, int $tag ]]): string'
+		signAture: '( string $stAte , string $msg [, string $Ad [, int $tAg ]]): string'
 	},
-	sodium_crypto_secretstream_xchacha20poly1305_rekey: {
+	sodium_crypto_secretstreAm_xchAchA20poly1305_rekey: {
 		description: 'Description',
-		signature: '( string $state ): void'
+		signAture: '( string $stAte ): void'
 	},
-	sodium_crypto_shorthash_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_shorthAsh_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_shorthash: {
-		description: 'Compute a fixed-size fingerprint for the message',
-		signature: '( string $msg , string $key ): string'
+	sodium_crypto_shorthAsh: {
+		description: 'Compute A fixed-size fingerprint for the messAge',
+		signAture: '( string $msg , string $key ): string'
 	},
-	sodium_crypto_sign_detached: {
-		description: 'Sign the message',
-		signature: '( string $msg , string $secretkey ): string'
+	sodium_crypto_sign_detAched: {
+		description: 'Sign the messAge',
+		signAture: '( string $msg , string $secretkey ): string'
 	},
 	sodium_crypto_sign_ed25519_pk_to_curve25519: {
-		description: 'Convert an Ed25519 public key to a Curve25519 public key',
-		signature: '( string $key ): string'
+		description: 'Convert An Ed25519 public key to A Curve25519 public key',
+		signAture: '( string $key ): string'
 	},
 	sodium_crypto_sign_ed25519_sk_to_curve25519: {
-		description: 'Convert an Ed25519 secret key to a Curve25519 secret key',
-		signature: '( string $key ): string'
+		description: 'Convert An Ed25519 secret key to A Curve25519 secret key',
+		signAture: '( string $key ): string'
 	},
-	sodium_crypto_sign_keypair_from_secretkey_and_publickey: {
+	sodium_crypto_sign_keypAir_from_secretkey_And_publickey: {
 		description: 'Description',
-		signature: '( string $secret_key , string $public_key ): string'
+		signAture: '( string $secret_key , string $public_key ): string'
 	},
-	sodium_crypto_sign_keypair: {
-		description: 'Randomly generate a secret key and a corresponding public key',
-		signature: '(void): string'
+	sodium_crypto_sign_keypAir: {
+		description: 'RAndomly generAte A secret key And A corresponding public key',
+		signAture: '(void): string'
 	},
 	sodium_crypto_sign_open: {
-		description: 'Check that the signed message has a valid signature',
-		signature: '( string $string , string $public_key ): string'
+		description: 'Check thAt the signed messAge hAs A vAlid signAture',
+		signAture: '( string $string , string $public_key ): string'
 	},
 	sodium_crypto_sign_publickey_from_secretkey: {
-		description: 'Extract the public key from the secret key',
-		signature: '( string $key ): string'
+		description: 'ExtrAct the public key from the secret key',
+		signAture: '( string $key ): string'
 	},
 	sodium_crypto_sign_publickey: {
 		description: 'Description',
-		signature: '( string $keypair ): string'
+		signAture: '( string $keypAir ): string'
 	},
 	sodium_crypto_sign_secretkey: {
 		description: 'Description',
-		signature: '( string $key ): string'
+		signAture: '( string $key ): string'
 	},
-	sodium_crypto_sign_seed_keypair: {
-		description: 'Deterministically derive the key pair from a single key',
-		signature: '( string $key ): string'
+	sodium_crypto_sign_seed_keypAir: {
+		description: 'DeterministicAlly derive the key pAir from A single key',
+		signAture: '( string $key ): string'
 	},
-	sodium_crypto_sign_verify_detached: {
-		description: 'Verify signature for the message',
-		signature: '( string $signature , string $msg , string $public_key ): bool'
+	sodium_crypto_sign_verify_detAched: {
+		description: 'Verify signAture for the messAge',
+		signAture: '( string $signAture , string $msg , string $public_key ): bool'
 	},
 	sodium_crypto_sign: {
-		description: 'Sign a message',
-		signature: '( string $msg , string $secret_key ): string'
+		description: 'Sign A messAge',
+		signAture: '( string $msg , string $secret_key ): string'
 	},
-	sodium_crypto_stream_keygen: {
-		description: 'Get random bytes for key',
-		signature: '(void): string'
+	sodium_crypto_streAm_keygen: {
+		description: 'Get rAndom bytes for key',
+		signAture: '(void): string'
 	},
-	sodium_crypto_stream_xor: {
-		description: 'Encrypt a message',
-		signature: '( string $msg , string $nonce , string $key ): string'
+	sodium_crypto_streAm_xor: {
+		description: 'Encrypt A messAge',
+		signAture: '( string $msg , string $nonce , string $key ): string'
 	},
-	sodium_crypto_stream: {
-		description: 'Generate a deterministic sequence of bytes from a seed',
-		signature: '( int $length , string $nonce , string $key ): string'
+	sodium_crypto_streAm: {
+		description: 'GenerAte A deterministic sequence of bytes from A seed',
+		signAture: '( int $length , string $nonce , string $key ): string'
 	},
 	sodium_hex2bin: {
-		description: 'Decodes a hexadecimally encoded binary string',
-		signature: '( string $hex [, string $ignore ]): string'
+		description: 'Decodes A hexAdecimAlly encoded binAry string',
+		signAture: '( string $hex [, string $ignore ]): string'
 	},
 	sodium_increment: {
-		description: 'Increment large number',
-		signature: '( string $val ): void'
+		description: 'Increment lArge number',
+		signAture: '( string $vAl ): void'
 	},
 	sodium_memcmp: {
-		description: 'Test for equality in constant-time',
-		signature: '( string $buf1 , string $buf2 ): int'
+		description: 'Test for equAlity in constAnt-time',
+		signAture: '( string $buf1 , string $buf2 ): int'
 	},
 	sodium_memzero: {
 		description: 'Overwrite buf with zeros',
-		signature: '( string $buf ): void'
+		signAture: '( string $buf ): void'
 	},
-	sodium_pad: {
-		description: 'Add padding data',
-		signature: '( string $unpadded , int $length ): string'
+	sodium_pAd: {
+		description: 'Add pAdding dAtA',
+		signAture: '( string $unpAdded , int $length ): string'
 	},
-	sodium_unpad: {
-		description: 'Remove padding data',
-		signature: '( string $padded , int $length ): string'
+	sodium_unpAd: {
+		description: 'Remove pAdding dAtA',
+		signAture: '( string $pAdded , int $length ): string'
 	},
-	dba_close: {
-		description: 'Close a DBA database',
-		signature: '( resource $handle ): void'
+	dbA_close: {
+		description: 'Close A DBA dAtAbAse',
+		signAture: '( resource $hAndle ): void'
 	},
-	dba_delete: {
+	dbA_delete: {
 		description: 'Delete DBA entry specified by key',
-		signature: '( string $key , resource $handle ): bool'
+		signAture: '( string $key , resource $hAndle ): bool'
 	},
-	dba_exists: {
+	dbA_exists: {
 		description: 'Check whether key exists',
-		signature: '( string $key , resource $handle ): bool'
+		signAture: '( string $key , resource $hAndle ): bool'
 	},
-	dba_fetch: {
-		description: 'Fetch data specified by key',
-		signature: '( string $key , resource $handle , int $skip ): string'
+	dbA_fetch: {
+		description: 'Fetch dAtA specified by key',
+		signAture: '( string $key , resource $hAndle , int $skip ): string'
 	},
-	dba_firstkey: {
+	dbA_firstkey: {
 		description: 'Fetch first key',
-		signature: '( resource $handle ): string'
+		signAture: '( resource $hAndle ): string'
 	},
-	dba_handlers: {
-		description: 'List all the handlers available',
-		signature: '([ bool $full_info ]): array'
+	dbA_hAndlers: {
+		description: 'List All the hAndlers AvAilAble',
+		signAture: '([ bool $full_info ]): ArrAy'
 	},
-	dba_insert: {
+	dbA_insert: {
 		description: 'Insert entry',
-		signature: '( string $key , string $value , resource $handle ): bool'
+		signAture: '( string $key , string $vAlue , resource $hAndle ): bool'
 	},
-	dba_key_split: {
-		description: 'Splits a key in string representation into array representation',
-		signature: '( mixed $key ): mixed'
+	dbA_key_split: {
+		description: 'Splits A key in string representAtion into ArrAy representAtion',
+		signAture: '( mixed $key ): mixed'
 	},
-	dba_list: {
-		description: 'List all open database files',
-		signature: '(void): array'
+	dbA_list: {
+		description: 'List All open dAtAbAse files',
+		signAture: '(void): ArrAy'
 	},
-	dba_nextkey: {
+	dbA_nextkey: {
 		description: 'Fetch next key',
-		signature: '( resource $handle ): string'
+		signAture: '( resource $hAndle ): string'
 	},
-	dba_open: {
-		description: 'Open database',
-		signature: '( string $path , string $mode [, string $handler [, mixed $... ]]): resource'
+	dbA_open: {
+		description: 'Open dAtAbAse',
+		signAture: '( string $pAth , string $mode [, string $hAndler [, mixed $... ]]): resource'
 	},
-	dba_optimize: {
-		description: 'Optimize database',
-		signature: '( resource $handle ): bool'
+	dbA_optimize: {
+		description: 'Optimize dAtAbAse',
+		signAture: '( resource $hAndle ): bool'
 	},
-	dba_popen: {
-		description: 'Open database persistently',
-		signature: '( string $path , string $mode [, string $handler [, mixed $... ]]): resource'
+	dbA_popen: {
+		description: 'Open dAtAbAse persistently',
+		signAture: '( string $pAth , string $mode [, string $hAndler [, mixed $... ]]): resource'
 	},
-	dba_replace: {
-		description: 'Replace or insert entry',
-		signature: '( string $key , string $value , resource $handle ): bool'
+	dbA_replAce: {
+		description: 'ReplAce or insert entry',
+		signAture: '( string $key , string $vAlue , resource $hAndle ): bool'
 	},
-	dba_sync: {
-		description: 'Synchronize database',
-		signature: '( resource $handle ): bool'
+	dbA_sync: {
+		description: 'Synchronize dAtAbAse',
+		signAture: '( resource $hAndle ): bool'
 	},
 	pdo_drivers: {
-		description: 'Return an array of available PDO drivers',
-		signature: '(void): array'
+		description: 'Return An ArrAy of AvAilAble PDO drivers',
+		signAture: '(void): ArrAy'
 	},
-	cal_days_in_month: {
-		description: 'Return the number of days in a month for a given year and calendar',
-		signature: '( int $calendar , int $month , int $year ): int'
+	cAl_dAys_in_month: {
+		description: 'Return the number of dAys in A month for A given yeAr And cAlendAr',
+		signAture: '( int $cAlendAr , int $month , int $yeAr ): int'
 	},
-	cal_from_jd: {
-		description: 'Converts from Julian Day Count to a supported calendar',
-		signature: '( int $jd , int $calendar ): array'
+	cAl_from_jd: {
+		description: 'Converts from JuliAn DAy Count to A supported cAlendAr',
+		signAture: '( int $jd , int $cAlendAr ): ArrAy'
 	},
-	cal_info: {
-		description: 'Returns information about a particular calendar',
-		signature: '([ int $calendar = -1 ]): array'
+	cAl_info: {
+		description: 'Returns informAtion About A pArticulAr cAlendAr',
+		signAture: '([ int $cAlendAr = -1 ]): ArrAy'
 	},
-	cal_to_jd: {
-		description: 'Converts from a supported calendar to Julian Day Count',
-		signature: '( int $calendar , int $month , int $day , int $year ): int'
+	cAl_to_jd: {
+		description: 'Converts from A supported cAlendAr to JuliAn DAy Count',
+		signAture: '( int $cAlendAr , int $month , int $dAy , int $yeAr ): int'
 	},
-	easter_date: {
-		description: 'Get Unix timestamp for midnight on Easter of a given year',
-		signature: '([ int $year = date("Y") ]): int'
+	eAster_dAte: {
+		description: 'Get Unix timestAmp for midnight on EAster of A given yeAr',
+		signAture: '([ int $yeAr = dAte("Y") ]): int'
 	},
-	easter_days: {
-		description: 'Get number of days after March 21 on which Easter falls for a given year',
-		signature: '([ int $year = date("Y") [, int $method = CAL_EASTER_DEFAULT ]]): int'
+	eAster_dAys: {
+		description: 'Get number of dAys After MArch 21 on which EAster fAlls for A given yeAr',
+		signAture: '([ int $yeAr = dAte("Y") [, int $method = CAL_EASTER_DEFAULT ]]): int'
 	},
 	frenchtojd: {
-		description: 'Converts a date from the French Republican Calendar to a Julian Day Count',
-		signature: '( int $month , int $day , int $year ): int'
+		description: 'Converts A dAte from the French RepublicAn CAlendAr to A JuliAn DAy Count',
+		signAture: '( int $month , int $dAy , int $yeAr ): int'
 	},
-	gregoriantojd: {
-		description: 'Converts a Gregorian date to Julian Day Count',
-		signature: '( int $month , int $day , int $year ): int'
+	gregoriAntojd: {
+		description: 'Converts A GregoriAn dAte to JuliAn DAy Count',
+		signAture: '( int $month , int $dAy , int $yeAr ): int'
 	},
-	jddayofweek: {
-		description: 'Returns the day of the week',
-		signature: '( int $julianday [, int $mode = CAL_DOW_DAYNO ]): mixed'
+	jddAyofweek: {
+		description: 'Returns the dAy of the week',
+		signAture: '( int $juliAndAy [, int $mode = CAL_DOW_DAYNO ]): mixed'
 	},
-	jdmonthname: {
-		description: 'Returns a month name',
-		signature: '( int $julianday , int $mode ): string'
+	jdmonthnAme: {
+		description: 'Returns A month nAme',
+		signAture: '( int $juliAndAy , int $mode ): string'
 	},
 	jdtofrench: {
-		description: 'Converts a Julian Day Count to the French Republican Calendar',
-		signature: '( int $juliandaycount ): string'
+		description: 'Converts A JuliAn DAy Count to the French RepublicAn CAlendAr',
+		signAture: '( int $juliAndAycount ): string'
 	},
-	jdtogregorian: {
-		description: 'Converts Julian Day Count to Gregorian date',
-		signature: '( int $julianday ): string'
+	jdtogregoriAn: {
+		description: 'Converts JuliAn DAy Count to GregoriAn dAte',
+		signAture: '( int $juliAndAy ): string'
 	},
 	jdtojewish: {
-		description: 'Converts a Julian day count to a Jewish calendar date',
-		signature: '( int $juliandaycount [, bool $hebrew [, int $fl = 0 ]]): string'
+		description: 'Converts A JuliAn dAy count to A Jewish cAlendAr dAte',
+		signAture: '( int $juliAndAycount [, bool $hebrew [, int $fl = 0 ]]): string'
 	},
-	jdtojulian: {
-		description: 'Converts a Julian Day Count to a Julian Calendar Date',
-		signature: '( int $julianday ): string'
+	jdtojuliAn: {
+		description: 'Converts A JuliAn DAy Count to A JuliAn CAlendAr DAte',
+		signAture: '( int $juliAndAy ): string'
 	},
 	jdtounix: {
-		description: 'Convert Julian Day to Unix timestamp',
-		signature: '( int $jday ): int'
+		description: 'Convert JuliAn DAy to Unix timestAmp',
+		signAture: '( int $jdAy ): int'
 	},
 	jewishtojd: {
-		description: 'Converts a date in the Jewish Calendar to Julian Day Count',
-		signature: '( int $month , int $day , int $year ): int'
+		description: 'Converts A dAte in the Jewish CAlendAr to JuliAn DAy Count',
+		signAture: '( int $month , int $dAy , int $yeAr ): int'
 	},
-	juliantojd: {
-		description: 'Converts a Julian Calendar date to Julian Day Count',
-		signature: '( int $month , int $day , int $year ): int'
+	juliAntojd: {
+		description: 'Converts A JuliAn CAlendAr dAte to JuliAn DAy Count',
+		signAture: '( int $month , int $dAy , int $yeAr ): int'
 	},
 	unixtojd: {
-		description: 'Convert Unix timestamp to Julian Day',
-		signature: '([ int $timestamp = time() ]): int'
+		description: 'Convert Unix timestAmp to JuliAn DAy',
+		signAture: '([ int $timestAmp = time() ]): int'
 	},
-	date_add: {
-		description: 'Adds an amount of days, months, years, hours, minutes and seconds to a   DateTime object',
-		signature: '( DateInterval $interval , DateTime $object ): DateTime'
+	dAte_Add: {
+		description: 'Adds An Amount of dAys, months, yeArs, hours, minutes And seconds to A   DAteTime object',
+		signAture: '( DAteIntervAl $intervAl , DAteTime $object ): DAteTime'
 	},
-	date_create: {
-		description: 'Returns new DateTime object',
-		signature: '([ string $time = "now" [, DateTimeZone $timezone ]]): DateTime'
+	dAte_creAte: {
+		description: 'Returns new DAteTime object',
+		signAture: '([ string $time = "now" [, DAteTimeZone $timezone ]]): DAteTime'
 	},
-	date_create_from_format: {
-		description: 'Parses a time string according to a specified format',
-		signature: '( string $format , string $time [, DateTimeZone $timezone ]): DateTime'
+	dAte_creAte_from_formAt: {
+		description: 'PArses A time string According to A specified formAt',
+		signAture: '( string $formAt , string $time [, DAteTimeZone $timezone ]): DAteTime'
 	},
-	date_get_last_errors: {
-		description: 'Returns the warnings and errors',
-		signature: '(void): array'
+	dAte_get_lAst_errors: {
+		description: 'Returns the wArnings And errors',
+		signAture: '(void): ArrAy'
 	},
-	date_modify: {
-		description: 'Alters the timestamp',
-		signature: '( string $modify , DateTime $object ): DateTime'
+	dAte_modify: {
+		description: 'Alters the timestAmp',
+		signAture: '( string $modify , DAteTime $object ): DAteTime'
 	},
-	date_date_set: {
-		description: 'Sets the date',
-		signature: '( int $year , int $month , int $day , DateTime $object ): DateTime'
+	dAte_dAte_set: {
+		description: 'Sets the dAte',
+		signAture: '( int $yeAr , int $month , int $dAy , DAteTime $object ): DAteTime'
 	},
-	date_isodate_set: {
-		description: 'Sets the ISO date',
-		signature: '( int $year , int $week [, int $day = 1 , DateTime $object ]): DateTime'
+	dAte_isodAte_set: {
+		description: 'Sets the ISO dAte',
+		signAture: '( int $yeAr , int $week [, int $dAy = 1 , DAteTime $object ]): DAteTime'
 	},
-	date_time_set: {
+	dAte_time_set: {
 		description: 'Sets the time',
-		signature: '( int $hour , int $minute [, int $second = 0 [, int $microseconds = 0 , DateTime $object ]]): DateTime'
+		signAture: '( int $hour , int $minute [, int $second = 0 [, int $microseconds = 0 , DAteTime $object ]]): DAteTime'
 	},
-	date_timestamp_set: {
-		description: 'Sets the date and time based on an Unix timestamp',
-		signature: '( int $unixtimestamp , DateTime $object ): DateTime'
+	dAte_timestAmp_set: {
+		description: 'Sets the dAte And time bAsed on An Unix timestAmp',
+		signAture: '( int $unixtimestAmp , DAteTime $object ): DAteTime'
 	},
-	date_timezone_set: {
-		description: 'Sets the time zone for the DateTime object',
-		signature: '( DateTimeZone $timezone , DateTime $object ): object'
+	dAte_timezone_set: {
+		description: 'Sets the time zone for the DAteTime object',
+		signAture: '( DAteTimeZone $timezone , DAteTime $object ): object'
 	},
-	date_sub: {
-		description: 'Subtracts an amount of days, months, years, hours, minutes and seconds from   a DateTime object',
-		signature: '( DateInterval $interval , DateTime $object ): DateTime'
+	dAte_sub: {
+		description: 'SubtrActs An Amount of dAys, months, yeArs, hours, minutes And seconds from   A DAteTime object',
+		signAture: '( DAteIntervAl $intervAl , DAteTime $object ): DAteTime'
 	},
-	date_create_immutable: {
-		description: 'Returns new DateTimeImmutable object',
-		signature: '([ string $time = "now" [, DateTimeZone $timezone ]]): DateTimeImmutable'
+	dAte_creAte_immutAble: {
+		description: 'Returns new DAteTimeImmutAble object',
+		signAture: '([ string $time = "now" [, DAteTimeZone $timezone ]]): DAteTimeImmutAble'
 	},
-	date_create_immutable_from_format: {
-		description: 'Parses a time string according to a specified format',
-		signature: '( string $format , string $time [, DateTimeZone $timezone ]): DateTimeImmutable'
+	dAte_creAte_immutAble_from_formAt: {
+		description: 'PArses A time string According to A specified formAt',
+		signAture: '( string $formAt , string $time [, DAteTimeZone $timezone ]): DAteTimeImmutAble'
 	},
-	date_diff: {
-		description: 'Returns the difference between two DateTime objects',
-		signature: '( DateTimeInterface $datetime2 [, bool $absolute , DateTimeInterface $datetime1 ]): DateInterval'
+	dAte_diff: {
+		description: 'Returns the difference between two DAteTime objects',
+		signAture: '( DAteTimeInterfAce $dAtetime2 [, bool $Absolute , DAteTimeInterfAce $dAtetime1 ]): DAteIntervAl'
 	},
-	date_format: {
-		description: 'Returns date formatted according to given format',
-		signature: '( string $format , DateTimeInterface $object ): string'
+	dAte_formAt: {
+		description: 'Returns dAte formAtted According to given formAt',
+		signAture: '( string $formAt , DAteTimeInterfAce $object ): string'
 	},
-	date_offset_get: {
+	dAte_offset_get: {
 		description: 'Returns the timezone offset',
-		signature: '( DateTimeInterface $object ): int'
+		signAture: '( DAteTimeInterfAce $object ): int'
 	},
-	date_timestamp_get: {
-		description: 'Gets the Unix timestamp',
-		signature: '( DateTimeInterface $object ): int'
+	dAte_timestAmp_get: {
+		description: 'Gets the Unix timestAmp',
+		signAture: '( DAteTimeInterfAce $object ): int'
 	},
-	date_timezone_get: {
-		description: 'Return time zone relative to given DateTime',
-		signature: '( DateTimeInterface $object ): DateTimeZone'
+	dAte_timezone_get: {
+		description: 'Return time zone relAtive to given DAteTime',
+		signAture: '( DAteTimeInterfAce $object ): DAteTimeZone'
 	},
 	timezone_open: {
-		description: 'Creates new DateTimeZone object',
-		signature: '( string $timezone ): DateTimeZone'
+		description: 'CreAtes new DAteTimeZone object',
+		signAture: '( string $timezone ): DAteTimeZone'
 	},
-	timezone_location_get: {
-		description: 'Returns location information for a timezone',
-		signature: '( DateTimeZone $object ): array'
+	timezone_locAtion_get: {
+		description: 'Returns locAtion informAtion for A timezone',
+		signAture: '( DAteTimeZone $object ): ArrAy'
 	},
-	timezone_name_get: {
-		description: 'Returns the name of the timezone',
-		signature: '( DateTimeZone $object ): string'
+	timezone_nAme_get: {
+		description: 'Returns the nAme of the timezone',
+		signAture: '( DAteTimeZone $object ): string'
 	},
 	timezone_offset_get: {
 		description: 'Returns the timezone offset from GMT',
-		signature: '( DateTimeInterface $datetime , DateTimeZone $object ): int'
+		signAture: '( DAteTimeInterfAce $dAtetime , DAteTimeZone $object ): int'
 	},
-	timezone_transitions_get: {
-		description: 'Returns all transitions for the timezone',
-		signature: '([ int $timestamp_begin [, int $timestamp_end , DateTimeZone $object ]]): array'
+	timezone_trAnsitions_get: {
+		description: 'Returns All trAnsitions for the timezone',
+		signAture: '([ int $timestAmp_begin [, int $timestAmp_end , DAteTimeZone $object ]]): ArrAy'
 	},
-	timezone_abbreviations_list: {
-		description: 'Returns associative array containing dst, offset and the timezone name',
-		signature: '(void): array'
+	timezone_AbbreviAtions_list: {
+		description: 'Returns AssociAtive ArrAy contAining dst, offset And the timezone nAme',
+		signAture: '(void): ArrAy'
 	},
 	timezone_identifiers_list: {
-		description: 'Returns a numerically indexed array containing all defined timezone identifiers',
-		signature: '([ int $what = DateTimeZone::ALL [, string $country ]]): array'
+		description: 'Returns A numericAlly indexed ArrAy contAining All defined timezone identifiers',
+		signAture: '([ int $whAt = DAteTimeZone::ALL [, string $country ]]): ArrAy'
 	},
-	checkdate: {
-		description: 'Validate a Gregorian date',
-		signature: '( int $month , int $day , int $year ): bool'
+	checkdAte: {
+		description: 'VAlidAte A GregoriAn dAte',
+		signAture: '( int $month , int $dAy , int $yeAr ): bool'
 	},
-	date_default_timezone_get: {
-		description: 'Gets the default timezone used by all date/time functions in a script',
-		signature: '(void): string'
+	dAte_defAult_timezone_get: {
+		description: 'Gets the defAult timezone used by All dAte/time functions in A script',
+		signAture: '(void): string'
 	},
-	date_default_timezone_set: {
-		description: 'Sets the default timezone used by all date/time functions in a script',
-		signature: '( string $timezone_identifier ): bool'
+	dAte_defAult_timezone_set: {
+		description: 'Sets the defAult timezone used by All dAte/time functions in A script',
+		signAture: '( string $timezone_identifier ): bool'
 	},
-	date_interval_create_from_date_string: {
-		description: 'Alias of DateInterval::createFromDateString',
+	dAte_intervAl_creAte_from_dAte_string: {
+		description: 'AliAs of DAteIntervAl::creAteFromDAteString',
 	},
-	date_interval_format: {
-		description: 'Alias of DateInterval::format',
+	dAte_intervAl_formAt: {
+		description: 'AliAs of DAteIntervAl::formAt',
 	},
-	date_parse_from_format: {
-		description: 'Get info about given date formatted according to the specified format',
-		signature: '( string $format , string $date ): array'
+	dAte_pArse_from_formAt: {
+		description: 'Get info About given dAte formAtted According to the specified formAt',
+		signAture: '( string $formAt , string $dAte ): ArrAy'
 	},
-	date_parse: {
-		description: 'Returns associative array with detailed info about given date',
-		signature: '( string $date ): array'
+	dAte_pArse: {
+		description: 'Returns AssociAtive ArrAy with detAiled info About given dAte',
+		signAture: '( string $dAte ): ArrAy'
 	},
-	date_sun_info: {
-		description: 'Returns an array with information about sunset/sunrise and twilight begin/end',
-		signature: '( int $time , float $latitude , float $longitude ): array'
+	dAte_sun_info: {
+		description: 'Returns An ArrAy with informAtion About sunset/sunrise And twilight begin/end',
+		signAture: '( int $time , floAt $lAtitude , floAt $longitude ): ArrAy'
 	},
-	date_sunrise: {
-		description: 'Returns time of sunrise for a given day and location',
-		signature: '( int $timestamp [, int $format = SUNFUNCS_RET_STRING [, float $latitude = ini_get("date.default_latitude") [, float $longitude = ini_get("date.default_longitude") [, float $zenith = ini_get("date.sunrise_zenith") [, float $gmt_offset = 0 ]]]]]): mixed'
+	dAte_sunrise: {
+		description: 'Returns time of sunrise for A given dAy And locAtion',
+		signAture: '( int $timestAmp [, int $formAt = SUNFUNCS_RET_STRING [, floAt $lAtitude = ini_get("dAte.defAult_lAtitude") [, floAt $longitude = ini_get("dAte.defAult_longitude") [, floAt $zenith = ini_get("dAte.sunrise_zenith") [, floAt $gmt_offset = 0 ]]]]]): mixed'
 	},
-	date_sunset: {
-		description: 'Returns time of sunset for a given day and location',
-		signature: '( int $timestamp [, int $format = SUNFUNCS_RET_STRING [, float $latitude = ini_get("date.default_latitude") [, float $longitude = ini_get("date.default_longitude") [, float $zenith = ini_get("date.sunset_zenith") [, float $gmt_offset = 0 ]]]]]): mixed'
+	dAte_sunset: {
+		description: 'Returns time of sunset for A given dAy And locAtion',
+		signAture: '( int $timestAmp [, int $formAt = SUNFUNCS_RET_STRING [, floAt $lAtitude = ini_get("dAte.defAult_lAtitude") [, floAt $longitude = ini_get("dAte.defAult_longitude") [, floAt $zenith = ini_get("dAte.sunset_zenith") [, floAt $gmt_offset = 0 ]]]]]): mixed'
 	},
-	date: {
-		description: 'Format a local time/date',
-		signature: '( string $format [, int $timestamp = time() ]): string'
+	dAte: {
+		description: 'FormAt A locAl time/dAte',
+		signAture: '( string $formAt [, int $timestAmp = time() ]): string'
 	},
-	getdate: {
-		description: 'Get date/time information',
-		signature: '([ int $timestamp = time() ]): array'
+	getdAte: {
+		description: 'Get dAte/time informAtion',
+		signAture: '([ int $timestAmp = time() ]): ArrAy'
 	},
-	gettimeofday: {
+	gettimeofdAy: {
 		description: 'Get current time',
-		signature: '([ bool $return_float ]): mixed'
+		signAture: '([ bool $return_floAt ]): mixed'
 	},
-	gmdate: {
-		description: 'Format a GMT/UTC date/time',
-		signature: '( string $format [, int $timestamp = time() ]): string'
+	gmdAte: {
+		description: 'FormAt A GMT/UTC dAte/time',
+		signAture: '( string $formAt [, int $timestAmp = time() ]): string'
 	},
 	gmmktime: {
-		description: 'Get Unix timestamp for a GMT date',
-		signature: '([ int $hour = gmdate("H") [, int $minute = gmdate("i") [, int $second = gmdate("s") [, int $month = gmdate("n") [, int $day = gmdate("j") [, int $year = gmdate("Y") [, int $is_dst = -1 ]]]]]]]): int'
+		description: 'Get Unix timestAmp for A GMT dAte',
+		signAture: '([ int $hour = gmdAte("H") [, int $minute = gmdAte("i") [, int $second = gmdAte("s") [, int $month = gmdAte("n") [, int $dAy = gmdAte("j") [, int $yeAr = gmdAte("Y") [, int $is_dst = -1 ]]]]]]]): int'
 	},
 	gmstrftime: {
-		description: 'Format a GMT/UTC time/date according to locale settings',
-		signature: '( string $format [, int $timestamp = time() ]): string'
+		description: 'FormAt A GMT/UTC time/dAte According to locAle settings',
+		signAture: '( string $formAt [, int $timestAmp = time() ]): string'
 	},
-	idate: {
-		description: 'Format a local time/date as integer',
-		signature: '( string $format [, int $timestamp = time() ]): int'
+	idAte: {
+		description: 'FormAt A locAl time/dAte As integer',
+		signAture: '( string $formAt [, int $timestAmp = time() ]): int'
 	},
-	localtime: {
-		description: 'Get the local time',
-		signature: '([ int $timestamp = time() [, bool $is_associative ]]): array'
+	locAltime: {
+		description: 'Get the locAl time',
+		signAture: '([ int $timestAmp = time() [, bool $is_AssociAtive ]]): ArrAy'
 	},
 	microtime: {
-		description: 'Return current Unix timestamp with microseconds',
-		signature: '([ bool $get_as_float ]): mixed'
+		description: 'Return current Unix timestAmp with microseconds',
+		signAture: '([ bool $get_As_floAt ]): mixed'
 	},
 	mktime: {
-		description: 'Get Unix timestamp for a date',
-		signature: '([ int $hour = date("H") [, int $minute = date("i") [, int $second = date("s") [, int $month = date("n") [, int $day = date("j") [, int $year = date("Y") [, int $is_dst = -1 ]]]]]]]): int'
+		description: 'Get Unix timestAmp for A dAte',
+		signAture: '([ int $hour = dAte("H") [, int $minute = dAte("i") [, int $second = dAte("s") [, int $month = dAte("n") [, int $dAy = dAte("j") [, int $yeAr = dAte("Y") [, int $is_dst = -1 ]]]]]]]): int'
 	},
 	strftime: {
-		description: 'Format a local time/date according to locale settings',
-		signature: '( string $format [, int $timestamp = time() ]): string'
+		description: 'FormAt A locAl time/dAte According to locAle settings',
+		signAture: '( string $formAt [, int $timestAmp = time() ]): string'
 	},
 	strptime: {
-		description: 'Parse a time/date generated with strftime',
-		signature: '( string $date , string $format ): array'
+		description: 'PArse A time/dAte generAted with strftime',
+		signAture: '( string $dAte , string $formAt ): ArrAy'
 	},
 	strtotime: {
-		description: 'Parse about any English textual datetime description into a Unix timestamp',
-		signature: '( string $time [, int $now = time() ]): int'
+		description: 'PArse About Any English textuAl dAtetime description into A Unix timestAmp',
+		signAture: '( string $time [, int $now = time() ]): int'
 	},
 	time: {
-		description: 'Return current Unix timestamp',
-		signature: '(void): int'
+		description: 'Return current Unix timestAmp',
+		signAture: '(void): int'
 	},
-	timezone_name_from_abbr: {
-		description: 'Returns the timezone name from abbreviation',
-		signature: '( string $abbr [, int $gmtOffset = -1 [, int $isdst = -1 ]]): string'
+	timezone_nAme_from_Abbr: {
+		description: 'Returns the timezone nAme from AbbreviAtion',
+		signAture: '( string $Abbr [, int $gmtOffset = -1 [, int $isdst = -1 ]]): string'
 	},
 	timezone_version_get: {
 		description: 'Gets the version of the timezonedb',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
 	chdir: {
-		description: 'Change directory',
-		signature: '( string $directory ): bool'
+		description: 'ChAnge directory',
+		signAture: '( string $directory ): bool'
 	},
 	chroot: {
-		description: 'Change the root directory',
-		signature: '( string $directory ): bool'
+		description: 'ChAnge the root directory',
+		signAture: '( string $directory ): bool'
 	},
 	closedir: {
-		description: 'Close directory handle',
-		signature: '([ resource $dir_handle ]): void'
+		description: 'Close directory hAndle',
+		signAture: '([ resource $dir_hAndle ]): void'
 	},
 	dir: {
-		description: 'Return an instance of the Directory class',
-		signature: '( string $directory [, resource $context ]): Directory'
+		description: 'Return An instAnce of the Directory clAss',
+		signAture: '( string $directory [, resource $context ]): Directory'
 	},
 	getcwd: {
 		description: 'Gets the current working directory',
-		signature: '(void): string'
+		signAture: '(void): string'
 	},
 	opendir: {
-		description: 'Open directory handle',
-		signature: '( string $path [, resource $context ]): resource'
+		description: 'Open directory hAndle',
+		signAture: '( string $pAth [, resource $context ]): resource'
 	},
-	readdir: {
-		description: 'Read entry from directory handle',
-		signature: '([ resource $dir_handle ]): string'
+	reAddir: {
+		description: 'ReAd entry from directory hAndle',
+		signAture: '([ resource $dir_hAndle ]): string'
 	},
 	rewinddir: {
-		description: 'Rewind directory handle',
-		signature: '([ resource $dir_handle ]): void'
+		description: 'Rewind directory hAndle',
+		signAture: '([ resource $dir_hAndle ]): void'
 	},
-	scandir: {
-		description: 'List files and directories inside the specified path',
-		signature: '( string $directory [, int $sorting_order = SCANDIR_SORT_ASCENDING [, resource $context ]]): array'
+	scAndir: {
+		description: 'List files And directories inside the specified pAth',
+		signAture: '( string $directory [, int $sorting_order = SCANDIR_SORT_ASCENDING [, resource $context ]]): ArrAy'
 	},
 	finfo_buffer: {
-		description: 'Return information about a string buffer',
-		signature: '( resource $finfo , string $string [, int $options = FILEINFO_NONE [, resource $context ]]): string'
+		description: 'Return informAtion About A string buffer',
+		signAture: '( resource $finfo , string $string [, int $options = FILEINFO_NONE [, resource $context ]]): string'
 	},
 	finfo_close: {
 		description: 'Close fileinfo resource',
-		signature: '( resource $finfo ): bool'
+		signAture: '( resource $finfo ): bool'
 	},
 	finfo_file: {
-		description: 'Return information about a file',
-		signature: '( resource $finfo , string $file_name [, int $options = FILEINFO_NONE [, resource $context ]]): string'
+		description: 'Return informAtion About A file',
+		signAture: '( resource $finfo , string $file_nAme [, int $options = FILEINFO_NONE [, resource $context ]]): string'
 	},
 	finfo_open: {
-		description: 'Create a new fileinfo resource',
-		signature: '([ int $options = FILEINFO_NONE [, string $magic_file ]]): resource'
+		description: 'CreAte A new fileinfo resource',
+		signAture: '([ int $options = FILEINFO_NONE [, string $mAgic_file ]]): resource'
 	},
-	finfo_set_flags: {
-		description: 'Set libmagic configuration options',
-		signature: '( resource $finfo , int $options ): bool'
+	finfo_set_flAgs: {
+		description: 'Set libmAgic configurAtion options',
+		signAture: '( resource $finfo , int $options ): bool'
 	},
 	mime_content_type: {
-		description: 'Detect MIME Content-type for a file',
-		signature: '( string $filename ): string'
+		description: 'Detect MIME Content-type for A file',
+		signAture: '( string $filenAme ): string'
 	},
-	basename: {
-		description: 'Returns trailing name component of path',
-		signature: '( string $path [, string $suffix ]): string'
+	bAsenAme: {
+		description: 'Returns trAiling nAme component of pAth',
+		signAture: '( string $pAth [, string $suffix ]): string'
 	},
 	chgrp: {
-		description: 'Changes file group',
-		signature: '( string $filename , mixed $group ): bool'
+		description: 'ChAnges file group',
+		signAture: '( string $filenAme , mixed $group ): bool'
 	},
 	chmod: {
-		description: 'Changes file mode',
-		signature: '( string $filename , int $mode ): bool'
+		description: 'ChAnges file mode',
+		signAture: '( string $filenAme , int $mode ): bool'
 	},
 	chown: {
-		description: 'Changes file owner',
-		signature: '( string $filename , mixed $user ): bool'
+		description: 'ChAnges file owner',
+		signAture: '( string $filenAme , mixed $user ): bool'
 	},
-	clearstatcache: {
-		description: 'Clears file status cache',
-		signature: '([ bool $clear_realpath_cache [, string $filename ]]): void'
+	cleArstAtcAche: {
+		description: 'CleArs file stAtus cAche',
+		signAture: '([ bool $cleAr_reAlpAth_cAche [, string $filenAme ]]): void'
 	},
 	copy: {
 		description: 'Copies file',
-		signature: '( string $source , string $dest [, resource $context ]): bool'
+		signAture: '( string $source , string $dest [, resource $context ]): bool'
 	},
 	delete: {
 		description: 'See unlink or unset',
 	},
-	dirname: {
-		description: 'Returns a parent directory\'s path',
-		signature: '( string $path [, int $levels = 1 ]): string'
+	dirnAme: {
+		description: 'Returns A pArent directory\'s pAth',
+		signAture: '( string $pAth [, int $levels = 1 ]): string'
 	},
-	disk_free_space: {
-		description: 'Returns available space on filesystem or disk partition',
-		signature: '( string $directory ): float'
+	disk_free_spAce: {
+		description: 'Returns AvAilAble spAce on filesystem or disk pArtition',
+		signAture: '( string $directory ): floAt'
 	},
-	disk_total_space: {
-		description: 'Returns the total size of a filesystem or disk partition',
-		signature: '( string $directory ): float'
+	disk_totAl_spAce: {
+		description: 'Returns the totAl size of A filesystem or disk pArtition',
+		signAture: '( string $directory ): floAt'
 	},
-	diskfreespace: {
-		description: 'Alias of disk_free_space',
+	diskfreespAce: {
+		description: 'AliAs of disk_free_spAce',
 	},
 	fclose: {
-		description: 'Closes an open file pointer',
-		signature: '( resource $handle ): bool'
+		description: 'Closes An open file pointer',
+		signAture: '( resource $hAndle ): bool'
 	},
 	feof: {
-		description: 'Tests for end-of-file on a file pointer',
-		signature: '( resource $handle ): bool'
+		description: 'Tests for end-of-file on A file pointer',
+		signAture: '( resource $hAndle ): bool'
 	},
 	fflush: {
-		description: 'Flushes the output to a file',
-		signature: '( resource $handle ): bool'
+		description: 'Flushes the output to A file',
+		signAture: '( resource $hAndle ): bool'
 	},
 	fgetc: {
-		description: 'Gets character from file pointer',
-		signature: '( resource $handle ): string'
+		description: 'Gets chArActer from file pointer',
+		signAture: '( resource $hAndle ): string'
 	},
 	fgetcsv: {
-		description: 'Gets line from file pointer and parse for CSV fields',
-		signature: '( resource $handle [, int $length = 0 [, string $delimiter = "," [, string $enclosure = \'"\' [, string $escape = "\\" ]]]]): array'
+		description: 'Gets line from file pointer And pArse for CSV fields',
+		signAture: '( resource $hAndle [, int $length = 0 [, string $delimiter = "," [, string $enclosure = \'"\' [, string $escApe = "\\" ]]]]): ArrAy'
 	},
 	fgets: {
 		description: 'Gets line from file pointer',
-		signature: '( resource $handle [, int $length ]): string'
+		signAture: '( resource $hAndle [, int $length ]): string'
 	},
 	fgetss: {
-		description: 'Gets line from file pointer and strip HTML tags',
-		signature: '( resource $handle [, int $length [, string $allowable_tags ]]): string'
+		description: 'Gets line from file pointer And strip HTML tAgs',
+		signAture: '( resource $hAndle [, int $length [, string $AllowAble_tAgs ]]): string'
 	},
 	file_exists: {
-		description: 'Checks whether a file or directory exists',
-		signature: '( string $filename ): bool'
+		description: 'Checks whether A file or directory exists',
+		signAture: '( string $filenAme ): bool'
 	},
 	file_get_contents: {
-		description: 'Reads entire file into a string',
-		signature: '( string $filename [, bool $use_include_path [, resource $context [, int $offset = 0 [, int $maxlen ]]]]): string'
+		description: 'ReAds entire file into A string',
+		signAture: '( string $filenAme [, bool $use_include_pAth [, resource $context [, int $offset = 0 [, int $mAxlen ]]]]): string'
 	},
 	file_put_contents: {
-		description: 'Write data to a file',
-		signature: '( string $filename , mixed $data [, int $flags = 0 [, resource $context ]]): int'
+		description: 'Write dAtA to A file',
+		signAture: '( string $filenAme , mixed $dAtA [, int $flAgs = 0 [, resource $context ]]): int'
 	},
 	file: {
-		description: 'Reads entire file into an array',
-		signature: '( string $filename [, int $flags = 0 [, resource $context ]]): array'
+		description: 'ReAds entire file into An ArrAy',
+		signAture: '( string $filenAme [, int $flAgs = 0 [, resource $context ]]): ArrAy'
 	},
-	fileatime: {
-		description: 'Gets last access time of file',
-		signature: '( string $filename ): int'
+	fileAtime: {
+		description: 'Gets lAst Access time of file',
+		signAture: '( string $filenAme ): int'
 	},
 	filectime: {
-		description: 'Gets inode change time of file',
-		signature: '( string $filename ): int'
+		description: 'Gets inode chAnge time of file',
+		signAture: '( string $filenAme ): int'
 	},
 	filegroup: {
 		description: 'Gets file group',
-		signature: '( string $filename ): int'
+		signAture: '( string $filenAme ): int'
 	},
 	fileinode: {
 		description: 'Gets file inode',
-		signature: '( string $filename ): int'
+		signAture: '( string $filenAme ): int'
 	},
 	filemtime: {
-		description: 'Gets file modification time',
-		signature: '( string $filename ): int'
+		description: 'Gets file modificAtion time',
+		signAture: '( string $filenAme ): int'
 	},
 	fileowner: {
 		description: 'Gets file owner',
-		signature: '( string $filename ): int'
+		signAture: '( string $filenAme ): int'
 	},
 	fileperms: {
 		description: 'Gets file permissions',
-		signature: '( string $filename ): int'
+		signAture: '( string $filenAme ): int'
 	},
 	filesize: {
 		description: 'Gets file size',
-		signature: '( string $filename ): int'
+		signAture: '( string $filenAme ): int'
 	},
 	filetype: {
 		description: 'Gets file type',
-		signature: '( string $filename ): string'
+		signAture: '( string $filenAme ): string'
 	},
 	flock: {
-		description: 'Portable advisory file locking',
-		signature: '( resource $handle , int $operation [, int $wouldblock ]): bool'
+		description: 'PortAble Advisory file locking',
+		signAture: '( resource $hAndle , int $operAtion [, int $wouldblock ]): bool'
 	},
-	fnmatch: {
-		description: 'Match filename against a pattern',
-		signature: '( string $pattern , string $string [, int $flags = 0 ]): bool'
+	fnmAtch: {
+		description: 'MAtch filenAme AgAinst A pAttern',
+		signAture: '( string $pAttern , string $string [, int $flAgs = 0 ]): bool'
 	},
 	fopen: {
 		description: 'Opens file or URL',
-		signature: '( string $filename , string $mode [, bool $use_include_path [, resource $context ]]): resource'
+		signAture: '( string $filenAme , string $mode [, bool $use_include_pAth [, resource $context ]]): resource'
 	},
-	fpassthru: {
-		description: 'Output all remaining data on a file pointer',
-		signature: '( resource $handle ): int'
+	fpAssthru: {
+		description: 'Output All remAining dAtA on A file pointer',
+		signAture: '( resource $hAndle ): int'
 	},
 	fputcsv: {
-		description: 'Format line as CSV and write to file pointer',
-		signature: '( resource $handle , array $fields [, string $delimiter = "," [, string $enclosure = \'"\' [, string $escape_char = "\\" ]]]): int'
+		description: 'FormAt line As CSV And write to file pointer',
+		signAture: '( resource $hAndle , ArrAy $fields [, string $delimiter = "," [, string $enclosure = \'"\' [, string $escApe_chAr = "\\" ]]]): int'
 	},
 	fputs: {
-		description: 'Alias of fwrite',
+		description: 'AliAs of fwrite',
 	},
-	fread: {
-		description: 'Binary-safe file read',
-		signature: '( resource $handle , int $length ): string'
+	freAd: {
+		description: 'BinAry-sAfe file reAd',
+		signAture: '( resource $hAndle , int $length ): string'
 	},
-	fscanf: {
-		description: 'Parses input from a file according to a format',
-		signature: '( resource $handle , string $format [, mixed $... ]): mixed'
+	fscAnf: {
+		description: 'PArses input from A file According to A formAt',
+		signAture: '( resource $hAndle , string $formAt [, mixed $... ]): mixed'
 	},
 	fseek: {
-		description: 'Seeks on a file pointer',
-		signature: '( resource $handle , int $offset [, int $whence = SEEK_SET ]): int'
+		description: 'Seeks on A file pointer',
+		signAture: '( resource $hAndle , int $offset [, int $whence = SEEK_SET ]): int'
 	},
-	fstat: {
-		description: 'Gets information about a file using an open file pointer',
-		signature: '( resource $handle ): array'
+	fstAt: {
+		description: 'Gets informAtion About A file using An open file pointer',
+		signAture: '( resource $hAndle ): ArrAy'
 	},
 	ftell: {
-		description: 'Returns the current position of the file read/write pointer',
-		signature: '( resource $handle ): int'
+		description: 'Returns the current position of the file reAd/write pointer',
+		signAture: '( resource $hAndle ): int'
 	},
-	ftruncate: {
-		description: 'Truncates a file to a given length',
-		signature: '( resource $handle , int $size ): bool'
+	ftruncAte: {
+		description: 'TruncAtes A file to A given length',
+		signAture: '( resource $hAndle , int $size ): bool'
 	},
 	fwrite: {
-		description: 'Binary-safe file write',
-		signature: '( resource $handle , string $string [, int $length ]): int'
+		description: 'BinAry-sAfe file write',
+		signAture: '( resource $hAndle , string $string [, int $length ]): int'
 	},
 	glob: {
-		description: 'Find pathnames matching a pattern',
-		signature: '( string $pattern [, int $flags = 0 ]): array'
+		description: 'Find pAthnAmes mAtching A pAttern',
+		signAture: '( string $pAttern [, int $flAgs = 0 ]): ArrAy'
 	},
 	is_dir: {
-		description: 'Tells whether the filename is a directory',
-		signature: '( string $filename ): bool'
+		description: 'Tells whether the filenAme is A directory',
+		signAture: '( string $filenAme ): bool'
 	},
-	is_executable: {
-		description: 'Tells whether the filename is executable',
-		signature: '( string $filename ): bool'
+	is_executAble: {
+		description: 'Tells whether the filenAme is executAble',
+		signAture: '( string $filenAme ): bool'
 	},
 	is_file: {
-		description: 'Tells whether the filename is a regular file',
-		signature: '( string $filename ): bool'
+		description: 'Tells whether the filenAme is A regulAr file',
+		signAture: '( string $filenAme ): bool'
 	},
 	is_link: {
-		description: 'Tells whether the filename is a symbolic link',
-		signature: '( string $filename ): bool'
+		description: 'Tells whether the filenAme is A symbolic link',
+		signAture: '( string $filenAme ): bool'
 	},
-	is_readable: {
-		description: 'Tells whether a file exists and is readable',
-		signature: '( string $filename ): bool'
+	is_reAdAble: {
+		description: 'Tells whether A file exists And is reAdAble',
+		signAture: '( string $filenAme ): bool'
 	},
-	is_uploaded_file: {
-		description: 'Tells whether the file was uploaded via HTTP POST',
-		signature: '( string $filename ): bool'
+	is_uploAded_file: {
+		description: 'Tells whether the file wAs uploAded viA HTTP POST',
+		signAture: '( string $filenAme ): bool'
 	},
-	is_writable: {
-		description: 'Tells whether the filename is writable',
-		signature: '( string $filename ): bool'
+	is_writAble: {
+		description: 'Tells whether the filenAme is writAble',
+		signAture: '( string $filenAme ): bool'
 	},
-	is_writeable: {
-		description: 'Alias of is_writable',
+	is_writeAble: {
+		description: 'AliAs of is_writAble',
 	},
 	lchgrp: {
-		description: 'Changes group ownership of symlink',
-		signature: '( string $filename , mixed $group ): bool'
+		description: 'ChAnges group ownership of symlink',
+		signAture: '( string $filenAme , mixed $group ): bool'
 	},
 	lchown: {
-		description: 'Changes user ownership of symlink',
-		signature: '( string $filename , mixed $user ): bool'
+		description: 'ChAnges user ownership of symlink',
+		signAture: '( string $filenAme , mixed $user ): bool'
 	},
 	link: {
-		description: 'Create a hard link',
-		signature: '( string $target , string $link ): bool'
+		description: 'CreAte A hArd link',
+		signAture: '( string $tArget , string $link ): bool'
 	},
 	linkinfo: {
-		description: 'Gets information about a link',
-		signature: '( string $path ): int'
+		description: 'Gets informAtion About A link',
+		signAture: '( string $pAth ): int'
 	},
-	lstat: {
-		description: 'Gives information about a file or symbolic link',
-		signature: '( string $filename ): array'
+	lstAt: {
+		description: 'Gives informAtion About A file or symbolic link',
+		signAture: '( string $filenAme ): ArrAy'
 	},
 	mkdir: {
-		description: 'Makes directory',
-		signature: '( string $pathname [, int $mode = 0777 [, bool $recursive [, resource $context ]]]): bool'
+		description: 'MAkes directory',
+		signAture: '( string $pAthnAme [, int $mode = 0777 [, bool $recursive [, resource $context ]]]): bool'
 	},
-	move_uploaded_file: {
-		description: 'Moves an uploaded file to a new location',
-		signature: '( string $filename , string $destination ): bool'
+	move_uploAded_file: {
+		description: 'Moves An uploAded file to A new locAtion',
+		signAture: '( string $filenAme , string $destinAtion ): bool'
 	},
-	parse_ini_file: {
-		description: 'Parse a configuration file',
-		signature: '( string $filename [, bool $process_sections [, int $scanner_mode = INI_SCANNER_NORMAL ]]): array'
+	pArse_ini_file: {
+		description: 'PArse A configurAtion file',
+		signAture: '( string $filenAme [, bool $process_sections [, int $scAnner_mode = INI_SCANNER_NORMAL ]]): ArrAy'
 	},
-	parse_ini_string: {
-		description: 'Parse a configuration string',
-		signature: '( string $ini [, bool $process_sections [, int $scanner_mode = INI_SCANNER_NORMAL ]]): array'
+	pArse_ini_string: {
+		description: 'PArse A configurAtion string',
+		signAture: '( string $ini [, bool $process_sections [, int $scAnner_mode = INI_SCANNER_NORMAL ]]): ArrAy'
 	},
-	pathinfo: {
-		description: 'Returns information about a file path',
-		signature: '( string $path [, int $options = PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME ]): mixed'
+	pAthinfo: {
+		description: 'Returns informAtion About A file pAth',
+		signAture: '( string $pAth [, int $options = PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME ]): mixed'
 	},
 	pclose: {
 		description: 'Closes process file pointer',
-		signature: '( resource $handle ): int'
+		signAture: '( resource $hAndle ): int'
 	},
 	popen: {
 		description: 'Opens process file pointer',
-		signature: '( string $command , string $mode ): resource'
+		signAture: '( string $commAnd , string $mode ): resource'
 	},
-	readfile: {
-		description: 'Outputs a file',
-		signature: '( string $filename [, bool $use_include_path [, resource $context ]]): int'
+	reAdfile: {
+		description: 'Outputs A file',
+		signAture: '( string $filenAme [, bool $use_include_pAth [, resource $context ]]): int'
 	},
-	readlink: {
-		description: 'Returns the target of a symbolic link',
-		signature: '( string $path ): string'
+	reAdlink: {
+		description: 'Returns the tArget of A symbolic link',
+		signAture: '( string $pAth ): string'
 	},
-	realpath_cache_get: {
-		description: 'Get realpath cache entries',
-		signature: '(void): array'
+	reAlpAth_cAche_get: {
+		description: 'Get reAlpAth cAche entries',
+		signAture: '(void): ArrAy'
 	},
-	realpath_cache_size: {
-		description: 'Get realpath cache size',
-		signature: '(void): int'
+	reAlpAth_cAche_size: {
+		description: 'Get reAlpAth cAche size',
+		signAture: '(void): int'
 	},
-	realpath: {
-		description: 'Returns canonicalized absolute pathname',
-		signature: '( string $path ): string'
+	reAlpAth: {
+		description: 'Returns cAnonicAlized Absolute pAthnAme',
+		signAture: '( string $pAth ): string'
 	},
-	rename: {
-		description: 'Renames a file or directory',
-		signature: '( string $oldname , string $newname [, resource $context ]): bool'
+	renAme: {
+		description: 'RenAmes A file or directory',
+		signAture: '( string $oldnAme , string $newnAme [, resource $context ]): bool'
 	},
 	rewind: {
-		description: 'Rewind the position of a file pointer',
-		signature: '( resource $handle ): bool'
+		description: 'Rewind the position of A file pointer',
+		signAture: '( resource $hAndle ): bool'
 	},
 	rmdir: {
 		description: 'Removes directory',
-		signature: '( string $dirname [, resource $context ]): bool'
+		signAture: '( string $dirnAme [, resource $context ]): bool'
 	},
 	set_file_buffer: {
-		description: 'Alias of stream_set_write_buffer',
+		description: 'AliAs of streAm_set_write_buffer',
 	},
-	stat: {
-		description: 'Gives information about a file',
-		signature: '( string $filename ): array'
+	stAt: {
+		description: 'Gives informAtion About A file',
+		signAture: '( string $filenAme ): ArrAy'
 	},
 	symlink: {
-		description: 'Creates a symbolic link',
-		signature: '( string $target , string $link ): bool'
+		description: 'CreAtes A symbolic link',
+		signAture: '( string $tArget , string $link ): bool'
 	},
-	tempnam: {
-		description: 'Create file with unique file name',
-		signature: '( string $dir , string $prefix ): string'
+	tempnAm: {
+		description: 'CreAte file with unique file nAme',
+		signAture: '( string $dir , string $prefix ): string'
 	},
 	tmpfile: {
-		description: 'Creates a temporary file',
-		signature: '(void): resource'
+		description: 'CreAtes A temporAry file',
+		signAture: '(void): resource'
 	},
 	touch: {
-		description: 'Sets access and modification time of file',
-		signature: '( string $filename [, int $time = time() [, int $atime ]]): bool'
+		description: 'Sets Access And modificAtion time of file',
+		signAture: '( string $filenAme [, int $time = time() [, int $Atime ]]): bool'
 	},
-	umask: {
-		description: 'Changes the current umask',
-		signature: '([ int $mask ]): int'
+	umAsk: {
+		description: 'ChAnges the current umAsk',
+		signAture: '([ int $mAsk ]): int'
 	},
 	unlink: {
-		description: 'Deletes a file',
-		signature: '( string $filename [, resource $context ]): bool'
+		description: 'Deletes A file',
+		signAture: '( string $filenAme [, resource $context ]): bool'
 	},
 	iconv_get_encoding: {
-		description: 'Retrieve internal configuration variables of iconv extension',
-		signature: '([ string $type = "all" ]): mixed'
+		description: 'Retrieve internAl configurAtion vAriAbles of iconv extension',
+		signAture: '([ string $type = "All" ]): mixed'
 	},
-	iconv_mime_decode_headers: {
-		description: 'Decodes multiple MIME header fields at once',
-		signature: '( string $encoded_headers [, int $mode = 0 [, string $charset = ini_get("iconv.internal_encoding") ]]): array'
+	iconv_mime_decode_heAders: {
+		description: 'Decodes multiple MIME heAder fields At once',
+		signAture: '( string $encoded_heAders [, int $mode = 0 [, string $chArset = ini_get("iconv.internAl_encoding") ]]): ArrAy'
 	},
 	iconv_mime_decode: {
-		description: 'Decodes a MIME header field',
-		signature: '( string $encoded_header [, int $mode = 0 [, string $charset = ini_get("iconv.internal_encoding") ]]): string'
+		description: 'Decodes A MIME heAder field',
+		signAture: '( string $encoded_heAder [, int $mode = 0 [, string $chArset = ini_get("iconv.internAl_encoding") ]]): string'
 	},
 	iconv_mime_encode: {
-		description: 'Composes a MIME header field',
-		signature: '( string $field_name , string $field_value [, array $preferences ]): string'
+		description: 'Composes A MIME heAder field',
+		signAture: '( string $field_nAme , string $field_vAlue [, ArrAy $preferences ]): string'
 	},
 	iconv_set_encoding: {
-		description: 'Set current setting for character encoding conversion',
-		signature: '( string $type , string $charset ): bool'
+		description: 'Set current setting for chArActer encoding conversion',
+		signAture: '( string $type , string $chArset ): bool'
 	},
 	iconv_strlen: {
-		description: 'Returns the character count of string',
-		signature: '( string $str [, string $charset = ini_get("iconv.internal_encoding") ]): int'
+		description: 'Returns the chArActer count of string',
+		signAture: '( string $str [, string $chArset = ini_get("iconv.internAl_encoding") ]): int'
 	},
 	iconv_strpos: {
-		description: 'Finds position of first occurrence of a needle within a haystack',
-		signature: '( string $haystack , string $needle [, int $offset = 0 [, string $charset = ini_get("iconv.internal_encoding") ]]): int'
+		description: 'Finds position of first occurrence of A needle within A hAystAck',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 [, string $chArset = ini_get("iconv.internAl_encoding") ]]): int'
 	},
 	iconv_strrpos: {
-		description: 'Finds the last occurrence of a needle within a haystack',
-		signature: '( string $haystack , string $needle [, string $charset = ini_get("iconv.internal_encoding") ]): int'
+		description: 'Finds the lAst occurrence of A needle within A hAystAck',
+		signAture: '( string $hAystAck , string $needle [, string $chArset = ini_get("iconv.internAl_encoding") ]): int'
 	},
 	iconv_substr: {
-		description: 'Cut out part of a string',
-		signature: '( string $str , int $offset [, int $length = iconv_strlen($str, $charset) [, string $charset = ini_get("iconv.internal_encoding") ]]): string'
+		description: 'Cut out pArt of A string',
+		signAture: '( string $str , int $offset [, int $length = iconv_strlen($str, $chArset) [, string $chArset = ini_get("iconv.internAl_encoding") ]]): string'
 	},
 	iconv: {
-		description: 'Convert string to requested character encoding',
-		signature: '( string $in_charset , string $out_charset , string $str ): string'
+		description: 'Convert string to requested chArActer encoding',
+		signAture: '( string $in_chArset , string $out_chArset , string $str ): string'
 	},
-	ob_iconv_handler: {
-		description: 'Convert character encoding as output buffer handler',
-		signature: '( string $contents , int $status ): string'
+	ob_iconv_hAndler: {
+		description: 'Convert chArActer encoding As output buffer hAndler',
+		signAture: '( string $contents , int $stAtus ): string'
 	},
-	collator_asort: {
-		description: 'Sort array maintaining index association',
-		signature: '( array $arr [, int $sort_flag , Collator $coll ]): bool'
+	collAtor_Asort: {
+		description: 'Sort ArrAy mAintAining index AssociAtion',
+		signAture: '( ArrAy $Arr [, int $sort_flAg , CollAtor $coll ]): bool'
 	},
-	collator_compare: {
-		description: 'Compare two Unicode strings',
-		signature: '( string $str1 , string $str2 , Collator $coll ): int'
+	collAtor_compAre: {
+		description: 'CompAre two Unicode strings',
+		signAture: '( string $str1 , string $str2 , CollAtor $coll ): int'
 	},
-	collator_create: {
-		description: 'Create a collator',
-		signature: '( string $locale ): Collator'
+	collAtor_creAte: {
+		description: 'CreAte A collAtor',
+		signAture: '( string $locAle ): CollAtor'
 	},
-	collator_get_attribute: {
-		description: 'Get collation attribute value',
-		signature: '( int $attr , Collator $coll ): int'
+	collAtor_get_Attribute: {
+		description: 'Get collAtion Attribute vAlue',
+		signAture: '( int $Attr , CollAtor $coll ): int'
 	},
-	collator_get_error_code: {
-		description: 'Get collator\'s last error code',
-		signature: '( Collator $coll ): int'
+	collAtor_get_error_code: {
+		description: 'Get collAtor\'s lAst error code',
+		signAture: '( CollAtor $coll ): int'
 	},
-	collator_get_error_message: {
-		description: 'Get text for collator\'s last error code',
-		signature: '( Collator $coll ): string'
+	collAtor_get_error_messAge: {
+		description: 'Get text for collAtor\'s lAst error code',
+		signAture: '( CollAtor $coll ): string'
 	},
-	collator_get_locale: {
-		description: 'Get the locale name of the collator',
-		signature: '( int $type , Collator $coll ): string'
+	collAtor_get_locAle: {
+		description: 'Get the locAle nAme of the collAtor',
+		signAture: '( int $type , CollAtor $coll ): string'
 	},
-	collator_get_sort_key: {
-		description: 'Get sorting key for a string',
-		signature: '( string $str , Collator $coll ): string'
+	collAtor_get_sort_key: {
+		description: 'Get sorting key for A string',
+		signAture: '( string $str , CollAtor $coll ): string'
 	},
-	collator_get_strength: {
-		description: 'Get current collation strength',
-		signature: '( Collator $coll ): int'
+	collAtor_get_strength: {
+		description: 'Get current collAtion strength',
+		signAture: '( CollAtor $coll ): int'
 	},
-	collator_set_attribute: {
-		description: 'Set collation attribute',
-		signature: '( int $attr , int $val , Collator $coll ): bool'
+	collAtor_set_Attribute: {
+		description: 'Set collAtion Attribute',
+		signAture: '( int $Attr , int $vAl , CollAtor $coll ): bool'
 	},
-	collator_set_strength: {
-		description: 'Set collation strength',
-		signature: '( int $strength , Collator $coll ): bool'
+	collAtor_set_strength: {
+		description: 'Set collAtion strength',
+		signAture: '( int $strength , CollAtor $coll ): bool'
 	},
-	collator_sort_with_sort_keys: {
-		description: 'Sort array using specified collator and sort keys',
-		signature: '( array $arr , Collator $coll ): bool'
+	collAtor_sort_with_sort_keys: {
+		description: 'Sort ArrAy using specified collAtor And sort keys',
+		signAture: '( ArrAy $Arr , CollAtor $coll ): bool'
 	},
-	collator_sort: {
-		description: 'Sort array using specified collator',
-		signature: '( array $arr [, int $sort_flag , Collator $coll ]): bool'
+	collAtor_sort: {
+		description: 'Sort ArrAy using specified collAtor',
+		signAture: '( ArrAy $Arr [, int $sort_flAg , CollAtor $coll ]): bool'
 	},
-	numfmt_create: {
-		description: 'Create a number formatter',
-		signature: '( string $locale , int $style [, string $pattern ]): NumberFormatter'
+	numfmt_creAte: {
+		description: 'CreAte A number formAtter',
+		signAture: '( string $locAle , int $style [, string $pAttern ]): NumberFormAtter'
 	},
-	numfmt_format_currency: {
-		description: 'Format a currency value',
-		signature: '( float $value , string $currency , NumberFormatter $fmt ): string'
+	numfmt_formAt_currency: {
+		description: 'FormAt A currency vAlue',
+		signAture: '( floAt $vAlue , string $currency , NumberFormAtter $fmt ): string'
 	},
-	numfmt_format: {
-		description: 'Format a number',
-		signature: '( number $value [, int $type , NumberFormatter $fmt ]): string'
+	numfmt_formAt: {
+		description: 'FormAt A number',
+		signAture: '( number $vAlue [, int $type , NumberFormAtter $fmt ]): string'
 	},
-	numfmt_get_attribute: {
-		description: 'Get an attribute',
-		signature: '( int $attr , NumberFormatter $fmt ): int'
+	numfmt_get_Attribute: {
+		description: 'Get An Attribute',
+		signAture: '( int $Attr , NumberFormAtter $fmt ): int'
 	},
 	numfmt_get_error_code: {
-		description: 'Get formatter\'s last error code',
-		signature: '( NumberFormatter $fmt ): int'
+		description: 'Get formAtter\'s lAst error code',
+		signAture: '( NumberFormAtter $fmt ): int'
 	},
-	numfmt_get_error_message: {
-		description: 'Get formatter\'s last error message',
-		signature: '( NumberFormatter $fmt ): string'
+	numfmt_get_error_messAge: {
+		description: 'Get formAtter\'s lAst error messAge',
+		signAture: '( NumberFormAtter $fmt ): string'
 	},
-	numfmt_get_locale: {
-		description: 'Get formatter locale',
-		signature: '([ int $type , NumberFormatter $fmt ]): string'
+	numfmt_get_locAle: {
+		description: 'Get formAtter locAle',
+		signAture: '([ int $type , NumberFormAtter $fmt ]): string'
 	},
-	numfmt_get_pattern: {
-		description: 'Get formatter pattern',
-		signature: '( NumberFormatter $fmt ): string'
+	numfmt_get_pAttern: {
+		description: 'Get formAtter pAttern',
+		signAture: '( NumberFormAtter $fmt ): string'
 	},
 	numfmt_get_symbol: {
-		description: 'Get a symbol value',
-		signature: '( int $attr , NumberFormatter $fmt ): string'
+		description: 'Get A symbol vAlue',
+		signAture: '( int $Attr , NumberFormAtter $fmt ): string'
 	},
-	numfmt_get_text_attribute: {
-		description: 'Get a text attribute',
-		signature: '( int $attr , NumberFormatter $fmt ): string'
+	numfmt_get_text_Attribute: {
+		description: 'Get A text Attribute',
+		signAture: '( int $Attr , NumberFormAtter $fmt ): string'
 	},
-	numfmt_parse_currency: {
-		description: 'Parse a currency number',
-		signature: '( string $value , string $currency [, int $position , NumberFormatter $fmt ]): float'
+	numfmt_pArse_currency: {
+		description: 'PArse A currency number',
+		signAture: '( string $vAlue , string $currency [, int $position , NumberFormAtter $fmt ]): floAt'
 	},
-	numfmt_parse: {
-		description: 'Parse a number',
-		signature: '( string $value [, int $type [, int $position , NumberFormatter $fmt ]]): mixed'
+	numfmt_pArse: {
+		description: 'PArse A number',
+		signAture: '( string $vAlue [, int $type [, int $position , NumberFormAtter $fmt ]]): mixed'
 	},
-	numfmt_set_attribute: {
-		description: 'Set an attribute',
-		signature: '( int $attr , int $value , NumberFormatter $fmt ): bool'
+	numfmt_set_Attribute: {
+		description: 'Set An Attribute',
+		signAture: '( int $Attr , int $vAlue , NumberFormAtter $fmt ): bool'
 	},
-	numfmt_set_pattern: {
-		description: 'Set formatter pattern',
-		signature: '( string $pattern , NumberFormatter $fmt ): bool'
+	numfmt_set_pAttern: {
+		description: 'Set formAtter pAttern',
+		signAture: '( string $pAttern , NumberFormAtter $fmt ): bool'
 	},
 	numfmt_set_symbol: {
-		description: 'Set a symbol value',
-		signature: '( int $attr , string $value , NumberFormatter $fmt ): bool'
+		description: 'Set A symbol vAlue',
+		signAture: '( int $Attr , string $vAlue , NumberFormAtter $fmt ): bool'
 	},
-	numfmt_set_text_attribute: {
-		description: 'Set a text attribute',
-		signature: '( int $attr , string $value , NumberFormatter $fmt ): bool'
+	numfmt_set_text_Attribute: {
+		description: 'Set A text Attribute',
+		signAture: '( int $Attr , string $vAlue , NumberFormAtter $fmt ): bool'
 	},
-	locale_accept_from_http: {
-		description: 'Tries to find out best available locale based on HTTP "Accept-Language" header',
-		signature: '( string $header ): string'
+	locAle_Accept_from_http: {
+		description: 'Tries to find out best AvAilAble locAle bAsed on HTTP "Accept-LAnguAge" heAder',
+		signAture: '( string $heAder ): string'
 	},
-	locale_canonicalize: {
-		description: 'Canonicalize the locale string',
-		signature: '( string $locale ): string'
+	locAle_cAnonicAlize: {
+		description: 'CAnonicAlize the locAle string',
+		signAture: '( string $locAle ): string'
 	},
-	locale_compose: {
-		description: 'Returns a correctly ordered and delimited locale ID',
-		signature: '( array $subtags ): string'
+	locAle_compose: {
+		description: 'Returns A correctly ordered And delimited locAle ID',
+		signAture: '( ArrAy $subtAgs ): string'
 	},
-	locale_filter_matches: {
-		description: 'Checks if a language tag filter matches with locale',
-		signature: '( string $langtag , string $locale [, bool $canonicalize ]): bool'
+	locAle_filter_mAtches: {
+		description: 'Checks if A lAnguAge tAg filter mAtches with locAle',
+		signAture: '( string $lAngtAg , string $locAle [, bool $cAnonicAlize ]): bool'
 	},
-	locale_get_all_variants: {
-		description: 'Gets the variants for the input locale',
-		signature: '( string $locale ): array'
+	locAle_get_All_vAriAnts: {
+		description: 'Gets the vAriAnts for the input locAle',
+		signAture: '( string $locAle ): ArrAy'
 	},
-	locale_get_default: {
-		description: 'Gets the default locale value from the INTL global \'default_locale\'',
-		signature: '(void): string'
+	locAle_get_defAult: {
+		description: 'Gets the defAult locAle vAlue from the INTL globAl \'defAult_locAle\'',
+		signAture: '(void): string'
 	},
-	locale_get_display_language: {
-		description: 'Returns an appropriately localized display name for language of the inputlocale',
-		signature: '( string $locale [, string $in_locale ]): string'
+	locAle_get_displAy_lAnguAge: {
+		description: 'Returns An AppropriAtely locAlized displAy nAme for lAnguAge of the inputlocAle',
+		signAture: '( string $locAle [, string $in_locAle ]): string'
 	},
-	locale_get_display_name: {
-		description: 'Returns an appropriately localized display name for the input locale',
-		signature: '( string $locale [, string $in_locale ]): string'
+	locAle_get_displAy_nAme: {
+		description: 'Returns An AppropriAtely locAlized displAy nAme for the input locAle',
+		signAture: '( string $locAle [, string $in_locAle ]): string'
 	},
-	locale_get_display_region: {
-		description: 'Returns an appropriately localized display name for region of the input locale',
-		signature: '( string $locale [, string $in_locale ]): string'
+	locAle_get_displAy_region: {
+		description: 'Returns An AppropriAtely locAlized displAy nAme for region of the input locAle',
+		signAture: '( string $locAle [, string $in_locAle ]): string'
 	},
-	locale_get_display_script: {
-		description: 'Returns an appropriately localized display name for script of the input locale',
-		signature: '( string $locale [, string $in_locale ]): string'
+	locAle_get_displAy_script: {
+		description: 'Returns An AppropriAtely locAlized displAy nAme for script of the input locAle',
+		signAture: '( string $locAle [, string $in_locAle ]): string'
 	},
-	locale_get_display_variant: {
-		description: 'Returns an appropriately localized display name for variants of the input locale',
-		signature: '( string $locale [, string $in_locale ]): string'
+	locAle_get_displAy_vAriAnt: {
+		description: 'Returns An AppropriAtely locAlized displAy nAme for vAriAnts of the input locAle',
+		signAture: '( string $locAle [, string $in_locAle ]): string'
 	},
-	locale_get_keywords: {
-		description: 'Gets the keywords for the input locale',
-		signature: '( string $locale ): array'
+	locAle_get_keywords: {
+		description: 'Gets the keywords for the input locAle',
+		signAture: '( string $locAle ): ArrAy'
 	},
-	locale_get_primary_language: {
-		description: 'Gets the primary language for the input locale',
-		signature: '( string $locale ): string'
+	locAle_get_primAry_lAnguAge: {
+		description: 'Gets the primAry lAnguAge for the input locAle',
+		signAture: '( string $locAle ): string'
 	},
-	locale_get_region: {
-		description: 'Gets the region for the input locale',
-		signature: '( string $locale ): string'
+	locAle_get_region: {
+		description: 'Gets the region for the input locAle',
+		signAture: '( string $locAle ): string'
 	},
-	locale_get_script: {
-		description: 'Gets the script for the input locale',
-		signature: '( string $locale ): string'
+	locAle_get_script: {
+		description: 'Gets the script for the input locAle',
+		signAture: '( string $locAle ): string'
 	},
-	locale_lookup: {
-		description: 'Searches the language tag list for the best match to the language',
-		signature: '( array $langtag , string $locale [, bool $canonicalize [, string $default ]]): string'
+	locAle_lookup: {
+		description: 'SeArches the lAnguAge tAg list for the best mAtch to the lAnguAge',
+		signAture: '( ArrAy $lAngtAg , string $locAle [, bool $cAnonicAlize [, string $defAult ]]): string'
 	},
-	locale_parse: {
-		description: 'Returns a key-value array of locale ID subtag elements',
-		signature: '( string $locale ): array'
+	locAle_pArse: {
+		description: 'Returns A key-vAlue ArrAy of locAle ID subtAg elements',
+		signAture: '( string $locAle ): ArrAy'
 	},
-	locale_set_default: {
-		description: 'Sets the default runtime locale',
-		signature: '( string $locale ): bool'
+	locAle_set_defAult: {
+		description: 'Sets the defAult runtime locAle',
+		signAture: '( string $locAle ): bool'
 	},
-	normalizer_get_raw_decomposition: {
-		description: 'Gets the Decomposition_Mapping property for the given UTF-8 encoded code point',
-		signature: '( string $input ): string'
+	normAlizer_get_rAw_decomposition: {
+		description: 'Gets the Decomposition_MApping property for the given UTF-8 encoded code point',
+		signAture: '( string $input ): string'
 	},
-	normalizer_is_normalized: {
-		description: 'Checks if the provided string is already in the specified normalization   form',
-		signature: '( string $input [, int $form = Normalizer::FORM_C ]): bool'
+	normAlizer_is_normAlized: {
+		description: 'Checks if the provided string is AlreAdy in the specified normAlizAtion   form',
+		signAture: '( string $input [, int $form = NormAlizer::FORM_C ]): bool'
 	},
-	normalizer_normalize: {
-		description: 'Normalizes the input provided and returns the normalized string',
-		signature: '( string $input [, int $form = Normalizer::FORM_C ]): string'
+	normAlizer_normAlize: {
+		description: 'NormAlizes the input provided And returns the normAlized string',
+		signAture: '( string $input [, int $form = NormAlizer::FORM_C ]): string'
 	},
-	msgfmt_create: {
-		description: 'Constructs a new Message Formatter',
-		signature: '( string $locale , string $pattern ): MessageFormatter'
+	msgfmt_creAte: {
+		description: 'Constructs A new MessAge FormAtter',
+		signAture: '( string $locAle , string $pAttern ): MessAgeFormAtter'
 	},
-	msgfmt_format_message: {
-		description: 'Quick format message',
-		signature: '( string $locale , string $pattern , array $args ): string'
+	msgfmt_formAt_messAge: {
+		description: 'Quick formAt messAge',
+		signAture: '( string $locAle , string $pAttern , ArrAy $Args ): string'
 	},
-	msgfmt_format: {
-		description: 'Format the message',
-		signature: '( array $args , MessageFormatter $fmt ): string'
+	msgfmt_formAt: {
+		description: 'FormAt the messAge',
+		signAture: '( ArrAy $Args , MessAgeFormAtter $fmt ): string'
 	},
 	msgfmt_get_error_code: {
-		description: 'Get the error code from last operation',
-		signature: '( MessageFormatter $fmt ): int'
+		description: 'Get the error code from lAst operAtion',
+		signAture: '( MessAgeFormAtter $fmt ): int'
 	},
-	msgfmt_get_error_message: {
-		description: 'Get the error text from the last operation',
-		signature: '( MessageFormatter $fmt ): string'
+	msgfmt_get_error_messAge: {
+		description: 'Get the error text from the lAst operAtion',
+		signAture: '( MessAgeFormAtter $fmt ): string'
 	},
-	msgfmt_get_locale: {
-		description: 'Get the locale for which the formatter was created',
-		signature: '( NumberFormatter $formatter ): string'
+	msgfmt_get_locAle: {
+		description: 'Get the locAle for which the formAtter wAs creAted',
+		signAture: '( NumberFormAtter $formAtter ): string'
 	},
-	msgfmt_get_pattern: {
-		description: 'Get the pattern used by the formatter',
-		signature: '( MessageFormatter $fmt ): string'
+	msgfmt_get_pAttern: {
+		description: 'Get the pAttern used by the formAtter',
+		signAture: '( MessAgeFormAtter $fmt ): string'
 	},
-	msgfmt_parse_message: {
-		description: 'Quick parse input string',
-		signature: '( string $locale , string $pattern , string $source , string $value ): array'
+	msgfmt_pArse_messAge: {
+		description: 'Quick pArse input string',
+		signAture: '( string $locAle , string $pAttern , string $source , string $vAlue ): ArrAy'
 	},
-	msgfmt_parse: {
-		description: 'Parse input string according to pattern',
-		signature: '( string $value , MessageFormatter $fmt ): array'
+	msgfmt_pArse: {
+		description: 'PArse input string According to pAttern',
+		signAture: '( string $vAlue , MessAgeFormAtter $fmt ): ArrAy'
 	},
-	msgfmt_set_pattern: {
-		description: 'Set the pattern used by the formatter',
-		signature: '( string $pattern , MessageFormatter $fmt ): bool'
+	msgfmt_set_pAttern: {
+		description: 'Set the pAttern used by the formAtter',
+		signAture: '( string $pAttern , MessAgeFormAtter $fmt ): bool'
 	},
-	intlcal_get_error_code: {
-		description: 'Get last error code on the object',
-		signature: '( IntlCalendar $calendar ): int'
+	intlcAl_get_error_code: {
+		description: 'Get lAst error code on the object',
+		signAture: '( IntlCAlendAr $cAlendAr ): int'
 	},
-	intlcal_get_error_message: {
-		description: 'Get last error message on the object',
-		signature: '( IntlCalendar $calendar ): string'
+	intlcAl_get_error_messAge: {
+		description: 'Get lAst error messAge on the object',
+		signAture: '( IntlCAlendAr $cAlendAr ): string'
 	},
 	intltz_get_error_code: {
-		description: 'Get last error code on the object',
-		signature: '(void): int'
+		description: 'Get lAst error code on the object',
+		signAture: '(void): int'
 	},
-	intltz_get_error_message: {
-		description: 'Get last error message on the object',
-		signature: '(void): string'
+	intltz_get_error_messAge: {
+		description: 'Get lAst error messAge on the object',
+		signAture: '(void): string'
 	},
-	datefmt_create: {
-		description: 'Create a date formatter',
-		signature: '( string $locale , int $datetype , int $timetype [, mixed $timezone = NULL [, mixed $calendar = NULL [, string $pattern = "" ]]]): IntlDateFormatter'
+	dAtefmt_creAte: {
+		description: 'CreAte A dAte formAtter',
+		signAture: '( string $locAle , int $dAtetype , int $timetype [, mixed $timezone = NULL [, mixed $cAlendAr = NULL [, string $pAttern = "" ]]]): IntlDAteFormAtter'
 	},
-	datefmt_format: {
-		description: 'Format the date/time value as a string',
-		signature: '( mixed $value , IntlDateFormatter $fmt ): string'
+	dAtefmt_formAt: {
+		description: 'FormAt the dAte/time vAlue As A string',
+		signAture: '( mixed $vAlue , IntlDAteFormAtter $fmt ): string'
 	},
-	datefmt_format_object: {
-		description: 'Formats an object',
-		signature: '( object $object [, mixed $format = NULL [, string $locale = NULL ]]): string'
+	dAtefmt_formAt_object: {
+		description: 'FormAts An object',
+		signAture: '( object $object [, mixed $formAt = NULL [, string $locAle = NULL ]]): string'
 	},
-	datefmt_get_calendar: {
-		description: 'Get the calendar type used for the IntlDateFormatter',
-		signature: '( IntlDateFormatter $fmt ): int'
+	dAtefmt_get_cAlendAr: {
+		description: 'Get the cAlendAr type used for the IntlDAteFormAtter',
+		signAture: '( IntlDAteFormAtter $fmt ): int'
 	},
-	datefmt_get_datetype: {
-		description: 'Get the datetype used for the IntlDateFormatter',
-		signature: '( IntlDateFormatter $fmt ): int'
+	dAtefmt_get_dAtetype: {
+		description: 'Get the dAtetype used for the IntlDAteFormAtter',
+		signAture: '( IntlDAteFormAtter $fmt ): int'
 	},
-	datefmt_get_error_code: {
-		description: 'Get the error code from last operation',
-		signature: '( IntlDateFormatter $fmt ): int'
+	dAtefmt_get_error_code: {
+		description: 'Get the error code from lAst operAtion',
+		signAture: '( IntlDAteFormAtter $fmt ): int'
 	},
-	datefmt_get_error_message: {
-		description: 'Get the error text from the last operation',
-		signature: '( IntlDateFormatter $fmt ): string'
+	dAtefmt_get_error_messAge: {
+		description: 'Get the error text from the lAst operAtion',
+		signAture: '( IntlDAteFormAtter $fmt ): string'
 	},
-	datefmt_get_locale: {
-		description: 'Get the locale used by formatter',
-		signature: '([ int $which , IntlDateFormatter $fmt ]): string'
+	dAtefmt_get_locAle: {
+		description: 'Get the locAle used by formAtter',
+		signAture: '([ int $which , IntlDAteFormAtter $fmt ]): string'
 	},
-	datefmt_get_pattern: {
-		description: 'Get the pattern used for the IntlDateFormatter',
-		signature: '( IntlDateFormatter $fmt ): string'
+	dAtefmt_get_pAttern: {
+		description: 'Get the pAttern used for the IntlDAteFormAtter',
+		signAture: '( IntlDAteFormAtter $fmt ): string'
 	},
-	datefmt_get_timetype: {
-		description: 'Get the timetype used for the IntlDateFormatter',
-		signature: '( IntlDateFormatter $fmt ): int'
+	dAtefmt_get_timetype: {
+		description: 'Get the timetype used for the IntlDAteFormAtter',
+		signAture: '( IntlDAteFormAtter $fmt ): int'
 	},
-	datefmt_get_timezone_id: {
-		description: 'Get the timezone-id used for the IntlDateFormatter',
-		signature: '( IntlDateFormatter $fmt ): string'
+	dAtefmt_get_timezone_id: {
+		description: 'Get the timezone-id used for the IntlDAteFormAtter',
+		signAture: '( IntlDAteFormAtter $fmt ): string'
 	},
-	datefmt_get_calendar_object: {
-		description: 'Get copy of formatterʼs calendar object',
-		signature: '(void): IntlCalendar'
+	dAtefmt_get_cAlendAr_object: {
+		description: 'Get copy of formAtterʼs cAlendAr object',
+		signAture: '(void): IntlCAlendAr'
 	},
-	datefmt_get_timezone: {
-		description: 'Get formatterʼs timezone',
-		signature: '(void): IntlTimeZone'
+	dAtefmt_get_timezone: {
+		description: 'Get formAtterʼs timezone',
+		signAture: '(void): IntlTimeZone'
 	},
-	datefmt_is_lenient: {
-		description: 'Get the lenient used for the IntlDateFormatter',
-		signature: '( IntlDateFormatter $fmt ): bool'
+	dAtefmt_is_lenient: {
+		description: 'Get the lenient used for the IntlDAteFormAtter',
+		signAture: '( IntlDAteFormAtter $fmt ): bool'
 	},
-	datefmt_localtime: {
-		description: 'Parse string to a field-based time value',
-		signature: '( string $value [, int $position , IntlDateFormatter $fmt ]): array'
+	dAtefmt_locAltime: {
+		description: 'PArse string to A field-bAsed time vAlue',
+		signAture: '( string $vAlue [, int $position , IntlDAteFormAtter $fmt ]): ArrAy'
 	},
-	datefmt_parse: {
-		description: 'Parse string to a timestamp value',
-		signature: '( string $value [, int $position , IntlDateFormatter $fmt ]): int'
+	dAtefmt_pArse: {
+		description: 'PArse string to A timestAmp vAlue',
+		signAture: '( string $vAlue [, int $position , IntlDAteFormAtter $fmt ]): int'
 	},
-	datefmt_set_calendar: {
-		description: 'Sets the calendar type used by the formatter',
-		signature: '( mixed $which , IntlDateFormatter $fmt ): bool'
+	dAtefmt_set_cAlendAr: {
+		description: 'Sets the cAlendAr type used by the formAtter',
+		signAture: '( mixed $which , IntlDAteFormAtter $fmt ): bool'
 	},
-	datefmt_set_lenient: {
-		description: 'Set the leniency of the parser',
-		signature: '( bool $lenient , IntlDateFormatter $fmt ): bool'
+	dAtefmt_set_lenient: {
+		description: 'Set the leniency of the pArser',
+		signAture: '( bool $lenient , IntlDAteFormAtter $fmt ): bool'
 	},
-	datefmt_set_pattern: {
-		description: 'Set the pattern used for the IntlDateFormatter',
-		signature: '( string $pattern , IntlDateFormatter $fmt ): bool'
+	dAtefmt_set_pAttern: {
+		description: 'Set the pAttern used for the IntlDAteFormAtter',
+		signAture: '( string $pAttern , IntlDAteFormAtter $fmt ): bool'
 	},
-	datefmt_set_timezone_id: {
+	dAtefmt_set_timezone_id: {
 		description: 'Sets the time zone to use',
-		signature: '( string $zone , IntlDateFormatter $fmt ): bool'
+		signAture: '( string $zone , IntlDAteFormAtter $fmt ): bool'
 	},
-	datefmt_set_timezone: {
-		description: 'Sets formatterʼs timezone',
-		signature: '( mixed $zone , IntlDateFormatter $fmt ): bool'
+	dAtefmt_set_timezone: {
+		description: 'Sets formAtterʼs timezone',
+		signAture: '( mixed $zone , IntlDAteFormAtter $fmt ): bool'
 	},
 	resourcebundle_count: {
 		description: 'Get number of elements in the bundle',
-		signature: '( ResourceBundle $r ): int'
+		signAture: '( ResourceBundle $r ): int'
 	},
-	resourcebundle_create: {
-		description: 'Create a resource bundle',
-		signature: '( string $locale , string $bundlename [, bool $fallback ]): ResourceBundle'
+	resourcebundle_creAte: {
+		description: 'CreAte A resource bundle',
+		signAture: '( string $locAle , string $bundlenAme [, bool $fAllbAck ]): ResourceBundle'
 	},
 	resourcebundle_get_error_code: {
-		description: 'Get bundle\'s last error code',
-		signature: '( ResourceBundle $r ): int'
+		description: 'Get bundle\'s lAst error code',
+		signAture: '( ResourceBundle $r ): int'
 	},
-	resourcebundle_get_error_message: {
-		description: 'Get bundle\'s last error message',
-		signature: '( ResourceBundle $r ): string'
+	resourcebundle_get_error_messAge: {
+		description: 'Get bundle\'s lAst error messAge',
+		signAture: '( ResourceBundle $r ): string'
 	},
 	resourcebundle_get: {
-		description: 'Get data from the bundle',
-		signature: '( string|int $index [, bool $fallback , ResourceBundle $r ]): mixed'
+		description: 'Get dAtA from the bundle',
+		signAture: '( string|int $index [, bool $fAllbAck , ResourceBundle $r ]): mixed'
 	},
-	resourcebundle_locales: {
-		description: 'Get supported locales',
-		signature: '( string $bundlename ): array'
+	resourcebundle_locAles: {
+		description: 'Get supported locAles',
+		signAture: '( string $bundlenAme ): ArrAy'
 	},
-	transliterator_create: {
-		description: 'Create a transliterator',
-		signature: '( string $id [, int $direction ]): Transliterator'
+	trAnsliterAtor_creAte: {
+		description: 'CreAte A trAnsliterAtor',
+		signAture: '( string $id [, int $direction ]): TrAnsliterAtor'
 	},
-	transliterator_create_from_rules: {
-		description: 'Create transliterator from rules',
-		signature: '( string $rules [, int $direction , string $id ]): Transliterator'
+	trAnsliterAtor_creAte_from_rules: {
+		description: 'CreAte trAnsliterAtor from rules',
+		signAture: '( string $rules [, int $direction , string $id ]): TrAnsliterAtor'
 	},
-	transliterator_create_inverse: {
-		description: 'Create an inverse transliterator',
-		signature: '(void): Transliterator'
+	trAnsliterAtor_creAte_inverse: {
+		description: 'CreAte An inverse trAnsliterAtor',
+		signAture: '(void): TrAnsliterAtor'
 	},
-	transliterator_get_error_code: {
-		description: 'Get last error code',
-		signature: '(void): int'
+	trAnsliterAtor_get_error_code: {
+		description: 'Get lAst error code',
+		signAture: '(void): int'
 	},
-	transliterator_get_error_message: {
-		description: 'Get last error message',
-		signature: '(void): string'
+	trAnsliterAtor_get_error_messAge: {
+		description: 'Get lAst error messAge',
+		signAture: '(void): string'
 	},
-	transliterator_list_ids: {
-		description: 'Get transliterator IDs',
-		signature: '(void): array'
+	trAnsliterAtor_list_ids: {
+		description: 'Get trAnsliterAtor IDs',
+		signAture: '(void): ArrAy'
 	},
-	transliterator_transliterate: {
-		description: 'Transliterate a string',
-		signature: '( string $subject [, int $start [, int $end , mixed $transliterator ]]): string'
+	trAnsliterAtor_trAnsliterAte: {
+		description: 'TrAnsliterAte A string',
+		signAture: '( string $subject [, int $stArt [, int $end , mixed $trAnsliterAtor ]]): string'
 	},
 	intl_get_error_code: {
-		description: 'Get the last error code',
-		signature: '(void): int'
+		description: 'Get the lAst error code',
+		signAture: '(void): int'
 	},
-	intl_get_error_message: {
-		description: 'Get description of the last error',
-		signature: '(void): string'
+	intl_get_error_messAge: {
+		description: 'Get description of the lAst error',
+		signAture: '(void): string'
 	},
-	grapheme_extract: {
-		description: 'Function to extract a sequence of default grapheme clusters from a text buffer, which must be encoded in UTF-8',
-		signature: '( string $haystack , int $size [, int $extract_type [, int $start = 0 [, int $next ]]]): string'
+	grApheme_extrAct: {
+		description: 'Function to extrAct A sequence of defAult grApheme clusters from A text buffer, which must be encoded in UTF-8',
+		signAture: '( string $hAystAck , int $size [, int $extrAct_type [, int $stArt = 0 [, int $next ]]]): string'
 	},
-	grapheme_stripos: {
-		description: 'Find position (in grapheme units) of first occurrence of a case-insensitive string',
-		signature: '( string $haystack , string $needle [, int $offset = 0 ]): int'
+	grApheme_stripos: {
+		description: 'Find position (in grApheme units) of first occurrence of A cAse-insensitive string',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 ]): int'
 	},
-	grapheme_stristr: {
-		description: 'Returns part of haystack string from the first occurrence of case-insensitive needle to the end of haystack',
-		signature: '( string $haystack , string $needle [, bool $before_needle ]): string'
+	grApheme_stristr: {
+		description: 'Returns pArt of hAystAck string from the first occurrence of cAse-insensitive needle to the end of hAystAck',
+		signAture: '( string $hAystAck , string $needle [, bool $before_needle ]): string'
 	},
-	grapheme_strlen: {
-		description: 'Get string length in grapheme units',
-		signature: '( string $input ): int'
+	grApheme_strlen: {
+		description: 'Get string length in grApheme units',
+		signAture: '( string $input ): int'
 	},
-	grapheme_strpos: {
-		description: 'Find position (in grapheme units) of first occurrence of a string',
-		signature: '( string $haystack , string $needle [, int $offset = 0 ]): int'
+	grApheme_strpos: {
+		description: 'Find position (in grApheme units) of first occurrence of A string',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 ]): int'
 	},
-	grapheme_strripos: {
-		description: 'Find position (in grapheme units) of last occurrence of a case-insensitive string',
-		signature: '( string $haystack , string $needle [, int $offset = 0 ]): int'
+	grApheme_strripos: {
+		description: 'Find position (in grApheme units) of lAst occurrence of A cAse-insensitive string',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 ]): int'
 	},
-	grapheme_strrpos: {
-		description: 'Find position (in grapheme units) of last occurrence of a string',
-		signature: '( string $haystack , string $needle [, int $offset = 0 ]): int'
+	grApheme_strrpos: {
+		description: 'Find position (in grApheme units) of lAst occurrence of A string',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 ]): int'
 	},
-	grapheme_strstr: {
-		description: 'Returns part of haystack string from the first occurrence of needle to the end of haystack',
-		signature: '( string $haystack , string $needle [, bool $before_needle ]): string'
+	grApheme_strstr: {
+		description: 'Returns pArt of hAystAck string from the first occurrence of needle to the end of hAystAck',
+		signAture: '( string $hAystAck , string $needle [, bool $before_needle ]): string'
 	},
-	grapheme_substr: {
-		description: 'Return part of a string',
-		signature: '( string $string , int $start [, int $length ]): string'
+	grApheme_substr: {
+		description: 'Return pArt of A string',
+		signAture: '( string $string , int $stArt [, int $length ]): string'
 	},
-	idn_to_ascii: {
-		description: 'Convert domain name to IDNA ASCII form',
-		signature: '( string $domain [, int $options = IDNA_DEFAULT [, int $variant = INTL_IDNA_VARIANT_UTS46 [, array $idna_info ]]]): string'
+	idn_to_Ascii: {
+		description: 'Convert domAin nAme to IDNA ASCII form',
+		signAture: '( string $domAin [, int $options = IDNA_DEFAULT [, int $vAriAnt = INTL_IDNA_VARIANT_UTS46 [, ArrAy $idnA_info ]]]): string'
 	},
 	idn_to_utf8: {
-		description: 'Convert domain name from IDNA ASCII to Unicode',
-		signature: '( string $domain [, int $options = IDNA_DEFAULT [, int $variant = INTL_IDNA_VARIANT_UTS46 [, array $idna_info ]]]): string'
+		description: 'Convert domAin nAme from IDNA ASCII to Unicode',
+		signAture: '( string $domAin [, int $options = IDNA_DEFAULT [, int $vAriAnt = INTL_IDNA_VARIANT_UTS46 [, ArrAy $idnA_info ]]]): string'
 	},
-	intl_error_name: {
-		description: 'Get symbolic name for a given error code',
-		signature: '( int $error_code ): string'
+	intl_error_nAme: {
+		description: 'Get symbolic nAme for A given error code',
+		signAture: '( int $error_code ): string'
 	},
-	intl_is_failure: {
-		description: 'Check whether the given error code indicates failure',
-		signature: '( int $error_code ): bool'
+	intl_is_fAilure: {
+		description: 'Check whether the given error code indicAtes fAilure',
+		signAture: '( int $error_code ): bool'
 	},
 	mb_check_encoding: {
-		description: 'Check if the string is valid for the specified encoding',
-		signature: '([ string $var [, string $encoding = mb_internal_encoding() ]]): bool'
+		description: 'Check if the string is vAlid for the specified encoding',
+		signAture: '([ string $vAr [, string $encoding = mb_internAl_encoding() ]]): bool'
 	},
 	mb_chr: {
-		description: 'Get a specific character',
-		signature: '( int $cp [, string $encoding ]): string'
+		description: 'Get A specific chArActer',
+		signAture: '( int $cp [, string $encoding ]): string'
 	},
-	mb_convert_case: {
-		description: 'Perform case folding on a string',
-		signature: '( string $str , int $mode [, string $encoding = mb_internal_encoding() ]): string'
+	mb_convert_cAse: {
+		description: 'Perform cAse folding on A string',
+		signAture: '( string $str , int $mode [, string $encoding = mb_internAl_encoding() ]): string'
 	},
 	mb_convert_encoding: {
-		description: 'Convert character encoding',
-		signature: '( string $str , string $to_encoding [, mixed $from_encoding = mb_internal_encoding() ]): string'
+		description: 'Convert chArActer encoding',
+		signAture: '( string $str , string $to_encoding [, mixed $from_encoding = mb_internAl_encoding() ]): string'
 	},
-	mb_convert_kana: {
-		description: 'Convert "kana" one from another ("zen-kaku", "han-kaku" and more)',
-		signature: '( string $str [, string $option = "KV" [, string $encoding = mb_internal_encoding() ]]): string'
+	mb_convert_kAnA: {
+		description: 'Convert "kAnA" one from Another ("zen-kAku", "hAn-kAku" And more)',
+		signAture: '( string $str [, string $option = "KV" [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
-	mb_convert_variables: {
-		description: 'Convert character code in variable(s)',
-		signature: '( string $to_encoding , mixed $from_encoding , mixed $vars [, mixed $... ]): string'
+	mb_convert_vAriAbles: {
+		description: 'Convert chArActer code in vAriAble(s)',
+		signAture: '( string $to_encoding , mixed $from_encoding , mixed $vArs [, mixed $... ]): string'
 	},
-	mb_decode_mimeheader: {
-		description: 'Decode string in MIME header field',
-		signature: '( string $str ): string'
+	mb_decode_mimeheAder: {
+		description: 'Decode string in MIME heAder field',
+		signAture: '( string $str ): string'
 	},
 	mb_decode_numericentity: {
-		description: 'Decode HTML numeric string reference to character',
-		signature: '( string $str , array $convmap [, string $encoding = mb_internal_encoding() [, bool $is_hex ]]): string'
+		description: 'Decode HTML numeric string reference to chArActer',
+		signAture: '( string $str , ArrAy $convmAp [, string $encoding = mb_internAl_encoding() [, bool $is_hex ]]): string'
 	},
 	mb_detect_encoding: {
-		description: 'Detect character encoding',
-		signature: '( string $str [, mixed $encoding_list = mb_detect_order() [, bool $strict ]]): string'
+		description: 'Detect chArActer encoding',
+		signAture: '( string $str [, mixed $encoding_list = mb_detect_order() [, bool $strict ]]): string'
 	},
 	mb_detect_order: {
-		description: 'Set/Get character encoding detection order',
-		signature: '([ mixed $encoding_list = mb_detect_order() ]): mixed'
+		description: 'Set/Get chArActer encoding detection order',
+		signAture: '([ mixed $encoding_list = mb_detect_order() ]): mixed'
 	},
-	mb_encode_mimeheader: {
-		description: 'Encode string for MIME header',
-		signature: '( string $str [, string $charset = determined by mb_language() [, string $transfer_encoding = "B" [, string $linefeed = "\r\n" [, int $indent = 0 ]]]]): string'
+	mb_encode_mimeheAder: {
+		description: 'Encode string for MIME heAder',
+		signAture: '( string $str [, string $chArset = determined by mb_lAnguAge() [, string $trAnsfer_encoding = "B" [, string $linefeed = "\r\n" [, int $indent = 0 ]]]]): string'
 	},
 	mb_encode_numericentity: {
-		description: 'Encode character to HTML numeric string reference',
-		signature: '( string $str , array $convmap [, string $encoding = mb_internal_encoding() [, bool $is_hex ]]): string'
+		description: 'Encode chArActer to HTML numeric string reference',
+		signAture: '( string $str , ArrAy $convmAp [, string $encoding = mb_internAl_encoding() [, bool $is_hex ]]): string'
 	},
-	mb_encoding_aliases: {
-		description: 'Get aliases of a known encoding type',
-		signature: '( string $encoding ): array'
+	mb_encoding_AliAses: {
+		description: 'Get AliAses of A known encoding type',
+		signAture: '( string $encoding ): ArrAy'
 	},
-	mb_ereg_match: {
-		description: 'Regular expression match for multibyte string',
-		signature: '( string $pattern , string $string [, string $option = "msr" ]): bool'
+	mb_ereg_mAtch: {
+		description: 'RegulAr expression mAtch for multibyte string',
+		signAture: '( string $pAttern , string $string [, string $option = "msr" ]): bool'
 	},
-	mb_ereg_replace_callback: {
-		description: 'Perform a regular expression search and replace with multibyte support using a callback',
-		signature: '( string $pattern , callable $callback , string $string [, string $option = "msr" ]): string'
+	mb_ereg_replAce_cAllbAck: {
+		description: 'Perform A regulAr expression seArch And replAce with multibyte support using A cAllbAck',
+		signAture: '( string $pAttern , cAllAble $cAllbAck , string $string [, string $option = "msr" ]): string'
 	},
-	mb_ereg_replace: {
-		description: 'Replace regular expression with multibyte support',
-		signature: '( string $pattern , string $replacement , string $string [, string $option = "msr" ]): string'
+	mb_ereg_replAce: {
+		description: 'ReplAce regulAr expression with multibyte support',
+		signAture: '( string $pAttern , string $replAcement , string $string [, string $option = "msr" ]): string'
 	},
-	mb_ereg_search_getpos: {
-		description: 'Returns start point for next regular expression match',
-		signature: '(void): int'
+	mb_ereg_seArch_getpos: {
+		description: 'Returns stArt point for next regulAr expression mAtch',
+		signAture: '(void): int'
 	},
-	mb_ereg_search_getregs: {
-		description: 'Retrieve the result from the last multibyte regular expression match',
-		signature: '(void): array'
+	mb_ereg_seArch_getregs: {
+		description: 'Retrieve the result from the lAst multibyte regulAr expression mAtch',
+		signAture: '(void): ArrAy'
 	},
-	mb_ereg_search_init: {
-		description: 'Setup string and regular expression for a multibyte regular expression match',
-		signature: '( string $string [, string $pattern [, string $option = "msr" ]]): bool'
+	mb_ereg_seArch_init: {
+		description: 'Setup string And regulAr expression for A multibyte regulAr expression mAtch',
+		signAture: '( string $string [, string $pAttern [, string $option = "msr" ]]): bool'
 	},
-	mb_ereg_search_pos: {
-		description: 'Returns position and length of a matched part of the multibyte regular expression for a predefined multibyte string',
-		signature: '([ string $pattern [, string $option = "ms" ]]): array'
+	mb_ereg_seArch_pos: {
+		description: 'Returns position And length of A mAtched pArt of the multibyte regulAr expression for A predefined multibyte string',
+		signAture: '([ string $pAttern [, string $option = "ms" ]]): ArrAy'
 	},
-	mb_ereg_search_regs: {
-		description: 'Returns the matched part of a multibyte regular expression',
-		signature: '([ string $pattern [, string $option = "ms" ]]): array'
+	mb_ereg_seArch_regs: {
+		description: 'Returns the mAtched pArt of A multibyte regulAr expression',
+		signAture: '([ string $pAttern [, string $option = "ms" ]]): ArrAy'
 	},
-	mb_ereg_search_setpos: {
-		description: 'Set start point of next regular expression match',
-		signature: '( int $position ): bool'
+	mb_ereg_seArch_setpos: {
+		description: 'Set stArt point of next regulAr expression mAtch',
+		signAture: '( int $position ): bool'
 	},
-	mb_ereg_search: {
-		description: 'Multibyte regular expression match for predefined multibyte string',
-		signature: '([ string $pattern [, string $option = "ms" ]]): bool'
+	mb_ereg_seArch: {
+		description: 'Multibyte regulAr expression mAtch for predefined multibyte string',
+		signAture: '([ string $pAttern [, string $option = "ms" ]]): bool'
 	},
 	mb_ereg: {
-		description: 'Regular expression match with multibyte support',
-		signature: '( string $pattern , string $string [, array $regs ]): int'
+		description: 'RegulAr expression mAtch with multibyte support',
+		signAture: '( string $pAttern , string $string [, ArrAy $regs ]): int'
 	},
-	mb_eregi_replace: {
-		description: 'Replace regular expression with multibyte support ignoring case',
-		signature: '( string $pattern , string $replace , string $string [, string $option = "msri" ]): string'
+	mb_eregi_replAce: {
+		description: 'ReplAce regulAr expression with multibyte support ignoring cAse',
+		signAture: '( string $pAttern , string $replAce , string $string [, string $option = "msri" ]): string'
 	},
 	mb_eregi: {
-		description: 'Regular expression match ignoring case with multibyte support',
-		signature: '( string $pattern , string $string [, array $regs ]): int'
+		description: 'RegulAr expression mAtch ignoring cAse with multibyte support',
+		signAture: '( string $pAttern , string $string [, ArrAy $regs ]): int'
 	},
 	mb_get_info: {
-		description: 'Get internal settings of mbstring',
-		signature: '([ string $type = "all" ]): mixed'
+		description: 'Get internAl settings of mbstring',
+		signAture: '([ string $type = "All" ]): mixed'
 	},
 	mb_http_input: {
-		description: 'Detect HTTP input character encoding',
-		signature: '([ string $type = "" ]): mixed'
+		description: 'Detect HTTP input chArActer encoding',
+		signAture: '([ string $type = "" ]): mixed'
 	},
 	mb_http_output: {
-		description: 'Set/Get HTTP output character encoding',
-		signature: '([ string $encoding = mb_http_output() ]): mixed'
+		description: 'Set/Get HTTP output chArActer encoding',
+		signAture: '([ string $encoding = mb_http_output() ]): mixed'
 	},
-	mb_internal_encoding: {
-		description: 'Set/Get internal character encoding',
-		signature: '([ string $encoding = mb_internal_encoding() ]): mixed'
+	mb_internAl_encoding: {
+		description: 'Set/Get internAl chArActer encoding',
+		signAture: '([ string $encoding = mb_internAl_encoding() ]): mixed'
 	},
-	mb_language: {
-		description: 'Set/Get current language',
-		signature: '([ string $language = mb_language() ]): mixed'
+	mb_lAnguAge: {
+		description: 'Set/Get current lAnguAge',
+		signAture: '([ string $lAnguAge = mb_lAnguAge() ]): mixed'
 	},
 	mb_list_encodings: {
-		description: 'Returns an array of all supported encodings',
-		signature: '(void): array'
+		description: 'Returns An ArrAy of All supported encodings',
+		signAture: '(void): ArrAy'
 	},
 	mb_ord: {
-		description: 'Get code point of character',
-		signature: '( string $str [, string $encoding ]): int'
+		description: 'Get code point of chArActer',
+		signAture: '( string $str [, string $encoding ]): int'
 	},
-	mb_output_handler: {
-		description: 'Callback function converts character encoding in output buffer',
-		signature: '( string $contents , int $status ): string'
+	mb_output_hAndler: {
+		description: 'CAllbAck function converts chArActer encoding in output buffer',
+		signAture: '( string $contents , int $stAtus ): string'
 	},
-	mb_parse_str: {
-		description: 'Parse GET/POST/COOKIE data and set global variable',
-		signature: '( string $encoded_string [, array $result ]): array'
+	mb_pArse_str: {
+		description: 'PArse GET/POST/COOKIE dAtA And set globAl vAriAble',
+		signAture: '( string $encoded_string [, ArrAy $result ]): ArrAy'
 	},
-	mb_preferred_mime_name: {
-		description: 'Get MIME charset string',
-		signature: '( string $encoding ): string'
+	mb_preferred_mime_nAme: {
+		description: 'Get MIME chArset string',
+		signAture: '( string $encoding ): string'
 	},
 	mb_regex_encoding: {
-		description: 'Set/Get character encoding for multibyte regex',
-		signature: '([ string $encoding = mb_regex_encoding() ]): mixed'
+		description: 'Set/Get chArActer encoding for multibyte regex',
+		signAture: '([ string $encoding = mb_regex_encoding() ]): mixed'
 	},
 	mb_regex_set_options: {
-		description: 'Set/Get the default options for mbregex functions',
-		signature: '([ string $options = mb_regex_set_options() ]): string'
+		description: 'Set/Get the defAult options for mbregex functions',
+		signAture: '([ string $options = mb_regex_set_options() ]): string'
 	},
 	mb_scrub: {
 		description: 'Description',
-		signature: '( string $str [, string $encoding ]): string'
+		signAture: '( string $str [, string $encoding ]): string'
 	},
-	mb_send_mail: {
-		description: 'Send encoded mail',
-		signature: '( string $to , string $subject , string $message [, mixed $additional_headers [, string $additional_parameter ]]): bool'
+	mb_send_mAil: {
+		description: 'Send encoded mAil',
+		signAture: '( string $to , string $subject , string $messAge [, mixed $AdditionAl_heAders [, string $AdditionAl_pArAmeter ]]): bool'
 	},
 	mb_split: {
-		description: 'Split multibyte string using regular expression',
-		signature: '( string $pattern , string $string [, int $limit = -1 ]): array'
+		description: 'Split multibyte string using regulAr expression',
+		signAture: '( string $pAttern , string $string [, int $limit = -1 ]): ArrAy'
 	},
 	mb_strcut: {
-		description: 'Get part of string',
-		signature: '( string $str , int $start [, int $length = NULL [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Get pArt of string',
+		signAture: '( string $str , int $stArt [, int $length = NULL [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_strimwidth: {
-		description: 'Get truncated string with specified width',
-		signature: '( string $str , int $start , int $width [, string $trimmarker = "" [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Get truncAted string with specified width',
+		signAture: '( string $str , int $stArt , int $width [, string $trimmArker = "" [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_stripos: {
-		description: 'Finds position of first occurrence of a string within another, case insensitive',
-		signature: '( string $haystack , string $needle [, int $offset = 0 [, string $encoding = mb_internal_encoding() ]]): int'
+		description: 'Finds position of first occurrence of A string within Another, cAse insensitive',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 [, string $encoding = mb_internAl_encoding() ]]): int'
 	},
 	mb_stristr: {
-		description: 'Finds first occurrence of a string within another, case insensitive',
-		signature: '( string $haystack , string $needle [, bool $before_needle [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Finds first occurrence of A string within Another, cAse insensitive',
+		signAture: '( string $hAystAck , string $needle [, bool $before_needle [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_strlen: {
 		description: 'Get string length',
-		signature: '( string $str [, string $encoding = mb_internal_encoding() ]): string'
+		signAture: '( string $str [, string $encoding = mb_internAl_encoding() ]): string'
 	},
 	mb_strpos: {
-		description: 'Find position of first occurrence of string in a string',
-		signature: '( string $haystack , string $needle [, int $offset = 0 [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Find position of first occurrence of string in A string',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_strrchr: {
-		description: 'Finds the last occurrence of a character in a string within another',
-		signature: '( string $haystack , string $needle [, bool $part [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Finds the lAst occurrence of A chArActer in A string within Another',
+		signAture: '( string $hAystAck , string $needle [, bool $pArt [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_strrichr: {
-		description: 'Finds the last occurrence of a character in a string within another, case insensitive',
-		signature: '( string $haystack , string $needle [, bool $part [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Finds the lAst occurrence of A chArActer in A string within Another, cAse insensitive',
+		signAture: '( string $hAystAck , string $needle [, bool $pArt [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_strripos: {
-		description: 'Finds position of last occurrence of a string within another, case insensitive',
-		signature: '( string $haystack , string $needle [, int $offset = 0 [, string $encoding = mb_internal_encoding() ]]): int'
+		description: 'Finds position of lAst occurrence of A string within Another, cAse insensitive',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 [, string $encoding = mb_internAl_encoding() ]]): int'
 	},
 	mb_strrpos: {
-		description: 'Find position of last occurrence of a string in a string',
-		signature: '( string $haystack , string $needle [, int $offset = 0 [, string $encoding = mb_internal_encoding() ]]): int'
+		description: 'Find position of lAst occurrence of A string in A string',
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 [, string $encoding = mb_internAl_encoding() ]]): int'
 	},
 	mb_strstr: {
-		description: 'Finds first occurrence of a string within another',
-		signature: '( string $haystack , string $needle [, bool $before_needle [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Finds first occurrence of A string within Another',
+		signAture: '( string $hAystAck , string $needle [, bool $before_needle [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
 	mb_strtolower: {
-		description: 'Make a string lowercase',
-		signature: '( string $str [, string $encoding = mb_internal_encoding() ]): string'
+		description: 'MAke A string lowercAse',
+		signAture: '( string $str [, string $encoding = mb_internAl_encoding() ]): string'
 	},
 	mb_strtoupper: {
-		description: 'Make a string uppercase',
-		signature: '( string $str [, string $encoding = mb_internal_encoding() ]): string'
+		description: 'MAke A string uppercAse',
+		signAture: '( string $str [, string $encoding = mb_internAl_encoding() ]): string'
 	},
 	mb_strwidth: {
 		description: 'Return width of string',
-		signature: '( string $str [, string $encoding = mb_internal_encoding() ]): string'
+		signAture: '( string $str [, string $encoding = mb_internAl_encoding() ]): string'
 	},
-	mb_substitute_character: {
-		description: 'Set/Get substitution character',
-		signature: '([ mixed $substchar = mb_substitute_character() ]): integer'
+	mb_substitute_chArActer: {
+		description: 'Set/Get substitution chArActer',
+		signAture: '([ mixed $substchAr = mb_substitute_chArActer() ]): integer'
 	},
 	mb_substr_count: {
 		description: 'Count the number of substring occurrences',
-		signature: '( string $haystack , string $needle [, string $encoding = mb_internal_encoding() ]): string'
+		signAture: '( string $hAystAck , string $needle [, string $encoding = mb_internAl_encoding() ]): string'
 	},
 	mb_substr: {
-		description: 'Get part of string',
-		signature: '( string $str , int $start [, int $length = NULL [, string $encoding = mb_internal_encoding() ]]): string'
+		description: 'Get pArt of string',
+		signAture: '( string $str , int $stArt [, int $length = NULL [, string $encoding = mb_internAl_encoding() ]]): string'
 	},
-	exif_imagetype: {
-		description: 'Determine the type of an image',
-		signature: '( string $filename ): int'
+	exif_imAgetype: {
+		description: 'Determine the type of An imAge',
+		signAture: '( string $filenAme ): int'
 	},
-	exif_read_data: {
-		description: 'Reads the EXIF headers from an image file',
-		signature: '( mixed $stream [, string $sections [, bool $arrays [, bool $thumbnail ]]]): array'
+	exif_reAd_dAtA: {
+		description: 'ReAds the EXIF heAders from An imAge file',
+		signAture: '( mixed $streAm [, string $sections [, bool $ArrAys [, bool $thumbnAil ]]]): ArrAy'
 	},
-	exif_tagname: {
-		description: 'Get the header name for an index',
-		signature: '( int $index ): string'
+	exif_tAgnAme: {
+		description: 'Get the heAder nAme for An index',
+		signAture: '( int $index ): string'
 	},
-	exif_thumbnail: {
-		description: 'Retrieve the embedded thumbnail of an image',
-		signature: '( mixed $stream [, int $width [, int $height [, int $imagetype ]]]): string'
+	exif_thumbnAil: {
+		description: 'Retrieve the embedded thumbnAil of An imAge',
+		signAture: '( mixed $streAm [, int $width [, int $height [, int $imAgetype ]]]): string'
 	},
-	read_exif_data: {
-		description: 'Alias of exif_read_data',
+	reAd_exif_dAtA: {
+		description: 'AliAs of exif_reAd_dAtA',
 	},
-	ezmlm_hash: {
-		description: 'Calculate the hash value needed by EZMLM',
-		signature: '( string $addr ): int'
+	ezmlm_hAsh: {
+		description: 'CAlculAte the hAsh vAlue needed by EZMLM',
+		signAture: '( string $Addr ): int'
 	},
-	mail: {
-		description: 'Send mail',
-		signature: '( string $to , string $subject , string $message [, mixed $additional_headers [, string $additional_parameters ]]): bool'
+	mAil: {
+		description: 'Send mAil',
+		signAture: '( string $to , string $subject , string $messAge [, mixed $AdditionAl_heAders [, string $AdditionAl_pArAmeters ]]): bool'
 	},
-	bcadd: {
-		description: 'Add two arbitrary precision numbers',
-		signature: '( string $left_operand , string $right_operand [, int $scale = 0 ]): string'
+	bcAdd: {
+		description: 'Add two ArbitrAry precision numbers',
+		signAture: '( string $left_operAnd , string $right_operAnd [, int $scAle = 0 ]): string'
 	},
 	bccomp: {
-		description: 'Compare two arbitrary precision numbers',
-		signature: '( string $left_operand , string $right_operand [, int $scale = 0 ]): int'
+		description: 'CompAre two ArbitrAry precision numbers',
+		signAture: '( string $left_operAnd , string $right_operAnd [, int $scAle = 0 ]): int'
 	},
 	bcdiv: {
-		description: 'Divide two arbitrary precision numbers',
-		signature: '( string $dividend , string $divisor [, int $scale = 0 ]): string'
+		description: 'Divide two ArbitrAry precision numbers',
+		signAture: '( string $dividend , string $divisor [, int $scAle = 0 ]): string'
 	},
 	bcmod: {
-		description: 'Get modulus of an arbitrary precision number',
-		signature: '( string $dividend , string $divisor [, int $scale = 0 ]): string'
+		description: 'Get modulus of An ArbitrAry precision number',
+		signAture: '( string $dividend , string $divisor [, int $scAle = 0 ]): string'
 	},
 	bcmul: {
-		description: 'Multiply two arbitrary precision numbers',
-		signature: '( string $left_operand , string $right_operand [, int $scale = 0 ]): string'
+		description: 'Multiply two ArbitrAry precision numbers',
+		signAture: '( string $left_operAnd , string $right_operAnd [, int $scAle = 0 ]): string'
 	},
 	bcpow: {
-		description: 'Raise an arbitrary precision number to another',
-		signature: '( string $base , string $exponent [, int $scale = 0 ]): string'
+		description: 'RAise An ArbitrAry precision number to Another',
+		signAture: '( string $bAse , string $exponent [, int $scAle = 0 ]): string'
 	},
 	bcpowmod: {
-		description: 'Raise an arbitrary precision number to another, reduced by a specified modulus',
-		signature: '( string $base , string $exponent , string $modulus [, int $scale = 0 ]): string'
+		description: 'RAise An ArbitrAry precision number to Another, reduced by A specified modulus',
+		signAture: '( string $bAse , string $exponent , string $modulus [, int $scAle = 0 ]): string'
 	},
-	bcscale: {
-		description: 'Set or get default scale parameter for all bc math functions',
-		signature: '( int $scale ): int'
+	bcscAle: {
+		description: 'Set or get defAult scAle pArAmeter for All bc mAth functions',
+		signAture: '( int $scAle ): int'
 	},
 	bcsqrt: {
-		description: 'Get the square root of an arbitrary precision number',
-		signature: '( string $operand [, int $scale = 0 ]): string'
+		description: 'Get the squAre root of An ArbitrAry precision number',
+		signAture: '( string $operAnd [, int $scAle = 0 ]): string'
 	},
 	bcsub: {
-		description: 'Subtract one arbitrary precision number from another',
-		signature: '( string $left_operand , string $right_operand [, int $scale = 0 ]): string'
+		description: 'SubtrAct one ArbitrAry precision number from Another',
+		signAture: '( string $left_operAnd , string $right_operAnd [, int $scAle = 0 ]): string'
 	},
-	abs: {
-		description: 'Absolute value',
-		signature: '( mixed $number ): number'
+	Abs: {
+		description: 'Absolute vAlue',
+		signAture: '( mixed $number ): number'
 	},
-	acos: {
+	Acos: {
 		description: 'Arc cosine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
-	acosh: {
+	Acosh: {
 		description: 'Inverse hyperbolic cosine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
-	asin: {
+	Asin: {
 		description: 'Arc sine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
-	asinh: {
+	Asinh: {
 		description: 'Inverse hyperbolic sine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
-	atan2: {
-		description: 'Arc tangent of two variables',
-		signature: '( float $y , float $x ): float'
+	AtAn2: {
+		description: 'Arc tAngent of two vAriAbles',
+		signAture: '( floAt $y , floAt $x ): floAt'
 	},
-	atan: {
-		description: 'Arc tangent',
-		signature: '( float $arg ): float'
+	AtAn: {
+		description: 'Arc tAngent',
+		signAture: '( floAt $Arg ): floAt'
 	},
-	atanh: {
-		description: 'Inverse hyperbolic tangent',
-		signature: '( float $arg ): float'
+	AtAnh: {
+		description: 'Inverse hyperbolic tAngent',
+		signAture: '( floAt $Arg ): floAt'
 	},
-	base_convert: {
-		description: 'Convert a number between arbitrary bases',
-		signature: '( string $number , int $frombase , int $tobase ): string'
+	bAse_convert: {
+		description: 'Convert A number between ArbitrAry bAses',
+		signAture: '( string $number , int $frombAse , int $tobAse ): string'
 	},
 	bindec: {
-		description: 'Binary to decimal',
-		signature: '( string $binary_string ): float'
+		description: 'BinAry to decimAl',
+		signAture: '( string $binAry_string ): floAt'
 	},
 	ceil: {
-		description: 'Round fractions up',
-		signature: '( float $value ): float'
+		description: 'Round frActions up',
+		signAture: '( floAt $vAlue ): floAt'
 	},
 	cos: {
 		description: 'Cosine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
 	cosh: {
 		description: 'Hyperbolic cosine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
 	decbin: {
-		description: 'Decimal to binary',
-		signature: '( int $number ): string'
+		description: 'DecimAl to binAry',
+		signAture: '( int $number ): string'
 	},
 	dechex: {
-		description: 'Decimal to hexadecimal',
-		signature: '( int $number ): string'
+		description: 'DecimAl to hexAdecimAl',
+		signAture: '( int $number ): string'
 	},
 	decoct: {
-		description: 'Decimal to octal',
-		signature: '( int $number ): string'
+		description: 'DecimAl to octAl',
+		signAture: '( int $number ): string'
 	},
-	deg2rad: {
-		description: 'Converts the number in degrees to the radian equivalent',
-		signature: '( float $number ): float'
+	deg2rAd: {
+		description: 'Converts the number in degrees to the rAdiAn equivAlent',
+		signAture: '( floAt $number ): floAt'
 	},
 	exp: {
-		description: 'Calculates the exponent of e',
-		signature: '( float $arg ): float'
+		description: 'CAlculAtes the exponent of e',
+		signAture: '( floAt $Arg ): floAt'
 	},
 	expm1: {
-		description: 'Returns exp(number) - 1, computed in a way that is accurate even   when the value of number is close to zero',
-		signature: '( float $arg ): float'
+		description: 'Returns exp(number) - 1, computed in A wAy thAt is AccurAte even   when the vAlue of number is close to zero',
+		signAture: '( floAt $Arg ): floAt'
 	},
 	floor: {
-		description: 'Round fractions down',
-		signature: '( float $value ): float'
+		description: 'Round frActions down',
+		signAture: '( floAt $vAlue ): floAt'
 	},
 	fmod: {
-		description: 'Returns the floating point remainder (modulo) of the division  of the arguments',
-		signature: '( float $x , float $y ): float'
+		description: 'Returns the floAting point remAinder (modulo) of the division  of the Arguments',
+		signAture: '( floAt $x , floAt $y ): floAt'
 	},
-	getrandmax: {
-		description: 'Show largest possible random value',
-		signature: '(void): int'
+	getrAndmAx: {
+		description: 'Show lArgest possible rAndom vAlue',
+		signAture: '(void): int'
 	},
 	hexdec: {
-		description: 'Hexadecimal to decimal',
-		signature: '( string $hex_string ): number'
+		description: 'HexAdecimAl to decimAl',
+		signAture: '( string $hex_string ): number'
 	},
 	hypot: {
-		description: 'Calculate the length of the hypotenuse of a right-angle triangle',
-		signature: '( float $x , float $y ): float'
+		description: 'CAlculAte the length of the hypotenuse of A right-Angle triAngle',
+		signAture: '( floAt $x , floAt $y ): floAt'
 	},
 	intdiv: {
 		description: 'Integer division',
-		signature: '( int $dividend , int $divisor ): int'
+		signAture: '( int $dividend , int $divisor ): int'
 	},
 	is_finite: {
-		description: 'Finds whether a value is a legal finite number',
-		signature: '( float $val ): bool'
+		description: 'Finds whether A vAlue is A legAl finite number',
+		signAture: '( floAt $vAl ): bool'
 	},
 	is_infinite: {
-		description: 'Finds whether a value is infinite',
-		signature: '( float $val ): bool'
+		description: 'Finds whether A vAlue is infinite',
+		signAture: '( floAt $vAl ): bool'
 	},
-	is_nan: {
-		description: 'Finds whether a value is not a number',
-		signature: '( float $val ): bool'
+	is_nAn: {
+		description: 'Finds whether A vAlue is not A number',
+		signAture: '( floAt $vAl ): bool'
 	},
-	lcg_value: {
-		description: 'Combined linear congruential generator',
-		signature: '(void): float'
+	lcg_vAlue: {
+		description: 'Combined lineAr congruentiAl generAtor',
+		signAture: '(void): floAt'
 	},
 	log10: {
-		description: 'Base-10 logarithm',
-		signature: '( float $arg ): float'
+		description: 'BAse-10 logArithm',
+		signAture: '( floAt $Arg ): floAt'
 	},
 	log1p: {
-		description: 'Returns log(1 + number), computed in a way that is accurate even when   the value of number is close to zero',
-		signature: '( float $number ): float'
+		description: 'Returns log(1 + number), computed in A wAy thAt is AccurAte even when   the vAlue of number is close to zero',
+		signAture: '( floAt $number ): floAt'
 	},
 	log: {
-		description: 'Natural logarithm',
-		signature: '( float $arg [, float $base = M_E ]): float'
+		description: 'NAturAl logArithm',
+		signAture: '( floAt $Arg [, floAt $bAse = M_E ]): floAt'
 	},
-	max: {
-		description: 'Find highest value',
-		signature: '( array $values , mixed $value1 [, mixed $... ]): string'
+	mAx: {
+		description: 'Find highest vAlue',
+		signAture: '( ArrAy $vAlues , mixed $vAlue1 [, mixed $... ]): string'
 	},
 	min: {
-		description: 'Find lowest value',
-		signature: '( array $values , mixed $value1 [, mixed $... ]): string'
+		description: 'Find lowest vAlue',
+		signAture: '( ArrAy $vAlues , mixed $vAlue1 [, mixed $... ]): string'
 	},
-	mt_getrandmax: {
-		description: 'Show largest possible random value',
-		signature: '(void): int'
+	mt_getrAndmAx: {
+		description: 'Show lArgest possible rAndom vAlue',
+		signAture: '(void): int'
 	},
-	mt_rand: {
-		description: 'Generate a random value via the Mersenne Twister Random Number Generator',
-		signature: '( int $min , int $max ): int'
+	mt_rAnd: {
+		description: 'GenerAte A rAndom vAlue viA the Mersenne Twister RAndom Number GenerAtor',
+		signAture: '( int $min , int $mAx ): int'
 	},
-	mt_srand: {
-		description: 'Seeds the Mersenne Twister Random Number Generator',
-		signature: '([ int $seed [, int $mode = MT_RAND_MT19937 ]]): void'
+	mt_srAnd: {
+		description: 'Seeds the Mersenne Twister RAndom Number GenerAtor',
+		signAture: '([ int $seed [, int $mode = MT_RAND_MT19937 ]]): void'
 	},
 	octdec: {
-		description: 'Octal to decimal',
-		signature: '( string $octal_string ): number'
+		description: 'OctAl to decimAl',
+		signAture: '( string $octAl_string ): number'
 	},
 	pi: {
-		description: 'Get value of pi',
-		signature: '(void): float'
+		description: 'Get vAlue of pi',
+		signAture: '(void): floAt'
 	},
 	pow: {
-		description: 'Exponential expression',
-		signature: '( number $base , number $exp ): number'
+		description: 'ExponentiAl expression',
+		signAture: '( number $bAse , number $exp ): number'
 	},
-	rad2deg: {
-		description: 'Converts the radian number to the equivalent number in degrees',
-		signature: '( float $number ): float'
+	rAd2deg: {
+		description: 'Converts the rAdiAn number to the equivAlent number in degrees',
+		signAture: '( floAt $number ): floAt'
 	},
-	rand: {
-		description: 'Generate a random integer',
-		signature: '( int $min , int $max ): int'
+	rAnd: {
+		description: 'GenerAte A rAndom integer',
+		signAture: '( int $min , int $mAx ): int'
 	},
 	round: {
-		description: 'Rounds a float',
-		signature: '( float $val [, int $precision = 0 [, int $mode = PHP_ROUND_HALF_UP ]]): float'
+		description: 'Rounds A floAt',
+		signAture: '( floAt $vAl [, int $precision = 0 [, int $mode = PHP_ROUND_HALF_UP ]]): floAt'
 	},
 	sin: {
 		description: 'Sine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
 	sinh: {
 		description: 'Hyperbolic sine',
-		signature: '( float $arg ): float'
+		signAture: '( floAt $Arg ): floAt'
 	},
 	sqrt: {
-		description: 'Square root',
-		signature: '( float $arg ): float'
+		description: 'SquAre root',
+		signAture: '( floAt $Arg ): floAt'
 	},
-	srand: {
-		description: 'Seed the random number generator',
-		signature: '([ int $seed ]): void'
+	srAnd: {
+		description: 'Seed the rAndom number generAtor',
+		signAture: '([ int $seed ]): void'
 	},
-	tan: {
-		description: 'Tangent',
-		signature: '( float $arg ): float'
+	tAn: {
+		description: 'TAngent',
+		signAture: '( floAt $Arg ): floAt'
 	},
-	tanh: {
-		description: 'Hyperbolic tangent',
-		signature: '( float $arg ): float'
+	tAnh: {
+		description: 'Hyperbolic tAngent',
+		signAture: '( floAt $Arg ): floAt'
 	},
-	pcntl_alarm: {
-		description: 'Set an alarm clock for delivery of a signal',
-		signature: '( int $seconds ): int'
+	pcntl_AlArm: {
+		description: 'Set An AlArm clock for delivery of A signAl',
+		signAture: '( int $seconds ): int'
 	},
-	pcntl_async_signals: {
-		description: 'Enable/disable asynchronous signal handling or return the old setting',
-		signature: '([ bool $on ]): bool'
+	pcntl_Async_signAls: {
+		description: 'EnAble/disAble Asynchronous signAl hAndling or return the old setting',
+		signAture: '([ bool $on ]): bool'
 	},
 	pcntl_errno: {
-		description: 'Alias of pcntl_get_last_error',
+		description: 'AliAs of pcntl_get_lAst_error',
 	},
 	pcntl_exec: {
-		description: 'Executes specified program in current process space',
-		signature: '( string $path [, array $args [, array $envs ]]): void'
+		description: 'Executes specified progrAm in current process spAce',
+		signAture: '( string $pAth [, ArrAy $Args [, ArrAy $envs ]]): void'
 	},
 	pcntl_fork: {
 		description: 'Forks the currently running process',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
-	pcntl_get_last_error: {
-		description: 'Retrieve the error number set by the last pcntl function which failed',
-		signature: '(void): int'
+	pcntl_get_lAst_error: {
+		description: 'Retrieve the error number set by the lAst pcntl function which fAiled',
+		signAture: '(void): int'
 	},
 	pcntl_getpriority: {
-		description: 'Get the priority of any process',
-		signature: '([ int $pid = getmypid() [, int $process_identifier = PRIO_PROCESS ]]): int'
+		description: 'Get the priority of Any process',
+		signAture: '([ int $pid = getmypid() [, int $process_identifier = PRIO_PROCESS ]]): int'
 	},
 	pcntl_setpriority: {
-		description: 'Change the priority of any process',
-		signature: '( int $priority [, int $pid = getmypid() [, int $process_identifier = PRIO_PROCESS ]]): bool'
+		description: 'ChAnge the priority of Any process',
+		signAture: '( int $priority [, int $pid = getmypid() [, int $process_identifier = PRIO_PROCESS ]]): bool'
 	},
-	pcntl_signal_dispatch: {
-		description: 'Calls signal handlers for pending signals',
-		signature: '(void): bool'
+	pcntl_signAl_dispAtch: {
+		description: 'CAlls signAl hAndlers for pending signAls',
+		signAture: '(void): bool'
 	},
-	pcntl_signal_get_handler: {
-		description: 'Get the current handler for specified signal',
-		signature: '( int $signo ): mixed'
+	pcntl_signAl_get_hAndler: {
+		description: 'Get the current hAndler for specified signAl',
+		signAture: '( int $signo ): mixed'
 	},
-	pcntl_signal: {
-		description: 'Installs a signal handler',
-		signature: '( int $signo , callable|int $handler [, bool $restart_syscalls ]): bool'
+	pcntl_signAl: {
+		description: 'InstAlls A signAl hAndler',
+		signAture: '( int $signo , cAllAble|int $hAndler [, bool $restArt_syscAlls ]): bool'
 	},
-	pcntl_sigprocmask: {
-		description: 'Sets and retrieves blocked signals',
-		signature: '( int $how , array $set [, array $oldset ]): bool'
+	pcntl_sigprocmAsk: {
+		description: 'Sets And retrieves blocked signAls',
+		signAture: '( int $how , ArrAy $set [, ArrAy $oldset ]): bool'
 	},
-	pcntl_sigtimedwait: {
-		description: 'Waits for signals, with a timeout',
-		signature: '( array $set [, array $siginfo [, int $seconds = 0 [, int $nanoseconds = 0 ]]]): int'
+	pcntl_sigtimedwAit: {
+		description: 'WAits for signAls, with A timeout',
+		signAture: '( ArrAy $set [, ArrAy $siginfo [, int $seconds = 0 [, int $nAnoseconds = 0 ]]]): int'
 	},
-	pcntl_sigwaitinfo: {
-		description: 'Waits for signals',
-		signature: '( array $set [, array $siginfo ]): int'
+	pcntl_sigwAitinfo: {
+		description: 'WAits for signAls',
+		signAture: '( ArrAy $set [, ArrAy $siginfo ]): int'
 	},
 	pcntl_strerror: {
-		description: 'Retrieve the system error message associated with the given errno',
-		signature: '( int $errno ): string'
+		description: 'Retrieve the system error messAge AssociAted with the given errno',
+		signAture: '( int $errno ): string'
 	},
-	pcntl_wait: {
-		description: 'Waits on or returns the status of a forked child',
-		signature: '( int $status [, int $options = 0 [, array $rusage ]]): int'
+	pcntl_wAit: {
+		description: 'WAits on or returns the stAtus of A forked child',
+		signAture: '( int $stAtus [, int $options = 0 [, ArrAy $rusAge ]]): int'
 	},
-	pcntl_waitpid: {
-		description: 'Waits on or returns the status of a forked child',
-		signature: '( int $pid , int $status [, int $options = 0 [, array $rusage ]]): int'
+	pcntl_wAitpid: {
+		description: 'WAits on or returns the stAtus of A forked child',
+		signAture: '( int $pid , int $stAtus [, int $options = 0 [, ArrAy $rusAge ]]): int'
 	},
-	pcntl_wexitstatus: {
-		description: 'Returns the return code of a terminated child',
-		signature: '( int $status ): int'
+	pcntl_wexitstAtus: {
+		description: 'Returns the return code of A terminAted child',
+		signAture: '( int $stAtus ): int'
 	},
 	pcntl_wifexited: {
-		description: 'Checks if status code represents a normal exit',
-		signature: '( int $status ): bool'
+		description: 'Checks if stAtus code represents A normAl exit',
+		signAture: '( int $stAtus ): bool'
 	},
-	pcntl_wifsignaled: {
-		description: 'Checks whether the status code represents a termination due to a signal',
-		signature: '( int $status ): bool'
+	pcntl_wifsignAled: {
+		description: 'Checks whether the stAtus code represents A terminAtion due to A signAl',
+		signAture: '( int $stAtus ): bool'
 	},
 	pcntl_wifstopped: {
 		description: 'Checks whether the child process is currently stopped',
-		signature: '( int $status ): bool'
+		signAture: '( int $stAtus ): bool'
 	},
 	pcntl_wstopsig: {
-		description: 'Returns the signal which caused the child to stop',
-		signature: '( int $status ): int'
+		description: 'Returns the signAl which cAused the child to stop',
+		signAture: '( int $stAtus ): int'
 	},
 	pcntl_wtermsig: {
-		description: 'Returns the signal which caused the child to terminate',
-		signature: '( int $status ): int'
+		description: 'Returns the signAl which cAused the child to terminAte',
+		signAture: '( int $stAtus ): int'
 	},
-	posix_access: {
-		description: 'Determine accessibility of a file',
-		signature: '( string $file [, int $mode = POSIX_F_OK ]): bool'
+	posix_Access: {
+		description: 'Determine Accessibility of A file',
+		signAture: '( string $file [, int $mode = POSIX_F_OK ]): bool'
 	},
 	posix_ctermid: {
-		description: 'Get path name of controlling terminal',
-		signature: '(void): string'
+		description: 'Get pAth nAme of controlling terminAl',
+		signAture: '(void): string'
 	},
 	posix_errno: {
-		description: 'Alias of posix_get_last_error',
+		description: 'AliAs of posix_get_lAst_error',
 	},
-	posix_get_last_error: {
-		description: 'Retrieve the error number set by the last posix function that failed',
-		signature: '(void): int'
+	posix_get_lAst_error: {
+		description: 'Retrieve the error number set by the lAst posix function thAt fAiled',
+		signAture: '(void): int'
 	},
 	posix_getcwd: {
-		description: 'Pathname of current directory',
-		signature: '(void): string'
+		description: 'PAthnAme of current directory',
+		signAture: '(void): string'
 	},
 	posix_getegid: {
 		description: 'Return the effective group ID of the current process',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	posix_geteuid: {
 		description: 'Return the effective user ID of the current process',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	posix_getgid: {
-		description: 'Return the real group ID of the current process',
-		signature: '(void): int'
+		description: 'Return the reAl group ID of the current process',
+		signAture: '(void): int'
 	},
 	posix_getgrgid: {
-		description: 'Return info about a group by group id',
-		signature: '( int $gid ): array'
+		description: 'Return info About A group by group id',
+		signAture: '( int $gid ): ArrAy'
 	},
-	posix_getgrnam: {
-		description: 'Return info about a group by name',
-		signature: '( string $name ): array'
+	posix_getgrnAm: {
+		description: 'Return info About A group by nAme',
+		signAture: '( string $nAme ): ArrAy'
 	},
 	posix_getgroups: {
 		description: 'Return the group set of the current process',
-		signature: '(void): array'
+		signAture: '(void): ArrAy'
 	},
 	posix_getlogin: {
-		description: 'Return login name',
-		signature: '(void): string'
+		description: 'Return login nAme',
+		signAture: '(void): string'
 	},
 	posix_getpgid: {
 		description: 'Get process group id for job control',
-		signature: '( int $pid ): int'
+		signAture: '( int $pid ): int'
 	},
 	posix_getpgrp: {
 		description: 'Return the current process group identifier',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	posix_getpid: {
 		description: 'Return the current process identifier',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
 	posix_getppid: {
-		description: 'Return the parent process identifier',
-		signature: '(void): int'
+		description: 'Return the pArent process identifier',
+		signAture: '(void): int'
 	},
-	posix_getpwnam: {
-		description: 'Return info about a user by username',
-		signature: '( string $username ): array'
+	posix_getpwnAm: {
+		description: 'Return info About A user by usernAme',
+		signAture: '( string $usernAme ): ArrAy'
 	},
 	posix_getpwuid: {
-		description: 'Return info about a user by user id',
-		signature: '( int $uid ): array'
+		description: 'Return info About A user by user id',
+		signAture: '( int $uid ): ArrAy'
 	},
 	posix_getrlimit: {
-		description: 'Return info about system resource limits',
-		signature: '(void): array'
+		description: 'Return info About system resource limits',
+		signAture: '(void): ArrAy'
 	},
 	posix_getsid: {
 		description: 'Get the current sid of the process',
-		signature: '( int $pid ): int'
+		signAture: '( int $pid ): int'
 	},
 	posix_getuid: {
-		description: 'Return the real user ID of the current process',
-		signature: '(void): int'
+		description: 'Return the reAl user ID of the current process',
+		signAture: '(void): int'
 	},
 	posix_initgroups: {
-		description: 'Calculate the group access list',
-		signature: '( string $name , int $base_group_id ): bool'
+		description: 'CAlculAte the group Access list',
+		signAture: '( string $nAme , int $bAse_group_id ): bool'
 	},
-	posix_isatty: {
-		description: 'Determine if a file descriptor is an interactive terminal',
-		signature: '( mixed $fd ): bool'
+	posix_isAtty: {
+		description: 'Determine if A file descriptor is An interActive terminAl',
+		signAture: '( mixed $fd ): bool'
 	},
 	posix_kill: {
-		description: 'Send a signal to a process',
-		signature: '( int $pid , int $sig ): bool'
+		description: 'Send A signAl to A process',
+		signAture: '( int $pid , int $sig ): bool'
 	},
 	posix_mkfifo: {
-		description: 'Create a fifo special file (a named pipe)',
-		signature: '( string $pathname , int $mode ): bool'
+		description: 'CreAte A fifo speciAl file (A nAmed pipe)',
+		signAture: '( string $pAthnAme , int $mode ): bool'
 	},
 	posix_mknod: {
-		description: 'Create a special or ordinary file (POSIX.1)',
-		signature: '( string $pathname , int $mode [, int $major = 0 [, int $minor = 0 ]]): bool'
+		description: 'CreAte A speciAl or ordinAry file (POSIX.1)',
+		signAture: '( string $pAthnAme , int $mode [, int $mAjor = 0 [, int $minor = 0 ]]): bool'
 	},
 	posix_setegid: {
 		description: 'Set the effective GID of the current process',
-		signature: '( int $gid ): bool'
+		signAture: '( int $gid ): bool'
 	},
 	posix_seteuid: {
 		description: 'Set the effective UID of the current process',
-		signature: '( int $uid ): bool'
+		signAture: '( int $uid ): bool'
 	},
 	posix_setgid: {
 		description: 'Set the GID of the current process',
-		signature: '( int $gid ): bool'
+		signAture: '( int $gid ): bool'
 	},
 	posix_setpgid: {
 		description: 'Set process group id for job control',
-		signature: '( int $pid , int $pgid ): bool'
+		signAture: '( int $pid , int $pgid ): bool'
 	},
 	posix_setrlimit: {
 		description: 'Set system resource limits',
-		signature: '( int $resource , int $softlimit , int $hardlimit ): bool'
+		signAture: '( int $resource , int $softlimit , int $hArdlimit ): bool'
 	},
 	posix_setsid: {
-		description: 'Make the current process a session leader',
-		signature: '(void): int'
+		description: 'MAke the current process A session leAder',
+		signAture: '(void): int'
 	},
 	posix_setuid: {
 		description: 'Set the UID of the current process',
-		signature: '( int $uid ): bool'
+		signAture: '( int $uid ): bool'
 	},
 	posix_strerror: {
-		description: 'Retrieve the system error message associated with the given errno',
-		signature: '( int $errno ): string'
+		description: 'Retrieve the system error messAge AssociAted with the given errno',
+		signAture: '( int $errno ): string'
 	},
 	posix_times: {
 		description: 'Get process times',
-		signature: '(void): array'
+		signAture: '(void): ArrAy'
 	},
-	posix_ttyname: {
-		description: 'Determine terminal device name',
-		signature: '( mixed $fd ): string'
+	posix_ttynAme: {
+		description: 'Determine terminAl device nAme',
+		signAture: '( mixed $fd ): string'
 	},
-	posix_uname: {
-		description: 'Get system name',
-		signature: '(void): array'
+	posix_unAme: {
+		description: 'Get system nAme',
+		signAture: '(void): ArrAy'
 	},
-	escapeshellarg: {
-		description: 'Escape a string to be used as a shell argument',
-		signature: '( string $arg ): string'
+	escApeshellArg: {
+		description: 'EscApe A string to be used As A shell Argument',
+		signAture: '( string $Arg ): string'
 	},
-	escapeshellcmd: {
-		description: 'Escape shell metacharacters',
-		signature: '( string $command ): string'
+	escApeshellcmd: {
+		description: 'EscApe shell metAchArActers',
+		signAture: '( string $commAnd ): string'
 	},
 	exec: {
-		description: 'Execute an external program',
-		signature: '( string $command [, array $output [, int $return_var ]]): string'
+		description: 'Execute An externAl progrAm',
+		signAture: '( string $commAnd [, ArrAy $output [, int $return_vAr ]]): string'
 	},
-	passthru: {
-		description: 'Execute an external program and display raw output',
-		signature: '( string $command [, int $return_var ]): void'
+	pAssthru: {
+		description: 'Execute An externAl progrAm And displAy rAw output',
+		signAture: '( string $commAnd [, int $return_vAr ]): void'
 	},
 	proc_close: {
-		description: 'Close a process opened by proc_open and return the exit code of that process',
-		signature: '( resource $process ): int'
+		description: 'Close A process opened by proc_open And return the exit code of thAt process',
+		signAture: '( resource $process ): int'
 	},
-	proc_get_status: {
-		description: 'Get information about a process opened by proc_open',
-		signature: '( resource $process ): array'
+	proc_get_stAtus: {
+		description: 'Get informAtion About A process opened by proc_open',
+		signAture: '( resource $process ): ArrAy'
 	},
 	proc_nice: {
-		description: 'Change the priority of the current process',
-		signature: '( int $increment ): bool'
+		description: 'ChAnge the priority of the current process',
+		signAture: '( int $increment ): bool'
 	},
 	proc_open: {
-		description: 'Execute a command and open file pointers for input/output',
-		signature: '( string $cmd , array $descriptorspec , array $pipes [, string $cwd [, array $env [, array $other_options ]]]): resource'
+		description: 'Execute A commAnd And open file pointers for input/output',
+		signAture: '( string $cmd , ArrAy $descriptorspec , ArrAy $pipes [, string $cwd [, ArrAy $env [, ArrAy $other_options ]]]): resource'
 	},
-	proc_terminate: {
-		description: 'Kills a process opened by proc_open',
-		signature: '( resource $process [, int $signal = 15 ]): bool'
+	proc_terminAte: {
+		description: 'Kills A process opened by proc_open',
+		signAture: '( resource $process [, int $signAl = 15 ]): bool'
 	},
 	shell_exec: {
-		description: 'Execute command via shell and return the complete output as a string',
-		signature: '( string $cmd ): string'
+		description: 'Execute commAnd viA shell And return the complete output As A string',
+		signAture: '( string $cmd ): string'
 	},
 	system: {
-		description: 'Execute an external program and display the output',
-		signature: '( string $command [, int $return_var ]): string'
+		description: 'Execute An externAl progrAm And displAy the output',
+		signAture: '( string $commAnd [, int $return_vAr ]): string'
 	},
 	ftok: {
-		description: 'Convert a pathname and a project identifier to a System V IPC key',
-		signature: '( string $pathname , string $proj ): int'
+		description: 'Convert A pAthnAme And A project identifier to A System V IPC key',
+		signAture: '( string $pAthnAme , string $proj ): int'
 	},
 	msg_get_queue: {
-		description: 'Create or attach to a message queue',
-		signature: '( int $key [, int $perms = 0666 ]): resource'
+		description: 'CreAte or AttAch to A messAge queue',
+		signAture: '( int $key [, int $perms = 0666 ]): resource'
 	},
 	msg_queue_exists: {
-		description: 'Check whether a message queue exists',
-		signature: '( int $key ): bool'
+		description: 'Check whether A messAge queue exists',
+		signAture: '( int $key ): bool'
 	},
 	msg_receive: {
-		description: 'Receive a message from a message queue',
-		signature: '( resource $queue , int $desiredmsgtype , int $msgtype , int $maxsize , mixed $message [, bool $unserialize [, int $flags = 0 [, int $errorcode ]]]): bool'
+		description: 'Receive A messAge from A messAge queue',
+		signAture: '( resource $queue , int $desiredmsgtype , int $msgtype , int $mAxsize , mixed $messAge [, bool $unseriAlize [, int $flAgs = 0 [, int $errorcode ]]]): bool'
 	},
 	msg_remove_queue: {
-		description: 'Destroy a message queue',
-		signature: '( resource $queue ): bool'
+		description: 'Destroy A messAge queue',
+		signAture: '( resource $queue ): bool'
 	},
 	msg_send: {
-		description: 'Send a message to a message queue',
-		signature: '( resource $queue , int $msgtype , mixed $message [, bool $serialize [, bool $blocking [, int $errorcode ]]]): bool'
+		description: 'Send A messAge to A messAge queue',
+		signAture: '( resource $queue , int $msgtype , mixed $messAge [, bool $seriAlize [, bool $blocking [, int $errorcode ]]]): bool'
 	},
 	msg_set_queue: {
-		description: 'Set information in the message queue data structure',
-		signature: '( resource $queue , array $data ): bool'
+		description: 'Set informAtion in the messAge queue dAtA structure',
+		signAture: '( resource $queue , ArrAy $dAtA ): bool'
 	},
-	msg_stat_queue: {
-		description: 'Returns information from the message queue data structure',
-		signature: '( resource $queue ): array'
+	msg_stAt_queue: {
+		description: 'Returns informAtion from the messAge queue dAtA structure',
+		signAture: '( resource $queue ): ArrAy'
 	},
-	sem_acquire: {
-		description: 'Acquire a semaphore',
-		signature: '( resource $sem_identifier [, bool $nowait ]): bool'
+	sem_Acquire: {
+		description: 'Acquire A semAphore',
+		signAture: '( resource $sem_identifier [, bool $nowAit ]): bool'
 	},
 	sem_get: {
-		description: 'Get a semaphore id',
-		signature: '( int $key [, int $max_acquire = 1 [, int $perm = 0666 [, int $auto_release = 1 ]]]): resource'
+		description: 'Get A semAphore id',
+		signAture: '( int $key [, int $mAx_Acquire = 1 [, int $perm = 0666 [, int $Auto_releAse = 1 ]]]): resource'
 	},
-	sem_release: {
-		description: 'Release a semaphore',
-		signature: '( resource $sem_identifier ): bool'
+	sem_releAse: {
+		description: 'ReleAse A semAphore',
+		signAture: '( resource $sem_identifier ): bool'
 	},
 	sem_remove: {
-		description: 'Remove a semaphore',
-		signature: '( resource $sem_identifier ): bool'
+		description: 'Remove A semAphore',
+		signAture: '( resource $sem_identifier ): bool'
 	},
-	shm_attach: {
-		description: 'Creates or open a shared memory segment',
-		signature: '( int $key [, int $memsize [, int $perm = 0666 ]]): resource'
+	shm_AttAch: {
+		description: 'CreAtes or open A shAred memory segment',
+		signAture: '( int $key [, int $memsize [, int $perm = 0666 ]]): resource'
 	},
-	shm_detach: {
-		description: 'Disconnects from shared memory segment',
-		signature: '( resource $shm_identifier ): bool'
+	shm_detAch: {
+		description: 'Disconnects from shAred memory segment',
+		signAture: '( resource $shm_identifier ): bool'
 	},
-	shm_get_var: {
-		description: 'Returns a variable from shared memory',
-		signature: '( resource $shm_identifier , int $variable_key ): mixed'
+	shm_get_vAr: {
+		description: 'Returns A vAriAble from shAred memory',
+		signAture: '( resource $shm_identifier , int $vAriAble_key ): mixed'
 	},
-	shm_has_var: {
-		description: 'Check whether a specific entry exists',
-		signature: '( resource $shm_identifier , int $variable_key ): bool'
+	shm_hAs_vAr: {
+		description: 'Check whether A specific entry exists',
+		signAture: '( resource $shm_identifier , int $vAriAble_key ): bool'
 	},
-	shm_put_var: {
-		description: 'Inserts or updates a variable in shared memory',
-		signature: '( resource $shm_identifier , int $variable_key , mixed $variable ): bool'
+	shm_put_vAr: {
+		description: 'Inserts or updAtes A vAriAble in shAred memory',
+		signAture: '( resource $shm_identifier , int $vAriAble_key , mixed $vAriAble ): bool'
 	},
-	shm_remove_var: {
-		description: 'Removes a variable from shared memory',
-		signature: '( resource $shm_identifier , int $variable_key ): bool'
+	shm_remove_vAr: {
+		description: 'Removes A vAriAble from shAred memory',
+		signAture: '( resource $shm_identifier , int $vAriAble_key ): bool'
 	},
 	shm_remove: {
-		description: 'Removes shared memory from Unix systems',
-		signature: '( resource $shm_identifier ): bool'
+		description: 'Removes shAred memory from Unix systems',
+		signAture: '( resource $shm_identifier ): bool'
 	},
 	shmop_close: {
-		description: 'Close shared memory block',
-		signature: '( resource $shmid ): void'
+		description: 'Close shAred memory block',
+		signAture: '( resource $shmid ): void'
 	},
 	shmop_delete: {
-		description: 'Delete shared memory block',
-		signature: '( resource $shmid ): bool'
+		description: 'Delete shAred memory block',
+		signAture: '( resource $shmid ): bool'
 	},
 	shmop_open: {
-		description: 'Create or open shared memory block',
-		signature: '( int $key , string $flags , int $mode , int $size ): resource'
+		description: 'CreAte or open shAred memory block',
+		signAture: '( int $key , string $flAgs , int $mode , int $size ): resource'
 	},
-	shmop_read: {
-		description: 'Read data from shared memory block',
-		signature: '( resource $shmid , int $start , int $count ): string'
+	shmop_reAd: {
+		description: 'ReAd dAtA from shAred memory block',
+		signAture: '( resource $shmid , int $stArt , int $count ): string'
 	},
 	shmop_size: {
-		description: 'Get size of shared memory block',
-		signature: '( resource $shmid ): int'
+		description: 'Get size of shAred memory block',
+		signAture: '( resource $shmid ): int'
 	},
 	shmop_write: {
-		description: 'Write data into shared memory block',
-		signature: '( resource $shmid , string $data , int $offset ): int'
+		description: 'Write dAtA into shAred memory block',
+		signAture: '( resource $shmid , string $dAtA , int $offset ): int'
 	},
 	json_decode: {
-		description: 'Decodes a JSON string',
-		signature: '( string $json [, bool $assoc [, int $depth = 512 [, int $options = 0 ]]]): mixed'
+		description: 'Decodes A JSON string',
+		signAture: '( string $json [, bool $Assoc [, int $depth = 512 [, int $options = 0 ]]]): mixed'
 	},
 	json_encode: {
-		description: 'Returns the JSON representation of a value',
-		signature: '( mixed $value [, int $options = 0 [, int $depth = 512 ]]): string'
+		description: 'Returns the JSON representAtion of A vAlue',
+		signAture: '( mixed $vAlue [, int $options = 0 [, int $depth = 512 ]]): string'
 	},
-	json_last_error_msg: {
-		description: 'Returns the error string of the last json_encode() or json_decode() call',
-		signature: '(void): string'
+	json_lAst_error_msg: {
+		description: 'Returns the error string of the lAst json_encode() or json_decode() cAll',
+		signAture: '(void): string'
 	},
-	json_last_error: {
-		description: 'Returns the last error occurred',
-		signature: '(void): int'
+	json_lAst_error: {
+		description: 'Returns the lAst error occurred',
+		signAture: '(void): int'
 	},
-	connection_aborted: {
+	connection_Aborted: {
 		description: 'Check whether client disconnected',
-		signature: '(void): int'
+		signAture: '(void): int'
 	},
-	connection_status: {
-		description: 'Returns connection status bitfield',
-		signature: '(void): int'
+	connection_stAtus: {
+		description: 'Returns connection stAtus bitfield',
+		signAture: '(void): int'
 	},
-	constant: {
-		description: 'Returns the value of a constant',
-		signature: '( string $name ): mixed'
+	constAnt: {
+		description: 'Returns the vAlue of A constAnt',
+		signAture: '( string $nAme ): mixed'
 	},
 	define: {
-		description: 'Defines a named constant',
-		signature: '( string $name , mixed $value [, bool $case_insensitive ]): bool'
+		description: 'Defines A nAmed constAnt',
+		signAture: '( string $nAme , mixed $vAlue [, bool $cAse_insensitive ]): bool'
 	},
 	defined: {
-		description: 'Checks whether a given named constant exists',
-		signature: '( string $name ): bool'
+		description: 'Checks whether A given nAmed constAnt exists',
+		signAture: '( string $nAme ): bool'
 	},
 	die: {
-		description: 'Equivalent to exit',
+		description: 'EquivAlent to exit',
 	},
-	eval: {
-		description: 'Evaluate a string as PHP code',
-		signature: '( string $code ): mixed'
+	evAl: {
+		description: 'EvAluAte A string As PHP code',
+		signAture: '( string $code ): mixed'
 	},
 	exit: {
-		description: 'Output a message and terminate the current script',
-		signature: '( int $status ): void'
+		description: 'Output A messAge And terminAte the current script',
+		signAture: '( int $stAtus ): void'
 	},
 	get_browser: {
-		description: 'Tells what the user\'s browser is capable of',
-		signature: '([ string $user_agent [, bool $return_array ]]): mixed'
+		description: 'Tells whAt the user\'s browser is cApAble of',
+		signAture: '([ string $user_Agent [, bool $return_ArrAy ]]): mixed'
 	},
-	__halt_compiler: {
-		description: 'Halts the compiler execution',
-		signature: '(void): void'
+	__hAlt_compiler: {
+		description: 'HAlts the compiler execution',
+		signAture: '(void): void'
 	},
 	highlight_file: {
-		description: 'Syntax highlighting of a file',
-		signature: '( string $filename [, bool $return ]): mixed'
+		description: 'SyntAx highlighting of A file',
+		signAture: '( string $filenAme [, bool $return ]): mixed'
 	},
 	highlight_string: {
-		description: 'Syntax highlighting of a string',
-		signature: '( string $str [, bool $return ]): mixed'
+		description: 'SyntAx highlighting of A string',
+		signAture: '( string $str [, bool $return ]): mixed'
 	},
 	hrtime: {
 		description: 'Get the system\'s high resolution time',
-		signature: '([ bool $get_as_number ]): mixed'
+		signAture: '([ bool $get_As_number ]): mixed'
 	},
-	ignore_user_abort: {
-		description: 'Set whether a client disconnect should abort script execution',
-		signature: '([ bool $value ]): int'
+	ignore_user_Abort: {
+		description: 'Set whether A client disconnect should Abort script execution',
+		signAture: '([ bool $vAlue ]): int'
 	},
-	pack: {
-		description: 'Pack data into binary string',
-		signature: '( string $format [, mixed $... ]): string'
+	pAck: {
+		description: 'PAck dAtA into binAry string',
+		signAture: '( string $formAt [, mixed $... ]): string'
 	},
-	php_check_syntax: {
-		description: 'Check the PHP syntax of (and execute) the specified file',
-		signature: '( string $filename [, string $error_message ]): bool'
+	php_check_syntAx: {
+		description: 'Check the PHP syntAx of (And execute) the specified file',
+		signAture: '( string $filenAme [, string $error_messAge ]): bool'
 	},
-	php_strip_whitespace: {
-		description: 'Return source with stripped comments and whitespace',
-		signature: '( string $filename ): string'
+	php_strip_whitespAce: {
+		description: 'Return source with stripped comments And whitespAce',
+		signAture: '( string $filenAme ): string'
 	},
-	sapi_windows_cp_conv: {
-		description: 'Convert string from one codepage to another',
-		signature: '( int|string $in_codepage , int|string $out_codepage , string $subject ): string'
+	sApi_windows_cp_conv: {
+		description: 'Convert string from one codepAge to Another',
+		signAture: '( int|string $in_codepAge , int|string $out_codepAge , string $subject ): string'
 	},
-	sapi_windows_cp_get: {
-		description: 'Get process codepage',
-		signature: '( string $kind ): int'
+	sApi_windows_cp_get: {
+		description: 'Get process codepAge',
+		signAture: '( string $kind ): int'
 	},
-	sapi_windows_cp_is_utf8: {
-		description: 'Indicates whether the codepage is UTF-8 compatible',
-		signature: '(void): bool'
+	sApi_windows_cp_is_utf8: {
+		description: 'IndicAtes whether the codepAge is UTF-8 compAtible',
+		signAture: '(void): bool'
 	},
-	sapi_windows_cp_set: {
-		description: 'Set process codepage',
-		signature: '( int $cp ): bool'
+	sApi_windows_cp_set: {
+		description: 'Set process codepAge',
+		signAture: '( int $cp ): bool'
 	},
-	sapi_windows_vt100_support: {
-		description: 'Get or set VT100 support for the specified stream associated to an output buffer of a Windows console.',
-		signature: '( resource $stream [, bool $enable ]): bool'
+	sApi_windows_vt100_support: {
+		description: 'Get or set VT100 support for the specified streAm AssociAted to An output buffer of A Windows console.',
+		signAture: '( resource $streAm [, bool $enAble ]): bool'
 	},
 	show_source: {
-		description: 'Alias of highlight_file',
+		description: 'AliAs of highlight_file',
 	},
 	sleep: {
-		description: 'Delay execution',
-		signature: '( int $seconds ): int'
+		description: 'DelAy execution',
+		signAture: '( int $seconds ): int'
 	},
-	sys_getloadavg: {
-		description: 'Gets system load average',
-		signature: '(void): array'
+	sys_getloAdAvg: {
+		description: 'Gets system loAd AverAge',
+		signAture: '(void): ArrAy'
 	},
-	time_nanosleep: {
-		description: 'Delay for a number of seconds and nanoseconds',
-		signature: '( int $seconds , int $nanoseconds ): mixed'
+	time_nAnosleep: {
+		description: 'DelAy for A number of seconds And nAnoseconds',
+		signAture: '( int $seconds , int $nAnoseconds ): mixed'
 	},
 	time_sleep_until: {
-		description: 'Make the script sleep until the specified time',
-		signature: '( float $timestamp ): bool'
+		description: 'MAke the script sleep until the specified time',
+		signAture: '( floAt $timestAmp ): bool'
 	},
 	uniqid: {
-		description: 'Generate a unique ID',
-		signature: '([ string $prefix = "" [, bool $more_entropy ]]): string'
+		description: 'GenerAte A unique ID',
+		signAture: '([ string $prefix = "" [, bool $more_entropy ]]): string'
 	},
-	unpack: {
-		description: 'Unpack data from binary string',
-		signature: '( string $format , string $data [, int $offset = 0 ]): array'
+	unpAck: {
+		description: 'UnpAck dAtA from binAry string',
+		signAture: '( string $formAt , string $dAtA [, int $offset = 0 ]): ArrAy'
 	},
 	usleep: {
-		description: 'Delay execution in microseconds',
-		signature: '( int $micro_seconds ): void'
+		description: 'DelAy execution in microseconds',
+		signAture: '( int $micro_seconds ): void'
 	},
-	class_implements: {
-		description: 'Return the interfaces which are implemented by the given class or interface',
-		signature: '( mixed $class [, bool $autoload ]): array'
+	clAss_implements: {
+		description: 'Return the interfAces which Are implemented by the given clAss or interfAce',
+		signAture: '( mixed $clAss [, bool $AutoloAd ]): ArrAy'
 	},
-	class_parents: {
-		description: 'Return the parent classes of the given class',
-		signature: '( mixed $class [, bool $autoload ]): array'
+	clAss_pArents: {
+		description: 'Return the pArent clAsses of the given clAss',
+		signAture: '( mixed $clAss [, bool $AutoloAd ]): ArrAy'
 	},
-	class_uses: {
-		description: 'Return the traits used by the given class',
-		signature: '( mixed $class [, bool $autoload ]): array'
+	clAss_uses: {
+		description: 'Return the trAits used by the given clAss',
+		signAture: '( mixed $clAss [, bool $AutoloAd ]): ArrAy'
 	},
-	iterator_apply: {
-		description: 'Call a function for every element in an iterator',
-		signature: '( Traversable $iterator , callable $function [, array $args ]): int'
+	iterAtor_Apply: {
+		description: 'CAll A function for every element in An iterAtor',
+		signAture: '( TrAversAble $iterAtor , cAllAble $function [, ArrAy $Args ]): int'
 	},
-	iterator_count: {
-		description: 'Count the elements in an iterator',
-		signature: '( Traversable $iterator ): int'
+	iterAtor_count: {
+		description: 'Count the elements in An iterAtor',
+		signAture: '( TrAversAble $iterAtor ): int'
 	},
-	iterator_to_array: {
-		description: 'Copy the iterator into an array',
-		signature: '( Traversable $iterator [, bool $use_keys ]): array'
+	iterAtor_to_ArrAy: {
+		description: 'Copy the iterAtor into An ArrAy',
+		signAture: '( TrAversAble $iterAtor [, bool $use_keys ]): ArrAy'
 	},
-	spl_autoload_call: {
-		description: 'Try all registered __autoload() functions to load the requested class',
-		signature: '( string $class_name ): void'
+	spl_AutoloAd_cAll: {
+		description: 'Try All registered __AutoloAd() functions to loAd the requested clAss',
+		signAture: '( string $clAss_nAme ): void'
 	},
-	spl_autoload_extensions: {
-		description: 'Register and return default file extensions for spl_autoload',
-		signature: '([ string $file_extensions ]): string'
+	spl_AutoloAd_extensions: {
+		description: 'Register And return defAult file extensions for spl_AutoloAd',
+		signAture: '([ string $file_extensions ]): string'
 	},
-	spl_autoload_functions: {
-		description: 'Return all registered __autoload() functions',
-		signature: '(void): array'
+	spl_AutoloAd_functions: {
+		description: 'Return All registered __AutoloAd() functions',
+		signAture: '(void): ArrAy'
 	},
-	spl_autoload_register: {
-		description: 'Register given function as __autoload() implementation',
-		signature: '([ callable $autoload_function [, bool $throw [, bool $prepend ]]]): bool'
+	spl_AutoloAd_register: {
+		description: 'Register given function As __AutoloAd() implementAtion',
+		signAture: '([ cAllAble $AutoloAd_function [, bool $throw [, bool $prepend ]]]): bool'
 	},
-	spl_autoload_unregister: {
-		description: 'Unregister given function as __autoload() implementation',
-		signature: '( mixed $autoload_function ): bool'
+	spl_AutoloAd_unregister: {
+		description: 'Unregister given function As __AutoloAd() implementAtion',
+		signAture: '( mixed $AutoloAd_function ): bool'
 	},
-	spl_autoload: {
-		description: 'Default implementation for __autoload()',
-		signature: '( string $class_name [, string $file_extensions = spl_autoload_extensions() ]): void'
+	spl_AutoloAd: {
+		description: 'DefAult implementAtion for __AutoloAd()',
+		signAture: '( string $clAss_nAme [, string $file_extensions = spl_AutoloAd_extensions() ]): void'
 	},
-	spl_classes: {
-		description: 'Return available SPL classes',
-		signature: '(void): array'
+	spl_clAsses: {
+		description: 'Return AvAilAble SPL clAsses',
+		signAture: '(void): ArrAy'
 	},
-	spl_object_hash: {
-		description: 'Return hash id for given object',
-		signature: '( object $obj ): string'
+	spl_object_hAsh: {
+		description: 'Return hAsh id for given object',
+		signAture: '( object $obj ): string'
 	},
 	spl_object_id: {
-		description: 'Return the integer object handle for given object',
-		signature: '( object $obj ): int'
+		description: 'Return the integer object hAndle for given object',
+		signAture: '( object $obj ): int'
 	},
 	set_socket_blocking: {
-		description: 'Alias of stream_set_blocking',
+		description: 'AliAs of streAm_set_blocking',
 	},
-	stream_bucket_append: {
-		description: 'Append bucket to brigade',
-		signature: '( resource $brigade , object $bucket ): void'
+	streAm_bucket_Append: {
+		description: 'Append bucket to brigAde',
+		signAture: '( resource $brigAde , object $bucket ): void'
 	},
-	stream_bucket_make_writeable: {
-		description: 'Return a bucket object from the brigade for operating on',
-		signature: '( resource $brigade ): object'
+	streAm_bucket_mAke_writeAble: {
+		description: 'Return A bucket object from the brigAde for operAting on',
+		signAture: '( resource $brigAde ): object'
 	},
-	stream_bucket_new: {
-		description: 'Create a new bucket for use on the current stream',
-		signature: '( resource $stream , string $buffer ): object'
+	streAm_bucket_new: {
+		description: 'CreAte A new bucket for use on the current streAm',
+		signAture: '( resource $streAm , string $buffer ): object'
 	},
-	stream_bucket_prepend: {
-		description: 'Prepend bucket to brigade',
-		signature: '( resource $brigade , object $bucket ): void'
+	streAm_bucket_prepend: {
+		description: 'Prepend bucket to brigAde',
+		signAture: '( resource $brigAde , object $bucket ): void'
 	},
-	stream_context_create: {
-		description: 'Creates a stream context',
-		signature: '([ array $options [, array $params ]]): resource'
+	streAm_context_creAte: {
+		description: 'CreAtes A streAm context',
+		signAture: '([ ArrAy $options [, ArrAy $pArAms ]]): resource'
 	},
-	stream_context_get_default: {
-		description: 'Retrieve the default stream context',
-		signature: '([ array $options ]): resource'
+	streAm_context_get_defAult: {
+		description: 'Retrieve the defAult streAm context',
+		signAture: '([ ArrAy $options ]): resource'
 	},
-	stream_context_get_options: {
-		description: 'Retrieve options for a stream/wrapper/context',
-		signature: '( resource $stream_or_context ): array'
+	streAm_context_get_options: {
+		description: 'Retrieve options for A streAm/wrApper/context',
+		signAture: '( resource $streAm_or_context ): ArrAy'
 	},
-	stream_context_get_params: {
-		description: 'Retrieves parameters from a context',
-		signature: '( resource $stream_or_context ): array'
+	streAm_context_get_pArAms: {
+		description: 'Retrieves pArAmeters from A context',
+		signAture: '( resource $streAm_or_context ): ArrAy'
 	},
-	stream_context_set_default: {
-		description: 'Set the default stream context',
-		signature: '( array $options ): resource'
+	streAm_context_set_defAult: {
+		description: 'Set the defAult streAm context',
+		signAture: '( ArrAy $options ): resource'
 	},
-	stream_context_set_option: {
-		description: 'Sets an option for a stream/wrapper/context',
-		signature: '( resource $stream_or_context , string $wrapper , string $option , mixed $value , array $options ): bool'
+	streAm_context_set_option: {
+		description: 'Sets An option for A streAm/wrApper/context',
+		signAture: '( resource $streAm_or_context , string $wrApper , string $option , mixed $vAlue , ArrAy $options ): bool'
 	},
-	stream_context_set_params: {
-		description: 'Set parameters for a stream/wrapper/context',
-		signature: '( resource $stream_or_context , array $params ): bool'
+	streAm_context_set_pArAms: {
+		description: 'Set pArAmeters for A streAm/wrApper/context',
+		signAture: '( resource $streAm_or_context , ArrAy $pArAms ): bool'
 	},
-	stream_copy_to_stream: {
-		description: 'Copies data from one stream to another',
-		signature: '( resource $source , resource $dest [, int $maxlength = -1 [, int $offset = 0 ]]): int'
+	streAm_copy_to_streAm: {
+		description: 'Copies dAtA from one streAm to Another',
+		signAture: '( resource $source , resource $dest [, int $mAxlength = -1 [, int $offset = 0 ]]): int'
 	},
-	stream_filter_append: {
-		description: 'Attach a filter to a stream',
-		signature: '( resource $stream , string $filtername [, int $read_write [, mixed $params ]]): resource'
+	streAm_filter_Append: {
+		description: 'AttAch A filter to A streAm',
+		signAture: '( resource $streAm , string $filternAme [, int $reAd_write [, mixed $pArAms ]]): resource'
 	},
-	stream_filter_prepend: {
-		description: 'Attach a filter to a stream',
-		signature: '( resource $stream , string $filtername [, int $read_write [, mixed $params ]]): resource'
+	streAm_filter_prepend: {
+		description: 'AttAch A filter to A streAm',
+		signAture: '( resource $streAm , string $filternAme [, int $reAd_write [, mixed $pArAms ]]): resource'
 	},
-	stream_filter_register: {
-		description: 'Register a user defined stream filter',
-		signature: '( string $filtername , string $classname ): bool'
+	streAm_filter_register: {
+		description: 'Register A user defined streAm filter',
+		signAture: '( string $filternAme , string $clAssnAme ): bool'
 	},
-	stream_filter_remove: {
-		description: 'Remove a filter from a stream',
-		signature: '( resource $stream_filter ): bool'
+	streAm_filter_remove: {
+		description: 'Remove A filter from A streAm',
+		signAture: '( resource $streAm_filter ): bool'
 	},
-	stream_get_contents: {
-		description: 'Reads remainder of a stream into a string',
-		signature: '( resource $handle [, int $maxlength = -1 [, int $offset = -1 ]]): string'
+	streAm_get_contents: {
+		description: 'ReAds remAinder of A streAm into A string',
+		signAture: '( resource $hAndle [, int $mAxlength = -1 [, int $offset = -1 ]]): string'
 	},
-	stream_get_filters: {
+	streAm_get_filters: {
 		description: 'Retrieve list of registered filters',
-		signature: '(void): array'
+		signAture: '(void): ArrAy'
 	},
-	stream_get_line: {
-		description: 'Gets line from stream resource up to a given delimiter',
-		signature: '( resource $handle , int $length [, string $ending ]): string'
+	streAm_get_line: {
+		description: 'Gets line from streAm resource up to A given delimiter',
+		signAture: '( resource $hAndle , int $length [, string $ending ]): string'
 	},
-	stream_get_meta_data: {
-		description: 'Retrieves header/meta data from streams/file pointers',
-		signature: '( resource $stream ): array'
+	streAm_get_metA_dAtA: {
+		description: 'Retrieves heAder/metA dAtA from streAms/file pointers',
+		signAture: '( resource $streAm ): ArrAy'
 	},
-	stream_get_transports: {
-		description: 'Retrieve list of registered socket transports',
-		signature: '(void): array'
+	streAm_get_trAnsports: {
+		description: 'Retrieve list of registered socket trAnsports',
+		signAture: '(void): ArrAy'
 	},
-	stream_get_wrappers: {
-		description: 'Retrieve list of registered streams',
-		signature: '(void): array'
+	streAm_get_wrAppers: {
+		description: 'Retrieve list of registered streAms',
+		signAture: '(void): ArrAy'
 	},
-	stream_is_local: {
-		description: 'Checks if a stream is a local stream',
-		signature: '( mixed $stream_or_url ): bool'
+	streAm_is_locAl: {
+		description: 'Checks if A streAm is A locAl streAm',
+		signAture: '( mixed $streAm_or_url ): bool'
 	},
-	stream_isatty: {
-		description: 'Check if a stream is a TTY',
-		signature: '( resource $stream ): bool'
+	streAm_isAtty: {
+		description: 'Check if A streAm is A TTY',
+		signAture: '( resource $streAm ): bool'
 	},
-	stream_notification_callback: {
-		description: 'A callback function for the notification context parameter',
-		signature: '( int $notification_code , int $severity , string $message , int $message_code , int $bytes_transferred , int $bytes_max ): callable'
+	streAm_notificAtion_cAllbAck: {
+		description: 'A cAllbAck function for the notificAtion context pArAmeter',
+		signAture: '( int $notificAtion_code , int $severity , string $messAge , int $messAge_code , int $bytes_trAnsferred , int $bytes_mAx ): cAllAble'
 	},
-	stream_register_wrapper: {
-		description: 'Alias of stream_wrapper_register',
+	streAm_register_wrApper: {
+		description: 'AliAs of streAm_wrApper_register',
 	},
-	stream_resolve_include_path: {
-		description: 'Resolve filename against the include path',
-		signature: '( string $filename ): string'
+	streAm_resolve_include_pAth: {
+		description: 'Resolve filenAme AgAinst the include pAth',
+		signAture: '( string $filenAme ): string'
 	},
-	stream_select: {
-		description: 'Runs the equivalent of the select() system call on the given   arrays of streams with a timeout specified by tv_sec and tv_usec',
-		signature: '( array $read , array $write , array $except , int $tv_sec [, int $tv_usec = 0 ]): int'
+	streAm_select: {
+		description: 'Runs the equivAlent of the select() system cAll on the given   ArrAys of streAms with A timeout specified by tv_sec And tv_usec',
+		signAture: '( ArrAy $reAd , ArrAy $write , ArrAy $except , int $tv_sec [, int $tv_usec = 0 ]): int'
 	},
-	stream_set_blocking: {
-		description: 'Set blocking/non-blocking mode on a stream',
-		signature: '( resource $stream , bool $mode ): bool'
+	streAm_set_blocking: {
+		description: 'Set blocking/non-blocking mode on A streAm',
+		signAture: '( resource $streAm , bool $mode ): bool'
 	},
-	stream_set_chunk_size: {
-		description: 'Set the stream chunk size',
-		signature: '( resource $fp , int $chunk_size ): int'
+	streAm_set_chunk_size: {
+		description: 'Set the streAm chunk size',
+		signAture: '( resource $fp , int $chunk_size ): int'
 	},
-	stream_set_read_buffer: {
-		description: 'Set read file buffering on the given stream',
-		signature: '( resource $stream , int $buffer ): int'
+	streAm_set_reAd_buffer: {
+		description: 'Set reAd file buffering on the given streAm',
+		signAture: '( resource $streAm , int $buffer ): int'
 	},
-	stream_set_timeout: {
-		description: 'Set timeout period on a stream',
-		signature: '( resource $stream , int $seconds [, int $microseconds = 0 ]): bool'
+	streAm_set_timeout: {
+		description: 'Set timeout period on A streAm',
+		signAture: '( resource $streAm , int $seconds [, int $microseconds = 0 ]): bool'
 	},
-	stream_set_write_buffer: {
-		description: 'Sets write file buffering on the given stream',
-		signature: '( resource $stream , int $buffer ): int'
+	streAm_set_write_buffer: {
+		description: 'Sets write file buffering on the given streAm',
+		signAture: '( resource $streAm , int $buffer ): int'
 	},
-	stream_socket_accept: {
-		description: 'Accept a connection on a socket created by stream_socket_server',
-		signature: '( resource $server_socket [, float $timeout = ini_get("default_socket_timeout") [, string $peername ]]): resource'
+	streAm_socket_Accept: {
+		description: 'Accept A connection on A socket creAted by streAm_socket_server',
+		signAture: '( resource $server_socket [, floAt $timeout = ini_get("defAult_socket_timeout") [, string $peernAme ]]): resource'
 	},
-	stream_socket_client: {
-		description: 'Open Internet or Unix domain socket connection',
-		signature: '( string $remote_socket [, int $errno [, string $errstr [, float $timeout = ini_get("default_socket_timeout") [, int $flags = STREAM_CLIENT_CONNECT [, resource $context ]]]]]): resource'
+	streAm_socket_client: {
+		description: 'Open Internet or Unix domAin socket connection',
+		signAture: '( string $remote_socket [, int $errno [, string $errstr [, floAt $timeout = ini_get("defAult_socket_timeout") [, int $flAgs = STREAM_CLIENT_CONNECT [, resource $context ]]]]]): resource'
 	},
-	stream_socket_enable_crypto: {
-		description: 'Turns encryption on/off on an already connected socket',
-		signature: '( resource $stream , bool $enable [, int $crypto_type [, resource $session_stream ]]): mixed'
+	streAm_socket_enAble_crypto: {
+		description: 'Turns encryption on/off on An AlreAdy connected socket',
+		signAture: '( resource $streAm , bool $enAble [, int $crypto_type [, resource $session_streAm ]]): mixed'
 	},
-	stream_socket_get_name: {
-		description: 'Retrieve the name of the local or remote sockets',
-		signature: '( resource $handle , bool $want_peer ): string'
+	streAm_socket_get_nAme: {
+		description: 'Retrieve the nAme of the locAl or remote sockets',
+		signAture: '( resource $hAndle , bool $wAnt_peer ): string'
 	},
-	stream_socket_pair: {
-		description: 'Creates a pair of connected, indistinguishable socket streams',
-		signature: '( int $domain , int $type , int $protocol ): array'
+	streAm_socket_pAir: {
+		description: 'CreAtes A pAir of connected, indistinguishAble socket streAms',
+		signAture: '( int $domAin , int $type , int $protocol ): ArrAy'
 	},
-	stream_socket_recvfrom: {
-		description: 'Receives data from a socket, connected or not',
-		signature: '( resource $socket , int $length [, int $flags = 0 [, string $address ]]): string'
+	streAm_socket_recvfrom: {
+		description: 'Receives dAtA from A socket, connected or not',
+		signAture: '( resource $socket , int $length [, int $flAgs = 0 [, string $Address ]]): string'
 	},
-	stream_socket_sendto: {
-		description: 'Sends a message to a socket, whether it is connected or not',
-		signature: '( resource $socket , string $data [, int $flags = 0 [, string $address ]]): int'
+	streAm_socket_sendto: {
+		description: 'Sends A messAge to A socket, whether it is connected or not',
+		signAture: '( resource $socket , string $dAtA [, int $flAgs = 0 [, string $Address ]]): int'
 	},
-	stream_socket_server: {
-		description: 'Create an Internet or Unix domain server socket',
-		signature: '( string $local_socket [, int $errno [, string $errstr [, int $flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN [, resource $context ]]]]): resource'
+	streAm_socket_server: {
+		description: 'CreAte An Internet or Unix domAin server socket',
+		signAture: '( string $locAl_socket [, int $errno [, string $errstr [, int $flAgs = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN [, resource $context ]]]]): resource'
 	},
-	stream_socket_shutdown: {
-		description: 'Shutdown a full-duplex connection',
-		signature: '( resource $stream , int $how ): bool'
+	streAm_socket_shutdown: {
+		description: 'Shutdown A full-duplex connection',
+		signAture: '( resource $streAm , int $how ): bool'
 	},
-	stream_supports_lock: {
-		description: 'Tells whether the stream supports locking',
-		signature: '( resource $stream ): bool'
+	streAm_supports_lock: {
+		description: 'Tells whether the streAm supports locking',
+		signAture: '( resource $streAm ): bool'
 	},
-	stream_wrapper_register: {
-		description: 'Register a URL wrapper implemented as a PHP class',
-		signature: '( string $protocol , string $classname [, int $flags = 0 ]): bool'
+	streAm_wrApper_register: {
+		description: 'Register A URL wrApper implemented As A PHP clAss',
+		signAture: '( string $protocol , string $clAssnAme [, int $flAgs = 0 ]): bool'
 	},
-	stream_wrapper_restore: {
-		description: 'Restores a previously unregistered built-in wrapper',
-		signature: '( string $protocol ): bool'
+	streAm_wrApper_restore: {
+		description: 'Restores A previously unregistered built-in wrApper',
+		signAture: '( string $protocol ): bool'
 	},
-	stream_wrapper_unregister: {
-		description: 'Unregister a URL wrapper',
-		signature: '( string $protocol ): bool'
+	streAm_wrApper_unregister: {
+		description: 'Unregister A URL wrApper',
+		signAture: '( string $protocol ): bool'
 	},
-	token_get_all: {
+	token_get_All: {
 		description: 'Split given source into PHP tokens',
-		signature: '( string $source [, int $flags = 0 ]): array'
+		signAture: '( string $source [, int $flAgs = 0 ]): ArrAy'
 	},
-	token_name: {
-		description: 'Get the symbolic name of a given PHP token',
-		signature: '( int $token ): string'
+	token_nAme: {
+		description: 'Get the symbolic nAme of A given PHP token',
+		signAture: '( int $token ): string'
 	},
-	base64_decode: {
-		description: 'Decodes data encoded with MIME base64',
-		signature: '( string $data [, bool $strict ]): string'
+	bAse64_decode: {
+		description: 'Decodes dAtA encoded with MIME bAse64',
+		signAture: '( string $dAtA [, bool $strict ]): string'
 	},
-	base64_encode: {
-		description: 'Encodes data with MIME base64',
-		signature: '( string $data ): string'
+	bAse64_encode: {
+		description: 'Encodes dAtA with MIME bAse64',
+		signAture: '( string $dAtA ): string'
 	},
-	get_headers: {
-		description: 'Fetches all the headers sent by the server in response to an HTTP request',
-		signature: '( string $url [, int $format = 0 [, resource $context ]]): array'
+	get_heAders: {
+		description: 'Fetches All the heAders sent by the server in response to An HTTP request',
+		signAture: '( string $url [, int $formAt = 0 [, resource $context ]]): ArrAy'
 	},
-	get_meta_tags: {
-		description: 'Extracts all meta tag content attributes from a file and returns an array',
-		signature: '( string $filename [, bool $use_include_path ]): array'
+	get_metA_tAgs: {
+		description: 'ExtrActs All metA tAg content Attributes from A file And returns An ArrAy',
+		signAture: '( string $filenAme [, bool $use_include_pAth ]): ArrAy'
 	},
 	http_build_query: {
-		description: 'Generate URL-encoded query string',
-		signature: '( mixed $query_data [, string $numeric_prefix [, string $arg_separator [, int $enc_type ]]]): string'
+		description: 'GenerAte URL-encoded query string',
+		signAture: '( mixed $query_dAtA [, string $numeric_prefix [, string $Arg_sepArAtor [, int $enc_type ]]]): string'
 	},
-	parse_url: {
-		description: 'Parse a URL and return its components',
-		signature: '( string $url [, int $component = -1 ]): mixed'
+	pArse_url: {
+		description: 'PArse A URL And return its components',
+		signAture: '( string $url [, int $component = -1 ]): mixed'
 	},
-	rawurldecode: {
+	rAwurldecode: {
 		description: 'Decode URL-encoded strings',
-		signature: '( string $str ): string'
+		signAture: '( string $str ): string'
 	},
-	rawurlencode: {
-		description: 'URL-encode according to RFC 3986',
-		signature: '( string $str ): string'
+	rAwurlencode: {
+		description: 'URL-encode According to RFC 3986',
+		signAture: '( string $str ): string'
 	},
 	urldecode: {
 		description: 'Decodes URL-encoded string',
-		signature: '( string $str ): string'
+		signAture: '( string $str ): string'
 	},
 	urlencode: {
 		description: 'URL-encodes string',
-		signature: '( string $str ): string'
+		signAture: '( string $str ): string'
 	},
 	curl_close: {
-		description: 'Close a cURL session',
-		signature: '( resource $ch ): void'
+		description: 'Close A cURL session',
+		signAture: '( resource $ch ): void'
 	},
-	curl_copy_handle: {
-		description: 'Copy a cURL handle along with all of its preferences',
-		signature: '( resource $ch ): resource'
+	curl_copy_hAndle: {
+		description: 'Copy A cURL hAndle Along with All of its preferences',
+		signAture: '( resource $ch ): resource'
 	},
 	curl_errno: {
-		description: 'Return the last error number',
-		signature: '( resource $ch ): int'
+		description: 'Return the lAst error number',
+		signAture: '( resource $ch ): int'
 	},
 	curl_error: {
-		description: 'Return a string containing the last error for the current session',
-		signature: '( resource $ch ): string'
+		description: 'Return A string contAining the lAst error for the current session',
+		signAture: '( resource $ch ): string'
 	},
-	curl_escape: {
+	curl_escApe: {
 		description: 'URL encodes the given string',
-		signature: '( resource $ch , string $str ): string'
+		signAture: '( resource $ch , string $str ): string'
 	},
 	curl_exec: {
-		description: 'Perform a cURL session',
-		signature: '( resource $ch ): mixed'
+		description: 'Perform A cURL session',
+		signAture: '( resource $ch ): mixed'
 	},
-	curl_file_create: {
-		description: 'Create a CURLFile object',
-		signature: '( string $filename [, string $mimetype [, string $postname ]]): CURLFile'
+	curl_file_creAte: {
+		description: 'CreAte A CURLFile object',
+		signAture: '( string $filenAme [, string $mimetype [, string $postnAme ]]): CURLFile'
 	},
 	curl_getinfo: {
-		description: 'Get information regarding a specific transfer',
-		signature: '( resource $ch [, int $opt ]): mixed'
+		description: 'Get informAtion regArding A specific trAnsfer',
+		signAture: '( resource $ch [, int $opt ]): mixed'
 	},
 	curl_init: {
-		description: 'Initialize a cURL session',
-		signature: '([ string $url ]): resource'
+		description: 'InitiAlize A cURL session',
+		signAture: '([ string $url ]): resource'
 	},
-	curl_multi_add_handle: {
-		description: 'Add a normal cURL handle to a cURL multi handle',
-		signature: '( resource $mh , resource $ch ): int'
+	curl_multi_Add_hAndle: {
+		description: 'Add A normAl cURL hAndle to A cURL multi hAndle',
+		signAture: '( resource $mh , resource $ch ): int'
 	},
 	curl_multi_close: {
-		description: 'Close a set of cURL handles',
-		signature: '( resource $mh ): void'
+		description: 'Close A set of cURL hAndles',
+		signAture: '( resource $mh ): void'
 	},
 	curl_multi_errno: {
-		description: 'Return the last multi curl error number',
-		signature: '( resource $mh ): int'
+		description: 'Return the lAst multi curl error number',
+		signAture: '( resource $mh ): int'
 	},
 	curl_multi_exec: {
-		description: 'Run the sub-connections of the current cURL handle',
-		signature: '( resource $mh , int $still_running ): int'
+		description: 'Run the sub-connections of the current cURL hAndle',
+		signAture: '( resource $mh , int $still_running ): int'
 	},
 	curl_multi_getcontent: {
-		description: 'Return the content of a cURL handle if CURLOPT_RETURNTRANSFER is set',
-		signature: '( resource $ch ): string'
+		description: 'Return the content of A cURL hAndle if CURLOPT_RETURNTRANSFER is set',
+		signAture: '( resource $ch ): string'
 	},
-	curl_multi_info_read: {
-		description: 'Get information about the current transfers',
-		signature: '( resource $mh [, int $msgs_in_queue ]): array'
+	curl_multi_info_reAd: {
+		description: 'Get informAtion About the current trAnsfers',
+		signAture: '( resource $mh [, int $msgs_in_queue ]): ArrAy'
 	},
 	curl_multi_init: {
-		description: 'Returns a new cURL multi handle',
-		signature: '(void): resource'
+		description: 'Returns A new cURL multi hAndle',
+		signAture: '(void): resource'
 	},
-	curl_multi_remove_handle: {
-		description: 'Remove a multi handle from a set of cURL handles',
-		signature: '( resource $mh , resource $ch ): int'
+	curl_multi_remove_hAndle: {
+		description: 'Remove A multi hAndle from A set of cURL hAndles',
+		signAture: '( resource $mh , resource $ch ): int'
 	},
 	curl_multi_select: {
-		description: 'Wait for activity on any curl_multi connection',
-		signature: '( resource $mh [, float $timeout = 1.0 ]): int'
+		description: 'WAit for Activity on Any curl_multi connection',
+		signAture: '( resource $mh [, floAt $timeout = 1.0 ]): int'
 	},
 	curl_multi_setopt: {
-		description: 'Set an option for the cURL multi handle',
-		signature: '( resource $mh , int $option , mixed $value ): bool'
+		description: 'Set An option for the cURL multi hAndle',
+		signAture: '( resource $mh , int $option , mixed $vAlue ): bool'
 	},
 	curl_multi_strerror: {
 		description: 'Return string describing error code',
-		signature: '( int $errornum ): string'
+		signAture: '( int $errornum ): string'
 	},
-	curl_pause: {
-		description: 'Pause and unpause a connection',
-		signature: '( resource $ch , int $bitmask ): int'
+	curl_pAuse: {
+		description: 'PAuse And unpAuse A connection',
+		signAture: '( resource $ch , int $bitmAsk ): int'
 	},
 	curl_reset: {
-		description: 'Reset all options of a libcurl session handle',
-		signature: '( resource $ch ): void'
+		description: 'Reset All options of A libcurl session hAndle',
+		signAture: '( resource $ch ): void'
 	},
-	curl_setopt_array: {
-		description: 'Set multiple options for a cURL transfer',
-		signature: '( resource $ch , array $options ): bool'
+	curl_setopt_ArrAy: {
+		description: 'Set multiple options for A cURL trAnsfer',
+		signAture: '( resource $ch , ArrAy $options ): bool'
 	},
 	curl_setopt: {
-		description: 'Set an option for a cURL transfer',
-		signature: '( resource $ch , int $option , mixed $value ): bool'
+		description: 'Set An option for A cURL trAnsfer',
+		signAture: '( resource $ch , int $option , mixed $vAlue ): bool'
 	},
-	curl_share_close: {
-		description: 'Close a cURL share handle',
-		signature: '( resource $sh ): void'
+	curl_shAre_close: {
+		description: 'Close A cURL shAre hAndle',
+		signAture: '( resource $sh ): void'
 	},
-	curl_share_errno: {
-		description: 'Return the last share curl error number',
-		signature: '( resource $sh ): int'
+	curl_shAre_errno: {
+		description: 'Return the lAst shAre curl error number',
+		signAture: '( resource $sh ): int'
 	},
-	curl_share_init: {
-		description: 'Initialize a cURL share handle',
-		signature: '(void): resource'
+	curl_shAre_init: {
+		description: 'InitiAlize A cURL shAre hAndle',
+		signAture: '(void): resource'
 	},
-	curl_share_setopt: {
-		description: 'Set an option for a cURL share handle',
-		signature: '( resource $sh , int $option , string $value ): bool'
+	curl_shAre_setopt: {
+		description: 'Set An option for A cURL shAre hAndle',
+		signAture: '( resource $sh , int $option , string $vAlue ): bool'
 	},
-	curl_share_strerror: {
+	curl_shAre_strerror: {
 		description: 'Return string describing the given error code',
-		signature: '( int $errornum ): string'
+		signAture: '( int $errornum ): string'
 	},
 	curl_strerror: {
 		description: 'Return string describing the given error code',
-		signature: '( int $errornum ): string'
+		signAture: '( int $errornum ): string'
 	},
-	curl_unescape: {
+	curl_unescApe: {
 		description: 'Decodes the given URL encoded string',
-		signature: '( resource $ch , string $str ): string'
+		signAture: '( resource $ch , string $str ): string'
 	},
 	curl_version: {
-		description: 'Gets cURL version information',
-		signature: '([ int $age = CURLVERSION_NOW ]): array'
+		description: 'Gets cURL version informAtion',
+		signAture: '([ int $Age = CURLVERSION_NOW ]): ArrAy'
 	},
-	ftp_alloc: {
-		description: 'Allocates space for a file to be uploaded',
-		signature: '( resource $ftp_stream , int $filesize [, string $result ]): bool'
+	ftp_Alloc: {
+		description: 'AllocAtes spAce for A file to be uploAded',
+		signAture: '( resource $ftp_streAm , int $filesize [, string $result ]): bool'
 	},
-	ftp_append: {
-		description: 'Append the contents of a file to another file on the FTP server',
-		signature: '( resource $ftp , string $remote_file , string $local_file [, int $mode ]): bool'
+	ftp_Append: {
+		description: 'Append the contents of A file to Another file on the FTP server',
+		signAture: '( resource $ftp , string $remote_file , string $locAl_file [, int $mode ]): bool'
 	},
 	ftp_cdup: {
-		description: 'Changes to the parent directory',
-		signature: '( resource $ftp_stream ): bool'
+		description: 'ChAnges to the pArent directory',
+		signAture: '( resource $ftp_streAm ): bool'
 	},
 	ftp_chdir: {
-		description: 'Changes the current directory on a FTP server',
-		signature: '( resource $ftp_stream , string $directory ): bool'
+		description: 'ChAnges the current directory on A FTP server',
+		signAture: '( resource $ftp_streAm , string $directory ): bool'
 	},
 	ftp_chmod: {
-		description: 'Set permissions on a file via FTP',
-		signature: '( resource $ftp_stream , int $mode , string $filename ): int'
+		description: 'Set permissions on A file viA FTP',
+		signAture: '( resource $ftp_streAm , int $mode , string $filenAme ): int'
 	},
 	ftp_close: {
-		description: 'Closes an FTP connection',
-		signature: '( resource $ftp_stream ): resource'
+		description: 'Closes An FTP connection',
+		signAture: '( resource $ftp_streAm ): resource'
 	},
 	ftp_connect: {
-		description: 'Opens an FTP connection',
-		signature: '( string $host [, int $port = 21 [, int $timeout = 90 ]]): resource'
+		description: 'Opens An FTP connection',
+		signAture: '( string $host [, int $port = 21 [, int $timeout = 90 ]]): resource'
 	},
 	ftp_delete: {
-		description: 'Deletes a file on the FTP server',
-		signature: '( resource $ftp_stream , string $path ): bool'
+		description: 'Deletes A file on the FTP server',
+		signAture: '( resource $ftp_streAm , string $pAth ): bool'
 	},
 	ftp_exec: {
-		description: 'Requests execution of a command on the FTP server',
-		signature: '( resource $ftp_stream , string $command ): bool'
+		description: 'Requests execution of A commAnd on the FTP server',
+		signAture: '( resource $ftp_streAm , string $commAnd ): bool'
 	},
 	ftp_fget: {
-		description: 'Downloads a file from the FTP server and saves to an open file',
-		signature: '( resource $ftp_stream , resource $handle , string $remote_file [, int $mode [, int $resumepos = 0 ]]): bool'
+		description: 'DownloAds A file from the FTP server And sAves to An open file',
+		signAture: '( resource $ftp_streAm , resource $hAndle , string $remote_file [, int $mode [, int $resumepos = 0 ]]): bool'
 	},
 	ftp_fput: {
-		description: 'Uploads from an open file to the FTP server',
-		signature: '( resource $ftp_stream , string $remote_file , resource $handle [, int $mode [, int $startpos = 0 ]]): bool'
+		description: 'UploAds from An open file to the FTP server',
+		signAture: '( resource $ftp_streAm , string $remote_file , resource $hAndle [, int $mode [, int $stArtpos = 0 ]]): bool'
 	},
 	ftp_get_option: {
-		description: 'Retrieves various runtime behaviours of the current FTP stream',
-		signature: '( resource $ftp_stream , int $option ): mixed'
+		description: 'Retrieves vArious runtime behAviours of the current FTP streAm',
+		signAture: '( resource $ftp_streAm , int $option ): mixed'
 	},
 	ftp_get: {
-		description: 'Downloads a file from the FTP server',
-		signature: '( resource $ftp_stream , string $local_file , string $remote_file [, int $mode [, int $resumepos = 0 ]]): bool'
+		description: 'DownloAds A file from the FTP server',
+		signAture: '( resource $ftp_streAm , string $locAl_file , string $remote_file [, int $mode [, int $resumepos = 0 ]]): bool'
 	},
 	ftp_login: {
-		description: 'Logs in to an FTP connection',
-		signature: '( resource $ftp_stream , string $username , string $password ): bool'
+		description: 'Logs in to An FTP connection',
+		signAture: '( resource $ftp_streAm , string $usernAme , string $pAssword ): bool'
 	},
 	ftp_mdtm: {
-		description: 'Returns the last modified time of the given file',
-		signature: '( resource $ftp_stream , string $remote_file ): int'
+		description: 'Returns the lAst modified time of the given file',
+		signAture: '( resource $ftp_streAm , string $remote_file ): int'
 	},
 	ftp_mkdir: {
-		description: 'Creates a directory',
-		signature: '( resource $ftp_stream , string $directory ): string'
+		description: 'CreAtes A directory',
+		signAture: '( resource $ftp_streAm , string $directory ): string'
 	},
 	ftp_mlsd: {
-		description: 'Returns a list of files in the given directory',
-		signature: '( resource $ftp_stream , string $directory ): array'
+		description: 'Returns A list of files in the given directory',
+		signAture: '( resource $ftp_streAm , string $directory ): ArrAy'
 	},
 	ftp_nb_continue: {
-		description: 'Continues retrieving/sending a file (non-blocking)',
-		signature: '( resource $ftp_stream ): int'
+		description: 'Continues retrieving/sending A file (non-blocking)',
+		signAture: '( resource $ftp_streAm ): int'
 	},
 	ftp_nb_fget: {
-		description: 'Retrieves a file from the FTP server and writes it to an open file (non-blocking)',
-		signature: '( resource $ftp_stream , resource $handle , string $remote_file [, int $mode [, int $resumepos = 0 ]]): int'
+		description: 'Retrieves A file from the FTP server And writes it to An open file (non-blocking)',
+		signAture: '( resource $ftp_streAm , resource $hAndle , string $remote_file [, int $mode [, int $resumepos = 0 ]]): int'
 	},
 	ftp_nb_fput: {
-		description: 'Stores a file from an open file to the FTP server (non-blocking)',
-		signature: '( resource $ftp_stream , string $remote_file , resource $handle [, int $mode [, int $startpos = 0 ]]): int'
+		description: 'Stores A file from An open file to the FTP server (non-blocking)',
+		signAture: '( resource $ftp_streAm , string $remote_file , resource $hAndle [, int $mode [, int $stArtpos = 0 ]]): int'
 	},
 	ftp_nb_get: {
-		description: 'Retrieves a file from the FTP server and writes it to a local file (non-blocking)',
-		signature: '( resource $ftp_stream , string $local_file , string $remote_file [, int $mode [, int $resumepos = 0 ]]): int'
+		description: 'Retrieves A file from the FTP server And writes it to A locAl file (non-blocking)',
+		signAture: '( resource $ftp_streAm , string $locAl_file , string $remote_file [, int $mode [, int $resumepos = 0 ]]): int'
 	},
 	ftp_nb_put: {
-		description: 'Stores a file on the FTP server (non-blocking)',
-		signature: '( resource $ftp_stream , string $remote_file , string $local_file [, int $mode [, int $startpos = 0 ]]): int'
+		description: 'Stores A file on the FTP server (non-blocking)',
+		signAture: '( resource $ftp_streAm , string $remote_file , string $locAl_file [, int $mode [, int $stArtpos = 0 ]]): int'
 	},
 	ftp_nlist: {
-		description: 'Returns a list of files in the given directory',
-		signature: '( resource $ftp_stream , string $directory ): array'
+		description: 'Returns A list of files in the given directory',
+		signAture: '( resource $ftp_streAm , string $directory ): ArrAy'
 	},
-	ftp_pasv: {
-		description: 'Turns passive mode on or off',
-		signature: '( resource $ftp_stream , bool $pasv ): bool'
+	ftp_pAsv: {
+		description: 'Turns pAssive mode on or off',
+		signAture: '( resource $ftp_streAm , bool $pAsv ): bool'
 	},
 	ftp_put: {
-		description: 'Uploads a file to the FTP server',
-		signature: '( resource $ftp_stream , string $remote_file , string $local_file [, int $mode [, int $startpos = 0 ]]): bool'
+		description: 'UploAds A file to the FTP server',
+		signAture: '( resource $ftp_streAm , string $remote_file , string $locAl_file [, int $mode [, int $stArtpos = 0 ]]): bool'
 	},
 	ftp_pwd: {
-		description: 'Returns the current directory name',
-		signature: '( resource $ftp_stream ): string'
+		description: 'Returns the current directory nAme',
+		signAture: '( resource $ftp_streAm ): string'
 	},
 	ftp_quit: {
-		description: 'Alias of ftp_close',
+		description: 'AliAs of ftp_close',
 	},
-	ftp_raw: {
-		description: 'Sends an arbitrary command to an FTP server',
-		signature: '( resource $ftp_stream , string $command ): array'
+	ftp_rAw: {
+		description: 'Sends An ArbitrAry commAnd to An FTP server',
+		signAture: '( resource $ftp_streAm , string $commAnd ): ArrAy'
 	},
-	ftp_rawlist: {
-		description: 'Returns a detailed list of files in the given directory',
-		signature: '( resource $ftp_stream , string $directory [, bool $recursive ]): array'
+	ftp_rAwlist: {
+		description: 'Returns A detAiled list of files in the given directory',
+		signAture: '( resource $ftp_streAm , string $directory [, bool $recursive ]): ArrAy'
 	},
-	ftp_rename: {
-		description: 'Renames a file or a directory on the FTP server',
-		signature: '( resource $ftp_stream , string $oldname , string $newname ): bool'
+	ftp_renAme: {
+		description: 'RenAmes A file or A directory on the FTP server',
+		signAture: '( resource $ftp_streAm , string $oldnAme , string $newnAme ): bool'
 	},
 	ftp_rmdir: {
-		description: 'Removes a directory',
-		signature: '( resource $ftp_stream , string $directory ): bool'
+		description: 'Removes A directory',
+		signAture: '( resource $ftp_streAm , string $directory ): bool'
 	},
 	ftp_set_option: {
-		description: 'Set miscellaneous runtime FTP options',
-		signature: '( resource $ftp_stream , int $option , mixed $value ): bool'
+		description: 'Set miscellAneous runtime FTP options',
+		signAture: '( resource $ftp_streAm , int $option , mixed $vAlue ): bool'
 	},
 	ftp_site: {
-		description: 'Sends a SITE command to the server',
-		signature: '( resource $ftp_stream , string $command ): bool'
+		description: 'Sends A SITE commAnd to the server',
+		signAture: '( resource $ftp_streAm , string $commAnd ): bool'
 	},
 	ftp_size: {
 		description: 'Returns the size of the given file',
-		signature: '( resource $ftp_stream , string $remote_file ): int'
+		signAture: '( resource $ftp_streAm , string $remote_file ): int'
 	},
 	ftp_ssl_connect: {
-		description: 'Opens a Secure SSL-FTP connection',
-		signature: '( string $host [, int $port = 21 [, int $timeout = 90 ]]): resource'
+		description: 'Opens A Secure SSL-FTP connection',
+		signAture: '( string $host [, int $port = 21 [, int $timeout = 90 ]]): resource'
 	},
 	ftp_systype: {
 		description: 'Returns the system type identifier of the remote FTP server',
-		signature: '( resource $ftp_stream ): string'
+		signAture: '( resource $ftp_streAm ): string'
 	},
 	checkdnsrr: {
-		description: 'Check DNS records corresponding to a given Internet host name or IP address',
-		signature: '( string $host [, string $type = "MX" ]): bool'
+		description: 'Check DNS records corresponding to A given Internet host nAme or IP Address',
+		signAture: '( string $host [, string $type = "MX" ]): bool'
 	},
 	closelog: {
 		description: 'Close connection to system logger',
-		signature: '(void): bool'
+		signAture: '(void): bool'
 	},
-	define_syslog_variables: {
-		description: 'Initializes all syslog related variables',
-		signature: '(void): void'
+	define_syslog_vAriAbles: {
+		description: 'InitiAlizes All syslog relAted vAriAbles',
+		signAture: '(void): void'
 	},
 	dns_check_record: {
-		description: 'Alias of checkdnsrr',
+		description: 'AliAs of checkdnsrr',
 	},
 	dns_get_mx: {
-		description: 'Alias of getmxrr',
+		description: 'AliAs of getmxrr',
 	},
 	dns_get_record: {
-		description: 'Fetch DNS Resource Records associated with a hostname',
-		signature: '( string $hostname [, int $type = DNS_ANY [, array $authns [, array $addtl [, bool $raw ]]]]): array'
+		description: 'Fetch DNS Resource Records AssociAted with A hostnAme',
+		signAture: '( string $hostnAme [, int $type = DNS_ANY [, ArrAy $Authns [, ArrAy $Addtl [, bool $rAw ]]]]): ArrAy'
 	},
 	fsockopen: {
-		description: 'Open Internet or Unix domain socket connection',
-		signature: '( string $hostname [, int $port = -1 [, int $errno [, string $errstr [, float $timeout = ini_get("default_socket_timeout") ]]]]): resource'
+		description: 'Open Internet or Unix domAin socket connection',
+		signAture: '( string $hostnAme [, int $port = -1 [, int $errno [, string $errstr [, floAt $timeout = ini_get("defAult_socket_timeout") ]]]]): resource'
 	},
-	gethostbyaddr: {
-		description: 'Get the Internet host name corresponding to a given IP address',
-		signature: '( string $ip_address ): string'
+	gethostbyAddr: {
+		description: 'Get the Internet host nAme corresponding to A given IP Address',
+		signAture: '( string $ip_Address ): string'
 	},
-	gethostbyname: {
-		description: 'Get the IPv4 address corresponding to a given Internet host name',
-		signature: '( string $hostname ): string'
+	gethostbynAme: {
+		description: 'Get the IPv4 Address corresponding to A given Internet host nAme',
+		signAture: '( string $hostnAme ): string'
 	},
-	gethostbynamel: {
-		description: 'Get a list of IPv4 addresses corresponding to a given Internet host   name',
-		signature: '( string $hostname ): array'
+	gethostbynAmel: {
+		description: 'Get A list of IPv4 Addresses corresponding to A given Internet host   nAme',
+		signAture: '( string $hostnAme ): ArrAy'
 	},
-	gethostname: {
-		description: 'Gets the host name',
-		signature: '(void): string'
+	gethostnAme: {
+		description: 'Gets the host nAme',
+		signAture: '(void): string'
 	},
 	getmxrr: {
-		description: 'Get MX records corresponding to a given Internet host name',
-		signature: '( string $hostname , array $mxhosts [, array $weight ]): bool'
+		description: 'Get MX records corresponding to A given Internet host nAme',
+		signAture: '( string $hostnAme , ArrAy $mxhosts [, ArrAy $weight ]): bool'
 	},
-	getprotobyname: {
-		description: 'Get protocol number associated with protocol name',
-		signature: '( string $name ): int'
+	getprotobynAme: {
+		description: 'Get protocol number AssociAted with protocol nAme',
+		signAture: '( string $nAme ): int'
 	},
 	getprotobynumber: {
-		description: 'Get protocol name associated with protocol number',
-		signature: '( int $number ): string'
+		description: 'Get protocol nAme AssociAted with protocol number',
+		signAture: '( int $number ): string'
 	},
-	getservbyname: {
-		description: 'Get port number associated with an Internet service and protocol',
-		signature: '( string $service , string $protocol ): int'
+	getservbynAme: {
+		description: 'Get port number AssociAted with An Internet service And protocol',
+		signAture: '( string $service , string $protocol ): int'
 	},
 	getservbyport: {
-		description: 'Get Internet service which corresponds to port and protocol',
-		signature: '( int $port , string $protocol ): string'
+		description: 'Get Internet service which corresponds to port And protocol',
+		signAture: '( int $port , string $protocol ): string'
 	},
-	header_register_callback: {
-		description: 'Call a header function',
-		signature: '( callable $callback ): bool'
+	heAder_register_cAllbAck: {
+		description: 'CAll A heAder function',
+		signAture: '( cAllAble $cAllbAck ): bool'
 	},
-	header_remove: {
-		description: 'Remove previously set headers',
-		signature: '([ string $name ]): void'
+	heAder_remove: {
+		description: 'Remove previously set heAders',
+		signAture: '([ string $nAme ]): void'
 	},
-	header: {
-		description: 'Send a raw HTTP header',
-		signature: '( string $header [, bool $replace [, int $http_response_code ]]): void'
+	heAder: {
+		description: 'Send A rAw HTTP heAder',
+		signAture: '( string $heAder [, bool $replAce [, int $http_response_code ]]): void'
 	},
-	headers_list: {
-		description: 'Returns a list of response headers sent (or ready to send)',
-		signature: '(void): array'
+	heAders_list: {
+		description: 'Returns A list of response heAders sent (or reAdy to send)',
+		signAture: '(void): ArrAy'
 	},
-	headers_sent: {
-		description: 'Checks if or where headers have been sent',
-		signature: '([ string $file [, int $line ]]): bool'
+	heAders_sent: {
+		description: 'Checks if or where heAders hAve been sent',
+		signAture: '([ string $file [, int $line ]]): bool'
 	},
 	http_response_code: {
 		description: 'Get or Set the HTTP response code',
-		signature: '([ int $response_code ]): mixed'
+		signAture: '([ int $response_code ]): mixed'
 	},
 	inet_ntop: {
-		description: 'Converts a packed internet address to a human readable representation',
-		signature: '( string $in_addr ): string'
+		description: 'Converts A pAcked internet Address to A humAn reAdAble representAtion',
+		signAture: '( string $in_Addr ): string'
 	},
 	inet_pton: {
-		description: 'Converts a human readable IP address to its packed in_addr representation',
-		signature: '( string $address ): string'
+		description: 'Converts A humAn reAdAble IP Address to its pAcked in_Addr representAtion',
+		signAture: '( string $Address ): string'
 	},
 	ip2long: {
-		description: 'Converts a string containing an (IPv4) Internet Protocol dotted address into a long integer',
-		signature: '( string $ip_address ): int'
+		description: 'Converts A string contAining An (IPv4) Internet Protocol dotted Address into A long integer',
+		signAture: '( string $ip_Address ): int'
 	},
 	long2ip: {
-		description: 'Converts an long integer address into a string in (IPv4) Internet standard dotted format',
-		signature: '( int $proper_address ): string'
+		description: 'Converts An long integer Address into A string in (IPv4) Internet stAndArd dotted formAt',
+		signAture: '( int $proper_Address ): string'
 	},
 	openlog: {
 		description: 'Open connection to system logger',
-		signature: '( string $ident , int $option , int $facility ): bool'
+		signAture: '( string $ident , int $option , int $fAcility ): bool'
 	},
 	pfsockopen: {
-		description: 'Open persistent Internet or Unix domain socket connection',
-		signature: '( string $hostname [, int $port = -1 [, int $errno [, string $errstr [, float $timeout = ini_get("default_socket_timeout") ]]]]): resource'
+		description: 'Open persistent Internet or Unix domAin socket connection',
+		signAture: '( string $hostnAme [, int $port = -1 [, int $errno [, string $errstr [, floAt $timeout = ini_get("defAult_socket_timeout") ]]]]): resource'
 	},
 	setcookie: {
-		description: 'Send a cookie',
-		signature: '( string $name [, string $value = "" [, int $expires = 0 [, string $path = "" [, string $domain = "" [, bool $secure [, bool $httponly [, array $options = [] ]]]]]]]): bool'
+		description: 'Send A cookie',
+		signAture: '( string $nAme [, string $vAlue = "" [, int $expires = 0 [, string $pAth = "" [, string $domAin = "" [, bool $secure [, bool $httponly [, ArrAy $options = [] ]]]]]]]): bool'
 	},
-	setrawcookie: {
-		description: 'Send a cookie without urlencoding the cookie value',
-		signature: '( string $name [, string $value [, int $expires = 0 [, string $path [, string $domain [, bool $secure [, bool $httponly [, array $options = [] ]]]]]]]): bool'
+	setrAwcookie: {
+		description: 'Send A cookie without urlencoding the cookie vAlue',
+		signAture: '( string $nAme [, string $vAlue [, int $expires = 0 [, string $pAth [, string $domAin [, bool $secure [, bool $httponly [, ArrAy $options = [] ]]]]]]]): bool'
 	},
-	socket_get_status: {
-		description: 'Alias of stream_get_meta_data',
+	socket_get_stAtus: {
+		description: 'AliAs of streAm_get_metA_dAtA',
 	},
 	socket_set_blocking: {
-		description: 'Alias of stream_set_blocking',
+		description: 'AliAs of streAm_set_blocking',
 	},
 	socket_set_timeout: {
-		description: 'Alias of stream_set_timeout',
+		description: 'AliAs of streAm_set_timeout',
 	},
 	syslog: {
-		description: 'Generate a system log message',
-		signature: '( int $priority , string $message ): bool'
+		description: 'GenerAte A system log messAge',
+		signAture: '( int $priority , string $messAge ): bool'
 	},
-	socket_accept: {
-		description: 'Accepts a connection on a socket',
-		signature: '( resource $socket ): resource'
+	socket_Accept: {
+		description: 'Accepts A connection on A socket',
+		signAture: '( resource $socket ): resource'
 	},
-	socket_addrinfo_bind: {
-		description: 'Create and bind to a socket from a given addrinfo',
-		signature: '( resource $addr ): resource'
+	socket_Addrinfo_bind: {
+		description: 'CreAte And bind to A socket from A given Addrinfo',
+		signAture: '( resource $Addr ): resource'
 	},
-	socket_addrinfo_connect: {
-		description: 'Create and connect to a socket from a given addrinfo',
-		signature: '( resource $addr ): resource'
+	socket_Addrinfo_connect: {
+		description: 'CreAte And connect to A socket from A given Addrinfo',
+		signAture: '( resource $Addr ): resource'
 	},
-	socket_addrinfo_explain: {
-		description: 'Get information about addrinfo',
-		signature: '( resource $addr ): array'
+	socket_Addrinfo_explAin: {
+		description: 'Get informAtion About Addrinfo',
+		signAture: '( resource $Addr ): ArrAy'
 	},
-	socket_addrinfo_lookup: {
-		description: 'Get array with contents of getaddrinfo about the given hostname',
-		signature: '( string $host [, string $service [, array $hints ]]): array'
+	socket_Addrinfo_lookup: {
+		description: 'Get ArrAy with contents of getAddrinfo About the given hostnAme',
+		signAture: '( string $host [, string $service [, ArrAy $hints ]]): ArrAy'
 	},
 	socket_bind: {
-		description: 'Binds a name to a socket',
-		signature: '( resource $socket , string $address [, int $port = 0 ]): bool'
+		description: 'Binds A nAme to A socket',
+		signAture: '( resource $socket , string $Address [, int $port = 0 ]): bool'
 	},
-	socket_clear_error: {
-		description: 'Clears the error on the socket or the last error code',
-		signature: '([ resource $socket ]): void'
+	socket_cleAr_error: {
+		description: 'CleArs the error on the socket or the lAst error code',
+		signAture: '([ resource $socket ]): void'
 	},
 	socket_close: {
-		description: 'Closes a socket resource',
-		signature: '( resource $socket ): void'
+		description: 'Closes A socket resource',
+		signAture: '( resource $socket ): void'
 	},
-	socket_cmsg_space: {
-		description: 'Calculate message buffer size',
-		signature: '( int $level , int $type [, int $n = 0 ]): int'
+	socket_cmsg_spAce: {
+		description: 'CAlculAte messAge buffer size',
+		signAture: '( int $level , int $type [, int $n = 0 ]): int'
 	},
 	socket_connect: {
-		description: 'Initiates a connection on a socket',
-		signature: '( resource $socket , string $address [, int $port = 0 ]): bool'
+		description: 'InitiAtes A connection on A socket',
+		signAture: '( resource $socket , string $Address [, int $port = 0 ]): bool'
 	},
-	socket_create_listen: {
-		description: 'Opens a socket on port to accept connections',
-		signature: '( int $port [, int $backlog = 128 ]): resource'
+	socket_creAte_listen: {
+		description: 'Opens A socket on port to Accept connections',
+		signAture: '( int $port [, int $bAcklog = 128 ]): resource'
 	},
-	socket_create_pair: {
-		description: 'Creates a pair of indistinguishable sockets and stores them in an array',
-		signature: '( int $domain , int $type , int $protocol , array $fd ): bool'
+	socket_creAte_pAir: {
+		description: 'CreAtes A pAir of indistinguishAble sockets And stores them in An ArrAy',
+		signAture: '( int $domAin , int $type , int $protocol , ArrAy $fd ): bool'
 	},
-	socket_create: {
-		description: 'Create a socket (endpoint for communication)',
-		signature: '( int $domain , int $type , int $protocol ): resource'
+	socket_creAte: {
+		description: 'CreAte A socket (endpoint for communicAtion)',
+		signAture: '( int $domAin , int $type , int $protocol ): resource'
 	},
-	socket_export_stream: {
-		description: 'Export a socket extension resource into a stream that encapsulates a socket',
-		signature: '( resource $socket ): resource'
+	socket_export_streAm: {
+		description: 'Export A socket extension resource into A streAm thAt encApsulAtes A socket',
+		signAture: '( resource $socket ): resource'
 	},
 	socket_get_option: {
 		description: 'Gets socket options for the socket',
-		signature: '( resource $socket , int $level , int $optname ): mixed'
+		signAture: '( resource $socket , int $level , int $optnAme ): mixed'
 	},
 	socket_getopt: {
-		description: 'Alias of socket_get_option',
+		description: 'AliAs of socket_get_option',
 	},
-	socket_getpeername: {
-		description: 'Queries the remote side of the given socket which may either result in host/port or in a Unix filesystem path, dependent on its type',
-		signature: '( resource $socket , string $address [, int $port ]): bool'
+	socket_getpeernAme: {
+		description: 'Queries the remote side of the given socket which mAy either result in host/port or in A Unix filesystem pAth, dependent on its type',
+		signAture: '( resource $socket , string $Address [, int $port ]): bool'
 	},
-	socket_getsockname: {
-		description: 'Queries the local side of the given socket which may either result in host/port or in a Unix filesystem path, dependent on its type',
-		signature: '( resource $socket , string $addr [, int $port ]): bool'
+	socket_getsocknAme: {
+		description: 'Queries the locAl side of the given socket which mAy either result in host/port or in A Unix filesystem pAth, dependent on its type',
+		signAture: '( resource $socket , string $Addr [, int $port ]): bool'
 	},
-	socket_import_stream: {
-		description: 'Import a stream',
-		signature: '( resource $stream ): resource'
+	socket_import_streAm: {
+		description: 'Import A streAm',
+		signAture: '( resource $streAm ): resource'
 	},
-	socket_last_error: {
-		description: 'Returns the last error on the socket',
-		signature: '([ resource $socket ]): int'
+	socket_lAst_error: {
+		description: 'Returns the lAst error on the socket',
+		signAture: '([ resource $socket ]): int'
 	},
 	socket_listen: {
-		description: 'Listens for a connection on a socket',
-		signature: '( resource $socket [, int $backlog = 0 ]): bool'
+		description: 'Listens for A connection on A socket',
+		signAture: '( resource $socket [, int $bAcklog = 0 ]): bool'
 	},
-	socket_read: {
-		description: 'Reads a maximum of length bytes from a socket',
-		signature: '( resource $socket , int $length [, int $type = PHP_BINARY_READ ]): string'
+	socket_reAd: {
+		description: 'ReAds A mAximum of length bytes from A socket',
+		signAture: '( resource $socket , int $length [, int $type = PHP_BINARY_READ ]): string'
 	},
 	socket_recv: {
-		description: 'Receives data from a connected socket',
-		signature: '( resource $socket , string $buf , int $len , int $flags ): int'
+		description: 'Receives dAtA from A connected socket',
+		signAture: '( resource $socket , string $buf , int $len , int $flAgs ): int'
 	},
 	socket_recvfrom: {
-		description: 'Receives data from a socket whether or not it is connection-oriented',
-		signature: '( resource $socket , string $buf , int $len , int $flags , string $name [, int $port ]): int'
+		description: 'Receives dAtA from A socket whether or not it is connection-oriented',
+		signAture: '( resource $socket , string $buf , int $len , int $flAgs , string $nAme [, int $port ]): int'
 	},
 	socket_recvmsg: {
-		description: 'Read a message',
-		signature: '( resource $socket , array $message [, int $flags = 0 ]): int'
+		description: 'ReAd A messAge',
+		signAture: '( resource $socket , ArrAy $messAge [, int $flAgs = 0 ]): int'
 	},
 	socket_select: {
-		description: 'Runs the select() system call on the given arrays of sockets with a specified timeout',
-		signature: '( array $read , array $write , array $except , int $tv_sec [, int $tv_usec = 0 ]): int'
+		description: 'Runs the select() system cAll on the given ArrAys of sockets with A specified timeout',
+		signAture: '( ArrAy $reAd , ArrAy $write , ArrAy $except , int $tv_sec [, int $tv_usec = 0 ]): int'
 	},
 	socket_send: {
-		description: 'Sends data to a connected socket',
-		signature: '( resource $socket , string $buf , int $len , int $flags ): int'
+		description: 'Sends dAtA to A connected socket',
+		signAture: '( resource $socket , string $buf , int $len , int $flAgs ): int'
 	},
 	socket_sendmsg: {
-		description: 'Send a message',
-		signature: '( resource $socket , array $message [, int $flags = 0 ]): int'
+		description: 'Send A messAge',
+		signAture: '( resource $socket , ArrAy $messAge [, int $flAgs = 0 ]): int'
 	},
 	socket_sendto: {
-		description: 'Sends a message to a socket, whether it is connected or not',
-		signature: '( resource $socket , string $buf , int $len , int $flags , string $addr [, int $port = 0 ]): int'
+		description: 'Sends A messAge to A socket, whether it is connected or not',
+		signAture: '( resource $socket , string $buf , int $len , int $flAgs , string $Addr [, int $port = 0 ]): int'
 	},
 	socket_set_block: {
-		description: 'Sets blocking mode on a socket resource',
-		signature: '( resource $socket ): bool'
+		description: 'Sets blocking mode on A socket resource',
+		signAture: '( resource $socket ): bool'
 	},
 	socket_set_nonblock: {
 		description: 'Sets nonblocking mode for file descriptor fd',
-		signature: '( resource $socket ): bool'
+		signAture: '( resource $socket ): bool'
 	},
 	socket_set_option: {
 		description: 'Sets socket options for the socket',
-		signature: '( resource $socket , int $level , int $optname , mixed $optval ): bool'
+		signAture: '( resource $socket , int $level , int $optnAme , mixed $optvAl ): bool'
 	},
 	socket_setopt: {
-		description: 'Alias of socket_set_option',
+		description: 'AliAs of socket_set_option',
 	},
 	socket_shutdown: {
-		description: 'Shuts down a socket for receiving, sending, or both',
-		signature: '( resource $socket [, int $how = 2 ]): bool'
+		description: 'Shuts down A socket for receiving, sending, or both',
+		signAture: '( resource $socket [, int $how = 2 ]): bool'
 	},
 	socket_strerror: {
-		description: 'Return a string describing a socket error',
-		signature: '( int $errno ): string'
+		description: 'Return A string describing A socket error',
+		signAture: '( int $errno ): string'
 	},
 	socket_write: {
-		description: 'Write to a socket',
-		signature: '( resource $socket , string $buffer [, int $length = 0 ]): int'
+		description: 'Write to A socket',
+		signAture: '( resource $socket , string $buffer [, int $length = 0 ]): int'
 	},
-	apache_child_terminate: {
-		description: 'Terminate apache process after this request',
-		signature: '(void): bool'
+	ApAche_child_terminAte: {
+		description: 'TerminAte ApAche process After this request',
+		signAture: '(void): bool'
 	},
-	apache_get_modules: {
-		description: 'Get a list of loaded Apache modules',
-		signature: '(void): array'
+	ApAche_get_modules: {
+		description: 'Get A list of loAded ApAche modules',
+		signAture: '(void): ArrAy'
 	},
-	apache_get_version: {
-		description: 'Fetch Apache version',
-		signature: '(void): string'
+	ApAche_get_version: {
+		description: 'Fetch ApAche version',
+		signAture: '(void): string'
 	},
-	apache_getenv: {
-		description: 'Get an Apache subprocess_env variable',
-		signature: '( string $variable [, bool $walk_to_top ]): string'
+	ApAche_getenv: {
+		description: 'Get An ApAche subprocess_env vAriAble',
+		signAture: '( string $vAriAble [, bool $wAlk_to_top ]): string'
 	},
-	apache_lookup_uri: {
-		description: 'Perform a partial request for the specified URI and return all info about it',
-		signature: '( string $filename ): object'
+	ApAche_lookup_uri: {
+		description: 'Perform A pArtiAl request for the specified URI And return All info About it',
+		signAture: '( string $filenAme ): object'
 	},
-	apache_note: {
-		description: 'Get and set apache request notes',
-		signature: '( string $note_name [, string $note_value = "" ]): string'
+	ApAche_note: {
+		description: 'Get And set ApAche request notes',
+		signAture: '( string $note_nAme [, string $note_vAlue = "" ]): string'
 	},
-	apache_request_headers: {
-		description: 'Fetch all HTTP request headers',
-		signature: '(void): array'
+	ApAche_request_heAders: {
+		description: 'Fetch All HTTP request heAders',
+		signAture: '(void): ArrAy'
 	},
-	apache_reset_timeout: {
-		description: 'Reset the Apache write timer',
-		signature: '(void): bool'
+	ApAche_reset_timeout: {
+		description: 'Reset the ApAche write timer',
+		signAture: '(void): bool'
 	},
-	apache_response_headers: {
-		description: 'Fetch all HTTP response headers',
-		signature: '(void): array'
+	ApAche_response_heAders: {
+		description: 'Fetch All HTTP response heAders',
+		signAture: '(void): ArrAy'
 	},
-	apache_setenv: {
-		description: 'Set an Apache subprocess_env variable',
-		signature: '( string $variable , string $value [, bool $walk_to_top ]): bool'
+	ApAche_setenv: {
+		description: 'Set An ApAche subprocess_env vAriAble',
+		signAture: '( string $vAriAble , string $vAlue [, bool $wAlk_to_top ]): bool'
 	},
-	getallheaders: {
-		description: 'Fetch all HTTP request headers',
-		signature: '(void): array'
+	getAllheAders: {
+		description: 'Fetch All HTTP request heAders',
+		signAture: '(void): ArrAy'
 	},
-	virtual: {
-		description: 'Perform an Apache sub-request',
-		signature: '( string $filename ): bool'
+	virtuAl: {
+		description: 'Perform An ApAche sub-request',
+		signAture: '( string $filenAme ): bool'
 	},
-	nsapi_request_headers: {
-		description: 'Fetch all HTTP request headers',
-		signature: '(void): array'
+	nsApi_request_heAders: {
+		description: 'Fetch All HTTP request heAders',
+		signAture: '(void): ArrAy'
 	},
-	nsapi_response_headers: {
-		description: 'Fetch all HTTP response headers',
-		signature: '(void): array'
+	nsApi_response_heAders: {
+		description: 'Fetch All HTTP response heAders',
+		signAture: '(void): ArrAy'
 	},
-	nsapi_virtual: {
-		description: 'Perform an NSAPI sub-request',
-		signature: '( string $uri ): bool'
+	nsApi_virtuAl: {
+		description: 'Perform An NSAPI sub-request',
+		signAture: '( string $uri ): bool'
 	},
-	session_abort: {
-		description: 'Discard session array changes and finish session',
-		signature: '(void): bool'
+	session_Abort: {
+		description: 'DiscArd session ArrAy chAnges And finish session',
+		signAture: '(void): bool'
 	},
-	session_cache_expire: {
-		description: 'Return current cache expire',
-		signature: '([ string $new_cache_expire ]): int'
+	session_cAche_expire: {
+		description: 'Return current cAche expire',
+		signAture: '([ string $new_cAche_expire ]): int'
 	},
-	session_cache_limiter: {
-		description: 'Get and/or set the current cache limiter',
-		signature: '([ string $cache_limiter ]): string'
+	session_cAche_limiter: {
+		description: 'Get And/or set the current cAche limiter',
+		signAture: '([ string $cAche_limiter ]): string'
 	},
 	session_commit: {
-		description: 'Alias of session_write_close',
+		description: 'AliAs of session_write_close',
 	},
-	session_create_id: {
-		description: 'Create new session id',
-		signature: '([ string $prefix ]): string'
+	session_creAte_id: {
+		description: 'CreAte new session id',
+		signAture: '([ string $prefix ]): string'
 	},
 	session_decode: {
-		description: 'Decodes session data from a session encoded string',
-		signature: '( string $data ): bool'
+		description: 'Decodes session dAtA from A session encoded string',
+		signAture: '( string $dAtA ): bool'
 	},
 	session_destroy: {
-		description: 'Destroys all data registered to a session',
-		signature: '(void): bool'
+		description: 'Destroys All dAtA registered to A session',
+		signAture: '(void): bool'
 	},
 	session_encode: {
-		description: 'Encodes the current session data as a session encoded string',
-		signature: '(void): string'
+		description: 'Encodes the current session dAtA As A session encoded string',
+		signAture: '(void): string'
 	},
 	session_gc: {
-		description: 'Perform session data garbage collection',
-		signature: '(void): int'
+		description: 'Perform session dAtA gArbAge collection',
+		signAture: '(void): int'
 	},
-	session_get_cookie_params: {
-		description: 'Get the session cookie parameters',
-		signature: '(void): array'
+	session_get_cookie_pArAms: {
+		description: 'Get the session cookie pArAmeters',
+		signAture: '(void): ArrAy'
 	},
 	session_id: {
-		description: 'Get and/or set the current session id',
-		signature: '([ string $id ]): string'
+		description: 'Get And/or set the current session id',
+		signAture: '([ string $id ]): string'
 	},
 	session_is_registered: {
-		description: 'Find out whether a global variable is registered in a session',
-		signature: '( string $name ): bool'
+		description: 'Find out whether A globAl vAriAble is registered in A session',
+		signAture: '( string $nAme ): bool'
 	},
-	session_module_name: {
-		description: 'Get and/or set the current session module',
-		signature: '([ string $module ]): string'
+	session_module_nAme: {
+		description: 'Get And/or set the current session module',
+		signAture: '([ string $module ]): string'
 	},
-	session_name: {
-		description: 'Get and/or set the current session name',
-		signature: '([ string $name ]): string'
+	session_nAme: {
+		description: 'Get And/or set the current session nAme',
+		signAture: '([ string $nAme ]): string'
 	},
-	session_regenerate_id: {
-		description: 'Update the current session id with a newly generated one',
-		signature: '([ bool $delete_old_session ]): bool'
+	session_regenerAte_id: {
+		description: 'UpdAte the current session id with A newly generAted one',
+		signAture: '([ bool $delete_old_session ]): bool'
 	},
 	session_register_shutdown: {
 		description: 'Session shutdown function',
-		signature: '(void): void'
+		signAture: '(void): void'
 	},
 	session_register: {
-		description: 'Register one or more global variables with the current session',
-		signature: '( mixed $name [, mixed $... ]): bool'
+		description: 'Register one or more globAl vAriAbles with the current session',
+		signAture: '( mixed $nAme [, mixed $... ]): bool'
 	},
 	session_reset: {
-		description: 'Re-initialize session array with original values',
-		signature: '(void): bool'
+		description: 'Re-initiAlize session ArrAy with originAl vAlues',
+		signAture: '(void): bool'
 	},
-	session_save_path: {
-		description: 'Get and/or set the current session save path',
-		signature: '([ string $path ]): string'
+	session_sAve_pAth: {
+		description: 'Get And/or set the current session sAve pAth',
+		signAture: '([ string $pAth ]): string'
 	},
-	session_set_cookie_params: {
-		description: 'Set the session cookie parameters',
-		signature: '( int $lifetime [, string $path [, string $domain [, bool $secure [, bool $httponly , array $options ]]]]): bool'
+	session_set_cookie_pArAms: {
+		description: 'Set the session cookie pArAmeters',
+		signAture: '( int $lifetime [, string $pAth [, string $domAin [, bool $secure [, bool $httponly , ArrAy $options ]]]]): bool'
 	},
-	session_set_save_handler: {
-		description: 'Sets user-level session storage functions',
-		signature: '( callable $open , callable $close , callable $read , callable $write , callable $destroy , callable $gc [, callable $create_sid [, callable $validate_sid [, callable $update_timestamp , object $sessionhandler [, bool $register_shutdown ]]]]): bool'
+	session_set_sAve_hAndler: {
+		description: 'Sets user-level session storAge functions',
+		signAture: '( cAllAble $open , cAllAble $close , cAllAble $reAd , cAllAble $write , cAllAble $destroy , cAllAble $gc [, cAllAble $creAte_sid [, cAllAble $vAlidAte_sid [, cAllAble $updAte_timestAmp , object $sessionhAndler [, bool $register_shutdown ]]]]): bool'
 	},
-	session_start: {
-		description: 'Start new or resume existing session',
-		signature: '([ array $options = array() ]): bool'
+	session_stArt: {
+		description: 'StArt new or resume existing session',
+		signAture: '([ ArrAy $options = ArrAy() ]): bool'
 	},
-	session_status: {
-		description: 'Returns the current session status',
-		signature: '(void): int'
+	session_stAtus: {
+		description: 'Returns the current session stAtus',
+		signAture: '(void): int'
 	},
 	session_unregister: {
-		description: 'Unregister a global variable from the current session',
-		signature: '( string $name ): bool'
+		description: 'Unregister A globAl vAriAble from the current session',
+		signAture: '( string $nAme ): bool'
 	},
 	session_unset: {
-		description: 'Free all session variables',
-		signature: '(void): bool'
+		description: 'Free All session vAriAbles',
+		signAture: '(void): bool'
 	},
 	session_write_close: {
-		description: 'Write session data and end session',
-		signature: '(void): bool'
+		description: 'Write session dAtA And end session',
+		signAture: '(void): bool'
 	},
 	preg_filter: {
-		description: 'Perform a regular expression search and replace',
-		signature: '( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
+		description: 'Perform A regulAr expression seArch And replAce',
+		signAture: '( mixed $pAttern , mixed $replAcement , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
 	},
 	preg_grep: {
-		description: 'Return array entries that match the pattern',
-		signature: '( string $pattern , array $input [, int $flags = 0 ]): array'
+		description: 'Return ArrAy entries thAt mAtch the pAttern',
+		signAture: '( string $pAttern , ArrAy $input [, int $flAgs = 0 ]): ArrAy'
 	},
-	preg_last_error: {
-		description: 'Returns the error code of the last PCRE regex execution',
-		signature: '(void): int'
+	preg_lAst_error: {
+		description: 'Returns the error code of the lAst PCRE regex execution',
+		signAture: '(void): int'
 	},
-	preg_match_all: {
-		description: 'Perform a global regular expression match',
-		signature: '( string $pattern , string $subject [, array $matches [, int $flags [, int $offset = 0 ]]]): int'
+	preg_mAtch_All: {
+		description: 'Perform A globAl regulAr expression mAtch',
+		signAture: '( string $pAttern , string $subject [, ArrAy $mAtches [, int $flAgs [, int $offset = 0 ]]]): int'
 	},
-	preg_match: {
-		description: 'Perform a regular expression match',
-		signature: '( string $pattern , string $subject [, array $matches [, int $flags = 0 [, int $offset = 0 ]]]): int'
+	preg_mAtch: {
+		description: 'Perform A regulAr expression mAtch',
+		signAture: '( string $pAttern , string $subject [, ArrAy $mAtches [, int $flAgs = 0 [, int $offset = 0 ]]]): int'
 	},
 	preg_quote: {
-		description: 'Quote regular expression characters',
-		signature: '( string $str [, string $delimiter ]): string'
+		description: 'Quote regulAr expression chArActers',
+		signAture: '( string $str [, string $delimiter ]): string'
 	},
-	preg_replace_callback_array: {
-		description: 'Perform a regular expression search and replace using callbacks',
-		signature: '( array $patterns_and_callbacks , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
+	preg_replAce_cAllbAck_ArrAy: {
+		description: 'Perform A regulAr expression seArch And replAce using cAllbAcks',
+		signAture: '( ArrAy $pAtterns_And_cAllbAcks , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
 	},
-	preg_replace_callback: {
-		description: 'Perform a regular expression search and replace using a callback',
-		signature: '( mixed $pattern , callable $callback , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
+	preg_replAce_cAllbAck: {
+		description: 'Perform A regulAr expression seArch And replAce using A cAllbAck',
+		signAture: '( mixed $pAttern , cAllAble $cAllbAck , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
 	},
-	preg_replace: {
-		description: 'Perform a regular expression search and replace',
-		signature: '( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
+	preg_replAce: {
+		description: 'Perform A regulAr expression seArch And replAce',
+		signAture: '( mixed $pAttern , mixed $replAcement , mixed $subject [, int $limit = -1 [, int $count ]]): mixed'
 	},
 	preg_split: {
-		description: 'Split string by a regular expression',
-		signature: '( string $pattern , string $subject [, int $limit = -1 [, int $flags = 0 ]]): array'
+		description: 'Split string by A regulAr expression',
+		signAture: '( string $pAttern , string $subject [, int $limit = -1 [, int $flAgs = 0 ]]): ArrAy'
 	},
-	addcslashes: {
-		description: 'Quote string with slashes in a C style',
-		signature: '( string $str , string $charlist ): string'
+	AddcslAshes: {
+		description: 'Quote string with slAshes in A C style',
+		signAture: '( string $str , string $chArlist ): string'
 	},
-	addslashes: {
-		description: 'Quote string with slashes',
-		signature: '( string $str ): string'
+	AddslAshes: {
+		description: 'Quote string with slAshes',
+		signAture: '( string $str ): string'
 	},
 	bin2hex: {
-		description: 'Convert binary data into hexadecimal representation',
-		signature: '( string $str ): string'
+		description: 'Convert binAry dAtA into hexAdecimAl representAtion',
+		signAture: '( string $str ): string'
 	},
 	chop: {
-		description: 'Alias of rtrim',
+		description: 'AliAs of rtrim',
 	},
 	chr: {
-		description: 'Generate a single-byte string from a number',
-		signature: '( int $bytevalue ): string'
+		description: 'GenerAte A single-byte string from A number',
+		signAture: '( int $bytevAlue ): string'
 	},
 	chunk_split: {
-		description: 'Split a string into smaller chunks',
-		signature: '( string $body [, int $chunklen = 76 [, string $end = "\r\n" ]]): string'
+		description: 'Split A string into smAller chunks',
+		signAture: '( string $body [, int $chunklen = 76 [, string $end = "\r\n" ]]): string'
 	},
 	convert_cyr_string: {
-		description: 'Convert from one Cyrillic character set to another',
-		signature: '( string $str , string $from , string $to ): string'
+		description: 'Convert from one Cyrillic chArActer set to Another',
+		signAture: '( string $str , string $from , string $to ): string'
 	},
 	convert_uudecode: {
-		description: 'Decode a uuencoded string',
-		signature: '( string $data ): string'
+		description: 'Decode A uuencoded string',
+		signAture: '( string $dAtA ): string'
 	},
 	convert_uuencode: {
-		description: 'Uuencode a string',
-		signature: '( string $data ): string'
+		description: 'Uuencode A string',
+		signAture: '( string $dAtA ): string'
 	},
-	count_chars: {
-		description: 'Return information about characters used in a string',
-		signature: '( string $string [, int $mode = 0 ]): mixed'
+	count_chArs: {
+		description: 'Return informAtion About chArActers used in A string',
+		signAture: '( string $string [, int $mode = 0 ]): mixed'
 	},
 	crc32: {
-		description: 'Calculates the crc32 polynomial of a string',
-		signature: '( string $str ): int'
+		description: 'CAlculAtes the crc32 polynomiAl of A string',
+		signAture: '( string $str ): int'
 	},
 	crypt: {
-		description: 'One-way string hashing',
-		signature: '( string $str [, string $salt ]): string'
+		description: 'One-wAy string hAshing',
+		signAture: '( string $str [, string $sAlt ]): string'
 	},
 	echo: {
 		description: 'Output one or more strings',
-		signature: '( string $arg1 [, string $... ]): void'
+		signAture: '( string $Arg1 [, string $... ]): void'
 	},
 	explode: {
-		description: 'Split a string by a string',
-		signature: '( string $delimiter , string $string [, int $limit = PHP_INT_MAX ]): array'
+		description: 'Split A string by A string',
+		signAture: '( string $delimiter , string $string [, int $limit = PHP_INT_MAX ]): ArrAy'
 	},
 	fprintf: {
-		description: 'Write a formatted string to a stream',
-		signature: '( resource $handle , string $format [, mixed $... ]): int'
+		description: 'Write A formAtted string to A streAm',
+		signAture: '( resource $hAndle , string $formAt [, mixed $... ]): int'
 	},
-	get_html_translation_table: {
-		description: 'Returns the translation table used by htmlspecialchars and htmlentities',
-		signature: '([ int $table = HTML_SPECIALCHARS [, int $flags = ENT_COMPAT | ENT_HTML401 [, string $encoding = "UTF-8" ]]]): array'
+	get_html_trAnslAtion_tAble: {
+		description: 'Returns the trAnslAtion tAble used by htmlspeciAlchArs And htmlentities',
+		signAture: '([ int $tAble = HTML_SPECIALCHARS [, int $flAgs = ENT_COMPAT | ENT_HTML401 [, string $encoding = "UTF-8" ]]]): ArrAy'
 	},
 	hebrev: {
-		description: 'Convert logical Hebrew text to visual text',
-		signature: '( string $hebrew_text [, int $max_chars_per_line = 0 ]): string'
+		description: 'Convert logicAl Hebrew text to visuAl text',
+		signAture: '( string $hebrew_text [, int $mAx_chArs_per_line = 0 ]): string'
 	},
 	hebrevc: {
-		description: 'Convert logical Hebrew text to visual text with newline conversion',
-		signature: '( string $hebrew_text [, int $max_chars_per_line = 0 ]): string'
+		description: 'Convert logicAl Hebrew text to visuAl text with newline conversion',
+		signAture: '( string $hebrew_text [, int $mAx_chArs_per_line = 0 ]): string'
 	},
 	hex2bin: {
-		description: 'Decodes a hexadecimally encoded binary string',
-		signature: '( string $data ): string'
+		description: 'Decodes A hexAdecimAlly encoded binAry string',
+		signAture: '( string $dAtA ): string'
 	},
 	html_entity_decode: {
-		description: 'Convert HTML entities to their corresponding characters',
-		signature: '( string $string [, int $flags = ENT_COMPAT | ENT_HTML401 [, string $encoding = ini_get("default_charset") ]]): string'
+		description: 'Convert HTML entities to their corresponding chArActers',
+		signAture: '( string $string [, int $flAgs = ENT_COMPAT | ENT_HTML401 [, string $encoding = ini_get("defAult_chArset") ]]): string'
 	},
 	htmlentities: {
-		description: 'Convert all applicable characters to HTML entities',
-		signature: '( string $string [, int $flags = ENT_COMPAT | ENT_HTML401 [, string $encoding = ini_get("default_charset") [, bool $double_encode ]]]): string'
+		description: 'Convert All ApplicAble chArActers to HTML entities',
+		signAture: '( string $string [, int $flAgs = ENT_COMPAT | ENT_HTML401 [, string $encoding = ini_get("defAult_chArset") [, bool $double_encode ]]]): string'
 	},
-	htmlspecialchars_decode: {
-		description: 'Convert special HTML entities back to characters',
-		signature: '( string $string [, int $flags = ENT_COMPAT | ENT_HTML401 ]): string'
+	htmlspeciAlchArs_decode: {
+		description: 'Convert speciAl HTML entities bAck to chArActers',
+		signAture: '( string $string [, int $flAgs = ENT_COMPAT | ENT_HTML401 ]): string'
 	},
-	htmlspecialchars: {
-		description: 'Convert special characters to HTML entities',
-		signature: '( string $string [, int $flags = ENT_COMPAT | ENT_HTML401 [, string $encoding = ini_get("default_charset") [, bool $double_encode ]]]): string'
+	htmlspeciAlchArs: {
+		description: 'Convert speciAl chArActers to HTML entities',
+		signAture: '( string $string [, int $flAgs = ENT_COMPAT | ENT_HTML401 [, string $encoding = ini_get("defAult_chArset") [, bool $double_encode ]]]): string'
 	},
 	implode: {
-		description: 'Join array elements with a string',
-		signature: '( string $glue , array $pieces ): string'
+		description: 'Join ArrAy elements with A string',
+		signAture: '( string $glue , ArrAy $pieces ): string'
 	},
 	join: {
-		description: 'Alias of implode',
+		description: 'AliAs of implode',
 	},
 	lcfirst: {
-		description: 'Make a string\'s first character lowercase',
-		signature: '( string $str ): string'
+		description: 'MAke A string\'s first chArActer lowercAse',
+		signAture: '( string $str ): string'
 	},
 	levenshtein: {
-		description: 'Calculate Levenshtein distance between two strings',
-		signature: '( string $str1 , string $str2 , int $cost_ins , int $cost_rep , int $cost_del ): int'
+		description: 'CAlculAte Levenshtein distAnce between two strings',
+		signAture: '( string $str1 , string $str2 , int $cost_ins , int $cost_rep , int $cost_del ): int'
 	},
-	localeconv: {
-		description: 'Get numeric formatting information',
-		signature: '(void): array'
+	locAleconv: {
+		description: 'Get numeric formAtting informAtion',
+		signAture: '(void): ArrAy'
 	},
 	ltrim: {
-		description: 'Strip whitespace (or other characters) from the beginning of a string',
-		signature: '( string $str [, string $character_mask ]): string'
+		description: 'Strip whitespAce (or other chArActers) from the beginning of A string',
+		signAture: '( string $str [, string $chArActer_mAsk ]): string'
 	},
 	md5_file: {
-		description: 'Calculates the md5 hash of a given file',
-		signature: '( string $filename [, bool $raw_output ]): string'
+		description: 'CAlculAtes the md5 hAsh of A given file',
+		signAture: '( string $filenAme [, bool $rAw_output ]): string'
 	},
 	md5: {
-		description: 'Calculate the md5 hash of a string',
-		signature: '( string $str [, bool $raw_output ]): string'
+		description: 'CAlculAte the md5 hAsh of A string',
+		signAture: '( string $str [, bool $rAw_output ]): string'
 	},
-	metaphone: {
-		description: 'Calculate the metaphone key of a string',
-		signature: '( string $str [, int $phonemes = 0 ]): string'
+	metAphone: {
+		description: 'CAlculAte the metAphone key of A string',
+		signAture: '( string $str [, int $phonemes = 0 ]): string'
 	},
-	money_format: {
-		description: 'Formats a number as a currency string',
-		signature: '( string $format , float $number ): string'
+	money_formAt: {
+		description: 'FormAts A number As A currency string',
+		signAture: '( string $formAt , floAt $number ): string'
 	},
-	nl_langinfo: {
-		description: 'Query language and locale information',
-		signature: '( int $item ): string'
+	nl_lAnginfo: {
+		description: 'Query lAnguAge And locAle informAtion',
+		signAture: '( int $item ): string'
 	},
 	nl2br: {
-		description: 'Inserts HTML line breaks before all newlines in a string',
-		signature: '( string $string [, bool $is_xhtml ]): string'
+		description: 'Inserts HTML line breAks before All newlines in A string',
+		signAture: '( string $string [, bool $is_xhtml ]): string'
 	},
-	number_format: {
-		description: 'Format a number with grouped thousands',
-		signature: '( float $number , int $decimals = 0 , string $dec_point = "." , string $thousands_sep = "," ): string'
+	number_formAt: {
+		description: 'FormAt A number with grouped thousAnds',
+		signAture: '( floAt $number , int $decimAls = 0 , string $dec_point = "." , string $thousAnds_sep = "," ): string'
 	},
 	ord: {
-		description: 'Convert the first byte of a string to a value between 0 and 255',
-		signature: '( string $string ): int'
+		description: 'Convert the first byte of A string to A vAlue between 0 And 255',
+		signAture: '( string $string ): int'
 	},
-	parse_str: {
-		description: 'Parses the string into variables',
-		signature: '( string $encoded_string [, array $result ]): void'
+	pArse_str: {
+		description: 'PArses the string into vAriAbles',
+		signAture: '( string $encoded_string [, ArrAy $result ]): void'
 	},
 	print: {
-		description: 'Output a string',
-		signature: '( string $arg ): int'
+		description: 'Output A string',
+		signAture: '( string $Arg ): int'
 	},
 	printf: {
-		description: 'Output a formatted string',
-		signature: '( string $format [, mixed $... ]): int'
+		description: 'Output A formAtted string',
+		signAture: '( string $formAt [, mixed $... ]): int'
 	},
-	quoted_printable_decode: {
-		description: 'Convert a quoted-printable string to an 8 bit string',
-		signature: '( string $str ): string'
+	quoted_printAble_decode: {
+		description: 'Convert A quoted-printAble string to An 8 bit string',
+		signAture: '( string $str ): string'
 	},
-	quoted_printable_encode: {
-		description: 'Convert a 8 bit string to a quoted-printable string',
-		signature: '( string $str ): string'
+	quoted_printAble_encode: {
+		description: 'Convert A 8 bit string to A quoted-printAble string',
+		signAture: '( string $str ): string'
 	},
-	quotemeta: {
-		description: 'Quote meta characters',
-		signature: '( string $str ): string'
+	quotemetA: {
+		description: 'Quote metA chArActers',
+		signAture: '( string $str ): string'
 	},
 	rtrim: {
-		description: 'Strip whitespace (or other characters) from the end of a string',
-		signature: '( string $str [, string $character_mask ]): string'
+		description: 'Strip whitespAce (or other chArActers) from the end of A string',
+		signAture: '( string $str [, string $chArActer_mAsk ]): string'
 	},
-	setlocale: {
-		description: 'Set locale information',
-		signature: '( int $category , array $locale [, string $... ]): string'
+	setlocAle: {
+		description: 'Set locAle informAtion',
+		signAture: '( int $cAtegory , ArrAy $locAle [, string $... ]): string'
 	},
-	sha1_file: {
-		description: 'Calculate the sha1 hash of a file',
-		signature: '( string $filename [, bool $raw_output ]): string'
+	shA1_file: {
+		description: 'CAlculAte the shA1 hAsh of A file',
+		signAture: '( string $filenAme [, bool $rAw_output ]): string'
 	},
-	sha1: {
-		description: 'Calculate the sha1 hash of a string',
-		signature: '( string $str [, bool $raw_output ]): string'
+	shA1: {
+		description: 'CAlculAte the shA1 hAsh of A string',
+		signAture: '( string $str [, bool $rAw_output ]): string'
 	},
-	similar_text: {
-		description: 'Calculate the similarity between two strings',
-		signature: '( string $first , string $second [, float $percent ]): int'
+	similAr_text: {
+		description: 'CAlculAte the similArity between two strings',
+		signAture: '( string $first , string $second [, floAt $percent ]): int'
 	},
 	soundex: {
-		description: 'Calculate the soundex key of a string',
-		signature: '( string $str ): string'
+		description: 'CAlculAte the soundex key of A string',
+		signAture: '( string $str ): string'
 	},
 	sprintf: {
-		description: 'Return a formatted string',
-		signature: '( string $format [, mixed $... ]): string'
+		description: 'Return A formAtted string',
+		signAture: '( string $formAt [, mixed $... ]): string'
 	},
-	sscanf: {
-		description: 'Parses input from a string according to a format',
-		signature: '( string $str , string $format [, mixed $... ]): mixed'
+	sscAnf: {
+		description: 'PArses input from A string According to A formAt',
+		signAture: '( string $str , string $formAt [, mixed $... ]): mixed'
 	},
 	str_getcsv: {
-		description: 'Parse a CSV string into an array',
-		signature: '( string $input [, string $delimiter = "," [, string $enclosure = \'"\' [, string $escape = "\\" ]]]): array'
+		description: 'PArse A CSV string into An ArrAy',
+		signAture: '( string $input [, string $delimiter = "," [, string $enclosure = \'"\' [, string $escApe = "\\" ]]]): ArrAy'
 	},
-	str_ireplace: {
-		description: 'Case-insensitive version of str_replace',
-		signature: '( mixed $search , mixed $replace , mixed $subject [, int $count ]): mixed'
+	str_ireplAce: {
+		description: 'CAse-insensitive version of str_replAce',
+		signAture: '( mixed $seArch , mixed $replAce , mixed $subject [, int $count ]): mixed'
 	},
-	str_pad: {
-		description: 'Pad a string to a certain length with another string',
-		signature: '( string $input , int $pad_length [, string $pad_string = " " [, int $pad_type = STR_PAD_RIGHT ]]): string'
+	str_pAd: {
+		description: 'PAd A string to A certAin length with Another string',
+		signAture: '( string $input , int $pAd_length [, string $pAd_string = " " [, int $pAd_type = STR_PAD_RIGHT ]]): string'
 	},
-	str_repeat: {
-		description: 'Repeat a string',
-		signature: '( string $input , int $multiplier ): string'
+	str_repeAt: {
+		description: 'RepeAt A string',
+		signAture: '( string $input , int $multiplier ): string'
 	},
-	str_replace: {
-		description: 'Replace all occurrences of the search string with the replacement string',
-		signature: '( mixed $search , mixed $replace , mixed $subject [, int $count ]): mixed'
+	str_replAce: {
+		description: 'ReplAce All occurrences of the seArch string with the replAcement string',
+		signAture: '( mixed $seArch , mixed $replAce , mixed $subject [, int $count ]): mixed'
 	},
 	str_rot13: {
-		description: 'Perform the rot13 transform on a string',
-		signature: '( string $str ): string'
+		description: 'Perform the rot13 trAnsform on A string',
+		signAture: '( string $str ): string'
 	},
 	str_shuffle: {
-		description: 'Randomly shuffles a string',
-		signature: '( string $str ): string'
+		description: 'RAndomly shuffles A string',
+		signAture: '( string $str ): string'
 	},
 	str_split: {
-		description: 'Convert a string to an array',
-		signature: '( string $string [, int $split_length = 1 ]): array'
+		description: 'Convert A string to An ArrAy',
+		signAture: '( string $string [, int $split_length = 1 ]): ArrAy'
 	},
 	str_word_count: {
-		description: 'Return information about words used in a string',
-		signature: '( string $string [, int $format = 0 [, string $charlist ]]): mixed'
+		description: 'Return informAtion About words used in A string',
+		signAture: '( string $string [, int $formAt = 0 [, string $chArlist ]]): mixed'
 	},
-	strcasecmp: {
-		description: 'Binary safe case-insensitive string comparison',
-		signature: '( string $str1 , string $str2 ): int'
+	strcAsecmp: {
+		description: 'BinAry sAfe cAse-insensitive string compArison',
+		signAture: '( string $str1 , string $str2 ): int'
 	},
 	strchr: {
-		description: 'Alias of strstr',
+		description: 'AliAs of strstr',
 	},
 	strcmp: {
-		description: 'Binary safe string comparison',
-		signature: '( string $str1 , string $str2 ): int'
+		description: 'BinAry sAfe string compArison',
+		signAture: '( string $str1 , string $str2 ): int'
 	},
 	strcoll: {
-		description: 'Locale based string comparison',
-		signature: '( string $str1 , string $str2 ): int'
+		description: 'LocAle bAsed string compArison',
+		signAture: '( string $str1 , string $str2 ): int'
 	},
 	strcspn: {
-		description: 'Find length of initial segment not matching mask',
-		signature: '( string $subject , string $mask [, int $start [, int $length ]]): int'
+		description: 'Find length of initiAl segment not mAtching mAsk',
+		signAture: '( string $subject , string $mAsk [, int $stArt [, int $length ]]): int'
 	},
-	strip_tags: {
-		description: 'Strip HTML and PHP tags from a string',
-		signature: '( string $str [, string $allowable_tags ]): string'
+	strip_tAgs: {
+		description: 'Strip HTML And PHP tAgs from A string',
+		signAture: '( string $str [, string $AllowAble_tAgs ]): string'
 	},
-	stripcslashes: {
-		description: 'Un-quote string quoted with addcslashes',
-		signature: '( string $str ): string'
+	stripcslAshes: {
+		description: 'Un-quote string quoted with AddcslAshes',
+		signAture: '( string $str ): string'
 	},
 	stripos: {
-		description: 'Find the position of the first occurrence of a case-insensitive substring in a string',
-		signature: '( string $haystack , mixed $needle [, int $offset = 0 ]): int'
+		description: 'Find the position of the first occurrence of A cAse-insensitive substring in A string',
+		signAture: '( string $hAystAck , mixed $needle [, int $offset = 0 ]): int'
 	},
-	stripslashes: {
-		description: 'Un-quotes a quoted string',
-		signature: '( string $str ): string'
+	stripslAshes: {
+		description: 'Un-quotes A quoted string',
+		signAture: '( string $str ): string'
 	},
 	stristr: {
-		description: 'Case-insensitive strstr',
-		signature: '( string $haystack , mixed $needle [, bool $before_needle ]): string'
+		description: 'CAse-insensitive strstr',
+		signAture: '( string $hAystAck , mixed $needle [, bool $before_needle ]): string'
 	},
 	strlen: {
 		description: 'Get string length',
-		signature: '( string $string ): int'
+		signAture: '( string $string ): int'
 	},
-	strnatcasecmp: {
-		description: 'Case insensitive string comparisons using a "natural order" algorithm',
-		signature: '( string $str1 , string $str2 ): int'
+	strnAtcAsecmp: {
+		description: 'CAse insensitive string compArisons using A "nAturAl order" Algorithm',
+		signAture: '( string $str1 , string $str2 ): int'
 	},
-	strnatcmp: {
-		description: 'String comparisons using a "natural order" algorithm',
-		signature: '( string $str1 , string $str2 ): int'
+	strnAtcmp: {
+		description: 'String compArisons using A "nAturAl order" Algorithm',
+		signAture: '( string $str1 , string $str2 ): int'
 	},
-	strncasecmp: {
-		description: 'Binary safe case-insensitive string comparison of the first n characters',
-		signature: '( string $str1 , string $str2 , int $len ): int'
+	strncAsecmp: {
+		description: 'BinAry sAfe cAse-insensitive string compArison of the first n chArActers',
+		signAture: '( string $str1 , string $str2 , int $len ): int'
 	},
 	strncmp: {
-		description: 'Binary safe string comparison of the first n characters',
-		signature: '( string $str1 , string $str2 , int $len ): int'
+		description: 'BinAry sAfe string compArison of the first n chArActers',
+		signAture: '( string $str1 , string $str2 , int $len ): int'
 	},
 	strpbrk: {
-		description: 'Search a string for any of a set of characters',
-		signature: '( string $haystack , string $char_list ): string'
+		description: 'SeArch A string for Any of A set of chArActers',
+		signAture: '( string $hAystAck , string $chAr_list ): string'
 	},
 	strpos: {
-		description: 'Find the position of the first occurrence of a substring in a string',
-		signature: '( string $haystack , mixed $needle [, int $offset = 0 ]): int'
+		description: 'Find the position of the first occurrence of A substring in A string',
+		signAture: '( string $hAystAck , mixed $needle [, int $offset = 0 ]): int'
 	},
 	strrchr: {
-		description: 'Find the last occurrence of a character in a string',
-		signature: '( string $haystack , mixed $needle ): string'
+		description: 'Find the lAst occurrence of A chArActer in A string',
+		signAture: '( string $hAystAck , mixed $needle ): string'
 	},
 	strrev: {
-		description: 'Reverse a string',
-		signature: '( string $string ): string'
+		description: 'Reverse A string',
+		signAture: '( string $string ): string'
 	},
 	strripos: {
-		description: 'Find the position of the last occurrence of a case-insensitive substring in a string',
-		signature: '( string $haystack , mixed $needle [, int $offset = 0 ]): int'
+		description: 'Find the position of the lAst occurrence of A cAse-insensitive substring in A string',
+		signAture: '( string $hAystAck , mixed $needle [, int $offset = 0 ]): int'
 	},
 	strrpos: {
-		description: 'Find the position of the last occurrence of a substring in a string',
-		signature: '( string $haystack , mixed $needle [, int $offset = 0 ]): int'
+		description: 'Find the position of the lAst occurrence of A substring in A string',
+		signAture: '( string $hAystAck , mixed $needle [, int $offset = 0 ]): int'
 	},
 	strspn: {
-		description: 'Finds the length of the initial segment of a string consisting   entirely of characters contained within a given mask',
-		signature: '( string $subject , string $mask [, int $start [, int $length ]]): int'
+		description: 'Finds the length of the initiAl segment of A string consisting   entirely of chArActers contAined within A given mAsk',
+		signAture: '( string $subject , string $mAsk [, int $stArt [, int $length ]]): int'
 	},
 	strstr: {
-		description: 'Find the first occurrence of a string',
-		signature: '( string $haystack , mixed $needle [, bool $before_needle ]): string'
+		description: 'Find the first occurrence of A string',
+		signAture: '( string $hAystAck , mixed $needle [, bool $before_needle ]): string'
 	},
 	strtok: {
 		description: 'Tokenize string',
-		signature: '( string $str , string $token ): string'
+		signAture: '( string $str , string $token ): string'
 	},
 	strtolower: {
-		description: 'Make a string lowercase',
-		signature: '( string $string ): string'
+		description: 'MAke A string lowercAse',
+		signAture: '( string $string ): string'
 	},
 	strtoupper: {
-		description: 'Make a string uppercase',
-		signature: '( string $string ): string'
+		description: 'MAke A string uppercAse',
+		signAture: '( string $string ): string'
 	},
 	strtr: {
-		description: 'Translate characters or replace substrings',
-		signature: '( string $str , string $from , string $to , array $replace_pairs ): string'
+		description: 'TrAnslAte chArActers or replAce substrings',
+		signAture: '( string $str , string $from , string $to , ArrAy $replAce_pAirs ): string'
 	},
-	substr_compare: {
-		description: 'Binary safe comparison of two strings from an offset, up to length characters',
-		signature: '( string $main_str , string $str , int $offset [, int $length [, bool $case_insensitivity ]]): int'
+	substr_compAre: {
+		description: 'BinAry sAfe compArison of two strings from An offset, up to length chArActers',
+		signAture: '( string $mAin_str , string $str , int $offset [, int $length [, bool $cAse_insensitivity ]]): int'
 	},
 	substr_count: {
 		description: 'Count the number of substring occurrences',
-		signature: '( string $haystack , string $needle [, int $offset = 0 [, int $length ]]): int'
+		signAture: '( string $hAystAck , string $needle [, int $offset = 0 [, int $length ]]): int'
 	},
-	substr_replace: {
-		description: 'Replace text within a portion of a string',
-		signature: '( mixed $string , mixed $replacement , mixed $start [, mixed $length ]): mixed'
+	substr_replAce: {
+		description: 'ReplAce text within A portion of A string',
+		signAture: '( mixed $string , mixed $replAcement , mixed $stArt [, mixed $length ]): mixed'
 	},
 	substr: {
-		description: 'Return part of a string',
-		signature: '( string $string , int $start [, int $length ]): string'
+		description: 'Return pArt of A string',
+		signAture: '( string $string , int $stArt [, int $length ]): string'
 	},
 	trim: {
-		description: 'Strip whitespace (or other characters) from the beginning and end of a string',
-		signature: '( string $str [, string $character_mask = " \t\n\r\0\x0B" ]): string'
+		description: 'Strip whitespAce (or other chArActers) from the beginning And end of A string',
+		signAture: '( string $str [, string $chArActer_mAsk = " \t\n\r\0\x0B" ]): string'
 	},
 	ucfirst: {
-		description: 'Make a string\'s first character uppercase',
-		signature: '( string $str ): string'
+		description: 'MAke A string\'s first chArActer uppercAse',
+		signAture: '( string $str ): string'
 	},
 	ucwords: {
-		description: 'Uppercase the first character of each word in a string',
-		signature: '( string $str [, string $delimiters = " \t\r\n\f\v" ]): string'
+		description: 'UppercAse the first chArActer of eAch word in A string',
+		signAture: '( string $str [, string $delimiters = " \t\r\n\f\v" ]): string'
 	},
 	vfprintf: {
-		description: 'Write a formatted string to a stream',
-		signature: '( resource $handle , string $format , array $args ): int'
+		description: 'Write A formAtted string to A streAm',
+		signAture: '( resource $hAndle , string $formAt , ArrAy $Args ): int'
 	},
 	vprintf: {
-		description: 'Output a formatted string',
-		signature: '( string $format , array $args ): int'
+		description: 'Output A formAtted string',
+		signAture: '( string $formAt , ArrAy $Args ): int'
 	},
 	vsprintf: {
-		description: 'Return a formatted string',
-		signature: '( string $format , array $args ): string'
+		description: 'Return A formAtted string',
+		signAture: '( string $formAt , ArrAy $Args ): string'
 	},
-	wordwrap: {
-		description: 'Wraps a string to a given number of characters',
-		signature: '( string $str [, int $width = 75 [, string $break = "\n" [, bool $cut ]]]): string'
+	wordwrAp: {
+		description: 'WrAps A string to A given number of chArActers',
+		signAture: '( string $str [, int $width = 75 [, string $breAk = "\n" [, bool $cut ]]]): string'
 	},
-	array_change_key_case: {
-		description: 'Changes the case of all keys in an array',
-		signature: '( array $array [, int $case = CASE_LOWER ]): array'
+	ArrAy_chAnge_key_cAse: {
+		description: 'ChAnges the cAse of All keys in An ArrAy',
+		signAture: '( ArrAy $ArrAy [, int $cAse = CASE_LOWER ]): ArrAy'
 	},
-	array_chunk: {
-		description: 'Split an array into chunks',
-		signature: '( array $array , int $size [, bool $preserve_keys ]): array'
+	ArrAy_chunk: {
+		description: 'Split An ArrAy into chunks',
+		signAture: '( ArrAy $ArrAy , int $size [, bool $preserve_keys ]): ArrAy'
 	},
-	array_column: {
-		description: 'Return the values from a single column in the input array',
-		signature: '( array $input , mixed $column_key [, mixed $index_key ]): array'
+	ArrAy_column: {
+		description: 'Return the vAlues from A single column in the input ArrAy',
+		signAture: '( ArrAy $input , mixed $column_key [, mixed $index_key ]): ArrAy'
 	},
-	array_combine: {
-		description: 'Creates an array by using one array for keys and another for its values',
-		signature: '( array $keys , array $values ): array'
+	ArrAy_combine: {
+		description: 'CreAtes An ArrAy by using one ArrAy for keys And Another for its vAlues',
+		signAture: '( ArrAy $keys , ArrAy $vAlues ): ArrAy'
 	},
-	array_count_values: {
-		description: 'Counts all the values of an array',
-		signature: '( array $array ): array'
+	ArrAy_count_vAlues: {
+		description: 'Counts All the vAlues of An ArrAy',
+		signAture: '( ArrAy $ArrAy ): ArrAy'
 	},
-	array_diff_assoc: {
-		description: 'Computes the difference of arrays with additional index check',
-		signature: '( array $array1 , array $array2 [, array $... ]): array'
+	ArrAy_diff_Assoc: {
+		description: 'Computes the difference of ArrAys with AdditionAl index check',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... ]): ArrAy'
 	},
-	array_diff_key: {
-		description: 'Computes the difference of arrays using keys for comparison',
-		signature: '( array $array1 , array $array2 [, array $... ]): array'
+	ArrAy_diff_key: {
+		description: 'Computes the difference of ArrAys using keys for compArison',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... ]): ArrAy'
 	},
-	array_diff_uassoc: {
-		description: 'Computes the difference of arrays with additional index check which is performed by a user supplied callback function',
-		signature: '( array $array1 , array $array2 [, array $... , callable $key_compare_func ]): array'
+	ArrAy_diff_uAssoc: {
+		description: 'Computes the difference of ArrAys with AdditionAl index check which is performed by A user supplied cAllbAck function',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $key_compAre_func ]): ArrAy'
 	},
-	array_diff_ukey: {
-		description: 'Computes the difference of arrays using a callback function on the keys for comparison',
-		signature: '( array $array1 , array $array2 [, array $... , callable $key_compare_func ]): array'
+	ArrAy_diff_ukey: {
+		description: 'Computes the difference of ArrAys using A cAllbAck function on the keys for compArison',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $key_compAre_func ]): ArrAy'
 	},
-	array_diff: {
-		description: 'Computes the difference of arrays',
-		signature: '( array $array1 , array $array2 [, array $... ]): array'
+	ArrAy_diff: {
+		description: 'Computes the difference of ArrAys',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... ]): ArrAy'
 	},
-	array_fill_keys: {
-		description: 'Fill an array with values, specifying keys',
-		signature: '( array $keys , mixed $value ): array'
+	ArrAy_fill_keys: {
+		description: 'Fill An ArrAy with vAlues, specifying keys',
+		signAture: '( ArrAy $keys , mixed $vAlue ): ArrAy'
 	},
-	array_fill: {
-		description: 'Fill an array with values',
-		signature: '( int $start_index , int $num , mixed $value ): array'
+	ArrAy_fill: {
+		description: 'Fill An ArrAy with vAlues',
+		signAture: '( int $stArt_index , int $num , mixed $vAlue ): ArrAy'
 	},
-	array_filter: {
-		description: 'Filters elements of an array using a callback function',
-		signature: '( array $array [, callable $callback [, int $flag = 0 ]]): array'
+	ArrAy_filter: {
+		description: 'Filters elements of An ArrAy using A cAllbAck function',
+		signAture: '( ArrAy $ArrAy [, cAllAble $cAllbAck [, int $flAg = 0 ]]): ArrAy'
 	},
-	array_flip: {
-		description: 'Exchanges all keys with their associated values in an array',
-		signature: '( array $array ): string'
+	ArrAy_flip: {
+		description: 'ExchAnges All keys with their AssociAted vAlues in An ArrAy',
+		signAture: '( ArrAy $ArrAy ): string'
 	},
-	array_intersect_assoc: {
-		description: 'Computes the intersection of arrays with additional index check',
-		signature: '( array $array1 , array $array2 [, array $... ]): array'
+	ArrAy_intersect_Assoc: {
+		description: 'Computes the intersection of ArrAys with AdditionAl index check',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... ]): ArrAy'
 	},
-	array_intersect_key: {
-		description: 'Computes the intersection of arrays using keys for comparison',
-		signature: '( array $array1 , array $array2 [, array $... ]): array'
+	ArrAy_intersect_key: {
+		description: 'Computes the intersection of ArrAys using keys for compArison',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... ]): ArrAy'
 	},
-	array_intersect_uassoc: {
-		description: 'Computes the intersection of arrays with additional index check, compares indexes by a callback function',
-		signature: '( array $array1 , array $array2 [, array $... , callable $key_compare_func ]): array'
+	ArrAy_intersect_uAssoc: {
+		description: 'Computes the intersection of ArrAys with AdditionAl index check, compAres indexes by A cAllbAck function',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $key_compAre_func ]): ArrAy'
 	},
-	array_intersect_ukey: {
-		description: 'Computes the intersection of arrays using a callback function on the keys for comparison',
-		signature: '( array $array1 , array $array2 [, array $... , callable $key_compare_func ]): array'
+	ArrAy_intersect_ukey: {
+		description: 'Computes the intersection of ArrAys using A cAllbAck function on the keys for compArison',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $key_compAre_func ]): ArrAy'
 	},
-	array_intersect: {
-		description: 'Computes the intersection of arrays',
-		signature: '( array $array1 , array $array2 [, array $... ]): array'
+	ArrAy_intersect: {
+		description: 'Computes the intersection of ArrAys',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... ]): ArrAy'
 	},
-	array_key_exists: {
-		description: 'Checks if the given key or index exists in the array',
-		signature: '( mixed $key , array $array ): bool'
+	ArrAy_key_exists: {
+		description: 'Checks if the given key or index exists in the ArrAy',
+		signAture: '( mixed $key , ArrAy $ArrAy ): bool'
 	},
-	array_key_first: {
-		description: 'Gets the first key of an array',
-		signature: '( array $array ): mixed'
+	ArrAy_key_first: {
+		description: 'Gets the first key of An ArrAy',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
-	array_key_last: {
-		description: 'Gets the last key of an array',
-		signature: '( array $array ): mixed'
+	ArrAy_key_lAst: {
+		description: 'Gets the lAst key of An ArrAy',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
-	array_keys: {
-		description: 'Return all the keys or a subset of the keys of an array',
-		signature: '( array $array , mixed $search_value [, bool $strict ]): array'
+	ArrAy_keys: {
+		description: 'Return All the keys or A subset of the keys of An ArrAy',
+		signAture: '( ArrAy $ArrAy , mixed $seArch_vAlue [, bool $strict ]): ArrAy'
 	},
-	array_map: {
-		description: 'Applies the callback to the elements of the given arrays',
-		signature: '( callable $callback , array $array1 [, array $... ]): array'
+	ArrAy_mAp: {
+		description: 'Applies the cAllbAck to the elements of the given ArrAys',
+		signAture: '( cAllAble $cAllbAck , ArrAy $ArrAy1 [, ArrAy $... ]): ArrAy'
 	},
-	array_merge_recursive: {
-		description: 'Merge one or more arrays recursively',
-		signature: '( array $array1 [, array $... ]): array'
+	ArrAy_merge_recursive: {
+		description: 'Merge one or more ArrAys recursively',
+		signAture: '( ArrAy $ArrAy1 [, ArrAy $... ]): ArrAy'
 	},
-	array_merge: {
-		description: 'Merge one or more arrays',
-		signature: '( array $array1 [, array $... ]): array'
+	ArrAy_merge: {
+		description: 'Merge one or more ArrAys',
+		signAture: '( ArrAy $ArrAy1 [, ArrAy $... ]): ArrAy'
 	},
-	array_multisort: {
-		description: 'Sort multiple or multi-dimensional arrays',
-		signature: '( array $array1 [, mixed $array1_sort_order = SORT_ASC [, mixed $array1_sort_flags = SORT_REGULAR [, mixed $... ]]]): string'
+	ArrAy_multisort: {
+		description: 'Sort multiple or multi-dimensionAl ArrAys',
+		signAture: '( ArrAy $ArrAy1 [, mixed $ArrAy1_sort_order = SORT_ASC [, mixed $ArrAy1_sort_flAgs = SORT_REGULAR [, mixed $... ]]]): string'
 	},
-	array_pad: {
-		description: 'Pad array to the specified length with a value',
-		signature: '( array $array , int $size , mixed $value ): array'
+	ArrAy_pAd: {
+		description: 'PAd ArrAy to the specified length with A vAlue',
+		signAture: '( ArrAy $ArrAy , int $size , mixed $vAlue ): ArrAy'
 	},
-	array_pop: {
-		description: 'Pop the element off the end of array',
-		signature: '( array $array ): array'
+	ArrAy_pop: {
+		description: 'Pop the element off the end of ArrAy',
+		signAture: '( ArrAy $ArrAy ): ArrAy'
 	},
-	array_product: {
-		description: 'Calculate the product of values in an array',
-		signature: '( array $array ): number'
+	ArrAy_product: {
+		description: 'CAlculAte the product of vAlues in An ArrAy',
+		signAture: '( ArrAy $ArrAy ): number'
 	},
-	array_push: {
-		description: 'Push one or more elements onto the end of array',
-		signature: '( array $array [, mixed $... ]): int'
+	ArrAy_push: {
+		description: 'Push one or more elements onto the end of ArrAy',
+		signAture: '( ArrAy $ArrAy [, mixed $... ]): int'
 	},
-	array_rand: {
-		description: 'Pick one or more random keys out of an array',
-		signature: '( array $array [, int $num = 1 ]): mixed'
+	ArrAy_rAnd: {
+		description: 'Pick one or more rAndom keys out of An ArrAy',
+		signAture: '( ArrAy $ArrAy [, int $num = 1 ]): mixed'
 	},
-	array_reduce: {
-		description: 'Iteratively reduce the array to a single value using a callback function',
-		signature: '( array $array , callable $callback [, mixed $initial ]): mixed'
+	ArrAy_reduce: {
+		description: 'IterAtively reduce the ArrAy to A single vAlue using A cAllbAck function',
+		signAture: '( ArrAy $ArrAy , cAllAble $cAllbAck [, mixed $initiAl ]): mixed'
 	},
-	array_replace_recursive: {
-		description: 'Replaces elements from passed arrays into the first array recursively',
-		signature: '( array $array1 [, array $... ]): array'
+	ArrAy_replAce_recursive: {
+		description: 'ReplAces elements from pAssed ArrAys into the first ArrAy recursively',
+		signAture: '( ArrAy $ArrAy1 [, ArrAy $... ]): ArrAy'
 	},
-	array_replace: {
-		description: 'Replaces elements from passed arrays into the first array',
-		signature: '( array $array1 [, array $... ]): array'
+	ArrAy_replAce: {
+		description: 'ReplAces elements from pAssed ArrAys into the first ArrAy',
+		signAture: '( ArrAy $ArrAy1 [, ArrAy $... ]): ArrAy'
 	},
-	array_reverse: {
-		description: 'Return an array with elements in reverse order',
-		signature: '( array $array [, bool $preserve_keys ]): array'
+	ArrAy_reverse: {
+		description: 'Return An ArrAy with elements in reverse order',
+		signAture: '( ArrAy $ArrAy [, bool $preserve_keys ]): ArrAy'
 	},
-	array_search: {
-		description: 'Searches the array for a given value and returns the first corresponding key if successful',
-		signature: '( mixed $needle , array $haystack [, bool $strict ]): mixed'
+	ArrAy_seArch: {
+		description: 'SeArches the ArrAy for A given vAlue And returns the first corresponding key if successful',
+		signAture: '( mixed $needle , ArrAy $hAystAck [, bool $strict ]): mixed'
 	},
-	array_shift: {
-		description: 'Shift an element off the beginning of array',
-		signature: '( array $array ): array'
+	ArrAy_shift: {
+		description: 'Shift An element off the beginning of ArrAy',
+		signAture: '( ArrAy $ArrAy ): ArrAy'
 	},
-	array_slice: {
-		description: 'Extract a slice of the array',
-		signature: '( array $array , int $offset [, int $length [, bool $preserve_keys ]]): array'
+	ArrAy_slice: {
+		description: 'ExtrAct A slice of the ArrAy',
+		signAture: '( ArrAy $ArrAy , int $offset [, int $length [, bool $preserve_keys ]]): ArrAy'
 	},
-	array_splice: {
-		description: 'Remove a portion of the array and replace it with something else',
-		signature: '( array $input , int $offset [, int $length = count($input) [, mixed $replacement = array() ]]): array'
+	ArrAy_splice: {
+		description: 'Remove A portion of the ArrAy And replAce it with something else',
+		signAture: '( ArrAy $input , int $offset [, int $length = count($input) [, mixed $replAcement = ArrAy() ]]): ArrAy'
 	},
-	array_sum: {
-		description: 'Calculate the sum of values in an array',
-		signature: '( array $array ): number'
+	ArrAy_sum: {
+		description: 'CAlculAte the sum of vAlues in An ArrAy',
+		signAture: '( ArrAy $ArrAy ): number'
 	},
-	array_udiff_assoc: {
-		description: 'Computes the difference of arrays with additional index check, compares data by a callback function',
-		signature: '( array $array1 , array $array2 [, array $... , callable $value_compare_func ]): array'
+	ArrAy_udiff_Assoc: {
+		description: 'Computes the difference of ArrAys with AdditionAl index check, compAres dAtA by A cAllbAck function',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $vAlue_compAre_func ]): ArrAy'
 	},
-	array_udiff_uassoc: {
-		description: 'Computes the difference of arrays with additional index check, compares data and indexes by a callback function',
-		signature: '( array $array1 , array $array2 [, array $... , callable $value_compare_func , callable $key_compare_func ]): array'
+	ArrAy_udiff_uAssoc: {
+		description: 'Computes the difference of ArrAys with AdditionAl index check, compAres dAtA And indexes by A cAllbAck function',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $vAlue_compAre_func , cAllAble $key_compAre_func ]): ArrAy'
 	},
-	array_udiff: {
-		description: 'Computes the difference of arrays by using a callback function for data comparison',
-		signature: '( array $array1 , array $array2 [, array $... , callable $value_compare_func ]): array'
+	ArrAy_udiff: {
+		description: 'Computes the difference of ArrAys by using A cAllbAck function for dAtA compArison',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $vAlue_compAre_func ]): ArrAy'
 	},
-	array_uintersect_assoc: {
-		description: 'Computes the intersection of arrays with additional index check, compares data by a callback function',
-		signature: '( array $array1 , array $array2 [, array $... , callable $value_compare_func ]): array'
+	ArrAy_uintersect_Assoc: {
+		description: 'Computes the intersection of ArrAys with AdditionAl index check, compAres dAtA by A cAllbAck function',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $vAlue_compAre_func ]): ArrAy'
 	},
-	array_uintersect_uassoc: {
-		description: 'Computes the intersection of arrays with additional index check, compares data and indexes by separate callback functions',
-		signature: '( array $array1 , array $array2 [, array $... , callable $value_compare_func , callable $key_compare_func ]): array'
+	ArrAy_uintersect_uAssoc: {
+		description: 'Computes the intersection of ArrAys with AdditionAl index check, compAres dAtA And indexes by sepArAte cAllbAck functions',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $vAlue_compAre_func , cAllAble $key_compAre_func ]): ArrAy'
 	},
-	array_uintersect: {
-		description: 'Computes the intersection of arrays, compares data by a callback function',
-		signature: '( array $array1 , array $array2 [, array $... , callable $value_compare_func ]): array'
+	ArrAy_uintersect: {
+		description: 'Computes the intersection of ArrAys, compAres dAtA by A cAllbAck function',
+		signAture: '( ArrAy $ArrAy1 , ArrAy $ArrAy2 [, ArrAy $... , cAllAble $vAlue_compAre_func ]): ArrAy'
 	},
-	array_unique: {
-		description: 'Removes duplicate values from an array',
-		signature: '( array $array [, int $sort_flags = SORT_STRING ]): array'
+	ArrAy_unique: {
+		description: 'Removes duplicAte vAlues from An ArrAy',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_STRING ]): ArrAy'
 	},
-	array_unshift: {
-		description: 'Prepend one or more elements to the beginning of an array',
-		signature: '( array $array [, mixed $... ]): int'
+	ArrAy_unshift: {
+		description: 'Prepend one or more elements to the beginning of An ArrAy',
+		signAture: '( ArrAy $ArrAy [, mixed $... ]): int'
 	},
-	array_values: {
-		description: 'Return all the values of an array',
-		signature: '( array $array ): array'
+	ArrAy_vAlues: {
+		description: 'Return All the vAlues of An ArrAy',
+		signAture: '( ArrAy $ArrAy ): ArrAy'
 	},
-	array_walk_recursive: {
-		description: 'Apply a user function recursively to every member of an array',
-		signature: '( array $array , callable $callback [, mixed $userdata ]): bool'
+	ArrAy_wAlk_recursive: {
+		description: 'Apply A user function recursively to every member of An ArrAy',
+		signAture: '( ArrAy $ArrAy , cAllAble $cAllbAck [, mixed $userdAtA ]): bool'
 	},
-	array_walk: {
-		description: 'Apply a user supplied function to every member of an array',
-		signature: '( array $array , callable $callback [, mixed $userdata ]): bool'
+	ArrAy_wAlk: {
+		description: 'Apply A user supplied function to every member of An ArrAy',
+		signAture: '( ArrAy $ArrAy , cAllAble $cAllbAck [, mixed $userdAtA ]): bool'
 	},
-	array: {
-		description: 'Create an array',
-		signature: '([ mixed $... ]): array'
+	ArrAy: {
+		description: 'CreAte An ArrAy',
+		signAture: '([ mixed $... ]): ArrAy'
 	},
-	arsort: {
-		description: 'Sort an array in reverse order and maintain index association',
-		signature: '( array $array [, int $sort_flags = SORT_REGULAR ]): bool'
+	Arsort: {
+		description: 'Sort An ArrAy in reverse order And mAintAin index AssociAtion',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_REGULAR ]): bool'
 	},
-	asort: {
-		description: 'Sort an array and maintain index association',
-		signature: '( array $array [, int $sort_flags = SORT_REGULAR ]): bool'
+	Asort: {
+		description: 'Sort An ArrAy And mAintAin index AssociAtion',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_REGULAR ]): bool'
 	},
-	compact: {
-		description: 'Create array containing variables and their values',
-		signature: '( mixed $varname1 [, mixed $... ]): array'
+	compAct: {
+		description: 'CreAte ArrAy contAining vAriAbles And their vAlues',
+		signAture: '( mixed $vArnAme1 [, mixed $... ]): ArrAy'
 	},
 	count: {
-		description: 'Count all elements in an array, or something in an object',
-		signature: '( mixed $array_or_countable [, int $mode = COUNT_NORMAL ]): int'
+		description: 'Count All elements in An ArrAy, or something in An object',
+		signAture: '( mixed $ArrAy_or_countAble [, int $mode = COUNT_NORMAL ]): int'
 	},
 	current: {
-		description: 'Return the current element in an array',
-		signature: '( array $array ): mixed'
+		description: 'Return the current element in An ArrAy',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
-	each: {
-		description: 'Return the current key and value pair from an array and advance the array cursor',
-		signature: '( array $array ): array'
+	eAch: {
+		description: 'Return the current key And vAlue pAir from An ArrAy And AdvAnce the ArrAy cursor',
+		signAture: '( ArrAy $ArrAy ): ArrAy'
 	},
 	end: {
-		description: 'Set the internal pointer of an array to its last element',
-		signature: '( array $array ): mixed'
+		description: 'Set the internAl pointer of An ArrAy to its lAst element',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
-	extract: {
-		description: 'Import variables into the current symbol table from an array',
-		signature: '( array $array [, int $flags = EXTR_OVERWRITE [, string $prefix ]]): int'
+	extrAct: {
+		description: 'Import vAriAbles into the current symbol tAble from An ArrAy',
+		signAture: '( ArrAy $ArrAy [, int $flAgs = EXTR_OVERWRITE [, string $prefix ]]): int'
 	},
-	in_array: {
-		description: 'Checks if a value exists in an array',
-		signature: '( mixed $needle , array $haystack [, bool $strict ]): bool'
+	in_ArrAy: {
+		description: 'Checks if A vAlue exists in An ArrAy',
+		signAture: '( mixed $needle , ArrAy $hAystAck [, bool $strict ]): bool'
 	},
 	key_exists: {
-		description: 'Alias of array_key_exists',
+		description: 'AliAs of ArrAy_key_exists',
 	},
 	key: {
-		description: 'Fetch a key from an array',
-		signature: '( array $array ): mixed'
+		description: 'Fetch A key from An ArrAy',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
 	krsort: {
-		description: 'Sort an array by key in reverse order',
-		signature: '( array $array [, int $sort_flags = SORT_REGULAR ]): bool'
+		description: 'Sort An ArrAy by key in reverse order',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_REGULAR ]): bool'
 	},
 	ksort: {
-		description: 'Sort an array by key',
-		signature: '( array $array [, int $sort_flags = SORT_REGULAR ]): bool'
+		description: 'Sort An ArrAy by key',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_REGULAR ]): bool'
 	},
 	list: {
-		description: 'Assign variables as if they were an array',
-		signature: '( mixed $var1 [, mixed $... ]): array'
+		description: 'Assign vAriAbles As if they were An ArrAy',
+		signAture: '( mixed $vAr1 [, mixed $... ]): ArrAy'
 	},
-	natcasesort: {
-		description: 'Sort an array using a case insensitive "natural order" algorithm',
-		signature: '( array $array ): bool'
+	nAtcAsesort: {
+		description: 'Sort An ArrAy using A cAse insensitive "nAturAl order" Algorithm',
+		signAture: '( ArrAy $ArrAy ): bool'
 	},
-	natsort: {
-		description: 'Sort an array using a "natural order" algorithm',
-		signature: '( array $array ): bool'
+	nAtsort: {
+		description: 'Sort An ArrAy using A "nAturAl order" Algorithm',
+		signAture: '( ArrAy $ArrAy ): bool'
 	},
 	next: {
-		description: 'Advance the internal pointer of an array',
-		signature: '( array $array ): mixed'
+		description: 'AdvAnce the internAl pointer of An ArrAy',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
 	pos: {
-		description: 'Alias of current',
+		description: 'AliAs of current',
 	},
 	prev: {
-		description: 'Rewind the internal array pointer',
-		signature: '( array $array ): mixed'
+		description: 'Rewind the internAl ArrAy pointer',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
-	range: {
-		description: 'Create an array containing a range of elements',
-		signature: '( mixed $start , mixed $end [, number $step = 1 ]): array'
+	rAnge: {
+		description: 'CreAte An ArrAy contAining A rAnge of elements',
+		signAture: '( mixed $stArt , mixed $end [, number $step = 1 ]): ArrAy'
 	},
 	reset: {
-		description: 'Set the internal pointer of an array to its first element',
-		signature: '( array $array ): mixed'
+		description: 'Set the internAl pointer of An ArrAy to its first element',
+		signAture: '( ArrAy $ArrAy ): mixed'
 	},
 	rsort: {
-		description: 'Sort an array in reverse order',
-		signature: '( array $array [, int $sort_flags = SORT_REGULAR ]): bool'
+		description: 'Sort An ArrAy in reverse order',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_REGULAR ]): bool'
 	},
 	shuffle: {
-		description: 'Shuffle an array',
-		signature: '( array $array ): bool'
+		description: 'Shuffle An ArrAy',
+		signAture: '( ArrAy $ArrAy ): bool'
 	},
 	sizeof: {
-		description: 'Alias of count',
+		description: 'AliAs of count',
 	},
 	sort: {
-		description: 'Sort an array',
-		signature: '( array $array [, int $sort_flags = SORT_REGULAR ]): bool'
+		description: 'Sort An ArrAy',
+		signAture: '( ArrAy $ArrAy [, int $sort_flAgs = SORT_REGULAR ]): bool'
 	},
-	uasort: {
-		description: 'Sort an array with a user-defined comparison function and maintain index association',
-		signature: '( array $array , callable $value_compare_func ): bool'
+	uAsort: {
+		description: 'Sort An ArrAy with A user-defined compArison function And mAintAin index AssociAtion',
+		signAture: '( ArrAy $ArrAy , cAllAble $vAlue_compAre_func ): bool'
 	},
 	uksort: {
-		description: 'Sort an array by keys using a user-defined comparison function',
-		signature: '( array $array , callable $key_compare_func ): bool'
+		description: 'Sort An ArrAy by keys using A user-defined compArison function',
+		signAture: '( ArrAy $ArrAy , cAllAble $key_compAre_func ): bool'
 	},
 	usort: {
-		description: 'Sort an array by values using a user-defined comparison function',
-		signature: '( array $array , callable $value_compare_func ): bool'
+		description: 'Sort An ArrAy by vAlues using A user-defined compArison function',
+		signAture: '( ArrAy $ArrAy , cAllAble $vAlue_compAre_func ): bool'
 	},
-	__autoload: {
-		description: 'Attempt to load undefined class',
-		signature: '( string $class ): void'
+	__AutoloAd: {
+		description: 'Attempt to loAd undefined clAss',
+		signAture: '( string $clAss ): void'
 	},
-	call_user_method_array: {
-		description: 'Call a user method given with an array of parameters',
-		signature: '( string $method_name , object $obj , array $params ): mixed'
+	cAll_user_method_ArrAy: {
+		description: 'CAll A user method given with An ArrAy of pArAmeters',
+		signAture: '( string $method_nAme , object $obj , ArrAy $pArAms ): mixed'
 	},
-	call_user_method: {
-		description: 'Call a user method on an specific object',
-		signature: '( string $method_name , object $obj [, mixed $... ]): mixed'
+	cAll_user_method: {
+		description: 'CAll A user method on An specific object',
+		signAture: '( string $method_nAme , object $obj [, mixed $... ]): mixed'
 	},
-	class_alias: {
-		description: 'Creates an alias for a class',
-		signature: '( string $original , string $alias [, bool $autoload ]): bool'
+	clAss_AliAs: {
+		description: 'CreAtes An AliAs for A clAss',
+		signAture: '( string $originAl , string $AliAs [, bool $AutoloAd ]): bool'
 	},
-	class_exists: {
-		description: 'Checks if the class has been defined',
-		signature: '( string $class_name [, bool $autoload ]): bool'
+	clAss_exists: {
+		description: 'Checks if the clAss hAs been defined',
+		signAture: '( string $clAss_nAme [, bool $AutoloAd ]): bool'
 	},
-	get_called_class: {
-		description: 'The "Late Static Binding" class name',
-		signature: '(void): string'
+	get_cAlled_clAss: {
+		description: 'The "LAte StAtic Binding" clAss nAme',
+		signAture: '(void): string'
 	},
-	get_class_methods: {
-		description: 'Gets the class methods\' names',
-		signature: '( mixed $class_name ): array'
+	get_clAss_methods: {
+		description: 'Gets the clAss methods\' nAmes',
+		signAture: '( mixed $clAss_nAme ): ArrAy'
 	},
-	get_class_vars: {
-		description: 'Get the default properties of the class',
-		signature: '( string $class_name ): array'
+	get_clAss_vArs: {
+		description: 'Get the defAult properties of the clAss',
+		signAture: '( string $clAss_nAme ): ArrAy'
 	},
-	get_class: {
-		description: 'Returns the name of the class of an object',
-		signature: '([ object $object ]): string'
+	get_clAss: {
+		description: 'Returns the nAme of the clAss of An object',
+		signAture: '([ object $object ]): string'
 	},
-	get_declared_classes: {
-		description: 'Returns an array with the name of the defined classes',
-		signature: '(void): array'
+	get_declAred_clAsses: {
+		description: 'Returns An ArrAy with the nAme of the defined clAsses',
+		signAture: '(void): ArrAy'
 	},
-	get_declared_interfaces: {
-		description: 'Returns an array of all declared interfaces',
-		signature: '(void): array'
+	get_declAred_interfAces: {
+		description: 'Returns An ArrAy of All declAred interfAces',
+		signAture: '(void): ArrAy'
 	},
-	get_declared_traits: {
-		description: 'Returns an array of all declared traits',
-		signature: '(void): array'
+	get_declAred_trAits: {
+		description: 'Returns An ArrAy of All declAred trAits',
+		signAture: '(void): ArrAy'
 	},
-	get_object_vars: {
+	get_object_vArs: {
 		description: 'Gets the properties of the given object',
-		signature: '( object $object ): array'
+		signAture: '( object $object ): ArrAy'
 	},
-	get_parent_class: {
-		description: 'Retrieves the parent class name for object or class',
-		signature: '([ mixed $object ]): string'
+	get_pArent_clAss: {
+		description: 'Retrieves the pArent clAss nAme for object or clAss',
+		signAture: '([ mixed $object ]): string'
 	},
-	interface_exists: {
-		description: 'Checks if the interface has been defined',
-		signature: '( string $interface_name [, bool $autoload ]): bool'
+	interfAce_exists: {
+		description: 'Checks if the interfAce hAs been defined',
+		signAture: '( string $interfAce_nAme [, bool $AutoloAd ]): bool'
 	},
-	is_a: {
-		description: 'Checks if the object is of this class or has this class as one of its parents',
-		signature: '( mixed $object , string $class_name [, bool $allow_string ]): bool'
+	is_A: {
+		description: 'Checks if the object is of this clAss or hAs this clAss As one of its pArents',
+		signAture: '( mixed $object , string $clAss_nAme [, bool $Allow_string ]): bool'
 	},
-	is_subclass_of: {
-		description: 'Checks if the object has this class as one of its parents or implements it',
-		signature: '( mixed $object , string $class_name [, bool $allow_string ]): bool'
+	is_subclAss_of: {
+		description: 'Checks if the object hAs this clAss As one of its pArents or implements it',
+		signAture: '( mixed $object , string $clAss_nAme [, bool $Allow_string ]): bool'
 	},
 	method_exists: {
-		description: 'Checks if the class method exists',
-		signature: '( mixed $object , string $method_name ): bool'
+		description: 'Checks if the clAss method exists',
+		signAture: '( mixed $object , string $method_nAme ): bool'
 	},
 	property_exists: {
-		description: 'Checks if the object or class has a property',
-		signature: '( mixed $class , string $property ): bool'
+		description: 'Checks if the object or clAss hAs A property',
+		signAture: '( mixed $clAss , string $property ): bool'
 	},
-	trait_exists: {
-		description: 'Checks if the trait exists',
-		signature: '( string $traitname [, bool $autoload ]): bool'
+	trAit_exists: {
+		description: 'Checks if the trAit exists',
+		signAture: '( string $trAitnAme [, bool $AutoloAd ]): bool'
 	},
-	ctype_alnum: {
-		description: 'Check for alphanumeric character(s)',
-		signature: '( string $text ): string'
+	ctype_Alnum: {
+		description: 'Check for AlphAnumeric chArActer(s)',
+		signAture: '( string $text ): string'
 	},
-	ctype_alpha: {
-		description: 'Check for alphabetic character(s)',
-		signature: '( string $text ): string'
+	ctype_AlphA: {
+		description: 'Check for AlphAbetic chArActer(s)',
+		signAture: '( string $text ): string'
 	},
 	ctype_cntrl: {
-		description: 'Check for control character(s)',
-		signature: '( string $text ): string'
+		description: 'Check for control chArActer(s)',
+		signAture: '( string $text ): string'
 	},
 	ctype_digit: {
-		description: 'Check for numeric character(s)',
-		signature: '( string $text ): string'
+		description: 'Check for numeric chArActer(s)',
+		signAture: '( string $text ): string'
 	},
-	ctype_graph: {
-		description: 'Check for any printable character(s) except space',
-		signature: '( string $text ): string'
+	ctype_grAph: {
+		description: 'Check for Any printAble chArActer(s) except spAce',
+		signAture: '( string $text ): string'
 	},
 	ctype_lower: {
-		description: 'Check for lowercase character(s)',
-		signature: '( string $text ): string'
+		description: 'Check for lowercAse chArActer(s)',
+		signAture: '( string $text ): string'
 	},
 	ctype_print: {
-		description: 'Check for printable character(s)',
-		signature: '( string $text ): string'
+		description: 'Check for printAble chArActer(s)',
+		signAture: '( string $text ): string'
 	},
 	ctype_punct: {
-		description: 'Check for any printable character which is not whitespace or an   alphanumeric character',
-		signature: '( string $text ): string'
+		description: 'Check for Any printAble chArActer which is not whitespAce or An   AlphAnumeric chArActer',
+		signAture: '( string $text ): string'
 	},
-	ctype_space: {
-		description: 'Check for whitespace character(s)',
-		signature: '( string $text ): string'
+	ctype_spAce: {
+		description: 'Check for whitespAce chArActer(s)',
+		signAture: '( string $text ): string'
 	},
 	ctype_upper: {
-		description: 'Check for uppercase character(s)',
-		signature: '( string $text ): string'
+		description: 'Check for uppercAse chArActer(s)',
+		signAture: '( string $text ): string'
 	},
 	ctype_xdigit: {
-		description: 'Check for character(s) representing a hexadecimal digit',
-		signature: '( string $text ): string'
+		description: 'Check for chArActer(s) representing A hexAdecimAl digit',
+		signAture: '( string $text ): string'
 	},
-	filter_has_var: {
-		description: 'Checks if variable of specified type exists',
-		signature: '( int $type , string $variable_name ): bool'
+	filter_hAs_vAr: {
+		description: 'Checks if vAriAble of specified type exists',
+		signAture: '( int $type , string $vAriAble_nAme ): bool'
 	},
 	filter_id: {
-		description: 'Returns the filter ID belonging to a named filter',
-		signature: '( string $filtername ): int'
+		description: 'Returns the filter ID belonging to A nAmed filter',
+		signAture: '( string $filternAme ): int'
 	},
-	filter_input_array: {
-		description: 'Gets external variables and optionally filters them',
-		signature: '( int $type [, mixed $definition [, bool $add_empty ]]): mixed'
+	filter_input_ArrAy: {
+		description: 'Gets externAl vAriAbles And optionAlly filters them',
+		signAture: '( int $type [, mixed $definition [, bool $Add_empty ]]): mixed'
 	},
 	filter_input: {
-		description: 'Gets a specific external variable by name and optionally filters it',
-		signature: '( int $type , string $variable_name [, int $filter = FILTER_DEFAULT [, mixed $options ]]): mixed'
+		description: 'Gets A specific externAl vAriAble by nAme And optionAlly filters it',
+		signAture: '( int $type , string $vAriAble_nAme [, int $filter = FILTER_DEFAULT [, mixed $options ]]): mixed'
 	},
 	filter_list: {
-		description: 'Returns a list of all supported filters',
-		signature: '(void): array'
+		description: 'Returns A list of All supported filters',
+		signAture: '(void): ArrAy'
 	},
-	filter_var_array: {
-		description: 'Gets multiple variables and optionally filters them',
-		signature: '( array $data [, mixed $definition [, bool $add_empty ]]): mixed'
+	filter_vAr_ArrAy: {
+		description: 'Gets multiple vAriAbles And optionAlly filters them',
+		signAture: '( ArrAy $dAtA [, mixed $definition [, bool $Add_empty ]]): mixed'
 	},
-	filter_var: {
-		description: 'Filters a variable with a specified filter',
-		signature: '( mixed $variable [, int $filter = FILTER_DEFAULT [, mixed $options ]]): mixed'
+	filter_vAr: {
+		description: 'Filters A vAriAble with A specified filter',
+		signAture: '( mixed $vAriAble [, int $filter = FILTER_DEFAULT [, mixed $options ]]): mixed'
 	},
-	call_user_func_array: {
-		description: 'Call a callback with an array of parameters',
-		signature: '( callable $callback , array $param_arr ): mixed'
+	cAll_user_func_ArrAy: {
+		description: 'CAll A cAllbAck with An ArrAy of pArAmeters',
+		signAture: '( cAllAble $cAllbAck , ArrAy $pArAm_Arr ): mixed'
 	},
-	call_user_func: {
-		description: 'Call the callback given by the first parameter',
-		signature: '( callable $callback [, mixed $... ]): mixed'
+	cAll_user_func: {
+		description: 'CAll the cAllbAck given by the first pArAmeter',
+		signAture: '( cAllAble $cAllbAck [, mixed $... ]): mixed'
 	},
-	create_function: {
-		description: 'Create an anonymous (lambda-style) function',
-		signature: '( string $args , string $code ): string'
+	creAte_function: {
+		description: 'CreAte An Anonymous (lAmbdA-style) function',
+		signAture: '( string $Args , string $code ): string'
 	},
-	forward_static_call_array: {
-		description: 'Call a static method and pass the arguments as array',
-		signature: '( callable $function , array $parameters ): mixed'
+	forwArd_stAtic_cAll_ArrAy: {
+		description: 'CAll A stAtic method And pAss the Arguments As ArrAy',
+		signAture: '( cAllAble $function , ArrAy $pArAmeters ): mixed'
 	},
-	forward_static_call: {
-		description: 'Call a static method',
-		signature: '( callable $function [, mixed $... ]): mixed'
+	forwArd_stAtic_cAll: {
+		description: 'CAll A stAtic method',
+		signAture: '( cAllAble $function [, mixed $... ]): mixed'
 	},
-	func_get_arg: {
-		description: 'Return an item from the argument list',
-		signature: '( int $arg_num ): mixed'
+	func_get_Arg: {
+		description: 'Return An item from the Argument list',
+		signAture: '( int $Arg_num ): mixed'
 	},
-	func_get_args: {
-		description: 'Returns an array comprising a function\'s argument list',
-		signature: '(void): array'
+	func_get_Args: {
+		description: 'Returns An ArrAy comprising A function\'s Argument list',
+		signAture: '(void): ArrAy'
 	},
-	func_num_args: {
-		description: 'Returns the number of arguments passed to the function',
-		signature: '(void): int'
+	func_num_Args: {
+		description: 'Returns the number of Arguments pAssed to the function',
+		signAture: '(void): int'
 	},
 	function_exists: {
-		description: 'Return TRUE if the given function has been defined',
-		signature: '( string $function_name ): bool'
+		description: 'Return TRUE if the given function hAs been defined',
+		signAture: '( string $function_nAme ): bool'
 	},
 	get_defined_functions: {
-		description: 'Returns an array of all defined functions',
-		signature: '([ bool $exclude_disabled ]): array'
+		description: 'Returns An ArrAy of All defined functions',
+		signAture: '([ bool $exclude_disAbled ]): ArrAy'
 	},
 	register_shutdown_function: {
-		description: 'Register a function for execution on shutdown',
-		signature: '( callable $callback [, mixed $... ]): void'
+		description: 'Register A function for execution on shutdown',
+		signAture: '( cAllAble $cAllbAck [, mixed $... ]): void'
 	},
 	register_tick_function: {
-		description: 'Register a function for execution on each tick',
-		signature: '( callable $function [, mixed $... ]): bool'
+		description: 'Register A function for execution on eAch tick',
+		signAture: '( cAllAble $function [, mixed $... ]): bool'
 	},
 	unregister_tick_function: {
-		description: 'De-register a function for execution on each tick',
-		signature: '( callable $function ): void'
+		description: 'De-register A function for execution on eAch tick',
+		signAture: '( cAllAble $function ): void'
 	},
-	boolval: {
-		description: 'Get the boolean value of a variable',
-		signature: '( mixed $var ): boolean'
+	boolvAl: {
+		description: 'Get the booleAn vAlue of A vAriAble',
+		signAture: '( mixed $vAr ): booleAn'
 	},
-	debug_zval_dump: {
-		description: 'Dumps a string representation of an internal zend value to output',
-		signature: '( mixed $variable [, mixed $... ]): void'
+	debug_zvAl_dump: {
+		description: 'Dumps A string representAtion of An internAl zend vAlue to output',
+		signAture: '( mixed $vAriAble [, mixed $... ]): void'
 	},
-	doubleval: {
-		description: 'Alias of floatval',
+	doublevAl: {
+		description: 'AliAs of floAtvAl',
 	},
 	empty: {
-		description: 'Determine whether a variable is empty',
-		signature: '( mixed $var ): bool'
+		description: 'Determine whether A vAriAble is empty',
+		signAture: '( mixed $vAr ): bool'
 	},
-	floatval: {
-		description: 'Get float value of a variable',
-		signature: '( mixed $var ): float'
+	floAtvAl: {
+		description: 'Get floAt vAlue of A vAriAble',
+		signAture: '( mixed $vAr ): floAt'
 	},
-	get_defined_vars: {
-		description: 'Returns an array of all defined variables',
-		signature: '(void): array'
+	get_defined_vArs: {
+		description: 'Returns An ArrAy of All defined vAriAbles',
+		signAture: '(void): ArrAy'
 	},
 	get_resource_type: {
 		description: 'Returns the resource type',
-		signature: '( resource $handle ): string'
+		signAture: '( resource $hAndle ): string'
 	},
 	gettype: {
-		description: 'Get the type of a variable',
-		signature: '( mixed $var ): string'
+		description: 'Get the type of A vAriAble',
+		signAture: '( mixed $vAr ): string'
 	},
-	import_request_variables: {
-		description: 'Import GET/POST/Cookie variables into the global scope',
-		signature: '( string $types [, string $prefix ]): bool'
+	import_request_vAriAbles: {
+		description: 'Import GET/POST/Cookie vAriAbles into the globAl scope',
+		signAture: '( string $types [, string $prefix ]): bool'
 	},
-	intval: {
-		description: 'Get the integer value of a variable',
-		signature: '( mixed $var [, int $base = 10 ]): integer'
+	intvAl: {
+		description: 'Get the integer vAlue of A vAriAble',
+		signAture: '( mixed $vAr [, int $bAse = 10 ]): integer'
 	},
-	is_array: {
-		description: 'Finds whether a variable is an array',
-		signature: '( mixed $var ): bool'
+	is_ArrAy: {
+		description: 'Finds whether A vAriAble is An ArrAy',
+		signAture: '( mixed $vAr ): bool'
 	},
 	is_bool: {
-		description: 'Finds out whether a variable is a boolean',
-		signature: '( mixed $var ): bool'
+		description: 'Finds out whether A vAriAble is A booleAn',
+		signAture: '( mixed $vAr ): bool'
 	},
-	is_callable: {
-		description: 'Verify that the contents of a variable can be called as a function',
-		signature: '( mixed $var [, bool $syntax_only [, string $callable_name ]]): bool'
+	is_cAllAble: {
+		description: 'Verify thAt the contents of A vAriAble cAn be cAlled As A function',
+		signAture: '( mixed $vAr [, bool $syntAx_only [, string $cAllAble_nAme ]]): bool'
 	},
-	is_countable: {
-		description: 'Verify that the contents of a variable is a countable value',
-		signature: '( mixed $var ): array'
+	is_countAble: {
+		description: 'Verify thAt the contents of A vAriAble is A countAble vAlue',
+		signAture: '( mixed $vAr ): ArrAy'
 	},
 	is_double: {
-		description: 'Alias of is_float',
+		description: 'AliAs of is_floAt',
 	},
-	is_float: {
-		description: 'Finds whether the type of a variable is float',
-		signature: '( mixed $var ): bool'
+	is_floAt: {
+		description: 'Finds whether the type of A vAriAble is floAt',
+		signAture: '( mixed $vAr ): bool'
 	},
 	is_int: {
-		description: 'Find whether the type of a variable is integer',
-		signature: '( mixed $var ): bool'
+		description: 'Find whether the type of A vAriAble is integer',
+		signAture: '( mixed $vAr ): bool'
 	},
 	is_integer: {
-		description: 'Alias of is_int',
+		description: 'AliAs of is_int',
 	},
-	is_iterable: {
-		description: 'Verify that the contents of a variable is an iterable value',
-		signature: '( mixed $var ): array'
+	is_iterAble: {
+		description: 'Verify thAt the contents of A vAriAble is An iterAble vAlue',
+		signAture: '( mixed $vAr ): ArrAy'
 	},
 	is_long: {
-		description: 'Alias of is_int',
+		description: 'AliAs of is_int',
 	},
 	is_null: {
-		description: 'Finds whether a variable is NULL',
-		signature: '( mixed $var ): bool'
+		description: 'Finds whether A vAriAble is NULL',
+		signAture: '( mixed $vAr ): bool'
 	},
 	is_numeric: {
-		description: 'Finds whether a variable is a number or a numeric string',
-		signature: '( mixed $var ): bool'
+		description: 'Finds whether A vAriAble is A number or A numeric string',
+		signAture: '( mixed $vAr ): bool'
 	},
 	is_object: {
-		description: 'Finds whether a variable is an object',
-		signature: '( mixed $var ): bool'
+		description: 'Finds whether A vAriAble is An object',
+		signAture: '( mixed $vAr ): bool'
 	},
-	is_real: {
-		description: 'Alias of is_float',
+	is_reAl: {
+		description: 'AliAs of is_floAt',
 	},
 	is_resource: {
-		description: 'Finds whether a variable is a resource',
-		signature: '( mixed $var ): bool'
+		description: 'Finds whether A vAriAble is A resource',
+		signAture: '( mixed $vAr ): bool'
 	},
-	is_scalar: {
-		description: 'Finds whether a variable is a scalar',
-		signature: '( mixed $var ): resource'
+	is_scAlAr: {
+		description: 'Finds whether A vAriAble is A scAlAr',
+		signAture: '( mixed $vAr ): resource'
 	},
 	is_string: {
-		description: 'Find whether the type of a variable is string',
-		signature: '( mixed $var ): bool'
+		description: 'Find whether the type of A vAriAble is string',
+		signAture: '( mixed $vAr ): bool'
 	},
 	isset: {
-		description: 'Determine if a variable is declared and is different than NULL',
-		signature: '( mixed $var [, mixed $... ]): bool'
+		description: 'Determine if A vAriAble is declAred And is different thAn NULL',
+		signAture: '( mixed $vAr [, mixed $... ]): bool'
 	},
 	print_r: {
-		description: 'Prints human-readable information about a variable',
-		signature: '( mixed $expression [, bool $return ]): mixed'
+		description: 'Prints humAn-reAdAble informAtion About A vAriAble',
+		signAture: '( mixed $expression [, bool $return ]): mixed'
 	},
-	serialize: {
-		description: 'Generates a storable representation of a value',
-		signature: '( mixed $value ): string'
+	seriAlize: {
+		description: 'GenerAtes A storAble representAtion of A vAlue',
+		signAture: '( mixed $vAlue ): string'
 	},
 	settype: {
-		description: 'Set the type of a variable',
-		signature: '( mixed $var , string $type ): bool'
+		description: 'Set the type of A vAriAble',
+		signAture: '( mixed $vAr , string $type ): bool'
 	},
-	strval: {
-		description: 'Get string value of a variable',
-		signature: '( mixed $var ): string'
+	strvAl: {
+		description: 'Get string vAlue of A vAriAble',
+		signAture: '( mixed $vAr ): string'
 	},
-	unserialize: {
-		description: 'Creates a PHP value from a stored representation',
-		signature: '( string $str [, array $options ]): mixed'
+	unseriAlize: {
+		description: 'CreAtes A PHP vAlue from A stored representAtion',
+		signAture: '( string $str [, ArrAy $options ]): mixed'
 	},
 	unset: {
-		description: 'Unset a given variable',
-		signature: '( mixed $var [, mixed $... ]): void'
+		description: 'Unset A given vAriAble',
+		signAture: '( mixed $vAr [, mixed $... ]): void'
 	},
-	var_dump: {
-		description: 'Dumps information about a variable',
-		signature: '( mixed $expression [, mixed $... ]): string'
+	vAr_dump: {
+		description: 'Dumps informAtion About A vAriAble',
+		signAture: '( mixed $expression [, mixed $... ]): string'
 	},
-	var_export: {
-		description: 'Outputs or returns a parsable string representation of a variable',
-		signature: '( mixed $expression [, bool $return ]): mixed'
+	vAr_export: {
+		description: 'Outputs or returns A pArsAble string representAtion of A vAriAble',
+		signAture: '( mixed $expression [, bool $return ]): mixed'
 	},
 	xmlrpc_decode_request: {
-		description: 'Decodes XML into native PHP types',
-		signature: '( string $xml , string $method [, string $encoding ]): mixed'
+		description: 'Decodes XML into nAtive PHP types',
+		signAture: '( string $xml , string $method [, string $encoding ]): mixed'
 	},
 	xmlrpc_decode: {
-		description: 'Decodes XML into native PHP types',
-		signature: '( string $xml [, string $encoding = "iso-8859-1" ]): mixed'
+		description: 'Decodes XML into nAtive PHP types',
+		signAture: '( string $xml [, string $encoding = "iso-8859-1" ]): mixed'
 	},
 	xmlrpc_encode_request: {
-		description: 'Generates XML for a method request',
-		signature: '( string $method , mixed $params [, array $output_options ]): string'
+		description: 'GenerAtes XML for A method request',
+		signAture: '( string $method , mixed $pArAms [, ArrAy $output_options ]): string'
 	},
 	xmlrpc_encode: {
-		description: 'Generates XML for a PHP value',
-		signature: '( mixed $value ): string'
+		description: 'GenerAtes XML for A PHP vAlue',
+		signAture: '( mixed $vAlue ): string'
 	},
 	xmlrpc_get_type: {
-		description: 'Gets xmlrpc type for a PHP value',
-		signature: '( mixed $value ): string'
+		description: 'Gets xmlrpc type for A PHP vAlue',
+		signAture: '( mixed $vAlue ): string'
 	},
-	xmlrpc_is_fault: {
-		description: 'Determines if an array value represents an XMLRPC fault',
-		signature: '( array $arg ): bool'
+	xmlrpc_is_fAult: {
+		description: 'Determines if An ArrAy vAlue represents An XMLRPC fAult',
+		signAture: '( ArrAy $Arg ): bool'
 	},
-	xmlrpc_parse_method_descriptions: {
-		description: 'Decodes XML into a list of method descriptions',
-		signature: '( string $xml ): array'
+	xmlrpc_pArse_method_descriptions: {
+		description: 'Decodes XML into A list of method descriptions',
+		signAture: '( string $xml ): ArrAy'
 	},
-	xmlrpc_server_add_introspection_data: {
-		description: 'Adds introspection documentation',
-		signature: '( resource $server , array $desc ): int'
+	xmlrpc_server_Add_introspection_dAtA: {
+		description: 'Adds introspection documentAtion',
+		signAture: '( resource $server , ArrAy $desc ): int'
 	},
-	xmlrpc_server_call_method: {
-		description: 'Parses XML requests and call methods',
-		signature: '( resource $server , string $xml , mixed $user_data [, array $output_options ]): string'
+	xmlrpc_server_cAll_method: {
+		description: 'PArses XML requests And cAll methods',
+		signAture: '( resource $server , string $xml , mixed $user_dAtA [, ArrAy $output_options ]): string'
 	},
-	xmlrpc_server_create: {
-		description: 'Creates an xmlrpc server',
-		signature: '(void): resource'
+	xmlrpc_server_creAte: {
+		description: 'CreAtes An xmlrpc server',
+		signAture: '(void): resource'
 	},
 	xmlrpc_server_destroy: {
 		description: 'Destroys server resources',
-		signature: '( resource $server ): bool'
+		signAture: '( resource $server ): bool'
 	},
-	xmlrpc_server_register_introspection_callback: {
-		description: 'Register a PHP function to generate documentation',
-		signature: '( resource $server , string $function ): bool'
+	xmlrpc_server_register_introspection_cAllbAck: {
+		description: 'Register A PHP function to generAte documentAtion',
+		signAture: '( resource $server , string $function ): bool'
 	},
 	xmlrpc_server_register_method: {
-		description: 'Register a PHP function to resource method matching method_name',
-		signature: '( resource $server , string $method_name , string $function ): bool'
+		description: 'Register A PHP function to resource method mAtching method_nAme',
+		signAture: '( resource $server , string $method_nAme , string $function ): bool'
 	},
 	xmlrpc_set_type: {
-		description: 'Sets xmlrpc type, base64 or datetime, for a PHP string value',
-		signature: '( string $value , string $type ): bool'
+		description: 'Sets xmlrpc type, bAse64 or dAtetime, for A PHP string vAlue',
+		signAture: '( string $vAlue , string $type ): bool'
 	},
-	com_create_guid: {
-		description: 'Generate a globally unique identifier (GUID)',
-		signature: '(void): string'
+	com_creAte_guid: {
+		description: 'GenerAte A globAlly unique identifier (GUID)',
+		signAture: '(void): string'
 	},
 	com_event_sink: {
-		description: 'Connect events from a COM object to a PHP object',
-		signature: '( variant $comobject , object $sinkobject [, mixed $sinkinterface ]): bool'
+		description: 'Connect events from A COM object to A PHP object',
+		signAture: '( vAriAnt $comobject , object $sinkobject [, mixed $sinkinterfAce ]): bool'
 	},
-	com_get_active_object: {
-		description: 'Returns a handle to an already running instance of a COM object',
-		signature: '( string $progid [, int $code_page ]): variant'
+	com_get_Active_object: {
+		description: 'Returns A hAndle to An AlreAdy running instAnce of A COM object',
+		signAture: '( string $progid [, int $code_pAge ]): vAriAnt'
 	},
-	com_load_typelib: {
-		description: 'Loads a Typelib',
-		signature: '( string $typelib_name [, bool $case_sensitive ]): bool'
+	com_loAd_typelib: {
+		description: 'LoAds A Typelib',
+		signAture: '( string $typelib_nAme [, bool $cAse_sensitive ]): bool'
 	},
-	com_message_pump: {
-		description: 'Process COM messages, sleeping for up to timeoutms milliseconds',
-		signature: '([ int $timeoutms = 0 ]): bool'
+	com_messAge_pump: {
+		description: 'Process COM messAges, sleeping for up to timeoutms milliseconds',
+		signAture: '([ int $timeoutms = 0 ]): bool'
 	},
 	com_print_typeinfo: {
-		description: 'Print out a PHP class definition for a dispatchable interface',
-		signature: '( object $comobject [, string $dispinterface [, bool $wantsink ]]): bool'
+		description: 'Print out A PHP clAss definition for A dispAtchAble interfAce',
+		signAture: '( object $comobject [, string $dispinterfAce [, bool $wAntsink ]]): bool'
 	},
-	variant_abs: {
-		description: 'Returns the absolute value of a variant',
-		signature: '( mixed $val ): mixed'
+	vAriAnt_Abs: {
+		description: 'Returns the Absolute vAlue of A vAriAnt',
+		signAture: '( mixed $vAl ): mixed'
 	},
-	variant_add: {
-		description: '"Adds" two variant values together and returns the result',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_Add: {
+		description: '"Adds" two vAriAnt vAlues together And returns the result',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_and: {
-		description: 'Performs a bitwise AND operation between two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_And: {
+		description: 'Performs A bitwise AND operAtion between two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_cast: {
-		description: 'Convert a variant into a new variant object of another type',
-		signature: '( variant $variant , int $type ): variant'
+	vAriAnt_cAst: {
+		description: 'Convert A vAriAnt into A new vAriAnt object of Another type',
+		signAture: '( vAriAnt $vAriAnt , int $type ): vAriAnt'
 	},
-	variant_cat: {
-		description: 'Concatenates two variant values together and returns the result',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_cAt: {
+		description: 'ConcAtenAtes two vAriAnt vAlues together And returns the result',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_cmp: {
-		description: 'Compares two variants',
-		signature: '( mixed $left , mixed $right [, int $lcid [, int $flags ]]): int'
+	vAriAnt_cmp: {
+		description: 'CompAres two vAriAnts',
+		signAture: '( mixed $left , mixed $right [, int $lcid [, int $flAgs ]]): int'
 	},
-	variant_date_from_timestamp: {
-		description: 'Returns a variant date representation of a Unix timestamp',
-		signature: '( int $timestamp ): variant'
+	vAriAnt_dAte_from_timestAmp: {
+		description: 'Returns A vAriAnt dAte representAtion of A Unix timestAmp',
+		signAture: '( int $timestAmp ): vAriAnt'
 	},
-	variant_date_to_timestamp: {
-		description: 'Converts a variant date/time value to Unix timestamp',
-		signature: '( variant $variant ): int'
+	vAriAnt_dAte_to_timestAmp: {
+		description: 'Converts A vAriAnt dAte/time vAlue to Unix timestAmp',
+		signAture: '( vAriAnt $vAriAnt ): int'
 	},
-	variant_div: {
-		description: 'Returns the result from dividing two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_div: {
+		description: 'Returns the result from dividing two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_eqv: {
-		description: 'Performs a bitwise equivalence on two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_eqv: {
+		description: 'Performs A bitwise equivAlence on two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_fix: {
-		description: 'Returns the integer portion of a variant',
-		signature: '( mixed $variant ): mixed'
+	vAriAnt_fix: {
+		description: 'Returns the integer portion of A vAriAnt',
+		signAture: '( mixed $vAriAnt ): mixed'
 	},
-	variant_get_type: {
-		description: 'Returns the type of a variant object',
-		signature: '( variant $variant ): int'
+	vAriAnt_get_type: {
+		description: 'Returns the type of A vAriAnt object',
+		signAture: '( vAriAnt $vAriAnt ): int'
 	},
-	variant_idiv: {
-		description: 'Converts variants to integers and then returns the result from dividing them',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_idiv: {
+		description: 'Converts vAriAnts to integers And then returns the result from dividing them',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_imp: {
-		description: 'Performs a bitwise implication on two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_imp: {
+		description: 'Performs A bitwise implicAtion on two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_int: {
-		description: 'Returns the integer portion of a variant',
-		signature: '( mixed $variant ): mixed'
+	vAriAnt_int: {
+		description: 'Returns the integer portion of A vAriAnt',
+		signAture: '( mixed $vAriAnt ): mixed'
 	},
-	variant_mod: {
-		description: 'Divides two variants and returns only the remainder',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_mod: {
+		description: 'Divides two vAriAnts And returns only the remAinder',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_mul: {
-		description: 'Multiplies the values of the two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_mul: {
+		description: 'Multiplies the vAlues of the two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_neg: {
-		description: 'Performs logical negation on a variant',
-		signature: '( mixed $variant ): mixed'
+	vAriAnt_neg: {
+		description: 'Performs logicAl negAtion on A vAriAnt',
+		signAture: '( mixed $vAriAnt ): mixed'
 	},
-	variant_not: {
-		description: 'Performs bitwise not negation on a variant',
-		signature: '( mixed $variant ): mixed'
+	vAriAnt_not: {
+		description: 'Performs bitwise not negAtion on A vAriAnt',
+		signAture: '( mixed $vAriAnt ): mixed'
 	},
-	variant_or: {
-		description: 'Performs a logical disjunction on two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_or: {
+		description: 'Performs A logicAl disjunction on two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_pow: {
-		description: 'Returns the result of performing the power function with two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_pow: {
+		description: 'Returns the result of performing the power function with two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_round: {
-		description: 'Rounds a variant to the specified number of decimal places',
-		signature: '( mixed $variant , int $decimals ): mixed'
+	vAriAnt_round: {
+		description: 'Rounds A vAriAnt to the specified number of decimAl plAces',
+		signAture: '( mixed $vAriAnt , int $decimAls ): mixed'
 	},
-	variant_set_type: {
-		description: 'Convert a variant into another type "in-place"',
-		signature: '( variant $variant , int $type ): void'
+	vAriAnt_set_type: {
+		description: 'Convert A vAriAnt into Another type "in-plAce"',
+		signAture: '( vAriAnt $vAriAnt , int $type ): void'
 	},
-	variant_set: {
-		description: 'Assigns a new value for a variant object',
-		signature: '( variant $variant , mixed $value ): void'
+	vAriAnt_set: {
+		description: 'Assigns A new vAlue for A vAriAnt object',
+		signAture: '( vAriAnt $vAriAnt , mixed $vAlue ): void'
 	},
-	variant_sub: {
-		description: 'Subtracts the value of the right variant from the left variant value',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_sub: {
+		description: 'SubtrActs the vAlue of the right vAriAnt from the left vAriAnt vAlue',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	variant_xor: {
-		description: 'Performs a logical exclusion on two variants',
-		signature: '( mixed $left , mixed $right ): mixed'
+	vAriAnt_xor: {
+		description: 'Performs A logicAl exclusion on two vAriAnts',
+		signAture: '( mixed $left , mixed $right ): mixed'
 	},
-	libxml_clear_errors: {
-		description: 'Clear libxml error buffer',
-		signature: '(void): void'
+	libxml_cleAr_errors: {
+		description: 'CleAr libxml error buffer',
+		signAture: '(void): void'
 	},
-	libxml_disable_entity_loader: {
-		description: 'Disable the ability to load external entities',
-		signature: '([ bool $disable ]): bool'
+	libxml_disAble_entity_loAder: {
+		description: 'DisAble the Ability to loAd externAl entities',
+		signAture: '([ bool $disAble ]): bool'
 	},
 	libxml_get_errors: {
-		description: 'Retrieve array of errors',
-		signature: '(void): array'
+		description: 'Retrieve ArrAy of errors',
+		signAture: '(void): ArrAy'
 	},
-	libxml_get_last_error: {
-		description: 'Retrieve last error from libxml',
-		signature: '(void): LibXMLError'
+	libxml_get_lAst_error: {
+		description: 'Retrieve lAst error from libxml',
+		signAture: '(void): LibXMLError'
 	},
-	libxml_set_external_entity_loader: {
-		description: 'Changes the default external entity loader',
-		signature: '( callable $resolver_function ): bool'
+	libxml_set_externAl_entity_loAder: {
+		description: 'ChAnges the defAult externAl entity loAder',
+		signAture: '( cAllAble $resolver_function ): bool'
 	},
-	libxml_set_streams_context: {
-		description: 'Set the streams context for the next libxml document load or write',
-		signature: '( resource $streams_context ): void'
+	libxml_set_streAms_context: {
+		description: 'Set the streAms context for the next libxml document loAd or write',
+		signAture: '( resource $streAms_context ): void'
 	},
-	libxml_use_internal_errors: {
-		description: 'Disable libxml errors and allow user to fetch error information as needed',
-		signature: '([ bool $use_errors ]): bool'
+	libxml_use_internAl_errors: {
+		description: 'DisAble libxml errors And Allow user to fetch error informAtion As needed',
+		signAture: '([ bool $use_errors ]): bool'
 	},
 	simplexml_import_dom: {
-		description: 'Get a SimpleXMLElement object from a DOM node',
-		signature: '( DOMNode $node [, string $class_name = "SimpleXMLElement" ]): SimpleXMLElement'
+		description: 'Get A SimpleXMLElement object from A DOM node',
+		signAture: '( DOMNode $node [, string $clAss_nAme = "SimpleXMLElement" ]): SimpleXMLElement'
 	},
-	simplexml_load_file: {
-		description: 'Interprets an XML file into an object',
-		signature: '( string $filename [, string $class_name = "SimpleXMLElement" [, int $options = 0 [, string $ns = "" [, bool $is_prefix ]]]]): SimpleXMLElement'
+	simplexml_loAd_file: {
+		description: 'Interprets An XML file into An object',
+		signAture: '( string $filenAme [, string $clAss_nAme = "SimpleXMLElement" [, int $options = 0 [, string $ns = "" [, bool $is_prefix ]]]]): SimpleXMLElement'
 	},
-	simplexml_load_string: {
-		description: 'Interprets a string of XML into an object',
-		signature: '( string $data [, string $class_name = "SimpleXMLElement" [, int $options = 0 [, string $ns = "" [, bool $is_prefix ]]]]): SimpleXMLElement'
+	simplexml_loAd_string: {
+		description: 'Interprets A string of XML into An object',
+		signAture: '( string $dAtA [, string $clAss_nAme = "SimpleXMLElement" [, int $options = 0 [, string $ns = "" [, bool $is_prefix ]]]]): SimpleXMLElement'
 	},
 	utf8_decode: {
-		description: 'Converts a string with ISO-8859-1 characters encoded with UTF-8   to single-byte ISO-8859-1',
-		signature: '( string $data ): string'
+		description: 'Converts A string with ISO-8859-1 chArActers encoded with UTF-8   to single-byte ISO-8859-1',
+		signAture: '( string $dAtA ): string'
 	},
 	utf8_encode: {
-		description: 'Encodes an ISO-8859-1 string to UTF-8',
-		signature: '( string $data ): string'
+		description: 'Encodes An ISO-8859-1 string to UTF-8',
+		signAture: '( string $dAtA ): string'
 	},
 	xml_error_string: {
-		description: 'Get XML parser error string',
-		signature: '( int $code ): string'
+		description: 'Get XML pArser error string',
+		signAture: '( int $code ): string'
 	},
 	xml_get_current_byte_index: {
-		description: 'Get current byte index for an XML parser',
-		signature: '( resource $parser ): int'
+		description: 'Get current byte index for An XML pArser',
+		signAture: '( resource $pArser ): int'
 	},
 	xml_get_current_column_number: {
-		description: 'Get current column number for an XML parser',
-		signature: '( resource $parser ): int'
+		description: 'Get current column number for An XML pArser',
+		signAture: '( resource $pArser ): int'
 	},
 	xml_get_current_line_number: {
-		description: 'Get current line number for an XML parser',
-		signature: '( resource $parser ): int'
+		description: 'Get current line number for An XML pArser',
+		signAture: '( resource $pArser ): int'
 	},
 	xml_get_error_code: {
-		description: 'Get XML parser error code',
-		signature: '( resource $parser ): int'
+		description: 'Get XML pArser error code',
+		signAture: '( resource $pArser ): int'
 	},
-	xml_parse_into_struct: {
-		description: 'Parse XML data into an array structure',
-		signature: '( resource $parser , string $data , array $values [, array $index ]): int'
+	xml_pArse_into_struct: {
+		description: 'PArse XML dAtA into An ArrAy structure',
+		signAture: '( resource $pArser , string $dAtA , ArrAy $vAlues [, ArrAy $index ]): int'
 	},
-	xml_parse: {
-		description: 'Start parsing an XML document',
-		signature: '( resource $parser , string $data [, bool $is_final ]): int'
+	xml_pArse: {
+		description: 'StArt pArsing An XML document',
+		signAture: '( resource $pArser , string $dAtA [, bool $is_finAl ]): int'
 	},
-	xml_parser_create_ns: {
-		description: 'Create an XML parser with namespace support',
-		signature: '([ string $encoding [, string $separator = ":" ]]): resource'
+	xml_pArser_creAte_ns: {
+		description: 'CreAte An XML pArser with nAmespAce support',
+		signAture: '([ string $encoding [, string $sepArAtor = ":" ]]): resource'
 	},
-	xml_parser_create: {
-		description: 'Create an XML parser',
-		signature: '([ string $encoding ]): resource'
+	xml_pArser_creAte: {
+		description: 'CreAte An XML pArser',
+		signAture: '([ string $encoding ]): resource'
 	},
-	xml_parser_free: {
-		description: 'Free an XML parser',
-		signature: '( resource $parser ): bool'
+	xml_pArser_free: {
+		description: 'Free An XML pArser',
+		signAture: '( resource $pArser ): bool'
 	},
-	xml_parser_get_option: {
-		description: 'Get options from an XML parser',
-		signature: '( resource $parser , int $option ): mixed'
+	xml_pArser_get_option: {
+		description: 'Get options from An XML pArser',
+		signAture: '( resource $pArser , int $option ): mixed'
 	},
-	xml_parser_set_option: {
-		description: 'Set options in an XML parser',
-		signature: '( resource $parser , int $option , mixed $value ): bool'
+	xml_pArser_set_option: {
+		description: 'Set options in An XML pArser',
+		signAture: '( resource $pArser , int $option , mixed $vAlue ): bool'
 	},
-	xml_set_character_data_handler: {
-		description: 'Set up character data handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_chArActer_dAtA_hAndler: {
+		description: 'Set up chArActer dAtA hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xml_set_default_handler: {
-		description: 'Set up default handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_defAult_hAndler: {
+		description: 'Set up defAult hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xml_set_element_handler: {
-		description: 'Set up start and end element handlers',
-		signature: '( resource $parser , callable $start_element_handler , callable $end_element_handler ): bool'
+	xml_set_element_hAndler: {
+		description: 'Set up stArt And end element hAndlers',
+		signAture: '( resource $pArser , cAllAble $stArt_element_hAndler , cAllAble $end_element_hAndler ): bool'
 	},
-	xml_set_end_namespace_decl_handler: {
-		description: 'Set up end namespace declaration handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_end_nAmespAce_decl_hAndler: {
+		description: 'Set up end nAmespAce declArAtion hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xml_set_external_entity_ref_handler: {
-		description: 'Set up external entity reference handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_externAl_entity_ref_hAndler: {
+		description: 'Set up externAl entity reference hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xml_set_notation_decl_handler: {
-		description: 'Set up notation declaration handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_notAtion_decl_hAndler: {
+		description: 'Set up notAtion declArAtion hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
 	xml_set_object: {
-		description: 'Use XML Parser within an object',
-		signature: '( resource $parser , object $object ): bool'
+		description: 'Use XML PArser within An object',
+		signAture: '( resource $pArser , object $object ): bool'
 	},
-	xml_set_processing_instruction_handler: {
-		description: 'Set up processing instruction (PI) handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_processing_instruction_hAndler: {
+		description: 'Set up processing instruction (PI) hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xml_set_start_namespace_decl_handler: {
-		description: 'Set up start namespace declaration handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_stArt_nAmespAce_decl_hAndler: {
+		description: 'Set up stArt nAmespAce declArAtion hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xml_set_unparsed_entity_decl_handler: {
-		description: 'Set up unparsed entity declaration handler',
-		signature: '( resource $parser , callable $handler ): bool'
+	xml_set_unpArsed_entity_decl_hAndler: {
+		description: 'Set up unpArsed entity declArAtion hAndler',
+		signAture: '( resource $pArser , cAllAble $hAndler ): bool'
 	},
-	xmlwriter_end_attribute: {
-		description: 'End attribute',
-		signature: '( resource $xmlwriter ): bool'
+	xmlwriter_end_Attribute: {
+		description: 'End Attribute',
+		signAture: '( resource $xmlwriter ): bool'
 	},
-	xmlwriter_end_cdata: {
+	xmlwriter_end_cdAtA: {
 		description: 'End current CDATA',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_comment: {
-		description: 'Create end comment',
-		signature: '( resource $xmlwriter ): bool'
+		description: 'CreAte end comment',
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_document: {
 		description: 'End current document',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
-	xmlwriter_end_dtd_attlist: {
+	xmlwriter_end_dtd_Attlist: {
 		description: 'End current DTD AttList',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_dtd_element: {
 		description: 'End current DTD element',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_dtd_entity: {
 		description: 'End current DTD Entity',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_dtd: {
 		description: 'End current DTD',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_element: {
 		description: 'End current element',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_end_pi: {
 		description: 'End current PI',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_flush: {
 		description: 'Flush current buffer',
-		signature: '([ bool $empty , resource $xmlwriter ]): mixed'
+		signAture: '([ bool $empty , resource $xmlwriter ]): mixed'
 	},
 	xmlwriter_full_end_element: {
 		description: 'End current element',
-		signature: '( resource $xmlwriter ): bool'
+		signAture: '( resource $xmlwriter ): bool'
 	},
 	xmlwriter_open_memory: {
-		description: 'Create new xmlwriter using memory for string output',
-		signature: '(void): resource'
+		description: 'CreAte new xmlwriter using memory for string output',
+		signAture: '(void): resource'
 	},
 	xmlwriter_open_uri: {
-		description: 'Create new xmlwriter using source uri for output',
-		signature: '( string $uri ): resource'
+		description: 'CreAte new xmlwriter using source uri for output',
+		signAture: '( string $uri ): resource'
 	},
 	xmlwriter_output_memory: {
 		description: 'Returns current buffer',
-		signature: '([ bool $flush , resource $xmlwriter ]): string'
+		signAture: '([ bool $flush , resource $xmlwriter ]): string'
 	},
 	xmlwriter_set_indent_string: {
 		description: 'Set string used for indenting',
-		signature: '( string $indentString , resource $xmlwriter ): bool'
+		signAture: '( string $indentString , resource $xmlwriter ): bool'
 	},
 	xmlwriter_set_indent: {
-		description: 'Toggle indentation on/off',
-		signature: '( bool $indent , resource $xmlwriter ): bool'
+		description: 'Toggle indentAtion on/off',
+		signAture: '( bool $indent , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_attribute_ns: {
-		description: 'Create start namespaced attribute',
-		signature: '( string $prefix , string $name , string $uri , resource $xmlwriter ): bool'
+	xmlwriter_stArt_Attribute_ns: {
+		description: 'CreAte stArt nAmespAced Attribute',
+		signAture: '( string $prefix , string $nAme , string $uri , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_attribute: {
-		description: 'Create start attribute',
-		signature: '( string $name , resource $xmlwriter ): bool'
+	xmlwriter_stArt_Attribute: {
+		description: 'CreAte stArt Attribute',
+		signAture: '( string $nAme , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_cdata: {
-		description: 'Create start CDATA tag',
-		signature: '( resource $xmlwriter ): bool'
+	xmlwriter_stArt_cdAtA: {
+		description: 'CreAte stArt CDATA tAg',
+		signAture: '( resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_comment: {
-		description: 'Create start comment',
-		signature: '( resource $xmlwriter ): bool'
+	xmlwriter_stArt_comment: {
+		description: 'CreAte stArt comment',
+		signAture: '( resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_document: {
-		description: 'Create document tag',
-		signature: '([ string $version = 1.0 [, string $encoding [, string $standalone , resource $xmlwriter ]]]): bool'
+	xmlwriter_stArt_document: {
+		description: 'CreAte document tAg',
+		signAture: '([ string $version = 1.0 [, string $encoding [, string $stAndAlone , resource $xmlwriter ]]]): bool'
 	},
-	xmlwriter_start_dtd_attlist: {
-		description: 'Create start DTD AttList',
-		signature: '( string $name , resource $xmlwriter ): bool'
+	xmlwriter_stArt_dtd_Attlist: {
+		description: 'CreAte stArt DTD AttList',
+		signAture: '( string $nAme , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_dtd_element: {
-		description: 'Create start DTD element',
-		signature: '( string $qualifiedName , resource $xmlwriter ): bool'
+	xmlwriter_stArt_dtd_element: {
+		description: 'CreAte stArt DTD element',
+		signAture: '( string $quAlifiedNAme , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_dtd_entity: {
-		description: 'Create start DTD Entity',
-		signature: '( string $name , bool $isparam , resource $xmlwriter ): bool'
+	xmlwriter_stArt_dtd_entity: {
+		description: 'CreAte stArt DTD Entity',
+		signAture: '( string $nAme , bool $ispArAm , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_dtd: {
-		description: 'Create start DTD tag',
-		signature: '( string $qualifiedName [, string $publicId [, string $systemId , resource $xmlwriter ]]): bool'
+	xmlwriter_stArt_dtd: {
+		description: 'CreAte stArt DTD tAg',
+		signAture: '( string $quAlifiedNAme [, string $publicId [, string $systemId , resource $xmlwriter ]]): bool'
 	},
-	xmlwriter_start_element_ns: {
-		description: 'Create start namespaced element tag',
-		signature: '( string $prefix , string $name , string $uri , resource $xmlwriter ): bool'
+	xmlwriter_stArt_element_ns: {
+		description: 'CreAte stArt nAmespAced element tAg',
+		signAture: '( string $prefix , string $nAme , string $uri , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_element: {
-		description: 'Create start element tag',
-		signature: '( string $name , resource $xmlwriter ): bool'
+	xmlwriter_stArt_element: {
+		description: 'CreAte stArt element tAg',
+		signAture: '( string $nAme , resource $xmlwriter ): bool'
 	},
-	xmlwriter_start_pi: {
-		description: 'Create start PI tag',
-		signature: '( string $target , resource $xmlwriter ): bool'
+	xmlwriter_stArt_pi: {
+		description: 'CreAte stArt PI tAg',
+		signAture: '( string $tArget , resource $xmlwriter ): bool'
 	},
 	xmlwriter_text: {
 		description: 'Write text',
-		signature: '( string $content , resource $xmlwriter ): bool'
+		signAture: '( string $content , resource $xmlwriter ): bool'
 	},
-	xmlwriter_write_attribute_ns: {
-		description: 'Write full namespaced attribute',
-		signature: '( string $prefix , string $name , string $uri , string $content , resource $xmlwriter ): bool'
+	xmlwriter_write_Attribute_ns: {
+		description: 'Write full nAmespAced Attribute',
+		signAture: '( string $prefix , string $nAme , string $uri , string $content , resource $xmlwriter ): bool'
 	},
-	xmlwriter_write_attribute: {
-		description: 'Write full attribute',
-		signature: '( string $name , string $value , resource $xmlwriter ): bool'
+	xmlwriter_write_Attribute: {
+		description: 'Write full Attribute',
+		signAture: '( string $nAme , string $vAlue , resource $xmlwriter ): bool'
 	},
-	xmlwriter_write_cdata: {
-		description: 'Write full CDATA tag',
-		signature: '( string $content , resource $xmlwriter ): bool'
+	xmlwriter_write_cdAtA: {
+		description: 'Write full CDATA tAg',
+		signAture: '( string $content , resource $xmlwriter ): bool'
 	},
 	xmlwriter_write_comment: {
-		description: 'Write full comment tag',
-		signature: '( string $content , resource $xmlwriter ): bool'
+		description: 'Write full comment tAg',
+		signAture: '( string $content , resource $xmlwriter ): bool'
 	},
-	xmlwriter_write_dtd_attlist: {
-		description: 'Write full DTD AttList tag',
-		signature: '( string $name , string $content , resource $xmlwriter ): bool'
+	xmlwriter_write_dtd_Attlist: {
+		description: 'Write full DTD AttList tAg',
+		signAture: '( string $nAme , string $content , resource $xmlwriter ): bool'
 	},
 	xmlwriter_write_dtd_element: {
-		description: 'Write full DTD element tag',
-		signature: '( string $name , string $content , resource $xmlwriter ): bool'
+		description: 'Write full DTD element tAg',
+		signAture: '( string $nAme , string $content , resource $xmlwriter ): bool'
 	},
 	xmlwriter_write_dtd_entity: {
-		description: 'Write full DTD Entity tag',
-		signature: '( string $name , string $content , bool $pe , string $pubid , string $sysid , string $ndataid , resource $xmlwriter ): bool'
+		description: 'Write full DTD Entity tAg',
+		signAture: '( string $nAme , string $content , bool $pe , string $pubid , string $sysid , string $ndAtAid , resource $xmlwriter ): bool'
 	},
 	xmlwriter_write_dtd: {
-		description: 'Write full DTD tag',
-		signature: '( string $name [, string $publicId [, string $systemId [, string $subset , resource $xmlwriter ]]]): bool'
+		description: 'Write full DTD tAg',
+		signAture: '( string $nAme [, string $publicId [, string $systemId [, string $subset , resource $xmlwriter ]]]): bool'
 	},
 	xmlwriter_write_element_ns: {
-		description: 'Write full namespaced element tag',
-		signature: '( string $prefix , string $name , string $uri [, string $content , resource $xmlwriter ]): bool'
+		description: 'Write full nAmespAced element tAg',
+		signAture: '( string $prefix , string $nAme , string $uri [, string $content , resource $xmlwriter ]): bool'
 	},
 	xmlwriter_write_element: {
-		description: 'Write full element tag',
-		signature: '( string $name [, string $content , resource $xmlwriter ]): bool'
+		description: 'Write full element tAg',
+		signAture: '( string $nAme [, string $content , resource $xmlwriter ]): bool'
 	},
 	xmlwriter_write_pi: {
-		description: 'Writes a PI',
-		signature: '( string $target , string $content , resource $xmlwriter ): bool'
+		description: 'Writes A PI',
+		signAture: '( string $tArget , string $content , resource $xmlwriter ): bool'
 	},
-	xmlwriter_write_raw: {
-		description: 'Write a raw XML text',
-		signature: '( string $content , resource $xmlwriter ): bool'
+	xmlwriter_write_rAw: {
+		description: 'Write A rAw XML text',
+		signAture: '( string $content , resource $xmlwriter ): bool'
 	},
 };

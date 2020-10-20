@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { BrowserBackupTracker } from 'vs/workbench/contrib/backup/browser/backupTracker';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { BrowserBAckupTrAcker } from 'vs/workbench/contrib/bAckup/browser/bAckupTrAcker';
 
-// Register Backup Tracker
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(BrowserBackupTracker, LifecyclePhase.Starting);
+// Register BAckup TrAcker
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(BrowserBAckupTrAcker, LifecyclePhAse.StArting);

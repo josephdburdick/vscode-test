@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Lazy } from 'vs/base/common/lazy';
-import { URI } from 'vs/base/common/uri';
+import { LAzy } from 'vs/bAse/common/lAzy';
+import { URI } from 'vs/bAse/common/uri';
 import { EditorInput, GroupIdentifier, IEditorInput, Verbosity } from 'vs/workbench/common/editor';
-import { IWebviewService, WebviewIcons, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { Schemas } from 'vs/base/common/network';
+import { IWebviewService, WebviewIcons, WebviewOverlAy } from 'vs/workbench/contrib/webview/browser/webview';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class WebviewInput extends EditorInput {
+export clAss WebviewInput extends EditorInput {
 
-	public static typeId = 'workbench.editors.webviewInput';
+	public stAtic typeId = 'workbench.editors.webviewInput';
 
-	private _name: string;
-	private _iconPath?: WebviewIcons;
-	private _group?: GroupIdentifier;
+	privAte _nAme: string;
+	privAte _iconPAth?: WebviewIcons;
+	privAte _group?: GroupIdentifier;
 
-	private _webview: Lazy<WebviewOverlay>;
+	privAte _webview: LAzy<WebviewOverlAy>;
 
-	private _hasTransfered = false;
+	privAte _hAsTrAnsfered = fAlse;
 
 	get resource() {
 		return URI.from({
-			scheme: Schemas.webviewPanel,
-			path: `webview-panel/webview-${this.id}`
+			scheme: SchemAs.webviewPAnel,
+			pAth: `webview-pAnel/webview-${this.id}`
 		});
 	}
 
 	constructor(
-		public readonly id: string,
-		public readonly viewType: string,
-		name: string,
-		webview: Lazy<WebviewOverlay>,
-		@IWebviewService private readonly _webviewService: IWebviewService,
+		public reAdonly id: string,
+		public reAdonly viewType: string,
+		nAme: string,
+		webview: LAzy<WebviewOverlAy>,
+		@IWebviewService privAte reAdonly _webviewService: IWebviewService,
 	) {
 		super();
-		this._name = name;
+		this._nAme = nAme;
 		this._webview = webview;
 	}
 
 	dispose() {
 		if (!this.isDisposed()) {
-			if (!this._hasTransfered) {
-				this._webview.rawValue?.dispose();
+			if (!this._hAsTrAnsfered) {
+				this._webview.rAwVAlue?.dispose();
 			}
 		}
 		super.dispose();
@@ -53,41 +53,41 @@ export class WebviewInput extends EditorInput {
 		return WebviewInput.typeId;
 	}
 
-	public getName(): string {
-		return this._name;
+	public getNAme(): string {
+		return this._nAme;
 	}
 
 	public getTitle(_verbosity?: Verbosity): string {
-		return this.getName();
+		return this.getNAme();
 	}
 
 	public getDescription(): string | undefined {
 		return undefined;
 	}
 
-	public setName(value: string): void {
-		this._name = value;
-		this._onDidChangeLabel.fire();
+	public setNAme(vAlue: string): void {
+		this._nAme = vAlue;
+		this._onDidChAngeLAbel.fire();
 	}
 
-	public get webview(): WebviewOverlay {
-		return this._webview.getValue();
+	public get webview(): WebviewOverlAy {
+		return this._webview.getVAlue();
 	}
 
 	public get extension() {
 		return this.webview.extension;
 	}
 
-	public get iconPath() {
-		return this._iconPath;
+	public get iconPAth() {
+		return this._iconPAth;
 	}
 
-	public set iconPath(value: WebviewIcons | undefined) {
-		this._iconPath = value;
-		this._webviewService.setIcons(this.id, value);
+	public set iconPAth(vAlue: WebviewIcons | undefined) {
+		this._iconPAth = vAlue;
+		this._webviewService.setIcons(this.id, vAlue);
 	}
 
-	public matches(other: IEditorInput): boolean {
+	public mAtches(other: IEditorInput): booleAn {
 		return other === this;
 	}
 
@@ -95,19 +95,19 @@ export class WebviewInput extends EditorInput {
 		return this._group;
 	}
 
-	public updateGroup(group: GroupIdentifier): void {
+	public updAteGroup(group: GroupIdentifier): void {
 		this._group = group;
 	}
 
 	public supportsSplitEditor() {
-		return false;
+		return fAlse;
 	}
 
-	protected transfer(other: WebviewInput): WebviewInput | undefined {
-		if (this._hasTransfered) {
+	protected trAnsfer(other: WebviewInput): WebviewInput | undefined {
+		if (this._hAsTrAnsfered) {
 			return undefined;
 		}
-		this._hasTransfered = true;
+		this._hAsTrAnsfered = true;
 		other._webview = this._webview;
 		return other;
 	}

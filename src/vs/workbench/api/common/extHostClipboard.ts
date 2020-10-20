@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMainContext, MainContext, MainThreadClipboardShape } from 'vs/workbench/api/common/extHost.protocol';
-import type * as vscode from 'vscode';
+import { IMAinContext, MAinContext, MAinThreAdClipboArdShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import type * As vscode from 'vscode';
 
-export class ExtHostClipboard implements vscode.Clipboard {
+export clAss ExtHostClipboArd implements vscode.ClipboArd {
 
-	private readonly _proxy: MainThreadClipboardShape;
+	privAte reAdonly _proxy: MAinThreAdClipboArdShApe;
 
-	constructor(mainContext: IMainContext) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadClipboard);
+	constructor(mAinContext: IMAinContext) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdClipboArd);
 	}
 
-	readText(): Promise<string> {
-		return this._proxy.$readText();
+	reAdText(): Promise<string> {
+		return this._proxy.$reAdText();
 	}
 
-	writeText(value: string): Promise<void> {
-		return this._proxy.$writeText(value);
+	writeText(vAlue: string): Promise<void> {
+		return this._proxy.$writeText(vAlue);
 	}
 }

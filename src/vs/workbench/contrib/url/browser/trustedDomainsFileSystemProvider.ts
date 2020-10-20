@@ -1,151 +1,151 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { parse } from 'vs/base/common/json';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCapabilities, FileType, FileWriteOptions, IFileService, IStat, IWatchOptions, IFileSystemProviderWithFileReadWriteCapability } from 'vs/platform/files/common/files';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import { Event } from 'vs/bAse/common/event';
+import { pArse } from 'vs/bAse/common/json';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCApAbilities, FileType, FileWriteOptions, IFileService, IStAt, IWAtchOptions, IFileSystemProviderWithFileReAdWriteCApAbility } from 'vs/plAtform/files/common/files';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { readTrustedDomains, TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, TRUSTED_DOMAINS_STORAGE_KEY } from 'vs/workbench/contrib/url/browser/trustedDomains';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { assertIsDefined } from 'vs/base/common/types';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { reAdTrustedDomAins, TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, TRUSTED_DOMAINS_STORAGE_KEY } from 'vs/workbench/contrib/url/browser/trustedDomAins';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { AssertIsDefined } from 'vs/bAse/common/types';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-const TRUSTED_DOMAINS_SCHEMA = 'trustedDomains';
+const TRUSTED_DOMAINS_SCHEMA = 'trustedDomAins';
 
-const TRUSTED_DOMAINS_STAT: IStat = {
+const TRUSTED_DOMAINS_STAT: IStAt = {
 	type: FileType.File,
-	ctime: Date.now(),
-	mtime: Date.now(),
+	ctime: DAte.now(),
+	mtime: DAte.now(),
 	size: 0
 };
 
-const CONFIG_HELP_TEXT_PRE = `// Links matching one or more entries in the list below can be opened without link protection.
-// The following examples show what entries can look like:
-// - "https://microsoft.com": Matches this specific domain using https
-// - "https://microsoft.com:8080": Matches this specific domain on this port using https
-// - "https://microsoft.com:*": Matches this specific domain on any port using https
-// - "https://microsoft.com/foo": Matches https://microsoft.com/foo and https://microsoft.com/foo/bar,
-//   but not https://microsoft.com/foobar or https://microsoft.com/bar
-// - "https://*.microsoft.com": Match all domains ending in "microsoft.com" using https
-// - "microsoft.com": Match this specific domain using either http or https
-// - "*.microsoft.com": Match all domains ending in "microsoft.com" using either http or https
-// - "http://192.168.0.1: Matches this specific IP using http
-// - "http://192.168.0.*: Matches all IP's with this prefix using http
-// - "*": Match all domains using either http or https
+const CONFIG_HELP_TEXT_PRE = `// Links mAtching one or more entries in the list below cAn be opened without link protection.
+// The following exAmples show whAt entries cAn look like:
+// - "https://microsoft.com": MAtches this specific domAin using https
+// - "https://microsoft.com:8080": MAtches this specific domAin on this port using https
+// - "https://microsoft.com:*": MAtches this specific domAin on Any port using https
+// - "https://microsoft.com/foo": MAtches https://microsoft.com/foo And https://microsoft.com/foo/bAr,
+//   but not https://microsoft.com/foobAr or https://microsoft.com/bAr
+// - "https://*.microsoft.com": MAtch All domAins ending in "microsoft.com" using https
+// - "microsoft.com": MAtch this specific domAin using either http or https
+// - "*.microsoft.com": MAtch All domAins ending in "microsoft.com" using either http or https
+// - "http://192.168.0.1: MAtches this specific IP using http
+// - "http://192.168.0.*: MAtches All IP's with this prefix using http
+// - "*": MAtch All domAins using either http or https
 //
 `;
 
 const CONFIG_HELP_TEXT_AFTER = `//
-// You can use the "Manage Trusted Domains" command to open this file.
-// Save this file to apply the trusted domains rules.
+// You cAn use the "MAnAge Trusted DomAins" commAnd to open this file.
+// SAve this file to Apply the trusted domAins rules.
 `;
 
 const CONFIG_PLACEHOLDER_TEXT = `[
 	// "https://microsoft.com"
 ]`;
 
-function computeTrustedDomainContent(defaultTrustedDomains: string[], trustedDomains: string[], userTrustedDomains: string[], workspaceTrustedDomains: string[]) {
+function computeTrustedDomAinContent(defAultTrustedDomAins: string[], trustedDomAins: string[], userTrustedDomAins: string[], workspAceTrustedDomAins: string[]) {
 	let content = CONFIG_HELP_TEXT_PRE;
 
-	if (defaultTrustedDomains.length > 0) {
-		content += `// By default, VS Code trusts "localhost" as well as the following domains:\n`;
-		defaultTrustedDomains.forEach(d => {
+	if (defAultTrustedDomAins.length > 0) {
+		content += `// By defAult, VS Code trusts "locAlhost" As well As the following domAins:\n`;
+		defAultTrustedDomAins.forEAch(d => {
 			content += `// - "${d}"\n`;
 		});
 	} else {
-		content += `// By default, VS Code trusts "localhost".\n`;
+		content += `// By defAult, VS Code trusts "locAlhost".\n`;
 	}
 
-	if (userTrustedDomains.length) {
-		content += `//\n// Additionally, the following domains are trusted based on your logged-in Accounts:\n`;
-		userTrustedDomains.forEach(d => {
+	if (userTrustedDomAins.length) {
+		content += `//\n// AdditionAlly, the following domAins Are trusted bAsed on your logged-in Accounts:\n`;
+		userTrustedDomAins.forEAch(d => {
 			content += `// - "${d}"\n`;
 		});
 	}
 
-	if (workspaceTrustedDomains.length) {
-		content += `//\n// Further, the following domains are trusted based on your workspace configuration:\n`;
-		workspaceTrustedDomains.forEach(d => {
+	if (workspAceTrustedDomAins.length) {
+		content += `//\n// Further, the following domAins Are trusted bAsed on your workspAce configurAtion:\n`;
+		workspAceTrustedDomAins.forEAch(d => {
 			content += `// - "${d}"\n`;
 		});
 	}
 
 	content += CONFIG_HELP_TEXT_AFTER;
 
-	if (trustedDomains.length === 0) {
+	if (trustedDomAins.length === 0) {
 		content += CONFIG_PLACEHOLDER_TEXT;
 	} else {
-		content += JSON.stringify(trustedDomains, null, 2);
+		content += JSON.stringify(trustedDomAins, null, 2);
 	}
 
 	return content;
 }
 
-export class TrustedDomainsFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapability, IWorkbenchContribution {
-	readonly capabilities = FileSystemProviderCapabilities.FileReadWrite;
+export clAss TrustedDomAinsFileSystemProvider implements IFileSystemProviderWithFileReAdWriteCApAbility, IWorkbenchContribution {
+	reAdonly cApAbilities = FileSystemProviderCApAbilities.FileReAdWrite;
 
-	readonly onDidChangeCapabilities = Event.None;
-	readonly onDidChangeFile = Event.None;
+	reAdonly onDidChAngeCApAbilities = Event.None;
+	reAdonly onDidChAngeFile = Event.None;
 
 	constructor(
-		@IFileService private readonly fileService: IFileService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IStorageKeysSyncRegistryService private readonly storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IStorAgeKeysSyncRegistryService privAte reAdonly storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
 	) {
 		this.fileService.registerProvider(TRUSTED_DOMAINS_SCHEMA, this);
 
-		this.storageKeysSyncRegistryService.registerStorageKey({ key: TRUSTED_DOMAINS_STORAGE_KEY, version: 1 });
-		this.storageKeysSyncRegistryService.registerStorageKey({ key: TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, version: 1 });
+		this.storAgeKeysSyncRegistryService.registerStorAgeKey({ key: TRUSTED_DOMAINS_STORAGE_KEY, version: 1 });
+		this.storAgeKeysSyncRegistryService.registerStorAgeKey({ key: TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, version: 1 });
 	}
 
-	stat(resource: URI): Promise<IStat> {
+	stAt(resource: URI): Promise<IStAt> {
 		return Promise.resolve(TRUSTED_DOMAINS_STAT);
 	}
 
-	async readFile(resource: URI): Promise<Uint8Array> {
-		let trustedDomainsContent = this.storageService.get(
+	Async reAdFile(resource: URI): Promise<Uint8ArrAy> {
+		let trustedDomAinsContent = this.storAgeService.get(
 			TRUSTED_DOMAINS_CONTENT_STORAGE_KEY,
-			StorageScope.GLOBAL
+			StorAgeScope.GLOBAL
 		);
 
-		const { defaultTrustedDomains, trustedDomains, userDomains, workspaceDomains } = await this.instantiationService.invokeFunction(readTrustedDomains);
+		const { defAultTrustedDomAins, trustedDomAins, userDomAins, workspAceDomAins } = AwAit this.instAntiAtionService.invokeFunction(reAdTrustedDomAins);
 		if (
-			!trustedDomainsContent ||
-			trustedDomainsContent.indexOf(CONFIG_HELP_TEXT_PRE) === -1 ||
-			trustedDomainsContent.indexOf(CONFIG_HELP_TEXT_AFTER) === -1 ||
-			[...defaultTrustedDomains, ...trustedDomains, ...userDomains, ...workspaceDomains].some(d => !assertIsDefined(trustedDomainsContent).includes(d))
+			!trustedDomAinsContent ||
+			trustedDomAinsContent.indexOf(CONFIG_HELP_TEXT_PRE) === -1 ||
+			trustedDomAinsContent.indexOf(CONFIG_HELP_TEXT_AFTER) === -1 ||
+			[...defAultTrustedDomAins, ...trustedDomAins, ...userDomAins, ...workspAceDomAins].some(d => !AssertIsDefined(trustedDomAinsContent).includes(d))
 		) {
-			trustedDomainsContent = computeTrustedDomainContent(defaultTrustedDomains, trustedDomains, userDomains, workspaceDomains);
+			trustedDomAinsContent = computeTrustedDomAinContent(defAultTrustedDomAins, trustedDomAins, userDomAins, workspAceDomAins);
 		}
 
-		const buffer = VSBuffer.fromString(trustedDomainsContent).buffer;
+		const buffer = VSBuffer.fromString(trustedDomAinsContent).buffer;
 		return buffer;
 	}
 
-	writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> {
+	writeFile(resource: URI, content: Uint8ArrAy, opts: FileWriteOptions): Promise<void> {
 		try {
-			const trustedDomainsContent = VSBuffer.wrap(content).toString();
-			const trustedDomains = parse(trustedDomainsContent);
+			const trustedDomAinsContent = VSBuffer.wrAp(content).toString();
+			const trustedDomAins = pArse(trustedDomAinsContent);
 
-			this.storageService.store(TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, trustedDomainsContent, StorageScope.GLOBAL);
-			this.storageService.store(
+			this.storAgeService.store(TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, trustedDomAinsContent, StorAgeScope.GLOBAL);
+			this.storAgeService.store(
 				TRUSTED_DOMAINS_STORAGE_KEY,
-				JSON.stringify(trustedDomains) || '',
-				StorageScope.GLOBAL
+				JSON.stringify(trustedDomAins) || '',
+				StorAgeScope.GLOBAL
 			);
-		} catch (err) { }
+		} cAtch (err) { }
 
 		return Promise.resolve();
 	}
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable {
+	wAtch(resource: URI, opts: IWAtchOptions): IDisposAble {
 		return {
 			dispose() {
 				return;
@@ -155,13 +155,13 @@ export class TrustedDomainsFileSystemProvider implements IFileSystemProviderWith
 	mkdir(resource: URI): Promise<void> {
 		return Promise.resolve(undefined!);
 	}
-	readdir(resource: URI): Promise<[string, FileType][]> {
+	reAddir(resource: URI): Promise<[string, FileType][]> {
 		return Promise.resolve(undefined!);
 	}
 	delete(resource: URI, opts: FileDeleteOptions): Promise<void> {
 		return Promise.resolve(undefined!);
 	}
-	rename(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> {
+	renAme(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> {
 		return Promise.resolve(undefined!);
 	}
 }

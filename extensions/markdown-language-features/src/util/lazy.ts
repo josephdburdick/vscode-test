@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface Lazy<T> {
-	readonly value: T;
-	readonly hasValue: boolean;
-	map<R>(f: (x: T) => R): Lazy<R>;
+export interfAce LAzy<T> {
+	reAdonly vAlue: T;
+	reAdonly hAsVAlue: booleAn;
+	mAp<R>(f: (x: T) => R): LAzy<R>;
 }
 
-class LazyValue<T> implements Lazy<T> {
-	private _hasValue: boolean = false;
-	private _value?: T;
+clAss LAzyVAlue<T> implements LAzy<T> {
+	privAte _hAsVAlue: booleAn = fAlse;
+	privAte _vAlue?: T;
 
 	constructor(
-		private readonly _getValue: () => T
+		privAte reAdonly _getVAlue: () => T
 	) { }
 
-	get value(): T {
-		if (!this._hasValue) {
-			this._hasValue = true;
-			this._value = this._getValue();
+	get vAlue(): T {
+		if (!this._hAsVAlue) {
+			this._hAsVAlue = true;
+			this._vAlue = this._getVAlue();
 		}
-		return this._value!;
+		return this._vAlue!;
 	}
 
-	get hasValue(): boolean {
-		return this._hasValue;
+	get hAsVAlue(): booleAn {
+		return this._hAsVAlue;
 	}
 
-	public map<R>(f: (x: T) => R): Lazy<R> {
-		return new LazyValue(() => f(this.value));
+	public mAp<R>(f: (x: T) => R): LAzy<R> {
+		return new LAzyVAlue(() => f(this.vAlue));
 	}
 }
 
-export function lazy<T>(getValue: () => T): Lazy<T> {
-	return new LazyValue<T>(getValue);
+export function lAzy<T>(getVAlue: () => T): LAzy<T> {
+	return new LAzyVAlue<T>(getVAlue);
 }

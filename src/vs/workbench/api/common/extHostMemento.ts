@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ExtHostStorage } from 'vs/workbench/api/common/extHostStorage';
+import type * As vscode from 'vscode';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ExtHostStorAge } from 'vs/workbench/Api/common/extHostStorAge';
 
-export class ExtensionMemento implements vscode.Memento {
+export clAss ExtensionMemento implements vscode.Memento {
 
-	private readonly _id: string;
-	private readonly _shared: boolean;
-	private readonly _storage: ExtHostStorage;
+	privAte reAdonly _id: string;
+	privAte reAdonly _shAred: booleAn;
+	privAte reAdonly _storAge: ExtHostStorAge;
 
-	private readonly _init: Promise<ExtensionMemento>;
-	private _value?: { [n: string]: any; };
-	private readonly _storageListener: IDisposable;
+	privAte reAdonly _init: Promise<ExtensionMemento>;
+	privAte _vAlue?: { [n: string]: Any; };
+	privAte reAdonly _storAgeListener: IDisposAble;
 
-	constructor(id: string, global: boolean, storage: ExtHostStorage) {
+	constructor(id: string, globAl: booleAn, storAge: ExtHostStorAge) {
 		this._id = id;
-		this._shared = global;
-		this._storage = storage;
+		this._shAred = globAl;
+		this._storAge = storAge;
 
-		this._init = this._storage.getValue(this._shared, this._id, Object.create(null)).then(value => {
-			this._value = value;
+		this._init = this._storAge.getVAlue(this._shAred, this._id, Object.creAte(null)).then(vAlue => {
+			this._vAlue = vAlue;
 			return this;
 		});
 
-		this._storageListener = this._storage.onDidChangeStorage(e => {
-			if (e.shared === this._shared && e.key === this._id) {
-				this._value = e.value;
+		this._storAgeListener = this._storAge.onDidChAngeStorAge(e => {
+			if (e.shAred === this._shAred && e.key === this._id) {
+				this._vAlue = e.vAlue;
 			}
 		});
 	}
 
-	get whenReady(): Promise<ExtensionMemento> {
+	get whenReAdy(): Promise<ExtensionMemento> {
 		return this._init;
 	}
 
 	get<T>(key: string): T | undefined;
-	get<T>(key: string, defaultValue: T): T;
-	get<T>(key: string, defaultValue?: T): T {
-		let value = this._value![key];
-		if (typeof value === 'undefined') {
-			value = defaultValue;
+	get<T>(key: string, defAultVAlue: T): T;
+	get<T>(key: string, defAultVAlue?: T): T {
+		let vAlue = this._vAlue![key];
+		if (typeof vAlue === 'undefined') {
+			vAlue = defAultVAlue;
 		}
-		return value;
+		return vAlue;
 	}
 
-	update(key: string, value: any): Promise<void> {
-		this._value![key] = value;
-		return this._storage.setValue(this._shared, this._id, this._value!);
+	updAte(key: string, vAlue: Any): Promise<void> {
+		this._vAlue![key] = vAlue;
+		return this._storAge.setVAlue(this._shAred, this._id, this._vAlue!);
 	}
 
 	dispose(): void {
-		this._storageListener.dispose();
+		this._storAgeListener.dispose();
 	}
 }

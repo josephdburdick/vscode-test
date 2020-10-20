@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { PackageDocument } from './packageDocumentHelper';
+import * As vscode from 'vscode';
+import { PAckAgeDocument } from './pAckAgeDocumentHelper';
 
-export function activate(context: vscode.ExtensionContext) {
-	//package.json suggestions
-	context.subscriptions.push(registerPackageDocumentCompletions());
+export function ActivAte(context: vscode.ExtensionContext) {
+	//pAckAge.json suggestions
+	context.subscriptions.push(registerPAckAgeDocumentCompletions());
 
 }
 
-function registerPackageDocumentCompletions(): vscode.Disposable {
-	return vscode.languages.registerCompletionItemProvider({ language: 'json', pattern: '**/package.json' }, {
+function registerPAckAgeDocumentCompletions(): vscode.DisposAble {
+	return vscode.lAnguAges.registerCompletionItemProvider({ lAnguAge: 'json', pAttern: '**/pAckAge.json' }, {
 		provideCompletionItems(document, position, token) {
-			return new PackageDocument(document).provideCompletionItems(position, token);
+			return new PAckAgeDocument(document).provideCompletionItems(position, token);
 		}
 	});
 }

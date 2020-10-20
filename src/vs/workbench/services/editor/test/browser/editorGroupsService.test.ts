@@ -1,387 +1,387 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Event } from 'vs/base/common/event';
-import { workbenchInstantiationService, registerTestEditor, TestFileEditorInput, TestEditorPart, ITestInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { GroupDirection, GroupsOrder, MergeGroupMode, GroupOrientation, GroupChangeKind, GroupLocation, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { EditorOptions, CloseDirection, IEditorPartOptions, EditorsOrder } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { MockScopableContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
+import * As Assert from 'Assert';
+import { Event } from 'vs/bAse/common/event';
+import { workbenchInstAntiAtionService, registerTestEditor, TestFileEditorInput, TestEditorPArt, ITestInstAntiAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { GroupDirection, GroupsOrder, MergeGroupMode, GroupOrientAtion, GroupChAngeKind, GroupLocAtion, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { EditorOptions, CloseDirection, IEditorPArtOptions, EditorsOrder } from 'vs/workbench/common/editor';
+import { URI } from 'vs/bAse/common/uri';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { MockScopAbleContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
 
 const TEST_EDITOR_ID = 'MyFileEditorForEditorGroupService';
 const TEST_EDITOR_INPUT_ID = 'testEditorInputForEditorGroupService';
 
 suite('EditorGroupsService', () => {
 
-	let disposables: IDisposable[] = [];
+	let disposAbles: IDisposAble[] = [];
 
 	setup(() => {
-		disposables.push(registerTestEditor(TEST_EDITOR_ID, [new SyncDescriptor(TestFileEditorInput)], TEST_EDITOR_INPUT_ID));
+		disposAbles.push(registerTestEditor(TEST_EDITOR_ID, [new SyncDescriptor(TestFileEditorInput)], TEST_EDITOR_INPUT_ID));
 	});
 
-	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+	teArdown(() => {
+		dispose(disposAbles);
+		disposAbles = [];
 	});
 
-	function createPart(instantiationService = workbenchInstantiationService()): [TestEditorPart, ITestInstantiationService] {
-		const part = instantiationService.createInstance(TestEditorPart);
-		part.create(document.createElement('div'));
-		part.layout(400, 300);
+	function creAtePArt(instAntiAtionService = workbenchInstAntiAtionService()): [TestEditorPArt, ITestInstAntiAtionService] {
+		const pArt = instAntiAtionService.creAteInstAnce(TestEditorPArt);
+		pArt.creAte(document.creAteElement('div'));
+		pArt.lAyout(400, 300);
 
-		return [part, instantiationService];
+		return [pArt, instAntiAtionService];
 	}
 
-	test('groups basics', async function () {
-		const instantiationService = workbenchInstantiationService({ contextKeyService: instantiationService => instantiationService.createInstance(MockScopableContextKeyService) });
-		const [part] = createPart(instantiationService);
+	test('groups bAsics', Async function () {
+		const instAntiAtionService = workbenchInstAntiAtionService({ contextKeyService: instAntiAtionService => instAntiAtionService.creAteInstAnce(MockScopAbleContextKeyService) });
+		const [pArt] = creAtePArt(instAntiAtionService);
 
-		let activeGroupChangeCounter = 0;
-		const activeGroupChangeListener = part.onDidActiveGroupChange(() => {
-			activeGroupChangeCounter++;
+		let ActiveGroupChAngeCounter = 0;
+		const ActiveGroupChAngeListener = pArt.onDidActiveGroupChAnge(() => {
+			ActiveGroupChAngeCounter++;
 		});
 
 		let groupAddedCounter = 0;
-		const groupAddedListener = part.onDidAddGroup(() => {
+		const groupAddedListener = pArt.onDidAddGroup(() => {
 			groupAddedCounter++;
 		});
 
 		let groupRemovedCounter = 0;
-		const groupRemovedListener = part.onDidRemoveGroup(() => {
+		const groupRemovedListener = pArt.onDidRemoveGroup(() => {
 			groupRemovedCounter++;
 		});
 
 		let groupMovedCounter = 0;
-		const groupMovedListener = part.onDidMoveGroup(() => {
+		const groupMovedListener = pArt.onDidMoveGroup(() => {
 			groupMovedCounter++;
 		});
 
-		// always a root group
-		const rootGroup = part.groups[0];
-		assert.equal(part.groups.length, 1);
-		assert.equal(part.count, 1);
-		assert.equal(rootGroup, part.getGroup(rootGroup.id));
-		assert.ok(part.activeGroup === rootGroup);
-		assert.equal(rootGroup.label, 'Group 1');
+		// AlwAys A root group
+		const rootGroup = pArt.groups[0];
+		Assert.equAl(pArt.groups.length, 1);
+		Assert.equAl(pArt.count, 1);
+		Assert.equAl(rootGroup, pArt.getGroup(rootGroup.id));
+		Assert.ok(pArt.ActiveGroup === rootGroup);
+		Assert.equAl(rootGroup.lAbel, 'Group 1');
 
-		let mru = part.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru.length, 1);
-		assert.equal(mru[0], rootGroup);
+		let mru = pArt.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
+		Assert.equAl(mru.length, 1);
+		Assert.equAl(mru[0], rootGroup);
 
-		const rightGroup = part.addGroup(rootGroup, GroupDirection.RIGHT);
-		assert.equal(rightGroup, part.getGroup(rightGroup.id));
-		assert.equal(groupAddedCounter, 1);
-		assert.equal(part.groups.length, 2);
-		assert.equal(part.count, 2);
-		assert.ok(part.activeGroup === rootGroup);
-		assert.equal(rootGroup.label, 'Group 1');
-		assert.equal(rightGroup.label, 'Group 2');
+		const rightGroup = pArt.AddGroup(rootGroup, GroupDirection.RIGHT);
+		Assert.equAl(rightGroup, pArt.getGroup(rightGroup.id));
+		Assert.equAl(groupAddedCounter, 1);
+		Assert.equAl(pArt.groups.length, 2);
+		Assert.equAl(pArt.count, 2);
+		Assert.ok(pArt.ActiveGroup === rootGroup);
+		Assert.equAl(rootGroup.lAbel, 'Group 1');
+		Assert.equAl(rightGroup.lAbel, 'Group 2');
 
-		mru = part.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru.length, 2);
-		assert.equal(mru[0], rootGroup);
-		assert.equal(mru[1], rightGroup);
+		mru = pArt.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
+		Assert.equAl(mru.length, 2);
+		Assert.equAl(mru[0], rootGroup);
+		Assert.equAl(mru[1], rightGroup);
 
-		assert.equal(activeGroupChangeCounter, 0);
+		Assert.equAl(ActiveGroupChAngeCounter, 0);
 
-		let rootGroupActiveChangeCounter = 0;
-		const rootGroupChangeListener = rootGroup.onDidGroupChange(e => {
-			if (e.kind === GroupChangeKind.GROUP_ACTIVE) {
-				rootGroupActiveChangeCounter++;
+		let rootGroupActiveChAngeCounter = 0;
+		const rootGroupChAngeListener = rootGroup.onDidGroupChAnge(e => {
+			if (e.kind === GroupChAngeKind.GROUP_ACTIVE) {
+				rootGroupActiveChAngeCounter++;
 			}
 		});
 
-		let rightGroupActiveChangeCounter = 0;
-		const rightGroupChangeListener = rightGroup.onDidGroupChange(e => {
-			if (e.kind === GroupChangeKind.GROUP_ACTIVE) {
-				rightGroupActiveChangeCounter++;
+		let rightGroupActiveChAngeCounter = 0;
+		const rightGroupChAngeListener = rightGroup.onDidGroupChAnge(e => {
+			if (e.kind === GroupChAngeKind.GROUP_ACTIVE) {
+				rightGroupActiveChAngeCounter++;
 			}
 		});
 
-		part.activateGroup(rightGroup);
-		assert.ok(part.activeGroup === rightGroup);
-		assert.equal(activeGroupChangeCounter, 1);
-		assert.equal(rootGroupActiveChangeCounter, 1);
-		assert.equal(rightGroupActiveChangeCounter, 1);
+		pArt.ActivAteGroup(rightGroup);
+		Assert.ok(pArt.ActiveGroup === rightGroup);
+		Assert.equAl(ActiveGroupChAngeCounter, 1);
+		Assert.equAl(rootGroupActiveChAngeCounter, 1);
+		Assert.equAl(rightGroupActiveChAngeCounter, 1);
 
-		rootGroupChangeListener.dispose();
-		rightGroupChangeListener.dispose();
+		rootGroupChAngeListener.dispose();
+		rightGroupChAngeListener.dispose();
 
-		mru = part.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru.length, 2);
-		assert.equal(mru[0], rightGroup);
-		assert.equal(mru[1], rootGroup);
+		mru = pArt.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
+		Assert.equAl(mru.length, 2);
+		Assert.equAl(mru[0], rightGroup);
+		Assert.equAl(mru[1], rootGroup);
 
-		const downGroup = part.addGroup(rightGroup, GroupDirection.DOWN);
-		let didDispose = false;
+		const downGroup = pArt.AddGroup(rightGroup, GroupDirection.DOWN);
+		let didDispose = fAlse;
 		downGroup.onWillDispose(() => {
 			didDispose = true;
 		});
-		assert.equal(groupAddedCounter, 2);
-		assert.equal(part.groups.length, 3);
-		assert.ok(part.activeGroup === rightGroup);
-		assert.ok(!downGroup.activeEditorPane);
-		assert.equal(rootGroup.label, 'Group 1');
-		assert.equal(rightGroup.label, 'Group 2');
-		assert.equal(downGroup.label, 'Group 3');
+		Assert.equAl(groupAddedCounter, 2);
+		Assert.equAl(pArt.groups.length, 3);
+		Assert.ok(pArt.ActiveGroup === rightGroup);
+		Assert.ok(!downGroup.ActiveEditorPAne);
+		Assert.equAl(rootGroup.lAbel, 'Group 1');
+		Assert.equAl(rightGroup.lAbel, 'Group 2');
+		Assert.equAl(downGroup.lAbel, 'Group 3');
 
-		mru = part.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru.length, 3);
-		assert.equal(mru[0], rightGroup);
-		assert.equal(mru[1], rootGroup);
-		assert.equal(mru[2], downGroup);
+		mru = pArt.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
+		Assert.equAl(mru.length, 3);
+		Assert.equAl(mru[0], rightGroup);
+		Assert.equAl(mru[1], rootGroup);
+		Assert.equAl(mru[2], downGroup);
 
-		const gridOrder = part.getGroups(GroupsOrder.GRID_APPEARANCE);
-		assert.equal(gridOrder.length, 3);
-		assert.equal(gridOrder[0], rootGroup);
-		assert.equal(gridOrder[0].index, 0);
-		assert.equal(gridOrder[1], rightGroup);
-		assert.equal(gridOrder[1].index, 1);
-		assert.equal(gridOrder[2], downGroup);
-		assert.equal(gridOrder[2].index, 2);
+		const gridOrder = pArt.getGroups(GroupsOrder.GRID_APPEARANCE);
+		Assert.equAl(gridOrder.length, 3);
+		Assert.equAl(gridOrder[0], rootGroup);
+		Assert.equAl(gridOrder[0].index, 0);
+		Assert.equAl(gridOrder[1], rightGroup);
+		Assert.equAl(gridOrder[1].index, 1);
+		Assert.equAl(gridOrder[2], downGroup);
+		Assert.equAl(gridOrder[2].index, 2);
 
-		part.moveGroup(downGroup, rightGroup, GroupDirection.DOWN);
-		assert.equal(groupMovedCounter, 1);
+		pArt.moveGroup(downGroup, rightGroup, GroupDirection.DOWN);
+		Assert.equAl(groupMovedCounter, 1);
 
-		part.removeGroup(downGroup);
-		assert.ok(!part.getGroup(downGroup.id));
-		assert.equal(didDispose, true);
-		assert.equal(groupRemovedCounter, 1);
-		assert.equal(part.groups.length, 2);
-		assert.ok(part.activeGroup === rightGroup);
-		assert.equal(rootGroup.label, 'Group 1');
-		assert.equal(rightGroup.label, 'Group 2');
+		pArt.removeGroup(downGroup);
+		Assert.ok(!pArt.getGroup(downGroup.id));
+		Assert.equAl(didDispose, true);
+		Assert.equAl(groupRemovedCounter, 1);
+		Assert.equAl(pArt.groups.length, 2);
+		Assert.ok(pArt.ActiveGroup === rightGroup);
+		Assert.equAl(rootGroup.lAbel, 'Group 1');
+		Assert.equAl(rightGroup.lAbel, 'Group 2');
 
-		mru = part.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru.length, 2);
-		assert.equal(mru[0], rightGroup);
-		assert.equal(mru[1], rootGroup);
+		mru = pArt.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
+		Assert.equAl(mru.length, 2);
+		Assert.equAl(mru[0], rightGroup);
+		Assert.equAl(mru[1], rootGroup);
 
-		const rightGroupContextKeyService = part.activeGroup.scopedContextKeyService;
+		const rightGroupContextKeyService = pArt.ActiveGroup.scopedContextKeyService;
 		const rootGroupContextKeyService = rootGroup.scopedContextKeyService;
 
-		assert.ok(rightGroupContextKeyService);
-		assert.ok(rootGroupContextKeyService);
-		assert.ok(rightGroupContextKeyService !== rootGroupContextKeyService);
+		Assert.ok(rightGroupContextKeyService);
+		Assert.ok(rootGroupContextKeyService);
+		Assert.ok(rightGroupContextKeyService !== rootGroupContextKeyService);
 
-		part.removeGroup(rightGroup);
-		assert.equal(groupRemovedCounter, 2);
-		assert.equal(part.groups.length, 1);
-		assert.ok(part.activeGroup === rootGroup);
+		pArt.removeGroup(rightGroup);
+		Assert.equAl(groupRemovedCounter, 2);
+		Assert.equAl(pArt.groups.length, 1);
+		Assert.ok(pArt.ActiveGroup === rootGroup);
 
-		mru = part.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru.length, 1);
-		assert.equal(mru[0], rootGroup);
+		mru = pArt.getGroups(GroupsOrder.MOST_RECENTLY_ACTIVE);
+		Assert.equAl(mru.length, 1);
+		Assert.equAl(mru[0], rootGroup);
 
-		part.removeGroup(rootGroup); // cannot remove root group
-		assert.equal(part.groups.length, 1);
-		assert.equal(groupRemovedCounter, 2);
-		assert.ok(part.activeGroup === rootGroup);
+		pArt.removeGroup(rootGroup); // cAnnot remove root group
+		Assert.equAl(pArt.groups.length, 1);
+		Assert.equAl(groupRemovedCounter, 2);
+		Assert.ok(pArt.ActiveGroup === rootGroup);
 
-		part.setGroupOrientation(part.orientation === GroupOrientation.HORIZONTAL ? GroupOrientation.VERTICAL : GroupOrientation.HORIZONTAL);
+		pArt.setGroupOrientAtion(pArt.orientAtion === GroupOrientAtion.HORIZONTAL ? GroupOrientAtion.VERTICAL : GroupOrientAtion.HORIZONTAL);
 
-		activeGroupChangeListener.dispose();
+		ActiveGroupChAngeListener.dispose();
 		groupAddedListener.dispose();
 		groupRemovedListener.dispose();
 		groupMovedListener.dispose();
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('save & restore state', async function () {
-		let [part, instantiationService] = createPart();
+	test('sAve & restore stAte', Async function () {
+		let [pArt, instAntiAtionService] = creAtePArt();
 
-		const rootGroup = part.groups[0];
-		const rightGroup = part.addGroup(rootGroup, GroupDirection.RIGHT);
-		const downGroup = part.addGroup(rightGroup, GroupDirection.DOWN);
+		const rootGroup = pArt.groups[0];
+		const rightGroup = pArt.AddGroup(rootGroup, GroupDirection.RIGHT);
+		const downGroup = pArt.AddGroup(rightGroup, GroupDirection.DOWN);
 
-		const rootGroupInput = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		await rootGroup.openEditor(rootGroupInput, EditorOptions.create({ pinned: true }));
+		const rootGroupInput = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		AwAit rootGroup.openEditor(rootGroupInput, EditorOptions.creAte({ pinned: true }));
 
-		const rightGroupInput = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		await rightGroup.openEditor(rightGroupInput, EditorOptions.create({ pinned: true }));
+		const rightGroupInput = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		AwAit rightGroup.openEditor(rightGroupInput, EditorOptions.creAte({ pinned: true }));
 
-		assert.equal(part.groups.length, 3);
+		Assert.equAl(pArt.groups.length, 3);
 
-		part.saveState();
-		part.dispose();
+		pArt.sAveStAte();
+		pArt.dispose();
 
-		let [restoredPart] = createPart(instantiationService);
+		let [restoredPArt] = creAtePArt(instAntiAtionService);
 
-		assert.equal(restoredPart.groups.length, 3);
-		assert.ok(restoredPart.getGroup(rootGroup.id));
-		assert.ok(restoredPart.getGroup(rightGroup.id));
-		assert.ok(restoredPart.getGroup(downGroup.id));
+		Assert.equAl(restoredPArt.groups.length, 3);
+		Assert.ok(restoredPArt.getGroup(rootGroup.id));
+		Assert.ok(restoredPArt.getGroup(rightGroup.id));
+		Assert.ok(restoredPArt.getGroup(downGroup.id));
 
-		restoredPart.clearState();
-		restoredPart.dispose();
+		restoredPArt.cleArStAte();
+		restoredPArt.dispose();
 	});
 
-	test('groups index / labels', function () {
-		const [part] = createPart();
+	test('groups index / lAbels', function () {
+		const [pArt] = creAtePArt();
 
-		const rootGroup = part.groups[0];
-		const rightGroup = part.addGroup(rootGroup, GroupDirection.RIGHT);
-		const downGroup = part.addGroup(rightGroup, GroupDirection.DOWN);
+		const rootGroup = pArt.groups[0];
+		const rightGroup = pArt.AddGroup(rootGroup, GroupDirection.RIGHT);
+		const downGroup = pArt.AddGroup(rightGroup, GroupDirection.DOWN);
 
-		let groupIndexChangedCounter = 0;
-		const groupIndexChangedListener = part.onDidGroupIndexChange(() => {
-			groupIndexChangedCounter++;
+		let groupIndexChAngedCounter = 0;
+		const groupIndexChAngedListener = pArt.onDidGroupIndexChAnge(() => {
+			groupIndexChAngedCounter++;
 		});
 
-		let indexChangeCounter = 0;
-		const labelChangeListener = downGroup.onDidGroupChange(e => {
-			if (e.kind === GroupChangeKind.GROUP_INDEX) {
-				indexChangeCounter++;
+		let indexChAngeCounter = 0;
+		const lAbelChAngeListener = downGroup.onDidGroupChAnge(e => {
+			if (e.kind === GroupChAngeKind.GROUP_INDEX) {
+				indexChAngeCounter++;
 			}
 		});
 
-		assert.equal(rootGroup.index, 0);
-		assert.equal(rightGroup.index, 1);
-		assert.equal(downGroup.index, 2);
-		assert.equal(rootGroup.label, 'Group 1');
-		assert.equal(rightGroup.label, 'Group 2');
-		assert.equal(downGroup.label, 'Group 3');
+		Assert.equAl(rootGroup.index, 0);
+		Assert.equAl(rightGroup.index, 1);
+		Assert.equAl(downGroup.index, 2);
+		Assert.equAl(rootGroup.lAbel, 'Group 1');
+		Assert.equAl(rightGroup.lAbel, 'Group 2');
+		Assert.equAl(downGroup.lAbel, 'Group 3');
 
-		part.removeGroup(rightGroup);
-		assert.equal(rootGroup.index, 0);
-		assert.equal(downGroup.index, 1);
-		assert.equal(rootGroup.label, 'Group 1');
-		assert.equal(downGroup.label, 'Group 2');
-		assert.equal(indexChangeCounter, 1);
-		assert.equal(groupIndexChangedCounter, 1);
+		pArt.removeGroup(rightGroup);
+		Assert.equAl(rootGroup.index, 0);
+		Assert.equAl(downGroup.index, 1);
+		Assert.equAl(rootGroup.lAbel, 'Group 1');
+		Assert.equAl(downGroup.lAbel, 'Group 2');
+		Assert.equAl(indexChAngeCounter, 1);
+		Assert.equAl(groupIndexChAngedCounter, 1);
 
-		part.moveGroup(downGroup, rootGroup, GroupDirection.UP);
-		assert.equal(downGroup.index, 0);
-		assert.equal(rootGroup.index, 1);
-		assert.equal(downGroup.label, 'Group 1');
-		assert.equal(rootGroup.label, 'Group 2');
-		assert.equal(indexChangeCounter, 2);
-		assert.equal(groupIndexChangedCounter, 3);
+		pArt.moveGroup(downGroup, rootGroup, GroupDirection.UP);
+		Assert.equAl(downGroup.index, 0);
+		Assert.equAl(rootGroup.index, 1);
+		Assert.equAl(downGroup.lAbel, 'Group 1');
+		Assert.equAl(rootGroup.lAbel, 'Group 2');
+		Assert.equAl(indexChAngeCounter, 2);
+		Assert.equAl(groupIndexChAngedCounter, 3);
 
-		const newFirstGroup = part.addGroup(downGroup, GroupDirection.UP);
-		assert.equal(newFirstGroup.index, 0);
-		assert.equal(downGroup.index, 1);
-		assert.equal(rootGroup.index, 2);
-		assert.equal(newFirstGroup.label, 'Group 1');
-		assert.equal(downGroup.label, 'Group 2');
-		assert.equal(rootGroup.label, 'Group 3');
-		assert.equal(indexChangeCounter, 3);
-		assert.equal(groupIndexChangedCounter, 6);
+		const newFirstGroup = pArt.AddGroup(downGroup, GroupDirection.UP);
+		Assert.equAl(newFirstGroup.index, 0);
+		Assert.equAl(downGroup.index, 1);
+		Assert.equAl(rootGroup.index, 2);
+		Assert.equAl(newFirstGroup.lAbel, 'Group 1');
+		Assert.equAl(downGroup.lAbel, 'Group 2');
+		Assert.equAl(rootGroup.lAbel, 'Group 3');
+		Assert.equAl(indexChAngeCounter, 3);
+		Assert.equAl(groupIndexChAngedCounter, 6);
 
-		labelChangeListener.dispose();
-		groupIndexChangedListener.dispose();
+		lAbelChAngeListener.dispose();
+		groupIndexChAngedListener.dispose();
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('copy/merge groups', async () => {
-		const [part] = createPart();
+	test('copy/merge groups', Async () => {
+		const [pArt] = creAtePArt();
 
 		let groupAddedCounter = 0;
-		const groupAddedListener = part.onDidAddGroup(() => {
+		const groupAddedListener = pArt.onDidAddGroup(() => {
 			groupAddedCounter++;
 		});
 
 		let groupRemovedCounter = 0;
-		const groupRemovedListener = part.onDidRemoveGroup(() => {
+		const groupRemovedListener = pArt.onDidRemoveGroup(() => {
 			groupRemovedCounter++;
 		});
 
-		const rootGroup = part.groups[0];
-		let rootGroupDisposed = false;
+		const rootGroup = pArt.groups[0];
+		let rootGroupDisposed = fAlse;
 		const disposeListener = rootGroup.onWillDispose(() => {
 			rootGroupDisposed = true;
 		});
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
 
-		await rootGroup.openEditor(input, EditorOptions.create({ pinned: true }));
-		const rightGroup = part.addGroup(rootGroup, GroupDirection.RIGHT, { activate: true });
-		const downGroup = part.copyGroup(rootGroup, rightGroup, GroupDirection.DOWN);
-		assert.equal(groupAddedCounter, 2);
-		assert.equal(downGroup.count, 1);
-		assert.ok(downGroup.activeEditor instanceof TestFileEditorInput);
-		part.mergeGroup(rootGroup, rightGroup, { mode: MergeGroupMode.COPY_EDITORS });
-		assert.equal(rightGroup.count, 1);
-		assert.ok(rightGroup.activeEditor instanceof TestFileEditorInput);
-		part.mergeGroup(rootGroup, rightGroup, { mode: MergeGroupMode.MOVE_EDITORS });
-		assert.equal(rootGroup.count, 0);
-		part.mergeGroup(rootGroup, downGroup);
-		assert.equal(groupRemovedCounter, 1);
-		assert.equal(rootGroupDisposed, true);
+		AwAit rootGroup.openEditor(input, EditorOptions.creAte({ pinned: true }));
+		const rightGroup = pArt.AddGroup(rootGroup, GroupDirection.RIGHT, { ActivAte: true });
+		const downGroup = pArt.copyGroup(rootGroup, rightGroup, GroupDirection.DOWN);
+		Assert.equAl(groupAddedCounter, 2);
+		Assert.equAl(downGroup.count, 1);
+		Assert.ok(downGroup.ActiveEditor instAnceof TestFileEditorInput);
+		pArt.mergeGroup(rootGroup, rightGroup, { mode: MergeGroupMode.COPY_EDITORS });
+		Assert.equAl(rightGroup.count, 1);
+		Assert.ok(rightGroup.ActiveEditor instAnceof TestFileEditorInput);
+		pArt.mergeGroup(rootGroup, rightGroup, { mode: MergeGroupMode.MOVE_EDITORS });
+		Assert.equAl(rootGroup.count, 0);
+		pArt.mergeGroup(rootGroup, downGroup);
+		Assert.equAl(groupRemovedCounter, 1);
+		Assert.equAl(rootGroupDisposed, true);
 		groupAddedListener.dispose();
 		groupRemovedListener.dispose();
 		disposeListener.dispose();
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('whenRestored', async () => {
-		const [part] = createPart();
+	test('whenRestored', Async () => {
+		const [pArt] = creAtePArt();
 
-		await part.whenRestored;
-		assert.ok(true);
-		part.dispose();
+		AwAit pArt.whenRestored;
+		Assert.ok(true);
+		pArt.dispose();
 	});
 
 	test('options', () => {
-		const [part] = createPart();
+		const [pArt] = creAtePArt();
 
-		let oldOptions!: IEditorPartOptions;
-		let newOptions!: IEditorPartOptions;
-		part.onDidEditorPartOptionsChange(event => {
-			oldOptions = event.oldPartOptions;
-			newOptions = event.newPartOptions;
+		let oldOptions!: IEditorPArtOptions;
+		let newOptions!: IEditorPArtOptions;
+		pArt.onDidEditorPArtOptionsChAnge(event => {
+			oldOptions = event.oldPArtOptions;
+			newOptions = event.newPArtOptions;
 		});
 
-		const currentOptions = part.partOptions;
-		assert.ok(currentOptions);
+		const currentOptions = pArt.pArtOptions;
+		Assert.ok(currentOptions);
 
-		part.enforcePartOptions({ showTabs: false });
-		assert.equal(part.partOptions.showTabs, false);
-		assert.equal(newOptions.showTabs, false);
-		assert.equal(oldOptions, currentOptions);
+		pArt.enforcePArtOptions({ showTAbs: fAlse });
+		Assert.equAl(pArt.pArtOptions.showTAbs, fAlse);
+		Assert.equAl(newOptions.showTAbs, fAlse);
+		Assert.equAl(oldOptions, currentOptions);
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('editor basics', async function () {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('editor bAsics', Async function () {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		await part.whenRestored;
+		AwAit pArt.whenRestored;
 
 		let editorWillOpenCounter = 0;
 		const editorWillOpenListener = group.onWillOpenEditor(() => {
 			editorWillOpenCounter++;
 		});
 
-		let activeEditorChangeCounter = 0;
+		let ActiveEditorChAngeCounter = 0;
 		let editorDidOpenCounter = 0;
 		let editorCloseCounter = 0;
 		let editorPinCounter = 0;
 		let editorStickyCounter = 0;
-		const editorGroupChangeListener = group.onDidGroupChange(e => {
-			if (e.kind === GroupChangeKind.EDITOR_OPEN) {
-				assert.ok(e.editor);
+		const editorGroupChAngeListener = group.onDidGroupChAnge(e => {
+			if (e.kind === GroupChAngeKind.EDITOR_OPEN) {
+				Assert.ok(e.editor);
 				editorDidOpenCounter++;
-			} else if (e.kind === GroupChangeKind.EDITOR_ACTIVE) {
-				assert.ok(e.editor);
-				activeEditorChangeCounter++;
-			} else if (e.kind === GroupChangeKind.EDITOR_CLOSE) {
-				assert.ok(e.editor);
+			} else if (e.kind === GroupChAngeKind.EDITOR_ACTIVE) {
+				Assert.ok(e.editor);
+				ActiveEditorChAngeCounter++;
+			} else if (e.kind === GroupChAngeKind.EDITOR_CLOSE) {
+				Assert.ok(e.editor);
 				editorCloseCounter++;
-			} else if (e.kind === GroupChangeKind.EDITOR_PIN) {
-				assert.ok(e.editor);
+			} else if (e.kind === GroupChAngeKind.EDITOR_PIN) {
+				Assert.ok(e.editor);
 				editorPinCounter++;
-			} else if (e.kind === GroupChangeKind.EDITOR_STICKY) {
-				assert.ok(e.editor);
+			} else if (e.kind === GroupChAngeKind.EDITOR_STICKY) {
+				Assert.ok(e.editor);
 				editorStickyCounter++;
 			}
 		});
@@ -396,707 +396,707 @@ suite('EditorGroupsService', () => {
 			editorWillCloseCounter++;
 		});
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditor(input, EditorOptions.create({ pinned: true }));
-		await group.openEditor(inputInactive, EditorOptions.create({ inactive: true }));
+		AwAit group.openEditor(input, EditorOptions.creAte({ pinned: true }));
+		AwAit group.openEditor(inputInActive, EditorOptions.creAte({ inActive: true }));
 
-		assert.equal(group.isActive(input), true);
-		assert.equal(group.isActive(inputInactive), false);
-		assert.equal(group.isOpened(input), true);
-		assert.equal(group.isOpened(inputInactive), true);
-		assert.equal(group.isEmpty, false);
-		assert.equal(group.count, 2);
-		assert.equal(editorWillOpenCounter, 2);
-		assert.equal(editorDidOpenCounter, 2);
-		assert.equal(activeEditorChangeCounter, 1);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
-		assert.equal(group.getIndexOfEditor(input), 0);
-		assert.equal(group.getIndexOfEditor(inputInactive), 1);
+		Assert.equAl(group.isActive(input), true);
+		Assert.equAl(group.isActive(inputInActive), fAlse);
+		Assert.equAl(group.isOpened(input), true);
+		Assert.equAl(group.isOpened(inputInActive), true);
+		Assert.equAl(group.isEmpty, fAlse);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(editorWillOpenCounter, 2);
+		Assert.equAl(editorDidOpenCounter, 2);
+		Assert.equAl(ActiveEditorChAngeCounter, 1);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
+		Assert.equAl(group.getIndexOfEditor(input), 0);
+		Assert.equAl(group.getIndexOfEditor(inputInActive), 1);
 
-		assert.equal(group.previewEditor, inputInactive);
-		assert.equal(group.isPinned(inputInactive), false);
-		group.pinEditor(inputInactive);
-		assert.equal(editorPinCounter, 1);
-		assert.equal(group.isPinned(inputInactive), true);
-		assert.ok(!group.previewEditor);
+		Assert.equAl(group.previewEditor, inputInActive);
+		Assert.equAl(group.isPinned(inputInActive), fAlse);
+		group.pinEditor(inputInActive);
+		Assert.equAl(editorPinCounter, 1);
+		Assert.equAl(group.isPinned(inputInActive), true);
+		Assert.ok(!group.previewEditor);
 
-		assert.equal(group.activeEditor, input);
-		assert.equal(group.activeEditorPane?.getId(), TEST_EDITOR_ID);
-		assert.equal(group.count, 2);
+		Assert.equAl(group.ActiveEditor, input);
+		Assert.equAl(group.ActiveEditorPAne?.getId(), TEST_EDITOR_ID);
+		Assert.equAl(group.count, 2);
 
 		const mru = group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE);
-		assert.equal(mru[0], input);
-		assert.equal(mru[1], inputInactive);
+		Assert.equAl(mru[0], input);
+		Assert.equAl(mru[1], inputInActive);
 
-		await group.openEditor(inputInactive);
-		assert.equal(activeEditorChangeCounter, 2);
-		assert.equal(group.activeEditor, inputInactive);
+		AwAit group.openEditor(inputInActive);
+		Assert.equAl(ActiveEditorChAngeCounter, 2);
+		Assert.equAl(group.ActiveEditor, inputInActive);
 
-		await group.openEditor(input);
-		await group.closeEditor(inputInactive);
+		AwAit group.openEditor(input);
+		AwAit group.closeEditor(inputInActive);
 
-		assert.equal(activeEditorChangeCounter, 3);
-		assert.equal(editorCloseCounter, 1);
-		assert.equal(editorCloseCounter1, 1);
-		assert.equal(editorWillCloseCounter, 1);
+		Assert.equAl(ActiveEditorChAngeCounter, 3);
+		Assert.equAl(editorCloseCounter, 1);
+		Assert.equAl(editorCloseCounter1, 1);
+		Assert.equAl(editorWillCloseCounter, 1);
 
-		assert.ok(inputInactive.gotDisposed);
+		Assert.ok(inputInActive.gotDisposed);
 
-		assert.equal(group.activeEditor, input);
+		Assert.equAl(group.ActiveEditor, input);
 
-		assert.equal(editorStickyCounter, 0);
+		Assert.equAl(editorStickyCounter, 0);
 		group.stickEditor(input);
-		assert.equal(editorStickyCounter, 1);
+		Assert.equAl(editorStickyCounter, 1);
 		group.unstickEditor(input);
-		assert.equal(editorStickyCounter, 2);
+		Assert.equAl(editorStickyCounter, 2);
 
 		editorCloseListener.dispose();
 		editorWillCloseListener.dispose();
 		editorWillOpenListener.dispose();
-		editorGroupChangeListener.dispose();
-		part.dispose();
+		editorGroupChAngeListener.dispose();
+		pArt.dispose();
 	});
 
-	test('openEditors / closeEditors', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('openEditors / closeEditors', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input, options: { pinned: true } },
-			{ editor: inputInactive }
+			{ editor: inputInActive }
 		]);
 
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
 
-		await group.closeEditors([input, inputInactive]);
+		AwAit group.closeEditors([input, inputInActive]);
 
-		assert.ok(input.gotDisposed);
-		assert.ok(inputInactive.gotDisposed);
+		Assert.ok(input.gotDisposed);
+		Assert.ok(inputInActive.gotDisposed);
 
-		assert.equal(group.isEmpty, true);
-		part.dispose();
+		Assert.equAl(group.isEmpty, true);
+		pArt.dispose();
 	});
 
-	test('closeEditors (one, opened in multiple groups)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (one, opened in multiple groups)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const rightGroup = part.addGroup(group, GroupDirection.RIGHT);
+		const rightGroup = pArt.AddGroup(group, GroupDirection.RIGHT);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
-		await rightGroup.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
+		AwAit group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
+		AwAit rightGroup.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
 
-		await rightGroup.closeEditor(input);
+		AwAit rightGroup.closeEditor(input);
 
-		assert.ok(!input.gotDisposed);
+		Assert.ok(!input.gotDisposed);
 
-		await group.closeEditor(input);
+		AwAit group.closeEditor(input);
 
-		assert.ok(input.gotDisposed);
+		Assert.ok(input.gotDisposed);
 	});
 
-	test('closeEditors (except one)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (except one)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ except: input2 });
-		assert.equal(group.count, 1);
-		assert.equal(group.getEditorByIndex(0), input2);
-		part.dispose();
+		AwAit group.closeEditors({ except: input2 });
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.getEditorByIndex(0), input2);
+		pArt.dispose();
 	});
 
-	test('closeEditors (except one, sticky editor)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (except one, sticky editor)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true, sticky: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ except: input2, excludeSticky: true });
+		AwAit group.closeEditors({ except: input2, excludeSticky: true });
 
-		assert.equal(group.count, 2);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
 
-		await group.closeEditors({ except: input2 });
+		AwAit group.closeEditors({ except: input2 });
 
-		assert.equal(group.count, 1);
-		assert.equal(group.stickyCount, 0);
-		assert.equal(group.getEditorByIndex(0), input2);
-		part.dispose();
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.stickyCount, 0);
+		Assert.equAl(group.getEditorByIndex(0), input2);
+		pArt.dispose();
 	});
 
-	test('closeEditors (saved only)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (sAved only)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ savedOnly: true });
-		assert.equal(group.count, 0);
-		part.dispose();
+		AwAit group.closeEditors({ sAvedOnly: true });
+		Assert.equAl(group.count, 0);
+		pArt.dispose();
 	});
 
-	test('closeEditors (saved only, sticky editor)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (sAved only, sticky editor)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true, sticky: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ savedOnly: true, excludeSticky: true });
+		AwAit group.closeEditors({ sAvedOnly: true, excludeSticky: true });
 
-		assert.equal(group.count, 1);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
 
-		await group.closeEditors({ savedOnly: true });
-		assert.equal(group.count, 0);
-		part.dispose();
+		AwAit group.closeEditors({ sAvedOnly: true });
+		Assert.equAl(group.count, 0);
+		pArt.dispose();
 	});
 
-	test('closeEditors (direction: right)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (direction: right)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ direction: CloseDirection.RIGHT, except: input2 });
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		part.dispose();
+		AwAit group.closeEditors({ direction: CloseDirection.RIGHT, except: input2 });
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		pArt.dispose();
 	});
 
-	test('closeEditors (direction: right, sticky editor)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (direction: right, sticky editor)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true, sticky: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ direction: CloseDirection.RIGHT, except: input2, excludeSticky: true });
-		assert.equal(group.count, 2);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
+		AwAit group.closeEditors({ direction: CloseDirection.RIGHT, except: input2, excludeSticky: true });
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
 
-		await group.closeEditors({ direction: CloseDirection.RIGHT, except: input2 });
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		part.dispose();
+		AwAit group.closeEditors({ direction: CloseDirection.RIGHT, except: input2 });
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		pArt.dispose();
 	});
 
-	test('closeEditors (direction: left)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (direction: left)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ direction: CloseDirection.LEFT, except: input2 });
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input2);
-		assert.equal(group.getEditorByIndex(1), input3);
-		part.dispose();
+		AwAit group.closeEditors({ direction: CloseDirection.LEFT, except: input2 });
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input2);
+		Assert.equAl(group.getEditorByIndex(1), input3);
+		pArt.dispose();
 	});
 
-	test('closeEditors (direction: left, sticky editor)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeEditors (direction: left, sticky editor)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input1 = new TestFileEditorInput(URI.file('foo/bar1'), TEST_EDITOR_INPUT_ID);
-		const input2 = new TestFileEditorInput(URI.file('foo/bar2'), TEST_EDITOR_INPUT_ID);
-		const input3 = new TestFileEditorInput(URI.file('foo/bar3'), TEST_EDITOR_INPUT_ID);
+		const input1 = new TestFileEditorInput(URI.file('foo/bAr1'), TEST_EDITOR_INPUT_ID);
+		const input2 = new TestFileEditorInput(URI.file('foo/bAr2'), TEST_EDITOR_INPUT_ID);
+		const input3 = new TestFileEditorInput(URI.file('foo/bAr3'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input1, options: { pinned: true, sticky: true } },
 			{ editor: input2, options: { pinned: true } },
 			{ editor: input3 }
 		]);
 
-		assert.equal(group.count, 3);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ direction: CloseDirection.LEFT, except: input2, excludeSticky: true });
-		assert.equal(group.count, 3);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input1);
-		assert.equal(group.getEditorByIndex(1), input2);
-		assert.equal(group.getEditorByIndex(2), input3);
+		AwAit group.closeEditors({ direction: CloseDirection.LEFT, except: input2, excludeSticky: true });
+		Assert.equAl(group.count, 3);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input1);
+		Assert.equAl(group.getEditorByIndex(1), input2);
+		Assert.equAl(group.getEditorByIndex(2), input3);
 
-		await group.closeEditors({ direction: CloseDirection.LEFT, except: input2 });
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input2);
-		assert.equal(group.getEditorByIndex(1), input3);
-		part.dispose();
+		AwAit group.closeEditors({ direction: CloseDirection.LEFT, except: input2 });
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input2);
+		Assert.equAl(group.getEditorByIndex(1), input3);
+		pArt.dispose();
 	});
 
-	test('closeAllEditors', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeAllEditors', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input, options: { pinned: true } },
-			{ editor: inputInactive }
+			{ editor: inputInActive }
 		]);
 
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
 
-		await group.closeAllEditors();
-		assert.equal(group.isEmpty, true);
-		part.dispose();
+		AwAit group.closeAllEditors();
+		Assert.equAl(group.isEmpty, true);
+		pArt.dispose();
 	});
 
-	test('closeAllEditors (sticky editor)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('closeAllEditors (sticky editor)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([
+		AwAit group.openEditors([
 			{ editor: input, options: { pinned: true, sticky: true } },
-			{ editor: inputInactive }
+			{ editor: inputInActive }
 		]);
 
-		assert.equal(group.count, 2);
-		assert.equal(group.stickyCount, 1);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.stickyCount, 1);
 
-		await group.closeAllEditors({ excludeSticky: true });
+		AwAit group.closeAllEditors({ excludeSticky: true });
 
-		assert.equal(group.count, 1);
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.getEditorByIndex(0), input);
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.getEditorByIndex(0), input);
 
-		await group.closeAllEditors();
+		AwAit group.closeAllEditors();
 
-		assert.equal(group.isEmpty, true);
+		Assert.equAl(group.isEmpty, true);
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('moveEditor (same group)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('moveEditor (sAme group)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
 		let editorMoveCounter = 0;
-		const editorGroupChangeListener = group.onDidGroupChange(e => {
-			if (e.kind === GroupChangeKind.EDITOR_MOVE) {
-				assert.ok(e.editor);
+		const editorGroupChAngeListener = group.onDidGroupChAnge(e => {
+			if (e.kind === GroupChAngeKind.EDITOR_MOVE) {
+				Assert.ok(e.editor);
 				editorMoveCounter++;
 			}
 		});
 
-		await group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
-		group.moveEditor(inputInactive, group, { index: 0 });
-		assert.equal(editorMoveCounter, 1);
-		assert.equal(group.getEditorByIndex(0), inputInactive);
-		assert.equal(group.getEditorByIndex(1), input);
-		editorGroupChangeListener.dispose();
-		part.dispose();
+		AwAit group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
+		group.moveEditor(inputInActive, group, { index: 0 });
+		Assert.equAl(editorMoveCounter, 1);
+		Assert.equAl(group.getEditorByIndex(0), inputInActive);
+		Assert.equAl(group.getEditorByIndex(1), input);
+		editorGroupChAngeListener.dispose();
+		pArt.dispose();
 	});
 
-	test('moveEditor (across groups)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('moveEditor (Across groups)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const rightGroup = part.addGroup(group, GroupDirection.RIGHT);
+		const rightGroup = pArt.AddGroup(group, GroupDirection.RIGHT);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
-		group.moveEditor(inputInactive, rightGroup, { index: 0 });
-		assert.equal(group.count, 1);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(rightGroup.count, 1);
-		assert.equal(rightGroup.getEditorByIndex(0), inputInactive);
-		part.dispose();
+		AwAit group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
+		group.moveEditor(inputInActive, rightGroup, { index: 0 });
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(rightGroup.count, 1);
+		Assert.equAl(rightGroup.getEditorByIndex(0), inputInActive);
+		pArt.dispose();
 	});
 
-	test('copyEditor (across groups)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('copyEditor (Across groups)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const rightGroup = part.addGroup(group, GroupDirection.RIGHT);
+		const rightGroup = pArt.AddGroup(group, GroupDirection.RIGHT);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
-		group.copyEditor(inputInactive, rightGroup, { index: 0 });
-		assert.equal(group.count, 2);
-		assert.equal(group.getEditorByIndex(0), input);
-		assert.equal(group.getEditorByIndex(1), inputInactive);
-		assert.equal(rightGroup.count, 1);
-		assert.equal(rightGroup.getEditorByIndex(0), inputInactive);
-		part.dispose();
+		AwAit group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
+		group.copyEditor(inputInActive, rightGroup, { index: 0 });
+		Assert.equAl(group.count, 2);
+		Assert.equAl(group.getEditorByIndex(0), input);
+		Assert.equAl(group.getEditorByIndex(1), inputInActive);
+		Assert.equAl(rightGroup.count, 1);
+		Assert.equAl(rightGroup.getEditorByIndex(0), inputInActive);
+		pArt.dispose();
 	});
 
-	test('replaceEditors', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('replAceEditors', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditor(input);
-		assert.equal(group.count, 1);
-		assert.equal(group.getEditorByIndex(0), input);
+		AwAit group.openEditor(input);
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.getEditorByIndex(0), input);
 
-		await group.replaceEditors([{ editor: input, replacement: inputInactive }]);
-		assert.equal(group.count, 1);
-		assert.equal(group.getEditorByIndex(0), inputInactive);
-		part.dispose();
+		AwAit group.replAceEditors([{ editor: input, replAcement: inputInActive }]);
+		Assert.equAl(group.count, 1);
+		Assert.equAl(group.getEditorByIndex(0), inputInActive);
+		pArt.dispose();
 	});
 
 	test('find neighbour group (left/right)', function () {
-		const [part] = createPart();
-		const rootGroup = part.activeGroup;
-		const rightGroup = part.addGroup(rootGroup, GroupDirection.RIGHT);
+		const [pArt] = creAtePArt();
+		const rootGroup = pArt.ActiveGroup;
+		const rightGroup = pArt.AddGroup(rootGroup, GroupDirection.RIGHT);
 
-		assert.equal(rightGroup, part.findGroup({ direction: GroupDirection.RIGHT }, rootGroup));
-		assert.equal(rootGroup, part.findGroup({ direction: GroupDirection.LEFT }, rightGroup));
+		Assert.equAl(rightGroup, pArt.findGroup({ direction: GroupDirection.RIGHT }, rootGroup));
+		Assert.equAl(rootGroup, pArt.findGroup({ direction: GroupDirection.LEFT }, rightGroup));
 
-		part.dispose();
+		pArt.dispose();
 	});
 
 	test('find neighbour group (up/down)', function () {
-		const [part] = createPart();
-		const rootGroup = part.activeGroup;
-		const downGroup = part.addGroup(rootGroup, GroupDirection.DOWN);
+		const [pArt] = creAtePArt();
+		const rootGroup = pArt.ActiveGroup;
+		const downGroup = pArt.AddGroup(rootGroup, GroupDirection.DOWN);
 
-		assert.equal(downGroup, part.findGroup({ direction: GroupDirection.DOWN }, rootGroup));
-		assert.equal(rootGroup, part.findGroup({ direction: GroupDirection.UP }, downGroup));
+		Assert.equAl(downGroup, pArt.findGroup({ direction: GroupDirection.DOWN }, rootGroup));
+		Assert.equAl(rootGroup, pArt.findGroup({ direction: GroupDirection.UP }, downGroup));
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('find group by location (left/right)', function () {
-		const [part] = createPart();
-		const rootGroup = part.activeGroup;
-		const rightGroup = part.addGroup(rootGroup, GroupDirection.RIGHT);
-		const downGroup = part.addGroup(rightGroup, GroupDirection.DOWN);
+	test('find group by locAtion (left/right)', function () {
+		const [pArt] = creAtePArt();
+		const rootGroup = pArt.ActiveGroup;
+		const rightGroup = pArt.AddGroup(rootGroup, GroupDirection.RIGHT);
+		const downGroup = pArt.AddGroup(rightGroup, GroupDirection.DOWN);
 
-		assert.equal(rootGroup, part.findGroup({ location: GroupLocation.FIRST }));
-		assert.equal(downGroup, part.findGroup({ location: GroupLocation.LAST }));
+		Assert.equAl(rootGroup, pArt.findGroup({ locAtion: GroupLocAtion.FIRST }));
+		Assert.equAl(downGroup, pArt.findGroup({ locAtion: GroupLocAtion.LAST }));
 
-		assert.equal(rightGroup, part.findGroup({ location: GroupLocation.NEXT }, rootGroup));
-		assert.equal(rootGroup, part.findGroup({ location: GroupLocation.PREVIOUS }, rightGroup));
+		Assert.equAl(rightGroup, pArt.findGroup({ locAtion: GroupLocAtion.NEXT }, rootGroup));
+		Assert.equAl(rootGroup, pArt.findGroup({ locAtion: GroupLocAtion.PREVIOUS }, rightGroup));
 
-		assert.equal(downGroup, part.findGroup({ location: GroupLocation.NEXT }, rightGroup));
-		assert.equal(rightGroup, part.findGroup({ location: GroupLocation.PREVIOUS }, downGroup));
+		Assert.equAl(downGroup, pArt.findGroup({ locAtion: GroupLocAtion.NEXT }, rightGroup));
+		Assert.equAl(rightGroup, pArt.findGroup({ locAtion: GroupLocAtion.PREVIOUS }, downGroup));
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('applyLayout (2x2)', function () {
-		const [part] = createPart();
+	test('ApplyLAyout (2x2)', function () {
+		const [pArt] = creAtePArt();
 
-		part.applyLayout({ groups: [{ groups: [{}, {}] }, { groups: [{}, {}] }], orientation: GroupOrientation.HORIZONTAL });
+		pArt.ApplyLAyout({ groups: [{ groups: [{}, {}] }, { groups: [{}, {}] }], orientAtion: GroupOrientAtion.HORIZONTAL });
 
-		assert.equal(part.groups.length, 4);
+		Assert.equAl(pArt.groups.length, 4);
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('centeredLayout', function () {
-		const [part] = createPart();
+	test('centeredLAyout', function () {
+		const [pArt] = creAtePArt();
 
-		part.centerLayout(true);
+		pArt.centerLAyout(true);
 
-		assert.equal(part.isLayoutCentered(), true);
+		Assert.equAl(pArt.isLAyoutCentered(), true);
 
-		part.dispose();
+		pArt.dispose();
 	});
 
-	test('sticky editors', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
+	test('sticky editors', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
 
-		await part.whenRestored;
+		AwAit pArt.whenRestored;
 
-		assert.equal(group.stickyCount, 0);
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL).length, 0);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 0);
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 0);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 0);
+		Assert.equAl(group.stickyCount, 0);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL).length, 0);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 0);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 0);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 0);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditor(input, EditorOptions.create({ pinned: true }));
-		await group.openEditor(inputInactive, EditorOptions.create({ inactive: true }));
+		AwAit group.openEditor(input, EditorOptions.creAte({ pinned: true }));
+		AwAit group.openEditor(inputInActive, EditorOptions.creAte({ inActive: true }));
 
-		assert.equal(group.stickyCount, 0);
-		assert.equal(group.isSticky(input), false);
-		assert.equal(group.isSticky(inputInactive), false);
+		Assert.equAl(group.stickyCount, 0);
+		Assert.equAl(group.isSticky(input), fAlse);
+		Assert.equAl(group.isSticky(inputInActive), fAlse);
 
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 2);
 
 		group.stickEditor(input);
 
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.isSticky(input), true);
-		assert.equal(group.isSticky(inputInactive), false);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.isSticky(input), true);
+		Assert.equAl(group.isSticky(inputInActive), fAlse);
 
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 1);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 1);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 1);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 1);
 
 		group.unstickEditor(input);
 
-		assert.equal(group.stickyCount, 0);
-		assert.equal(group.isSticky(input), false);
-		assert.equal(group.isSticky(inputInactive), false);
+		Assert.equAl(group.stickyCount, 0);
+		Assert.equAl(group.isSticky(input), fAlse);
+		Assert.equAl(group.isSticky(inputInActive), fAlse);
 
-		assert.equal(group.getIndexOfEditor(input), 0);
-		assert.equal(group.getIndexOfEditor(inputInactive), 1);
+		Assert.equAl(group.getIndexOfEditor(input), 0);
+		Assert.equAl(group.getIndexOfEditor(inputInActive), 1);
 
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 2);
 
 		let editorMoveCounter = 0;
-		const editorGroupChangeListener = group.onDidGroupChange(e => {
-			if (e.kind === GroupChangeKind.EDITOR_MOVE) {
-				assert.ok(e.editor);
+		const editorGroupChAngeListener = group.onDidGroupChAnge(e => {
+			if (e.kind === GroupChAngeKind.EDITOR_MOVE) {
+				Assert.ok(e.editor);
 				editorMoveCounter++;
 			}
 		});
 
-		group.stickEditor(inputInactive);
+		group.stickEditor(inputInActive);
 
-		assert.equal(group.stickyCount, 1);
-		assert.equal(group.isSticky(input), false);
-		assert.equal(group.isSticky(inputInactive), true);
+		Assert.equAl(group.stickyCount, 1);
+		Assert.equAl(group.isSticky(input), fAlse);
+		Assert.equAl(group.isSticky(inputInActive), true);
 
-		assert.equal(group.getIndexOfEditor(input), 1);
-		assert.equal(group.getIndexOfEditor(inputInactive), 0);
-		assert.equal(editorMoveCounter, 1);
+		Assert.equAl(group.getIndexOfEditor(input), 1);
+		Assert.equAl(group.getIndexOfEditor(inputInActive), 0);
+		Assert.equAl(editorMoveCounter, 1);
 
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
-		assert.equal(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 1);
-		assert.equal(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 1);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).length, 2);
+		Assert.equAl(group.getEditors(EditorsOrder.SEQUENTIAL, { excludeSticky: true }).length, 1);
+		Assert.equAl(group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE, { excludeSticky: true }).length, 1);
 
-		const inputSticky = new TestFileEditorInput(URI.file('foo/bar/sticky'), TEST_EDITOR_INPUT_ID);
+		const inputSticky = new TestFileEditorInput(URI.file('foo/bAr/sticky'), TEST_EDITOR_INPUT_ID);
 
-		await group.openEditor(inputSticky, EditorOptions.create({ sticky: true }));
+		AwAit group.openEditor(inputSticky, EditorOptions.creAte({ sticky: true }));
 
-		assert.equal(group.stickyCount, 2);
-		assert.equal(group.isSticky(input), false);
-		assert.equal(group.isSticky(inputInactive), true);
-		assert.equal(group.isSticky(inputSticky), true);
+		Assert.equAl(group.stickyCount, 2);
+		Assert.equAl(group.isSticky(input), fAlse);
+		Assert.equAl(group.isSticky(inputInActive), true);
+		Assert.equAl(group.isSticky(inputSticky), true);
 
-		assert.equal(group.getIndexOfEditor(inputInactive), 0);
-		assert.equal(group.getIndexOfEditor(inputSticky), 1);
-		assert.equal(group.getIndexOfEditor(input), 2);
+		Assert.equAl(group.getIndexOfEditor(inputInActive), 0);
+		Assert.equAl(group.getIndexOfEditor(inputSticky), 1);
+		Assert.equAl(group.getIndexOfEditor(input), 2);
 
-		await group.openEditor(input, EditorOptions.create({ sticky: true }));
+		AwAit group.openEditor(input, EditorOptions.creAte({ sticky: true }));
 
-		assert.equal(group.stickyCount, 3);
-		assert.equal(group.isSticky(input), true);
-		assert.equal(group.isSticky(inputInactive), true);
-		assert.equal(group.isSticky(inputSticky), true);
+		Assert.equAl(group.stickyCount, 3);
+		Assert.equAl(group.isSticky(input), true);
+		Assert.equAl(group.isSticky(inputInActive), true);
+		Assert.equAl(group.isSticky(inputSticky), true);
 
-		assert.equal(group.getIndexOfEditor(inputInactive), 0);
-		assert.equal(group.getIndexOfEditor(inputSticky), 1);
-		assert.equal(group.getIndexOfEditor(input), 2);
+		Assert.equAl(group.getIndexOfEditor(inputInActive), 0);
+		Assert.equAl(group.getIndexOfEditor(inputSticky), 1);
+		Assert.equAl(group.getIndexOfEditor(input), 2);
 
-		editorGroupChangeListener.dispose();
-		part.dispose();
+		editorGroupChAngeListener.dispose();
+		pArt.dispose();
 	});
 
-	test('moveEditor with context (across groups)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('moveEditor with context (Across groups)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const rightGroup = part.addGroup(group, GroupDirection.RIGHT);
+		const rightGroup = pArt.AddGroup(group, GroupDirection.RIGHT);
 
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
 		let firstOpenEditorContext: OpenEditorContext | undefined;
 		Event.once(group.onWillOpenEditor)(e => {
 			firstOpenEditorContext = e.context;
 		});
-		await group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
-		assert.equal(firstOpenEditorContext, undefined);
+		AwAit group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
+		Assert.equAl(firstOpenEditorContext, undefined);
 
-		const waitForEditorWillOpen = new Promise<OpenEditorContext | undefined>(resolve => {
+		const wAitForEditorWillOpen = new Promise<OpenEditorContext | undefined>(resolve => {
 			Event.once(rightGroup.onWillOpenEditor)(e => resolve(e.context));
 		});
 
-		group.moveEditor(inputInactive, rightGroup, { index: 0 });
-		const context = await waitForEditorWillOpen;
-		assert.equal(context, OpenEditorContext.MOVE_EDITOR);
-		part.dispose();
+		group.moveEditor(inputInActive, rightGroup, { index: 0 });
+		const context = AwAit wAitForEditorWillOpen;
+		Assert.equAl(context, OpenEditorContext.MOVE_EDITOR);
+		pArt.dispose();
 	});
 
-	test('copyEditor with context (across groups)', async () => {
-		const [part] = createPart();
-		const group = part.activeGroup;
-		assert.equal(group.isEmpty, true);
+	test('copyEditor with context (Across groups)', Async () => {
+		const [pArt] = creAtePArt();
+		const group = pArt.ActiveGroup;
+		Assert.equAl(group.isEmpty, true);
 
-		const rightGroup = part.addGroup(group, GroupDirection.RIGHT);
-		const input = new TestFileEditorInput(URI.file('foo/bar'), TEST_EDITOR_INPUT_ID);
-		const inputInactive = new TestFileEditorInput(URI.file('foo/bar/inactive'), TEST_EDITOR_INPUT_ID);
-		await group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInactive }]);
-		const waitForEditorWillOpen = new Promise<OpenEditorContext | undefined>(resolve => {
+		const rightGroup = pArt.AddGroup(group, GroupDirection.RIGHT);
+		const input = new TestFileEditorInput(URI.file('foo/bAr'), TEST_EDITOR_INPUT_ID);
+		const inputInActive = new TestFileEditorInput(URI.file('foo/bAr/inActive'), TEST_EDITOR_INPUT_ID);
+		AwAit group.openEditors([{ editor: input, options: { pinned: true } }, { editor: inputInActive }]);
+		const wAitForEditorWillOpen = new Promise<OpenEditorContext | undefined>(resolve => {
 			Event.once(rightGroup.onWillOpenEditor)(e => resolve(e.context));
 		});
 
-		group.copyEditor(inputInactive, rightGroup, { index: 0 });
-		const context = await waitForEditorWillOpen;
-		assert.equal(context, OpenEditorContext.COPY_EDITOR);
-		part.dispose();
+		group.copyEditor(inputInActive, rightGroup, { index: 0 });
+		const context = AwAit wAitForEditorWillOpen;
+		Assert.equAl(context, OpenEditorContext.COPY_EDITOR);
+		pArt.dispose();
 	});
 });

@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isWindows, isMacintosh, setImmediate, globals, INodeProcess } from 'vs/base/common/platform';
+import { isWindows, isMAcintosh, setImmediAte, globAls, INodeProcess } from 'vs/bAse/common/plAtform';
 
-declare const process: INodeProcess;
+declAre const process: INodeProcess;
 
-let safeProcess: INodeProcess;
+let sAfeProcess: INodeProcess;
 
-// Native node.js environment
+// NAtive node.js environment
 if (typeof process !== 'undefined') {
-	safeProcess = process;
+	sAfeProcess = process;
 }
 
-// Native sandbox environment
-else if (typeof globals.vscode !== 'undefined') {
-	safeProcess = globals.vscode.process;
+// NAtive sAndbox environment
+else if (typeof globAls.vscode !== 'undefined') {
+	sAfeProcess = globAls.vscode.process;
 }
 
 // Web environment
 else {
-	safeProcess = {
+	sAfeProcess = {
 
 		// Supported
-		get platform(): 'win32' | 'linux' | 'darwin' { return isWindows ? 'win32' : isMacintosh ? 'darwin' : 'linux'; },
-		nextTick(callback: (...args: any[]) => void): void { return setImmediate(callback); },
+		get plAtform(): 'win32' | 'linux' | 'dArwin' { return isWindows ? 'win32' : isMAcintosh ? 'dArwin' : 'linux'; },
+		nextTick(cAllbAck: (...Args: Any[]) => void): void { return setImmediAte(cAllbAck); },
 
 		// Unsupported
-		get env() { return Object.create(null); },
+		get env() { return Object.creAte(null); },
 		cwd(): string { return '/'; },
 		getuid(): number { return -1; }
 	};
 }
 
-export const cwd = safeProcess.cwd;
-export const env = safeProcess.env;
-export const platform = safeProcess.platform;
-export const nextTick = safeProcess.nextTick;
+export const cwd = sAfeProcess.cwd;
+export const env = sAfeProcess.env;
+export const plAtform = sAfeProcess.plAtform;
+export const nextTick = sAfeProcess.nextTick;

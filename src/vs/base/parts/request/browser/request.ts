@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { VSBuffer, bufferToStream } from 'vs/base/common/buffer';
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { cAnceled } from 'vs/bAse/common/errors';
+import { VSBuffer, bufferToStreAm } from 'vs/bAse/common/buffer';
+import { IRequestOptions, IRequestContext } from 'vs/bAse/pArts/request/common/request';
 
-export function request(options: IRequestOptions, token: CancellationToken): Promise<IRequestContext> {
-	if (options.proxyAuthorization) {
-		options.headers = {
-			...(options.headers || {}),
-			'Proxy-Authorization': options.proxyAuthorization
+export function request(options: IRequestOptions, token: CAncellAtionToken): Promise<IRequestContext> {
+	if (options.proxyAuthorizAtion) {
+		options.heAders = {
+			...(options.heAders || {}),
+			'Proxy-AuthorizAtion': options.proxyAuthorizAtion
 		};
 	}
 
 	const xhr = new XMLHttpRequest();
 	return new Promise<IRequestContext>((resolve, reject) => {
 
-		xhr.open(options.type || 'GET', options.url || '', true, options.user, options.password);
-		setRequestHeaders(xhr, options);
+		xhr.open(options.type || 'GET', options.url || '', true, options.user, options.pAssword);
+		setRequestHeAders(xhr, options);
 
-		xhr.responseType = 'arraybuffer';
-		xhr.onerror = e => reject(new Error(xhr.statusText && ('XHR failed: ' + xhr.statusText) || 'XHR failed'));
-		xhr.onload = (e) => {
+		xhr.responseType = 'ArrAybuffer';
+		xhr.onerror = e => reject(new Error(xhr.stAtusText && ('XHR fAiled: ' + xhr.stAtusText) || 'XHR fAiled'));
+		xhr.onloAd = (e) => {
 			resolve({
 				res: {
-					statusCode: xhr.status,
-					headers: getResponseHeaders(xhr)
+					stAtusCode: xhr.stAtus,
+					heAders: getResponseHeAders(xhr)
 				},
-				stream: bufferToStream(VSBuffer.wrap(new Uint8Array(xhr.response)))
+				streAm: bufferToStreAm(VSBuffer.wrAp(new Uint8ArrAy(xhr.response)))
 			});
 		};
 		xhr.ontimeout = e => reject(new Error(`XHR timeout: ${options.timeout}ms`));
@@ -39,38 +39,38 @@ export function request(options: IRequestOptions, token: CancellationToken): Pro
 			xhr.timeout = options.timeout;
 		}
 
-		xhr.send(options.data);
+		xhr.send(options.dAtA);
 
-		// cancel
-		token.onCancellationRequested(() => {
-			xhr.abort();
-			reject(canceled());
+		// cAncel
+		token.onCAncellAtionRequested(() => {
+			xhr.Abort();
+			reject(cAnceled());
 		});
 	});
 }
 
-function setRequestHeaders(xhr: XMLHttpRequest, options: IRequestOptions): void {
-	if (options.headers) {
-		outer: for (let k in options.headers) {
+function setRequestHeAders(xhr: XMLHttpRequest, options: IRequestOptions): void {
+	if (options.heAders) {
+		outer: for (let k in options.heAders) {
 			switch (k) {
-				case 'User-Agent':
-				case 'Accept-Encoding':
-				case 'Content-Length':
-					// unsafe headers
+				cAse 'User-Agent':
+				cAse 'Accept-Encoding':
+				cAse 'Content-Length':
+					// unsAfe heAders
 					continue outer;
 			}
-			xhr.setRequestHeader(k, options.headers[k]);
+			xhr.setRequestHeAder(k, options.heAders[k]);
 		}
 	}
 }
 
-function getResponseHeaders(xhr: XMLHttpRequest): { [name: string]: string } {
-	const headers: { [name: string]: string } = Object.create(null);
-	for (const line of xhr.getAllResponseHeaders().split(/\r\n|\n|\r/g)) {
+function getResponseHeAders(xhr: XMLHttpRequest): { [nAme: string]: string } {
+	const heAders: { [nAme: string]: string } = Object.creAte(null);
+	for (const line of xhr.getAllResponseHeAders().split(/\r\n|\n|\r/g)) {
 		if (line) {
 			const idx = line.indexOf(':');
-			headers[line.substr(0, idx).trim().toLowerCase()] = line.substr(idx + 1).trim();
+			heAders[line.substr(0, idx).trim().toLowerCAse()] = line.substr(idx + 1).trim();
 		}
 	}
-	return headers;
+	return heAders;
 }

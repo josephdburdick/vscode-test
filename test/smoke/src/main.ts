@@ -1,180 +1,180 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as cp from 'child_process';
-import * as path from 'path';
-import * as minimist from 'minimist';
-import * as tmp from 'tmp';
-import * as rimraf from 'rimraf';
-import * as mkdirp from 'mkdirp';
+import * As fs from 'fs';
+import * As cp from 'child_process';
+import * As pAth from 'pAth';
+import * As minimist from 'minimist';
+import * As tmp from 'tmp';
+import * As rimrAf from 'rimrAf';
+import * As mkdirp from 'mkdirp';
 import { ncp } from 'ncp';
 import {
-	Application,
-	Quality,
-	ApplicationOptions,
+	ApplicAtion,
+	QuAlity,
+	ApplicAtionOptions,
 	MultiLogger,
 	Logger,
 	ConsoleLogger,
 	FileLogger,
-} from '../../automation';
+} from '../../AutomAtion';
 
-import { setup as setupDataMigrationTests } from './areas/workbench/data-migration.test';
-import { setup as setupDataLossTests } from './areas/workbench/data-loss.test';
-import { setup as setupDataPreferencesTests } from './areas/preferences/preferences.test';
-import { setup as setupDataSearchTests } from './areas/search/search.test';
-import { setup as setupDataNotebookTests } from './areas/notebook/notebook.test';
-import { setup as setupDataLanguagesTests } from './areas/languages/languages.test';
-import { setup as setupDataEditorTests } from './areas/editor/editor.test';
-import { setup as setupDataStatusbarTests } from './areas/statusbar/statusbar.test';
-import { setup as setupDataExtensionTests } from './areas/extensions/extensions.test';
-import { setup as setupDataMultirootTests } from './areas/multiroot/multiroot.test';
-import { setup as setupDataLocalizationTests } from './areas/workbench/localization.test';
-import { setup as setupLaunchTests } from './areas/workbench/launch.test';
+import { setup As setupDAtAMigrAtionTests } from './AreAs/workbench/dAtA-migrAtion.test';
+import { setup As setupDAtALossTests } from './AreAs/workbench/dAtA-loss.test';
+import { setup As setupDAtAPreferencesTests } from './AreAs/preferences/preferences.test';
+import { setup As setupDAtASeArchTests } from './AreAs/seArch/seArch.test';
+import { setup As setupDAtANotebookTests } from './AreAs/notebook/notebook.test';
+import { setup As setupDAtALAnguAgesTests } from './AreAs/lAnguAges/lAnguAges.test';
+import { setup As setupDAtAEditorTests } from './AreAs/editor/editor.test';
+import { setup As setupDAtAStAtusbArTests } from './AreAs/stAtusbAr/stAtusbAr.test';
+import { setup As setupDAtAExtensionTests } from './AreAs/extensions/extensions.test';
+import { setup As setupDAtAMultirootTests } from './AreAs/multiroot/multiroot.test';
+import { setup As setupDAtALocAlizAtionTests } from './AreAs/workbench/locAlizAtion.test';
+import { setup As setupLAunchTests } from './AreAs/workbench/lAunch.test';
 
 if (!/^v10/.test(process.version) && !/^v12/.test(process.version)) {
 	console.error('Error: Smoketest must be run using Node 10/12. Currently running', process.version);
 	process.exit(1);
 }
 
-const tmpDir = tmp.dirSync({ prefix: 't' }) as { name: string; removeCallback: Function; };
-const testDataPath = tmpDir.name;
-process.once('exit', () => rimraf.sync(testDataPath));
+const tmpDir = tmp.dirSync({ prefix: 't' }) As { nAme: string; removeCAllbAck: Function; };
+const testDAtAPAth = tmpDir.nAme;
+process.once('exit', () => rimrAf.sync(testDAtAPAth));
 
-const [, , ...args] = process.argv;
-const opts = minimist(args, {
+const [, , ...Args] = process.Argv;
+const opts = minimist(Args, {
 	string: [
 		'browser',
 		'build',
-		'stable-build',
-		'wait-time',
+		'stAble-build',
+		'wAit-time',
 		'test-repo',
 		'screenshots',
 		'log'
 	],
-	boolean: [
+	booleAn: [
 		'verbose',
 		'remote',
 		'web'
 	],
-	default: {
-		verbose: false
+	defAult: {
+		verbose: fAlse
 	}
 });
 
 const testRepoUrl = 'https://github.com/microsoft/vscode-smoketest-express';
-const workspacePath = path.join(testDataPath, 'vscode-smoketest-express');
-const extensionsPath = path.join(testDataPath, 'extensions-dir');
-mkdirp.sync(extensionsPath);
+const workspAcePAth = pAth.join(testDAtAPAth, 'vscode-smoketest-express');
+const extensionsPAth = pAth.join(testDAtAPAth, 'extensions-dir');
+mkdirp.sync(extensionsPAth);
 
-const screenshotsPath = opts.screenshots ? path.resolve(opts.screenshots) : null;
-if (screenshotsPath) {
-	mkdirp.sync(screenshotsPath);
+const screenshotsPAth = opts.screenshots ? pAth.resolve(opts.screenshots) : null;
+if (screenshotsPAth) {
+	mkdirp.sync(screenshotsPAth);
 }
 
-function fail(errorMessage): void {
-	console.error(errorMessage);
+function fAil(errorMessAge): void {
+	console.error(errorMessAge);
 	process.exit(1);
 }
 
-const repoPath = path.join(__dirname, '..', '..', '..');
+const repoPAth = pAth.join(__dirnAme, '..', '..', '..');
 
-let quality: Quality;
+let quAlity: QuAlity;
 
 //
 // #### Electron Smoke Tests ####
 //
 if (!opts.web) {
 
-	function getDevElectronPath(): string {
-		const buildPath = path.join(repoPath, '.build');
-		const product = require(path.join(repoPath, 'product.json'));
+	function getDevElectronPAth(): string {
+		const buildPAth = pAth.join(repoPAth, '.build');
+		const product = require(pAth.join(repoPAth, 'product.json'));
 
-		switch (process.platform) {
-			case 'darwin':
-				return path.join(buildPath, 'electron', `${product.nameLong}.app`, 'Contents', 'MacOS', 'Electron');
-			case 'linux':
-				return path.join(buildPath, 'electron', `${product.applicationName}`);
-			case 'win32':
-				return path.join(buildPath, 'electron', `${product.nameShort}.exe`);
-			default:
-				throw new Error('Unsupported platform.');
+		switch (process.plAtform) {
+			cAse 'dArwin':
+				return pAth.join(buildPAth, 'electron', `${product.nAmeLong}.App`, 'Contents', 'MAcOS', 'Electron');
+			cAse 'linux':
+				return pAth.join(buildPAth, 'electron', `${product.ApplicAtionNAme}`);
+			cAse 'win32':
+				return pAth.join(buildPAth, 'electron', `${product.nAmeShort}.exe`);
+			defAult:
+				throw new Error('Unsupported plAtform.');
 		}
 	}
 
-	function getBuildElectronPath(root: string): string {
-		switch (process.platform) {
-			case 'darwin':
-				return path.join(root, 'Contents', 'MacOS', 'Electron');
-			case 'linux': {
-				const product = require(path.join(root, 'resources', 'app', 'product.json'));
-				return path.join(root, product.applicationName);
+	function getBuildElectronPAth(root: string): string {
+		switch (process.plAtform) {
+			cAse 'dArwin':
+				return pAth.join(root, 'Contents', 'MAcOS', 'Electron');
+			cAse 'linux': {
+				const product = require(pAth.join(root, 'resources', 'App', 'product.json'));
+				return pAth.join(root, product.ApplicAtionNAme);
 			}
-			case 'win32': {
-				const product = require(path.join(root, 'resources', 'app', 'product.json'));
-				return path.join(root, `${product.nameShort}.exe`);
+			cAse 'win32': {
+				const product = require(pAth.join(root, 'resources', 'App', 'product.json'));
+				return pAth.join(root, `${product.nAmeShort}.exe`);
 			}
-			default:
-				throw new Error('Unsupported platform.');
+			defAult:
+				throw new Error('Unsupported plAtform.');
 		}
 	}
 
-	let testCodePath = opts.build;
-	let stableCodePath = opts['stable-build'];
-	let electronPath: string;
-	let stablePath: string | undefined = undefined;
+	let testCodePAth = opts.build;
+	let stAbleCodePAth = opts['stAble-build'];
+	let electronPAth: string;
+	let stAblePAth: string | undefined = undefined;
 
-	if (testCodePath) {
-		electronPath = getBuildElectronPath(testCodePath);
+	if (testCodePAth) {
+		electronPAth = getBuildElectronPAth(testCodePAth);
 
-		if (stableCodePath) {
-			stablePath = getBuildElectronPath(stableCodePath);
+		if (stAbleCodePAth) {
+			stAblePAth = getBuildElectronPAth(stAbleCodePAth);
 		}
 	} else {
-		testCodePath = getDevElectronPath();
-		electronPath = testCodePath;
-		process.env.VSCODE_REPOSITORY = repoPath;
+		testCodePAth = getDevElectronPAth();
+		electronPAth = testCodePAth;
+		process.env.VSCODE_REPOSITORY = repoPAth;
 		process.env.VSCODE_DEV = '1';
 		process.env.VSCODE_CLI = '1';
 	}
 
-	if (!fs.existsSync(electronPath || '')) {
-		fail(`Can't find VSCode at ${electronPath}.`);
+	if (!fs.existsSync(electronPAth || '')) {
+		fAil(`CAn't find VSCode At ${electronPAth}.`);
 	}
 
-	if (typeof stablePath === 'string' && !fs.existsSync(stablePath)) {
-		fail(`Can't find Stable VSCode at ${stablePath}.`);
+	if (typeof stAblePAth === 'string' && !fs.existsSync(stAblePAth)) {
+		fAil(`CAn't find StAble VSCode At ${stAblePAth}.`);
 	}
 
 	if (process.env.VSCODE_DEV === '1') {
-		quality = Quality.Dev;
-	} else if (electronPath.indexOf('Code - Insiders') >= 0 /* macOS/Windows */ || electronPath.indexOf('code-insiders') /* Linux */ >= 0) {
-		quality = Quality.Insiders;
+		quAlity = QuAlity.Dev;
+	} else if (electronPAth.indexOf('Code - Insiders') >= 0 /* mAcOS/Windows */ || electronPAth.indexOf('code-insiders') /* Linux */ >= 0) {
+		quAlity = QuAlity.Insiders;
 	} else {
-		quality = Quality.Stable;
+		quAlity = QuAlity.StAble;
 	}
 
-	console.log(`Running desktop smoke tests against ${electronPath}`);
+	console.log(`Running desktop smoke tests AgAinst ${electronPAth}`);
 }
 
 //
 // #### Web Smoke Tests ####
 //
 else {
-	const testCodeServerPath = opts.build || process.env.VSCODE_REMOTE_SERVER_PATH;
+	const testCodeServerPAth = opts.build || process.env.VSCODE_REMOTE_SERVER_PATH;
 
-	if (typeof testCodeServerPath === 'string') {
-		if (!fs.existsSync(testCodeServerPath)) {
-			fail(`Can't find Code server at ${testCodeServerPath}.`);
+	if (typeof testCodeServerPAth === 'string') {
+		if (!fs.existsSync(testCodeServerPAth)) {
+			fAil(`CAn't find Code server At ${testCodeServerPAth}.`);
 		} else {
-			console.log(`Running web smoke tests against ${testCodeServerPath}`);
+			console.log(`Running web smoke tests AgAinst ${testCodeServerPAth}`);
 		}
 	}
 
-	if (!testCodeServerPath) {
-		process.env.VSCODE_REPOSITORY = repoPath;
+	if (!testCodeServerPAth) {
+		process.env.VSCODE_REPOSITORY = repoPAth;
 		process.env.VSCODE_DEV = '1';
 		process.env.VSCODE_CLI = '1';
 
@@ -182,51 +182,51 @@ else {
 	}
 
 	if (process.env.VSCODE_DEV === '1') {
-		quality = Quality.Dev;
+		quAlity = QuAlity.Dev;
 	} else {
-		quality = Quality.Insiders;
+		quAlity = QuAlity.Insiders;
 	}
 }
 
-const userDataDir = path.join(testDataPath, 'd');
+const userDAtADir = pAth.join(testDAtAPAth, 'd');
 
-async function setupRepository(): Promise<void> {
+Async function setupRepository(): Promise<void> {
 	if (opts['test-repo']) {
 		console.log('*** Copying test project repository:', opts['test-repo']);
-		rimraf.sync(workspacePath);
-		// not platform friendly
-		if (process.platform === 'win32') {
-			cp.execSync(`xcopy /E "${opts['test-repo']}" "${workspacePath}"\\*`);
+		rimrAf.sync(workspAcePAth);
+		// not plAtform friendly
+		if (process.plAtform === 'win32') {
+			cp.execSync(`xcopy /E "${opts['test-repo']}" "${workspAcePAth}"\\*`);
 		} else {
-			cp.execSync(`cp -R "${opts['test-repo']}" "${workspacePath}"`);
+			cp.execSync(`cp -R "${opts['test-repo']}" "${workspAcePAth}"`);
 		}
 
 	} else {
-		if (!fs.existsSync(workspacePath)) {
+		if (!fs.existsSync(workspAcePAth)) {
 			console.log('*** Cloning test project repository...');
-			cp.spawnSync('git', ['clone', testRepoUrl, workspacePath]);
+			cp.spAwnSync('git', ['clone', testRepoUrl, workspAcePAth]);
 		} else {
-			console.log('*** Cleaning test project repository...');
-			cp.spawnSync('git', ['fetch'], { cwd: workspacePath });
-			cp.spawnSync('git', ['reset', '--hard', 'FETCH_HEAD'], { cwd: workspacePath });
-			cp.spawnSync('git', ['clean', '-xdf'], { cwd: workspacePath });
+			console.log('*** CleAning test project repository...');
+			cp.spAwnSync('git', ['fetch'], { cwd: workspAcePAth });
+			cp.spAwnSync('git', ['reset', '--hArd', 'FETCH_HEAD'], { cwd: workspAcePAth });
+			cp.spAwnSync('git', ['cleAn', '-xdf'], { cwd: workspAcePAth });
 		}
 
-		console.log('*** Running yarn...');
-		cp.execSync('yarn', { cwd: workspacePath, stdio: 'inherit' });
+		console.log('*** Running yArn...');
+		cp.execSync('yArn', { cwd: workspAcePAth, stdio: 'inherit' });
 	}
 }
 
-async function setup(): Promise<void> {
-	console.log('*** Test data:', testDataPath);
-	console.log('*** Preparing smoketest setup...');
+Async function setup(): Promise<void> {
+	console.log('*** Test dAtA:', testDAtAPAth);
+	console.log('*** PrepAring smoketest setup...');
 
-	await setupRepository();
+	AwAit setupRepository();
 
 	console.log('*** Smoketest setup done!\n');
 }
 
-function createOptions(): ApplicationOptions {
+function creAteOptions(): ApplicAtionOptions {
 	const loggers: Logger[] = [];
 
 	if (opts.verbose) {
@@ -237,93 +237,93 @@ function createOptions(): ApplicationOptions {
 
 	if (opts.log) {
 		loggers.push(new FileLogger(opts.log));
-		log = 'trace';
+		log = 'trAce';
 	}
 	return {
-		quality,
-		codePath: opts.build,
-		workspacePath,
-		userDataDir,
-		extensionsPath,
-		waitTime: parseInt(opts['wait-time'] || '0') || 20,
+		quAlity,
+		codePAth: opts.build,
+		workspAcePAth,
+		userDAtADir,
+		extensionsPAth,
+		wAitTime: pArseInt(opts['wAit-time'] || '0') || 20,
 		logger: new MultiLogger(loggers),
 		verbose: opts.verbose,
 		log,
-		screenshotsPath,
+		screenshotsPAth,
 		remote: opts.remote,
 		web: opts.web,
 		browser: opts.browser
 	};
 }
 
-before(async function () {
-	this.timeout(2 * 60 * 1000); // allow two minutes for setup
-	await setup();
-	this.defaultOptions = createOptions();
+before(Async function () {
+	this.timeout(2 * 60 * 1000); // Allow two minutes for setup
+	AwAit setup();
+	this.defAultOptions = creAteOptions();
 });
 
-after(async function () {
-	await new Promise(c => setTimeout(c, 500)); // wait for shutdown
+After(Async function () {
+	AwAit new Promise(c => setTimeout(c, 500)); // wAit for shutdown
 
 	if (opts.log) {
-		const logsDir = path.join(userDataDir, 'logs');
-		const destLogsDir = path.join(path.dirname(opts.log), 'logs');
-		await new Promise((c, e) => ncp(logsDir, destLogsDir, err => err ? e(err) : c()));
+		const logsDir = pAth.join(userDAtADir, 'logs');
+		const destLogsDir = pAth.join(pAth.dirnAme(opts.log), 'logs');
+		AwAit new Promise((c, e) => ncp(logsDir, destLogsDir, err => err ? e(err) : c()));
 	}
 
-	await new Promise((c, e) => rimraf(testDataPath, { maxBusyTries: 10 }, err => err ? e(err) : c()));
+	AwAit new Promise((c, e) => rimrAf(testDAtAPAth, { mAxBusyTries: 10 }, err => err ? e(err) : c()));
 });
 
 describe(`VSCode Smoke Tests (${opts.web ? 'Web' : 'Electron'})`, () => {
-	if (screenshotsPath) {
-		afterEach(async function () {
-			if (this.currentTest.state !== 'failed') {
+	if (screenshotsPAth) {
+		AfterEAch(Async function () {
+			if (this.currentTest.stAte !== 'fAiled') {
 				return;
 			}
-			const app = this.app as Application;
-			const name = this.currentTest.fullTitle().replace(/[^a-z0-9\-]/ig, '_');
+			const App = this.App As ApplicAtion;
+			const nAme = this.currentTest.fullTitle().replAce(/[^A-z0-9\-]/ig, '_');
 
-			await app.captureScreenshot(name);
+			AwAit App.cAptureScreenshot(nAme);
 		});
 	}
 
 	if (opts.log) {
-		beforeEach(async function () {
-			const app = this.app as Application;
+		beforeEAch(Async function () {
+			const App = this.App As ApplicAtion;
 			const title = this.currentTest.fullTitle();
 
-			app.logger.log('*** Test start:', title);
+			App.logger.log('*** Test stArt:', title);
 		});
 	}
 
-	if (!opts.web && opts['stable-build']) {
-		describe(`Stable vs Insiders Smoke Tests: This test MUST run before releasing by providing the --stable-build command line argument`, () => {
-			setupDataMigrationTests(opts['stable-build'], testDataPath);
+	if (!opts.web && opts['stAble-build']) {
+		describe(`StAble vs Insiders Smoke Tests: This test MUST run before releAsing by providing the --stAble-build commAnd line Argument`, () => {
+			setupDAtAMigrAtionTests(opts['stAble-build'], testDAtAPAth);
 		});
 	}
 
 	describe(`VSCode Smoke Tests (${opts.web ? 'Web' : 'Electron'})`, () => {
-		before(async function () {
-			const app = new Application(this.defaultOptions);
-			await app!.start(opts.web ? false : undefined);
-			this.app = app;
+		before(Async function () {
+			const App = new ApplicAtion(this.defAultOptions);
+			AwAit App!.stArt(opts.web ? fAlse : undefined);
+			this.App = App;
 		});
 
-		after(async function () {
-			await this.app.stop();
+		After(Async function () {
+			AwAit this.App.stop();
 		});
 
-		if (!opts.web) { setupDataLossTests(); }
-		if (!opts.web) { setupDataPreferencesTests(); }
-		setupDataSearchTests();
-		setupDataNotebookTests();
-		setupDataLanguagesTests();
-		setupDataEditorTests();
-		setupDataStatusbarTests(!!opts.web);
-		if (!opts.web) { setupDataExtensionTests(); }
-		if (!opts.web) { setupDataMultirootTests(); }
-		if (!opts.web) { setupDataLocalizationTests(); }
-		if (!opts.web) { setupLaunchTests(); }
+		if (!opts.web) { setupDAtALossTests(); }
+		if (!opts.web) { setupDAtAPreferencesTests(); }
+		setupDAtASeArchTests();
+		setupDAtANotebookTests();
+		setupDAtALAnguAgesTests();
+		setupDAtAEditorTests();
+		setupDAtAStAtusbArTests(!!opts.web);
+		if (!opts.web) { setupDAtAExtensionTests(); }
+		if (!opts.web) { setupDAtAMultirootTests(); }
+		if (!opts.web) { setupDAtALocAlizAtionTests(); }
+		if (!opts.web) { setupLAunchTests(); }
 	});
 });
 

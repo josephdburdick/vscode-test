@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { mapArrayOrNot } from 'vs/base/common/arrays';
-import { URI } from 'vs/base/common/uri';
-import { ILogService } from 'vs/platform/log/common/log';
-import { SearchRange, TextSearchMatch } from 'vs/workbench/services/search/common/search';
-import * as searchExtTypes from 'vs/workbench/services/search/common/searchExtTypes';
+import { mApArrAyOrNot } from 'vs/bAse/common/ArrAys';
+import { URI } from 'vs/bAse/common/uri';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { SeArchRAnge, TextSeArchMAtch } from 'vs/workbench/services/seArch/common/seArch';
+import * As seArchExtTypes from 'vs/workbench/services/seArch/common/seArchExtTypes';
 
-export type Maybe<T> = T | null | undefined;
+export type MAybe<T> = T | null | undefined;
 
-export function anchorGlob(glob: string): string {
-	return glob.startsWith('**') || glob.startsWith('/') ? glob : `/${glob}`;
+export function AnchorGlob(glob: string): string {
+	return glob.stArtsWith('**') || glob.stArtsWith('/') ? glob : `/${glob}`;
 }
 
 /**
- * Create a vscode.TextSearchMatch by using our internal TextSearchMatch type for its previewOptions logic.
+ * CreAte A vscode.TextSeArchMAtch by using our internAl TextSeArchMAtch type for its previewOptions logic.
  */
-export function createTextSearchResult(uri: URI, text: string, range: searchExtTypes.Range | searchExtTypes.Range[], previewOptions?: searchExtTypes.TextSearchPreviewOptions): searchExtTypes.TextSearchMatch {
-	const searchRange = mapArrayOrNot(range, rangeToSearchRange);
+export function creAteTextSeArchResult(uri: URI, text: string, rAnge: seArchExtTypes.RAnge | seArchExtTypes.RAnge[], previewOptions?: seArchExtTypes.TextSeArchPreviewOptions): seArchExtTypes.TextSeArchMAtch {
+	const seArchRAnge = mApArrAyOrNot(rAnge, rAngeToSeArchRAnge);
 
-	const internalResult = new TextSearchMatch(text, searchRange, previewOptions);
-	const internalPreviewRange = internalResult.preview.matches;
+	const internAlResult = new TextSeArchMAtch(text, seArchRAnge, previewOptions);
+	const internAlPreviewRAnge = internAlResult.preview.mAtches;
 	return {
-		ranges: mapArrayOrNot(searchRange, searchRangeToRange),
+		rAnges: mApArrAyOrNot(seArchRAnge, seArchRAngeToRAnge),
 		uri,
 		preview: {
-			text: internalResult.preview.text,
-			matches: mapArrayOrNot(internalPreviewRange, searchRangeToRange)
+			text: internAlResult.preview.text,
+			mAtches: mApArrAyOrNot(internAlPreviewRAnge, seArchRAngeToRAnge)
 		}
 	};
 }
 
-function rangeToSearchRange(range: searchExtTypes.Range): SearchRange {
-	return new SearchRange(range.start.line, range.start.character, range.end.line, range.end.character);
+function rAngeToSeArchRAnge(rAnge: seArchExtTypes.RAnge): SeArchRAnge {
+	return new SeArchRAnge(rAnge.stArt.line, rAnge.stArt.chArActer, rAnge.end.line, rAnge.end.chArActer);
 }
 
-function searchRangeToRange(range: SearchRange): searchExtTypes.Range {
-	return new searchExtTypes.Range(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
+function seArchRAngeToRAnge(rAnge: SeArchRAnge): seArchExtTypes.RAnge {
+	return new seArchExtTypes.RAnge(rAnge.stArtLineNumber, rAnge.stArtColumn, rAnge.endLineNumber, rAnge.endColumn);
 }
 
-export interface IOutputChannel {
-	appendLine(msg: string): void;
+export interfAce IOutputChAnnel {
+	AppendLine(msg: string): void;
 }
 
-export class OutputChannel implements IOutputChannel {
-	constructor(@ILogService private readonly logService: ILogService) { }
+export clAss OutputChAnnel implements IOutputChAnnel {
+	constructor(@ILogService privAte reAdonly logService: ILogService) { }
 
-	appendLine(msg: string): void {
-		this.logService.debug('RipgrepSearchEH#search', msg);
+	AppendLine(msg: string): void {
+		this.logService.debug('RipgrepSeArchEH#seArch', msg);
 	}
 }

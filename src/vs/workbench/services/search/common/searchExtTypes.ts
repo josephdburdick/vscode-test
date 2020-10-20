@@ -1,203 +1,203 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
-import { IProgress } from 'vs/platform/progress/common/progress';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { IProgress } from 'vs/plAtform/progress/common/progress';
 
-export class Position {
-	constructor(readonly line: number, readonly character: number) { }
+export clAss Position {
+	constructor(reAdonly line: number, reAdonly chArActer: number) { }
 
-	isBefore(other: Position): boolean { return false; }
-	isBeforeOrEqual(other: Position): boolean { return false; }
-	isAfter(other: Position): boolean { return false; }
-	isAfterOrEqual(other: Position): boolean { return false; }
-	isEqual(other: Position): boolean { return false; }
-	compareTo(other: Position): number { return 0; }
-	translate(lineDelta?: number, characterDelta?: number): Position;
-	translate(change: { lineDelta?: number; characterDelta?: number; }): Position;
-	translate(_?: any, _2?: any): Position { return new Position(0, 0); }
-	with(line?: number, character?: number): Position;
-	with(change: { line?: number; character?: number; }): Position;
-	with(_: any): Position { return new Position(0, 0); }
+	isBefore(other: Position): booleAn { return fAlse; }
+	isBeforeOrEquAl(other: Position): booleAn { return fAlse; }
+	isAfter(other: Position): booleAn { return fAlse; }
+	isAfterOrEquAl(other: Position): booleAn { return fAlse; }
+	isEquAl(other: Position): booleAn { return fAlse; }
+	compAreTo(other: Position): number { return 0; }
+	trAnslAte(lineDeltA?: number, chArActerDeltA?: number): Position;
+	trAnslAte(chAnge: { lineDeltA?: number; chArActerDeltA?: number; }): Position;
+	trAnslAte(_?: Any, _2?: Any): Position { return new Position(0, 0); }
+	with(line?: number, chArActer?: number): Position;
+	with(chAnge: { line?: number; chArActer?: number; }): Position;
+	with(_: Any): Position { return new Position(0, 0); }
 }
 
-export class Range {
-	readonly start: Position;
-	readonly end: Position;
+export clAss RAnge {
+	reAdonly stArt: Position;
+	reAdonly end: Position;
 
-	constructor(startLine: number, startCol: number, endLine: number, endCol: number) {
-		this.start = new Position(startLine, startCol);
+	constructor(stArtLine: number, stArtCol: number, endLine: number, endCol: number) {
+		this.stArt = new Position(stArtLine, stArtCol);
 		this.end = new Position(endLine, endCol);
 	}
 
-	isEmpty = false;
-	isSingleLine = false;
-	contains(positionOrRange: Position | Range): boolean { return false; }
-	isEqual(other: Range): boolean { return false; }
-	intersection(range: Range): Range | undefined { return undefined; }
-	union(other: Range): Range { return new Range(0, 0, 0, 0); }
+	isEmpty = fAlse;
+	isSingleLine = fAlse;
+	contAins(positionOrRAnge: Position | RAnge): booleAn { return fAlse; }
+	isEquAl(other: RAnge): booleAn { return fAlse; }
+	intersection(rAnge: RAnge): RAnge | undefined { return undefined; }
+	union(other: RAnge): RAnge { return new RAnge(0, 0, 0, 0); }
 
-	with(start?: Position, end?: Position): Range;
-	with(change: { start?: Position, end?: Position }): Range;
-	with(_: any): Range { return new Range(0, 0, 0, 0); }
+	with(stArt?: Position, end?: Position): RAnge;
+	with(chAnge: { stArt?: Position, end?: Position }): RAnge;
+	with(_: Any): RAnge { return new RAnge(0, 0, 0, 0); }
 }
 
-export type ProviderResult<T> = T | undefined | null | Thenable<T | undefined | null>;
+export type ProviderResult<T> = T | undefined | null | ThenAble<T | undefined | null>;
 
 /**
- * A relative pattern is a helper to construct glob patterns that are matched
- * relatively to a base path. The base path can either be an absolute file path
- * or a [workspace folder](#WorkspaceFolder).
+ * A relAtive pAttern is A helper to construct glob pAtterns thAt Are mAtched
+ * relAtively to A bAse pAth. The bAse pAth cAn either be An Absolute file pAth
+ * or A [workspAce folder](#WorkspAceFolder).
  */
-export interface RelativePattern {
+export interfAce RelAtivePAttern {
 
 	/**
-	 * A base file path to which this pattern will be matched against relatively.
+	 * A bAse file pAth to which this pAttern will be mAtched AgAinst relAtively.
 	 */
-	base: string;
+	bAse: string;
 
 	/**
-	 * A file glob pattern like `*.{ts,js}` that will be matched on file paths
-	 * relative to the base path.
+	 * A file glob pAttern like `*.{ts,js}` thAt will be mAtched on file pAths
+	 * relAtive to the bAse pAth.
 	 *
-	 * Example: Given a base of `/home/work/folder` and a file path of `/home/work/folder/index.js`,
-	 * the file glob pattern will match on `index.js`.
+	 * ExAmple: Given A bAse of `/home/work/folder` And A file pAth of `/home/work/folder/index.js`,
+	 * the file glob pAttern will mAtch on `index.js`.
 	 */
-	pattern: string;
+	pAttern: string;
 }
 
 /**
- * A file glob pattern to match file paths against. This can either be a glob pattern string
- * (like `**​/*.{ts,js}` or `*.{ts,js}`) or a [relative pattern](#RelativePattern).
+ * A file glob pAttern to mAtch file pAths AgAinst. This cAn either be A glob pAttern string
+ * (like `**​/*.{ts,js}` or `*.{ts,js}`) or A [relAtive pAttern](#RelAtivePAttern).
  *
- * Glob patterns can have the following syntax:
- * * `*` to match one or more characters in a path segment
- * * `?` to match on one character in a path segment
- * * `**` to match any number of path segments, including none
- * * `{}` to group conditions (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript files)
- * * `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`, `example.1`, …)
- * * `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on `example.a`, `example.b`, but not `example.0`)
+ * Glob pAtterns cAn hAve the following syntAx:
+ * * `*` to mAtch one or more chArActers in A pAth segment
+ * * `?` to mAtch on one chArActer in A pAth segment
+ * * `**` to mAtch Any number of pAth segments, including none
+ * * `{}` to group conditions (e.g. `**​/*.{ts,js}` mAtches All TypeScript And JAvAScript files)
+ * * `[]` to declAre A rAnge of chArActers to mAtch in A pAth segment (e.g., `exAmple.[0-9]` to mAtch on `exAmple.0`, `exAmple.1`, …)
+ * * `[!...]` to negAte A rAnge of chArActers to mAtch in A pAth segment (e.g., `exAmple.[!0-9]` to mAtch on `exAmple.A`, `exAmple.b`, but not `exAmple.0`)
  *
- * Note: a backslash (`\`) is not valid within a glob pattern. If you have an existing file
- * path to match against, consider to use the [relative pattern](#RelativePattern) support
- * that takes care of converting any backslash into slash. Otherwise, make sure to convert
- * any backslash to slash when creating the glob pattern.
+ * Note: A bAckslAsh (`\`) is not vAlid within A glob pAttern. If you hAve An existing file
+ * pAth to mAtch AgAinst, consider to use the [relAtive pAttern](#RelAtivePAttern) support
+ * thAt tAkes cAre of converting Any bAckslAsh into slAsh. Otherwise, mAke sure to convert
+ * Any bAckslAsh to slAsh when creAting the glob pAttern.
  */
-export type GlobPattern = string | RelativePattern;
+export type GlobPAttern = string | RelAtivePAttern;
 
 /**
- * The parameters of a query for text search.
+ * The pArAmeters of A query for text seArch.
  */
-export interface TextSearchQuery {
+export interfAce TextSeArchQuery {
 	/**
-	 * The text pattern to search for.
+	 * The text pAttern to seArch for.
 	 */
-	pattern: string;
+	pAttern: string;
 
 	/**
-	 * Whether or not `pattern` should match multiple lines of text.
+	 * Whether or not `pAttern` should mAtch multiple lines of text.
 	 */
-	isMultiline?: boolean;
+	isMultiline?: booleAn;
 
 	/**
-	 * Whether or not `pattern` should be interpreted as a regular expression.
+	 * Whether or not `pAttern` should be interpreted As A regulAr expression.
 	 */
-	isRegExp?: boolean;
+	isRegExp?: booleAn;
 
 	/**
-	 * Whether or not the search should be case-sensitive.
+	 * Whether or not the seArch should be cAse-sensitive.
 	 */
-	isCaseSensitive?: boolean;
+	isCAseSensitive?: booleAn;
 
 	/**
-	 * Whether or not to search for whole word matches only.
+	 * Whether or not to seArch for whole word mAtches only.
 	 */
-	isWordMatch?: boolean;
+	isWordMAtch?: booleAn;
 }
 
 /**
- * A file glob pattern to match file paths against.
- * TODO@roblou - merge this with the GlobPattern docs/definition in vscode.d.ts.
- * @see [GlobPattern](#GlobPattern)
+ * A file glob pAttern to mAtch file pAths AgAinst.
+ * TODO@roblou - merge this with the GlobPAttern docs/definition in vscode.d.ts.
+ * @see [GlobPAttern](#GlobPAttern)
  */
 export type GlobString = string;
 
 /**
- * Options common to file and text search
+ * Options common to file And text seArch
  */
-export interface SearchOptions {
+export interfAce SeArchOptions {
 	/**
-	 * The root folder to search within.
+	 * The root folder to seArch within.
 	 */
 	folder: URI;
 
 	/**
-	 * Files that match an `includes` glob pattern should be included in the search.
+	 * Files thAt mAtch An `includes` glob pAttern should be included in the seArch.
 	 */
 	includes: GlobString[];
 
 	/**
-	 * Files that match an `excludes` glob pattern should be excluded from the search.
+	 * Files thAt mAtch An `excludes` glob pAttern should be excluded from the seArch.
 	 */
 	excludes: GlobString[];
 
 	/**
-	 * Whether external files that exclude files, like .gitignore, should be respected.
-	 * See the vscode setting `"search.useIgnoreFiles"`.
+	 * Whether externAl files thAt exclude files, like .gitignore, should be respected.
+	 * See the vscode setting `"seArch.useIgnoreFiles"`.
 	 */
-	useIgnoreFiles: boolean;
+	useIgnoreFiles: booleAn;
 
 	/**
-	 * Whether symlinks should be followed while searching.
-	 * See the vscode setting `"search.followSymlinks"`.
+	 * Whether symlinks should be followed while seArching.
+	 * See the vscode setting `"seArch.followSymlinks"`.
 	 */
-	followSymlinks: boolean;
+	followSymlinks: booleAn;
 
 	/**
-	 * Whether global files that exclude files, like .gitignore, should be respected.
-	 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+	 * Whether globAl files thAt exclude files, like .gitignore, should be respected.
+	 * See the vscode setting `"seArch.useGlobAlIgnoreFiles"`.
 	 */
-	useGlobalIgnoreFiles: boolean;
+	useGlobAlIgnoreFiles: booleAn;
 }
 
 /**
  * Options to specify the size of the result text preview.
- * These options don't affect the size of the match itself, just the amount of preview text.
+ * These options don't Affect the size of the mAtch itself, just the Amount of preview text.
  */
-export interface TextSearchPreviewOptions {
+export interfAce TextSeArchPreviewOptions {
 	/**
-	 * The maximum number of lines in the preview.
-	 * Only search providers that support multiline search will ever return more than one line in the match.
+	 * The mAximum number of lines in the preview.
+	 * Only seArch providers thAt support multiline seArch will ever return more thAn one line in the mAtch.
 	 */
-	matchLines: number;
+	mAtchLines: number;
 
 	/**
-	 * The maximum number of characters included per line.
+	 * The mAximum number of chArActers included per line.
 	 */
-	charsPerLine: number;
+	chArsPerLine: number;
 }
 
 /**
- * Options that apply to text search.
+ * Options thAt Apply to text seArch.
  */
-export interface TextSearchOptions extends SearchOptions {
+export interfAce TextSeArchOptions extends SeArchOptions {
 	/**
-	 * The maximum number of results to be returned.
+	 * The mAximum number of results to be returned.
 	 */
-	maxResults: number;
+	mAxResults: number;
 
 	/**
 	 * Options to specify the size of the result text preview.
 	 */
-	previewOptions?: TextSearchPreviewOptions;
+	previewOptions?: TextSeArchPreviewOptions;
 
 	/**
-	 * Exclude files larger than `maxFileSize` in bytes.
+	 * Exclude files lArger thAn `mAxFileSize` in bytes.
 	 */
-	maxFileSize?: number;
+	mAxFileSize?: number;
 
 	/**
 	 * Interpret files using this encoding.
@@ -206,104 +206,104 @@ export interface TextSearchOptions extends SearchOptions {
 	encoding?: string;
 
 	/**
-	 * Number of lines of context to include before each match.
+	 * Number of lines of context to include before eAch mAtch.
 	 */
 	beforeContext?: number;
 
 	/**
-	 * Number of lines of context to include after each match.
+	 * Number of lines of context to include After eAch mAtch.
 	 */
-	afterContext?: number;
+	AfterContext?: number;
 }
 
 /**
- * Information collected when text search is complete.
+ * InformAtion collected when text seArch is complete.
  */
-export interface TextSearchComplete {
+export interfAce TextSeArchComplete {
 	/**
-	 * Whether the search hit the limit on the maximum number of search results.
-	 * `maxResults` on [`TextSearchOptions`](#TextSearchOptions) specifies the max number of results.
-	 * - If exactly that number of matches exist, this should be false.
-	 * - If `maxResults` matches are returned and more exist, this should be true.
-	 * - If search hits an internal limit which is less than `maxResults`, this should be true.
+	 * Whether the seArch hit the limit on the mAximum number of seArch results.
+	 * `mAxResults` on [`TextSeArchOptions`](#TextSeArchOptions) specifies the mAx number of results.
+	 * - If exActly thAt number of mAtches exist, this should be fAlse.
+	 * - If `mAxResults` mAtches Are returned And more exist, this should be true.
+	 * - If seArch hits An internAl limit which is less thAn `mAxResults`, this should be true.
 	 */
-	limitHit?: boolean;
+	limitHit?: booleAn;
 }
 
 /**
- * The parameters of a query for file search.
+ * The pArAmeters of A query for file seArch.
  */
-export interface FileSearchQuery {
+export interfAce FileSeArchQuery {
 	/**
-	 * The search pattern to match against file paths.
+	 * The seArch pAttern to mAtch AgAinst file pAths.
 	 */
-	pattern: string;
+	pAttern: string;
 }
 
 /**
- * Options that apply to file search.
+ * Options thAt Apply to file seArch.
  */
-export interface FileSearchOptions extends SearchOptions {
+export interfAce FileSeArchOptions extends SeArchOptions {
 	/**
-	 * The maximum number of results to be returned.
+	 * The mAximum number of results to be returned.
 	 */
-	maxResults?: number;
+	mAxResults?: number;
 
 	/**
-	 * A CancellationToken that represents the session for this search query. If the provider chooses to, this object can be used as the key for a cache,
-	 * and searches with the same session object can search the same cache. When the token is cancelled, the session is complete and the cache can be cleared.
+	 * A CAncellAtionToken thAt represents the session for this seArch query. If the provider chooses to, this object cAn be used As the key for A cAche,
+	 * And seArches with the sAme session object cAn seArch the sAme cAche. When the token is cAncelled, the session is complete And the cAche cAn be cleAred.
 	 */
-	session?: CancellationToken;
+	session?: CAncellAtionToken;
 }
 
 /**
  * A preview of the text result.
  */
-export interface TextSearchMatchPreview {
+export interfAce TextSeArchMAtchPreview {
 	/**
-	 * The matching lines of text, or a portion of the matching line that contains the match.
+	 * The mAtching lines of text, or A portion of the mAtching line thAt contAins the mAtch.
 	 */
 	text: string;
 
 	/**
-	 * The Range within `text` corresponding to the text of the match.
-	 * The number of matches must match the TextSearchMatch's range property.
+	 * The RAnge within `text` corresponding to the text of the mAtch.
+	 * The number of mAtches must mAtch the TextSeArchMAtch's rAnge property.
 	 */
-	matches: Range | Range[];
+	mAtches: RAnge | RAnge[];
 }
 
 /**
- * A match from a text search
+ * A mAtch from A text seArch
  */
-export interface TextSearchMatch {
+export interfAce TextSeArchMAtch {
 	/**
-	 * The uri for the matching document.
+	 * The uri for the mAtching document.
 	 */
 	uri: URI;
 
 	/**
-	 * The range of the match within the document, or multiple ranges for multiple matches.
+	 * The rAnge of the mAtch within the document, or multiple rAnges for multiple mAtches.
 	 */
-	ranges: Range | Range[];
+	rAnges: RAnge | RAnge[];
 
 	/**
-	 * A preview of the text match.
+	 * A preview of the text mAtch.
 	 */
-	preview: TextSearchMatchPreview;
+	preview: TextSeArchMAtchPreview;
 }
 
 /**
- * A line of context surrounding a TextSearchMatch.
+ * A line of context surrounding A TextSeArchMAtch.
  */
-export interface TextSearchContext {
+export interfAce TextSeArchContext {
 	/**
-	 * The uri for the matching document.
+	 * The uri for the mAtching document.
 	 */
 	uri: URI;
 
 	/**
 	 * One line of text.
-	 * previewOptions.charsPerLine applies to this
+	 * previewOptions.chArsPerLine Applies to this
 	 */
 	text: string;
 
@@ -313,82 +313,82 @@ export interface TextSearchContext {
 	lineNumber: number;
 }
 
-export type TextSearchResult = TextSearchMatch | TextSearchContext;
+export type TextSeArchResult = TextSeArchMAtch | TextSeArchContext;
 
 /**
- * A FileSearchProvider provides search results for files in the given folder that match a query string. It can be invoked by quickaccess or other extensions.
+ * A FileSeArchProvider provides seArch results for files in the given folder thAt mAtch A query string. It cAn be invoked by quickAccess or other extensions.
  *
- * A FileSearchProvider is the more powerful of two ways to implement file search in VS Code. Use a FileSearchProvider if you wish to search within a folder for
- * all files that match the user's query.
+ * A FileSeArchProvider is the more powerful of two wAys to implement file seArch in VS Code. Use A FileSeArchProvider if you wish to seArch within A folder for
+ * All files thAt mAtch the user's query.
  *
- * The FileSearchProvider will be invoked on every keypress in quickaccess. When `workspace.findFiles` is called, it will be invoked with an empty query string,
- * and in that case, every file in the folder should be returned.
+ * The FileSeArchProvider will be invoked on every keypress in quickAccess. When `workspAce.findFiles` is cAlled, it will be invoked with An empty query string,
+ * And in thAt cAse, every file in the folder should be returned.
  */
-export interface FileSearchProvider {
+export interfAce FileSeArchProvider {
 	/**
-	 * Provide the set of files that match a certain file path pattern.
-	 * @param query The parameters for this query.
-	 * @param options A set of options to consider while searching files.
-	 * @param progress A progress callback that must be invoked for all results.
-	 * @param token A cancellation token.
+	 * Provide the set of files thAt mAtch A certAin file pAth pAttern.
+	 * @pArAm query The pArAmeters for this query.
+	 * @pArAm options A set of options to consider while seArching files.
+	 * @pArAm progress A progress cAllbAck thAt must be invoked for All results.
+	 * @pArAm token A cAncellAtion token.
 	 */
-	provideFileSearchResults(query: FileSearchQuery, options: FileSearchOptions, token: CancellationToken): ProviderResult<URI[]>;
+	provideFileSeArchResults(query: FileSeArchQuery, options: FileSeArchOptions, token: CAncellAtionToken): ProviderResult<URI[]>;
 }
 
 /**
- * A TextSearchProvider provides search results for text results inside files in the workspace.
+ * A TextSeArchProvider provides seArch results for text results inside files in the workspAce.
  */
-export interface TextSearchProvider {
+export interfAce TextSeArchProvider {
 	/**
-	 * Provide results that match the given text pattern.
-	 * @param query The parameters for this query.
-	 * @param options A set of options to consider while searching.
-	 * @param progress A progress callback that must be invoked for all results.
-	 * @param token A cancellation token.
+	 * Provide results thAt mAtch the given text pAttern.
+	 * @pArAm query The pArAmeters for this query.
+	 * @pArAm options A set of options to consider while seArching.
+	 * @pArAm progress A progress cAllbAck thAt must be invoked for All results.
+	 * @pArAm token A cAncellAtion token.
 	 */
-	provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: IProgress<TextSearchResult>, token: CancellationToken): ProviderResult<TextSearchComplete>;
+	provideTextSeArchResults(query: TextSeArchQuery, options: TextSeArchOptions, progress: IProgress<TextSeArchResult>, token: CAncellAtionToken): ProviderResult<TextSeArchComplete>;
 }
 
 /**
- * Options that can be set on a findTextInFiles search.
+ * Options thAt cAn be set on A findTextInFiles seArch.
  */
-export interface FindTextInFilesOptions {
+export interfAce FindTextInFilesOptions {
 	/**
-	 * A [glob pattern](#GlobPattern) that defines the files to search for. The glob pattern
-	 * will be matched against the file paths of files relative to their workspace. Use a [relative pattern](#RelativePattern)
-	 * to restrict the search results to a [workspace folder](#WorkspaceFolder).
+	 * A [glob pAttern](#GlobPAttern) thAt defines the files to seArch for. The glob pAttern
+	 * will be mAtched AgAinst the file pAths of files relAtive to their workspAce. Use A [relAtive pAttern](#RelAtivePAttern)
+	 * to restrict the seArch results to A [workspAce folder](#WorkspAceFolder).
 	 */
-	include?: GlobPattern;
+	include?: GlobPAttern;
 
 	/**
-	 * A [glob pattern](#GlobPattern) that defines files and folders to exclude. The glob pattern
-	 * will be matched against the file paths of resulting matches relative to their workspace. When `undefined` only default excludes will
-	 * apply, when `null` no excludes will apply.
+	 * A [glob pAttern](#GlobPAttern) thAt defines files And folders to exclude. The glob pAttern
+	 * will be mAtched AgAinst the file pAths of resulting mAtches relAtive to their workspAce. When `undefined` only defAult excludes will
+	 * Apply, when `null` no excludes will Apply.
 	 */
-	exclude?: GlobPattern | null;
+	exclude?: GlobPAttern | null;
 
 	/**
-	 * The maximum number of results to search for
+	 * The mAximum number of results to seArch for
 	 */
-	maxResults?: number;
+	mAxResults?: number;
 
 	/**
-	 * Whether external files that exclude files, like .gitignore, should be respected.
-	 * See the vscode setting `"search.useIgnoreFiles"`.
+	 * Whether externAl files thAt exclude files, like .gitignore, should be respected.
+	 * See the vscode setting `"seArch.useIgnoreFiles"`.
 	 */
-	useIgnoreFiles?: boolean;
+	useIgnoreFiles?: booleAn;
 
 	/**
-	 * Whether global files that exclude files, like .gitignore, should be respected.
-	 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+	 * Whether globAl files thAt exclude files, like .gitignore, should be respected.
+	 * See the vscode setting `"seArch.useGlobAlIgnoreFiles"`.
 	 */
-	useGlobalIgnoreFiles?: boolean;
+	useGlobAlIgnoreFiles?: booleAn;
 
 	/**
-	 * Whether symlinks should be followed while searching.
-	 * See the vscode setting `"search.followSymlinks"`.
+	 * Whether symlinks should be followed while seArching.
+	 * See the vscode setting `"seArch.followSymlinks"`.
 	 */
-	followSymlinks?: boolean;
+	followSymlinks?: booleAn;
 
 	/**
 	 * Interpret files using this encoding.
@@ -399,15 +399,15 @@ export interface FindTextInFilesOptions {
 	/**
 	 * Options to specify the size of the result text preview.
 	 */
-	previewOptions?: TextSearchPreviewOptions;
+	previewOptions?: TextSeArchPreviewOptions;
 
 	/**
-	 * Number of lines of context to include before each match.
+	 * Number of lines of context to include before eAch mAtch.
 	 */
 	beforeContext?: number;
 
 	/**
-	 * Number of lines of context to include after each match.
+	 * Number of lines of context to include After eAch mAtch.
 	 */
-	afterContext?: number;
+	AfterContext?: number;
 }

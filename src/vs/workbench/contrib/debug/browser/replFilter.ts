@@ -1,242 +1,242 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { matchesFuzzy } from 'vs/base/common/filters';
-import { splitGlobAware } from 'vs/base/common/glob';
-import { ITreeFilter, TreeVisibility, TreeFilterResult } from 'vs/base/browser/ui/tree/tree';
+import { mAtchesFuzzy } from 'vs/bAse/common/filters';
+import { splitGlobAwAre } from 'vs/bAse/common/glob';
+import { ITreeFilter, TreeVisibility, TreeFilterResult } from 'vs/bAse/browser/ui/tree/tree';
 import { IReplElement } from 'vs/workbench/contrib/debug/common/debug';
-import * as DOM from 'vs/base/browser/dom';
-import { BaseActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { Delayer } from 'vs/base/common/async';
-import { IAction } from 'vs/base/common/actions';
-import { HistoryInputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { toDisposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { ContextScopedHistoryInputBox } from 'vs/platform/browser/contextScopedHistoryWidget';
-import { attachInputBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { badgeBackground, badgeForeground, contrastBorder } from 'vs/platform/theme/common/colorRegistry';
-import { ReplEvaluationResult, ReplEvaluationInput } from 'vs/workbench/contrib/debug/common/replModel';
-import { localize } from 'vs/nls';
+import * As DOM from 'vs/bAse/browser/dom';
+import { BAseActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { DelAyer } from 'vs/bAse/common/Async';
+import { IAction } from 'vs/bAse/common/Actions';
+import { HistoryInputBox } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { toDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { ContextScopedHistoryInputBox } from 'vs/plAtform/browser/contextScopedHistoryWidget';
+import { AttAchInputBoxStyler, AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { bAdgeBAckground, bAdgeForeground, contrAstBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { ReplEvAluAtionResult, ReplEvAluAtionInput } from 'vs/workbench/contrib/debug/common/replModel';
+import { locAlize } from 'vs/nls';
 
 
-type ParsedQuery = {
+type PArsedQuery = {
 	type: 'include' | 'exclude',
 	query: string,
 };
 
-export class ReplFilter implements ITreeFilter<IReplElement> {
+export clAss ReplFilter implements ITreeFilter<IReplElement> {
 
-	static matchQuery = matchesFuzzy;
+	stAtic mAtchQuery = mAtchesFuzzy;
 
-	private _parsedQueries: ParsedQuery[] = [];
+	privAte _pArsedQueries: PArsedQuery[] = [];
 	set filterQuery(query: string) {
-		this._parsedQueries = [];
+		this._pArsedQueries = [];
 		query = query.trim();
 
 		if (query && query !== '') {
-			const filters = splitGlobAware(query, ',').map(s => s.trim()).filter(s => !!s.length);
+			const filters = splitGlobAwAre(query, ',').mAp(s => s.trim()).filter(s => !!s.length);
 			for (const f of filters) {
-				if (f.startsWith('!')) {
-					this._parsedQueries.push({ type: 'exclude', query: f.slice(1) });
+				if (f.stArtsWith('!')) {
+					this._pArsedQueries.push({ type: 'exclude', query: f.slice(1) });
 				} else {
-					this._parsedQueries.push({ type: 'include', query: f });
+					this._pArsedQueries.push({ type: 'include', query: f });
 				}
 			}
 		}
 	}
 
-	filter(element: IReplElement, parentVisibility: TreeVisibility): TreeFilterResult<void> {
-		if (element instanceof ReplEvaluationInput || element instanceof ReplEvaluationResult) {
+	filter(element: IReplElement, pArentVisibility: TreeVisibility): TreeFilterResult<void> {
+		if (element instAnceof ReplEvAluAtionInput || element instAnceof ReplEvAluAtionResult) {
 			// Only filter the output events, everything else is visible https://github.com/microsoft/vscode/issues/105863
 			return TreeVisibility.Visible;
 		}
 
-		let includeQueryPresent = false;
-		let includeQueryMatched = false;
+		let includeQueryPresent = fAlse;
+		let includeQueryMAtched = fAlse;
 
 		const text = element.toString();
 
-		for (let { type, query } of this._parsedQueries) {
-			if (type === 'exclude' && ReplFilter.matchQuery(query, text)) {
-				// If exclude query matches, ignore all other queries and hide
-				return false;
+		for (let { type, query } of this._pArsedQueries) {
+			if (type === 'exclude' && ReplFilter.mAtchQuery(query, text)) {
+				// If exclude query mAtches, ignore All other queries And hide
+				return fAlse;
 			} else if (type === 'include') {
 				includeQueryPresent = true;
-				if (ReplFilter.matchQuery(query, text)) {
-					includeQueryMatched = true;
+				if (ReplFilter.mAtchQuery(query, text)) {
+					includeQueryMAtched = true;
 				}
 			}
 		}
 
-		return includeQueryPresent ? includeQueryMatched : (typeof parentVisibility !== 'undefined' ? parentVisibility : TreeVisibility.Visible);
+		return includeQueryPresent ? includeQueryMAtched : (typeof pArentVisibility !== 'undefined' ? pArentVisibility : TreeVisibility.Visible);
 	}
 }
 
-export interface IFilterStatsProvider {
-	getFilterStats(): { total: number, filtered: number };
+export interfAce IFilterStAtsProvider {
+	getFilterStAts(): { totAl: number, filtered: number };
 }
 
-export class ReplFilterState {
+export clAss ReplFilterStAte {
 
-	constructor(private filterStatsProvider: IFilterStatsProvider) { }
+	constructor(privAte filterStAtsProvider: IFilterStAtsProvider) { }
 
-	private readonly _onDidChange: Emitter<void> = new Emitter<void>();
-	get onDidChange(): Event<void> {
-		return this._onDidChange.event;
+	privAte reAdonly _onDidChAnge: Emitter<void> = new Emitter<void>();
+	get onDidChAnge(): Event<void> {
+		return this._onDidChAnge.event;
 	}
 
-	private readonly _onDidStatsChange: Emitter<void> = new Emitter<void>();
-	get onDidStatsChange(): Event<void> {
-		return this._onDidStatsChange.event;
+	privAte reAdonly _onDidStAtsChAnge: Emitter<void> = new Emitter<void>();
+	get onDidStAtsChAnge(): Event<void> {
+		return this._onDidStAtsChAnge.event;
 	}
 
-	private _filterText = '';
-	private _stats = { total: 0, filtered: 0 };
+	privAte _filterText = '';
+	privAte _stAts = { totAl: 0, filtered: 0 };
 
 	get filterText(): string {
 		return this._filterText;
 	}
 
-	get filterStats(): { total: number, filtered: number } {
-		return this._stats;
+	get filterStAts(): { totAl: number, filtered: number } {
+		return this._stAts;
 	}
 
 	set filterText(filterText: string) {
 		if (this._filterText !== filterText) {
 			this._filterText = filterText;
-			this._onDidChange.fire();
-			this.updateFilterStats();
+			this._onDidChAnge.fire();
+			this.updAteFilterStAts();
 		}
 	}
 
-	updateFilterStats(): void {
-		const { total, filtered } = this.filterStatsProvider.getFilterStats();
-		if (this._stats.total !== total || this._stats.filtered !== filtered) {
-			this._stats = { total, filtered };
-			this._onDidStatsChange.fire();
+	updAteFilterStAts(): void {
+		const { totAl, filtered } = this.filterStAtsProvider.getFilterStAts();
+		if (this._stAts.totAl !== totAl || this._stAts.filtered !== filtered) {
+			this._stAts = { totAl, filtered };
+			this._onDidStAtsChAnge.fire();
 		}
 	}
 }
 
-export class ReplFilterActionViewItem extends BaseActionViewItem {
+export clAss ReplFilterActionViewItem extends BAseActionViewItem {
 
-	private delayedFilterUpdate: Delayer<void>;
-	private container!: HTMLElement;
-	private filterBadge!: HTMLElement;
-	private filterInputBox!: HistoryInputBox;
+	privAte delAyedFilterUpdAte: DelAyer<void>;
+	privAte contAiner!: HTMLElement;
+	privAte filterBAdge!: HTMLElement;
+	privAte filterInputBox!: HistoryInputBox;
 
 	constructor(
-		action: IAction,
-		private placeholder: string,
-		private filters: ReplFilterState,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IThemeService private readonly themeService: IThemeService,
-		@IContextViewService private readonly contextViewService: IContextViewService) {
-		super(null, action);
-		this.delayedFilterUpdate = new Delayer<void>(400);
-		this._register(toDisposable(() => this.delayedFilterUpdate.cancel()));
+		Action: IAction,
+		privAte plAceholder: string,
+		privAte filters: ReplFilterStAte,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService) {
+		super(null, Action);
+		this.delAyedFilterUpdAte = new DelAyer<void>(400);
+		this._register(toDisposAble(() => this.delAyedFilterUpdAte.cAncel()));
 	}
 
-	render(container: HTMLElement): void {
-		this.container = container;
-		this.container.classList.add('repl-panel-filter-container');
+	render(contAiner: HTMLElement): void {
+		this.contAiner = contAiner;
+		this.contAiner.clAssList.Add('repl-pAnel-filter-contAiner');
 
-		this.element = DOM.append(this.container, DOM.$(''));
-		this.element.className = this.class;
-		this.createInput(this.element);
-		this.createBadge(this.element);
-		this.updateClass();
+		this.element = DOM.Append(this.contAiner, DOM.$(''));
+		this.element.clAssNAme = this.clAss;
+		this.creAteInput(this.element);
+		this.creAteBAdge(this.element);
+		this.updAteClAss();
 	}
 
 	focus(): void {
 		this.filterInputBox.focus();
 	}
 
-	private clearFilterText(): void {
-		this.filterInputBox.value = '';
+	privAte cleArFilterText(): void {
+		this.filterInputBox.vAlue = '';
 	}
 
-	private createInput(container: HTMLElement): void {
-		this.filterInputBox = this._register(this.instantiationService.createInstance(ContextScopedHistoryInputBox, container, this.contextViewService, {
-			placeholder: this.placeholder,
+	privAte creAteInput(contAiner: HTMLElement): void {
+		this.filterInputBox = this._register(this.instAntiAtionService.creAteInstAnce(ContextScopedHistoryInputBox, contAiner, this.contextViewService, {
+			plAceholder: this.plAceholder,
 			history: []
 		}));
-		this._register(attachInputBoxStyler(this.filterInputBox, this.themeService));
-		this.filterInputBox.value = this.filters.filterText;
+		this._register(AttAchInputBoxStyler(this.filterInputBox, this.themeService));
+		this.filterInputBox.vAlue = this.filters.filterText;
 
-		this._register(this.filterInputBox.onDidChange(() => this.delayedFilterUpdate.trigger(() => this.onDidInputChange(this.filterInputBox!))));
-		this._register(this.filters.onDidChange(() => {
-			this.filterInputBox.value = this.filters.filterText;
+		this._register(this.filterInputBox.onDidChAnge(() => this.delAyedFilterUpdAte.trigger(() => this.onDidInputChAnge(this.filterInputBox!))));
+		this._register(this.filters.onDidChAnge(() => {
+			this.filterInputBox.vAlue = this.filters.filterText;
 		}));
-		this._register(DOM.addStandardDisposableListener(this.filterInputBox.inputElement, DOM.EventType.KEY_DOWN, (e: any) => this.onInputKeyDown(e)));
-		this._register(DOM.addStandardDisposableListener(container, DOM.EventType.KEY_DOWN, this.handleKeyboardEvent));
-		this._register(DOM.addStandardDisposableListener(container, DOM.EventType.KEY_UP, this.handleKeyboardEvent));
-		this._register(DOM.addStandardDisposableListener(this.filterInputBox.inputElement, DOM.EventType.CLICK, (e) => {
-			e.stopPropagation();
-			e.preventDefault();
+		this._register(DOM.AddStAndArdDisposAbleListener(this.filterInputBox.inputElement, DOM.EventType.KEY_DOWN, (e: Any) => this.onInputKeyDown(e)));
+		this._register(DOM.AddStAndArdDisposAbleListener(contAiner, DOM.EventType.KEY_DOWN, this.hAndleKeyboArdEvent));
+		this._register(DOM.AddStAndArdDisposAbleListener(contAiner, DOM.EventType.KEY_UP, this.hAndleKeyboArdEvent));
+		this._register(DOM.AddStAndArdDisposAbleListener(this.filterInputBox.inputElement, DOM.EventType.CLICK, (e) => {
+			e.stopPropAgAtion();
+			e.preventDefAult();
 		}));
 	}
 
-	private onDidInputChange(inputbox: HistoryInputBox) {
-		inputbox.addToHistory();
-		this.filters.filterText = inputbox.value;
+	privAte onDidInputChAnge(inputbox: HistoryInputBox) {
+		inputbox.AddToHistory();
+		this.filters.filterText = inputbox.vAlue;
 	}
 
-	// Action toolbar is swallowing some keys for action items which should not be for an input box
-	private handleKeyboardEvent(event: StandardKeyboardEvent) {
-		if (event.equals(KeyCode.Space)
-			|| event.equals(KeyCode.LeftArrow)
-			|| event.equals(KeyCode.RightArrow)
-			|| event.equals(KeyCode.Escape)
+	// Action toolbAr is swAllowing some keys for Action items which should not be for An input box
+	privAte hAndleKeyboArdEvent(event: StAndArdKeyboArdEvent) {
+		if (event.equAls(KeyCode.SpAce)
+			|| event.equAls(KeyCode.LeftArrow)
+			|| event.equAls(KeyCode.RightArrow)
+			|| event.equAls(KeyCode.EscApe)
 		) {
-			event.stopPropagation();
+			event.stopPropAgAtion();
 		}
 	}
 
-	private onInputKeyDown(event: StandardKeyboardEvent) {
-		if (event.equals(KeyCode.Escape)) {
-			this.clearFilterText();
-			event.stopPropagation();
-			event.preventDefault();
+	privAte onInputKeyDown(event: StAndArdKeyboArdEvent) {
+		if (event.equAls(KeyCode.EscApe)) {
+			this.cleArFilterText();
+			event.stopPropAgAtion();
+			event.preventDefAult();
 		}
 	}
 
-	private createBadge(container: HTMLElement): void {
-		const controlsContainer = DOM.append(container, DOM.$('.repl-panel-filter-controls'));
-		const filterBadge = this.filterBadge = DOM.append(controlsContainer, DOM.$('.repl-panel-filter-badge'));
-		this._register(attachStylerCallback(this.themeService, { badgeBackground, badgeForeground, contrastBorder }, colors => {
-			const background = colors.badgeBackground ? colors.badgeBackground.toString() : '';
-			const foreground = colors.badgeForeground ? colors.badgeForeground.toString() : '';
-			const border = colors.contrastBorder ? colors.contrastBorder.toString() : '';
+	privAte creAteBAdge(contAiner: HTMLElement): void {
+		const controlsContAiner = DOM.Append(contAiner, DOM.$('.repl-pAnel-filter-controls'));
+		const filterBAdge = this.filterBAdge = DOM.Append(controlsContAiner, DOM.$('.repl-pAnel-filter-bAdge'));
+		this._register(AttAchStylerCAllbAck(this.themeService, { bAdgeBAckground, bAdgeForeground, contrAstBorder }, colors => {
+			const bAckground = colors.bAdgeBAckground ? colors.bAdgeBAckground.toString() : '';
+			const foreground = colors.bAdgeForeground ? colors.bAdgeForeground.toString() : '';
+			const border = colors.contrAstBorder ? colors.contrAstBorder.toString() : '';
 
-			filterBadge.style.backgroundColor = background;
+			filterBAdge.style.bAckgroundColor = bAckground;
 
-			filterBadge.style.borderWidth = border ? '1px' : '';
-			filterBadge.style.borderStyle = border ? 'solid' : '';
-			filterBadge.style.borderColor = border;
-			filterBadge.style.color = foreground;
+			filterBAdge.style.borderWidth = border ? '1px' : '';
+			filterBAdge.style.borderStyle = border ? 'solid' : '';
+			filterBAdge.style.borderColor = border;
+			filterBAdge.style.color = foreground;
 		}));
-		this.updateBadge();
-		this._register(this.filters.onDidStatsChange(() => this.updateBadge()));
+		this.updAteBAdge();
+		this._register(this.filters.onDidStAtsChAnge(() => this.updAteBAdge()));
 	}
 
-	private updateBadge(): void {
-		const { total, filtered } = this.filters.filterStats;
-		const filterBadgeHidden = total === filtered || total === 0;
+	privAte updAteBAdge(): void {
+		const { totAl, filtered } = this.filters.filterStAts;
+		const filterBAdgeHidden = totAl === filtered || totAl === 0;
 
-		this.filterBadge.classList.toggle('hidden', filterBadgeHidden);
-		this.filterBadge.textContent = localize('showing filtered repl lines', "Showing {0} of {1}", filtered, total);
-		this.filterInputBox.inputElement.style.paddingRight = filterBadgeHidden ? '4px' : '150px';
+		this.filterBAdge.clAssList.toggle('hidden', filterBAdgeHidden);
+		this.filterBAdge.textContent = locAlize('showing filtered repl lines', "Showing {0} of {1}", filtered, totAl);
+		this.filterInputBox.inputElement.style.pAddingRight = filterBAdgeHidden ? '4px' : '150px';
 	}
 
-	protected get class(): string {
-		return 'panel-action-tree-filter';
+	protected get clAss(): string {
+		return 'pAnel-Action-tree-filter';
 	}
 }

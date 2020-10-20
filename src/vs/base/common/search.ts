@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from './strings';
+import * As strings from './strings';
 
-export function buildReplaceStringWithCasePreserved(matches: string[] | null, pattern: string): string {
-	if (matches && (matches[0] !== '')) {
-		const containsHyphens = validateSpecificSpecialCharacter(matches, pattern, '-');
-		const containsUnderscores = validateSpecificSpecialCharacter(matches, pattern, '_');
-		if (containsHyphens && !containsUnderscores) {
-			return buildReplaceStringForSpecificSpecialCharacter(matches, pattern, '-');
-		} else if (!containsHyphens && containsUnderscores) {
-			return buildReplaceStringForSpecificSpecialCharacter(matches, pattern, '_');
+export function buildReplAceStringWithCAsePreserved(mAtches: string[] | null, pAttern: string): string {
+	if (mAtches && (mAtches[0] !== '')) {
+		const contAinsHyphens = vAlidAteSpecificSpeciAlChArActer(mAtches, pAttern, '-');
+		const contAinsUnderscores = vAlidAteSpecificSpeciAlChArActer(mAtches, pAttern, '_');
+		if (contAinsHyphens && !contAinsUnderscores) {
+			return buildReplAceStringForSpecificSpeciAlChArActer(mAtches, pAttern, '-');
+		} else if (!contAinsHyphens && contAinsUnderscores) {
+			return buildReplAceStringForSpecificSpeciAlChArActer(mAtches, pAttern, '_');
 		}
-		if (matches[0].toUpperCase() === matches[0]) {
-			return pattern.toUpperCase();
-		} else if (matches[0].toLowerCase() === matches[0]) {
-			return pattern.toLowerCase();
-		} else if (strings.containsUppercaseCharacter(matches[0][0]) && pattern.length > 0) {
-			return pattern[0].toUpperCase() + pattern.substr(1);
+		if (mAtches[0].toUpperCAse() === mAtches[0]) {
+			return pAttern.toUpperCAse();
+		} else if (mAtches[0].toLowerCAse() === mAtches[0]) {
+			return pAttern.toLowerCAse();
+		} else if (strings.contAinsUppercAseChArActer(mAtches[0][0]) && pAttern.length > 0) {
+			return pAttern[0].toUpperCAse() + pAttern.substr(1);
 		} else {
-			// we don't understand its pattern yet.
-			return pattern;
+			// we don't understAnd its pAttern yet.
+			return pAttern;
 		}
 	} else {
-		return pattern;
+		return pAttern;
 	}
 }
 
-function validateSpecificSpecialCharacter(matches: string[], pattern: string, specialCharacter: string): boolean {
-	const doesContainSpecialCharacter = matches[0].indexOf(specialCharacter) !== -1 && pattern.indexOf(specialCharacter) !== -1;
-	return doesContainSpecialCharacter && matches[0].split(specialCharacter).length === pattern.split(specialCharacter).length;
+function vAlidAteSpecificSpeciAlChArActer(mAtches: string[], pAttern: string, speciAlChArActer: string): booleAn {
+	const doesContAinSpeciAlChArActer = mAtches[0].indexOf(speciAlChArActer) !== -1 && pAttern.indexOf(speciAlChArActer) !== -1;
+	return doesContAinSpeciAlChArActer && mAtches[0].split(speciAlChArActer).length === pAttern.split(speciAlChArActer).length;
 }
 
-function buildReplaceStringForSpecificSpecialCharacter(matches: string[], pattern: string, specialCharacter: string): string {
-	const splitPatternAtSpecialCharacter = pattern.split(specialCharacter);
-	const splitMatchAtSpecialCharacter = matches[0].split(specialCharacter);
-	let replaceString: string = '';
-	splitPatternAtSpecialCharacter.forEach((splitValue, index) => {
-		replaceString += buildReplaceStringWithCasePreserved([splitMatchAtSpecialCharacter[index]], splitValue) + specialCharacter;
+function buildReplAceStringForSpecificSpeciAlChArActer(mAtches: string[], pAttern: string, speciAlChArActer: string): string {
+	const splitPAtternAtSpeciAlChArActer = pAttern.split(speciAlChArActer);
+	const splitMAtchAtSpeciAlChArActer = mAtches[0].split(speciAlChArActer);
+	let replAceString: string = '';
+	splitPAtternAtSpeciAlChArActer.forEAch((splitVAlue, index) => {
+		replAceString += buildReplAceStringWithCAsePreserved([splitMAtchAtSpeciAlChArActer[index]], splitVAlue) + speciAlChArActer;
 	});
 
-	return replaceString.slice(0, -1);
+	return replAceString.slice(0, -1);
 }

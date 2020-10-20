@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, dispose, Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IWindowsConfiguration } from 'vs/platform/windows/common/windows';
+import { IDisposAble, dispose, DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IWindowsConfigurAtion } from 'vs/plAtform/windows/common/windows';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { localize } from 'vs/nls';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { locAlize } from 'vs/nls';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { URI } from 'vs/base/common/uri';
-import { isEqual } from 'vs/base/common/resources';
-import { isMacintosh, isNative, isLinux } from 'vs/base/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { URI } from 'vs/bAse/common/uri';
+import { isEquAl } from 'vs/bAse/common/resources';
+import { isMAcintosh, isNAtive, isLinux } from 'vs/bAse/common/plAtform';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 
-interface IConfiguration extends IWindowsConfiguration {
-	update: { mode: string; };
-	debug: { console: { wordWrap: boolean } };
-	editor: { accessibilitySupport: 'on' | 'off' | 'auto' };
+interfAce IConfigurAtion extends IWindowsConfigurAtion {
+	updAte: { mode: string; };
+	debug: { console: { wordWrAp: booleAn } };
+	editor: { AccessibilitySupport: 'on' | 'off' | 'Auto' };
 }
 
-export class SettingsChangeRelauncher extends Disposable implements IWorkbenchContribution {
+export clAss SettingsChAngeRelAuncher extends DisposAble implements IWorkbenchContribution {
 
-	private titleBarStyle: 'native' | 'custom' | undefined;
-	private nativeTabs: boolean | undefined;
-	private nativeFullScreen: boolean | undefined;
-	private clickThroughInactive: boolean | undefined;
-	private updateMode: string | undefined;
-	private debugConsoleWordWrap: boolean | undefined;
-	private accessibilitySupport: 'on' | 'off' | 'auto' | undefined;
+	privAte titleBArStyle: 'nAtive' | 'custom' | undefined;
+	privAte nAtiveTAbs: booleAn | undefined;
+	privAte nAtiveFullScreen: booleAn | undefined;
+	privAte clickThroughInActive: booleAn | undefined;
+	privAte updAteMode: string | undefined;
+	privAte debugConsoleWordWrAp: booleAn | undefined;
+	privAte AccessibilitySupport: 'on' | 'off' | 'Auto' | undefined;
 
 	constructor(
-		@IHostService private readonly hostService: IHostService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IProductService private readonly productService: IProductService,
-		@IDialogService private readonly dialogService: IDialogService
+		@IHostService privAte reAdonly hostService: IHostService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService
 	) {
 		super();
 
-		this.onConfigurationChange(configurationService.getValue<IConfiguration>(), false);
-		this._register(this.configurationService.onDidChangeConfiguration(e => this.onConfigurationChange(this.configurationService.getValue<IConfiguration>(), true)));
+		this.onConfigurAtionChAnge(configurAtionService.getVAlue<IConfigurAtion>(), fAlse);
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(e => this.onConfigurAtionChAnge(this.configurAtionService.getVAlue<IConfigurAtion>(), true)));
 	}
 
-	private onConfigurationChange(config: IConfiguration, notify: boolean): void {
-		let changed = false;
+	privAte onConfigurAtionChAnge(config: IConfigurAtion, notify: booleAn): void {
+		let chAnged = fAlse;
 
-		// Debug console word wrap
-		if (typeof config.debug?.console.wordWrap === 'boolean' && config.debug.console.wordWrap !== this.debugConsoleWordWrap) {
-			this.debugConsoleWordWrap = config.debug.console.wordWrap;
-			changed = true;
+		// Debug console word wrAp
+		if (typeof config.debug?.console.wordWrAp === 'booleAn' && config.debug.console.wordWrAp !== this.debugConsoleWordWrAp) {
+			this.debugConsoleWordWrAp = config.debug.console.wordWrAp;
+			chAnged = true;
 		}
 
-		if (isNative) {
+		if (isNAtive) {
 
-			// Titlebar style
-			if (typeof config.window?.titleBarStyle === 'string' && config.window?.titleBarStyle !== this.titleBarStyle && (config.window.titleBarStyle === 'native' || config.window.titleBarStyle === 'custom')) {
-				this.titleBarStyle = config.window.titleBarStyle;
-				changed = true;
+			// TitlebAr style
+			if (typeof config.window?.titleBArStyle === 'string' && config.window?.titleBArStyle !== this.titleBArStyle && (config.window.titleBArStyle === 'nAtive' || config.window.titleBArStyle === 'custom')) {
+				this.titleBArStyle = config.window.titleBArStyle;
+				chAnged = true;
 			}
 
-			// macOS: Native tabs
-			if (isMacintosh && typeof config.window?.nativeTabs === 'boolean' && config.window.nativeTabs !== this.nativeTabs) {
-				this.nativeTabs = config.window.nativeTabs;
-				changed = true;
+			// mAcOS: NAtive tAbs
+			if (isMAcintosh && typeof config.window?.nAtiveTAbs === 'booleAn' && config.window.nAtiveTAbs !== this.nAtiveTAbs) {
+				this.nAtiveTAbs = config.window.nAtiveTAbs;
+				chAnged = true;
 			}
 
-			// macOS: Native fullscreen
-			if (isMacintosh && typeof config.window?.nativeFullScreen === 'boolean' && config.window.nativeFullScreen !== this.nativeFullScreen) {
-				this.nativeFullScreen = config.window.nativeFullScreen;
-				changed = true;
+			// mAcOS: NAtive fullscreen
+			if (isMAcintosh && typeof config.window?.nAtiveFullScreen === 'booleAn' && config.window.nAtiveFullScreen !== this.nAtiveFullScreen) {
+				this.nAtiveFullScreen = config.window.nAtiveFullScreen;
+				chAnged = true;
 			}
 
-			// macOS: Click through (accept first mouse)
-			if (isMacintosh && typeof config.window?.clickThroughInactive === 'boolean' && config.window.clickThroughInactive !== this.clickThroughInactive) {
-				this.clickThroughInactive = config.window.clickThroughInactive;
-				changed = true;
+			// mAcOS: Click through (Accept first mouse)
+			if (isMAcintosh && typeof config.window?.clickThroughInActive === 'booleAn' && config.window.clickThroughInActive !== this.clickThroughInActive) {
+				this.clickThroughInActive = config.window.clickThroughInActive;
+				chAnged = true;
 			}
 
-			// Update channel
-			if (typeof config.update?.mode === 'string' && config.update.mode !== this.updateMode) {
-				this.updateMode = config.update.mode;
-				changed = true;
+			// UpdAte chAnnel
+			if (typeof config.updAte?.mode === 'string' && config.updAte.mode !== this.updAteMode) {
+				this.updAteMode = config.updAte.mode;
+				chAnged = true;
 			}
 
-			// On linux turning on accessibility support will also pass this flag to the chrome renderer, thus a restart is required
-			if (isLinux && typeof config.editor?.accessibilitySupport === 'string' && config.editor.accessibilitySupport !== this.accessibilitySupport) {
-				this.accessibilitySupport = config.editor.accessibilitySupport;
-				if (this.accessibilitySupport === 'on') {
-					changed = true;
+			// On linux turning on Accessibility support will Also pAss this flAg to the chrome renderer, thus A restArt is required
+			if (isLinux && typeof config.editor?.AccessibilitySupport === 'string' && config.editor.AccessibilitySupport !== this.AccessibilitySupport) {
+				this.AccessibilitySupport = config.editor.AccessibilitySupport;
+				if (this.AccessibilitySupport === 'on') {
+					chAnged = true;
 				}
 			}
 		}
 
-		// Notify only when changed and we are the focused window (avoids notification spam across windows)
-		if (notify && changed) {
+		// Notify only when chAnged And we Are the focused window (Avoids notificAtion spAm Across windows)
+		if (notify && chAnged) {
 			this.doConfirm(
-				isNative ?
-					localize('relaunchSettingMessage', "A setting has changed that requires a restart to take effect.") :
-					localize('relaunchSettingMessageWeb', "A setting has changed that requires a reload to take effect."),
-				isNative ?
-					localize('relaunchSettingDetail', "Press the restart button to restart {0} and enable the setting.", this.productService.nameLong) :
-					localize('relaunchSettingDetailWeb', "Press the reload button to reload {0} and enable the setting.", this.productService.nameLong),
-				isNative ?
-					localize('restart', "&&Restart") :
-					localize('restartWeb', "&&Reload"),
-				() => this.hostService.restart()
+				isNAtive ?
+					locAlize('relAunchSettingMessAge', "A setting hAs chAnged thAt requires A restArt to tAke effect.") :
+					locAlize('relAunchSettingMessAgeWeb', "A setting hAs chAnged thAt requires A reloAd to tAke effect."),
+				isNAtive ?
+					locAlize('relAunchSettingDetAil', "Press the restArt button to restArt {0} And enAble the setting.", this.productService.nAmeLong) :
+					locAlize('relAunchSettingDetAilWeb', "Press the reloAd button to reloAd {0} And enAble the setting.", this.productService.nAmeLong),
+				isNAtive ?
+					locAlize('restArt', "&&RestArt") :
+					locAlize('restArtWeb', "&&ReloAd"),
+				() => this.hostService.restArt()
 			);
 		}
 	}
 
-	private async doConfirm(message: string, detail: string, primaryButton: string, confirmed: () => void): Promise<void> {
-		if (this.hostService.hasFocus) {
-			const res = await this.dialogService.confirm({ type: 'info', message, detail, primaryButton });
+	privAte Async doConfirm(messAge: string, detAil: string, primAryButton: string, confirmed: () => void): Promise<void> {
+		if (this.hostService.hAsFocus) {
+			const res = AwAit this.diAlogService.confirm({ type: 'info', messAge, detAil, primAryButton });
 			if (res.confirmed) {
 				confirmed();
 			}
@@ -126,82 +126,82 @@ export class SettingsChangeRelauncher extends Disposable implements IWorkbenchCo
 	}
 }
 
-export class WorkspaceChangeExtHostRelauncher extends Disposable implements IWorkbenchContribution {
+export clAss WorkspAceChAngeExtHostRelAuncher extends DisposAble implements IWorkbenchContribution {
 
-	private firstFolderResource?: URI;
-	private extensionHostRestarter: RunOnceScheduler;
+	privAte firstFolderResource?: URI;
+	privAte extensionHostRestArter: RunOnceScheduler;
 
-	private onDidChangeWorkspaceFoldersUnbind: IDisposable | undefined;
+	privAte onDidChAngeWorkspAceFoldersUnbind: IDisposAble | undefined;
 
 	constructor(
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
 		@IExtensionService extensionService: IExtensionService,
 		@IHostService hostService: IHostService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 
-		this.extensionHostRestarter = this._register(new RunOnceScheduler(() => {
-			if (!!environmentService.extensionTestsLocationURI) {
-				return; // no restart when in tests: see https://github.com/microsoft/vscode/issues/66936
+		this.extensionHostRestArter = this._register(new RunOnceScheduler(() => {
+			if (!!environmentService.extensionTestsLocAtionURI) {
+				return; // no restArt when in tests: see https://github.com/microsoft/vscode/issues/66936
 			}
 
 			if (environmentService.remoteAuthority) {
-				hostService.reload(); // TODO@aeschli, workaround
-			} else if (isNative) {
-				extensionService.restartExtensionHost();
+				hostService.reloAd(); // TODO@Aeschli, workAround
+			} else if (isNAtive) {
+				extensionService.restArtExtensionHost();
 			}
 		}, 10));
 
-		this.contextService.getCompleteWorkspace()
-			.then(workspace => {
-				this.firstFolderResource = workspace.folders.length > 0 ? workspace.folders[0].uri : undefined;
-				this.handleWorkbenchState();
-				this._register(this.contextService.onDidChangeWorkbenchState(() => setTimeout(() => this.handleWorkbenchState())));
+		this.contextService.getCompleteWorkspAce()
+			.then(workspAce => {
+				this.firstFolderResource = workspAce.folders.length > 0 ? workspAce.folders[0].uri : undefined;
+				this.hAndleWorkbenchStAte();
+				this._register(this.contextService.onDidChAngeWorkbenchStAte(() => setTimeout(() => this.hAndleWorkbenchStAte())));
 			});
 
-		this._register(toDisposable(() => {
-			if (this.onDidChangeWorkspaceFoldersUnbind) {
-				this.onDidChangeWorkspaceFoldersUnbind.dispose();
+		this._register(toDisposAble(() => {
+			if (this.onDidChAngeWorkspAceFoldersUnbind) {
+				this.onDidChAngeWorkspAceFoldersUnbind.dispose();
 			}
 		}));
 	}
 
-	private handleWorkbenchState(): void {
+	privAte hAndleWorkbenchStAte(): void {
 
-		// React to folder changes when we are in workspace state
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
+		// ReAct to folder chAnges when we Are in workspAce stAte
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
 
-			// Update our known first folder path if we entered workspace
-			const workspace = this.contextService.getWorkspace();
-			this.firstFolderResource = workspace.folders.length > 0 ? workspace.folders[0].uri : undefined;
+			// UpdAte our known first folder pAth if we entered workspAce
+			const workspAce = this.contextService.getWorkspAce();
+			this.firstFolderResource = workspAce.folders.length > 0 ? workspAce.folders[0].uri : undefined;
 
-			// Install workspace folder listener
-			if (!this.onDidChangeWorkspaceFoldersUnbind) {
-				this.onDidChangeWorkspaceFoldersUnbind = this.contextService.onDidChangeWorkspaceFolders(() => this.onDidChangeWorkspaceFolders());
+			// InstAll workspAce folder listener
+			if (!this.onDidChAngeWorkspAceFoldersUnbind) {
+				this.onDidChAngeWorkspAceFoldersUnbind = this.contextService.onDidChAngeWorkspAceFolders(() => this.onDidChAngeWorkspAceFolders());
 			}
 		}
 
-		// Ignore the workspace folder changes in EMPTY or FOLDER state
+		// Ignore the workspAce folder chAnges in EMPTY or FOLDER stAte
 		else {
-			dispose(this.onDidChangeWorkspaceFoldersUnbind);
-			this.onDidChangeWorkspaceFoldersUnbind = undefined;
+			dispose(this.onDidChAngeWorkspAceFoldersUnbind);
+			this.onDidChAngeWorkspAceFoldersUnbind = undefined;
 		}
 	}
 
-	private onDidChangeWorkspaceFolders(): void {
-		const workspace = this.contextService.getWorkspace();
+	privAte onDidChAngeWorkspAceFolders(): void {
+		const workspAce = this.contextService.getWorkspAce();
 
-		// Restart extension host if first root folder changed (impact on deprecated workspace.rootPath API)
-		const newFirstFolderResource = workspace.folders.length > 0 ? workspace.folders[0].uri : undefined;
-		if (!isEqual(this.firstFolderResource, newFirstFolderResource)) {
+		// RestArt extension host if first root folder chAnged (impAct on deprecAted workspAce.rootPAth API)
+		const newFirstFolderResource = workspAce.folders.length > 0 ? workspAce.folders[0].uri : undefined;
+		if (!isEquAl(this.firstFolderResource, newFirstFolderResource)) {
 			this.firstFolderResource = newFirstFolderResource;
 
-			this.extensionHostRestarter.schedule(); // buffer calls to extension host restart
+			this.extensionHostRestArter.schedule(); // buffer cAlls to extension host restArt
 		}
 	}
 }
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(SettingsChangeRelauncher, LifecyclePhase.Restored);
-workbenchRegistry.registerWorkbenchContribution(WorkspaceChangeExtHostRelauncher, LifecyclePhase.Restored);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(SettingsChAngeRelAuncher, LifecyclePhAse.Restored);
+workbenchRegistry.registerWorkbenchContribution(WorkspAceChAngeExtHostRelAuncher, LifecyclePhAse.Restored);

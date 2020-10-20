@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IShellLaunchConfig, TERMINAL_VIEW_ID } from 'vs/workbench/contrib/terminal/common/terminal';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IDisposable, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { SplitView, Orientation, IView, Sizing } from 'vs/base/browser/ui/splitview/splitview';
-import { IWorkbenchLayoutService, Parts, Position } from 'vs/workbench/services/layout/browser/layoutService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ITerminalInstance, Direction, ITerminalTab, ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { ViewContainerLocation, IViewDescriptorService } from 'vs/workbench/common/views';
+import { IShellLAunchConfig, TERMINAL_VIEW_ID } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IDisposAble, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { SplitView, OrientAtion, IView, Sizing } from 'vs/bAse/browser/ui/splitview/splitview';
+import { IWorkbenchLAyoutService, PArts, Position } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ITerminAlInstAnce, Direction, ITerminAlTAb, ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { ViewContAinerLocAtion, IViewDescriptorService } from 'vs/workbench/common/views';
 
 const SPLIT_PANE_MIN_SIZE = 120;
 
-class SplitPaneContainer extends Disposable {
-	private _height: number;
-	private _width: number;
-	private _splitView!: SplitView;
-	private readonly _splitViewDisposables = this._register(new DisposableStore());
-	private _children: SplitPane[] = [];
+clAss SplitPAneContAiner extends DisposAble {
+	privAte _height: number;
+	privAte _width: number;
+	privAte _splitView!: SplitView;
+	privAte reAdonly _splitViewDisposAbles = this._register(new DisposAbleStore());
+	privAte _children: SplitPAne[] = [];
 
-	private _onDidChange: Event<number | undefined> = Event.None;
-	public get onDidChange(): Event<number | undefined> { return this._onDidChange; }
+	privAte _onDidChAnge: Event<number | undefined> = Event.None;
+	public get onDidChAnge(): Event<number | undefined> { return this._onDidChAnge; }
 
 	constructor(
-		private _container: HTMLElement,
-		public orientation: Orientation,
-		@IWorkbenchLayoutService private readonly _layoutService: IWorkbenchLayoutService
+		privAte _contAiner: HTMLElement,
+		public orientAtion: OrientAtion,
+		@IWorkbenchLAyoutService privAte reAdonly _lAyoutService: IWorkbenchLAyoutService
 	) {
 		super();
-		this._width = this._container.offsetWidth;
-		this._height = this._container.offsetHeight;
-		this._createSplitView();
-		this._splitView.layout(this.orientation === Orientation.HORIZONTAL ? this._width : this._height);
+		this._width = this._contAiner.offsetWidth;
+		this._height = this._contAiner.offsetHeight;
+		this._creAteSplitView();
+		this._splitView.lAyout(this.orientAtion === OrientAtion.HORIZONTAL ? this._width : this._height);
 	}
 
-	private _createSplitView(): void {
-		this._splitView = new SplitView(this._container, { orientation: this.orientation });
-		this._splitViewDisposables.clear();
-		this._splitViewDisposables.add(this._splitView.onDidSashReset(() => this._splitView.distributeViewSizes()));
+	privAte _creAteSplitView(): void {
+		this._splitView = new SplitView(this._contAiner, { orientAtion: this.orientAtion });
+		this._splitViewDisposAbles.cleAr();
+		this._splitViewDisposAbles.Add(this._splitView.onDidSAshReset(() => this._splitView.distributeViewSizes()));
 	}
 
-	public split(instance: ITerminalInstance, index: number = this._children.length): void {
-		this._addChild(instance, index);
+	public split(instAnce: ITerminAlInstAnce, index: number = this._children.length): void {
+		this._AddChild(instAnce, index);
 	}
 
-	public resizePane(index: number, direction: Direction, amount: number): void {
-		const isHorizontal = (direction === Direction.Left) || (direction === Direction.Right);
+	public resizePAne(index: number, direction: Direction, Amount: number): void {
+		const isHorizontAl = (direction === Direction.Left) || (direction === Direction.Right);
 
-		if ((isHorizontal && this.orientation !== Orientation.HORIZONTAL) ||
-			(!isHorizontal && this.orientation !== Orientation.VERTICAL)) {
-			// Resize the entire pane as a whole
-			if ((this.orientation === Orientation.HORIZONTAL && direction === Direction.Down) ||
-				(this.orientation === Orientation.VERTICAL && direction === Direction.Right)) {
-				amount *= -1;
+		if ((isHorizontAl && this.orientAtion !== OrientAtion.HORIZONTAL) ||
+			(!isHorizontAl && this.orientAtion !== OrientAtion.VERTICAL)) {
+			// Resize the entire pAne As A whole
+			if ((this.orientAtion === OrientAtion.HORIZONTAL && direction === Direction.Down) ||
+				(this.orientAtion === OrientAtion.VERTICAL && direction === Direction.Right)) {
+				Amount *= -1;
 			}
-			this._layoutService.resizePart(Parts.PANEL_PART, amount);
+			this._lAyoutService.resizePArt(PArts.PANEL_PART, Amount);
 			return;
 		}
 
-		// Resize left/right in horizontal or up/down in vertical
-		// Only resize when there is more than one pane
+		// Resize left/right in horizontAl or up/down in verticAl
+		// Only resize when there is more thAn one pAne
 		if (this._children.length <= 1) {
 			return;
 		}
@@ -72,52 +72,52 @@ class SplitPaneContainer extends Disposable {
 			sizes.push(this._splitView.getViewSize(i));
 		}
 
-		// Remove size from right pane, unless index is the last pane in which case use left pane
-		const isSizingEndPane = index !== this._children.length - 1;
-		const indexToChange = isSizingEndPane ? index + 1 : index - 1;
-		if (isSizingEndPane && direction === Direction.Left) {
-			amount *= -1;
-		} else if (!isSizingEndPane && direction === Direction.Right) {
-			amount *= -1;
-		} else if (isSizingEndPane && direction === Direction.Up) {
-			amount *= -1;
-		} else if (!isSizingEndPane && direction === Direction.Down) {
-			amount *= -1;
+		// Remove size from right pAne, unless index is the lAst pAne in which cAse use left pAne
+		const isSizingEndPAne = index !== this._children.length - 1;
+		const indexToChAnge = isSizingEndPAne ? index + 1 : index - 1;
+		if (isSizingEndPAne && direction === Direction.Left) {
+			Amount *= -1;
+		} else if (!isSizingEndPAne && direction === Direction.Right) {
+			Amount *= -1;
+		} else if (isSizingEndPAne && direction === Direction.Up) {
+			Amount *= -1;
+		} else if (!isSizingEndPAne && direction === Direction.Down) {
+			Amount *= -1;
 		}
 
-		// Ensure the size is not reduced beyond the minimum, otherwise weird things can happen
-		if (sizes[index] + amount < SPLIT_PANE_MIN_SIZE) {
-			amount = SPLIT_PANE_MIN_SIZE - sizes[index];
-		} else if (sizes[indexToChange] - amount < SPLIT_PANE_MIN_SIZE) {
-			amount = sizes[indexToChange] - SPLIT_PANE_MIN_SIZE;
+		// Ensure the size is not reduced beyond the minimum, otherwise weird things cAn hAppen
+		if (sizes[index] + Amount < SPLIT_PANE_MIN_SIZE) {
+			Amount = SPLIT_PANE_MIN_SIZE - sizes[index];
+		} else if (sizes[indexToChAnge] - Amount < SPLIT_PANE_MIN_SIZE) {
+			Amount = sizes[indexToChAnge] - SPLIT_PANE_MIN_SIZE;
 		}
 
-		// Apply the size change
-		sizes[index] += amount;
-		sizes[indexToChange] -= amount;
+		// Apply the size chAnge
+		sizes[index] += Amount;
+		sizes[indexToChAnge] -= Amount;
 		for (let i = 0; i < this._splitView.length - 1; i++) {
 			this._splitView.resizeView(i, sizes[i]);
 		}
 	}
 
-	private _addChild(instance: ITerminalInstance, index: number): void {
-		const child = new SplitPane(instance, this.orientation === Orientation.HORIZONTAL ? this._height : this._width);
-		child.orientation = this.orientation;
+	privAte _AddChild(instAnce: ITerminAlInstAnce, index: number): void {
+		const child = new SplitPAne(instAnce, this.orientAtion === OrientAtion.HORIZONTAL ? this._height : this._width);
+		child.orientAtion = this.orientAtion;
 		if (typeof index === 'number') {
 			this._children.splice(index, 0, child);
 		} else {
 			this._children.push(child);
 		}
 
-		this._withDisabledLayout(() => this._splitView.addView(child, Sizing.Distribute, index));
+		this._withDisAbledLAyout(() => this._splitView.AddView(child, Sizing.Distribute, index));
 
-		this._onDidChange = Event.any(...this._children.map(c => c.onDidChange));
+		this._onDidChAnge = Event.Any(...this._children.mAp(c => c.onDidChAnge));
 	}
 
-	public remove(instance: ITerminalInstance): void {
+	public remove(instAnce: ITerminAlInstAnce): void {
 		let index: number | null = null;
 		for (let i = 0; i < this._children.length; i++) {
-			if (this._children[i].instance === instance) {
+			if (this._children[i].instAnce === instAnce) {
 				index = i;
 			}
 		}
@@ -127,314 +127,314 @@ class SplitPaneContainer extends Disposable {
 		}
 	}
 
-	public layout(width: number, height: number): void {
+	public lAyout(width: number, height: number): void {
 		this._width = width;
 		this._height = height;
-		if (this.orientation === Orientation.HORIZONTAL) {
-			this._children.forEach(c => c.orthogonalLayout(height));
-			this._splitView.layout(width);
+		if (this.orientAtion === OrientAtion.HORIZONTAL) {
+			this._children.forEAch(c => c.orthogonAlLAyout(height));
+			this._splitView.lAyout(width);
 		} else {
-			this._children.forEach(c => c.orthogonalLayout(width));
-			this._splitView.layout(height);
+			this._children.forEAch(c => c.orthogonAlLAyout(width));
+			this._splitView.lAyout(height);
 		}
 	}
 
-	public setOrientation(orientation: Orientation): void {
-		if (this.orientation === orientation) {
+	public setOrientAtion(orientAtion: OrientAtion): void {
+		if (this.orientAtion === orientAtion) {
 			return;
 		}
-		this.orientation = orientation;
+		this.orientAtion = orientAtion;
 
 		// Remove old split view
-		while (this._container.children.length > 0) {
-			this._container.removeChild(this._container.children[0]);
+		while (this._contAiner.children.length > 0) {
+			this._contAiner.removeChild(this._contAiner.children[0]);
 		}
-		this._splitViewDisposables.clear();
+		this._splitViewDisposAbles.cleAr();
 		this._splitView.dispose();
 
-		// Create new split view with updated orientation
-		this._createSplitView();
-		this._withDisabledLayout(() => {
-			this._children.forEach(child => {
-				child.orientation = orientation;
-				this._splitView.addView(child, 1);
+		// CreAte new split view with updAted orientAtion
+		this._creAteSplitView();
+		this._withDisAbledLAyout(() => {
+			this._children.forEAch(child => {
+				child.orientAtion = orientAtion;
+				this._splitView.AddView(child, 1);
 			});
 		});
 	}
 
-	private _withDisabledLayout(innerFunction: () => void): void {
-		// Whenever manipulating views that are going to be changed immediately, disabling
-		// layout/resize events in the terminal prevent bad dimensions going to the pty.
-		this._children.forEach(c => c.instance.disableLayout = true);
+	privAte _withDisAbledLAyout(innerFunction: () => void): void {
+		// Whenever mAnipulAting views thAt Are going to be chAnged immediAtely, disAbling
+		// lAyout/resize events in the terminAl prevent bAd dimensions going to the pty.
+		this._children.forEAch(c => c.instAnce.disAbleLAyout = true);
 		innerFunction();
-		this._children.forEach(c => c.instance.disableLayout = false);
+		this._children.forEAch(c => c.instAnce.disAbleLAyout = fAlse);
 	}
 }
 
-class SplitPane implements IView {
+clAss SplitPAne implements IView {
 	public minimumSize: number = SPLIT_PANE_MIN_SIZE;
-	public maximumSize: number = Number.MAX_VALUE;
+	public mAximumSize: number = Number.MAX_VALUE;
 
-	public orientation: Orientation | undefined;
+	public orientAtion: OrientAtion | undefined;
 
-	private _onDidChange: Event<number | undefined> = Event.None;
-	public get onDidChange(): Event<number | undefined> { return this._onDidChange; }
+	privAte _onDidChAnge: Event<number | undefined> = Event.None;
+	public get onDidChAnge(): Event<number | undefined> { return this._onDidChAnge; }
 
-	readonly element: HTMLElement;
+	reAdonly element: HTMLElement;
 
 	constructor(
-		readonly instance: ITerminalInstance,
-		public orthogonalSize: number
+		reAdonly instAnce: ITerminAlInstAnce,
+		public orthogonAlSize: number
 	) {
-		this.element = document.createElement('div');
-		this.element.className = 'terminal-split-pane';
-		this.instance.attachToElement(this.element);
+		this.element = document.creAteElement('div');
+		this.element.clAssNAme = 'terminAl-split-pAne';
+		this.instAnce.AttAchToElement(this.element);
 	}
 
-	public layout(size: number): void {
-		// Only layout when both sizes are known
-		if (!size || !this.orthogonalSize) {
+	public lAyout(size: number): void {
+		// Only lAyout when both sizes Are known
+		if (!size || !this.orthogonAlSize) {
 			return;
 		}
 
-		if (this.orientation === Orientation.VERTICAL) {
-			this.instance.layout({ width: this.orthogonalSize, height: size });
+		if (this.orientAtion === OrientAtion.VERTICAL) {
+			this.instAnce.lAyout({ width: this.orthogonAlSize, height: size });
 		} else {
-			this.instance.layout({ width: size, height: this.orthogonalSize });
+			this.instAnce.lAyout({ width: size, height: this.orthogonAlSize });
 		}
 	}
 
-	public orthogonalLayout(size: number): void {
-		this.orthogonalSize = size;
+	public orthogonAlLAyout(size: number): void {
+		this.orthogonAlSize = size;
 	}
 }
 
-export class TerminalTab extends Disposable implements ITerminalTab {
-	private _terminalInstances: ITerminalInstance[] = [];
-	private _splitPaneContainer: SplitPaneContainer | undefined;
-	private _tabElement: HTMLElement | undefined;
-	private _panelPosition: Position = Position.BOTTOM;
-	private _terminalLocation: ViewContainerLocation = ViewContainerLocation.Panel;
+export clAss TerminAlTAb extends DisposAble implements ITerminAlTAb {
+	privAte _terminAlInstAnces: ITerminAlInstAnce[] = [];
+	privAte _splitPAneContAiner: SplitPAneContAiner | undefined;
+	privAte _tAbElement: HTMLElement | undefined;
+	privAte _pAnelPosition: Position = Position.BOTTOM;
+	privAte _terminAlLocAtion: ViewContAinerLocAtion = ViewContAinerLocAtion.PAnel;
 
-	private _activeInstanceIndex: number;
-	private _isVisible: boolean = false;
+	privAte _ActiveInstAnceIndex: number;
+	privAte _isVisible: booleAn = fAlse;
 
-	public get terminalInstances(): ITerminalInstance[] { return this._terminalInstances; }
+	public get terminAlInstAnces(): ITerminAlInstAnce[] { return this._terminAlInstAnces; }
 
-	private readonly _onDisposed: Emitter<ITerminalTab> = this._register(new Emitter<ITerminalTab>());
-	public readonly onDisposed: Event<ITerminalTab> = this._onDisposed.event;
-	private readonly _onInstancesChanged: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onInstancesChanged: Event<void> = this._onInstancesChanged.event;
+	privAte reAdonly _onDisposed: Emitter<ITerminAlTAb> = this._register(new Emitter<ITerminAlTAb>());
+	public reAdonly onDisposed: Event<ITerminAlTAb> = this._onDisposed.event;
+	privAte reAdonly _onInstAncesChAnged: Emitter<void> = this._register(new Emitter<void>());
+	public reAdonly onInstAncesChAnged: Event<void> = this._onInstAncesChAnged.event;
 
 	constructor(
-		private _container: HTMLElement | undefined,
-		shellLaunchConfigOrInstance: IShellLaunchConfig | ITerminalInstance,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@IWorkbenchLayoutService private readonly _layoutService: IWorkbenchLayoutService,
-		@IViewDescriptorService private readonly _viewDescriptorService: IViewDescriptorService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService
+		privAte _contAiner: HTMLElement | undefined,
+		shellLAunchConfigOrInstAnce: IShellLAunchConfig | ITerminAlInstAnce,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@IWorkbenchLAyoutService privAte reAdonly _lAyoutService: IWorkbenchLAyoutService,
+		@IViewDescriptorService privAte reAdonly _viewDescriptorService: IViewDescriptorService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
 
-		let instance: ITerminalInstance;
-		if ('id' in shellLaunchConfigOrInstance) {
-			instance = shellLaunchConfigOrInstance;
+		let instAnce: ITerminAlInstAnce;
+		if ('id' in shellLAunchConfigOrInstAnce) {
+			instAnce = shellLAunchConfigOrInstAnce;
 		} else {
-			instance = this._terminalService.createInstance(undefined, shellLaunchConfigOrInstance);
+			instAnce = this._terminAlService.creAteInstAnce(undefined, shellLAunchConfigOrInstAnce);
 		}
-		this._terminalInstances.push(instance);
-		this._initInstanceListeners(instance);
-		this._activeInstanceIndex = 0;
+		this._terminAlInstAnces.push(instAnce);
+		this._initInstAnceListeners(instAnce);
+		this._ActiveInstAnceIndex = 0;
 
-		if (this._container) {
-			this.attachToElement(this._container);
+		if (this._contAiner) {
+			this.AttAchToElement(this._contAiner);
 		}
 	}
 
 	public dispose(): void {
 		super.dispose();
-		if (this._container && this._tabElement) {
-			this._container.removeChild(this._tabElement);
-			this._tabElement = undefined;
+		if (this._contAiner && this._tAbElement) {
+			this._contAiner.removeChild(this._tAbElement);
+			this._tAbElement = undefined;
 		}
-		this._terminalInstances = [];
-		this._onInstancesChanged.fire();
+		this._terminAlInstAnces = [];
+		this._onInstAncesChAnged.fire();
 	}
 
-	public get activeInstance(): ITerminalInstance | null {
-		if (this._terminalInstances.length === 0) {
+	public get ActiveInstAnce(): ITerminAlInstAnce | null {
+		if (this._terminAlInstAnces.length === 0) {
 			return null;
 		}
-		return this._terminalInstances[this._activeInstanceIndex];
+		return this._terminAlInstAnces[this._ActiveInstAnceIndex];
 	}
 
-	private _initInstanceListeners(instance: ITerminalInstance): void {
-		instance.addDisposable(instance.onDisposed(instance => this._onInstanceDisposed(instance)));
-		instance.addDisposable(instance.onFocused(instance => this._setActiveInstance(instance)));
+	privAte _initInstAnceListeners(instAnce: ITerminAlInstAnce): void {
+		instAnce.AddDisposAble(instAnce.onDisposed(instAnce => this._onInstAnceDisposed(instAnce)));
+		instAnce.AddDisposAble(instAnce.onFocused(instAnce => this._setActiveInstAnce(instAnce)));
 	}
 
-	private _onInstanceDisposed(instance: ITerminalInstance): void {
-		// Get the index of the instance and remove it from the list
-		const index = this._terminalInstances.indexOf(instance);
-		const wasActiveInstance = instance === this.activeInstance;
+	privAte _onInstAnceDisposed(instAnce: ITerminAlInstAnce): void {
+		// Get the index of the instAnce And remove it from the list
+		const index = this._terminAlInstAnces.indexOf(instAnce);
+		const wAsActiveInstAnce = instAnce === this.ActiveInstAnce;
 		if (index !== -1) {
-			this._terminalInstances.splice(index, 1);
+			this._terminAlInstAnces.splice(index, 1);
 		}
 
-		// Adjust focus if the instance was active
-		if (wasActiveInstance && this._terminalInstances.length > 0) {
-			const newIndex = index < this._terminalInstances.length ? index : this._terminalInstances.length - 1;
-			this.setActiveInstanceByIndex(newIndex);
-			// TODO: Only focus the new instance if the tab had focus?
-			if (this.activeInstance) {
-				this.activeInstance.focus(true);
+		// Adjust focus if the instAnce wAs Active
+		if (wAsActiveInstAnce && this._terminAlInstAnces.length > 0) {
+			const newIndex = index < this._terminAlInstAnces.length ? index : this._terminAlInstAnces.length - 1;
+			this.setActiveInstAnceByIndex(newIndex);
+			// TODO: Only focus the new instAnce if the tAb hAd focus?
+			if (this.ActiveInstAnce) {
+				this.ActiveInstAnce.focus(true);
 			}
 		}
 
-		// Remove the instance from the split pane if it has been created
-		if (this._splitPaneContainer) {
-			this._splitPaneContainer.remove(instance);
+		// Remove the instAnce from the split pAne if it hAs been creAted
+		if (this._splitPAneContAiner) {
+			this._splitPAneContAiner.remove(instAnce);
 		}
 
-		// Fire events and dispose tab if it was the last instance
-		this._onInstancesChanged.fire();
-		if (this._terminalInstances.length === 0) {
+		// Fire events And dispose tAb if it wAs the lAst instAnce
+		this._onInstAncesChAnged.fire();
+		if (this._terminAlInstAnces.length === 0) {
 			this._onDisposed.fire(this);
 			this.dispose();
 		}
 	}
 
-	private _setActiveInstance(instance: ITerminalInstance): void {
-		this.setActiveInstanceByIndex(this._getIndexFromId(instance.id));
+	privAte _setActiveInstAnce(instAnce: ITerminAlInstAnce): void {
+		this.setActiveInstAnceByIndex(this._getIndexFromId(instAnce.id));
 	}
 
-	private _getIndexFromId(terminalId: number): number {
-		let terminalIndex = -1;
-		this.terminalInstances.forEach((terminalInstance, i) => {
-			if (terminalInstance.id === terminalId) {
-				terminalIndex = i;
+	privAte _getIndexFromId(terminAlId: number): number {
+		let terminAlIndex = -1;
+		this.terminAlInstAnces.forEAch((terminAlInstAnce, i) => {
+			if (terminAlInstAnce.id === terminAlId) {
+				terminAlIndex = i;
 			}
 		});
-		if (terminalIndex === -1) {
-			throw new Error(`Terminal with ID ${terminalId} does not exist (has it already been disposed?)`);
+		if (terminAlIndex === -1) {
+			throw new Error(`TerminAl with ID ${terminAlId} does not exist (hAs it AlreAdy been disposed?)`);
 		}
-		return terminalIndex;
+		return terminAlIndex;
 	}
 
-	public setActiveInstanceByIndex(index: number): void {
-		// Check for invalid value
-		if (index < 0 || index >= this._terminalInstances.length) {
+	public setActiveInstAnceByIndex(index: number): void {
+		// Check for invAlid vAlue
+		if (index < 0 || index >= this._terminAlInstAnces.length) {
 			return;
 		}
 
-		const didInstanceChange = this._activeInstanceIndex !== index;
-		this._activeInstanceIndex = index;
+		const didInstAnceChAnge = this._ActiveInstAnceIndex !== index;
+		this._ActiveInstAnceIndex = index;
 
-		if (didInstanceChange) {
-			this._onInstancesChanged.fire();
+		if (didInstAnceChAnge) {
+			this._onInstAncesChAnged.fire();
 		}
 	}
 
-	public attachToElement(element: HTMLElement): void {
-		this._container = element;
+	public AttAchToElement(element: HTMLElement): void {
+		this._contAiner = element;
 
-		// If we already have a tab element, we can reparent it
-		if (!this._tabElement) {
-			this._tabElement = document.createElement('div');
-			this._tabElement.classList.add('terminal-tab');
+		// If we AlreAdy hAve A tAb element, we cAn repArent it
+		if (!this._tAbElement) {
+			this._tAbElement = document.creAteElement('div');
+			this._tAbElement.clAssList.Add('terminAl-tAb');
 		}
 
-		this._container.appendChild(this._tabElement);
-		if (!this._splitPaneContainer) {
-			this._panelPosition = this._layoutService.getPanelPosition();
-			this._terminalLocation = this._viewDescriptorService.getViewLocationById(TERMINAL_VIEW_ID)!;
-			const orientation = this._terminalLocation === ViewContainerLocation.Panel && this._panelPosition === Position.BOTTOM ? Orientation.HORIZONTAL : Orientation.VERTICAL;
-			const newLocal = this._instantiationService.createInstance(SplitPaneContainer, this._tabElement, orientation);
-			this._splitPaneContainer = newLocal;
-			this.terminalInstances.forEach(instance => this._splitPaneContainer!.split(instance));
+		this._contAiner.AppendChild(this._tAbElement);
+		if (!this._splitPAneContAiner) {
+			this._pAnelPosition = this._lAyoutService.getPAnelPosition();
+			this._terminAlLocAtion = this._viewDescriptorService.getViewLocAtionById(TERMINAL_VIEW_ID)!;
+			const orientAtion = this._terminAlLocAtion === ViewContAinerLocAtion.PAnel && this._pAnelPosition === Position.BOTTOM ? OrientAtion.HORIZONTAL : OrientAtion.VERTICAL;
+			const newLocAl = this._instAntiAtionService.creAteInstAnce(SplitPAneContAiner, this._tAbElement, orientAtion);
+			this._splitPAneContAiner = newLocAl;
+			this.terminAlInstAnces.forEAch(instAnce => this._splitPAneContAiner!.split(instAnce));
 		}
 
 		this.setVisible(this._isVisible);
 	}
 
 	public get title(): string {
-		let title = this.terminalInstances[0].title;
-		for (let i = 1; i < this.terminalInstances.length; i++) {
-			if (this.terminalInstances[i].title) {
-				title += `, ${this.terminalInstances[i].title}`;
+		let title = this.terminAlInstAnces[0].title;
+		for (let i = 1; i < this.terminAlInstAnces.length; i++) {
+			if (this.terminAlInstAnces[i].title) {
+				title += `, ${this.terminAlInstAnces[i].title}`;
 			}
 		}
 		return title;
 	}
 
-	public setVisible(visible: boolean): void {
+	public setVisible(visible: booleAn): void {
 		this._isVisible = visible;
-		if (this._tabElement) {
-			this._tabElement.style.display = visible ? '' : 'none';
+		if (this._tAbElement) {
+			this._tAbElement.style.displAy = visible ? '' : 'none';
 		}
-		this.terminalInstances.forEach(i => i.setVisible(visible));
+		this.terminAlInstAnces.forEAch(i => i.setVisible(visible));
 	}
 
-	public split(shellLaunchConfig: IShellLaunchConfig): ITerminalInstance {
-		if (!this._container) {
-			throw new Error('Cannot split terminal that has not been attached');
+	public split(shellLAunchConfig: IShellLAunchConfig): ITerminAlInstAnce {
+		if (!this._contAiner) {
+			throw new Error('CAnnot split terminAl thAt hAs not been AttAched');
 		}
 
-		const instance = this._terminalService.createInstance(undefined, shellLaunchConfig);
-		this._terminalInstances.splice(this._activeInstanceIndex + 1, 0, instance);
-		this._initInstanceListeners(instance);
-		this._setActiveInstance(instance);
+		const instAnce = this._terminAlService.creAteInstAnce(undefined, shellLAunchConfig);
+		this._terminAlInstAnces.splice(this._ActiveInstAnceIndex + 1, 0, instAnce);
+		this._initInstAnceListeners(instAnce);
+		this._setActiveInstAnce(instAnce);
 
-		if (this._splitPaneContainer) {
-			this._splitPaneContainer.split(instance, this._activeInstanceIndex);
+		if (this._splitPAneContAiner) {
+			this._splitPAneContAiner.split(instAnce, this._ActiveInstAnceIndex);
 		}
 
-		return instance;
+		return instAnce;
 	}
 
-	public addDisposable(disposable: IDisposable): void {
-		this._register(disposable);
+	public AddDisposAble(disposAble: IDisposAble): void {
+		this._register(disposAble);
 	}
 
-	public layout(width: number, height: number): void {
-		if (this._splitPaneContainer) {
-			// Check if the panel position changed and rotate panes if so
-			const newPanelPosition = this._layoutService.getPanelPosition();
-			const newTerminalLocation = this._viewDescriptorService.getViewLocationById(TERMINAL_VIEW_ID)!;
-			const terminalPositionChanged = newPanelPosition !== this._panelPosition || newTerminalLocation !== this._terminalLocation;
+	public lAyout(width: number, height: number): void {
+		if (this._splitPAneContAiner) {
+			// Check if the pAnel position chAnged And rotAte pAnes if so
+			const newPAnelPosition = this._lAyoutService.getPAnelPosition();
+			const newTerminAlLocAtion = this._viewDescriptorService.getViewLocAtionById(TERMINAL_VIEW_ID)!;
+			const terminAlPositionChAnged = newPAnelPosition !== this._pAnelPosition || newTerminAlLocAtion !== this._terminAlLocAtion;
 
-			if (terminalPositionChanged) {
-				const newOrientation = newTerminalLocation === ViewContainerLocation.Panel && newPanelPosition === Position.BOTTOM ? Orientation.HORIZONTAL : Orientation.VERTICAL;
-				this._splitPaneContainer.setOrientation(newOrientation);
-				this._panelPosition = newPanelPosition;
-				this._terminalLocation = newTerminalLocation;
+			if (terminAlPositionChAnged) {
+				const newOrientAtion = newTerminAlLocAtion === ViewContAinerLocAtion.PAnel && newPAnelPosition === Position.BOTTOM ? OrientAtion.HORIZONTAL : OrientAtion.VERTICAL;
+				this._splitPAneContAiner.setOrientAtion(newOrientAtion);
+				this._pAnelPosition = newPAnelPosition;
+				this._terminAlLocAtion = newTerminAlLocAtion;
 			}
 
-			this._splitPaneContainer.layout(width, height);
+			this._splitPAneContAiner.lAyout(width, height);
 		}
 	}
 
-	public focusPreviousPane(): void {
-		const newIndex = this._activeInstanceIndex === 0 ? this._terminalInstances.length - 1 : this._activeInstanceIndex - 1;
-		this.setActiveInstanceByIndex(newIndex);
+	public focusPreviousPAne(): void {
+		const newIndex = this._ActiveInstAnceIndex === 0 ? this._terminAlInstAnces.length - 1 : this._ActiveInstAnceIndex - 1;
+		this.setActiveInstAnceByIndex(newIndex);
 	}
 
-	public focusNextPane(): void {
-		const newIndex = this._activeInstanceIndex === this._terminalInstances.length - 1 ? 0 : this._activeInstanceIndex + 1;
-		this.setActiveInstanceByIndex(newIndex);
+	public focusNextPAne(): void {
+		const newIndex = this._ActiveInstAnceIndex === this._terminAlInstAnces.length - 1 ? 0 : this._ActiveInstAnceIndex + 1;
+		this.setActiveInstAnceByIndex(newIndex);
 	}
 
-	public resizePane(direction: Direction): void {
-		if (!this._splitPaneContainer) {
+	public resizePAne(direction: Direction): void {
+		if (!this._splitPAneContAiner) {
 			return;
 		}
 
-		const isHorizontal = (direction === Direction.Left || direction === Direction.Right);
-		const font = this._terminalService.configHelper.getFont();
-		// TODO: Support letter spacing and line height
-		const amount = isHorizontal ? font.charWidth : font.charHeight;
-		if (amount) {
-			this._splitPaneContainer.resizePane(this._activeInstanceIndex, direction, amount);
+		const isHorizontAl = (direction === Direction.Left || direction === Direction.Right);
+		const font = this._terminAlService.configHelper.getFont();
+		// TODO: Support letter spAcing And line height
+		const Amount = isHorizontAl ? font.chArWidth : font.chArHeight;
+		if (Amount) {
+			this._splitPAneContAiner.resizePAne(this._ActiveInstAnceIndex, direction, Amount);
 		}
 	}
 }

@@ -1,69 +1,69 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import { mapArrayOrNot } from 'vs/base/common/arrays';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import * as resources from 'vs/base/common/resources';
-import * as glob from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { IExtendedExtensionSearchOptions, IFileMatch, IFolderQuery, IPatternInfo, ISearchCompleteStats, ITextQuery, ITextSearchContext, ITextSearchMatch, ITextSearchResult, QueryGlobTester, resolvePatternsForProvider } from 'vs/workbench/services/search/common/search';
-import { TextSearchProvider, TextSearchResult, TextSearchMatch, TextSearchComplete, Range, TextSearchOptions, TextSearchQuery } from 'vs/workbench/services/search/common/searchExtTypes';
-import { nextTick } from 'vs/base/common/process';
-import { Schemas } from 'vs/base/common/network';
+import * As pAth from 'vs/bAse/common/pAth';
+import { mApArrAyOrNot } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import * As resources from 'vs/bAse/common/resources';
+import * As glob from 'vs/bAse/common/glob';
+import { URI } from 'vs/bAse/common/uri';
+import { IExtendedExtensionSeArchOptions, IFileMAtch, IFolderQuery, IPAtternInfo, ISeArchCompleteStAts, ITextQuery, ITextSeArchContext, ITextSeArchMAtch, ITextSeArchResult, QueryGlobTester, resolvePAtternsForProvider } from 'vs/workbench/services/seArch/common/seArch';
+import { TextSeArchProvider, TextSeArchResult, TextSeArchMAtch, TextSeArchComplete, RAnge, TextSeArchOptions, TextSeArchQuery } from 'vs/workbench/services/seArch/common/seArchExtTypes';
+import { nextTick } from 'vs/bAse/common/process';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export interface IFileUtils {
-	readdir: (resource: URI) => Promise<string[]>;
-	toCanonicalName: (encoding: string) => string;
+export interfAce IFileUtils {
+	reAddir: (resource: URI) => Promise<string[]>;
+	toCAnonicAlNAme: (encoding: string) => string;
 }
 
-export class TextSearchManager {
+export clAss TextSeArchMAnAger {
 
-	private collector: TextSearchResultsCollector | null = null;
+	privAte collector: TextSeArchResultsCollector | null = null;
 
-	private isLimitHit = false;
-	private resultCount = 0;
+	privAte isLimitHit = fAlse;
+	privAte resultCount = 0;
 
-	constructor(private query: ITextQuery, private provider: TextSearchProvider, private fileUtils: IFileUtils) { }
+	constructor(privAte query: ITextQuery, privAte provider: TextSeArchProvider, privAte fileUtils: IFileUtils) { }
 
-	search(onProgress: (matches: IFileMatch[]) => void, token: CancellationToken): Promise<ISearchCompleteStats> {
+	seArch(onProgress: (mAtches: IFileMAtch[]) => void, token: CAncellAtionToken): Promise<ISeArchCompleteStAts> {
 		const folderQueries = this.query.folderQueries || [];
-		const tokenSource = new CancellationTokenSource();
-		token.onCancellationRequested(() => tokenSource.cancel());
+		const tokenSource = new CAncellAtionTokenSource();
+		token.onCAncellAtionRequested(() => tokenSource.cAncel());
 
-		return new Promise<ISearchCompleteStats>((resolve, reject) => {
-			this.collector = new TextSearchResultsCollector(onProgress);
+		return new Promise<ISeArchCompleteStAts>((resolve, reject) => {
+			this.collector = new TextSeArchResultsCollector(onProgress);
 
-			let isCanceled = false;
-			const onResult = (result: TextSearchResult, folderIdx: number) => {
-				if (isCanceled) {
+			let isCAnceled = fAlse;
+			const onResult = (result: TextSeArchResult, folderIdx: number) => {
+				if (isCAnceled) {
 					return;
 				}
 
 				if (!this.isLimitHit) {
 					const resultSize = this.resultSize(result);
-					if (extensionResultIsMatch(result) && typeof this.query.maxResults === 'number' && this.resultCount + resultSize > this.query.maxResults) {
+					if (extensionResultIsMAtch(result) && typeof this.query.mAxResults === 'number' && this.resultCount + resultSize > this.query.mAxResults) {
 						this.isLimitHit = true;
-						isCanceled = true;
-						tokenSource.cancel();
+						isCAnceled = true;
+						tokenSource.cAncel();
 
-						result = this.trimResultToSize(result, this.query.maxResults - this.resultCount);
+						result = this.trimResultToSize(result, this.query.mAxResults - this.resultCount);
 					}
 
 					const newResultSize = this.resultSize(result);
 					this.resultCount += newResultSize;
-					if (newResultSize > 0 || !extensionResultIsMatch(result)) {
-						this.collector!.add(result, folderIdx);
+					if (newResultSize > 0 || !extensionResultIsMAtch(result)) {
+						this.collector!.Add(result, folderIdx);
 					}
 				}
 			};
 
-			// For each root folder
-			Promise.all(folderQueries.map((fq, i) => {
-				return this.searchInFolder(fq, r => onResult(r, i), tokenSource.token);
+			// For eAch root folder
+			Promise.All(folderQueries.mAp((fq, i) => {
+				return this.seArchInFolder(fq, r => onResult(r, i), tokenSource.token);
 			})).then(results => {
 				tokenSource.dispose();
 				this.collector!.flush();
@@ -71,63 +71,63 @@ export class TextSearchManager {
 				const someFolderHitLImit = results.some(result => !!result && !!result.limitHit);
 				resolve({
 					limitHit: this.isLimitHit || someFolderHitLImit,
-					stats: {
-						type: 'textSearchProvider'
+					stAts: {
+						type: 'textSeArchProvider'
 					}
 				});
 			}, (err: Error) => {
 				tokenSource.dispose();
-				const errMsg = toErrorMessage(err);
+				const errMsg = toErrorMessAge(err);
 				reject(new Error(errMsg));
 			});
 		});
 	}
 
-	private resultSize(result: TextSearchResult): number {
-		if (extensionResultIsMatch(result)) {
-			return Array.isArray(result.ranges) ?
-				result.ranges.length :
+	privAte resultSize(result: TextSeArchResult): number {
+		if (extensionResultIsMAtch(result)) {
+			return ArrAy.isArrAy(result.rAnges) ?
+				result.rAnges.length :
 				1;
 		}
 		else {
-			// #104400 context lines shoudn't count towards result count
+			// #104400 context lines shoudn't count towArds result count
 			return 0;
 		}
 	}
 
-	private trimResultToSize(result: TextSearchMatch, size: number): TextSearchMatch {
-		const rangesArr = Array.isArray(result.ranges) ? result.ranges : [result.ranges];
-		const matchesArr = Array.isArray(result.preview.matches) ? result.preview.matches : [result.preview.matches];
+	privAte trimResultToSize(result: TextSeArchMAtch, size: number): TextSeArchMAtch {
+		const rAngesArr = ArrAy.isArrAy(result.rAnges) ? result.rAnges : [result.rAnges];
+		const mAtchesArr = ArrAy.isArrAy(result.preview.mAtches) ? result.preview.mAtches : [result.preview.mAtches];
 
 		return {
-			ranges: rangesArr.slice(0, size),
+			rAnges: rAngesArr.slice(0, size),
 			preview: {
-				matches: matchesArr.slice(0, size),
+				mAtches: mAtchesArr.slice(0, size),
 				text: result.preview.text
 			},
 			uri: result.uri
 		};
 	}
 
-	private searchInFolder(folderQuery: IFolderQuery<URI>, onResult: (result: TextSearchResult) => void, token: CancellationToken): Promise<TextSearchComplete | null | undefined> {
+	privAte seArchInFolder(folderQuery: IFolderQuery<URI>, onResult: (result: TextSeArchResult) => void, token: CAncellAtionToken): Promise<TextSeArchComplete | null | undefined> {
 		const queryTester = new QueryGlobTester(this.query, folderQuery);
 		const testingPs: Promise<void>[] = [];
 		const progress = {
-			report: (result: TextSearchResult) => {
-				if (!this.validateProviderResult(result)) {
+			report: (result: TextSeArchResult) => {
+				if (!this.vAlidAteProviderResult(result)) {
 					return;
 				}
 
-				const hasSibling = folderQuery.folder.scheme === Schemas.file ?
-					glob.hasSiblingPromiseFn(() => {
-						return this.fileUtils.readdir(resources.dirname(result.uri));
+				const hAsSibling = folderQuery.folder.scheme === SchemAs.file ?
+					glob.hAsSiblingPromiseFn(() => {
+						return this.fileUtils.reAddir(resources.dirnAme(result.uri));
 					}) :
 					undefined;
 
-				const relativePath = resources.relativePath(folderQuery.folder, result.uri);
-				if (relativePath) {
+				const relAtivePAth = resources.relAtivePAth(folderQuery.folder, result.uri);
+				if (relAtivePAth) {
 					testingPs.push(
-						queryTester.includedInQuery(relativePath, path.basename(relativePath), hasSibling)
+						queryTester.includedInQuery(relAtivePAth, pAth.bAsenAme(relAtivePAth), hAsSibling)
 							.then(included => {
 								if (included) {
 									onResult(result);
@@ -137,31 +137,31 @@ export class TextSearchManager {
 			}
 		};
 
-		const searchOptions = this.getSearchOptionsForFolder(folderQuery);
+		const seArchOptions = this.getSeArchOptionsForFolder(folderQuery);
 		return new Promise(resolve => nextTick(resolve))
-			.then(() => this.provider.provideTextSearchResults(patternInfoToQuery(this.query.contentPattern), searchOptions, progress, token))
+			.then(() => this.provider.provideTextSeArchResults(pAtternInfoToQuery(this.query.contentPAttern), seArchOptions, progress, token))
 			.then(result => {
-				return Promise.all(testingPs)
+				return Promise.All(testingPs)
 					.then(() => result);
 			});
 	}
 
-	private validateProviderResult(result: TextSearchResult): boolean {
-		if (extensionResultIsMatch(result)) {
-			if (Array.isArray(result.ranges)) {
-				if (!Array.isArray(result.preview.matches)) {
-					console.warn('INVALID - A text search provider match\'s`ranges` and`matches` properties must have the same type.');
-					return false;
+	privAte vAlidAteProviderResult(result: TextSeArchResult): booleAn {
+		if (extensionResultIsMAtch(result)) {
+			if (ArrAy.isArrAy(result.rAnges)) {
+				if (!ArrAy.isArrAy(result.preview.mAtches)) {
+					console.wArn('INVALID - A text seArch provider mAtch\'s`rAnges` And`mAtches` properties must hAve the sAme type.');
+					return fAlse;
 				}
 
-				if ((<Range[]>result.preview.matches).length !== result.ranges.length) {
-					console.warn('INVALID - A text search provider match\'s`ranges` and`matches` properties must have the same length.');
-					return false;
+				if ((<RAnge[]>result.preview.mAtches).length !== result.rAnges.length) {
+					console.wArn('INVALID - A text seArch provider mAtch\'s`rAnges` And`mAtches` properties must hAve the sAme length.');
+					return fAlse;
 				}
 			} else {
-				if (Array.isArray(result.preview.matches)) {
-					console.warn('INVALID - A text search provider match\'s`ranges` and`matches` properties must have the same length.');
-					return false;
+				if (ArrAy.isArrAy(result.preview.mAtches)) {
+					console.wArn('INVALID - A text seArch provider mAtch\'s`rAnges` And`mAtches` properties must hAve the sAme length.');
+					return fAlse;
 				}
 			}
 		}
@@ -169,192 +169,192 @@ export class TextSearchManager {
 		return true;
 	}
 
-	private getSearchOptionsForFolder(fq: IFolderQuery<URI>): TextSearchOptions {
-		const includes = resolvePatternsForProvider(this.query.includePattern, fq.includePattern);
-		const excludes = resolvePatternsForProvider(this.query.excludePattern, fq.excludePattern);
+	privAte getSeArchOptionsForFolder(fq: IFolderQuery<URI>): TextSeArchOptions {
+		const includes = resolvePAtternsForProvider(this.query.includePAttern, fq.includePAttern);
+		const excludes = resolvePAtternsForProvider(this.query.excludePAttern, fq.excludePAttern);
 
-		const options = <TextSearchOptions>{
+		const options = <TextSeArchOptions>{
 			folder: URI.from(fq.folder),
 			excludes,
 			includes,
-			useIgnoreFiles: !fq.disregardIgnoreFiles,
-			useGlobalIgnoreFiles: !fq.disregardGlobalIgnoreFiles,
+			useIgnoreFiles: !fq.disregArdIgnoreFiles,
+			useGlobAlIgnoreFiles: !fq.disregArdGlobAlIgnoreFiles,
 			followSymlinks: !fq.ignoreSymlinks,
-			encoding: fq.fileEncoding && this.fileUtils.toCanonicalName(fq.fileEncoding),
-			maxFileSize: this.query.maxFileSize,
-			maxResults: this.query.maxResults,
+			encoding: fq.fileEncoding && this.fileUtils.toCAnonicAlNAme(fq.fileEncoding),
+			mAxFileSize: this.query.mAxFileSize,
+			mAxResults: this.query.mAxResults,
 			previewOptions: this.query.previewOptions,
-			afterContext: this.query.afterContext,
+			AfterContext: this.query.AfterContext,
 			beforeContext: this.query.beforeContext
 		};
-		(<IExtendedExtensionSearchOptions>options).usePCRE2 = this.query.usePCRE2;
+		(<IExtendedExtensionSeArchOptions>options).usePCRE2 = this.query.usePCRE2;
 		return options;
 	}
 }
 
-function patternInfoToQuery(patternInfo: IPatternInfo): TextSearchQuery {
-	return <TextSearchQuery>{
-		isCaseSensitive: patternInfo.isCaseSensitive || false,
-		isRegExp: patternInfo.isRegExp || false,
-		isWordMatch: patternInfo.isWordMatch || false,
-		isMultiline: patternInfo.isMultiline || false,
-		pattern: patternInfo.pattern
+function pAtternInfoToQuery(pAtternInfo: IPAtternInfo): TextSeArchQuery {
+	return <TextSeArchQuery>{
+		isCAseSensitive: pAtternInfo.isCAseSensitive || fAlse,
+		isRegExp: pAtternInfo.isRegExp || fAlse,
+		isWordMAtch: pAtternInfo.isWordMAtch || fAlse,
+		isMultiline: pAtternInfo.isMultiline || fAlse,
+		pAttern: pAtternInfo.pAttern
 	};
 }
 
-export class TextSearchResultsCollector {
-	private _batchedCollector: BatchedCollector<IFileMatch>;
+export clAss TextSeArchResultsCollector {
+	privAte _bAtchedCollector: BAtchedCollector<IFileMAtch>;
 
-	private _currentFolderIdx: number = -1;
-	private _currentUri: URI | undefined;
-	private _currentFileMatch: IFileMatch | null = null;
+	privAte _currentFolderIdx: number = -1;
+	privAte _currentUri: URI | undefined;
+	privAte _currentFileMAtch: IFileMAtch | null = null;
 
-	constructor(private _onResult: (result: IFileMatch[]) => void) {
-		this._batchedCollector = new BatchedCollector<IFileMatch>(512, items => this.sendItems(items));
+	constructor(privAte _onResult: (result: IFileMAtch[]) => void) {
+		this._bAtchedCollector = new BAtchedCollector<IFileMAtch>(512, items => this.sendItems(items));
 	}
 
-	add(data: TextSearchResult, folderIdx: number): void {
-		// Collects TextSearchResults into IInternalFileMatches and collates using BatchedCollector.
-		// This is efficient for ripgrep which sends results back one file at a time. It wouldn't be efficient for other search
-		// providers that send results in random order. We could do this step afterwards instead.
-		if (this._currentFileMatch && (this._currentFolderIdx !== folderIdx || !resources.isEqual(this._currentUri, data.uri))) {
+	Add(dAtA: TextSeArchResult, folderIdx: number): void {
+		// Collects TextSeArchResults into IInternAlFileMAtches And collAtes using BAtchedCollector.
+		// This is efficient for ripgrep which sends results bAck one file At A time. It wouldn't be efficient for other seArch
+		// providers thAt send results in rAndom order. We could do this step AfterwArds insteAd.
+		if (this._currentFileMAtch && (this._currentFolderIdx !== folderIdx || !resources.isEquAl(this._currentUri, dAtA.uri))) {
 			this.pushToCollector();
-			this._currentFileMatch = null;
+			this._currentFileMAtch = null;
 		}
 
-		if (!this._currentFileMatch) {
+		if (!this._currentFileMAtch) {
 			this._currentFolderIdx = folderIdx;
-			this._currentFileMatch = {
-				resource: data.uri,
+			this._currentFileMAtch = {
+				resource: dAtA.uri,
 				results: []
 			};
 		}
 
-		this._currentFileMatch.results!.push(extensionResultToFrontendResult(data));
+		this._currentFileMAtch.results!.push(extensionResultToFrontendResult(dAtA));
 	}
 
-	private pushToCollector(): void {
-		const size = this._currentFileMatch && this._currentFileMatch.results ?
-			this._currentFileMatch.results.length :
+	privAte pushToCollector(): void {
+		const size = this._currentFileMAtch && this._currentFileMAtch.results ?
+			this._currentFileMAtch.results.length :
 			0;
-		this._batchedCollector.addItem(this._currentFileMatch!, size);
+		this._bAtchedCollector.AddItem(this._currentFileMAtch!, size);
 	}
 
 	flush(): void {
 		this.pushToCollector();
-		this._batchedCollector.flush();
+		this._bAtchedCollector.flush();
 	}
 
-	private sendItems(items: IFileMatch[]): void {
+	privAte sendItems(items: IFileMAtch[]): void {
 		this._onResult(items);
 	}
 }
 
-function extensionResultToFrontendResult(data: TextSearchResult): ITextSearchResult {
-	// Warning: result from RipgrepTextSearchEH has fake Range. Don't depend on any other props beyond these...
-	if (extensionResultIsMatch(data)) {
-		return <ITextSearchMatch>{
+function extensionResultToFrontendResult(dAtA: TextSeArchResult): ITextSeArchResult {
+	// WArning: result from RipgrepTextSeArchEH hAs fAke RAnge. Don't depend on Any other props beyond these...
+	if (extensionResultIsMAtch(dAtA)) {
+		return <ITextSeArchMAtch>{
 			preview: {
-				matches: mapArrayOrNot(data.preview.matches, m => ({
-					startLineNumber: m.start.line,
-					startColumn: m.start.character,
+				mAtches: mApArrAyOrNot(dAtA.preview.mAtches, m => ({
+					stArtLineNumber: m.stArt.line,
+					stArtColumn: m.stArt.chArActer,
 					endLineNumber: m.end.line,
-					endColumn: m.end.character
+					endColumn: m.end.chArActer
 				})),
-				text: data.preview.text
+				text: dAtA.preview.text
 			},
-			ranges: mapArrayOrNot(data.ranges, r => ({
-				startLineNumber: r.start.line,
-				startColumn: r.start.character,
+			rAnges: mApArrAyOrNot(dAtA.rAnges, r => ({
+				stArtLineNumber: r.stArt.line,
+				stArtColumn: r.stArt.chArActer,
 				endLineNumber: r.end.line,
-				endColumn: r.end.character
+				endColumn: r.end.chArActer
 			}))
 		};
 	} else {
-		return <ITextSearchContext>{
-			text: data.text,
-			lineNumber: data.lineNumber
+		return <ITextSeArchContext>{
+			text: dAtA.text,
+			lineNumber: dAtA.lineNumber
 		};
 	}
 }
 
-export function extensionResultIsMatch(data: TextSearchResult): data is TextSearchMatch {
-	return !!(<TextSearchMatch>data).preview;
+export function extensionResultIsMAtch(dAtA: TextSeArchResult): dAtA is TextSeArchMAtch {
+	return !!(<TextSeArchMAtch>dAtA).preview;
 }
 
 /**
- * Collects items that have a size - before the cumulative size of collected items reaches START_BATCH_AFTER_COUNT, the callback is called for every
+ * Collects items thAt hAve A size - before the cumulAtive size of collected items reAches START_BATCH_AFTER_COUNT, the cAllbAck is cAlled for every
  * set of items collected.
- * But after that point, the callback is called with batches of maxBatchSize.
- * If the batch isn't filled within some time, the callback is also called.
+ * But After thAt point, the cAllbAck is cAlled with bAtches of mAxBAtchSize.
+ * If the bAtch isn't filled within some time, the cAllbAck is Also cAlled.
  */
-export class BatchedCollector<T> {
-	private static readonly TIMEOUT = 4000;
+export clAss BAtchedCollector<T> {
+	privAte stAtic reAdonly TIMEOUT = 4000;
 
-	// After START_BATCH_AFTER_COUNT items have been collected, stop flushing on timeout
-	private static readonly START_BATCH_AFTER_COUNT = 50;
+	// After START_BATCH_AFTER_COUNT items hAve been collected, stop flushing on timeout
+	privAte stAtic reAdonly START_BATCH_AFTER_COUNT = 50;
 
-	private totalNumberCompleted = 0;
-	private batch: T[] = [];
-	private batchSize = 0;
-	private timeoutHandle: any;
+	privAte totAlNumberCompleted = 0;
+	privAte bAtch: T[] = [];
+	privAte bAtchSize = 0;
+	privAte timeoutHAndle: Any;
 
-	constructor(private maxBatchSize: number, private cb: (items: T[]) => void) {
+	constructor(privAte mAxBAtchSize: number, privAte cb: (items: T[]) => void) {
 	}
 
-	addItem(item: T, size: number): void {
+	AddItem(item: T, size: number): void {
 		if (!item) {
 			return;
 		}
 
-		this.addItemToBatch(item, size);
+		this.AddItemToBAtch(item, size);
 	}
 
-	addItems(items: T[], size: number): void {
+	AddItems(items: T[], size: number): void {
 		if (!items) {
 			return;
 		}
 
-		this.addItemsToBatch(items, size);
+		this.AddItemsToBAtch(items, size);
 	}
 
-	private addItemToBatch(item: T, size: number): void {
-		this.batch.push(item);
-		this.batchSize += size;
-		this.onUpdate();
+	privAte AddItemToBAtch(item: T, size: number): void {
+		this.bAtch.push(item);
+		this.bAtchSize += size;
+		this.onUpdAte();
 	}
 
-	private addItemsToBatch(item: T[], size: number): void {
-		this.batch = this.batch.concat(item);
-		this.batchSize += size;
-		this.onUpdate();
+	privAte AddItemsToBAtch(item: T[], size: number): void {
+		this.bAtch = this.bAtch.concAt(item);
+		this.bAtchSize += size;
+		this.onUpdAte();
 	}
 
-	private onUpdate(): void {
-		if (this.totalNumberCompleted < BatchedCollector.START_BATCH_AFTER_COUNT) {
-			// Flush because we aren't batching yet
+	privAte onUpdAte(): void {
+		if (this.totAlNumberCompleted < BAtchedCollector.START_BATCH_AFTER_COUNT) {
+			// Flush becAuse we Aren't bAtching yet
 			this.flush();
-		} else if (this.batchSize >= this.maxBatchSize) {
-			// Flush because the batch is full
+		} else if (this.bAtchSize >= this.mAxBAtchSize) {
+			// Flush becAuse the bAtch is full
 			this.flush();
-		} else if (!this.timeoutHandle) {
-			// No timeout running, start a timeout to flush
-			this.timeoutHandle = setTimeout(() => {
+		} else if (!this.timeoutHAndle) {
+			// No timeout running, stArt A timeout to flush
+			this.timeoutHAndle = setTimeout(() => {
 				this.flush();
-			}, BatchedCollector.TIMEOUT);
+			}, BAtchedCollector.TIMEOUT);
 		}
 	}
 
 	flush(): void {
-		if (this.batchSize) {
-			this.totalNumberCompleted += this.batchSize;
-			this.cb(this.batch);
-			this.batch = [];
-			this.batchSize = 0;
+		if (this.bAtchSize) {
+			this.totAlNumberCompleted += this.bAtchSize;
+			this.cb(this.bAtch);
+			this.bAtch = [];
+			this.bAtchSize = 0;
 
-			if (this.timeoutHandle) {
-				clearTimeout(this.timeoutHandle);
-				this.timeoutHandle = 0;
+			if (this.timeoutHAndle) {
+				cleArTimeout(this.timeoutHAndle);
+				this.timeoutHAndle = 0;
 			}
 		}
 	}

@@ -1,230 +1,230 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as vm from 'vm';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
+import * As vm from 'vm';
 
-interface IPosition {
+interfAce IPosition {
 	line: number;
 	col: number;
 }
 
-interface IBuildModuleInfo {
+interfAce IBuildModuleInfo {
 	id: string;
-	path: string;
-	defineLocation: IPosition;
+	pAth: string;
+	defineLocAtion: IPosition;
 	dependencies: string[];
 	shim: string;
-	exports: any;
+	exports: Any;
 }
 
-interface IBuildModuleInfoMap {
+interfAce IBuildModuleInfoMAp {
 	[moduleId: string]: IBuildModuleInfo;
 }
 
-interface ILoaderPlugin {
-	write(pluginName: string, moduleName: string, write: ILoaderPluginWriteFunc): void;
-	writeFile(pluginName: string, entryPoint: string, req: ILoaderPluginReqFunc, write: (filename: string, contents: string) => void, config: any): void;
-	finishBuild(write: (filename: string, contents: string) => void): void;
+interfAce ILoAderPlugin {
+	write(pluginNAme: string, moduleNAme: string, write: ILoAderPluginWriteFunc): void;
+	writeFile(pluginNAme: string, entryPoint: string, req: ILoAderPluginReqFunc, write: (filenAme: string, contents: string) => void, config: Any): void;
+	finishBuild(write: (filenAme: string, contents: string) => void): void;
 }
 
-interface ILoaderPluginWriteFunc {
+interfAce ILoAderPluginWriteFunc {
 	(something: string): void;
 	getEntryPoint(): string;
-	asModule(moduleId: string, code: string): void;
+	AsModule(moduleId: string, code: string): void;
 }
 
-interface ILoaderPluginReqFunc {
+interfAce ILoAderPluginReqFunc {
 	(something: string): void;
 	toUrl(something: string): string;
 }
 
-export interface IEntryPoint {
-	name: string;
+export interfAce IEntryPoint {
+	nAme: string;
 	include?: string[];
 	exclude?: string[];
 	prepend?: string[];
-	append?: string[];
+	Append?: string[];
 	dest?: string;
 }
 
-interface IEntryPointMap {
+interfAce IEntryPointMAp {
 	[moduleId: string]: IEntryPoint;
 }
 
-export interface IGraph {
+export interfAce IGrAph {
 	[node: string]: string[];
 }
 
-interface INodeSet {
-	[node: string]: boolean;
+interfAce INodeSet {
+	[node: string]: booleAn;
 }
 
-export interface IFile {
-	path: string | null;
+export interfAce IFile {
+	pAth: string | null;
 	contents: string;
 }
 
-export interface IConcatFile {
+export interfAce IConcAtFile {
 	dest: string;
 	sources: IFile[];
 }
 
-export interface IBundleData {
-	graph: IGraph;
+export interfAce IBundleDAtA {
+	grAph: IGrAph;
 	bundles: { [moduleId: string]: string[]; };
 }
 
-export interface IBundleResult {
-	files: IConcatFile[];
+export interfAce IBundleResult {
+	files: IConcAtFile[];
 	cssInlinedResources: string[];
-	bundleData: IBundleData;
+	bundleDAtA: IBundleDAtA;
 }
 
-interface IPartialBundleResult {
-	files: IConcatFile[];
-	bundleData: IBundleData;
+interfAce IPArtiAlBundleResult {
+	files: IConcAtFile[];
+	bundleDAtA: IBundleDAtA;
 }
 
-export interface ILoaderConfig {
-	isBuild?: boolean;
-	paths?: { [path: string]: any; };
+export interfAce ILoAderConfig {
+	isBuild?: booleAn;
+	pAths?: { [pAth: string]: Any; };
 }
 
 /**
  * Bundle `entryPoints` given config `config`.
  */
-export function bundle(entryPoints: IEntryPoint[], config: ILoaderConfig, callback: (err: any, result: IBundleResult | null) => void): void {
-	const entryPointsMap: IEntryPointMap = {};
-	entryPoints.forEach((module: IEntryPoint) => {
-		entryPointsMap[module.name] = module;
+export function bundle(entryPoints: IEntryPoint[], config: ILoAderConfig, cAllbAck: (err: Any, result: IBundleResult | null) => void): void {
+	const entryPointsMAp: IEntryPointMAp = {};
+	entryPoints.forEAch((module: IEntryPoint) => {
+		entryPointsMAp[module.nAme] = module;
 	});
 
-	const allMentionedModulesMap: { [modules: string]: boolean; } = {};
-	entryPoints.forEach((module: IEntryPoint) => {
-		allMentionedModulesMap[module.name] = true;
-		(module.include || []).forEach(function (includedModule) {
-			allMentionedModulesMap[includedModule] = true;
+	const AllMentionedModulesMAp: { [modules: string]: booleAn; } = {};
+	entryPoints.forEAch((module: IEntryPoint) => {
+		AllMentionedModulesMAp[module.nAme] = true;
+		(module.include || []).forEAch(function (includedModule) {
+			AllMentionedModulesMAp[includedModule] = true;
 		});
-		(module.exclude || []).forEach(function (excludedModule) {
-			allMentionedModulesMap[excludedModule] = true;
+		(module.exclude || []).forEAch(function (excludedModule) {
+			AllMentionedModulesMAp[excludedModule] = true;
 		});
 	});
 
 
-	const code = require('fs').readFileSync(path.join(__dirname, '../../src/vs/loader.js'));
-	const r: Function = <any>vm.runInThisContext('(function(require, module, exports) { ' + code + '\n});');
-	const loaderModule = { exports: {} };
-	r.call({}, require, loaderModule, loaderModule.exports);
+	const code = require('fs').reAdFileSync(pAth.join(__dirnAme, '../../src/vs/loAder.js'));
+	const r: Function = <Any>vm.runInThisContext('(function(require, module, exports) { ' + code + '\n});');
+	const loAderModule = { exports: {} };
+	r.cAll({}, require, loAderModule, loAderModule.exports);
 
-	const loader: any = loaderModule.exports;
+	const loAder: Any = loAderModule.exports;
 	config.isBuild = true;
-	config.paths = config.paths || {};
-	if (!config.paths['vs/nls']) {
-		config.paths['vs/nls'] = 'out-build/vs/nls.build';
+	config.pAths = config.pAths || {};
+	if (!config.pAths['vs/nls']) {
+		config.pAths['vs/nls'] = 'out-build/vs/nls.build';
 	}
-	if (!config.paths['vs/css']) {
-		config.paths['vs/css'] = 'out-build/vs/css.build';
+	if (!config.pAths['vs/css']) {
+		config.pAths['vs/css'] = 'out-build/vs/css.build';
 	}
-	loader.config(config);
+	loAder.config(config);
 
-	loader(['require'], (localRequire: any) => {
-		const resolvePath = (path: string) => {
-			const r = localRequire.toUrl(path);
+	loAder(['require'], (locAlRequire: Any) => {
+		const resolvePAth = (pAth: string) => {
+			const r = locAlRequire.toUrl(pAth);
 			if (!/\.js/.test(r)) {
 				return r + '.js';
 			}
 			return r;
 		};
-		for (const moduleId in entryPointsMap) {
-			const entryPoint = entryPointsMap[moduleId];
-			if (entryPoint.append) {
-				entryPoint.append = entryPoint.append.map(resolvePath);
+		for (const moduleId in entryPointsMAp) {
+			const entryPoint = entryPointsMAp[moduleId];
+			if (entryPoint.Append) {
+				entryPoint.Append = entryPoint.Append.mAp(resolvePAth);
 			}
 			if (entryPoint.prepend) {
-				entryPoint.prepend = entryPoint.prepend.map(resolvePath);
+				entryPoint.prepend = entryPoint.prepend.mAp(resolvePAth);
 			}
 		}
 	});
 
-	loader(Object.keys(allMentionedModulesMap), () => {
-		const modules = <IBuildModuleInfo[]>loader.getBuildInfo();
-		const partialResult = emitEntryPoints(modules, entryPointsMap);
-		const cssInlinedResources = loader('vs/css').getInlinedResources();
-		callback(null, {
-			files: partialResult.files,
+	loAder(Object.keys(AllMentionedModulesMAp), () => {
+		const modules = <IBuildModuleInfo[]>loAder.getBuildInfo();
+		const pArtiAlResult = emitEntryPoints(modules, entryPointsMAp);
+		const cssInlinedResources = loAder('vs/css').getInlinedResources();
+		cAllbAck(null, {
+			files: pArtiAlResult.files,
 			cssInlinedResources: cssInlinedResources,
-			bundleData: partialResult.bundleData
+			bundleDAtA: pArtiAlResult.bundleDAtA
 		});
-	}, (err: any) => callback(err, null));
+	}, (err: Any) => cAllbAck(err, null));
 }
 
-function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMap): IPartialBundleResult {
-	const modulesMap: IBuildModuleInfoMap = {};
-	modules.forEach((m: IBuildModuleInfo) => {
-		modulesMap[m.id] = m;
+function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMAp): IPArtiAlBundleResult {
+	const modulesMAp: IBuildModuleInfoMAp = {};
+	modules.forEAch((m: IBuildModuleInfo) => {
+		modulesMAp[m.id] = m;
 	});
 
-	const modulesGraph: IGraph = {};
-	modules.forEach((m: IBuildModuleInfo) => {
-		modulesGraph[m.id] = m.dependencies;
+	const modulesGrAph: IGrAph = {};
+	modules.forEAch((m: IBuildModuleInfo) => {
+		modulesGrAph[m.id] = m.dependencies;
 	});
 
-	const sortedModules = topologicalSort(modulesGraph);
+	const sortedModules = topologicAlSort(modulesGrAph);
 
-	let result: IConcatFile[] = [];
-	const usedPlugins: IPluginMap = {};
-	const bundleData: IBundleData = {
-		graph: modulesGraph,
+	let result: IConcAtFile[] = [];
+	const usedPlugins: IPluginMAp = {};
+	const bundleDAtA: IBundleDAtA = {
+		grAph: modulesGrAph,
 		bundles: {}
 	};
 
-	Object.keys(entryPoints).forEach((moduleToBundle: string) => {
+	Object.keys(entryPoints).forEAch((moduleToBundle: string) => {
 		const info = entryPoints[moduleToBundle];
-		const rootNodes = [moduleToBundle].concat(info.include || []);
-		const allDependencies = visit(rootNodes, modulesGraph);
-		const excludes: string[] = ['require', 'exports', 'module'].concat(info.exclude || []);
+		const rootNodes = [moduleToBundle].concAt(info.include || []);
+		const AllDependencies = visit(rootNodes, modulesGrAph);
+		const excludes: string[] = ['require', 'exports', 'module'].concAt(info.exclude || []);
 
-		excludes.forEach((excludeRoot: string) => {
-			const allExcludes = visit([excludeRoot], modulesGraph);
-			Object.keys(allExcludes).forEach((exclude: string) => {
-				delete allDependencies[exclude];
+		excludes.forEAch((excludeRoot: string) => {
+			const AllExcludes = visit([excludeRoot], modulesGrAph);
+			Object.keys(AllExcludes).forEAch((exclude: string) => {
+				delete AllDependencies[exclude];
 			});
 		});
 
 		const includedModules = sortedModules.filter((module: string) => {
-			return allDependencies[module];
+			return AllDependencies[module];
 		});
 
-		bundleData.bundles[moduleToBundle] = includedModules;
+		bundleDAtA.bundles[moduleToBundle] = includedModules;
 
 		const res = emitEntryPoint(
-			modulesMap,
-			modulesGraph,
+			modulesMAp,
+			modulesGrAph,
 			moduleToBundle,
 			includedModules,
 			info.prepend || [],
-			info.append || [],
+			info.Append || [],
 			info.dest
 		);
 
-		result = result.concat(res.files);
-		for (const pluginName in res.usedPlugins) {
-			usedPlugins[pluginName] = usedPlugins[pluginName] || res.usedPlugins[pluginName];
+		result = result.concAt(res.files);
+		for (const pluginNAme in res.usedPlugins) {
+			usedPlugins[pluginNAme] = usedPlugins[pluginNAme] || res.usedPlugins[pluginNAme];
 		}
 	});
 
-	Object.keys(usedPlugins).forEach((pluginName: string) => {
-		const plugin = usedPlugins[pluginName];
+	Object.keys(usedPlugins).forEAch((pluginNAme: string) => {
+		const plugin = usedPlugins[pluginNAme];
 		if (typeof plugin.finishBuild === 'function') {
-			const write = (filename: string, contents: string) => {
+			const write = (filenAme: string, contents: string) => {
 				result.push({
-					dest: filename,
+					dest: filenAme,
 					sources: [{
-						path: null,
+						pAth: null,
 						contents: contents
 					}]
 				});
@@ -235,35 +235,35 @@ function emitEntryPoints(modules: IBuildModuleInfo[], entryPoints: IEntryPointMa
 
 	return {
 		// TODO@TS 2.1.2
-		files: extractStrings(removeDuplicateTSBoilerplate(result)),
-		bundleData: bundleData
+		files: extrActStrings(removeDuplicAteTSBoilerplAte(result)),
+		bundleDAtA: bundleDAtA
 	};
 }
 
-function extractStrings(destFiles: IConcatFile[]): IConcatFile[] {
-	const parseDefineCall = (moduleMatch: string, depsMatch: string) => {
-		const module = moduleMatch.replace(/^"|"$/g, '');
-		let deps = depsMatch.split(',');
-		deps = deps.map((dep) => {
+function extrActStrings(destFiles: IConcAtFile[]): IConcAtFile[] {
+	const pArseDefineCAll = (moduleMAtch: string, depsMAtch: string) => {
+		const module = moduleMAtch.replAce(/^"|"$/g, '');
+		let deps = depsMAtch.split(',');
+		deps = deps.mAp((dep) => {
 			dep = dep.trim();
-			dep = dep.replace(/^"|"$/g, '');
-			dep = dep.replace(/^'|'$/g, '');
+			dep = dep.replAce(/^"|"$/g, '');
+			dep = dep.replAce(/^'|'$/g, '');
 			let prefix: string | null = null;
-			let _path: string | null = null;
+			let _pAth: string | null = null;
 			const pieces = dep.split('!');
 			if (pieces.length > 1) {
 				prefix = pieces[0] + '!';
-				_path = pieces[1];
+				_pAth = pieces[1];
 			} else {
 				prefix = '';
-				_path = pieces[0];
+				_pAth = pieces[0];
 			}
 
-			if (/^\.\//.test(_path) || /^\.\.\//.test(_path)) {
-				const res = path.join(path.dirname(module), _path).replace(/\\/g, '/');
+			if (/^\.\//.test(_pAth) || /^\.\.\//.test(_pAth)) {
+				const res = pAth.join(pAth.dirnAme(module), _pAth).replAce(/\\/g, '/');
 				return prefix + res;
 			}
-			return prefix + _path;
+			return prefix + _pAth;
 		});
 		return {
 			module: module,
@@ -271,7 +271,7 @@ function extractStrings(destFiles: IConcatFile[]): IConcatFile[] {
 		};
 	};
 
-	destFiles.forEach((destFile) => {
+	destFiles.forEAch((destFile) => {
 		if (!/\.js$/.test(destFile.dest)) {
 			return;
 		}
@@ -279,46 +279,46 @@ function extractStrings(destFiles: IConcatFile[]): IConcatFile[] {
 			return;
 		}
 
-		// Do one pass to record the usage counts for each module id
+		// Do one pAss to record the usAge counts for eAch module id
 		const useCounts: { [moduleId: string]: number; } = {};
-		destFile.sources.forEach((source) => {
-			const matches = source.contents.match(/define\(("[^"]+"),\s*\[(((, )?("|')[^"']+("|'))+)\]/);
-			if (!matches) {
+		destFile.sources.forEAch((source) => {
+			const mAtches = source.contents.mAtch(/define\(("[^"]+"),\s*\[(((, )?("|')[^"']+("|'))+)\]/);
+			if (!mAtches) {
 				return;
 			}
 
-			const defineCall = parseDefineCall(matches[1], matches[2]);
-			useCounts[defineCall.module] = (useCounts[defineCall.module] || 0) + 1;
-			defineCall.deps.forEach((dep) => {
+			const defineCAll = pArseDefineCAll(mAtches[1], mAtches[2]);
+			useCounts[defineCAll.module] = (useCounts[defineCAll.module] || 0) + 1;
+			defineCAll.deps.forEAch((dep) => {
 				useCounts[dep] = (useCounts[dep] || 0) + 1;
 			});
 		});
 
 		const sortedByUseModules = Object.keys(useCounts);
-		sortedByUseModules.sort((a, b) => {
-			return useCounts[b] - useCounts[a];
+		sortedByUseModules.sort((A, b) => {
+			return useCounts[b] - useCounts[A];
 		});
 
-		const replacementMap: { [moduleId: string]: number; } = {};
-		sortedByUseModules.forEach((module, index) => {
-			replacementMap[module] = index;
+		const replAcementMAp: { [moduleId: string]: number; } = {};
+		sortedByUseModules.forEAch((module, index) => {
+			replAcementMAp[module] = index;
 		});
 
-		destFile.sources.forEach((source) => {
-			source.contents = source.contents.replace(/define\(("[^"]+"),\s*\[(((, )?("|')[^"']+("|'))+)\]/, (_, moduleMatch, depsMatch) => {
-				const defineCall = parseDefineCall(moduleMatch, depsMatch);
-				return `define(__m[${replacementMap[defineCall.module]}/*${defineCall.module}*/], __M([${defineCall.deps.map(dep => replacementMap[dep] + '/*' + dep + '*/').join(',')}])`;
+		destFile.sources.forEAch((source) => {
+			source.contents = source.contents.replAce(/define\(("[^"]+"),\s*\[(((, )?("|')[^"']+("|'))+)\]/, (_, moduleMAtch, depsMAtch) => {
+				const defineCAll = pArseDefineCAll(moduleMAtch, depsMAtch);
+				return `define(__m[${replAcementMAp[defineCAll.module]}/*${defineCAll.module}*/], __M([${defineCAll.deps.mAp(dep => replAcementMAp[dep] + '/*' + dep + '*/').join(',')}])`;
 			});
 		});
 
 		destFile.sources.unshift({
-			path: null,
+			pAth: null,
 			contents: [
 				'(function() {',
-				`var __m = ${JSON.stringify(sortedByUseModules)};`,
-				`var __M = function(deps) {`,
-				`  var result = [];`,
-				`  for (var i = 0, len = deps.length; i < len; i++) {`,
+				`vAr __m = ${JSON.stringify(sortedByUseModules)};`,
+				`vAr __M = function(deps) {`,
+				`  vAr result = [];`,
+				`  for (vAr i = 0, len = deps.length; i < len; i++) {`,
 				`    result[i] = __m[deps[i]];`,
 				`  }`,
 				`  return result;`,
@@ -327,46 +327,46 @@ function extractStrings(destFiles: IConcatFile[]): IConcatFile[] {
 		});
 
 		destFile.sources.push({
-			path: null,
-			contents: '}).call(this);'
+			pAth: null,
+			contents: '}).cAll(this);'
 		});
 	});
 	return destFiles;
 }
 
-function removeDuplicateTSBoilerplate(destFiles: IConcatFile[]): IConcatFile[] {
-	// Taken from typescript compiler => emitFiles
+function removeDuplicAteTSBoilerplAte(destFiles: IConcAtFile[]): IConcAtFile[] {
+	// TAken from typescript compiler => emitFiles
 	const BOILERPLATE = [
-		{ start: /^var __extends/, end: /^}\)\(\);$/ },
-		{ start: /^var __assign/, end: /^};$/ },
-		{ start: /^var __decorate/, end: /^};$/ },
-		{ start: /^var __metadata/, end: /^};$/ },
-		{ start: /^var __param/, end: /^};$/ },
-		{ start: /^var __awaiter/, end: /^};$/ },
-		{ start: /^var __generator/, end: /^};$/ },
+		{ stArt: /^vAr __extends/, end: /^}\)\(\);$/ },
+		{ stArt: /^vAr __Assign/, end: /^};$/ },
+		{ stArt: /^vAr __decorAte/, end: /^};$/ },
+		{ stArt: /^vAr __metAdAtA/, end: /^};$/ },
+		{ stArt: /^vAr __pArAm/, end: /^};$/ },
+		{ stArt: /^vAr __AwAiter/, end: /^};$/ },
+		{ stArt: /^vAr __generAtor/, end: /^};$/ },
 	];
 
-	destFiles.forEach((destFile) => {
-		const SEEN_BOILERPLATE: boolean[] = [];
-		destFile.sources.forEach((source) => {
+	destFiles.forEAch((destFile) => {
+		const SEEN_BOILERPLATE: booleAn[] = [];
+		destFile.sources.forEAch((source) => {
 			const lines = source.contents.split(/\r\n|\n|\r/);
 			const newLines: string[] = [];
-			let IS_REMOVING_BOILERPLATE = false, END_BOILERPLATE: RegExp;
+			let IS_REMOVING_BOILERPLATE = fAlse, END_BOILERPLATE: RegExp;
 
 			for (let i = 0; i < lines.length; i++) {
 				const line = lines[i];
 				if (IS_REMOVING_BOILERPLATE) {
 					newLines.push('');
 					if (END_BOILERPLATE!.test(line)) {
-						IS_REMOVING_BOILERPLATE = false;
+						IS_REMOVING_BOILERPLATE = fAlse;
 					}
 				} else {
 					for (let j = 0; j < BOILERPLATE.length; j++) {
-						const boilerplate = BOILERPLATE[j];
-						if (boilerplate.start.test(line)) {
+						const boilerplAte = BOILERPLATE[j];
+						if (boilerplAte.stArt.test(line)) {
 							if (SEEN_BOILERPLATE[j]) {
 								IS_REMOVING_BOILERPLATE = true;
-								END_BOILERPLATE = boilerplate.end;
+								END_BOILERPLATE = boilerplAte.end;
 							} else {
 								SEEN_BOILERPLATE[j] = true;
 							}
@@ -386,99 +386,99 @@ function removeDuplicateTSBoilerplate(destFiles: IConcatFile[]): IConcatFile[] {
 	return destFiles;
 }
 
-interface IPluginMap {
-	[moduleId: string]: ILoaderPlugin;
+interfAce IPluginMAp {
+	[moduleId: string]: ILoAderPlugin;
 }
 
-interface IEmitEntryPointResult {
-	files: IConcatFile[];
-	usedPlugins: IPluginMap;
+interfAce IEmitEntryPointResult {
+	files: IConcAtFile[];
+	usedPlugins: IPluginMAp;
 }
 
 function emitEntryPoint(
-	modulesMap: IBuildModuleInfoMap,
-	deps: IGraph,
+	modulesMAp: IBuildModuleInfoMAp,
+	deps: IGrAph,
 	entryPoint: string,
 	includedModules: string[],
 	prepend: string[],
-	append: string[],
+	Append: string[],
 	dest: string | undefined
 ): IEmitEntryPointResult {
 	if (!dest) {
 		dest = entryPoint + '.js';
 	}
-	const mainResult: IConcatFile = {
+	const mAinResult: IConcAtFile = {
 		sources: [],
 		dest: dest
 	},
-		results: IConcatFile[] = [mainResult];
+		results: IConcAtFile[] = [mAinResult];
 
-	const usedPlugins: IPluginMap = {};
-	const getLoaderPlugin = (pluginName: string): ILoaderPlugin => {
-		if (!usedPlugins[pluginName]) {
-			usedPlugins[pluginName] = modulesMap[pluginName].exports;
+	const usedPlugins: IPluginMAp = {};
+	const getLoAderPlugin = (pluginNAme: string): ILoAderPlugin => {
+		if (!usedPlugins[pluginNAme]) {
+			usedPlugins[pluginNAme] = modulesMAp[pluginNAme].exports;
 		}
-		return usedPlugins[pluginName];
+		return usedPlugins[pluginNAme];
 	};
 
-	includedModules.forEach((c: string) => {
-		const bangIndex = c.indexOf('!');
+	includedModules.forEAch((c: string) => {
+		const bAngIndex = c.indexOf('!');
 
-		if (bangIndex >= 0) {
-			const pluginName = c.substr(0, bangIndex);
-			const plugin = getLoaderPlugin(pluginName);
-			mainResult.sources.push(emitPlugin(entryPoint, plugin, pluginName, c.substr(bangIndex + 1)));
+		if (bAngIndex >= 0) {
+			const pluginNAme = c.substr(0, bAngIndex);
+			const plugin = getLoAderPlugin(pluginNAme);
+			mAinResult.sources.push(emitPlugin(entryPoint, plugin, pluginNAme, c.substr(bAngIndex + 1)));
 			return;
 		}
 
-		const module = modulesMap[c];
+		const module = modulesMAp[c];
 
-		if (module.path === 'empty:') {
+		if (module.pAth === 'empty:') {
 			return;
 		}
 
-		const contents = readFileAndRemoveBOM(module.path);
+		const contents = reAdFileAndRemoveBOM(module.pAth);
 
 		if (module.shim) {
-			mainResult.sources.push(emitShimmedModule(c, deps[c], module.shim, module.path, contents));
+			mAinResult.sources.push(emitShimmedModule(c, deps[c], module.shim, module.pAth, contents));
 		} else {
-			mainResult.sources.push(emitNamedModule(c, module.defineLocation, module.path, contents));
+			mAinResult.sources.push(emitNAmedModule(c, module.defineLocAtion, module.pAth, contents));
 		}
 	});
 
-	Object.keys(usedPlugins).forEach((pluginName: string) => {
-		const plugin = usedPlugins[pluginName];
+	Object.keys(usedPlugins).forEAch((pluginNAme: string) => {
+		const plugin = usedPlugins[pluginNAme];
 		if (typeof plugin.writeFile === 'function') {
-			const req: ILoaderPluginReqFunc = <any>(() => {
+			const req: ILoAderPluginReqFunc = <Any>(() => {
 				throw new Error('no-no!');
 			});
 			req.toUrl = something => something;
 
-			const write = (filename: string, contents: string) => {
+			const write = (filenAme: string, contents: string) => {
 				results.push({
-					dest: filename,
+					dest: filenAme,
 					sources: [{
-						path: null,
+						pAth: null,
 						contents: contents
 					}]
 				});
 			};
-			plugin.writeFile(pluginName, entryPoint, req, write, {});
+			plugin.writeFile(pluginNAme, entryPoint, req, write, {});
 		}
 	});
 
-	const toIFile = (path: string): IFile => {
-		const contents = readFileAndRemoveBOM(path);
+	const toIFile = (pAth: string): IFile => {
+		const contents = reAdFileAndRemoveBOM(pAth);
 		return {
-			path: path,
+			pAth: pAth,
 			contents: contents
 		};
 	};
 
-	const toPrepend = (prepend || []).map(toIFile);
-	const toAppend = (append || []).map(toIFile);
+	const toPrepend = (prepend || []).mAp(toIFile);
+	const toAppend = (Append || []).mAp(toIFile);
 
-	mainResult.sources = toPrepend.concat(mainResult.sources).concat(toAppend);
+	mAinResult.sources = toPrepend.concAt(mAinResult.sources).concAt(toAppend);
 
 	return {
 		files: results,
@@ -486,64 +486,64 @@ function emitEntryPoint(
 	};
 }
 
-function readFileAndRemoveBOM(path: string): string {
+function reAdFileAndRemoveBOM(pAth: string): string {
 	const BOM_CHAR_CODE = 65279;
-	let contents = fs.readFileSync(path, 'utf8');
+	let contents = fs.reAdFileSync(pAth, 'utf8');
 	// Remove BOM
-	if (contents.charCodeAt(0) === BOM_CHAR_CODE) {
+	if (contents.chArCodeAt(0) === BOM_CHAR_CODE) {
 		contents = contents.substring(1);
 	}
 	return contents;
 }
 
-function emitPlugin(entryPoint: string, plugin: ILoaderPlugin, pluginName: string, moduleName: string): IFile {
+function emitPlugin(entryPoint: string, plugin: ILoAderPlugin, pluginNAme: string, moduleNAme: string): IFile {
 	let result = '';
 	if (typeof plugin.write === 'function') {
-		const write: ILoaderPluginWriteFunc = <any>((what: string) => {
-			result += what;
+		const write: ILoAderPluginWriteFunc = <Any>((whAt: string) => {
+			result += whAt;
 		});
 		write.getEntryPoint = () => {
 			return entryPoint;
 		};
-		write.asModule = (moduleId: string, code: string) => {
-			code = code.replace(/^define\(/, 'define("' + moduleId + '",');
+		write.AsModule = (moduleId: string, code: string) => {
+			code = code.replAce(/^define\(/, 'define("' + moduleId + '",');
 			result += code;
 		};
-		plugin.write(pluginName, moduleName, write);
+		plugin.write(pluginNAme, moduleNAme, write);
 	}
 	return {
-		path: null,
+		pAth: null,
 		contents: result
 	};
 }
 
-function emitNamedModule(moduleId: string, defineCallPosition: IPosition, path: string, contents: string): IFile {
+function emitNAmedModule(moduleId: string, defineCAllPosition: IPosition, pAth: string, contents: string): IFile {
 
-	// `defineCallPosition` is the position in code: |define()
-	const defineCallOffset = positionToOffset(contents, defineCallPosition.line, defineCallPosition.col);
+	// `defineCAllPosition` is the position in code: |define()
+	const defineCAllOffset = positionToOffset(contents, defineCAllPosition.line, defineCAllPosition.col);
 
-	// `parensOffset` is the position in code: define|()
-	const parensOffset = contents.indexOf('(', defineCallOffset);
+	// `pArensOffset` is the position in code: define|()
+	const pArensOffset = contents.indexOf('(', defineCAllOffset);
 
 	const insertStr = '"' + moduleId + '", ';
 
 	return {
-		path: path,
-		contents: contents.substr(0, parensOffset + 1) + insertStr + contents.substr(parensOffset + 1)
+		pAth: pAth,
+		contents: contents.substr(0, pArensOffset + 1) + insertStr + contents.substr(pArensOffset + 1)
 	};
 }
 
-function emitShimmedModule(moduleId: string, myDeps: string[], factory: string, path: string, contents: string): IFile {
+function emitShimmedModule(moduleId: string, myDeps: string[], fActory: string, pAth: string, contents: string): IFile {
 	const strDeps = (myDeps.length > 0 ? '"' + myDeps.join('", "') + '"' : '');
-	const strDefine = 'define("' + moduleId + '", [' + strDeps + '], ' + factory + ');';
+	const strDefine = 'define("' + moduleId + '", [' + strDeps + '], ' + fActory + ');';
 	return {
-		path: path,
+		pAth: pAth,
 		contents: contents + '\n;\n' + strDefine
 	};
 }
 
 /**
- * Convert a position (line:col) to (offset) in string `str`
+ * Convert A position (line:col) to (offset) in string `str`
  */
 function positionToOffset(str: string, desiredLine: number, desiredCol: number): number {
 	if (desiredLine === 1) {
@@ -551,35 +551,35 @@ function positionToOffset(str: string, desiredLine: number, desiredCol: number):
 	}
 
 	let line = 1;
-	let lastNewLineOffset = -1;
+	let lAstNewLineOffset = -1;
 
 	do {
 		if (desiredLine === line) {
-			return lastNewLineOffset + 1 + desiredCol - 1;
+			return lAstNewLineOffset + 1 + desiredCol - 1;
 		}
-		lastNewLineOffset = str.indexOf('\n', lastNewLineOffset + 1);
+		lAstNewLineOffset = str.indexOf('\n', lAstNewLineOffset + 1);
 		line++;
-	} while (lastNewLineOffset >= 0);
+	} while (lAstNewLineOffset >= 0);
 
 	return -1;
 }
 
 
 /**
- * Return a set of reachable nodes in `graph` starting from `rootNodes`
+ * Return A set of reAchAble nodes in `grAph` stArting from `rootNodes`
  */
-function visit(rootNodes: string[], graph: IGraph): INodeSet {
+function visit(rootNodes: string[], grAph: IGrAph): INodeSet {
 	const result: INodeSet = {};
 	const queue = rootNodes;
 
-	rootNodes.forEach((node) => {
+	rootNodes.forEAch((node) => {
 		result[node] = true;
 	});
 
 	while (queue.length > 0) {
 		const el = queue.shift();
-		const myEdges = graph[el!] || [];
-		myEdges.forEach((toNode) => {
+		const myEdges = grAph[el!] || [];
+		myEdges.forEAch((toNode) => {
 			if (!result[toNode]) {
 				result[toNode] = true;
 				queue.push(toNode);
@@ -591,20 +591,20 @@ function visit(rootNodes: string[], graph: IGraph): INodeSet {
 }
 
 /**
- * Perform a topological sort on `graph`
+ * Perform A topologicAl sort on `grAph`
  */
-function topologicalSort(graph: IGraph): string[] {
+function topologicAlSort(grAph: IGrAph): string[] {
 
-	const allNodes: INodeSet = {},
+	const AllNodes: INodeSet = {},
 		outgoingEdgeCount: { [node: string]: number; } = {},
-		inverseEdges: IGraph = {};
+		inverseEdges: IGrAph = {};
 
-	Object.keys(graph).forEach((fromNode: string) => {
-		allNodes[fromNode] = true;
-		outgoingEdgeCount[fromNode] = graph[fromNode].length;
+	Object.keys(grAph).forEAch((fromNode: string) => {
+		AllNodes[fromNode] = true;
+		outgoingEdgeCount[fromNode] = grAph[fromNode].length;
 
-		graph[fromNode].forEach((toNode) => {
-			allNodes[toNode] = true;
+		grAph[fromNode].forEAch((toNode) => {
+			AllNodes[toNode] = true;
 			outgoingEdgeCount[toNode] = outgoingEdgeCount[toNode] || 0;
 
 			inverseEdges[toNode] = inverseEdges[toNode] || [];
@@ -612,11 +612,11 @@ function topologicalSort(graph: IGraph): string[] {
 		});
 	});
 
-	// https://en.wikipedia.org/wiki/Topological_sorting
+	// https://en.wikipediA.org/wiki/TopologicAl_sorting
 	const S: string[] = [],
 		L: string[] = [];
 
-	Object.keys(allNodes).forEach((node: string) => {
+	Object.keys(AllNodes).forEAch((node: string) => {
 		if (outgoingEdgeCount[node] === 0) {
 			delete outgoingEdgeCount[node];
 			S.push(node);
@@ -624,14 +624,14 @@ function topologicalSort(graph: IGraph): string[] {
 	});
 
 	while (S.length > 0) {
-		// Ensure the exact same order all the time with the same inputs
+		// Ensure the exAct sAme order All the time with the sAme inputs
 		S.sort();
 
 		const n: string = S.shift()!;
 		L.push(n);
 
 		const myInverseEdges = inverseEdges[n] || [];
-		myInverseEdges.forEach((m: string) => {
+		myInverseEdges.forEAch((m: string) => {
 			outgoingEdgeCount[m]--;
 			if (outgoingEdgeCount[m] === 0) {
 				delete outgoingEdgeCount[m];
@@ -641,7 +641,7 @@ function topologicalSort(graph: IGraph): string[] {
 	}
 
 	if (Object.keys(outgoingEdgeCount).length > 0) {
-		throw new Error('Cannot do topological sort on cyclic graph, remaining nodes: ' + Object.keys(outgoingEdgeCount));
+		throw new Error('CAnnot do topologicAl sort on cyclic grAph, remAining nodes: ' + Object.keys(outgoingEdgeCount));
 	}
 
 	return L;

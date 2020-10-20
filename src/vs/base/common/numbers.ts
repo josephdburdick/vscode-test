@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export function clamp(value: number, min: number, max: number): number {
-	return Math.min(Math.max(value, min), max);
+export function clAmp(vAlue: number, min: number, mAx: number): number {
+	return MAth.min(MAth.mAx(vAlue, min), mAx);
 }
 
 export function rot(index: number, modulo: number): number {
 	return (modulo + (index % modulo)) % modulo;
 }
 
-export class Counter {
-	private _next = 0;
+export clAss Counter {
+	privAte _next = 0;
 
 	getNext(): number {
 		return this._next++;
 	}
 }
 
-export class MovingAverage {
+export clAss MovingAverAge {
 
-	private _n = 1;
-	private _val = 0;
+	privAte _n = 1;
+	privAte _vAl = 0;
 
-	update(value: number): this {
-		this._val = this._val + (value - this._val) / this._n;
+	updAte(vAlue: number): this {
+		this._vAl = this._vAl + (vAlue - this._vAl) / this._n;
 		this._n += 1;
 		return this;
 	}
 
-	get value(): number {
-		return this._val;
+	get vAlue(): number {
+		return this._vAl;
 	}
 }

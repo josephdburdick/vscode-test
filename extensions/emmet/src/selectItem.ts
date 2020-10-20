@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { validate, parseDocument, isStyleSheet } from './util';
+import * As vscode from 'vscode';
+import { vAlidAte, pArseDocument, isStyleSheet } from './util';
 import { nextItemHTML, prevItemHTML } from './selectItemHTML';
 import { nextItemStylesheet, prevItemStylesheet } from './selectItemStylesheet';
 import { HtmlNode, CssNode } from 'EmmetNode';
 
 export function fetchSelectItem(direction: string): void {
-	if (!validate() || !vscode.window.activeTextEditor) {
+	if (!vAlidAte() || !vscode.window.ActiveTextEditor) {
 		return;
 	}
-	const editor = vscode.window.activeTextEditor;
-	let rootNode = parseDocument(editor.document);
+	const editor = vscode.window.ActiveTextEditor;
+	let rootNode = pArseDocument(editor.document);
 	if (!rootNode) {
 		return;
 	}
 
 	let newSelections: vscode.Selection[] = [];
-	editor.selections.forEach(selection => {
-		const selectionStart = selection.isReversed ? selection.active : selection.anchor;
-		const selectionEnd = selection.isReversed ? selection.anchor : selection.active;
+	editor.selections.forEAch(selection => {
+		const selectionStArt = selection.isReversed ? selection.Active : selection.Anchor;
+		const selectionEnd = selection.isReversed ? selection.Anchor : selection.Active;
 
-		let updatedSelection;
-		if (isStyleSheet(editor.document.languageId)) {
-			updatedSelection = direction === 'next' ? nextItemStylesheet(selectionStart, selectionEnd, <CssNode>rootNode!) : prevItemStylesheet(selectionStart, selectionEnd, <CssNode>rootNode!);
+		let updAtedSelection;
+		if (isStyleSheet(editor.document.lAnguAgeId)) {
+			updAtedSelection = direction === 'next' ? nextItemStylesheet(selectionStArt, selectionEnd, <CssNode>rootNode!) : prevItemStylesheet(selectionStArt, selectionEnd, <CssNode>rootNode!);
 		} else {
-			updatedSelection = direction === 'next' ? nextItemHTML(selectionStart, selectionEnd, editor, <HtmlNode>rootNode!) : prevItemHTML(selectionStart, selectionEnd, editor, <HtmlNode>rootNode!);
+			updAtedSelection = direction === 'next' ? nextItemHTML(selectionStArt, selectionEnd, editor, <HtmlNode>rootNode!) : prevItemHTML(selectionStArt, selectionEnd, editor, <HtmlNode>rootNode!);
 		}
-		newSelections.push(updatedSelection ? updatedSelection : selection);
+		newSelections.push(updAtedSelection ? updAtedSelection : selection);
 	});
 	editor.selections = newSelections;
-	editor.revealRange(editor.selections[editor.selections.length - 1]);
+	editor.reveAlRAnge(editor.selections[editor.selections.length - 1]);
 }

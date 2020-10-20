@@ -1,155 +1,155 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkbenchActionRegistry, Extensions as WorkbenchActionExtensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { EditorDescriptor, IEditorRegistry, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { RuntimeExtensionsEditor, ShowRuntimeExtensionsAction, IExtensionHostProfileService, DebugExtensionHostAction, StartExtensionHostProfileAction, StopExtensionHostProfileAction, CONTEXT_PROFILE_SESSION_STATE, SaveExtensionHostProfileAction, CONTEXT_EXTENSION_HOST_PROFILE_RECORDED } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor';
-import { EditorInput, IEditorInputFactory, IEditorInputFactoryRegistry, Extensions as EditorInputExtensions, ActiveEditorContext } from 'vs/workbench/common/editor';
+import { locAlize } from 'vs/nls';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IWorkbenchActionRegistry, Extensions As WorkbenchActionExtensions, CATEGORIES } from 'vs/workbench/common/Actions';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { ServicesAccessor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { EditorDescriptor, IEditorRegistry, Extensions As EditorExtensions } from 'vs/workbench/browser/editor';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { RuntimeExtensionsEditor, ShowRuntimeExtensionsAction, IExtensionHostProfileService, DebugExtensionHostAction, StArtExtensionHostProfileAction, StopExtensionHostProfileAction, CONTEXT_PROFILE_SESSION_STATE, SAveExtensionHostProfileAction, CONTEXT_EXTENSION_HOST_PROFILE_RECORDED } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor';
+import { EditorInput, IEditorInputFActory, IEditorInputFActoryRegistry, Extensions As EditorInputExtensions, ActiveEditorContext } from 'vs/workbench/common/editor';
 import { ExtensionHostProfileService } from 'vs/workbench/contrib/extensions/electron-browser/extensionProfileService';
 import { RuntimeExtensionsInput } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsInput';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
 import { ExtensionsAutoProfiler } from 'vs/workbench/contrib/extensions/electron-browser/extensionsAutoProfiler';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { OpenExtensionsFolderAction } from 'vs/workbench/contrib/extensions/electron-sandbox/extensionsActions';
-import { ExtensionsLabel } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationNotificationService } from 'vs/platform/extensionRecommendations/common/extensionRecommendations';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { ExtensionRecommendationNotificationServiceChannel } from 'vs/platform/extensionRecommendations/electron-sandbox/extensionRecommendationsIpc';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { OpenExtensionsFolderAction } from 'vs/workbench/contrib/extensions/electron-sAndbox/extensionsActions';
+import { ExtensionsLAbel } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IExtensionRecommendAtionNotificAtionService } from 'vs/plAtform/extensionRecommendAtions/common/extensionRecommendAtions';
+import { IShAredProcessService } from 'vs/plAtform/ipc/electron-browser/shAredProcessService';
+import { ExtensionRecommendAtionNotificAtionServiceChAnnel } from 'vs/plAtform/extensionRecommendAtions/electron-sAndbox/extensionRecommendAtionsIpc';
 
 // Singletons
 registerSingleton(IExtensionHostProfileService, ExtensionHostProfileService, true);
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(ExtensionsAutoProfiler, LifecyclePhase.Eventually);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(ExtensionsAutoProfiler, LifecyclePhAse.EventuAlly);
 
 // Running Extensions Editor
 
-const runtimeExtensionsEditorDescriptor = EditorDescriptor.create(
+const runtimeExtensionsEditorDescriptor = EditorDescriptor.creAte(
 	RuntimeExtensionsEditor,
 	RuntimeExtensionsEditor.ID,
-	localize('runtimeExtension', "Running Extensions")
+	locAlize('runtimeExtension', "Running Extensions")
 );
 
-Registry.as<IEditorRegistry>(EditorExtensions.Editors)
+Registry.As<IEditorRegistry>(EditorExtensions.Editors)
 	.registerEditor(runtimeExtensionsEditorDescriptor, [new SyncDescriptor(RuntimeExtensionsInput)]);
 
-class RuntimeExtensionsInputFactory implements IEditorInputFactory {
-	canSerialize(editorInput: EditorInput): boolean {
+clAss RuntimeExtensionsInputFActory implements IEditorInputFActory {
+	cAnSeriAlize(editorInput: EditorInput): booleAn {
 		return true;
 	}
-	serialize(editorInput: EditorInput): string {
+	seriAlize(editorInput: EditorInput): string {
 		return '';
 	}
-	deserialize(instantiationService: IInstantiationService, serializedEditorInput: string): EditorInput {
-		return RuntimeExtensionsInput.instance;
+	deseriAlize(instAntiAtionService: IInstAntiAtionService, seriAlizedEditorInput: string): EditorInput {
+		return RuntimeExtensionsInput.instAnce;
 	}
 }
 
-Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories).registerEditorInputFactory(RuntimeExtensionsInput.ID, RuntimeExtensionsInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorInputExtensions.EditorInputFActories).registerEditorInputFActory(RuntimeExtensionsInput.ID, RuntimeExtensionsInputFActory);
 
 
-// Global actions
-const actionRegistry = Registry.as<IWorkbenchActionRegistry>(WorkbenchActionExtensions.WorkbenchActions);
+// GlobAl Actions
+const ActionRegistry = Registry.As<IWorkbenchActionRegistry>(WorkbenchActionExtensions.WorkbenchActions);
 
-actionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(ShowRuntimeExtensionsAction), 'Show Running Extensions', CATEGORIES.Developer.value);
+ActionRegistry.registerWorkbenchAction(SyncActionDescriptor.from(ShowRuntimeExtensionsAction), 'Show Running Extensions', CATEGORIES.Developer.vAlue);
 
-class ExtensionsContributions implements IWorkbenchContribution {
+clAss ExtensionsContributions implements IWorkbenchContribution {
 
 	constructor(
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService,
-		@IExtensionRecommendationNotificationService extensionRecommendationNotificationService: IExtensionRecommendationNotificationService,
-		@ISharedProcessService sharedProcessService: ISharedProcessService,
+		@INAtiveWorkbenchEnvironmentService environmentService: INAtiveWorkbenchEnvironmentService,
+		@IExtensionRecommendAtionNotificAtionService extensionRecommendAtionNotificAtionService: IExtensionRecommendAtionNotificAtionService,
+		@IShAredProcessService shAredProcessService: IShAredProcessService,
 	) {
-		sharedProcessService.registerChannel('IExtensionRecommendationNotificationService', new ExtensionRecommendationNotificationServiceChannel(extensionRecommendationNotificationService));
-		if (environmentService.extensionsPath) {
+		shAredProcessService.registerChAnnel('IExtensionRecommendAtionNotificAtionService', new ExtensionRecommendAtionNotificAtionServiceChAnnel(extensionRecommendAtionNotificAtionService));
+		if (environmentService.extensionsPAth) {
 			const openExtensionsFolderActionDescriptor = SyncActionDescriptor.from(OpenExtensionsFolderAction);
-			actionRegistry.registerWorkbenchAction(openExtensionsFolderActionDescriptor, 'Extensions: Open Extensions Folder', ExtensionsLabel);
+			ActionRegistry.registerWorkbenchAction(openExtensionsFolderActionDescriptor, 'Extensions: Open Extensions Folder', ExtensionsLAbel);
 		}
 	}
 }
 
-workbenchRegistry.registerWorkbenchContribution(ExtensionsContributions, LifecyclePhase.Starting);
+workbenchRegistry.registerWorkbenchContribution(ExtensionsContributions, LifecyclePhAse.StArting);
 
-// Register Commands
+// Register CommAnds
 
-CommandsRegistry.registerCommand(DebugExtensionHostAction.ID, (accessor: ServicesAccessor) => {
-	const instantiationService = accessor.get(IInstantiationService);
-	instantiationService.createInstance(DebugExtensionHostAction).run();
+CommAndsRegistry.registerCommAnd(DebugExtensionHostAction.ID, (Accessor: ServicesAccessor) => {
+	const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+	instAntiAtionService.creAteInstAnce(DebugExtensionHostAction).run();
 });
 
-CommandsRegistry.registerCommand(StartExtensionHostProfileAction.ID, (accessor: ServicesAccessor) => {
-	const instantiationService = accessor.get(IInstantiationService);
-	instantiationService.createInstance(StartExtensionHostProfileAction, StartExtensionHostProfileAction.ID, StartExtensionHostProfileAction.LABEL).run();
+CommAndsRegistry.registerCommAnd(StArtExtensionHostProfileAction.ID, (Accessor: ServicesAccessor) => {
+	const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+	instAntiAtionService.creAteInstAnce(StArtExtensionHostProfileAction, StArtExtensionHostProfileAction.ID, StArtExtensionHostProfileAction.LABEL).run();
 });
 
-CommandsRegistry.registerCommand(StopExtensionHostProfileAction.ID, (accessor: ServicesAccessor) => {
-	const instantiationService = accessor.get(IInstantiationService);
-	instantiationService.createInstance(StopExtensionHostProfileAction, StopExtensionHostProfileAction.ID, StopExtensionHostProfileAction.LABEL).run();
+CommAndsRegistry.registerCommAnd(StopExtensionHostProfileAction.ID, (Accessor: ServicesAccessor) => {
+	const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+	instAntiAtionService.creAteInstAnce(StopExtensionHostProfileAction, StopExtensionHostProfileAction.ID, StopExtensionHostProfileAction.LABEL).run();
 });
 
-CommandsRegistry.registerCommand(SaveExtensionHostProfileAction.ID, (accessor: ServicesAccessor) => {
-	const instantiationService = accessor.get(IInstantiationService);
-	instantiationService.createInstance(SaveExtensionHostProfileAction, SaveExtensionHostProfileAction.ID, SaveExtensionHostProfileAction.LABEL).run();
+CommAndsRegistry.registerCommAnd(SAveExtensionHostProfileAction.ID, (Accessor: ServicesAccessor) => {
+	const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+	instAntiAtionService.creAteInstAnce(SAveExtensionHostProfileAction, SAveExtensionHostProfileAction.ID, SAveExtensionHostProfileAction.LABEL).run();
 });
 
 // Running extensions
 
-MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
-	command: {
+MenuRegistry.AppendMenuItem(MenuId.EditorTitle, {
+	commAnd: {
 		id: DebugExtensionHostAction.ID,
 		title: DebugExtensionHostAction.LABEL,
 		icon: {
-			id: 'codicon/debug-start'
+			id: 'codicon/debug-stArt'
 		}
 	},
-	group: 'navigation',
-	when: ActiveEditorContext.isEqualTo(RuntimeExtensionsEditor.ID)
+	group: 'nAvigAtion',
+	when: ActiveEditorContext.isEquAlTo(RuntimeExtensionsEditor.ID)
 });
 
-MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
-	command: {
-		id: StartExtensionHostProfileAction.ID,
-		title: StartExtensionHostProfileAction.LABEL,
+MenuRegistry.AppendMenuItem(MenuId.EditorTitle, {
+	commAnd: {
+		id: StArtExtensionHostProfileAction.ID,
+		title: StArtExtensionHostProfileAction.LABEL,
 		icon: {
 			id: 'codicon/circle-filled'
 		}
 	},
-	group: 'navigation',
-	when: ContextKeyExpr.and(ActiveEditorContext.isEqualTo(RuntimeExtensionsEditor.ID), CONTEXT_PROFILE_SESSION_STATE.notEqualsTo('running'))
+	group: 'nAvigAtion',
+	when: ContextKeyExpr.And(ActiveEditorContext.isEquAlTo(RuntimeExtensionsEditor.ID), CONTEXT_PROFILE_SESSION_STATE.notEquAlsTo('running'))
 });
 
-MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
-	command: {
+MenuRegistry.AppendMenuItem(MenuId.EditorTitle, {
+	commAnd: {
 		id: StopExtensionHostProfileAction.ID,
 		title: StopExtensionHostProfileAction.LABEL,
 		icon: {
 			id: 'codicon/debug-stop'
 		}
 	},
-	group: 'navigation',
-	when: ContextKeyExpr.and(ActiveEditorContext.isEqualTo(RuntimeExtensionsEditor.ID), CONTEXT_PROFILE_SESSION_STATE.isEqualTo('running'))
+	group: 'nAvigAtion',
+	when: ContextKeyExpr.And(ActiveEditorContext.isEquAlTo(RuntimeExtensionsEditor.ID), CONTEXT_PROFILE_SESSION_STATE.isEquAlTo('running'))
 });
 
-MenuRegistry.appendMenuItem(MenuId.EditorTitle, {
-	command: {
-		id: SaveExtensionHostProfileAction.ID,
-		title: SaveExtensionHostProfileAction.LABEL,
+MenuRegistry.AppendMenuItem(MenuId.EditorTitle, {
+	commAnd: {
+		id: SAveExtensionHostProfileAction.ID,
+		title: SAveExtensionHostProfileAction.LABEL,
 		icon: {
-			id: 'codicon/save-all'
+			id: 'codicon/sAve-All'
 		},
 		precondition: CONTEXT_EXTENSION_HOST_PROFILE_RECORDED
 	},
-	group: 'navigation',
-	when: ContextKeyExpr.and(ActiveEditorContext.isEqualTo(RuntimeExtensionsEditor.ID))
+	group: 'nAvigAtion',
+	when: ContextKeyExpr.And(ActiveEditorContext.isEquAlTo(RuntimeExtensionsEditor.ID))
 });

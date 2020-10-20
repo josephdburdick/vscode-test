@@ -1,347 +1,347 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { buildReplaceStringWithCasePreserved } from 'vs/base/common/search';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { buildReplAceStringWithCAsePreserved } from 'vs/bAse/common/seArch';
 
-const enum ReplacePatternKind {
-	StaticValue = 0,
-	DynamicPieces = 1
+const enum ReplAcePAtternKind {
+	StAticVAlue = 0,
+	DynAmicPieces = 1
 }
 
 /**
- * Assigned when the replace pattern is entirely static.
+ * Assigned when the replAce pAttern is entirely stAtic.
  */
-class StaticValueReplacePattern {
-	public readonly kind = ReplacePatternKind.StaticValue;
-	constructor(public readonly staticValue: string) { }
+clAss StAticVAlueReplAcePAttern {
+	public reAdonly kind = ReplAcePAtternKind.StAticVAlue;
+	constructor(public reAdonly stAticVAlue: string) { }
 }
 
 /**
- * Assigned when the replace pattern has replacement patterns.
+ * Assigned when the replAce pAttern hAs replAcement pAtterns.
  */
-class DynamicPiecesReplacePattern {
-	public readonly kind = ReplacePatternKind.DynamicPieces;
-	constructor(public readonly pieces: ReplacePiece[]) { }
+clAss DynAmicPiecesReplAcePAttern {
+	public reAdonly kind = ReplAcePAtternKind.DynAmicPieces;
+	constructor(public reAdonly pieces: ReplAcePiece[]) { }
 }
 
-export class ReplacePattern {
+export clAss ReplAcePAttern {
 
-	public static fromStaticValue(value: string): ReplacePattern {
-		return new ReplacePattern([ReplacePiece.staticValue(value)]);
+	public stAtic fromStAticVAlue(vAlue: string): ReplAcePAttern {
+		return new ReplAcePAttern([ReplAcePiece.stAticVAlue(vAlue)]);
 	}
 
-	private readonly _state: StaticValueReplacePattern | DynamicPiecesReplacePattern;
+	privAte reAdonly _stAte: StAticVAlueReplAcePAttern | DynAmicPiecesReplAcePAttern;
 
-	public get hasReplacementPatterns(): boolean {
-		return (this._state.kind === ReplacePatternKind.DynamicPieces);
+	public get hAsReplAcementPAtterns(): booleAn {
+		return (this._stAte.kind === ReplAcePAtternKind.DynAmicPieces);
 	}
 
-	constructor(pieces: ReplacePiece[] | null) {
+	constructor(pieces: ReplAcePiece[] | null) {
 		if (!pieces || pieces.length === 0) {
-			this._state = new StaticValueReplacePattern('');
-		} else if (pieces.length === 1 && pieces[0].staticValue !== null) {
-			this._state = new StaticValueReplacePattern(pieces[0].staticValue);
+			this._stAte = new StAticVAlueReplAcePAttern('');
+		} else if (pieces.length === 1 && pieces[0].stAticVAlue !== null) {
+			this._stAte = new StAticVAlueReplAcePAttern(pieces[0].stAticVAlue);
 		} else {
-			this._state = new DynamicPiecesReplacePattern(pieces);
+			this._stAte = new DynAmicPiecesReplAcePAttern(pieces);
 		}
 	}
 
-	public buildReplaceString(matches: string[] | null, preserveCase?: boolean): string {
-		if (this._state.kind === ReplacePatternKind.StaticValue) {
-			if (preserveCase) {
-				return buildReplaceStringWithCasePreserved(matches, this._state.staticValue);
+	public buildReplAceString(mAtches: string[] | null, preserveCAse?: booleAn): string {
+		if (this._stAte.kind === ReplAcePAtternKind.StAticVAlue) {
+			if (preserveCAse) {
+				return buildReplAceStringWithCAsePreserved(mAtches, this._stAte.stAticVAlue);
 			} else {
-				return this._state.staticValue;
+				return this._stAte.stAticVAlue;
 			}
 		}
 
 		let result = '';
-		for (let i = 0, len = this._state.pieces.length; i < len; i++) {
-			let piece = this._state.pieces[i];
-			if (piece.staticValue !== null) {
-				// static value ReplacePiece
-				result += piece.staticValue;
+		for (let i = 0, len = this._stAte.pieces.length; i < len; i++) {
+			let piece = this._stAte.pieces[i];
+			if (piece.stAticVAlue !== null) {
+				// stAtic vAlue ReplAcePiece
+				result += piece.stAticVAlue;
 				continue;
 			}
 
-			// match index ReplacePiece
-			let match: string = ReplacePattern._substitute(piece.matchIndex, matches);
-			if (piece.caseOps !== null && piece.caseOps.length > 0) {
+			// mAtch index ReplAcePiece
+			let mAtch: string = ReplAcePAttern._substitute(piece.mAtchIndex, mAtches);
+			if (piece.cAseOps !== null && piece.cAseOps.length > 0) {
 				let repl: string[] = [];
-				let lenOps: number = piece.caseOps.length;
+				let lenOps: number = piece.cAseOps.length;
 				let opIdx: number = 0;
-				for (let idx: number = 0, len: number = match.length; idx < len; idx++) {
+				for (let idx: number = 0, len: number = mAtch.length; idx < len; idx++) {
 					if (opIdx >= lenOps) {
-						repl.push(match.slice(idx));
-						break;
+						repl.push(mAtch.slice(idx));
+						breAk;
 					}
-					switch (piece.caseOps[opIdx]) {
-						case 'U':
-							repl.push(match[idx].toUpperCase());
-							break;
-						case 'u':
-							repl.push(match[idx].toUpperCase());
+					switch (piece.cAseOps[opIdx]) {
+						cAse 'U':
+							repl.push(mAtch[idx].toUpperCAse());
+							breAk;
+						cAse 'u':
+							repl.push(mAtch[idx].toUpperCAse());
 							opIdx++;
-							break;
-						case 'L':
-							repl.push(match[idx].toLowerCase());
-							break;
-						case 'l':
-							repl.push(match[idx].toLowerCase());
+							breAk;
+						cAse 'L':
+							repl.push(mAtch[idx].toLowerCAse());
+							breAk;
+						cAse 'l':
+							repl.push(mAtch[idx].toLowerCAse());
 							opIdx++;
-							break;
-						default:
-							repl.push(match[idx]);
+							breAk;
+						defAult:
+							repl.push(mAtch[idx]);
 					}
 				}
-				match = repl.join('');
+				mAtch = repl.join('');
 			}
-			result += match;
+			result += mAtch;
 		}
 
 		return result;
 	}
 
-	private static _substitute(matchIndex: number, matches: string[] | null): string {
-		if (matches === null) {
+	privAte stAtic _substitute(mAtchIndex: number, mAtches: string[] | null): string {
+		if (mAtches === null) {
 			return '';
 		}
-		if (matchIndex === 0) {
-			return matches[0];
+		if (mAtchIndex === 0) {
+			return mAtches[0];
 		}
 
-		let remainder = '';
-		while (matchIndex > 0) {
-			if (matchIndex < matches.length) {
-				// A match can be undefined
-				let match = (matches[matchIndex] || '');
-				return match + remainder;
+		let remAinder = '';
+		while (mAtchIndex > 0) {
+			if (mAtchIndex < mAtches.length) {
+				// A mAtch cAn be undefined
+				let mAtch = (mAtches[mAtchIndex] || '');
+				return mAtch + remAinder;
 			}
-			remainder = String(matchIndex % 10) + remainder;
-			matchIndex = Math.floor(matchIndex / 10);
+			remAinder = String(mAtchIndex % 10) + remAinder;
+			mAtchIndex = MAth.floor(mAtchIndex / 10);
 		}
-		return '$' + remainder;
+		return '$' + remAinder;
 	}
 }
 
 /**
- * A replace piece can either be a static string or an index to a specific match.
+ * A replAce piece cAn either be A stAtic string or An index to A specific mAtch.
  */
-export class ReplacePiece {
+export clAss ReplAcePiece {
 
-	public static staticValue(value: string): ReplacePiece {
-		return new ReplacePiece(value, -1, null);
+	public stAtic stAticVAlue(vAlue: string): ReplAcePiece {
+		return new ReplAcePiece(vAlue, -1, null);
 	}
 
-	public static matchIndex(index: number): ReplacePiece {
-		return new ReplacePiece(null, index, null);
+	public stAtic mAtchIndex(index: number): ReplAcePiece {
+		return new ReplAcePiece(null, index, null);
 	}
 
-	public static caseOps(index: number, caseOps: string[]): ReplacePiece {
-		return new ReplacePiece(null, index, caseOps);
+	public stAtic cAseOps(index: number, cAseOps: string[]): ReplAcePiece {
+		return new ReplAcePiece(null, index, cAseOps);
 	}
 
-	public readonly staticValue: string | null;
-	public readonly matchIndex: number;
-	public readonly caseOps: string[] | null;
+	public reAdonly stAticVAlue: string | null;
+	public reAdonly mAtchIndex: number;
+	public reAdonly cAseOps: string[] | null;
 
-	private constructor(staticValue: string | null, matchIndex: number, caseOps: string[] | null) {
-		this.staticValue = staticValue;
-		this.matchIndex = matchIndex;
-		if (!caseOps || caseOps.length === 0) {
-			this.caseOps = null;
+	privAte constructor(stAticVAlue: string | null, mAtchIndex: number, cAseOps: string[] | null) {
+		this.stAticVAlue = stAticVAlue;
+		this.mAtchIndex = mAtchIndex;
+		if (!cAseOps || cAseOps.length === 0) {
+			this.cAseOps = null;
 		} else {
-			this.caseOps = caseOps.slice(0);
+			this.cAseOps = cAseOps.slice(0);
 		}
 	}
 }
 
-class ReplacePieceBuilder {
+clAss ReplAcePieceBuilder {
 
-	private readonly _source: string;
-	private _lastCharIndex: number;
-	private readonly _result: ReplacePiece[];
-	private _resultLen: number;
-	private _currentStaticPiece: string;
+	privAte reAdonly _source: string;
+	privAte _lAstChArIndex: number;
+	privAte reAdonly _result: ReplAcePiece[];
+	privAte _resultLen: number;
+	privAte _currentStAticPiece: string;
 
 	constructor(source: string) {
 		this._source = source;
-		this._lastCharIndex = 0;
+		this._lAstChArIndex = 0;
 		this._result = [];
 		this._resultLen = 0;
-		this._currentStaticPiece = '';
+		this._currentStAticPiece = '';
 	}
 
-	public emitUnchanged(toCharIndex: number): void {
-		this._emitStatic(this._source.substring(this._lastCharIndex, toCharIndex));
-		this._lastCharIndex = toCharIndex;
+	public emitUnchAnged(toChArIndex: number): void {
+		this._emitStAtic(this._source.substring(this._lAstChArIndex, toChArIndex));
+		this._lAstChArIndex = toChArIndex;
 	}
 
-	public emitStatic(value: string, toCharIndex: number): void {
-		this._emitStatic(value);
-		this._lastCharIndex = toCharIndex;
+	public emitStAtic(vAlue: string, toChArIndex: number): void {
+		this._emitStAtic(vAlue);
+		this._lAstChArIndex = toChArIndex;
 	}
 
-	private _emitStatic(value: string): void {
-		if (value.length === 0) {
+	privAte _emitStAtic(vAlue: string): void {
+		if (vAlue.length === 0) {
 			return;
 		}
-		this._currentStaticPiece += value;
+		this._currentStAticPiece += vAlue;
 	}
 
-	public emitMatchIndex(index: number, toCharIndex: number, caseOps: string[]): void {
-		if (this._currentStaticPiece.length !== 0) {
-			this._result[this._resultLen++] = ReplacePiece.staticValue(this._currentStaticPiece);
-			this._currentStaticPiece = '';
+	public emitMAtchIndex(index: number, toChArIndex: number, cAseOps: string[]): void {
+		if (this._currentStAticPiece.length !== 0) {
+			this._result[this._resultLen++] = ReplAcePiece.stAticVAlue(this._currentStAticPiece);
+			this._currentStAticPiece = '';
 		}
-		this._result[this._resultLen++] = ReplacePiece.caseOps(index, caseOps);
-		this._lastCharIndex = toCharIndex;
+		this._result[this._resultLen++] = ReplAcePiece.cAseOps(index, cAseOps);
+		this._lAstChArIndex = toChArIndex;
 	}
 
 
-	public finalize(): ReplacePattern {
-		this.emitUnchanged(this._source.length);
-		if (this._currentStaticPiece.length !== 0) {
-			this._result[this._resultLen++] = ReplacePiece.staticValue(this._currentStaticPiece);
-			this._currentStaticPiece = '';
+	public finAlize(): ReplAcePAttern {
+		this.emitUnchAnged(this._source.length);
+		if (this._currentStAticPiece.length !== 0) {
+			this._result[this._resultLen++] = ReplAcePiece.stAticVAlue(this._currentStAticPiece);
+			this._currentStAticPiece = '';
 		}
-		return new ReplacePattern(this._result);
+		return new ReplAcePAttern(this._result);
 	}
 }
 
 /**
- * \n			=> inserts a LF
- * \t			=> inserts a TAB
- * \\			=> inserts a "\".
- * \u			=> upper-cases one character in a match.
- * \U			=> upper-cases ALL remaining characters in a match.
- * \l			=> lower-cases one character in a match.
- * \L			=> lower-cases ALL remaining characters in a match.
- * $$			=> inserts a "$".
- * $& and $0	=> inserts the matched substring.
- * $n			=> Where n is a non-negative integer lesser than 100, inserts the nth parenthesized submatch string
- * everything else stays untouched
+ * \n			=> inserts A LF
+ * \t			=> inserts A TAB
+ * \\			=> inserts A "\".
+ * \u			=> upper-cAses one chArActer in A mAtch.
+ * \U			=> upper-cAses ALL remAining chArActers in A mAtch.
+ * \l			=> lower-cAses one chArActer in A mAtch.
+ * \L			=> lower-cAses ALL remAining chArActers in A mAtch.
+ * $$			=> inserts A "$".
+ * $& And $0	=> inserts the mAtched substring.
+ * $n			=> Where n is A non-negAtive integer lesser thAn 100, inserts the nth pArenthesized submAtch string
+ * everything else stAys untouched
  *
- * Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter
+ * Also see https://developer.mozillA.org/en-US/docs/Web/JAvAScript/Reference/GlobAl_Objects/String/replAce#Specifying_A_string_As_A_pArAmeter
  */
-export function parseReplaceString(replaceString: string): ReplacePattern {
-	if (!replaceString || replaceString.length === 0) {
-		return new ReplacePattern(null);
+export function pArseReplAceString(replAceString: string): ReplAcePAttern {
+	if (!replAceString || replAceString.length === 0) {
+		return new ReplAcePAttern(null);
 	}
 
-	let caseOps: string[] = [];
-	let result = new ReplacePieceBuilder(replaceString);
+	let cAseOps: string[] = [];
+	let result = new ReplAcePieceBuilder(replAceString);
 
-	for (let i = 0, len = replaceString.length; i < len; i++) {
-		let chCode = replaceString.charCodeAt(i);
+	for (let i = 0, len = replAceString.length; i < len; i++) {
+		let chCode = replAceString.chArCodeAt(i);
 
-		if (chCode === CharCode.Backslash) {
+		if (chCode === ChArCode.BAckslAsh) {
 
-			// move to next char
+			// move to next chAr
 			i++;
 
 			if (i >= len) {
-				// string ends with a \
-				break;
+				// string ends with A \
+				breAk;
 			}
 
-			let nextChCode = replaceString.charCodeAt(i);
-			// let replaceWithCharacter: string | null = null;
+			let nextChCode = replAceString.chArCodeAt(i);
+			// let replAceWithChArActer: string | null = null;
 
 			switch (nextChCode) {
-				case CharCode.Backslash:
-					// \\ => inserts a "\"
-					result.emitUnchanged(i - 1);
-					result.emitStatic('\\', i + 1);
-					break;
-				case CharCode.n:
-					// \n => inserts a LF
-					result.emitUnchanged(i - 1);
-					result.emitStatic('\n', i + 1);
-					break;
-				case CharCode.t:
-					// \t => inserts a TAB
-					result.emitUnchanged(i - 1);
-					result.emitStatic('\t', i + 1);
-					break;
-				// Case modification of string replacements, patterned after Boost, but only applied
-				// to the replacement text, not subsequent content.
-				case CharCode.u:
-				// \u => upper-cases one character.
-				case CharCode.U:
-				// \U => upper-cases ALL following characters.
-				case CharCode.l:
-				// \l => lower-cases one character.
-				case CharCode.L:
-					// \L => lower-cases ALL following characters.
-					result.emitUnchanged(i - 1);
-					result.emitStatic('', i + 1);
-					caseOps.push(String.fromCharCode(nextChCode));
-					break;
+				cAse ChArCode.BAckslAsh:
+					// \\ => inserts A "\"
+					result.emitUnchAnged(i - 1);
+					result.emitStAtic('\\', i + 1);
+					breAk;
+				cAse ChArCode.n:
+					// \n => inserts A LF
+					result.emitUnchAnged(i - 1);
+					result.emitStAtic('\n', i + 1);
+					breAk;
+				cAse ChArCode.t:
+					// \t => inserts A TAB
+					result.emitUnchAnged(i - 1);
+					result.emitStAtic('\t', i + 1);
+					breAk;
+				// CAse modificAtion of string replAcements, pAtterned After Boost, but only Applied
+				// to the replAcement text, not subsequent content.
+				cAse ChArCode.u:
+				// \u => upper-cAses one chArActer.
+				cAse ChArCode.U:
+				// \U => upper-cAses ALL following chArActers.
+				cAse ChArCode.l:
+				// \l => lower-cAses one chArActer.
+				cAse ChArCode.L:
+					// \L => lower-cAses ALL following chArActers.
+					result.emitUnchAnged(i - 1);
+					result.emitStAtic('', i + 1);
+					cAseOps.push(String.fromChArCode(nextChCode));
+					breAk;
 			}
 
 			continue;
 		}
 
-		if (chCode === CharCode.DollarSign) {
+		if (chCode === ChArCode.DollArSign) {
 
-			// move to next char
+			// move to next chAr
 			i++;
 
 			if (i >= len) {
-				// string ends with a $
-				break;
+				// string ends with A $
+				breAk;
 			}
 
-			let nextChCode = replaceString.charCodeAt(i);
+			let nextChCode = replAceString.chArCodeAt(i);
 
-			if (nextChCode === CharCode.DollarSign) {
-				// $$ => inserts a "$"
-				result.emitUnchanged(i - 1);
-				result.emitStatic('$', i + 1);
+			if (nextChCode === ChArCode.DollArSign) {
+				// $$ => inserts A "$"
+				result.emitUnchAnged(i - 1);
+				result.emitStAtic('$', i + 1);
 				continue;
 			}
 
-			if (nextChCode === CharCode.Digit0 || nextChCode === CharCode.Ampersand) {
-				// $& and $0 => inserts the matched substring.
-				result.emitUnchanged(i - 1);
-				result.emitMatchIndex(0, i + 1, caseOps);
-				caseOps.length = 0;
+			if (nextChCode === ChArCode.Digit0 || nextChCode === ChArCode.AmpersAnd) {
+				// $& And $0 => inserts the mAtched substring.
+				result.emitUnchAnged(i - 1);
+				result.emitMAtchIndex(0, i + 1, cAseOps);
+				cAseOps.length = 0;
 				continue;
 			}
 
-			if (CharCode.Digit1 <= nextChCode && nextChCode <= CharCode.Digit9) {
+			if (ChArCode.Digit1 <= nextChCode && nextChCode <= ChArCode.Digit9) {
 				// $n
 
-				let matchIndex = nextChCode - CharCode.Digit0;
+				let mAtchIndex = nextChCode - ChArCode.Digit0;
 
-				// peek next char to probe for $nn
+				// peek next chAr to probe for $nn
 				if (i + 1 < len) {
-					let nextNextChCode = replaceString.charCodeAt(i + 1);
-					if (CharCode.Digit0 <= nextNextChCode && nextNextChCode <= CharCode.Digit9) {
+					let nextNextChCode = replAceString.chArCodeAt(i + 1);
+					if (ChArCode.Digit0 <= nextNextChCode && nextNextChCode <= ChArCode.Digit9) {
 						// $nn
 
-						// move to next char
+						// move to next chAr
 						i++;
-						matchIndex = matchIndex * 10 + (nextNextChCode - CharCode.Digit0);
+						mAtchIndex = mAtchIndex * 10 + (nextNextChCode - ChArCode.Digit0);
 
-						result.emitUnchanged(i - 2);
-						result.emitMatchIndex(matchIndex, i + 1, caseOps);
-						caseOps.length = 0;
+						result.emitUnchAnged(i - 2);
+						result.emitMAtchIndex(mAtchIndex, i + 1, cAseOps);
+						cAseOps.length = 0;
 						continue;
 					}
 				}
 
-				result.emitUnchanged(i - 1);
-				result.emitMatchIndex(matchIndex, i + 1, caseOps);
-				caseOps.length = 0;
+				result.emitUnchAnged(i - 1);
+				result.emitMAtchIndex(mAtchIndex, i + 1, cAseOps);
+				cAseOps.length = 0;
 				continue;
 			}
 		}
 	}
 
-	return result.finalize();
+	return result.finAlize();
 }

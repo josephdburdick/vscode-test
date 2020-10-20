@@ -1,153 +1,153 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { IExpression } from 'vs/base/common/glob';
-import { join } from 'vs/base/common/path';
-import { isWindows } from 'vs/base/common/platform';
-import { URI as uri } from 'vs/base/common/uri';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { IWorkspaceContextService, toWorkspaceFolder, toWorkspaceFolders, Workspace } from 'vs/platform/workspace/common/workspace';
-import { ISearchPathsInfo, QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
-import { IFileQuery, IFolderQuery, IPatternInfo, ITextQuery, QueryType } from 'vs/workbench/services/search/common/search';
-import { TestPathService, TestEnvironmentService } from 'vs/workbench/test/browser/workbenchTestServices';
+import * As Assert from 'Assert';
+import { IExpression } from 'vs/bAse/common/glob';
+import { join } from 'vs/bAse/common/pAth';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { URI As uri } from 'vs/bAse/common/uri';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { IWorkspAceContextService, toWorkspAceFolder, toWorkspAceFolders, WorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { ISeArchPAthsInfo, QueryBuilder } from 'vs/workbench/contrib/seArch/common/queryBuilder';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
+import { IFileQuery, IFolderQuery, IPAtternInfo, ITextQuery, QueryType } from 'vs/workbench/services/seArch/common/seArch';
+import { TestPAthService, TestEnvironmentService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 
 const DEFAULT_EDITOR_CONFIG = {};
-const DEFAULT_USER_CONFIG = { useRipgrep: true, useIgnoreFiles: true, useGlobalIgnoreFiles: true };
+const DEFAULT_USER_CONFIG = { useRipgrep: true, useIgnoreFiles: true, useGlobAlIgnoreFiles: true };
 const DEFAULT_QUERY_PROPS = {};
-const DEFAULT_TEXT_QUERY_PROPS = { usePCRE2: false };
+const DEFAULT_TEXT_QUERY_PROPS = { usePCRE2: fAlse };
 
 suite('QueryBuilder', () => {
-	const PATTERN_INFO: IPatternInfo = { pattern: 'a' };
-	const ROOT_1 = fixPath('/foo/root1');
+	const PATTERN_INFO: IPAtternInfo = { pAttern: 'A' };
+	const ROOT_1 = fixPAth('/foo/root1');
 	const ROOT_1_URI = getUri(ROOT_1);
-	const ROOT_1_NAMED_FOLDER = toWorkspaceFolder(ROOT_1_URI);
-	const WS_CONFIG_PATH = getUri('/bar/test.code-workspace'); // location of the workspace file (not important except that it is a file URI)
+	const ROOT_1_NAMED_FOLDER = toWorkspAceFolder(ROOT_1_URI);
+	const WS_CONFIG_PATH = getUri('/bAr/test.code-workspAce'); // locAtion of the workspAce file (not importAnt except thAt it is A file URI)
 
-	let instantiationService: TestInstantiationService;
+	let instAntiAtionService: TestInstAntiAtionService;
 	let queryBuilder: QueryBuilder;
-	let mockConfigService: TestConfigurationService;
+	let mockConfigService: TestConfigurAtionService;
 	let mockContextService: TestContextService;
-	let mockWorkspace: Workspace;
+	let mockWorkspAce: WorkspAce;
 
 	setup(() => {
-		instantiationService = new TestInstantiationService();
+		instAntiAtionService = new TestInstAntiAtionService();
 
-		mockConfigService = new TestConfigurationService();
-		mockConfigService.setUserConfiguration('search', DEFAULT_USER_CONFIG);
-		mockConfigService.setUserConfiguration('editor', DEFAULT_EDITOR_CONFIG);
-		instantiationService.stub(IConfigurationService, mockConfigService);
+		mockConfigService = new TestConfigurAtionService();
+		mockConfigService.setUserConfigurAtion('seArch', DEFAULT_USER_CONFIG);
+		mockConfigService.setUserConfigurAtion('editor', DEFAULT_EDITOR_CONFIG);
+		instAntiAtionService.stub(IConfigurAtionService, mockConfigService);
 
 		mockContextService = new TestContextService();
-		mockWorkspace = new Workspace('workspace', [toWorkspaceFolder(ROOT_1_URI)]);
-		mockContextService.setWorkspace(mockWorkspace);
+		mockWorkspAce = new WorkspAce('workspAce', [toWorkspAceFolder(ROOT_1_URI)]);
+		mockContextService.setWorkspAce(mockWorkspAce);
 
-		instantiationService.stub(IWorkspaceContextService, mockContextService);
-		instantiationService.stub(IEnvironmentService, TestEnvironmentService);
-		instantiationService.stub(IPathService, new TestPathService());
+		instAntiAtionService.stub(IWorkspAceContextService, mockContextService);
+		instAntiAtionService.stub(IEnvironmentService, TestEnvironmentService);
+		instAntiAtionService.stub(IPAthService, new TestPAthService());
 
-		queryBuilder = instantiationService.createInstance(QueryBuilder);
+		queryBuilder = instAntiAtionService.creAteInstAnce(QueryBuilder);
 	});
 
-	test('simple text pattern', () => {
-		assertEqualTextQueries(
+	test('simple text pAttern', () => {
+		AssertEquAlTextQueries(
 			queryBuilder.text(PATTERN_INFO),
 			{
 				folderQueries: [],
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				type: QueryType.Text
 			});
 	});
 
-	test('normalize literal newlines', () => {
-		assertEqualTextQueries(
-			queryBuilder.text({ pattern: 'foo\nbar', isRegExp: true }),
+	test('normAlize literAl newlines', () => {
+		AssertEquAlTextQueries(
+			queryBuilder.text({ pAttern: 'foo\nbAr', isRegExp: true }),
 			{
 				folderQueries: [],
-				contentPattern: {
-					pattern: 'foo\\nbar',
+				contentPAttern: {
+					pAttern: 'foo\\nbAr',
 					isRegExp: true,
 					isMultiline: true
 				},
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
-			queryBuilder.text({ pattern: 'foo\nbar', isRegExp: false }),
+		AssertEquAlTextQueries(
+			queryBuilder.text({ pAttern: 'foo\nbAr', isRegExp: fAlse }),
 			{
 				folderQueries: [],
-				contentPattern: {
-					pattern: 'foo\nbar',
-					isRegExp: false,
+				contentPAttern: {
+					pAttern: 'foo\nbAr',
+					isRegExp: fAlse,
 					isMultiline: true
 				},
 				type: QueryType.Text
 			});
 	});
 
-	test('does not split glob pattern when expandPatterns disabled', () => {
-		assertEqualQueries(
+	test('does not split glob pAttern when expAndPAtterns disAbled', () => {
+		AssertEquAlQueries(
 			queryBuilder.file(
 				[ROOT_1_NAMED_FOLDER],
-				{ includePattern: '**/foo, **/bar' },
+				{ includePAttern: '**/foo, **/bAr' },
 			),
 			{
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
 				type: QueryType.File,
-				includePattern: {
-					'**/foo, **/bar': true
+				includePAttern: {
+					'**/foo, **/bAr': true
 				}
 			});
 	});
 
 	test('folderResources', () => {
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI]
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{ folder: ROOT_1_URI }],
 				type: QueryType.Text
 			});
 	});
 
 	test('simple exclude setting', () => {
-		mockConfigService.setUserConfiguration('search', {
+		mockConfigService.setUserConfigurAtion('seArch', {
 			...DEFAULT_USER_CONFIG,
 			exclude: {
-				'bar/**': true,
+				'bAr/**': true,
 				'foo/**': {
-					'when': '$(basename).ts'
+					'when': '$(bAsenAme).ts'
 				}
 			}
 		});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					expandPatterns: true // verify that this doesn't affect patterns from configuration
+					expAndPAtterns: true // verify thAt this doesn't Affect pAtterns from configurAtion
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: {
-						'bar/**': true,
+					excludePAttern: {
+						'bAr/**': true,
 						'foo/**': {
-							'when': '$(basename).ts'
+							'when': '$(bAsenAme).ts'
 						}
 					}
 				}],
@@ -156,124 +156,124 @@ suite('QueryBuilder', () => {
 	});
 
 	test('simple include', () => {
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: 'bar',
-					expandPatterns: true
+					includePAttern: 'bAr',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				includePattern: {
-					'**/bar': true,
-					'**/bar/**': true
+				includePAttern: {
+					'**/bAr': true,
+					'**/bAr/**': true
 				},
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: 'bar'
+					includePAttern: 'bAr'
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				includePattern: {
-					'bar': true
+				includePAttern: {
+					'bAr': true
 				},
 				type: QueryType.Text
 			});
 	});
 
-	test('simple include with ./ syntax', () => {
+	test('simple include with ./ syntAx', () => {
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: './bar',
-					expandPatterns: true
+					includePAttern: './bAr',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					includePattern: {
-						'bar': true,
-						'bar/**': true
+					includePAttern: {
+						'bAr': true,
+						'bAr/**': true
 					}
 				}],
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: '.\\bar',
-					expandPatterns: true
+					includePAttern: '.\\bAr',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					includePattern: {
-						'bar': true,
-						'bar/**': true
+					includePAttern: {
+						'bAr': true,
+						'bAr/**': true
 					}
 				}],
 				type: QueryType.Text
 			});
 	});
 
-	test('exclude setting and searchPath', () => {
-		mockConfigService.setUserConfiguration('search', {
+	test('exclude setting And seArchPAth', () => {
+		mockConfigService.setUserConfigurAtion('seArch', {
 			...DEFAULT_USER_CONFIG,
 			exclude: {
 				'foo/**/*.js': true,
-				'bar/**': {
-					'when': '$(basename).ts'
+				'bAr/**': {
+					'when': '$(bAsenAme).ts'
 				}
 			}
 		});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					includePattern: './foo',
-					expandPatterns: true
+					includePAttern: './foo',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					includePattern: {
+					includePAttern: {
 						'foo': true,
 						'foo/**': true
 					},
-					excludePattern: {
+					excludePAttern: {
 						'foo/**/*.js': true,
-						'bar/**': {
-							'when': '$(basename).ts'
+						'bAr/**': {
+							'when': '$(bAsenAme).ts'
 						}
 					}
 				}],
@@ -282,61 +282,61 @@ suite('QueryBuilder', () => {
 	});
 
 	test('multiroot exclude settings', () => {
-		const ROOT_2 = fixPath('/project/root2');
+		const ROOT_2 = fixPAth('/project/root2');
 		const ROOT_2_URI = getUri(ROOT_2);
-		const ROOT_3 = fixPath('/project/root3');
+		const ROOT_3 = fixPAth('/project/root3');
 		const ROOT_3_URI = getUri(ROOT_3);
-		mockWorkspace.folders = toWorkspaceFolders([{ path: ROOT_1_URI.fsPath }, { path: ROOT_2_URI.fsPath }, { path: ROOT_3_URI.fsPath }], WS_CONFIG_PATH);
-		mockWorkspace.configuration = uri.file(fixPath('/config'));
+		mockWorkspAce.folders = toWorkspAceFolders([{ pAth: ROOT_1_URI.fsPAth }, { pAth: ROOT_2_URI.fsPAth }, { pAth: ROOT_3_URI.fsPAth }], WS_CONFIG_PATH);
+		mockWorkspAce.configurAtion = uri.file(fixPAth('/config'));
 
-		mockConfigService.setUserConfiguration('search', {
+		mockConfigService.setUserConfigurAtion('seArch', {
 			...DEFAULT_USER_CONFIG,
 			exclude: { 'foo/**/*.js': true }
 		}, ROOT_1_URI);
 
-		mockConfigService.setUserConfiguration('search', {
+		mockConfigService.setUserConfigurAtion('seArch', {
 			...DEFAULT_USER_CONFIG,
-			exclude: { 'bar': true }
+			exclude: { 'bAr': true }
 		}, ROOT_2_URI);
 
-		// There are 3 roots, the first two have search.exclude settings, test that the correct basic query is returned
-		assertEqualTextQueries(
+		// There Are 3 roots, the first two hAve seArch.exclude settings, test thAt the correct bAsic query is returned
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI, ROOT_2_URI, ROOT_3_URI]
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [
-					{ folder: ROOT_1_URI, excludePattern: patternsToIExpression('foo/**/*.js') },
-					{ folder: ROOT_2_URI, excludePattern: patternsToIExpression('bar') },
+					{ folder: ROOT_1_URI, excludePAttern: pAtternsToIExpression('foo/**/*.js') },
+					{ folder: ROOT_2_URI, excludePAttern: pAtternsToIExpression('bAr') },
 					{ folder: ROOT_3_URI }
 				],
 				type: QueryType.Text
 			}
 		);
 
-		// Now test that it merges the root excludes when an 'include' is used
-		assertEqualTextQueries(
+		// Now test thAt it merges the root excludes when An 'include' is used
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI, ROOT_2_URI, ROOT_3_URI],
 				{
-					includePattern: './root2/src',
-					expandPatterns: true
+					includePAttern: './root2/src',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [
 					{
 						folder: ROOT_2_URI,
-						includePattern: {
+						includePAttern: {
 							'src': true,
 							'src/**': true
 						},
-						excludePattern: {
-							'bar': true
+						excludePAttern: {
+							'bAr': true
 						},
 					}
 				],
@@ -345,694 +345,694 @@ suite('QueryBuilder', () => {
 		);
 	});
 
-	test('simple exclude input pattern', () => {
-		assertEqualTextQueries(
+	test('simple exclude input pAttern', () => {
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: 'foo',
-					expandPatterns: true
+					excludePAttern: 'foo',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
 				type: QueryType.Text,
-				excludePattern: patternsToIExpression(...globalGlob('foo'))
+				excludePAttern: pAtternsToIExpression(...globAlGlob('foo'))
 			});
 	});
 
-	test('file pattern trimming', () => {
+	test('file pAttern trimming', () => {
 		const content = 'content';
-		assertEqualQueries(
+		AssertEquAlQueries(
 			queryBuilder.file(
 				[],
-				{ filePattern: ` ${content} ` }
+				{ filePAttern: ` ${content} ` }
 			),
 			{
 				folderQueries: [],
-				filePattern: content,
+				filePAttern: content,
 				type: QueryType.File
 			});
 	});
 
-	test('exclude ./ syntax', () => {
-		assertEqualTextQueries(
+	test('exclude ./ syntAx', () => {
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: './bar',
-					expandPatterns: true
+					excludePAttern: './bAr',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: patternsToIExpression('bar', 'bar/**'),
+					excludePAttern: pAtternsToIExpression('bAr', 'bAr/**'),
 				}],
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: './bar/**/*.ts',
-					expandPatterns: true
+					excludePAttern: './bAr/**/*.ts',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: patternsToIExpression('bar/**/*.ts', 'bar/**/*.ts/**'),
+					excludePAttern: pAtternsToIExpression('bAr/**/*.ts', 'bAr/**/*.ts/**'),
 				}],
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					excludePattern: '.\\bar\\**\\*.ts',
-					expandPatterns: true
+					excludePAttern: '.\\bAr\\**\\*.ts',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI,
-					excludePattern: patternsToIExpression('bar/**/*.ts', 'bar/**/*.ts/**'),
+					excludePAttern: pAtternsToIExpression('bAr/**/*.ts', 'bAr/**/*.ts/**'),
 				}],
 				type: QueryType.Text
 			});
 	});
 
-	test('extraFileResources', () => {
-		assertEqualTextQueries(
+	test('extrAFileResources', () => {
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
-				{ extraFileResources: [getUri('/foo/bar.js')] }
+				{ extrAFileResources: [getUri('/foo/bAr.js')] }
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				extraFileResources: [getUri('/foo/bar.js')],
+				extrAFileResources: [getUri('/foo/bAr.js')],
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					extraFileResources: [getUri('/foo/bar.js')],
-					excludePattern: '*.js',
-					expandPatterns: true
+					extrAFileResources: [getUri('/foo/bAr.js')],
+					excludePAttern: '*.js',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				excludePattern: patternsToIExpression(...globalGlob('*.js')),
+				excludePAttern: pAtternsToIExpression(...globAlGlob('*.js')),
 				type: QueryType.Text
 			});
 
-		assertEqualTextQueries(
+		AssertEquAlTextQueries(
 			queryBuilder.text(
 				PATTERN_INFO,
 				[ROOT_1_URI],
 				{
-					extraFileResources: [getUri('/foo/bar.js')],
-					includePattern: '*.txt',
-					expandPatterns: true
+					extrAFileResources: [getUri('/foo/bAr.js')],
+					includePAttern: '*.txt',
+					expAndPAtterns: true
 				}
 			),
 			{
-				contentPattern: PATTERN_INFO,
+				contentPAttern: PATTERN_INFO,
 				folderQueries: [{
 					folder: ROOT_1_URI
 				}],
-				includePattern: patternsToIExpression(...globalGlob('*.txt')),
+				includePAttern: pAtternsToIExpression(...globAlGlob('*.txt')),
 				type: QueryType.Text
 			});
 	});
 
-	suite('parseSearchPaths', () => {
+	suite('pArseSeArchPAths', () => {
 		test('simple includes', () => {
-			function testSimpleIncludes(includePattern: string, expectedPatterns: string[]): void {
-				assert.deepEqual(
-					queryBuilder.parseSearchPaths(includePattern),
+			function testSimpleIncludes(includePAttern: string, expectedPAtterns: string[]): void {
+				Assert.deepEquAl(
+					queryBuilder.pArseSeArchPAths(includePAttern),
 					{
-						pattern: patternsToIExpression(...expectedPatterns)
+						pAttern: pAtternsToIExpression(...expectedPAtterns)
 					},
-					includePattern);
+					includePAttern);
 			}
 
 			[
-				['a', ['**/a/**', '**/a']],
-				['a/b', ['**/a/b', '**/a/b/**']],
-				['a/b,  c', ['**/a/b', '**/c', '**/a/b/**', '**/c/**']],
-				['a,.txt', ['**/a', '**/a/**', '**/*.txt', '**/*.txt/**']],
-				['a,,,b', ['**/a', '**/a/**', '**/b', '**/b/**']],
-				['**/a,b/**', ['**/a', '**/a/**', '**/b/**']]
-			].forEach(([includePattern, expectedPatterns]) => testSimpleIncludes(<string>includePattern, <string[]>expectedPatterns));
+				['A', ['**/A/**', '**/A']],
+				['A/b', ['**/A/b', '**/A/b/**']],
+				['A/b,  c', ['**/A/b', '**/c', '**/A/b/**', '**/c/**']],
+				['A,.txt', ['**/A', '**/A/**', '**/*.txt', '**/*.txt/**']],
+				['A,,,b', ['**/A', '**/A/**', '**/b', '**/b/**']],
+				['**/A,b/**', ['**/A', '**/A/**', '**/b/**']]
+			].forEAch(([includePAttern, expectedPAtterns]) => testSimpleIncludes(<string>includePAttern, <string[]>expectedPAtterns));
 		});
 
-		function testIncludes(includePattern: string, expectedResult: ISearchPathsInfo): void {
-			assertEqualSearchPathResults(
-				queryBuilder.parseSearchPaths(includePattern),
+		function testIncludes(includePAttern: string, expectedResult: ISeArchPAthsInfo): void {
+			AssertEquAlSeArchPAthResults(
+				queryBuilder.pArseSeArchPAths(includePAttern),
 				expectedResult,
-				includePattern);
+				includePAttern);
 		}
 
-		function testIncludesDataItem([includePattern, expectedResult]: [string, ISearchPathsInfo]): void {
-			testIncludes(includePattern, expectedResult);
+		function testIncludesDAtAItem([includePAttern, expectedResult]: [string, ISeArchPAthsInfo]): void {
+			testIncludes(includePAttern, expectedResult);
 		}
 
-		test('absolute includes', () => {
-			const cases: [string, ISearchPathsInfo][] = [
+		test('Absolute includes', () => {
+			const cAses: [string, ISeArchPAthsInfo][] = [
 				[
-					fixPath('/foo/bar'),
+					fixPAth('/foo/bAr'),
 					{
-						searchPaths: [{ searchPath: getUri('/foo/bar') }]
+						seArchPAths: [{ seArchPAth: getUri('/foo/bAr') }]
 					}
 				],
 				[
-					fixPath('/foo/bar') + ',' + 'a',
+					fixPAth('/foo/bAr') + ',' + 'A',
 					{
-						searchPaths: [{ searchPath: getUri('/foo/bar') }],
-						pattern: patternsToIExpression(...globalGlob('a'))
+						seArchPAths: [{ seArchPAth: getUri('/foo/bAr') }],
+						pAttern: pAtternsToIExpression(...globAlGlob('A'))
 					}
 				],
 				[
-					fixPath('/foo/bar') + ',' + fixPath('/1/2'),
+					fixPAth('/foo/bAr') + ',' + fixPAth('/1/2'),
 					{
-						searchPaths: [{ searchPath: getUri('/foo/bar') }, { searchPath: getUri('/1/2') }]
+						seArchPAths: [{ seArchPAth: getUri('/foo/bAr') }, { seArchPAth: getUri('/1/2') }]
 					}
 				],
 				[
-					fixPath('/foo/bar') + ',' + fixPath('/foo/../foo/bar/fooar/..'),
+					fixPAth('/foo/bAr') + ',' + fixPAth('/foo/../foo/bAr/fooAr/..'),
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo/bar')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo/bAr')
 						}]
 					}
 				],
 				[
-					fixPath('/foo/bar/**/*.ts'),
+					fixPAth('/foo/bAr/**/*.ts'),
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo/bar'),
-							pattern: patternsToIExpression('**/*.ts', '**/*.ts/**')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo/bAr'),
+							pAttern: pAtternsToIExpression('**/*.ts', '**/*.ts/**')
 						}]
 					}
 				],
 				[
-					fixPath('/foo/bar/*a/b/c'),
+					fixPAth('/foo/bAr/*A/b/c'),
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo/bar'),
-							pattern: patternsToIExpression('*a/b/c', '*a/b/c/**')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo/bAr'),
+							pAttern: pAtternsToIExpression('*A/b/c', '*A/b/c/**')
 						}]
 					}
 				],
 				[
-					fixPath('/*a/b/c'),
+					fixPAth('/*A/b/c'),
 					{
-						searchPaths: [{
-							searchPath: getUri('/'),
-							pattern: patternsToIExpression('*a/b/c', '*a/b/c/**')
+						seArchPAths: [{
+							seArchPAth: getUri('/'),
+							pAttern: pAtternsToIExpression('*A/b/c', '*A/b/c/**')
 						}]
 					}
 				],
 				[
-					fixPath('/foo/{b,c}ar'),
+					fixPAth('/foo/{b,c}Ar'),
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo'),
-							pattern: patternsToIExpression('{b,c}ar', '{b,c}ar/**')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo'),
+							pAttern: pAtternsToIExpression('{b,c}Ar', '{b,c}Ar/**')
 						}]
 					}
 				]
 			];
-			cases.forEach(testIncludesDataItem);
+			cAses.forEAch(testIncludesDAtAItem);
 		});
 
-		test('relative includes w/single root folder', () => {
-			const cases: [string, ISearchPathsInfo][] = [
+		test('relAtive includes w/single root folder', () => {
+			const cAses: [string, ISeArchPAthsInfo][] = [
 				[
-					'./a',
+					'./A',
 					{
-						searchPaths: [{
-							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('a', 'a/**')
+						seArchPAths: [{
+							seArchPAth: ROOT_1_URI,
+							pAttern: pAtternsToIExpression('A', 'A/**')
 						}]
 					}
 				],
 				[
-					'./a/',
+					'./A/',
 					{
-						searchPaths: [{
-							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('a', 'a/**')
+						seArchPAths: [{
+							seArchPAth: ROOT_1_URI,
+							pAttern: pAtternsToIExpression('A', 'A/**')
 						}]
 					}
 				],
 				[
-					'./a/*b/c',
+					'./A/*b/c',
 					{
-						searchPaths: [{
-							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('a/*b/c', 'a/*b/c/**')
+						seArchPAths: [{
+							seArchPAth: ROOT_1_URI,
+							pAttern: pAtternsToIExpression('A/*b/c', 'A/*b/c/**')
 						}]
 					}
 				],
 				[
-					'./a/*b/c, ' + fixPath('/project/foo'),
+					'./A/*b/c, ' + fixPAth('/project/foo'),
 					{
-						searchPaths: [
+						seArchPAths: [
 							{
-								searchPath: ROOT_1_URI,
-								pattern: patternsToIExpression('a/*b/c', 'a/*b/c/**')
+								seArchPAth: ROOT_1_URI,
+								pAttern: pAtternsToIExpression('A/*b/c', 'A/*b/c/**')
 							},
 							{
-								searchPath: getUri('/project/foo')
+								seArchPAth: getUri('/project/foo')
 							}]
 					}
 				],
 				[
-					'./a/b/,./c/d',
+					'./A/b/,./c/d',
 					{
-						searchPaths: [{
-							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('a/b', 'a/b/**', 'c/d', 'c/d/**')
+						seArchPAths: [{
+							seArchPAth: ROOT_1_URI,
+							pAttern: pAtternsToIExpression('A/b', 'A/b/**', 'c/d', 'c/d/**')
 						}]
 					}
 				],
 				[
 					'../',
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo')
 						}]
 					}
 				],
 				[
 					'..',
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo')
 						}]
 					}
 				],
 				[
-					'..\\bar',
+					'..\\bAr',
 					{
-						searchPaths: [{
-							searchPath: getUri('/foo/bar')
+						seArchPAths: [{
+							seArchPAth: getUri('/foo/bAr')
 						}]
 					}
 				]
 			];
-			cases.forEach(testIncludesDataItem);
+			cAses.forEAch(testIncludesDAtAItem);
 		});
 
-		test('relative includes w/two root folders', () => {
+		test('relAtive includes w/two root folders', () => {
 			const ROOT_2 = '/project/root2';
-			mockWorkspace.folders = toWorkspaceFolders([{ path: ROOT_1_URI.fsPath }, { path: getUri(ROOT_2).fsPath }], WS_CONFIG_PATH);
-			mockWorkspace.configuration = uri.file(fixPath('config'));
+			mockWorkspAce.folders = toWorkspAceFolders([{ pAth: ROOT_1_URI.fsPAth }, { pAth: getUri(ROOT_2).fsPAth }], WS_CONFIG_PATH);
+			mockWorkspAce.configurAtion = uri.file(fixPAth('config'));
 
-			const cases: [string, ISearchPathsInfo][] = [
+			const cAses: [string, ISeArchPAthsInfo][] = [
 				[
 					'./root1',
 					{
-						searchPaths: [{
-							searchPath: getUri(ROOT_1)
+						seArchPAths: [{
+							seArchPAth: getUri(ROOT_1)
 						}]
 					}
 				],
 				[
 					'./root2',
 					{
-						searchPaths: [{
-							searchPath: getUri(ROOT_2),
+						seArchPAths: [{
+							seArchPAth: getUri(ROOT_2),
 						}]
 					}
 				],
 				[
-					'./root1/a/**/b, ./root2/**/*.txt',
+					'./root1/A/**/b, ./root2/**/*.txt',
 					{
-						searchPaths: [
+						seArchPAths: [
 							{
-								searchPath: ROOT_1_URI,
-								pattern: patternsToIExpression('a/**/b', 'a/**/b/**')
+								seArchPAth: ROOT_1_URI,
+								pAttern: pAtternsToIExpression('A/**/b', 'A/**/b/**')
 							},
 							{
-								searchPath: getUri(ROOT_2),
-								pattern: patternsToIExpression('**/*.txt', '**/*.txt/**')
+								seArchPAth: getUri(ROOT_2),
+								pAttern: pAtternsToIExpression('**/*.txt', '**/*.txt/**')
 							}]
 					}
 				]
 			];
-			cases.forEach(testIncludesDataItem);
+			cAses.forEAch(testIncludesDAtAItem);
 		});
 
-		test('include ./foldername', () => {
+		test('include ./foldernAme', () => {
 			const ROOT_2 = '/project/root2';
-			const ROOT_1_FOLDERNAME = 'foldername';
-			mockWorkspace.folders = toWorkspaceFolders([{ path: ROOT_1_URI.fsPath, name: ROOT_1_FOLDERNAME }, { path: getUri(ROOT_2).fsPath }], WS_CONFIG_PATH);
-			mockWorkspace.configuration = uri.file(fixPath('config'));
+			const ROOT_1_FOLDERNAME = 'foldernAme';
+			mockWorkspAce.folders = toWorkspAceFolders([{ pAth: ROOT_1_URI.fsPAth, nAme: ROOT_1_FOLDERNAME }, { pAth: getUri(ROOT_2).fsPAth }], WS_CONFIG_PATH);
+			mockWorkspAce.configurAtion = uri.file(fixPAth('config'));
 
-			const cases: [string, ISearchPathsInfo][] = [
+			const cAses: [string, ISeArchPAthsInfo][] = [
 				[
-					'./foldername',
+					'./foldernAme',
 					{
-						searchPaths: [{
-							searchPath: ROOT_1_URI
+						seArchPAths: [{
+							seArchPAth: ROOT_1_URI
 						}]
 					}
 				],
 				[
-					'./foldername/foo',
+					'./foldernAme/foo',
 					{
-						searchPaths: [{
-							searchPath: ROOT_1_URI,
-							pattern: patternsToIExpression('foo', 'foo/**')
+						seArchPAths: [{
+							seArchPAth: ROOT_1_URI,
+							pAttern: pAtternsToIExpression('foo', 'foo/**')
 						}]
 					}
 				]
 			];
-			cases.forEach(testIncludesDataItem);
+			cAses.forEAch(testIncludesDAtAItem);
 		});
 
-		test('relative includes w/multiple ambiguous root folders', () => {
+		test('relAtive includes w/multiple Ambiguous root folders', () => {
 			const ROOT_2 = '/project/rootB';
 			const ROOT_3 = '/otherproject/rootB';
-			mockWorkspace.folders = toWorkspaceFolders([{ path: ROOT_1_URI.fsPath }, { path: getUri(ROOT_2).fsPath }, { path: getUri(ROOT_3).fsPath }], WS_CONFIG_PATH);
-			mockWorkspace.configuration = uri.file(fixPath('/config'));
+			mockWorkspAce.folders = toWorkspAceFolders([{ pAth: ROOT_1_URI.fsPAth }, { pAth: getUri(ROOT_2).fsPAth }, { pAth: getUri(ROOT_3).fsPAth }], WS_CONFIG_PATH);
+			mockWorkspAce.configurAtion = uri.file(fixPAth('/config'));
 
-			const cases: [string, ISearchPathsInfo][] = [
+			const cAses: [string, ISeArchPAthsInfo][] = [
 				[
 					'',
 					{
-						searchPaths: undefined
+						seArchPAths: undefined
 					}
 				],
 				[
 					'./',
 					{
-						searchPaths: undefined
+						seArchPAths: undefined
 					}
 				],
 				[
 					'./root1',
 					{
-						searchPaths: [{
-							searchPath: getUri(ROOT_1)
+						seArchPAths: [{
+							seArchPAth: getUri(ROOT_1)
 						}]
 					}
 				],
 				[
 					'./root1,./',
 					{
-						searchPaths: [{
-							searchPath: getUri(ROOT_1)
+						seArchPAths: [{
+							seArchPAth: getUri(ROOT_1)
 						}]
 					}
 				],
 				[
 					'./rootB',
 					{
-						searchPaths: [
+						seArchPAths: [
 							{
-								searchPath: getUri(ROOT_2),
+								seArchPAth: getUri(ROOT_2),
 							},
 							{
-								searchPath: getUri(ROOT_3),
+								seArchPAth: getUri(ROOT_3),
 							}]
 					}
 				],
 				[
-					'./rootB/a/**/b, ./rootB/b/**/*.txt',
+					'./rootB/A/**/b, ./rootB/b/**/*.txt',
 					{
-						searchPaths: [
+						seArchPAths: [
 							{
-								searchPath: getUri(ROOT_2),
-								pattern: patternsToIExpression('a/**/b', 'a/**/b/**', 'b/**/*.txt', 'b/**/*.txt/**')
+								seArchPAth: getUri(ROOT_2),
+								pAttern: pAtternsToIExpression('A/**/b', 'A/**/b/**', 'b/**/*.txt', 'b/**/*.txt/**')
 							},
 							{
-								searchPath: getUri(ROOT_3),
-								pattern: patternsToIExpression('a/**/b', 'a/**/b/**', 'b/**/*.txt', 'b/**/*.txt/**')
+								seArchPAth: getUri(ROOT_3),
+								pAttern: pAtternsToIExpression('A/**/b', 'A/**/b/**', 'b/**/*.txt', 'b/**/*.txt/**')
 							}]
 					}
 				],
 				[
-					'./root1/**/foo/, bar/',
+					'./root1/**/foo/, bAr/',
 					{
-						pattern: patternsToIExpression('**/bar', '**/bar/**'),
-						searchPaths: [
+						pAttern: pAtternsToIExpression('**/bAr', '**/bAr/**'),
+						seArchPAths: [
 							{
-								searchPath: ROOT_1_URI,
-								pattern: patternsToIExpression('**/foo', '**/foo/**')
+								seArchPAth: ROOT_1_URI,
+								pAttern: pAtternsToIExpression('**/foo', '**/foo/**')
 							}]
 					}
 				]
 			];
-			cases.forEach(testIncludesDataItem);
+			cAses.forEAch(testIncludesDAtAItem);
 		});
 	});
 
-	suite('smartCase', () => {
-		test('no flags -> no change', () => {
+	suite('smArtCAse', () => {
+		test('no flAgs -> no chAnge', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'a'
+					pAttern: 'A'
 				},
 				[]);
 
-			assert(!query.contentPattern.isCaseSensitive);
+			Assert(!query.contentPAttern.isCAseSensitive);
 		});
 
-		test('maintains isCaseSensitive when smartCase not set', () => {
+		test('mAintAins isCAseSensitive when smArtCAse not set', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'a',
-					isCaseSensitive: true
+					pAttern: 'A',
+					isCAseSensitive: true
 				},
 				[]);
 
-			assert(query.contentPattern.isCaseSensitive);
+			Assert(query.contentPAttern.isCAseSensitive);
 		});
 
-		test('maintains isCaseSensitive when smartCase set', () => {
+		test('mAintAins isCAseSensitive when smArtCAse set', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'a',
-					isCaseSensitive: true
+					pAttern: 'A',
+					isCAseSensitive: true
 				},
 				[],
 				{
-					isSmartCase: true
+					isSmArtCAse: true
 				});
 
-			assert(query.contentPattern.isCaseSensitive);
+			Assert(query.contentPAttern.isCAseSensitive);
 		});
 
-		test('smartCase determines not case sensitive', () => {
+		test('smArtCAse determines not cAse sensitive', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'abcd'
+					pAttern: 'Abcd'
 				},
 				[],
 				{
-					isSmartCase: true
+					isSmArtCAse: true
 				});
 
-			assert(!query.contentPattern.isCaseSensitive);
+			Assert(!query.contentPAttern.isCAseSensitive);
 		});
 
-		test('smartCase determines case sensitive', () => {
+		test('smArtCAse determines cAse sensitive', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'abCd'
+					pAttern: 'AbCd'
 				},
 				[],
 				{
-					isSmartCase: true
+					isSmArtCAse: true
 				});
 
-			assert(query.contentPattern.isCaseSensitive);
+			Assert(query.contentPAttern.isCAseSensitive);
 		});
 
-		test('smartCase determines not case sensitive (regex)', () => {
+		test('smArtCAse determines not cAse sensitive (regex)', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'ab\\Sd',
+					pAttern: 'Ab\\Sd',
 					isRegExp: true
 				},
 				[],
 				{
-					isSmartCase: true
+					isSmArtCAse: true
 				});
 
-			assert(!query.contentPattern.isCaseSensitive);
+			Assert(!query.contentPAttern.isCAseSensitive);
 		});
 
-		test('smartCase determines case sensitive (regex)', () => {
+		test('smArtCAse determines cAse sensitive (regex)', () => {
 			const query = queryBuilder.text(
 				{
-					pattern: 'ab[A-Z]d',
+					pAttern: 'Ab[A-Z]d',
 					isRegExp: true
 				},
 				[],
 				{
-					isSmartCase: true
+					isSmArtCAse: true
 				});
 
-			assert(query.contentPattern.isCaseSensitive);
+			Assert(query.contentPAttern.isCAseSensitive);
 		});
 	});
 
 	suite('file', () => {
 		test('simple file query', () => {
-			const cacheKey = 'asdf';
+			const cAcheKey = 'Asdf';
 			const query = queryBuilder.file(
 				[ROOT_1_NAMED_FOLDER],
 				{
-					cacheKey,
+					cAcheKey,
 					sortByScore: true
 				},
 			);
 
-			assert.equal(query.folderQueries.length, 1);
-			assert.equal(query.cacheKey, cacheKey);
-			assert(query.sortByScore);
+			Assert.equAl(query.folderQueries.length, 1);
+			Assert.equAl(query.cAcheKey, cAcheKey);
+			Assert(query.sortByScore);
 		});
 	});
 });
 
-function assertEqualTextQueries(actual: ITextQuery, expected: ITextQuery): void {
+function AssertEquAlTextQueries(ActuAl: ITextQuery, expected: ITextQuery): void {
 	expected = {
 		...DEFAULT_TEXT_QUERY_PROPS,
 		...expected
 	};
 
-	return assertEqualQueries(actual, expected);
+	return AssertEquAlQueries(ActuAl, expected);
 }
 
-export function assertEqualQueries(actual: ITextQuery | IFileQuery, expected: ITextQuery | IFileQuery): void {
+export function AssertEquAlQueries(ActuAl: ITextQuery | IFileQuery, expected: ITextQuery | IFileQuery): void {
 	expected = {
 		...DEFAULT_QUERY_PROPS,
 		...expected
 	};
 
-	const folderQueryToCompareObject = (fq: IFolderQuery) => {
+	const folderQueryToCompAreObject = (fq: IFolderQuery) => {
 		return {
-			path: fq.folder.fsPath,
-			excludePattern: normalizeExpression(fq.excludePattern),
-			includePattern: normalizeExpression(fq.includePattern),
+			pAth: fq.folder.fsPAth,
+			excludePAttern: normAlizeExpression(fq.excludePAttern),
+			includePAttern: normAlizeExpression(fq.includePAttern),
 			fileEncoding: fq.fileEncoding
 		};
 	};
 
-	// Avoid comparing URI objects, not a good idea
+	// Avoid compAring URI objects, not A good ideA
 	if (expected.folderQueries) {
-		assert.deepEqual(actual.folderQueries.map(folderQueryToCompareObject), expected.folderQueries.map(folderQueryToCompareObject));
-		actual.folderQueries = [];
+		Assert.deepEquAl(ActuAl.folderQueries.mAp(folderQueryToCompAreObject), expected.folderQueries.mAp(folderQueryToCompAreObject));
+		ActuAl.folderQueries = [];
 		expected.folderQueries = [];
 	}
 
-	if (expected.extraFileResources) {
-		assert.deepEqual(actual.extraFileResources!.map(extraFile => extraFile.fsPath), expected.extraFileResources.map(extraFile => extraFile.fsPath));
-		delete expected.extraFileResources;
-		delete actual.extraFileResources;
+	if (expected.extrAFileResources) {
+		Assert.deepEquAl(ActuAl.extrAFileResources!.mAp(extrAFile => extrAFile.fsPAth), expected.extrAFileResources.mAp(extrAFile => extrAFile.fsPAth));
+		delete expected.extrAFileResources;
+		delete ActuAl.extrAFileResources;
 	}
 
-	delete actual.usingSearchPaths;
-	actual.includePattern = normalizeExpression(actual.includePattern);
-	actual.excludePattern = normalizeExpression(actual.excludePattern);
-	cleanUndefinedQueryValues(actual);
+	delete ActuAl.usingSeArchPAths;
+	ActuAl.includePAttern = normAlizeExpression(ActuAl.includePAttern);
+	ActuAl.excludePAttern = normAlizeExpression(ActuAl.excludePAttern);
+	cleAnUndefinedQueryVAlues(ActuAl);
 
-	assert.deepEqual(actual, expected);
+	Assert.deepEquAl(ActuAl, expected);
 }
 
-export function assertEqualSearchPathResults(actual: ISearchPathsInfo, expected: ISearchPathsInfo, message?: string): void {
-	cleanUndefinedQueryValues(actual);
-	assert.deepEqual(actual.pattern, expected.pattern, message);
+export function AssertEquAlSeArchPAthResults(ActuAl: ISeArchPAthsInfo, expected: ISeArchPAthsInfo, messAge?: string): void {
+	cleAnUndefinedQueryVAlues(ActuAl);
+	Assert.deepEquAl(ActuAl.pAttern, expected.pAttern, messAge);
 
-	assert.equal(actual.searchPaths && actual.searchPaths.length, expected.searchPaths && expected.searchPaths.length);
-	if (actual.searchPaths) {
-		actual.searchPaths.forEach((searchPath, i) => {
-			const expectedSearchPath = expected.searchPaths![i];
-			assert.deepEqual(searchPath.pattern, expectedSearchPath.pattern);
-			assert.equal(searchPath.searchPath.toString(), expectedSearchPath.searchPath.toString());
+	Assert.equAl(ActuAl.seArchPAths && ActuAl.seArchPAths.length, expected.seArchPAths && expected.seArchPAths.length);
+	if (ActuAl.seArchPAths) {
+		ActuAl.seArchPAths.forEAch((seArchPAth, i) => {
+			const expectedSeArchPAth = expected.seArchPAths![i];
+			Assert.deepEquAl(seArchPAth.pAttern, expectedSeArchPAth.pAttern);
+			Assert.equAl(seArchPAth.seArchPAth.toString(), expectedSeArchPAth.seArchPAth.toString());
 		});
 	}
 }
 
 /**
- * Recursively delete all undefined property values from the search query, to make it easier to
- * assert.deepEqual with some expected object.
+ * Recursively delete All undefined property vAlues from the seArch query, to mAke it eAsier to
+ * Assert.deepEquAl with some expected object.
  */
-export function cleanUndefinedQueryValues(q: any): void {
+export function cleAnUndefinedQueryVAlues(q: Any): void {
 	for (const key in q) {
 		if (q[key] === undefined) {
 			delete q[key];
 		} else if (typeof q[key] === 'object') {
-			cleanUndefinedQueryValues(q[key]);
+			cleAnUndefinedQueryVAlues(q[key]);
 		}
 	}
 
 	return q;
 }
 
-export function globalGlob(pattern: string): string[] {
+export function globAlGlob(pAttern: string): string[] {
 	return [
-		`**/${pattern}/**`,
-		`**/${pattern}`
+		`**/${pAttern}/**`,
+		`**/${pAttern}`
 	];
 }
 
-export function patternsToIExpression(...patterns: string[]): IExpression {
-	return patterns.length ?
-		patterns.reduce((glob, cur) => { glob[cur] = true; return glob; }, Object.create(null)) :
+export function pAtternsToIExpression(...pAtterns: string[]): IExpression {
+	return pAtterns.length ?
+		pAtterns.reduce((glob, cur) => { glob[cur] = true; return glob; }, Object.creAte(null)) :
 		undefined;
 }
 
-export function getUri(...slashPathParts: string[]): uri {
-	return uri.file(fixPath(...slashPathParts));
+export function getUri(...slAshPAthPArts: string[]): uri {
+	return uri.file(fixPAth(...slAshPAthPArts));
 }
 
-export function fixPath(...slashPathParts: string[]): string {
-	if (isWindows && slashPathParts.length && !slashPathParts[0].match(/^c:/i)) {
-		slashPathParts.unshift('c:');
+export function fixPAth(...slAshPAthPArts: string[]): string {
+	if (isWindows && slAshPAthPArts.length && !slAshPAthPArts[0].mAtch(/^c:/i)) {
+		slAshPAthPArts.unshift('c:');
 	}
 
-	return join(...slashPathParts);
+	return join(...slAshPAthPArts);
 }
 
-export function normalizeExpression(expression: IExpression | undefined): IExpression | undefined {
+export function normAlizeExpression(expression: IExpression | undefined): IExpression | undefined {
 	if (!expression) {
 		return expression;
 	}
 
-	const normalized = Object.create(null);
-	Object.keys(expression).forEach(key => {
-		normalized[key.replace(/\\/g, '/')] = expression[key];
+	const normAlized = Object.creAte(null);
+	Object.keys(expression).forEAch(key => {
+		normAlized[key.replAce(/\\/g, '/')] = expression[key];
 	});
 
-	return normalized;
+	return normAlized;
 }

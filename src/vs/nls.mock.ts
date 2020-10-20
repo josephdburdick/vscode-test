@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ILocalizeInfo {
+export interfAce ILocAlizeInfo {
 	key: string;
 	comment: string[];
 }
 
-function _format(message: string, args: any[]): string {
+function _formAt(messAge: string, Args: Any[]): string {
 	let result: string;
-	if (args.length === 0) {
-		result = message;
+	if (Args.length === 0) {
+		result = messAge;
 	} else {
-		result = message.replace(/\{(\d+)\}/g, function (match, rest) {
+		result = messAge.replAce(/\{(\d+)\}/g, function (mAtch, rest) {
 			const index = rest[0];
-			return typeof args[index] !== 'undefined' ? args[index] : match;
+			return typeof Args[index] !== 'undefined' ? Args[index] : mAtch;
 		});
 	}
 	return result;
 }
 
-export function localize(data: ILocalizeInfo | string, message: string, ...args: any[]): string {
-	return _format(message, args);
+export function locAlize(dAtA: ILocAlizeInfo | string, messAge: string, ...Args: Any[]): string {
+	return _formAt(messAge, Args);
 }

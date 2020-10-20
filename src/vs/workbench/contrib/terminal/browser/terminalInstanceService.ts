@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITerminalInstanceService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { IWindowsShellHelper, ITerminalChildProcess, IDefaultShellAndArgsRequest } from 'vs/workbench/contrib/terminal/common/terminal';
-import type { Terminal as XTermTerminal } from 'xterm';
-import type { SearchAddon as XTermSearchAddon } from 'xterm-addon-search';
-import type { Unicode11Addon as XTermUnicode11Addon } from 'xterm-addon-unicode11';
-import type { WebglAddon as XTermWebglAddon } from 'xterm-addon-webgl';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { Emitter, Event } from 'vs/base/common/event';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { ITerminAlInstAnceService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { IWindowsShellHelper, ITerminAlChildProcess, IDefAultShellAndArgsRequest } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import type { TerminAl As XTermTerminAl } from 'xterm';
+import type { SeArchAddon As XTermSeArchAddon } from 'xterm-Addon-seArch';
+import type { Unicode11Addon As XTermUnicode11Addon } from 'xterm-Addon-unicode11';
+import type { WebglAddon As XTermWebglAddon } from 'xterm-Addon-webgl';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-let Terminal: typeof XTermTerminal;
-let SearchAddon: typeof XTermSearchAddon;
+let TerminAl: typeof XTermTerminAl;
+let SeArchAddon: typeof XTermSeArchAddon;
 let Unicode11Addon: typeof XTermUnicode11Addon;
 let WebglAddon: typeof XTermWebglAddon;
 
-export class TerminalInstanceService implements ITerminalInstanceService {
-	public _serviceBrand: undefined;
+export clAss TerminAlInstAnceService implements ITerminAlInstAnceService {
+	public _serviceBrAnd: undefined;
 
-	private readonly _onRequestDefaultShellAndArgs = new Emitter<IDefaultShellAndArgsRequest>();
-	public get onRequestDefaultShellAndArgs(): Event<IDefaultShellAndArgsRequest> { return this._onRequestDefaultShellAndArgs.event; }
+	privAte reAdonly _onRequestDefAultShellAndArgs = new Emitter<IDefAultShellAndArgsRequest>();
+	public get onRequestDefAultShellAndArgs(): Event<IDefAultShellAndArgsRequest> { return this._onRequestDefAultShellAndArgs.event; }
 
-	public async getXtermConstructor(): Promise<typeof XTermTerminal> {
-		if (!Terminal) {
-			Terminal = (await import('xterm')).Terminal;
+	public Async getXtermConstructor(): Promise<typeof XTermTerminAl> {
+		if (!TerminAl) {
+			TerminAl = (AwAit import('xterm')).TerminAl;
 		}
-		return Terminal;
+		return TerminAl;
 	}
 
-	public async getXtermSearchConstructor(): Promise<typeof XTermSearchAddon> {
-		if (!SearchAddon) {
-			SearchAddon = (await import('xterm-addon-search')).SearchAddon;
+	public Async getXtermSeArchConstructor(): Promise<typeof XTermSeArchAddon> {
+		if (!SeArchAddon) {
+			SeArchAddon = (AwAit import('xterm-Addon-seArch')).SeArchAddon;
 		}
-		return SearchAddon;
+		return SeArchAddon;
 	}
 
-	public async getXtermUnicode11Constructor(): Promise<typeof XTermUnicode11Addon> {
+	public Async getXtermUnicode11Constructor(): Promise<typeof XTermUnicode11Addon> {
 		if (!Unicode11Addon) {
-			Unicode11Addon = (await import('xterm-addon-unicode11')).Unicode11Addon;
+			Unicode11Addon = (AwAit import('xterm-Addon-unicode11')).Unicode11Addon;
 		}
 		return Unicode11Addon;
 	}
 
-	public async getXtermWebglConstructor(): Promise<typeof XTermWebglAddon> {
+	public Async getXtermWebglConstructor(): Promise<typeof XTermWebglAddon> {
 		if (!WebglAddon) {
-			WebglAddon = (await import('xterm-addon-webgl')).WebglAddon;
+			WebglAddon = (AwAit import('xterm-Addon-webgl')).WebglAddon;
 		}
 		return WebglAddon;
 	}
 
-	public createWindowsShellHelper(): IWindowsShellHelper {
+	public creAteWindowsShellHelper(): IWindowsShellHelper {
 		throw new Error('Not implemented');
 	}
 
-	public createTerminalProcess(): ITerminalChildProcess {
+	public creAteTerminAlProcess(): ITerminAlChildProcess {
 		throw new Error('Not implemented');
 	}
 
-	public getDefaultShellAndArgs(useAutomationShell: boolean,): Promise<{ shell: string, args: string[] | string | undefined }> {
-		return new Promise(r => this._onRequestDefaultShellAndArgs.fire({
-			useAutomationShell,
-			callback: (shell, args) => r({ shell, args })
+	public getDefAultShellAndArgs(useAutomAtionShell: booleAn,): Promise<{ shell: string, Args: string[] | string | undefined }> {
+		return new Promise(r => this._onRequestDefAultShellAndArgs.fire({
+			useAutomAtionShell,
+			cAllbAck: (shell, Args) => r({ shell, Args })
 		}));
 	}
 
-	public async getMainProcessParentEnv(): Promise<IProcessEnvironment> {
+	public Async getMAinProcessPArentEnv(): Promise<IProcessEnvironment> {
 		return {};
 	}
 }
 
-registerSingleton(ITerminalInstanceService, TerminalInstanceService, true);
+registerSingleton(ITerminAlInstAnceService, TerminAlInstAnceService, true);

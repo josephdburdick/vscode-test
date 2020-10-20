@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-declare function setTimeout(callback: (...args: any[]) => void, ms: number, ...args: any[]): NodeJS.Timer;
-declare function clearTimeout(timeoutId: NodeJS.Timer): void;
-declare function setInterval(callback: (...args: any[]) => void, ms: number, ...args: any[]): NodeJS.Timer;
-declare function clearInterval(intervalId: NodeJS.Timer): void;
-declare function setImmediate(callback: (...args: any[]) => void, ...args: any[]): any;
-declare function clearImmediate(immediateId: any): void;
+declAre function setTimeout(cAllbAck: (...Args: Any[]) => void, ms: number, ...Args: Any[]): NodeJS.Timer;
+declAre function cleArTimeout(timeoutId: NodeJS.Timer): void;
+declAre function setIntervAl(cAllbAck: (...Args: Any[]) => void, ms: number, ...Args: Any[]): NodeJS.Timer;
+declAre function cleArIntervAl(intervAlId: NodeJS.Timer): void;
+declAre function setImmediAte(cAllbAck: (...Args: Any[]) => void, ...Args: Any[]): Any;
+declAre function cleArImmediAte(immediAteId: Any): void;

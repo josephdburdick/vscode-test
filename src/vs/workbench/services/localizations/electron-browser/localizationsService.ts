@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { ILocalizationsService } from 'vs/platform/localizations/common/localizations';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { ILocAlizAtionsService } from 'vs/plAtform/locAlizAtions/common/locAlizAtions';
+import { IShAredProcessService } from 'vs/plAtform/ipc/electron-browser/shAredProcessService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-// @ts-ignore: interface is implemented via proxy
-export class LocalizationsService implements ILocalizationsService {
+// @ts-ignore: interfAce is implemented viA proxy
+export clAss LocAlizAtionsService implements ILocAlizAtionsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@ISharedProcessService sharedProcessService: ISharedProcessService,
+		@IShAredProcessService shAredProcessService: IShAredProcessService,
 	) {
-		return createChannelSender<ILocalizationsService>(sharedProcessService.getChannel('localizations'));
+		return creAteChAnnelSender<ILocAlizAtionsService>(shAredProcessService.getChAnnel('locAlizAtions'));
 	}
 }
 
-registerSingleton(ILocalizationsService, LocalizationsService, true);
+registerSingleton(ILocAlizAtionsService, LocAlizAtionsService, true);

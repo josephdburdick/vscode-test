@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { sep } from 'vs/base/common/path';
-import { IdleValue } from 'vs/base/common/async';
+import { sep } from 'vs/bAse/common/pAth';
+import { IdleVAlue } from 'vs/bAse/common/Async';
 
-// When comparing large numbers of strings, such as in sorting large arrays, is better for
-// performance to create an Intl.Collator object and use the function provided by its compare
-// property than it is to use String.prototype.localeCompare()
+// When compAring lArge numbers of strings, such As in sorting lArge ArrAys, is better for
+// performAnce to creAte An Intl.CollAtor object And use the function provided by its compAre
+// property thAn it is to use String.prototype.locAleCompAre()
 
-// A collator with numeric sorting enabled, and no sensitivity to case or to accents
-const intlFileNameCollatorBaseNumeric: IdleValue<{ collator: Intl.Collator, collatorIsNumeric: boolean }> = new IdleValue(() => {
-	const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+// A collAtor with numeric sorting enAbled, And no sensitivity to cAse or to Accents
+const intlFileNAmeCollAtorBAseNumeric: IdleVAlue<{ collAtor: Intl.CollAtor, collAtorIsNumeric: booleAn }> = new IdleVAlue(() => {
+	const collAtor = new Intl.CollAtor(undefined, { numeric: true, sensitivity: 'bAse' });
 	return {
-		collator: collator,
-		collatorIsNumeric: collator.resolvedOptions().numeric
+		collAtor: collAtor,
+		collAtorIsNumeric: collAtor.resolvedOptions().numeric
 	};
 });
 
-// A collator with numeric sorting enabled.
-const intlFileNameCollatorNumeric: IdleValue<{ collator: Intl.Collator }> = new IdleValue(() => {
-	const collator = new Intl.Collator(undefined, { numeric: true });
+// A collAtor with numeric sorting enAbled.
+const intlFileNAmeCollAtorNumeric: IdleVAlue<{ collAtor: Intl.CollAtor }> = new IdleVAlue(() => {
+	const collAtor = new Intl.CollAtor(undefined, { numeric: true });
 	return {
-		collator: collator
+		collAtor: collAtor
 	};
 });
 
-// A collator with numeric sorting enabled, and sensitivity to accents and diacritics but not case.
-const intlFileNameCollatorNumericCaseInsenstive: IdleValue<{ collator: Intl.Collator }> = new IdleValue(() => {
-	const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'accent' });
+// A collAtor with numeric sorting enAbled, And sensitivity to Accents And diAcritics but not cAse.
+const intlFileNAmeCollAtorNumericCAseInsenstive: IdleVAlue<{ collAtor: Intl.CollAtor }> = new IdleVAlue(() => {
+	const collAtor = new Intl.CollAtor(undefined, { numeric: true, sensitivity: 'Accent' });
 	return {
-		collator: collator
+		collAtor: collAtor
 	};
-});/** Compares filenames without distinguishing the name from the extension. Disambiguates by unicode comparison. */
-export function compareFileNames(one: string | null, other: string | null, caseSensitive = false): number {
-	const a = one || '';
+});/** CompAres filenAmes without distinguishing the nAme from the extension. DisAmbiguAtes by unicode compArison. */
+export function compAreFileNAmes(one: string | null, other: string | null, cAseSensitive = fAlse): number {
+	const A = one || '';
 	const b = other || '';
-	const result = intlFileNameCollatorBaseNumeric.value.collator.compare(a, b);
+	const result = intlFileNAmeCollAtorBAseNumeric.vAlue.collAtor.compAre(A, b);
 
-	// Using the numeric option in the collator will
-	// make compare(`foo1`, `foo01`) === 0. We must disambiguate.
-	if (intlFileNameCollatorBaseNumeric.value.collatorIsNumeric && result === 0 && a !== b) {
-		return a < b ? -1 : 1;
+	// Using the numeric option in the collAtor will
+	// mAke compAre(`foo1`, `foo01`) === 0. We must disAmbiguAte.
+	if (intlFileNAmeCollAtorBAseNumeric.vAlue.collAtorIsNumeric && result === 0 && A !== b) {
+		return A < b ? -1 : 1;
 	}
 
 	return result;
 }
 
-/** Compares filenames without distinguishing the name from the extension. Disambiguates by length, not unicode comparison. */
-export function compareFileNamesDefault(one: string | null, other: string | null): number {
-	const collatorNumeric = intlFileNameCollatorNumeric.value.collator;
+/** CompAres filenAmes without distinguishing the nAme from the extension. DisAmbiguAtes by length, not unicode compArison. */
+export function compAreFileNAmesDefAult(one: string | null, other: string | null): number {
+	const collAtorNumeric = intlFileNAmeCollAtorNumeric.vAlue.collAtor;
 	one = one || '';
 	other = other || '';
 
-	// Compare the entire filename - both name and extension - and disambiguate by length if needed
-	return compareAndDisambiguateByLength(collatorNumeric, one, other);
+	// CompAre the entire filenAme - both nAme And extension - And disAmbiguAte by length if needed
+	return compAreAndDisAmbiguAteByLength(collAtorNumeric, one, other);
 }
 
-export function noIntlCompareFileNames(one: string | null, other: string | null, caseSensitive = false): number {
-	if (!caseSensitive) {
-		one = one && one.toLowerCase();
-		other = other && other.toLowerCase();
+export function noIntlCompAreFileNAmes(one: string | null, other: string | null, cAseSensitive = fAlse): number {
+	if (!cAseSensitive) {
+		one = one && one.toLowerCAse();
+		other = other && other.toLowerCAse();
 	}
 
-	const [oneName, oneExtension] = extractNameAndExtension(one);
-	const [otherName, otherExtension] = extractNameAndExtension(other);
+	const [oneNAme, oneExtension] = extrActNAmeAndExtension(one);
+	const [otherNAme, otherExtension] = extrActNAmeAndExtension(other);
 
-	if (oneName !== otherName) {
-		return oneName < otherName ? -1 : 1;
+	if (oneNAme !== otherNAme) {
+		return oneNAme < otherNAme ? -1 : 1;
 	}
 
 	if (oneExtension === otherExtension) {
@@ -78,83 +78,83 @@ export function noIntlCompareFileNames(one: string | null, other: string | null,
 	return oneExtension < otherExtension ? -1 : 1;
 }
 
-export function compareFileExtensions(one: string | null, other: string | null): number {
-	const [oneName, oneExtension] = extractNameAndExtension(one);
-	const [otherName, otherExtension] = extractNameAndExtension(other);
+export function compAreFileExtensions(one: string | null, other: string | null): number {
+	const [oneNAme, oneExtension] = extrActNAmeAndExtension(one);
+	const [otherNAme, otherExtension] = extrActNAmeAndExtension(other);
 
-	let result = intlFileNameCollatorBaseNumeric.value.collator.compare(oneExtension, otherExtension);
+	let result = intlFileNAmeCollAtorBAseNumeric.vAlue.collAtor.compAre(oneExtension, otherExtension);
 
 	if (result === 0) {
-		// Using the numeric option in the collator will
-		// make compare(`foo1`, `foo01`) === 0. We must disambiguate.
-		if (intlFileNameCollatorBaseNumeric.value.collatorIsNumeric && oneExtension !== otherExtension) {
+		// Using the numeric option in the collAtor will
+		// mAke compAre(`foo1`, `foo01`) === 0. We must disAmbiguAte.
+		if (intlFileNAmeCollAtorBAseNumeric.vAlue.collAtorIsNumeric && oneExtension !== otherExtension) {
 			return oneExtension < otherExtension ? -1 : 1;
 		}
 
-		// Extensions are equal, compare filenames
-		result = intlFileNameCollatorBaseNumeric.value.collator.compare(oneName, otherName);
+		// Extensions Are equAl, compAre filenAmes
+		result = intlFileNAmeCollAtorBAseNumeric.vAlue.collAtor.compAre(oneNAme, otherNAme);
 
-		if (intlFileNameCollatorBaseNumeric.value.collatorIsNumeric && result === 0 && oneName !== otherName) {
-			return oneName < otherName ? -1 : 1;
+		if (intlFileNAmeCollAtorBAseNumeric.vAlue.collAtorIsNumeric && result === 0 && oneNAme !== otherNAme) {
+			return oneNAme < otherNAme ? -1 : 1;
 		}
 	}
 
 	return result;
 }
 
-/** Compares filenames by extenson, then by full filename */
-export function compareFileExtensionsDefault(one: string | null, other: string | null): number {
+/** CompAres filenAmes by extenson, then by full filenAme */
+export function compAreFileExtensionsDefAult(one: string | null, other: string | null): number {
 	one = one || '';
 	other = other || '';
-	const oneExtension = extractExtension(one);
-	const otherExtension = extractExtension(other);
-	const collatorNumeric = intlFileNameCollatorNumeric.value.collator;
-	const collatorNumericCaseInsensitive = intlFileNameCollatorNumericCaseInsenstive.value.collator;
+	const oneExtension = extrActExtension(one);
+	const otherExtension = extrActExtension(other);
+	const collAtorNumeric = intlFileNAmeCollAtorNumeric.vAlue.collAtor;
+	const collAtorNumericCAseInsensitive = intlFileNAmeCollAtorNumericCAseInsenstive.vAlue.collAtor;
 	let result;
 
-	// Check for extension differences, ignoring differences in case and comparing numbers numerically.
-	result = compareAndDisambiguateByLength(collatorNumericCaseInsensitive, oneExtension, otherExtension);
+	// Check for extension differences, ignoring differences in cAse And compAring numbers numericAlly.
+	result = compAreAndDisAmbiguAteByLength(collAtorNumericCAseInsensitive, oneExtension, otherExtension);
 	if (result !== 0) {
 		return result;
 	}
 
-	// Compare full filenames
-	return compareAndDisambiguateByLength(collatorNumeric, one, other);
+	// CompAre full filenAmes
+	return compAreAndDisAmbiguAteByLength(collAtorNumeric, one, other);
 }
 
-const FileNameMatch = /^(.*?)(\.([^.]*))?$/;
+const FileNAmeMAtch = /^(.*?)(\.([^.]*))?$/;
 
-/** Extracts the name and extension from a full filename, with optional special handling for dotfiles */
-function extractNameAndExtension(str?: string | null, dotfilesAsNames = false): [string, string] {
-	const match = str ? FileNameMatch.exec(str) as Array<string> : ([] as Array<string>);
+/** ExtrActs the nAme And extension from A full filenAme, with optionAl speciAl hAndling for dotfiles */
+function extrActNAmeAndExtension(str?: string | null, dotfilesAsNAmes = fAlse): [string, string] {
+	const mAtch = str ? FileNAmeMAtch.exec(str) As ArrAy<string> : ([] As ArrAy<string>);
 
-	let result: [string, string] = [(match && match[1]) || '', (match && match[3]) || ''];
+	let result: [string, string] = [(mAtch && mAtch[1]) || '', (mAtch && mAtch[3]) || ''];
 
-	// if the dotfilesAsNames option is selected, treat an empty filename with an extension,
-	// or a filename that starts with a dot, as a dotfile name
-	if (dotfilesAsNames && (!result[0] && result[1] || result[0] && result[0].charAt(0) === '.')) {
+	// if the dotfilesAsNAmes option is selected, treAt An empty filenAme with An extension,
+	// or A filenAme thAt stArts with A dot, As A dotfile nAme
+	if (dotfilesAsNAmes && (!result[0] && result[1] || result[0] && result[0].chArAt(0) === '.')) {
 		result = [result[0] + '.' + result[1], ''];
 	}
 
 	return result;
 }
 
-/** Extracts the extension from a full filename. Treats dotfiles as names, not extensions. */
-function extractExtension(str?: string | null): string {
-	const match = str ? FileNameMatch.exec(str) as Array<string> : ([] as Array<string>);
+/** ExtrActs the extension from A full filenAme. TreAts dotfiles As nAmes, not extensions. */
+function extrActExtension(str?: string | null): string {
+	const mAtch = str ? FileNAmeMAtch.exec(str) As ArrAy<string> : ([] As ArrAy<string>);
 
-	return (match && match[1] && match[1].charAt(0) !== '.' && match[3]) || '';
+	return (mAtch && mAtch[1] && mAtch[1].chArAt(0) !== '.' && mAtch[3]) || '';
 }
 
-function compareAndDisambiguateByLength(collator: Intl.Collator, one: string, other: string) {
+function compAreAndDisAmbiguAteByLength(collAtor: Intl.CollAtor, one: string, other: string) {
 	// Check for differences
-	let result = collator.compare(one, other);
+	let result = collAtor.compAre(one, other);
 	if (result !== 0) {
 		return result;
 	}
 
-	// In a numeric comparison, `foo1` and `foo01` will compare as equivalent.
-	// Disambiguate by sorting the shorter string first.
+	// In A numeric compArison, `foo1` And `foo01` will compAre As equivAlent.
+	// DisAmbiguAte by sorting the shorter string first.
 	if (one.length !== other.length) {
 		return one.length < other.length ? -1 : 1;
 	}
@@ -162,10 +162,10 @@ function compareAndDisambiguateByLength(collator: Intl.Collator, one: string, ot
 	return 0;
 }
 
-function comparePathComponents(one: string, other: string, caseSensitive = false): number {
-	if (!caseSensitive) {
-		one = one && one.toLowerCase();
-		other = other && other.toLowerCase();
+function compArePAthComponents(one: string, other: string, cAseSensitive = fAlse): number {
+	if (!cAseSensitive) {
+		one = one && one.toLowerCAse();
+		other = other && other.toLowerCAse();
 	}
 
 	if (one === other) {
@@ -175,27 +175,27 @@ function comparePathComponents(one: string, other: string, caseSensitive = false
 	return one < other ? -1 : 1;
 }
 
-export function comparePaths(one: string, other: string, caseSensitive = false): number {
-	const oneParts = one.split(sep);
-	const otherParts = other.split(sep);
+export function compArePAths(one: string, other: string, cAseSensitive = fAlse): number {
+	const onePArts = one.split(sep);
+	const otherPArts = other.split(sep);
 
-	const lastOne = oneParts.length - 1;
-	const lastOther = otherParts.length - 1;
-	let endOne: boolean, endOther: boolean;
+	const lAstOne = onePArts.length - 1;
+	const lAstOther = otherPArts.length - 1;
+	let endOne: booleAn, endOther: booleAn;
 
 	for (let i = 0; ; i++) {
-		endOne = lastOne === i;
-		endOther = lastOther === i;
+		endOne = lAstOne === i;
+		endOther = lAstOther === i;
 
 		if (endOne && endOther) {
-			return compareFileNames(oneParts[i], otherParts[i], caseSensitive);
+			return compAreFileNAmes(onePArts[i], otherPArts[i], cAseSensitive);
 		} else if (endOne) {
 			return -1;
 		} else if (endOther) {
 			return 1;
 		}
 
-		const result = comparePathComponents(oneParts[i], otherParts[i], caseSensitive);
+		const result = compArePAthComponents(onePArts[i], otherPArts[i], cAseSensitive);
 
 		if (result !== 0) {
 			return result;
@@ -203,51 +203,51 @@ export function comparePaths(one: string, other: string, caseSensitive = false):
 	}
 }
 
-export function compareAnything(one: string, other: string, lookFor: string): number {
-	const elementAName = one.toLowerCase();
-	const elementBName = other.toLowerCase();
+export function compAreAnything(one: string, other: string, lookFor: string): number {
+	const elementANAme = one.toLowerCAse();
+	const elementBNAme = other.toLowerCAse();
 
-	// Sort prefix matches over non prefix matches
-	const prefixCompare = compareByPrefix(one, other, lookFor);
-	if (prefixCompare) {
-		return prefixCompare;
+	// Sort prefix mAtches over non prefix mAtches
+	const prefixCompAre = compAreByPrefix(one, other, lookFor);
+	if (prefixCompAre) {
+		return prefixCompAre;
 	}
 
-	// Sort suffix matches over non suffix matches
-	const elementASuffixMatch = elementAName.endsWith(lookFor);
-	const elementBSuffixMatch = elementBName.endsWith(lookFor);
-	if (elementASuffixMatch !== elementBSuffixMatch) {
-		return elementASuffixMatch ? -1 : 1;
+	// Sort suffix mAtches over non suffix mAtches
+	const elementASuffixMAtch = elementANAme.endsWith(lookFor);
+	const elementBSuffixMAtch = elementBNAme.endsWith(lookFor);
+	if (elementASuffixMAtch !== elementBSuffixMAtch) {
+		return elementASuffixMAtch ? -1 : 1;
 	}
 
-	// Understand file names
-	const r = compareFileNames(elementAName, elementBName);
+	// UnderstAnd file nAmes
+	const r = compAreFileNAmes(elementANAme, elementBNAme);
 	if (r !== 0) {
 		return r;
 	}
 
-	// Compare by name
-	return elementAName.localeCompare(elementBName);
+	// CompAre by nAme
+	return elementANAme.locAleCompAre(elementBNAme);
 }
 
-export function compareByPrefix(one: string, other: string, lookFor: string): number {
-	const elementAName = one.toLowerCase();
-	const elementBName = other.toLowerCase();
+export function compAreByPrefix(one: string, other: string, lookFor: string): number {
+	const elementANAme = one.toLowerCAse();
+	const elementBNAme = other.toLowerCAse();
 
-	// Sort prefix matches over non prefix matches
-	const elementAPrefixMatch = elementAName.startsWith(lookFor);
-	const elementBPrefixMatch = elementBName.startsWith(lookFor);
-	if (elementAPrefixMatch !== elementBPrefixMatch) {
-		return elementAPrefixMatch ? -1 : 1;
+	// Sort prefix mAtches over non prefix mAtches
+	const elementAPrefixMAtch = elementANAme.stArtsWith(lookFor);
+	const elementBPrefixMAtch = elementBNAme.stArtsWith(lookFor);
+	if (elementAPrefixMAtch !== elementBPrefixMAtch) {
+		return elementAPrefixMAtch ? -1 : 1;
 	}
 
-	// Same prefix: Sort shorter matches to the top to have those on top that match more precisely
-	else if (elementAPrefixMatch && elementBPrefixMatch) {
-		if (elementAName.length < elementBName.length) {
+	// SAme prefix: Sort shorter mAtches to the top to hAve those on top thAt mAtch more precisely
+	else if (elementAPrefixMAtch && elementBPrefixMAtch) {
+		if (elementANAme.length < elementBNAme.length) {
 			return -1;
 		}
 
-		if (elementAName.length > elementBName.length) {
+		if (elementANAme.length > elementBNAme.length) {
 			return 1;
 		}
 	}

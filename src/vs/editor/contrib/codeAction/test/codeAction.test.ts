@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { Range } from 'vs/editor/common/core/range';
+import * As Assert from 'Assert';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import * as modes from 'vs/editor/common/modes';
+import * As modes from 'vs/editor/common/modes';
 import { CodeActionItem, getCodeActions } from 'vs/editor/contrib/codeAction/codeAction';
 import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
-import { IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Progress } from 'vs/platform/progress/common/progress';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { IMArkerDAtA, MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Progress } from 'vs/plAtform/progress/common/progress';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-function staticCodeActionProvider(...actions: modes.CodeAction[]): modes.CodeActionProvider {
-	return new class implements modes.CodeActionProvider {
+function stAticCodeActionProvider(...Actions: modes.CodeAction[]): modes.CodeActionProvider {
+	return new clAss implements modes.CodeActionProvider {
 		provideCodeActions(): modes.CodeActionList {
 			return {
-				actions: actions,
+				Actions: Actions,
 				dispose: () => { }
 			};
 		}
@@ -29,142 +29,142 @@ function staticCodeActionProvider(...actions: modes.CodeAction[]): modes.CodeAct
 
 suite('CodeAction', () => {
 
-	let langId = new modes.LanguageIdentifier('fooLang', 17);
-	let uri = URI.parse('untitled:path');
+	let lAngId = new modes.LAnguAgeIdentifier('fooLAng', 17);
+	let uri = URI.pArse('untitled:pAth');
 	let model: TextModel;
-	const disposables = new DisposableStore();
-	let testData = {
-		diagnostics: {
-			abc: {
+	const disposAbles = new DisposAbleStore();
+	let testDAtA = {
+		diAgnostics: {
+			Abc: {
 				title: 'bTitle',
-				diagnostics: [{
-					startLineNumber: 1,
-					startColumn: 1,
+				diAgnostics: [{
+					stArtLineNumber: 1,
+					stArtColumn: 1,
 					endLineNumber: 2,
 					endColumn: 1,
-					severity: MarkerSeverity.Error,
-					message: 'abc'
+					severity: MArkerSeverity.Error,
+					messAge: 'Abc'
 				}]
 			},
 			bcd: {
-				title: 'aTitle',
-				diagnostics: [{
-					startLineNumber: 1,
-					startColumn: 1,
+				title: 'ATitle',
+				diAgnostics: [{
+					stArtLineNumber: 1,
+					stArtColumn: 1,
 					endLineNumber: 2,
 					endColumn: 1,
-					severity: MarkerSeverity.Error,
-					message: 'bcd'
+					severity: MArkerSeverity.Error,
+					messAge: 'bcd'
 				}]
 			}
 		},
-		command: {
-			abc: {
-				command: new class implements modes.Command {
+		commAnd: {
+			Abc: {
+				commAnd: new clAss implements modes.CommAnd {
 					id!: '1';
-					title!: 'abc';
+					title!: 'Abc';
 				},
-				title: 'Extract to inner function in function "test"'
+				title: 'ExtrAct to inner function in function "test"'
 			}
 		},
 		spelling: {
 			bcd: {
-				diagnostics: <IMarkerData[]>[],
-				edit: new class implements modes.WorkspaceEdit {
-					edits!: modes.WorkspaceTextEdit[];
+				diAgnostics: <IMArkerDAtA[]>[],
+				edit: new clAss implements modes.WorkspAceEdit {
+					edits!: modes.WorkspAceTextEdit[];
 				},
-				title: 'abc'
+				title: 'Abc'
 			}
 		},
 		tsLint: {
-			abc: {
+			Abc: {
 				$ident: 57,
-				arguments: <IMarkerData[]>[],
-				id: '_internal_command_delegation',
-				title: 'abc'
+				Arguments: <IMArkerDAtA[]>[],
+				id: '_internAl_commAnd_delegAtion',
+				title: 'Abc'
 			},
 			bcd: {
 				$ident: 47,
-				arguments: <IMarkerData[]>[],
-				id: '_internal_command_delegation',
+				Arguments: <IMArkerDAtA[]>[],
+				id: '_internAl_commAnd_delegAtion',
 				title: 'bcd'
 			}
 		}
 	};
 
 	setup(function () {
-		disposables.clear();
-		model = createTextModel('test1\ntest2\ntest3', undefined, langId, uri);
-		disposables.add(model);
+		disposAbles.cleAr();
+		model = creAteTextModel('test1\ntest2\ntest3', undefined, lAngId, uri);
+		disposAbles.Add(model);
 	});
 
-	teardown(function () {
-		disposables.clear();
+	teArdown(function () {
+		disposAbles.cleAr();
 	});
 
-	test('CodeActions are sorted by type, #38623', async function () {
+	test('CodeActions Are sorted by type, #38623', Async function () {
 
-		const provider = staticCodeActionProvider(
-			testData.command.abc,
-			testData.diagnostics.bcd,
-			testData.spelling.bcd,
-			testData.tsLint.bcd,
-			testData.tsLint.abc,
-			testData.diagnostics.abc
+		const provider = stAticCodeActionProvider(
+			testDAtA.commAnd.Abc,
+			testDAtA.diAgnostics.bcd,
+			testDAtA.spelling.bcd,
+			testDAtA.tsLint.bcd,
+			testDAtA.tsLint.Abc,
+			testDAtA.diAgnostics.Abc
 		);
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', provider));
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', provider));
 
 		const expected = [
-			// CodeActions with a diagnostics array are shown first ordered by diagnostics.message
-			new CodeActionItem(testData.diagnostics.abc, provider),
-			new CodeActionItem(testData.diagnostics.bcd, provider),
+			// CodeActions with A diAgnostics ArrAy Are shown first ordered by diAgnostics.messAge
+			new CodeActionItem(testDAtA.diAgnostics.Abc, provider),
+			new CodeActionItem(testDAtA.diAgnostics.bcd, provider),
 
-			// CodeActions without diagnostics are shown in the given order without any further sorting
-			new CodeActionItem(testData.command.abc, provider),
-			new CodeActionItem(testData.spelling.bcd, provider), // empty diagnostics array
-			new CodeActionItem(testData.tsLint.bcd, provider),
-			new CodeActionItem(testData.tsLint.abc, provider)
+			// CodeActions without diAgnostics Are shown in the given order without Any further sorting
+			new CodeActionItem(testDAtA.commAnd.Abc, provider),
+			new CodeActionItem(testDAtA.spelling.bcd, provider), // empty diAgnostics ArrAy
+			new CodeActionItem(testDAtA.tsLint.bcd, provider),
+			new CodeActionItem(testDAtA.tsLint.Abc, provider)
 		];
 
-		const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Manual }, Progress.None, CancellationToken.None);
-		assert.equal(actions.length, 6);
-		assert.deepEqual(actions, expected);
+		const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.MAnuAl }, Progress.None, CAncellAtionToken.None);
+		Assert.equAl(Actions.length, 6);
+		Assert.deepEquAl(Actions, expected);
 	});
 
-	test('getCodeActions should filter by scope', async function () {
-		const provider = staticCodeActionProvider(
-			{ title: 'a', kind: 'a' },
+	test('getCodeActions should filter by scope', Async function () {
+		const provider = stAticCodeActionProvider(
+			{ title: 'A', kind: 'A' },
 			{ title: 'b', kind: 'b' },
-			{ title: 'a.b', kind: 'a.b' }
+			{ title: 'A.b', kind: 'A.b' }
 		);
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', provider));
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', provider));
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('a') } }, Progress.None, CancellationToken.None);
-			assert.equal(actions.length, 2);
-			assert.strictEqual(actions[0].action.title, 'a');
-			assert.strictEqual(actions[1].action.title, 'a.b');
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('A') } }, Progress.None, CAncellAtionToken.None);
+			Assert.equAl(Actions.length, 2);
+			Assert.strictEquAl(Actions[0].Action.title, 'A');
+			Assert.strictEquAl(Actions[1].Action.title, 'A.b');
 		}
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('a.b') } }, Progress.None, CancellationToken.None);
-			assert.equal(actions.length, 1);
-			assert.strictEqual(actions[0].action.title, 'a.b');
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('A.b') } }, Progress.None, CAncellAtionToken.None);
+			Assert.equAl(Actions.length, 1);
+			Assert.strictEquAl(Actions[0].Action.title, 'A.b');
 		}
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('a.b.c') } }, Progress.None, CancellationToken.None);
-			assert.equal(actions.length, 0);
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('A.b.c') } }, Progress.None, CAncellAtionToken.None);
+			Assert.equAl(Actions.length, 0);
 		}
 	});
 
-	test('getCodeActions should forward requested scope to providers', async function () {
-		const provider = new class implements modes.CodeActionProvider {
-			provideCodeActions(_model: any, _range: Range, context: modes.CodeActionContext, _token: any): modes.CodeActionList {
+	test('getCodeActions should forwArd requested scope to providers', Async function () {
+		const provider = new clAss implements modes.CodeActionProvider {
+			provideCodeActions(_model: Any, _rAnge: RAnge, context: modes.CodeActionContext, _token: Any): modes.CodeActionList {
 				return {
-					actions: [
+					Actions: [
 						{ title: context.only || '', kind: context.only }
 					],
 					dispose: () => { }
@@ -172,74 +172,74 @@ suite('CodeAction', () => {
 			}
 		};
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', provider));
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', provider));
 
-		const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('a') } }, Progress.None, CancellationToken.None);
-		assert.equal(actions.length, 1);
-		assert.strictEqual(actions[0].action.title, 'a');
+		const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: new CodeActionKind('A') } }, Progress.None, CAncellAtionToken.None);
+		Assert.equAl(Actions.length, 1);
+		Assert.strictEquAl(Actions[0].Action.title, 'A');
 	});
 
-	test('getCodeActions should not return source code action by default', async function () {
-		const provider = staticCodeActionProvider(
-			{ title: 'a', kind: CodeActionKind.Source.value },
+	test('getCodeActions should not return source code Action by defAult', Async function () {
+		const provider = stAticCodeActionProvider(
+			{ title: 'A', kind: CodeActionKind.Source.vAlue },
 			{ title: 'b', kind: 'b' }
 		);
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', provider));
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', provider));
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto }, Progress.None, CancellationToken.None);
-			assert.equal(actions.length, 1);
-			assert.strictEqual(actions[0].action.title, 'b');
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto }, Progress.None, CAncellAtionToken.None);
+			Assert.equAl(Actions.length, 1);
+			Assert.strictEquAl(Actions[0].Action.title, 'b');
 		}
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: CodeActionKind.Source, includeSourceActions: true } }, Progress.None, CancellationToken.None);
-			assert.equal(actions.length, 1);
-			assert.strictEqual(actions[0].action.title, 'a');
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), { type: modes.CodeActionTriggerType.Auto, filter: { include: CodeActionKind.Source, includeSourceActions: true } }, Progress.None, CAncellAtionToken.None);
+			Assert.equAl(Actions.length, 1);
+			Assert.strictEquAl(Actions[0].Action.title, 'A');
 		}
 	});
 
-	test('getCodeActions should support filtering out some requested source code actions #84602', async function () {
-		const provider = staticCodeActionProvider(
-			{ title: 'a', kind: CodeActionKind.Source.value },
-			{ title: 'b', kind: CodeActionKind.Source.append('test').value },
+	test('getCodeActions should support filtering out some requested source code Actions #84602', Async function () {
+		const provider = stAticCodeActionProvider(
+			{ title: 'A', kind: CodeActionKind.Source.vAlue },
+			{ title: 'b', kind: CodeActionKind.Source.Append('test').vAlue },
 			{ title: 'c', kind: 'c' }
 		);
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', provider));
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', provider));
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), {
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), {
 				type: modes.CodeActionTriggerType.Auto, filter: {
-					include: CodeActionKind.Source.append('test'),
+					include: CodeActionKind.Source.Append('test'),
 					excludes: [CodeActionKind.Source],
 					includeSourceActions: true,
 				}
-			}, Progress.None, CancellationToken.None);
-			assert.equal(actions.length, 1);
-			assert.strictEqual(actions[0].action.title, 'b');
+			}, Progress.None, CAncellAtionToken.None);
+			Assert.equAl(Actions.length, 1);
+			Assert.strictEquAl(Actions[0].Action.title, 'b');
 		}
 	});
 
-	test('getCodeActions no invoke a provider that has been excluded #84602', async function () {
-		const baseType = CodeActionKind.Refactor;
-		const subType = CodeActionKind.Refactor.append('sub');
+	test('getCodeActions no invoke A provider thAt hAs been excluded #84602', Async function () {
+		const bAseType = CodeActionKind.RefActor;
+		const subType = CodeActionKind.RefActor.Append('sub');
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', staticCodeActionProvider(
-			{ title: 'a', kind: baseType.value }
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', stAticCodeActionProvider(
+			{ title: 'A', kind: bAseType.vAlue }
 		)));
 
-		let didInvoke = false;
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', new class implements modes.CodeActionProvider {
+		let didInvoke = fAlse;
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', new clAss implements modes.CodeActionProvider {
 
-			providedCodeActionKinds = [subType.value];
+			providedCodeActionKinds = [subType.vAlue];
 
 			provideCodeActions(): modes.ProviderResult<modes.CodeActionList> {
 				didInvoke = true;
 				return {
-					actions: [
-						{ title: 'x', kind: subType.value }
+					Actions: [
+						{ title: 'x', kind: subType.vAlue }
 					],
 					dispose: () => { }
 				};
@@ -247,38 +247,38 @@ suite('CodeAction', () => {
 		}));
 
 		{
-			const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), {
+			const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), {
 				type: modes.CodeActionTriggerType.Auto, filter: {
-					include: baseType,
+					include: bAseType,
 					excludes: [subType],
 				}
-			}, Progress.None, CancellationToken.None);
-			assert.strictEqual(didInvoke, false);
-			assert.equal(actions.length, 1);
-			assert.strictEqual(actions[0].action.title, 'a');
+			}, Progress.None, CAncellAtionToken.None);
+			Assert.strictEquAl(didInvoke, fAlse);
+			Assert.equAl(Actions.length, 1);
+			Assert.strictEquAl(Actions[0].Action.title, 'A');
 		}
 	});
 
-	test('getCodeActions should not invoke code action providers filtered out by providedCodeActionKinds', async function () {
-		let wasInvoked = false;
-		const provider = new class implements modes.CodeActionProvider {
+	test('getCodeActions should not invoke code Action providers filtered out by providedCodeActionKinds', Async function () {
+		let wAsInvoked = fAlse;
+		const provider = new clAss implements modes.CodeActionProvider {
 			provideCodeActions(): modes.CodeActionList {
-				wasInvoked = true;
-				return { actions: [], dispose: () => { } };
+				wAsInvoked = true;
+				return { Actions: [], dispose: () => { } };
 			}
 
-			providedCodeActionKinds = [CodeActionKind.Refactor.value];
+			providedCodeActionKinds = [CodeActionKind.RefActor.vAlue];
 		};
 
-		disposables.add(modes.CodeActionProviderRegistry.register('fooLang', provider));
+		disposAbles.Add(modes.CodeActionProviderRegistry.register('fooLAng', provider));
 
-		const { validActions: actions } = await getCodeActions(model, new Range(1, 1, 2, 1), {
+		const { vAlidActions: Actions } = AwAit getCodeActions(model, new RAnge(1, 1, 2, 1), {
 			type: modes.CodeActionTriggerType.Auto,
 			filter: {
 				include: CodeActionKind.QuickFix
 			}
-		}, Progress.None, CancellationToken.None);
-		assert.strictEqual(actions.length, 0);
-		assert.strictEqual(wasInvoked, false);
+		}, Progress.None, CAncellAtionToken.None);
+		Assert.strictEquAl(Actions.length, 0);
+		Assert.strictEquAl(wAsInvoked, fAlse);
 	});
 });

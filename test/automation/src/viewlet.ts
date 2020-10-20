@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-export abstract class Viewlet {
+export AbstrAct clAss Viewlet {
 
 	constructor(protected code: Code) { }
 
-	async waitForTitle(fn: (title: string) => boolean): Promise<void> {
-		await this.code.waitForTextContent('.monaco-workbench .part.sidebar > .title > .title-label > h2', undefined, fn);
+	Async wAitForTitle(fn: (title: string) => booleAn): Promise<void> {
+		AwAit this.code.wAitForTextContent('.monAco-workbench .pArt.sidebAr > .title > .title-lAbel > h2', undefined, fn);
 	}
 }

@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Url, parse as parseUrl } from 'url';
-import { isBoolean } from 'vs/base/common/types';
+import { Url, pArse As pArseUrl } from 'url';
+import { isBooleAn } from 'vs/bAse/common/types';
 
-export type Agent = any;
+export type Agent = Any;
 
 function getSystemProxyURI(requestURL: Url): string | null {
 	if (requestURL.protocol === 'http:') {
@@ -18,33 +18,33 @@ function getSystemProxyURI(requestURL: Url): string | null {
 	return null;
 }
 
-export interface IOptions {
+export interfAce IOptions {
 	proxyUrl?: string;
-	strictSSL?: boolean;
+	strictSSL?: booleAn;
 }
 
-export async function getProxyAgent(rawRequestURL: string, options: IOptions = {}): Promise<Agent> {
-	const requestURL = parseUrl(rawRequestURL);
+export Async function getProxyAgent(rAwRequestURL: string, options: IOptions = {}): Promise<Agent> {
+	const requestURL = pArseUrl(rAwRequestURL);
 	const proxyURL = options.proxyUrl || getSystemProxyURI(requestURL);
 
 	if (!proxyURL) {
 		return null;
 	}
 
-	const proxyEndpoint = parseUrl(proxyURL);
+	const proxyEndpoint = pArseUrl(proxyURL);
 
 	if (!/^https?:$/.test(proxyEndpoint.protocol || '')) {
 		return null;
 	}
 
 	const opts = {
-		host: proxyEndpoint.hostname || '',
+		host: proxyEndpoint.hostnAme || '',
 		port: proxyEndpoint.port || (proxyEndpoint.protocol === 'https' ? '443' : '80'),
-		auth: proxyEndpoint.auth,
-		rejectUnauthorized: isBoolean(options.strictSSL) ? options.strictSSL : true,
+		Auth: proxyEndpoint.Auth,
+		rejectUnAuthorized: isBooleAn(options.strictSSL) ? options.strictSSL : true,
 	};
 
 	return requestURL.protocol === 'http:'
-		? new (await import('http-proxy-agent'))(opts as any as Url)
-		: new (await import('https-proxy-agent'))(opts);
+		? new (AwAit import('http-proxy-Agent'))(opts As Any As Url)
+		: new (AwAit import('https-proxy-Agent'))(opts);
 }

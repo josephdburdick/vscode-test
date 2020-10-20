@@ -1,439 +1,439 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * This is the place for API experiments and proposals.
- * These API are NOT stable and subject to change. They are only available in the Insiders
- * distribution and CANNOT be used in published extensions.
+ * This is the plAce for API experiments And proposAls.
+ * These API Are NOT stAble And subject to chAnge. They Are only AvAilAble in the Insiders
+ * distribution And CANNOT be used in published extensions.
  *
- * To test these API in local environment:
- * - Use Insiders release of VS Code.
- * - Add `"enableProposedApi": true` to your package.json.
+ * To test these API in locAl environment:
+ * - Use Insiders releAse of VS Code.
+ * - Add `"enAbleProposedApi": true` to your pAckAge.json.
  * - Copy this file to your project.
  */
 
-declare module 'vscode' {
+declAre module 'vscode' {
 
-	// #region auth provider: https://github.com/microsoft/vscode/issues/88309
+	// #region Auth provider: https://github.com/microsoft/vscode/issues/88309
 
 	/**
-	 * An [event](#Event) which fires when an [AuthenticationProvider](#AuthenticationProvider) is added or removed.
+	 * An [event](#Event) which fires when An [AuthenticAtionProvider](#AuthenticAtionProvider) is Added or removed.
 	 */
-	export interface AuthenticationProvidersChangeEvent {
+	export interfAce AuthenticAtionProvidersChAngeEvent {
 		/**
-		 * The ids of the [authenticationProvider](#AuthenticationProvider)s that have been added.
+		 * The ids of the [AuthenticAtionProvider](#AuthenticAtionProvider)s thAt hAve been Added.
 		 */
-		readonly added: ReadonlyArray<AuthenticationProviderInformation>;
+		reAdonly Added: ReAdonlyArrAy<AuthenticAtionProviderInformAtion>;
 
 		/**
-		 * The ids of the [authenticationProvider](#AuthenticationProvider)s that have been removed.
+		 * The ids of the [AuthenticAtionProvider](#AuthenticAtionProvider)s thAt hAve been removed.
 		 */
-		readonly removed: ReadonlyArray<AuthenticationProviderInformation>;
+		reAdonly removed: ReAdonlyArrAy<AuthenticAtionProviderInformAtion>;
 	}
 
 	/**
-	* An [event](#Event) which fires when an [AuthenticationSession](#AuthenticationSession) is added, removed, or changed.
+	* An [event](#Event) which fires when An [AuthenticAtionSession](#AuthenticAtionSession) is Added, removed, or chAnged.
 	*/
-	export interface AuthenticationProviderAuthenticationSessionsChangeEvent {
+	export interfAce AuthenticAtionProviderAuthenticAtionSessionsChAngeEvent {
 		/**
-		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have been added.
+		 * The ids of the [AuthenticAtionSession](#AuthenticAtionSession)s thAt hAve been Added.
 		*/
-		readonly added: ReadonlyArray<string>;
+		reAdonly Added: ReAdonlyArrAy<string>;
 
 		/**
-		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have been removed.
+		 * The ids of the [AuthenticAtionSession](#AuthenticAtionSession)s thAt hAve been removed.
 		 */
-		readonly removed: ReadonlyArray<string>;
+		reAdonly removed: ReAdonlyArrAy<string>;
 
 		/**
-		 * The ids of the [AuthenticationSession](#AuthenticationSession)s that have been changed.
+		 * The ids of the [AuthenticAtionSession](#AuthenticAtionSession)s thAt hAve been chAnged.
 		 */
-		readonly changed: ReadonlyArray<string>;
+		reAdonly chAnged: ReAdonlyArrAy<string>;
 	}
 
 	/**
-	 * **WARNING** When writing an AuthenticationProvider, `id` should be treated as part of your extension's
-	 * API, changing it is a breaking change for all extensions relying on the provider. The id is
-	 * treated case-sensitively.
+	 * **WARNING** When writing An AuthenticAtionProvider, `id` should be treAted As pArt of your extension's
+	 * API, chAnging it is A breAking chAnge for All extensions relying on the provider. The id is
+	 * treAted cAse-sensitively.
 	 */
-	export interface AuthenticationProvider {
+	export interfAce AuthenticAtionProvider {
 		/**
-		 * Used as an identifier for extensions trying to work with a particular
+		 * Used As An identifier for extensions trying to work with A pArticulAr
 		 * provider: 'microsoft', 'github', etc. id must be unique, registering
-		 * another provider with the same id will fail.
+		 * Another provider with the sAme id will fAil.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The human-readable name of the provider.
+		 * The humAn-reAdAble nAme of the provider.
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 
 		/**
-		 * Whether it is possible to be signed into multiple accounts at once with this provider
+		 * Whether it is possible to be signed into multiple Accounts At once with this provider
 		*/
-		readonly supportsMultipleAccounts: boolean;
+		reAdonly supportsMultipleAccounts: booleAn;
 
 		/**
-		 * An [event](#Event) which fires when the array of sessions has changed, or data
-		 * within a session has changed.
+		 * An [event](#Event) which fires when the ArrAy of sessions hAs chAnged, or dAtA
+		 * within A session hAs chAnged.
 		 */
-		readonly onDidChangeSessions: Event<AuthenticationProviderAuthenticationSessionsChangeEvent>;
+		reAdonly onDidChAngeSessions: Event<AuthenticAtionProviderAuthenticAtionSessionsChAngeEvent>;
 
 		/**
-		 * Returns an array of current sessions.
+		 * Returns An ArrAy of current sessions.
 		 */
-		getSessions(): Thenable<ReadonlyArray<AuthenticationSession>>;
+		getSessions(): ThenAble<ReAdonlyArrAy<AuthenticAtionSession>>;
 
 		/**
-		 * Prompts a user to login.
+		 * Prompts A user to login.
 		 */
-		login(scopes: string[]): Thenable<AuthenticationSession>;
+		login(scopes: string[]): ThenAble<AuthenticAtionSession>;
 
 		/**
 		 * Removes the session corresponding to session id.
-		 * @param sessionId The session id to log out of
+		 * @pArAm sessionId The session id to log out of
 		 */
-		logout(sessionId: string): Thenable<void>;
+		logout(sessionId: string): ThenAble<void>;
 	}
 
-	export namespace authentication {
+	export nAmespAce AuthenticAtion {
 		/**
-		 * Register an authentication provider.
+		 * Register An AuthenticAtion provider.
 		 *
-		 * There can only be one provider per id and an error is being thrown when an id
-		 * has already been used by another provider.
+		 * There cAn only be one provider per id And An error is being thrown when An id
+		 * hAs AlreAdy been used by Another provider.
 		 *
-		 * @param provider The authentication provider provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm provider The AuthenticAtion provider provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerAuthenticationProvider(provider: AuthenticationProvider): Disposable;
+		export function registerAuthenticAtionProvider(provider: AuthenticAtionProvider): DisposAble;
 
 		/**
-		 * @deprecated - getSession should now trigger extension activation.
-		 * Fires with the provider id that was registered or unregistered.
+		 * @deprecAted - getSession should now trigger extension ActivAtion.
+		 * Fires with the provider id thAt wAs registered or unregistered.
 		 */
-		export const onDidChangeAuthenticationProviders: Event<AuthenticationProvidersChangeEvent>;
+		export const onDidChAngeAuthenticAtionProviders: Event<AuthenticAtionProvidersChAngeEvent>;
 
 		/**
-		 * @deprecated
-		 * The ids of the currently registered authentication providers.
-		 * @returns An array of the ids of authentication providers that are currently registered.
+		 * @deprecAted
+		 * The ids of the currently registered AuthenticAtion providers.
+		 * @returns An ArrAy of the ids of AuthenticAtion providers thAt Are currently registered.
 		 */
-		export function getProviderIds(): Thenable<ReadonlyArray<string>>;
+		export function getProviderIds(): ThenAble<ReAdonlyArrAy<string>>;
 
 		/**
-		 * @deprecated
-		 * An array of the ids of authentication providers that are currently registered.
+		 * @deprecAted
+		 * An ArrAy of the ids of AuthenticAtion providers thAt Are currently registered.
 		 */
-		export const providerIds: ReadonlyArray<string>;
+		export const providerIds: ReAdonlyArrAy<string>;
 
 		/**
-		 * An array of the information of authentication providers that are currently registered.
+		 * An ArrAy of the informAtion of AuthenticAtion providers thAt Are currently registered.
 		 */
-		export const providers: ReadonlyArray<AuthenticationProviderInformation>;
+		export const providers: ReAdonlyArrAy<AuthenticAtionProviderInformAtion>;
 
 		/**
-		 * @deprecated
-		* Logout of a specific session.
-		* @param providerId The id of the provider to use
-		* @param sessionId The session id to remove
+		 * @deprecAted
+		* Logout of A specific session.
+		* @pArAm providerId The id of the provider to use
+		* @pArAm sessionId The session id to remove
 		* provider
 		*/
-		export function logout(providerId: string, sessionId: string): Thenable<void>;
+		export function logout(providerId: string, sessionId: string): ThenAble<void>;
 
 		/**
-		 * Retrieve a password that was stored with key. Returns undefined if there
-		 * is no password matching that key.
-		 * @param key The key the password was stored under.
+		 * Retrieve A pAssword thAt wAs stored with key. Returns undefined if there
+		 * is no pAssword mAtching thAt key.
+		 * @pArAm key The key the pAssword wAs stored under.
 		 */
-		export function getPassword(key: string): Thenable<string | undefined>;
+		export function getPAssword(key: string): ThenAble<string | undefined>;
 
 		/**
-		 * Store a password under a given key.
-		 * @param key The key to store the password under
-		 * @param value The password
+		 * Store A pAssword under A given key.
+		 * @pArAm key The key to store the pAssword under
+		 * @pArAm vAlue The pAssword
 		 */
-		export function setPassword(key: string, value: string): Thenable<void>;
+		export function setPAssword(key: string, vAlue: string): ThenAble<void>;
 
 		/**
-		 * Remove a password from storage.
-		 * @param key The key the password was stored under.
+		 * Remove A pAssword from storAge.
+		 * @pArAm key The key the pAssword wAs stored under.
 		 */
-		export function deletePassword(key: string): Thenable<void>;
+		export function deletePAssword(key: string): ThenAble<void>;
 
 		/**
-		 * Fires when a password is set or deleted.
+		 * Fires when A pAssword is set or deleted.
 		 */
-		export const onDidChangePassword: Event<void>;
+		export const onDidChAngePAssword: Event<void>;
 	}
 
 	//#endregion
 
-	//#region @alexdima - resolvers
+	//#region @AlexdimA - resolvers
 
-	export interface RemoteAuthorityResolverContext {
+	export interfAce RemoteAuthorityResolverContext {
 		resolveAttempt: number;
 	}
 
-	export class ResolvedAuthority {
-		readonly host: string;
-		readonly port: number;
+	export clAss ResolvedAuthority {
+		reAdonly host: string;
+		reAdonly port: number;
 
 		constructor(host: string, port: number);
 	}
 
-	export interface ResolvedOptions {
+	export interfAce ResolvedOptions {
 		extensionHostEnv?: { [key: string]: string | null; };
 	}
 
-	export interface TunnelOptions {
+	export interfAce TunnelOptions {
 		remoteAddress: { port: number, host: string; };
-		// The desired local port. If this port can't be used, then another will be chosen.
-		localAddressPort?: number;
-		label?: string;
+		// The desired locAl port. If this port cAn't be used, then Another will be chosen.
+		locAlAddressPort?: number;
+		lAbel?: string;
 	}
 
-	export interface TunnelDescription {
+	export interfAce TunnelDescription {
 		remoteAddress: { port: number, host: string; };
-		//The complete local address(ex. localhost:1234)
-		localAddress: { port: number, host: string; } | string;
+		//The complete locAl Address(ex. locAlhost:1234)
+		locAlAddress: { port: number, host: string; } | string;
 	}
 
-	export interface Tunnel extends TunnelDescription {
-		// Implementers of Tunnel should fire onDidDispose when dispose is called.
+	export interfAce Tunnel extends TunnelDescription {
+		// Implementers of Tunnel should fire onDidDispose when dispose is cAlled.
 		onDidDispose: Event<void>;
 		dispose(): void;
 	}
 
 	/**
-	 * Used as part of the ResolverResult if the extension has any candidate,
-	 * published, or forwarded ports.
+	 * Used As pArt of the ResolverResult if the extension hAs Any cAndidAte,
+	 * published, or forwArded ports.
 	 */
-	export interface TunnelInformation {
+	export interfAce TunnelInformAtion {
 		/**
-		 * Tunnels that are detected by the extension. The remotePort is used for display purposes.
-		 * The localAddress should be the complete local address (ex. localhost:1234) for connecting to the port. Tunnels provided through
-		 * detected are read-only from the forwarded ports UI.
+		 * Tunnels thAt Are detected by the extension. The remotePort is used for displAy purposes.
+		 * The locAlAddress should be the complete locAl Address (ex. locAlhost:1234) for connecting to the port. Tunnels provided through
+		 * detected Are reAd-only from the forwArded ports UI.
 		 */
 		environmentTunnels?: TunnelDescription[];
 
 	}
 
-	export type ResolverResult = ResolvedAuthority & ResolvedOptions & TunnelInformation;
+	export type ResolverResult = ResolvedAuthority & ResolvedOptions & TunnelInformAtion;
 
-	export class RemoteAuthorityResolverError extends Error {
-		static NotAvailable(message?: string, handled?: boolean): RemoteAuthorityResolverError;
-		static TemporarilyNotAvailable(message?: string): RemoteAuthorityResolverError;
+	export clAss RemoteAuthorityResolverError extends Error {
+		stAtic NotAvAilAble(messAge?: string, hAndled?: booleAn): RemoteAuthorityResolverError;
+		stAtic TemporArilyNotAvAilAble(messAge?: string): RemoteAuthorityResolverError;
 
-		constructor(message?: string);
+		constructor(messAge?: string);
 	}
 
-	export interface RemoteAuthorityResolver {
-		resolve(authority: string, context: RemoteAuthorityResolverContext): ResolverResult | Thenable<ResolverResult>;
+	export interfAce RemoteAuthorityResolver {
+		resolve(Authority: string, context: RemoteAuthorityResolverContext): ResolverResult | ThenAble<ResolverResult>;
 		/**
-		 * Can be optionally implemented if the extension can forward ports better than the core.
-		 * When not implemented, the core will use its default forwarding logic.
-		 * When implemented, the core will use this to forward ports.
+		 * CAn be optionAlly implemented if the extension cAn forwArd ports better thAn the core.
+		 * When not implemented, the core will use its defAult forwArding logic.
+		 * When implemented, the core will use this to forwArd ports.
 		 */
-		tunnelFactory?: (tunnelOptions: TunnelOptions) => Thenable<Tunnel> | undefined;
+		tunnelFActory?: (tunnelOptions: TunnelOptions) => ThenAble<Tunnel> | undefined;
 
 		/**
-		 * Provides filtering for candidate ports.
+		 * Provides filtering for cAndidAte ports.
 		 */
-		showCandidatePort?: (host: string, port: number, detail: string) => Thenable<boolean>;
+		showCAndidAtePort?: (host: string, port: number, detAil: string) => ThenAble<booleAn>;
 	}
 
-	export namespace workspace {
+	export nAmespAce workspAce {
 		/**
-		 * Forwards a port. If the current resolver implements RemoteAuthorityResolver:forwardPort then that will be used to make the tunnel.
-		 * By default, openTunnel only support localhost; however, RemoteAuthorityResolver:tunnelFactory can be used to support other ips.
+		 * ForwArds A port. If the current resolver implements RemoteAuthorityResolver:forwArdPort then thAt will be used to mAke the tunnel.
+		 * By defAult, openTunnel only support locAlhost; however, RemoteAuthorityResolver:tunnelFActory cAn be used to support other ips.
 		 *
-		 * @throws When run in an environment without a remote.
+		 * @throws When run in An environment without A remote.
 		 *
-		 * @param tunnelOptions The `localPort` is a suggestion only. If that port is not available another will be chosen.
+		 * @pArAm tunnelOptions The `locAlPort` is A suggestion only. If thAt port is not AvAilAble Another will be chosen.
 		 */
-		export function openTunnel(tunnelOptions: TunnelOptions): Thenable<Tunnel>;
+		export function openTunnel(tunnelOptions: TunnelOptions): ThenAble<Tunnel>;
 
 		/**
-		 * Gets an array of the currently available tunnels. This does not include environment tunnels, only tunnels that have been created by the user.
-		 * Note that these are of type TunnelDescription and cannot be disposed.
+		 * Gets An ArrAy of the currently AvAilAble tunnels. This does not include environment tunnels, only tunnels thAt hAve been creAted by the user.
+		 * Note thAt these Are of type TunnelDescription And cAnnot be disposed.
 		 */
-		export let tunnels: Thenable<TunnelDescription[]>;
+		export let tunnels: ThenAble<TunnelDescription[]>;
 
 		/**
-		 * Fired when the list of tunnels has changed.
+		 * Fired when the list of tunnels hAs chAnged.
 		 */
-		export const onDidChangeTunnels: Event<void>;
+		export const onDidChAngeTunnels: Event<void>;
 	}
 
-	export interface ResourceLabelFormatter {
+	export interfAce ResourceLAbelFormAtter {
 		scheme: string;
-		authority?: string;
-		formatting: ResourceLabelFormatting;
+		Authority?: string;
+		formAtting: ResourceLAbelFormAtting;
 	}
 
-	export interface ResourceLabelFormatting {
-		label: string; // myLabel:/${path}
-		// For historic reasons we use an or string here. Once we finalize this API we should start using enums instead and adopt it in extensions.
-		// eslint-disable-next-line vscode-dts-literal-or-types
-		separator: '/' | '\\' | '';
-		tildify?: boolean;
-		normalizeDriveLetter?: boolean;
-		workspaceSuffix?: string;
-		authorityPrefix?: string;
-		stripPathStartingSeparator?: boolean;
+	export interfAce ResourceLAbelFormAtting {
+		lAbel: string; // myLAbel:/${pAth}
+		// For historic reAsons we use An or string here. Once we finAlize this API we should stArt using enums insteAd And Adopt it in extensions.
+		// eslint-disAble-next-line vscode-dts-literAl-or-types
+		sepArAtor: '/' | '\\' | '';
+		tildify?: booleAn;
+		normAlizeDriveLetter?: booleAn;
+		workspAceSuffix?: string;
+		AuthorityPrefix?: string;
+		stripPAthStArtingSepArAtor?: booleAn;
 	}
 
-	export namespace workspace {
-		export function registerRemoteAuthorityResolver(authorityPrefix: string, resolver: RemoteAuthorityResolver): Disposable;
-		export function registerResourceLabelFormatter(formatter: ResourceLabelFormatter): Disposable;
+	export nAmespAce workspAce {
+		export function registerRemoteAuthorityResolver(AuthorityPrefix: string, resolver: RemoteAuthorityResolver): DisposAble;
+		export function registerResourceLAbelFormAtter(formAtter: ResourceLAbelFormAtter): DisposAble;
 	}
 
 	//#endregion
 
 	//#region editor insets: https://github.com/microsoft/vscode/issues/85682
 
-	export interface WebviewEditorInset {
-		readonly editor: TextEditor;
-		readonly line: number;
-		readonly height: number;
-		readonly webview: Webview;
-		readonly onDidDispose: Event<void>;
+	export interfAce WebviewEditorInset {
+		reAdonly editor: TextEditor;
+		reAdonly line: number;
+		reAdonly height: number;
+		reAdonly webview: Webview;
+		reAdonly onDidDispose: Event<void>;
 		dispose(): void;
 	}
 
-	export namespace window {
-		export function createWebviewTextEditorInset(editor: TextEditor, line: number, height: number, options?: WebviewOptions): WebviewEditorInset;
+	export nAmespAce window {
+		export function creAteWebviewTextEditorInset(editor: TextEditor, line: number, height: number, options?: WebviewOptions): WebviewEditorInset;
 	}
 
 	//#endregion
 
-	//#region read/write in chunks: https://github.com/microsoft/vscode/issues/84515
+	//#region reAd/write in chunks: https://github.com/microsoft/vscode/issues/84515
 
-	export interface FileSystemProvider {
-		open?(resource: Uri, options: { create: boolean; }): number | Thenable<number>;
-		close?(fd: number): void | Thenable<void>;
-		read?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): number | Thenable<number>;
-		write?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): number | Thenable<number>;
+	export interfAce FileSystemProvider {
+		open?(resource: Uri, options: { creAte: booleAn; }): number | ThenAble<number>;
+		close?(fd: number): void | ThenAble<void>;
+		reAd?(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): number | ThenAble<number>;
+		write?(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): number | ThenAble<number>;
 	}
 
 	//#endregion
 
-	//#region TextSearchProvider: https://github.com/microsoft/vscode/issues/59921
+	//#region TextSeArchProvider: https://github.com/microsoft/vscode/issues/59921
 
 	/**
-	 * The parameters of a query for text search.
+	 * The pArAmeters of A query for text seArch.
 	 */
-	export interface TextSearchQuery {
+	export interfAce TextSeArchQuery {
 		/**
-		 * The text pattern to search for.
+		 * The text pAttern to seArch for.
 		 */
-		pattern: string;
+		pAttern: string;
 
 		/**
-		 * Whether or not `pattern` should match multiple lines of text.
+		 * Whether or not `pAttern` should mAtch multiple lines of text.
 		 */
-		isMultiline?: boolean;
+		isMultiline?: booleAn;
 
 		/**
-		 * Whether or not `pattern` should be interpreted as a regular expression.
+		 * Whether or not `pAttern` should be interpreted As A regulAr expression.
 		 */
-		isRegExp?: boolean;
+		isRegExp?: booleAn;
 
 		/**
-		 * Whether or not the search should be case-sensitive.
+		 * Whether or not the seArch should be cAse-sensitive.
 		 */
-		isCaseSensitive?: boolean;
+		isCAseSensitive?: booleAn;
 
 		/**
-		 * Whether or not to search for whole word matches only.
+		 * Whether or not to seArch for whole word mAtches only.
 		 */
-		isWordMatch?: boolean;
+		isWordMAtch?: booleAn;
 	}
 
 	/**
-	 * A file glob pattern to match file paths against.
-	 * TODO@roblourens merge this with the GlobPattern docs/definition in vscode.d.ts.
-	 * @see [GlobPattern](#GlobPattern)
+	 * A file glob pAttern to mAtch file pAths AgAinst.
+	 * TODO@roblourens merge this with the GlobPAttern docs/definition in vscode.d.ts.
+	 * @see [GlobPAttern](#GlobPAttern)
 	 */
 	export type GlobString = string;
 
 	/**
-	 * Options common to file and text search
+	 * Options common to file And text seArch
 	 */
-	export interface SearchOptions {
+	export interfAce SeArchOptions {
 		/**
-		 * The root folder to search within.
+		 * The root folder to seArch within.
 		 */
 		folder: Uri;
 
 		/**
-		 * Files that match an `includes` glob pattern should be included in the search.
+		 * Files thAt mAtch An `includes` glob pAttern should be included in the seArch.
 		 */
 		includes: GlobString[];
 
 		/**
-		 * Files that match an `excludes` glob pattern should be excluded from the search.
+		 * Files thAt mAtch An `excludes` glob pAttern should be excluded from the seArch.
 		 */
 		excludes: GlobString[];
 
 		/**
-		 * Whether external files that exclude files, like .gitignore, should be respected.
-		 * See the vscode setting `"search.useIgnoreFiles"`.
+		 * Whether externAl files thAt exclude files, like .gitignore, should be respected.
+		 * See the vscode setting `"seArch.useIgnoreFiles"`.
 		 */
-		useIgnoreFiles: boolean;
+		useIgnoreFiles: booleAn;
 
 		/**
-		 * Whether symlinks should be followed while searching.
-		 * See the vscode setting `"search.followSymlinks"`.
+		 * Whether symlinks should be followed while seArching.
+		 * See the vscode setting `"seArch.followSymlinks"`.
 		 */
-		followSymlinks: boolean;
+		followSymlinks: booleAn;
 
 		/**
-		 * Whether global files that exclude files, like .gitignore, should be respected.
-		 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+		 * Whether globAl files thAt exclude files, like .gitignore, should be respected.
+		 * See the vscode setting `"seArch.useGlobAlIgnoreFiles"`.
 		 */
-		useGlobalIgnoreFiles: boolean;
+		useGlobAlIgnoreFiles: booleAn;
 	}
 
 	/**
 	 * Options to specify the size of the result text preview.
-	 * These options don't affect the size of the match itself, just the amount of preview text.
+	 * These options don't Affect the size of the mAtch itself, just the Amount of preview text.
 	 */
-	export interface TextSearchPreviewOptions {
+	export interfAce TextSeArchPreviewOptions {
 		/**
-		 * The maximum number of lines in the preview.
-		 * Only search providers that support multiline search will ever return more than one line in the match.
+		 * The mAximum number of lines in the preview.
+		 * Only seArch providers thAt support multiline seArch will ever return more thAn one line in the mAtch.
 		 */
-		matchLines: number;
+		mAtchLines: number;
 
 		/**
-		 * The maximum number of characters included per line.
+		 * The mAximum number of chArActers included per line.
 		 */
-		charsPerLine: number;
+		chArsPerLine: number;
 	}
 
 	/**
-	 * Options that apply to text search.
+	 * Options thAt Apply to text seArch.
 	 */
-	export interface TextSearchOptions extends SearchOptions {
+	export interfAce TextSeArchOptions extends SeArchOptions {
 		/**
-		 * The maximum number of results to be returned.
+		 * The mAximum number of results to be returned.
 		 */
-		maxResults: number;
+		mAxResults: number;
 
 		/**
 		 * Options to specify the size of the result text preview.
 		 */
-		previewOptions?: TextSearchPreviewOptions;
+		previewOptions?: TextSeArchPreviewOptions;
 
 		/**
-		 * Exclude files larger than `maxFileSize` in bytes.
+		 * Exclude files lArger thAn `mAxFileSize` in bytes.
 		 */
-		maxFileSize?: number;
+		mAxFileSize?: number;
 
 		/**
 		 * Interpret files using this encoding.
@@ -442,78 +442,78 @@ declare module 'vscode' {
 		encoding?: string;
 
 		/**
-		 * Number of lines of context to include before each match.
+		 * Number of lines of context to include before eAch mAtch.
 		 */
 		beforeContext?: number;
 
 		/**
-		 * Number of lines of context to include after each match.
+		 * Number of lines of context to include After eAch mAtch.
 		 */
-		afterContext?: number;
+		AfterContext?: number;
 	}
 
 	/**
-	 * Information collected when text search is complete.
+	 * InformAtion collected when text seArch is complete.
 	 */
-	export interface TextSearchComplete {
+	export interfAce TextSeArchComplete {
 		/**
-		 * Whether the search hit the limit on the maximum number of search results.
-		 * `maxResults` on [`TextSearchOptions`](#TextSearchOptions) specifies the max number of results.
-		 * - If exactly that number of matches exist, this should be false.
-		 * - If `maxResults` matches are returned and more exist, this should be true.
-		 * - If search hits an internal limit which is less than `maxResults`, this should be true.
+		 * Whether the seArch hit the limit on the mAximum number of seArch results.
+		 * `mAxResults` on [`TextSeArchOptions`](#TextSeArchOptions) specifies the mAx number of results.
+		 * - If exActly thAt number of mAtches exist, this should be fAlse.
+		 * - If `mAxResults` mAtches Are returned And more exist, this should be true.
+		 * - If seArch hits An internAl limit which is less thAn `mAxResults`, this should be true.
 		 */
-		limitHit?: boolean;
+		limitHit?: booleAn;
 	}
 
 	/**
 	 * A preview of the text result.
 	 */
-	export interface TextSearchMatchPreview {
+	export interfAce TextSeArchMAtchPreview {
 		/**
-		 * The matching lines of text, or a portion of the matching line that contains the match.
+		 * The mAtching lines of text, or A portion of the mAtching line thAt contAins the mAtch.
 		 */
 		text: string;
 
 		/**
-		 * The Range within `text` corresponding to the text of the match.
-		 * The number of matches must match the TextSearchMatch's range property.
+		 * The RAnge within `text` corresponding to the text of the mAtch.
+		 * The number of mAtches must mAtch the TextSeArchMAtch's rAnge property.
 		 */
-		matches: Range | Range[];
+		mAtches: RAnge | RAnge[];
 	}
 
 	/**
-	 * A match from a text search
+	 * A mAtch from A text seArch
 	 */
-	export interface TextSearchMatch {
+	export interfAce TextSeArchMAtch {
 		/**
-		 * The uri for the matching document.
+		 * The uri for the mAtching document.
 		 */
 		uri: Uri;
 
 		/**
-		 * The range of the match within the document, or multiple ranges for multiple matches.
+		 * The rAnge of the mAtch within the document, or multiple rAnges for multiple mAtches.
 		 */
-		ranges: Range | Range[];
+		rAnges: RAnge | RAnge[];
 
 		/**
-		 * A preview of the text match.
+		 * A preview of the text mAtch.
 		 */
-		preview: TextSearchMatchPreview;
+		preview: TextSeArchMAtchPreview;
 	}
 
 	/**
-	 * A line of context surrounding a TextSearchMatch.
+	 * A line of context surrounding A TextSeArchMAtch.
 	 */
-	export interface TextSearchContext {
+	export interfAce TextSeArchContext {
 		/**
-		 * The uri for the matching document.
+		 * The uri for the mAtching document.
 		 */
 		uri: Uri;
 
 		/**
 		 * One line of text.
-		 * previewOptions.charsPerLine applies to this
+		 * previewOptions.chArsPerLine Applies to this
 		 */
 		text: string;
 
@@ -523,93 +523,93 @@ declare module 'vscode' {
 		lineNumber: number;
 	}
 
-	export type TextSearchResult = TextSearchMatch | TextSearchContext;
+	export type TextSeArchResult = TextSeArchMAtch | TextSeArchContext;
 
 	/**
-	 * A TextSearchProvider provides search results for text results inside files in the workspace.
+	 * A TextSeArchProvider provides seArch results for text results inside files in the workspAce.
 	 */
-	export interface TextSearchProvider {
+	export interfAce TextSeArchProvider {
 		/**
-		 * Provide results that match the given text pattern.
-		 * @param query The parameters for this query.
-		 * @param options A set of options to consider while searching.
-		 * @param progress A progress callback that must be invoked for all results.
-		 * @param token A cancellation token.
+		 * Provide results thAt mAtch the given text pAttern.
+		 * @pArAm query The pArAmeters for this query.
+		 * @pArAm options A set of options to consider while seArching.
+		 * @pArAm progress A progress cAllbAck thAt must be invoked for All results.
+		 * @pArAm token A cAncellAtion token.
 		 */
-		provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: Progress<TextSearchResult>, token: CancellationToken): ProviderResult<TextSearchComplete>;
+		provideTextSeArchResults(query: TextSeArchQuery, options: TextSeArchOptions, progress: Progress<TextSeArchResult>, token: CAncellAtionToken): ProviderResult<TextSeArchComplete>;
 	}
 
 	//#endregion
 
-	//#region FileSearchProvider: https://github.com/microsoft/vscode/issues/73524
+	//#region FileSeArchProvider: https://github.com/microsoft/vscode/issues/73524
 
 	/**
-	 * The parameters of a query for file search.
+	 * The pArAmeters of A query for file seArch.
 	 */
-	export interface FileSearchQuery {
+	export interfAce FileSeArchQuery {
 		/**
-		 * The search pattern to match against file paths.
+		 * The seArch pAttern to mAtch AgAinst file pAths.
 		 */
-		pattern: string;
+		pAttern: string;
 	}
 
 	/**
-	 * Options that apply to file search.
+	 * Options thAt Apply to file seArch.
 	 */
-	export interface FileSearchOptions extends SearchOptions {
+	export interfAce FileSeArchOptions extends SeArchOptions {
 		/**
-		 * The maximum number of results to be returned.
+		 * The mAximum number of results to be returned.
 		 */
-		maxResults?: number;
+		mAxResults?: number;
 
 		/**
-		 * A CancellationToken that represents the session for this search query. If the provider chooses to, this object can be used as the key for a cache,
-		 * and searches with the same session object can search the same cache. When the token is cancelled, the session is complete and the cache can be cleared.
+		 * A CAncellAtionToken thAt represents the session for this seArch query. If the provider chooses to, this object cAn be used As the key for A cAche,
+		 * And seArches with the sAme session object cAn seArch the sAme cAche. When the token is cAncelled, the session is complete And the cAche cAn be cleAred.
 		 */
-		session?: CancellationToken;
+		session?: CAncellAtionToken;
 	}
 
 	/**
-	 * A FileSearchProvider provides search results for files in the given folder that match a query string. It can be invoked by quickopen or other extensions.
+	 * A FileSeArchProvider provides seArch results for files in the given folder thAt mAtch A query string. It cAn be invoked by quickopen or other extensions.
 	 *
-	 * A FileSearchProvider is the more powerful of two ways to implement file search in VS Code. Use a FileSearchProvider if you wish to search within a folder for
-	 * all files that match the user's query.
+	 * A FileSeArchProvider is the more powerful of two wAys to implement file seArch in VS Code. Use A FileSeArchProvider if you wish to seArch within A folder for
+	 * All files thAt mAtch the user's query.
 	 *
-	 * The FileSearchProvider will be invoked on every keypress in quickopen. When `workspace.findFiles` is called, it will be invoked with an empty query string,
-	 * and in that case, every file in the folder should be returned.
+	 * The FileSeArchProvider will be invoked on every keypress in quickopen. When `workspAce.findFiles` is cAlled, it will be invoked with An empty query string,
+	 * And in thAt cAse, every file in the folder should be returned.
 	 */
-	export interface FileSearchProvider {
+	export interfAce FileSeArchProvider {
 		/**
-		 * Provide the set of files that match a certain file path pattern.
-		 * @param query The parameters for this query.
-		 * @param options A set of options to consider while searching files.
-		 * @param token A cancellation token.
+		 * Provide the set of files thAt mAtch A certAin file pAth pAttern.
+		 * @pArAm query The pArAmeters for this query.
+		 * @pArAm options A set of options to consider while seArching files.
+		 * @pArAm token A cAncellAtion token.
 		 */
-		provideFileSearchResults(query: FileSearchQuery, options: FileSearchOptions, token: CancellationToken): ProviderResult<Uri[]>;
+		provideFileSeArchResults(query: FileSeArchQuery, options: FileSeArchOptions, token: CAncellAtionToken): ProviderResult<Uri[]>;
 	}
 
-	export namespace workspace {
+	export nAmespAce workspAce {
 		/**
-		 * Register a search provider.
+		 * Register A seArch provider.
 		 *
-		 * Only one provider can be registered per scheme.
+		 * Only one provider cAn be registered per scheme.
 		 *
-		 * @param scheme The provider will be invoked for workspace folders that have this file scheme.
-		 * @param provider The provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm scheme The provider will be invoked for workspAce folders thAt hAve this file scheme.
+		 * @pArAm provider The provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerFileSearchProvider(scheme: string, provider: FileSearchProvider): Disposable;
+		export function registerFileSeArchProvider(scheme: string, provider: FileSeArchProvider): DisposAble;
 
 		/**
-		 * Register a text search provider.
+		 * Register A text seArch provider.
 		 *
-		 * Only one provider can be registered per scheme.
+		 * Only one provider cAn be registered per scheme.
 		 *
-		 * @param scheme The provider will be invoked for workspace folders that have this file scheme.
-		 * @param provider The provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm scheme The provider will be invoked for workspAce folders thAt hAve this file scheme.
+		 * @pArAm provider The provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerTextSearchProvider(scheme: string, provider: TextSearchProvider): Disposable;
+		export function registerTextSeArchProvider(scheme: string, provider: TextSeArchProvider): DisposAble;
 	}
 
 	//#endregion
@@ -617,50 +617,50 @@ declare module 'vscode' {
 	//#region findTextInFiles: https://github.com/microsoft/vscode/issues/59924
 
 	/**
-	 * Options that can be set on a findTextInFiles search.
+	 * Options thAt cAn be set on A findTextInFiles seArch.
 	 */
-	export interface FindTextInFilesOptions {
+	export interfAce FindTextInFilesOptions {
 		/**
-		 * A [glob pattern](#GlobPattern) that defines the files to search for. The glob pattern
-		 * will be matched against the file paths of files relative to their workspace. Use a [relative pattern](#RelativePattern)
-		 * to restrict the search results to a [workspace folder](#WorkspaceFolder).
+		 * A [glob pAttern](#GlobPAttern) thAt defines the files to seArch for. The glob pAttern
+		 * will be mAtched AgAinst the file pAths of files relAtive to their workspAce. Use A [relAtive pAttern](#RelAtivePAttern)
+		 * to restrict the seArch results to A [workspAce folder](#WorkspAceFolder).
 		 */
-		include?: GlobPattern;
+		include?: GlobPAttern;
 
 		/**
-		 * A [glob pattern](#GlobPattern) that defines files and folders to exclude. The glob pattern
-		 * will be matched against the file paths of resulting matches relative to their workspace. When `undefined`, default excludes will
-		 * apply.
+		 * A [glob pAttern](#GlobPAttern) thAt defines files And folders to exclude. The glob pAttern
+		 * will be mAtched AgAinst the file pAths of resulting mAtches relAtive to their workspAce. When `undefined`, defAult excludes will
+		 * Apply.
 		 */
-		exclude?: GlobPattern;
+		exclude?: GlobPAttern;
 
 		/**
-		 * Whether to use the default and user-configured excludes. Defaults to true.
+		 * Whether to use the defAult And user-configured excludes. DefAults to true.
 		 */
-		useDefaultExcludes?: boolean;
+		useDefAultExcludes?: booleAn;
 
 		/**
-		 * The maximum number of results to search for
+		 * The mAximum number of results to seArch for
 		 */
-		maxResults?: number;
+		mAxResults?: number;
 
 		/**
-		 * Whether external files that exclude files, like .gitignore, should be respected.
-		 * See the vscode setting `"search.useIgnoreFiles"`.
+		 * Whether externAl files thAt exclude files, like .gitignore, should be respected.
+		 * See the vscode setting `"seArch.useIgnoreFiles"`.
 		 */
-		useIgnoreFiles?: boolean;
+		useIgnoreFiles?: booleAn;
 
 		/**
-		 * Whether global files that exclude files, like .gitignore, should be respected.
-		 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
+		 * Whether globAl files thAt exclude files, like .gitignore, should be respected.
+		 * See the vscode setting `"seArch.useGlobAlIgnoreFiles"`.
 		 */
-		useGlobalIgnoreFiles?: boolean;
+		useGlobAlIgnoreFiles?: booleAn;
 
 		/**
-		 * Whether symlinks should be followed while searching.
-		 * See the vscode setting `"search.followSymlinks"`.
+		 * Whether symlinks should be followed while seArching.
+		 * See the vscode setting `"seArch.followSymlinks"`.
 		 */
-		followSymlinks?: boolean;
+		followSymlinks?: booleAn;
 
 		/**
 		 * Interpret files using this encoding.
@@ -671,136 +671,136 @@ declare module 'vscode' {
 		/**
 		 * Options to specify the size of the result text preview.
 		 */
-		previewOptions?: TextSearchPreviewOptions;
+		previewOptions?: TextSeArchPreviewOptions;
 
 		/**
-		 * Number of lines of context to include before each match.
+		 * Number of lines of context to include before eAch mAtch.
 		 */
 		beforeContext?: number;
 
 		/**
-		 * Number of lines of context to include after each match.
+		 * Number of lines of context to include After eAch mAtch.
 		 */
-		afterContext?: number;
+		AfterContext?: number;
 	}
 
-	export namespace workspace {
+	export nAmespAce workspAce {
 		/**
-		 * Search text in files across all [workspace folders](#workspace.workspaceFolders) in the workspace.
-		 * @param query The query parameters for the search - the search string, whether it's case-sensitive, or a regex, or matches whole words.
-		 * @param callback A callback, called for each result
-		 * @param token A token that can be used to signal cancellation to the underlying search engine.
-		 * @return A thenable that resolves when the search is complete.
+		 * SeArch text in files Across All [workspAce folders](#workspAce.workspAceFolders) in the workspAce.
+		 * @pArAm query The query pArAmeters for the seArch - the seArch string, whether it's cAse-sensitive, or A regex, or mAtches whole words.
+		 * @pArAm cAllbAck A cAllbAck, cAlled for eAch result
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion to the underlying seArch engine.
+		 * @return A thenAble thAt resolves when the seArch is complete.
 		 */
-		export function findTextInFiles(query: TextSearchQuery, callback: (result: TextSearchResult) => void, token?: CancellationToken): Thenable<TextSearchComplete>;
+		export function findTextInFiles(query: TextSeArchQuery, cAllbAck: (result: TextSeArchResult) => void, token?: CAncellAtionToken): ThenAble<TextSeArchComplete>;
 
 		/**
-		 * Search text in files across all [workspace folders](#workspace.workspaceFolders) in the workspace.
-		 * @param query The query parameters for the search - the search string, whether it's case-sensitive, or a regex, or matches whole words.
-		 * @param options An optional set of query options. Include and exclude patterns, maxResults, etc.
-		 * @param callback A callback, called for each result
-		 * @param token A token that can be used to signal cancellation to the underlying search engine.
-		 * @return A thenable that resolves when the search is complete.
+		 * SeArch text in files Across All [workspAce folders](#workspAce.workspAceFolders) in the workspAce.
+		 * @pArAm query The query pArAmeters for the seArch - the seArch string, whether it's cAse-sensitive, or A regex, or mAtches whole words.
+		 * @pArAm options An optionAl set of query options. Include And exclude pAtterns, mAxResults, etc.
+		 * @pArAm cAllbAck A cAllbAck, cAlled for eAch result
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion to the underlying seArch engine.
+		 * @return A thenAble thAt resolves when the seArch is complete.
 		 */
-		export function findTextInFiles(query: TextSearchQuery, options: FindTextInFilesOptions, callback: (result: TextSearchResult) => void, token?: CancellationToken): Thenable<TextSearchComplete>;
+		export function findTextInFiles(query: TextSeArchQuery, options: FindTextInFilesOptions, cAllbAck: (result: TextSeArchResult) => void, token?: CAncellAtionToken): ThenAble<TextSeArchComplete>;
 	}
 
 	//#endregion
 
-	//#region diff command: https://github.com/microsoft/vscode/issues/84899
+	//#region diff commAnd: https://github.com/microsoft/vscode/issues/84899
 
 	/**
-	 * The contiguous set of modified lines in a diff.
+	 * The contiguous set of modified lines in A diff.
 	 */
-	export interface LineChange {
-		readonly originalStartLineNumber: number;
-		readonly originalEndLineNumber: number;
-		readonly modifiedStartLineNumber: number;
-		readonly modifiedEndLineNumber: number;
+	export interfAce LineChAnge {
+		reAdonly originAlStArtLineNumber: number;
+		reAdonly originAlEndLineNumber: number;
+		reAdonly modifiedStArtLineNumber: number;
+		reAdonly modifiedEndLineNumber: number;
 	}
 
-	export namespace commands {
+	export nAmespAce commAnds {
 
 		/**
-		 * Registers a diff information command that can be invoked via a keyboard shortcut,
-		 * a menu item, an action, or directly.
+		 * Registers A diff informAtion commAnd thAt cAn be invoked viA A keyboArd shortcut,
+		 * A menu item, An Action, or directly.
 		 *
-		 * Diff information commands are different from ordinary [commands](#commands.registerCommand) as
-		 * they only execute when there is an active diff editor when the command is called, and the diff
-		 * information has been computed. Also, the command handler of an editor command has access to
-		 * the diff information.
+		 * Diff informAtion commAnds Are different from ordinAry [commAnds](#commAnds.registerCommAnd) As
+		 * they only execute when there is An Active diff editor when the commAnd is cAlled, And the diff
+		 * informAtion hAs been computed. Also, the commAnd hAndler of An editor commAnd hAs Access to
+		 * the diff informAtion.
 		 *
-		 * @param command A unique identifier for the command.
-		 * @param callback A command handler function with access to the [diff information](#LineChange).
-		 * @param thisArg The `this` context used when invoking the handler function.
-		 * @return Disposable which unregisters this command on disposal.
+		 * @pArAm commAnd A unique identifier for the commAnd.
+		 * @pArAm cAllbAck A commAnd hAndler function with Access to the [diff informAtion](#LineChAnge).
+		 * @pArAm thisArg The `this` context used when invoking the hAndler function.
+		 * @return DisposAble which unregisters this commAnd on disposAl.
 		 */
-		export function registerDiffInformationCommand(command: string, callback: (diff: LineChange[], ...args: any[]) => any, thisArg?: any): Disposable;
+		export function registerDiffInformAtionCommAnd(commAnd: string, cAllbAck: (diff: LineChAnge[], ...Args: Any[]) => Any, thisArg?: Any): DisposAble;
 	}
 
 	//#endregion
 
-	//#region file-decorations: https://github.com/microsoft/vscode/issues/54938
+	//#region file-decorAtions: https://github.com/microsoft/vscode/issues/54938
 
 
-	export class FileDecoration {
+	export clAss FileDecorAtion {
 
 		/**
-		 * A very short string that represents this decoration.
+		 * A very short string thAt represents this decorAtion.
 		 */
-		badge?: string;
+		bAdge?: string;
 
 		/**
-		 * A human-readable tooltip for this decoration.
+		 * A humAn-reAdAble tooltip for this decorAtion.
 		 */
 		tooltip?: string;
 
 		/**
-		 * The color of this decoration.
+		 * The color of this decorAtion.
 		 */
 		color?: ThemeColor;
 
 		/**
-		 * A flag expressing that this decoration should be
-		 * propagated to its parents.
+		 * A flAg expressing thAt this decorAtion should be
+		 * propAgAted to its pArents.
 		 */
-		propagate?: boolean;
+		propAgAte?: booleAn;
 
 		/**
-		 * Creates a new decoration.
+		 * CreAtes A new decorAtion.
 		 *
-		 * @param badge A letter that represents the decoration.
-		 * @param tooltip The tooltip of the decoration.
-		 * @param color The color of the decoration.
+		 * @pArAm bAdge A letter thAt represents the decorAtion.
+		 * @pArAm tooltip The tooltip of the decorAtion.
+		 * @pArAm color The color of the decorAtion.
 		 */
-		constructor(badge?: string, tooltip?: string, color?: ThemeColor);
+		constructor(bAdge?: string, tooltip?: string, color?: ThemeColor);
 	}
 
 	/**
-	 * The decoration provider interfaces defines the contract between extensions and
-	 * file decorations.
+	 * The decorAtion provider interfAces defines the contrAct between extensions And
+	 * file decorAtions.
 	 */
-	export interface FileDecorationProvider {
+	export interfAce FileDecorAtionProvider {
 
 		/**
-		 * An event to signal decorations for one or many files have changed.
+		 * An event to signAl decorAtions for one or mAny files hAve chAnged.
 		 *
 		 * @see [EventEmitter](#EventEmitter
 		 */
-		onDidChange: Event<undefined | Uri | Uri[]>;
+		onDidChAnge: Event<undefined | Uri | Uri[]>;
 
 		/**
-		 * Provide decorations for a given uri.
+		 * Provide decorAtions for A given uri.
 		 *
-		 * @param uri The uri of the file to provide a decoration for.
-		 * @param token A cancellation token.
-		 * @returns A decoration or a thenable that resolves to such.
+		 * @pArAm uri The uri of the file to provide A decorAtion for.
+		 * @pArAm token A cAncellAtion token.
+		 * @returns A decorAtion or A thenAble thAt resolves to such.
 		 */
-		provideFileDecoration(uri: Uri, token: CancellationToken): ProviderResult<FileDecoration>;
+		provideFileDecorAtion(uri: Uri, token: CAncellAtionToken): ProviderResult<FileDecorAtion>;
 	}
 
-	export namespace window {
-		export function registerDecorationProvider(provider: FileDecorationProvider): Disposable;
+	export nAmespAce window {
+		export function registerDecorAtionProvider(provider: FileDecorAtionProvider): DisposAble;
 	}
 
 	//#endregion
@@ -808,29 +808,29 @@ declare module 'vscode' {
 	//#region debug
 
 	/**
-	 * A DebugProtocolVariableContainer is an opaque stand-in type for the intersection of the Scope and Variable types defined in the Debug Adapter Protocol.
-	 * See https://microsoft.github.io/debug-adapter-protocol/specification#Types_Scope and https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable.
+	 * A DebugProtocolVAriAbleContAiner is An opAque stAnd-in type for the intersection of the Scope And VAriAble types defined in the Debug AdApter Protocol.
+	 * See https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_Scope And https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_VAriAble.
 	 */
-	export interface DebugProtocolVariableContainer {
-		// Properties: the intersection of DAP's Scope and Variable types.
+	export interfAce DebugProtocolVAriAbleContAiner {
+		// Properties: the intersection of DAP's Scope And VAriAble types.
 	}
 
 	/**
-	 * A DebugProtocolVariable is an opaque stand-in type for the Variable type defined in the Debug Adapter Protocol.
-	 * See https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable.
+	 * A DebugProtocolVAriAble is An opAque stAnd-in type for the VAriAble type defined in the Debug AdApter Protocol.
+	 * See https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_VAriAble.
 	 */
-	export interface DebugProtocolVariable {
-		// Properties: see details [here](https://microsoft.github.io/debug-adapter-protocol/specification#Base_Protocol_Variable).
+	export interfAce DebugProtocolVAriAble {
+		// Properties: see detAils [here](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#BAse_Protocol_VAriAble).
 	}
 
-	// deprecated debug API
+	// deprecAted debug API
 
-	export interface DebugConfigurationProvider {
+	export interfAce DebugConfigurAtionProvider {
 		/**
-		 * Deprecated, use DebugAdapterDescriptorFactory.provideDebugAdapter instead.
-		 * @deprecated Use DebugAdapterDescriptorFactory.createDebugAdapterDescriptor instead
+		 * DeprecAted, use DebugAdApterDescriptorFActory.provideDebugAdApter insteAd.
+		 * @deprecAted Use DebugAdApterDescriptorFActory.creAteDebugAdApterDescriptor insteAd
 		 */
-		debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable>;
+		debugAdApterExecutAble?(folder: WorkspAceFolder | undefined, token?: CAncellAtionToken): ProviderResult<DebugAdApterExecutAble>;
 	}
 
 	//#endregion
@@ -838,169 +838,169 @@ declare module 'vscode' {
 	//#region LogLevel: https://github.com/microsoft/vscode/issues/85992
 
 	/**
-	 * @deprecated DO NOT USE, will be removed
+	 * @deprecAted DO NOT USE, will be removed
 	 */
 	export enum LogLevel {
-		Trace = 1,
+		TrAce = 1,
 		Debug = 2,
 		Info = 3,
-		Warning = 4,
+		WArning = 4,
 		Error = 5,
-		Critical = 6,
+		CriticAl = 6,
 		Off = 7
 	}
 
-	export namespace env {
+	export nAmespAce env {
 		/**
-		 * @deprecated DO NOT USE, will be removed
+		 * @deprecAted DO NOT USE, will be removed
 		 */
 		export const logLevel: LogLevel;
 
 		/**
-		 * @deprecated DO NOT USE, will be removed
+		 * @deprecAted DO NOT USE, will be removed
 		 */
-		export const onDidChangeLogLevel: Event<LogLevel>;
+		export const onDidChAngeLogLevel: Event<LogLevel>;
 	}
 
 	//#endregion
 
-	//#region @joaomoreno: SCM validation
+	//#region @joAomoreno: SCM vAlidAtion
 
 	/**
-	 * Represents the validation type of the Source Control input.
+	 * Represents the vAlidAtion type of the Source Control input.
 	 */
-	export enum SourceControlInputBoxValidationType {
+	export enum SourceControlInputBoxVAlidAtionType {
 
 		/**
-		 * Something not allowed by the rules of a language or other means.
+		 * Something not Allowed by the rules of A lAnguAge or other meAns.
 		 */
 		Error = 0,
 
 		/**
-		 * Something suspicious but allowed.
+		 * Something suspicious but Allowed.
 		 */
-		Warning = 1,
+		WArning = 1,
 
 		/**
-		 * Something to inform about but not a problem.
+		 * Something to inform About but not A problem.
 		 */
-		Information = 2
+		InformAtion = 2
 	}
 
-	export interface SourceControlInputBoxValidation {
+	export interfAce SourceControlInputBoxVAlidAtion {
 
 		/**
-		 * The validation message to display.
+		 * The vAlidAtion messAge to displAy.
 		 */
-		readonly message: string;
+		reAdonly messAge: string;
 
 		/**
-		 * The validation type.
+		 * The vAlidAtion type.
 		 */
-		readonly type: SourceControlInputBoxValidationType;
+		reAdonly type: SourceControlInputBoxVAlidAtionType;
 	}
 
 	/**
 	 * Represents the input box in the Source Control viewlet.
 	 */
-	export interface SourceControlInputBox {
+	export interfAce SourceControlInputBox {
 
 		/**
-		 * A validation function for the input box. It's possible to change
-		 * the validation provider simply by setting this property to a different function.
+		 * A vAlidAtion function for the input box. It's possible to chAnge
+		 * the vAlidAtion provider simply by setting this property to A different function.
 		 */
-		validateInput?(value: string, cursorPosition: number): ProviderResult<SourceControlInputBoxValidation | undefined | null>;
+		vAlidAteInput?(vAlue: string, cursorPosition: number): ProviderResult<SourceControlInputBoxVAlidAtion | undefined | null>;
 	}
 
 	//#endregion
 
-	//#region @joaomoreno: SCM selected provider
+	//#region @joAomoreno: SCM selected provider
 
-	export interface SourceControl {
+	export interfAce SourceControl {
 
 		/**
 		 * Whether the source control is selected.
 		 */
-		readonly selected: boolean;
+		reAdonly selected: booleAn;
 
 		/**
-		 * An event signaling when the selection state changes.
+		 * An event signAling when the selection stAte chAnges.
 		 */
-		readonly onDidChangeSelection: Event<boolean>;
+		reAdonly onDidChAngeSelection: Event<booleAn>;
 	}
 
 	//#endregion
 
-	//#region Terminal data write event https://github.com/microsoft/vscode/issues/78502
+	//#region TerminAl dAtA write event https://github.com/microsoft/vscode/issues/78502
 
-	export interface TerminalDataWriteEvent {
+	export interfAce TerminAlDAtAWriteEvent {
 		/**
-		 * The [terminal](#Terminal) for which the data was written.
+		 * The [terminAl](#TerminAl) for which the dAtA wAs written.
 		 */
-		readonly terminal: Terminal;
+		reAdonly terminAl: TerminAl;
 		/**
-		 * The data being written.
+		 * The dAtA being written.
 		 */
-		readonly data: string;
+		reAdonly dAtA: string;
 	}
 
-	namespace window {
+	nAmespAce window {
 		/**
-		 * An event which fires when the terminal's child pseudo-device is written to (the shell).
-		 * In other words, this provides access to the raw data stream from the process running
-		 * within the terminal, including VT sequences.
+		 * An event which fires when the terminAl's child pseudo-device is written to (the shell).
+		 * In other words, this provides Access to the rAw dAtA streAm from the process running
+		 * within the terminAl, including VT sequences.
 		 */
-		export const onDidWriteTerminalData: Event<TerminalDataWriteEvent>;
+		export const onDidWriteTerminAlDAtA: Event<TerminAlDAtAWriteEvent>;
 	}
 
 	//#endregion
 
-	//#region Terminal dimensions property and change event https://github.com/microsoft/vscode/issues/55718
+	//#region TerminAl dimensions property And chAnge event https://github.com/microsoft/vscode/issues/55718
 
 	/**
-	 * An [event](#Event) which fires when a [Terminal](#Terminal)'s dimensions change.
+	 * An [event](#Event) which fires when A [TerminAl](#TerminAl)'s dimensions chAnge.
 	 */
-	export interface TerminalDimensionsChangeEvent {
+	export interfAce TerminAlDimensionsChAngeEvent {
 		/**
-		 * The [terminal](#Terminal) for which the dimensions have changed.
+		 * The [terminAl](#TerminAl) for which the dimensions hAve chAnged.
 		 */
-		readonly terminal: Terminal;
+		reAdonly terminAl: TerminAl;
 		/**
-		 * The new value for the [terminal's dimensions](#Terminal.dimensions).
+		 * The new vAlue for the [terminAl's dimensions](#TerminAl.dimensions).
 		 */
-		readonly dimensions: TerminalDimensions;
+		reAdonly dimensions: TerminAlDimensions;
 	}
 
-	export namespace window {
+	export nAmespAce window {
 		/**
-		 * An event which fires when the [dimensions](#Terminal.dimensions) of the terminal change.
+		 * An event which fires when the [dimensions](#TerminAl.dimensions) of the terminAl chAnge.
 		 */
-		export const onDidChangeTerminalDimensions: Event<TerminalDimensionsChangeEvent>;
+		export const onDidChAngeTerminAlDimensions: Event<TerminAlDimensionsChAngeEvent>;
 	}
 
-	export interface Terminal {
+	export interfAce TerminAl {
 		/**
-		 * The current dimensions of the terminal. This will be `undefined` immediately after the
-		 * terminal is created as the dimensions are not known until shortly after the terminal is
-		 * created.
+		 * The current dimensions of the terminAl. This will be `undefined` immediAtely After the
+		 * terminAl is creAted As the dimensions Are not known until shortly After the terminAl is
+		 * creAted.
 		 */
-		readonly dimensions: TerminalDimensions | undefined;
+		reAdonly dimensions: TerminAlDimensions | undefined;
 	}
 
 	//#endregion
 
 	//#region @jrieken -> exclusive document filters
 
-	export interface DocumentFilter {
-		exclusive?: boolean;
+	export interfAce DocumentFilter {
+		exclusive?: booleAn;
 	}
 
 	//#endregion
 
-	//#region @alexdima - OnEnter enhancement
-	export interface OnEnterRule {
+	//#region @AlexdimA - OnEnter enhAncement
+	export interfAce OnEnterRule {
 		/**
-		 * This rule will only execute if the text above the this line matches this regular expression.
+		 * This rule will only execute if the text Above the this line mAtches this regulAr expression.
 		 */
 		oneLineAboveText?: RegExp;
 	}
@@ -1008,144 +1008,144 @@ declare module 'vscode' {
 
 	//#region Tree View: https://github.com/microsoft/vscode/issues/61313
 	/**
-	 * Label describing the [Tree item](#TreeItem)
+	 * LAbel describing the [Tree item](#TreeItem)
 	 */
-	export interface TreeItemLabel {
+	export interfAce TreeItemLAbel {
 
 		/**
-		 * A human-readable string describing the [Tree item](#TreeItem).
+		 * A humAn-reAdAble string describing the [Tree item](#TreeItem).
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * Ranges in the label to highlight. A range is defined as a tuple of two number where the
-		 * first is the inclusive start index and the second the exclusive end index
+		 * RAnges in the lAbel to highlight. A rAnge is defined As A tuple of two number where the
+		 * first is the inclusive stArt index And the second the exclusive end index
 		 */
 		highlights?: [number, number][];
 
 	}
 
 	// https://github.com/microsoft/vscode/issues/100741
-	export interface TreeDataProvider<T> {
-		resolveTreeItem?(element: T, item: TreeItem2): TreeItem2 | Thenable<TreeItem2>;
+	export interfAce TreeDAtAProvider<T> {
+		resolveTreeItem?(element: T, item: TreeItem2): TreeItem2 | ThenAble<TreeItem2>;
 	}
 
-	export class TreeItem2 extends TreeItem {
+	export clAss TreeItem2 extends TreeItem {
 		/**
-		 * Label describing this item. When `falsy`, it is derived from [resourceUri](#TreeItem.resourceUri).
+		 * LAbel describing this item. When `fAlsy`, it is derived from [resourceUri](#TreeItem.resourceUri).
 		 */
-		label?: string | TreeItemLabel | /* for compilation */ any;
+		lAbel?: string | TreeItemLAbel | /* for compilAtion */ Any;
 
 		/**
 		 * Content to be shown when you hover over the tree item.
 		 */
-		tooltip?: string | MarkdownString | /* for compilation */ any;
+		tooltip?: string | MArkdownString | /* for compilAtion */ Any;
 
 		/**
-		 * @param label Label describing this item
-		 * @param collapsibleState [TreeItemCollapsibleState](#TreeItemCollapsibleState) of the tree item. Default is [TreeItemCollapsibleState.None](#TreeItemCollapsibleState.None)
+		 * @pArAm lAbel LAbel describing this item
+		 * @pArAm collApsibleStAte [TreeItemCollApsibleStAte](#TreeItemCollApsibleStAte) of the tree item. DefAult is [TreeItemCollApsibleStAte.None](#TreeItemCollApsibleStAte.None)
 		 */
-		constructor(label: TreeItemLabel, collapsibleState?: TreeItemCollapsibleState);
+		constructor(lAbel: TreeItemLAbel, collApsibleStAte?: TreeItemCollApsibleStAte);
 	}
 	//#endregion
 
-	//#region Task presentation group: https://github.com/microsoft/vscode/issues/47265
-	export interface TaskPresentationOptions {
+	//#region TAsk presentAtion group: https://github.com/microsoft/vscode/issues/47265
+	export interfAce TAskPresentAtionOptions {
 		/**
-		 * Controls whether the task is executed in a specific terminal group using split panes.
+		 * Controls whether the tAsk is executed in A specific terminAl group using split pAnes.
 		 */
 		group?: string;
 	}
 	//#endregion
 
-	//#region Status bar item with ID and Name: https://github.com/microsoft/vscode/issues/74972
+	//#region StAtus bAr item with ID And NAme: https://github.com/microsoft/vscode/issues/74972
 
-	export namespace window {
+	export nAmespAce window {
 
 		/**
-		 * Options to configure the status bar item.
+		 * Options to configure the stAtus bAr item.
 		 */
-		export interface StatusBarItemOptions {
+		export interfAce StAtusBArItemOptions {
 
 			/**
-			 * A unique identifier of the status bar item. The identifier
-			 * is for example used to allow a user to show or hide the
-			 * status bar item in the UI.
+			 * A unique identifier of the stAtus bAr item. The identifier
+			 * is for exAmple used to Allow A user to show or hide the
+			 * stAtus bAr item in the UI.
 			 */
 			id: string;
 
 			/**
-			 * A human readable name of the status bar item. The name is
-			 * for example used as a label in the UI to show or hide the
-			 * status bar item.
+			 * A humAn reAdAble nAme of the stAtus bAr item. The nAme is
+			 * for exAmple used As A lAbel in the UI to show or hide the
+			 * stAtus bAr item.
 			 */
-			name: string;
+			nAme: string;
 
 			/**
-			 * Accessibility information used when screen reader interacts with this status bar item.
+			 * Accessibility informAtion used when screen reAder interActs with this stAtus bAr item.
 			 */
-			accessibilityInformation?: AccessibilityInformation;
+			AccessibilityInformAtion?: AccessibilityInformAtion;
 
 			/**
-			 * The alignment of the status bar item.
+			 * The Alignment of the stAtus bAr item.
 			 */
-			alignment?: StatusBarAlignment;
+			Alignment?: StAtusBArAlignment;
 
 			/**
-			 * The priority of the status bar item. Higher value means the item should
+			 * The priority of the stAtus bAr item. Higher vAlue meAns the item should
 			 * be shown more to the left.
 			 */
 			priority?: number;
 		}
 
 		/**
-		 * Creates a status bar [item](#StatusBarItem).
+		 * CreAtes A stAtus bAr [item](#StAtusBArItem).
 		 *
-		 * @param options The options of the item. If not provided, some default values
-		 * will be assumed. For example, the `StatusBarItemOptions.id` will be the id
-		 * of the extension and the `StatusBarItemOptions.name` will be the extension name.
-		 * @return A new status bar item.
+		 * @pArAm options The options of the item. If not provided, some defAult vAlues
+		 * will be Assumed. For exAmple, the `StAtusBArItemOptions.id` will be the id
+		 * of the extension And the `StAtusBArItemOptions.nAme` will be the extension nAme.
+		 * @return A new stAtus bAr item.
 		 */
-		export function createStatusBarItem(options?: StatusBarItemOptions): StatusBarItem;
+		export function creAteStAtusBArItem(options?: StAtusBArItemOptions): StAtusBArItem;
 	}
 
 	//#endregion
 
-	//#region OnTypeRename: https://github.com/microsoft/vscode/issues/88424
+	//#region OnTypeRenAme: https://github.com/microsoft/vscode/issues/88424
 
 	/**
-	 * The rename provider interface defines the contract between extensions and
-	 * the live-rename feature.
+	 * The renAme provider interfAce defines the contrAct between extensions And
+	 * the live-renAme feAture.
 	 */
-	export interface OnTypeRenameProvider {
+	export interfAce OnTypeRenAmeProvider {
 		/**
-		 * Provide a list of ranges that can be live renamed together.
+		 * Provide A list of rAnges thAt cAn be live renAmed together.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return A list of ranges that can be live-renamed togehter. The ranges must have
-		 * identical length and contain identical text content. The ranges cannot overlap. Optional a word pattern
-		 * that overrides the word pattern defined when registering the provider. Live rename stops as soon as the renamed content
-		 * no longer matches the word pattern.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A list of rAnges thAt cAn be live-renAmed togehter. The rAnges must hAve
+		 * identicAl length And contAin identicAl text content. The rAnges cAnnot overlAp. OptionAl A word pAttern
+		 * thAt overrides the word pAttern defined when registering the provider. Live renAme stops As soon As the renAmed content
+		 * no longer mAtches the word pAttern.
 		 */
-		provideOnTypeRenameRanges(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<{ ranges: Range[]; wordPattern?: RegExp; }>;
+		provideOnTypeRenAmeRAnges(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<{ rAnges: RAnge[]; wordPAttern?: RegExp; }>;
 	}
 
-	namespace languages {
+	nAmespAce lAnguAges {
 		/**
-		 * Register a rename provider that works on type.
+		 * Register A renAme provider thAt works on type.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And the best-mAtching provider is used. FAilure
+		 * of the selected provider will cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An on type rename provider.
-		 * @param wordPattern Word pattern for this provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider An on type renAme provider.
+		 * @pArAm wordPAttern Word pAttern for this provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerOnTypeRenameProvider(selector: DocumentSelector, provider: OnTypeRenameProvider, wordPattern?: RegExp): Disposable;
+		export function registerOnTypeRenAmeProvider(selector: DocumentSelector, provider: OnTypeRenAmeProvider, wordPAttern?: RegExp): DisposAble;
 	}
 
 	//#endregion
@@ -1154,32 +1154,32 @@ declare module 'vscode' {
 
 	// TODO: Also for custom editor
 
-	export interface CustomTextEditorProvider {
+	export interfAce CustomTextEditorProvider {
 
 		/**
-		 * Handle when the underlying resource for a custom editor is renamed.
+		 * HAndle when the underlying resource for A custom editor is renAmed.
 		 *
-		 * This allows the webview for the editor be preserved throughout the rename. If this method is not implemented,
-		 * VS Code will destory the previous custom editor and create a replacement one.
+		 * This Allows the webview for the editor be preserved throughout the renAme. If this method is not implemented,
+		 * VS Code will destory the previous custom editor And creAte A replAcement one.
 		 *
-		 * @param newDocument New text document to use for the custom editor.
-		 * @param existingWebviewPanel Webview panel for the custom editor.
-		 * @param token A cancellation token that indicates the result is no longer needed.
+		 * @pArAm newDocument New text document to use for the custom editor.
+		 * @pArAm existingWebviewPAnel Webview pAnel for the custom editor.
+		 * @pArAm token A cAncellAtion token thAt indicAtes the result is no longer needed.
 		 *
-		 * @return Thenable indicating that the webview editor has been moved.
+		 * @return ThenAble indicAting thAt the webview editor hAs been moved.
 		 */
-		moveCustomTextEditor?(newDocument: TextDocument, existingWebviewPanel: WebviewPanel, token: CancellationToken): Thenable<void>;
+		moveCustomTextEditor?(newDocument: TextDocument, existingWebviewPAnel: WebviewPAnel, token: CAncellAtionToken): ThenAble<void>;
 	}
 
 	//#endregion
 
-	//#region allow QuickPicks to skip sorting: https://github.com/microsoft/vscode/issues/73904
+	//#region Allow QuickPicks to skip sorting: https://github.com/microsoft/vscode/issues/73904
 
-	export interface QuickPick<T extends QuickPickItem> extends QuickInput {
+	export interfAce QuickPick<T extends QuickPickItem> extends QuickInput {
 		/**
-		 * An optional flag to sort the final results by index of first query match in label. Defaults to true.
+		 * An optionAl flAg to sort the finAl results by index of first query mAtch in lAbel. DefAults to true.
 		 */
-		sortByLabel: boolean;
+		sortByLAbel: booleAn;
 	}
 
 	//#endregion
@@ -1187,7 +1187,7 @@ declare module 'vscode' {
 	//#region @rebornix: Notebook
 
 	export enum CellKind {
-		Markdown = 1,
+		MArkdown = 1,
 		Code = 2
 	}
 
@@ -1197,596 +1197,596 @@ declare module 'vscode' {
 		Rich = 3
 	}
 
-	export interface CellStreamOutput {
+	export interfAce CellStreAmOutput {
 		outputKind: CellOutputKind.Text;
 		text: string;
 	}
 
-	export interface CellErrorOutput {
+	export interfAce CellErrorOutput {
 		outputKind: CellOutputKind.Error;
 		/**
-		 * Exception Name
+		 * Exception NAme
 		 */
-		ename: string;
+		enAme: string;
 		/**
-		 * Exception Value
+		 * Exception VAlue
 		 */
-		evalue: string;
+		evAlue: string;
 		/**
-		 * Exception call stack
+		 * Exception cAll stAck
 		 */
-		traceback: string[];
+		trAcebAck: string[];
 	}
 
-	export interface NotebookCellOutputMetadata {
+	export interfAce NotebookCellOutputMetAdAtA {
 		/**
-		 * Additional attributes of a cell metadata.
+		 * AdditionAl Attributes of A cell metAdAtA.
 		 */
-		custom?: { [key: string]: any };
+		custom?: { [key: string]: Any };
 	}
 
-	export interface CellDisplayOutput {
+	export interfAce CellDisplAyOutput {
 		outputKind: CellOutputKind.Rich;
 		/**
-		 * { mime_type: value }
+		 * { mime_type: vAlue }
 		 *
-		 * Example:
+		 * ExAmple:
 		 * ```json
 		 * {
 		 *   "outputKind": vscode.CellOutputKind.Rich,
-		 *   "data": {
+		 *   "dAtA": {
 		 *      "text/html": [
 		 *          "<h1>Hello</h1>"
 		 *       ],
-		 *      "text/plain": [
-		 *        "<IPython.lib.display.IFrame at 0x11dee3e80>"
+		 *      "text/plAin": [
+		 *        "<IPython.lib.displAy.IFrAme At 0x11dee3e80>"
 		 *      ]
 		 *   }
 		 * }
 		 */
-		data: { [key: string]: any; };
+		dAtA: { [key: string]: Any; };
 
-		readonly metadata?: NotebookCellOutputMetadata;
+		reAdonly metAdAtA?: NotebookCellOutputMetAdAtA;
 	}
 
-	export type CellOutput = CellStreamOutput | CellErrorOutput | CellDisplayOutput;
+	export type CellOutput = CellStreAmOutput | CellErrorOutput | CellDisplAyOutput;
 
-	export class NotebookCellOutputItem {
+	export clAss NotebookCellOutputItem {
 
-		readonly mime: string;
-		readonly value: unknown;
-		readonly metadata?: Record<string, string | number | boolean>;
+		reAdonly mime: string;
+		reAdonly vAlue: unknown;
+		reAdonly metAdAtA?: Record<string, string | number | booleAn>;
 
-		constructor(mime: string, value: unknown, metadata?: Record<string, string | number | boolean>);
+		constructor(mime: string, vAlue: unknown, metAdAtA?: Record<string, string | number | booleAn>);
 	}
 
-	//TODO@jrieken add id?
-	export class NotebookCellOutput {
+	//TODO@jrieken Add id?
+	export clAss NotebookCellOutput {
 
-		readonly outputs: NotebookCellOutputItem[];
-		readonly metadata?: Record<string, string | number | boolean>;
+		reAdonly outputs: NotebookCellOutputItem[];
+		reAdonly metAdAtA?: Record<string, string | number | booleAn>;
 
-		constructor(outputs: NotebookCellOutputItem[], metadata?: Record<string, string | number | boolean>);
+		constructor(outputs: NotebookCellOutputItem[], metAdAtA?: Record<string, string | number | booleAn>);
 
-		//TODO@jrieken HACK to workaround dependency issues...
-		toJSON(): any;
+		//TODO@jrieken HACK to workAround dependency issues...
+		toJSON(): Any;
 	}
 
-	export enum NotebookCellRunState {
+	export enum NotebookCellRunStAte {
 		Running = 1,
 		Idle = 2,
 		Success = 3,
 		Error = 4
 	}
 
-	export enum NotebookRunState {
+	export enum NotebookRunStAte {
 		Running = 1,
 		Idle = 2
 	}
 
-	export interface NotebookCellMetadata {
+	export interfAce NotebookCellMetAdAtA {
 		/**
-		 * Controls whether a cell's editor is editable/readonly.
+		 * Controls whether A cell's editor is editAble/reAdonly.
 		 */
-		editable?: boolean;
+		editAble?: booleAn;
 
 		/**
-		 * Controls if the cell is executable.
-		 * This metadata is ignored for markdown cell.
+		 * Controls if the cell is executAble.
+		 * This metAdAtA is ignored for mArkdown cell.
 		 */
-		runnable?: boolean;
+		runnAble?: booleAn;
 
 		/**
-		 * Controls if the cell has a margin to support the breakpoint UI.
-		 * This metadata is ignored for markdown cell.
+		 * Controls if the cell hAs A mArgin to support the breAkpoint UI.
+		 * This metAdAtA is ignored for mArkdown cell.
 		 */
-		breakpointMargin?: boolean;
+		breAkpointMArgin?: booleAn;
 
 		/**
-		 * Whether the [execution order](#NotebookCellMetadata.executionOrder) indicator will be displayed.
-		 * Defaults to true.
+		 * Whether the [execution order](#NotebookCellMetAdAtA.executionOrder) indicAtor will be displAyed.
+		 * DefAults to true.
 		 */
-		hasExecutionOrder?: boolean;
+		hAsExecutionOrder?: booleAn;
 
 		/**
-		 * The order in which this cell was executed.
+		 * The order in which this cell wAs executed.
 		 */
 		executionOrder?: number;
 
 		/**
-		 * A status message to be shown in the cell's status bar
+		 * A stAtus messAge to be shown in the cell's stAtus bAr
 		 */
-		statusMessage?: string;
+		stAtusMessAge?: string;
 
 		/**
-		 * The cell's current run state
+		 * The cell's current run stAte
 		 */
-		runState?: NotebookCellRunState;
+		runStAte?: NotebookCellRunStAte;
 
 		/**
-		 * If the cell is running, the time at which the cell started running
+		 * If the cell is running, the time At which the cell stArted running
 		 */
-		runStartTime?: number;
+		runStArtTime?: number;
 
 		/**
-		 * The total duration of the cell's last run
+		 * The totAl durAtion of the cell's lAst run
 		 */
-		lastRunDuration?: number;
+		lAstRunDurAtion?: number;
 
 		/**
-		 * Whether a code cell's editor is collapsed
+		 * Whether A code cell's editor is collApsed
 		 */
-		inputCollapsed?: boolean;
+		inputCollApsed?: booleAn;
 
 		/**
-		 * Whether a code cell's outputs are collapsed
+		 * Whether A code cell's outputs Are collApsed
 		 */
-		outputCollapsed?: boolean;
+		outputCollApsed?: booleAn;
 
 		/**
-		 * Additional attributes of a cell metadata.
+		 * AdditionAl Attributes of A cell metAdAtA.
 		 */
-		custom?: { [key: string]: any };
+		custom?: { [key: string]: Any };
 	}
 
-	export interface NotebookCell {
-		readonly index: number;
-		readonly notebook: NotebookDocument;
-		readonly uri: Uri;
-		readonly cellKind: CellKind;
-		readonly document: TextDocument;
-		readonly language: string;
+	export interfAce NotebookCell {
+		reAdonly index: number;
+		reAdonly notebook: NotebookDocument;
+		reAdonly uri: Uri;
+		reAdonly cellKind: CellKind;
+		reAdonly document: TextDocument;
+		reAdonly lAnguAge: string;
 		outputs: CellOutput[];
-		metadata: NotebookCellMetadata;
+		metAdAtA: NotebookCellMetAdAtA;
 	}
 
-	export interface NotebookDocumentMetadata {
+	export interfAce NotebookDocumentMetAdAtA {
 		/**
-		 * Controls if users can add or delete cells
-		 * Defaults to true
+		 * Controls if users cAn Add or delete cells
+		 * DefAults to true
 		 */
-		editable?: boolean;
+		editAble?: booleAn;
 
 		/**
-		 * Controls whether the full notebook can be run at once.
-		 * Defaults to true
+		 * Controls whether the full notebook cAn be run At once.
+		 * DefAults to true
 		 */
-		runnable?: boolean;
+		runnAble?: booleAn;
 
 		/**
-		 * Default value for [cell editable metadata](#NotebookCellMetadata.editable).
-		 * Defaults to true.
+		 * DefAult vAlue for [cell editAble metAdAtA](#NotebookCellMetAdAtA.editAble).
+		 * DefAults to true.
 		 */
-		cellEditable?: boolean;
+		cellEditAble?: booleAn;
 
 		/**
-		 * Default value for [cell runnable metadata](#NotebookCellMetadata.runnable).
-		 * Defaults to true.
+		 * DefAult vAlue for [cell runnAble metAdAtA](#NotebookCellMetAdAtA.runnAble).
+		 * DefAults to true.
 		 */
-		cellRunnable?: boolean;
+		cellRunnAble?: booleAn;
 
 		/**
-		 * Default value for [cell hasExecutionOrder metadata](#NotebookCellMetadata.hasExecutionOrder).
-		 * Defaults to true.
+		 * DefAult vAlue for [cell hAsExecutionOrder metAdAtA](#NotebookCellMetAdAtA.hAsExecutionOrder).
+		 * DefAults to true.
 		 */
-		cellHasExecutionOrder?: boolean;
+		cellHAsExecutionOrder?: booleAn;
 
-		displayOrder?: GlobPattern[];
-
-		/**
-		 * Additional attributes of the document metadata.
-		 */
-		custom?: { [key: string]: any };
+		displAyOrder?: GlobPAttern[];
 
 		/**
-		 * The document's current run state
+		 * AdditionAl Attributes of the document metAdAtA.
 		 */
-		runState?: NotebookRunState;
+		custom?: { [key: string]: Any };
+
+		/**
+		 * The document's current run stAte
+		 */
+		runStAte?: NotebookRunStAte;
 	}
 
-	export interface NotebookDocumentContentOptions {
+	export interfAce NotebookDocumentContentOptions {
 		/**
-		 * Controls if outputs change will trigger notebook document content change and if it will be used in the diff editor
-		 * Default to false. If the content provider doesn't persisit the outputs in the file document, this should be set to true.
+		 * Controls if outputs chAnge will trigger notebook document content chAnge And if it will be used in the diff editor
+		 * DefAult to fAlse. If the content provider doesn't persisit the outputs in the file document, this should be set to true.
 		 */
-		transientOutputs: boolean;
+		trAnsientOutputs: booleAn;
 
 		/**
-		 * Controls if a meetadata property change will trigger notebook document content change and if it will be used in the diff editor
-		 * Default to false. If the content provider doesn't persisit a metadata property in the file document, it should be set to true.
+		 * Controls if A meetAdAtA property chAnge will trigger notebook document content chAnge And if it will be used in the diff editor
+		 * DefAult to fAlse. If the content provider doesn't persisit A metAdAtA property in the file document, it should be set to true.
 		 */
-		transientMetadata: { [K in keyof NotebookCellMetadata]?: boolean };
+		trAnsientMetAdAtA: { [K in keyof NotebookCellMetAdAtA]?: booleAn };
 	}
 
-	export interface NotebookDocument {
-		readonly uri: Uri;
-		readonly version: number;
-		readonly fileName: string;
-		readonly viewType: string;
-		readonly isDirty: boolean;
-		readonly isUntitled: boolean;
-		readonly cells: ReadonlyArray<NotebookCell>;
-		readonly contentOptions: NotebookDocumentContentOptions;
-		languages: string[];
-		metadata: NotebookDocumentMetadata;
+	export interfAce NotebookDocument {
+		reAdonly uri: Uri;
+		reAdonly version: number;
+		reAdonly fileNAme: string;
+		reAdonly viewType: string;
+		reAdonly isDirty: booleAn;
+		reAdonly isUntitled: booleAn;
+		reAdonly cells: ReAdonlyArrAy<NotebookCell>;
+		reAdonly contentOptions: NotebookDocumentContentOptions;
+		lAnguAges: string[];
+		metAdAtA: NotebookDocumentMetAdAtA;
 	}
 
-	export interface NotebookConcatTextDocument {
+	export interfAce NotebookConcAtTextDocument {
 		uri: Uri;
-		isClosed: boolean;
+		isClosed: booleAn;
 		dispose(): void;
-		onDidChange: Event<void>;
+		onDidChAnge: Event<void>;
 		version: number;
 		getText(): string;
-		getText(range: Range): string;
+		getText(rAnge: RAnge): string;
 
 		offsetAt(position: Position): number;
 		positionAt(offset: number): Position;
-		validateRange(range: Range): Range;
-		validatePosition(position: Position): Position;
+		vAlidAteRAnge(rAnge: RAnge): RAnge;
+		vAlidAtePosition(position: Position): Position;
 
-		locationAt(positionOrRange: Position | Range): Location;
-		positionAt(location: Location): Position;
-		contains(uri: Uri): boolean
+		locAtionAt(positionOrRAnge: Position | RAnge): LocAtion;
+		positionAt(locAtion: LocAtion): Position;
+		contAins(uri: Uri): booleAn
 	}
 
-	export interface WorkspaceEdit {
-		replaceNotebookMetadata(uri: Uri, value: NotebookDocumentMetadata): void;
-		replaceNotebookCells(uri: Uri, start: number, end: number, cells: NotebookCellData[], metadata?: WorkspaceEditEntryMetadata): void;
-		replaceNotebookCellOutput(uri: Uri, index: number, outputs: (NotebookCellOutput | CellOutput)[], metadata?: WorkspaceEditEntryMetadata): void;
-		replaceNotebookCellMetadata(uri: Uri, index: number, cellMetadata: NotebookCellMetadata, metadata?: WorkspaceEditEntryMetadata): void;
+	export interfAce WorkspAceEdit {
+		replAceNotebookMetAdAtA(uri: Uri, vAlue: NotebookDocumentMetAdAtA): void;
+		replAceNotebookCells(uri: Uri, stArt: number, end: number, cells: NotebookCellDAtA[], metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
+		replAceNotebookCellOutput(uri: Uri, index: number, outputs: (NotebookCellOutput | CellOutput)[], metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
+		replAceNotebookCellMetAdAtA(uri: Uri, index: number, cellMetAdAtA: NotebookCellMetAdAtA, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 	}
 
-	export interface NotebookEditorEdit {
-		replaceMetadata(value: NotebookDocumentMetadata): void;
-		replaceCells(start: number, end: number, cells: NotebookCellData[]): void;
-		replaceCellOutput(index: number, outputs: (NotebookCellOutput | CellOutput)[]): void;
-		replaceCellMetadata(index: number, metadata: NotebookCellMetadata): void;
+	export interfAce NotebookEditorEdit {
+		replAceMetAdAtA(vAlue: NotebookDocumentMetAdAtA): void;
+		replAceCells(stArt: number, end: number, cells: NotebookCellDAtA[]): void;
+		replAceCellOutput(index: number, outputs: (NotebookCellOutput | CellOutput)[]): void;
+		replAceCellMetAdAtA(index: number, metAdAtA: NotebookCellMetAdAtA): void;
 	}
 
-	export interface NotebookCellRange {
-		readonly start: number;
+	export interfAce NotebookCellRAnge {
+		reAdonly stArt: number;
 		/**
 		 * exclusive
 		 */
-		readonly end: number;
+		reAdonly end: number;
 	}
 
-	export enum NotebookEditorRevealType {
+	export enum NotebookEditorReveAlType {
 		/**
-		 * The range will be revealed with as little scrolling as possible.
+		 * The rAnge will be reveAled with As little scrolling As possible.
 		 */
-		Default = 0,
+		DefAult = 0,
 		/**
-		 * The range will always be revealed in the center of the viewport.
+		 * The rAnge will AlwAys be reveAled in the center of the viewport.
 		 */
 		InCenter = 1,
 		/**
-		 * If the range is outside the viewport, it will be revealed in the center of the viewport.
-		 * Otherwise, it will be revealed with as little scrolling as possible.
+		 * If the rAnge is outside the viewport, it will be reveAled in the center of the viewport.
+		 * Otherwise, it will be reveAled with As little scrolling As possible.
 		 */
 		InCenterIfOutsideViewport = 2,
 	}
 
-	export interface NotebookEditor {
+	export interfAce NotebookEditor {
 		/**
-		 * The document associated with this notebook editor.
+		 * The document AssociAted with this notebook editor.
 		 */
-		readonly document: NotebookDocument;
+		reAdonly document: NotebookDocument;
 
 		/**
-		 * The primary selected cell on this notebook editor.
+		 * The primAry selected cell on this notebook editor.
 		 */
-		readonly selection?: NotebookCell;
+		reAdonly selection?: NotebookCell;
 
 
 		/**
-		 * The current visible ranges in the editor (vertically).
+		 * The current visible rAnges in the editor (verticAlly).
 		 */
-		readonly visibleRanges: NotebookCellRange[];
+		reAdonly visibleRAnges: NotebookCellRAnge[];
 
 		/**
 		 * The column in which this editor shows.
 		 */
-		readonly viewColumn?: ViewColumn;
+		reAdonly viewColumn?: ViewColumn;
 
 		/**
-		 * Fired when the panel is disposed.
+		 * Fired when the pAnel is disposed.
 		 */
-		readonly onDidDispose: Event<void>;
+		reAdonly onDidDispose: Event<void>;
 
 		/**
 		 * Active kernel used in the editor
 		 */
-		readonly kernel?: NotebookKernel;
+		reAdonly kernel?: NotebookKernel;
 
 		/**
-		 * Fired when the output hosting webview posts a message.
+		 * Fired when the output hosting webview posts A messAge.
 		 */
-		readonly onDidReceiveMessage: Event<any>;
+		reAdonly onDidReceiveMessAge: Event<Any>;
 		/**
-		 * Post a message to the output hosting webview.
+		 * Post A messAge to the output hosting webview.
 		 *
-		 * Messages are only delivered if the editor is live.
+		 * MessAges Are only delivered if the editor is live.
 		 *
-		 * @param message Body of the message. This must be a string or other json serilizable object.
+		 * @pArAm messAge Body of the messAge. This must be A string or other json serilizAble object.
 		 */
-		postMessage(message: any): Thenable<boolean>;
-
-		/**
-		 * Convert a uri for the local file system to one that can be used inside outputs webview.
-		 */
-		asWebviewUri(localResource: Uri): Uri;
+		postMessAge(messAge: Any): ThenAble<booleAn>;
 
 		/**
-		 * Perform an edit on the notebook associated with this notebook editor.
-		 *
-		 * The given callback-function is invoked with an [edit-builder](#NotebookEditorEdit) which must
-		 * be used to make edits. Note that the edit-builder is only valid while the
-		 * callback executes.
-		 *
-		 * @param callback A function which can create edits using an [edit-builder](#NotebookEditorEdit).
-		 * @return A promise that resolves with a value indicating if the edits could be applied.
+		 * Convert A uri for the locAl file system to one thAt cAn be used inside outputs webview.
 		 */
-		edit(callback: (editBuilder: NotebookEditorEdit) => void): Thenable<boolean>;
+		AsWebviewUri(locAlResource: Uri): Uri;
 
-		setDecorations(decorationType: NotebookEditorDecorationType, range: NotebookCellRange): void;
+		/**
+		 * Perform An edit on the notebook AssociAted with this notebook editor.
+		 *
+		 * The given cAllbAck-function is invoked with An [edit-builder](#NotebookEditorEdit) which must
+		 * be used to mAke edits. Note thAt the edit-builder is only vAlid while the
+		 * cAllbAck executes.
+		 *
+		 * @pArAm cAllbAck A function which cAn creAte edits using An [edit-builder](#NotebookEditorEdit).
+		 * @return A promise thAt resolves with A vAlue indicAting if the edits could be Applied.
+		 */
+		edit(cAllbAck: (editBuilder: NotebookEditorEdit) => void): ThenAble<booleAn>;
 
-		revealRange(range: NotebookCellRange, revealType?: NotebookEditorRevealType): void;
+		setDecorAtions(decorAtionType: NotebookEditorDecorAtionType, rAnge: NotebookCellRAnge): void;
+
+		reveAlRAnge(rAnge: NotebookCellRAnge, reveAlType?: NotebookEditorReveAlType): void;
 	}
 
-	export interface NotebookOutputSelector {
+	export interfAce NotebookOutputSelector {
 		mimeTypes?: string[];
 	}
 
-	export interface NotebookRenderRequest {
-		output: CellDisplayOutput;
+	export interfAce NotebookRenderRequest {
+		output: CellDisplAyOutput;
 		mimeType: string;
 		outputId: string;
 	}
 
-	export interface NotebookDocumentMetadataChangeEvent {
-		readonly document: NotebookDocument;
+	export interfAce NotebookDocumentMetAdAtAChAngeEvent {
+		reAdonly document: NotebookDocument;
 	}
 
-	export interface NotebookCellsChangeData {
-		readonly start: number;
-		readonly deletedCount: number;
-		readonly deletedItems: NotebookCell[];
-		readonly items: NotebookCell[];
+	export interfAce NotebookCellsChAngeDAtA {
+		reAdonly stArt: number;
+		reAdonly deletedCount: number;
+		reAdonly deletedItems: NotebookCell[];
+		reAdonly items: NotebookCell[];
 	}
 
-	export interface NotebookCellsChangeEvent {
+	export interfAce NotebookCellsChAngeEvent {
 
 		/**
-		 * The affected document.
+		 * The Affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly changes: ReadonlyArray<NotebookCellsChangeData>;
+		reAdonly document: NotebookDocument;
+		reAdonly chAnges: ReAdonlyArrAy<NotebookCellsChAngeDAtA>;
 	}
 
-	export interface NotebookCellMoveEvent {
+	export interfAce NotebookCellMoveEvent {
 
 		/**
-		 * The affected document.
+		 * The Affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly index: number;
-		readonly newIndex: number;
+		reAdonly document: NotebookDocument;
+		reAdonly index: number;
+		reAdonly newIndex: number;
 	}
 
-	export interface NotebookCellOutputsChangeEvent {
+	export interfAce NotebookCellOutputsChAngeEvent {
 
 		/**
-		 * The affected document.
+		 * The Affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly cells: NotebookCell[];
+		reAdonly document: NotebookDocument;
+		reAdonly cells: NotebookCell[];
 	}
 
-	export interface NotebookCellLanguageChangeEvent {
+	export interfAce NotebookCellLAnguAgeChAngeEvent {
 
 		/**
-		 * The affected document.
+		 * The Affected document.
 		 */
-		readonly document: NotebookDocument;
-		readonly cell: NotebookCell;
-		readonly language: string;
+		reAdonly document: NotebookDocument;
+		reAdonly cell: NotebookCell;
+		reAdonly lAnguAge: string;
 	}
 
-	export interface NotebookCellMetadataChangeEvent {
-		readonly document: NotebookDocument;
-		readonly cell: NotebookCell;
+	export interfAce NotebookCellMetAdAtAChAngeEvent {
+		reAdonly document: NotebookDocument;
+		reAdonly cell: NotebookCell;
 	}
 
-	export interface NotebookEditorSelectionChangeEvent {
-		readonly notebookEditor: NotebookEditor;
-		readonly selection?: NotebookCell;
+	export interfAce NotebookEditorSelectionChAngeEvent {
+		reAdonly notebookEditor: NotebookEditor;
+		reAdonly selection?: NotebookCell;
 	}
 
-	export interface NotebookEditorVisibleRangesChangeEvent {
-		readonly notebookEditor: NotebookEditor;
-		readonly visibleRanges: ReadonlyArray<NotebookCellRange>;
+	export interfAce NotebookEditorVisibleRAngesChAngeEvent {
+		reAdonly notebookEditor: NotebookEditor;
+		reAdonly visibleRAnges: ReAdonlyArrAy<NotebookCellRAnge>;
 	}
 
-	export interface NotebookCellData {
-		readonly cellKind: CellKind;
-		readonly source: string;
-		readonly language: string;
-		readonly outputs: CellOutput[];
-		readonly metadata: NotebookCellMetadata | undefined;
+	export interfAce NotebookCellDAtA {
+		reAdonly cellKind: CellKind;
+		reAdonly source: string;
+		reAdonly lAnguAge: string;
+		reAdonly outputs: CellOutput[];
+		reAdonly metAdAtA: NotebookCellMetAdAtA | undefined;
 	}
 
-	export interface NotebookData {
-		readonly cells: NotebookCellData[];
-		readonly languages: string[];
-		readonly metadata: NotebookDocumentMetadata;
+	export interfAce NotebookDAtA {
+		reAdonly cells: NotebookCellDAtA[];
+		reAdonly lAnguAges: string[];
+		reAdonly metAdAtA: NotebookDocumentMetAdAtA;
 	}
 
-	interface NotebookDocumentContentChangeEvent {
+	interfAce NotebookDocumentContentChAngeEvent {
 
 		/**
-		 * The document that the edit is for.
+		 * The document thAt the edit is for.
 		 */
-		readonly document: NotebookDocument;
+		reAdonly document: NotebookDocument;
 	}
 
-	interface NotebookDocumentEditEvent {
+	interfAce NotebookDocumentEditEvent {
 
 		/**
-		 * The document that the edit is for.
+		 * The document thAt the edit is for.
 		 */
-		readonly document: NotebookDocument;
+		reAdonly document: NotebookDocument;
 
 		/**
-		 * Undo the edit operation.
+		 * Undo the edit operAtion.
 		 *
 		 * This is invoked by VS Code when the user undoes this edit. To implement `undo`, your
-		 * extension should restore the document and editor to the state they were in just before this
-		 * edit was added to VS Code's internal edit stack by `onDidChangeCustomDocument`.
+		 * extension should restore the document And editor to the stAte they were in just before this
+		 * edit wAs Added to VS Code's internAl edit stAck by `onDidChAngeCustomDocument`.
 		 */
-		undo(): Thenable<void> | void;
+		undo(): ThenAble<void> | void;
 
 		/**
-		 * Redo the edit operation.
+		 * Redo the edit operAtion.
 		 *
 		 * This is invoked by VS Code when the user redoes this edit. To implement `redo`, your
-		 * extension should restore the document and editor to the state they were in just after this
-		 * edit was added to VS Code's internal edit stack by `onDidChangeCustomDocument`.
+		 * extension should restore the document And editor to the stAte they were in just After this
+		 * edit wAs Added to VS Code's internAl edit stAck by `onDidChAngeCustomDocument`.
 		 */
-		redo(): Thenable<void> | void;
+		redo(): ThenAble<void> | void;
 
 		/**
-		 * Display name describing the edit.
+		 * DisplAy nAme describing the edit.
 		 *
-		 * This will be shown to users in the UI for undo/redo operations.
+		 * This will be shown to users in the UI for undo/redo operAtions.
 		 */
-		readonly label?: string;
+		reAdonly lAbel?: string;
 	}
 
-	interface NotebookDocumentBackup {
+	interfAce NotebookDocumentBAckup {
 		/**
-		 * Unique identifier for the backup.
+		 * Unique identifier for the bAckup.
 		 *
-		 * This id is passed back to your extension in `openNotebook` when opening a notebook editor from a backup.
+		 * This id is pAssed bAck to your extension in `openNotebook` when opening A notebook editor from A bAckup.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * Delete the current backup.
+		 * Delete the current bAckup.
 		 *
-		 * This is called by VS Code when it is clear the current backup is no longer needed, such as when a new backup
-		 * is made or when the file is saved.
+		 * This is cAlled by VS Code when it is cleAr the current bAckup is no longer needed, such As when A new bAckup
+		 * is mAde or when the file is sAved.
 		 */
 		delete(): void;
 	}
 
-	interface NotebookDocumentBackupContext {
-		readonly destination: Uri;
+	interfAce NotebookDocumentBAckupContext {
+		reAdonly destinAtion: Uri;
 	}
 
-	interface NotebookDocumentOpenContext {
-		readonly backupId?: string;
+	interfAce NotebookDocumentOpenContext {
+		reAdonly bAckupId?: string;
 	}
 
 	/**
-	 * Communication object passed to the {@link NotebookContentProvider} and
-	 * {@link NotebookOutputRenderer} to communicate with the webview.
+	 * CommunicAtion object pAssed to the {@link NotebookContentProvider} And
+	 * {@link NotebookOutputRenderer} to communicAte with the webview.
 	 */
-	export interface NotebookCommunication {
+	export interfAce NotebookCommunicAtion {
 		/**
-		 * ID of the editor this object communicates with. A single notebook
-		 * document can have multiple attached webviews and editors, when the
-		 * notebook is split for instance. The editor ID lets you differentiate
+		 * ID of the editor this object communicAtes with. A single notebook
+		 * document cAn hAve multiple AttAched webviews And editors, when the
+		 * notebook is split for instAnce. The editor ID lets you differentiAte
 		 * between them.
 		 */
-		readonly editorId: string;
+		reAdonly editorId: string;
 
 		/**
-		 * Fired when the output hosting webview posts a message.
+		 * Fired when the output hosting webview posts A messAge.
 		 */
-		readonly onDidReceiveMessage: Event<any>;
+		reAdonly onDidReceiveMessAge: Event<Any>;
 		/**
-		 * Post a message to the output hosting webview.
+		 * Post A messAge to the output hosting webview.
 		 *
-		 * Messages are only delivered if the editor is live.
+		 * MessAges Are only delivered if the editor is live.
 		 *
-		 * @param message Body of the message. This must be a string or other json serilizable object.
+		 * @pArAm messAge Body of the messAge. This must be A string or other json serilizAble object.
 		 */
-		postMessage(message: any): Thenable<boolean>;
+		postMessAge(messAge: Any): ThenAble<booleAn>;
 
 		/**
-		 * Convert a uri for the local file system to one that can be used inside outputs webview.
+		 * Convert A uri for the locAl file system to one thAt cAn be used inside outputs webview.
 		 */
-		asWebviewUri(localResource: Uri): Uri;
+		AsWebviewUri(locAlResource: Uri): Uri;
 	}
 
-	export interface NotebookContentProvider {
-		readonly options?: NotebookDocumentContentOptions;
-		readonly onDidChangeNotebookContentOptions?: Event<NotebookDocumentContentOptions>;
-		readonly onDidChangeNotebook: Event<NotebookDocumentContentChangeEvent | NotebookDocumentEditEvent>;
+	export interfAce NotebookContentProvider {
+		reAdonly options?: NotebookDocumentContentOptions;
+		reAdonly onDidChAngeNotebookContentOptions?: Event<NotebookDocumentContentOptions>;
+		reAdonly onDidChAngeNotebook: Event<NotebookDocumentContentChAngeEvent | NotebookDocumentEditEvent>;
 
 		/**
-		 * Content providers should always use [file system providers](#FileSystemProvider) to
-		 * resolve the raw content for `uri` as the resouce is not necessarily a file on disk.
+		 * Content providers should AlwAys use [file system providers](#FileSystemProvider) to
+		 * resolve the rAw content for `uri` As the resouce is not necessArily A file on disk.
 		 */
-		openNotebook(uri: Uri, openContext: NotebookDocumentOpenContext): NotebookData | Promise<NotebookData>;
-		resolveNotebook(document: NotebookDocument, webview: NotebookCommunication): Promise<void>;
-		saveNotebook(document: NotebookDocument, cancellation: CancellationToken): Promise<void>;
-		saveNotebookAs(targetResource: Uri, document: NotebookDocument, cancellation: CancellationToken): Promise<void>;
-		backupNotebook(document: NotebookDocument, context: NotebookDocumentBackupContext, cancellation: CancellationToken): Promise<NotebookDocumentBackup>;
+		openNotebook(uri: Uri, openContext: NotebookDocumentOpenContext): NotebookDAtA | Promise<NotebookDAtA>;
+		resolveNotebook(document: NotebookDocument, webview: NotebookCommunicAtion): Promise<void>;
+		sAveNotebook(document: NotebookDocument, cAncellAtion: CAncellAtionToken): Promise<void>;
+		sAveNotebookAs(tArgetResource: Uri, document: NotebookDocument, cAncellAtion: CAncellAtionToken): Promise<void>;
+		bAckupNotebook(document: NotebookDocument, context: NotebookDocumentBAckupContext, cAncellAtion: CAncellAtionToken): Promise<NotebookDocumentBAckup>;
 	}
 
-	export interface NotebookKernel {
-		readonly id?: string;
-		label: string;
+	export interfAce NotebookKernel {
+		reAdonly id?: string;
+		lAbel: string;
 		description?: string;
-		detail?: string;
-		isPreferred?: boolean;
-		preloads?: Uri[];
+		detAil?: string;
+		isPreferred?: booleAn;
+		preloAds?: Uri[];
 		executeCell(document: NotebookDocument, cell: NotebookCell): void;
-		cancelCellExecution(document: NotebookDocument, cell: NotebookCell): void;
+		cAncelCellExecution(document: NotebookDocument, cell: NotebookCell): void;
 		executeAllCells(document: NotebookDocument): void;
-		cancelAllCellsExecution(document: NotebookDocument): void;
+		cAncelAllCellsExecution(document: NotebookDocument): void;
 	}
 
-	export type NotebookFilenamePattern = GlobPattern | { include: GlobPattern; exclude: GlobPattern };
+	export type NotebookFilenAmePAttern = GlobPAttern | { include: GlobPAttern; exclude: GlobPAttern };
 
-	export interface NotebookDocumentFilter {
+	export interfAce NotebookDocumentFilter {
 		viewType?: string | string[];
-		filenamePattern?: NotebookFilenamePattern;
+		filenAmePAttern?: NotebookFilenAmePAttern;
 	}
 
-	export interface NotebookKernelProvider<T extends NotebookKernel = NotebookKernel> {
-		onDidChangeKernels?: Event<NotebookDocument | undefined>;
-		provideKernels(document: NotebookDocument, token: CancellationToken): ProviderResult<T[]>;
-		resolveKernel?(kernel: T, document: NotebookDocument, webview: NotebookCommunication, token: CancellationToken): ProviderResult<void>;
+	export interfAce NotebookKernelProvider<T extends NotebookKernel = NotebookKernel> {
+		onDidChAngeKernels?: Event<NotebookDocument | undefined>;
+		provideKernels(document: NotebookDocument, token: CAncellAtionToken): ProviderResult<T[]>;
+		resolveKernel?(kernel: T, document: NotebookDocument, webview: NotebookCommunicAtion, token: CAncellAtionToken): ProviderResult<void>;
 	}
 
 	/**
-	 * Represents the alignment of status bar items.
+	 * Represents the Alignment of stAtus bAr items.
 	 */
-	export enum NotebookCellStatusBarAlignment {
+	export enum NotebookCellStAtusBArAlignment {
 
 		/**
 		 * Aligned to the left side.
@@ -1799,308 +1799,308 @@ declare module 'vscode' {
 		Right = 2
 	}
 
-	export interface NotebookCellStatusBarItem {
-		readonly cell: NotebookCell;
-		readonly alignment: NotebookCellStatusBarAlignment;
-		readonly priority?: number;
+	export interfAce NotebookCellStAtusBArItem {
+		reAdonly cell: NotebookCell;
+		reAdonly Alignment: NotebookCellStAtusBArAlignment;
+		reAdonly priority?: number;
 		text: string;
 		tooltip: string | undefined;
-		command: string | Command | undefined;
-		accessibilityInformation?: AccessibilityInformation;
+		commAnd: string | CommAnd | undefined;
+		AccessibilityInformAtion?: AccessibilityInformAtion;
 		show(): void;
 		hide(): void;
 		dispose(): void;
 	}
 
-	export interface NotebookDecorationRenderOptions {
-		backgroundColor?: string | ThemeColor;
+	export interfAce NotebookDecorAtionRenderOptions {
+		bAckgroundColor?: string | ThemeColor;
 		borderColor?: string | ThemeColor;
-		top: ThemableDecorationAttachmentRenderOptions;
+		top: ThemAbleDecorAtionAttAchmentRenderOptions;
 	}
 
-	export interface NotebookEditorDecorationType {
-		readonly key: string;
+	export interfAce NotebookEditorDecorAtionType {
+		reAdonly key: string;
 		dispose(): void;
 	}
 
 
-	export namespace notebook {
+	export nAmespAce notebook {
 		export function registerNotebookContentProvider(
 			notebookType: string,
 			provider: NotebookContentProvider,
 			options?: NotebookDocumentContentOptions & {
 				/**
-				 * Not ready for production or development use yet.
+				 * Not reAdy for production or development use yet.
 				 */
 				viewOptions?: {
-					displayName: string;
-					filenamePattern: NotebookFilenamePattern[];
-					exclusive?: boolean;
+					displAyNAme: string;
+					filenAmePAttern: NotebookFilenAmePAttern[];
+					exclusive?: booleAn;
 				};
 			}
-		): Disposable;
+		): DisposAble;
 
 		export function registerNotebookKernelProvider(
 			selector: NotebookDocumentFilter,
 			provider: NotebookKernelProvider
-		): Disposable;
+		): DisposAble;
 
-		export function createNotebookEditorDecorationType(options: NotebookDecorationRenderOptions): NotebookEditorDecorationType;
+		export function creAteNotebookEditorDecorAtionType(options: NotebookDecorAtionRenderOptions): NotebookEditorDecorAtionType;
 		export function openNotebookDocument(uri: Uri, viewType?: string): Promise<NotebookDocument>;
 		export const onDidOpenNotebookDocument: Event<NotebookDocument>;
 		export const onDidCloseNotebookDocument: Event<NotebookDocument>;
-		export const onDidSaveNotebookDocument: Event<NotebookDocument>;
+		export const onDidSAveNotebookDocument: Event<NotebookDocument>;
 
 		/**
 		 * All currently known notebook documents.
 		 */
-		export const notebookDocuments: ReadonlyArray<NotebookDocument>;
-		export const onDidChangeNotebookDocumentMetadata: Event<NotebookDocumentMetadataChangeEvent>;
-		export const onDidChangeNotebookCells: Event<NotebookCellsChangeEvent>;
-		export const onDidChangeCellOutputs: Event<NotebookCellOutputsChangeEvent>;
-		export const onDidChangeCellLanguage: Event<NotebookCellLanguageChangeEvent>;
-		export const onDidChangeCellMetadata: Event<NotebookCellMetadataChangeEvent>;
+		export const notebookDocuments: ReAdonlyArrAy<NotebookDocument>;
+		export const onDidChAngeNotebookDocumentMetAdAtA: Event<NotebookDocumentMetAdAtAChAngeEvent>;
+		export const onDidChAngeNotebookCells: Event<NotebookCellsChAngeEvent>;
+		export const onDidChAngeCellOutputs: Event<NotebookCellOutputsChAngeEvent>;
+		export const onDidChAngeCellLAnguAge: Event<NotebookCellLAnguAgeChAngeEvent>;
+		export const onDidChAngeCellMetAdAtA: Event<NotebookCellMetAdAtAChAngeEvent>;
 		/**
-		 * Create a document that is the concatenation of all  notebook cells. By default all code-cells are included
-		 * but a selector can be provided to narrow to down the set of cells.
+		 * CreAte A document thAt is the concAtenAtion of All  notebook cells. By defAult All code-cells Are included
+		 * but A selector cAn be provided to nArrow to down the set of cells.
 		 *
-		 * @param notebook
-		 * @param selector
+		 * @pArAm notebook
+		 * @pArAm selector
 		 */
-		export function createConcatTextDocument(notebook: NotebookDocument, selector?: DocumentSelector): NotebookConcatTextDocument;
+		export function creAteConcAtTextDocument(notebook: NotebookDocument, selector?: DocumentSelector): NotebookConcAtTextDocument;
 
-		export const onDidChangeActiveNotebookKernel: Event<{ document: NotebookDocument, kernel: NotebookKernel | undefined }>;
+		export const onDidChAngeActiveNotebookKernel: Event<{ document: NotebookDocument, kernel: NotebookKernel | undefined }>;
 
 		/**
-		 * Creates a notebook cell status bar [item](#NotebookCellStatusBarItem).
-		 * It will be disposed automatically when the notebook document is closed or the cell is deleted.
+		 * CreAtes A notebook cell stAtus bAr [item](#NotebookCellStAtusBArItem).
+		 * It will be disposed AutomAticAlly when the notebook document is closed or the cell is deleted.
 		 *
-		 * @param cell The cell on which this item should be shown.
-		 * @param alignment The alignment of the item.
-		 * @param priority The priority of the item. Higher values mean the item should be shown more to the left.
-		 * @return A new status bar item.
+		 * @pArAm cell The cell on which this item should be shown.
+		 * @pArAm Alignment The Alignment of the item.
+		 * @pArAm priority The priority of the item. Higher vAlues meAn the item should be shown more to the left.
+		 * @return A new stAtus bAr item.
 		 */
-		export function createCellStatusBarItem(cell: NotebookCell, alignment?: NotebookCellStatusBarAlignment, priority?: number): NotebookCellStatusBarItem;
+		export function creAteCellStAtusBArItem(cell: NotebookCell, Alignment?: NotebookCellStAtusBArAlignment, priority?: number): NotebookCellStAtusBArItem;
 	}
 
-	export namespace window {
+	export nAmespAce window {
 		export const visibleNotebookEditors: NotebookEditor[];
-		export const onDidChangeVisibleNotebookEditors: Event<NotebookEditor[]>;
-		export const activeNotebookEditor: NotebookEditor | undefined;
-		export const onDidChangeActiveNotebookEditor: Event<NotebookEditor | undefined>;
-		export const onDidChangeNotebookEditorSelection: Event<NotebookEditorSelectionChangeEvent>;
-		export const onDidChangeNotebookEditorVisibleRanges: Event<NotebookEditorVisibleRangesChangeEvent>;
+		export const onDidChAngeVisibleNotebookEditors: Event<NotebookEditor[]>;
+		export const ActiveNotebookEditor: NotebookEditor | undefined;
+		export const onDidChAngeActiveNotebookEditor: Event<NotebookEditor | undefined>;
+		export const onDidChAngeNotebookEditorSelection: Event<NotebookEditorSelectionChAngeEvent>;
+		export const onDidChAngeNotebookEditorVisibleRAnges: Event<NotebookEditorVisibleRAngesChAngeEvent>;
 	}
 
 	//#endregion
 
 	//#region https://github.com/microsoft/vscode/issues/39441
 
-	export interface CompletionItem {
+	export interfAce CompletionItem {
 		/**
-		 * Will be merged into CompletionItem#label
+		 * Will be merged into CompletionItem#lAbel
 		 */
-		label2?: CompletionItemLabel;
+		lAbel2?: CompletionItemLAbel;
 	}
 
-	export interface CompletionItemLabel {
+	export interfAce CompletionItemLAbel {
 		/**
-		 * The function or variable. Rendered leftmost.
+		 * The function or vAriAble. Rendered leftmost.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * The parameters without the return type. Render after `name`.
+		 * The pArAmeters without the return type. Render After `nAme`.
 		 */
-		parameters?: string;
+		pArAmeters?: string;
 
 		/**
-		 * The fully qualified name, like package name or file path. Rendered after `signature`.
+		 * The fully quAlified nAme, like pAckAge nAme or file pAth. Rendered After `signAture`.
 		 */
-		qualifier?: string;
+		quAlifier?: string;
 
 		/**
-		 * The return-type of a function or type of a property/variable. Rendered rightmost.
+		 * The return-type of A function or type of A property/vAriAble. Rendered rightmost.
 		 */
 		type?: string;
 	}
 
 	//#endregion
 
-	//#region @eamodio - timeline: https://github.com/microsoft/vscode/issues/84297
+	//#region @eAmodio - timeline: https://github.com/microsoft/vscode/issues/84297
 
-	export class TimelineItem {
+	export clAss TimelineItem {
 		/**
-		 * A timestamp (in milliseconds since 1 January 1970 00:00:00) for when the timeline item occurred.
+		 * A timestAmp (in milliseconds since 1 JAnuAry 1970 00:00:00) for when the timeline item occurred.
 		 */
-		timestamp: number;
+		timestAmp: number;
 
 		/**
-		 * A human-readable string describing the timeline item.
+		 * A humAn-reAdAble string describing the timeline item.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * Optional id for the timeline item. It must be unique across all the timeline items provided by this source.
+		 * OptionAl id for the timeline item. It must be unique Across All the timeline items provided by this source.
 		 *
-		 * If not provided, an id is generated using the timeline item's timestamp.
+		 * If not provided, An id is generAted using the timeline item's timestAmp.
 		 */
 		id?: string;
 
 		/**
-		 * The icon path or [ThemeIcon](#ThemeIcon) for the timeline item.
+		 * The icon pAth or [ThemeIcon](#ThemeIcon) for the timeline item.
 		 */
-		iconPath?: Uri | { light: Uri; dark: Uri; } | ThemeIcon;
+		iconPAth?: Uri | { light: Uri; dArk: Uri; } | ThemeIcon;
 
 		/**
-		 * A human readable string describing less prominent details of the timeline item.
+		 * A humAn reAdAble string describing less prominent detAils of the timeline item.
 		 */
 		description?: string;
 
 		/**
 		 * The tooltip text when you hover over the timeline item.
 		 */
-		detail?: string;
+		detAil?: string;
 
 		/**
-		 * The [command](#Command) that should be executed when the timeline item is selected.
+		 * The [commAnd](#CommAnd) thAt should be executed when the timeline item is selected.
 		 */
-		command?: Command;
+		commAnd?: CommAnd;
 
 		/**
-		 * Context value of the timeline item. This can be used to contribute specific actions to the item.
-		 * For example, a timeline item is given a context value as `commit`. When contributing actions to `timeline/item/context`
-		 * using `menus` extension point, you can specify context value for key `timelineItem` in `when` expression like `timelineItem == commit`.
+		 * Context vAlue of the timeline item. This cAn be used to contribute specific Actions to the item.
+		 * For exAmple, A timeline item is given A context vAlue As `commit`. When contributing Actions to `timeline/item/context`
+		 * using `menus` extension point, you cAn specify context vAlue for key `timelineItem` in `when` expression like `timelineItem == commit`.
 		 * ```
 		 *	"contributes": {
 		 *		"menus": {
 		 *			"timeline/item/context": [
 		 *				{
-		 *					"command": "extension.copyCommitId",
+		 *					"commAnd": "extension.copyCommitId",
 		 *					"when": "timelineItem == commit"
 		 *				}
 		 *			]
 		 *		}
 		 *	}
 		 * ```
-		 * This will show the `extension.copyCommitId` action only for items where `contextValue` is `commit`.
+		 * This will show the `extension.copyCommitId` Action only for items where `contextVAlue` is `commit`.
 		 */
-		contextValue?: string;
+		contextVAlue?: string;
 
 		/**
-		 * Accessibility information used when screen reader interacts with this timeline item.
+		 * Accessibility informAtion used when screen reAder interActs with this timeline item.
 		 */
-		accessibilityInformation?: AccessibilityInformation;
+		AccessibilityInformAtion?: AccessibilityInformAtion;
 
 		/**
-		 * @param label A human-readable string describing the timeline item
-		 * @param timestamp A timestamp (in milliseconds since 1 January 1970 00:00:00) for when the timeline item occurred
+		 * @pArAm lAbel A humAn-reAdAble string describing the timeline item
+		 * @pArAm timestAmp A timestAmp (in milliseconds since 1 JAnuAry 1970 00:00:00) for when the timeline item occurred
 		 */
-		constructor(label: string, timestamp: number);
+		constructor(lAbel: string, timestAmp: number);
 	}
 
-	export interface TimelineChangeEvent {
+	export interfAce TimelineChAngeEvent {
 		/**
-		 * The [uri](#Uri) of the resource for which the timeline changed.
+		 * The [uri](#Uri) of the resource for which the timeline chAnged.
 		 */
 		uri: Uri;
 
 		/**
-		 * A flag which indicates whether the entire timeline should be reset.
+		 * A flAg which indicAtes whether the entire timeline should be reset.
 		 */
-		reset?: boolean;
+		reset?: booleAn;
 	}
 
-	export interface Timeline {
-		readonly paging?: {
+	export interfAce Timeline {
+		reAdonly pAging?: {
 			/**
-			 * A provider-defined cursor specifying the starting point of timeline items which are after the ones returned.
-			 * Use `undefined` to signal that there are no more items to be returned.
+			 * A provider-defined cursor specifying the stArting point of timeline items which Are After the ones returned.
+			 * Use `undefined` to signAl thAt there Are no more items to be returned.
 			 */
-			readonly cursor: string | undefined;
+			reAdonly cursor: string | undefined;
 		};
 
 		/**
-		 * An array of [timeline items](#TimelineItem).
+		 * An ArrAy of [timeline items](#TimelineItem).
 		 */
-		readonly items: readonly TimelineItem[];
+		reAdonly items: reAdonly TimelineItem[];
 	}
 
-	export interface TimelineOptions {
+	export interfAce TimelineOptions {
 		/**
-		 * A provider-defined cursor specifying the starting point of the timeline items that should be returned.
+		 * A provider-defined cursor specifying the stArting point of the timeline items thAt should be returned.
 		 */
 		cursor?: string;
 
 		/**
-		 * An optional maximum number timeline items or the all timeline items newer (inclusive) than the timestamp or id that should be returned.
-		 * If `undefined` all timeline items should be returned.
+		 * An optionAl mAximum number timeline items or the All timeline items newer (inclusive) thAn the timestAmp or id thAt should be returned.
+		 * If `undefined` All timeline items should be returned.
 		 */
-		limit?: number | { timestamp: number; id?: string; };
+		limit?: number | { timestAmp: number; id?: string; };
 	}
 
-	export interface TimelineProvider {
+	export interfAce TimelineProvider {
 		/**
-		 * An optional event to signal that the timeline for a source has changed.
-		 * To signal that the timeline for all resources (uris) has changed, do not pass any argument or pass `undefined`.
+		 * An optionAl event to signAl thAt the timeline for A source hAs chAnged.
+		 * To signAl thAt the timeline for All resources (uris) hAs chAnged, do not pAss Any Argument or pAss `undefined`.
 		 */
-		onDidChange?: Event<TimelineChangeEvent | undefined>;
+		onDidChAnge?: Event<TimelineChAngeEvent | undefined>;
 
 		/**
-		 * An identifier of the source of the timeline items. This can be used to filter sources.
+		 * An identifier of the source of the timeline items. This cAn be used to filter sources.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * A human-readable string describing the source of the timeline items. This can be used as the display label when filtering sources.
+		 * A humAn-reAdAble string describing the source of the timeline items. This cAn be used As the displAy lAbel when filtering sources.
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 
 		/**
-		 * Provide [timeline items](#TimelineItem) for a [Uri](#Uri).
+		 * Provide [timeline items](#TimelineItem) for A [Uri](#Uri).
 		 *
-		 * @param uri The [uri](#Uri) of the file to provide the timeline for.
-		 * @param options A set of options to determine how results should be returned.
-		 * @param token A cancellation token.
-		 * @return The [timeline result](#TimelineResult) or a thenable that resolves to such. The lack of a result
-		 * can be signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm uri The [uri](#Uri) of the file to provide the timeline for.
+		 * @pArAm options A set of options to determine how results should be returned.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The [timeline result](#TimelineResult) or A thenAble thAt resolves to such. The lAck of A result
+		 * cAn be signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideTimeline(uri: Uri, options: TimelineOptions, token: CancellationToken): ProviderResult<Timeline>;
+		provideTimeline(uri: Uri, options: TimelineOptions, token: CAncellAtionToken): ProviderResult<Timeline>;
 	}
 
-	export namespace workspace {
+	export nAmespAce workspAce {
 		/**
-		 * Register a timeline provider.
+		 * Register A timeline provider.
 		 *
-		 * Multiple providers can be registered. In that case, providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered. In thAt cAse, providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param scheme A scheme or schemes that defines which documents this provider is applicable to. Can be `*` to target all documents.
-		 * @param provider A timeline provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm scheme A scheme or schemes thAt defines which documents this provider is ApplicAble to. CAn be `*` to tArget All documents.
+		 * @pArAm provider A timeline provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		*/
-		export function registerTimelineProvider(scheme: string | string[], provider: TimelineProvider): Disposable;
+		export function registerTimelineProvider(scheme: string | string[], provider: TimelineProvider): DisposAble;
 	}
 
 	//#endregion
 
 	//#region https://github.com/microsoft/vscode/issues/91555
 
-	export enum StandardTokenType {
+	export enum StAndArdTokenType {
 		Other = 0,
 		Comment = 1,
 		String = 2,
 		RegEx = 4
 	}
 
-	export interface TokenInformation {
-		type: StandardTokenType;
-		range: Range;
+	export interfAce TokenInformAtion {
+		type: StAndArdTokenType;
+		rAnge: RAnge;
 	}
 
-	export namespace languages {
-		export function getTokenInformationAtPosition(document: TextDocument, position: Position): Promise<TokenInformation>;
+	export nAmespAce lAnguAges {
+		export function getTokenInformAtionAtPosition(document: TextDocument, position: Position): Promise<TokenInformAtion>;
 	}
 
 	//#endregion
@@ -2109,17 +2109,17 @@ declare module 'vscode' {
 
 	export enum ExtensionRuntime {
 		/**
-		 * The extension is running in a NodeJS extension host. Runtime access to NodeJS APIs is available.
+		 * The extension is running in A NodeJS extension host. Runtime Access to NodeJS APIs is AvAilAble.
 		 */
 		Node = 1,
 		/**
-		 * The extension is running in a Webworker extension host. Runtime access is limited to Webworker APIs.
+		 * The extension is running in A Webworker extension host. Runtime Access is limited to Webworker APIs.
 		 */
 		Webworker = 2
 	}
 
-	export interface ExtensionContext {
-		readonly extensionRuntime: ExtensionRuntime;
+	export interfAce ExtensionContext {
+		reAdonly extensionRuntime: ExtensionRuntime;
 	}
 
 	//#endregion
@@ -2127,11 +2127,11 @@ declare module 'vscode' {
 
 	//#region https://github.com/microsoft/vscode/issues/102091
 
-	export interface TextDocument {
+	export interfAce TextDocument {
 
 		/**
-		 * The [notebook](#NotebookDocument) that contains this document as a notebook cell or `undefined` when
-		 * the document is not contained by a notebook (this should be the more frequent case).
+		 * The [notebook](#NotebookDocument) thAt contAins this document As A notebook cell or `undefined` when
+		 * the document is not contAined by A notebook (this should be the more frequent cAse).
 		 */
 		notebook: NotebookDocument | undefined;
 	}
@@ -2139,43 +2139,43 @@ declare module 'vscode' {
 
 	//#region https://github.com/microsoft/vscode/issues/91697
 
-	export interface FileSystem {
+	export interfAce FileSystem {
 		/**
-		 * Check if a given file system supports writing files.
+		 * Check if A given file system supports writing files.
 		 *
-		 * Keep in mind that just because a file system supports writing, that does
-		 * not mean that writes will always succeed. There may be permissions issues
-		 * or other errors that prevent writing a file.
+		 * Keep in mind thAt just becAuse A file system supports writing, thAt does
+		 * not meAn thAt writes will AlwAys succeed. There mAy be permissions issues
+		 * or other errors thAt prevent writing A file.
 		 *
-		 * @param scheme The scheme of the filesystem, for example `file` or `git`.
+		 * @pArAm scheme The scheme of the filesystem, for exAmple `file` or `git`.
 		 *
-		 * @return `true` if the file system supports writing, `false` if it does not
-		 * support writing (i.e. it is readonly), and `undefined` if VS Code does not
-		 * know about the filesystem.
+		 * @return `true` if the file system supports writing, `fAlse` if it does not
+		 * support writing (i.e. it is reAdonly), And `undefined` if VS Code does not
+		 * know About the filesystem.
 		 */
-		isWritableFileSystem(scheme: string): boolean | undefined;
+		isWritAbleFileSystem(scheme: string): booleAn | undefined;
 	}
 
 
 	//#endregion
 
 	//#region https://github.com/microsoft/vscode/issues/102665 Comment API @rebornix
-	export interface CommentThread {
+	export interfAce CommentThreAd {
 		/**
-		 * Whether the thread supports reply.
-		 * Defaults to true.
+		 * Whether the threAd supports reply.
+		 * DefAults to true.
 		 */
-		canReply: boolean;
+		cAnReply: booleAn;
 	}
 	//#endregion
 
-	//#region https://github.com/microsoft/vscode/issues/108929 FoldingRangeProvider.onDidChangeFoldingRanges @aeschli
-	export interface FoldingRangeProvider2 extends FoldingRangeProvider {
+	//#region https://github.com/microsoft/vscode/issues/108929 FoldingRAngeProvider.onDidChAngeFoldingRAnges @Aeschli
+	export interfAce FoldingRAngeProvider2 extends FoldingRAngeProvider {
 
 		/**
-		 * An optional event to signal that the folding ranges from this provider have changed.
+		 * An optionAl event to signAl thAt the folding rAnges from this provider hAve chAnged.
 		 */
-		onDidChangeFoldingRanges?: Event<void>;
+		onDidChAngeFoldingRAnges?: Event<void>;
 
 	}
 	//#endregion

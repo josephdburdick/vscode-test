@@ -1,205 +1,205 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { MessageBoxOptions, MessageBoxReturnValue, SaveDialogOptions, SaveDialogReturnValue, OpenDialogOptions, OpenDialogReturnValue, dialog, FileFilter, BrowserWindow } from 'electron';
-import { Queue } from 'vs/base/common/async';
-import { IStateService } from 'vs/platform/state/node/state';
-import { isMacintosh } from 'vs/base/common/platform';
-import { dirname } from 'vs/base/common/path';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { exists } from 'vs/base/node/pfs';
-import { INativeOpenDialogOptions } from 'vs/platform/dialogs/common/dialogs';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { localize } from 'vs/nls';
-import { WORKSPACE_FILTER } from 'vs/platform/workspaces/common/workspaces';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { MessAgeBoxOptions, MessAgeBoxReturnVAlue, SAveDiAlogOptions, SAveDiAlogReturnVAlue, OpenDiAlogOptions, OpenDiAlogReturnVAlue, diAlog, FileFilter, BrowserWindow } from 'electron';
+import { Queue } from 'vs/bAse/common/Async';
+import { IStAteService } from 'vs/plAtform/stAte/node/stAte';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { dirnAme } from 'vs/bAse/common/pAth';
+import { normAlizeNFC } from 'vs/bAse/common/normAlizAtion';
+import { exists } from 'vs/bAse/node/pfs';
+import { INAtiveOpenDiAlogOptions } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { locAlize } from 'vs/nls';
+import { WORKSPACE_FILTER } from 'vs/plAtform/workspAces/common/workspAces';
+import { mnemonicButtonLAbel } from 'vs/bAse/common/lAbels';
 
-export const IDialogMainService = createDecorator<IDialogMainService>('dialogMainService');
+export const IDiAlogMAinService = creAteDecorAtor<IDiAlogMAinService>('diAlogMAinService');
 
-export interface IDialogMainService {
+export interfAce IDiAlogMAinService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	pickFileFolder(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
-	pickFolder(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
-	pickFile(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
-	pickWorkspace(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
+	pickFileFolder(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
+	pickFolder(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
+	pickFile(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
+	pickWorkspAce(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined>;
 
-	showMessageBox(options: MessageBoxOptions, window?: BrowserWindow): Promise<MessageBoxReturnValue>;
-	showSaveDialog(options: SaveDialogOptions, window?: BrowserWindow): Promise<SaveDialogReturnValue>;
-	showOpenDialog(options: OpenDialogOptions, window?: BrowserWindow): Promise<OpenDialogReturnValue>;
+	showMessAgeBox(options: MessAgeBoxOptions, window?: BrowserWindow): Promise<MessAgeBoxReturnVAlue>;
+	showSAveDiAlog(options: SAveDiAlogOptions, window?: BrowserWindow): Promise<SAveDiAlogReturnVAlue>;
+	showOpenDiAlog(options: OpenDiAlogOptions, window?: BrowserWindow): Promise<OpenDiAlogReturnVAlue>;
 }
 
-interface IInternalNativeOpenDialogOptions extends INativeOpenDialogOptions {
-	pickFolders?: boolean;
-	pickFiles?: boolean;
+interfAce IInternAlNAtiveOpenDiAlogOptions extends INAtiveOpenDiAlogOptions {
+	pickFolders?: booleAn;
+	pickFiles?: booleAn;
 
 	title: string;
-	buttonLabel?: string;
+	buttonLAbel?: string;
 	filters?: FileFilter[];
 }
 
-export class DialogMainService implements IDialogMainService {
+export clAss DiAlogMAinService implements IDiAlogMAinService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly workingDirPickerStorageKey = 'pickerWorkingDir';
+	privAte stAtic reAdonly workingDirPickerStorAgeKey = 'pickerWorkingDir';
 
-	private readonly mapWindowToDialogQueue: Map<number, Queue<void>>;
-	private readonly noWindowDialogQueue: Queue<void>;
+	privAte reAdonly mApWindowToDiAlogQueue: MAp<number, Queue<void>>;
+	privAte reAdonly noWindowDiAlogQueue: Queue<void>;
 
 	constructor(
-		@IStateService private readonly stateService: IStateService
+		@IStAteService privAte reAdonly stAteService: IStAteService
 	) {
-		this.mapWindowToDialogQueue = new Map<number, Queue<void>>();
-		this.noWindowDialogQueue = new Queue<void>();
+		this.mApWindowToDiAlogQueue = new MAp<number, Queue<void>>();
+		this.noWindowDiAlogQueue = new Queue<void>();
 	}
 
-	pickFileFolder(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
-		return this.doPick({ ...options, pickFolders: true, pickFiles: true, title: localize('open', "Open") }, window);
+	pickFileFolder(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
+		return this.doPick({ ...options, pickFolders: true, pickFiles: true, title: locAlize('open', "Open") }, window);
 	}
 
-	pickFolder(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
-		return this.doPick({ ...options, pickFolders: true, title: localize('openFolder', "Open Folder") }, window);
+	pickFolder(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
+		return this.doPick({ ...options, pickFolders: true, title: locAlize('openFolder', "Open Folder") }, window);
 	}
 
-	pickFile(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
-		return this.doPick({ ...options, pickFiles: true, title: localize('openFile', "Open File") }, window);
+	pickFile(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
+		return this.doPick({ ...options, pickFiles: true, title: locAlize('openFile', "Open File") }, window);
 	}
 
-	pickWorkspace(options: INativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
-		const title = localize('openWorkspaceTitle', "Open Workspace");
-		const buttonLabel = mnemonicButtonLabel(localize({ key: 'openWorkspace', comment: ['&& denotes a mnemonic'] }, "&&Open"));
+	pickWorkspAce(options: INAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
+		const title = locAlize('openWorkspAceTitle', "Open WorkspAce");
+		const buttonLAbel = mnemonicButtonLAbel(locAlize({ key: 'openWorkspAce', comment: ['&& denotes A mnemonic'] }, "&&Open"));
 		const filters = WORKSPACE_FILTER;
 
-		return this.doPick({ ...options, pickFiles: true, title, filters, buttonLabel }, window);
+		return this.doPick({ ...options, pickFiles: true, title, filters, buttonLAbel }, window);
 	}
 
-	private async doPick(options: IInternalNativeOpenDialogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
+	privAte Async doPick(options: IInternAlNAtiveOpenDiAlogOptions, window?: BrowserWindow): Promise<string[] | undefined> {
 
-		// Ensure dialog options
-		const dialogOptions: OpenDialogOptions = {
+		// Ensure diAlog options
+		const diAlogOptions: OpenDiAlogOptions = {
 			title: options.title,
-			buttonLabel: options.buttonLabel,
+			buttonLAbel: options.buttonLAbel,
 			filters: options.filters
 		};
 
-		// Ensure defaultPath
-		dialogOptions.defaultPath = options.defaultPath || this.stateService.getItem<string>(DialogMainService.workingDirPickerStorageKey);
+		// Ensure defAultPAth
+		diAlogOptions.defAultPAth = options.defAultPAth || this.stAteService.getItem<string>(DiAlogMAinService.workingDirPickerStorAgeKey);
 
 
 		// Ensure properties
-		if (typeof options.pickFiles === 'boolean' || typeof options.pickFolders === 'boolean') {
-			dialogOptions.properties = undefined; // let it override based on the booleans
+		if (typeof options.pickFiles === 'booleAn' || typeof options.pickFolders === 'booleAn') {
+			diAlogOptions.properties = undefined; // let it override bAsed on the booleAns
 
 			if (options.pickFiles && options.pickFolders) {
-				dialogOptions.properties = ['multiSelections', 'openDirectory', 'openFile', 'createDirectory'];
+				diAlogOptions.properties = ['multiSelections', 'openDirectory', 'openFile', 'creAteDirectory'];
 			}
 		}
 
-		if (!dialogOptions.properties) {
-			dialogOptions.properties = ['multiSelections', options.pickFolders ? 'openDirectory' : 'openFile', 'createDirectory'];
+		if (!diAlogOptions.properties) {
+			diAlogOptions.properties = ['multiSelections', options.pickFolders ? 'openDirectory' : 'openFile', 'creAteDirectory'];
 		}
 
-		if (isMacintosh) {
-			dialogOptions.properties.push('treatPackageAsDirectory'); // always drill into .app files
+		if (isMAcintosh) {
+			diAlogOptions.properties.push('treAtPAckAgeAsDirectory'); // AlwAys drill into .App files
 		}
 
-		// Show Dialog
+		// Show DiAlog
 		const windowToUse = window || BrowserWindow.getFocusedWindow();
 
-		const result = await this.showOpenDialog(dialogOptions, withNullAsUndefined(windowToUse));
-		if (result && result.filePaths && result.filePaths.length > 0) {
+		const result = AwAit this.showOpenDiAlog(diAlogOptions, withNullAsUndefined(windowToUse));
+		if (result && result.filePAths && result.filePAths.length > 0) {
 
-			// Remember path in storage for next time
-			this.stateService.setItem(DialogMainService.workingDirPickerStorageKey, dirname(result.filePaths[0]));
+			// Remember pAth in storAge for next time
+			this.stAteService.setItem(DiAlogMAinService.workingDirPickerStorAgeKey, dirnAme(result.filePAths[0]));
 
-			return result.filePaths;
+			return result.filePAths;
 		}
 
 		return;
 	}
 
-	private getDialogQueue(window?: BrowserWindow): Queue<any> {
+	privAte getDiAlogQueue(window?: BrowserWindow): Queue<Any> {
 		if (!window) {
-			return this.noWindowDialogQueue;
+			return this.noWindowDiAlogQueue;
 		}
 
-		let windowDialogQueue = this.mapWindowToDialogQueue.get(window.id);
-		if (!windowDialogQueue) {
-			windowDialogQueue = new Queue<any>();
-			this.mapWindowToDialogQueue.set(window.id, windowDialogQueue);
+		let windowDiAlogQueue = this.mApWindowToDiAlogQueue.get(window.id);
+		if (!windowDiAlogQueue) {
+			windowDiAlogQueue = new Queue<Any>();
+			this.mApWindowToDiAlogQueue.set(window.id, windowDiAlogQueue);
 		}
 
-		return windowDialogQueue;
+		return windowDiAlogQueue;
 	}
 
-	showMessageBox(options: MessageBoxOptions, window?: BrowserWindow): Promise<MessageBoxReturnValue> {
-		return this.getDialogQueue(window).queue(async () => {
+	showMessAgeBox(options: MessAgeBoxOptions, window?: BrowserWindow): Promise<MessAgeBoxReturnVAlue> {
+		return this.getDiAlogQueue(window).queue(Async () => {
 			if (window) {
-				return dialog.showMessageBox(window, options);
+				return diAlog.showMessAgeBox(window, options);
 			}
 
-			return dialog.showMessageBox(options);
+			return diAlog.showMessAgeBox(options);
 		});
 	}
 
-	showSaveDialog(options: SaveDialogOptions, window?: BrowserWindow): Promise<SaveDialogReturnValue> {
+	showSAveDiAlog(options: SAveDiAlogOptions, window?: BrowserWindow): Promise<SAveDiAlogReturnVAlue> {
 
-		function normalizePath(path: string | undefined): string | undefined {
-			if (path && isMacintosh) {
-				path = normalizeNFC(path); // normalize paths returned from the OS
+		function normAlizePAth(pAth: string | undefined): string | undefined {
+			if (pAth && isMAcintosh) {
+				pAth = normAlizeNFC(pAth); // normAlize pAths returned from the OS
 			}
 
-			return path;
+			return pAth;
 		}
 
-		return this.getDialogQueue(window).queue(async () => {
-			let result: SaveDialogReturnValue;
+		return this.getDiAlogQueue(window).queue(Async () => {
+			let result: SAveDiAlogReturnVAlue;
 			if (window) {
-				result = await dialog.showSaveDialog(window, options);
+				result = AwAit diAlog.showSAveDiAlog(window, options);
 			} else {
-				result = await dialog.showSaveDialog(options);
+				result = AwAit diAlog.showSAveDiAlog(options);
 			}
 
-			result.filePath = normalizePath(result.filePath);
+			result.filePAth = normAlizePAth(result.filePAth);
 
 			return result;
 		});
 	}
 
-	showOpenDialog(options: OpenDialogOptions, window?: BrowserWindow): Promise<OpenDialogReturnValue> {
+	showOpenDiAlog(options: OpenDiAlogOptions, window?: BrowserWindow): Promise<OpenDiAlogReturnVAlue> {
 
-		function normalizePaths(paths: string[]): string[] {
-			if (paths && paths.length > 0 && isMacintosh) {
-				paths = paths.map(path => normalizeNFC(path)); // normalize paths returned from the OS
+		function normAlizePAths(pAths: string[]): string[] {
+			if (pAths && pAths.length > 0 && isMAcintosh) {
+				pAths = pAths.mAp(pAth => normAlizeNFC(pAth)); // normAlize pAths returned from the OS
 			}
 
-			return paths;
+			return pAths;
 		}
 
-		return this.getDialogQueue(window).queue(async () => {
+		return this.getDiAlogQueue(window).queue(Async () => {
 
-			// Ensure the path exists (if provided)
-			if (options.defaultPath) {
-				const pathExists = await exists(options.defaultPath);
-				if (!pathExists) {
-					options.defaultPath = undefined;
+			// Ensure the pAth exists (if provided)
+			if (options.defAultPAth) {
+				const pAthExists = AwAit exists(options.defAultPAth);
+				if (!pAthExists) {
+					options.defAultPAth = undefined;
 				}
 			}
 
-			// Show dialog
-			let result: OpenDialogReturnValue;
+			// Show diAlog
+			let result: OpenDiAlogReturnVAlue;
 			if (window) {
-				result = await dialog.showOpenDialog(window, options);
+				result = AwAit diAlog.showOpenDiAlog(window, options);
 			} else {
-				result = await dialog.showOpenDialog(options);
+				result = AwAit diAlog.showOpenDiAlog(options);
 			}
 
-			result.filePaths = normalizePaths(result.filePaths);
+			result.filePAths = normAlizePAths(result.filePAths);
 
 			return result;
 		});

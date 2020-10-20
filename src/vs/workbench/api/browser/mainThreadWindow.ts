@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ExtHostContext, ExtHostWindowShape, IExtHostContext, IOpenUriOptions, MainContext, MainThreadWindowShape } from '../common/extHost.protocol';
+import { Event } from 'vs/bAse/common/event';
+import { DisposAbleStore, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ExtHostContext, ExtHostWindowShApe, IExtHostContext, IOpenUriOptions, MAinContext, MAinThreAdWindowShApe } from '../common/extHost.protocol';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
 
-@extHostNamedCustomer(MainContext.MainThreadWindow)
-export class MainThreadWindow implements MainThreadWindowShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdWindow)
+export clAss MAinThreAdWindow implements MAinThreAdWindowShApe {
 
-	private readonly proxy: ExtHostWindowShape;
-	private readonly disposables = new DisposableStore();
-	private readonly resolved = new Map<number, IDisposable>();
+	privAte reAdonly proxy: ExtHostWindowShApe;
+	privAte reAdonly disposAbles = new DisposAbleStore();
+	privAte reAdonly resolved = new MAp<number, IDisposAble>();
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IHostService private readonly hostService: IHostService,
-		@IOpenerService private readonly openerService: IOpenerService,
+		@IHostService privAte reAdonly hostService: IHostService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
 	) {
 		this.proxy = extHostContext.getProxy(ExtHostContext.ExtHostWindow);
 
-		Event.latch(hostService.onDidChangeFocus)
-			(this.proxy.$onDidChangeWindowFocus, this.proxy, this.disposables);
+		Event.lAtch(hostService.onDidChAngeFocus)
+			(this.proxy.$onDidChAngeWindowFocus, this.proxy, this.disposAbles);
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
+		this.disposAbles.dispose();
 
-		for (const value of this.resolved.values()) {
-			value.dispose();
+		for (const vAlue of this.resolved.vAlues()) {
+			vAlue.dispose();
 		}
-		this.resolved.clear();
+		this.resolved.cleAr();
 	}
 
-	$getWindowVisibility(): Promise<boolean> {
-		return Promise.resolve(this.hostService.hasFocus);
+	$getWindowVisibility(): Promise<booleAn> {
+		return Promise.resolve(this.hostService.hAsFocus);
 	}
 
-	async $openUri(uriComponents: UriComponents, uriString: string | undefined, options: IOpenUriOptions): Promise<boolean> {
+	Async $openUri(uriComponents: UriComponents, uriString: string | undefined, options: IOpenUriOptions): Promise<booleAn> {
 		const uri = URI.from(uriComponents);
-		let target: URI | string;
-		if (uriString && URI.parse(uriString).toString() === uri.toString()) {
-			// called with string and no transformation happened -> keep string
-			target = uriString;
+		let tArget: URI | string;
+		if (uriString && URI.pArse(uriString).toString() === uri.toString()) {
+			// cAlled with string And no trAnsformAtion hAppened -> keep string
+			tArget = uriString;
 		} else {
-			// called with URI or transformed -> use uri
-			target = uri;
+			// cAlled with URI or trAnsformed -> use uri
+			tArget = uri;
 		}
-		return this.openerService.open(target, { openExternal: true, allowTunneling: options.allowTunneling });
+		return this.openerService.open(tArget, { openExternAl: true, AllowTunneling: options.AllowTunneling });
 	}
 
-	async $asExternalUri(uriComponents: UriComponents, options: IOpenUriOptions): Promise<UriComponents> {
+	Async $AsExternAlUri(uriComponents: UriComponents, options: IOpenUriOptions): Promise<UriComponents> {
 		const uri = URI.revive(uriComponents);
-		const result = await this.openerService.resolveExternalUri(uri, options);
+		const result = AwAit this.openerService.resolveExternAlUri(uri, options);
 		return result.resolved;
 	}
 }

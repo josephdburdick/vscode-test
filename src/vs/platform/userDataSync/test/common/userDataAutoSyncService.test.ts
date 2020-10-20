@@ -1,428 +1,428 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { UserDataSyncClient, UserDataSyncTestServer } from 'vs/platform/userDataSync/test/common/userDataSyncClient';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { UserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
-import { IUserDataSyncService, SyncResource, UserDataAutoSyncError, UserDataSyncErrorCode, UserDataSyncStoreError } from 'vs/platform/userDataSync/common/userDataSync';
-import { Event } from 'vs/base/common/event';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { joinPath } from 'vs/base/common/resources';
-import { IUserDataSyncMachinesService } from 'vs/platform/userDataSync/common/userDataSyncMachines';
+import * As Assert from 'Assert';
+import { UserDAtASyncClient, UserDAtASyncTestServer } from 'vs/plAtform/userDAtASync/test/common/userDAtASyncClient';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { UserDAtAAutoSyncService } from 'vs/plAtform/userDAtASync/common/userDAtAAutoSyncService';
+import { IUserDAtASyncService, SyncResource, UserDAtAAutoSyncError, UserDAtASyncErrorCode, UserDAtASyncStoreError } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { Event } from 'vs/bAse/common/event';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { IUserDAtASyncMAchinesService } from 'vs/plAtform/userDAtASync/common/userDAtASyncMAchines';
 
-class TestUserDataAutoSyncService extends UserDataAutoSyncService {
-	protected startAutoSync(): boolean { return false; }
-	protected getSyncTriggerDelayTime(): number { return 50; }
+clAss TestUserDAtAAutoSyncService extends UserDAtAAutoSyncService {
+	protected stArtAutoSync(): booleAn { return fAlse; }
+	protected getSyncTriggerDelAyTime(): number { return 50; }
 
 	sync(): Promise<void> {
-		return this.triggerSync(['sync'], false, false);
+		return this.triggerSync(['sync'], fAlse, fAlse);
 	}
 }
 
-suite('UserDataAutoSyncService', () => {
+suite('UserDAtAAutoSyncService', () => {
 
-	const disposableStore = new DisposableStore();
+	const disposAbleStore = new DisposAbleStore();
 
-	teardown(() => disposableStore.clear());
+	teArdown(() => disposAbleStore.cleAr());
 
-	test('test auto sync with sync resource change triggers sync', async () => {
+	test('test Auto sync with sync resource chAnge triggers sync', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
 
-		// Sync once and reset requests
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
-		target.reset();
+		// Sync once And reset requests
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
+		tArget.reset();
 
-		const testObject: UserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const testObject: UserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Trigger auto sync with settings change
-		await testObject.triggerSync([SyncResource.Settings], false, false);
+		// Trigger Auto sync with settings chAnge
+		AwAit testObject.triggerSync([SyncResource.Settings], fAlse, fAlse);
 
-		// Filter out machine requests
-		const actual = target.requests.filter(request => !request.url.startsWith(`${target.url}/v1/resource/machines`));
+		// Filter out mAchine requests
+		const ActuAl = tArget.requests.filter(request => !request.url.stArtsWith(`${tArget.url}/v1/resource/mAchines`));
 
-		// Make sure only one manifest request is made
-		assert.deepEqual(actual, [{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} }]);
+		// MAke sure only one mAnifest request is mAde
+		Assert.deepEquAl(ActuAl, [{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} }]);
 	});
 
-	test('test auto sync with sync resource change triggers sync for every change', async () => {
+	test('test Auto sync with sync resource chAnge triggers sync for every chAnge', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
 
-		// Sync once and reset requests
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
-		target.reset();
+		// Sync once And reset requests
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
+		tArget.reset();
 
-		const testObject: UserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const testObject: UserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Trigger auto sync with settings change multiple times
+		// Trigger Auto sync with settings chAnge multiple times
 		for (let counter = 0; counter < 2; counter++) {
-			await testObject.triggerSync([SyncResource.Settings], false, false);
+			AwAit testObject.triggerSync([SyncResource.Settings], fAlse, fAlse);
 		}
 
-		// Filter out machine requests
-		const actual = target.requests.filter(request => !request.url.startsWith(`${target.url}/v1/resource/machines`));
+		// Filter out mAchine requests
+		const ActuAl = tArget.requests.filter(request => !request.url.stArtsWith(`${tArget.url}/v1/resource/mAchines`));
 
-		assert.deepEqual(actual, [
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} }
+		Assert.deepEquAl(ActuAl, [
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} }
 		]);
 	});
 
-	test('test auto sync with non sync resource change triggers sync', async () => {
+	test('test Auto sync with non sync resource chAnge triggers sync', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
 
-		// Sync once and reset requests
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
-		target.reset();
+		// Sync once And reset requests
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
+		tArget.reset();
 
-		const testObject: UserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const testObject: UserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Trigger auto sync with window focus once
-		await testObject.triggerSync(['windowFocus'], true, false);
+		// Trigger Auto sync with window focus once
+		AwAit testObject.triggerSync(['windowFocus'], true, fAlse);
 
-		// Filter out machine requests
-		const actual = target.requests.filter(request => !request.url.startsWith(`${target.url}/v1/resource/machines`));
+		// Filter out mAchine requests
+		const ActuAl = tArget.requests.filter(request => !request.url.stArtsWith(`${tArget.url}/v1/resource/mAchines`));
 
-		// Make sure only one manifest request is made
-		assert.deepEqual(actual, [{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} }]);
+		// MAke sure only one mAnifest request is mAde
+		Assert.deepEquAl(ActuAl, [{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} }]);
 	});
 
-	test('test auto sync with non sync resource change does not trigger continuous syncs', async () => {
+	test('test Auto sync with non sync resource chAnge does not trigger continuous syncs', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
 
-		// Sync once and reset requests
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
-		target.reset();
+		// Sync once And reset requests
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
+		tArget.reset();
 
-		const testObject: UserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const testObject: UserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Trigger auto sync with window focus multiple times
+		// Trigger Auto sync with window focus multiple times
 		for (let counter = 0; counter < 2; counter++) {
-			await testObject.triggerSync(['windowFocus'], true, false);
+			AwAit testObject.triggerSync(['windowFocus'], true, fAlse);
 		}
 
-		// Filter out machine requests
-		const actual = target.requests.filter(request => !request.url.startsWith(`${target.url}/v1/resource/machines`));
+		// Filter out mAchine requests
+		const ActuAl = tArget.requests.filter(request => !request.url.stArtsWith(`${tArget.url}/v1/resource/mAchines`));
 
-		// Make sure only one manifest request is made
-		assert.deepEqual(actual, [{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} }]);
+		// MAke sure only one mAnifest request is mAde
+		Assert.deepEquAl(ActuAl, [{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} }]);
 	});
 
-	test('test first auto sync requests', async () => {
+	test('test first Auto sync requests', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
-		const testObject: TestUserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
+		const testObject: TestUserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		await testObject.sync();
+		AwAit testObject.sync();
 
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			// Machines
-			{ type: 'GET', url: `${target.url}/v1/resource/machines/latest`, headers: {} },
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			// MAchines
+			{ type: 'GET', url: `${tArget.url}/v1/resource/mAchines/lAtest`, heAders: {} },
 			// Settings
-			{ type: 'GET', url: `${target.url}/v1/resource/settings/latest`, headers: {} },
-			{ type: 'POST', url: `${target.url}/v1/resource/settings`, headers: { 'If-Match': '0' } },
+			{ type: 'GET', url: `${tArget.url}/v1/resource/settings/lAtest`, heAders: {} },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/settings`, heAders: { 'If-MAtch': '0' } },
 			// Keybindings
-			{ type: 'GET', url: `${target.url}/v1/resource/keybindings/latest`, headers: {} },
-			{ type: 'POST', url: `${target.url}/v1/resource/keybindings`, headers: { 'If-Match': '0' } },
+			{ type: 'GET', url: `${tArget.url}/v1/resource/keybindings/lAtest`, heAders: {} },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/keybindings`, heAders: { 'If-MAtch': '0' } },
 			// Snippets
-			{ type: 'GET', url: `${target.url}/v1/resource/snippets/latest`, headers: {} },
-			{ type: 'POST', url: `${target.url}/v1/resource/snippets`, headers: { 'If-Match': '0' } },
-			// Global state
-			{ type: 'GET', url: `${target.url}/v1/resource/globalState/latest`, headers: {} },
-			{ type: 'POST', url: `${target.url}/v1/resource/globalState`, headers: { 'If-Match': '0' } },
+			{ type: 'GET', url: `${tArget.url}/v1/resource/snippets/lAtest`, heAders: {} },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/snippets`, heAders: { 'If-MAtch': '0' } },
+			// GlobAl stAte
+			{ type: 'GET', url: `${tArget.url}/v1/resource/globAlStAte/lAtest`, heAders: {} },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/globAlStAte`, heAders: { 'If-MAtch': '0' } },
 			// Extensions
-			{ type: 'GET', url: `${target.url}/v1/resource/extensions/latest`, headers: {} },
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			// Machines
-			{ type: 'POST', url: `${target.url}/v1/resource/machines`, headers: { 'If-Match': '0' } }
+			{ type: 'GET', url: `${tArget.url}/v1/resource/extensions/lAtest`, heAders: {} },
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			// MAchines
+			{ type: 'POST', url: `${tArget.url}/v1/resource/mAchines`, heAders: { 'If-MAtch': '0' } }
 		]);
 
 	});
 
-	test('test further auto sync requests without changes', async () => {
+	test('test further Auto sync requests without chAnges', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
-		const testObject: TestUserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
+		const testObject: TestUserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Sync once and reset requests
-		await testObject.sync();
-		target.reset();
+		// Sync once And reset requests
+		AwAit testObject.sync();
+		tArget.reset();
 
-		await testObject.sync();
+		AwAit testObject.sync();
 
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} }
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} }
 		]);
 
 	});
 
-	test('test further auto sync requests with changes', async () => {
+	test('test further Auto sync requests with chAnges', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
-		const testObject: TestUserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
+		const testObject: TestUserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Sync once and reset requests
-		await testObject.sync();
-		target.reset();
+		// Sync once And reset requests
+		AwAit testObject.sync();
+		tArget.reset();
 
-		// Do changes in the client
-		const fileService = client.instantiationService.get(IFileService);
-		const environmentService = client.instantiationService.get(IEnvironmentService);
-		await fileService.writeFile(environmentService.settingsResource, VSBuffer.fromString(JSON.stringify({ 'editor.fontSize': 14 })));
-		await fileService.writeFile(environmentService.keybindingsResource, VSBuffer.fromString(JSON.stringify([{ 'command': 'abcd', 'key': 'cmd+c' }])));
-		await fileService.writeFile(joinPath(environmentService.snippetsHome, 'html.json'), VSBuffer.fromString(`{}`));
-		await fileService.writeFile(environmentService.argvResource, VSBuffer.fromString(JSON.stringify({ 'locale': 'de' })));
-		await testObject.sync();
+		// Do chAnges in the client
+		const fileService = client.instAntiAtionService.get(IFileService);
+		const environmentService = client.instAntiAtionService.get(IEnvironmentService);
+		AwAit fileService.writeFile(environmentService.settingsResource, VSBuffer.fromString(JSON.stringify({ 'editor.fontSize': 14 })));
+		AwAit fileService.writeFile(environmentService.keybindingsResource, VSBuffer.fromString(JSON.stringify([{ 'commAnd': 'Abcd', 'key': 'cmd+c' }])));
+		AwAit fileService.writeFile(joinPAth(environmentService.snippetsHome, 'html.json'), VSBuffer.fromString(`{}`));
+		AwAit fileService.writeFile(environmentService.ArgvResource, VSBuffer.fromString(JSON.stringify({ 'locAle': 'de' })));
+		AwAit testObject.sync();
 
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
 			// Settings
-			{ type: 'POST', url: `${target.url}/v1/resource/settings`, headers: { 'If-Match': '1' } },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/settings`, heAders: { 'If-MAtch': '1' } },
 			// Keybindings
-			{ type: 'POST', url: `${target.url}/v1/resource/keybindings`, headers: { 'If-Match': '1' } },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/keybindings`, heAders: { 'If-MAtch': '1' } },
 			// Snippets
-			{ type: 'POST', url: `${target.url}/v1/resource/snippets`, headers: { 'If-Match': '1' } },
-			// Global state
-			{ type: 'POST', url: `${target.url}/v1/resource/globalState`, headers: { 'If-Match': '1' } },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/snippets`, heAders: { 'If-MAtch': '1' } },
+			// GlobAl stAte
+			{ type: 'POST', url: `${tArget.url}/v1/resource/globAlStAte`, heAders: { 'If-MAtch': '1' } },
 		]);
 
 	});
 
-	test('test auto sync send execution id header', async () => {
+	test('test Auto sync send execution id heAder', Async () => {
 		// Setup the client
-		const target = new UserDataSyncTestServer();
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
-		const testObject: TestUserDataAutoSyncService = client.instantiationService.createInstance(TestUserDataAutoSyncService);
+		const tArget = new UserDAtASyncTestServer();
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
+		const testObject: TestUserDAtAAutoSyncService = client.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		// Sync once and reset requests
-		await testObject.sync();
-		target.reset();
+		// Sync once And reset requests
+		AwAit testObject.sync();
+		tArget.reset();
 
-		await testObject.sync();
+		AwAit testObject.sync();
 
-		for (const request of target.requestsWithAllHeaders) {
-			const hasExecutionIdHeader = request.headers && request.headers['X-Execution-Id'] && request.headers['X-Execution-Id'].length > 0;
-			if (request.url.startsWith(`${target.url}/v1/resource/machines`)) {
-				assert.ok(!hasExecutionIdHeader, `Should not have execution header: ${request.url}`);
+		for (const request of tArget.requestsWithAllHeAders) {
+			const hAsExecutionIdHeAder = request.heAders && request.heAders['X-Execution-Id'] && request.heAders['X-Execution-Id'].length > 0;
+			if (request.url.stArtsWith(`${tArget.url}/v1/resource/mAchines`)) {
+				Assert.ok(!hAsExecutionIdHeAder, `Should not hAve execution heAder: ${request.url}`);
 			} else {
-				assert.ok(hasExecutionIdHeader, `Should have execution header: ${request.url}`);
+				Assert.ok(hAsExecutionIdHeAder, `Should hAve execution heAder: ${request.url}`);
 			}
 		}
 
 	});
 
-	test('test delete on one client throws turned off error on other client while syncing', async () => {
-		const target = new UserDataSyncTestServer();
+	test('test delete on one client throws turned off error on other client while syncing', Async () => {
+		const tArget = new UserDAtASyncTestServer();
 
-		// Set up and sync from the client
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
+		// Set up And sync from the client
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
 
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
-		await testObject.sync();
-
-		// Reset from the first client
-		await client.instantiationService.get(IUserDataSyncService).reset();
-
-		// Sync from the test client
-		target.reset();
-
-		const errorPromise = Event.toPromise(testObject.onError);
-		await testObject.sync();
-
-		const e = await errorPromise;
-		assert.ok(e instanceof UserDataAutoSyncError);
-		assert.deepEqual((<UserDataAutoSyncError>e).code, UserDataSyncErrorCode.TurnedOff);
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			// Machine
-			{ type: 'GET', url: `${target.url}/v1/resource/machines/latest`, headers: { 'If-None-Match': '1' } },
-		]);
-	});
-
-	test('test disabling the machine turns off sync', async () => {
-		const target = new UserDataSyncTestServer();
-
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
-		await testObject.sync();
-
-		// Disable current machine
-		const userDataSyncMachinesService = testClient.instantiationService.get(IUserDataSyncMachinesService);
-		const machines = await userDataSyncMachinesService.getMachines();
-		const currentMachine = machines.find(m => m.isCurrent)!;
-		await userDataSyncMachinesService.setEnablement(currentMachine.id, false);
-
-		target.reset();
-
-		const errorPromise = Event.toPromise(testObject.onError);
-		await testObject.sync();
-
-		const e = await errorPromise;
-		assert.ok(e instanceof UserDataAutoSyncError);
-		assert.deepEqual((<UserDataAutoSyncError>e).code, UserDataSyncErrorCode.TurnedOff);
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			// Machine
-			{ type: 'GET', url: `${target.url}/v1/resource/machines/latest`, headers: { 'If-None-Match': '2' } },
-			{ type: 'POST', url: `${target.url}/v1/resource/machines`, headers: { 'If-Match': '2' } },
-		]);
-	});
-
-	test('test removing the machine adds machine back', async () => {
-		const target = new UserDataSyncTestServer();
-
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
-		await testObject.sync();
-
-		// Remove current machine
-		await testClient.instantiationService.get(IUserDataSyncMachinesService).removeCurrentMachine();
-
-		target.reset();
-
-		await testObject.sync();
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			// Machine
-			{ type: 'POST', url: `${target.url}/v1/resource/machines`, headers: { 'If-Match': '2' } },
-		]);
-	});
-
-	test('test creating new session from one client throws session expired error on another client while syncing', async () => {
-		const target = new UserDataSyncTestServer();
-
-		// Set up and sync from the client
-		const client = disposableStore.add(new UserDataSyncClient(target));
-		await client.setUp();
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
-
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
-		await testObject.sync();
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
+		AwAit testObject.sync();
 
 		// Reset from the first client
-		await client.instantiationService.get(IUserDataSyncService).reset();
-
-		// Sync again from the first client to create new session
-		await (await client.instantiationService.get(IUserDataSyncService).createSyncTask()).run();
+		AwAit client.instAntiAtionService.get(IUserDAtASyncService).reset();
 
 		// Sync from the test client
-		target.reset();
+		tArget.reset();
 
 		const errorPromise = Event.toPromise(testObject.onError);
-		await testObject.sync();
+		AwAit testObject.sync();
 
-		const e = await errorPromise;
-		assert.ok(e instanceof UserDataAutoSyncError);
-		assert.deepEqual((<UserDataAutoSyncError>e).code, UserDataSyncErrorCode.SessionExpired);
-		assert.deepEqual(target.requests, [
-			// Manifest
-			{ type: 'GET', url: `${target.url}/v1/manifest`, headers: {} },
-			// Machine
-			{ type: 'GET', url: `${target.url}/v1/resource/machines/latest`, headers: { 'If-None-Match': '1' } },
+		const e = AwAit errorPromise;
+		Assert.ok(e instAnceof UserDAtAAutoSyncError);
+		Assert.deepEquAl((<UserDAtAAutoSyncError>e).code, UserDAtASyncErrorCode.TurnedOff);
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			// MAchine
+			{ type: 'GET', url: `${tArget.url}/v1/resource/mAchines/lAtest`, heAders: { 'If-None-MAtch': '1' } },
 		]);
 	});
 
-	test('test rate limit on server', async () => {
-		const target = new UserDataSyncTestServer(5);
+	test('test disAbling the mAchine turns off sync', Async () => {
+		const tArget = new UserDAtASyncTestServer();
 
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
+		AwAit testObject.sync();
+
+		// DisAble current mAchine
+		const userDAtASyncMAchinesService = testClient.instAntiAtionService.get(IUserDAtASyncMAchinesService);
+		const mAchines = AwAit userDAtASyncMAchinesService.getMAchines();
+		const currentMAchine = mAchines.find(m => m.isCurrent)!;
+		AwAit userDAtASyncMAchinesService.setEnAblement(currentMAchine.id, fAlse);
+
+		tArget.reset();
 
 		const errorPromise = Event.toPromise(testObject.onError);
-		while (target.requests.length < 5) {
-			await testObject.sync();
+		AwAit testObject.sync();
+
+		const e = AwAit errorPromise;
+		Assert.ok(e instAnceof UserDAtAAutoSyncError);
+		Assert.deepEquAl((<UserDAtAAutoSyncError>e).code, UserDAtASyncErrorCode.TurnedOff);
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			// MAchine
+			{ type: 'GET', url: `${tArget.url}/v1/resource/mAchines/lAtest`, heAders: { 'If-None-MAtch': '2' } },
+			{ type: 'POST', url: `${tArget.url}/v1/resource/mAchines`, heAders: { 'If-MAtch': '2' } },
+		]);
+	});
+
+	test('test removing the mAchine Adds mAchine bAck', Async () => {
+		const tArget = new UserDAtASyncTestServer();
+
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
+		AwAit testObject.sync();
+
+		// Remove current mAchine
+		AwAit testClient.instAntiAtionService.get(IUserDAtASyncMAchinesService).removeCurrentMAchine();
+
+		tArget.reset();
+
+		AwAit testObject.sync();
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			// MAchine
+			{ type: 'POST', url: `${tArget.url}/v1/resource/mAchines`, heAders: { 'If-MAtch': '2' } },
+		]);
+	});
+
+	test('test creAting new session from one client throws session expired error on Another client while syncing', Async () => {
+		const tArget = new UserDAtASyncTestServer();
+
+		// Set up And sync from the client
+		const client = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit client.setUp();
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
+
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
+		AwAit testObject.sync();
+
+		// Reset from the first client
+		AwAit client.instAntiAtionService.get(IUserDAtASyncService).reset();
+
+		// Sync AgAin from the first client to creAte new session
+		AwAit (AwAit client.instAntiAtionService.get(IUserDAtASyncService).creAteSyncTAsk()).run();
+
+		// Sync from the test client
+		tArget.reset();
+
+		const errorPromise = Event.toPromise(testObject.onError);
+		AwAit testObject.sync();
+
+		const e = AwAit errorPromise;
+		Assert.ok(e instAnceof UserDAtAAutoSyncError);
+		Assert.deepEquAl((<UserDAtAAutoSyncError>e).code, UserDAtASyncErrorCode.SessionExpired);
+		Assert.deepEquAl(tArget.requests, [
+			// MAnifest
+			{ type: 'GET', url: `${tArget.url}/v1/mAnifest`, heAders: {} },
+			// MAchine
+			{ type: 'GET', url: `${tArget.url}/v1/resource/mAchines/lAtest`, heAders: { 'If-None-MAtch': '1' } },
+		]);
+	});
+
+	test('test rAte limit on server', Async () => {
+		const tArget = new UserDAtASyncTestServer(5);
+
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
+
+		const errorPromise = Event.toPromise(testObject.onError);
+		while (tArget.requests.length < 5) {
+			AwAit testObject.sync();
 		}
 
-		const e = await errorPromise;
-		assert.ok(e instanceof UserDataSyncStoreError);
-		assert.deepEqual((<UserDataSyncStoreError>e).code, UserDataSyncErrorCode.TooManyRequests);
+		const e = AwAit errorPromise;
+		Assert.ok(e instAnceof UserDAtASyncStoreError);
+		Assert.deepEquAl((<UserDAtASyncStoreError>e).code, UserDAtASyncErrorCode.TooMAnyRequests);
 	});
 
-	test('test auto sync is suspended when server donot accepts requests', async () => {
-		const target = new UserDataSyncTestServer(5, 1);
+	test('test Auto sync is suspended when server donot Accepts requests', Async () => {
+		const tArget = new UserDAtASyncTestServer(5, 1);
 
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		while (target.requests.length < 5) {
-			await testObject.sync();
+		while (tArget.requests.length < 5) {
+			AwAit testObject.sync();
 		}
 
-		target.reset();
-		await testObject.sync();
+		tArget.reset();
+		AwAit testObject.sync();
 
-		assert.deepEqual(target.requests, []);
+		Assert.deepEquAl(tArget.requests, []);
 	});
 
-	test('test cache control header with no cache is sent when triggered with disable cache option', async () => {
-		const target = new UserDataSyncTestServer(5, 1);
+	test('test cAche control heAder with no cAche is sent when triggered with disAble cAche option', Async () => {
+		const tArget = new UserDAtASyncTestServer(5, 1);
 
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		await testObject.triggerSync(['some reason'], true, true);
-		assert.equal(target.requestsWithAllHeaders[0].headers!['Cache-Control'], 'no-cache');
+		AwAit testObject.triggerSync(['some reAson'], true, true);
+		Assert.equAl(tArget.requestsWithAllHeAders[0].heAders!['CAche-Control'], 'no-cAche');
 	});
 
-	test('test cache control header is not sent when triggered without disable cache option', async () => {
-		const target = new UserDataSyncTestServer(5, 1);
+	test('test cAche control heAder is not sent when triggered without disAble cAche option', Async () => {
+		const tArget = new UserDAtASyncTestServer(5, 1);
 
-		// Set up and sync from the test client
-		const testClient = disposableStore.add(new UserDataSyncClient(target));
-		await testClient.setUp();
-		const testObject: TestUserDataAutoSyncService = testClient.instantiationService.createInstance(TestUserDataAutoSyncService);
+		// Set up And sync from the test client
+		const testClient = disposAbleStore.Add(new UserDAtASyncClient(tArget));
+		AwAit testClient.setUp();
+		const testObject: TestUserDAtAAutoSyncService = testClient.instAntiAtionService.creAteInstAnce(TestUserDAtAAutoSyncService);
 
-		await testObject.triggerSync(['some reason'], true, false);
-		assert.equal(target.requestsWithAllHeaders[0].headers!['Cache-Control'], undefined);
+		AwAit testObject.triggerSync(['some reAson'], true, fAlse);
+		Assert.equAl(tArget.requestsWithAllHeAders[0].heAders!['CAche-Control'], undefined);
 	});
 
 });

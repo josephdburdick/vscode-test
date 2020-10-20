@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Range } from 'vs/editor/common/core/range';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
+import * As modes from 'vs/editor/common/modes';
 import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
-import { ContextKeyExpr, IContextKeyService, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
+import { ContextKeyExpr, IContextKeyService, ContextKeyExpression } from 'vs/plAtform/contextkey/common/contextkey';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IExtensionPoint } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { DocumentationExtensionPoint } from './documentationExtensionPoint';
+import { DocumentAtionExtensionPoint } from './documentAtionExtensionPoint';
 
 
-export class CodeActionDocumentationContribution extends Disposable implements IWorkbenchContribution, modes.CodeActionProvider {
+export clAss CodeActionDocumentAtionContribution extends DisposAble implements IWorkbenchContribution, modes.CodeActionProvider {
 
-	private contributions: {
+	privAte contributions: {
 		title: string;
 		when: ContextKeyExpression;
-		command: string;
+		commAnd: string;
 	}[] = [];
 
-	private readonly emptyCodeActionsList = {
-		actions: [],
+	privAte reAdonly emptyCodeActionsList = {
+		Actions: [],
 		dispose: () => { }
 	};
 
 	constructor(
-		extensionPoint: IExtensionPoint<DocumentationExtensionPoint>,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+		extensionPoint: IExtensionPoint<DocumentAtionExtensionPoint>,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
 	) {
 		super();
 
 		this._register(modes.CodeActionProviderRegistry.register('*', this));
 
-		extensionPoint.setHandler(points => {
+		extensionPoint.setHAndler(points => {
 			this.contributions = [];
-			for (const documentation of points) {
-				if (!documentation.value.refactoring) {
+			for (const documentAtion of points) {
+				if (!documentAtion.vAlue.refActoring) {
 					continue;
 				}
 
-				for (const contribution of documentation.value.refactoring) {
-					const precondition = ContextKeyExpr.deserialize(contribution.when);
+				for (const contribution of documentAtion.vAlue.refActoring) {
+					const precondition = ContextKeyExpr.deseriAlize(contribution.when);
 					if (!precondition) {
 						continue;
 					}
@@ -53,7 +53,7 @@ export class CodeActionDocumentationContribution extends Disposable implements I
 					this.contributions.push({
 						title: contribution.title,
 						when: precondition,
-						command: contribution.command
+						commAnd: contribution.commAnd
 					});
 
 				}
@@ -61,22 +61,22 @@ export class CodeActionDocumentationContribution extends Disposable implements I
 		});
 	}
 
-	async provideCodeActions(_model: ITextModel, _range: Range | Selection, context: modes.CodeActionContext, _token: CancellationToken): Promise<modes.CodeActionList> {
+	Async provideCodeActions(_model: ITextModel, _rAnge: RAnge | Selection, context: modes.CodeActionContext, _token: CAncellAtionToken): Promise<modes.CodeActionList> {
 		return this.emptyCodeActionsList;
 	}
 
-	public _getAdditionalMenuItems(context: modes.CodeActionContext, actions: readonly modes.CodeAction[]): modes.Command[] {
-		if (context.only !== CodeActionKind.Refactor.value) {
-			if (!actions.some(action => action.kind && CodeActionKind.Refactor.contains(new CodeActionKind(action.kind)))) {
+	public _getAdditionAlMenuItems(context: modes.CodeActionContext, Actions: reAdonly modes.CodeAction[]): modes.CommAnd[] {
+		if (context.only !== CodeActionKind.RefActor.vAlue) {
+			if (!Actions.some(Action => Action.kind && CodeActionKind.RefActor.contAins(new CodeActionKind(Action.kind)))) {
 				return [];
 			}
 		}
 
 		return this.contributions
-			.filter(contribution => this.contextKeyService.contextMatchesRules(contribution.when))
-			.map(contribution => {
+			.filter(contribution => this.contextKeyService.contextMAtchesRules(contribution.when))
+			.mAp(contribution => {
 				return {
-					id: contribution.command,
+					id: contribution.commAnd,
 					title: contribution.title
 				};
 			});

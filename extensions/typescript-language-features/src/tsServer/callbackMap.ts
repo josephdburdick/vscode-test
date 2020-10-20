@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as Proto from '../protocol';
+import type * As Proto from '../protocol';
 import { ServerResponse } from '../typescriptService';
 
-export interface CallbackItem<R> {
-	readonly onSuccess: (value: R) => void;
-	readonly onError: (err: Error) => void;
-	readonly queuingStartTime: number;
-	readonly isAsync: boolean;
+export interfAce CAllbAckItem<R> {
+	reAdonly onSuccess: (vAlue: R) => void;
+	reAdonly onError: (err: Error) => void;
+	reAdonly queuingStArtTime: number;
+	reAdonly isAsync: booleAn;
 }
 
-export class CallbackMap<R extends Proto.Response> {
-	private readonly _callbacks = new Map<number, CallbackItem<ServerResponse.Response<R> | undefined>>();
-	private readonly _asyncCallbacks = new Map<number, CallbackItem<ServerResponse.Response<R> | undefined>>();
+export clAss CAllbAckMAp<R extends Proto.Response> {
+	privAte reAdonly _cAllbAcks = new MAp<number, CAllbAckItem<ServerResponse.Response<R> | undefined>>();
+	privAte reAdonly _AsyncCAllbAcks = new MAp<number, CAllbAckItem<ServerResponse.Response<R> | undefined>>();
 
-	public destroy(cause: string): void {
-		const cancellation = new ServerResponse.Cancelled(cause);
-		for (const callback of this._callbacks.values()) {
-			callback.onSuccess(cancellation);
+	public destroy(cAuse: string): void {
+		const cAncellAtion = new ServerResponse.CAncelled(cAuse);
+		for (const cAllbAck of this._cAllbAcks.vAlues()) {
+			cAllbAck.onSuccess(cAncellAtion);
 		}
-		this._callbacks.clear();
-		for (const callback of this._asyncCallbacks.values()) {
-			callback.onSuccess(cancellation);
+		this._cAllbAcks.cleAr();
+		for (const cAllbAck of this._AsyncCAllbAcks.vAlues()) {
+			cAllbAck.onSuccess(cAncellAtion);
 		}
-		this._asyncCallbacks.clear();
+		this._AsyncCAllbAcks.cleAr();
 	}
 
-	public add(seq: number, callback: CallbackItem<ServerResponse.Response<R> | undefined>, isAsync: boolean) {
+	public Add(seq: number, cAllbAck: CAllbAckItem<ServerResponse.Response<R> | undefined>, isAsync: booleAn) {
 		if (isAsync) {
-			this._asyncCallbacks.set(seq, callback);
+			this._AsyncCAllbAcks.set(seq, cAllbAck);
 		} else {
-			this._callbacks.set(seq, callback);
+			this._cAllbAcks.set(seq, cAllbAck);
 		}
 	}
 
-	public fetch(seq: number): CallbackItem<ServerResponse.Response<R> | undefined> | undefined {
-		const callback = this._callbacks.get(seq) || this._asyncCallbacks.get(seq);
+	public fetch(seq: number): CAllbAckItem<ServerResponse.Response<R> | undefined> | undefined {
+		const cAllbAck = this._cAllbAcks.get(seq) || this._AsyncCAllbAcks.get(seq);
 		this.delete(seq);
-		return callback;
+		return cAllbAck;
 	}
 
-	private delete(seq: number) {
-		if (!this._callbacks.delete(seq)) {
-			this._asyncCallbacks.delete(seq);
+	privAte delete(seq: number) {
+		if (!this._cAllbAcks.delete(seq)) {
+			this._AsyncCAllbAcks.delete(seq);
 		}
 	}
 }

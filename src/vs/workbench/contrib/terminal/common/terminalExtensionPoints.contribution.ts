@@ -1,9 +1,9 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITerminalContributionService, TerminalContributionService } from './terminalExtensionPoints';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { ITerminAlContributionService, TerminAlContributionService } from './terminAlExtensionPoints';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-registerSingleton(ITerminalContributionService, TerminalContributionService, true);
+registerSingleton(ITerminAlContributionService, TerminAlContributionService, true);

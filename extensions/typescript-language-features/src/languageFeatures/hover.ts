@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
-import { localize } from '../tsServer/versionProvider';
-import { ClientCapability, ITypeScriptServiceClient, ServerType } from '../typescriptService';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
+import { locAlize } from '../tsServer/versionProvider';
+import { ClientCApAbility, ITypeScriptServiceClient, ServerType } from '../typescriptService';
+import { conditionAlRegistrAtion, requireSomeCApAbility } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import { markdownDocumentation } from '../utils/previewer';
-import * as typeConverters from '../utils/typeConverters';
+import { mArkdownDocumentAtion } from '../utils/previewer';
+import * As typeConverters from '../utils/typeConverters';
 
 
-class TypeScriptHoverProvider implements vscode.HoverProvider {
+clAss TypeScriptHoverProvider implements vscode.HoverProvider {
 
 	public constructor(
-		private readonly client: ITypeScriptServiceClient
+		privAte reAdonly client: ITypeScriptServiceClient
 	) { }
 
-	public async provideHover(
+	public Async provideHover(
 		document: vscode.TextDocument,
 		position: vscode.Position,
-		token: vscode.CancellationToken
+		token: vscode.CAncellAtionToken
 	): Promise<vscode.Hover | undefined> {
-		const filepath = this.client.toOpenedFilePath(document);
-		if (!filepath) {
+		const filepAth = this.client.toOpenedFilePAth(document);
+		if (!filepAth) {
 			return undefined;
 		}
 
-		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
-		const response = await this.client.interruptGetErr(() => this.client.execute('quickinfo', args, token));
+		const Args = typeConverters.Position.toFileLocAtionRequestArgs(filepAth, position);
+		const response = AwAit this.client.interruptGetErr(() => this.client.execute('quickinfo', Args, token));
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
 		return new vscode.Hover(
 			this.getContents(document.uri, response.body, response._serverType),
-			typeConverters.Range.fromTextSpan(response.body));
+			typeConverters.RAnge.fromTextSpAn(response.body));
 	}
 
-	private getContents(
+	privAte getContents(
 		resource: vscode.Uri,
-		data: Proto.QuickInfoResponseBody,
+		dAtA: Proto.QuickInfoResponseBody,
 		source: ServerType | undefined,
 	) {
-		const parts: vscode.MarkedString[] = [];
+		const pArts: vscode.MArkedString[] = [];
 
-		if (data.displayString) {
-			const displayParts: string[] = [];
+		if (dAtA.displAyString) {
+			const displAyPArts: string[] = [];
 
-			if (source === ServerType.Syntax && this.client.hasCapabilityForResource(resource, ClientCapability.Semantic)) {
-				displayParts.push(
-					localize({
-						key: 'loadingPrefix',
-						comment: ['Prefix displayed for hover entries while the server is still loading']
-					}, "(loading...)"));
+			if (source === ServerType.SyntAx && this.client.hAsCApAbilityForResource(resource, ClientCApAbility.SemAntic)) {
+				displAyPArts.push(
+					locAlize({
+						key: 'loAdingPrefix',
+						comment: ['Prefix displAyed for hover entries while the server is still loAding']
+					}, "(loAding...)"));
 			}
 
-			displayParts.push(data.displayString);
+			displAyPArts.push(dAtA.displAyString);
 
-			parts.push({ language: 'typescript', value: displayParts.join(' ') });
+			pArts.push({ lAnguAge: 'typescript', vAlue: displAyPArts.join(' ') });
 		}
-		parts.push(markdownDocumentation(data.documentation, data.tags));
-		return parts;
+		pArts.push(mArkdownDocumentAtion(dAtA.documentAtion, dAtA.tAgs));
+		return pArts;
 	}
 }
 
 export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient
-): vscode.Disposable {
-	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+): vscode.DisposAble {
+	return conditionAlRegistrAtion([
+		requireSomeCApAbility(client, ClientCApAbility.EnhAncedSyntAx, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerHoverProvider(selector.syntax,
+		return vscode.lAnguAges.registerHoverProvider(selector.syntAx,
 			new TypeScriptHoverProvider(client));
 	});
 }

@@ -1,69 +1,69 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MarkdownString } from 'vs/base/common/htmlContent';
+import * As Assert from 'Assert';
+import { MArkdownString } from 'vs/bAse/common/htmlContent';
 
-suite('MarkdownString', () => {
+suite('MArkdownString', () => {
 
-	test('appendText', () => {
+	test('AppendText', () => {
 
-		const mds = new MarkdownString();
-		mds.appendText('# foo\n*bar*');
+		const mds = new MArkdownString();
+		mds.AppendText('# foo\n*bAr*');
 
-		assert.equal(mds.value, '\\# foo\n\n\\*bar\\*');
+		Assert.equAl(mds.vAlue, '\\# foo\n\n\\*bAr\\*');
 	});
 
 	suite('ThemeIcons', () => {
 
 		suite('Support On', () => {
 
-			test('appendText', () => {
-				const mds = new MarkdownString(undefined, { supportThemeIcons: true });
-				mds.appendText('$(zap) $(not a theme icon) $(add)');
+			test('AppendText', () => {
+				const mds = new MArkdownString(undefined, { supportThemeIcons: true });
+				mds.AppendText('$(zAp) $(not A theme icon) $(Add)');
 
-				assert.equal(mds.value, '\\\\$\\(zap\\) $\\(not a theme icon\\) \\\\$\\(add\\)');
+				Assert.equAl(mds.vAlue, '\\\\$\\(zAp\\) $\\(not A theme icon\\) \\\\$\\(Add\\)');
 			});
 
-			test('appendMarkdown', () => {
-				const mds = new MarkdownString(undefined, { supportThemeIcons: true });
-				mds.appendMarkdown('$(zap) $(not a theme icon) $(add)');
+			test('AppendMArkdown', () => {
+				const mds = new MArkdownString(undefined, { supportThemeIcons: true });
+				mds.AppendMArkdown('$(zAp) $(not A theme icon) $(Add)');
 
-				assert.equal(mds.value, '$(zap) $(not a theme icon) $(add)');
+				Assert.equAl(mds.vAlue, '$(zAp) $(not A theme icon) $(Add)');
 			});
 
-			test('appendMarkdown with escaped icon', () => {
-				const mds = new MarkdownString(undefined, { supportThemeIcons: true });
-				mds.appendMarkdown('\\$(zap) $(not a theme icon) $(add)');
+			test('AppendMArkdown with escAped icon', () => {
+				const mds = new MArkdownString(undefined, { supportThemeIcons: true });
+				mds.AppendMArkdown('\\$(zAp) $(not A theme icon) $(Add)');
 
-				assert.equal(mds.value, '\\$(zap) $(not a theme icon) $(add)');
+				Assert.equAl(mds.vAlue, '\\$(zAp) $(not A theme icon) $(Add)');
 			});
 
 		});
 
 		suite('Support Off', () => {
 
-			test('appendText', () => {
-				const mds = new MarkdownString(undefined, { supportThemeIcons: false });
-				mds.appendText('$(zap) $(not a theme icon) $(add)');
+			test('AppendText', () => {
+				const mds = new MArkdownString(undefined, { supportThemeIcons: fAlse });
+				mds.AppendText('$(zAp) $(not A theme icon) $(Add)');
 
-				assert.equal(mds.value, '$\\(zap\\) $\\(not a theme icon\\) $\\(add\\)');
+				Assert.equAl(mds.vAlue, '$\\(zAp\\) $\\(not A theme icon\\) $\\(Add\\)');
 			});
 
-			test('appendMarkdown', () => {
-				const mds = new MarkdownString(undefined, { supportThemeIcons: false });
-				mds.appendMarkdown('$(zap) $(not a theme icon) $(add)');
+			test('AppendMArkdown', () => {
+				const mds = new MArkdownString(undefined, { supportThemeIcons: fAlse });
+				mds.AppendMArkdown('$(zAp) $(not A theme icon) $(Add)');
 
-				assert.equal(mds.value, '$(zap) $(not a theme icon) $(add)');
+				Assert.equAl(mds.vAlue, '$(zAp) $(not A theme icon) $(Add)');
 			});
 
-			test('appendMarkdown with escaped icon', () => {
-				const mds = new MarkdownString(undefined, { supportThemeIcons: true });
-				mds.appendMarkdown('\\$(zap) $(not a theme icon) $(add)');
+			test('AppendMArkdown with escAped icon', () => {
+				const mds = new MArkdownString(undefined, { supportThemeIcons: true });
+				mds.AppendMArkdown('\\$(zAp) $(not A theme icon) $(Add)');
 
-				assert.equal(mds.value, '\\$(zap) $(not a theme icon) $(add)');
+				Assert.equAl(mds.vAlue, '\\$(zAp) $(not A theme icon) $(Add)');
 			});
 
 		});

@@ -1,171 +1,171 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IExtensionManagementService, IExtensionGalleryService, InstallOperation, DidInstallExtensionEvent } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationsService, ExtensionRecommendationReason, IExtensionIgnoredRecommendationsService } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ShowRecommendationsOnlyOnDemandKey } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { distinct, shuffle } from 'vs/base/common/arrays';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { LifecyclePhase, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { DynamicWorkspaceRecommendations } from 'vs/workbench/contrib/extensions/browser/dynamicWorkspaceRecommendations';
-import { ExeBasedRecommendations } from 'vs/workbench/contrib/extensions/browser/exeBasedRecommendations';
-import { ExperimentalRecommendations } from 'vs/workbench/contrib/extensions/browser/experimentalRecommendations';
-import { WorkspaceRecommendations } from 'vs/workbench/contrib/extensions/browser/workspaceRecommendations';
-import { FileBasedRecommendations } from 'vs/workbench/contrib/extensions/browser/fileBasedRecommendations';
-import { KeymapRecommendations } from 'vs/workbench/contrib/extensions/browser/keymapRecommendations';
-import { ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { ConfigBasedRecommendations } from 'vs/workbench/contrib/extensions/browser/configBasedRecommendations';
-import { IExtensionRecommendationNotificationService } from 'vs/platform/extensionRecommendations/common/extensionRecommendations';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtensionMAnAgementService, IExtensionGAlleryService, InstAllOperAtion, DidInstAllExtensionEvent } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IExtensionRecommendAtionsService, ExtensionRecommendAtionReAson, IExtensionIgnoredRecommendAtionsService } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ShowRecommendAtionsOnlyOnDemAndKey } from 'vs/workbench/contrib/extensions/common/extensions';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { distinct, shuffle } from 'vs/bAse/common/ArrAys';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { LifecyclePhAse, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { DynAmicWorkspAceRecommendAtions } from 'vs/workbench/contrib/extensions/browser/dynAmicWorkspAceRecommendAtions';
+import { ExeBAsedRecommendAtions } from 'vs/workbench/contrib/extensions/browser/exeBAsedRecommendAtions';
+import { ExperimentAlRecommendAtions } from 'vs/workbench/contrib/extensions/browser/experimentAlRecommendAtions';
+import { WorkspAceRecommendAtions } from 'vs/workbench/contrib/extensions/browser/workspAceRecommendAtions';
+import { FileBAsedRecommendAtions } from 'vs/workbench/contrib/extensions/browser/fileBAsedRecommendAtions';
+import { KeymApRecommendAtions } from 'vs/workbench/contrib/extensions/browser/keymApRecommendAtions';
+import { ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { ConfigBAsedRecommendAtions } from 'vs/workbench/contrib/extensions/browser/configBAsedRecommendAtions';
+import { IExtensionRecommendAtionNotificAtionService } from 'vs/plAtform/extensionRecommendAtions/common/extensionRecommendAtions';
 
-type IgnoreRecommendationClassification = {
-	recommendationReason: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
-	extensionId: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
+type IgnoreRecommendAtionClAssificAtion = {
+	recommendAtionReAson: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight', isMeAsurement: true };
+	extensionId: { clAssificAtion: 'PublicNonPersonAlDAtA', purpose: 'FeAtureInsight' };
 };
 
-export class ExtensionRecommendationsService extends Disposable implements IExtensionRecommendationsService {
+export clAss ExtensionRecommendAtionsService extends DisposAble implements IExtensionRecommendAtionsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	// Recommendations
-	private readonly fileBasedRecommendations: FileBasedRecommendations;
-	private readonly workspaceRecommendations: WorkspaceRecommendations;
-	private readonly experimentalRecommendations: ExperimentalRecommendations;
-	private readonly configBasedRecommendations: ConfigBasedRecommendations;
-	private readonly exeBasedRecommendations: ExeBasedRecommendations;
-	private readonly dynamicWorkspaceRecommendations: DynamicWorkspaceRecommendations;
-	private readonly keymapRecommendations: KeymapRecommendations;
+	// RecommendAtions
+	privAte reAdonly fileBAsedRecommendAtions: FileBAsedRecommendAtions;
+	privAte reAdonly workspAceRecommendAtions: WorkspAceRecommendAtions;
+	privAte reAdonly experimentAlRecommendAtions: ExperimentAlRecommendAtions;
+	privAte reAdonly configBAsedRecommendAtions: ConfigBAsedRecommendAtions;
+	privAte reAdonly exeBAsedRecommendAtions: ExeBAsedRecommendAtions;
+	privAte reAdonly dynAmicWorkspAceRecommendAtions: DynAmicWorkspAceRecommendAtions;
+	privAte reAdonly keymApRecommendAtions: KeymApRecommendAtions;
 
-	public readonly activationPromise: Promise<void>;
-	private sessionSeed: number;
+	public reAdonly ActivAtionPromise: Promise<void>;
+	privAte sessionSeed: number;
 
-	private _onDidChangeRecommendations = this._register(new Emitter<void>());
-	readonly onDidChangeRecommendations = this._onDidChangeRecommendations.event;
+	privAte _onDidChAngeRecommendAtions = this._register(new Emitter<void>());
+	reAdonly onDidChAngeRecommendAtions = this._onDidChAngeRecommendAtions.event;
 
 	constructor(
-		@IInstantiationService instantiationService: IInstantiationService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IExtensionIgnoredRecommendationsService private readonly extensionRecommendationsManagementService: IExtensionIgnoredRecommendationsService,
-		@IExtensionRecommendationNotificationService private readonly extensionRecommendationNotificationService: IExtensionRecommendationNotificationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IExtensionGAlleryService privAte reAdonly gAlleryService: IExtensionGAlleryService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService,
+		@IExtensionMAnAgementService privAte reAdonly extensionMAnAgementService: IExtensionMAnAgementService,
+		@IExtensionIgnoredRecommendAtionsService privAte reAdonly extensionRecommendAtionsMAnAgementService: IExtensionIgnoredRecommendAtionsService,
+		@IExtensionRecommendAtionNotificAtionService privAte reAdonly extensionRecommendAtionNotificAtionService: IExtensionRecommendAtionNotificAtionService,
 	) {
 		super();
 
-		this.workspaceRecommendations = instantiationService.createInstance(WorkspaceRecommendations);
-		this.fileBasedRecommendations = instantiationService.createInstance(FileBasedRecommendations);
-		this.experimentalRecommendations = instantiationService.createInstance(ExperimentalRecommendations);
-		this.configBasedRecommendations = instantiationService.createInstance(ConfigBasedRecommendations);
-		this.exeBasedRecommendations = instantiationService.createInstance(ExeBasedRecommendations);
-		this.dynamicWorkspaceRecommendations = instantiationService.createInstance(DynamicWorkspaceRecommendations);
-		this.keymapRecommendations = instantiationService.createInstance(KeymapRecommendations);
+		this.workspAceRecommendAtions = instAntiAtionService.creAteInstAnce(WorkspAceRecommendAtions);
+		this.fileBAsedRecommendAtions = instAntiAtionService.creAteInstAnce(FileBAsedRecommendAtions);
+		this.experimentAlRecommendAtions = instAntiAtionService.creAteInstAnce(ExperimentAlRecommendAtions);
+		this.configBAsedRecommendAtions = instAntiAtionService.creAteInstAnce(ConfigBAsedRecommendAtions);
+		this.exeBAsedRecommendAtions = instAntiAtionService.creAteInstAnce(ExeBAsedRecommendAtions);
+		this.dynAmicWorkspAceRecommendAtions = instAntiAtionService.creAteInstAnce(DynAmicWorkspAceRecommendAtions);
+		this.keymApRecommendAtions = instAntiAtionService.creAteInstAnce(KeymApRecommendAtions);
 
-		if (!this.isEnabled()) {
+		if (!this.isEnAbled()) {
 			this.sessionSeed = 0;
-			this.activationPromise = Promise.resolve();
+			this.ActivAtionPromise = Promise.resolve();
 			return;
 		}
 
-		this.sessionSeed = +new Date();
+		this.sessionSeed = +new DAte();
 
-		// Activation
-		this.activationPromise = this.activate();
+		// ActivAtion
+		this.ActivAtionPromise = this.ActivAte();
 
-		this._register(this.extensionManagementService.onDidInstallExtension(e => this.onDidInstallExtension(e)));
+		this._register(this.extensionMAnAgementService.onDidInstAllExtension(e => this.onDidInstAllExtension(e)));
 	}
 
-	private async activate(): Promise<void> {
-		await this.lifecycleService.when(LifecyclePhase.Restored);
+	privAte Async ActivAte(): Promise<void> {
+		AwAit this.lifecycleService.when(LifecyclePhAse.Restored);
 
-		// activate all recommendations
-		await Promise.all([
-			this.workspaceRecommendations.activate(),
-			this.fileBasedRecommendations.activate(),
-			this.experimentalRecommendations.activate(),
-			this.keymapRecommendations.activate(),
-			this.lifecycleService.when(LifecyclePhase.Eventually)
-				.then(async () => {
-					if (!this.configurationService.getValue<boolean>(ShowRecommendationsOnlyOnDemandKey)) {
-						await this.activateProactiveRecommendations();
+		// ActivAte All recommendAtions
+		AwAit Promise.All([
+			this.workspAceRecommendAtions.ActivAte(),
+			this.fileBAsedRecommendAtions.ActivAte(),
+			this.experimentAlRecommendAtions.ActivAte(),
+			this.keymApRecommendAtions.ActivAte(),
+			this.lifecycleService.when(LifecyclePhAse.EventuAlly)
+				.then(Async () => {
+					if (!this.configurAtionService.getVAlue<booleAn>(ShowRecommendAtionsOnlyOnDemAndKey)) {
+						AwAit this.ActivAteProActiveRecommendAtions();
 					}
 				})
 		]);
 
-		this._register(this.extensionRecommendationsManagementService.onDidChangeIgnoredRecommendations(() => this._onDidChangeRecommendations.fire()));
-		this._register(this.extensionRecommendationsManagementService.onDidChangeGlobalIgnoredRecommendation(({ extensionId, isRecommended }) => {
+		this._register(this.extensionRecommendAtionsMAnAgementService.onDidChAngeIgnoredRecommendAtions(() => this._onDidChAngeRecommendAtions.fire()));
+		this._register(this.extensionRecommendAtionsMAnAgementService.onDidChAngeGlobAlIgnoredRecommendAtion(({ extensionId, isRecommended }) => {
 			if (!isRecommended) {
-				const reason = this.getAllRecommendationsWithReason()[extensionId];
-				if (reason && reason.reasonId) {
-					this.telemetryService.publicLog2<{ extensionId: string, recommendationReason: ExtensionRecommendationReason }, IgnoreRecommendationClassification>('extensionsRecommendations:ignoreRecommendation', { extensionId, recommendationReason: reason.reasonId });
+				const reAson = this.getAllRecommendAtionsWithReAson()[extensionId];
+				if (reAson && reAson.reAsonId) {
+					this.telemetryService.publicLog2<{ extensionId: string, recommendAtionReAson: ExtensionRecommendAtionReAson }, IgnoreRecommendAtionClAssificAtion>('extensionsRecommendAtions:ignoreRecommendAtion', { extensionId, recommendAtionReAson: reAson.reAsonId });
 				}
 			}
 		}));
 
-		await this.promptWorkspaceRecommendations();
-		this._register(Event.any(this.workspaceRecommendations.onDidChangeRecommendations, this.configBasedRecommendations.onDidChangeRecommendations)(() => this.promptWorkspaceRecommendations()));
+		AwAit this.promptWorkspAceRecommendAtions();
+		this._register(Event.Any(this.workspAceRecommendAtions.onDidChAngeRecommendAtions, this.configBAsedRecommendAtions.onDidChAngeRecommendAtions)(() => this.promptWorkspAceRecommendAtions()));
 	}
 
-	private isEnabled(): boolean {
-		return this.galleryService.isEnabled() && !this.environmentService.extensionDevelopmentLocationURI;
+	privAte isEnAbled(): booleAn {
+		return this.gAlleryService.isEnAbled() && !this.environmentService.extensionDevelopmentLocAtionURI;
 	}
 
-	private async activateProactiveRecommendations(): Promise<void> {
-		await Promise.all([this.dynamicWorkspaceRecommendations.activate(), this.exeBasedRecommendations.activate(), this.configBasedRecommendations.activate()]);
+	privAte Async ActivAteProActiveRecommendAtions(): Promise<void> {
+		AwAit Promise.All([this.dynAmicWorkspAceRecommendAtions.ActivAte(), this.exeBAsedRecommendAtions.ActivAte(), this.configBAsedRecommendAtions.ActivAte()]);
 	}
 
-	getAllRecommendationsWithReason(): { [id: string]: { reasonId: ExtensionRecommendationReason, reasonText: string }; } {
-		/* Activate proactive recommendations */
-		this.activateProactiveRecommendations();
+	getAllRecommendAtionsWithReAson(): { [id: string]: { reAsonId: ExtensionRecommendAtionReAson, reAsonText: string }; } {
+		/* ActivAte proActive recommendAtions */
+		this.ActivAteProActiveRecommendAtions();
 
-		const output: { [id: string]: { reasonId: ExtensionRecommendationReason, reasonText: string }; } = Object.create(null);
+		const output: { [id: string]: { reAsonId: ExtensionRecommendAtionReAson, reAsonText: string }; } = Object.creAte(null);
 
-		const allRecommendations = [
-			...this.dynamicWorkspaceRecommendations.recommendations,
-			...this.configBasedRecommendations.recommendations,
-			...this.exeBasedRecommendations.recommendations,
-			...this.experimentalRecommendations.recommendations,
-			...this.fileBasedRecommendations.recommendations,
-			...this.workspaceRecommendations.recommendations,
-			...this.keymapRecommendations.recommendations,
+		const AllRecommendAtions = [
+			...this.dynAmicWorkspAceRecommendAtions.recommendAtions,
+			...this.configBAsedRecommendAtions.recommendAtions,
+			...this.exeBAsedRecommendAtions.recommendAtions,
+			...this.experimentAlRecommendAtions.recommendAtions,
+			...this.fileBAsedRecommendAtions.recommendAtions,
+			...this.workspAceRecommendAtions.recommendAtions,
+			...this.keymApRecommendAtions.recommendAtions,
 		];
 
-		for (const { extensionId, reason } of allRecommendations) {
+		for (const { extensionId, reAson } of AllRecommendAtions) {
 			if (this.isExtensionAllowedToBeRecommended(extensionId)) {
-				output[extensionId.toLowerCase()] = reason;
+				output[extensionId.toLowerCAse()] = reAson;
 			}
 		}
 
 		return output;
 	}
 
-	async getConfigBasedRecommendations(): Promise<{ important: string[], others: string[] }> {
-		await this.configBasedRecommendations.activate();
+	Async getConfigBAsedRecommendAtions(): Promise<{ importAnt: string[], others: string[] }> {
+		AwAit this.configBAsedRecommendAtions.ActivAte();
 		return {
-			important: this.toExtensionRecommendations(this.configBasedRecommendations.importantRecommendations),
-			others: this.toExtensionRecommendations(this.configBasedRecommendations.otherRecommendations)
+			importAnt: this.toExtensionRecommendAtions(this.configBAsedRecommendAtions.importAntRecommendAtions),
+			others: this.toExtensionRecommendAtions(this.configBAsedRecommendAtions.otherRecommendAtions)
 		};
 	}
 
-	async getOtherRecommendations(): Promise<string[]> {
-		await this.activateProactiveRecommendations();
+	Async getOtherRecommendAtions(): Promise<string[]> {
+		AwAit this.ActivAteProActiveRecommendAtions();
 
-		const recommendations = [
-			...this.configBasedRecommendations.otherRecommendations,
-			...this.exeBasedRecommendations.otherRecommendations,
-			...this.dynamicWorkspaceRecommendations.recommendations,
-			...this.experimentalRecommendations.recommendations
+		const recommendAtions = [
+			...this.configBAsedRecommendAtions.otherRecommendAtions,
+			...this.exeBAsedRecommendAtions.otherRecommendAtions,
+			...this.dynAmicWorkspAceRecommendAtions.recommendAtions,
+			...this.experimentAlRecommendAtions.recommendAtions
 		];
 
-		const extensionIds = distinct(recommendations.map(e => e.extensionId))
+		const extensionIds = distinct(recommendAtions.mAp(e => e.extensionId))
 			.filter(extensionId => this.isExtensionAllowedToBeRecommended(extensionId));
 
 		shuffle(extensionIds, this.sessionSeed);
@@ -173,16 +173,16 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 		return extensionIds;
 	}
 
-	async getImportantRecommendations(): Promise<string[]> {
-		await this.activateProactiveRecommendations();
+	Async getImportAntRecommendAtions(): Promise<string[]> {
+		AwAit this.ActivAteProActiveRecommendAtions();
 
-		const recommendations = [
-			...this.fileBasedRecommendations.importantRecommendations,
-			...this.configBasedRecommendations.importantRecommendations,
-			...this.exeBasedRecommendations.importantRecommendations,
+		const recommendAtions = [
+			...this.fileBAsedRecommendAtions.importAntRecommendAtions,
+			...this.configBAsedRecommendAtions.importAntRecommendAtions,
+			...this.exeBAsedRecommendAtions.importAntRecommendAtions,
 		];
 
-		const extensionIds = distinct(recommendations.map(e => e.extensionId))
+		const extensionIds = distinct(recommendAtions.mAp(e => e.extensionId))
 			.filter(extensionId => this.isExtensionAllowedToBeRecommended(extensionId));
 
 		shuffle(extensionIds, this.sessionSeed);
@@ -190,65 +190,65 @@ export class ExtensionRecommendationsService extends Disposable implements IExte
 		return extensionIds;
 	}
 
-	getKeymapRecommendations(): string[] {
-		return this.toExtensionRecommendations(this.keymapRecommendations.recommendations);
+	getKeymApRecommendAtions(): string[] {
+		return this.toExtensionRecommendAtions(this.keymApRecommendAtions.recommendAtions);
 	}
 
-	async getWorkspaceRecommendations(): Promise<string[]> {
-		if (!this.isEnabled()) {
+	Async getWorkspAceRecommendAtions(): Promise<string[]> {
+		if (!this.isEnAbled()) {
 			return [];
 		}
-		await this.workspaceRecommendations.activate();
-		return this.toExtensionRecommendations(this.workspaceRecommendations.recommendations);
+		AwAit this.workspAceRecommendAtions.ActivAte();
+		return this.toExtensionRecommendAtions(this.workspAceRecommendAtions.recommendAtions);
 	}
 
-	async getExeBasedRecommendations(exe?: string): Promise<{ important: string[], others: string[] }> {
-		await this.exeBasedRecommendations.activate();
-		const { important, others } = exe ? this.exeBasedRecommendations.getRecommendations(exe)
-			: { important: this.exeBasedRecommendations.importantRecommendations, others: this.exeBasedRecommendations.otherRecommendations };
-		return { important: this.toExtensionRecommendations(important), others: this.toExtensionRecommendations(others) };
+	Async getExeBAsedRecommendAtions(exe?: string): Promise<{ importAnt: string[], others: string[] }> {
+		AwAit this.exeBAsedRecommendAtions.ActivAte();
+		const { importAnt, others } = exe ? this.exeBAsedRecommendAtions.getRecommendAtions(exe)
+			: { importAnt: this.exeBAsedRecommendAtions.importAntRecommendAtions, others: this.exeBAsedRecommendAtions.otherRecommendAtions };
+		return { importAnt: this.toExtensionRecommendAtions(importAnt), others: this.toExtensionRecommendAtions(others) };
 	}
 
-	getFileBasedRecommendations(): string[] {
-		return this.toExtensionRecommendations(this.fileBasedRecommendations.recommendations);
+	getFileBAsedRecommendAtions(): string[] {
+		return this.toExtensionRecommendAtions(this.fileBAsedRecommendAtions.recommendAtions);
 	}
 
-	private onDidInstallExtension(e: DidInstallExtensionEvent): void {
-		if (e.gallery && e.operation === InstallOperation.Install) {
-			const extRecommendations = this.getAllRecommendationsWithReason() || {};
-			const recommendationReason = extRecommendations[e.gallery.identifier.id.toLowerCase()];
-			if (recommendationReason) {
+	privAte onDidInstAllExtension(e: DidInstAllExtensionEvent): void {
+		if (e.gAllery && e.operAtion === InstAllOperAtion.InstAll) {
+			const extRecommendAtions = this.getAllRecommendAtionsWithReAson() || {};
+			const recommendAtionReAson = extRecommendAtions[e.gAllery.identifier.id.toLowerCAse()];
+			if (recommendAtionReAson) {
 				/* __GDPR__
-					"extensionGallery:install:recommendations" : {
-						"recommendationReason": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+					"extensionGAllery:instAll:recommendAtions" : {
+						"recommendAtionReAson": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true },
 						"${include}": [
-							"${GalleryExtensionTelemetryData}"
+							"${GAlleryExtensionTelemetryDAtA}"
 						]
 					}
 				*/
-				this.telemetryService.publicLog('extensionGallery:install:recommendations', { ...e.gallery.telemetryData, recommendationReason: recommendationReason.reasonId });
+				this.telemetryService.publicLog('extensionGAllery:instAll:recommendAtions', { ...e.gAllery.telemetryDAtA, recommendAtionReAson: recommendAtionReAson.reAsonId });
 			}
 		}
 	}
 
-	private toExtensionRecommendations(recommendations: ReadonlyArray<ExtensionRecommendation>): string[] {
-		const extensionIds = distinct(recommendations.map(e => e.extensionId))
+	privAte toExtensionRecommendAtions(recommendAtions: ReAdonlyArrAy<ExtensionRecommendAtion>): string[] {
+		const extensionIds = distinct(recommendAtions.mAp(e => e.extensionId))
 			.filter(extensionId => this.isExtensionAllowedToBeRecommended(extensionId));
 
 		return extensionIds;
 	}
 
-	private isExtensionAllowedToBeRecommended(extensionId: string): boolean {
-		return !this.extensionRecommendationsManagementService.ignoredRecommendations.includes(extensionId.toLowerCase());
+	privAte isExtensionAllowedToBeRecommended(extensionId: string): booleAn {
+		return !this.extensionRecommendAtionsMAnAgementService.ignoredRecommendAtions.includes(extensionId.toLowerCAse());
 	}
 
-	private async promptWorkspaceRecommendations(): Promise<void> {
-		const allowedRecommendations = [...this.workspaceRecommendations.recommendations, ...this.configBasedRecommendations.importantRecommendations]
-			.map(({ extensionId }) => extensionId)
+	privAte Async promptWorkspAceRecommendAtions(): Promise<void> {
+		const AllowedRecommendAtions = [...this.workspAceRecommendAtions.recommendAtions, ...this.configBAsedRecommendAtions.importAntRecommendAtions]
+			.mAp(({ extensionId }) => extensionId)
 			.filter(extensionId => this.isExtensionAllowedToBeRecommended(extensionId));
 
-		if (allowedRecommendations.length) {
-			await this.extensionRecommendationNotificationService.promptWorkspaceRecommendations(allowedRecommendations);
+		if (AllowedRecommendAtions.length) {
+			AwAit this.extensionRecommendAtionNotificAtionService.promptWorkspAceRecommendAtions(AllowedRecommendAtions);
 		}
 	}
 

@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IStorageChangeEvent, IStorageMainService } from 'vs/platform/storage/node/storageMainService';
-import { IUpdateRequest, IStorageDatabase, IStorageItemsChangeEvent } from 'vs/base/parts/storage/common/storage';
-import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { ILogService } from 'vs/platform/log/common/log';
-import { generateUuid } from 'vs/base/common/uuid';
-import { instanceStorageKey, firstSessionDateStorageKey, lastSessionDateStorageKey, currentSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
+import { IChAnnel, IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IStorAgeChAngeEvent, IStorAgeMAinService } from 'vs/plAtform/storAge/node/storAgeMAinService';
+import { IUpdAteRequest, IStorAgeDAtAbAse, IStorAgeItemsChAngeEvent } from 'vs/bAse/pArts/storAge/common/storAge';
+import { DisposAble, IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { instAnceStorAgeKey, firstSessionDAteStorAgeKey, lAstSessionDAteStorAgeKey, currentSessionDAteStorAgeKey } from 'vs/plAtform/telemetry/common/telemetry';
 
 type Key = string;
-type Value = string;
-type Item = [Key, Value];
+type VAlue = string;
+type Item = [Key, VAlue];
 
-interface ISerializableUpdateRequest {
+interfAce ISeriAlizAbleUpdAteRequest {
 	insert?: Item[];
 	delete?: Key[];
 }
 
-interface ISerializableItemsChangeEvent {
-	readonly changed?: Item[];
-	readonly deleted?: Key[];
+interfAce ISeriAlizAbleItemsChAngeEvent {
+	reAdonly chAnged?: Item[];
+	reAdonly deleted?: Key[];
 }
 
-export class GlobalStorageDatabaseChannel extends Disposable implements IServerChannel {
+export clAss GlobAlStorAgeDAtAbAseChAnnel extends DisposAble implements IServerChAnnel {
 
-	private static readonly STORAGE_CHANGE_DEBOUNCE_TIME = 100;
+	privAte stAtic reAdonly STORAGE_CHANGE_DEBOUNCE_TIME = 100;
 
-	private readonly _onDidChangeItems = this._register(new Emitter<ISerializableItemsChangeEvent>());
-	readonly onDidChangeItems = this._onDidChangeItems.event;
+	privAte reAdonly _onDidChAngeItems = this._register(new Emitter<ISeriAlizAbleItemsChAngeEvent>());
+	reAdonly onDidChAngeItems = this._onDidChAngeItems.event;
 
-	private readonly whenReady = this.init();
+	privAte reAdonly whenReAdy = this.init();
 
 	constructor(
-		private logService: ILogService,
-		private storageMainService: IStorageMainService
+		privAte logService: ILogService,
+		privAte storAgeMAinService: IStorAgeMAinService
 	) {
 		super();
 	}
 
-	private async init(): Promise<void> {
+	privAte Async init(): Promise<void> {
 		try {
-			await this.storageMainService.initialize();
-		} catch (error) {
-			this.logService.error(`[storage] init(): Unable to init global storage due to ${error}`);
+			AwAit this.storAgeMAinService.initiAlize();
+		} cAtch (error) {
+			this.logService.error(`[storAge] init(): UnAble to init globAl storAge due to ${error}`);
 		}
 
-		// Apply global telemetry values as part of the initialization
-		// These are global across all windows and thereby should be
-		// written from the main process once.
+		// Apply globAl telemetry vAlues As pArt of the initiAlizAtion
+		// These Are globAl Across All windows And thereby should be
+		// written from the mAin process once.
 		this.initTelemetry();
 
-		// Setup storage change listeners
+		// Setup storAge chAnge listeners
 		this.registerListeners();
 	}
 
-	private initTelemetry(): void {
-		const instanceId = this.storageMainService.get(instanceStorageKey, undefined);
-		if (instanceId === undefined) {
-			this.storageMainService.store(instanceStorageKey, generateUuid());
+	privAte initTelemetry(): void {
+		const instAnceId = this.storAgeMAinService.get(instAnceStorAgeKey, undefined);
+		if (instAnceId === undefined) {
+			this.storAgeMAinService.store(instAnceStorAgeKey, generAteUuid());
 		}
 
-		const firstSessionDate = this.storageMainService.get(firstSessionDateStorageKey, undefined);
-		if (firstSessionDate === undefined) {
-			this.storageMainService.store(firstSessionDateStorageKey, new Date().toUTCString());
+		const firstSessionDAte = this.storAgeMAinService.get(firstSessionDAteStorAgeKey, undefined);
+		if (firstSessionDAte === undefined) {
+			this.storAgeMAinService.store(firstSessionDAteStorAgeKey, new DAte().toUTCString());
 		}
 
-		const lastSessionDate = this.storageMainService.get(currentSessionDateStorageKey, undefined); // previous session date was the "current" one at that time
-		const currentSessionDate = new Date().toUTCString(); // current session date is "now"
-		this.storageMainService.store(lastSessionDateStorageKey, typeof lastSessionDate === 'undefined' ? null : lastSessionDate);
-		this.storageMainService.store(currentSessionDateStorageKey, currentSessionDate);
+		const lAstSessionDAte = this.storAgeMAinService.get(currentSessionDAteStorAgeKey, undefined); // previous session dAte wAs the "current" one At thAt time
+		const currentSessionDAte = new DAte().toUTCString(); // current session dAte is "now"
+		this.storAgeMAinService.store(lAstSessionDAteStorAgeKey, typeof lAstSessionDAte === 'undefined' ? null : lAstSessionDAte);
+		this.storAgeMAinService.store(currentSessionDAteStorAgeKey, currentSessionDAte);
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Listen for changes in global storage to send to listeners
-		// that are listening. Use a debouncer to reduce IPC traffic.
-		this._register(Event.debounce(this.storageMainService.onDidChangeStorage, (prev: IStorageChangeEvent[] | undefined, cur: IStorageChangeEvent) => {
+		// Listen for chAnges in globAl storAge to send to listeners
+		// thAt Are listening. Use A debouncer to reduce IPC trAffic.
+		this._register(Event.debounce(this.storAgeMAinService.onDidChAngeStorAge, (prev: IStorAgeChAngeEvent[] | undefined, cur: IStorAgeChAngeEvent) => {
 			if (!prev) {
 				prev = [cur];
 			} else {
@@ -87,130 +87,130 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 			}
 
 			return prev;
-		}, GlobalStorageDatabaseChannel.STORAGE_CHANGE_DEBOUNCE_TIME)(events => {
+		}, GlobAlStorAgeDAtAbAseChAnnel.STORAGE_CHANGE_DEBOUNCE_TIME)(events => {
 			if (events.length) {
-				this._onDidChangeItems.fire(this.serializeEvents(events));
+				this._onDidChAngeItems.fire(this.seriAlizeEvents(events));
 			}
 		}));
 	}
 
-	private serializeEvents(events: IStorageChangeEvent[]): ISerializableItemsChangeEvent {
-		const changed = new Map<Key, Value>();
+	privAte seriAlizeEvents(events: IStorAgeChAngeEvent[]): ISeriAlizAbleItemsChAngeEvent {
+		const chAnged = new MAp<Key, VAlue>();
 		const deleted = new Set<Key>();
-		events.forEach(event => {
-			const existing = this.storageMainService.get(event.key);
+		events.forEAch(event => {
+			const existing = this.storAgeMAinService.get(event.key);
 			if (typeof existing === 'string') {
-				changed.set(event.key, existing);
+				chAnged.set(event.key, existing);
 			} else {
-				deleted.add(event.key);
+				deleted.Add(event.key);
 			}
 		});
 
 		return {
-			changed: Array.from(changed.entries()),
-			deleted: Array.from(deleted.values())
+			chAnged: ArrAy.from(chAnged.entries()),
+			deleted: ArrAy.from(deleted.vAlues())
 		};
 	}
 
-	listen(_: unknown, event: string): Event<any> {
+	listen(_: unknown, event: string): Event<Any> {
 		switch (event) {
-			case 'onDidChangeItems': return this.onDidChangeItems;
+			cAse 'onDidChAngeItems': return this.onDidChAngeItems;
 		}
 
 		throw new Error(`Event not found: ${event}`);
 	}
 
-	async call(_: unknown, command: string, arg?: any): Promise<any> {
+	Async cAll(_: unknown, commAnd: string, Arg?: Any): Promise<Any> {
 
-		// ensure to always wait for ready
-		await this.whenReady;
+		// ensure to AlwAys wAit for reAdy
+		AwAit this.whenReAdy;
 
-		// handle call
-		switch (command) {
-			case 'getItems': {
-				return Array.from(this.storageMainService.items.entries());
+		// hAndle cAll
+		switch (commAnd) {
+			cAse 'getItems': {
+				return ArrAy.from(this.storAgeMAinService.items.entries());
 			}
 
-			case 'updateItems': {
-				const items: ISerializableUpdateRequest = arg;
+			cAse 'updAteItems': {
+				const items: ISeriAlizAbleUpdAteRequest = Arg;
 				if (items.insert) {
-					for (const [key, value] of items.insert) {
-						this.storageMainService.store(key, value);
+					for (const [key, vAlue] of items.insert) {
+						this.storAgeMAinService.store(key, vAlue);
 					}
 				}
 
 				if (items.delete) {
-					items.delete.forEach(key => this.storageMainService.remove(key));
+					items.delete.forEAch(key => this.storAgeMAinService.remove(key));
 				}
 
-				break;
+				breAk;
 			}
 
-			default:
-				throw new Error(`Call not found: ${command}`);
+			defAult:
+				throw new Error(`CAll not found: ${commAnd}`);
 		}
 	}
 }
 
-export class GlobalStorageDatabaseChannelClient extends Disposable implements IStorageDatabase {
+export clAss GlobAlStorAgeDAtAbAseChAnnelClient extends DisposAble implements IStorAgeDAtAbAse {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidChangeItemsExternal = this._register(new Emitter<IStorageItemsChangeEvent>());
-	readonly onDidChangeItemsExternal = this._onDidChangeItemsExternal.event;
+	privAte reAdonly _onDidChAngeItemsExternAl = this._register(new Emitter<IStorAgeItemsChAngeEvent>());
+	reAdonly onDidChAngeItemsExternAl = this._onDidChAngeItemsExternAl.event;
 
-	private onDidChangeItemsOnMainListener: IDisposable | undefined;
+	privAte onDidChAngeItemsOnMAinListener: IDisposAble | undefined;
 
-	constructor(private channel: IChannel) {
+	constructor(privAte chAnnel: IChAnnel) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this.onDidChangeItemsOnMainListener = this.channel.listen<ISerializableItemsChangeEvent>('onDidChangeItems')((e: ISerializableItemsChangeEvent) => this.onDidChangeItemsOnMain(e));
+	privAte registerListeners(): void {
+		this.onDidChAngeItemsOnMAinListener = this.chAnnel.listen<ISeriAlizAbleItemsChAngeEvent>('onDidChAngeItems')((e: ISeriAlizAbleItemsChAngeEvent) => this.onDidChAngeItemsOnMAin(e));
 	}
 
-	private onDidChangeItemsOnMain(e: ISerializableItemsChangeEvent): void {
-		if (Array.isArray(e.changed) || Array.isArray(e.deleted)) {
-			this._onDidChangeItemsExternal.fire({
-				changed: e.changed ? new Map(e.changed) : undefined,
+	privAte onDidChAngeItemsOnMAin(e: ISeriAlizAbleItemsChAngeEvent): void {
+		if (ArrAy.isArrAy(e.chAnged) || ArrAy.isArrAy(e.deleted)) {
+			this._onDidChAngeItemsExternAl.fire({
+				chAnged: e.chAnged ? new MAp(e.chAnged) : undefined,
 				deleted: e.deleted ? new Set<string>(e.deleted) : undefined
 			});
 		}
 	}
 
-	async getItems(): Promise<Map<string, string>> {
-		const items: Item[] = await this.channel.call('getItems');
+	Async getItems(): Promise<MAp<string, string>> {
+		const items: Item[] = AwAit this.chAnnel.cAll('getItems');
 
-		return new Map(items);
+		return new MAp(items);
 	}
 
-	updateItems(request: IUpdateRequest): Promise<void> {
-		const serializableRequest: ISerializableUpdateRequest = Object.create(null);
+	updAteItems(request: IUpdAteRequest): Promise<void> {
+		const seriAlizAbleRequest: ISeriAlizAbleUpdAteRequest = Object.creAte(null);
 
 		if (request.insert) {
-			serializableRequest.insert = Array.from(request.insert.entries());
+			seriAlizAbleRequest.insert = ArrAy.from(request.insert.entries());
 		}
 
 		if (request.delete) {
-			serializableRequest.delete = Array.from(request.delete.values());
+			seriAlizAbleRequest.delete = ArrAy.from(request.delete.vAlues());
 		}
 
-		return this.channel.call('updateItems', serializableRequest);
+		return this.chAnnel.cAll('updAteItems', seriAlizAbleRequest);
 	}
 
 	close(): Promise<void> {
 
-		// when we are about to close, we start to ignore main-side changes since we close anyway
-		dispose(this.onDidChangeItemsOnMainListener);
+		// when we Are About to close, we stArt to ignore mAin-side chAnges since we close AnywAy
+		dispose(this.onDidChAngeItemsOnMAinListener);
 
-		return Promise.resolve(); // global storage is closed on the main side
+		return Promise.resolve(); // globAl storAge is closed on the mAin side
 	}
 
 	dispose(): void {
 		super.dispose();
 
-		dispose(this.onDidChangeItemsOnMainListener);
+		dispose(this.onDidChAngeItemsOnMAinListener);
 	}
 }

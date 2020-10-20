@@ -1,187 +1,187 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./simpleFindWidget';
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { FindInput, IFindInputStyles } from 'vs/base/browser/ui/findinput/findInput';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Delayer } from 'vs/base/common/async';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
-import { IMessage as InputBoxMessage } from 'vs/base/browser/ui/inputbox/inputBox';
-import { SimpleButton, findPreviousMatchIcon, findNextMatchIcon, findCloseIcon } from 'vs/editor/contrib/find/findWidget';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { editorWidgetBackground, inputActiveOptionBorder, inputActiveOptionBackground, inputActiveOptionForeground, inputBackground, inputBorder, inputForeground, inputValidationErrorBackground, inputValidationErrorBorder, inputValidationErrorForeground, inputValidationInfoBackground, inputValidationInfoBorder, inputValidationInfoForeground, inputValidationWarningBackground, inputValidationWarningBorder, inputValidationWarningForeground, widgetShadow, editorWidgetForeground } from 'vs/platform/theme/common/colorRegistry';
-import { IColorTheme, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { ContextScopedFindInput } from 'vs/platform/browser/contextScopedHistoryWidget';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { FindInput, IFindInputStyles } from 'vs/bAse/browser/ui/findinput/findInput';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { DelAyer } from 'vs/bAse/common/Async';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { FindReplAceStAte } from 'vs/editor/contrib/find/findStAte';
+import { IMessAge As InputBoxMessAge } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { SimpleButton, findPreviousMAtchIcon, findNextMAtchIcon, findCloseIcon } from 'vs/editor/contrib/find/findWidget';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { editorWidgetBAckground, inputActiveOptionBorder, inputActiveOptionBAckground, inputActiveOptionForeground, inputBAckground, inputBorder, inputForeground, inputVAlidAtionErrorBAckground, inputVAlidAtionErrorBorder, inputVAlidAtionErrorForeground, inputVAlidAtionInfoBAckground, inputVAlidAtionInfoBorder, inputVAlidAtionInfoForeground, inputVAlidAtionWArningBAckground, inputVAlidAtionWArningBorder, inputVAlidAtionWArningForeground, widgetShAdow, editorWidgetForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { IColorTheme, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { ContextScopedFindInput } from 'vs/plAtform/browser/contextScopedHistoryWidget';
 
-const NLS_FIND_INPUT_LABEL = nls.localize('label.find', "Find");
-const NLS_FIND_INPUT_PLACEHOLDER = nls.localize('placeholder.find', "Find");
-const NLS_PREVIOUS_MATCH_BTN_LABEL = nls.localize('label.previousMatchButton', "Previous match");
-const NLS_NEXT_MATCH_BTN_LABEL = nls.localize('label.nextMatchButton', "Next match");
-const NLS_CLOSE_BTN_LABEL = nls.localize('label.closeButton', "Close");
+const NLS_FIND_INPUT_LABEL = nls.locAlize('lAbel.find', "Find");
+const NLS_FIND_INPUT_PLACEHOLDER = nls.locAlize('plAceholder.find', "Find");
+const NLS_PREVIOUS_MATCH_BTN_LABEL = nls.locAlize('lAbel.previousMAtchButton', "Previous mAtch");
+const NLS_NEXT_MATCH_BTN_LABEL = nls.locAlize('lAbel.nextMAtchButton', "Next mAtch");
+const NLS_CLOSE_BTN_LABEL = nls.locAlize('lAbel.closeButton', "Close");
 
-export abstract class SimpleFindWidget extends Widget {
-	private readonly _findInput: FindInput;
-	private readonly _domNode: HTMLElement;
-	private readonly _innerDomNode: HTMLElement;
-	private readonly _focusTracker: dom.IFocusTracker;
-	private readonly _findInputFocusTracker: dom.IFocusTracker;
-	private readonly _updateHistoryDelayer: Delayer<void>;
-	private readonly prevBtn: SimpleButton;
-	private readonly nextBtn: SimpleButton;
+export AbstrAct clAss SimpleFindWidget extends Widget {
+	privAte reAdonly _findInput: FindInput;
+	privAte reAdonly _domNode: HTMLElement;
+	privAte reAdonly _innerDomNode: HTMLElement;
+	privAte reAdonly _focusTrAcker: dom.IFocusTrAcker;
+	privAte reAdonly _findInputFocusTrAcker: dom.IFocusTrAcker;
+	privAte reAdonly _updAteHistoryDelAyer: DelAyer<void>;
+	privAte reAdonly prevBtn: SimpleButton;
+	privAte reAdonly nextBtn: SimpleButton;
 
-	private _isVisible: boolean = false;
-	private foundMatch: boolean = false;
+	privAte _isVisible: booleAn = fAlse;
+	privAte foundMAtch: booleAn = fAlse;
 
 	constructor(
-		@IContextViewService private readonly _contextViewService: IContextViewService,
+		@IContextViewService privAte reAdonly _contextViewService: IContextViewService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		private readonly _state: FindReplaceState = new FindReplaceState(),
-		showOptionButtons?: boolean
+		privAte reAdonly _stAte: FindReplAceStAte = new FindReplAceStAte(),
+		showOptionButtons?: booleAn
 	) {
 		super();
 
 		this._findInput = this._register(new ContextScopedFindInput(null, this._contextViewService, {
-			label: NLS_FIND_INPUT_LABEL,
-			placeholder: NLS_FIND_INPUT_PLACEHOLDER,
-			validation: (value: string): InputBoxMessage | null => {
-				if (value.length === 0 || !this._findInput.getRegex()) {
+			lAbel: NLS_FIND_INPUT_LABEL,
+			plAceholder: NLS_FIND_INPUT_PLACEHOLDER,
+			vAlidAtion: (vAlue: string): InputBoxMessAge | null => {
+				if (vAlue.length === 0 || !this._findInput.getRegex()) {
 					return null;
 				}
 				try {
-					new RegExp(value);
+					new RegExp(vAlue);
 					return null;
-				} catch (e) {
-					this.foundMatch = false;
-					this.updateButtons(this.foundMatch);
-					return { content: e.message };
+				} cAtch (e) {
+					this.foundMAtch = fAlse;
+					this.updAteButtons(this.foundMAtch);
+					return { content: e.messAge };
 				}
 			}
 		}, contextKeyService, showOptionButtons));
 
-		// Find History with update delayer
-		this._updateHistoryDelayer = new Delayer<void>(500);
+		// Find History with updAte delAyer
+		this._updAteHistoryDelAyer = new DelAyer<void>(500);
 
 		this.oninput(this._findInput.domNode, (e) => {
-			this.foundMatch = this.onInputChanged();
-			this.updateButtons(this.foundMatch);
-			this._delayedUpdateHistory();
+			this.foundMAtch = this.onInputChAnged();
+			this.updAteButtons(this.foundMAtch);
+			this._delAyedUpdAteHistory();
 		});
 
-		this._findInput.setRegex(!!this._state.isRegex);
-		this._findInput.setCaseSensitive(!!this._state.matchCase);
-		this._findInput.setWholeWords(!!this._state.wholeWord);
+		this._findInput.setRegex(!!this._stAte.isRegex);
+		this._findInput.setCAseSensitive(!!this._stAte.mAtchCAse);
+		this._findInput.setWholeWords(!!this._stAte.wholeWord);
 
-		this._register(this._findInput.onDidOptionChange(() => {
-			this._state.change({
+		this._register(this._findInput.onDidOptionChAnge(() => {
+			this._stAte.chAnge({
 				isRegex: this._findInput.getRegex(),
 				wholeWord: this._findInput.getWholeWords(),
-				matchCase: this._findInput.getCaseSensitive()
+				mAtchCAse: this._findInput.getCAseSensitive()
 			}, true);
 		}));
 
-		this._register(this._state.onFindReplaceStateChange(() => {
-			this._findInput.setRegex(this._state.isRegex);
-			this._findInput.setWholeWords(this._state.wholeWord);
-			this._findInput.setCaseSensitive(this._state.matchCase);
+		this._register(this._stAte.onFindReplAceStAteChAnge(() => {
+			this._findInput.setRegex(this._stAte.isRegex);
+			this._findInput.setWholeWords(this._stAte.wholeWord);
+			this._findInput.setCAseSensitive(this._stAte.mAtchCAse);
 			this.findFirst();
 		}));
 
 		this.prevBtn = this._register(new SimpleButton({
-			label: NLS_PREVIOUS_MATCH_BTN_LABEL,
-			className: findPreviousMatchIcon.classNames,
+			lAbel: NLS_PREVIOUS_MATCH_BTN_LABEL,
+			clAssNAme: findPreviousMAtchIcon.clAssNAmes,
 			onTrigger: () => {
 				this.find(true);
 			}
 		}));
 
 		this.nextBtn = this._register(new SimpleButton({
-			label: NLS_NEXT_MATCH_BTN_LABEL,
-			className: findNextMatchIcon.classNames,
+			lAbel: NLS_NEXT_MATCH_BTN_LABEL,
+			clAssNAme: findNextMAtchIcon.clAssNAmes,
 			onTrigger: () => {
-				this.find(false);
+				this.find(fAlse);
 			}
 		}));
 
 		const closeBtn = this._register(new SimpleButton({
-			label: NLS_CLOSE_BTN_LABEL,
-			className: findCloseIcon.classNames,
+			lAbel: NLS_CLOSE_BTN_LABEL,
+			clAssNAme: findCloseIcon.clAssNAmes,
 			onTrigger: () => {
 				this.hide();
 			}
 		}));
 
-		this._innerDomNode = document.createElement('div');
-		this._innerDomNode.classList.add('simple-find-part');
-		this._innerDomNode.appendChild(this._findInput.domNode);
-		this._innerDomNode.appendChild(this.prevBtn.domNode);
-		this._innerDomNode.appendChild(this.nextBtn.domNode);
-		this._innerDomNode.appendChild(closeBtn.domNode);
+		this._innerDomNode = document.creAteElement('div');
+		this._innerDomNode.clAssList.Add('simple-find-pArt');
+		this._innerDomNode.AppendChild(this._findInput.domNode);
+		this._innerDomNode.AppendChild(this.prevBtn.domNode);
+		this._innerDomNode.AppendChild(this.nextBtn.domNode);
+		this._innerDomNode.AppendChild(closeBtn.domNode);
 
-		// _domNode wraps _innerDomNode, ensuring that
-		this._domNode = document.createElement('div');
-		this._domNode.classList.add('simple-find-part-wrapper');
-		this._domNode.appendChild(this._innerDomNode);
+		// _domNode wrAps _innerDomNode, ensuring thAt
+		this._domNode = document.creAteElement('div');
+		this._domNode.clAssList.Add('simple-find-pArt-wrApper');
+		this._domNode.AppendChild(this._innerDomNode);
 
 		this.onkeyup(this._innerDomNode, e => {
-			if (e.equals(KeyCode.Escape)) {
+			if (e.equAls(KeyCode.EscApe)) {
 				this.hide();
-				e.preventDefault();
+				e.preventDefAult();
 				return;
 			}
 		});
 
-		this._focusTracker = this._register(dom.trackFocus(this._innerDomNode));
-		this._register(this._focusTracker.onDidFocus(this.onFocusTrackerFocus.bind(this)));
-		this._register(this._focusTracker.onDidBlur(this.onFocusTrackerBlur.bind(this)));
+		this._focusTrAcker = this._register(dom.trAckFocus(this._innerDomNode));
+		this._register(this._focusTrAcker.onDidFocus(this.onFocusTrAckerFocus.bind(this)));
+		this._register(this._focusTrAcker.onDidBlur(this.onFocusTrAckerBlur.bind(this)));
 
-		this._findInputFocusTracker = this._register(dom.trackFocus(this._findInput.domNode));
-		this._register(this._findInputFocusTracker.onDidFocus(this.onFindInputFocusTrackerFocus.bind(this)));
-		this._register(this._findInputFocusTracker.onDidBlur(this.onFindInputFocusTrackerBlur.bind(this)));
+		this._findInputFocusTrAcker = this._register(dom.trAckFocus(this._findInput.domNode));
+		this._register(this._findInputFocusTrAcker.onDidFocus(this.onFindInputFocusTrAckerFocus.bind(this)));
+		this._register(this._findInputFocusTrAcker.onDidBlur(this.onFindInputFocusTrAckerBlur.bind(this)));
 
-		this._register(dom.addDisposableListener(this._innerDomNode, 'click', (event) => {
-			event.stopPropagation();
+		this._register(dom.AddDisposAbleListener(this._innerDomNode, 'click', (event) => {
+			event.stopPropAgAtion();
 		}));
 	}
 
-	protected abstract onInputChanged(): boolean;
-	protected abstract find(previous: boolean): void;
-	protected abstract findFirst(): void;
-	protected abstract onFocusTrackerFocus(): void;
-	protected abstract onFocusTrackerBlur(): void;
-	protected abstract onFindInputFocusTrackerFocus(): void;
-	protected abstract onFindInputFocusTrackerBlur(): void;
+	protected AbstrAct onInputChAnged(): booleAn;
+	protected AbstrAct find(previous: booleAn): void;
+	protected AbstrAct findFirst(): void;
+	protected AbstrAct onFocusTrAckerFocus(): void;
+	protected AbstrAct onFocusTrAckerBlur(): void;
+	protected AbstrAct onFindInputFocusTrAckerFocus(): void;
+	protected AbstrAct onFindInputFocusTrAckerBlur(): void;
 
-	protected get inputValue() {
-		return this._findInput.getValue();
+	protected get inputVAlue() {
+		return this._findInput.getVAlue();
 	}
 
-	public get focusTracker(): dom.IFocusTracker {
-		return this._focusTracker;
+	public get focusTrAcker(): dom.IFocusTrAcker {
+		return this._focusTrAcker;
 	}
 
-	public updateTheme(theme: IColorTheme): void {
+	public updAteTheme(theme: IColorTheme): void {
 		const inputStyles: IFindInputStyles = {
 			inputActiveOptionBorder: theme.getColor(inputActiveOptionBorder),
 			inputActiveOptionForeground: theme.getColor(inputActiveOptionForeground),
-			inputActiveOptionBackground: theme.getColor(inputActiveOptionBackground),
-			inputBackground: theme.getColor(inputBackground),
+			inputActiveOptionBAckground: theme.getColor(inputActiveOptionBAckground),
+			inputBAckground: theme.getColor(inputBAckground),
 			inputForeground: theme.getColor(inputForeground),
 			inputBorder: theme.getColor(inputBorder),
-			inputValidationInfoBackground: theme.getColor(inputValidationInfoBackground),
-			inputValidationInfoForeground: theme.getColor(inputValidationInfoForeground),
-			inputValidationInfoBorder: theme.getColor(inputValidationInfoBorder),
-			inputValidationWarningBackground: theme.getColor(inputValidationWarningBackground),
-			inputValidationWarningForeground: theme.getColor(inputValidationWarningForeground),
-			inputValidationWarningBorder: theme.getColor(inputValidationWarningBorder),
-			inputValidationErrorBackground: theme.getColor(inputValidationErrorBackground),
-			inputValidationErrorForeground: theme.getColor(inputValidationErrorForeground),
-			inputValidationErrorBorder: theme.getColor(inputValidationErrorBorder)
+			inputVAlidAtionInfoBAckground: theme.getColor(inputVAlidAtionInfoBAckground),
+			inputVAlidAtionInfoForeground: theme.getColor(inputVAlidAtionInfoForeground),
+			inputVAlidAtionInfoBorder: theme.getColor(inputVAlidAtionInfoBorder),
+			inputVAlidAtionWArningBAckground: theme.getColor(inputVAlidAtionWArningBAckground),
+			inputVAlidAtionWArningForeground: theme.getColor(inputVAlidAtionWArningForeground),
+			inputVAlidAtionWArningBorder: theme.getColor(inputVAlidAtionWArningBorder),
+			inputVAlidAtionErrorBAckground: theme.getColor(inputVAlidAtionErrorBAckground),
+			inputVAlidAtionErrorForeground: theme.getColor(inputVAlidAtionErrorForeground),
+			inputVAlidAtionErrorBorder: theme.getColor(inputVAlidAtionErrorBorder)
 		};
 		this._findInput.style(inputStyles);
 	}
@@ -189,8 +189,8 @@ export abstract class SimpleFindWidget extends Widget {
 	dispose() {
 		super.dispose();
 
-		if (this._domNode && this._domNode.parentElement) {
-			this._domNode.parentElement.removeChild(this._domNode);
+		if (this._domNode && this._domNode.pArentElement) {
+			this._domNode.pArentElement.removeChild(this._domNode);
 		}
 	}
 
@@ -198,9 +198,9 @@ export abstract class SimpleFindWidget extends Widget {
 		return this._domNode;
 	}
 
-	public reveal(initialInput?: string): void {
-		if (initialInput) {
-			this._findInput.setValue(initialInput);
+	public reveAl(initiAlInput?: string): void {
+		if (initiAlInput) {
+			this._findInput.setVAlue(initiAlInput);
 		}
 
 		if (this._isVisible) {
@@ -209,82 +209,82 @@ export abstract class SimpleFindWidget extends Widget {
 		}
 
 		this._isVisible = true;
-		this.updateButtons(this.foundMatch);
+		this.updAteButtons(this.foundMAtch);
 
 		setTimeout(() => {
-			this._innerDomNode.classList.add('visible', 'visible-transition');
-			this._innerDomNode.setAttribute('aria-hidden', 'false');
+			this._innerDomNode.clAssList.Add('visible', 'visible-trAnsition');
+			this._innerDomNode.setAttribute('AriA-hidden', 'fAlse');
 			this._findInput.select();
 		}, 0);
 	}
 
-	public show(initialInput?: string): void {
-		if (initialInput && !this._isVisible) {
-			this._findInput.setValue(initialInput);
+	public show(initiAlInput?: string): void {
+		if (initiAlInput && !this._isVisible) {
+			this._findInput.setVAlue(initiAlInput);
 		}
 
 		this._isVisible = true;
 
 		setTimeout(() => {
-			this._innerDomNode.classList.add('visible', 'visible-transition');
-			this._innerDomNode.setAttribute('aria-hidden', 'false');
+			this._innerDomNode.clAssList.Add('visible', 'visible-trAnsition');
+			this._innerDomNode.setAttribute('AriA-hidden', 'fAlse');
 		}, 0);
 	}
 
 	public hide(): void {
 		if (this._isVisible) {
-			this._innerDomNode.classList.remove('visible-transition');
-			this._innerDomNode.setAttribute('aria-hidden', 'true');
-			// Need to delay toggling visibility until after Transition, then visibility hidden - removes from tabIndex list
+			this._innerDomNode.clAssList.remove('visible-trAnsition');
+			this._innerDomNode.setAttribute('AriA-hidden', 'true');
+			// Need to delAy toggling visibility until After TrAnsition, then visibility hidden - removes from tAbIndex list
 			setTimeout(() => {
-				this._isVisible = false;
-				this.updateButtons(this.foundMatch);
-				this._innerDomNode.classList.remove('visible');
+				this._isVisible = fAlse;
+				this.updAteButtons(this.foundMAtch);
+				this._innerDomNode.clAssList.remove('visible');
 			}, 200);
 		}
 	}
 
-	protected _delayedUpdateHistory() {
-		this._updateHistoryDelayer.trigger(this._updateHistory.bind(this));
+	protected _delAyedUpdAteHistory() {
+		this._updAteHistoryDelAyer.trigger(this._updAteHistory.bind(this));
 	}
 
-	protected _updateHistory() {
-		this._findInput.inputBox.addToHistory();
+	protected _updAteHistory() {
+		this._findInput.inputBox.AddToHistory();
 	}
 
-	protected _getRegexValue(): boolean {
+	protected _getRegexVAlue(): booleAn {
 		return this._findInput.getRegex();
 	}
 
-	protected _getWholeWordValue(): boolean {
+	protected _getWholeWordVAlue(): booleAn {
 		return this._findInput.getWholeWords();
 	}
 
-	protected _getCaseSensitiveValue(): boolean {
-		return this._findInput.getCaseSensitive();
+	protected _getCAseSensitiveVAlue(): booleAn {
+		return this._findInput.getCAseSensitive();
 	}
 
-	protected updateButtons(foundMatch: boolean) {
-		const hasInput = this.inputValue.length > 0;
-		this.prevBtn.setEnabled(this._isVisible && hasInput && foundMatch);
-		this.nextBtn.setEnabled(this._isVisible && hasInput && foundMatch);
+	protected updAteButtons(foundMAtch: booleAn) {
+		const hAsInput = this.inputVAlue.length > 0;
+		this.prevBtn.setEnAbled(this._isVisible && hAsInput && foundMAtch);
+		this.nextBtn.setEnAbled(this._isVisible && hAsInput && foundMAtch);
 	}
 }
 
 // theming
-registerThemingParticipant((theme, collector) => {
-	const findWidgetBGColor = theme.getColor(editorWidgetBackground);
+registerThemingPArticipAnt((theme, collector) => {
+	const findWidgetBGColor = theme.getColor(editorWidgetBAckground);
 	if (findWidgetBGColor) {
-		collector.addRule(`.monaco-workbench .simple-find-part { background-color: ${findWidgetBGColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .simple-find-pArt { bAckground-color: ${findWidgetBGColor} !importAnt; }`);
 	}
 
 	const widgetForeground = theme.getColor(editorWidgetForeground);
 	if (widgetForeground) {
-		collector.addRule(`.monaco-workbench .simple-find-part { color: ${widgetForeground}; }`);
+		collector.AddRule(`.monAco-workbench .simple-find-pArt { color: ${widgetForeground}; }`);
 	}
 
-	const widgetShadowColor = theme.getColor(widgetShadow);
-	if (widgetShadowColor) {
-		collector.addRule(`.monaco-workbench .simple-find-part { box-shadow: 0 2px 8px ${widgetShadowColor}; }`);
+	const widgetShAdowColor = theme.getColor(widgetShAdow);
+	if (widgetShAdowColor) {
+		collector.AddRule(`.monAco-workbench .simple-find-pArt { box-shAdow: 0 2px 8px ${widgetShAdowColor}; }`);
 	}
 });

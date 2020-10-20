@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { EditorInput, IEditorInput, GroupIdentifier, ISaveOptions, IMoveResult, IRevertOptions, EditorModel } from 'vs/workbench/common/editor';
+import * As glob from 'vs/bAse/common/glob';
+import { EditorInput, IEditorInput, GroupIdentifier, ISAveOptions, IMoveResult, IRevertOptions, EditorModel } from 'vs/workbench/common/editor';
 import { INotebookService } from 'vs/workbench/contrib/notebook/common/notebookService';
-import { URI } from 'vs/base/common/uri';
-import { isEqual } from 'vs/base/common/resources';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
+import { URI } from 'vs/bAse/common/uri';
+import { isEquAl } from 'vs/bAse/common/resources';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IFilesConfigurAtionService, AutoSAveMode } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IFileDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
 import { INotebookEditorModelResolverService } from 'vs/workbench/contrib/notebook/common/notebookEditorModelResolverService';
-import { IReference } from 'vs/base/common/lifecycle';
+import { IReference } from 'vs/bAse/common/lifecycle';
 import { INotebookEditorModel, INotebookDiffEditorModel } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 import { NotebookEditorModel } from 'vs/workbench/contrib/notebook/common/notebookEditorModel';
 
-interface NotebookEditorInputOptions {
-	startDirty?: boolean;
+interfAce NotebookEditorInputOptions {
+	stArtDirty?: booleAn;
 }
 
-class NotebookDiffEditorModel extends EditorModel implements INotebookDiffEditorModel {
+clAss NotebookDiffEditorModel extends EditorModel implements INotebookDiffEditorModel {
 	constructor(
-		readonly original: NotebookEditorModel,
-		readonly modified: NotebookEditorModel,
+		reAdonly originAl: NotebookEditorModel,
+		reAdonly modified: NotebookEditorModel,
 	) {
 		super();
 	}
 
-	async load(): Promise<NotebookDiffEditorModel> {
-		await this.original.load();
-		await this.modified.load();
+	Async loAd(): Promise<NotebookDiffEditorModel> {
+		AwAit this.originAl.loAd();
+		AwAit this.modified.loAd();
 
 		return this;
 	}
 
-	async resolveOriginalFromDisk() {
-		await this.original.load({ forceReadFromDisk: true });
+	Async resolveOriginAlFromDisk() {
+		AwAit this.originAl.loAd({ forceReAdFromDisk: true });
 	}
 
-	async resolveModifiedFromDisk() {
-		await this.modified.load({ forceReadFromDisk: true });
+	Async resolveModifiedFromDisk() {
+		AwAit this.modified.loAd({ forceReAdFromDisk: true });
 	}
 
 	dispose(): void {
@@ -48,81 +48,81 @@ class NotebookDiffEditorModel extends EditorModel implements INotebookDiffEditor
 	}
 }
 
-export class NotebookDiffEditorInput extends EditorInput {
-	static create(instantiationService: IInstantiationService, resource: URI, name: string, originalResource: URI, originalName: string, textDiffName: string, viewType: string | undefined, options: NotebookEditorInputOptions = {}) {
-		return instantiationService.createInstance(NotebookDiffEditorInput, resource, name, originalResource, originalName, textDiffName, viewType, options);
+export clAss NotebookDiffEditorInput extends EditorInput {
+	stAtic creAte(instAntiAtionService: IInstAntiAtionService, resource: URI, nAme: string, originAlResource: URI, originAlNAme: string, textDiffNAme: string, viewType: string | undefined, options: NotebookEditorInputOptions = {}) {
+		return instAntiAtionService.creAteInstAnce(NotebookDiffEditorInput, resource, nAme, originAlResource, originAlNAme, textDiffNAme, viewType, options);
 	}
 
-	static readonly ID: string = 'workbench.input.diffNotebookInput';
+	stAtic reAdonly ID: string = 'workbench.input.diffNotebookInput';
 
-	private _textModel: IReference<INotebookEditorModel> | null = null;
-	private _originalTextModel: IReference<INotebookEditorModel> | null = null;
-	private _defaultDirtyState: boolean = false;
+	privAte _textModel: IReference<INotebookEditorModel> | null = null;
+	privAte _originAlTextModel: IReference<INotebookEditorModel> | null = null;
+	privAte _defAultDirtyStAte: booleAn = fAlse;
 
 	constructor(
-		public readonly resource: URI,
-		public readonly name: string,
-		public readonly originalResource: URI,
-		public readonly originalName: string,
-		public readonly textDiffName: string,
-		public readonly viewType: string | undefined,
-		public readonly options: NotebookEditorInputOptions,
-		@INotebookService private readonly _notebookService: INotebookService,
-		@INotebookEditorModelResolverService private readonly _notebookModelResolverService: INotebookEditorModelResolverService,
-		@IFilesConfigurationService private readonly _filesConfigurationService: IFilesConfigurationService,
-		@IFileDialogService private readonly _fileDialogService: IFileDialogService,
-		// @IInstantiationService private readonly _instantiationService: IInstantiationService
+		public reAdonly resource: URI,
+		public reAdonly nAme: string,
+		public reAdonly originAlResource: URI,
+		public reAdonly originAlNAme: string,
+		public reAdonly textDiffNAme: string,
+		public reAdonly viewType: string | undefined,
+		public reAdonly options: NotebookEditorInputOptions,
+		@INotebookService privAte reAdonly _notebookService: INotebookService,
+		@INotebookEditorModelResolverService privAte reAdonly _notebookModelResolverService: INotebookEditorModelResolverService,
+		@IFilesConfigurAtionService privAte reAdonly _filesConfigurAtionService: IFilesConfigurAtionService,
+		@IFileDiAlogService privAte reAdonly _fileDiAlogService: IFileDiAlogService,
+		// @IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
-		this._defaultDirtyState = !!options.startDirty;
+		this._defAultDirtyStAte = !!options.stArtDirty;
 	}
 
 	getTypeId(): string {
 		return NotebookDiffEditorInput.ID;
 	}
 
-	getName(): string {
-		return this.textDiffName;
+	getNAme(): string {
+		return this.textDiffNAme;
 	}
 
 	isDirty() {
 		if (!this._textModel) {
-			return !!this._defaultDirtyState;
+			return !!this._defAultDirtyStAte;
 		}
 		return this._textModel.object.isDirty();
 	}
 
-	isUntitled(): boolean {
-		return this._textModel?.object.isUntitled() || false;
+	isUntitled(): booleAn {
+		return this._textModel?.object.isUntitled() || fAlse;
 	}
 
-	isReadonly() {
-		return false;
+	isReAdonly() {
+		return fAlse;
 	}
 
-	isSaving(): boolean {
+	isSAving(): booleAn {
 		if (this.isUntitled()) {
-			return false; // untitled is never saving automatically
+			return fAlse; // untitled is never sAving AutomAticAlly
 		}
 
 		if (!this.isDirty()) {
-			return false; // the editor needs to be dirty for being saved
+			return fAlse; // the editor needs to be dirty for being sAved
 		}
 
-		if (this._filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-			return true; // a short auto save is configured, treat this as being saved
+		if (this._filesConfigurAtionService.getAutoSAveMode() === AutoSAveMode.AFTER_SHORT_DELAY) {
+			return true; // A short Auto sAve is configured, treAt this As being sAved
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	async save(group: GroupIdentifier, options?: ISaveOptions): Promise<IEditorInput | undefined> {
+	Async sAve(group: GroupIdentifier, options?: ISAveOptions): Promise<IEditorInput | undefined> {
 		if (this._textModel) {
 
 			if (this.isUntitled()) {
-				return this.saveAs(group, options);
+				return this.sAveAs(group, options);
 			} else {
-				await this._textModel.object.save();
+				AwAit this._textModel.object.sAve();
 			}
 
 			return this;
@@ -131,7 +131,7 @@ export class NotebookDiffEditorInput extends EditorInput {
 		return undefined;
 	}
 
-	async saveAs(group: GroupIdentifier, options?: ISaveOptions): Promise<IEditorInput | undefined> {
+	Async sAveAs(group: GroupIdentifier, options?: ISAveOptions): Promise<IEditorInput | undefined> {
 		if (!this._textModel || !this.viewType) {
 			return undefined;
 		}
@@ -142,84 +142,84 @@ export class NotebookDiffEditorInput extends EditorInput {
 			return undefined;
 		}
 
-		const dialogPath = this._textModel.object.resource;
-		const target = await this._fileDialogService.pickFileToSave(dialogPath, options?.availableFileSystems);
-		if (!target) {
-			return undefined; // save cancelled
+		const diAlogPAth = this._textModel.object.resource;
+		const tArget = AwAit this._fileDiAlogService.pickFileToSAve(diAlogPAth, options?.AvAilAbleFileSystems);
+		if (!tArget) {
+			return undefined; // sAve cAncelled
 		}
 
-		if (!provider.matches(target)) {
-			const patterns = provider.selectors.map(pattern => {
-				if (typeof pattern === 'string') {
-					return pattern;
+		if (!provider.mAtches(tArget)) {
+			const pAtterns = provider.selectors.mAp(pAttern => {
+				if (typeof pAttern === 'string') {
+					return pAttern;
 				}
 
-				if (glob.isRelativePattern(pattern)) {
-					return `${pattern} (base ${pattern.base})`;
+				if (glob.isRelAtivePAttern(pAttern)) {
+					return `${pAttern} (bAse ${pAttern.bAse})`;
 				}
 
-				return `${pattern.include} (exclude: ${pattern.exclude})`;
+				return `${pAttern.include} (exclude: ${pAttern.exclude})`;
 			}).join(', ');
-			throw new Error(`File name ${target} is not supported by ${provider.providerDisplayName}.
+			throw new Error(`File nAme ${tArget} is not supported by ${provider.providerDisplAyNAme}.
 
-Please make sure the file name matches following patterns:
-${patterns}
+PleAse mAke sure the file nAme mAtches following pAtterns:
+${pAtterns}
 `);
 		}
 
-		if (!await this._textModel.object.saveAs(target)) {
+		if (!AwAit this._textModel.object.sAveAs(tArget)) {
 			return undefined;
 		}
 
-		return this._move(group, target)?.editor;
+		return this._move(group, tArget)?.editor;
 	}
 
-	// called when users rename a notebook document
-	rename(group: GroupIdentifier, target: URI): IMoveResult | undefined {
+	// cAlled when users renAme A notebook document
+	renAme(group: GroupIdentifier, tArget: URI): IMoveResult | undefined {
 		if (this._textModel) {
-			const contributedNotebookProviders = this._notebookService.getContributedNotebookProviders(target);
+			const contributedNotebookProviders = this._notebookService.getContributedNotebookProviders(tArget);
 
 			if (contributedNotebookProviders.find(provider => provider.id === this._textModel!.object.viewType)) {
-				return this._move(group, target);
+				return this._move(group, tArget);
 			}
 		}
 		return undefined;
 	}
 
-	private _move(group: GroupIdentifier, newResource: URI): { editor: IEditorInput } | undefined {
+	privAte _move(group: GroupIdentifier, newResource: URI): { editor: IEditorInput } | undefined {
 		return undefined;
 	}
 
-	async revert(group: GroupIdentifier, options?: IRevertOptions): Promise<void> {
+	Async revert(group: GroupIdentifier, options?: IRevertOptions): Promise<void> {
 		if (this._textModel && this._textModel.object.isDirty()) {
-			await this._textModel.object.revert(options);
+			AwAit this._textModel.object.revert(options);
 		}
 
 		return;
 	}
 
-	async resolve(): Promise<INotebookDiffEditorModel | null> {
-		if (!await this._notebookService.canResolve(this.viewType!)) {
+	Async resolve(): Promise<INotebookDiffEditorModel | null> {
+		if (!AwAit this._notebookService.cAnResolve(this.viewType!)) {
 			return null;
 		}
 
 		if (!this._textModel) {
-			this._textModel = await this._notebookModelResolverService.resolve(this.resource, this.viewType!);
-			this._originalTextModel = await this._notebookModelResolverService.resolve(this.originalResource, this.viewType!);
+			this._textModel = AwAit this._notebookModelResolverService.resolve(this.resource, this.viewType!);
+			this._originAlTextModel = AwAit this._notebookModelResolverService.resolve(this.originAlResource, this.viewType!);
 		}
 
-		return new NotebookDiffEditorModel(this._originalTextModel!.object as NotebookEditorModel, this._textModel.object as NotebookEditorModel);
+		return new NotebookDiffEditorModel(this._originAlTextModel!.object As NotebookEditorModel, this._textModel.object As NotebookEditorModel);
 	}
 
-	matches(otherInput: unknown): boolean {
+	mAtches(otherInput: unknown): booleAn {
 		if (this === otherInput) {
 			return true;
 		}
-		if (otherInput instanceof NotebookDiffEditorInput) {
+		if (otherInput instAnceof NotebookDiffEditorInput) {
 			return this.viewType === otherInput.viewType
-				&& isEqual(this.resource, otherInput.resource);
+				&& isEquAl(this.resource, otherInput.resource);
 		}
-		return false;
+		return fAlse;
 	}
 
 	dispose() {

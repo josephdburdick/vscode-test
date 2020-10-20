@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Collections from 'vs/base/common/collections';
-import * as Objects from 'vs/base/common/objects';
-import * as Path from 'vs/base/common/path';
-import { CommandOptions, ErrorData, Source } from 'vs/base/common/processes';
-import * as Strings from 'vs/base/common/strings';
-import { LineData, LineProcess } from 'vs/base/node/processes';
-import * as nls from 'vs/nls';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IWorkspaceContextService, IWorkspaceFolder, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import * as Tasks from '../common/tasks';
-import * as TaskConfig from '../common/taskConfiguration';
+import * As Collections from 'vs/bAse/common/collections';
+import * As Objects from 'vs/bAse/common/objects';
+import * As PAth from 'vs/bAse/common/pAth';
+import { CommAndOptions, ErrorDAtA, Source } from 'vs/bAse/common/processes';
+import * As Strings from 'vs/bAse/common/strings';
+import { LineDAtA, LineProcess } from 'vs/bAse/node/processes';
+import * As nls from 'vs/nls';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IWorkspAceContextService, IWorkspAceFolder, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { IConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolver';
+import * As TAsks from '../common/tAsks';
+import * As TAskConfig from '../common/tAskConfigurAtion';
 
 const build = 'build';
 const test = 'test';
-const defaultValue = 'default';
+const defAultVAlue = 'defAult';
 
-interface TaskInfo {
+interfAce TAskInfo {
 	index: number;
-	exact: number;
+	exAct: number;
 }
 
-interface TaskInfos {
-	build: TaskInfo;
-	test: TaskInfo;
+interfAce TAskInfos {
+	build: TAskInfo;
+	test: TAskInfo;
 }
 
-interface TaskDetectorMatcher {
+interfAce TAskDetectorMAtcher {
 	init(): void;
-	match(tasks: string[], line: string): void;
+	mAtch(tAsks: string[], line: string): void;
 }
 
-interface DetectorConfig {
-	matcher: TaskDetectorMatcher;
-	arg: string;
+interfAce DetectorConfig {
+	mAtcher: TAskDetectorMAtcher;
+	Arg: string;
 }
 
-class RegexpTaskMatcher implements TaskDetectorMatcher {
-	private regexp: RegExp;
+clAss RegexpTAskMAtcher implements TAskDetectorMAtcher {
+	privAte regexp: RegExp;
 
 	constructor(regExp: RegExp) {
 		this.regexp = regExp;
@@ -50,113 +50,113 @@ class RegexpTaskMatcher implements TaskDetectorMatcher {
 	init() {
 	}
 
-	match(tasks: string[], line: string): void {
-		let matches = this.regexp.exec(line);
-		if (matches && matches.length > 0) {
-			tasks.push(matches[1]);
+	mAtch(tAsks: string[], line: string): void {
+		let mAtches = this.regexp.exec(line);
+		if (mAtches && mAtches.length > 0) {
+			tAsks.push(mAtches[1]);
 		}
 	}
 }
 
-class GruntTaskMatcher implements TaskDetectorMatcher {
-	private tasksStart!: boolean;
-	private tasksEnd!: boolean;
-	private descriptionOffset!: number | null;
+clAss GruntTAskMAtcher implements TAskDetectorMAtcher {
+	privAte tAsksStArt!: booleAn;
+	privAte tAsksEnd!: booleAn;
+	privAte descriptionOffset!: number | null;
 
 	init() {
-		this.tasksStart = false;
-		this.tasksEnd = false;
+		this.tAsksStArt = fAlse;
+		this.tAsksEnd = fAlse;
 		this.descriptionOffset = null;
 	}
 
-	match(tasks: string[], line: string): void {
-		// grunt lists tasks as follows (description is wrapped into a new line if too long):
+	mAtch(tAsks: string[], line: string): void {
+		// grunt lists tAsks As follows (description is wrApped into A new line if too long):
 		// ...
-		// Available tasks
+		// AvAilAble tAsks
 		//         uglify  Minify files with UglifyJS. *
-		//         jshint  Validate files with JSHint. *
-		//           test  Alias for "jshint", "qunit" tasks.
-		//        default  Alias for "jshint", "qunit", "concat", "uglify" tasks.
-		//           long  Alias for "eslint", "qunit", "browserify", "sass",
-		//                 "autoprefixer", "uglify", tasks.
+		//         jshint  VAlidAte files with JSHint. *
+		//           test  AliAs for "jshint", "qunit" tAsks.
+		//        defAult  AliAs for "jshint", "qunit", "concAt", "uglify" tAsks.
+		//           long  AliAs for "eslint", "qunit", "browserify", "sAss",
+		//                 "Autoprefixer", "uglify", tAsks.
 		//
-		// Tasks run in the order specified
-		if (!this.tasksStart && !this.tasksEnd) {
-			if (line.indexOf('Available tasks') === 0) {
-				this.tasksStart = true;
+		// TAsks run in the order specified
+		if (!this.tAsksStArt && !this.tAsksEnd) {
+			if (line.indexOf('AvAilAble tAsks') === 0) {
+				this.tAsksStArt = true;
 			}
 		}
-		else if (this.tasksStart && !this.tasksEnd) {
-			if (line.indexOf('Tasks run in the order specified') === 0) {
-				this.tasksEnd = true;
+		else if (this.tAsksStArt && !this.tAsksEnd) {
+			if (line.indexOf('TAsks run in the order specified') === 0) {
+				this.tAsksEnd = true;
 			} else {
 				if (this.descriptionOffset === null) {
-					const match = line.match(/\S  \S/);
-					if (match) {
-						this.descriptionOffset = (match.index || 0) + 1;
+					const mAtch = line.mAtch(/\S  \S/);
+					if (mAtch) {
+						this.descriptionOffset = (mAtch.index || 0) + 1;
 					} else {
 						this.descriptionOffset = 0;
 					}
 				}
-				let taskName = line.substr(0, this.descriptionOffset).trim();
-				if (taskName.length > 0) {
-					tasks.push(taskName);
+				let tAskNAme = line.substr(0, this.descriptionOffset).trim();
+				if (tAskNAme.length > 0) {
+					tAsks.push(tAskNAme);
 				}
 			}
 		}
 	}
 }
 
-export interface DetectorResult {
-	config: TaskConfig.ExternalTaskRunnerConfiguration | null;
+export interfAce DetectorResult {
+	config: TAskConfig.ExternAlTAskRunnerConfigurAtion | null;
 	stdout: string[];
 	stderr: string[];
 }
 
-export class ProcessRunnerDetector {
+export clAss ProcessRunnerDetector {
 
-	private static Version: string = '0.1.0';
+	privAte stAtic Version: string = '0.1.0';
 
-	private static SupportedRunners: Collections.IStringDictionary<boolean> = {
+	privAte stAtic SupportedRunners: Collections.IStringDictionAry<booleAn> = {
 		'gulp': true,
-		'jake': true,
+		'jAke': true,
 		'grunt': true
 	};
 
-	private static TaskMatchers: Collections.IStringDictionary<DetectorConfig> = {
-		'gulp': { matcher: new RegexpTaskMatcher(/^(.*)$/), arg: '--tasks-simple' },
-		'jake': { matcher: new RegexpTaskMatcher(/^jake\s+([^\s]+)\s/), arg: '--tasks' },
-		'grunt': { matcher: new GruntTaskMatcher(), arg: '--help' },
+	privAte stAtic TAskMAtchers: Collections.IStringDictionAry<DetectorConfig> = {
+		'gulp': { mAtcher: new RegexpTAskMAtcher(/^(.*)$/), Arg: '--tAsks-simple' },
+		'jAke': { mAtcher: new RegexpTAskMAtcher(/^jAke\s+([^\s]+)\s/), Arg: '--tAsks' },
+		'grunt': { mAtcher: new GruntTAskMAtcher(), Arg: '--help' },
 	};
 
-	public static supports(runner: string): boolean {
+	public stAtic supports(runner: string): booleAn {
 		return ProcessRunnerDetector.SupportedRunners[runner];
 	}
 
-	private static detectorConfig(runner: string): DetectorConfig {
-		return ProcessRunnerDetector.TaskMatchers[runner];
+	privAte stAtic detectorConfig(runner: string): DetectorConfig {
+		return ProcessRunnerDetector.TAskMAtchers[runner];
 	}
 
-	private static DefaultProblemMatchers: string[] = ['$lessCompile', '$tsc', '$jshint'];
+	privAte stAtic DefAultProblemMAtchers: string[] = ['$lessCompile', '$tsc', '$jshint'];
 
-	private fileService: IFileService;
-	private contextService: IWorkspaceContextService;
-	private configurationResolverService: IConfigurationResolverService;
-	private taskConfiguration: TaskConfig.ExternalTaskRunnerConfiguration | null;
-	private _workspaceRoot: IWorkspaceFolder;
-	private _stderr: string[];
-	private _stdout: string[];
-	private _cwd: string;
+	privAte fileService: IFileService;
+	privAte contextService: IWorkspAceContextService;
+	privAte configurAtionResolverService: IConfigurAtionResolverService;
+	privAte tAskConfigurAtion: TAskConfig.ExternAlTAskRunnerConfigurAtion | null;
+	privAte _workspAceRoot: IWorkspAceFolder;
+	privAte _stderr: string[];
+	privAte _stdout: string[];
+	privAte _cwd: string;
 
-	constructor(workspaceFolder: IWorkspaceFolder, fileService: IFileService, contextService: IWorkspaceContextService, configurationResolverService: IConfigurationResolverService, config: TaskConfig.ExternalTaskRunnerConfiguration | null = null) {
+	constructor(workspAceFolder: IWorkspAceFolder, fileService: IFileService, contextService: IWorkspAceContextService, configurAtionResolverService: IConfigurAtionResolverService, config: TAskConfig.ExternAlTAskRunnerConfigurAtion | null = null) {
 		this.fileService = fileService;
 		this.contextService = contextService;
-		this.configurationResolverService = configurationResolverService;
-		this.taskConfiguration = config;
-		this._workspaceRoot = workspaceFolder;
+		this.configurAtionResolverService = configurAtionResolverService;
+		this.tAskConfigurAtion = config;
+		this._workspAceRoot = workspAceFolder;
 		this._stderr = [];
 		this._stdout = [];
-		this._cwd = this.contextService.getWorkbenchState() !== WorkbenchState.EMPTY ? Path.normalize(this._workspaceRoot.uri.fsPath) : '';
+		this._cwd = this.contextService.getWorkbenchStAte() !== WorkbenchStAte.EMPTY ? PAth.normAlize(this._workspAceRoot.uri.fsPAth) : '';
 	}
 
 	public get stderr(): string[] {
@@ -167,47 +167,47 @@ export class ProcessRunnerDetector {
 		return this._stdout;
 	}
 
-	public detect(list: boolean = false, detectSpecific?: string): Promise<DetectorResult> {
-		let commandExecutable: string;
-		if (this.taskConfiguration && this.taskConfiguration.command && (commandExecutable = TaskConfig.CommandString.value(this.taskConfiguration.command)) && ProcessRunnerDetector.supports(commandExecutable)) {
-			let config = ProcessRunnerDetector.detectorConfig(commandExecutable);
-			let args = (this.taskConfiguration.args || []).concat(config.arg);
-			let options: CommandOptions = this.taskConfiguration.options ? this.resolveCommandOptions(this._workspaceRoot, this.taskConfiguration.options) : { cwd: this._cwd };
-			let isShellCommand = !!this.taskConfiguration.isShellCommand;
+	public detect(list: booleAn = fAlse, detectSpecific?: string): Promise<DetectorResult> {
+		let commAndExecutAble: string;
+		if (this.tAskConfigurAtion && this.tAskConfigurAtion.commAnd && (commAndExecutAble = TAskConfig.CommAndString.vAlue(this.tAskConfigurAtion.commAnd)) && ProcessRunnerDetector.supports(commAndExecutAble)) {
+			let config = ProcessRunnerDetector.detectorConfig(commAndExecutAble);
+			let Args = (this.tAskConfigurAtion.Args || []).concAt(config.Arg);
+			let options: CommAndOptions = this.tAskConfigurAtion.options ? this.resolveCommAndOptions(this._workspAceRoot, this.tAskConfigurAtion.options) : { cwd: this._cwd };
+			let isShellCommAnd = !!this.tAskConfigurAtion.isShellCommAnd;
 			return Promise.resolve(this.runDetection(
-				new LineProcess(commandExecutable, this.configurationResolverService.resolve(this._workspaceRoot, args.map(a => TaskConfig.CommandString.value(a))), isShellCommand, options),
-				commandExecutable, isShellCommand, config.matcher, ProcessRunnerDetector.DefaultProblemMatchers, list));
+				new LineProcess(commAndExecutAble, this.configurAtionResolverService.resolve(this._workspAceRoot, Args.mAp(A => TAskConfig.CommAndString.vAlue(A))), isShellCommAnd, options),
+				commAndExecutAble, isShellCommAnd, config.mAtcher, ProcessRunnerDetector.DefAultProblemMAtchers, list));
 		} else {
 			if (detectSpecific) {
 				let detectorPromise: Promise<DetectorResult | null>;
 				if ('gulp' === detectSpecific) {
-					detectorPromise = this.tryDetectGulp(this._workspaceRoot, list);
-				} else if ('jake' === detectSpecific) {
-					detectorPromise = this.tryDetectJake(this._workspaceRoot, list);
+					detectorPromise = this.tryDetectGulp(this._workspAceRoot, list);
+				} else if ('jAke' === detectSpecific) {
+					detectorPromise = this.tryDetectJAke(this._workspAceRoot, list);
 				} else if ('grunt' === detectSpecific) {
-					detectorPromise = this.tryDetectGrunt(this._workspaceRoot, list);
+					detectorPromise = this.tryDetectGrunt(this._workspAceRoot, list);
 				} else {
 					throw new Error('Unknown detector type');
 				}
-				return detectorPromise.then((value) => {
-					if (value) {
-						return value;
+				return detectorPromise.then((vAlue) => {
+					if (vAlue) {
+						return vAlue;
 					} else {
 						return { config: null, stdout: this.stdout, stderr: this.stderr };
 					}
 				});
 			} else {
-				return this.tryDetectGulp(this._workspaceRoot, list).then((value) => {
-					if (value) {
-						return value;
+				return this.tryDetectGulp(this._workspAceRoot, list).then((vAlue) => {
+					if (vAlue) {
+						return vAlue;
 					}
-					return this.tryDetectJake(this._workspaceRoot, list).then((value) => {
-						if (value) {
-							return value;
+					return this.tryDetectJAke(this._workspAceRoot, list).then((vAlue) => {
+						if (vAlue) {
+							return vAlue;
 						}
-						return this.tryDetectGrunt(this._workspaceRoot, list).then((value) => {
-							if (value) {
-								return value;
+						return this.tryDetectGrunt(this._workspAceRoot, list).then((vAlue) => {
+							if (vAlue) {
+								return vAlue;
 							}
 							return { config: null, stdout: this.stdout, stderr: this.stderr };
 						});
@@ -217,174 +217,174 @@ export class ProcessRunnerDetector {
 		}
 	}
 
-	private resolveCommandOptions(workspaceFolder: IWorkspaceFolder, options: CommandOptions): CommandOptions {
-		// TODO@Dirk adopt new configuration resolver service https://github.com/microsoft/vscode/issues/31365
+	privAte resolveCommAndOptions(workspAceFolder: IWorkspAceFolder, options: CommAndOptions): CommAndOptions {
+		// TODO@Dirk Adopt new configurAtion resolver service https://github.com/microsoft/vscode/issues/31365
 		let result = Objects.deepClone(options);
 		if (result.cwd) {
-			result.cwd = this.configurationResolverService.resolve(workspaceFolder, result.cwd);
+			result.cwd = this.configurAtionResolverService.resolve(workspAceFolder, result.cwd);
 		}
 		if (result.env) {
-			result.env = this.configurationResolverService.resolve(workspaceFolder, result.env);
+			result.env = this.configurAtionResolverService.resolve(workspAceFolder, result.env);
 		}
 		return result;
 	}
 
-	private tryDetectGulp(workspaceFolder: IWorkspaceFolder, list: boolean): Promise<DetectorResult | null> {
-		return Promise.resolve(this.fileService.resolve(workspaceFolder.toResource('gulpfile.js'))).then((stat) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
+	privAte tryDetectGulp(workspAceFolder: IWorkspAceFolder, list: booleAn): Promise<DetectorResult | null> {
+		return Promise.resolve(this.fileService.resolve(workspAceFolder.toResource('gulpfile.js'))).then((stAt) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
 			let config = ProcessRunnerDetector.detectorConfig('gulp');
-			let process = new LineProcess('gulp', [config.arg, '--no-color'], true, { cwd: this._cwd });
-			return this.runDetection(process, 'gulp', true, config.matcher, ProcessRunnerDetector.DefaultProblemMatchers, list);
-		}, (err: any) => {
+			let process = new LineProcess('gulp', [config.Arg, '--no-color'], true, { cwd: this._cwd });
+			return this.runDetection(process, 'gulp', true, config.mAtcher, ProcessRunnerDetector.DefAultProblemMAtchers, list);
+		}, (err: Any) => {
 			return null;
 		});
 	}
 
-	private tryDetectGrunt(workspaceFolder: IWorkspaceFolder, list: boolean): Promise<DetectorResult | null> {
-		return Promise.resolve(this.fileService.resolve(workspaceFolder.toResource('Gruntfile.js'))).then((stat) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
+	privAte tryDetectGrunt(workspAceFolder: IWorkspAceFolder, list: booleAn): Promise<DetectorResult | null> {
+		return Promise.resolve(this.fileService.resolve(workspAceFolder.toResource('Gruntfile.js'))).then((stAt) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
 			let config = ProcessRunnerDetector.detectorConfig('grunt');
-			let process = new LineProcess('grunt', [config.arg, '--no-color'], true, { cwd: this._cwd });
-			return this.runDetection(process, 'grunt', true, config.matcher, ProcessRunnerDetector.DefaultProblemMatchers, list);
-		}, (err: any) => {
+			let process = new LineProcess('grunt', [config.Arg, '--no-color'], true, { cwd: this._cwd });
+			return this.runDetection(process, 'grunt', true, config.mAtcher, ProcessRunnerDetector.DefAultProblemMAtchers, list);
+		}, (err: Any) => {
 			return null;
 		});
 	}
 
-	private tryDetectJake(workspaceFolder: IWorkspaceFolder, list: boolean): Promise<DetectorResult | null> {
+	privAte tryDetectJAke(workspAceFolder: IWorkspAceFolder, list: booleAn): Promise<DetectorResult | null> {
 		let run = () => {
-			let config = ProcessRunnerDetector.detectorConfig('jake');
-			let process = new LineProcess('jake', [config.arg], true, { cwd: this._cwd });
-			return this.runDetection(process, 'jake', true, config.matcher, ProcessRunnerDetector.DefaultProblemMatchers, list);
+			let config = ProcessRunnerDetector.detectorConfig('jAke');
+			let process = new LineProcess('jAke', [config.Arg], true, { cwd: this._cwd });
+			return this.runDetection(process, 'jAke', true, config.mAtcher, ProcessRunnerDetector.DefAultProblemMAtchers, list);
 		};
-		return Promise.resolve(this.fileService.resolve(workspaceFolder.toResource('Jakefile'))).then((stat) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
+		return Promise.resolve(this.fileService.resolve(workspAceFolder.toResource('JAkefile'))).then((stAt) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
 			return run();
-		}, (err: any) => {
-			return this.fileService.resolve(workspaceFolder.toResource('Jakefile.js')).then((stat) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
+		}, (err: Any) => {
+			return this.fileService.resolve(workspAceFolder.toResource('JAkefile.js')).then((stAt) => { // TODO@Dirk (https://github.com/microsoft/vscode/issues/29454)
 				return run();
-			}, (err: any) => {
+			}, (err: Any) => {
 				return null;
 			});
 		});
 	}
 
-	private runDetection(process: LineProcess, command: string, isShellCommand: boolean, matcher: TaskDetectorMatcher, problemMatchers: string[], list: boolean): Promise<DetectorResult> {
-		let tasks: string[] = [];
-		matcher.init();
+	privAte runDetection(process: LineProcess, commAnd: string, isShellCommAnd: booleAn, mAtcher: TAskDetectorMAtcher, problemMAtchers: string[], list: booleAn): Promise<DetectorResult> {
+		let tAsks: string[] = [];
+		mAtcher.init();
 
-		const onProgress = (progress: LineData) => {
+		const onProgress = (progress: LineDAtA) => {
 			if (progress.source === Source.stderr) {
 				this._stderr.push(progress.line);
 				return;
 			}
-			let line = Strings.removeAnsiEscapeCodes(progress.line);
-			matcher.match(tasks, line);
+			let line = Strings.removeAnsiEscApeCodes(progress.line);
+			mAtcher.mAtch(tAsks, line);
 		};
 
-		return process.start(onProgress).then((success) => {
-			if (tasks.length === 0) {
+		return process.stArt(onProgress).then((success) => {
+			if (tAsks.length === 0) {
 				if (success.cmdCode !== 0) {
-					if (command === 'gulp') {
-						this._stderr.push(nls.localize('TaskSystemDetector.noGulpTasks', 'Running gulp --tasks-simple didn\'t list any tasks. Did you run npm install?'));
-					} else if (command === 'jake') {
-						this._stderr.push(nls.localize('TaskSystemDetector.noJakeTasks', 'Running jake --tasks didn\'t list any tasks. Did you run npm install?'));
+					if (commAnd === 'gulp') {
+						this._stderr.push(nls.locAlize('TAskSystemDetector.noGulpTAsks', 'Running gulp --tAsks-simple didn\'t list Any tAsks. Did you run npm instAll?'));
+					} else if (commAnd === 'jAke') {
+						this._stderr.push(nls.locAlize('TAskSystemDetector.noJAkeTAsks', 'Running jAke --tAsks didn\'t list Any tAsks. Did you run npm instAll?'));
 					}
 				}
 				return { config: null, stdout: this._stdout, stderr: this._stderr };
 			}
-			let result: TaskConfig.ExternalTaskRunnerConfiguration = {
+			let result: TAskConfig.ExternAlTAskRunnerConfigurAtion = {
 				version: ProcessRunnerDetector.Version,
-				command: command,
-				isShellCommand: isShellCommand
+				commAnd: commAnd,
+				isShellCommAnd: isShellCommAnd
 			};
-			// Hack. We need to remove this.
-			if (command === 'gulp') {
-				result.args = ['--no-color'];
+			// HAck. We need to remove this.
+			if (commAnd === 'gulp') {
+				result.Args = ['--no-color'];
 			}
-			result.tasks = this.createTaskDescriptions(tasks, problemMatchers, list);
+			result.tAsks = this.creAteTAskDescriptions(tAsks, problemMAtchers, list);
 			return { config: result, stdout: this._stdout, stderr: this._stderr };
-		}, (err: ErrorData) => {
+		}, (err: ErrorDAtA) => {
 			let error = err.error;
-			if ((<any>error).code === 'ENOENT') {
-				if (command === 'gulp') {
-					this._stderr.push(nls.localize('TaskSystemDetector.noGulpProgram', 'Gulp is not installed on your system. Run npm install -g gulp to install it.'));
-				} else if (command === 'jake') {
-					this._stderr.push(nls.localize('TaskSystemDetector.noJakeProgram', 'Jake is not installed on your system. Run npm install -g jake to install it.'));
-				} else if (command === 'grunt') {
-					this._stderr.push(nls.localize('TaskSystemDetector.noGruntProgram', 'Grunt is not installed on your system. Run npm install -g grunt to install it.'));
+			if ((<Any>error).code === 'ENOENT') {
+				if (commAnd === 'gulp') {
+					this._stderr.push(nls.locAlize('TAskSystemDetector.noGulpProgrAm', 'Gulp is not instAlled on your system. Run npm instAll -g gulp to instAll it.'));
+				} else if (commAnd === 'jAke') {
+					this._stderr.push(nls.locAlize('TAskSystemDetector.noJAkeProgrAm', 'JAke is not instAlled on your system. Run npm instAll -g jAke to instAll it.'));
+				} else if (commAnd === 'grunt') {
+					this._stderr.push(nls.locAlize('TAskSystemDetector.noGruntProgrAm', 'Grunt is not instAlled on your system. Run npm instAll -g grunt to instAll it.'));
 				}
 			} else {
-				this._stderr.push(nls.localize('TaskSystemDetector.noProgram', 'Program {0} was not found. Message is {1}', command, error ? error.message : ''));
+				this._stderr.push(nls.locAlize('TAskSystemDetector.noProgrAm', 'ProgrAm {0} wAs not found. MessAge is {1}', commAnd, error ? error.messAge : ''));
 			}
 			return { config: null, stdout: this._stdout, stderr: this._stderr };
 		});
 	}
 
-	private createTaskDescriptions(tasks: string[], problemMatchers: string[], list: boolean): TaskConfig.CustomTask[] {
-		let taskConfigs: TaskConfig.CustomTask[] = [];
+	privAte creAteTAskDescriptions(tAsks: string[], problemMAtchers: string[], list: booleAn): TAskConfig.CustomTAsk[] {
+		let tAskConfigs: TAskConfig.CustomTAsk[] = [];
 		if (list) {
-			tasks.forEach((task) => {
-				taskConfigs.push({
-					taskName: task,
-					args: []
+			tAsks.forEAch((tAsk) => {
+				tAskConfigs.push({
+					tAskNAme: tAsk,
+					Args: []
 				});
 			});
 		} else {
-			let taskInfos: TaskInfos = {
-				build: { index: -1, exact: -1 },
-				test: { index: -1, exact: -1 }
+			let tAskInfos: TAskInfos = {
+				build: { index: -1, exAct: -1 },
+				test: { index: -1, exAct: -1 }
 			};
-			tasks.forEach((task, index) => {
-				this.testBuild(taskInfos.build, task, index);
-				this.testTest(taskInfos.test, task, index);
+			tAsks.forEAch((tAsk, index) => {
+				this.testBuild(tAskInfos.build, tAsk, index);
+				this.testTest(tAskInfos.test, tAsk, index);
 			});
-			if (taskInfos.build.index !== -1) {
-				let name = tasks[taskInfos.build.index];
-				this._stdout.push(nls.localize('TaskSystemDetector.buildTaskDetected', 'Build task named \'{0}\' detected.', name));
-				taskConfigs.push({
-					taskName: name,
-					args: [],
-					group: Tasks.TaskGroup.Build,
-					problemMatcher: problemMatchers
+			if (tAskInfos.build.index !== -1) {
+				let nAme = tAsks[tAskInfos.build.index];
+				this._stdout.push(nls.locAlize('TAskSystemDetector.buildTAskDetected', 'Build tAsk nAmed \'{0}\' detected.', nAme));
+				tAskConfigs.push({
+					tAskNAme: nAme,
+					Args: [],
+					group: TAsks.TAskGroup.Build,
+					problemMAtcher: problemMAtchers
 				});
 			}
-			if (taskInfos.test.index !== -1) {
-				let name = tasks[taskInfos.test.index];
-				this._stdout.push(nls.localize('TaskSystemDetector.testTaskDetected', 'Test task named \'{0}\' detected.', name));
-				taskConfigs.push({
-					taskName: name,
-					args: [],
-					group: Tasks.TaskGroup.Test,
+			if (tAskInfos.test.index !== -1) {
+				let nAme = tAsks[tAskInfos.test.index];
+				this._stdout.push(nls.locAlize('TAskSystemDetector.testTAskDetected', 'Test tAsk nAmed \'{0}\' detected.', nAme));
+				tAskConfigs.push({
+					tAskNAme: nAme,
+					Args: [],
+					group: TAsks.TAskGroup.Test,
 				});
 			}
 		}
-		return taskConfigs;
+		return tAskConfigs;
 	}
 
-	private testBuild(taskInfo: TaskInfo, taskName: string, index: number): void {
-		if (taskName === build) {
-			taskInfo.index = index;
-			taskInfo.exact = 4;
-		} else if ((taskName.startsWith(build) || taskName.endsWith(build)) && taskInfo.exact < 4) {
-			taskInfo.index = index;
-			taskInfo.exact = 3;
-		} else if (taskName.indexOf(build) !== -1 && taskInfo.exact < 3) {
-			taskInfo.index = index;
-			taskInfo.exact = 2;
-		} else if (taskName === defaultValue && taskInfo.exact < 2) {
-			taskInfo.index = index;
-			taskInfo.exact = 1;
+	privAte testBuild(tAskInfo: TAskInfo, tAskNAme: string, index: number): void {
+		if (tAskNAme === build) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 4;
+		} else if ((tAskNAme.stArtsWith(build) || tAskNAme.endsWith(build)) && tAskInfo.exAct < 4) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 3;
+		} else if (tAskNAme.indexOf(build) !== -1 && tAskInfo.exAct < 3) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 2;
+		} else if (tAskNAme === defAultVAlue && tAskInfo.exAct < 2) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 1;
 		}
 	}
 
-	private testTest(taskInfo: TaskInfo, taskName: string, index: number): void {
-		if (taskName === test) {
-			taskInfo.index = index;
-			taskInfo.exact = 3;
-		} else if ((taskName.startsWith(test) || taskName.endsWith(test)) && taskInfo.exact < 3) {
-			taskInfo.index = index;
-			taskInfo.exact = 2;
-		} else if (taskName.indexOf(test) !== -1 && taskInfo.exact < 2) {
-			taskInfo.index = index;
-			taskInfo.exact = 1;
+	privAte testTest(tAskInfo: TAskInfo, tAskNAme: string, index: number): void {
+		if (tAskNAme === test) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 3;
+		} else if ((tAskNAme.stArtsWith(test) || tAskNAme.endsWith(test)) && tAskInfo.exAct < 3) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 2;
+		} else if (tAskNAme.indexOf(test) !== -1 && tAskInfo.exAct < 2) {
+			tAskInfo.index = index;
+			tAskInfo.exAct = 1;
 		}
 	}
 }

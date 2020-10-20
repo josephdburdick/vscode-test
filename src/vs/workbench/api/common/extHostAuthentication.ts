@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
-import * as modes from 'vs/editor/common/modes';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IMainContext, MainContext, MainThreadAuthenticationShape, ExtHostAuthenticationShape } from 'vs/workbench/api/common/extHost.protocol';
-import { Disposable } from 'vs/workbench/api/common/extHostTypes';
-import { IExtensionDescription, ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import type * As vscode from 'vscode';
+import * As modes from 'vs/editor/common/modes';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IMAinContext, MAinContext, MAinThreAdAuthenticAtionShApe, ExtHostAuthenticAtionShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { DisposAble } from 'vs/workbench/Api/common/extHostTypes';
+import { IExtensionDescription, ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 
-export class ExtHostAuthentication implements ExtHostAuthenticationShape {
-	private _proxy: MainThreadAuthenticationShape;
-	private _authenticationProviders: Map<string, vscode.AuthenticationProvider> = new Map<string, vscode.AuthenticationProvider>();
+export clAss ExtHostAuthenticAtion implements ExtHostAuthenticAtionShApe {
+	privAte _proxy: MAinThreAdAuthenticAtionShApe;
+	privAte _AuthenticAtionProviders: MAp<string, vscode.AuthenticAtionProvider> = new MAp<string, vscode.AuthenticAtionProvider>();
 
-	private _providerIds: string[] = [];
+	privAte _providerIds: string[] = [];
 
-	private _providers: vscode.AuthenticationProviderInformation[] = [];
+	privAte _providers: vscode.AuthenticAtionProviderInformAtion[] = [];
 
-	private _onDidChangeAuthenticationProviders = new Emitter<vscode.AuthenticationProvidersChangeEvent>();
-	readonly onDidChangeAuthenticationProviders: Event<vscode.AuthenticationProvidersChangeEvent> = this._onDidChangeAuthenticationProviders.event;
+	privAte _onDidChAngeAuthenticAtionProviders = new Emitter<vscode.AuthenticAtionProvidersChAngeEvent>();
+	reAdonly onDidChAngeAuthenticAtionProviders: Event<vscode.AuthenticAtionProvidersChAngeEvent> = this._onDidChAngeAuthenticAtionProviders.event;
 
-	private _onDidChangeSessions = new Emitter<vscode.AuthenticationSessionsChangeEvent>();
-	readonly onDidChangeSessions: Event<vscode.AuthenticationSessionsChangeEvent> = this._onDidChangeSessions.event;
+	privAte _onDidChAngeSessions = new Emitter<vscode.AuthenticAtionSessionsChAngeEvent>();
+	reAdonly onDidChAngeSessions: Event<vscode.AuthenticAtionSessionsChAngeEvent> = this._onDidChAngeSessions.event;
 
-	private _onDidChangePassword = new Emitter<void>();
-	readonly onDidChangePassword: Event<void> = this._onDidChangePassword.event;
+	privAte _onDidChAngePAssword = new Emitter<void>();
+	reAdonly onDidChAngePAssword: Event<void> = this._onDidChAngePAssword.event;
 
-	constructor(mainContext: IMainContext) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadAuthentication);
+	constructor(mAinContext: IMAinContext) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdAuthenticAtion);
 	}
 
-	$setProviders(providers: vscode.AuthenticationProviderInformation[]): Promise<void> {
+	$setProviders(providers: vscode.AuthenticAtionProviderInformAtion[]): Promise<void> {
 		this._providers = providers;
 		return Promise.resolve();
 	}
 
-	getProviderIds(): Promise<ReadonlyArray<string>> {
+	getProviderIds(): Promise<ReAdonlyArrAy<string>> {
 		return this._proxy.$getProviderIds();
 	}
 
@@ -44,57 +44,57 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 		return this._providerIds;
 	}
 
-	get providers(): ReadonlyArray<vscode.AuthenticationProviderInformation> {
+	get providers(): ReAdonlyArrAy<vscode.AuthenticAtionProviderInformAtion> {
 		return Object.freeze(this._providers.slice());
 	}
 
-	async getSession(requestingExtension: IExtensionDescription, providerId: string, scopes: string[], options: vscode.AuthenticationGetSessionOptions & { createIfNone: true }): Promise<vscode.AuthenticationSession>;
-	async getSession(requestingExtension: IExtensionDescription, providerId: string, scopes: string[], options: vscode.AuthenticationGetSessionOptions = {}): Promise<vscode.AuthenticationSession | undefined> {
-		await this._proxy.$ensureProvider(providerId);
-		const provider = this._authenticationProviders.get(providerId);
-		const extensionName = requestingExtension.displayName || requestingExtension.name;
+	Async getSession(requestingExtension: IExtensionDescription, providerId: string, scopes: string[], options: vscode.AuthenticAtionGetSessionOptions & { creAteIfNone: true }): Promise<vscode.AuthenticAtionSession>;
+	Async getSession(requestingExtension: IExtensionDescription, providerId: string, scopes: string[], options: vscode.AuthenticAtionGetSessionOptions = {}): Promise<vscode.AuthenticAtionSession | undefined> {
+		AwAit this._proxy.$ensureProvider(providerId);
+		const provider = this._AuthenticAtionProviders.get(providerId);
+		const extensionNAme = requestingExtension.displAyNAme || requestingExtension.nAme;
 		const extensionId = ExtensionIdentifier.toKey(requestingExtension.identifier);
 
 		if (!provider) {
-			return this._proxy.$getSession(providerId, scopes, extensionId, extensionName, options);
+			return this._proxy.$getSession(providerId, scopes, extensionId, extensionNAme, options);
 		}
 
 		const orderedScopes = scopes.sort().join(' ');
-		const sessions = (await provider.getSessions()).filter(session => session.scopes.slice().sort().join(' ') === orderedScopes);
+		const sessions = (AwAit provider.getSessions()).filter(session => session.scopes.slice().sort().join(' ') === orderedScopes);
 
 		if (sessions.length) {
 			if (!provider.supportsMultipleAccounts) {
 				const session = sessions[0];
-				const allowed = await this._proxy.$getSessionsPrompt(providerId, session.account.label, provider.label, extensionId, extensionName);
-				if (allowed) {
+				const Allowed = AwAit this._proxy.$getSessionsPrompt(providerId, session.Account.lAbel, provider.lAbel, extensionId, extensionNAme);
+				if (Allowed) {
 					return session;
 				} else {
 					throw new Error('User did not consent to login.');
 				}
 			}
 
-			// On renderer side, confirm consent, ask user to choose between accounts if multiple sessions are valid
-			const selected = await this._proxy.$selectSession(providerId, provider.label, extensionId, extensionName, sessions, scopes, !!options.clearSessionPreference);
+			// On renderer side, confirm consent, Ask user to choose between Accounts if multiple sessions Are vAlid
+			const selected = AwAit this._proxy.$selectSession(providerId, provider.lAbel, extensionId, extensionNAme, sessions, scopes, !!options.cleArSessionPreference);
 			return sessions.find(session => session.id === selected.id);
 		} else {
-			if (options.createIfNone) {
-				const isAllowed = await this._proxy.$loginPrompt(provider.label, extensionName);
+			if (options.creAteIfNone) {
+				const isAllowed = AwAit this._proxy.$loginPrompt(provider.lAbel, extensionNAme);
 				if (!isAllowed) {
 					throw new Error('User did not consent to login.');
 				}
 
-				const session = await provider.login(scopes);
-				await this._proxy.$setTrustedExtensionAndAccountPreference(providerId, session.account.label, extensionId, extensionName, session.id);
+				const session = AwAit provider.login(scopes);
+				AwAit this._proxy.$setTrustedExtensionAndAccountPreference(providerId, session.Account.lAbel, extensionId, extensionNAme, session.id);
 				return session;
 			} else {
-				await this._proxy.$requestNewSession(providerId, scopes, extensionId, extensionName);
+				AwAit this._proxy.$requestNewSession(providerId, scopes, extensionId, extensionNAme);
 				return undefined;
 			}
 		}
 	}
 
-	async logout(providerId: string, sessionId: string): Promise<void> {
-		const provider = this._authenticationProviders.get(providerId);
+	Async logout(providerId: string, sessionId: string): Promise<void> {
+		const provider = this._AuthenticAtionProviders.get(providerId);
 		if (!provider) {
 			return this._proxy.$logout(providerId, sessionId);
 		}
@@ -102,12 +102,12 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 		return provider.logout(sessionId);
 	}
 
-	registerAuthenticationProvider(provider: vscode.AuthenticationProvider): vscode.Disposable {
-		if (this._authenticationProviders.get(provider.id)) {
-			throw new Error(`An authentication provider with id '${provider.id}' is already registered.`);
+	registerAuthenticAtionProvider(provider: vscode.AuthenticAtionProvider): vscode.DisposAble {
+		if (this._AuthenticAtionProviders.get(provider.id)) {
+			throw new Error(`An AuthenticAtion provider with id '${provider.id}' is AlreAdy registered.`);
 		}
 
-		this._authenticationProviders.set(provider.id, provider);
+		this._AuthenticAtionProviders.set(provider.id, provider);
 		if (!this._providerIds.includes(provider.id)) {
 			this._providerIds.push(provider.id);
 		}
@@ -115,19 +115,19 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 		if (!this._providers.find(p => p.id === provider.id)) {
 			this._providers.push({
 				id: provider.id,
-				label: provider.label
+				lAbel: provider.lAbel
 			});
 		}
 
-		const listener = provider.onDidChangeSessions(e => {
-			this._proxy.$sendDidChangeSessions(provider.id, e);
+		const listener = provider.onDidChAngeSessions(e => {
+			this._proxy.$sendDidChAngeSessions(provider.id, e);
 		});
 
-		this._proxy.$registerAuthenticationProvider(provider.id, provider.label, provider.supportsMultipleAccounts);
+		this._proxy.$registerAuthenticAtionProvider(provider.id, provider.lAbel, provider.supportsMultipleAccounts);
 
-		return new Disposable(() => {
+		return new DisposAble(() => {
 			listener.dispose();
-			this._authenticationProviders.delete(provider.id);
+			this._AuthenticAtionProviders.delete(provider.id);
 			const index = this._providerIds.findIndex(id => id === provider.id);
 			if (index > -1) {
 				this._providerIds.splice(index);
@@ -138,91 +138,91 @@ export class ExtHostAuthentication implements ExtHostAuthenticationShape {
 				this._providers.splice(i);
 			}
 
-			this._proxy.$unregisterAuthenticationProvider(provider.id);
+			this._proxy.$unregisterAuthenticAtionProvider(provider.id);
 		});
 	}
 
-	$login(providerId: string, scopes: string[]): Promise<modes.AuthenticationSession> {
-		const authProvider = this._authenticationProviders.get(providerId);
-		if (authProvider) {
-			return Promise.resolve(authProvider.login(scopes));
+	$login(providerId: string, scopes: string[]): Promise<modes.AuthenticAtionSession> {
+		const AuthProvider = this._AuthenticAtionProviders.get(providerId);
+		if (AuthProvider) {
+			return Promise.resolve(AuthProvider.login(scopes));
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnAble to find AuthenticAtion provider with hAndle: ${providerId}`);
 	}
 
 	$logout(providerId: string, sessionId: string): Promise<void> {
-		const authProvider = this._authenticationProviders.get(providerId);
-		if (authProvider) {
-			return Promise.resolve(authProvider.logout(sessionId));
+		const AuthProvider = this._AuthenticAtionProviders.get(providerId);
+		if (AuthProvider) {
+			return Promise.resolve(AuthProvider.logout(sessionId));
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnAble to find AuthenticAtion provider with hAndle: ${providerId}`);
 	}
 
-	$getSessions(providerId: string): Promise<ReadonlyArray<modes.AuthenticationSession>> {
-		const authProvider = this._authenticationProviders.get(providerId);
-		if (authProvider) {
-			return Promise.resolve(authProvider.getSessions());
+	$getSessions(providerId: string): Promise<ReAdonlyArrAy<modes.AuthenticAtionSession>> {
+		const AuthProvider = this._AuthenticAtionProviders.get(providerId);
+		if (AuthProvider) {
+			return Promise.resolve(AuthProvider.getSessions());
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnAble to find AuthenticAtion provider with hAndle: ${providerId}`);
 	}
 
-	async $getSessionAccessToken(providerId: string, sessionId: string): Promise<string> {
-		const authProvider = this._authenticationProviders.get(providerId);
-		if (authProvider) {
-			const sessions = await authProvider.getSessions();
+	Async $getSessionAccessToken(providerId: string, sessionId: string): Promise<string> {
+		const AuthProvider = this._AuthenticAtionProviders.get(providerId);
+		if (AuthProvider) {
+			const sessions = AwAit AuthProvider.getSessions();
 			const session = sessions.find(session => session.id === sessionId);
 			if (session) {
-				return session.accessToken;
+				return session.AccessToken;
 			}
 
-			throw new Error(`Unable to find session with id: ${sessionId}`);
+			throw new Error(`UnAble to find session with id: ${sessionId}`);
 		}
 
-		throw new Error(`Unable to find authentication provider with handle: ${providerId}`);
+		throw new Error(`UnAble to find AuthenticAtion provider with hAndle: ${providerId}`);
 	}
 
-	$onDidChangeAuthenticationSessions(id: string, label: string, event: modes.AuthenticationSessionsChangeEvent) {
-		this._onDidChangeSessions.fire({ provider: { id, label }, ...event });
+	$onDidChAngeAuthenticAtionSessions(id: string, lAbel: string, event: modes.AuthenticAtionSessionsChAngeEvent) {
+		this._onDidChAngeSessions.fire({ provider: { id, lAbel }, ...event });
 		return Promise.resolve();
 	}
 
-	$onDidChangeAuthenticationProviders(added: modes.AuthenticationProviderInformation[], removed: modes.AuthenticationProviderInformation[]) {
-		added.forEach(provider => {
+	$onDidChAngeAuthenticAtionProviders(Added: modes.AuthenticAtionProviderInformAtion[], removed: modes.AuthenticAtionProviderInformAtion[]) {
+		Added.forEAch(provider => {
 			if (!this._providers.some(p => p.id === provider.id)) {
 				this._providers.push(provider);
 			}
 		});
 
-		removed.forEach(p => {
+		removed.forEAch(p => {
 			const index = this._providers.findIndex(provider => provider.id === p.id);
 			if (index > -1) {
 				this._providers.splice(index);
 			}
 		});
 
-		this._onDidChangeAuthenticationProviders.fire({ added, removed });
+		this._onDidChAngeAuthenticAtionProviders.fire({ Added, removed });
 		return Promise.resolve();
 	}
 
-	async $onDidChangePassword(): Promise<void> {
-		this._onDidChangePassword.fire();
+	Async $onDidChAngePAssword(): Promise<void> {
+		this._onDidChAngePAssword.fire();
 	}
 
-	getPassword(requestingExtension: IExtensionDescription, key: string): Promise<string | undefined> {
+	getPAssword(requestingExtension: IExtensionDescription, key: string): Promise<string | undefined> {
 		const extensionId = ExtensionIdentifier.toKey(requestingExtension.identifier);
-		return this._proxy.$getPassword(extensionId, key);
+		return this._proxy.$getPAssword(extensionId, key);
 	}
 
-	setPassword(requestingExtension: IExtensionDescription, key: string, value: string): Promise<void> {
+	setPAssword(requestingExtension: IExtensionDescription, key: string, vAlue: string): Promise<void> {
 		const extensionId = ExtensionIdentifier.toKey(requestingExtension.identifier);
-		return this._proxy.$setPassword(extensionId, key, value);
+		return this._proxy.$setPAssword(extensionId, key, vAlue);
 	}
 
-	deletePassword(requestingExtension: IExtensionDescription, key: string): Promise<void> {
+	deletePAssword(requestingExtension: IExtensionDescription, key: string): Promise<void> {
 		const extensionId = ExtensionIdentifier.toKey(requestingExtension.identifier);
-		return this._proxy.$deletePassword(extensionId, key);
+		return this._proxy.$deletePAssword(extensionId, key);
 	}
 }

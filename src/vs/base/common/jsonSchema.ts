@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export type JSONSchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'null' | 'array' | 'object';
+export type JSONSchemAType = 'string' | 'number' | 'integer' | 'booleAn' | 'null' | 'ArrAy' | 'object';
 
-export interface IJSONSchema {
+export interfAce IJSONSchemA {
 	id?: string;
 	$id?: string;
-	$schema?: string;
-	type?: JSONSchemaType | JSONSchemaType[];
+	$schemA?: string;
+	type?: JSONSchemAType | JSONSchemAType[];
 	title?: string;
-	default?: any;
-	definitions?: IJSONSchemaMap;
+	defAult?: Any;
+	definitions?: IJSONSchemAMAp;
 	description?: string;
-	properties?: IJSONSchemaMap;
-	patternProperties?: IJSONSchemaMap;
-	additionalProperties?: boolean | IJSONSchema;
+	properties?: IJSONSchemAMAp;
+	pAtternProperties?: IJSONSchemAMAp;
+	AdditionAlProperties?: booleAn | IJSONSchemA;
 	minProperties?: number;
-	maxProperties?: number;
-	dependencies?: IJSONSchemaMap | { [prop: string]: string[] };
-	items?: IJSONSchema | IJSONSchema[];
+	mAxProperties?: number;
+	dependencies?: IJSONSchemAMAp | { [prop: string]: string[] };
+	items?: IJSONSchemA | IJSONSchemA[];
 	minItems?: number;
-	maxItems?: number;
-	uniqueItems?: boolean;
-	additionalItems?: boolean | IJSONSchema;
-	pattern?: string;
+	mAxItems?: number;
+	uniqueItems?: booleAn;
+	AdditionAlItems?: booleAn | IJSONSchemA;
+	pAttern?: string;
 	minLength?: number;
-	maxLength?: number;
+	mAxLength?: number;
 	minimum?: number;
-	maximum?: number;
-	exclusiveMinimum?: boolean | number;
-	exclusiveMaximum?: boolean | number;
+	mAximum?: number;
+	exclusiveMinimum?: booleAn | number;
+	exclusiveMAximum?: booleAn | number;
 	multipleOf?: number;
 	required?: string[];
 	$ref?: string;
-	anyOf?: IJSONSchema[];
-	allOf?: IJSONSchema[];
-	oneOf?: IJSONSchema[];
-	not?: IJSONSchema;
-	enum?: any[];
-	format?: string;
+	AnyOf?: IJSONSchemA[];
+	AllOf?: IJSONSchemA[];
+	oneOf?: IJSONSchemA[];
+	not?: IJSONSchemA;
+	enum?: Any[];
+	formAt?: string;
 
-	// schema draft 06
-	const?: any;
-	contains?: IJSONSchema;
-	propertyNames?: IJSONSchema;
+	// schemA drAft 06
+	const?: Any;
+	contAins?: IJSONSchemA;
+	propertyNAmes?: IJSONSchemA;
 
-	// schema draft 07
+	// schemA drAft 07
 	$comment?: string;
-	if?: IJSONSchema;
-	then?: IJSONSchema;
-	else?: IJSONSchema;
+	if?: IJSONSchemA;
+	then?: IJSONSchemA;
+	else?: IJSONSchemA;
 
 	// VS Code extensions
-	defaultSnippets?: IJSONSchemaSnippet[];
-	errorMessage?: string;
-	patternErrorMessage?: string;
-	deprecationMessage?: string;
-	markdownDeprecationMessage?: string;
+	defAultSnippets?: IJSONSchemASnippet[];
+	errorMessAge?: string;
+	pAtternErrorMessAge?: string;
+	deprecAtionMessAge?: string;
+	mArkdownDeprecAtionMessAge?: string;
 	enumDescriptions?: string[];
-	markdownEnumDescriptions?: string[];
-	markdownDescription?: string;
-	doNotSuggest?: boolean;
+	mArkdownEnumDescriptions?: string[];
+	mArkdownDescription?: string;
+	doNotSuggest?: booleAn;
 	suggestSortText?: string;
-	allowComments?: boolean;
-	allowTrailingCommas?: boolean;
+	AllowComments?: booleAn;
+	AllowTrAilingCommAs?: booleAn;
 }
 
-export interface IJSONSchemaMap {
-	[name: string]: IJSONSchema;
+export interfAce IJSONSchemAMAp {
+	[nAme: string]: IJSONSchemA;
 }
 
-export interface IJSONSchemaSnippet {
-	label?: string;
+export interfAce IJSONSchemASnippet {
+	lAbel?: string;
 	description?: string;
-	body?: any; // a object that will be JSON stringified
-	bodyText?: string; // an already stringified JSON object that can contain new lines (\n) and tabs (\t)
+	body?: Any; // A object thAt will be JSON stringified
+	bodyText?: string; // An AlreAdy stringified JSON object thAt cAn contAin new lines (\n) And tAbs (\t)
 }

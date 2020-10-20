@@ -1,122 +1,122 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-class WindowManager {
+clAss WindowMAnAger {
 
-	public static readonly INSTANCE = new WindowManager();
+	public stAtic reAdonly INSTANCE = new WindowMAnAger();
 
 	// --- Zoom Level
-	private _zoomLevel: number = 0;
-	private _lastZoomLevelChangeTime: number = 0;
-	private readonly _onDidChangeZoomLevel = new Emitter<number>();
+	privAte _zoomLevel: number = 0;
+	privAte _lAstZoomLevelChAngeTime: number = 0;
+	privAte reAdonly _onDidChAngeZoomLevel = new Emitter<number>();
 
-	public readonly onDidChangeZoomLevel: Event<number> = this._onDidChangeZoomLevel.event;
+	public reAdonly onDidChAngeZoomLevel: Event<number> = this._onDidChAngeZoomLevel.event;
 	public getZoomLevel(): number {
 		return this._zoomLevel;
 	}
-	public getTimeSinceLastZoomLevelChanged(): number {
-		return Date.now() - this._lastZoomLevelChangeTime;
+	public getTimeSinceLAstZoomLevelChAnged(): number {
+		return DAte.now() - this._lAstZoomLevelChAngeTime;
 	}
-	public setZoomLevel(zoomLevel: number, isTrusted: boolean): void {
+	public setZoomLevel(zoomLevel: number, isTrusted: booleAn): void {
 		if (this._zoomLevel === zoomLevel) {
 			return;
 		}
 
 		this._zoomLevel = zoomLevel;
 		// See https://github.com/microsoft/vscode/issues/26151
-		this._lastZoomLevelChangeTime = isTrusted ? 0 : Date.now();
-		this._onDidChangeZoomLevel.fire(this._zoomLevel);
+		this._lAstZoomLevelChAngeTime = isTrusted ? 0 : DAte.now();
+		this._onDidChAngeZoomLevel.fire(this._zoomLevel);
 	}
 
-	// --- Zoom Factor
-	private _zoomFactor: number = 1;
+	// --- Zoom FActor
+	privAte _zoomFActor: number = 1;
 
-	public getZoomFactor(): number {
-		return this._zoomFactor;
+	public getZoomFActor(): number {
+		return this._zoomFActor;
 	}
-	public setZoomFactor(zoomFactor: number): void {
-		this._zoomFactor = zoomFactor;
+	public setZoomFActor(zoomFActor: number): void {
+		this._zoomFActor = zoomFActor;
 	}
 
-	// --- Pixel Ratio
-	public getPixelRatio(): number {
-		let ctx: any = document.createElement('canvas').getContext('2d');
-		let dpr = window.devicePixelRatio || 1;
-		let bsr = ctx.webkitBackingStorePixelRatio ||
-			ctx.mozBackingStorePixelRatio ||
-			ctx.msBackingStorePixelRatio ||
-			ctx.oBackingStorePixelRatio ||
-			ctx.backingStorePixelRatio || 1;
+	// --- Pixel RAtio
+	public getPixelRAtio(): number {
+		let ctx: Any = document.creAteElement('cAnvAs').getContext('2d');
+		let dpr = window.devicePixelRAtio || 1;
+		let bsr = ctx.webkitBAckingStorePixelRAtio ||
+			ctx.mozBAckingStorePixelRAtio ||
+			ctx.msBAckingStorePixelRAtio ||
+			ctx.oBAckingStorePixelRAtio ||
+			ctx.bAckingStorePixelRAtio || 1;
 		return dpr / bsr;
 	}
 
 	// --- Fullscreen
-	private _fullscreen: boolean = false;
-	private readonly _onDidChangeFullscreen = new Emitter<void>();
+	privAte _fullscreen: booleAn = fAlse;
+	privAte reAdonly _onDidChAngeFullscreen = new Emitter<void>();
 
-	public readonly onDidChangeFullscreen: Event<void> = this._onDidChangeFullscreen.event;
-	public setFullscreen(fullscreen: boolean): void {
+	public reAdonly onDidChAngeFullscreen: Event<void> = this._onDidChAngeFullscreen.event;
+	public setFullscreen(fullscreen: booleAn): void {
 		if (this._fullscreen === fullscreen) {
 			return;
 		}
 
 		this._fullscreen = fullscreen;
-		this._onDidChangeFullscreen.fire();
+		this._onDidChAngeFullscreen.fire();
 	}
-	public isFullscreen(): boolean {
+	public isFullscreen(): booleAn {
 		return this._fullscreen;
 	}
 }
 
 /** A zoom index, e.g. 1, 2, 3 */
-export function setZoomLevel(zoomLevel: number, isTrusted: boolean): void {
-	WindowManager.INSTANCE.setZoomLevel(zoomLevel, isTrusted);
+export function setZoomLevel(zoomLevel: number, isTrusted: booleAn): void {
+	WindowMAnAger.INSTANCE.setZoomLevel(zoomLevel, isTrusted);
 }
 export function getZoomLevel(): number {
-	return WindowManager.INSTANCE.getZoomLevel();
+	return WindowMAnAger.INSTANCE.getZoomLevel();
 }
-/** Returns the time (in ms) since the zoom level was changed */
-export function getTimeSinceLastZoomLevelChanged(): number {
-	return WindowManager.INSTANCE.getTimeSinceLastZoomLevelChanged();
+/** Returns the time (in ms) since the zoom level wAs chAnged */
+export function getTimeSinceLAstZoomLevelChAnged(): number {
+	return WindowMAnAger.INSTANCE.getTimeSinceLAstZoomLevelChAnged();
 }
-export function onDidChangeZoomLevel(callback: (zoomLevel: number) => void): IDisposable {
-	return WindowManager.INSTANCE.onDidChangeZoomLevel(callback);
-}
-
-/** The zoom scale for an index, e.g. 1, 1.2, 1.4 */
-export function getZoomFactor(): number {
-	return WindowManager.INSTANCE.getZoomFactor();
-}
-export function setZoomFactor(zoomFactor: number): void {
-	WindowManager.INSTANCE.setZoomFactor(zoomFactor);
+export function onDidChAngeZoomLevel(cAllbAck: (zoomLevel: number) => void): IDisposAble {
+	return WindowMAnAger.INSTANCE.onDidChAngeZoomLevel(cAllbAck);
 }
 
-export function getPixelRatio(): number {
-	return WindowManager.INSTANCE.getPixelRatio();
+/** The zoom scAle for An index, e.g. 1, 1.2, 1.4 */
+export function getZoomFActor(): number {
+	return WindowMAnAger.INSTANCE.getZoomFActor();
+}
+export function setZoomFActor(zoomFActor: number): void {
+	WindowMAnAger.INSTANCE.setZoomFActor(zoomFActor);
 }
 
-export function setFullscreen(fullscreen: boolean): void {
-	WindowManager.INSTANCE.setFullscreen(fullscreen);
+export function getPixelRAtio(): number {
+	return WindowMAnAger.INSTANCE.getPixelRAtio();
 }
-export function isFullscreen(): boolean {
-	return WindowManager.INSTANCE.isFullscreen();
-}
-export const onDidChangeFullscreen = WindowManager.INSTANCE.onDidChangeFullscreen;
 
-const userAgent = navigator.userAgent;
+export function setFullscreen(fullscreen: booleAn): void {
+	WindowMAnAger.INSTANCE.setFullscreen(fullscreen);
+}
+export function isFullscreen(): booleAn {
+	return WindowMAnAger.INSTANCE.isFullscreen();
+}
+export const onDidChAngeFullscreen = WindowMAnAger.INSTANCE.onDidChAngeFullscreen;
+
+const userAgent = nAvigAtor.userAgent;
 
 export const isEdge = (userAgent.indexOf('Edge/') >= 0);
-export const isOpera = (userAgent.indexOf('Opera') >= 0);
+export const isOperA = (userAgent.indexOf('OperA') >= 0);
 export const isFirefox = (userAgent.indexOf('Firefox') >= 0);
 export const isWebKit = (userAgent.indexOf('AppleWebKit') >= 0);
 export const isChrome = (userAgent.indexOf('Chrome') >= 0);
-export const isSafari = (!isChrome && (userAgent.indexOf('Safari') >= 0));
-export const isWebkitWebView = (!isChrome && !isSafari && isWebKit);
-export const isIPad = (userAgent.indexOf('iPad') >= 0 || (isSafari && navigator.maxTouchPoints > 0));
+export const isSAfAri = (!isChrome && (userAgent.indexOf('SAfAri') >= 0));
+export const isWebkitWebView = (!isChrome && !isSAfAri && isWebKit);
+export const isIPAd = (userAgent.indexOf('iPAd') >= 0 || (isSAfAri && nAvigAtor.mAxTouchPoints > 0));
 export const isEdgeWebView = isEdge && (userAgent.indexOf('WebView/') >= 0);
-export const isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+export const isStAndAlone = (window.mAtchMediA && window.mAtchMediA('(displAy-mode: stAndAlone)').mAtches);

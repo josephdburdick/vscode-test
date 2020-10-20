@@ -1,106 +1,106 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DiffChange } from 'vs/base/common/diff/diffChange';
-import { stringHash } from 'vs/base/common/hash';
-import { Constants } from 'vs/base/common/uint';
+import { DiffChAnge } from 'vs/bAse/common/diff/diffChAnge';
+import { stringHAsh } from 'vs/bAse/common/hAsh';
+import { ConstAnts } from 'vs/bAse/common/uint';
 
-export class StringDiffSequence implements ISequence {
+export clAss StringDiffSequence implements ISequence {
 
-	constructor(private source: string) { }
+	constructor(privAte source: string) { }
 
-	getElements(): Int32Array | number[] | string[] {
+	getElements(): Int32ArrAy | number[] | string[] {
 		const source = this.source;
-		const characters = new Int32Array(source.length);
+		const chArActers = new Int32ArrAy(source.length);
 		for (let i = 0, len = source.length; i < len; i++) {
-			characters[i] = source.charCodeAt(i);
+			chArActers[i] = source.chArCodeAt(i);
 		}
-		return characters;
+		return chArActers;
 	}
 }
 
-export function stringDiff(original: string, modified: string, pretty: boolean): IDiffChange[] {
-	return new LcsDiff(new StringDiffSequence(original), new StringDiffSequence(modified)).ComputeDiff(pretty).changes;
+export function stringDiff(originAl: string, modified: string, pretty: booleAn): IDiffChAnge[] {
+	return new LcsDiff(new StringDiffSequence(originAl), new StringDiffSequence(modified)).ComputeDiff(pretty).chAnges;
 }
 
-export interface ISequence {
-	getElements(): Int32Array | number[] | string[];
+export interfAce ISequence {
+	getElements(): Int32ArrAy | number[] | string[];
 }
 
-export interface IDiffChange {
+export interfAce IDiffChAnge {
 	/**
-	 * The position of the first element in the original sequence which
-	 * this change affects.
+	 * The position of the first element in the originAl sequence which
+	 * this chAnge Affects.
 	 */
-	originalStart: number;
+	originAlStArt: number;
 
 	/**
-	 * The number of elements from the original sequence which were
-	 * affected.
+	 * The number of elements from the originAl sequence which were
+	 * Affected.
 	 */
-	originalLength: number;
+	originAlLength: number;
 
 	/**
 	 * The position of the first element in the modified sequence which
-	 * this change affects.
+	 * this chAnge Affects.
 	 */
-	modifiedStart: number;
+	modifiedStArt: number;
 
 	/**
 	 * The number of elements from the modified sequence which were
-	 * affected (added).
+	 * Affected (Added).
 	 */
 	modifiedLength: number;
 }
 
-export interface IContinueProcessingPredicate {
-	(furthestOriginalIndex: number, matchLengthOfLongest: number): boolean;
+export interfAce IContinueProcessingPredicAte {
+	(furthestOriginAlIndex: number, mAtchLengthOfLongest: number): booleAn;
 }
 
-export interface IDiffResult {
-	quitEarly: boolean;
-	changes: IDiffChange[];
+export interfAce IDiffResult {
+	quitEArly: booleAn;
+	chAnges: IDiffChAnge[];
 }
 
 //
-// The code below has been ported from a C# implementation in VS
+// The code below hAs been ported from A C# implementAtion in VS
 //
 
-export class Debug {
+export clAss Debug {
 
-	public static Assert(condition: boolean, message: string): void {
+	public stAtic Assert(condition: booleAn, messAge: string): void {
 		if (!condition) {
-			throw new Error(message);
+			throw new Error(messAge);
 		}
 	}
 }
 
-export class MyArray {
+export clAss MyArrAy {
 	/**
-	 * Copies a range of elements from an Array starting at the specified source index and pastes
-	 * them to another Array starting at the specified destination index. The length and the indexes
-	 * are specified as 64-bit integers.
-	 * sourceArray:
-	 *		The Array that contains the data to copy.
+	 * Copies A rAnge of elements from An ArrAy stArting At the specified source index And pAstes
+	 * them to Another ArrAy stArting At the specified destinAtion index. The length And the indexes
+	 * Are specified As 64-bit integers.
+	 * sourceArrAy:
+	 *		The ArrAy thAt contAins the dAtA to copy.
 	 * sourceIndex:
-	 *		A 64-bit integer that represents the index in the sourceArray at which copying begins.
-	 * destinationArray:
-	 *		The Array that receives the data.
-	 * destinationIndex:
-	 *		A 64-bit integer that represents the index in the destinationArray at which storing begins.
+	 *		A 64-bit integer thAt represents the index in the sourceArrAy At which copying begins.
+	 * destinAtionArrAy:
+	 *		The ArrAy thAt receives the dAtA.
+	 * destinAtionIndex:
+	 *		A 64-bit integer thAt represents the index in the destinAtionArrAy At which storing begins.
 	 * length:
-	 *		A 64-bit integer that represents the number of elements to copy.
+	 *		A 64-bit integer thAt represents the number of elements to copy.
 	 */
-	public static Copy(sourceArray: any[], sourceIndex: number, destinationArray: any[], destinationIndex: number, length: number) {
+	public stAtic Copy(sourceArrAy: Any[], sourceIndex: number, destinAtionArrAy: Any[], destinAtionIndex: number, length: number) {
 		for (let i = 0; i < length; i++) {
-			destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
+			destinAtionArrAy[destinAtionIndex + i] = sourceArrAy[sourceIndex + i];
 		}
 	}
-	public static Copy2(sourceArray: Int32Array, sourceIndex: number, destinationArray: Int32Array, destinationIndex: number, length: number) {
+	public stAtic Copy2(sourceArrAy: Int32ArrAy, sourceIndex: number, destinAtionArrAy: Int32ArrAy, destinAtionIndex: number, length: number) {
 		for (let i = 0; i < length; i++) {
-			destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
+			destinAtionArrAy[destinAtionIndex + i] = sourceArrAy[sourceIndex + i];
 		}
 	}
 }
@@ -108,572 +108,572 @@ export class MyArray {
 //*****************************************************************************
 // LcsDiff.cs
 //
-// An implementation of the difference algorithm described in
-// "An O(ND) Difference Algorithm and its variations" by Eugene W. Myers
+// An implementAtion of the difference Algorithm described in
+// "An O(ND) Difference Algorithm And its vAriAtions" by Eugene W. Myers
 //
-// Copyright (C) 2008 Microsoft Corporation @minifier_do_not_preserve
+// Copyright (C) 2008 Microsoft CorporAtion @minifier_do_not_preserve
 //*****************************************************************************
 
-// Our total memory usage for storing history is (worst-case):
-// 2 * [(MaxDifferencesHistory + 1) * (MaxDifferencesHistory + 1) - 1] * sizeof(int)
+// Our totAl memory usAge for storing history is (worst-cAse):
+// 2 * [(MAxDifferencesHistory + 1) * (MAxDifferencesHistory + 1) - 1] * sizeof(int)
 // 2 * [1448*1448 - 1] * 4 = 16773624 = 16MB
-const enum LocalConstants {
-	MaxDifferencesHistory = 1447
+const enum LocAlConstAnts {
+	MAxDifferencesHistory = 1447
 }
 
 /**
- * A utility class which helps to create the set of DiffChanges from
- * a difference operation. This class accepts original DiffElements and
- * modified DiffElements that are involved in a particular change. The
- * MarktNextChange() method can be called to mark the separation between
- * distinct changes. At the end, the Changes property can be called to retrieve
- * the constructed changes.
+ * A utility clAss which helps to creAte the set of DiffChAnges from
+ * A difference operAtion. This clAss Accepts originAl DiffElements And
+ * modified DiffElements thAt Are involved in A pArticulAr chAnge. The
+ * MArktNextChAnge() method cAn be cAlled to mArk the sepArAtion between
+ * distinct chAnges. At the end, the ChAnges property cAn be cAlled to retrieve
+ * the constructed chAnges.
  */
-class DiffChangeHelper {
+clAss DiffChAngeHelper {
 
-	private m_changes: DiffChange[];
-	private m_originalStart: number;
-	private m_modifiedStart: number;
-	private m_originalCount: number;
-	private m_modifiedCount: number;
+	privAte m_chAnges: DiffChAnge[];
+	privAte m_originAlStArt: number;
+	privAte m_modifiedStArt: number;
+	privAte m_originAlCount: number;
+	privAte m_modifiedCount: number;
 
 	/**
-	 * Constructs a new DiffChangeHelper for the given DiffSequences.
+	 * Constructs A new DiffChAngeHelper for the given DiffSequences.
 	 */
 	constructor() {
-		this.m_changes = [];
-		this.m_originalStart = Constants.MAX_SAFE_SMALL_INTEGER;
-		this.m_modifiedStart = Constants.MAX_SAFE_SMALL_INTEGER;
-		this.m_originalCount = 0;
+		this.m_chAnges = [];
+		this.m_originAlStArt = ConstAnts.MAX_SAFE_SMALL_INTEGER;
+		this.m_modifiedStArt = ConstAnts.MAX_SAFE_SMALL_INTEGER;
+		this.m_originAlCount = 0;
 		this.m_modifiedCount = 0;
 	}
 
 	/**
-	 * Marks the beginning of the next change in the set of differences.
+	 * MArks the beginning of the next chAnge in the set of differences.
 	 */
-	public MarkNextChange(): void {
-		// Only add to the list if there is something to add
-		if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
-			// Add the new change to our list
-			this.m_changes.push(new DiffChange(this.m_originalStart, this.m_originalCount,
-				this.m_modifiedStart, this.m_modifiedCount));
+	public MArkNextChAnge(): void {
+		// Only Add to the list if there is something to Add
+		if (this.m_originAlCount > 0 || this.m_modifiedCount > 0) {
+			// Add the new chAnge to our list
+			this.m_chAnges.push(new DiffChAnge(this.m_originAlStArt, this.m_originAlCount,
+				this.m_modifiedStArt, this.m_modifiedCount));
 		}
 
-		// Reset for the next change
-		this.m_originalCount = 0;
+		// Reset for the next chAnge
+		this.m_originAlCount = 0;
 		this.m_modifiedCount = 0;
-		this.m_originalStart = Constants.MAX_SAFE_SMALL_INTEGER;
-		this.m_modifiedStart = Constants.MAX_SAFE_SMALL_INTEGER;
+		this.m_originAlStArt = ConstAnts.MAX_SAFE_SMALL_INTEGER;
+		this.m_modifiedStArt = ConstAnts.MAX_SAFE_SMALL_INTEGER;
 	}
 
 	/**
-	 * Adds the original element at the given position to the elements
-	 * affected by the current change. The modified index gives context
-	 * to the change position with respect to the original sequence.
-	 * @param originalIndex The index of the original element to add.
-	 * @param modifiedIndex The index of the modified element that provides corresponding position in the modified sequence.
+	 * Adds the originAl element At the given position to the elements
+	 * Affected by the current chAnge. The modified index gives context
+	 * to the chAnge position with respect to the originAl sequence.
+	 * @pArAm originAlIndex The index of the originAl element to Add.
+	 * @pArAm modifiedIndex The index of the modified element thAt provides corresponding position in the modified sequence.
 	 */
-	public AddOriginalElement(originalIndex: number, modifiedIndex: number) {
-		// The 'true' start index is the smallest of the ones we've seen
-		this.m_originalStart = Math.min(this.m_originalStart, originalIndex);
-		this.m_modifiedStart = Math.min(this.m_modifiedStart, modifiedIndex);
+	public AddOriginAlElement(originAlIndex: number, modifiedIndex: number) {
+		// The 'true' stArt index is the smAllest of the ones we've seen
+		this.m_originAlStArt = MAth.min(this.m_originAlStArt, originAlIndex);
+		this.m_modifiedStArt = MAth.min(this.m_modifiedStArt, modifiedIndex);
 
-		this.m_originalCount++;
+		this.m_originAlCount++;
 	}
 
 	/**
-	 * Adds the modified element at the given position to the elements
-	 * affected by the current change. The original index gives context
-	 * to the change position with respect to the modified sequence.
-	 * @param originalIndex The index of the original element that provides corresponding position in the original sequence.
-	 * @param modifiedIndex The index of the modified element to add.
+	 * Adds the modified element At the given position to the elements
+	 * Affected by the current chAnge. The originAl index gives context
+	 * to the chAnge position with respect to the modified sequence.
+	 * @pArAm originAlIndex The index of the originAl element thAt provides corresponding position in the originAl sequence.
+	 * @pArAm modifiedIndex The index of the modified element to Add.
 	 */
-	public AddModifiedElement(originalIndex: number, modifiedIndex: number): void {
-		// The 'true' start index is the smallest of the ones we've seen
-		this.m_originalStart = Math.min(this.m_originalStart, originalIndex);
-		this.m_modifiedStart = Math.min(this.m_modifiedStart, modifiedIndex);
+	public AddModifiedElement(originAlIndex: number, modifiedIndex: number): void {
+		// The 'true' stArt index is the smAllest of the ones we've seen
+		this.m_originAlStArt = MAth.min(this.m_originAlStArt, originAlIndex);
+		this.m_modifiedStArt = MAth.min(this.m_modifiedStArt, modifiedIndex);
 
 		this.m_modifiedCount++;
 	}
 
 	/**
-	 * Retrieves all of the changes marked by the class.
+	 * Retrieves All of the chAnges mArked by the clAss.
 	 */
-	public getChanges(): DiffChange[] {
-		if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
-			// Finish up on whatever is left
-			this.MarkNextChange();
+	public getChAnges(): DiffChAnge[] {
+		if (this.m_originAlCount > 0 || this.m_modifiedCount > 0) {
+			// Finish up on whAtever is left
+			this.MArkNextChAnge();
 		}
 
-		return this.m_changes;
+		return this.m_chAnges;
 	}
 
 	/**
-	 * Retrieves all of the changes marked by the class in the reverse order
+	 * Retrieves All of the chAnges mArked by the clAss in the reverse order
 	 */
-	public getReverseChanges(): DiffChange[] {
-		if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
-			// Finish up on whatever is left
-			this.MarkNextChange();
+	public getReverseChAnges(): DiffChAnge[] {
+		if (this.m_originAlCount > 0 || this.m_modifiedCount > 0) {
+			// Finish up on whAtever is left
+			this.MArkNextChAnge();
 		}
 
-		this.m_changes.reverse();
-		return this.m_changes;
+		this.m_chAnges.reverse();
+		return this.m_chAnges;
 	}
 
 }
 
 /**
- * An implementation of the difference algorithm described in
- * "An O(ND) Difference Algorithm and its variations" by Eugene W. Myers
+ * An implementAtion of the difference Algorithm described in
+ * "An O(ND) Difference Algorithm And its vAriAtions" by Eugene W. Myers
  */
-export class LcsDiff {
+export clAss LcsDiff {
 
-	private readonly ContinueProcessingPredicate: IContinueProcessingPredicate | null;
+	privAte reAdonly ContinueProcessingPredicAte: IContinueProcessingPredicAte | null;
 
-	private readonly _hasStrings: boolean;
-	private readonly _originalStringElements: string[];
-	private readonly _originalElementsOrHash: Int32Array;
-	private readonly _modifiedStringElements: string[];
-	private readonly _modifiedElementsOrHash: Int32Array;
+	privAte reAdonly _hAsStrings: booleAn;
+	privAte reAdonly _originAlStringElements: string[];
+	privAte reAdonly _originAlElementsOrHAsh: Int32ArrAy;
+	privAte reAdonly _modifiedStringElements: string[];
+	privAte reAdonly _modifiedElementsOrHAsh: Int32ArrAy;
 
-	private m_forwardHistory: Int32Array[];
-	private m_reverseHistory: Int32Array[];
+	privAte m_forwArdHistory: Int32ArrAy[];
+	privAte m_reverseHistory: Int32ArrAy[];
 
 	/**
 	 * Constructs the DiffFinder
 	 */
-	constructor(originalSequence: ISequence, modifiedSequence: ISequence, continueProcessingPredicate: IContinueProcessingPredicate | null = null) {
-		this.ContinueProcessingPredicate = continueProcessingPredicate;
+	constructor(originAlSequence: ISequence, modifiedSequence: ISequence, continueProcessingPredicAte: IContinueProcessingPredicAte | null = null) {
+		this.ContinueProcessingPredicAte = continueProcessingPredicAte;
 
-		const [originalStringElements, originalElementsOrHash, originalHasStrings] = LcsDiff._getElements(originalSequence);
-		const [modifiedStringElements, modifiedElementsOrHash, modifiedHasStrings] = LcsDiff._getElements(modifiedSequence);
+		const [originAlStringElements, originAlElementsOrHAsh, originAlHAsStrings] = LcsDiff._getElements(originAlSequence);
+		const [modifiedStringElements, modifiedElementsOrHAsh, modifiedHAsStrings] = LcsDiff._getElements(modifiedSequence);
 
-		this._hasStrings = (originalHasStrings && modifiedHasStrings);
-		this._originalStringElements = originalStringElements;
-		this._originalElementsOrHash = originalElementsOrHash;
+		this._hAsStrings = (originAlHAsStrings && modifiedHAsStrings);
+		this._originAlStringElements = originAlStringElements;
+		this._originAlElementsOrHAsh = originAlElementsOrHAsh;
 		this._modifiedStringElements = modifiedStringElements;
-		this._modifiedElementsOrHash = modifiedElementsOrHash;
+		this._modifiedElementsOrHAsh = modifiedElementsOrHAsh;
 
-		this.m_forwardHistory = [];
+		this.m_forwArdHistory = [];
 		this.m_reverseHistory = [];
 	}
 
-	private static _isStringArray(arr: Int32Array | number[] | string[]): arr is string[] {
-		return (arr.length > 0 && typeof arr[0] === 'string');
+	privAte stAtic _isStringArrAy(Arr: Int32ArrAy | number[] | string[]): Arr is string[] {
+		return (Arr.length > 0 && typeof Arr[0] === 'string');
 	}
 
-	private static _getElements(sequence: ISequence): [string[], Int32Array, boolean] {
+	privAte stAtic _getElements(sequence: ISequence): [string[], Int32ArrAy, booleAn] {
 		const elements = sequence.getElements();
 
-		if (LcsDiff._isStringArray(elements)) {
-			const hashes = new Int32Array(elements.length);
+		if (LcsDiff._isStringArrAy(elements)) {
+			const hAshes = new Int32ArrAy(elements.length);
 			for (let i = 0, len = elements.length; i < len; i++) {
-				hashes[i] = stringHash(elements[i], 0);
+				hAshes[i] = stringHAsh(elements[i], 0);
 			}
-			return [elements, hashes, true];
+			return [elements, hAshes, true];
 		}
 
-		if (elements instanceof Int32Array) {
-			return [[], elements, false];
+		if (elements instAnceof Int32ArrAy) {
+			return [[], elements, fAlse];
 		}
 
-		return [[], new Int32Array(elements), false];
+		return [[], new Int32ArrAy(elements), fAlse];
 	}
 
-	private ElementsAreEqual(originalIndex: number, newIndex: number): boolean {
-		if (this._originalElementsOrHash[originalIndex] !== this._modifiedElementsOrHash[newIndex]) {
-			return false;
+	privAte ElementsAreEquAl(originAlIndex: number, newIndex: number): booleAn {
+		if (this._originAlElementsOrHAsh[originAlIndex] !== this._modifiedElementsOrHAsh[newIndex]) {
+			return fAlse;
 		}
-		return (this._hasStrings ? this._originalStringElements[originalIndex] === this._modifiedStringElements[newIndex] : true);
+		return (this._hAsStrings ? this._originAlStringElements[originAlIndex] === this._modifiedStringElements[newIndex] : true);
 	}
 
-	private OriginalElementsAreEqual(index1: number, index2: number): boolean {
-		if (this._originalElementsOrHash[index1] !== this._originalElementsOrHash[index2]) {
-			return false;
+	privAte OriginAlElementsAreEquAl(index1: number, index2: number): booleAn {
+		if (this._originAlElementsOrHAsh[index1] !== this._originAlElementsOrHAsh[index2]) {
+			return fAlse;
 		}
-		return (this._hasStrings ? this._originalStringElements[index1] === this._originalStringElements[index2] : true);
+		return (this._hAsStrings ? this._originAlStringElements[index1] === this._originAlStringElements[index2] : true);
 	}
 
-	private ModifiedElementsAreEqual(index1: number, index2: number): boolean {
-		if (this._modifiedElementsOrHash[index1] !== this._modifiedElementsOrHash[index2]) {
-			return false;
+	privAte ModifiedElementsAreEquAl(index1: number, index2: number): booleAn {
+		if (this._modifiedElementsOrHAsh[index1] !== this._modifiedElementsOrHAsh[index2]) {
+			return fAlse;
 		}
-		return (this._hasStrings ? this._modifiedStringElements[index1] === this._modifiedStringElements[index2] : true);
+		return (this._hAsStrings ? this._modifiedStringElements[index1] === this._modifiedStringElements[index2] : true);
 	}
 
-	public ComputeDiff(pretty: boolean): IDiffResult {
-		return this._ComputeDiff(0, this._originalElementsOrHash.length - 1, 0, this._modifiedElementsOrHash.length - 1, pretty);
+	public ComputeDiff(pretty: booleAn): IDiffResult {
+		return this._ComputeDiff(0, this._originAlElementsOrHAsh.length - 1, 0, this._modifiedElementsOrHAsh.length - 1, pretty);
 	}
 
 	/**
-	 * Computes the differences between the original and modified input
-	 * sequences on the bounded range.
-	 * @returns An array of the differences between the two input sequences.
+	 * Computes the differences between the originAl And modified input
+	 * sequences on the bounded rAnge.
+	 * @returns An ArrAy of the differences between the two input sequences.
 	 */
-	private _ComputeDiff(originalStart: number, originalEnd: number, modifiedStart: number, modifiedEnd: number, pretty: boolean): IDiffResult {
-		const quitEarlyArr = [false];
-		let changes = this.ComputeDiffRecursive(originalStart, originalEnd, modifiedStart, modifiedEnd, quitEarlyArr);
+	privAte _ComputeDiff(originAlStArt: number, originAlEnd: number, modifiedStArt: number, modifiedEnd: number, pretty: booleAn): IDiffResult {
+		const quitEArlyArr = [fAlse];
+		let chAnges = this.ComputeDiffRecursive(originAlStArt, originAlEnd, modifiedStArt, modifiedEnd, quitEArlyArr);
 
 		if (pretty) {
-			// We have to clean up the computed diff to be more intuitive
-			// but it turns out this cannot be done correctly until the entire set
-			// of diffs have been computed
-			changes = this.PrettifyChanges(changes);
+			// We hAve to cleAn up the computed diff to be more intuitive
+			// but it turns out this cAnnot be done correctly until the entire set
+			// of diffs hAve been computed
+			chAnges = this.PrettifyChAnges(chAnges);
 		}
 
 		return {
-			quitEarly: quitEarlyArr[0],
-			changes: changes
+			quitEArly: quitEArlyArr[0],
+			chAnges: chAnges
 		};
 	}
 
 	/**
-	 * Private helper method which computes the differences on the bounded range
+	 * PrivAte helper method which computes the differences on the bounded rAnge
 	 * recursively.
-	 * @returns An array of the differences between the two input sequences.
+	 * @returns An ArrAy of the differences between the two input sequences.
 	 */
-	private ComputeDiffRecursive(originalStart: number, originalEnd: number, modifiedStart: number, modifiedEnd: number, quitEarlyArr: boolean[]): DiffChange[] {
-		quitEarlyArr[0] = false;
+	privAte ComputeDiffRecursive(originAlStArt: number, originAlEnd: number, modifiedStArt: number, modifiedEnd: number, quitEArlyArr: booleAn[]): DiffChAnge[] {
+		quitEArlyArr[0] = fAlse;
 
-		// Find the start of the differences
-		while (originalStart <= originalEnd && modifiedStart <= modifiedEnd && this.ElementsAreEqual(originalStart, modifiedStart)) {
-			originalStart++;
-			modifiedStart++;
+		// Find the stArt of the differences
+		while (originAlStArt <= originAlEnd && modifiedStArt <= modifiedEnd && this.ElementsAreEquAl(originAlStArt, modifiedStArt)) {
+			originAlStArt++;
+			modifiedStArt++;
 		}
 
 		// Find the end of the differences
-		while (originalEnd >= originalStart && modifiedEnd >= modifiedStart && this.ElementsAreEqual(originalEnd, modifiedEnd)) {
-			originalEnd--;
+		while (originAlEnd >= originAlStArt && modifiedEnd >= modifiedStArt && this.ElementsAreEquAl(originAlEnd, modifiedEnd)) {
+			originAlEnd--;
 			modifiedEnd--;
 		}
 
-		// In the special case where we either have all insertions or all deletions or the sequences are identical
-		if (originalStart > originalEnd || modifiedStart > modifiedEnd) {
-			let changes: DiffChange[];
+		// In the speciAl cAse where we either hAve All insertions or All deletions or the sequences Are identicAl
+		if (originAlStArt > originAlEnd || modifiedStArt > modifiedEnd) {
+			let chAnges: DiffChAnge[];
 
-			if (modifiedStart <= modifiedEnd) {
-				Debug.Assert(originalStart === originalEnd + 1, 'originalStart should only be one more than originalEnd');
+			if (modifiedStArt <= modifiedEnd) {
+				Debug.Assert(originAlStArt === originAlEnd + 1, 'originAlStArt should only be one more thAn originAlEnd');
 
 				// All insertions
-				changes = [
-					new DiffChange(originalStart, 0, modifiedStart, modifiedEnd - modifiedStart + 1)
+				chAnges = [
+					new DiffChAnge(originAlStArt, 0, modifiedStArt, modifiedEnd - modifiedStArt + 1)
 				];
-			} else if (originalStart <= originalEnd) {
-				Debug.Assert(modifiedStart === modifiedEnd + 1, 'modifiedStart should only be one more than modifiedEnd');
+			} else if (originAlStArt <= originAlEnd) {
+				Debug.Assert(modifiedStArt === modifiedEnd + 1, 'modifiedStArt should only be one more thAn modifiedEnd');
 
 				// All deletions
-				changes = [
-					new DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, 0)
+				chAnges = [
+					new DiffChAnge(originAlStArt, originAlEnd - originAlStArt + 1, modifiedStArt, 0)
 				];
 			} else {
-				Debug.Assert(originalStart === originalEnd + 1, 'originalStart should only be one more than originalEnd');
-				Debug.Assert(modifiedStart === modifiedEnd + 1, 'modifiedStart should only be one more than modifiedEnd');
+				Debug.Assert(originAlStArt === originAlEnd + 1, 'originAlStArt should only be one more thAn originAlEnd');
+				Debug.Assert(modifiedStArt === modifiedEnd + 1, 'modifiedStArt should only be one more thAn modifiedEnd');
 
-				// Identical sequences - No differences
-				changes = [];
+				// IdenticAl sequences - No differences
+				chAnges = [];
 			}
 
-			return changes;
+			return chAnges;
 		}
 
-		// This problem can be solved using the Divide-And-Conquer technique.
-		const midOriginalArr = [0];
+		// This problem cAn be solved using the Divide-And-Conquer technique.
+		const midOriginAlArr = [0];
 		const midModifiedArr = [0];
-		const result = this.ComputeRecursionPoint(originalStart, originalEnd, modifiedStart, modifiedEnd, midOriginalArr, midModifiedArr, quitEarlyArr);
+		const result = this.ComputeRecursionPoint(originAlStArt, originAlEnd, modifiedStArt, modifiedEnd, midOriginAlArr, midModifiedArr, quitEArlyArr);
 
-		const midOriginal = midOriginalArr[0];
+		const midOriginAl = midOriginAlArr[0];
 		const midModified = midModifiedArr[0];
 
 		if (result !== null) {
-			// Result is not-null when there was enough memory to compute the changes while
-			// searching for the recursion point
+			// Result is not-null when there wAs enough memory to compute the chAnges while
+			// seArching for the recursion point
 			return result;
-		} else if (!quitEarlyArr[0]) {
-			// We can break the problem down recursively by finding the changes in the
-			// First Half:   (originalStart, modifiedStart) to (midOriginal, midModified)
-			// Second Half:  (midOriginal + 1, minModified + 1) to (originalEnd, modifiedEnd)
-			// NOTE: ComputeDiff() is inclusive, therefore the second range starts on the next point
+		} else if (!quitEArlyArr[0]) {
+			// We cAn breAk the problem down recursively by finding the chAnges in the
+			// First HAlf:   (originAlStArt, modifiedStArt) to (midOriginAl, midModified)
+			// Second HAlf:  (midOriginAl + 1, minModified + 1) to (originAlEnd, modifiedEnd)
+			// NOTE: ComputeDiff() is inclusive, therefore the second rAnge stArts on the next point
 
-			const leftChanges = this.ComputeDiffRecursive(originalStart, midOriginal, modifiedStart, midModified, quitEarlyArr);
-			let rightChanges: DiffChange[] = [];
+			const leftChAnges = this.ComputeDiffRecursive(originAlStArt, midOriginAl, modifiedStArt, midModified, quitEArlyArr);
+			let rightChAnges: DiffChAnge[] = [];
 
-			if (!quitEarlyArr[0]) {
-				rightChanges = this.ComputeDiffRecursive(midOriginal + 1, originalEnd, midModified + 1, modifiedEnd, quitEarlyArr);
+			if (!quitEArlyArr[0]) {
+				rightChAnges = this.ComputeDiffRecursive(midOriginAl + 1, originAlEnd, midModified + 1, modifiedEnd, quitEArlyArr);
 			} else {
-				// We did't have time to finish the first half, so we don't have time to compute this half.
+				// We did't hAve time to finish the first hAlf, so we don't hAve time to compute this hAlf.
 				// Consider the entire rest of the sequence different.
-				rightChanges = [
-					new DiffChange(midOriginal + 1, originalEnd - (midOriginal + 1) + 1, midModified + 1, modifiedEnd - (midModified + 1) + 1)
+				rightChAnges = [
+					new DiffChAnge(midOriginAl + 1, originAlEnd - (midOriginAl + 1) + 1, midModified + 1, modifiedEnd - (midModified + 1) + 1)
 				];
 			}
 
-			return this.ConcatenateChanges(leftChanges, rightChanges);
+			return this.ConcAtenAteChAnges(leftChAnges, rightChAnges);
 		}
 
-		// If we hit here, we quit early, and so can't return anything meaningful
+		// If we hit here, we quit eArly, And so cAn't return Anything meAningful
 		return [
-			new DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, modifiedEnd - modifiedStart + 1)
+			new DiffChAnge(originAlStArt, originAlEnd - originAlStArt + 1, modifiedStArt, modifiedEnd - modifiedStArt + 1)
 		];
 	}
 
-	private WALKTRACE(diagonalForwardBase: number, diagonalForwardStart: number, diagonalForwardEnd: number, diagonalForwardOffset: number,
-		diagonalReverseBase: number, diagonalReverseStart: number, diagonalReverseEnd: number, diagonalReverseOffset: number,
-		forwardPoints: Int32Array, reversePoints: Int32Array,
-		originalIndex: number, originalEnd: number, midOriginalArr: number[],
+	privAte WALKTRACE(diAgonAlForwArdBAse: number, diAgonAlForwArdStArt: number, diAgonAlForwArdEnd: number, diAgonAlForwArdOffset: number,
+		diAgonAlReverseBAse: number, diAgonAlReverseStArt: number, diAgonAlReverseEnd: number, diAgonAlReverseOffset: number,
+		forwArdPoints: Int32ArrAy, reversePoints: Int32ArrAy,
+		originAlIndex: number, originAlEnd: number, midOriginAlArr: number[],
 		modifiedIndex: number, modifiedEnd: number, midModifiedArr: number[],
-		deltaIsEven: boolean, quitEarlyArr: boolean[]
-	): DiffChange[] {
-		let forwardChanges: DiffChange[] | null = null;
-		let reverseChanges: DiffChange[] | null = null;
+		deltAIsEven: booleAn, quitEArlyArr: booleAn[]
+	): DiffChAnge[] {
+		let forwArdChAnges: DiffChAnge[] | null = null;
+		let reverseChAnges: DiffChAnge[] | null = null;
 
-		// First, walk backward through the forward diagonals history
-		let changeHelper = new DiffChangeHelper();
-		let diagonalMin = diagonalForwardStart;
-		let diagonalMax = diagonalForwardEnd;
-		let diagonalRelative = (midOriginalArr[0] - midModifiedArr[0]) - diagonalForwardOffset;
-		let lastOriginalIndex = Constants.MIN_SAFE_SMALL_INTEGER;
-		let historyIndex = this.m_forwardHistory.length - 1;
+		// First, wAlk bAckwArd through the forwArd diAgonAls history
+		let chAngeHelper = new DiffChAngeHelper();
+		let diAgonAlMin = diAgonAlForwArdStArt;
+		let diAgonAlMAx = diAgonAlForwArdEnd;
+		let diAgonAlRelAtive = (midOriginAlArr[0] - midModifiedArr[0]) - diAgonAlForwArdOffset;
+		let lAstOriginAlIndex = ConstAnts.MIN_SAFE_SMALL_INTEGER;
+		let historyIndex = this.m_forwArdHistory.length - 1;
 
 		do {
-			// Get the diagonal index from the relative diagonal number
-			const diagonal = diagonalRelative + diagonalForwardBase;
+			// Get the diAgonAl index from the relAtive diAgonAl number
+			const diAgonAl = diAgonAlRelAtive + diAgonAlForwArdBAse;
 
-			// Figure out where we came from
-			if (diagonal === diagonalMin || (diagonal < diagonalMax && forwardPoints[diagonal - 1] < forwardPoints[diagonal + 1])) {
-				// Vertical line (the element is an insert)
-				originalIndex = forwardPoints[diagonal + 1];
-				modifiedIndex = originalIndex - diagonalRelative - diagonalForwardOffset;
-				if (originalIndex < lastOriginalIndex) {
-					changeHelper.MarkNextChange();
+			// Figure out where we cAme from
+			if (diAgonAl === diAgonAlMin || (diAgonAl < diAgonAlMAx && forwArdPoints[diAgonAl - 1] < forwArdPoints[diAgonAl + 1])) {
+				// VerticAl line (the element is An insert)
+				originAlIndex = forwArdPoints[diAgonAl + 1];
+				modifiedIndex = originAlIndex - diAgonAlRelAtive - diAgonAlForwArdOffset;
+				if (originAlIndex < lAstOriginAlIndex) {
+					chAngeHelper.MArkNextChAnge();
 				}
-				lastOriginalIndex = originalIndex;
-				changeHelper.AddModifiedElement(originalIndex + 1, modifiedIndex);
-				diagonalRelative = (diagonal + 1) - diagonalForwardBase; //Setup for the next iteration
+				lAstOriginAlIndex = originAlIndex;
+				chAngeHelper.AddModifiedElement(originAlIndex + 1, modifiedIndex);
+				diAgonAlRelAtive = (diAgonAl + 1) - diAgonAlForwArdBAse; //Setup for the next iterAtion
 			} else {
-				// Horizontal line (the element is a deletion)
-				originalIndex = forwardPoints[diagonal - 1] + 1;
-				modifiedIndex = originalIndex - diagonalRelative - diagonalForwardOffset;
-				if (originalIndex < lastOriginalIndex) {
-					changeHelper.MarkNextChange();
+				// HorizontAl line (the element is A deletion)
+				originAlIndex = forwArdPoints[diAgonAl - 1] + 1;
+				modifiedIndex = originAlIndex - diAgonAlRelAtive - diAgonAlForwArdOffset;
+				if (originAlIndex < lAstOriginAlIndex) {
+					chAngeHelper.MArkNextChAnge();
 				}
-				lastOriginalIndex = originalIndex - 1;
-				changeHelper.AddOriginalElement(originalIndex, modifiedIndex + 1);
-				diagonalRelative = (diagonal - 1) - diagonalForwardBase; //Setup for the next iteration
+				lAstOriginAlIndex = originAlIndex - 1;
+				chAngeHelper.AddOriginAlElement(originAlIndex, modifiedIndex + 1);
+				diAgonAlRelAtive = (diAgonAl - 1) - diAgonAlForwArdBAse; //Setup for the next iterAtion
 			}
 
 			if (historyIndex >= 0) {
-				forwardPoints = this.m_forwardHistory[historyIndex];
-				diagonalForwardBase = forwardPoints[0]; //We stored this in the first spot
-				diagonalMin = 1;
-				diagonalMax = forwardPoints.length - 1;
+				forwArdPoints = this.m_forwArdHistory[historyIndex];
+				diAgonAlForwArdBAse = forwArdPoints[0]; //We stored this in the first spot
+				diAgonAlMin = 1;
+				diAgonAlMAx = forwArdPoints.length - 1;
 			}
 		} while (--historyIndex >= -1);
 
-		// Ironically, we get the forward changes as the reverse of the
-		// order we added them since we technically added them backwards
-		forwardChanges = changeHelper.getReverseChanges();
+		// IronicAlly, we get the forwArd chAnges As the reverse of the
+		// order we Added them since we technicAlly Added them bAckwArds
+		forwArdChAnges = chAngeHelper.getReverseChAnges();
 
-		if (quitEarlyArr[0]) {
-			// TODO: Calculate a partial from the reverse diagonals.
-			//       For now, just assume everything after the midOriginal/midModified point is a diff
+		if (quitEArlyArr[0]) {
+			// TODO: CAlculAte A pArtiAl from the reverse diAgonAls.
+			//       For now, just Assume everything After the midOriginAl/midModified point is A diff
 
-			let originalStartPoint = midOriginalArr[0] + 1;
-			let modifiedStartPoint = midModifiedArr[0] + 1;
+			let originAlStArtPoint = midOriginAlArr[0] + 1;
+			let modifiedStArtPoint = midModifiedArr[0] + 1;
 
-			if (forwardChanges !== null && forwardChanges.length > 0) {
-				const lastForwardChange = forwardChanges[forwardChanges.length - 1];
-				originalStartPoint = Math.max(originalStartPoint, lastForwardChange.getOriginalEnd());
-				modifiedStartPoint = Math.max(modifiedStartPoint, lastForwardChange.getModifiedEnd());
+			if (forwArdChAnges !== null && forwArdChAnges.length > 0) {
+				const lAstForwArdChAnge = forwArdChAnges[forwArdChAnges.length - 1];
+				originAlStArtPoint = MAth.mAx(originAlStArtPoint, lAstForwArdChAnge.getOriginAlEnd());
+				modifiedStArtPoint = MAth.mAx(modifiedStArtPoint, lAstForwArdChAnge.getModifiedEnd());
 			}
 
-			reverseChanges = [
-				new DiffChange(originalStartPoint, originalEnd - originalStartPoint + 1,
-					modifiedStartPoint, modifiedEnd - modifiedStartPoint + 1)
+			reverseChAnges = [
+				new DiffChAnge(originAlStArtPoint, originAlEnd - originAlStArtPoint + 1,
+					modifiedStArtPoint, modifiedEnd - modifiedStArtPoint + 1)
 			];
 		} else {
-			// Now walk backward through the reverse diagonals history
-			changeHelper = new DiffChangeHelper();
-			diagonalMin = diagonalReverseStart;
-			diagonalMax = diagonalReverseEnd;
-			diagonalRelative = (midOriginalArr[0] - midModifiedArr[0]) - diagonalReverseOffset;
-			lastOriginalIndex = Constants.MAX_SAFE_SMALL_INTEGER;
-			historyIndex = (deltaIsEven) ? this.m_reverseHistory.length - 1 : this.m_reverseHistory.length - 2;
+			// Now wAlk bAckwArd through the reverse diAgonAls history
+			chAngeHelper = new DiffChAngeHelper();
+			diAgonAlMin = diAgonAlReverseStArt;
+			diAgonAlMAx = diAgonAlReverseEnd;
+			diAgonAlRelAtive = (midOriginAlArr[0] - midModifiedArr[0]) - diAgonAlReverseOffset;
+			lAstOriginAlIndex = ConstAnts.MAX_SAFE_SMALL_INTEGER;
+			historyIndex = (deltAIsEven) ? this.m_reverseHistory.length - 1 : this.m_reverseHistory.length - 2;
 
 			do {
-				// Get the diagonal index from the relative diagonal number
-				const diagonal = diagonalRelative + diagonalReverseBase;
+				// Get the diAgonAl index from the relAtive diAgonAl number
+				const diAgonAl = diAgonAlRelAtive + diAgonAlReverseBAse;
 
-				// Figure out where we came from
-				if (diagonal === diagonalMin || (diagonal < diagonalMax && reversePoints[diagonal - 1] >= reversePoints[diagonal + 1])) {
-					// Horizontal line (the element is a deletion))
-					originalIndex = reversePoints[diagonal + 1] - 1;
-					modifiedIndex = originalIndex - diagonalRelative - diagonalReverseOffset;
-					if (originalIndex > lastOriginalIndex) {
-						changeHelper.MarkNextChange();
+				// Figure out where we cAme from
+				if (diAgonAl === diAgonAlMin || (diAgonAl < diAgonAlMAx && reversePoints[diAgonAl - 1] >= reversePoints[diAgonAl + 1])) {
+					// HorizontAl line (the element is A deletion))
+					originAlIndex = reversePoints[diAgonAl + 1] - 1;
+					modifiedIndex = originAlIndex - diAgonAlRelAtive - diAgonAlReverseOffset;
+					if (originAlIndex > lAstOriginAlIndex) {
+						chAngeHelper.MArkNextChAnge();
 					}
-					lastOriginalIndex = originalIndex + 1;
-					changeHelper.AddOriginalElement(originalIndex + 1, modifiedIndex + 1);
-					diagonalRelative = (diagonal + 1) - diagonalReverseBase; //Setup for the next iteration
+					lAstOriginAlIndex = originAlIndex + 1;
+					chAngeHelper.AddOriginAlElement(originAlIndex + 1, modifiedIndex + 1);
+					diAgonAlRelAtive = (diAgonAl + 1) - diAgonAlReverseBAse; //Setup for the next iterAtion
 				} else {
-					// Vertical line (the element is an insertion)
-					originalIndex = reversePoints[diagonal - 1];
-					modifiedIndex = originalIndex - diagonalRelative - diagonalReverseOffset;
-					if (originalIndex > lastOriginalIndex) {
-						changeHelper.MarkNextChange();
+					// VerticAl line (the element is An insertion)
+					originAlIndex = reversePoints[diAgonAl - 1];
+					modifiedIndex = originAlIndex - diAgonAlRelAtive - diAgonAlReverseOffset;
+					if (originAlIndex > lAstOriginAlIndex) {
+						chAngeHelper.MArkNextChAnge();
 					}
-					lastOriginalIndex = originalIndex;
-					changeHelper.AddModifiedElement(originalIndex + 1, modifiedIndex + 1);
-					diagonalRelative = (diagonal - 1) - diagonalReverseBase; //Setup for the next iteration
+					lAstOriginAlIndex = originAlIndex;
+					chAngeHelper.AddModifiedElement(originAlIndex + 1, modifiedIndex + 1);
+					diAgonAlRelAtive = (diAgonAl - 1) - diAgonAlReverseBAse; //Setup for the next iterAtion
 				}
 
 				if (historyIndex >= 0) {
 					reversePoints = this.m_reverseHistory[historyIndex];
-					diagonalReverseBase = reversePoints[0]; //We stored this in the first spot
-					diagonalMin = 1;
-					diagonalMax = reversePoints.length - 1;
+					diAgonAlReverseBAse = reversePoints[0]; //We stored this in the first spot
+					diAgonAlMin = 1;
+					diAgonAlMAx = reversePoints.length - 1;
 				}
 			} while (--historyIndex >= -1);
 
-			// There are cases where the reverse history will find diffs that
-			// are correct, but not intuitive, so we need shift them.
-			reverseChanges = changeHelper.getChanges();
+			// There Are cAses where the reverse history will find diffs thAt
+			// Are correct, but not intuitive, so we need shift them.
+			reverseChAnges = chAngeHelper.getChAnges();
 		}
 
-		return this.ConcatenateChanges(forwardChanges, reverseChanges);
+		return this.ConcAtenAteChAnges(forwArdChAnges, reverseChAnges);
 	}
 
 	/**
-	 * Given the range to compute the diff on, this method finds the point:
-	 * (midOriginal, midModified)
-	 * that exists in the middle of the LCS of the two sequences and
-	 * is the point at which the LCS problem may be broken down recursively.
-	 * This method will try to keep the LCS trace in memory. If the LCS recursion
-	 * point is calculated and the full trace is available in memory, then this method
-	 * will return the change list.
-	 * @param originalStart The start bound of the original sequence range
-	 * @param originalEnd The end bound of the original sequence range
-	 * @param modifiedStart The start bound of the modified sequence range
-	 * @param modifiedEnd The end bound of the modified sequence range
-	 * @param midOriginal The middle point of the original sequence range
-	 * @param midModified The middle point of the modified sequence range
-	 * @returns The diff changes, if available, otherwise null
+	 * Given the rAnge to compute the diff on, this method finds the point:
+	 * (midOriginAl, midModified)
+	 * thAt exists in the middle of the LCS of the two sequences And
+	 * is the point At which the LCS problem mAy be broken down recursively.
+	 * This method will try to keep the LCS trAce in memory. If the LCS recursion
+	 * point is cAlculAted And the full trAce is AvAilAble in memory, then this method
+	 * will return the chAnge list.
+	 * @pArAm originAlStArt The stArt bound of the originAl sequence rAnge
+	 * @pArAm originAlEnd The end bound of the originAl sequence rAnge
+	 * @pArAm modifiedStArt The stArt bound of the modified sequence rAnge
+	 * @pArAm modifiedEnd The end bound of the modified sequence rAnge
+	 * @pArAm midOriginAl The middle point of the originAl sequence rAnge
+	 * @pArAm midModified The middle point of the modified sequence rAnge
+	 * @returns The diff chAnges, if AvAilAble, otherwise null
 	 */
-	private ComputeRecursionPoint(originalStart: number, originalEnd: number, modifiedStart: number, modifiedEnd: number, midOriginalArr: number[], midModifiedArr: number[], quitEarlyArr: boolean[]) {
-		let originalIndex = 0, modifiedIndex = 0;
-		let diagonalForwardStart = 0, diagonalForwardEnd = 0;
-		let diagonalReverseStart = 0, diagonalReverseEnd = 0;
+	privAte ComputeRecursionPoint(originAlStArt: number, originAlEnd: number, modifiedStArt: number, modifiedEnd: number, midOriginAlArr: number[], midModifiedArr: number[], quitEArlyArr: booleAn[]) {
+		let originAlIndex = 0, modifiedIndex = 0;
+		let diAgonAlForwArdStArt = 0, diAgonAlForwArdEnd = 0;
+		let diAgonAlReverseStArt = 0, diAgonAlReverseEnd = 0;
 
-		// To traverse the edit graph and produce the proper LCS, our actual
-		// start position is just outside the given boundary
-		originalStart--;
-		modifiedStart--;
+		// To trAverse the edit grAph And produce the proper LCS, our ActuAl
+		// stArt position is just outside the given boundAry
+		originAlStArt--;
+		modifiedStArt--;
 
-		// We set these up to make the compiler happy, but they will
-		// be replaced before we return with the actual recursion point
-		midOriginalArr[0] = 0;
+		// We set these up to mAke the compiler hAppy, but they will
+		// be replAced before we return with the ActuAl recursion point
+		midOriginAlArr[0] = 0;
 		midModifiedArr[0] = 0;
 
-		// Clear out the history
-		this.m_forwardHistory = [];
+		// CleAr out the history
+		this.m_forwArdHistory = [];
 		this.m_reverseHistory = [];
 
-		// Each cell in the two arrays corresponds to a diagonal in the edit graph.
-		// The integer value in the cell represents the originalIndex of the furthest
-		// reaching point found so far that ends in that diagonal.
-		// The modifiedIndex can be computed mathematically from the originalIndex and the diagonal number.
-		const maxDifferences = (originalEnd - originalStart) + (modifiedEnd - modifiedStart);
-		const numDiagonals = maxDifferences + 1;
-		const forwardPoints = new Int32Array(numDiagonals);
-		const reversePoints = new Int32Array(numDiagonals);
-		// diagonalForwardBase: Index into forwardPoints of the diagonal which passes through (originalStart, modifiedStart)
-		// diagonalReverseBase: Index into reversePoints of the diagonal which passes through (originalEnd, modifiedEnd)
-		const diagonalForwardBase = (modifiedEnd - modifiedStart);
-		const diagonalReverseBase = (originalEnd - originalStart);
-		// diagonalForwardOffset: Geometric offset which allows modifiedIndex to be computed from originalIndex and the
-		//    diagonal number (relative to diagonalForwardBase)
-		// diagonalReverseOffset: Geometric offset which allows modifiedIndex to be computed from originalIndex and the
-		//    diagonal number (relative to diagonalReverseBase)
-		const diagonalForwardOffset = (originalStart - modifiedStart);
-		const diagonalReverseOffset = (originalEnd - modifiedEnd);
+		// EAch cell in the two ArrAys corresponds to A diAgonAl in the edit grAph.
+		// The integer vAlue in the cell represents the originAlIndex of the furthest
+		// reAching point found so fAr thAt ends in thAt diAgonAl.
+		// The modifiedIndex cAn be computed mAthemAticAlly from the originAlIndex And the diAgonAl number.
+		const mAxDifferences = (originAlEnd - originAlStArt) + (modifiedEnd - modifiedStArt);
+		const numDiAgonAls = mAxDifferences + 1;
+		const forwArdPoints = new Int32ArrAy(numDiAgonAls);
+		const reversePoints = new Int32ArrAy(numDiAgonAls);
+		// diAgonAlForwArdBAse: Index into forwArdPoints of the diAgonAl which pAsses through (originAlStArt, modifiedStArt)
+		// diAgonAlReverseBAse: Index into reversePoints of the diAgonAl which pAsses through (originAlEnd, modifiedEnd)
+		const diAgonAlForwArdBAse = (modifiedEnd - modifiedStArt);
+		const diAgonAlReverseBAse = (originAlEnd - originAlStArt);
+		// diAgonAlForwArdOffset: Geometric offset which Allows modifiedIndex to be computed from originAlIndex And the
+		//    diAgonAl number (relAtive to diAgonAlForwArdBAse)
+		// diAgonAlReverseOffset: Geometric offset which Allows modifiedIndex to be computed from originAlIndex And the
+		//    diAgonAl number (relAtive to diAgonAlReverseBAse)
+		const diAgonAlForwArdOffset = (originAlStArt - modifiedStArt);
+		const diAgonAlReverseOffset = (originAlEnd - modifiedEnd);
 
-		// delta: The difference between the end diagonal and the start diagonal. This is used to relate diagonal numbers
-		//   relative to the start diagonal with diagonal numbers relative to the end diagonal.
-		// The Even/Oddn-ness of this delta is important for determining when we should check for overlap
-		const delta = diagonalReverseBase - diagonalForwardBase;
-		const deltaIsEven = (delta % 2 === 0);
+		// deltA: The difference between the end diAgonAl And the stArt diAgonAl. This is used to relAte diAgonAl numbers
+		//   relAtive to the stArt diAgonAl with diAgonAl numbers relAtive to the end diAgonAl.
+		// The Even/Oddn-ness of this deltA is importAnt for determining when we should check for overlAp
+		const deltA = diAgonAlReverseBAse - diAgonAlForwArdBAse;
+		const deltAIsEven = (deltA % 2 === 0);
 
-		// Here we set up the start and end points as the furthest points found so far
-		// in both the forward and reverse directions, respectively
-		forwardPoints[diagonalForwardBase] = originalStart;
-		reversePoints[diagonalReverseBase] = originalEnd;
+		// Here we set up the stArt And end points As the furthest points found so fAr
+		// in both the forwArd And reverse directions, respectively
+		forwArdPoints[diAgonAlForwArdBAse] = originAlStArt;
+		reversePoints[diAgonAlReverseBAse] = originAlEnd;
 
-		// Remember if we quit early, and thus need to do a best-effort result instead of a real result.
-		quitEarlyArr[0] = false;
+		// Remember if we quit eArly, And thus need to do A best-effort result insteAd of A reAl result.
+		quitEArlyArr[0] = fAlse;
 
 
 
 		// A couple of points:
-		// --With this method, we iterate on the number of differences between the two sequences.
-		//   The more differences there actually are, the longer this will take.
-		// --Also, as the number of differences increases, we have to search on diagonals further
-		//   away from the reference diagonal (which is diagonalForwardBase for forward, diagonalReverseBase for reverse).
-		// --We extend on even diagonals (relative to the reference diagonal) only when numDifferences
-		//   is even and odd diagonals only when numDifferences is odd.
-		for (let numDifferences = 1; numDifferences <= (maxDifferences / 2) + 1; numDifferences++) {
-			let furthestOriginalIndex = 0;
+		// --With this method, we iterAte on the number of differences between the two sequences.
+		//   The more differences there ActuAlly Are, the longer this will tAke.
+		// --Also, As the number of differences increAses, we hAve to seArch on diAgonAls further
+		//   AwAy from the reference diAgonAl (which is diAgonAlForwArdBAse for forwArd, diAgonAlReverseBAse for reverse).
+		// --We extend on even diAgonAls (relAtive to the reference diAgonAl) only when numDifferences
+		//   is even And odd diAgonAls only when numDifferences is odd.
+		for (let numDifferences = 1; numDifferences <= (mAxDifferences / 2) + 1; numDifferences++) {
+			let furthestOriginAlIndex = 0;
 			let furthestModifiedIndex = 0;
 
-			// Run the algorithm in the forward direction
-			diagonalForwardStart = this.ClipDiagonalBound(diagonalForwardBase - numDifferences, numDifferences, diagonalForwardBase, numDiagonals);
-			diagonalForwardEnd = this.ClipDiagonalBound(diagonalForwardBase + numDifferences, numDifferences, diagonalForwardBase, numDiagonals);
-			for (let diagonal = diagonalForwardStart; diagonal <= diagonalForwardEnd; diagonal += 2) {
-				// STEP 1: We extend the furthest reaching point in the present diagonal
-				// by looking at the diagonals above and below and picking the one whose point
-				// is further away from the start point (originalStart, modifiedStart)
-				if (diagonal === diagonalForwardStart || (diagonal < diagonalForwardEnd && forwardPoints[diagonal - 1] < forwardPoints[diagonal + 1])) {
-					originalIndex = forwardPoints[diagonal + 1];
+			// Run the Algorithm in the forwArd direction
+			diAgonAlForwArdStArt = this.ClipDiAgonAlBound(diAgonAlForwArdBAse - numDifferences, numDifferences, diAgonAlForwArdBAse, numDiAgonAls);
+			diAgonAlForwArdEnd = this.ClipDiAgonAlBound(diAgonAlForwArdBAse + numDifferences, numDifferences, diAgonAlForwArdBAse, numDiAgonAls);
+			for (let diAgonAl = diAgonAlForwArdStArt; diAgonAl <= diAgonAlForwArdEnd; diAgonAl += 2) {
+				// STEP 1: We extend the furthest reAching point in the present diAgonAl
+				// by looking At the diAgonAls Above And below And picking the one whose point
+				// is further AwAy from the stArt point (originAlStArt, modifiedStArt)
+				if (diAgonAl === diAgonAlForwArdStArt || (diAgonAl < diAgonAlForwArdEnd && forwArdPoints[diAgonAl - 1] < forwArdPoints[diAgonAl + 1])) {
+					originAlIndex = forwArdPoints[diAgonAl + 1];
 				} else {
-					originalIndex = forwardPoints[diagonal - 1] + 1;
+					originAlIndex = forwArdPoints[diAgonAl - 1] + 1;
 				}
-				modifiedIndex = originalIndex - (diagonal - diagonalForwardBase) - diagonalForwardOffset;
+				modifiedIndex = originAlIndex - (diAgonAl - diAgonAlForwArdBAse) - diAgonAlForwArdOffset;
 
-				// Save the current originalIndex so we can test for false overlap in step 3
-				const tempOriginalIndex = originalIndex;
+				// SAve the current originAlIndex so we cAn test for fAlse overlAp in step 3
+				const tempOriginAlIndex = originAlIndex;
 
-				// STEP 2: We can continue to extend the furthest reaching point in the present diagonal
-				// so long as the elements are equal.
-				while (originalIndex < originalEnd && modifiedIndex < modifiedEnd && this.ElementsAreEqual(originalIndex + 1, modifiedIndex + 1)) {
-					originalIndex++;
+				// STEP 2: We cAn continue to extend the furthest reAching point in the present diAgonAl
+				// so long As the elements Are equAl.
+				while (originAlIndex < originAlEnd && modifiedIndex < modifiedEnd && this.ElementsAreEquAl(originAlIndex + 1, modifiedIndex + 1)) {
+					originAlIndex++;
 					modifiedIndex++;
 				}
-				forwardPoints[diagonal] = originalIndex;
+				forwArdPoints[diAgonAl] = originAlIndex;
 
-				if (originalIndex + modifiedIndex > furthestOriginalIndex + furthestModifiedIndex) {
-					furthestOriginalIndex = originalIndex;
+				if (originAlIndex + modifiedIndex > furthestOriginAlIndex + furthestModifiedIndex) {
+					furthestOriginAlIndex = originAlIndex;
 					furthestModifiedIndex = modifiedIndex;
 				}
 
-				// STEP 3: If delta is odd (overlap first happens on forward when delta is odd)
-				// and diagonal is in the range of reverse diagonals computed for numDifferences-1
-				// (the previous iteration; we haven't computed reverse diagonals for numDifferences yet)
-				// then check for overlap.
-				if (!deltaIsEven && Math.abs(diagonal - diagonalReverseBase) <= (numDifferences - 1)) {
-					if (originalIndex >= reversePoints[diagonal]) {
-						midOriginalArr[0] = originalIndex;
+				// STEP 3: If deltA is odd (overlAp first hAppens on forwArd when deltA is odd)
+				// And diAgonAl is in the rAnge of reverse diAgonAls computed for numDifferences-1
+				// (the previous iterAtion; we hAven't computed reverse diAgonAls for numDifferences yet)
+				// then check for overlAp.
+				if (!deltAIsEven && MAth.Abs(diAgonAl - diAgonAlReverseBAse) <= (numDifferences - 1)) {
+					if (originAlIndex >= reversePoints[diAgonAl]) {
+						midOriginAlArr[0] = originAlIndex;
 						midModifiedArr[0] = modifiedIndex;
 
-						if (tempOriginalIndex <= reversePoints[diagonal] && LocalConstants.MaxDifferencesHistory > 0 && numDifferences <= (LocalConstants.MaxDifferencesHistory + 1)) {
-							// BINGO! We overlapped, and we have the full trace in memory!
-							return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset,
-								diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset,
-								forwardPoints, reversePoints,
-								originalIndex, originalEnd, midOriginalArr,
+						if (tempOriginAlIndex <= reversePoints[diAgonAl] && LocAlConstAnts.MAxDifferencesHistory > 0 && numDifferences <= (LocAlConstAnts.MAxDifferencesHistory + 1)) {
+							// BINGO! We overlApped, And we hAve the full trAce in memory!
+							return this.WALKTRACE(diAgonAlForwArdBAse, diAgonAlForwArdStArt, diAgonAlForwArdEnd, diAgonAlForwArdOffset,
+								diAgonAlReverseBAse, diAgonAlReverseStArt, diAgonAlReverseEnd, diAgonAlReverseOffset,
+								forwArdPoints, reversePoints,
+								originAlIndex, originAlEnd, midOriginAlArr,
 								modifiedIndex, modifiedEnd, midModifiedArr,
-								deltaIsEven, quitEarlyArr
+								deltAIsEven, quitEArlyArr
 							);
 						} else {
-							// Either false overlap, or we didn't have enough memory for the full trace
+							// Either fAlse overlAp, or we didn't hAve enough memory for the full trAce
 							// Just return the recursion point
 							return null;
 						}
@@ -681,85 +681,85 @@ export class LcsDiff {
 				}
 			}
 
-			// Check to see if we should be quitting early, before moving on to the next iteration.
-			const matchLengthOfLongest = ((furthestOriginalIndex - originalStart) + (furthestModifiedIndex - modifiedStart) - numDifferences) / 2;
+			// Check to see if we should be quitting eArly, before moving on to the next iterAtion.
+			const mAtchLengthOfLongest = ((furthestOriginAlIndex - originAlStArt) + (furthestModifiedIndex - modifiedStArt) - numDifferences) / 2;
 
-			if (this.ContinueProcessingPredicate !== null && !this.ContinueProcessingPredicate(furthestOriginalIndex, matchLengthOfLongest)) {
-				// We can't finish, so skip ahead to generating a result from what we have.
-				quitEarlyArr[0] = true;
+			if (this.ContinueProcessingPredicAte !== null && !this.ContinueProcessingPredicAte(furthestOriginAlIndex, mAtchLengthOfLongest)) {
+				// We cAn't finish, so skip AheAd to generAting A result from whAt we hAve.
+				quitEArlyArr[0] = true;
 
-				// Use the furthest distance we got in the forward direction.
-				midOriginalArr[0] = furthestOriginalIndex;
+				// Use the furthest distAnce we got in the forwArd direction.
+				midOriginAlArr[0] = furthestOriginAlIndex;
 				midModifiedArr[0] = furthestModifiedIndex;
 
-				if (matchLengthOfLongest > 0 && LocalConstants.MaxDifferencesHistory > 0 && numDifferences <= (LocalConstants.MaxDifferencesHistory + 1)) {
-					// Enough of the history is in memory to walk it backwards
-					return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset,
-						diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset,
-						forwardPoints, reversePoints,
-						originalIndex, originalEnd, midOriginalArr,
+				if (mAtchLengthOfLongest > 0 && LocAlConstAnts.MAxDifferencesHistory > 0 && numDifferences <= (LocAlConstAnts.MAxDifferencesHistory + 1)) {
+					// Enough of the history is in memory to wAlk it bAckwArds
+					return this.WALKTRACE(diAgonAlForwArdBAse, diAgonAlForwArdStArt, diAgonAlForwArdEnd, diAgonAlForwArdOffset,
+						diAgonAlReverseBAse, diAgonAlReverseStArt, diAgonAlReverseEnd, diAgonAlReverseOffset,
+						forwArdPoints, reversePoints,
+						originAlIndex, originAlEnd, midOriginAlArr,
 						modifiedIndex, modifiedEnd, midModifiedArr,
-						deltaIsEven, quitEarlyArr
+						deltAIsEven, quitEArlyArr
 					);
 				} else {
-					// We didn't actually remember enough of the history.
+					// We didn't ActuAlly remember enough of the history.
 
-					//Since we are quiting the diff early, we need to shift back the originalStart and modified start
-					//back into the boundary limits since we decremented their value above beyond the boundary limit.
-					originalStart++;
-					modifiedStart++;
+					//Since we Are quiting the diff eArly, we need to shift bAck the originAlStArt And modified stArt
+					//bAck into the boundAry limits since we decremented their vAlue Above beyond the boundAry limit.
+					originAlStArt++;
+					modifiedStArt++;
 
 					return [
-						new DiffChange(originalStart, originalEnd - originalStart + 1,
-							modifiedStart, modifiedEnd - modifiedStart + 1)
+						new DiffChAnge(originAlStArt, originAlEnd - originAlStArt + 1,
+							modifiedStArt, modifiedEnd - modifiedStArt + 1)
 					];
 				}
 			}
 
-			// Run the algorithm in the reverse direction
-			diagonalReverseStart = this.ClipDiagonalBound(diagonalReverseBase - numDifferences, numDifferences, diagonalReverseBase, numDiagonals);
-			diagonalReverseEnd = this.ClipDiagonalBound(diagonalReverseBase + numDifferences, numDifferences, diagonalReverseBase, numDiagonals);
-			for (let diagonal = diagonalReverseStart; diagonal <= diagonalReverseEnd; diagonal += 2) {
-				// STEP 1: We extend the furthest reaching point in the present diagonal
-				// by looking at the diagonals above and below and picking the one whose point
-				// is further away from the start point (originalEnd, modifiedEnd)
-				if (diagonal === diagonalReverseStart || (diagonal < diagonalReverseEnd && reversePoints[diagonal - 1] >= reversePoints[diagonal + 1])) {
-					originalIndex = reversePoints[diagonal + 1] - 1;
+			// Run the Algorithm in the reverse direction
+			diAgonAlReverseStArt = this.ClipDiAgonAlBound(diAgonAlReverseBAse - numDifferences, numDifferences, diAgonAlReverseBAse, numDiAgonAls);
+			diAgonAlReverseEnd = this.ClipDiAgonAlBound(diAgonAlReverseBAse + numDifferences, numDifferences, diAgonAlReverseBAse, numDiAgonAls);
+			for (let diAgonAl = diAgonAlReverseStArt; diAgonAl <= diAgonAlReverseEnd; diAgonAl += 2) {
+				// STEP 1: We extend the furthest reAching point in the present diAgonAl
+				// by looking At the diAgonAls Above And below And picking the one whose point
+				// is further AwAy from the stArt point (originAlEnd, modifiedEnd)
+				if (diAgonAl === diAgonAlReverseStArt || (diAgonAl < diAgonAlReverseEnd && reversePoints[diAgonAl - 1] >= reversePoints[diAgonAl + 1])) {
+					originAlIndex = reversePoints[diAgonAl + 1] - 1;
 				} else {
-					originalIndex = reversePoints[diagonal - 1];
+					originAlIndex = reversePoints[diAgonAl - 1];
 				}
-				modifiedIndex = originalIndex - (diagonal - diagonalReverseBase) - diagonalReverseOffset;
+				modifiedIndex = originAlIndex - (diAgonAl - diAgonAlReverseBAse) - diAgonAlReverseOffset;
 
-				// Save the current originalIndex so we can test for false overlap
-				const tempOriginalIndex = originalIndex;
+				// SAve the current originAlIndex so we cAn test for fAlse overlAp
+				const tempOriginAlIndex = originAlIndex;
 
-				// STEP 2: We can continue to extend the furthest reaching point in the present diagonal
-				// as long as the elements are equal.
-				while (originalIndex > originalStart && modifiedIndex > modifiedStart && this.ElementsAreEqual(originalIndex, modifiedIndex)) {
-					originalIndex--;
+				// STEP 2: We cAn continue to extend the furthest reAching point in the present diAgonAl
+				// As long As the elements Are equAl.
+				while (originAlIndex > originAlStArt && modifiedIndex > modifiedStArt && this.ElementsAreEquAl(originAlIndex, modifiedIndex)) {
+					originAlIndex--;
 					modifiedIndex--;
 				}
-				reversePoints[diagonal] = originalIndex;
+				reversePoints[diAgonAl] = originAlIndex;
 
-				// STEP 4: If delta is even (overlap first happens on reverse when delta is even)
-				// and diagonal is in the range of forward diagonals computed for numDifferences
-				// then check for overlap.
-				if (deltaIsEven && Math.abs(diagonal - diagonalForwardBase) <= numDifferences) {
-					if (originalIndex <= forwardPoints[diagonal]) {
-						midOriginalArr[0] = originalIndex;
+				// STEP 4: If deltA is even (overlAp first hAppens on reverse when deltA is even)
+				// And diAgonAl is in the rAnge of forwArd diAgonAls computed for numDifferences
+				// then check for overlAp.
+				if (deltAIsEven && MAth.Abs(diAgonAl - diAgonAlForwArdBAse) <= numDifferences) {
+					if (originAlIndex <= forwArdPoints[diAgonAl]) {
+						midOriginAlArr[0] = originAlIndex;
 						midModifiedArr[0] = modifiedIndex;
 
-						if (tempOriginalIndex >= forwardPoints[diagonal] && LocalConstants.MaxDifferencesHistory > 0 && numDifferences <= (LocalConstants.MaxDifferencesHistory + 1)) {
-							// BINGO! We overlapped, and we have the full trace in memory!
-							return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset,
-								diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset,
-								forwardPoints, reversePoints,
-								originalIndex, originalEnd, midOriginalArr,
+						if (tempOriginAlIndex >= forwArdPoints[diAgonAl] && LocAlConstAnts.MAxDifferencesHistory > 0 && numDifferences <= (LocAlConstAnts.MAxDifferencesHistory + 1)) {
+							// BINGO! We overlApped, And we hAve the full trAce in memory!
+							return this.WALKTRACE(diAgonAlForwArdBAse, diAgonAlForwArdStArt, diAgonAlForwArdEnd, diAgonAlForwArdOffset,
+								diAgonAlReverseBAse, diAgonAlReverseStArt, diAgonAlReverseEnd, diAgonAlReverseOffset,
+								forwArdPoints, reversePoints,
+								originAlIndex, originAlEnd, midOriginAlArr,
 								modifiedIndex, modifiedEnd, midModifiedArr,
-								deltaIsEven, quitEarlyArr
+								deltAIsEven, quitEArlyArr
 							);
 						} else {
-							// Either false overlap, or we didn't have enough memory for the full trace
+							// Either fAlse overlAp, or we didn't hAve enough memory for the full trAce
 							// Just return the recursion point
 							return null;
 						}
@@ -767,263 +767,263 @@ export class LcsDiff {
 				}
 			}
 
-			// Save current vectors to history before the next iteration
-			if (numDifferences <= LocalConstants.MaxDifferencesHistory) {
-				// We are allocating space for one extra int, which we fill with
-				// the index of the diagonal base index
-				let temp = new Int32Array(diagonalForwardEnd - diagonalForwardStart + 2);
-				temp[0] = diagonalForwardBase - diagonalForwardStart + 1;
-				MyArray.Copy2(forwardPoints, diagonalForwardStart, temp, 1, diagonalForwardEnd - diagonalForwardStart + 1);
-				this.m_forwardHistory.push(temp);
+			// SAve current vectors to history before the next iterAtion
+			if (numDifferences <= LocAlConstAnts.MAxDifferencesHistory) {
+				// We Are AllocAting spAce for one extrA int, which we fill with
+				// the index of the diAgonAl bAse index
+				let temp = new Int32ArrAy(diAgonAlForwArdEnd - diAgonAlForwArdStArt + 2);
+				temp[0] = diAgonAlForwArdBAse - diAgonAlForwArdStArt + 1;
+				MyArrAy.Copy2(forwArdPoints, diAgonAlForwArdStArt, temp, 1, diAgonAlForwArdEnd - diAgonAlForwArdStArt + 1);
+				this.m_forwArdHistory.push(temp);
 
-				temp = new Int32Array(diagonalReverseEnd - diagonalReverseStart + 2);
-				temp[0] = diagonalReverseBase - diagonalReverseStart + 1;
-				MyArray.Copy2(reversePoints, diagonalReverseStart, temp, 1, diagonalReverseEnd - diagonalReverseStart + 1);
+				temp = new Int32ArrAy(diAgonAlReverseEnd - diAgonAlReverseStArt + 2);
+				temp[0] = diAgonAlReverseBAse - diAgonAlReverseStArt + 1;
+				MyArrAy.Copy2(reversePoints, diAgonAlReverseStArt, temp, 1, diAgonAlReverseEnd - diAgonAlReverseStArt + 1);
 				this.m_reverseHistory.push(temp);
 			}
 
 		}
 
-		// If we got here, then we have the full trace in history. We just have to convert it to a change list
-		// NOTE: This part is a bit messy
-		return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset,
-			diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset,
-			forwardPoints, reversePoints,
-			originalIndex, originalEnd, midOriginalArr,
+		// If we got here, then we hAve the full trAce in history. We just hAve to convert it to A chAnge list
+		// NOTE: This pArt is A bit messy
+		return this.WALKTRACE(diAgonAlForwArdBAse, diAgonAlForwArdStArt, diAgonAlForwArdEnd, diAgonAlForwArdOffset,
+			diAgonAlReverseBAse, diAgonAlReverseStArt, diAgonAlReverseEnd, diAgonAlReverseOffset,
+			forwArdPoints, reversePoints,
+			originAlIndex, originAlEnd, midOriginAlArr,
 			modifiedIndex, modifiedEnd, midModifiedArr,
-			deltaIsEven, quitEarlyArr
+			deltAIsEven, quitEArlyArr
 		);
 	}
 
 	/**
-	 * Shifts the given changes to provide a more intuitive diff.
-	 * While the first element in a diff matches the first element after the diff,
+	 * Shifts the given chAnges to provide A more intuitive diff.
+	 * While the first element in A diff mAtches the first element After the diff,
 	 * we shift the diff down.
 	 *
-	 * @param changes The list of changes to shift
-	 * @returns The shifted changes
+	 * @pArAm chAnges The list of chAnges to shift
+	 * @returns The shifted chAnges
 	 */
-	private PrettifyChanges(changes: DiffChange[]): DiffChange[] {
+	privAte PrettifyChAnges(chAnges: DiffChAnge[]): DiffChAnge[] {
 
-		// Shift all the changes down first
-		for (let i = 0; i < changes.length; i++) {
-			const change = changes[i];
-			const originalStop = (i < changes.length - 1) ? changes[i + 1].originalStart : this._originalElementsOrHash.length;
-			const modifiedStop = (i < changes.length - 1) ? changes[i + 1].modifiedStart : this._modifiedElementsOrHash.length;
-			const checkOriginal = change.originalLength > 0;
-			const checkModified = change.modifiedLength > 0;
+		// Shift All the chAnges down first
+		for (let i = 0; i < chAnges.length; i++) {
+			const chAnge = chAnges[i];
+			const originAlStop = (i < chAnges.length - 1) ? chAnges[i + 1].originAlStArt : this._originAlElementsOrHAsh.length;
+			const modifiedStop = (i < chAnges.length - 1) ? chAnges[i + 1].modifiedStArt : this._modifiedElementsOrHAsh.length;
+			const checkOriginAl = chAnge.originAlLength > 0;
+			const checkModified = chAnge.modifiedLength > 0;
 
-			while (change.originalStart + change.originalLength < originalStop &&
-				change.modifiedStart + change.modifiedLength < modifiedStop &&
-				(!checkOriginal || this.OriginalElementsAreEqual(change.originalStart, change.originalStart + change.originalLength)) &&
-				(!checkModified || this.ModifiedElementsAreEqual(change.modifiedStart, change.modifiedStart + change.modifiedLength))) {
-				change.originalStart++;
-				change.modifiedStart++;
+			while (chAnge.originAlStArt + chAnge.originAlLength < originAlStop &&
+				chAnge.modifiedStArt + chAnge.modifiedLength < modifiedStop &&
+				(!checkOriginAl || this.OriginAlElementsAreEquAl(chAnge.originAlStArt, chAnge.originAlStArt + chAnge.originAlLength)) &&
+				(!checkModified || this.ModifiedElementsAreEquAl(chAnge.modifiedStArt, chAnge.modifiedStArt + chAnge.modifiedLength))) {
+				chAnge.originAlStArt++;
+				chAnge.modifiedStArt++;
 			}
 
-			let mergedChangeArr: Array<DiffChange | null> = [null];
-			if (i < changes.length - 1 && this.ChangesOverlap(changes[i], changes[i + 1], mergedChangeArr)) {
-				changes[i] = mergedChangeArr[0]!;
-				changes.splice(i + 1, 1);
+			let mergedChAngeArr: ArrAy<DiffChAnge | null> = [null];
+			if (i < chAnges.length - 1 && this.ChAngesOverlAp(chAnges[i], chAnges[i + 1], mergedChAngeArr)) {
+				chAnges[i] = mergedChAngeArr[0]!;
+				chAnges.splice(i + 1, 1);
 				i--;
 				continue;
 			}
 		}
 
-		// Shift changes back up until we hit empty or whitespace-only lines
-		for (let i = changes.length - 1; i >= 0; i--) {
-			const change = changes[i];
+		// Shift chAnges bAck up until we hit empty or whitespAce-only lines
+		for (let i = chAnges.length - 1; i >= 0; i--) {
+			const chAnge = chAnges[i];
 
-			let originalStop = 0;
+			let originAlStop = 0;
 			let modifiedStop = 0;
 			if (i > 0) {
-				const prevChange = changes[i - 1];
-				if (prevChange.originalLength > 0) {
-					originalStop = prevChange.originalStart + prevChange.originalLength;
+				const prevChAnge = chAnges[i - 1];
+				if (prevChAnge.originAlLength > 0) {
+					originAlStop = prevChAnge.originAlStArt + prevChAnge.originAlLength;
 				}
-				if (prevChange.modifiedLength > 0) {
-					modifiedStop = prevChange.modifiedStart + prevChange.modifiedLength;
+				if (prevChAnge.modifiedLength > 0) {
+					modifiedStop = prevChAnge.modifiedStArt + prevChAnge.modifiedLength;
 				}
 			}
 
-			const checkOriginal = change.originalLength > 0;
-			const checkModified = change.modifiedLength > 0;
+			const checkOriginAl = chAnge.originAlLength > 0;
+			const checkModified = chAnge.modifiedLength > 0;
 
-			let bestDelta = 0;
-			let bestScore = this._boundaryScore(change.originalStart, change.originalLength, change.modifiedStart, change.modifiedLength);
+			let bestDeltA = 0;
+			let bestScore = this._boundAryScore(chAnge.originAlStArt, chAnge.originAlLength, chAnge.modifiedStArt, chAnge.modifiedLength);
 
-			for (let delta = 1; ; delta++) {
-				const originalStart = change.originalStart - delta;
-				const modifiedStart = change.modifiedStart - delta;
+			for (let deltA = 1; ; deltA++) {
+				const originAlStArt = chAnge.originAlStArt - deltA;
+				const modifiedStArt = chAnge.modifiedStArt - deltA;
 
-				if (originalStart < originalStop || modifiedStart < modifiedStop) {
-					break;
+				if (originAlStArt < originAlStop || modifiedStArt < modifiedStop) {
+					breAk;
 				}
 
-				if (checkOriginal && !this.OriginalElementsAreEqual(originalStart, originalStart + change.originalLength)) {
-					break;
+				if (checkOriginAl && !this.OriginAlElementsAreEquAl(originAlStArt, originAlStArt + chAnge.originAlLength)) {
+					breAk;
 				}
 
-				if (checkModified && !this.ModifiedElementsAreEqual(modifiedStart, modifiedStart + change.modifiedLength)) {
-					break;
+				if (checkModified && !this.ModifiedElementsAreEquAl(modifiedStArt, modifiedStArt + chAnge.modifiedLength)) {
+					breAk;
 				}
 
-				const score = this._boundaryScore(originalStart, change.originalLength, modifiedStart, change.modifiedLength);
+				const score = this._boundAryScore(originAlStArt, chAnge.originAlLength, modifiedStArt, chAnge.modifiedLength);
 
 				if (score > bestScore) {
 					bestScore = score;
-					bestDelta = delta;
+					bestDeltA = deltA;
 				}
 			}
 
-			change.originalStart -= bestDelta;
-			change.modifiedStart -= bestDelta;
+			chAnge.originAlStArt -= bestDeltA;
+			chAnge.modifiedStArt -= bestDeltA;
 		}
 
-		return changes;
+		return chAnges;
 	}
 
-	private _OriginalIsBoundary(index: number): boolean {
-		if (index <= 0 || index >= this._originalElementsOrHash.length - 1) {
+	privAte _OriginAlIsBoundAry(index: number): booleAn {
+		if (index <= 0 || index >= this._originAlElementsOrHAsh.length - 1) {
 			return true;
 		}
-		return (this._hasStrings && /^\s*$/.test(this._originalStringElements[index]));
+		return (this._hAsStrings && /^\s*$/.test(this._originAlStringElements[index]));
 	}
 
-	private _OriginalRegionIsBoundary(originalStart: number, originalLength: number): boolean {
-		if (this._OriginalIsBoundary(originalStart) || this._OriginalIsBoundary(originalStart - 1)) {
+	privAte _OriginAlRegionIsBoundAry(originAlStArt: number, originAlLength: number): booleAn {
+		if (this._OriginAlIsBoundAry(originAlStArt) || this._OriginAlIsBoundAry(originAlStArt - 1)) {
 			return true;
 		}
-		if (originalLength > 0) {
-			const originalEnd = originalStart + originalLength;
-			if (this._OriginalIsBoundary(originalEnd - 1) || this._OriginalIsBoundary(originalEnd)) {
+		if (originAlLength > 0) {
+			const originAlEnd = originAlStArt + originAlLength;
+			if (this._OriginAlIsBoundAry(originAlEnd - 1) || this._OriginAlIsBoundAry(originAlEnd)) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	private _ModifiedIsBoundary(index: number): boolean {
-		if (index <= 0 || index >= this._modifiedElementsOrHash.length - 1) {
+	privAte _ModifiedIsBoundAry(index: number): booleAn {
+		if (index <= 0 || index >= this._modifiedElementsOrHAsh.length - 1) {
 			return true;
 		}
-		return (this._hasStrings && /^\s*$/.test(this._modifiedStringElements[index]));
+		return (this._hAsStrings && /^\s*$/.test(this._modifiedStringElements[index]));
 	}
 
-	private _ModifiedRegionIsBoundary(modifiedStart: number, modifiedLength: number): boolean {
-		if (this._ModifiedIsBoundary(modifiedStart) || this._ModifiedIsBoundary(modifiedStart - 1)) {
+	privAte _ModifiedRegionIsBoundAry(modifiedStArt: number, modifiedLength: number): booleAn {
+		if (this._ModifiedIsBoundAry(modifiedStArt) || this._ModifiedIsBoundAry(modifiedStArt - 1)) {
 			return true;
 		}
 		if (modifiedLength > 0) {
-			const modifiedEnd = modifiedStart + modifiedLength;
-			if (this._ModifiedIsBoundary(modifiedEnd - 1) || this._ModifiedIsBoundary(modifiedEnd)) {
+			const modifiedEnd = modifiedStArt + modifiedLength;
+			if (this._ModifiedIsBoundAry(modifiedEnd - 1) || this._ModifiedIsBoundAry(modifiedEnd)) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	private _boundaryScore(originalStart: number, originalLength: number, modifiedStart: number, modifiedLength: number): number {
-		const originalScore = (this._OriginalRegionIsBoundary(originalStart, originalLength) ? 1 : 0);
-		const modifiedScore = (this._ModifiedRegionIsBoundary(modifiedStart, modifiedLength) ? 1 : 0);
-		return (originalScore + modifiedScore);
+	privAte _boundAryScore(originAlStArt: number, originAlLength: number, modifiedStArt: number, modifiedLength: number): number {
+		const originAlScore = (this._OriginAlRegionIsBoundAry(originAlStArt, originAlLength) ? 1 : 0);
+		const modifiedScore = (this._ModifiedRegionIsBoundAry(modifiedStArt, modifiedLength) ? 1 : 0);
+		return (originAlScore + modifiedScore);
 	}
 
 	/**
-	 * Concatenates the two input DiffChange lists and returns the resulting
+	 * ConcAtenAtes the two input DiffChAnge lists And returns the resulting
 	 * list.
-	 * @param The left changes
-	 * @param The right changes
-	 * @returns The concatenated list
+	 * @pArAm The left chAnges
+	 * @pArAm The right chAnges
+	 * @returns The concAtenAted list
 	 */
-	private ConcatenateChanges(left: DiffChange[], right: DiffChange[]): DiffChange[] {
-		let mergedChangeArr: DiffChange[] = [];
+	privAte ConcAtenAteChAnges(left: DiffChAnge[], right: DiffChAnge[]): DiffChAnge[] {
+		let mergedChAngeArr: DiffChAnge[] = [];
 
 		if (left.length === 0 || right.length === 0) {
 			return (right.length > 0) ? right : left;
-		} else if (this.ChangesOverlap(left[left.length - 1], right[0], mergedChangeArr)) {
-			// Since we break the problem down recursively, it is possible that we
-			// might recurse in the middle of a change thereby splitting it into
-			// two changes. Here in the combining stage, we detect and fuse those
-			// changes back together
-			const result = new Array<DiffChange>(left.length + right.length - 1);
-			MyArray.Copy(left, 0, result, 0, left.length - 1);
-			result[left.length - 1] = mergedChangeArr[0];
-			MyArray.Copy(right, 1, result, left.length, right.length - 1);
+		} else if (this.ChAngesOverlAp(left[left.length - 1], right[0], mergedChAngeArr)) {
+			// Since we breAk the problem down recursively, it is possible thAt we
+			// might recurse in the middle of A chAnge thereby splitting it into
+			// two chAnges. Here in the combining stAge, we detect And fuse those
+			// chAnges bAck together
+			const result = new ArrAy<DiffChAnge>(left.length + right.length - 1);
+			MyArrAy.Copy(left, 0, result, 0, left.length - 1);
+			result[left.length - 1] = mergedChAngeArr[0];
+			MyArrAy.Copy(right, 1, result, left.length, right.length - 1);
 
 			return result;
 		} else {
-			const result = new Array<DiffChange>(left.length + right.length);
-			MyArray.Copy(left, 0, result, 0, left.length);
-			MyArray.Copy(right, 0, result, left.length, right.length);
+			const result = new ArrAy<DiffChAnge>(left.length + right.length);
+			MyArrAy.Copy(left, 0, result, 0, left.length);
+			MyArrAy.Copy(right, 0, result, left.length, right.length);
 
 			return result;
 		}
 	}
 
 	/**
-	 * Returns true if the two changes overlap and can be merged into a single
-	 * change
-	 * @param left The left change
-	 * @param right The right change
-	 * @param mergedChange The merged change if the two overlap, null otherwise
-	 * @returns True if the two changes overlap
+	 * Returns true if the two chAnges overlAp And cAn be merged into A single
+	 * chAnge
+	 * @pArAm left The left chAnge
+	 * @pArAm right The right chAnge
+	 * @pArAm mergedChAnge The merged chAnge if the two overlAp, null otherwise
+	 * @returns True if the two chAnges overlAp
 	 */
-	private ChangesOverlap(left: DiffChange, right: DiffChange, mergedChangeArr: Array<DiffChange | null>): boolean {
-		Debug.Assert(left.originalStart <= right.originalStart, 'Left change is not less than or equal to right change');
-		Debug.Assert(left.modifiedStart <= right.modifiedStart, 'Left change is not less than or equal to right change');
+	privAte ChAngesOverlAp(left: DiffChAnge, right: DiffChAnge, mergedChAngeArr: ArrAy<DiffChAnge | null>): booleAn {
+		Debug.Assert(left.originAlStArt <= right.originAlStArt, 'Left chAnge is not less thAn or equAl to right chAnge');
+		Debug.Assert(left.modifiedStArt <= right.modifiedStArt, 'Left chAnge is not less thAn or equAl to right chAnge');
 
-		if (left.originalStart + left.originalLength >= right.originalStart || left.modifiedStart + left.modifiedLength >= right.modifiedStart) {
-			const originalStart = left.originalStart;
-			let originalLength = left.originalLength;
-			const modifiedStart = left.modifiedStart;
+		if (left.originAlStArt + left.originAlLength >= right.originAlStArt || left.modifiedStArt + left.modifiedLength >= right.modifiedStArt) {
+			const originAlStArt = left.originAlStArt;
+			let originAlLength = left.originAlLength;
+			const modifiedStArt = left.modifiedStArt;
 			let modifiedLength = left.modifiedLength;
 
-			if (left.originalStart + left.originalLength >= right.originalStart) {
-				originalLength = right.originalStart + right.originalLength - left.originalStart;
+			if (left.originAlStArt + left.originAlLength >= right.originAlStArt) {
+				originAlLength = right.originAlStArt + right.originAlLength - left.originAlStArt;
 			}
-			if (left.modifiedStart + left.modifiedLength >= right.modifiedStart) {
-				modifiedLength = right.modifiedStart + right.modifiedLength - left.modifiedStart;
+			if (left.modifiedStArt + left.modifiedLength >= right.modifiedStArt) {
+				modifiedLength = right.modifiedStArt + right.modifiedLength - left.modifiedStArt;
 			}
 
-			mergedChangeArr[0] = new DiffChange(originalStart, originalLength, modifiedStart, modifiedLength);
+			mergedChAngeArr[0] = new DiffChAnge(originAlStArt, originAlLength, modifiedStArt, modifiedLength);
 			return true;
 		} else {
-			mergedChangeArr[0] = null;
-			return false;
+			mergedChAngeArr[0] = null;
+			return fAlse;
 		}
 	}
 
 	/**
-	 * Helper method used to clip a diagonal index to the range of valid
-	 * diagonals. This also decides whether or not the diagonal index,
-	 * if it exceeds the boundary, should be clipped to the boundary or clipped
-	 * one inside the boundary depending on the Even/Odd status of the boundary
-	 * and numDifferences.
-	 * @param diagonal The index of the diagonal to clip.
-	 * @param numDifferences The current number of differences being iterated upon.
-	 * @param diagonalBaseIndex The base reference diagonal.
-	 * @param numDiagonals The total number of diagonals.
-	 * @returns The clipped diagonal index.
+	 * Helper method used to clip A diAgonAl index to the rAnge of vAlid
+	 * diAgonAls. This Also decides whether or not the diAgonAl index,
+	 * if it exceeds the boundAry, should be clipped to the boundAry or clipped
+	 * one inside the boundAry depending on the Even/Odd stAtus of the boundAry
+	 * And numDifferences.
+	 * @pArAm diAgonAl The index of the diAgonAl to clip.
+	 * @pArAm numDifferences The current number of differences being iterAted upon.
+	 * @pArAm diAgonAlBAseIndex The bAse reference diAgonAl.
+	 * @pArAm numDiAgonAls The totAl number of diAgonAls.
+	 * @returns The clipped diAgonAl index.
 	 */
-	private ClipDiagonalBound(diagonal: number, numDifferences: number, diagonalBaseIndex: number, numDiagonals: number): number {
-		if (diagonal >= 0 && diagonal < numDiagonals) {
-			// Nothing to clip, its in range
-			return diagonal;
+	privAte ClipDiAgonAlBound(diAgonAl: number, numDifferences: number, diAgonAlBAseIndex: number, numDiAgonAls: number): number {
+		if (diAgonAl >= 0 && diAgonAl < numDiAgonAls) {
+			// Nothing to clip, its in rAnge
+			return diAgonAl;
 		}
 
-		// diagonalsBelow: The number of diagonals below the reference diagonal
-		// diagonalsAbove: The number of diagonals above the reference diagonal
-		const diagonalsBelow = diagonalBaseIndex;
-		const diagonalsAbove = numDiagonals - diagonalBaseIndex - 1;
+		// diAgonAlsBelow: The number of diAgonAls below the reference diAgonAl
+		// diAgonAlsAbove: The number of diAgonAls Above the reference diAgonAl
+		const diAgonAlsBelow = diAgonAlBAseIndex;
+		const diAgonAlsAbove = numDiAgonAls - diAgonAlBAseIndex - 1;
 		const diffEven = (numDifferences % 2 === 0);
 
-		if (diagonal < 0) {
-			const lowerBoundEven = (diagonalsBelow % 2 === 0);
+		if (diAgonAl < 0) {
+			const lowerBoundEven = (diAgonAlsBelow % 2 === 0);
 			return (diffEven === lowerBoundEven) ? 0 : 1;
 		} else {
-			const upperBoundEven = (diagonalsAbove % 2 === 0);
-			return (diffEven === upperBoundEven) ? numDiagonals - 1 : numDiagonals - 2;
+			const upperBoundEven = (diAgonAlsAbove % 2 === 0);
+			return (diffEven === upperBoundEven) ? numDiAgonAls - 1 : numDiAgonAls - 2;
 		}
 	}
 }

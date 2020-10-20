@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStatusbarService, StatusbarAlignment as MainThreadStatusBarAlignment, IStatusbarEntryAccessor, IStatusbarEntry } from 'vs/workbench/services/statusbar/common/statusbar';
-import { MainThreadStatusBarShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
-import { ThemeColor } from 'vs/platform/theme/common/themeService';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { dispose } from 'vs/base/common/lifecycle';
-import { Command } from 'vs/editor/common/modes';
-import { IAccessibilityInformation } from 'vs/platform/accessibility/common/accessibility';
+import { IStAtusbArService, StAtusbArAlignment As MAinThreAdStAtusBArAlignment, IStAtusbArEntryAccessor, IStAtusbArEntry } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
+import { MAinThreAdStAtusBArShApe, MAinContext, IExtHostContext } from '../common/extHost.protocol';
+import { ThemeColor } from 'vs/plAtform/theme/common/themeService';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { dispose } from 'vs/bAse/common/lifecycle';
+import { CommAnd } from 'vs/editor/common/modes';
+import { IAccessibilityInformAtion } from 'vs/plAtform/Accessibility/common/Accessibility';
 
-@extHostNamedCustomer(MainContext.MainThreadStatusBar)
-export class MainThreadStatusBar implements MainThreadStatusBarShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdStAtusBAr)
+export clAss MAinThreAdStAtusBAr implements MAinThreAdStAtusBArShApe {
 
-	private readonly entries: Map<number, { accessor: IStatusbarEntryAccessor, alignment: MainThreadStatusBarAlignment, priority: number }> = new Map();
-	static readonly CODICON_REGEXP = /\$\((.*?)\)/g;
+	privAte reAdonly entries: MAp<number, { Accessor: IStAtusbArEntryAccessor, Alignment: MAinThreAdStAtusBArAlignment, priority: number }> = new MAp();
+	stAtic reAdonly CODICON_REGEXP = /\$\((.*?)\)/g;
 
 	constructor(
 		_extHostContext: IExtHostContext,
-		@IStatusbarService private readonly statusbarService: IStatusbarService
+		@IStAtusbArService privAte reAdonly stAtusbArService: IStAtusbArService
 	) { }
 
 	dispose(): void {
-		this.entries.forEach(entry => entry.accessor.dispose());
-		this.entries.clear();
+		this.entries.forEAch(entry => entry.Accessor.dispose());
+		this.entries.cleAr();
 	}
 
-	$setEntry(id: number, statusId: string, statusName: string, text: string, tooltip: string | undefined, command: Command | undefined, color: string | ThemeColor | undefined, alignment: MainThreadStatusBarAlignment, priority: number | undefined, accessibilityInformation: IAccessibilityInformation): void {
-		// if there are icons in the text use the tooltip for the aria label
-		let ariaLabel: string;
+	$setEntry(id: number, stAtusId: string, stAtusNAme: string, text: string, tooltip: string | undefined, commAnd: CommAnd | undefined, color: string | ThemeColor | undefined, Alignment: MAinThreAdStAtusBArAlignment, priority: number | undefined, AccessibilityInformAtion: IAccessibilityInformAtion): void {
+		// if there Are icons in the text use the tooltip for the AriA lAbel
+		let AriALAbel: string;
 		let role: string | undefined = undefined;
-		if (accessibilityInformation) {
-			ariaLabel = accessibilityInformation.label;
-			role = accessibilityInformation.role;
+		if (AccessibilityInformAtion) {
+			AriALAbel = AccessibilityInformAtion.lAbel;
+			role = AccessibilityInformAtion.role;
 		} else {
-			ariaLabel = text ? text.replace(MainThreadStatusBar.CODICON_REGEXP, (_match, codiconName) => codiconName) : '';
+			AriALAbel = text ? text.replAce(MAinThreAdStAtusBAr.CODICON_REGEXP, (_mAtch, codiconNAme) => codiconNAme) : '';
 		}
-		const entry: IStatusbarEntry = { text, tooltip, command, color, ariaLabel, role };
+		const entry: IStAtusbArEntry = { text, tooltip, commAnd, color, AriALAbel, role };
 
 		if (typeof priority === 'undefined') {
 			priority = 0;
 		}
 
-		// Reset existing entry if alignment or priority changed
+		// Reset existing entry if Alignment or priority chAnged
 		let existingEntry = this.entries.get(id);
-		if (existingEntry && (existingEntry.alignment !== alignment || existingEntry.priority !== priority)) {
-			dispose(existingEntry.accessor);
+		if (existingEntry && (existingEntry.Alignment !== Alignment || existingEntry.priority !== priority)) {
+			dispose(existingEntry.Accessor);
 			this.entries.delete(id);
 			existingEntry = undefined;
 		}
 
-		// Create new entry if not existing
+		// CreAte new entry if not existing
 		if (!existingEntry) {
-			this.entries.set(id, { accessor: this.statusbarService.addEntry(entry, statusId, statusName, alignment, priority), alignment, priority });
+			this.entries.set(id, { Accessor: this.stAtusbArService.AddEntry(entry, stAtusId, stAtusNAme, Alignment, priority), Alignment, priority });
 		}
 
-		// Otherwise update
+		// Otherwise updAte
 		else {
-			existingEntry.accessor.update(entry);
+			existingEntry.Accessor.updAte(entry);
 		}
 	}
 
 	$dispose(id: number) {
 		const entry = this.entries.get(id);
 		if (entry) {
-			dispose(entry.accessor);
+			dispose(entry.Accessor);
 			this.entries.delete(id);
 		}
 	}

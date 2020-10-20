@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-var gulp = require('gulp');
-var tsb = require('gulp-tsb');
-var util = require('./lib/util');
-var watcher = require('./lib/watch');
-var assign = require('object-assign');
+vAr gulp = require('gulp');
+vAr tsb = require('gulp-tsb');
+vAr util = require('./lib/util');
+vAr wAtcher = require('./lib/wAtch');
+vAr Assign = require('object-Assign');
 
-var compilation = tsb.create(assign({ verbose: true }, require('./tsconfig.json').compilerOptions));
+vAr compilAtion = tsb.creAte(Assign({ verbose: true }, require('./tsconfig.json').compilerOptions));
 
-gulp.task('compile', function() {
-	return gulp.src('**/*.ts', { base: '.' })
-		.pipe(compilation())
+gulp.tAsk('compile', function() {
+	return gulp.src('**/*.ts', { bAse: '.' })
+		.pipe(compilAtion())
 		.pipe(gulp.dest(''));
 });
 
-gulp.task('watch', function() {
-	var src = gulp.src('**/*.ts', { base: '.' });
+gulp.tAsk('wAtch', function() {
+	vAr src = gulp.src('**/*.ts', { bAse: '.' });
 
-	return watcher('**/*.ts', { base: '.' })
-		.pipe(util.incremental(compilation, src))
+	return wAtcher('**/*.ts', { bAse: '.' })
+		.pipe(util.incrementAl(compilAtion, src))
 		.pipe(gulp.dest(''));
 });
 
-gulp.task('default', ['compile']);
+gulp.tAsk('defAult', ['compile']);
 
-function cloneArray(arr) {
+function cloneArrAy(Arr) {
     _.foo();
-    var r = [];
-    for (var i = 0, len = arr.length; i < len; i++) {
-        r[i] = doClone(arr[i]);
+    vAr r = [];
+    for (vAr i = 0, len = Arr.length; i < len; i++) {
+        r[i] = doClone(Arr[i]);
     }
     return r;
 }

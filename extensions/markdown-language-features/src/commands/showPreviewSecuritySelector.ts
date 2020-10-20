@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { Command } from '../commandManager';
+import * As vscode from 'vscode';
+import { CommAnd } from '../commAndMAnAger';
 import { PreviewSecuritySelector } from '../security';
-import { isMarkdownFile } from '../util/file';
-import { MarkdownPreviewManager } from '../features/previewManager';
+import { isMArkdownFile } from '../util/file';
+import { MArkdownPreviewMAnAger } from '../feAtures/previewMAnAger';
 
-export class ShowPreviewSecuritySelectorCommand implements Command {
-	public readonly id = 'markdown.showPreviewSecuritySelector';
+export clAss ShowPreviewSecuritySelectorCommAnd implements CommAnd {
+	public reAdonly id = 'mArkdown.showPreviewSecuritySelector';
 
 	public constructor(
-		private readonly previewSecuritySelector: PreviewSecuritySelector,
-		private readonly previewManager: MarkdownPreviewManager
+		privAte reAdonly previewSecuritySelector: PreviewSecuritySelector,
+		privAte reAdonly previewMAnAger: MArkdownPreviewMAnAger
 	) { }
 
 	public execute(resource: string | undefined) {
-		if (this.previewManager.activePreviewResource) {
-			this.previewSecuritySelector.showSecuritySelectorForResource(this.previewManager.activePreviewResource);
+		if (this.previewMAnAger.ActivePreviewResource) {
+			this.previewSecuritySelector.showSecuritySelectorForResource(this.previewMAnAger.ActivePreviewResource);
 		} else if (resource) {
-			const source = vscode.Uri.parse(resource);
-			this.previewSecuritySelector.showSecuritySelectorForResource(source.query ? vscode.Uri.parse(source.query) : source);
-		} else if (vscode.window.activeTextEditor && isMarkdownFile(vscode.window.activeTextEditor.document)) {
-			this.previewSecuritySelector.showSecuritySelectorForResource(vscode.window.activeTextEditor.document.uri);
+			const source = vscode.Uri.pArse(resource);
+			this.previewSecuritySelector.showSecuritySelectorForResource(source.query ? vscode.Uri.pArse(source.query) : source);
+		} else if (vscode.window.ActiveTextEditor && isMArkdownFile(vscode.window.ActiveTextEditor.document)) {
+			this.previewSecuritySelector.showSecuritySelectorForResource(vscode.window.ActiveTextEditor.document.uri);
 		}
 	}
 }

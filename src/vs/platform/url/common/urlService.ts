@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IURLService, IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { first } from 'vs/base/common/async';
-import { toDisposable, IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import product from 'vs/platform/product/common/product';
+import { IURLService, IURLHAndler, IOpenURLOptions } from 'vs/plAtform/url/common/url';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { first } from 'vs/bAse/common/Async';
+import { toDisposAble, IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import product from 'vs/plAtform/product/common/product';
 
-export abstract class AbstractURLService extends Disposable implements IURLService {
+export AbstrAct clAss AbstrActURLService extends DisposAble implements IURLService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private handlers = new Set<IURLHandler>();
+	privAte hAndlers = new Set<IURLHAndler>();
 
-	abstract create(options?: Partial<UriComponents>): URI;
+	AbstrAct creAte(options?: PArtiAl<UriComponents>): URI;
 
-	open(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
-		const handlers = [...this.handlers.values()];
-		return first(handlers.map(h => () => h.handleURL(uri, options)), undefined, false).then(val => val || false);
+	open(uri: URI, options?: IOpenURLOptions): Promise<booleAn> {
+		const hAndlers = [...this.hAndlers.vAlues()];
+		return first(hAndlers.mAp(h => () => h.hAndleURL(uri, options)), undefined, fAlse).then(vAl => vAl || fAlse);
 	}
 
-	registerHandler(handler: IURLHandler): IDisposable {
-		this.handlers.add(handler);
-		return toDisposable(() => this.handlers.delete(handler));
+	registerHAndler(hAndler: IURLHAndler): IDisposAble {
+		this.hAndlers.Add(hAndler);
+		return toDisposAble(() => this.hAndlers.delete(hAndler));
 	}
 }
 
-export class NativeURLService extends AbstractURLService {
+export clAss NAtiveURLService extends AbstrActURLService {
 
-	create(options?: Partial<UriComponents>): URI {
-		let { authority, path, query, fragment } = options ? options : { authority: undefined, path: undefined, query: undefined, fragment: undefined };
+	creAte(options?: PArtiAl<UriComponents>): URI {
+		let { Authority, pAth, query, frAgment } = options ? options : { Authority: undefined, pAth: undefined, query: undefined, frAgment: undefined };
 
-		if (authority && path && path.indexOf('/') !== 0) {
-			path = `/${path}`; // URI validation requires a path if there is an authority
+		if (Authority && pAth && pAth.indexOf('/') !== 0) {
+			pAth = `/${pAth}`; // URI vAlidAtion requires A pAth if there is An Authority
 		}
 
-		return URI.from({ scheme: product.urlProtocol, authority, path, query, fragment });
+		return URI.from({ scheme: product.urlProtocol, Authority, pAth, query, frAgment });
 	}
 }

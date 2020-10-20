@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IPanel } from 'vs/workbench/common/panel';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IBadge } from 'vs/workbench/services/activity/common/activity';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IProgressIndicator } from 'vs/platform/progress/common/progress';
+import { Event } from 'vs/bAse/common/event';
+import { IPAnel } from 'vs/workbench/common/pAnel';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IBAdge } from 'vs/workbench/services/Activity/common/Activity';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IProgressIndicAtor } from 'vs/plAtform/progress/common/progress';
 
-export const IPanelService = createDecorator<IPanelService>('panelService');
+export const IPAnelService = creAteDecorAtor<IPAnelService>('pAnelService');
 
-export interface IPanelIdentifier {
+export interfAce IPAnelIdentifier {
 	id: string;
-	name: string;
-	cssClass?: string;
+	nAme: string;
+	cssClAss?: string;
 }
 
-export interface IPanelService {
+export interfAce IPAnelService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidPanelOpen: Event<{ readonly panel: IPanel, readonly focus: boolean }>;
-	readonly onDidPanelClose: Event<IPanel>;
-
-	/**
-	 * Opens a panel with the given identifier and pass keyboard focus to it if specified.
-	 */
-	openPanel(id?: string, focus?: boolean): Promise<IPanel | undefined>;
+	reAdonly onDidPAnelOpen: Event<{ reAdonly pAnel: IPAnel, reAdonly focus: booleAn }>;
+	reAdonly onDidPAnelClose: Event<IPAnel>;
 
 	/**
-	 * Returns the current active panel or null if none
+	 * Opens A pAnel with the given identifier And pAss keyboArd focus to it if specified.
 	 */
-	getActivePanel(): IPanel | undefined;
+	openPAnel(id?: string, focus?: booleAn): Promise<IPAnel | undefined>;
 
 	/**
-	 * Returns the panel by id.
+	 * Returns the current Active pAnel or null if none
 	 */
-	getPanel(id: string): IPanelIdentifier | undefined;
+	getActivePAnel(): IPAnel | undefined;
 
 	/**
-	 * Returns all built-in panels following the default order
+	 * Returns the pAnel by id.
 	 */
-	getPanels(): readonly IPanelIdentifier[];
+	getPAnel(id: string): IPAnelIdentifier | undefined;
 
 	/**
-	 * Returns pinned panels following the visual order
+	 * Returns All built-in pAnels following the defAult order
 	 */
-	getPinnedPanels(): readonly IPanelIdentifier[];
+	getPAnels(): reAdonly IPAnelIdentifier[];
 
 	/**
-	 * Returns the progress indicator for the panel bar.
+	 * Returns pinned pAnels following the visuAl order
 	 */
-	getProgressIndicator(id: string): IProgressIndicator | undefined;
+	getPinnedPAnels(): reAdonly IPAnelIdentifier[];
 
 	/**
-	 * Show an activity in a panel.
+	 * Returns the progress indicAtor for the pAnel bAr.
 	 */
-	showActivity(panelId: string, badge: IBadge, clazz?: string): IDisposable;
+	getProgressIndicAtor(id: string): IProgressIndicAtor | undefined;
 
 	/**
-	 * Hide the currently active panel.
+	 * Show An Activity in A pAnel.
 	 */
-	hideActivePanel(): void;
+	showActivity(pAnelId: string, bAdge: IBAdge, clAzz?: string): IDisposAble;
 
 	/**
-	 * Get the last active panel ID.
+	 * Hide the currently Active pAnel.
 	 */
-	getLastActivePanelId(): string;
+	hideActivePAnel(): void;
+
+	/**
+	 * Get the lAst Active pAnel ID.
+	 */
+	getLAstActivePAnelId(): string;
 }

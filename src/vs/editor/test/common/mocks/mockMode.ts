@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IMode, LanguageIdentifier } from 'vs/editor/common/modes';
-import { ILanguageSelection } from 'vs/editor/common/services/modeService';
+import { Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IMode, LAnguAgeIdentifier } from 'vs/editor/common/modes';
+import { ILAnguAgeSelection } from 'vs/editor/common/services/modeService';
 
-export class MockMode extends Disposable implements IMode {
-	private readonly _languageIdentifier: LanguageIdentifier;
+export clAss MockMode extends DisposAble implements IMode {
+	privAte reAdonly _lAnguAgeIdentifier: LAnguAgeIdentifier;
 
-	constructor(languageIdentifier: LanguageIdentifier) {
+	constructor(lAnguAgeIdentifier: LAnguAgeIdentifier) {
 		super();
-		this._languageIdentifier = languageIdentifier;
+		this._lAnguAgeIdentifier = lAnguAgeIdentifier;
 	}
 
 	public getId(): string {
-		return this._languageIdentifier.language;
+		return this._lAnguAgeIdentifier.lAnguAge;
 	}
 
-	public getLanguageIdentifier(): LanguageIdentifier {
-		return this._languageIdentifier;
+	public getLAnguAgeIdentifier(): LAnguAgeIdentifier {
+		return this._lAnguAgeIdentifier;
 	}
 }
 
-export class StaticLanguageSelector implements ILanguageSelection {
-	readonly onDidChange: Event<LanguageIdentifier> = Event.None;
-	constructor(public readonly languageIdentifier: LanguageIdentifier) { }
+export clAss StAticLAnguAgeSelector implements ILAnguAgeSelection {
+	reAdonly onDidChAnge: Event<LAnguAgeIdentifier> = Event.None;
+	constructor(public reAdonly lAnguAgeIdentifier: LAnguAgeIdentifier) { }
 	public dispose(): void { }
 }

@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { join, basename, dirname } from 'path';
-import { readFileSync } from 'fs';
+import { join, bAsenAme, dirnAme } from 'pAth';
+import { reAdFileSync } from 'fs';
 
-const contents: { [name: string]: string } = {};
+const contents: { [nAme: string]: string } = {};
 
-const serverFolder = basename(__dirname) === 'dist' ? dirname(__dirname) : dirname(dirname(__dirname));
+const serverFolder = bAsenAme(__dirnAme) === 'dist' ? dirnAme(__dirnAme) : dirnAme(dirnAme(__dirnAme));
 const TYPESCRIPT_LIB_SOURCE = join(serverFolder, '../../node_modules/typescript/lib');
 const JQUERY_PATH = join(serverFolder, 'lib/jquery.d.ts');
 
-export function loadLibrary(name: string) {
-	let content = contents[name];
+export function loAdLibrAry(nAme: string) {
+	let content = contents[nAme];
 	if (typeof content !== 'string') {
-		let libPath;
-		if (name === 'jquery') {
-			libPath = JQUERY_PATH;
+		let libPAth;
+		if (nAme === 'jquery') {
+			libPAth = JQUERY_PATH;
 		} else {
-			libPath = join(TYPESCRIPT_LIB_SOURCE, name); // from source
+			libPAth = join(TYPESCRIPT_LIB_SOURCE, nAme); // from source
 		}
 		try {
-			content = readFileSync(libPath).toString();
-		} catch (e) {
-			console.log(`Unable to load library ${name} at ${libPath}: ${e.message}`);
+			content = reAdFileSync(libPAth).toString();
+		} cAtch (e) {
+			console.log(`UnAble to loAd librAry ${nAme} At ${libPAth}: ${e.messAge}`);
 			content = '';
 		}
-		contents[name] = content;
+		contents[nAme] = content;
 	}
 	return content;
 }

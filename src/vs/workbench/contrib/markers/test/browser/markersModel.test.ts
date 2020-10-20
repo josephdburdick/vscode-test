@@ -1,252 +1,252 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { IMarker, MarkerSeverity, IRelatedInformation } from 'vs/platform/markers/common/markers';
-import { MarkersModel, Marker, ResourceMarkers, RelatedInformation } from 'vs/workbench/contrib/markers/browser/markersModel';
-import { groupBy } from 'vs/base/common/collections';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { IMArker, MArkerSeverity, IRelAtedInformAtion } from 'vs/plAtform/mArkers/common/mArkers';
+import { MArkersModel, MArker, ResourceMArkers, RelAtedInformAtion } from 'vs/workbench/contrib/mArkers/browser/mArkersModel';
+import { groupBy } from 'vs/bAse/common/collections';
 
-class TestMarkersModel extends MarkersModel {
+clAss TestMArkersModel extends MArkersModel {
 
-	constructor(markers: IMarker[]) {
+	constructor(mArkers: IMArker[]) {
 		super();
 
-		const byResource = groupBy(markers, r => r.resource.toString());
+		const byResource = groupBy(mArkers, r => r.resource.toString());
 
-		Object.keys(byResource).forEach(key => {
-			const markers = byResource[key];
-			const resource = markers[0].resource;
+		Object.keys(byResource).forEAch(key => {
+			const mArkers = byResource[key];
+			const resource = mArkers[0].resource;
 
-			this.setResourceMarkers([[resource, markers]]);
+			this.setResourceMArkers([[resource, mArkers]]);
 		});
 	}
 }
 
-suite('MarkersModel Test', () => {
+suite('MArkersModel Test', () => {
 
-	test('marker ids are unique', function () {
-		const marker1 = anErrorWithRange(3);
-		const marker2 = anErrorWithRange(3);
-		const marker3 = aWarningWithRange(3);
-		const marker4 = aWarningWithRange(3);
+	test('mArker ids Are unique', function () {
+		const mArker1 = AnErrorWithRAnge(3);
+		const mArker2 = AnErrorWithRAnge(3);
+		const mArker3 = AWArningWithRAnge(3);
+		const mArker4 = AWArningWithRAnge(3);
 
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4]);
-		const actuals = testObject.resourceMarkers[0].markers;
+		const testObject = new TestMArkersModel([mArker1, mArker2, mArker3, mArker4]);
+		const ActuAls = testObject.resourceMArkers[0].mArkers;
 
-		assert.notEqual(actuals[0].id, actuals[1].id);
-		assert.notEqual(actuals[0].id, actuals[2].id);
-		assert.notEqual(actuals[0].id, actuals[3].id);
-		assert.notEqual(actuals[1].id, actuals[2].id);
-		assert.notEqual(actuals[1].id, actuals[3].id);
-		assert.notEqual(actuals[2].id, actuals[3].id);
+		Assert.notEquAl(ActuAls[0].id, ActuAls[1].id);
+		Assert.notEquAl(ActuAls[0].id, ActuAls[2].id);
+		Assert.notEquAl(ActuAls[0].id, ActuAls[3].id);
+		Assert.notEquAl(ActuAls[1].id, ActuAls[2].id);
+		Assert.notEquAl(ActuAls[1].id, ActuAls[3].id);
+		Assert.notEquAl(ActuAls[2].id, ActuAls[3].id);
 	});
 
-	test('sort palces resources with no errors at the end', function () {
-		const marker1 = aMarker('a/res1', MarkerSeverity.Warning);
-		const marker2 = aMarker('a/res2');
-		const marker3 = aMarker('res4');
-		const marker4 = aMarker('b/res3');
-		const marker5 = aMarker('res4');
-		const marker6 = aMarker('c/res2', MarkerSeverity.Info);
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6]);
+	test('sort pAlces resources with no errors At the end', function () {
+		const mArker1 = AMArker('A/res1', MArkerSeverity.WArning);
+		const mArker2 = AMArker('A/res2');
+		const mArker3 = AMArker('res4');
+		const mArker4 = AMArker('b/res3');
+		const mArker5 = AMArker('res4');
+		const mArker6 = AMArker('c/res2', MArkerSeverity.Info);
+		const testObject = new TestMArkersModel([mArker1, mArker2, mArker3, mArker4, mArker5, mArker6]);
 
-		const actuals = testObject.resourceMarkers;
+		const ActuAls = testObject.resourceMArkers;
 
-		assert.equal(5, actuals.length);
-		assert.ok(compareResource(actuals[0], 'a/res2'));
-		assert.ok(compareResource(actuals[1], 'b/res3'));
-		assert.ok(compareResource(actuals[2], 'res4'));
-		assert.ok(compareResource(actuals[3], 'a/res1'));
-		assert.ok(compareResource(actuals[4], 'c/res2'));
+		Assert.equAl(5, ActuAls.length);
+		Assert.ok(compAreResource(ActuAls[0], 'A/res2'));
+		Assert.ok(compAreResource(ActuAls[1], 'b/res3'));
+		Assert.ok(compAreResource(ActuAls[2], 'res4'));
+		Assert.ok(compAreResource(ActuAls[3], 'A/res1'));
+		Assert.ok(compAreResource(ActuAls[4], 'c/res2'));
 	});
 
-	test('sort resources by file path', function () {
-		const marker1 = aMarker('a/res1');
-		const marker2 = aMarker('a/res2');
-		const marker3 = aMarker('res4');
-		const marker4 = aMarker('b/res3');
-		const marker5 = aMarker('res4');
-		const marker6 = aMarker('c/res2');
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6]);
+	test('sort resources by file pAth', function () {
+		const mArker1 = AMArker('A/res1');
+		const mArker2 = AMArker('A/res2');
+		const mArker3 = AMArker('res4');
+		const mArker4 = AMArker('b/res3');
+		const mArker5 = AMArker('res4');
+		const mArker6 = AMArker('c/res2');
+		const testObject = new TestMArkersModel([mArker1, mArker2, mArker3, mArker4, mArker5, mArker6]);
 
-		const actuals = testObject.resourceMarkers;
+		const ActuAls = testObject.resourceMArkers;
 
-		assert.equal(5, actuals.length);
-		assert.ok(compareResource(actuals[0], 'a/res1'));
-		assert.ok(compareResource(actuals[1], 'a/res2'));
-		assert.ok(compareResource(actuals[2], 'b/res3'));
-		assert.ok(compareResource(actuals[3], 'c/res2'));
-		assert.ok(compareResource(actuals[4], 'res4'));
+		Assert.equAl(5, ActuAls.length);
+		Assert.ok(compAreResource(ActuAls[0], 'A/res1'));
+		Assert.ok(compAreResource(ActuAls[1], 'A/res2'));
+		Assert.ok(compAreResource(ActuAls[2], 'b/res3'));
+		Assert.ok(compAreResource(ActuAls[3], 'c/res2'));
+		Assert.ok(compAreResource(ActuAls[4], 'res4'));
 	});
 
-	test('sort markers by severity, line and column', function () {
-		const marker1 = aWarningWithRange(8, 1, 9, 3);
-		const marker2 = aWarningWithRange(3);
-		const marker3 = anErrorWithRange(8, 1, 9, 3);
-		const marker4 = anIgnoreWithRange(5);
-		const marker5 = anInfoWithRange(8, 1, 8, 4, 'ab');
-		const marker6 = anErrorWithRange(3);
-		const marker7 = anErrorWithRange(5);
-		const marker8 = anInfoWithRange(5);
-		const marker9 = anErrorWithRange(8, 1, 8, 4, 'ab');
-		const marker10 = anErrorWithRange(10);
-		const marker11 = anErrorWithRange(8, 1, 8, 4, 'ba');
-		const marker12 = anIgnoreWithRange(3);
-		const marker13 = aWarningWithRange(5);
-		const marker14 = anErrorWithRange(4);
-		const marker15 = anErrorWithRange(8, 2, 8, 4);
-		const testObject = new TestMarkersModel([marker1, marker2, marker3, marker4, marker5, marker6, marker7, marker8, marker9, marker10, marker11, marker12, marker13, marker14, marker15]);
+	test('sort mArkers by severity, line And column', function () {
+		const mArker1 = AWArningWithRAnge(8, 1, 9, 3);
+		const mArker2 = AWArningWithRAnge(3);
+		const mArker3 = AnErrorWithRAnge(8, 1, 9, 3);
+		const mArker4 = AnIgnoreWithRAnge(5);
+		const mArker5 = AnInfoWithRAnge(8, 1, 8, 4, 'Ab');
+		const mArker6 = AnErrorWithRAnge(3);
+		const mArker7 = AnErrorWithRAnge(5);
+		const mArker8 = AnInfoWithRAnge(5);
+		const mArker9 = AnErrorWithRAnge(8, 1, 8, 4, 'Ab');
+		const mArker10 = AnErrorWithRAnge(10);
+		const mArker11 = AnErrorWithRAnge(8, 1, 8, 4, 'bA');
+		const mArker12 = AnIgnoreWithRAnge(3);
+		const mArker13 = AWArningWithRAnge(5);
+		const mArker14 = AnErrorWithRAnge(4);
+		const mArker15 = AnErrorWithRAnge(8, 2, 8, 4);
+		const testObject = new TestMArkersModel([mArker1, mArker2, mArker3, mArker4, mArker5, mArker6, mArker7, mArker8, mArker9, mArker10, mArker11, mArker12, mArker13, mArker14, mArker15]);
 
-		const actuals = testObject.resourceMarkers[0].markers;
+		const ActuAls = testObject.resourceMArkers[0].mArkers;
 
-		assert.equal(actuals[0].marker, marker6);
-		assert.equal(actuals[1].marker, marker14);
-		assert.equal(actuals[2].marker, marker7);
-		assert.equal(actuals[3].marker, marker9);
-		assert.equal(actuals[4].marker, marker11);
-		assert.equal(actuals[5].marker, marker3);
-		assert.equal(actuals[6].marker, marker15);
-		assert.equal(actuals[7].marker, marker10);
-		assert.equal(actuals[8].marker, marker2);
-		assert.equal(actuals[9].marker, marker13);
-		assert.equal(actuals[10].marker, marker1);
-		assert.equal(actuals[11].marker, marker8);
-		assert.equal(actuals[12].marker, marker5);
-		assert.equal(actuals[13].marker, marker12);
-		assert.equal(actuals[14].marker, marker4);
+		Assert.equAl(ActuAls[0].mArker, mArker6);
+		Assert.equAl(ActuAls[1].mArker, mArker14);
+		Assert.equAl(ActuAls[2].mArker, mArker7);
+		Assert.equAl(ActuAls[3].mArker, mArker9);
+		Assert.equAl(ActuAls[4].mArker, mArker11);
+		Assert.equAl(ActuAls[5].mArker, mArker3);
+		Assert.equAl(ActuAls[6].mArker, mArker15);
+		Assert.equAl(ActuAls[7].mArker, mArker10);
+		Assert.equAl(ActuAls[8].mArker, mArker2);
+		Assert.equAl(ActuAls[9].mArker, mArker13);
+		Assert.equAl(ActuAls[10].mArker, mArker1);
+		Assert.equAl(ActuAls[11].mArker, mArker8);
+		Assert.equAl(ActuAls[12].mArker, mArker5);
+		Assert.equAl(ActuAls[13].mArker, mArker12);
+		Assert.equAl(ActuAls[14].mArker, mArker4);
 	});
 
 	test('toString()', () => {
-		let marker = aMarker('a/res1');
-		marker.code = '1234';
-		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path }, null, '\t'), new Marker('1', marker).toString());
+		let mArker = AMArker('A/res1');
+		mArker.code = '1234';
+		Assert.equAl(JSON.stringify({ ...mArker, resource: mArker.resource.pAth }, null, '\t'), new MArker('1', mArker).toString());
 
-		marker = aMarker('a/res2', MarkerSeverity.Warning);
-		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path }, null, '\t'), new Marker('2', marker).toString());
+		mArker = AMArker('A/res2', MArkerSeverity.WArning);
+		Assert.equAl(JSON.stringify({ ...mArker, resource: mArker.resource.pAth }, null, '\t'), new MArker('2', mArker).toString());
 
-		marker = aMarker('a/res2', MarkerSeverity.Info, 1, 2, 1, 8, 'Info', '');
-		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path }, null, '\t'), new Marker('3', marker).toString());
+		mArker = AMArker('A/res2', MArkerSeverity.Info, 1, 2, 1, 8, 'Info', '');
+		Assert.equAl(JSON.stringify({ ...mArker, resource: mArker.resource.pAth }, null, '\t'), new MArker('3', mArker).toString());
 
-		marker = aMarker('a/res2', MarkerSeverity.Hint, 1, 2, 1, 8, 'Ignore message', 'Ignore');
-		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path }, null, '\t'), new Marker('4', marker).toString());
+		mArker = AMArker('A/res2', MArkerSeverity.Hint, 1, 2, 1, 8, 'Ignore messAge', 'Ignore');
+		Assert.equAl(JSON.stringify({ ...mArker, resource: mArker.resource.pAth }, null, '\t'), new MArker('4', mArker).toString());
 
-		marker = aMarker('a/res2', MarkerSeverity.Warning, 1, 2, 1, 8, 'Warning message', '', [{ startLineNumber: 2, startColumn: 5, endLineNumber: 2, endColumn: 10, message: 'some info', resource: URI.file('a/res3') }]);
-		const testObject = new Marker('5', marker, null!);
+		mArker = AMArker('A/res2', MArkerSeverity.WArning, 1, 2, 1, 8, 'WArning messAge', '', [{ stArtLineNumber: 2, stArtColumn: 5, endLineNumber: 2, endColumn: 10, messAge: 'some info', resource: URI.file('A/res3') }]);
+		const testObject = new MArker('5', mArker, null!);
 
-		// hack
-		(testObject as any).relatedInformation = marker.relatedInformation!.map(r => new RelatedInformation('6', marker, r));
-		assert.equal(JSON.stringify({ ...marker, resource: marker.resource.path, relatedInformation: marker.relatedInformation!.map(r => ({ ...r, resource: r.resource.path })) }, null, '\t'), testObject.toString());
+		// hAck
+		(testObject As Any).relAtedInformAtion = mArker.relAtedInformAtion!.mAp(r => new RelAtedInformAtion('6', mArker, r));
+		Assert.equAl(JSON.stringify({ ...mArker, resource: mArker.resource.pAth, relAtedInformAtion: mArker.relAtedInformAtion!.mAp(r => ({ ...r, resource: r.resource.pAth })) }, null, '\t'), testObject.toString());
 	});
 
-	test('Markers for same-document but different fragment', function () {
-		const model = new TestMarkersModel([anErrorWithRange(1)]);
+	test('MArkers for sAme-document but different frAgment', function () {
+		const model = new TestMArkersModel([AnErrorWithRAnge(1)]);
 
-		assert.equal(model.total, 1);
+		Assert.equAl(model.totAl, 1);
 
-		const document = URI.parse('foo://test/path/file');
-		const frag1 = URI.parse('foo://test/path/file#1');
-		const frag2 = URI.parse('foo://test/path/file#two');
+		const document = URI.pArse('foo://test/pAth/file');
+		const frAg1 = URI.pArse('foo://test/pAth/file#1');
+		const frAg2 = URI.pArse('foo://test/pAth/file#two');
 
-		model.setResourceMarkers([[document, [{ ...aMarker(), resource: frag1 }, { ...aMarker(), resource: frag2 }]]]);
+		model.setResourceMArkers([[document, [{ ...AMArker(), resource: frAg1 }, { ...AMArker(), resource: frAg2 }]]]);
 
-		assert.equal(model.total, 3);
-		let a = model.getResourceMarkers(document);
-		let b = model.getResourceMarkers(frag1);
-		let c = model.getResourceMarkers(frag2);
-		assert.ok(a === b);
-		assert.ok(a === c);
+		Assert.equAl(model.totAl, 3);
+		let A = model.getResourceMArkers(document);
+		let b = model.getResourceMArkers(frAg1);
+		let c = model.getResourceMArkers(frAg2);
+		Assert.ok(A === b);
+		Assert.ok(A === c);
 
-		model.setResourceMarkers([[document, [{ ...aMarker(), resource: frag2 }]]]);
-		assert.equal(model.total, 2);
+		model.setResourceMArkers([[document, [{ ...AMArker(), resource: frAg2 }]]]);
+		Assert.equAl(model.totAl, 2);
 	});
 
-	test('Problems are no sorted correctly #99135', function () {
-		const model = new TestMarkersModel([]);
-		assert.equal(model.total, 0);
+	test('Problems Are no sorted correctly #99135', function () {
+		const model = new TestMArkersModel([]);
+		Assert.equAl(model.totAl, 0);
 
-		const document = URI.parse('foo://test/path/file');
-		const frag1 = URI.parse('foo://test/path/file#1');
-		const frag2 = URI.parse('foo://test/path/file#2');
+		const document = URI.pArse('foo://test/pAth/file');
+		const frAg1 = URI.pArse('foo://test/pAth/file#1');
+		const frAg2 = URI.pArse('foo://test/pAth/file#2');
 
-		model.setResourceMarkers([[frag1, [
-			{ ...aMarker(), resource: frag1 },
-			{ ...aMarker(undefined, MarkerSeverity.Warning), resource: frag1 },
+		model.setResourceMArkers([[frAg1, [
+			{ ...AMArker(), resource: frAg1 },
+			{ ...AMArker(undefined, MArkerSeverity.WArning), resource: frAg1 },
 		]]]);
 
-		model.setResourceMarkers([[frag2, [
-			{ ...aMarker(), resource: frag2 }
+		model.setResourceMArkers([[frAg2, [
+			{ ...AMArker(), resource: frAg2 }
 		]]]);
 
-		assert.equal(model.total, 3);
-		const markers = model.getResourceMarkers(document)?.markers;
-		assert.deepEqual(markers?.map(m => m.marker.severity), [MarkerSeverity.Error, MarkerSeverity.Error, MarkerSeverity.Warning]);
-		assert.deepEqual(markers?.map(m => m.marker.resource.toString()), [frag1.toString(), frag2.toString(), frag1.toString()]);
+		Assert.equAl(model.totAl, 3);
+		const mArkers = model.getResourceMArkers(document)?.mArkers;
+		Assert.deepEquAl(mArkers?.mAp(m => m.mArker.severity), [MArkerSeverity.Error, MArkerSeverity.Error, MArkerSeverity.WArning]);
+		Assert.deepEquAl(mArkers?.mAp(m => m.mArker.resource.toString()), [frAg1.toString(), frAg2.toString(), frAg1.toString()]);
 	});
 
-	function compareResource(a: ResourceMarkers, b: string): boolean {
-		return a.resource.toString() === URI.file(b).toString();
+	function compAreResource(A: ResourceMArkers, b: string): booleAn {
+		return A.resource.toString() === URI.file(b).toString();
 	}
 
-	function anErrorWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
-		message: string = 'some message',
-	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Error, startLineNumber, startColumn, endLineNumber, endColumn, message);
+	function AnErrorWithRAnge(stArtLineNumber: number = 10,
+		stArtColumn: number = 5,
+		endLineNumber: number = stArtLineNumber + 1,
+		endColumn: number = stArtColumn + 5,
+		messAge: string = 'some messAge',
+	): IMArker {
+		return AMArker('some resource', MArkerSeverity.Error, stArtLineNumber, stArtColumn, endLineNumber, endColumn, messAge);
 	}
 
-	function aWarningWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
-		message: string = 'some message',
-	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Warning, startLineNumber, startColumn, endLineNumber, endColumn, message);
+	function AWArningWithRAnge(stArtLineNumber: number = 10,
+		stArtColumn: number = 5,
+		endLineNumber: number = stArtLineNumber + 1,
+		endColumn: number = stArtColumn + 5,
+		messAge: string = 'some messAge',
+	): IMArker {
+		return AMArker('some resource', MArkerSeverity.WArning, stArtLineNumber, stArtColumn, endLineNumber, endColumn, messAge);
 	}
 
-	function anInfoWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
-		message: string = 'some message',
-	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Info, startLineNumber, startColumn, endLineNumber, endColumn, message);
+	function AnInfoWithRAnge(stArtLineNumber: number = 10,
+		stArtColumn: number = 5,
+		endLineNumber: number = stArtLineNumber + 1,
+		endColumn: number = stArtColumn + 5,
+		messAge: string = 'some messAge',
+	): IMArker {
+		return AMArker('some resource', MArkerSeverity.Info, stArtLineNumber, stArtColumn, endLineNumber, endColumn, messAge);
 	}
 
-	function anIgnoreWithRange(startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
-		message: string = 'some message',
-	): IMarker {
-		return aMarker('some resource', MarkerSeverity.Hint, startLineNumber, startColumn, endLineNumber, endColumn, message);
+	function AnIgnoreWithRAnge(stArtLineNumber: number = 10,
+		stArtColumn: number = 5,
+		endLineNumber: number = stArtLineNumber + 1,
+		endColumn: number = stArtColumn + 5,
+		messAge: string = 'some messAge',
+	): IMArker {
+		return AMArker('some resource', MArkerSeverity.Hint, stArtLineNumber, stArtColumn, endLineNumber, endColumn, messAge);
 	}
 
-	function aMarker(resource: string = 'some resource',
-		severity: MarkerSeverity = MarkerSeverity.Error,
-		startLineNumber: number = 10,
-		startColumn: number = 5,
-		endLineNumber: number = startLineNumber + 1,
-		endColumn: number = startColumn + 5,
-		message: string = 'some message',
+	function AMArker(resource: string = 'some resource',
+		severity: MArkerSeverity = MArkerSeverity.Error,
+		stArtLineNumber: number = 10,
+		stArtColumn: number = 5,
+		endLineNumber: number = stArtLineNumber + 1,
+		endColumn: number = stArtColumn + 5,
+		messAge: string = 'some messAge',
 		source: string = 'tslint',
-		relatedInformation?: IRelatedInformation[]
-	): IMarker {
+		relAtedInformAtion?: IRelAtedInformAtion[]
+	): IMArker {
 		return {
 			owner: 'someOwner',
 			resource: URI.file(resource),
 			severity,
-			message,
-			startLineNumber,
-			startColumn,
+			messAge,
+			stArtLineNumber,
+			stArtColumn,
 			endLineNumber,
 			endColumn,
 			source,
-			relatedInformation
+			relAtedInformAtion
 		};
 	}
 });

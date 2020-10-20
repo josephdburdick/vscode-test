@@ -1,471 +1,471 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { DiagnosticCollection, ExtHostDiagnostics } from 'vs/workbench/api/common/extHostDiagnostics';
-import { Diagnostic, DiagnosticSeverity, Range, DiagnosticRelatedInformation, Location } from 'vs/workbench/api/common/extHostTypes';
-import { MainThreadDiagnosticsShape, IMainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { mock } from 'vs/base/test/common/mock';
-import { Emitter, Event } from 'vs/base/common/event';
-import { NullLogService } from 'vs/platform/log/common/log';
-import type * as vscode from 'vscode';
+import * As Assert from 'Assert';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { DiAgnosticCollection, ExtHostDiAgnostics } from 'vs/workbench/Api/common/extHostDiAgnostics';
+import { DiAgnostic, DiAgnosticSeverity, RAnge, DiAgnosticRelAtedInformAtion, LocAtion } from 'vs/workbench/Api/common/extHostTypes';
+import { MAinThreAdDiAgnosticsShApe, IMAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { IMArkerDAtA, MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
+import { mock } from 'vs/bAse/test/common/mock';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import type * As vscode from 'vscode';
 import { nullExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
 
-suite('ExtHostDiagnostics', () => {
+suite('ExtHostDiAgnostics', () => {
 
-	class DiagnosticsShape extends mock<MainThreadDiagnosticsShape>() {
-		$changeMany(owner: string, entries: [UriComponents, IMarkerData[]][]): void {
+	clAss DiAgnosticsShApe extends mock<MAinThreAdDiAgnosticsShApe>() {
+		$chAngeMAny(owner: string, entries: [UriComponents, IMArkerDAtA[]][]): void {
 			//
 		}
-		$clear(owner: string): void {
+		$cleAr(owner: string): void {
 			//
 		}
 	}
 
 	test('disposeCheck', () => {
 
-		const collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
+		const collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
 
 		collection.dispose();
-		collection.dispose(); // that's OK
-		assert.throws(() => collection.name);
-		assert.throws(() => collection.clear());
-		assert.throws(() => collection.delete(URI.parse('aa:bb')));
-		assert.throws(() => collection.forEach(() => { }));
-		assert.throws(() => collection.get(URI.parse('aa:bb')));
-		assert.throws(() => collection.has(URI.parse('aa:bb')));
-		assert.throws(() => collection.set(URI.parse('aa:bb'), []));
-		assert.throws(() => collection.set(URI.parse('aa:bb'), undefined!));
+		collection.dispose(); // thAt's OK
+		Assert.throws(() => collection.nAme);
+		Assert.throws(() => collection.cleAr());
+		Assert.throws(() => collection.delete(URI.pArse('AA:bb')));
+		Assert.throws(() => collection.forEAch(() => { }));
+		Assert.throws(() => collection.get(URI.pArse('AA:bb')));
+		Assert.throws(() => collection.hAs(URI.pArse('AA:bb')));
+		Assert.throws(() => collection.set(URI.pArse('AA:bb'), []));
+		Assert.throws(() => collection.set(URI.pArse('AA:bb'), undefined!));
 	});
 
 
-	test('diagnostic collection, forEach, clear, has', function () {
-		let collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		assert.equal(collection.name, 'test');
+	test('diAgnostic collection, forEAch, cleAr, hAs', function () {
+		let collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
+		Assert.equAl(collection.nAme, 'test');
 		collection.dispose();
-		assert.throws(() => collection.name);
+		Assert.throws(() => collection.nAme);
 
 		let c = 0;
-		collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		collection.forEach(() => c++);
-		assert.equal(c, 0);
+		collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
+		collection.forEAch(() => c++);
+		Assert.equAl(c, 0);
 
-		collection.set(URI.parse('foo:bar'), [
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
+		collection.set(URI.pArse('foo:bAr'), [
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-1'),
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-2')
 		]);
-		collection.forEach(() => c++);
-		assert.equal(c, 1);
+		collection.forEAch(() => c++);
+		Assert.equAl(c, 1);
 
 		c = 0;
-		collection.clear();
-		collection.forEach(() => c++);
-		assert.equal(c, 0);
+		collection.cleAr();
+		collection.forEAch(() => c++);
+		Assert.equAl(c, 0);
 
-		collection.set(URI.parse('foo:bar1'), [
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
+		collection.set(URI.pArse('foo:bAr1'), [
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-1'),
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-2')
 		]);
-		collection.set(URI.parse('foo:bar2'), [
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
+		collection.set(URI.pArse('foo:bAr2'), [
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-1'),
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-2')
 		]);
-		collection.forEach(() => c++);
-		assert.equal(c, 2);
+		collection.forEAch(() => c++);
+		Assert.equAl(c, 2);
 
-		assert.ok(collection.has(URI.parse('foo:bar1')));
-		assert.ok(collection.has(URI.parse('foo:bar2')));
-		assert.ok(!collection.has(URI.parse('foo:bar3')));
-		collection.delete(URI.parse('foo:bar1'));
-		assert.ok(!collection.has(URI.parse('foo:bar1')));
+		Assert.ok(collection.hAs(URI.pArse('foo:bAr1')));
+		Assert.ok(collection.hAs(URI.pArse('foo:bAr2')));
+		Assert.ok(!collection.hAs(URI.pArse('foo:bAr3')));
+		collection.delete(URI.pArse('foo:bAr1'));
+		Assert.ok(!collection.hAs(URI.pArse('foo:bAr1')));
 
 		collection.dispose();
 	});
 
-	test('diagnostic collection, immutable read', function () {
-		let collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		collection.set(URI.parse('foo:bar'), [
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-1'),
-			new Diagnostic(new Range(0, 0, 1, 1), 'message-2')
+	test('diAgnostic collection, immutAble reAd', function () {
+		let collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
+		collection.set(URI.pArse('foo:bAr'), [
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-1'),
+			new DiAgnostic(new RAnge(0, 0, 1, 1), 'messAge-2')
 		]);
 
-		let array = collection.get(URI.parse('foo:bar')) as Diagnostic[];
-		assert.throws(() => array.length = 0);
-		assert.throws(() => array.pop());
-		assert.throws(() => array[0] = new Diagnostic(new Range(0, 0, 0, 0), 'evil'));
+		let ArrAy = collection.get(URI.pArse('foo:bAr')) As DiAgnostic[];
+		Assert.throws(() => ArrAy.length = 0);
+		Assert.throws(() => ArrAy.pop());
+		Assert.throws(() => ArrAy[0] = new DiAgnostic(new RAnge(0, 0, 0, 0), 'evil'));
 
-		collection.forEach((uri: URI, array: readonly vscode.Diagnostic[]): any => {
-			assert.throws(() => (array as Diagnostic[]).length = 0);
-			assert.throws(() => (array as Diagnostic[]).pop());
-			assert.throws(() => (array as Diagnostic[])[0] = new Diagnostic(new Range(0, 0, 0, 0), 'evil'));
+		collection.forEAch((uri: URI, ArrAy: reAdonly vscode.DiAgnostic[]): Any => {
+			Assert.throws(() => (ArrAy As DiAgnostic[]).length = 0);
+			Assert.throws(() => (ArrAy As DiAgnostic[]).pop());
+			Assert.throws(() => (ArrAy As DiAgnostic[])[0] = new DiAgnostic(new RAnge(0, 0, 0, 0), 'evil'));
 		});
 
-		array = collection.get(URI.parse('foo:bar')) as Diagnostic[];
-		assert.equal(array.length, 2);
+		ArrAy = collection.get(URI.pArse('foo:bAr')) As DiAgnostic[];
+		Assert.equAl(ArrAy.length, 2);
 
 		collection.dispose();
 	});
 
 
-	test('diagnostics collection, set with dupliclated tuples', function () {
-		let collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		let uri = URI.parse('sc:hightower');
+	test('diAgnostics collection, set with dupliclAted tuples', function () {
+		let collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
+		let uri = URI.pArse('sc:hightower');
 		collection.set([
-			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-1')]],
-			[URI.parse('some:thing'), [new Diagnostic(new Range(0, 0, 1, 1), 'something')]],
-			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-2')]],
+			[uri, [new DiAgnostic(new RAnge(0, 0, 0, 1), 'messAge-1')]],
+			[URI.pArse('some:thing'), [new DiAgnostic(new RAnge(0, 0, 1, 1), 'something')]],
+			[uri, [new DiAgnostic(new RAnge(0, 0, 0, 1), 'messAge-2')]],
 		]);
 
-		let array = collection.get(uri);
-		assert.equal(array.length, 2);
-		let [first, second] = array;
-		assert.equal(first.message, 'message-1');
-		assert.equal(second.message, 'message-2');
+		let ArrAy = collection.get(uri);
+		Assert.equAl(ArrAy.length, 2);
+		let [first, second] = ArrAy;
+		Assert.equAl(first.messAge, 'messAge-1');
+		Assert.equAl(second.messAge, 'messAge-2');
 
-		// clear
+		// cleAr
 		collection.delete(uri);
-		assert.ok(!collection.has(uri));
+		Assert.ok(!collection.hAs(uri));
 
-		// bad tuple clears 1/2
+		// bAd tuple cleArs 1/2
 		collection.set([
-			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-1')]],
-			[URI.parse('some:thing'), [new Diagnostic(new Range(0, 0, 1, 1), 'something')]],
+			[uri, [new DiAgnostic(new RAnge(0, 0, 0, 1), 'messAge-1')]],
+			[URI.pArse('some:thing'), [new DiAgnostic(new RAnge(0, 0, 1, 1), 'something')]],
 			[uri, undefined!]
 		]);
-		assert.ok(!collection.has(uri));
+		Assert.ok(!collection.hAs(uri));
 
-		// clear
+		// cleAr
 		collection.delete(uri);
-		assert.ok(!collection.has(uri));
+		Assert.ok(!collection.hAs(uri));
 
-		// bad tuple clears 2/2
+		// bAd tuple cleArs 2/2
 		collection.set([
-			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-1')]],
-			[URI.parse('some:thing'), [new Diagnostic(new Range(0, 0, 1, 1), 'something')]],
+			[uri, [new DiAgnostic(new RAnge(0, 0, 0, 1), 'messAge-1')]],
+			[URI.pArse('some:thing'), [new DiAgnostic(new RAnge(0, 0, 1, 1), 'something')]],
 			[uri, undefined!],
-			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-2')]],
-			[uri, [new Diagnostic(new Range(0, 0, 0, 1), 'message-3')]],
+			[uri, [new DiAgnostic(new RAnge(0, 0, 0, 1), 'messAge-2')]],
+			[uri, [new DiAgnostic(new RAnge(0, 0, 0, 1), 'messAge-3')]],
 		]);
 
-		array = collection.get(uri);
-		assert.equal(array.length, 2);
-		[first, second] = array;
-		assert.equal(first.message, 'message-2');
-		assert.equal(second.message, 'message-3');
+		ArrAy = collection.get(uri);
+		Assert.equAl(ArrAy.length, 2);
+		[first, second] = ArrAy;
+		Assert.equAl(first.messAge, 'messAge-2');
+		Assert.equAl(second.messAge, 'messAge-3');
 
 		collection.dispose();
 	});
 
-	test('diagnostics collection, set tuple overrides, #11547', function () {
+	test('diAgnostics collection, set tuple overrides, #11547', function () {
 
-		let lastEntries!: [UriComponents, IMarkerData[]][];
-		let collection = new DiagnosticCollection('test', 'test', 100, new class extends DiagnosticsShape {
-			$changeMany(owner: string, entries: [UriComponents, IMarkerData[]][]): void {
-				lastEntries = entries;
-				return super.$changeMany(owner, entries);
+		let lAstEntries!: [UriComponents, IMArkerDAtA[]][];
+		let collection = new DiAgnosticCollection('test', 'test', 100, new clAss extends DiAgnosticsShApe {
+			$chAngeMAny(owner: string, entries: [UriComponents, IMArkerDAtA[]][]): void {
+				lAstEntries = entries;
+				return super.$chAngeMAny(owner, entries);
 			}
 		}, new Emitter());
-		let uri = URI.parse('sc:hightower');
+		let uri = URI.pArse('sc:hightower');
 
-		collection.set([[uri, [new Diagnostic(new Range(0, 0, 1, 1), 'error')]]]);
-		assert.equal(collection.get(uri).length, 1);
-		assert.equal(collection.get(uri)[0].message, 'error');
-		assert.equal(lastEntries.length, 1);
-		let [[, data1]] = lastEntries;
-		assert.equal(data1.length, 1);
-		assert.equal(data1[0].message, 'error');
-		lastEntries = undefined!;
+		collection.set([[uri, [new DiAgnostic(new RAnge(0, 0, 1, 1), 'error')]]]);
+		Assert.equAl(collection.get(uri).length, 1);
+		Assert.equAl(collection.get(uri)[0].messAge, 'error');
+		Assert.equAl(lAstEntries.length, 1);
+		let [[, dAtA1]] = lAstEntries;
+		Assert.equAl(dAtA1.length, 1);
+		Assert.equAl(dAtA1[0].messAge, 'error');
+		lAstEntries = undefined!;
 
-		collection.set([[uri, [new Diagnostic(new Range(0, 0, 1, 1), 'warning')]]]);
-		assert.equal(collection.get(uri).length, 1);
-		assert.equal(collection.get(uri)[0].message, 'warning');
-		assert.equal(lastEntries.length, 1);
-		let [[, data2]] = lastEntries;
-		assert.equal(data2.length, 1);
-		assert.equal(data2[0].message, 'warning');
-		lastEntries = undefined!;
+		collection.set([[uri, [new DiAgnostic(new RAnge(0, 0, 1, 1), 'wArning')]]]);
+		Assert.equAl(collection.get(uri).length, 1);
+		Assert.equAl(collection.get(uri)[0].messAge, 'wArning');
+		Assert.equAl(lAstEntries.length, 1);
+		let [[, dAtA2]] = lAstEntries;
+		Assert.equAl(dAtA2.length, 1);
+		Assert.equAl(dAtA2[0].messAge, 'wArning');
+		lAstEntries = undefined!;
 	});
 
-	test('do send message when not making a change', function () {
+	test('do send messAge when not mAking A chAnge', function () {
 
-		let changeCount = 0;
+		let chAngeCount = 0;
 		let eventCount = 0;
 
-		const emitter = new Emitter<any>();
+		const emitter = new Emitter<Any>();
 		emitter.event(_ => eventCount += 1);
-		const collection = new DiagnosticCollection('test', 'test', 100, new class extends DiagnosticsShape {
-			$changeMany() {
-				changeCount += 1;
+		const collection = new DiAgnosticCollection('test', 'test', 100, new clAss extends DiAgnosticsShApe {
+			$chAngeMAny() {
+				chAngeCount += 1;
 			}
 		}, emitter);
 
-		let uri = URI.parse('sc:hightower');
-		let diag = new Diagnostic(new Range(0, 0, 0, 1), 'ffff');
+		let uri = URI.pArse('sc:hightower');
+		let diAg = new DiAgnostic(new RAnge(0, 0, 0, 1), 'ffff');
 
-		collection.set(uri, [diag]);
-		assert.equal(changeCount, 1);
-		assert.equal(eventCount, 1);
+		collection.set(uri, [diAg]);
+		Assert.equAl(chAngeCount, 1);
+		Assert.equAl(eventCount, 1);
 
-		collection.set(uri, [diag]);
-		assert.equal(changeCount, 2);
-		assert.equal(eventCount, 2);
+		collection.set(uri, [diAg]);
+		Assert.equAl(chAngeCount, 2);
+		Assert.equAl(eventCount, 2);
 	});
 
-	test('diagnostics collection, tuples and undefined (small array), #15585', function () {
+	test('diAgnostics collection, tuples And undefined (smAll ArrAy), #15585', function () {
 
-		const collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		let uri = URI.parse('sc:hightower');
-		let uri2 = URI.parse('sc:nomad');
-		let diag = new Diagnostic(new Range(0, 0, 0, 1), 'ffff');
+		const collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
+		let uri = URI.pArse('sc:hightower');
+		let uri2 = URI.pArse('sc:nomAd');
+		let diAg = new DiAgnostic(new RAnge(0, 0, 0, 1), 'ffff');
 
 		collection.set([
-			[uri, [diag, diag, diag]],
+			[uri, [diAg, diAg, diAg]],
 			[uri, undefined!],
-			[uri, [diag]],
+			[uri, [diAg]],
 
-			[uri2, [diag, diag]],
+			[uri2, [diAg, diAg]],
 			[uri2, undefined!],
-			[uri2, [diag]],
+			[uri2, [diAg]],
 		]);
 
-		assert.equal(collection.get(uri).length, 1);
-		assert.equal(collection.get(uri2).length, 1);
+		Assert.equAl(collection.get(uri).length, 1);
+		Assert.equAl(collection.get(uri2).length, 1);
 	});
 
-	test('diagnostics collection, tuples and undefined (large array), #15585', function () {
+	test('diAgnostics collection, tuples And undefined (lArge ArrAy), #15585', function () {
 
-		const collection = new DiagnosticCollection('test', 'test', 100, new DiagnosticsShape(), new Emitter());
-		const tuples: [URI, Diagnostic[]][] = [];
+		const collection = new DiAgnosticCollection('test', 'test', 100, new DiAgnosticsShApe(), new Emitter());
+		const tuples: [URI, DiAgnostic[]][] = [];
 
 		for (let i = 0; i < 500; i++) {
-			let uri = URI.parse('sc:hightower#' + i);
-			let diag = new Diagnostic(new Range(0, 0, 0, 1), i.toString());
+			let uri = URI.pArse('sc:hightower#' + i);
+			let diAg = new DiAgnostic(new RAnge(0, 0, 0, 1), i.toString());
 
-			tuples.push([uri, [diag, diag, diag]]);
+			tuples.push([uri, [diAg, diAg, diAg]]);
 			tuples.push([uri, undefined!]);
-			tuples.push([uri, [diag]]);
+			tuples.push([uri, [diAg]]);
 		}
 
 		collection.set(tuples);
 
 		for (let i = 0; i < 500; i++) {
-			let uri = URI.parse('sc:hightower#' + i);
-			assert.equal(collection.has(uri), true);
-			assert.equal(collection.get(uri).length, 1);
+			let uri = URI.pArse('sc:hightower#' + i);
+			Assert.equAl(collection.hAs(uri), true);
+			Assert.equAl(collection.get(uri).length, 1);
 		}
 	});
 
-	test('diagnostic capping', function () {
+	test('diAgnostic cApping', function () {
 
-		let lastEntries!: [UriComponents, IMarkerData[]][];
-		let collection = new DiagnosticCollection('test', 'test', 250, new class extends DiagnosticsShape {
-			$changeMany(owner: string, entries: [UriComponents, IMarkerData[]][]): void {
-				lastEntries = entries;
-				return super.$changeMany(owner, entries);
+		let lAstEntries!: [UriComponents, IMArkerDAtA[]][];
+		let collection = new DiAgnosticCollection('test', 'test', 250, new clAss extends DiAgnosticsShApe {
+			$chAngeMAny(owner: string, entries: [UriComponents, IMArkerDAtA[]][]): void {
+				lAstEntries = entries;
+				return super.$chAngeMAny(owner, entries);
 			}
 		}, new Emitter());
-		let uri = URI.parse('aa:bb');
+		let uri = URI.pArse('AA:bb');
 
-		let diagnostics: Diagnostic[] = [];
+		let diAgnostics: DiAgnostic[] = [];
 		for (let i = 0; i < 500; i++) {
-			diagnostics.push(new Diagnostic(new Range(i, 0, i + 1, 0), `error#${i}`, i < 300
-				? DiagnosticSeverity.Warning
-				: DiagnosticSeverity.Error));
+			diAgnostics.push(new DiAgnostic(new RAnge(i, 0, i + 1, 0), `error#${i}`, i < 300
+				? DiAgnosticSeverity.WArning
+				: DiAgnosticSeverity.Error));
 		}
 
-		collection.set(uri, diagnostics);
-		assert.equal(collection.get(uri).length, 500);
-		assert.equal(lastEntries.length, 1);
-		assert.equal(lastEntries[0][1].length, 251);
-		assert.equal(lastEntries[0][1][0].severity, MarkerSeverity.Error);
-		assert.equal(lastEntries[0][1][200].severity, MarkerSeverity.Warning);
-		assert.equal(lastEntries[0][1][250].severity, MarkerSeverity.Info);
+		collection.set(uri, diAgnostics);
+		Assert.equAl(collection.get(uri).length, 500);
+		Assert.equAl(lAstEntries.length, 1);
+		Assert.equAl(lAstEntries[0][1].length, 251);
+		Assert.equAl(lAstEntries[0][1][0].severity, MArkerSeverity.Error);
+		Assert.equAl(lAstEntries[0][1][200].severity, MArkerSeverity.WArning);
+		Assert.equAl(lAstEntries[0][1][250].severity, MArkerSeverity.Info);
 	});
 
-	test('diagnostic eventing', async function () {
-		let emitter = new Emitter<Array<URI>>();
-		let collection = new DiagnosticCollection('ddd', 'test', 100, new DiagnosticsShape(), emitter);
+	test('diAgnostic eventing', Async function () {
+		let emitter = new Emitter<ArrAy<URI>>();
+		let collection = new DiAgnosticCollection('ddd', 'test', 100, new DiAgnosticsShApe(), emitter);
 
-		let diag1 = new Diagnostic(new Range(1, 1, 2, 3), 'diag1');
-		let diag2 = new Diagnostic(new Range(1, 1, 2, 3), 'diag2');
-		let diag3 = new Diagnostic(new Range(1, 1, 2, 3), 'diag3');
+		let diAg1 = new DiAgnostic(new RAnge(1, 1, 2, 3), 'diAg1');
+		let diAg2 = new DiAgnostic(new RAnge(1, 1, 2, 3), 'diAg2');
+		let diAg3 = new DiAgnostic(new RAnge(1, 1, 2, 3), 'diAg3');
 
-		let p = Event.toPromise(emitter.event).then(a => {
-			assert.equal(a.length, 1);
-			assert.equal(a[0].toString(), 'aa:bb');
-			assert.ok(URI.isUri(a[0]));
+		let p = Event.toPromise(emitter.event).then(A => {
+			Assert.equAl(A.length, 1);
+			Assert.equAl(A[0].toString(), 'AA:bb');
+			Assert.ok(URI.isUri(A[0]));
 		});
-		collection.set(URI.parse('aa:bb'), []);
-		await p;
+		collection.set(URI.pArse('AA:bb'), []);
+		AwAit p;
 
 		p = Event.toPromise(emitter.event).then(e => {
-			assert.equal(e.length, 2);
-			assert.ok(URI.isUri(e[0]));
-			assert.ok(URI.isUri(e[1]));
-			assert.equal(e[0].toString(), 'aa:bb');
-			assert.equal(e[1].toString(), 'aa:cc');
+			Assert.equAl(e.length, 2);
+			Assert.ok(URI.isUri(e[0]));
+			Assert.ok(URI.isUri(e[1]));
+			Assert.equAl(e[0].toString(), 'AA:bb');
+			Assert.equAl(e[1].toString(), 'AA:cc');
 		});
 		collection.set([
-			[URI.parse('aa:bb'), [diag1]],
-			[URI.parse('aa:cc'), [diag2, diag3]],
+			[URI.pArse('AA:bb'), [diAg1]],
+			[URI.pArse('AA:cc'), [diAg2, diAg3]],
 		]);
-		await p;
+		AwAit p;
 
 		p = Event.toPromise(emitter.event).then(e => {
-			assert.equal(e.length, 2);
-			assert.ok(URI.isUri(e[0]));
-			assert.ok(URI.isUri(e[1]));
+			Assert.equAl(e.length, 2);
+			Assert.ok(URI.isUri(e[0]));
+			Assert.ok(URI.isUri(e[1]));
 		});
-		collection.clear();
-		await p;
+		collection.cleAr();
+		AwAit p;
 	});
 
-	test('vscode.languages.onDidChangeDiagnostics Does Not Provide Document URI #49582', async function () {
-		let emitter = new Emitter<Array<URI>>();
-		let collection = new DiagnosticCollection('ddd', 'test', 100, new DiagnosticsShape(), emitter);
+	test('vscode.lAnguAges.onDidChAngeDiAgnostics Does Not Provide Document URI #49582', Async function () {
+		let emitter = new Emitter<ArrAy<URI>>();
+		let collection = new DiAgnosticCollection('ddd', 'test', 100, new DiAgnosticsShApe(), emitter);
 
-		let diag1 = new Diagnostic(new Range(1, 1, 2, 3), 'diag1');
+		let diAg1 = new DiAgnostic(new RAnge(1, 1, 2, 3), 'diAg1');
 
 		// delete
-		collection.set(URI.parse('aa:bb'), [diag1]);
+		collection.set(URI.pArse('AA:bb'), [diAg1]);
 		let p = Event.toPromise(emitter.event).then(e => {
-			assert.equal(e[0].toString(), 'aa:bb');
+			Assert.equAl(e[0].toString(), 'AA:bb');
 		});
-		collection.delete(URI.parse('aa:bb'));
-		await p;
+		collection.delete(URI.pArse('AA:bb'));
+		AwAit p;
 
-		// set->undefined (as delete)
-		collection.set(URI.parse('aa:bb'), [diag1]);
+		// set->undefined (As delete)
+		collection.set(URI.pArse('AA:bb'), [diAg1]);
 		p = Event.toPromise(emitter.event).then(e => {
-			assert.equal(e[0].toString(), 'aa:bb');
+			Assert.equAl(e[0].toString(), 'AA:bb');
 		});
-		collection.set(URI.parse('aa:bb'), undefined!);
-		await p;
+		collection.set(URI.pArse('AA:bb'), undefined!);
+		AwAit p;
 	});
 
-	test('diagnostics with related information', function (done) {
+	test('diAgnostics with relAted informAtion', function (done) {
 
-		let collection = new DiagnosticCollection('ddd', 'test', 100, new class extends DiagnosticsShape {
-			$changeMany(owner: string, entries: [UriComponents, IMarkerData[]][]) {
+		let collection = new DiAgnosticCollection('ddd', 'test', 100, new clAss extends DiAgnosticsShApe {
+			$chAngeMAny(owner: string, entries: [UriComponents, IMArkerDAtA[]][]) {
 
-				let [[, data]] = entries;
-				assert.equal(entries.length, 1);
-				assert.equal(data.length, 1);
+				let [[, dAtA]] = entries;
+				Assert.equAl(entries.length, 1);
+				Assert.equAl(dAtA.length, 1);
 
-				let [diag] = data;
-				assert.equal(diag.relatedInformation!.length, 2);
-				assert.equal(diag.relatedInformation![0].message, 'more1');
-				assert.equal(diag.relatedInformation![1].message, 'more2');
+				let [diAg] = dAtA;
+				Assert.equAl(diAg.relAtedInformAtion!.length, 2);
+				Assert.equAl(diAg.relAtedInformAtion![0].messAge, 'more1');
+				Assert.equAl(diAg.relAtedInformAtion![1].messAge, 'more2');
 				done();
 			}
-		}, new Emitter<any>());
+		}, new Emitter<Any>());
 
-		let diag = new Diagnostic(new Range(0, 0, 1, 1), 'Foo');
-		diag.relatedInformation = [
-			new DiagnosticRelatedInformation(new Location(URI.parse('cc:dd'), new Range(0, 0, 0, 0)), 'more1'),
-			new DiagnosticRelatedInformation(new Location(URI.parse('cc:ee'), new Range(0, 0, 0, 0)), 'more2')
+		let diAg = new DiAgnostic(new RAnge(0, 0, 1, 1), 'Foo');
+		diAg.relAtedInformAtion = [
+			new DiAgnosticRelAtedInformAtion(new LocAtion(URI.pArse('cc:dd'), new RAnge(0, 0, 0, 0)), 'more1'),
+			new DiAgnosticRelAtedInformAtion(new LocAtion(URI.pArse('cc:ee'), new RAnge(0, 0, 0, 0)), 'more2')
 		];
 
-		collection.set(URI.parse('aa:bb'), [diag]);
+		collection.set(URI.pArse('AA:bb'), [diAg]);
 	});
 
-	test('vscode.languages.getDiagnostics appears to return old diagnostics in some circumstances #54359', function () {
+	test('vscode.lAnguAges.getDiAgnostics AppeArs to return old diAgnostics in some circumstAnces #54359', function () {
 		const ownerHistory: string[] = [];
-		const diags = new ExtHostDiagnostics(new class implements IMainContext {
-			getProxy(id: any): any {
-				return new class DiagnosticsShape {
-					$clear(owner: string): void {
+		const diAgs = new ExtHostDiAgnostics(new clAss implements IMAinContext {
+			getProxy(id: Any): Any {
+				return new clAss DiAgnosticsShApe {
+					$cleAr(owner: string): void {
 						ownerHistory.push(owner);
 					}
 				};
 			}
-			set(): any {
+			set(): Any {
 				return null;
 			}
-			assertRegistered(): void {
+			AssertRegistered(): void {
 
 			}
-			drain() {
+			drAin() {
 				return undefined!;
 			}
 		}, new NullLogService());
 
-		let collection1 = diags.createDiagnosticCollection(nullExtensionDescription.identifier, 'foo');
-		let collection2 = diags.createDiagnosticCollection(nullExtensionDescription.identifier, 'foo'); // warns, uses a different owner
+		let collection1 = diAgs.creAteDiAgnosticCollection(nullExtensionDescription.identifier, 'foo');
+		let collection2 = diAgs.creAteDiAgnosticCollection(nullExtensionDescription.identifier, 'foo'); // wArns, uses A different owner
 
-		collection1.clear();
-		collection2.clear();
+		collection1.cleAr();
+		collection2.cleAr();
 
-		assert.equal(ownerHistory.length, 2);
-		assert.equal(ownerHistory[0], 'foo');
-		assert.equal(ownerHistory[1], 'foo0');
+		Assert.equAl(ownerHistory.length, 2);
+		Assert.equAl(ownerHistory[0], 'foo');
+		Assert.equAl(ownerHistory[1], 'foo0');
 	});
 
-	test('Error updating diagnostics from extension #60394', function () {
-		let callCount = 0;
-		let collection = new DiagnosticCollection('ddd', 'test', 100, new class extends DiagnosticsShape {
-			$changeMany(owner: string, entries: [UriComponents, IMarkerData[]][]) {
-				callCount += 1;
+	test('Error updAting diAgnostics from extension #60394', function () {
+		let cAllCount = 0;
+		let collection = new DiAgnosticCollection('ddd', 'test', 100, new clAss extends DiAgnosticsShApe {
+			$chAngeMAny(owner: string, entries: [UriComponents, IMArkerDAtA[]][]) {
+				cAllCount += 1;
 			}
-		}, new Emitter<any>());
+		}, new Emitter<Any>());
 
-		let array: Diagnostic[] = [];
-		let diag1 = new Diagnostic(new Range(0, 0, 1, 1), 'Foo');
-		let diag2 = new Diagnostic(new Range(0, 0, 1, 1), 'Bar');
+		let ArrAy: DiAgnostic[] = [];
+		let diAg1 = new DiAgnostic(new RAnge(0, 0, 1, 1), 'Foo');
+		let diAg2 = new DiAgnostic(new RAnge(0, 0, 1, 1), 'BAr');
 
-		array.push(diag1, diag2);
+		ArrAy.push(diAg1, diAg2);
 
-		collection.set(URI.parse('test:me'), array);
-		assert.equal(callCount, 1);
+		collection.set(URI.pArse('test:me'), ArrAy);
+		Assert.equAl(cAllCount, 1);
 
-		collection.set(URI.parse('test:me'), array);
-		assert.equal(callCount, 2); // equal array
+		collection.set(URI.pArse('test:me'), ArrAy);
+		Assert.equAl(cAllCount, 2); // equAl ArrAy
 
-		array.push(diag2);
-		collection.set(URI.parse('test:me'), array);
-		assert.equal(callCount, 3); // same but un-equal array
+		ArrAy.push(diAg2);
+		collection.set(URI.pArse('test:me'), ArrAy);
+		Assert.equAl(cAllCount, 3); // sAme but un-equAl ArrAy
 	});
 
-	test('Diagnostics created by tasks aren\'t accessible to extensions #47292', async function () {
-		const diags = new ExtHostDiagnostics(new class implements IMainContext {
-			getProxy(id: any): any {
+	test('DiAgnostics creAted by tAsks Aren\'t Accessible to extensions #47292', Async function () {
+		const diAgs = new ExtHostDiAgnostics(new clAss implements IMAinContext {
+			getProxy(id: Any): Any {
 				return {};
 			}
-			set(): any {
+			set(): Any {
 				return null;
 			}
-			assertRegistered(): void {
+			AssertRegistered(): void {
 
 			}
-			drain() {
+			drAin() {
 				return undefined!;
 			}
 		}, new NullLogService());
 
 
 		//
-		const uri = URI.parse('foo:bar');
-		const data: IMarkerData[] = [{
-			message: 'message',
-			startLineNumber: 1,
-			startColumn: 1,
+		const uri = URI.pArse('foo:bAr');
+		const dAtA: IMArkerDAtA[] = [{
+			messAge: 'messAge',
+			stArtLineNumber: 1,
+			stArtColumn: 1,
 			endLineNumber: 1,
 			endColumn: 1,
 			severity: 3
 		}];
 
-		const p1 = Event.toPromise(diags.onDidChangeDiagnostics);
-		diags.$acceptMarkersChange([[uri, data]]);
-		await p1;
-		assert.equal(diags.getDiagnostics(uri).length, 1);
+		const p1 = Event.toPromise(diAgs.onDidChAngeDiAgnostics);
+		diAgs.$AcceptMArkersChAnge([[uri, dAtA]]);
+		AwAit p1;
+		Assert.equAl(diAgs.getDiAgnostics(uri).length, 1);
 
-		const p2 = Event.toPromise(diags.onDidChangeDiagnostics);
-		diags.$acceptMarkersChange([[uri, []]]);
-		await p2;
-		assert.equal(diags.getDiagnostics(uri).length, 0);
+		const p2 = Event.toPromise(diAgs.onDidChAngeDiAgnostics);
+		diAgs.$AcceptMArkersChAnge([[uri, []]]);
+		AwAit p2;
+		Assert.equAl(diAgs.getDiAgnostics(uri).length, 0);
 	});
 });

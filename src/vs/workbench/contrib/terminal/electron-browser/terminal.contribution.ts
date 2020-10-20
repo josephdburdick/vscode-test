@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ITerminalInstanceService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { TerminalInstanceService } from 'vs/workbench/contrib/terminal/electron-browser/terminalInstanceService';
-import { getSystemShell } from 'vs/workbench/contrib/terminal/node/terminal';
-import { TerminalNativeContribution } from 'vs/workbench/contrib/terminal/electron-browser/terminalNativeContribution';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { getTerminalShellConfiguration } from 'vs/workbench/contrib/terminal/common/terminalConfiguration';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ITerminAlInstAnceService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { TerminAlInstAnceService } from 'vs/workbench/contrib/terminAl/electron-browser/terminAlInstAnceService';
+import { getSystemShell } from 'vs/workbench/contrib/terminAl/node/terminAl';
+import { TerminAlNAtiveContribution } from 'vs/workbench/contrib/terminAl/electron-browser/terminAlNAtiveContribution';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IConfigurAtionRegistry, Extensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { getTerminAlShellConfigurAtion } from 'vs/workbench/contrib/terminAl/common/terminAlConfigurAtion';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
-// This file contains additional desktop-only contributions on top of those in browser/
+// This file contAins AdditionAl desktop-only contributions on top of those in browser/
 
 // Register services
-registerSingleton(ITerminalInstanceService, TerminalInstanceService, true);
+registerSingleton(ITerminAlInstAnceService, TerminAlInstAnceService, true);
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(TerminalNativeContribution, LifecyclePhase.Ready);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(TerminAlNAtiveContribution, LifecyclePhAse.ReAdy);
 
-// Register configurations
-const configurationRegistry = Registry.as<IConfigurationRegistry>(Extensions.Configuration);
-configurationRegistry.registerConfiguration(getTerminalShellConfiguration(getSystemShell));
+// Register configurAtions
+const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion);
+configurAtionRegistry.registerConfigurAtion(getTerminAlShellConfigurAtion(getSystemShell));

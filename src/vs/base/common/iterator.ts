@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export namespace Iterable {
+export nAmespAce IterAble {
 
-	export function is<T = any>(thing: any): thing is IterableIterator<T> {
-		return thing && typeof thing === 'object' && typeof thing[Symbol.iterator] === 'function';
+	export function is<T = Any>(thing: Any): thing is IterAbleIterAtor<T> {
+		return thing && typeof thing === 'object' && typeof thing[Symbol.iterAtor] === 'function';
 	}
 
-	const _empty: Iterable<any> = Object.freeze([]);
-	export function empty<T = any>(): Iterable<T> {
+	const _empty: IterAble<Any> = Object.freeze([]);
+	export function empty<T = Any>(): IterAble<T> {
 		return _empty;
 	}
 
-	export function* single<T>(element: T): Iterable<T> {
+	export function* single<T>(element: T): IterAble<T> {
 		yield element;
 	}
 
-	export function from<T>(iterable: Iterable<T> | undefined | null): Iterable<T> {
-		return iterable || _empty;
+	export function from<T>(iterAble: IterAble<T> | undefined | null): IterAble<T> {
+		return iterAble || _empty;
 	}
 
-	export function first<T>(iterable: Iterable<T>): T | undefined {
-		return iterable[Symbol.iterator]().next().value;
+	export function first<T>(iterAble: IterAble<T>): T | undefined {
+		return iterAble[Symbol.iterAtor]().next().vAlue;
 	}
 
-	export function some<T>(iterable: Iterable<T>, predicate: (t: T) => boolean): boolean {
-		for (const element of iterable) {
-			if (predicate(element)) {
+	export function some<T>(iterAble: IterAble<T>, predicAte: (t: T) => booleAn): booleAn {
+		for (const element of iterAble) {
+			if (predicAte(element)) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	export function* filter<T>(iterable: Iterable<T>, predicate: (t: T) => boolean): Iterable<T> {
-		for (const element of iterable) {
-			if (predicate(element)) {
+	export function* filter<T>(iterAble: IterAble<T>, predicAte: (t: T) => booleAn): IterAble<T> {
+		for (const element of iterAble) {
+			if (predicAte(element)) {
 				yield element;
 			}
 		}
 	}
 
-	export function* map<T, R>(iterable: Iterable<T>, fn: (t: T) => R): Iterable<R> {
-		for (const element of iterable) {
+	export function* mAp<T, R>(iterAble: IterAble<T>, fn: (t: T) => R): IterAble<R> {
+		for (const element of iterAble) {
 			yield fn(element);
 		}
 	}
 
-	export function* concat<T>(...iterables: Iterable<T>[]): Iterable<T> {
-		for (const iterable of iterables) {
-			for (const element of iterable) {
+	export function* concAt<T>(...iterAbles: IterAble<T>[]): IterAble<T> {
+		for (const iterAble of iterAbles) {
+			for (const element of iterAble) {
 				yield element;
 			}
 		}
 	}
 
 	/**
-	 * Consumes `atMost` elements from iterable and returns the consumed elements,
-	 * and an iterable for the rest of the elements.
+	 * Consumes `AtMost` elements from iterAble And returns the consumed elements,
+	 * And An iterAble for the rest of the elements.
 	 */
-	export function consume<T>(iterable: Iterable<T>, atMost: number = Number.POSITIVE_INFINITY): [T[], Iterable<T>] {
+	export function consume<T>(iterAble: IterAble<T>, AtMost: number = Number.POSITIVE_INFINITY): [T[], IterAble<T>] {
 		const consumed: T[] = [];
 
-		if (atMost === 0) {
-			return [consumed, iterable];
+		if (AtMost === 0) {
+			return [consumed, iterAble];
 		}
 
-		const iterator = iterable[Symbol.iterator]();
+		const iterAtor = iterAble[Symbol.iterAtor]();
 
-		for (let i = 0; i < atMost; i++) {
-			const next = iterator.next();
+		for (let i = 0; i < AtMost; i++) {
+			const next = iterAtor.next();
 
 			if (next.done) {
-				return [consumed, Iterable.empty()];
+				return [consumed, IterAble.empty()];
 			}
 
-			consumed.push(next.value);
+			consumed.push(next.vAlue);
 		}
 
-		return [consumed, { [Symbol.iterator]() { return iterator; } }];
+		return [consumed, { [Symbol.iterAtor]() { return iterAtor; } }];
 	}
 }

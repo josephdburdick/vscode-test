@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IPosition } from 'vs/editor/common/core/position';
-import * as editorCommon from 'vs/editor/common/editorCommon';
-import * as model from 'vs/editor/common/model';
-import { SearchParams } from 'vs/editor/common/model/textModelSearch';
-import { CELL_STATUSBAR_HEIGHT, EDITOR_TOP_PADDING } from 'vs/workbench/contrib/notebook/browser/constants';
-import { CellEditState, CellFocusMode, CursorAtBoundary, CellViewModelStateChangeEvent, IEditableCellViewModel, INotebookCellDecorationOptions } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { CellKind, NotebookCellMetadata, NotebookDocumentMetadata, INotebookSearchOptions, ShowCellStatusBarKey } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import * As editorCommon from 'vs/editor/common/editorCommon';
+import * As model from 'vs/editor/common/model';
+import { SeArchPArAms } from 'vs/editor/common/model/textModelSeArch';
+import { CELL_STATUSBAR_HEIGHT, EDITOR_TOP_PADDING } from 'vs/workbench/contrib/notebook/browser/constAnts';
+import { CellEditStAte, CellFocusMode, CursorAtBoundAry, CellViewModelStAteChAngeEvent, IEditAbleCellViewModel, INotebookCellDecorAtionOptions } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { CellKind, NotebookCellMetAdAtA, NotebookDocumentMetAdAtA, INotebookSeArchOptions, ShowCellStAtusBArKey } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 
-export abstract class BaseCellViewModel extends Disposable {
+export AbstrAct clAss BAseCellViewModel extends DisposAble {
 
-	protected readonly _onDidChangeEditorAttachState = new Emitter<void>();
-	// Do not merge this event with `onDidChangeState` as we are using `Event.once(onDidChangeEditorAttachState)` elsewhere.
-	readonly onDidChangeEditorAttachState = this._onDidChangeEditorAttachState.event;
-	protected readonly _onDidChangeState: Emitter<CellViewModelStateChangeEvent> = this._register(new Emitter<CellViewModelStateChangeEvent>());
-	public readonly onDidChangeState: Event<CellViewModelStateChangeEvent> = this._onDidChangeState.event;
+	protected reAdonly _onDidChAngeEditorAttAchStAte = new Emitter<void>();
+	// Do not merge this event with `onDidChAngeStAte` As we Are using `Event.once(onDidChAngeEditorAttAchStAte)` elsewhere.
+	reAdonly onDidChAngeEditorAttAchStAte = this._onDidChAngeEditorAttAchStAte.event;
+	protected reAdonly _onDidChAngeStAte: Emitter<CellViewModelStAteChAngeEvent> = this._register(new Emitter<CellViewModelStAteChAngeEvent>());
+	public reAdonly onDidChAngeStAte: Event<CellViewModelStAteChAngeEvent> = this._onDidChAngeStAte.event;
 
-	get handle() {
-		return this.model.handle;
+	get hAndle() {
+		return this.model.hAndle;
 	}
 	get uri() {
 		return this.model.uri;
@@ -35,58 +35,58 @@ export abstract class BaseCellViewModel extends Disposable {
 	get lineCount() {
 		return this.model.textBuffer.getLineCount();
 	}
-	get metadata() {
-		return this.model.metadata;
+	get metAdAtA() {
+		return this.model.metAdAtA;
 	}
-	get language() {
-		return this.model.language;
-	}
-
-	abstract cellKind: CellKind;
-
-	private _editState: CellEditState = CellEditState.Preview;
-
-	get editState(): CellEditState {
-		return this._editState;
+	get lAnguAge() {
+		return this.model.lAnguAge;
 	}
 
-	set editState(newState: CellEditState) {
-		if (newState === this._editState) {
+	AbstrAct cellKind: CellKind;
+
+	privAte _editStAte: CellEditStAte = CellEditStAte.Preview;
+
+	get editStAte(): CellEditStAte {
+		return this._editStAte;
+	}
+
+	set editStAte(newStAte: CellEditStAte) {
+		if (newStAte === this._editStAte) {
 			return;
 		}
 
-		this._editState = newState;
-		this._onDidChangeState.fire({ editStateChanged: true });
-		if (this._editState === CellEditState.Preview) {
-			this.focusMode = CellFocusMode.Container;
+		this._editStAte = newStAte;
+		this._onDidChAngeStAte.fire({ editStAteChAnged: true });
+		if (this._editStAte === CellEditStAte.Preview) {
+			this.focusMode = CellFocusMode.ContAiner;
 		}
 	}
 
-	private _focusMode: CellFocusMode = CellFocusMode.Container;
+	privAte _focusMode: CellFocusMode = CellFocusMode.ContAiner;
 	get focusMode() {
 		return this._focusMode;
 	}
 	set focusMode(newMode: CellFocusMode) {
 		this._focusMode = newMode;
-		this._onDidChangeState.fire({ focusModeChanged: true });
+		this._onDidChAngeStAte.fire({ focusModeChAnged: true });
 	}
 
 	protected _textEditor?: ICodeEditor;
-	get editorAttached(): boolean {
+	get editorAttAched(): booleAn {
 		return !!this._textEditor;
 	}
-	private _cursorChangeListener: IDisposable | null = null;
-	private _editorViewStates: editorCommon.ICodeEditorViewState | null = null;
-	private _resolvedCellDecorations = new Map<string, INotebookCellDecorationOptions>();
-	private _cellDecorationsChanged = new Emitter<{ added: INotebookCellDecorationOptions[], removed: INotebookCellDecorationOptions[] }>();
-	onCellDecorationsChanged: Event<{ added: INotebookCellDecorationOptions[], removed: INotebookCellDecorationOptions[] }> = this._cellDecorationsChanged.event;
-	private _resolvedDecorations = new Map<string, {
+	privAte _cursorChAngeListener: IDisposAble | null = null;
+	privAte _editorViewStAtes: editorCommon.ICodeEditorViewStAte | null = null;
+	privAte _resolvedCellDecorAtions = new MAp<string, INotebookCellDecorAtionOptions>();
+	privAte _cellDecorAtionsChAnged = new Emitter<{ Added: INotebookCellDecorAtionOptions[], removed: INotebookCellDecorAtionOptions[] }>();
+	onCellDecorAtionsChAnged: Event<{ Added: INotebookCellDecorAtionOptions[], removed: INotebookCellDecorAtionOptions[] }> = this._cellDecorAtionsChAnged.event;
+	privAte _resolvedDecorAtions = new MAp<string, {
 		id?: string;
-		options: model.IModelDeltaDecoration;
+		options: model.IModelDeltADecorAtion;
 	}>();
-	private _lastDecorationId: number = 0;
+	privAte _lAstDecorAtionId: number = 0;
 
-	private _textModel: model.ITextModel | undefined = undefined;
+	privAte _textModel: model.ITextModel | undefined = undefined;
 	get textModel(): model.ITextModel | undefined {
 		return this._textModel;
 	}
@@ -95,70 +95,70 @@ export abstract class BaseCellViewModel extends Disposable {
 		this._textModel = m;
 	}
 
-	hasModel(): this is IEditableCellViewModel {
+	hAsModel(): this is IEditAbleCellViewModel {
 		return !!this._textModel;
 	}
 
-	private _dragging: boolean = false;
-	get dragging(): boolean {
-		return this._dragging;
+	privAte _drAgging: booleAn = fAlse;
+	get drAgging(): booleAn {
+		return this._drAgging;
 	}
 
-	set dragging(v: boolean) {
-		this._dragging = v;
+	set drAgging(v: booleAn) {
+		this._drAgging = v;
 	}
 
 	constructor(
-		readonly viewType: string,
-		readonly model: NotebookCellTextModel,
+		reAdonly viewType: string,
+		reAdonly model: NotebookCellTextModel,
 		public id: string,
-		private readonly _configurationService: IConfigurationService
+		privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
 		super();
 
-		this._register(model.onDidChangeLanguage(() => {
-			this._onDidChangeState.fire({ languageChanged: true });
+		this._register(model.onDidChAngeLAnguAge(() => {
+			this._onDidChAngeStAte.fire({ lAnguAgeChAnged: true });
 		}));
 
-		this._register(model.onDidChangeMetadata(() => {
-			this._onDidChangeState.fire({ metadataChanged: true });
+		this._register(model.onDidChAngeMetAdAtA(() => {
+			this._onDidChAngeStAte.fire({ metAdAtAChAnged: true });
 		}));
 
-		this._register(this._configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration(ShowCellStatusBarKey)) {
-				this.layoutChange({});
+		this._register(this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion(ShowCellStAtusBArKey)) {
+				this.lAyoutChAnge({});
 			}
 		}));
 	}
 
-	protected getEditorStatusbarHeight() {
-		const showCellStatusBar = this._configurationService.getValue<boolean>(ShowCellStatusBarKey);
-		return showCellStatusBar ? CELL_STATUSBAR_HEIGHT : 0;
+	protected getEditorStAtusbArHeight() {
+		const showCellStAtusBAr = this._configurAtionService.getVAlue<booleAn>(ShowCellStAtusBArKey);
+		return showCellStAtusBAr ? CELL_STATUSBAR_HEIGHT : 0;
 	}
 
-	// abstract resolveTextModel(): Promise<model.ITextModel>;
-	abstract hasDynamicHeight(): boolean;
-	abstract getHeight(lineHeight: number): number;
-	abstract onDeselect(): void;
-	abstract layoutChange(change: any): void;
+	// AbstrAct resolveTextModel(): Promise<model.ITextModel>;
+	AbstrAct hAsDynAmicHeight(): booleAn;
+	AbstrAct getHeight(lineHeight: number): number;
+	AbstrAct onDeselect(): void;
+	AbstrAct lAyoutChAnge(chAnge: Any): void;
 
-	assertTextModelAttached(): boolean {
+	AssertTextModelAttAched(): booleAn {
 		if (this.textModel && this._textEditor && this._textEditor.getModel() === this.textModel) {
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	attachTextEditor(editor: ICodeEditor) {
-		if (!editor.hasModel()) {
-			throw new Error('Invalid editor: model is missing');
+	AttAchTextEditor(editor: ICodeEditor) {
+		if (!editor.hAsModel()) {
+			throw new Error('InvAlid editor: model is missing');
 		}
 
 		if (this._textEditor === editor) {
-			if (this._cursorChangeListener === null) {
-				this._cursorChangeListener = this._textEditor.onDidChangeCursorSelection(() => { this._onDidChangeState.fire({ selectionChanged: true }); });
-				this._onDidChangeState.fire({ selectionChanged: true });
+			if (this._cursorChAngeListener === null) {
+				this._cursorChAngeListener = this._textEditor.onDidChAngeCursorSelection(() => { this._onDidChAngeStAte.fire({ selectionChAnged: true }); });
+				this._onDidChAngeStAte.fire({ selectionChAnged: true });
 			}
 			return;
 		}
@@ -166,154 +166,154 @@ export abstract class BaseCellViewModel extends Disposable {
 		this._textEditor = editor;
 		this.textModel = this._textEditor.getModel() || undefined;
 
-		if (this._editorViewStates) {
-			this._restoreViewState(this._editorViewStates);
+		if (this._editorViewStAtes) {
+			this._restoreViewStAte(this._editorViewStAtes);
 		}
 
-		this._resolvedDecorations.forEach((value, key) => {
-			if (key.startsWith('_lazy_')) {
-				// lazy ones
-				const ret = this._textEditor!.deltaDecorations([], [value.options]);
-				this._resolvedDecorations.get(key)!.id = ret[0];
+		this._resolvedDecorAtions.forEAch((vAlue, key) => {
+			if (key.stArtsWith('_lAzy_')) {
+				// lAzy ones
+				const ret = this._textEditor!.deltADecorAtions([], [vAlue.options]);
+				this._resolvedDecorAtions.get(key)!.id = ret[0];
 			}
 			else {
-				const ret = this._textEditor!.deltaDecorations([], [value.options]);
-				this._resolvedDecorations.get(key)!.id = ret[0];
+				const ret = this._textEditor!.deltADecorAtions([], [vAlue.options]);
+				this._resolvedDecorAtions.get(key)!.id = ret[0];
 			}
 		});
 
-		this._cursorChangeListener = this._textEditor.onDidChangeCursorSelection(() => { this._onDidChangeState.fire({ selectionChanged: true }); });
-		this._onDidChangeState.fire({ selectionChanged: true });
-		this._onDidChangeEditorAttachState.fire();
+		this._cursorChAngeListener = this._textEditor.onDidChAngeCursorSelection(() => { this._onDidChAngeStAte.fire({ selectionChAnged: true }); });
+		this._onDidChAngeStAte.fire({ selectionChAnged: true });
+		this._onDidChAngeEditorAttAchStAte.fire();
 	}
 
-	detachTextEditor() {
-		this.saveViewState();
-		// decorations need to be cleared first as editors can be resued.
-		this._resolvedDecorations.forEach(value => {
-			const resolvedid = value.id;
+	detAchTextEditor() {
+		this.sAveViewStAte();
+		// decorAtions need to be cleAred first As editors cAn be resued.
+		this._resolvedDecorAtions.forEAch(vAlue => {
+			const resolvedid = vAlue.id;
 
 			if (resolvedid) {
-				this._textEditor?.deltaDecorations([resolvedid], []);
+				this._textEditor?.deltADecorAtions([resolvedid], []);
 			}
 		});
 
 		this._textEditor = undefined;
 		this.textModel = undefined;
-		this._cursorChangeListener?.dispose();
-		this._cursorChangeListener = null;
-		this._onDidChangeEditorAttachState.fire();
+		this._cursorChAngeListener?.dispose();
+		this._cursorChAngeListener = null;
+		this._onDidChAngeEditorAttAchStAte.fire();
 	}
 
 	getText(): string {
-		return this.model.getValue();
+		return this.model.getVAlue();
 	}
 
 	getTextLength(): number {
 		return this.model.getTextLength();
 	}
 
-	private saveViewState(): void {
+	privAte sAveViewStAte(): void {
 		if (!this._textEditor) {
 			return;
 		}
 
-		this._editorViewStates = this._textEditor.saveViewState();
+		this._editorViewStAtes = this._textEditor.sAveViewStAte();
 	}
 
-	saveEditorViewState() {
+	sAveEditorViewStAte() {
 		if (this._textEditor) {
-			this._editorViewStates = this._textEditor.saveViewState();
+			this._editorViewStAtes = this._textEditor.sAveViewStAte();
 		}
 
-		return this._editorViewStates;
+		return this._editorViewStAtes;
 	}
 
-	restoreEditorViewState(editorViewStates: editorCommon.ICodeEditorViewState | null, totalHeight?: number) {
-		this._editorViewStates = editorViewStates;
+	restoreEditorViewStAte(editorViewStAtes: editorCommon.ICodeEditorViewStAte | null, totAlHeight?: number) {
+		this._editorViewStAtes = editorViewStAtes;
 	}
 
-	private _restoreViewState(state: editorCommon.ICodeEditorViewState | null): void {
-		if (state) {
-			this._textEditor?.restoreViewState(state);
+	privAte _restoreViewStAte(stAte: editorCommon.ICodeEditorViewStAte | null): void {
+		if (stAte) {
+			this._textEditor?.restoreViewStAte(stAte);
 		}
 	}
 
-	addModelDecoration(decoration: model.IModelDeltaDecoration): string {
+	AddModelDecorAtion(decorAtion: model.IModelDeltADecorAtion): string {
 		if (!this._textEditor) {
-			const id = ++this._lastDecorationId;
-			const decorationId = `_lazy_${this.id};${id}`;
-			this._resolvedDecorations.set(decorationId, { options: decoration });
-			return decorationId;
+			const id = ++this._lAstDecorAtionId;
+			const decorAtionId = `_lAzy_${this.id};${id}`;
+			this._resolvedDecorAtions.set(decorAtionId, { options: decorAtion });
+			return decorAtionId;
 		}
 
-		const result = this._textEditor.deltaDecorations([], [decoration]);
-		this._resolvedDecorations.set(result[0], { id: result[0], options: decoration });
+		const result = this._textEditor.deltADecorAtions([], [decorAtion]);
+		this._resolvedDecorAtions.set(result[0], { id: result[0], options: decorAtion });
 		return result[0];
 	}
 
-	removeModelDecoration(decorationId: string) {
-		const realDecorationId = this._resolvedDecorations.get(decorationId);
+	removeModelDecorAtion(decorAtionId: string) {
+		const reAlDecorAtionId = this._resolvedDecorAtions.get(decorAtionId);
 
-		if (this._textEditor && realDecorationId && realDecorationId.id !== undefined) {
-			this._textEditor.deltaDecorations([realDecorationId.id!], []);
+		if (this._textEditor && reAlDecorAtionId && reAlDecorAtionId.id !== undefined) {
+			this._textEditor.deltADecorAtions([reAlDecorAtionId.id!], []);
 		}
 
-		// lastly, remove all the cache
-		this._resolvedDecorations.delete(decorationId);
+		// lAstly, remove All the cAche
+		this._resolvedDecorAtions.delete(decorAtionId);
 	}
 
-	deltaModelDecorations(oldDecorations: string[], newDecorations: model.IModelDeltaDecoration[]): string[] {
-		oldDecorations.forEach(id => {
-			this.removeModelDecoration(id);
+	deltAModelDecorAtions(oldDecorAtions: string[], newDecorAtions: model.IModelDeltADecorAtion[]): string[] {
+		oldDecorAtions.forEAch(id => {
+			this.removeModelDecorAtion(id);
 		});
 
-		const ret = newDecorations.map(option => {
-			return this.addModelDecoration(option);
+		const ret = newDecorAtions.mAp(option => {
+			return this.AddModelDecorAtion(option);
 		});
 
 		return ret;
 	}
 
-	private _removeCellDecoration(decorationId: string) {
-		const options = this._resolvedCellDecorations.get(decorationId);
+	privAte _removeCellDecorAtion(decorAtionId: string) {
+		const options = this._resolvedCellDecorAtions.get(decorAtionId);
 
 		if (options) {
-			this._cellDecorationsChanged.fire({ added: [], removed: [options] });
-			this._resolvedCellDecorations.delete(decorationId);
+			this._cellDecorAtionsChAnged.fire({ Added: [], removed: [options] });
+			this._resolvedCellDecorAtions.delete(decorAtionId);
 		}
 	}
 
-	private _addCellDecoration(options: INotebookCellDecorationOptions): string {
-		const id = ++this._lastDecorationId;
-		const decorationId = `_cell_${this.id};${id}`;
-		this._resolvedCellDecorations.set(decorationId, options);
-		this._cellDecorationsChanged.fire({ added: [options], removed: [] });
-		return decorationId;
+	privAte _AddCellDecorAtion(options: INotebookCellDecorAtionOptions): string {
+		const id = ++this._lAstDecorAtionId;
+		const decorAtionId = `_cell_${this.id};${id}`;
+		this._resolvedCellDecorAtions.set(decorAtionId, options);
+		this._cellDecorAtionsChAnged.fire({ Added: [options], removed: [] });
+		return decorAtionId;
 	}
 
-	getCellDecorations() {
-		return [...this._resolvedCellDecorations.values()];
+	getCellDecorAtions() {
+		return [...this._resolvedCellDecorAtions.vAlues()];
 	}
 
-	deltaCellDecorations(oldDecorations: string[], newDecorations: INotebookCellDecorationOptions[]): string[] {
-		oldDecorations.forEach(id => {
-			this._removeCellDecoration(id);
+	deltACellDecorAtions(oldDecorAtions: string[], newDecorAtions: INotebookCellDecorAtionOptions[]): string[] {
+		oldDecorAtions.forEAch(id => {
+			this._removeCellDecorAtion(id);
 		});
 
-		const ret = newDecorations.map(option => {
-			return this._addCellDecoration(option);
+		const ret = newDecorAtions.mAp(option => {
+			return this._AddCellDecorAtion(option);
 		});
 
 		return ret;
 	}
 
-	revealRangeInCenter(range: Range) {
-		this._textEditor?.revealRangeInCenter(range, editorCommon.ScrollType.Immediate);
+	reveAlRAngeInCenter(rAnge: RAnge) {
+		this._textEditor?.reveAlRAngeInCenter(rAnge, editorCommon.ScrollType.ImmediAte);
 	}
 
-	setSelection(range: Range) {
-		this._textEditor?.setSelection(range);
+	setSelection(rAnge: RAnge) {
+		this._textEditor?.setSelection(rAnge);
 	}
 
 	setSelections(selections: Selection[]) {
@@ -326,13 +326,13 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this._textEditor?.getSelections() || [];
 	}
 
-	getSelectionsStartPosition(): IPosition[] | undefined {
+	getSelectionsStArtPosition(): IPosition[] | undefined {
 		if (this._textEditor) {
 			const selections = this._textEditor.getSelections();
-			return selections?.map(s => s.getStartPosition());
+			return selections?.mAp(s => s.getStArtPosition());
 		} else {
-			const selections = this._editorViewStates?.cursorState;
-			return selections?.map(s => s.selectionStart);
+			const selections = this._editorViewStAtes?.cursorStAte;
+			return selections?.mAp(s => s.selectionStArt);
 		}
 	}
 
@@ -352,38 +352,38 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this._textEditor.getTopForPosition(line, column) + EDITOR_TOP_PADDING;
 	}
 
-	cursorAtBoundary(): CursorAtBoundary {
+	cursorAtBoundAry(): CursorAtBoundAry {
 		if (!this._textEditor) {
-			return CursorAtBoundary.None;
+			return CursorAtBoundAry.None;
 		}
 
 		if (!this.textModel) {
-			return CursorAtBoundary.None;
+			return CursorAtBoundAry.None;
 		}
 
-		// only validate primary cursor
+		// only vAlidAte primAry cursor
 		const selection = this._textEditor.getSelection();
 
-		// only validate empty cursor
+		// only vAlidAte empty cursor
 		if (!selection || !selection.isEmpty()) {
-			return CursorAtBoundary.None;
+			return CursorAtBoundAry.None;
 		}
 
 		const firstViewLineTop = this._textEditor.getTopForPosition(1, 1);
-		const lastViewLineTop = this._textEditor.getTopForPosition(this.textModel!.getLineCount(), this.textModel!.getLineLength(this.textModel!.getLineCount()));
-		const selectionTop = this._textEditor.getTopForPosition(selection.startLineNumber, selection.startColumn);
+		const lAstViewLineTop = this._textEditor.getTopForPosition(this.textModel!.getLineCount(), this.textModel!.getLineLength(this.textModel!.getLineCount()));
+		const selectionTop = this._textEditor.getTopForPosition(selection.stArtLineNumber, selection.stArtColumn);
 
-		if (selectionTop === lastViewLineTop) {
+		if (selectionTop === lAstViewLineTop) {
 			if (selectionTop === firstViewLineTop) {
-				return CursorAtBoundary.Both;
+				return CursorAtBoundAry.Both;
 			} else {
-				return CursorAtBoundary.Bottom;
+				return CursorAtBoundAry.Bottom;
 			}
 		} else {
 			if (selectionTop === firstViewLineTop) {
-				return CursorAtBoundary.Top;
+				return CursorAtBoundAry.Top;
 			} else {
-				return CursorAtBoundary.None;
+				return CursorAtBoundAry.None;
 			}
 		}
 	}
@@ -392,51 +392,51 @@ export abstract class BaseCellViewModel extends Disposable {
 		return this.model.textBuffer;
 	}
 
-	abstract resolveTextModel(): Promise<model.ITextModel>;
+	AbstrAct resolveTextModel(): Promise<model.ITextModel>;
 
-	protected cellStartFind(value: string, options: INotebookSearchOptions): model.FindMatch[] | null {
-		let cellMatches: model.FindMatch[] = [];
+	protected cellStArtFind(vAlue: string, options: INotebookSeArchOptions): model.FindMAtch[] | null {
+		let cellMAtches: model.FindMAtch[] = [];
 
-		if (this.assertTextModelAttached()) {
-			cellMatches = this.textModel!.findMatches(
-				value,
-				false,
-				options.regex || false,
-				options.caseSensitive || false,
-				options.wholeWord ? options.wordSeparators || null : null,
-				false);
+		if (this.AssertTextModelAttAched()) {
+			cellMAtches = this.textModel!.findMAtches(
+				vAlue,
+				fAlse,
+				options.regex || fAlse,
+				options.cAseSensitive || fAlse,
+				options.wholeWord ? options.wordSepArAtors || null : null,
+				fAlse);
 		} else {
 			const lineCount = this.textBuffer.getLineCount();
-			const fullRange = new Range(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
-			const searchParams = new SearchParams(value, options.regex || false, options.caseSensitive || false, options.wholeWord ? options.wordSeparators || null : null,);
-			const searchData = searchParams.parseSearchRequest();
+			const fullRAnge = new RAnge(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
+			const seArchPArAms = new SeArchPArAms(vAlue, options.regex || fAlse, options.cAseSensitive || fAlse, options.wholeWord ? options.wordSepArAtors || null : null,);
+			const seArchDAtA = seArchPArAms.pArseSeArchRequest();
 
-			if (!searchData) {
+			if (!seArchDAtA) {
 				return null;
 			}
 
-			cellMatches = this.textBuffer.findMatchesLineByLine(fullRange, searchData, false, 1000);
+			cellMAtches = this.textBuffer.findMAtchesLineByLine(fullRAnge, seArchDAtA, fAlse, 1000);
 		}
 
-		return cellMatches;
+		return cellMAtches;
 	}
 
-	getEvaluatedMetadata(documentMetadata: NotebookDocumentMetadata): NotebookCellMetadata {
-		const editable = this.metadata?.editable ??
-			documentMetadata.cellEditable;
+	getEvAluAtedMetAdAtA(documentMetAdAtA: NotebookDocumentMetAdAtA): NotebookCellMetAdAtA {
+		const editAble = this.metAdAtA?.editAble ??
+			documentMetAdAtA.cellEditAble;
 
-		const runnable = this.metadata?.runnable ??
-			documentMetadata.cellRunnable;
+		const runnAble = this.metAdAtA?.runnAble ??
+			documentMetAdAtA.cellRunnAble;
 
-		const hasExecutionOrder = this.metadata?.hasExecutionOrder ??
-			documentMetadata.cellHasExecutionOrder;
+		const hAsExecutionOrder = this.metAdAtA?.hAsExecutionOrder ??
+			documentMetAdAtA.cellHAsExecutionOrder;
 
 		return {
-			...(this.metadata || {}),
+			...(this.metAdAtA || {}),
 			...{
-				editable,
-				runnable,
-				hasExecutionOrder
+				editAble,
+				runnAble,
+				hAsExecutionOrder
 			}
 		};
 	}
@@ -447,7 +447,7 @@ export abstract class BaseCellViewModel extends Disposable {
 
 	toJSON(): object {
 		return {
-			handle: this.handle
+			hAndle: this.hAndle
 		};
 	}
 }

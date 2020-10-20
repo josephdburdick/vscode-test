@@ -1,776 +1,776 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as pfs from 'vs/base/node/pfs';
-import { URI } from 'vs/base/common/uri';
-import { EnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { parseArgs, OPTIONS } from 'vs/platform/environment/node/argv';
-import { BackupMainService } from 'vs/platform/backup/electron-main/backupMainService';
-import { IWorkspaceBackupInfo } from 'vs/platform/backup/electron-main/backup';
-import { IBackupWorkspacesFormat, ISerializedWorkspace } from 'vs/platform/backup/node/backup';
-import { HotExitConfiguration } from 'vs/platform/files/common/files';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { ConsoleLogMainService } from 'vs/platform/log/common/log';
-import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { createHash } from 'crypto';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { Schemas } from 'vs/base/common/network';
-import { isEqual } from 'vs/base/common/resources';
+import * As Assert from 'Assert';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As fs from 'fs';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As pfs from 'vs/bAse/node/pfs';
+import { URI } from 'vs/bAse/common/uri';
+import { EnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
+import { pArseArgs, OPTIONS } from 'vs/plAtform/environment/node/Argv';
+import { BAckupMAinService } from 'vs/plAtform/bAckup/electron-mAin/bAckupMAinService';
+import { IWorkspAceBAckupInfo } from 'vs/plAtform/bAckup/electron-mAin/bAckup';
+import { IBAckupWorkspAcesFormAt, ISeriAlizedWorkspAce } from 'vs/plAtform/bAckup/node/bAckup';
+import { HotExitConfigurAtion } from 'vs/plAtform/files/common/files';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { ConsoleLogMAinService } from 'vs/plAtform/log/common/log';
+import { IWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { creAteHAsh } from 'crypto';
+import { getRAndomTestPAth } from 'vs/bAse/test/node/testUtils';
+import { SchemAs } from 'vs/bAse/common/network';
+import { isEquAl } from 'vs/bAse/common/resources';
 
-suite('BackupMainService', () => {
+suite('BAckupMAinService', () => {
 
-	function assertEqualUris(actual: URI[], expected: URI[]) {
-		assert.deepEqual(actual.map(a => a.toString()), expected.map(a => a.toString()));
+	function AssertEquAlUris(ActuAl: URI[], expected: URI[]) {
+		Assert.deepEquAl(ActuAl.mAp(A => A.toString()), expected.mAp(A => A.toString()));
 	}
 
-	const parentDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'backupservice');
-	const backupHome = path.join(parentDir, 'Backups');
-	const backupWorkspacesPath = path.join(backupHome, 'workspaces.json');
+	const pArentDir = getRAndomTestPAth(os.tmpdir(), 'vsctests', 'bAckupservice');
+	const bAckupHome = pAth.join(pArentDir, 'BAckups');
+	const bAckupWorkspAcesPAth = pAth.join(bAckupHome, 'workspAces.json');
 
-	const environmentService = new EnvironmentMainService(parseArgs(process.argv, OPTIONS));
+	const environmentService = new EnvironmentMAinService(pArseArgs(process.Argv, OPTIONS));
 
-	class TestBackupMainService extends BackupMainService {
+	clAss TestBAckupMAinService extends BAckupMAinService {
 
-		constructor(backupHome: string, backupWorkspacesPath: string, configService: TestConfigurationService) {
-			super(environmentService, configService, new ConsoleLogMainService());
+		constructor(bAckupHome: string, bAckupWorkspAcesPAth: string, configService: TestConfigurAtionService) {
+			super(environmentService, configService, new ConsoleLogMAinService());
 
-			this.backupHome = backupHome;
-			this.workspacesJsonPath = backupWorkspacesPath;
+			this.bAckupHome = bAckupHome;
+			this.workspAcesJsonPAth = bAckupWorkspAcesPAth;
 		}
 
-		toBackupPath(arg: URI | string): string {
-			const id = arg instanceof URI ? super.getFolderHash(arg) : arg;
-			return path.join(this.backupHome, id);
+		toBAckupPAth(Arg: URI | string): string {
+			const id = Arg instAnceof URI ? super.getFolderHAsh(Arg) : Arg;
+			return pAth.join(this.bAckupHome, id);
 		}
 
-		getFolderHash(folderUri: URI): string {
-			return super.getFolderHash(folderUri);
+		getFolderHAsh(folderUri: URI): string {
+			return super.getFolderHAsh(folderUri);
 		}
 
-		toLegacyBackupPath(folderPath: string): string {
-			return path.join(this.backupHome, super.getLegacyFolderHash(folderPath));
+		toLegAcyBAckupPAth(folderPAth: string): string {
+			return pAth.join(this.bAckupHome, super.getLegAcyFolderHAsh(folderPAth));
 		}
 	}
 
-	function toWorkspace(path: string): IWorkspaceIdentifier {
+	function toWorkspAce(pAth: string): IWorkspAceIdentifier {
 		return {
-			id: createHash('md5').update(sanitizePath(path)).digest('hex'),
-			configPath: URI.file(path)
+			id: creAteHAsh('md5').updAte(sAnitizePAth(pAth)).digest('hex'),
+			configPAth: URI.file(pAth)
 		};
 	}
 
-	function toWorkspaceBackupInfo(path: string, remoteAuthority?: string): IWorkspaceBackupInfo {
+	function toWorkspAceBAckupInfo(pAth: string, remoteAuthority?: string): IWorkspAceBAckupInfo {
 		return {
-			workspace: {
-				id: createHash('md5').update(sanitizePath(path)).digest('hex'),
-				configPath: URI.file(path)
+			workspAce: {
+				id: creAteHAsh('md5').updAte(sAnitizePAth(pAth)).digest('hex'),
+				configPAth: URI.file(pAth)
 			},
 			remoteAuthority
 		};
 	}
 
-	function toSerializedWorkspace(ws: IWorkspaceIdentifier): ISerializedWorkspace {
+	function toSeriAlizedWorkspAce(ws: IWorkspAceIdentifier): ISeriAlizedWorkspAce {
 		return {
 			id: ws.id,
-			configURIPath: ws.configPath.toString()
+			configURIPAth: ws.configPAth.toString()
 		};
 	}
 
-	async function ensureFolderExists(uri: URI): Promise<void> {
-		if (!fs.existsSync(uri.fsPath)) {
-			fs.mkdirSync(uri.fsPath);
+	Async function ensureFolderExists(uri: URI): Promise<void> {
+		if (!fs.existsSync(uri.fsPAth)) {
+			fs.mkdirSync(uri.fsPAth);
 		}
-		const backupFolder = service.toBackupPath(uri);
-		await createBackupFolder(backupFolder);
+		const bAckupFolder = service.toBAckupPAth(uri);
+		AwAit creAteBAckupFolder(bAckupFolder);
 	}
 
-	async function ensureWorkspaceExists(workspace: IWorkspaceIdentifier): Promise<IWorkspaceIdentifier> {
-		if (!fs.existsSync(workspace.configPath.fsPath)) {
-			await pfs.writeFile(workspace.configPath.fsPath, 'Hello');
+	Async function ensureWorkspAceExists(workspAce: IWorkspAceIdentifier): Promise<IWorkspAceIdentifier> {
+		if (!fs.existsSync(workspAce.configPAth.fsPAth)) {
+			AwAit pfs.writeFile(workspAce.configPAth.fsPAth, 'Hello');
 		}
-		const backupFolder = service.toBackupPath(workspace.id);
-		await createBackupFolder(backupFolder);
-		return workspace;
+		const bAckupFolder = service.toBAckupPAth(workspAce.id);
+		AwAit creAteBAckupFolder(bAckupFolder);
+		return workspAce;
 	}
 
-	async function createBackupFolder(backupFolder: string): Promise<void> {
-		if (!fs.existsSync(backupFolder)) {
-			fs.mkdirSync(backupFolder);
-			fs.mkdirSync(path.join(backupFolder, Schemas.file));
-			await pfs.writeFile(path.join(backupFolder, Schemas.file, 'foo.txt'), 'Hello');
+	Async function creAteBAckupFolder(bAckupFolder: string): Promise<void> {
+		if (!fs.existsSync(bAckupFolder)) {
+			fs.mkdirSync(bAckupFolder);
+			fs.mkdirSync(pAth.join(bAckupFolder, SchemAs.file));
+			AwAit pfs.writeFile(pAth.join(bAckupFolder, SchemAs.file, 'foo.txt'), 'Hello');
 		}
 	}
 
-	function sanitizePath(p: string): string {
-		return platform.isLinux ? p : p.toLowerCase();
+	function sAnitizePAth(p: string): string {
+		return plAtform.isLinux ? p : p.toLowerCAse();
 	}
 
-	const fooFile = URI.file(platform.isWindows ? 'C:\\foo' : '/foo');
-	const barFile = URI.file(platform.isWindows ? 'C:\\bar' : '/bar');
+	const fooFile = URI.file(plAtform.isWindows ? 'C:\\foo' : '/foo');
+	const bArFile = URI.file(plAtform.isWindows ? 'C:\\bAr' : '/bAr');
 
-	const existingTestFolder1 = URI.file(path.join(parentDir, 'folder1'));
+	const existingTestFolder1 = URI.file(pAth.join(pArentDir, 'folder1'));
 
-	let service: TestBackupMainService;
-	let configService: TestConfigurationService;
+	let service: TestBAckupMAinService;
+	let configService: TestConfigurAtionService;
 
-	setup(async () => {
+	setup(Async () => {
 
-		// Delete any existing backups completely and then re-create it.
-		await pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
-		await pfs.mkdirp(backupHome);
+		// Delete Any existing bAckups completely And then re-creAte it.
+		AwAit pfs.rimrAf(bAckupHome, pfs.RimRAfMode.MOVE);
+		AwAit pfs.mkdirp(bAckupHome);
 
-		configService = new TestConfigurationService();
-		service = new TestBackupMainService(backupHome, backupWorkspacesPath, configService);
+		configService = new TestConfigurAtionService();
+		service = new TestBAckupMAinService(bAckupHome, bAckupWorkspAcesPAth, configService);
 
-		return service.initialize();
+		return service.initiAlize();
 	});
 
-	teardown(() => {
-		return pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
+	teArdown(() => {
+		return pfs.rimrAf(bAckupHome, pfs.RimRAfMode.MOVE);
 	});
 
-	test('service validates backup workspaces on startup and cleans up (folder workspaces)', async function () {
-		this.timeout(1000 * 10); // increase timeout for this test
+	test('service vAlidAtes bAckup workspAces on stArtup And cleAns up (folder workspAces)', Async function () {
+		this.timeout(1000 * 10); // increAse timeout for this test
 
-		// 1) backup workspace path does not exist
-		service.registerFolderBackupSync(fooFile);
-		service.registerFolderBackupSync(barFile);
-		await service.initialize();
-		assertEqualUris(service.getFolderBackupPaths(), []);
+		// 1) bAckup workspAce pAth does not exist
+		service.registerFolderBAckupSync(fooFile);
+		service.registerFolderBAckupSync(bArFile);
+		AwAit service.initiAlize();
+		AssertEquAlUris(service.getFolderBAckupPAths(), []);
 
-		// 2) backup workspace path exists with empty contents within
-		fs.mkdirSync(service.toBackupPath(fooFile));
-		fs.mkdirSync(service.toBackupPath(barFile));
-		service.registerFolderBackupSync(fooFile);
-		service.registerFolderBackupSync(barFile);
-		await service.initialize();
-		assertEqualUris(service.getFolderBackupPaths(), []);
-		assert.ok(!fs.existsSync(service.toBackupPath(fooFile)));
-		assert.ok(!fs.existsSync(service.toBackupPath(barFile)));
+		// 2) bAckup workspAce pAth exists with empty contents within
+		fs.mkdirSync(service.toBAckupPAth(fooFile));
+		fs.mkdirSync(service.toBAckupPAth(bArFile));
+		service.registerFolderBAckupSync(fooFile);
+		service.registerFolderBAckupSync(bArFile);
+		AwAit service.initiAlize();
+		AssertEquAlUris(service.getFolderBAckupPAths(), []);
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(fooFile)));
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(bArFile)));
 
-		// 3) backup workspace path exists with empty folders within
-		fs.mkdirSync(service.toBackupPath(fooFile));
-		fs.mkdirSync(service.toBackupPath(barFile));
-		fs.mkdirSync(path.join(service.toBackupPath(fooFile), Schemas.file));
-		fs.mkdirSync(path.join(service.toBackupPath(barFile), Schemas.untitled));
-		service.registerFolderBackupSync(fooFile);
-		service.registerFolderBackupSync(barFile);
-		await service.initialize();
-		assertEqualUris(service.getFolderBackupPaths(), []);
-		assert.ok(!fs.existsSync(service.toBackupPath(fooFile)));
-		assert.ok(!fs.existsSync(service.toBackupPath(barFile)));
+		// 3) bAckup workspAce pAth exists with empty folders within
+		fs.mkdirSync(service.toBAckupPAth(fooFile));
+		fs.mkdirSync(service.toBAckupPAth(bArFile));
+		fs.mkdirSync(pAth.join(service.toBAckupPAth(fooFile), SchemAs.file));
+		fs.mkdirSync(pAth.join(service.toBAckupPAth(bArFile), SchemAs.untitled));
+		service.registerFolderBAckupSync(fooFile);
+		service.registerFolderBAckupSync(bArFile);
+		AwAit service.initiAlize();
+		AssertEquAlUris(service.getFolderBAckupPAths(), []);
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(fooFile)));
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(bArFile)));
 
-		// 4) backup workspace path points to a workspace that no longer exists
-		// so it should convert the backup worspace to an empty workspace backup
-		const fileBackups = path.join(service.toBackupPath(fooFile), Schemas.file);
-		fs.mkdirSync(service.toBackupPath(fooFile));
-		fs.mkdirSync(service.toBackupPath(barFile));
-		fs.mkdirSync(fileBackups);
-		service.registerFolderBackupSync(fooFile);
-		assert.equal(service.getFolderBackupPaths().length, 1);
-		assert.equal(service.getEmptyWindowBackupPaths().length, 0);
-		fs.writeFileSync(path.join(fileBackups, 'backup.txt'), '');
-		await service.initialize();
-		assert.equal(service.getFolderBackupPaths().length, 0);
-		assert.equal(service.getEmptyWindowBackupPaths().length, 1);
+		// 4) bAckup workspAce pAth points to A workspAce thAt no longer exists
+		// so it should convert the bAckup worspAce to An empty workspAce bAckup
+		const fileBAckups = pAth.join(service.toBAckupPAth(fooFile), SchemAs.file);
+		fs.mkdirSync(service.toBAckupPAth(fooFile));
+		fs.mkdirSync(service.toBAckupPAth(bArFile));
+		fs.mkdirSync(fileBAckups);
+		service.registerFolderBAckupSync(fooFile);
+		Assert.equAl(service.getFolderBAckupPAths().length, 1);
+		Assert.equAl(service.getEmptyWindowBAckupPAths().length, 0);
+		fs.writeFileSync(pAth.join(fileBAckups, 'bAckup.txt'), '');
+		AwAit service.initiAlize();
+		Assert.equAl(service.getFolderBAckupPAths().length, 0);
+		Assert.equAl(service.getEmptyWindowBAckupPAths().length, 1);
 	});
 
-	test('service validates backup workspaces on startup and cleans up (root workspaces)', async function () {
-		this.timeout(1000 * 10); // increase timeout for this test
+	test('service vAlidAtes bAckup workspAces on stArtup And cleAns up (root workspAces)', Async function () {
+		this.timeout(1000 * 10); // increAse timeout for this test
 
-		// 1) backup workspace path does not exist
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(fooFile.fsPath));
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(barFile.fsPath));
-		await service.initialize();
-		assert.deepEqual(service.getWorkspaceBackups(), []);
+		// 1) bAckup workspAce pAth does not exist
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(fooFile.fsPAth));
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(bArFile.fsPAth));
+		AwAit service.initiAlize();
+		Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 
-		// 2) backup workspace path exists with empty contents within
-		fs.mkdirSync(service.toBackupPath(fooFile));
-		fs.mkdirSync(service.toBackupPath(barFile));
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(fooFile.fsPath));
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(barFile.fsPath));
-		await service.initialize();
-		assert.deepEqual(service.getWorkspaceBackups(), []);
-		assert.ok(!fs.existsSync(service.toBackupPath(fooFile)));
-		assert.ok(!fs.existsSync(service.toBackupPath(barFile)));
+		// 2) bAckup workspAce pAth exists with empty contents within
+		fs.mkdirSync(service.toBAckupPAth(fooFile));
+		fs.mkdirSync(service.toBAckupPAth(bArFile));
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(fooFile.fsPAth));
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(bArFile.fsPAth));
+		AwAit service.initiAlize();
+		Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(fooFile)));
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(bArFile)));
 
-		// 3) backup workspace path exists with empty folders within
-		fs.mkdirSync(service.toBackupPath(fooFile));
-		fs.mkdirSync(service.toBackupPath(barFile));
-		fs.mkdirSync(path.join(service.toBackupPath(fooFile), Schemas.file));
-		fs.mkdirSync(path.join(service.toBackupPath(barFile), Schemas.untitled));
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(fooFile.fsPath));
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(barFile.fsPath));
-		await service.initialize();
-		assert.deepEqual(service.getWorkspaceBackups(), []);
-		assert.ok(!fs.existsSync(service.toBackupPath(fooFile)));
-		assert.ok(!fs.existsSync(service.toBackupPath(barFile)));
+		// 3) bAckup workspAce pAth exists with empty folders within
+		fs.mkdirSync(service.toBAckupPAth(fooFile));
+		fs.mkdirSync(service.toBAckupPAth(bArFile));
+		fs.mkdirSync(pAth.join(service.toBAckupPAth(fooFile), SchemAs.file));
+		fs.mkdirSync(pAth.join(service.toBAckupPAth(bArFile), SchemAs.untitled));
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(fooFile.fsPAth));
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(bArFile.fsPAth));
+		AwAit service.initiAlize();
+		Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(fooFile)));
+		Assert.ok(!fs.existsSync(service.toBAckupPAth(bArFile)));
 
-		// 4) backup workspace path points to a workspace that no longer exists
-		// so it should convert the backup worspace to an empty workspace backup
-		const fileBackups = path.join(service.toBackupPath(fooFile), Schemas.file);
-		fs.mkdirSync(service.toBackupPath(fooFile));
-		fs.mkdirSync(service.toBackupPath(barFile));
-		fs.mkdirSync(fileBackups);
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(fooFile.fsPath));
-		assert.equal(service.getWorkspaceBackups().length, 1);
-		assert.equal(service.getEmptyWindowBackupPaths().length, 0);
-		fs.writeFileSync(path.join(fileBackups, 'backup.txt'), '');
-		await service.initialize();
-		assert.equal(service.getWorkspaceBackups().length, 0);
-		assert.equal(service.getEmptyWindowBackupPaths().length, 1);
+		// 4) bAckup workspAce pAth points to A workspAce thAt no longer exists
+		// so it should convert the bAckup worspAce to An empty workspAce bAckup
+		const fileBAckups = pAth.join(service.toBAckupPAth(fooFile), SchemAs.file);
+		fs.mkdirSync(service.toBAckupPAth(fooFile));
+		fs.mkdirSync(service.toBAckupPAth(bArFile));
+		fs.mkdirSync(fileBAckups);
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(fooFile.fsPAth));
+		Assert.equAl(service.getWorkspAceBAckups().length, 1);
+		Assert.equAl(service.getEmptyWindowBAckupPAths().length, 0);
+		fs.writeFileSync(pAth.join(fileBAckups, 'bAckup.txt'), '');
+		AwAit service.initiAlize();
+		Assert.equAl(service.getWorkspAceBAckups().length, 0);
+		Assert.equAl(service.getEmptyWindowBAckupPAths().length, 1);
 	});
 
-	test('service supports to migrate backup data from another location', () => {
-		const backupPathToMigrate = service.toBackupPath(fooFile);
-		fs.mkdirSync(backupPathToMigrate);
-		fs.writeFileSync(path.join(backupPathToMigrate, 'backup.txt'), 'Some Data');
-		service.registerFolderBackupSync(URI.file(backupPathToMigrate));
+	test('service supports to migrAte bAckup dAtA from Another locAtion', () => {
+		const bAckupPAthToMigrAte = service.toBAckupPAth(fooFile);
+		fs.mkdirSync(bAckupPAthToMigrAte);
+		fs.writeFileSync(pAth.join(bAckupPAthToMigrAte, 'bAckup.txt'), 'Some DAtA');
+		service.registerFolderBAckupSync(URI.file(bAckupPAthToMigrAte));
 
-		const workspaceBackupPath = service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(barFile.fsPath), backupPathToMigrate);
+		const workspAceBAckupPAth = service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(bArFile.fsPAth), bAckupPAthToMigrAte);
 
-		assert.ok(fs.existsSync(workspaceBackupPath));
-		assert.ok(fs.existsSync(path.join(workspaceBackupPath, 'backup.txt')));
-		assert.ok(!fs.existsSync(backupPathToMigrate));
+		Assert.ok(fs.existsSync(workspAceBAckupPAth));
+		Assert.ok(fs.existsSync(pAth.join(workspAceBAckupPAth, 'bAckup.txt')));
+		Assert.ok(!fs.existsSync(bAckupPAthToMigrAte));
 
-		const emptyBackups = service.getEmptyWindowBackupPaths();
-		assert.equal(0, emptyBackups.length);
+		const emptyBAckups = service.getEmptyWindowBAckupPAths();
+		Assert.equAl(0, emptyBAckups.length);
 	});
 
-	test('service backup migration makes sure to preserve existing backups', () => {
-		const backupPathToMigrate = service.toBackupPath(fooFile);
-		fs.mkdirSync(backupPathToMigrate);
-		fs.writeFileSync(path.join(backupPathToMigrate, 'backup.txt'), 'Some Data');
-		service.registerFolderBackupSync(URI.file(backupPathToMigrate));
+	test('service bAckup migrAtion mAkes sure to preserve existing bAckups', () => {
+		const bAckupPAthToMigrAte = service.toBAckupPAth(fooFile);
+		fs.mkdirSync(bAckupPAthToMigrAte);
+		fs.writeFileSync(pAth.join(bAckupPAthToMigrAte, 'bAckup.txt'), 'Some DAtA');
+		service.registerFolderBAckupSync(URI.file(bAckupPAthToMigrAte));
 
-		const backupPathToPreserve = service.toBackupPath(barFile);
-		fs.mkdirSync(backupPathToPreserve);
-		fs.writeFileSync(path.join(backupPathToPreserve, 'backup.txt'), 'Some Data');
-		service.registerFolderBackupSync(URI.file(backupPathToPreserve));
+		const bAckupPAthToPreserve = service.toBAckupPAth(bArFile);
+		fs.mkdirSync(bAckupPAthToPreserve);
+		fs.writeFileSync(pAth.join(bAckupPAthToPreserve, 'bAckup.txt'), 'Some DAtA');
+		service.registerFolderBAckupSync(URI.file(bAckupPAthToPreserve));
 
-		const workspaceBackupPath = service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(barFile.fsPath), backupPathToMigrate);
+		const workspAceBAckupPAth = service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(bArFile.fsPAth), bAckupPAthToMigrAte);
 
-		assert.ok(fs.existsSync(workspaceBackupPath));
-		assert.ok(fs.existsSync(path.join(workspaceBackupPath, 'backup.txt')));
-		assert.ok(!fs.existsSync(backupPathToMigrate));
+		Assert.ok(fs.existsSync(workspAceBAckupPAth));
+		Assert.ok(fs.existsSync(pAth.join(workspAceBAckupPAth, 'bAckup.txt')));
+		Assert.ok(!fs.existsSync(bAckupPAthToMigrAte));
 
-		const emptyBackups = service.getEmptyWindowBackupPaths();
-		assert.equal(1, emptyBackups.length);
-		assert.equal(1, fs.readdirSync(path.join(backupHome, emptyBackups[0].backupFolder!)).length);
+		const emptyBAckups = service.getEmptyWindowBAckupPAths();
+		Assert.equAl(1, emptyBAckups.length);
+		Assert.equAl(1, fs.reAddirSync(pAth.join(bAckupHome, emptyBAckups[0].bAckupFolder!)).length);
 	});
 
-	suite('migrate path to URI', () => {
+	suite('migrAte pAth to URI', () => {
 
-		test('migration folder path to URI makes sure to preserve existing backups', async () => {
-			let path1 = path.join(parentDir, 'folder1');
-			let path2 = path.join(parentDir, 'FOLDER2');
-			let uri1 = URI.file(path1);
-			let uri2 = URI.file(path2);
+		test('migrAtion folder pAth to URI mAkes sure to preserve existing bAckups', Async () => {
+			let pAth1 = pAth.join(pArentDir, 'folder1');
+			let pAth2 = pAth.join(pArentDir, 'FOLDER2');
+			let uri1 = URI.file(pAth1);
+			let uri2 = URI.file(pAth2);
 
-			if (!fs.existsSync(path1)) {
-				fs.mkdirSync(path1);
+			if (!fs.existsSync(pAth1)) {
+				fs.mkdirSync(pAth1);
 			}
-			if (!fs.existsSync(path2)) {
-				fs.mkdirSync(path2);
+			if (!fs.existsSync(pAth2)) {
+				fs.mkdirSync(pAth2);
 			}
-			const backupFolder1 = service.toLegacyBackupPath(path1);
-			if (!fs.existsSync(backupFolder1)) {
-				fs.mkdirSync(backupFolder1);
-				fs.mkdirSync(path.join(backupFolder1, Schemas.file));
-				await pfs.writeFile(path.join(backupFolder1, Schemas.file, 'unsaved1.txt'), 'Legacy');
+			const bAckupFolder1 = service.toLegAcyBAckupPAth(pAth1);
+			if (!fs.existsSync(bAckupFolder1)) {
+				fs.mkdirSync(bAckupFolder1);
+				fs.mkdirSync(pAth.join(bAckupFolder1, SchemAs.file));
+				AwAit pfs.writeFile(pAth.join(bAckupFolder1, SchemAs.file, 'unsAved1.txt'), 'LegAcy');
 			}
-			const backupFolder2 = service.toLegacyBackupPath(path2);
-			if (!fs.existsSync(backupFolder2)) {
-				fs.mkdirSync(backupFolder2);
-				fs.mkdirSync(path.join(backupFolder2, Schemas.file));
-				await pfs.writeFile(path.join(backupFolder2, Schemas.file, 'unsaved2.txt'), 'Legacy');
+			const bAckupFolder2 = service.toLegAcyBAckupPAth(pAth2);
+			if (!fs.existsSync(bAckupFolder2)) {
+				fs.mkdirSync(bAckupFolder2);
+				fs.mkdirSync(pAth.join(bAckupFolder2, SchemAs.file));
+				AwAit pfs.writeFile(pAth.join(bAckupFolder2, SchemAs.file, 'unsAved2.txt'), 'LegAcy');
 			}
 
-			const workspacesJson = { rootWorkspaces: [], folderWorkspaces: [path1, path2], emptyWorkspaces: [] };
-			await pfs.writeFile(backupWorkspacesPath, JSON.stringify(workspacesJson));
-			await service.initialize();
-			const content = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = (<IBackupWorkspacesFormat>JSON.parse(content));
-			assert.deepEqual(json.folderURIWorkspaces, [uri1.toString(), uri2.toString()]);
-			const newBackupFolder1 = service.toBackupPath(uri1);
-			assert.ok(fs.existsSync(path.join(newBackupFolder1, Schemas.file, 'unsaved1.txt')));
-			const newBackupFolder2 = service.toBackupPath(uri2);
-			assert.ok(fs.existsSync(path.join(newBackupFolder2, Schemas.file, 'unsaved2.txt')));
+			const workspAcesJson = { rootWorkspAces: [], folderWorkspAces: [pAth1, pAth2], emptyWorkspAces: [] };
+			AwAit pfs.writeFile(bAckupWorkspAcesPAth, JSON.stringify(workspAcesJson));
+			AwAit service.initiAlize();
+			const content = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(content));
+			Assert.deepEquAl(json.folderURIWorkspAces, [uri1.toString(), uri2.toString()]);
+			const newBAckupFolder1 = service.toBAckupPAth(uri1);
+			Assert.ok(fs.existsSync(pAth.join(newBAckupFolder1, SchemAs.file, 'unsAved1.txt')));
+			const newBAckupFolder2 = service.toBAckupPAth(uri2);
+			Assert.ok(fs.existsSync(pAth.join(newBAckupFolder2, SchemAs.file, 'unsAved2.txt')));
 		});
 
-		test('migrate storage file', async () => {
-			let folderPath = path.join(parentDir, 'f1');
-			ensureFolderExists(URI.file(folderPath));
-			const backupFolderPath = service.toLegacyBackupPath(folderPath);
-			await createBackupFolder(backupFolderPath);
+		test('migrAte storAge file', Async () => {
+			let folderPAth = pAth.join(pArentDir, 'f1');
+			ensureFolderExists(URI.file(folderPAth));
+			const bAckupFolderPAth = service.toLegAcyBAckupPAth(folderPAth);
+			AwAit creAteBAckupFolder(bAckupFolderPAth);
 
-			let workspacePath = path.join(parentDir, 'f2.code-workspace');
-			const workspace = toWorkspace(workspacePath);
-			await ensureWorkspaceExists(workspace);
+			let workspAcePAth = pAth.join(pArentDir, 'f2.code-workspAce');
+			const workspAce = toWorkspAce(workspAcePAth);
+			AwAit ensureWorkspAceExists(workspAce);
 
-			const workspacesJson = { rootWorkspaces: [{ id: workspace.id, configPath: workspacePath }], folderWorkspaces: [folderPath], emptyWorkspaces: [] };
-			await pfs.writeFile(backupWorkspacesPath, JSON.stringify(workspacesJson));
-			await service.initialize();
-			const content = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = (<IBackupWorkspacesFormat>JSON.parse(content));
-			assert.deepEqual(json.folderURIWorkspaces, [URI.file(folderPath).toString()]);
-			assert.deepEqual(json.rootURIWorkspaces, [{ id: workspace.id, configURIPath: URI.file(workspacePath).toString() }]);
+			const workspAcesJson = { rootWorkspAces: [{ id: workspAce.id, configPAth: workspAcePAth }], folderWorkspAces: [folderPAth], emptyWorkspAces: [] };
+			AwAit pfs.writeFile(bAckupWorkspAcesPAth, JSON.stringify(workspAcesJson));
+			AwAit service.initiAlize();
+			const content = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(content));
+			Assert.deepEquAl(json.folderURIWorkspAces, [URI.file(folderPAth).toString()]);
+			Assert.deepEquAl(json.rootURIWorkspAces, [{ id: workspAce.id, configURIPAth: URI.file(workspAcePAth).toString() }]);
 
-			assertEqualUris(service.getWorkspaceBackups().map(window => window.workspace.configPath), [workspace.configPath]);
+			AssertEquAlUris(service.getWorkspAceBAckups().mAp(window => window.workspAce.configPAth), [workspAce.configPAth]);
 		});
 	});
 
 
-	suite('loadSync', () => {
-		test('getFolderBackupPaths() should return [] when workspaces.json doesn\'t exist', () => {
-			assertEqualUris(service.getFolderBackupPaths(), []);
+	suite('loAdSync', () => {
+		test('getFolderBAckupPAths() should return [] when workspAces.json doesn\'t exist', () => {
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
 		});
 
-		test('getFolderBackupPaths() should return [] when workspaces.json is not properly formed JSON', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{]');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, 'foo');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
+		test('getFolderBAckupPAths() should return [] when workspAces.json is not properly formed JSON', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{]');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, 'foo');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
 		});
 
-		test('getFolderBackupPaths() should return [] when folderWorkspaces in workspaces.json is absent', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '{}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
+		test('getFolderBAckupPAths() should return [] when folderWorkspAces in workspAces.json is Absent', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
 		});
 
-		test('getFolderBackupPaths() should return [] when folderWorkspaces in workspaces.json is not a string array', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '{"folderWorkspaces":{}}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"folderWorkspaces":{"foo": ["bar"]}}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"folderWorkspaces":{"foo": []}}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"folderWorkspaces":{"foo": "bar"}}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"folderWorkspaces":"foo"}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"folderWorkspaces":1}');
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
+		test('getFolderBAckupPAths() should return [] when folderWorkspAces in workspAces.json is not A string ArrAy', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"folderWorkspAces":{}}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"folderWorkspAces":{"foo": ["bAr"]}}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"folderWorkspAces":{"foo": []}}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"folderWorkspAces":{"foo": "bAr"}}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"folderWorkspAces":"foo"}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"folderWorkspAces":1}');
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
 		});
 
-		test('getFolderBackupPaths() should return [] when files.hotExit = "onExitAndWindowClose"', async () => {
-			service.registerFolderBackupSync(URI.file(fooFile.fsPath.toUpperCase()));
-			assertEqualUris(service.getFolderBackupPaths(), [URI.file(fooFile.fsPath.toUpperCase())]);
-			configService.setUserConfiguration('files.hotExit', HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE);
-			await service.initialize();
-			assertEqualUris(service.getFolderBackupPaths(), []);
+		test('getFolderBAckupPAths() should return [] when files.hotExit = "onExitAndWindowClose"', Async () => {
+			service.registerFolderBAckupSync(URI.file(fooFile.fsPAth.toUpperCAse()));
+			AssertEquAlUris(service.getFolderBAckupPAths(), [URI.file(fooFile.fsPAth.toUpperCAse())]);
+			configService.setUserConfigurAtion('files.hotExit', HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE);
+			AwAit service.initiAlize();
+			AssertEquAlUris(service.getFolderBAckupPAths(), []);
 		});
 
-		test('getWorkspaceBackups() should return [] when workspaces.json doesn\'t exist', () => {
-			assert.deepEqual(service.getWorkspaceBackups(), []);
+		test('getWorkspAceBAckups() should return [] when workspAces.json doesn\'t exist', () => {
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 		});
 
-		test('getWorkspaceBackups() should return [] when workspaces.json is not properly formed JSON', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{]');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, 'foo');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
+		test('getWorkspAceBAckups() should return [] when workspAces.json is not properly formed JSON', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{]');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, 'foo');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 		});
 
-		test('getWorkspaceBackups() should return [] when folderWorkspaces in workspaces.json is absent', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '{}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
+		test('getWorkspAceBAckups() should return [] when folderWorkspAces in workspAces.json is Absent', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 		});
 
-		test('getWorkspaceBackups() should return [] when rootWorkspaces in workspaces.json is not a object array', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '{"rootWorkspaces":{}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootWorkspaces":{"foo": ["bar"]}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootWorkspaces":{"foo": []}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootWorkspaces":{"foo": "bar"}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootWorkspaces":"foo"}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootWorkspaces":1}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
+		test('getWorkspAceBAckups() should return [] when rootWorkspAces in workspAces.json is not A object ArrAy', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootWorkspAces":{}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootWorkspAces":{"foo": ["bAr"]}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootWorkspAces":{"foo": []}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootWorkspAces":{"foo": "bAr"}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootWorkspAces":"foo"}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootWorkspAces":1}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 		});
 
-		test('getWorkspaceBackups() should return [] when rootURIWorkspaces in workspaces.json is not a object array', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '{"rootURIWorkspaces":{}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootURIWorkspaces":{"foo": ["bar"]}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootURIWorkspaces":{"foo": []}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootURIWorkspaces":{"foo": "bar"}}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootURIWorkspaces":"foo"}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"rootURIWorkspaces":1}');
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
+		test('getWorkspAceBAckups() should return [] when rootURIWorkspAces in workspAces.json is not A object ArrAy', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootURIWorkspAces":{}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootURIWorkspAces":{"foo": ["bAr"]}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootURIWorkspAces":{"foo": []}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootURIWorkspAces":{"foo": "bAr"}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootURIWorkspAces":"foo"}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"rootURIWorkspAces":1}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 		});
 
-		test('getWorkspaceBackups() should return [] when files.hotExit = "onExitAndWindowClose"', async () => {
-			const upperFooPath = fooFile.fsPath.toUpperCase();
-			service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(upperFooPath));
-			assert.equal(service.getWorkspaceBackups().length, 1);
-			assertEqualUris(service.getWorkspaceBackups().map(r => r.workspace.configPath), [URI.file(upperFooPath)]);
-			configService.setUserConfiguration('files.hotExit', HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE);
-			await service.initialize();
-			assert.deepEqual(service.getWorkspaceBackups(), []);
+		test('getWorkspAceBAckups() should return [] when files.hotExit = "onExitAndWindowClose"', Async () => {
+			const upperFooPAth = fooFile.fsPAth.toUpperCAse();
+			service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(upperFooPAth));
+			Assert.equAl(service.getWorkspAceBAckups().length, 1);
+			AssertEquAlUris(service.getWorkspAceBAckups().mAp(r => r.workspAce.configPAth), [URI.file(upperFooPAth)]);
+			configService.setUserConfigurAtion('files.hotExit', HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE);
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getWorkspAceBAckups(), []);
 		});
 
-		test('getEmptyWorkspaceBackupPaths() should return [] when workspaces.json doesn\'t exist', () => {
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
+		test('getEmptyWorkspAceBAckupPAths() should return [] when workspAces.json doesn\'t exist', () => {
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
 		});
 
-		test('getEmptyWorkspaceBackupPaths() should return [] when workspaces.json is not properly formed JSON', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{]');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, 'foo');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
+		test('getEmptyWorkspAceBAckupPAths() should return [] when workspAces.json is not properly formed JSON', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{]');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, 'foo');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
 		});
 
-		test('getEmptyWorkspaceBackupPaths() should return [] when folderWorkspaces in workspaces.json is absent', async () => {
-			fs.writeFileSync(backupWorkspacesPath, '{}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
+		test('getEmptyWorkspAceBAckupPAths() should return [] when folderWorkspAces in workspAces.json is Absent', Async () => {
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
 		});
 
-		test('getEmptyWorkspaceBackupPaths() should return [] when folderWorkspaces in workspaces.json is not a string array', async function () {
+		test('getEmptyWorkspAceBAckupPAths() should return [] when folderWorkspAces in workspAces.json is not A string ArrAy', Async function () {
 			this.timeout(5000);
-			fs.writeFileSync(backupWorkspacesPath, '{"emptyWorkspaces":{}}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"emptyWorkspaces":{"foo": ["bar"]}}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"emptyWorkspaces":{"foo": []}}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"emptyWorkspaces":{"foo": "bar"}}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"emptyWorkspaces":"foo"}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
-			fs.writeFileSync(backupWorkspacesPath, '{"emptyWorkspaces":1}');
-			await service.initialize();
-			assert.deepEqual(service.getEmptyWindowBackupPaths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"emptyWorkspAces":{}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"emptyWorkspAces":{"foo": ["bAr"]}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"emptyWorkspAces":{"foo": []}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"emptyWorkspAces":{"foo": "bAr"}}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"emptyWorkspAces":"foo"}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
+			fs.writeFileSync(bAckupWorkspAcesPAth, '{"emptyWorkspAces":1}');
+			AwAit service.initiAlize();
+			Assert.deepEquAl(service.getEmptyWindowBAckupPAths(), []);
 		});
 	});
 
-	suite('dedupeFolderWorkspaces', () => {
-		test('should ignore duplicates (folder workspace)', async () => {
+	suite('dedupeFolderWorkspAces', () => {
+		test('should ignore duplicAtes (folder workspAce)', Async () => {
 
-			await ensureFolderExists(existingTestFolder1);
+			AwAit ensureFolderExists(existingTestFolder1);
 
-			const workspacesJson: IBackupWorkspacesFormat = {
-				rootURIWorkspaces: [],
-				folderURIWorkspaces: [existingTestFolder1.toString(), existingTestFolder1.toString()],
-				emptyWorkspaceInfos: []
+			const workspAcesJson: IBAckupWorkspAcesFormAt = {
+				rootURIWorkspAces: [],
+				folderURIWorkspAces: [existingTestFolder1.toString(), existingTestFolder1.toString()],
+				emptyWorkspAceInfos: []
 			};
-			await pfs.writeFile(backupWorkspacesPath, JSON.stringify(workspacesJson));
-			await service.initialize();
+			AwAit pfs.writeFile(bAckupWorkspAcesPAth, JSON.stringify(workspAcesJson));
+			AwAit service.initiAlize();
 
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = <IBackupWorkspacesFormat>JSON.parse(buffer);
-			assert.deepEqual(json.folderURIWorkspaces, [existingTestFolder1.toString()]);
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = <IBAckupWorkspAcesFormAt>JSON.pArse(buffer);
+			Assert.deepEquAl(json.folderURIWorkspAces, [existingTestFolder1.toString()]);
 		});
 
-		test('should ignore duplicates on Windows and Mac (folder workspace)', async () => {
+		test('should ignore duplicAtes on Windows And MAc (folder workspAce)', Async () => {
 
-			await ensureFolderExists(existingTestFolder1);
+			AwAit ensureFolderExists(existingTestFolder1);
 
-			const workspacesJson: IBackupWorkspacesFormat = {
-				rootURIWorkspaces: [],
-				folderURIWorkspaces: [existingTestFolder1.toString(), existingTestFolder1.toString().toLowerCase()],
-				emptyWorkspaceInfos: []
+			const workspAcesJson: IBAckupWorkspAcesFormAt = {
+				rootURIWorkspAces: [],
+				folderURIWorkspAces: [existingTestFolder1.toString(), existingTestFolder1.toString().toLowerCAse()],
+				emptyWorkspAceInfos: []
 			};
-			await pfs.writeFile(backupWorkspacesPath, JSON.stringify(workspacesJson));
-			await service.initialize();
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = <IBackupWorkspacesFormat>JSON.parse(buffer);
-			assert.deepEqual(json.folderURIWorkspaces, [existingTestFolder1.toString()]);
+			AwAit pfs.writeFile(bAckupWorkspAcesPAth, JSON.stringify(workspAcesJson));
+			AwAit service.initiAlize();
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = <IBAckupWorkspAcesFormAt>JSON.pArse(buffer);
+			Assert.deepEquAl(json.folderURIWorkspAces, [existingTestFolder1.toString()]);
 		});
 
-		test('should ignore duplicates on Windows and Mac (root workspace)', async () => {
+		test('should ignore duplicAtes on Windows And MAc (root workspAce)', Async () => {
 
-			const workspacePath = path.join(parentDir, 'Foo.code-workspace');
-			const workspacePath1 = path.join(parentDir, 'FOO.code-workspace');
-			const workspacePath2 = path.join(parentDir, 'foo.code-workspace');
+			const workspAcePAth = pAth.join(pArentDir, 'Foo.code-workspAce');
+			const workspAcePAth1 = pAth.join(pArentDir, 'FOO.code-workspAce');
+			const workspAcePAth2 = pAth.join(pArentDir, 'foo.code-workspAce');
 
-			const workspace1 = await ensureWorkspaceExists(toWorkspace(workspacePath));
-			const workspace2 = await ensureWorkspaceExists(toWorkspace(workspacePath1));
-			const workspace3 = await ensureWorkspaceExists(toWorkspace(workspacePath2));
+			const workspAce1 = AwAit ensureWorkspAceExists(toWorkspAce(workspAcePAth));
+			const workspAce2 = AwAit ensureWorkspAceExists(toWorkspAce(workspAcePAth1));
+			const workspAce3 = AwAit ensureWorkspAceExists(toWorkspAce(workspAcePAth2));
 
-			const workspacesJson: IBackupWorkspacesFormat = {
-				rootURIWorkspaces: [workspace1, workspace2, workspace3].map(toSerializedWorkspace),
-				folderURIWorkspaces: [],
-				emptyWorkspaceInfos: []
+			const workspAcesJson: IBAckupWorkspAcesFormAt = {
+				rootURIWorkspAces: [workspAce1, workspAce2, workspAce3].mAp(toSeriAlizedWorkspAce),
+				folderURIWorkspAces: [],
+				emptyWorkspAceInfos: []
 			};
-			await pfs.writeFile(backupWorkspacesPath, JSON.stringify(workspacesJson));
-			await service.initialize();
+			AwAit pfs.writeFile(bAckupWorkspAcesPAth, JSON.stringify(workspAcesJson));
+			AwAit service.initiAlize();
 
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = <IBackupWorkspacesFormat>JSON.parse(buffer);
-			assert.equal(json.rootURIWorkspaces.length, platform.isLinux ? 3 : 1);
-			if (platform.isLinux) {
-				assert.deepEqual(json.rootURIWorkspaces.map(r => r.configURIPath), [URI.file(workspacePath).toString(), URI.file(workspacePath1).toString(), URI.file(workspacePath2).toString()]);
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = <IBAckupWorkspAcesFormAt>JSON.pArse(buffer);
+			Assert.equAl(json.rootURIWorkspAces.length, plAtform.isLinux ? 3 : 1);
+			if (plAtform.isLinux) {
+				Assert.deepEquAl(json.rootURIWorkspAces.mAp(r => r.configURIPAth), [URI.file(workspAcePAth).toString(), URI.file(workspAcePAth1).toString(), URI.file(workspAcePAth2).toString()]);
 			} else {
-				assert.deepEqual(json.rootURIWorkspaces.map(r => r.configURIPath), [URI.file(workspacePath).toString()], 'should return the first duplicated entry');
+				Assert.deepEquAl(json.rootURIWorkspAces.mAp(r => r.configURIPAth), [URI.file(workspAcePAth).toString()], 'should return the first duplicAted entry');
 			}
 		});
 	});
 
-	suite('registerWindowForBackups', () => {
-		test('should persist paths to workspaces.json (folder workspace)', async () => {
-			service.registerFolderBackupSync(fooFile);
-			service.registerFolderBackupSync(barFile);
-			assertEqualUris(service.getFolderBackupPaths(), [fooFile, barFile]);
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = <IBackupWorkspacesFormat>JSON.parse(buffer);
-			assert.deepEqual(json.folderURIWorkspaces, [fooFile.toString(), barFile.toString()]);
+	suite('registerWindowForBAckups', () => {
+		test('should persist pAths to workspAces.json (folder workspAce)', Async () => {
+			service.registerFolderBAckupSync(fooFile);
+			service.registerFolderBAckupSync(bArFile);
+			AssertEquAlUris(service.getFolderBAckupPAths(), [fooFile, bArFile]);
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = <IBAckupWorkspAcesFormAt>JSON.pArse(buffer);
+			Assert.deepEquAl(json.folderURIWorkspAces, [fooFile.toString(), bArFile.toString()]);
 		});
 
-		test('should persist paths to workspaces.json (root workspace)', async () => {
-			const ws1 = toWorkspaceBackupInfo(fooFile.fsPath);
-			service.registerWorkspaceBackupSync(ws1);
-			const ws2 = toWorkspaceBackupInfo(barFile.fsPath);
-			service.registerWorkspaceBackupSync(ws2);
+		test('should persist pAths to workspAces.json (root workspAce)', Async () => {
+			const ws1 = toWorkspAceBAckupInfo(fooFile.fsPAth);
+			service.registerWorkspAceBAckupSync(ws1);
+			const ws2 = toWorkspAceBAckupInfo(bArFile.fsPAth);
+			service.registerWorkspAceBAckupSync(ws2);
 
-			assertEqualUris(service.getWorkspaceBackups().map(b => b.workspace.configPath), [fooFile, barFile]);
-			assert.equal(ws1.workspace.id, service.getWorkspaceBackups()[0].workspace.id);
-			assert.equal(ws2.workspace.id, service.getWorkspaceBackups()[1].workspace.id);
+			AssertEquAlUris(service.getWorkspAceBAckups().mAp(b => b.workspAce.configPAth), [fooFile, bArFile]);
+			Assert.equAl(ws1.workspAce.id, service.getWorkspAceBAckups()[0].workspAce.id);
+			Assert.equAl(ws2.workspAce.id, service.getWorkspAceBAckups()[1].workspAce.id);
 
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = <IBackupWorkspacesFormat>JSON.parse(buffer);
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = <IBAckupWorkspAcesFormAt>JSON.pArse(buffer);
 
-			assert.deepEqual(json.rootURIWorkspaces.map(b => b.configURIPath), [fooFile.toString(), barFile.toString()]);
-			assert.equal(ws1.workspace.id, json.rootURIWorkspaces[0].id);
-			assert.equal(ws2.workspace.id, json.rootURIWorkspaces[1].id);
-		});
-	});
-
-	test('should always store the workspace path in workspaces.json using the case given, regardless of whether the file system is case-sensitive (folder workspace)', async () => {
-		service.registerFolderBackupSync(URI.file(fooFile.fsPath.toUpperCase()));
-		assertEqualUris(service.getFolderBackupPaths(), [URI.file(fooFile.fsPath.toUpperCase())]);
-
-		const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-		const json = <IBackupWorkspacesFormat>JSON.parse(buffer);
-		assert.deepEqual(json.folderURIWorkspaces, [URI.file(fooFile.fsPath.toUpperCase()).toString()]);
-	});
-
-	test('should always store the workspace path in workspaces.json using the case given, regardless of whether the file system is case-sensitive (root workspace)', async () => {
-		const upperFooPath = fooFile.fsPath.toUpperCase();
-		service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(upperFooPath));
-		assertEqualUris(service.getWorkspaceBackups().map(b => b.workspace.configPath), [URI.file(upperFooPath)]);
-
-		const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-		const json = (<IBackupWorkspacesFormat>JSON.parse(buffer));
-		assert.deepEqual(json.rootURIWorkspaces.map(b => b.configURIPath), [URI.file(upperFooPath).toString()]);
-	});
-
-	suite('removeBackupPathSync', () => {
-		test('should remove folder workspaces from workspaces.json (folder workspace)', async () => {
-			service.registerFolderBackupSync(fooFile);
-			service.registerFolderBackupSync(barFile);
-			service.unregisterFolderBackupSync(fooFile);
-
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = (<IBackupWorkspacesFormat>JSON.parse(buffer));
-			assert.deepEqual(json.folderURIWorkspaces, [barFile.toString()]);
-			service.unregisterFolderBackupSync(barFile);
-
-			const content = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json2 = (<IBackupWorkspacesFormat>JSON.parse(content));
-			assert.deepEqual(json2.folderURIWorkspaces, []);
-		});
-
-		test('should remove folder workspaces from workspaces.json (root workspace)', async () => {
-			const ws1 = toWorkspaceBackupInfo(fooFile.fsPath);
-			service.registerWorkspaceBackupSync(ws1);
-			const ws2 = toWorkspaceBackupInfo(barFile.fsPath);
-			service.registerWorkspaceBackupSync(ws2);
-			service.unregisterWorkspaceBackupSync(ws1.workspace);
-
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = (<IBackupWorkspacesFormat>JSON.parse(buffer));
-			assert.deepEqual(json.rootURIWorkspaces.map(r => r.configURIPath), [barFile.toString()]);
-			service.unregisterWorkspaceBackupSync(ws2.workspace);
-
-			const content = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json2 = (<IBackupWorkspacesFormat>JSON.parse(content));
-			assert.deepEqual(json2.rootURIWorkspaces, []);
-		});
-
-		test('should remove empty workspaces from workspaces.json', async () => {
-			service.registerEmptyWindowBackupSync('foo');
-			service.registerEmptyWindowBackupSync('bar');
-			service.unregisterEmptyWindowBackupSync('foo');
-
-			const buffer = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = (<IBackupWorkspacesFormat>JSON.parse(buffer));
-			assert.deepEqual(json.emptyWorkspaces, ['bar']);
-			service.unregisterEmptyWindowBackupSync('bar');
-
-			const content = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json2 = (<IBackupWorkspacesFormat>JSON.parse(content));
-			assert.deepEqual(json2.emptyWorkspaces, []);
-		});
-
-		test('should fail gracefully when removing a path that doesn\'t exist', async () => {
-
-			await ensureFolderExists(existingTestFolder1); // make sure backup folder exists, so the folder is not removed on loadSync
-
-			const workspacesJson: IBackupWorkspacesFormat = { rootURIWorkspaces: [], folderURIWorkspaces: [existingTestFolder1.toString()], emptyWorkspaceInfos: [] };
-			await pfs.writeFile(backupWorkspacesPath, JSON.stringify(workspacesJson));
-			await service.initialize();
-			service.unregisterFolderBackupSync(barFile);
-			service.unregisterEmptyWindowBackupSync('test');
-			const content = await pfs.readFile(backupWorkspacesPath, 'utf-8');
-			const json = (<IBackupWorkspacesFormat>JSON.parse(content));
-			assert.deepEqual(json.folderURIWorkspaces, [existingTestFolder1.toString()]);
+			Assert.deepEquAl(json.rootURIWorkspAces.mAp(b => b.configURIPAth), [fooFile.toString(), bArFile.toString()]);
+			Assert.equAl(ws1.workspAce.id, json.rootURIWorkspAces[0].id);
+			Assert.equAl(ws2.workspAce.id, json.rootURIWorkspAces[1].id);
 		});
 	});
 
-	suite('getWorkspaceHash', () => {
+	test('should AlwAys store the workspAce pAth in workspAces.json using the cAse given, regArdless of whether the file system is cAse-sensitive (folder workspAce)', Async () => {
+		service.registerFolderBAckupSync(URI.file(fooFile.fsPAth.toUpperCAse()));
+		AssertEquAlUris(service.getFolderBAckupPAths(), [URI.file(fooFile.fsPAth.toUpperCAse())]);
 
-		test('should ignore case on Windows and Mac', () => {
+		const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+		const json = <IBAckupWorkspAcesFormAt>JSON.pArse(buffer);
+		Assert.deepEquAl(json.folderURIWorkspAces, [URI.file(fooFile.fsPAth.toUpperCAse()).toString()]);
+	});
+
+	test('should AlwAys store the workspAce pAth in workspAces.json using the cAse given, regArdless of whether the file system is cAse-sensitive (root workspAce)', Async () => {
+		const upperFooPAth = fooFile.fsPAth.toUpperCAse();
+		service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(upperFooPAth));
+		AssertEquAlUris(service.getWorkspAceBAckups().mAp(b => b.workspAce.configPAth), [URI.file(upperFooPAth)]);
+
+		const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+		const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(buffer));
+		Assert.deepEquAl(json.rootURIWorkspAces.mAp(b => b.configURIPAth), [URI.file(upperFooPAth).toString()]);
+	});
+
+	suite('removeBAckupPAthSync', () => {
+		test('should remove folder workspAces from workspAces.json (folder workspAce)', Async () => {
+			service.registerFolderBAckupSync(fooFile);
+			service.registerFolderBAckupSync(bArFile);
+			service.unregisterFolderBAckupSync(fooFile);
+
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(buffer));
+			Assert.deepEquAl(json.folderURIWorkspAces, [bArFile.toString()]);
+			service.unregisterFolderBAckupSync(bArFile);
+
+			const content = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json2 = (<IBAckupWorkspAcesFormAt>JSON.pArse(content));
+			Assert.deepEquAl(json2.folderURIWorkspAces, []);
+		});
+
+		test('should remove folder workspAces from workspAces.json (root workspAce)', Async () => {
+			const ws1 = toWorkspAceBAckupInfo(fooFile.fsPAth);
+			service.registerWorkspAceBAckupSync(ws1);
+			const ws2 = toWorkspAceBAckupInfo(bArFile.fsPAth);
+			service.registerWorkspAceBAckupSync(ws2);
+			service.unregisterWorkspAceBAckupSync(ws1.workspAce);
+
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(buffer));
+			Assert.deepEquAl(json.rootURIWorkspAces.mAp(r => r.configURIPAth), [bArFile.toString()]);
+			service.unregisterWorkspAceBAckupSync(ws2.workspAce);
+
+			const content = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json2 = (<IBAckupWorkspAcesFormAt>JSON.pArse(content));
+			Assert.deepEquAl(json2.rootURIWorkspAces, []);
+		});
+
+		test('should remove empty workspAces from workspAces.json', Async () => {
+			service.registerEmptyWindowBAckupSync('foo');
+			service.registerEmptyWindowBAckupSync('bAr');
+			service.unregisterEmptyWindowBAckupSync('foo');
+
+			const buffer = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(buffer));
+			Assert.deepEquAl(json.emptyWorkspAces, ['bAr']);
+			service.unregisterEmptyWindowBAckupSync('bAr');
+
+			const content = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json2 = (<IBAckupWorkspAcesFormAt>JSON.pArse(content));
+			Assert.deepEquAl(json2.emptyWorkspAces, []);
+		});
+
+		test('should fAil grAcefully when removing A pAth thAt doesn\'t exist', Async () => {
+
+			AwAit ensureFolderExists(existingTestFolder1); // mAke sure bAckup folder exists, so the folder is not removed on loAdSync
+
+			const workspAcesJson: IBAckupWorkspAcesFormAt = { rootURIWorkspAces: [], folderURIWorkspAces: [existingTestFolder1.toString()], emptyWorkspAceInfos: [] };
+			AwAit pfs.writeFile(bAckupWorkspAcesPAth, JSON.stringify(workspAcesJson));
+			AwAit service.initiAlize();
+			service.unregisterFolderBAckupSync(bArFile);
+			service.unregisterEmptyWindowBAckupSync('test');
+			const content = AwAit pfs.reAdFile(bAckupWorkspAcesPAth, 'utf-8');
+			const json = (<IBAckupWorkspAcesFormAt>JSON.pArse(content));
+			Assert.deepEquAl(json.folderURIWorkspAces, [existingTestFolder1.toString()]);
+		});
+	});
+
+	suite('getWorkspAceHAsh', () => {
+
+		test('should ignore cAse on Windows And MAc', () => {
 			// Skip test on Linux
-			if (platform.isLinux) {
+			if (plAtform.isLinux) {
 				return;
 			}
 
-			if (platform.isMacintosh) {
-				assert.equal(service.getFolderHash(URI.file('/foo')), service.getFolderHash(URI.file('/FOO')));
+			if (plAtform.isMAcintosh) {
+				Assert.equAl(service.getFolderHAsh(URI.file('/foo')), service.getFolderHAsh(URI.file('/FOO')));
 			}
 
-			if (platform.isWindows) {
-				assert.equal(service.getFolderHash(URI.file('c:\\foo')), service.getFolderHash(URI.file('C:\\FOO')));
-			}
-		});
-	});
-
-	suite('mixed path casing', () => {
-		test('should handle case insensitive paths properly (registerWindowForBackupsSync) (folder workspace)', () => {
-			service.registerFolderBackupSync(fooFile);
-			service.registerFolderBackupSync(URI.file(fooFile.fsPath.toUpperCase()));
-
-			if (platform.isLinux) {
-				assert.equal(service.getFolderBackupPaths().length, 2);
-			} else {
-				assert.equal(service.getFolderBackupPaths().length, 1);
-			}
-		});
-
-		test('should handle case insensitive paths properly (registerWindowForBackupsSync) (root workspace)', () => {
-			service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(fooFile.fsPath));
-			service.registerWorkspaceBackupSync(toWorkspaceBackupInfo(fooFile.fsPath.toUpperCase()));
-
-			if (platform.isLinux) {
-				assert.equal(service.getWorkspaceBackups().length, 2);
-			} else {
-				assert.equal(service.getWorkspaceBackups().length, 1);
-			}
-		});
-
-		test('should handle case insensitive paths properly (removeBackupPathSync) (folder workspace)', () => {
-
-			// same case
-			service.registerFolderBackupSync(fooFile);
-			service.unregisterFolderBackupSync(fooFile);
-			assert.equal(service.getFolderBackupPaths().length, 0);
-
-			// mixed case
-			service.registerFolderBackupSync(fooFile);
-			service.unregisterFolderBackupSync(URI.file(fooFile.fsPath.toUpperCase()));
-
-			if (platform.isLinux) {
-				assert.equal(service.getFolderBackupPaths().length, 1);
-			} else {
-				assert.equal(service.getFolderBackupPaths().length, 0);
+			if (plAtform.isWindows) {
+				Assert.equAl(service.getFolderHAsh(URI.file('c:\\foo')), service.getFolderHAsh(URI.file('C:\\FOO')));
 			}
 		});
 	});
 
-	suite('getDirtyWorkspaces', () => {
-		test('should report if a workspace or folder has backups', async () => {
-			const folderBackupPath = service.registerFolderBackupSync(fooFile);
+	suite('mixed pAth cAsing', () => {
+		test('should hAndle cAse insensitive pAths properly (registerWindowForBAckupsSync) (folder workspAce)', () => {
+			service.registerFolderBAckupSync(fooFile);
+			service.registerFolderBAckupSync(URI.file(fooFile.fsPAth.toUpperCAse()));
 
-			const backupWorkspaceInfo = toWorkspaceBackupInfo(fooFile.fsPath);
-			const workspaceBackupPath = service.registerWorkspaceBackupSync(backupWorkspaceInfo);
+			if (plAtform.isLinux) {
+				Assert.equAl(service.getFolderBAckupPAths().length, 2);
+			} else {
+				Assert.equAl(service.getFolderBAckupPAths().length, 1);
+			}
+		});
 
-			assert.equal(((await service.getDirtyWorkspaces()).length), 0);
+		test('should hAndle cAse insensitive pAths properly (registerWindowForBAckupsSync) (root workspAce)', () => {
+			service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(fooFile.fsPAth));
+			service.registerWorkspAceBAckupSync(toWorkspAceBAckupInfo(fooFile.fsPAth.toUpperCAse()));
+
+			if (plAtform.isLinux) {
+				Assert.equAl(service.getWorkspAceBAckups().length, 2);
+			} else {
+				Assert.equAl(service.getWorkspAceBAckups().length, 1);
+			}
+		});
+
+		test('should hAndle cAse insensitive pAths properly (removeBAckupPAthSync) (folder workspAce)', () => {
+
+			// sAme cAse
+			service.registerFolderBAckupSync(fooFile);
+			service.unregisterFolderBAckupSync(fooFile);
+			Assert.equAl(service.getFolderBAckupPAths().length, 0);
+
+			// mixed cAse
+			service.registerFolderBAckupSync(fooFile);
+			service.unregisterFolderBAckupSync(URI.file(fooFile.fsPAth.toUpperCAse()));
+
+			if (plAtform.isLinux) {
+				Assert.equAl(service.getFolderBAckupPAths().length, 1);
+			} else {
+				Assert.equAl(service.getFolderBAckupPAths().length, 0);
+			}
+		});
+	});
+
+	suite('getDirtyWorkspAces', () => {
+		test('should report if A workspAce or folder hAs bAckups', Async () => {
+			const folderBAckupPAth = service.registerFolderBAckupSync(fooFile);
+
+			const bAckupWorkspAceInfo = toWorkspAceBAckupInfo(fooFile.fsPAth);
+			const workspAceBAckupPAth = service.registerWorkspAceBAckupSync(bAckupWorkspAceInfo);
+
+			Assert.equAl(((AwAit service.getDirtyWorkspAces()).length), 0);
 
 			try {
-				await pfs.mkdirp(path.join(folderBackupPath, Schemas.file));
-				await pfs.mkdirp(path.join(workspaceBackupPath, Schemas.untitled));
-			} catch (error) {
-				// ignore - folder might exist already
+				AwAit pfs.mkdirp(pAth.join(folderBAckupPAth, SchemAs.file));
+				AwAit pfs.mkdirp(pAth.join(workspAceBAckupPAth, SchemAs.untitled));
+			} cAtch (error) {
+				// ignore - folder might exist AlreAdy
 			}
 
-			assert.equal(((await service.getDirtyWorkspaces()).length), 0);
+			Assert.equAl(((AwAit service.getDirtyWorkspAces()).length), 0);
 
-			fs.writeFileSync(path.join(folderBackupPath, Schemas.file, '594a4a9d82a277a899d4713a5b08f504'), '');
-			fs.writeFileSync(path.join(workspaceBackupPath, Schemas.untitled, '594a4a9d82a277a899d4713a5b08f504'), '');
+			fs.writeFileSync(pAth.join(folderBAckupPAth, SchemAs.file, '594A4A9d82A277A899d4713A5b08f504'), '');
+			fs.writeFileSync(pAth.join(workspAceBAckupPAth, SchemAs.untitled, '594A4A9d82A277A899d4713A5b08f504'), '');
 
-			const dirtyWorkspaces = await service.getDirtyWorkspaces();
-			assert.equal(dirtyWorkspaces.length, 2);
+			const dirtyWorkspAces = AwAit service.getDirtyWorkspAces();
+			Assert.equAl(dirtyWorkspAces.length, 2);
 
 			let found = 0;
-			for (const dirtyWorkpspace of dirtyWorkspaces) {
-				if (URI.isUri(dirtyWorkpspace)) {
-					if (isEqual(fooFile, dirtyWorkpspace)) {
+			for (const dirtyWorkpspAce of dirtyWorkspAces) {
+				if (URI.isUri(dirtyWorkpspAce)) {
+					if (isEquAl(fooFile, dirtyWorkpspAce)) {
 						found++;
 					}
 				} else {
-					if (isEqual(backupWorkspaceInfo.workspace.configPath, dirtyWorkpspace.configPath)) {
+					if (isEquAl(bAckupWorkspAceInfo.workspAce.configPAth, dirtyWorkpspAce.configPAth)) {
 						found++;
 					}
 				}
 			}
 
-			assert.equal(found, 2);
+			Assert.equAl(found, 2);
 		});
 	});
 });

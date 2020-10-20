@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Uri } from 'vscode';
 
-export interface GitUriParams {
-	path: string;
+export interfAce GitUriPArAms {
+	pAth: string;
 	ref: string;
 	submoduleOf?: string;
 }
 
-export function isGitUri(uri: Uri): boolean {
+export function isGitUri(uri: Uri): booleAn {
 	return /^git$/.test(uri.scheme);
 }
 
-export function fromGitUri(uri: Uri): GitUriParams {
-	return JSON.parse(uri.query);
+export function fromGitUri(uri: Uri): GitUriPArAms {
+	return JSON.pArse(uri.query);
 }
 
-export interface GitUriOptions {
-	replaceFileExtension?: boolean;
+export interfAce GitUriOptions {
+	replAceFileExtension?: booleAn;
 	submoduleOf?: string;
 }
 
-// As a mitigation for extensions like ESLint showing warnings and errors
-// for git URIs, let's change the file extension of these uris to .git,
-// when `replaceFileExtension` is true.
+// As A mitigAtion for extensions like ESLint showing wArnings And errors
+// for git URIs, let's chAnge the file extension of these uris to .git,
+// when `replAceFileExtension` is true.
 export function toGitUri(uri: Uri, ref: string, options: GitUriOptions = {}): Uri {
-	const params: GitUriParams = {
-		path: uri.fsPath,
+	const pArAms: GitUriPArAms = {
+		pAth: uri.fsPAth,
 		ref
 	};
 
 	if (options.submoduleOf) {
-		params.submoduleOf = options.submoduleOf;
+		pArAms.submoduleOf = options.submoduleOf;
 	}
 
-	let path = uri.path;
+	let pAth = uri.pAth;
 
-	if (options.replaceFileExtension) {
-		path = `${path}.git`;
+	if (options.replAceFileExtension) {
+		pAth = `${pAth}.git`;
 	} else if (options.submoduleOf) {
-		path = `${path}.diff`;
+		pAth = `${pAth}.diff`;
 	}
 
 	return uri.with({
 		scheme: 'git',
-		path,
-		query: JSON.stringify(params)
+		pAth,
+		query: JSON.stringify(pArAms)
 	});
 }

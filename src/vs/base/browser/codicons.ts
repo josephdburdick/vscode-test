@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
+import * As dom from 'vs/bAse/browser/dom';
 
-const renderCodiconsRegex = /(\\)?\$\((([a-z0-9\-]+?)(?:~([a-z0-9\-]*?))?)\)/gi;
+const renderCodiconsRegex = /(\\)?\$\((([A-z0-9\-]+?)(?:~([A-z0-9\-]*?))?)\)/gi;
 
-export function renderCodicons(text: string): Array<HTMLSpanElement | string> {
-	const elements = new Array<HTMLSpanElement | string>();
-	let match: RegExpMatchArray | null;
+export function renderCodicons(text: string): ArrAy<HTMLSpAnElement | string> {
+	const elements = new ArrAy<HTMLSpAnElement | string>();
+	let mAtch: RegExpMAtchArrAy | null;
 
-	let textStart = 0, textStop = 0;
-	while ((match = renderCodiconsRegex.exec(text)) !== null) {
-		textStop = match.index || 0;
-		elements.push(text.substring(textStart, textStop));
-		textStart = (match.index || 0) + match[0].length;
+	let textStArt = 0, textStop = 0;
+	while ((mAtch = renderCodiconsRegex.exec(text)) !== null) {
+		textStop = mAtch.index || 0;
+		elements.push(text.substring(textStArt, textStop));
+		textStArt = (mAtch.index || 0) + mAtch[0].length;
 
-		const [, escaped, codicon, name, animation] = match;
-		elements.push(escaped ? `$(${codicon})` : renderCodicon(name, animation));
+		const [, escAped, codicon, nAme, AnimAtion] = mAtch;
+		elements.push(escAped ? `$(${codicon})` : renderCodicon(nAme, AnimAtion));
 	}
 
-	if (textStart < text.length) {
-		elements.push(text.substring(textStart));
+	if (textStArt < text.length) {
+		elements.push(text.substring(textStArt));
 	}
 	return elements;
 }
 
-export function renderCodicon(name: string, animation: string): HTMLSpanElement {
-	return dom.$(`span.codicon.codicon-${name}${animation ? `.codicon-animation-${animation}` : ''}`);
+export function renderCodicon(nAme: string, AnimAtion: string): HTMLSpAnElement {
+	return dom.$(`spAn.codicon.codicon-${nAme}${AnimAtion ? `.codicon-AnimAtion-${AnimAtion}` : ''}`);
 }

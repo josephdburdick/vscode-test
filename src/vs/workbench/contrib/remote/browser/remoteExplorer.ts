@@ -1,211 +1,211 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as nls from 'vs/nls';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import * As nls from 'vs/nls';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { Extensions, IViewDescriptorService, IViewsRegistry, IViewsService } from 'vs/workbench/common/views';
-import { IActivityService, NumberBadge } from 'vs/workbench/services/activity/common/activity';
-import { IRemoteExplorerService, MakeAddress, mapHasTunnelLocalhostOrAllInterfaces, TUNNEL_VIEW_ID } from 'vs/workbench/services/remote/common/remoteExplorerService';
-import { forwardedPortsViewEnabled, ForwardPortAction, OpenPortInBrowserAction, TunnelPanelDescriptor, TunnelViewModel } from 'vs/workbench/contrib/remote/browser/tunnelView';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+import { IActivityService, NumberBAdge } from 'vs/workbench/services/Activity/common/Activity';
+import { IRemoteExplorerService, MAkeAddress, mApHAsTunnelLocAlhostOrAllInterfAces, TUNNEL_VIEW_ID } from 'vs/workbench/services/remote/common/remoteExplorerService';
+import { forwArdedPortsViewEnAbled, ForwArdPortAction, OpenPortInBrowserAction, TunnelPAnelDescriptor, TunnelViewModel } from 'vs/workbench/contrib/remote/browser/tunnelView';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IStatusbarEntry, IStatusbarEntryAccessor, IStatusbarService, StatusbarAlignment } from 'vs/workbench/services/statusbar/common/statusbar';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IStAtusbArEntry, IStAtusbArEntryAccessor, IStAtusbArService, StAtusbArAlignment } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
 import { UrlFinder } from 'vs/workbench/contrib/remote/browser/urlFinder';
-import Severity from 'vs/base/common/severity';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { INotificationService, IPromptChoice } from 'vs/platform/notification/common/notification';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import Severity from 'vs/bAse/common/severity';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { INotificAtionService, IPromptChoice } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
 
 export const VIEWLET_ID = 'workbench.view.remote';
 
-export class ForwardedPortsView extends Disposable implements IWorkbenchContribution {
-	private contextKeyListener?: IDisposable;
-	private _activityBadge?: IDisposable;
-	private entryAccessor: IStatusbarEntryAccessor | undefined;
+export clAss ForwArdedPortsView extends DisposAble implements IWorkbenchContribution {
+	privAte contextKeyListener?: IDisposAble;
+	privAte _ActivityBAdge?: IDisposAble;
+	privAte entryAccessor: IStAtusbArEntryAccessor | undefined;
 
 	constructor(
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IRemoteExplorerService private readonly remoteExplorerService: IRemoteExplorerService,
-		@IViewDescriptorService private readonly viewDescriptorService: IViewDescriptorService,
-		@IActivityService private readonly activityService: IActivityService,
-		@IStatusbarService private readonly statusbarService: IStatusbarService
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IRemoteExplorerService privAte reAdonly remoteExplorerService: IRemoteExplorerService,
+		@IViewDescriptorService privAte reAdonly viewDescriptorService: IViewDescriptorService,
+		@IActivityService privAte reAdonly ActivityService: IActivityService,
+		@IStAtusbArService privAte reAdonly stAtusbArService: IStAtusbArService
 	) {
 		super();
-		this._register(Registry.as<IViewsRegistry>(Extensions.ViewsRegistry).registerViewWelcomeContent(TUNNEL_VIEW_ID, {
-			content: `Forwarded ports allow you to access your running services locally.\n[Forward a Port](command:${ForwardPortAction.INLINE_ID})`,
+		this._register(Registry.As<IViewsRegistry>(Extensions.ViewsRegistry).registerViewWelcomeContent(TUNNEL_VIEW_ID, {
+			content: `ForwArded ports Allow you to Access your running services locAlly.\n[ForwArd A Port](commAnd:${ForwArdPortAction.INLINE_ID})`,
 		}));
-		this.enableBadgeAndStatusBar();
-		this.enableForwardedPortsView();
+		this.enAbleBAdgeAndStAtusBAr();
+		this.enAbleForwArdedPortsView();
 	}
 
-	private enableForwardedPortsView() {
+	privAte enAbleForwArdedPortsView() {
 		if (this.contextKeyListener) {
 			this.contextKeyListener.dispose();
 			this.contextKeyListener = undefined;
 		}
 
-		const viewEnabled: boolean = !!forwardedPortsViewEnabled.getValue(this.contextKeyService);
-		if (this.environmentService.remoteAuthority && viewEnabled) {
-			const tunnelPanelDescriptor = new TunnelPanelDescriptor(new TunnelViewModel(this.remoteExplorerService), this.environmentService);
-			const viewsRegistry = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry);
-			const viewContainer = this.viewDescriptorService.getViewContainerById(VIEWLET_ID);
-			if (viewContainer) {
-				viewsRegistry.registerViews([tunnelPanelDescriptor!], viewContainer);
+		const viewEnAbled: booleAn = !!forwArdedPortsViewEnAbled.getVAlue(this.contextKeyService);
+		if (this.environmentService.remoteAuthority && viewEnAbled) {
+			const tunnelPAnelDescriptor = new TunnelPAnelDescriptor(new TunnelViewModel(this.remoteExplorerService), this.environmentService);
+			const viewsRegistry = Registry.As<IViewsRegistry>(Extensions.ViewsRegistry);
+			const viewContAiner = this.viewDescriptorService.getViewContAinerById(VIEWLET_ID);
+			if (viewContAiner) {
+				viewsRegistry.registerViews([tunnelPAnelDescriptor!], viewContAiner);
 			}
 		} else if (this.environmentService.remoteAuthority) {
-			this.contextKeyListener = this.contextKeyService.onDidChangeContext(e => {
-				if (e.affectsSome(new Set(forwardedPortsViewEnabled.keys()))) {
-					this.enableForwardedPortsView();
+			this.contextKeyListener = this.contextKeyService.onDidChAngeContext(e => {
+				if (e.AffectsSome(new Set(forwArdedPortsViewEnAbled.keys()))) {
+					this.enAbleForwArdedPortsView();
 				}
 			});
 		}
 	}
 
-	private enableBadgeAndStatusBar() {
-		this._register(this.remoteExplorerService.tunnelModel.onForwardPort(() => {
-			this.updateActivityBadge();
-			this.updateStatusBar();
+	privAte enAbleBAdgeAndStAtusBAr() {
+		this._register(this.remoteExplorerService.tunnelModel.onForwArdPort(() => {
+			this.updAteActivityBAdge();
+			this.updAteStAtusBAr();
 		}));
 		this._register(this.remoteExplorerService.tunnelModel.onClosePort(() => {
-			this.updateActivityBadge();
-			this.updateStatusBar();
+			this.updAteActivityBAdge();
+			this.updAteStAtusBAr();
 		}));
-		const disposable = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry).onViewsRegistered(e => {
+		const disposAble = Registry.As<IViewsRegistry>(Extensions.ViewsRegistry).onViewsRegistered(e => {
 			if (e.find(view => view.views.find(viewDescriptor => viewDescriptor.id === TUNNEL_VIEW_ID))) {
-				this.updateActivityBadge();
-				this.updateStatusBar();
-				disposable.dispose();
+				this.updAteActivityBAdge();
+				this.updAteStAtusBAr();
+				disposAble.dispose();
 			}
 		});
 	}
 
-	private updateActivityBadge() {
-		if (this._activityBadge) {
-			this._activityBadge.dispose();
+	privAte updAteActivityBAdge() {
+		if (this._ActivityBAdge) {
+			this._ActivityBAdge.dispose();
 		}
-		if (this.remoteExplorerService.tunnelModel.forwarded.size > 0) {
-			const viewContainer = this.viewDescriptorService.getViewContainerByViewId(TUNNEL_VIEW_ID);
-			if (viewContainer) {
-				this._activityBadge = this.activityService.showViewContainerActivity(viewContainer.id, {
-					badge: new NumberBadge(this.remoteExplorerService.tunnelModel.forwarded.size, n => n === 1 ? nls.localize('1forwardedPort', "1 forwarded port") : nls.localize('nForwardedPorts', "{0} forwarded ports", n))
+		if (this.remoteExplorerService.tunnelModel.forwArded.size > 0) {
+			const viewContAiner = this.viewDescriptorService.getViewContAinerByViewId(TUNNEL_VIEW_ID);
+			if (viewContAiner) {
+				this._ActivityBAdge = this.ActivityService.showViewContAinerActivity(viewContAiner.id, {
+					bAdge: new NumberBAdge(this.remoteExplorerService.tunnelModel.forwArded.size, n => n === 1 ? nls.locAlize('1forwArdedPort', "1 forwArded port") : nls.locAlize('nForwArdedPorts', "{0} forwArded ports", n))
 				});
 			}
 		}
 	}
 
-	private updateStatusBar() {
+	privAte updAteStAtusBAr() {
 		if (!this.entryAccessor) {
-			this._register(this.entryAccessor = this.statusbarService.addEntry(this.entry, 'status.forwardedPorts', nls.localize('status.forwardedPorts', "Forwarded Ports"), StatusbarAlignment.LEFT, 40));
+			this._register(this.entryAccessor = this.stAtusbArService.AddEntry(this.entry, 'stAtus.forwArdedPorts', nls.locAlize('stAtus.forwArdedPorts', "ForwArded Ports"), StAtusbArAlignment.LEFT, 40));
 		} else {
-			this.entryAccessor.update(this.entry);
+			this.entryAccessor.updAte(this.entry);
 		}
 	}
 
-	private get entry(): IStatusbarEntry {
+	privAte get entry(): IStAtusbArEntry {
 		let text: string;
-		if (this.remoteExplorerService.tunnelModel.forwarded.size === 0) {
-			text = nls.localize('remote.forwardedPorts.statusbarTextNone', "No Ports Available");
-		} else if (this.remoteExplorerService.tunnelModel.forwarded.size === 1) {
-			text = nls.localize('remote.forwardedPorts.statusbarTextSingle', "1 Port Available");
+		if (this.remoteExplorerService.tunnelModel.forwArded.size === 0) {
+			text = nls.locAlize('remote.forwArdedPorts.stAtusbArTextNone', "No Ports AvAilAble");
+		} else if (this.remoteExplorerService.tunnelModel.forwArded.size === 1) {
+			text = nls.locAlize('remote.forwArdedPorts.stAtusbArTextSingle', "1 Port AvAilAble");
 		} else {
-			text = nls.localize('remote.forwardedPorts.statusbarTextMultiple', "{0} Ports Available", this.remoteExplorerService.tunnelModel.forwarded.size);
+			text = nls.locAlize('remote.forwArdedPorts.stAtusbArTextMultiple', "{0} Ports AvAilAble", this.remoteExplorerService.tunnelModel.forwArded.size);
 		}
-		const tooltip = nls.localize('remote.forwardedPorts.statusbarTooltip', "Available Ports: {0}",
-			Array.from(this.remoteExplorerService.tunnelModel.forwarded.values()).map(forwarded => forwarded.remotePort).join(', '));
+		const tooltip = nls.locAlize('remote.forwArdedPorts.stAtusbArTooltip', "AvAilAble Ports: {0}",
+			ArrAy.from(this.remoteExplorerService.tunnelModel.forwArded.vAlues()).mAp(forwArded => forwArded.remotePort).join(', '));
 		return {
-			text: `$(radio-tower) ${text}`,
-			ariaLabel: tooltip,
+			text: `$(rAdio-tower) ${text}`,
+			AriALAbel: tooltip,
 			tooltip,
-			command: `${TUNNEL_VIEW_ID}.focus`
+			commAnd: `${TUNNEL_VIEW_ID}.focus`
 		};
 	}
 }
 
 
-export class AutomaticPortForwarding extends Disposable implements IWorkbenchContribution {
-	private contextServiceListener?: IDisposable;
-	private urlFinder?: UrlFinder;
-	private static AUTO_FORWARD_SETTING = 'remote.autoForwardPorts';
+export clAss AutomAticPortForwArding extends DisposAble implements IWorkbenchContribution {
+	privAte contextServiceListener?: IDisposAble;
+	privAte urlFinder?: UrlFinder;
+	privAte stAtic AUTO_FORWARD_SETTING = 'remote.AutoForwArdPorts';
 
 	constructor(
-		@ITerminalService private readonly terminalService: ITerminalService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IViewsService private readonly viewsService: IViewsService,
-		@IRemoteExplorerService private readonly remoteExplorerService: IRemoteExplorerService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@ITerminAlService privAte reAdonly terminAlService: ITerminAlService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IViewsService privAte reAdonly viewsService: IViewsService,
+		@IRemoteExplorerService privAte reAdonly remoteExplorerService: IRemoteExplorerService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
 		super();
-		this._register(configurationService.onDidChangeConfiguration((e) => {
-			if (e.affectsConfiguration(AutomaticPortForwarding.AUTO_FORWARD_SETTING)) {
-				this.tryStartStopUrlFinder();
+		this._register(configurAtionService.onDidChAngeConfigurAtion((e) => {
+			if (e.AffectsConfigurAtion(AutomAticPortForwArding.AUTO_FORWARD_SETTING)) {
+				this.tryStArtStopUrlFinder();
 			}
 		}));
 
 		if (this.environmentService.remoteAuthority) {
-			this.contextServiceListener = this._register(this.contextKeyService.onDidChangeContext(e => {
-				if (e.affectsSome(new Set(forwardedPortsViewEnabled.keys()))) {
-					this.tryStartStopUrlFinder();
+			this.contextServiceListener = this._register(this.contextKeyService.onDidChAngeContext(e => {
+				if (e.AffectsSome(new Set(forwArdedPortsViewEnAbled.keys()))) {
+					this.tryStArtStopUrlFinder();
 				}
 			}));
-			this.tryStartStopUrlFinder();
+			this.tryStArtStopUrlFinder();
 		}
 	}
 
-	private tryStartStopUrlFinder() {
-		if (this.configurationService.getValue(AutomaticPortForwarding.AUTO_FORWARD_SETTING)) {
-			this.startUrlFinder();
+	privAte tryStArtStopUrlFinder() {
+		if (this.configurAtionService.getVAlue(AutomAticPortForwArding.AUTO_FORWARD_SETTING)) {
+			this.stArtUrlFinder();
 		} else {
 			this.stopUrlFinder();
 		}
 	}
 
-	private startUrlFinder() {
-		if (!this.urlFinder && !forwardedPortsViewEnabled.getValue(this.contextKeyService)) {
+	privAte stArtUrlFinder() {
+		if (!this.urlFinder && !forwArdedPortsViewEnAbled.getVAlue(this.contextKeyService)) {
 			return;
 		}
 		if (this.contextServiceListener) {
 			this.contextServiceListener.dispose();
 		}
-		this.urlFinder = this._register(new UrlFinder(this.terminalService));
-		this._register(this.urlFinder.onDidMatchLocalUrl(async (localUrl) => {
-			if (mapHasTunnelLocalhostOrAllInterfaces(this.remoteExplorerService.tunnelModel.forwarded, localUrl.host, localUrl.port)) {
+		this.urlFinder = this._register(new UrlFinder(this.terminAlService));
+		this._register(this.urlFinder.onDidMAtchLocAlUrl(Async (locAlUrl) => {
+			if (mApHAsTunnelLocAlhostOrAllInterfAces(this.remoteExplorerService.tunnelModel.forwArded, locAlUrl.host, locAlUrl.port)) {
 				return;
 			}
-			const forwarded = await this.remoteExplorerService.forward(localUrl);
-			if (forwarded) {
-				const address = MakeAddress(forwarded.tunnelRemoteHost, forwarded.tunnelRemotePort);
-				const message = nls.localize('remote.tunnelsView.automaticForward', "Your service running on port {0} is available.",
-					forwarded.tunnelRemotePort);
+			const forwArded = AwAit this.remoteExplorerService.forwArd(locAlUrl);
+			if (forwArded) {
+				const Address = MAkeAddress(forwArded.tunnelRemoteHost, forwArded.tunnelRemotePort);
+				const messAge = nls.locAlize('remote.tunnelsView.AutomAticForwArd', "Your service running on port {0} is AvAilAble.",
+					forwArded.tunnelRemotePort);
 				const browserChoice: IPromptChoice = {
-					label: OpenPortInBrowserAction.LABEL,
-					run: () => OpenPortInBrowserAction.run(this.remoteExplorerService.tunnelModel, this.openerService, address)
+					lAbel: OpenPortInBrowserAction.LABEL,
+					run: () => OpenPortInBrowserAction.run(this.remoteExplorerService.tunnelModel, this.openerService, Address)
 				};
 				const showChoice: IPromptChoice = {
-					label: nls.localize('remote.tunnelsView.showView', "Show Forwarded Ports"),
+					lAbel: nls.locAlize('remote.tunnelsView.showView', "Show ForwArded Ports"),
 					run: () => {
 						const remoteAuthority = this.environmentService.remoteAuthority;
 						const explorerType: string[] | undefined = remoteAuthority ? [remoteAuthority.split('+')[0]] : undefined;
 						if (explorerType) {
-							this.remoteExplorerService.targetType = explorerType;
+							this.remoteExplorerService.tArgetType = explorerType;
 						}
-						this.viewsService.openViewContainer(VIEWLET_ID);
+						this.viewsService.openViewContAiner(VIEWLET_ID);
 					},
-					isSecondary: true
+					isSecondAry: true
 				};
-				this.notificationService.prompt(Severity.Info, message, [browserChoice, showChoice], { neverShowAgain: { id: 'remote.tunnelsView.autoForwardNeverShow', isSecondary: true } });
+				this.notificAtionService.prompt(Severity.Info, messAge, [browserChoice, showChoice], { neverShowAgAin: { id: 'remote.tunnelsView.AutoForwArdNeverShow', isSecondAry: true } });
 			}
 		}));
 	}
 
-	private stopUrlFinder() {
+	privAte stopUrlFinder() {
 		if (this.urlFinder) {
 			this.urlFinder.dispose();
 			this.urlFinder = undefined;

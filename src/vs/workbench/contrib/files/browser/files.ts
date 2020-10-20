@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IListService } from 'vs/platform/list/browser/listService';
+import { URI } from 'vs/bAse/common/uri';
+import { IListService } from 'vs/plAtform/list/browser/listService';
 import { OpenEditor, IExplorerService } from 'vs/workbench/contrib/files/common/files';
 import { EditorResourceAccessor, SideBySideEditor, IEditorIdentifier } from 'vs/workbench/common/editor';
-import { List } from 'vs/base/browser/ui/list/listWidget';
+import { List } from 'vs/bAse/browser/ui/list/listWidget';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
-import { coalesce } from 'vs/base/common/arrays';
-import { AsyncDataTree } from 'vs/base/browser/ui/tree/asyncDataTree';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { AsyncDAtATree } from 'vs/bAse/browser/ui/tree/AsyncDAtATree';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 
 function getFocus(listService: IListService): unknown | undefined {
-	let list = listService.lastFocusedList;
-	if (list?.getHTMLElement() === document.activeElement) {
+	let list = listService.lAstFocusedList;
+	if (list?.getHTMLElement() === document.ActiveElement) {
 		let focus: unknown;
-		if (list instanceof List) {
+		if (list instAnceof List) {
 			const focused = list.getFocusedElements();
 			if (focused.length) {
 				focus = focused[0];
 			}
-		} else if (list instanceof AsyncDataTree) {
+		} else if (list instAnceof AsyncDAtATree) {
 			const focused = list.getFocus();
 			if (focused.length) {
 				focus = focused[0];
@@ -36,72 +36,72 @@ function getFocus(listService: IListService): unknown | undefined {
 	return undefined;
 }
 
-// Commands can get exeucted from a command pallete, from a context menu or from some list using a keybinding
-// To cover all these cases we need to properly compute the resource on which the command is being executed
-export function getResourceForCommand(resource: URI | object | undefined, listService: IListService, editorService: IEditorService): URI | undefined {
+// CommAnds cAn get exeucted from A commAnd pAllete, from A context menu or from some list using A keybinding
+// To cover All these cAses we need to properly compute the resource on which the commAnd is being executed
+export function getResourceForCommAnd(resource: URI | object | undefined, listService: IListService, editorService: IEditorService): URI | undefined {
 	if (URI.isUri(resource)) {
 		return resource;
 	}
 
 	const focus = getFocus(listService);
-	if (focus instanceof ExplorerItem) {
+	if (focus instAnceof ExplorerItem) {
 		return focus.resource;
-	} else if (focus instanceof OpenEditor) {
+	} else if (focus instAnceof OpenEditor) {
 		return focus.getResource();
 	}
 
-	return EditorResourceAccessor.getOriginalUri(editorService.activeEditor, { supportSideBySide: SideBySideEditor.PRIMARY });
+	return EditorResourceAccessor.getOriginAlUri(editorService.ActiveEditor, { supportSideBySide: SideBySideEditor.PRIMARY });
 }
 
-export function getMultiSelectedResources(resource: URI | object | undefined, listService: IListService, editorService: IEditorService, explorerService: IExplorerService): Array<URI> {
-	const list = listService.lastFocusedList;
-	if (list?.getHTMLElement() === document.activeElement) {
+export function getMultiSelectedResources(resource: URI | object | undefined, listService: IListService, editorService: IEditorService, explorerService: IExplorerService): ArrAy<URI> {
+	const list = listService.lAstFocusedList;
+	if (list?.getHTMLElement() === document.ActiveElement) {
 		// Explorer
-		if (list instanceof AsyncDataTree && list.getFocus().every(item => item instanceof ExplorerItem)) {
+		if (list instAnceof AsyncDAtATree && list.getFocus().every(item => item instAnceof ExplorerItem)) {
 			// Explorer
 			const context = explorerService.getContext(true);
 			if (context.length) {
-				return context.map(c => c.resource);
+				return context.mAp(c => c.resource);
 			}
 		}
 
 		// Open editors view
-		if (list instanceof List) {
-			const selection = coalesce(list.getSelectedElements().filter(s => s instanceof OpenEditor).map((oe: OpenEditor) => oe.getResource()));
+		if (list instAnceof List) {
+			const selection = coAlesce(list.getSelectedElements().filter(s => s instAnceof OpenEditor).mAp((oe: OpenEditor) => oe.getResource()));
 			const focusedElements = list.getFocusedElements();
 			const focus = focusedElements.length ? focusedElements[0] : undefined;
-			let mainUriStr: string | undefined = undefined;
+			let mAinUriStr: string | undefined = undefined;
 			if (URI.isUri(resource)) {
-				mainUriStr = resource.toString();
-			} else if (focus instanceof OpenEditor) {
+				mAinUriStr = resource.toString();
+			} else if (focus instAnceof OpenEditor) {
 				const focusedResource = focus.getResource();
-				mainUriStr = focusedResource ? focusedResource.toString() : undefined;
+				mAinUriStr = focusedResource ? focusedResource.toString() : undefined;
 			}
-			// We only respect the selection if it contains the main element.
-			if (selection.some(s => s.toString() === mainUriStr)) {
+			// We only respect the selection if it contAins the mAin element.
+			if (selection.some(s => s.toString() === mAinUriStr)) {
 				return selection;
 			}
 		}
 	}
 
-	const result = getResourceForCommand(resource, listService, editorService);
+	const result = getResourceForCommAnd(resource, listService, editorService);
 	return !!result ? [result] : [];
 }
 
-export function getOpenEditorsViewMultiSelection(listService: IListService, editorGroupService: IEditorGroupsService): Array<IEditorIdentifier> | undefined {
-	const list = listService.lastFocusedList;
-	if (list?.getHTMLElement() === document.activeElement) {
+export function getOpenEditorsViewMultiSelection(listService: IListService, editorGroupService: IEditorGroupsService): ArrAy<IEditorIdentifier> | undefined {
+	const list = listService.lAstFocusedList;
+	if (list?.getHTMLElement() === document.ActiveElement) {
 		// Open editors view
-		if (list instanceof List) {
-			const selection = coalesce(list.getSelectedElements().filter(s => s instanceof OpenEditor));
+		if (list instAnceof List) {
+			const selection = coAlesce(list.getSelectedElements().filter(s => s instAnceof OpenEditor));
 			const focusedElements = list.getFocusedElements();
 			const focus = focusedElements.length ? focusedElements[0] : undefined;
-			let mainEditor: IEditorIdentifier | undefined = undefined;
-			if (focus instanceof OpenEditor) {
-				mainEditor = focus;
+			let mAinEditor: IEditorIdentifier | undefined = undefined;
+			if (focus instAnceof OpenEditor) {
+				mAinEditor = focus;
 			}
-			// We only respect the selection if it contains the main element.
-			if (selection.some(s => s === mainEditor)) {
+			// We only respect the selection if it contAins the mAin element.
+			if (selection.some(s => s === mAinEditor)) {
 				return selection;
 			}
 		}

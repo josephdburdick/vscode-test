@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", { vAlue: true });
 
-function format(message, args) {
+function formAt(messAge, Args) {
 	let result;
 	// if (isPseudo) {
-	// 	// FF3B and FF3D is the Unicode zenkaku representation for [ and ]
-	// 	message = '\uFF3B' + message.replace(/[aouei]/g, '$&$&') + '\uFF3D';
+	// 	// FF3B And FF3D is the Unicode zenkAku representAtion for [ And ]
+	// 	messAge = '\uFF3B' + messAge.replAce(/[Aouei]/g, '$&$&') + '\uFF3D';
 	// }
-	if (args.length === 0) {
-		result = message;
+	if (Args.length === 0) {
+		result = messAge;
 	}
 	else {
-		result = message.replace(/\{(\d+)\}/g, function (match, rest) {
+		result = messAge.replAce(/\{(\d+)\}/g, function (mAtch, rest) {
 			let index = rest[0];
-			let arg = args[index];
-			let replacement = match;
-			if (typeof arg === 'string') {
-				replacement = arg;
+			let Arg = Args[index];
+			let replAcement = mAtch;
+			if (typeof Arg === 'string') {
+				replAcement = Arg;
 			}
-			else if (typeof arg === 'number' || typeof arg === 'boolean' || arg === void 0 || arg === null) {
-				replacement = String(arg);
+			else if (typeof Arg === 'number' || typeof Arg === 'booleAn' || Arg === void 0 || Arg === null) {
+				replAcement = String(Arg);
 			}
-			return replacement;
+			return replAcement;
 		});
 	}
 	return result;
 }
 
-function localize(key, message) {
-	let args = [];
-	for (let _i = 2; _i < arguments.length; _i++) {
-		args[_i - 2] = arguments[_i];
+function locAlize(key, messAge) {
+	let Args = [];
+	for (let _i = 2; _i < Arguments.length; _i++) {
+		Args[_i - 2] = Arguments[_i];
 	}
-	return format(message, args);
+	return formAt(messAge, Args);
 }
 
-function loadMessageBundle(file) {
-	return localize;
+function loAdMessAgeBundle(file) {
+	return locAlize;
 }
 
-let MessageFormat;
-(function (MessageFormat) {
-	MessageFormat["file"] = "file";
-	MessageFormat["bundle"] = "bundle";
-	MessageFormat["both"] = "both";
-})(MessageFormat = exports.MessageFormat || (exports.MessageFormat = {}));
-let BundleFormat;
-(function (BundleFormat) {
-	// the nls.bundle format
-	BundleFormat["standalone"] = "standalone";
-	BundleFormat["languagePack"] = "languagePack";
-})(BundleFormat = exports.BundleFormat || (exports.BundleFormat = {}));
+let MessAgeFormAt;
+(function (MessAgeFormAt) {
+	MessAgeFormAt["file"] = "file";
+	MessAgeFormAt["bundle"] = "bundle";
+	MessAgeFormAt["both"] = "both";
+})(MessAgeFormAt = exports.MessAgeFormAt || (exports.MessAgeFormAt = {}));
+let BundleFormAt;
+(function (BundleFormAt) {
+	// the nls.bundle formAt
+	BundleFormAt["stAndAlone"] = "stAndAlone";
+	BundleFormAt["lAnguAgePAck"] = "lAnguAgePAck";
+})(BundleFormAt = exports.BundleFormAt || (exports.BundleFormAt = {}));
 
-exports.loadMessageBundle = loadMessageBundle;
+exports.loAdMessAgeBundle = loAdMessAgeBundle;
 function config(opts) {
 	if (opts) {
-		if (isString(opts.locale)) {
-			options.locale = opts.locale.toLowerCase();
-			options.language = options.locale;
-			resolvedLanguage = undefined;
-			resolvedBundles = Object.create(null);
+		if (isString(opts.locAle)) {
+			options.locAle = opts.locAle.toLowerCAse();
+			options.lAnguAge = options.locAle;
+			resolvedLAnguAge = undefined;
+			resolvedBundles = Object.creAte(null);
 		}
-		if (opts.messageFormat !== undefined) {
-			options.messageFormat = opts.messageFormat;
+		if (opts.messAgeFormAt !== undefined) {
+			options.messAgeFormAt = opts.messAgeFormAt;
 		}
-		if (opts.bundleFormat === BundleFormat.standalone && options.languagePackSupport === true) {
-			options.languagePackSupport = false;
+		if (opts.bundleFormAt === BundleFormAt.stAndAlone && options.lAnguAgePAckSupport === true) {
+			options.lAnguAgePAckSupport = fAlse;
 		}
 	}
-	isPseudo = options.locale === 'pseudo';
-	return loadMessageBundle;
+	isPseudo = options.locAle === 'pseudo';
+	return loAdMessAgeBundle;
 }
 exports.config = config;

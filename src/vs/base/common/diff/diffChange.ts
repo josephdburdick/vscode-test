@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Represents information about a specific difference between two sequences.
+ * Represents informAtion About A specific difference between two sequences.
  */
-export class DiffChange {
+export clAss DiffChAnge {
 
 	/**
-	 * The position of the first element in the original sequence which
-	 * this change affects.
+	 * The position of the first element in the originAl sequence which
+	 * this chAnge Affects.
 	 */
-	public originalStart: number;
+	public originAlStArt: number;
 
 	/**
-	 * The number of elements from the original sequence which were
-	 * affected.
+	 * The number of elements from the originAl sequence which were
+	 * Affected.
 	 */
-	public originalLength: number;
+	public originAlLength: number;
 
 	/**
 	 * The position of the first element in the modified sequence which
-	 * this change affects.
+	 * this chAnge Affects.
 	 */
-	public modifiedStart: number;
+	public modifiedStArt: number;
 
 	/**
 	 * The number of elements from the modified sequence which were
-	 * affected (added).
+	 * Affected (Added).
 	 */
 	public modifiedLength: number;
 
 	/**
-	 * Constructs a new DiffChange with the given sequence information
-	 * and content.
+	 * Constructs A new DiffChAnge with the given sequence informAtion
+	 * And content.
 	 */
-	constructor(originalStart: number, originalLength: number, modifiedStart: number, modifiedLength: number) {
-		//Debug.Assert(originalLength > 0 || modifiedLength > 0, "originalLength and modifiedLength cannot both be <= 0");
-		this.originalStart = originalStart;
-		this.originalLength = originalLength;
-		this.modifiedStart = modifiedStart;
+	constructor(originAlStArt: number, originAlLength: number, modifiedStArt: number, modifiedLength: number) {
+		//Debug.Assert(originAlLength > 0 || modifiedLength > 0, "originAlLength And modifiedLength cAnnot both be <= 0");
+		this.originAlStArt = originAlStArt;
+		this.originAlLength = originAlLength;
+		this.modifiedStArt = modifiedStArt;
 		this.modifiedLength = modifiedLength;
 	}
 
 	/**
-	 * The end point (exclusive) of the change in the original sequence.
+	 * The end point (exclusive) of the chAnge in the originAl sequence.
 	 */
-	public getOriginalEnd() {
-		return this.originalStart + this.originalLength;
+	public getOriginAlEnd() {
+		return this.originAlStArt + this.originAlLength;
 	}
 
 	/**
-	 * The end point (exclusive) of the change in the modified sequence.
+	 * The end point (exclusive) of the chAnge in the modified sequence.
 	 */
 	public getModifiedEnd() {
-		return this.modifiedStart + this.modifiedLength;
+		return this.modifiedStArt + this.modifiedLength;
 	}
 }

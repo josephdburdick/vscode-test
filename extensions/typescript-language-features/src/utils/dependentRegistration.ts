@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { ITypeScriptServiceClient, ClientCapability } from '../typescriptService';
-import API from './api';
-import { Disposable } from './dispose';
+import * As vscode from 'vscode';
+import { ITypeScriptServiceClient, ClientCApAbility } from '../typescriptService';
+import API from './Api';
+import { DisposAble } from './dispose';
 
-export class Condition extends Disposable {
-	private _value: boolean;
+export clAss Condition extends DisposAble {
+	privAte _vAlue: booleAn;
 
 	constructor(
-		private readonly getValue: () => boolean,
-		onUpdate: (handler: () => void) => void,
+		privAte reAdonly getVAlue: () => booleAn,
+		onUpdAte: (hAndler: () => void) => void,
 	) {
 		super();
-		this._value = this.getValue();
+		this._vAlue = this.getVAlue();
 
-		onUpdate(() => {
-			const newValue = this.getValue();
-			if (newValue !== this._value) {
-				this._value = newValue;
-				this._onDidChange.fire();
+		onUpdAte(() => {
+			const newVAlue = this.getVAlue();
+			if (newVAlue !== this._vAlue) {
+				this._vAlue = newVAlue;
+				this._onDidChAnge.fire();
 			}
 		});
 	}
 
-	public get value(): boolean { return this._value; }
+	public get vAlue(): booleAn { return this._vAlue; }
 
-	private readonly _onDidChange = this._register(new vscode.EventEmitter<void>());
-	public readonly onDidChange = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = this._register(new vscode.EventEmitter<void>());
+	public reAdonly onDidChAnge = this._onDidChAnge.event;
 }
 
-class ConditionalRegistration {
-	private registration: vscode.Disposable | undefined = undefined;
+clAss ConditionAlRegistrAtion {
+	privAte registrAtion: vscode.DisposAble | undefined = undefined;
 
 	public constructor(
-		private readonly conditions: readonly Condition[],
-		private readonly doRegister: () => vscode.Disposable
+		privAte reAdonly conditions: reAdonly Condition[],
+		privAte reAdonly doRegister: () => vscode.DisposAble
 	) {
 		for (const condition of conditions) {
-			condition.onDidChange(() => this.update());
+			condition.onDidChAnge(() => this.updAte());
 		}
-		this.update();
+		this.updAte();
 	}
 
 	public dispose() {
-		this.registration?.dispose();
-		this.registration = undefined;
+		this.registrAtion?.dispose();
+		this.registrAtion = undefined;
 	}
 
-	private update() {
-		const enabled = this.conditions.every(condition => condition.value);
-		if (enabled) {
-			if (!this.registration) {
-				this.registration = this.doRegister();
+	privAte updAte() {
+		const enAbled = this.conditions.every(condition => condition.vAlue);
+		if (enAbled) {
+			if (!this.registrAtion) {
+				this.registrAtion = this.doRegister();
 			}
 		} else {
-			if (this.registration) {
-				this.registration.dispose();
-				this.registration = undefined;
+			if (this.registrAtion) {
+				this.registrAtion.dispose();
+				this.registrAtion = undefined;
 			}
 		}
 	}
 }
 
-export function conditionalRegistration(
-	conditions: readonly Condition[],
-	doRegister: () => vscode.Disposable,
-): vscode.Disposable {
-	return new ConditionalRegistration(conditions, doRegister);
+export function conditionAlRegistrAtion(
+	conditions: reAdonly Condition[],
+	doRegister: () => vscode.DisposAble,
+): vscode.DisposAble {
+	return new ConditionAlRegistrAtion(conditions, doRegister);
 }
 
 export function requireMinVersion(
@@ -78,30 +78,30 @@ export function requireMinVersion(
 	minVersion: API,
 ) {
 	return new Condition(
-		() => client.apiVersion.gte(minVersion),
-		client.onTsServerStarted
+		() => client.ApiVersion.gte(minVersion),
+		client.onTsServerStArted
 	);
 }
 
-export function requireConfiguration(
-	language: string,
-	configValue: string,
+export function requireConfigurAtion(
+	lAnguAge: string,
+	configVAlue: string,
 ) {
 	return new Condition(
 		() => {
-			const config = vscode.workspace.getConfiguration(language, null);
-			return !!config.get<boolean>(configValue);
+			const config = vscode.workspAce.getConfigurAtion(lAnguAge, null);
+			return !!config.get<booleAn>(configVAlue);
 		},
-		vscode.workspace.onDidChangeConfiguration
+		vscode.workspAce.onDidChAngeConfigurAtion
 	);
 }
 
-export function requireSomeCapability(
+export function requireSomeCApAbility(
 	client: ITypeScriptServiceClient,
-	...capabilities: readonly ClientCapability[]
+	...cApAbilities: reAdonly ClientCApAbility[]
 ) {
 	return new Condition(
-		() => capabilities.some(requiredCapability => client.capabilities.has(requiredCapability)),
-		client.onDidChangeCapabilities
+		() => cApAbilities.some(requiredCApAbility => client.cApAbilities.hAs(requiredCApAbility)),
+		client.onDidChAngeCApAbilities
 	);
 }

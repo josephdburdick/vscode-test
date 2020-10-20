@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextModel, IModelDecoration } from 'vs/editor/common/model';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IMarker } from 'vs/platform/markers/common/markers';
-import { Event } from 'vs/base/common/event';
-import { Range } from 'vs/editor/common/core/range';
+import { ITextModel, IModelDecorAtion } from 'vs/editor/common/model';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IMArker } from 'vs/plAtform/mArkers/common/mArkers';
+import { Event } from 'vs/bAse/common/event';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 
-export const IMarkerDecorationsService = createDecorator<IMarkerDecorationsService>('markerDecorationsService');
+export const IMArkerDecorAtionsService = creAteDecorAtor<IMArkerDecorAtionsService>('mArkerDecorAtionsService');
 
-export interface IMarkerDecorationsService {
-	readonly _serviceBrand: undefined;
+export interfAce IMArkerDecorAtionsService {
+	reAdonly _serviceBrAnd: undefined;
 
-	onDidChangeMarker: Event<ITextModel>;
+	onDidChAngeMArker: Event<ITextModel>;
 
-	getMarker(model: ITextModel, decoration: IModelDecoration): IMarker | null;
+	getMArker(model: ITextModel, decorAtion: IModelDecorAtion): IMArker | null;
 
-	getLiveMarkers(model: ITextModel): [Range, IMarker][];
+	getLiveMArkers(model: ITextModel): [RAnge, IMArker][];
 }

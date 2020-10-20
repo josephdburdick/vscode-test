@@ -1,268 +1,268 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ipcMain as ipc, app, BrowserWindow } from 'electron';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IStateService } from 'vs/platform/state/node/state';
-import { Event, Emitter } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ICodeWindow } from 'vs/platform/windows/electron-main/windows';
-import { handleVetos } from 'vs/platform/lifecycle/common/lifecycle';
-import { isMacintosh, isWindows } from 'vs/base/common/platform';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Barrier, timeout } from 'vs/base/common/async';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
+import { ipcMAin As ipc, App, BrowserWindow } from 'electron';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IStAteService } from 'vs/plAtform/stAte/node/stAte';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICodeWindow } from 'vs/plAtform/windows/electron-mAin/windows';
+import { hAndleVetos } from 'vs/plAtform/lifecycle/common/lifecycle';
+import { isMAcintosh, isWindows } from 'vs/bAse/common/plAtform';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { BArrier, timeout } from 'vs/bAse/common/Async';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
 
-export const ILifecycleMainService = createDecorator<ILifecycleMainService>('lifecycleMainService');
+export const ILifecycleMAinService = creAteDecorAtor<ILifecycleMAinService>('lifecycleMAinService');
 
-export const enum UnloadReason {
+export const enum UnloAdReAson {
 	CLOSE = 1,
 	QUIT = 2,
 	RELOAD = 3,
 	LOAD = 4
 }
 
-export interface IWindowUnloadEvent {
+export interfAce IWindowUnloAdEvent {
 	window: ICodeWindow;
-	reason: UnloadReason;
-	veto(value: boolean | Promise<boolean>): void;
+	reAson: UnloAdReAson;
+	veto(vAlue: booleAn | Promise<booleAn>): void;
 }
 
-export interface ShutdownEvent {
+export interfAce ShutdownEvent {
 
 	/**
-	 * Allows to join the shutdown. The promise can be a long running operation but it
-	 * will block the application from closing.
+	 * Allows to join the shutdown. The promise cAn be A long running operAtion but it
+	 * will block the ApplicAtion from closing.
 	 */
 	join(promise: Promise<void>): void;
 }
 
-export interface ILifecycleMainService {
+export interfAce ILifecycleMAinService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Will be true if the program was restarted (e.g. due to explicit request or update).
+	 * Will be true if the progrAm wAs restArted (e.g. due to explicit request or updAte).
 	 */
-	readonly wasRestarted: boolean;
+	reAdonly wAsRestArted: booleAn;
 
 	/**
-	 * Will be true if the program was requested to quit.
+	 * Will be true if the progrAm wAs requested to quit.
 	 */
-	readonly quitRequested: boolean;
+	reAdonly quitRequested: booleAn;
 
 	/**
-	 * A flag indicating in what phase of the lifecycle we currently are.
+	 * A flAg indicAting in whAt phAse of the lifecycle we currently Are.
 	 */
-	phase: LifecycleMainPhase;
+	phAse: LifecycleMAinPhAse;
 
 	/**
-	 * An event that fires when the application is about to shutdown before any window is closed.
-	 * The shutdown can still be prevented by any window that vetos this event.
+	 * An event thAt fires when the ApplicAtion is About to shutdown before Any window is closed.
+	 * The shutdown cAn still be prevented by Any window thAt vetos this event.
 	 */
-	readonly onBeforeShutdown: Event<void>;
+	reAdonly onBeforeShutdown: Event<void>;
 
 	/**
-	 * An event that fires after the onBeforeShutdown event has been fired and after no window has
-	 * vetoed the shutdown sequence. At this point listeners are ensured that the application will
+	 * An event thAt fires After the onBeforeShutdown event hAs been fired And After no window hAs
+	 * vetoed the shutdown sequence. At this point listeners Are ensured thAt the ApplicAtion will
 	 * quit without veto.
 	 */
-	readonly onWillShutdown: Event<ShutdownEvent>;
+	reAdonly onWillShutdown: Event<ShutdownEvent>;
 
 	/**
-	 * An event that fires before a window closes. This event is fired after any veto has been dealt
-	 * with so that listeners know for sure that the window will close without veto.
+	 * An event thAt fires before A window closes. This event is fired After Any veto hAs been deAlt
+	 * with so thAt listeners know for sure thAt the window will close without veto.
 	 */
-	readonly onBeforeWindowClose: Event<ICodeWindow>;
+	reAdonly onBeforeWindowClose: Event<ICodeWindow>;
 
 	/**
-	 * An event that fires before a window is about to unload. Listeners can veto this event to prevent
-	 * the window from unloading.
+	 * An event thAt fires before A window is About to unloAd. Listeners cAn veto this event to prevent
+	 * the window from unloAding.
 	 */
-	readonly onBeforeWindowUnload: Event<IWindowUnloadEvent>;
+	reAdonly onBeforeWindowUnloAd: Event<IWindowUnloAdEvent>;
 
 	/**
-	 * Reload a window. All lifecycle event handlers are triggered.
+	 * ReloAd A window. All lifecycle event hAndlers Are triggered.
 	 */
-	reload(window: ICodeWindow, cli?: NativeParsedArgs): Promise<void>;
+	reloAd(window: ICodeWindow, cli?: NAtivePArsedArgs): Promise<void>;
 
 	/**
-	 * Unload a window for the provided reason. All lifecycle event handlers are triggered.
+	 * UnloAd A window for the provided reAson. All lifecycle event hAndlers Are triggered.
 	 */
-	unload(window: ICodeWindow, reason: UnloadReason): Promise<boolean /* veto */>;
+	unloAd(window: ICodeWindow, reAson: UnloAdReAson): Promise<booleAn /* veto */>;
 
 	/**
-	 * Restart the application with optional arguments (CLI). All lifecycle event handlers are triggered.
+	 * RestArt the ApplicAtion with optionAl Arguments (CLI). All lifecycle event hAndlers Are triggered.
 	 */
-	relaunch(options?: { addArgs?: string[], removeArgs?: string[] }): void;
+	relAunch(options?: { AddArgs?: string[], removeArgs?: string[] }): void;
 
 	/**
-	 * Shutdown the application normally. All lifecycle event handlers are triggered.
+	 * Shutdown the ApplicAtion normAlly. All lifecycle event hAndlers Are triggered.
 	 */
-	quit(fromUpdate?: boolean): Promise<boolean /* veto */>;
+	quit(fromUpdAte?: booleAn): Promise<booleAn /* veto */>;
 
 	/**
-	 * Forcefully shutdown the application. No livecycle event handlers are triggered.
+	 * Forcefully shutdown the ApplicAtion. No livecycle event hAndlers Are triggered.
 	 */
 	kill(code?: number): Promise<void>;
 
 	/**
-	 * Returns a promise that resolves when a certain lifecycle phase
-	 * has started.
+	 * Returns A promise thAt resolves when A certAin lifecycle phAse
+	 * hAs stArted.
 	 */
-	when(phase: LifecycleMainPhase): Promise<void>;
+	when(phAse: LifecycleMAinPhAse): Promise<void>;
 }
 
-export const enum LifecycleMainPhase {
+export const enum LifecycleMAinPhAse {
 
 	/**
-	 * The first phase signals that we are about to startup.
+	 * The first phAse signAls thAt we Are About to stArtup.
 	 */
-	Starting = 1,
+	StArting = 1,
 
 	/**
-	 * Services are ready and first window is about to open.
+	 * Services Are reAdy And first window is About to open.
 	 */
-	Ready = 2,
+	ReAdy = 2,
 
 	/**
-	 * This phase signals a point in time after the window has opened
-	 * and is typically the best place to do work that is not required
+	 * This phAse signAls A point in time After the window hAs opened
+	 * And is typicAlly the best plAce to do work thAt is not required
 	 * for the window to open.
 	 */
 	AfterWindowOpen = 3
 }
 
-export class LifecycleMainService extends Disposable implements ILifecycleMainService {
+export clAss LifecycleMAinService extends DisposAble implements ILifecycleMAinService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly QUIT_FROM_RESTART_MARKER = 'quit.from.restart'; // use a marker to find out if the session was restarted
+	privAte stAtic reAdonly QUIT_FROM_RESTART_MARKER = 'quit.from.restArt'; // use A mArker to find out if the session wAs restArted
 
-	private readonly _onBeforeShutdown = this._register(new Emitter<void>());
-	readonly onBeforeShutdown = this._onBeforeShutdown.event;
+	privAte reAdonly _onBeforeShutdown = this._register(new Emitter<void>());
+	reAdonly onBeforeShutdown = this._onBeforeShutdown.event;
 
-	private readonly _onWillShutdown = this._register(new Emitter<ShutdownEvent>());
-	readonly onWillShutdown = this._onWillShutdown.event;
+	privAte reAdonly _onWillShutdown = this._register(new Emitter<ShutdownEvent>());
+	reAdonly onWillShutdown = this._onWillShutdown.event;
 
-	private readonly _onBeforeWindowClose = this._register(new Emitter<ICodeWindow>());
-	readonly onBeforeWindowClose = this._onBeforeWindowClose.event;
+	privAte reAdonly _onBeforeWindowClose = this._register(new Emitter<ICodeWindow>());
+	reAdonly onBeforeWindowClose = this._onBeforeWindowClose.event;
 
-	private readonly _onBeforeWindowUnload = this._register(new Emitter<IWindowUnloadEvent>());
-	readonly onBeforeWindowUnload = this._onBeforeWindowUnload.event;
+	privAte reAdonly _onBeforeWindowUnloAd = this._register(new Emitter<IWindowUnloAdEvent>());
+	reAdonly onBeforeWindowUnloAd = this._onBeforeWindowUnloAd.event;
 
-	private _quitRequested = false;
-	get quitRequested(): boolean { return this._quitRequested; }
+	privAte _quitRequested = fAlse;
+	get quitRequested(): booleAn { return this._quitRequested; }
 
-	private _wasRestarted: boolean = false;
-	get wasRestarted(): boolean { return this._wasRestarted; }
+	privAte _wAsRestArted: booleAn = fAlse;
+	get wAsRestArted(): booleAn { return this._wAsRestArted; }
 
-	private _phase = LifecycleMainPhase.Starting;
-	get phase(): LifecycleMainPhase { return this._phase; }
+	privAte _phAse = LifecycleMAinPhAse.StArting;
+	get phAse(): LifecycleMAinPhAse { return this._phAse; }
 
-	private readonly windowToCloseRequest = new Set<number>();
-	private oneTimeListenerTokenGenerator = 0;
-	private windowCounter = 0;
+	privAte reAdonly windowToCloseRequest = new Set<number>();
+	privAte oneTimeListenerTokenGenerAtor = 0;
+	privAte windowCounter = 0;
 
-	private pendingQuitPromise: Promise<boolean> | null = null;
-	private pendingQuitPromiseResolve: { (veto: boolean): void } | null = null;
+	privAte pendingQuitPromise: Promise<booleAn> | null = null;
+	privAte pendingQuitPromiseResolve: { (veto: booleAn): void } | null = null;
 
-	private pendingWillShutdownPromise: Promise<void> | null = null;
+	privAte pendingWillShutdownPromise: Promise<void> | null = null;
 
-	private readonly phaseWhen = new Map<LifecycleMainPhase, Barrier>();
+	privAte reAdonly phAseWhen = new MAp<LifecycleMAinPhAse, BArrier>();
 
 	constructor(
-		@ILogService private readonly logService: ILogService,
-		@IStateService private readonly stateService: IStateService
+		@ILogService privAte reAdonly logService: ILogService,
+		@IStAteService privAte reAdonly stAteService: IStAteService
 	) {
 		super();
 
-		this.handleRestarted();
-		this.when(LifecycleMainPhase.Ready).then(() => this.registerListeners());
+		this.hAndleRestArted();
+		this.when(LifecycleMAinPhAse.ReAdy).then(() => this.registerListeners());
 	}
 
-	private handleRestarted(): void {
-		this._wasRestarted = !!this.stateService.getItem(LifecycleMainService.QUIT_FROM_RESTART_MARKER);
+	privAte hAndleRestArted(): void {
+		this._wAsRestArted = !!this.stAteService.getItem(LifecycleMAinService.QUIT_FROM_RESTART_MARKER);
 
-		if (this._wasRestarted) {
-			this.stateService.removeItem(LifecycleMainService.QUIT_FROM_RESTART_MARKER); // remove the marker right after if found
+		if (this._wAsRestArted) {
+			this.stAteService.removeItem(LifecycleMAinService.QUIT_FROM_RESTART_MARKER); // remove the mArker right After if found
 		}
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// before-quit: an event that is fired if application quit was
-		// requested but before any window was closed.
+		// before-quit: An event thAt is fired if ApplicAtion quit wAs
+		// requested but before Any window wAs closed.
 		const beforeQuitListener = () => {
 			if (this._quitRequested) {
 				return;
 			}
 
-			this.logService.trace('Lifecycle#app.on(before-quit)');
+			this.logService.trAce('Lifecycle#App.on(before-quit)');
 			this._quitRequested = true;
 
-			// Emit event to indicate that we are about to shutdown
-			this.logService.trace('Lifecycle#onBeforeShutdown.fire()');
+			// Emit event to indicAte thAt we Are About to shutdown
+			this.logService.trAce('Lifecycle#onBeforeShutdown.fire()');
 			this._onBeforeShutdown.fire();
 
-			// macOS: can run without any window open. in that case we fire
-			// the onWillShutdown() event directly because there is no veto
+			// mAcOS: cAn run without Any window open. in thAt cAse we fire
+			// the onWillShutdown() event directly becAuse there is no veto
 			// to be expected.
-			if (isMacintosh && this.windowCounter === 0) {
+			if (isMAcintosh && this.windowCounter === 0) {
 				this.beginOnWillShutdown();
 			}
 		};
-		app.addListener('before-quit', beforeQuitListener);
+		App.AddListener('before-quit', beforeQuitListener);
 
-		// window-all-closed: an event that only fires when the last window
-		// was closed. We override this event to be in charge if app.quit()
-		// should be called or not.
+		// window-All-closed: An event thAt only fires when the lAst window
+		// wAs closed. We override this event to be in chArge if App.quit()
+		// should be cAlled or not.
 		const windowAllClosedListener = () => {
-			this.logService.trace('Lifecycle#app.on(window-all-closed)');
+			this.logService.trAce('Lifecycle#App.on(window-All-closed)');
 
-			// Windows/Linux: we quit when all windows have closed
-			// Mac: we only quit when quit was requested
-			if (this._quitRequested || !isMacintosh) {
-				app.quit();
+			// Windows/Linux: we quit when All windows hAve closed
+			// MAc: we only quit when quit wAs requested
+			if (this._quitRequested || !isMAcintosh) {
+				App.quit();
 			}
 		};
-		app.addListener('window-all-closed', windowAllClosedListener);
+		App.AddListener('window-All-closed', windowAllClosedListener);
 
-		// will-quit: an event that is fired after all windows have been
-		// closed, but before actually quitting.
-		app.once('will-quit', e => {
-			this.logService.trace('Lifecycle#app.on(will-quit)');
+		// will-quit: An event thAt is fired After All windows hAve been
+		// closed, but before ActuAlly quitting.
+		App.once('will-quit', e => {
+			this.logService.trAce('Lifecycle#App.on(will-quit)');
 
-			// Prevent the quit until the shutdown promise was resolved
-			e.preventDefault();
+			// Prevent the quit until the shutdown promise wAs resolved
+			e.preventDefAult();
 
-			// Start shutdown sequence
+			// StArt shutdown sequence
 			const shutdownPromise = this.beginOnWillShutdown();
 
-			// Wait until shutdown is signaled to be complete
-			shutdownPromise.finally(() => {
+			// WAit until shutdown is signAled to be complete
+			shutdownPromise.finAlly(() => {
 
 				// Resolve pending quit promise now without veto
-				this.resolvePendingQuitPromise(false /* no veto */);
+				this.resolvePendingQuitPromise(fAlse /* no veto */);
 
-				// Quit again, this time do not prevent this, since our
-				// will-quit listener is only installed "once". Also
-				// remove any listener we have that is no longer needed
-				app.removeListener('before-quit', beforeQuitListener);
-				app.removeListener('window-all-closed', windowAllClosedListener);
-				app.quit();
+				// Quit AgAin, this time do not prevent this, since our
+				// will-quit listener is only instAlled "once". Also
+				// remove Any listener we hAve thAt is no longer needed
+				App.removeListener('before-quit', beforeQuitListener);
+				App.removeListener('window-All-closed', windowAllClosedListener);
+				App.quit();
 			});
 		});
 	}
 
-	private beginOnWillShutdown(): Promise<void> {
+	privAte beginOnWillShutdown(): Promise<void> {
 		if (this.pendingWillShutdownPromise) {
-			return this.pendingWillShutdownPromise; // shutdown is already running
+			return this.pendingWillShutdownPromise; // shutdown is AlreAdy running
 		}
 
-		this.logService.trace('Lifecycle#onWillShutdown.fire()');
+		this.logService.trAce('Lifecycle#onWillShutdown.fire()');
 
 		const joiners: Promise<void>[] = [];
 
@@ -274,75 +274,75 @@ export class LifecycleMainService extends Disposable implements ILifecycleMainSe
 			}
 		});
 
-		this.pendingWillShutdownPromise = Promise.all(joiners).then(() => undefined, err => this.logService.error(err));
+		this.pendingWillShutdownPromise = Promise.All(joiners).then(() => undefined, err => this.logService.error(err));
 
 		return this.pendingWillShutdownPromise;
 	}
 
-	set phase(value: LifecycleMainPhase) {
-		if (value < this.phase) {
-			throw new Error('Lifecycle cannot go backwards');
+	set phAse(vAlue: LifecycleMAinPhAse) {
+		if (vAlue < this.phAse) {
+			throw new Error('Lifecycle cAnnot go bAckwArds');
 		}
 
-		if (this._phase === value) {
+		if (this._phAse === vAlue) {
 			return;
 		}
 
-		this.logService.trace(`lifecycle (main): phase changed (value: ${value})`);
+		this.logService.trAce(`lifecycle (mAin): phAse chAnged (vAlue: ${vAlue})`);
 
-		this._phase = value;
+		this._phAse = vAlue;
 
-		const barrier = this.phaseWhen.get(this._phase);
-		if (barrier) {
-			barrier.open();
-			this.phaseWhen.delete(this._phase);
+		const bArrier = this.phAseWhen.get(this._phAse);
+		if (bArrier) {
+			bArrier.open();
+			this.phAseWhen.delete(this._phAse);
 		}
 	}
 
-	async when(phase: LifecycleMainPhase): Promise<void> {
-		if (phase <= this._phase) {
+	Async when(phAse: LifecycleMAinPhAse): Promise<void> {
+		if (phAse <= this._phAse) {
 			return;
 		}
 
-		let barrier = this.phaseWhen.get(phase);
-		if (!barrier) {
-			barrier = new Barrier();
-			this.phaseWhen.set(phase, barrier);
+		let bArrier = this.phAseWhen.get(phAse);
+		if (!bArrier) {
+			bArrier = new BArrier();
+			this.phAseWhen.set(phAse, bArrier);
 		}
 
-		await barrier.wait();
+		AwAit bArrier.wAit();
 	}
 
 	registerWindow(window: ICodeWindow): void {
 
-		// track window count
+		// trAck window count
 		this.windowCounter++;
 
-		// Window Before Closing: Main -> Renderer
+		// Window Before Closing: MAin -> Renderer
 		window.win.on('close', e => {
 
-			// The window already acknowledged to be closed
+			// The window AlreAdy Acknowledged to be closed
 			const windowId = window.id;
-			if (this.windowToCloseRequest.has(windowId)) {
+			if (this.windowToCloseRequest.hAs(windowId)) {
 				this.windowToCloseRequest.delete(windowId);
 
 				return;
 			}
 
-			this.logService.trace(`Lifecycle#window.on('close') - window ID ${window.id}`);
+			this.logService.trAce(`Lifecycle#window.on('close') - window ID ${window.id}`);
 
-			// Otherwise prevent unload and handle it from window
-			e.preventDefault();
-			this.unload(window, UnloadReason.CLOSE).then(veto => {
+			// Otherwise prevent unloAd And hAndle it from window
+			e.preventDefAult();
+			this.unloAd(window, UnloAdReAson.CLOSE).then(veto => {
 				if (veto) {
 					this.windowToCloseRequest.delete(windowId);
 					return;
 				}
 
-				this.windowToCloseRequest.add(windowId);
+				this.windowToCloseRequest.Add(windowId);
 
-				// Fire onBeforeWindowClose before actually closing
-				this.logService.trace(`Lifecycle#onBeforeWindowClose.fire() - window ID ${windowId}`);
+				// Fire onBeforeWindowClose before ActuAlly closing
+				this.logService.trAce(`Lifecycle#onBeforeWindowClose.fire() - window ID ${windowId}`);
 				this._onBeforeWindowClose.fire(window);
 
 				// No veto, close window now
@@ -352,78 +352,78 @@ export class LifecycleMainService extends Disposable implements ILifecycleMainSe
 
 		// Window After Closing
 		window.win.on('closed', () => {
-			this.logService.trace(`Lifecycle#window.on('closed') - window ID ${window.id}`);
+			this.logService.trAce(`Lifecycle#window.on('closed') - window ID ${window.id}`);
 
-			// update window count
+			// updAte window count
 			this.windowCounter--;
 
-			// if there are no more code windows opened, fire the onWillShutdown event, unless
-			// we are on macOS where it is perfectly fine to close the last window and
-			// the application continues running (unless quit was actually requested)
-			if (this.windowCounter === 0 && (!isMacintosh || this._quitRequested)) {
+			// if there Are no more code windows opened, fire the onWillShutdown event, unless
+			// we Are on mAcOS where it is perfectly fine to close the lAst window And
+			// the ApplicAtion continues running (unless quit wAs ActuAlly requested)
+			if (this.windowCounter === 0 && (!isMAcintosh || this._quitRequested)) {
 				this.beginOnWillShutdown();
 			}
 		});
 	}
 
-	async reload(window: ICodeWindow, cli?: NativeParsedArgs): Promise<void> {
+	Async reloAd(window: ICodeWindow, cli?: NAtivePArsedArgs): Promise<void> {
 
-		// Only reload when the window has not vetoed this
-		const veto = await this.unload(window, UnloadReason.RELOAD);
+		// Only reloAd when the window hAs not vetoed this
+		const veto = AwAit this.unloAd(window, UnloAdReAson.RELOAD);
 		if (!veto) {
-			window.reload(undefined, cli);
+			window.reloAd(undefined, cli);
 		}
 	}
 
-	async unload(window: ICodeWindow, reason: UnloadReason): Promise<boolean /* veto */> {
+	Async unloAd(window: ICodeWindow, reAson: UnloAdReAson): Promise<booleAn /* veto */> {
 
-		// Always allow to unload a window that is not yet ready
-		if (!window.isReady) {
-			return false;
+		// AlwAys Allow to unloAd A window thAt is not yet reAdy
+		if (!window.isReAdy) {
+			return fAlse;
 		}
 
-		this.logService.trace(`Lifecycle#unload() - window ID ${window.id}`);
+		this.logService.trAce(`Lifecycle#unloAd() - window ID ${window.id}`);
 
-		// first ask the window itself if it vetos the unload
-		const windowUnloadReason = this._quitRequested ? UnloadReason.QUIT : reason;
-		let veto = await this.onBeforeUnloadWindowInRenderer(window, windowUnloadReason);
+		// first Ask the window itself if it vetos the unloAd
+		const windowUnloAdReAson = this._quitRequested ? UnloAdReAson.QUIT : reAson;
+		let veto = AwAit this.onBeforeUnloAdWindowInRenderer(window, windowUnloAdReAson);
 		if (veto) {
-			this.logService.trace(`Lifecycle#unload() - veto in renderer (window ID ${window.id})`);
+			this.logService.trAce(`Lifecycle#unloAd() - veto in renderer (window ID ${window.id})`);
 
-			return this.handleWindowUnloadVeto(veto);
+			return this.hAndleWindowUnloAdVeto(veto);
 		}
 
-		// then check for vetos in the main side
-		veto = await this.onBeforeUnloadWindowInMain(window, windowUnloadReason);
+		// then check for vetos in the mAin side
+		veto = AwAit this.onBeforeUnloAdWindowInMAin(window, windowUnloAdReAson);
 		if (veto) {
-			this.logService.trace(`Lifecycle#unload() - veto in main (window ID ${window.id})`);
+			this.logService.trAce(`Lifecycle#unloAd() - veto in mAin (window ID ${window.id})`);
 
-			return this.handleWindowUnloadVeto(veto);
+			return this.hAndleWindowUnloAdVeto(veto);
 		}
 
-		this.logService.trace(`Lifecycle#unload() - no veto (window ID ${window.id})`);
+		this.logService.trAce(`Lifecycle#unloAd() - no veto (window ID ${window.id})`);
 
-		// finally if there are no vetos, unload the renderer
-		await this.onWillUnloadWindowInRenderer(window, windowUnloadReason);
+		// finAlly if there Are no vetos, unloAd the renderer
+		AwAit this.onWillUnloAdWindowInRenderer(window, windowUnloAdReAson);
 
-		return false;
+		return fAlse;
 	}
 
-	private handleWindowUnloadVeto(veto: boolean): boolean {
+	privAte hAndleWindowUnloAdVeto(veto: booleAn): booleAn {
 		if (!veto) {
-			return false; // no veto
+			return fAlse; // no veto
 		}
 
-		// a veto resolves any pending quit with veto
+		// A veto resolves Any pending quit with veto
 		this.resolvePendingQuitPromise(true /* veto */);
 
-		// a veto resets the pending quit request flag
-		this._quitRequested = false;
+		// A veto resets the pending quit request flAg
+		this._quitRequested = fAlse;
 
 		return true; // veto
 	}
 
-	private resolvePendingQuitPromise(veto: boolean): void {
+	privAte resolvePendingQuitPromise(veto: booleAn): void {
 		if (this.pendingQuitPromiseResolve) {
 			this.pendingQuitPromiseResolve(veto);
 			this.pendingQuitPromiseResolve = null;
@@ -431,103 +431,103 @@ export class LifecycleMainService extends Disposable implements ILifecycleMainSe
 		}
 	}
 
-	private onBeforeUnloadWindowInRenderer(window: ICodeWindow, reason: UnloadReason): Promise<boolean /* veto */> {
-		return new Promise<boolean>(resolve => {
-			const oneTimeEventToken = this.oneTimeListenerTokenGenerator++;
-			const okChannel = `vscode:ok${oneTimeEventToken}`;
-			const cancelChannel = `vscode:cancel${oneTimeEventToken}`;
+	privAte onBeforeUnloAdWindowInRenderer(window: ICodeWindow, reAson: UnloAdReAson): Promise<booleAn /* veto */> {
+		return new Promise<booleAn>(resolve => {
+			const oneTimeEventToken = this.oneTimeListenerTokenGenerAtor++;
+			const okChAnnel = `vscode:ok${oneTimeEventToken}`;
+			const cAncelChAnnel = `vscode:cAncel${oneTimeEventToken}`;
 
-			ipc.once(okChannel, () => {
-				resolve(false); // no veto
+			ipc.once(okChAnnel, () => {
+				resolve(fAlse); // no veto
 			});
 
-			ipc.once(cancelChannel, () => {
+			ipc.once(cAncelChAnnel, () => {
 				resolve(true); // veto
 			});
 
-			window.send('vscode:onBeforeUnload', { okChannel, cancelChannel, reason });
+			window.send('vscode:onBeforeUnloAd', { okChAnnel, cAncelChAnnel, reAson });
 		});
 	}
 
-	private onBeforeUnloadWindowInMain(window: ICodeWindow, reason: UnloadReason): Promise<boolean /* veto */> {
-		const vetos: (boolean | Promise<boolean>)[] = [];
+	privAte onBeforeUnloAdWindowInMAin(window: ICodeWindow, reAson: UnloAdReAson): Promise<booleAn /* veto */> {
+		const vetos: (booleAn | Promise<booleAn>)[] = [];
 
-		this._onBeforeWindowUnload.fire({
-			reason,
+		this._onBeforeWindowUnloAd.fire({
+			reAson,
 			window,
-			veto(value) {
-				vetos.push(value);
+			veto(vAlue) {
+				vetos.push(vAlue);
 			}
 		});
 
-		return handleVetos(vetos, err => this.logService.error(err));
+		return hAndleVetos(vetos, err => this.logService.error(err));
 	}
 
-	private onWillUnloadWindowInRenderer(window: ICodeWindow, reason: UnloadReason): Promise<void> {
+	privAte onWillUnloAdWindowInRenderer(window: ICodeWindow, reAson: UnloAdReAson): Promise<void> {
 		return new Promise<void>(resolve => {
-			const oneTimeEventToken = this.oneTimeListenerTokenGenerator++;
-			const replyChannel = `vscode:reply${oneTimeEventToken}`;
+			const oneTimeEventToken = this.oneTimeListenerTokenGenerAtor++;
+			const replyChAnnel = `vscode:reply${oneTimeEventToken}`;
 
-			ipc.once(replyChannel, () => resolve());
+			ipc.once(replyChAnnel, () => resolve());
 
-			window.send('vscode:onWillUnload', { replyChannel, reason });
+			window.send('vscode:onWillUnloAd', { replyChAnnel, reAson });
 		});
 	}
 
-	quit(fromUpdate?: boolean): Promise<boolean /* veto */> {
+	quit(fromUpdAte?: booleAn): Promise<booleAn /* veto */> {
 		if (this.pendingQuitPromise) {
 			return this.pendingQuitPromise;
 		}
 
-		this.logService.trace(`Lifecycle#quit() - from update: ${fromUpdate}`);
+		this.logService.trAce(`Lifecycle#quit() - from updAte: ${fromUpdAte}`);
 
-		// Remember the reason for quit was to restart
-		if (fromUpdate) {
-			this.stateService.setItem(LifecycleMainService.QUIT_FROM_RESTART_MARKER, true);
+		// Remember the reAson for quit wAs to restArt
+		if (fromUpdAte) {
+			this.stAteService.setItem(LifecycleMAinService.QUIT_FROM_RESTART_MARKER, true);
 		}
 
 		this.pendingQuitPromise = new Promise(resolve => {
 
-			// Store as field to access it from a window cancellation
+			// Store As field to Access it from A window cAncellAtion
 			this.pendingQuitPromiseResolve = resolve;
 
-			// Calling app.quit() will trigger the close handlers of each opened window
-			// and only if no window vetoed the shutdown, we will get the will-quit event
-			this.logService.trace('Lifecycle#quit() - calling app.quit()');
-			app.quit();
+			// CAlling App.quit() will trigger the close hAndlers of eAch opened window
+			// And only if no window vetoed the shutdown, we will get the will-quit event
+			this.logService.trAce('Lifecycle#quit() - cAlling App.quit()');
+			App.quit();
 		});
 
 		return this.pendingQuitPromise;
 	}
 
-	relaunch(options?: { addArgs?: string[], removeArgs?: string[] }): void {
-		this.logService.trace('Lifecycle#relaunch()');
+	relAunch(options?: { AddArgs?: string[], removeArgs?: string[] }): void {
+		this.logService.trAce('Lifecycle#relAunch()');
 
-		const args = process.argv.slice(1);
-		if (options?.addArgs) {
-			args.push(...options.addArgs);
+		const Args = process.Argv.slice(1);
+		if (options?.AddArgs) {
+			Args.push(...options.AddArgs);
 		}
 
 		if (options?.removeArgs) {
-			for (const a of options.removeArgs) {
-				const idx = args.indexOf(a);
+			for (const A of options.removeArgs) {
+				const idx = Args.indexOf(A);
 				if (idx >= 0) {
-					args.splice(idx, 1);
+					Args.splice(idx, 1);
 				}
 			}
 		}
 
-		let quitVetoed = false;
-		app.once('quit', () => {
+		let quitVetoed = fAlse;
+		App.once('quit', () => {
 			if (!quitVetoed) {
 
-				// Remember the reason for quit was to restart
-				this.stateService.setItem(LifecycleMainService.QUIT_FROM_RESTART_MARKER, true);
+				// Remember the reAson for quit wAs to restArt
+				this.stAteService.setItem(LifecycleMAinService.QUIT_FROM_RESTART_MARKER, true);
 
-				// Windows: we are about to restart and as such we need to restore the original
-				// current working directory we had on startup to get the exact same startup
-				// behaviour. As such, we briefly change back to the VSCODE_CWD and then when
-				// Code starts it will set it back to the installation directory again.
+				// Windows: we Are About to restArt And As such we need to restore the originAl
+				// current working directory we hAd on stArtup to get the exAct sAme stArtup
+				// behAviour. As such, we briefly chAnge bAck to the VSCODE_CWD And then when
+				// Code stArts it will set it bAck to the instAllAtion directory AgAin.
 				try {
 					if (isWindows) {
 						const vscodeCwd = process.env['VSCODE_CWD'];
@@ -535,43 +535,43 @@ export class LifecycleMainService extends Disposable implements ILifecycleMainSe
 							process.chdir(vscodeCwd);
 						}
 					}
-				} catch (err) {
+				} cAtch (err) {
 					this.logService.error(err);
 				}
 
-				// relaunch after we are sure there is no veto
-				this.logService.trace('Lifecycle#relaunch() - calling app.relaunch()');
-				app.relaunch({ args });
+				// relAunch After we Are sure there is no veto
+				this.logService.trAce('Lifecycle#relAunch() - cAlling App.relAunch()');
+				App.relAunch({ Args });
 			}
 		});
 
-		// app.relaunch() does not quit automatically, so we quit first,
-		// check for vetoes and then relaunch from the app.on('quit') event
+		// App.relAunch() does not quit AutomAticAlly, so we quit first,
+		// check for vetoes And then relAunch from the App.on('quit') event
 		this.quit().then(veto => quitVetoed = veto);
 	}
 
-	async kill(code?: number): Promise<void> {
-		this.logService.trace('Lifecycle#kill()');
+	Async kill(code?: number): Promise<void> {
+		this.logService.trAce('Lifecycle#kill()');
 
-		// The kill() method is only used in 2 situations:
-		// - when an instance fails to start at all
+		// The kill() method is only used in 2 situAtions:
+		// - when An instAnce fAils to stArt At All
 		// - when extension tests run from CLI to report proper exit code
 		//
-		// From extension tests we have seen issues where calling app.exit()
-		// with an opened window can lead to native crashes (Linux) when webviews
-		// are involved. As such, we should make sure to destroy any opened
-		// window before calling app.exit().
+		// From extension tests we hAve seen issues where cAlling App.exit()
+		// with An opened window cAn leAd to nAtive crAshes (Linux) when webviews
+		// Are involved. As such, we should mAke sure to destroy Any opened
+		// window before cAlling App.exit().
 		//
-		// Note: Electron implements a similar logic here:
-		// https://github.com/electron/electron/blob/fe5318d753637c3903e23fc1ed1b263025887b6a/spec-main/window-helpers.ts#L5
+		// Note: Electron implements A similAr logic here:
+		// https://github.com/electron/electron/blob/fe5318d753637c3903e23fc1ed1b263025887b6A/spec-mAin/window-helpers.ts#L5
 
-		await Promise.race([
+		AwAit Promise.rAce([
 
-			// still do not block more than 1s
+			// still do not block more thAn 1s
 			timeout(1000),
 
-			// destroy any opened window
-			(async () => {
+			// destroy Any opened window
+			(Async () => {
 				for (const window of BrowserWindow.getAllWindows()) {
 					if (window && !window.isDestroyed()) {
 						let whenWindowClosed: Promise<void>;
@@ -582,13 +582,13 @@ export class LifecycleMainService extends Disposable implements ILifecycleMainSe
 						}
 
 						window.destroy();
-						await whenWindowClosed;
+						AwAit whenWindowClosed;
 					}
 				}
 			})()
 		]);
 
-		// Now exit either after 1s or all windows destroyed
-		app.exit(code);
+		// Now exit either After 1s or All windows destroyed
+		App.exit(code);
 	}
 }

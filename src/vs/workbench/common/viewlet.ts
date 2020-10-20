@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IPaneComposite } from 'vs/workbench/common/panecomposite';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IPAneComposite } from 'vs/workbench/common/pAnecomposite';
 
-export const SideBarVisibleContext = new RawContextKey<boolean>('sideBarVisible', false);
-export const SidebarFocusContext = new RawContextKey<boolean>('sideBarFocus', false);
-export const ActiveViewletContext = new RawContextKey<string>('activeViewlet', '');
+export const SideBArVisibleContext = new RAwContextKey<booleAn>('sideBArVisible', fAlse);
+export const SidebArFocusContext = new RAwContextKey<booleAn>('sideBArFocus', fAlse);
+export const ActiveViewletContext = new RAwContextKey<string>('ActiveViewlet', '');
 
-export interface IViewlet extends IPaneComposite {
+export interfAce IViewlet extends IPAneComposite {
 
 	/**
-	 * Returns the minimal width needed to avoid any content horizontal truncation
+	 * Returns the minimAl width needed to Avoid Any content horizontAl truncAtion
 	 */
-	getOptimalWidth(): number | undefined;
+	getOptimAlWidth(): number | undefined;
 }

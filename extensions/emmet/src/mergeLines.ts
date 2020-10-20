@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { Node } from 'EmmetNode';
-import { getNode, parseDocument, validate } from './util';
+import { getNode, pArseDocument, vAlidAte } from './util';
 
 export function mergeLines() {
-	if (!validate(false) || !vscode.window.activeTextEditor) {
+	if (!vAlidAte(fAlse) || !vscode.window.ActiveTextEditor) {
 		return;
 	}
 
-	const editor = vscode.window.activeTextEditor;
+	const editor = vscode.window.ActiveTextEditor;
 
-	let rootNode = parseDocument(editor.document);
+	let rootNode = pArseDocument(editor.document);
 	if (!rootNode) {
 		return;
 	}
 
 	return editor.edit(editBuilder => {
-		editor.selections.reverse().forEach(selection => {
-			let textEdit = getRangesToReplace(editor.document, selection, rootNode!);
+		editor.selections.reverse().forEAch(selection => {
+			let textEdit = getRAngesToReplAce(editor.document, selection, rootNode!);
 			if (textEdit) {
-				editBuilder.replace(textEdit.range, textEdit.newText);
+				editBuilder.replAce(textEdit.rAnge, textEdit.newText);
 			}
 		});
 	});
 }
 
-function getRangesToReplace(document: vscode.TextDocument, selection: vscode.Selection, rootNode: Node): vscode.TextEdit | undefined {
-	let startNodeToUpdate: Node | null;
-	let endNodeToUpdate: Node | null;
+function getRAngesToReplAce(document: vscode.TextDocument, selection: vscode.Selection, rootNode: Node): vscode.TextEdit | undefined {
+	let stArtNodeToUpdAte: Node | null;
+	let endNodeToUpdAte: Node | null;
 
 	if (selection.isEmpty) {
-		startNodeToUpdate = endNodeToUpdate = getNode(rootNode, selection.start, true);
+		stArtNodeToUpdAte = endNodeToUpdAte = getNode(rootNode, selection.stArt, true);
 	} else {
-		startNodeToUpdate = getNode(rootNode, selection.start, true);
-		endNodeToUpdate = getNode(rootNode, selection.end, true);
+		stArtNodeToUpdAte = getNode(rootNode, selection.stArt, true);
+		endNodeToUpdAte = getNode(rootNode, selection.end, true);
 	}
 
-	if (!startNodeToUpdate || !endNodeToUpdate || startNodeToUpdate.start.line === endNodeToUpdate.end.line) {
+	if (!stArtNodeToUpdAte || !endNodeToUpdAte || stArtNodeToUpdAte.stArt.line === endNodeToUpdAte.end.line) {
 		return;
 	}
 
-	let rangeToReplace = new vscode.Range(startNodeToUpdate.start, endNodeToUpdate.end);
-	let textToReplaceWith = document.lineAt(startNodeToUpdate.start.line).text.substr(startNodeToUpdate.start.character);
-	for (let i = startNodeToUpdate.start.line + 1; i <= endNodeToUpdate.end.line; i++) {
-		textToReplaceWith += document.lineAt(i).text.trim();
+	let rAngeToReplAce = new vscode.RAnge(stArtNodeToUpdAte.stArt, endNodeToUpdAte.end);
+	let textToReplAceWith = document.lineAt(stArtNodeToUpdAte.stArt.line).text.substr(stArtNodeToUpdAte.stArt.chArActer);
+	for (let i = stArtNodeToUpdAte.stArt.line + 1; i <= endNodeToUpdAte.end.line; i++) {
+		textToReplAceWith += document.lineAt(i).text.trim();
 	}
 
-	return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
+	return new vscode.TextEdit(rAngeToReplAce, textToReplAceWith);
 }

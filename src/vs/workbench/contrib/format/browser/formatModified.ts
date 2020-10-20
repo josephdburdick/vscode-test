@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ITextModel } from 'vs/editor/common/model';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { formatDocumentRangesWithSelectedProvider, FormattingMode } from 'vs/editor/contrib/format/format';
-import * as nls from 'vs/nls';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Progress } from 'vs/platform/progress/common/progress';
-import { getOriginalResource } from 'vs/workbench/contrib/scm/browser/dirtydiffDecorator';
+import { formAtDocumentRAngesWithSelectedProvider, FormAttingMode } from 'vs/editor/contrib/formAt/formAt';
+import * As nls from 'vs/nls';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Progress } from 'vs/plAtform/progress/common/progress';
+import { getOriginAlResource } from 'vs/workbench/contrib/scm/browser/dirtydiffDecorAtor';
 import { ISCMService } from 'vs/workbench/contrib/scm/common/scm';
 
-registerEditorAction(class FormatModifiedAction extends EditorAction {
+registerEditorAction(clAss FormAtModifiedAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.formatChanges',
-			label: nls.localize('formatChanges', "Format Modified Lines"),
-			alias: 'Format Modified Lines',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentSelectionFormattingProvider),
+			id: 'editor.Action.formAtChAnges',
+			lAbel: nls.locAlize('formAtChAnges', "FormAt Modified Lines"),
+			AliAs: 'FormAt Modified Lines',
+			precondition: ContextKeyExpr.And(EditorContextKeys.writAble, EditorContextKeys.hAsDocumentSelectionFormAttingProvider),
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const instaService = accessor.get(IInstantiationService);
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const instAService = Accessor.get(IInstAntiAtionService);
 
-		if (!editor.hasModel()) {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
-		const ranges = await instaService.invokeFunction(getModifiedRanges, editor.getModel());
-		if (isNonEmptyArray(ranges)) {
-			return instaService.invokeFunction(
-				formatDocumentRangesWithSelectedProvider, editor, ranges,
-				FormattingMode.Explicit, Progress.None, CancellationToken.None
+		const rAnges = AwAit instAService.invokeFunction(getModifiedRAnges, editor.getModel());
+		if (isNonEmptyArrAy(rAnges)) {
+			return instAService.invokeFunction(
+				formAtDocumentRAngesWithSelectedProvider, editor, rAnges,
+				FormAttingMode.Explicit, Progress.None, CAncellAtionToken.None
 			);
 		}
 	}
 });
 
 
-export async function getModifiedRanges(accessor: ServicesAccessor, modified: ITextModel): Promise<Range[] | undefined> {
-	const scmService = accessor.get(ISCMService);
-	const workerService = accessor.get(IEditorWorkerService);
-	const modelService = accessor.get(ITextModelService);
+export Async function getModifiedRAnges(Accessor: ServicesAccessor, modified: ITextModel): Promise<RAnge[] | undefined> {
+	const scmService = Accessor.get(ISCMService);
+	const workerService = Accessor.get(IEditorWorkerService);
+	const modelService = Accessor.get(ITextModelService);
 
-	const original = await getOriginalResource(scmService, modified.uri);
-	if (!original) {
+	const originAl = AwAit getOriginAlResource(scmService, modified.uri);
+	if (!originAl) {
 		return undefined;
 	}
 
-	const ranges: Range[] = [];
-	const ref = await modelService.createModelReference(original);
+	const rAnges: RAnge[] = [];
+	const ref = AwAit modelService.creAteModelReference(originAl);
 	try {
-		if (!workerService.canComputeDirtyDiff(original, modified.uri)) {
+		if (!workerService.cAnComputeDirtyDiff(originAl, modified.uri)) {
 			return undefined;
 		}
-		const changes = await workerService.computeDirtyDiff(original, modified.uri, true);
-		if (!isNonEmptyArray(changes)) {
+		const chAnges = AwAit workerService.computeDirtyDiff(originAl, modified.uri, true);
+		if (!isNonEmptyArrAy(chAnges)) {
 			return undefined;
 		}
-		for (let change of changes) {
-			ranges.push(modified.validateRange(new Range(
-				change.modifiedStartLineNumber, 1,
-				change.modifiedEndLineNumber || change.modifiedStartLineNumber /*endLineNumber is 0 when things got deleted*/, Number.MAX_SAFE_INTEGER)
+		for (let chAnge of chAnges) {
+			rAnges.push(modified.vAlidAteRAnge(new RAnge(
+				chAnge.modifiedStArtLineNumber, 1,
+				chAnge.modifiedEndLineNumber || chAnge.modifiedStArtLineNumber /*endLineNumber is 0 when things got deleted*/, Number.MAX_SAFE_INTEGER)
 			));
 		}
-	} finally {
+	} finAlly {
 		ref.dispose();
 	}
 
-	return ranges;
+	return rAnges;
 }

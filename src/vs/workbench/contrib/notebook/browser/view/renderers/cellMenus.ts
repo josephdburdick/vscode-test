@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMenu, IMenuService, MenuId } from 'vs/platform/actions/common/actions';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+import { IMenu, IMenuService, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
 
-export class CellMenus {
+export clAss CellMenus {
 	constructor(
-		@IMenuService private readonly menuService: IMenuService,
+		@IMenuService privAte reAdonly menuService: IMenuService,
 	) { }
 
 	getCellTitleMenu(contextKeyService: IContextKeyService): IMenu {
@@ -23,8 +23,8 @@ export class CellMenus {
 		return this.getMenu(MenuId.NotebookCellListTop, contextKeyService);
 	}
 
-	private getMenu(menuId: MenuId, contextKeyService: IContextKeyService): IMenu {
-		const menu = this.menuService.createMenu(menuId, contextKeyService);
+	privAte getMenu(menuId: MenuId, contextKeyService: IContextKeyService): IMenu {
+		const menu = this.menuService.creAteMenu(menuId, contextKeyService);
 
 
 		return menu;

@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IUpdateService, State } from 'vs/platform/update/common/update';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IUpdAteService, StAte } from 'vs/plAtform/updAte/common/updAte';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-export class NativeUpdateService implements IUpdateService {
+export clAss NAtiveUpdAteService implements IUpdAteService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onStateChange = new Emitter<State>();
-	readonly onStateChange: Event<State> = this._onStateChange.event;
+	privAte reAdonly _onStAteChAnge = new Emitter<StAte>();
+	reAdonly onStAteChAnge: Event<StAte> = this._onStAteChAnge.event;
 
-	private _state: State = State.Uninitialized;
-	get state(): State { return this._state; }
+	privAte _stAte: StAte = StAte.UninitiAlized;
+	get stAte(): StAte { return this._stAte; }
 
-	private channel: IChannel;
+	privAte chAnnel: IChAnnel;
 
-	constructor(@IMainProcessService mainProcessService: IMainProcessService) {
-		this.channel = mainProcessService.getChannel('update');
+	constructor(@IMAinProcessService mAinProcessService: IMAinProcessService) {
+		this.chAnnel = mAinProcessService.getChAnnel('updAte');
 
-		// always set this._state as the state changes
-		this.onStateChange(state => this._state = state);
+		// AlwAys set this._stAte As the stAte chAnges
+		this.onStAteChAnge(stAte => this._stAte = stAte);
 
-		this.channel.call<State>('_getInitialState').then(state => {
-			// fire initial state
-			this._onStateChange.fire(state);
+		this.chAnnel.cAll<StAte>('_getInitiAlStAte').then(stAte => {
+			// fire initiAl stAte
+			this._onStAteChAnge.fire(stAte);
 
-			// fire subsequent states as they come in from remote
+			// fire subsequent stAtes As they come in from remote
 
-			this.channel.listen<State>('onStateChange')(state => this._onStateChange.fire(state));
+			this.chAnnel.listen<StAte>('onStAteChAnge')(stAte => this._onStAteChAnge.fire(stAte));
 		});
 	}
 
-	checkForUpdates(context: any): Promise<void> {
-		return this.channel.call('checkForUpdates', context);
+	checkForUpdAtes(context: Any): Promise<void> {
+		return this.chAnnel.cAll('checkForUpdAtes', context);
 	}
 
-	downloadUpdate(): Promise<void> {
-		return this.channel.call('downloadUpdate');
+	downloAdUpdAte(): Promise<void> {
+		return this.chAnnel.cAll('downloAdUpdAte');
 	}
 
-	applyUpdate(): Promise<void> {
-		return this.channel.call('applyUpdate');
+	ApplyUpdAte(): Promise<void> {
+		return this.chAnnel.cAll('ApplyUpdAte');
 	}
 
-	quitAndInstall(): Promise<void> {
-		return this.channel.call('quitAndInstall');
+	quitAndInstAll(): Promise<void> {
+		return this.chAnnel.cAll('quitAndInstAll');
 	}
 
-	isLatestVersion(): Promise<boolean> {
-		return this.channel.call('isLatestVersion');
+	isLAtestVersion(): Promise<booleAn> {
+		return this.chAnnel.cAll('isLAtestVersion');
 	}
 }
 
-registerSingleton(IUpdateService, NativeUpdateService);
+registerSingleton(IUpdAteService, NAtiveUpdAteService);

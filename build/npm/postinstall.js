@@ -1,77 +1,77 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const cp = require('child_process');
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
-const yarn = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
+const yArn = process.plAtform === 'win32' ? 'yArn.cmd' : 'yArn';
 
 /**
- * @param {string} location
- * @param {*} [opts]
+ * @pArAm {string} locAtion
+ * @pArAm {*} [opts]
  */
-function yarnInstall(location, opts) {
+function yArnInstAll(locAtion, opts) {
 	opts = opts || { env: process.env };
-	opts.cwd = location;
+	opts.cwd = locAtion;
 	opts.stdio = 'inherit';
 
-	const raw = process.env['npm_config_argv'] || '{}';
-	const argv = JSON.parse(raw);
-	const original = argv.original || [];
-	const args = original.filter(arg => arg === '--ignore-optional' || arg === '--frozen-lockfile');
+	const rAw = process.env['npm_config_Argv'] || '{}';
+	const Argv = JSON.pArse(rAw);
+	const originAl = Argv.originAl || [];
+	const Args = originAl.filter(Arg => Arg === '--ignore-optionAl' || Arg === '--frozen-lockfile');
 
-	console.log(`Installing dependencies in ${location}...`);
-	console.log(`$ yarn ${args.join(' ')}`);
-	const result = cp.spawnSync(yarn, args, opts);
+	console.log(`InstAlling dependencies in ${locAtion}...`);
+	console.log(`$ yArn ${Args.join(' ')}`);
+	const result = cp.spAwnSync(yArn, Args, opts);
 
-	if (result.error || result.status !== 0) {
+	if (result.error || result.stAtus !== 0) {
 		process.exit(1);
 	}
 }
 
-yarnInstall('extensions'); // node modules shared by all extensions
+yArnInstAll('extensions'); // node modules shAred by All extensions
 
-if (!(process.platform === 'win32' && (process.arch === 'arm64' || process.env['npm_config_arch'] === 'arm64'))) {
-	yarnInstall('remote'); // node modules used by vscode server
-	yarnInstall('remote/web'); // node modules used by vscode web
+if (!(process.plAtform === 'win32' && (process.Arch === 'Arm64' || process.env['npm_config_Arch'] === 'Arm64'))) {
+	yArnInstAll('remote'); // node modules used by vscode server
+	yArnInstAll('remote/web'); // node modules used by vscode web
 }
 
-const allExtensionFolders = fs.readdirSync('extensions');
-const extensions = allExtensionFolders.filter(e => {
+const AllExtensionFolders = fs.reAddirSync('extensions');
+const extensions = AllExtensionFolders.filter(e => {
 	try {
-		let packageJSON = JSON.parse(fs.readFileSync(path.join('extensions', e, 'package.json')).toString());
-		return packageJSON && (packageJSON.dependencies || packageJSON.devDependencies);
-	} catch (e) {
-		return false;
+		let pAckAgeJSON = JSON.pArse(fs.reAdFileSync(pAth.join('extensions', e, 'pAckAge.json')).toString());
+		return pAckAgeJSON && (pAckAgeJSON.dependencies || pAckAgeJSON.devDependencies);
+	} cAtch (e) {
+		return fAlse;
 	}
 });
 
-extensions.forEach(extension => yarnInstall(`extensions/${extension}`));
+extensions.forEAch(extension => yArnInstAll(`extensions/${extension}`));
 
-function yarnInstallBuildDependencies() {
-	// make sure we install the deps of build/lib/watch for the system installed
-	// node, since that is the driver of gulp
-	const watchPath = path.join(path.dirname(__dirname), 'lib', 'watch');
-	const yarnrcPath = path.join(watchPath, '.yarnrc');
+function yArnInstAllBuildDependencies() {
+	// mAke sure we instAll the deps of build/lib/wAtch for the system instAlled
+	// node, since thAt is the driver of gulp
+	const wAtchPAth = pAth.join(pAth.dirnAme(__dirnAme), 'lib', 'wAtch');
+	const yArnrcPAth = pAth.join(wAtchPAth, '.yArnrc');
 
-	const disturl = 'https://nodejs.org/download/release';
-	const target = process.versions.node;
+	const disturl = 'https://nodejs.org/downloAd/releAse';
+	const tArget = process.versions.node;
 	const runtime = 'node';
 
-	const yarnrc = `disturl "${disturl}"
-target "${target}"
+	const yArnrc = `disturl "${disturl}"
+tArget "${tArget}"
 runtime "${runtime}"`;
 
-	fs.writeFileSync(yarnrcPath, yarnrc, 'utf8');
-	yarnInstall(watchPath);
+	fs.writeFileSync(yArnrcPAth, yArnrc, 'utf8');
+	yArnInstAll(wAtchPAth);
 }
 
-yarnInstall(`build`); // node modules required for build
-yarnInstall('test/automation'); // node modules required for smoketest
-yarnInstall('test/smoke'); // node modules required for smoketest
-yarnInstall('test/integration/browser'); // node modules required for integration
-yarnInstallBuildDependencies(); // node modules for watching, specific to host node version, not electron
+yArnInstAll(`build`); // node modules required for build
+yArnInstAll('test/AutomAtion'); // node modules required for smoketest
+yArnInstAll('test/smoke'); // node modules required for smoketest
+yArnInstAll('test/integrAtion/browser'); // node modules required for integrAtion
+yArnInstAllBuildDependencies(); // node modules for wAtching, specific to host node version, not electron
 
-cp.execSync('git config pull.rebase true');
+cp.execSync('git config pull.rebAse true');

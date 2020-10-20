@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withDefaults = require('../shared.webpack.config');
-const path = require('path');
-const webpack = require('webpack');
+const withDefAults = require('../shAred.webpAck.config');
+const pAth = require('pAth');
+const webpAck = require('webpAck');
 
-const config = withDefaults({
-	context: path.join(__dirname, 'client'),
+const config = withDefAults({
+	context: pAth.join(__dirnAme, 'client'),
 	entry: {
-		extension: './src/node/jsonClientMain.ts'
+		extension: './src/node/jsonClientMAin.ts'
 	},
 	output: {
-		filename: 'jsonClientMain.js',
-		path: path.join(__dirname, 'client', 'dist', 'node')
+		filenAme: 'jsonClientMAin.js',
+		pAth: pAth.join(__dirnAme, 'client', 'dist', 'node')
 	}
 });
 
-// add plugin, don't replace inherited
-config.plugins.push(new webpack.IgnorePlugin(/vertx/)); // request-light dependency
+// Add plugin, don't replAce inherited
+config.plugins.push(new webpAck.IgnorePlugin(/vertx/)); // request-light dependency
 
 module.exports = config;

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { RawContextKey, IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
+import { RAwContextKey, IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class WordContextKey extends Disposable {
+export clAss WordContextKey extends DisposAble {
 
-	static readonly AtEnd = new RawContextKey<boolean>('atEndOfWord', false);
+	stAtic reAdonly AtEnd = new RAwContextKey<booleAn>('AtEndOfWord', fAlse);
 
-	private readonly _ckAtEnd: IContextKey<boolean>;
+	privAte reAdonly _ckAtEnd: IContextKey<booleAn>;
 
-	private _enabled: boolean = false;
-	private _selectionListener?: IDisposable;
+	privAte _enAbled: booleAn = fAlse;
+	privAte _selectionListener?: IDisposAble;
 
 	constructor(
-		private readonly _editor: ICodeEditor,
+		privAte reAdonly _editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService,
 	) {
 		super();
 		this._ckAtEnd = WordContextKey.AtEnd.bindTo(contextKeyService);
-		this._register(this._editor.onDidChangeConfiguration(e => e.hasChanged(EditorOption.tabCompletion) && this._update()));
-		this._update();
+		this._register(this._editor.onDidChAngeConfigurAtion(e => e.hAsChAnged(EditorOption.tAbCompletion) && this._updAte()));
+		this._updAte();
 	}
 
 	dispose(): void {
@@ -33,30 +33,30 @@ export class WordContextKey extends Disposable {
 		this._ckAtEnd.reset();
 	}
 
-	private _update(): void {
-		// only update this when tab completions are enabled
-		const enabled = this._editor.getOption(EditorOption.tabCompletion) === 'on';
-		if (this._enabled === enabled) {
+	privAte _updAte(): void {
+		// only updAte this when tAb completions Are enAbled
+		const enAbled = this._editor.getOption(EditorOption.tAbCompletion) === 'on';
+		if (this._enAbled === enAbled) {
 			return;
 		}
-		this._enabled = enabled;
+		this._enAbled = enAbled;
 
-		if (this._enabled) {
+		if (this._enAbled) {
 			const checkForWordEnd = () => {
-				if (!this._editor.hasModel()) {
-					this._ckAtEnd.set(false);
+				if (!this._editor.hAsModel()) {
+					this._ckAtEnd.set(fAlse);
 					return;
 				}
 				const model = this._editor.getModel();
 				const selection = this._editor.getSelection();
-				const word = model.getWordAtPosition(selection.getStartPosition());
+				const word = model.getWordAtPosition(selection.getStArtPosition());
 				if (!word) {
-					this._ckAtEnd.set(false);
+					this._ckAtEnd.set(fAlse);
 					return;
 				}
-				this._ckAtEnd.set(word.endColumn === selection.getStartPosition().column);
+				this._ckAtEnd.set(word.endColumn === selection.getStArtPosition().column);
 			};
-			this._selectionListener = this._editor.onDidChangeCursorSelection(checkForWordEnd);
+			this._selectionListener = this._editor.onDidChAngeCursorSelection(checkForWordEnd);
 			checkForWordEnd();
 
 		} else if (this._selectionListener) {

@@ -1,158 +1,158 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { getCSSLanguageService } from 'vscode-css-languageservice';
+import { getCSSLAnguAgeService } from 'vscode-css-lAnguAgeservice';
 import {
-	ClientCapabilities, DocumentContext, getLanguageService as getHTMLLanguageService, IHTMLDataProvider, SelectionRange,
-	CompletionItem, CompletionList, Definition, Diagnostic, DocumentHighlight, DocumentLink, FoldingRange, FormattingOptions,
-	Hover, Location, Position, Range, SignatureHelp, SymbolInformation, TextDocument, TextEdit,
-	Color, ColorInformation, ColorPresentation, WorkspaceEdit
-} from 'vscode-html-languageservice';
-import { WorkspaceFolder } from 'vscode-languageserver';
-import { getLanguageModelCache, LanguageModelCache } from '../languageModelCache';
+	ClientCApAbilities, DocumentContext, getLAnguAgeService As getHTMLLAnguAgeService, IHTMLDAtAProvider, SelectionRAnge,
+	CompletionItem, CompletionList, Definition, DiAgnostic, DocumentHighlight, DocumentLink, FoldingRAnge, FormAttingOptions,
+	Hover, LocAtion, Position, RAnge, SignAtureHelp, SymbolInformAtion, TextDocument, TextEdit,
+	Color, ColorInformAtion, ColorPresentAtion, WorkspAceEdit
+} from 'vscode-html-lAnguAgeservice';
+import { WorkspAceFolder } from 'vscode-lAnguAgeserver';
+import { getLAnguAgeModelCAche, LAnguAgeModelCAche } from '../lAnguAgeModelCAche';
 import { getCSSMode } from './cssMode';
 import { getDocumentRegions, HTMLDocumentRegions } from './embeddedSupport';
 import { getHTMLMode } from './htmlMode';
-import { getJavaScriptMode } from './javascriptMode';
+import { getJAvAScriptMode } from './jAvAscriptMode';
 import { RequestService } from '../requests';
 
-export * from 'vscode-html-languageservice';
-export { WorkspaceFolder } from 'vscode-languageserver';
+export * from 'vscode-html-lAnguAgeservice';
+export { WorkspAceFolder } from 'vscode-lAnguAgeserver';
 
-export interface Settings {
-	css?: any;
-	html?: any;
-	javascript?: any;
+export interfAce Settings {
+	css?: Any;
+	html?: Any;
+	jAvAscript?: Any;
 }
 
-export interface Workspace {
-	readonly settings: Settings;
-	readonly folders: WorkspaceFolder[];
+export interfAce WorkspAce {
+	reAdonly settings: Settings;
+	reAdonly folders: WorkspAceFolder[];
 }
 
-export interface SemanticTokenData {
-	start: Position;
+export interfAce SemAnticTokenDAtA {
+	stArt: Position;
 	length: number;
 	typeIdx: number;
 	modifierSet: number;
 }
 
-export interface LanguageMode {
+export interfAce LAnguAgeMode {
 	getId(): string;
-	getSelectionRange?: (document: TextDocument, position: Position) => Promise<SelectionRange>;
-	doValidation?: (document: TextDocument, settings?: Settings) => Promise<Diagnostic[]>;
+	getSelectionRAnge?: (document: TextDocument, position: Position) => Promise<SelectionRAnge>;
+	doVAlidAtion?: (document: TextDocument, settings?: Settings) => Promise<DiAgnostic[]>;
 	doComplete?: (document: TextDocument, position: Position, documentContext: DocumentContext, settings?: Settings) => Promise<CompletionList>;
 	doResolve?: (document: TextDocument, item: CompletionItem) => Promise<CompletionItem>;
 	doHover?: (document: TextDocument, position: Position) => Promise<Hover | null>;
-	doSignatureHelp?: (document: TextDocument, position: Position) => Promise<SignatureHelp | null>;
-	doRename?: (document: TextDocument, position: Position, newName: string) => Promise<WorkspaceEdit | null>;
-	doOnTypeRename?: (document: TextDocument, position: Position) => Promise<Range[] | null>;
+	doSignAtureHelp?: (document: TextDocument, position: Position) => Promise<SignAtureHelp | null>;
+	doRenAme?: (document: TextDocument, position: Position, newNAme: string) => Promise<WorkspAceEdit | null>;
+	doOnTypeRenAme?: (document: TextDocument, position: Position) => Promise<RAnge[] | null>;
 	findDocumentHighlight?: (document: TextDocument, position: Position) => Promise<DocumentHighlight[]>;
-	findDocumentSymbols?: (document: TextDocument) => Promise<SymbolInformation[]>;
+	findDocumentSymbols?: (document: TextDocument) => Promise<SymbolInformAtion[]>;
 	findDocumentLinks?: (document: TextDocument, documentContext: DocumentContext) => Promise<DocumentLink[]>;
 	findDefinition?: (document: TextDocument, position: Position) => Promise<Definition | null>;
-	findReferences?: (document: TextDocument, position: Position) => Promise<Location[]>;
-	format?: (document: TextDocument, range: Range, options: FormattingOptions, settings?: Settings) => Promise<TextEdit[]>;
-	findDocumentColors?: (document: TextDocument) => Promise<ColorInformation[]>;
-	getColorPresentations?: (document: TextDocument, color: Color, range: Range) => Promise<ColorPresentation[]>;
+	findReferences?: (document: TextDocument, position: Position) => Promise<LocAtion[]>;
+	formAt?: (document: TextDocument, rAnge: RAnge, options: FormAttingOptions, settings?: Settings) => Promise<TextEdit[]>;
+	findDocumentColors?: (document: TextDocument) => Promise<ColorInformAtion[]>;
+	getColorPresentAtions?: (document: TextDocument, color: Color, rAnge: RAnge) => Promise<ColorPresentAtion[]>;
 	doAutoClose?: (document: TextDocument, position: Position) => Promise<string | null>;
-	findMatchingTagPosition?: (document: TextDocument, position: Position) => Promise<Position | null>;
-	getFoldingRanges?: (document: TextDocument) => Promise<FoldingRange[]>;
+	findMAtchingTAgPosition?: (document: TextDocument, position: Position) => Promise<Position | null>;
+	getFoldingRAnges?: (document: TextDocument) => Promise<FoldingRAnge[]>;
 	onDocumentRemoved(document: TextDocument): void;
-	getSemanticTokens?(document: TextDocument): Promise<SemanticTokenData[]>;
-	getSemanticTokenLegend?(): { types: string[], modifiers: string[] };
+	getSemAnticTokens?(document: TextDocument): Promise<SemAnticTokenDAtA[]>;
+	getSemAnticTokenLegend?(): { types: string[], modifiers: string[] };
 	dispose(): void;
 }
 
-export interface LanguageModes {
-	updateDataProviders(dataProviders: IHTMLDataProvider[]): void;
-	getModeAtPosition(document: TextDocument, position: Position): LanguageMode | undefined;
-	getModesInRange(document: TextDocument, range: Range): LanguageModeRange[];
-	getAllModes(): LanguageMode[];
-	getAllModesInDocument(document: TextDocument): LanguageMode[];
-	getMode(languageId: string): LanguageMode | undefined;
+export interfAce LAnguAgeModes {
+	updAteDAtAProviders(dAtAProviders: IHTMLDAtAProvider[]): void;
+	getModeAtPosition(document: TextDocument, position: Position): LAnguAgeMode | undefined;
+	getModesInRAnge(document: TextDocument, rAnge: RAnge): LAnguAgeModeRAnge[];
+	getAllModes(): LAnguAgeMode[];
+	getAllModesInDocument(document: TextDocument): LAnguAgeMode[];
+	getMode(lAnguAgeId: string): LAnguAgeMode | undefined;
 	onDocumentRemoved(document: TextDocument): void;
 	dispose(): void;
 }
 
-export interface LanguageModeRange extends Range {
-	mode: LanguageMode | undefined;
-	attributeValue?: boolean;
+export interfAce LAnguAgeModeRAnge extends RAnge {
+	mode: LAnguAgeMode | undefined;
+	AttributeVAlue?: booleAn;
 }
 
-export function getLanguageModes(supportedLanguages: { [languageId: string]: boolean; }, workspace: Workspace, clientCapabilities: ClientCapabilities, requestService: RequestService): LanguageModes {
-	const htmlLanguageService = getHTMLLanguageService({ clientCapabilities, fileSystemProvider: requestService });
-	const cssLanguageService = getCSSLanguageService({ clientCapabilities, fileSystemProvider: requestService });
+export function getLAnguAgeModes(supportedLAnguAges: { [lAnguAgeId: string]: booleAn; }, workspAce: WorkspAce, clientCApAbilities: ClientCApAbilities, requestService: RequestService): LAnguAgeModes {
+	const htmlLAnguAgeService = getHTMLLAnguAgeService({ clientCApAbilities, fileSystemProvider: requestService });
+	const cssLAnguAgeService = getCSSLAnguAgeService({ clientCApAbilities, fileSystemProvider: requestService });
 
-	let documentRegions = getLanguageModelCache<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLanguageService, document));
+	let documentRegions = getLAnguAgeModelCAche<HTMLDocumentRegions>(10, 60, document => getDocumentRegions(htmlLAnguAgeService, document));
 
-	let modelCaches: LanguageModelCache<any>[] = [];
-	modelCaches.push(documentRegions);
+	let modelCAches: LAnguAgeModelCAche<Any>[] = [];
+	modelCAches.push(documentRegions);
 
-	let modes = Object.create(null);
-	modes['html'] = getHTMLMode(htmlLanguageService, workspace);
-	if (supportedLanguages['css']) {
-		modes['css'] = getCSSMode(cssLanguageService, documentRegions, workspace);
+	let modes = Object.creAte(null);
+	modes['html'] = getHTMLMode(htmlLAnguAgeService, workspAce);
+	if (supportedLAnguAges['css']) {
+		modes['css'] = getCSSMode(cssLAnguAgeService, documentRegions, workspAce);
 	}
-	if (supportedLanguages['javascript']) {
-		modes['javascript'] = getJavaScriptMode(documentRegions, 'javascript', workspace);
-		modes['typescript'] = getJavaScriptMode(documentRegions, 'typescript', workspace);
+	if (supportedLAnguAges['jAvAscript']) {
+		modes['jAvAscript'] = getJAvAScriptMode(documentRegions, 'jAvAscript', workspAce);
+		modes['typescript'] = getJAvAScriptMode(documentRegions, 'typescript', workspAce);
 	}
 	return {
-		async updateDataProviders(dataProviders: IHTMLDataProvider[]): Promise<void> {
-			htmlLanguageService.setDataProviders(true, dataProviders);
+		Async updAteDAtAProviders(dAtAProviders: IHTMLDAtAProvider[]): Promise<void> {
+			htmlLAnguAgeService.setDAtAProviders(true, dAtAProviders);
 		},
-		getModeAtPosition(document: TextDocument, position: Position): LanguageMode | undefined {
-			let languageId = documentRegions.get(document).getLanguageAtPosition(position);
-			if (languageId) {
-				return modes[languageId];
+		getModeAtPosition(document: TextDocument, position: Position): LAnguAgeMode | undefined {
+			let lAnguAgeId = documentRegions.get(document).getLAnguAgeAtPosition(position);
+			if (lAnguAgeId) {
+				return modes[lAnguAgeId];
 			}
 			return undefined;
 		},
-		getModesInRange(document: TextDocument, range: Range): LanguageModeRange[] {
-			return documentRegions.get(document).getLanguageRanges(range).map(r => {
-				return <LanguageModeRange>{
-					start: r.start,
+		getModesInRAnge(document: TextDocument, rAnge: RAnge): LAnguAgeModeRAnge[] {
+			return documentRegions.get(document).getLAnguAgeRAnges(rAnge).mAp(r => {
+				return <LAnguAgeModeRAnge>{
+					stArt: r.stArt,
 					end: r.end,
-					mode: r.languageId && modes[r.languageId],
-					attributeValue: r.attributeValue
+					mode: r.lAnguAgeId && modes[r.lAnguAgeId],
+					AttributeVAlue: r.AttributeVAlue
 				};
 			});
 		},
-		getAllModesInDocument(document: TextDocument): LanguageMode[] {
+		getAllModesInDocument(document: TextDocument): LAnguAgeMode[] {
 			let result = [];
-			for (let languageId of documentRegions.get(document).getLanguagesInDocument()) {
-				let mode = modes[languageId];
+			for (let lAnguAgeId of documentRegions.get(document).getLAnguAgesInDocument()) {
+				let mode = modes[lAnguAgeId];
 				if (mode) {
 					result.push(mode);
 				}
 			}
 			return result;
 		},
-		getAllModes(): LanguageMode[] {
+		getAllModes(): LAnguAgeMode[] {
 			let result = [];
-			for (let languageId in modes) {
-				let mode = modes[languageId];
+			for (let lAnguAgeId in modes) {
+				let mode = modes[lAnguAgeId];
 				if (mode) {
 					result.push(mode);
 				}
 			}
 			return result;
 		},
-		getMode(languageId: string): LanguageMode {
-			return modes[languageId];
+		getMode(lAnguAgeId: string): LAnguAgeMode {
+			return modes[lAnguAgeId];
 		},
 		onDocumentRemoved(document: TextDocument) {
-			modelCaches.forEach(mc => mc.onDocumentRemoved(document));
+			modelCAches.forEAch(mc => mc.onDocumentRemoved(document));
 			for (let mode in modes) {
 				modes[mode].onDocumentRemoved(document);
 			}
 		},
 		dispose(): void {
-			modelCaches.forEach(mc => mc.dispose());
-			modelCaches = [];
+			modelCAches.forEAch(mc => mc.dispose());
+			modelCAches = [];
 			for (let mode in modes) {
 				modes[mode].dispose();
 			}

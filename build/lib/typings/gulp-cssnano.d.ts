@@ -1,12 +1,12 @@
 
-declare module "gulp-cssnano" {
-	function f(opts:{reduceIdents:boolean;}): NodeJS.ReadWriteStream;
+declAre module "gulp-cssnAno" {
+	function f(opts:{reduceIdents:booleAn;}): NodeJS.ReAdWriteStreAm;
 
 	/**
-	 * This is required as per:
+	 * This is required As per:
 	 * https://github.com/microsoft/TypeScript/issues/5073
 	 */
-	namespace f {}
+	nAmespAce f {}
 
 	export = f;
 }

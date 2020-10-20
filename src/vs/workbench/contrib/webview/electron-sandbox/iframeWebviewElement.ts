@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ThrottledDelayer } from 'vs/base/common/async';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ILogService } from 'vs/platform/log/common/log';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { ITunnelService } from 'vs/platform/remote/common/tunnel';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/browser/themeing';
+import { ThrottledDelAyer } from 'vs/bAse/common/Async';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { ITunnelService } from 'vs/plAtform/remote/common/tunnel';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { WebviewThemeDAtAProvider } from 'vs/workbench/contrib/webview/browser/themeing';
 import { WebviewContentOptions, WebviewExtensionDescription, WebviewOptions } from 'vs/workbench/contrib/webview/browser/webview';
-import { IFrameWebview } from 'vs/workbench/contrib/webview/browser/webviewElement';
-import { rewriteVsCodeResourceUrls, WebviewResourceRequestManager } from 'vs/workbench/contrib/webview/electron-sandbox/resourceLoading';
+import { IFrAmeWebview } from 'vs/workbench/contrib/webview/browser/webviewElement';
+import { rewriteVsCodeResourceUrls, WebviewResourceRequestMAnAger } from 'vs/workbench/contrib/webview/electron-sAndbox/resourceLoAding';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
 /**
- * Webview backed by an iframe but that uses Electron APIs to power the webview.
+ * Webview bAcked by An ifrAme but thAt uses Electron APIs to power the webview.
  */
-export class ElectronIframeWebview extends IFrameWebview {
+export clAss ElectronIfrAmeWebview extends IFrAmeWebview {
 
-	private readonly _resourceRequestManager: WebviewResourceRequestManager;
-	private _messagePromise = Promise.resolve();
+	privAte reAdonly _resourceRequestMAnAger: WebviewResourceRequestMAnAger;
+	privAte _messAgePromise = Promise.resolve();
 
-	private readonly _focusDelayer = this._register(new ThrottledDelayer(10));
-	private _elementFocusImpl!: (options?: FocusOptions | undefined) => void;
+	privAte reAdonly _focusDelAyer = this._register(new ThrottledDelAyer(10));
+	privAte _elementFocusImpl!: (options?: FocusOptions | undefined) => void;
 
 	constructor(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
-		webviewThemeDataProvider: WebviewThemeDataProvider,
+		webviewThemeDAtAProvider: WebviewThemeDAtAProvider,
 		@ITunnelService tunnelService: ITunnelService,
 		@IFileService fileService: IFileService,
 		@IRequestService requestService: IRequestService,
@@ -44,17 +44,17 @@ export class ElectronIframeWebview extends IFrameWebview {
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IRemoteAuthorityResolverService _remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ILogService logService: ILogService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@INotificationService noficationService: INotificationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@INotificAtionService noficAtionService: INotificAtionService,
 	) {
-		super(id, options, contentOptions, extension, webviewThemeDataProvider,
-			noficationService, tunnelService, fileService, requestService, telemetryService, environmentService, _remoteAuthorityResolverService, logService);
+		super(id, options, contentOptions, extension, webviewThemeDAtAProvider,
+			noficAtionService, tunnelService, fileService, requestService, telemetryService, environmentService, _remoteAuthorityResolverService, logService);
 
-		this._resourceRequestManager = this._register(instantiationService.createInstance(WebviewResourceRequestManager, id, extension, this.content.options));
+		this._resourceRequestMAnAger = this._register(instAntiAtionService.creAteInstAnce(WebviewResourceRequestMAnAger, id, extension, this.content.options));
 	}
 
-	protected createElement(options: WebviewOptions, contentOptions: WebviewContentOptions) {
-		const element = super.createElement(options, contentOptions);
+	protected creAteElement(options: WebviewOptions, contentOptions: WebviewContentOptions) {
+		const element = super.creAteElement(options, contentOptions);
 		this._elementFocusImpl = element.focus.bind(element);
 		element.focus = () => {
 			this.doFocus();
@@ -63,73 +63,73 @@ export class ElectronIframeWebview extends IFrameWebview {
 	}
 
 	protected initElement(extension: WebviewExtensionDescription | undefined, options: WebviewOptions) {
-		// The extensionId and purpose in the URL are used for filtering in js-debug:
-		this.element!.setAttribute('src', `${Schemas.vscodeWebview}://${this.id}/index.html?id=${this.id}&platform=electron&extensionId=${extension?.id.value ?? ''}&purpose=${options.purpose}`);
+		// The extensionId And purpose in the URL Are used for filtering in js-debug:
+		this.element!.setAttribute('src', `${SchemAs.vscodeWebview}://${this.id}/index.html?id=${this.id}&plAtform=electron&extensionId=${extension?.id.vAlue ?? ''}&purpose=${options.purpose}`);
 	}
 
 	public set contentOptions(options: WebviewContentOptions) {
-		this._resourceRequestManager.update(options);
+		this._resourceRequestMAnAger.updAte(options);
 		super.contentOptions = options;
 	}
 
-	public set localResourcesRoot(resources: URI[]) {
-		this._resourceRequestManager.update({
+	public set locAlResourcesRoot(resources: URI[]) {
+		this._resourceRequestMAnAger.updAte({
 			...this.contentOptions,
-			localResourceRoots: resources,
+			locAlResourceRoots: resources,
 		});
-		super.localResourcesRoot = resources;
+		super.locAlResourcesRoot = resources;
 	}
 
-	protected get extraContentOptions() {
+	protected get extrAContentOptions() {
 		return {};
 	}
 
-	protected async doPostMessage(channel: string, data?: any): Promise<void> {
-		this._messagePromise = this._messagePromise
-			.then(() => this._resourceRequestManager.ensureReady())
+	protected Async doPostMessAge(chAnnel: string, dAtA?: Any): Promise<void> {
+		this._messAgePromise = this._messAgePromise
+			.then(() => this._resourceRequestMAnAger.ensureReAdy())
 			.then(() => {
-				this.element?.contentWindow!.postMessage({ channel, args: data }, '*');
+				this.element?.contentWindow!.postMessAge({ chAnnel, Args: dAtA }, '*');
 			});
 	}
 
-	protected preprocessHtml(value: string): string {
-		return rewriteVsCodeResourceUrls(this.id, value);
+	protected preprocessHtml(vAlue: string): string {
+		return rewriteVsCodeResourceUrls(this.id, vAlue);
 	}
 
 	public focus(): void {
 		this.doFocus();
 
-		// Handle focus change programmatically (do not rely on event from <webview>)
-		this.handleFocusChange(true);
+		// HAndle focus chAnge progrAmmAticAlly (do not rely on event from <webview>)
+		this.hAndleFocusChAnge(true);
 	}
 
-	private doFocus() {
+	privAte doFocus() {
 		if (!this.element) {
 			return;
 		}
 
-		// Workaround for https://github.com/microsoft/vscode/issues/75209
-		// .focus is async for imframes so for a sequence of actions such as:
+		// WorkAround for https://github.com/microsoft/vscode/issues/75209
+		// .focus is Async for imfrAmes so for A sequence of Actions such As:
 		//
 		// 1. Open webview
-		// 1. Show quick pick from command palette
+		// 1. Show quick pick from commAnd pAlette
 		//
-		// We end up focusing the webview after showing the quick pick, which causes
-		// the quick pick to instantly dismiss.
+		// We end up focusing the webview After showing the quick pick, which cAuses
+		// the quick pick to instAntly dismiss.
 		//
-		// Workaround this by debouncing the focus and making sure we are not focused on an input
+		// WorkAround this by debouncing the focus And mAking sure we Are not focused on An input
 		// when we try to re-focus.
-		this._focusDelayer.trigger(async () => {
+		this._focusDelAyer.trigger(Async () => {
 			if (!this.isFocused || !this.element) {
 				return;
 			}
 
-			if (document.activeElement?.tagName === 'INPUT') {
+			if (document.ActiveElement?.tAgNAme === 'INPUT') {
 				return;
 			}
 			try {
 				this._elementFocusImpl();
-			} catch {
+			} cAtch {
 				// noop
 			}
 			this._send('focus');

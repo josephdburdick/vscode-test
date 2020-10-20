@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { dirname, basename, distinctParents, joinPath, normalizePath, isAbsolutePath, relativePath, removeTrailingPathSeparator, hasTrailingPathSeparator, resolvePath, addTrailingPathSeparator, extUri, extUriIgnorePathCase } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { isWindows } from 'vs/base/common/platform';
-import { toSlashes } from 'vs/base/common/extpath';
-import { win32, posix } from 'vs/base/common/path';
+import * As Assert from 'Assert';
+import { dirnAme, bAsenAme, distinctPArents, joinPAth, normAlizePAth, isAbsolutePAth, relAtivePAth, removeTrAilingPAthSepArAtor, hAsTrAilingPAthSepArAtor, resolvePAth, AddTrAilingPAthSepArAtor, extUri, extUriIgnorePAthCAse } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { toSlAshes } from 'vs/bAse/common/extpAth';
+import { win32, posix } from 'vs/bAse/common/pAth';
 
 
 suite('Resources', () => {
 
-	test('distinctParents', () => {
+	test('distinctPArents', () => {
 
-		// Basic
+		// BAsic
 		let resources = [
 			URI.file('/some/folderA/file.txt'),
 			URI.file('/some/folderB/file.txt'),
 			URI.file('/some/folderC/file.txt')
 		];
 
-		let distinct = distinctParents(resources, r => r);
-		assert.equal(distinct.length, 3);
-		assert.equal(distinct[0].toString(), resources[0].toString());
-		assert.equal(distinct[1].toString(), resources[1].toString());
-		assert.equal(distinct[2].toString(), resources[2].toString());
+		let distinct = distinctPArents(resources, r => r);
+		Assert.equAl(distinct.length, 3);
+		Assert.equAl(distinct[0].toString(), resources[0].toString());
+		Assert.equAl(distinct[1].toString(), resources[1].toString());
+		Assert.equAl(distinct[2].toString(), resources[2].toString());
 
-		// Parent / Child
+		// PArent / Child
 		resources = [
 			URI.file('/some/folderA'),
 			URI.file('/some/folderA/file.txt'),
@@ -36,397 +36,397 @@ suite('Resources', () => {
 			URI.file('/some/file.txt')
 		];
 
-		distinct = distinctParents(resources, r => r);
-		assert.equal(distinct.length, 3);
-		assert.equal(distinct[0].toString(), resources[0].toString());
-		assert.equal(distinct[1].toString(), resources[3].toString());
-		assert.equal(distinct[2].toString(), resources[4].toString());
+		distinct = distinctPArents(resources, r => r);
+		Assert.equAl(distinct.length, 3);
+		Assert.equAl(distinct[0].toString(), resources[0].toString());
+		Assert.equAl(distinct[1].toString(), resources[3].toString());
+		Assert.equAl(distinct[2].toString(), resources[4].toString());
 	});
 
-	test('dirname', () => {
+	test('dirnAme', () => {
 		if (isWindows) {
-			assert.equal(dirname(URI.file('c:\\some\\file\\test.txt')).toString(), 'file:///c%3A/some/file');
-			assert.equal(dirname(URI.file('c:\\some\\file')).toString(), 'file:///c%3A/some');
-			assert.equal(dirname(URI.file('c:\\some\\file\\')).toString(), 'file:///c%3A/some');
-			assert.equal(dirname(URI.file('c:\\some')).toString(), 'file:///c%3A/');
-			assert.equal(dirname(URI.file('C:\\some')).toString(), 'file:///c%3A/');
-			assert.equal(dirname(URI.file('c:\\')).toString(), 'file:///c%3A/');
+			Assert.equAl(dirnAme(URI.file('c:\\some\\file\\test.txt')).toString(), 'file:///c%3A/some/file');
+			Assert.equAl(dirnAme(URI.file('c:\\some\\file')).toString(), 'file:///c%3A/some');
+			Assert.equAl(dirnAme(URI.file('c:\\some\\file\\')).toString(), 'file:///c%3A/some');
+			Assert.equAl(dirnAme(URI.file('c:\\some')).toString(), 'file:///c%3A/');
+			Assert.equAl(dirnAme(URI.file('C:\\some')).toString(), 'file:///c%3A/');
+			Assert.equAl(dirnAme(URI.file('c:\\')).toString(), 'file:///c%3A/');
 		} else {
-			assert.equal(dirname(URI.file('/some/file/test.txt')).toString(), 'file:///some/file');
-			assert.equal(dirname(URI.file('/some/file/')).toString(), 'file:///some');
-			assert.equal(dirname(URI.file('/some/file')).toString(), 'file:///some');
+			Assert.equAl(dirnAme(URI.file('/some/file/test.txt')).toString(), 'file:///some/file');
+			Assert.equAl(dirnAme(URI.file('/some/file/')).toString(), 'file:///some');
+			Assert.equAl(dirnAme(URI.file('/some/file')).toString(), 'file:///some');
 		}
-		assert.equal(dirname(URI.parse('foo://a/some/file/test.txt')).toString(), 'foo://a/some/file');
-		assert.equal(dirname(URI.parse('foo://a/some/file/')).toString(), 'foo://a/some');
-		assert.equal(dirname(URI.parse('foo://a/some/file')).toString(), 'foo://a/some');
-		assert.equal(dirname(URI.parse('foo://a/some')).toString(), 'foo://a/');
-		assert.equal(dirname(URI.parse('foo://a/')).toString(), 'foo://a/');
-		assert.equal(dirname(URI.parse('foo://a')).toString(), 'foo://a');
+		Assert.equAl(dirnAme(URI.pArse('foo://A/some/file/test.txt')).toString(), 'foo://A/some/file');
+		Assert.equAl(dirnAme(URI.pArse('foo://A/some/file/')).toString(), 'foo://A/some');
+		Assert.equAl(dirnAme(URI.pArse('foo://A/some/file')).toString(), 'foo://A/some');
+		Assert.equAl(dirnAme(URI.pArse('foo://A/some')).toString(), 'foo://A/');
+		Assert.equAl(dirnAme(URI.pArse('foo://A/')).toString(), 'foo://A/');
+		Assert.equAl(dirnAme(URI.pArse('foo://A')).toString(), 'foo://A');
 
 		// does not explode (https://github.com/microsoft/vscode/issues/41987)
-		dirname(URI.from({ scheme: 'file', authority: '/users/someone/portal.h' }));
+		dirnAme(URI.from({ scheme: 'file', Authority: '/users/someone/portAl.h' }));
 
-		assert.equal(dirname(URI.parse('foo://a/b/c?q')).toString(), 'foo://a/b?q');
+		Assert.equAl(dirnAme(URI.pArse('foo://A/b/c?q')).toString(), 'foo://A/b?q');
 	});
 
-	test('basename', () => {
+	test('bAsenAme', () => {
 		if (isWindows) {
-			assert.equal(basename(URI.file('c:\\some\\file\\test.txt')), 'test.txt');
-			assert.equal(basename(URI.file('c:\\some\\file')), 'file');
-			assert.equal(basename(URI.file('c:\\some\\file\\')), 'file');
-			assert.equal(basename(URI.file('C:\\some\\file\\')), 'file');
+			Assert.equAl(bAsenAme(URI.file('c:\\some\\file\\test.txt')), 'test.txt');
+			Assert.equAl(bAsenAme(URI.file('c:\\some\\file')), 'file');
+			Assert.equAl(bAsenAme(URI.file('c:\\some\\file\\')), 'file');
+			Assert.equAl(bAsenAme(URI.file('C:\\some\\file\\')), 'file');
 		} else {
-			assert.equal(basename(URI.file('/some/file/test.txt')), 'test.txt');
-			assert.equal(basename(URI.file('/some/file/')), 'file');
-			assert.equal(basename(URI.file('/some/file')), 'file');
-			assert.equal(basename(URI.file('/some')), 'some');
+			Assert.equAl(bAsenAme(URI.file('/some/file/test.txt')), 'test.txt');
+			Assert.equAl(bAsenAme(URI.file('/some/file/')), 'file');
+			Assert.equAl(bAsenAme(URI.file('/some/file')), 'file');
+			Assert.equAl(bAsenAme(URI.file('/some')), 'some');
 		}
-		assert.equal(basename(URI.parse('foo://a/some/file/test.txt')), 'test.txt');
-		assert.equal(basename(URI.parse('foo://a/some/file/')), 'file');
-		assert.equal(basename(URI.parse('foo://a/some/file')), 'file');
-		assert.equal(basename(URI.parse('foo://a/some')), 'some');
-		assert.equal(basename(URI.parse('foo://a/')), '');
-		assert.equal(basename(URI.parse('foo://a')), '');
+		Assert.equAl(bAsenAme(URI.pArse('foo://A/some/file/test.txt')), 'test.txt');
+		Assert.equAl(bAsenAme(URI.pArse('foo://A/some/file/')), 'file');
+		Assert.equAl(bAsenAme(URI.pArse('foo://A/some/file')), 'file');
+		Assert.equAl(bAsenAme(URI.pArse('foo://A/some')), 'some');
+		Assert.equAl(bAsenAme(URI.pArse('foo://A/')), '');
+		Assert.equAl(bAsenAme(URI.pArse('foo://A')), '');
 	});
 
-	test('joinPath', () => {
+	test('joinPAth', () => {
 		if (isWindows) {
-			assert.equal(joinPath(URI.file('c:\\foo\\bar'), '/file.js').toString(), 'file:///c%3A/foo/bar/file.js');
-			assert.equal(joinPath(URI.file('c:\\foo\\bar\\'), 'file.js').toString(), 'file:///c%3A/foo/bar/file.js');
-			assert.equal(joinPath(URI.file('c:\\foo\\bar\\'), '/file.js').toString(), 'file:///c%3A/foo/bar/file.js');
-			assert.equal(joinPath(URI.file('c:\\'), '/file.js').toString(), 'file:///c%3A/file.js');
-			assert.equal(joinPath(URI.file('c:\\'), 'bar/file.js').toString(), 'file:///c%3A/bar/file.js');
-			assert.equal(joinPath(URI.file('c:\\foo'), './file.js').toString(), 'file:///c%3A/foo/file.js');
-			assert.equal(joinPath(URI.file('c:\\foo'), '/./file.js').toString(), 'file:///c%3A/foo/file.js');
-			assert.equal(joinPath(URI.file('C:\\foo'), '../file.js').toString(), 'file:///c%3A/file.js');
-			assert.equal(joinPath(URI.file('C:\\foo\\.'), '../file.js').toString(), 'file:///c%3A/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\foo\\bAr'), '/file.js').toString(), 'file:///c%3A/foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\foo\\bAr\\'), 'file.js').toString(), 'file:///c%3A/foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\foo\\bAr\\'), '/file.js').toString(), 'file:///c%3A/foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\'), '/file.js').toString(), 'file:///c%3A/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\'), 'bAr/file.js').toString(), 'file:///c%3A/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\foo'), './file.js').toString(), 'file:///c%3A/foo/file.js');
+			Assert.equAl(joinPAth(URI.file('c:\\foo'), '/./file.js').toString(), 'file:///c%3A/foo/file.js');
+			Assert.equAl(joinPAth(URI.file('C:\\foo'), '../file.js').toString(), 'file:///c%3A/file.js');
+			Assert.equAl(joinPAth(URI.file('C:\\foo\\.'), '../file.js').toString(), 'file:///c%3A/file.js');
 		} else {
-			assert.equal(joinPath(URI.file('/foo/bar'), '/file.js').toString(), 'file:///foo/bar/file.js');
-			assert.equal(joinPath(URI.file('/foo/bar'), 'file.js').toString(), 'file:///foo/bar/file.js');
-			assert.equal(joinPath(URI.file('/foo/bar/'), '/file.js').toString(), 'file:///foo/bar/file.js');
-			assert.equal(joinPath(URI.file('/'), '/file.js').toString(), 'file:///file.js');
-			assert.equal(joinPath(URI.file('/foo/bar'), './file.js').toString(), 'file:///foo/bar/file.js');
-			assert.equal(joinPath(URI.file('/foo/bar'), '/./file.js').toString(), 'file:///foo/bar/file.js');
-			assert.equal(joinPath(URI.file('/foo/bar'), '../file.js').toString(), 'file:///foo/file.js');
+			Assert.equAl(joinPAth(URI.file('/foo/bAr'), '/file.js').toString(), 'file:///foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('/foo/bAr'), 'file.js').toString(), 'file:///foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('/foo/bAr/'), '/file.js').toString(), 'file:///foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('/'), '/file.js').toString(), 'file:///file.js');
+			Assert.equAl(joinPAth(URI.file('/foo/bAr'), './file.js').toString(), 'file:///foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('/foo/bAr'), '/./file.js').toString(), 'file:///foo/bAr/file.js');
+			Assert.equAl(joinPAth(URI.file('/foo/bAr'), '../file.js').toString(), 'file:///foo/file.js');
 		}
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar')).toString(), 'foo://a/foo/bar');
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar'), '/file.js').toString(), 'foo://a/foo/bar/file.js');
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar'), 'file.js').toString(), 'foo://a/foo/bar/file.js');
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar/'), '/file.js').toString(), 'foo://a/foo/bar/file.js');
-		assert.equal(joinPath(URI.parse('foo://a/'), '/file.js').toString(), 'foo://a/file.js');
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar/'), './file.js').toString(), 'foo://a/foo/bar/file.js');
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar/'), '/./file.js').toString(), 'foo://a/foo/bar/file.js');
-		assert.equal(joinPath(URI.parse('foo://a/foo/bar/'), '../file.js').toString(), 'foo://a/foo/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr')).toString(), 'foo://A/foo/bAr');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr'), '/file.js').toString(), 'foo://A/foo/bAr/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr'), 'file.js').toString(), 'foo://A/foo/bAr/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr/'), '/file.js').toString(), 'foo://A/foo/bAr/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/'), '/file.js').toString(), 'foo://A/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr/'), './file.js').toString(), 'foo://A/foo/bAr/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr/'), '/./file.js').toString(), 'foo://A/foo/bAr/file.js');
+		Assert.equAl(joinPAth(URI.pArse('foo://A/foo/bAr/'), '../file.js').toString(), 'foo://A/foo/file.js');
 
-		assert.equal(
-			joinPath(URI.from({ scheme: 'myScheme', authority: 'authority', path: '/path', query: 'query', fragment: 'fragment' }), '/file.js').toString(),
-			'myScheme://authority/path/file.js?query#fragment');
+		Assert.equAl(
+			joinPAth(URI.from({ scheme: 'myScheme', Authority: 'Authority', pAth: '/pAth', query: 'query', frAgment: 'frAgment' }), '/file.js').toString(),
+			'myScheme://Authority/pAth/file.js?query#frAgment');
 	});
 
-	test('normalizePath', () => {
+	test('normAlizePAth', () => {
 		if (isWindows) {
-			assert.equal(normalizePath(URI.file('c:\\foo\\.\\bar')).toString(), 'file:///c%3A/foo/bar');
-			assert.equal(normalizePath(URI.file('c:\\foo\\.')).toString(), 'file:///c%3A/foo');
-			assert.equal(normalizePath(URI.file('c:\\foo\\.\\')).toString(), 'file:///c%3A/foo/');
-			assert.equal(normalizePath(URI.file('c:\\foo\\..')).toString(), 'file:///c%3A/');
-			assert.equal(normalizePath(URI.file('c:\\foo\\..\\bar')).toString(), 'file:///c%3A/bar');
-			assert.equal(normalizePath(URI.file('c:\\foo\\..\\..\\bar')).toString(), 'file:///c%3A/bar');
-			assert.equal(normalizePath(URI.file('c:\\foo\\foo\\..\\..\\bar')).toString(), 'file:///c%3A/bar');
-			assert.equal(normalizePath(URI.file('C:\\foo\\foo\\.\\..\\..\\bar')).toString(), 'file:///c%3A/bar');
-			assert.equal(normalizePath(URI.file('C:\\foo\\foo\\.\\..\\some\\..\\bar')).toString(), 'file:///c%3A/foo/bar');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\.\\bAr')).toString(), 'file:///c%3A/foo/bAr');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\.')).toString(), 'file:///c%3A/foo');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\.\\')).toString(), 'file:///c%3A/foo/');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\..')).toString(), 'file:///c%3A/');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\..\\bAr')).toString(), 'file:///c%3A/bAr');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\..\\..\\bAr')).toString(), 'file:///c%3A/bAr');
+			Assert.equAl(normAlizePAth(URI.file('c:\\foo\\foo\\..\\..\\bAr')).toString(), 'file:///c%3A/bAr');
+			Assert.equAl(normAlizePAth(URI.file('C:\\foo\\foo\\.\\..\\..\\bAr')).toString(), 'file:///c%3A/bAr');
+			Assert.equAl(normAlizePAth(URI.file('C:\\foo\\foo\\.\\..\\some\\..\\bAr')).toString(), 'file:///c%3A/foo/bAr');
 		} else {
-			assert.equal(normalizePath(URI.file('/foo/./bar')).toString(), 'file:///foo/bar');
-			assert.equal(normalizePath(URI.file('/foo/.')).toString(), 'file:///foo');
-			assert.equal(normalizePath(URI.file('/foo/./')).toString(), 'file:///foo/');
-			assert.equal(normalizePath(URI.file('/foo/..')).toString(), 'file:///');
-			assert.equal(normalizePath(URI.file('/foo/../bar')).toString(), 'file:///bar');
-			assert.equal(normalizePath(URI.file('/foo/../../bar')).toString(), 'file:///bar');
-			assert.equal(normalizePath(URI.file('/foo/foo/../../bar')).toString(), 'file:///bar');
-			assert.equal(normalizePath(URI.file('/foo/foo/./../../bar')).toString(), 'file:///bar');
-			assert.equal(normalizePath(URI.file('/foo/foo/./../some/../bar')).toString(), 'file:///foo/bar');
-			assert.equal(normalizePath(URI.file('/f')).toString(), 'file:///f');
+			Assert.equAl(normAlizePAth(URI.file('/foo/./bAr')).toString(), 'file:///foo/bAr');
+			Assert.equAl(normAlizePAth(URI.file('/foo/.')).toString(), 'file:///foo');
+			Assert.equAl(normAlizePAth(URI.file('/foo/./')).toString(), 'file:///foo/');
+			Assert.equAl(normAlizePAth(URI.file('/foo/..')).toString(), 'file:///');
+			Assert.equAl(normAlizePAth(URI.file('/foo/../bAr')).toString(), 'file:///bAr');
+			Assert.equAl(normAlizePAth(URI.file('/foo/../../bAr')).toString(), 'file:///bAr');
+			Assert.equAl(normAlizePAth(URI.file('/foo/foo/../../bAr')).toString(), 'file:///bAr');
+			Assert.equAl(normAlizePAth(URI.file('/foo/foo/./../../bAr')).toString(), 'file:///bAr');
+			Assert.equAl(normAlizePAth(URI.file('/foo/foo/./../some/../bAr')).toString(), 'file:///foo/bAr');
+			Assert.equAl(normAlizePAth(URI.file('/f')).toString(), 'file:///f');
 		}
-		assert.equal(normalizePath(URI.parse('foo://a/foo/./bar')).toString(), 'foo://a/foo/bar');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/.')).toString(), 'foo://a/foo');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/./')).toString(), 'foo://a/foo/');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/..')).toString(), 'foo://a/');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/../bar')).toString(), 'foo://a/bar');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/../../bar')).toString(), 'foo://a/bar');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/foo/../../bar')).toString(), 'foo://a/bar');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/foo/./../../bar')).toString(), 'foo://a/bar');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/foo/./../some/../bar')).toString(), 'foo://a/foo/bar');
-		assert.equal(normalizePath(URI.parse('foo://a')).toString(), 'foo://a');
-		assert.equal(normalizePath(URI.parse('foo://a/')).toString(), 'foo://a/');
-		assert.equal(normalizePath(URI.parse('foo://a/foo/./bar?q=1')).toString(), URI.parse('foo://a/foo/bar?q%3D1').toString());
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/./bAr')).toString(), 'foo://A/foo/bAr');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/.')).toString(), 'foo://A/foo');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/./')).toString(), 'foo://A/foo/');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/..')).toString(), 'foo://A/');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/../bAr')).toString(), 'foo://A/bAr');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/../../bAr')).toString(), 'foo://A/bAr');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/foo/../../bAr')).toString(), 'foo://A/bAr');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/foo/./../../bAr')).toString(), 'foo://A/bAr');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/foo/./../some/../bAr')).toString(), 'foo://A/foo/bAr');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A')).toString(), 'foo://A');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/')).toString(), 'foo://A/');
+		Assert.equAl(normAlizePAth(URI.pArse('foo://A/foo/./bAr?q=1')).toString(), URI.pArse('foo://A/foo/bAr?q%3D1').toString());
 	});
 
 	test('isAbsolute', () => {
 		if (isWindows) {
-			assert.equal(isAbsolutePath(URI.file('c:\\foo\\')), true);
-			assert.equal(isAbsolutePath(URI.file('C:\\foo\\')), true);
-			assert.equal(isAbsolutePath(URI.file('bar')), true); // URI normalizes all file URIs to be absolute
+			Assert.equAl(isAbsolutePAth(URI.file('c:\\foo\\')), true);
+			Assert.equAl(isAbsolutePAth(URI.file('C:\\foo\\')), true);
+			Assert.equAl(isAbsolutePAth(URI.file('bAr')), true); // URI normAlizes All file URIs to be Absolute
 		} else {
-			assert.equal(isAbsolutePath(URI.file('/foo/bar')), true);
-			assert.equal(isAbsolutePath(URI.file('bar')), true); // URI normalizes all file URIs to be absolute
+			Assert.equAl(isAbsolutePAth(URI.file('/foo/bAr')), true);
+			Assert.equAl(isAbsolutePAth(URI.file('bAr')), true); // URI normAlizes All file URIs to be Absolute
 		}
-		assert.equal(isAbsolutePath(URI.parse('foo:foo')), false);
-		assert.equal(isAbsolutePath(URI.parse('foo://a/foo/.')), true);
+		Assert.equAl(isAbsolutePAth(URI.pArse('foo:foo')), fAlse);
+		Assert.equAl(isAbsolutePAth(URI.pArse('foo://A/foo/.')), true);
 	});
 
-	function assertTrailingSeparator(u1: URI, expected: boolean) {
-		assert.equal(hasTrailingPathSeparator(u1), expected, u1.toString());
+	function AssertTrAilingSepArAtor(u1: URI, expected: booleAn) {
+		Assert.equAl(hAsTrAilingPAthSepArAtor(u1), expected, u1.toString());
 	}
 
-	function assertRemoveTrailingSeparator(u1: URI, expected: URI) {
-		assertEqualURI(removeTrailingPathSeparator(u1), expected, u1.toString());
+	function AssertRemoveTrAilingSepArAtor(u1: URI, expected: URI) {
+		AssertEquAlURI(removeTrAilingPAthSepArAtor(u1), expected, u1.toString());
 	}
 
-	function assertAddTrailingSeparator(u1: URI, expected: URI) {
-		assertEqualURI(addTrailingPathSeparator(u1), expected, u1.toString());
+	function AssertAddTrAilingSepArAtor(u1: URI, expected: URI) {
+		AssertEquAlURI(AddTrAilingPAthSepArAtor(u1), expected, u1.toString());
 	}
 
-	test('trailingPathSeparator', () => {
-		assertTrailingSeparator(URI.parse('foo://a/foo'), false);
-		assertTrailingSeparator(URI.parse('foo://a/foo/'), true);
-		assertTrailingSeparator(URI.parse('foo://a/'), false);
-		assertTrailingSeparator(URI.parse('foo://a'), false);
+	test('trAilingPAthSepArAtor', () => {
+		AssertTrAilingSepArAtor(URI.pArse('foo://A/foo'), fAlse);
+		AssertTrAilingSepArAtor(URI.pArse('foo://A/foo/'), true);
+		AssertTrAilingSepArAtor(URI.pArse('foo://A/'), fAlse);
+		AssertTrAilingSepArAtor(URI.pArse('foo://A'), fAlse);
 
-		assertRemoveTrailingSeparator(URI.parse('foo://a/foo'), URI.parse('foo://a/foo'));
-		assertRemoveTrailingSeparator(URI.parse('foo://a/foo/'), URI.parse('foo://a/foo'));
-		assertRemoveTrailingSeparator(URI.parse('foo://a/'), URI.parse('foo://a/'));
-		assertRemoveTrailingSeparator(URI.parse('foo://a'), URI.parse('foo://a'));
+		AssertRemoveTrAilingSepArAtor(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo'));
+		AssertRemoveTrAilingSepArAtor(URI.pArse('foo://A/foo/'), URI.pArse('foo://A/foo'));
+		AssertRemoveTrAilingSepArAtor(URI.pArse('foo://A/'), URI.pArse('foo://A/'));
+		AssertRemoveTrAilingSepArAtor(URI.pArse('foo://A'), URI.pArse('foo://A'));
 
-		assertAddTrailingSeparator(URI.parse('foo://a/foo'), URI.parse('foo://a/foo/'));
-		assertAddTrailingSeparator(URI.parse('foo://a/foo/'), URI.parse('foo://a/foo/'));
-		assertAddTrailingSeparator(URI.parse('foo://a/'), URI.parse('foo://a/'));
-		assertAddTrailingSeparator(URI.parse('foo://a'), URI.parse('foo://a/'));
+		AssertAddTrAilingSepArAtor(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo/'));
+		AssertAddTrAilingSepArAtor(URI.pArse('foo://A/foo/'), URI.pArse('foo://A/foo/'));
+		AssertAddTrAilingSepArAtor(URI.pArse('foo://A/'), URI.pArse('foo://A/'));
+		AssertAddTrAilingSepArAtor(URI.pArse('foo://A'), URI.pArse('foo://A/'));
 
 		if (isWindows) {
-			assertTrailingSeparator(URI.file('c:\\a\\foo'), false);
-			assertTrailingSeparator(URI.file('c:\\a\\foo\\'), true);
-			assertTrailingSeparator(URI.file('c:\\'), false);
-			assertTrailingSeparator(URI.file('\\\\server\\share\\some\\'), true);
-			assertTrailingSeparator(URI.file('\\\\server\\share\\'), false);
+			AssertTrAilingSepArAtor(URI.file('c:\\A\\foo'), fAlse);
+			AssertTrAilingSepArAtor(URI.file('c:\\A\\foo\\'), true);
+			AssertTrAilingSepArAtor(URI.file('c:\\'), fAlse);
+			AssertTrAilingSepArAtor(URI.file('\\\\server\\shAre\\some\\'), true);
+			AssertTrAilingSepArAtor(URI.file('\\\\server\\shAre\\'), fAlse);
 
-			assertRemoveTrailingSeparator(URI.file('c:\\a\\foo'), URI.file('c:\\a\\foo'));
-			assertRemoveTrailingSeparator(URI.file('c:\\a\\foo\\'), URI.file('c:\\a\\foo'));
-			assertRemoveTrailingSeparator(URI.file('c:\\'), URI.file('c:\\'));
-			assertRemoveTrailingSeparator(URI.file('\\\\server\\share\\some\\'), URI.file('\\\\server\\share\\some'));
-			assertRemoveTrailingSeparator(URI.file('\\\\server\\share\\'), URI.file('\\\\server\\share\\'));
+			AssertRemoveTrAilingSepArAtor(URI.file('c:\\A\\foo'), URI.file('c:\\A\\foo'));
+			AssertRemoveTrAilingSepArAtor(URI.file('c:\\A\\foo\\'), URI.file('c:\\A\\foo'));
+			AssertRemoveTrAilingSepArAtor(URI.file('c:\\'), URI.file('c:\\'));
+			AssertRemoveTrAilingSepArAtor(URI.file('\\\\server\\shAre\\some\\'), URI.file('\\\\server\\shAre\\some'));
+			AssertRemoveTrAilingSepArAtor(URI.file('\\\\server\\shAre\\'), URI.file('\\\\server\\shAre\\'));
 
-			assertAddTrailingSeparator(URI.file('c:\\a\\foo'), URI.file('c:\\a\\foo\\'));
-			assertAddTrailingSeparator(URI.file('c:\\a\\foo\\'), URI.file('c:\\a\\foo\\'));
-			assertAddTrailingSeparator(URI.file('c:\\'), URI.file('c:\\'));
-			assertAddTrailingSeparator(URI.file('\\\\server\\share\\some'), URI.file('\\\\server\\share\\some\\'));
-			assertAddTrailingSeparator(URI.file('\\\\server\\share\\some\\'), URI.file('\\\\server\\share\\some\\'));
+			AssertAddTrAilingSepArAtor(URI.file('c:\\A\\foo'), URI.file('c:\\A\\foo\\'));
+			AssertAddTrAilingSepArAtor(URI.file('c:\\A\\foo\\'), URI.file('c:\\A\\foo\\'));
+			AssertAddTrAilingSepArAtor(URI.file('c:\\'), URI.file('c:\\'));
+			AssertAddTrAilingSepArAtor(URI.file('\\\\server\\shAre\\some'), URI.file('\\\\server\\shAre\\some\\'));
+			AssertAddTrAilingSepArAtor(URI.file('\\\\server\\shAre\\some\\'), URI.file('\\\\server\\shAre\\some\\'));
 		} else {
-			assertTrailingSeparator(URI.file('/foo/bar'), false);
-			assertTrailingSeparator(URI.file('/foo/bar/'), true);
-			assertTrailingSeparator(URI.file('/'), false);
+			AssertTrAilingSepArAtor(URI.file('/foo/bAr'), fAlse);
+			AssertTrAilingSepArAtor(URI.file('/foo/bAr/'), true);
+			AssertTrAilingSepArAtor(URI.file('/'), fAlse);
 
-			assertRemoveTrailingSeparator(URI.file('/foo/bar'), URI.file('/foo/bar'));
-			assertRemoveTrailingSeparator(URI.file('/foo/bar/'), URI.file('/foo/bar'));
-			assertRemoveTrailingSeparator(URI.file('/'), URI.file('/'));
+			AssertRemoveTrAilingSepArAtor(URI.file('/foo/bAr'), URI.file('/foo/bAr'));
+			AssertRemoveTrAilingSepArAtor(URI.file('/foo/bAr/'), URI.file('/foo/bAr'));
+			AssertRemoveTrAilingSepArAtor(URI.file('/'), URI.file('/'));
 
-			assertAddTrailingSeparator(URI.file('/foo/bar'), URI.file('/foo/bar/'));
-			assertAddTrailingSeparator(URI.file('/foo/bar/'), URI.file('/foo/bar/'));
-			assertAddTrailingSeparator(URI.file('/'), URI.file('/'));
+			AssertAddTrAilingSepArAtor(URI.file('/foo/bAr'), URI.file('/foo/bAr/'));
+			AssertAddTrAilingSepArAtor(URI.file('/foo/bAr/'), URI.file('/foo/bAr/'));
+			AssertAddTrAilingSepArAtor(URI.file('/'), URI.file('/'));
 		}
 	});
 
-	function assertEqualURI(actual: URI, expected: URI, message?: string, ignoreCase?: boolean) {
-		let util = ignoreCase ? extUriIgnorePathCase : extUri;
-		if (!util.isEqual(expected, actual)) {
-			assert.equal(actual.toString(), expected.toString(), message);
+	function AssertEquAlURI(ActuAl: URI, expected: URI, messAge?: string, ignoreCAse?: booleAn) {
+		let util = ignoreCAse ? extUriIgnorePAthCAse : extUri;
+		if (!util.isEquAl(expected, ActuAl)) {
+			Assert.equAl(ActuAl.toString(), expected.toString(), messAge);
 		}
 	}
 
-	function assertRelativePath(u1: URI, u2: URI, expectedPath: string | undefined, ignoreJoin?: boolean, ignoreCase?: boolean) {
-		let util = ignoreCase ? extUriIgnorePathCase : extUri;
+	function AssertRelAtivePAth(u1: URI, u2: URI, expectedPAth: string | undefined, ignoreJoin?: booleAn, ignoreCAse?: booleAn) {
+		let util = ignoreCAse ? extUriIgnorePAthCAse : extUri;
 
-		assert.equal(util.relativePath(u1, u2), expectedPath, `from ${u1.toString()} to ${u2.toString()}`);
-		if (expectedPath !== undefined && !ignoreJoin) {
-			assertEqualURI(removeTrailingPathSeparator(joinPath(u1, expectedPath)), removeTrailingPathSeparator(u2), 'joinPath on relativePath should be equal', ignoreCase);
+		Assert.equAl(util.relAtivePAth(u1, u2), expectedPAth, `from ${u1.toString()} to ${u2.toString()}`);
+		if (expectedPAth !== undefined && !ignoreJoin) {
+			AssertEquAlURI(removeTrAilingPAthSepArAtor(joinPAth(u1, expectedPAth)), removeTrAilingPAthSepArAtor(u2), 'joinPAth on relAtivePAth should be equAl', ignoreCAse);
 		}
 	}
 
-	test('relativePath', () => {
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://a/foo/bar'), 'bar');
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://a/foo/bar/'), 'bar');
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://a/foo/bar/goo'), 'bar/goo');
-		assertRelativePath(URI.parse('foo://a/'), URI.parse('foo://a/foo/bar/goo'), 'foo/bar/goo');
-		assertRelativePath(URI.parse('foo://a/foo/xoo'), URI.parse('foo://a/foo/bar'), '../bar');
-		assertRelativePath(URI.parse('foo://a/foo/xoo/yoo'), URI.parse('foo://a'), '../../..', true);
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://a/foo/'), '');
-		assertRelativePath(URI.parse('foo://a/foo/'), URI.parse('foo://a/foo'), '');
-		assertRelativePath(URI.parse('foo://a/foo/'), URI.parse('foo://a/foo/'), '');
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://a/foo'), '');
-		assertRelativePath(URI.parse('foo://a'), URI.parse('foo://a'), '', true);
-		assertRelativePath(URI.parse('foo://a/'), URI.parse('foo://a/'), '');
-		assertRelativePath(URI.parse('foo://a/'), URI.parse('foo://a'), '', true);
-		assertRelativePath(URI.parse('foo://a/foo?q'), URI.parse('foo://a/foo/bar#h'), 'bar', true);
-		assertRelativePath(URI.parse('foo://'), URI.parse('foo://a/b'), undefined);
-		assertRelativePath(URI.parse('foo://a2/b'), URI.parse('foo://a/b'), undefined);
-		assertRelativePath(URI.parse('goo://a/b'), URI.parse('foo://a/b'), undefined);
+	test('relAtivePAth', () => {
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo/bAr'), 'bAr');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo/bAr/'), 'bAr');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo/bAr/goo'), 'bAr/goo');
+		AssertRelAtivePAth(URI.pArse('foo://A/'), URI.pArse('foo://A/foo/bAr/goo'), 'foo/bAr/goo');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo/xoo'), URI.pArse('foo://A/foo/bAr'), '../bAr');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo/xoo/yoo'), URI.pArse('foo://A'), '../../..', true);
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo/'), '');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo/'), URI.pArse('foo://A/foo'), '');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo/'), URI.pArse('foo://A/foo/'), '');
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/foo'), '');
+		AssertRelAtivePAth(URI.pArse('foo://A'), URI.pArse('foo://A'), '', true);
+		AssertRelAtivePAth(URI.pArse('foo://A/'), URI.pArse('foo://A/'), '');
+		AssertRelAtivePAth(URI.pArse('foo://A/'), URI.pArse('foo://A'), '', true);
+		AssertRelAtivePAth(URI.pArse('foo://A/foo?q'), URI.pArse('foo://A/foo/bAr#h'), 'bAr', true);
+		AssertRelAtivePAth(URI.pArse('foo://'), URI.pArse('foo://A/b'), undefined);
+		AssertRelAtivePAth(URI.pArse('foo://A2/b'), URI.pArse('foo://A/b'), undefined);
+		AssertRelAtivePAth(URI.pArse('goo://A/b'), URI.pArse('foo://A/b'), undefined);
 
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://A/FOO/bar/goo'), 'bar/goo', false, true);
-		assertRelativePath(URI.parse('foo://a/foo'), URI.parse('foo://A/FOO/BAR/GOO'), 'BAR/GOO', false, true);
-		assertRelativePath(URI.parse('foo://a/foo/xoo'), URI.parse('foo://A/FOO/BAR/GOO'), '../BAR/GOO', false, true);
-		assertRelativePath(URI.parse('foo:///c:/a/foo'), URI.parse('foo:///C:/a/foo/xoo/'), 'xoo', false, true);
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/FOO/bAr/goo'), 'bAr/goo', fAlse, true);
+		AssertRelAtivePAth(URI.pArse('foo://A/foo'), URI.pArse('foo://A/FOO/BAR/GOO'), 'BAR/GOO', fAlse, true);
+		AssertRelAtivePAth(URI.pArse('foo://A/foo/xoo'), URI.pArse('foo://A/FOO/BAR/GOO'), '../BAR/GOO', fAlse, true);
+		AssertRelAtivePAth(URI.pArse('foo:///c:/A/foo'), URI.pArse('foo:///C:/A/foo/xoo/'), 'xoo', fAlse, true);
 
 		if (isWindows) {
-			assertRelativePath(URI.file('c:\\foo\\bar'), URI.file('c:\\foo\\bar'), '');
-			assertRelativePath(URI.file('c:\\foo\\bar\\huu'), URI.file('c:\\foo\\bar'), '..');
-			assertRelativePath(URI.file('c:\\foo\\bar\\a1\\a2'), URI.file('c:\\foo\\bar'), '../..');
-			assertRelativePath(URI.file('c:\\foo\\bar\\'), URI.file('c:\\foo\\bar\\a1\\a2'), 'a1/a2');
-			assertRelativePath(URI.file('c:\\foo\\bar\\'), URI.file('c:\\foo\\bar\\a1\\a2\\'), 'a1/a2');
-			assertRelativePath(URI.file('c:\\'), URI.file('c:\\foo\\bar'), 'foo/bar');
-			assertRelativePath(URI.file('\\\\server\\share\\some\\'), URI.file('\\\\server\\share\\some\\path'), 'path');
-			assertRelativePath(URI.file('\\\\server\\share\\some\\'), URI.file('\\\\server\\share2\\some\\path'), '../../share2/some/path', true); // ignore joinPath assert: path.join is not root aware
+			AssertRelAtivePAth(URI.file('c:\\foo\\bAr'), URI.file('c:\\foo\\bAr'), '');
+			AssertRelAtivePAth(URI.file('c:\\foo\\bAr\\huu'), URI.file('c:\\foo\\bAr'), '..');
+			AssertRelAtivePAth(URI.file('c:\\foo\\bAr\\A1\\A2'), URI.file('c:\\foo\\bAr'), '../..');
+			AssertRelAtivePAth(URI.file('c:\\foo\\bAr\\'), URI.file('c:\\foo\\bAr\\A1\\A2'), 'A1/A2');
+			AssertRelAtivePAth(URI.file('c:\\foo\\bAr\\'), URI.file('c:\\foo\\bAr\\A1\\A2\\'), 'A1/A2');
+			AssertRelAtivePAth(URI.file('c:\\'), URI.file('c:\\foo\\bAr'), 'foo/bAr');
+			AssertRelAtivePAth(URI.file('\\\\server\\shAre\\some\\'), URI.file('\\\\server\\shAre\\some\\pAth'), 'pAth');
+			AssertRelAtivePAth(URI.file('\\\\server\\shAre\\some\\'), URI.file('\\\\server\\shAre2\\some\\pAth'), '../../shAre2/some/pAth', true); // ignore joinPAth Assert: pAth.join is not root AwAre
 		} else {
-			assertRelativePath(URI.file('/a/foo'), URI.file('/a/foo/bar'), 'bar');
-			assertRelativePath(URI.file('/a/foo'), URI.file('/a/foo/bar/'), 'bar');
-			assertRelativePath(URI.file('/a/foo'), URI.file('/a/foo/bar/goo'), 'bar/goo');
-			assertRelativePath(URI.file('/a/'), URI.file('/a/foo/bar/goo'), 'foo/bar/goo');
-			assertRelativePath(URI.file('/'), URI.file('/a/foo/bar/goo'), 'a/foo/bar/goo');
-			assertRelativePath(URI.file('/a/foo/xoo'), URI.file('/a/foo/bar'), '../bar');
-			assertRelativePath(URI.file('/a/foo/xoo/yoo'), URI.file('/a'), '../../..');
-			assertRelativePath(URI.file('/a/foo'), URI.file('/a/foo/'), '');
-			assertRelativePath(URI.file('/a/foo'), URI.file('/b/foo/'), '../../b/foo');
+			AssertRelAtivePAth(URI.file('/A/foo'), URI.file('/A/foo/bAr'), 'bAr');
+			AssertRelAtivePAth(URI.file('/A/foo'), URI.file('/A/foo/bAr/'), 'bAr');
+			AssertRelAtivePAth(URI.file('/A/foo'), URI.file('/A/foo/bAr/goo'), 'bAr/goo');
+			AssertRelAtivePAth(URI.file('/A/'), URI.file('/A/foo/bAr/goo'), 'foo/bAr/goo');
+			AssertRelAtivePAth(URI.file('/'), URI.file('/A/foo/bAr/goo'), 'A/foo/bAr/goo');
+			AssertRelAtivePAth(URI.file('/A/foo/xoo'), URI.file('/A/foo/bAr'), '../bAr');
+			AssertRelAtivePAth(URI.file('/A/foo/xoo/yoo'), URI.file('/A'), '../../..');
+			AssertRelAtivePAth(URI.file('/A/foo'), URI.file('/A/foo/'), '');
+			AssertRelAtivePAth(URI.file('/A/foo'), URI.file('/b/foo/'), '../../b/foo');
 		}
 	});
 
-	function assertResolve(u1: URI, path: string, expected: URI) {
-		const actual = resolvePath(u1, path);
-		assertEqualURI(actual, expected, `from ${u1.toString()} and ${path}`);
+	function AssertResolve(u1: URI, pAth: string, expected: URI) {
+		const ActuAl = resolvePAth(u1, pAth);
+		AssertEquAlURI(ActuAl, expected, `from ${u1.toString()} And ${pAth}`);
 
-		const p = path.indexOf('/') !== -1 ? posix : win32;
-		if (!p.isAbsolute(path)) {
-			let expectedPath = isWindows ? toSlashes(path) : path;
-			expectedPath = expectedPath.startsWith('./') ? expectedPath.substr(2) : expectedPath;
-			assert.equal(relativePath(u1, actual), expectedPath, `relativePath (${u1.toString()}) on actual (${actual.toString()}) should be to path (${expectedPath})`);
+		const p = pAth.indexOf('/') !== -1 ? posix : win32;
+		if (!p.isAbsolute(pAth)) {
+			let expectedPAth = isWindows ? toSlAshes(pAth) : pAth;
+			expectedPAth = expectedPAth.stArtsWith('./') ? expectedPAth.substr(2) : expectedPAth;
+			Assert.equAl(relAtivePAth(u1, ActuAl), expectedPAth, `relAtivePAth (${u1.toString()}) on ActuAl (${ActuAl.toString()}) should be to pAth (${expectedPAth})`);
 		}
 	}
 
 	test('resolve', () => {
 		if (isWindows) {
-			assertResolve(URI.file('c:\\foo\\bar'), 'file.js', URI.file('c:\\foo\\bar\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar'), 't\\file.js', URI.file('c:\\foo\\bar\\t\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar'), '.\\t\\file.js', URI.file('c:\\foo\\bar\\t\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar'), 'a1/file.js', URI.file('c:\\foo\\bar\\a1\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar'), './a1/file.js', URI.file('c:\\foo\\bar\\a1\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar'), '\\b1\\file.js', URI.file('c:\\b1\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar'), '/b1/file.js', URI.file('c:\\b1\\file.js'));
-			assertResolve(URI.file('c:\\foo\\bar\\'), 'file.js', URI.file('c:\\foo\\bar\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), 'file.js', URI.file('c:\\foo\\bAr\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), 't\\file.js', URI.file('c:\\foo\\bAr\\t\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), '.\\t\\file.js', URI.file('c:\\foo\\bAr\\t\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), 'A1/file.js', URI.file('c:\\foo\\bAr\\A1\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), './A1/file.js', URI.file('c:\\foo\\bAr\\A1\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), '\\b1\\file.js', URI.file('c:\\b1\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr'), '/b1/file.js', URI.file('c:\\b1\\file.js'));
+			AssertResolve(URI.file('c:\\foo\\bAr\\'), 'file.js', URI.file('c:\\foo\\bAr\\file.js'));
 
-			assertResolve(URI.file('c:\\'), 'file.js', URI.file('c:\\file.js'));
-			assertResolve(URI.file('c:\\'), '\\b1\\file.js', URI.file('c:\\b1\\file.js'));
-			assertResolve(URI.file('c:\\'), '/b1/file.js', URI.file('c:\\b1\\file.js'));
-			assertResolve(URI.file('c:\\'), 'd:\\foo\\bar.txt', URI.file('d:\\foo\\bar.txt'));
+			AssertResolve(URI.file('c:\\'), 'file.js', URI.file('c:\\file.js'));
+			AssertResolve(URI.file('c:\\'), '\\b1\\file.js', URI.file('c:\\b1\\file.js'));
+			AssertResolve(URI.file('c:\\'), '/b1/file.js', URI.file('c:\\b1\\file.js'));
+			AssertResolve(URI.file('c:\\'), 'd:\\foo\\bAr.txt', URI.file('d:\\foo\\bAr.txt'));
 
-			assertResolve(URI.file('\\\\server\\share\\some\\'), 'b1\\file.js', URI.file('\\\\server\\share\\some\\b1\\file.js'));
-			assertResolve(URI.file('\\\\server\\share\\some\\'), '\\file.js', URI.file('\\\\server\\share\\file.js'));
+			AssertResolve(URI.file('\\\\server\\shAre\\some\\'), 'b1\\file.js', URI.file('\\\\server\\shAre\\some\\b1\\file.js'));
+			AssertResolve(URI.file('\\\\server\\shAre\\some\\'), '\\file.js', URI.file('\\\\server\\shAre\\file.js'));
 
-			assertResolve(URI.file('c:\\'), '\\\\server\\share\\some\\', URI.file('\\\\server\\share\\some'));
-			assertResolve(URI.file('\\\\server\\share\\some\\'), 'c:\\', URI.file('c:\\'));
+			AssertResolve(URI.file('c:\\'), '\\\\server\\shAre\\some\\', URI.file('\\\\server\\shAre\\some'));
+			AssertResolve(URI.file('\\\\server\\shAre\\some\\'), 'c:\\', URI.file('c:\\'));
 		} else {
-			assertResolve(URI.file('/foo/bar'), 'file.js', URI.file('/foo/bar/file.js'));
-			assertResolve(URI.file('/foo/bar'), './file.js', URI.file('/foo/bar/file.js'));
-			assertResolve(URI.file('/foo/bar'), '/file.js', URI.file('/file.js'));
-			assertResolve(URI.file('/foo/bar/'), 'file.js', URI.file('/foo/bar/file.js'));
-			assertResolve(URI.file('/'), 'file.js', URI.file('/file.js'));
-			assertResolve(URI.file(''), './file.js', URI.file('/file.js'));
-			assertResolve(URI.file(''), '/file.js', URI.file('/file.js'));
+			AssertResolve(URI.file('/foo/bAr'), 'file.js', URI.file('/foo/bAr/file.js'));
+			AssertResolve(URI.file('/foo/bAr'), './file.js', URI.file('/foo/bAr/file.js'));
+			AssertResolve(URI.file('/foo/bAr'), '/file.js', URI.file('/file.js'));
+			AssertResolve(URI.file('/foo/bAr/'), 'file.js', URI.file('/foo/bAr/file.js'));
+			AssertResolve(URI.file('/'), 'file.js', URI.file('/file.js'));
+			AssertResolve(URI.file(''), './file.js', URI.file('/file.js'));
+			AssertResolve(URI.file(''), '/file.js', URI.file('/file.js'));
 		}
 
-		assertResolve(URI.parse('foo://server/foo/bar'), 'file.js', URI.parse('foo://server/foo/bar/file.js'));
-		assertResolve(URI.parse('foo://server/foo/bar'), './file.js', URI.parse('foo://server/foo/bar/file.js'));
-		assertResolve(URI.parse('foo://server/foo/bar'), './file.js', URI.parse('foo://server/foo/bar/file.js'));
-		assertResolve(URI.parse('foo://server/foo/bar'), 'c:\\a1\\b1', URI.parse('foo://server/c:/a1/b1'));
-		assertResolve(URI.parse('foo://server/foo/bar'), 'c:\\', URI.parse('foo://server/c:'));
+		AssertResolve(URI.pArse('foo://server/foo/bAr'), 'file.js', URI.pArse('foo://server/foo/bAr/file.js'));
+		AssertResolve(URI.pArse('foo://server/foo/bAr'), './file.js', URI.pArse('foo://server/foo/bAr/file.js'));
+		AssertResolve(URI.pArse('foo://server/foo/bAr'), './file.js', URI.pArse('foo://server/foo/bAr/file.js'));
+		AssertResolve(URI.pArse('foo://server/foo/bAr'), 'c:\\A1\\b1', URI.pArse('foo://server/c:/A1/b1'));
+		AssertResolve(URI.pArse('foo://server/foo/bAr'), 'c:\\', URI.pArse('foo://server/c:'));
 
 
 	});
 
-	function assertIsEqual(u1: URI, u2: URI, ignoreCase: boolean | undefined, expected: boolean) {
+	function AssertIsEquAl(u1: URI, u2: URI, ignoreCAse: booleAn | undefined, expected: booleAn) {
 
-		let util = ignoreCase ? extUriIgnorePathCase : extUri;
+		let util = ignoreCAse ? extUriIgnorePAthCAse : extUri;
 
-		assert.equal(util.isEqual(u1, u2), expected, `${u1.toString()}${expected ? '===' : '!=='}${u2.toString()}`);
-		assert.equal(util.compare(u1, u2) === 0, expected);
-		assert.equal(util.getComparisonKey(u1) === util.getComparisonKey(u2), expected, `comparison keys ${u1.toString()}, ${u2.toString()}`);
-		assert.equal(util.isEqualOrParent(u1, u2), expected, `isEqualOrParent ${u1.toString()}, ${u2.toString()}`);
-		if (!ignoreCase) {
-			assert.equal(u1.toString() === u2.toString(), expected);
+		Assert.equAl(util.isEquAl(u1, u2), expected, `${u1.toString()}${expected ? '===' : '!=='}${u2.toString()}`);
+		Assert.equAl(util.compAre(u1, u2) === 0, expected);
+		Assert.equAl(util.getCompArisonKey(u1) === util.getCompArisonKey(u2), expected, `compArison keys ${u1.toString()}, ${u2.toString()}`);
+		Assert.equAl(util.isEquAlOrPArent(u1, u2), expected, `isEquAlOrPArent ${u1.toString()}, ${u2.toString()}`);
+		if (!ignoreCAse) {
+			Assert.equAl(u1.toString() === u2.toString(), expected);
 		}
 	}
 
 
-	test('isEqual', () => {
-		let fileURI = isWindows ? URI.file('c:\\foo\\bar') : URI.file('/foo/bar');
-		let fileURI2 = isWindows ? URI.file('C:\\foo\\Bar') : URI.file('/foo/Bar');
-		assertIsEqual(fileURI, fileURI, true, true);
-		assertIsEqual(fileURI, fileURI, false, true);
-		assertIsEqual(fileURI, fileURI, undefined, true);
-		assertIsEqual(fileURI, fileURI2, true, true);
-		assertIsEqual(fileURI, fileURI2, false, false);
+	test('isEquAl', () => {
+		let fileURI = isWindows ? URI.file('c:\\foo\\bAr') : URI.file('/foo/bAr');
+		let fileURI2 = isWindows ? URI.file('C:\\foo\\BAr') : URI.file('/foo/BAr');
+		AssertIsEquAl(fileURI, fileURI, true, true);
+		AssertIsEquAl(fileURI, fileURI, fAlse, true);
+		AssertIsEquAl(fileURI, fileURI, undefined, true);
+		AssertIsEquAl(fileURI, fileURI2, true, true);
+		AssertIsEquAl(fileURI, fileURI2, fAlse, fAlse);
 
-		let fileURI3 = URI.parse('foo://server:453/foo/bar');
-		let fileURI4 = URI.parse('foo://server:453/foo/Bar');
-		assertIsEqual(fileURI3, fileURI3, true, true);
-		assertIsEqual(fileURI3, fileURI3, false, true);
-		assertIsEqual(fileURI3, fileURI3, undefined, true);
-		assertIsEqual(fileURI3, fileURI4, true, true);
-		assertIsEqual(fileURI3, fileURI4, false, false);
+		let fileURI3 = URI.pArse('foo://server:453/foo/bAr');
+		let fileURI4 = URI.pArse('foo://server:453/foo/BAr');
+		AssertIsEquAl(fileURI3, fileURI3, true, true);
+		AssertIsEquAl(fileURI3, fileURI3, fAlse, true);
+		AssertIsEquAl(fileURI3, fileURI3, undefined, true);
+		AssertIsEquAl(fileURI3, fileURI4, true, true);
+		AssertIsEquAl(fileURI3, fileURI4, fAlse, fAlse);
 
-		assertIsEqual(fileURI, fileURI3, true, false);
+		AssertIsEquAl(fileURI, fileURI3, true, fAlse);
 
-		assertIsEqual(URI.parse('file://server'), URI.parse('file://server/'), true, true);
-		assertIsEqual(URI.parse('http://server'), URI.parse('http://server/'), true, true);
-		assertIsEqual(URI.parse('foo://server'), URI.parse('foo://server/'), true, false); // only selected scheme have / as the default path
-		assertIsEqual(URI.parse('foo://server/foo'), URI.parse('foo://server/foo/'), true, false);
-		assertIsEqual(URI.parse('foo://server/foo'), URI.parse('foo://server/foo?'), true, true);
+		AssertIsEquAl(URI.pArse('file://server'), URI.pArse('file://server/'), true, true);
+		AssertIsEquAl(URI.pArse('http://server'), URI.pArse('http://server/'), true, true);
+		AssertIsEquAl(URI.pArse('foo://server'), URI.pArse('foo://server/'), true, fAlse); // only selected scheme hAve / As the defAult pAth
+		AssertIsEquAl(URI.pArse('foo://server/foo'), URI.pArse('foo://server/foo/'), true, fAlse);
+		AssertIsEquAl(URI.pArse('foo://server/foo'), URI.pArse('foo://server/foo?'), true, true);
 
-		let fileURI5 = URI.parse('foo://server:453/foo/bar?q=1');
-		let fileURI6 = URI.parse('foo://server:453/foo/bar#xy');
+		let fileURI5 = URI.pArse('foo://server:453/foo/bAr?q=1');
+		let fileURI6 = URI.pArse('foo://server:453/foo/bAr#xy');
 
-		assertIsEqual(fileURI5, fileURI5, true, true);
-		assertIsEqual(fileURI5, fileURI3, true, false);
-		assertIsEqual(fileURI6, fileURI6, true, true);
-		assertIsEqual(fileURI6, fileURI5, true, false);
-		assertIsEqual(fileURI6, fileURI3, true, false);
+		AssertIsEquAl(fileURI5, fileURI5, true, true);
+		AssertIsEquAl(fileURI5, fileURI3, true, fAlse);
+		AssertIsEquAl(fileURI6, fileURI6, true, true);
+		AssertIsEquAl(fileURI6, fileURI5, true, fAlse);
+		AssertIsEquAl(fileURI6, fileURI3, true, fAlse);
 	});
 
-	test('isEqualOrParent', () => {
+	test('isEquAlOrPArent', () => {
 
-		let fileURI = isWindows ? URI.file('c:\\foo\\bar') : URI.file('/foo/bar');
+		let fileURI = isWindows ? URI.file('c:\\foo\\bAr') : URI.file('/foo/bAr');
 		let fileURI2 = isWindows ? URI.file('c:\\foo') : URI.file('/foo');
 		let fileURI2b = isWindows ? URI.file('C:\\Foo\\') : URI.file('/Foo/');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI, fileURI), true, '1');
-		assert.equal(extUri.isEqualOrParent(fileURI, fileURI), true, '2');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI, fileURI2), true, '3');
-		assert.equal(extUri.isEqualOrParent(fileURI, fileURI2), true, '4');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI, fileURI2b), true, '5');
-		assert.equal(extUri.isEqualOrParent(fileURI, fileURI2b), false, '6');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI, fileURI), true, '1');
+		Assert.equAl(extUri.isEquAlOrPArent(fileURI, fileURI), true, '2');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI, fileURI2), true, '3');
+		Assert.equAl(extUri.isEquAlOrPArent(fileURI, fileURI2), true, '4');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI, fileURI2b), true, '5');
+		Assert.equAl(extUri.isEquAlOrPArent(fileURI, fileURI2b), fAlse, '6');
 
-		assert.equal(extUri.isEqualOrParent(fileURI2, fileURI), false, '7');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI2b, fileURI2), true, '8');
+		Assert.equAl(extUri.isEquAlOrPArent(fileURI2, fileURI), fAlse, '7');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI2b, fileURI2), true, '8');
 
-		let fileURI3 = URI.parse('foo://server:453/foo/bar/goo');
-		let fileURI4 = URI.parse('foo://server:453/foo/');
-		let fileURI5 = URI.parse('foo://server:453/foo');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI3, fileURI3, true), true, '11');
-		assert.equal(extUri.isEqualOrParent(fileURI3, fileURI3), true, '12');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI3, fileURI4, true), true, '13');
-		assert.equal(extUri.isEqualOrParent(fileURI3, fileURI4), true, '14');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI3, fileURI, true), false, '15');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI5, fileURI5, true), true, '16');
+		let fileURI3 = URI.pArse('foo://server:453/foo/bAr/goo');
+		let fileURI4 = URI.pArse('foo://server:453/foo/');
+		let fileURI5 = URI.pArse('foo://server:453/foo');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI3, fileURI3, true), true, '11');
+		Assert.equAl(extUri.isEquAlOrPArent(fileURI3, fileURI3), true, '12');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI3, fileURI4, true), true, '13');
+		Assert.equAl(extUri.isEquAlOrPArent(fileURI3, fileURI4), true, '14');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI3, fileURI, true), fAlse, '15');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI5, fileURI5, true), true, '16');
 
-		let fileURI6 = URI.parse('foo://server:453/foo?q=1');
-		let fileURI7 = URI.parse('foo://server:453/foo/bar?q=1');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI6, fileURI5), false, '17');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI6, fileURI6), true, '18');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI7, fileURI6), true, '19');
-		assert.equal(extUriIgnorePathCase.isEqualOrParent(fileURI7, fileURI5), false, '20');
+		let fileURI6 = URI.pArse('foo://server:453/foo?q=1');
+		let fileURI7 = URI.pArse('foo://server:453/foo/bAr?q=1');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI6, fileURI5), fAlse, '17');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI6, fileURI6), true, '18');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI7, fileURI6), true, '19');
+		Assert.equAl(extUriIgnorePAthCAse.isEquAlOrPArent(fileURI7, fileURI5), fAlse, '20');
 	});
 });

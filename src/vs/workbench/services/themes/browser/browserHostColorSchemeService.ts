@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { IHostColorSchemeService } from 'vs/workbench/services/themes/common/hostColorSchemeService';
 
-export class BrowserHostColorSchemeService extends Disposable implements IHostColorSchemeService {
+export clAss BrowserHostColorSchemeService extends DisposAble implements IHostColorSchemeService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidSchemeChangeEvent = this._register(new Emitter<void>());
+	privAte reAdonly _onDidSchemeChAngeEvent = this._register(new Emitter<void>());
 
 	constructor(
-		@IWorkbenchEnvironmentService private environmentService: IWorkbenchEnvironmentService
+		@IWorkbenchEnvironmentService privAte environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		window.matchMedia('(prefers-color-scheme: dark)').addListener(() => {
-			this._onDidSchemeChangeEvent.fire();
+		window.mAtchMediA('(prefers-color-scheme: dArk)').AddListener(() => {
+			this._onDidSchemeChAngeEvent.fire();
 		});
-		window.matchMedia('(forced-colors: active)').addListener(() => {
-			this._onDidSchemeChangeEvent.fire();
+		window.mAtchMediA('(forced-colors: Active)').AddListener(() => {
+			this._onDidSchemeChAngeEvent.fire();
 		});
 	}
 
-	get onDidChangeColorScheme(): Event<void> {
-		return this._onDidSchemeChangeEvent.event;
+	get onDidChAngeColorScheme(): Event<void> {
+		return this._onDidSchemeChAngeEvent.event;
 	}
 
-	get dark(): boolean {
-		if (window.matchMedia(`(prefers-color-scheme: light)`).matches) {
-			return false;
-		} else if (window.matchMedia(`(prefers-color-scheme: dark)`).matches) {
+	get dArk(): booleAn {
+		if (window.mAtchMediA(`(prefers-color-scheme: light)`).mAtches) {
+			return fAlse;
+		} else if (window.mAtchMediA(`(prefers-color-scheme: dArk)`).mAtches) {
 			return true;
 		}
-		return this.environmentService.configuration.colorScheme.dark;
+		return this.environmentService.configurAtion.colorScheme.dArk;
 	}
 
-	get highContrast(): boolean {
-		if (window.matchMedia(`(forced-colors: active)`).matches) {
+	get highContrAst(): booleAn {
+		if (window.mAtchMediA(`(forced-colors: Active)`).mAtches) {
 			return true;
 		}
-		return this.environmentService.configuration.colorScheme.highContrast;
+		return this.environmentService.configurAtion.colorScheme.highContrAst;
 	}
 
 }

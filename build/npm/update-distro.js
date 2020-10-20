@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const cp = require('child_process');
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
 
-const rootPath = path.dirname(path.dirname(path.dirname(__dirname)));
-const vscodePath = path.join(rootPath, 'vscode');
-const distroPath = path.join(rootPath, 'vscode-distro');
-const commit = cp.execSync('git rev-parse HEAD', { cwd: distroPath, encoding: 'utf8' }).trim();
-const packageJsonPath = path.join(vscodePath, 'package.json');
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const rootPAth = pAth.dirnAme(pAth.dirnAme(pAth.dirnAme(__dirnAme)));
+const vscodePAth = pAth.join(rootPAth, 'vscode');
+const distroPAth = pAth.join(rootPAth, 'vscode-distro');
+const commit = cp.execSync('git rev-pArse HEAD', { cwd: distroPAth, encoding: 'utf8' }).trim();
+const pAckAgeJsonPAth = pAth.join(vscodePAth, 'pAckAge.json');
+const pAckAgeJson = JSON.pArse(fs.reAdFileSync(pAckAgeJsonPAth, 'utf8'));
 
-packageJson.distro = commit;
-fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+pAckAgeJson.distro = commit;
+fs.writeFileSync(pAckAgeJsonPAth, JSON.stringify(pAckAgeJson, null, 2));

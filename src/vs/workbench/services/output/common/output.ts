@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
 
 export const Extensions = {
-	OutputChannels: 'workbench.contributions.outputChannels'
+	OutputChAnnels: 'workbench.contributions.outputChAnnels'
 };
 
-export interface IOutputChannelDescriptor {
+export interfAce IOutputChAnnelDescriptor {
 	id: string;
-	label: string;
-	log: boolean;
+	lAbel: string;
+	log: booleAn;
 	file?: URI;
 }
 
-export interface IFileOutputChannelDescriptor extends IOutputChannelDescriptor {
+export interfAce IFileOutputChAnnelDescriptor extends IOutputChAnnelDescriptor {
 	file: URI;
 }
 
-export interface IOutputChannelRegistry {
+export interfAce IOutputChAnnelRegistry {
 
-	readonly onDidRegisterChannel: Event<string>;
-	readonly onDidRemoveChannel: Event<string>;
-
-	/**
-	 * Make an output channel known to the output world.
-	 */
-	registerChannel(descriptor: IOutputChannelDescriptor): void;
+	reAdonly onDidRegisterChAnnel: Event<string>;
+	reAdonly onDidRemoveChAnnel: Event<string>;
 
 	/**
-	 * Returns the list of channels known to the output world.
+	 * MAke An output chAnnel known to the output world.
 	 */
-	getChannels(): IOutputChannelDescriptor[];
+	registerChAnnel(descriptor: IOutputChAnnelDescriptor): void;
 
 	/**
-	 * Returns the channel with the passed id.
+	 * Returns the list of chAnnels known to the output world.
 	 */
-	getChannel(id: string): IOutputChannelDescriptor | undefined;
+	getChAnnels(): IOutputChAnnelDescriptor[];
 
 	/**
-	 * Remove the output channel with the passed id.
+	 * Returns the chAnnel with the pAssed id.
 	 */
-	removeChannel(id: string): void;
+	getChAnnel(id: string): IOutputChAnnelDescriptor | undefined;
+
+	/**
+	 * Remove the output chAnnel with the pAssed id.
+	 */
+	removeChAnnel(id: string): void;
 }
 
-class OutputChannelRegistry implements IOutputChannelRegistry {
-	private channels = new Map<string, IOutputChannelDescriptor>();
+clAss OutputChAnnelRegistry implements IOutputChAnnelRegistry {
+	privAte chAnnels = new MAp<string, IOutputChAnnelDescriptor>();
 
-	private readonly _onDidRegisterChannel = new Emitter<string>();
-	readonly onDidRegisterChannel: Event<string> = this._onDidRegisterChannel.event;
+	privAte reAdonly _onDidRegisterChAnnel = new Emitter<string>();
+	reAdonly onDidRegisterChAnnel: Event<string> = this._onDidRegisterChAnnel.event;
 
-	private readonly _onDidRemoveChannel = new Emitter<string>();
-	readonly onDidRemoveChannel: Event<string> = this._onDidRemoveChannel.event;
+	privAte reAdonly _onDidRemoveChAnnel = new Emitter<string>();
+	reAdonly onDidRemoveChAnnel: Event<string> = this._onDidRemoveChAnnel.event;
 
-	public registerChannel(descriptor: IOutputChannelDescriptor): void {
-		if (!this.channels.has(descriptor.id)) {
-			this.channels.set(descriptor.id, descriptor);
-			this._onDidRegisterChannel.fire(descriptor.id);
+	public registerChAnnel(descriptor: IOutputChAnnelDescriptor): void {
+		if (!this.chAnnels.hAs(descriptor.id)) {
+			this.chAnnels.set(descriptor.id, descriptor);
+			this._onDidRegisterChAnnel.fire(descriptor.id);
 		}
 	}
 
-	public getChannels(): IOutputChannelDescriptor[] {
-		const result: IOutputChannelDescriptor[] = [];
-		this.channels.forEach(value => result.push(value));
+	public getChAnnels(): IOutputChAnnelDescriptor[] {
+		const result: IOutputChAnnelDescriptor[] = [];
+		this.chAnnels.forEAch(vAlue => result.push(vAlue));
 		return result;
 	}
 
-	public getChannel(id: string): IOutputChannelDescriptor | undefined {
-		return this.channels.get(id);
+	public getChAnnel(id: string): IOutputChAnnelDescriptor | undefined {
+		return this.chAnnels.get(id);
 	}
 
-	public removeChannel(id: string): void {
-		this.channels.delete(id);
-		this._onDidRemoveChannel.fire(id);
+	public removeChAnnel(id: string): void {
+		this.chAnnels.delete(id);
+		this._onDidRemoveChAnnel.fire(id);
 	}
 }
 
-Registry.add(Extensions.OutputChannels, new OutputChannelRegistry());
+Registry.Add(Extensions.OutputChAnnels, new OutputChAnnelRegistry());

@@ -1,349 +1,349 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, IDisposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { IViewDescriptorService, ViewContainer, IViewDescriptor, IView, ViewContainerLocation, IViewsService, IViewPaneContainer, getVisbileViewContextKey } from 'vs/workbench/common/views';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { DisposAble, IDisposAble, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { IViewDescriptorService, ViewContAiner, IViewDescriptor, IView, ViewContAinerLocAtion, IViewsService, IViewPAneContAiner, getVisbileViewContextKey } from 'vs/workbench/common/views';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { ContextKeyExpr, IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { Event, Emitter } from 'vs/base/common/event';
-import { isString } from 'vs/base/common/types';
-import { MenuId, registerAction2, Action2 } from 'vs/platform/actions/common/actions';
-import { localize } from 'vs/nls';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IPaneComposite } from 'vs/workbench/common/panecomposite';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { PanelRegistry, PanelDescriptor, Extensions as PanelExtensions, Panel } from 'vs/workbench/browser/panel';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { ContextKeyExpr, IContextKey, IContextKeyService, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { isString } from 'vs/bAse/common/types';
+import { MenuId, registerAction2, Action2 } from 'vs/plAtform/Actions/common/Actions';
+import { locAlize } from 'vs/nls';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IPAneComposite } from 'vs/workbench/common/pAnecomposite';
+import { IPAnelService } from 'vs/workbench/services/pAnel/common/pAnelService';
+import { ServicesAccessor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ViewPAneContAiner } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { PAnelRegistry, PAnelDescriptor, Extensions As PAnelExtensions, PAnel } from 'vs/workbench/browser/pAnel';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { Viewlet, ViewletDescriptor, ViewletRegistry, Extensions as ViewletExtensions } from 'vs/workbench/browser/viewlet';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { URI } from 'vs/base/common/uri';
-import { IProgressIndicator } from 'vs/platform/progress/common/progress';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { Viewlet, ViewletDescriptor, ViewletRegistry, Extensions As ViewletExtensions } from 'vs/workbench/browser/viewlet';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { URI } from 'vs/bAse/common/uri';
+import { IProgressIndicAtor } from 'vs/plAtform/progress/common/progress';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 
-export class ViewsService extends Disposable implements IViewsService {
+export clAss ViewsService extends DisposAble implements IViewsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly viewDisposable: Map<IViewDescriptor, IDisposable>;
-	private readonly viewPaneContainers: Map<string, { viewPaneContainer: ViewPaneContainer, disposable: IDisposable }>;
+	privAte reAdonly viewDisposAble: MAp<IViewDescriptor, IDisposAble>;
+	privAte reAdonly viewPAneContAiners: MAp<string, { viewPAneContAiner: ViewPAneContAiner, disposAble: IDisposAble }>;
 
-	private readonly _onDidChangeViewVisibility: Emitter<{ id: string, visible: boolean }> = this._register(new Emitter<{ id: string, visible: boolean }>());
-	readonly onDidChangeViewVisibility: Event<{ id: string, visible: boolean }> = this._onDidChangeViewVisibility.event;
+	privAte reAdonly _onDidChAngeViewVisibility: Emitter<{ id: string, visible: booleAn }> = this._register(new Emitter<{ id: string, visible: booleAn }>());
+	reAdonly onDidChAngeViewVisibility: Event<{ id: string, visible: booleAn }> = this._onDidChAngeViewVisibility.event;
 
-	private readonly _onDidChangeViewContainerVisibility = this._register(new Emitter<{ id: string, visible: boolean, location: ViewContainerLocation }>());
-	readonly onDidChangeViewContainerVisibility = this._onDidChangeViewContainerVisibility.event;
+	privAte reAdonly _onDidChAngeViewContAinerVisibility = this._register(new Emitter<{ id: string, visible: booleAn, locAtion: ViewContAinerLocAtion }>());
+	reAdonly onDidChAngeViewContAinerVisibility = this._onDidChAngeViewContAinerVisibility.event;
 
-	private readonly visibleViewContextKeys: Map<string, IContextKey<boolean>>;
+	privAte reAdonly visibleViewContextKeys: MAp<string, IContextKey<booleAn>>;
 
 	constructor(
-		@IViewDescriptorService private readonly viewDescriptorService: IViewDescriptorService,
-		@IPanelService private readonly panelService: IPanelService,
-		@IViewletService private readonly viewletService: IViewletService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService
+		@IViewDescriptorService privAte reAdonly viewDescriptorService: IViewDescriptorService,
+		@IPAnelService privAte reAdonly pAnelService: IPAnelService,
+		@IViewletService privAte reAdonly viewletService: IViewletService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService
 	) {
 		super();
 
-		this.viewDisposable = new Map<IViewDescriptor, IDisposable>();
-		this.visibleViewContextKeys = new Map<string, IContextKey<boolean>>();
-		this.viewPaneContainers = new Map<string, { viewPaneContainer: ViewPaneContainer, disposable: IDisposable }>();
+		this.viewDisposAble = new MAp<IViewDescriptor, IDisposAble>();
+		this.visibleViewContextKeys = new MAp<string, IContextKey<booleAn>>();
+		this.viewPAneContAiners = new MAp<string, { viewPAneContAiner: ViewPAneContAiner, disposAble: IDisposAble }>();
 
-		this._register(toDisposable(() => {
-			this.viewDisposable.forEach(disposable => disposable.dispose());
-			this.viewDisposable.clear();
+		this._register(toDisposAble(() => {
+			this.viewDisposAble.forEAch(disposAble => disposAble.dispose());
+			this.viewDisposAble.cleAr();
 		}));
 
-		this.viewDescriptorService.viewContainers.forEach(viewContainer => this.onDidRegisterViewContainer(viewContainer, this.viewDescriptorService.getViewContainerLocation(viewContainer)!));
-		this._register(this.viewDescriptorService.onDidChangeViewContainers(({ added, removed }) => this.onDidChangeContainers(added, removed)));
-		this._register(this.viewDescriptorService.onDidChangeContainerLocation(({ viewContainer, from, to }) => this.onDidChangeContainerLocation(viewContainer, from, to)));
+		this.viewDescriptorService.viewContAiners.forEAch(viewContAiner => this.onDidRegisterViewContAiner(viewContAiner, this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner)!));
+		this._register(this.viewDescriptorService.onDidChAngeViewContAiners(({ Added, removed }) => this.onDidChAngeContAiners(Added, removed)));
+		this._register(this.viewDescriptorService.onDidChAngeContAinerLocAtion(({ viewContAiner, from, to }) => this.onDidChAngeContAinerLocAtion(viewContAiner, from, to)));
 
-		// View Container Visibility
-		this._register(this.viewletService.onDidViewletOpen(viewlet => this._onDidChangeViewContainerVisibility.fire({ id: viewlet.getId(), visible: true, location: ViewContainerLocation.Sidebar })));
-		this._register(this.panelService.onDidPanelOpen(e => this._onDidChangeViewContainerVisibility.fire({ id: e.panel.getId(), visible: true, location: ViewContainerLocation.Panel })));
-		this._register(this.viewletService.onDidViewletClose(viewlet => this._onDidChangeViewContainerVisibility.fire({ id: viewlet.getId(), visible: false, location: ViewContainerLocation.Sidebar })));
-		this._register(this.panelService.onDidPanelClose(panel => this._onDidChangeViewContainerVisibility.fire({ id: panel.getId(), visible: false, location: ViewContainerLocation.Panel })));
+		// View ContAiner Visibility
+		this._register(this.viewletService.onDidViewletOpen(viewlet => this._onDidChAngeViewContAinerVisibility.fire({ id: viewlet.getId(), visible: true, locAtion: ViewContAinerLocAtion.SidebAr })));
+		this._register(this.pAnelService.onDidPAnelOpen(e => this._onDidChAngeViewContAinerVisibility.fire({ id: e.pAnel.getId(), visible: true, locAtion: ViewContAinerLocAtion.PAnel })));
+		this._register(this.viewletService.onDidViewletClose(viewlet => this._onDidChAngeViewContAinerVisibility.fire({ id: viewlet.getId(), visible: fAlse, locAtion: ViewContAinerLocAtion.SidebAr })));
+		this._register(this.pAnelService.onDidPAnelClose(pAnel => this._onDidChAngeViewContAinerVisibility.fire({ id: pAnel.getId(), visible: fAlse, locAtion: ViewContAinerLocAtion.PAnel })));
 
 	}
 
-	private registerViewPaneContainer(viewPaneContainer: ViewPaneContainer): void {
-		const disposable = new DisposableStore();
-		disposable.add(viewPaneContainer);
-		disposable.add(viewPaneContainer.onDidAddViews(views => this.onViewsAdded(views)));
-		disposable.add(viewPaneContainer.onDidChangeViewVisibility(view => this.onViewsVisibilityChanged(view, view.isBodyVisible())));
-		disposable.add(viewPaneContainer.onDidRemoveViews(views => this.onViewsRemoved(views)));
+	privAte registerViewPAneContAiner(viewPAneContAiner: ViewPAneContAiner): void {
+		const disposAble = new DisposAbleStore();
+		disposAble.Add(viewPAneContAiner);
+		disposAble.Add(viewPAneContAiner.onDidAddViews(views => this.onViewsAdded(views)));
+		disposAble.Add(viewPAneContAiner.onDidChAngeViewVisibility(view => this.onViewsVisibilityChAnged(view, view.isBodyVisible())));
+		disposAble.Add(viewPAneContAiner.onDidRemoveViews(views => this.onViewsRemoved(views)));
 
-		this.viewPaneContainers.set(viewPaneContainer.getId(), { viewPaneContainer, disposable });
+		this.viewPAneContAiners.set(viewPAneContAiner.getId(), { viewPAneContAiner, disposAble });
 	}
 
-	private deregisterViewPaneContainer(id: string): void {
-		const viewPaneContainerItem = this.viewPaneContainers.get(id);
-		if (viewPaneContainerItem) {
-			viewPaneContainerItem.disposable.dispose();
-			this.viewPaneContainers.delete(id);
+	privAte deregisterViewPAneContAiner(id: string): void {
+		const viewPAneContAinerItem = this.viewPAneContAiners.get(id);
+		if (viewPAneContAinerItem) {
+			viewPAneContAinerItem.disposAble.dispose();
+			this.viewPAneContAiners.delete(id);
 		}
 	}
 
-	private onViewsAdded(added: IView[]): void {
-		for (const view of added) {
-			this.onViewsVisibilityChanged(view, view.isBodyVisible());
+	privAte onViewsAdded(Added: IView[]): void {
+		for (const view of Added) {
+			this.onViewsVisibilityChAnged(view, view.isBodyVisible());
 		}
 	}
 
-	private onViewsVisibilityChanged(view: IView, visible: boolean): void {
-		this.getOrCreateActiveViewContextKey(view).set(visible);
-		this._onDidChangeViewVisibility.fire({ id: view.id, visible: visible });
+	privAte onViewsVisibilityChAnged(view: IView, visible: booleAn): void {
+		this.getOrCreAteActiveViewContextKey(view).set(visible);
+		this._onDidChAngeViewVisibility.fire({ id: view.id, visible: visible });
 	}
 
-	private onViewsRemoved(removed: IView[]): void {
+	privAte onViewsRemoved(removed: IView[]): void {
 		for (const view of removed) {
-			this.onViewsVisibilityChanged(view, false);
+			this.onViewsVisibilityChAnged(view, fAlse);
 		}
 	}
 
-	private getOrCreateActiveViewContextKey(view: IView): IContextKey<boolean> {
+	privAte getOrCreAteActiveViewContextKey(view: IView): IContextKey<booleAn> {
 		const visibleContextKeyId = getVisbileViewContextKey(view.id);
 		let contextKey = this.visibleViewContextKeys.get(visibleContextKeyId);
 		if (!contextKey) {
-			contextKey = new RawContextKey(visibleContextKeyId, false).bindTo(this.contextKeyService);
+			contextKey = new RAwContextKey(visibleContextKeyId, fAlse).bindTo(this.contextKeyService);
 			this.visibleViewContextKeys.set(visibleContextKeyId, contextKey);
 		}
 		return contextKey;
 	}
 
-	private onDidChangeContainers(added: ReadonlyArray<{ container: ViewContainer, location: ViewContainerLocation }>, removed: ReadonlyArray<{ container: ViewContainer, location: ViewContainerLocation }>): void {
-		for (const { container, location } of removed) {
-			this.deregisterViewletOrPanel(container, location);
+	privAte onDidChAngeContAiners(Added: ReAdonlyArrAy<{ contAiner: ViewContAiner, locAtion: ViewContAinerLocAtion }>, removed: ReAdonlyArrAy<{ contAiner: ViewContAiner, locAtion: ViewContAinerLocAtion }>): void {
+		for (const { contAiner, locAtion } of removed) {
+			this.deregisterViewletOrPAnel(contAiner, locAtion);
 		}
-		for (const { container, location } of added) {
-			this.onDidRegisterViewContainer(container, location);
+		for (const { contAiner, locAtion } of Added) {
+			this.onDidRegisterViewContAiner(contAiner, locAtion);
 		}
 	}
 
-	private onDidRegisterViewContainer(viewContainer: ViewContainer, viewContainerLocation: ViewContainerLocation): void {
-		this.registerViewletOrPanel(viewContainer, viewContainerLocation);
-		const viewContainerModel = this.viewDescriptorService.getViewContainerModel(viewContainer);
-		this.onViewDescriptorsAdded(viewContainerModel.allViewDescriptors, viewContainer);
-		this._register(viewContainerModel.onDidChangeAllViewDescriptors(({ added, removed }) => {
-			this.onViewDescriptorsAdded(added, viewContainer);
+	privAte onDidRegisterViewContAiner(viewContAiner: ViewContAiner, viewContAinerLocAtion: ViewContAinerLocAtion): void {
+		this.registerViewletOrPAnel(viewContAiner, viewContAinerLocAtion);
+		const viewContAinerModel = this.viewDescriptorService.getViewContAinerModel(viewContAiner);
+		this.onViewDescriptorsAdded(viewContAinerModel.AllViewDescriptors, viewContAiner);
+		this._register(viewContAinerModel.onDidChAngeAllViewDescriptors(({ Added, removed }) => {
+			this.onViewDescriptorsAdded(Added, viewContAiner);
 			this.onViewDescriptorsRemoved(removed);
 		}));
 	}
 
-	private onDidChangeContainerLocation(viewContainer: ViewContainer, from: ViewContainerLocation, to: ViewContainerLocation): void {
-		this.deregisterViewletOrPanel(viewContainer, from);
-		this.registerViewletOrPanel(viewContainer, to);
+	privAte onDidChAngeContAinerLocAtion(viewContAiner: ViewContAiner, from: ViewContAinerLocAtion, to: ViewContAinerLocAtion): void {
+		this.deregisterViewletOrPAnel(viewContAiner, from);
+		this.registerViewletOrPAnel(viewContAiner, to);
 	}
 
-	private onViewDescriptorsAdded(views: ReadonlyArray<IViewDescriptor>, container: ViewContainer): void {
-		const location = this.viewDescriptorService.getViewContainerLocation(container);
-		if (location === null) {
+	privAte onViewDescriptorsAdded(views: ReAdonlyArrAy<IViewDescriptor>, contAiner: ViewContAiner): void {
+		const locAtion = this.viewDescriptorService.getViewContAinerLocAtion(contAiner);
+		if (locAtion === null) {
 			return;
 		}
 
-		const composite = this.getComposite(container.id, location);
+		const composite = this.getComposite(contAiner.id, locAtion);
 		for (const viewDescriptor of views) {
-			const disposables = new DisposableStore();
-			disposables.add(registerAction2(class FocusViewAction extends Action2 {
+			const disposAbles = new DisposAbleStore();
+			disposAbles.Add(registerAction2(clAss FocusViewAction extends Action2 {
 				constructor() {
 					super({
-						id: viewDescriptor.focusCommand ? viewDescriptor.focusCommand.id : `${viewDescriptor.id}.focus`,
-						title: { original: `Focus on ${viewDescriptor.name} View`, value: localize({ key: 'focus view', comment: ['{0} indicates the name of the view to be focused.'] }, "Focus on {0} View", viewDescriptor.name) },
-						category: composite ? composite.name : CATEGORIES.View,
+						id: viewDescriptor.focusCommAnd ? viewDescriptor.focusCommAnd.id : `${viewDescriptor.id}.focus`,
+						title: { originAl: `Focus on ${viewDescriptor.nAme} View`, vAlue: locAlize({ key: 'focus view', comment: ['{0} indicAtes the nAme of the view to be focused.'] }, "Focus on {0} View", viewDescriptor.nAme) },
+						cAtegory: composite ? composite.nAme : CATEGORIES.View,
 						menu: [{
-							id: MenuId.CommandPalette,
+							id: MenuId.CommAndPAlette,
 							when: viewDescriptor.when,
 						}],
 						keybinding: {
-							when: ContextKeyExpr.has(`${viewDescriptor.id}.active`),
+							when: ContextKeyExpr.hAs(`${viewDescriptor.id}.Active`),
 							weight: KeybindingWeight.WorkbenchContrib,
-							primary: viewDescriptor.focusCommand?.keybindings?.primary,
-							secondary: viewDescriptor.focusCommand?.keybindings?.secondary,
-							linux: viewDescriptor.focusCommand?.keybindings?.linux,
-							mac: viewDescriptor.focusCommand?.keybindings?.mac,
-							win: viewDescriptor.focusCommand?.keybindings?.win
+							primAry: viewDescriptor.focusCommAnd?.keybindings?.primAry,
+							secondAry: viewDescriptor.focusCommAnd?.keybindings?.secondAry,
+							linux: viewDescriptor.focusCommAnd?.keybindings?.linux,
+							mAc: viewDescriptor.focusCommAnd?.keybindings?.mAc,
+							win: viewDescriptor.focusCommAnd?.keybindings?.win
 						}
 					});
 				}
-				run(accessor: ServicesAccessor): void {
-					accessor.get(IViewsService).openView(viewDescriptor.id, true);
+				run(Accessor: ServicesAccessor): void {
+					Accessor.get(IViewsService).openView(viewDescriptor.id, true);
 				}
 			}));
 
-			disposables.add(registerAction2(class ResetViewLocationAction extends Action2 {
+			disposAbles.Add(registerAction2(clAss ResetViewLocAtionAction extends Action2 {
 				constructor() {
 					super({
-						id: `${viewDescriptor.id}.resetViewLocation`,
+						id: `${viewDescriptor.id}.resetViewLocAtion`,
 						title: {
-							original: 'Reset Location',
-							value: localize('resetViewLocation', "Reset Location")
+							originAl: 'Reset LocAtion',
+							vAlue: locAlize('resetViewLocAtion', "Reset LocAtion")
 						},
 						menu: [{
 							id: MenuId.ViewTitleContext,
 							when: ContextKeyExpr.or(
-								ContextKeyExpr.and(
-									ContextKeyExpr.equals('view', viewDescriptor.id),
-									ContextKeyExpr.equals(`${viewDescriptor.id}.defaultViewLocation`, false)
+								ContextKeyExpr.And(
+									ContextKeyExpr.equAls('view', viewDescriptor.id),
+									ContextKeyExpr.equAls(`${viewDescriptor.id}.defAultViewLocAtion`, fAlse)
 								)
 							)
 						}],
 					});
 				}
-				run(accessor: ServicesAccessor): void {
-					const viewDescriptorService = accessor.get(IViewDescriptorService);
-					const defaultContainer = viewDescriptorService.getDefaultContainerById(viewDescriptor.id)!;
-					const containerModel = viewDescriptorService.getViewContainerModel(defaultContainer)!;
+				run(Accessor: ServicesAccessor): void {
+					const viewDescriptorService = Accessor.get(IViewDescriptorService);
+					const defAultContAiner = viewDescriptorService.getDefAultContAinerById(viewDescriptor.id)!;
+					const contAinerModel = viewDescriptorService.getViewContAinerModel(defAultContAiner)!;
 
-					// The default container is hidden so we should try to reset its location first
-					if (defaultContainer.hideIfEmpty && containerModel.visibleViewDescriptors.length === 0) {
-						const defaultLocation = viewDescriptorService.getDefaultViewContainerLocation(defaultContainer)!;
-						viewDescriptorService.moveViewContainerToLocation(defaultContainer, defaultLocation);
+					// The defAult contAiner is hidden so we should try to reset its locAtion first
+					if (defAultContAiner.hideIfEmpty && contAinerModel.visibleViewDescriptors.length === 0) {
+						const defAultLocAtion = viewDescriptorService.getDefAultViewContAinerLocAtion(defAultContAiner)!;
+						viewDescriptorService.moveViewContAinerToLocAtion(defAultContAiner, defAultLocAtion);
 					}
 
-					viewDescriptorService.moveViewsToContainer([viewDescriptor], viewDescriptorService.getDefaultContainerById(viewDescriptor.id)!);
-					accessor.get(IViewsService).openView(viewDescriptor.id, true);
+					viewDescriptorService.moveViewsToContAiner([viewDescriptor], viewDescriptorService.getDefAultContAinerById(viewDescriptor.id)!);
+					Accessor.get(IViewsService).openView(viewDescriptor.id, true);
 				}
 			}));
 
-			this.viewDisposable.set(viewDescriptor, disposables);
+			this.viewDisposAble.set(viewDescriptor, disposAbles);
 		}
 	}
 
-	private onViewDescriptorsRemoved(views: ReadonlyArray<IViewDescriptor>): void {
+	privAte onViewDescriptorsRemoved(views: ReAdonlyArrAy<IViewDescriptor>): void {
 		for (const view of views) {
-			const disposable = this.viewDisposable.get(view);
-			if (disposable) {
-				disposable.dispose();
-				this.viewDisposable.delete(view);
+			const disposAble = this.viewDisposAble.get(view);
+			if (disposAble) {
+				disposAble.dispose();
+				this.viewDisposAble.delete(view);
 			}
 		}
 	}
 
-	private async openComposite(compositeId: string, location: ViewContainerLocation, focus?: boolean): Promise<IPaneComposite | undefined> {
-		if (location === ViewContainerLocation.Sidebar) {
+	privAte Async openComposite(compositeId: string, locAtion: ViewContAinerLocAtion, focus?: booleAn): Promise<IPAneComposite | undefined> {
+		if (locAtion === ViewContAinerLocAtion.SidebAr) {
 			return this.viewletService.openViewlet(compositeId, focus);
-		} else if (location === ViewContainerLocation.Panel) {
-			return this.panelService.openPanel(compositeId, focus) as Promise<IPaneComposite>;
+		} else if (locAtion === ViewContAinerLocAtion.PAnel) {
+			return this.pAnelService.openPAnel(compositeId, focus) As Promise<IPAneComposite>;
 		}
 		return undefined;
 	}
 
-	private getComposite(compositeId: string, location: ViewContainerLocation): { id: string, name: string } | undefined {
-		if (location === ViewContainerLocation.Sidebar) {
+	privAte getComposite(compositeId: string, locAtion: ViewContAinerLocAtion): { id: string, nAme: string } | undefined {
+		if (locAtion === ViewContAinerLocAtion.SidebAr) {
 			return this.viewletService.getViewlet(compositeId);
-		} else if (location === ViewContainerLocation.Panel) {
-			return this.panelService.getPanel(compositeId);
+		} else if (locAtion === ViewContAinerLocAtion.PAnel) {
+			return this.pAnelService.getPAnel(compositeId);
 		}
 
 		return undefined;
 	}
 
-	isViewContainerVisible(id: string): boolean {
-		const viewContainer = this.viewDescriptorService.getViewContainerById(id);
-		if (viewContainer) {
-			const viewContainerLocation = this.viewDescriptorService.getViewContainerLocation(viewContainer);
-			switch (viewContainerLocation) {
-				case ViewContainerLocation.Panel:
-					return this.panelService.getActivePanel()?.getId() === id;
-				case ViewContainerLocation.Sidebar:
+	isViewContAinerVisible(id: string): booleAn {
+		const viewContAiner = this.viewDescriptorService.getViewContAinerById(id);
+		if (viewContAiner) {
+			const viewContAinerLocAtion = this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner);
+			switch (viewContAinerLocAtion) {
+				cAse ViewContAinerLocAtion.PAnel:
+					return this.pAnelService.getActivePAnel()?.getId() === id;
+				cAse ViewContAinerLocAtion.SidebAr:
 					return this.viewletService.getActiveViewlet()?.getId() === id;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	getVisibleViewContainer(location: ViewContainerLocation): ViewContainer | null {
-		let viewContainerId: string | undefined = undefined;
-		switch (location) {
-			case ViewContainerLocation.Panel:
-				viewContainerId = this.panelService.getActivePanel()?.getId();
-				break;
-			case ViewContainerLocation.Sidebar:
-				viewContainerId = this.viewletService.getActiveViewlet()?.getId();
-				break;
+	getVisibleViewContAiner(locAtion: ViewContAinerLocAtion): ViewContAiner | null {
+		let viewContAinerId: string | undefined = undefined;
+		switch (locAtion) {
+			cAse ViewContAinerLocAtion.PAnel:
+				viewContAinerId = this.pAnelService.getActivePAnel()?.getId();
+				breAk;
+			cAse ViewContAinerLocAtion.SidebAr:
+				viewContAinerId = this.viewletService.getActiveViewlet()?.getId();
+				breAk;
 		}
-		return viewContainerId ? this.viewDescriptorService.getViewContainerById(viewContainerId) : null;
+		return viewContAinerId ? this.viewDescriptorService.getViewContAinerById(viewContAinerId) : null;
 	}
 
-	getActiveViewPaneContainerWithId(viewContainerId: string): IViewPaneContainer | null {
-		const viewContainer = this.viewDescriptorService.getViewContainerById(viewContainerId);
-		return viewContainer ? this.getActiveViewPaneContainer(viewContainer) : null;
+	getActiveViewPAneContAinerWithId(viewContAinerId: string): IViewPAneContAiner | null {
+		const viewContAiner = this.viewDescriptorService.getViewContAinerById(viewContAinerId);
+		return viewContAiner ? this.getActiveViewPAneContAiner(viewContAiner) : null;
 	}
 
-	async openViewContainer(id: string, focus?: boolean): Promise<IPaneComposite | null> {
-		const viewContainer = this.viewDescriptorService.getViewContainerById(id);
-		if (viewContainer) {
-			const viewContainerLocation = this.viewDescriptorService.getViewContainerLocation(viewContainer);
-			switch (viewContainerLocation) {
-				case ViewContainerLocation.Panel:
-					const panel = await this.panelService.openPanel(id, focus);
-					return panel as IPaneComposite;
-				case ViewContainerLocation.Sidebar:
-					const viewlet = await this.viewletService.openViewlet(id, focus);
+	Async openViewContAiner(id: string, focus?: booleAn): Promise<IPAneComposite | null> {
+		const viewContAiner = this.viewDescriptorService.getViewContAinerById(id);
+		if (viewContAiner) {
+			const viewContAinerLocAtion = this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner);
+			switch (viewContAinerLocAtion) {
+				cAse ViewContAinerLocAtion.PAnel:
+					const pAnel = AwAit this.pAnelService.openPAnel(id, focus);
+					return pAnel As IPAneComposite;
+				cAse ViewContAinerLocAtion.SidebAr:
+					const viewlet = AwAit this.viewletService.openViewlet(id, focus);
 					return viewlet || null;
 			}
 		}
 		return null;
 	}
 
-	async closeViewContainer(id: string): Promise<void> {
-		const viewContainer = this.viewDescriptorService.getViewContainerById(id);
-		if (viewContainer) {
-			const viewContainerLocation = this.viewDescriptorService.getViewContainerLocation(viewContainer);
-			switch (viewContainerLocation) {
-				case ViewContainerLocation.Panel:
-					return this.panelService.getActivePanel()?.getId() === id ? this.layoutService.setPanelHidden(true) : undefined;
-				case ViewContainerLocation.Sidebar:
-					return this.viewletService.getActiveViewlet()?.getId() === id ? this.layoutService.setSideBarHidden(true) : undefined;
+	Async closeViewContAiner(id: string): Promise<void> {
+		const viewContAiner = this.viewDescriptorService.getViewContAinerById(id);
+		if (viewContAiner) {
+			const viewContAinerLocAtion = this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner);
+			switch (viewContAinerLocAtion) {
+				cAse ViewContAinerLocAtion.PAnel:
+					return this.pAnelService.getActivePAnel()?.getId() === id ? this.lAyoutService.setPAnelHidden(true) : undefined;
+				cAse ViewContAinerLocAtion.SidebAr:
+					return this.viewletService.getActiveViewlet()?.getId() === id ? this.lAyoutService.setSideBArHidden(true) : undefined;
 			}
 		}
 	}
 
-	isViewVisible(id: string): boolean {
-		const activeView = this.getActiveViewWithId(id);
-		return activeView?.isBodyVisible() || false;
+	isViewVisible(id: string): booleAn {
+		const ActiveView = this.getActiveViewWithId(id);
+		return ActiveView?.isBodyVisible() || fAlse;
 	}
 
 	getActiveViewWithId<T extends IView>(id: string): T | null {
-		const viewContainer = this.viewDescriptorService.getViewContainerByViewId(id);
-		if (viewContainer) {
-			const activeViewPaneContainer = this.getActiveViewPaneContainer(viewContainer);
-			if (activeViewPaneContainer) {
-				return activeViewPaneContainer.getView(id) as T;
+		const viewContAiner = this.viewDescriptorService.getViewContAinerByViewId(id);
+		if (viewContAiner) {
+			const ActiveViewPAneContAiner = this.getActiveViewPAneContAiner(viewContAiner);
+			if (ActiveViewPAneContAiner) {
+				return ActiveViewPAneContAiner.getView(id) As T;
 			}
 		}
 		return null;
 	}
 
-	async openView<T extends IView>(id: string, focus: boolean): Promise<T | null> {
-		const viewContainer = this.viewDescriptorService.getViewContainerByViewId(id);
-		if (!viewContainer) {
+	Async openView<T extends IView>(id: string, focus: booleAn): Promise<T | null> {
+		const viewContAiner = this.viewDescriptorService.getViewContAinerByViewId(id);
+		if (!viewContAiner) {
 			return null;
 		}
 
-		if (!this.viewDescriptorService.getViewContainerModel(viewContainer).activeViewDescriptors.some(viewDescriptor => viewDescriptor.id === id)) {
+		if (!this.viewDescriptorService.getViewContAinerModel(viewContAiner).ActiveViewDescriptors.some(viewDescriptor => viewDescriptor.id === id)) {
 			return null;
 		}
 
-		const location = this.viewDescriptorService.getViewContainerLocation(viewContainer);
-		const compositeDescriptor = this.getComposite(viewContainer.id, location!);
+		const locAtion = this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner);
+		const compositeDescriptor = this.getComposite(viewContAiner.id, locAtion!);
 		if (compositeDescriptor) {
-			const paneComposite = await this.openComposite(compositeDescriptor.id, location!) as IPaneComposite | undefined;
-			if (paneComposite && paneComposite.openView) {
-				return paneComposite.openView<T>(id, focus) || null;
+			const pAneComposite = AwAit this.openComposite(compositeDescriptor.id, locAtion!) As IPAneComposite | undefined;
+			if (pAneComposite && pAneComposite.openView) {
+				return pAneComposite.openView<T>(id, focus) || null;
 			} else if (focus) {
-				paneComposite?.focus();
+				pAneComposite?.focus();
 			}
 		}
 
@@ -351,149 +351,149 @@ export class ViewsService extends Disposable implements IViewsService {
 	}
 
 	closeView(id: string): void {
-		const viewContainer = this.viewDescriptorService.getViewContainerByViewId(id);
-		if (viewContainer) {
-			const activeViewPaneContainer = this.getActiveViewPaneContainer(viewContainer);
-			if (activeViewPaneContainer) {
-				const view = activeViewPaneContainer.getView(id);
+		const viewContAiner = this.viewDescriptorService.getViewContAinerByViewId(id);
+		if (viewContAiner) {
+			const ActiveViewPAneContAiner = this.getActiveViewPAneContAiner(viewContAiner);
+			if (ActiveViewPAneContAiner) {
+				const view = ActiveViewPAneContAiner.getView(id);
 				if (view) {
-					if (activeViewPaneContainer.views.length === 1) {
-						const location = this.viewDescriptorService.getViewContainerLocation(viewContainer);
-						if (location === ViewContainerLocation.Sidebar) {
-							this.layoutService.setSideBarHidden(true);
-						} else if (location === ViewContainerLocation.Panel) {
-							this.panelService.hideActivePanel();
+					if (ActiveViewPAneContAiner.views.length === 1) {
+						const locAtion = this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner);
+						if (locAtion === ViewContAinerLocAtion.SidebAr) {
+							this.lAyoutService.setSideBArHidden(true);
+						} else if (locAtion === ViewContAinerLocAtion.PAnel) {
+							this.pAnelService.hideActivePAnel();
 						}
 					} else {
-						view.setExpanded(false);
+						view.setExpAnded(fAlse);
 					}
 				}
 			}
 		}
 	}
 
-	private getActiveViewPaneContainer(viewContainer: ViewContainer): IViewPaneContainer | null {
-		const location = this.viewDescriptorService.getViewContainerLocation(viewContainer);
+	privAte getActiveViewPAneContAiner(viewContAiner: ViewContAiner): IViewPAneContAiner | null {
+		const locAtion = this.viewDescriptorService.getViewContAinerLocAtion(viewContAiner);
 
-		if (location === ViewContainerLocation.Sidebar) {
-			const activeViewlet = this.viewletService.getActiveViewlet();
-			if (activeViewlet?.getId() === viewContainer.id) {
-				return activeViewlet.getViewPaneContainer() || null;
+		if (locAtion === ViewContAinerLocAtion.SidebAr) {
+			const ActiveViewlet = this.viewletService.getActiveViewlet();
+			if (ActiveViewlet?.getId() === viewContAiner.id) {
+				return ActiveViewlet.getViewPAneContAiner() || null;
 			}
-		} else if (location === ViewContainerLocation.Panel) {
-			const activePanel = this.panelService.getActivePanel();
-			if (activePanel?.getId() === viewContainer.id) {
-				return (activePanel as IPaneComposite).getViewPaneContainer() || null;
+		} else if (locAtion === ViewContAinerLocAtion.PAnel) {
+			const ActivePAnel = this.pAnelService.getActivePAnel();
+			if (ActivePAnel?.getId() === viewContAiner.id) {
+				return (ActivePAnel As IPAneComposite).getViewPAneContAiner() || null;
 			}
 		}
 
 		return null;
 	}
 
-	getViewProgressIndicator(viewId: string): IProgressIndicator | undefined {
-		const viewContainer = this.viewDescriptorService.getViewContainerByViewId(viewId);
-		if (viewContainer === null) {
+	getViewProgressIndicAtor(viewId: string): IProgressIndicAtor | undefined {
+		const viewContAiner = this.viewDescriptorService.getViewContAinerByViewId(viewId);
+		if (viewContAiner === null) {
 			return undefined;
 		}
 
-		const view = this.viewPaneContainers.get(viewContainer.id)?.viewPaneContainer?.getView(viewId);
-		return view?.getProgressIndicator();
+		const view = this.viewPAneContAiners.get(viewContAiner.id)?.viewPAneContAiner?.getView(viewId);
+		return view?.getProgressIndicAtor();
 	}
 
-	private registerViewletOrPanel(viewContainer: ViewContainer, viewContainerLocation: ViewContainerLocation): void {
-		switch (viewContainerLocation) {
-			case ViewContainerLocation.Panel:
-				this.registerPanel(viewContainer);
-				break;
-			case ViewContainerLocation.Sidebar:
-				if (viewContainer.ctorDescriptor) {
-					this.registerViewlet(viewContainer);
+	privAte registerViewletOrPAnel(viewContAiner: ViewContAiner, viewContAinerLocAtion: ViewContAinerLocAtion): void {
+		switch (viewContAinerLocAtion) {
+			cAse ViewContAinerLocAtion.PAnel:
+				this.registerPAnel(viewContAiner);
+				breAk;
+			cAse ViewContAinerLocAtion.SidebAr:
+				if (viewContAiner.ctorDescriptor) {
+					this.registerViewlet(viewContAiner);
 				}
-				break;
+				breAk;
 		}
 	}
 
-	private deregisterViewletOrPanel(viewContainer: ViewContainer, viewContainerLocation: ViewContainerLocation): void {
-		switch (viewContainerLocation) {
-			case ViewContainerLocation.Panel:
-				this.deregisterPanel(viewContainer);
-				break;
-			case ViewContainerLocation.Sidebar:
-				if (viewContainer.ctorDescriptor) {
-					this.deregisterViewlet(viewContainer);
+	privAte deregisterViewletOrPAnel(viewContAiner: ViewContAiner, viewContAinerLocAtion: ViewContAinerLocAtion): void {
+		switch (viewContAinerLocAtion) {
+			cAse ViewContAinerLocAtion.PAnel:
+				this.deregisterPAnel(viewContAiner);
+				breAk;
+			cAse ViewContAinerLocAtion.SidebAr:
+				if (viewContAiner.ctorDescriptor) {
+					this.deregisterViewlet(viewContAiner);
 				}
-				break;
+				breAk;
 		}
 	}
 
-	private registerPanel(viewContainer: ViewContainer): void {
-		const that = this;
-		class PaneContainerPanel extends Panel {
+	privAte registerPAnel(viewContAiner: ViewContAiner): void {
+		const thAt = this;
+		clAss PAneContAinerPAnel extends PAnel {
 			constructor(
 				@ITelemetryService telemetryService: ITelemetryService,
-				@IStorageService storageService: IStorageService,
-				@IInstantiationService instantiationService: IInstantiationService,
+				@IStorAgeService storAgeService: IStorAgeService,
+				@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 				@IThemeService themeService: IThemeService,
 				@IContextMenuService contextMenuService: IContextMenuService,
 				@IExtensionService extensionService: IExtensionService,
-				@IWorkspaceContextService contextService: IWorkspaceContextService,
+				@IWorkspAceContextService contextService: IWorkspAceContextService,
 			) {
-				// Use composite's instantiation service to get the editor progress service for any editors instantiated within the composite
-				const viewPaneContainer = (instantiationService as any).createInstance(viewContainer.ctorDescriptor!.ctor, ...(viewContainer.ctorDescriptor!.staticArguments || []));
-				super(viewContainer.id, viewPaneContainer, telemetryService, storageService, instantiationService, themeService, contextMenuService, extensionService, contextService);
-				that.registerViewPaneContainer(this.viewPaneContainer);
+				// Use composite's instAntiAtion service to get the editor progress service for Any editors instAntiAted within the composite
+				const viewPAneContAiner = (instAntiAtionService As Any).creAteInstAnce(viewContAiner.ctorDescriptor!.ctor, ...(viewContAiner.ctorDescriptor!.stAticArguments || []));
+				super(viewContAiner.id, viewPAneContAiner, telemetryService, storAgeService, instAntiAtionService, themeService, contextMenuService, extensionService, contextService);
+				thAt.registerViewPAneContAiner(this.viewPAneContAiner);
 			}
 		}
-		Registry.as<PanelRegistry>(PanelExtensions.Panels).registerPanel(PanelDescriptor.create(
-			PaneContainerPanel,
-			viewContainer.id,
-			viewContainer.name,
+		Registry.As<PAnelRegistry>(PAnelExtensions.PAnels).registerPAnel(PAnelDescriptor.creAte(
+			PAneContAinerPAnel,
+			viewContAiner.id,
+			viewContAiner.nAme,
 			undefined,
-			viewContainer.order,
-			viewContainer.requestedIndex,
-			viewContainer.focusCommand?.id,
+			viewContAiner.order,
+			viewContAiner.requestedIndex,
+			viewContAiner.focusCommAnd?.id,
 		));
 	}
 
-	private deregisterPanel(viewContainer: ViewContainer): void {
-		this.deregisterViewPaneContainer(viewContainer.id);
-		Registry.as<PanelRegistry>(PanelExtensions.Panels).deregisterPanel(viewContainer.id);
+	privAte deregisterPAnel(viewContAiner: ViewContAiner): void {
+		this.deregisterViewPAneContAiner(viewContAiner.id);
+		Registry.As<PAnelRegistry>(PAnelExtensions.PAnels).deregisterPAnel(viewContAiner.id);
 	}
 
-	private registerViewlet(viewContainer: ViewContainer): void {
-		const that = this;
-		class PaneContainerViewlet extends Viewlet {
+	privAte registerViewlet(viewContAiner: ViewContAiner): void {
+		const thAt = this;
+		clAss PAneContAinerViewlet extends Viewlet {
 			constructor(
-				@IConfigurationService configurationService: IConfigurationService,
-				@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+				@IConfigurAtionService configurAtionService: IConfigurAtionService,
+				@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 				@ITelemetryService telemetryService: ITelemetryService,
-				@IWorkspaceContextService contextService: IWorkspaceContextService,
-				@IStorageService storageService: IStorageService,
-				@IInstantiationService instantiationService: IInstantiationService,
+				@IWorkspAceContextService contextService: IWorkspAceContextService,
+				@IStorAgeService storAgeService: IStorAgeService,
+				@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 				@IThemeService themeService: IThemeService,
 				@IContextMenuService contextMenuService: IContextMenuService,
 				@IExtensionService extensionService: IExtensionService,
 			) {
-				// Use composite's instantiation service to get the editor progress service for any editors instantiated within the composite
-				const viewPaneContainer = (instantiationService as any).createInstance(viewContainer.ctorDescriptor!.ctor, ...(viewContainer.ctorDescriptor!.staticArguments || []));
-				super(viewContainer.id, viewPaneContainer, telemetryService, storageService, instantiationService, themeService, contextMenuService, extensionService, contextService, layoutService, configurationService);
-				that.registerViewPaneContainer(this.viewPaneContainer);
+				// Use composite's instAntiAtion service to get the editor progress service for Any editors instAntiAted within the composite
+				const viewPAneContAiner = (instAntiAtionService As Any).creAteInstAnce(viewContAiner.ctorDescriptor!.ctor, ...(viewContAiner.ctorDescriptor!.stAticArguments || []));
+				super(viewContAiner.id, viewPAneContAiner, telemetryService, storAgeService, instAntiAtionService, themeService, contextMenuService, extensionService, contextService, lAyoutService, configurAtionService);
+				thAt.registerViewPAneContAiner(this.viewPAneContAiner);
 			}
 		}
-		Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).registerViewlet(ViewletDescriptor.create(
-			PaneContainerViewlet,
-			viewContainer.id,
-			viewContainer.name,
-			isString(viewContainer.icon) ? viewContainer.icon : undefined,
-			viewContainer.order,
-			viewContainer.requestedIndex,
-			viewContainer.icon instanceof URI ? viewContainer.icon : undefined
+		Registry.As<ViewletRegistry>(ViewletExtensions.Viewlets).registerViewlet(ViewletDescriptor.creAte(
+			PAneContAinerViewlet,
+			viewContAiner.id,
+			viewContAiner.nAme,
+			isString(viewContAiner.icon) ? viewContAiner.icon : undefined,
+			viewContAiner.order,
+			viewContAiner.requestedIndex,
+			viewContAiner.icon instAnceof URI ? viewContAiner.icon : undefined
 		));
 	}
 
-	private deregisterViewlet(viewContainer: ViewContainer): void {
-		this.deregisterViewPaneContainer(viewContainer.id);
-		Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).deregisterViewlet(viewContainer.id);
+	privAte deregisterViewlet(viewContAiner: ViewContAiner): void {
+		this.deregisterViewPAneContAiner(viewContAiner.id);
+		Registry.As<ViewletRegistry>(ViewletExtensions.Viewlets).deregisterViewlet(viewContAiner.id);
 	}
 }
 

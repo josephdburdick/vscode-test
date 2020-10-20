@@ -1,233 +1,233 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { EditorInput, EditorOptions, IEditorOpenContext, IVisibleEditorPane } from 'vs/workbench/common/editor';
-import { Dimension, show, hide } from 'vs/base/browser/dom';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IEditorRegistry, Extensions as EditorExtensions, IEditorDescriptor } from 'vs/workbench/browser/editor';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IEditorProgressService, LongRunningOperation } from 'vs/platform/progress/common/progress';
-import { IEditorGroupView, DEFAULT_EDITOR_MIN_DIMENSIONS, DEFAULT_EDITOR_MAX_DIMENSIONS } from 'vs/workbench/browser/parts/editor/editor';
-import { Emitter } from 'vs/base/common/event';
-import { assertIsDefined } from 'vs/base/common/types';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { EditorInput, EditorOptions, IEditorOpenContext, IVisibleEditorPAne } from 'vs/workbench/common/editor';
+import { Dimension, show, hide } from 'vs/bAse/browser/dom';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IEditorRegistry, Extensions As EditorExtensions, IEditorDescriptor } from 'vs/workbench/browser/editor';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { EditorPAne } from 'vs/workbench/browser/pArts/editor/editorPAne';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IEditorProgressService, LongRunningOperAtion } from 'vs/plAtform/progress/common/progress';
+import { IEditorGroupView, DEFAULT_EDITOR_MIN_DIMENSIONS, DEFAULT_EDITOR_MAX_DIMENSIONS } from 'vs/workbench/browser/pArts/editor/editor';
+import { Emitter } from 'vs/bAse/common/event';
+import { AssertIsDefined } from 'vs/bAse/common/types';
 
-export interface IOpenEditorResult {
-	readonly editorPane: EditorPane;
-	readonly editorChanged: boolean;
+export interfAce IOpenEditorResult {
+	reAdonly editorPAne: EditorPAne;
+	reAdonly editorChAnged: booleAn;
 }
 
-export class EditorControl extends Disposable {
+export clAss EditorControl extends DisposAble {
 
-	get minimumWidth() { return this._activeEditorPane?.minimumWidth ?? DEFAULT_EDITOR_MIN_DIMENSIONS.width; }
-	get minimumHeight() { return this._activeEditorPane?.minimumHeight ?? DEFAULT_EDITOR_MIN_DIMENSIONS.height; }
-	get maximumWidth() { return this._activeEditorPane?.maximumWidth ?? DEFAULT_EDITOR_MAX_DIMENSIONS.width; }
-	get maximumHeight() { return this._activeEditorPane?.maximumHeight ?? DEFAULT_EDITOR_MAX_DIMENSIONS.height; }
+	get minimumWidth() { return this._ActiveEditorPAne?.minimumWidth ?? DEFAULT_EDITOR_MIN_DIMENSIONS.width; }
+	get minimumHeight() { return this._ActiveEditorPAne?.minimumHeight ?? DEFAULT_EDITOR_MIN_DIMENSIONS.height; }
+	get mAximumWidth() { return this._ActiveEditorPAne?.mAximumWidth ?? DEFAULT_EDITOR_MAX_DIMENSIONS.width; }
+	get mAximumHeight() { return this._ActiveEditorPAne?.mAximumHeight ?? DEFAULT_EDITOR_MAX_DIMENSIONS.height; }
 
-	private readonly _onDidFocus = this._register(new Emitter<void>());
-	readonly onDidFocus = this._onDidFocus.event;
+	privAte reAdonly _onDidFocus = this._register(new Emitter<void>());
+	reAdonly onDidFocus = this._onDidFocus.event;
 
-	private _onDidSizeConstraintsChange = this._register(new Emitter<{ width: number; height: number; } | undefined>());
-	readonly onDidSizeConstraintsChange = this._onDidSizeConstraintsChange.event;
+	privAte _onDidSizeConstrAintsChAnge = this._register(new Emitter<{ width: number; height: number; } | undefined>());
+	reAdonly onDidSizeConstrAintsChAnge = this._onDidSizeConstrAintsChAnge.event;
 
-	private _activeEditorPane: EditorPane | null = null;
-	get activeEditorPane(): IVisibleEditorPane | null { return this._activeEditorPane as IVisibleEditorPane | null; }
+	privAte _ActiveEditorPAne: EditorPAne | null = null;
+	get ActiveEditorPAne(): IVisibleEditorPAne | null { return this._ActiveEditorPAne As IVisibleEditorPAne | null; }
 
-	private readonly editorPanes: EditorPane[] = [];
+	privAte reAdonly editorPAnes: EditorPAne[] = [];
 
-	private readonly activeEditorPaneDisposables = this._register(new DisposableStore());
-	private dimension: Dimension | undefined;
-	private readonly editorOperation = this._register(new LongRunningOperation(this.editorProgressService));
+	privAte reAdonly ActiveEditorPAneDisposAbles = this._register(new DisposAbleStore());
+	privAte dimension: Dimension | undefined;
+	privAte reAdonly editorOperAtion = this._register(new LongRunningOperAtion(this.editorProgressService));
 
 	constructor(
-		private parent: HTMLElement,
-		private groupView: IEditorGroupView,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IEditorProgressService private readonly editorProgressService: IEditorProgressService
+		privAte pArent: HTMLElement,
+		privAte groupView: IEditorGroupView,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IEditorProgressService privAte reAdonly editorProgressService: IEditorProgressService
 	) {
 		super();
 	}
 
-	async openEditor(editor: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext): Promise<IOpenEditorResult> {
+	Async openEditor(editor: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext): Promise<IOpenEditorResult> {
 
-		// Editor pane
-		const descriptor = Registry.as<IEditorRegistry>(EditorExtensions.Editors).getEditor(editor);
+		// Editor pAne
+		const descriptor = Registry.As<IEditorRegistry>(EditorExtensions.Editors).getEditor(editor);
 		if (!descriptor) {
 			throw new Error(`No editor descriptor found for input id ${editor.getTypeId()}`);
 		}
-		const editorPane = this.doShowEditorPane(descriptor);
+		const editorPAne = this.doShowEditorPAne(descriptor);
 
 		// Set input
-		const editorChanged = await this.doSetInput(editorPane, editor, options, context);
-		return { editorPane, editorChanged };
+		const editorChAnged = AwAit this.doSetInput(editorPAne, editor, options, context);
+		return { editorPAne, editorChAnged };
 	}
 
-	private doShowEditorPane(descriptor: IEditorDescriptor): EditorPane {
+	privAte doShowEditorPAne(descriptor: IEditorDescriptor): EditorPAne {
 
-		// Return early if the currently active editor pane can handle the input
-		if (this._activeEditorPane && descriptor.describes(this._activeEditorPane)) {
-			return this._activeEditorPane;
+		// Return eArly if the currently Active editor pAne cAn hAndle the input
+		if (this._ActiveEditorPAne && descriptor.describes(this._ActiveEditorPAne)) {
+			return this._ActiveEditorPAne;
 		}
 
-		// Hide active one first
-		this.doHideActiveEditorPane();
+		// Hide Active one first
+		this.doHideActiveEditorPAne();
 
-		// Create editor pane
-		const editorPane = this.doCreateEditorPane(descriptor);
+		// CreAte editor pAne
+		const editorPAne = this.doCreAteEditorPAne(descriptor);
 
-		// Set editor as active
-		this.doSetActiveEditorPane(editorPane);
+		// Set editor As Active
+		this.doSetActiveEditorPAne(editorPAne);
 
 		// Show editor
-		const container = assertIsDefined(editorPane.getContainer());
-		this.parent.appendChild(container);
-		show(container);
+		const contAiner = AssertIsDefined(editorPAne.getContAiner());
+		this.pArent.AppendChild(contAiner);
+		show(contAiner);
 
-		// Indicate to editor that it is now visible
-		editorPane.setVisible(true, this.groupView);
+		// IndicAte to editor thAt it is now visible
+		editorPAne.setVisible(true, this.groupView);
 
-		// Layout
+		// LAyout
 		if (this.dimension) {
-			editorPane.layout(this.dimension);
+			editorPAne.lAyout(this.dimension);
 		}
 
-		return editorPane;
+		return editorPAne;
 	}
 
-	private doCreateEditorPane(descriptor: IEditorDescriptor): EditorPane {
+	privAte doCreAteEditorPAne(descriptor: IEditorDescriptor): EditorPAne {
 
-		// Instantiate editor
-		const editorPane = this.doInstantiateEditorPane(descriptor);
+		// InstAntiAte editor
+		const editorPAne = this.doInstAntiAteEditorPAne(descriptor);
 
-		// Create editor container as needed
-		if (!editorPane.getContainer()) {
-			const editorPaneContainer = document.createElement('div');
-			editorPaneContainer.classList.add('editor-instance');
-			editorPaneContainer.setAttribute('data-editor-id', descriptor.getId());
+		// CreAte editor contAiner As needed
+		if (!editorPAne.getContAiner()) {
+			const editorPAneContAiner = document.creAteElement('div');
+			editorPAneContAiner.clAssList.Add('editor-instAnce');
+			editorPAneContAiner.setAttribute('dAtA-editor-id', descriptor.getId());
 
-			editorPane.create(editorPaneContainer);
+			editorPAne.creAte(editorPAneContAiner);
 		}
 
-		return editorPane;
+		return editorPAne;
 	}
 
-	private doInstantiateEditorPane(descriptor: IEditorDescriptor): EditorPane {
+	privAte doInstAntiAteEditorPAne(descriptor: IEditorDescriptor): EditorPAne {
 
-		// Return early if already instantiated
-		const existingEditorPane = this.editorPanes.find(editorPane => descriptor.describes(editorPane));
-		if (existingEditorPane) {
-			return existingEditorPane;
+		// Return eArly if AlreAdy instAntiAted
+		const existingEditorPAne = this.editorPAnes.find(editorPAne => descriptor.describes(editorPAne));
+		if (existingEditorPAne) {
+			return existingEditorPAne;
 		}
 
-		// Otherwise instantiate new
-		const editorPane = this._register(descriptor.instantiate(this.instantiationService));
-		this.editorPanes.push(editorPane);
+		// Otherwise instAntiAte new
+		const editorPAne = this._register(descriptor.instAntiAte(this.instAntiAtionService));
+		this.editorPAnes.push(editorPAne);
 
-		return editorPane;
+		return editorPAne;
 	}
 
-	private doSetActiveEditorPane(editorPane: EditorPane | null) {
-		this._activeEditorPane = editorPane;
+	privAte doSetActiveEditorPAne(editorPAne: EditorPAne | null) {
+		this._ActiveEditorPAne = editorPAne;
 
-		// Clear out previous active editor pane listeners
-		this.activeEditorPaneDisposables.clear();
+		// CleAr out previous Active editor pAne listeners
+		this.ActiveEditorPAneDisposAbles.cleAr();
 
-		// Listen to editor pane changes
-		if (editorPane) {
-			this.activeEditorPaneDisposables.add(editorPane.onDidSizeConstraintsChange(e => this._onDidSizeConstraintsChange.fire(e)));
-			this.activeEditorPaneDisposables.add(editorPane.onDidFocus(() => this._onDidFocus.fire()));
+		// Listen to editor pAne chAnges
+		if (editorPAne) {
+			this.ActiveEditorPAneDisposAbles.Add(editorPAne.onDidSizeConstrAintsChAnge(e => this._onDidSizeConstrAintsChAnge.fire(e)));
+			this.ActiveEditorPAneDisposAbles.Add(editorPAne.onDidFocus(() => this._onDidFocus.fire()));
 		}
 
-		// Indicate that size constraints could have changed due to new editor
-		this._onDidSizeConstraintsChange.fire(undefined);
+		// IndicAte thAt size constrAints could hAve chAnged due to new editor
+		this._onDidSizeConstrAintsChAnge.fire(undefined);
 	}
 
-	private async doSetInput(editorPane: EditorPane, editor: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext): Promise<boolean> {
+	privAte Async doSetInput(editorPAne: EditorPAne, editor: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext): Promise<booleAn> {
 
-		// If the input did not change, return early and only apply the options
-		// unless the options instruct us to force open it even if it is the same
-		const forceReload = options?.forceReload;
-		const inputMatches = editorPane.input && editorPane.input.matches(editor);
-		if (inputMatches && !forceReload) {
+		// If the input did not chAnge, return eArly And only Apply the options
+		// unless the options instruct us to force open it even if it is the sAme
+		const forceReloAd = options?.forceReloAd;
+		const inputMAtches = editorPAne.input && editorPAne.input.mAtches(editor);
+		if (inputMAtches && !forceReloAd) {
 
-			// Forward options
-			editorPane.setOptions(options);
+			// ForwArd options
+			editorPAne.setOptions(options);
 
-			// Still focus as needed
+			// Still focus As needed
 			const focus = !options || !options.preserveFocus;
 			if (focus) {
-				editorPane.focus();
+				editorPAne.focus();
 			}
 
-			return false;
+			return fAlse;
 		}
 
-		// Show progress while setting input after a certain timeout. If the workbench is opening
-		// be more relaxed about progress showing by increasing the delay a little bit to reduce flicker.
-		const operation = this.editorOperation.start(this.layoutService.isRestored() ? 800 : 3200);
+		// Show progress while setting input After A certAin timeout. If the workbench is opening
+		// be more relAxed About progress showing by increAsing the delAy A little bit to reduce flicker.
+		const operAtion = this.editorOperAtion.stArt(this.lAyoutService.isRestored() ? 800 : 3200);
 
-		// Call into editor pane
-		const editorWillChange = !inputMatches;
+		// CAll into editor pAne
+		const editorWillChAnge = !inputMAtches;
 		try {
-			await editorPane.setInput(editor, options, context, operation.token);
+			AwAit editorPAne.setInput(editor, options, context, operAtion.token);
 
-			// Focus (unless prevented or another operation is running)
-			if (operation.isCurrent()) {
+			// Focus (unless prevented or Another operAtion is running)
+			if (operAtion.isCurrent()) {
 				const focus = !options || !options.preserveFocus;
 				if (focus) {
-					editorPane.focus();
+					editorPAne.focus();
 				}
 			}
 
-			return editorWillChange;
-		} finally {
-			operation.stop();
+			return editorWillChAnge;
+		} finAlly {
+			operAtion.stop();
 		}
 	}
 
-	private doHideActiveEditorPane(): void {
-		if (!this._activeEditorPane) {
+	privAte doHideActiveEditorPAne(): void {
+		if (!this._ActiveEditorPAne) {
 			return;
 		}
 
-		// Stop any running operation
-		this.editorOperation.stop();
+		// Stop Any running operAtion
+		this.editorOperAtion.stop();
 
-		// Indicate to editor pane before removing the editor from
-		// the DOM to give a chance to persist certain state that
-		// might depend on still being the active DOM element.
-		this._activeEditorPane.clearInput();
-		this._activeEditorPane.setVisible(false, this.groupView);
+		// IndicAte to editor pAne before removing the editor from
+		// the DOM to give A chAnce to persist certAin stAte thAt
+		// might depend on still being the Active DOM element.
+		this._ActiveEditorPAne.cleArInput();
+		this._ActiveEditorPAne.setVisible(fAlse, this.groupView);
 
-		// Remove editor pane from parent
-		const editorPaneContainer = this._activeEditorPane.getContainer();
-		if (editorPaneContainer) {
-			this.parent.removeChild(editorPaneContainer);
-			hide(editorPaneContainer);
+		// Remove editor pAne from pArent
+		const editorPAneContAiner = this._ActiveEditorPAne.getContAiner();
+		if (editorPAneContAiner) {
+			this.pArent.removeChild(editorPAneContAiner);
+			hide(editorPAneContAiner);
 		}
 
-		// Clear active editor pane
-		this.doSetActiveEditorPane(null);
+		// CleAr Active editor pAne
+		this.doSetActiveEditorPAne(null);
 	}
 
 	closeEditor(editor: EditorInput): void {
-		if (this._activeEditorPane && editor.matches(this._activeEditorPane.input)) {
-			this.doHideActiveEditorPane();
+		if (this._ActiveEditorPAne && editor.mAtches(this._ActiveEditorPAne.input)) {
+			this.doHideActiveEditorPAne();
 		}
 	}
 
-	setVisible(visible: boolean): void {
-		this._activeEditorPane?.setVisible(visible, this.groupView);
+	setVisible(visible: booleAn): void {
+		this._ActiveEditorPAne?.setVisible(visible, this.groupView);
 	}
 
-	layout(dimension: Dimension): void {
+	lAyout(dimension: Dimension): void {
 		this.dimension = dimension;
 
-		this._activeEditorPane?.layout(dimension);
+		this._ActiveEditorPAne?.lAyout(dimension);
 	}
 }

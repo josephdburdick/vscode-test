@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { BareFontInfo } from 'vs/editor/common/config/fontInfo';
+import { BAreFontInfo } from 'vs/editor/common/config/fontInfo';
 
-export const enum CharWidthRequestType {
-	Regular = 0,
-	Italic = 1,
+export const enum ChArWidthRequestType {
+	RegulAr = 0,
+	ItAlic = 1,
 	Bold = 2
 }
 
-export class CharWidthRequest {
+export clAss ChArWidthRequest {
 
-	public readonly chr: string;
-	public readonly type: CharWidthRequestType;
+	public reAdonly chr: string;
+	public reAdonly type: ChArWidthRequestType;
 	public width: number;
 
-	constructor(chr: string, type: CharWidthRequestType) {
+	constructor(chr: string, type: ChArWidthRequestType) {
 		this.chr = chr;
 		this.type = type;
 		this.width = 0;
@@ -28,111 +28,111 @@ export class CharWidthRequest {
 	}
 }
 
-class DomCharWidthReader {
+clAss DomChArWidthReAder {
 
-	private readonly _bareFontInfo: BareFontInfo;
-	private readonly _requests: CharWidthRequest[];
+	privAte reAdonly _bAreFontInfo: BAreFontInfo;
+	privAte reAdonly _requests: ChArWidthRequest[];
 
-	private _container: HTMLElement | null;
-	private _testElements: HTMLSpanElement[] | null;
+	privAte _contAiner: HTMLElement | null;
+	privAte _testElements: HTMLSpAnElement[] | null;
 
-	constructor(bareFontInfo: BareFontInfo, requests: CharWidthRequest[]) {
-		this._bareFontInfo = bareFontInfo;
+	constructor(bAreFontInfo: BAreFontInfo, requests: ChArWidthRequest[]) {
+		this._bAreFontInfo = bAreFontInfo;
 		this._requests = requests;
 
-		this._container = null;
+		this._contAiner = null;
 		this._testElements = null;
 	}
 
-	public read(): void {
-		// Create a test container with all these test elements
-		this._createDomElements();
+	public reAd(): void {
+		// CreAte A test contAiner with All these test elements
+		this._creAteDomElements();
 
-		// Add the container to the DOM
-		document.body.appendChild(this._container!);
+		// Add the contAiner to the DOM
+		document.body.AppendChild(this._contAiner!);
 
-		// Read character widths
-		this._readFromDomElements();
+		// ReAd chArActer widths
+		this._reAdFromDomElements();
 
-		// Remove the container from the DOM
-		document.body.removeChild(this._container!);
+		// Remove the contAiner from the DOM
+		document.body.removeChild(this._contAiner!);
 
-		this._container = null;
+		this._contAiner = null;
 		this._testElements = null;
 	}
 
-	private _createDomElements(): void {
-		const container = document.createElement('div');
-		container.style.position = 'absolute';
-		container.style.top = '-50000px';
-		container.style.width = '50000px';
+	privAte _creAteDomElements(): void {
+		const contAiner = document.creAteElement('div');
+		contAiner.style.position = 'Absolute';
+		contAiner.style.top = '-50000px';
+		contAiner.style.width = '50000px';
 
-		const regularDomNode = document.createElement('div');
-		regularDomNode.style.fontFamily = this._bareFontInfo.getMassagedFontFamily();
-		regularDomNode.style.fontWeight = this._bareFontInfo.fontWeight;
-		regularDomNode.style.fontSize = this._bareFontInfo.fontSize + 'px';
-		regularDomNode.style.fontFeatureSettings = this._bareFontInfo.fontFeatureSettings;
-		regularDomNode.style.lineHeight = this._bareFontInfo.lineHeight + 'px';
-		regularDomNode.style.letterSpacing = this._bareFontInfo.letterSpacing + 'px';
-		container.appendChild(regularDomNode);
+		const regulArDomNode = document.creAteElement('div');
+		regulArDomNode.style.fontFAmily = this._bAreFontInfo.getMAssAgedFontFAmily();
+		regulArDomNode.style.fontWeight = this._bAreFontInfo.fontWeight;
+		regulArDomNode.style.fontSize = this._bAreFontInfo.fontSize + 'px';
+		regulArDomNode.style.fontFeAtureSettings = this._bAreFontInfo.fontFeAtureSettings;
+		regulArDomNode.style.lineHeight = this._bAreFontInfo.lineHeight + 'px';
+		regulArDomNode.style.letterSpAcing = this._bAreFontInfo.letterSpAcing + 'px';
+		contAiner.AppendChild(regulArDomNode);
 
-		const boldDomNode = document.createElement('div');
-		boldDomNode.style.fontFamily = this._bareFontInfo.getMassagedFontFamily();
+		const boldDomNode = document.creAteElement('div');
+		boldDomNode.style.fontFAmily = this._bAreFontInfo.getMAssAgedFontFAmily();
 		boldDomNode.style.fontWeight = 'bold';
-		boldDomNode.style.fontSize = this._bareFontInfo.fontSize + 'px';
-		boldDomNode.style.fontFeatureSettings = this._bareFontInfo.fontFeatureSettings;
-		boldDomNode.style.lineHeight = this._bareFontInfo.lineHeight + 'px';
-		boldDomNode.style.letterSpacing = this._bareFontInfo.letterSpacing + 'px';
-		container.appendChild(boldDomNode);
+		boldDomNode.style.fontSize = this._bAreFontInfo.fontSize + 'px';
+		boldDomNode.style.fontFeAtureSettings = this._bAreFontInfo.fontFeAtureSettings;
+		boldDomNode.style.lineHeight = this._bAreFontInfo.lineHeight + 'px';
+		boldDomNode.style.letterSpAcing = this._bAreFontInfo.letterSpAcing + 'px';
+		contAiner.AppendChild(boldDomNode);
 
-		const italicDomNode = document.createElement('div');
-		italicDomNode.style.fontFamily = this._bareFontInfo.getMassagedFontFamily();
-		italicDomNode.style.fontWeight = this._bareFontInfo.fontWeight;
-		italicDomNode.style.fontSize = this._bareFontInfo.fontSize + 'px';
-		italicDomNode.style.fontFeatureSettings = this._bareFontInfo.fontFeatureSettings;
-		italicDomNode.style.lineHeight = this._bareFontInfo.lineHeight + 'px';
-		italicDomNode.style.letterSpacing = this._bareFontInfo.letterSpacing + 'px';
-		italicDomNode.style.fontStyle = 'italic';
-		container.appendChild(italicDomNode);
+		const itAlicDomNode = document.creAteElement('div');
+		itAlicDomNode.style.fontFAmily = this._bAreFontInfo.getMAssAgedFontFAmily();
+		itAlicDomNode.style.fontWeight = this._bAreFontInfo.fontWeight;
+		itAlicDomNode.style.fontSize = this._bAreFontInfo.fontSize + 'px';
+		itAlicDomNode.style.fontFeAtureSettings = this._bAreFontInfo.fontFeAtureSettings;
+		itAlicDomNode.style.lineHeight = this._bAreFontInfo.lineHeight + 'px';
+		itAlicDomNode.style.letterSpAcing = this._bAreFontInfo.letterSpAcing + 'px';
+		itAlicDomNode.style.fontStyle = 'itAlic';
+		contAiner.AppendChild(itAlicDomNode);
 
-		const testElements: HTMLSpanElement[] = [];
+		const testElements: HTMLSpAnElement[] = [];
 		for (const request of this._requests) {
 
-			let parent: HTMLElement;
-			if (request.type === CharWidthRequestType.Regular) {
-				parent = regularDomNode;
+			let pArent: HTMLElement;
+			if (request.type === ChArWidthRequestType.RegulAr) {
+				pArent = regulArDomNode;
 			}
-			if (request.type === CharWidthRequestType.Bold) {
-				parent = boldDomNode;
+			if (request.type === ChArWidthRequestType.Bold) {
+				pArent = boldDomNode;
 			}
-			if (request.type === CharWidthRequestType.Italic) {
-				parent = italicDomNode;
+			if (request.type === ChArWidthRequestType.ItAlic) {
+				pArent = itAlicDomNode;
 			}
 
-			parent!.appendChild(document.createElement('br'));
+			pArent!.AppendChild(document.creAteElement('br'));
 
-			const testElement = document.createElement('span');
-			DomCharWidthReader._render(testElement, request);
-			parent!.appendChild(testElement);
+			const testElement = document.creAteElement('spAn');
+			DomChArWidthReAder._render(testElement, request);
+			pArent!.AppendChild(testElement);
 
 			testElements.push(testElement);
 		}
 
-		this._container = container;
+		this._contAiner = contAiner;
 		this._testElements = testElements;
 	}
 
-	private static _render(testElement: HTMLElement, request: CharWidthRequest): void {
+	privAte stAtic _render(testElement: HTMLElement, request: ChArWidthRequest): void {
 		if (request.chr === ' ') {
-			let htmlString = '\u00a0';
-			// Repeat character 256 (2^8) times
+			let htmlString = '\u00A0';
+			// RepeAt chArActer 256 (2^8) times
 			for (let i = 0; i < 8; i++) {
 				htmlString += htmlString;
 			}
 			testElement.innerText = htmlString;
 		} else {
 			let testString = request.chr;
-			// Repeat character 256 (2^8) times
+			// RepeAt chArActer 256 (2^8) times
 			for (let i = 0; i < 8; i++) {
 				testString += testString;
 			}
@@ -140,7 +140,7 @@ class DomCharWidthReader {
 		}
 	}
 
-	private _readFromDomElements(): void {
+	privAte _reAdFromDomElements(): void {
 		for (let i = 0, len = this._requests.length; i < len; i++) {
 			const request = this._requests[i];
 			const testElement = this._testElements![i];
@@ -150,7 +150,7 @@ class DomCharWidthReader {
 	}
 }
 
-export function readCharWidths(bareFontInfo: BareFontInfo, requests: CharWidthRequest[]): void {
-	const reader = new DomCharWidthReader(bareFontInfo, requests);
-	reader.read();
+export function reAdChArWidths(bAreFontInfo: BAreFontInfo, requests: ChArWidthRequest[]): void {
+	const reAder = new DomChArWidthReAder(bAreFontInfo, requests);
+	reAder.reAd();
 }

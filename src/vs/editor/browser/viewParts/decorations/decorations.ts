@@ -1,236 +1,236 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./decorations';
-import { DynamicViewOverlay } from 'vs/editor/browser/view/dynamicViewOverlay';
-import { Range } from 'vs/editor/common/core/range';
-import { HorizontalRange, RenderingContext } from 'vs/editor/common/view/renderingContext';
+import 'vs/css!./decorAtions';
+import { DynAmicViewOverlAy } from 'vs/editor/browser/view/dynAmicViewOverlAy';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { HorizontAlRAnge, RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
-import { ViewModelDecoration } from 'vs/editor/common/viewModel/viewModel';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
+import { ViewModelDecorAtion } from 'vs/editor/common/viewModel/viewModel';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class DecorationsOverlay extends DynamicViewOverlay {
+export clAss DecorAtionsOverlAy extends DynAmicViewOverlAy {
 
-	private readonly _context: ViewContext;
-	private _lineHeight: number;
-	private _typicalHalfwidthCharacterWidth: number;
-	private _renderResult: string[] | null;
+	privAte reAdonly _context: ViewContext;
+	privAte _lineHeight: number;
+	privAte _typicAlHAlfwidthChArActerWidth: number;
+	privAte _renderResult: string[] | null;
 
 	constructor(context: ViewContext) {
 		super();
 		this._context = context;
-		const options = this._context.configuration.options;
+		const options = this._context.configurAtion.options;
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
+		this._typicAlHAlfwidthChArActerWidth = options.get(EditorOption.fontInfo).typicAlHAlfwidthChArActerWidth;
 		this._renderResult = null;
 
-		this._context.addEventHandler(this);
+		this._context.AddEventHAndler(this);
 	}
 
 	public dispose(): void {
-		this._context.removeEventHandler(this);
+		this._context.removeEventHAndler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const options = this._context.configuration.options;
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		const options = this._context.configurAtion.options;
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
+		this._typicAlHAlfwidthChArActerWidth = options.get(EditorOption.fontInfo).typicAlHAlfwidthChArActerWidth;
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	public onDecorAtionsChAnged(e: viewEvents.ViewDecorAtionsChAngedEvent): booleAn {
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	public onFlushed(e: viewEvents.ViewFlushedEvent): booleAn {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	public onLinesChAnged(e: viewEvents.ViewLinesChAngedEvent): booleAn {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): booleAn {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): booleAn {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return e.scrollTopChanged || e.scrollWidthChanged;
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		return e.scrollTopChAnged || e.scrollWidthChAnged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	public onZonesChAnged(e: viewEvents.ViewZonesChAngedEvent): booleAn {
 		return true;
 	}
-	// --- end event handlers
+	// --- end event hAndlers
 
-	public prepareRender(ctx: RenderingContext): void {
-		const _decorations = ctx.getDecorationsInViewport();
+	public prepAreRender(ctx: RenderingContext): void {
+		const _decorAtions = ctx.getDecorAtionsInViewport();
 
-		// Keep only decorations with `className`
-		let decorations: ViewModelDecoration[] = [], decorationsLen = 0;
-		for (let i = 0, len = _decorations.length; i < len; i++) {
-			const d = _decorations[i];
-			if (d.options.className) {
-				decorations[decorationsLen++] = d;
+		// Keep only decorAtions with `clAssNAme`
+		let decorAtions: ViewModelDecorAtion[] = [], decorAtionsLen = 0;
+		for (let i = 0, len = _decorAtions.length; i < len; i++) {
+			const d = _decorAtions[i];
+			if (d.options.clAssNAme) {
+				decorAtions[decorAtionsLen++] = d;
 			}
 		}
 
-		// Sort decorations for consistent render output
-		decorations = decorations.sort((a, b) => {
-			if (a.options.zIndex! < b.options.zIndex!) {
+		// Sort decorAtions for consistent render output
+		decorAtions = decorAtions.sort((A, b) => {
+			if (A.options.zIndex! < b.options.zIndex!) {
 				return -1;
 			}
-			if (a.options.zIndex! > b.options.zIndex!) {
+			if (A.options.zIndex! > b.options.zIndex!) {
 				return 1;
 			}
-			const aClassName = a.options.className!;
-			const bClassName = b.options.className!;
+			const AClAssNAme = A.options.clAssNAme!;
+			const bClAssNAme = b.options.clAssNAme!;
 
-			if (aClassName < bClassName) {
+			if (AClAssNAme < bClAssNAme) {
 				return -1;
 			}
-			if (aClassName > bClassName) {
+			if (AClAssNAme > bClAssNAme) {
 				return 1;
 			}
 
-			return Range.compareRangesUsingStarts(a.range, b.range);
+			return RAnge.compAreRAngesUsingStArts(A.rAnge, b.rAnge);
 		});
 
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
+		const visibleStArtLineNumber = ctx.visibleRAnge.stArtLineNumber;
+		const visibleEndLineNumber = ctx.visibleRAnge.endLineNumber;
 		const output: string[] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		for (let lineNumber = visibleStArtLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
+			const lineIndex = lineNumber - visibleStArtLineNumber;
 			output[lineIndex] = '';
 		}
 
-		// Render first whole line decorations and then regular decorations
-		this._renderWholeLineDecorations(ctx, decorations, output);
-		this._renderNormalDecorations(ctx, decorations, output);
+		// Render first whole line decorAtions And then regulAr decorAtions
+		this._renderWholeLineDecorAtions(ctx, decorAtions, output);
+		this._renderNormAlDecorAtions(ctx, decorAtions, output);
 		this._renderResult = output;
 	}
 
-	private _renderWholeLineDecorations(ctx: RenderingContext, decorations: ViewModelDecoration[], output: string[]): void {
+	privAte _renderWholeLineDecorAtions(ctx: RenderingContext, decorAtions: ViewModelDecorAtion[], output: string[]): void {
 		const lineHeight = String(this._lineHeight);
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
+		const visibleStArtLineNumber = ctx.visibleRAnge.stArtLineNumber;
+		const visibleEndLineNumber = ctx.visibleRAnge.endLineNumber;
 
-		for (let i = 0, lenI = decorations.length; i < lenI; i++) {
-			const d = decorations[i];
+		for (let i = 0, lenI = decorAtions.length; i < lenI; i++) {
+			const d = decorAtions[i];
 
 			if (!d.options.isWholeLine) {
 				continue;
 			}
 
-			const decorationOutput = (
-				'<div class="cdr '
-				+ d.options.className
+			const decorAtionOutput = (
+				'<div clAss="cdr '
+				+ d.options.clAssNAme
 				+ '" style="left:0;width:100%;height:'
 				+ lineHeight
 				+ 'px;"></div>'
 			);
 
-			const startLineNumber = Math.max(d.range.startLineNumber, visibleStartLineNumber);
-			const endLineNumber = Math.min(d.range.endLineNumber, visibleEndLineNumber);
-			for (let j = startLineNumber; j <= endLineNumber; j++) {
-				const lineIndex = j - visibleStartLineNumber;
-				output[lineIndex] += decorationOutput;
+			const stArtLineNumber = MAth.mAx(d.rAnge.stArtLineNumber, visibleStArtLineNumber);
+			const endLineNumber = MAth.min(d.rAnge.endLineNumber, visibleEndLineNumber);
+			for (let j = stArtLineNumber; j <= endLineNumber; j++) {
+				const lineIndex = j - visibleStArtLineNumber;
+				output[lineIndex] += decorAtionOutput;
 			}
 		}
 	}
 
-	private _renderNormalDecorations(ctx: RenderingContext, decorations: ViewModelDecoration[], output: string[]): void {
+	privAte _renderNormAlDecorAtions(ctx: RenderingContext, decorAtions: ViewModelDecorAtion[], output: string[]): void {
 		const lineHeight = String(this._lineHeight);
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
+		const visibleStArtLineNumber = ctx.visibleRAnge.stArtLineNumber;
 
-		let prevClassName: string | null = null;
-		let prevShowIfCollapsed: boolean = false;
-		let prevRange: Range | null = null;
+		let prevClAssNAme: string | null = null;
+		let prevShowIfCollApsed: booleAn = fAlse;
+		let prevRAnge: RAnge | null = null;
 
-		for (let i = 0, lenI = decorations.length; i < lenI; i++) {
-			const d = decorations[i];
+		for (let i = 0, lenI = decorAtions.length; i < lenI; i++) {
+			const d = decorAtions[i];
 
 			if (d.options.isWholeLine) {
 				continue;
 			}
 
-			const className = d.options.className!;
-			const showIfCollapsed = Boolean(d.options.showIfCollapsed);
+			const clAssNAme = d.options.clAssNAme!;
+			const showIfCollApsed = BooleAn(d.options.showIfCollApsed);
 
-			let range = d.range;
-			if (showIfCollapsed && range.endColumn === 1 && range.endLineNumber !== range.startLineNumber) {
-				range = new Range(range.startLineNumber, range.startColumn, range.endLineNumber - 1, this._context.model.getLineMaxColumn(range.endLineNumber - 1));
+			let rAnge = d.rAnge;
+			if (showIfCollApsed && rAnge.endColumn === 1 && rAnge.endLineNumber !== rAnge.stArtLineNumber) {
+				rAnge = new RAnge(rAnge.stArtLineNumber, rAnge.stArtColumn, rAnge.endLineNumber - 1, this._context.model.getLineMAxColumn(rAnge.endLineNumber - 1));
 			}
 
-			if (prevClassName === className && prevShowIfCollapsed === showIfCollapsed && Range.areIntersectingOrTouching(prevRange!, range)) {
-				// merge into previous decoration
-				prevRange = Range.plusRange(prevRange!, range);
+			if (prevClAssNAme === clAssNAme && prevShowIfCollApsed === showIfCollApsed && RAnge.AreIntersectingOrTouching(prevRAnge!, rAnge)) {
+				// merge into previous decorAtion
+				prevRAnge = RAnge.plusRAnge(prevRAnge!, rAnge);
 				continue;
 			}
 
-			// flush previous decoration
-			if (prevClassName !== null) {
-				this._renderNormalDecoration(ctx, prevRange!, prevClassName, prevShowIfCollapsed, lineHeight, visibleStartLineNumber, output);
+			// flush previous decorAtion
+			if (prevClAssNAme !== null) {
+				this._renderNormAlDecorAtion(ctx, prevRAnge!, prevClAssNAme, prevShowIfCollApsed, lineHeight, visibleStArtLineNumber, output);
 			}
 
-			prevClassName = className;
-			prevShowIfCollapsed = showIfCollapsed;
-			prevRange = range;
+			prevClAssNAme = clAssNAme;
+			prevShowIfCollApsed = showIfCollApsed;
+			prevRAnge = rAnge;
 		}
 
-		if (prevClassName !== null) {
-			this._renderNormalDecoration(ctx, prevRange!, prevClassName, prevShowIfCollapsed, lineHeight, visibleStartLineNumber, output);
+		if (prevClAssNAme !== null) {
+			this._renderNormAlDecorAtion(ctx, prevRAnge!, prevClAssNAme, prevShowIfCollApsed, lineHeight, visibleStArtLineNumber, output);
 		}
 	}
 
-	private _renderNormalDecoration(ctx: RenderingContext, range: Range, className: string, showIfCollapsed: boolean, lineHeight: string, visibleStartLineNumber: number, output: string[]): void {
-		const linesVisibleRanges = ctx.linesVisibleRangesForRange(range, /*TODO@Alex*/className === 'findMatch');
-		if (!linesVisibleRanges) {
+	privAte _renderNormAlDecorAtion(ctx: RenderingContext, rAnge: RAnge, clAssNAme: string, showIfCollApsed: booleAn, lineHeight: string, visibleStArtLineNumber: number, output: string[]): void {
+		const linesVisibleRAnges = ctx.linesVisibleRAngesForRAnge(rAnge, /*TODO@Alex*/clAssNAme === 'findMAtch');
+		if (!linesVisibleRAnges) {
 			return;
 		}
 
-		for (let j = 0, lenJ = linesVisibleRanges.length; j < lenJ; j++) {
-			const lineVisibleRanges = linesVisibleRanges[j];
-			if (lineVisibleRanges.outsideRenderedLine) {
+		for (let j = 0, lenJ = linesVisibleRAnges.length; j < lenJ; j++) {
+			const lineVisibleRAnges = linesVisibleRAnges[j];
+			if (lineVisibleRAnges.outsideRenderedLine) {
 				continue;
 			}
-			const lineIndex = lineVisibleRanges.lineNumber - visibleStartLineNumber;
+			const lineIndex = lineVisibleRAnges.lineNumber - visibleStArtLineNumber;
 
-			if (showIfCollapsed && lineVisibleRanges.ranges.length === 1) {
-				const singleVisibleRange = lineVisibleRanges.ranges[0];
-				if (singleVisibleRange.width === 0) {
-					// collapsed range case => make the decoration visible by faking its width
-					lineVisibleRanges.ranges[0] = new HorizontalRange(singleVisibleRange.left, this._typicalHalfwidthCharacterWidth);
+			if (showIfCollApsed && lineVisibleRAnges.rAnges.length === 1) {
+				const singleVisibleRAnge = lineVisibleRAnges.rAnges[0];
+				if (singleVisibleRAnge.width === 0) {
+					// collApsed rAnge cAse => mAke the decorAtion visible by fAking its width
+					lineVisibleRAnges.rAnges[0] = new HorizontAlRAnge(singleVisibleRAnge.left, this._typicAlHAlfwidthChArActerWidth);
 				}
 			}
 
-			for (let k = 0, lenK = lineVisibleRanges.ranges.length; k < lenK; k++) {
-				const visibleRange = lineVisibleRanges.ranges[k];
-				const decorationOutput = (
-					'<div class="cdr '
-					+ className
+			for (let k = 0, lenK = lineVisibleRAnges.rAnges.length; k < lenK; k++) {
+				const visibleRAnge = lineVisibleRAnges.rAnges[k];
+				const decorAtionOutput = (
+					'<div clAss="cdr '
+					+ clAssNAme
 					+ '" style="left:'
-					+ String(visibleRange.left)
+					+ String(visibleRAnge.left)
 					+ 'px;width:'
-					+ String(visibleRange.width)
+					+ String(visibleRAnge.width)
 					+ 'px;height:'
 					+ lineHeight
 					+ 'px;"></div>'
 				);
-				output[lineIndex] += decorationOutput;
+				output[lineIndex] += decorAtionOutput;
 			}
 		}
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	public render(stArtLineNumber: number, lineNumber: number): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		const lineIndex = lineNumber - startLineNumber;
+		const lineIndex = lineNumber - stArtLineNumber;
 		if (lineIndex < 0 || lineIndex >= this._renderResult.length) {
 			return '';
 		}

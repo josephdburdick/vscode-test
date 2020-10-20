@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { join, dirname, basename } from 'vs/base/common/path';
-import { readdir, rimraf } from 'vs/base/node/pfs';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { join, dirnAme, bAsenAme } from 'vs/bAse/common/pAth';
+import { reAddir, rimrAf } from 'vs/bAse/node/pfs';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
 
-export class LogsDataCleaner extends Disposable {
+export clAss LogsDAtACleAner extends DisposAble {
 
 	constructor(
-		@IEnvironmentService private readonly environmentService: IEnvironmentService
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService
 	) {
 		super();
 
-		this.cleanUpOldLogsSoon();
+		this.cleAnUpOldLogsSoon();
 	}
 
-	private cleanUpOldLogsSoon(): void {
-		let handle: NodeJS.Timeout | undefined = setTimeout(() => {
-			handle = undefined;
+	privAte cleAnUpOldLogsSoon(): void {
+		let hAndle: NodeJS.Timeout | undefined = setTimeout(() => {
+			hAndle = undefined;
 
-			const currentLog = basename(this.environmentService.logsPath);
-			const logsRoot = dirname(this.environmentService.logsPath);
+			const currentLog = bAsenAme(this.environmentService.logsPAth);
+			const logsRoot = dirnAme(this.environmentService.logsPAth);
 
-			readdir(logsRoot).then(children => {
-				const allSessions = children.filter(name => /^\d{8}T\d{6}$/.test(name));
-				const oldSessions = allSessions.sort().filter((d, i) => d !== currentLog);
-				const toDelete = oldSessions.slice(0, Math.max(0, oldSessions.length - 9));
+			reAddir(logsRoot).then(children => {
+				const AllSessions = children.filter(nAme => /^\d{8}T\d{6}$/.test(nAme));
+				const oldSessions = AllSessions.sort().filter((d, i) => d !== currentLog);
+				const toDelete = oldSessions.slice(0, MAth.mAx(0, oldSessions.length - 9));
 
-				return Promise.all(toDelete.map(name => rimraf(join(logsRoot, name))));
+				return Promise.All(toDelete.mAp(nAme => rimrAf(join(logsRoot, nAme))));
 			}).then(null, onUnexpectedError);
 		}, 10 * 1000);
 
-		this._register(toDisposable(() => {
-			if (handle) {
-				clearTimeout(handle);
-				handle = undefined;
+		this._register(toDisposAble(() => {
+			if (hAndle) {
+				cleArTimeout(hAndle);
+				hAndle = undefined;
 			}
 		}));
 	}

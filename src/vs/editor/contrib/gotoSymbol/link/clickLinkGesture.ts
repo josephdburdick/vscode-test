@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { ICodeEditor, IEditorMouseEvent, IMouseTarget } from 'vs/editor/browser/editorBrowser';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICursorSelectionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as platform from 'vs/base/common/platform';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { ICodeEditor, IEditorMouseEvent, IMouseTArget } from 'vs/editor/browser/editorBrowser';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ICursorSelectionChAngedEvent } from 'vs/editor/common/controller/cursorEvents';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import * As plAtform from 'vs/bAse/common/plAtform';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-function hasModifier(e: { ctrlKey: boolean; shiftKey: boolean; altKey: boolean; metaKey: boolean }, modifier: 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey'): boolean {
+function hAsModifier(e: { ctrlKey: booleAn; shiftKey: booleAn; AltKey: booleAn; metAKey: booleAn }, modifier: 'ctrlKey' | 'shiftKey' | 'AltKey' | 'metAKey'): booleAn {
 	return !!e[modifier];
 }
 
 /**
- * An event that encapsulates the various trigger modifiers logic needed for go to definition.
+ * An event thAt encApsulAtes the vArious trigger modifiers logic needed for go to definition.
  */
-export class ClickLinkMouseEvent {
+export clAss ClickLinkMouseEvent {
 
-	public readonly target: IMouseTarget;
-	public readonly hasTriggerModifier: boolean;
-	public readonly hasSideBySideModifier: boolean;
-	public readonly isNoneOrSingleMouseDown: boolean;
+	public reAdonly tArget: IMouseTArget;
+	public reAdonly hAsTriggerModifier: booleAn;
+	public reAdonly hAsSideBySideModifier: booleAn;
+	public reAdonly isNoneOrSingleMouseDown: booleAn;
 
 	constructor(source: IEditorMouseEvent, opts: ClickLinkOptions) {
-		this.target = source.target;
-		this.hasTriggerModifier = hasModifier(source.event, opts.triggerModifier);
-		this.hasSideBySideModifier = hasModifier(source.event, opts.triggerSideBySideModifier);
-		this.isNoneOrSingleMouseDown = (source.event.detail <= 1);
+		this.tArget = source.tArget;
+		this.hAsTriggerModifier = hAsModifier(source.event, opts.triggerModifier);
+		this.hAsSideBySideModifier = hAsModifier(source.event, opts.triggerSideBySideModifier);
+		this.isNoneOrSingleMouseDown = (source.event.detAil <= 1);
 	}
 }
 
 /**
- * An event that encapsulates the various trigger modifiers logic needed for go to definition.
+ * An event thAt encApsulAtes the vArious trigger modifiers logic needed for go to definition.
  */
-export class ClickLinkKeyboardEvent {
+export clAss ClickLinkKeyboArdEvent {
 
-	public readonly keyCodeIsTriggerKey: boolean;
-	public readonly keyCodeIsSideBySideKey: boolean;
-	public readonly hasTriggerModifier: boolean;
+	public reAdonly keyCodeIsTriggerKey: booleAn;
+	public reAdonly keyCodeIsSideBySideKey: booleAn;
+	public reAdonly hAsTriggerModifier: booleAn;
 
-	constructor(source: IKeyboardEvent, opts: ClickLinkOptions) {
+	constructor(source: IKeyboArdEvent, opts: ClickLinkOptions) {
 		this.keyCodeIsTriggerKey = (source.keyCode === opts.triggerKey);
 		this.keyCodeIsSideBySideKey = (source.keyCode === opts.triggerSideBySideKey);
-		this.hasTriggerModifier = hasModifier(source, opts.triggerModifier);
+		this.hAsTriggerModifier = hAsModifier(source, opts.triggerModifier);
 	}
 }
-export type TriggerModifier = 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey';
+export type TriggerModifier = 'ctrlKey' | 'shiftKey' | 'AltKey' | 'metAKey';
 
-export class ClickLinkOptions {
+export clAss ClickLinkOptions {
 
-	public readonly triggerKey: KeyCode;
-	public readonly triggerModifier: TriggerModifier;
-	public readonly triggerSideBySideKey: KeyCode;
-	public readonly triggerSideBySideModifier: TriggerModifier;
+	public reAdonly triggerKey: KeyCode;
+	public reAdonly triggerModifier: TriggerModifier;
+	public reAdonly triggerSideBySideKey: KeyCode;
+	public reAdonly triggerSideBySideModifier: TriggerModifier;
 
 	constructor(
 		triggerKey: KeyCode,
@@ -70,7 +70,7 @@ export class ClickLinkOptions {
 		this.triggerSideBySideModifier = triggerSideBySideModifier;
 	}
 
-	public equals(other: ClickLinkOptions): boolean {
+	public equAls(other: ClickLinkOptions): booleAn {
 		return (
 			this.triggerKey === other.triggerKey
 			&& this.triggerModifier === other.triggerModifier
@@ -80,129 +80,129 @@ export class ClickLinkOptions {
 	}
 }
 
-function createOptions(multiCursorModifier: 'altKey' | 'ctrlKey' | 'metaKey'): ClickLinkOptions {
-	if (multiCursorModifier === 'altKey') {
-		if (platform.isMacintosh) {
-			return new ClickLinkOptions(KeyCode.Meta, 'metaKey', KeyCode.Alt, 'altKey');
+function creAteOptions(multiCursorModifier: 'AltKey' | 'ctrlKey' | 'metAKey'): ClickLinkOptions {
+	if (multiCursorModifier === 'AltKey') {
+		if (plAtform.isMAcintosh) {
+			return new ClickLinkOptions(KeyCode.MetA, 'metAKey', KeyCode.Alt, 'AltKey');
 		}
-		return new ClickLinkOptions(KeyCode.Ctrl, 'ctrlKey', KeyCode.Alt, 'altKey');
+		return new ClickLinkOptions(KeyCode.Ctrl, 'ctrlKey', KeyCode.Alt, 'AltKey');
 	}
 
-	if (platform.isMacintosh) {
-		return new ClickLinkOptions(KeyCode.Alt, 'altKey', KeyCode.Meta, 'metaKey');
+	if (plAtform.isMAcintosh) {
+		return new ClickLinkOptions(KeyCode.Alt, 'AltKey', KeyCode.MetA, 'metAKey');
 	}
-	return new ClickLinkOptions(KeyCode.Alt, 'altKey', KeyCode.Ctrl, 'ctrlKey');
+	return new ClickLinkOptions(KeyCode.Alt, 'AltKey', KeyCode.Ctrl, 'ctrlKey');
 }
 
-export class ClickLinkGesture extends Disposable {
+export clAss ClickLinkGesture extends DisposAble {
 
-	private readonly _onMouseMoveOrRelevantKeyDown: Emitter<[ClickLinkMouseEvent, ClickLinkKeyboardEvent | null]> = this._register(new Emitter<[ClickLinkMouseEvent, ClickLinkKeyboardEvent | null]>());
-	public readonly onMouseMoveOrRelevantKeyDown: Event<[ClickLinkMouseEvent, ClickLinkKeyboardEvent | null]> = this._onMouseMoveOrRelevantKeyDown.event;
+	privAte reAdonly _onMouseMoveOrRelevAntKeyDown: Emitter<[ClickLinkMouseEvent, ClickLinkKeyboArdEvent | null]> = this._register(new Emitter<[ClickLinkMouseEvent, ClickLinkKeyboArdEvent | null]>());
+	public reAdonly onMouseMoveOrRelevAntKeyDown: Event<[ClickLinkMouseEvent, ClickLinkKeyboArdEvent | null]> = this._onMouseMoveOrRelevAntKeyDown.event;
 
-	private readonly _onExecute: Emitter<ClickLinkMouseEvent> = this._register(new Emitter<ClickLinkMouseEvent>());
-	public readonly onExecute: Event<ClickLinkMouseEvent> = this._onExecute.event;
+	privAte reAdonly _onExecute: Emitter<ClickLinkMouseEvent> = this._register(new Emitter<ClickLinkMouseEvent>());
+	public reAdonly onExecute: Event<ClickLinkMouseEvent> = this._onExecute.event;
 
-	private readonly _onCancel: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onCancel: Event<void> = this._onCancel.event;
+	privAte reAdonly _onCAncel: Emitter<void> = this._register(new Emitter<void>());
+	public reAdonly onCAncel: Event<void> = this._onCAncel.event;
 
-	private readonly _editor: ICodeEditor;
-	private _opts: ClickLinkOptions;
+	privAte reAdonly _editor: ICodeEditor;
+	privAte _opts: ClickLinkOptions;
 
-	private _lastMouseMoveEvent: ClickLinkMouseEvent | null;
-	private _hasTriggerKeyOnMouseDown: boolean;
-	private _lineNumberOnMouseDown: number;
+	privAte _lAstMouseMoveEvent: ClickLinkMouseEvent | null;
+	privAte _hAsTriggerKeyOnMouseDown: booleAn;
+	privAte _lineNumberOnMouseDown: number;
 
 	constructor(editor: ICodeEditor) {
 		super();
 
 		this._editor = editor;
-		this._opts = createOptions(this._editor.getOption(EditorOption.multiCursorModifier));
+		this._opts = creAteOptions(this._editor.getOption(EditorOption.multiCursorModifier));
 
-		this._lastMouseMoveEvent = null;
-		this._hasTriggerKeyOnMouseDown = false;
+		this._lAstMouseMoveEvent = null;
+		this._hAsTriggerKeyOnMouseDown = fAlse;
 		this._lineNumberOnMouseDown = 0;
 
-		this._register(this._editor.onDidChangeConfiguration((e) => {
-			if (e.hasChanged(EditorOption.multiCursorModifier)) {
-				const newOpts = createOptions(this._editor.getOption(EditorOption.multiCursorModifier));
-				if (this._opts.equals(newOpts)) {
+		this._register(this._editor.onDidChAngeConfigurAtion((e) => {
+			if (e.hAsChAnged(EditorOption.multiCursorModifier)) {
+				const newOpts = creAteOptions(this._editor.getOption(EditorOption.multiCursorModifier));
+				if (this._opts.equAls(newOpts)) {
 					return;
 				}
 				this._opts = newOpts;
-				this._lastMouseMoveEvent = null;
-				this._hasTriggerKeyOnMouseDown = false;
+				this._lAstMouseMoveEvent = null;
+				this._hAsTriggerKeyOnMouseDown = fAlse;
 				this._lineNumberOnMouseDown = 0;
-				this._onCancel.fire();
+				this._onCAncel.fire();
 			}
 		}));
 		this._register(this._editor.onMouseMove((e: IEditorMouseEvent) => this._onEditorMouseMove(new ClickLinkMouseEvent(e, this._opts))));
 		this._register(this._editor.onMouseDown((e: IEditorMouseEvent) => this._onEditorMouseDown(new ClickLinkMouseEvent(e, this._opts))));
 		this._register(this._editor.onMouseUp((e: IEditorMouseEvent) => this._onEditorMouseUp(new ClickLinkMouseEvent(e, this._opts))));
-		this._register(this._editor.onKeyDown((e: IKeyboardEvent) => this._onEditorKeyDown(new ClickLinkKeyboardEvent(e, this._opts))));
-		this._register(this._editor.onKeyUp((e: IKeyboardEvent) => this._onEditorKeyUp(new ClickLinkKeyboardEvent(e, this._opts))));
-		this._register(this._editor.onMouseDrag(() => this._resetHandler()));
+		this._register(this._editor.onKeyDown((e: IKeyboArdEvent) => this._onEditorKeyDown(new ClickLinkKeyboArdEvent(e, this._opts))));
+		this._register(this._editor.onKeyUp((e: IKeyboArdEvent) => this._onEditorKeyUp(new ClickLinkKeyboArdEvent(e, this._opts))));
+		this._register(this._editor.onMouseDrAg(() => this._resetHAndler()));
 
-		this._register(this._editor.onDidChangeCursorSelection((e) => this._onDidChangeCursorSelection(e)));
-		this._register(this._editor.onDidChangeModel((e) => this._resetHandler()));
-		this._register(this._editor.onDidChangeModelContent(() => this._resetHandler()));
-		this._register(this._editor.onDidScrollChange((e) => {
-			if (e.scrollTopChanged || e.scrollLeftChanged) {
-				this._resetHandler();
+		this._register(this._editor.onDidChAngeCursorSelection((e) => this._onDidChAngeCursorSelection(e)));
+		this._register(this._editor.onDidChAngeModel((e) => this._resetHAndler()));
+		this._register(this._editor.onDidChAngeModelContent(() => this._resetHAndler()));
+		this._register(this._editor.onDidScrollChAnge((e) => {
+			if (e.scrollTopChAnged || e.scrollLeftChAnged) {
+				this._resetHAndler();
 			}
 		}));
 	}
 
-	private _onDidChangeCursorSelection(e: ICursorSelectionChangedEvent): void {
-		if (e.selection && e.selection.startColumn !== e.selection.endColumn) {
-			this._resetHandler(); // immediately stop this feature if the user starts to select (https://github.com/microsoft/vscode/issues/7827)
+	privAte _onDidChAngeCursorSelection(e: ICursorSelectionChAngedEvent): void {
+		if (e.selection && e.selection.stArtColumn !== e.selection.endColumn) {
+			this._resetHAndler(); // immediAtely stop this feAture if the user stArts to select (https://github.com/microsoft/vscode/issues/7827)
 		}
 	}
 
-	private _onEditorMouseMove(mouseEvent: ClickLinkMouseEvent): void {
-		this._lastMouseMoveEvent = mouseEvent;
+	privAte _onEditorMouseMove(mouseEvent: ClickLinkMouseEvent): void {
+		this._lAstMouseMoveEvent = mouseEvent;
 
-		this._onMouseMoveOrRelevantKeyDown.fire([mouseEvent, null]);
+		this._onMouseMoveOrRelevAntKeyDown.fire([mouseEvent, null]);
 	}
 
-	private _onEditorMouseDown(mouseEvent: ClickLinkMouseEvent): void {
-		// We need to record if we had the trigger key on mouse down because someone might select something in the editor
-		// holding the mouse down and then while mouse is down start to press Ctrl/Cmd to start a copy operation and then
-		// release the mouse button without wanting to do the navigation.
-		// With this flag we prevent goto definition if the mouse was down before the trigger key was pressed.
-		this._hasTriggerKeyOnMouseDown = mouseEvent.hasTriggerModifier;
-		this._lineNumberOnMouseDown = mouseEvent.target.position ? mouseEvent.target.position.lineNumber : 0;
+	privAte _onEditorMouseDown(mouseEvent: ClickLinkMouseEvent): void {
+		// We need to record if we hAd the trigger key on mouse down becAuse someone might select something in the editor
+		// holding the mouse down And then while mouse is down stArt to press Ctrl/Cmd to stArt A copy operAtion And then
+		// releAse the mouse button without wAnting to do the nAvigAtion.
+		// With this flAg we prevent goto definition if the mouse wAs down before the trigger key wAs pressed.
+		this._hAsTriggerKeyOnMouseDown = mouseEvent.hAsTriggerModifier;
+		this._lineNumberOnMouseDown = mouseEvent.tArget.position ? mouseEvent.tArget.position.lineNumber : 0;
 	}
 
-	private _onEditorMouseUp(mouseEvent: ClickLinkMouseEvent): void {
-		const currentLineNumber = mouseEvent.target.position ? mouseEvent.target.position.lineNumber : 0;
-		if (this._hasTriggerKeyOnMouseDown && this._lineNumberOnMouseDown && this._lineNumberOnMouseDown === currentLineNumber) {
+	privAte _onEditorMouseUp(mouseEvent: ClickLinkMouseEvent): void {
+		const currentLineNumber = mouseEvent.tArget.position ? mouseEvent.tArget.position.lineNumber : 0;
+		if (this._hAsTriggerKeyOnMouseDown && this._lineNumberOnMouseDown && this._lineNumberOnMouseDown === currentLineNumber) {
 			this._onExecute.fire(mouseEvent);
 		}
 	}
 
-	private _onEditorKeyDown(e: ClickLinkKeyboardEvent): void {
+	privAte _onEditorKeyDown(e: ClickLinkKeyboArdEvent): void {
 		if (
-			this._lastMouseMoveEvent
+			this._lAstMouseMoveEvent
 			&& (
-				e.keyCodeIsTriggerKey // User just pressed Ctrl/Cmd (normal goto definition)
-				|| (e.keyCodeIsSideBySideKey && e.hasTriggerModifier) // User pressed Ctrl/Cmd+Alt (goto definition to the side)
+				e.keyCodeIsTriggerKey // User just pressed Ctrl/Cmd (normAl goto definition)
+				|| (e.keyCodeIsSideBySideKey && e.hAsTriggerModifier) // User pressed Ctrl/Cmd+Alt (goto definition to the side)
 			)
 		) {
-			this._onMouseMoveOrRelevantKeyDown.fire([this._lastMouseMoveEvent, e]);
-		} else if (e.hasTriggerModifier) {
-			this._onCancel.fire(); // remove decorations if user holds another key with ctrl/cmd to prevent accident goto declaration
+			this._onMouseMoveOrRelevAntKeyDown.fire([this._lAstMouseMoveEvent, e]);
+		} else if (e.hAsTriggerModifier) {
+			this._onCAncel.fire(); // remove decorAtions if user holds Another key with ctrl/cmd to prevent Accident goto declArAtion
 		}
 	}
 
-	private _onEditorKeyUp(e: ClickLinkKeyboardEvent): void {
+	privAte _onEditorKeyUp(e: ClickLinkKeyboArdEvent): void {
 		if (e.keyCodeIsTriggerKey) {
-			this._onCancel.fire();
+			this._onCAncel.fire();
 		}
 	}
 
-	private _resetHandler(): void {
-		this._lastMouseMoveEvent = null;
-		this._hasTriggerKeyOnMouseDown = false;
-		this._onCancel.fire();
+	privAte _resetHAndler(): void {
+		this._lAstMouseMoveEvent = null;
+		this._hAsTriggerKeyOnMouseDown = fAlse;
+		this._onCAncel.fire();
 	}
 }

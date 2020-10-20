@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
 
-// @ts-ignore: interface is implemented via proxy
-export class NativeHostService implements INativeHostService {
+// @ts-ignore: interfAce is implemented viA proxy
+export clAss NAtiveHostService implements INAtiveHostService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		readonly windowId: number,
-		@IMainProcessService mainProcessService: IMainProcessService
+		reAdonly windowId: number,
+		@IMAinProcessService mAinProcessService: IMAinProcessService
 	) {
-		return createChannelSender<INativeHostService>(mainProcessService.getChannel('nativeHost'), {
+		return creAteChAnnelSender<INAtiveHostService>(mAinProcessService.getChAnnel('nAtiveHost'), {
 			context: windowId,
 			properties: (() => {
-				const properties = new Map<string, unknown>();
+				const properties = new MAp<string, unknown>();
 				properties.set('windowId', windowId);
 
 				return properties;

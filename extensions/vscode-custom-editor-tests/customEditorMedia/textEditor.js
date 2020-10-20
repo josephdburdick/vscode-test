@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 (function () {
 	// @ts-ignore
-	const vscode = acquireVsCodeApi();
+	const vscode = AcquireVsCodeApi();
 
-	const textArea = document.querySelector('textarea');
+	const textAreA = document.querySelector('textAreA');
 
-	const initialState = vscode.getState();
-	if (initialState) {
-		textArea.value = initialState.value;
+	const initiAlStAte = vscode.getStAte();
+	if (initiAlStAte) {
+		textAreA.vAlue = initiAlStAte.vAlue;
 	}
 
-	window.addEventListener('message', e => {
-		switch (e.data.type) {
-			case 'fakeInput':
+	window.AddEventListener('messAge', e => {
+		switch (e.dAtA.type) {
+			cAse 'fAkeInput':
 				{
-					const value = e.data.value;
-					textArea.value = value;
+					const vAlue = e.dAtA.vAlue;
+					textAreA.vAlue = vAlue;
 					onInput();
-					break;
+					breAk;
 				}
 
-			case 'setValue':
+			cAse 'setVAlue':
 				{
-					const value = e.data.value;
-					textArea.value = value;
-					vscode.setState({ value });
+					const vAlue = e.dAtA.vAlue;
+					textAreA.vAlue = vAlue;
+					vscode.setStAte({ vAlue });
 
-					vscode.postMessage({
-						type: 'didChangeContent',
-						value: value
+					vscode.postMessAge({
+						type: 'didChAngeContent',
+						vAlue: vAlue
 					});
-					break;
+					breAk;
 				}
 		}
 	});
 
 	const onInput = () => {
-		const value = textArea.value;
-		vscode.setState({ value });
-		vscode.postMessage({
+		const vAlue = textAreA.vAlue;
+		vscode.setStAte({ vAlue });
+		vscode.postMessAge({
 			type: 'edit',
-			value: value
+			vAlue: vAlue
 		});
-		vscode.postMessage({
-			type: 'didChangeContent',
-			value: value
+		vscode.postMessAge({
+			type: 'didChAngeContent',
+			vAlue: vAlue
 		});
 	};
 
-	textArea.addEventListener('input', onInput);
+	textAreA.AddEventListener('input', onInput);
 }());

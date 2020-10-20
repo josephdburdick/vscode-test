@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as azure from 'azure-storage';
-import * as mime from 'mime';
-import * as minimist from 'minimist';
-import { basename, join } from 'path';
+import * As Azure from 'Azure-storAge';
+import * As mime from 'mime';
+import * As minimist from 'minimist';
+import { bAsenAme, join } from 'pAth';
 
-const fileNames = [
-	'fake.html',
+const fileNAmes = [
+	'fAke.html',
 	'host.js',
 	'index.html',
-	'main.js',
+	'mAin.js',
 	'service-worker.js'
 ];
 
-async function assertContainer(blobService: azure.BlobService, container: string): Promise<void> {
-	await new Promise<void>((c, e) => blobService.createContainerIfNotExists(container, { publicAccessLevel: 'blob' }, err => err ? e(err) : c()));
+Async function AssertContAiner(blobService: Azure.BlobService, contAiner: string): Promise<void> {
+	AwAit new Promise<void>((c, e) => blobService.creAteContAinerIfNotExists(contAiner, { publicAccessLevel: 'blob' }, err => err ? e(err) : c()));
 }
 
-async function doesBlobExist(blobService: azure.BlobService, container: string, blobName: string): Promise<boolean | undefined> {
-	const existsResult = await new Promise<azure.BlobService.BlobResult>((c, e) => blobService.doesBlobExist(container, blobName, (err, r) => err ? e(err) : c(r)));
+Async function doesBlobExist(blobService: Azure.BlobService, contAiner: string, blobNAme: string): Promise<booleAn | undefined> {
+	const existsResult = AwAit new Promise<Azure.BlobService.BlobResult>((c, e) => blobService.doesBlobExist(contAiner, blobNAme, (err, r) => err ? e(err) : c(r)));
 	return existsResult.exists;
 }
 
-async function uploadBlob(blobService: azure.BlobService, container: string, blobName: string, file: string): Promise<void> {
-	const blobOptions: azure.BlobService.CreateBlockBlobRequestOptions = {
+Async function uploAdBlob(blobService: Azure.BlobService, contAiner: string, blobNAme: string, file: string): Promise<void> {
+	const blobOptions: Azure.BlobService.CreAteBlockBlobRequestOptions = {
 		contentSettings: {
 			contentType: mime.lookup(file),
-			cacheControl: 'max-age=31536000, public'
+			cAcheControl: 'mAx-Age=31536000, public'
 		}
 	};
 
-	await new Promise<void>((c, e) => blobService.createBlockBlobFromLocalFile(container, blobName, file, blobOptions, err => err ? e(err) : c()));
+	AwAit new Promise<void>((c, e) => blobService.creAteBlockBlobFromLocAlFile(contAiner, blobNAme, file, blobOptions, err => err ? e(err) : c()));
 }
 
-async function publish(commit: string, files: readonly string[]): Promise<void> {
+Async function publish(commit: string, files: reAdonly string[]): Promise<void> {
 
 	console.log('Publishing...');
 	console.log('Commit:', commit);
-	const storageAccount = process.env['AZURE_WEBVIEW_STORAGE_ACCOUNT']!;
+	const storAgeAccount = process.env['AZURE_WEBVIEW_STORAGE_ACCOUNT']!;
 
-	const blobService = azure.createBlobService(storageAccount, process.env['AZURE_WEBVIEW_STORAGE_ACCESS_KEY']!)
-		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
+	const blobService = Azure.creAteBlobService(storAgeAccount, process.env['AZURE_WEBVIEW_STORAGE_ACCESS_KEY']!)
+		.withFilter(new Azure.ExponentiAlRetryPolicyFilter(20));
 
-	await assertContainer(blobService, commit);
+	AwAit AssertContAiner(blobService, commit);
 
 	for (const file of files) {
-		const blobName = basename(file);
-		const blobExists = await doesBlobExist(blobService, commit, blobName);
+		const blobNAme = bAsenAme(file);
+		const blobExists = AwAit doesBlobExist(blobService, commit, blobNAme);
 		if (blobExists) {
-			console.log(`Blob ${commit}, ${blobName} already exists, not publishing again.`);
+			console.log(`Blob ${commit}, ${blobNAme} AlreAdy exists, not publishing AgAin.`);
 			continue;
 		}
-		console.log('Uploading blob to Azure storage...');
-		await uploadBlob(blobService, commit, blobName, file);
+		console.log('UploAding blob to Azure storAge...');
+		AwAit uploAdBlob(blobService, commit, blobNAme, file);
 	}
 
-	console.log('Blobs successfully uploaded.');
+	console.log('Blobs successfully uploAded.');
 }
 
-function main(): void {
+function mAin(): void {
 	const commit = process.env['BUILD_SOURCEVERSION'];
 
 	if (!commit) {
-		console.warn('Skipping publish due to missing BUILD_SOURCEVERSION');
+		console.wArn('Skipping publish due to missing BUILD_SOURCEVERSION');
 		return;
 	}
 
-	const opts = minimist(process.argv.slice(2));
+	const opts = minimist(process.Argv.slice(2));
 	const [directory] = opts._;
 
-	const files = fileNames.map(fileName => join(directory, fileName));
+	const files = fileNAmes.mAp(fileNAme => join(directory, fileNAme));
 
-	publish(commit, files).catch(err => {
+	publish(commit, files).cAtch(err => {
 		console.error(err);
 		process.exit(1);
 	});
 }
 
-if (process.argv.length < 3) {
-	console.error('Usage: node publish.js <directory>');
+if (process.Argv.length < 3) {
+	console.error('UsAge: node publish.js <directory>');
 	process.exit(-1);
 }
-main();
+mAin();

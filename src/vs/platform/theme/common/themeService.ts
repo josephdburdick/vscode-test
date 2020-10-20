@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Color } from 'vs/base/common/color';
-import { IDisposable, toDisposable, Disposable } from 'vs/base/common/lifecycle';
-import * as platform from 'vs/platform/registry/common/platform';
-import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Color } from 'vs/bAse/common/color';
+import { IDisposAble, toDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import * As plAtform from 'vs/plAtform/registry/common/plAtform';
+import { ColorIdentifier } from 'vs/plAtform/theme/common/colorRegistry';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { ColorScheme } from 'vs/plAtform/theme/common/theme';
 
-export const IThemeService = createDecorator<IThemeService>('themeService');
+export const IThemeService = creAteDecorAtor<IThemeService>('themeService');
 
-export interface ThemeColor {
+export interfAce ThemeColor {
 	id: string;
 }
 
@@ -23,44 +23,44 @@ export function themeColorFromId(id: ColorIdentifier) {
 }
 
 // theme icon
-export interface ThemeIcon {
-	readonly id: string;
-	readonly themeColor?: ThemeColor;
+export interfAce ThemeIcon {
+	reAdonly id: string;
+	reAdonly themeColor?: ThemeColor;
 }
 
-export namespace ThemeIcon {
-	export function isThemeIcon(obj: any): obj is ThemeIcon | { id: string } {
+export nAmespAce ThemeIcon {
+	export function isThemeIcon(obj: Any): obj is ThemeIcon | { id: string } {
 		return obj && typeof obj === 'object' && typeof (<ThemeIcon>obj).id === 'string';
 	}
 
-	const _regexFromString = /^\$\(([a-z.]+\/)?([a-z-~]+)\)$/i;
+	const _regexFromString = /^\$\(([A-z.]+\/)?([A-z-~]+)\)$/i;
 
 	export function fromString(str: string): ThemeIcon | undefined {
-		const match = _regexFromString.exec(str);
-		if (!match) {
+		const mAtch = _regexFromString.exec(str);
+		if (!mAtch) {
 			return undefined;
 		}
-		let [, owner, name] = match;
+		let [, owner, nAme] = mAtch;
 		if (!owner) {
 			owner = `codicon/`;
 		}
-		return { id: owner + name };
+		return { id: owner + nAme };
 	}
 
-	const _regexAsClassName = /^(codicon\/)?([a-z-]+)(~[a-z]+)?$/i;
+	const _regexAsClAssNAme = /^(codicon\/)?([A-z-]+)(~[A-z]+)?$/i;
 
-	export function asClassName(icon: ThemeIcon): string | undefined {
-		// todo@martin,joh -> this should go into the ThemeService
-		const match = _regexAsClassName.exec(icon.id);
-		if (!match) {
+	export function AsClAssNAme(icon: ThemeIcon): string | undefined {
+		// todo@mArtin,joh -> this should go into the ThemeService
+		const mAtch = _regexAsClAssNAme.exec(icon.id);
+		if (!mAtch) {
 			return undefined;
 		}
-		let [, , name, modifier] = match;
-		let className = `codicon codicon-${name}`;
+		let [, , nAme, modifier] = mAtch;
+		let clAssNAme = `codicon codicon-${nAme}`;
 		if (modifier) {
-			className += ` ${modifier.substr(1)}`;
+			clAssNAme += ` ${modifier.substr(1)}`;
 		}
-		return className;
+		return clAssNAme;
 	}
 }
 
@@ -69,137 +69,137 @@ export const FolderThemeIcon = { id: 'folder' };
 
 export function getThemeTypeSelector(type: ColorScheme): string {
 	switch (type) {
-		case ColorScheme.DARK: return 'vs-dark';
-		case ColorScheme.HIGH_CONTRAST: return 'hc-black';
-		default: return 'vs';
+		cAse ColorScheme.DARK: return 'vs-dArk';
+		cAse ColorScheme.HIGH_CONTRAST: return 'hc-blAck';
+		defAult: return 'vs';
 	}
 }
 
-export interface ITokenStyle {
-	readonly foreground?: number;
-	readonly bold?: boolean;
-	readonly underline?: boolean;
-	readonly italic?: boolean;
+export interfAce ITokenStyle {
+	reAdonly foreground?: number;
+	reAdonly bold?: booleAn;
+	reAdonly underline?: booleAn;
+	reAdonly itAlic?: booleAn;
 }
 
-export interface IColorTheme {
+export interfAce IColorTheme {
 
-	readonly type: ColorScheme;
+	reAdonly type: ColorScheme;
 
-	readonly label: string;
+	reAdonly lAbel: string;
 
 	/**
 	 * Resolves the color of the given color identifier. If the theme does not
-	 * specify the color, the default color is returned unless <code>useDefault</code> is set to false.
-	 * @param color the id of the color
-	 * @param useDefault specifies if the default color should be used. If not set, the default is used.
+	 * specify the color, the defAult color is returned unless <code>useDefAult</code> is set to fAlse.
+	 * @pArAm color the id of the color
+	 * @pArAm useDefAult specifies if the defAult color should be used. If not set, the defAult is used.
 	 */
-	getColor(color: ColorIdentifier, useDefault?: boolean): Color | undefined;
+	getColor(color: ColorIdentifier, useDefAult?: booleAn): Color | undefined;
 
 	/**
-	 * Returns whether the theme defines a value for the color. If not, that means the
-	 * default color will be used.
+	 * Returns whether the theme defines A vAlue for the color. If not, thAt meAns the
+	 * defAult color will be used.
 	 */
-	defines(color: ColorIdentifier): boolean;
+	defines(color: ColorIdentifier): booleAn;
 
 	/**
-	 * Returns the token style for a given classification. The result uses the <code>MetadataConsts</code> format
+	 * Returns the token style for A given clAssificAtion. The result uses the <code>MetAdAtAConsts</code> formAt
 	 */
-	getTokenStyleMetadata(type: string, modifiers: string[], modelLanguage: string): ITokenStyle | undefined;
+	getTokenStyleMetAdAtA(type: string, modifiers: string[], modelLAnguAge: string): ITokenStyle | undefined;
 
 	/**
-	 * List of all colors used with tokens. <code>getTokenStyleMetadata</code> references the colors by index into this list.
+	 * List of All colors used with tokens. <code>getTokenStyleMetAdAtA</code> references the colors by index into this list.
 	 */
-	readonly tokenColorMap: string[];
+	reAdonly tokenColorMAp: string[];
 
 	/**
-	 * Defines whether semantic highlighting should be enabled for the theme.
+	 * Defines whether semAntic highlighting should be enAbled for the theme.
 	 */
-	readonly semanticHighlighting: boolean;
+	reAdonly semAnticHighlighting: booleAn;
 }
 
-export interface IFileIconTheme {
-	readonly hasFileIcons: boolean;
-	readonly hasFolderIcons: boolean;
-	readonly hidesExplorerArrows: boolean;
+export interfAce IFileIconTheme {
+	reAdonly hAsFileIcons: booleAn;
+	reAdonly hAsFolderIcons: booleAn;
+	reAdonly hidesExplorerArrows: booleAn;
 }
 
-export interface ICssStyleCollector {
-	addRule(rule: string): void;
+export interfAce ICssStyleCollector {
+	AddRule(rule: string): void;
 }
 
-export interface IThemingParticipant {
+export interfAce IThemingPArticipAnt {
 	(theme: IColorTheme, collector: ICssStyleCollector, environment: IEnvironmentService): void;
 }
 
-export interface IThemeService {
-	readonly _serviceBrand: undefined;
+export interfAce IThemeService {
+	reAdonly _serviceBrAnd: undefined;
 
 	getColorTheme(): IColorTheme;
 
-	readonly onDidColorThemeChange: Event<IColorTheme>;
+	reAdonly onDidColorThemeChAnge: Event<IColorTheme>;
 
 	getFileIconTheme(): IFileIconTheme;
 
-	readonly onDidFileIconThemeChange: Event<IFileIconTheme>;
+	reAdonly onDidFileIconThemeChAnge: Event<IFileIconTheme>;
 
 }
 
-// static theming participant
+// stAtic theming pArticipAnt
 export const Extensions = {
-	ThemingContribution: 'base.contributions.theming'
+	ThemingContribution: 'bAse.contributions.theming'
 };
 
-export interface IThemingRegistry {
+export interfAce IThemingRegistry {
 
 	/**
-	 * Register a theming participant that is invoked on every theme change.
+	 * Register A theming pArticipAnt thAt is invoked on every theme chAnge.
 	 */
-	onColorThemeChange(participant: IThemingParticipant): IDisposable;
+	onColorThemeChAnge(pArticipAnt: IThemingPArticipAnt): IDisposAble;
 
-	getThemingParticipants(): IThemingParticipant[];
+	getThemingPArticipAnts(): IThemingPArticipAnt[];
 
-	readonly onThemingParticipantAdded: Event<IThemingParticipant>;
+	reAdonly onThemingPArticipAntAdded: Event<IThemingPArticipAnt>;
 }
 
-class ThemingRegistry implements IThemingRegistry {
-	private themingParticipants: IThemingParticipant[] = [];
-	private readonly onThemingParticipantAddedEmitter: Emitter<IThemingParticipant>;
+clAss ThemingRegistry implements IThemingRegistry {
+	privAte themingPArticipAnts: IThemingPArticipAnt[] = [];
+	privAte reAdonly onThemingPArticipAntAddedEmitter: Emitter<IThemingPArticipAnt>;
 
 	constructor() {
-		this.themingParticipants = [];
-		this.onThemingParticipantAddedEmitter = new Emitter<IThemingParticipant>();
+		this.themingPArticipAnts = [];
+		this.onThemingPArticipAntAddedEmitter = new Emitter<IThemingPArticipAnt>();
 	}
 
-	public onColorThemeChange(participant: IThemingParticipant): IDisposable {
-		this.themingParticipants.push(participant);
-		this.onThemingParticipantAddedEmitter.fire(participant);
-		return toDisposable(() => {
-			const idx = this.themingParticipants.indexOf(participant);
-			this.themingParticipants.splice(idx, 1);
+	public onColorThemeChAnge(pArticipAnt: IThemingPArticipAnt): IDisposAble {
+		this.themingPArticipAnts.push(pArticipAnt);
+		this.onThemingPArticipAntAddedEmitter.fire(pArticipAnt);
+		return toDisposAble(() => {
+			const idx = this.themingPArticipAnts.indexOf(pArticipAnt);
+			this.themingPArticipAnts.splice(idx, 1);
 		});
 	}
 
-	public get onThemingParticipantAdded(): Event<IThemingParticipant> {
-		return this.onThemingParticipantAddedEmitter.event;
+	public get onThemingPArticipAntAdded(): Event<IThemingPArticipAnt> {
+		return this.onThemingPArticipAntAddedEmitter.event;
 	}
 
-	public getThemingParticipants(): IThemingParticipant[] {
-		return this.themingParticipants;
+	public getThemingPArticipAnts(): IThemingPArticipAnt[] {
+		return this.themingPArticipAnts;
 	}
 }
 
 let themingRegistry = new ThemingRegistry();
-platform.Registry.add(Extensions.ThemingContribution, themingRegistry);
+plAtform.Registry.Add(Extensions.ThemingContribution, themingRegistry);
 
-export function registerThemingParticipant(participant: IThemingParticipant): IDisposable {
-	return themingRegistry.onColorThemeChange(participant);
+export function registerThemingPArticipAnt(pArticipAnt: IThemingPArticipAnt): IDisposAble {
+	return themingRegistry.onColorThemeChAnge(pArticipAnt);
 }
 
 /**
- * Utility base class for all themable components.
+ * Utility bAse clAss for All themAble components.
  */
-export class Themable extends Disposable {
+export clAss ThemAble extends DisposAble {
 	protected theme: IColorTheme;
 
 	constructor(
@@ -209,18 +209,18 @@ export class Themable extends Disposable {
 
 		this.theme = themeService.getColorTheme();
 
-		// Hook up to theme changes
-		this._register(this.themeService.onDidColorThemeChange(theme => this.onThemeChange(theme)));
+		// Hook up to theme chAnges
+		this._register(this.themeService.onDidColorThemeChAnge(theme => this.onThemeChAnge(theme)));
 	}
 
-	protected onThemeChange(theme: IColorTheme): void {
+	protected onThemeChAnge(theme: IColorTheme): void {
 		this.theme = theme;
 
-		this.updateStyles();
+		this.updAteStyles();
 	}
 
-	protected updateStyles(): void {
-		// Subclasses to override
+	protected updAteStyles(): void {
+		// SubclAsses to override
 	}
 
 	protected getColor(id: string, modify?: (color: Color, theme: IColorTheme) => Color): string | null {

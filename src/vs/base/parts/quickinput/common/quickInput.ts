@@ -1,156 +1,156 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IMatch } from 'vs/base/common/filters';
-import { IItemAccessor } from 'vs/base/common/fuzzyScorer';
-import { Schemas } from 'vs/base/common/network';
+import { ResolvedKeybinding } from 'vs/bAse/common/keyCodes';
+import { URI } from 'vs/bAse/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IMAtch } from 'vs/bAse/common/filters';
+import { IItemAccessor } from 'vs/bAse/common/fuzzyScorer';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export interface IQuickPickItemHighlights {
-	label?: IMatch[];
-	description?: IMatch[];
-	detail?: IMatch[];
+export interfAce IQuickPickItemHighlights {
+	lAbel?: IMAtch[];
+	description?: IMAtch[];
+	detAil?: IMAtch[];
 }
 
-export interface IQuickPickItem {
+export interfAce IQuickPickItem {
 	type?: 'item';
 	id?: string;
-	label: string;
-	ariaLabel?: string;
+	lAbel: string;
+	AriALAbel?: string;
 	description?: string;
-	detail?: string;
+	detAil?: string;
 	/**
-	 * Allows to show a keybinding next to the item to indicate
-	 * how the item can be triggered outside of the picker using
-	 * keyboard shortcut.
+	 * Allows to show A keybinding next to the item to indicAte
+	 * how the item cAn be triggered outside of the picker using
+	 * keyboArd shortcut.
 	 */
 	keybinding?: ResolvedKeybinding;
-	iconClasses?: string[];
-	italic?: boolean;
-	strikethrough?: boolean;
+	iconClAsses?: string[];
+	itAlic?: booleAn;
+	strikethrough?: booleAn;
 	highlights?: IQuickPickItemHighlights;
 	buttons?: IQuickInputButton[];
-	picked?: boolean;
-	alwaysShow?: boolean;
+	picked?: booleAn;
+	AlwAysShow?: booleAn;
 }
 
-export interface IQuickPickSeparator {
-	type: 'separator';
-	label?: string;
+export interfAce IQuickPickSepArAtor {
+	type: 'sepArAtor';
+	lAbel?: string;
 }
 
-export interface IKeyMods {
-	readonly ctrlCmd: boolean;
-	readonly alt: boolean;
+export interfAce IKeyMods {
+	reAdonly ctrlCmd: booleAn;
+	reAdonly Alt: booleAn;
 }
 
-export const NO_KEY_MODS: IKeyMods = { ctrlCmd: false, alt: false };
+export const NO_KEY_MODS: IKeyMods = { ctrlCmd: fAlse, Alt: fAlse };
 
-export interface IQuickNavigateConfiguration {
+export interfAce IQuickNAvigAteConfigurAtion {
 	keybindings: ResolvedKeybinding[];
 }
 
-export interface IPickOptions<T extends IQuickPickItem> {
+export interfAce IPickOptions<T extends IQuickPickItem> {
 
 	/**
-	 * an optional string to show as placeholder in the input box to guide the user what she picks on
+	 * An optionAl string to show As plAceholder in the input box to guide the user whAt she picks on
 	 */
-	placeHolder?: string;
+	plAceHolder?: string;
 
 	/**
-	 * an optional flag to include the description when filtering the picks
+	 * An optionAl flAg to include the description when filtering the picks
 	 */
-	matchOnDescription?: boolean;
+	mAtchOnDescription?: booleAn;
 
 	/**
-	 * an optional flag to include the detail when filtering the picks
+	 * An optionAl flAg to include the detAil when filtering the picks
 	 */
-	matchOnDetail?: boolean;
+	mAtchOnDetAil?: booleAn;
 
 	/**
-	 * an optional flag to filter the picks based on label. Defaults to true.
+	 * An optionAl flAg to filter the picks bAsed on lAbel. DefAults to true.
 	 */
-	matchOnLabel?: boolean;
+	mAtchOnLAbel?: booleAn;
 
 	/**
-	 * an option flag to control whether focus is always automatically brought to a list item. Defaults to true.
+	 * An option flAg to control whether focus is AlwAys AutomAticAlly brought to A list item. DefAults to true.
 	 */
-	autoFocusOnList?: boolean;
+	AutoFocusOnList?: booleAn;
 
 	/**
-	 * an optional flag to not close the picker on focus lost
+	 * An optionAl flAg to not close the picker on focus lost
 	 */
-	ignoreFocusLost?: boolean;
+	ignoreFocusLost?: booleAn;
 
 	/**
-	 * an optional flag to make this picker multi-select
+	 * An optionAl flAg to mAke this picker multi-select
 	 */
-	canPickMany?: boolean;
+	cAnPickMAny?: booleAn;
 
 	/**
-	 * enables quick navigate in the picker to open an element without typing
+	 * enAbles quick nAvigAte in the picker to open An element without typing
 	 */
-	quickNavigate?: IQuickNavigateConfiguration;
+	quickNAvigAte?: IQuickNAvigAteConfigurAtion;
 
 	/**
-	 * a context key to set when this picker is active
+	 * A context key to set when this picker is Active
 	 */
 	contextKey?: string;
 
 	/**
-	 * an optional property for the item to focus initially.
+	 * An optionAl property for the item to focus initiAlly.
 	 */
-	activeItem?: Promise<T> | T;
+	ActiveItem?: Promise<T> | T;
 
 	onKeyMods?: (keyMods: IKeyMods) => void;
 	onDidFocus?: (entry: T) => void;
 	onDidTriggerItemButton?: (context: IQuickPickItemButtonContext<T>) => void;
 }
 
-export interface IInputOptions {
+export interfAce IInputOptions {
 
 	/**
-	 * the value to prefill in the input box
+	 * the vAlue to prefill in the input box
 	 */
-	value?: string;
+	vAlue?: string;
 
 	/**
-	 * the selection of value, default to the whole word
+	 * the selection of vAlue, defAult to the whole word
 	 */
-	valueSelection?: [number, number];
+	vAlueSelection?: [number, number];
 
 	/**
-	 * the text to display underneath the input box
+	 * the text to displAy underneAth the input box
 	 */
 	prompt?: string;
 
 	/**
-	 * an optional string to show as placeholder in the input box to guide the user what to type
+	 * An optionAl string to show As plAceholder in the input box to guide the user whAt to type
 	 */
-	placeHolder?: string;
+	plAceHolder?: string;
 
 	/**
-	 * Controls if a password input is shown. Password input hides the typed text.
+	 * Controls if A pAssword input is shown. PAssword input hides the typed text.
 	 */
-	password?: boolean;
+	pAssword?: booleAn;
 
-	ignoreFocusLost?: boolean;
+	ignoreFocusLost?: booleAn;
 
 	/**
-	 * an optional function that is used to validate user input.
+	 * An optionAl function thAt is used to vAlidAte user input.
 	 */
-	validateInput?: (input: string) => Promise<string | null | undefined>;
+	vAlidAteInput?: (input: string) => Promise<string | null | undefined>;
 }
 
-export interface IQuickInput extends IDisposable {
+export interfAce IQuickInput extends IDisposAble {
 
-	readonly onDidHide: Event<void>;
-	readonly onDispose: Event<void>;
+	reAdonly onDidHide: Event<void>;
+	reAdonly onDispose: Event<void>;
 
 	title: string | undefined;
 
@@ -158,185 +158,185 @@ export interface IQuickInput extends IDisposable {
 
 	step: number | undefined;
 
-	totalSteps: number | undefined;
+	totAlSteps: number | undefined;
 
-	enabled: boolean;
+	enAbled: booleAn;
 
 	contextKey: string | undefined;
 
-	busy: boolean;
+	busy: booleAn;
 
-	ignoreFocusOut: boolean;
+	ignoreFocusOut: booleAn;
 
 	show(): void;
 
 	hide(): void;
 }
 
-export interface IQuickPickAcceptEvent {
+export interfAce IQuickPickAcceptEvent {
 
 	/**
-	 * Signals if the picker item is to be accepted
-	 * in the background while keeping the picker open.
+	 * SignAls if the picker item is to be Accepted
+	 * in the bAckground while keeping the picker open.
 	 */
-	inBackground: boolean;
+	inBAckground: booleAn;
 }
 
-export enum ItemActivation {
+export enum ItemActivAtion {
 	NONE,
 	FIRST,
 	SECOND,
 	LAST
 }
 
-export interface IQuickPick<T extends IQuickPickItem> extends IQuickInput {
+export interfAce IQuickPick<T extends IQuickPickItem> extends IQuickInput {
 
-	value: string;
+	vAlue: string;
 
 	/**
-	 * A method that allows to massage the value used
-	 * for filtering, e.g, to remove certain parts.
+	 * A method thAt Allows to mAssAge the vAlue used
+	 * for filtering, e.g, to remove certAin pArts.
 	 */
-	filterValue: (value: string) => string;
+	filterVAlue: (vAlue: string) => string;
 
-	ariaLabel: string | undefined;
+	AriALAbel: string | undefined;
 
-	placeholder: string | undefined;
+	plAceholder: string | undefined;
 
-	readonly onDidChangeValue: Event<string>;
+	reAdonly onDidChAngeVAlue: Event<string>;
 
-	readonly onDidAccept: Event<IQuickPickAcceptEvent>;
+	reAdonly onDidAccept: Event<IQuickPickAcceptEvent>;
 
 	/**
-	 * If enabled, will fire the `onDidAccept` event when
-	 * pressing the arrow-right key with the idea of accepting
+	 * If enAbled, will fire the `onDidAccept` event when
+	 * pressing the Arrow-right key with the ideA of Accepting
 	 * the selected item without closing the picker.
 	 */
-	canAcceptInBackground: boolean;
+	cAnAcceptInBAckground: booleAn;
 
-	ok: boolean | 'default';
+	ok: booleAn | 'defAult';
 
-	readonly onDidCustom: Event<void>;
+	reAdonly onDidCustom: Event<void>;
 
-	customButton: boolean;
+	customButton: booleAn;
 
-	customLabel: string | undefined;
+	customLAbel: string | undefined;
 
 	customHover: string | undefined;
 
-	buttons: ReadonlyArray<IQuickInputButton>;
+	buttons: ReAdonlyArrAy<IQuickInputButton>;
 
-	readonly onDidTriggerButton: Event<IQuickInputButton>;
+	reAdonly onDidTriggerButton: Event<IQuickInputButton>;
 
-	readonly onDidTriggerItemButton: Event<IQuickPickItemButtonEvent<T>>;
+	reAdonly onDidTriggerItemButton: Event<IQuickPickItemButtonEvent<T>>;
 
-	items: ReadonlyArray<T | IQuickPickSeparator>;
+	items: ReAdonlyArrAy<T | IQuickPickSepArAtor>;
 
-	canSelectMany: boolean;
+	cAnSelectMAny: booleAn;
 
-	matchOnDescription: boolean;
+	mAtchOnDescription: booleAn;
 
-	matchOnDetail: boolean;
+	mAtchOnDetAil: booleAn;
 
-	matchOnLabel: boolean;
+	mAtchOnLAbel: booleAn;
 
-	sortByLabel: boolean;
+	sortByLAbel: booleAn;
 
-	autoFocusOnList: boolean;
+	AutoFocusOnList: booleAn;
 
-	quickNavigate: IQuickNavigateConfiguration | undefined;
+	quickNAvigAte: IQuickNAvigAteConfigurAtion | undefined;
 
-	activeItems: ReadonlyArray<T>;
+	ActiveItems: ReAdonlyArrAy<T>;
 
-	readonly onDidChangeActive: Event<T[]>;
+	reAdonly onDidChAngeActive: Event<T[]>;
 
 	/**
-	 * Allows to control which entry should be activated by default.
+	 * Allows to control which entry should be ActivAted by defAult.
 	 */
-	itemActivation: ItemActivation;
+	itemActivAtion: ItemActivAtion;
 
-	selectedItems: ReadonlyArray<T>;
+	selectedItems: ReAdonlyArrAy<T>;
 
-	readonly onDidChangeSelection: Event<T[]>;
+	reAdonly onDidChAngeSelection: Event<T[]>;
 
-	readonly keyMods: IKeyMods;
+	reAdonly keyMods: IKeyMods;
 
-	valueSelection: Readonly<[number, number]> | undefined;
+	vAlueSelection: ReAdonly<[number, number]> | undefined;
 
-	validationMessage: string | undefined;
+	vAlidAtionMessAge: string | undefined;
 
-	inputHasFocus(): boolean;
+	inputHAsFocus(): booleAn;
 
 	focusOnInput(): void;
 
 	/**
-	 * Hides the input box from the picker UI. This is typically used
-	 * in combination with quick-navigation where no search UI should
+	 * Hides the input box from the picker UI. This is typicAlly used
+	 * in combinAtion with quick-nAvigAtion where no seArch UI should
 	 * be presented.
 	 */
-	hideInput: boolean;
+	hideInput: booleAn;
 
-	hideCheckAll: boolean;
+	hideCheckAll: booleAn;
 }
 
-export interface IInputBox extends IQuickInput {
+export interfAce IInputBox extends IQuickInput {
 
-	value: string;
+	vAlue: string;
 
-	valueSelection: Readonly<[number, number]> | undefined;
+	vAlueSelection: ReAdonly<[number, number]> | undefined;
 
-	placeholder: string | undefined;
+	plAceholder: string | undefined;
 
-	password: boolean;
+	pAssword: booleAn;
 
-	readonly onDidChangeValue: Event<string>;
+	reAdonly onDidChAngeVAlue: Event<string>;
 
-	readonly onDidAccept: Event<void>;
+	reAdonly onDidAccept: Event<void>;
 
-	buttons: ReadonlyArray<IQuickInputButton>;
+	buttons: ReAdonlyArrAy<IQuickInputButton>;
 
-	readonly onDidTriggerButton: Event<IQuickInputButton>;
+	reAdonly onDidTriggerButton: Event<IQuickInputButton>;
 
 	prompt: string | undefined;
 
-	validationMessage: string | undefined;
+	vAlidAtionMessAge: string | undefined;
 }
 
-export interface IQuickInputButton {
-	/** iconPath or iconClass required */
-	iconPath?: { dark: URI; light?: URI; };
-	/** iconPath or iconClass required */
-	iconClass?: string;
+export interfAce IQuickInputButton {
+	/** iconPAth or iconClAss required */
+	iconPAth?: { dArk: URI; light?: URI; };
+	/** iconPAth or iconClAss required */
+	iconClAss?: string;
 	tooltip?: string;
 	/**
-	 * Whether to always show the button. By default buttons
-	 * are only visible when hovering over them with the mouse
+	 * Whether to AlwAys show the button. By defAult buttons
+	 * Are only visible when hovering over them with the mouse
 	 */
-	alwaysVisible?: boolean;
+	AlwAysVisible?: booleAn;
 }
 
-export interface IQuickPickItemButtonEvent<T extends IQuickPickItem> {
+export interfAce IQuickPickItemButtonEvent<T extends IQuickPickItem> {
 	button: IQuickInputButton;
 	item: T;
 }
 
-export interface IQuickPickItemButtonContext<T extends IQuickPickItem> extends IQuickPickItemButtonEvent<T> {
+export interfAce IQuickPickItemButtonContext<T extends IQuickPickItem> extends IQuickPickItemButtonEvent<T> {
 	removeItem(): void;
 }
 
-export type QuickPickInput<T = IQuickPickItem> = T | IQuickPickSeparator;
+export type QuickPickInput<T = IQuickPickItem> = T | IQuickPickSepArAtor;
 
 
 //region Fuzzy Scorer Support
 
 export type IQuickPickItemWithResource = IQuickPickItem & { resource?: URI };
 
-export class QuickPickItemScorerAccessor implements IItemAccessor<IQuickPickItemWithResource> {
+export clAss QuickPickItemScorerAccessor implements IItemAccessor<IQuickPickItemWithResource> {
 
-	constructor(private options?: { skipDescription?: boolean, skipPath?: boolean }) { }
+	constructor(privAte options?: { skipDescription?: booleAn, skipPAth?: booleAn }) { }
 
-	getItemLabel(entry: IQuickPickItemWithResource): string {
-		return entry.label;
+	getItemLAbel(entry: IQuickPickItemWithResource): string {
+		return entry.lAbel;
 	}
 
 	getItemDescription(entry: IQuickPickItemWithResource): string | undefined {
@@ -347,16 +347,16 @@ export class QuickPickItemScorerAccessor implements IItemAccessor<IQuickPickItem
 		return entry.description;
 	}
 
-	getItemPath(entry: IQuickPickItemWithResource): string | undefined {
-		if (this.options?.skipPath) {
+	getItemPAth(entry: IQuickPickItemWithResource): string | undefined {
+		if (this.options?.skipPAth) {
 			return undefined;
 		}
 
-		if (entry.resource?.scheme === Schemas.file) {
-			return entry.resource.fsPath;
+		if (entry.resource?.scheme === SchemAs.file) {
+			return entry.resource.fsPAth;
 		}
 
-		return entry.resource?.path;
+		return entry.resource?.pAth;
 	}
 }
 

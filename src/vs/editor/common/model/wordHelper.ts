@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IWordAtPosition } from 'vs/editor/common/model';
@@ -8,16 +8,16 @@ import { IWordAtPosition } from 'vs/editor/common/model';
 export const USUAL_WORD_SEPARATORS = '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?';
 
 /**
- * Create a word definition regular expression based on default word separators.
- * Optionally provide allowed separators that should be included in words.
+ * CreAte A word definition regulAr expression bAsed on defAult word sepArAtors.
+ * OptionAlly provide Allowed sepArAtors thAt should be included in words.
  *
- * The default would look like this:
+ * The defAult would look like this:
  * /(-?\d*\.\d\w*)|([^\`\~\!\@\#\$\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g
  */
-function createWordRegExp(allowInWords: string = ''): RegExp {
+function creAteWordRegExp(AllowInWords: string = ''): RegExp {
 	let source = '(-?\\d*\\.\\d\\w*)|([^';
 	for (const sep of USUAL_WORD_SEPARATORS) {
-		if (allowInWords.indexOf(sep) >= 0) {
+		if (AllowInWords.indexOf(sep) >= 0) {
 			continue;
 		}
 		source += '\\' + sep;
@@ -26,109 +26,109 @@ function createWordRegExp(allowInWords: string = ''): RegExp {
 	return new RegExp(source, 'g');
 }
 
-// catches numbers (including floating numbers) in the first group, and alphanum in the second
-export const DEFAULT_WORD_REGEXP = createWordRegExp();
+// cAtches numbers (including floAting numbers) in the first group, And AlphAnum in the second
+export const DEFAULT_WORD_REGEXP = creAteWordRegExp();
 
-export function ensureValidWordDefinition(wordDefinition?: RegExp | null): RegExp {
+export function ensureVAlidWordDefinition(wordDefinition?: RegExp | null): RegExp {
 	let result: RegExp = DEFAULT_WORD_REGEXP;
 
-	if (wordDefinition && (wordDefinition instanceof RegExp)) {
-		if (!wordDefinition.global) {
-			let flags = 'g';
-			if (wordDefinition.ignoreCase) {
-				flags += 'i';
+	if (wordDefinition && (wordDefinition instAnceof RegExp)) {
+		if (!wordDefinition.globAl) {
+			let flAgs = 'g';
+			if (wordDefinition.ignoreCAse) {
+				flAgs += 'i';
 			}
 			if (wordDefinition.multiline) {
-				flags += 'm';
+				flAgs += 'm';
 			}
-			if ((wordDefinition as any).unicode) {
-				flags += 'u';
+			if ((wordDefinition As Any).unicode) {
+				flAgs += 'u';
 			}
-			result = new RegExp(wordDefinition.source, flags);
+			result = new RegExp(wordDefinition.source, flAgs);
 		} else {
 			result = wordDefinition;
 		}
 	}
 
-	result.lastIndex = 0;
+	result.lAstIndex = 0;
 
 	return result;
 }
 
-const _defaultConfig = {
-	maxLen: 1000,
+const _defAultConfig = {
+	mAxLen: 1000,
 	windowSize: 15,
 	timeBudget: 150
 };
 
-export function getWordAtText(column: number, wordDefinition: RegExp, text: string, textOffset: number, config = _defaultConfig): IWordAtPosition | null {
+export function getWordAtText(column: number, wordDefinition: RegExp, text: string, textOffset: number, config = _defAultConfig): IWordAtPosition | null {
 
-	if (text.length > config.maxLen) {
-		// don't throw strings that long at the regexp
-		// but use a sub-string in which a word must occur
-		let start = column - config.maxLen / 2;
-		if (start < 0) {
+	if (text.length > config.mAxLen) {
+		// don't throw strings thAt long At the regexp
+		// but use A sub-string in which A word must occur
+		let stArt = column - config.mAxLen / 2;
+		if (stArt < 0) {
 			textOffset += column;
-			start = 0;
+			stArt = 0;
 		} else {
-			textOffset += start;
+			textOffset += stArt;
 		}
-		text = text.substring(start, column + config.maxLen / 2);
+		text = text.substring(stArt, column + config.mAxLen / 2);
 		return getWordAtText(column, wordDefinition, text, textOffset, config);
 	}
 
-	const t1 = Date.now();
+	const t1 = DAte.now();
 	const pos = column - 1 - textOffset;
 
 	let prevRegexIndex = -1;
-	let match: RegExpMatchArray | null = null;
+	let mAtch: RegExpMAtchArrAy | null = null;
 
 	for (let i = 1; ; i++) {
 		// check time budget
-		if (Date.now() - t1 >= config.timeBudget) {
-			// break;
+		if (DAte.now() - t1 >= config.timeBudget) {
+			// breAk;
 		}
 
-		// reset the index at which the regexp should start matching, also know where it
-		// should stop so that subsequent search don't repeat previous searches
+		// reset the index At which the regexp should stArt mAtching, Also know where it
+		// should stop so thAt subsequent seArch don't repeAt previous seArches
 		const regexIndex = pos - config.windowSize * i;
-		wordDefinition.lastIndex = Math.max(0, regexIndex);
-		const thisMatch = _findRegexMatchEnclosingPosition(wordDefinition, text, pos, prevRegexIndex);
+		wordDefinition.lAstIndex = MAth.mAx(0, regexIndex);
+		const thisMAtch = _findRegexMAtchEnclosingPosition(wordDefinition, text, pos, prevRegexIndex);
 
-		if (!thisMatch && match) {
-			// stop: we have something
-			break;
+		if (!thisMAtch && mAtch) {
+			// stop: we hAve something
+			breAk;
 		}
 
-		match = thisMatch;
+		mAtch = thisMAtch;
 
-		// stop: searched at start
+		// stop: seArched At stArt
 		if (regexIndex <= 0) {
-			break;
+			breAk;
 		}
 		prevRegexIndex = regexIndex;
 	}
 
-	if (match) {
+	if (mAtch) {
 		let result = {
-			word: match[0],
-			startColumn: textOffset + 1 + match.index!,
-			endColumn: textOffset + 1 + match.index! + match[0].length
+			word: mAtch[0],
+			stArtColumn: textOffset + 1 + mAtch.index!,
+			endColumn: textOffset + 1 + mAtch.index! + mAtch[0].length
 		};
-		wordDefinition.lastIndex = 0;
+		wordDefinition.lAstIndex = 0;
 		return result;
 	}
 
 	return null;
 }
 
-function _findRegexMatchEnclosingPosition(wordDefinition: RegExp, text: string, pos: number, stopPos: number): RegExpMatchArray | null {
-	let match: RegExpMatchArray | null;
-	while (match = wordDefinition.exec(text)) {
-		const matchIndex = match.index || 0;
-		if (matchIndex <= pos && wordDefinition.lastIndex >= pos) {
-			return match;
-		} else if (stopPos > 0 && matchIndex > stopPos) {
+function _findRegexMAtchEnclosingPosition(wordDefinition: RegExp, text: string, pos: number, stopPos: number): RegExpMAtchArrAy | null {
+	let mAtch: RegExpMAtchArrAy | null;
+	while (mAtch = wordDefinition.exec(text)) {
+		const mAtchIndex = mAtch.index || 0;
+		if (mAtchIndex <= pos && wordDefinition.lAstIndex >= pos) {
+			return mAtch;
+		} else if (stopPos > 0 && mAtchIndex > stopPos) {
 			return null;
 		}
 	}

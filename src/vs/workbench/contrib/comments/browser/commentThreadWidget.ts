@@ -1,168 +1,168 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { Action, IAction } from 'vs/base/common/actions';
-import * as arrays from 'vs/base/common/arrays';
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import * as strings from 'vs/base/common/strings';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IMarginData } from 'vs/editor/browser/controller/mouseTarget';
-import { ICodeEditor, IEditorMouseEvent, MouseTargetType } from 'vs/editor/browser/editorBrowser';
+import * As dom from 'vs/bAse/browser/dom';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { Action, IAction } from 'vs/bAse/common/Actions';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { Color } from 'vs/bAse/common/color';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import * As strings from 'vs/bAse/common/strings';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { URI } from 'vs/bAse/common/uri';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { IMArginDAtA } from 'vs/editor/browser/controller/mouseTArget';
+import { ICodeEditor, IEditorMouseEvent, MouseTArgetType } from 'vs/editor/browser/editorBrowser';
 import { IPosition } from 'vs/editor/common/core/position';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
+import * As modes from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
+import { MArkdownRenderer } from 'vs/editor/browser/core/mArkdownRenderer';
 import { peekViewBorder } from 'vs/editor/contrib/peekView/peekView';
 import { ZoneWidget } from 'vs/editor/contrib/zoneWidget/zoneWidget';
-import * as nls from 'vs/nls';
-import { MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IMenu, MenuItemAction, SubmenuItemAction } from 'vs/platform/actions/common/actions';
-import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { contrastBorder, editorForeground, focusBorder, inputValidationErrorBackground, inputValidationErrorBorder, inputValidationErrorForeground, textBlockQuoteBackground, textBlockQuoteBorder, textLinkActiveForeground, textLinkForeground, transparent } from 'vs/platform/theme/common/colorRegistry';
-import { IColorTheme, IThemeService } from 'vs/platform/theme/common/themeService';
+import * As nls from 'vs/nls';
+import { MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { IMenu, MenuItemAction, SubmenuItemAction } from 'vs/plAtform/Actions/common/Actions';
+import { IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { contrAstBorder, editorForeground, focusBorder, inputVAlidAtionErrorBAckground, inputVAlidAtionErrorBorder, inputVAlidAtionErrorForeground, textBlockQuoteBAckground, textBlockQuoteBorder, textLinkActiveForeground, textLinkForeground, trAnspArent } from 'vs/plAtform/theme/common/colorRegistry';
+import { IColorTheme, IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { CommentFormActions } from 'vs/workbench/contrib/comments/browser/commentFormActions';
 import { CommentGlyphWidget } from 'vs/workbench/contrib/comments/browser/commentGlyphWidget';
 import { CommentMenus } from 'vs/workbench/contrib/comments/browser/commentMenus';
 import { CommentNode } from 'vs/workbench/contrib/comments/browser/commentNode';
 import { ICommentService } from 'vs/workbench/contrib/comments/browser/commentService';
 import { CommentContextKeys } from 'vs/workbench/contrib/comments/common/commentContextKeys';
-import { ICommentThreadWidget } from 'vs/workbench/contrib/comments/common/commentThreadWidget';
+import { ICommentThreAdWidget } from 'vs/workbench/contrib/comments/common/commentThreAdWidget';
 import { SimpleCommentEditor } from './simpleCommentEditor';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from 'vs/base/browser/ui/mouseCursor/mouseCursor';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from 'vs/bAse/browser/ui/mouseCursor/mouseCursor';
+import { ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export const COMMENTEDITOR_DECORATION_KEY = 'commenteditordecoration';
-const COLLAPSE_ACTION_CLASS = 'expand-review-action codicon-chevron-up';
+export const COMMENTEDITOR_DECORATION_KEY = 'commenteditordecorAtion';
+const COLLAPSE_ACTION_CLASS = 'expAnd-review-Action codicon-chevron-up';
 const COMMENT_SCHEME = 'comment';
 
 
 let INMEM_MODEL_ID = 0;
 
-export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget {
-	private _headElement!: HTMLElement;
-	protected _headingLabel!: HTMLElement;
-	protected _actionbarWidget!: ActionBar;
-	private _bodyElement!: HTMLElement;
-	private _parentEditor: ICodeEditor;
-	private _commentsElement!: HTMLElement;
-	private _commentElements: CommentNode[] = [];
-	private _commentReplyComponent?: {
+export clAss ReviewZoneWidget extends ZoneWidget implements ICommentThreAdWidget {
+	privAte _heAdElement!: HTMLElement;
+	protected _heAdingLAbel!: HTMLElement;
+	protected _ActionbArWidget!: ActionBAr;
+	privAte _bodyElement!: HTMLElement;
+	privAte _pArentEditor: ICodeEditor;
+	privAte _commentsElement!: HTMLElement;
+	privAte _commentElements: CommentNode[] = [];
+	privAte _commentReplyComponent?: {
 		editor: ICodeEditor;
 		form: HTMLElement;
-		commentEditorIsEmpty: IContextKey<boolean>;
+		commentEditorIsEmpty: IContextKey<booleAn>;
 	};
-	private _reviewThreadReplyButton!: HTMLElement;
-	private _resizeObserver: any;
-	private readonly _onDidClose = new Emitter<ReviewZoneWidget | undefined>();
-	private readonly _onDidCreateThread = new Emitter<ReviewZoneWidget>();
-	private _isExpanded?: boolean;
-	private _collapseAction!: Action;
-	private _commentGlyph?: CommentGlyphWidget;
-	private _submitActionsDisposables: IDisposable[];
-	private readonly _globalToDispose = new DisposableStore();
-	private _commentThreadDisposables: IDisposable[] = [];
-	private _markdownRenderer: MarkdownRenderer;
-	private _styleElement: HTMLStyleElement;
-	private _formActions: HTMLElement | null;
-	private _error!: HTMLElement;
-	private _contextKeyService: IContextKeyService;
-	private _threadIsEmpty: IContextKey<boolean>;
-	private _commentThreadContextValue: IContextKey<string>;
-	private _commentFormActions!: CommentFormActions;
-	private _scopedInstatiationService: IInstantiationService;
-	private _focusedComment: number | undefined = undefined;
+	privAte _reviewThreAdReplyButton!: HTMLElement;
+	privAte _resizeObserver: Any;
+	privAte reAdonly _onDidClose = new Emitter<ReviewZoneWidget | undefined>();
+	privAte reAdonly _onDidCreAteThreAd = new Emitter<ReviewZoneWidget>();
+	privAte _isExpAnded?: booleAn;
+	privAte _collApseAction!: Action;
+	privAte _commentGlyph?: CommentGlyphWidget;
+	privAte _submitActionsDisposAbles: IDisposAble[];
+	privAte reAdonly _globAlToDispose = new DisposAbleStore();
+	privAte _commentThreAdDisposAbles: IDisposAble[] = [];
+	privAte _mArkdownRenderer: MArkdownRenderer;
+	privAte _styleElement: HTMLStyleElement;
+	privAte _formActions: HTMLElement | null;
+	privAte _error!: HTMLElement;
+	privAte _contextKeyService: IContextKeyService;
+	privAte _threAdIsEmpty: IContextKey<booleAn>;
+	privAte _commentThreAdContextVAlue: IContextKey<string>;
+	privAte _commentFormActions!: CommentFormActions;
+	privAte _scopedInstAtiAtionService: IInstAntiAtionService;
+	privAte _focusedComment: number | undefined = undefined;
 
 	public get owner(): string {
 		return this._owner;
 	}
-	public get commentThread(): modes.CommentThread {
-		return this._commentThread;
+	public get commentThreAd(): modes.CommentThreAd {
+		return this._commentThreAd;
 	}
 
 	public get extensionId(): string | undefined {
-		return this._commentThread.extensionId;
+		return this._commentThreAd.extensionId;
 	}
 
-	private _commentMenus: CommentMenus;
+	privAte _commentMenus: CommentMenus;
 
-	private _commentOptions: modes.CommentOptions | undefined;
+	privAte _commentOptions: modes.CommentOptions | undefined;
 
 	constructor(
 		editor: ICodeEditor,
-		private _owner: string,
-		private _commentThread: modes.CommentThread,
-		private _pendingComment: string | null,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@IModeService private modeService: IModeService,
-		@IModelService private modelService: IModelService,
-		@IThemeService private themeService: IThemeService,
-		@ICommentService private commentService: ICommentService,
-		@IOpenerService private openerService: IOpenerService,
+		privAte _owner: string,
+		privAte _commentThreAd: modes.CommentThreAd,
+		privAte _pendingComment: string | null,
+		@IInstAntiAtionService privAte instAntiAtionService: IInstAntiAtionService,
+		@IModeService privAte modeService: IModeService,
+		@IModelService privAte modelService: IModelService,
+		@IThemeService privAte themeService: IThemeService,
+		@ICommentService privAte commentService: ICommentService,
+		@IOpenerService privAte openerService: IOpenerService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		super(editor, { keepEditorSelection: true });
-		this._contextKeyService = contextKeyService.createScoped(this.domNode);
+		this._contextKeyService = contextKeyService.creAteScoped(this.domNode);
 
-		this._scopedInstatiationService = instantiationService.createChild(new ServiceCollection(
+		this._scopedInstAtiAtionService = instAntiAtionService.creAteChild(new ServiceCollection(
 			[IContextKeyService, this._contextKeyService]
 		));
 
-		this._threadIsEmpty = CommentContextKeys.commentThreadIsEmpty.bindTo(this._contextKeyService);
-		this._threadIsEmpty.set(!_commentThread.comments || !_commentThread.comments.length);
-		this._commentThreadContextValue = this._contextKeyService.createKey('commentThread', _commentThread.contextValue);
+		this._threAdIsEmpty = CommentContextKeys.commentThreAdIsEmpty.bindTo(this._contextKeyService);
+		this._threAdIsEmpty.set(!_commentThreAd.comments || !_commentThreAd.comments.length);
+		this._commentThreAdContextVAlue = this._contextKeyService.creAteKey('commentThreAd', _commentThreAd.contextVAlue);
 
-		const commentControllerKey = this._contextKeyService.createKey<string | undefined>('commentController', undefined);
+		const commentControllerKey = this._contextKeyService.creAteKey<string | undefined>('commentController', undefined);
 		const controller = this.commentService.getCommentController(this._owner);
 
 		if (controller) {
-			commentControllerKey.set(controller.contextValue);
+			commentControllerKey.set(controller.contextVAlue);
 			this._commentOptions = controller.options;
 		}
 
 		this._resizeObserver = null;
-		this._isExpanded = _commentThread.collapsibleState === modes.CommentThreadCollapsibleState.Expanded;
-		this._commentThreadDisposables = [];
-		this._submitActionsDisposables = [];
+		this._isExpAnded = _commentThreAd.collApsibleStAte === modes.CommentThreAdCollApsibleStAte.ExpAnded;
+		this._commentThreAdDisposAbles = [];
+		this._submitActionsDisposAbles = [];
 		this._formActions = null;
 		this._commentMenus = this.commentService.getCommentMenus(this._owner);
-		this.create();
+		this.creAte();
 
-		this._styleElement = dom.createStyleSheet(this.domNode);
-		this._globalToDispose.add(this.themeService.onDidColorThemeChange(this._applyTheme, this));
-		this._globalToDispose.add(this.editor.onDidChangeConfiguration(e => {
-			if (e.hasChanged(EditorOption.fontInfo)) {
-				this._applyTheme(this.themeService.getColorTheme());
+		this._styleElement = dom.creAteStyleSheet(this.domNode);
+		this._globAlToDispose.Add(this.themeService.onDidColorThemeChAnge(this._ApplyTheme, this));
+		this._globAlToDispose.Add(this.editor.onDidChAngeConfigurAtion(e => {
+			if (e.hAsChAnged(EditorOption.fontInfo)) {
+				this._ApplyTheme(this.themeService.getColorTheme());
 			}
 		}));
-		this._applyTheme(this.themeService.getColorTheme());
+		this._ApplyTheme(this.themeService.getColorTheme());
 
-		this._markdownRenderer = this._globalToDispose.add(new MarkdownRenderer({ editor }, this.modeService, this.openerService));
-		this._parentEditor = editor;
+		this._mArkdownRenderer = this._globAlToDispose.Add(new MArkdownRenderer({ editor }, this.modeService, this.openerService));
+		this._pArentEditor = editor;
 	}
 
 	public get onDidClose(): Event<ReviewZoneWidget | undefined> {
 		return this._onDidClose.event;
 	}
 
-	public get onDidCreateThread(): Event<ReviewZoneWidget> {
-		return this._onDidCreateThread.event;
+	public get onDidCreAteThreAd(): Event<ReviewZoneWidget> {
+		return this._onDidCreAteThreAd.event;
 	}
 
 	public getPosition(): IPosition | undefined {
@@ -176,105 +176,105 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 		return undefined;
 	}
 
-	protected revealLine(lineNumber: number) {
-		// we don't do anything here as we always do the reveal ourselves.
+	protected reveAlLine(lineNumber: number) {
+		// we don't do Anything here As we AlwAys do the reveAl ourselves.
 	}
 
-	public reveal(commentUniqueId?: number) {
-		if (!this._isExpanded) {
-			this.show({ lineNumber: this._commentThread.range.startLineNumber, column: 1 }, 2);
+	public reveAl(commentUniqueId?: number) {
+		if (!this._isExpAnded) {
+			this.show({ lineNumber: this._commentThreAd.rAnge.stArtLineNumber, column: 1 }, 2);
 		}
 
 		if (commentUniqueId !== undefined) {
-			let height = this.editor.getLayoutInfo().height;
-			let matchedNode = this._commentElements.filter(commentNode => commentNode.comment.uniqueIdInThread === commentUniqueId);
-			if (matchedNode && matchedNode.length) {
-				const commentThreadCoords = dom.getDomNodePagePosition(this._commentElements[0].domNode);
-				const commentCoords = dom.getDomNodePagePosition(matchedNode[0].domNode);
+			let height = this.editor.getLAyoutInfo().height;
+			let mAtchedNode = this._commentElements.filter(commentNode => commentNode.comment.uniqueIdInThreAd === commentUniqueId);
+			if (mAtchedNode && mAtchedNode.length) {
+				const commentThreAdCoords = dom.getDomNodePAgePosition(this._commentElements[0].domNode);
+				const commentCoords = dom.getDomNodePAgePosition(mAtchedNode[0].domNode);
 
-				this.editor.setScrollTop(this.editor.getTopForLineNumber(this._commentThread.range.startLineNumber) - height / 2 + commentCoords.top - commentThreadCoords.top);
+				this.editor.setScrollTop(this.editor.getTopForLineNumber(this._commentThreAd.rAnge.stArtLineNumber) - height / 2 + commentCoords.top - commentThreAdCoords.top);
 				return;
 			}
 		}
 
-		this.editor.revealRangeInCenter(this._commentThread.range);
+		this.editor.reveAlRAngeInCenter(this._commentThreAd.rAnge);
 	}
 
 	public getPendingComment(): string | null {
 		if (this._commentReplyComponent) {
 			let model = this._commentReplyComponent.editor.getModel();
 
-			if (model && model.getValueLength() > 0) { // checking length is cheap
-				return model.getValue();
+			if (model && model.getVAlueLength() > 0) { // checking length is cheAp
+				return model.getVAlue();
 			}
 		}
 
 		return null;
 	}
 
-	protected _fillContainer(container: HTMLElement): void {
-		this.setCssClass('review-widget');
-		this._headElement = <HTMLDivElement>dom.$('.head');
-		container.appendChild(this._headElement);
-		this._fillHead(this._headElement);
+	protected _fillContAiner(contAiner: HTMLElement): void {
+		this.setCssClAss('review-widget');
+		this._heAdElement = <HTMLDivElement>dom.$('.heAd');
+		contAiner.AppendChild(this._heAdElement);
+		this._fillHeAd(this._heAdElement);
 
 		this._bodyElement = <HTMLDivElement>dom.$('.body');
-		container.appendChild(this._bodyElement);
+		contAiner.AppendChild(this._bodyElement);
 
-		dom.addDisposableListener(this._bodyElement, dom.EventType.FOCUS_IN, e => {
-			this.commentService.setActiveCommentThread(this._commentThread);
+		dom.AddDisposAbleListener(this._bodyElement, dom.EventType.FOCUS_IN, e => {
+			this.commentService.setActiveCommentThreAd(this._commentThreAd);
 		});
 	}
 
-	protected _fillHead(container: HTMLElement): void {
-		let titleElement = dom.append(this._headElement, dom.$('.review-title'));
+	protected _fillHeAd(contAiner: HTMLElement): void {
+		let titleElement = dom.Append(this._heAdElement, dom.$('.review-title'));
 
-		this._headingLabel = dom.append(titleElement, dom.$('span.filename'));
-		this.createThreadLabel();
+		this._heAdingLAbel = dom.Append(titleElement, dom.$('spAn.filenAme'));
+		this.creAteThreAdLAbel();
 
-		const actionsContainer = dom.append(this._headElement, dom.$('.review-actions'));
-		this._actionbarWidget = new ActionBar(actionsContainer, {
-			actionViewItemProvider: (action: IAction) => {
-				if (action instanceof MenuItemAction) {
-					return this.instantiationService.createInstance(MenuEntryActionViewItem, action);
-				} else if (action instanceof SubmenuItemAction) {
-					return this.instantiationService.createInstance(SubmenuEntryActionViewItem, action);
+		const ActionsContAiner = dom.Append(this._heAdElement, dom.$('.review-Actions'));
+		this._ActionbArWidget = new ActionBAr(ActionsContAiner, {
+			ActionViewItemProvider: (Action: IAction) => {
+				if (Action instAnceof MenuItemAction) {
+					return this.instAntiAtionService.creAteInstAnce(MenuEntryActionViewItem, Action);
+				} else if (Action instAnceof SubmenuItemAction) {
+					return this.instAntiAtionService.creAteInstAnce(SubmenuEntryActionViewItem, Action);
 				} else {
-					return new ActionViewItem({}, action, { label: false, icon: true });
+					return new ActionViewItem({}, Action, { lAbel: fAlse, icon: true });
 				}
 			}
 		});
 
-		this._disposables.add(this._actionbarWidget);
+		this._disposAbles.Add(this._ActionbArWidget);
 
-		this._collapseAction = new Action('review.expand', nls.localize('label.collapse', "Collapse"), COLLAPSE_ACTION_CLASS, true, () => this.collapse());
+		this._collApseAction = new Action('review.expAnd', nls.locAlize('lAbel.collApse', "CollApse"), COLLAPSE_ACTION_CLASS, true, () => this.collApse());
 
-		const menu = this._commentMenus.getCommentThreadTitleActions(this._commentThread, this._contextKeyService);
-		this.setActionBarActions(menu);
+		const menu = this._commentMenus.getCommentThreAdTitleActions(this._commentThreAd, this._contextKeyService);
+		this.setActionBArActions(menu);
 
-		this._disposables.add(menu);
-		this._disposables.add(menu.onDidChange(e => {
-			this.setActionBarActions(menu);
+		this._disposAbles.Add(menu);
+		this._disposAbles.Add(menu.onDidChAnge(e => {
+			this.setActionBArActions(menu);
 		}));
 
-		this._actionbarWidget.context = this._commentThread;
+		this._ActionbArWidget.context = this._commentThreAd;
 	}
 
-	private setActionBarActions(menu: IMenu): void {
-		const groups = menu.getActions({ shouldForwardArgs: true }).reduce((r, [, actions]) => [...r, ...actions], <(MenuItemAction | SubmenuItemAction)[]>[]);
-		this._actionbarWidget.clear();
-		this._actionbarWidget.push([...groups, this._collapseAction], { label: false, icon: true });
+	privAte setActionBArActions(menu: IMenu): void {
+		const groups = menu.getActions({ shouldForwArdArgs: true }).reduce((r, [, Actions]) => [...r, ...Actions], <(MenuItemAction | SubmenuItemAction)[]>[]);
+		this._ActionbArWidget.cleAr();
+		this._ActionbArWidget.push([...groups, this._collApseAction], { lAbel: fAlse, icon: true });
 	}
 
-	private deleteCommentThread(): void {
+	privAte deleteCommentThreAd(): void {
 		this.dispose();
-		this.commentService.disposeCommentThread(this.owner, this._commentThread.threadId);
+		this.commentService.disposeCommentThreAd(this.owner, this._commentThreAd.threAdId);
 	}
 
-	public collapse(): Promise<void> {
-		this._commentThread.collapsibleState = modes.CommentThreadCollapsibleState.Collapsed;
-		if (this._commentThread.comments && this._commentThread.comments.length === 0) {
-			this.deleteCommentThread();
+	public collApse(): Promise<void> {
+		this._commentThreAd.collApsibleStAte = modes.CommentThreAdCollApsibleStAte.CollApsed;
+		if (this._commentThreAd.comments && this._commentThreAd.comments.length === 0) {
+			this.deleteCommentThreAd();
 			return Promise.resolve();
 		}
 
@@ -289,32 +289,32 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 		return 0;
 	}
 
-	toggleExpand(lineNumber: number) {
-		if (this._isExpanded) {
-			this._commentThread.collapsibleState = modes.CommentThreadCollapsibleState.Collapsed;
+	toggleExpAnd(lineNumber: number) {
+		if (this._isExpAnded) {
+			this._commentThreAd.collApsibleStAte = modes.CommentThreAdCollApsibleStAte.CollApsed;
 			this.hide();
-			if (!this._commentThread.comments || !this._commentThread.comments.length) {
-				this.deleteCommentThread();
+			if (!this._commentThreAd.comments || !this._commentThreAd.comments.length) {
+				this.deleteCommentThreAd();
 			}
 		} else {
-			this._commentThread.collapsibleState = modes.CommentThreadCollapsibleState.Expanded;
+			this._commentThreAd.collApsibleStAte = modes.CommentThreAdCollApsibleStAte.ExpAnded;
 			this.show({ lineNumber: lineNumber, column: 1 }, 2);
 		}
 	}
 
-	async update(commentThread: modes.CommentThread) {
+	Async updAte(commentThreAd: modes.CommentThreAd) {
 		const oldCommentsLen = this._commentElements.length;
-		const newCommentsLen = commentThread.comments ? commentThread.comments.length : 0;
-		this._threadIsEmpty.set(!newCommentsLen);
+		const newCommentsLen = commentThreAd.comments ? commentThreAd.comments.length : 0;
+		this._threAdIsEmpty.set(!newCommentsLen);
 
 		let commentElementsToDel: CommentNode[] = [];
 		let commentElementsToDelIndex: number[] = [];
 		for (let i = 0; i < oldCommentsLen; i++) {
 			let comment = this._commentElements[i].comment;
-			let newComment = commentThread.comments ? commentThread.comments.filter(c => c.uniqueIdInThread === comment.uniqueIdInThread) : [];
+			let newComment = commentThreAd.comments ? commentThreAd.comments.filter(c => c.uniqueIdInThreAd === comment.uniqueIdInThreAd) : [];
 
 			if (newComment.length) {
-				this._commentElements[i].update(newComment[0]);
+				this._commentElements[i].updAte(newComment[0]);
 			} else {
 				commentElementsToDelIndex.push(i);
 				commentElementsToDel.push(this._commentElements[i]);
@@ -327,25 +327,25 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			this._commentsElement.removeChild(commentElementsToDel[i].domNode);
 		}
 
-		let lastCommentElement: HTMLElement | null = null;
+		let lAstCommentElement: HTMLElement | null = null;
 		let newCommentNodeList: CommentNode[] = [];
 		let newCommentsInEditMode: CommentNode[] = [];
 		for (let i = newCommentsLen - 1; i >= 0; i--) {
-			let currentComment = commentThread.comments![i];
-			let oldCommentNode = this._commentElements.filter(commentNode => commentNode.comment.uniqueIdInThread === currentComment.uniqueIdInThread);
+			let currentComment = commentThreAd.comments![i];
+			let oldCommentNode = this._commentElements.filter(commentNode => commentNode.comment.uniqueIdInThreAd === currentComment.uniqueIdInThreAd);
 			if (oldCommentNode.length) {
-				lastCommentElement = oldCommentNode[0].domNode;
+				lAstCommentElement = oldCommentNode[0].domNode;
 				newCommentNodeList.unshift(oldCommentNode[0]);
 			} else {
-				const newElement = this.createNewCommentNode(currentComment);
+				const newElement = this.creAteNewCommentNode(currentComment);
 
 				newCommentNodeList.unshift(newElement);
-				if (lastCommentElement) {
-					this._commentsElement.insertBefore(newElement.domNode, lastCommentElement);
-					lastCommentElement = newElement.domNode;
+				if (lAstCommentElement) {
+					this._commentsElement.insertBefore(newElement.domNode, lAstCommentElement);
+					lAstCommentElement = newElement.domNode;
 				} else {
-					this._commentsElement.appendChild(newElement.domNode);
-					lastCommentElement = newElement.domNode;
+					this._commentsElement.AppendChild(newElement.domNode);
+					lAstCommentElement = newElement.domNode;
 				}
 
 				if (currentComment.mode === modes.CommentMode.Editing) {
@@ -355,13 +355,13 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			}
 		}
 
-		this._commentThread = commentThread;
+		this._commentThreAd = commentThreAd;
 		this._commentElements = newCommentNodeList;
-		this.createThreadLabel();
+		this.creAteThreAdLAbel();
 
-		// Move comment glyph widget and show position if the line has changed.
-		const lineNumber = this._commentThread.range.startLineNumber;
-		let shouldMoveWidget = false;
+		// Move comment glyph widget And show position if the line hAs chAnged.
+		const lineNumber = this._commentThreAd.rAnge.stArtLineNumber;
+		let shouldMoveWidget = fAlse;
 		if (this._commentGlyph) {
 			if (this._commentGlyph.getPosition().position!.lineNumber !== lineNumber) {
 				shouldMoveWidget = true;
@@ -369,134 +369,134 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			}
 		}
 
-		if (!this._reviewThreadReplyButton && this._commentReplyComponent) {
-			this.createReplyButton(this._commentReplyComponent.editor, this._commentReplyComponent.form);
+		if (!this._reviewThreAdReplyButton && this._commentReplyComponent) {
+			this.creAteReplyButton(this._commentReplyComponent.editor, this._commentReplyComponent.form);
 		}
 
-		if (this._commentThread.comments && this._commentThread.comments.length === 0) {
-			this.expandReplyArea();
+		if (this._commentThreAd.comments && this._commentThreAd.comments.length === 0) {
+			this.expAndReplyAreA();
 		}
 
-		if (shouldMoveWidget && this._isExpanded) {
+		if (shouldMoveWidget && this._isExpAnded) {
 			this.show({ lineNumber, column: 1 }, 2);
 		}
 
-		if (this._commentThread.collapsibleState === modes.CommentThreadCollapsibleState.Expanded) {
+		if (this._commentThreAd.collApsibleStAte === modes.CommentThreAdCollApsibleStAte.ExpAnded) {
 			this.show({ lineNumber, column: 1 }, 2);
 		} else {
 			this.hide();
 		}
 
-		if (this._commentThread.contextValue) {
-			this._commentThreadContextValue.set(this._commentThread.contextValue);
+		if (this._commentThreAd.contextVAlue) {
+			this._commentThreAdContextVAlue.set(this._commentThreAd.contextVAlue);
 		} else {
-			this._commentThreadContextValue.reset();
+			this._commentThreAdContextVAlue.reset();
 		}
 
 		if (newCommentsInEditMode.length) {
-			const lastIndex = this._commentElements.indexOf(newCommentsInEditMode[newCommentsInEditMode.length - 1]);
-			this._focusedComment = lastIndex;
+			const lAstIndex = this._commentElements.indexOf(newCommentsInEditMode[newCommentsInEditMode.length - 1]);
+			this._focusedComment = lAstIndex;
 		}
 
 		this.setFocusedComment(this._focusedComment);
 	}
 
 	protected _onWidth(widthInPixel: number): void {
-		this._commentReplyComponent?.editor.layout({ height: 5 * 18, width: widthInPixel - 54 /* margin 20px * 10 + scrollbar 14px*/ });
+		this._commentReplyComponent?.editor.lAyout({ height: 5 * 18, width: widthInPixel - 54 /* mArgin 20px * 10 + scrollbAr 14px*/ });
 	}
 
-	protected _doLayout(heightInPixel: number, widthInPixel: number): void {
-		this._commentReplyComponent?.editor.layout({ height: 5 * 18, width: widthInPixel - 54 /* margin 20px * 10 + scrollbar 14px*/ });
+	protected _doLAyout(heightInPixel: number, widthInPixel: number): void {
+		this._commentReplyComponent?.editor.lAyout({ height: 5 * 18, width: widthInPixel - 54 /* mArgin 20px * 10 + scrollbAr 14px*/ });
 	}
 
-	display(lineNumber: number) {
+	displAy(lineNumber: number) {
 		this._commentGlyph = new CommentGlyphWidget(this.editor, lineNumber);
 
-		this._disposables.add(this.editor.onMouseDown(e => this.onEditorMouseDown(e)));
-		this._disposables.add(this.editor.onMouseUp(e => this.onEditorMouseUp(e)));
+		this._disposAbles.Add(this.editor.onMouseDown(e => this.onEditorMouseDown(e)));
+		this._disposAbles.Add(this.editor.onMouseUp(e => this.onEditorMouseUp(e)));
 
-		let headHeight = Math.ceil(this.editor.getOption(EditorOption.lineHeight) * 1.2);
-		this._headElement.style.height = `${headHeight}px`;
-		this._headElement.style.lineHeight = this._headElement.style.height;
+		let heAdHeight = MAth.ceil(this.editor.getOption(EditorOption.lineHeight) * 1.2);
+		this._heAdElement.style.height = `${heAdHeight}px`;
+		this._heAdElement.style.lineHeight = this._heAdElement.style.height;
 
-		this._commentsElement = dom.append(this._bodyElement, dom.$('div.comments-container'));
-		this._commentsElement.setAttribute('role', 'presentation');
-		this._commentsElement.tabIndex = 0;
+		this._commentsElement = dom.Append(this._bodyElement, dom.$('div.comments-contAiner'));
+		this._commentsElement.setAttribute('role', 'presentAtion');
+		this._commentsElement.tAbIndex = 0;
 
-		this._disposables.add(dom.addDisposableListener(this._commentsElement, dom.EventType.KEY_DOWN, (e) => {
-			let event = new StandardKeyboardEvent(e as KeyboardEvent);
-			if (event.equals(KeyCode.UpArrow) || event.equals(KeyCode.DownArrow)) {
-				const moveFocusWithinBounds = (change: number): number => {
-					if (this._focusedComment === undefined && change >= 0) { return 0; }
-					if (this._focusedComment === undefined && change < 0) { return this._commentElements.length - 1; }
-					let newIndex = this._focusedComment! + change;
-					return Math.min(Math.max(0, newIndex), this._commentElements.length - 1);
+		this._disposAbles.Add(dom.AddDisposAbleListener(this._commentsElement, dom.EventType.KEY_DOWN, (e) => {
+			let event = new StAndArdKeyboArdEvent(e As KeyboArdEvent);
+			if (event.equAls(KeyCode.UpArrow) || event.equAls(KeyCode.DownArrow)) {
+				const moveFocusWithinBounds = (chAnge: number): number => {
+					if (this._focusedComment === undefined && chAnge >= 0) { return 0; }
+					if (this._focusedComment === undefined && chAnge < 0) { return this._commentElements.length - 1; }
+					let newIndex = this._focusedComment! + chAnge;
+					return MAth.min(MAth.mAx(0, newIndex), this._commentElements.length - 1);
 				};
 
-				this.setFocusedComment(event.equals(KeyCode.UpArrow) ? moveFocusWithinBounds(-1) : moveFocusWithinBounds(1));
+				this.setFocusedComment(event.equAls(KeyCode.UpArrow) ? moveFocusWithinBounds(-1) : moveFocusWithinBounds(1));
 			}
 		}));
 
 		this._commentElements = [];
-		if (this._commentThread.comments) {
-			for (const comment of this._commentThread.comments) {
-				const newCommentNode = this.createNewCommentNode(comment);
+		if (this._commentThreAd.comments) {
+			for (const comment of this._commentThreAd.comments) {
+				const newCommentNode = this.creAteNewCommentNode(comment);
 
 				this._commentElements.push(newCommentNode);
-				this._commentsElement.appendChild(newCommentNode.domNode);
+				this._commentsElement.AppendChild(newCommentNode.domNode);
 				if (comment.mode === modes.CommentMode.Editing) {
 					newCommentNode.switchToEditMode();
 				}
 			}
 		}
 
-		// create comment thread only when it supports reply
-		if (this._commentThread.canReply) {
-			this.createCommentForm();
+		// creAte comment threAd only when it supports reply
+		if (this._commentThreAd.cAnReply) {
+			this.creAteCommentForm();
 		}
 
-		this._resizeObserver = new MutationObserver(this._refresh.bind(this));
+		this._resizeObserver = new MutAtionObserver(this._refresh.bind(this));
 
 		this._resizeObserver.observe(this._bodyElement, {
-			attributes: true,
+			Attributes: true,
 			childList: true,
-			characterData: true,
+			chArActerDAtA: true,
 			subtree: true
 		});
 
-		if (this._commentThread.collapsibleState === modes.CommentThreadCollapsibleState.Expanded) {
+		if (this._commentThreAd.collApsibleStAte === modes.CommentThreAdCollApsibleStAte.ExpAnded) {
 			this.show({ lineNumber: lineNumber, column: 1 }, 2);
 		}
 
-		// If there are no existing comments, place focus on the text area. This must be done after show, which also moves focus.
-		// if this._commentThread.comments is undefined, it doesn't finish initialization yet, so we don't focus the editor immediately.
-		if (this._commentThread.canReply && this._commentReplyComponent) {
-			if (!this._commentThread.comments || !this._commentThread.comments.length) {
+		// If there Are no existing comments, plAce focus on the text AreA. This must be done After show, which Also moves focus.
+		// if this._commentThreAd.comments is undefined, it doesn't finish initiAlizAtion yet, so we don't focus the editor immediAtely.
+		if (this._commentThreAd.cAnReply && this._commentReplyComponent) {
+			if (!this._commentThreAd.comments || !this._commentThreAd.comments.length) {
 				this._commentReplyComponent.editor.focus();
-			} else if (this._commentReplyComponent.editor.getModel()!.getValueLength() > 0) {
-				this.expandReplyArea();
+			} else if (this._commentReplyComponent.editor.getModel()!.getVAlueLength() > 0) {
+				this.expAndReplyAreA();
 			}
 		}
 
-		this._commentThreadDisposables.push(this._commentThread.onDidChangeCanReply(() => {
+		this._commentThreAdDisposAbles.push(this._commentThreAd.onDidChAngeCAnReply(() => {
 			if (this._commentReplyComponent) {
-				if (!this._commentThread.canReply) {
-					this._commentReplyComponent.form.style.display = 'none';
+				if (!this._commentThreAd.cAnReply) {
+					this._commentReplyComponent.form.style.displAy = 'none';
 				} else {
-					this._commentReplyComponent.form.style.display = 'block';
+					this._commentReplyComponent.form.style.displAy = 'block';
 				}
 			} else {
-				if (this._commentThread.canReply) {
-					this.createCommentForm();
+				if (this._commentThreAd.cAnReply) {
+					this.creAteCommentForm();
 				}
 			}
 		}));
 	}
 
-	private createCommentForm() {
-		const hasExistingComments = this._commentThread.comments && this._commentThread.comments.length > 0;
-		const commentForm = dom.append(this._bodyElement, dom.$('.comment-form'));
-		const commentEditor = this._scopedInstatiationService.createInstance(SimpleCommentEditor, commentForm, SimpleCommentEditor.getEditorOptions(), this._parentEditor, this);
+	privAte creAteCommentForm() {
+		const hAsExistingComments = this._commentThreAd.comments && this._commentThreAd.comments.length > 0;
+		const commentForm = dom.Append(this._bodyElement, dom.$('.comment-form'));
+		const commentEditor = this._scopedInstAtiAtionService.creAteInstAnce(SimpleCommentEditor, commentForm, SimpleCommentEditor.getEditorOptions(), this._pArentEditor, this);
 		const commentEditorIsEmpty = CommentContextKeys.commentIsEmpty.bindTo(this._contextKeyService);
 		commentEditorIsEmpty.set(!this._pendingComment);
 
@@ -506,102 +506,102 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			commentEditorIsEmpty
 		};
 
-		const modeId = generateUuid() + '-' + (hasExistingComments ? this._commentThread.threadId : ++INMEM_MODEL_ID);
-		const params = JSON.stringify({
+		const modeId = generAteUuid() + '-' + (hAsExistingComments ? this._commentThreAd.threAdId : ++INMEM_MODEL_ID);
+		const pArAms = JSON.stringify({
 			extensionId: this.extensionId,
-			commentThreadId: this.commentThread.threadId
+			commentThreAdId: this.commentThreAd.threAdId
 		});
 
-		let resource = URI.parse(`${COMMENT_SCHEME}://${this.extensionId}/commentinput-${modeId}.md?${params}`); // TODO. Remove params once extensions adopt authority.
+		let resource = URI.pArse(`${COMMENT_SCHEME}://${this.extensionId}/commentinput-${modeId}.md?${pArAms}`); // TODO. Remove pArAms once extensions Adopt Authority.
 		let commentController = this.commentService.getCommentController(this.owner);
 		if (commentController) {
-			resource = resource.with({ authority: commentController.id });
+			resource = resource.with({ Authority: commentController.id });
 		}
 
-		const model = this.modelService.createModel(this._pendingComment || '', this.modeService.createByFilepathOrFirstLine(resource), resource, false);
-		this._disposables.add(model);
+		const model = this.modelService.creAteModel(this._pendingComment || '', this.modeService.creAteByFilepAthOrFirstLine(resource), resource, fAlse);
+		this._disposAbles.Add(model);
 		commentEditor.setModel(model);
-		this._disposables.add(commentEditor);
-		this._disposables.add(commentEditor.getModel()!.onDidChangeContent(() => {
-			this.setCommentEditorDecorations();
-			commentEditorIsEmpty?.set(!commentEditor.getValue());
+		this._disposAbles.Add(commentEditor);
+		this._disposAbles.Add(commentEditor.getModel()!.onDidChAngeContent(() => {
+			this.setCommentEditorDecorAtions();
+			commentEditorIsEmpty?.set(!commentEditor.getVAlue());
 		}));
 
-		this.createTextModelListener(commentEditor, commentForm);
+		this.creAteTextModelListener(commentEditor, commentForm);
 
-		this.setCommentEditorDecorations();
+		this.setCommentEditorDecorAtions();
 
-		// Only add the additional step of clicking a reply button to expand the textarea when there are existing comments
-		if (hasExistingComments) {
-			this.createReplyButton(commentEditor, commentForm);
+		// Only Add the AdditionAl step of clicking A reply button to expAnd the textAreA when there Are existing comments
+		if (hAsExistingComments) {
+			this.creAteReplyButton(commentEditor, commentForm);
 		} else {
-			if (this._commentThread.comments && this._commentThread.comments.length === 0) {
-				this.expandReplyArea();
+			if (this._commentThreAd.comments && this._commentThreAd.comments.length === 0) {
+				this.expAndReplyAreA();
 			}
 		}
-		this._error = dom.append(commentForm, dom.$('.validation-error.hidden'));
+		this._error = dom.Append(commentForm, dom.$('.vAlidAtion-error.hidden'));
 
-		this._formActions = dom.append(commentForm, dom.$('.form-actions'));
-		this.createCommentWidgetActions(this._formActions, model);
-		this.createCommentWidgetActionsListener();
+		this._formActions = dom.Append(commentForm, dom.$('.form-Actions'));
+		this.creAteCommentWidgetActions(this._formActions, model);
+		this.creAteCommentWidgetActionsListener();
 	}
 
-	private createTextModelListener(commentEditor: ICodeEditor, commentForm: HTMLElement) {
-		this._commentThreadDisposables.push(commentEditor.onDidFocusEditorWidget(() => {
-			this._commentThread.input = {
+	privAte creAteTextModelListener(commentEditor: ICodeEditor, commentForm: HTMLElement) {
+		this._commentThreAdDisposAbles.push(commentEditor.onDidFocusEditorWidget(() => {
+			this._commentThreAd.input = {
 				uri: commentEditor.getModel()!.uri,
-				value: commentEditor.getValue()
+				vAlue: commentEditor.getVAlue()
 			};
-			this.commentService.setActiveCommentThread(this._commentThread);
+			this.commentService.setActiveCommentThreAd(this._commentThreAd);
 		}));
 
-		this._commentThreadDisposables.push(commentEditor.getModel()!.onDidChangeContent(() => {
-			let modelContent = commentEditor.getValue();
-			if (this._commentThread.input && this._commentThread.input.uri === commentEditor.getModel()!.uri && this._commentThread.input.value !== modelContent) {
-				let newInput: modes.CommentInput = this._commentThread.input;
-				newInput.value = modelContent;
-				this._commentThread.input = newInput;
+		this._commentThreAdDisposAbles.push(commentEditor.getModel()!.onDidChAngeContent(() => {
+			let modelContent = commentEditor.getVAlue();
+			if (this._commentThreAd.input && this._commentThreAd.input.uri === commentEditor.getModel()!.uri && this._commentThreAd.input.vAlue !== modelContent) {
+				let newInput: modes.CommentInput = this._commentThreAd.input;
+				newInput.vAlue = modelContent;
+				this._commentThreAd.input = newInput;
 			}
-			this.commentService.setActiveCommentThread(this._commentThread);
+			this.commentService.setActiveCommentThreAd(this._commentThreAd);
 		}));
 
-		this._commentThreadDisposables.push(this._commentThread.onDidChangeInput(input => {
-			let thread = this._commentThread;
+		this._commentThreAdDisposAbles.push(this._commentThreAd.onDidChAngeInput(input => {
+			let threAd = this._commentThreAd;
 
-			if (thread.input && thread.input.uri !== commentEditor.getModel()!.uri) {
+			if (threAd.input && threAd.input.uri !== commentEditor.getModel()!.uri) {
 				return;
 			}
 			if (!input) {
 				return;
 			}
 
-			if (commentEditor.getValue() !== input.value) {
-				commentEditor.setValue(input.value);
+			if (commentEditor.getVAlue() !== input.vAlue) {
+				commentEditor.setVAlue(input.vAlue);
 
-				if (input.value === '') {
+				if (input.vAlue === '') {
 					this._pendingComment = '';
-					commentForm.classList.remove('expand');
+					commentForm.clAssList.remove('expAnd');
 					commentEditor.getDomNode()!.style.outline = '';
 					this._error.textContent = '';
-					this._error.classList.add('hidden');
+					this._error.clAssList.Add('hidden');
 				}
 			}
 		}));
 
-		this._commentThreadDisposables.push(this._commentThread.onDidChangeComments(async _ => {
-			await this.update(this._commentThread);
+		this._commentThreAdDisposAbles.push(this._commentThreAd.onDidChAngeComments(Async _ => {
+			AwAit this.updAte(this._commentThreAd);
 		}));
 
-		this._commentThreadDisposables.push(this._commentThread.onDidChangeLabel(_ => {
-			this.createThreadLabel();
+		this._commentThreAdDisposAbles.push(this._commentThreAd.onDidChAngeLAbel(_ => {
+			this.creAteThreAdLAbel();
 		}));
 	}
 
-	private createCommentWidgetActionsListener() {
-		this._commentThreadDisposables.push(this._commentThread.onDidChangeRange(range => {
-			// Move comment glyph widget and show position if the line has changed.
-			const lineNumber = this._commentThread.range.startLineNumber;
-			let shouldMoveWidget = false;
+	privAte creAteCommentWidgetActionsListener() {
+		this._commentThreAdDisposAbles.push(this._commentThreAd.onDidChAngeRAnge(rAnge => {
+			// Move comment glyph widget And show position if the line hAs chAnged.
+			const lineNumber = this._commentThreAd.rAnge.stArtLineNumber;
+			let shouldMoveWidget = fAlse;
 			if (this._commentGlyph) {
 				if (this._commentGlyph.getPosition().position!.lineNumber !== lineNumber) {
 					shouldMoveWidget = true;
@@ -609,170 +609,170 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 				}
 			}
 
-			if (shouldMoveWidget && this._isExpanded) {
+			if (shouldMoveWidget && this._isExpAnded) {
 				this.show({ lineNumber, column: 1 }, 2);
 			}
 		}));
 
-		this._commentThreadDisposables.push(this._commentThread.onDidChangeCollasibleState(state => {
-			if (state === modes.CommentThreadCollapsibleState.Expanded && !this._isExpanded) {
-				const lineNumber = this._commentThread.range.startLineNumber;
+		this._commentThreAdDisposAbles.push(this._commentThreAd.onDidChAngeCollAsibleStAte(stAte => {
+			if (stAte === modes.CommentThreAdCollApsibleStAte.ExpAnded && !this._isExpAnded) {
+				const lineNumber = this._commentThreAd.rAnge.stArtLineNumber;
 
 				this.show({ lineNumber, column: 1 }, 2);
 				return;
 			}
 
-			if (state === modes.CommentThreadCollapsibleState.Collapsed && this._isExpanded) {
+			if (stAte === modes.CommentThreAdCollApsibleStAte.CollApsed && this._isExpAnded) {
 				this.hide();
 				return;
 			}
 		}));
 	}
 
-	private setFocusedComment(value: number | undefined) {
+	privAte setFocusedComment(vAlue: number | undefined) {
 		if (this._focusedComment !== undefined) {
-			this._commentElements[this._focusedComment]?.setFocus(false);
+			this._commentElements[this._focusedComment]?.setFocus(fAlse);
 		}
 
-		if (this._commentElements.length === 0 || value === undefined) {
+		if (this._commentElements.length === 0 || vAlue === undefined) {
 			this._focusedComment = undefined;
 		} else {
-			this._focusedComment = Math.min(value, this._commentElements.length - 1);
+			this._focusedComment = MAth.min(vAlue, this._commentElements.length - 1);
 			this._commentElements[this._focusedComment].setFocus(true);
 		}
 	}
 
-	private getActiveComment(): CommentNode | ReviewZoneWidget {
+	privAte getActiveComment(): CommentNode | ReviewZoneWidget {
 		return this._commentElements.filter(node => node.isEditing)[0] || this;
 	}
 
 	/**
-	 * Command based actions.
+	 * CommAnd bAsed Actions.
 	 */
-	private createCommentWidgetActions(container: HTMLElement, model: ITextModel) {
-		const commentThread = this._commentThread;
+	privAte creAteCommentWidgetActions(contAiner: HTMLElement, model: ITextModel) {
+		const commentThreAd = this._commentThreAd;
 
-		const menu = this._commentMenus.getCommentThreadActions(commentThread, this._contextKeyService);
+		const menu = this._commentMenus.getCommentThreAdActions(commentThreAd, this._contextKeyService);
 
-		this._disposables.add(menu);
-		this._disposables.add(menu.onDidChange(() => {
+		this._disposAbles.Add(menu);
+		this._disposAbles.Add(menu.onDidChAnge(() => {
 			this._commentFormActions.setActions(menu);
 		}));
 
-		this._commentFormActions = new CommentFormActions(container, async (action: IAction) => {
-			if (!commentThread.comments || !commentThread.comments.length) {
+		this._commentFormActions = new CommentFormActions(contAiner, Async (Action: IAction) => {
+			if (!commentThreAd.comments || !commentThreAd.comments.length) {
 				let newPosition = this.getPosition();
 
 				if (newPosition) {
-					this.commentService.updateCommentThreadTemplate(this.owner, commentThread.commentThreadHandle, new Range(newPosition.lineNumber, 1, newPosition.lineNumber, 1));
+					this.commentService.updAteCommentThreAdTemplAte(this.owner, commentThreAd.commentThreAdHAndle, new RAnge(newPosition.lineNumber, 1, newPosition.lineNumber, 1));
 				}
 			}
-			action.run({
-				thread: this._commentThread,
-				text: this._commentReplyComponent?.editor.getValue(),
+			Action.run({
+				threAd: this._commentThreAd,
+				text: this._commentReplyComponent?.editor.getVAlue(),
 				$mid: 8
 			});
 
-			this.hideReplyArea();
+			this.hideReplyAreA();
 		}, this.themeService);
 
 		this._commentFormActions.setActions(menu);
 	}
 
-	private createNewCommentNode(comment: modes.Comment): CommentNode {
-		let newCommentNode = this._scopedInstatiationService.createInstance(CommentNode,
-			this._commentThread,
+	privAte creAteNewCommentNode(comment: modes.Comment): CommentNode {
+		let newCommentNode = this._scopedInstAtiAtionService.creAteInstAnce(CommentNode,
+			this._commentThreAd,
 			comment,
 			this.owner,
 			this.editor.getModel()!.uri,
-			this._parentEditor,
+			this._pArentEditor,
 			this,
-			this._markdownRenderer);
+			this._mArkdownRenderer);
 
-		this._disposables.add(newCommentNode);
-		this._disposables.add(newCommentNode.onDidClick(clickedNode =>
-			this.setFocusedComment(this._commentElements.findIndex(commentNode => commentNode.comment.uniqueIdInThread === clickedNode.comment.uniqueIdInThread))
+		this._disposAbles.Add(newCommentNode);
+		this._disposAbles.Add(newCommentNode.onDidClick(clickedNode =>
+			this.setFocusedComment(this._commentElements.findIndex(commentNode => commentNode.comment.uniqueIdInThreAd === clickedNode.comment.uniqueIdInThreAd))
 		));
 
 		return newCommentNode;
 	}
 
-	async submitComment(): Promise<void> {
-		const activeComment = this.getActiveComment();
-		if (activeComment instanceof ReviewZoneWidget) {
+	Async submitComment(): Promise<void> {
+		const ActiveComment = this.getActiveComment();
+		if (ActiveComment instAnceof ReviewZoneWidget) {
 			if (this._commentFormActions) {
-				this._commentFormActions.triggerDefaultAction();
+				this._commentFormActions.triggerDefAultAction();
 			}
 		}
 	}
 
-	private createThreadLabel() {
-		let label: string | undefined;
-		label = this._commentThread.label;
+	privAte creAteThreAdLAbel() {
+		let lAbel: string | undefined;
+		lAbel = this._commentThreAd.lAbel;
 
-		if (label === undefined) {
-			if (this._commentThread.comments && this._commentThread.comments.length) {
-				const participantsList = this._commentThread.comments.filter(arrays.uniqueFilter(comment => comment.userName)).map(comment => `@${comment.userName}`).join(', ');
-				label = nls.localize('commentThreadParticipants', "Participants: {0}", participantsList);
+		if (lAbel === undefined) {
+			if (this._commentThreAd.comments && this._commentThreAd.comments.length) {
+				const pArticipAntsList = this._commentThreAd.comments.filter(ArrAys.uniqueFilter(comment => comment.userNAme)).mAp(comment => `@${comment.userNAme}`).join(', ');
+				lAbel = nls.locAlize('commentThreAdPArticipAnts', "PArticipAnts: {0}", pArticipAntsList);
 			} else {
-				label = nls.localize('startThread', "Start discussion");
+				lAbel = nls.locAlize('stArtThreAd', "StArt discussion");
 			}
 		}
 
-		if (label) {
-			this._headingLabel.textContent = strings.escape(label);
-			this._headingLabel.setAttribute('aria-label', label);
+		if (lAbel) {
+			this._heAdingLAbel.textContent = strings.escApe(lAbel);
+			this._heAdingLAbel.setAttribute('AriA-lAbel', lAbel);
 		}
 	}
 
-	private expandReplyArea() {
-		if (!this._commentReplyComponent?.form.classList.contains('expand')) {
-			this._commentReplyComponent?.form.classList.add('expand');
+	privAte expAndReplyAreA() {
+		if (!this._commentReplyComponent?.form.clAssList.contAins('expAnd')) {
+			this._commentReplyComponent?.form.clAssList.Add('expAnd');
 			this._commentReplyComponent?.editor.focus();
 		}
 	}
 
-	private hideReplyArea() {
+	privAte hideReplyAreA() {
 		if (this._commentReplyComponent) {
-			this._commentReplyComponent.editor.setValue('');
+			this._commentReplyComponent.editor.setVAlue('');
 			this._commentReplyComponent.editor.getDomNode()!.style.outline = '';
 		}
 		this._pendingComment = '';
-		this._commentReplyComponent?.form.classList.remove('expand');
+		this._commentReplyComponent?.form.clAssList.remove('expAnd');
 		this._error.textContent = '';
-		this._error.classList.add('hidden');
+		this._error.clAssList.Add('hidden');
 	}
 
-	private createReplyButton(commentEditor: ICodeEditor, commentForm: HTMLElement) {
-		this._reviewThreadReplyButton = <HTMLButtonElement>dom.append(commentForm, dom.$(`button.review-thread-reply-button.${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME}`));
-		this._reviewThreadReplyButton.title = this._commentOptions?.prompt || nls.localize('reply', "Reply...");
+	privAte creAteReplyButton(commentEditor: ICodeEditor, commentForm: HTMLElement) {
+		this._reviewThreAdReplyButton = <HTMLButtonElement>dom.Append(commentForm, dom.$(`button.review-threAd-reply-button.${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME}`));
+		this._reviewThreAdReplyButton.title = this._commentOptions?.prompt || nls.locAlize('reply', "Reply...");
 
-		this._reviewThreadReplyButton.textContent = this._commentOptions?.prompt || nls.localize('reply', "Reply...");
-		// bind click/escape actions for reviewThreadReplyButton and textArea
-		this._disposables.add(dom.addDisposableListener(this._reviewThreadReplyButton, 'click', _ => this.expandReplyArea()));
-		this._disposables.add(dom.addDisposableListener(this._reviewThreadReplyButton, 'focus', _ => this.expandReplyArea()));
+		this._reviewThreAdReplyButton.textContent = this._commentOptions?.prompt || nls.locAlize('reply', "Reply...");
+		// bind click/escApe Actions for reviewThreAdReplyButton And textAreA
+		this._disposAbles.Add(dom.AddDisposAbleListener(this._reviewThreAdReplyButton, 'click', _ => this.expAndReplyAreA()));
+		this._disposAbles.Add(dom.AddDisposAbleListener(this._reviewThreAdReplyButton, 'focus', _ => this.expAndReplyAreA()));
 
 		commentEditor.onDidBlurEditorWidget(() => {
-			if (commentEditor.getModel()!.getValueLength() === 0 && commentForm.classList.contains('expand')) {
-				commentForm.classList.remove('expand');
+			if (commentEditor.getModel()!.getVAlueLength() === 0 && commentForm.clAssList.contAins('expAnd')) {
+				commentForm.clAssList.remove('expAnd');
 			}
 		});
 	}
 
 	_refresh() {
-		if (this._isExpanded && this._bodyElement) {
-			let dimensions = dom.getClientArea(this._bodyElement);
+		if (this._isExpAnded && this._bodyElement) {
+			let dimensions = dom.getClientAreA(this._bodyElement);
 
-			this._commentElements.forEach(element => {
-				element.layout();
+			this._commentElements.forEAch(element => {
+				element.lAyout();
 			});
 
-			const headHeight = Math.ceil(this.editor.getOption(EditorOption.lineHeight) * 1.2);
+			const heAdHeight = MAth.ceil(this.editor.getOption(EditorOption.lineHeight) * 1.2);
 			const lineHeight = this.editor.getOption(EditorOption.lineHeight);
-			const arrowHeight = Math.round(lineHeight / 3);
-			const frameThickness = Math.round(lineHeight / 9) * 2;
+			const ArrowHeight = MAth.round(lineHeight / 3);
+			const frAmeThickness = MAth.round(lineHeight / 9) * 2;
 
-			const computedLinesNumber = Math.ceil((headHeight + dimensions.height + arrowHeight + frameThickness + 8 /** margin bottom to avoid margin collapse */) / lineHeight);
+			const computedLinesNumber = MAth.ceil((heAdHeight + dimensions.height + ArrowHeight + frAmeThickness + 8 /** mArgin bottom to Avoid mArgin collApse */) / lineHeight);
 
 			if (this._viewZone?.heightInLines === computedLinesNumber) {
 				return;
@@ -780,55 +780,55 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 
 			let currentPosition = this.getPosition();
 
-			if (this._viewZone && currentPosition && currentPosition.lineNumber !== this._viewZone.afterLineNumber) {
-				this._viewZone.afterLineNumber = currentPosition.lineNumber;
+			if (this._viewZone && currentPosition && currentPosition.lineNumber !== this._viewZone.AfterLineNumber) {
+				this._viewZone.AfterLineNumber = currentPosition.lineNumber;
 			}
 
-			if (!this._commentThread.comments || !this._commentThread.comments.length) {
+			if (!this._commentThreAd.comments || !this._commentThreAd.comments.length) {
 				this._commentReplyComponent?.editor.focus();
 			}
 
-			this._relayout(computedLinesNumber);
+			this._relAyout(computedLinesNumber);
 		}
 	}
 
-	private setCommentEditorDecorations() {
+	privAte setCommentEditorDecorAtions() {
 		const model = this._commentReplyComponent && this._commentReplyComponent.editor.getModel();
 		if (model) {
-			const valueLength = model.getValueLength();
-			const hasExistingComments = this._commentThread.comments && this._commentThread.comments.length > 0;
-			const placeholder = valueLength > 0
+			const vAlueLength = model.getVAlueLength();
+			const hAsExistingComments = this._commentThreAd.comments && this._commentThreAd.comments.length > 0;
+			const plAceholder = vAlueLength > 0
 				? ''
-				: hasExistingComments
-					? (this._commentOptions?.placeHolder || nls.localize('reply', "Reply..."))
-					: (this._commentOptions?.placeHolder || nls.localize('newComment', "Type a new comment"));
-			const decorations = [{
-				range: {
-					startLineNumber: 0,
+				: hAsExistingComments
+					? (this._commentOptions?.plAceHolder || nls.locAlize('reply', "Reply..."))
+					: (this._commentOptions?.plAceHolder || nls.locAlize('newComment', "Type A new comment"));
+			const decorAtions = [{
+				rAnge: {
+					stArtLineNumber: 0,
 					endLineNumber: 0,
-					startColumn: 0,
+					stArtColumn: 0,
 					endColumn: 1
 				},
 				renderOptions: {
-					after: {
-						contentText: placeholder,
-						color: `${transparent(editorForeground, 0.4)(this.themeService.getColorTheme())}`
+					After: {
+						contentText: plAceholder,
+						color: `${trAnspArent(editorForeground, 0.4)(this.themeService.getColorTheme())}`
 					}
 				}
 			}];
 
-			this._commentReplyComponent?.editor.setDecorations(COMMENTEDITOR_DECORATION_KEY, decorations);
+			this._commentReplyComponent?.editor.setDecorAtions(COMMENTEDITOR_DECORATION_KEY, decorAtions);
 		}
 	}
 
-	private mouseDownInfo: { lineNumber: number } | null = null;
+	privAte mouseDownInfo: { lineNumber: number } | null = null;
 
-	private onEditorMouseDown(e: IEditorMouseEvent): void {
+	privAte onEditorMouseDown(e: IEditorMouseEvent): void {
 		this.mouseDownInfo = null;
 
-		const range = e.target.range;
+		const rAnge = e.tArget.rAnge;
 
-		if (!range) {
+		if (!rAnge) {
 			return;
 		}
 
@@ -836,22 +836,22 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			return;
 		}
 
-		if (e.target.type !== MouseTargetType.GUTTER_LINE_DECORATIONS) {
+		if (e.tArget.type !== MouseTArgetType.GUTTER_LINE_DECORATIONS) {
 			return;
 		}
 
-		const data = e.target.detail as IMarginData;
-		const gutterOffsetX = data.offsetX - data.glyphMarginWidth - data.lineNumbersWidth - data.glyphMarginLeft;
+		const dAtA = e.tArget.detAil As IMArginDAtA;
+		const gutterOffsetX = dAtA.offsetX - dAtA.glyphMArginWidth - dAtA.lineNumbersWidth - dAtA.glyphMArginLeft;
 
-		// don't collide with folding and git decorations
+		// don't collide with folding And git decorAtions
 		if (gutterOffsetX > 14) {
 			return;
 		}
 
-		this.mouseDownInfo = { lineNumber: range.startLineNumber };
+		this.mouseDownInfo = { lineNumber: rAnge.stArtLineNumber };
 	}
 
-	private onEditorMouseUp(e: IEditorMouseEvent): void {
+	privAte onEditorMouseUp(e: IEditorMouseEvent): void {
 		if (!this.mouseDownInfo) {
 			return;
 		}
@@ -859,17 +859,17 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 		const { lineNumber } = this.mouseDownInfo;
 		this.mouseDownInfo = null;
 
-		const range = e.target.range;
+		const rAnge = e.tArget.rAnge;
 
-		if (!range || range.startLineNumber !== lineNumber) {
+		if (!rAnge || rAnge.stArtLineNumber !== lineNumber) {
 			return;
 		}
 
-		if (e.target.type !== MouseTargetType.GUTTER_LINE_DECORATIONS) {
+		if (e.tArget.type !== MouseTArgetType.GUTTER_LINE_DECORATIONS) {
 			return;
 		}
 
-		if (!e.target.element) {
+		if (!e.tArget.element) {
 			return;
 		}
 
@@ -877,89 +877,89 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			return;
 		}
 
-		if (e.target.element.className.indexOf('comment-thread') >= 0) {
-			this.toggleExpand(lineNumber);
+		if (e.tArget.element.clAssNAme.indexOf('comment-threAd') >= 0) {
+			this.toggleExpAnd(lineNumber);
 		}
 	}
 
-	private _applyTheme(theme: IColorTheme) {
-		const borderColor = theme.getColor(peekViewBorder) || Color.transparent;
+	privAte _ApplyTheme(theme: IColorTheme) {
+		const borderColor = theme.getColor(peekViewBorder) || Color.trAnspArent;
 		this.style({
-			arrowColor: borderColor,
-			frameColor: borderColor
+			ArrowColor: borderColor,
+			frAmeColor: borderColor
 		});
 
 		const content: string[] = [];
 		const linkColor = theme.getColor(textLinkForeground);
 		if (linkColor) {
-			content.push(`.monaco-editor .review-widget .body .comment-body a { color: ${linkColor} }`);
+			content.push(`.monAco-editor .review-widget .body .comment-body A { color: ${linkColor} }`);
 		}
 
 		const linkActiveColor = theme.getColor(textLinkActiveForeground);
 		if (linkActiveColor) {
-			content.push(`.monaco-editor .review-widget .body .comment-body a:hover, a:active { color: ${linkActiveColor} }`);
+			content.push(`.monAco-editor .review-widget .body .comment-body A:hover, A:Active { color: ${linkActiveColor} }`);
 		}
 
 		const focusColor = theme.getColor(focusBorder);
 		if (focusColor) {
-			content.push(`.monaco-editor .review-widget .body .comment-body a:focus { outline: 1px solid ${focusColor}; }`);
-			content.push(`.monaco-editor .review-widget .body .monaco-editor.focused { outline: 1px solid ${focusColor}; }`);
+			content.push(`.monAco-editor .review-widget .body .comment-body A:focus { outline: 1px solid ${focusColor}; }`);
+			content.push(`.monAco-editor .review-widget .body .monAco-editor.focused { outline: 1px solid ${focusColor}; }`);
 		}
 
-		const blockQuoteBackground = theme.getColor(textBlockQuoteBackground);
-		if (blockQuoteBackground) {
-			content.push(`.monaco-editor .review-widget .body .review-comment blockquote { background: ${blockQuoteBackground}; }`);
+		const blockQuoteBAckground = theme.getColor(textBlockQuoteBAckground);
+		if (blockQuoteBAckground) {
+			content.push(`.monAco-editor .review-widget .body .review-comment blockquote { bAckground: ${blockQuoteBAckground}; }`);
 		}
 
 		const blockQuoteBOrder = theme.getColor(textBlockQuoteBorder);
 		if (blockQuoteBOrder) {
-			content.push(`.monaco-editor .review-widget .body .review-comment blockquote { border-color: ${blockQuoteBOrder}; }`);
+			content.push(`.monAco-editor .review-widget .body .review-comment blockquote { border-color: ${blockQuoteBOrder}; }`);
 		}
 
-		const hcBorder = theme.getColor(contrastBorder);
+		const hcBorder = theme.getColor(contrAstBorder);
 		if (hcBorder) {
-			content.push(`.monaco-editor .review-widget .body .comment-form .review-thread-reply-button { outline-color: ${hcBorder}; }`);
-			content.push(`.monaco-editor .review-widget .body .monaco-editor { outline: 1px solid ${hcBorder}; }`);
+			content.push(`.monAco-editor .review-widget .body .comment-form .review-threAd-reply-button { outline-color: ${hcBorder}; }`);
+			content.push(`.monAco-editor .review-widget .body .monAco-editor { outline: 1px solid ${hcBorder}; }`);
 		}
 
-		const errorBorder = theme.getColor(inputValidationErrorBorder);
+		const errorBorder = theme.getColor(inputVAlidAtionErrorBorder);
 		if (errorBorder) {
-			content.push(`.monaco-editor .review-widget .validation-error { border: 1px solid ${errorBorder}; }`);
+			content.push(`.monAco-editor .review-widget .vAlidAtion-error { border: 1px solid ${errorBorder}; }`);
 		}
 
-		const errorBackground = theme.getColor(inputValidationErrorBackground);
-		if (errorBackground) {
-			content.push(`.monaco-editor .review-widget .validation-error { background: ${errorBackground}; }`);
+		const errorBAckground = theme.getColor(inputVAlidAtionErrorBAckground);
+		if (errorBAckground) {
+			content.push(`.monAco-editor .review-widget .vAlidAtion-error { bAckground: ${errorBAckground}; }`);
 		}
 
-		const errorForeground = theme.getColor(inputValidationErrorForeground);
+		const errorForeground = theme.getColor(inputVAlidAtionErrorForeground);
 		if (errorForeground) {
-			content.push(`.monaco-editor .review-widget .body .comment-form .validation-error { color: ${errorForeground}; }`);
+			content.push(`.monAco-editor .review-widget .body .comment-form .vAlidAtion-error { color: ${errorForeground}; }`);
 		}
 
 		const fontInfo = this.editor.getOption(EditorOption.fontInfo);
-		content.push(`.monaco-editor .review-widget .body code {
-			font-family: ${fontInfo.fontFamily};
+		content.push(`.monAco-editor .review-widget .body code {
+			font-fAmily: ${fontInfo.fontFAmily};
 			font-size: ${fontInfo.fontSize}px;
 			font-weight: ${fontInfo.fontWeight};
 		}`);
 
 		this._styleElement.textContent = content.join('\n');
 
-		// Editor decorations should also be responsive to theme changes
-		this.setCommentEditorDecorations();
+		// Editor decorAtions should Also be responsive to theme chAnges
+		this.setCommentEditorDecorAtions();
 	}
 
-	show(rangeOrPos: IRange | IPosition, heightInLines: number): void {
-		this._isExpanded = true;
-		super.show(rangeOrPos, heightInLines);
+	show(rAngeOrPos: IRAnge | IPosition, heightInLines: number): void {
+		this._isExpAnded = true;
+		super.show(rAngeOrPos, heightInLines);
 		this._refresh();
 	}
 
 	hide() {
-		if (this._isExpanded) {
-			this._isExpanded = false;
-			// Focus the container so that the comment editor will be blurred before it is hidden
+		if (this._isExpAnded) {
+			this._isExpAnded = fAlse;
+			// Focus the contAiner so thAt the comment editor will be blurred before it is hidden
 			this.editor.focus();
 		}
 		super.hide();
@@ -977,9 +977,9 @@ export class ReviewZoneWidget extends ZoneWidget implements ICommentThreadWidget
 			this._commentGlyph = undefined;
 		}
 
-		this._globalToDispose.dispose();
-		this._commentThreadDisposables.forEach(global => global.dispose());
-		this._submitActionsDisposables.forEach(local => local.dispose());
+		this._globAlToDispose.dispose();
+		this._commentThreAdDisposAbles.forEAch(globAl => globAl.dispose());
+		this._submitActionsDisposAbles.forEAch(locAl => locAl.dispose());
 		this._onDidClose.fire(undefined);
 	}
 }

@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DocumentContext } from 'vscode-css-languageservice';
-import { endsWith, startsWith } from '../utils/strings';
-import { WorkspaceFolder } from 'vscode-languageserver';
-import { resolvePath } from '../requests';
+import { DocumentContext } from 'vscode-css-lAnguAgeservice';
+import { endsWith, stArtsWith } from '../utils/strings';
+import { WorkspAceFolder } from 'vscode-lAnguAgeserver';
+import { resolvePAth } from '../requests';
 
-export function getDocumentContext(documentUri: string, workspaceFolders: WorkspaceFolder[]): DocumentContext {
+export function getDocumentContext(documentUri: string, workspAceFolders: WorkspAceFolder[]): DocumentContext {
 	function getRootFolder(): string | undefined {
-		for (let folder of workspaceFolders) {
+		for (let folder of workspAceFolders) {
 			let folderURI = folder.uri;
 			if (!endsWith(folderURI, '/')) {
 				folderURI = folderURI + '/';
 			}
-			if (startsWith(documentUri, folderURI)) {
+			if (stArtsWith(documentUri, folderURI)) {
 				return folderURI;
 			}
 		}
@@ -23,15 +23,15 @@ export function getDocumentContext(documentUri: string, workspaceFolders: Worksp
 	}
 
 	return {
-		resolveReference: (ref: string, base = documentUri) => {
-			if (ref[0] === '/') { // resolve absolute path against the current workspace folder
+		resolveReference: (ref: string, bAse = documentUri) => {
+			if (ref[0] === '/') { // resolve Absolute pAth AgAinst the current workspAce folder
 				let folderUri = getRootFolder();
 				if (folderUri) {
 					return folderUri + ref.substr(1);
 				}
 			}
-			base = base.substr(0, base.lastIndexOf('/') + 1);
-			return resolvePath(base, ref);
+			bAse = bAse.substr(0, bAse.lAstIndexOf('/') + 1);
+			return resolvePAth(bAse, ref);
 		},
 	};
 }

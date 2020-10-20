@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction } from 'vs/base/common/actions';
+import { IAction } from 'vs/bAse/common/Actions';
 
-export interface IErrorOptions {
-	actions?: ReadonlyArray<IAction>;
+export interfAce IErrorOptions {
+	Actions?: ReAdonlyArrAy<IAction>;
 }
 
-export interface IErrorWithActions {
-	actions?: ReadonlyArray<IAction>;
+export interfAce IErrorWithActions {
+	Actions?: ReAdonlyArrAy<IAction>;
 }
 
 export function isErrorWithActions(obj: unknown): obj is IErrorWithActions {
-	return obj instanceof Error && Array.isArray((obj as IErrorWithActions).actions);
+	return obj instAnceof Error && ArrAy.isArrAy((obj As IErrorWithActions).Actions);
 }
 
-export function createErrorWithActions(message: string, options: IErrorOptions = Object.create(null)): Error & IErrorWithActions {
-	const result = new Error(message);
+export function creAteErrorWithActions(messAge: string, options: IErrorOptions = Object.creAte(null)): Error & IErrorWithActions {
+	const result = new Error(messAge);
 
-	if (options.actions) {
-		(<IErrorWithActions>result).actions = options.actions;
+	if (options.Actions) {
+		(<IErrorWithActions>result).Actions = options.Actions;
 	}
 
 	return result;

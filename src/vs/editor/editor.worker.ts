@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { SimpleWorkerServer } from 'vs/base/common/worker/simpleWorker';
+import { SimpleWorkerServer } from 'vs/bAse/common/worker/simpleWorker';
 import { EditorSimpleWorker } from 'vs/editor/common/services/editorSimpleWorker';
 import { EditorWorkerHost } from 'vs/editor/common/services/editorWorkerServiceImpl';
 
-let initialized = false;
+let initiAlized = fAlse;
 
-export function initialize(foreignModule: any) {
-	if (initialized) {
+export function initiAlize(foreignModule: Any) {
+	if (initiAlized) {
 		return;
 	}
-	initialized = true;
+	initiAlized = true;
 
 	const simpleWorker = new SimpleWorkerServer((msg) => {
-		(<any>self).postMessage(msg);
+		(<Any>self).postMessAge(msg);
 	}, (host: EditorWorkerHost) => new EditorSimpleWorker(host, foreignModule));
 
-	self.onmessage = (e: MessageEvent) => {
-		simpleWorker.onmessage(e.data);
+	self.onmessAge = (e: MessAgeEvent) => {
+		simpleWorker.onmessAge(e.dAtA);
 	};
 }
 
-self.onmessage = (e: MessageEvent) => {
-	// Ignore first message in this case and initialize if not yet initialized
-	if (!initialized) {
-		initialize(null);
+self.onmessAge = (e: MessAgeEvent) => {
+	// Ignore first messAge in this cAse And initiAlize if not yet initiAlized
+	if (!initiAlized) {
+		initiAlize(null);
 	}
 };

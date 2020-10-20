@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IProductConfiguration } from 'vs/platform/product/common/productService';
-import { isWeb } from 'vs/base/common/platform';
-import { env } from 'vs/base/common/process';
-import { FileAccess } from 'vs/base/common/network';
-import { dirname, joinPath } from 'vs/base/common/resources';
+import { IProductConfigurAtion } from 'vs/plAtform/product/common/productService';
+import { isWeb } from 'vs/bAse/common/plAtform';
+import { env } from 'vs/bAse/common/process';
+import { FileAccess } from 'vs/bAse/common/network';
+import { dirnAme, joinPAth } from 'vs/bAse/common/resources';
 
-let product: IProductConfiguration;
+let product: IProductConfigurAtion;
 
-// Web or Native (sandbox TODO@sandbox need to add all properties of product.json)
+// Web or NAtive (sAndbox TODO@sAndbox need to Add All properties of product.json)
 if (isWeb || typeof require === 'undefined' || typeof require.__$__nodeRequire !== 'function') {
 
-	// Built time configuration (do NOT modify)
-	product = { /*BUILD->INSERT_PRODUCT_CONFIGURATION*/ } as IProductConfiguration;
+	// Built time configurAtion (do NOT modify)
+	product = { /*BUILD->INSERT_PRODUCT_CONFIGURATION*/ } As IProductConfigurAtion;
 
 	// Running out of sources
 	if (Object.keys(product).length === 0) {
-		Object.assign(product, {
+		Object.Assign(product, {
 			version: '1.51.0-dev',
-			nameShort: isWeb ? 'Code Web - OSS Dev' : 'Code - OSS Dev',
-			nameLong: isWeb ? 'Code Web - OSS Dev' : 'Code - OSS Dev',
-			applicationName: 'code-oss',
-			dataFolderName: '.vscode-oss',
+			nAmeShort: isWeb ? 'Code Web - OSS Dev' : 'Code - OSS Dev',
+			nAmeLong: isWeb ? 'Code Web - OSS Dev' : 'Code - OSS Dev',
+			ApplicAtionNAme: 'code-oss',
+			dAtAFolderNAme: '.vscode-oss',
 			urlProtocol: 'code-oss',
 			reportIssueUrl: 'https://github.com/microsoft/vscode/issues/new',
-			licenseName: 'MIT',
-			licenseUrl: 'https://github.com/microsoft/vscode/blob/master/LICENSE.txt',
+			licenseNAme: 'MIT',
+			licenseUrl: 'https://github.com/microsoft/vscode/blob/mAster/LICENSE.txt',
 			extensionAllowedProposedApi: [
-				'ms-vscode.vscode-js-profile-flame',
-				'ms-vscode.vscode-js-profile-table',
+				'ms-vscode.vscode-js-profile-flAme',
+				'ms-vscode.vscode-js-profile-tAble',
 				'ms-vscode.references-view',
 				'ms-vscode.github-browser'
 			],
@@ -39,27 +39,27 @@ if (isWeb || typeof require === 'undefined' || typeof require.__$__nodeRequire !
 	}
 }
 
-// Native (non-sandboxed)
+// NAtive (non-sAndboxed)
 else {
 
-	// Obtain values from product.json and package.json
-	const rootPath = dirname(FileAccess.asFileUri('', require));
+	// ObtAin vAlues from product.json And pAckAge.json
+	const rootPAth = dirnAme(FileAccess.AsFileUri('', require));
 
-	product = require.__$__nodeRequire(joinPath(rootPath, 'product.json').fsPath);
-	const pkg = require.__$__nodeRequire(joinPath(rootPath, 'package.json').fsPath) as { version: string; };
+	product = require.__$__nodeRequire(joinPAth(rootPAth, 'product.json').fsPAth);
+	const pkg = require.__$__nodeRequire(joinPAth(rootPAth, 'pAckAge.json').fsPAth) As { version: string; };
 
 	// Running out of sources
 	if (env['VSCODE_DEV']) {
-		Object.assign(product, {
-			nameShort: `${product.nameShort} Dev`,
-			nameLong: `${product.nameLong} Dev`,
-			dataFolderName: `${product.dataFolderName}-dev`
+		Object.Assign(product, {
+			nAmeShort: `${product.nAmeShort} Dev`,
+			nAmeLong: `${product.nAmeLong} Dev`,
+			dAtAFolderNAme: `${product.dAtAFolderNAme}-dev`
 		});
 	}
 
-	Object.assign(product, {
+	Object.Assign(product, {
 		version: pkg.version
 	});
 }
 
-export default product;
+export defAult product;

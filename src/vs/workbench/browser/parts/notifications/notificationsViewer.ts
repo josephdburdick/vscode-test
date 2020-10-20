@@ -1,509 +1,509 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { clearNode, addDisposableListener, EventType, EventHelper, $ } from 'vs/base/browser/dom';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { ButtonGroup } from 'vs/base/browser/ui/button/button';
-import { attachButtonStyler, attachProgressBarStyler } from 'vs/platform/theme/common/styler';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { IAction, IActionRunner } from 'vs/base/common/actions';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { dispose, DisposableStore, Disposable } from 'vs/base/common/lifecycle';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { INotificationViewItem, NotificationViewItem, NotificationViewItemContentChangeKind, INotificationMessage, ChoiceAction } from 'vs/workbench/common/notifications';
-import { ClearNotificationAction, ExpandNotificationAction, CollapseNotificationAction, ConfigureNotificationAction } from 'vs/workbench/browser/parts/notifications/notificationsActions';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
-import { Severity } from 'vs/platform/notification/common/notification';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { Codicon } from 'vs/base/common/codicons';
-import { DropdownMenuActionViewItem } from 'vs/base/browser/ui/dropdown/dropdownActionViewItem';
+import { IListVirtuAlDelegAte, IListRenderer } from 'vs/bAse/browser/ui/list/list';
+import { cleArNode, AddDisposAbleListener, EventType, EventHelper, $ } from 'vs/bAse/browser/dom';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { ButtonGroup } from 'vs/bAse/browser/ui/button/button';
+import { AttAchButtonStyler, AttAchProgressBArStyler } from 'vs/plAtform/theme/common/styler';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { IAction, IActionRunner } from 'vs/bAse/common/Actions';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { dispose, DisposAbleStore, DisposAble } from 'vs/bAse/common/lifecycle';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { INotificAtionViewItem, NotificAtionViewItem, NotificAtionViewItemContentChAngeKind, INotificAtionMessAge, ChoiceAction } from 'vs/workbench/common/notificAtions';
+import { CleArNotificAtionAction, ExpAndNotificAtionAction, CollApseNotificAtionAction, ConfigureNotificAtionAction } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsActions';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { ProgressBAr } from 'vs/bAse/browser/ui/progressbAr/progressbAr';
+import { Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { Codicon } from 'vs/bAse/common/codicons';
+import { DropdownMenuActionViewItem } from 'vs/bAse/browser/ui/dropdown/dropdownActionViewItem';
 
-export class NotificationsListDelegate implements IListVirtualDelegate<INotificationViewItem> {
+export clAss NotificAtionsListDelegAte implements IListVirtuAlDelegAte<INotificAtionViewItem> {
 
-	private static readonly ROW_HEIGHT = 42;
-	private static readonly LINE_HEIGHT = 22;
+	privAte stAtic reAdonly ROW_HEIGHT = 42;
+	privAte stAtic reAdonly LINE_HEIGHT = 22;
 
-	private offsetHelper: HTMLElement;
+	privAte offsetHelper: HTMLElement;
 
-	constructor(container: HTMLElement) {
-		this.offsetHelper = this.createOffsetHelper(container);
+	constructor(contAiner: HTMLElement) {
+		this.offsetHelper = this.creAteOffsetHelper(contAiner);
 	}
 
-	private createOffsetHelper(container: HTMLElement): HTMLElement {
-		const offsetHelper = document.createElement('div');
-		offsetHelper.classList.add('notification-offset-helper');
+	privAte creAteOffsetHelper(contAiner: HTMLElement): HTMLElement {
+		const offsetHelper = document.creAteElement('div');
+		offsetHelper.clAssList.Add('notificAtion-offset-helper');
 
-		container.appendChild(offsetHelper);
+		contAiner.AppendChild(offsetHelper);
 
 		return offsetHelper;
 	}
 
-	getHeight(notification: INotificationViewItem): number {
-		if (!notification.expanded) {
-			return NotificationsListDelegate.ROW_HEIGHT; // return early if there are no more rows to show
+	getHeight(notificAtion: INotificAtionViewItem): number {
+		if (!notificAtion.expAnded) {
+			return NotificAtionsListDelegAte.ROW_HEIGHT; // return eArly if there Are no more rows to show
 		}
 
-		// First row: message and actions
-		let expandedHeight = NotificationsListDelegate.ROW_HEIGHT;
+		// First row: messAge And Actions
+		let expAndedHeight = NotificAtionsListDelegAte.ROW_HEIGHT;
 
-		// Dynamic height: if message overflows
-		const preferredMessageHeight = this.computePreferredHeight(notification);
-		const messageOverflows = NotificationsListDelegate.LINE_HEIGHT < preferredMessageHeight;
-		if (messageOverflows) {
-			const overflow = preferredMessageHeight - NotificationsListDelegate.LINE_HEIGHT;
-			expandedHeight += overflow;
+		// DynAmic height: if messAge overflows
+		const preferredMessAgeHeight = this.computePreferredHeight(notificAtion);
+		const messAgeOverflows = NotificAtionsListDelegAte.LINE_HEIGHT < preferredMessAgeHeight;
+		if (messAgeOverflows) {
+			const overflow = preferredMessAgeHeight - NotificAtionsListDelegAte.LINE_HEIGHT;
+			expAndedHeight += overflow;
 		}
 
-		// Last row: source and buttons if we have any
-		if (notification.source || isNonEmptyArray(notification.actions && notification.actions.primary)) {
-			expandedHeight += NotificationsListDelegate.ROW_HEIGHT;
+		// LAst row: source And buttons if we hAve Any
+		if (notificAtion.source || isNonEmptyArrAy(notificAtion.Actions && notificAtion.Actions.primAry)) {
+			expAndedHeight += NotificAtionsListDelegAte.ROW_HEIGHT;
 		}
 
-		// If the expanded height is same as collapsed, unset the expanded state
-		// but skip events because there is no change that has visual impact
-		if (expandedHeight === NotificationsListDelegate.ROW_HEIGHT) {
-			notification.collapse(true /* skip events, no change in height */);
+		// If the expAnded height is sAme As collApsed, unset the expAnded stAte
+		// but skip events becAuse there is no chAnge thAt hAs visuAl impAct
+		if (expAndedHeight === NotificAtionsListDelegAte.ROW_HEIGHT) {
+			notificAtion.collApse(true /* skip events, no chAnge in height */);
 		}
 
-		return expandedHeight;
+		return expAndedHeight;
 	}
 
-	private computePreferredHeight(notification: INotificationViewItem): number {
+	privAte computePreferredHeight(notificAtion: INotificAtionViewItem): number {
 
-		// Prepare offset helper depending on toolbar actions count
-		let actions = 1; // close
-		if (notification.canCollapse) {
-			actions++; // expand/collapse
+		// PrepAre offset helper depending on toolbAr Actions count
+		let Actions = 1; // close
+		if (notificAtion.cAnCollApse) {
+			Actions++; // expAnd/collApse
 		}
-		if (isNonEmptyArray(notification.actions && notification.actions.secondary)) {
-			actions++; // secondary actions
+		if (isNonEmptyArrAy(notificAtion.Actions && notificAtion.Actions.secondAry)) {
+			Actions++; // secondAry Actions
 		}
-		this.offsetHelper.style.width = `${450 /* notifications container width */ - (10 /* padding */ + 26 /* severity icon */ + (actions * 24) /* 24px per action */)}px`;
+		this.offsetHelper.style.width = `${450 /* notificAtions contAiner width */ - (10 /* pAdding */ + 26 /* severity icon */ + (Actions * 24) /* 24px per Action */)}px`;
 
-		// Render message into offset helper
-		const renderedMessage = NotificationMessageRenderer.render(notification.message);
-		this.offsetHelper.appendChild(renderedMessage);
+		// Render messAge into offset helper
+		const renderedMessAge = NotificAtionMessAgeRenderer.render(notificAtion.messAge);
+		this.offsetHelper.AppendChild(renderedMessAge);
 
 		// Compute height
-		const preferredHeight = Math.max(this.offsetHelper.offsetHeight, this.offsetHelper.scrollHeight);
+		const preferredHeight = MAth.mAx(this.offsetHelper.offsetHeight, this.offsetHelper.scrollHeight);
 
-		// Always clear offset helper after use
-		clearNode(this.offsetHelper);
+		// AlwAys cleAr offset helper After use
+		cleArNode(this.offsetHelper);
 
 		return preferredHeight;
 	}
 
-	getTemplateId(element: INotificationViewItem): string {
-		if (element instanceof NotificationViewItem) {
-			return NotificationRenderer.TEMPLATE_ID;
+	getTemplAteId(element: INotificAtionViewItem): string {
+		if (element instAnceof NotificAtionViewItem) {
+			return NotificAtionRenderer.TEMPLATE_ID;
 		}
 
 		throw new Error('unknown element type: ' + element);
 	}
 }
 
-export interface INotificationTemplateData {
-	container: HTMLElement;
-	toDispose: DisposableStore;
+export interfAce INotificAtionTemplAteDAtA {
+	contAiner: HTMLElement;
+	toDispose: DisposAbleStore;
 
-	mainRow: HTMLElement;
+	mAinRow: HTMLElement;
 	icon: HTMLElement;
-	message: HTMLElement;
-	toolbar: ActionBar;
+	messAge: HTMLElement;
+	toolbAr: ActionBAr;
 
-	detailsRow: HTMLElement;
+	detAilsRow: HTMLElement;
 	source: HTMLElement;
-	buttonsContainer: HTMLElement;
-	progress: ProgressBar;
+	buttonsContAiner: HTMLElement;
+	progress: ProgressBAr;
 
-	renderer: NotificationTemplateRenderer;
+	renderer: NotificAtionTemplAteRenderer;
 }
 
-interface IMessageActionHandler {
-	callback: (href: string) => void;
-	toDispose: DisposableStore;
+interfAce IMessAgeActionHAndler {
+	cAllbAck: (href: string) => void;
+	toDispose: DisposAbleStore;
 }
 
-class NotificationMessageRenderer {
+clAss NotificAtionMessAgeRenderer {
 
-	static render(message: INotificationMessage, actionHandler?: IMessageActionHandler): HTMLElement {
-		const messageContainer = document.createElement('span');
+	stAtic render(messAge: INotificAtionMessAge, ActionHAndler?: IMessAgeActionHAndler): HTMLElement {
+		const messAgeContAiner = document.creAteElement('spAn');
 
-		for (const node of message.linkedText.nodes) {
+		for (const node of messAge.linkedText.nodes) {
 			if (typeof node === 'string') {
-				messageContainer.appendChild(document.createTextNode(node));
+				messAgeContAiner.AppendChild(document.creAteTextNode(node));
 			} else {
 				let title = node.title;
 
-				if (!title && node.href.startsWith('command:')) {
-					title = localize('executeCommand', "Click to execute command '{0}'", node.href.substr('command:'.length));
+				if (!title && node.href.stArtsWith('commAnd:')) {
+					title = locAlize('executeCommAnd', "Click to execute commAnd '{0}'", node.href.substr('commAnd:'.length));
 				} else if (!title) {
 					title = node.href;
 				}
 
-				const anchor = $('a', { href: node.href, title: title, }, node.label);
+				const Anchor = $('A', { href: node.href, title: title, }, node.lAbel);
 
-				if (actionHandler) {
-					actionHandler.toDispose.add(addDisposableListener(anchor, EventType.CLICK, e => {
+				if (ActionHAndler) {
+					ActionHAndler.toDispose.Add(AddDisposAbleListener(Anchor, EventType.CLICK, e => {
 						EventHelper.stop(e, true);
-						actionHandler.callback(node.href);
+						ActionHAndler.cAllbAck(node.href);
 					}));
 				}
 
-				messageContainer.appendChild(anchor);
+				messAgeContAiner.AppendChild(Anchor);
 			}
 		}
 
-		return messageContainer;
+		return messAgeContAiner;
 	}
 }
 
-export class NotificationRenderer implements IListRenderer<INotificationViewItem, INotificationTemplateData> {
+export clAss NotificAtionRenderer implements IListRenderer<INotificAtionViewItem, INotificAtionTemplAteDAtA> {
 
-	static readonly TEMPLATE_ID = 'notification';
+	stAtic reAdonly TEMPLATE_ID = 'notificAtion';
 
 	constructor(
-		private actionRunner: IActionRunner,
-		@IThemeService private readonly themeService: IThemeService,
-		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		privAte ActionRunner: IActionRunner,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IContextMenuService privAte reAdonly contextMenuService: IContextMenuService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
 	}
 
-	get templateId() {
-		return NotificationRenderer.TEMPLATE_ID;
+	get templAteId() {
+		return NotificAtionRenderer.TEMPLATE_ID;
 	}
 
-	renderTemplate(container: HTMLElement): INotificationTemplateData {
-		const data: INotificationTemplateData = Object.create(null);
-		data.toDispose = new DisposableStore();
+	renderTemplAte(contAiner: HTMLElement): INotificAtionTemplAteDAtA {
+		const dAtA: INotificAtionTemplAteDAtA = Object.creAte(null);
+		dAtA.toDispose = new DisposAbleStore();
 
-		// Container
-		data.container = document.createElement('div');
-		data.container.classList.add('notification-list-item');
+		// ContAiner
+		dAtA.contAiner = document.creAteElement('div');
+		dAtA.contAiner.clAssList.Add('notificAtion-list-item');
 
-		// Main Row
-		data.mainRow = document.createElement('div');
-		data.mainRow.classList.add('notification-list-item-main-row');
+		// MAin Row
+		dAtA.mAinRow = document.creAteElement('div');
+		dAtA.mAinRow.clAssList.Add('notificAtion-list-item-mAin-row');
 
 		// Icon
-		data.icon = document.createElement('div');
-		data.icon.classList.add('notification-list-item-icon', 'codicon');
+		dAtA.icon = document.creAteElement('div');
+		dAtA.icon.clAssList.Add('notificAtion-list-item-icon', 'codicon');
 
-		// Message
-		data.message = document.createElement('div');
-		data.message.classList.add('notification-list-item-message');
+		// MessAge
+		dAtA.messAge = document.creAteElement('div');
+		dAtA.messAge.clAssList.Add('notificAtion-list-item-messAge');
 
-		// Toolbar
-		const toolbarContainer = document.createElement('div');
-		toolbarContainer.classList.add('notification-list-item-toolbar-container');
-		data.toolbar = new ActionBar(
-			toolbarContainer,
+		// ToolbAr
+		const toolbArContAiner = document.creAteElement('div');
+		toolbArContAiner.clAssList.Add('notificAtion-list-item-toolbAr-contAiner');
+		dAtA.toolbAr = new ActionBAr(
+			toolbArContAiner,
 			{
-				ariaLabel: localize('notificationActions', "Notification Actions"),
-				actionViewItemProvider: action => {
-					if (action && action instanceof ConfigureNotificationAction) {
-						const item = new DropdownMenuActionViewItem(action, action.configurationActions, this.contextMenuService, { actionRunner: this.actionRunner, classNames: action.class });
-						data.toDispose.add(item);
+				AriALAbel: locAlize('notificAtionActions', "NotificAtion Actions"),
+				ActionViewItemProvider: Action => {
+					if (Action && Action instAnceof ConfigureNotificAtionAction) {
+						const item = new DropdownMenuActionViewItem(Action, Action.configurAtionActions, this.contextMenuService, { ActionRunner: this.ActionRunner, clAssNAmes: Action.clAss });
+						dAtA.toDispose.Add(item);
 
 						return item;
 					}
 
 					return undefined;
 				},
-				actionRunner: this.actionRunner
+				ActionRunner: this.ActionRunner
 			}
 		);
-		data.toDispose.add(data.toolbar);
+		dAtA.toDispose.Add(dAtA.toolbAr);
 
-		// Details Row
-		data.detailsRow = document.createElement('div');
-		data.detailsRow.classList.add('notification-list-item-details-row');
+		// DetAils Row
+		dAtA.detAilsRow = document.creAteElement('div');
+		dAtA.detAilsRow.clAssList.Add('notificAtion-list-item-detAils-row');
 
 		// Source
-		data.source = document.createElement('div');
-		data.source.classList.add('notification-list-item-source');
+		dAtA.source = document.creAteElement('div');
+		dAtA.source.clAssList.Add('notificAtion-list-item-source');
 
-		// Buttons Container
-		data.buttonsContainer = document.createElement('div');
-		data.buttonsContainer.classList.add('notification-list-item-buttons-container');
+		// Buttons ContAiner
+		dAtA.buttonsContAiner = document.creAteElement('div');
+		dAtA.buttonsContAiner.clAssList.Add('notificAtion-list-item-buttons-contAiner');
 
-		container.appendChild(data.container);
+		contAiner.AppendChild(dAtA.contAiner);
 
-		// the details row appears first in order for better keyboard access to notification buttons
-		data.container.appendChild(data.detailsRow);
-		data.detailsRow.appendChild(data.source);
-		data.detailsRow.appendChild(data.buttonsContainer);
+		// the detAils row AppeArs first in order for better keyboArd Access to notificAtion buttons
+		dAtA.contAiner.AppendChild(dAtA.detAilsRow);
+		dAtA.detAilsRow.AppendChild(dAtA.source);
+		dAtA.detAilsRow.AppendChild(dAtA.buttonsContAiner);
 
-		// main row
-		data.container.appendChild(data.mainRow);
-		data.mainRow.appendChild(data.icon);
-		data.mainRow.appendChild(data.message);
-		data.mainRow.appendChild(toolbarContainer);
+		// mAin row
+		dAtA.contAiner.AppendChild(dAtA.mAinRow);
+		dAtA.mAinRow.AppendChild(dAtA.icon);
+		dAtA.mAinRow.AppendChild(dAtA.messAge);
+		dAtA.mAinRow.AppendChild(toolbArContAiner);
 
-		// Progress: below the rows to span the entire width of the item
-		data.progress = new ProgressBar(container);
-		data.toDispose.add(attachProgressBarStyler(data.progress, this.themeService));
-		data.toDispose.add(data.progress);
+		// Progress: below the rows to spAn the entire width of the item
+		dAtA.progress = new ProgressBAr(contAiner);
+		dAtA.toDispose.Add(AttAchProgressBArStyler(dAtA.progress, this.themeService));
+		dAtA.toDispose.Add(dAtA.progress);
 
 		// Renderer
-		data.renderer = this.instantiationService.createInstance(NotificationTemplateRenderer, data, this.actionRunner);
-		data.toDispose.add(data.renderer);
+		dAtA.renderer = this.instAntiAtionService.creAteInstAnce(NotificAtionTemplAteRenderer, dAtA, this.ActionRunner);
+		dAtA.toDispose.Add(dAtA.renderer);
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement(notification: INotificationViewItem, index: number, data: INotificationTemplateData): void {
-		data.renderer.setInput(notification);
+	renderElement(notificAtion: INotificAtionViewItem, index: number, dAtA: INotificAtionTemplAteDAtA): void {
+		dAtA.renderer.setInput(notificAtion);
 	}
 
-	disposeTemplate(templateData: INotificationTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: INotificAtionTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-export class NotificationTemplateRenderer extends Disposable {
+export clAss NotificAtionTemplAteRenderer extends DisposAble {
 
-	private static closeNotificationAction: ClearNotificationAction;
-	private static expandNotificationAction: ExpandNotificationAction;
-	private static collapseNotificationAction: CollapseNotificationAction;
+	privAte stAtic closeNotificAtionAction: CleArNotificAtionAction;
+	privAte stAtic expAndNotificAtionAction: ExpAndNotificAtionAction;
+	privAte stAtic collApseNotificAtionAction: CollApseNotificAtionAction;
 
-	private static readonly SEVERITIES = [Severity.Info, Severity.Warning, Severity.Error];
+	privAte stAtic reAdonly SEVERITIES = [Severity.Info, Severity.WArning, Severity.Error];
 
-	private readonly inputDisposables = this._register(new DisposableStore());
+	privAte reAdonly inputDisposAbles = this._register(new DisposAbleStore());
 
 	constructor(
-		private template: INotificationTemplateData,
-		private actionRunner: IActionRunner,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IThemeService private readonly themeService: IThemeService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService
+		privAte templAte: INotificAtionTemplAteDAtA,
+		privAte ActionRunner: IActionRunner,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService
 	) {
 		super();
 
-		if (!NotificationTemplateRenderer.closeNotificationAction) {
-			NotificationTemplateRenderer.closeNotificationAction = instantiationService.createInstance(ClearNotificationAction, ClearNotificationAction.ID, ClearNotificationAction.LABEL);
-			NotificationTemplateRenderer.expandNotificationAction = instantiationService.createInstance(ExpandNotificationAction, ExpandNotificationAction.ID, ExpandNotificationAction.LABEL);
-			NotificationTemplateRenderer.collapseNotificationAction = instantiationService.createInstance(CollapseNotificationAction, CollapseNotificationAction.ID, CollapseNotificationAction.LABEL);
+		if (!NotificAtionTemplAteRenderer.closeNotificAtionAction) {
+			NotificAtionTemplAteRenderer.closeNotificAtionAction = instAntiAtionService.creAteInstAnce(CleArNotificAtionAction, CleArNotificAtionAction.ID, CleArNotificAtionAction.LABEL);
+			NotificAtionTemplAteRenderer.expAndNotificAtionAction = instAntiAtionService.creAteInstAnce(ExpAndNotificAtionAction, ExpAndNotificAtionAction.ID, ExpAndNotificAtionAction.LABEL);
+			NotificAtionTemplAteRenderer.collApseNotificAtionAction = instAntiAtionService.creAteInstAnce(CollApseNotificAtionAction, CollApseNotificAtionAction.ID, CollApseNotificAtionAction.LABEL);
 		}
 	}
 
-	setInput(notification: INotificationViewItem): void {
-		this.inputDisposables.clear();
+	setInput(notificAtion: INotificAtionViewItem): void {
+		this.inputDisposAbles.cleAr();
 
-		this.render(notification);
+		this.render(notificAtion);
 	}
 
-	private render(notification: INotificationViewItem): void {
+	privAte render(notificAtion: INotificAtionViewItem): void {
 
-		// Container
-		this.template.container.classList.toggle('expanded', notification.expanded);
-		this.inputDisposables.add(addDisposableListener(this.template.container, EventType.AUXCLICK, e => {
-			if (!notification.hasProgress && e.button === 1 /* Middle Button */) {
+		// ContAiner
+		this.templAte.contAiner.clAssList.toggle('expAnded', notificAtion.expAnded);
+		this.inputDisposAbles.Add(AddDisposAbleListener(this.templAte.contAiner, EventType.AUXCLICK, e => {
+			if (!notificAtion.hAsProgress && e.button === 1 /* Middle Button */) {
 				EventHelper.stop(e, true);
 
-				notification.close();
+				notificAtion.close();
 			}
 		}));
 
 		// Severity Icon
-		this.renderSeverity(notification);
+		this.renderSeverity(notificAtion);
 
-		// Message
-		const messageOverflows = this.renderMessage(notification);
+		// MessAge
+		const messAgeOverflows = this.renderMessAge(notificAtion);
 
-		// Secondary Actions
-		this.renderSecondaryActions(notification, messageOverflows);
+		// SecondAry Actions
+		this.renderSecondAryActions(notificAtion, messAgeOverflows);
 
 		// Source
-		this.renderSource(notification);
+		this.renderSource(notificAtion);
 
 		// Buttons
-		this.renderButtons(notification);
+		this.renderButtons(notificAtion);
 
 		// Progress
-		this.renderProgress(notification);
+		this.renderProgress(notificAtion);
 
-		// Label Change Events that we can handle directly
-		// (changes to actions require an entire redraw of
-		// the notification because it has an impact on
-		// epxansion state)
-		this.inputDisposables.add(notification.onDidChangeContent(event => {
+		// LAbel ChAnge Events thAt we cAn hAndle directly
+		// (chAnges to Actions require An entire redrAw of
+		// the notificAtion becAuse it hAs An impAct on
+		// epxAnsion stAte)
+		this.inputDisposAbles.Add(notificAtion.onDidChAngeContent(event => {
 			switch (event.kind) {
-				case NotificationViewItemContentChangeKind.SEVERITY:
-					this.renderSeverity(notification);
-					break;
-				case NotificationViewItemContentChangeKind.PROGRESS:
-					this.renderProgress(notification);
-					break;
-				case NotificationViewItemContentChangeKind.MESSAGE:
-					this.renderMessage(notification);
-					break;
+				cAse NotificAtionViewItemContentChAngeKind.SEVERITY:
+					this.renderSeverity(notificAtion);
+					breAk;
+				cAse NotificAtionViewItemContentChAngeKind.PROGRESS:
+					this.renderProgress(notificAtion);
+					breAk;
+				cAse NotificAtionViewItemContentChAngeKind.MESSAGE:
+					this.renderMessAge(notificAtion);
+					breAk;
 			}
 		}));
 	}
 
-	private renderSeverity(notification: INotificationViewItem): void {
-		// first remove, then set as the codicon class names overlap
-		NotificationTemplateRenderer.SEVERITIES.forEach(severity => {
-			if (notification.severity !== severity) {
-				this.template.icon.classList.remove(...this.toSeverityIcon(severity).classNamesArray);
+	privAte renderSeverity(notificAtion: INotificAtionViewItem): void {
+		// first remove, then set As the codicon clAss nAmes overlAp
+		NotificAtionTemplAteRenderer.SEVERITIES.forEAch(severity => {
+			if (notificAtion.severity !== severity) {
+				this.templAte.icon.clAssList.remove(...this.toSeverityIcon(severity).clAssNAmesArrAy);
 			}
 		});
-		this.template.icon.classList.add(...this.toSeverityIcon(notification.severity).classNamesArray);
+		this.templAte.icon.clAssList.Add(...this.toSeverityIcon(notificAtion.severity).clAssNAmesArrAy);
 	}
 
-	private renderMessage(notification: INotificationViewItem): boolean {
-		clearNode(this.template.message);
-		this.template.message.appendChild(NotificationMessageRenderer.render(notification.message, {
-			callback: link => this.openerService.open(URI.parse(link)),
-			toDispose: this.inputDisposables
+	privAte renderMessAge(notificAtion: INotificAtionViewItem): booleAn {
+		cleArNode(this.templAte.messAge);
+		this.templAte.messAge.AppendChild(NotificAtionMessAgeRenderer.render(notificAtion.messAge, {
+			cAllbAck: link => this.openerService.open(URI.pArse(link)),
+			toDispose: this.inputDisposAbles
 		}));
 
-		const messageOverflows = notification.canCollapse && !notification.expanded && this.template.message.scrollWidth > this.template.message.clientWidth;
-		if (messageOverflows) {
-			this.template.message.title = this.template.message.textContent + '';
+		const messAgeOverflows = notificAtion.cAnCollApse && !notificAtion.expAnded && this.templAte.messAge.scrollWidth > this.templAte.messAge.clientWidth;
+		if (messAgeOverflows) {
+			this.templAte.messAge.title = this.templAte.messAge.textContent + '';
 		} else {
-			this.template.message.removeAttribute('title');
+			this.templAte.messAge.removeAttribute('title');
 		}
 
-		const links = this.template.message.querySelectorAll('a');
+		const links = this.templAte.messAge.querySelectorAll('A');
 		for (let i = 0; i < links.length; i++) {
-			links.item(i).tabIndex = -1; // prevent keyboard navigation to links to allow for better keyboard support within a message
+			links.item(i).tAbIndex = -1; // prevent keyboArd nAvigAtion to links to Allow for better keyboArd support within A messAge
 		}
 
-		return messageOverflows;
+		return messAgeOverflows;
 	}
 
-	private renderSecondaryActions(notification: INotificationViewItem, messageOverflows: boolean): void {
-		const actions: IAction[] = [];
+	privAte renderSecondAryActions(notificAtion: INotificAtionViewItem, messAgeOverflows: booleAn): void {
+		const Actions: IAction[] = [];
 
-		// Secondary Actions
-		const secondaryActions = notification.actions ? notification.actions.secondary : undefined;
-		if (isNonEmptyArray(secondaryActions)) {
-			const configureNotificationAction = this.instantiationService.createInstance(ConfigureNotificationAction, ConfigureNotificationAction.ID, ConfigureNotificationAction.LABEL, secondaryActions);
-			actions.push(configureNotificationAction);
-			this.inputDisposables.add(configureNotificationAction);
+		// SecondAry Actions
+		const secondAryActions = notificAtion.Actions ? notificAtion.Actions.secondAry : undefined;
+		if (isNonEmptyArrAy(secondAryActions)) {
+			const configureNotificAtionAction = this.instAntiAtionService.creAteInstAnce(ConfigureNotificAtionAction, ConfigureNotificAtionAction.ID, ConfigureNotificAtionAction.LABEL, secondAryActions);
+			Actions.push(configureNotificAtionAction);
+			this.inputDisposAbles.Add(configureNotificAtionAction);
 		}
 
-		// Expand / Collapse
-		let showExpandCollapseAction = false;
-		if (notification.canCollapse) {
-			if (notification.expanded) {
-				showExpandCollapseAction = true; // allow to collapse an expanded message
-			} else if (notification.source) {
-				showExpandCollapseAction = true; // allow to expand to details row
-			} else if (messageOverflows) {
-				showExpandCollapseAction = true; // allow to expand if message overflows
+		// ExpAnd / CollApse
+		let showExpAndCollApseAction = fAlse;
+		if (notificAtion.cAnCollApse) {
+			if (notificAtion.expAnded) {
+				showExpAndCollApseAction = true; // Allow to collApse An expAnded messAge
+			} else if (notificAtion.source) {
+				showExpAndCollApseAction = true; // Allow to expAnd to detAils row
+			} else if (messAgeOverflows) {
+				showExpAndCollApseAction = true; // Allow to expAnd if messAge overflows
 			}
 		}
 
-		if (showExpandCollapseAction) {
-			actions.push(notification.expanded ? NotificationTemplateRenderer.collapseNotificationAction : NotificationTemplateRenderer.expandNotificationAction);
+		if (showExpAndCollApseAction) {
+			Actions.push(notificAtion.expAnded ? NotificAtionTemplAteRenderer.collApseNotificAtionAction : NotificAtionTemplAteRenderer.expAndNotificAtionAction);
 		}
 
 		// Close (unless progress is showing)
-		if (!notification.hasProgress) {
-			actions.push(NotificationTemplateRenderer.closeNotificationAction);
+		if (!notificAtion.hAsProgress) {
+			Actions.push(NotificAtionTemplAteRenderer.closeNotificAtionAction);
 		}
 
-		this.template.toolbar.clear();
-		this.template.toolbar.context = notification;
-		actions.forEach(action => this.template.toolbar.push(action, { icon: true, label: false, keybinding: this.getKeybindingLabel(action) }));
+		this.templAte.toolbAr.cleAr();
+		this.templAte.toolbAr.context = notificAtion;
+		Actions.forEAch(Action => this.templAte.toolbAr.push(Action, { icon: true, lAbel: fAlse, keybinding: this.getKeybindingLAbel(Action) }));
 	}
 
-	private renderSource(notification: INotificationViewItem): void {
-		if (notification.expanded && notification.source) {
-			this.template.source.textContent = localize('notificationSource', "Source: {0}", notification.source);
-			this.template.source.title = notification.source;
+	privAte renderSource(notificAtion: INotificAtionViewItem): void {
+		if (notificAtion.expAnded && notificAtion.source) {
+			this.templAte.source.textContent = locAlize('notificAtionSource', "Source: {0}", notificAtion.source);
+			this.templAte.source.title = notificAtion.source;
 		} else {
-			this.template.source.textContent = '';
-			this.template.source.removeAttribute('title');
+			this.templAte.source.textContent = '';
+			this.templAte.source.removeAttribute('title');
 		}
 	}
 
-	private renderButtons(notification: INotificationViewItem): void {
-		clearNode(this.template.buttonsContainer);
+	privAte renderButtons(notificAtion: INotificAtionViewItem): void {
+		cleArNode(this.templAte.buttonsContAiner);
 
-		const primaryActions = notification.actions ? notification.actions.primary : undefined;
-		if (notification.expanded && isNonEmptyArray(primaryActions)) {
-			const buttonGroup = new ButtonGroup(this.template.buttonsContainer, primaryActions.length, { title: true /* assign titles to buttons in case they overflow */ });
-			buttonGroup.buttons.forEach((button, index) => {
-				const action = primaryActions[index];
-				button.label = action.label;
+		const primAryActions = notificAtion.Actions ? notificAtion.Actions.primAry : undefined;
+		if (notificAtion.expAnded && isNonEmptyArrAy(primAryActions)) {
+			const buttonGroup = new ButtonGroup(this.templAte.buttonsContAiner, primAryActions.length, { title: true /* Assign titles to buttons in cAse they overflow */ });
+			buttonGroup.buttons.forEAch((button, index) => {
+				const Action = primAryActions[index];
+				button.lAbel = Action.lAbel;
 
-				this.inputDisposables.add(button.onDidClick(e => {
+				this.inputDisposAbles.Add(button.onDidClick(e => {
 					EventHelper.stop(e, true);
 
-					// Run action
-					this.actionRunner.run(action, notification);
+					// Run Action
+					this.ActionRunner.run(Action, notificAtion);
 
-					// Hide notification (unless explicitly prevented)
-					if (!(action instanceof ChoiceAction) || !action.keepOpen) {
-						notification.close();
+					// Hide notificAtion (unless explicitly prevented)
+					if (!(Action instAnceof ChoiceAction) || !Action.keepOpen) {
+						notificAtion.close();
 					}
 				}));
 
-				this.inputDisposables.add(attachButtonStyler(button, this.themeService));
+				this.inputDisposAbles.Add(AttAchButtonStyler(button, this.themeService));
 			});
 
-			this.inputDisposables.add(buttonGroup);
+			this.inputDisposAbles.Add(buttonGroup);
 		}
 	}
 
-	private renderProgress(notification: INotificationViewItem): void {
+	privAte renderProgress(notificAtion: INotificAtionViewItem): void {
 
-		// Return early if the item has no progress
-		if (!notification.hasProgress) {
-			this.template.progress.stop().hide();
+		// Return eArly if the item hAs no progress
+		if (!notificAtion.hAsProgress) {
+			this.templAte.progress.stop().hide();
 
 			return;
 		}
 
 		// Infinite
-		const state = notification.progress.state;
-		if (state.infinite) {
-			this.template.progress.infinite().show();
+		const stAte = notificAtion.progress.stAte;
+		if (stAte.infinite) {
+			this.templAte.progress.infinite().show();
 		}
 
-		// Total / Worked
-		else if (typeof state.total === 'number' || typeof state.worked === 'number') {
-			if (typeof state.total === 'number' && !this.template.progress.hasTotal()) {
-				this.template.progress.total(state.total);
+		// TotAl / Worked
+		else if (typeof stAte.totAl === 'number' || typeof stAte.worked === 'number') {
+			if (typeof stAte.totAl === 'number' && !this.templAte.progress.hAsTotAl()) {
+				this.templAte.progress.totAl(stAte.totAl);
 			}
 
-			if (typeof state.worked === 'number') {
-				this.template.progress.setWorked(state.worked).show();
+			if (typeof stAte.worked === 'number') {
+				this.templAte.progress.setWorked(stAte.worked).show();
 			}
 		}
 
 		// Done
 		else {
-			this.template.progress.done().hide();
+			this.templAte.progress.done().hide();
 		}
 	}
 
-	private toSeverityIcon(severity: Severity): Codicon {
+	privAte toSeverityIcon(severity: Severity): Codicon {
 		switch (severity) {
-			case Severity.Warning:
-				return Codicon.warning;
-			case Severity.Error:
+			cAse Severity.WArning:
+				return Codicon.wArning;
+			cAse Severity.Error:
 				return Codicon.error;
 		}
 		return Codicon.info;
 	}
 
-	private getKeybindingLabel(action: IAction): string | null {
-		const keybinding = this.keybindingService.lookupKeybinding(action.id);
+	privAte getKeybindingLAbel(Action: IAction): string | null {
+		const keybinding = this.keybindingService.lookupKeybinding(Action.id);
 
-		return keybinding ? keybinding.getLabel() : null;
+		return keybinding ? keybinding.getLAbel() : null;
 	}
 }

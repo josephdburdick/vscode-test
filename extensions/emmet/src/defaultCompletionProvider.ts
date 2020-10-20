@@ -1,154 +1,154 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { Node, Stylesheet } from 'EmmetNode';
-import { isValidLocationForEmmetAbbreviation, getSyntaxFromArgs } from './abbreviationActions';
-import { getEmmetHelper, getMappingForIncludedLanguages, parsePartialStylesheet, getEmmetConfiguration, getEmmetMode, isStyleSheet, parseDocument, getNode, allowedMimeTypesInScriptTag, trimQuotes, toLSTextDocument } from './util';
-import { getLanguageService, TokenType, Range as LSRange } from 'vscode-html-languageservice';
+import { isVAlidLocAtionForEmmetAbbreviAtion, getSyntAxFromArgs } from './AbbreviAtionActions';
+import { getEmmetHelper, getMAppingForIncludedLAnguAges, pArsePArtiAlStylesheet, getEmmetConfigurAtion, getEmmetMode, isStyleSheet, pArseDocument, getNode, AllowedMimeTypesInScriptTAg, trimQuotes, toLSTextDocument } from './util';
+import { getLAnguAgeService, TokenType, RAnge As LSRAnge } from 'vscode-html-lAnguAgeservice';
 
-export class DefaultCompletionItemProvider implements vscode.CompletionItemProvider {
+export clAss DefAultCompletionItemProvider implements vscode.CompletionItemProvider {
 
-	private lastCompletionType: string | undefined;
+	privAte lAstCompletionType: string | undefined;
 
-	private htmlLS = getLanguageService();
+	privAte htmlLS = getLAnguAgeService();
 
-	public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, _: vscode.CancellationToken, context: vscode.CompletionContext): Thenable<vscode.CompletionList | undefined> | undefined {
-		const completionResult = this.provideCompletionItemsInternal(document, position, context);
+	public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, _: vscode.CAncellAtionToken, context: vscode.CompletionContext): ThenAble<vscode.CompletionList | undefined> | undefined {
+		const completionResult = this.provideCompletionItemsInternAl(document, position, context);
 		if (!completionResult) {
-			this.lastCompletionType = undefined;
+			this.lAstCompletionType = undefined;
 			return;
 		}
 
 		return completionResult.then(completionList => {
 			if (!completionList || !completionList.items.length) {
-				this.lastCompletionType = undefined;
+				this.lAstCompletionType = undefined;
 				return completionList;
 			}
 			const item = completionList.items[0];
-			const expandedText = item.documentation ? item.documentation.toString() : '';
+			const expAndedText = item.documentAtion ? item.documentAtion.toString() : '';
 
-			if (expandedText.startsWith('<')) {
-				this.lastCompletionType = 'html';
-			} else if (expandedText.indexOf(':') > 0 && expandedText.endsWith(';')) {
-				this.lastCompletionType = 'css';
+			if (expAndedText.stArtsWith('<')) {
+				this.lAstCompletionType = 'html';
+			} else if (expAndedText.indexOf(':') > 0 && expAndedText.endsWith(';')) {
+				this.lAstCompletionType = 'css';
 			} else {
-				this.lastCompletionType = undefined;
+				this.lAstCompletionType = undefined;
 			}
 			return completionList;
 		});
 	}
 
-	private provideCompletionItemsInternal(document: vscode.TextDocument, position: vscode.Position, context: vscode.CompletionContext): Thenable<vscode.CompletionList | undefined> | undefined {
-		const emmetConfig = vscode.workspace.getConfiguration('emmet');
-		const excludedLanguages = emmetConfig['excludeLanguages'] ? emmetConfig['excludeLanguages'] : [];
-		if (excludedLanguages.indexOf(document.languageId) > -1) {
+	privAte provideCompletionItemsInternAl(document: vscode.TextDocument, position: vscode.Position, context: vscode.CompletionContext): ThenAble<vscode.CompletionList | undefined> | undefined {
+		const emmetConfig = vscode.workspAce.getConfigurAtion('emmet');
+		const excludedLAnguAges = emmetConfig['excludeLAnguAges'] ? emmetConfig['excludeLAnguAges'] : [];
+		if (excludedLAnguAges.indexOf(document.lAnguAgeId) > -1) {
 			return;
 		}
 
-		const mappedLanguages = getMappingForIncludedLanguages();
-		const isSyntaxMapped = mappedLanguages[document.languageId] ? true : false;
-		let emmetMode = getEmmetMode((isSyntaxMapped ? mappedLanguages[document.languageId] : document.languageId), excludedLanguages);
+		const mAppedLAnguAges = getMAppingForIncludedLAnguAges();
+		const isSyntAxMApped = mAppedLAnguAges[document.lAnguAgeId] ? true : fAlse;
+		let emmetMode = getEmmetMode((isSyntAxMApped ? mAppedLAnguAges[document.lAnguAgeId] : document.lAnguAgeId), excludedLAnguAges);
 
 		if (!emmetMode
-			|| emmetConfig['showExpandedAbbreviation'] === 'never'
-			|| ((isSyntaxMapped || emmetMode === 'jsx') && emmetConfig['showExpandedAbbreviation'] !== 'always')) {
+			|| emmetConfig['showExpAndedAbbreviAtion'] === 'never'
+			|| ((isSyntAxMApped || emmetMode === 'jsx') && emmetConfig['showExpAndedAbbreviAtion'] !== 'AlwAys')) {
 			return;
 		}
 
-		let syntax = emmetMode;
+		let syntAx = emmetMode;
 
 		const helper = getEmmetHelper();
-		let validateLocation = syntax === 'html' || syntax === 'jsx' || syntax === 'xml';
+		let vAlidAteLocAtion = syntAx === 'html' || syntAx === 'jsx' || syntAx === 'xml';
 		let rootNode: Node | undefined = undefined;
 		let currentNode: Node | null = null;
 
 		const lsDoc = toLSTextDocument(document);
-		position = document.validatePosition(position);
+		position = document.vAlidAtePosition(position);
 
-		if (document.languageId === 'html') {
+		if (document.lAnguAgeId === 'html') {
 			if (context.triggerKind === vscode.CompletionTriggerKind.TriggerForIncompleteCompletions) {
-				switch (this.lastCompletionType) {
-					case 'html':
-						validateLocation = false;
-						break;
-					case 'css':
-						validateLocation = false;
-						syntax = 'css';
-						break;
-					default:
-						break;
+				switch (this.lAstCompletionType) {
+					cAse 'html':
+						vAlidAteLocAtion = fAlse;
+						breAk;
+					cAse 'css':
+						vAlidAteLocAtion = fAlse;
+						syntAx = 'css';
+						breAk;
+					defAult:
+						breAk;
 				}
 
 			}
-			if (validateLocation) {
+			if (vAlidAteLocAtion) {
 
-				const parsedLsDoc = this.htmlLS.parseHTMLDocument(lsDoc);
+				const pArsedLsDoc = this.htmlLS.pArseHTMLDocument(lsDoc);
 				const positionOffset = document.offsetAt(position);
-				const node = parsedLsDoc.findNodeAt(positionOffset);
+				const node = pArsedLsDoc.findNodeAt(positionOffset);
 
-				if (node.tag === 'script') {
-					if (node.attributes && 'type' in node.attributes) {
-						const rawTypeAttrValue = node.attributes['type'];
-						if (rawTypeAttrValue) {
-							const typeAttrValue = trimQuotes(rawTypeAttrValue);
-							if (typeAttrValue === 'application/javascript' || typeAttrValue === 'text/javascript') {
-								if (!getSyntaxFromArgs({ language: 'javascript' })) {
+				if (node.tAg === 'script') {
+					if (node.Attributes && 'type' in node.Attributes) {
+						const rAwTypeAttrVAlue = node.Attributes['type'];
+						if (rAwTypeAttrVAlue) {
+							const typeAttrVAlue = trimQuotes(rAwTypeAttrVAlue);
+							if (typeAttrVAlue === 'ApplicAtion/jAvAscript' || typeAttrVAlue === 'text/jAvAscript') {
+								if (!getSyntAxFromArgs({ lAnguAge: 'jAvAscript' })) {
 									return;
 								} else {
-									validateLocation = false;
+									vAlidAteLocAtion = fAlse;
 								}
 							}
 
-							else if (allowedMimeTypesInScriptTag.indexOf(trimQuotes(rawTypeAttrValue)) > -1) {
-								validateLocation = false;
+							else if (AllowedMimeTypesInScriptTAg.indexOf(trimQuotes(rAwTypeAttrVAlue)) > -1) {
+								vAlidAteLocAtion = fAlse;
 							}
 						}
 					} else {
 						return;
 					}
 				}
-				else if (node.tag === 'style') {
-					syntax = 'css';
-					validateLocation = false;
+				else if (node.tAg === 'style') {
+					syntAx = 'css';
+					vAlidAteLocAtion = fAlse;
 				} else {
-					if (node.attributes && node.attributes['style']) {
-						const scanner = this.htmlLS.createScanner(document.getText(), node.start);
-						let tokenType = scanner.scan();
+					if (node.Attributes && node.Attributes['style']) {
+						const scAnner = this.htmlLS.creAteScAnner(document.getText(), node.stArt);
+						let tokenType = scAnner.scAn();
 						let prevAttr = undefined;
-						let styleAttrValueRange: [number, number] | undefined = undefined;
-						while (tokenType !== TokenType.EOS && (scanner.getTokenEnd() <= positionOffset)) {
-							tokenType = scanner.scan();
-							if (tokenType === TokenType.AttributeName) {
-								prevAttr = scanner.getTokenText();
+						let styleAttrVAlueRAnge: [number, number] | undefined = undefined;
+						while (tokenType !== TokenType.EOS && (scAnner.getTokenEnd() <= positionOffset)) {
+							tokenType = scAnner.scAn();
+							if (tokenType === TokenType.AttributeNAme) {
+								prevAttr = scAnner.getTokenText();
 							}
-							else if (tokenType === TokenType.AttributeValue && prevAttr === 'style') {
-								styleAttrValueRange = [scanner.getTokenOffset(), scanner.getTokenEnd()];
+							else if (tokenType === TokenType.AttributeVAlue && prevAttr === 'style') {
+								styleAttrVAlueRAnge = [scAnner.getTokenOffset(), scAnner.getTokenEnd()];
 							}
 						}
-						if (prevAttr === 'style' && styleAttrValueRange && positionOffset > styleAttrValueRange[0] && positionOffset < styleAttrValueRange[1]) {
-							syntax = 'css';
-							validateLocation = false;
+						if (prevAttr === 'style' && styleAttrVAlueRAnge && positionOffset > styleAttrVAlueRAnge[0] && positionOffset < styleAttrVAlueRAnge[1]) {
+							syntAx = 'css';
+							vAlidAteLocAtion = fAlse;
 						}
 					}
 				}
 			}
 		}
 
-		const expandOptions = isStyleSheet(syntax) ?
-			{ lookAhead: false, syntax: 'stylesheet' } :
-			{ lookAhead: true, syntax: 'markup' };
-		const extractAbbreviationResults = helper.extractAbbreviation(lsDoc, position, expandOptions);
-		if (!extractAbbreviationResults || !helper.isAbbreviationValid(syntax, extractAbbreviationResults.abbreviation)) {
+		const expAndOptions = isStyleSheet(syntAx) ?
+			{ lookAheAd: fAlse, syntAx: 'stylesheet' } :
+			{ lookAheAd: true, syntAx: 'mArkup' };
+		const extrActAbbreviAtionResults = helper.extrActAbbreviAtion(lsDoc, position, expAndOptions);
+		if (!extrActAbbreviAtionResults || !helper.isAbbreviAtionVAlid(syntAx, extrActAbbreviAtionResults.AbbreviAtion)) {
 			return;
 		}
 
-		if (isStyleSheet(document.languageId) && context.triggerKind !== vscode.CompletionTriggerKind.TriggerForIncompleteCompletions) {
-			validateLocation = true;
-			let usePartialParsing = vscode.workspace.getConfiguration('emmet')['optimizeStylesheetParsing'] === true;
-			rootNode = usePartialParsing && document.lineCount > 1000 ? parsePartialStylesheet(document, position) : <Stylesheet>parseDocument(document, false);
+		if (isStyleSheet(document.lAnguAgeId) && context.triggerKind !== vscode.CompletionTriggerKind.TriggerForIncompleteCompletions) {
+			vAlidAteLocAtion = true;
+			let usePArtiAlPArsing = vscode.workspAce.getConfigurAtion('emmet')['optimizeStylesheetPArsing'] === true;
+			rootNode = usePArtiAlPArsing && document.lineCount > 1000 ? pArsePArtiAlStylesheet(document, position) : <Stylesheet>pArseDocument(document, fAlse);
 			if (!rootNode) {
 				return;
 			}
@@ -157,22 +157,22 @@ export class DefaultCompletionItemProvider implements vscode.CompletionItemProvi
 
 
 
-		if (validateLocation && !isValidLocationForEmmetAbbreviation(document, rootNode, currentNode, syntax, position, toRange(extractAbbreviationResults.abbreviationRange))) {
+		if (vAlidAteLocAtion && !isVAlidLocAtionForEmmetAbbreviAtion(document, rootNode, currentNode, syntAx, position, toRAnge(extrActAbbreviAtionResults.AbbreviAtionRAnge))) {
 			return;
 		}
 
-		let noiseCheckPromise: Thenable<any> = Promise.resolve();
+		let noiseCheckPromise: ThenAble<Any> = Promise.resolve();
 
 		// Fix for https://github.com/microsoft/vscode/issues/32647
-		// Check for document symbols in js/ts/jsx/tsx and avoid triggering emmet for abbreviations of the form symbolName.sometext
-		// Presence of > or * or + in the abbreviation denotes valid abbreviation that should trigger emmet
-		if (!isStyleSheet(syntax) && (document.languageId === 'javascript' || document.languageId === 'javascriptreact' || document.languageId === 'typescript' || document.languageId === 'typescriptreact')) {
-			let abbreviation: string = extractAbbreviationResults.abbreviation;
-			if (abbreviation.startsWith('this.')) {
+		// Check for document symbols in js/ts/jsx/tsx And Avoid triggering emmet for AbbreviAtions of the form symbolNAme.sometext
+		// Presence of > or * or + in the AbbreviAtion denotes vAlid AbbreviAtion thAt should trigger emmet
+		if (!isStyleSheet(syntAx) && (document.lAnguAgeId === 'jAvAscript' || document.lAnguAgeId === 'jAvAscriptreAct' || document.lAnguAgeId === 'typescript' || document.lAnguAgeId === 'typescriptreAct')) {
+			let AbbreviAtion: string = extrActAbbreviAtionResults.AbbreviAtion;
+			if (AbbreviAtion.stArtsWith('this.')) {
 				noiseCheckPromise = Promise.resolve(true);
 			} else {
-				noiseCheckPromise = vscode.commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeDocumentSymbolProvider', document.uri).then((symbols: vscode.SymbolInformation[] | undefined) => {
-					return symbols && symbols.find(x => abbreviation === x.name || (abbreviation.startsWith(x.name + '.') && !/>|\*|\+/.test(abbreviation)));
+				noiseCheckPromise = vscode.commAnds.executeCommAnd<vscode.SymbolInformAtion[]>('vscode.executeDocumentSymbolProvider', document.uri).then((symbols: vscode.SymbolInformAtion[] | undefined) => {
+					return symbols && symbols.find(x => AbbreviAtion === x.nAme || (AbbreviAtion.stArtsWith(x.nAme + '.') && !/>|\*|\+/.test(AbbreviAtion)));
 				});
 			}
 		}
@@ -182,24 +182,24 @@ export class DefaultCompletionItemProvider implements vscode.CompletionItemProvi
 				return;
 			}
 
-			let result = helper.doComplete(toLSTextDocument(document), position, syntax, getEmmetConfiguration(syntax!));
+			let result = helper.doComplete(toLSTextDocument(document), position, syntAx, getEmmetConfigurAtion(syntAx!));
 
 			// https://github.com/microsoft/vscode/issues/86941
 			if (result && result.items && result.items.length === 1) {
-				if (result.items[0].label === 'widows: ;') {
+				if (result.items[0].lAbel === 'widows: ;') {
 					return undefined;
 				}
 			}
 
 			let newItems: vscode.CompletionItem[] = [];
 			if (result && result.items) {
-				result.items.forEach((item: any) => {
-					let newItem = new vscode.CompletionItem(item.label);
-					newItem.documentation = item.documentation;
-					newItem.detail = item.detail;
+				result.items.forEAch((item: Any) => {
+					let newItem = new vscode.CompletionItem(item.lAbel);
+					newItem.documentAtion = item.documentAtion;
+					newItem.detAil = item.detAil;
 					newItem.insertText = new vscode.SnippetString(item.textEdit.newText);
-					let oldrange = item.textEdit.range;
-					newItem.range = new vscode.Range(oldrange.start.line, oldrange.start.character, oldrange.end.line, oldrange.end.character);
+					let oldrAnge = item.textEdit.rAnge;
+					newItem.rAnge = new vscode.RAnge(oldrAnge.stArt.line, oldrAnge.stArt.chArActer, oldrAnge.end.line, oldrAnge.end.chArActer);
 
 					newItem.filterText = item.filterText;
 					newItem.sortText = item.sortText;
@@ -216,6 +216,6 @@ export class DefaultCompletionItemProvider implements vscode.CompletionItemProvi
 	}
 }
 
-function toRange(lsRange: LSRange) {
-	return new vscode.Range(lsRange.start.line, lsRange.start.character, lsRange.end.line, lsRange.end.character);
+function toRAnge(lsRAnge: LSRAnge) {
+	return new vscode.RAnge(lsRAnge.stArt.line, lsRAnge.stArt.chArActer, lsRAnge.end.line, lsRAnge.end.chArActer);
 }

@@ -1,75 +1,75 @@
-/* Game of Life
+/* GAme of Life
  * Implemented in TypeScript
- * To learn more about TypeScript, please visit http://www.typescriptlang.org/
+ * To leArn more About TypeScript, pleAse visit http://www.typescriptlAng.org/
  */
 
-module Conway {
+module ConwAy {
 
-	export class Cell {
+	export clAss Cell {
 		public row: number;
 		public col: number;
-		public live: boolean;
+		public live: booleAn;
 
-		constructor(row: number, col: number, live: boolean) {
+		constructor(row: number, col: number, live: booleAn) {
 			this.row = row;
 			this.col = col;
 			this.live = live
 		}
 	}
 
-	export class GameOfLife {
-		private gridSize: number;
-		private canvasSize: number;
-		private lineColor: string;
-		private liveColor: string;
-		private deadColor: string;
-		private initialLifeProbability: number;
-		private animationRate: number;
-		private cellSize: number;
-		private world;
+	export clAss GAmeOfLife {
+		privAte gridSize: number;
+		privAte cAnvAsSize: number;
+		privAte lineColor: string;
+		privAte liveColor: string;
+		privAte deAdColor: string;
+		privAte initiAlLifeProbAbility: number;
+		privAte AnimAtionRAte: number;
+		privAte cellSize: number;
+		privAte world;
 
 
 		constructor() {
 			this.gridSize = 50;
-			this.canvasSize = 600;
+			this.cAnvAsSize = 600;
 			this.lineColor = '#cdcdcd';
 			this.liveColor = '#666';
-			this.deadColor = '#eee';
-			this.initialLifeProbability = 0.5;
-			this.animationRate = 60;
+			this.deAdColor = '#eee';
+			this.initiAlLifeProbAbility = 0.5;
+			this.AnimAtionRAte = 60;
 			this.cellSize = 0;
-			this.world = this.createWorld();
+			this.world = this.creAteWorld();
 			this.circleOfLife();
 		}
 
-		public createWorld() {
-			return this.travelWorld( (cell : Cell) =>  {
-				cell.live = Math.random() < this.initialLifeProbability;
+		public creAteWorld() {
+			return this.trAvelWorld( (cell : Cell) =>  {
+				cell.live = MAth.rAndom() < this.initiAlLifeProbAbility;
 				return cell;
 			});
 		}
 
 		public circleOfLife() : void {
-			this.world = this.travelWorld( (cell: Cell) => {
+			this.world = this.trAvelWorld( (cell: Cell) => {
 				cell = this.world[cell.row][cell.col];
-				this.draw(cell);
-				return this.resolveNextGeneration(cell);
+				this.drAw(cell);
+				return this.resolveNextGenerAtion(cell);
 			});
-			setTimeout( () => {this.circleOfLife()}, this.animationRate);
+			setTimeout( () => {this.circleOfLife()}, this.AnimAtionRAte);
 		}
 
-		public resolveNextGeneration(cell : Cell) {
-			var count = this.countNeighbors(cell);
-			var newCell = new Cell(cell.row, cell.col, cell.live);
-			if(count < 2 || count > 3) newCell.live = false;
+		public resolveNextGenerAtion(cell : Cell) {
+			vAr count = this.countNeighbors(cell);
+			vAr newCell = new Cell(cell.row, cell.col, cell.live);
+			if(count < 2 || count > 3) newCell.live = fAlse;
 			else if(count == 3) newCell.live = true;
 			return newCell;
 		}
 
 		public countNeighbors(cell : Cell) {
-			var neighbors = 0;
-			for(var row = -1; row <=1; row++) {
-				for(var col = -1; col <= 1; col++) {
+			vAr neighbors = 0;
+			for(vAr row = -1; row <=1; row++) {
+				for(vAr col = -1; col <= 1; col++) {
 					if(row == 0 && col == 0) continue;
 					if(this.isAlive(cell.row + row, cell.col + col)) {
 						neighbors++;
@@ -80,32 +80,32 @@ module Conway {
 		}
 
 		public isAlive(row : number, col : number) {
-			if(row < 0 || col < 0 || row >= this.gridSize || col >= this.gridSize) return false;
+			if(row < 0 || col < 0 || row >= this.gridSize || col >= this.gridSize) return fAlse;
 			return this.world[row][col].live;
 		}
 
-		public travelWorld(callback) {
-			var result = [];
-			for(var row = 0; row < this.gridSize; row++) {
-				var rowData = [];
-				for(var col = 0; col < this.gridSize; col++) {
-					rowData.push(callback(new Cell(row, col, false)));
+		public trAvelWorld(cAllbAck) {
+			vAr result = [];
+			for(vAr row = 0; row < this.gridSize; row++) {
+				vAr rowDAtA = [];
+				for(vAr col = 0; col < this.gridSize; col++) {
+					rowDAtA.push(cAllbAck(new Cell(row, col, fAlse)));
 				}
-				result.push(rowData);
+				result.push(rowDAtA);
 			}
 			return result;
 		}
 
-		public draw(cell : Cell) {
-			if(this.cellSize == 0) this.cellSize = this.canvasSize/this.gridSize;
+		public drAw(cell : Cell) {
+			if(this.cellSize == 0) this.cellSize = this.cAnvAsSize/this.gridSize;
 
 			this.context.strokeStyle = this.lineColor;
 			this.context.strokeRect(cell.row * this.cellSize, cell.col*this.cellSize, this.cellSize, this.cellSize);
-			this.context.fillStyle = cell.live ? this.liveColor : this.deadColor;
+			this.context.fillStyle = cell.live ? this.liveColor : this.deAdColor;
 			this.context.fillRect(cell.row * this.cellSize, cell.col*this.cellSize, this.cellSize, this.cellSize);
 		}
 
 	}
 }
 
-var game = new Conway.GameOfLife();
+vAr gAme = new ConwAy.GAmeOfLife();

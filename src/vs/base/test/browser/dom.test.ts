@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as dom from 'vs/base/browser/dom';
+import * As Assert from 'Assert';
+import * As dom from 'vs/bAse/browser/dom';
 const $ = dom.$;
 
 suite('dom', () => {
-	test('hasClass', () => {
+	test('hAsClAss', () => {
 
-		let element = document.createElement('div');
-		element.className = 'foobar boo far';
+		let element = document.creAteElement('div');
+		element.clAssNAme = 'foobAr boo fAr';
 
-		assert(element.classList.contains('foobar'));
-		assert(element.classList.contains('boo'));
-		assert(element.classList.contains('far'));
-		assert(!element.classList.contains('bar'));
-		assert(!element.classList.contains('foo'));
-		assert(!element.classList.contains(''));
+		Assert(element.clAssList.contAins('foobAr'));
+		Assert(element.clAssList.contAins('boo'));
+		Assert(element.clAssList.contAins('fAr'));
+		Assert(!element.clAssList.contAins('bAr'));
+		Assert(!element.clAssList.contAins('foo'));
+		Assert(!element.clAssList.contAins(''));
 	});
 
-	test('removeClass', () => {
+	test('removeClAss', () => {
 
-		let element = document.createElement('div');
-		element.className = 'foobar boo far';
+		let element = document.creAteElement('div');
+		element.clAssNAme = 'foobAr boo fAr';
 
-		element.classList.remove('boo');
-		assert(element.classList.contains('far'));
-		assert(!element.classList.contains('boo'));
-		assert(element.classList.contains('foobar'));
-		assert.equal(element.className, 'foobar far');
+		element.clAssList.remove('boo');
+		Assert(element.clAssList.contAins('fAr'));
+		Assert(!element.clAssList.contAins('boo'));
+		Assert(element.clAssList.contAins('foobAr'));
+		Assert.equAl(element.clAssNAme, 'foobAr fAr');
 
-		element = document.createElement('div');
-		element.className = 'foobar boo far';
+		element = document.creAteElement('div');
+		element.clAssNAme = 'foobAr boo fAr';
 
-		element.classList.remove('far');
-		assert(!element.classList.contains('far'));
-		assert(element.classList.contains('boo'));
-		assert(element.classList.contains('foobar'));
-		assert.equal(element.className, 'foobar boo');
+		element.clAssList.remove('fAr');
+		Assert(!element.clAssList.contAins('fAr'));
+		Assert(element.clAssList.contAins('boo'));
+		Assert(element.clAssList.contAins('foobAr'));
+		Assert.equAl(element.clAssNAme, 'foobAr boo');
 
-		element.classList.remove('boo');
-		assert(!element.classList.contains('far'));
-		assert(!element.classList.contains('boo'));
-		assert(element.classList.contains('foobar'));
-		assert.equal(element.className, 'foobar');
+		element.clAssList.remove('boo');
+		Assert(!element.clAssList.contAins('fAr'));
+		Assert(!element.clAssList.contAins('boo'));
+		Assert(element.clAssList.contAins('foobAr'));
+		Assert.equAl(element.clAssNAme, 'foobAr');
 
-		element.classList.remove('foobar');
-		assert(!element.classList.contains('far'));
-		assert(!element.classList.contains('boo'));
-		assert(!element.classList.contains('foobar'));
-		assert.equal(element.className, '');
+		element.clAssList.remove('foobAr');
+		Assert(!element.clAssList.contAins('fAr'));
+		Assert(!element.clAssList.contAins('boo'));
+		Assert(!element.clAssList.contAins('foobAr'));
+		Assert.equAl(element.clAssNAme, '');
 	});
 
-	test('removeClass should consider hyphens', function () {
-		let element = document.createElement('div');
+	test('removeClAss should consider hyphens', function () {
+		let element = document.creAteElement('div');
 
-		element.classList.add('foo-bar');
-		element.classList.add('bar');
+		element.clAssList.Add('foo-bAr');
+		element.clAssList.Add('bAr');
 
-		assert(element.classList.contains('foo-bar'));
-		assert(element.classList.contains('bar'));
+		Assert(element.clAssList.contAins('foo-bAr'));
+		Assert(element.clAssList.contAins('bAr'));
 
-		element.classList.remove('bar');
-		assert(element.classList.contains('foo-bar'));
-		assert(!element.classList.contains('bar'));
+		element.clAssList.remove('bAr');
+		Assert(element.clAssList.contAins('foo-bAr'));
+		Assert(!element.clAssList.contAins('bAr'));
 
-		element.classList.remove('foo-bar');
-		assert(!element.classList.contains('foo-bar'));
-		assert(!element.classList.contains('bar'));
+		element.clAssList.remove('foo-bAr');
+		Assert(!element.clAssList.contAins('foo-bAr'));
+		Assert(!element.clAssList.contAins('bAr'));
 	});
 
-	test('multibyteAwareBtoa', () => {
-		assert.equal(dom.multibyteAwareBtoa('hello world'), dom.multibyteAwareBtoa('hello world'));
-		assert.ok(dom.multibyteAwareBtoa('平仮名'));
+	test('multibyteAwAreBtoA', () => {
+		Assert.equAl(dom.multibyteAwAreBtoA('hello world'), dom.multibyteAwAreBtoA('hello world'));
+		Assert.ok(dom.multibyteAwAreBtoA('平仮名'));
 	});
 
 	suite('$', () => {
 		test('should build simple nodes', () => {
 			const div = $('div');
-			assert(div);
-			assert(div instanceof HTMLElement);
-			assert.equal(div.tagName, 'DIV');
-			assert(!div.firstChild);
+			Assert(div);
+			Assert(div instAnceof HTMLElement);
+			Assert.equAl(div.tAgNAme, 'DIV');
+			Assert(!div.firstChild);
 		});
 
 		test('should buld nodes with id', () => {
 			const div = $('div#foo');
-			assert(div);
-			assert(div instanceof HTMLElement);
-			assert.equal(div.tagName, 'DIV');
-			assert.equal(div.id, 'foo');
+			Assert(div);
+			Assert(div instAnceof HTMLElement);
+			Assert.equAl(div.tAgNAme, 'DIV');
+			Assert.equAl(div.id, 'foo');
 		});
 
-		test('should buld nodes with class-name', () => {
+		test('should buld nodes with clAss-nAme', () => {
 			const div = $('div.foo');
-			assert(div);
-			assert(div instanceof HTMLElement);
-			assert.equal(div.tagName, 'DIV');
-			assert.equal(div.className, 'foo');
+			Assert(div);
+			Assert(div instAnceof HTMLElement);
+			Assert.equAl(div.tAgNAme, 'DIV');
+			Assert.equAl(div.clAssNAme, 'foo');
 		});
 
-		test('should build nodes with attributes', () => {
-			let div = $('div', { class: 'test' });
-			assert.equal(div.className, 'test');
+		test('should build nodes with Attributes', () => {
+			let div = $('div', { clAss: 'test' });
+			Assert.equAl(div.clAssNAme, 'test');
 
 			div = $('div', undefined);
-			assert.equal(div.className, '');
+			Assert.equAl(div.clAssNAme, '');
 		});
 
 		test('should build nodes with children', () => {
-			let div = $('div', undefined, $('span', { id: 'demospan' }));
-			let firstChild = div.firstChild as HTMLElement;
-			assert.equal(firstChild.tagName, 'SPAN');
-			assert.equal(firstChild.id, 'demospan');
+			let div = $('div', undefined, $('spAn', { id: 'demospAn' }));
+			let firstChild = div.firstChild As HTMLElement;
+			Assert.equAl(firstChild.tAgNAme, 'SPAN');
+			Assert.equAl(firstChild.id, 'demospAn');
 
 			div = $('div', undefined, 'hello');
 
-			assert.equal(div.firstChild && div.firstChild.textContent, 'hello');
+			Assert.equAl(div.firstChild && div.firstChild.textContent, 'hello');
 		});
 
 		test('should build nodes with text children', () => {
-			let div = $('div', undefined, 'foobar');
-			let firstChild = div.firstChild as HTMLElement;
-			assert.equal(firstChild.tagName, undefined);
-			assert.equal(firstChild.textContent, 'foobar');
+			let div = $('div', undefined, 'foobAr');
+			let firstChild = div.firstChild As HTMLElement;
+			Assert.equAl(firstChild.tAgNAme, undefined);
+			Assert.equAl(firstChild.textContent, 'foobAr');
 		});
 	});
 });

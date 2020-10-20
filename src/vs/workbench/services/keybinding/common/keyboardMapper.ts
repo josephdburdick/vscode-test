@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { ScanCodeBinding } from 'vs/base/common/scanCode';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
+import { Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import { ScAnCodeBinding } from 'vs/bAse/common/scAnCode';
+import { IKeyboArdEvent } from 'vs/plAtform/keybinding/common/keybinding';
 
-export interface IKeyboardMapper {
+export interfAce IKeyboArdMApper {
 	dumpDebugInfo(): string;
 	resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[];
-	resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding;
-	resolveUserBinding(firstPart: (SimpleKeybinding | ScanCodeBinding)[]): ResolvedKeybinding[];
+	resolveKeyboArdEvent(keyboArdEvent: IKeyboArdEvent): ResolvedKeybinding;
+	resolveUserBinding(firstPArt: (SimpleKeybinding | ScAnCodeBinding)[]): ResolvedKeybinding[];
 }
 
-export class CachedKeyboardMapper implements IKeyboardMapper {
+export clAss CAchedKeyboArdMApper implements IKeyboArdMApper {
 
-	private _actual: IKeyboardMapper;
-	private _cache: Map<string, ResolvedKeybinding[]>;
+	privAte _ActuAl: IKeyboArdMApper;
+	privAte _cAche: MAp<string, ResolvedKeybinding[]>;
 
-	constructor(actual: IKeyboardMapper) {
-		this._actual = actual;
-		this._cache = new Map<string, ResolvedKeybinding[]>();
+	constructor(ActuAl: IKeyboArdMApper) {
+		this._ActuAl = ActuAl;
+		this._cAche = new MAp<string, ResolvedKeybinding[]>();
 	}
 
 	public dumpDebugInfo(): string {
-		return this._actual.dumpDebugInfo();
+		return this._ActuAl.dumpDebugInfo();
 	}
 
 	public resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[] {
-		const hashCode = keybinding.getHashCode();
-		const resolved = this._cache.get(hashCode);
+		const hAshCode = keybinding.getHAshCode();
+		const resolved = this._cAche.get(hAshCode);
 		if (!resolved) {
-			const r = this._actual.resolveKeybinding(keybinding);
-			this._cache.set(hashCode, r);
+			const r = this._ActuAl.resolveKeybinding(keybinding);
+			this._cAche.set(hAshCode, r);
 			return r;
 		}
 		return resolved;
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding {
-		return this._actual.resolveKeyboardEvent(keyboardEvent);
+	public resolveKeyboArdEvent(keyboArdEvent: IKeyboArdEvent): ResolvedKeybinding {
+		return this._ActuAl.resolveKeyboArdEvent(keyboArdEvent);
 	}
 
-	public resolveUserBinding(parts: (SimpleKeybinding | ScanCodeBinding)[]): ResolvedKeybinding[] {
-		return this._actual.resolveUserBinding(parts);
+	public resolveUserBinding(pArts: (SimpleKeybinding | ScAnCodeBinding)[]): ResolvedKeybinding[] {
+		return this._ActuAl.resolveUserBinding(pArts);
 	}
 }

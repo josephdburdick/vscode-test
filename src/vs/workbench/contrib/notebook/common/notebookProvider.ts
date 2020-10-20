@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { basename } from 'vs/base/common/path';
-import { INotebookExclusiveDocumentFilter, isDocumentExcludePattern, NotebookEditorPriority, TransientOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import * As glob from 'vs/bAse/common/glob';
+import { URI } from 'vs/bAse/common/uri';
+import { bAsenAme } from 'vs/bAse/common/pAth';
+import { INotebookExclusiveDocumentFilter, isDocumentExcludePAttern, NotebookEditorPriority, TrAnsientOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 
-export type NotebookSelector = string | glob.IRelativePattern | INotebookExclusiveDocumentFilter;
+export type NotebookSelector = string | glob.IRelAtivePAttern | INotebookExclusiveDocumentFilter;
 
-export interface NotebookEditorDescriptor {
-	readonly id: string;
-	readonly displayName: string;
-	readonly selectors: readonly { filenamePattern?: string; excludeFileNamePattern?: string; }[];
-	readonly priority: NotebookEditorPriority;
-	readonly providerExtensionId?: string;
-	readonly providerDescription?: string;
-	readonly providerDisplayName: string;
-	readonly providerExtensionLocation: URI;
-	readonly dynamicContribution: boolean;
-	readonly exclusive: boolean;
+export interfAce NotebookEditorDescriptor {
+	reAdonly id: string;
+	reAdonly displAyNAme: string;
+	reAdonly selectors: reAdonly { filenAmePAttern?: string; excludeFileNAmePAttern?: string; }[];
+	reAdonly priority: NotebookEditorPriority;
+	reAdonly providerExtensionId?: string;
+	reAdonly providerDescription?: string;
+	reAdonly providerDisplAyNAme: string;
+	reAdonly providerExtensionLocAtion: URI;
+	reAdonly dynAmicContribution: booleAn;
+	reAdonly exclusive: booleAn;
 }
 
-export class NotebookProviderInfo {
+export clAss NotebookProviderInfo {
 
-	readonly id: string;
-	readonly displayName: string;
+	reAdonly id: string;
+	reAdonly displAyNAme: string;
 
-	readonly priority: NotebookEditorPriority;
-	// it's optional as the memento might not have it
-	readonly providerExtensionId?: string;
-	readonly providerDescription?: string;
-	readonly providerDisplayName: string;
-	readonly providerExtensionLocation: URI;
-	readonly dynamicContribution: boolean;
-	readonly exclusive: boolean;
-	private _selectors: NotebookSelector[];
+	reAdonly priority: NotebookEditorPriority;
+	// it's optionAl As the memento might not hAve it
+	reAdonly providerExtensionId?: string;
+	reAdonly providerDescription?: string;
+	reAdonly providerDisplAyNAme: string;
+	reAdonly providerExtensionLocAtion: URI;
+	reAdonly dynAmicContribution: booleAn;
+	reAdonly exclusive: booleAn;
+	privAte _selectors: NotebookSelector[];
 	get selectors() {
 		return this._selectors;
 	}
-	private _options: TransientOptions;
+	privAte _options: TrAnsientOptions;
 	get options() {
 		return this._options;
 	}
 
 	constructor(descriptor: NotebookEditorDescriptor) {
 		this.id = descriptor.id;
-		this.displayName = descriptor.displayName;
-		this._selectors = descriptor.selectors?.map(selector => ({
-			include: selector.filenamePattern,
-			exclude: selector.excludeFileNamePattern || ''
+		this.displAyNAme = descriptor.displAyNAme;
+		this._selectors = descriptor.selectors?.mAp(selector => ({
+			include: selector.filenAmePAttern,
+			exclude: selector.excludeFileNAmePAttern || ''
 		})) || [];
 		this.priority = descriptor.priority;
 		this.providerExtensionId = descriptor.providerExtensionId;
 		this.providerDescription = descriptor.providerDescription;
-		this.providerDisplayName = descriptor.providerDisplayName;
-		this.providerExtensionLocation = descriptor.providerExtensionLocation;
-		this.dynamicContribution = descriptor.dynamicContribution;
+		this.providerDisplAyNAme = descriptor.providerDisplAyNAme;
+		this.providerExtensionLocAtion = descriptor.providerExtensionLocAtion;
+		this.dynAmicContribution = descriptor.dynAmicContribution;
 		this.exclusive = descriptor.exclusive;
 		this._options = {
-			transientMetadata: {},
-			transientOutputs: false
+			trAnsientMetAdAtA: {},
+			trAnsientOutputs: fAlse
 		};
 	}
 
-	update(args: { selectors?: NotebookSelector[]; options?: TransientOptions }) {
-		if (args.selectors) {
-			this._selectors = args.selectors;
+	updAte(Args: { selectors?: NotebookSelector[]; options?: TrAnsientOptions }) {
+		if (Args.selectors) {
+			this._selectors = Args.selectors;
 		}
 
-		if (args.options) {
-			this._options = args.options;
+		if (Args.options) {
+			this._options = Args.options;
 		}
 	}
 
-	matches(resource: URI): boolean {
-		return this.selectors?.some(selector => NotebookProviderInfo.selectorMatches(selector, resource));
+	mAtches(resource: URI): booleAn {
+		return this.selectors?.some(selector => NotebookProviderInfo.selectorMAtches(selector, resource));
 	}
 
-	static selectorMatches(selector: NotebookSelector, resource: URI): boolean {
+	stAtic selectorMAtches(selector: NotebookSelector, resource: URI): booleAn {
 		if (typeof selector === 'string') {
-			// filenamePattern
-			if (glob.match(selector.toLowerCase(), basename(resource.fsPath).toLowerCase())) {
+			// filenAmePAttern
+			if (glob.mAtch(selector.toLowerCAse(), bAsenAme(resource.fsPAth).toLowerCAse())) {
 				return true;
 			}
 		}
 
-		if (glob.isRelativePattern(selector)) {
-			if (glob.match(selector, basename(resource.fsPath).toLowerCase())) {
+		if (glob.isRelAtivePAttern(selector)) {
+			if (glob.mAtch(selector, bAsenAme(resource.fsPAth).toLowerCAse())) {
 				return true;
 			}
 		}
 
-		if (!isDocumentExcludePattern(selector)) {
-			return false;
+		if (!isDocumentExcludePAttern(selector)) {
+			return fAlse;
 		}
 
-		let filenamePattern = selector.include;
-		let excludeFilenamePattern = selector.exclude;
+		let filenAmePAttern = selector.include;
+		let excludeFilenAmePAttern = selector.exclude;
 
-		if (glob.match(filenamePattern, basename(resource.fsPath).toLowerCase())) {
-			if (excludeFilenamePattern) {
-				if (glob.match(excludeFilenamePattern, basename(resource.fsPath).toLowerCase())) {
-					return false;
+		if (glob.mAtch(filenAmePAttern, bAsenAme(resource.fsPAth).toLowerCAse())) {
+			if (excludeFilenAmePAttern) {
+				if (glob.mAtch(excludeFilenAmePAttern, bAsenAme(resource.fsPAth).toLowerCAse())) {
+					return fAlse;
 				}
 			}
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
 }

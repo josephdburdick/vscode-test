@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IViewlet } from 'vs/workbench/common/viewlet';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
 import { ViewletDescriptor } from 'vs/workbench/browser/viewlet';
-import { IProgressIndicator } from 'vs/platform/progress/common/progress';
+import { IProgressIndicAtor } from 'vs/plAtform/progress/common/progress';
 
-export const IViewletService = createDecorator<IViewletService>('viewletService');
+export const IViewletService = creAteDecorAtor<IViewletService>('viewletService');
 
-export interface IViewletService {
+export interfAce IViewletService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidViewletRegister: Event<ViewletDescriptor>;
-	readonly onDidViewletDeregister: Event<ViewletDescriptor>;
-	readonly onDidViewletOpen: Event<IViewlet>;
-	readonly onDidViewletClose: Event<IViewlet>;
+	reAdonly onDidViewletRegister: Event<ViewletDescriptor>;
+	reAdonly onDidViewletDeregister: Event<ViewletDescriptor>;
+	reAdonly onDidViewletOpen: Event<IViewlet>;
+	reAdonly onDidViewletClose: Event<IViewlet>;
 
 	/**
-	 * Opens a viewlet with the given identifier and pass keyboard focus to it if specified.
+	 * Opens A viewlet with the given identifier And pAss keyboArd focus to it if specified.
 	 */
-	openViewlet(id: string | undefined, focus?: boolean): Promise<IViewlet | undefined>;
+	openViewlet(id: string | undefined, focus?: booleAn): Promise<IViewlet | undefined>;
 
 	/**
-	 * Returns the current active viewlet if any.
+	 * Returns the current Active viewlet if Any.
 	 */
 	getActiveViewlet(): IViewlet | undefined;
 
@@ -36,22 +36,22 @@ export interface IViewletService {
 	getViewlet(id: string): ViewletDescriptor | undefined;
 
 	/**
-	 * Returns all enabled viewlets
+	 * Returns All enAbled viewlets
 	 */
 	getViewlets(): ViewletDescriptor[];
 
 	/**
-	 * Returns the progress indicator for the side bar.
+	 * Returns the progress indicAtor for the side bAr.
 	 */
-	getProgressIndicator(id: string): IProgressIndicator | undefined;
+	getProgressIndicAtor(id: string): IProgressIndicAtor | undefined;
 
 	/**
-	 * Hide the active viewlet.
+	 * Hide the Active viewlet.
 	 */
 	hideActiveViewlet(): void;
 
 	/**
-	 * Return the last active viewlet id.
+	 * Return the lAst Active viewlet id.
 	 */
-	getLastActiveViewletId(): string;
+	getLAstActiveViewletId(): string;
 }

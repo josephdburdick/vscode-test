@@ -1,118 +1,118 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isFalsyOrEmpty, isNonEmptyArray } from 'vs/base/common/arrays';
-import { Schemas } from 'vs/base/common/network';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IMarkerService, IMarkerData, IResourceMarker, IMarker, MarkerStatistics, MarkerSeverity } from './markers';
-import { ResourceMap } from 'vs/base/common/map';
-import { Iterable } from 'vs/base/common/iterator';
+import { isFAlsyOrEmpty, isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IMArkerService, IMArkerDAtA, IResourceMArker, IMArker, MArkerStAtistics, MArkerSeverity } from './mArkers';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { IterAble } from 'vs/bAse/common/iterAtor';
 
-class DoubleResourceMap<V>{
+clAss DoubleResourceMAp<V>{
 
-	private _byResource = new ResourceMap<Map<string, V>>();
-	private _byOwner = new Map<string, ResourceMap<V>>();
+	privAte _byResource = new ResourceMAp<MAp<string, V>>();
+	privAte _byOwner = new MAp<string, ResourceMAp<V>>();
 
-	set(resource: URI, owner: string, value: V) {
-		let ownerMap = this._byResource.get(resource);
-		if (!ownerMap) {
-			ownerMap = new Map();
-			this._byResource.set(resource, ownerMap);
+	set(resource: URI, owner: string, vAlue: V) {
+		let ownerMAp = this._byResource.get(resource);
+		if (!ownerMAp) {
+			ownerMAp = new MAp();
+			this._byResource.set(resource, ownerMAp);
 		}
-		ownerMap.set(owner, value);
+		ownerMAp.set(owner, vAlue);
 
-		let resourceMap = this._byOwner.get(owner);
-		if (!resourceMap) {
-			resourceMap = new ResourceMap();
-			this._byOwner.set(owner, resourceMap);
+		let resourceMAp = this._byOwner.get(owner);
+		if (!resourceMAp) {
+			resourceMAp = new ResourceMAp();
+			this._byOwner.set(owner, resourceMAp);
 		}
-		resourceMap.set(resource, value);
+		resourceMAp.set(resource, vAlue);
 	}
 
 	get(resource: URI, owner: string): V | undefined {
-		let ownerMap = this._byResource.get(resource);
-		return ownerMap?.get(owner);
+		let ownerMAp = this._byResource.get(resource);
+		return ownerMAp?.get(owner);
 	}
 
-	delete(resource: URI, owner: string): boolean {
-		let removedA = false;
-		let removedB = false;
-		let ownerMap = this._byResource.get(resource);
-		if (ownerMap) {
-			removedA = ownerMap.delete(owner);
+	delete(resource: URI, owner: string): booleAn {
+		let removedA = fAlse;
+		let removedB = fAlse;
+		let ownerMAp = this._byResource.get(resource);
+		if (ownerMAp) {
+			removedA = ownerMAp.delete(owner);
 		}
-		let resourceMap = this._byOwner.get(owner);
-		if (resourceMap) {
-			removedB = resourceMap.delete(resource);
+		let resourceMAp = this._byOwner.get(owner);
+		if (resourceMAp) {
+			removedB = resourceMAp.delete(resource);
 		}
 		if (removedA !== removedB) {
-			throw new Error('illegal state');
+			throw new Error('illegAl stAte');
 		}
 		return removedA && removedB;
 	}
 
-	values(key?: URI | string): Iterable<V> {
+	vAlues(key?: URI | string): IterAble<V> {
 		if (typeof key === 'string') {
-			return this._byOwner.get(key)?.values() ?? Iterable.empty();
+			return this._byOwner.get(key)?.vAlues() ?? IterAble.empty();
 		}
 		if (URI.isUri(key)) {
-			return this._byResource.get(key)?.values() ?? Iterable.empty();
+			return this._byResource.get(key)?.vAlues() ?? IterAble.empty();
 		}
 
-		return Iterable.map(Iterable.concat(...this._byOwner.values()), map => map[1]);
+		return IterAble.mAp(IterAble.concAt(...this._byOwner.vAlues()), mAp => mAp[1]);
 	}
 }
 
-class MarkerStats implements MarkerStatistics {
+clAss MArkerStAts implements MArkerStAtistics {
 
 	errors: number = 0;
 	infos: number = 0;
-	warnings: number = 0;
+	wArnings: number = 0;
 	unknowns: number = 0;
 
-	private readonly _data = new ResourceMap<MarkerStatistics>();
-	private readonly _service: IMarkerService;
-	private readonly _subscription: IDisposable;
+	privAte reAdonly _dAtA = new ResourceMAp<MArkerStAtistics>();
+	privAte reAdonly _service: IMArkerService;
+	privAte reAdonly _subscription: IDisposAble;
 
-	constructor(service: IMarkerService) {
+	constructor(service: IMArkerService) {
 		this._service = service;
-		this._subscription = service.onMarkerChanged(this._update, this);
+		this._subscription = service.onMArkerChAnged(this._updAte, this);
 	}
 
 	dispose(): void {
 		this._subscription.dispose();
 	}
 
-	private _update(resources: readonly URI[]): void {
+	privAte _updAte(resources: reAdonly URI[]): void {
 		for (const resource of resources) {
-			const oldStats = this._data.get(resource);
-			if (oldStats) {
-				this._substract(oldStats);
+			const oldStAts = this._dAtA.get(resource);
+			if (oldStAts) {
+				this._substrAct(oldStAts);
 			}
-			const newStats = this._resourceStats(resource);
-			this._add(newStats);
-			this._data.set(resource, newStats);
+			const newStAts = this._resourceStAts(resource);
+			this._Add(newStAts);
+			this._dAtA.set(resource, newStAts);
 		}
 	}
 
-	private _resourceStats(resource: URI): MarkerStatistics {
-		const result: MarkerStatistics = { errors: 0, warnings: 0, infos: 0, unknowns: 0 };
+	privAte _resourceStAts(resource: URI): MArkerStAtistics {
+		const result: MArkerStAtistics = { errors: 0, wArnings: 0, infos: 0, unknowns: 0 };
 
-		// TODO this is a hack
-		if (resource.scheme === Schemas.inMemory || resource.scheme === Schemas.walkThrough || resource.scheme === Schemas.walkThroughSnippet) {
+		// TODO this is A hAck
+		if (resource.scheme === SchemAs.inMemory || resource.scheme === SchemAs.wAlkThrough || resource.scheme === SchemAs.wAlkThroughSnippet) {
 			return result;
 		}
 
-		for (const { severity } of this._service.read({ resource })) {
-			if (severity === MarkerSeverity.Error) {
+		for (const { severity } of this._service.reAd({ resource })) {
+			if (severity === MArkerSeverity.Error) {
 				result.errors += 1;
-			} else if (severity === MarkerSeverity.Warning) {
-				result.warnings += 1;
-			} else if (severity === MarkerSeverity.Info) {
+			} else if (severity === MArkerSeverity.WArning) {
+				result.wArnings += 1;
+			} else if (severity === MArkerSeverity.Info) {
 				result.infos += 1;
 			} else {
 				result.unknowns += 1;
@@ -122,173 +122,173 @@ class MarkerStats implements MarkerStatistics {
 		return result;
 	}
 
-	private _substract(op: MarkerStatistics) {
+	privAte _substrAct(op: MArkerStAtistics) {
 		this.errors -= op.errors;
-		this.warnings -= op.warnings;
+		this.wArnings -= op.wArnings;
 		this.infos -= op.infos;
 		this.unknowns -= op.unknowns;
 	}
 
-	private _add(op: MarkerStatistics) {
+	privAte _Add(op: MArkerStAtistics) {
 		this.errors += op.errors;
-		this.warnings += op.warnings;
+		this.wArnings += op.wArnings;
 		this.infos += op.infos;
 		this.unknowns += op.unknowns;
 	}
 }
 
-export class MarkerService implements IMarkerService {
+export clAss MArkerService implements IMArkerService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onMarkerChanged = new Emitter<readonly URI[]>();
-	readonly onMarkerChanged: Event<readonly URI[]> = Event.debounce(this._onMarkerChanged.event, MarkerService._debouncer, 0);
+	privAte reAdonly _onMArkerChAnged = new Emitter<reAdonly URI[]>();
+	reAdonly onMArkerChAnged: Event<reAdonly URI[]> = Event.debounce(this._onMArkerChAnged.event, MArkerService._debouncer, 0);
 
-	private readonly _data = new DoubleResourceMap<IMarker[]>();
-	private readonly _stats: MarkerStats;
+	privAte reAdonly _dAtA = new DoubleResourceMAp<IMArker[]>();
+	privAte reAdonly _stAts: MArkerStAts;
 
 	constructor() {
-		this._stats = new MarkerStats(this);
+		this._stAts = new MArkerStAts(this);
 	}
 
 	dispose(): void {
-		this._stats.dispose();
+		this._stAts.dispose();
 	}
 
-	getStatistics(): MarkerStatistics {
-		return this._stats;
+	getStAtistics(): MArkerStAtistics {
+		return this._stAts;
 	}
 
 	remove(owner: string, resources: URI[]): void {
 		for (const resource of resources || []) {
-			this.changeOne(owner, resource, []);
+			this.chAngeOne(owner, resource, []);
 		}
 	}
 
-	changeOne(owner: string, resource: URI, markerData: IMarkerData[]): void {
+	chAngeOne(owner: string, resource: URI, mArkerDAtA: IMArkerDAtA[]): void {
 
-		if (isFalsyOrEmpty(markerData)) {
-			// remove marker for this (owner,resource)-tuple
-			const removed = this._data.delete(resource, owner);
+		if (isFAlsyOrEmpty(mArkerDAtA)) {
+			// remove mArker for this (owner,resource)-tuple
+			const removed = this._dAtA.delete(resource, owner);
 			if (removed) {
-				this._onMarkerChanged.fire([resource]);
+				this._onMArkerChAnged.fire([resource]);
 			}
 
 		} else {
-			// insert marker for this (owner,resource)-tuple
-			const markers: IMarker[] = [];
-			for (const data of markerData) {
-				const marker = MarkerService._toMarker(owner, resource, data);
-				if (marker) {
-					markers.push(marker);
+			// insert mArker for this (owner,resource)-tuple
+			const mArkers: IMArker[] = [];
+			for (const dAtA of mArkerDAtA) {
+				const mArker = MArkerService._toMArker(owner, resource, dAtA);
+				if (mArker) {
+					mArkers.push(mArker);
 				}
 			}
-			this._data.set(resource, owner, markers);
-			this._onMarkerChanged.fire([resource]);
+			this._dAtA.set(resource, owner, mArkers);
+			this._onMArkerChAnged.fire([resource]);
 		}
 	}
 
-	private static _toMarker(owner: string, resource: URI, data: IMarkerData): IMarker | undefined {
+	privAte stAtic _toMArker(owner: string, resource: URI, dAtA: IMArkerDAtA): IMArker | undefined {
 		let {
 			code, severity,
-			message, source,
-			startLineNumber, startColumn, endLineNumber, endColumn,
-			relatedInformation,
-			tags,
-		} = data;
+			messAge, source,
+			stArtLineNumber, stArtColumn, endLineNumber, endColumn,
+			relAtedInformAtion,
+			tAgs,
+		} = dAtA;
 
-		if (!message) {
+		if (!messAge) {
 			return undefined;
 		}
 
-		// santize data
-		startLineNumber = startLineNumber > 0 ? startLineNumber : 1;
-		startColumn = startColumn > 0 ? startColumn : 1;
-		endLineNumber = endLineNumber >= startLineNumber ? endLineNumber : startLineNumber;
-		endColumn = endColumn > 0 ? endColumn : startColumn;
+		// sAntize dAtA
+		stArtLineNumber = stArtLineNumber > 0 ? stArtLineNumber : 1;
+		stArtColumn = stArtColumn > 0 ? stArtColumn : 1;
+		endLineNumber = endLineNumber >= stArtLineNumber ? endLineNumber : stArtLineNumber;
+		endColumn = endColumn > 0 ? endColumn : stArtColumn;
 
 		return {
 			resource,
 			owner,
 			code,
 			severity,
-			message,
+			messAge,
 			source,
-			startLineNumber,
-			startColumn,
+			stArtLineNumber,
+			stArtColumn,
 			endLineNumber,
 			endColumn,
-			relatedInformation,
-			tags,
+			relAtedInformAtion,
+			tAgs,
 		};
 	}
 
-	changeAll(owner: string, data: IResourceMarker[]): void {
-		const changes: URI[] = [];
+	chAngeAll(owner: string, dAtA: IResourceMArker[]): void {
+		const chAnges: URI[] = [];
 
-		// remove old marker
-		const existing = this._data.values(owner);
+		// remove old mArker
+		const existing = this._dAtA.vAlues(owner);
 		if (existing) {
-			for (let data of existing) {
-				const first = Iterable.first(data);
+			for (let dAtA of existing) {
+				const first = IterAble.first(dAtA);
 				if (first) {
-					changes.push(first.resource);
-					this._data.delete(first.resource, owner);
+					chAnges.push(first.resource);
+					this._dAtA.delete(first.resource, owner);
 				}
 			}
 		}
 
-		// add new markers
-		if (isNonEmptyArray(data)) {
+		// Add new mArkers
+		if (isNonEmptyArrAy(dAtA)) {
 
 			// group by resource
-			const groups = new ResourceMap<IMarker[]>();
-			for (const { resource, marker: markerData } of data) {
-				const marker = MarkerService._toMarker(owner, resource, markerData);
-				if (!marker) {
-					// filter bad markers
+			const groups = new ResourceMAp<IMArker[]>();
+			for (const { resource, mArker: mArkerDAtA } of dAtA) {
+				const mArker = MArkerService._toMArker(owner, resource, mArkerDAtA);
+				if (!mArker) {
+					// filter bAd mArkers
 					continue;
 				}
-				const array = groups.get(resource);
-				if (!array) {
-					groups.set(resource, [marker]);
-					changes.push(resource);
+				const ArrAy = groups.get(resource);
+				if (!ArrAy) {
+					groups.set(resource, [mArker]);
+					chAnges.push(resource);
 				} else {
-					array.push(marker);
+					ArrAy.push(mArker);
 				}
 			}
 
-			// insert all
-			for (const [resource, value] of groups) {
-				this._data.set(resource, owner, value);
+			// insert All
+			for (const [resource, vAlue] of groups) {
+				this._dAtA.set(resource, owner, vAlue);
 			}
 		}
 
-		if (changes.length > 0) {
-			this._onMarkerChanged.fire(changes);
+		if (chAnges.length > 0) {
+			this._onMArkerChAnged.fire(chAnges);
 		}
 	}
 
-	read(filter: { owner?: string; resource?: URI; severities?: number, take?: number; } = Object.create(null)): IMarker[] {
+	reAd(filter: { owner?: string; resource?: URI; severities?: number, tAke?: number; } = Object.creAte(null)): IMArker[] {
 
-		let { owner, resource, severities, take } = filter;
+		let { owner, resource, severities, tAke } = filter;
 
-		if (!take || take < 0) {
-			take = -1;
+		if (!tAke || tAke < 0) {
+			tAke = -1;
 		}
 
 		if (owner && resource) {
-			// exactly one owner AND resource
-			const data = this._data.get(resource, owner);
-			if (!data) {
+			// exActly one owner AND resource
+			const dAtA = this._dAtA.get(resource, owner);
+			if (!dAtA) {
 				return [];
 			} else {
-				const result: IMarker[] = [];
-				for (const marker of data) {
-					if (MarkerService._accept(marker, severities)) {
-						const newLen = result.push(marker);
-						if (take > 0 && newLen === take) {
-							break;
+				const result: IMArker[] = [];
+				for (const mArker of dAtA) {
+					if (MArkerService._Accept(mArker, severities)) {
+						const newLen = result.push(mArker);
+						if (tAke > 0 && newLen === tAke) {
+							breAk;
 						}
 					}
 				}
@@ -296,13 +296,13 @@ export class MarkerService implements IMarkerService {
 			}
 
 		} else if (!owner && !resource) {
-			// all
-			const result: IMarker[] = [];
-			for (let markers of this._data.values()) {
-				for (let data of markers) {
-					if (MarkerService._accept(data, severities)) {
-						const newLen = result.push(data);
-						if (take > 0 && newLen === take) {
+			// All
+			const result: IMArker[] = [];
+			for (let mArkers of this._dAtA.vAlues()) {
+				for (let dAtA of mArkers) {
+					if (MArkerService._Accept(dAtA, severities)) {
+						const newLen = result.push(dAtA);
+						if (tAke > 0 && newLen === tAke) {
 							return result;
 						}
 					}
@@ -312,13 +312,13 @@ export class MarkerService implements IMarkerService {
 
 		} else {
 			// of one resource OR owner
-			const iterable = this._data.values(resource ?? owner!);
-			const result: IMarker[] = [];
-			for (const markers of iterable) {
-				for (const data of markers) {
-					if (MarkerService._accept(data, severities)) {
-						const newLen = result.push(data);
-						if (take > 0 && newLen === take) {
+			const iterAble = this._dAtA.vAlues(resource ?? owner!);
+			const result: IMArker[] = [];
+			for (const mArkers of iterAble) {
+				for (const dAtA of mArkers) {
+					if (MArkerService._Accept(dAtA, severities)) {
+						const newLen = result.push(dAtA);
+						if (tAke > 0 && newLen === tAke) {
 							return result;
 						}
 					}
@@ -328,25 +328,25 @@ export class MarkerService implements IMarkerService {
 		}
 	}
 
-	private static _accept(marker: IMarker, severities?: number): boolean {
-		return severities === undefined || (severities & marker.severity) === marker.severity;
+	privAte stAtic _Accept(mArker: IMArker, severities?: number): booleAn {
+		return severities === undefined || (severities & mArker.severity) === mArker.severity;
 	}
 
 	// --- event debounce logic
 
-	private static _dedupeMap: ResourceMap<true>;
+	privAte stAtic _dedupeMAp: ResourceMAp<true>;
 
-	private static _debouncer(last: URI[] | undefined, event: readonly URI[]): URI[] {
-		if (!last) {
-			MarkerService._dedupeMap = new ResourceMap();
-			last = [];
+	privAte stAtic _debouncer(lAst: URI[] | undefined, event: reAdonly URI[]): URI[] {
+		if (!lAst) {
+			MArkerService._dedupeMAp = new ResourceMAp();
+			lAst = [];
 		}
 		for (const uri of event) {
-			if (!MarkerService._dedupeMap.has(uri)) {
-				MarkerService._dedupeMap.set(uri, true);
-				last.push(uri);
+			if (!MArkerService._dedupeMAp.hAs(uri)) {
+				MArkerService._dedupeMAp.set(uri, true);
+				lAst.push(uri);
 			}
 		}
-		return last;
+		return lAst;
 	}
 }

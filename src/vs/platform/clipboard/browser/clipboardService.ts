@@ -1,100 +1,100 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { URI } from 'vs/base/common/uri';
-import { $ } from 'vs/base/browser/dom';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { URI } from 'vs/bAse/common/uri';
+import { $ } from 'vs/bAse/browser/dom';
 
-export class BrowserClipboardService implements IClipboardService {
+export clAss BrowserClipboArdService implements IClipboArdService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly mapTextToType = new Map<string, string>(); // unsupported in web (only in-memory)
+	privAte reAdonly mApTextToType = new MAp<string, string>(); // unsupported in web (only in-memory)
 
-	async writeText(text: string, type?: string): Promise<void> {
+	Async writeText(text: string, type?: string): Promise<void> {
 
 		// With type: only in-memory is supported
 		if (type) {
-			this.mapTextToType.set(type, text);
+			this.mApTextToType.set(type, text);
 
 			return;
 		}
 
-		// Guard access to navigator.clipboard with try/catch
-		// as we have seen DOMExceptions in certain browsers
+		// GuArd Access to nAvigAtor.clipboArd with try/cAtch
+		// As we hAve seen DOMExceptions in certAin browsers
 		// due to security policies.
 		try {
-			return await navigator.clipboard.writeText(text);
-		} catch (error) {
+			return AwAit nAvigAtor.clipboArd.writeText(text);
+		} cAtch (error) {
 			console.error(error);
 		}
 
-		// Fallback to textarea and execCommand solution
+		// FAllbAck to textAreA And execCommAnd solution
 
-		const activeElement = document.activeElement;
+		const ActiveElement = document.ActiveElement;
 
-		const textArea: HTMLTextAreaElement = document.body.appendChild($('textarea', { 'aria-hidden': true }));
-		textArea.style.height = '1px';
-		textArea.style.width = '1px';
-		textArea.style.position = 'absolute';
+		const textAreA: HTMLTextAreAElement = document.body.AppendChild($('textAreA', { 'AriA-hidden': true }));
+		textAreA.style.height = '1px';
+		textAreA.style.width = '1px';
+		textAreA.style.position = 'Absolute';
 
-		textArea.value = text;
-		textArea.focus();
-		textArea.select();
+		textAreA.vAlue = text;
+		textAreA.focus();
+		textAreA.select();
 
-		document.execCommand('copy');
+		document.execCommAnd('copy');
 
-		if (activeElement instanceof HTMLElement) {
-			activeElement.focus();
+		if (ActiveElement instAnceof HTMLElement) {
+			ActiveElement.focus();
 		}
 
-		document.body.removeChild(textArea);
+		document.body.removeChild(textAreA);
 
 		return;
 	}
 
-	async readText(type?: string): Promise<string> {
+	Async reAdText(type?: string): Promise<string> {
 
 		// With type: only in-memory is supported
 		if (type) {
-			return this.mapTextToType.get(type) || '';
+			return this.mApTextToType.get(type) || '';
 		}
 
-		// Guard access to navigator.clipboard with try/catch
-		// as we have seen DOMExceptions in certain browsers
+		// GuArd Access to nAvigAtor.clipboArd with try/cAtch
+		// As we hAve seen DOMExceptions in certAin browsers
 		// due to security policies.
 		try {
-			return await navigator.clipboard.readText();
-		} catch (error) {
+			return AwAit nAvigAtor.clipboArd.reAdText();
+		} cAtch (error) {
 			console.error(error);
 
 			return '';
 		}
 	}
 
-	private findText = ''; // unsupported in web (only in-memory)
+	privAte findText = ''; // unsupported in web (only in-memory)
 
-	async readFindText(): Promise<string> {
+	Async reAdFindText(): Promise<string> {
 		return this.findText;
 	}
 
-	async writeFindText(text: string): Promise<void> {
+	Async writeFindText(text: string): Promise<void> {
 		this.findText = text;
 	}
 
-	private resources: URI[] = []; // unsupported in web (only in-memory)
+	privAte resources: URI[] = []; // unsupported in web (only in-memory)
 
-	async writeResources(resources: URI[]): Promise<void> {
+	Async writeResources(resources: URI[]): Promise<void> {
 		this.resources = resources;
 	}
 
-	async readResources(): Promise<URI[]> {
+	Async reAdResources(): Promise<URI[]> {
 		return this.resources;
 	}
 
-	async hasResources(): Promise<boolean> {
+	Async hAsResources(): Promise<booleAn> {
 		return this.resources.length > 0;
 	}
 }

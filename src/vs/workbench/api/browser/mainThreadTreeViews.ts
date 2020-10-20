@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ExtHostContext, MainThreadTreeViewsShape, ExtHostTreeViewsShape, MainContext, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ITreeViewDataProvider, ITreeItem, IViewsService, ITreeView, IViewsRegistry, ITreeViewDescriptor, IRevealOptions, Extensions, ResolvableTreeItem } from 'vs/workbench/common/views';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { distinct } from 'vs/base/common/arrays';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { isUndefinedOrNull, isNumber } from 'vs/base/common/types';
-import { Registry } from 'vs/platform/registry/common/platform';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ExtHostContext, MAinThreAdTreeViewsShApe, ExtHostTreeViewsShApe, MAinContext, IExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { ITreeViewDAtAProvider, ITreeItem, IViewsService, ITreeView, IViewsRegistry, ITreeViewDescriptor, IReveAlOptions, Extensions, ResolvAbleTreeItem } from 'vs/workbench/common/views';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { distinct } from 'vs/bAse/common/ArrAys';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { isUndefinedOrNull, isNumber } from 'vs/bAse/common/types';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
-@extHostNamedCustomer(MainContext.MainThreadTreeViews)
-export class MainThreadTreeViews extends Disposable implements MainThreadTreeViewsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdTreeViews)
+export clAss MAinThreAdTreeViews extends DisposAble implements MAinThreAdTreeViewsShApe {
 
-	private readonly _proxy: ExtHostTreeViewsShape;
-	private readonly _dataProviders: Map<string, TreeViewDataProvider> = new Map<string, TreeViewDataProvider>();
+	privAte reAdonly _proxy: ExtHostTreeViewsShApe;
+	privAte reAdonly _dAtAProviders: MAp<string, TreeViewDAtAProvider> = new MAp<string, TreeViewDAtAProvider>();
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IViewsService private readonly viewsService: IViewsService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@ILogService private readonly logService: ILogService
+		@IViewsService privAte reAdonly viewsService: IViewsService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@ILogService privAte reAdonly logService: ILogService
 	) {
 		super();
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostTreeViews);
 	}
 
-	$registerTreeViewDataProvider(treeViewId: string, options: { showCollapseAll: boolean, canSelectMany: boolean }): void {
-		this.logService.trace('MainThreadTreeViews#$registerTreeViewDataProvider', treeViewId, options);
+	$registerTreeViewDAtAProvider(treeViewId: string, options: { showCollApseAll: booleAn, cAnSelectMAny: booleAn }): void {
+		this.logService.trAce('MAinThreAdTreeViews#$registerTreeViewDAtAProvider', treeViewId, options);
 
-		this.extensionService.whenInstalledExtensionsRegistered().then(() => {
-			const dataProvider = new TreeViewDataProvider(treeViewId, this._proxy, this.notificationService);
-			this._dataProviders.set(treeViewId, dataProvider);
+		this.extensionService.whenInstAlledExtensionsRegistered().then(() => {
+			const dAtAProvider = new TreeViewDAtAProvider(treeViewId, this._proxy, this.notificAtionService);
+			this._dAtAProviders.set(treeViewId, dAtAProvider);
 			const viewer = this.getTreeView(treeViewId);
 			if (viewer) {
-				// Order is important here. The internal tree isn't created until the dataProvider is set.
-				// Set all other properties first!
-				viewer.showCollapseAllAction = !!options.showCollapseAll;
-				viewer.canSelectMany = !!options.canSelectMany;
-				viewer.dataProvider = dataProvider;
+				// Order is importAnt here. The internAl tree isn't creAted until the dAtAProvider is set.
+				// Set All other properties first!
+				viewer.showCollApseAllAction = !!options.showCollApseAll;
+				viewer.cAnSelectMAny = !!options.cAnSelectMAny;
+				viewer.dAtAProvider = dAtAProvider;
 				this.registerListeners(treeViewId, viewer);
 				this._proxy.$setVisible(treeViewId, viewer.visible);
 			} else {
-				this.notificationService.error('No view is registered with id: ' + treeViewId);
+				this.notificAtionService.error('No view is registered with id: ' + treeViewId);
 			}
 		});
 	}
 
-	$reveal(treeViewId: string, item: ITreeItem, parentChain: ITreeItem[], options: IRevealOptions): Promise<void> {
-		this.logService.trace('MainThreadTreeViews#$reveal', treeViewId, item, parentChain, options);
+	$reveAl(treeViewId: string, item: ITreeItem, pArentChAin: ITreeItem[], options: IReveAlOptions): Promise<void> {
+		this.logService.trAce('MAinThreAdTreeViews#$reveAl', treeViewId, item, pArentChAin, options);
 
 		return this.viewsService.openView(treeViewId, options.focus)
 			.then(() => {
 				const viewer = this.getTreeView(treeViewId);
 				if (viewer) {
-					return this.reveal(viewer, this._dataProviders.get(treeViewId)!, item, parentChain, options);
+					return this.reveAl(viewer, this._dAtAProviders.get(treeViewId)!, item, pArentChAin, options);
 				}
 				return undefined;
 			});
 	}
 
-	$refresh(treeViewId: string, itemsToRefreshByHandle: { [treeItemHandle: string]: ITreeItem }): Promise<void> {
-		this.logService.trace('MainThreadTreeViews#$refresh', treeViewId, itemsToRefreshByHandle);
+	$refresh(treeViewId: string, itemsToRefreshByHAndle: { [treeItemHAndle: string]: ITreeItem }): Promise<void> {
+		this.logService.trAce('MAinThreAdTreeViews#$refresh', treeViewId, itemsToRefreshByHAndle);
 
 		const viewer = this.getTreeView(treeViewId);
-		const dataProvider = this._dataProviders.get(treeViewId);
-		if (viewer && dataProvider) {
-			const itemsToRefresh = dataProvider.getItemsToRefresh(itemsToRefreshByHandle);
+		const dAtAProvider = this._dAtAProviders.get(treeViewId);
+		if (viewer && dAtAProvider) {
+			const itemsToRefresh = dAtAProvider.getItemsToRefresh(itemsToRefreshByHAndle);
 			return viewer.refresh(itemsToRefresh.length ? itemsToRefresh : undefined);
 		}
 		return Promise.resolve();
 	}
 
-	$setMessage(treeViewId: string, message: string): void {
-		this.logService.trace('MainThreadTreeViews#$setMessage', treeViewId, message);
+	$setMessAge(treeViewId: string, messAge: string): void {
+		this.logService.trAce('MAinThreAdTreeViews#$setMessAge', treeViewId, messAge);
 
 		const viewer = this.getTreeView(treeViewId);
 		if (viewer) {
-			viewer.message = message;
+			viewer.messAge = messAge;
 		}
 	}
 
 	$setTitle(treeViewId: string, title: string, description: string | undefined): void {
-		this.logService.trace('MainThreadTreeViews#$setTitle', treeViewId, title, description);
+		this.logService.trAce('MAinThreAdTreeViews#$setTitle', treeViewId, title, description);
 
 		const viewer = this.getTreeView(treeViewId);
 		if (viewer) {
@@ -96,111 +96,111 @@ export class MainThreadTreeViews extends Disposable implements MainThreadTreeVie
 		}
 	}
 
-	private async reveal(treeView: ITreeView, dataProvider: TreeViewDataProvider, itemIn: ITreeItem, parentChain: ITreeItem[], options: IRevealOptions): Promise<void> {
-		options = options ? options : { select: false, focus: false };
-		const select = isUndefinedOrNull(options.select) ? false : options.select;
-		const focus = isUndefinedOrNull(options.focus) ? false : options.focus;
-		let expand = Math.min(isNumber(options.expand) ? options.expand : options.expand === true ? 1 : 0, 3);
+	privAte Async reveAl(treeView: ITreeView, dAtAProvider: TreeViewDAtAProvider, itemIn: ITreeItem, pArentChAin: ITreeItem[], options: IReveAlOptions): Promise<void> {
+		options = options ? options : { select: fAlse, focus: fAlse };
+		const select = isUndefinedOrNull(options.select) ? fAlse : options.select;
+		const focus = isUndefinedOrNull(options.focus) ? fAlse : options.focus;
+		let expAnd = MAth.min(isNumber(options.expAnd) ? options.expAnd : options.expAnd === true ? 1 : 0, 3);
 
-		if (dataProvider.isEmpty()) {
+		if (dAtAProvider.isEmpty()) {
 			// Refresh if empty
-			await treeView.refresh();
+			AwAit treeView.refresh();
 		}
-		for (const parent of parentChain) {
-			const parentItem = dataProvider.getItem(parent.handle);
-			if (parentItem) {
-				await treeView.expand(parentItem);
+		for (const pArent of pArentChAin) {
+			const pArentItem = dAtAProvider.getItem(pArent.hAndle);
+			if (pArentItem) {
+				AwAit treeView.expAnd(pArentItem);
 			}
 		}
-		const item = dataProvider.getItem(itemIn.handle);
+		const item = dAtAProvider.getItem(itemIn.hAndle);
 		if (item) {
-			await treeView.reveal(item);
+			AwAit treeView.reveAl(item);
 			if (select) {
 				treeView.setSelection([item]);
 			}
 			if (focus) {
 				treeView.setFocus(item);
 			}
-			let itemsToExpand = [item];
-			for (; itemsToExpand.length > 0 && expand > 0; expand--) {
-				await treeView.expand(itemsToExpand);
-				itemsToExpand = itemsToExpand.reduce((result, itemValue) => {
-					const item = dataProvider.getItem(itemValue.handle);
+			let itemsToExpAnd = [item];
+			for (; itemsToExpAnd.length > 0 && expAnd > 0; expAnd--) {
+				AwAit treeView.expAnd(itemsToExpAnd);
+				itemsToExpAnd = itemsToExpAnd.reduce((result, itemVAlue) => {
+					const item = dAtAProvider.getItem(itemVAlue.hAndle);
 					if (item && item.children && item.children.length) {
 						result.push(...item.children);
 					}
 					return result;
-				}, [] as ITreeItem[]);
+				}, [] As ITreeItem[]);
 			}
 		}
 	}
 
-	private registerListeners(treeViewId: string, treeView: ITreeView): void {
-		this._register(treeView.onDidExpandItem(item => this._proxy.$setExpanded(treeViewId, item.handle, true)));
-		this._register(treeView.onDidCollapseItem(item => this._proxy.$setExpanded(treeViewId, item.handle, false)));
-		this._register(treeView.onDidChangeSelection(items => this._proxy.$setSelection(treeViewId, items.map(({ handle }) => handle))));
-		this._register(treeView.onDidChangeVisibility(isVisible => this._proxy.$setVisible(treeViewId, isVisible)));
+	privAte registerListeners(treeViewId: string, treeView: ITreeView): void {
+		this._register(treeView.onDidExpAndItem(item => this._proxy.$setExpAnded(treeViewId, item.hAndle, true)));
+		this._register(treeView.onDidCollApseItem(item => this._proxy.$setExpAnded(treeViewId, item.hAndle, fAlse)));
+		this._register(treeView.onDidChAngeSelection(items => this._proxy.$setSelection(treeViewId, items.mAp(({ hAndle }) => hAndle))));
+		this._register(treeView.onDidChAngeVisibility(isVisible => this._proxy.$setVisible(treeViewId, isVisible)));
 	}
 
-	private getTreeView(treeViewId: string): ITreeView | null {
-		const viewDescriptor: ITreeViewDescriptor = <ITreeViewDescriptor>Registry.as<IViewsRegistry>(Extensions.ViewsRegistry).getView(treeViewId);
+	privAte getTreeView(treeViewId: string): ITreeView | null {
+		const viewDescriptor: ITreeViewDescriptor = <ITreeViewDescriptor>Registry.As<IViewsRegistry>(Extensions.ViewsRegistry).getView(treeViewId);
 		return viewDescriptor ? viewDescriptor.treeView : null;
 	}
 
 	dispose(): void {
-		this._dataProviders.forEach((dataProvider, treeViewId) => {
+		this._dAtAProviders.forEAch((dAtAProvider, treeViewId) => {
 			const treeView = this.getTreeView(treeViewId);
 			if (treeView) {
-				treeView.dataProvider = undefined;
+				treeView.dAtAProvider = undefined;
 			}
 		});
-		this._dataProviders.clear();
+		this._dAtAProviders.cleAr();
 		super.dispose();
 	}
 }
 
-type TreeItemHandle = string;
+type TreeItemHAndle = string;
 
-class TreeViewDataProvider implements ITreeViewDataProvider {
+clAss TreeViewDAtAProvider implements ITreeViewDAtAProvider {
 
-	private readonly itemsMap: Map<TreeItemHandle, ITreeItem> = new Map<TreeItemHandle, ITreeItem>();
-	private hasResolve: Promise<boolean>;
+	privAte reAdonly itemsMAp: MAp<TreeItemHAndle, ITreeItem> = new MAp<TreeItemHAndle, ITreeItem>();
+	privAte hAsResolve: Promise<booleAn>;
 
-	constructor(private readonly treeViewId: string,
-		private readonly _proxy: ExtHostTreeViewsShape,
-		private readonly notificationService: INotificationService
+	constructor(privAte reAdonly treeViewId: string,
+		privAte reAdonly _proxy: ExtHostTreeViewsShApe,
+		privAte reAdonly notificAtionService: INotificAtionService
 	) {
-		this.hasResolve = this._proxy.$hasResolve(this.treeViewId);
+		this.hAsResolve = this._proxy.$hAsResolve(this.treeViewId);
 	}
 
 	getChildren(treeItem?: ITreeItem): Promise<ITreeItem[]> {
-		return Promise.resolve(this._proxy.$getChildren(this.treeViewId, treeItem ? treeItem.handle : undefined)
+		return Promise.resolve(this._proxy.$getChildren(this.treeViewId, treeItem ? treeItem.hAndle : undefined)
 			.then(
 				children => this.postGetChildren(children),
 				err => {
-					this.notificationService.error(err);
+					this.notificAtionService.error(err);
 					return [];
 				}));
 	}
 
-	getItemsToRefresh(itemsToRefreshByHandle: { [treeItemHandle: string]: ITreeItem }): ITreeItem[] {
+	getItemsToRefresh(itemsToRefreshByHAndle: { [treeItemHAndle: string]: ITreeItem }): ITreeItem[] {
 		const itemsToRefresh: ITreeItem[] = [];
-		if (itemsToRefreshByHandle) {
-			for (const treeItemHandle of Object.keys(itemsToRefreshByHandle)) {
-				const currentTreeItem = this.getItem(treeItemHandle);
+		if (itemsToRefreshByHAndle) {
+			for (const treeItemHAndle of Object.keys(itemsToRefreshByHAndle)) {
+				const currentTreeItem = this.getItem(treeItemHAndle);
 				if (currentTreeItem) { // Refresh only if the item exists
-					const treeItem = itemsToRefreshByHandle[treeItemHandle];
-					// Update the current item with refreshed item
-					this.updateTreeItem(currentTreeItem, treeItem);
-					if (treeItemHandle === treeItem.handle) {
+					const treeItem = itemsToRefreshByHAndle[treeItemHAndle];
+					// UpdAte the current item with refreshed item
+					this.updAteTreeItem(currentTreeItem, treeItem);
+					if (treeItemHAndle === treeItem.hAndle) {
 						itemsToRefresh.push(currentTreeItem);
 					} else {
-						// Update maps when handle is changed and refresh parent
-						this.itemsMap.delete(treeItemHandle);
-						this.itemsMap.set(currentTreeItem.handle, currentTreeItem);
-						const parent = treeItem.parentHandle ? this.itemsMap.get(treeItem.parentHandle) : null;
-						if (parent) {
-							itemsToRefresh.push(parent);
+						// UpdAte mAps when hAndle is chAnged And refresh pArent
+						this.itemsMAp.delete(treeItemHAndle);
+						this.itemsMAp.set(currentTreeItem.hAndle, currentTreeItem);
+						const pArent = treeItem.pArentHAndle ? this.itemsMAp.get(treeItem.pArentHAndle) : null;
+						if (pArent) {
+							itemsToRefresh.push(pArent);
 						}
 					}
 				}
@@ -209,35 +209,35 @@ class TreeViewDataProvider implements ITreeViewDataProvider {
 		return itemsToRefresh;
 	}
 
-	getItem(treeItemHandle: string): ITreeItem | undefined {
-		return this.itemsMap.get(treeItemHandle);
+	getItem(treeItemHAndle: string): ITreeItem | undefined {
+		return this.itemsMAp.get(treeItemHAndle);
 	}
 
-	isEmpty(): boolean {
-		return this.itemsMap.size === 0;
+	isEmpty(): booleAn {
+		return this.itemsMAp.size === 0;
 	}
 
-	private async postGetChildren(elements: ITreeItem[]): Promise<ResolvableTreeItem[]> {
-		const result: ResolvableTreeItem[] = [];
-		const hasResolve = await this.hasResolve;
+	privAte Async postGetChildren(elements: ITreeItem[]): Promise<ResolvAbleTreeItem[]> {
+		const result: ResolvAbleTreeItem[] = [];
+		const hAsResolve = AwAit this.hAsResolve;
 		if (elements) {
 			for (const element of elements) {
-				const resolvable = new ResolvableTreeItem(element, hasResolve ? () => {
-					return this._proxy.$resolve(this.treeViewId, element.handle);
+				const resolvAble = new ResolvAbleTreeItem(element, hAsResolve ? () => {
+					return this._proxy.$resolve(this.treeViewId, element.hAndle);
 				} : undefined);
-				this.itemsMap.set(element.handle, resolvable);
-				result.push(resolvable);
+				this.itemsMAp.set(element.hAndle, resolvAble);
+				result.push(resolvAble);
 			}
 		}
 		return result;
 	}
 
-	private updateTreeItem(current: ITreeItem, treeItem: ITreeItem): void {
+	privAte updAteTreeItem(current: ITreeItem, treeItem: ITreeItem): void {
 		treeItem.children = treeItem.children ? treeItem.children : undefined;
 		if (current) {
 			const properties = distinct([...Object.keys(current), ...Object.keys(treeItem)]);
 			for (const property of properties) {
-				(<any>current)[property] = (<any>treeItem)[property];
+				(<Any>current)[property] = (<Any>treeItem)[property];
 			}
 		}
 	}

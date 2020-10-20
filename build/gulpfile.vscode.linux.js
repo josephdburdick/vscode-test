@@ -1,278 +1,278 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
 const gulp = require('gulp');
-const replace = require('gulp-replace');
-const rename = require('gulp-rename');
+const replAce = require('gulp-replAce');
+const renAme = require('gulp-renAme');
 const shell = require('gulp-shell');
-const es = require('event-stream');
+const es = require('event-streAm');
 const vfs = require('vinyl-fs');
 const util = require('./lib/util');
-const task = require('./lib/task');
-const packageJson = require('../package.json');
+const tAsk = require('./lib/tAsk');
+const pAckAgeJson = require('../pAckAge.json');
 const product = require('../product.json');
 const rpmDependencies = require('../resources/linux/rpm/dependencies.json');
-const path = require('path');
-const root = path.dirname(__dirname);
+const pAth = require('pAth');
+const root = pAth.dirnAme(__dirnAme);
 const commit = util.getVersion(root);
 
-const linuxPackageRevision = Math.floor(new Date().getTime() / 1000);
+const linuxPAckAgeRevision = MAth.floor(new DAte().getTime() / 1000);
 
-function getDebPackageArch(arch) {
-	return { x64: 'amd64', armhf: 'armhf', arm64: 'arm64' }[arch];
+function getDebPAckAgeArch(Arch) {
+	return { x64: 'Amd64', Armhf: 'Armhf', Arm64: 'Arm64' }[Arch];
 }
 
-function prepareDebPackage(arch) {
-	const binaryDir = '../VSCode-linux-' + arch;
-	const debArch = getDebPackageArch(arch);
-	const destination = '.build/linux/deb/' + debArch + '/' + product.applicationName + '-' + debArch;
+function prepAreDebPAckAge(Arch) {
+	const binAryDir = '../VSCode-linux-' + Arch;
+	const debArch = getDebPAckAgeArch(Arch);
+	const destinAtion = '.build/linux/deb/' + debArch + '/' + product.ApplicAtionNAme + '-' + debArch;
 
 	return function () {
-		const desktop = gulp.src('resources/linux/code.desktop', { base: '.' })
-			.pipe(rename('usr/share/applications/' + product.applicationName + '.desktop'));
+		const desktop = gulp.src('resources/linux/code.desktop', { bAse: '.' })
+			.pipe(renAme('usr/shAre/ApplicAtions/' + product.ApplicAtionNAme + '.desktop'));
 
-		const desktopUrlHandler = gulp.src('resources/linux/code-url-handler.desktop', { base: '.' })
-			.pipe(rename('usr/share/applications/' + product.applicationName + '-url-handler.desktop'));
+		const desktopUrlHAndler = gulp.src('resources/linux/code-url-hAndler.desktop', { bAse: '.' })
+			.pipe(renAme('usr/shAre/ApplicAtions/' + product.ApplicAtionNAme + '-url-hAndler.desktop'));
 
-		const desktops = es.merge(desktop, desktopUrlHandler)
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME_SHORT@@', product.nameShort))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@EXEC@@', `/usr/share/${product.applicationName}/${product.applicationName}`))
-			.pipe(replace('@@ICON@@', product.linuxIconName))
-			.pipe(replace('@@URLPROTOCOL@@', product.urlProtocol));
+		const desktops = es.merge(desktop, desktopUrlHAndler)
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME_SHORT@@', product.nAmeShort))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@EXEC@@', `/usr/shAre/${product.ApplicAtionNAme}/${product.ApplicAtionNAme}`))
+			.pipe(replAce('@@ICON@@', product.linuxIconNAme))
+			.pipe(replAce('@@URLPROTOCOL@@', product.urlProtocol));
 
-		const appdata = gulp.src('resources/linux/code.appdata.xml', { base: '.' })
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@LICENSE@@', product.licenseName))
-			.pipe(rename('usr/share/appdata/' + product.applicationName + '.appdata.xml'));
+		const AppdAtA = gulp.src('resources/linux/code.AppdAtA.xml', { bAse: '.' })
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@LICENSE@@', product.licenseNAme))
+			.pipe(renAme('usr/shAre/AppdAtA/' + product.ApplicAtionNAme + '.AppdAtA.xml'));
 
-		const workspaceMime = gulp.src('resources/linux/code-workspace.xml', { base: '.' })
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(rename('usr/share/mime/packages/' + product.applicationName + '-workspace.xml'));
+		const workspAceMime = gulp.src('resources/linux/code-workspAce.xml', { bAse: '.' })
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('usr/shAre/mime/pAckAges/' + product.ApplicAtionNAme + '-workspAce.xml'));
 
-		const icon = gulp.src('resources/linux/code.png', { base: '.' })
-			.pipe(rename('usr/share/pixmaps/' + product.linuxIconName + '.png'));
+		const icon = gulp.src('resources/linux/code.png', { bAse: '.' })
+			.pipe(renAme('usr/shAre/pixmAps/' + product.linuxIconNAme + '.png'));
 
-		const bash_completion = gulp.src('resources/completions/bash/code')
-			.pipe(replace('@@APPNAME@@', product.applicationName))
-			.pipe(rename('usr/share/bash-completion/completions/' + product.applicationName));
+		const bAsh_completion = gulp.src('resources/completions/bAsh/code')
+			.pipe(replAce('@@APPNAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('usr/shAre/bAsh-completion/completions/' + product.ApplicAtionNAme));
 
 		const zsh_completion = gulp.src('resources/completions/zsh/_code')
-			.pipe(replace('@@APPNAME@@', product.applicationName))
-			.pipe(rename('usr/share/zsh/vendor-completions/_' + product.applicationName));
+			.pipe(replAce('@@APPNAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('usr/shAre/zsh/vendor-completions/_' + product.ApplicAtionNAme));
 
-		const code = gulp.src(binaryDir + '/**/*', { base: binaryDir })
-			.pipe(rename(function (p) { p.dirname = 'usr/share/' + product.applicationName + '/' + p.dirname; }));
+		const code = gulp.src(binAryDir + '/**/*', { bAse: binAryDir })
+			.pipe(renAme(function (p) { p.dirnAme = 'usr/shAre/' + product.ApplicAtionNAme + '/' + p.dirnAme; }));
 
 		let size = 0;
 		const control = code.pipe(es.through(
 			function (f) { size += f.isDirectory() ? 4096 : f.contents.length; },
 			function () {
-				const that = this;
-				gulp.src('resources/linux/debian/control.template', { base: '.' })
-					.pipe(replace('@@NAME@@', product.applicationName))
-					.pipe(replace('@@VERSION@@', packageJson.version + '-' + linuxPackageRevision))
-					.pipe(replace('@@ARCHITECTURE@@', debArch))
-					.pipe(replace('@@INSTALLEDSIZE@@', Math.ceil(size / 1024)))
-					.pipe(rename('DEBIAN/control'))
-					.pipe(es.through(function (f) { that.emit('data', f); }, function () { that.emit('end'); }));
+				const thAt = this;
+				gulp.src('resources/linux/debiAn/control.templAte', { bAse: '.' })
+					.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+					.pipe(replAce('@@VERSION@@', pAckAgeJson.version + '-' + linuxPAckAgeRevision))
+					.pipe(replAce('@@ARCHITECTURE@@', debArch))
+					.pipe(replAce('@@INSTALLEDSIZE@@', MAth.ceil(size / 1024)))
+					.pipe(renAme('DEBIAN/control'))
+					.pipe(es.through(function (f) { thAt.emit('dAtA', f); }, function () { thAt.emit('end'); }));
 			}));
 
-		const prerm = gulp.src('resources/linux/debian/prerm.template', { base: '.' })
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(rename('DEBIAN/prerm'));
+		const prerm = gulp.src('resources/linux/debiAn/prerm.templAte', { bAse: '.' })
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('DEBIAN/prerm'));
 
-		const postrm = gulp.src('resources/linux/debian/postrm.template', { base: '.' })
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(rename('DEBIAN/postrm'));
+		const postrm = gulp.src('resources/linux/debiAn/postrm.templAte', { bAse: '.' })
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('DEBIAN/postrm'));
 
-		const postinst = gulp.src('resources/linux/debian/postinst.template', { base: '.' })
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@ARCHITECTURE@@', debArch))
-			.pipe(replace('@@QUALITY@@', product.quality || '@@QUALITY@@'))
-			.pipe(replace('@@UPDATEURL@@', product.updateUrl || '@@UPDATEURL@@'))
-			.pipe(rename('DEBIAN/postinst'));
+		const postinst = gulp.src('resources/linux/debiAn/postinst.templAte', { bAse: '.' })
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@ARCHITECTURE@@', debArch))
+			.pipe(replAce('@@QUALITY@@', product.quAlity || '@@QUALITY@@'))
+			.pipe(replAce('@@UPDATEURL@@', product.updAteUrl || '@@UPDATEURL@@'))
+			.pipe(renAme('DEBIAN/postinst'));
 
-		const all = es.merge(control, postinst, postrm, prerm, desktops, appdata, workspaceMime, icon, bash_completion, zsh_completion, code);
+		const All = es.merge(control, postinst, postrm, prerm, desktops, AppdAtA, workspAceMime, icon, bAsh_completion, zsh_completion, code);
 
-		return all.pipe(vfs.dest(destination));
+		return All.pipe(vfs.dest(destinAtion));
 	};
 }
 
-function buildDebPackage(arch) {
-	const debArch = getDebPackageArch(arch);
-	return shell.task([
-		'chmod 755 ' + product.applicationName + '-' + debArch + '/DEBIAN/postinst ' + product.applicationName + '-' + debArch + '/DEBIAN/prerm ' + product.applicationName + '-' + debArch + '/DEBIAN/postrm',
+function buildDebPAckAge(Arch) {
+	const debArch = getDebPAckAgeArch(Arch);
+	return shell.tAsk([
+		'chmod 755 ' + product.ApplicAtionNAme + '-' + debArch + '/DEBIAN/postinst ' + product.ApplicAtionNAme + '-' + debArch + '/DEBIAN/prerm ' + product.ApplicAtionNAme + '-' + debArch + '/DEBIAN/postrm',
 		'mkdir -p deb',
-		'fakeroot dpkg-deb -b ' + product.applicationName + '-' + debArch + ' deb'
+		'fAkeroot dpkg-deb -b ' + product.ApplicAtionNAme + '-' + debArch + ' deb'
 	], { cwd: '.build/linux/deb/' + debArch });
 }
 
-function getRpmBuildPath(rpmArch) {
+function getRpmBuildPAth(rpmArch) {
 	return '.build/linux/rpm/' + rpmArch + '/rpmbuild';
 }
 
-function getRpmPackageArch(arch) {
-	return { x64: 'x86_64', armhf: 'armv7hl', arm64: 'aarch64' }[arch];
+function getRpmPAckAgeArch(Arch) {
+	return { x64: 'x86_64', Armhf: 'Armv7hl', Arm64: 'AArch64' }[Arch];
 }
 
-function prepareRpmPackage(arch) {
-	const binaryDir = '../VSCode-linux-' + arch;
-	const rpmArch = getRpmPackageArch(arch);
+function prepAreRpmPAckAge(Arch) {
+	const binAryDir = '../VSCode-linux-' + Arch;
+	const rpmArch = getRpmPAckAgeArch(Arch);
 
 	return function () {
-		const desktop = gulp.src('resources/linux/code.desktop', { base: '.' })
-			.pipe(rename('BUILD/usr/share/applications/' + product.applicationName + '.desktop'));
+		const desktop = gulp.src('resources/linux/code.desktop', { bAse: '.' })
+			.pipe(renAme('BUILD/usr/shAre/ApplicAtions/' + product.ApplicAtionNAme + '.desktop'));
 
-		const desktopUrlHandler = gulp.src('resources/linux/code-url-handler.desktop', { base: '.' })
-			.pipe(rename('BUILD/usr/share/applications/' + product.applicationName + '-url-handler.desktop'));
+		const desktopUrlHAndler = gulp.src('resources/linux/code-url-hAndler.desktop', { bAse: '.' })
+			.pipe(renAme('BUILD/usr/shAre/ApplicAtions/' + product.ApplicAtionNAme + '-url-hAndler.desktop'));
 
-		const desktops = es.merge(desktop, desktopUrlHandler)
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME_SHORT@@', product.nameShort))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@EXEC@@', `/usr/share/${product.applicationName}/${product.applicationName}`))
-			.pipe(replace('@@ICON@@', product.linuxIconName))
-			.pipe(replace('@@URLPROTOCOL@@', product.urlProtocol));
+		const desktops = es.merge(desktop, desktopUrlHAndler)
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME_SHORT@@', product.nAmeShort))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@EXEC@@', `/usr/shAre/${product.ApplicAtionNAme}/${product.ApplicAtionNAme}`))
+			.pipe(replAce('@@ICON@@', product.linuxIconNAme))
+			.pipe(replAce('@@URLPROTOCOL@@', product.urlProtocol));
 
-		const appdata = gulp.src('resources/linux/code.appdata.xml', { base: '.' })
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@LICENSE@@', product.licenseName))
-			.pipe(rename('usr/share/appdata/' + product.applicationName + '.appdata.xml'));
+		const AppdAtA = gulp.src('resources/linux/code.AppdAtA.xml', { bAse: '.' })
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@LICENSE@@', product.licenseNAme))
+			.pipe(renAme('usr/shAre/AppdAtA/' + product.ApplicAtionNAme + '.AppdAtA.xml'));
 
-		const workspaceMime = gulp.src('resources/linux/code-workspace.xml', { base: '.' })
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(rename('BUILD/usr/share/mime/packages/' + product.applicationName + '-workspace.xml'));
+		const workspAceMime = gulp.src('resources/linux/code-workspAce.xml', { bAse: '.' })
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('BUILD/usr/shAre/mime/pAckAges/' + product.ApplicAtionNAme + '-workspAce.xml'));
 
-		const icon = gulp.src('resources/linux/code.png', { base: '.' })
-			.pipe(rename('BUILD/usr/share/pixmaps/' + product.linuxIconName + '.png'));
+		const icon = gulp.src('resources/linux/code.png', { bAse: '.' })
+			.pipe(renAme('BUILD/usr/shAre/pixmAps/' + product.linuxIconNAme + '.png'));
 
-		const bash_completion = gulp.src('resources/completions/bash/code')
-			.pipe(replace('@@APPNAME@@', product.applicationName))
-			.pipe(rename('BUILD/usr/share/bash-completion/completions/' + product.applicationName));
+		const bAsh_completion = gulp.src('resources/completions/bAsh/code')
+			.pipe(replAce('@@APPNAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('BUILD/usr/shAre/bAsh-completion/completions/' + product.ApplicAtionNAme));
 
 		const zsh_completion = gulp.src('resources/completions/zsh/_code')
-			.pipe(replace('@@APPNAME@@', product.applicationName))
-			.pipe(rename('BUILD/usr/share/zsh/site-functions/_' + product.applicationName));
+			.pipe(replAce('@@APPNAME@@', product.ApplicAtionNAme))
+			.pipe(renAme('BUILD/usr/shAre/zsh/site-functions/_' + product.ApplicAtionNAme));
 
-		const code = gulp.src(binaryDir + '/**/*', { base: binaryDir })
-			.pipe(rename(function (p) { p.dirname = 'BUILD/usr/share/' + product.applicationName + '/' + p.dirname; }));
+		const code = gulp.src(binAryDir + '/**/*', { bAse: binAryDir })
+			.pipe(renAme(function (p) { p.dirnAme = 'BUILD/usr/shAre/' + product.ApplicAtionNAme + '/' + p.dirnAme; }));
 
-		const spec = gulp.src('resources/linux/rpm/code.spec.template', { base: '.' })
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@ICON@@', product.linuxIconName))
-			.pipe(replace('@@VERSION@@', packageJson.version))
-			.pipe(replace('@@RELEASE@@', linuxPackageRevision))
-			.pipe(replace('@@ARCHITECTURE@@', rpmArch))
-			.pipe(replace('@@LICENSE@@', product.licenseName))
-			.pipe(replace('@@QUALITY@@', product.quality || '@@QUALITY@@'))
-			.pipe(replace('@@UPDATEURL@@', product.updateUrl || '@@UPDATEURL@@'))
-			.pipe(replace('@@DEPENDENCIES@@', rpmDependencies[rpmArch].join(', ')))
-			.pipe(rename('SPECS/' + product.applicationName + '.spec'));
+		const spec = gulp.src('resources/linux/rpm/code.spec.templAte', { bAse: '.' })
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@ICON@@', product.linuxIconNAme))
+			.pipe(replAce('@@VERSION@@', pAckAgeJson.version))
+			.pipe(replAce('@@RELEASE@@', linuxPAckAgeRevision))
+			.pipe(replAce('@@ARCHITECTURE@@', rpmArch))
+			.pipe(replAce('@@LICENSE@@', product.licenseNAme))
+			.pipe(replAce('@@QUALITY@@', product.quAlity || '@@QUALITY@@'))
+			.pipe(replAce('@@UPDATEURL@@', product.updAteUrl || '@@UPDATEURL@@'))
+			.pipe(replAce('@@DEPENDENCIES@@', rpmDependencies[rpmArch].join(', ')))
+			.pipe(renAme('SPECS/' + product.ApplicAtionNAme + '.spec'));
 
-		const specIcon = gulp.src('resources/linux/rpm/code.xpm', { base: '.' })
-			.pipe(rename('SOURCES/' + product.applicationName + '.xpm'));
+		const specIcon = gulp.src('resources/linux/rpm/code.xpm', { bAse: '.' })
+			.pipe(renAme('SOURCES/' + product.ApplicAtionNAme + '.xpm'));
 
-		const all = es.merge(code, desktops, appdata, workspaceMime, icon, bash_completion, zsh_completion, spec, specIcon);
+		const All = es.merge(code, desktops, AppdAtA, workspAceMime, icon, bAsh_completion, zsh_completion, spec, specIcon);
 
-		return all.pipe(vfs.dest(getRpmBuildPath(rpmArch)));
+		return All.pipe(vfs.dest(getRpmBuildPAth(rpmArch)));
 	};
 }
 
-function buildRpmPackage(arch) {
-	const rpmArch = getRpmPackageArch(arch);
-	const rpmBuildPath = getRpmBuildPath(rpmArch);
-	const rpmOut = rpmBuildPath + '/RPMS/' + rpmArch;
-	const destination = '.build/linux/rpm/' + rpmArch;
+function buildRpmPAckAge(Arch) {
+	const rpmArch = getRpmPAckAgeArch(Arch);
+	const rpmBuildPAth = getRpmBuildPAth(rpmArch);
+	const rpmOut = rpmBuildPAth + '/RPMS/' + rpmArch;
+	const destinAtion = '.build/linux/rpm/' + rpmArch;
 
-	return shell.task([
-		'mkdir -p ' + destination,
-		'HOME="$(pwd)/' + destination + '" fakeroot rpmbuild -bb ' + rpmBuildPath + '/SPECS/' + product.applicationName + '.spec --target=' + rpmArch,
-		'cp "' + rpmOut + '/$(ls ' + rpmOut + ')" ' + destination + '/'
+	return shell.tAsk([
+		'mkdir -p ' + destinAtion,
+		'HOME="$(pwd)/' + destinAtion + '" fAkeroot rpmbuild -bb ' + rpmBuildPAth + '/SPECS/' + product.ApplicAtionNAme + '.spec --tArget=' + rpmArch,
+		'cp "' + rpmOut + '/$(ls ' + rpmOut + ')" ' + destinAtion + '/'
 	]);
 }
 
-function getSnapBuildPath(arch) {
-	return `.build/linux/snap/${arch}/${product.applicationName}-${arch}`;
+function getSnApBuildPAth(Arch) {
+	return `.build/linux/snAp/${Arch}/${product.ApplicAtionNAme}-${Arch}`;
 }
 
-function prepareSnapPackage(arch) {
-	const binaryDir = '../VSCode-linux-' + arch;
-	const destination = getSnapBuildPath(arch);
+function prepAreSnApPAckAge(Arch) {
+	const binAryDir = '../VSCode-linux-' + Arch;
+	const destinAtion = getSnApBuildPAth(Arch);
 
 	return function () {
-		// A desktop file that is placed in snap/gui will be placed into meta/gui verbatim.
-		const desktop = gulp.src('resources/linux/code.desktop', { base: '.' })
-			.pipe(rename(`snap/gui/${product.applicationName}.desktop`));
+		// A desktop file thAt is plAced in snAp/gui will be plAced into metA/gui verbAtim.
+		const desktop = gulp.src('resources/linux/code.desktop', { bAse: '.' })
+			.pipe(renAme(`snAp/gui/${product.ApplicAtionNAme}.desktop`));
 
-		// A desktop file that is placed in snap/gui will be placed into meta/gui verbatim.
-		const desktopUrlHandler = gulp.src('resources/linux/code-url-handler.desktop', { base: '.' })
-			.pipe(rename(`snap/gui/${product.applicationName}-url-handler.desktop`));
+		// A desktop file thAt is plAced in snAp/gui will be plAced into metA/gui verbAtim.
+		const desktopUrlHAndler = gulp.src('resources/linux/code-url-hAndler.desktop', { bAse: '.' })
+			.pipe(renAme(`snAp/gui/${product.ApplicAtionNAme}-url-hAndler.desktop`));
 
-		const desktops = es.merge(desktop, desktopUrlHandler)
-			.pipe(replace('@@NAME_LONG@@', product.nameLong))
-			.pipe(replace('@@NAME_SHORT@@', product.nameShort))
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@EXEC@@', `${product.applicationName} --force-user-env`))
-			.pipe(replace('@@ICON@@', `\${SNAP}/meta/gui/${product.linuxIconName}.png`))
-			.pipe(replace('@@URLPROTOCOL@@', product.urlProtocol));
+		const desktops = es.merge(desktop, desktopUrlHAndler)
+			.pipe(replAce('@@NAME_LONG@@', product.nAmeLong))
+			.pipe(replAce('@@NAME_SHORT@@', product.nAmeShort))
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@EXEC@@', `${product.ApplicAtionNAme} --force-user-env`))
+			.pipe(replAce('@@ICON@@', `\${SNAP}/metA/gui/${product.linuxIconNAme}.png`))
+			.pipe(replAce('@@URLPROTOCOL@@', product.urlProtocol));
 
-		// An icon that is placed in snap/gui will be placed into meta/gui verbatim.
-		const icon = gulp.src('resources/linux/code.png', { base: '.' })
-			.pipe(rename(`snap/gui/${product.linuxIconName}.png`));
+		// An icon thAt is plAced in snAp/gui will be plAced into metA/gui verbAtim.
+		const icon = gulp.src('resources/linux/code.png', { bAse: '.' })
+			.pipe(renAme(`snAp/gui/${product.linuxIconNAme}.png`));
 
-		const code = gulp.src(binaryDir + '/**/*', { base: binaryDir })
-			.pipe(rename(function (p) { p.dirname = `usr/share/${product.applicationName}/${p.dirname}`; }));
+		const code = gulp.src(binAryDir + '/**/*', { bAse: binAryDir })
+			.pipe(renAme(function (p) { p.dirnAme = `usr/shAre/${product.ApplicAtionNAme}/${p.dirnAme}`; }));
 
-		const snapcraft = gulp.src('resources/linux/snap/snapcraft.yaml', { base: '.' })
-			.pipe(replace('@@NAME@@', product.applicationName))
-			.pipe(replace('@@VERSION@@', commit.substr(0, 8)))
-			.pipe(rename('snap/snapcraft.yaml'));
+		const snApcrAft = gulp.src('resources/linux/snAp/snApcrAft.yAml', { bAse: '.' })
+			.pipe(replAce('@@NAME@@', product.ApplicAtionNAme))
+			.pipe(replAce('@@VERSION@@', commit.substr(0, 8)))
+			.pipe(renAme('snAp/snApcrAft.yAml'));
 
-		const electronLaunch = gulp.src('resources/linux/snap/electron-launch', { base: '.' })
-			.pipe(rename('electron-launch'));
+		const electronLAunch = gulp.src('resources/linux/snAp/electron-lAunch', { bAse: '.' })
+			.pipe(renAme('electron-lAunch'));
 
-		const all = es.merge(desktops, icon, code, snapcraft, electronLaunch);
+		const All = es.merge(desktops, icon, code, snApcrAft, electronLAunch);
 
-		return all.pipe(vfs.dest(destination));
+		return All.pipe(vfs.dest(destinAtion));
 	};
 }
 
-function buildSnapPackage(arch) {
-	const snapBuildPath = getSnapBuildPath(arch);
-	// Default target for snapcraft runs: pull, build, stage and prime, and finally assembles the snap.
-	return shell.task(`cd ${snapBuildPath} && snapcraft`);
+function buildSnApPAckAge(Arch) {
+	const snApBuildPAth = getSnApBuildPAth(Arch);
+	// DefAult tArget for snApcrAft runs: pull, build, stAge And prime, And finAlly Assembles the snAp.
+	return shell.tAsk(`cd ${snApBuildPAth} && snApcrAft`);
 }
 
 const BUILD_TARGETS = [
-	{ arch: 'x64' },
-	{ arch: 'armhf' },
-	{ arch: 'arm64' },
+	{ Arch: 'x64' },
+	{ Arch: 'Armhf' },
+	{ Arch: 'Arm64' },
 ];
 
-BUILD_TARGETS.forEach(({ arch }) => {
-	const debArch = getDebPackageArch(arch);
-	const prepareDebTask = task.define(`vscode-linux-${arch}-prepare-deb`, task.series(util.rimraf(`.build/linux/deb/${debArch}`), prepareDebPackage(arch)));
-	const buildDebTask = task.define(`vscode-linux-${arch}-build-deb`, task.series(prepareDebTask, buildDebPackage(arch)));
-	gulp.task(buildDebTask);
+BUILD_TARGETS.forEAch(({ Arch }) => {
+	const debArch = getDebPAckAgeArch(Arch);
+	const prepAreDebTAsk = tAsk.define(`vscode-linux-${Arch}-prepAre-deb`, tAsk.series(util.rimrAf(`.build/linux/deb/${debArch}`), prepAreDebPAckAge(Arch)));
+	const buildDebTAsk = tAsk.define(`vscode-linux-${Arch}-build-deb`, tAsk.series(prepAreDebTAsk, buildDebPAckAge(Arch)));
+	gulp.tAsk(buildDebTAsk);
 
-	const rpmArch = getRpmPackageArch(arch);
-	const prepareRpmTask = task.define(`vscode-linux-${arch}-prepare-rpm`, task.series(util.rimraf(`.build/linux/rpm/${rpmArch}`), prepareRpmPackage(arch)));
-	const buildRpmTask = task.define(`vscode-linux-${arch}-build-rpm`, task.series(prepareRpmTask, buildRpmPackage(arch)));
-	gulp.task(buildRpmTask);
+	const rpmArch = getRpmPAckAgeArch(Arch);
+	const prepAreRpmTAsk = tAsk.define(`vscode-linux-${Arch}-prepAre-rpm`, tAsk.series(util.rimrAf(`.build/linux/rpm/${rpmArch}`), prepAreRpmPAckAge(Arch)));
+	const buildRpmTAsk = tAsk.define(`vscode-linux-${Arch}-build-rpm`, tAsk.series(prepAreRpmTAsk, buildRpmPAckAge(Arch)));
+	gulp.tAsk(buildRpmTAsk);
 
-	const prepareSnapTask = task.define(`vscode-linux-${arch}-prepare-snap`, task.series(util.rimraf(`.build/linux/snap/${arch}`), prepareSnapPackage(arch)));
-	gulp.task(prepareSnapTask);
-	const buildSnapTask = task.define(`vscode-linux-${arch}-build-snap`, task.series(prepareSnapTask, buildSnapPackage(arch)));
-	gulp.task(buildSnapTask);
+	const prepAreSnApTAsk = tAsk.define(`vscode-linux-${Arch}-prepAre-snAp`, tAsk.series(util.rimrAf(`.build/linux/snAp/${Arch}`), prepAreSnApPAckAge(Arch)));
+	gulp.tAsk(prepAreSnApTAsk);
+	const buildSnApTAsk = tAsk.define(`vscode-linux-${Arch}-build-snAp`, tAsk.series(prepAreSnApTAsk, buildSnApPAckAge(Arch)));
+	gulp.tAsk(buildSnApTAsk);
 });

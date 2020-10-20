@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { ICommand, ICursorStateComputerData, IEditOperationBuilder } from 'vs/editor/common/editorCommon';
+import { ICommAnd, ICursorStAteComputerDAtA, IEditOperAtionBuilder } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 
-export class SurroundSelectionCommand implements ICommand {
-	private readonly _range: Selection;
-	private readonly _charBeforeSelection: string;
-	private readonly _charAfterSelection: string;
+export clAss SurroundSelectionCommAnd implements ICommAnd {
+	privAte reAdonly _rAnge: Selection;
+	privAte reAdonly _chArBeforeSelection: string;
+	privAte reAdonly _chArAfterSelection: string;
 
-	constructor(range: Selection, charBeforeSelection: string, charAfterSelection: string) {
-		this._range = range;
-		this._charBeforeSelection = charBeforeSelection;
-		this._charAfterSelection = charAfterSelection;
+	constructor(rAnge: Selection, chArBeforeSelection: string, chArAfterSelection: string) {
+		this._rAnge = rAnge;
+		this._chArBeforeSelection = chArBeforeSelection;
+		this._chArAfterSelection = chArAfterSelection;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(new Range(
-			this._range.startLineNumber,
-			this._range.startColumn,
-			this._range.startLineNumber,
-			this._range.startColumn
-		), this._charBeforeSelection);
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
+		builder.AddTrAckedEditOperAtion(new RAnge(
+			this._rAnge.stArtLineNumber,
+			this._rAnge.stArtColumn,
+			this._rAnge.stArtLineNumber,
+			this._rAnge.stArtColumn
+		), this._chArBeforeSelection);
 
-		builder.addTrackedEditOperation(new Range(
-			this._range.endLineNumber,
-			this._range.endColumn,
-			this._range.endLineNumber,
-			this._range.endColumn
-		), this._charAfterSelection);
+		builder.AddTrAckedEditOperAtion(new RAnge(
+			this._rAnge.endLineNumber,
+			this._rAnge.endColumn,
+			this._rAnge.endLineNumber,
+			this._rAnge.endColumn
+		), this._chArAfterSelection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
-		let inverseEditOperations = helper.getInverseEditOperations();
-		let firstOperationRange = inverseEditOperations[0].range;
-		let secondOperationRange = inverseEditOperations[1].range;
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
+		let inverseEditOperAtions = helper.getInverseEditOperAtions();
+		let firstOperAtionRAnge = inverseEditOperAtions[0].rAnge;
+		let secondOperAtionRAnge = inverseEditOperAtions[1].rAnge;
 
 		return new Selection(
-			firstOperationRange.endLineNumber,
-			firstOperationRange.endColumn,
-			secondOperationRange.endLineNumber,
-			secondOperationRange.endColumn - this._charAfterSelection.length
+			firstOperAtionRAnge.endLineNumber,
+			firstOperAtionRAnge.endColumn,
+			secondOperAtionRAnge.endLineNumber,
+			secondOperAtionRAnge.endColumn - this._chArAfterSelection.length
 		);
 	}
 }

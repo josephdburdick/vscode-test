@@ -1,241 +1,241 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { createMatches } from 'vs/base/common/filters';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { append, $, hide, show } from 'vs/base/browser/dom';
-import { IListRenderer } from 'vs/base/browser/ui/list/list';
+import * As nls from 'vs/nls';
+import { creAteMAtches } from 'vs/bAse/common/filters';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Append, $, hide, show } from 'vs/bAse/browser/dom';
+import { IListRenderer } from 'vs/bAse/browser/ui/list/list';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { CompletionItem } from './suggest';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { CompletionItemKind, completionKindToCssClass, CompletionItemTag } from 'vs/editor/common/modes';
-import { IconLabel, IIconLabelValueOptions } from 'vs/base/browser/ui/iconLabel/iconLabel';
-import { getIconClasses } from 'vs/editor/common/services/getIconClasses';
+import { CompletionItemKind, completionKindToCssClAss, CompletionItemTAg } from 'vs/editor/common/modes';
+import { IconLAbel, IIconLAbelVAlueOptions } from 'vs/bAse/browser/ui/iconLAbel/iconLAbel';
+import { getIconClAsses } from 'vs/editor/common/services/getIconClAsses';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { URI } from 'vs/base/common/uri';
-import { FileKind } from 'vs/platform/files/common/files';
-import { flatten } from 'vs/base/common/arrays';
-import { canExpandCompletionItem } from './suggestWidgetDetails';
-import { Codicon, registerIcon } from 'vs/base/common/codicons';
-import { Emitter, Event } from 'vs/base/common/event';
+import { URI } from 'vs/bAse/common/uri';
+import { FileKind } from 'vs/plAtform/files/common/files';
+import { flAtten } from 'vs/bAse/common/ArrAys';
+import { cAnExpAndCompletionItem } from './suggestWidgetDetAils';
+import { Codicon, registerIcon } from 'vs/bAse/common/codicons';
+import { Emitter, Event } from 'vs/bAse/common/event';
 
-export function getAriaId(index: number): string {
-	return `suggest-aria-id:${index}`;
+export function getAriAId(index: number): string {
+	return `suggest-AriA-id:${index}`;
 }
 
 export const suggestMoreInfoIcon = registerIcon('suggest-more-info', Codicon.chevronRight);
 
-const colorRegExp = /^(#([\da-f]{3}){1,2}|(rgb|hsl)a\(\s*(\d{1,3}%?\s*,\s*){3}(1|0?\.\d+)\)|(rgb|hsl)\(\s*\d{1,3}%?(\s*,\s*\d{1,3}%?){2}\s*\))$/i;
+const colorRegExp = /^(#([\dA-f]{3}){1,2}|(rgb|hsl)A\(\s*(\d{1,3}%?\s*,\s*){3}(1|0?\.\d+)\)|(rgb|hsl)\(\s*\d{1,3}%?(\s*,\s*\d{1,3}%?){2}\s*\))$/i;
 
-function extractColor(item: CompletionItem, out: string[]): boolean {
-	const label = typeof item.completion.label === 'string'
-		? item.completion.label
-		: item.completion.label.name;
+function extrActColor(item: CompletionItem, out: string[]): booleAn {
+	const lAbel = typeof item.completion.lAbel === 'string'
+		? item.completion.lAbel
+		: item.completion.lAbel.nAme;
 
-	if (label.match(colorRegExp)) {
-		out[0] = label;
+	if (lAbel.mAtch(colorRegExp)) {
+		out[0] = lAbel;
 		return true;
 	}
-	if (typeof item.completion.documentation === 'string' && item.completion.documentation.match(colorRegExp)) {
-		out[0] = item.completion.documentation;
+	if (typeof item.completion.documentAtion === 'string' && item.completion.documentAtion.mAtch(colorRegExp)) {
+		out[0] = item.completion.documentAtion;
 		return true;
 	}
-	return false;
+	return fAlse;
 }
 
 
-export interface ISuggestionTemplateData {
+export interfAce ISuggestionTemplAteDAtA {
 	root: HTMLElement;
 
 	/**
 	 * Flexbox
 	 * < ------------- left ------------ >     < --- right -- >
-	 * <icon><label><signature><qualifier>     <type><readmore>
+	 * <icon><lAbel><signAture><quAlifier>     <type><reAdmore>
 	 */
 	left: HTMLElement;
 	right: HTMLElement;
 
 	icon: HTMLElement;
-	colorspan: HTMLElement;
-	iconLabel: IconLabel;
-	iconContainer: HTMLElement;
-	parametersLabel: HTMLElement;
-	qualifierLabel: HTMLElement;
+	colorspAn: HTMLElement;
+	iconLAbel: IconLAbel;
+	iconContAiner: HTMLElement;
+	pArAmetersLAbel: HTMLElement;
+	quAlifierLAbel: HTMLElement;
 	/**
-	 * Showing either `CompletionItem#details` or `CompletionItemLabel#type`
+	 * Showing either `CompletionItem#detAils` or `CompletionItemLAbel#type`
 	 */
-	detailsLabel: HTMLElement;
-	readMore: HTMLElement;
-	disposables: DisposableStore;
+	detAilsLAbel: HTMLElement;
+	reAdMore: HTMLElement;
+	disposAbles: DisposAbleStore;
 }
 
-export class ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTemplateData> {
+export clAss ItemRenderer implements IListRenderer<CompletionItem, ISuggestionTemplAteDAtA> {
 
-	private readonly _onDidToggleDetails = new Emitter<void>();
-	readonly onDidToggleDetails: Event<void> = this._onDidToggleDetails.event;
+	privAte reAdonly _onDidToggleDetAils = new Emitter<void>();
+	reAdonly onDidToggleDetAils: Event<void> = this._onDidToggleDetAils.event;
 
-	readonly templateId = 'suggestion';
+	reAdonly templAteId = 'suggestion';
 
 	constructor(
-		private readonly _editor: ICodeEditor,
-		private readonly _triggerKeybindingLabel: string,
-		@IModelService private readonly _modelService: IModelService,
-		@IModeService private readonly _modeService: IModeService,
-		@IThemeService private readonly _themeService: IThemeService
+		privAte reAdonly _editor: ICodeEditor,
+		privAte reAdonly _triggerKeybindingLAbel: string,
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@IThemeService privAte reAdonly _themeService: IThemeService
 	) { }
 
 	dispose(): void {
-		this._onDidToggleDetails.dispose();
+		this._onDidToggleDetAils.dispose();
 	}
 
-	renderTemplate(container: HTMLElement): ISuggestionTemplateData {
-		const data = <ISuggestionTemplateData>Object.create(null);
-		data.disposables = new DisposableStore();
+	renderTemplAte(contAiner: HTMLElement): ISuggestionTemplAteDAtA {
+		const dAtA = <ISuggestionTemplAteDAtA>Object.creAte(null);
+		dAtA.disposAbles = new DisposAbleStore();
 
-		data.root = container;
-		data.root.classList.add('show-file-icons');
+		dAtA.root = contAiner;
+		dAtA.root.clAssList.Add('show-file-icons');
 
-		data.icon = append(container, $('.icon'));
-		data.colorspan = append(data.icon, $('span.colorspan'));
+		dAtA.icon = Append(contAiner, $('.icon'));
+		dAtA.colorspAn = Append(dAtA.icon, $('spAn.colorspAn'));
 
-		const text = append(container, $('.contents'));
-		const main = append(text, $('.main'));
+		const text = Append(contAiner, $('.contents'));
+		const mAin = Append(text, $('.mAin'));
 
-		data.iconContainer = append(main, $('.icon-label.codicon'));
-		data.left = append(main, $('span.left'));
-		data.right = append(main, $('span.right'));
+		dAtA.iconContAiner = Append(mAin, $('.icon-lAbel.codicon'));
+		dAtA.left = Append(mAin, $('spAn.left'));
+		dAtA.right = Append(mAin, $('spAn.right'));
 
-		data.iconLabel = new IconLabel(data.left, { supportHighlights: true, supportCodicons: true });
-		data.disposables.add(data.iconLabel);
+		dAtA.iconLAbel = new IconLAbel(dAtA.left, { supportHighlights: true, supportCodicons: true });
+		dAtA.disposAbles.Add(dAtA.iconLAbel);
 
-		data.parametersLabel = append(data.left, $('span.signature-label'));
-		data.qualifierLabel = append(data.left, $('span.qualifier-label'));
-		data.detailsLabel = append(data.right, $('span.details-label'));
+		dAtA.pArAmetersLAbel = Append(dAtA.left, $('spAn.signAture-lAbel'));
+		dAtA.quAlifierLAbel = Append(dAtA.left, $('spAn.quAlifier-lAbel'));
+		dAtA.detAilsLAbel = Append(dAtA.right, $('spAn.detAils-lAbel'));
 
-		data.readMore = append(data.right, $('span.readMore' + suggestMoreInfoIcon.cssSelector));
-		data.readMore.title = nls.localize('readMore', "Read More ({0})", this._triggerKeybindingLabel);
+		dAtA.reAdMore = Append(dAtA.right, $('spAn.reAdMore' + suggestMoreInfoIcon.cssSelector));
+		dAtA.reAdMore.title = nls.locAlize('reAdMore', "ReAd More ({0})", this._triggerKeybindingLAbel);
 
 		const configureFont = () => {
 			const options = this._editor.getOptions();
 			const fontInfo = options.get(EditorOption.fontInfo);
-			const fontFamily = fontInfo.fontFamily;
-			const fontFeatureSettings = fontInfo.fontFeatureSettings;
+			const fontFAmily = fontInfo.fontFAmily;
+			const fontFeAtureSettings = fontInfo.fontFeAtureSettings;
 			const fontSize = options.get(EditorOption.suggestFontSize) || fontInfo.fontSize;
 			const lineHeight = options.get(EditorOption.suggestLineHeight) || fontInfo.lineHeight;
 			const fontWeight = fontInfo.fontWeight;
 			const fontSizePx = `${fontSize}px`;
 			const lineHeightPx = `${lineHeight}px`;
 
-			data.root.style.fontSize = fontSizePx;
-			data.root.style.fontWeight = fontWeight;
-			main.style.fontFamily = fontFamily;
-			main.style.fontFeatureSettings = fontFeatureSettings;
-			main.style.lineHeight = lineHeightPx;
-			data.icon.style.height = lineHeightPx;
-			data.icon.style.width = lineHeightPx;
-			data.readMore.style.height = lineHeightPx;
-			data.readMore.style.width = lineHeightPx;
+			dAtA.root.style.fontSize = fontSizePx;
+			dAtA.root.style.fontWeight = fontWeight;
+			mAin.style.fontFAmily = fontFAmily;
+			mAin.style.fontFeAtureSettings = fontFeAtureSettings;
+			mAin.style.lineHeight = lineHeightPx;
+			dAtA.icon.style.height = lineHeightPx;
+			dAtA.icon.style.width = lineHeightPx;
+			dAtA.reAdMore.style.height = lineHeightPx;
+			dAtA.reAdMore.style.width = lineHeightPx;
 		};
 
 		configureFont();
 
-		data.disposables.add(this._editor.onDidChangeConfiguration(e => {
-			if (e.hasChanged(EditorOption.fontInfo) || e.hasChanged(EditorOption.suggestFontSize) || e.hasChanged(EditorOption.suggestLineHeight)) {
+		dAtA.disposAbles.Add(this._editor.onDidChAngeConfigurAtion(e => {
+			if (e.hAsChAnged(EditorOption.fontInfo) || e.hAsChAnged(EditorOption.suggestFontSize) || e.hAsChAnged(EditorOption.suggestLineHeight)) {
 				configureFont();
 			}
 		}));
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement(element: CompletionItem, index: number, data: ISuggestionTemplateData): void {
+	renderElement(element: CompletionItem, index: number, dAtA: ISuggestionTemplAteDAtA): void {
 		const { completion } = element;
-		const textLabel = typeof completion.label === 'string' ? completion.label : completion.label.name;
+		const textLAbel = typeof completion.lAbel === 'string' ? completion.lAbel : completion.lAbel.nAme;
 
-		data.root.id = getAriaId(index);
-		data.colorspan.style.backgroundColor = '';
+		dAtA.root.id = getAriAId(index);
+		dAtA.colorspAn.style.bAckgroundColor = '';
 
-		const labelOptions: IIconLabelValueOptions = {
-			labelEscapeNewLines: true,
-			matches: createMatches(element.score)
+		const lAbelOptions: IIconLAbelVAlueOptions = {
+			lAbelEscApeNewLines: true,
+			mAtches: creAteMAtches(element.score)
 		};
 
 		let color: string[] = [];
-		if (completion.kind === CompletionItemKind.Color && extractColor(element, color)) {
-			// special logic for 'color' completion items
-			data.icon.className = 'icon customcolor';
-			data.iconContainer.className = 'icon hide';
-			data.colorspan.style.backgroundColor = color[0];
+		if (completion.kind === CompletionItemKind.Color && extrActColor(element, color)) {
+			// speciAl logic for 'color' completion items
+			dAtA.icon.clAssNAme = 'icon customcolor';
+			dAtA.iconContAiner.clAssNAme = 'icon hide';
+			dAtA.colorspAn.style.bAckgroundColor = color[0];
 
-		} else if (completion.kind === CompletionItemKind.File && this._themeService.getFileIconTheme().hasFileIcons) {
-			// special logic for 'file' completion items
-			data.icon.className = 'icon hide';
-			data.iconContainer.className = 'icon hide';
-			const labelClasses = getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: textLabel }), FileKind.FILE);
-			const detailClasses = getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: completion.detail }), FileKind.FILE);
-			labelOptions.extraClasses = labelClasses.length > detailClasses.length ? labelClasses : detailClasses;
+		} else if (completion.kind === CompletionItemKind.File && this._themeService.getFileIconTheme().hAsFileIcons) {
+			// speciAl logic for 'file' completion items
+			dAtA.icon.clAssNAme = 'icon hide';
+			dAtA.iconContAiner.clAssNAme = 'icon hide';
+			const lAbelClAsses = getIconClAsses(this._modelService, this._modeService, URI.from({ scheme: 'fAke', pAth: textLAbel }), FileKind.FILE);
+			const detAilClAsses = getIconClAsses(this._modelService, this._modeService, URI.from({ scheme: 'fAke', pAth: completion.detAil }), FileKind.FILE);
+			lAbelOptions.extrAClAsses = lAbelClAsses.length > detAilClAsses.length ? lAbelClAsses : detAilClAsses;
 
-		} else if (completion.kind === CompletionItemKind.Folder && this._themeService.getFileIconTheme().hasFolderIcons) {
-			// special logic for 'folder' completion items
-			data.icon.className = 'icon hide';
-			data.iconContainer.className = 'icon hide';
-			labelOptions.extraClasses = flatten([
-				getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: textLabel }), FileKind.FOLDER),
-				getIconClasses(this._modelService, this._modeService, URI.from({ scheme: 'fake', path: completion.detail }), FileKind.FOLDER)
+		} else if (completion.kind === CompletionItemKind.Folder && this._themeService.getFileIconTheme().hAsFolderIcons) {
+			// speciAl logic for 'folder' completion items
+			dAtA.icon.clAssNAme = 'icon hide';
+			dAtA.iconContAiner.clAssNAme = 'icon hide';
+			lAbelOptions.extrAClAsses = flAtten([
+				getIconClAsses(this._modelService, this._modeService, URI.from({ scheme: 'fAke', pAth: textLAbel }), FileKind.FOLDER),
+				getIconClAsses(this._modelService, this._modeService, URI.from({ scheme: 'fAke', pAth: completion.detAil }), FileKind.FOLDER)
 			]);
 		} else {
-			// normal icon
-			data.icon.className = 'icon hide';
-			data.iconContainer.className = '';
-			data.iconContainer.classList.add('suggest-icon', ...completionKindToCssClass(completion.kind).split(' '));
+			// normAl icon
+			dAtA.icon.clAssNAme = 'icon hide';
+			dAtA.iconContAiner.clAssNAme = '';
+			dAtA.iconContAiner.clAssList.Add('suggest-icon', ...completionKindToCssClAss(completion.kind).split(' '));
 		}
 
-		if (completion.tags && completion.tags.indexOf(CompletionItemTag.Deprecated) >= 0) {
-			labelOptions.extraClasses = (labelOptions.extraClasses || []).concat(['deprecated']);
-			labelOptions.matches = [];
+		if (completion.tAgs && completion.tAgs.indexOf(CompletionItemTAg.DeprecAted) >= 0) {
+			lAbelOptions.extrAClAsses = (lAbelOptions.extrAClAsses || []).concAt(['deprecAted']);
+			lAbelOptions.mAtches = [];
 		}
 
-		data.iconLabel.setLabel(textLabel, undefined, labelOptions);
-		if (typeof completion.label === 'string') {
-			data.parametersLabel.textContent = '';
-			data.qualifierLabel.textContent = '';
-			data.detailsLabel.textContent = (completion.detail || '').replace(/\n.*$/m, '');
-			data.root.classList.add('string-label');
-			data.root.title = '';
+		dAtA.iconLAbel.setLAbel(textLAbel, undefined, lAbelOptions);
+		if (typeof completion.lAbel === 'string') {
+			dAtA.pArAmetersLAbel.textContent = '';
+			dAtA.quAlifierLAbel.textContent = '';
+			dAtA.detAilsLAbel.textContent = (completion.detAil || '').replAce(/\n.*$/m, '');
+			dAtA.root.clAssList.Add('string-lAbel');
+			dAtA.root.title = '';
 		} else {
-			data.parametersLabel.textContent = (completion.label.parameters || '').replace(/\n.*$/m, '');
-			data.qualifierLabel.textContent = (completion.label.qualifier || '').replace(/\n.*$/m, '');
-			data.detailsLabel.textContent = (completion.label.type || '').replace(/\n.*$/m, '');
-			data.root.classList.remove('string-label');
-			data.root.title = `${textLabel}${completion.label.parameters ?? ''}  ${completion.label.qualifier ?? ''}  ${completion.label.type ?? ''}`;
+			dAtA.pArAmetersLAbel.textContent = (completion.lAbel.pArAmeters || '').replAce(/\n.*$/m, '');
+			dAtA.quAlifierLAbel.textContent = (completion.lAbel.quAlifier || '').replAce(/\n.*$/m, '');
+			dAtA.detAilsLAbel.textContent = (completion.lAbel.type || '').replAce(/\n.*$/m, '');
+			dAtA.root.clAssList.remove('string-lAbel');
+			dAtA.root.title = `${textLAbel}${completion.lAbel.pArAmeters ?? ''}  ${completion.lAbel.quAlifier ?? ''}  ${completion.lAbel.type ?? ''}`;
 		}
 
-		if (canExpandCompletionItem(element)) {
-			data.right.classList.add('can-expand-details');
-			show(data.readMore);
-			data.readMore.onmousedown = e => {
-				e.stopPropagation();
-				e.preventDefault();
+		if (cAnExpAndCompletionItem(element)) {
+			dAtA.right.clAssList.Add('cAn-expAnd-detAils');
+			show(dAtA.reAdMore);
+			dAtA.reAdMore.onmousedown = e => {
+				e.stopPropAgAtion();
+				e.preventDefAult();
 			};
-			data.readMore.onclick = e => {
-				e.stopPropagation();
-				e.preventDefault();
-				this._onDidToggleDetails.fire();
+			dAtA.reAdMore.onclick = e => {
+				e.stopPropAgAtion();
+				e.preventDefAult();
+				this._onDidToggleDetAils.fire();
 			};
 		} else {
-			data.right.classList.remove('can-expand-details');
-			hide(data.readMore);
-			data.readMore.onmousedown = null;
-			data.readMore.onclick = null;
+			dAtA.right.clAssList.remove('cAn-expAnd-detAils');
+			hide(dAtA.reAdMore);
+			dAtA.reAdMore.onmousedown = null;
+			dAtA.reAdMore.onclick = null;
 		}
 	}
 
-	disposeTemplate(templateData: ISuggestionTemplateData): void {
-		templateData.disposables.dispose();
+	disposeTemplAte(templAteDAtA: ISuggestionTemplAteDAtA): void {
+		templAteDAtA.disposAbles.dispose();
 	}
 }

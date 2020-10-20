@@ -1,200 +1,200 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
-class Node<K, V> {
-	readonly forward: Node<K, V>[];
-	constructor(readonly level: number, readonly key: K, public value: V) {
-		this.forward = [];
+clAss Node<K, V> {
+	reAdonly forwArd: Node<K, V>[];
+	constructor(reAdonly level: number, reAdonly key: K, public vAlue: V) {
+		this.forwArd = [];
 	}
 }
 
 const NIL: undefined = undefined;
 
-interface Comparator<K> {
-	(a: K, b: K): number;
+interfAce CompArAtor<K> {
+	(A: K, b: K): number;
 }
 
-export class SkipList<K, V> implements Map<K, V> {
+export clAss SkipList<K, V> implements MAp<K, V> {
 
-	readonly [Symbol.toStringTag] = 'SkipList';
+	reAdonly [Symbol.toStringTAg] = 'SkipList';
 
-	private _maxLevel: number;
-	private _level: number = 0;
-	private _header: Node<K, V>;
-	private _size: number = 0;
+	privAte _mAxLevel: number;
+	privAte _level: number = 0;
+	privAte _heAder: Node<K, V>;
+	privAte _size: number = 0;
 
 	/**
 	 *
-	 * @param capacity Capacity at which the list performs best
+	 * @pArAm cApAcity CApAcity At which the list performs best
 	 */
 	constructor(
-		readonly comparator: (a: K, b: K) => number,
-		capacity: number = 2 ** 16
+		reAdonly compArAtor: (A: K, b: K) => number,
+		cApAcity: number = 2 ** 16
 	) {
-		this._maxLevel = Math.max(1, Math.log2(capacity) | 0);
-		this._header = <any>new Node(this._maxLevel, NIL, NIL);
+		this._mAxLevel = MAth.mAx(1, MAth.log2(cApAcity) | 0);
+		this._heAder = <Any>new Node(this._mAxLevel, NIL, NIL);
 	}
 
 	get size(): number {
 		return this._size;
 	}
 
-	clear(): void {
-		this._header = <any>new Node(this._maxLevel, NIL, NIL);
+	cleAr(): void {
+		this._heAder = <Any>new Node(this._mAxLevel, NIL, NIL);
 	}
 
-	has(key: K): boolean {
-		return Boolean(SkipList._search(this, key, this.comparator));
+	hAs(key: K): booleAn {
+		return BooleAn(SkipList._seArch(this, key, this.compArAtor));
 	}
 
 	get(key: K): V | undefined {
-		return SkipList._search(this, key, this.comparator)?.value;
+		return SkipList._seArch(this, key, this.compArAtor)?.vAlue;
 	}
 
-	set(key: K, value: V): this {
-		if (SkipList._insert(this, key, value, this.comparator)) {
+	set(key: K, vAlue: V): this {
+		if (SkipList._insert(this, key, vAlue, this.compArAtor)) {
 			this._size += 1;
 		}
 		return this;
 	}
 
-	delete(key: K): boolean {
-		const didDelete = SkipList._delete(this, key, this.comparator);
+	delete(key: K): booleAn {
+		const didDelete = SkipList._delete(this, key, this.compArAtor);
 		if (didDelete) {
 			this._size -= 1;
 		}
 		return didDelete;
 	}
 
-	// --- iteration
+	// --- iterAtion
 
-	forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
-		let node = this._header.forward[0];
+	forEAch(cAllbAckfn: (vAlue: V, key: K, mAp: MAp<K, V>) => void, thisArg?: Any): void {
+		let node = this._heAder.forwArd[0];
 		while (node) {
-			callbackfn.call(thisArg, node.value, node.key, this);
-			node = node.forward[0];
+			cAllbAckfn.cAll(thisArg, node.vAlue, node.key, this);
+			node = node.forwArd[0];
 		}
 	}
 
-	[Symbol.iterator](): IterableIterator<[K, V]> {
+	[Symbol.iterAtor](): IterAbleIterAtor<[K, V]> {
 		return this.entries();
 	}
 
-	*entries(): IterableIterator<[K, V]> {
-		let node = this._header.forward[0];
+	*entries(): IterAbleIterAtor<[K, V]> {
+		let node = this._heAder.forwArd[0];
 		while (node) {
-			yield [node.key, node.value];
-			node = node.forward[0];
+			yield [node.key, node.vAlue];
+			node = node.forwArd[0];
 		}
 	}
 
-	*keys(): IterableIterator<K> {
-		let node = this._header.forward[0];
+	*keys(): IterAbleIterAtor<K> {
+		let node = this._heAder.forwArd[0];
 		while (node) {
 			yield node.key;
-			node = node.forward[0];
+			node = node.forwArd[0];
 		}
 	}
 
-	*values(): IterableIterator<V> {
-		let node = this._header.forward[0];
+	*vAlues(): IterAbleIterAtor<V> {
+		let node = this._heAder.forwArd[0];
 		while (node) {
-			yield node.value;
-			node = node.forward[0];
+			yield node.vAlue;
+			node = node.forwArd[0];
 		}
 	}
 
 	toString(): string {
 		// debug string...
 		let result = '[SkipList]:';
-		let node = this._header.forward[0];
+		let node = this._heAder.forwArd[0];
 		while (node) {
-			result += `node(${node.key}, ${node.value}, lvl:${node.level})`;
-			node = node.forward[0];
+			result += `node(${node.key}, ${node.vAlue}, lvl:${node.level})`;
+			node = node.forwArd[0];
 		}
 		return result;
 	}
 
-	// from https://www.epaperpress.com/sortsearch/download/skiplist.pdf
+	// from https://www.epAperpress.com/sortseArch/downloAd/skiplist.pdf
 
-	private static _search<K, V>(list: SkipList<K, V>, searchKey: K, comparator: Comparator<K>) {
-		let x = list._header;
+	privAte stAtic _seArch<K, V>(list: SkipList<K, V>, seArchKey: K, compArAtor: CompArAtor<K>) {
+		let x = list._heAder;
 		for (let i = list._level - 1; i >= 0; i--) {
-			while (x.forward[i] && comparator(x.forward[i].key, searchKey) < 0) {
-				x = x.forward[i];
+			while (x.forwArd[i] && compArAtor(x.forwArd[i].key, seArchKey) < 0) {
+				x = x.forwArd[i];
 			}
 		}
-		x = x.forward[0];
-		if (x && comparator(x.key, searchKey) === 0) {
+		x = x.forwArd[0];
+		if (x && compArAtor(x.key, seArchKey) === 0) {
 			return x;
 		}
 		return undefined;
 	}
 
-	private static _insert<K, V>(list: SkipList<K, V>, searchKey: K, value: V, comparator: Comparator<K>) {
-		let update: Node<K, V>[] = [];
-		let x = list._header;
+	privAte stAtic _insert<K, V>(list: SkipList<K, V>, seArchKey: K, vAlue: V, compArAtor: CompArAtor<K>) {
+		let updAte: Node<K, V>[] = [];
+		let x = list._heAder;
 		for (let i = list._level - 1; i >= 0; i--) {
-			while (x.forward[i] && comparator(x.forward[i].key, searchKey) < 0) {
-				x = x.forward[i];
+			while (x.forwArd[i] && compArAtor(x.forwArd[i].key, seArchKey) < 0) {
+				x = x.forwArd[i];
 			}
-			update[i] = x;
+			updAte[i] = x;
 		}
-		x = x.forward[0];
-		if (x && comparator(x.key, searchKey) === 0) {
-			// update
-			x.value = value;
-			return false;
+		x = x.forwArd[0];
+		if (x && compArAtor(x.key, seArchKey) === 0) {
+			// updAte
+			x.vAlue = vAlue;
+			return fAlse;
 		} else {
 			// insert
-			let lvl = SkipList._randomLevel(list);
+			let lvl = SkipList._rAndomLevel(list);
 			if (lvl > list._level) {
 				for (let i = list._level; i < lvl; i++) {
-					update[i] = list._header;
+					updAte[i] = list._heAder;
 				}
 				list._level = lvl;
 			}
-			x = new Node<K, V>(lvl, searchKey, value);
+			x = new Node<K, V>(lvl, seArchKey, vAlue);
 			for (let i = 0; i < lvl; i++) {
-				x.forward[i] = update[i].forward[i];
-				update[i].forward[i] = x;
+				x.forwArd[i] = updAte[i].forwArd[i];
+				updAte[i].forwArd[i] = x;
 			}
 			return true;
 		}
 	}
 
-	private static _randomLevel(list: SkipList<any, any>, p: number = 0.5): number {
+	privAte stAtic _rAndomLevel(list: SkipList<Any, Any>, p: number = 0.5): number {
 		let lvl = 1;
-		while (Math.random() < p && lvl < list._maxLevel) {
+		while (MAth.rAndom() < p && lvl < list._mAxLevel) {
 			lvl += 1;
 		}
 		return lvl;
 	}
 
-	private static _delete<K, V>(list: SkipList<K, V>, searchKey: K, comparator: Comparator<K>) {
-		let update: Node<K, V>[] = [];
-		let x = list._header;
+	privAte stAtic _delete<K, V>(list: SkipList<K, V>, seArchKey: K, compArAtor: CompArAtor<K>) {
+		let updAte: Node<K, V>[] = [];
+		let x = list._heAder;
 		for (let i = list._level - 1; i >= 0; i--) {
-			while (x.forward[i] && comparator(x.forward[i].key, searchKey) < 0) {
-				x = x.forward[i];
+			while (x.forwArd[i] && compArAtor(x.forwArd[i].key, seArchKey) < 0) {
+				x = x.forwArd[i];
 			}
-			update[i] = x;
+			updAte[i] = x;
 		}
-		x = x.forward[0];
-		if (!x || comparator(x.key, searchKey) !== 0) {
+		x = x.forwArd[0];
+		if (!x || compArAtor(x.key, seArchKey) !== 0) {
 			// not found
-			return false;
+			return fAlse;
 		}
 		for (let i = 0; i < list._level; i++) {
-			if (update[i].forward[i] !== x) {
-				break;
+			if (updAte[i].forwArd[i] !== x) {
+				breAk;
 			}
-			update[i].forward[i] = x.forward[i];
+			updAte[i].forwArd[i] = x.forwArd[i];
 		}
-		while (list._level > 0 && list._header.forward[list._level - 1] === NIL) {
+		while (list._level > 0 && list._heAder.forwArd[list._level - 1] === NIL) {
 			list._level -= 1;
 		}
 		return true;

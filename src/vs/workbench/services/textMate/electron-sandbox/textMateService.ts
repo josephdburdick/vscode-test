@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextMateService } from 'vs/workbench/services/textMate/common/textMateService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractTextMateService } from 'vs/workbench/services/textMate/browser/abstractTextMateService';
+import { ITextMAteService } from 'vs/workbench/services/textMAte/common/textMAteService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { AbstrActTextMAteService } from 'vs/workbench/services/textMAte/browser/AbstrActTextMAteService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { createWebWorker, MonacoWebWorker } from 'vs/editor/common/services/webWorker';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { creAteWebWorker, MonAcoWebWorker } from 'vs/editor/common/services/webWorker';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import type { IRawTheme } from 'vscode-textmate';
-import { IValidGrammarDefinition } from 'vs/workbench/services/textMate/common/TMScopeRegistry';
-import { TextMateWorker } from 'vs/workbench/services/textMate/electron-sandbox/textMateWorker';
+import type { IRAwTheme } from 'vscode-textmAte';
+import { IVAlidGrAmmArDefinition } from 'vs/workbench/services/textMAte/common/TMScopeRegistry';
+import { TextMAteWorker } from 'vs/workbench/services/textMAte/electron-sAndbox/textMAteWorker';
 import { ITextModel } from 'vs/editor/common/model';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { UriComponents, URI } from 'vs/base/common/uri';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { UriComponents, URI } from 'vs/bAse/common/uri';
 import { MultilineTokensBuilder } from 'vs/editor/common/model/tokensStore';
-import { TMGrammarFactory } from 'vs/workbench/services/textMate/common/TMGrammarFactory';
-import { IModelContentChangedEvent } from 'vs/editor/common/model/textModelEvents';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { TMGrAmmArFActory } from 'vs/workbench/services/textMAte/common/TMGrAmmArFActory';
+import { IModelContentChAngedEvent } from 'vs/editor/common/model/textModelEvents';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IExtensionResourceLoAderService } from 'vs/workbench/services/extensionResourceLoAder/common/extensionResourceLoAder';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IProgressService } from 'vs/platform/progress/common/progress';
-import { FileAccess } from 'vs/base/common/network';
+import { IProgressService } from 'vs/plAtform/progress/common/progress';
+import { FileAccess } from 'vs/bAse/common/network';
 
-const RUN_TEXTMATE_IN_WORKER = false;
+const RUN_TEXTMATE_IN_WORKER = fAlse;
 
-class ModelWorkerTextMateTokenizer extends Disposable {
+clAss ModelWorkerTextMAteTokenizer extends DisposAble {
 
-	private readonly _worker: TextMateWorker;
-	private readonly _model: ITextModel;
-	private _isSynced: boolean;
-	private _pendingChanges: IModelContentChangedEvent[] = [];
+	privAte reAdonly _worker: TextMAteWorker;
+	privAte reAdonly _model: ITextModel;
+	privAte _isSynced: booleAn;
+	privAte _pendingChAnges: IModelContentChAngedEvent[] = [];
 
-	constructor(worker: TextMateWorker, model: ITextModel) {
+	constructor(worker: TextMAteWorker, model: ITextModel) {
 		super();
 		this._worker = worker;
 		this._model = model;
-		this._isSynced = false;
+		this._isSynced = fAlse;
 
-		this._register(this._model.onDidChangeAttached(() => this._onDidChangeAttached()));
-		this._onDidChangeAttached();
+		this._register(this._model.onDidChAngeAttAched(() => this._onDidChAngeAttAched()));
+		this._onDidChAngeAttAched();
 
-		this._register(this._model.onDidChangeContent((e) => {
+		this._register(this._model.onDidChAngeContent((e) => {
 			if (this._isSynced) {
-				this._worker.acceptModelChanged(this._model.uri.toString(), e);
-				this._pendingChanges.push(e);
+				this._worker.AcceptModelChAnged(this._model.uri.toString(), e);
+				this._pendingChAnges.push(e);
 			}
 		}));
 
-		this._register(this._model.onDidChangeLanguage((e) => {
+		this._register(this._model.onDidChAngeLAnguAge((e) => {
 			if (this._isSynced) {
-				this._worker.acceptModelLanguageChanged(this._model.uri.toString(), this._model.getLanguageIdentifier().id);
+				this._worker.AcceptModelLAnguAgeChAnged(this._model.uri.toString(), this._model.getLAnguAgeIdentifier().id);
 			}
 		}));
 	}
 
-	private _onDidChangeAttached(): void {
-		if (this._model.isAttachedToEditor()) {
+	privAte _onDidChAngeAttAched(): void {
+		if (this._model.isAttAchedToEditor()) {
 			if (!this._isSynced) {
 				this._beginSync();
 			}
@@ -72,20 +72,20 @@ class ModelWorkerTextMateTokenizer extends Disposable {
 		}
 	}
 
-	private _beginSync(): void {
+	privAte _beginSync(): void {
 		this._isSynced = true;
-		this._worker.acceptNewModel({
+		this._worker.AcceptNewModel({
 			uri: this._model.uri,
 			versionId: this._model.getVersionId(),
 			lines: this._model.getLinesContent(),
 			EOL: this._model.getEOL(),
-			languageId: this._model.getLanguageIdentifier().id,
+			lAnguAgeId: this._model.getLAnguAgeIdentifier().id,
 		});
 	}
 
-	private _endSync(): void {
-		this._isSynced = false;
-		this._worker.acceptRemovedModel(this._model.uri.toString());
+	privAte _endSync(): void {
+		this._isSynced = fAlse;
+		this._worker.AcceptRemovedModel(this._model.uri.toString());
 	}
 
 	public dispose() {
@@ -93,21 +93,21 @@ class ModelWorkerTextMateTokenizer extends Disposable {
 		this._endSync();
 	}
 
-	private _confirm(versionId: number): void {
-		while (this._pendingChanges.length > 0 && this._pendingChanges[0].versionId <= versionId) {
-			this._pendingChanges.shift();
+	privAte _confirm(versionId: number): void {
+		while (this._pendingChAnges.length > 0 && this._pendingChAnges[0].versionId <= versionId) {
+			this._pendingChAnges.shift();
 		}
 	}
 
-	public setTokens(versionId: number, rawTokens: ArrayBuffer): void {
+	public setTokens(versionId: number, rAwTokens: ArrAyBuffer): void {
 		this._confirm(versionId);
-		const tokens = MultilineTokensBuilder.deserialize(new Uint8Array(rawTokens));
+		const tokens = MultilineTokensBuilder.deseriAlize(new Uint8ArrAy(rAwTokens));
 
-		for (let i = 0; i < this._pendingChanges.length; i++) {
-			const change = this._pendingChanges[i];
+		for (let i = 0; i < this._pendingChAnges.length; i++) {
+			const chAnge = this._pendingChAnges[i];
 			for (let j = 0; j < tokens.length; j++) {
-				for (let k = 0; k < change.changes.length; k++) {
-					tokens[j].applyEdit(change.changes[k].range, change.changes[k].text);
+				for (let k = 0; k < chAnge.chAnges.length; k++) {
+					tokens[j].ApplyEdit(chAnge.chAnges[k].rAnge, chAnge.chAnges[k].text);
 				}
 			}
 		}
@@ -116,65 +116,65 @@ class ModelWorkerTextMateTokenizer extends Disposable {
 	}
 }
 
-export class TextMateWorkerHost {
+export clAss TextMAteWorkerHost {
 
 	constructor(
-		private readonly textMateService: TextMateService,
-		@IExtensionResourceLoaderService private readonly _extensionResourceLoaderService: IExtensionResourceLoaderService
+		privAte reAdonly textMAteService: TextMAteService,
+		@IExtensionResourceLoAderService privAte reAdonly _extensionResourceLoAderService: IExtensionResourceLoAderService
 	) {
 	}
 
-	async readFile(_resource: UriComponents): Promise<string> {
+	Async reAdFile(_resource: UriComponents): Promise<string> {
 		const resource = URI.revive(_resource);
-		return this._extensionResourceLoaderService.readExtensionResource(resource);
+		return this._extensionResourceLoAderService.reAdExtensionResource(resource);
 	}
 
-	async setTokens(_resource: UriComponents, versionId: number, tokens: Uint8Array): Promise<void> {
+	Async setTokens(_resource: UriComponents, versionId: number, tokens: Uint8ArrAy): Promise<void> {
 		const resource = URI.revive(_resource);
-		this.textMateService.setTokens(resource, versionId, tokens);
+		this.textMAteService.setTokens(resource, versionId, tokens);
 	}
 }
 
-export class TextMateService extends AbstractTextMateService {
+export clAss TextMAteService extends AbstrActTextMAteService {
 
-	private _worker: MonacoWebWorker<TextMateWorker> | null;
-	private _workerProxy: TextMateWorker | null;
-	private _tokenizers: { [uri: string]: ModelWorkerTextMateTokenizer; };
+	privAte _worker: MonAcoWebWorker<TextMAteWorker> | null;
+	privAte _workerProxy: TextMAteWorker | null;
+	privAte _tokenizers: { [uri: string]: ModelWorkerTextMAteTokenizer; };
 
 	constructor(
 		@IModeService modeService: IModeService,
 		@IWorkbenchThemeService themeService: IWorkbenchThemeService,
-		@IExtensionResourceLoaderService extensionResourceLoaderService: IExtensionResourceLoaderService,
-		@INotificationService notificationService: INotificationService,
+		@IExtensionResourceLoAderService extensionResourceLoAderService: IExtensionResourceLoAderService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@ILogService logService: ILogService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IStorageService storageService: IStorageService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
 		@IProgressService progressService: IProgressService,
-		@IModelService private readonly _modelService: IModelService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@IWorkbenchEnvironmentService privAte reAdonly _environmentService: IWorkbenchEnvironmentService,
 	) {
-		super(modeService, themeService, extensionResourceLoaderService, notificationService, logService, configurationService, storageService, progressService);
+		super(modeService, themeService, extensionResourceLoAderService, notificAtionService, logService, configurAtionService, storAgeService, progressService);
 		this._worker = null;
 		this._workerProxy = null;
-		this._tokenizers = Object.create(null);
+		this._tokenizers = Object.creAte(null);
 		this._register(this._modelService.onModelAdded(model => this._onModelAdded(model)));
 		this._register(this._modelService.onModelRemoved(model => this._onModelRemoved(model)));
-		this._modelService.getModels().forEach((model) => this._onModelAdded(model));
+		this._modelService.getModels().forEAch((model) => this._onModelAdded(model));
 	}
 
-	private _onModelAdded(model: ITextModel): void {
+	privAte _onModelAdded(model: ITextModel): void {
 		if (!this._workerProxy) {
 			return;
 		}
-		if (model.isTooLargeForSyncing()) {
+		if (model.isTooLArgeForSyncing()) {
 			return;
 		}
 		const key = model.uri.toString();
-		const tokenizer = new ModelWorkerTextMateTokenizer(this._workerProxy, model);
+		const tokenizer = new ModelWorkerTextMAteTokenizer(this._workerProxy, model);
 		this._tokenizers[key] = tokenizer;
 	}
 
-	private _onModelRemoved(model: ITextModel): void {
+	privAte _onModelRemoved(model: ITextModel): void {
 		const key = model.uri.toString();
 		if (this._tokenizers[key]) {
 			this._tokenizers[key].dispose();
@@ -182,58 +182,58 @@ export class TextMateService extends AbstractTextMateService {
 		}
 	}
 
-	protected async _loadVSCodeOnigurumWASM(): Promise<Response | ArrayBuffer> {
-		const response = await fetch(this._environmentService.isBuilt
-			? FileAccess.asBrowserUri('../../../../../../node_modules.asar.unpacked/vscode-oniguruma/release/onig.wasm', require).toString(true)
-			: FileAccess.asBrowserUri('../../../../../../node_modules/vscode-oniguruma/release/onig.wasm', require).toString(true));
+	protected Async _loAdVSCodeOnigurumWASM(): Promise<Response | ArrAyBuffer> {
+		const response = AwAit fetch(this._environmentService.isBuilt
+			? FileAccess.AsBrowserUri('../../../../../../node_modules.AsAr.unpAcked/vscode-onigurumA/releAse/onig.wAsm', require).toString(true)
+			: FileAccess.AsBrowserUri('../../../../../../node_modules/vscode-onigurumA/releAse/onig.wAsm', require).toString(true));
 		return response;
 	}
 
-	protected _onDidCreateGrammarFactory(grammarDefinitions: IValidGrammarDefinition[]): void {
+	protected _onDidCreAteGrAmmArFActory(grAmmArDefinitions: IVAlidGrAmmArDefinition[]): void {
 		this._killWorker();
 
 		if (RUN_TEXTMATE_IN_WORKER) {
-			const workerHost = new TextMateWorkerHost(this, this._extensionResourceLoaderService);
-			const worker = createWebWorker<TextMateWorker>(this._modelService, {
-				createData: {
-					grammarDefinitions
+			const workerHost = new TextMAteWorkerHost(this, this._extensionResourceLoAderService);
+			const worker = creAteWebWorker<TextMAteWorker>(this._modelService, {
+				creAteDAtA: {
+					grAmmArDefinitions
 				},
-				label: 'textMateWorker',
-				moduleId: 'vs/workbench/services/textMate/electron-browser/textMateWorker',
+				lAbel: 'textMAteWorker',
+				moduleId: 'vs/workbench/services/textMAte/electron-browser/textMAteWorker',
 				host: workerHost
 			});
 
 			this._worker = worker;
 			worker.getProxy().then((proxy) => {
 				if (this._worker !== worker) {
-					// disposed in the meantime
+					// disposed in the meAntime
 					return;
 				}
 				this._workerProxy = proxy;
-				if (this._currentTheme && this._currentTokenColorMap) {
-					this._workerProxy.acceptTheme(this._currentTheme, this._currentTokenColorMap);
+				if (this._currentTheme && this._currentTokenColorMAp) {
+					this._workerProxy.AcceptTheme(this._currentTheme, this._currentTokenColorMAp);
 				}
-				this._modelService.getModels().forEach((model) => this._onModelAdded(model));
+				this._modelService.getModels().forEAch((model) => this._onModelAdded(model));
 			});
 		}
 	}
 
-	protected _doUpdateTheme(grammarFactory: TMGrammarFactory, theme: IRawTheme, colorMap: string[]): void {
-		super._doUpdateTheme(grammarFactory, theme, colorMap);
-		if (this._currentTheme && this._currentTokenColorMap && this._workerProxy) {
-			this._workerProxy.acceptTheme(this._currentTheme, this._currentTokenColorMap);
+	protected _doUpdAteTheme(grAmmArFActory: TMGrAmmArFActory, theme: IRAwTheme, colorMAp: string[]): void {
+		super._doUpdAteTheme(grAmmArFActory, theme, colorMAp);
+		if (this._currentTheme && this._currentTokenColorMAp && this._workerProxy) {
+			this._workerProxy.AcceptTheme(this._currentTheme, this._currentTokenColorMAp);
 		}
 	}
 
-	protected _onDidDisposeGrammarFactory(): void {
+	protected _onDidDisposeGrAmmArFActory(): void {
 		this._killWorker();
 	}
 
-	private _killWorker(): void {
+	privAte _killWorker(): void {
 		for (let key of Object.keys(this._tokenizers)) {
 			this._tokenizers[key].dispose();
 		}
-		this._tokenizers = Object.create(null);
+		this._tokenizers = Object.creAte(null);
 
 		if (this._worker) {
 			this._worker.dispose();
@@ -242,7 +242,7 @@ export class TextMateService extends AbstractTextMateService {
 		this._workerProxy = null;
 	}
 
-	setTokens(resource: URI, versionId: number, tokens: ArrayBuffer): void {
+	setTokens(resource: URI, versionId: number, tokens: ArrAyBuffer): void {
 		const key = resource.toString();
 		if (!this._tokenizers[key]) {
 			return;
@@ -251,4 +251,4 @@ export class TextMateService extends AbstractTextMateService {
 	}
 }
 
-registerSingleton(ITextMateService, TextMateService);
+registerSingleton(ITextMAteService, TextMAteService);

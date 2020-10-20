@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Range } from 'vs/editor/common/core/range';
+import { URI } from 'vs/bAse/common/uri';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
 import { DocumentSymbol } from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { OutlineModel, OutlineElement } from 'vs/editor/contrib/documentSymbols/outlineModel';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { assertType } from 'vs/base/common/types';
-import { Iterable } from 'vs/base/common/iterator';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { AssertType } from 'vs/bAse/common/types';
+import { IterAble } from 'vs/bAse/common/iterAtor';
 
-export async function getDocumentSymbols(document: ITextModel, flat: boolean, token: CancellationToken): Promise<DocumentSymbol[]> {
+export Async function getDocumentSymbols(document: ITextModel, flAt: booleAn, token: CAncellAtionToken): Promise<DocumentSymbol[]> {
 
-	const model = await OutlineModel.create(document, token);
+	const model = AwAit OutlineModel.creAte(document, token);
 	const roots: DocumentSymbol[] = [];
-	for (const child of model.children.values()) {
-		if (child instanceof OutlineElement) {
+	for (const child of model.children.vAlues()) {
+		if (child instAnceof OutlineElement) {
 			roots.push(child.symbol);
 		} else {
-			roots.push(...Iterable.map(child.children.values(), child => child.symbol));
+			roots.push(...IterAble.mAp(child.children.vAlues(), child => child.symbol));
 		}
 	}
 
-	let flatEntries: DocumentSymbol[] = [];
-	if (token.isCancellationRequested) {
-		return flatEntries;
+	let flAtEntries: DocumentSymbol[] = [];
+	if (token.isCAncellAtionRequested) {
+		return flAtEntries;
 	}
-	if (flat) {
-		flatten(flatEntries, roots, '');
+	if (flAt) {
+		flAtten(flAtEntries, roots, '');
 	} else {
-		flatEntries = roots;
+		flAtEntries = roots;
 	}
 
-	return flatEntries.sort(compareEntriesUsingStart);
+	return flAtEntries.sort(compAreEntriesUsingStArt);
 }
 
-function compareEntriesUsingStart(a: DocumentSymbol, b: DocumentSymbol): number {
-	return Range.compareRangesUsingStarts(a.range, b.range);
+function compAreEntriesUsingStArt(A: DocumentSymbol, b: DocumentSymbol): number {
+	return RAnge.compAreRAngesUsingStArts(A.rAnge, b.rAnge);
 }
 
-function flatten(bucket: DocumentSymbol[], entries: DocumentSymbol[], overrideContainerLabel: string): void {
+function flAtten(bucket: DocumentSymbol[], entries: DocumentSymbol[], overrideContAinerLAbel: string): void {
 	for (let entry of entries) {
 		bucket.push({
 			kind: entry.kind,
-			tags: entry.tags,
-			name: entry.name,
-			detail: entry.detail,
-			containerName: entry.containerName || overrideContainerLabel,
-			range: entry.range,
-			selectionRange: entry.selectionRange,
-			children: undefined, // we flatten it...
+			tAgs: entry.tAgs,
+			nAme: entry.nAme,
+			detAil: entry.detAil,
+			contAinerNAme: entry.contAinerNAme || overrideContAinerLAbel,
+			rAnge: entry.rAnge,
+			selectionRAnge: entry.selectionRAnge,
+			children: undefined, // we flAtten it...
 		});
 		if (entry.children) {
-			flatten(bucket, entry.children, entry.name);
+			flAtten(bucket, entry.children, entry.nAme);
 		}
 	}
 }
 
-CommandsRegistry.registerCommand('_executeDocumentSymbolProvider', async function (accessor, ...args) {
-	const [resource] = args;
-	assertType(URI.isUri(resource));
+CommAndsRegistry.registerCommAnd('_executeDocumentSymbolProvider', Async function (Accessor, ...Args) {
+	const [resource] = Args;
+	AssertType(URI.isUri(resource));
 
-	const model = accessor.get(IModelService).getModel(resource);
+	const model = Accessor.get(IModelService).getModel(resource);
 	if (model) {
-		return getDocumentSymbols(model, false, CancellationToken.None);
+		return getDocumentSymbols(model, fAlse, CAncellAtionToken.None);
 	}
 
-	const reference = await accessor.get(ITextModelService).createModelReference(resource);
+	const reference = AwAit Accessor.get(ITextModelService).creAteModelReference(resource);
 	try {
-		return await getDocumentSymbols(reference.object.textEditorModel, false, CancellationToken.None);
-	} finally {
+		return AwAit getDocumentSymbols(reference.object.textEditorModel, fAlse, CAncellAtionToken.None);
+	} finAlly {
 		reference.dispose();
 	}
 });

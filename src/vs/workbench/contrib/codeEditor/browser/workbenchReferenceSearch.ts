@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { ReferencesController } from 'vs/editor/contrib/gotoSymbol/peek/referencesController';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 
-export class WorkbenchReferencesController extends ReferencesController {
+export clAss WorkbenchReferencesController extends ReferencesController {
 
 	public constructor(
 		editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@ICodeEditorService editorService: ICodeEditorService,
-		@INotificationService notificationService: INotificationService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IStorageService storageService: IStorageService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 	) {
 		super(
-			false,
+			fAlse,
 			editor,
 			contextKeyService,
 			editorService,
-			notificationService,
-			instantiationService,
-			storageService,
-			configurationService
+			notificAtionService,
+			instAntiAtionService,
+			storAgeService,
+			configurAtionService
 		);
 	}
 }

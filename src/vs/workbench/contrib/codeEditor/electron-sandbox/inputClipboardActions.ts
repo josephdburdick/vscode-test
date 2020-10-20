@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeybindingsRegistry } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import * as platform from 'vs/base/common/platform';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import { KeybindingsRegistry } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
 
-if (platform.isMacintosh) {
+if (plAtform.isMAcintosh) {
 
-	// On the mac, cmd+x, cmd+c and cmd+v do not result in cut / copy / paste
-	// We therefore add a basic keybinding rule that invokes document.execCommand
+	// On the mAc, cmd+x, cmd+c And cmd+v do not result in cut / copy / pAste
+	// We therefore Add A bAsic keybinding rule thAt invokes document.execCommAnd
 	// This is to cover <input>s...
 
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeybindingsRegistry.registerCommAndAndKeybindingRule({
 		id: 'execCut',
-		primary: KeyMod.CtrlCmd | KeyCode.KEY_X,
-		handler: bindExecuteCommand('cut'),
+		primAry: KeyMod.CtrlCmd | KeyCode.KEY_X,
+		hAndler: bindExecuteCommAnd('cut'),
 		weight: 0,
 		when: undefined,
 	});
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
+	KeybindingsRegistry.registerCommAndAndKeybindingRule({
 		id: 'execCopy',
-		primary: KeyMod.CtrlCmd | KeyCode.KEY_C,
-		handler: bindExecuteCommand('copy'),
+		primAry: KeyMod.CtrlCmd | KeyCode.KEY_C,
+		hAndler: bindExecuteCommAnd('copy'),
 		weight: 0,
 		when: undefined,
 	});
-	KeybindingsRegistry.registerCommandAndKeybindingRule({
-		id: 'execPaste',
-		primary: KeyMod.CtrlCmd | KeyCode.KEY_V,
-		handler: bindExecuteCommand('paste'),
+	KeybindingsRegistry.registerCommAndAndKeybindingRule({
+		id: 'execPAste',
+		primAry: KeyMod.CtrlCmd | KeyCode.KEY_V,
+		hAndler: bindExecuteCommAnd('pAste'),
 		weight: 0,
 		when: undefined,
 	});
 
-	function bindExecuteCommand(command: 'cut' | 'copy' | 'paste') {
+	function bindExecuteCommAnd(commAnd: 'cut' | 'copy' | 'pAste') {
 		return () => {
-			document.execCommand(command);
+			document.execCommAnd(commAnd);
 		};
 	}
 }

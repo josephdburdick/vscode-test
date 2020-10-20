@@ -1,304 +1,304 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as platform from 'vs/base/common/platform';
-import product from 'vs/platform/product/common/product';
-import { serve, Server, connect } from 'vs/base/parts/ipc/node/ipc.net';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { IEnvironmentService, INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { NativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
-import { ExtensionManagementChannel, ExtensionTipsChannel } from 'vs/platform/extensionManagement/common/extensionManagementIpc';
-import { IExtensionManagementService, IExtensionGalleryService, IGlobalExtensionEnablementService, IExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ExtensionManagementService } from 'vs/platform/extensionManagement/node/extensionManagementService';
-import { ExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionGalleryService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ConfigurationService } from 'vs/platform/configuration/common/configurationService';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { RequestService } from 'vs/platform/request/browser/requestService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { combinedAppender, NullTelemetryService, ITelemetryAppender, NullAppender } from 'vs/platform/telemetry/common/telemetryUtils';
-import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
-import { TelemetryAppenderChannel } from 'vs/platform/telemetry/node/telemetryIpc';
-import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
-import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppender';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { ILogService, LogLevel, ILoggerService } from 'vs/platform/log/common/log';
-import { LoggerChannelClient, FollowerLogService } from 'vs/platform/log/common/logIpc';
-import { LocalizationsService } from 'vs/platform/localizations/node/localizations';
-import { ILocalizationsService } from 'vs/platform/localizations/common/localizations';
-import { combinedDisposable, DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
-import { DownloadService } from 'vs/platform/download/common/downloadService';
-import { IDownloadService } from 'vs/platform/download/common/download';
-import { IChannel, IServerChannel, StaticRouter, createChannelSender, createChannelReceiver } from 'vs/base/parts/ipc/common/ipc';
-import { NodeCachedDataCleaner } from 'vs/code/electron-browser/sharedProcess/contrib/nodeCachedDataCleaner';
-import { LanguagePackCachedDataCleaner } from 'vs/code/electron-browser/sharedProcess/contrib/languagePackCachedDataCleaner';
-import { StorageDataCleaner } from 'vs/code/electron-browser/sharedProcess/contrib/storageDataCleaner';
-import { LogsDataCleaner } from 'vs/code/electron-browser/sharedProcess/contrib/logsDataCleaner';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { DiagnosticsService, IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { Schemas } from 'vs/base/common/network';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IUserDataSyncService, IUserDataSyncStoreService, registerConfiguration, IUserDataSyncLogService, IUserDataSyncUtilService, IUserDataSyncResourceEnablementService, IUserDataSyncBackupStoreService, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
-import { UserDataSyncService } from 'vs/platform/userDataSync/common/userDataSyncService';
-import { UserDataSyncStoreService, UserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSyncStoreService';
-import { UserDataSyncChannel, UserDataSyncUtilServiceClient, UserDataAutoSyncChannel, StorageKeysSyncRegistryChannelClient, UserDataSyncMachinesServiceChannel, UserDataSyncAccountServiceChannel, UserDataSyncStoreManagementServiceChannel } from 'vs/platform/userDataSync/common/userDataSyncIpc';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { LoggerService } from 'vs/platform/log/node/loggerService';
-import { UserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSyncLog';
-import { UserDataAutoSyncService } from 'vs/platform/userDataSync/electron-sandbox/userDataAutoSyncService';
-import { NativeStorageService } from 'vs/platform/storage/node/storageService';
-import { GlobalStorageDatabaseChannelClient } from 'vs/platform/storage/node/storageIpc';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { GlobalExtensionEnablementService } from 'vs/platform/extensionManagement/common/extensionEnablementService';
-import { UserDataSyncResourceEnablementService } from 'vs/platform/userDataSync/common/userDataSyncResourceEnablementService';
-import { IUserDataSyncAccountService, UserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
-import { UserDataSyncBackupStoreService } from 'vs/platform/userDataSync/common/userDataSyncBackupStoreService';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { ExtensionTipsService } from 'vs/platform/extensionManagement/electron-sandbox/extensionTipsService';
-import { UserDataSyncMachinesService, IUserDataSyncMachinesService } from 'vs/platform/userDataSync/common/userDataSyncMachines';
-import { IExtensionRecommendationNotificationService } from 'vs/platform/extensionRecommendations/common/extensionRecommendations';
-import { ExtensionRecommendationNotificationServiceChannelClient } from 'vs/platform/extensionRecommendations/electron-sandbox/extensionRecommendationsIpc';
-import { ActiveWindowManager } from 'vs/platform/windows/common/windowTracker';
-import { TelemetryLogAppender } from 'vs/platform/telemetry/common/telemetryLogAppender';
+import * As fs from 'fs';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import product from 'vs/plAtform/product/common/product';
+import { serve, Server, connect } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { IEnvironmentService, INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { NAtiveEnvironmentService } from 'vs/plAtform/environment/node/environmentService';
+import { ExtensionMAnAgementChAnnel, ExtensionTipsChAnnel } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementIpc';
+import { IExtensionMAnAgementService, IExtensionGAlleryService, IGlobAlExtensionEnAblementService, IExtensionTipsService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { ExtensionMAnAgementService } from 'vs/plAtform/extensionMAnAgement/node/extensionMAnAgementService';
+import { ExtensionGAlleryService } from 'vs/plAtform/extensionMAnAgement/common/extensionGAlleryService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtionService';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { RequestService } from 'vs/plAtform/request/browser/requestService';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { combinedAppender, NullTelemetryService, ITelemetryAppender, NullAppender } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { resolveCommonProperties } from 'vs/plAtform/telemetry/node/commonProperties';
+import { TelemetryAppenderChAnnel } from 'vs/plAtform/telemetry/node/telemetryIpc';
+import { TelemetryService, ITelemetryServiceConfig } from 'vs/plAtform/telemetry/common/telemetryService';
+import { AppInsightsAppender } from 'vs/plAtform/telemetry/node/AppInsightsAppender';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { ILogService, LogLevel, ILoggerService } from 'vs/plAtform/log/common/log';
+import { LoggerChAnnelClient, FollowerLogService } from 'vs/plAtform/log/common/logIpc';
+import { LocAlizAtionsService } from 'vs/plAtform/locAlizAtions/node/locAlizAtions';
+import { ILocAlizAtionsService } from 'vs/plAtform/locAlizAtions/common/locAlizAtions';
+import { combinedDisposAble, DisposAbleStore, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { DownloAdService } from 'vs/plAtform/downloAd/common/downloAdService';
+import { IDownloAdService } from 'vs/plAtform/downloAd/common/downloAd';
+import { IChAnnel, IServerChAnnel, StAticRouter, creAteChAnnelSender, creAteChAnnelReceiver } from 'vs/bAse/pArts/ipc/common/ipc';
+import { NodeCAchedDAtACleAner } from 'vs/code/electron-browser/shAredProcess/contrib/nodeCAchedDAtACleAner';
+import { LAnguAgePAckCAchedDAtACleAner } from 'vs/code/electron-browser/shAredProcess/contrib/lAnguAgePAckCAchedDAtACleAner';
+import { StorAgeDAtACleAner } from 'vs/code/electron-browser/shAredProcess/contrib/storAgeDAtACleAner';
+import { LogsDAtACleAner } from 'vs/code/electron-browser/shAredProcess/contrib/logsDAtACleAner';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { SpdLogService } from 'vs/plAtform/log/node/spdlogService';
+import { DiAgnosticsService, IDiAgnosticsService } from 'vs/plAtform/diAgnostics/node/diAgnosticsService';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { DiskFileSystemProvider } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IUserDAtASyncService, IUserDAtASyncStoreService, registerConfigurAtion, IUserDAtASyncLogService, IUserDAtASyncUtilService, IUserDAtASyncResourceEnAblementService, IUserDAtASyncBAckupStoreService, IUserDAtASyncStoreMAnAgementService } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { UserDAtASyncService } from 'vs/plAtform/userDAtASync/common/userDAtASyncService';
+import { UserDAtASyncStoreService, UserDAtASyncStoreMAnAgementService } from 'vs/plAtform/userDAtASync/common/userDAtASyncStoreService';
+import { UserDAtASyncChAnnel, UserDAtASyncUtilServiceClient, UserDAtAAutoSyncChAnnel, StorAgeKeysSyncRegistryChAnnelClient, UserDAtASyncMAchinesServiceChAnnel, UserDAtASyncAccountServiceChAnnel, UserDAtASyncStoreMAnAgementServiceChAnnel } from 'vs/plAtform/userDAtASync/common/userDAtASyncIpc';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { LoggerService } from 'vs/plAtform/log/node/loggerService';
+import { UserDAtASyncLogService } from 'vs/plAtform/userDAtASync/common/userDAtASyncLog';
+import { UserDAtAAutoSyncService } from 'vs/plAtform/userDAtASync/electron-sAndbox/userDAtAAutoSyncService';
+import { NAtiveStorAgeService } from 'vs/plAtform/storAge/node/storAgeService';
+import { GlobAlStorAgeDAtAbAseChAnnelClient } from 'vs/plAtform/storAge/node/storAgeIpc';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { GlobAlExtensionEnAblementService } from 'vs/plAtform/extensionMAnAgement/common/extensionEnAblementService';
+import { UserDAtASyncResourceEnAblementService } from 'vs/plAtform/userDAtASync/common/userDAtASyncResourceEnAblementService';
+import { IUserDAtASyncAccountService, UserDAtASyncAccountService } from 'vs/plAtform/userDAtASync/common/userDAtASyncAccount';
+import { UserDAtASyncBAckupStoreService } from 'vs/plAtform/userDAtASync/common/userDAtASyncBAckupStoreService';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { ExtensionTipsService } from 'vs/plAtform/extensionMAnAgement/electron-sAndbox/extensionTipsService';
+import { UserDAtASyncMAchinesService, IUserDAtASyncMAchinesService } from 'vs/plAtform/userDAtASync/common/userDAtASyncMAchines';
+import { IExtensionRecommendAtionNotificAtionService } from 'vs/plAtform/extensionRecommendAtions/common/extensionRecommendAtions';
+import { ExtensionRecommendAtionNotificAtionServiceChAnnelClient } from 'vs/plAtform/extensionRecommendAtions/electron-sAndbox/extensionRecommendAtionsIpc';
+import { ActiveWindowMAnAger } from 'vs/plAtform/windows/common/windowTrAcker';
+import { TelemetryLogAppender } from 'vs/plAtform/telemetry/common/telemetryLogAppender';
 
-export interface ISharedProcessConfiguration {
-	readonly machineId: string;
-	readonly windowId: number;
+export interfAce IShAredProcessConfigurAtion {
+	reAdonly mAchineId: string;
+	reAdonly windowId: number;
 }
 
-export function startup(configuration: ISharedProcessConfiguration) {
-	handshake(configuration);
+export function stArtup(configurAtion: IShAredProcessConfigurAtion) {
+	hAndshAke(configurAtion);
 }
 
-interface ISharedProcessInitData {
-	sharedIPCHandle: string;
-	args: NativeParsedArgs;
+interfAce IShAredProcessInitDAtA {
+	shAredIPCHAndle: string;
+	Args: NAtivePArsedArgs;
 	logLevel: LogLevel;
-	nodeCachedDataDir?: string;
-	backupWorkspacesPath: string;
+	nodeCAchedDAtADir?: string;
+	bAckupWorkspAcesPAth: string;
 }
 
-const eventPrefix = 'monacoworkbench';
+const eventPrefix = 'monAcoworkbench';
 
-class MainProcessService implements IMainProcessService {
+clAss MAinProcessService implements IMAinProcessService {
 
 	constructor(
-		private server: Server,
-		private mainRouter: StaticRouter
+		privAte server: Server,
+		privAte mAinRouter: StAticRouter
 	) { }
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	getChannel(channelName: string): IChannel {
-		return this.server.getChannel(channelName, this.mainRouter);
+	getChAnnel(chAnnelNAme: string): IChAnnel {
+		return this.server.getChAnnel(chAnnelNAme, this.mAinRouter);
 	}
 
-	registerChannel(channelName: string, channel: IServerChannel<string>): void {
-		this.server.registerChannel(channelName, channel);
+	registerChAnnel(chAnnelNAme: string, chAnnel: IServerChAnnel<string>): void {
+		this.server.registerChAnnel(chAnnelNAme, chAnnel);
 	}
 }
 
-async function main(server: Server, initData: ISharedProcessInitData, configuration: ISharedProcessConfiguration): Promise<void> {
+Async function mAin(server: Server, initDAtA: IShAredProcessInitDAtA, configurAtion: IShAredProcessConfigurAtion): Promise<void> {
 	const services = new ServiceCollection();
 
-	const disposables = new DisposableStore();
+	const disposAbles = new DisposAbleStore();
 
-	const onExit = () => disposables.dispose();
+	const onExit = () => disposAbles.dispose();
 	process.once('exit', onExit);
-	ipcRenderer.once('vscode:electron-main->shared-process=exit', onExit);
+	ipcRenderer.once('vscode:electron-mAin->shAred-process=exit', onExit);
 
-	disposables.add(server);
+	disposAbles.Add(server);
 
-	const environmentService = new NativeEnvironmentService(initData.args);
+	const environmentService = new NAtiveEnvironmentService(initDAtA.Args);
 
-	const mainRouter = new StaticRouter(ctx => ctx === 'main');
-	const loggerClient = new LoggerChannelClient(server.getChannel('logger', mainRouter));
-	const logService = new FollowerLogService(loggerClient, new SpdLogService('sharedprocess', environmentService.logsPath, initData.logLevel));
-	disposables.add(logService);
-	logService.info('main', JSON.stringify(configuration));
+	const mAinRouter = new StAticRouter(ctx => ctx === 'mAin');
+	const loggerClient = new LoggerChAnnelClient(server.getChAnnel('logger', mAinRouter));
+	const logService = new FollowerLogService(loggerClient, new SpdLogService('shAredprocess', environmentService.logsPAth, initDAtA.logLevel));
+	disposAbles.Add(logService);
+	logService.info('mAin', JSON.stringify(configurAtion));
 
-	const mainProcessService = new MainProcessService(server, mainRouter);
-	services.set(IMainProcessService, mainProcessService);
+	const mAinProcessService = new MAinProcessService(server, mAinRouter);
+	services.set(IMAinProcessService, mAinProcessService);
 
 	// Files
 	const fileService = new FileService(logService);
 	services.set(IFileService, fileService);
-	disposables.add(fileService);
+	disposAbles.Add(fileService);
 	const diskFileSystemProvider = new DiskFileSystemProvider(logService);
-	disposables.add(diskFileSystemProvider);
-	fileService.registerProvider(Schemas.file, diskFileSystemProvider);
+	disposAbles.Add(diskFileSystemProvider);
+	fileService.registerProvider(SchemAs.file, diskFileSystemProvider);
 
-	// Configuration
-	const configurationService = new ConfigurationService(environmentService.settingsResource, fileService);
-	disposables.add(configurationService);
-	await configurationService.initialize();
+	// ConfigurAtion
+	const configurAtionService = new ConfigurAtionService(environmentService.settingsResource, fileService);
+	disposAbles.Add(configurAtionService);
+	AwAit configurAtionService.initiAlize();
 
-	// Storage
-	const storageService = new NativeStorageService(new GlobalStorageDatabaseChannelClient(mainProcessService.getChannel('storage')), logService, environmentService);
-	await storageService.initialize();
-	services.set(IStorageService, storageService);
-	disposables.add(toDisposable(() => storageService.flush()));
+	// StorAge
+	const storAgeService = new NAtiveStorAgeService(new GlobAlStorAgeDAtAbAseChAnnelClient(mAinProcessService.getChAnnel('storAge')), logService, environmentService);
+	AwAit storAgeService.initiAlize();
+	services.set(IStorAgeService, storAgeService);
+	disposAbles.Add(toDisposAble(() => storAgeService.flush()));
 
-	services.set(IStorageKeysSyncRegistryService, new StorageKeysSyncRegistryChannelClient(mainProcessService.getChannel('storageKeysSyncRegistryService')));
+	services.set(IStorAgeKeysSyncRegistryService, new StorAgeKeysSyncRegistryChAnnelClient(mAinProcessService.getChAnnel('storAgeKeysSyncRegistryService')));
 
 	services.set(IEnvironmentService, environmentService);
-	services.set(INativeEnvironmentService, environmentService);
+	services.set(INAtiveEnvironmentService, environmentService);
 
-	services.set(IProductService, { _serviceBrand: undefined, ...product });
+	services.set(IProductService, { _serviceBrAnd: undefined, ...product });
 	services.set(ILogService, logService);
-	services.set(IConfigurationService, configurationService);
+	services.set(IConfigurAtionService, configurAtionService);
 	services.set(IRequestService, new SyncDescriptor(RequestService));
 	services.set(ILoggerService, new SyncDescriptor(LoggerService));
 
-	const nativeHostService = createChannelSender<INativeHostService>(mainProcessService.getChannel('nativeHost'), { context: configuration.windowId });
-	services.set(INativeHostService, nativeHostService);
-	const activeWindowManager = new ActiveWindowManager(nativeHostService);
-	const activeWindowRouter = new StaticRouter(ctx => activeWindowManager.getActiveClientId().then(id => ctx === id));
+	const nAtiveHostService = creAteChAnnelSender<INAtiveHostService>(mAinProcessService.getChAnnel('nAtiveHost'), { context: configurAtion.windowId });
+	services.set(INAtiveHostService, nAtiveHostService);
+	const ActiveWindowMAnAger = new ActiveWindowMAnAger(nAtiveHostService);
+	const ActiveWindowRouter = new StAticRouter(ctx => ActiveWindowMAnAger.getActiveClientId().then(id => ctx === id));
 
-	services.set(IDownloadService, new SyncDescriptor(DownloadService));
-	services.set(IExtensionRecommendationNotificationService, new ExtensionRecommendationNotificationServiceChannelClient(server.getChannel('IExtensionRecommendationNotificationService', activeWindowRouter)));
+	services.set(IDownloAdService, new SyncDescriptor(DownloAdService));
+	services.set(IExtensionRecommendAtionNotificAtionService, new ExtensionRecommendAtionNotificAtionServiceChAnnelClient(server.getChAnnel('IExtensionRecommendAtionNotificAtionService', ActiveWindowRouter)));
 
-	const instantiationService = new InstantiationService(services);
+	const instAntiAtionService = new InstAntiAtionService(services);
 
 	let telemetryService: ITelemetryService;
-	instantiationService.invokeFunction(accessor => {
+	instAntiAtionService.invokeFunction(Accessor => {
 		const services = new ServiceCollection();
-		const { appRoot, extensionsPath, extensionDevelopmentLocationURI, isBuilt, installSourcePath } = environmentService;
+		const { AppRoot, extensionsPAth, extensionDevelopmentLocAtionURI, isBuilt, instAllSourcePAth } = environmentService;
 
 		let telemetryAppender: ITelemetryAppender = NullAppender;
-		if (!extensionDevelopmentLocationURI && !environmentService.disableTelemetry && product.enableTelemetry) {
-			telemetryAppender = new TelemetryLogAppender(accessor.get(ILoggerService), environmentService);
-			if (product.aiConfig && product.aiConfig.asimovKey && isBuilt) {
-				const appInsightsAppender = new AppInsightsAppender(eventPrefix, null, product.aiConfig.asimovKey);
-				disposables.add(toDisposable(() => appInsightsAppender!.flush())); // Ensure the AI appender is disposed so that it flushes remaining data
-				telemetryAppender = combinedAppender(appInsightsAppender, telemetryAppender);
+		if (!extensionDevelopmentLocAtionURI && !environmentService.disAbleTelemetry && product.enAbleTelemetry) {
+			telemetryAppender = new TelemetryLogAppender(Accessor.get(ILoggerService), environmentService);
+			if (product.AiConfig && product.AiConfig.AsimovKey && isBuilt) {
+				const AppInsightsAppender = new AppInsightsAppender(eventPrefix, null, product.AiConfig.AsimovKey);
+				disposAbles.Add(toDisposAble(() => AppInsightsAppender!.flush())); // Ensure the AI Appender is disposed so thAt it flushes remAining dAtA
+				telemetryAppender = combinedAppender(AppInsightsAppender, telemetryAppender);
 			}
 			const config: ITelemetryServiceConfig = {
-				appender: telemetryAppender,
-				commonProperties: resolveCommonProperties(product.commit, product.version, configuration.machineId, product.msftInternalDomains, installSourcePath),
+				Appender: telemetryAppender,
+				commonProperties: resolveCommonProperties(product.commit, product.version, configurAtion.mAchineId, product.msftInternAlDomAins, instAllSourcePAth),
 				sendErrorTelemetry: true,
-				piiPaths: extensionsPath ? [appRoot, extensionsPath] : [appRoot]
+				piiPAths: extensionsPAth ? [AppRoot, extensionsPAth] : [AppRoot]
 			};
 
-			telemetryService = new TelemetryService(config, configurationService);
+			telemetryService = new TelemetryService(config, configurAtionService);
 			services.set(ITelemetryService, telemetryService);
 		} else {
 			telemetryService = NullTelemetryService;
 			services.set(ITelemetryService, NullTelemetryService);
 		}
-		server.registerChannel('telemetryAppender', new TelemetryAppenderChannel(telemetryAppender));
+		server.registerChAnnel('telemetryAppender', new TelemetryAppenderChAnnel(telemetryAppender));
 
-		services.set(IExtensionManagementService, new SyncDescriptor(ExtensionManagementService));
-		services.set(IExtensionGalleryService, new SyncDescriptor(ExtensionGalleryService));
-		services.set(ILocalizationsService, new SyncDescriptor(LocalizationsService));
-		services.set(IDiagnosticsService, new SyncDescriptor(DiagnosticsService));
+		services.set(IExtensionMAnAgementService, new SyncDescriptor(ExtensionMAnAgementService));
+		services.set(IExtensionGAlleryService, new SyncDescriptor(ExtensionGAlleryService));
+		services.set(ILocAlizAtionsService, new SyncDescriptor(LocAlizAtionsService));
+		services.set(IDiAgnosticsService, new SyncDescriptor(DiAgnosticsService));
 		services.set(IExtensionTipsService, new SyncDescriptor(ExtensionTipsService));
 
-		services.set(IUserDataSyncAccountService, new SyncDescriptor(UserDataSyncAccountService));
-		services.set(IUserDataSyncLogService, new SyncDescriptor(UserDataSyncLogService));
-		services.set(IUserDataSyncUtilService, new UserDataSyncUtilServiceClient(server.getChannel('userDataSyncUtil', client => client.ctx !== 'main')));
-		services.set(IGlobalExtensionEnablementService, new SyncDescriptor(GlobalExtensionEnablementService));
-		services.set(IUserDataSyncStoreManagementService, new SyncDescriptor(UserDataSyncStoreManagementService));
-		services.set(IUserDataSyncStoreService, new SyncDescriptor(UserDataSyncStoreService));
-		services.set(IUserDataSyncMachinesService, new SyncDescriptor(UserDataSyncMachinesService));
-		services.set(IUserDataSyncBackupStoreService, new SyncDescriptor(UserDataSyncBackupStoreService));
-		services.set(IUserDataSyncResourceEnablementService, new SyncDescriptor(UserDataSyncResourceEnablementService));
-		services.set(IUserDataSyncService, new SyncDescriptor(UserDataSyncService));
-		registerConfiguration();
+		services.set(IUserDAtASyncAccountService, new SyncDescriptor(UserDAtASyncAccountService));
+		services.set(IUserDAtASyncLogService, new SyncDescriptor(UserDAtASyncLogService));
+		services.set(IUserDAtASyncUtilService, new UserDAtASyncUtilServiceClient(server.getChAnnel('userDAtASyncUtil', client => client.ctx !== 'mAin')));
+		services.set(IGlobAlExtensionEnAblementService, new SyncDescriptor(GlobAlExtensionEnAblementService));
+		services.set(IUserDAtASyncStoreMAnAgementService, new SyncDescriptor(UserDAtASyncStoreMAnAgementService));
+		services.set(IUserDAtASyncStoreService, new SyncDescriptor(UserDAtASyncStoreService));
+		services.set(IUserDAtASyncMAchinesService, new SyncDescriptor(UserDAtASyncMAchinesService));
+		services.set(IUserDAtASyncBAckupStoreService, new SyncDescriptor(UserDAtASyncBAckupStoreService));
+		services.set(IUserDAtASyncResourceEnAblementService, new SyncDescriptor(UserDAtASyncResourceEnAblementService));
+		services.set(IUserDAtASyncService, new SyncDescriptor(UserDAtASyncService));
+		registerConfigurAtion();
 
-		const instantiationService2 = instantiationService.createChild(services);
+		const instAntiAtionService2 = instAntiAtionService.creAteChild(services);
 
-		instantiationService2.invokeFunction(accessor => {
+		instAntiAtionService2.invokeFunction(Accessor => {
 
-			const extensionManagementService = accessor.get(IExtensionManagementService);
-			const channel = new ExtensionManagementChannel(extensionManagementService, () => null);
-			server.registerChannel('extensions', channel);
+			const extensionMAnAgementService = Accessor.get(IExtensionMAnAgementService);
+			const chAnnel = new ExtensionMAnAgementChAnnel(extensionMAnAgementService, () => null);
+			server.registerChAnnel('extensions', chAnnel);
 
-			const localizationsService = accessor.get(ILocalizationsService);
-			const localizationsChannel = createChannelReceiver(localizationsService);
-			server.registerChannel('localizations', localizationsChannel);
+			const locAlizAtionsService = Accessor.get(ILocAlizAtionsService);
+			const locAlizAtionsChAnnel = creAteChAnnelReceiver(locAlizAtionsService);
+			server.registerChAnnel('locAlizAtions', locAlizAtionsChAnnel);
 
-			const diagnosticsService = accessor.get(IDiagnosticsService);
-			const diagnosticsChannel = createChannelReceiver(diagnosticsService);
-			server.registerChannel('diagnostics', diagnosticsChannel);
+			const diAgnosticsService = Accessor.get(IDiAgnosticsService);
+			const diAgnosticsChAnnel = creAteChAnnelReceiver(diAgnosticsService);
+			server.registerChAnnel('diAgnostics', diAgnosticsChAnnel);
 
-			const extensionTipsService = accessor.get(IExtensionTipsService);
-			const extensionTipsChannel = new ExtensionTipsChannel(extensionTipsService);
-			server.registerChannel('extensionTipsService', extensionTipsChannel);
+			const extensionTipsService = Accessor.get(IExtensionTipsService);
+			const extensionTipsChAnnel = new ExtensionTipsChAnnel(extensionTipsService);
+			server.registerChAnnel('extensionTipsService', extensionTipsChAnnel);
 
-			const userDataSyncMachinesService = accessor.get(IUserDataSyncMachinesService);
-			const userDataSyncMachineChannel = new UserDataSyncMachinesServiceChannel(userDataSyncMachinesService);
-			server.registerChannel('userDataSyncMachines', userDataSyncMachineChannel);
+			const userDAtASyncMAchinesService = Accessor.get(IUserDAtASyncMAchinesService);
+			const userDAtASyncMAchineChAnnel = new UserDAtASyncMAchinesServiceChAnnel(userDAtASyncMAchinesService);
+			server.registerChAnnel('userDAtASyncMAchines', userDAtASyncMAchineChAnnel);
 
-			const authTokenService = accessor.get(IUserDataSyncAccountService);
-			const authTokenChannel = new UserDataSyncAccountServiceChannel(authTokenService);
-			server.registerChannel('userDataSyncAccount', authTokenChannel);
+			const AuthTokenService = Accessor.get(IUserDAtASyncAccountService);
+			const AuthTokenChAnnel = new UserDAtASyncAccountServiceChAnnel(AuthTokenService);
+			server.registerChAnnel('userDAtASyncAccount', AuthTokenChAnnel);
 
-			const userDataSyncStoreManagementService = accessor.get(IUserDataSyncStoreManagementService);
-			const userDataSyncStoreManagementChannel = new UserDataSyncStoreManagementServiceChannel(userDataSyncStoreManagementService);
-			server.registerChannel('userDataSyncStoreManagement', userDataSyncStoreManagementChannel);
+			const userDAtASyncStoreMAnAgementService = Accessor.get(IUserDAtASyncStoreMAnAgementService);
+			const userDAtASyncStoreMAnAgementChAnnel = new UserDAtASyncStoreMAnAgementServiceChAnnel(userDAtASyncStoreMAnAgementService);
+			server.registerChAnnel('userDAtASyncStoreMAnAgement', userDAtASyncStoreMAnAgementChAnnel);
 
-			const userDataSyncService = accessor.get(IUserDataSyncService);
-			const userDataSyncChannel = new UserDataSyncChannel(server, userDataSyncService, logService);
-			server.registerChannel('userDataSync', userDataSyncChannel);
+			const userDAtASyncService = Accessor.get(IUserDAtASyncService);
+			const userDAtASyncChAnnel = new UserDAtASyncChAnnel(server, userDAtASyncService, logService);
+			server.registerChAnnel('userDAtASync', userDAtASyncChAnnel);
 
-			const userDataAutoSync = instantiationService2.createInstance(UserDataAutoSyncService);
-			const userDataAutoSyncChannel = new UserDataAutoSyncChannel(userDataAutoSync);
-			server.registerChannel('userDataAutoSync', userDataAutoSyncChannel);
+			const userDAtAAutoSync = instAntiAtionService2.creAteInstAnce(UserDAtAAutoSyncService);
+			const userDAtAAutoSyncChAnnel = new UserDAtAAutoSyncChAnnel(userDAtAAutoSync);
+			server.registerChAnnel('userDAtAAutoSync', userDAtAAutoSyncChAnnel);
 
-			// clean up deprecated extensions
-			(extensionManagementService as ExtensionManagementService).removeDeprecatedExtensions();
-			// update localizations cache
-			(localizationsService as LocalizationsService).update();
-			// cache clean ups
-			disposables.add(combinedDisposable(
-				new NodeCachedDataCleaner(initData.nodeCachedDataDir),
-				instantiationService2.createInstance(LanguagePackCachedDataCleaner),
-				instantiationService2.createInstance(StorageDataCleaner, initData.backupWorkspacesPath),
-				instantiationService2.createInstance(LogsDataCleaner),
-				userDataAutoSync
+			// cleAn up deprecAted extensions
+			(extensionMAnAgementService As ExtensionMAnAgementService).removeDeprecAtedExtensions();
+			// updAte locAlizAtions cAche
+			(locAlizAtionsService As LocAlizAtionsService).updAte();
+			// cAche cleAn ups
+			disposAbles.Add(combinedDisposAble(
+				new NodeCAchedDAtACleAner(initDAtA.nodeCAchedDAtADir),
+				instAntiAtionService2.creAteInstAnce(LAnguAgePAckCAchedDAtACleAner),
+				instAntiAtionService2.creAteInstAnce(StorAgeDAtACleAner, initDAtA.bAckupWorkspAcesPAth),
+				instAntiAtionService2.creAteInstAnce(LogsDAtACleAner),
+				userDAtAAutoSync
 			));
-			disposables.add(extensionManagementService as ExtensionManagementService);
+			disposAbles.Add(extensionMAnAgementService As ExtensionMAnAgementService);
 		});
 	});
 }
 
 function setupIPC(hook: string): Promise<Server> {
-	function setup(retry: boolean): Promise<Server> {
+	function setup(retry: booleAn): Promise<Server> {
 		return serve(hook).then(null, err => {
-			if (!retry || platform.isWindows || err.code !== 'EADDRINUSE') {
+			if (!retry || plAtform.isWindows || err.code !== 'EADDRINUSE') {
 				return Promise.reject(err);
 			}
 
-			// should retry, not windows and eaddrinuse
+			// should retry, not windows And eAddrinuse
 
 			return connect(hook, '').then(
 				client => {
-					// we could connect to a running instance. this is not good, abort
+					// we could connect to A running instAnce. this is not good, Abort
 					client.dispose();
-					return Promise.reject(new Error('There is an instance already running.'));
+					return Promise.reject(new Error('There is An instAnce AlreAdy running.'));
 				},
 				err => {
-					// it happens on Linux and OS X that the pipe is left behind
-					// let's delete it, since we can't connect to it
-					// and the retry the whole thing
+					// it hAppens on Linux And OS X thAt the pipe is left behind
+					// let's delete it, since we cAn't connect to it
+					// And the retry the whole thing
 					try {
 						fs.unlinkSync(hook);
-					} catch (e) {
-						return Promise.reject(new Error('Error deleting the shared ipc hook.'));
+					} cAtch (e) {
+						return Promise.reject(new Error('Error deleting the shAred ipc hook.'));
 					}
 
-					return setup(false);
+					return setup(fAlse);
 				}
 			);
 		});
@@ -307,21 +307,21 @@ function setupIPC(hook: string): Promise<Server> {
 	return setup(true);
 }
 
-async function handshake(configuration: ISharedProcessConfiguration): Promise<void> {
+Async function hAndshAke(configurAtion: IShAredProcessConfigurAtion): Promise<void> {
 
-	// receive payload from electron-main to start things
-	const data = await new Promise<ISharedProcessInitData>(c => {
-		ipcRenderer.once('vscode:electron-main->shared-process=payload', (event: unknown, r: ISharedProcessInitData) => c(r));
+	// receive pAyloAd from electron-mAin to stArt things
+	const dAtA = AwAit new Promise<IShAredProcessInitDAtA>(c => {
+		ipcRenderer.once('vscode:electron-mAin->shAred-process=pAyloAd', (event: unknown, r: IShAredProcessInitDAtA) => c(r));
 
-		// tell electron-main we are ready to receive payload
-		ipcRenderer.send('vscode:shared-process->electron-main=ready-for-payload');
+		// tell electron-mAin we Are reAdy to receive pAyloAd
+		ipcRenderer.send('vscode:shAred-process->electron-mAin=reAdy-for-pAyloAd');
 	});
 
-	// await IPC connection and signal this back to electron-main
-	const server = await setupIPC(data.sharedIPCHandle);
-	ipcRenderer.send('vscode:shared-process->electron-main=ipc-ready');
+	// AwAit IPC connection And signAl this bAck to electron-mAin
+	const server = AwAit setupIPC(dAtA.shAredIPCHAndle);
+	ipcRenderer.send('vscode:shAred-process->electron-mAin=ipc-reAdy');
 
-	// await initialization and signal this back to electron-main
-	await main(server, data, configuration);
-	ipcRenderer.send('vscode:shared-process->electron-main=init-done');
+	// AwAit initiAlizAtion And signAl this bAck to electron-mAin
+	AwAit mAin(server, dAtA, configurAtion);
+	ipcRenderer.send('vscode:shAred-process->electron-mAin=init-done');
 }

@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Based on @sergeche's work on the emmet plugin for atom
+// BAsed on @sergeche's work on the emmet plugin for Atom
 // TODO: Move to https://github.com/emmetio/file-utils
 
 
 
-import * as path from 'path';
-import * as fs from 'fs';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
 
 const reAbsolutePosix = /^\/+/;
 const reAbsoluteWin32 = /^\\+/;
-const reAbsolute = path.sep === '/' ? reAbsolutePosix : reAbsoluteWin32;
+const reAbsolute = pAth.sep === '/' ? reAbsolutePosix : reAbsoluteWin32;
 
 /**
- * Locates given `filePath` on user’s file system and returns absolute path to it.
- * This method expects either URL, or relative/absolute path to resource
- * @param basePath Base path to use if filePath is not absoulte
- * @param filePath File to locate.
+ * LocAtes given `filePAth` on user’s file system And returns Absolute pAth to it.
+ * This method expects either URL, or relAtive/Absolute pAth to resource
+ * @pArAm bAsePAth BAse pAth to use if filePAth is not Absoulte
+ * @pArAm filePAth File to locAte.
  */
-export function locateFile(base: string, filePath: string): Promise<string> {
-	if (/^\w+:/.test(filePath)) {
-		// path with protocol, already absolute
-		return Promise.resolve(filePath);
+export function locAteFile(bAse: string, filePAth: string): Promise<string> {
+	if (/^\w+:/.test(filePAth)) {
+		// pAth with protocol, AlreAdy Absolute
+		return Promise.resolve(filePAth);
 	}
 
-	filePath = path.normalize(filePath);
+	filePAth = pAth.normAlize(filePAth);
 
-	return reAbsolute.test(filePath)
-		? resolveAbsolute(base, filePath)
-		: resolveRelative(base, filePath);
+	return reAbsolute.test(filePAth)
+		? resolveAbsolute(bAse, filePAth)
+		: resolveRelAtive(bAse, filePAth);
 }
 
 /**
- * Resolves relative file path
+ * Resolves relAtive file pAth
  */
-function resolveRelative(basePath: string, filePath: string): Promise<string> {
-	return tryFile(path.resolve(basePath, filePath));
+function resolveRelAtive(bAsePAth: string, filePAth: string): Promise<string> {
+	return tryFile(pAth.resolve(bAsePAth, filePAth));
 }
 
 /**
- * Resolves absolute file path agaist given editor: tries to find file in every
- * parent of editor’s file
+ * Resolves Absolute file pAth AgAist given editor: tries to find file in every
+ * pArent of editor’s file
  */
-function resolveAbsolute(basePath: string, filePath: string): Promise<string> {
+function resolveAbsolute(bAsePAth: string, filePAth: string): Promise<string> {
 	return new Promise((resolve, reject) => {
-		filePath = filePath.replace(reAbsolute, '');
+		filePAth = filePAth.replAce(reAbsolute, '');
 
 		const next = (ctx: string) => {
-			tryFile(path.resolve(ctx, filePath))
+			tryFile(pAth.resolve(ctx, filePAth))
 				.then(resolve, () => {
-					const dir = path.dirname(ctx);
+					const dir = pAth.dirnAme(ctx);
 					if (!dir || dir === ctx) {
-						return reject(`Unable to locate absolute file ${filePath}`);
+						return reject(`UnAble to locAte Absolute file ${filePAth}`);
 					}
 
 					next(dir);
 				});
 		};
 
-		next(basePath);
+		next(bAsePAth);
 	});
 }
 
 /**
- * Check if given file exists and it’s a file, not directory
+ * Check if given file exists And it’s A file, not directory
  */
 function tryFile(file: string): Promise<string> {
 	return new Promise((resolve, reject) => {
-		fs.stat(file, (err, stat) => {
+		fs.stAt(file, (err, stAt) => {
 			if (err) {
 				return reject(err);
 			}
 
-			if (!stat.isFile()) {
-				return reject(new Error(`${file} is not a file`));
+			if (!stAt.isFile()) {
+				return reject(new Error(`${file} is not A file`));
 			}
 
 			resolve(file);

@@ -1,154 +1,154 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename } from 'path';
-import * as vscode from 'vscode';
-import { DiagnosticKind } from './languageFeatures/diagnostics';
-import FileConfigurationManager from './languageFeatures/fileConfigurationManager';
-import { CachedResponse } from './tsServer/cachedResponse';
+import { bAsenAme } from 'pAth';
+import * As vscode from 'vscode';
+import { DiAgnosticKind } from './lAnguAgeFeAtures/diAgnostics';
+import FileConfigurAtionMAnAger from './lAnguAgeFeAtures/fileConfigurAtionMAnAger';
+import { CAchedResponse } from './tsServer/cAchedResponse';
 import TypeScriptServiceClient from './typescriptServiceClient';
-import { CommandManager } from './commands/commandManager';
-import { Disposable } from './utils/dispose';
+import { CommAndMAnAger } from './commAnds/commAndMAnAger';
+import { DisposAble } from './utils/dispose';
 import { DocumentSelector } from './utils/documentSelector';
-import * as fileSchemes from './utils/fileSchemes';
-import { LanguageDescription } from './utils/languageDescription';
+import * As fileSchemes from './utils/fileSchemes';
+import { LAnguAgeDescription } from './utils/lAnguAgeDescription';
 import { TelemetryReporter } from './utils/telemetry';
-import TypingsStatus from './utils/typingsStatus';
+import TypingsStAtus from './utils/typingsStAtus';
 
 
-const validateSetting = 'validate.enable';
-const suggestionSetting = 'suggestionActions.enabled';
+const vAlidAteSetting = 'vAlidAte.enAble';
+const suggestionSetting = 'suggestionActions.enAbled';
 
-export default class LanguageProvider extends Disposable {
+export defAult clAss LAnguAgeProvider extends DisposAble {
 
 	constructor(
-		private readonly client: TypeScriptServiceClient,
-		private readonly description: LanguageDescription,
-		private readonly commandManager: CommandManager,
-		private readonly telemetryReporter: TelemetryReporter,
-		private readonly typingsStatus: TypingsStatus,
-		private readonly fileConfigurationManager: FileConfigurationManager,
-		private readonly onCompletionAccepted: (item: vscode.CompletionItem) => void,
+		privAte reAdonly client: TypeScriptServiceClient,
+		privAte reAdonly description: LAnguAgeDescription,
+		privAte reAdonly commAndMAnAger: CommAndMAnAger,
+		privAte reAdonly telemetryReporter: TelemetryReporter,
+		privAte reAdonly typingsStAtus: TypingsStAtus,
+		privAte reAdonly fileConfigurAtionMAnAger: FileConfigurAtionMAnAger,
+		privAte reAdonly onCompletionAccepted: (item: vscode.CompletionItem) => void,
 	) {
 		super();
-		vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposables);
-		this.configurationChanged();
+		vscode.workspAce.onDidChAngeConfigurAtion(this.configurAtionChAnged, this, this._disposAbles);
+		this.configurAtionChAnged();
 
-		client.onReady(() => this.registerProviders());
+		client.onReAdy(() => this.registerProviders());
 	}
 
-	private get documentSelector(): DocumentSelector {
-		const semantic: vscode.DocumentFilter[] = [];
-		const syntax: vscode.DocumentFilter[] = [];
-		for (const language of this.description.modeIds) {
-			syntax.push({ language });
-			for (const scheme of fileSchemes.semanticSupportedSchemes) {
-				semantic.push({ language, scheme });
+	privAte get documentSelector(): DocumentSelector {
+		const semAntic: vscode.DocumentFilter[] = [];
+		const syntAx: vscode.DocumentFilter[] = [];
+		for (const lAnguAge of this.description.modeIds) {
+			syntAx.push({ lAnguAge });
+			for (const scheme of fileSchemes.semAnticSupportedSchemes) {
+				semAntic.push({ lAnguAge, scheme });
 			}
 		}
 
-		return { semantic, syntax };
+		return { semAntic, syntAx };
 	}
 
-	private async registerProviders(): Promise<void> {
+	privAte Async registerProviders(): Promise<void> {
 		const selector = this.documentSelector;
 
-		const cachedResponse = new CachedResponse();
+		const cAchedResponse = new CAchedResponse();
 
-		await Promise.all([
-			import('./languageFeatures/completions').then(provider => this._register(provider.register(selector, this.description.id, this.client, this.typingsStatus, this.fileConfigurationManager, this.commandManager, this.telemetryReporter, this.onCompletionAccepted))),
-			import('./languageFeatures/definitions').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/directiveCommentCompletions').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/documentHighlight').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/documentSymbol').then(provider => this._register(provider.register(selector, this.client, cachedResponse))),
-			import('./languageFeatures/folding').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/formatting').then(provider => this._register(provider.register(selector, this.description.id, this.client, this.fileConfigurationManager))),
-			import('./languageFeatures/hover').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/implementations').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/codeLens/implementationsCodeLens').then(provider => this._register(provider.register(selector, this.description.id, this.client, cachedResponse))),
-			import('./languageFeatures/jsDocCompletions').then(provider => this._register(provider.register(selector, this.description.id, this.client))),
-			import('./languageFeatures/organizeImports').then(provider => this._register(provider.register(selector, this.client, this.commandManager, this.fileConfigurationManager, this.telemetryReporter))),
-			import('./languageFeatures/quickFix').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.commandManager, this.client.diagnosticsManager, this.telemetryReporter))),
-			import('./languageFeatures/fixAll').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.client.diagnosticsManager))),
-			import('./languageFeatures/refactor').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.commandManager, this.telemetryReporter))),
-			import('./languageFeatures/references').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/codeLens/referencesCodeLens').then(provider => this._register(provider.register(selector, this.description.id, this.client, cachedResponse))),
-			import('./languageFeatures/rename').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager))),
-			import('./languageFeatures/smartSelect').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/signatureHelp').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/tagClosing').then(provider => this._register(provider.register(selector, this.description.id, this.client))),
-			import('./languageFeatures/typeDefinitions').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/semanticTokens').then(provider => this._register(provider.register(selector, this.client))),
-			import('./languageFeatures/callHierarchy').then(provider => this._register(provider.register(selector, this.client))),
+		AwAit Promise.All([
+			import('./lAnguAgeFeAtures/completions').then(provider => this._register(provider.register(selector, this.description.id, this.client, this.typingsStAtus, this.fileConfigurAtionMAnAger, this.commAndMAnAger, this.telemetryReporter, this.onCompletionAccepted))),
+			import('./lAnguAgeFeAtures/definitions').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/directiveCommentCompletions').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/documentHighlight').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/documentSymbol').then(provider => this._register(provider.register(selector, this.client, cAchedResponse))),
+			import('./lAnguAgeFeAtures/folding').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/formAtting').then(provider => this._register(provider.register(selector, this.description.id, this.client, this.fileConfigurAtionMAnAger))),
+			import('./lAnguAgeFeAtures/hover').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/implementAtions').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/codeLens/implementAtionsCodeLens').then(provider => this._register(provider.register(selector, this.description.id, this.client, cAchedResponse))),
+			import('./lAnguAgeFeAtures/jsDocCompletions').then(provider => this._register(provider.register(selector, this.description.id, this.client))),
+			import('./lAnguAgeFeAtures/orgAnizeImports').then(provider => this._register(provider.register(selector, this.client, this.commAndMAnAger, this.fileConfigurAtionMAnAger, this.telemetryReporter))),
+			import('./lAnguAgeFeAtures/quickFix').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurAtionMAnAger, this.commAndMAnAger, this.client.diAgnosticsMAnAger, this.telemetryReporter))),
+			import('./lAnguAgeFeAtures/fixAll').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurAtionMAnAger, this.client.diAgnosticsMAnAger))),
+			import('./lAnguAgeFeAtures/refActor').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurAtionMAnAger, this.commAndMAnAger, this.telemetryReporter))),
+			import('./lAnguAgeFeAtures/references').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/codeLens/referencesCodeLens').then(provider => this._register(provider.register(selector, this.description.id, this.client, cAchedResponse))),
+			import('./lAnguAgeFeAtures/renAme').then(provider => this._register(provider.register(selector, this.client, this.fileConfigurAtionMAnAger))),
+			import('./lAnguAgeFeAtures/smArtSelect').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/signAtureHelp').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/tAgClosing').then(provider => this._register(provider.register(selector, this.description.id, this.client))),
+			import('./lAnguAgeFeAtures/typeDefinitions').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/semAnticTokens').then(provider => this._register(provider.register(selector, this.client))),
+			import('./lAnguAgeFeAtures/cAllHierArchy').then(provider => this._register(provider.register(selector, this.client))),
 		]);
 	}
 
-	private configurationChanged(): void {
-		const config = vscode.workspace.getConfiguration(this.id, null);
-		this.updateValidate(config.get(validateSetting, true));
-		this.updateSuggestionDiagnostics(config.get(suggestionSetting, true));
+	privAte configurAtionChAnged(): void {
+		const config = vscode.workspAce.getConfigurAtion(this.id, null);
+		this.updAteVAlidAte(config.get(vAlidAteSetting, true));
+		this.updAteSuggestionDiAgnostics(config.get(suggestionSetting, true));
 	}
 
-	public handles(resource: vscode.Uri, doc: vscode.TextDocument): boolean {
-		if (doc && this.description.modeIds.indexOf(doc.languageId) >= 0) {
+	public hAndles(resource: vscode.Uri, doc: vscode.TextDocument): booleAn {
+		if (doc && this.description.modeIds.indexOf(doc.lAnguAgeId) >= 0) {
 			return true;
 		}
 
-		const base = basename(resource.fsPath);
-		return !!base && (!!this.description.configFilePattern && this.description.configFilePattern.test(base));
+		const bAse = bAsenAme(resource.fsPAth);
+		return !!bAse && (!!this.description.configFilePAttern && this.description.configFilePAttern.test(bAse));
 	}
 
-	private get id(): string {
+	privAte get id(): string {
 		return this.description.id;
 	}
 
-	public get diagnosticSource(): string {
-		return this.description.diagnosticSource;
+	public get diAgnosticSource(): string {
+		return this.description.diAgnosticSource;
 	}
 
-	private updateValidate(value: boolean) {
-		this.client.diagnosticsManager.setValidate(this._diagnosticLanguage, value);
+	privAte updAteVAlidAte(vAlue: booleAn) {
+		this.client.diAgnosticsMAnAger.setVAlidAte(this._diAgnosticLAnguAge, vAlue);
 	}
 
-	private updateSuggestionDiagnostics(value: boolean) {
-		this.client.diagnosticsManager.setEnableSuggestions(this._diagnosticLanguage, value);
+	privAte updAteSuggestionDiAgnostics(vAlue: booleAn) {
+		this.client.diAgnosticsMAnAger.setEnAbleSuggestions(this._diAgnosticLAnguAge, vAlue);
 	}
 
-	public reInitialize(): void {
-		this.client.diagnosticsManager.reInitialize();
+	public reInitiAlize(): void {
+		this.client.diAgnosticsMAnAger.reInitiAlize();
 	}
 
-	public triggerAllDiagnostics(): void {
-		this.client.bufferSyncSupport.requestAllDiagnostics();
+	public triggerAllDiAgnostics(): void {
+		this.client.bufferSyncSupport.requestAllDiAgnostics();
 	}
 
-	public diagnosticsReceived(diagnosticsKind: DiagnosticKind, file: vscode.Uri, diagnostics: (vscode.Diagnostic & { reportUnnecessary: any, reportDeprecated: any })[]): void {
-		const config = vscode.workspace.getConfiguration(this.id, file);
-		const reportUnnecessary = config.get<boolean>('showUnused', true);
-		const reportDeprecated = config.get<boolean>('showDeprecated', true);
-		this.client.diagnosticsManager.updateDiagnostics(file, this._diagnosticLanguage, diagnosticsKind, diagnostics.filter(diag => {
-			// Don't both reporting diagnostics we know will not be rendered
-			if (!reportUnnecessary) {
-				if (diag.reportUnnecessary && diag.severity === vscode.DiagnosticSeverity.Hint) {
-					return false;
+	public diAgnosticsReceived(diAgnosticsKind: DiAgnosticKind, file: vscode.Uri, diAgnostics: (vscode.DiAgnostic & { reportUnnecessAry: Any, reportDeprecAted: Any })[]): void {
+		const config = vscode.workspAce.getConfigurAtion(this.id, file);
+		const reportUnnecessAry = config.get<booleAn>('showUnused', true);
+		const reportDeprecAted = config.get<booleAn>('showDeprecAted', true);
+		this.client.diAgnosticsMAnAger.updAteDiAgnostics(file, this._diAgnosticLAnguAge, diAgnosticsKind, diAgnostics.filter(diAg => {
+			// Don't both reporting diAgnostics we know will not be rendered
+			if (!reportUnnecessAry) {
+				if (diAg.reportUnnecessAry && diAg.severity === vscode.DiAgnosticSeverity.Hint) {
+					return fAlse;
 				}
 			}
-			if (!reportDeprecated) {
-				if (diag.reportDeprecated && diag.severity === vscode.DiagnosticSeverity.Hint) {
-					return false;
+			if (!reportDeprecAted) {
+				if (diAg.reportDeprecAted && diAg.severity === vscode.DiAgnosticSeverity.Hint) {
+					return fAlse;
 				}
 			}
 			return true;
 		}));
 	}
 
-	public configFileDiagnosticsReceived(file: vscode.Uri, diagnostics: vscode.Diagnostic[]): void {
-		this.client.diagnosticsManager.configFileDiagnosticsReceived(file, diagnostics);
+	public configFileDiAgnosticsReceived(file: vscode.Uri, diAgnostics: vscode.DiAgnostic[]): void {
+		this.client.diAgnosticsMAnAger.configFileDiAgnosticsReceived(file, diAgnostics);
 	}
 
-	private get _diagnosticLanguage() {
-		return this.description.diagnosticLanguage;
+	privAte get _diAgnosticLAnguAge() {
+		return this.description.diAgnosticLAnguAge;
 	}
 }

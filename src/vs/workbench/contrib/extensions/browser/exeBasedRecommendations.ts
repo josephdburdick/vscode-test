@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IExtensionTipsService, IExecutableBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { localize } from 'vs/nls';
-import { basename } from 'vs/base/common/path';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { IExtensionTipsService, IExecutAbleBAsedExtensionTip } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { ExtensionRecommendAtions, ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { locAlize } from 'vs/nls';
+import { bAsenAme } from 'vs/bAse/common/pAth';
+import { ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
 
-export class ExeBasedRecommendations extends ExtensionRecommendations {
+export clAss ExeBAsedRecommendAtions extends ExtensionRecommendAtions {
 
-	private _otherTips: IExecutableBasedExtensionTip[] = [];
-	private _importantTips: IExecutableBasedExtensionTip[] = [];
+	privAte _otherTips: IExecutAbleBAsedExtensionTip[] = [];
+	privAte _importAntTips: IExecutAbleBAsedExtensionTip[] = [];
 
-	get otherRecommendations(): ReadonlyArray<ExtensionRecommendation> { return this._otherTips.map(tip => this.toExtensionRecommendation(tip)); }
-	get importantRecommendations(): ReadonlyArray<ExtensionRecommendation> { return this._importantTips.map(tip => this.toExtensionRecommendation(tip)); }
+	get otherRecommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._otherTips.mAp(tip => this.toExtensionRecommendAtion(tip)); }
+	get importAntRecommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._importAntTips.mAp(tip => this.toExtensionRecommendAtion(tip)); }
 
-	get recommendations(): ReadonlyArray<ExtensionRecommendation> { return [...this.importantRecommendations, ...this.otherRecommendations]; }
+	get recommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return [...this.importAntRecommendAtions, ...this.otherRecommendAtions]; }
 
 	constructor(
-		@IExtensionTipsService private readonly extensionTipsService: IExtensionTipsService,
+		@IExtensionTipsService privAte reAdonly extensionTipsService: IExtensionTipsService,
 	) {
 		super();
 	}
 
-	getRecommendations(exe: string): { important: ExtensionRecommendation[], others: ExtensionRecommendation[] } {
-		const important = this._importantTips
-			.filter(tip => tip.exeName.toLowerCase() === exe.toLowerCase())
-			.map(tip => this.toExtensionRecommendation(tip));
+	getRecommendAtions(exe: string): { importAnt: ExtensionRecommendAtion[], others: ExtensionRecommendAtion[] } {
+		const importAnt = this._importAntTips
+			.filter(tip => tip.exeNAme.toLowerCAse() === exe.toLowerCAse())
+			.mAp(tip => this.toExtensionRecommendAtion(tip));
 
 		const others = this._otherTips
-			.filter(tip => tip.exeName.toLowerCase() === exe.toLowerCase())
-			.map(tip => this.toExtensionRecommendation(tip));
+			.filter(tip => tip.exeNAme.toLowerCAse() === exe.toLowerCAse())
+			.mAp(tip => this.toExtensionRecommendAtion(tip));
 
-		return { important, others };
+		return { importAnt, others };
 	}
 
-	protected async doActivate(): Promise<void> {
-		this._otherTips = await this.extensionTipsService.getOtherExecutableBasedTips();
-		await this.fetchImportantExeBasedRecommendations();
+	protected Async doActivAte(): Promise<void> {
+		this._otherTips = AwAit this.extensionTipsService.getOtherExecutAbleBAsedTips();
+		AwAit this.fetchImportAntExeBAsedRecommendAtions();
 	}
 
-	private _importantExeBasedRecommendations: Promise<Map<string, IExecutableBasedExtensionTip>> | undefined;
-	private async fetchImportantExeBasedRecommendations(): Promise<Map<string, IExecutableBasedExtensionTip>> {
-		if (!this._importantExeBasedRecommendations) {
-			this._importantExeBasedRecommendations = this.doFetchImportantExeBasedRecommendations();
+	privAte _importAntExeBAsedRecommendAtions: Promise<MAp<string, IExecutAbleBAsedExtensionTip>> | undefined;
+	privAte Async fetchImportAntExeBAsedRecommendAtions(): Promise<MAp<string, IExecutAbleBAsedExtensionTip>> {
+		if (!this._importAntExeBAsedRecommendAtions) {
+			this._importAntExeBAsedRecommendAtions = this.doFetchImportAntExeBAsedRecommendAtions();
 		}
-		return this._importantExeBasedRecommendations;
+		return this._importAntExeBAsedRecommendAtions;
 	}
 
-	private async doFetchImportantExeBasedRecommendations(): Promise<Map<string, IExecutableBasedExtensionTip>> {
-		const importantExeBasedRecommendations = new Map<string, IExecutableBasedExtensionTip>();
-		this._importantTips = await this.extensionTipsService.getImportantExecutableBasedTips();
-		this._importantTips.forEach(tip => importantExeBasedRecommendations.set(tip.extensionId.toLowerCase(), tip));
-		return importantExeBasedRecommendations;
+	privAte Async doFetchImportAntExeBAsedRecommendAtions(): Promise<MAp<string, IExecutAbleBAsedExtensionTip>> {
+		const importAntExeBAsedRecommendAtions = new MAp<string, IExecutAbleBAsedExtensionTip>();
+		this._importAntTips = AwAit this.extensionTipsService.getImportAntExecutAbleBAsedTips();
+		this._importAntTips.forEAch(tip => importAntExeBAsedRecommendAtions.set(tip.extensionId.toLowerCAse(), tip));
+		return importAntExeBAsedRecommendAtions;
 	}
 
-	private toExtensionRecommendation(tip: IExecutableBasedExtensionTip): ExtensionRecommendation {
+	privAte toExtensionRecommendAtion(tip: IExecutAbleBAsedExtensionTip): ExtensionRecommendAtion {
 		return {
-			extensionId: tip.extensionId.toLowerCase(),
-			reason: {
-				reasonId: ExtensionRecommendationReason.Executable,
-				reasonText: localize('exeBasedRecommendation', "This extension is recommended because you have {0} installed.", tip.exeFriendlyName || basename(tip.windowsPath!))
+			extensionId: tip.extensionId.toLowerCAse(),
+			reAson: {
+				reAsonId: ExtensionRecommendAtionReAson.ExecutAble,
+				reAsonText: locAlize('exeBAsedRecommendAtion', "This extension is recommended becAuse you hAve {0} instAlled.", tip.exeFriendlyNAme || bAsenAme(tip.windowsPAth!))
 			}
 		};
 	}

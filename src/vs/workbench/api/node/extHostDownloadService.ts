@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/path';
+import { join } from 'vs/bAse/common/pAth';
 import { tmpdir } from 'os';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { URI } from 'vs/base/common/uri';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { IExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { URI } from 'vs/bAse/common/uri';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
 
-export class ExtHostDownloadService extends Disposable {
+export clAss ExtHostDownloAdService extends DisposAble {
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
-		@IExtHostCommands commands: IExtHostCommands
+		@IExtHostCommAnds commAnds: IExtHostCommAnds
 	) {
 		super();
 
-		const proxy = extHostRpc.getProxy(MainContext.MainThreadDownloadService);
+		const proxy = extHostRpc.getProxy(MAinContext.MAinThreAdDownloAdService);
 
-		commands.registerCommand(false, '_workbench.downloadResource', async (resource: URI): Promise<any> => {
-			const location = URI.file(join(tmpdir(), generateUuid()));
-			await proxy.$download(resource, location);
-			return location;
+		commAnds.registerCommAnd(fAlse, '_workbench.downloAdResource', Async (resource: URI): Promise<Any> => {
+			const locAtion = URI.file(join(tmpdir(), generAteUuid()));
+			AwAit proxy.$downloAd(resource, locAtion);
+			return locAtion;
 		});
 	}
 }

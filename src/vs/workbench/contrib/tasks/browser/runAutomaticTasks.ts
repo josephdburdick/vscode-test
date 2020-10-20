@@ -1,130 +1,130 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * As nls from 'vs/nls';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { ITaskService, WorkspaceFolderTaskResult } from 'vs/workbench/contrib/tasks/common/taskService';
-import { forEach } from 'vs/base/common/collections';
-import { RunOnOptions, Task, TaskRunSource, TASKS_CATEGORY } from 'vs/workbench/contrib/tasks/common/tasks';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IQuickPickItem, IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { Action2 } from 'vs/platform/actions/common/actions';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
+import { ITAskService, WorkspAceFolderTAskResult } from 'vs/workbench/contrib/tAsks/common/tAskService';
+import { forEAch } from 'vs/bAse/common/collections';
+import { RunOnOptions, TAsk, TAskRunSource, TASKS_CATEGORY } from 'vs/workbench/contrib/tAsks/common/tAsks';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IQuickPickItem, IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { Action2 } from 'vs/plAtform/Actions/common/Actions';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-const ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE = 'tasks.run.allowAutomatic';
+const ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE = 'tAsks.run.AllowAutomAtic';
 
-export class RunAutomaticTasks extends Disposable implements IWorkbenchContribution {
+export clAss RunAutomAticTAsks extends DisposAble implements IWorkbenchContribution {
 	constructor(
-		@ITaskService private readonly taskService: ITaskService,
-		@IStorageService storageService: IStorageService) {
+		@ITAskService privAte reAdonly tAskService: ITAskService,
+		@IStorAgeService storAgeService: IStorAgeService) {
 		super();
-		const isFolderAutomaticAllowed = storageService.getBoolean(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, StorageScope.WORKSPACE, undefined);
-		this.tryRunTasks(isFolderAutomaticAllowed);
+		const isFolderAutomAticAllowed = storAgeService.getBooleAn(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, StorAgeScope.WORKSPACE, undefined);
+		this.tryRunTAsks(isFolderAutomAticAllowed);
 	}
 
-	private tryRunTasks(isAllowed: boolean | undefined) {
-		// Only run if allowed. Prompting for permission occurs when a user first tries to run a task.
+	privAte tryRunTAsks(isAllowed: booleAn | undefined) {
+		// Only run if Allowed. Prompting for permission occurs when A user first tries to run A tAsk.
 		if (isAllowed === true) {
-			this.taskService.getWorkspaceTasks(TaskRunSource.FolderOpen).then(workspaceTaskResult => {
-				let { tasks } = RunAutomaticTasks.findAutoTasks(this.taskService, workspaceTaskResult);
-				if (tasks.length > 0) {
-					RunAutomaticTasks.runTasks(this.taskService, tasks);
+			this.tAskService.getWorkspAceTAsks(TAskRunSource.FolderOpen).then(workspAceTAskResult => {
+				let { tAsks } = RunAutomAticTAsks.findAutoTAsks(this.tAskService, workspAceTAskResult);
+				if (tAsks.length > 0) {
+					RunAutomAticTAsks.runTAsks(this.tAskService, tAsks);
 				}
 			});
 		}
 	}
 
-	private static runTasks(taskService: ITaskService, tasks: Array<Task | Promise<Task | undefined>>) {
-		tasks.forEach(task => {
-			if (task instanceof Promise) {
-				task.then(promiseResult => {
+	privAte stAtic runTAsks(tAskService: ITAskService, tAsks: ArrAy<TAsk | Promise<TAsk | undefined>>) {
+		tAsks.forEAch(tAsk => {
+			if (tAsk instAnceof Promise) {
+				tAsk.then(promiseResult => {
 					if (promiseResult) {
-						taskService.run(promiseResult);
+						tAskService.run(promiseResult);
 					}
 				});
 			} else {
-				taskService.run(task);
+				tAskService.run(tAsk);
 			}
 		});
 	}
 
-	private static findAutoTasks(taskService: ITaskService, workspaceTaskResult: Map<string, WorkspaceFolderTaskResult>): { tasks: Array<Task | Promise<Task | undefined>>, taskNames: Array<string> } {
-		const tasks = new Array<Task | Promise<Task | undefined>>();
-		const taskNames = new Array<string>();
-		if (workspaceTaskResult) {
-			workspaceTaskResult.forEach(resultElement => {
+	privAte stAtic findAutoTAsks(tAskService: ITAskService, workspAceTAskResult: MAp<string, WorkspAceFolderTAskResult>): { tAsks: ArrAy<TAsk | Promise<TAsk | undefined>>, tAskNAmes: ArrAy<string> } {
+		const tAsks = new ArrAy<TAsk | Promise<TAsk | undefined>>();
+		const tAskNAmes = new ArrAy<string>();
+		if (workspAceTAskResult) {
+			workspAceTAskResult.forEAch(resultElement => {
 				if (resultElement.set) {
-					resultElement.set.tasks.forEach(task => {
-						if (task.runOptions.runOn === RunOnOptions.folderOpen) {
-							tasks.push(task);
-							taskNames.push(task._label);
+					resultElement.set.tAsks.forEAch(tAsk => {
+						if (tAsk.runOptions.runOn === RunOnOptions.folderOpen) {
+							tAsks.push(tAsk);
+							tAskNAmes.push(tAsk._lAbel);
 						}
 					});
 				}
-				if (resultElement.configurations) {
-					forEach(resultElement.configurations.byIdentifier, (configedTask) => {
-						if (configedTask.value.runOptions.runOn === RunOnOptions.folderOpen) {
-							tasks.push(new Promise<Task | undefined>(resolve => {
-								taskService.getTask(resultElement.workspaceFolder, configedTask.value._id, true).then(task => resolve(task));
+				if (resultElement.configurAtions) {
+					forEAch(resultElement.configurAtions.byIdentifier, (configedTAsk) => {
+						if (configedTAsk.vAlue.runOptions.runOn === RunOnOptions.folderOpen) {
+							tAsks.push(new Promise<TAsk | undefined>(resolve => {
+								tAskService.getTAsk(resultElement.workspAceFolder, configedTAsk.vAlue._id, true).then(tAsk => resolve(tAsk));
 							}));
-							if (configedTask.value._label) {
-								taskNames.push(configedTask.value._label);
+							if (configedTAsk.vAlue._lAbel) {
+								tAskNAmes.push(configedTAsk.vAlue._lAbel);
 							} else {
-								taskNames.push(configedTask.value.configures.task);
+								tAskNAmes.push(configedTAsk.vAlue.configures.tAsk);
 							}
 						}
 					});
 				}
 			});
 		}
-		return { tasks, taskNames };
+		return { tAsks, tAskNAmes };
 	}
 
-	public static promptForPermission(taskService: ITaskService, storageService: IStorageService, notificationService: INotificationService,
-		workspaceTaskResult: Map<string, WorkspaceFolderTaskResult>) {
-		const isFolderAutomaticAllowed = storageService.getBoolean(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, StorageScope.WORKSPACE, undefined);
-		if (isFolderAutomaticAllowed !== undefined) {
+	public stAtic promptForPermission(tAskService: ITAskService, storAgeService: IStorAgeService, notificAtionService: INotificAtionService,
+		workspAceTAskResult: MAp<string, WorkspAceFolderTAskResult>) {
+		const isFolderAutomAticAllowed = storAgeService.getBooleAn(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, StorAgeScope.WORKSPACE, undefined);
+		if (isFolderAutomAticAllowed !== undefined) {
 			return;
 		}
 
-		let { tasks, taskNames } = RunAutomaticTasks.findAutoTasks(taskService, workspaceTaskResult);
-		if (taskNames.length > 0) {
-			// We have automatic tasks, prompt to allow.
-			this.showPrompt(notificationService, storageService, taskService, taskNames).then(allow => {
-				if (allow) {
-					RunAutomaticTasks.runTasks(taskService, tasks);
+		let { tAsks, tAskNAmes } = RunAutomAticTAsks.findAutoTAsks(tAskService, workspAceTAskResult);
+		if (tAskNAmes.length > 0) {
+			// We hAve AutomAtic tAsks, prompt to Allow.
+			this.showPrompt(notificAtionService, storAgeService, tAskService, tAskNAmes).then(Allow => {
+				if (Allow) {
+					RunAutomAticTAsks.runTAsks(tAskService, tAsks);
 				}
 			});
 		}
 	}
 
-	private static showPrompt(notificationService: INotificationService, storageService: IStorageService, taskService: ITaskService,
-		taskNames: Array<string>): Promise<boolean> {
-		return new Promise<boolean>(resolve => {
-			notificationService.prompt(Severity.Info, nls.localize('tasks.run.allowAutomatic', "This folder has tasks ({0}) defined in \'tasks.json\' that run automatically when you open this folder. Do you allow automatic tasks to run when you open this folder?", taskNames.join(', ')),
+	privAte stAtic showPrompt(notificAtionService: INotificAtionService, storAgeService: IStorAgeService, tAskService: ITAskService,
+		tAskNAmes: ArrAy<string>): Promise<booleAn> {
+		return new Promise<booleAn>(resolve => {
+			notificAtionService.prompt(Severity.Info, nls.locAlize('tAsks.run.AllowAutomAtic', "This folder hAs tAsks ({0}) defined in \'tAsks.json\' thAt run AutomAticAlly when you open this folder. Do you Allow AutomAtic tAsks to run when you open this folder?", tAskNAmes.join(', ')),
 				[{
-					label: nls.localize('allow', "Allow and run"),
+					lAbel: nls.locAlize('Allow', "Allow And run"),
 					run: () => {
 						resolve(true);
-						storageService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, true, StorageScope.WORKSPACE);
+						storAgeService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, true, StorAgeScope.WORKSPACE);
 					}
 				},
 				{
-					label: nls.localize('disallow', "Disallow"),
+					lAbel: nls.locAlize('disAllow', "DisAllow"),
 					run: () => {
-						resolve(false);
-						storageService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, false, StorageScope.WORKSPACE);
+						resolve(fAlse);
+						storAgeService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, fAlse, StorAgeScope.WORKSPACE);
 					}
 				},
 				{
-					label: nls.localize('openTasks', "Open tasks.json"),
+					lAbel: nls.locAlize('openTAsks', "Open tAsks.json"),
 					run: () => {
-						taskService.openConfig(undefined);
-						resolve(false);
+						tAskService.openConfig(undefined);
+						resolve(fAlse);
 					}
 				}]
 			);
@@ -133,29 +133,29 @@ export class RunAutomaticTasks extends Disposable implements IWorkbenchContribut
 
 }
 
-export class ManageAutomaticTaskRunning extends Action2 {
+export clAss MAnAgeAutomAticTAskRunning extends Action2 {
 
-	public static readonly ID = 'workbench.action.tasks.manageAutomaticRunning';
-	public static readonly LABEL = nls.localize('workbench.action.tasks.manageAutomaticRunning', "Manage Automatic Tasks in Folder");
+	public stAtic reAdonly ID = 'workbench.Action.tAsks.mAnAgeAutomAticRunning';
+	public stAtic reAdonly LABEL = nls.locAlize('workbench.Action.tAsks.mAnAgeAutomAticRunning', "MAnAge AutomAtic TAsks in Folder");
 
 	constructor() {
 		super({
-			id: ManageAutomaticTaskRunning.ID,
-			title: ManageAutomaticTaskRunning.LABEL,
-			category: TASKS_CATEGORY
+			id: MAnAgeAutomAticTAskRunning.ID,
+			title: MAnAgeAutomAticTAskRunning.LABEL,
+			cAtegory: TASKS_CATEGORY
 		});
 	}
 
-	public async run(accessor: ServicesAccessor): Promise<any> {
-		const quickInputService = accessor.get(IQuickInputService);
-		const storageService = accessor.get(IStorageService);
-		const allowItem: IQuickPickItem = { label: nls.localize('workbench.action.tasks.allowAutomaticTasks', "Allow Automatic Tasks in Folder") };
-		const disallowItem: IQuickPickItem = { label: nls.localize('workbench.action.tasks.disallowAutomaticTasks', "Disallow Automatic Tasks in Folder") };
-		const value = await quickInputService.pick([allowItem, disallowItem], { canPickMany: false });
-		if (!value) {
+	public Async run(Accessor: ServicesAccessor): Promise<Any> {
+		const quickInputService = Accessor.get(IQuickInputService);
+		const storAgeService = Accessor.get(IStorAgeService);
+		const AllowItem: IQuickPickItem = { lAbel: nls.locAlize('workbench.Action.tAsks.AllowAutomAticTAsks', "Allow AutomAtic TAsks in Folder") };
+		const disAllowItem: IQuickPickItem = { lAbel: nls.locAlize('workbench.Action.tAsks.disAllowAutomAticTAsks', "DisAllow AutomAtic TAsks in Folder") };
+		const vAlue = AwAit quickInputService.pick([AllowItem, disAllowItem], { cAnPickMAny: fAlse });
+		if (!vAlue) {
 			return;
 		}
 
-		storageService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, value === allowItem, StorageScope.WORKSPACE);
+		storAgeService.store(ARE_AUTOMATIC_TASKS_ALLOWED_IN_WORKSPACE, vAlue === AllowItem, StorAgeScope.WORKSPACE);
 	}
 }

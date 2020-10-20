@@ -1,125 +1,125 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
-import { CachedResponse } from '../tsServer/cachedResponse';
+import * As Assert from 'Assert';
+import 'mochA';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
+import { CAchedResponse } from '../tsServer/cAchedResponse';
 import { ServerResponse } from '../typescriptService';
 
-suite('CachedResponse', () => {
-	test('should cache simple response for same document', async () => {
-		const doc = await createTextDocument();
-		const response = new CachedResponse();
+suite('CAchedResponse', () => {
+	test('should cAche simple response for sAme document', Async () => {
+		const doc = AwAit creAteTextDocument();
+		const response = new CAchedResponse();
 
-		assertResult(await response.execute(doc, respondWith('test-0')), 'test-0');
-		assertResult(await response.execute(doc, respondWith('test-1')), 'test-0');
+		AssertResult(AwAit response.execute(doc, respondWith('test-0')), 'test-0');
+		AssertResult(AwAit response.execute(doc, respondWith('test-1')), 'test-0');
 	});
 
-	test('should invalidate cache for new document', async () => {
-		const doc1 = await createTextDocument();
-		const doc2 = await createTextDocument();
-		const response = new CachedResponse();
+	test('should invAlidAte cAche for new document', Async () => {
+		const doc1 = AwAit creAteTextDocument();
+		const doc2 = AwAit creAteTextDocument();
+		const response = new CAchedResponse();
 
-		assertResult(await response.execute(doc1, respondWith('test-0')), 'test-0');
-		assertResult(await response.execute(doc1, respondWith('test-1')), 'test-0');
-		assertResult(await response.execute(doc2, respondWith('test-2')), 'test-2');
-		assertResult(await response.execute(doc2, respondWith('test-3')), 'test-2');
-		assertResult(await response.execute(doc1, respondWith('test-4')), 'test-4');
-		assertResult(await response.execute(doc1, respondWith('test-5')), 'test-4');
+		AssertResult(AwAit response.execute(doc1, respondWith('test-0')), 'test-0');
+		AssertResult(AwAit response.execute(doc1, respondWith('test-1')), 'test-0');
+		AssertResult(AwAit response.execute(doc2, respondWith('test-2')), 'test-2');
+		AssertResult(AwAit response.execute(doc2, respondWith('test-3')), 'test-2');
+		AssertResult(AwAit response.execute(doc1, respondWith('test-4')), 'test-4');
+		AssertResult(AwAit response.execute(doc1, respondWith('test-5')), 'test-4');
 	});
 
-	test('should not cache cancelled responses', async () => {
-		const doc = await createTextDocument();
-		const response = new CachedResponse();
+	test('should not cAche cAncelled responses', Async () => {
+		const doc = AwAit creAteTextDocument();
+		const response = new CAchedResponse();
 
-		const cancelledResponder = createEventualResponder<ServerResponse.Cancelled>();
-		const result1 = response.execute(doc, () => cancelledResponder.promise);
+		const cAncelledResponder = creAteEventuAlResponder<ServerResponse.CAncelled>();
+		const result1 = response.execute(doc, () => cAncelledResponder.promise);
 		const result2 = response.execute(doc, respondWith('test-0'));
 		const result3 = response.execute(doc, respondWith('test-1'));
 
-		cancelledResponder.resolve(new ServerResponse.Cancelled('cancelled'));
+		cAncelledResponder.resolve(new ServerResponse.CAncelled('cAncelled'));
 
-		assert.strictEqual((await result1).type, 'cancelled');
-		assertResult(await result2, 'test-0');
-		assertResult(await result3, 'test-0');
+		Assert.strictEquAl((AwAit result1).type, 'cAncelled');
+		AssertResult(AwAit result2, 'test-0');
+		AssertResult(AwAit result3, 'test-0');
 	});
 
-	test('should not care if subsequent requests are cancelled if first request is resolved ok', async () => {
-		const doc = await createTextDocument();
-		const response = new CachedResponse();
+	test('should not cAre if subsequent requests Are cAncelled if first request is resolved ok', Async () => {
+		const doc = AwAit creAteTextDocument();
+		const response = new CAchedResponse();
 
-		const cancelledResponder = createEventualResponder<ServerResponse.Cancelled>();
+		const cAncelledResponder = creAteEventuAlResponder<ServerResponse.CAncelled>();
 		const result1 = response.execute(doc, respondWith('test-0'));
-		const result2 = response.execute(doc, () => cancelledResponder.promise);
+		const result2 = response.execute(doc, () => cAncelledResponder.promise);
 		const result3 = response.execute(doc, respondWith('test-1'));
 
-		cancelledResponder.resolve(new ServerResponse.Cancelled('cancelled'));
+		cAncelledResponder.resolve(new ServerResponse.CAncelled('cAncelled'));
 
-		assertResult(await result1, 'test-0');
-		assertResult(await result2, 'test-0');
-		assertResult(await result3, 'test-0');
+		AssertResult(AwAit result1, 'test-0');
+		AssertResult(AwAit result2, 'test-0');
+		AssertResult(AwAit result3, 'test-0');
 	});
 
-	test('should not cache cancelled responses with document changes', async () => {
-		const doc1 = await createTextDocument();
-		const doc2 = await createTextDocument();
-		const response = new CachedResponse();
+	test('should not cAche cAncelled responses with document chAnges', Async () => {
+		const doc1 = AwAit creAteTextDocument();
+		const doc2 = AwAit creAteTextDocument();
+		const response = new CAchedResponse();
 
-		const cancelledResponder = createEventualResponder<ServerResponse.Cancelled>();
-		const cancelledResponder2 = createEventualResponder<ServerResponse.Cancelled>();
+		const cAncelledResponder = creAteEventuAlResponder<ServerResponse.CAncelled>();
+		const cAncelledResponder2 = creAteEventuAlResponder<ServerResponse.CAncelled>();
 
-		const result1 = response.execute(doc1, () => cancelledResponder.promise);
+		const result1 = response.execute(doc1, () => cAncelledResponder.promise);
 		const result2 = response.execute(doc1, respondWith('test-0'));
 		const result3 = response.execute(doc1, respondWith('test-1'));
-		const result4 = response.execute(doc2, () => cancelledResponder2.promise);
+		const result4 = response.execute(doc2, () => cAncelledResponder2.promise);
 		const result5 = response.execute(doc2, respondWith('test-2'));
 		const result6 = response.execute(doc1, respondWith('test-3'));
 
-		cancelledResponder.resolve(new ServerResponse.Cancelled('cancelled'));
-		cancelledResponder2.resolve(new ServerResponse.Cancelled('cancelled'));
+		cAncelledResponder.resolve(new ServerResponse.CAncelled('cAncelled'));
+		cAncelledResponder2.resolve(new ServerResponse.CAncelled('cAncelled'));
 
-		assert.strictEqual((await result1).type, 'cancelled');
-		assertResult(await result2, 'test-0');
-		assertResult(await result3, 'test-0');
-		assert.strictEqual((await result4).type, 'cancelled');
-		assertResult(await result5, 'test-2');
-		assertResult(await result6, 'test-3');
+		Assert.strictEquAl((AwAit result1).type, 'cAncelled');
+		AssertResult(AwAit result2, 'test-0');
+		AssertResult(AwAit result3, 'test-0');
+		Assert.strictEquAl((AwAit result4).type, 'cAncelled');
+		AssertResult(AwAit result5, 'test-2');
+		AssertResult(AwAit result6, 'test-3');
 	});
 });
 
-function respondWith(command: string) {
-	return async () => createResponse(command);
+function respondWith(commAnd: string) {
+	return Async () => creAteResponse(commAnd);
 }
 
-function createTextDocument() {
-	return vscode.workspace.openTextDocument({ language: 'javascript', content: '' });
+function creAteTextDocument() {
+	return vscode.workspAce.openTextDocument({ lAnguAge: 'jAvAscript', content: '' });
 }
 
-function assertResult(result: ServerResponse.Response<Proto.Response>, command: string) {
+function AssertResult(result: ServerResponse.Response<Proto.Response>, commAnd: string) {
 	if (result.type === 'response') {
-		assert.strictEqual(result.command, command);
+		Assert.strictEquAl(result.commAnd, commAnd);
 	} else {
-		assert.fail('Response failed');
+		Assert.fAil('Response fAiled');
 	}
 }
 
-function createResponse(command: string): Proto.Response {
+function creAteResponse(commAnd: string): Proto.Response {
 	return {
 		type: 'response',
 		body: {},
-		command: command,
+		commAnd: commAnd,
 		request_seq: 1,
 		success: true,
 		seq: 1
 	};
 }
 
-function createEventualResponder<T>(): { promise: Promise<T>, resolve: (x: T) => void } {
-	let resolve: (value: T) => void;
+function creAteEventuAlResponder<T>(): { promise: Promise<T>, resolve: (x: T) => void } {
+	let resolve: (vAlue: T) => void;
 	const promise = new Promise<T>(r => { resolve = r; });
 	return { promise, resolve: resolve! };
 }

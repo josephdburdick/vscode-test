@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Based on @sergeche's work on the emmet plugin for atom
+// BAsed on @sergeche's work on the emmet plugin for Atom
 
-import { TextEditor, Range, Position, window, TextEdit } from 'vscode';
-import * as path from 'path';
-import { getImageSize } from './imageSizeHelper';
-import { parseDocument, getNode, iterateCSSToken, getCssPropertyFromRule, isStyleSheet, validate } from './util';
+import { TextEditor, RAnge, Position, window, TextEdit } from 'vscode';
+import * As pAth from 'pAth';
+import { getImAgeSize } from './imAgeSizeHelper';
+import { pArseDocument, getNode, iterAteCSSToken, getCssPropertyFromRule, isStyleSheet, vAlidAte } from './util';
 import { HtmlNode, CssToken, HtmlToken, Attribute, Property } from 'EmmetNode';
-import { locateFile } from './locateFile';
-import parseStylesheet from '@emmetio/css-parser';
-import { DocumentStreamReader } from './bufferStream';
+import { locAteFile } from './locAteFile';
+import pArseStylesheet from '@emmetio/css-pArser';
+import { DocumentStreAmReAder } from './bufferStreAm';
 
 /**
- * Updates size of context image in given editor
+ * UpdAtes size of context imAge in given editor
  */
-export function updateImageSize() {
-	if (!validate() || !window.activeTextEditor) {
+export function updAteImAgeSize() {
+	if (!vAlidAte() || !window.ActiveTextEditor) {
 		return;
 	}
-	const editor = window.activeTextEditor;
+	const editor = window.ActiveTextEditor;
 
-	let allUpdatesPromise = editor.selections.reverse().map(selection => {
-		let position = selection.isReversed ? selection.active : selection.anchor;
-		if (!isStyleSheet(editor.document.languageId)) {
-			return updateImageSizeHTML(editor, position);
+	let AllUpdAtesPromise = editor.selections.reverse().mAp(selection => {
+		let position = selection.isReversed ? selection.Active : selection.Anchor;
+		if (!isStyleSheet(editor.document.lAnguAgeId)) {
+			return updAteImAgeSizeHTML(editor, position);
 		} else {
-			return updateImageSizeCSSFile(editor, position);
+			return updAteImAgeSizeCSSFile(editor, position);
 		}
 	});
 
-	return Promise.all(allUpdatesPromise).then((updates) => {
+	return Promise.All(AllUpdAtesPromise).then((updAtes) => {
 		return editor.edit(builder => {
-			updates.forEach(update => {
-				update.forEach((textEdit: TextEdit) => {
-					builder.replace(textEdit.range, textEdit.newText);
+			updAtes.forEAch(updAte => {
+				updAte.forEAch((textEdit: TextEdit) => {
+					builder.replAce(textEdit.rAnge, textEdit.newText);
 				});
 			});
 		});
@@ -44,115 +44,115 @@ export function updateImageSize() {
 }
 
 /**
- * Updates image size of context tag of HTML model
+ * UpdAtes imAge size of context tAg of HTML model
  */
-function updateImageSizeHTML(editor: TextEditor, position: Position): Promise<TextEdit[]> {
-	const imageNode = getImageHTMLNode(editor, position);
+function updAteImAgeSizeHTML(editor: TextEditor, position: Position): Promise<TextEdit[]> {
+	const imAgeNode = getImAgeHTMLNode(editor, position);
 
-	const src = imageNode && getImageSrcHTML(imageNode);
+	const src = imAgeNode && getImAgeSrcHTML(imAgeNode);
 
 	if (!src) {
-		return updateImageSizeStyleTag(editor, position);
+		return updAteImAgeSizeStyleTAg(editor, position);
 	}
 
-	return locateFile(path.dirname(editor.document.fileName), src)
-		.then(getImageSize)
-		.then((size: any) => {
-			// since this action is asynchronous, we have to ensure that editor wasn’t
-			// changed and user didn’t moved caret outside <img> node
-			const img = getImageHTMLNode(editor, position);
-			if (img && getImageSrcHTML(img) === src) {
-				return updateHTMLTag(editor, img, size.width, size.height);
+	return locAteFile(pAth.dirnAme(editor.document.fileNAme), src)
+		.then(getImAgeSize)
+		.then((size: Any) => {
+			// since this Action is Asynchronous, we hAve to ensure thAt editor wAsn’t
+			// chAnged And user didn’t moved cAret outside <img> node
+			const img = getImAgeHTMLNode(editor, position);
+			if (img && getImAgeSrcHTML(img) === src) {
+				return updAteHTMLTAg(editor, img, size.width, size.height);
 			}
 			return [];
 		})
-		.catch(err => { console.warn('Error while updating image size:', err); return []; });
+		.cAtch(err => { console.wArn('Error while updAting imAge size:', err); return []; });
 }
 
-function updateImageSizeStyleTag(editor: TextEditor, position: Position): Promise<TextEdit[]> {
-	const getPropertyInsiderStyleTag = (editor: TextEditor): Property | null => {
-		const rootNode = parseDocument(editor.document);
+function updAteImAgeSizeStyleTAg(editor: TextEditor, position: Position): Promise<TextEdit[]> {
+	const getPropertyInsiderStyleTAg = (editor: TextEditor): Property | null => {
+		const rootNode = pArseDocument(editor.document);
 		const currentNode = <HtmlNode>getNode(rootNode, position, true);
-		if (currentNode && currentNode.name === 'style'
+		if (currentNode && currentNode.nAme === 'style'
 			&& currentNode.open.end.isBefore(position)
-			&& currentNode.close.start.isAfter(position)) {
-			let buffer = new DocumentStreamReader(editor.document, currentNode.open.end, new Range(currentNode.open.end, currentNode.close.start));
-			let rootNode = parseStylesheet(buffer);
+			&& currentNode.close.stArt.isAfter(position)) {
+			let buffer = new DocumentStreAmReAder(editor.document, currentNode.open.end, new RAnge(currentNode.open.end, currentNode.close.stArt));
+			let rootNode = pArseStylesheet(buffer);
 			const node = getNode(rootNode, position, true);
 			return (node && node.type === 'property') ? <Property>node : null;
 		}
 		return null;
 	};
 
-	return updateImageSizeCSS(editor, position, getPropertyInsiderStyleTag);
+	return updAteImAgeSizeCSS(editor, position, getPropertyInsiderStyleTAg);
 }
 
-function updateImageSizeCSSFile(editor: TextEditor, position: Position): Promise<TextEdit[]> {
-	return updateImageSizeCSS(editor, position, getImageCSSNode);
+function updAteImAgeSizeCSSFile(editor: TextEditor, position: Position): Promise<TextEdit[]> {
+	return updAteImAgeSizeCSS(editor, position, getImAgeCSSNode);
 }
 
 /**
- * Updates image size of context rule of stylesheet model
+ * UpdAtes imAge size of context rule of stylesheet model
  */
-function updateImageSizeCSS(editor: TextEditor, position: Position, fetchNode: (editor: TextEditor, position: Position) => Property | null): Promise<TextEdit[]> {
+function updAteImAgeSizeCSS(editor: TextEditor, position: Position, fetchNode: (editor: TextEditor, position: Position) => Property | null): Promise<TextEdit[]> {
 	const node = fetchNode(editor, position);
-	const src = node && getImageSrcCSS(node, position);
+	const src = node && getImAgeSrcCSS(node, position);
 
 	if (!src) {
-		return Promise.reject(new Error('No valid image source'));
+		return Promise.reject(new Error('No vAlid imAge source'));
 	}
 
-	return locateFile(path.dirname(editor.document.fileName), src)
-		.then(getImageSize)
-		.then((size: any): TextEdit[] => {
-			// since this action is asynchronous, we have to ensure that editor wasn’t
-			// changed and user didn’t moved caret outside <img> node
+	return locAteFile(pAth.dirnAme(editor.document.fileNAme), src)
+		.then(getImAgeSize)
+		.then((size: Any): TextEdit[] => {
+			// since this Action is Asynchronous, we hAve to ensure thAt editor wAsn’t
+			// chAnged And user didn’t moved cAret outside <img> node
 			const prop = fetchNode(editor, position);
-			if (prop && getImageSrcCSS(prop, position) === src) {
-				return updateCSSNode(editor, prop, size.width, size.height);
+			if (prop && getImAgeSrcCSS(prop, position) === src) {
+				return updAteCSSNode(editor, prop, size.width, size.height);
 			}
 			return [];
 		})
-		.catch(err => { console.warn('Error while updating image size:', err); return []; });
+		.cAtch(err => { console.wArn('Error while updAting imAge size:', err); return []; });
 }
 
 /**
- * Returns <img> node under caret in given editor or `null` if such node cannot
+ * Returns <img> node under cAret in given editor or `null` if such node cAnnot
  * be found
  */
-function getImageHTMLNode(editor: TextEditor, position: Position): HtmlNode | null {
-	const rootNode = parseDocument(editor.document);
+function getImAgeHTMLNode(editor: TextEditor, position: Position): HtmlNode | null {
+	const rootNode = pArseDocument(editor.document);
 	const node = <HtmlNode>getNode(rootNode, position, true);
 
-	return node && node.name.toLowerCase() === 'img' ? node : null;
+	return node && node.nAme.toLowerCAse() === 'img' ? node : null;
 }
 
 /**
- * Returns css property under caret in given editor or `null` if such node cannot
+ * Returns css property under cAret in given editor or `null` if such node cAnnot
  * be found
  */
-function getImageCSSNode(editor: TextEditor, position: Position): Property | null {
-	const rootNode = parseDocument(editor.document);
+function getImAgeCSSNode(editor: TextEditor, position: Position): Property | null {
+	const rootNode = pArseDocument(editor.document);
 	const node = getNode(rootNode, position, true);
 	return node && node.type === 'property' ? <Property>node : null;
 }
 
 /**
- * Returns image source from given <img> node
+ * Returns imAge source from given <img> node
  */
-function getImageSrcHTML(node: HtmlNode): string | undefined {
+function getImAgeSrcHTML(node: HtmlNode): string | undefined {
 	const srcAttr = getAttribute(node, 'src');
 	if (!srcAttr) {
 		return;
 	}
 
-	return (<HtmlToken>srcAttr.value).value;
+	return (<HtmlToken>srcAttr.vAlue).vAlue;
 }
 
 /**
- * Returns image source from given `url()` token
+ * Returns imAge source from given `url()` token
  */
-function getImageSrcCSS(node: Property | undefined, position: Position): string | undefined {
+function getImAgeSrcCSS(node: Property | undefined, position: Position): string | undefined {
 	if (!node) {
 		return;
 	}
@@ -161,24 +161,24 @@ function getImageSrcCSS(node: Property | undefined, position: Position): string 
 		return;
 	}
 
-	// A stylesheet token may contain either quoted ('string') or unquoted URL
-	let urlValue = urlToken.item(0);
-	if (urlValue && urlValue.type === 'string') {
-		urlValue = urlValue.item(0);
+	// A stylesheet token mAy contAin either quoted ('string') or unquoted URL
+	let urlVAlue = urlToken.item(0);
+	if (urlVAlue && urlVAlue.type === 'string') {
+		urlVAlue = urlVAlue.item(0);
 	}
 
-	return urlValue && urlValue.valueOf();
+	return urlVAlue && urlVAlue.vAlueOf();
 }
 
 /**
- * Updates size of given HTML node
+ * UpdAtes size of given HTML node
  */
-function updateHTMLTag(editor: TextEditor, node: HtmlNode, width: number, height: number): TextEdit[] {
+function updAteHTMLTAg(editor: TextEditor, node: HtmlNode, width: number, height: number): TextEdit[] {
 	const srcAttr = getAttribute(node, 'src');
 	const widthAttr = getAttribute(node, 'width');
 	const heightAttr = getAttribute(node, 'height');
 	const quote = getAttributeQuote(editor, srcAttr);
-	const endOfAttributes = node.attributes[node.attributes.length - 1].end;
+	const endOfAttributes = node.Attributes[node.Attributes.length - 1].end;
 
 	let edits: TextEdit[] = [];
 	let textToAdd = '';
@@ -186,82 +186,82 @@ function updateHTMLTag(editor: TextEditor, node: HtmlNode, width: number, height
 	if (!widthAttr) {
 		textToAdd += ` width=${quote}${width}${quote}`;
 	} else {
-		edits.push(new TextEdit(new Range(widthAttr.value.start, widthAttr.value.end), String(width)));
+		edits.push(new TextEdit(new RAnge(widthAttr.vAlue.stArt, widthAttr.vAlue.end), String(width)));
 	}
 	if (!heightAttr) {
 		textToAdd += ` height=${quote}${height}${quote}`;
 	} else {
-		edits.push(new TextEdit(new Range(heightAttr.value.start, heightAttr.value.end), String(height)));
+		edits.push(new TextEdit(new RAnge(heightAttr.vAlue.stArt, heightAttr.vAlue.end), String(height)));
 	}
 	if (textToAdd) {
-		edits.push(new TextEdit(new Range(endOfAttributes, endOfAttributes), textToAdd));
+		edits.push(new TextEdit(new RAnge(endOfAttributes, endOfAttributes), textToAdd));
 	}
 
 	return edits;
 }
 
 /**
- * Updates size of given CSS rule
+ * UpdAtes size of given CSS rule
  */
-function updateCSSNode(editor: TextEditor, srcProp: Property, width: number, height: number): TextEdit[] {
-	const rule = srcProp.parent;
+function updAteCSSNode(editor: TextEditor, srcProp: Property, width: number, height: number): TextEdit[] {
+	const rule = srcProp.pArent;
 	const widthProp = getCssPropertyFromRule(rule, 'width');
 	const heightProp = getCssPropertyFromRule(rule, 'height');
 
-	// Detect formatting
-	const separator = srcProp.separator || ': ';
+	// Detect formAtting
+	const sepArAtor = srcProp.sepArAtor || ': ';
 	const before = getPropertyDelimitor(editor, srcProp);
 
 	let edits: TextEdit[] = [];
-	if (!srcProp.terminatorToken) {
-		edits.push(new TextEdit(new Range(srcProp.end, srcProp.end), ';'));
+	if (!srcProp.terminAtorToken) {
+		edits.push(new TextEdit(new RAnge(srcProp.end, srcProp.end), ';'));
 	}
 
 	let textToAdd = '';
 	if (!widthProp) {
-		textToAdd += `${before}width${separator}${width}px;`;
+		textToAdd += `${before}width${sepArAtor}${width}px;`;
 	} else {
-		edits.push(new TextEdit(new Range(widthProp.valueToken.start, widthProp.valueToken.end), `${width}px`));
+		edits.push(new TextEdit(new RAnge(widthProp.vAlueToken.stArt, widthProp.vAlueToken.end), `${width}px`));
 	}
 	if (!heightProp) {
-		textToAdd += `${before}height${separator}${height}px;`;
+		textToAdd += `${before}height${sepArAtor}${height}px;`;
 	} else {
-		edits.push(new TextEdit(new Range(heightProp.valueToken.start, heightProp.valueToken.end), `${height}px`));
+		edits.push(new TextEdit(new RAnge(heightProp.vAlueToken.stArt, heightProp.vAlueToken.end), `${height}px`));
 	}
 	if (textToAdd) {
-		edits.push(new TextEdit(new Range(srcProp.end, srcProp.end), textToAdd));
+		edits.push(new TextEdit(new RAnge(srcProp.end, srcProp.end), textToAdd));
 	}
 
 	return edits;
 }
 
 /**
- * Returns attribute object with `attrName` name from given HTML node
+ * Returns Attribute object with `AttrNAme` nAme from given HTML node
  */
-function getAttribute(node: HtmlNode, attrName: string): Attribute {
-	attrName = attrName.toLowerCase();
-	return node && (node.open as any).attributes.find((attr: any) => attr.name.value.toLowerCase() === attrName);
+function getAttribute(node: HtmlNode, AttrNAme: string): Attribute {
+	AttrNAme = AttrNAme.toLowerCAse();
+	return node && (node.open As Any).Attributes.find((Attr: Any) => Attr.nAme.vAlue.toLowerCAse() === AttrNAme);
 }
 
 /**
- * Returns quote character, used for value of given attribute. May return empty
- * string if attribute wasn’t quoted
+ * Returns quote chArActer, used for vAlue of given Attribute. MAy return empty
+ * string if Attribute wAsn’t quoted
 
  */
-function getAttributeQuote(editor: TextEditor, attr: any): string {
-	const range = new Range(attr.value ? attr.value.end : attr.end, attr.end);
-	return range.isEmpty ? '' : editor.document.getText(range);
+function getAttributeQuote(editor: TextEditor, Attr: Any): string {
+	const rAnge = new RAnge(Attr.vAlue ? Attr.vAlue.end : Attr.end, Attr.end);
+	return rAnge.isEmpty ? '' : editor.document.getText(rAnge);
 }
 
 /**
  * Finds 'url' token for given `pos` point in given CSS property `node`
  */
 function findUrlToken(node: Property, pos: Position): CssToken | undefined {
-	for (let i = 0, il = (node as any).parsedValue.length, url; i < il; i++) {
-		iterateCSSToken((node as any).parsedValue[i], (token: CssToken) => {
-			if (token.type === 'url' && token.start.isBeforeOrEqual(pos) && token.end.isAfterOrEqual(pos)) {
+	for (let i = 0, il = (node As Any).pArsedVAlue.length, url; i < il; i++) {
+		iterAteCSSToken((node As Any).pArsedVAlue[i], (token: CssToken) => {
+			if (token.type === 'url' && token.stArt.isBeforeOrEquAl(pos) && token.end.isAfterOrEquAl(pos)) {
 				url = token;
-				return false;
+				return fAlse;
 			}
 			return true;
 		});
@@ -274,14 +274,14 @@ function findUrlToken(node: Property, pos: Position): CssToken | undefined {
 }
 
 /**
- * Returns a string that is used to delimit properties in current node’s rule
+ * Returns A string thAt is used to delimit properties in current node’s rule
  */
 function getPropertyDelimitor(editor: TextEditor, node: Property): string {
-	let anchor;
-	if (anchor = (node.previousSibling || node.parent.contentStartToken)) {
-		return editor.document.getText(new Range(anchor.end, node.start));
-	} else if (anchor = (node.nextSibling || node.parent.contentEndToken)) {
-		return editor.document.getText(new Range(node.end, anchor.start));
+	let Anchor;
+	if (Anchor = (node.previousSibling || node.pArent.contentStArtToken)) {
+		return editor.document.getText(new RAnge(Anchor.end, node.stArt));
+	} else if (Anchor = (node.nextSibling || node.pArent.contentEndToken)) {
+		return editor.document.getText(new RAnge(node.end, Anchor.stArt));
 	}
 
 	return '';

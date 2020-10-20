@@ -1,205 +1,205 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import severity from 'vs/base/common/severity';
-import * as dom from 'vs/base/browser/dom';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import { Variable } from 'vs/workbench/contrib/debug/common/debugModel';
-import { SimpleReplElement, RawObjectReplElement, ReplEvaluationInput, ReplEvaluationResult, ReplGroup } from 'vs/workbench/contrib/debug/common/replModel';
-import { CachedListVirtualDelegate } from 'vs/base/browser/ui/list/list';
-import { ITreeRenderer, ITreeNode, IAsyncDataSource } from 'vs/base/browser/ui/tree/tree';
+import severity from 'vs/bAse/common/severity';
+import * As dom from 'vs/bAse/browser/dom';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
+import { VAriAble } from 'vs/workbench/contrib/debug/common/debugModel';
+import { SimpleReplElement, RAwObjectReplElement, ReplEvAluAtionInput, ReplEvAluAtionResult, ReplGroup } from 'vs/workbench/contrib/debug/common/replModel';
+import { CAchedListVirtuAlDelegAte } from 'vs/bAse/browser/ui/list/list';
+import { ITreeRenderer, ITreeNode, IAsyncDAtASource } from 'vs/bAse/browser/ui/tree/tree';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { renderExpressionValue, AbstractExpressionsRenderer, IExpressionTemplateData, renderVariable, IInputBoxOptions } from 'vs/workbench/contrib/debug/browser/baseDebugView';
-import { handleANSIOutput } from 'vs/workbench/contrib/debug/browser/debugANSIHandling';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { renderExpressionVAlue, AbstrActExpressionsRenderer, IExpressionTemplAteDAtA, renderVAriAble, IInputBoxOptions } from 'vs/workbench/contrib/debug/browser/bAseDebugView';
+import { hAndleANSIOutput } from 'vs/workbench/contrib/debug/browser/debugANSIHAndling';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
 import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { FuzzyScore, createMatches } from 'vs/base/common/filters';
-import { HighlightedLabel, IHighlight } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
-import { IReplElementSource, IDebugService, IExpression, IReplElement, IDebugConfiguration, IDebugSession, IExpressionContainer } from 'vs/workbench/contrib/debug/common/debug';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { localize } from 'vs/nls';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { FuzzyScore, creAteMAtches } from 'vs/bAse/common/filters';
+import { HighlightedLAbel, IHighlight } from 'vs/bAse/browser/ui/highlightedlAbel/highlightedLAbel';
+import { IReplElementSource, IDebugService, IExpression, IReplElement, IDebugConfigurAtion, IDebugSession, IExpressionContAiner } from 'vs/workbench/contrib/debug/common/debug';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { locAlize } from 'vs/nls';
 
 const $ = dom.$;
 
-interface IReplEvaluationInputTemplateData {
-	label: HighlightedLabel;
+interfAce IReplEvAluAtionInputTemplAteDAtA {
+	lAbel: HighlightedLAbel;
 }
 
-interface IReplGroupTemplateData {
-	label: HighlightedLabel;
+interfAce IReplGroupTemplAteDAtA {
+	lAbel: HighlightedLAbel;
 }
 
-interface IReplEvaluationResultTemplateData {
-	value: HTMLElement;
+interfAce IReplEvAluAtionResultTemplAteDAtA {
+	vAlue: HTMLElement;
 }
 
-interface ISimpleReplElementTemplateData {
-	container: HTMLElement;
-	value: HTMLElement;
+interfAce ISimpleReplElementTemplAteDAtA {
+	contAiner: HTMLElement;
+	vAlue: HTMLElement;
 	source: HTMLElement;
 	getReplElementSource(): IReplElementSource | undefined;
-	toDispose: IDisposable[];
+	toDispose: IDisposAble[];
 }
 
-interface IRawObjectReplTemplateData {
-	container: HTMLElement;
+interfAce IRAwObjectReplTemplAteDAtA {
+	contAiner: HTMLElement;
 	expression: HTMLElement;
-	name: HTMLElement;
-	value: HTMLElement;
-	label: HighlightedLabel;
+	nAme: HTMLElement;
+	vAlue: HTMLElement;
+	lAbel: HighlightedLAbel;
 }
 
-export class ReplEvaluationInputsRenderer implements ITreeRenderer<ReplEvaluationInput, FuzzyScore, IReplEvaluationInputTemplateData> {
-	static readonly ID = 'replEvaluationInput';
+export clAss ReplEvAluAtionInputsRenderer implements ITreeRenderer<ReplEvAluAtionInput, FuzzyScore, IReplEvAluAtionInputTemplAteDAtA> {
+	stAtic reAdonly ID = 'replEvAluAtionInput';
 
-	get templateId(): string {
-		return ReplEvaluationInputsRenderer.ID;
+	get templAteId(): string {
+		return ReplEvAluAtionInputsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IReplEvaluationInputTemplateData {
-		dom.append(container, $('span.arrow.codicon.codicon-arrow-small-right'));
-		const input = dom.append(container, $('.expression'));
-		const label = new HighlightedLabel(input, false);
-		return { label };
+	renderTemplAte(contAiner: HTMLElement): IReplEvAluAtionInputTemplAteDAtA {
+		dom.Append(contAiner, $('spAn.Arrow.codicon.codicon-Arrow-smAll-right'));
+		const input = dom.Append(contAiner, $('.expression'));
+		const lAbel = new HighlightedLAbel(input, fAlse);
+		return { lAbel };
 	}
 
-	renderElement(element: ITreeNode<ReplEvaluationInput, FuzzyScore>, index: number, templateData: IReplEvaluationInputTemplateData): void {
-		const evaluation = element.element;
-		templateData.label.set(evaluation.value, createMatches(element.filterData));
+	renderElement(element: ITreeNode<ReplEvAluAtionInput, FuzzyScore>, index: number, templAteDAtA: IReplEvAluAtionInputTemplAteDAtA): void {
+		const evAluAtion = element.element;
+		templAteDAtA.lAbel.set(evAluAtion.vAlue, creAteMAtches(element.filterDAtA));
 	}
 
-	disposeTemplate(templateData: IReplEvaluationInputTemplateData): void {
+	disposeTemplAte(templAteDAtA: IReplEvAluAtionInputTemplAteDAtA): void {
 		// noop
 	}
 }
 
-export class ReplGroupRenderer implements ITreeRenderer<ReplGroup, FuzzyScore, IReplGroupTemplateData> {
-	static readonly ID = 'replGroup';
+export clAss ReplGroupRenderer implements ITreeRenderer<ReplGroup, FuzzyScore, IReplGroupTemplAteDAtA> {
+	stAtic reAdonly ID = 'replGroup';
 
-	get templateId(): string {
+	get templAteId(): string {
 		return ReplGroupRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IReplEvaluationInputTemplateData {
-		const input = dom.append(container, $('.expression'));
-		const label = new HighlightedLabel(input, false);
-		return { label };
+	renderTemplAte(contAiner: HTMLElement): IReplEvAluAtionInputTemplAteDAtA {
+		const input = dom.Append(contAiner, $('.expression'));
+		const lAbel = new HighlightedLAbel(input, fAlse);
+		return { lAbel };
 	}
 
-	renderElement(element: ITreeNode<ReplGroup, FuzzyScore>, _index: number, templateData: IReplGroupTemplateData): void {
+	renderElement(element: ITreeNode<ReplGroup, FuzzyScore>, _index: number, templAteDAtA: IReplGroupTemplAteDAtA): void {
 		const replGroup = element.element;
-		templateData.label.set(replGroup.name, createMatches(element.filterData));
+		templAteDAtA.lAbel.set(replGroup.nAme, creAteMAtches(element.filterDAtA));
 	}
 
-	disposeTemplate(_templateData: IReplEvaluationInputTemplateData): void {
+	disposeTemplAte(_templAteDAtA: IReplEvAluAtionInputTemplAteDAtA): void {
 		// noop
 	}
 }
 
-export class ReplEvaluationResultsRenderer implements ITreeRenderer<ReplEvaluationResult, FuzzyScore, IReplEvaluationResultTemplateData> {
-	static readonly ID = 'replEvaluationResult';
+export clAss ReplEvAluAtionResultsRenderer implements ITreeRenderer<ReplEvAluAtionResult, FuzzyScore, IReplEvAluAtionResultTemplAteDAtA> {
+	stAtic reAdonly ID = 'replEvAluAtionResult';
 
-	get templateId(): string {
-		return ReplEvaluationResultsRenderer.ID;
+	get templAteId(): string {
+		return ReplEvAluAtionResultsRenderer.ID;
 	}
 
-	constructor(private readonly linkDetector: LinkDetector) { }
+	constructor(privAte reAdonly linkDetector: LinkDetector) { }
 
-	renderTemplate(container: HTMLElement): IReplEvaluationResultTemplateData {
-		const output = dom.append(container, $('.evaluation-result.expression'));
-		const value = dom.append(output, $('span.value'));
+	renderTemplAte(contAiner: HTMLElement): IReplEvAluAtionResultTemplAteDAtA {
+		const output = dom.Append(contAiner, $('.evAluAtion-result.expression'));
+		const vAlue = dom.Append(output, $('spAn.vAlue'));
 
-		return { value };
+		return { vAlue };
 	}
 
-	renderElement(element: ITreeNode<ReplEvaluationResult, FuzzyScore>, index: number, templateData: IReplEvaluationResultTemplateData): void {
+	renderElement(element: ITreeNode<ReplEvAluAtionResult, FuzzyScore>, index: number, templAteDAtA: IReplEvAluAtionResultTemplAteDAtA): void {
 		const expression = element.element;
-		renderExpressionValue(expression, templateData.value, {
-			showHover: false,
+		renderExpressionVAlue(expression, templAteDAtA.vAlue, {
+			showHover: fAlse,
 			colorize: true,
 			linkDetector: this.linkDetector
 		});
 	}
 
-	disposeTemplate(templateData: IReplEvaluationResultTemplateData): void {
+	disposeTemplAte(templAteDAtA: IReplEvAluAtionResultTemplAteDAtA): void {
 		// noop
 	}
 }
 
-export class ReplSimpleElementsRenderer implements ITreeRenderer<SimpleReplElement, FuzzyScore, ISimpleReplElementTemplateData> {
-	static readonly ID = 'simpleReplElement';
+export clAss ReplSimpleElementsRenderer implements ITreeRenderer<SimpleReplElement, FuzzyScore, ISimpleReplElementTemplAteDAtA> {
+	stAtic reAdonly ID = 'simpleReplElement';
 
 	constructor(
-		private readonly linkDetector: LinkDetector,
-		@IEditorService private readonly editorService: IEditorService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IThemeService private readonly themeService: IThemeService
+		privAte reAdonly linkDetector: LinkDetector,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IThemeService privAte reAdonly themeService: IThemeService
 	) { }
 
-	get templateId(): string {
+	get templAteId(): string {
 		return ReplSimpleElementsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): ISimpleReplElementTemplateData {
-		const data: ISimpleReplElementTemplateData = Object.create(null);
-		container.classList.add('output');
-		const expression = dom.append(container, $('.output.expression.value-and-source'));
+	renderTemplAte(contAiner: HTMLElement): ISimpleReplElementTemplAteDAtA {
+		const dAtA: ISimpleReplElementTemplAteDAtA = Object.creAte(null);
+		contAiner.clAssList.Add('output');
+		const expression = dom.Append(contAiner, $('.output.expression.vAlue-And-source'));
 
-		data.container = container;
-		data.value = dom.append(expression, $('span.value'));
-		data.source = dom.append(expression, $('.source'));
-		data.toDispose = [];
-		data.toDispose.push(dom.addDisposableListener(data.source, 'click', e => {
-			e.preventDefault();
-			e.stopPropagation();
-			const source = data.getReplElementSource();
+		dAtA.contAiner = contAiner;
+		dAtA.vAlue = dom.Append(expression, $('spAn.vAlue'));
+		dAtA.source = dom.Append(expression, $('.source'));
+		dAtA.toDispose = [];
+		dAtA.toDispose.push(dom.AddDisposAbleListener(dAtA.source, 'click', e => {
+			e.preventDefAult();
+			e.stopPropAgAtion();
+			const source = dAtA.getReplElementSource();
 			if (source) {
 				source.source.openInEditor(this.editorService, {
-					startLineNumber: source.lineNumber,
-					startColumn: source.column,
+					stArtLineNumber: source.lineNumber,
+					stArtColumn: source.column,
 					endLineNumber: source.lineNumber,
 					endColumn: source.column
 				});
 			}
 		}));
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement({ element }: ITreeNode<SimpleReplElement, FuzzyScore>, index: number, templateData: ISimpleReplElementTemplateData): void {
-		// value
-		dom.clearNode(templateData.value);
-		// Reset classes to clear ansi decorations since templates are reused
-		templateData.value.className = 'value';
-		const result = handleANSIOutput(element.value, this.linkDetector, this.themeService, element.session);
-		templateData.value.appendChild(result);
+	renderElement({ element }: ITreeNode<SimpleReplElement, FuzzyScore>, index: number, templAteDAtA: ISimpleReplElementTemplAteDAtA): void {
+		// vAlue
+		dom.cleArNode(templAteDAtA.vAlue);
+		// Reset clAsses to cleAr Ansi decorAtions since templAtes Are reused
+		templAteDAtA.vAlue.clAssNAme = 'vAlue';
+		const result = hAndleANSIOutput(element.vAlue, this.linkDetector, this.themeService, element.session);
+		templAteDAtA.vAlue.AppendChild(result);
 
-		templateData.value.classList.add((element.severity === severity.Warning) ? 'warn' : (element.severity === severity.Error) ? 'error' : (element.severity === severity.Ignore) ? 'ignore' : 'info');
-		templateData.source.textContent = element.sourceData ? `${element.sourceData.source.name}:${element.sourceData.lineNumber}` : '';
-		templateData.source.title = element.sourceData ? `${this.labelService.getUriLabel(element.sourceData.source.uri)}:${element.sourceData.lineNumber}` : '';
-		templateData.getReplElementSource = () => element.sourceData;
+		templAteDAtA.vAlue.clAssList.Add((element.severity === severity.WArning) ? 'wArn' : (element.severity === severity.Error) ? 'error' : (element.severity === severity.Ignore) ? 'ignore' : 'info');
+		templAteDAtA.source.textContent = element.sourceDAtA ? `${element.sourceDAtA.source.nAme}:${element.sourceDAtA.lineNumber}` : '';
+		templAteDAtA.source.title = element.sourceDAtA ? `${this.lAbelService.getUriLAbel(element.sourceDAtA.source.uri)}:${element.sourceDAtA.lineNumber}` : '';
+		templAteDAtA.getReplElementSource = () => element.sourceDAtA;
 	}
 
-	disposeTemplate(templateData: ISimpleReplElementTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: ISimpleReplElementTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-export class ReplVariablesRenderer extends AbstractExpressionsRenderer {
+export clAss ReplVAriAblesRenderer extends AbstrActExpressionsRenderer {
 
-	static readonly ID = 'replVariable';
+	stAtic reAdonly ID = 'replVAriAble';
 
-	get templateId(): string {
-		return ReplVariablesRenderer.ID;
+	get templAteId(): string {
+		return ReplVAriAblesRenderer.ID;
 	}
 
 	constructor(
-		private readonly linkDetector: LinkDetector,
+		privAte reAdonly linkDetector: LinkDetector,
 		@IDebugService debugService: IDebugService,
 		@IContextViewService contextViewService: IContextViewService,
 		@IThemeService themeService: IThemeService,
@@ -207,8 +207,8 @@ export class ReplVariablesRenderer extends AbstractExpressionsRenderer {
 		super(debugService, contextViewService, themeService);
 	}
 
-	protected renderExpression(expression: IExpression, data: IExpressionTemplateData, highlights: IHighlight[]): void {
-		renderVariable(expression as Variable, data, true, highlights, this.linkDetector);
+	protected renderExpression(expression: IExpression, dAtA: IExpressionTemplAteDAtA, highlights: IHighlight[]): void {
+		renderVAriAble(expression As VAriAble, dAtA, true, highlights, this.linkDetector);
 	}
 
 	protected getInputBoxOptions(expression: IExpression): IInputBoxOptions | undefined {
@@ -216,131 +216,131 @@ export class ReplVariablesRenderer extends AbstractExpressionsRenderer {
 	}
 }
 
-export class ReplRawObjectsRenderer implements ITreeRenderer<RawObjectReplElement, FuzzyScore, IRawObjectReplTemplateData> {
-	static readonly ID = 'rawObject';
+export clAss ReplRAwObjectsRenderer implements ITreeRenderer<RAwObjectReplElement, FuzzyScore, IRAwObjectReplTemplAteDAtA> {
+	stAtic reAdonly ID = 'rAwObject';
 
-	constructor(private readonly linkDetector: LinkDetector) { }
+	constructor(privAte reAdonly linkDetector: LinkDetector) { }
 
-	get templateId(): string {
-		return ReplRawObjectsRenderer.ID;
+	get templAteId(): string {
+		return ReplRAwObjectsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IRawObjectReplTemplateData {
-		container.classList.add('output');
+	renderTemplAte(contAiner: HTMLElement): IRAwObjectReplTemplAteDAtA {
+		contAiner.clAssList.Add('output');
 
-		const expression = dom.append(container, $('.output.expression'));
-		const name = dom.append(expression, $('span.name'));
-		const label = new HighlightedLabel(name, false);
-		const value = dom.append(expression, $('span.value'));
+		const expression = dom.Append(contAiner, $('.output.expression'));
+		const nAme = dom.Append(expression, $('spAn.nAme'));
+		const lAbel = new HighlightedLAbel(nAme, fAlse);
+		const vAlue = dom.Append(expression, $('spAn.vAlue'));
 
-		return { container, expression, name, label, value };
+		return { contAiner, expression, nAme, lAbel, vAlue };
 	}
 
-	renderElement(node: ITreeNode<RawObjectReplElement, FuzzyScore>, index: number, templateData: IRawObjectReplTemplateData): void {
+	renderElement(node: ITreeNode<RAwObjectReplElement, FuzzyScore>, index: number, templAteDAtA: IRAwObjectReplTemplAteDAtA): void {
 		// key
 		const element = node.element;
-		templateData.label.set(element.name ? `${element.name}:` : '', createMatches(node.filterData));
-		if (element.name) {
-			templateData.name.textContent = `${element.name}:`;
+		templAteDAtA.lAbel.set(element.nAme ? `${element.nAme}:` : '', creAteMAtches(node.filterDAtA));
+		if (element.nAme) {
+			templAteDAtA.nAme.textContent = `${element.nAme}:`;
 		} else {
-			templateData.name.textContent = '';
+			templAteDAtA.nAme.textContent = '';
 		}
 
-		// value
-		renderExpressionValue(element.value, templateData.value, {
-			showHover: false,
+		// vAlue
+		renderExpressionVAlue(element.vAlue, templAteDAtA.vAlue, {
+			showHover: fAlse,
 			linkDetector: this.linkDetector
 		});
 	}
 
-	disposeTemplate(templateData: IRawObjectReplTemplateData): void {
+	disposeTemplAte(templAteDAtA: IRAwObjectReplTemplAteDAtA): void {
 		// noop
 	}
 }
 
-export class ReplDelegate extends CachedListVirtualDelegate<IReplElement> {
+export clAss ReplDelegAte extends CAchedListVirtuAlDelegAte<IReplElement> {
 
-	constructor(private configurationService: IConfigurationService) {
+	constructor(privAte configurAtionService: IConfigurAtionService) {
 		super();
 	}
 
 	getHeight(element: IReplElement): number {
-		const config = this.configurationService.getValue<IDebugConfiguration>('debug');
+		const config = this.configurAtionService.getVAlue<IDebugConfigurAtion>('debug');
 
-		if (!config.console.wordWrap) {
-			return this.estimateHeight(element, true);
+		if (!config.console.wordWrAp) {
+			return this.estimAteHeight(element, true);
 		}
 
 		return super.getHeight(element);
 	}
 
-	protected estimateHeight(element: IReplElement, ignoreValueLength = false): number {
-		const config = this.configurationService.getValue<IDebugConfiguration>('debug');
-		const rowHeight = Math.ceil(1.4 * config.console.fontSize);
-		const countNumberOfLines = (str: string) => Math.max(1, (str && str.match(/\r\n|\n/g) || []).length);
-		const hasValue = (e: any): e is { value: string } => typeof e.value === 'string';
+	protected estimAteHeight(element: IReplElement, ignoreVAlueLength = fAlse): number {
+		const config = this.configurAtionService.getVAlue<IDebugConfigurAtion>('debug');
+		const rowHeight = MAth.ceil(1.4 * config.console.fontSize);
+		const countNumberOfLines = (str: string) => MAth.mAx(1, (str && str.mAtch(/\r\n|\n/g) || []).length);
+		const hAsVAlue = (e: Any): e is { vAlue: string } => typeof e.vAlue === 'string';
 
-		// Calculate a rough overestimation for the height
-		// For every 30 characters increase the number of lines needed
-		if (hasValue(element)) {
-			let value = element.value;
-			let valueRows = countNumberOfLines(value) + (ignoreValueLength ? 0 : Math.floor(value.length / 30));
+		// CAlculAte A rough overestimAtion for the height
+		// For every 30 chArActers increAse the number of lines needed
+		if (hAsVAlue(element)) {
+			let vAlue = element.vAlue;
+			let vAlueRows = countNumberOfLines(vAlue) + (ignoreVAlueLength ? 0 : MAth.floor(vAlue.length / 30));
 
-			return valueRows * rowHeight;
+			return vAlueRows * rowHeight;
 		}
 
 		return rowHeight;
 	}
 
-	getTemplateId(element: IReplElement): string {
-		if (element instanceof Variable && element.name) {
-			return ReplVariablesRenderer.ID;
+	getTemplAteId(element: IReplElement): string {
+		if (element instAnceof VAriAble && element.nAme) {
+			return ReplVAriAblesRenderer.ID;
 		}
-		if (element instanceof ReplEvaluationResult) {
-			return ReplEvaluationResultsRenderer.ID;
+		if (element instAnceof ReplEvAluAtionResult) {
+			return ReplEvAluAtionResultsRenderer.ID;
 		}
-		if (element instanceof ReplEvaluationInput) {
-			return ReplEvaluationInputsRenderer.ID;
+		if (element instAnceof ReplEvAluAtionInput) {
+			return ReplEvAluAtionInputsRenderer.ID;
 		}
-		if (element instanceof SimpleReplElement || (element instanceof Variable && !element.name)) {
-			// Variable with no name is a top level variable which should be rendered like a repl element #17404
+		if (element instAnceof SimpleReplElement || (element instAnceof VAriAble && !element.nAme)) {
+			// VAriAble with no nAme is A top level vAriAble which should be rendered like A repl element #17404
 			return ReplSimpleElementsRenderer.ID;
 		}
-		if (element instanceof ReplGroup) {
+		if (element instAnceof ReplGroup) {
 			return ReplGroupRenderer.ID;
 		}
 
-		return ReplRawObjectsRenderer.ID;
+		return ReplRAwObjectsRenderer.ID;
 	}
 
-	hasDynamicHeight(element: IReplElement): boolean {
-		// Empty elements should not have dynamic height since they will be invisible
+	hAsDynAmicHeight(element: IReplElement): booleAn {
+		// Empty elements should not hAve dynAmic height since they will be invisible
 		return element.toString().length > 0;
 	}
 }
 
-function isDebugSession(obj: any): obj is IDebugSession {
+function isDebugSession(obj: Any): obj is IDebugSession {
 	return typeof obj.getReplElements === 'function';
 }
 
-export class ReplDataSource implements IAsyncDataSource<IDebugSession, IReplElement> {
+export clAss ReplDAtASource implements IAsyncDAtASource<IDebugSession, IReplElement> {
 
-	hasChildren(element: IReplElement | IDebugSession): boolean {
+	hAsChildren(element: IReplElement | IDebugSession): booleAn {
 		if (isDebugSession(element)) {
 			return true;
 		}
 
-		return !!(<IExpressionContainer | ReplGroup>element).hasChildren;
+		return !!(<IExpressionContAiner | ReplGroup>element).hAsChildren;
 	}
 
 	getChildren(element: IReplElement | IDebugSession): Promise<IReplElement[]> {
 		if (isDebugSession(element)) {
 			return Promise.resolve(element.getReplElements());
 		}
-		if (element instanceof RawObjectReplElement) {
+		if (element instAnceof RAwObjectReplElement) {
 			return element.getChildren();
 		}
-		if (element instanceof ReplGroup) {
+		if (element instAnceof ReplGroup) {
 			return Promise.resolve(element.getChildren());
 		}
 
@@ -348,24 +348,24 @@ export class ReplDataSource implements IAsyncDataSource<IDebugSession, IReplElem
 	}
 }
 
-export class ReplAccessibilityProvider implements IListAccessibilityProvider<IReplElement> {
+export clAss ReplAccessibilityProvider implements IListAccessibilityProvider<IReplElement> {
 
-	getWidgetAriaLabel(): string {
-		return localize('debugConsole', "Debug Console");
+	getWidgetAriALAbel(): string {
+		return locAlize('debugConsole', "Debug Console");
 	}
 
-	getAriaLabel(element: IReplElement): string {
-		if (element instanceof Variable) {
-			return localize('replVariableAriaLabel', "Variable {0}, value {1}", element.name, element.value);
+	getAriALAbel(element: IReplElement): string {
+		if (element instAnceof VAriAble) {
+			return locAlize('replVAriAbleAriALAbel', "VAriAble {0}, vAlue {1}", element.nAme, element.vAlue);
 		}
-		if (element instanceof SimpleReplElement || element instanceof ReplEvaluationInput || element instanceof ReplEvaluationResult) {
-			return localize('replValueOutputAriaLabel', "{0}", element.value);
+		if (element instAnceof SimpleReplElement || element instAnceof ReplEvAluAtionInput || element instAnceof ReplEvAluAtionResult) {
+			return locAlize('replVAlueOutputAriALAbel', "{0}", element.vAlue);
 		}
-		if (element instanceof RawObjectReplElement) {
-			return localize('replRawObjectAriaLabel', "Debug console variable {0}, value {1}", element.name, element.value);
+		if (element instAnceof RAwObjectReplElement) {
+			return locAlize('replRAwObjectAriALAbel', "Debug console vAriAble {0}, vAlue {1}", element.nAme, element.vAlue);
 		}
-		if (element instanceof ReplGroup) {
-			return localize('replGroup', "Debug console group {0}, read eval print loop, debug", element.name);
+		if (element instAnceof ReplGroup) {
+			return locAlize('replGroup', "Debug console group {0}, reAd evAl print loop, debug", element.nAme);
 		}
 
 		return '';

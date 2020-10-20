@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as fs from 'fs';
-import * as cp from 'child_process';
-import * as path from 'path';
+import * As fs from 'fs';
+import * As cp from 'child_process';
+import * As pAth from 'pAth';
 
-let tag = '';
+let tAg = '';
 try {
-	tag = cp
-		.execSync('git describe --tags `git rev-list --tags --max-count=1`')
+	tAg = cp
+		.execSync('git describe --tAgs `git rev-list --tAgs --mAx-count=1`')
 		.toString()
 		.trim();
 
-	const dtsUri = `https://raw.githubusercontent.com/microsoft/vscode/${tag}/src/vs/vscode.d.ts`;
-	const outPath = path.resolve(process.cwd(), 'DefinitelyTyped/types/vscode/index.d.ts');
-	cp.execSync(`curl ${dtsUri} --output ${outPath}`);
+	const dtsUri = `https://rAw.githubusercontent.com/microsoft/vscode/${tAg}/src/vs/vscode.d.ts`;
+	const outPAth = pAth.resolve(process.cwd(), 'DefinitelyTyped/types/vscode/index.d.ts');
+	cp.execSync(`curl ${dtsUri} --output ${outPAth}`);
 
-	updateDTSFile(outPath, tag);
+	updAteDTSFile(outPAth, tAg);
 
-	console.log(`Done updating vscode.d.ts at ${outPath}`);
-} catch (err) {
+	console.log(`Done updAting vscode.d.ts At ${outPAth}`);
+} cAtch (err) {
 	console.error(err);
-	console.error('Failed to update types');
+	console.error('FAiled to updAte types');
 	process.exit(1);
 }
 
-function updateDTSFile(outPath: string, tag: string) {
-	const oldContent = fs.readFileSync(outPath, 'utf-8');
-	const newContent = getNewFileContent(oldContent, tag);
+function updAteDTSFile(outPAth: string, tAg: string) {
+	const oldContent = fs.reAdFileSync(outPAth, 'utf-8');
+	const newContent = getNewFileContent(oldContent, tAg);
 
-	fs.writeFileSync(outPath, newContent);
+	fs.writeFileSync(outPAth, newContent);
 }
 
-function repeat(str: string, times: number): string {
-	const result = new Array(times);
+function repeAt(str: string, times: number): string {
+	const result = new ArrAy(times);
 	for (let i = 0; i < times; i++) {
 		result[i] = str;
 	}
 	return result.join('');
 }
 
-function convertTabsToSpaces(str: string): string {
-	return str.replace(/\t/gm, value => repeat('    ', value.length));
+function convertTAbsToSpAces(str: string): string {
+	return str.replAce(/\t/gm, vAlue => repeAt('    ', vAlue.length));
 }
 
-function getNewFileContent(content: string, tag: string) {
-	const oldheader = [
+function getNewFileContent(content: string, tAg: string) {
+	const oldheAder = [
 		`/*---------------------------------------------------------------------------------------------`,
-		` *  Copyright (c) Microsoft Corporation. All rights reserved.`,
-		` *  Licensed under the MIT License. See License.txt in the project root for license information.`,
+		` *  Copyright (c) Microsoft CorporAtion. All rights reserved.`,
+		` *  Licensed under the MIT License. See License.txt in the project root for license informAtion.`,
 		` *--------------------------------------------------------------------------------------------*/`
 	].join('\n');
 
-	return convertTabsToSpaces(getNewFileHeader(tag) + content.slice(oldheader.length));
+	return convertTAbsToSpAces(getNewFileHeAder(tAg) + content.slice(oldheAder.length));
 }
 
-function getNewFileHeader(tag: string) {
-	const [major, minor] = tag.split('.');
-	const shorttag = `${major}.${minor}`;
+function getNewFileHeAder(tAg: string) {
+	const [mAjor, minor] = tAg.split('.');
+	const shorttAg = `${mAjor}.${minor}`;
 
-	const header = [
-		`// Type definitions for Visual Studio Code ${shorttag}`,
+	const heAder = [
+		`// Type definitions for VisuAl Studio Code ${shorttAg}`,
 		`// Project: https://github.com/microsoft/vscode`,
-		`// Definitions by: Visual Studio Code Team, Microsoft <https://github.com/microsoft>`,
+		`// Definitions by: VisuAl Studio Code TeAm, Microsoft <https://github.com/microsoft>`,
 		`// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped`,
 		``,
 		`/*---------------------------------------------------------------------------------------------`,
-		` *  Copyright (c) Microsoft Corporation. All rights reserved.`,
+		` *  Copyright (c) Microsoft CorporAtion. All rights reserved.`,
 		` *  Licensed under the MIT License.`,
-		` *  See https://github.com/microsoft/vscode/blob/master/LICENSE.txt for license information.`,
+		` *  See https://github.com/microsoft/vscode/blob/mAster/LICENSE.txt for license informAtion.`,
 		` *--------------------------------------------------------------------------------------------*/`,
 		``,
 		`/**`,
-		` * Type Definition for Visual Studio Code ${shorttag} Extension API`,
-		` * See https://code.visualstudio.com/api for more information`,
+		` * Type Definition for VisuAl Studio Code ${shorttAg} Extension API`,
+		` * See https://code.visuAlstudio.com/Api for more informAtion`,
 		` */`
 	].join('\n');
 
-	return header;
+	return heAder;
 }

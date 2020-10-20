@@ -1,299 +1,299 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Range } from 'vs/editor/common/core/range';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { MATCHES_LIMIT } from './findModel';
 
-export interface FindReplaceStateChangedEvent {
-	moveCursor: boolean;
-	updateHistory: boolean;
+export interfAce FindReplAceStAteChAngedEvent {
+	moveCursor: booleAn;
+	updAteHistory: booleAn;
 
-	searchString: boolean;
-	replaceString: boolean;
-	isRevealed: boolean;
-	isReplaceRevealed: boolean;
-	isRegex: boolean;
-	wholeWord: boolean;
-	matchCase: boolean;
-	preserveCase: boolean;
-	searchScope: boolean;
-	matchesPosition: boolean;
-	matchesCount: boolean;
-	currentMatch: boolean;
-	loop: boolean;
+	seArchString: booleAn;
+	replAceString: booleAn;
+	isReveAled: booleAn;
+	isReplAceReveAled: booleAn;
+	isRegex: booleAn;
+	wholeWord: booleAn;
+	mAtchCAse: booleAn;
+	preserveCAse: booleAn;
+	seArchScope: booleAn;
+	mAtchesPosition: booleAn;
+	mAtchesCount: booleAn;
+	currentMAtch: booleAn;
+	loop: booleAn;
 }
 
 export const enum FindOptionOverride {
 	NotSet = 0,
 	True = 1,
-	False = 2
+	FAlse = 2
 }
 
-export interface INewFindReplaceState {
-	searchString?: string;
-	replaceString?: string;
-	isRevealed?: boolean;
-	isReplaceRevealed?: boolean;
-	isRegex?: boolean;
+export interfAce INewFindReplAceStAte {
+	seArchString?: string;
+	replAceString?: string;
+	isReveAled?: booleAn;
+	isReplAceReveAled?: booleAn;
+	isRegex?: booleAn;
 	isRegexOverride?: FindOptionOverride;
-	wholeWord?: boolean;
+	wholeWord?: booleAn;
 	wholeWordOverride?: FindOptionOverride;
-	matchCase?: boolean;
-	matchCaseOverride?: FindOptionOverride;
-	preserveCase?: boolean;
-	preserveCaseOverride?: FindOptionOverride;
-	searchScope?: Range[] | null;
-	loop?: boolean;
+	mAtchCAse?: booleAn;
+	mAtchCAseOverride?: FindOptionOverride;
+	preserveCAse?: booleAn;
+	preserveCAseOverride?: FindOptionOverride;
+	seArchScope?: RAnge[] | null;
+	loop?: booleAn;
 }
 
-function effectiveOptionValue(override: FindOptionOverride, value: boolean): boolean {
+function effectiveOptionVAlue(override: FindOptionOverride, vAlue: booleAn): booleAn {
 	if (override === FindOptionOverride.True) {
 		return true;
 	}
-	if (override === FindOptionOverride.False) {
-		return false;
+	if (override === FindOptionOverride.FAlse) {
+		return fAlse;
 	}
-	return value;
+	return vAlue;
 }
 
-export class FindReplaceState extends Disposable {
-	private _searchString: string;
-	private _replaceString: string;
-	private _isRevealed: boolean;
-	private _isReplaceRevealed: boolean;
-	private _isRegex: boolean;
-	private _isRegexOverride: FindOptionOverride;
-	private _wholeWord: boolean;
-	private _wholeWordOverride: FindOptionOverride;
-	private _matchCase: boolean;
-	private _matchCaseOverride: FindOptionOverride;
-	private _preserveCase: boolean;
-	private _preserveCaseOverride: FindOptionOverride;
-	private _searchScope: Range[] | null;
-	private _matchesPosition: number;
-	private _matchesCount: number;
-	private _currentMatch: Range | null;
-	private _loop: boolean;
-	private readonly _onFindReplaceStateChange = this._register(new Emitter<FindReplaceStateChangedEvent>());
+export clAss FindReplAceStAte extends DisposAble {
+	privAte _seArchString: string;
+	privAte _replAceString: string;
+	privAte _isReveAled: booleAn;
+	privAte _isReplAceReveAled: booleAn;
+	privAte _isRegex: booleAn;
+	privAte _isRegexOverride: FindOptionOverride;
+	privAte _wholeWord: booleAn;
+	privAte _wholeWordOverride: FindOptionOverride;
+	privAte _mAtchCAse: booleAn;
+	privAte _mAtchCAseOverride: FindOptionOverride;
+	privAte _preserveCAse: booleAn;
+	privAte _preserveCAseOverride: FindOptionOverride;
+	privAte _seArchScope: RAnge[] | null;
+	privAte _mAtchesPosition: number;
+	privAte _mAtchesCount: number;
+	privAte _currentMAtch: RAnge | null;
+	privAte _loop: booleAn;
+	privAte reAdonly _onFindReplAceStAteChAnge = this._register(new Emitter<FindReplAceStAteChAngedEvent>());
 
-	public get searchString(): string { return this._searchString; }
-	public get replaceString(): string { return this._replaceString; }
-	public get isRevealed(): boolean { return this._isRevealed; }
-	public get isReplaceRevealed(): boolean { return this._isReplaceRevealed; }
-	public get isRegex(): boolean { return effectiveOptionValue(this._isRegexOverride, this._isRegex); }
-	public get wholeWord(): boolean { return effectiveOptionValue(this._wholeWordOverride, this._wholeWord); }
-	public get matchCase(): boolean { return effectiveOptionValue(this._matchCaseOverride, this._matchCase); }
-	public get preserveCase(): boolean { return effectiveOptionValue(this._preserveCaseOverride, this._preserveCase); }
+	public get seArchString(): string { return this._seArchString; }
+	public get replAceString(): string { return this._replAceString; }
+	public get isReveAled(): booleAn { return this._isReveAled; }
+	public get isReplAceReveAled(): booleAn { return this._isReplAceReveAled; }
+	public get isRegex(): booleAn { return effectiveOptionVAlue(this._isRegexOverride, this._isRegex); }
+	public get wholeWord(): booleAn { return effectiveOptionVAlue(this._wholeWordOverride, this._wholeWord); }
+	public get mAtchCAse(): booleAn { return effectiveOptionVAlue(this._mAtchCAseOverride, this._mAtchCAse); }
+	public get preserveCAse(): booleAn { return effectiveOptionVAlue(this._preserveCAseOverride, this._preserveCAse); }
 
-	public get actualIsRegex(): boolean { return this._isRegex; }
-	public get actualWholeWord(): boolean { return this._wholeWord; }
-	public get actualMatchCase(): boolean { return this._matchCase; }
-	public get actualPreserveCase(): boolean { return this._preserveCase; }
+	public get ActuAlIsRegex(): booleAn { return this._isRegex; }
+	public get ActuAlWholeWord(): booleAn { return this._wholeWord; }
+	public get ActuAlMAtchCAse(): booleAn { return this._mAtchCAse; }
+	public get ActuAlPreserveCAse(): booleAn { return this._preserveCAse; }
 
-	public get searchScope(): Range[] | null { return this._searchScope; }
-	public get matchesPosition(): number { return this._matchesPosition; }
-	public get matchesCount(): number { return this._matchesCount; }
-	public get currentMatch(): Range | null { return this._currentMatch; }
-	public readonly onFindReplaceStateChange: Event<FindReplaceStateChangedEvent> = this._onFindReplaceStateChange.event;
+	public get seArchScope(): RAnge[] | null { return this._seArchScope; }
+	public get mAtchesPosition(): number { return this._mAtchesPosition; }
+	public get mAtchesCount(): number { return this._mAtchesCount; }
+	public get currentMAtch(): RAnge | null { return this._currentMAtch; }
+	public reAdonly onFindReplAceStAteChAnge: Event<FindReplAceStAteChAngedEvent> = this._onFindReplAceStAteChAnge.event;
 
 	constructor() {
 		super();
-		this._searchString = '';
-		this._replaceString = '';
-		this._isRevealed = false;
-		this._isReplaceRevealed = false;
-		this._isRegex = false;
+		this._seArchString = '';
+		this._replAceString = '';
+		this._isReveAled = fAlse;
+		this._isReplAceReveAled = fAlse;
+		this._isRegex = fAlse;
 		this._isRegexOverride = FindOptionOverride.NotSet;
-		this._wholeWord = false;
+		this._wholeWord = fAlse;
 		this._wholeWordOverride = FindOptionOverride.NotSet;
-		this._matchCase = false;
-		this._matchCaseOverride = FindOptionOverride.NotSet;
-		this._preserveCase = false;
-		this._preserveCaseOverride = FindOptionOverride.NotSet;
-		this._searchScope = null;
-		this._matchesPosition = 0;
-		this._matchesCount = 0;
-		this._currentMatch = null;
+		this._mAtchCAse = fAlse;
+		this._mAtchCAseOverride = FindOptionOverride.NotSet;
+		this._preserveCAse = fAlse;
+		this._preserveCAseOverride = FindOptionOverride.NotSet;
+		this._seArchScope = null;
+		this._mAtchesPosition = 0;
+		this._mAtchesCount = 0;
+		this._currentMAtch = null;
 		this._loop = true;
 	}
 
-	public changeMatchInfo(matchesPosition: number, matchesCount: number, currentMatch: Range | undefined): void {
-		let changeEvent: FindReplaceStateChangedEvent = {
-			moveCursor: false,
-			updateHistory: false,
-			searchString: false,
-			replaceString: false,
-			isRevealed: false,
-			isReplaceRevealed: false,
-			isRegex: false,
-			wholeWord: false,
-			matchCase: false,
-			preserveCase: false,
-			searchScope: false,
-			matchesPosition: false,
-			matchesCount: false,
-			currentMatch: false,
-			loop: false
+	public chAngeMAtchInfo(mAtchesPosition: number, mAtchesCount: number, currentMAtch: RAnge | undefined): void {
+		let chAngeEvent: FindReplAceStAteChAngedEvent = {
+			moveCursor: fAlse,
+			updAteHistory: fAlse,
+			seArchString: fAlse,
+			replAceString: fAlse,
+			isReveAled: fAlse,
+			isReplAceReveAled: fAlse,
+			isRegex: fAlse,
+			wholeWord: fAlse,
+			mAtchCAse: fAlse,
+			preserveCAse: fAlse,
+			seArchScope: fAlse,
+			mAtchesPosition: fAlse,
+			mAtchesCount: fAlse,
+			currentMAtch: fAlse,
+			loop: fAlse
 		};
-		let somethingChanged = false;
+		let somethingChAnged = fAlse;
 
-		if (matchesCount === 0) {
-			matchesPosition = 0;
+		if (mAtchesCount === 0) {
+			mAtchesPosition = 0;
 		}
-		if (matchesPosition > matchesCount) {
-			matchesPosition = matchesCount;
-		}
-
-		if (this._matchesPosition !== matchesPosition) {
-			this._matchesPosition = matchesPosition;
-			changeEvent.matchesPosition = true;
-			somethingChanged = true;
-		}
-		if (this._matchesCount !== matchesCount) {
-			this._matchesCount = matchesCount;
-			changeEvent.matchesCount = true;
-			somethingChanged = true;
+		if (mAtchesPosition > mAtchesCount) {
+			mAtchesPosition = mAtchesCount;
 		}
 
-		if (typeof currentMatch !== 'undefined') {
-			if (!Range.equalsRange(this._currentMatch, currentMatch)) {
-				this._currentMatch = currentMatch;
-				changeEvent.currentMatch = true;
-				somethingChanged = true;
+		if (this._mAtchesPosition !== mAtchesPosition) {
+			this._mAtchesPosition = mAtchesPosition;
+			chAngeEvent.mAtchesPosition = true;
+			somethingChAnged = true;
+		}
+		if (this._mAtchesCount !== mAtchesCount) {
+			this._mAtchesCount = mAtchesCount;
+			chAngeEvent.mAtchesCount = true;
+			somethingChAnged = true;
+		}
+
+		if (typeof currentMAtch !== 'undefined') {
+			if (!RAnge.equAlsRAnge(this._currentMAtch, currentMAtch)) {
+				this._currentMAtch = currentMAtch;
+				chAngeEvent.currentMAtch = true;
+				somethingChAnged = true;
 			}
 		}
 
-		if (somethingChanged) {
-			this._onFindReplaceStateChange.fire(changeEvent);
+		if (somethingChAnged) {
+			this._onFindReplAceStAteChAnge.fire(chAngeEvent);
 		}
 	}
 
-	public change(newState: INewFindReplaceState, moveCursor: boolean, updateHistory: boolean = true): void {
-		let changeEvent: FindReplaceStateChangedEvent = {
+	public chAnge(newStAte: INewFindReplAceStAte, moveCursor: booleAn, updAteHistory: booleAn = true): void {
+		let chAngeEvent: FindReplAceStAteChAngedEvent = {
 			moveCursor: moveCursor,
-			updateHistory: updateHistory,
-			searchString: false,
-			replaceString: false,
-			isRevealed: false,
-			isReplaceRevealed: false,
-			isRegex: false,
-			wholeWord: false,
-			matchCase: false,
-			preserveCase: false,
-			searchScope: false,
-			matchesPosition: false,
-			matchesCount: false,
-			currentMatch: false,
-			loop: false
+			updAteHistory: updAteHistory,
+			seArchString: fAlse,
+			replAceString: fAlse,
+			isReveAled: fAlse,
+			isReplAceReveAled: fAlse,
+			isRegex: fAlse,
+			wholeWord: fAlse,
+			mAtchCAse: fAlse,
+			preserveCAse: fAlse,
+			seArchScope: fAlse,
+			mAtchesPosition: fAlse,
+			mAtchesCount: fAlse,
+			currentMAtch: fAlse,
+			loop: fAlse
 		};
-		let somethingChanged = false;
+		let somethingChAnged = fAlse;
 
 		const oldEffectiveIsRegex = this.isRegex;
 		const oldEffectiveWholeWords = this.wholeWord;
-		const oldEffectiveMatchCase = this.matchCase;
-		const oldEffectivePreserveCase = this.preserveCase;
+		const oldEffectiveMAtchCAse = this.mAtchCAse;
+		const oldEffectivePreserveCAse = this.preserveCAse;
 
-		if (typeof newState.searchString !== 'undefined') {
-			if (this._searchString !== newState.searchString) {
-				this._searchString = newState.searchString;
-				changeEvent.searchString = true;
-				somethingChanged = true;
+		if (typeof newStAte.seArchString !== 'undefined') {
+			if (this._seArchString !== newStAte.seArchString) {
+				this._seArchString = newStAte.seArchString;
+				chAngeEvent.seArchString = true;
+				somethingChAnged = true;
 			}
 		}
-		if (typeof newState.replaceString !== 'undefined') {
-			if (this._replaceString !== newState.replaceString) {
-				this._replaceString = newState.replaceString;
-				changeEvent.replaceString = true;
-				somethingChanged = true;
+		if (typeof newStAte.replAceString !== 'undefined') {
+			if (this._replAceString !== newStAte.replAceString) {
+				this._replAceString = newStAte.replAceString;
+				chAngeEvent.replAceString = true;
+				somethingChAnged = true;
 			}
 		}
-		if (typeof newState.isRevealed !== 'undefined') {
-			if (this._isRevealed !== newState.isRevealed) {
-				this._isRevealed = newState.isRevealed;
-				changeEvent.isRevealed = true;
-				somethingChanged = true;
+		if (typeof newStAte.isReveAled !== 'undefined') {
+			if (this._isReveAled !== newStAte.isReveAled) {
+				this._isReveAled = newStAte.isReveAled;
+				chAngeEvent.isReveAled = true;
+				somethingChAnged = true;
 			}
 		}
-		if (typeof newState.isReplaceRevealed !== 'undefined') {
-			if (this._isReplaceRevealed !== newState.isReplaceRevealed) {
-				this._isReplaceRevealed = newState.isReplaceRevealed;
-				changeEvent.isReplaceRevealed = true;
-				somethingChanged = true;
+		if (typeof newStAte.isReplAceReveAled !== 'undefined') {
+			if (this._isReplAceReveAled !== newStAte.isReplAceReveAled) {
+				this._isReplAceReveAled = newStAte.isReplAceReveAled;
+				chAngeEvent.isReplAceReveAled = true;
+				somethingChAnged = true;
 			}
 		}
-		if (typeof newState.isRegex !== 'undefined') {
-			this._isRegex = newState.isRegex;
+		if (typeof newStAte.isRegex !== 'undefined') {
+			this._isRegex = newStAte.isRegex;
 		}
-		if (typeof newState.wholeWord !== 'undefined') {
-			this._wholeWord = newState.wholeWord;
+		if (typeof newStAte.wholeWord !== 'undefined') {
+			this._wholeWord = newStAte.wholeWord;
 		}
-		if (typeof newState.matchCase !== 'undefined') {
-			this._matchCase = newState.matchCase;
+		if (typeof newStAte.mAtchCAse !== 'undefined') {
+			this._mAtchCAse = newStAte.mAtchCAse;
 		}
-		if (typeof newState.preserveCase !== 'undefined') {
-			this._preserveCase = newState.preserveCase;
+		if (typeof newStAte.preserveCAse !== 'undefined') {
+			this._preserveCAse = newStAte.preserveCAse;
 		}
-		if (typeof newState.searchScope !== 'undefined') {
-			if (!newState.searchScope?.every((newSearchScope) => {
-				return this._searchScope?.some(existingSearchScope => {
-					return !Range.equalsRange(existingSearchScope, newSearchScope);
+		if (typeof newStAte.seArchScope !== 'undefined') {
+			if (!newStAte.seArchScope?.every((newSeArchScope) => {
+				return this._seArchScope?.some(existingSeArchScope => {
+					return !RAnge.equAlsRAnge(existingSeArchScope, newSeArchScope);
 				});
 			})) {
-				this._searchScope = newState.searchScope;
-				changeEvent.searchScope = true;
-				somethingChanged = true;
+				this._seArchScope = newStAte.seArchScope;
+				chAngeEvent.seArchScope = true;
+				somethingChAnged = true;
 			}
 		}
-		if (typeof newState.loop !== 'undefined') {
-			if (this._loop !== newState.loop) {
-				this._loop = newState.loop;
-				changeEvent.loop = true;
-				somethingChanged = true;
+		if (typeof newStAte.loop !== 'undefined') {
+			if (this._loop !== newStAte.loop) {
+				this._loop = newStAte.loop;
+				chAngeEvent.loop = true;
+				somethingChAnged = true;
 			}
 		}
-		// Overrides get set when they explicitly come in and get reset anytime something else changes
-		this._isRegexOverride = (typeof newState.isRegexOverride !== 'undefined' ? newState.isRegexOverride : FindOptionOverride.NotSet);
-		this._wholeWordOverride = (typeof newState.wholeWordOverride !== 'undefined' ? newState.wholeWordOverride : FindOptionOverride.NotSet);
-		this._matchCaseOverride = (typeof newState.matchCaseOverride !== 'undefined' ? newState.matchCaseOverride : FindOptionOverride.NotSet);
-		this._preserveCaseOverride = (typeof newState.preserveCaseOverride !== 'undefined' ? newState.preserveCaseOverride : FindOptionOverride.NotSet);
+		// Overrides get set when they explicitly come in And get reset Anytime something else chAnges
+		this._isRegexOverride = (typeof newStAte.isRegexOverride !== 'undefined' ? newStAte.isRegexOverride : FindOptionOverride.NotSet);
+		this._wholeWordOverride = (typeof newStAte.wholeWordOverride !== 'undefined' ? newStAte.wholeWordOverride : FindOptionOverride.NotSet);
+		this._mAtchCAseOverride = (typeof newStAte.mAtchCAseOverride !== 'undefined' ? newStAte.mAtchCAseOverride : FindOptionOverride.NotSet);
+		this._preserveCAseOverride = (typeof newStAte.preserveCAseOverride !== 'undefined' ? newStAte.preserveCAseOverride : FindOptionOverride.NotSet);
 
 		if (oldEffectiveIsRegex !== this.isRegex) {
-			somethingChanged = true;
-			changeEvent.isRegex = true;
+			somethingChAnged = true;
+			chAngeEvent.isRegex = true;
 		}
 		if (oldEffectiveWholeWords !== this.wholeWord) {
-			somethingChanged = true;
-			changeEvent.wholeWord = true;
+			somethingChAnged = true;
+			chAngeEvent.wholeWord = true;
 		}
-		if (oldEffectiveMatchCase !== this.matchCase) {
-			somethingChanged = true;
-			changeEvent.matchCase = true;
-		}
-
-		if (oldEffectivePreserveCase !== this.preserveCase) {
-			somethingChanged = true;
-			changeEvent.preserveCase = true;
+		if (oldEffectiveMAtchCAse !== this.mAtchCAse) {
+			somethingChAnged = true;
+			chAngeEvent.mAtchCAse = true;
 		}
 
-		if (somethingChanged) {
-			this._onFindReplaceStateChange.fire(changeEvent);
+		if (oldEffectivePreserveCAse !== this.preserveCAse) {
+			somethingChAnged = true;
+			chAngeEvent.preserveCAse = true;
+		}
+
+		if (somethingChAnged) {
+			this._onFindReplAceStAteChAnge.fire(chAngeEvent);
 		}
 	}
 
-	public canNavigateBack(): boolean {
-		return this.canNavigateInLoop() || (this.matchesPosition !== 1);
+	public cAnNAvigAteBAck(): booleAn {
+		return this.cAnNAvigAteInLoop() || (this.mAtchesPosition !== 1);
 	}
 
-	public canNavigateForward(): boolean {
-		return this.canNavigateInLoop() || (this.matchesPosition < this.matchesCount);
+	public cAnNAvigAteForwArd(): booleAn {
+		return this.cAnNAvigAteInLoop() || (this.mAtchesPosition < this.mAtchesCount);
 	}
 
-	private canNavigateInLoop(): boolean {
-		return this._loop || (this.matchesCount >= MATCHES_LIMIT);
+	privAte cAnNAvigAteInLoop(): booleAn {
+		return this._loop || (this.mAtchesCount >= MATCHES_LIMIT);
 	}
 
 }

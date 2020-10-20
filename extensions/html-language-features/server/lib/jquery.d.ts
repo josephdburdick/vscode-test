@@ -1,2862 +1,2862 @@
 // Type definitions for jQuery 1.10.x / 2.0.x
 // Project: http://jquery.com/
-// Definitions by: Boris Yankov <https://github.com/borisyankov/>, Christian Hoffmeister <https://github.com/choffmeister>, Steve Fenton <https://github.com/Steve-Fenton>, Diullei Gomes <https://github.com/Diullei>, Tass Iliopoulos <https://github.com/tasoili>, Jason Swearingen <https://github.com/jasons-novaleaf>, Sean Hill <https://github.com/seanski>, Guus Goossens <https://github.com/Guuz>, Kelly Summerlin <https://github.com/ksummerlin>, Basarat Ali Syed <https://github.com/basarat>, Nicholas Wolverson <https://github.com/nwolverson>, Derek Cicerone <https://github.com/derekcicerone>, Andrew Gaspar <https://github.com/AndrewGaspar>, James Harrison Fisher <https://github.com/jameshfisher>, Seikichi Kondo <https://github.com/seikichi>, Benjamin Jackman <https://github.com/benjaminjackman>, Poul Sorensen <https://github.com/s093294>, Josh Strobl <https://github.com/JoshStrobl>, John Reilly <https://github.com/johnnyreilly/>, Dick van den Brink <https://github.com/DickvdBrink>
+// Definitions by: Boris YAnkov <https://github.com/borisyAnkov/>, ChristiAn Hoffmeister <https://github.com/choffmeister>, Steve Fenton <https://github.com/Steve-Fenton>, Diullei Gomes <https://github.com/Diullei>, TAss Iliopoulos <https://github.com/tAsoili>, JAson SweAringen <https://github.com/jAsons-novAleAf>, SeAn Hill <https://github.com/seAnski>, Guus Goossens <https://github.com/Guuz>, Kelly Summerlin <https://github.com/ksummerlin>, BAsArAt Ali Syed <https://github.com/bAsArAt>, NicholAs Wolverson <https://github.com/nwolverson>, Derek Cicerone <https://github.com/derekcicerone>, Andrew GAspAr <https://github.com/AndrewGAspAr>, JAmes HArrison Fisher <https://github.com/jAmeshfisher>, Seikichi Kondo <https://github.com/seikichi>, BenjAmin JAckmAn <https://github.com/benjAminjAckmAn>, Poul Sorensen <https://github.com/s093294>, Josh Strobl <https://github.com/JoshStrobl>, John Reilly <https://github.com/johnnyreilly/>, Dick vAn den Brink <https://github.com/DickvdBrink>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 /* *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright (c) Microsoft CorporAtion. All rights reserved.
+Licensed under the ApAche License, Version 2.0 (the "License"); you mAy not use
+this file except in compliAnce with the License. You mAy obtAin A copy of the
+License At http://www.ApAche.org/licenses/LICENSE-2.0
 
 THIS CODE IS PROVIDED *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
 WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
 MERCHANTABLITY OR NON-INFRINGEMENT.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+See the ApAche Version 2.0 License for specific lAnguAge governing permissions
+And limitAtions under the License.
 ***************************************************************************** */
 
 
 /**
- * Interface for the AJAX setting that will configure the AJAX request
+ * InterfAce for the AJAX setting thAt will configure the AJAX request
  */
-interface JQueryAjaxSettings {
+interfAce JQueryAjAxSettings {
     /**
-     * The content type sent in the request header that tells the server what kind of response it will accept in return. If the accepts setting needs modification, it is recommended to do so once in the $.ajaxSetup() method.
+     * The content type sent in the request heAder thAt tells the server whAt kind of response it will Accept in return. If the Accepts setting needs modificAtion, it is recommended to do so once in the $.AjAxSetup() method.
      */
-    accepts?: any;
+    Accepts?: Any;
     /**
-     * By default, all requests are sent asynchronously (i.e. this is set to true by default). If you need synchronous requests, set this option to false. Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation. Note that synchronous requests may temporarily lock the browser, disabling any actions while the request is active. As of jQuery 1.8, the use of async: false with jqXHR ($.Deferred) is deprecated; you must use the success/error/complete callback options instead of the corresponding methods of the jqXHR object such as jqXHR.done() or the deprecated jqXHR.success().
+     * By defAult, All requests Are sent Asynchronously (i.e. this is set to true by defAult). If you need synchronous requests, set this option to fAlse. Cross-domAin requests And dAtAType: "jsonp" requests do not support synchronous operAtion. Note thAt synchronous requests mAy temporArily lock the browser, disAbling Any Actions while the request is Active. As of jQuery 1.8, the use of Async: fAlse with jqXHR ($.Deferred) is deprecAted; you must use the success/error/complete cAllbAck options insteAd of the corresponding methods of the jqXHR object such As jqXHR.done() or the deprecAted jqXHR.success().
      */
-    async?: boolean;
+    Async?: booleAn;
     /**
-     * A pre-request callback function that can be used to modify the jqXHR (in jQuery 1.4.x, XMLHTTPRequest) object before it is sent. Use this to set custom headers, etc. The jqXHR and settings objects are passed as arguments. This is an Ajax Event. Returning false in the beforeSend function will cancel the request. As of jQuery 1.5, the beforeSend option will be called regardless of the type of request.
+     * A pre-request cAllbAck function thAt cAn be used to modify the jqXHR (in jQuery 1.4.x, XMLHTTPRequest) object before it is sent. Use this to set custom heAders, etc. The jqXHR And settings objects Are pAssed As Arguments. This is An AjAx Event. Returning fAlse in the beforeSend function will cAncel the request. As of jQuery 1.5, the beforeSend option will be cAlled regArdless of the type of request.
      */
-    beforeSend?(jqXHR: JQueryXHR, settings: JQueryAjaxSettings): any;
+    beforeSend?(jqXHR: JQueryXHR, settings: JQueryAjAxSettings): Any;
     /**
-     * If set to false, it will force requested pages not to be cached by the browser. Note: Setting cache to false will only work correctly with HEAD and GET requests. It works by appending "_={timestamp}" to the GET parameters. The parameter is not needed for other types of requests, except in IE8 when a POST is made to a URL that has already been requested by a GET.
+     * If set to fAlse, it will force requested pAges not to be cAched by the browser. Note: Setting cAche to fAlse will only work correctly with HEAD And GET requests. It works by Appending "_={timestAmp}" to the GET pArAmeters. The pArAmeter is not needed for other types of requests, except in IE8 when A POST is mAde to A URL thAt hAs AlreAdy been requested by A GET.
      */
-    cache?: boolean;
+    cAche?: booleAn;
     /**
-     * A function to be called when the request finishes (after success and error callbacks are executed). The function gets passed two arguments: The jqXHR (in jQuery 1.4.x, XMLHTTPRequest) object and a string categorizing the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror"). As of jQuery 1.5, the complete setting can accept an array of functions. Each function will be called in turn. This is an Ajax Event.
+     * A function to be cAlled when the request finishes (After success And error cAllbAcks Are executed). The function gets pAssed two Arguments: The jqXHR (in jQuery 1.4.x, XMLHTTPRequest) object And A string cAtegorizing the stAtus of the request ("success", "notmodified", "error", "timeout", "Abort", or "pArsererror"). As of jQuery 1.5, the complete setting cAn Accept An ArrAy of functions. EAch function will be cAlled in turn. This is An AjAx Event.
      */
-    complete?(jqXHR: JQueryXHR, textStatus: string): any;
+    complete?(jqXHR: JQueryXHR, textStAtus: string): Any;
     /**
-     * An object of string/regular-expression pairs that determine how jQuery will parse the response, given its content type. (version added: 1.5)
+     * An object of string/regulAr-expression pAirs thAt determine how jQuery will pArse the response, given its content type. (version Added: 1.5)
      */
-    contents?: { [key: string]: any; };
-    //According to jQuery.ajax source code, ajax's option actually allows contentType to set to "false"
+    contents?: { [key: string]: Any; };
+    //According to jQuery.AjAx source code, AjAx's option ActuAlly Allows contentType to set to "fAlse"
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/742
     /**
-     * When sending data to the server, use this content type. Default is "application/x-www-form-urlencoded; charset=UTF-8", which is fine for most cases. If you explicitly pass in a content-type to $.ajax(), then it is always sent to the server (even if no data is sent). The W3C XMLHttpRequest specification dictates that the charset is always UTF-8; specifying another charset will not force the browser to change the encoding.
+     * When sending dAtA to the server, use this content type. DefAult is "ApplicAtion/x-www-form-urlencoded; chArset=UTF-8", which is fine for most cAses. If you explicitly pAss in A content-type to $.AjAx(), then it is AlwAys sent to the server (even if no dAtA is sent). The W3C XMLHttpRequest specificAtion dictAtes thAt the chArset is AlwAys UTF-8; specifying Another chArset will not force the browser to chAnge the encoding.
      */
-    contentType?: any;
+    contentType?: Any;
     /**
-     * This object will be made the context of all Ajax-related callbacks. By default, the context is an object that represents the ajax settings used in the call ($.ajaxSettings merged with the settings passed to $.ajax).
+     * This object will be mAde the context of All AjAx-relAted cAllbAcks. By defAult, the context is An object thAt represents the AjAx settings used in the cAll ($.AjAxSettings merged with the settings pAssed to $.AjAx).
      */
-    context?: any;
+    context?: Any;
     /**
-     * An object containing dataType-to-dataType converters. Each converter's value is a function that returns the transformed value of the response. (version added: 1.5)
+     * An object contAining dAtAType-to-dAtAType converters. EAch converter's vAlue is A function thAt returns the trAnsformed vAlue of the response. (version Added: 1.5)
      */
-    converters?: { [key: string]: any; };
+    converters?: { [key: string]: Any; };
     /**
-     * If you wish to force a crossDomain request (such as JSONP) on the same domain, set the value of crossDomain to true. This allows, for example, server-side redirection to another domain. (version added: 1.5)
+     * If you wish to force A crossDomAin request (such As JSONP) on the sAme domAin, set the vAlue of crossDomAin to true. This Allows, for exAmple, server-side redirection to Another domAin. (version Added: 1.5)
      */
-    crossDomain?: boolean;
+    crossDomAin?: booleAn;
     /**
-     * Data to be sent to the server. It is converted to a query string, if not already a string. It's appended to the url for GET-requests. See processData option to prevent this automatic processing. Object must be Key/Value pairs. If value is an Array, jQuery serializes multiple values with same key based on the value of the traditional setting (described below).
+     * DAtA to be sent to the server. It is converted to A query string, if not AlreAdy A string. It's Appended to the url for GET-requests. See processDAtA option to prevent this AutomAtic processing. Object must be Key/VAlue pAirs. If vAlue is An ArrAy, jQuery seriAlizes multiple vAlues with sAme key bAsed on the vAlue of the trAditionAl setting (described below).
      */
-    data?: any;
+    dAtA?: Any;
     /**
-     * A function to be used to handle the raw response data of XMLHttpRequest.This is a pre-filtering function to sanitize the response. You should return the sanitized data. The function accepts two arguments: The raw data returned from the server and the 'dataType' parameter.
+     * A function to be used to hAndle the rAw response dAtA of XMLHttpRequest.This is A pre-filtering function to sAnitize the response. You should return the sAnitized dAtA. The function Accepts two Arguments: The rAw dAtA returned from the server And the 'dAtAType' pArAmeter.
      */
-    dataFilter?(data: any, ty: any): any;
+    dAtAFilter?(dAtA: Any, ty: Any): Any;
     /**
-     * The type of data that you're expecting back from the server. If none is specified, jQuery will try to infer it based on the MIME type of the response (an XML MIME type will yield XML, in 1.4 JSON will yield a JavaScript object, in 1.4 script will execute the script, and anything else will be returned as a string).
+     * The type of dAtA thAt you're expecting bAck from the server. If none is specified, jQuery will try to infer it bAsed on the MIME type of the response (An XML MIME type will yield XML, in 1.4 JSON will yield A JAvAScript object, in 1.4 script will execute the script, And Anything else will be returned As A string).
      */
-    dataType?: string;
+    dAtAType?: string;
     /**
-     * A function to be called if the request fails. The function receives three arguments: The jqXHR (in jQuery 1.4.x, XMLHttpRequest) object, a string describing the type of error that occurred and an optional exception object, if one occurred. Possible values for the second argument (besides null) are "timeout", "error", "abort", and "parsererror". When an HTTP error occurs, errorThrown receives the textual portion of the HTTP status, such as "Not Found" or "Internal Server Error." As of jQuery 1.5, the error setting can accept an array of functions. Each function will be called in turn. Note: This handler is not called for cross-domain script and cross-domain JSONP requests. This is an Ajax Event.
+     * A function to be cAlled if the request fAils. The function receives three Arguments: The jqXHR (in jQuery 1.4.x, XMLHttpRequest) object, A string describing the type of error thAt occurred And An optionAl exception object, if one occurred. Possible vAlues for the second Argument (besides null) Are "timeout", "error", "Abort", And "pArsererror". When An HTTP error occurs, errorThrown receives the textuAl portion of the HTTP stAtus, such As "Not Found" or "InternAl Server Error." As of jQuery 1.5, the error setting cAn Accept An ArrAy of functions. EAch function will be cAlled in turn. Note: This hAndler is not cAlled for cross-domAin script And cross-domAin JSONP requests. This is An AjAx Event.
      */
-    error?(jqXHR: JQueryXHR, textStatus: string, errorThrown: string): any;
+    error?(jqXHR: JQueryXHR, textStAtus: string, errorThrown: string): Any;
     /**
-     * Whether to trigger global Ajax event handlers for this request. The default is true. Set to false to prevent the global handlers like ajaxStart or ajaxStop from being triggered. This can be used to control various Ajax Events.
+     * Whether to trigger globAl AjAx event hAndlers for this request. The defAult is true. Set to fAlse to prevent the globAl hAndlers like AjAxStArt or AjAxStop from being triggered. This cAn be used to control vArious AjAx Events.
      */
-    global?: boolean;
+    globAl?: booleAn;
     /**
-     * An object of additional header key/value pairs to send along with requests using the XMLHttpRequest transport. The header X-Requested-With: XMLHttpRequest is always added, but its default XMLHttpRequest value can be changed here. Values in the headers setting can also be overwritten from within the beforeSend function. (version added: 1.5)
+     * An object of AdditionAl heAder key/vAlue pAirs to send Along with requests using the XMLHttpRequest trAnsport. The heAder X-Requested-With: XMLHttpRequest is AlwAys Added, but its defAult XMLHttpRequest vAlue cAn be chAnged here. VAlues in the heAders setting cAn Also be overwritten from within the beforeSend function. (version Added: 1.5)
      */
-    headers?: { [key: string]: any; };
+    heAders?: { [key: string]: Any; };
     /**
-     * Allow the request to be successful only if the response has changed since the last request. This is done by checking the Last-Modified header. Default value is false, ignoring the header. In jQuery 1.4 this technique also checks the 'etag' specified by the server to catch unmodified data.
+     * Allow the request to be successful only if the response hAs chAnged since the lAst request. This is done by checking the LAst-Modified heAder. DefAult vAlue is fAlse, ignoring the heAder. In jQuery 1.4 this technique Also checks the 'etAg' specified by the server to cAtch unmodified dAtA.
      */
-    ifModified?: boolean;
+    ifModified?: booleAn;
     /**
-     * Allow the current environment to be recognized as "local," (e.g. the filesystem), even if jQuery does not recognize it as such by default. The following protocols are currently recognized as local: file, *-extension, and widget. If the isLocal setting needs modification, it is recommended to do so once in the $.ajaxSetup() method. (version added: 1.5.1)
+     * Allow the current environment to be recognized As "locAl," (e.g. the filesystem), even if jQuery does not recognize it As such by defAult. The following protocols Are currently recognized As locAl: file, *-extension, And widget. If the isLocAl setting needs modificAtion, it is recommended to do so once in the $.AjAxSetup() method. (version Added: 1.5.1)
      */
-    isLocal?: boolean;
+    isLocAl?: booleAn;
     /**
-     * Override the callback function name in a jsonp request. This value will be used instead of 'callback' in the 'callback=?' part of the query string in the url. So {jsonp:'onJSONPLoad'} would result in 'onJSONPLoad=?' passed to the server. As of jQuery 1.5, setting the jsonp option to false prevents jQuery from adding the "?callback" string to the URL or attempting to use "=?" for transformation. In this case, you should also explicitly set the jsonpCallback setting. For example, { jsonp: false, jsonpCallback: "callbackName" }
+     * Override the cAllbAck function nAme in A jsonp request. This vAlue will be used insteAd of 'cAllbAck' in the 'cAllbAck=?' pArt of the query string in the url. So {jsonp:'onJSONPLoAd'} would result in 'onJSONPLoAd=?' pAssed to the server. As of jQuery 1.5, setting the jsonp option to fAlse prevents jQuery from Adding the "?cAllbAck" string to the URL or Attempting to use "=?" for trAnsformAtion. In this cAse, you should Also explicitly set the jsonpCAllbAck setting. For exAmple, { jsonp: fAlse, jsonpCAllbAck: "cAllbAckNAme" }
      */
-    jsonp?: any;
+    jsonp?: Any;
     /**
-     * Specify the callback function name for a JSONP request. This value will be used instead of the random name automatically generated by jQuery. It is preferable to let jQuery generate a unique name as it'll make it easier to manage the requests and provide callbacks and error handling. You may want to specify the callback when you want to enable better browser caching of GET requests. As of jQuery 1.5, you can also use a function for this setting, in which case the value of jsonpCallback is set to the return value of that function.
+     * Specify the cAllbAck function nAme for A JSONP request. This vAlue will be used insteAd of the rAndom nAme AutomAticAlly generAted by jQuery. It is preferAble to let jQuery generAte A unique nAme As it'll mAke it eAsier to mAnAge the requests And provide cAllbAcks And error hAndling. You mAy wAnt to specify the cAllbAck when you wAnt to enAble better browser cAching of GET requests. As of jQuery 1.5, you cAn Also use A function for this setting, in which cAse the vAlue of jsonpCAllbAck is set to the return vAlue of thAt function.
      */
-    jsonpCallback?: any;
+    jsonpCAllbAck?: Any;
     /**
-     * The HTTP method to use for the request (e.g. "POST", "GET", "PUT"). (version added: 1.9.0)
+     * The HTTP method to use for the request (e.g. "POST", "GET", "PUT"). (version Added: 1.9.0)
      */
     method?: string;
     /**
-     * A mime type to override the XHR mime type. (version added: 1.5.1)
+     * A mime type to override the XHR mime type. (version Added: 1.5.1)
      */
     mimeType?: string;
     /**
-     * A password to be used with XMLHttpRequest in response to an HTTP access authentication request.
+     * A pAssword to be used with XMLHttpRequest in response to An HTTP Access AuthenticAtion request.
      */
-    password?: string;
+    pAssword?: string;
     /**
-     * By default, data passed in to the data option as an object (technically, anything other than a string) will be processed and transformed into a query string, fitting to the default content-type "application/x-www-form-urlencoded". If you want to send a DOMDocument, or other non-processed data, set this option to false.
+     * By defAult, dAtA pAssed in to the dAtA option As An object (technicAlly, Anything other thAn A string) will be processed And trAnsformed into A query string, fitting to the defAult content-type "ApplicAtion/x-www-form-urlencoded". If you wAnt to send A DOMDocument, or other non-processed dAtA, set this option to fAlse.
      */
-    processData?: boolean;
+    processDAtA?: booleAn;
     /**
-     * Only applies when the "script" transport is used (e.g., cross-domain requests with "jsonp" or "script" dataType and "GET" type). Sets the charset attribute on the script tag used in the request. Used when the character set on the local page is not the same as the one on the remote script.
+     * Only Applies when the "script" trAnsport is used (e.g., cross-domAin requests with "jsonp" or "script" dAtAType And "GET" type). Sets the chArset Attribute on the script tAg used in the request. Used when the chArActer set on the locAl pAge is not the sAme As the one on the remote script.
      */
-    scriptCharset?: string;
+    scriptChArset?: string;
     /**
-     * An object of numeric HTTP codes and functions to be called when the response has the corresponding code. f the request is successful, the status code functions take the same parameters as the success callback; if it results in an error (including 3xx redirect), they take the same parameters as the error callback. (version added: 1.5)
+     * An object of numeric HTTP codes And functions to be cAlled when the response hAs the corresponding code. f the request is successful, the stAtus code functions tAke the sAme pArAmeters As the success cAllbAck; if it results in An error (including 3xx redirect), they tAke the sAme pArAmeters As the error cAllbAck. (version Added: 1.5)
      */
-    statusCode?: { [key: string]: any; };
+    stAtusCode?: { [key: string]: Any; };
     /**
-     * A function to be called if the request succeeds. The function gets passed three arguments: The data returned from the server, formatted according to the dataType parameter; a string describing the status; and the jqXHR (in jQuery 1.4.x, XMLHttpRequest) object. As of jQuery 1.5, the success setting can accept an array of functions. Each function will be called in turn. This is an Ajax Event.
+     * A function to be cAlled if the request succeeds. The function gets pAssed three Arguments: The dAtA returned from the server, formAtted According to the dAtAType pArAmeter; A string describing the stAtus; And the jqXHR (in jQuery 1.4.x, XMLHttpRequest) object. As of jQuery 1.5, the success setting cAn Accept An ArrAy of functions. EAch function will be cAlled in turn. This is An AjAx Event.
      */
-    success?(data: any, textStatus: string, jqXHR: JQueryXHR): any;
+    success?(dAtA: Any, textStAtus: string, jqXHR: JQueryXHR): Any;
     /**
-     * Set a timeout (in milliseconds) for the request. This will override any global timeout set with $.ajaxSetup(). The timeout period starts at the point the $.ajax call is made; if several other requests are in progress and the browser has no connections available, it is possible for a request to time out before it can be sent. In jQuery 1.4.x and below, the XMLHttpRequest object will be in an invalid state if the request times out; accessing any object members may throw an exception. In Firefox 3.0+ only, script and JSONP requests cannot be cancelled by a timeout; the script will run even if it arrives after the timeout period.
+     * Set A timeout (in milliseconds) for the request. This will override Any globAl timeout set with $.AjAxSetup(). The timeout period stArts At the point the $.AjAx cAll is mAde; if severAl other requests Are in progress And the browser hAs no connections AvAilAble, it is possible for A request to time out before it cAn be sent. In jQuery 1.4.x And below, the XMLHttpRequest object will be in An invAlid stAte if the request times out; Accessing Any object members mAy throw An exception. In Firefox 3.0+ only, script And JSONP requests cAnnot be cAncelled by A timeout; the script will run even if it Arrives After the timeout period.
      */
     timeout?: number;
     /**
-     * Set this to true if you wish to use the traditional style of param serialization.
+     * Set this to true if you wish to use the trAditionAl style of pArAm seriAlizAtion.
      */
-    traditional?: boolean;
+    trAditionAl?: booleAn;
     /**
-     * The type of request to make ("POST" or "GET"), default is "GET". Note: Other HTTP request methods, such as PUT and DELETE, can also be used here, but they are not supported by all browsers.
+     * The type of request to mAke ("POST" or "GET"), defAult is "GET". Note: Other HTTP request methods, such As PUT And DELETE, cAn Also be used here, but they Are not supported by All browsers.
      */
     type?: string;
     /**
-     * A string containing the URL to which the request is sent.
+     * A string contAining the URL to which the request is sent.
      */
     url?: string;
     /**
-     * A username to be used with XMLHttpRequest in response to an HTTP access authentication request.
+     * A usernAme to be used with XMLHttpRequest in response to An HTTP Access AuthenticAtion request.
      */
-    username?: string;
+    usernAme?: string;
     /**
-     * Callback for creating the XMLHttpRequest object. Defaults to the ActiveXObject when available (IE), the XMLHttpRequest otherwise. Override to provide your own implementation for XMLHttpRequest or enhancements to the factory.
+     * CAllbAck for creAting the XMLHttpRequest object. DefAults to the ActiveXObject when AvAilAble (IE), the XMLHttpRequest otherwise. Override to provide your own implementAtion for XMLHttpRequest or enhAncements to the fActory.
      */
-    xhr?: any;
+    xhr?: Any;
     /**
-     * An object of fieldName-fieldValue pairs to set on the native XHR object. For example, you can use it to set withCredentials to true for cross-domain requests if needed. In jQuery 1.5, the withCredentials property was not propagated to the native XHR and thus CORS requests requiring it would ignore this flag. For this reason, we recommend using jQuery 1.5.1+ should you require the use of it. (version added: 1.5.1)
+     * An object of fieldNAme-fieldVAlue pAirs to set on the nAtive XHR object. For exAmple, you cAn use it to set withCredentiAls to true for cross-domAin requests if needed. In jQuery 1.5, the withCredentiAls property wAs not propAgAted to the nAtive XHR And thus CORS requests requiring it would ignore this flAg. For this reAson, we recommend using jQuery 1.5.1+ should you require the use of it. (version Added: 1.5.1)
      */
-    xhrFields?: { [key: string]: any; };
+    xhrFields?: { [key: string]: Any; };
 }
 
 /**
- * Interface for the jqXHR object
+ * InterfAce for the jqXHR object
  */
-interface JQueryXHR extends XMLHttpRequest, JQueryPromise<any> {
+interfAce JQueryXHR extends XMLHttpRequest, JQueryPromise<Any> {
     /**
-     * The .overrideMimeType() method may be used in the beforeSend() callback function, for example, to modify the response content-type header. As of jQuery 1.5.1, the jqXHR object also contains the overrideMimeType() method (it was available in jQuery 1.4.x, as well, but was temporarily removed in jQuery 1.5).
+     * The .overrideMimeType() method mAy be used in the beforeSend() cAllbAck function, for exAmple, to modify the response content-type heAder. As of jQuery 1.5.1, the jqXHR object Also contAins the overrideMimeType() method (it wAs AvAilAble in jQuery 1.4.x, As well, but wAs temporArily removed in jQuery 1.5).
      */
-    overrideMimeType(mimeType: string): any;
+    overrideMimeType(mimeType: string): Any;
     /**
-     * Cancel the request.
+     * CAncel the request.
      *
-     * @param statusText A string passed as the textStatus parameter for the done callback. Default value: "canceled"
+     * @pArAm stAtusText A string pAssed As the textStAtus pArAmeter for the done cAllbAck. DefAult vAlue: "cAnceled"
      */
-    abort(statusText?: string): void;
+    Abort(stAtusText?: string): void;
     /**
-     * Incorporates the functionality of the .done() and .fail() methods, allowing (as of jQuery 1.8) the underlying Promise to be manipulated. Refer to deferred.then() for implementation details.
+     * IncorporAtes the functionAlity of the .done() And .fAil() methods, Allowing (As of jQuery 1.8) the underlying Promise to be mAnipulAted. Refer to deferred.then() for implementAtion detAils.
      */
-    then<R>(doneCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => R, failCallback?: (jqXHR: JQueryXHR, textStatus: string, errorThrown: any) => void): JQueryPromise<R>;
+    then<R>(doneCAllbAck: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => R, fAilCAllbAck?: (jqXHR: JQueryXHR, textStAtus: string, errorThrown: Any) => void): JQueryPromise<R>;
     /**
-     * Property containing the parsed response if the response Content-Type is json
+     * Property contAining the pArsed response if the response Content-Type is json
      */
-    responseJSON?: any;
+    responseJSON?: Any;
     /**
-     * A function to be called if the request fails.
+     * A function to be cAlled if the request fAils.
      */
-    error(xhr: JQueryXHR, textStatus: string, errorThrown: string): void;
+    error(xhr: JQueryXHR, textStAtus: string, errorThrown: string): void;
 }
 
 /**
- * Interface for the JQuery callback
+ * InterfAce for the JQuery cAllbAck
  */
-interface JQueryCallback {
+interfAce JQueryCAllbAck {
     /**
-     * Add a callback or a collection of callbacks to a callback list.
+     * Add A cAllbAck or A collection of cAllbAcks to A cAllbAck list.
      *
-     * @param callbacks A function, or array of functions, that are to be added to the callback list.
+     * @pArAm cAllbAcks A function, or ArrAy of functions, thAt Are to be Added to the cAllbAck list.
      */
-    add(callbacks: Function): JQueryCallback;
+    Add(cAllbAcks: Function): JQueryCAllbAck;
     /**
-     * Add a callback or a collection of callbacks to a callback list.
+     * Add A cAllbAck or A collection of cAllbAcks to A cAllbAck list.
      *
-     * @param callbacks A function, or array of functions, that are to be added to the callback list.
+     * @pArAm cAllbAcks A function, or ArrAy of functions, thAt Are to be Added to the cAllbAck list.
      */
-    add(callbacks: Function[]): JQueryCallback;
+    Add(cAllbAcks: Function[]): JQueryCAllbAck;
 
     /**
-     * Disable a callback list from doing anything more.
+     * DisAble A cAllbAck list from doing Anything more.
      */
-    disable(): JQueryCallback;
+    disAble(): JQueryCAllbAck;
 
     /**
-     * Determine if the callbacks list has been disabled.
+     * Determine if the cAllbAcks list hAs been disAbled.
      */
-    disabled(): boolean;
+    disAbled(): booleAn;
 
     /**
-     * Remove all of the callbacks from a list.
+     * Remove All of the cAllbAcks from A list.
      */
-    empty(): JQueryCallback;
+    empty(): JQueryCAllbAck;
 
     /**
-     * Call all of the callbacks with the given arguments
+     * CAll All of the cAllbAcks with the given Arguments
      *
-     * @param arguments The argument or list of arguments to pass back to the callback list.
+     * @pArAm Arguments The Argument or list of Arguments to pAss bAck to the cAllbAck list.
      */
-    fire(...arguments: any[]): JQueryCallback;
+    fire(...Arguments: Any[]): JQueryCAllbAck;
 
     /**
-     * Determine if the callbacks have already been called at least once.
+     * Determine if the cAllbAcks hAve AlreAdy been cAlled At leAst once.
      */
-    fired(): boolean;
+    fired(): booleAn;
 
     /**
-     * Call all callbacks in a list with the given context and arguments.
+     * CAll All cAllbAcks in A list with the given context And Arguments.
      *
-     * @param context A reference to the context in which the callbacks in the list should be fired.
-     * @param arguments An argument, or array of arguments, to pass to the callbacks in the list.
+     * @pArAm context A reference to the context in which the cAllbAcks in the list should be fired.
+     * @pArAm Arguments An Argument, or ArrAy of Arguments, to pAss to the cAllbAcks in the list.
      */
-    fireWith(context?: any, args?: any[]): JQueryCallback;
+    fireWith(context?: Any, Args?: Any[]): JQueryCAllbAck;
 
     /**
-     * Determine whether a supplied callback is in a list
+     * Determine whether A supplied cAllbAck is in A list
      *
-     * @param callback The callback to search for.
+     * @pArAm cAllbAck The cAllbAck to seArch for.
      */
-    has(callback: Function): boolean;
+    hAs(cAllbAck: Function): booleAn;
 
     /**
-     * Lock a callback list in its current state.
+     * Lock A cAllbAck list in its current stAte.
      */
-    lock(): JQueryCallback;
+    lock(): JQueryCAllbAck;
 
     /**
-     * Determine if the callbacks list has been locked.
+     * Determine if the cAllbAcks list hAs been locked.
      */
-    locked(): boolean;
+    locked(): booleAn;
 
     /**
-     * Remove a callback or a collection of callbacks from a callback list.
+     * Remove A cAllbAck or A collection of cAllbAcks from A cAllbAck list.
      *
-     * @param callbacks A function, or array of functions, that are to be removed from the callback list.
+     * @pArAm cAllbAcks A function, or ArrAy of functions, thAt Are to be removed from the cAllbAck list.
      */
-    remove(callbacks: Function): JQueryCallback;
+    remove(cAllbAcks: Function): JQueryCAllbAck;
     /**
-     * Remove a callback or a collection of callbacks from a callback list.
+     * Remove A cAllbAck or A collection of cAllbAcks from A cAllbAck list.
      *
-     * @param callbacks A function, or array of functions, that are to be removed from the callback list.
+     * @pArAm cAllbAcks A function, or ArrAy of functions, thAt Are to be removed from the cAllbAck list.
      */
-    remove(callbacks: Function[]): JQueryCallback;
+    remove(cAllbAcks: Function[]): JQueryCAllbAck;
 }
 
 /**
  * Allows jQuery Promises to interop with non-jQuery promises
  */
-interface JQueryGenericPromise<T> {
+interfAce JQueryGenericPromise<T> {
     /**
-     * Add handlers to be called when the Deferred object is resolved, rejected, or still in progress.
+     * Add hAndlers to be cAlled when the Deferred object is resolved, rejected, or still in progress.
      *
-     * @param doneFilter A function that is called when the Deferred is resolved.
-     * @param failFilter An optional function that is called when the Deferred is rejected.
+     * @pArAm doneFilter A function thAt is cAlled when the Deferred is resolved.
+     * @pArAm fAilFilter An optionAl function thAt is cAlled when the Deferred is rejected.
      */
-    then<U>(doneFilter: (value?: T, ...values: any[]) => U | JQueryPromise<U>, failFilter?: (...reasons: any[]) => any, progressFilter?: (...progression: any[]) => any): JQueryPromise<U>;
+    then<U>(doneFilter: (vAlue?: T, ...vAlues: Any[]) => U | JQueryPromise<U>, fAilFilter?: (...reAsons: Any[]) => Any, progressFilter?: (...progression: Any[]) => Any): JQueryPromise<U>;
 
     /**
-     * Add handlers to be called when the Deferred object is resolved, rejected, or still in progress.
+     * Add hAndlers to be cAlled when the Deferred object is resolved, rejected, or still in progress.
      *
-     * @param doneFilter A function that is called when the Deferred is resolved.
-     * @param failFilter An optional function that is called when the Deferred is rejected.
+     * @pArAm doneFilter A function thAt is cAlled when the Deferred is resolved.
+     * @pArAm fAilFilter An optionAl function thAt is cAlled when the Deferred is rejected.
      */
-    then(doneFilter: (value?: T, ...values: any[]) => void, failFilter?: (...reasons: any[]) => any, progressFilter?: (...progression: any[]) => any): JQueryPromise<void>;
+    then(doneFilter: (vAlue?: T, ...vAlues: Any[]) => void, fAilFilter?: (...reAsons: Any[]) => Any, progressFilter?: (...progression: Any[]) => Any): JQueryPromise<void>;
 }
 
 /**
- * Interface for the JQuery promise/deferred callbacks
+ * InterfAce for the JQuery promise/deferred cAllbAcks
  */
-interface JQueryPromiseCallback<T> {
-    (value?: T, ...args: any[]): void;
+interfAce JQueryPromiseCAllbAck<T> {
+    (vAlue?: T, ...Args: Any[]): void;
 }
 
-interface JQueryPromiseOperator<T, U> {
-    (callback1: JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[], ...callbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<U>;
-}
-
-/**
- * Interface for the JQuery promise, part of callbacks
- */
-interface JQueryPromise<T> extends JQueryGenericPromise<T> {
-    /**
-     * Determine the current state of a Deferred object.
-     */
-    state(): string;
-    /**
-     * Add handlers to be called when the Deferred object is either resolved or rejected.
-     *
-     * @param alwaysCallbacks1 A function, or array of functions, that is called when the Deferred is resolved or rejected.
-     * @param alwaysCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved or rejected.
-     */
-    always(alwaysCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
-    /**
-     * Add handlers to be called when the Deferred object is resolved.
-     *
-     * @param doneCallbacks1 A function, or array of functions, that are called when the Deferred is resolved.
-     * @param doneCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved.
-     */
-    done(doneCallback1?: JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[], ...doneCallbackN: Array<JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[]>): JQueryPromise<T>;
-    /**
-     * Add handlers to be called when the Deferred object is rejected.
-     *
-     * @param failCallbacks1 A function, or array of functions, that are called when the Deferred is rejected.
-     * @param failCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is rejected.
-     */
-    fail(failCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
-    /**
-     * Add handlers to be called when the Deferred object generates progress notifications.
-     *
-     * @param progressCallbacks A function, or array of functions, to be called when the Deferred generates progress notifications.
-     */
-    progress(progressCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...progressCallbackN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryPromise<T>;
-
-    // Deprecated - given no typings
-    pipe(doneFilter?: (x: any) => any, failFilter?: (x: any) => any, progressFilter?: (x: any) => any): JQueryPromise<any>;
-
-    /**
-     * Return a Deferred's Promise object.
-     *
-     * @param target Object onto which the promise methods have to be attached
-     */
-    promise(target?: any): JQueryPromise<T>;
+interfAce JQueryPromiseOperAtor<T, U> {
+    (cAllbAck1: JQueryPromiseCAllbAck<T> | JQueryPromiseCAllbAck<T>[], ...cAllbAcksN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryPromise<U>;
 }
 
 /**
- * Interface for the JQuery deferred, part of callbacks
+ * InterfAce for the JQuery promise, pArt of cAllbAcks
  */
-interface JQueryDeferred<T> extends JQueryGenericPromise<T> {
+interfAce JQueryPromise<T> extends JQueryGenericPromise<T> {
     /**
-     * Determine the current state of a Deferred object.
+     * Determine the current stAte of A Deferred object.
      */
-    state(): string;
+    stAte(): string;
     /**
-     * Add handlers to be called when the Deferred object is either resolved or rejected.
+     * Add hAndlers to be cAlled when the Deferred object is either resolved or rejected.
      *
-     * @param alwaysCallbacks1 A function, or array of functions, that is called when the Deferred is resolved or rejected.
-     * @param alwaysCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved or rejected.
+     * @pArAm AlwAysCAllbAcks1 A function, or ArrAy of functions, thAt is cAlled when the Deferred is resolved or rejected.
+     * @pArAm AlwAysCAllbAcks2 OptionAl AdditionAl functions, or ArrAys of functions, thAt Are cAlled when the Deferred is resolved or rejected.
      */
-    always(alwaysCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
+    AlwAys(AlwAysCAllbAck1?: JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[], ...AlwAysCAllbAcksN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryPromise<T>;
     /**
-     * Add handlers to be called when the Deferred object is resolved.
+     * Add hAndlers to be cAlled when the Deferred object is resolved.
      *
-     * @param doneCallbacks1 A function, or array of functions, that are called when the Deferred is resolved.
-     * @param doneCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is resolved.
+     * @pArAm doneCAllbAcks1 A function, or ArrAy of functions, thAt Are cAlled when the Deferred is resolved.
+     * @pArAm doneCAllbAcks2 OptionAl AdditionAl functions, or ArrAys of functions, thAt Are cAlled when the Deferred is resolved.
      */
-    done(doneCallback1?: JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[], ...doneCallbackN: Array<JQueryPromiseCallback<T> | JQueryPromiseCallback<T>[]>): JQueryDeferred<T>;
+    done(doneCAllbAck1?: JQueryPromiseCAllbAck<T> | JQueryPromiseCAllbAck<T>[], ...doneCAllbAckN: ArrAy<JQueryPromiseCAllbAck<T> | JQueryPromiseCAllbAck<T>[]>): JQueryPromise<T>;
     /**
-     * Add handlers to be called when the Deferred object is rejected.
+     * Add hAndlers to be cAlled when the Deferred object is rejected.
      *
-     * @param failCallbacks1 A function, or array of functions, that are called when the Deferred is rejected.
-     * @param failCallbacks2 Optional additional functions, or arrays of functions, that are called when the Deferred is rejected.
+     * @pArAm fAilCAllbAcks1 A function, or ArrAy of functions, thAt Are cAlled when the Deferred is rejected.
+     * @pArAm fAilCAllbAcks2 OptionAl AdditionAl functions, or ArrAys of functions, thAt Are cAlled when the Deferred is rejected.
      */
-    fail(failCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
+    fAil(fAilCAllbAck1?: JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[], ...fAilCAllbAcksN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryPromise<T>;
     /**
-     * Add handlers to be called when the Deferred object generates progress notifications.
+     * Add hAndlers to be cAlled when the Deferred object generAtes progress notificAtions.
      *
-     * @param progressCallbacks A function, or array of functions, to be called when the Deferred generates progress notifications.
+     * @pArAm progressCAllbAcks A function, or ArrAy of functions, to be cAlled when the Deferred generAtes progress notificAtions.
      */
-    progress(progressCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...progressCallbackN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]>): JQueryDeferred<T>;
+    progress(progressCAllbAck1?: JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[], ...progressCAllbAckN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryPromise<T>;
+
+    // DeprecAted - given no typings
+    pipe(doneFilter?: (x: Any) => Any, fAilFilter?: (x: Any) => Any, progressFilter?: (x: Any) => Any): JQueryPromise<Any>;
 
     /**
-     * Call the progressCallbacks on a Deferred object with the given args.
+     * Return A Deferred's Promise object.
      *
-     * @param args Optional arguments that are passed to the progressCallbacks.
+     * @pArAm tArget Object onto which the promise methods hAve to be AttAched
      */
-    notify(value?: any, ...args: any[]): JQueryDeferred<T>;
-
-    /**
-     * Call the progressCallbacks on a Deferred object with the given context and args.
-     *
-     * @param context Context passed to the progressCallbacks as the this object.
-     * @param args Optional arguments that are passed to the progressCallbacks.
-     */
-    notifyWith(context: any, value?: any[]): JQueryDeferred<T>;
-
-    /**
-     * Reject a Deferred object and call any failCallbacks with the given args.
-     *
-     * @param args Optional arguments that are passed to the failCallbacks.
-     */
-    reject(value?: any, ...args: any[]): JQueryDeferred<T>;
-    /**
-     * Reject a Deferred object and call any failCallbacks with the given context and args.
-     *
-     * @param context Context passed to the failCallbacks as the this object.
-     * @param args An optional array of arguments that are passed to the failCallbacks.
-     */
-    rejectWith(context: any, value?: any[]): JQueryDeferred<T>;
-
-    /**
-     * Resolve a Deferred object and call any doneCallbacks with the given args.
-     *
-     * @param value First argument passed to doneCallbacks.
-     * @param args Optional subsequent arguments that are passed to the doneCallbacks.
-     */
-    resolve(value?: T, ...args: any[]): JQueryDeferred<T>;
-
-    /**
-     * Resolve a Deferred object and call any doneCallbacks with the given context and args.
-     *
-     * @param context Context passed to the doneCallbacks as the this object.
-     * @param args An optional array of arguments that are passed to the doneCallbacks.
-     */
-    resolveWith(context: any, value?: T[]): JQueryDeferred<T>;
-
-    /**
-     * Return a Deferred's Promise object.
-     *
-     * @param target Object onto which the promise methods have to be attached
-     */
-    promise(target?: any): JQueryPromise<T>;
-
-    // Deprecated - given no typings
-    pipe(doneFilter?: (x: any) => any, failFilter?: (x: any) => any, progressFilter?: (x: any) => any): JQueryPromise<any>;
+    promise(tArget?: Any): JQueryPromise<T>;
 }
 
 /**
- * Interface of the JQuery extension of the W3C event object
+ * InterfAce for the JQuery deferred, pArt of cAllbAcks
  */
-interface BaseJQueryEventObject extends Event {
-    currentTarget: Element;
-    data: any;
-    delegateTarget: Element;
-    isDefaultPrevented(): boolean;
-    isImmediatePropagationStopped(): boolean;
-    isPropagationStopped(): boolean;
-    namespace: string;
-    originalEvent: Event;
-    preventDefault(): any;
-    relatedTarget: Element;
-    result: any;
-    stopImmediatePropagation(): void;
-    stopPropagation(): void;
-    target: Element;
-    pageX: number;
-    pageY: number;
+interfAce JQueryDeferred<T> extends JQueryGenericPromise<T> {
+    /**
+     * Determine the current stAte of A Deferred object.
+     */
+    stAte(): string;
+    /**
+     * Add hAndlers to be cAlled when the Deferred object is either resolved or rejected.
+     *
+     * @pArAm AlwAysCAllbAcks1 A function, or ArrAy of functions, thAt is cAlled when the Deferred is resolved or rejected.
+     * @pArAm AlwAysCAllbAcks2 OptionAl AdditionAl functions, or ArrAys of functions, thAt Are cAlled when the Deferred is resolved or rejected.
+     */
+    AlwAys(AlwAysCAllbAck1?: JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[], ...AlwAysCAllbAcksN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryDeferred<T>;
+    /**
+     * Add hAndlers to be cAlled when the Deferred object is resolved.
+     *
+     * @pArAm doneCAllbAcks1 A function, or ArrAy of functions, thAt Are cAlled when the Deferred is resolved.
+     * @pArAm doneCAllbAcks2 OptionAl AdditionAl functions, or ArrAys of functions, thAt Are cAlled when the Deferred is resolved.
+     */
+    done(doneCAllbAck1?: JQueryPromiseCAllbAck<T> | JQueryPromiseCAllbAck<T>[], ...doneCAllbAckN: ArrAy<JQueryPromiseCAllbAck<T> | JQueryPromiseCAllbAck<T>[]>): JQueryDeferred<T>;
+    /**
+     * Add hAndlers to be cAlled when the Deferred object is rejected.
+     *
+     * @pArAm fAilCAllbAcks1 A function, or ArrAy of functions, thAt Are cAlled when the Deferred is rejected.
+     * @pArAm fAilCAllbAcks2 OptionAl AdditionAl functions, or ArrAys of functions, thAt Are cAlled when the Deferred is rejected.
+     */
+    fAil(fAilCAllbAck1?: JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[], ...fAilCAllbAcksN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryDeferred<T>;
+    /**
+     * Add hAndlers to be cAlled when the Deferred object generAtes progress notificAtions.
+     *
+     * @pArAm progressCAllbAcks A function, or ArrAy of functions, to be cAlled when the Deferred generAtes progress notificAtions.
+     */
+    progress(progressCAllbAck1?: JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[], ...progressCAllbAckN: ArrAy<JQueryPromiseCAllbAck<Any> | JQueryPromiseCAllbAck<Any>[]>): JQueryDeferred<T>;
+
+    /**
+     * CAll the progressCAllbAcks on A Deferred object with the given Args.
+     *
+     * @pArAm Args OptionAl Arguments thAt Are pAssed to the progressCAllbAcks.
+     */
+    notify(vAlue?: Any, ...Args: Any[]): JQueryDeferred<T>;
+
+    /**
+     * CAll the progressCAllbAcks on A Deferred object with the given context And Args.
+     *
+     * @pArAm context Context pAssed to the progressCAllbAcks As the this object.
+     * @pArAm Args OptionAl Arguments thAt Are pAssed to the progressCAllbAcks.
+     */
+    notifyWith(context: Any, vAlue?: Any[]): JQueryDeferred<T>;
+
+    /**
+     * Reject A Deferred object And cAll Any fAilCAllbAcks with the given Args.
+     *
+     * @pArAm Args OptionAl Arguments thAt Are pAssed to the fAilCAllbAcks.
+     */
+    reject(vAlue?: Any, ...Args: Any[]): JQueryDeferred<T>;
+    /**
+     * Reject A Deferred object And cAll Any fAilCAllbAcks with the given context And Args.
+     *
+     * @pArAm context Context pAssed to the fAilCAllbAcks As the this object.
+     * @pArAm Args An optionAl ArrAy of Arguments thAt Are pAssed to the fAilCAllbAcks.
+     */
+    rejectWith(context: Any, vAlue?: Any[]): JQueryDeferred<T>;
+
+    /**
+     * Resolve A Deferred object And cAll Any doneCAllbAcks with the given Args.
+     *
+     * @pArAm vAlue First Argument pAssed to doneCAllbAcks.
+     * @pArAm Args OptionAl subsequent Arguments thAt Are pAssed to the doneCAllbAcks.
+     */
+    resolve(vAlue?: T, ...Args: Any[]): JQueryDeferred<T>;
+
+    /**
+     * Resolve A Deferred object And cAll Any doneCAllbAcks with the given context And Args.
+     *
+     * @pArAm context Context pAssed to the doneCAllbAcks As the this object.
+     * @pArAm Args An optionAl ArrAy of Arguments thAt Are pAssed to the doneCAllbAcks.
+     */
+    resolveWith(context: Any, vAlue?: T[]): JQueryDeferred<T>;
+
+    /**
+     * Return A Deferred's Promise object.
+     *
+     * @pArAm tArget Object onto which the promise methods hAve to be AttAched
+     */
+    promise(tArget?: Any): JQueryPromise<T>;
+
+    // DeprecAted - given no typings
+    pipe(doneFilter?: (x: Any) => Any, fAilFilter?: (x: Any) => Any, progressFilter?: (x: Any) => Any): JQueryPromise<Any>;
+}
+
+/**
+ * InterfAce of the JQuery extension of the W3C event object
+ */
+interfAce BAseJQueryEventObject extends Event {
+    currentTArget: Element;
+    dAtA: Any;
+    delegAteTArget: Element;
+    isDefAultPrevented(): booleAn;
+    isImmediAtePropAgAtionStopped(): booleAn;
+    isPropAgAtionStopped(): booleAn;
+    nAmespAce: string;
+    originAlEvent: Event;
+    preventDefAult(): Any;
+    relAtedTArget: Element;
+    result: Any;
+    stopImmediAtePropAgAtion(): void;
+    stopPropAgAtion(): void;
+    tArget: Element;
+    pAgeX: number;
+    pAgeY: number;
     which: number;
-    metaKey: boolean;
+    metAKey: booleAn;
 }
 
-interface JQueryInputEventObject extends BaseJQueryEventObject {
-    altKey: boolean;
-    ctrlKey: boolean;
-    metaKey: boolean;
-    shiftKey: boolean;
+interfAce JQueryInputEventObject extends BAseJQueryEventObject {
+    AltKey: booleAn;
+    ctrlKey: booleAn;
+    metAKey: booleAn;
+    shiftKey: booleAn;
 }
 
-interface JQueryMouseEventObject extends JQueryInputEventObject {
+interfAce JQueryMouseEventObject extends JQueryInputEventObject {
     button: number;
     clientX: number;
     clientY: number;
     offsetX: number;
     offsetY: number;
-    pageX: number;
-    pageY: number;
+    pAgeX: number;
+    pAgeY: number;
     screenX: number;
     screenY: number;
 }
 
-interface JQueryKeyEventObject extends JQueryInputEventObject {
-    char: any;
-    charCode: number;
-    key: any;
+interfAce JQueryKeyEventObject extends JQueryInputEventObject {
+    chAr: Any;
+    chArCode: number;
+    key: Any;
     keyCode: number;
 }
 
-interface JQueryEventObject extends BaseJQueryEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject {
+interfAce JQueryEventObject extends BAseJQueryEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject {
 }
 
 /*
     Collection of properties of the current browser
 */
 
-interface JQuerySupport {
-    ajax?: boolean;
-    boxModel?: boolean;
-    changeBubbles?: boolean;
-    checkClone?: boolean;
-    checkOn?: boolean;
-    cors?: boolean;
-    cssFloat?: boolean;
-    hrefNormalized?: boolean;
-    htmlSerialize?: boolean;
-    leadingWhitespace?: boolean;
-    noCloneChecked?: boolean;
-    noCloneEvent?: boolean;
-    opacity?: boolean;
-    optDisabled?: boolean;
-    optSelected?: boolean;
-    scriptEval?(): boolean;
-    style?: boolean;
-    submitBubbles?: boolean;
-    tbody?: boolean;
+interfAce JQuerySupport {
+    AjAx?: booleAn;
+    boxModel?: booleAn;
+    chAngeBubbles?: booleAn;
+    checkClone?: booleAn;
+    checkOn?: booleAn;
+    cors?: booleAn;
+    cssFloAt?: booleAn;
+    hrefNormAlized?: booleAn;
+    htmlSeriAlize?: booleAn;
+    leAdingWhitespAce?: booleAn;
+    noCloneChecked?: booleAn;
+    noCloneEvent?: booleAn;
+    opAcity?: booleAn;
+    optDisAbled?: booleAn;
+    optSelected?: booleAn;
+    scriptEvAl?(): booleAn;
+    style?: booleAn;
+    submitBubbles?: booleAn;
+    tbody?: booleAn;
 }
 
-interface JQueryParam {
+interfAce JQueryPArAm {
     /**
-     * Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax request.
+     * CreAte A seriAlized representAtion of An ArrAy or object, suitAble for use in A URL query string or AjAx request.
      *
-     * @param obj An array or object to serialize.
+     * @pArAm obj An ArrAy or object to seriAlize.
      */
-    (obj: any): string;
+    (obj: Any): string;
 
     /**
-     * Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax request.
+     * CreAte A seriAlized representAtion of An ArrAy or object, suitAble for use in A URL query string or AjAx request.
      *
-     * @param obj An array or object to serialize.
-     * @param traditional A Boolean indicating whether to perform a traditional "shallow" serialization.
+     * @pArAm obj An ArrAy or object to seriAlize.
+     * @pArAm trAditionAl A BooleAn indicAting whether to perform A trAditionAl "shAllow" seriAlizAtion.
      */
-    (obj: any, traditional: boolean): string;
+    (obj: Any, trAditionAl: booleAn): string;
 }
 
 /**
- * The interface used to construct jQuery events (with $.Event). It is
- * defined separately instead of inline in JQueryStatic to allow
+ * The interfAce used to construct jQuery events (with $.Event). It is
+ * defined sepArAtely insteAd of inline in JQueryStAtic to Allow
  * overriding the construction function with specific strings
  * returning specific event objects.
  */
-interface JQueryEventConstructor {
-    (name: string, eventProperties?: any): JQueryEventObject;
-    new(name: string, eventProperties?: any): JQueryEventObject;
+interfAce JQueryEventConstructor {
+    (nAme: string, eventProperties?: Any): JQueryEventObject;
+    new(nAme: string, eventProperties?: Any): JQueryEventObject;
 }
 
 /**
- * The interface used to specify coordinates.
+ * The interfAce used to specify coordinAtes.
  */
-interface JQueryCoordinates {
+interfAce JQueryCoordinAtes {
     left: number;
     top: number;
 }
 
 /**
- * Elements in the array returned by serializeArray()
+ * Elements in the ArrAy returned by seriAlizeArrAy()
  */
-interface JQuerySerializeArrayElement {
-    name: string;
-    value: string;
+interfAce JQuerySeriAlizeArrAyElement {
+    nAme: string;
+    vAlue: string;
 }
 
-interface JQueryAnimationOptions {
+interfAce JQueryAnimAtionOptions {
     /**
-     * A string or number determining how long the animation will run.
+     * A string or number determining how long the AnimAtion will run.
      */
-    duration?: any;
+    durAtion?: Any;
     /**
-     * A string indicating which easing function to use for the transition.
+     * A string indicAting which eAsing function to use for the trAnsition.
      */
-    easing?: string;
+    eAsing?: string;
     /**
-     * A function to call once the animation is complete.
+     * A function to cAll once the AnimAtion is complete.
      */
     complete?: Function;
     /**
-     * A function to be called for each animated property of each animated element. This function provides an opportunity to modify the Tween object to change the value of the property before it is set.
+     * A function to be cAlled for eAch AnimAted property of eAch AnimAted element. This function provides An opportunity to modify the Tween object to chAnge the vAlue of the property before it is set.
      */
-    step?: (now: number, tween: any) => any;
+    step?: (now: number, tween: Any) => Any;
     /**
-     * A function to be called after each step of the animation, only once per animated element regardless of the number of animated properties. (version added: 1.8)
+     * A function to be cAlled After eAch step of the AnimAtion, only once per AnimAted element regArdless of the number of AnimAted properties. (version Added: 1.8)
      */
-    progress?: (animation: JQueryPromise<any>, progress: number, remainingMs: number) => any;
+    progress?: (AnimAtion: JQueryPromise<Any>, progress: number, remAiningMs: number) => Any;
     /**
-     * A function to call when the animation begins. (version added: 1.8)
+     * A function to cAll when the AnimAtion begins. (version Added: 1.8)
      */
-    start?: (animation: JQueryPromise<any>) => any;
+    stArt?: (AnimAtion: JQueryPromise<Any>) => Any;
     /**
-     * A function to be called when the animation completes (its Promise object is resolved). (version added: 1.8)
+     * A function to be cAlled when the AnimAtion completes (its Promise object is resolved). (version Added: 1.8)
      */
-    done?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any;
+    done?: (AnimAtion: JQueryPromise<Any>, jumpedToEnd: booleAn) => Any;
     /**
-     * A function to be called when the animation fails to complete (its Promise object is rejected). (version added: 1.8)
+     * A function to be cAlled when the AnimAtion fAils to complete (its Promise object is rejected). (version Added: 1.8)
      */
-    fail?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any;
+    fAil?: (AnimAtion: JQueryPromise<Any>, jumpedToEnd: booleAn) => Any;
     /**
-     * A function to be called when the animation completes or stops without completing (its Promise object is either resolved or rejected). (version added: 1.8)
+     * A function to be cAlled when the AnimAtion completes or stops without completing (its Promise object is either resolved or rejected). (version Added: 1.8)
      */
-    always?: (animation: JQueryPromise<any>, jumpedToEnd: boolean) => any;
+    AlwAys?: (AnimAtion: JQueryPromise<Any>, jumpedToEnd: booleAn) => Any;
     /**
-     * A Boolean indicating whether to place the animation in the effects queue. If false, the animation will begin immediately. As of jQuery 1.7, the queue option can also accept a string, in which case the animation is added to the queue represented by that string. When a custom queue name is used the animation does not automatically start; you must call .dequeue("queuename") to start it.
+     * A BooleAn indicAting whether to plAce the AnimAtion in the effects queue. If fAlse, the AnimAtion will begin immediAtely. As of jQuery 1.7, the queue option cAn Also Accept A string, in which cAse the AnimAtion is Added to the queue represented by thAt string. When A custom queue nAme is used the AnimAtion does not AutomAticAlly stArt; you must cAll .dequeue("queuenAme") to stArt it.
      */
-    queue?: any;
+    queue?: Any;
     /**
-     * A map of one or more of the CSS properties defined by the properties argument and their corresponding easing functions. (version added: 1.4)
+     * A mAp of one or more of the CSS properties defined by the properties Argument And their corresponding eAsing functions. (version Added: 1.4)
      */
-    specialEasing?: Object;
+    speciAlEAsing?: Object;
 }
 
-interface JQueryEasingFunction {
+interfAce JQueryEAsingFunction {
     (percent: number): number;
 }
 
-interface JQueryEasingFunctions {
-    [name: string]: JQueryEasingFunction;
-    linear: JQueryEasingFunction;
-    swing: JQueryEasingFunction;
+interfAce JQueryEAsingFunctions {
+    [nAme: string]: JQueryEAsingFunction;
+    lineAr: JQueryEAsingFunction;
+    swing: JQueryEAsingFunction;
 }
 
 /**
- * Static members of jQuery (those on $ and jQuery themselves)
+ * StAtic members of jQuery (those on $ And jQuery themselves)
  */
-interface JQueryStatic {
+interfAce JQueryStAtic {
 
     /**
-     * Perform an asynchronous HTTP (Ajax) request.
+     * Perform An Asynchronous HTTP (AjAx) request.
      *
-     * @param settings A set of key/value pairs that configure the Ajax request. All settings are optional. A default can be set for any option with $.ajaxSetup().
+     * @pArAm settings A set of key/vAlue pAirs thAt configure the AjAx request. All settings Are optionAl. A defAult cAn be set for Any option with $.AjAxSetup().
      */
-    ajax(settings: JQueryAjaxSettings): JQueryXHR;
+    AjAx(settings: JQueryAjAxSettings): JQueryXHR;
     /**
-     * Perform an asynchronous HTTP (Ajax) request.
+     * Perform An Asynchronous HTTP (AjAx) request.
      *
-     * @param url A string containing the URL to which the request is sent.
-     * @param settings A set of key/value pairs that configure the Ajax request. All settings are optional. A default can be set for any option with $.ajaxSetup().
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm settings A set of key/vAlue pAirs thAt configure the AjAx request. All settings Are optionAl. A defAult cAn be set for Any option with $.AjAxSetup().
      */
-    ajax(url: string, settings?: JQueryAjaxSettings): JQueryXHR;
+    AjAx(url: string, settings?: JQueryAjAxSettings): JQueryXHR;
 
     /**
-     * Handle custom Ajax options or modify existing options before each request is sent and before they are processed by $.ajax().
+     * HAndle custom AjAx options or modify existing options before eAch request is sent And before they Are processed by $.AjAx().
      *
-     * @param dataTypes An optional string containing one or more space-separated dataTypes
-     * @param handler A handler to set default values for future Ajax requests.
+     * @pArAm dAtATypes An optionAl string contAining one or more spAce-sepArAted dAtATypes
+     * @pArAm hAndler A hAndler to set defAult vAlues for future AjAx requests.
      */
-    ajaxPrefilter(dataTypes: string, handler: (opts: any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) => any): void;
+    AjAxPrefilter(dAtATypes: string, hAndler: (opts: Any, originAlOpts: JQueryAjAxSettings, jqXHR: JQueryXHR) => Any): void;
     /**
-     * Handle custom Ajax options or modify existing options before each request is sent and before they are processed by $.ajax().
+     * HAndle custom AjAx options or modify existing options before eAch request is sent And before they Are processed by $.AjAx().
      *
-     * @param handler A handler to set default values for future Ajax requests.
+     * @pArAm hAndler A hAndler to set defAult vAlues for future AjAx requests.
      */
-    ajaxPrefilter(handler: (opts: any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) => any): void;
+    AjAxPrefilter(hAndler: (opts: Any, originAlOpts: JQueryAjAxSettings, jqXHR: JQueryXHR) => Any): void;
 
-    ajaxSettings: JQueryAjaxSettings;
-
-    /**
-     * Set default values for future Ajax requests. Its use is not recommended.
-     *
-     * @param options A set of key/value pairs that configure the default Ajax request. All options are optional.
-     */
-    ajaxSetup(options: JQueryAjaxSettings): void;
+    AjAxSettings: JQueryAjAxSettings;
 
     /**
-     * Load data from the server using a HTTP GET request.
+     * Set defAult vAlues for future AjAx requests. Its use is not recommended.
      *
-     * @param url A string containing the URL to which the request is sent.
-     * @param success A callback function that is executed if the request succeeds.
-     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
+     * @pArAm options A set of key/vAlue pAirs thAt configure the defAult AjAx request. All options Are optionAl.
      */
-    get(url: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
-    /**
-     * Load data from the server using a HTTP GET request.
-     *
-     * @param url A string containing the URL to which the request is sent.
-     * @param data A plain object or string that is sent to the server with the request.
-     * @param success A callback function that is executed if the request succeeds.
-     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
-     */
-    get(url: string, data?: Object | string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
-    /**
-     * Load data from the server using a HTTP GET request.
-     *
-     * @param settings The JQueryAjaxSettings to be used for the request
-     */
-    get(settings: JQueryAjaxSettings): JQueryXHR;
-    /**
-     * Load JSON-encoded data from the server using a GET HTTP request.
-     *
-     * @param url A string containing the URL to which the request is sent.
-     * @param success A callback function that is executed if the request succeeds.
-     */
-    getJSON(url: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
-    /**
-     * Load JSON-encoded data from the server using a GET HTTP request.
-     *
-     * @param url A string containing the URL to which the request is sent.
-     * @param data A plain object or string that is sent to the server with the request.
-     * @param success A callback function that is executed if the request succeeds.
-     */
-    getJSON(url: string, data?: Object | string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
-    /**
-     * Load a JavaScript file from the server using a GET HTTP request, then execute it.
-     *
-     * @param url A string containing the URL to which the request is sent.
-     * @param success A callback function that is executed if the request succeeds.
-     */
-    getScript(url: string, success?: (script: string, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
+    AjAxSetup(options: JQueryAjAxSettings): void;
 
     /**
-     * Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax request.
+     * LoAd dAtA from the server using A HTTP GET request.
+     *
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds.
+     * @pArAm dAtAType The type of dAtA expected from the server. DefAult: Intelligent Guess (xml, json, script, or html).
      */
-    param: JQueryParam;
+    get(url: string, success?: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => Any, dAtAType?: string): JQueryXHR;
+    /**
+     * LoAd dAtA from the server using A HTTP GET request.
+     *
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm dAtA A plAin object or string thAt is sent to the server with the request.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds.
+     * @pArAm dAtAType The type of dAtA expected from the server. DefAult: Intelligent Guess (xml, json, script, or html).
+     */
+    get(url: string, dAtA?: Object | string, success?: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => Any, dAtAType?: string): JQueryXHR;
+    /**
+     * LoAd dAtA from the server using A HTTP GET request.
+     *
+     * @pArAm settings The JQueryAjAxSettings to be used for the request
+     */
+    get(settings: JQueryAjAxSettings): JQueryXHR;
+    /**
+     * LoAd JSON-encoded dAtA from the server using A GET HTTP request.
+     *
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds.
+     */
+    getJSON(url: string, success?: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => Any): JQueryXHR;
+    /**
+     * LoAd JSON-encoded dAtA from the server using A GET HTTP request.
+     *
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm dAtA A plAin object or string thAt is sent to the server with the request.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds.
+     */
+    getJSON(url: string, dAtA?: Object | string, success?: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => Any): JQueryXHR;
+    /**
+     * LoAd A JAvAScript file from the server using A GET HTTP request, then execute it.
+     *
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds.
+     */
+    getScript(url: string, success?: (script: string, textStAtus: string, jqXHR: JQueryXHR) => Any): JQueryXHR;
 
     /**
-     * Load data from the server using a HTTP POST request.
-     *
-     * @param url A string containing the URL to which the request is sent.
-     * @param success A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.
-     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
+     * CreAte A seriAlized representAtion of An ArrAy or object, suitAble for use in A URL query string or AjAx request.
      */
-    post(url: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
-    /**
-     * Load data from the server using a HTTP POST request.
-     *
-     * @param url A string containing the URL to which the request is sent.
-     * @param data A plain object or string that is sent to the server with the request.
-     * @param success A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.
-     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
-     */
-    post(url: string, data?: Object | string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
-    /**
-     * Load data from the server using a HTTP POST request.
-     *
-     * @param settings The JQueryAjaxSettings to be used for the request
-     */
-    post(settings: JQueryAjaxSettings): JQueryXHR;
-    /**
-     * A multi-purpose callbacks list object that provides a powerful way to manage callback lists.
-     *
-     * @param flags An optional list of space-separated flags that change how the callback list behaves.
-     */
-    Callbacks(flags?: string): JQueryCallback;
+    pArAm: JQueryPArAm;
 
     /**
-     * Holds or releases the execution of jQuery's ready event.
+     * LoAd dAtA from the server using A HTTP POST request.
      *
-     * @param hold Indicates whether the ready hold is being requested or released
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds. Required if dAtAType is provided, but cAn be null in thAt cAse.
+     * @pArAm dAtAType The type of dAtA expected from the server. DefAult: Intelligent Guess (xml, json, script, text, html).
      */
-    holdReady(hold: boolean): void;
+    post(url: string, success?: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => Any, dAtAType?: string): JQueryXHR;
+    /**
+     * LoAd dAtA from the server using A HTTP POST request.
+     *
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm dAtA A plAin object or string thAt is sent to the server with the request.
+     * @pArAm success A cAllbAck function thAt is executed if the request succeeds. Required if dAtAType is provided, but cAn be null in thAt cAse.
+     * @pArAm dAtAType The type of dAtA expected from the server. DefAult: Intelligent Guess (xml, json, script, text, html).
+     */
+    post(url: string, dAtA?: Object | string, success?: (dAtA: Any, textStAtus: string, jqXHR: JQueryXHR) => Any, dAtAType?: string): JQueryXHR;
+    /**
+     * LoAd dAtA from the server using A HTTP POST request.
+     *
+     * @pArAm settings The JQueryAjAxSettings to be used for the request
+     */
+    post(settings: JQueryAjAxSettings): JQueryXHR;
+    /**
+     * A multi-purpose cAllbAcks list object thAt provides A powerful wAy to mAnAge cAllbAck lists.
+     *
+     * @pArAm flAgs An optionAl list of spAce-sepArAted flAgs thAt chAnge how the cAllbAck list behAves.
+     */
+    CAllbAcks(flAgs?: string): JQueryCAllbAck;
 
     /**
-     * Accepts a string containing a CSS selector which is then used to match a set of elements.
+     * Holds or releAses the execution of jQuery's reAdy event.
      *
-     * @param selector A string containing a selector expression
-     * @param context A DOM Element, Document, or jQuery to use as context
+     * @pArAm hold IndicAtes whether the reAdy hold is being requested or releAsed
+     */
+    holdReAdy(hold: booleAn): void;
+
+    /**
+     * Accepts A string contAining A CSS selector which is then used to mAtch A set of elements.
+     *
+     * @pArAm selector A string contAining A selector expression
+     * @pArAm context A DOM Element, Document, or jQuery to use As context
      */
     (selector: string, context?: Element | JQuery): JQuery;
 
     /**
-     * Accepts a string containing a CSS selector which is then used to match a set of elements.
+     * Accepts A string contAining A CSS selector which is then used to mAtch A set of elements.
      *
-     * @param element A DOM element to wrap in a jQuery object.
+     * @pArAm element A DOM element to wrAp in A jQuery object.
      */
     (element: Element): JQuery;
 
     /**
-     * Accepts a string containing a CSS selector which is then used to match a set of elements.
+     * Accepts A string contAining A CSS selector which is then used to mAtch A set of elements.
      *
-     * @param elementArray An array containing a set of DOM elements to wrap in a jQuery object.
+     * @pArAm elementArrAy An ArrAy contAining A set of DOM elements to wrAp in A jQuery object.
      */
-    (elementArray: Element[]): JQuery;
+    (elementArrAy: Element[]): JQuery;
 
     /**
-     * Binds a function to be executed when the DOM has finished loading.
+     * Binds A function to be executed when the DOM hAs finished loAding.
      *
-     * @param callback A function to execute after the DOM is ready.
+     * @pArAm cAllbAck A function to execute After the DOM is reAdy.
      */
-    (callback: (jQueryAlias?: JQueryStatic) => any): JQuery;
+    (cAllbAck: (jQueryAliAs?: JQueryStAtic) => Any): JQuery;
 
     /**
-     * Accepts a string containing a CSS selector which is then used to match a set of elements.
+     * Accepts A string contAining A CSS selector which is then used to mAtch A set of elements.
      *
-     * @param object A plain object to wrap in a jQuery object.
+     * @pArAm object A plAin object to wrAp in A jQuery object.
      */
     (object: {}): JQuery;
 
     /**
-     * Accepts a string containing a CSS selector which is then used to match a set of elements.
+     * Accepts A string contAining A CSS selector which is then used to mAtch A set of elements.
      *
-     * @param object An existing jQuery object to clone.
+     * @pArAm object An existing jQuery object to clone.
      */
     (object: JQuery): JQuery;
 
     /**
-     * Specify a function to execute when the DOM is fully loaded.
+     * Specify A function to execute when the DOM is fully loAded.
      */
     (): JQuery;
 
     /**
-     * Creates DOM elements on the fly from the provided string of raw HTML.
+     * CreAtes DOM elements on the fly from the provided string of rAw HTML.
      *
-     * @param html A string of HTML to create on the fly. Note that this parses HTML, not XML.
-     * @param ownerDocument A document in which the new elements will be created.
+     * @pArAm html A string of HTML to creAte on the fly. Note thAt this pArses HTML, not XML.
+     * @pArAm ownerDocument A document in which the new elements will be creAted.
      */
     (html: string, ownerDocument?: Document): JQuery;
 
     /**
-     * Creates DOM elements on the fly from the provided string of raw HTML.
+     * CreAtes DOM elements on the fly from the provided string of rAw HTML.
      *
-     * @param html A string defining a single, standalone, HTML element (e.g. <div/> or <div></div>).
-     * @param attributes An object of attributes, events, and methods to call on the newly-created element.
+     * @pArAm html A string defining A single, stAndAlone, HTML element (e.g. <div/> or <div></div>).
+     * @pArAm Attributes An object of Attributes, events, And methods to cAll on the newly-creAted element.
      */
-    (html: string, attributes: Object): JQuery;
+    (html: string, Attributes: Object): JQuery;
 
     /**
-     * Relinquish jQuery's control of the $ variable.
+     * Relinquish jQuery's control of the $ vAriAble.
      *
-     * @param removeAll A Boolean indicating whether to remove all jQuery variables from the global scope (including jQuery itself).
+     * @pArAm removeAll A BooleAn indicAting whether to remove All jQuery vAriAbles from the globAl scope (including jQuery itself).
      */
-    noConflict(removeAll?: boolean): JQueryStatic;
+    noConflict(removeAll?: booleAn): JQueryStAtic;
 
     /**
-     * Provides a way to execute callback functions based on one or more objects, usually Deferred objects that represent asynchronous events.
+     * Provides A wAy to execute cAllbAck functions bAsed on one or more objects, usuAlly Deferred objects thAt represent Asynchronous events.
      *
-     * @param deferreds One or more Deferred objects, or plain JavaScript objects.
+     * @pArAm deferreds One or more Deferred objects, or plAin JAvAScript objects.
      */
-    when<T>(...deferreds: Array<T | JQueryPromise<T>/* as JQueryDeferred<T> */>): JQueryPromise<T>;
+    when<T>(...deferreds: ArrAy<T | JQueryPromise<T>/* As JQueryDeferred<T> */>): JQueryPromise<T>;
 
     /**
-     * Hook directly into jQuery to override how particular CSS properties are retrieved or set, normalize CSS property naming, or create custom properties.
+     * Hook directly into jQuery to override how pArticulAr CSS properties Are retrieved or set, normAlize CSS property nAming, or creAte custom properties.
      */
-    cssHooks: { [key: string]: any; };
-    cssNumber: any;
+    cssHooks: { [key: string]: Any; };
+    cssNumber: Any;
 
     /**
-     * Store arbitrary data associated with the specified element. Returns the value that was set.
+     * Store ArbitrAry dAtA AssociAted with the specified element. Returns the vAlue thAt wAs set.
      *
-     * @param element The DOM element to associate with the data.
-     * @param key A string naming the piece of data to set.
-     * @param value The new data value.
+     * @pArAm element The DOM element to AssociAte with the dAtA.
+     * @pArAm key A string nAming the piece of dAtA to set.
+     * @pArAm vAlue The new dAtA vAlue.
      */
-    data<T>(element: Element, key: string, value: T): T;
+    dAtA<T>(element: Element, key: string, vAlue: T): T;
     /**
-     * Returns value at named data store for the element, as set by jQuery.data(element, name, value), or the full data store for the element.
+     * Returns vAlue At nAmed dAtA store for the element, As set by jQuery.dAtA(element, nAme, vAlue), or the full dAtA store for the element.
      *
-     * @param element The DOM element to associate with the data.
-     * @param key A string naming the piece of data to set.
+     * @pArAm element The DOM element to AssociAte with the dAtA.
+     * @pArAm key A string nAming the piece of dAtA to set.
      */
-    data(element: Element, key: string): any;
+    dAtA(element: Element, key: string): Any;
     /**
-     * Returns value at named data store for the element, as set by jQuery.data(element, name, value), or the full data store for the element.
+     * Returns vAlue At nAmed dAtA store for the element, As set by jQuery.dAtA(element, nAme, vAlue), or the full dAtA store for the element.
      *
-     * @param element The DOM element to associate with the data.
+     * @pArAm element The DOM element to AssociAte with the dAtA.
      */
-    data(element: Element): any;
+    dAtA(element: Element): Any;
 
     /**
-     * Execute the next function on the queue for the matched element.
+     * Execute the next function on the queue for the mAtched element.
      *
-     * @param element A DOM element from which to remove and execute a queued function.
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
+     * @pArAm element A DOM element from which to remove And execute A queued function.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
      */
-    dequeue(element: Element, queueName?: string): void;
+    dequeue(element: Element, queueNAme?: string): void;
 
     /**
-     * Determine whether an element has any jQuery data associated with it.
+     * Determine whether An element hAs Any jQuery dAtA AssociAted with it.
      *
-     * @param element A DOM element to be checked for data.
+     * @pArAm element A DOM element to be checked for dAtA.
      */
-    hasData(element: Element): boolean;
+    hAsDAtA(element: Element): booleAn;
 
     /**
-     * Show the queue of functions to be executed on the matched element.
+     * Show the queue of functions to be executed on the mAtched element.
      *
-     * @param element A DOM element to inspect for an attached queue.
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
+     * @pArAm element A DOM element to inspect for An AttAched queue.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
      */
-    queue(element: Element, queueName?: string): any[];
+    queue(element: Element, queueNAme?: string): Any[];
     /**
-     * Manipulate the queue of functions to be executed on the matched element.
+     * MAnipulAte the queue of functions to be executed on the mAtched element.
      *
-     * @param element A DOM element where the array of queued functions is attached.
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
-     * @param newQueue An array of functions to replace the current queue contents.
+     * @pArAm element A DOM element where the ArrAy of queued functions is AttAched.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
+     * @pArAm newQueue An ArrAy of functions to replAce the current queue contents.
      */
-    queue(element: Element, queueName: string, newQueue: Function[]): JQuery;
+    queue(element: Element, queueNAme: string, newQueue: Function[]): JQuery;
     /**
-     * Manipulate the queue of functions to be executed on the matched element.
+     * MAnipulAte the queue of functions to be executed on the mAtched element.
      *
-     * @param element A DOM element on which to add a queued function.
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
-     * @param callback The new function to add to the queue.
+     * @pArAm element A DOM element on which to Add A queued function.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
+     * @pArAm cAllbAck The new function to Add to the queue.
      */
-    queue(element: Element, queueName: string, callback: Function): JQuery;
+    queue(element: Element, queueNAme: string, cAllbAck: Function): JQuery;
 
     /**
-     * Remove a previously-stored piece of data.
+     * Remove A previously-stored piece of dAtA.
      *
-     * @param element A DOM element from which to remove data.
-     * @param name A string naming the piece of data to remove.
+     * @pArAm element A DOM element from which to remove dAtA.
+     * @pArAm nAme A string nAming the piece of dAtA to remove.
      */
-    removeData(element: Element, name?: string): JQuery;
+    removeDAtA(element: Element, nAme?: string): JQuery;
 
     /**
-     * A constructor function that returns a chainable utility object with methods to register multiple callbacks into callback queues, invoke callback queues, and relay the success or failure state of any synchronous or asynchronous function.
+     * A constructor function thAt returns A chAinAble utility object with methods to register multiple cAllbAcks into cAllbAck queues, invoke cAllbAck queues, And relAy the success or fAilure stAte of Any synchronous or Asynchronous function.
      *
-     * @param beforeStart A function that is called just before the constructor returns.
+     * @pArAm beforeStArt A function thAt is cAlled just before the constructor returns.
      */
-    Deferred<T>(beforeStart?: (deferred: JQueryDeferred<T>) => any): JQueryDeferred<T>;
+    Deferred<T>(beforeStArt?: (deferred: JQueryDeferred<T>) => Any): JQueryDeferred<T>;
 
     /**
      * Effects
      */
 
-    easing: JQueryEasingFunctions;
+    eAsing: JQueryEAsingFunctions;
 
     fx: {
         tick: () => void;
         /**
-         * The rate (in milliseconds) at which animations fire.
+         * The rAte (in milliseconds) At which AnimAtions fire.
          */
-        interval: number;
+        intervAl: number;
         stop: () => void;
-        speeds: { slow: number; fast: number; };
+        speeds: { slow: number; fAst: number; };
         /**
-         * Globally disable all animations.
+         * GlobAlly disAble All AnimAtions.
          */
-        off: boolean;
-        step: any;
+        off: booleAn;
+        step: Any;
     };
 
     /**
-     * Takes a function and returns a new one that will always have a particular context.
+     * TAkes A function And returns A new one thAt will AlwAys hAve A pArticulAr context.
      *
-     * @param fnction The function whose context will be changed.
-     * @param context The object to which the context (this) of the function should be set.
-     * @param additionalArguments Any number of arguments to be passed to the function referenced in the function argument.
+     * @pArAm fnction The function whose context will be chAnged.
+     * @pArAm context The object to which the context (this) of the function should be set.
+     * @pArAm AdditionAlArguments Any number of Arguments to be pAssed to the function referenced in the function Argument.
      */
-    proxy(fnction: (...args: any[]) => any, context: Object, ...additionalArguments: any[]): any;
+    proxy(fnction: (...Args: Any[]) => Any, context: Object, ...AdditionAlArguments: Any[]): Any;
     /**
-     * Takes a function and returns a new one that will always have a particular context.
+     * TAkes A function And returns A new one thAt will AlwAys hAve A pArticulAr context.
      *
-     * @param context The object to which the context (this) of the function should be set.
-     * @param name The name of the function whose context will be changed (should be a property of the context object).
-     * @param additionalArguments Any number of arguments to be passed to the function named in the name argument.
+     * @pArAm context The object to which the context (this) of the function should be set.
+     * @pArAm nAme The nAme of the function whose context will be chAnged (should be A property of the context object).
+     * @pArAm AdditionAlArguments Any number of Arguments to be pAssed to the function nAmed in the nAme Argument.
      */
-    proxy(context: Object, name: string, ...additionalArguments: any[]): any;
+    proxy(context: Object, nAme: string, ...AdditionAlArguments: Any[]): Any;
 
     Event: JQueryEventConstructor;
 
     /**
-     * Takes a string and throws an exception containing it.
+     * TAkes A string And throws An exception contAining it.
      *
-     * @param message The message to send out.
+     * @pArAm messAge The messAge to send out.
      */
-    error(message: any): JQuery;
+    error(messAge: Any): JQuery;
 
-    expr: any;
-    fn: any;  //TODO: Decide how we want to type this
+    expr: Any;
+    fn: Any;  //TODO: Decide how we wAnt to type this
 
-    isReady: boolean;
+    isReAdy: booleAn;
 
     // Properties
     support: JQuerySupport;
 
     /**
-     * Check to see if a DOM element is a descendant of another DOM element.
+     * Check to see if A DOM element is A descendAnt of Another DOM element.
      *
-     * @param container The DOM element that may contain the other element.
-     * @param contained The DOM element that may be contained by (a descendant of) the other element.
+     * @pArAm contAiner The DOM element thAt mAy contAin the other element.
+     * @pArAm contAined The DOM element thAt mAy be contAined by (A descendAnt of) the other element.
      */
-    contains(container: Element, contained: Element): boolean;
+    contAins(contAiner: Element, contAined: Element): booleAn;
 
     /**
-     * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
+     * A generic iterAtor function, which cAn be used to seAmlessly iterAte over both objects And ArrAys. ArrAys And ArrAy-like objects with A length property (such As A function's Arguments object) Are iterAted by numeric index, from 0 to length-1. Other objects Are iterAted viA their nAmed properties.
      *
-     * @param collection The object or array to iterate over.
-     * @param callback The function that will be executed on every object.
+     * @pArAm collection The object or ArrAy to iterAte over.
+     * @pArAm cAllbAck The function thAt will be executed on every object.
      */
-    each<T>(
+    eAch<T>(
         collection: T[],
-        callback: (indexInArray: number, valueOfElement: T) => any
-    ): any;
+        cAllbAck: (indexInArrAy: number, vAlueOfElement: T) => Any
+    ): Any;
 
     /**
-     * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
+     * A generic iterAtor function, which cAn be used to seAmlessly iterAte over both objects And ArrAys. ArrAys And ArrAy-like objects with A length property (such As A function's Arguments object) Are iterAted by numeric index, from 0 to length-1. Other objects Are iterAted viA their nAmed properties.
      *
-     * @param collection The object or array to iterate over.
-     * @param callback The function that will be executed on every object.
+     * @pArAm collection The object or ArrAy to iterAte over.
+     * @pArAm cAllbAck The function thAt will be executed on every object.
      */
-    each(
-        collection: any,
-        callback: (indexInArray: any, valueOfElement: any) => any
-    ): any;
+    eAch(
+        collection: Any,
+        cAllbAck: (indexInArrAy: Any, vAlueOfElement: Any) => Any
+    ): Any;
 
     /**
      * Merge the contents of two or more objects together into the first object.
      *
-     * @param target An object that will receive the new properties if additional objects are passed in or that will extend the jQuery namespace if it is the sole argument.
-     * @param object1 An object containing additional properties to merge in.
-     * @param objectN Additional objects containing properties to merge in.
+     * @pArAm tArget An object thAt will receive the new properties if AdditionAl objects Are pAssed in or thAt will extend the jQuery nAmespAce if it is the sole Argument.
+     * @pArAm object1 An object contAining AdditionAl properties to merge in.
+     * @pArAm objectN AdditionAl objects contAining properties to merge in.
      */
-    extend(target: any, object1?: any, ...objectN: any[]): any;
+    extend(tArget: Any, object1?: Any, ...objectN: Any[]): Any;
     /**
      * Merge the contents of two or more objects together into the first object.
      *
-     * @param deep If true, the merge becomes recursive (aka. deep copy).
-     * @param target The object to extend. It will receive the new properties.
-     * @param object1 An object containing additional properties to merge in.
-     * @param objectN Additional objects containing properties to merge in.
+     * @pArAm deep If true, the merge becomes recursive (AkA. deep copy).
+     * @pArAm tArget The object to extend. It will receive the new properties.
+     * @pArAm object1 An object contAining AdditionAl properties to merge in.
+     * @pArAm objectN AdditionAl objects contAining properties to merge in.
      */
-    extend(deep: boolean, target: any, object1?: any, ...objectN: any[]): any;
+    extend(deep: booleAn, tArget: Any, object1?: Any, ...objectN: Any[]): Any;
 
     /**
-     * Execute some JavaScript code globally.
+     * Execute some JAvAScript code globAlly.
      *
-     * @param code The JavaScript code to execute.
+     * @pArAm code The JAvAScript code to execute.
      */
-    globalEval(code: string): any;
+    globAlEvAl(code: string): Any;
 
     /**
-     * Finds the elements of an array which satisfy a filter function. The original array is not affected.
+     * Finds the elements of An ArrAy which sAtisfy A filter function. The originAl ArrAy is not Affected.
      *
-     * @param array The array to search through.
-     * @param func The function to process each item against. The first argument to the function is the item, and the second argument is the index. The function should return a Boolean value.  this will be the global window object.
-     * @param invert If "invert" is false, or not provided, then the function returns an array consisting of all elements for which "callback" returns true. If "invert" is true, then the function returns an array consisting of all elements for which "callback" returns false.
+     * @pArAm ArrAy The ArrAy to seArch through.
+     * @pArAm func The function to process eAch item AgAinst. The first Argument to the function is the item, And the second Argument is the index. The function should return A BooleAn vAlue.  this will be the globAl window object.
+     * @pArAm invert If "invert" is fAlse, or not provided, then the function returns An ArrAy consisting of All elements for which "cAllbAck" returns true. If "invert" is true, then the function returns An ArrAy consisting of All elements for which "cAllbAck" returns fAlse.
      */
-    grep<T>(array: T[], func: (elementOfArray?: T, indexInArray?: number) => boolean, invert?: boolean): T[];
+    grep<T>(ArrAy: T[], func: (elementOfArrAy?: T, indexInArrAy?: number) => booleAn, invert?: booleAn): T[];
 
     /**
-     * Search for a specified value within an array and return its index (or -1 if not found).
+     * SeArch for A specified vAlue within An ArrAy And return its index (or -1 if not found).
      *
-     * @param value The value to search for.
-     * @param array An array through which to search.
-     * @param fromIndex he index of the array at which to begin the search. The default is 0, which will search the whole array.
+     * @pArAm vAlue The vAlue to seArch for.
+     * @pArAm ArrAy An ArrAy through which to seArch.
+     * @pArAm fromIndex he index of the ArrAy At which to begin the seArch. The defAult is 0, which will seArch the whole ArrAy.
      */
-    inArray<T>(value: T, array: T[], fromIndex?: number): number;
+    inArrAy<T>(vAlue: T, ArrAy: T[], fromIndex?: number): number;
 
     /**
-     * Determine whether the argument is an array.
+     * Determine whether the Argument is An ArrAy.
      *
-     * @param obj Object to test whether or not it is an array.
+     * @pArAm obj Object to test whether or not it is An ArrAy.
      */
-    isArray(obj: any): boolean;
+    isArrAy(obj: Any): booleAn;
     /**
-     * Check to see if an object is empty (contains no enumerable properties).
+     * Check to see if An object is empty (contAins no enumerAble properties).
      *
-     * @param obj The object that will be checked to see if it's empty.
+     * @pArAm obj The object thAt will be checked to see if it's empty.
      */
-    isEmptyObject(obj: any): boolean;
+    isEmptyObject(obj: Any): booleAn;
     /**
-     * Determine if the argument passed is a Javascript function object.
+     * Determine if the Argument pAssed is A JAvAscript function object.
      *
-     * @param obj Object to test whether or not it is a function.
+     * @pArAm obj Object to test whether or not it is A function.
      */
-    isFunction(obj: any): boolean;
+    isFunction(obj: Any): booleAn;
     /**
-     * Determines whether its argument is a number.
+     * Determines whether its Argument is A number.
      *
-     * @param obj The value to be tested.
+     * @pArAm obj The vAlue to be tested.
      */
-    isNumeric(value: any): boolean;
+    isNumeric(vAlue: Any): booleAn;
     /**
-     * Check to see if an object is a plain object (created using "{}" or "new Object").
+     * Check to see if An object is A plAin object (creAted using "{}" or "new Object").
      *
-     * @param obj The object that will be checked to see if it's a plain object.
+     * @pArAm obj The object thAt will be checked to see if it's A plAin object.
      */
-    isPlainObject(obj: any): boolean;
+    isPlAinObject(obj: Any): booleAn;
     /**
-     * Determine whether the argument is a window.
+     * Determine whether the Argument is A window.
      *
-     * @param obj Object to test whether or not it is a window.
+     * @pArAm obj Object to test whether or not it is A window.
      */
-    isWindow(obj: any): boolean;
+    isWindow(obj: Any): booleAn;
     /**
-     * Check to see if a DOM node is within an XML document (or is an XML document).
+     * Check to see if A DOM node is within An XML document (or is An XML document).
      *
-     * @param node he DOM node that will be checked to see if it's in an XML document.
+     * @pArAm node he DOM node thAt will be checked to see if it's in An XML document.
      */
-    isXMLDoc(node: Node): boolean;
+    isXMLDoc(node: Node): booleAn;
 
     /**
-     * Convert an array-like object into a true JavaScript array.
+     * Convert An ArrAy-like object into A true JAvAScript ArrAy.
      *
-     * @param obj Any object to turn into a native Array.
+     * @pArAm obj Any object to turn into A nAtive ArrAy.
      */
-    makeArray(obj: any): any[];
+    mAkeArrAy(obj: Any): Any[];
 
     /**
-     * Translate all items in an array or object to new array of items.
+     * TrAnslAte All items in An ArrAy or object to new ArrAy of items.
      *
-     * @param array The Array to translate.
-     * @param callback The function to process each item against. The first argument to the function is the array item, the second argument is the index in array The function can return any value. Within the function, this refers to the global (window) object.
+     * @pArAm ArrAy The ArrAy to trAnslAte.
+     * @pArAm cAllbAck The function to process eAch item AgAinst. The first Argument to the function is the ArrAy item, the second Argument is the index in ArrAy The function cAn return Any vAlue. Within the function, this refers to the globAl (window) object.
      */
-    map<T, U>(array: T[], callback: (elementOfArray?: T, indexInArray?: number) => U): U[];
+    mAp<T, U>(ArrAy: T[], cAllbAck: (elementOfArrAy?: T, indexInArrAy?: number) => U): U[];
     /**
-     * Translate all items in an array or object to new array of items.
+     * TrAnslAte All items in An ArrAy or object to new ArrAy of items.
      *
-     * @param arrayOrObject The Array or Object to translate.
-     * @param callback The function to process each item against. The first argument to the function is the value; the second argument is the index or key of the array or object property. The function can return any value to add to the array. A returned array will be flattened into the resulting array. Within the function, this refers to the global (window) object.
+     * @pArAm ArrAyOrObject The ArrAy or Object to trAnslAte.
+     * @pArAm cAllbAck The function to process eAch item AgAinst. The first Argument to the function is the vAlue; the second Argument is the index or key of the ArrAy or object property. The function cAn return Any vAlue to Add to the ArrAy. A returned ArrAy will be flAttened into the resulting ArrAy. Within the function, this refers to the globAl (window) object.
      */
-    map(arrayOrObject: any, callback: (value?: any, indexOrKey?: any) => any): any;
+    mAp(ArrAyOrObject: Any, cAllbAck: (vAlue?: Any, indexOrKey?: Any) => Any): Any;
 
     /**
-     * Merge the contents of two arrays together into the first array.
+     * Merge the contents of two ArrAys together into the first ArrAy.
      *
-     * @param first The first array to merge, the elements of second added.
-     * @param second The second array to merge into the first, unaltered.
+     * @pArAm first The first ArrAy to merge, the elements of second Added.
+     * @pArAm second The second ArrAy to merge into the first, unAltered.
      */
     merge<T>(first: T[], second: T[]): T[];
 
     /**
      * An empty function.
      */
-    noop(): any;
+    noop(): Any;
 
     /**
-     * Return a number representing the current time.
+     * Return A number representing the current time.
      */
     now(): number;
 
     /**
-     * Takes a well-formed JSON string and returns the resulting JavaScript object.
+     * TAkes A well-formed JSON string And returns the resulting JAvAScript object.
      *
-     * @param json The JSON string to parse.
+     * @pArAm json The JSON string to pArse.
      */
-    parseJSON(json: string): any;
+    pArseJSON(json: string): Any;
 
     /**
-     * Parses a string into an XML document.
+     * PArses A string into An XML document.
      *
-     * @param data a well-formed XML string to be parsed
+     * @pArAm dAtA A well-formed XML string to be pArsed
      */
-    parseXML(data: string): XMLDocument;
+    pArseXML(dAtA: string): XMLDocument;
 
     /**
-     * Remove the whitespace from the beginning and end of a string.
+     * Remove the whitespAce from the beginning And end of A string.
      *
-     * @param str Remove the whitespace from the beginning and end of a string.
+     * @pArAm str Remove the whitespAce from the beginning And end of A string.
      */
     trim(str: string): string;
 
     /**
-     * Determine the internal JavaScript [[Class]] of an object.
+     * Determine the internAl JAvAScript [[ClAss]] of An object.
      *
-     * @param obj Object to get the internal JavaScript [[Class]] of.
+     * @pArAm obj Object to get the internAl JAvAScript [[ClAss]] of.
      */
-    type(obj: any): string;
+    type(obj: Any): string;
 
     /**
-     * Sorts an array of DOM elements, in place, with the duplicates removed. Note that this only works on arrays of DOM elements, not strings or numbers.
+     * Sorts An ArrAy of DOM elements, in plAce, with the duplicAtes removed. Note thAt this only works on ArrAys of DOM elements, not strings or numbers.
      *
-     * @param array The Array of DOM elements.
+     * @pArAm ArrAy The ArrAy of DOM elements.
      */
-    unique(array: Element[]): Element[];
+    unique(ArrAy: Element[]): Element[];
 
     /**
-     * Parses a string into an array of DOM nodes.
+     * PArses A string into An ArrAy of DOM nodes.
      *
-     * @param data HTML string to be parsed
-     * @param context DOM element to serve as the context in which the HTML fragment will be created
-     * @param keepScripts A Boolean indicating whether to include scripts passed in the HTML string
+     * @pArAm dAtA HTML string to be pArsed
+     * @pArAm context DOM element to serve As the context in which the HTML frAgment will be creAted
+     * @pArAm keepScripts A BooleAn indicAting whether to include scripts pAssed in the HTML string
      */
-    parseHTML(data: string, context?: HTMLElement, keepScripts?: boolean): any[];
+    pArseHTML(dAtA: string, context?: HTMLElement, keepScripts?: booleAn): Any[];
 
     /**
-     * Parses a string into an array of DOM nodes.
+     * PArses A string into An ArrAy of DOM nodes.
      *
-     * @param data HTML string to be parsed
-     * @param context DOM element to serve as the context in which the HTML fragment will be created
-     * @param keepScripts A Boolean indicating whether to include scripts passed in the HTML string
+     * @pArAm dAtA HTML string to be pArsed
+     * @pArAm context DOM element to serve As the context in which the HTML frAgment will be creAted
+     * @pArAm keepScripts A BooleAn indicAting whether to include scripts pAssed in the HTML string
      */
-    parseHTML(data: string, context?: Document, keepScripts?: boolean): any[];
+    pArseHTML(dAtA: string, context?: Document, keepScripts?: booleAn): Any[];
 }
 
 /**
- * The jQuery instance members
+ * The jQuery instAnce members
  */
-interface JQuery {
+interfAce JQuery {
     /**
-     * Register a handler to be called when Ajax requests complete. This is an AjaxEvent.
+     * Register A hAndler to be cAlled when AjAx requests complete. This is An AjAxEvent.
      *
-     * @param handler The function to be invoked.
+     * @pArAm hAndler The function to be invoked.
      */
-    ajaxComplete(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: any) => any): JQuery;
+    AjAxComplete(hAndler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, AjAxOptions: Any) => Any): JQuery;
     /**
-     * Register a handler to be called when Ajax requests complete with an error. This is an Ajax Event.
+     * Register A hAndler to be cAlled when AjAx requests complete with An error. This is An AjAx Event.
      *
-     * @param handler The function to be invoked.
+     * @pArAm hAndler The function to be invoked.
      */
-    ajaxError(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxSettings: JQueryAjaxSettings, thrownError: any) => any): JQuery;
+    AjAxError(hAndler: (event: JQueryEventObject, jqXHR: JQueryXHR, AjAxSettings: JQueryAjAxSettings, thrownError: Any) => Any): JQuery;
     /**
-     * Attach a function to be executed before an Ajax request is sent. This is an Ajax Event.
+     * AttAch A function to be executed before An AjAx request is sent. This is An AjAx Event.
      *
-     * @param handler The function to be invoked.
+     * @pArAm hAndler The function to be invoked.
      */
-    ajaxSend(handler: (event: JQueryEventObject, jqXHR: JQueryXHR, ajaxOptions: JQueryAjaxSettings) => any): JQuery;
+    AjAxSend(hAndler: (event: JQueryEventObject, jqXHR: JQueryXHR, AjAxOptions: JQueryAjAxSettings) => Any): JQuery;
     /**
-     * Register a handler to be called when the first Ajax request begins. This is an Ajax Event.
+     * Register A hAndler to be cAlled when the first AjAx request begins. This is An AjAx Event.
      *
-     * @param handler The function to be invoked.
+     * @pArAm hAndler The function to be invoked.
      */
-    ajaxStart(handler: () => any): JQuery;
+    AjAxStArt(hAndler: () => Any): JQuery;
     /**
-     * Register a handler to be called when all Ajax requests have completed. This is an Ajax Event.
+     * Register A hAndler to be cAlled when All AjAx requests hAve completed. This is An AjAx Event.
      *
-     * @param handler The function to be invoked.
+     * @pArAm hAndler The function to be invoked.
      */
-    ajaxStop(handler: () => any): JQuery;
+    AjAxStop(hAndler: () => Any): JQuery;
     /**
-     * Attach a function to be executed whenever an Ajax request completes successfully. This is an Ajax Event.
+     * AttAch A function to be executed whenever An AjAx request completes successfully. This is An AjAx Event.
      *
-     * @param handler The function to be invoked.
+     * @pArAm hAndler The function to be invoked.
      */
-    ajaxSuccess(handler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, ajaxOptions: JQueryAjaxSettings) => any): JQuery;
+    AjAxSuccess(hAndler: (event: JQueryEventObject, XMLHttpRequest: XMLHttpRequest, AjAxOptions: JQueryAjAxSettings) => Any): JQuery;
 
     /**
-     * Load data from the server and place the returned HTML into the matched element.
+     * LoAd dAtA from the server And plAce the returned HTML into the mAtched element.
      *
-     * @param url A string containing the URL to which the request is sent.
-     * @param data A plain object or string that is sent to the server with the request.
-     * @param complete A callback function that is executed when the request completes.
+     * @pArAm url A string contAining the URL to which the request is sent.
+     * @pArAm dAtA A plAin object or string thAt is sent to the server with the request.
+     * @pArAm complete A cAllbAck function thAt is executed when the request completes.
      */
-    load(url: string, data?: string | Object, complete?: (responseText: string, textStatus: string, XMLHttpRequest: XMLHttpRequest) => any): JQuery;
+    loAd(url: string, dAtA?: string | Object, complete?: (responseText: string, textStAtus: string, XMLHttpRequest: XMLHttpRequest) => Any): JQuery;
 
     /**
-     * Encode a set of form elements as a string for submission.
+     * Encode A set of form elements As A string for submission.
      */
-    serialize(): string;
+    seriAlize(): string;
     /**
-     * Encode a set of form elements as an array of names and values.
+     * Encode A set of form elements As An ArrAy of nAmes And vAlues.
      */
-    serializeArray(): JQuerySerializeArrayElement[];
+    seriAlizeArrAy(): JQuerySeriAlizeArrAyElement[];
 
     /**
-     * Adds the specified class(es) to each of the set of matched elements.
+     * Adds the specified clAss(es) to eAch of the set of mAtched elements.
      *
-     * @param className One or more space-separated classes to be added to the class attribute of each matched element.
+     * @pArAm clAssNAme One or more spAce-sepArAted clAsses to be Added to the clAss Attribute of eAch mAtched element.
      */
-    addClass(className: string): JQuery;
+    AddClAss(clAssNAme: string): JQuery;
     /**
-     * Adds the specified class(es) to each of the set of matched elements.
+     * Adds the specified clAss(es) to eAch of the set of mAtched elements.
      *
-     * @param function A function returning one or more space-separated class names to be added to the existing class name(s). Receives the index position of the element in the set and the existing class name(s) as arguments. Within the function, this refers to the current element in the set.
+     * @pArAm function A function returning one or more spAce-sepArAted clAss nAmes to be Added to the existing clAss nAme(s). Receives the index position of the element in the set And the existing clAss nAme(s) As Arguments. Within the function, this refers to the current element in the set.
      */
-    addClass(func: (index: number, className: string) => string): JQuery;
+    AddClAss(func: (index: number, clAssNAme: string) => string): JQuery;
 
     /**
-     * Add the previous set of elements on the stack to the current set, optionally filtered by a selector.
+     * Add the previous set of elements on the stAck to the current set, optionAlly filtered by A selector.
      */
-    addBack(selector?: string): JQuery;
+    AddBAck(selector?: string): JQuery;
 
     /**
-     * Get the value of an attribute for the first element in the set of matched elements.
+     * Get the vAlue of An Attribute for the first element in the set of mAtched elements.
      *
-     * @param attributeName The name of the attribute to get.
+     * @pArAm AttributeNAme The nAme of the Attribute to get.
      */
-    attr(attributeName: string): string;
+    Attr(AttributeNAme: string): string;
     /**
-     * Set one or more attributes for the set of matched elements.
+     * Set one or more Attributes for the set of mAtched elements.
      *
-     * @param attributeName The name of the attribute to set.
-     * @param value A value to set for the attribute.
+     * @pArAm AttributeNAme The nAme of the Attribute to set.
+     * @pArAm vAlue A vAlue to set for the Attribute.
      */
-    attr(attributeName: string, value: string | number): JQuery;
+    Attr(AttributeNAme: string, vAlue: string | number): JQuery;
     /**
-     * Set one or more attributes for the set of matched elements.
+     * Set one or more Attributes for the set of mAtched elements.
      *
-     * @param attributeName The name of the attribute to set.
-     * @param func A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old attribute value as arguments.
+     * @pArAm AttributeNAme The nAme of the Attribute to set.
+     * @pArAm func A function returning the vAlue to set. this is the current element. Receives the index position of the element in the set And the old Attribute vAlue As Arguments.
      */
-    attr(attributeName: string, func: (index: number, attr: string) => string | number): JQuery;
+    Attr(AttributeNAme: string, func: (index: number, Attr: string) => string | number): JQuery;
     /**
-     * Set one or more attributes for the set of matched elements.
+     * Set one or more Attributes for the set of mAtched elements.
      *
-     * @param attributes An object of attribute-value pairs to set.
+     * @pArAm Attributes An object of Attribute-vAlue pAirs to set.
      */
-    attr(attributes: Object): JQuery;
+    Attr(Attributes: Object): JQuery;
 
     /**
-     * Determine whether any of the matched elements are assigned the given class.
+     * Determine whether Any of the mAtched elements Are Assigned the given clAss.
      *
-     * @param className The class name to search for.
+     * @pArAm clAssNAme The clAss nAme to seArch for.
      */
-    hasClass(className: string): boolean;
+    hAsClAss(clAssNAme: string): booleAn;
 
     /**
-     * Get the HTML contents of the first element in the set of matched elements.
+     * Get the HTML contents of the first element in the set of mAtched elements.
      */
     html(): string;
     /**
-     * Set the HTML contents of each element in the set of matched elements.
+     * Set the HTML contents of eAch element in the set of mAtched elements.
      *
-     * @param htmlString A string of HTML to set as the content of each matched element.
+     * @pArAm htmlString A string of HTML to set As the content of eAch mAtched element.
      */
     html(htmlString: string): JQuery;
     /**
-     * Set the HTML contents of each element in the set of matched elements.
+     * Set the HTML contents of eAch element in the set of mAtched elements.
      *
-     * @param func A function returning the HTML content to set. Receives the index position of the element in the set and the old HTML value as arguments. jQuery empties the element before calling the function; use the oldhtml argument to reference the previous content. Within the function, this refers to the current element in the set.
+     * @pArAm func A function returning the HTML content to set. Receives the index position of the element in the set And the old HTML vAlue As Arguments. jQuery empties the element before cAlling the function; use the oldhtml Argument to reference the previous content. Within the function, this refers to the current element in the set.
      */
     html(func: (index: number, oldhtml: string) => string): JQuery;
     /**
-     * Set the HTML contents of each element in the set of matched elements.
+     * Set the HTML contents of eAch element in the set of mAtched elements.
      *
-     * @param func A function returning the HTML content to set. Receives the index position of the element in the set and the old HTML value as arguments. jQuery empties the element before calling the function; use the oldhtml argument to reference the previous content. Within the function, this refers to the current element in the set.
+     * @pArAm func A function returning the HTML content to set. Receives the index position of the element in the set And the old HTML vAlue As Arguments. jQuery empties the element before cAlling the function; use the oldhtml Argument to reference the previous content. Within the function, this refers to the current element in the set.
      */
 
     /**
-     * Get the value of a property for the first element in the set of matched elements.
+     * Get the vAlue of A property for the first element in the set of mAtched elements.
      *
-     * @param propertyName The name of the property to get.
+     * @pArAm propertyNAme The nAme of the property to get.
      */
-    prop(propertyName: string): any;
+    prop(propertyNAme: string): Any;
     /**
-     * Set one or more properties for the set of matched elements.
+     * Set one or more properties for the set of mAtched elements.
      *
-     * @param propertyName The name of the property to set.
-     * @param value A value to set for the property.
+     * @pArAm propertyNAme The nAme of the property to set.
+     * @pArAm vAlue A vAlue to set for the property.
      */
-    prop(propertyName: string, value: string | number | boolean): JQuery;
+    prop(propertyNAme: string, vAlue: string | number | booleAn): JQuery;
     /**
-     * Set one or more properties for the set of matched elements.
+     * Set one or more properties for the set of mAtched elements.
      *
-     * @param properties An object of property-value pairs to set.
+     * @pArAm properties An object of property-vAlue pAirs to set.
      */
     prop(properties: Object): JQuery;
     /**
-     * Set one or more properties for the set of matched elements.
+     * Set one or more properties for the set of mAtched elements.
      *
-     * @param propertyName The name of the property to set.
-     * @param func A function returning the value to set. Receives the index position of the element in the set and the old property value as arguments. Within the function, the keyword this refers to the current element.
+     * @pArAm propertyNAme The nAme of the property to set.
+     * @pArAm func A function returning the vAlue to set. Receives the index position of the element in the set And the old property vAlue As Arguments. Within the function, the keyword this refers to the current element.
      */
-    prop(propertyName: string, func: (index: number, oldPropertyValue: any) => any): JQuery;
+    prop(propertyNAme: string, func: (index: number, oldPropertyVAlue: Any) => Any): JQuery;
 
     /**
-     * Remove an attribute from each element in the set of matched elements.
+     * Remove An Attribute from eAch element in the set of mAtched elements.
      *
-     * @param attributeName An attribute to remove; as of version 1.7, it can be a space-separated list of attributes.
+     * @pArAm AttributeNAme An Attribute to remove; As of version 1.7, it cAn be A spAce-sepArAted list of Attributes.
      */
-    removeAttr(attributeName: string): JQuery;
+    removeAttr(AttributeNAme: string): JQuery;
 
     /**
-     * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
+     * Remove A single clAss, multiple clAsses, or All clAsses from eAch element in the set of mAtched elements.
      *
-     * @param className One or more space-separated classes to be removed from the class attribute of each matched element.
+     * @pArAm clAssNAme One or more spAce-sepArAted clAsses to be removed from the clAss Attribute of eAch mAtched element.
      */
-    removeClass(className?: string): JQuery;
+    removeClAss(clAssNAme?: string): JQuery;
     /**
-     * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
+     * Remove A single clAss, multiple clAsses, or All clAsses from eAch element in the set of mAtched elements.
      *
-     * @param function A function returning one or more space-separated class names to be removed. Receives the index position of the element in the set and the old class value as arguments.
+     * @pArAm function A function returning one or more spAce-sepArAted clAss nAmes to be removed. Receives the index position of the element in the set And the old clAss vAlue As Arguments.
      */
-    removeClass(func: (index: number, className: string) => string): JQuery;
+    removeClAss(func: (index: number, clAssNAme: string) => string): JQuery;
 
     /**
-     * Remove a property for the set of matched elements.
+     * Remove A property for the set of mAtched elements.
      *
-     * @param propertyName The name of the property to remove.
+     * @pArAm propertyNAme The nAme of the property to remove.
      */
-    removeProp(propertyName: string): JQuery;
+    removeProp(propertyNAme: string): JQuery;
 
     /**
-     * Add or remove one or more classes from each element in the set of matched elements, depending on either the class's presence or the value of the switch argument.
+     * Add or remove one or more clAsses from eAch element in the set of mAtched elements, depending on either the clAss's presence or the vAlue of the switch Argument.
      *
-     * @param className One or more class names (separated by spaces) to be toggled for each element in the matched set.
-     * @param swtch A Boolean (not just truthy/falsy) value to determine whether the class should be added or removed.
+     * @pArAm clAssNAme One or more clAss nAmes (sepArAted by spAces) to be toggled for eAch element in the mAtched set.
+     * @pArAm swtch A BooleAn (not just truthy/fAlsy) vAlue to determine whether the clAss should be Added or removed.
      */
-    toggleClass(className: string, swtch?: boolean): JQuery;
+    toggleClAss(clAssNAme: string, swtch?: booleAn): JQuery;
     /**
-     * Add or remove one or more classes from each element in the set of matched elements, depending on either the class's presence or the value of the switch argument.
+     * Add or remove one or more clAsses from eAch element in the set of mAtched elements, depending on either the clAss's presence or the vAlue of the switch Argument.
      *
-     * @param swtch A boolean value to determine whether the class should be added or removed.
+     * @pArAm swtch A booleAn vAlue to determine whether the clAss should be Added or removed.
      */
-    toggleClass(swtch?: boolean): JQuery;
+    toggleClAss(swtch?: booleAn): JQuery;
     /**
-     * Add or remove one or more classes from each element in the set of matched elements, depending on either the class's presence or the value of the switch argument.
+     * Add or remove one or more clAsses from eAch element in the set of mAtched elements, depending on either the clAss's presence or the vAlue of the switch Argument.
      *
-     * @param func A function that returns class names to be toggled in the class attribute of each element in the matched set. Receives the index position of the element in the set, the old class value, and the switch as arguments.
-     * @param swtch A boolean value to determine whether the class should be added or removed.
+     * @pArAm func A function thAt returns clAss nAmes to be toggled in the clAss Attribute of eAch element in the mAtched set. Receives the index position of the element in the set, the old clAss vAlue, And the switch As Arguments.
+     * @pArAm swtch A booleAn vAlue to determine whether the clAss should be Added or removed.
      */
-    toggleClass(func: (index: number, className: string, swtch: boolean) => string, swtch?: boolean): JQuery;
+    toggleClAss(func: (index: number, clAssNAme: string, swtch: booleAn) => string, swtch?: booleAn): JQuery;
 
     /**
-     * Get the current value of the first element in the set of matched elements.
+     * Get the current vAlue of the first element in the set of mAtched elements.
      */
-    val(): any;
+    vAl(): Any;
     /**
-     * Set the value of each element in the set of matched elements.
+     * Set the vAlue of eAch element in the set of mAtched elements.
      *
-     * @param value A string of text, an array of strings or number corresponding to the value of each matched element to set as selected/checked.
+     * @pArAm vAlue A string of text, An ArrAy of strings or number corresponding to the vAlue of eAch mAtched element to set As selected/checked.
      */
-    val(value: string | string[] | number): JQuery;
+    vAl(vAlue: string | string[] | number): JQuery;
     /**
-     * Set the value of each element in the set of matched elements.
+     * Set the vAlue of eAch element in the set of mAtched elements.
      *
-     * @param func A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old value as arguments.
+     * @pArAm func A function returning the vAlue to set. this is the current element. Receives the index position of the element in the set And the old vAlue As Arguments.
      */
-    val(func: (index: number, value: string) => string): JQuery;
+    vAl(func: (index: number, vAlue: string) => string): JQuery;
 
 
     /**
-     * Get the value of style properties for the first element in the set of matched elements.
+     * Get the vAlue of style properties for the first element in the set of mAtched elements.
      *
-     * @param propertyName A CSS property.
+     * @pArAm propertyNAme A CSS property.
      */
-    css(propertyName: string): string;
+    css(propertyNAme: string): string;
     /**
-     * Set one or more CSS properties for the set of matched elements.
+     * Set one or more CSS properties for the set of mAtched elements.
      *
-     * @param propertyName A CSS property name.
-     * @param value A value to set for the property.
+     * @pArAm propertyNAme A CSS property nAme.
+     * @pArAm vAlue A vAlue to set for the property.
      */
-    css(propertyName: string, value: string | number): JQuery;
+    css(propertyNAme: string, vAlue: string | number): JQuery;
     /**
-     * Set one or more CSS properties for the set of matched elements.
+     * Set one or more CSS properties for the set of mAtched elements.
      *
-     * @param propertyName A CSS property name.
-     * @param value A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old value as arguments.
+     * @pArAm propertyNAme A CSS property nAme.
+     * @pArAm vAlue A function returning the vAlue to set. this is the current element. Receives the index position of the element in the set And the old vAlue As Arguments.
      */
-    css(propertyName: string, value: (index: number, value: string) => string | number): JQuery;
+    css(propertyNAme: string, vAlue: (index: number, vAlue: string) => string | number): JQuery;
     /**
-     * Set one or more CSS properties for the set of matched elements.
+     * Set one or more CSS properties for the set of mAtched elements.
      *
-     * @param properties An object of property-value pairs to set.
+     * @pArAm properties An object of property-vAlue pAirs to set.
      */
     css(properties: Object): JQuery;
 
     /**
-     * Get the current computed height for the first element in the set of matched elements.
+     * Get the current computed height for the first element in the set of mAtched elements.
      */
     height(): number;
     /**
-     * Set the CSS height of every matched element.
+     * Set the CSS height of every mAtched element.
      *
-     * @param value An integer representing the number of pixels, or an integer with an optional unit of measure appended (as a string).
+     * @pArAm vAlue An integer representing the number of pixels, or An integer with An optionAl unit of meAsure Appended (As A string).
      */
-    height(value: number | string): JQuery;
+    height(vAlue: number | string): JQuery;
     /**
-     * Set the CSS height of every matched element.
+     * Set the CSS height of every mAtched element.
      *
-     * @param func A function returning the height to set. Receives the index position of the element in the set and the old height as arguments. Within the function, this refers to the current element in the set.
+     * @pArAm func A function returning the height to set. Receives the index position of the element in the set And the old height As Arguments. Within the function, this refers to the current element in the set.
      */
     height(func: (index: number, height: number) => number | string): JQuery;
 
     /**
-     * Get the current computed height for the first element in the set of matched elements, including padding but not border.
+     * Get the current computed height for the first element in the set of mAtched elements, including pAdding but not border.
      */
     innerHeight(): number;
 
     /**
-     * Sets the inner height on elements in the set of matched elements, including padding but not border.
+     * Sets the inner height on elements in the set of mAtched elements, including pAdding but not border.
      *
-     * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     * @pArAm vAlue An integer representing the number of pixels, or An integer Along with An optionAl unit of meAsure Appended (As A string).
      */
     innerHeight(height: number | string): JQuery;
 
     /**
-     * Get the current computed width for the first element in the set of matched elements, including padding but not border.
+     * Get the current computed width for the first element in the set of mAtched elements, including pAdding but not border.
      */
     innerWidth(): number;
 
     /**
-     * Sets the inner width on elements in the set of matched elements, including padding but not border.
+     * Sets the inner width on elements in the set of mAtched elements, including pAdding but not border.
      *
-     * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     * @pArAm vAlue An integer representing the number of pixels, or An integer Along with An optionAl unit of meAsure Appended (As A string).
      */
     innerWidth(width: number | string): JQuery;
 
     /**
-     * Get the current coordinates of the first element in the set of matched elements, relative to the document.
+     * Get the current coordinAtes of the first element in the set of mAtched elements, relAtive to the document.
      */
-    offset(): JQueryCoordinates;
+    offset(): JQueryCoordinAtes;
     /**
-     * An object containing the properties top and left, which are integers indicating the new top and left coordinates for the elements.
+     * An object contAining the properties top And left, which Are integers indicAting the new top And left coordinAtes for the elements.
      *
-     * @param coordinates An object containing the properties top and left, which are integers indicating the new top and left coordinates for the elements.
+     * @pArAm coordinAtes An object contAining the properties top And left, which Are integers indicAting the new top And left coordinAtes for the elements.
      */
-    offset(coordinates: JQueryCoordinates): JQuery;
+    offset(coordinAtes: JQueryCoordinAtes): JQuery;
     /**
-     * An object containing the properties top and left, which are integers indicating the new top and left coordinates for the elements.
+     * An object contAining the properties top And left, which Are integers indicAting the new top And left coordinAtes for the elements.
      *
-     * @param func A function to return the coordinates to set. Receives the index of the element in the collection as the first argument and the current coordinates as the second argument. The function should return an object with the new top and left properties.
+     * @pArAm func A function to return the coordinAtes to set. Receives the index of the element in the collection As the first Argument And the current coordinAtes As the second Argument. The function should return An object with the new top And left properties.
      */
-    offset(func: (index: number, coords: JQueryCoordinates) => JQueryCoordinates): JQuery;
+    offset(func: (index: number, coords: JQueryCoordinAtes) => JQueryCoordinAtes): JQuery;
 
     /**
-     * Get the current computed height for the first element in the set of matched elements, including padding, border, and optionally margin. Returns an integer (without "px") representation of the value or null if called on an empty set of elements.
+     * Get the current computed height for the first element in the set of mAtched elements, including pAdding, border, And optionAlly mArgin. Returns An integer (without "px") representAtion of the vAlue or null if cAlled on An empty set of elements.
      *
-     * @param includeMargin A Boolean indicating whether to include the element's margin in the calculation.
+     * @pArAm includeMArgin A BooleAn indicAting whether to include the element's mArgin in the cAlculAtion.
      */
-    outerHeight(includeMargin?: boolean): number;
+    outerHeight(includeMArgin?: booleAn): number;
 
     /**
-     * Sets the outer height on elements in the set of matched elements, including padding and border.
+     * Sets the outer height on elements in the set of mAtched elements, including pAdding And border.
      *
-     * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     * @pArAm vAlue An integer representing the number of pixels, or An integer Along with An optionAl unit of meAsure Appended (As A string).
      */
     outerHeight(height: number | string): JQuery;
 
     /**
-     * Get the current computed width for the first element in the set of matched elements, including padding and border.
+     * Get the current computed width for the first element in the set of mAtched elements, including pAdding And border.
      *
-     * @param includeMargin A Boolean indicating whether to include the element's margin in the calculation.
+     * @pArAm includeMArgin A BooleAn indicAting whether to include the element's mArgin in the cAlculAtion.
      */
-    outerWidth(includeMargin?: boolean): number;
+    outerWidth(includeMArgin?: booleAn): number;
 
     /**
-     * Sets the outer width on elements in the set of matched elements, including padding and border.
+     * Sets the outer width on elements in the set of mAtched elements, including pAdding And border.
      *
-     * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     * @pArAm vAlue An integer representing the number of pixels, or An integer Along with An optionAl unit of meAsure Appended (As A string).
      */
     outerWidth(width: number | string): JQuery;
 
     /**
-     * Get the current coordinates of the first element in the set of matched elements, relative to the offset parent.
+     * Get the current coordinAtes of the first element in the set of mAtched elements, relAtive to the offset pArent.
      */
-    position(): JQueryCoordinates;
+    position(): JQueryCoordinAtes;
 
     /**
-     * Get the current horizontal position of the scroll bar for the first element in the set of matched elements or set the horizontal position of the scroll bar for every matched element.
+     * Get the current horizontAl position of the scroll bAr for the first element in the set of mAtched elements or set the horizontAl position of the scroll bAr for every mAtched element.
      */
     scrollLeft(): number;
     /**
-     * Set the current horizontal position of the scroll bar for each of the set of matched elements.
+     * Set the current horizontAl position of the scroll bAr for eAch of the set of mAtched elements.
      *
-     * @param value An integer indicating the new position to set the scroll bar to.
+     * @pArAm vAlue An integer indicAting the new position to set the scroll bAr to.
      */
-    scrollLeft(value: number): JQuery;
+    scrollLeft(vAlue: number): JQuery;
 
     /**
-     * Get the current vertical position of the scroll bar for the first element in the set of matched elements or set the vertical position of the scroll bar for every matched element.
+     * Get the current verticAl position of the scroll bAr for the first element in the set of mAtched elements or set the verticAl position of the scroll bAr for every mAtched element.
      */
     scrollTop(): number;
     /**
-     * Set the current vertical position of the scroll bar for each of the set of matched elements.
+     * Set the current verticAl position of the scroll bAr for eAch of the set of mAtched elements.
      *
-     * @param value An integer indicating the new position to set the scroll bar to.
+     * @pArAm vAlue An integer indicAting the new position to set the scroll bAr to.
      */
-    scrollTop(value: number): JQuery;
+    scrollTop(vAlue: number): JQuery;
 
     /**
-     * Get the current computed width for the first element in the set of matched elements.
+     * Get the current computed width for the first element in the set of mAtched elements.
      */
     width(): number;
     /**
-     * Set the CSS width of each element in the set of matched elements.
+     * Set the CSS width of eAch element in the set of mAtched elements.
      *
-     * @param value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     * @pArAm vAlue An integer representing the number of pixels, or An integer Along with An optionAl unit of meAsure Appended (As A string).
      */
-    width(value: number | string): JQuery;
+    width(vAlue: number | string): JQuery;
     /**
-     * Set the CSS width of each element in the set of matched elements.
+     * Set the CSS width of eAch element in the set of mAtched elements.
      *
-     * @param func A function returning the width to set. Receives the index position of the element in the set and the old width as arguments. Within the function, this refers to the current element in the set.
+     * @pArAm func A function returning the width to set. Receives the index position of the element in the set And the old width As Arguments. Within the function, this refers to the current element in the set.
      */
     width(func: (index: number, width: number) => number | string): JQuery;
 
     /**
-     * Remove from the queue all items that have not yet been run.
+     * Remove from the queue All items thAt hAve not yet been run.
      *
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
      */
-    clearQueue(queueName?: string): JQuery;
+    cleArQueue(queueNAme?: string): JQuery;
 
     /**
-     * Store arbitrary data associated with the matched elements.
+     * Store ArbitrAry dAtA AssociAted with the mAtched elements.
      *
-     * @param key A string naming the piece of data to set.
-     * @param value The new data value; it can be any Javascript type including Array or Object.
+     * @pArAm key A string nAming the piece of dAtA to set.
+     * @pArAm vAlue The new dAtA vAlue; it cAn be Any JAvAscript type including ArrAy or Object.
      */
-    data(key: string, value: any): JQuery;
+    dAtA(key: string, vAlue: Any): JQuery;
     /**
-     * Return the value at the named data store for the first element in the jQuery collection, as set by data(name, value) or by an HTML5 data-* attribute.
+     * Return the vAlue At the nAmed dAtA store for the first element in the jQuery collection, As set by dAtA(nAme, vAlue) or by An HTML5 dAtA-* Attribute.
      *
-     * @param key Name of the data stored.
+     * @pArAm key NAme of the dAtA stored.
      */
-    data(key: string): any;
+    dAtA(key: string): Any;
     /**
-     * Store arbitrary data associated with the matched elements.
+     * Store ArbitrAry dAtA AssociAted with the mAtched elements.
      *
-     * @param obj An object of key-value pairs of data to update.
+     * @pArAm obj An object of key-vAlue pAirs of dAtA to updAte.
      */
-    data(obj: { [key: string]: any; }): JQuery;
+    dAtA(obj: { [key: string]: Any; }): JQuery;
     /**
-     * Return the value at the named data store for the first element in the jQuery collection, as set by data(name, value) or by an HTML5 data-* attribute.
+     * Return the vAlue At the nAmed dAtA store for the first element in the jQuery collection, As set by dAtA(nAme, vAlue) or by An HTML5 dAtA-* Attribute.
      */
-    data(): any;
+    dAtA(): Any;
 
     /**
-     * Execute the next function on the queue for the matched elements.
+     * Execute the next function on the queue for the mAtched elements.
      *
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
      */
-    dequeue(queueName?: string): JQuery;
+    dequeue(queueNAme?: string): JQuery;
 
     /**
-     * Remove a previously-stored piece of data.
+     * Remove A previously-stored piece of dAtA.
      *
-     * @param name A string naming the piece of data to delete or space-separated string naming the pieces of data to delete.
+     * @pArAm nAme A string nAming the piece of dAtA to delete or spAce-sepArAted string nAming the pieces of dAtA to delete.
      */
-    removeData(name: string): JQuery;
+    removeDAtA(nAme: string): JQuery;
     /**
-     * Remove a previously-stored piece of data.
+     * Remove A previously-stored piece of dAtA.
      *
-     * @param list An array of strings naming the pieces of data to delete.
+     * @pArAm list An ArrAy of strings nAming the pieces of dAtA to delete.
      */
-    removeData(list: string[]): JQuery;
+    removeDAtA(list: string[]): JQuery;
     /**
-     * Remove all previously-stored piece of data.
+     * Remove All previously-stored piece of dAtA.
      */
-    removeData(): JQuery;
+    removeDAtA(): JQuery;
 
     /**
-     * Return a Promise object to observe when all actions of a certain type bound to the collection, queued or not, have finished.
+     * Return A Promise object to observe when All Actions of A certAin type bound to the collection, queued or not, hAve finished.
      *
-     * @param type The type of queue that needs to be observed. (default: fx)
-     * @param target Object onto which the promise methods have to be attached
+     * @pArAm type The type of queue thAt needs to be observed. (defAult: fx)
+     * @pArAm tArget Object onto which the promise methods hAve to be AttAched
      */
-    promise(type?: string, target?: Object): JQueryPromise<any>;
+    promise(type?: string, tArget?: Object): JQueryPromise<Any>;
 
     /**
-     * Perform a custom animation of a set of CSS properties.
+     * Perform A custom AnimAtion of A set of CSS properties.
      *
-     * @param properties An object of CSS properties and values that the animation will move toward.
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm properties An object of CSS properties And vAlues thAt the AnimAtion will move towArd.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    animate(properties: Object, duration?: string | number, complete?: Function): JQuery;
+    AnimAte(properties: Object, durAtion?: string | number, complete?: Function): JQuery;
     /**
-     * Perform a custom animation of a set of CSS properties.
+     * Perform A custom AnimAtion of A set of CSS properties.
      *
-     * @param properties An object of CSS properties and values that the animation will move toward.
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition. (default: swing)
-     * @param complete A function to call once the animation is complete.
+     * @pArAm properties An object of CSS properties And vAlues thAt the AnimAtion will move towArd.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition. (defAult: swing)
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    animate(properties: Object, duration?: string | number, easing?: string, complete?: Function): JQuery;
+    AnimAte(properties: Object, durAtion?: string | number, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Perform a custom animation of a set of CSS properties.
+     * Perform A custom AnimAtion of A set of CSS properties.
      *
-     * @param properties An object of CSS properties and values that the animation will move toward.
-     * @param options A map of additional options to pass to the method.
+     * @pArAm properties An object of CSS properties And vAlues thAt the AnimAtion will move towArd.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    animate(properties: Object, options: JQueryAnimationOptions): JQuery;
+    AnimAte(properties: Object, options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Set a timer to delay execution of subsequent items in the queue.
+     * Set A timer to delAy execution of subsequent items in the queue.
      *
-     * @param duration An integer indicating the number of milliseconds to delay execution of the next item in the queue.
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
+     * @pArAm durAtion An integer indicAting the number of milliseconds to delAy execution of the next item in the queue.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
      */
-    delay(duration: number, queueName?: string): JQuery;
+    delAy(durAtion: number, queueNAme?: string): JQuery;
 
     /**
-     * Display the matched elements by fading them to opaque.
+     * DisplAy the mAtched elements by fAding them to opAque.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeIn(duration?: number | string, complete?: Function): JQuery;
+    fAdeIn(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Display the matched elements by fading them to opaque.
+     * DisplAy the mAtched elements by fAding them to opAque.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeIn(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    fAdeIn(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Display the matched elements by fading them to opaque.
+     * DisplAy the mAtched elements by fAding them to opAque.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    fadeIn(options: JQueryAnimationOptions): JQuery;
+    fAdeIn(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Hide the matched elements by fading them to transparent.
+     * Hide the mAtched elements by fAding them to trAnspArent.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeOut(duration?: number | string, complete?: Function): JQuery;
+    fAdeOut(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Hide the matched elements by fading them to transparent.
+     * Hide the mAtched elements by fAding them to trAnspArent.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeOut(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    fAdeOut(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Hide the matched elements by fading them to transparent.
+     * Hide the mAtched elements by fAding them to trAnspArent.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    fadeOut(options: JQueryAnimationOptions): JQuery;
+    fAdeOut(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Adjust the opacity of the matched elements.
+     * Adjust the opAcity of the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param opacity A number between 0 and 1 denoting the target opacity.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm opAcity A number between 0 And 1 denoting the tArget opAcity.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeTo(duration: string | number, opacity: number, complete?: Function): JQuery;
+    fAdeTo(durAtion: string | number, opAcity: number, complete?: Function): JQuery;
     /**
-     * Adjust the opacity of the matched elements.
+     * Adjust the opAcity of the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param opacity A number between 0 and 1 denoting the target opacity.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm opAcity A number between 0 And 1 denoting the tArget opAcity.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeTo(duration: string | number, opacity: number, easing?: string, complete?: Function): JQuery;
+    fAdeTo(durAtion: string | number, opAcity: number, eAsing?: string, complete?: Function): JQuery;
 
     /**
-     * Display or hide the matched elements by animating their opacity.
+     * DisplAy or hide the mAtched elements by AnimAting their opAcity.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeToggle(duration?: number | string, complete?: Function): JQuery;
+    fAdeToggle(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Display or hide the matched elements by animating their opacity.
+     * DisplAy or hide the mAtched elements by AnimAting their opAcity.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    fadeToggle(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    fAdeToggle(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Display or hide the matched elements by animating their opacity.
+     * DisplAy or hide the mAtched elements by AnimAting their opAcity.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    fadeToggle(options: JQueryAnimationOptions): JQuery;
+    fAdeToggle(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Stop the currently-running animation, remove all queued animations, and complete all animations for the matched elements.
+     * Stop the currently-running AnimAtion, remove All queued AnimAtions, And complete All AnimAtions for the mAtched elements.
      *
-     * @param queue The name of the queue in which to stop animations.
+     * @pArAm queue The nAme of the queue in which to stop AnimAtions.
      */
     finish(queue?: string): JQuery;
 
     /**
-     * Hide the matched elements.
+     * Hide the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    hide(duration?: number | string, complete?: Function): JQuery;
+    hide(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Hide the matched elements.
+     * Hide the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    hide(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    hide(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Hide the matched elements.
+     * Hide the mAtched elements.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    hide(options: JQueryAnimationOptions): JQuery;
+    hide(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Display the matched elements.
+     * DisplAy the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    show(duration?: number | string, complete?: Function): JQuery;
+    show(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Display the matched elements.
+     * DisplAy the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    show(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    show(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Display the matched elements.
+     * DisplAy the mAtched elements.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    show(options: JQueryAnimationOptions): JQuery;
+    show(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Display the matched elements with a sliding motion.
+     * DisplAy the mAtched elements with A sliding motion.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    slideDown(duration?: number | string, complete?: Function): JQuery;
+    slideDown(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Display the matched elements with a sliding motion.
+     * DisplAy the mAtched elements with A sliding motion.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    slideDown(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    slideDown(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Display the matched elements with a sliding motion.
+     * DisplAy the mAtched elements with A sliding motion.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    slideDown(options: JQueryAnimationOptions): JQuery;
+    slideDown(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Display or hide the matched elements with a sliding motion.
+     * DisplAy or hide the mAtched elements with A sliding motion.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    slideToggle(duration?: number | string, complete?: Function): JQuery;
+    slideToggle(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Display or hide the matched elements with a sliding motion.
+     * DisplAy or hide the mAtched elements with A sliding motion.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    slideToggle(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    slideToggle(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Display or hide the matched elements with a sliding motion.
+     * DisplAy or hide the mAtched elements with A sliding motion.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    slideToggle(options: JQueryAnimationOptions): JQuery;
+    slideToggle(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Hide the matched elements with a sliding motion.
+     * Hide the mAtched elements with A sliding motion.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    slideUp(duration?: number | string, complete?: Function): JQuery;
+    slideUp(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Hide the matched elements with a sliding motion.
+     * Hide the mAtched elements with A sliding motion.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    slideUp(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    slideUp(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Hide the matched elements with a sliding motion.
+     * Hide the mAtched elements with A sliding motion.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    slideUp(options: JQueryAnimationOptions): JQuery;
+    slideUp(options: JQueryAnimAtionOptions): JQuery;
 
     /**
-     * Stop the currently-running animation on the matched elements.
+     * Stop the currently-running AnimAtion on the mAtched elements.
      *
-     * @param clearQueue A Boolean indicating whether to remove queued animation as well. Defaults to false.
-     * @param jumpToEnd A Boolean indicating whether to complete the current animation immediately. Defaults to false.
+     * @pArAm cleArQueue A BooleAn indicAting whether to remove queued AnimAtion As well. DefAults to fAlse.
+     * @pArAm jumpToEnd A BooleAn indicAting whether to complete the current AnimAtion immediAtely. DefAults to fAlse.
      */
-    stop(clearQueue?: boolean, jumpToEnd?: boolean): JQuery;
+    stop(cleArQueue?: booleAn, jumpToEnd?: booleAn): JQuery;
     /**
-     * Stop the currently-running animation on the matched elements.
+     * Stop the currently-running AnimAtion on the mAtched elements.
      *
-     * @param queue The name of the queue in which to stop animations.
-     * @param clearQueue A Boolean indicating whether to remove queued animation as well. Defaults to false.
-     * @param jumpToEnd A Boolean indicating whether to complete the current animation immediately. Defaults to false.
+     * @pArAm queue The nAme of the queue in which to stop AnimAtions.
+     * @pArAm cleArQueue A BooleAn indicAting whether to remove queued AnimAtion As well. DefAults to fAlse.
+     * @pArAm jumpToEnd A BooleAn indicAting whether to complete the current AnimAtion immediAtely. DefAults to fAlse.
      */
-    stop(queue?: string, clearQueue?: boolean, jumpToEnd?: boolean): JQuery;
+    stop(queue?: string, cleArQueue?: booleAn, jumpToEnd?: booleAn): JQuery;
 
     /**
-     * Display or hide the matched elements.
+     * DisplAy or hide the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    toggle(duration?: number | string, complete?: Function): JQuery;
+    toggle(durAtion?: number | string, complete?: Function): JQuery;
     /**
-     * Display or hide the matched elements.
+     * DisplAy or hide the mAtched elements.
      *
-     * @param duration A string or number determining how long the animation will run.
-     * @param easing A string indicating which easing function to use for the transition.
-     * @param complete A function to call once the animation is complete.
+     * @pArAm durAtion A string or number determining how long the AnimAtion will run.
+     * @pArAm eAsing A string indicAting which eAsing function to use for the trAnsition.
+     * @pArAm complete A function to cAll once the AnimAtion is complete.
      */
-    toggle(duration?: number | string, easing?: string, complete?: Function): JQuery;
+    toggle(durAtion?: number | string, eAsing?: string, complete?: Function): JQuery;
     /**
-     * Display or hide the matched elements.
+     * DisplAy or hide the mAtched elements.
      *
-     * @param options A map of additional options to pass to the method.
+     * @pArAm options A mAp of AdditionAl options to pAss to the method.
      */
-    toggle(options: JQueryAnimationOptions): JQuery;
+    toggle(options: JQueryAnimAtionOptions): JQuery;
     /**
-     * Display or hide the matched elements.
+     * DisplAy or hide the mAtched elements.
      *
-     * @param showOrHide A Boolean indicating whether to show or hide the elements.
+     * @pArAm showOrHide A BooleAn indicAting whether to show or hide the elements.
      */
-    toggle(showOrHide: boolean): JQuery;
+    toggle(showOrHide: booleAn): JQuery;
 
     /**
-     * Attach a handler to an event for the elements.
+     * AttAch A hAndler to An event for the elements.
      *
-     * @param eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventType A string contAining one or more DOM event types, such As "click" or "submit," or custom event nAmes.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    bind(eventType: string, eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    bind(eventType: string, eventDAtA: Any, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Attach a handler to an event for the elements.
+     * AttAch A hAndler to An event for the elements.
      *
-     * @param eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventType A string contAining one or more DOM event types, such As "click" or "submit," or custom event nAmes.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    bind(eventType: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    bind(eventType: string, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Attach a handler to an event for the elements.
+     * AttAch A hAndler to An event for the elements.
      *
-     * @param eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param preventBubble Setting the third argument to false will attach a function that prevents the default action from occurring and stops the event from bubbling. The default is true.
+     * @pArAm eventType A string contAining one or more DOM event types, such As "click" or "submit," or custom event nAmes.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm preventBubble Setting the third Argument to fAlse will AttAch A function thAt prevents the defAult Action from occurring And stops the event from bubbling. The defAult is true.
      */
-    bind(eventType: string, eventData: any, preventBubble: boolean): JQuery;
+    bind(eventType: string, eventDAtA: Any, preventBubble: booleAn): JQuery;
     /**
-     * Attach a handler to an event for the elements.
+     * AttAch A hAndler to An event for the elements.
      *
-     * @param eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
-     * @param preventBubble Setting the third argument to false will attach a function that prevents the default action from occurring and stops the event from bubbling. The default is true.
+     * @pArAm eventType A string contAining one or more DOM event types, such As "click" or "submit," or custom event nAmes.
+     * @pArAm preventBubble Setting the third Argument to fAlse will AttAch A function thAt prevents the defAult Action from occurring And stops the event from bubbling. The defAult is true.
      */
-    bind(eventType: string, preventBubble: boolean): JQuery;
+    bind(eventType: string, preventBubble: booleAn): JQuery;
     /**
-     * Attach a handler to an event for the elements.
+     * AttAch A hAndler to An event for the elements.
      *
-     * @param events An object containing one or more DOM event types and functions to execute for them.
+     * @pArAm events An object contAining one or more DOM event types And functions to execute for them.
      */
-    bind(events: any): JQuery;
+    bind(events: Any): JQuery;
 
     /**
-     * Trigger the "blur" event on an element
+     * Trigger the "blur" event on An element
      */
     blur(): JQuery;
     /**
-     * Bind an event handler to the "blur" JavaScript event
+     * Bind An event hAndler to the "blur" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    blur(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    blur(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "blur" JavaScript event
+     * Bind An event hAndler to the "blur" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    blur(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    blur(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "change" event on an element.
+     * Trigger the "chAnge" event on An element.
      */
-    change(): JQuery;
+    chAnge(): JQuery;
     /**
-     * Bind an event handler to the "change" JavaScript event
+     * Bind An event hAndler to the "chAnge" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    change(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    chAnge(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "change" JavaScript event
+     * Bind An event hAndler to the "chAnge" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    change(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    chAnge(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "click" event on an element.
+     * Trigger the "click" event on An element.
      */
     click(): JQuery;
     /**
-     * Bind an event handler to the "click" JavaScript event
+     * Bind An event hAndler to the "click" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
      */
-    click(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    click(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "click" JavaScript event
+     * Bind An event hAndler to the "click" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    click(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    click(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "contextmenu" event on an element.
+     * Trigger the "contextmenu" event on An element.
      */
     contextmenu(): JQuery;
     /**
-     * Bind an event handler to the "contextmenu" JavaScript event.
+     * Bind An event hAndler to the "contextmenu" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    contextmenu(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    contextmenu(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "contextmenu" JavaScript event.
+     * Bind An event hAndler to the "contextmenu" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    contextmenu(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    contextmenu(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "dblclick" event on an element.
+     * Trigger the "dblclick" event on An element.
      */
     dblclick(): JQuery;
     /**
-     * Bind an event handler to the "dblclick" JavaScript event
+     * Bind An event hAndler to the "dblclick" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    dblclick(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    dblclick(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "dblclick" JavaScript event
+     * Bind An event hAndler to the "dblclick" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    dblclick(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    dblclick(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
-    delegate(selector: any, eventType: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
-    delegate(selector: any, eventType: string, eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    delegAte(selector: Any, eventType: string, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
+    delegAte(selector: Any, eventType: string, eventDAtA: Any, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "focus" event on an element.
+     * Trigger the "focus" event on An element.
      */
     focus(): JQuery;
     /**
-     * Bind an event handler to the "focus" JavaScript event
+     * Bind An event hAndler to the "focus" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    focus(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focus(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "focus" JavaScript event
+     * Bind An event hAndler to the "focus" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    focus(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    focus(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "focusin" event on an element.
+     * Trigger the "focusin" event on An element.
      */
     focusin(): JQuery;
     /**
-     * Bind an event handler to the "focusin" JavaScript event
+     * Bind An event hAndler to the "focusin" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    focusin(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focusin(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "focusin" JavaScript event
+     * Bind An event hAndler to the "focusin" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    focusin(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focusin(eventDAtA: Object, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "focusout" event on an element.
+     * Trigger the "focusout" event on An element.
      */
     focusout(): JQuery;
     /**
-     * Bind an event handler to the "focusout" JavaScript event
+     * Bind An event hAndler to the "focusout" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    focusout(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focusout(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "focusout" JavaScript event
+     * Bind An event hAndler to the "focusout" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    focusout(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focusout(eventDAtA: Object, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Bind two handlers to the matched elements, to be executed when the mouse pointer enters and leaves the elements.
+     * Bind two hAndlers to the mAtched elements, to be executed when the mouse pointer enters And leAves the elements.
      *
-     * @param handlerIn A function to execute when the mouse pointer enters the element.
-     * @param handlerOut A function to execute when the mouse pointer leaves the element.
+     * @pArAm hAndlerIn A function to execute when the mouse pointer enters the element.
+     * @pArAm hAndlerOut A function to execute when the mouse pointer leAves the element.
      */
-    hover(handlerIn: (eventObject: JQueryEventObject) => any, handlerOut: (eventObject: JQueryEventObject) => any): JQuery;
+    hover(hAndlerIn: (eventObject: JQueryEventObject) => Any, hAndlerOut: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind a single handler to the matched elements, to be executed when the mouse pointer enters or leaves the elements.
+     * Bind A single hAndler to the mAtched elements, to be executed when the mouse pointer enters or leAves the elements.
      *
-     * @param handlerInOut A function to execute when the mouse pointer enters or leaves the element.
+     * @pArAm hAndlerInOut A function to execute when the mouse pointer enters or leAves the element.
      */
-    hover(handlerInOut: (eventObject: JQueryEventObject) => any): JQuery;
+    hover(hAndlerInOut: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "keydown" event on an element.
+     * Trigger the "keydown" event on An element.
      */
     keydown(): JQuery;
     /**
-     * Bind an event handler to the "keydown" JavaScript event
+     * Bind An event hAndler to the "keydown" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    keydown(handler: (eventObject: JQueryKeyEventObject) => any): JQuery;
+    keydown(hAndler: (eventObject: JQueryKeyEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "keydown" JavaScript event
+     * Bind An event hAndler to the "keydown" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    keydown(eventData?: any, handler?: (eventObject: JQueryKeyEventObject) => any): JQuery;
+    keydown(eventDAtA?: Any, hAndler?: (eventObject: JQueryKeyEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "keypress" event on an element.
+     * Trigger the "keypress" event on An element.
      */
     keypress(): JQuery;
     /**
-     * Bind an event handler to the "keypress" JavaScript event
+     * Bind An event hAndler to the "keypress" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    keypress(handler: (eventObject: JQueryKeyEventObject) => any): JQuery;
+    keypress(hAndler: (eventObject: JQueryKeyEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "keypress" JavaScript event
+     * Bind An event hAndler to the "keypress" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    keypress(eventData?: any, handler?: (eventObject: JQueryKeyEventObject) => any): JQuery;
+    keypress(eventDAtA?: Any, hAndler?: (eventObject: JQueryKeyEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "keyup" event on an element.
+     * Trigger the "keyup" event on An element.
      */
     keyup(): JQuery;
     /**
-     * Bind an event handler to the "keyup" JavaScript event
+     * Bind An event hAndler to the "keyup" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    keyup(handler: (eventObject: JQueryKeyEventObject) => any): JQuery;
+    keyup(hAndler: (eventObject: JQueryKeyEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "keyup" JavaScript event
+     * Bind An event hAndler to the "keyup" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    keyup(eventData?: any, handler?: (eventObject: JQueryKeyEventObject) => any): JQuery;
+    keyup(eventDAtA?: Any, hAndler?: (eventObject: JQueryKeyEventObject) => Any): JQuery;
 
     /**
-     * Bind an event handler to the "load" JavaScript event.
+     * Bind An event hAndler to the "loAd" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    load(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    loAd(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "load" JavaScript event.
+     * Bind An event hAndler to the "loAd" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    load(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    loAd(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mousedown" event on an element.
+     * Trigger the "mousedown" event on An element.
      */
     mousedown(): JQuery;
     /**
-     * Bind an event handler to the "mousedown" JavaScript event.
+     * Bind An event hAndler to the "mousedown" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mousedown(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mousedown(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "mousedown" JavaScript event.
+     * Bind An event hAndler to the "mousedown" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mousedown(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mousedown(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mouseenter" event on an element.
+     * Trigger the "mouseenter" event on An element.
      */
     mouseenter(): JQuery;
     /**
-     * Bind an event handler to be fired when the mouse enters an element.
+     * Bind An event hAndler to be fired when the mouse enters An element.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseenter(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseenter(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to be fired when the mouse enters an element.
+     * Bind An event hAndler to be fired when the mouse enters An element.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseenter(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseenter(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mouseleave" event on an element.
+     * Trigger the "mouseleAve" event on An element.
      */
-    mouseleave(): JQuery;
+    mouseleAve(): JQuery;
     /**
-     * Bind an event handler to be fired when the mouse leaves an element.
+     * Bind An event hAndler to be fired when the mouse leAves An element.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseleave(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseleAve(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to be fired when the mouse leaves an element.
+     * Bind An event hAndler to be fired when the mouse leAves An element.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseleave(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseleAve(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mousemove" event on an element.
+     * Trigger the "mousemove" event on An element.
      */
     mousemove(): JQuery;
     /**
-     * Bind an event handler to the "mousemove" JavaScript event.
+     * Bind An event hAndler to the "mousemove" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mousemove(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mousemove(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "mousemove" JavaScript event.
+     * Bind An event hAndler to the "mousemove" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mousemove(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mousemove(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mouseout" event on an element.
+     * Trigger the "mouseout" event on An element.
      */
     mouseout(): JQuery;
     /**
-     * Bind an event handler to the "mouseout" JavaScript event.
+     * Bind An event hAndler to the "mouseout" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseout(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseout(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "mouseout" JavaScript event.
+     * Bind An event hAndler to the "mouseout" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseout(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseout(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mouseover" event on an element.
+     * Trigger the "mouseover" event on An element.
      */
     mouseover(): JQuery;
     /**
-     * Bind an event handler to the "mouseover" JavaScript event.
+     * Bind An event hAndler to the "mouseover" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseover(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseover(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "mouseover" JavaScript event.
+     * Bind An event hAndler to the "mouseover" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseover(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseover(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "mouseup" event on an element.
+     * Trigger the "mouseup" event on An element.
      */
     mouseup(): JQuery;
     /**
-     * Bind an event handler to the "mouseup" JavaScript event.
+     * Bind An event hAndler to the "mouseup" JAvAScript event.
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseup(handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseup(hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "mouseup" JavaScript event.
+     * Bind An event hAndler to the "mouseup" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    mouseup(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseup(eventDAtA: Object, hAndler: (eventObject: JQueryMouseEventObject) => Any): JQuery;
 
     /**
-     * Remove an event handler.
+     * Remove An event hAndler.
      */
     off(): JQuery;
     /**
-     * Remove an event handler.
+     * Remove An event hAndler.
      *
-     * @param events One or more space-separated event types and optional namespaces, or just namespaces, such as "click", "keydown.myPlugin", or ".myPlugin".
-     * @param selector A selector which should match the one originally passed to .on() when attaching event handlers.
-     * @param handler A handler function previously attached for the event(s), or the special value false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, or just nAmespAces, such As "click", "keydown.myPlugin", or ".myPlugin".
+     * @pArAm selector A selector which should mAtch the one originAlly pAssed to .on() when AttAching event hAndlers.
+     * @pArAm hAndler A hAndler function previously AttAched for the event(s), or the speciAl vAlue fAlse.
      */
-    off(events: string, selector?: string, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    off(events: string, selector?: string, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Remove an event handler.
+     * Remove An event hAndler.
      *
-     * @param events One or more space-separated event types and optional namespaces, or just namespaces, such as "click", "keydown.myPlugin", or ".myPlugin".
-     * @param handler A handler function previously attached for the event(s), or the special value false. Takes handler with extra args that can be attached with on().
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, or just nAmespAces, such As "click", "keydown.myPlugin", or ".myPlugin".
+     * @pArAm hAndler A hAndler function previously AttAched for the event(s), or the speciAl vAlue fAlse. TAkes hAndler with extrA Args thAt cAn be AttAched with on().
      */
-    off(events: string, handler: (eventObject: JQueryEventObject, ...args: any[]) => any): JQuery;
+    off(events: string, hAndler: (eventObject: JQueryEventObject, ...Args: Any[]) => Any): JQuery;
     /**
-     * Remove an event handler.
+     * Remove An event hAndler.
      *
-     * @param events One or more space-separated event types and optional namespaces, or just namespaces, such as "click", "keydown.myPlugin", or ".myPlugin".
-     * @param handler A handler function previously attached for the event(s), or the special value false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, or just nAmespAces, such As "click", "keydown.myPlugin", or ".myPlugin".
+     * @pArAm hAndler A hAndler function previously AttAched for the event(s), or the speciAl vAlue fAlse.
      */
-    off(events: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    off(events: string, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Remove an event handler.
+     * Remove An event hAndler.
      *
-     * @param events An object where the string keys represent one or more space-separated event types and optional namespaces, and the values represent handler functions previously attached for the event(s).
-     * @param selector A selector which should match the one originally passed to .on() when attaching event handlers.
+     * @pArAm events An object where the string keys represent one or more spAce-sepArAted event types And optionAl nAmespAces, And the vAlues represent hAndler functions previously AttAched for the event(s).
+     * @pArAm selector A selector which should mAtch the one originAlly pAssed to .on() when AttAching event hAndlers.
      */
-    off(events: { [key: string]: any; }, selector?: string): JQuery;
+    off(events: { [key: string]: Any; }, selector?: string): JQuery;
 
     /**
-     * Attach an event handler function for one or more events to the selected elements.
+     * AttAch An event hAndler function for one or more events to the selected elements.
      *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false. Rest parameter args is for optional parameters passed to jQuery.trigger(). Note that the actual parameters on the event handler function must be marked as optional (? syntax).
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, such As "click" or "keydown.myPlugin".
+     * @pArAm hAndler A function to execute when the event is triggered. The vAlue fAlse is Also Allowed As A shorthAnd for A function thAt simply does return fAlse. Rest pArAmeter Args is for optionAl pArAmeters pAssed to jQuery.trigger(). Note thAt the ActuAl pArAmeters on the event hAndler function must be mArked As optionAl (? syntAx).
      */
-    on(events: string, handler: (eventObject: JQueryEventObject, ...args: any[]) => any): JQuery;
+    on(events: string, hAndler: (eventObject: JQueryEventObject, ...Args: Any[]) => Any): JQuery;
     /**
-     * Attach an event handler function for one or more events to the selected elements.
+     * AttAch An event hAndler function for one or more events to the selected elements.
      *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param data Data to be passed to the handler in event.data when an event is triggered.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, such As "click" or "keydown.myPlugin".
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered. The vAlue fAlse is Also Allowed As A shorthAnd for A function thAt simply does return fAlse.
     */
-    on(events: string, data: any, handler: (eventObject: JQueryEventObject, ...args: any[]) => any): JQuery;
+    on(events: string, dAtA: Any, hAndler: (eventObject: JQueryEventObject, ...Args: Any[]) => Any): JQuery;
     /**
-     * Attach an event handler function for one or more events to the selected elements.
+     * AttAch An event hAndler function for one or more events to the selected elements.
      *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param selector A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, such As "click" or "keydown.myPlugin".
+     * @pArAm selector A selector string to filter the descendAnts of the selected elements thAt trigger the event. If the selector is null or omitted, the event is AlwAys triggered when it reAches the selected element.
+     * @pArAm hAndler A function to execute when the event is triggered. The vAlue fAlse is Also Allowed As A shorthAnd for A function thAt simply does return fAlse.
      */
-    on(events: string, selector: string, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any): JQuery;
+    on(events: string, selector: string, hAndler: (eventObject: JQueryEventObject, ...eventDAtA: Any[]) => Any): JQuery;
     /**
-     * Attach an event handler function for one or more events to the selected elements.
+     * AttAch An event hAndler function for one or more events to the selected elements.
      *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param selector A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.
-     * @param data Data to be passed to the handler in event.data when an event is triggered.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, such As "click" or "keydown.myPlugin".
+     * @pArAm selector A selector string to filter the descendAnts of the selected elements thAt trigger the event. If the selector is null or omitted, the event is AlwAys triggered when it reAches the selected element.
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered. The vAlue fAlse is Also Allowed As A shorthAnd for A function thAt simply does return fAlse.
      */
-    on(events: string, selector: string, data: any, handler: (eventObject: JQueryEventObject, ...eventData: any[]) => any): JQuery;
+    on(events: string, selector: string, dAtA: Any, hAndler: (eventObject: JQueryEventObject, ...eventDAtA: Any[]) => Any): JQuery;
     /**
-     * Attach an event handler function for one or more events to the selected elements.
+     * AttAch An event hAndler function for one or more events to the selected elements.
      *
-     * @param events An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
-     * @param selector A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.
-     * @param data Data to be passed to the handler in event.data when an event occurs.
+     * @pArAm events An object in which the string keys represent one or more spAce-sepArAted event types And optionAl nAmespAces, And the vAlues represent A hAndler function to be cAlled for the event(s).
+     * @pArAm selector A selector string to filter the descendAnts of the selected elements thAt will cAll the hAndler. If the selector is null or omitted, the hAndler is AlwAys cAlled when it reAches the selected element.
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event occurs.
      */
-    on(events: { [key: string]: any; }, selector?: string, data?: any): JQuery;
+    on(events: { [key: string]: Any; }, selector?: string, dAtA?: Any): JQuery;
     /**
-     * Attach an event handler function for one or more events to the selected elements.
+     * AttAch An event hAndler function for one or more events to the selected elements.
      *
-     * @param events An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
-     * @param data Data to be passed to the handler in event.data when an event occurs.
+     * @pArAm events An object in which the string keys represent one or more spAce-sepArAted event types And optionAl nAmespAces, And the vAlues represent A hAndler function to be cAlled for the event(s).
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event occurs.
      */
-    on(events: { [key: string]: any; }, data?: any): JQuery;
+    on(events: { [key: string]: Any; }, dAtA?: Any): JQuery;
 
     /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
+     * AttAch A hAndler to An event for the elements. The hAndler is executed At most once per element per event type.
      *
-     * @param events A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
-     * @param handler A function to execute at the time the event is triggered.
+     * @pArAm events A string contAining one or more JAvAScript event types, such As "click" or "submit," or custom event nAmes.
+     * @pArAm hAndler A function to execute At the time the event is triggered.
      */
-    one(events: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    one(events: string, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
+     * AttAch A hAndler to An event for the elements. The hAndler is executed At most once per element per event type.
      *
-     * @param events A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
-     * @param data An object containing data that will be passed to the event handler.
-     * @param handler A function to execute at the time the event is triggered.
+     * @pArAm events A string contAining one or more JAvAScript event types, such As "click" or "submit," or custom event nAmes.
+     * @pArAm dAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute At the time the event is triggered.
      */
-    one(events: string, data: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    one(events: string, dAtA: Object, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
+     * AttAch A hAndler to An event for the elements. The hAndler is executed At most once per element per event type.
      *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param selector A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, such As "click" or "keydown.myPlugin".
+     * @pArAm selector A selector string to filter the descendAnts of the selected elements thAt trigger the event. If the selector is null or omitted, the event is AlwAys triggered when it reAches the selected element.
+     * @pArAm hAndler A function to execute when the event is triggered. The vAlue fAlse is Also Allowed As A shorthAnd for A function thAt simply does return fAlse.
      */
-    one(events: string, selector: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    one(events: string, selector: string, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
+     * AttAch A hAndler to An event for the elements. The hAndler is executed At most once per element per event type.
      *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param selector A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.
-     * @param data Data to be passed to the handler in event.data when an event is triggered.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
+     * @pArAm events One or more spAce-sepArAted event types And optionAl nAmespAces, such As "click" or "keydown.myPlugin".
+     * @pArAm selector A selector string to filter the descendAnts of the selected elements thAt trigger the event. If the selector is null or omitted, the event is AlwAys triggered when it reAches the selected element.
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered. The vAlue fAlse is Also Allowed As A shorthAnd for A function thAt simply does return fAlse.
      */
-    one(events: string, selector: string, data: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    one(events: string, selector: string, dAtA: Any, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
+     * AttAch A hAndler to An event for the elements. The hAndler is executed At most once per element per event type.
      *
-     * @param events An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
-     * @param selector A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.
-     * @param data Data to be passed to the handler in event.data when an event occurs.
+     * @pArAm events An object in which the string keys represent one or more spAce-sepArAted event types And optionAl nAmespAces, And the vAlues represent A hAndler function to be cAlled for the event(s).
+     * @pArAm selector A selector string to filter the descendAnts of the selected elements thAt will cAll the hAndler. If the selector is null or omitted, the hAndler is AlwAys cAlled when it reAches the selected element.
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event occurs.
      */
-    one(events: { [key: string]: any; }, selector?: string, data?: any): JQuery;
+    one(events: { [key: string]: Any; }, selector?: string, dAtA?: Any): JQuery;
 
     /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
+     * AttAch A hAndler to An event for the elements. The hAndler is executed At most once per element per event type.
      *
-     * @param events An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
-     * @param data Data to be passed to the handler in event.data when an event occurs.
+     * @pArAm events An object in which the string keys represent one or more spAce-sepArAted event types And optionAl nAmespAces, And the vAlues represent A hAndler function to be cAlled for the event(s).
+     * @pArAm dAtA DAtA to be pAssed to the hAndler in event.dAtA when An event occurs.
      */
-    one(events: { [key: string]: any; }, data?: any): JQuery;
+    one(events: { [key: string]: Any; }, dAtA?: Any): JQuery;
 
 
     /**
-     * Specify a function to execute when the DOM is fully loaded.
+     * Specify A function to execute when the DOM is fully loAded.
      *
-     * @param handler A function to execute after the DOM is ready.
+     * @pArAm hAndler A function to execute After the DOM is reAdy.
      */
-    ready(handler: (jQueryAlias?: JQueryStatic) => any): JQuery;
+    reAdy(hAndler: (jQueryAliAs?: JQueryStAtic) => Any): JQuery;
 
     /**
-     * Trigger the "resize" event on an element.
+     * Trigger the "resize" event on An element.
      */
     resize(): JQuery;
     /**
-     * Bind an event handler to the "resize" JavaScript event.
+     * Bind An event hAndler to the "resize" JAvAScript event.
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    resize(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    resize(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "resize" JavaScript event.
+     * Bind An event hAndler to the "resize" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    resize(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    resize(eventDAtA: Object, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "scroll" event on an element.
+     * Trigger the "scroll" event on An element.
      */
     scroll(): JQuery;
     /**
-     * Bind an event handler to the "scroll" JavaScript event.
+     * Bind An event hAndler to the "scroll" JAvAScript event.
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    scroll(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    scroll(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "scroll" JavaScript event.
+     * Bind An event hAndler to the "scroll" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    scroll(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    scroll(eventDAtA: Object, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "select" event on an element.
+     * Trigger the "select" event on An element.
      */
     select(): JQuery;
     /**
-     * Bind an event handler to the "select" JavaScript event.
+     * Bind An event hAndler to the "select" JAvAScript event.
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    select(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    select(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "select" JavaScript event.
+     * Bind An event hAndler to the "select" JAvAScript event.
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    select(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    select(eventDAtA: Object, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Trigger the "submit" event on an element.
+     * Trigger the "submit" event on An element.
      */
     submit(): JQuery;
     /**
-     * Bind an event handler to the "submit" JavaScript event
+     * Bind An event hAndler to the "submit" JAvAScript event
      *
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    submit(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    submit(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "submit" JavaScript event
+     * Bind An event hAndler to the "submit" JAvAScript event
      *
-     * @param eventData An object containing data that will be passed to the event handler.
-     * @param handler A function to execute each time the event is triggered.
+     * @pArAm eventDAtA An object contAining dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute eAch time the event is triggered.
      */
-    submit(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    submit(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Execute all handlers and behaviors attached to the matched elements for the given event type.
+     * Execute All hAndlers And behAviors AttAched to the mAtched elements for the given event type.
      *
-     * @param eventType A string containing a JavaScript event type, such as click or submit.
-     * @param extraParameters Additional parameters to pass along to the event handler.
+     * @pArAm eventType A string contAining A JAvAScript event type, such As click or submit.
+     * @pArAm extrAPArAmeters AdditionAl pArAmeters to pAss Along to the event hAndler.
      */
-    trigger(eventType: string, extraParameters?: any[] | Object): JQuery;
+    trigger(eventType: string, extrAPArAmeters?: Any[] | Object): JQuery;
     /**
-     * Execute all handlers and behaviors attached to the matched elements for the given event type.
+     * Execute All hAndlers And behAviors AttAched to the mAtched elements for the given event type.
      *
-     * @param event A jQuery.Event object.
-     * @param extraParameters Additional parameters to pass along to the event handler.
+     * @pArAm event A jQuery.Event object.
+     * @pArAm extrAPArAmeters AdditionAl pArAmeters to pAss Along to the event hAndler.
      */
-    trigger(event: JQueryEventObject, extraParameters?: any[] | Object): JQuery;
+    trigger(event: JQueryEventObject, extrAPArAmeters?: Any[] | Object): JQuery;
 
     /**
-     * Execute all handlers attached to an element for an event.
+     * Execute All hAndlers AttAched to An element for An event.
      *
-     * @param eventType A string containing a JavaScript event type, such as click or submit.
-     * @param extraParameters An array of additional parameters to pass along to the event handler.
+     * @pArAm eventType A string contAining A JAvAScript event type, such As click or submit.
+     * @pArAm extrAPArAmeters An ArrAy of AdditionAl pArAmeters to pAss Along to the event hAndler.
      */
-    triggerHandler(eventType: string, ...extraParameters: any[]): Object;
+    triggerHAndler(eventType: string, ...extrAPArAmeters: Any[]): Object;
 
     /**
-     * Execute all handlers attached to an element for an event.
+     * Execute All hAndlers AttAched to An element for An event.
      *
-     * @param event A jQuery.Event object.
-     * @param extraParameters An array of additional parameters to pass along to the event handler.
+     * @pArAm event A jQuery.Event object.
+     * @pArAm extrAPArAmeters An ArrAy of AdditionAl pArAmeters to pAss Along to the event hAndler.
      */
-    triggerHandler(event: JQueryEventObject, ...extraParameters: any[]): Object;
+    triggerHAndler(event: JQueryEventObject, ...extrAPArAmeters: Any[]): Object;
 
     /**
-     * Remove a previously-attached event handler from the elements.
+     * Remove A previously-AttAched event hAndler from the elements.
      *
-     * @param eventType A string containing a JavaScript event type, such as click or submit.
-     * @param handler The function that is to be no longer executed.
+     * @pArAm eventType A string contAining A JAvAScript event type, such As click or submit.
+     * @pArAm hAndler The function thAt is to be no longer executed.
      */
-    unbind(eventType?: string, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    unbind(eventType?: string, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Remove a previously-attached event handler from the elements.
+     * Remove A previously-AttAched event hAndler from the elements.
      *
-     * @param eventType A string containing a JavaScript event type, such as click or submit.
-     * @param fls Unbinds the corresponding 'return false' function that was bound using .bind( eventType, false ).
+     * @pArAm eventType A string contAining A JAvAScript event type, such As click or submit.
+     * @pArAm fls Unbinds the corresponding 'return fAlse' function thAt wAs bound using .bind( eventType, fAlse ).
      */
-    unbind(eventType: string, fls: boolean): JQuery;
+    unbind(eventType: string, fls: booleAn): JQuery;
     /**
-     * Remove a previously-attached event handler from the elements.
+     * Remove A previously-AttAched event hAndler from the elements.
      *
-     * @param evt A JavaScript event object as passed to an event handler.
+     * @pArAm evt A JAvAScript event object As pAssed to An event hAndler.
      */
-    unbind(evt: any): JQuery;
+    unbind(evt: Any): JQuery;
 
     /**
-     * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
+     * Remove A hAndler from the event for All elements which mAtch the current selector, bAsed upon A specific set of root elements.
      */
-    undelegate(): JQuery;
+    undelegAte(): JQuery;
     /**
-     * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
+     * Remove A hAndler from the event for All elements which mAtch the current selector, bAsed upon A specific set of root elements.
      *
-     * @param selector A selector which will be used to filter the event results.
-     * @param eventType A string containing a JavaScript event type, such as "click" or "keydown"
-     * @param handler A function to execute at the time the event is triggered.
+     * @pArAm selector A selector which will be used to filter the event results.
+     * @pArAm eventType A string contAining A JAvAScript event type, such As "click" or "keydown"
+     * @pArAm hAndler A function to execute At the time the event is triggered.
      */
-    undelegate(selector: string, eventType: string, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    undelegAte(selector: string, eventType: string, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
+     * Remove A hAndler from the event for All elements which mAtch the current selector, bAsed upon A specific set of root elements.
      *
-     * @param selector A selector which will be used to filter the event results.
-     * @param events An object of one or more event types and previously bound functions to unbind from them.
+     * @pArAm selector A selector which will be used to filter the event results.
+     * @pArAm events An object of one or more event types And previously bound functions to unbind from them.
      */
-    undelegate(selector: string, events: Object): JQuery;
+    undelegAte(selector: string, events: Object): JQuery;
     /**
-     * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
+     * Remove A hAndler from the event for All elements which mAtch the current selector, bAsed upon A specific set of root elements.
      *
-     * @param namespace A string containing a namespace to unbind all events from.
+     * @pArAm nAmespAce A string contAining A nAmespAce to unbind All events from.
      */
-    undelegate(namespace: string): JQuery;
+    undelegAte(nAmespAce: string): JQuery;
 
     /**
-     * Bind an event handler to the "unload" JavaScript event. (DEPRECATED from v1.8)
+     * Bind An event hAndler to the "unloAd" JAvAScript event. (DEPRECATED from v1.8)
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    unload(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    unloAd(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "unload" JavaScript event. (DEPRECATED from v1.8)
+     * Bind An event hAndler to the "unloAd" JAvAScript event. (DEPRECATED from v1.8)
      *
-     * @param eventData A plain object of data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA A plAin object of dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    unload(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    unloAd(eventDAtA?: Any, hAndler?: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * The DOM node context originally passed to jQuery(); if none was passed then context will likely be the document. (DEPRECATED from v1.10)
+     * The DOM node context originAlly pAssed to jQuery(); if none wAs pAssed then context will likely be the document. (DEPRECATED from v1.10)
      */
     context: Element;
 
     jquery: string;
 
     /**
-     * Bind an event handler to the "error" JavaScript event. (DEPRECATED from v1.8)
+     * Bind An event hAndler to the "error" JAvAScript event. (DEPRECATED from v1.8)
      *
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    error(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    error(hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
     /**
-     * Bind an event handler to the "error" JavaScript event. (DEPRECATED from v1.8)
+     * Bind An event hAndler to the "error" JAvAScript event. (DEPRECATED from v1.8)
      *
-     * @param eventData A plain object of data that will be passed to the event handler.
-     * @param handler A function to execute when the event is triggered.
+     * @pArAm eventDAtA A plAin object of dAtA thAt will be pAssed to the event hAndler.
+     * @pArAm hAndler A function to execute when the event is triggered.
      */
-    error(eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    error(eventDAtA: Any, hAndler: (eventObject: JQueryEventObject) => Any): JQuery;
 
     /**
-     * Add a collection of DOM elements onto the jQuery stack.
+     * Add A collection of DOM elements onto the jQuery stAck.
      *
-     * @param elements An array of elements to push onto the stack and make into a new jQuery object.
+     * @pArAm elements An ArrAy of elements to push onto the stAck And mAke into A new jQuery object.
      */
-    pushStack(elements: any[]): JQuery;
+    pushStAck(elements: Any[]): JQuery;
     /**
-     * Add a collection of DOM elements onto the jQuery stack.
+     * Add A collection of DOM elements onto the jQuery stAck.
      *
-     * @param elements An array of elements to push onto the stack and make into a new jQuery object.
-     * @param name The name of a jQuery method that generated the array of elements.
-     * @param arguments The arguments that were passed in to the jQuery method (for serialization).
+     * @pArAm elements An ArrAy of elements to push onto the stAck And mAke into A new jQuery object.
+     * @pArAm nAme The nAme of A jQuery method thAt generAted the ArrAy of elements.
+     * @pArAm Arguments The Arguments thAt were pAssed in to the jQuery method (for seriAlizAtion).
      */
-    pushStack(elements: any[], name: string, arguments: any[]): JQuery;
+    pushStAck(elements: Any[], nAme: string, Arguments: Any[]): JQuery;
 
     /**
-     * Insert content, specified by the parameter, after each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, After eAch element in the set of mAtched elements.
      *
-     * param content1 HTML string, DOM element, DocumentFragment, array of elements, or jQuery object to insert after each element in the set of matched elements.
-     * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert after each element in the set of matched elements.
+     * pArAm content1 HTML string, DOM element, DocumentFrAgment, ArrAy of elements, or jQuery object to insert After eAch element in the set of mAtched elements.
+     * pArAm content2 One or more AdditionAl DOM elements, ArrAys of elements, HTML strings, or jQuery objects to insert After eAch element in the set of mAtched elements.
      */
-    after(content1: JQuery | any[] | Element | DocumentFragment | Text | string, ...content2: any[]): JQuery;
+    After(content1: JQuery | Any[] | Element | DocumentFrAgment | Text | string, ...content2: Any[]): JQuery;
     /**
-     * Insert content, specified by the parameter, after each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, After eAch element in the set of mAtched elements.
      *
-     * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert after each element in the set of matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
+     * pArAm func A function thAt returns An HTML string, DOM element(s), or jQuery object to insert After eAch element in the set of mAtched elements. Receives the index position of the element in the set As An Argument. Within the function, this refers to the current element in the set.
      */
-    after(func: (index: number, html: string) => string | Element | JQuery): JQuery;
+    After(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
-     * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, to the end of eAch element in the set of mAtched elements.
      *
-     * param content1 DOM element, DocumentFragment, array of elements, HTML string, or jQuery object to insert at the end of each element in the set of matched elements.
-     * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the end of each element in the set of matched elements.
+     * pArAm content1 DOM element, DocumentFrAgment, ArrAy of elements, HTML string, or jQuery object to insert At the end of eAch element in the set of mAtched elements.
+     * pArAm content2 One or more AdditionAl DOM elements, ArrAys of elements, HTML strings, or jQuery objects to insert At the end of eAch element in the set of mAtched elements.
      */
-    append(content1: JQuery | any[] | Element | DocumentFragment | Text | string, ...content2: any[]): JQuery;
+    Append(content1: JQuery | Any[] | Element | DocumentFrAgment | Text | string, ...content2: Any[]): JQuery;
     /**
-     * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, to the end of eAch element in the set of mAtched elements.
      *
-     * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert at the end of each element in the set of matched elements. Receives the index position of the element in the set and the old HTML value of the element as arguments. Within the function, this refers to the current element in the set.
+     * pArAm func A function thAt returns An HTML string, DOM element(s), or jQuery object to insert At the end of eAch element in the set of mAtched elements. Receives the index position of the element in the set And the old HTML vAlue of the element As Arguments. Within the function, this refers to the current element in the set.
      */
-    append(func: (index: number, html: string) => string | Element | JQuery): JQuery;
+    Append(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
-     * Insert every element in the set of matched elements to the end of the target.
+     * Insert every element in the set of mAtched elements to the end of the tArget.
      *
-     * @param target A selector, element, HTML string, array of elements, or jQuery object; the matched set of elements will be inserted at the end of the element(s) specified by this parameter.
+     * @pArAm tArget A selector, element, HTML string, ArrAy of elements, or jQuery object; the mAtched set of elements will be inserted At the end of the element(s) specified by this pArAmeter.
      */
-    appendTo(target: JQuery | any[] | Element | string): JQuery;
+    AppendTo(tArget: JQuery | Any[] | Element | string): JQuery;
 
     /**
-     * Insert content, specified by the parameter, before each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, before eAch element in the set of mAtched elements.
      *
-     * param content1 HTML string, DOM element, DocumentFragment, array of elements, or jQuery object to insert before each element in the set of matched elements.
-     * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert before each element in the set of matched elements.
+     * pArAm content1 HTML string, DOM element, DocumentFrAgment, ArrAy of elements, or jQuery object to insert before eAch element in the set of mAtched elements.
+     * pArAm content2 One or more AdditionAl DOM elements, ArrAys of elements, HTML strings, or jQuery objects to insert before eAch element in the set of mAtched elements.
      */
-    before(content1: JQuery | any[] | Element | DocumentFragment | Text | string, ...content2: any[]): JQuery;
+    before(content1: JQuery | Any[] | Element | DocumentFrAgment | Text | string, ...content2: Any[]): JQuery;
     /**
-     * Insert content, specified by the parameter, before each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, before eAch element in the set of mAtched elements.
      *
-     * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert before each element in the set of matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
+     * pArAm func A function thAt returns An HTML string, DOM element(s), or jQuery object to insert before eAch element in the set of mAtched elements. Receives the index position of the element in the set As An Argument. Within the function, this refers to the current element in the set.
      */
     before(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
-     * Create a deep copy of the set of matched elements.
+     * CreAte A deep copy of the set of mAtched elements.
      *
-     * param withDataAndEvents A Boolean indicating whether event handlers and data should be copied along with the elements. The default value is false.
-     * param deepWithDataAndEvents A Boolean indicating whether event handlers and data for all children of the cloned element should be copied. By default its value matches the first argument's value (which defaults to false).
+     * pArAm withDAtAAndEvents A BooleAn indicAting whether event hAndlers And dAtA should be copied Along with the elements. The defAult vAlue is fAlse.
+     * pArAm deepWithDAtAAndEvents A BooleAn indicAting whether event hAndlers And dAtA for All children of the cloned element should be copied. By defAult its vAlue mAtches the first Argument's vAlue (which defAults to fAlse).
      */
-    clone(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean): JQuery;
+    clone(withDAtAAndEvents?: booleAn, deepWithDAtAAndEvents?: booleAn): JQuery;
 
     /**
-     * Remove the set of matched elements from the DOM.
+     * Remove the set of mAtched elements from the DOM.
      *
-     * param selector A selector expression that filters the set of matched elements to be removed.
+     * pArAm selector A selector expression thAt filters the set of mAtched elements to be removed.
      */
-    detach(selector?: string): JQuery;
+    detAch(selector?: string): JQuery;
 
     /**
-     * Remove all child nodes of the set of matched elements from the DOM.
+     * Remove All child nodes of the set of mAtched elements from the DOM.
      */
     empty(): JQuery;
 
     /**
-     * Insert every element in the set of matched elements after the target.
+     * Insert every element in the set of mAtched elements After the tArget.
      *
-     * param target A selector, element, array of elements, HTML string, or jQuery object; the matched set of elements will be inserted after the element(s) specified by this parameter.
+     * pArAm tArget A selector, element, ArrAy of elements, HTML string, or jQuery object; the mAtched set of elements will be inserted After the element(s) specified by this pArAmeter.
      */
-    insertAfter(target: JQuery | any[] | Element | Text | string): JQuery;
+    insertAfter(tArget: JQuery | Any[] | Element | Text | string): JQuery;
 
     /**
-     * Insert every element in the set of matched elements before the target.
+     * Insert every element in the set of mAtched elements before the tArget.
      *
-     * param target A selector, element, array of elements, HTML string, or jQuery object; the matched set of elements will be inserted before the element(s) specified by this parameter.
+     * pArAm tArget A selector, element, ArrAy of elements, HTML string, or jQuery object; the mAtched set of elements will be inserted before the element(s) specified by this pArAmeter.
      */
-    insertBefore(target: JQuery | any[] | Element | Text | string): JQuery;
+    insertBefore(tArget: JQuery | Any[] | Element | Text | string): JQuery;
 
     /**
-     * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, to the beginning of eAch element in the set of mAtched elements.
      *
-     * param content1 DOM element, DocumentFragment, array of elements, HTML string, or jQuery object to insert at the beginning of each element in the set of matched elements.
-     * param content2 One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the beginning of each element in the set of matched elements.
+     * pArAm content1 DOM element, DocumentFrAgment, ArrAy of elements, HTML string, or jQuery object to insert At the beginning of eAch element in the set of mAtched elements.
+     * pArAm content2 One or more AdditionAl DOM elements, ArrAys of elements, HTML strings, or jQuery objects to insert At the beginning of eAch element in the set of mAtched elements.
      */
-    prepend(content1: JQuery | any[] | Element | DocumentFragment | Text | string, ...content2: any[]): JQuery;
+    prepend(content1: JQuery | Any[] | Element | DocumentFrAgment | Text | string, ...content2: Any[]): JQuery;
     /**
-     * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+     * Insert content, specified by the pArAmeter, to the beginning of eAch element in the set of mAtched elements.
      *
-     * param func A function that returns an HTML string, DOM element(s), or jQuery object to insert at the beginning of each element in the set of matched elements. Receives the index position of the element in the set and the old HTML value of the element as arguments. Within the function, this refers to the current element in the set.
+     * pArAm func A function thAt returns An HTML string, DOM element(s), or jQuery object to insert At the beginning of eAch element in the set of mAtched elements. Receives the index position of the element in the set And the old HTML vAlue of the element As Arguments. Within the function, this refers to the current element in the set.
      */
     prepend(func: (index: number, html: string) => string | Element | JQuery): JQuery;
 
     /**
-     * Insert every element in the set of matched elements to the beginning of the target.
+     * Insert every element in the set of mAtched elements to the beginning of the tArget.
      *
-     * @param target A selector, element, HTML string, array of elements, or jQuery object; the matched set of elements will be inserted at the beginning of the element(s) specified by this parameter.
+     * @pArAm tArget A selector, element, HTML string, ArrAy of elements, or jQuery object; the mAtched set of elements will be inserted At the beginning of the element(s) specified by this pArAmeter.
      */
-    prependTo(target: JQuery | any[] | Element | string): JQuery;
+    prependTo(tArget: JQuery | Any[] | Element | string): JQuery;
 
     /**
-     * Remove the set of matched elements from the DOM.
+     * Remove the set of mAtched elements from the DOM.
      *
-     * @param selector A selector expression that filters the set of matched elements to be removed.
+     * @pArAm selector A selector expression thAt filters the set of mAtched elements to be removed.
      */
     remove(selector?: string): JQuery;
 
     /**
-     * Replace each target element with the set of matched elements.
+     * ReplAce eAch tArget element with the set of mAtched elements.
      *
-     * @param target A selector string, jQuery object, DOM element, or array of elements indicating which element(s) to replace.
+     * @pArAm tArget A selector string, jQuery object, DOM element, or ArrAy of elements indicAting which element(s) to replAce.
      */
-    replaceAll(target: JQuery | any[] | Element | string): JQuery;
+    replAceAll(tArget: JQuery | Any[] | Element | string): JQuery;
 
     /**
-     * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+     * ReplAce eAch element in the set of mAtched elements with the provided new content And return the set of elements thAt wAs removed.
      *
-     * param newContent The content to insert. May be an HTML string, DOM element, array of DOM elements, or jQuery object.
+     * pArAm newContent The content to insert. MAy be An HTML string, DOM element, ArrAy of DOM elements, or jQuery object.
      */
-    replaceWith(newContent: JQuery | any[] | Element | Text | string): JQuery;
+    replAceWith(newContent: JQuery | Any[] | Element | Text | string): JQuery;
     /**
-     * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+     * ReplAce eAch element in the set of mAtched elements with the provided new content And return the set of elements thAt wAs removed.
      *
-     * param func A function that returns content with which to replace the set of matched elements.
+     * pArAm func A function thAt returns content with which to replAce the set of mAtched elements.
      */
-    replaceWith(func: () => Element | JQuery): JQuery;
+    replAceWith(func: () => Element | JQuery): JQuery;
 
     /**
-     * Get the combined text contents of each element in the set of matched elements, including their descendants.
+     * Get the combined text contents of eAch element in the set of mAtched elements, including their descendAnts.
      */
     text(): string;
     /**
-     * Set the content of each element in the set of matched elements to the specified text.
+     * Set the content of eAch element in the set of mAtched elements to the specified text.
      *
-     * @param text The text to set as the content of each matched element. When Number or Boolean is supplied, it will be converted to a String representation.
+     * @pArAm text The text to set As the content of eAch mAtched element. When Number or BooleAn is supplied, it will be converted to A String representAtion.
      */
-    text(text: string | number | boolean): JQuery;
+    text(text: string | number | booleAn): JQuery;
     /**
-     * Set the content of each element in the set of matched elements to the specified text.
+     * Set the content of eAch element in the set of mAtched elements to the specified text.
      *
-     * @param func A function returning the text content to set. Receives the index position of the element in the set and the old text value as arguments.
+     * @pArAm func A function returning the text content to set. Receives the index position of the element in the set And the old text vAlue As Arguments.
      */
     text(func: (index: number, text: string) => string): JQuery;
 
     /**
-     * Retrieve all the elements contained in the jQuery set, as an array.
-     * @name toArray
+     * Retrieve All the elements contAined in the jQuery set, As An ArrAy.
+     * @nAme toArrAy
      */
-    toArray(): HTMLElement[];
+    toArrAy(): HTMLElement[];
 
     /**
-     * Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
+     * Remove the pArents of the set of mAtched elements from the DOM, leAving the mAtched elements in their plAce.
      */
-    unwrap(): JQuery;
+    unwrAp(): JQuery;
 
     /**
-     * Wrap an HTML structure around each element in the set of matched elements.
+     * WrAp An HTML structure Around eAch element in the set of mAtched elements.
      *
-     * @param wrappingElement A selector, element, HTML string, or jQuery object specifying the structure to wrap around the matched elements.
+     * @pArAm wrAppingElement A selector, element, HTML string, or jQuery object specifying the structure to wrAp Around the mAtched elements.
      */
-    wrap(wrappingElement: JQuery | Element | string): JQuery;
+    wrAp(wrAppingElement: JQuery | Element | string): JQuery;
     /**
-     * Wrap an HTML structure around each element in the set of matched elements.
+     * WrAp An HTML structure Around eAch element in the set of mAtched elements.
      *
-     * @param func A callback function returning the HTML content or jQuery object to wrap around the matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
+     * @pArAm func A cAllbAck function returning the HTML content or jQuery object to wrAp Around the mAtched elements. Receives the index position of the element in the set As An Argument. Within the function, this refers to the current element in the set.
      */
-    wrap(func: (index: number) => string | JQuery): JQuery;
+    wrAp(func: (index: number) => string | JQuery): JQuery;
 
     /**
-     * Wrap an HTML structure around all elements in the set of matched elements.
+     * WrAp An HTML structure Around All elements in the set of mAtched elements.
      *
-     * @param wrappingElement A selector, element, HTML string, or jQuery object specifying the structure to wrap around the matched elements.
+     * @pArAm wrAppingElement A selector, element, HTML string, or jQuery object specifying the structure to wrAp Around the mAtched elements.
      */
-    wrapAll(wrappingElement: JQuery | Element | string): JQuery;
-    wrapAll(func: (index: number) => string): JQuery;
+    wrApAll(wrAppingElement: JQuery | Element | string): JQuery;
+    wrApAll(func: (index: number) => string): JQuery;
 
     /**
-     * Wrap an HTML structure around the content of each element in the set of matched elements.
+     * WrAp An HTML structure Around the content of eAch element in the set of mAtched elements.
      *
-     * @param wrappingElement An HTML snippet, selector expression, jQuery object, or DOM element specifying the structure to wrap around the content of the matched elements.
+     * @pArAm wrAppingElement An HTML snippet, selector expression, jQuery object, or DOM element specifying the structure to wrAp Around the content of the mAtched elements.
      */
-    wrapInner(wrappingElement: JQuery | Element | string): JQuery;
+    wrApInner(wrAppingElement: JQuery | Element | string): JQuery;
     /**
-     * Wrap an HTML structure around the content of each element in the set of matched elements.
+     * WrAp An HTML structure Around the content of eAch element in the set of mAtched elements.
      *
-     * @param func A callback function which generates a structure to wrap around the content of the matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
+     * @pArAm func A cAllbAck function which generAtes A structure to wrAp Around the content of the mAtched elements. Receives the index position of the element in the set As An Argument. Within the function, this refers to the current element in the set.
      */
-    wrapInner(func: (index: number) => string): JQuery;
+    wrApInner(func: (index: number) => string): JQuery;
 
     /**
-     * Iterate over a jQuery object, executing a function for each matched element.
+     * IterAte over A jQuery object, executing A function for eAch mAtched element.
      *
-     * @param func A function to execute for each matched element.
+     * @pArAm func A function to execute for eAch mAtched element.
      */
-    each(func: (index: number, elem: Element) => any): JQuery;
+    eAch(func: (index: number, elem: Element) => Any): JQuery;
 
     /**
-     * Retrieve one of the elements matched by the jQuery object.
+     * Retrieve one of the elements mAtched by the jQuery object.
      *
-     * @param index A zero-based integer indicating which element to retrieve.
+     * @pArAm index A zero-bAsed integer indicAting which element to retrieve.
      */
     get(index: number): HTMLElement;
     /**
-     * Retrieve the elements matched by the jQuery object.
-     * @alias toArray
+     * Retrieve the elements mAtched by the jQuery object.
+     * @AliAs toArrAy
      */
     get(): HTMLElement[];
 
     /**
-     * Search for a given element from among the matched elements.
+     * SeArch for A given element from Among the mAtched elements.
      */
     index(): number;
     /**
-     * Search for a given element from among the matched elements.
+     * SeArch for A given element from Among the mAtched elements.
      *
-     * @param selector A selector representing a jQuery collection in which to look for an element.
+     * @pArAm selector A selector representing A jQuery collection in which to look for An element.
      */
     index(selector: string | JQuery | Element): number;
 
@@ -2865,385 +2865,385 @@ interface JQuery {
      */
     length: number;
     /**
-     * A selector representing selector passed to jQuery(), if any, when creating the original set.
-     * version deprecated: 1.7, removed: 1.9
+     * A selector representing selector pAssed to jQuery(), if Any, when creAting the originAl set.
+     * version deprecAted: 1.7, removed: 1.9
      */
     selector: string;
-    [index: string]: any;
+    [index: string]: Any;
     [index: number]: HTMLElement;
 
     /**
-     * Add elements to the set of matched elements.
+     * Add elements to the set of mAtched elements.
      *
-     * @param selector A string representing a selector expression to find additional elements to add to the set of matched elements.
-     * @param context The point in the document at which the selector should begin matching; similar to the context argument of the $(selector, context) method.
+     * @pArAm selector A string representing A selector expression to find AdditionAl elements to Add to the set of mAtched elements.
+     * @pArAm context The point in the document At which the selector should begin mAtching; similAr to the context Argument of the $(selector, context) method.
      */
-    add(selector: string, context?: Element): JQuery;
+    Add(selector: string, context?: Element): JQuery;
     /**
-     * Add elements to the set of matched elements.
+     * Add elements to the set of mAtched elements.
      *
-     * @param elements One or more elements to add to the set of matched elements.
+     * @pArAm elements One or more elements to Add to the set of mAtched elements.
      */
-    add(...elements: Element[]): JQuery;
+    Add(...elements: Element[]): JQuery;
     /**
-     * Add elements to the set of matched elements.
+     * Add elements to the set of mAtched elements.
      *
-     * @param html An HTML fragment to add to the set of matched elements.
+     * @pArAm html An HTML frAgment to Add to the set of mAtched elements.
      */
-    add(html: string): JQuery;
+    Add(html: string): JQuery;
     /**
-     * Add elements to the set of matched elements.
+     * Add elements to the set of mAtched elements.
      *
-     * @param obj An existing jQuery object to add to the set of matched elements.
+     * @pArAm obj An existing jQuery object to Add to the set of mAtched elements.
      */
-    add(obj: JQuery): JQuery;
+    Add(obj: JQuery): JQuery;
 
     /**
-     * Get the children of each element in the set of matched elements, optionally filtered by a selector.
+     * Get the children of eAch element in the set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     children(selector?: string): JQuery;
 
     /**
-     * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+     * For eAch element in the set, get the first element thAt mAtches the selector by testing the element itself And trAversing up through its Ancestors in the DOM tree.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     closest(selector: string): JQuery;
     /**
-     * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+     * For eAch element in the set, get the first element thAt mAtches the selector by testing the element itself And trAversing up through its Ancestors in the DOM tree.
      *
-     * @param selector A string containing a selector expression to match elements against.
-     * @param context A DOM element within which a matching element may be found. If no context is passed in then the context of the jQuery set will be used instead.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
+     * @pArAm context A DOM element within which A mAtching element mAy be found. If no context is pAssed in then the context of the jQuery set will be used insteAd.
      */
     closest(selector: string, context?: Element): JQuery;
     /**
-     * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+     * For eAch element in the set, get the first element thAt mAtches the selector by testing the element itself And trAversing up through its Ancestors in the DOM tree.
      *
-     * @param obj A jQuery object to match elements against.
+     * @pArAm obj A jQuery object to mAtch elements AgAinst.
      */
     closest(obj: JQuery): JQuery;
     /**
-     * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+     * For eAch element in the set, get the first element thAt mAtches the selector by testing the element itself And trAversing up through its Ancestors in the DOM tree.
      *
-     * @param element An element to match elements against.
+     * @pArAm element An element to mAtch elements AgAinst.
      */
     closest(element: Element): JQuery;
 
     /**
-     * Get an array of all the elements and selectors matched against the current element up through the DOM tree.
+     * Get An ArrAy of All the elements And selectors mAtched AgAinst the current element up through the DOM tree.
      *
-     * @param selectors An array or string containing a selector expression to match elements against (can also be a jQuery object).
-     * @param context A DOM element within which a matching element may be found. If no context is passed in then the context of the jQuery set will be used instead.
+     * @pArAm selectors An ArrAy or string contAining A selector expression to mAtch elements AgAinst (cAn Also be A jQuery object).
+     * @pArAm context A DOM element within which A mAtching element mAy be found. If no context is pAssed in then the context of the jQuery set will be used insteAd.
      */
-    closest(selectors: any, context?: Element): any[];
+    closest(selectors: Any, context?: Element): Any[];
 
     /**
-     * Get the children of each element in the set of matched elements, including text and comment nodes.
+     * Get the children of eAch element in the set of mAtched elements, including text And comment nodes.
      */
     contents(): JQuery;
 
     /**
-     * End the most recent filtering operation in the current chain and return the set of matched elements to its previous state.
+     * End the most recent filtering operAtion in the current chAin And return the set of mAtched elements to its previous stAte.
      */
     end(): JQuery;
 
     /**
-     * Reduce the set of matched elements to the one at the specified index.
+     * Reduce the set of mAtched elements to the one At the specified index.
      *
-     * @param index An integer indicating the 0-based position of the element. OR An integer indicating the position of the element, counting backwards from the last element in the set.
+     * @pArAm index An integer indicAting the 0-bAsed position of the element. OR An integer indicAting the position of the element, counting bAckwArds from the lAst element in the set.
      *
      */
     eq(index: number): JQuery;
 
     /**
-     * Reduce the set of matched elements to those that match the selector or pass the function's test.
+     * Reduce the set of mAtched elements to those thAt mAtch the selector or pAss the function's test.
      *
-     * @param selector A string containing a selector expression to match the current set of elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch the current set of elements AgAinst.
      */
     filter(selector: string): JQuery;
     /**
-     * Reduce the set of matched elements to those that match the selector or pass the function's test.
+     * Reduce the set of mAtched elements to those thAt mAtch the selector or pAss the function's test.
      *
-     * @param func A function used as a test for each element in the set. this is the current DOM element.
+     * @pArAm func A function used As A test for eAch element in the set. this is the current DOM element.
      */
-    filter(func: (index: number, element: Element) => any): JQuery;
+    filter(func: (index: number, element: Element) => Any): JQuery;
     /**
-     * Reduce the set of matched elements to those that match the selector or pass the function's test.
+     * Reduce the set of mAtched elements to those thAt mAtch the selector or pAss the function's test.
      *
-     * @param element An element to match the current set of elements against.
+     * @pArAm element An element to mAtch the current set of elements AgAinst.
      */
     filter(element: Element): JQuery;
     /**
-     * Reduce the set of matched elements to those that match the selector or pass the function's test.
+     * Reduce the set of mAtched elements to those thAt mAtch the selector or pAss the function's test.
      *
-     * @param obj An existing jQuery object to match the current set of elements against.
+     * @pArAm obj An existing jQuery object to mAtch the current set of elements AgAinst.
      */
     filter(obj: JQuery): JQuery;
 
     /**
-     * Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.
+     * Get the descendAnts of eAch element in the current set of mAtched elements, filtered by A selector, jQuery object, or element.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     find(selector: string): JQuery;
     /**
-     * Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.
+     * Get the descendAnts of eAch element in the current set of mAtched elements, filtered by A selector, jQuery object, or element.
      *
-     * @param element An element to match elements against.
+     * @pArAm element An element to mAtch elements AgAinst.
      */
     find(element: Element): JQuery;
     /**
-     * Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.
+     * Get the descendAnts of eAch element in the current set of mAtched elements, filtered by A selector, jQuery object, or element.
      *
-     * @param obj A jQuery object to match elements against.
+     * @pArAm obj A jQuery object to mAtch elements AgAinst.
      */
     find(obj: JQuery): JQuery;
 
     /**
-     * Reduce the set of matched elements to the first in the set.
+     * Reduce the set of mAtched elements to the first in the set.
      */
     first(): JQuery;
 
     /**
-     * Reduce the set of matched elements to those that have a descendant that matches the selector or DOM element.
+     * Reduce the set of mAtched elements to those thAt hAve A descendAnt thAt mAtches the selector or DOM element.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
-    has(selector: string): JQuery;
+    hAs(selector: string): JQuery;
     /**
-     * Reduce the set of matched elements to those that have a descendant that matches the selector or DOM element.
+     * Reduce the set of mAtched elements to those thAt hAve A descendAnt thAt mAtches the selector or DOM element.
      *
-     * @param contained A DOM element to match elements against.
+     * @pArAm contAined A DOM element to mAtch elements AgAinst.
      */
-    has(contained: Element): JQuery;
+    hAs(contAined: Element): JQuery;
 
     /**
-     * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+     * Check the current mAtched set of elements AgAinst A selector, element, or jQuery object And return true if At leAst one of these elements mAtches the given Arguments.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
-    is(selector: string): boolean;
+    is(selector: string): booleAn;
     /**
-     * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+     * Check the current mAtched set of elements AgAinst A selector, element, or jQuery object And return true if At leAst one of these elements mAtches the given Arguments.
      *
-     * @param func A function used as a test for the set of elements. It accepts one argument, index, which is the element's index in the jQuery collection.Within the function, this refers to the current DOM element.
+     * @pArAm func A function used As A test for the set of elements. It Accepts one Argument, index, which is the element's index in the jQuery collection.Within the function, this refers to the current DOM element.
      */
-    is(func: (index: number, element: Element) => boolean): boolean;
+    is(func: (index: number, element: Element) => booleAn): booleAn;
     /**
-     * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+     * Check the current mAtched set of elements AgAinst A selector, element, or jQuery object And return true if At leAst one of these elements mAtches the given Arguments.
      *
-     * @param obj An existing jQuery object to match the current set of elements against.
+     * @pArAm obj An existing jQuery object to mAtch the current set of elements AgAinst.
      */
-    is(obj: JQuery): boolean;
+    is(obj: JQuery): booleAn;
     /**
-     * Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+     * Check the current mAtched set of elements AgAinst A selector, element, or jQuery object And return true if At leAst one of these elements mAtches the given Arguments.
      *
-     * @param elements One or more elements to match the current set of elements against.
+     * @pArAm elements One or more elements to mAtch the current set of elements AgAinst.
      */
-    is(elements: any): boolean;
+    is(elements: Any): booleAn;
 
     /**
-     * Reduce the set of matched elements to the final one in the set.
+     * Reduce the set of mAtched elements to the finAl one in the set.
      */
-    last(): JQuery;
+    lAst(): JQuery;
 
     /**
-     * Pass each element in the current matched set through a function, producing a new jQuery object containing the return values.
+     * PAss eAch element in the current mAtched set through A function, producing A new jQuery object contAining the return vAlues.
      *
-     * @param callback A function object that will be invoked for each element in the current set.
+     * @pArAm cAllbAck A function object thAt will be invoked for eAch element in the current set.
      */
-    map(callback: (index: number, domElement: Element) => any): JQuery;
+    mAp(cAllbAck: (index: number, domElement: Element) => Any): JQuery;
 
     /**
-     * Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.
+     * Get the immediAtely following sibling of eAch element in the set of mAtched elements. If A selector is provided, it retrieves the next sibling only if it mAtches thAt selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     next(selector?: string): JQuery;
 
     /**
-     * Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.
+     * Get All following siblings of eAch element in the set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     nextAll(selector?: string): JQuery;
 
     /**
-     * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
+     * Get All following siblings of eAch element up to but not including the element mAtched by the selector, DOM node, or jQuery object pAssed.
      *
-     * @param selector A string containing a selector expression to indicate where to stop matching following sibling elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to indicAte where to stop mAtching following sibling elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
     nextUntil(selector?: string, filter?: string): JQuery;
     /**
-     * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
+     * Get All following siblings of eAch element up to but not including the element mAtched by the selector, DOM node, or jQuery object pAssed.
      *
-     * @param element A DOM node or jQuery object indicating where to stop matching following sibling elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm element A DOM node or jQuery object indicAting where to stop mAtching following sibling elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
     nextUntil(element?: Element, filter?: string): JQuery;
     /**
-     * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
+     * Get All following siblings of eAch element up to but not including the element mAtched by the selector, DOM node, or jQuery object pAssed.
      *
-     * @param obj A DOM node or jQuery object indicating where to stop matching following sibling elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm obj A DOM node or jQuery object indicAting where to stop mAtching following sibling elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
     nextUntil(obj?: JQuery, filter?: string): JQuery;
 
     /**
-     * Remove elements from the set of matched elements.
+     * Remove elements from the set of mAtched elements.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     not(selector: string): JQuery;
     /**
-     * Remove elements from the set of matched elements.
+     * Remove elements from the set of mAtched elements.
      *
-     * @param func A function used as a test for each element in the set. this is the current DOM element.
+     * @pArAm func A function used As A test for eAch element in the set. this is the current DOM element.
      */
-    not(func: (index: number, element: Element) => boolean): JQuery;
+    not(func: (index: number, element: Element) => booleAn): JQuery;
     /**
-     * Remove elements from the set of matched elements.
+     * Remove elements from the set of mAtched elements.
      *
-     * @param elements One or more DOM elements to remove from the matched set.
+     * @pArAm elements One or more DOM elements to remove from the mAtched set.
      */
     not(elements: Element | Element[]): JQuery;
     /**
-     * Remove elements from the set of matched elements.
+     * Remove elements from the set of mAtched elements.
      *
-     * @param obj An existing jQuery object to match the current set of elements against.
+     * @pArAm obj An existing jQuery object to mAtch the current set of elements AgAinst.
      */
     not(obj: JQuery): JQuery;
 
     /**
-     * Get the closest ancestor element that is positioned.
+     * Get the closest Ancestor element thAt is positioned.
      */
-    offsetParent(): JQuery;
+    offsetPArent(): JQuery;
 
     /**
-     * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.
+     * Get the pArent of eAch element in the current set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
-    parent(selector?: string): JQuery;
+    pArent(selector?: string): JQuery;
 
     /**
-     * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
+     * Get the Ancestors of eAch element in the current set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
-    parents(selector?: string): JQuery;
+    pArents(selector?: string): JQuery;
 
     /**
-     * Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * Get the Ancestors of eAch element in the current set of mAtched elements, up to but not including the element mAtched by the selector, DOM node, or jQuery object.
      *
-     * @param selector A string containing a selector expression to indicate where to stop matching ancestor elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to indicAte where to stop mAtching Ancestor elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
-    parentsUntil(selector?: string, filter?: string): JQuery;
+    pArentsUntil(selector?: string, filter?: string): JQuery;
     /**
-     * Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * Get the Ancestors of eAch element in the current set of mAtched elements, up to but not including the element mAtched by the selector, DOM node, or jQuery object.
      *
-     * @param element A DOM node or jQuery object indicating where to stop matching ancestor elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm element A DOM node or jQuery object indicAting where to stop mAtching Ancestor elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
-    parentsUntil(element?: Element, filter?: string): JQuery;
+    pArentsUntil(element?: Element, filter?: string): JQuery;
     /**
-     * Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * Get the Ancestors of eAch element in the current set of mAtched elements, up to but not including the element mAtched by the selector, DOM node, or jQuery object.
      *
-     * @param obj A DOM node or jQuery object indicating where to stop matching ancestor elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm obj A DOM node or jQuery object indicAting where to stop mAtching Ancestor elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
-    parentsUntil(obj?: JQuery, filter?: string): JQuery;
+    pArentsUntil(obj?: JQuery, filter?: string): JQuery;
 
     /**
-     * Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.
+     * Get the immediAtely preceding sibling of eAch element in the set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     prev(selector?: string): JQuery;
 
     /**
-     * Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.
+     * Get All preceding siblings of eAch element in the set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     prevAll(selector?: string): JQuery;
 
     /**
-     * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * Get All preceding siblings of eAch element up to but not including the element mAtched by the selector, DOM node, or jQuery object.
      *
-     * @param selector A string containing a selector expression to indicate where to stop matching preceding sibling elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to indicAte where to stop mAtching preceding sibling elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
     prevUntil(selector?: string, filter?: string): JQuery;
     /**
-     * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * Get All preceding siblings of eAch element up to but not including the element mAtched by the selector, DOM node, or jQuery object.
      *
-     * @param element A DOM node or jQuery object indicating where to stop matching preceding sibling elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm element A DOM node or jQuery object indicAting where to stop mAtching preceding sibling elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
     prevUntil(element?: Element, filter?: string): JQuery;
     /**
-     * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
+     * Get All preceding siblings of eAch element up to but not including the element mAtched by the selector, DOM node, or jQuery object.
      *
-     * @param obj A DOM node or jQuery object indicating where to stop matching preceding sibling elements.
-     * @param filter A string containing a selector expression to match elements against.
+     * @pArAm obj A DOM node or jQuery object indicAting where to stop mAtching preceding sibling elements.
+     * @pArAm filter A string contAining A selector expression to mAtch elements AgAinst.
      */
     prevUntil(obj?: JQuery, filter?: string): JQuery;
 
     /**
-     * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
+     * Get the siblings of eAch element in the set of mAtched elements, optionAlly filtered by A selector.
      *
-     * @param selector A string containing a selector expression to match elements against.
+     * @pArAm selector A string contAining A selector expression to mAtch elements AgAinst.
      */
     siblings(selector?: string): JQuery;
 
     /**
-     * Reduce the set of matched elements to a subset specified by a range of indices.
+     * Reduce the set of mAtched elements to A subset specified by A rAnge of indices.
      *
-     * @param start An integer indicating the 0-based position at which the elements begin to be selected. If negative, it indicates an offset from the end of the set.
-     * @param end An integer indicating the 0-based position at which the elements stop being selected. If negative, it indicates an offset from the end of the set. If omitted, the range continues until the end of the set.
+     * @pArAm stArt An integer indicAting the 0-bAsed position At which the elements begin to be selected. If negAtive, it indicAtes An offset from the end of the set.
+     * @pArAm end An integer indicAting the 0-bAsed position At which the elements stop being selected. If negAtive, it indicAtes An offset from the end of the set. If omitted, the rAnge continues until the end of the set.
      */
-    slice(start: number, end?: number): JQuery;
+    slice(stArt: number, end?: number): JQuery;
 
     /**
-     * Show the queue of functions to be executed on the matched elements.
+     * Show the queue of functions to be executed on the mAtched elements.
      *
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
      */
-    queue(queueName?: string): any[];
+    queue(queueNAme?: string): Any[];
     /**
-     * Manipulate the queue of functions to be executed, once for each matched element.
+     * MAnipulAte the queue of functions to be executed, once for eAch mAtched element.
      *
-     * @param newQueue An array of functions to replace the current queue contents.
+     * @pArAm newQueue An ArrAy of functions to replAce the current queue contents.
      */
     queue(newQueue: Function[]): JQuery;
     /**
-     * Manipulate the queue of functions to be executed, once for each matched element.
+     * MAnipulAte the queue of functions to be executed, once for eAch mAtched element.
      *
-     * @param callback The new function to add to the queue, with a function to call that will dequeue the next item.
+     * @pArAm cAllbAck The new function to Add to the queue, with A function to cAll thAt will dequeue the next item.
      */
-    queue(callback: Function): JQuery;
+    queue(cAllbAck: Function): JQuery;
     /**
-     * Manipulate the queue of functions to be executed, once for each matched element.
+     * MAnipulAte the queue of functions to be executed, once for eAch mAtched element.
      *
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
-     * @param newQueue An array of functions to replace the current queue contents.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
+     * @pArAm newQueue An ArrAy of functions to replAce the current queue contents.
      */
-    queue(queueName: string, newQueue: Function[]): JQuery;
+    queue(queueNAme: string, newQueue: Function[]): JQuery;
     /**
-     * Manipulate the queue of functions to be executed, once for each matched element.
+     * MAnipulAte the queue of functions to be executed, once for eAch mAtched element.
      *
-     * @param queueName A string containing the name of the queue. Defaults to fx, the standard effects queue.
-     * @param callback The new function to add to the queue, with a function to call that will dequeue the next item.
+     * @pArAm queueNAme A string contAining the nAme of the queue. DefAults to fx, the stAndArd effects queue.
+     * @pArAm cAllbAck The new function to Add to the queue, with A function to cAll thAt will dequeue the next item.
      */
-    queue(queueName: string, callback: Function): JQuery;
+    queue(queueNAme: string, cAllbAck: Function): JQuery;
 }
-declare module 'jquery' {
+declAre module 'jquery' {
     export = $;
 }
-declare const jQuery: JQueryStatic;
-declare const $: JQueryStatic;
+declAre const jQuery: JQueryStAtic;
+declAre const $: JQueryStAtic;

@@ -1,17 +1,17 @@
 /*
 The MIT License (MIT)
 
-Copyright © 2015 Nicolas Bevacqua
+Copyright © 2015 NicolAs BevAcquA
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
+Permission is hereby grAnted, free of chArge, to Any person obtAining A copy of
+this softwAre And AssociAted documentAtion files (the "SoftwAre"), to deAl in
+the SoftwAre without restriction, including without limitAtion the rights to
+use, copy, modify, merge, publish, distribute, sublicense, And/or sell copies of
+the SoftwAre, And to permit persons to whom the SoftwAre is furnished to do so,
 subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The Above copyright notice And this permission notice shAll be included in All
+copies or substAntiAl portions of the SoftwAre.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
@@ -21,95 +21,95 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-let __insane_func;
+let __insAne_func;
 
-(function () { function r(e, n, t) { function o(i, f) { if (!n[i]) { if (!e[i]) { var c = "function" == typeof require && require; if (!f && c) return c(i, !0); if (u) return u(i, !0); var a = new Error("Cannot find module '" + i + "'"); throw a.code = "MODULE_NOT_FOUND", a } var p = n[i] = { exports: {} }; e[i][0].call(p.exports, function (r) { var n = e[i][1][r]; return o(n || r) }, p, p.exports, r, e, n, t) } return n[i].exports } for (var u = "function" == typeof require && require, i = 0; i < t.length; i++)o(t[i]); return o } return r })()({
+(function () { function r(e, n, t) { function o(i, f) { if (!n[i]) { if (!e[i]) { vAr c = "function" == typeof require && require; if (!f && c) return c(i, !0); if (u) return u(i, !0); vAr A = new Error("CAnnot find module '" + i + "'"); throw A.code = "MODULE_NOT_FOUND", A } vAr p = n[i] = { exports: {} }; e[i][0].cAll(p.exports, function (r) { vAr n = e[i][1][r]; return o(n || r) }, p, p.exports, r, e, n, t) } return n[i].exports } for (vAr u = "function" == typeof require && require, i = 0; i < t.length; i++)o(t[i]); return o } return r })()({
 	1: [function (require, module, exports) {
 		'use strict';
 
-		var toMap = require('./toMap');
-		var uris = ['background', 'base', 'cite', 'href', 'longdesc', 'src', 'usemap'];
+		vAr toMAp = require('./toMAp');
+		vAr uris = ['bAckground', 'bAse', 'cite', 'href', 'longdesc', 'src', 'usemAp'];
 
 		module.exports = {
-			uris: toMap(uris) // attributes that have an href and hence need to be sanitized
+			uris: toMAp(uris) // Attributes thAt hAve An href And hence need to be sAnitized
 		};
 
-	}, { "./toMap": 10 }], 2: [function (require, module, exports) {
+	}, { "./toMAp": 10 }], 2: [function (require, module, exports) {
 		'use strict';
 
-		var defaults = {
-			allowedAttributes: {
-				'*': ['title', 'accesskey'],
-				a: ['href', 'name', 'target', 'aria-label'],
-				iframe: ['allowfullscreen', 'frameborder', 'src'],
-				img: ['src', 'alt', 'title', 'aria-label']
+		vAr defAults = {
+			AllowedAttributes: {
+				'*': ['title', 'Accesskey'],
+				A: ['href', 'nAme', 'tArget', 'AriA-lAbel'],
+				ifrAme: ['Allowfullscreen', 'frAmeborder', 'src'],
+				img: ['src', 'Alt', 'title', 'AriA-lAbel']
 			},
-			allowedClasses: {},
-			allowedSchemes: ['http', 'https', 'mailto'],
-			allowedTags: [
-				'a', 'abbr', 'article', 'b', 'blockquote', 'br', 'caption', 'code', 'del', 'details', 'div', 'em',
-				'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins', 'kbd', 'li', 'main', 'mark',
-				'ol', 'p', 'pre', 'section', 'span', 'strike', 'strong', 'sub', 'summary', 'sup', 'table',
-				'tbody', 'td', 'th', 'thead', 'tr', 'u', 'ul'
+			AllowedClAsses: {},
+			AllowedSchemes: ['http', 'https', 'mAilto'],
+			AllowedTAgs: [
+				'A', 'Abbr', 'Article', 'b', 'blockquote', 'br', 'cAption', 'code', 'del', 'detAils', 'div', 'em',
+				'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins', 'kbd', 'li', 'mAin', 'mArk',
+				'ol', 'p', 'pre', 'section', 'spAn', 'strike', 'strong', 'sub', 'summAry', 'sup', 'tAble',
+				'tbody', 'td', 'th', 'theAd', 'tr', 'u', 'ul'
 			],
 			filter: null
 		};
 
-		module.exports = defaults;
+		module.exports = defAults;
 
 	}, {}], 3: [function (require, module, exports) {
 		'use strict';
 
-		var toMap = require('./toMap');
-		var voids = ['area', 'br', 'col', 'hr', 'img', 'wbr', 'input', 'base', 'basefont', 'link', 'meta'];
+		vAr toMAp = require('./toMAp');
+		vAr voids = ['AreA', 'br', 'col', 'hr', 'img', 'wbr', 'input', 'bAse', 'bAsefont', 'link', 'metA'];
 
 		module.exports = {
-			voids: toMap(voids)
+			voids: toMAp(voids)
 		};
 
-	}, { "./toMap": 10 }], 4: [function (require, module, exports) {
+	}, { "./toMAp": 10 }], 4: [function (require, module, exports) {
 		'use strict';
 
-		var he = require('he');
-		var assign = require('assignment');
-		var parser = require('./parser');
-		var sanitizer = require('./sanitizer');
-		var defaults = require('./defaults');
+		vAr he = require('he');
+		vAr Assign = require('Assignment');
+		vAr pArser = require('./pArser');
+		vAr sAnitizer = require('./sAnitizer');
+		vAr defAults = require('./defAults');
 
-		function insane(html, options, strict) {
-			var buffer = [];
-			var configuration = strict === true ? options : assign({}, defaults, options);
-			var handler = sanitizer(buffer, configuration);
+		function insAne(html, options, strict) {
+			vAr buffer = [];
+			vAr configurAtion = strict === true ? options : Assign({}, defAults, options);
+			vAr hAndler = sAnitizer(buffer, configurAtion);
 
-			parser(html, handler);
+			pArser(html, hAndler);
 
 			return buffer.join('');
 		}
 
-		insane.defaults = defaults;
-		module.exports = insane;
-		__insane_func = insane;
+		insAne.defAults = defAults;
+		module.exports = insAne;
+		__insAne_func = insAne;
 
-	}, { "./defaults": 2, "./parser": 7, "./sanitizer": 8, "assignment": 6, "he": 9 }], 5: [function (require, module, exports) {
+	}, { "./defAults": 2, "./pArser": 7, "./sAnitizer": 8, "Assignment": 6, "he": 9 }], 5: [function (require, module, exports) {
 		'use strict';
 
-		module.exports = function lowercase(string) {
-			return typeof string === 'string' ? string.toLowerCase() : string;
+		module.exports = function lowercAse(string) {
+			return typeof string === 'string' ? string.toLowerCAse() : string;
 		};
 
 	}, {}], 6: [function (require, module, exports) {
 		'use strict';
 
-		function assignment(result) {
-			var stack = Array.prototype.slice.call(arguments, 1);
-			var item;
-			var key;
-			while (stack.length) {
-				item = stack.shift();
+		function Assignment(result) {
+			vAr stAck = ArrAy.prototype.slice.cAll(Arguments, 1);
+			vAr item;
+			vAr key;
+			while (stAck.length) {
+				item = stAck.shift();
 				for (key in item) {
-					if (item.hasOwnProperty(key)) {
-						if (Object.prototype.toString.call(result[key]) === '[object Object]') {
-							result[key] = assignment(result[key], item[key]);
+					if (item.hAsOwnProperty(key)) {
+						if (Object.prototype.toString.cAll(result[key]) === '[object Object]') {
+							result[key] = Assignment(result[key], item[key]);
 						} else {
 							result[key] = item[key];
 						}
@@ -119,88 +119,88 @@ let __insane_func;
 			return result;
 		}
 
-		module.exports = assignment;
+		module.exports = Assignment;
 
 	}, {}], 7: [function (require, module, exports) {
 		'use strict';
 
-		var he = require('he');
-		var lowercase = require('./lowercase');
-		var attributes = require('./attributes');
-		var elements = require('./elements');
-		var rstart = /^<\s*([\w:-]+)((?:\s+[\w:-]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)\s*>/;
-		var rend = /^<\s*\/\s*([\w:-]+)[^>]*>/;
-		var rattrs = /([\w:-]+)(?:\s*=\s*(?:(?:"((?:[^"])*)")|(?:'((?:[^'])*)')|([^>\s]+)))?/g;
-		var rtag = /^</;
-		var rtagend = /^<\s*\//;
+		vAr he = require('he');
+		vAr lowercAse = require('./lowercAse');
+		vAr Attributes = require('./Attributes');
+		vAr elements = require('./elements');
+		vAr rstArt = /^<\s*([\w:-]+)((?:\s+[\w:-]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)\s*>/;
+		vAr rend = /^<\s*\/\s*([\w:-]+)[^>]*>/;
+		vAr rAttrs = /([\w:-]+)(?:\s*=\s*(?:(?:"((?:[^"])*)")|(?:'((?:[^'])*)')|([^>\s]+)))?/g;
+		vAr rtAg = /^</;
+		vAr rtAgend = /^<\s*\//;
 
-		function createStack() {
-			var stack = [];
-			stack.lastItem = function lastItem() {
-				return stack[stack.length - 1];
+		function creAteStAck() {
+			vAr stAck = [];
+			stAck.lAstItem = function lAstItem() {
+				return stAck[stAck.length - 1];
 			};
-			return stack;
+			return stAck;
 		}
 
-		function parser(html, handler) {
-			var stack = createStack();
-			var last = html;
-			var chars;
+		function pArser(html, hAndler) {
+			vAr stAck = creAteStAck();
+			vAr lAst = html;
+			vAr chArs;
 
 			while (html) {
-				parsePart();
+				pArsePArt();
 			}
-			parseEndTag(); // clean up any remaining tags
+			pArseEndTAg(); // cleAn up Any remAining tAgs
 
-			function parsePart() {
-				chars = true;
-				parseTag();
+			function pArsePArt() {
+				chArs = true;
+				pArseTAg();
 
-				var same = html === last;
-				last = html;
+				vAr sAme = html === lAst;
+				lAst = html;
 
-				if (same) { // discard, because it's invalid
+				if (sAme) { // discArd, becAuse it's invAlid
 					html = '';
 				}
 			}
 
-			function parseTag() {
+			function pArseTAg() {
 				if (html.substr(0, 4) === '<!--') { // comments
-					parseComment();
-				} else if (rtagend.test(html)) {
-					parseEdge(rend, parseEndTag);
-				} else if (rtag.test(html)) {
-					parseEdge(rstart, parseStartTag);
+					pArseComment();
+				} else if (rtAgend.test(html)) {
+					pArseEdge(rend, pArseEndTAg);
+				} else if (rtAg.test(html)) {
+					pArseEdge(rstArt, pArseStArtTAg);
 				}
-				parseTagDecode();
+				pArseTAgDecode();
 			}
 
-			function parseEdge(regex, parser) {
-				var match = html.match(regex);
-				if (match) {
-					html = html.substring(match[0].length);
-					match[0].replace(regex, parser);
-					chars = false;
+			function pArseEdge(regex, pArser) {
+				vAr mAtch = html.mAtch(regex);
+				if (mAtch) {
+					html = html.substring(mAtch[0].length);
+					mAtch[0].replAce(regex, pArser);
+					chArs = fAlse;
 				}
 			}
 
-			function parseComment() {
-				var index = html.indexOf('-->');
+			function pArseComment() {
+				vAr index = html.indexOf('-->');
 				if (index >= 0) {
-					if (handler.comment) {
-						handler.comment(html.substring(4, index));
+					if (hAndler.comment) {
+						hAndler.comment(html.substring(4, index));
 					}
 					html = html.substring(index + 3);
-					chars = false;
+					chArs = fAlse;
 				}
 			}
 
-			function parseTagDecode() {
-				if (!chars) {
+			function pArseTAgDecode() {
+				if (!chArs) {
 					return;
 				}
-				var text;
-				var index = html.indexOf('<');
+				vAr text;
+				vAr index = html.indexOf('<');
 				if (index >= 0) {
 					text = html.substring(0, index);
 					html = html.substring(index);
@@ -208,134 +208,134 @@ let __insane_func;
 					text = html;
 					html = '';
 				}
-				if (handler.chars) {
-					handler.chars(text);
+				if (hAndler.chArs) {
+					hAndler.chArs(text);
 				}
 			}
 
-			function parseStartTag(tag, tagName, rest, unary) {
-				var attrs = {};
-				var low = lowercase(tagName);
-				var u = elements.voids[low] || !!unary;
+			function pArseStArtTAg(tAg, tAgNAme, rest, unAry) {
+				vAr Attrs = {};
+				vAr low = lowercAse(tAgNAme);
+				vAr u = elements.voids[low] || !!unAry;
 
-				rest.replace(rattrs, attrReplacer);
+				rest.replAce(rAttrs, AttrReplAcer);
 
 				if (!u) {
-					stack.push(low);
+					stAck.push(low);
 				}
-				if (handler.start) {
-					handler.start(low, attrs, u);
+				if (hAndler.stArt) {
+					hAndler.stArt(low, Attrs, u);
 				}
 
-				function attrReplacer(match, name, doubleQuotedValue, singleQuotedValue, unquotedValue) {
-					if (doubleQuotedValue === void 0 && singleQuotedValue === void 0 && unquotedValue === void 0) {
-						attrs[name] = void 0; // attribute is like <button disabled></button>
+				function AttrReplAcer(mAtch, nAme, doubleQuotedVAlue, singleQuotedVAlue, unquotedVAlue) {
+					if (doubleQuotedVAlue === void 0 && singleQuotedVAlue === void 0 && unquotedVAlue === void 0) {
+						Attrs[nAme] = void 0; // Attribute is like <button disAbled></button>
 					} else {
-						attrs[name] = he.decode(doubleQuotedValue || singleQuotedValue || unquotedValue || '');
+						Attrs[nAme] = he.decode(doubleQuotedVAlue || singleQuotedVAlue || unquotedVAlue || '');
 					}
 				}
 			}
 
-			function parseEndTag(tag, tagName) {
-				var i;
-				var pos = 0;
-				var low = lowercase(tagName);
+			function pArseEndTAg(tAg, tAgNAme) {
+				vAr i;
+				vAr pos = 0;
+				vAr low = lowercAse(tAgNAme);
 				if (low) {
-					for (pos = stack.length - 1; pos >= 0; pos--) {
-						if (stack[pos] === low) {
-							break; // find the closest opened tag of the same type
+					for (pos = stAck.length - 1; pos >= 0; pos--) {
+						if (stAck[pos] === low) {
+							breAk; // find the closest opened tAg of the sAme type
 						}
 					}
 				}
 				if (pos >= 0) {
-					for (i = stack.length - 1; i >= pos; i--) {
-						if (handler.end) { // close all the open elements, up the stack
-							handler.end(stack[i]);
+					for (i = stAck.length - 1; i >= pos; i--) {
+						if (hAndler.end) { // close All the open elements, up the stAck
+							hAndler.end(stAck[i]);
 						}
 					}
-					stack.length = pos;
+					stAck.length = pos;
 				}
 			}
 		}
 
-		module.exports = parser;
+		module.exports = pArser;
 
-	}, { "./attributes": 1, "./elements": 3, "./lowercase": 5, "he": 9 }], 8: [function (require, module, exports) {
+	}, { "./Attributes": 1, "./elements": 3, "./lowercAse": 5, "he": 9 }], 8: [function (require, module, exports) {
 		'use strict';
 
-		var he = require('he');
-		var lowercase = require('./lowercase');
-		var attributes = require('./attributes');
-		var elements = require('./elements');
+		vAr he = require('he');
+		vAr lowercAse = require('./lowercAse');
+		vAr Attributes = require('./Attributes');
+		vAr elements = require('./elements');
 
-		function sanitizer(buffer, options) {
-			var last;
-			var context;
-			var o = options || {};
+		function sAnitizer(buffer, options) {
+			vAr lAst;
+			vAr context;
+			vAr o = options || {};
 
 			reset();
 
 			return {
-				start: start,
+				stArt: stArt,
 				end: end,
-				chars: chars
+				chArs: chArs
 			};
 
-			function out(value) {
-				buffer.push(value);
+			function out(vAlue) {
+				buffer.push(vAlue);
 			}
 
-			function start(tag, attrs, unary) {
-				var low = lowercase(tag);
+			function stArt(tAg, Attrs, unAry) {
+				vAr low = lowercAse(tAg);
 
 				if (context.ignoring) {
 					ignore(low); return;
 				}
-				if ((o.allowedTags || []).indexOf(low) === -1) {
+				if ((o.AllowedTAgs || []).indexOf(low) === -1) {
 					ignore(low); return;
 				}
-				if (o.filter && !o.filter({ tag: low, attrs: attrs })) {
+				if (o.filter && !o.filter({ tAg: low, Attrs: Attrs })) {
 					ignore(low); return;
 				}
 
 				out('<');
 				out(low);
-				Object.keys(attrs).forEach(parse);
-				out(unary ? '/>' : '>');
+				Object.keys(Attrs).forEAch(pArse);
+				out(unAry ? '/>' : '>');
 
-				function parse(key) {
-					var value = attrs[key];
-					var classesOk = (o.allowedClasses || {})[low] || [];
-					var attrsOk = (o.allowedAttributes || {})[low] || [];
-					attrsOk = attrsOk.concat((o.allowedAttributes || {})['*'] || []);
-					var valid;
-					var lkey = lowercase(key);
-					if (lkey === 'class' && attrsOk.indexOf(lkey) === -1) {
-						value = value.split(' ').filter(isValidClass).join(' ').trim();
-						valid = value.length;
+				function pArse(key) {
+					vAr vAlue = Attrs[key];
+					vAr clAssesOk = (o.AllowedClAsses || {})[low] || [];
+					vAr AttrsOk = (o.AllowedAttributes || {})[low] || [];
+					AttrsOk = AttrsOk.concAt((o.AllowedAttributes || {})['*'] || []);
+					vAr vAlid;
+					vAr lkey = lowercAse(key);
+					if (lkey === 'clAss' && AttrsOk.indexOf(lkey) === -1) {
+						vAlue = vAlue.split(' ').filter(isVAlidClAss).join(' ').trim();
+						vAlid = vAlue.length;
 					} else {
-						valid = attrsOk.indexOf(lkey) !== -1 && (attributes.uris[lkey] !== true || testUrl(value));
+						vAlid = AttrsOk.indexOf(lkey) !== -1 && (Attributes.uris[lkey] !== true || testUrl(vAlue));
 					}
-					if (valid) {
+					if (vAlid) {
 						out(' ');
 						out(key);
-						if (typeof value === 'string') {
+						if (typeof vAlue === 'string') {
 							out('="');
-							out(he.encode(value));
+							out(he.encode(vAlue));
 							out('"');
 						}
 					}
-					function isValidClass(className) {
-						return classesOk && classesOk.indexOf(className) !== -1;
+					function isVAlidClAss(clAssNAme) {
+						return clAssesOk && clAssesOk.indexOf(clAssNAme) !== -1;
 					}
 				}
 			}
 
-			function end(tag) {
-				var low = lowercase(tag);
-				var allowed = (o.allowedTags || []).indexOf(low) !== -1;
-				if (allowed) {
-					if (context.ignoring === false) {
+			function end(tAg) {
+				vAr low = lowercAse(tAg);
+				vAr Allowed = (o.AllowedTAgs || []).indexOf(low) !== -1;
+				if (Allowed) {
+					if (context.ignoring === fAlse) {
 						out('</');
 						out(low);
 						out('>');
@@ -348,48 +348,48 @@ let __insane_func;
 			}
 
 			function testUrl(text) {
-				var start = text[0];
-				if (start === '#' || start === '/') {
+				vAr stArt = text[0];
+				if (stArt === '#' || stArt === '/') {
 					return true;
 				}
-				var colon = text.indexOf(':');
+				vAr colon = text.indexOf(':');
 				if (colon === -1) {
 					return true;
 				}
-				var questionmark = text.indexOf('?');
-				if (questionmark !== -1 && colon > questionmark) {
+				vAr questionmArk = text.indexOf('?');
+				if (questionmArk !== -1 && colon > questionmArk) {
 					return true;
 				}
-				var hash = text.indexOf('#');
-				if (hash !== -1 && colon > hash) {
+				vAr hAsh = text.indexOf('#');
+				if (hAsh !== -1 && colon > hAsh) {
 					return true;
 				}
-				return o.allowedSchemes.some(matches);
+				return o.AllowedSchemes.some(mAtches);
 
-				function matches(scheme) {
+				function mAtches(scheme) {
 					return text.indexOf(scheme + ':') === 0;
 				}
 			}
 
-			function chars(text) {
-				if (context.ignoring === false) {
-					out(o.transformText ? o.transformText(text) : text);
+			function chArs(text) {
+				if (context.ignoring === fAlse) {
+					out(o.trAnsformText ? o.trAnsformText(text) : text);
 				}
 			}
 
-			function ignore(tag) {
-				if (elements.voids[tag]) {
+			function ignore(tAg) {
+				if (elements.voids[tAg]) {
 					return;
 				}
-				if (context.ignoring === false) {
-					context = { ignoring: tag, depth: 1 };
-				} else if (context.ignoring === tag) {
+				if (context.ignoring === fAlse) {
+					context = { ignoring: tAg, depth: 1 };
+				} else if (context.ignoring === tAg) {
 					context.depth++;
 				}
 			}
 
-			function unignore(tag) {
-				if (context.ignoring === tag) {
+			function unignore(tAg) {
+				if (context.ignoring === tAg) {
 					if (--context.depth <= 0) {
 						reset();
 					}
@@ -397,78 +397,78 @@ let __insane_func;
 			}
 
 			function reset() {
-				context = { ignoring: false, depth: 0 };
+				context = { ignoring: fAlse, depth: 0 };
 			}
 		}
 
-		module.exports = sanitizer;
+		module.exports = sAnitizer;
 
-	}, { "./attributes": 1, "./elements": 3, "./lowercase": 5, "he": 9 }], 9: [function (require, module, exports) {
+	}, { "./Attributes": 1, "./elements": 3, "./lowercAse": 5, "he": 9 }], 9: [function (require, module, exports) {
 		'use strict';
 
-		var escapes = {
-			'&': '&amp;',
+		vAr escApes = {
+			'&': '&Amp;',
 			'<': '&lt;',
 			'>': '&gt;',
 			'"': '&quot;',
 			"'": '&#39;'
 		};
-		var unescapes = {
-			'&amp;': '&',
+		vAr unescApes = {
+			'&Amp;': '&',
 			'&lt;': '<',
 			'&gt;': '>',
 			'&quot;': '"',
 			'&#39;': "'"
 		};
-		var rescaped = /(&amp;|&lt;|&gt;|&quot;|&#39;)/g;
-		var runescaped = /[&<>"']/g;
+		vAr rescAped = /(&Amp;|&lt;|&gt;|&quot;|&#39;)/g;
+		vAr runescAped = /[&<>"']/g;
 
-		function escapeHtmlChar(match) {
-			return escapes[match];
+		function escApeHtmlChAr(mAtch) {
+			return escApes[mAtch];
 		}
-		function unescapeHtmlChar(match) {
-			return unescapes[match];
-		}
-
-		function escapeHtml(text) {
-			return text == null ? '' : String(text).replace(runescaped, escapeHtmlChar);
+		function unescApeHtmlChAr(mAtch) {
+			return unescApes[mAtch];
 		}
 
-		function unescapeHtml(html) {
-			return html == null ? '' : String(html).replace(rescaped, unescapeHtmlChar);
+		function escApeHtml(text) {
+			return text == null ? '' : String(text).replAce(runescAped, escApeHtmlChAr);
 		}
 
-		escapeHtml.options = unescapeHtml.options = {};
+		function unescApeHtml(html) {
+			return html == null ? '' : String(html).replAce(rescAped, unescApeHtmlChAr);
+		}
+
+		escApeHtml.options = unescApeHtml.options = {};
 
 		module.exports = {
-			encode: escapeHtml,
-			escape: escapeHtml,
-			decode: unescapeHtml,
-			unescape: unescapeHtml,
+			encode: escApeHtml,
+			escApe: escApeHtml,
+			decode: unescApeHtml,
+			unescApe: unescApeHtml,
 			version: '1.0.0-browser'
 		};
 
 	}, {}], 10: [function (require, module, exports) {
 		'use strict';
 
-		function toMap(list) {
-			return list.reduce(asKey, {});
+		function toMAp(list) {
+			return list.reduce(AsKey, {});
 		}
 
-		function asKey(accumulator, item) {
-			accumulator[item] = true;
-			return accumulator;
+		function AsKey(AccumulAtor, item) {
+			AccumulAtor[item] = true;
+			return AccumulAtor;
 		}
 
-		module.exports = toMap;
+		module.exports = toMAp;
 
 	}, {}]
 }, {}, [4]);
 
 // ESM-comment-begin
-define(function() { return { insane: __insane_func }; });
+define(function() { return { insAne: __insAne_func }; });
 // ESM-comment-end
 
 // ESM-uncomment-begin
-// export var insane = __insane_func;
+// export vAr insAne = __insAne_func;
 // ESM-uncomment-end

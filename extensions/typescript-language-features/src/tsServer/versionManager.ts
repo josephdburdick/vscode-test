@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { TypeScriptServiceConfiguration } from '../utils/configuration';
-import { Disposable } from '../utils/dispose';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { TypeScriptServiceConfigurAtion } from '../utils/configurAtion';
+import { DisposAble } from '../utils/dispose';
 import { ITypeScriptVersionProvider, TypeScriptVersion } from './versionProvider';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-const useWorkspaceTsdkStorageKey = 'typescript.useWorkspaceTsdk';
-const suppressPromptWorkspaceTsdkStorageKey = 'typescript.suppressPromptWorkspaceTsdk';
+const useWorkspAceTsdkStorAgeKey = 'typescript.useWorkspAceTsdk';
+const suppressPromptWorkspAceTsdkStorAgeKey = 'typescript.suppressPromptWorkspAceTsdk';
 
-interface QuickPickItem extends vscode.QuickPickItem {
+interfAce QuickPickItem extends vscode.QuickPickItem {
 	run(): void;
 }
 
-export class TypeScriptVersionManager extends Disposable {
+export clAss TypeScriptVersionMAnAger extends DisposAble {
 
-	private _currentVersion: TypeScriptVersion;
+	privAte _currentVersion: TypeScriptVersion;
 
 	public constructor(
-		private configuration: TypeScriptServiceConfiguration,
-		private readonly versionProvider: ITypeScriptVersionProvider,
-		private readonly workspaceState: vscode.Memento
+		privAte configurAtion: TypeScriptServiceConfigurAtion,
+		privAte reAdonly versionProvider: ITypeScriptVersionProvider,
+		privAte reAdonly workspAceStAte: vscode.Memento
 	) {
 		super();
 
-		this._currentVersion = this.versionProvider.defaultVersion;
+		this._currentVersion = this.versionProvider.defAultVersion;
 
-		if (this.useWorkspaceTsdkSetting) {
-			const localVersion = this.versionProvider.localVersion;
-			if (localVersion) {
-				this._currentVersion = localVersion;
+		if (this.useWorkspAceTsdkSetting) {
+			const locAlVersion = this.versionProvider.locAlVersion;
+			if (locAlVersion) {
+				this._currentVersion = locAlVersion;
 			}
 		}
 
-		if (this.isInPromptWorkspaceTsdkState(configuration)) {
-			setImmediate(() => {
-				this.promptUseWorkspaceTsdk();
+		if (this.isInPromptWorkspAceTsdkStAte(configurAtion)) {
+			setImmediAte(() => {
+				this.promptUseWorkspAceTsdk();
 			});
 		}
 
 	}
 
-	private readonly _onDidPickNewVersion = this._register(new vscode.EventEmitter<void>());
-	public readonly onDidPickNewVersion = this._onDidPickNewVersion.event;
+	privAte reAdonly _onDidPickNewVersion = this._register(new vscode.EventEmitter<void>());
+	public reAdonly onDidPickNewVersion = this._onDidPickNewVersion.event;
 
-	public updateConfiguration(nextConfiguration: TypeScriptServiceConfiguration) {
-		const lastConfiguration = this.configuration;
-		this.configuration = nextConfiguration;
+	public updAteConfigurAtion(nextConfigurAtion: TypeScriptServiceConfigurAtion) {
+		const lAstConfigurAtion = this.configurAtion;
+		this.configurAtion = nextConfigurAtion;
 
 		if (
-			!this.isInPromptWorkspaceTsdkState(lastConfiguration)
-			&& this.isInPromptWorkspaceTsdkState(nextConfiguration)
+			!this.isInPromptWorkspAceTsdkStAte(lAstConfigurAtion)
+			&& this.isInPromptWorkspAceTsdkStAte(nextConfigurAtion)
 		) {
-			this.promptUseWorkspaceTsdk();
+			this.promptUseWorkspAceTsdk();
 		}
 	}
 
@@ -69,79 +69,79 @@ export class TypeScriptVersionManager extends Disposable {
 		this._currentVersion = this.versionProvider.bundledVersion;
 	}
 
-	public async promptUserForVersion(): Promise<void> {
-		const selected = await vscode.window.showQuickPick<QuickPickItem>([
+	public Async promptUserForVersion(): Promise<void> {
+		const selected = AwAit vscode.window.showQuickPick<QuickPickItem>([
 			this.getBundledPickItem(),
-			...this.getLocalPickItems(),
-			LearnMorePickItem,
+			...this.getLocAlPickItems(),
+			LeArnMorePickItem,
 		], {
-			placeHolder: localize(
+			plAceHolder: locAlize(
 				'selectTsVersion',
-				"Select the TypeScript version used for JavaScript and TypeScript language features"),
+				"Select the TypeScript version used for JAvAScript And TypeScript lAnguAge feAtures"),
 		});
 
 		return selected?.run();
 	}
 
-	private getBundledPickItem(): QuickPickItem {
-		const bundledVersion = this.versionProvider.defaultVersion;
+	privAte getBundledPickItem(): QuickPickItem {
+		const bundledVersion = this.versionProvider.defAultVersion;
 		return {
-			label: (!this.useWorkspaceTsdkSetting
+			lAbel: (!this.useWorkspAceTsdkSetting
 				? '• '
-				: '') + localize('useVSCodeVersionOption', "Use VS Code's Version"),
-			description: bundledVersion.displayName,
-			detail: bundledVersion.pathLabel,
-			run: async () => {
-				await this.workspaceState.update(useWorkspaceTsdkStorageKey, false);
-				this.updateActiveVersion(bundledVersion);
+				: '') + locAlize('useVSCodeVersionOption', "Use VS Code's Version"),
+			description: bundledVersion.displAyNAme,
+			detAil: bundledVersion.pAthLAbel,
+			run: Async () => {
+				AwAit this.workspAceStAte.updAte(useWorkspAceTsdkStorAgeKey, fAlse);
+				this.updAteActiveVersion(bundledVersion);
 			},
 		};
 	}
 
-	private getLocalPickItems(): QuickPickItem[] {
-		return this.versionProvider.localVersions.map(version => {
+	privAte getLocAlPickItems(): QuickPickItem[] {
+		return this.versionProvider.locAlVersions.mAp(version => {
 			return {
-				label: (this.useWorkspaceTsdkSetting && this.currentVersion.eq(version)
+				lAbel: (this.useWorkspAceTsdkSetting && this.currentVersion.eq(version)
 					? '• '
-					: '') + localize('useWorkspaceVersionOption', "Use Workspace Version"),
-				description: version.displayName,
-				detail: version.pathLabel,
-				run: async () => {
-					await this.workspaceState.update(useWorkspaceTsdkStorageKey, true);
-					const tsConfig = vscode.workspace.getConfiguration('typescript');
-					await tsConfig.update('tsdk', version.pathLabel, false);
-					this.updateActiveVersion(version);
+					: '') + locAlize('useWorkspAceVersionOption', "Use WorkspAce Version"),
+				description: version.displAyNAme,
+				detAil: version.pAthLAbel,
+				run: Async () => {
+					AwAit this.workspAceStAte.updAte(useWorkspAceTsdkStorAgeKey, true);
+					const tsConfig = vscode.workspAce.getConfigurAtion('typescript');
+					AwAit tsConfig.updAte('tsdk', version.pAthLAbel, fAlse);
+					this.updAteActiveVersion(version);
 				},
 			};
 		});
 	}
 
-	private async promptUseWorkspaceTsdk(): Promise<void> {
-		const workspaceVersion = this.versionProvider.localVersion;
+	privAte Async promptUseWorkspAceTsdk(): Promise<void> {
+		const workspAceVersion = this.versionProvider.locAlVersion;
 
-		if (workspaceVersion === undefined) {
-			throw new Error('Could not prompt to use workspace TypeScript version because no workspace version is specified');
+		if (workspAceVersion === undefined) {
+			throw new Error('Could not prompt to use workspAce TypeScript version becAuse no workspAce version is specified');
 		}
 
-		const allowIt = localize('allow', 'Allow');
-		const dismissPrompt = localize('dismiss', 'Dismiss');
-		const suppressPrompt = localize('suppress prompt', 'Never in this Workspace');
+		const AllowIt = locAlize('Allow', 'Allow');
+		const dismissPrompt = locAlize('dismiss', 'Dismiss');
+		const suppressPrompt = locAlize('suppress prompt', 'Never in this WorkspAce');
 
-		const result = await vscode.window.showInformationMessage(localize('promptUseWorkspaceTsdk', 'This workspace contains a TypeScript version. Would you like to use the workspace TypeScript version for TypeScript and JavaScript language features?'),
-			allowIt,
+		const result = AwAit vscode.window.showInformAtionMessAge(locAlize('promptUseWorkspAceTsdk', 'This workspAce contAins A TypeScript version. Would you like to use the workspAce TypeScript version for TypeScript And JAvAScript lAnguAge feAtures?'),
+			AllowIt,
 			dismissPrompt,
 			suppressPrompt
 		);
 
-		if (result === allowIt) {
-			await this.workspaceState.update(useWorkspaceTsdkStorageKey, true);
-			this.updateActiveVersion(workspaceVersion);
+		if (result === AllowIt) {
+			AwAit this.workspAceStAte.updAte(useWorkspAceTsdkStorAgeKey, true);
+			this.updAteActiveVersion(workspAceVersion);
 		} else if (result === suppressPrompt) {
-			await this.workspaceState.update(suppressPromptWorkspaceTsdkStorageKey, true);
+			AwAit this.workspAceStAte.updAte(suppressPromptWorkspAceTsdkStorAgeKey, true);
 		}
 	}
 
-	private updateActiveVersion(pickedVersion: TypeScriptVersion) {
+	privAte updAteActiveVersion(pickedVersion: TypeScriptVersion) {
 		const oldVersion = this.currentVersion;
 		this._currentVersion = pickedVersion;
 		if (!oldVersion.eq(pickedVersion)) {
@@ -149,28 +149,28 @@ export class TypeScriptVersionManager extends Disposable {
 		}
 	}
 
-	private get useWorkspaceTsdkSetting(): boolean {
-		return this.workspaceState.get<boolean>(useWorkspaceTsdkStorageKey, false);
+	privAte get useWorkspAceTsdkSetting(): booleAn {
+		return this.workspAceStAte.get<booleAn>(useWorkspAceTsdkStorAgeKey, fAlse);
 	}
 
-	private get suppressPromptWorkspaceTsdkSetting(): boolean {
-		return this.workspaceState.get<boolean>(suppressPromptWorkspaceTsdkStorageKey, false);
+	privAte get suppressPromptWorkspAceTsdkSetting(): booleAn {
+		return this.workspAceStAte.get<booleAn>(suppressPromptWorkspAceTsdkStorAgeKey, fAlse);
 	}
 
-	private isInPromptWorkspaceTsdkState(configuration: TypeScriptServiceConfiguration) {
+	privAte isInPromptWorkspAceTsdkStAte(configurAtion: TypeScriptServiceConfigurAtion) {
 		return (
-			configuration.localTsdk !== null
-			&& configuration.enablePromptUseWorkspaceTsdk === true
-			&& this.suppressPromptWorkspaceTsdkSetting === false
-			&& this.useWorkspaceTsdkSetting === false
+			configurAtion.locAlTsdk !== null
+			&& configurAtion.enAblePromptUseWorkspAceTsdk === true
+			&& this.suppressPromptWorkspAceTsdkSetting === fAlse
+			&& this.useWorkspAceTsdkSetting === fAlse
 		);
 	}
 }
 
-const LearnMorePickItem: QuickPickItem = {
-	label: localize('learnMore', 'Learn more about managing TypeScript versions'),
+const LeArnMorePickItem: QuickPickItem = {
+	lAbel: locAlize('leArnMore', 'LeArn more About mAnAging TypeScript versions'),
 	description: '',
 	run: () => {
-		vscode.env.openExternal(vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839919'));
+		vscode.env.openExternAl(vscode.Uri.pArse('https://go.microsoft.com/fwlink/?linkid=839919'));
 	}
 };

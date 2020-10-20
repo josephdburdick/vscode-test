@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 'use strict';
 
 (function () {
-	const bootstrapWindow = bootstrapWindowLib();
+	const bootstrApWindow = bootstrApWindowLib();
 
-	// Load issue reporter into window
-	bootstrapWindow.load(['vs/code/electron-sandbox/issue/issueReporterMain'], function (issueReporter, configuration) {
-		issueReporter.startup(configuration);
-	}, { forceEnableDeveloperKeybindings: true, disallowReloadKeybinding: true });
+	// LoAd issue reporter into window
+	bootstrApWindow.loAd(['vs/code/electron-sAndbox/issue/issueReporterMAin'], function (issueReporter, configurAtion) {
+		issueReporter.stArtup(configurAtion);
+	}, { forceEnAbleDeveloperKeybindings: true, disAllowReloAdKeybinding: true });
 
 
-	//#region Globals
+	//#region GlobAls
 
 	/**
-	 * @returns {{ load: (modules: string[], resultCallback: (result, configuration: object) => any, options?: object) => unknown }}
+	 * @returns {{ loAd: (modules: string[], resultCAllbAck: (result, configurAtion: object) => Any, options?: object) => unknown }}
 	 */
-	function bootstrapWindowLib() {
-		// @ts-ignore (defined in bootstrap-window.js)
-		return window.MonacoBootstrapWindow;
+	function bootstrApWindowLib() {
+		// @ts-ignore (defined in bootstrAp-window.js)
+		return window.MonAcoBootstrApWindow;
 	}
 
 	//#endregion

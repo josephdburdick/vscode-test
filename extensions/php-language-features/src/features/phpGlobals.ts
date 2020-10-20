@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// file generated from PHP53Schema.xml using php-exclude_generate_php_globals.js
+// file generAted from PHP53SchemA.xml using php-exclude_generAte_php_globAls.js
 
-export interface IEntry { description?: string; signature?: string; }
-export interface IEntries { [name: string]: IEntry; }
+export interfAce IEntry { description?: string; signAture?: string; }
+export interfAce IEntries { [nAme: string]: IEntry; }
 
-export const globalvariables: IEntries = {
+export const globAlvAriAbles: IEntries = {
 	$GLOBALS: {
-		description: 'An associative array containing references to all variables which are currently defined in the global scope of the script. The variable names are the keys of the array.',
+		description: 'An AssociAtive ArrAy contAining references to All vAriAbles which Are currently defined in the globAl scope of the script. The vAriAble nAmes Are the keys of the ArrAy.',
 	},
 	$_SERVER: {
-		description: '$_SERVER is an array containing information such as headers, paths, and script locations. The entries in this array are created by the web server. There is no guarantee that every web server will provide any of these; servers may omit some, or provide others not listed here. That said, a large number of these variables are accounted for in the CGI/1.1 specification, so you should be able to expect those.',
+		description: '$_SERVER is An ArrAy contAining informAtion such As heAders, pAths, And script locAtions. The entries in this ArrAy Are creAted by the web server. There is no guArAntee thAt every web server will provide Any of these; servers mAy omit some, or provide others not listed here. ThAt sAid, A lArge number of these vAriAbles Are Accounted for in the CGI/1.1 specificAtion, so you should be Able to expect those.',
 	},
 	$_GET: {
-		description: 'An associative array of variables passed to the current script via the URL parameters.',
+		description: 'An AssociAtive ArrAy of vAriAbles pAssed to the current script viA the URL pArAmeters.',
 	},
 	$_POST: {
-		description: 'An associative array of variables passed to the current script via the HTTP POST method.',
+		description: 'An AssociAtive ArrAy of vAriAbles pAssed to the current script viA the HTTP POST method.',
 	},
 	$_FILES: {
-		description: 'An associative array of items uploaded to the current script via the HTTP POST method.',
+		description: 'An AssociAtive ArrAy of items uploAded to the current script viA the HTTP POST method.',
 	},
 	$_REQUEST: {
-		description: 'An associative array that by default contains the contents of $_GET, $_POST and $_COOKIE.',
+		description: 'An AssociAtive ArrAy thAt by defAult contAins the contents of $_GET, $_POST And $_COOKIE.',
 	},
 	$_SESSION: {
-		description: 'An associative array containing session variables available to the current script. See the Session functions documentation for more information on how this is used.',
+		description: 'An AssociAtive ArrAy contAining session vAriAbles AvAilAble to the current script. See the Session functions documentAtion for more informAtion on how this is used.',
 	},
 	$_ENV: {
-		description: 'An associative array of variables passed to the current script via the environment method. \r\n\r\nThese variables are imported into PHP\'s global namespace from the environment under which the PHP parser is running. Many are provided by the shell under which PHP is running and different systems are likely running different kinds of shells, a definitive list is impossible. Please see your shell\'s documentation for a list of defined environment variables. \r\n\r\nOther environment variables include the CGI variables, placed there regardless of whether PHP is running as a server module or CGI processor.',
+		description: 'An AssociAtive ArrAy of vAriAbles pAssed to the current script viA the environment method. \r\n\r\nThese vAriAbles Are imported into PHP\'s globAl nAmespAce from the environment under which the PHP pArser is running. MAny Are provided by the shell under which PHP is running And different systems Are likely running different kinds of shells, A definitive list is impossible. PleAse see your shell\'s documentAtion for A list of defined environment vAriAbles. \r\n\r\nOther environment vAriAbles include the CGI vAriAbles, plAced there regArdless of whether PHP is running As A server module or CGI processor.',
 	},
 	$_COOKIE: {
-		description: 'An associative array of variables passed to the current script via HTTP Cookies.',
+		description: 'An AssociAtive ArrAy of vAriAbles pAssed to the current script viA HTTP Cookies.',
 	},
 	$php_errormsg: {
-		description: '$php_errormsg is a variable containing the text of the last error message generated by PHP. This variable will only be available within the scope in which the error occurred, and only if the track_errors configuration option is turned on (it defaults to off).',
+		description: '$php_errormsg is A vAriAble contAining the text of the lAst error messAge generAted by PHP. This vAriAble will only be AvAilAble within the scope in which the error occurred, And only if the trAck_errors configurAtion option is turned on (it defAults to off).',
 	},
 	$HTTP_RAW_POST_DATA: {
-		description: '$HTTP_RAW_POST_DATA contains the raw POST data. See always_populate_raw_post_data',
+		description: '$HTTP_RAW_POST_DATA contAins the rAw POST dAtA. See AlwAys_populAte_rAw_post_dAtA',
 	},
-	$http_response_header: {
-		description: 'The $http_response_header array is similar to the get_headers() function. When using the HTTP wrapper, $http_response_header will be populated with the HTTP response headers. $http_response_header will be created in the local scope.',
+	$http_response_heAder: {
+		description: 'The $http_response_heAder ArrAy is similAr to the get_heAders() function. When using the HTTP wrApper, $http_response_heAder will be populAted with the HTTP response heAders. $http_response_heAder will be creAted in the locAl scope.',
 	},
-	$argc: {
-		description: 'Contains the number of arguments passed to the current script when running from the command line.',
+	$Argc: {
+		description: 'ContAins the number of Arguments pAssed to the current script when running from the commAnd line.',
 	},
-	$argv: {
-		description: 'Contains an array of all the arguments passed to the script when running from the command line.',
+	$Argv: {
+		description: 'ContAins An ArrAy of All the Arguments pAssed to the script when running from the commAnd line.',
 	},
 	$this: {
 		description: 'Refers to the current object',
 	},
 };
-export const compiletimeconstants: IEntries = {
+export const compiletimeconstAnts: IEntries = {
 	__CLASS__: {
-		description: 'The class name. (Added in PHP 4.3.0) As of PHP 5 this constant returns the class name as it was declared (case-sensitive). In PHP 4 its value is always lowercased.',
+		description: 'The clAss nAme. (Added in PHP 4.3.0) As of PHP 5 this constAnt returns the clAss nAme As it wAs declAred (cAse-sensitive). In PHP 4 its vAlue is AlwAys lowercAsed.',
 	},
 	__DIR__: {
-		description: 'The directory of the file. If used inside an include, the directory of the included file is returned. This is equivalent to dirname(__FILE__). This directory name does not have a trailing slash unless it is the root directory. (Added in PHP 5.3.0.)',
+		description: 'The directory of the file. If used inside An include, the directory of the included file is returned. This is equivAlent to dirnAme(__FILE__). This directory nAme does not hAve A trAiling slAsh unless it is the root directory. (Added in PHP 5.3.0.)',
 	},
 	__FILE__: {
-		description: 'The full path and filename of the file. If used inside an include, the name of the included file is returned. Since PHP 4.0.2, __FILE__ always contains an absolute path with symlinks resolved whereas in older versions it contained relative path under some circumstances.',
+		description: 'The full pAth And filenAme of the file. If used inside An include, the nAme of the included file is returned. Since PHP 4.0.2, __FILE__ AlwAys contAins An Absolute pAth with symlinks resolved whereAs in older versions it contAined relAtive pAth under some circumstAnces.',
 	},
 	__FUNCTION__: {
-		description: 'The function name. (Added in PHP 4.3.0) As of PHP 5 this constant returns the function name as it was declared (case-sensitive). In PHP 4 its value is always lowercased.',
+		description: 'The function nAme. (Added in PHP 4.3.0) As of PHP 5 this constAnt returns the function nAme As it wAs declAred (cAse-sensitive). In PHP 4 its vAlue is AlwAys lowercAsed.',
 	},
 	__LINE__: {
 		description: 'The current line number of the file.',
 	},
 	__METHOD__: {
-		description: 'The class method name. (Added in PHP 5.0.0) The method name is returned as it was declared (case-sensitive).',
+		description: 'The clAss method nAme. (Added in PHP 5.0.0) The method nAme is returned As it wAs declAred (cAse-sensitive).',
 	},
 	__NAMESPACE__: {
-		description: 'The name of the current namespace (case-sensitive). This constant is defined in compile-time (Added in PHP 5.3.0).',
+		description: 'The nAme of the current nAmespAce (cAse-sensitive). This constAnt is defined in compile-time (Added in PHP 5.3.0).',
 	},
 	TRUE: {
 	},
@@ -84,154 +84,154 @@ export const compiletimeconstants: IEntries = {
 	NULL: {
 	},
 	M_PI: {
-		description: 'The constant Pi: 3.14159265358979323846',
+		description: 'The constAnt Pi: 3.14159265358979323846',
 	},
 	M_E: {
-		description: 'The constant e: 2.7182818284590452354',
+		description: 'The constAnt e: 2.7182818284590452354',
 	},
 	M_LOG2E: {
-		description: 'The constant log_2 e: 1.4426950408889634074',
+		description: 'The constAnt log_2 e: 1.4426950408889634074',
 	},
 	M_LOG10E: {
-		description: 'The constant log_10 e: 0.43429448190325182765',
+		description: 'The constAnt log_10 e: 0.43429448190325182765',
 	},
 	M_LN2: {
-		description: 'The constant log_e 2: 0.69314718055994530942',
+		description: 'The constAnt log_e 2: 0.69314718055994530942',
 	},
 	M_LN10: {
-		description: 'The constant log_e 10: 2.30258509299404568402',
+		description: 'The constAnt log_e 10: 2.30258509299404568402',
 	},
 	M_PI_2: {
-		description: 'The constant pi/2: 1.57079632679489661923',
+		description: 'The constAnt pi/2: 1.57079632679489661923',
 	},
 	M_PI_4: {
-		description: 'The constant pi/4: 0.78539816339744830962',
+		description: 'The constAnt pi/4: 0.78539816339744830962',
 	},
 	M_1_PI: {
-		description: 'The constant 1/pi: 0.31830988618379067154',
+		description: 'The constAnt 1/pi: 0.31830988618379067154',
 	},
 	M_2_PI: {
-		description: 'The constant 2/pi: 0.63661977236758134308',
+		description: 'The constAnt 2/pi: 0.63661977236758134308',
 	},
 	M_SQRTPI: {
-		description: 'The constant sqrt(pi): 1.77245385090551602729',
+		description: 'The constAnt sqrt(pi): 1.77245385090551602729',
 	},
 	M_2_SQRTPI: {
-		description: 'The constant 2/sqrt(pi): 1.12837916709551257390',
+		description: 'The constAnt 2/sqrt(pi): 1.12837916709551257390',
 	},
 	M_SQRT2: {
-		description: 'The constant sqrt(2): 1.41421356237309504880',
+		description: 'The constAnt sqrt(2): 1.41421356237309504880',
 	},
 	M_SQRT3: {
-		description: 'The constant sqrt(3): 1.73205080756887729352',
+		description: 'The constAnt sqrt(3): 1.73205080756887729352',
 	},
 	M_SQRT1_2: {
-		description: 'The constant 1/sqrt(2): 0.7071067811865475244',
+		description: 'The constAnt 1/sqrt(2): 0.7071067811865475244',
 	},
 	M_LNPI: {
-		description: 'The constant log_e(pi): 1.14472988584940017414',
+		description: 'The constAnt log_e(pi): 1.14472988584940017414',
 	},
 	M_EULER: {
-		description: 'Euler constant: 0.57721566490153286061',
+		description: 'Euler constAnt: 0.57721566490153286061',
 	},
 	PHP_ROUND_HALF_UP: {
-		description: 'Round halves up = 1',
+		description: 'Round hAlves up = 1',
 	},
 	PHP_ROUND_HALF_DOWN: {
-		description: 'Round halves down = 2',
+		description: 'Round hAlves down = 2',
 	},
 	PHP_ROUND_HALF_EVEN: {
-		description: 'Round halves to even numbers = 3',
+		description: 'Round hAlves to even numbers = 3',
 	},
 	PHP_ROUND_HALF_ODD: {
-		description: 'Round halvesto odd numbers = 4',
+		description: 'Round hAlvesto odd numbers = 4',
 	},
 	NAN: {
-		description: 'NAN (as a float): Not A Number',
+		description: 'NAN (As A floAt): Not A Number',
 	},
 	INF: {
-		description: 'INF (as a float): The infinite',
+		description: 'INF (As A floAt): The infinite',
 	},
 	PASSWORD_BCRYPT: {
-		description: 'PASSWORD_BCRYPT is used to create new password hashes using the CRYPT_BLOWFISH algorithm.',
+		description: 'PASSWORD_BCRYPT is used to creAte new pAssword hAshes using the CRYPT_BLOWFISH Algorithm.',
 	},
 	PASSWORD_DEFAULT: {
-		description: 'The default algorithm to use for hashing if no algorithm is provided. This may change in newer PHP releases when newer, stronger hashing algorithms are supported.',
+		description: 'The defAult Algorithm to use for hAshing if no Algorithm is provided. This mAy chAnge in newer PHP releAses when newer, stronger hAshing Algorithms Are supported.',
 	},
 };
 export const keywords: IEntries = {
 	define: {
-		description: 'Defines a named constant at runtime.',
-		signature: '( string $name , mixed $value [, bool $case_insensitive = false ] ): bool'
+		description: 'Defines A nAmed constAnt At runtime.',
+		signAture: '( string $nAme , mixed $vAlue [, bool $cAse_insensitive = fAlse ] ): bool'
 	},
 	die: {
-		description: 'This language construct is equivalent to exit().',
+		description: 'This lAnguAge construct is equivAlent to exit().',
 	},
 	echo: {
-		description: 'Outputs all parameters. \r\n\r\necho() is not actually a function (it is a language construct), so you are not required to use parentheses with it. echo() (unlike some other language constructs) does not behave like a function, so it cannot always be used in the context of a function. Additionally, if you want to pass more than one parameter to echo(), the parameters must not be enclosed within parentheses.\r\n\r\necho() also has a shortcut syntax, where you can immediately follow the opening tag with an equals sign. This short syntax only works with the short_open_tag configuration setting enabled.',
-		signature: '( string $arg1 [, string $... ] ): void'
+		description: 'Outputs All pArAmeters. \r\n\r\necho() is not ActuAlly A function (it is A lAnguAge construct), so you Are not required to use pArentheses with it. echo() (unlike some other lAnguAge constructs) does not behAve like A function, so it cAnnot AlwAys be used in the context of A function. AdditionAlly, if you wAnt to pAss more thAn one pArAmeter to echo(), the pArAmeters must not be enclosed within pArentheses.\r\n\r\necho() Also hAs A shortcut syntAx, where you cAn immediAtely follow the opening tAg with An equAls sign. This short syntAx only works with the short_open_tAg configurAtion setting enAbled.',
+		signAture: '( string $Arg1 [, string $... ] ): void'
 	},
 	empty: {
-		description: 'Determine whether a variable is considered to be empty.',
-		signature: '( mixed $var ): bool'
+		description: 'Determine whether A vAriAble is considered to be empty.',
+		signAture: '( mixed $vAr ): bool'
 	},
 	exit: {
-		description: 'Terminates execution of the script. Shutdown functions and object destructors will always be executed even if exit() is called.',
-		signature: '([ string $status ] )\r\nvoid exit ( int $status ): void'
+		description: 'TerminAtes execution of the script. Shutdown functions And object destructors will AlwAys be executed even if exit() is cAlled.',
+		signAture: '([ string $stAtus ] )\r\nvoid exit ( int $stAtus ): void'
 	},
-	eval: {
-		description: 'Evaluates the string given in code_str as PHP code. Among other things, this can be useful for storing code in a database text field for later execution.\r\nThere are some factors to keep in mind when using eval(). Remember that the string passed must be valid PHP code, including things like terminating statements with a semicolon so the parser doesn\'t die on the line after the eval(), and properly escaping things in code_str. To mix HTML output and PHP code you can use a closing PHP tag to leave PHP mode.\r\nAlso remember that variables given values under eval() will retain these values in the main script afterwards.',
-		signature: '( string $code_str ): mixed'
+	evAl: {
+		description: 'EvAluAtes the string given in code_str As PHP code. Among other things, this cAn be useful for storing code in A dAtAbAse text field for lAter execution.\r\nThere Are some fActors to keep in mind when using evAl(). Remember thAt the string pAssed must be vAlid PHP code, including things like terminAting stAtements with A semicolon so the pArser doesn\'t die on the line After the evAl(), And properly escAping things in code_str. To mix HTML output And PHP code you cAn use A closing PHP tAg to leAve PHP mode.\r\nAlso remember thAt vAriAbles given vAlues under evAl() will retAin these vAlues in the mAin script AfterwArds.',
+		signAture: '( string $code_str ): mixed'
 	},
 	include: {
-		description: 'The include() statement includes and evaluates the specified file.',
+		description: 'The include() stAtement includes And evAluAtes the specified file.',
 	},
 	include_once: {
-		description: 'The include_once() statement includes and evaluates the specified file during the execution of the script. This is a behavior similar to the include() statement, with the only difference being that if the code from a file has already been included, it will not be included again. As the name suggests, it will be included just once. \r\n\r\ninclude_once() may be used in cases where the same file might be included and evaluated more than once during a particular execution of a script, so in this case it may help avoid problems such as function redefinitions, variable value reassignments, etc.',
+		description: 'The include_once() stAtement includes And evAluAtes the specified file during the execution of the script. This is A behAvior similAr to the include() stAtement, with the only difference being thAt if the code from A file hAs AlreAdy been included, it will not be included AgAin. As the nAme suggests, it will be included just once. \r\n\r\ninclude_once() mAy be used in cAses where the sAme file might be included And evAluAted more thAn once during A pArticulAr execution of A script, so in this cAse it mAy help Avoid problems such As function redefinitions, vAriAble vAlue reAssignments, etc.',
 	},
 	isset: {
-		description: 'Determine if a variable is set and is not NULL. \r\n\r\nIf a variable has been unset with unset(), it will no longer be set. isset() will return FALSE if testing a variable that has been set to NULL. Also note that a NULL byte is not equivalent to the PHP NULL constant. \r\n\r\nIf multiple parameters are supplied then isset() will return TRUE only if all of the parameters are set. Evaluation goes from left to right and stops as soon as an unset variable is encountered.',
-		signature: '( mixed $var [, mixed $... ] ): bool'
+		description: 'Determine if A vAriAble is set And is not NULL. \r\n\r\nIf A vAriAble hAs been unset with unset(), it will no longer be set. isset() will return FALSE if testing A vAriAble thAt hAs been set to NULL. Also note thAt A NULL byte is not equivAlent to the PHP NULL constAnt. \r\n\r\nIf multiple pArAmeters Are supplied then isset() will return TRUE only if All of the pArAmeters Are set. EvAluAtion goes from left to right And stops As soon As An unset vAriAble is encountered.',
+		signAture: '( mixed $vAr [, mixed $... ] ): bool'
 	},
 	list: {
-		description: 'Like array(), this is not really a function, but a language construct. list() is used to assign a list of variables in one operation.',
-		signature: '( mixed $varname [, mixed $... ] ): array'
+		description: 'Like ArrAy(), this is not reAlly A function, but A lAnguAge construct. list() is used to Assign A list of vAriAbles in one operAtion.',
+		signAture: '( mixed $vArnAme [, mixed $... ] ): ArrAy'
 	},
 	require: {
-		description: 'require() is identical to include() except upon failure it will also produce a fatal E_COMPILE_ERROR level error. In other words, it will halt the script whereas include() only emits a warning (E_WARNING) which allows the script to continue.',
+		description: 'require() is identicAl to include() except upon fAilure it will Also produce A fAtAl E_COMPILE_ERROR level error. In other words, it will hAlt the script whereAs include() only emits A wArning (E_WARNING) which Allows the script to continue.',
 	},
 	require_once: {
-		description: 'The require_once() statement is identical to require() except PHP will check if the file has already been included, and if so, not include (require) it again.',
+		description: 'The require_once() stAtement is identicAl to require() except PHP will check if the file hAs AlreAdy been included, And if so, not include (require) it AgAin.',
 	},
 	return: {
-		description: 'If called from within a function, the return() statement immediately ends execution of the current function, and returns its argument as the value of the function call. return() will also end the execution of an eval() statement or script file. \r\n\r\nIf called from the global scope, then execution of the current script file is ended. If the current script file was include()ed or require()ed, then control is passed back to the calling file. Furthermore, if the current script file was include()ed, then the value given to return() will be returned as the value of the include() call. If return() is called from within the main script file, then script execution ends. If the current script file was named by the auto_prepend_file or auto_append_file configuration options in php.ini, then that script file\'s execution is ended.',
+		description: 'If cAlled from within A function, the return() stAtement immediAtely ends execution of the current function, And returns its Argument As the vAlue of the function cAll. return() will Also end the execution of An evAl() stAtement or script file. \r\n\r\nIf cAlled from the globAl scope, then execution of the current script file is ended. If the current script file wAs include()ed or require()ed, then control is pAssed bAck to the cAlling file. Furthermore, if the current script file wAs include()ed, then the vAlue given to return() will be returned As the vAlue of the include() cAll. If return() is cAlled from within the mAin script file, then script execution ends. If the current script file wAs nAmed by the Auto_prepend_file or Auto_Append_file configurAtion options in php.ini, then thAt script file\'s execution is ended.',
 	},
 	print: {
-		description: 'Outputs arg. \r\n\r\nprint() is not actually a real function (it is a language construct) so you are not required to use parentheses with its argument list.',
-		signature: '( string $arg ): int'
+		description: 'Outputs Arg. \r\n\r\nprint() is not ActuAlly A reAl function (it is A lAnguAge construct) so you Are not required to use pArentheses with its Argument list.',
+		signAture: '( string $Arg ): int'
 	},
 	unset: {
-		description: 'unset() destroys the specified variables. \r\n\r\nThe behavior of unset() inside of a function can vary depending on what type of variable you are attempting to destroy. \r\n\r\nIf a globalized variable is unset() inside of a function, only the local variable is destroyed. The variable in the calling environment will retain the same value as before unset() was called.',
-		signature: '( mixed $var [, mixed $... ] ): void'
+		description: 'unset() destroys the specified vAriAbles. \r\n\r\nThe behAvior of unset() inside of A function cAn vAry depending on whAt type of vAriAble you Are Attempting to destroy. \r\n\r\nIf A globAlized vAriAble is unset() inside of A function, only the locAl vAriAble is destroyed. The vAriAble in the cAlling environment will retAin the sAme vAlue As before unset() wAs cAlled.',
+		signAture: '( mixed $vAr [, mixed $... ] ): void'
 	},
 	yield: {
-		description: 'The heart of a generator function is the yield keyword. In its simplest form, a yield statement looks much like a return statement, except that instead of stopping execution of the function and returning, yield instead provides a value to the code looping over the generator and pauses execution of the generator function.',
+		description: 'The heArt of A generAtor function is the yield keyword. In its simplest form, A yield stAtement looks much like A return stAtement, except thAt insteAd of stopping execution of the function And returning, yield insteAd provides A vAlue to the code looping over the generAtor And pAuses execution of the generAtor function.',
 	},
-	abstract: {
+	AbstrAct: {
 	},
-	and: {
+	And: {
 	},
-	array: {
+	ArrAy: {
 	},
-	as: {
+	As: {
 	},
-	break: {
+	breAk: {
 	},
-	case: {
+	cAse: {
 	},
-	catch: {
+	cAtch: {
 	},
-	class: {
+	clAss: {
 	},
 	clone: {
 	},
@@ -239,9 +239,9 @@ export const keywords: IEntries = {
 	},
 	continue: {
 	},
-	declare: {
+	declAre: {
 	},
-	default: {
+	defAult: {
 	},
 	do: {
 	},
@@ -249,11 +249,11 @@ export const keywords: IEntries = {
 	},
 	elseif: {
 	},
-	enddeclare: {
+	enddeclAre: {
 	},
 	endfor: {
 	},
-	endforeach: {
+	endforeAch: {
 	},
 	endif: {
 	},
@@ -263,17 +263,17 @@ export const keywords: IEntries = {
 	},
 	extends: {
 	},
-	final: {
+	finAl: {
 	},
-	finally: {
+	finAlly: {
 	},
 	for: {
 	},
-	foreach: {
+	foreAch: {
 	},
 	function: {
 	},
-	global: {
+	globAl: {
 	},
 	goto: {
 	},
@@ -281,21 +281,21 @@ export const keywords: IEntries = {
 	},
 	implements: {
 	},
-	interface: {
+	interfAce: {
 	},
-	instanceof: {
+	instAnceof: {
 	},
-	insteadOf: {
+	insteAdOf: {
 	},
-	namespace: {
+	nAmespAce: {
 	},
 	new: {
 	},
 	or: {
 	},
-	parent: {
+	pArent: {
 	},
-	private: {
+	privAte: {
 	},
 	protected: {
 	},
@@ -303,19 +303,19 @@ export const keywords: IEntries = {
 	},
 	self: {
 	},
-	static: {
+	stAtic: {
 	},
 	switch: {
 	},
 	throw: {
 	},
-	trait: {
+	trAit: {
 	},
 	try: {
 	},
 	use: {
 	},
-	var: {
+	vAr: {
 	},
 	while: {
 	},

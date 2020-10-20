@@ -1,204 +1,204 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { merge, updateIgnoredSettings, addSetting } from 'vs/platform/userDataSync/common/settingsMerge';
-import type { IConflictSetting } from 'vs/platform/userDataSync/common/userDataSync';
+import * As Assert from 'Assert';
+import { merge, updAteIgnoredSettings, AddSetting } from 'vs/plAtform/userDAtASync/common/settingsMerge';
+import type { IConflictSetting } from 'vs/plAtform/userDAtASync/common/userDAtASync';
 
-const formattingOptions = { eol: '\n', insertSpaces: false, tabSize: 4 };
+const formAttingOptions = { eol: '\n', insertSpAces: fAlse, tAbSize: 4 };
 
 suite('SettingsMerge - Merge', () => {
 
-	test('merge when local and remote are same with one entry', async () => {
-		const localContent = stringify({ 'a': 1 });
-		const remoteContent = stringify({ 'a': 1 });
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+	test('merge when locAl And remote Are sAme with one entry', Async () => {
+		const locAlContent = stringify({ 'A': 1 });
+		const remoteContent = stringify({ 'A': 1 });
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when local and remote are same with multiple entries', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when locAl And remote Are sAme with multiple entries', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 			'b': 2
 		});
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when local and remote are same with multiple entries in different order', async () => {
-		const localContent = stringify({
+	test('merge when locAl And remote Are sAme with multiple entries in different order', Async () => {
+		const locAlContent = stringify({
 			'b': 2,
-			'a': 1,
+			'A': 1,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 			'b': 2
 		});
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, localContent);
-		assert.equal(actual.remoteContent, remoteContent);
-		assert.ok(actual.hasConflicts);
-		assert.equal(actual.conflictsSettings.length, 0);
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, locAlContent);
+		Assert.equAl(ActuAl.remoteContent, remoteContent);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
 	});
 
-	test('merge when local and remote are same with different base content', async () => {
-		const localContent = stringify({
+	test('merge when locAl And remote Are sAme with different bAse content', Async () => {
+		const locAlContent = stringify({
 			'b': 2,
-			'a': 1,
+			'A': 1,
 		});
-		const baseContent = stringify({
-			'a': 2,
+		const bAseContent = stringify({
+			'A': 2,
 			'b': 1
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 			'b': 2
 		});
-		const actual = merge(localContent, remoteContent, baseContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, localContent);
-		assert.equal(actual.remoteContent, remoteContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, locAlContent);
+		Assert.equAl(ActuAl.remoteContent, remoteContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(ActuAl.hAsConflicts);
 	});
 
-	test('merge when a new entry is added to remote', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when A new entry is Added to remote', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 			'b': 2
 		});
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when multiple new entries are added to remote', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when multiple new entries Are Added to remote', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 			'b': 2,
 			'c': 3,
 		});
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when multiple new entries are added to remote from base and local has not changed', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when multiple new entries Are Added to remote from bAse And locAl hAs not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 		});
 		const remoteContent = stringify({
 			'b': 2,
-			'a': 1,
+			'A': 1,
 			'c': 3,
 		});
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when an entry is removed from remote from base and local has not changed', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when An entry is removed from remote from bAse And locAl hAs not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 		});
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when all entries are removed from base and local has not changed', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when All entries Are removed from bAse And locAl hAs not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 		});
 		const remoteContent = stringify({});
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when an entry is updated in remote from base and local has not changed', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when An entry is updAted in remote from bAse And locAl hAs not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 		});
 		const remoteContent = stringify({
-			'a': 2
+			'A': 2
 		});
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when remote has moved forwareded with multiple changes and local stays with base', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when remote hAs moved forwAreded with multiple chAnges And locAl stAys with bAse', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 		});
 		const remoteContent = stringify({
-			'a': 2,
+			'A': 2,
 			'b': 1,
 			'c': 3,
 			'd': 4,
 		});
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when remote has moved forwareded with order changes and local stays with base', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when remote hAs moved forwAreded with order chAnges And locAl stAys with bAse', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 		});
 		const remoteContent = stringify({
-			'a': 2,
+			'A': 2,
 			'd': 4,
 			'c': 3,
 			'b': 2,
 		});
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when remote has moved forwareded with comment changes and local stays with base', async () => {
-		const localContent = `
+	test('merge when remote hAs moved forwAreded with comment chAnges And locAl stAys with bAse', Async () => {
+		const locAlContent = `
 {
 	// this is comment for b
 	"b": 2,
@@ -207,20 +207,20 @@ suite('SettingsMerge - Merge', () => {
 }`;
 		const remoteContent = stringify`
 {
-	// comment b has changed
+	// comment b hAs chAnged
 	"b": 2,
 	// this is comment for c
 	"c": 1,
 }`;
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when remote has moved forwareded with comment and order changes and local stays with base', async () => {
-		const localContent = `
+	test('merge when remote hAs moved forwAreded with comment And order chAnges And locAl stAys with bAse', Async () => {
+		const locAlContent = `
 {
 	// this is comment for b
 	"b": 2,
@@ -231,103 +231,103 @@ suite('SettingsMerge - Merge', () => {
 {
 	// this is comment for c
 	"c": 1,
-	// comment b has changed
+	// comment b hAs chAnged
 	"b": 2,
 }`;
-		const actual = merge(localContent, remoteContent, localContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when a new entries are added to local', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when A new entries Are Added to locAl', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 			'd': 4,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 		});
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when multiple new entries are added to local from base and remote is not changed', async () => {
-		const localContent = stringify({
-			'a': 2,
+	test('merge when multiple new entries Are Added to locAl from bAse And remote is not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 2,
 			'b': 1,
 			'c': 3,
 			'd': 4,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 		});
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when an entry is removed from local from base and remote has not changed', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when An entry is removed from locAl from bAse And remote hAs not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'c': 2
 		});
 		const remoteContent = stringify({
-			'a': 2,
+			'A': 2,
 			'b': 1,
 			'c': 3,
 			'd': 4,
 		});
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when an entry is updated in local from base and remote has not changed', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('merge when An entry is updAted in locAl from bAse And remote hAs not chAnged', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'c': 2
 		});
 		const remoteContent = stringify({
-			'a': 2,
+			'A': 2,
 			'c': 2,
 		});
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when local has moved forwarded with multiple changes and remote stays with base', async () => {
-		const localContent = stringify({
-			'a': 2,
+	test('merge when locAl hAs moved forwArded with multiple chAnges And remote stAys with bAse', Async () => {
+		const locAlContent = stringify({
+			'A': 2,
 			'b': 1,
 			'c': 3,
 			'd': 4,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 		});
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when local has moved forwarded with order changes and remote stays with base', async () => {
-		const localContent = `
+	test('merge when locAl hAs moved forwArded with order chAnges And remote stAys with bAse', Async () => {
+		const locAlContent = `
 {
 	"b": 2,
 	"c": 1,
@@ -337,42 +337,20 @@ suite('SettingsMerge - Merge', () => {
 	"c": 1,
 	"b": 2,
 }`;
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when local has moved forwarded with comment changes and remote stays with base', async () => {
-		const localContent = `
+	test('merge when locAl hAs moved forwArded with comment chAnges And remote stAys with bAse', Async () => {
+		const locAlContent = `
 {
-	// comment for b has changed
+	// comment for b hAs chAnged
 	"b": 2,
 	// comment for c
 	"c": 1,
-}`;
-		const remoteContent = stringify`
-{
-	// comment for b
-	"b": 2,
-	// comment for c
-	"c": 1,
-}`;
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
-	});
-
-	test('merge when local has moved forwarded with comment and order changes and remote stays with base', async () => {
-		const localContent = `
-{
-	// comment for c
-	"c": 1,
-	// comment for b has changed
-	"b": 2,
 }`;
 		const remoteContent = stringify`
 {
@@ -381,74 +359,96 @@ suite('SettingsMerge - Merge', () => {
 	// comment for c
 	"c": 1,
 }`;
-		const actual = merge(localContent, remoteContent, remoteContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, localContent);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('merge when local and remote with one entry but different value', async () => {
-		const localContent = stringify({
-			'a': 1
+	test('merge when locAl hAs moved forwArded with comment And order chAnges And remote stAys with bAse', Async () => {
+		const locAlContent = `
+{
+	// comment for c
+	"c": 1,
+	// comment for b hAs chAnged
+	"b": 2,
+}`;
+		const remoteContent = stringify`
+{
+	// comment for b
+	"b": 2,
+	// comment for c
+	"c": 1,
+}`;
+		const ActuAl = merge(locAlContent, remoteContent, remoteContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, locAlContent);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
+	});
+
+	test('merge when locAl And remote with one entry but different vAlue', Async () => {
+		const locAlContent = stringify({
+			'A': 1
 		});
 		const remoteContent = stringify({
-			'a': 2
+			'A': 2
 		});
-		const expectedConflicts: IConflictSetting[] = [{ key: 'a', localValue: 1, remoteValue: 2 }];
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, localContent);
-		assert.equal(actual.remoteContent, remoteContent);
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, expectedConflicts);
+		const expectedConflicts: IConflictSetting[] = [{ key: 'A', locAlVAlue: 1, remoteVAlue: 2 }];
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, locAlContent);
+		Assert.equAl(ActuAl.remoteContent, remoteContent);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, expectedConflicts);
 	});
 
-	test('merge when the entry is removed in remote but updated in local and a new entry is added in remote', async () => {
-		const baseContent = stringify({
-			'a': 1
+	test('merge when the entry is removed in remote but updAted in locAl And A new entry is Added in remote', Async () => {
+		const bAseContent = stringify({
+			'A': 1
 		});
-		const localContent = stringify({
-			'a': 2
+		const locAlContent = stringify({
+			'A': 2
 		});
 		const remoteContent = stringify({
 			'b': 2
 		});
-		const expectedConflicts: IConflictSetting[] = [{ key: 'a', localValue: 2, remoteValue: undefined }];
-		const actual = merge(localContent, remoteContent, baseContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, stringify({
-			'a': 2,
+		const expectedConflicts: IConflictSetting[] = [{ key: 'A', locAlVAlue: 2, remoteVAlue: undefined }];
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, stringify({
+			'A': 2,
 			'b': 2
 		}));
-		assert.equal(actual.remoteContent, remoteContent);
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, expectedConflicts);
+		Assert.equAl(ActuAl.remoteContent, remoteContent);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, expectedConflicts);
 	});
 
-	test('merge with single entry and local is empty', async () => {
-		const baseContent = stringify({
-			'a': 1
+	test('merge with single entry And locAl is empty', Async () => {
+		const bAseContent = stringify({
+			'A': 1
 		});
-		const localContent = stringify({});
+		const locAlContent = stringify({});
 		const remoteContent = stringify({
-			'a': 2
+			'A': 2
 		});
-		const expectedConflicts: IConflictSetting[] = [{ key: 'a', localValue: undefined, remoteValue: 2 }];
-		const actual = merge(localContent, remoteContent, baseContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, localContent);
-		assert.equal(actual.remoteContent, remoteContent);
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, expectedConflicts);
+		const expectedConflicts: IConflictSetting[] = [{ key: 'A', locAlVAlue: undefined, remoteVAlue: 2 }];
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, locAlContent);
+		Assert.equAl(ActuAl.remoteContent, remoteContent);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, expectedConflicts);
 	});
 
-	test('merge when local and remote has moved forwareded with conflicts', async () => {
-		const baseContent = stringify({
-			'a': 1,
+	test('merge when locAl And remote hAs moved forwAreded with conflicts', Async () => {
+		const bAseContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 			'd': 4,
 		});
-		const localContent = stringify({
-			'a': 2,
+		const locAlContent = stringify({
+			'A': 2,
 			'c': 3,
 			'd': 5,
 			'e': 4,
@@ -461,104 +461,104 @@ suite('SettingsMerge - Merge', () => {
 			'e': 5,
 		});
 		const expectedConflicts: IConflictSetting[] = [
-			{ key: 'b', localValue: undefined, remoteValue: 3 },
-			{ key: 'a', localValue: 2, remoteValue: undefined },
-			{ key: 'd', localValue: 5, remoteValue: 6 },
-			{ key: 'e', localValue: 4, remoteValue: 5 },
+			{ key: 'b', locAlVAlue: undefined, remoteVAlue: 3 },
+			{ key: 'A', locAlVAlue: 2, remoteVAlue: undefined },
+			{ key: 'd', locAlVAlue: 5, remoteVAlue: 6 },
+			{ key: 'e', locAlVAlue: 4, remoteVAlue: 5 },
 		];
-		const actual = merge(localContent, remoteContent, baseContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, stringify({
-			'a': 2,
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, stringify({
+			'A': 2,
 			'c': 3,
 			'd': 5,
 			'e': 4,
 			'f': 1,
 		}));
-		assert.equal(actual.remoteContent, stringify({
+		Assert.equAl(ActuAl.remoteContent, stringify({
 			'b': 3,
 			'c': 3,
 			'd': 6,
 			'e': 5,
 			'f': 1,
 		}));
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, expectedConflicts);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, expectedConflicts);
 	});
 
-	test('merge when local and remote has moved forwareded with change in order', async () => {
-		const baseContent = stringify({
-			'a': 1,
+	test('merge when locAl And remote hAs moved forwAreded with chAnge in order', Async () => {
+		const bAseContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 			'd': 4,
 		});
-		const localContent = stringify({
-			'a': 2,
+		const locAlContent = stringify({
+			'A': 2,
 			'c': 3,
 			'b': 2,
 			'd': 4,
 			'e': 5,
 		});
 		const remoteContent = stringify({
-			'a': 1,
+			'A': 1,
 			'b': 2,
 			'c': 4,
 		});
-		const actual = merge(localContent, remoteContent, baseContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, stringify({
-			'a': 2,
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, stringify({
+			'A': 2,
 			'c': 4,
 			'b': 2,
 			'e': 5,
 		}));
-		assert.equal(actual.remoteContent, stringify({
-			'a': 2,
+		Assert.equAl(ActuAl.remoteContent, stringify({
+			'A': 2,
 			'b': 2,
 			'e': 5,
 			'c': 4,
 		}));
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, []);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, []);
 	});
 
-	test('merge when local and remote has moved forwareded with comment changes', async () => {
-		const baseContent = `
+	test('merge when locAl And remote hAs moved forwAreded with comment chAnges', Async () => {
+		const bAseContent = `
 {
 	// this is comment for b
 	"b": 2,
 	// this is comment for c
 	"c": 1
 }`;
-		const localContent = `
+		const locAlContent = `
 {
-	// comment b has changed in local
+	// comment b hAs chAnged in locAl
 	"b": 2,
 	// this is comment for c
 	"c": 1
 }`;
 		const remoteContent = `
 {
-	// comment b has changed in remote
+	// comment b hAs chAnged in remote
 	"b": 2,
 	// this is comment for c
 	"c": 1
 }`;
-		const actual = merge(localContent, remoteContent, baseContent, [], [], formattingOptions);
-		assert.equal(actual.localContent, localContent);
-		assert.equal(actual.remoteContent, remoteContent);
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, []);
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, locAlContent);
+		Assert.equAl(ActuAl.remoteContent, remoteContent);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, []);
 	});
 
-	test('resolve when local and remote has moved forwareded with resolved conflicts', async () => {
-		const baseContent = stringify({
-			'a': 1,
+	test('resolve when locAl And remote hAs moved forwAreded with resolved conflicts', Async () => {
+		const bAseContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 			'd': 4,
 		});
-		const localContent = stringify({
-			'a': 2,
+		const locAlContent = stringify({
+			'A': 2,
 			'c': 3,
 			'd': 5,
 			'e': 4,
@@ -571,383 +571,383 @@ suite('SettingsMerge - Merge', () => {
 			'e': 5,
 		});
 		const expectedConflicts: IConflictSetting[] = [
-			{ key: 'd', localValue: 5, remoteValue: 6 },
+			{ key: 'd', locAlVAlue: 5, remoteVAlue: 6 },
 		];
-		const actual = merge(localContent, remoteContent, baseContent, [], [{ key: 'a', value: 2 }, { key: 'b', value: undefined }, { key: 'e', value: 5 }], formattingOptions);
-		assert.equal(actual.localContent, stringify({
-			'a': 2,
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, [], [{ key: 'A', vAlue: 2 }, { key: 'b', vAlue: undefined }, { key: 'e', vAlue: 5 }], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, stringify({
+			'A': 2,
 			'c': 3,
 			'd': 5,
 			'e': 5,
 			'f': 1,
 		}));
-		assert.equal(actual.remoteContent, stringify({
+		Assert.equAl(ActuAl.remoteContent, stringify({
 			'c': 3,
 			'd': 6,
 			'e': 5,
 			'f': 1,
-			'a': 2,
+			'A': 2,
 		}));
-		assert.ok(actual.hasConflicts);
-		assert.deepEqual(actual.conflictsSettings, expectedConflicts);
+		Assert.ok(ActuAl.hAsConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, expectedConflicts);
 	});
 
-	test('ignored setting is not merged when changed in local and remote', async () => {
-		const localContent = stringify({ 'a': 1 });
-		const remoteContent = stringify({ 'a': 2 });
-		const actual = merge(localContent, remoteContent, null, ['a'], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+	test('ignored setting is not merged when chAnged in locAl And remote', Async () => {
+		const locAlContent = stringify({ 'A': 1 });
+		const remoteContent = stringify({ 'A': 2 });
+		const ActuAl = merge(locAlContent, remoteContent, null, ['A'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged when changed in local and remote from base', async () => {
-		const baseContent = stringify({ 'a': 0 });
-		const localContent = stringify({ 'a': 1 });
-		const remoteContent = stringify({ 'a': 2 });
-		const actual = merge(localContent, remoteContent, baseContent, ['a'], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+	test('ignored setting is not merged when chAnged in locAl And remote from bAse', Async () => {
+		const bAseContent = stringify({ 'A': 0 });
+		const locAlContent = stringify({ 'A': 1 });
+		const remoteContent = stringify({ 'A': 2 });
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, ['A'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged when added in remote', async () => {
-		const localContent = stringify({});
-		const remoteContent = stringify({ 'a': 1 });
-		const actual = merge(localContent, remoteContent, null, ['a'], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+	test('ignored setting is not merged when Added in remote', Async () => {
+		const locAlContent = stringify({});
+		const remoteContent = stringify({ 'A': 1 });
+		const ActuAl = merge(locAlContent, remoteContent, null, ['A'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged when added in remote from base', async () => {
-		const localContent = stringify({ 'b': 2 });
-		const remoteContent = stringify({ 'a': 1, 'b': 2 });
-		const actual = merge(localContent, remoteContent, localContent, ['a'], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+	test('ignored setting is not merged when Added in remote from bAse', Async () => {
+		const locAlContent = stringify({ 'b': 2 });
+		const remoteContent = stringify({ 'A': 1, 'b': 2 });
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, ['A'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged when removed in remote', async () => {
-		const localContent = stringify({ 'a': 1 });
+	test('ignored setting is not merged when removed in remote', Async () => {
+		const locAlContent = stringify({ 'A': 1 });
 		const remoteContent = stringify({});
-		const actual = merge(localContent, remoteContent, null, ['a'], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, null, ['A'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged when removed in remote from base', async () => {
-		const localContent = stringify({ 'a': 2 });
+	test('ignored setting is not merged when removed in remote from bAse', Async () => {
+		const locAlContent = stringify({ 'A': 2 });
 		const remoteContent = stringify({});
-		const actual = merge(localContent, remoteContent, localContent, ['a'], [], formattingOptions);
-		assert.equal(actual.localContent, null);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, locAlContent, ['A'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, null);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged with other changes without conflicts', async () => {
-		const baseContent = stringify({
-			'a': 2,
+	test('ignored setting is not merged with other chAnges without conflicts', Async () => {
+		const bAseContent = stringify({
+			'A': 2,
 			'b': 2,
 			'c': 3,
 			'd': 4,
 			'e': 5,
 		});
-		const localContent = stringify({
-			'a': 1,
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 		});
 		const remoteContent = stringify({
-			'a': 3,
+			'A': 3,
 			'b': 3,
 			'd': 4,
 			'e': 6,
 		});
-		const actual = merge(localContent, remoteContent, baseContent, ['a', 'e'], [], formattingOptions);
-		assert.equal(actual.localContent, stringify({
-			'a': 1,
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, ['A', 'e'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, stringify({
+			'A': 1,
 			'b': 3,
 		}));
-		assert.equal(actual.remoteContent, stringify({
-			'a': 3,
+		Assert.equAl(ActuAl.remoteContent, stringify({
+			'A': 3,
 			'b': 3,
 			'e': 6,
 		}));
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 
-	test('ignored setting is not merged with other changes conflicts', async () => {
-		const baseContent = stringify({
-			'a': 2,
+	test('ignored setting is not merged with other chAnges conflicts', Async () => {
+		const bAseContent = stringify({
+			'A': 2,
 			'b': 2,
 			'c': 3,
 			'd': 4,
 			'e': 5,
 		});
-		const localContent = stringify({
-			'a': 1,
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 4,
 			'c': 3,
 			'd': 5,
 		});
 		const remoteContent = stringify({
-			'a': 3,
+			'A': 3,
 			'b': 3,
 			'e': 6,
 		});
 		const expectedConflicts: IConflictSetting[] = [
-			{ key: 'd', localValue: 5, remoteValue: undefined },
-			{ key: 'b', localValue: 4, remoteValue: 3 },
+			{ key: 'd', locAlVAlue: 5, remoteVAlue: undefined },
+			{ key: 'b', locAlVAlue: 4, remoteVAlue: 3 },
 		];
-		const actual = merge(localContent, remoteContent, baseContent, ['a', 'e'], [], formattingOptions);
-		assert.equal(actual.localContent, stringify({
-			'a': 1,
+		const ActuAl = merge(locAlContent, remoteContent, bAseContent, ['A', 'e'], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, stringify({
+			'A': 1,
 			'b': 4,
 			'd': 5,
 		}));
-		assert.equal(actual.remoteContent, stringify({
-			'a': 3,
+		Assert.equAl(ActuAl.remoteContent, stringify({
+			'A': 3,
 			'b': 3,
 			'e': 6,
 		}));
-		assert.deepEqual(actual.conflictsSettings, expectedConflicts);
-		assert.ok(actual.hasConflicts);
+		Assert.deepEquAl(ActuAl.conflictsSettings, expectedConflicts);
+		Assert.ok(ActuAl.hAsConflicts);
 	});
 
-	test('merge when remote has comments and local is empty', async () => {
-		const localContent = `
+	test('merge when remote hAs comments And locAl is empty', Async () => {
+		const locAlContent = `
 {
 
 }`;
 		const remoteContent = stringify`
 {
-	// this is a comment
-	"a": 1,
+	// this is A comment
+	"A": 1,
 }`;
-		const actual = merge(localContent, remoteContent, null, [], [], formattingOptions);
-		assert.equal(actual.localContent, remoteContent);
-		assert.equal(actual.remoteContent, null);
-		assert.equal(actual.conflictsSettings.length, 0);
-		assert.ok(!actual.hasConflicts);
+		const ActuAl = merge(locAlContent, remoteContent, null, [], [], formAttingOptions);
+		Assert.equAl(ActuAl.locAlContent, remoteContent);
+		Assert.equAl(ActuAl.remoteContent, null);
+		Assert.equAl(ActuAl.conflictsSettings.length, 0);
+		Assert.ok(!ActuAl.hAsConflicts);
 	});
 });
 
 suite('SettingsMerge - Compute Remote Content', () => {
 
-	test('local content is returned when there are no ignored settings', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('locAl content is returned when there Are no ignored settings', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 		});
 		const remoteContent = stringify({
-			'a': 3,
+			'A': 3,
 			'b': 3,
 			'd': 4,
 			'e': 6,
 		});
-		const actual = updateIgnoredSettings(localContent, remoteContent, [], formattingOptions);
-		assert.equal(actual, localContent);
+		const ActuAl = updAteIgnoredSettings(locAlContent, remoteContent, [], formAttingOptions);
+		Assert.equAl(ActuAl, locAlContent);
 	});
 
-	test('ignored settings are not updated from remote content', async () => {
-		const localContent = stringify({
-			'a': 1,
+	test('ignored settings Are not updAted from remote content', Async () => {
+		const locAlContent = stringify({
+			'A': 1,
 			'b': 2,
 			'c': 3,
 		});
 		const remoteContent = stringify({
-			'a': 3,
+			'A': 3,
 			'b': 3,
 			'd': 4,
 			'e': 6,
 		});
 		const expected = stringify({
-			'a': 3,
+			'A': 3,
 			'b': 2,
 			'c': 3,
 		});
-		const actual = updateIgnoredSettings(localContent, remoteContent, ['a'], formattingOptions);
-		assert.equal(actual, expected);
+		const ActuAl = updAteIgnoredSettings(locAlContent, remoteContent, ['A'], formAttingOptions);
+		Assert.equAl(ActuAl, expected);
 	});
 
 });
 
 suite('SettingsMerge - Add Setting', () => {
 
-	test('Insert after a setting without comments', () => {
+	test('Insert After A setting without comments', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 2,
+	"A": 2,
 	"d": 3
 }`;
 
 		const expected = `
 {
-	"a": 2,
+	"A": 2,
 	"b": 2,
 	"d": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting without comments at the end', () => {
+	test('Insert After A setting without comments At the end', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 2
+	"A": 2
 }`;
 
 		const expected = `
 {
-	"a": 2,
+	"A": 2,
 	"b": 2
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
 	test('Insert between settings without comment', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	"c": 3
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert between settings and there is a comment in between in source', () => {
+	test('Insert between settings And there is A comment in between in source', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	"c": 3
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting and after a comment at the end', () => {
+	test('Insert After A setting And After A comment At the end', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1
+	"A": 1
 	// this is comment for b
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting ending with comma and after a comment at the end', () => {
+	test('Insert After A setting ending with commA And After A comment At the end', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a comment and there are no settings', () => {
+	test('Insert After A comment And there Are no settings', () => {
 
 		const sourceContent = `
 {
 	// this is comment for b
 	"b": 2
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	// this is comment for b
 }`;
@@ -958,53 +958,53 @@ suite('SettingsMerge - Add Setting', () => {
 	"b": 2
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting and between a comment and setting', () => {
+	test('Insert After A setting And between A comment And setting', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"c": 3
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting between two comments and there is a setting after', () => {
+	test('Insert After A setting between two comments And there is A setting After', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	// this is comment for c
 	"c": 3
@@ -1012,144 +1012,144 @@ suite('SettingsMerge - Add Setting', () => {
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting between two comments on the same line and there is a setting after', () => {
+	test('Insert After A setting between two comments on the sAme line And there is A setting After', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	/* this is comment for b */
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	/* this is comment for b */ // this is comment for c
 	"c": 3
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	/* this is comment for b */
 	"b": 2, // this is comment for c
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting between two line comments on the same line and there is a setting after', () => {
+	test('Insert After A setting between two line comments on the sAme line And there is A setting After', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	/* this is comment for b */
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b // this is comment for c
 	"c": 3
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b // this is comment for c
 	"b": 2,
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting between two comments and there is no setting after', () => {
+	test('Insert After A setting between two comments And there is no setting After', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
-	// this is a comment
+	// this is A comment
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1
+	"A": 1
 	// this is comment for b
-	// this is a comment
+	// this is A comment
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
-	// this is a comment
+	// this is A comment
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting with comma and between two comments and there is no setting after', () => {
+	test('Insert After A setting with commA And between two comments And there is no setting After', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
-	// this is a comment
+	// this is A comment
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
-	// this is a comment
+	// this is A comment
 }`;
 
 		const expected = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2
-	// this is a comment
+	// this is A comment
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
-	test('Insert before a setting without comments', () => {
+	test('Insert before A setting without comments', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"d": 2,
 	"c": 3
@@ -1162,20 +1162,20 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting without comments at the end', () => {
+	test('Insert before A setting without comments At the end', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"c": 3
 }`;
@@ -1186,21 +1186,21 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting with comment', () => {
+	test('Insert before A setting with comment', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	// this is comment for c
 	"c": 3
@@ -1213,12 +1213,12 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting and before a comment at the beginning', () => {
+	test('Insert before A setting And before A comment At the beginning', () => {
 
 		const sourceContent = `
 {
@@ -1226,7 +1226,7 @@ suite('SettingsMerge - Add Setting', () => {
 	"b": 2,
 	"c": 3,
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	// this is comment for b
 	"c": 3
@@ -1239,12 +1239,12 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting ending with comma and before a comment at the begninning', () => {
+	test('Insert before A setting ending with commA And before A comment At the begninning', () => {
 
 		const sourceContent = `
 {
@@ -1252,7 +1252,7 @@ suite('SettingsMerge - Add Setting', () => {
 	"b": 2,
 	"c": 3,
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	// this is comment for b
 	"c": 3,
@@ -1265,21 +1265,21 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3,
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting and between a setting and comment', () => {
+	test('Insert before A setting And between A setting And comment', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"d": 1,
 	// this is comment for b
@@ -1294,22 +1294,22 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting between two comments and there is a setting before', () => {
+	test('Insert before A setting between two comments And there is A setting before', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	// this is comment for b
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"d": 1,
 	// this is comment for b
@@ -1326,22 +1326,22 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting between two comments on the same line and there is a setting before', () => {
+	test('Insert before A setting between two comments on the sAme line And there is A setting before', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	/* this is comment for b */
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"d": 1,
 	/* this is comment for b */ // this is comment for c
@@ -1357,22 +1357,22 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting between two line comments on the same line and there is a setting before', () => {
+	test('Insert before A setting between two line comments on the sAme line And there is A setting before', () => {
 
 		const sourceContent = `
 {
-	"a": 1,
+	"A": 1,
 	/* this is comment for b */
 	"b": 2,
 	// this is comment for c
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"d": 1,
 	// this is comment for b // this is comment for c
@@ -1387,12 +1387,12 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting between two comments and there is no setting before', () => {
+	test('Insert before A setting between two comments And there is no setting before', () => {
 
 		const sourceContent = `
 {
@@ -1401,7 +1401,7 @@ suite('SettingsMerge - Add Setting', () => {
 	// this is comment for c
 	"c": 1
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	// this is comment for b
 	// this is comment for c
@@ -1416,12 +1416,12 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 1
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert before a setting with comma and between two comments and there is no setting before', () => {
+	test('Insert before A setting with commA And between two comments And there is no setting before', () => {
 
 		const sourceContent = `
 {
@@ -1430,7 +1430,7 @@ suite('SettingsMerge - Add Setting', () => {
 	// this is comment for c
 	"c": 1
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	// this is comment for b
 	// this is comment for c
@@ -1445,22 +1445,22 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 1,
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a setting that is of object type', () => {
+	test('Insert After A setting thAt is of object type', () => {
 
 		const sourceContent = `
 {
 	"b": {
 		"d": 1
 	},
-	"a": 2,
+	"A": 2,
 	"c": 1
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"b": {
 		"d": 1
@@ -1468,22 +1468,22 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 1
 }`;
 
-		const actual = addSetting('a', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('A', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, sourceContent);
+		Assert.equAl(ActuAl, sourceContent);
 	});
 
-	test('Insert after a setting that is of array type', () => {
+	test('Insert After A setting thAt is of ArrAy type', () => {
 
 		const sourceContent = `
 {
 	"b": [
 		1
 	],
-	"a": 2,
+	"A": 2,
 	"c": 1
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
 	"b": [
 		1
@@ -1491,106 +1491,106 @@ suite('SettingsMerge - Add Setting', () => {
 	"c": 1
 }`;
 
-		const actual = addSetting('a', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('A', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, sourceContent);
+		Assert.equAl(ActuAl, sourceContent);
 	});
 
-	test('Insert after a comment with comma separator of previous setting and no next nodes ', () => {
+	test('Insert After A comment with commA sepArAtor of previous setting And no next nodes ', () => {
 
 		const sourceContent = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"b": 2
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 }`;
 
 		const expected = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"b": 2
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a comment with comma separator of previous setting and there is a setting after ', () => {
+	test('Insert After A comment with commA sepArAtor of previous setting And there is A setting After ', () => {
 
 		const sourceContent = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"b": 2,
 	"c": 3
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"c": 3
 }`;
 
 		const expected = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"b": 2,
 	"c": 3
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('Insert after a comment with comma separator of previous setting and there is a comment after ', () => {
+	test('Insert After A comment with commA sepArAtor of previous setting And there is A comment After ', () => {
 
 		const sourceContent = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"b": 2
-	// this is a comment
+	// this is A comment
 }`;
-		const targetContent = `
+		const tArgetContent = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
-	// this is a comment
+	// this is A comment
 }`;
 
 		const expected = `
 {
-	"a": 1
-	// this is comment for a
+	"A": 1
+	// this is comment for A
 	,
 	"b": 2
-	// this is a comment
+	// this is A comment
 }`;
 
-		const actual = addSetting('b', sourceContent, targetContent, formattingOptions);
+		const ActuAl = AddSetting('b', sourceContent, tArgetContent, formAttingOptions);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 });
 
 
-function stringify(value: any): string {
-	return JSON.stringify(value, null, '\t');
+function stringify(vAlue: Any): string {
+	return JSON.stringify(vAlue, null, '\t');
 }

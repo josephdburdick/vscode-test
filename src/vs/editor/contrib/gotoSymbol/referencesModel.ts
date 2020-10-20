@@ -1,127 +1,127 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { Event, Emitter } from 'vs/base/common/event';
-import { basename, extUri } from 'vs/base/common/resources';
-import { IDisposable, dispose, IReference, DisposableStore } from 'vs/base/common/lifecycle';
-import * as strings from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
-import { defaultGenerator } from 'vs/base/common/idGenerator';
-import { Range, IRange } from 'vs/editor/common/core/range';
-import { Location, LocationLink } from 'vs/editor/common/modes';
+import { locAlize } from 'vs/nls';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { bAsenAme, extUri } from 'vs/bAse/common/resources';
+import { IDisposAble, dispose, IReference, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import * As strings from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
+import { defAultGenerAtor } from 'vs/bAse/common/idGenerAtor';
+import { RAnge, IRAnge } from 'vs/editor/common/core/rAnge';
+import { LocAtion, LocAtionLink } from 'vs/editor/common/modes';
 import { ITextModelService, ITextEditorModel } from 'vs/editor/common/services/resolverService';
 import { Position } from 'vs/editor/common/core/position';
-import { IMatch } from 'vs/base/common/filters';
-import { Constants } from 'vs/base/common/uint';
-import { ResourceMap } from 'vs/base/common/map';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { IMAtch } from 'vs/bAse/common/filters';
+import { ConstAnts } from 'vs/bAse/common/uint';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 
-export class OneReference {
+export clAss OneReference {
 
-	readonly id: string = defaultGenerator.nextId();
+	reAdonly id: string = defAultGenerAtor.nextId();
 
 	constructor(
-		readonly isProviderFirst: boolean,
-		readonly parent: FileReferences,
-		readonly uri: URI,
-		private _range: IRange,
-		private _rangeCallback: (ref: OneReference) => void
+		reAdonly isProviderFirst: booleAn,
+		reAdonly pArent: FileReferences,
+		reAdonly uri: URI,
+		privAte _rAnge: IRAnge,
+		privAte _rAngeCAllbAck: (ref: OneReference) => void
 	) { }
 
-	get range(): IRange {
-		return this._range;
+	get rAnge(): IRAnge {
+		return this._rAnge;
 	}
 
-	set range(value: IRange) {
-		this._range = value;
-		this._rangeCallback(this);
+	set rAnge(vAlue: IRAnge) {
+		this._rAnge = vAlue;
+		this._rAngeCAllbAck(this);
 	}
 
-	get ariaMessage(): string {
-		return localize(
-			'aria.oneReference', "symbol in {0} on line {1} at column {2}",
-			basename(this.uri), this.range.startLineNumber, this.range.startColumn
+	get AriAMessAge(): string {
+		return locAlize(
+			'AriA.oneReference', "symbol in {0} on line {1} At column {2}",
+			bAsenAme(this.uri), this.rAnge.stArtLineNumber, this.rAnge.stArtColumn
 		);
 	}
 }
 
-export class FilePreview implements IDisposable {
+export clAss FilePreview implements IDisposAble {
 
 	constructor(
-		private readonly _modelReference: IReference<ITextEditorModel>
+		privAte reAdonly _modelReference: IReference<ITextEditorModel>
 	) { }
 
 	dispose(): void {
 		this._modelReference.dispose();
 	}
 
-	preview(range: IRange, n: number = 8): { value: string; highlight: IMatch } | undefined {
+	preview(rAnge: IRAnge, n: number = 8): { vAlue: string; highlight: IMAtch } | undefined {
 		const model = this._modelReference.object.textEditorModel;
 
 		if (!model) {
 			return undefined;
 		}
 
-		const { startLineNumber, startColumn, endLineNumber, endColumn } = range;
-		const word = model.getWordUntilPosition({ lineNumber: startLineNumber, column: startColumn - n });
-		const beforeRange = new Range(startLineNumber, word.startColumn, startLineNumber, startColumn);
-		const afterRange = new Range(endLineNumber, endColumn, endLineNumber, Constants.MAX_SAFE_SMALL_INTEGER);
+		const { stArtLineNumber, stArtColumn, endLineNumber, endColumn } = rAnge;
+		const word = model.getWordUntilPosition({ lineNumber: stArtLineNumber, column: stArtColumn - n });
+		const beforeRAnge = new RAnge(stArtLineNumber, word.stArtColumn, stArtLineNumber, stArtColumn);
+		const AfterRAnge = new RAnge(endLineNumber, endColumn, endLineNumber, ConstAnts.MAX_SAFE_SMALL_INTEGER);
 
-		const before = model.getValueInRange(beforeRange).replace(/^\s+/, '');
-		const inside = model.getValueInRange(range);
-		const after = model.getValueInRange(afterRange).replace(/\s+$/, '');
+		const before = model.getVAlueInRAnge(beforeRAnge).replAce(/^\s+/, '');
+		const inside = model.getVAlueInRAnge(rAnge);
+		const After = model.getVAlueInRAnge(AfterRAnge).replAce(/\s+$/, '');
 
 		return {
-			value: before + inside + after,
-			highlight: { start: before.length, end: before.length + inside.length }
+			vAlue: before + inside + After,
+			highlight: { stArt: before.length, end: before.length + inside.length }
 		};
 	}
 }
 
-export class FileReferences implements IDisposable {
+export clAss FileReferences implements IDisposAble {
 
-	readonly children: OneReference[] = [];
+	reAdonly children: OneReference[] = [];
 
-	private _previews = new ResourceMap<FilePreview>();
+	privAte _previews = new ResourceMAp<FilePreview>();
 
 	constructor(
-		readonly parent: ReferencesModel,
-		readonly uri: URI
+		reAdonly pArent: ReferencesModel,
+		reAdonly uri: URI
 	) { }
 
 	dispose(): void {
-		dispose(this._previews.values());
-		this._previews.clear();
+		dispose(this._previews.vAlues());
+		this._previews.cleAr();
 	}
 
 	getPreview(child: OneReference): FilePreview | undefined {
 		return this._previews.get(child.uri);
 	}
 
-	get ariaMessage(): string {
+	get AriAMessAge(): string {
 		const len = this.children.length;
 		if (len === 1) {
-			return localize('aria.fileReferences.1', "1 symbol in {0}, full path {1}", basename(this.uri), this.uri.fsPath);
+			return locAlize('AriA.fileReferences.1', "1 symbol in {0}, full pAth {1}", bAsenAme(this.uri), this.uri.fsPAth);
 		} else {
-			return localize('aria.fileReferences.N', "{0} symbols in {1}, full path {2}", len, basename(this.uri), this.uri.fsPath);
+			return locAlize('AriA.fileReferences.N', "{0} symbols in {1}, full pAth {2}", len, bAsenAme(this.uri), this.uri.fsPAth);
 		}
 	}
 
-	async resolve(textModelResolverService: ITextModelService): Promise<FileReferences> {
+	Async resolve(textModelResolverService: ITextModelService): Promise<FileReferences> {
 		if (this._previews.size !== 0) {
 			return this;
 		}
 		for (let child of this.children) {
-			if (this._previews.has(child.uri)) {
+			if (this._previews.hAs(child.uri)) {
 				continue;
 			}
 			try {
-				const ref = await textModelResolverService.createModelReference(child.uri);
+				const ref = AwAit textModelResolverService.creAteModelReference(child.uri);
 				this._previews.set(child.uri, new FilePreview(ref));
-			} catch (err) {
+			} cAtch (err) {
 				onUnexpectedError(err);
 			}
 		}
@@ -129,43 +129,43 @@ export class FileReferences implements IDisposable {
 	}
 }
 
-export class ReferencesModel implements IDisposable {
+export clAss ReferencesModel implements IDisposAble {
 
-	private readonly _disposables = new DisposableStore();
-	private readonly _links: LocationLink[];
-	private readonly _title: string;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
+	privAte reAdonly _links: LocAtionLink[];
+	privAte reAdonly _title: string;
 
-	readonly groups: FileReferences[] = [];
-	readonly references: OneReference[] = [];
+	reAdonly groups: FileReferences[] = [];
+	reAdonly references: OneReference[] = [];
 
-	readonly _onDidChangeReferenceRange = new Emitter<OneReference>();
-	readonly onDidChangeReferenceRange: Event<OneReference> = this._onDidChangeReferenceRange.event;
+	reAdonly _onDidChAngeReferenceRAnge = new Emitter<OneReference>();
+	reAdonly onDidChAngeReferenceRAnge: Event<OneReference> = this._onDidChAngeReferenceRAnge.event;
 
-	constructor(links: LocationLink[], title: string) {
+	constructor(links: LocAtionLink[], title: string) {
 		this._links = links;
 		this._title = title;
 
-		// grouping and sorting
+		// grouping And sorting
 		const [providersFirst] = links;
-		links.sort(ReferencesModel._compareReferences);
+		links.sort(ReferencesModel._compAreReferences);
 
 		let current: FileReferences | undefined;
 		for (let link of links) {
-			if (!current || !extUri.isEqual(current.uri, link.uri, true)) {
+			if (!current || !extUri.isEquAl(current.uri, link.uri, true)) {
 				// new group
 				current = new FileReferences(this, link.uri);
 				this.groups.push(current);
 			}
 
-			// append, check for equality first!
-			if (current.children.length === 0 || ReferencesModel._compareReferences(link, current.children[current.children.length - 1]) !== 0) {
+			// Append, check for equAlity first!
+			if (current.children.length === 0 || ReferencesModel._compAreReferences(link, current.children[current.children.length - 1]) !== 0) {
 
 				const oneRef = new OneReference(
 					providersFirst === link,
 					current,
 					link.uri,
-					link.targetSelectionRange || link.range,
-					ref => this._onDidChangeReferenceRange.fire(ref)
+					link.tArgetSelectionRAnge || link.rAnge,
+					ref => this._onDidChAngeReferenceRAnge.fire(ref)
 				);
 				this.references.push(oneRef);
 				current.children.push(oneRef);
@@ -175,8 +175,8 @@ export class ReferencesModel implements IDisposable {
 
 	dispose(): void {
 		dispose(this.groups);
-		this._disposables.dispose();
-		this._onDidChangeReferenceRange.dispose();
+		this._disposAbles.dispose();
+		this._onDidChAngeReferenceRAnge.dispose();
 		this.groups.length = 0;
 	}
 
@@ -188,29 +188,29 @@ export class ReferencesModel implements IDisposable {
 		return this._title;
 	}
 
-	get isEmpty(): boolean {
+	get isEmpty(): booleAn {
 		return this.groups.length === 0;
 	}
 
-	get ariaMessage(): string {
+	get AriAMessAge(): string {
 		if (this.isEmpty) {
-			return localize('aria.result.0', "No results found");
+			return locAlize('AriA.result.0', "No results found");
 		} else if (this.references.length === 1) {
-			return localize('aria.result.1', "Found 1 symbol in {0}", this.references[0].uri.fsPath);
+			return locAlize('AriA.result.1', "Found 1 symbol in {0}", this.references[0].uri.fsPAth);
 		} else if (this.groups.length === 1) {
-			return localize('aria.result.n1', "Found {0} symbols in {1}", this.references.length, this.groups[0].uri.fsPath);
+			return locAlize('AriA.result.n1', "Found {0} symbols in {1}", this.references.length, this.groups[0].uri.fsPAth);
 		} else {
-			return localize('aria.result.nm', "Found {0} symbols in {1} files", this.references.length, this.groups.length);
+			return locAlize('AriA.result.nm', "Found {0} symbols in {1} files", this.references.length, this.groups.length);
 		}
 	}
 
-	nextOrPreviousReference(reference: OneReference, next: boolean): OneReference {
+	nextOrPreviousReference(reference: OneReference, next: booleAn): OneReference {
 
-		let { parent } = reference;
+		let { pArent } = reference;
 
-		let idx = parent.children.indexOf(reference);
-		let childCount = parent.children.length;
-		let groupCount = parent.parent.groups.length;
+		let idx = pArent.children.indexOf(reference);
+		let childCount = pArent.children.length;
+		let groupCount = pArent.pArent.groups.length;
 
 		if (groupCount === 1 || next && idx + 1 < childCount || !next && idx > 0) {
 			// cycling within one file
@@ -219,43 +219,43 @@ export class ReferencesModel implements IDisposable {
 			} else {
 				idx = (idx + childCount - 1) % childCount;
 			}
-			return parent.children[idx];
+			return pArent.children[idx];
 		}
 
-		idx = parent.parent.groups.indexOf(parent);
+		idx = pArent.pArent.groups.indexOf(pArent);
 		if (next) {
 			idx = (idx + 1) % groupCount;
-			return parent.parent.groups[idx].children[0];
+			return pArent.pArent.groups[idx].children[0];
 		} else {
 			idx = (idx + groupCount - 1) % groupCount;
-			return parent.parent.groups[idx].children[parent.parent.groups[idx].children.length - 1];
+			return pArent.pArent.groups[idx].children[pArent.pArent.groups[idx].children.length - 1];
 		}
 	}
 
-	nearestReference(resource: URI, position: Position): OneReference | undefined {
+	neArestReference(resource: URI, position: Position): OneReference | undefined {
 
-		const nearest = this.references.map((ref, idx) => {
+		const neArest = this.references.mAp((ref, idx) => {
 			return {
 				idx,
 				prefixLen: strings.commonPrefixLength(ref.uri.toString(), resource.toString()),
-				offsetDist: Math.abs(ref.range.startLineNumber - position.lineNumber) * 100 + Math.abs(ref.range.startColumn - position.column)
+				offsetDist: MAth.Abs(ref.rAnge.stArtLineNumber - position.lineNumber) * 100 + MAth.Abs(ref.rAnge.stArtColumn - position.column)
 			};
-		}).sort((a, b) => {
-			if (a.prefixLen > b.prefixLen) {
+		}).sort((A, b) => {
+			if (A.prefixLen > b.prefixLen) {
 				return -1;
-			} else if (a.prefixLen < b.prefixLen) {
+			} else if (A.prefixLen < b.prefixLen) {
 				return 1;
-			} else if (a.offsetDist < b.offsetDist) {
+			} else if (A.offsetDist < b.offsetDist) {
 				return -1;
-			} else if (a.offsetDist > b.offsetDist) {
+			} else if (A.offsetDist > b.offsetDist) {
 				return 1;
 			} else {
 				return 0;
 			}
 		})[0];
 
-		if (nearest) {
-			return this.references[nearest.idx];
+		if (neArest) {
+			return this.references[neArest.idx];
 		}
 		return undefined;
 	}
@@ -263,7 +263,7 @@ export class ReferencesModel implements IDisposable {
 	referenceAt(resource: URI, position: Position): OneReference | undefined {
 		for (const ref of this.references) {
 			if (ref.uri.toString() === resource.toString()) {
-				if (Range.containsPosition(ref.range, position)) {
+				if (RAnge.contAinsPosition(ref.rAnge, position)) {
 					return ref;
 				}
 			}
@@ -280,7 +280,7 @@ export class ReferencesModel implements IDisposable {
 		return this.references[0];
 	}
 
-	private static _compareReferences(a: Location, b: Location): number {
-		return extUri.compare(a.uri, b.uri) || Range.compareRangesUsingStarts(a.range, b.range);
+	privAte stAtic _compAreReferences(A: LocAtion, b: LocAtion): number {
+		return extUri.compAre(A.uri, b.uri) || RAnge.compAreRAngesUsingStArts(A.rAnge, b.rAnge);
 	}
 }

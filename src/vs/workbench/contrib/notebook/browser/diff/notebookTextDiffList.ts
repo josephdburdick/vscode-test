@@ -1,223 +1,223 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./notebookDiff';
-import { IListRenderer, IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
-import * as DOM from 'vs/base/browser/dom';
-import { IListStyles, IStyleController } from 'vs/base/browser/ui/list/listWidget';
-import { DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IListService, IWorkbenchListOptions, WorkbenchList } from 'vs/platform/list/browser/listService';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { IListRenderer, IListVirtuAlDelegAte } from 'vs/bAse/browser/ui/list/list';
+import * As DOM from 'vs/bAse/browser/dom';
+import { IListStyles, IStyleController } from 'vs/bAse/browser/ui/list/listWidget';
+import { DisposAbleStore, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IListService, IWorkbenchListOptions, WorkbenchList } from 'vs/plAtform/list/browser/listService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { CellDiffViewModel } from 'vs/workbench/contrib/notebook/browser/diff/celllDiffViewModel';
-import { CellDiffRenderTemplate, INotebookTextDiffEditor } from 'vs/workbench/contrib/notebook/browser/diff/common';
-import { isMacintosh } from 'vs/base/common/platform';
+import { CellDiffRenderTemplAte, INotebookTextDiffEditor } from 'vs/workbench/contrib/notebook/browser/diff/common';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
 import { DeletedCell, InsertCell, ModifiedCell } from 'vs/workbench/contrib/notebook/browser/diff/cellComponents';
 
-export class NotebookCellTextDiffListDelegate implements IListVirtualDelegate<CellDiffViewModel> {
-	// private readonly lineHeight: number;
+export clAss NotebookCellTextDiffListDelegAte implements IListVirtuAlDelegAte<CellDiffViewModel> {
+	// privAte reAdonly lineHeight: number;
 
 	constructor(
-		@IConfigurationService readonly configurationService: IConfigurationService
+		@IConfigurAtionService reAdonly configurAtionService: IConfigurAtionService
 	) {
-		// const editorOptions = this.configurationService.getValue<IEditorOptions>('editor');
-		// this.lineHeight = BareFontInfo.createFromRawSettings(editorOptions, getZoomLevel()).lineHeight;
+		// const editorOptions = this.configurAtionService.getVAlue<IEditorOptions>('editor');
+		// this.lineHeight = BAreFontInfo.creAteFromRAwSettings(editorOptions, getZoomLevel()).lineHeight;
 	}
 
 	getHeight(element: CellDiffViewModel): number {
 		return 100;
 	}
 
-	hasDynamicHeight(element: CellDiffViewModel): boolean {
-		return false;
+	hAsDynAmicHeight(element: CellDiffViewModel): booleAn {
+		return fAlse;
 	}
 
-	getTemplateId(element: CellDiffViewModel): string {
+	getTemplAteId(element: CellDiffViewModel): string {
 		return CellDiffRenderer.TEMPLATE_ID;
 	}
 }
-export class CellDiffRenderer implements IListRenderer<CellDiffViewModel, CellDiffRenderTemplate> {
-	static readonly TEMPLATE_ID = 'cell_diff';
+export clAss CellDiffRenderer implements IListRenderer<CellDiffViewModel, CellDiffRenderTemplAte> {
+	stAtic reAdonly TEMPLATE_ID = 'cell_diff';
 
 	constructor(
-		readonly notebookEditor: INotebookTextDiffEditor,
-		@IInstantiationService protected readonly instantiationService: IInstantiationService
+		reAdonly notebookEditor: INotebookTextDiffEditor,
+		@IInstAntiAtionService protected reAdonly instAntiAtionService: IInstAntiAtionService
 	) { }
 
-	get templateId() {
+	get templAteId() {
 		return CellDiffRenderer.TEMPLATE_ID;
 	}
 
-	renderTemplate(container: HTMLElement): CellDiffRenderTemplate {
+	renderTemplAte(contAiner: HTMLElement): CellDiffRenderTemplAte {
 		return {
-			container,
-			elementDisposables: new DisposableStore()
+			contAiner,
+			elementDisposAbles: new DisposAbleStore()
 		};
 	}
 
-	renderElement(element: CellDiffViewModel, index: number, templateData: CellDiffRenderTemplate, height: number | undefined): void {
-		templateData.container.innerText = '';
+	renderElement(element: CellDiffViewModel, index: number, templAteDAtA: CellDiffRenderTemplAte, height: number | undefined): void {
+		templAteDAtA.contAiner.innerText = '';
 		switch (element.type) {
-			case 'unchanged':
-				templateData.elementDisposables.add(this.instantiationService.createInstance(ModifiedCell, this.notebookEditor, element, templateData));
+			cAse 'unchAnged':
+				templAteDAtA.elementDisposAbles.Add(this.instAntiAtionService.creAteInstAnce(ModifiedCell, this.notebookEditor, element, templAteDAtA));
 				return;
-			case 'delete':
-				templateData.elementDisposables.add(this.instantiationService.createInstance(DeletedCell, this.notebookEditor, element, templateData));
+			cAse 'delete':
+				templAteDAtA.elementDisposAbles.Add(this.instAntiAtionService.creAteInstAnce(DeletedCell, this.notebookEditor, element, templAteDAtA));
 				return;
-			case 'insert':
-				templateData.elementDisposables.add(this.instantiationService.createInstance(InsertCell, this.notebookEditor, element, templateData));
+			cAse 'insert':
+				templAteDAtA.elementDisposAbles.Add(this.instAntiAtionService.creAteInstAnce(InsertCell, this.notebookEditor, element, templAteDAtA));
 				return;
-			case 'modified':
-				templateData.elementDisposables.add(this.instantiationService.createInstance(ModifiedCell, this.notebookEditor, element, templateData));
+			cAse 'modified':
+				templAteDAtA.elementDisposAbles.Add(this.instAntiAtionService.creAteInstAnce(ModifiedCell, this.notebookEditor, element, templAteDAtA));
 				return;
-			default:
-				break;
+			defAult:
+				breAk;
 		}
 	}
 
-	disposeTemplate(templateData: CellDiffRenderTemplate): void {
-		templateData.container.innerText = '';
+	disposeTemplAte(templAteDAtA: CellDiffRenderTemplAte): void {
+		templAteDAtA.contAiner.innerText = '';
 	}
 
-	disposeElement(element: CellDiffViewModel, index: number, templateData: CellDiffRenderTemplate): void {
-		templateData.elementDisposables.clear();
+	disposeElement(element: CellDiffViewModel, index: number, templAteDAtA: CellDiffRenderTemplAte): void {
+		templAteDAtA.elementDisposAbles.cleAr();
 	}
 }
 
 
-export class NotebookTextDiffList extends WorkbenchList<CellDiffViewModel> implements IDisposable, IStyleController {
-	private styleElement?: HTMLStyleElement;
+export clAss NotebookTextDiffList extends WorkbenchList<CellDiffViewModel> implements IDisposAble, IStyleController {
+	privAte styleElement?: HTMLStyleElement;
 
 	constructor(
 		listUser: string,
-		container: HTMLElement,
-		delegate: IListVirtualDelegate<CellDiffViewModel>,
-		renderers: IListRenderer<CellDiffViewModel, CellDiffRenderTemplate>[],
+		contAiner: HTMLElement,
+		delegAte: IListVirtuAlDelegAte<CellDiffViewModel>,
+		renderers: IListRenderer<CellDiffViewModel, CellDiffRenderTemplAte>[],
 		contextKeyService: IContextKeyService,
 		options: IWorkbenchListOptions<CellDiffViewModel>,
 		@IListService listService: IListService,
 		@IThemeService themeService: IThemeService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IKeybindingService keybindingService: IKeybindingService) {
-		super(listUser, container, delegate, renderers, options, contextKeyService, listService, themeService, configurationService, keybindingService);
+		super(listUser, contAiner, delegAte, renderers, options, contextKeyService, listService, themeService, configurAtionService, keybindingService);
 	}
 
 	style(styles: IListStyles) {
 		const selectorSuffix = this.view.domId;
 		if (!this.styleElement) {
-			this.styleElement = DOM.createStyleSheet(this.view.domNode);
+			this.styleElement = DOM.creAteStyleSheet(this.view.domNode);
 		}
 		const suffix = selectorSuffix && `.${selectorSuffix}`;
 		const content: string[] = [];
 
-		if (styles.listBackground) {
-			if (styles.listBackground.isOpaque()) {
-				content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows { background: ${styles.listBackground}; }`);
-			} else if (!isMacintosh) { // subpixel AA doesn't exist in macOS
-				console.warn(`List with id '${selectorSuffix}' was styled with a non-opaque background color. This will break sub-pixel antialiasing.`);
+		if (styles.listBAckground) {
+			if (styles.listBAckground.isOpAque()) {
+				content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows { bAckground: ${styles.listBAckground}; }`);
+			} else if (!isMAcintosh) { // subpixel AA doesn't exist in mAcOS
+				console.wArn(`List with id '${selectorSuffix}' wAs styled with A non-opAque bAckground color. This will breAk sub-pixel AntiAliAsing.`);
 			}
 		}
 
-		if (styles.listFocusBackground) {
-			content.push(`.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused { background-color: ${styles.listFocusBackground}; }`);
-			content.push(`.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused:hover { background-color: ${styles.listFocusBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listFocusBAckground) {
+			content.push(`.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused { bAckground-color: ${styles.listFocusBAckground}; }`);
+			content.push(`.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused:hover { bAckground-color: ${styles.listFocusBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
 		if (styles.listFocusForeground) {
-			content.push(`.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused { color: ${styles.listFocusForeground}; }`);
+			content.push(`.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused { color: ${styles.listFocusForeground}; }`);
 		}
 
-		if (styles.listActiveSelectionBackground) {
-			content.push(`.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected { background-color: ${styles.listActiveSelectionBackground}; }`);
-			content.push(`.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected:hover { background-color: ${styles.listActiveSelectionBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listActiveSelectionBAckground) {
+			content.push(`.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected { bAckground-color: ${styles.listActiveSelectionBAckground}; }`);
+			content.push(`.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected:hover { bAckground-color: ${styles.listActiveSelectionBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
 		if (styles.listActiveSelectionForeground) {
-			content.push(`.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected { color: ${styles.listActiveSelectionForeground}; }`);
+			content.push(`.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected { color: ${styles.listActiveSelectionForeground}; }`);
 		}
 
-		if (styles.listFocusAndSelectionBackground) {
+		if (styles.listFocusAndSelectionBAckground) {
 			content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected.focused { background-color: ${styles.listFocusAndSelectionBackground}; }
+				.monAco-drAg-imAge,
+				.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected.focused { bAckground-color: ${styles.listFocusAndSelectionBAckground}; }
 			`);
 		}
 
 		if (styles.listFocusAndSelectionForeground) {
 			content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected.focused { color: ${styles.listFocusAndSelectionForeground}; }
+				.monAco-drAg-imAge,
+				.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected.focused { color: ${styles.listFocusAndSelectionForeground}; }
 			`);
 		}
 
-		if (styles.listInactiveFocusBackground) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused { background-color:  ${styles.listInactiveFocusBackground}; }`);
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused:hover { background-color:  ${styles.listInactiveFocusBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listInActiveFocusBAckground) {
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused { bAckground-color:  ${styles.listInActiveFocusBAckground}; }`);
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused:hover { bAckground-color:  ${styles.listInActiveFocusBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
-		if (styles.listInactiveSelectionBackground) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected { background-color:  ${styles.listInactiveSelectionBackground}; }`);
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected:hover { background-color:  ${styles.listInactiveSelectionBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listInActiveSelectionBAckground) {
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected { bAckground-color:  ${styles.listInActiveSelectionBAckground}; }`);
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected:hover { bAckground-color:  ${styles.listInActiveSelectionBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
-		if (styles.listInactiveSelectionForeground) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected { color: ${styles.listInactiveSelectionForeground}; }`);
+		if (styles.listInActiveSelectionForeground) {
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected { color: ${styles.listInActiveSelectionForeground}; }`);
 		}
 
-		if (styles.listHoverBackground) {
-			content.push(`.monaco-list${suffix}:not(.drop-target) > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row:hover:not(.selected):not(.focused) { background-color:  ${styles.listHoverBackground}; }`);
+		if (styles.listHoverBAckground) {
+			content.push(`.monAco-list${suffix}:not(.drop-tArget) > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row:hover:not(.selected):not(.focused) { bAckground-color:  ${styles.listHoverBAckground}; }`);
 		}
 
 		if (styles.listHoverForeground) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row:hover:not(.selected):not(.focused) { color:  ${styles.listHoverForeground}; }`);
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row:hover:not(.selected):not(.focused) { color:  ${styles.listHoverForeground}; }`);
 		}
 
 		if (styles.listSelectionOutline) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.selected { outline: 1px dotted ${styles.listSelectionOutline}; outline-offset: -1px; }`);
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.selected { outline: 1px dotted ${styles.listSelectionOutline}; outline-offset: -1px; }`);
 		}
 
 		if (styles.listFocusOutline) {
 			content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
+				.monAco-drAg-imAge,
+				.monAco-list${suffix}:focus > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
 			`);
 		}
 
-		if (styles.listInactiveFocusOutline) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row.focused { outline: 1px dotted ${styles.listInactiveFocusOutline}; outline-offset: -1px; }`);
+		if (styles.listInActiveFocusOutline) {
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row.focused { outline: 1px dotted ${styles.listInActiveFocusOutline}; outline-offset: -1px; }`);
 		}
 
 		if (styles.listHoverOutline) {
-			content.push(`.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows > .monaco-list-row:hover { outline: 1px dashed ${styles.listHoverOutline}; outline-offset: -1px; }`);
+			content.push(`.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows > .monAco-list-row:hover { outline: 1px dAshed ${styles.listHoverOutline}; outline-offset: -1px; }`);
 		}
 
-		if (styles.listDropBackground) {
+		if (styles.listDropBAckground) {
 			content.push(`
-				.monaco-list${suffix}.drop-target,
-				.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-rows.drop-target,
-				.monaco-list${suffix} > div.monaco-scrollable-element > .monaco-list-row.drop-target { background-color: ${styles.listDropBackground} !important; color: inherit !important; }
+				.monAco-list${suffix}.drop-tArget,
+				.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-rows.drop-tArget,
+				.monAco-list${suffix} > div.monAco-scrollAble-element > .monAco-list-row.drop-tArget { bAckground-color: ${styles.listDropBAckground} !importAnt; color: inherit !importAnt; }
 			`);
 		}
 
-		if (styles.listFilterWidgetBackground) {
-			content.push(`.monaco-list-type-filter { background-color: ${styles.listFilterWidgetBackground} }`);
+		if (styles.listFilterWidgetBAckground) {
+			content.push(`.monAco-list-type-filter { bAckground-color: ${styles.listFilterWidgetBAckground} }`);
 		}
 
 		if (styles.listFilterWidgetOutline) {
-			content.push(`.monaco-list-type-filter { border: 1px solid ${styles.listFilterWidgetOutline}; }`);
+			content.push(`.monAco-list-type-filter { border: 1px solid ${styles.listFilterWidgetOutline}; }`);
 		}
 
-		if (styles.listFilterWidgetNoMatchesOutline) {
-			content.push(`.monaco-list-type-filter.no-matches { border: 1px solid ${styles.listFilterWidgetNoMatchesOutline}; }`);
+		if (styles.listFilterWidgetNoMAtchesOutline) {
+			content.push(`.monAco-list-type-filter.no-mAtches { border: 1px solid ${styles.listFilterWidgetNoMAtchesOutline}; }`);
 		}
 
-		if (styles.listMatchesShadow) {
-			content.push(`.monaco-list-type-filter { box-shadow: 1px 1px 1px ${styles.listMatchesShadow}; }`);
+		if (styles.listMAtchesShAdow) {
+			content.push(`.monAco-list-type-filter { box-shAdow: 1px 1px 1px ${styles.listMAtchesShAdow}; }`);
 		}
 
 		const newStyles = content.join('\n');

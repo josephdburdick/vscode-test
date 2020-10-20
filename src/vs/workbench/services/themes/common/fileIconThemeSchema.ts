@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as JSONExtensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { fontWeightRegex, fontStyleRegex, fontSizeRegex, fontIdRegex } from 'vs/workbench/services/themes/common/productIconThemeSchema';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As JSONExtensions, IJSONContributionRegistry } from 'vs/plAtform/jsonschemAs/common/jsonContributionRegistry';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { fontWeightRegex, fontStyleRegex, fontSizeRegex, fontIdRegex } from 'vs/workbench/services/themes/common/productIconThemeSchemA';
 
-const schemaId = 'vscode://schemas/icon-theme';
-const schema: IJSONSchema = {
+const schemAId = 'vscode://schemAs/icon-theme';
+const schemA: IJSONSchemA = {
 	type: 'object',
-	allowComments: true,
-	allowTrailingCommas: true,
+	AllowComments: true,
+	AllowTrAilingCommAs: true,
 	definitions: {
-		folderExpanded: {
+		folderExpAnded: {
 			type: 'string',
-			description: nls.localize('schema.folderExpanded', 'The folder icon for expanded folders. The expanded folder icon is optional. If not set, the icon defined for folder will be shown.')
+			description: nls.locAlize('schemA.folderExpAnded', 'The folder icon for expAnded folders. The expAnded folder icon is optionAl. If not set, the icon defined for folder will be shown.')
 		},
 		folder: {
 			type: 'string',
-			description: nls.localize('schema.folder', 'The folder icon for collapsed folders, and if folderExpanded is not set, also for expanded folders.')
+			description: nls.locAlize('schemA.folder', 'The folder icon for collApsed folders, And if folderExpAnded is not set, Also for expAnded folders.')
 
 		},
 		file: {
 			type: 'string',
-			description: nls.localize('schema.file', 'The default file icon, shown for all files that don\'t match any extension, filename or language id.')
+			description: nls.locAlize('schemA.file', 'The defAult file icon, shown for All files thAt don\'t mAtch Any extension, filenAme or lAnguAge id.')
 
 		},
-		folderNames: {
+		folderNAmes: {
 			type: 'object',
-			description: nls.localize('schema.folderNames', 'Associates folder names to icons. The object key is the folder name, not including any path segments. No patterns or wildcards are allowed. Folder name matching is case insensitive.'),
-			additionalProperties: {
+			description: nls.locAlize('schemA.folderNAmes', 'AssociAtes folder nAmes to icons. The object key is the folder nAme, not including Any pAth segments. No pAtterns or wildcArds Are Allowed. Folder nAme mAtching is cAse insensitive.'),
+			AdditionAlProperties: {
 				type: 'string',
-				description: nls.localize('schema.folderName', 'The ID of the icon definition for the association.')
+				description: nls.locAlize('schemA.folderNAme', 'The ID of the icon definition for the AssociAtion.')
 			}
 		},
-		folderNamesExpanded: {
+		folderNAmesExpAnded: {
 			type: 'object',
-			description: nls.localize('schema.folderNamesExpanded', 'Associates folder names to icons for expanded folders. The object key is the folder name, not including any path segments. No patterns or wildcards are allowed. Folder name matching is case insensitive.'),
-			additionalProperties: {
+			description: nls.locAlize('schemA.folderNAmesExpAnded', 'AssociAtes folder nAmes to icons for expAnded folders. The object key is the folder nAme, not including Any pAth segments. No pAtterns or wildcArds Are Allowed. Folder nAme mAtching is cAse insensitive.'),
+			AdditionAlProperties: {
 				type: 'string',
-				description: nls.localize('schema.folderNameExpanded', 'The ID of the icon definition for the association.')
+				description: nls.locAlize('schemA.folderNAmeExpAnded', 'The ID of the icon definition for the AssociAtion.')
 			}
 		},
 		fileExtensions: {
 			type: 'object',
-			description: nls.localize('schema.fileExtensions', 'Associates file extensions to icons. The object key is the file extension name. The extension name is the last segment of a file name after the last dot (not including the dot). Extensions are compared case insensitive.'),
+			description: nls.locAlize('schemA.fileExtensions', 'AssociAtes file extensions to icons. The object key is the file extension nAme. The extension nAme is the lAst segment of A file nAme After the lAst dot (not including the dot). Extensions Are compAred cAse insensitive.'),
 
-			additionalProperties: {
+			AdditionAlProperties: {
 				type: 'string',
-				description: nls.localize('schema.fileExtension', 'The ID of the icon definition for the association.')
+				description: nls.locAlize('schemA.fileExtension', 'The ID of the icon definition for the AssociAtion.')
 			}
 		},
-		fileNames: {
+		fileNAmes: {
 			type: 'object',
-			description: nls.localize('schema.fileNames', 'Associates file names to icons. The object key is the full file name, but not including any path segments. File name can include dots and a possible file extension. No patterns or wildcards are allowed. File name matching is case insensitive.'),
+			description: nls.locAlize('schemA.fileNAmes', 'AssociAtes file nAmes to icons. The object key is the full file nAme, but not including Any pAth segments. File nAme cAn include dots And A possible file extension. No pAtterns or wildcArds Are Allowed. File nAme mAtching is cAse insensitive.'),
 
-			additionalProperties: {
+			AdditionAlProperties: {
 				type: 'string',
-				description: nls.localize('schema.fileName', 'The ID of the icon definition for the association.')
+				description: nls.locAlize('schemA.fileNAme', 'The ID of the icon definition for the AssociAtion.')
 			}
 		},
-		languageIds: {
+		lAnguAgeIds: {
 			type: 'object',
-			description: nls.localize('schema.languageIds', 'Associates languages to icons. The object key is the language id as defined in the language contribution point.'),
+			description: nls.locAlize('schemA.lAnguAgeIds', 'AssociAtes lAnguAges to icons. The object key is the lAnguAge id As defined in the lAnguAge contribution point.'),
 
-			additionalProperties: {
+			AdditionAlProperties: {
 				type: 'string',
-				description: nls.localize('schema.languageId', 'The ID of the icon definition for the association.')
+				description: nls.locAlize('schemA.lAnguAgeId', 'The ID of the icon definition for the AssociAtion.')
 			}
 		},
-		associations: {
+		AssociAtions: {
 			type: 'object',
 			properties: {
-				folderExpanded: {
-					$ref: '#/definitions/folderExpanded'
+				folderExpAnded: {
+					$ref: '#/definitions/folderExpAnded'
 				},
 				folder: {
 					$ref: '#/definitions/folder'
@@ -84,73 +84,73 @@ const schema: IJSONSchema = {
 				file: {
 					$ref: '#/definitions/file'
 				},
-				folderNames: {
-					$ref: '#/definitions/folderNames'
+				folderNAmes: {
+					$ref: '#/definitions/folderNAmes'
 				},
-				folderNamesExpanded: {
-					$ref: '#/definitions/folderNamesExpanded'
+				folderNAmesExpAnded: {
+					$ref: '#/definitions/folderNAmesExpAnded'
 				},
 				fileExtensions: {
 					$ref: '#/definitions/fileExtensions'
 				},
-				fileNames: {
-					$ref: '#/definitions/fileNames'
+				fileNAmes: {
+					$ref: '#/definitions/fileNAmes'
 				},
-				languageIds: {
-					$ref: '#/definitions/languageIds'
+				lAnguAgeIds: {
+					$ref: '#/definitions/lAnguAgeIds'
 				}
 			}
 		}
 	},
 	properties: {
 		fonts: {
-			type: 'array',
-			description: nls.localize('schema.fonts', 'Fonts that are used in the icon definitions.'),
+			type: 'ArrAy',
+			description: nls.locAlize('schemA.fonts', 'Fonts thAt Are used in the icon definitions.'),
 			items: {
 				type: 'object',
 				properties: {
 					id: {
 						type: 'string',
-						description: nls.localize('schema.id', 'The ID of the font.'),
-						pattern: fontIdRegex,
-						patternErrorMessage: nls.localize('schema.id.formatError', 'The ID must only contain letter, numbers, underscore and minus.')
+						description: nls.locAlize('schemA.id', 'The ID of the font.'),
+						pAttern: fontIdRegex,
+						pAtternErrorMessAge: nls.locAlize('schemA.id.formAtError', 'The ID must only contAin letter, numbers, underscore And minus.')
 					},
 					src: {
-						type: 'array',
-						description: nls.localize('schema.src', 'The location of the font.'),
+						type: 'ArrAy',
+						description: nls.locAlize('schemA.src', 'The locAtion of the font.'),
 						items: {
 							type: 'object',
 							properties: {
-								path: {
+								pAth: {
 									type: 'string',
-									description: nls.localize('schema.font-path', 'The font path, relative to the current file icon theme file.'),
+									description: nls.locAlize('schemA.font-pAth', 'The font pAth, relAtive to the current file icon theme file.'),
 								},
-								format: {
+								formAt: {
 									type: 'string',
-									description: nls.localize('schema.font-format', 'The format of the font.'),
+									description: nls.locAlize('schemA.font-formAt', 'The formAt of the font.'),
 									enum: ['woff', 'woff2', 'truetype', 'opentype', 'embedded-opentype', 'svg']
 								}
 							},
 							required: [
-								'path',
-								'format'
+								'pAth',
+								'formAt'
 							]
 						}
 					},
 					weight: {
 						type: 'string',
-						description: nls.localize('schema.font-weight', 'The weight of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight for valid values.'),
-						pattern: fontWeightRegex
+						description: nls.locAlize('schemA.font-weight', 'The weight of the font. See https://developer.mozillA.org/en-US/docs/Web/CSS/font-weight for vAlid vAlues.'),
+						pAttern: fontWeightRegex
 					},
 					style: {
 						type: 'string',
-						description: nls.localize('schema.font-style', 'The style of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-style for valid values.'),
-						pattern: fontStyleRegex
+						description: nls.locAlize('schemA.font-style', 'The style of the font. See https://developer.mozillA.org/en-US/docs/Web/CSS/font-style for vAlid vAlues.'),
+						pAttern: fontStyleRegex
 					},
 					size: {
 						type: 'string',
-						description: nls.localize('schema.font-size', 'The default size of the font. See https://developer.mozilla.org/en-US/docs/Web/CSS/font-size for valid values.'),
-						pattern: fontSizeRegex
+						description: nls.locAlize('schemA.font-size', 'The defAult size of the font. See https://developer.mozillA.org/en-US/docs/Web/CSS/font-size for vAlid vAlues.'),
+						pAttern: fontSizeRegex
 					}
 				},
 				required: [
@@ -161,38 +161,38 @@ const schema: IJSONSchema = {
 		},
 		iconDefinitions: {
 			type: 'object',
-			description: nls.localize('schema.iconDefinitions', 'Description of all icons that can be used when associating files to icons.'),
-			additionalProperties: {
+			description: nls.locAlize('schemA.iconDefinitions', 'Description of All icons thAt cAn be used when AssociAting files to icons.'),
+			AdditionAlProperties: {
 				type: 'object',
-				description: nls.localize('schema.iconDefinition', 'An icon definition. The object key is the ID of the definition.'),
+				description: nls.locAlize('schemA.iconDefinition', 'An icon definition. The object key is the ID of the definition.'),
 				properties: {
-					iconPath: {
+					iconPAth: {
 						type: 'string',
-						description: nls.localize('schema.iconPath', 'When using a SVG or PNG: The path to the image. The path is relative to the icon set file.')
+						description: nls.locAlize('schemA.iconPAth', 'When using A SVG or PNG: The pAth to the imAge. The pAth is relAtive to the icon set file.')
 					},
-					fontCharacter: {
+					fontChArActer: {
 						type: 'string',
-						description: nls.localize('schema.fontCharacter', 'When using a glyph font: The character in the font to use.')
+						description: nls.locAlize('schemA.fontChArActer', 'When using A glyph font: The chArActer in the font to use.')
 					},
 					fontColor: {
 						type: 'string',
-						format: 'color-hex',
-						description: nls.localize('schema.fontColor', 'When using a glyph font: The color to use.')
+						formAt: 'color-hex',
+						description: nls.locAlize('schemA.fontColor', 'When using A glyph font: The color to use.')
 					},
 					fontSize: {
 						type: 'string',
-						description: nls.localize('schema.fontSize', 'When using a font: The font size in percentage to the text font. If not set, defaults to the size in the font definition.'),
-						pattern: fontSizeRegex
+						description: nls.locAlize('schemA.fontSize', 'When using A font: The font size in percentAge to the text font. If not set, defAults to the size in the font definition.'),
+						pAttern: fontSizeRegex
 					},
 					fontId: {
 						type: 'string',
-						description: nls.localize('schema.fontId', 'When using a font: The id of the font. If not set, defaults to the first font definition.')
+						description: nls.locAlize('schemA.fontId', 'When using A font: The id of the font. If not set, defAults to the first font definition.')
 					}
 				}
 			}
 		},
-		folderExpanded: {
-			$ref: '#/definitions/folderExpanded'
+		folderExpAnded: {
+			$ref: '#/definitions/folderExpAnded'
 		},
 		folder: {
 			$ref: '#/definitions/folder'
@@ -200,34 +200,34 @@ const schema: IJSONSchema = {
 		file: {
 			$ref: '#/definitions/file'
 		},
-		folderNames: {
-			$ref: '#/definitions/folderNames'
+		folderNAmes: {
+			$ref: '#/definitions/folderNAmes'
 		},
 		fileExtensions: {
 			$ref: '#/definitions/fileExtensions'
 		},
-		fileNames: {
-			$ref: '#/definitions/fileNames'
+		fileNAmes: {
+			$ref: '#/definitions/fileNAmes'
 		},
-		languageIds: {
-			$ref: '#/definitions/languageIds'
+		lAnguAgeIds: {
+			$ref: '#/definitions/lAnguAgeIds'
 		},
 		light: {
-			$ref: '#/definitions/associations',
-			description: nls.localize('schema.light', 'Optional associations for file icons in light color themes.')
+			$ref: '#/definitions/AssociAtions',
+			description: nls.locAlize('schemA.light', 'OptionAl AssociAtions for file icons in light color themes.')
 		},
-		highContrast: {
-			$ref: '#/definitions/associations',
-			description: nls.localize('schema.highContrast', 'Optional associations for file icons in high contrast color themes.')
+		highContrAst: {
+			$ref: '#/definitions/AssociAtions',
+			description: nls.locAlize('schemA.highContrAst', 'OptionAl AssociAtions for file icons in high contrAst color themes.')
 		},
 		hidesExplorerArrows: {
-			type: 'boolean',
-			description: nls.localize('schema.hidesExplorerArrows', 'Configures whether the file explorer\'s arrows should be hidden when this theme is active.')
+			type: 'booleAn',
+			description: nls.locAlize('schemA.hidesExplorerArrows', 'Configures whether the file explorer\'s Arrows should be hidden when this theme is Active.')
 		}
 	}
 };
 
-export function registerFileIconThemeSchemas() {
-	let schemaRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
-	schemaRegistry.registerSchema(schemaId, schema);
+export function registerFileIconThemeSchemAs() {
+	let schemARegistry = Registry.As<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+	schemARegistry.registerSchemA(schemAId, schemA);
 }

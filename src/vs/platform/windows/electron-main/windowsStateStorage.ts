@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IWindowState as IWindowUIState } from 'vs/platform/windows/electron-main/windows';
-import { IWindowState, IWindowsState } from 'vs/platform/windows/electron-main/windowsMainService';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IWindowStAte As IWindowUIStAte } from 'vs/plAtform/windows/electron-mAin/windows';
+import { IWindowStAte, IWindowsStAte } from 'vs/plAtform/windows/electron-mAin/windowsMAinService';
 
-export type WindowsStateStorageData = object;
+export type WindowsStAteStorAgeDAtA = object;
 
-interface ISerializedWindowsState {
-	lastActiveWindow?: ISerializedWindowState;
-	lastPluginDevelopmentHostWindow?: ISerializedWindowState;
-	openedWindows: ISerializedWindowState[];
+interfAce ISeriAlizedWindowsStAte {
+	lAstActiveWindow?: ISeriAlizedWindowStAte;
+	lAstPluginDevelopmentHostWindow?: ISeriAlizedWindowStAte;
+	openedWindows: ISeriAlizedWindowStAte[];
 }
 
-interface ISerializedWindowState {
-	workspaceIdentifier?: { id: string; configURIPath: string };
+interfAce ISeriAlizedWindowStAte {
+	workspAceIdentifier?: { id: string; configURIPAth: string };
 	folder?: string;
-	backupPath?: string;
+	bAckupPAth?: string;
 	remoteAuthority?: string;
-	uiState: IWindowUIState;
+	uiStAte: IWindowUIStAte;
 
-	// deprecated
+	// deprecAted
 	folderUri?: UriComponents;
-	folderPath?: string;
-	workspace?: { id: string; configPath: string };
+	folderPAth?: string;
+	workspAce?: { id: string; configPAth: string };
 }
 
-export function restoreWindowsState(data: WindowsStateStorageData | undefined): IWindowsState {
-	const result: IWindowsState = { openedWindows: [] };
-	const windowsState = data as ISerializedWindowsState || { openedWindows: [] };
+export function restoreWindowsStAte(dAtA: WindowsStAteStorAgeDAtA | undefined): IWindowsStAte {
+	const result: IWindowsStAte = { openedWindows: [] };
+	const windowsStAte = dAtA As ISeriAlizedWindowsStAte || { openedWindows: [] };
 
-	if (windowsState.lastActiveWindow) {
-		result.lastActiveWindow = restoreWindowState(windowsState.lastActiveWindow);
+	if (windowsStAte.lAstActiveWindow) {
+		result.lAstActiveWindow = restoreWindowStAte(windowsStAte.lAstActiveWindow);
 	}
 
-	if (windowsState.lastPluginDevelopmentHostWindow) {
-		result.lastPluginDevelopmentHostWindow = restoreWindowState(windowsState.lastPluginDevelopmentHostWindow);
+	if (windowsStAte.lAstPluginDevelopmentHostWindow) {
+		result.lAstPluginDevelopmentHostWindow = restoreWindowStAte(windowsStAte.lAstPluginDevelopmentHostWindow);
 	}
 
-	if (Array.isArray(windowsState.openedWindows)) {
-		result.openedWindows = windowsState.openedWindows.map(windowState => restoreWindowState(windowState));
+	if (ArrAy.isArrAy(windowsStAte.openedWindows)) {
+		result.openedWindows = windowsStAte.openedWindows.mAp(windowStAte => restoreWindowStAte(windowStAte));
 	}
 
 	return result;
 }
 
-function restoreWindowState(windowState: ISerializedWindowState): IWindowState {
-	const result: IWindowState = { uiState: windowState.uiState };
-	if (windowState.backupPath) {
-		result.backupPath = windowState.backupPath;
+function restoreWindowStAte(windowStAte: ISeriAlizedWindowStAte): IWindowStAte {
+	const result: IWindowStAte = { uiStAte: windowStAte.uiStAte };
+	if (windowStAte.bAckupPAth) {
+		result.bAckupPAth = windowStAte.bAckupPAth;
 	}
 
-	if (windowState.remoteAuthority) {
-		result.remoteAuthority = windowState.remoteAuthority;
+	if (windowStAte.remoteAuthority) {
+		result.remoteAuthority = windowStAte.remoteAuthority;
 	}
 
-	if (windowState.folder) {
-		result.folderUri = URI.parse(windowState.folder);
-	} else if (windowState.folderUri) {
-		result.folderUri = URI.revive(windowState.folderUri);
-	} else if (windowState.folderPath) {
-		result.folderUri = URI.file(windowState.folderPath);
+	if (windowStAte.folder) {
+		result.folderUri = URI.pArse(windowStAte.folder);
+	} else if (windowStAte.folderUri) {
+		result.folderUri = URI.revive(windowStAte.folderUri);
+	} else if (windowStAte.folderPAth) {
+		result.folderUri = URI.file(windowStAte.folderPAth);
 	}
 
-	if (windowState.workspaceIdentifier) {
-		result.workspace = { id: windowState.workspaceIdentifier.id, configPath: URI.parse(windowState.workspaceIdentifier.configURIPath) };
-	} else if (windowState.workspace) {
-		result.workspace = { id: windowState.workspace.id, configPath: URI.file(windowState.workspace.configPath) };
+	if (windowStAte.workspAceIdentifier) {
+		result.workspAce = { id: windowStAte.workspAceIdentifier.id, configPAth: URI.pArse(windowStAte.workspAceIdentifier.configURIPAth) };
+	} else if (windowStAte.workspAce) {
+		result.workspAce = { id: windowStAte.workspAce.id, configPAth: URI.file(windowStAte.workspAce.configPAth) };
 	}
 
 	return result;
 }
 
-export function getWindowsStateStoreData(windowsState: IWindowsState): WindowsStateStorageData {
+export function getWindowsStAteStoreDAtA(windowsStAte: IWindowsStAte): WindowsStAteStorAgeDAtA {
 	return {
-		lastActiveWindow: windowsState.lastActiveWindow && serializeWindowState(windowsState.lastActiveWindow),
-		lastPluginDevelopmentHostWindow: windowsState.lastPluginDevelopmentHostWindow && serializeWindowState(windowsState.lastPluginDevelopmentHostWindow),
-		openedWindows: windowsState.openedWindows.map(ws => serializeWindowState(ws))
+		lAstActiveWindow: windowsStAte.lAstActiveWindow && seriAlizeWindowStAte(windowsStAte.lAstActiveWindow),
+		lAstPluginDevelopmentHostWindow: windowsStAte.lAstPluginDevelopmentHostWindow && seriAlizeWindowStAte(windowsStAte.lAstPluginDevelopmentHostWindow),
+		openedWindows: windowsStAte.openedWindows.mAp(ws => seriAlizeWindowStAte(ws))
 	};
 }
 
-function serializeWindowState(windowState: IWindowState): ISerializedWindowState {
+function seriAlizeWindowStAte(windowStAte: IWindowStAte): ISeriAlizedWindowStAte {
 	return {
-		workspaceIdentifier: windowState.workspace && { id: windowState.workspace.id, configURIPath: windowState.workspace.configPath.toString() },
-		folder: windowState.folderUri && windowState.folderUri.toString(),
-		backupPath: windowState.backupPath,
-		remoteAuthority: windowState.remoteAuthority,
-		uiState: windowState.uiState
+		workspAceIdentifier: windowStAte.workspAce && { id: windowStAte.workspAce.id, configURIPAth: windowStAte.workspAce.configPAth.toString() },
+		folder: windowStAte.folderUri && windowStAte.folderUri.toString(),
+		bAckupPAth: windowStAte.bAckupPAth,
+		remoteAuthority: windowStAte.remoteAuthority,
+		uiStAte: windowStAte.uiStAte
 	};
 }

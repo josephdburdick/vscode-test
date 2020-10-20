@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
-import { Stylesheet, LanguageService as CSSLanguageService } from 'vscode-css-languageservice';
-import { LanguageMode, Workspace, Color, TextDocument, Position, Range, CompletionList, DocumentContext } from './languageModes';
+import { LAnguAgeModelCAche, getLAnguAgeModelCAche } from '../lAnguAgeModelCAche';
+import { Stylesheet, LAnguAgeService As CSSLAnguAgeService } from 'vscode-css-lAnguAgeservice';
+import { LAnguAgeMode, WorkspAce, Color, TextDocument, Position, RAnge, CompletionList, DocumentContext } from './lAnguAgeModes';
 import { HTMLDocumentRegions, CSS_STYLE_RULE } from './embeddedSupport';
 
-export function getCSSMode(cssLanguageService: CSSLanguageService, documentRegions: LanguageModelCache<HTMLDocumentRegions>, workspace: Workspace): LanguageMode {
-	let embeddedCSSDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('css'));
-	let cssStylesheets = getLanguageModelCache<Stylesheet>(10, 60, document => cssLanguageService.parseStylesheet(document));
+export function getCSSMode(cssLAnguAgeService: CSSLAnguAgeService, documentRegions: LAnguAgeModelCAche<HTMLDocumentRegions>, workspAce: WorkspAce): LAnguAgeMode {
+	let embeddedCSSDocuments = getLAnguAgeModelCAche<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument('css'));
+	let cssStylesheets = getLAnguAgeModelCAche<Stylesheet>(10, 60, document => cssLAnguAgeService.pArseStylesheet(document));
 
 	return {
 		getId() {
 			return 'css';
 		},
-		async doValidation(document: TextDocument, settings = workspace.settings) {
+		Async doVAlidAtion(document: TextDocument, settings = workspAce.settings) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.doValidation(embedded, cssStylesheets.get(embedded), settings && settings.css);
+			return cssLAnguAgeService.doVAlidAtion(embedded, cssStylesheets.get(embedded), settings && settings.css);
 		},
-		async doComplete(document: TextDocument, position: Position, documentContext: DocumentContext, _settings = workspace.settings) {
+		Async doComplete(document: TextDocument, position: Position, documentContext: DocumentContext, _settings = workspAce.settings) {
 			let embedded = embeddedCSSDocuments.get(document);
 			const stylesheet = cssStylesheets.get(embedded);
-			return cssLanguageService.doComplete2(embedded, position, stylesheet, documentContext) || CompletionList.create();
+			return cssLAnguAgeService.doComplete2(embedded, position, stylesheet, documentContext) || CompletionList.creAte();
 		},
-		async doHover(document: TextDocument, position: Position) {
+		Async doHover(document: TextDocument, position: Position) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.doHover(embedded, position, cssStylesheets.get(embedded));
+			return cssLAnguAgeService.doHover(embedded, position, cssStylesheets.get(embedded));
 		},
-		async findDocumentHighlight(document: TextDocument, position: Position) {
+		Async findDocumentHighlight(document: TextDocument, position: Position) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.findDocumentHighlights(embedded, position, cssStylesheets.get(embedded));
+			return cssLAnguAgeService.findDocumentHighlights(embedded, position, cssStylesheets.get(embedded));
 		},
-		async findDocumentSymbols(document: TextDocument) {
+		Async findDocumentSymbols(document: TextDocument) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.findDocumentSymbols(embedded, cssStylesheets.get(embedded)).filter(s => s.name !== CSS_STYLE_RULE);
+			return cssLAnguAgeService.findDocumentSymbols(embedded, cssStylesheets.get(embedded)).filter(s => s.nAme !== CSS_STYLE_RULE);
 		},
-		async findDefinition(document: TextDocument, position: Position) {
+		Async findDefinition(document: TextDocument, position: Position) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.findDefinition(embedded, position, cssStylesheets.get(embedded));
+			return cssLAnguAgeService.findDefinition(embedded, position, cssStylesheets.get(embedded));
 		},
-		async findReferences(document: TextDocument, position: Position) {
+		Async findReferences(document: TextDocument, position: Position) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.findReferences(embedded, position, cssStylesheets.get(embedded));
+			return cssLAnguAgeService.findReferences(embedded, position, cssStylesheets.get(embedded));
 		},
-		async findDocumentColors(document: TextDocument) {
+		Async findDocumentColors(document: TextDocument) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.findDocumentColors(embedded, cssStylesheets.get(embedded));
+			return cssLAnguAgeService.findDocumentColors(embedded, cssStylesheets.get(embedded));
 		},
-		async getColorPresentations(document: TextDocument, color: Color, range: Range) {
+		Async getColorPresentAtions(document: TextDocument, color: Color, rAnge: RAnge) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.getColorPresentations(embedded, cssStylesheets.get(embedded), color, range);
+			return cssLAnguAgeService.getColorPresentAtions(embedded, cssStylesheets.get(embedded), color, rAnge);
 		},
-		async getFoldingRanges(document: TextDocument) {
+		Async getFoldingRAnges(document: TextDocument) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.getFoldingRanges(embedded, {});
+			return cssLAnguAgeService.getFoldingRAnges(embedded, {});
 		},
-		async getSelectionRange(document: TextDocument, position: Position) {
+		Async getSelectionRAnge(document: TextDocument, position: Position) {
 			let embedded = embeddedCSSDocuments.get(document);
-			return cssLanguageService.getSelectionRanges(embedded, [position], cssStylesheets.get(embedded))[0];
+			return cssLAnguAgeService.getSelectionRAnges(embedded, [position], cssStylesheets.get(embedded))[0];
 		},
 		onDocumentRemoved(document: TextDocument) {
 			embeddedCSSDocuments.onDocumentRemoved(document);

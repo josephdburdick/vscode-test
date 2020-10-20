@@ -1,103 +1,103 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IPosition, Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 
 /**
  * A selection in the editor.
- * The selection is a range that has an orientation.
+ * The selection is A rAnge thAt hAs An orientAtion.
  */
-export interface ISelection {
+export interfAce ISelection {
 	/**
-	 * The line number on which the selection has started.
+	 * The line number on which the selection hAs stArted.
 	 */
-	readonly selectionStartLineNumber: number;
+	reAdonly selectionStArtLineNumber: number;
 	/**
-	 * The column on `selectionStartLineNumber` where the selection has started.
+	 * The column on `selectionStArtLineNumber` where the selection hAs stArted.
 	 */
-	readonly selectionStartColumn: number;
+	reAdonly selectionStArtColumn: number;
 	/**
-	 * The line number on which the selection has ended.
+	 * The line number on which the selection hAs ended.
 	 */
-	readonly positionLineNumber: number;
+	reAdonly positionLineNumber: number;
 	/**
-	 * The column on `positionLineNumber` where the selection has ended.
+	 * The column on `positionLineNumber` where the selection hAs ended.
 	 */
-	readonly positionColumn: number;
+	reAdonly positionColumn: number;
 }
 
 /**
- * The direction of a selection.
+ * The direction of A selection.
  */
 export const enum SelectionDirection {
 	/**
-	 * The selection starts above where it ends.
+	 * The selection stArts Above where it ends.
 	 */
 	LTR,
 	/**
-	 * The selection starts below where it ends.
+	 * The selection stArts below where it ends.
 	 */
 	RTL
 }
 
 /**
  * A selection in the editor.
- * The selection is a range that has an orientation.
+ * The selection is A rAnge thAt hAs An orientAtion.
  */
-export class Selection extends Range {
+export clAss Selection extends RAnge {
 	/**
-	 * The line number on which the selection has started.
+	 * The line number on which the selection hAs stArted.
 	 */
-	public readonly selectionStartLineNumber: number;
+	public reAdonly selectionStArtLineNumber: number;
 	/**
-	 * The column on `selectionStartLineNumber` where the selection has started.
+	 * The column on `selectionStArtLineNumber` where the selection hAs stArted.
 	 */
-	public readonly selectionStartColumn: number;
+	public reAdonly selectionStArtColumn: number;
 	/**
-	 * The line number on which the selection has ended.
+	 * The line number on which the selection hAs ended.
 	 */
-	public readonly positionLineNumber: number;
+	public reAdonly positionLineNumber: number;
 	/**
-	 * The column on `positionLineNumber` where the selection has ended.
+	 * The column on `positionLineNumber` where the selection hAs ended.
 	 */
-	public readonly positionColumn: number;
+	public reAdonly positionColumn: number;
 
-	constructor(selectionStartLineNumber: number, selectionStartColumn: number, positionLineNumber: number, positionColumn: number) {
-		super(selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn);
-		this.selectionStartLineNumber = selectionStartLineNumber;
-		this.selectionStartColumn = selectionStartColumn;
+	constructor(selectionStArtLineNumber: number, selectionStArtColumn: number, positionLineNumber: number, positionColumn: number) {
+		super(selectionStArtLineNumber, selectionStArtColumn, positionLineNumber, positionColumn);
+		this.selectionStArtLineNumber = selectionStArtLineNumber;
+		this.selectionStArtColumn = selectionStArtColumn;
 		this.positionLineNumber = positionLineNumber;
 		this.positionColumn = positionColumn;
 	}
 
 	/**
-	 * Transform to a human-readable representation.
+	 * TrAnsform to A humAn-reAdAble representAtion.
 	 */
 	public toString(): string {
-		return '[' + this.selectionStartLineNumber + ',' + this.selectionStartColumn + ' -> ' + this.positionLineNumber + ',' + this.positionColumn + ']';
+		return '[' + this.selectionStArtLineNumber + ',' + this.selectionStArtColumn + ' -> ' + this.positionLineNumber + ',' + this.positionColumn + ']';
 	}
 
 	/**
-	 * Test if equals other selection.
+	 * Test if equAls other selection.
 	 */
-	public equalsSelection(other: ISelection): boolean {
+	public equAlsSelection(other: ISelection): booleAn {
 		return (
-			Selection.selectionsEqual(this, other)
+			Selection.selectionsEquAl(this, other)
 		);
 	}
 
 	/**
-	 * Test if the two selections are equal.
+	 * Test if the two selections Are equAl.
 	 */
-	public static selectionsEqual(a: ISelection, b: ISelection): boolean {
+	public stAtic selectionsEquAl(A: ISelection, b: ISelection): booleAn {
 		return (
-			a.selectionStartLineNumber === b.selectionStartLineNumber &&
-			a.selectionStartColumn === b.selectionStartColumn &&
-			a.positionLineNumber === b.positionLineNumber &&
-			a.positionColumn === b.positionColumn
+			A.selectionStArtLineNumber === b.selectionStArtLineNumber &&
+			A.selectionStArtColumn === b.selectionStArtColumn &&
+			A.positionLineNumber === b.positionLineNumber &&
+			A.positionColumn === b.positionColumn
 		);
 	}
 
@@ -105,98 +105,98 @@ export class Selection extends Range {
 	 * Get directions (LTR or RTL).
 	 */
 	public getDirection(): SelectionDirection {
-		if (this.selectionStartLineNumber === this.startLineNumber && this.selectionStartColumn === this.startColumn) {
+		if (this.selectionStArtLineNumber === this.stArtLineNumber && this.selectionStArtColumn === this.stArtColumn) {
 			return SelectionDirection.LTR;
 		}
 		return SelectionDirection.RTL;
 	}
 
 	/**
-	 * Create a new selection with a different `positionLineNumber` and `positionColumn`.
+	 * CreAte A new selection with A different `positionLineNumber` And `positionColumn`.
 	 */
 	public setEndPosition(endLineNumber: number, endColumn: number): Selection {
 		if (this.getDirection() === SelectionDirection.LTR) {
-			return new Selection(this.startLineNumber, this.startColumn, endLineNumber, endColumn);
+			return new Selection(this.stArtLineNumber, this.stArtColumn, endLineNumber, endColumn);
 		}
-		return new Selection(endLineNumber, endColumn, this.startLineNumber, this.startColumn);
+		return new Selection(endLineNumber, endColumn, this.stArtLineNumber, this.stArtColumn);
 	}
 
 	/**
-	 * Get the position at `positionLineNumber` and `positionColumn`.
+	 * Get the position At `positionLineNumber` And `positionColumn`.
 	 */
 	public getPosition(): Position {
 		return new Position(this.positionLineNumber, this.positionColumn);
 	}
 
 	/**
-	 * Create a new selection with a different `selectionStartLineNumber` and `selectionStartColumn`.
+	 * CreAte A new selection with A different `selectionStArtLineNumber` And `selectionStArtColumn`.
 	 */
-	public setStartPosition(startLineNumber: number, startColumn: number): Selection {
+	public setStArtPosition(stArtLineNumber: number, stArtColumn: number): Selection {
 		if (this.getDirection() === SelectionDirection.LTR) {
-			return new Selection(startLineNumber, startColumn, this.endLineNumber, this.endColumn);
+			return new Selection(stArtLineNumber, stArtColumn, this.endLineNumber, this.endColumn);
 		}
-		return new Selection(this.endLineNumber, this.endColumn, startLineNumber, startColumn);
+		return new Selection(this.endLineNumber, this.endColumn, stArtLineNumber, stArtColumn);
 	}
 
 	// ----
 
 	/**
-	 * Create a `Selection` from one or two positions
+	 * CreAte A `Selection` from one or two positions
 	 */
-	public static fromPositions(start: IPosition, end: IPosition = start): Selection {
-		return new Selection(start.lineNumber, start.column, end.lineNumber, end.column);
+	public stAtic fromPositions(stArt: IPosition, end: IPosition = stArt): Selection {
+		return new Selection(stArt.lineNumber, stArt.column, end.lineNumber, end.column);
 	}
 
 	/**
-	 * Create a `Selection` from an `ISelection`.
+	 * CreAte A `Selection` from An `ISelection`.
 	 */
-	public static liftSelection(sel: ISelection): Selection {
-		return new Selection(sel.selectionStartLineNumber, sel.selectionStartColumn, sel.positionLineNumber, sel.positionColumn);
+	public stAtic liftSelection(sel: ISelection): Selection {
+		return new Selection(sel.selectionStArtLineNumber, sel.selectionStArtColumn, sel.positionLineNumber, sel.positionColumn);
 	}
 
 	/**
-	 * `a` equals `b`.
+	 * `A` equAls `b`.
 	 */
-	public static selectionsArrEqual(a: ISelection[], b: ISelection[]): boolean {
-		if (a && !b || !a && b) {
-			return false;
+	public stAtic selectionsArrEquAl(A: ISelection[], b: ISelection[]): booleAn {
+		if (A && !b || !A && b) {
+			return fAlse;
 		}
-		if (!a && !b) {
+		if (!A && !b) {
 			return true;
 		}
-		if (a.length !== b.length) {
-			return false;
+		if (A.length !== b.length) {
+			return fAlse;
 		}
-		for (let i = 0, len = a.length; i < len; i++) {
-			if (!this.selectionsEqual(a[i], b[i])) {
-				return false;
+		for (let i = 0, len = A.length; i < len; i++) {
+			if (!this.selectionsEquAl(A[i], b[i])) {
+				return fAlse;
 			}
 		}
 		return true;
 	}
 
 	/**
-	 * Test if `obj` is an `ISelection`.
+	 * Test if `obj` is An `ISelection`.
 	 */
-	public static isISelection(obj: any): obj is ISelection {
+	public stAtic isISelection(obj: Any): obj is ISelection {
 		return (
 			obj
-			&& (typeof obj.selectionStartLineNumber === 'number')
-			&& (typeof obj.selectionStartColumn === 'number')
+			&& (typeof obj.selectionStArtLineNumber === 'number')
+			&& (typeof obj.selectionStArtColumn === 'number')
 			&& (typeof obj.positionLineNumber === 'number')
 			&& (typeof obj.positionColumn === 'number')
 		);
 	}
 
 	/**
-	 * Create with a direction.
+	 * CreAte with A direction.
 	 */
-	public static createWithDirection(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, direction: SelectionDirection): Selection {
+	public stAtic creAteWithDirection(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number, direction: SelectionDirection): Selection {
 
 		if (direction === SelectionDirection.LTR) {
-			return new Selection(startLineNumber, startColumn, endLineNumber, endColumn);
+			return new Selection(stArtLineNumber, stArtColumn, endLineNumber, endColumn);
 		}
 
-		return new Selection(endLineNumber, endColumn, startLineNumber, startColumn);
+		return new Selection(endLineNumber, endColumn, stArtLineNumber, stArtColumn);
 	}
 }

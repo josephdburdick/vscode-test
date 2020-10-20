@@ -1,57 +1,57 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { List } from 'vs/base/browser/ui/list/listWidget';
-import { WorkbenchListFocusContextKey, IListService, WorkbenchListSupportsMultiSelectContextKey, ListWidget, WorkbenchListHasSelectionOrFocus, getSelectionKeyboardEvent } from 'vs/platform/list/browser/listService';
-import { PagedList } from 'vs/base/browser/ui/list/listPaging';
-import { range } from 'vs/base/common/arrays';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { ObjectTree } from 'vs/base/browser/ui/tree/objectTree';
-import { AsyncDataTree } from 'vs/base/browser/ui/tree/asyncDataTree';
-import { DataTree } from 'vs/base/browser/ui/tree/dataTree';
-import { ITreeNode } from 'vs/base/browser/ui/tree/tree';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { List } from 'vs/bAse/browser/ui/list/listWidget';
+import { WorkbenchListFocusContextKey, IListService, WorkbenchListSupportsMultiSelectContextKey, ListWidget, WorkbenchListHAsSelectionOrFocus, getSelectionKeyboArdEvent } from 'vs/plAtform/list/browser/listService';
+import { PAgedList } from 'vs/bAse/browser/ui/list/listPAging';
+import { rAnge } from 'vs/bAse/common/ArrAys';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { ObjectTree } from 'vs/bAse/browser/ui/tree/objectTree';
+import { AsyncDAtATree } from 'vs/bAse/browser/ui/tree/AsyncDAtATree';
+import { DAtATree } from 'vs/bAse/browser/ui/tree/dAtATree';
+import { ITreeNode } from 'vs/bAse/browser/ui/tree/tree';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 
 function ensureDOMFocus(widget: ListWidget | undefined): void {
-	// it can happen that one of the commands is executed while
-	// DOM focus is within another focusable control within the
-	// list/tree item. therefor we should ensure that the
-	// list/tree has DOM focus again after the command ran.
-	if (widget && widget.getHTMLElement() !== document.activeElement) {
+	// it cAn hAppen thAt one of the commAnds is executed while
+	// DOM focus is within Another focusAble control within the
+	// list/tree item. therefor we should ensure thAt the
+	// list/tree hAs DOM focus AgAin After the commAnd rAn.
+	if (widget && widget.getHTMLElement() !== document.ActiveElement) {
 		widget.domFocus();
 	}
 }
 
-function focusDown(accessor: ServicesAccessor, arg2?: number, loop: boolean = false): void {
-	const focused = accessor.get(IListService).lastFocusedList;
-	const count = typeof arg2 === 'number' ? arg2 : 1;
+function focusDown(Accessor: ServicesAccessor, Arg2?: number, loop: booleAn = fAlse): void {
+	const focused = Accessor.get(IListService).lAstFocusedList;
+	const count = typeof Arg2 === 'number' ? Arg2 : 1;
 
 	// List
-	if (focused instanceof List || focused instanceof PagedList) {
+	if (focused instAnceof List || focused instAnceof PAgedList) {
 		const list = focused;
 
 		list.focusNext(count);
 		const listFocus = list.getFocus();
 		if (listFocus.length) {
-			list.reveal(listFocus[0]);
+			list.reveAl(listFocus[0]);
 		}
 	}
 
 	// Tree
-	else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+	else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 		const tree = focused;
 
-		const fakeKeyboardEvent = new KeyboardEvent('keydown');
-		tree.focusNext(count, loop, fakeKeyboardEvent);
+		const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+		tree.focusNext(count, loop, fAkeKeyboArdEvent);
 
 		const listFocus = tree.getFocus();
 		if (listFocus.length) {
-			tree.reveal(listFocus[0]);
+			tree.reveAl(listFocus[0]);
 		}
 	}
 
@@ -59,22 +59,22 @@ function focusDown(accessor: ServicesAccessor, arg2?: number, loop: boolean = fa
 	ensureDOMFocus(focused);
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.focusDown',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.DownArrow,
-	mac: {
-		primary: KeyCode.DownArrow,
-		secondary: [KeyMod.WinCtrl | KeyCode.KEY_N]
+	primAry: KeyCode.DownArrow,
+	mAc: {
+		primAry: KeyCode.DownArrow,
+		secondAry: [KeyMod.WinCtrl | KeyCode.KEY_N]
 	},
-	handler: (accessor, arg2) => focusDown(accessor, arg2)
+	hAndler: (Accessor, Arg2) => focusDown(Accessor, Arg2)
 });
 
-function expandMultiSelection(focused: List<unknown> | PagedList<unknown> | ObjectTree<unknown, unknown> | DataTree<unknown, unknown, unknown> | AsyncDataTree<unknown, unknown, unknown>, previousFocus: unknown): void {
+function expAndMultiSelection(focused: List<unknown> | PAgedList<unknown> | ObjectTree<unknown, unknown> | DAtATree<unknown, unknown, unknown> | AsyncDAtATree<unknown, unknown, unknown>, previousFocus: unknown): void {
 
 	// List
-	if (focused instanceof List || focused instanceof PagedList) {
+	if (focused instAnceof List || focused instAnceof PAgedList) {
 		const list = focused;
 
 		const focus = list.getFocus() ? list.getFocus()[0] : undefined;
@@ -83,13 +83,13 @@ function expandMultiSelection(focused: List<unknown> | PagedList<unknown> | Obje
 			list.setSelection(selection.filter(s => s !== previousFocus));
 		} else {
 			if (typeof focus === 'number') {
-				list.setSelection(selection.concat(focus));
+				list.setSelection(selection.concAt(focus));
 			}
 		}
 	}
 
 	// Tree
-	else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+	else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 		const list = focused;
 
 		const focus = list.getFocus() ? list.getFocus()[0] : undefined;
@@ -99,63 +99,63 @@ function expandMultiSelection(focused: List<unknown> | PagedList<unknown> | Obje
 		}
 
 		const selection = list.getSelection();
-		const fakeKeyboardEvent = new KeyboardEvent('keydown', { shiftKey: true });
+		const fAkeKeyboArdEvent = new KeyboArdEvent('keydown', { shiftKey: true });
 
 		if (selection && selection.indexOf(focus) >= 0) {
-			list.setSelection(selection.filter(s => s !== previousFocus), fakeKeyboardEvent);
+			list.setSelection(selection.filter(s => s !== previousFocus), fAkeKeyboArdEvent);
 		} else {
-			list.setSelection(selection.concat(focus), fakeKeyboardEvent);
+			list.setSelection(selection.concAt(focus), fAkeKeyboArdEvent);
 		}
 	}
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.expandSelectionDown',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.expAndSelectionDown',
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(WorkbenchListFocusContextKey, WorkbenchListSupportsMultiSelectContextKey),
-	primary: KeyMod.Shift | KeyCode.DownArrow,
-	handler: (accessor, arg2) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	when: ContextKeyExpr.And(WorkbenchListFocusContextKey, WorkbenchListSupportsMultiSelectContextKey),
+	primAry: KeyMod.Shift | KeyCode.DownArrow,
+	hAndler: (Accessor, Arg2) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List / Tree
-		if (focused instanceof List || focused instanceof PagedList || focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		if (focused instAnceof List || focused instAnceof PAgedList || focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const list = focused;
 
 			// Focus down first
 			const previousFocus = list.getFocus() ? list.getFocus()[0] : undefined;
-			focusDown(accessor, arg2, false);
+			focusDown(Accessor, Arg2, fAlse);
 
-			// Then adjust selection
-			expandMultiSelection(focused, previousFocus);
+			// Then Adjust selection
+			expAndMultiSelection(focused, previousFocus);
 		}
 	}
 });
 
-function focusUp(accessor: ServicesAccessor, arg2?: number, loop: boolean = false): void {
-	const focused = accessor.get(IListService).lastFocusedList;
-	const count = typeof arg2 === 'number' ? arg2 : 1;
+function focusUp(Accessor: ServicesAccessor, Arg2?: number, loop: booleAn = fAlse): void {
+	const focused = Accessor.get(IListService).lAstFocusedList;
+	const count = typeof Arg2 === 'number' ? Arg2 : 1;
 
 	// List
-	if (focused instanceof List || focused instanceof PagedList) {
+	if (focused instAnceof List || focused instAnceof PAgedList) {
 		const list = focused;
 
 		list.focusPrevious(count);
 		const listFocus = list.getFocus();
 		if (listFocus.length) {
-			list.reveal(listFocus[0]);
+			list.reveAl(listFocus[0]);
 		}
 	}
 
 	// Tree
-	else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+	else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 		const tree = focused;
 
-		const fakeKeyboardEvent = new KeyboardEvent('keydown');
-		tree.focusPrevious(count, loop, fakeKeyboardEvent);
+		const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+		tree.focusPrevious(count, loop, fAkeKeyboArdEvent);
 
 		const listFocus = tree.getFocus();
 		if (listFocus.length) {
-			tree.reveal(listFocus[0]);
+			tree.reveAl(listFocus[0]);
 		}
 	}
 
@@ -163,55 +163,55 @@ function focusUp(accessor: ServicesAccessor, arg2?: number, loop: boolean = fals
 	ensureDOMFocus(focused);
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.focusUp',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.UpArrow,
-	mac: {
-		primary: KeyCode.UpArrow,
-		secondary: [KeyMod.WinCtrl | KeyCode.KEY_P]
+	primAry: KeyCode.UpArrow,
+	mAc: {
+		primAry: KeyCode.UpArrow,
+		secondAry: [KeyMod.WinCtrl | KeyCode.KEY_P]
 	},
-	handler: (accessor, arg2) => focusUp(accessor, arg2)
+	hAndler: (Accessor, Arg2) => focusUp(Accessor, Arg2)
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.expandSelectionUp',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.expAndSelectionUp',
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(WorkbenchListFocusContextKey, WorkbenchListSupportsMultiSelectContextKey),
-	primary: KeyMod.Shift | KeyCode.UpArrow,
-	handler: (accessor, arg2) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	when: ContextKeyExpr.And(WorkbenchListFocusContextKey, WorkbenchListSupportsMultiSelectContextKey),
+	primAry: KeyMod.Shift | KeyCode.UpArrow,
+	hAndler: (Accessor, Arg2) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List / Tree
-		if (focused instanceof List || focused instanceof PagedList || focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		if (focused instAnceof List || focused instAnceof PAgedList || focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const list = focused;
 
 			// Focus up first
 			const previousFocus = list.getFocus() ? list.getFocus()[0] : undefined;
-			focusUp(accessor, arg2, false);
+			focusUp(Accessor, Arg2, fAlse);
 
-			// Then adjust selection
-			expandMultiSelection(focused, previousFocus);
+			// Then Adjust selection
+			expAndMultiSelection(focused, previousFocus);
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.collapse',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.collApse',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.LeftArrow,
-	mac: {
-		primary: KeyCode.LeftArrow,
-		secondary: [KeyMod.CtrlCmd | KeyCode.UpArrow]
+	primAry: KeyCode.LeftArrow,
+	mAc: {
+		primAry: KeyCode.LeftArrow,
+		secondAry: [KeyMod.CtrlCmd | KeyCode.UpArrow]
 	},
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// Tree only
-		if (focused && !(focused instanceof List || focused instanceof PagedList)) {
-			if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		if (focused && !(focused instAnceof List || focused instAnceof PAgedList)) {
+			if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 				const tree = focused;
 				const focusedElements = tree.getFocus();
 
@@ -221,13 +221,13 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 
 				const focus = focusedElements[0];
 
-				if (!tree.collapse(focus)) {
-					const parent = tree.getParentElement(focus);
+				if (!tree.collApse(focus)) {
+					const pArent = tree.getPArentElement(focus);
 
-					if (parent) {
-						const fakeKeyboardEvent = new KeyboardEvent('keydown');
-						tree.setFocus([parent], fakeKeyboardEvent);
-						tree.reveal(parent);
+					if (pArent) {
+						const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+						tree.setFocus([pArent], fAkeKeyboArdEvent);
+						tree.reveAl(pArent);
 					}
 				}
 			}
@@ -235,65 +235,65 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.collapseAll',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.collApseAll',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyMod.CtrlCmd | KeyCode.LeftArrow,
-	mac: {
-		primary: KeyMod.CtrlCmd | KeyCode.LeftArrow,
-		secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow]
+	primAry: KeyMod.CtrlCmd | KeyCode.LeftArrow,
+	mAc: {
+		primAry: KeyMod.CtrlCmd | KeyCode.LeftArrow,
+		secondAry: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow]
 	},
-	handler: (accessor) => {
-		const focusedTree = accessor.get(IListService).lastFocusedList;
+	hAndler: (Accessor) => {
+		const focusedTree = Accessor.get(IListService).lAstFocusedList;
 
-		if (focusedTree && !(focusedTree instanceof List || focusedTree instanceof PagedList)) {
-			focusedTree.collapseAll();
+		if (focusedTree && !(focusedTree instAnceof List || focusedTree instAnceof PAgedList)) {
+			focusedTree.collApseAll();
 		}
 	}
 });
 
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.focusParent',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.focusPArent',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
-		if (!focused || focused instanceof List || focused instanceof PagedList) {
+		if (!focused || focused instAnceof List || focused instAnceof PAgedList) {
 			return;
 		}
 
-		if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const tree = focused;
 			const focusedElements = tree.getFocus();
 			if (focusedElements.length === 0) {
 				return;
 			}
 			const focus = focusedElements[0];
-			const parent = tree.getParentElement(focus);
-			if (parent) {
-				const fakeKeyboardEvent = new KeyboardEvent('keydown');
-				tree.setFocus([parent], fakeKeyboardEvent);
-				tree.reveal(parent);
+			const pArent = tree.getPArentElement(focus);
+			if (pArent) {
+				const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+				tree.setFocus([pArent], fAkeKeyboArdEvent);
+				tree.reveAl(pArent);
 			}
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.expand',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.expAnd',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.RightArrow,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	primAry: KeyCode.RightArrow,
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// Tree only
-		if (focused && !(focused instanceof List || focused instanceof PagedList)) {
-			if (focused instanceof ObjectTree || focused instanceof DataTree) {
-				// TODO@Joao: instead of doing this here, just delegate to a tree method
+		if (focused && !(focused instAnceof List || focused instAnceof PAgedList)) {
+			if (focused instAnceof ObjectTree || focused instAnceof DAtATree) {
+				// TODO@JoAo: insteAd of doing this here, just delegAte to A tree method
 				const tree = focused;
 				const focusedElements = tree.getFocus();
 
@@ -303,21 +303,21 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 
 				const focus = focusedElements[0];
 
-				if (!tree.expand(focus)) {
+				if (!tree.expAnd(focus)) {
 					const child = tree.getFirstElementChild(focus);
 
 					if (child) {
 						const node = tree.getNode(child);
 
 						if (node.visible) {
-							const fakeKeyboardEvent = new KeyboardEvent('keydown');
-							tree.setFocus([child], fakeKeyboardEvent);
-							tree.reveal(child);
+							const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+							tree.setFocus([child], fAkeKeyboArdEvent);
+							tree.reveAl(child);
 						}
 					}
 				}
-			} else if (focused instanceof AsyncDataTree) {
-				// TODO@Joao: instead of doing this here, just delegate to a tree method
+			} else if (focused instAnceof AsyncDAtATree) {
+				// TODO@JoAo: insteAd of doing this here, just delegAte to A tree method
 				const tree = focused;
 				const focusedElements = tree.getFocus();
 
@@ -326,17 +326,17 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 				}
 
 				const focus = focusedElements[0];
-				tree.expand(focus).then(didExpand => {
-					if (focus && !didExpand) {
+				tree.expAnd(focus).then(didExpAnd => {
+					if (focus && !didExpAnd) {
 						const child = tree.getFirstElementChild(focus);
 
 						if (child) {
 							const node = tree.getNode(child);
 
 							if (node.visible) {
-								const fakeKeyboardEvent = new KeyboardEvent('keydown');
-								tree.setFocus([child], fakeKeyboardEvent);
-								tree.reveal(child);
+								const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+								tree.setFocus([child], fAkeKeyboArdEvent);
+								tree.reveAl(child);
 							}
 						}
 					}
@@ -346,29 +346,29 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.focusPageUp',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.focusPAgeUp',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.PageUp,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	primAry: KeyCode.PAgeUp,
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List
-		if (focused instanceof List || focused instanceof PagedList) {
+		if (focused instAnceof List || focused instAnceof PAgedList) {
 			const list = focused;
 
-			list.focusPreviousPage();
-			list.reveal(list.getFocus()[0]);
+			list.focusPreviousPAge();
+			list.reveAl(list.getFocus()[0]);
 		}
 
 		// Tree
-		else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const list = focused;
 
-			const fakeKeyboardEvent = new KeyboardEvent('keydown');
-			list.focusPreviousPage(fakeKeyboardEvent);
-			list.reveal(list.getFocus()[0]);
+			const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+			list.focusPreviousPAge(fAkeKeyboArdEvent);
+			list.reveAl(list.getFocus()[0]);
 		}
 
 		// Ensure DOM Focus
@@ -376,29 +376,29 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.focusPageDown',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.focusPAgeDown',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.PageDown,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	primAry: KeyCode.PAgeDown,
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List
-		if (focused instanceof List || focused instanceof PagedList) {
+		if (focused instAnceof List || focused instAnceof PAgedList) {
 			const list = focused;
 
-			list.focusNextPage();
-			list.reveal(list.getFocus()[0]);
+			list.focusNextPAge();
+			list.reveAl(list.getFocus()[0]);
 		}
 
 		// Tree
-		else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const list = focused;
 
-			const fakeKeyboardEvent = new KeyboardEvent('keydown');
-			list.focusNextPage(fakeKeyboardEvent);
-			list.reveal(list.getFocus()[0]);
+			const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+			list.focusNextPAge(fAkeKeyboArdEvent);
+			list.reveAl(list.getFocus()[0]);
 		}
 
 		// Ensure DOM Focus
@@ -406,43 +406,43 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.focusFirst',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.Home,
-	handler: accessor => listFocusFirst(accessor)
+	primAry: KeyCode.Home,
+	hAndler: Accessor => listFocusFirst(Accessor)
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.focusFirstChild',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: 0,
-	handler: accessor => listFocusFirst(accessor, { fromFocused: true })
+	primAry: 0,
+	hAndler: Accessor => listFocusFirst(Accessor, { fromFocused: true })
 });
 
-function listFocusFirst(accessor: ServicesAccessor, options?: { fromFocused: boolean }): void {
-	const focused = accessor.get(IListService).lastFocusedList;
+function listFocusFirst(Accessor: ServicesAccessor, options?: { fromFocused: booleAn }): void {
+	const focused = Accessor.get(IListService).lAstFocusedList;
 
 	// List
-	if (focused instanceof List || focused instanceof PagedList) {
+	if (focused instAnceof List || focused instAnceof PAgedList) {
 		const list = focused;
 
 		list.setFocus([0]);
-		list.reveal(0);
+		list.reveAl(0);
 	}
 
 	// Tree
-	else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+	else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 		const tree = focused;
-		const fakeKeyboardEvent = new KeyboardEvent('keydown');
-		tree.focusFirst(fakeKeyboardEvent);
+		const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+		tree.focusFirst(fAkeKeyboArdEvent);
 
 		const focus = tree.getFocus();
 
 		if (focus.length > 0) {
-			tree.reveal(focus[0]);
+			tree.reveAl(focus[0]);
 		}
 	}
 
@@ -450,43 +450,43 @@ function listFocusFirst(accessor: ServicesAccessor, options?: { fromFocused: boo
 	ensureDOMFocus(focused);
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.focusLast',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.focusLAst',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.End,
-	handler: accessor => listFocusLast(accessor)
+	primAry: KeyCode.End,
+	hAndler: Accessor => listFocusLAst(Accessor)
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.focusLastChild',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.focusLAstChild',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: 0,
-	handler: accessor => listFocusLast(accessor, { fromFocused: true })
+	primAry: 0,
+	hAndler: Accessor => listFocusLAst(Accessor, { fromFocused: true })
 });
 
-function listFocusLast(accessor: ServicesAccessor, options?: { fromFocused: boolean }): void {
-	const focused = accessor.get(IListService).lastFocusedList;
+function listFocusLAst(Accessor: ServicesAccessor, options?: { fromFocused: booleAn }): void {
+	const focused = Accessor.get(IListService).lAstFocusedList;
 
 	// List
-	if (focused instanceof List || focused instanceof PagedList) {
+	if (focused instAnceof List || focused instAnceof PAgedList) {
 		const list = focused;
 
 		list.setFocus([list.length - 1]);
-		list.reveal(list.length - 1);
+		list.reveAl(list.length - 1);
 	}
 
 	// Tree
-	else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+	else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 		const tree = focused;
-		const fakeKeyboardEvent = new KeyboardEvent('keydown');
-		tree.focusLast(fakeKeyboardEvent);
+		const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+		tree.focusLAst(fAkeKeyboArdEvent);
 
 		const focus = tree.getFocus();
 
 		if (focus.length > 0) {
-			tree.reveal(focus[0]);
+			tree.reveAl(focus[0]);
 		}
 	}
 
@@ -495,99 +495,99 @@ function listFocusLast(accessor: ServicesAccessor, options?: { fromFocused: bool
 }
 
 
-function focusElement(accessor: ServicesAccessor, retainCurrentFocus: boolean): void {
-	const focused = accessor.get(IListService).lastFocusedList;
-	const fakeKeyboardEvent = getSelectionKeyboardEvent('keydown', retainCurrentFocus);
+function focusElement(Accessor: ServicesAccessor, retAinCurrentFocus: booleAn): void {
+	const focused = Accessor.get(IListService).lAstFocusedList;
+	const fAkeKeyboArdEvent = getSelectionKeyboArdEvent('keydown', retAinCurrentFocus);
 	// List
-	if (focused instanceof List || focused instanceof PagedList) {
+	if (focused instAnceof List || focused instAnceof PAgedList) {
 		const list = focused;
-		list.setSelection(list.getFocus(), fakeKeyboardEvent);
+		list.setSelection(list.getFocus(), fAkeKeyboArdEvent);
 	}
 
 	// Trees
-	else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+	else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 		const tree = focused;
 		const focus = tree.getFocus();
 
 		if (focus.length > 0) {
-			let toggleCollapsed = true;
+			let toggleCollApsed = true;
 
-			if (tree.expandOnlyOnTwistieClick === true) {
-				toggleCollapsed = false;
-			} else if (typeof tree.expandOnlyOnTwistieClick !== 'boolean' && tree.expandOnlyOnTwistieClick(focus[0])) {
-				toggleCollapsed = false;
+			if (tree.expAndOnlyOnTwistieClick === true) {
+				toggleCollApsed = fAlse;
+			} else if (typeof tree.expAndOnlyOnTwistieClick !== 'booleAn' && tree.expAndOnlyOnTwistieClick(focus[0])) {
+				toggleCollApsed = fAlse;
 			}
 
-			if (toggleCollapsed) {
-				tree.toggleCollapsed(focus[0]);
+			if (toggleCollApsed) {
+				tree.toggleCollApsed(focus[0]);
 			}
 		}
-		tree.setSelection(focus, fakeKeyboardEvent);
+		tree.setSelection(focus, fAkeKeyboArdEvent);
 	}
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.select',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.Enter,
-	mac: {
-		primary: KeyCode.Enter,
-		secondary: [KeyMod.CtrlCmd | KeyCode.DownArrow]
+	primAry: KeyCode.Enter,
+	mAc: {
+		primAry: KeyCode.Enter,
+		secondAry: [KeyMod.CtrlCmd | KeyCode.DownArrow]
 	},
-	handler: (accessor) => {
-		focusElement(accessor, false);
+	hAndler: (Accessor) => {
+		focusElement(Accessor, fAlse);
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.selectAndPreserveFocus',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	handler: accessor => {
-		focusElement(accessor, true);
+	hAndler: Accessor => {
+		focusElement(Accessor, true);
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.selectAll',
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(WorkbenchListFocusContextKey, WorkbenchListSupportsMultiSelectContextKey),
-	primary: KeyMod.CtrlCmd | KeyCode.KEY_A,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	when: ContextKeyExpr.And(WorkbenchListFocusContextKey, WorkbenchListSupportsMultiSelectContextKey),
+	primAry: KeyMod.CtrlCmd | KeyCode.KEY_A,
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List
-		if (focused instanceof List || focused instanceof PagedList) {
+		if (focused instAnceof List || focused instAnceof PAgedList) {
 			const list = focused;
-			const fakeKeyboardEvent = new KeyboardEvent('keydown');
-			list.setSelection(range(list.length), fakeKeyboardEvent);
+			const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+			list.setSelection(rAnge(list.length), fAkeKeyboArdEvent);
 		}
 
 		// Trees
-		else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const tree = focused;
 			const focus = tree.getFocus();
 			const selection = tree.getSelection();
 
-			// Which element should be considered to start selecting all?
-			let start: unknown | undefined = undefined;
+			// Which element should be considered to stArt selecting All?
+			let stArt: unknown | undefined = undefined;
 
 			if (focus.length > 0 && (selection.length === 0 || !selection.includes(focus[0]))) {
-				start = focus[0];
+				stArt = focus[0];
 			}
 
-			if (!start && selection.length > 0) {
-				start = selection[0];
+			if (!stArt && selection.length > 0) {
+				stArt = selection[0];
 			}
 
-			// What is the scope of select all?
+			// WhAt is the scope of select All?
 			let scope: unknown | undefined = undefined;
 
-			if (!start) {
+			if (!stArt) {
 				scope = undefined;
 			} else {
-				scope = tree.getParentElement(start);
+				scope = tree.getPArentElement(stArt);
 			}
 
 			const newSelection: unknown[] = [];
@@ -596,7 +596,7 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 					if (child.visible) {
 						newSelection.push(child.element);
 
-						if (!child.collapsed) {
+						if (!child.collApsed) {
 							visit(child);
 						}
 					}
@@ -606,24 +606,24 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 			// Add the whole scope subtree to the new selection
 			visit(tree.getNode(scope));
 
-			// If the scope isn't the tree root, it should be part of the new selection
+			// If the scope isn't the tree root, it should be pArt of the new selection
 			if (scope && selection.length === newSelection.length) {
 				newSelection.unshift(scope);
 			}
 
-			const fakeKeyboardEvent = new KeyboardEvent('keydown');
-			tree.setSelection(newSelection, fakeKeyboardEvent);
+			const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
+			tree.setSelection(newSelection, fAkeKeyboArdEvent);
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.toggleSelection',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Enter,
-	handler: (accessor) => {
-		const widget = accessor.get(IListService).lastFocusedList;
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Enter,
+	hAndler: (Accessor) => {
+		const widget = Accessor.get(IListService).lAstFocusedList;
 
 		if (!widget) {
 			return;
@@ -646,39 +646,39 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.toggleExpand',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.toggleExpAnd',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyCode.Space,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	primAry: KeyCode.SpAce,
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// Tree only
-		if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const tree = focused;
 			const focus = tree.getFocus();
 
-			if (focus.length > 0 && tree.isCollapsible(focus[0])) {
-				tree.toggleCollapsed(focus[0]);
+			if (focus.length > 0 && tree.isCollApsible(focus[0])) {
+				tree.toggleCollApsed(focus[0]);
 				return;
 			}
 		}
 
-		focusElement(accessor, true);
+		focusElement(Accessor, true);
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'list.clear',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'list.cleAr',
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(WorkbenchListFocusContextKey, WorkbenchListHasSelectionOrFocus),
-	primary: KeyCode.Escape,
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	when: ContextKeyExpr.And(WorkbenchListFocusContextKey, WorkbenchListHAsSelectionOrFocus),
+	primAry: KeyCode.EscApe,
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List
-		if (focused instanceof List || focused instanceof PagedList) {
+		if (focused instAnceof List || focused instAnceof PAgedList) {
 			const list = focused;
 
 			list.setSelection([]);
@@ -686,60 +686,60 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 		}
 
 		// Tree
-		else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const list = focused;
-			const fakeKeyboardEvent = new KeyboardEvent('keydown');
+			const fAkeKeyboArdEvent = new KeyboArdEvent('keydown');
 
-			list.setSelection([], fakeKeyboardEvent);
-			list.setFocus([], fakeKeyboardEvent);
+			list.setSelection([], fAkeKeyboArdEvent);
+			list.setFocus([], fAkeKeyboArdEvent);
 		}
 	}
 });
 
-CommandsRegistry.registerCommand({
-	id: 'list.toggleKeyboardNavigation',
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+CommAndsRegistry.registerCommAnd({
+	id: 'list.toggleKeyboArdNAvigAtion',
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List
-		if (focused instanceof List || focused instanceof PagedList) {
+		if (focused instAnceof List || focused instAnceof PAgedList) {
 			const list = focused;
-			list.toggleKeyboardNavigation();
+			list.toggleKeyboArdNAvigAtion();
 		}
 
 		// Tree
-		else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const tree = focused;
-			tree.toggleKeyboardNavigation();
+			tree.toggleKeyboArdNAvigAtion();
 		}
 	}
 });
 
-CommandsRegistry.registerCommand({
+CommAndsRegistry.registerCommAnd({
 	id: 'list.toggleFilterOnType',
-	handler: (accessor) => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	hAndler: (Accessor) => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		// List
-		if (focused instanceof List || focused instanceof PagedList) {
-			// TODO@joao
+		if (focused instAnceof List || focused instAnceof PAgedList) {
+			// TODO@joAo
 		}
 
 		// Tree
-		else if (focused instanceof ObjectTree || focused instanceof DataTree || focused instanceof AsyncDataTree) {
+		else if (focused instAnceof ObjectTree || focused instAnceof DAtATree || focused instAnceof AsyncDAtATree) {
 			const tree = focused;
-			tree.updateOptions({ filterOnType: !tree.filterOnType });
+			tree.updAteOptions({ filterOnType: !tree.filterOnType });
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.scrollUp',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyMod.CtrlCmd | KeyCode.UpArrow,
-	handler: accessor => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	primAry: KeyMod.CtrlCmd | KeyCode.UpArrow,
+	hAndler: Accessor => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		if (!focused) {
 			return;
@@ -749,13 +749,13 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.scrollDown',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	primary: KeyMod.CtrlCmd | KeyCode.DownArrow,
-	handler: accessor => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	primAry: KeyMod.CtrlCmd | KeyCode.DownArrow,
+	hAndler: Accessor => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		if (!focused) {
 			return;
@@ -765,12 +765,12 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.scrollLeft',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	handler: accessor => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	hAndler: Accessor => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		if (!focused) {
 			return;
@@ -780,12 +780,12 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: 'list.scrollRight',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: WorkbenchListFocusContextKey,
-	handler: accessor => {
-		const focused = accessor.get(IListService).lastFocusedList;
+	hAndler: Accessor => {
+		const focused = Accessor.get(IListService).lAstFocusedList;
 
 		if (!focused) {
 			return;

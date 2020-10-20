@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEncodingSupport, ISaveOptions, IModeSupport } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
-import { URI } from 'vs/base/common/uri';
+import { IEncodingSupport, ISAveOptions, IModeSupport } from 'vs/workbench/common/editor';
+import { BAseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
+import { URI } from 'vs/bAse/common/uri';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { ITextBufferFactory, ITextModel } from 'vs/editor/common/model';
-import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
+import { ITextResourceConfigurAtionService } from 'vs/editor/common/services/textResourceConfigurAtionService';
+import { ITextBufferFActory, ITextModel } from 'vs/editor/common/model';
+import { creAteTextBufferFActory } from 'vs/editor/common/model/textModel';
 import { IResolvedTextEditorModel, ITextEditorModel } from 'vs/editor/common/services/resolverService';
-import { IWorkingCopyService, IWorkingCopy, WorkingCopyCapabilities, IWorkingCopyBackup } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { IWorkingCopyService, IWorkingCopy, WorkingCopyCApAbilities, IWorkingCopyBAckup } from 'vs/workbench/services/workingCopy/common/workingCopyService';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { IModelContentChangedEvent } from 'vs/editor/common/model/textModelEvents';
-import { withNullAsUndefined, assertIsDefined } from 'vs/base/common/types';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { ensureValidWordDefinition } from 'vs/editor/common/model/wordHelper';
+import { IModelContentChAngedEvent } from 'vs/editor/common/model/textModelEvents';
+import { withNullAsUndefined, AssertIsDefined } from 'vs/bAse/common/types';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { ensureVAlidWordDefinition } from 'vs/editor/common/model/wordHelper';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export interface IUntitledTextEditorModel extends ITextEditorModel, IModeSupport, IEncodingSupport, IWorkingCopy {
-
-	/**
-	 * Emits an event when the encoding of this untitled model changes.
-	 */
-	readonly onDidChangeEncoding: Event<void>;
+export interfAce IUntitledTextEditorModel extends ITextEditorModel, IModeSupport, IEncodingSupport, IWorkingCopy {
 
 	/**
-	 * Emits an event when the name of this untitled model changes.
+	 * Emits An event when the encoding of this untitled model chAnges.
 	 */
-	readonly onDidChangeName: Event<void>;
+	reAdonly onDidChAngeEncoding: Event<void>;
 
 	/**
-	 * Emits an event when this untitled model is reverted.
+	 * Emits An event when the nAme of this untitled model chAnges.
 	 */
-	readonly onDidRevert: Event<void>;
+	reAdonly onDidChAngeNAme: Event<void>;
 
 	/**
-	 * Whether this untitled text model has an associated file path.
+	 * Emits An event when this untitled model is reverted.
 	 */
-	readonly hasAssociatedFilePath: boolean;
+	reAdonly onDidRevert: Event<void>;
 
 	/**
-	 * Whether this model has an explicit language mode or not.
+	 * Whether this untitled text model hAs An AssociAted file pAth.
 	 */
-	readonly hasModeSetExplicitly: boolean;
+	reAdonly hAsAssociAtedFilePAth: booleAn;
+
+	/**
+	 * Whether this model hAs An explicit lAnguAge mode or not.
+	 */
+	reAdonly hAsModeSetExplicitly: booleAn;
 
 	/**
 	 * Sets the encoding to use for this untitled model.
@@ -56,77 +56,77 @@ export interface IUntitledTextEditorModel extends ITextEditorModel, IModeSupport
 	setEncoding(encoding: string): void;
 
 	/**
-	 * Load the untitled model.
+	 * LoAd the untitled model.
 	 */
-	load(): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel>;
+	loAd(): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel>;
 
 	/**
-	 * Updates the value of the untitled model optionally allowing to ignore dirty.
+	 * UpdAtes the vAlue of the untitled model optionAlly Allowing to ignore dirty.
 	 * The model must be resolved for this method to work.
 	 */
-	setValue(this: IResolvedTextEditorModel, value: string, ignoreDirty?: boolean): void;
+	setVAlue(this: IResolvedTextEditorModel, vAlue: string, ignoreDirty?: booleAn): void;
 }
 
-export class UntitledTextEditorModel extends BaseTextEditorModel implements IUntitledTextEditorModel {
+export clAss UntitledTextEditorModel extends BAseTextEditorModel implements IUntitledTextEditorModel {
 
-	private static readonly FIRST_LINE_NAME_MAX_LENGTH = 40;
+	privAte stAtic reAdonly FIRST_LINE_NAME_MAX_LENGTH = 40;
 
-	private readonly _onDidChangeContent = this._register(new Emitter<void>());
-	readonly onDidChangeContent = this._onDidChangeContent.event;
+	privAte reAdonly _onDidChAngeContent = this._register(new Emitter<void>());
+	reAdonly onDidChAngeContent = this._onDidChAngeContent.event;
 
-	private readonly _onDidChangeName = this._register(new Emitter<void>());
-	readonly onDidChangeName = this._onDidChangeName.event;
+	privAte reAdonly _onDidChAngeNAme = this._register(new Emitter<void>());
+	reAdonly onDidChAngeNAme = this._onDidChAngeNAme.event;
 
-	private readonly _onDidChangeDirty = this._register(new Emitter<void>());
-	readonly onDidChangeDirty = this._onDidChangeDirty.event;
+	privAte reAdonly _onDidChAngeDirty = this._register(new Emitter<void>());
+	reAdonly onDidChAngeDirty = this._onDidChAngeDirty.event;
 
-	private readonly _onDidChangeEncoding = this._register(new Emitter<void>());
-	readonly onDidChangeEncoding = this._onDidChangeEncoding.event;
+	privAte reAdonly _onDidChAngeEncoding = this._register(new Emitter<void>());
+	reAdonly onDidChAngeEncoding = this._onDidChAngeEncoding.event;
 
-	private readonly _onDidRevert = this._register(new Emitter<void>());
-	readonly onDidRevert = this._onDidRevert.event;
+	privAte reAdonly _onDidRevert = this._register(new Emitter<void>());
+	reAdonly onDidRevert = this._onDidRevert.event;
 
-	readonly capabilities = WorkingCopyCapabilities.Untitled;
+	reAdonly cApAbilities = WorkingCopyCApAbilities.Untitled;
 
-	private cachedModelFirstLineWords: string | undefined = undefined;
-	get name(): string {
-		// Take name from first line if present and only if
-		// we have no associated file path. In that case we
-		// prefer the file name as title.
-		if (this.configuredLabelFormat === 'content' && !this.hasAssociatedFilePath && this.cachedModelFirstLineWords) {
-			return this.cachedModelFirstLineWords;
+	privAte cAchedModelFirstLineWords: string | undefined = undefined;
+	get nAme(): string {
+		// TAke nAme from first line if present And only if
+		// we hAve no AssociAted file pAth. In thAt cAse we
+		// prefer the file nAme As title.
+		if (this.configuredLAbelFormAt === 'content' && !this.hAsAssociAtedFilePAth && this.cAchedModelFirstLineWords) {
+			return this.cAchedModelFirstLineWords;
 		}
 
-		// Otherwise fallback to resource
-		return this.labelService.getUriBasenameLabel(this.resource);
+		// Otherwise fAllbAck to resource
+		return this.lAbelService.getUriBAsenAmeLAbel(this.resource);
 	}
 
-	private dirty = this.hasAssociatedFilePath || !!this.initialValue;
-	private ignoreDirtyOnModelContentChange = false;
+	privAte dirty = this.hAsAssociAtedFilePAth || !!this.initiAlVAlue;
+	privAte ignoreDirtyOnModelContentChAnge = fAlse;
 
-	private versionId = 0;
+	privAte versionId = 0;
 
-	private configuredEncoding: string | undefined;
-	private configuredLabelFormat: 'content' | 'name' = 'content';
+	privAte configuredEncoding: string | undefined;
+	privAte configuredLAbelFormAt: 'content' | 'nAme' = 'content';
 
 	constructor(
-		public readonly resource: URI,
-		public readonly hasAssociatedFilePath: boolean,
-		private readonly initialValue: string | undefined,
-		private preferredMode: string | undefined,
-		private preferredEncoding: string | undefined,
+		public reAdonly resource: URI,
+		public reAdonly hAsAssociAtedFilePAth: booleAn,
+		privAte reAdonly initiAlVAlue: string | undefined,
+		privAte preferredMode: string | undefined,
+		privAte preferredEncoding: string | undefined,
 		@IModeService modeService: IModeService,
 		@IModelService modelService: IModelService,
-		@IBackupFileService private readonly backupFileService: IBackupFileService,
-		@ITextResourceConfigurationService private readonly textResourceConfigurationService: ITextResourceConfigurationService,
-		@IWorkingCopyService private readonly workingCopyService: IWorkingCopyService,
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IEditorService private readonly editorService: IEditorService
+		@IBAckupFileService privAte reAdonly bAckupFileService: IBAckupFileService,
+		@ITextResourceConfigurAtionService privAte reAdonly textResourceConfigurAtionService: ITextResourceConfigurAtionService,
+		@IWorkingCopyService privAte reAdonly workingCopyService: IWorkingCopyService,
+		@ITextFileService privAte reAdonly textFileService: ITextFileService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IEditorService privAte reAdonly editorService: IEditorService
 	) {
 		super(modelService, modeService);
 
-		// Make known to working copy service
+		// MAke known to working copy service
 		this._register(this.workingCopyService.registerWorkingCopy(this));
 
 		if (preferredMode) {
@@ -134,36 +134,36 @@ export class UntitledTextEditorModel extends BaseTextEditorModel implements IUnt
 		}
 
 		// Fetch config
-		this.onConfigurationChange(false);
+		this.onConfigurAtionChAnge(fAlse);
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Config Changes
-		this._register(this.textResourceConfigurationService.onDidChangeConfiguration(e => this.onConfigurationChange(true)));
+		// Config ChAnges
+		this._register(this.textResourceConfigurAtionService.onDidChAngeConfigurAtion(e => this.onConfigurAtionChAnge(true)));
 	}
 
-	private onConfigurationChange(fromEvent: boolean): void {
+	privAte onConfigurAtionChAnge(fromEvent: booleAn): void {
 
 		// Encoding
-		const configuredEncoding = this.textResourceConfigurationService.getValue<string>(this.resource, 'files.encoding');
+		const configuredEncoding = this.textResourceConfigurAtionService.getVAlue<string>(this.resource, 'files.encoding');
 		if (this.configuredEncoding !== configuredEncoding) {
 			this.configuredEncoding = configuredEncoding;
 
 			if (fromEvent && !this.preferredEncoding) {
-				this._onDidChangeEncoding.fire(); // do not fire event if we have a preferred encoding set
+				this._onDidChAngeEncoding.fire(); // do not fire event if we hAve A preferred encoding set
 			}
 		}
 
-		// Label Format
-		const configuredLabelFormat = this.textResourceConfigurationService.getValue<string>(this.resource, 'workbench.editor.untitled.labelFormat');
-		if (this.configuredLabelFormat !== configuredLabelFormat && (configuredLabelFormat === 'content' || configuredLabelFormat === 'name')) {
-			this.configuredLabelFormat = configuredLabelFormat;
+		// LAbel FormAt
+		const configuredLAbelFormAt = this.textResourceConfigurAtionService.getVAlue<string>(this.resource, 'workbench.editor.untitled.lAbelFormAt');
+		if (this.configuredLAbelFormAt !== configuredLAbelFormAt && (configuredLAbelFormAt === 'content' || configuredLAbelFormAt === 'nAme')) {
+			this.configuredLAbelFormAt = configuredLAbelFormAt;
 
 			if (fromEvent) {
-				this._onDidChangeName.fire();
+				this._onDidChAngeNAme.fire();
 			}
 		}
 	}
@@ -172,28 +172,28 @@ export class UntitledTextEditorModel extends BaseTextEditorModel implements IUnt
 		return this.versionId;
 	}
 
-	private _hasModeSetExplicitly: boolean = false;
-	get hasModeSetExplicitly(): boolean { return this._hasModeSetExplicitly; }
+	privAte _hAsModeSetExplicitly: booleAn = fAlse;
+	get hAsModeSetExplicitly(): booleAn { return this._hAsModeSetExplicitly; }
 
 	setMode(mode: string): void {
 
-		// Remember that an explicit mode was set
-		this._hasModeSetExplicitly = true;
+		// Remember thAt An explicit mode wAs set
+		this._hAsModeSetExplicitly = true;
 
-		let actualMode: string | undefined = undefined;
-		if (mode === '${activeEditorLanguage}') {
-			// support the special '${activeEditorLanguage}' mode by
-			// looking up the language mode from the currently
-			// active text editor if any
-			actualMode = this.editorService.activeTextEditorMode;
+		let ActuAlMode: string | undefined = undefined;
+		if (mode === '${ActiveEditorLAnguAge}') {
+			// support the speciAl '${ActiveEditorLAnguAge}' mode by
+			// looking up the lAnguAge mode from the currently
+			// Active text editor if Any
+			ActuAlMode = this.editorService.ActiveTextEditorMode;
 		} else {
-			actualMode = mode;
+			ActuAlMode = mode;
 		}
 
-		this.preferredMode = actualMode;
+		this.preferredMode = ActuAlMode;
 
-		if (actualMode) {
-			super.setMode(actualMode);
+		if (ActuAlMode) {
+			super.setMode(ActuAlMode);
 		}
 	}
 
@@ -213,124 +213,124 @@ export class UntitledTextEditorModel extends BaseTextEditorModel implements IUnt
 		const oldEncoding = this.getEncoding();
 		this.preferredEncoding = encoding;
 
-		// Emit if it changed
+		// Emit if it chAnged
 		if (oldEncoding !== this.preferredEncoding) {
-			this._onDidChangeEncoding.fire();
+			this._onDidChAngeEncoding.fire();
 		}
 	}
 
-	setValue(value: string, ignoreDirty?: boolean): void {
+	setVAlue(vAlue: string, ignoreDirty?: booleAn): void {
 		if (ignoreDirty) {
-			this.ignoreDirtyOnModelContentChange = true;
+			this.ignoreDirtyOnModelContentChAnge = true;
 		}
 
 		try {
-			this.updateTextEditorModel(createTextBufferFactory(value));
-		} finally {
-			this.ignoreDirtyOnModelContentChange = false;
+			this.updAteTextEditorModel(creAteTextBufferFActory(vAlue));
+		} finAlly {
+			this.ignoreDirtyOnModelContentChAnge = fAlse;
 		}
 	}
 
-	isReadonly(): boolean {
-		return false;
+	isReAdonly(): booleAn {
+		return fAlse;
 	}
 
-	isDirty(): boolean {
+	isDirty(): booleAn {
 		return this.dirty;
 	}
 
-	private setDirty(dirty: boolean): void {
+	privAte setDirty(dirty: booleAn): void {
 		if (this.dirty === dirty) {
 			return;
 		}
 
 		this.dirty = dirty;
-		this._onDidChangeDirty.fire();
+		this._onDidChAngeDirty.fire();
 	}
 
-	async save(options?: ISaveOptions): Promise<boolean> {
-		const target = await this.textFileService.save(this.resource, options);
+	Async sAve(options?: ISAveOptions): Promise<booleAn> {
+		const tArget = AwAit this.textFileService.sAve(this.resource, options);
 
-		return !!target;
+		return !!tArget;
 	}
 
-	async revert(): Promise<void> {
-		this.setDirty(false);
+	Async revert(): Promise<void> {
+		this.setDirty(fAlse);
 
-		// Emit as event
+		// Emit As event
 		this._onDidRevert.fire();
 
-		// A reverted untitled model is invalid because it has
-		// no actual source on disk to revert to. As such we
+		// A reverted untitled model is invAlid becAuse it hAs
+		// no ActuAl source on disk to revert to. As such we
 		// dispose the model.
 		this.dispose();
 	}
 
-	async backup(token: CancellationToken): Promise<IWorkingCopyBackup> {
-		return { content: withNullAsUndefined(this.createSnapshot()) };
+	Async bAckup(token: CAncellAtionToken): Promise<IWorkingCopyBAckup> {
+		return { content: withNullAsUndefined(this.creAteSnApshot()) };
 	}
 
-	async load(): Promise<UntitledTextEditorModel & IResolvedTextEditorModel> {
+	Async loAd(): Promise<UntitledTextEditorModel & IResolvedTextEditorModel> {
 
-		// Check for backups
-		const backup = await this.backupFileService.resolve(this.resource);
+		// Check for bAckups
+		const bAckup = AwAit this.bAckupFileService.resolve(this.resource);
 
-		let untitledContents: ITextBufferFactory;
-		if (backup) {
-			untitledContents = backup.value;
+		let untitledContents: ITextBufferFActory;
+		if (bAckup) {
+			untitledContents = bAckup.vAlue;
 		} else {
-			untitledContents = createTextBufferFactory(this.initialValue || '');
+			untitledContents = creAteTextBufferFActory(this.initiAlVAlue || '');
 		}
 
-		// Create text editor model if not yet done
-		let createdUntitledModel = false;
+		// CreAte text editor model if not yet done
+		let creAtedUntitledModel = fAlse;
 		if (!this.textEditorModel) {
-			this.createTextEditorModel(untitledContents, this.resource, this.preferredMode);
-			createdUntitledModel = true;
+			this.creAteTextEditorModel(untitledContents, this.resource, this.preferredMode);
+			creAtedUntitledModel = true;
 		}
 
-		// Otherwise: the untitled model already exists and we must assume
-		// that the value of the model was changed by the user. As such we
-		// do not update the contents, only the mode if configured.
+		// Otherwise: the untitled model AlreAdy exists And we must Assume
+		// thAt the vAlue of the model wAs chAnged by the user. As such we
+		// do not updAte the contents, only the mode if configured.
 		else {
-			this.updateTextEditorModel(undefined, this.preferredMode);
+			this.updAteTextEditorModel(undefined, this.preferredMode);
 		}
 
 		// Listen to text model events
-		const textEditorModel = assertIsDefined(this.textEditorModel);
-		this._register(textEditorModel.onDidChangeContent(e => this.onModelContentChanged(textEditorModel, e)));
-		this._register(textEditorModel.onDidChangeLanguage(() => this.onConfigurationChange(true))); // mode change can have impact on config
+		const textEditorModel = AssertIsDefined(this.textEditorModel);
+		this._register(textEditorModel.onDidChAngeContent(e => this.onModelContentChAnged(textEditorModel, e)));
+		this._register(textEditorModel.onDidChAngeLAnguAge(() => this.onConfigurAtionChAnge(true))); // mode chAnge cAn hAve impAct on config
 
-		// Only adjust name and dirty state etc. if we
-		// actually created the untitled model
-		if (createdUntitledModel) {
+		// Only Adjust nAme And dirty stAte etc. if we
+		// ActuAlly creAted the untitled model
+		if (creAtedUntitledModel) {
 
-			// Name
-			if (backup || this.initialValue) {
-				this.updateNameFromFirstLine();
+			// NAme
+			if (bAckup || this.initiAlVAlue) {
+				this.updAteNAmeFromFirstLine();
 			}
 
-			// Untitled associated to file path are dirty right away as well as untitled with content
-			this.setDirty(this.hasAssociatedFilePath || !!backup || !!this.initialValue);
+			// Untitled AssociAted to file pAth Are dirty right AwAy As well As untitled with content
+			this.setDirty(this.hAsAssociAtedFilePAth || !!bAckup || !!this.initiAlVAlue);
 
-			// If we have initial contents, make sure to emit this
-			// as the appropiate events to the outside.
-			if (backup || this.initialValue) {
-				this._onDidChangeContent.fire();
+			// If we hAve initiAl contents, mAke sure to emit this
+			// As the AppropiAte events to the outside.
+			if (bAckup || this.initiAlVAlue) {
+				this._onDidChAngeContent.fire();
 			}
 		}
 
-		return this as UntitledTextEditorModel & IResolvedTextEditorModel;
+		return this As UntitledTextEditorModel & IResolvedTextEditorModel;
 	}
 
-	private onModelContentChanged(model: ITextModel, e: IModelContentChangedEvent): void {
+	privAte onModelContentChAnged(model: ITextModel, e: IModelContentChAngedEvent): void {
 		this.versionId++;
 
-		if (!this.ignoreDirtyOnModelContentChange) {
-			// mark the untitled text editor as non-dirty once its content becomes empty and we do
-			// not have an associated path set. we never want dirty indicator in that case.
-			if (!this.hasAssociatedFilePath && model.getLineCount() === 1 && model.getLineContent(1) === '') {
-				this.setDirty(false);
+		if (!this.ignoreDirtyOnModelContentChAnge) {
+			// mArk the untitled text editor As non-dirty once its content becomes empty And we do
+			// not hAve An AssociAted pAth set. we never wAnt dirty indicAtor in thAt cAse.
+			if (!this.hAsAssociAtedFilePAth && model.getLineCount() === 1 && model.getLineContent(1) === '') {
+				this.setDirty(fAlse);
 			}
 
 			// turn dirty otherwise
@@ -339,36 +339,36 @@ export class UntitledTextEditorModel extends BaseTextEditorModel implements IUnt
 			}
 		}
 
-		// Check for name change if first line changed in the range of 0-FIRST_LINE_NAME_MAX_LENGTH columns
-		if (e.changes.some(change => (change.range.startLineNumber === 1 || change.range.endLineNumber === 1) && change.range.startColumn <= UntitledTextEditorModel.FIRST_LINE_NAME_MAX_LENGTH)) {
-			this.updateNameFromFirstLine();
+		// Check for nAme chAnge if first line chAnged in the rAnge of 0-FIRST_LINE_NAME_MAX_LENGTH columns
+		if (e.chAnges.some(chAnge => (chAnge.rAnge.stArtLineNumber === 1 || chAnge.rAnge.endLineNumber === 1) && chAnge.rAnge.stArtColumn <= UntitledTextEditorModel.FIRST_LINE_NAME_MAX_LENGTH)) {
+			this.updAteNAmeFromFirstLine();
 		}
 
-		// Emit as general content change event
-		this._onDidChangeContent.fire();
+		// Emit As generAl content chAnge event
+		this._onDidChAngeContent.fire();
 	}
 
-	private updateNameFromFirstLine(): void {
-		if (this.hasAssociatedFilePath) {
-			return; // not in case of an associated file path
+	privAte updAteNAmeFromFirstLine(): void {
+		if (this.hAsAssociAtedFilePAth) {
+			return; // not in cAse of An AssociAted file pAth
 		}
 
 		// Determine the first words of the model following these rules:
-		// - cannot be only whitespace (so we trim())
-		// - cannot be only non-alphanumeric characters (so we run word definition regex over it)
-		// - cannot be longer than FIRST_LINE_MAX_TITLE_LENGTH
-		// - normalize multiple whitespaces to a single whitespace
+		// - cAnnot be only whitespAce (so we trim())
+		// - cAnnot be only non-AlphAnumeric chArActers (so we run word definition regex over it)
+		// - cAnnot be longer thAn FIRST_LINE_MAX_TITLE_LENGTH
+		// - normAlize multiple whitespAces to A single whitespAce
 
-		let modelFirstWordsCandidate: string | undefined = undefined;
+		let modelFirstWordsCAndidAte: string | undefined = undefined;
 
-		const firstLineText = this.textEditorModel?.getValueInRange({ startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: UntitledTextEditorModel.FIRST_LINE_NAME_MAX_LENGTH + 1 }).trim().replace(/\s+/g, ' ');
-		if (firstLineText && ensureValidWordDefinition().exec(firstLineText)) {
-			modelFirstWordsCandidate = firstLineText;
+		const firstLineText = this.textEditorModel?.getVAlueInRAnge({ stArtLineNumber: 1, endLineNumber: 1, stArtColumn: 1, endColumn: UntitledTextEditorModel.FIRST_LINE_NAME_MAX_LENGTH + 1 }).trim().replAce(/\s+/g, ' ');
+		if (firstLineText && ensureVAlidWordDefinition().exec(firstLineText)) {
+			modelFirstWordsCAndidAte = firstLineText;
 		}
 
-		if (modelFirstWordsCandidate !== this.cachedModelFirstLineWords) {
-			this.cachedModelFirstLineWords = modelFirstWordsCandidate;
-			this._onDidChangeName.fire();
+		if (modelFirstWordsCAndidAte !== this.cAchedModelFirstLineWords) {
+			this.cAchedModelFirstLineWords = modelFirstWordsCAndidAte;
+			this._onDidChAngeNAme.fire();
 		}
 	}
 }

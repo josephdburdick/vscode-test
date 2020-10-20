@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { WalkThroughInput } from 'vs/workbench/contrib/welcome/walkThrough/browser/walkThroughInput';
-import { WalkThroughPart } from 'vs/workbench/contrib/welcome/walkThrough/browser/walkThroughPart';
-import { WalkThroughArrowUp, WalkThroughArrowDown, WalkThroughPageUp, WalkThroughPageDown } from 'vs/workbench/contrib/welcome/walkThrough/browser/walkThroughActions';
-import { WalkThroughSnippetContentProvider } from 'vs/workbench/contrib/welcome/walkThrough/common/walkThroughContentProvider';
-import { EditorWalkThroughAction, EditorWalkThroughInputFactory } from 'vs/workbench/contrib/welcome/walkThrough/browser/editor/editorWalkThrough';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as EditorInputExtensions, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { IEditorRegistry, Extensions as EditorExtensions, EditorDescriptor } from 'vs/workbench/browser/editor';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { KeybindingsRegistry } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { locAlize } from 'vs/nls';
+import { WAlkThroughInput } from 'vs/workbench/contrib/welcome/wAlkThrough/browser/wAlkThroughInput';
+import { WAlkThroughPArt } from 'vs/workbench/contrib/welcome/wAlkThrough/browser/wAlkThroughPArt';
+import { WAlkThroughArrowUp, WAlkThroughArrowDown, WAlkThroughPAgeUp, WAlkThroughPAgeDown } from 'vs/workbench/contrib/welcome/wAlkThrough/browser/wAlkThroughActions';
+import { WAlkThroughSnippetContentProvider } from 'vs/workbench/contrib/welcome/wAlkThrough/common/wAlkThroughContentProvider';
+import { EditorWAlkThroughAction, EditorWAlkThroughInputFActory } from 'vs/workbench/contrib/welcome/wAlkThrough/browser/editor/editorWAlkThrough';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As EditorInputExtensions, IEditorInputFActoryRegistry } from 'vs/workbench/common/editor';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/Actions';
+import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IEditorRegistry, Extensions As EditorExtensions, EditorDescriptor } from 'vs/workbench/browser/editor';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { KeybindingsRegistry } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 
-Registry.as<IEditorRegistry>(EditorExtensions.Editors)
-	.registerEditor(EditorDescriptor.create(
-		WalkThroughPart,
-		WalkThroughPart.ID,
-		localize('walkThrough.editor.label', "Interactive Playground"),
+Registry.As<IEditorRegistry>(EditorExtensions.Editors)
+	.registerEditor(EditorDescriptor.creAte(
+		WAlkThroughPArt,
+		WAlkThroughPArt.ID,
+		locAlize('wAlkThrough.editor.lAbel', "InterActive PlAyground"),
 	),
-		[new SyncDescriptor(WalkThroughInput)]);
+		[new SyncDescriptor(WAlkThroughInput)]);
 
-Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions)
+Registry.As<IWorkbenchActionRegistry>(Extensions.WorkbenchActions)
 	.registerWorkbenchAction(
-		SyncActionDescriptor.from(EditorWalkThroughAction),
-		'Help: Interactive Playground', CATEGORIES.Help.value);
+		SyncActionDescriptor.from(EditorWAlkThroughAction),
+		'Help: InterActive PlAyground', CATEGORIES.Help.vAlue);
 
-Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories).registerEditorInputFactory(EditorWalkThroughInputFactory.ID, EditorWalkThroughInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorInputExtensions.EditorInputFActories).registerEditorInputFActory(EditorWAlkThroughInputFActory.ID, EditorWAlkThroughInputFActory);
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WalkThroughSnippetContentProvider, LifecyclePhase.Starting);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(WAlkThroughSnippetContentProvider, LifecyclePhAse.StArting);
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(WalkThroughArrowUp);
+KeybindingsRegistry.registerCommAndAndKeybindingRule(WAlkThroughArrowUp);
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(WalkThroughArrowDown);
+KeybindingsRegistry.registerCommAndAndKeybindingRule(WAlkThroughArrowDown);
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(WalkThroughPageUp);
+KeybindingsRegistry.registerCommAndAndKeybindingRule(WAlkThroughPAgeUp);
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(WalkThroughPageDown);
+KeybindingsRegistry.registerCommAndAndKeybindingRule(WAlkThroughPAgeDown);
 
-MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArHelpMenu, {
 	group: '1_welcome',
-	command: {
-		id: 'workbench.action.showInteractivePlayground',
-		title: localize({ key: 'miInteractivePlayground', comment: ['&& denotes a mnemonic'] }, "I&&nteractive Playground")
+	commAnd: {
+		id: 'workbench.Action.showInterActivePlAyground',
+		title: locAlize({ key: 'miInterActivePlAyground', comment: ['&& denotes A mnemonic'] }, "I&&nterActive PlAyground")
 	},
 	order: 2
 });

@@ -1,411 +1,411 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ITextAreaWrapper, PagedScreenReaderStrategy, TextAreaState } from 'vs/editor/browser/controller/textAreaState';
+import * As Assert from 'Assert';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ITextAreAWrApper, PAgedScreenReAderStrAtegy, TextAreAStAte } from 'vs/editor/browser/controller/textAreAStAte';
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-export class MockTextAreaWrapper extends Disposable implements ITextAreaWrapper {
+export clAss MockTextAreAWrApper extends DisposAble implements ITextAreAWrApper {
 
-	public _value: string;
-	public _selectionStart: number;
+	public _vAlue: string;
+	public _selectionStArt: number;
 	public _selectionEnd: number;
 
 	constructor() {
 		super();
-		this._value = '';
-		this._selectionStart = 0;
+		this._vAlue = '';
+		this._selectionStArt = 0;
 		this._selectionEnd = 0;
 	}
 
-	public getValue(): string {
-		return this._value;
+	public getVAlue(): string {
+		return this._vAlue;
 	}
 
-	public setValue(reason: string, value: string): void {
-		this._value = value;
-		this._selectionStart = this._value.length;
-		this._selectionEnd = this._value.length;
+	public setVAlue(reAson: string, vAlue: string): void {
+		this._vAlue = vAlue;
+		this._selectionStArt = this._vAlue.length;
+		this._selectionEnd = this._vAlue.length;
 	}
 
-	public getSelectionStart(): number {
-		return this._selectionStart;
+	public getSelectionStArt(): number {
+		return this._selectionStArt;
 	}
 
 	public getSelectionEnd(): number {
 		return this._selectionEnd;
 	}
 
-	public setSelectionRange(reason: string, selectionStart: number, selectionEnd: number): void {
-		if (selectionStart < 0) {
-			selectionStart = 0;
+	public setSelectionRAnge(reAson: string, selectionStArt: number, selectionEnd: number): void {
+		if (selectionStArt < 0) {
+			selectionStArt = 0;
 		}
-		if (selectionStart > this._value.length) {
-			selectionStart = this._value.length;
+		if (selectionStArt > this._vAlue.length) {
+			selectionStArt = this._vAlue.length;
 		}
 		if (selectionEnd < 0) {
 			selectionEnd = 0;
 		}
-		if (selectionEnd > this._value.length) {
-			selectionEnd = this._value.length;
+		if (selectionEnd > this._vAlue.length) {
+			selectionEnd = this._vAlue.length;
 		}
-		this._selectionStart = selectionStart;
+		this._selectionStArt = selectionStArt;
 		this._selectionEnd = selectionEnd;
 	}
 }
 
-function equalsTextAreaState(a: TextAreaState, b: TextAreaState): boolean {
+function equAlsTextAreAStAte(A: TextAreAStAte, b: TextAreAStAte): booleAn {
 	return (
-		a.value === b.value
-		&& a.selectionStart === b.selectionStart
-		&& a.selectionEnd === b.selectionEnd
-		&& Position.equals(a.selectionStartPosition, b.selectionStartPosition)
-		&& Position.equals(a.selectionEndPosition, b.selectionEndPosition)
+		A.vAlue === b.vAlue
+		&& A.selectionStArt === b.selectionStArt
+		&& A.selectionEnd === b.selectionEnd
+		&& Position.equAls(A.selectionStArtPosition, b.selectionStArtPosition)
+		&& Position.equAls(A.selectionEndPosition, b.selectionEndPosition)
 	);
 }
 
-suite('TextAreaState', () => {
+suite('TextAreAStAte', () => {
 
-	function assertTextAreaState(actual: TextAreaState, value: string, selectionStart: number, selectionEnd: number): void {
-		let desired = new TextAreaState(value, selectionStart, selectionEnd, null, null);
-		assert.ok(equalsTextAreaState(desired, actual), desired.toString() + ' == ' + actual.toString());
+	function AssertTextAreAStAte(ActuAl: TextAreAStAte, vAlue: string, selectionStArt: number, selectionEnd: number): void {
+		let desired = new TextAreAStAte(vAlue, selectionStArt, selectionEnd, null, null);
+		Assert.ok(equAlsTextAreAStAte(desired, ActuAl), desired.toString() + ' == ' + ActuAl.toString());
 	}
 
-	test('fromTextArea', () => {
-		let textArea = new MockTextAreaWrapper();
-		textArea._value = 'Hello world!';
-		textArea._selectionStart = 1;
-		textArea._selectionEnd = 12;
-		let actual = TextAreaState.readFromTextArea(textArea);
+	test('fromTextAreA', () => {
+		let textAreA = new MockTextAreAWrApper();
+		textAreA._vAlue = 'Hello world!';
+		textAreA._selectionStArt = 1;
+		textAreA._selectionEnd = 12;
+		let ActuAl = TextAreAStAte.reAdFromTextAreA(textAreA);
 
-		assertTextAreaState(actual, 'Hello world!', 1, 12);
-		assert.equal(actual.value, 'Hello world!');
-		assert.equal(actual.selectionStart, 1);
+		AssertTextAreAStAte(ActuAl, 'Hello world!', 1, 12);
+		Assert.equAl(ActuAl.vAlue, 'Hello world!');
+		Assert.equAl(ActuAl.selectionStArt, 1);
 
-		actual = actual.collapseSelection();
-		assertTextAreaState(actual, 'Hello world!', 12, 12);
+		ActuAl = ActuAl.collApseSelection();
+		AssertTextAreAStAte(ActuAl, 'Hello world!', 12, 12);
 
-		textArea.dispose();
+		textAreA.dispose();
 	});
 
-	test('applyToTextArea', () => {
-		let textArea = new MockTextAreaWrapper();
-		textArea._value = 'Hello world!';
-		textArea._selectionStart = 1;
-		textArea._selectionEnd = 12;
+	test('ApplyToTextAreA', () => {
+		let textAreA = new MockTextAreAWrApper();
+		textAreA._vAlue = 'Hello world!';
+		textAreA._selectionStArt = 1;
+		textAreA._selectionEnd = 12;
 
-		let state = new TextAreaState('Hi world!', 2, 2, null, null);
-		state.writeToTextArea('test', textArea, false);
+		let stAte = new TextAreAStAte('Hi world!', 2, 2, null, null);
+		stAte.writeToTextAreA('test', textAreA, fAlse);
 
-		assert.equal(textArea._value, 'Hi world!');
-		assert.equal(textArea._selectionStart, 9);
-		assert.equal(textArea._selectionEnd, 9);
+		Assert.equAl(textAreA._vAlue, 'Hi world!');
+		Assert.equAl(textAreA._selectionStArt, 9);
+		Assert.equAl(textAreA._selectionEnd, 9);
 
-		state = new TextAreaState('Hi world!', 3, 3, null, null);
-		state.writeToTextArea('test', textArea, false);
+		stAte = new TextAreAStAte('Hi world!', 3, 3, null, null);
+		stAte.writeToTextAreA('test', textAreA, fAlse);
 
-		assert.equal(textArea._value, 'Hi world!');
-		assert.equal(textArea._selectionStart, 9);
-		assert.equal(textArea._selectionEnd, 9);
+		Assert.equAl(textAreA._vAlue, 'Hi world!');
+		Assert.equAl(textAreA._selectionStArt, 9);
+		Assert.equAl(textAreA._selectionEnd, 9);
 
-		state = new TextAreaState('Hi world!', 0, 2, null, null);
-		state.writeToTextArea('test', textArea, true);
+		stAte = new TextAreAStAte('Hi world!', 0, 2, null, null);
+		stAte.writeToTextAreA('test', textAreA, true);
 
-		assert.equal(textArea._value, 'Hi world!');
-		assert.equal(textArea._selectionStart, 0);
-		assert.equal(textArea._selectionEnd, 2);
+		Assert.equAl(textAreA._vAlue, 'Hi world!');
+		Assert.equAl(textAreA._selectionStArt, 0);
+		Assert.equAl(textAreA._selectionEnd, 2);
 
-		textArea.dispose();
+		textAreA.dispose();
 	});
 
-	function testDeduceInput(prevState: TextAreaState | null, value: string, selectionStart: number, selectionEnd: number, couldBeEmojiInput: boolean, expected: string, expectedCharReplaceCnt: number): void {
-		prevState = prevState || TextAreaState.EMPTY;
+	function testDeduceInput(prevStAte: TextAreAStAte | null, vAlue: string, selectionStArt: number, selectionEnd: number, couldBeEmojiInput: booleAn, expected: string, expectedChArReplAceCnt: number): void {
+		prevStAte = prevStAte || TextAreAStAte.EMPTY;
 
-		let textArea = new MockTextAreaWrapper();
-		textArea._value = value;
-		textArea._selectionStart = selectionStart;
-		textArea._selectionEnd = selectionEnd;
+		let textAreA = new MockTextAreAWrApper();
+		textAreA._vAlue = vAlue;
+		textAreA._selectionStArt = selectionStArt;
+		textAreA._selectionEnd = selectionEnd;
 
-		let newState = TextAreaState.readFromTextArea(textArea);
-		let actual = TextAreaState.deduceInput(prevState, newState, couldBeEmojiInput);
+		let newStAte = TextAreAStAte.reAdFromTextAreA(textAreA);
+		let ActuAl = TextAreAStAte.deduceInput(prevStAte, newStAte, couldBeEmojiInput);
 
-		assert.equal(actual.text, expected);
-		assert.equal(actual.replaceCharCnt, expectedCharReplaceCnt);
+		Assert.equAl(ActuAl.text, expected);
+		Assert.equAl(ActuAl.replAceChArCnt, expectedChArReplAceCnt);
 
-		textArea.dispose();
+		textAreA.dispose();
 	}
 
-	test('deduceInput - Japanese typing sennsei and accepting', () => {
-		// manual test:
-		// - choose keyboard layout: Japanese -> Hiragama
+	test('deduceInput - JApAnese typing sennsei And Accepting', () => {
+		// mAnuAl test:
+		// - choose keyboArd lAyout: JApAnese -> HirAgAmA
 		// - type sennsei
-		// - accept with Enter
+		// - Accept with Enter
 		// - expected: せんせい
 
 		// s
-		// PREVIOUS STATE: [ <>, selectionStart: 0, selectionEnd: 0, selectionToken: 0]
-		// CURRENT STATE: [ <ｓ>, selectionStart: 0, selectionEnd: 1, selectionToken: 0]
+		// PREVIOUS STATE: [ <>, selectionStArt: 0, selectionEnd: 0, selectionToken: 0]
+		// CURRENT STATE: [ <ｓ>, selectionStArt: 0, selectionEnd: 1, selectionToken: 0]
 		testDeduceInput(
-			TextAreaState.EMPTY,
+			TextAreAStAte.EMPTY,
 			'ｓ',
 			0, 1, true,
 			'ｓ', 0
 		);
 
 		// e
-		// PREVIOUS STATE: [ <ｓ>, selectionStart: 0, selectionEnd: 1, selectionToken: 0]
-		// CURRENT STATE: [ <せ>, selectionStart: 0, selectionEnd: 1, selectionToken: 0]
+		// PREVIOUS STATE: [ <ｓ>, selectionStArt: 0, selectionEnd: 1, selectionToken: 0]
+		// CURRENT STATE: [ <せ>, selectionStArt: 0, selectionEnd: 1, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('ｓ', 0, 1, null, null),
+			new TextAreAStAte('ｓ', 0, 1, null, null),
 			'せ',
 			0, 1, true,
 			'せ', 1
 		);
 
 		// n
-		// PREVIOUS STATE: [ <せ>, selectionStart: 0, selectionEnd: 1, selectionToken: 0]
-		// CURRENT STATE: [ <せｎ>, selectionStart: 0, selectionEnd: 2, selectionToken: 0]
+		// PREVIOUS STATE: [ <せ>, selectionStArt: 0, selectionEnd: 1, selectionToken: 0]
+		// CURRENT STATE: [ <せｎ>, selectionStArt: 0, selectionEnd: 2, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せ', 0, 1, null, null),
+			new TextAreAStAte('せ', 0, 1, null, null),
 			'せｎ',
 			0, 2, true,
 			'せｎ', 1
 		);
 
 		// n
-		// PREVIOUS STATE: [ <せｎ>, selectionStart: 0, selectionEnd: 2, selectionToken: 0]
-		// CURRENT STATE: [ <せん>, selectionStart: 0, selectionEnd: 2, selectionToken: 0]
+		// PREVIOUS STATE: [ <せｎ>, selectionStArt: 0, selectionEnd: 2, selectionToken: 0]
+		// CURRENT STATE: [ <せん>, selectionStArt: 0, selectionEnd: 2, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せｎ', 0, 2, null, null),
+			new TextAreAStAte('せｎ', 0, 2, null, null),
 			'せん',
 			0, 2, true,
 			'せん', 2
 		);
 
 		// s
-		// PREVIOUS STATE: [ <せん>, selectionStart: 0, selectionEnd: 2, selectionToken: 0]
-		// CURRENT STATE: [ <せんｓ>, selectionStart: 0, selectionEnd: 3, selectionToken: 0]
+		// PREVIOUS STATE: [ <せん>, selectionStArt: 0, selectionEnd: 2, selectionToken: 0]
+		// CURRENT STATE: [ <せんｓ>, selectionStArt: 0, selectionEnd: 3, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せん', 0, 2, null, null),
+			new TextAreAStAte('せん', 0, 2, null, null),
 			'せんｓ',
 			0, 3, true,
 			'せんｓ', 2
 		);
 
 		// e
-		// PREVIOUS STATE: [ <せんｓ>, selectionStart: 0, selectionEnd: 3, selectionToken: 0]
-		// CURRENT STATE: [ <せんせ>, selectionStart: 0, selectionEnd: 3, selectionToken: 0]
+		// PREVIOUS STATE: [ <せんｓ>, selectionStArt: 0, selectionEnd: 3, selectionToken: 0]
+		// CURRENT STATE: [ <せんせ>, selectionStArt: 0, selectionEnd: 3, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せんｓ', 0, 3, null, null),
+			new TextAreAStAte('せんｓ', 0, 3, null, null),
 			'せんせ',
 			0, 3, true,
 			'せんせ', 3
 		);
 
-		// no-op? [was recorded]
-		// PREVIOUS STATE: [ <せんせ>, selectionStart: 0, selectionEnd: 3, selectionToken: 0]
-		// CURRENT STATE: [ <せんせ>, selectionStart: 0, selectionEnd: 3, selectionToken: 0]
+		// no-op? [wAs recorded]
+		// PREVIOUS STATE: [ <せんせ>, selectionStArt: 0, selectionEnd: 3, selectionToken: 0]
+		// CURRENT STATE: [ <せんせ>, selectionStArt: 0, selectionEnd: 3, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せんせ', 0, 3, null, null),
+			new TextAreAStAte('せんせ', 0, 3, null, null),
 			'せんせ',
 			0, 3, true,
 			'せんせ', 3
 		);
 
 		// i
-		// PREVIOUS STATE: [ <せんせ>, selectionStart: 0, selectionEnd: 3, selectionToken: 0]
-		// CURRENT STATE: [ <せんせい>, selectionStart: 0, selectionEnd: 4, selectionToken: 0]
+		// PREVIOUS STATE: [ <せんせ>, selectionStArt: 0, selectionEnd: 3, selectionToken: 0]
+		// CURRENT STATE: [ <せんせい>, selectionStArt: 0, selectionEnd: 4, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せんせ', 0, 3, null, null),
+			new TextAreAStAte('せんせ', 0, 3, null, null),
 			'せんせい',
 			0, 4, true,
 			'せんせい', 3
 		);
 
-		// ENTER (accept)
-		// PREVIOUS STATE: [ <せんせい>, selectionStart: 0, selectionEnd: 4, selectionToken: 0]
-		// CURRENT STATE: [ <せんせい>, selectionStart: 4, selectionEnd: 4, selectionToken: 0]
+		// ENTER (Accept)
+		// PREVIOUS STATE: [ <せんせい>, selectionStArt: 0, selectionEnd: 4, selectionToken: 0]
+		// CURRENT STATE: [ <せんせい>, selectionStArt: 4, selectionEnd: 4, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せんせい', 0, 4, null, null),
+			new TextAreAStAte('せんせい', 0, 4, null, null),
 			'せんせい',
 			4, 4, true,
 			'', 0
 		);
 	});
 
-	test('deduceInput - Japanese typing sennsei and choosing different suggestion', () => {
-		// manual test:
-		// - choose keyboard layout: Japanese -> Hiragama
+	test('deduceInput - JApAnese typing sennsei And choosing different suggestion', () => {
+		// mAnuAl test:
+		// - choose keyboArd lAyout: JApAnese -> HirAgAmA
 		// - type sennsei
-		// - arrow down (choose next suggestion)
-		// - accept with Enter
+		// - Arrow down (choose next suggestion)
+		// - Accept with Enter
 		// - expected: せんせい
 
 		// sennsei
-		// PREVIOUS STATE: [ <せんせい>, selectionStart: 0, selectionEnd: 4, selectionToken: 0]
-		// CURRENT STATE: [ <せんせい>, selectionStart: 0, selectionEnd: 4, selectionToken: 0]
+		// PREVIOUS STATE: [ <せんせい>, selectionStArt: 0, selectionEnd: 4, selectionToken: 0]
+		// CURRENT STATE: [ <せんせい>, selectionStArt: 0, selectionEnd: 4, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せんせい', 0, 4, null, null),
+			new TextAreAStAte('せんせい', 0, 4, null, null),
 			'せんせい',
 			0, 4, true,
 			'せんせい', 4
 		);
 
-		// arrow down
-		// CURRENT STATE: [ <先生>, selectionStart: 0, selectionEnd: 2, selectionToken: 0]
-		// PREVIOUS STATE: [ <せんせい>, selectionStart: 0, selectionEnd: 4, selectionToken: 0]
+		// Arrow down
+		// CURRENT STATE: [ <先生>, selectionStArt: 0, selectionEnd: 2, selectionToken: 0]
+		// PREVIOUS STATE: [ <せんせい>, selectionStArt: 0, selectionEnd: 4, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('せんせい', 0, 4, null, null),
+			new TextAreAStAte('せんせい', 0, 4, null, null),
 			'先生',
 			0, 2, true,
 			'先生', 4
 		);
 
-		// ENTER (accept)
-		// PREVIOUS STATE: [ <先生>, selectionStart: 0, selectionEnd: 2, selectionToken: 0]
-		// CURRENT STATE: [ <先生>, selectionStart: 2, selectionEnd: 2, selectionToken: 0]
+		// ENTER (Accept)
+		// PREVIOUS STATE: [ <先生>, selectionStArt: 0, selectionEnd: 2, selectionToken: 0]
+		// CURRENT STATE: [ <先生>, selectionStArt: 2, selectionEnd: 2, selectionToken: 0]
 		testDeduceInput(
-			new TextAreaState('先生', 0, 2, null, null),
+			new TextAreAStAte('先生', 0, 2, null, null),
 			'先生',
 			2, 2, true,
 			'', 0
 		);
 	});
 
-	test('extractNewText - no previous state with selection', () => {
+	test('extrActNewText - no previous stAte with selection', () => {
 		testDeduceInput(
 			null,
-			'a',
+			'A',
 			0, 1, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('issue #2586: Replacing selected end-of-line with newline locks up the document', () => {
+	test('issue #2586: ReplAcing selected end-of-line with newline locks up the document', () => {
 		testDeduceInput(
-			new TextAreaState(']\n', 1, 2, null, null),
+			new TextAreAStAte(']\n', 1, 2, null, null),
 			']\n',
 			2, 2, true,
 			'\n', 0
 		);
 	});
 
-	test('extractNewText - no previous state without selection', () => {
+	test('extrActNewText - no previous stAte without selection', () => {
 		testDeduceInput(
 			null,
-			'a',
+			'A',
 			1, 1, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('extractNewText - typing does not cause a selection', () => {
+	test('extrActNewText - typing does not cAuse A selection', () => {
 		testDeduceInput(
-			TextAreaState.EMPTY,
-			'a',
+			TextAreAStAte.EMPTY,
+			'A',
 			0, 1, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('extractNewText - had the textarea empty', () => {
+	test('extrActNewText - hAd the textAreA empty', () => {
 		testDeduceInput(
-			TextAreaState.EMPTY,
-			'a',
+			TextAreAStAte.EMPTY,
+			'A',
 			1, 1, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('extractNewText - had the entire line selected', () => {
+	test('extrActNewText - hAd the entire line selected', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 0, 12, null, null),
+			new TextAreAStAte('Hello world!', 0, 12, null, null),
 			'H',
 			1, 1, true,
 			'H', 0
 		);
 	});
 
-	test('extractNewText - had previous text 1', () => {
+	test('extrActNewText - hAd previous text 1', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 12, 12, null, null),
-			'Hello world!a',
+			new TextAreAStAte('Hello world!', 12, 12, null, null),
+			'Hello world!A',
 			13, 13, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('extractNewText - had previous text 2', () => {
+	test('extrActNewText - hAd previous text 2', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 0, 0, null, null),
-			'aHello world!',
+			new TextAreAStAte('Hello world!', 0, 0, null, null),
+			'AHello world!',
 			1, 1, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('extractNewText - had previous text 3', () => {
+	test('extrActNewText - hAd previous text 3', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 6, 11, null, null),
+			new TextAreAStAte('Hello world!', 6, 11, null, null),
 			'Hello other!',
 			11, 11, true,
 			'other', 0
 		);
 	});
 
-	test('extractNewText - IME', () => {
+	test('extrActNewText - IME', () => {
 		testDeduceInput(
-			TextAreaState.EMPTY,
+			TextAreAStAte.EMPTY,
 			'これは',
 			3, 3, true,
 			'これは', 0
 		);
 	});
 
-	test('extractNewText - isInOverwriteMode', () => {
+	test('extrActNewText - isInOverwriteMode', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 0, 0, null, null),
+			new TextAreAStAte('Hello world!', 0, 0, null, null),
 			'Aello world!',
 			1, 1, true,
 			'A', 0
 		);
 	});
 
-	test('extractMacReplacedText - does nothing if there is selection', () => {
+	test('extrActMAcReplAcedText - does nothing if there is selection', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 5, 5, null, null),
+			new TextAreAStAte('Hello world!', 5, 5, null, null),
 			'Hellö world!',
 			4, 5, true,
 			'ö', 0
 		);
 	});
 
-	test('extractMacReplacedText - does nothing if there is more than one extra char', () => {
+	test('extrActMAcReplAcedText - does nothing if there is more thAn one extrA chAr', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 5, 5, null, null),
+			new TextAreAStAte('Hello world!', 5, 5, null, null),
 			'Hellöö world!',
 			5, 5, true,
 			'öö', 1
 		);
 	});
 
-	test('extractMacReplacedText - does nothing if there is more than one changed char', () => {
+	test('extrActMAcReplAcedText - does nothing if there is more thAn one chAnged chAr', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 5, 5, null, null),
+			new TextAreAStAte('Hello world!', 5, 5, null, null),
 			'Helöö world!',
 			5, 5, true,
 			'öö', 2
 		);
 	});
 
-	test('extractMacReplacedText', () => {
+	test('extrActMAcReplAcedText', () => {
 		testDeduceInput(
-			new TextAreaState('Hello world!', 5, 5, null, null),
+			new TextAreAStAte('Hello world!', 5, 5, null, null),
 			'Hellö world!',
 			5, 5, true,
 			'ö', 1
@@ -414,31 +414,31 @@ suite('TextAreaState', () => {
 
 	test('issue #25101 - First key press ignored', () => {
 		testDeduceInput(
-			new TextAreaState('a', 0, 1, null, null),
-			'a',
+			new TextAreAStAte('A', 0, 1, null, null),
+			'A',
 			1, 1, true,
-			'a', 0
+			'A', 0
 		);
 	});
 
-	test('issue #16520 - Cmd-d of single character followed by typing same character as has no effect', () => {
+	test('issue #16520 - Cmd-d of single chArActer followed by typing sAme chArActer As hAs no effect', () => {
 		testDeduceInput(
-			new TextAreaState('x x', 0, 1, null, null),
+			new TextAreAStAte('x x', 0, 1, null, null),
 			'x x',
 			1, 1, true,
 			'x', 0
 		);
 	});
 
-	test('issue #4271 (example 1) - When inserting an emoji on OSX, it is placed two spaces left of the cursor', () => {
-		// The OSX emoji inserter inserts emojis at random positions in the text, unrelated to where the cursor is.
+	test('issue #4271 (exAmple 1) - When inserting An emoji on OSX, it is plAced two spAces left of the cursor', () => {
+		// The OSX emoji inserter inserts emojis At rAndom positions in the text, unrelAted to where the cursor is.
 		testDeduceInput(
-			new TextAreaState(
+			new TextAreAStAte(
 				[
 					'some1  text',
 					'some2  text',
 					'some3  text',
-					'some4  text', // cursor is here in the middle of the two spaces
+					'some4  text', // cursor is here in the middle of the two spAces
 					'some5  text',
 					'some6  text',
 					'some7  text'
@@ -460,10 +460,10 @@ suite('TextAreaState', () => {
 		);
 	});
 
-	test('issue #4271 (example 2) - When inserting an emoji on OSX, it is placed two spaces left of the cursor', () => {
-		// The OSX emoji inserter inserts emojis at random positions in the text, unrelated to where the cursor is.
+	test('issue #4271 (exAmple 2) - When inserting An emoji on OSX, it is plAced two spAces left of the cursor', () => {
+		// The OSX emoji inserter inserts emojis At rAndom positions in the text, unrelAted to where the cursor is.
 		testDeduceInput(
-			new TextAreaState(
+			new TextAreAStAte(
 				'some1  text',
 				6, 6,
 				null, null
@@ -474,25 +474,25 @@ suite('TextAreaState', () => {
 		);
 	});
 
-	test('issue #4271 (example 3) - When inserting an emoji on OSX, it is placed two spaces left of the cursor', () => {
-		// The OSX emoji inserter inserts emojis at random positions in the text, unrelated to where the cursor is.
+	test('issue #4271 (exAmple 3) - When inserting An emoji on OSX, it is plAced two spAces left of the cursor', () => {
+		// The OSX emoji inserter inserts emojis At rAndom positions in the text, unrelAted to where the cursor is.
 		testDeduceInput(
-			new TextAreaState(
-				'qwertyu\nasdfghj\nzxcvbnm',
+			new TextAreAStAte(
+				'qwertyu\nAsdfghj\nzxcvbnm',
 				12, 12,
 				null, null
 			),
-			'qwertyu\nasdfghj\nzxcvbnm🎈',
+			'qwertyu\nAsdfghj\nzxcvbnm🎈',
 			25, 25, true,
 			'🎈', 0
 		);
 	});
 
-	// an example of an emoji missed by the regex but which has the FE0F variant 16 hint
-	test('issue #4271 (example 4) - When inserting an emoji on OSX, it is placed two spaces left of the cursor', () => {
-		// The OSX emoji inserter inserts emojis at random positions in the text, unrelated to where the cursor is.
+	// An exAmple of An emoji missed by the regex but which hAs the FE0F vAriAnt 16 hint
+	test('issue #4271 (exAmple 4) - When inserting An emoji on OSX, it is plAced two spAces left of the cursor', () => {
+		// The OSX emoji inserter inserts emojis At rAndom positions in the text, unrelAted to where the cursor is.
 		testDeduceInput(
-			new TextAreaState(
+			new TextAreAStAte(
 				'some1  text',
 				6, 6,
 				null, null
@@ -503,92 +503,92 @@ suite('TextAreaState', () => {
 		);
 	});
 
-	suite('PagedScreenReaderStrategy', () => {
+	suite('PAgedScreenReAderStrAtegy', () => {
 
-		function testPagedScreenReaderStrategy(lines: string[], selection: Selection, expected: TextAreaState): void {
-			const model = createTextModel(lines.join('\n'));
-			const actual = PagedScreenReaderStrategy.fromEditorSelection(TextAreaState.EMPTY, model, selection, 10, true);
-			assert.ok(equalsTextAreaState(actual, expected));
+		function testPAgedScreenReAderStrAtegy(lines: string[], selection: Selection, expected: TextAreAStAte): void {
+			const model = creAteTextModel(lines.join('\n'));
+			const ActuAl = PAgedScreenReAderStrAtegy.fromEditorSelection(TextAreAStAte.EMPTY, model, selection, 10, true);
+			Assert.ok(equAlsTextAreAStAte(ActuAl, expected));
 			model.dispose();
 		}
 
 		test('simple', () => {
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'Hello world!'
 				],
 				new Selection(1, 13, 1, 13),
-				new TextAreaState('Hello world!', 12, 12, new Position(1, 13), new Position(1, 13))
+				new TextAreAStAte('Hello world!', 12, 12, new Position(1, 13), new Position(1, 13))
 			);
 
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'Hello world!'
 				],
 				new Selection(1, 1, 1, 1),
-				new TextAreaState('Hello world!', 0, 0, new Position(1, 1), new Position(1, 1))
+				new TextAreAStAte('Hello world!', 0, 0, new Position(1, 1), new Position(1, 1))
 			);
 
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'Hello world!'
 				],
 				new Selection(1, 1, 1, 6),
-				new TextAreaState('Hello world!', 0, 5, new Position(1, 1), new Position(1, 6))
+				new TextAreAStAte('Hello world!', 0, 5, new Position(1, 1), new Position(1, 6))
 			);
 		});
 
 		test('multiline', () => {
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'Hello world!',
-					'How are you?'
+					'How Are you?'
 				],
 				new Selection(1, 1, 1, 1),
-				new TextAreaState('Hello world!\nHow are you?', 0, 0, new Position(1, 1), new Position(1, 1))
+				new TextAreAStAte('Hello world!\nHow Are you?', 0, 0, new Position(1, 1), new Position(1, 1))
 			);
 
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'Hello world!',
-					'How are you?'
+					'How Are you?'
 				],
 				new Selection(2, 1, 2, 1),
-				new TextAreaState('Hello world!\nHow are you?', 13, 13, new Position(2, 1), new Position(2, 1))
+				new TextAreAStAte('Hello world!\nHow Are you?', 13, 13, new Position(2, 1), new Position(2, 1))
 			);
 		});
 
-		test('page', () => {
-			testPagedScreenReaderStrategy(
+		test('pAge', () => {
+			testPAgedScreenReAderStrAtegy(
 				[
 					'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9\nL10\nL11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\nL21'
 				],
 				new Selection(1, 1, 1, 1),
-				new TextAreaState('L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9\nL10\n', 0, 0, new Position(1, 1), new Position(1, 1))
+				new TextAreAStAte('L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9\nL10\n', 0, 0, new Position(1, 1), new Position(1, 1))
 			);
 
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9\nL10\nL11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\nL21'
 				],
 				new Selection(11, 1, 11, 1),
-				new TextAreaState('L11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\n', 0, 0, new Position(11, 1), new Position(11, 1))
+				new TextAreAStAte('L11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\n', 0, 0, new Position(11, 1), new Position(11, 1))
 			);
 
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9\nL10\nL11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\nL21'
 				],
 				new Selection(12, 1, 12, 1),
-				new TextAreaState('L11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\n', 4, 4, new Position(12, 1), new Position(12, 1))
+				new TextAreAStAte('L11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\n', 4, 4, new Position(12, 1), new Position(12, 1))
 			);
 
-			testPagedScreenReaderStrategy(
+			testPAgedScreenReAderStrAtegy(
 				[
 					'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9\nL10\nL11\nL12\nL13\nL14\nL15\nL16\nL17\nL18\nL19\nL20\nL21'
 				],
 				new Selection(21, 1, 21, 1),
-				new TextAreaState('L21', 0, 0, new Position(21, 1), new Position(21, 1))
+				new TextAreAStAte('L21', 0, 0, new Position(21, 1), new Position(21, 1))
 			);
 		});
 

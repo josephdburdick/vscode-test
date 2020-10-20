@@ -1,301 +1,301 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { AuthenticationSession, AuthenticationSessionsChangeEvent, AuthenticationProviderInformation } from 'vs/editor/common/modes';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { MainThreadAuthenticationProvider } from 'vs/workbench/api/browser/mainThreadAuthentication';
-import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IActivityService, NumberBadge } from 'vs/workbench/services/activity/common/activity';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import * As nls from 'vs/nls';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { AuthenticAtionSession, AuthenticAtionSessionsChAngeEvent, AuthenticAtionProviderInformAtion } from 'vs/editor/common/modes';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { MAinThreAdAuthenticAtionProvider } from 'vs/workbench/Api/browser/mAinThreAdAuthenticAtion';
+import { MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { IActivityService, NumberBAdge } from 'vs/workbench/services/Activity/common/Activity';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { isString } from 'vs/base/common/types';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { isString } from 'vs/bAse/common/types';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { flatten } from 'vs/base/common/arrays';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { flAtten } from 'vs/bAse/common/ArrAys';
+import { isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 
-export function getAuthenticationProviderActivationEvent(id: string): string { return `onAuthenticationRequest:${id}`; }
+export function getAuthenticAtionProviderActivAtionEvent(id: string): string { return `onAuthenticAtionRequest:${id}`; }
 
-export type AuthenticationSessionInfo = { readonly id: string, readonly accessToken: string, readonly providerId: string, readonly canSignOut?: boolean };
-export async function getCurrentAuthenticationSessionInfo(environmentService: IWorkbenchEnvironmentService, productService: IProductService): Promise<AuthenticationSessionInfo | undefined> {
-	if (environmentService.options?.credentialsProvider) {
-		const authenticationSessionValue = await environmentService.options.credentialsProvider.getPassword(`${productService.urlProtocol}.login`, 'account');
-		if (authenticationSessionValue) {
-			const authenticationSessionInfo: AuthenticationSessionInfo = JSON.parse(authenticationSessionValue);
-			if (authenticationSessionInfo
-				&& isString(authenticationSessionInfo.id)
-				&& isString(authenticationSessionInfo.accessToken)
-				&& isString(authenticationSessionInfo.providerId)
+export type AuthenticAtionSessionInfo = { reAdonly id: string, reAdonly AccessToken: string, reAdonly providerId: string, reAdonly cAnSignOut?: booleAn };
+export Async function getCurrentAuthenticAtionSessionInfo(environmentService: IWorkbenchEnvironmentService, productService: IProductService): Promise<AuthenticAtionSessionInfo | undefined> {
+	if (environmentService.options?.credentiAlsProvider) {
+		const AuthenticAtionSessionVAlue = AwAit environmentService.options.credentiAlsProvider.getPAssword(`${productService.urlProtocol}.login`, 'Account');
+		if (AuthenticAtionSessionVAlue) {
+			const AuthenticAtionSessionInfo: AuthenticAtionSessionInfo = JSON.pArse(AuthenticAtionSessionVAlue);
+			if (AuthenticAtionSessionInfo
+				&& isString(AuthenticAtionSessionInfo.id)
+				&& isString(AuthenticAtionSessionInfo.AccessToken)
+				&& isString(AuthenticAtionSessionInfo.providerId)
 			) {
-				return authenticationSessionInfo;
+				return AuthenticAtionSessionInfo;
 			}
 		}
 	}
 	return undefined;
 }
 
-export const IAuthenticationService = createDecorator<IAuthenticationService>('IAuthenticationService');
+export const IAuthenticAtionService = creAteDecorAtor<IAuthenticAtionService>('IAuthenticAtionService');
 
-export interface IAuthenticationService {
-	readonly _serviceBrand: undefined;
+export interfAce IAuthenticAtionService {
+	reAdonly _serviceBrAnd: undefined;
 
-	isAuthenticationProviderRegistered(id: string): boolean;
+	isAuthenticAtionProviderRegistered(id: string): booleAn;
 	getProviderIds(): string[];
-	registerAuthenticationProvider(id: string, provider: MainThreadAuthenticationProvider): void;
-	unregisterAuthenticationProvider(id: string): void;
-	requestNewSession(id: string, scopes: string[], extensionId: string, extensionName: string): void;
-	sessionsUpdate(providerId: string, event: AuthenticationSessionsChangeEvent): void;
+	registerAuthenticAtionProvider(id: string, provider: MAinThreAdAuthenticAtionProvider): void;
+	unregisterAuthenticAtionProvider(id: string): void;
+	requestNewSession(id: string, scopes: string[], extensionId: string, extensionNAme: string): void;
+	sessionsUpdAte(providerId: string, event: AuthenticAtionSessionsChAngeEvent): void;
 
-	readonly onDidRegisterAuthenticationProvider: Event<AuthenticationProviderInformation>;
-	readonly onDidUnregisterAuthenticationProvider: Event<AuthenticationProviderInformation>;
+	reAdonly onDidRegisterAuthenticAtionProvider: Event<AuthenticAtionProviderInformAtion>;
+	reAdonly onDidUnregisterAuthenticAtionProvider: Event<AuthenticAtionProviderInformAtion>;
 
-	readonly onDidChangeSessions: Event<{ providerId: string, label: string, event: AuthenticationSessionsChangeEvent }>;
+	reAdonly onDidChAngeSessions: Event<{ providerId: string, lAbel: string, event: AuthenticAtionSessionsChAngeEvent }>;
 
-	declaredProviders: AuthenticationProviderInformation[];
-	readonly onDidChangeDeclaredProviders: Event<AuthenticationProviderInformation[]>;
+	declAredProviders: AuthenticAtionProviderInformAtion[];
+	reAdonly onDidChAngeDeclAredProviders: Event<AuthenticAtionProviderInformAtion[]>;
 
-	getSessions(providerId: string): Promise<ReadonlyArray<AuthenticationSession>>;
-	getLabel(providerId: string): string;
-	supportsMultipleAccounts(providerId: string): boolean;
-	login(providerId: string, scopes: string[]): Promise<AuthenticationSession>;
+	getSessions(providerId: string): Promise<ReAdonlyArrAy<AuthenticAtionSession>>;
+	getLAbel(providerId: string): string;
+	supportsMultipleAccounts(providerId: string): booleAn;
+	login(providerId: string, scopes: string[]): Promise<AuthenticAtionSession>;
 	logout(providerId: string, sessionId: string): Promise<void>;
 
-	manageTrustedExtensionsForAccount(providerId: string, accountName: string): Promise<void>;
-	signOutOfAccount(providerId: string, accountName: string): Promise<void>;
+	mAnAgeTrustedExtensionsForAccount(providerId: string, AccountNAme: string): Promise<void>;
+	signOutOfAccount(providerId: string, AccountNAme: string): Promise<void>;
 }
 
-export interface AllowedExtension {
+export interfAce AllowedExtension {
 	id: string;
-	name: string;
+	nAme: string;
 }
 
-export function readAllowedExtensions(storageService: IStorageService, providerId: string, accountName: string): AllowedExtension[] {
+export function reAdAllowedExtensions(storAgeService: IStorAgeService, providerId: string, AccountNAme: string): AllowedExtension[] {
 	let trustedExtensions: AllowedExtension[] = [];
 	try {
-		const trustedExtensionSrc = storageService.get(`${providerId}-${accountName}`, StorageScope.GLOBAL);
+		const trustedExtensionSrc = storAgeService.get(`${providerId}-${AccountNAme}`, StorAgeScope.GLOBAL);
 		if (trustedExtensionSrc) {
-			trustedExtensions = JSON.parse(trustedExtensionSrc);
+			trustedExtensions = JSON.pArse(trustedExtensionSrc);
 		}
-	} catch (err) { }
+	} cAtch (err) { }
 
 	return trustedExtensions;
 }
 
-export interface SessionRequest {
-	disposables: IDisposable[];
+export interfAce SessionRequest {
+	disposAbles: IDisposAble[];
 	requestingExtensionIds: string[];
 }
 
-export interface SessionRequestInfo {
+export interfAce SessionRequestInfo {
 	[scopes: string]: SessionRequest;
 }
 
-CommandsRegistry.registerCommand('workbench.getCodeExchangeProxyEndpoints', function (accessor, _) {
-	const environmentService = accessor.get(IWorkbenchEnvironmentService);
-	return environmentService.options?.codeExchangeProxyEndpoints;
+CommAndsRegistry.registerCommAnd('workbench.getCodeExchAngeProxyEndpoints', function (Accessor, _) {
+	const environmentService = Accessor.get(IWorkbenchEnvironmentService);
+	return environmentService.options?.codeExchAngeProxyEndpoints;
 });
 
-const authenticationDefinitionSchema: IJSONSchema = {
+const AuthenticAtionDefinitionSchemA: IJSONSchemA = {
 	type: 'object',
-	additionalProperties: false,
+	AdditionAlProperties: fAlse,
 	properties: {
 		id: {
 			type: 'string',
-			description: nls.localize('authentication.id', 'The id of the authentication provider.')
+			description: nls.locAlize('AuthenticAtion.id', 'The id of the AuthenticAtion provider.')
 		},
-		label: {
+		lAbel: {
 			type: 'string',
-			description: nls.localize('authentication.label', 'The human readable name of the authentication provider.'),
+			description: nls.locAlize('AuthenticAtion.lAbel', 'The humAn reAdAble nAme of the AuthenticAtion provider.'),
 		}
 	}
 };
 
-const authenticationExtPoint = ExtensionsRegistry.registerExtensionPoint<AuthenticationProviderInformation[]>({
-	extensionPoint: 'authentication',
-	jsonSchema: {
-		description: nls.localize('authenticationExtensionPoint', 'Contributes authentication'),
-		type: 'array',
-		items: authenticationDefinitionSchema
+const AuthenticAtionExtPoint = ExtensionsRegistry.registerExtensionPoint<AuthenticAtionProviderInformAtion[]>({
+	extensionPoint: 'AuthenticAtion',
+	jsonSchemA: {
+		description: nls.locAlize('AuthenticAtionExtensionPoint', 'Contributes AuthenticAtion'),
+		type: 'ArrAy',
+		items: AuthenticAtionDefinitionSchemA
 	}
 });
 
-export class AuthenticationService extends Disposable implements IAuthenticationService {
-	declare readonly _serviceBrand: undefined;
-	private _placeholderMenuItem: IDisposable | undefined;
-	private _noAccountsMenuItem: IDisposable | undefined;
-	private _signInRequestItems = new Map<string, SessionRequestInfo>();
-	private _accountBadgeDisposable = this._register(new MutableDisposable());
+export clAss AuthenticAtionService extends DisposAble implements IAuthenticAtionService {
+	declAre reAdonly _serviceBrAnd: undefined;
+	privAte _plAceholderMenuItem: IDisposAble | undefined;
+	privAte _noAccountsMenuItem: IDisposAble | undefined;
+	privAte _signInRequestItems = new MAp<string, SessionRequestInfo>();
+	privAte _AccountBAdgeDisposAble = this._register(new MutAbleDisposAble());
 
-	private _authenticationProviders: Map<string, MainThreadAuthenticationProvider> = new Map<string, MainThreadAuthenticationProvider>();
+	privAte _AuthenticAtionProviders: MAp<string, MAinThreAdAuthenticAtionProvider> = new MAp<string, MAinThreAdAuthenticAtionProvider>();
 
 	/**
-	 * All providers that have been statically declared by extensions. These may not be registered.
+	 * All providers thAt hAve been stAticAlly declAred by extensions. These mAy not be registered.
 	 */
-	declaredProviders: AuthenticationProviderInformation[] = [];
+	declAredProviders: AuthenticAtionProviderInformAtion[] = [];
 
-	private _onDidRegisterAuthenticationProvider: Emitter<AuthenticationProviderInformation> = this._register(new Emitter<AuthenticationProviderInformation>());
-	readonly onDidRegisterAuthenticationProvider: Event<AuthenticationProviderInformation> = this._onDidRegisterAuthenticationProvider.event;
+	privAte _onDidRegisterAuthenticAtionProvider: Emitter<AuthenticAtionProviderInformAtion> = this._register(new Emitter<AuthenticAtionProviderInformAtion>());
+	reAdonly onDidRegisterAuthenticAtionProvider: Event<AuthenticAtionProviderInformAtion> = this._onDidRegisterAuthenticAtionProvider.event;
 
-	private _onDidUnregisterAuthenticationProvider: Emitter<AuthenticationProviderInformation> = this._register(new Emitter<AuthenticationProviderInformation>());
-	readonly onDidUnregisterAuthenticationProvider: Event<AuthenticationProviderInformation> = this._onDidUnregisterAuthenticationProvider.event;
+	privAte _onDidUnregisterAuthenticAtionProvider: Emitter<AuthenticAtionProviderInformAtion> = this._register(new Emitter<AuthenticAtionProviderInformAtion>());
+	reAdonly onDidUnregisterAuthenticAtionProvider: Event<AuthenticAtionProviderInformAtion> = this._onDidUnregisterAuthenticAtionProvider.event;
 
-	private _onDidChangeSessions: Emitter<{ providerId: string, label: string, event: AuthenticationSessionsChangeEvent }> = this._register(new Emitter<{ providerId: string, label: string, event: AuthenticationSessionsChangeEvent }>());
-	readonly onDidChangeSessions: Event<{ providerId: string, label: string, event: AuthenticationSessionsChangeEvent }> = this._onDidChangeSessions.event;
+	privAte _onDidChAngeSessions: Emitter<{ providerId: string, lAbel: string, event: AuthenticAtionSessionsChAngeEvent }> = this._register(new Emitter<{ providerId: string, lAbel: string, event: AuthenticAtionSessionsChAngeEvent }>());
+	reAdonly onDidChAngeSessions: Event<{ providerId: string, lAbel: string, event: AuthenticAtionSessionsChAngeEvent }> = this._onDidChAngeSessions.event;
 
-	private _onDidChangeDeclaredProviders: Emitter<AuthenticationProviderInformation[]> = this._register(new Emitter<AuthenticationProviderInformation[]>());
-	readonly onDidChangeDeclaredProviders: Event<AuthenticationProviderInformation[]> = this._onDidChangeDeclaredProviders.event;
+	privAte _onDidChAngeDeclAredProviders: Emitter<AuthenticAtionProviderInformAtion[]> = this._register(new Emitter<AuthenticAtionProviderInformAtion[]>());
+	reAdonly onDidChAngeDeclAredProviders: Event<AuthenticAtionProviderInformAtion[]> = this._onDidChAngeDeclAredProviders.event;
 
 	constructor(
-		@IActivityService private readonly activityService: IActivityService,
-		@IExtensionService private readonly extensionService: IExtensionService
+		@IActivityService privAte reAdonly ActivityService: IActivityService,
+		@IExtensionService privAte reAdonly extensionService: IExtensionService
 	) {
 		super();
-		this._placeholderMenuItem = MenuRegistry.appendMenuItem(MenuId.AccountsContext, {
-			command: {
-				id: 'noAuthenticationProviders',
-				title: nls.localize('loading', "Loading..."),
-				precondition: ContextKeyExpr.false()
+		this._plAceholderMenuItem = MenuRegistry.AppendMenuItem(MenuId.AccountsContext, {
+			commAnd: {
+				id: 'noAuthenticAtionProviders',
+				title: nls.locAlize('loAding', "LoAding..."),
+				precondition: ContextKeyExpr.fAlse()
 			},
 		});
 
-		authenticationExtPoint.setHandler((extensions, { added, removed }) => {
-			added.forEach(point => {
-				for (const provider of point.value) {
-					if (isFalsyOrWhitespace(provider.id)) {
-						point.collector.error(nls.localize('authentication.missingId', 'An authentication contribution must specify an id.'));
+		AuthenticAtionExtPoint.setHAndler((extensions, { Added, removed }) => {
+			Added.forEAch(point => {
+				for (const provider of point.vAlue) {
+					if (isFAlsyOrWhitespAce(provider.id)) {
+						point.collector.error(nls.locAlize('AuthenticAtion.missingId', 'An AuthenticAtion contribution must specify An id.'));
 						continue;
 					}
 
-					if (isFalsyOrWhitespace(provider.label)) {
-						point.collector.error(nls.localize('authentication.missingLabel', 'An authentication contribution must specify a label.'));
+					if (isFAlsyOrWhitespAce(provider.lAbel)) {
+						point.collector.error(nls.locAlize('AuthenticAtion.missingLAbel', 'An AuthenticAtion contribution must specify A lAbel.'));
 						continue;
 					}
 
-					if (!this.declaredProviders.some(p => p.id === provider.id)) {
-						this.declaredProviders.push(provider);
+					if (!this.declAredProviders.some(p => p.id === provider.id)) {
+						this.declAredProviders.push(provider);
 					} else {
-						point.collector.error(nls.localize('authentication.idConflict', "This authentication id '{0}' has already been registered", provider.id));
+						point.collector.error(nls.locAlize('AuthenticAtion.idConflict', "This AuthenticAtion id '{0}' hAs AlreAdy been registered", provider.id));
 					}
 				}
 			});
 
-			const removedExtPoints = flatten(removed.map(r => r.value));
-			removedExtPoints.forEach(point => {
-				const index = this.declaredProviders.findIndex(provider => provider.id === point.id);
+			const removedExtPoints = flAtten(removed.mAp(r => r.vAlue));
+			removedExtPoints.forEAch(point => {
+				const index = this.declAredProviders.findIndex(provider => provider.id === point.id);
 				if (index > -1) {
-					this.declaredProviders.splice(index, 1);
+					this.declAredProviders.splice(index, 1);
 				}
 			});
 
-			this._onDidChangeDeclaredProviders.fire(this.declaredProviders);
+			this._onDidChAngeDeclAredProviders.fire(this.declAredProviders);
 		});
 	}
 
 	getProviderIds(): string[] {
 		const providerIds: string[] = [];
-		this._authenticationProviders.forEach(provider => {
+		this._AuthenticAtionProviders.forEAch(provider => {
 			providerIds.push(provider.id);
 		});
 		return providerIds;
 	}
 
-	isAuthenticationProviderRegistered(id: string): boolean {
-		return this._authenticationProviders.has(id);
+	isAuthenticAtionProviderRegistered(id: string): booleAn {
+		return this._AuthenticAtionProviders.hAs(id);
 	}
 
-	private updateAccountsMenuItem(): void {
-		let hasSession = false;
-		this._authenticationProviders.forEach(async provider => {
-			hasSession = hasSession || provider.hasSessions();
+	privAte updAteAccountsMenuItem(): void {
+		let hAsSession = fAlse;
+		this._AuthenticAtionProviders.forEAch(Async provider => {
+			hAsSession = hAsSession || provider.hAsSessions();
 		});
 
-		if (hasSession && this._noAccountsMenuItem) {
+		if (hAsSession && this._noAccountsMenuItem) {
 			this._noAccountsMenuItem.dispose();
 			this._noAccountsMenuItem = undefined;
 		}
 
-		if (!hasSession && !this._noAccountsMenuItem) {
-			this._noAccountsMenuItem = MenuRegistry.appendMenuItem(MenuId.AccountsContext, {
-				group: '0_accounts',
-				command: {
+		if (!hAsSession && !this._noAccountsMenuItem) {
+			this._noAccountsMenuItem = MenuRegistry.AppendMenuItem(MenuId.AccountsContext, {
+				group: '0_Accounts',
+				commAnd: {
 					id: 'noAccounts',
-					title: nls.localize('noAccounts', "You are not signed in to any accounts"),
-					precondition: ContextKeyExpr.false()
+					title: nls.locAlize('noAccounts', "You Are not signed in to Any Accounts"),
+					precondition: ContextKeyExpr.fAlse()
 				},
 			});
 		}
 	}
 
-	registerAuthenticationProvider(id: string, authenticationProvider: MainThreadAuthenticationProvider): void {
-		this._authenticationProviders.set(id, authenticationProvider);
-		this._onDidRegisterAuthenticationProvider.fire({ id, label: authenticationProvider.label });
+	registerAuthenticAtionProvider(id: string, AuthenticAtionProvider: MAinThreAdAuthenticAtionProvider): void {
+		this._AuthenticAtionProviders.set(id, AuthenticAtionProvider);
+		this._onDidRegisterAuthenticAtionProvider.fire({ id, lAbel: AuthenticAtionProvider.lAbel });
 
-		if (this._placeholderMenuItem) {
-			this._placeholderMenuItem.dispose();
-			this._placeholderMenuItem = undefined;
+		if (this._plAceholderMenuItem) {
+			this._plAceholderMenuItem.dispose();
+			this._plAceholderMenuItem = undefined;
 		}
 
-		this.updateAccountsMenuItem();
+		this.updAteAccountsMenuItem();
 	}
 
-	unregisterAuthenticationProvider(id: string): void {
-		const provider = this._authenticationProviders.get(id);
+	unregisterAuthenticAtionProvider(id: string): void {
+		const provider = this._AuthenticAtionProviders.get(id);
 		if (provider) {
 			provider.dispose();
-			this._authenticationProviders.delete(id);
-			this._onDidUnregisterAuthenticationProvider.fire({ id, label: provider.label });
-			this.updateAccountsMenuItem();
+			this._AuthenticAtionProviders.delete(id);
+			this._onDidUnregisterAuthenticAtionProvider.fire({ id, lAbel: provider.lAbel });
+			this.updAteAccountsMenuItem();
 		}
 
-		if (!this._authenticationProviders.size) {
-			this._placeholderMenuItem = MenuRegistry.appendMenuItem(MenuId.AccountsContext, {
-				command: {
-					id: 'noAuthenticationProviders',
-					title: nls.localize('loading', "Loading..."),
-					precondition: ContextKeyExpr.false()
+		if (!this._AuthenticAtionProviders.size) {
+			this._plAceholderMenuItem = MenuRegistry.AppendMenuItem(MenuId.AccountsContext, {
+				commAnd: {
+					id: 'noAuthenticAtionProviders',
+					title: nls.locAlize('loAding', "LoAding..."),
+					precondition: ContextKeyExpr.fAlse()
 				},
 			});
 		}
 	}
 
-	async sessionsUpdate(id: string, event: AuthenticationSessionsChangeEvent): Promise<void> {
-		const provider = this._authenticationProviders.get(id);
+	Async sessionsUpdAte(id: string, event: AuthenticAtionSessionsChAngeEvent): Promise<void> {
+		const provider = this._AuthenticAtionProviders.get(id);
 		if (provider) {
-			this._onDidChangeSessions.fire({ providerId: id, label: provider.label, event: event });
-			await provider.updateSessionItems(event);
-			this.updateAccountsMenuItem();
+			this._onDidChAngeSessions.fire({ providerId: id, lAbel: provider.lAbel, event: event });
+			AwAit provider.updAteSessionItems(event);
+			this.updAteAccountsMenuItem();
 
-			if (event.added) {
-				await this.updateNewSessionRequests(provider);
+			if (event.Added) {
+				AwAit this.updAteNewSessionRequests(provider);
 			}
 		}
 	}
 
-	private async updateNewSessionRequests(provider: MainThreadAuthenticationProvider): Promise<void> {
+	privAte Async updAteNewSessionRequests(provider: MAinThreAdAuthenticAtionProvider): Promise<void> {
 		const existingRequestsForProvider = this._signInRequestItems.get(provider.id);
 		if (!existingRequestsForProvider) {
 			return;
 		}
 
-		const sessions = await provider.getSessions();
-		let changed = false;
+		const sessions = AwAit provider.getSessions();
+		let chAnged = fAlse;
 
-		Object.keys(existingRequestsForProvider).forEach(requestedScopes => {
+		Object.keys(existingRequestsForProvider).forEAch(requestedScopes => {
 			if (sessions.some(session => session.scopes.slice().sort().join('') === requestedScopes)) {
-				// Request has been completed
-				changed = true;
+				// Request hAs been completed
+				chAnged = true;
 				const sessionRequest = existingRequestsForProvider[requestedScopes];
-				sessionRequest?.disposables.forEach(item => item.dispose());
+				sessionRequest?.disposAbles.forEAch(item => item.dispose());
 
 				delete existingRequestsForProvider[requestedScopes];
 				if (Object.keys(existingRequestsForProvider).length === 0) {
@@ -306,33 +306,33 @@ export class AuthenticationService extends Disposable implements IAuthentication
 			}
 		});
 
-		if (changed) {
-			this._accountBadgeDisposable.clear();
+		if (chAnged) {
+			this._AccountBAdgeDisposAble.cleAr();
 
 			if (this._signInRequestItems.size > 0) {
 				let numberOfRequests = 0;
-				this._signInRequestItems.forEach(providerRequests => {
-					Object.keys(providerRequests).forEach(request => {
+				this._signInRequestItems.forEAch(providerRequests => {
+					Object.keys(providerRequests).forEAch(request => {
 						numberOfRequests += providerRequests[request].requestingExtensionIds.length;
 					});
 				});
 
-				const badge = new NumberBadge(numberOfRequests, () => nls.localize('sign in', "Sign in requested"));
-				this._accountBadgeDisposable.value = this.activityService.showAccountsActivity({ badge });
+				const bAdge = new NumberBAdge(numberOfRequests, () => nls.locAlize('sign in', "Sign in requested"));
+				this._AccountBAdgeDisposAble.vAlue = this.ActivityService.showAccountsActivity({ bAdge });
 			}
 		}
 	}
 
-	async requestNewSession(providerId: string, scopes: string[], extensionId: string, extensionName: string): Promise<void> {
-		let provider = this._authenticationProviders.get(providerId);
+	Async requestNewSession(providerId: string, scopes: string[], extensionId: string, extensionNAme: string): Promise<void> {
+		let provider = this._AuthenticAtionProviders.get(providerId);
 		if (!provider) {
-			// Activate has already been called for the authentication provider, but it cannot block on registering itself
-			// since this is sync and returns a disposable. So, wait for registration event to fire that indicates the
-			// provider is now in the map.
-			await new Promise<void>((resolve, _) => {
-				this.onDidRegisterAuthenticationProvider(e => {
+			// ActivAte hAs AlreAdy been cAlled for the AuthenticAtion provider, but it cAnnot block on registering itself
+			// since this is sync And returns A disposAble. So, wAit for registrAtion event to fire thAt indicAtes the
+			// provider is now in the mAp.
+			AwAit new Promise<void>((resolve, _) => {
+				this.onDidRegisterAuthenticAtionProvider(e => {
 					if (e.id === providerId) {
-						provider = this._authenticationProviders.get(providerId);
+						provider = this._AuthenticAtionProviders.get(providerId);
 						resolve();
 					}
 				});
@@ -342,171 +342,171 @@ export class AuthenticationService extends Disposable implements IAuthentication
 		if (provider) {
 			const providerRequests = this._signInRequestItems.get(providerId);
 			const scopesList = scopes.sort().join('');
-			const extensionHasExistingRequest = providerRequests
+			const extensionHAsExistingRequest = providerRequests
 				&& providerRequests[scopesList]
 				&& providerRequests[scopesList].requestingExtensionIds.includes(extensionId);
 
-			if (extensionHasExistingRequest) {
+			if (extensionHAsExistingRequest) {
 				return;
 			}
 
-			const menuItem = MenuRegistry.appendMenuItem(MenuId.AccountsContext, {
+			const menuItem = MenuRegistry.AppendMenuItem(MenuId.AccountsContext, {
 				group: '2_signInRequests',
-				command: {
+				commAnd: {
 					id: `${extensionId}signIn`,
-					title: nls.localize(
+					title: nls.locAlize(
 						{
 							key: 'signInRequest',
-							comment: ['The placeholder {0} will be replaced with an extension name. (1) is to indicate that this menu item contributes to a badge count.']
+							comment: ['The plAceholder {0} will be replAced with An extension nAme. (1) is to indicAte thAt this menu item contributes to A bAdge count.']
 						},
 						"Sign in to use {0} (1)",
-						extensionName)
+						extensionNAme)
 				}
 			});
 
-			const signInCommand = CommandsRegistry.registerCommand({
+			const signInCommAnd = CommAndsRegistry.registerCommAnd({
 				id: `${extensionId}signIn`,
-				handler: async (accessor) => {
-					const authenticationService = accessor.get(IAuthenticationService);
-					const storageService = accessor.get(IStorageService);
-					const session = await authenticationService.login(providerId, scopes);
+				hAndler: Async (Accessor) => {
+					const AuthenticAtionService = Accessor.get(IAuthenticAtionService);
+					const storAgeService = Accessor.get(IStorAgeService);
+					const session = AwAit AuthenticAtionService.login(providerId, scopes);
 
-					// Add extension to allow list since user explicitly signed in on behalf of it
-					const allowList = readAllowedExtensions(storageService, providerId, session.account.label);
-					if (!allowList.find(allowed => allowed.id === extensionId)) {
-						allowList.push({ id: extensionId, name: extensionName });
-						storageService.store(`${providerId}-${session.account.label}`, JSON.stringify(allowList), StorageScope.GLOBAL);
+					// Add extension to Allow list since user explicitly signed in on behAlf of it
+					const AllowList = reAdAllowedExtensions(storAgeService, providerId, session.Account.lAbel);
+					if (!AllowList.find(Allowed => Allowed.id === extensionId)) {
+						AllowList.push({ id: extensionId, nAme: extensionNAme });
+						storAgeService.store(`${providerId}-${session.Account.lAbel}`, JSON.stringify(AllowList), StorAgeScope.GLOBAL);
 					}
 
-					// And also set it as the preferred account for the extension
-					storageService.store(`${extensionName}-${providerId}`, session.id, StorageScope.GLOBAL);
+					// And Also set it As the preferred Account for the extension
+					storAgeService.store(`${extensionNAme}-${providerId}`, session.id, StorAgeScope.GLOBAL);
 				}
 			});
 
 
 			if (providerRequests) {
-				const existingRequest = providerRequests[scopesList] || { disposables: [], requestingExtensionIds: [] };
+				const existingRequest = providerRequests[scopesList] || { disposAbles: [], requestingExtensionIds: [] };
 
 				providerRequests[scopesList] = {
-					disposables: [...existingRequest.disposables, menuItem, signInCommand],
+					disposAbles: [...existingRequest.disposAbles, menuItem, signInCommAnd],
 					requestingExtensionIds: [...existingRequest.requestingExtensionIds, extensionId]
 				};
 				this._signInRequestItems.set(providerId, providerRequests);
 			} else {
 				this._signInRequestItems.set(providerId, {
 					[scopesList]: {
-						disposables: [menuItem, signInCommand],
+						disposAbles: [menuItem, signInCommAnd],
 						requestingExtensionIds: [extensionId]
 					}
 				});
 			}
 
-			this._accountBadgeDisposable.clear();
+			this._AccountBAdgeDisposAble.cleAr();
 
 			let numberOfRequests = 0;
-			this._signInRequestItems.forEach(providerRequests => {
-				Object.keys(providerRequests).forEach(request => {
+			this._signInRequestItems.forEAch(providerRequests => {
+				Object.keys(providerRequests).forEAch(request => {
 					numberOfRequests += providerRequests[request].requestingExtensionIds.length;
 				});
 			});
 
-			const badge = new NumberBadge(numberOfRequests, () => nls.localize('sign in', "Sign in requested"));
-			this._accountBadgeDisposable.value = this.activityService.showAccountsActivity({ badge });
+			const bAdge = new NumberBAdge(numberOfRequests, () => nls.locAlize('sign in', "Sign in requested"));
+			this._AccountBAdgeDisposAble.vAlue = this.ActivityService.showAccountsActivity({ bAdge });
 		}
 	}
-	getLabel(id: string): string {
-		const authProvider = this.declaredProviders.find(provider => provider.id === id);
-		if (authProvider) {
-			return authProvider.label;
+	getLAbel(id: string): string {
+		const AuthProvider = this.declAredProviders.find(provider => provider.id === id);
+		if (AuthProvider) {
+			return AuthProvider.lAbel;
 		} else {
-			throw new Error(`No authentication provider '${id}' has been declared.`);
+			throw new Error(`No AuthenticAtion provider '${id}' hAs been declAred.`);
 		}
 	}
 
-	supportsMultipleAccounts(id: string): boolean {
-		const authProvider = this._authenticationProviders.get(id);
-		if (authProvider) {
-			return authProvider.supportsMultipleAccounts;
+	supportsMultipleAccounts(id: string): booleAn {
+		const AuthProvider = this._AuthenticAtionProviders.get(id);
+		if (AuthProvider) {
+			return AuthProvider.supportsMultipleAccounts;
 		} else {
-			throw new Error(`No authentication provider '${id}' is currently registered.`);
+			throw new Error(`No AuthenticAtion provider '${id}' is currently registered.`);
 		}
 	}
 
-	private async tryActivateProvider(providerId: string): Promise<MainThreadAuthenticationProvider> {
-		await this.extensionService.activateByEvent(getAuthenticationProviderActivationEvent(providerId));
-		let provider = this._authenticationProviders.get(providerId);
+	privAte Async tryActivAteProvider(providerId: string): Promise<MAinThreAdAuthenticAtionProvider> {
+		AwAit this.extensionService.ActivAteByEvent(getAuthenticAtionProviderActivAtionEvent(providerId));
+		let provider = this._AuthenticAtionProviders.get(providerId);
 		if (provider) {
 			return provider;
 		}
 
-		// When activate has completed, the extension has made the call to `registerAuthenticationProvider`.
-		// However, activate cannot block on this, so the renderer may not have gotten the event yet.
-		const didRegister: Promise<MainThreadAuthenticationProvider> = new Promise((resolve, _) => {
-			this.onDidRegisterAuthenticationProvider(e => {
+		// When ActivAte hAs completed, the extension hAs mAde the cAll to `registerAuthenticAtionProvider`.
+		// However, ActivAte cAnnot block on this, so the renderer mAy not hAve gotten the event yet.
+		const didRegister: Promise<MAinThreAdAuthenticAtionProvider> = new Promise((resolve, _) => {
+			this.onDidRegisterAuthenticAtionProvider(e => {
 				if (e.id === providerId) {
-					provider = this._authenticationProviders.get(providerId);
+					provider = this._AuthenticAtionProviders.get(providerId);
 					if (provider) {
 						resolve(provider);
 					} else {
-						throw new Error(`No authentication provider '${providerId}' is currently registered.`);
+						throw new Error(`No AuthenticAtion provider '${providerId}' is currently registered.`);
 					}
 				}
 			});
 		});
 
-		const didTimeout: Promise<MainThreadAuthenticationProvider> = new Promise((_, reject) => {
+		const didTimeout: Promise<MAinThreAdAuthenticAtionProvider> = new Promise((_, reject) => {
 			setTimeout(() => {
 				reject();
 			}, 5000);
 		});
 
-		return Promise.race([didRegister, didTimeout]);
+		return Promise.rAce([didRegister, didTimeout]);
 	}
 
-	async getSessions(id: string): Promise<ReadonlyArray<AuthenticationSession>> {
+	Async getSessions(id: string): Promise<ReAdonlyArrAy<AuthenticAtionSession>> {
 		try {
-			const authProvider = this._authenticationProviders.get(id) || await this.tryActivateProvider(id);
-			return await authProvider.getSessions();
-		} catch (_) {
-			throw new Error(`No authentication provider '${id}' is currently registered.`);
+			const AuthProvider = this._AuthenticAtionProviders.get(id) || AwAit this.tryActivAteProvider(id);
+			return AwAit AuthProvider.getSessions();
+		} cAtch (_) {
+			throw new Error(`No AuthenticAtion provider '${id}' is currently registered.`);
 		}
 	}
 
-	async login(id: string, scopes: string[]): Promise<AuthenticationSession> {
+	Async login(id: string, scopes: string[]): Promise<AuthenticAtionSession> {
 		try {
-			const authProvider = this._authenticationProviders.get(id) || await this.tryActivateProvider(id);
-			return await authProvider.login(scopes);
-		} catch (_) {
-			throw new Error(`No authentication provider '${id}' is currently registered.`);
+			const AuthProvider = this._AuthenticAtionProviders.get(id) || AwAit this.tryActivAteProvider(id);
+			return AwAit AuthProvider.login(scopes);
+		} cAtch (_) {
+			throw new Error(`No AuthenticAtion provider '${id}' is currently registered.`);
 		}
 	}
 
-	async logout(id: string, sessionId: string): Promise<void> {
-		const authProvider = this._authenticationProviders.get(id);
-		if (authProvider) {
-			return authProvider.logout(sessionId);
+	Async logout(id: string, sessionId: string): Promise<void> {
+		const AuthProvider = this._AuthenticAtionProviders.get(id);
+		if (AuthProvider) {
+			return AuthProvider.logout(sessionId);
 		} else {
-			throw new Error(`No authentication provider '${id}' is currently registered.`);
+			throw new Error(`No AuthenticAtion provider '${id}' is currently registered.`);
 		}
 	}
 
-	async manageTrustedExtensionsForAccount(id: string, accountName: string): Promise<void> {
-		const authProvider = this._authenticationProviders.get(id);
-		if (authProvider) {
-			return authProvider.manageTrustedExtensions(accountName);
+	Async mAnAgeTrustedExtensionsForAccount(id: string, AccountNAme: string): Promise<void> {
+		const AuthProvider = this._AuthenticAtionProviders.get(id);
+		if (AuthProvider) {
+			return AuthProvider.mAnAgeTrustedExtensions(AccountNAme);
 		} else {
-			throw new Error(`No authentication provider '${id}' is currently registered.`);
+			throw new Error(`No AuthenticAtion provider '${id}' is currently registered.`);
 		}
 	}
 
-	async signOutOfAccount(id: string, accountName: string): Promise<void> {
-		const authProvider = this._authenticationProviders.get(id);
-		if (authProvider) {
-			return authProvider.signOut(accountName);
+	Async signOutOfAccount(id: string, AccountNAme: string): Promise<void> {
+		const AuthProvider = this._AuthenticAtionProviders.get(id);
+		if (AuthProvider) {
+			return AuthProvider.signOut(AccountNAme);
 		} else {
-			throw new Error(`No authentication provider '${id}' is currently registered.`);
+			throw new Error(`No AuthenticAtion provider '${id}' is currently registered.`);
 		}
 	}
 }
 
-registerSingleton(IAuthenticationService, AuthenticationService);
+registerSingleton(IAuthenticAtionService, AuthenticAtionService);

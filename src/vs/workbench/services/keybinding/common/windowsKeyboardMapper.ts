@@ -1,158 +1,158 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { KeyCode, KeyCodeUtils, Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { UILabelProvider } from 'vs/base/common/keybindingLabels';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { IMMUTABLE_CODE_TO_KEY_CODE, ScanCode, ScanCodeBinding, ScanCodeUtils } from 'vs/base/common/scanCode';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { IKeyboardMapper } from 'vs/workbench/services/keybinding/common/keyboardMapper';
-import { BaseResolvedKeybinding } from 'vs/platform/keybinding/common/baseResolvedKeybinding';
-import { removeElementsAfterNulls } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { KeyCode, KeyCodeUtils, Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import { UILAbelProvider } from 'vs/bAse/common/keybindingLAbels';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { IMMUTABLE_CODE_TO_KEY_CODE, ScAnCode, ScAnCodeBinding, ScAnCodeUtils } from 'vs/bAse/common/scAnCode';
+import { IKeyboArdEvent } from 'vs/plAtform/keybinding/common/keybinding';
+import { IKeyboArdMApper } from 'vs/workbench/services/keybinding/common/keyboArdMApper';
+import { BAseResolvedKeybinding } from 'vs/plAtform/keybinding/common/bAseResolvedKeybinding';
+import { removeElementsAfterNulls } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
 
-export interface IWindowsKeyMapping {
+export interfAce IWindowsKeyMApping {
 	vkey: string;
-	value: string;
+	vAlue: string;
 	withShift: string;
 	withAltGr: string;
 	withShiftAltGr: string;
 }
 
-function windowsKeyMappingEquals(a: IWindowsKeyMapping, b: IWindowsKeyMapping): boolean {
-	if (!a && !b) {
+function windowsKeyMAppingEquAls(A: IWindowsKeyMApping, b: IWindowsKeyMApping): booleAn {
+	if (!A && !b) {
 		return true;
 	}
-	if (!a || !b) {
-		return false;
+	if (!A || !b) {
+		return fAlse;
 	}
 	return (
-		a.vkey === b.vkey
-		&& a.value === b.value
-		&& a.withShift === b.withShift
-		&& a.withAltGr === b.withAltGr
-		&& a.withShiftAltGr === b.withShiftAltGr
+		A.vkey === b.vkey
+		&& A.vAlue === b.vAlue
+		&& A.withShift === b.withShift
+		&& A.withAltGr === b.withAltGr
+		&& A.withShiftAltGr === b.withShiftAltGr
 	);
 }
 
-export interface IWindowsKeyboardMapping {
-	[scanCode: string]: IWindowsKeyMapping;
+export interfAce IWindowsKeyboArdMApping {
+	[scAnCode: string]: IWindowsKeyMApping;
 }
 
-export function windowsKeyboardMappingEquals(a: IWindowsKeyboardMapping | null, b: IWindowsKeyboardMapping | null): boolean {
-	if (!a && !b) {
+export function windowsKeyboArdMAppingEquAls(A: IWindowsKeyboArdMApping | null, b: IWindowsKeyboArdMApping | null): booleAn {
+	if (!A && !b) {
 		return true;
 	}
-	if (!a || !b) {
-		return false;
+	if (!A || !b) {
+		return fAlse;
 	}
-	for (let scanCode = 0; scanCode < ScanCode.MAX_VALUE; scanCode++) {
-		const strScanCode = ScanCodeUtils.toString(scanCode);
-		const aEntry = a[strScanCode];
-		const bEntry = b[strScanCode];
-		if (!windowsKeyMappingEquals(aEntry, bEntry)) {
-			return false;
+	for (let scAnCode = 0; scAnCode < ScAnCode.MAX_VALUE; scAnCode++) {
+		const strScAnCode = ScAnCodeUtils.toString(scAnCode);
+		const AEntry = A[strScAnCode];
+		const bEntry = b[strScAnCode];
+		if (!windowsKeyMAppingEquAls(AEntry, bEntry)) {
+			return fAlse;
 		}
 	}
 	return true;
 }
 
 
-const LOG = false;
+const LOG = fAlse;
 function log(str: string): void {
 	if (LOG) {
 		console.info(str);
 	}
 }
 
-const NATIVE_KEY_CODE_TO_KEY_CODE: { [nativeKeyCode: string]: KeyCode; } = _getNativeMap();
+const NATIVE_KEY_CODE_TO_KEY_CODE: { [nAtiveKeyCode: string]: KeyCode; } = _getNAtiveMAp();
 
-export interface IScanCodeMapping {
-	scanCode: ScanCode;
+export interfAce IScAnCodeMApping {
+	scAnCode: ScAnCode;
 	keyCode: KeyCode;
-	value: string;
+	vAlue: string;
 	withShift: string;
 	withAltGr: string;
 	withShiftAltGr: string;
 }
 
-export class WindowsNativeResolvedKeybinding extends BaseResolvedKeybinding<SimpleKeybinding> {
+export clAss WindowsNAtiveResolvedKeybinding extends BAseResolvedKeybinding<SimpleKeybinding> {
 
-	private readonly _mapper: WindowsKeyboardMapper;
+	privAte reAdonly _mApper: WindowsKeyboArdMApper;
 
-	constructor(mapper: WindowsKeyboardMapper, parts: SimpleKeybinding[]) {
-		super(OperatingSystem.Windows, parts);
-		this._mapper = mapper;
+	constructor(mApper: WindowsKeyboArdMApper, pArts: SimpleKeybinding[]) {
+		super(OperAtingSystem.Windows, pArts);
+		this._mApper = mApper;
 	}
 
-	protected _getLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getLAbel(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
-		return this._mapper.getUILabelForKeyCode(keybinding.keyCode);
+		return this._mApper.getUILAbelForKeyCode(keybinding.keyCode);
 	}
 
-	private _getUSLabelForKeybinding(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	privAte _getUSLAbelForKeybinding(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
 		return KeyCodeUtils.toString(keybinding.keyCode);
 	}
 
-	public getUSLabel(): string | null {
-		return UILabelProvider.toLabel(this._os, this._parts, (keybinding) => this._getUSLabelForKeybinding(keybinding));
+	public getUSLAbel(): string | null {
+		return UILAbelProvider.toLAbel(this._os, this._pArts, (keybinding) => this._getUSLAbelForKeybinding(keybinding));
 	}
 
-	protected _getAriaLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getAriALAbel(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
-		return this._mapper.getAriaLabelForKeyCode(keybinding.keyCode);
+		return this._mApper.getAriALAbelForKeyCode(keybinding.keyCode);
 	}
 
-	private _keyCodeToElectronAccelerator(keyCode: KeyCode): string | null {
+	privAte _keyCodeToElectronAccelerAtor(keyCode: KeyCode): string | null {
 		if (keyCode >= KeyCode.NUMPAD_0 && keyCode <= KeyCode.NUMPAD_DIVIDE) {
-			// Electron cannot handle numpad keys
+			// Electron cAnnot hAndle numpAd keys
 			return null;
 		}
 
 		switch (keyCode) {
-			case KeyCode.UpArrow:
+			cAse KeyCode.UpArrow:
 				return 'Up';
-			case KeyCode.DownArrow:
+			cAse KeyCode.DownArrow:
 				return 'Down';
-			case KeyCode.LeftArrow:
+			cAse KeyCode.LeftArrow:
 				return 'Left';
-			case KeyCode.RightArrow:
+			cAse KeyCode.RightArrow:
 				return 'Right';
 		}
 
-		// electron menus always do the correct rendering on Windows
+		// electron menus AlwAys do the correct rendering on Windows
 		return KeyCodeUtils.toString(keyCode);
 	}
 
-	protected _getElectronAccelerator(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getElectronAccelerAtor(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return null;
 		}
-		return this._keyCodeToElectronAccelerator(keybinding.keyCode);
+		return this._keyCodeToElectronAccelerAtor(keybinding.keyCode);
 	}
 
-	protected _getUserSettingsLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getUserSettingsLAbel(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
-		const result = this._mapper.getUserSettingsLabelForKeyCode(keybinding.keyCode);
-		return (result ? result.toLowerCase() : result);
+		const result = this._mApper.getUserSettingsLAbelForKeyCode(keybinding.keyCode);
+		return (result ? result.toLowerCAse() : result);
 	}
 
-	protected _isWYSIWYG(keybinding: SimpleKeybinding): boolean {
+	protected _isWYSIWYG(keybinding: SimpleKeybinding): booleAn {
 		return this.__isWYSIWYG(keybinding.keyCode);
 	}
 
-	private __isWYSIWYG(keyCode: KeyCode): boolean {
+	privAte __isWYSIWYG(keyCode: KeyCode): booleAn {
 		if (
 			keyCode === KeyCode.LeftArrow
 			|| keyCode === KeyCode.UpArrow
@@ -161,12 +161,12 @@ export class WindowsNativeResolvedKeybinding extends BaseResolvedKeybinding<Simp
 		) {
 			return true;
 		}
-		const ariaLabel = this._mapper.getAriaLabelForKeyCode(keyCode);
-		const userSettingsLabel = this._mapper.getUserSettingsLabelForKeyCode(keyCode);
-		return (ariaLabel === userSettingsLabel);
+		const AriALAbel = this._mApper.getAriALAbelForKeyCode(keyCode);
+		const userSettingsLAbel = this._mApper.getUserSettingsLAbelForKeyCode(keyCode);
+		return (AriALAbel === userSettingsLAbel);
 	}
 
-	protected _getDispatchPart(keybinding: SimpleKeybinding): string | null {
+	protected _getDispAtchPArt(keybinding: SimpleKeybinding): string | null {
 		if (keybinding.isModifierKey()) {
 			return null;
 		}
@@ -178,250 +178,250 @@ export class WindowsNativeResolvedKeybinding extends BaseResolvedKeybinding<Simp
 		if (keybinding.shiftKey) {
 			result += 'shift+';
 		}
-		if (keybinding.altKey) {
-			result += 'alt+';
+		if (keybinding.AltKey) {
+			result += 'Alt+';
 		}
-		if (keybinding.metaKey) {
-			result += 'meta+';
+		if (keybinding.metAKey) {
+			result += 'metA+';
 		}
 		result += KeyCodeUtils.toString(keybinding.keyCode);
 
 		return result;
 	}
 
-	private static getProducedCharCode(kb: ScanCodeBinding, mapping: IScanCodeMapping): string | null {
-		if (!mapping) {
+	privAte stAtic getProducedChArCode(kb: ScAnCodeBinding, mApping: IScAnCodeMApping): string | null {
+		if (!mApping) {
 			return null;
 		}
-		if (kb.ctrlKey && kb.shiftKey && kb.altKey) {
-			return mapping.withShiftAltGr;
+		if (kb.ctrlKey && kb.shiftKey && kb.AltKey) {
+			return mApping.withShiftAltGr;
 		}
-		if (kb.ctrlKey && kb.altKey) {
-			return mapping.withAltGr;
+		if (kb.ctrlKey && kb.AltKey) {
+			return mApping.withAltGr;
 		}
 		if (kb.shiftKey) {
-			return mapping.withShift;
+			return mApping.withShift;
 		}
-		return mapping.value;
+		return mApping.vAlue;
 	}
 
-	public static getProducedChar(kb: ScanCodeBinding, mapping: IScanCodeMapping): string {
-		const char = this.getProducedCharCode(kb, mapping);
-		if (char === null || char.length === 0) {
+	public stAtic getProducedChAr(kb: ScAnCodeBinding, mApping: IScAnCodeMApping): string {
+		const chAr = this.getProducedChArCode(kb, mApping);
+		if (chAr === null || chAr.length === 0) {
 			return ' --- ';
 		}
-		return '  ' + char + '  ';
+		return '  ' + chAr + '  ';
 	}
 }
 
-export class WindowsKeyboardMapper implements IKeyboardMapper {
+export clAss WindowsKeyboArdMApper implements IKeyboArdMApper {
 
-	public readonly isUSStandard: boolean;
-	private readonly _codeInfo: IScanCodeMapping[];
-	private readonly _scanCodeToKeyCode: KeyCode[];
-	private readonly _keyCodeToLabel: Array<string | null> = [];
-	private readonly _keyCodeExists: boolean[];
+	public reAdonly isUSStAndArd: booleAn;
+	privAte reAdonly _codeInfo: IScAnCodeMApping[];
+	privAte reAdonly _scAnCodeToKeyCode: KeyCode[];
+	privAte reAdonly _keyCodeToLAbel: ArrAy<string | null> = [];
+	privAte reAdonly _keyCodeExists: booleAn[];
 
-	constructor(isUSStandard: boolean, rawMappings: IWindowsKeyboardMapping) {
-		this.isUSStandard = isUSStandard;
-		this._scanCodeToKeyCode = [];
-		this._keyCodeToLabel = [];
+	constructor(isUSStAndArd: booleAn, rAwMAppings: IWindowsKeyboArdMApping) {
+		this.isUSStAndArd = isUSStAndArd;
+		this._scAnCodeToKeyCode = [];
+		this._keyCodeToLAbel = [];
 		this._keyCodeExists = [];
-		this._keyCodeToLabel[KeyCode.Unknown] = KeyCodeUtils.toString(KeyCode.Unknown);
+		this._keyCodeToLAbel[KeyCode.Unknown] = KeyCodeUtils.toString(KeyCode.Unknown);
 
-		for (let scanCode = ScanCode.None; scanCode < ScanCode.MAX_VALUE; scanCode++) {
-			const immutableKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[scanCode];
-			if (immutableKeyCode !== -1) {
-				this._scanCodeToKeyCode[scanCode] = immutableKeyCode;
-				this._keyCodeToLabel[immutableKeyCode] = KeyCodeUtils.toString(immutableKeyCode);
-				this._keyCodeExists[immutableKeyCode] = true;
+		for (let scAnCode = ScAnCode.None; scAnCode < ScAnCode.MAX_VALUE; scAnCode++) {
+			const immutAbleKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[scAnCode];
+			if (immutAbleKeyCode !== -1) {
+				this._scAnCodeToKeyCode[scAnCode] = immutAbleKeyCode;
+				this._keyCodeToLAbel[immutAbleKeyCode] = KeyCodeUtils.toString(immutAbleKeyCode);
+				this._keyCodeExists[immutAbleKeyCode] = true;
 			}
 		}
 
-		let producesLetter: boolean[] = [];
-		let producesLetters = false;
+		let producesLetter: booleAn[] = [];
+		let producesLetters = fAlse;
 
 		this._codeInfo = [];
-		for (let strCode in rawMappings) {
-			if (rawMappings.hasOwnProperty(strCode)) {
-				const scanCode = ScanCodeUtils.toEnum(strCode);
-				if (scanCode === ScanCode.None) {
-					log(`Unknown scanCode ${strCode} in mapping.`);
+		for (let strCode in rAwMAppings) {
+			if (rAwMAppings.hAsOwnProperty(strCode)) {
+				const scAnCode = ScAnCodeUtils.toEnum(strCode);
+				if (scAnCode === ScAnCode.None) {
+					log(`Unknown scAnCode ${strCode} in mApping.`);
 					continue;
 				}
-				const rawMapping = rawMappings[strCode];
+				const rAwMApping = rAwMAppings[strCode];
 
-				const immutableKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[scanCode];
-				if (immutableKeyCode !== -1) {
-					const keyCode = NATIVE_KEY_CODE_TO_KEY_CODE[rawMapping.vkey] || KeyCode.Unknown;
-					if (keyCode === KeyCode.Unknown || immutableKeyCode === keyCode) {
+				const immutAbleKeyCode = IMMUTABLE_CODE_TO_KEY_CODE[scAnCode];
+				if (immutAbleKeyCode !== -1) {
+					const keyCode = NATIVE_KEY_CODE_TO_KEY_CODE[rAwMApping.vkey] || KeyCode.Unknown;
+					if (keyCode === KeyCode.Unknown || immutAbleKeyCode === keyCode) {
 						continue;
 					}
-					if (scanCode !== ScanCode.NumpadComma) {
-						// Looks like ScanCode.NumpadComma doesn't always map to KeyCode.NUMPAD_SEPARATOR
+					if (scAnCode !== ScAnCode.NumpAdCommA) {
+						// Looks like ScAnCode.NumpAdCommA doesn't AlwAys mAp to KeyCode.NUMPAD_SEPARATOR
 						// e.g. on POR - PTB
 						continue;
 					}
 				}
 
-				const value = rawMapping.value;
-				const withShift = rawMapping.withShift;
-				const withAltGr = rawMapping.withAltGr;
-				const withShiftAltGr = rawMapping.withShiftAltGr;
-				const keyCode = NATIVE_KEY_CODE_TO_KEY_CODE[rawMapping.vkey] || KeyCode.Unknown;
+				const vAlue = rAwMApping.vAlue;
+				const withShift = rAwMApping.withShift;
+				const withAltGr = rAwMApping.withAltGr;
+				const withShiftAltGr = rAwMApping.withShiftAltGr;
+				const keyCode = NATIVE_KEY_CODE_TO_KEY_CODE[rAwMApping.vkey] || KeyCode.Unknown;
 
-				const mapping: IScanCodeMapping = {
-					scanCode: scanCode,
+				const mApping: IScAnCodeMApping = {
+					scAnCode: scAnCode,
 					keyCode: keyCode,
-					value: value,
+					vAlue: vAlue,
 					withShift: withShift,
 					withAltGr: withAltGr,
 					withShiftAltGr: withShiftAltGr,
 				};
-				this._codeInfo[scanCode] = mapping;
-				this._scanCodeToKeyCode[scanCode] = keyCode;
+				this._codeInfo[scAnCode] = mApping;
+				this._scAnCodeToKeyCode[scAnCode] = keyCode;
 
 				if (keyCode === KeyCode.Unknown) {
 					continue;
 				}
 				this._keyCodeExists[keyCode] = true;
 
-				if (value.length === 0) {
+				if (vAlue.length === 0) {
 					// This key does not produce strings
-					this._keyCodeToLabel[keyCode] = null;
+					this._keyCodeToLAbel[keyCode] = null;
 				}
 
-				else if (value.length > 1) {
-					// This key produces a letter representable with multiple UTF-16 code units.
-					this._keyCodeToLabel[keyCode] = value;
+				else if (vAlue.length > 1) {
+					// This key produces A letter representAble with multiple UTF-16 code units.
+					this._keyCodeToLAbel[keyCode] = vAlue;
 				}
 
 				else {
-					const charCode = value.charCodeAt(0);
+					const chArCode = vAlue.chArCodeAt(0);
 
-					if (charCode >= CharCode.a && charCode <= CharCode.z) {
-						const upperCaseValue = CharCode.A + (charCode - CharCode.a);
-						producesLetter[upperCaseValue] = true;
+					if (chArCode >= ChArCode.A && chArCode <= ChArCode.z) {
+						const upperCAseVAlue = ChArCode.A + (chArCode - ChArCode.A);
+						producesLetter[upperCAseVAlue] = true;
 						producesLetters = true;
-						this._keyCodeToLabel[keyCode] = String.fromCharCode(CharCode.A + (charCode - CharCode.a));
+						this._keyCodeToLAbel[keyCode] = String.fromChArCode(ChArCode.A + (chArCode - ChArCode.A));
 					}
 
-					else if (charCode >= CharCode.A && charCode <= CharCode.Z) {
-						producesLetter[charCode] = true;
+					else if (chArCode >= ChArCode.A && chArCode <= ChArCode.Z) {
+						producesLetter[chArCode] = true;
 						producesLetters = true;
-						this._keyCodeToLabel[keyCode] = value;
+						this._keyCodeToLAbel[keyCode] = vAlue;
 					}
 
 					else {
-						this._keyCodeToLabel[keyCode] = value;
+						this._keyCodeToLAbel[keyCode] = vAlue;
 					}
 				}
 			}
 		}
 
-		// Handle keyboard layouts where latin characters are not produced e.g. Cyrillic
-		const _registerLetterIfMissing = (charCode: CharCode, keyCode: KeyCode): void => {
-			if (!producesLetter[charCode]) {
-				this._keyCodeToLabel[keyCode] = String.fromCharCode(charCode);
+		// HAndle keyboArd lAyouts where lAtin chArActers Are not produced e.g. Cyrillic
+		const _registerLetterIfMissing = (chArCode: ChArCode, keyCode: KeyCode): void => {
+			if (!producesLetter[chArCode]) {
+				this._keyCodeToLAbel[keyCode] = String.fromChArCode(chArCode);
 			}
 		};
-		_registerLetterIfMissing(CharCode.A, KeyCode.KEY_A);
-		_registerLetterIfMissing(CharCode.B, KeyCode.KEY_B);
-		_registerLetterIfMissing(CharCode.C, KeyCode.KEY_C);
-		_registerLetterIfMissing(CharCode.D, KeyCode.KEY_D);
-		_registerLetterIfMissing(CharCode.E, KeyCode.KEY_E);
-		_registerLetterIfMissing(CharCode.F, KeyCode.KEY_F);
-		_registerLetterIfMissing(CharCode.G, KeyCode.KEY_G);
-		_registerLetterIfMissing(CharCode.H, KeyCode.KEY_H);
-		_registerLetterIfMissing(CharCode.I, KeyCode.KEY_I);
-		_registerLetterIfMissing(CharCode.J, KeyCode.KEY_J);
-		_registerLetterIfMissing(CharCode.K, KeyCode.KEY_K);
-		_registerLetterIfMissing(CharCode.L, KeyCode.KEY_L);
-		_registerLetterIfMissing(CharCode.M, KeyCode.KEY_M);
-		_registerLetterIfMissing(CharCode.N, KeyCode.KEY_N);
-		_registerLetterIfMissing(CharCode.O, KeyCode.KEY_O);
-		_registerLetterIfMissing(CharCode.P, KeyCode.KEY_P);
-		_registerLetterIfMissing(CharCode.Q, KeyCode.KEY_Q);
-		_registerLetterIfMissing(CharCode.R, KeyCode.KEY_R);
-		_registerLetterIfMissing(CharCode.S, KeyCode.KEY_S);
-		_registerLetterIfMissing(CharCode.T, KeyCode.KEY_T);
-		_registerLetterIfMissing(CharCode.U, KeyCode.KEY_U);
-		_registerLetterIfMissing(CharCode.V, KeyCode.KEY_V);
-		_registerLetterIfMissing(CharCode.W, KeyCode.KEY_W);
-		_registerLetterIfMissing(CharCode.X, KeyCode.KEY_X);
-		_registerLetterIfMissing(CharCode.Y, KeyCode.KEY_Y);
-		_registerLetterIfMissing(CharCode.Z, KeyCode.KEY_Z);
+		_registerLetterIfMissing(ChArCode.A, KeyCode.KEY_A);
+		_registerLetterIfMissing(ChArCode.B, KeyCode.KEY_B);
+		_registerLetterIfMissing(ChArCode.C, KeyCode.KEY_C);
+		_registerLetterIfMissing(ChArCode.D, KeyCode.KEY_D);
+		_registerLetterIfMissing(ChArCode.E, KeyCode.KEY_E);
+		_registerLetterIfMissing(ChArCode.F, KeyCode.KEY_F);
+		_registerLetterIfMissing(ChArCode.G, KeyCode.KEY_G);
+		_registerLetterIfMissing(ChArCode.H, KeyCode.KEY_H);
+		_registerLetterIfMissing(ChArCode.I, KeyCode.KEY_I);
+		_registerLetterIfMissing(ChArCode.J, KeyCode.KEY_J);
+		_registerLetterIfMissing(ChArCode.K, KeyCode.KEY_K);
+		_registerLetterIfMissing(ChArCode.L, KeyCode.KEY_L);
+		_registerLetterIfMissing(ChArCode.M, KeyCode.KEY_M);
+		_registerLetterIfMissing(ChArCode.N, KeyCode.KEY_N);
+		_registerLetterIfMissing(ChArCode.O, KeyCode.KEY_O);
+		_registerLetterIfMissing(ChArCode.P, KeyCode.KEY_P);
+		_registerLetterIfMissing(ChArCode.Q, KeyCode.KEY_Q);
+		_registerLetterIfMissing(ChArCode.R, KeyCode.KEY_R);
+		_registerLetterIfMissing(ChArCode.S, KeyCode.KEY_S);
+		_registerLetterIfMissing(ChArCode.T, KeyCode.KEY_T);
+		_registerLetterIfMissing(ChArCode.U, KeyCode.KEY_U);
+		_registerLetterIfMissing(ChArCode.V, KeyCode.KEY_V);
+		_registerLetterIfMissing(ChArCode.W, KeyCode.KEY_W);
+		_registerLetterIfMissing(ChArCode.X, KeyCode.KEY_X);
+		_registerLetterIfMissing(ChArCode.Y, KeyCode.KEY_Y);
+		_registerLetterIfMissing(ChArCode.Z, KeyCode.KEY_Z);
 
 		if (!producesLetters) {
-			// Since this keyboard layout produces no latin letters at all, most of the UI will use the
-			// US kb layout equivalent for UI labels, so also try to render other keys with the US labels
+			// Since this keyboArd lAyout produces no lAtin letters At All, most of the UI will use the
+			// US kb lAyout equivAlent for UI lAbels, so Also try to render other keys with the US lAbels
 			// for consistency...
-			const _registerLabel = (keyCode: KeyCode, charCode: CharCode): void => {
-				// const existingLabel = this._keyCodeToLabel[keyCode];
-				// const existingCharCode = (existingLabel ? existingLabel.charCodeAt(0) : CharCode.Null);
-				// if (existingCharCode < 32 || existingCharCode > 126) {
-				this._keyCodeToLabel[keyCode] = String.fromCharCode(charCode);
+			const _registerLAbel = (keyCode: KeyCode, chArCode: ChArCode): void => {
+				// const existingLAbel = this._keyCodeToLAbel[keyCode];
+				// const existingChArCode = (existingLAbel ? existingLAbel.chArCodeAt(0) : ChArCode.Null);
+				// if (existingChArCode < 32 || existingChArCode > 126) {
+				this._keyCodeToLAbel[keyCode] = String.fromChArCode(chArCode);
 				// }
 			};
-			_registerLabel(KeyCode.US_SEMICOLON, CharCode.Semicolon);
-			_registerLabel(KeyCode.US_EQUAL, CharCode.Equals);
-			_registerLabel(KeyCode.US_COMMA, CharCode.Comma);
-			_registerLabel(KeyCode.US_MINUS, CharCode.Dash);
-			_registerLabel(KeyCode.US_DOT, CharCode.Period);
-			_registerLabel(KeyCode.US_SLASH, CharCode.Slash);
-			_registerLabel(KeyCode.US_BACKTICK, CharCode.BackTick);
-			_registerLabel(KeyCode.US_OPEN_SQUARE_BRACKET, CharCode.OpenSquareBracket);
-			_registerLabel(KeyCode.US_BACKSLASH, CharCode.Backslash);
-			_registerLabel(KeyCode.US_CLOSE_SQUARE_BRACKET, CharCode.CloseSquareBracket);
-			_registerLabel(KeyCode.US_QUOTE, CharCode.SingleQuote);
+			_registerLAbel(KeyCode.US_SEMICOLON, ChArCode.Semicolon);
+			_registerLAbel(KeyCode.US_EQUAL, ChArCode.EquAls);
+			_registerLAbel(KeyCode.US_COMMA, ChArCode.CommA);
+			_registerLAbel(KeyCode.US_MINUS, ChArCode.DAsh);
+			_registerLAbel(KeyCode.US_DOT, ChArCode.Period);
+			_registerLAbel(KeyCode.US_SLASH, ChArCode.SlAsh);
+			_registerLAbel(KeyCode.US_BACKTICK, ChArCode.BAckTick);
+			_registerLAbel(KeyCode.US_OPEN_SQUARE_BRACKET, ChArCode.OpenSquAreBrAcket);
+			_registerLAbel(KeyCode.US_BACKSLASH, ChArCode.BAckslAsh);
+			_registerLAbel(KeyCode.US_CLOSE_SQUARE_BRACKET, ChArCode.CloseSquAreBrAcket);
+			_registerLAbel(KeyCode.US_QUOTE, ChArCode.SingleQuote);
 		}
 	}
 
 	public dumpDebugInfo(): string {
 		let result: string[] = [];
 
-		let immutableSamples = [
-			ScanCode.ArrowUp,
-			ScanCode.Numpad0
+		let immutAbleSAmples = [
+			ScAnCode.ArrowUp,
+			ScAnCode.NumpAd0
 		];
 
 		let cnt = 0;
 		result.push(`-----------------------------------------------------------------------------------------------------------------------------------------`);
-		for (let scanCode = ScanCode.None; scanCode < ScanCode.MAX_VALUE; scanCode++) {
-			if (IMMUTABLE_CODE_TO_KEY_CODE[scanCode] !== -1) {
-				if (immutableSamples.indexOf(scanCode) === -1) {
+		for (let scAnCode = ScAnCode.None; scAnCode < ScAnCode.MAX_VALUE; scAnCode++) {
+			if (IMMUTABLE_CODE_TO_KEY_CODE[scAnCode] !== -1) {
+				if (immutAbleSAmples.indexOf(scAnCode) === -1) {
 					continue;
 				}
 			}
 
 			if (cnt % 6 === 0) {
-				result.push(`|       HW Code combination      |  Key  |    KeyCode combination    |          UI label         |        User settings       | WYSIWYG |`);
+				result.push(`|       HW Code combinAtion      |  Key  |    KeyCode combinAtion    |          UI lAbel         |        User settings       | WYSIWYG |`);
 				result.push(`-----------------------------------------------------------------------------------------------------------------------------------------`);
 			}
 			cnt++;
 
-			const mapping = this._codeInfo[scanCode];
-			const strCode = ScanCodeUtils.toString(scanCode);
+			const mApping = this._codeInfo[scAnCode];
+			const strCode = ScAnCodeUtils.toString(scAnCode);
 
 			const mods = [0b000, 0b010, 0b101, 0b111];
 			for (const mod of mods) {
-				const ctrlKey = (mod & 0b001) ? true : false;
-				const shiftKey = (mod & 0b010) ? true : false;
-				const altKey = (mod & 0b100) ? true : false;
-				const scanCodeBinding = new ScanCodeBinding(ctrlKey, shiftKey, altKey, false, scanCode);
-				const kb = this._resolveSimpleUserBinding(scanCodeBinding);
+				const ctrlKey = (mod & 0b001) ? true : fAlse;
+				const shiftKey = (mod & 0b010) ? true : fAlse;
+				const AltKey = (mod & 0b100) ? true : fAlse;
+				const scAnCodeBinding = new ScAnCodeBinding(ctrlKey, shiftKey, AltKey, fAlse, scAnCode);
+				const kb = this._resolveSimpleUserBinding(scAnCodeBinding);
 				const strKeyCode = (kb ? KeyCodeUtils.toString(kb.keyCode) : null);
-				const resolvedKb = (kb ? new WindowsNativeResolvedKeybinding(this, [kb]) : null);
+				const resolvedKb = (kb ? new WindowsNAtiveResolvedKeybinding(this, [kb]) : null);
 
-				const outScanCode = `${ctrlKey ? 'Ctrl+' : ''}${shiftKey ? 'Shift+' : ''}${altKey ? 'Alt+' : ''}${strCode}`;
-				const ariaLabel = (resolvedKb ? resolvedKb.getAriaLabel() : null);
-				const outUILabel = (ariaLabel ? ariaLabel.replace(/Control\+/, 'Ctrl+') : null);
-				const outUserSettings = (resolvedKb ? resolvedKb.getUserSettingsLabel() : null);
-				const outKey = WindowsNativeResolvedKeybinding.getProducedChar(scanCodeBinding, mapping);
-				const outKb = (strKeyCode ? `${ctrlKey ? 'Ctrl+' : ''}${shiftKey ? 'Shift+' : ''}${altKey ? 'Alt+' : ''}${strKeyCode}` : null);
-				const isWYSIWYG = (resolvedKb ? resolvedKb.isWYSIWYG() : false);
+				const outScAnCode = `${ctrlKey ? 'Ctrl+' : ''}${shiftKey ? 'Shift+' : ''}${AltKey ? 'Alt+' : ''}${strCode}`;
+				const AriALAbel = (resolvedKb ? resolvedKb.getAriALAbel() : null);
+				const outUILAbel = (AriALAbel ? AriALAbel.replAce(/Control\+/, 'Ctrl+') : null);
+				const outUserSettings = (resolvedKb ? resolvedKb.getUserSettingsLAbel() : null);
+				const outKey = WindowsNAtiveResolvedKeybinding.getProducedChAr(scAnCodeBinding, mApping);
+				const outKb = (strKeyCode ? `${ctrlKey ? 'Ctrl+' : ''}${shiftKey ? 'Shift+' : ''}${AltKey ? 'Alt+' : ''}${strKeyCode}` : null);
+				const isWYSIWYG = (resolvedKb ? resolvedKb.isWYSIWYG() : fAlse);
 				const outWYSIWYG = (isWYSIWYG ? '       ' : '   NO  ');
-				result.push(`| ${this._leftPad(outScanCode, 30)} | ${outKey} | ${this._leftPad(outKb, 25)} | ${this._leftPad(outUILabel, 25)} |  ${this._leftPad(outUserSettings, 25)} | ${outWYSIWYG} |`);
+				result.push(`| ${this._leftPAd(outScAnCode, 30)} | ${outKey} | ${this._leftPAd(outKb, 25)} | ${this._leftPAd(outUILAbel, 25)} |  ${this._leftPAd(outUserSettings, 25)} | ${outWYSIWYG} |`);
 			}
 			result.push(`-----------------------------------------------------------------------------------------------------------------------------------------`);
 		}
@@ -430,7 +430,7 @@ export class WindowsKeyboardMapper implements IKeyboardMapper {
 		return result.join('\n');
 	}
 
-	private _leftPad(str: string | null, cnt: number): string {
+	privAte _leftPAd(str: string | null, cnt: number): string {
 		if (str === null) {
 			str = 'null';
 		}
@@ -440,95 +440,95 @@ export class WindowsKeyboardMapper implements IKeyboardMapper {
 		return str;
 	}
 
-	public getUILabelForKeyCode(keyCode: KeyCode): string {
-		return this._getLabelForKeyCode(keyCode);
+	public getUILAbelForKeyCode(keyCode: KeyCode): string {
+		return this._getLAbelForKeyCode(keyCode);
 	}
 
-	public getAriaLabelForKeyCode(keyCode: KeyCode): string {
-		return this._getLabelForKeyCode(keyCode);
+	public getAriALAbelForKeyCode(keyCode: KeyCode): string {
+		return this._getLAbelForKeyCode(keyCode);
 	}
 
-	public getUserSettingsLabelForKeyCode(keyCode: KeyCode): string {
-		if (this.isUSStandard) {
+	public getUserSettingsLAbelForKeyCode(keyCode: KeyCode): string {
+		if (this.isUSStAndArd) {
 			return KeyCodeUtils.toUserSettingsUS(keyCode);
 		}
-		return KeyCodeUtils.toUserSettingsGeneral(keyCode);
+		return KeyCodeUtils.toUserSettingsGenerAl(keyCode);
 	}
 
-	private _getLabelForKeyCode(keyCode: KeyCode): string {
-		return this._keyCodeToLabel[keyCode] || KeyCodeUtils.toString(KeyCode.Unknown);
+	privAte _getLAbelForKeyCode(keyCode: KeyCode): string {
+		return this._keyCodeToLAbel[keyCode] || KeyCodeUtils.toString(KeyCode.Unknown);
 	}
 
-	public resolveKeybinding(keybinding: Keybinding): WindowsNativeResolvedKeybinding[] {
-		const parts = keybinding.parts;
-		for (let i = 0, len = parts.length; i < len; i++) {
-			const part = parts[i];
-			if (!this._keyCodeExists[part.keyCode]) {
+	public resolveKeybinding(keybinding: Keybinding): WindowsNAtiveResolvedKeybinding[] {
+		const pArts = keybinding.pArts;
+		for (let i = 0, len = pArts.length; i < len; i++) {
+			const pArt = pArts[i];
+			if (!this._keyCodeExists[pArt.keyCode]) {
 				return [];
 			}
 		}
-		return [new WindowsNativeResolvedKeybinding(this, parts)];
+		return [new WindowsNAtiveResolvedKeybinding(this, pArts)];
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): WindowsNativeResolvedKeybinding {
-		const keybinding = new SimpleKeybinding(keyboardEvent.ctrlKey, keyboardEvent.shiftKey, keyboardEvent.altKey, keyboardEvent.metaKey, keyboardEvent.keyCode);
-		return new WindowsNativeResolvedKeybinding(this, [keybinding]);
+	public resolveKeyboArdEvent(keyboArdEvent: IKeyboArdEvent): WindowsNAtiveResolvedKeybinding {
+		const keybinding = new SimpleKeybinding(keyboArdEvent.ctrlKey, keyboArdEvent.shiftKey, keyboArdEvent.AltKey, keyboArdEvent.metAKey, keyboArdEvent.keyCode);
+		return new WindowsNAtiveResolvedKeybinding(this, [keybinding]);
 	}
 
-	private _resolveSimpleUserBinding(binding: SimpleKeybinding | ScanCodeBinding | null): SimpleKeybinding | null {
+	privAte _resolveSimpleUserBinding(binding: SimpleKeybinding | ScAnCodeBinding | null): SimpleKeybinding | null {
 		if (!binding) {
 			return null;
 		}
-		if (binding instanceof SimpleKeybinding) {
+		if (binding instAnceof SimpleKeybinding) {
 			if (!this._keyCodeExists[binding.keyCode]) {
 				return null;
 			}
 			return binding;
 		}
-		const keyCode = this._scanCodeToKeyCode[binding.scanCode] || KeyCode.Unknown;
+		const keyCode = this._scAnCodeToKeyCode[binding.scAnCode] || KeyCode.Unknown;
 		if (keyCode === KeyCode.Unknown || !this._keyCodeExists[keyCode]) {
 			return null;
 		}
-		return new SimpleKeybinding(binding.ctrlKey, binding.shiftKey, binding.altKey, binding.metaKey, keyCode);
+		return new SimpleKeybinding(binding.ctrlKey, binding.shiftKey, binding.AltKey, binding.metAKey, keyCode);
 	}
 
-	public resolveUserBinding(input: (SimpleKeybinding | ScanCodeBinding)[]): ResolvedKeybinding[] {
-		const parts: SimpleKeybinding[] = removeElementsAfterNulls(input.map(keybinding => this._resolveSimpleUserBinding(keybinding)));
-		if (parts.length > 0) {
-			return [new WindowsNativeResolvedKeybinding(this, parts)];
+	public resolveUserBinding(input: (SimpleKeybinding | ScAnCodeBinding)[]): ResolvedKeybinding[] {
+		const pArts: SimpleKeybinding[] = removeElementsAfterNulls(input.mAp(keybinding => this._resolveSimpleUserBinding(keybinding)));
+		if (pArts.length > 0) {
+			return [new WindowsNAtiveResolvedKeybinding(this, pArts)];
 		}
 		return [];
 	}
 }
 
 
-// See https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
-// See https://github.com/microsoft/node-native-keymap/blob/master/deps/chromium/keyboard_codes_win.h
-function _getNativeMap() {
+// See https://msdn.microsoft.com/en-us/librAry/windows/desktop/dd375731(v=vs.85).Aspx
+// See https://github.com/microsoft/node-nAtive-keymAp/blob/mAster/deps/chromium/keyboArd_codes_win.h
+function _getNAtiveMAp() {
 	return {
-		VK_BACK: KeyCode.Backspace,
-		VK_TAB: KeyCode.Tab,
+		VK_BACK: KeyCode.BAckspAce,
+		VK_TAB: KeyCode.TAb,
 		VK_CLEAR: KeyCode.Unknown, // MISSING
 		VK_RETURN: KeyCode.Enter,
 		VK_SHIFT: KeyCode.Shift,
 		VK_CONTROL: KeyCode.Ctrl,
 		VK_MENU: KeyCode.Alt,
-		VK_PAUSE: KeyCode.PauseBreak,
-		VK_CAPITAL: KeyCode.CapsLock,
+		VK_PAUSE: KeyCode.PAuseBreAk,
+		VK_CAPITAL: KeyCode.CApsLock,
 		VK_KANA: KeyCode.Unknown, // MISSING
 		VK_HANGUL: KeyCode.Unknown, // MISSING
 		VK_JUNJA: KeyCode.Unknown, // MISSING
 		VK_FINAL: KeyCode.Unknown, // MISSING
 		VK_HANJA: KeyCode.Unknown, // MISSING
 		VK_KANJI: KeyCode.Unknown, // MISSING
-		VK_ESCAPE: KeyCode.Escape,
+		VK_ESCAPE: KeyCode.EscApe,
 		VK_CONVERT: KeyCode.Unknown, // MISSING
 		VK_NONCONVERT: KeyCode.Unknown, // MISSING
 		VK_ACCEPT: KeyCode.Unknown, // MISSING
 		VK_MODECHANGE: KeyCode.Unknown, // MISSING
-		VK_SPACE: KeyCode.Space,
-		VK_PRIOR: KeyCode.PageUp,
-		VK_NEXT: KeyCode.PageDown,
+		VK_SPACE: KeyCode.SpAce,
+		VK_PRIOR: KeyCode.PAgeUp,
+		VK_NEXT: KeyCode.PAgeDown,
 		VK_END: KeyCode.End,
 		VK_HOME: KeyCode.Home,
 		VK_LEFT: KeyCode.LeftArrow,
@@ -580,9 +580,9 @@ function _getNativeMap() {
 		VK_Y: KeyCode.KEY_Y,
 		VK_Z: KeyCode.KEY_Z,
 
-		VK_LWIN: KeyCode.Meta,
-		VK_COMMAND: KeyCode.Meta,
-		VK_RWIN: KeyCode.Meta,
+		VK_LWIN: KeyCode.MetA,
+		VK_COMMAND: KeyCode.MetA,
+		VK_RWIN: KeyCode.MetA,
 		VK_APPS: KeyCode.Unknown, // MISSING
 		VK_SLEEP: KeyCode.Unknown, // MISSING
 		VK_NUMPAD0: KeyCode.NUMPAD_0,

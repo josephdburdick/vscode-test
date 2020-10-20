@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface ITerminalWidget extends IDisposable {
+export interfAce ITerminAlWidget extends IDisposAble {
 	/**
-	 * Only one widget of each ID can be displayed at once.
+	 * Only one widget of eAch ID cAn be displAyed At once.
 	 */
 	id: string;
-	attach(container: HTMLElement): void;
+	AttAch(contAiner: HTMLElement): void;
 }

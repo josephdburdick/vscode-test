@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { PreviewStatusBarEntry as OwnedStatusBarEntry } from './ownedStatusBarEntry';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { PreviewStAtusBArEntry As OwnedStAtusBArEntry } from './ownedStAtusBArEntry';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-const selectZoomLevelCommandId = '_imagePreview.selectZoomLevel';
+const selectZoomLevelCommAndId = '_imAgePreview.selectZoomLevel';
 
-export type Scale = number | 'fit';
+export type ScAle = number | 'fit';
 
-export class ZoomStatusBarEntry extends OwnedStatusBarEntry {
+export clAss ZoomStAtusBArEntry extends OwnedStAtusBArEntry {
 
-	private readonly _onDidChangeScale = this._register(new vscode.EventEmitter<{ scale: Scale }>());
-	public readonly onDidChangeScale = this._onDidChangeScale.event;
+	privAte reAdonly _onDidChAngeScAle = this._register(new vscode.EventEmitter<{ scAle: ScAle }>());
+	public reAdonly onDidChAngeScAle = this._onDidChAngeScAle.event;
 
 	constructor() {
 		super({
-			id: 'imagePreview.zoom',
-			name: localize('zoomStatusBar.name', "Image Zoom"),
-			alignment: vscode.StatusBarAlignment.Right,
+			id: 'imAgePreview.zoom',
+			nAme: locAlize('zoomStAtusBAr.nAme', "ImAge Zoom"),
+			Alignment: vscode.StAtusBArAlignment.Right,
 			priority: 102 /* to the left of editor size entry (101) */,
 		});
 
-		this._register(vscode.commands.registerCommand(selectZoomLevelCommandId, async () => {
-			type MyPickItem = vscode.QuickPickItem & { scale: Scale };
+		this._register(vscode.commAnds.registerCommAnd(selectZoomLevelCommAndId, Async () => {
+			type MyPickItem = vscode.QuickPickItem & { scAle: ScAle };
 
-			const scales: Scale[] = [10, 5, 2, 1, 0.5, 0.2, 'fit'];
-			const options = scales.map((scale): MyPickItem => ({
-				label: this.zoomLabel(scale),
-				scale
+			const scAles: ScAle[] = [10, 5, 2, 1, 0.5, 0.2, 'fit'];
+			const options = scAles.mAp((scAle): MyPickItem => ({
+				lAbel: this.zoomLAbel(scAle),
+				scAle
 			}));
 
-			const pick = await vscode.window.showQuickPick(options, {
-				placeHolder: localize('zoomStatusBar.placeholder', "Select zoom level")
+			const pick = AwAit vscode.window.showQuickPick(options, {
+				plAceHolder: locAlize('zoomStAtusBAr.plAceholder', "Select zoom level")
 			});
 			if (pick) {
-				this._onDidChangeScale.fire({ scale: pick.scale });
+				this._onDidChAngeScAle.fire({ scAle: pick.scAle });
 			}
 		}));
 
-		this.entry.command = selectZoomLevelCommandId;
+		this.entry.commAnd = selectZoomLevelCommAndId;
 	}
 
-	public show(owner: string, scale: Scale) {
-		this.showItem(owner, this.zoomLabel(scale));
+	public show(owner: string, scAle: ScAle) {
+		this.showItem(owner, this.zoomLAbel(scAle));
 	}
 
-	private zoomLabel(scale: Scale): string {
-		return scale === 'fit'
-			? localize('zoomStatusBar.wholeImageLabel', "Whole Image")
-			: `${Math.round(scale * 100)}%`;
+	privAte zoomLAbel(scAle: ScAle): string {
+		return scAle === 'fit'
+			? locAlize('zoomStAtusBAr.wholeImAgeLAbel', "Whole ImAge")
+			: `${MAth.round(scAle * 100)}%`;
 	}
 }

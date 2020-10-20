@@ -1,256 +1,256 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
+import { DisposAbleStore, toDisposAble } from 'vs/bAse/common/lifecycle';
 
 /**
- * The payload that flows in readable stream events.
+ * The pAyloAd thAt flows in reAdAble streAm events.
  */
-export type ReadableStreamEventPayload<T> = T | Error | 'end';
+export type ReAdAbleStreAmEventPAyloAd<T> = T | Error | 'end';
 
-export interface ReadableStreamEvents<T> {
-
-	/**
-	 * The 'data' event is emitted whenever the stream is
-	 * relinquishing ownership of a chunk of data to a consumer.
-	 */
-	on(event: 'data', callback: (data: T) => void): void;
+export interfAce ReAdAbleStreAmEvents<T> {
 
 	/**
-	 * Emitted when any error occurs.
+	 * The 'dAtA' event is emitted whenever the streAm is
+	 * relinquishing ownership of A chunk of dAtA to A consumer.
 	 */
-	on(event: 'error', callback: (err: Error) => void): void;
+	on(event: 'dAtA', cAllbAck: (dAtA: T) => void): void;
 
 	/**
-	 * The 'end' event is emitted when there is no more data
-	 * to be consumed from the stream. The 'end' event will
-	 * not be emitted unless the data is completely consumed.
+	 * Emitted when Any error occurs.
 	 */
-	on(event: 'end', callback: () => void): void;
+	on(event: 'error', cAllbAck: (err: Error) => void): void;
+
+	/**
+	 * The 'end' event is emitted when there is no more dAtA
+	 * to be consumed from the streAm. The 'end' event will
+	 * not be emitted unless the dAtA is completely consumed.
+	 */
+	on(event: 'end', cAllbAck: () => void): void;
 }
 
 /**
- * A interface that emulates the API shape of a node.js readable
- * stream for use in native and web environments.
+ * A interfAce thAt emulAtes the API shApe of A node.js reAdAble
+ * streAm for use in nAtive And web environments.
  */
-export interface ReadableStream<T> extends ReadableStreamEvents<T> {
+export interfAce ReAdAbleStreAm<T> extends ReAdAbleStreAmEvents<T> {
 
 	/**
-	 * Stops emitting any events until resume() is called.
+	 * Stops emitting Any events until resume() is cAlled.
 	 */
-	pause(): void;
+	pAuse(): void;
 
 	/**
-	 * Starts emitting events again after pause() was called.
+	 * StArts emitting events AgAin After pAuse() wAs cAlled.
 	 */
 	resume(): void;
 
 	/**
-	 * Destroys the stream and stops emitting any event.
+	 * Destroys the streAm And stops emitting Any event.
 	 */
 	destroy(): void;
 
 	/**
-	 * Allows to remove a listener that was previously added.
+	 * Allows to remove A listener thAt wAs previously Added.
 	 */
-	removeListener(event: string, callback: Function): void;
+	removeListener(event: string, cAllbAck: Function): void;
 }
 
 /**
- * A interface that emulates the API shape of a node.js readable
- * for use in native and web environments.
+ * A interfAce thAt emulAtes the API shApe of A node.js reAdAble
+ * for use in nAtive And web environments.
  */
-export interface Readable<T> {
+export interfAce ReAdAble<T> {
 
 	/**
-	 * Read data from the underlying source. Will return
-	 * null to indicate that no more data can be read.
+	 * ReAd dAtA from the underlying source. Will return
+	 * null to indicAte thAt no more dAtA cAn be reAd.
 	 */
-	read(): T | null;
+	reAd(): T | null;
 }
 
 /**
- * A interface that emulates the API shape of a node.js writeable
- * stream for use in native and web environments.
+ * A interfAce thAt emulAtes the API shApe of A node.js writeAble
+ * streAm for use in nAtive And web environments.
  */
-export interface WriteableStream<T> extends ReadableStream<T> {
+export interfAce WriteAbleStreAm<T> extends ReAdAbleStreAm<T> {
 
 	/**
-	 * Writing data to the stream will trigger the on('data')
-	 * event listener if the stream is flowing and buffer the
-	 * data otherwise until the stream is flowing.
+	 * Writing dAtA to the streAm will trigger the on('dAtA')
+	 * event listener if the streAm is flowing And buffer the
+	 * dAtA otherwise until the streAm is flowing.
 	 *
-	 * If a `highWaterMark` is configured and writing to the
-	 * stream reaches this mark, a promise will be returned
-	 * that should be awaited on before writing more data.
-	 * Otherwise there is a risk of buffering a large number
-	 * of data chunks without consumer.
+	 * If A `highWAterMArk` is configured And writing to the
+	 * streAm reAches this mArk, A promise will be returned
+	 * thAt should be AwAited on before writing more dAtA.
+	 * Otherwise there is A risk of buffering A lArge number
+	 * of dAtA chunks without consumer.
 	 */
-	write(data: T): void | Promise<void>;
+	write(dAtA: T): void | Promise<void>;
 
 	/**
-	 * Signals an error to the consumer of the stream via the
-	 * on('error') handler if the stream is flowing.
+	 * SignAls An error to the consumer of the streAm viA the
+	 * on('error') hAndler if the streAm is flowing.
 	 */
 	error(error: Error): void;
 
 	/**
-	 * Signals the end of the stream to the consumer. If the
-	 * result is not an error, will trigger the on('data') event
-	 * listener if the stream is flowing and buffer the data
-	 * otherwise until the stream is flowing.
+	 * SignAls the end of the streAm to the consumer. If the
+	 * result is not An error, will trigger the on('dAtA') event
+	 * listener if the streAm is flowing And buffer the dAtA
+	 * otherwise until the streAm is flowing.
 	 *
-	 * In case of an error, the on('error') event will be used
-	 * if the stream is flowing.
+	 * In cAse of An error, the on('error') event will be used
+	 * if the streAm is flowing.
 	 */
 	end(result?: T | Error): void;
 }
 
 /**
- * A stream that has a buffer already read. Returns the original stream
- * that was read as well as the chunks that got read.
+ * A streAm thAt hAs A buffer AlreAdy reAd. Returns the originAl streAm
+ * thAt wAs reAd As well As the chunks thAt got reAd.
  *
- * The `ended` flag indicates if the stream has been fully consumed.
+ * The `ended` flAg indicAtes if the streAm hAs been fully consumed.
  */
-export interface ReadableBufferedStream<T> {
+export interfAce ReAdAbleBufferedStreAm<T> {
 
 	/**
-	 * The original stream that is being read.
+	 * The originAl streAm thAt is being reAd.
 	 */
-	stream: ReadableStream<T>;
+	streAm: ReAdAbleStreAm<T>;
 
 	/**
-	 * An array of chunks already read from this stream.
+	 * An ArrAy of chunks AlreAdy reAd from this streAm.
 	 */
 	buffer: T[];
 
 	/**
-	 * Signals if the stream has ended or not. If not, consumers
-	 * should continue to read from the stream until consumed.
+	 * SignAls if the streAm hAs ended or not. If not, consumers
+	 * should continue to reAd from the streAm until consumed.
 	 */
-	ended: boolean;
+	ended: booleAn;
 }
 
-export function isReadableStream<T>(obj: unknown): obj is ReadableStream<T> {
-	const candidate = obj as ReadableStream<T>;
+export function isReAdAbleStreAm<T>(obj: unknown): obj is ReAdAbleStreAm<T> {
+	const cAndidAte = obj As ReAdAbleStreAm<T>;
 
-	return candidate && [candidate.on, candidate.pause, candidate.resume, candidate.destroy].every(fn => typeof fn === 'function');
+	return cAndidAte && [cAndidAte.on, cAndidAte.pAuse, cAndidAte.resume, cAndidAte.destroy].every(fn => typeof fn === 'function');
 }
 
-export function isReadableBufferedStream<T>(obj: unknown): obj is ReadableBufferedStream<T> {
-	const candidate = obj as ReadableBufferedStream<T>;
+export function isReAdAbleBufferedStreAm<T>(obj: unknown): obj is ReAdAbleBufferedStreAm<T> {
+	const cAndidAte = obj As ReAdAbleBufferedStreAm<T>;
 
-	return candidate && isReadableStream(candidate.stream) && Array.isArray(candidate.buffer) && typeof candidate.ended === 'boolean';
+	return cAndidAte && isReAdAbleStreAm(cAndidAte.streAm) && ArrAy.isArrAy(cAndidAte.buffer) && typeof cAndidAte.ended === 'booleAn';
 }
 
-export interface IReducer<T> {
-	(data: T[]): T;
+export interfAce IReducer<T> {
+	(dAtA: T[]): T;
 }
 
-export interface IDataTransformer<Original, Transformed> {
-	(data: Original): Transformed;
+export interfAce IDAtATrAnsformer<OriginAl, TrAnsformed> {
+	(dAtA: OriginAl): TrAnsformed;
 }
 
-export interface IErrorTransformer {
+export interfAce IErrorTrAnsformer {
 	(error: Error): Error;
 }
 
-export interface ITransformer<Original, Transformed> {
-	data: IDataTransformer<Original, Transformed>;
-	error?: IErrorTransformer;
+export interfAce ITrAnsformer<OriginAl, TrAnsformed> {
+	dAtA: IDAtATrAnsformer<OriginAl, TrAnsformed>;
+	error?: IErrorTrAnsformer;
 }
 
-export function newWriteableStream<T>(reducer: IReducer<T>, options?: WriteableStreamOptions): WriteableStream<T> {
-	return new WriteableStreamImpl<T>(reducer, options);
+export function newWriteAbleStreAm<T>(reducer: IReducer<T>, options?: WriteAbleStreAmOptions): WriteAbleStreAm<T> {
+	return new WriteAbleStreAmImpl<T>(reducer, options);
 }
 
-export interface WriteableStreamOptions {
+export interfAce WriteAbleStreAmOptions {
 
 	/**
-	 * The number of objects to buffer before WriteableStream#write()
-	 * signals back that the buffer is full. Can be used to reduce
-	 * the memory pressure when the stream is not flowing.
+	 * The number of objects to buffer before WriteAbleStreAm#write()
+	 * signAls bAck thAt the buffer is full. CAn be used to reduce
+	 * the memory pressure when the streAm is not flowing.
 	 */
-	highWaterMark?: number;
+	highWAterMArk?: number;
 }
 
-class WriteableStreamImpl<T> implements WriteableStream<T> {
+clAss WriteAbleStreAmImpl<T> implements WriteAbleStreAm<T> {
 
-	private readonly state = {
-		flowing: false,
-		ended: false,
-		destroyed: false
+	privAte reAdonly stAte = {
+		flowing: fAlse,
+		ended: fAlse,
+		destroyed: fAlse
 	};
 
-	private readonly buffer = {
-		data: [] as T[],
-		error: [] as Error[]
+	privAte reAdonly buffer = {
+		dAtA: [] As T[],
+		error: [] As Error[]
 	};
 
-	private readonly listeners = {
-		data: [] as { (data: T): void }[],
-		error: [] as { (error: Error): void }[],
-		end: [] as { (): void }[]
+	privAte reAdonly listeners = {
+		dAtA: [] As { (dAtA: T): void }[],
+		error: [] As { (error: Error): void }[],
+		end: [] As { (): void }[]
 	};
 
-	private readonly pendingWritePromises: Function[] = [];
+	privAte reAdonly pendingWritePromises: Function[] = [];
 
-	constructor(private reducer: IReducer<T>, private options?: WriteableStreamOptions) { }
+	constructor(privAte reducer: IReducer<T>, privAte options?: WriteAbleStreAmOptions) { }
 
-	pause(): void {
-		if (this.state.destroyed) {
+	pAuse(): void {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
-		this.state.flowing = false;
+		this.stAte.flowing = fAlse;
 	}
 
 	resume(): void {
-		if (this.state.destroyed) {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
-		if (!this.state.flowing) {
-			this.state.flowing = true;
+		if (!this.stAte.flowing) {
+			this.stAte.flowing = true;
 
 			// emit buffered events
-			this.flowData();
+			this.flowDAtA();
 			this.flowErrors();
 			this.flowEnd();
 		}
 	}
 
-	write(data: T): void | Promise<void> {
-		if (this.state.destroyed) {
+	write(dAtA: T): void | Promise<void> {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
-		// flowing: directly send the data to listeners
-		if (this.state.flowing) {
-			this.listeners.data.forEach(listener => listener(data));
+		// flowing: directly send the dAtA to listeners
+		if (this.stAte.flowing) {
+			this.listeners.dAtA.forEAch(listener => listener(dAtA));
 		}
 
-		// not yet flowing: buffer data until flowing
+		// not yet flowing: buffer dAtA until flowing
 		else {
-			this.buffer.data.push(data);
+			this.buffer.dAtA.push(dAtA);
 
-			// highWaterMark: if configured, signal back when buffer reached limits
-			if (typeof this.options?.highWaterMark === 'number' && this.buffer.data.length > this.options.highWaterMark) {
+			// highWAterMArk: if configured, signAl bAck when buffer reAched limits
+			if (typeof this.options?.highWAterMArk === 'number' && this.buffer.dAtA.length > this.options.highWAterMArk) {
 				return new Promise(resolve => this.pendingWritePromises.push(resolve));
 			}
 		}
 	}
 
 	error(error: Error): void {
-		if (this.state.destroyed) {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
 		// flowing: directly send the error to listeners
-		if (this.state.flowing) {
-			this.listeners.error.forEach(listener => listener(error));
+		if (this.stAte.flowing) {
+			this.listeners.error.forEAch(listener => listener(error));
 		}
 
 		// not yet flowing: buffer errors until flowing
@@ -260,147 +260,147 @@ class WriteableStreamImpl<T> implements WriteableStream<T> {
 	}
 
 	end(result?: T | Error): void {
-		if (this.state.destroyed) {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
-		// end with data or error if provided
-		if (result instanceof Error) {
+		// end with dAtA or error if provided
+		if (result instAnceof Error) {
 			this.error(result);
 		} else if (result) {
 			this.write(result);
 		}
 
 		// flowing: send end event to listeners
-		if (this.state.flowing) {
-			this.listeners.end.forEach(listener => listener());
+		if (this.stAte.flowing) {
+			this.listeners.end.forEAch(listener => listener());
 
 			this.destroy();
 		}
 
-		// not yet flowing: remember state
+		// not yet flowing: remember stAte
 		else {
-			this.state.ended = true;
+			this.stAte.ended = true;
 		}
 	}
 
-	on(event: 'data', callback: (data: T) => void): void;
-	on(event: 'error', callback: (err: Error) => void): void;
-	on(event: 'end', callback: () => void): void;
-	on(event: 'data' | 'error' | 'end', callback: (arg0?: any) => void): void {
-		if (this.state.destroyed) {
+	on(event: 'dAtA', cAllbAck: (dAtA: T) => void): void;
+	on(event: 'error', cAllbAck: (err: Error) => void): void;
+	on(event: 'end', cAllbAck: () => void): void;
+	on(event: 'dAtA' | 'error' | 'end', cAllbAck: (Arg0?: Any) => void): void {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
 		switch (event) {
-			case 'data':
-				this.listeners.data.push(callback);
+			cAse 'dAtA':
+				this.listeners.dAtA.push(cAllbAck);
 
-				// switch into flowing mode as soon as the first 'data'
-				// listener is added and we are not yet in flowing mode
+				// switch into flowing mode As soon As the first 'dAtA'
+				// listener is Added And we Are not yet in flowing mode
 				this.resume();
 
-				break;
+				breAk;
 
-			case 'end':
-				this.listeners.end.push(callback);
+			cAse 'end':
+				this.listeners.end.push(cAllbAck);
 
-				// emit 'end' event directly if we are flowing
-				// and the end has already been reached
+				// emit 'end' event directly if we Are flowing
+				// And the end hAs AlreAdy been reAched
 				//
 				// finish() when it went through
-				if (this.state.flowing && this.flowEnd()) {
+				if (this.stAte.flowing && this.flowEnd()) {
 					this.destroy();
 				}
 
-				break;
+				breAk;
 
-			case 'error':
-				this.listeners.error.push(callback);
+			cAse 'error':
+				this.listeners.error.push(cAllbAck);
 
-				// emit buffered 'error' events unless done already
-				// now that we know that we have at least one listener
-				if (this.state.flowing) {
+				// emit buffered 'error' events unless done AlreAdy
+				// now thAt we know thAt we hAve At leAst one listener
+				if (this.stAte.flowing) {
 					this.flowErrors();
 				}
 
-				break;
+				breAk;
 		}
 	}
 
-	removeListener(event: string, callback: Function): void {
-		if (this.state.destroyed) {
+	removeListener(event: string, cAllbAck: Function): void {
+		if (this.stAte.destroyed) {
 			return;
 		}
 
 		let listeners: unknown[] | undefined = undefined;
 
 		switch (event) {
-			case 'data':
-				listeners = this.listeners.data;
-				break;
+			cAse 'dAtA':
+				listeners = this.listeners.dAtA;
+				breAk;
 
-			case 'end':
+			cAse 'end':
 				listeners = this.listeners.end;
-				break;
+				breAk;
 
-			case 'error':
+			cAse 'error':
 				listeners = this.listeners.error;
-				break;
+				breAk;
 		}
 
 		if (listeners) {
-			const index = listeners.indexOf(callback);
+			const index = listeners.indexOf(cAllbAck);
 			if (index >= 0) {
 				listeners.splice(index, 1);
 			}
 		}
 	}
 
-	private flowData(): void {
-		if (this.buffer.data.length > 0) {
-			const fullDataBuffer = this.reducer(this.buffer.data);
+	privAte flowDAtA(): void {
+		if (this.buffer.dAtA.length > 0) {
+			const fullDAtABuffer = this.reducer(this.buffer.dAtA);
 
-			this.listeners.data.forEach(listener => listener(fullDataBuffer));
+			this.listeners.dAtA.forEAch(listener => listener(fullDAtABuffer));
 
-			this.buffer.data.length = 0;
+			this.buffer.dAtA.length = 0;
 
-			// When the buffer is empty, resolve all pending writers
+			// When the buffer is empty, resolve All pending writers
 			const pendingWritePromises = [...this.pendingWritePromises];
 			this.pendingWritePromises.length = 0;
-			pendingWritePromises.forEach(pendingWritePromise => pendingWritePromise());
+			pendingWritePromises.forEAch(pendingWritePromise => pendingWritePromise());
 		}
 	}
 
-	private flowErrors(): void {
+	privAte flowErrors(): void {
 		if (this.listeners.error.length > 0) {
 			for (const error of this.buffer.error) {
-				this.listeners.error.forEach(listener => listener(error));
+				this.listeners.error.forEAch(listener => listener(error));
 			}
 
 			this.buffer.error.length = 0;
 		}
 	}
 
-	private flowEnd(): boolean {
-		if (this.state.ended) {
-			this.listeners.end.forEach(listener => listener());
+	privAte flowEnd(): booleAn {
+		if (this.stAte.ended) {
+			this.listeners.end.forEAch(listener => listener());
 
 			return this.listeners.end.length > 0;
 		}
 
-		return false;
+		return fAlse;
 	}
 
 	destroy(): void {
-		if (!this.state.destroyed) {
-			this.state.destroyed = true;
-			this.state.ended = true;
+		if (!this.stAte.destroyed) {
+			this.stAte.destroyed = true;
+			this.stAte.ended = true;
 
-			this.buffer.data.length = 0;
+			this.buffer.dAtA.length = 0;
 			this.buffer.error.length = 0;
 
-			this.listeners.data.length = 0;
+			this.listeners.dAtA.length = 0;
 			this.listeners.error.length = 0;
 			this.listeners.end.length = 0;
 
@@ -410,13 +410,13 @@ class WriteableStreamImpl<T> implements WriteableStream<T> {
 }
 
 /**
- * Helper to fully read a T readable into a T.
+ * Helper to fully reAd A T reAdAble into A T.
  */
-export function consumeReadable<T>(readable: Readable<T>, reducer: IReducer<T>): T {
+export function consumeReAdAble<T>(reAdAble: ReAdAble<T>, reducer: IReducer<T>): T {
 	const chunks: T[] = [];
 
 	let chunk: T | null;
-	while ((chunk = readable.read()) !== null) {
+	while ((chunk = reAdAble.reAd()) !== null) {
 		chunks.push(chunk);
 	}
 
@@ -424,133 +424,133 @@ export function consumeReadable<T>(readable: Readable<T>, reducer: IReducer<T>):
 }
 
 /**
- * Helper to read a T readable up to a maximum of chunks. If the limit is
- * reached, will return a readable instead to ensure all data can still
- * be read.
+ * Helper to reAd A T reAdAble up to A mAximum of chunks. If the limit is
+ * reAched, will return A reAdAble insteAd to ensure All dAtA cAn still
+ * be reAd.
  */
-export function peekReadable<T>(readable: Readable<T>, reducer: IReducer<T>, maxChunks: number): T | Readable<T> {
+export function peekReAdAble<T>(reAdAble: ReAdAble<T>, reducer: IReducer<T>, mAxChunks: number): T | ReAdAble<T> {
 	const chunks: T[] = [];
 
 	let chunk: T | null | undefined = undefined;
-	while ((chunk = readable.read()) !== null && chunks.length < maxChunks) {
+	while ((chunk = reAdAble.reAd()) !== null && chunks.length < mAxChunks) {
 		chunks.push(chunk);
 	}
 
-	// If the last chunk is null, it means we reached the end of
-	// the readable and return all the data at once
+	// If the lAst chunk is null, it meAns we reAched the end of
+	// the reAdAble And return All the dAtA At once
 	if (chunk === null && chunks.length > 0) {
 		return reducer(chunks);
 	}
 
-	// Otherwise, we still have a chunk, it means we reached the maxChunks
-	// value and as such we return a new Readable that first returns
-	// the existing read chunks and then continues with reading from
-	// the underlying readable.
+	// Otherwise, we still hAve A chunk, it meAns we reAched the mAxChunks
+	// vAlue And As such we return A new ReAdAble thAt first returns
+	// the existing reAd chunks And then continues with reAding from
+	// the underlying reAdAble.
 	return {
-		read: () => {
+		reAd: () => {
 
-			// First consume chunks from our array
+			// First consume chunks from our ArrAy
 			if (chunks.length > 0) {
 				return chunks.shift()!;
 			}
 
-			// Then ensure to return our last read chunk
+			// Then ensure to return our lAst reAd chunk
 			if (typeof chunk !== 'undefined') {
-				const lastReadChunk = chunk;
+				const lAstReAdChunk = chunk;
 
-				// explicitly use undefined here to indicate that we consumed
-				// the chunk, which could have either been null or valued.
+				// explicitly use undefined here to indicAte thAt we consumed
+				// the chunk, which could hAve either been null or vAlued.
 				chunk = undefined;
 
-				return lastReadChunk;
+				return lAstReAdChunk;
 			}
 
-			// Finally delegate back to the Readable
-			return readable.read();
+			// FinAlly delegAte bAck to the ReAdAble
+			return reAdAble.reAd();
 		}
 	};
 }
 
 /**
- * Helper to fully read a T stream into a T.
+ * Helper to fully reAd A T streAm into A T.
  */
-export function consumeStream<T>(stream: ReadableStreamEvents<T>, reducer: IReducer<T>): Promise<T> {
+export function consumeStreAm<T>(streAm: ReAdAbleStreAmEvents<T>, reducer: IReducer<T>): Promise<T> {
 	return new Promise((resolve, reject) => {
 		const chunks: T[] = [];
 
-		stream.on('data', data => chunks.push(data));
-		stream.on('error', error => reject(error));
-		stream.on('end', () => resolve(reducer(chunks)));
+		streAm.on('dAtA', dAtA => chunks.push(dAtA));
+		streAm.on('error', error => reject(error));
+		streAm.on('end', () => resolve(reducer(chunks)));
 	});
 }
 
 /**
- * Helper to peek up to `maxChunks` into a stream. The return type signals if
- * the stream has ended or not. If not, caller needs to add a `data` listener
- * to continue reading.
+ * Helper to peek up to `mAxChunks` into A streAm. The return type signAls if
+ * the streAm hAs ended or not. If not, cAller needs to Add A `dAtA` listener
+ * to continue reAding.
  */
-export function peekStream<T>(stream: ReadableStream<T>, maxChunks: number): Promise<ReadableBufferedStream<T>> {
+export function peekStreAm<T>(streAm: ReAdAbleStreAm<T>, mAxChunks: number): Promise<ReAdAbleBufferedStreAm<T>> {
 	return new Promise((resolve, reject) => {
-		const streamListeners = new DisposableStore();
+		const streAmListeners = new DisposAbleStore();
 
-		// Data Listener
+		// DAtA Listener
 		const buffer: T[] = [];
-		const dataListener = (chunk: T) => {
+		const dAtAListener = (chunk: T) => {
 
 			// Add to buffer
 			buffer.push(chunk);
 
-			// We reached maxChunks and thus need to return
-			if (buffer.length > maxChunks) {
+			// We reAched mAxChunks And thus need to return
+			if (buffer.length > mAxChunks) {
 
-				// Dispose any listeners and ensure to pause the
-				// stream so that it can be consumed again by caller
-				streamListeners.dispose();
-				stream.pause();
+				// Dispose Any listeners And ensure to pAuse the
+				// streAm so thAt it cAn be consumed AgAin by cAller
+				streAmListeners.dispose();
+				streAm.pAuse();
 
-				return resolve({ stream, buffer, ended: false });
+				return resolve({ streAm, buffer, ended: fAlse });
 			}
 		};
 
-		streamListeners.add(toDisposable(() => stream.removeListener('data', dataListener)));
-		stream.on('data', dataListener);
+		streAmListeners.Add(toDisposAble(() => streAm.removeListener('dAtA', dAtAListener)));
+		streAm.on('dAtA', dAtAListener);
 
 		// Error Listener
 		const errorListener = (error: Error) => {
 			return reject(error);
 		};
 
-		streamListeners.add(toDisposable(() => stream.removeListener('error', errorListener)));
-		stream.on('error', errorListener);
+		streAmListeners.Add(toDisposAble(() => streAm.removeListener('error', errorListener)));
+		streAm.on('error', errorListener);
 
 		const endListener = () => {
-			return resolve({ stream, buffer, ended: true });
+			return resolve({ streAm, buffer, ended: true });
 		};
 
-		streamListeners.add(toDisposable(() => stream.removeListener('end', endListener)));
-		stream.on('end', endListener);
+		streAmListeners.Add(toDisposAble(() => streAm.removeListener('end', endListener)));
+		streAm.on('end', endListener);
 	});
 }
 
 /**
- * Helper to create a readable stream from an existing T.
+ * Helper to creAte A reAdAble streAm from An existing T.
  */
-export function toStream<T>(t: T, reducer: IReducer<T>): ReadableStream<T> {
-	const stream = newWriteableStream<T>(reducer);
+export function toStreAm<T>(t: T, reducer: IReducer<T>): ReAdAbleStreAm<T> {
+	const streAm = newWriteAbleStreAm<T>(reducer);
 
-	stream.end(t);
+	streAm.end(t);
 
-	return stream;
+	return streAm;
 }
 
 /**
- * Helper to convert a T into a Readable<T>.
+ * Helper to convert A T into A ReAdAble<T>.
  */
-export function toReadable<T>(t: T): Readable<T> {
-	let consumed = false;
+export function toReAdAble<T>(t: T): ReAdAble<T> {
+	let consumed = fAlse;
 
 	return {
-		read: () => {
+		reAd: () => {
 			if (consumed) {
 				return null;
 			}
@@ -563,14 +563,14 @@ export function toReadable<T>(t: T): Readable<T> {
 }
 
 /**
- * Helper to transform a readable stream into another stream.
+ * Helper to trAnsform A reAdAble streAm into Another streAm.
  */
-export function transform<Original, Transformed>(stream: ReadableStreamEvents<Original>, transformer: ITransformer<Original, Transformed>, reducer: IReducer<Transformed>): ReadableStream<Transformed> {
-	const target = newWriteableStream<Transformed>(reducer);
+export function trAnsform<OriginAl, TrAnsformed>(streAm: ReAdAbleStreAmEvents<OriginAl>, trAnsformer: ITrAnsformer<OriginAl, TrAnsformed>, reducer: IReducer<TrAnsformed>): ReAdAbleStreAm<TrAnsformed> {
+	const tArget = newWriteAbleStreAm<TrAnsformed>(reducer);
 
-	stream.on('data', data => target.write(transformer.data(data)));
-	stream.on('end', () => target.end());
-	stream.on('error', error => target.error(transformer.error ? transformer.error(error) : error));
+	streAm.on('dAtA', dAtA => tArget.write(trAnsformer.dAtA(dAtA)));
+	streAm.on('end', () => tArget.end());
+	streAm.on('error', error => tArget.error(trAnsformer.error ? trAnsformer.error(error) : error));
 
-	return target;
+	return tArget;
 }

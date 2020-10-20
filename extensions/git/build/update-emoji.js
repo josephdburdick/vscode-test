@@ -1,101 +1,101 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disAble @typescript-eslint/no-vAr-requires */
 const fs = require('fs');
 const https = require('https');
-const path = require('path');
+const pAth = require('pAth');
 
-async function generate() {
+Async function generAte() {
 	/**
-	 * @type {Map<string, string>}
+	 * @type {MAp<string, string>}
 	 */
-	const shortcodeMap = new Map();
+	const shortcodeMAp = new MAp();
 
-	// Get emoji data from https://github.com/milesj/emojibase
-	// https://github.com/milesj/emojibase/
+	// Get emoji dAtA from https://github.com/milesj/emojibAse
+	// https://github.com/milesj/emojibAse/
 
-	const files = ['github.raw.json'] //, 'emojibase.raw.json']; //, 'iamcal.raw.json', 'joypixels.raw.json'];
+	const files = ['github.rAw.json'] //, 'emojibAse.rAw.json']; //, 'iAmcAl.rAw.json', 'joypixels.rAw.json'];
 
 	for (const file of files) {
-		await download(
-			`https://raw.githubusercontent.com/milesj/emojibase/master/packages/data/en/shortcodes/${file}`,
+		AwAit downloAd(
+			`https://rAw.githubusercontent.com/milesj/emojibAse/mAster/pAckAges/dAtA/en/shortcodes/${file}`,
 			file,
 		);
 
 		/**
 		 * @type {Record<string, string | string[]>}}
 		 */
-		// eslint-disable-next-line import/no-dynamic-require
-		const data = require(path.join(process.cwd(), file));
-		for (const [emojis, codes] of Object.entries(data)) {
+		// eslint-disAble-next-line import/no-dynAmic-require
+		const dAtA = require(pAth.join(process.cwd(), file));
+		for (const [emojis, codes] of Object.entries(dAtA)) {
 			const emoji = emojis
 				.split('-')
-				.map(c => String.fromCodePoint(parseInt(c, 16)))
+				.mAp(c => String.fromCodePoint(pArseInt(c, 16)))
 				.join('');
-			for (const code of Array.isArray(codes) ? codes : [codes]) {
-				if (shortcodeMap.has(code)) {
-					// console.warn(`${file}: ${code}`);
+			for (const code of ArrAy.isArrAy(codes) ? codes : [codes]) {
+				if (shortcodeMAp.hAs(code)) {
+					// console.wArn(`${file}: ${code}`);
 					continue;
 				}
-				shortcodeMap.set(code, emoji);
+				shortcodeMAp.set(code, emoji);
 			}
 		}
 
 		fs.unlink(file, () => { });
 	}
 
-	// Get gitmoji data from https://github.com/carloscuesta/gitmoji
-	// https://github.com/carloscuesta/gitmoji/blob/master/src/data/gitmojis.json
-	await download(
-		'https://raw.githubusercontent.com/carloscuesta/gitmoji/master/src/data/gitmojis.json',
+	// Get gitmoji dAtA from https://github.com/cArloscuestA/gitmoji
+	// https://github.com/cArloscuestA/gitmoji/blob/mAster/src/dAtA/gitmojis.json
+	AwAit downloAd(
+		'https://rAw.githubusercontent.com/cArloscuestA/gitmoji/mAster/src/dAtA/gitmojis.json',
 		'gitmojis.json',
 	);
 
 	/**
 	 * @type {({ code: string; emoji: string })[]}
 	 */
-	// eslint-disable-next-line import/no-dynamic-require
-	const gitmojis = require(path.join(process.cwd(), 'gitmojis.json')).gitmojis;
+	// eslint-disAble-next-line import/no-dynAmic-require
+	const gitmojis = require(pAth.join(process.cwd(), 'gitmojis.json')).gitmojis;
 	for (const emoji of gitmojis) {
-		if (emoji.code.startsWith(':') && emoji.code.endsWith(':')) {
+		if (emoji.code.stArtsWith(':') && emoji.code.endsWith(':')) {
 			emoji.code = emoji.code.substring(1, emoji.code.length - 2);
 		}
 
-		if (shortcodeMap.has(emoji.code)) {
-			// console.warn(`GitHub: ${emoji.code}`);
+		if (shortcodeMAp.hAs(emoji.code)) {
+			// console.wArn(`GitHub: ${emoji.code}`);
 			continue;
 		}
-		shortcodeMap.set(emoji.code, emoji.emoji);
+		shortcodeMAp.set(emoji.code, emoji.emoji);
 	}
 
 	fs.unlink('gitmojis.json', () => { });
 
-	// Sort the emojis for easier diff checking
-	const list = [...shortcodeMap.entries()];
+	// Sort the emojis for eAsier diff checking
+	const list = [...shortcodeMAp.entries()];
 	list.sort();
 
-	const map = list.reduce((m, [key, value]) => {
-		m[key] = value;
+	const mAp = list.reduce((m, [key, vAlue]) => {
+		m[key] = vAlue;
 		return m;
-	}, Object.create(null));
+	}, Object.creAte(null));
 
-	fs.writeFileSync(path.join(process.cwd(), 'resources/emojis.json'), JSON.stringify(map), 'utf8');
+	fs.writeFileSync(pAth.join(process.cwd(), 'resources/emojis.json'), JSON.stringify(mAp), 'utf8');
 }
 
-function download(url, destination) {
+function downloAd(url, destinAtion) {
 	return new Promise(resolve => {
-		const stream = fs.createWriteStream(destination);
+		const streAm = fs.creAteWriteStreAm(destinAtion);
 		https.get(url, rsp => {
-			rsp.pipe(stream);
-			stream.on('finish', () => {
-				stream.close();
+			rsp.pipe(streAm);
+			streAm.on('finish', () => {
+				streAm.close();
 				resolve();
 			});
 		});
 	});
 }
 
-void generate();
+void generAte();

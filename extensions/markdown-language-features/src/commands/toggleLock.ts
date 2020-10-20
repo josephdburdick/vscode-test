@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Command } from '../commandManager';
-import { MarkdownPreviewManager } from '../features/previewManager';
+import { CommAnd } from '../commAndMAnAger';
+import { MArkdownPreviewMAnAger } from '../feAtures/previewMAnAger';
 
-export class ToggleLockCommand implements Command {
-	public readonly id = 'markdown.preview.toggleLock';
+export clAss ToggleLockCommAnd implements CommAnd {
+	public reAdonly id = 'mArkdown.preview.toggleLock';
 
 	public constructor(
-		private readonly previewManager: MarkdownPreviewManager
+		privAte reAdonly previewMAnAger: MArkdownPreviewMAnAger
 	) { }
 
 	public execute() {
-		this.previewManager.toggleLock();
+		this.previewMAnAger.toggleLock();
 	}
 }

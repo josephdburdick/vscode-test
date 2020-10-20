@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IssueReporterData } from 'vs/platform/issue/common/issue';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IssueReporterDAtA } from 'vs/plAtform/issue/common/issue';
 
-export const IWorkbenchIssueService = createDecorator<IWorkbenchIssueService>('workbenchIssueService');
+export const IWorkbenchIssueService = creAteDecorAtor<IWorkbenchIssueService>('workbenchIssueService');
 
-export interface IWorkbenchIssueService {
-	readonly _serviceBrand: undefined;
-	openReporter(dataOverrides?: Partial<IssueReporterData>): Promise<void>;
+export interfAce IWorkbenchIssueService {
+	reAdonly _serviceBrAnd: undefined;
+	openReporter(dAtAOverrides?: PArtiAl<IssueReporterDAtA>): Promise<void>;
 	openProcessExplorer(): Promise<void>;
 }

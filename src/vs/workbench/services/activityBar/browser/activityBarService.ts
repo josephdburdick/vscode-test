@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IBadge } from 'vs/workbench/services/activity/common/activity';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IBAdge } from 'vs/workbench/services/Activity/common/Activity';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export const IActivityBarService = createDecorator<IActivityBarService>('activityBarService');
+export const IActivityBArService = creAteDecorAtor<IActivityBArService>('ActivityBArService');
 
-export interface IActivityBarService {
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Show an activity in a viewlet.
-	 */
-	showActivity(viewletOrActionId: string, badge: IBadge, clazz?: string, priority?: number): IDisposable;
+export interfAce IActivityBArService {
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Returns id of pinned view containers following the visual order.
+	 * Show An Activity in A viewlet.
 	 */
-	getPinnedViewContainerIds(): string[];
+	showActivity(viewletOrActionId: string, bAdge: IBAdge, clAzz?: string, priority?: number): IDisposAble;
 
 	/**
-	 * Returns id of visible viewlets following the visual order.
+	 * Returns id of pinned view contAiners following the visuAl order.
 	 */
-	getVisibleViewContainerIds(): string[];
+	getPinnedViewContAinerIds(): string[];
 
 	/**
-	 * Focuses the activity bar.
+	 * Returns id of visible viewlets following the visuAl order.
 	 */
-	focusActivityBar(): void;
+	getVisibleViewContAinerIds(): string[];
+
+	/**
+	 * Focuses the Activity bAr.
+	 */
+	focusActivityBAr(): void;
 }

@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/browser/themeing';
-import { IWebviewService, Webview, WebviewContentOptions, WebviewElement, WebviewExtensionDescription, WebviewIcons, WebviewOptions, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
-import { IFrameWebview } from 'vs/workbench/contrib/webview/browser/webviewElement';
-import { DynamicWebviewEditorOverlay } from './dynamicWebviewEditorOverlay';
-import { WebviewIconManager } from './webviewIconManager';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { WebviewThemeDAtAProvider } from 'vs/workbench/contrib/webview/browser/themeing';
+import { IWebviewService, Webview, WebviewContentOptions, WebviewElement, WebviewExtensionDescription, WebviewIcons, WebviewOptions, WebviewOverlAy } from 'vs/workbench/contrib/webview/browser/webview';
+import { IFrAmeWebview } from 'vs/workbench/contrib/webview/browser/webviewElement';
+import { DynAmicWebviewEditorOverlAy } from './dynAmicWebviewEditorOverlAy';
+import { WebviewIconMAnAger } from './webviewIconMAnAger';
 
-export class WebviewService implements IWebviewService {
-	declare readonly _serviceBrand: undefined;
+export clAss WebviewService implements IWebviewService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	protected readonly _webviewThemeDataProvider: WebviewThemeDataProvider;
+	protected reAdonly _webviewThemeDAtAProvider: WebviewThemeDAtAProvider;
 
-	private readonly _iconManager: WebviewIconManager;
+	privAte reAdonly _iconMAnAger: WebviewIconMAnAger;
 
 	constructor(
-		@IInstantiationService protected readonly _instantiationService: IInstantiationService,
+		@IInstAntiAtionService protected reAdonly _instAntiAtionService: IInstAntiAtionService,
 	) {
-		this._webviewThemeDataProvider = this._instantiationService.createInstance(WebviewThemeDataProvider);
-		this._iconManager = this._instantiationService.createInstance(WebviewIconManager);
+		this._webviewThemeDAtAProvider = this._instAntiAtionService.creAteInstAnce(WebviewThemeDAtAProvider);
+		this._iconMAnAger = this._instAntiAtionService.creAteInstAnce(WebviewIconMAnAger);
 	}
 
-	private _activeWebview?: Webview;
-	public get activeWebview() { return this._activeWebview; }
+	privAte _ActiveWebview?: Webview;
+	public get ActiveWebview() { return this._ActiveWebview; }
 
-	createWebviewElement(
+	creAteWebviewElement(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
 	): WebviewElement {
-		const webview = this._instantiationService.createInstance(IFrameWebview, id, options, contentOptions, extension, this._webviewThemeDataProvider);
-		this.addWebviewListeners(webview);
+		const webview = this._instAntiAtionService.creAteInstAnce(IFrAmeWebview, id, options, contentOptions, extension, this._webviewThemeDAtAProvider);
+		this.AddWebviewListeners(webview);
 		return webview;
 	}
 
-	createWebviewOverlay(
+	creAteWebviewOverlAy(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
-	): WebviewOverlay {
-		const webview = this._instantiationService.createInstance(DynamicWebviewEditorOverlay, id, options, contentOptions, extension);
-		this.addWebviewListeners(webview);
+	): WebviewOverlAy {
+		const webview = this._instAntiAtionService.creAteInstAnce(DynAmicWebviewEditorOverlAy, id, options, contentOptions, extension);
+		this.AddWebviewListeners(webview);
 		return webview;
 	}
 
-	setIcons(id: string, iconPath: WebviewIcons | undefined): void {
-		this._iconManager.setIcons(id, iconPath);
+	setIcons(id: string, iconPAth: WebviewIcons | undefined): void {
+		this._iconMAnAger.setIcons(id, iconPAth);
 	}
 
-	protected addWebviewListeners(webview: Webview) {
+	protected AddWebviewListeners(webview: Webview) {
 		webview.onDidFocus(() => {
-			this._activeWebview = webview;
+			this._ActiveWebview = webview;
 		});
 
 		const onBlur = () => {
-			if (this._activeWebview === webview) {
-				this._activeWebview = undefined;
+			if (this._ActiveWebview === webview) {
+				this._ActiveWebview = undefined;
 			}
 		};
 

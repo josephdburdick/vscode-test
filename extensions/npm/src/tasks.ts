@@ -1,416 +1,416 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import {
-	TaskDefinition, Task, TaskGroup, WorkspaceFolder, RelativePattern, ShellExecution, Uri, workspace,
-	DebugConfiguration, debug, TaskProvider, TextDocument, tasks, TaskScope, QuickPickItem, window
+	TAskDefinition, TAsk, TAskGroup, WorkspAceFolder, RelAtivePAttern, ShellExecution, Uri, workspAce,
+	DebugConfigurAtion, debug, TAskProvider, TextDocument, tAsks, TAskScope, QuickPickItem, window
 } from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as minimatch from 'minimatch';
-import * as nls from 'vscode-nls';
-import { JSONVisitor, visit, ParseErrorCode } from 'jsonc-parser';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
+import * As minimAtch from 'minimAtch';
+import * As nls from 'vscode-nls';
+import { JSONVisitor, visit, PArseErrorCode } from 'jsonc-pArser';
 import { findPreferredPM } from './preferred-pm';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-export interface NpmTaskDefinition extends TaskDefinition {
+export interfAce NpmTAskDefinition extends TAskDefinition {
 	script: string;
-	path?: string;
+	pAth?: string;
 }
 
-export interface FolderTaskItem extends QuickPickItem {
-	label: string;
-	task: Task;
+export interfAce FolderTAskItem extends QuickPickItem {
+	lAbel: string;
+	tAsk: TAsk;
 }
 
 type AutoDetect = 'on' | 'off';
 
-let cachedTasks: Task[] | undefined = undefined;
+let cAchedTAsks: TAsk[] | undefined = undefined;
 
-const INSTALL_SCRIPT = 'install';
+const INSTALL_SCRIPT = 'instAll';
 
-export class NpmTaskProvider implements TaskProvider {
+export clAss NpmTAskProvider implements TAskProvider {
 
 	constructor() {
 	}
 
-	public provideTasks() {
+	public provideTAsks() {
 		return provideNpmScripts();
 	}
 
-	public resolveTask(_task: Task): Promise<Task> | undefined {
-		const npmTask = (<any>_task.definition).script;
-		if (npmTask) {
-			const kind: NpmTaskDefinition = (<any>_task.definition);
-			let packageJsonUri: Uri;
-			if (_task.scope === undefined || _task.scope === TaskScope.Global || _task.scope === TaskScope.Workspace) {
-				// scope is required to be a WorkspaceFolder for resolveTask
+	public resolveTAsk(_tAsk: TAsk): Promise<TAsk> | undefined {
+		const npmTAsk = (<Any>_tAsk.definition).script;
+		if (npmTAsk) {
+			const kind: NpmTAskDefinition = (<Any>_tAsk.definition);
+			let pAckAgeJsonUri: Uri;
+			if (_tAsk.scope === undefined || _tAsk.scope === TAskScope.GlobAl || _tAsk.scope === TAskScope.WorkspAce) {
+				// scope is required to be A WorkspAceFolder for resolveTAsk
 				return undefined;
 			}
-			if (kind.path) {
-				packageJsonUri = _task.scope.uri.with({ path: _task.scope.uri.path + '/' + kind.path + 'package.json' });
+			if (kind.pAth) {
+				pAckAgeJsonUri = _tAsk.scope.uri.with({ pAth: _tAsk.scope.uri.pAth + '/' + kind.pAth + 'pAckAge.json' });
 			} else {
-				packageJsonUri = _task.scope.uri.with({ path: _task.scope.uri.path + '/package.json' });
+				pAckAgeJsonUri = _tAsk.scope.uri.with({ pAth: _tAsk.scope.uri.pAth + '/pAckAge.json' });
 			}
-			return createTask(kind, `${kind.script === INSTALL_SCRIPT ? '' : 'run '}${kind.script}`, _task.scope, packageJsonUri);
+			return creAteTAsk(kind, `${kind.script === INSTALL_SCRIPT ? '' : 'run '}${kind.script}`, _tAsk.scope, pAckAgeJsonUri);
 		}
 		return undefined;
 	}
 }
 
-export function invalidateTasksCache() {
-	cachedTasks = undefined;
+export function invAlidAteTAsksCAche() {
+	cAchedTAsks = undefined;
 }
 
-const buildNames: string[] = ['build', 'compile', 'watch'];
-function isBuildTask(name: string): boolean {
-	for (let buildName of buildNames) {
-		if (name.indexOf(buildName) !== -1) {
+const buildNAmes: string[] = ['build', 'compile', 'wAtch'];
+function isBuildTAsk(nAme: string): booleAn {
+	for (let buildNAme of buildNAmes) {
+		if (nAme.indexOf(buildNAme) !== -1) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-const testNames: string[] = ['test'];
-function isTestTask(name: string): boolean {
-	for (let testName of testNames) {
-		if (name === testName) {
+const testNAmes: string[] = ['test'];
+function isTestTAsk(nAme: string): booleAn {
+	for (let testNAme of testNAmes) {
+		if (nAme === testNAme) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-function getPrePostScripts(scripts: any): Set<string> {
+function getPrePostScripts(scripts: Any): Set<string> {
 	const prePostScripts: Set<string> = new Set([
-		'preuninstall', 'postuninstall', 'prepack', 'postpack', 'preinstall', 'postinstall',
-		'prepack', 'postpack', 'prepublish', 'postpublish', 'preversion', 'postversion',
-		'prestop', 'poststop', 'prerestart', 'postrestart', 'preshrinkwrap', 'postshrinkwrap',
+		'preuninstAll', 'postuninstAll', 'prepAck', 'postpAck', 'preinstAll', 'postinstAll',
+		'prepAck', 'postpAck', 'prepublish', 'postpublish', 'preversion', 'postversion',
+		'prestop', 'poststop', 'prerestArt', 'postrestArt', 'preshrinkwrAp', 'postshrinkwrAp',
 		'pretest', 'postest', 'prepublishOnly'
 	]);
 	let keys = Object.keys(scripts);
 	for (const script of keys) {
 		const prepost = ['pre' + script, 'post' + script];
-		prepost.forEach(each => {
-			if (scripts[each] !== undefined) {
-				prePostScripts.add(each);
+		prepost.forEAch(eAch => {
+			if (scripts[eAch] !== undefined) {
+				prePostScripts.Add(eAch);
 			}
 		});
 	}
 	return prePostScripts;
 }
 
-export function isWorkspaceFolder(value: any): value is WorkspaceFolder {
-	return value && typeof value !== 'number';
+export function isWorkspAceFolder(vAlue: Any): vAlue is WorkspAceFolder {
+	return vAlue && typeof vAlue !== 'number';
 }
 
-export async function getPackageManager(folder: WorkspaceFolder): Promise<string> {
-	let packageManagerName = workspace.getConfiguration('npm', folder.uri).get<string>('packageManager', 'npm');
+export Async function getPAckAgeMAnAger(folder: WorkspAceFolder): Promise<string> {
+	let pAckAgeMAnAgerNAme = workspAce.getConfigurAtion('npm', folder.uri).get<string>('pAckAgeMAnAger', 'npm');
 
-	if (packageManagerName === 'auto') {
-		const { name, multiplePMDetected } = await findPreferredPM(folder.uri.fsPath);
-		packageManagerName = name;
+	if (pAckAgeMAnAgerNAme === 'Auto') {
+		const { nAme, multiplePMDetected } = AwAit findPreferredPM(folder.uri.fsPAth);
+		pAckAgeMAnAgerNAme = nAme;
 
 		if (multiplePMDetected) {
-			const multiplePMWarning = localize('npm.multiplePMWarning', 'Found multiple lockfiles for {0}. Using {1} as the preferred package manager.', folder.uri.fsPath, packageManagerName);
-			window.showWarningMessage(multiplePMWarning);
+			const multiplePMWArning = locAlize('npm.multiplePMWArning', 'Found multiple lockfiles for {0}. Using {1} As the preferred pAckAge mAnAger.', folder.uri.fsPAth, pAckAgeMAnAgerNAme);
+			window.showWArningMessAge(multiplePMWArning);
 		}
 	}
 
-	return packageManagerName;
+	return pAckAgeMAnAgerNAme;
 }
 
-export async function hasNpmScripts(): Promise<boolean> {
-	let folders = workspace.workspaceFolders;
+export Async function hAsNpmScripts(): Promise<booleAn> {
+	let folders = workspAce.workspAceFolders;
 	if (!folders) {
-		return false;
+		return fAlse;
 	}
 	try {
 		for (const folder of folders) {
-			if (isAutoDetectionEnabled(folder)) {
-				let relativePattern = new RelativePattern(folder, '**/package.json');
-				let paths = await workspace.findFiles(relativePattern, '**/node_modules/**');
-				if (paths.length > 0) {
+			if (isAutoDetectionEnAbled(folder)) {
+				let relAtivePAttern = new RelAtivePAttern(folder, '**/pAckAge.json');
+				let pAths = AwAit workspAce.findFiles(relAtivePAttern, '**/node_modules/**');
+				if (pAths.length > 0) {
 					return true;
 				}
 			}
 		}
-		return false;
-	} catch (error) {
+		return fAlse;
+	} cAtch (error) {
 		return Promise.reject(error);
 	}
 }
 
-async function detectNpmScripts(): Promise<Task[]> {
+Async function detectNpmScripts(): Promise<TAsk[]> {
 
-	let emptyTasks: Task[] = [];
-	let allTasks: Task[] = [];
-	let visitedPackageJsonFiles: Set<string> = new Set();
+	let emptyTAsks: TAsk[] = [];
+	let AllTAsks: TAsk[] = [];
+	let visitedPAckAgeJsonFiles: Set<string> = new Set();
 
-	let folders = workspace.workspaceFolders;
+	let folders = workspAce.workspAceFolders;
 	if (!folders) {
-		return emptyTasks;
+		return emptyTAsks;
 	}
 	try {
 		for (const folder of folders) {
-			if (isAutoDetectionEnabled(folder)) {
-				let relativePattern = new RelativePattern(folder, '**/package.json');
-				let paths = await workspace.findFiles(relativePattern, '**/{node_modules,.vscode-test}/**');
-				for (const path of paths) {
-					if (!isExcluded(folder, path) && !visitedPackageJsonFiles.has(path.fsPath)) {
-						let tasks = await provideNpmScriptsForFolder(path);
-						visitedPackageJsonFiles.add(path.fsPath);
-						allTasks.push(...tasks);
+			if (isAutoDetectionEnAbled(folder)) {
+				let relAtivePAttern = new RelAtivePAttern(folder, '**/pAckAge.json');
+				let pAths = AwAit workspAce.findFiles(relAtivePAttern, '**/{node_modules,.vscode-test}/**');
+				for (const pAth of pAths) {
+					if (!isExcluded(folder, pAth) && !visitedPAckAgeJsonFiles.hAs(pAth.fsPAth)) {
+						let tAsks = AwAit provideNpmScriptsForFolder(pAth);
+						visitedPAckAgeJsonFiles.Add(pAth.fsPAth);
+						AllTAsks.push(...tAsks);
 					}
 				}
 			}
 		}
-		return allTasks;
-	} catch (error) {
+		return AllTAsks;
+	} cAtch (error) {
 		return Promise.reject(error);
 	}
 }
 
 
-export async function detectNpmScriptsForFolder(folder: Uri): Promise<FolderTaskItem[]> {
+export Async function detectNpmScriptsForFolder(folder: Uri): Promise<FolderTAskItem[]> {
 
-	let folderTasks: FolderTaskItem[] = [];
+	let folderTAsks: FolderTAskItem[] = [];
 
 	try {
-		let relativePattern = new RelativePattern(folder.fsPath, '**/package.json');
-		let paths = await workspace.findFiles(relativePattern, '**/node_modules/**');
+		let relAtivePAttern = new RelAtivePAttern(folder.fsPAth, '**/pAckAge.json');
+		let pAths = AwAit workspAce.findFiles(relAtivePAttern, '**/node_modules/**');
 
-		let visitedPackageJsonFiles: Set<string> = new Set();
-		for (const path of paths) {
-			if (!visitedPackageJsonFiles.has(path.fsPath)) {
-				let tasks = await provideNpmScriptsForFolder(path);
-				visitedPackageJsonFiles.add(path.fsPath);
-				folderTasks.push(...tasks.map(t => ({ label: t.name, task: t })));
+		let visitedPAckAgeJsonFiles: Set<string> = new Set();
+		for (const pAth of pAths) {
+			if (!visitedPAckAgeJsonFiles.hAs(pAth.fsPAth)) {
+				let tAsks = AwAit provideNpmScriptsForFolder(pAth);
+				visitedPAckAgeJsonFiles.Add(pAth.fsPAth);
+				folderTAsks.push(...tAsks.mAp(t => ({ lAbel: t.nAme, tAsk: t })));
 			}
 		}
-		return folderTasks;
-	} catch (error) {
+		return folderTAsks;
+	} cAtch (error) {
 		return Promise.reject(error);
 	}
 }
 
-export async function provideNpmScripts(): Promise<Task[]> {
-	if (!cachedTasks) {
-		cachedTasks = await detectNpmScripts();
+export Async function provideNpmScripts(): Promise<TAsk[]> {
+	if (!cAchedTAsks) {
+		cAchedTAsks = AwAit detectNpmScripts();
 	}
-	return cachedTasks;
+	return cAchedTAsks;
 }
 
-export function isAutoDetectionEnabled(folder?: WorkspaceFolder): boolean {
-	return workspace.getConfiguration('npm', folder?.uri).get<AutoDetect>('autoDetect') === 'on';
+export function isAutoDetectionEnAbled(folder?: WorkspAceFolder): booleAn {
+	return workspAce.getConfigurAtion('npm', folder?.uri).get<AutoDetect>('AutoDetect') === 'on';
 }
 
-function isExcluded(folder: WorkspaceFolder, packageJsonUri: Uri) {
-	function testForExclusionPattern(path: string, pattern: string): boolean {
-		return minimatch(path, pattern, { dot: true });
+function isExcluded(folder: WorkspAceFolder, pAckAgeJsonUri: Uri) {
+	function testForExclusionPAttern(pAth: string, pAttern: string): booleAn {
+		return minimAtch(pAth, pAttern, { dot: true });
 	}
 
-	let exclude = workspace.getConfiguration('npm', folder.uri).get<string | string[]>('exclude');
-	let packageJsonFolder = path.dirname(packageJsonUri.fsPath);
+	let exclude = workspAce.getConfigurAtion('npm', folder.uri).get<string | string[]>('exclude');
+	let pAckAgeJsonFolder = pAth.dirnAme(pAckAgeJsonUri.fsPAth);
 
 	if (exclude) {
-		if (Array.isArray(exclude)) {
-			for (let pattern of exclude) {
-				if (testForExclusionPattern(packageJsonFolder, pattern)) {
+		if (ArrAy.isArrAy(exclude)) {
+			for (let pAttern of exclude) {
+				if (testForExclusionPAttern(pAckAgeJsonFolder, pAttern)) {
 					return true;
 				}
 			}
-		} else if (testForExclusionPattern(packageJsonFolder, exclude)) {
+		} else if (testForExclusionPAttern(pAckAgeJsonFolder, exclude)) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-function isDebugScript(script: string): boolean {
-	let match = script.match(/--(inspect|debug)(-brk)?(=((\[[0-9a-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9\.]*):)?(\d+))?/);
-	return match !== null;
+function isDebugScript(script: string): booleAn {
+	let mAtch = script.mAtch(/--(inspect|debug)(-brk)?(=((\[[0-9A-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[A-zA-Z0-9\.]*):)?(\d+))?/);
+	return mAtch !== null;
 }
 
-async function provideNpmScriptsForFolder(packageJsonUri: Uri): Promise<Task[]> {
-	let emptyTasks: Task[] = [];
+Async function provideNpmScriptsForFolder(pAckAgeJsonUri: Uri): Promise<TAsk[]> {
+	let emptyTAsks: TAsk[] = [];
 
-	let folder = workspace.getWorkspaceFolder(packageJsonUri);
+	let folder = workspAce.getWorkspAceFolder(pAckAgeJsonUri);
 	if (!folder) {
-		return emptyTasks;
+		return emptyTAsks;
 	}
-	let scripts = await getScripts(packageJsonUri);
+	let scripts = AwAit getScripts(pAckAgeJsonUri);
 	if (!scripts) {
-		return emptyTasks;
+		return emptyTAsks;
 	}
 
-	const result: Task[] = [];
+	const result: TAsk[] = [];
 
 	const prePostScripts = getPrePostScripts(scripts);
 
-	for (const each of Object.keys(scripts)) {
-		const task = await createTask(each, `run ${each}`, folder!, packageJsonUri, scripts![each]);
-		const lowerCaseTaskName = each.toLowerCase();
-		if (isBuildTask(lowerCaseTaskName)) {
-			task.group = TaskGroup.Build;
-		} else if (isTestTask(lowerCaseTaskName)) {
-			task.group = TaskGroup.Test;
+	for (const eAch of Object.keys(scripts)) {
+		const tAsk = AwAit creAteTAsk(eAch, `run ${eAch}`, folder!, pAckAgeJsonUri, scripts![eAch]);
+		const lowerCAseTAskNAme = eAch.toLowerCAse();
+		if (isBuildTAsk(lowerCAseTAskNAme)) {
+			tAsk.group = TAskGroup.Build;
+		} else if (isTestTAsk(lowerCAseTAskNAme)) {
+			tAsk.group = TAskGroup.Test;
 		}
-		if (prePostScripts.has(each)) {
-			task.group = TaskGroup.Clean; // hack: use Clean group to tag pre/post scripts
+		if (prePostScripts.hAs(eAch)) {
+			tAsk.group = TAskGroup.CleAn; // hAck: use CleAn group to tAg pre/post scripts
 		}
 
-		// todo@connor4312: all scripts are now debuggable, what is a 'debug script'?
-		if (isDebugScript(scripts![each])) {
-			task.group = TaskGroup.Rebuild; // hack: use Rebuild group to tag debug scripts
+		// todo@connor4312: All scripts Are now debuggAble, whAt is A 'debug script'?
+		if (isDebugScript(scripts![eAch])) {
+			tAsk.group = TAskGroup.Rebuild; // hAck: use Rebuild group to tAg debug scripts
 		}
-		result.push(task);
+		result.push(tAsk);
 	}
 
-	// always add npm install (without a problem matcher)
-	result.push(await createTask(INSTALL_SCRIPT, INSTALL_SCRIPT, folder, packageJsonUri, 'install dependencies from package', []));
+	// AlwAys Add npm instAll (without A problem mAtcher)
+	result.push(AwAit creAteTAsk(INSTALL_SCRIPT, INSTALL_SCRIPT, folder, pAckAgeJsonUri, 'instAll dependencies from pAckAge', []));
 	return result;
 }
 
-export function getTaskName(script: string, relativePath: string | undefined) {
-	if (relativePath && relativePath.length) {
-		return `${script} - ${relativePath.substring(0, relativePath.length - 1)}`;
+export function getTAskNAme(script: string, relAtivePAth: string | undefined) {
+	if (relAtivePAth && relAtivePAth.length) {
+		return `${script} - ${relAtivePAth.substring(0, relAtivePAth.length - 1)}`;
 	}
 	return script;
 }
 
-export async function createTask(script: NpmTaskDefinition | string, cmd: string, folder: WorkspaceFolder, packageJsonUri: Uri, detail?: string, matcher?: any): Promise<Task> {
-	let kind: NpmTaskDefinition;
+export Async function creAteTAsk(script: NpmTAskDefinition | string, cmd: string, folder: WorkspAceFolder, pAckAgeJsonUri: Uri, detAil?: string, mAtcher?: Any): Promise<TAsk> {
+	let kind: NpmTAskDefinition;
 	if (typeof script === 'string') {
 		kind = { type: 'npm', script: script };
 	} else {
 		kind = script;
 	}
 
-	const packageManager = await getPackageManager(folder);
-	async function getCommandLine(cmd: string): Promise<string> {
-		if (workspace.getConfiguration('npm', folder.uri).get<boolean>('runSilent')) {
-			return `${packageManager} --silent ${cmd}`;
+	const pAckAgeMAnAger = AwAit getPAckAgeMAnAger(folder);
+	Async function getCommAndLine(cmd: string): Promise<string> {
+		if (workspAce.getConfigurAtion('npm', folder.uri).get<booleAn>('runSilent')) {
+			return `${pAckAgeMAnAger} --silent ${cmd}`;
 		}
-		return `${packageManager} ${cmd}`;
+		return `${pAckAgeMAnAger} ${cmd}`;
 	}
 
-	function getRelativePath(packageJsonUri: Uri): string {
+	function getRelAtivePAth(pAckAgeJsonUri: Uri): string {
 		let rootUri = folder.uri;
-		let absolutePath = packageJsonUri.path.substring(0, packageJsonUri.path.length - 'package.json'.length);
-		return absolutePath.substring(rootUri.path.length + 1);
+		let AbsolutePAth = pAckAgeJsonUri.pAth.substring(0, pAckAgeJsonUri.pAth.length - 'pAckAge.json'.length);
+		return AbsolutePAth.substring(rootUri.pAth.length + 1);
 	}
 
-	let relativePackageJson = getRelativePath(packageJsonUri);
-	if (relativePackageJson.length) {
-		kind.path = relativePackageJson;
+	let relAtivePAckAgeJson = getRelAtivePAth(pAckAgeJsonUri);
+	if (relAtivePAckAgeJson.length) {
+		kind.pAth = relAtivePAckAgeJson;
 	}
-	let taskName = getTaskName(kind.script, relativePackageJson);
-	let cwd = path.dirname(packageJsonUri.fsPath);
-	const task = new Task(kind, folder, taskName, 'npm', new ShellExecution(await getCommandLine(cmd), { cwd: cwd }), matcher);
-	task.detail = detail;
-	return task;
+	let tAskNAme = getTAskNAme(kind.script, relAtivePAckAgeJson);
+	let cwd = pAth.dirnAme(pAckAgeJsonUri.fsPAth);
+	const tAsk = new TAsk(kind, folder, tAskNAme, 'npm', new ShellExecution(AwAit getCommAndLine(cmd), { cwd: cwd }), mAtcher);
+	tAsk.detAil = detAil;
+	return tAsk;
 }
 
 
-export function getPackageJsonUriFromTask(task: Task): Uri | null {
-	if (isWorkspaceFolder(task.scope)) {
-		if (task.definition.path) {
-			return Uri.file(path.join(task.scope.uri.fsPath, task.definition.path, 'package.json'));
+export function getPAckAgeJsonUriFromTAsk(tAsk: TAsk): Uri | null {
+	if (isWorkspAceFolder(tAsk.scope)) {
+		if (tAsk.definition.pAth) {
+			return Uri.file(pAth.join(tAsk.scope.uri.fsPAth, tAsk.definition.pAth, 'pAckAge.json'));
 		} else {
-			return Uri.file(path.join(task.scope.uri.fsPath, 'package.json'));
+			return Uri.file(pAth.join(tAsk.scope.uri.fsPAth, 'pAckAge.json'));
 		}
 	}
 	return null;
 }
 
-export async function hasPackageJson(): Promise<boolean> {
-	let folders = workspace.workspaceFolders;
+export Async function hAsPAckAgeJson(): Promise<booleAn> {
+	let folders = workspAce.workspAceFolders;
 	if (!folders) {
-		return false;
+		return fAlse;
 	}
 	for (const folder of folders) {
 		if (folder.uri.scheme === 'file') {
-			let packageJson = path.join(folder.uri.fsPath, 'package.json');
-			if (await exists(packageJson)) {
+			let pAckAgeJson = pAth.join(folder.uri.fsPAth, 'pAckAge.json');
+			if (AwAit exists(pAckAgeJson)) {
 				return true;
 			}
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-async function exists(file: string): Promise<boolean> {
-	return new Promise<boolean>((resolve, _reject) => {
-		fs.exists(file, (value) => {
-			resolve(value);
+Async function exists(file: string): Promise<booleAn> {
+	return new Promise<booleAn>((resolve, _reject) => {
+		fs.exists(file, (vAlue) => {
+			resolve(vAlue);
 		});
 	});
 }
 
-async function readFile(file: string): Promise<string> {
+Async function reAdFile(file: string): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
-		fs.readFile(file, (err, data) => {
+		fs.reAdFile(file, (err, dAtA) => {
 			if (err) {
 				reject(err);
 			}
-			resolve(data.toString());
+			resolve(dAtA.toString());
 		});
 	});
 }
 
-export async function runScript(script: string, document: TextDocument) {
+export Async function runScript(script: string, document: TextDocument) {
 	let uri = document.uri;
-	let folder = workspace.getWorkspaceFolder(uri);
+	let folder = workspAce.getWorkspAceFolder(uri);
 	if (folder) {
-		let task = await createTask(script, `run ${script}`, folder, uri);
-		tasks.executeTask(task);
+		let tAsk = AwAit creAteTAsk(script, `run ${script}`, folder, uri);
+		tAsks.executeTAsk(tAsk);
 	}
 }
 
-export async function startDebugging(scriptName: string, cwd: string, folder: WorkspaceFolder) {
-	const config: DebugConfiguration = {
-		type: 'pwa-node',
-		request: 'launch',
-		name: `Debug ${scriptName}`,
+export Async function stArtDebugging(scriptNAme: string, cwd: string, folder: WorkspAceFolder) {
+	const config: DebugConfigurAtion = {
+		type: 'pwA-node',
+		request: 'lAunch',
+		nAme: `Debug ${scriptNAme}`,
 		cwd,
-		runtimeExecutable: await getPackageManager(folder),
+		runtimeExecutAble: AwAit getPAckAgeMAnAger(folder),
 		runtimeArgs: [
 			'run',
-			scriptName,
+			scriptNAme,
 		],
 	};
 
 	if (folder) {
-		debug.startDebugging(folder, config);
+		debug.stArtDebugging(folder, config);
 	}
 }
 
 
-export type StringMap = { [s: string]: string; };
+export type StringMAp = { [s: string]: string; };
 
-async function findAllScripts(buffer: string): Promise<StringMap> {
-	let scripts: StringMap = {};
+Async function findAllScripts(buffer: string): Promise<StringMAp> {
+	let scripts: StringMAp = {};
 	let script: string | undefined = undefined;
-	let inScripts = false;
+	let inScripts = fAlse;
 
 	let visitor: JSONVisitor = {
-		onError(_error: ParseErrorCode, _offset: number, _length: number) {
+		onError(_error: PArseErrorCode, _offset: number, _length: number) {
 			console.log(_error);
 		},
 		onObjectEnd() {
 			if (inScripts) {
-				inScripts = false;
+				inScripts = fAlse;
 			}
 		},
-		onLiteralValue(value: any, _offset: number, _length: number) {
+		onLiterAlVAlue(vAlue: Any, _offset: number, _length: number) {
 			if (script) {
-				if (typeof value === 'string') {
-					scripts[script] = value;
+				if (typeof vAlue === 'string') {
+					scripts[script] = vAlue;
 				}
 				script = undefined;
 			}
@@ -421,7 +421,7 @@ async function findAllScripts(buffer: string): Promise<StringMap> {
 			}
 			else if (inScripts && !script) {
 				script = property;
-			} else { // nested object which is invalid, ignore the script
+			} else { // nested object which is invAlid, ignore the script
 				script = undefined;
 			}
 		}
@@ -430,25 +430,25 @@ async function findAllScripts(buffer: string): Promise<StringMap> {
 	return scripts;
 }
 
-export function findAllScriptRanges(buffer: string): Map<string, [number, number, string]> {
-	let scripts: Map<string, [number, number, string]> = new Map();
+export function findAllScriptRAnges(buffer: string): MAp<string, [number, number, string]> {
+	let scripts: MAp<string, [number, number, string]> = new MAp();
 	let script: string | undefined = undefined;
 	let offset: number;
 	let length: number;
 
-	let inScripts = false;
+	let inScripts = fAlse;
 
 	let visitor: JSONVisitor = {
-		onError(_error: ParseErrorCode, _offset: number, _length: number) {
+		onError(_error: PArseErrorCode, _offset: number, _length: number) {
 		},
 		onObjectEnd() {
 			if (inScripts) {
-				inScripts = false;
+				inScripts = fAlse;
 			}
 		},
-		onLiteralValue(value: any, _offset: number, _length: number) {
+		onLiterAlVAlue(vAlue: Any, _offset: number, _length: number) {
 			if (script) {
-				scripts.set(script, [offset, length, value]);
+				scripts.set(script, [offset, length, vAlue]);
 				script = undefined;
 			}
 		},
@@ -470,22 +470,22 @@ export function findAllScriptRanges(buffer: string): Map<string, [number, number
 export function findScriptAtPosition(buffer: string, offset: number): string | undefined {
 	let script: string | undefined = undefined;
 	let foundScript: string | undefined = undefined;
-	let inScripts = false;
-	let scriptStart: number | undefined;
+	let inScripts = fAlse;
+	let scriptStArt: number | undefined;
 	let visitor: JSONVisitor = {
-		onError(_error: ParseErrorCode, _offset: number, _length: number) {
+		onError(_error: PArseErrorCode, _offset: number, _length: number) {
 		},
 		onObjectEnd() {
 			if (inScripts) {
-				inScripts = false;
-				scriptStart = undefined;
+				inScripts = fAlse;
+				scriptStArt = undefined;
 			}
 		},
-		onLiteralValue(value: any, nodeOffset: number, nodeLength: number) {
-			if (inScripts && scriptStart) {
-				if (typeof value === 'string' && offset >= scriptStart && offset < nodeOffset + nodeLength) {
+		onLiterAlVAlue(vAlue: Any, nodeOffset: number, nodeLength: number) {
+			if (inScripts && scriptStArt) {
+				if (typeof vAlue === 'string' && offset >= scriptStArt && offset < nodeOffset + nodeLength) {
 					// found the script
-					inScripts = false;
+					inScripts = fAlse;
 					foundScript = script;
 				} else {
 					script = undefined;
@@ -497,9 +497,9 @@ export function findScriptAtPosition(buffer: string, offset: number): string | u
 				inScripts = true;
 			}
 			else if (inScripts) {
-				scriptStart = nodeOffset;
+				scriptStArt = nodeOffset;
 				script = property;
-			} else { // nested object which is invalid, ignore the script
+			} else { // nested object which is invAlid, ignore the script
 				script = undefined;
 			}
 		}
@@ -508,23 +508,23 @@ export function findScriptAtPosition(buffer: string, offset: number): string | u
 	return foundScript;
 }
 
-export async function getScripts(packageJsonUri: Uri): Promise<StringMap | undefined> {
+export Async function getScripts(pAckAgeJsonUri: Uri): Promise<StringMAp | undefined> {
 
-	if (packageJsonUri.scheme !== 'file') {
+	if (pAckAgeJsonUri.scheme !== 'file') {
 		return undefined;
 	}
 
-	let packageJson = packageJsonUri.fsPath;
-	if (!await exists(packageJson)) {
+	let pAckAgeJson = pAckAgeJsonUri.fsPAth;
+	if (!AwAit exists(pAckAgeJson)) {
 		return undefined;
 	}
 
 	try {
-		let contents = await readFile(packageJson);
-		let json = findAllScripts(contents);//JSON.parse(contents);
+		let contents = AwAit reAdFile(pAckAgeJson);
+		let json = findAllScripts(contents);//JSON.pArse(contents);
 		return json;
-	} catch (e) {
-		let localizedParseError = localize('npm.parseError', 'Npm task detection: failed to parse the file {0}', packageJsonUri.fsPath);
-		throw new Error(localizedParseError);
+	} cAtch (e) {
+		let locAlizedPArseError = locAlize('npm.pArseError', 'Npm tAsk detection: fAiled to pArse the file {0}', pAckAgeJsonUri.fsPAth);
+		throw new Error(locAlizedPArseError);
 	}
 }

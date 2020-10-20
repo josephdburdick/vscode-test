@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IEditorGroupsService, IEditorGroup, GroupsOrder } from 'vs/workbench/services/editor/common/editorGroupsService';
@@ -11,28 +11,28 @@ export type EditorViewColumn = number;
 
 export function viewColumnToEditorGroup(editorGroupService: IEditorGroupsService, position?: EditorViewColumn): GroupIdentifier {
 	if (typeof position !== 'number' || position === ACTIVE_GROUP) {
-		return ACTIVE_GROUP; // prefer active group when position is undefined or passed in as such
+		return ACTIVE_GROUP; // prefer Active group when position is undefined or pAssed in As such
 	}
 
 	const groups = editorGroupService.getGroups(GroupsOrder.GRID_APPEARANCE);
 
-	let candidate = groups[position];
-	if (candidate) {
-		return candidate.id; // found direct match
+	let cAndidAte = groups[position];
+	if (cAndidAte) {
+		return cAndidAte.id; // found direct mAtch
 	}
 
 	let firstGroup = groups[0];
 	if (groups.length === 1 && firstGroup.count === 0) {
-		return firstGroup.id; // first editor should always open in first group independent from position provided
+		return firstGroup.id; // first editor should AlwAys open in first group independent from position provided
 	}
 
-	return SIDE_GROUP; // open to the side if group not found or we are instructed to
+	return SIDE_GROUP; // open to the side if group not found or we Are instructed to
 }
 
 export function editorGroupToViewColumn(editorGroupService: IEditorGroupsService, editorGroup: IEditorGroup | GroupIdentifier): EditorViewColumn {
 	const group = (typeof editorGroup === 'number') ? editorGroupService.getGroup(editorGroup) : editorGroup;
 	if (!group) {
-		throw new Error('Invalid group provided');
+		throw new Error('InvAlid group provided');
 	}
 
 	return editorGroupService.getGroups(GroupsOrder.GRID_APPEARANCE).indexOf(group);

@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { IExplorerService, IFilesConfiguration, SortOrder, IExplorerView } from 'vs/workbench/contrib/files/common/files';
+import { Event } from 'vs/bAse/common/event';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { IExplorerService, IFilesConfigurAtion, SortOrder, IExplorerView } from 'vs/workbench/contrib/files/common/files';
 import { ExplorerItem, ExplorerModel } from 'vs/workbench/contrib/files/common/explorerModel';
-import { URI } from 'vs/base/common/uri';
-import { FileOperationEvent, FileOperation, IFileService, FileChangesEvent, FILES_EXCLUDE_CONFIG, FileChangeType, IResolveFileOptions } from 'vs/platform/files/common/files';
-import { dirname } from 'vs/base/common/resources';
-import { memoize } from 'vs/base/common/decorators';
-import { ResourceGlobMatcher } from 'vs/workbench/common/resources';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
-import { IExpression } from 'vs/base/common/glob';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { URI } from 'vs/bAse/common/uri';
+import { FileOperAtionEvent, FileOperAtion, IFileService, FileChAngesEvent, FILES_EXCLUDE_CONFIG, FileChAngeType, IResolveFileOptions } from 'vs/plAtform/files/common/files';
+import { dirnAme } from 'vs/bAse/common/resources';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { ResourceGlobMAtcher } from 'vs/workbench/common/resources';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IConfigurAtionService, IConfigurAtionChAngeEvent } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IExpression } from 'vs/bAse/common/glob';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IEditableData } from 'vs/workbench/common/views';
+import { IEditAbleDAtA } from 'vs/workbench/common/views';
 import { EditorResourceAccessor } from 'vs/workbench/common/editor';
 
-function getFileEventsExcludes(configurationService: IConfigurationService, root?: URI): IExpression {
+function getFileEventsExcludes(configurAtionService: IConfigurAtionService, root?: URI): IExpression {
 	const scope = root ? { resource: root } : undefined;
-	const configuration = scope ? configurationService.getValue<IFilesConfiguration>(scope) : configurationService.getValue<IFilesConfiguration>();
+	const configurAtion = scope ? configurAtionService.getVAlue<IFilesConfigurAtion>(scope) : configurAtionService.getVAlue<IFilesConfigurAtion>();
 
-	return configuration?.files?.exclude || Object.create(null);
+	return configurAtion?.files?.exclude || Object.creAte(null);
 }
 
-export class ExplorerService implements IExplorerService {
-	declare readonly _serviceBrand: undefined;
+export clAss ExplorerService implements IExplorerService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly EXPLORER_FILE_CHANGES_REACT_DELAY = 500; // delay in ms to react to file changes to give our internal events a chance to react first
+	privAte stAtic reAdonly EXPLORER_FILE_CHANGES_REACT_DELAY = 500; // delAy in ms to reAct to file chAnges to give our internAl events A chAnce to reAct first
 
-	private readonly disposables = new DisposableStore();
-	private editable: { stat: ExplorerItem, data: IEditableData } | undefined;
-	private _sortOrder: SortOrder;
-	private cutItems: ExplorerItem[] | undefined;
-	private view: IExplorerView | undefined;
-	private model: ExplorerModel;
+	privAte reAdonly disposAbles = new DisposAbleStore();
+	privAte editAble: { stAt: ExplorerItem, dAtA: IEditAbleDAtA } | undefined;
+	privAte _sortOrder: SortOrder;
+	privAte cutItems: ExplorerItem[] | undefined;
+	privAte view: IExplorerView | undefined;
+	privAte model: ExplorerModel;
 
 	constructor(
-		@IFileService private fileService: IFileService,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@IConfigurationService private configurationService: IConfigurationService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@IClipboardService private clipboardService: IClipboardService,
-		@IEditorService private editorService: IEditorService,
+		@IFileService privAte fileService: IFileService,
+		@IInstAntiAtionService privAte instAntiAtionService: IInstAntiAtionService,
+		@IConfigurAtionService privAte configurAtionService: IConfigurAtionService,
+		@IWorkspAceContextService privAte contextService: IWorkspAceContextService,
+		@IClipboArdService privAte clipboArdService: IClipboArdService,
+		@IEditorService privAte editorService: IEditorService,
 	) {
-		this._sortOrder = this.configurationService.getValue('explorer.sortOrder');
+		this._sortOrder = this.configurAtionService.getVAlue('explorer.sortOrder');
 
 		this.model = new ExplorerModel(this.contextService, this.fileService);
-		this.disposables.add(this.model);
-		this.disposables.add(this.fileService.onDidRunOperation(e => this.onDidRunOperation(e)));
-		this.disposables.add(this.fileService.onDidFilesChange(e => this.onDidFilesChange(e)));
-		this.disposables.add(this.configurationService.onDidChangeConfiguration(e => this.onConfigurationUpdated(this.configurationService.getValue<IFilesConfiguration>())));
-		this.disposables.add(Event.any<{ scheme: string }>(this.fileService.onDidChangeFileSystemProviderRegistrations, this.fileService.onDidChangeFileSystemProviderCapabilities)(async e => {
-			let affected = false;
-			this.model.roots.forEach(r => {
+		this.disposAbles.Add(this.model);
+		this.disposAbles.Add(this.fileService.onDidRunOperAtion(e => this.onDidRunOperAtion(e)));
+		this.disposAbles.Add(this.fileService.onDidFilesChAnge(e => this.onDidFilesChAnge(e)));
+		this.disposAbles.Add(this.configurAtionService.onDidChAngeConfigurAtion(e => this.onConfigurAtionUpdAted(this.configurAtionService.getVAlue<IFilesConfigurAtion>())));
+		this.disposAbles.Add(Event.Any<{ scheme: string }>(this.fileService.onDidChAngeFileSystemProviderRegistrAtions, this.fileService.onDidChAngeFileSystemProviderCApAbilities)(Async e => {
+			let Affected = fAlse;
+			this.model.roots.forEAch(r => {
 				if (r.resource.scheme === e.scheme) {
-					affected = true;
+					Affected = true;
 					r.forgetChildren();
 				}
 			});
-			if (affected) {
+			if (Affected) {
 				if (this.view) {
-					await this.view.refresh(true);
+					AwAit this.view.refresh(true);
 				}
 			}
 		}));
-		this.disposables.add(this.model.onDidChangeRoots(() => {
+		this.disposAbles.Add(this.model.onDidChAngeRoots(() => {
 			if (this.view) {
 				this.view.setTreeInput();
 			}
@@ -88,21 +88,21 @@ export class ExplorerService implements IExplorerService {
 		this.view = contextProvider;
 	}
 
-	getContext(respectMultiSelection: boolean): ExplorerItem[] {
+	getContext(respectMultiSelection: booleAn): ExplorerItem[] {
 		if (!this.view) {
 			return [];
 		}
 		return this.view.getContext(respectMultiSelection);
 	}
 
-	// Memoized locals
-	@memoize private get fileEventsFilter(): ResourceGlobMatcher {
-		const fileEventsFilter = this.instantiationService.createInstance(
-			ResourceGlobMatcher,
-			(root?: URI) => getFileEventsExcludes(this.configurationService, root),
-			(event: IConfigurationChangeEvent) => event.affectsConfiguration(FILES_EXCLUDE_CONFIG)
+	// Memoized locAls
+	@memoize privAte get fileEventsFilter(): ResourceGlobMAtcher {
+		const fileEventsFilter = this.instAntiAtionService.creAteInstAnce(
+			ResourceGlobMAtcher,
+			(root?: URI) => getFileEventsExcludes(this.configurAtionService, root),
+			(event: IConfigurAtionChAngeEvent) => event.AffectsConfigurAtion(FILES_EXCLUDE_CONFIG)
 		);
-		this.disposables.add(fileEventsFilter);
+		this.disposAbles.Add(fileEventsFilter);
 
 		return fileEventsFilter;
 	}
@@ -113,286 +113,286 @@ export class ExplorerService implements IExplorerService {
 		return this.model.findClosest(resource);
 	}
 
-	async setEditable(stat: ExplorerItem, data: IEditableData | null): Promise<void> {
+	Async setEditAble(stAt: ExplorerItem, dAtA: IEditAbleDAtA | null): Promise<void> {
 		if (!this.view) {
 			return;
 		}
 
-		if (!data) {
-			this.editable = undefined;
+		if (!dAtA) {
+			this.editAble = undefined;
 		} else {
-			this.editable = { stat, data };
+			this.editAble = { stAt, dAtA };
 		}
-		const isEditing = this.isEditable(stat);
-		await this.view.setEditable(stat, isEditing);
+		const isEditing = this.isEditAble(stAt);
+		AwAit this.view.setEditAble(stAt, isEditing);
 	}
 
-	async setToCopy(items: ExplorerItem[], cut: boolean): Promise<void> {
+	Async setToCopy(items: ExplorerItem[], cut: booleAn): Promise<void> {
 		const previouslyCutItems = this.cutItems;
 		this.cutItems = cut ? items : undefined;
-		await this.clipboardService.writeResources(items.map(s => s.resource));
+		AwAit this.clipboArdService.writeResources(items.mAp(s => s.resource));
 
 		this.view?.itemsCopied(items, cut, previouslyCutItems);
 	}
 
-	isCut(item: ExplorerItem): boolean {
+	isCut(item: ExplorerItem): booleAn {
 		return !!this.cutItems && this.cutItems.indexOf(item) >= 0;
 	}
 
-	getEditable(): { stat: ExplorerItem, data: IEditableData } | undefined {
-		return this.editable;
+	getEditAble(): { stAt: ExplorerItem, dAtA: IEditAbleDAtA } | undefined {
+		return this.editAble;
 	}
 
-	getEditableData(stat: ExplorerItem): IEditableData | undefined {
-		return this.editable && this.editable.stat === stat ? this.editable.data : undefined;
+	getEditAbleDAtA(stAt: ExplorerItem): IEditAbleDAtA | undefined {
+		return this.editAble && this.editAble.stAt === stAt ? this.editAble.dAtA : undefined;
 	}
 
-	isEditable(stat: ExplorerItem | undefined): boolean {
-		return !!this.editable && (this.editable.stat === stat || !stat);
+	isEditAble(stAt: ExplorerItem | undefined): booleAn {
+		return !!this.editAble && (this.editAble.stAt === stAt || !stAt);
 	}
 
-	async select(resource: URI, reveal?: boolean | string): Promise<void> {
+	Async select(resource: URI, reveAl?: booleAn | string): Promise<void> {
 		if (!this.view) {
 			return;
 		}
 
-		const fileStat = this.findClosest(resource);
-		if (fileStat) {
-			await this.view.selectResource(fileStat.resource, reveal);
+		const fileStAt = this.findClosest(resource);
+		if (fileStAt) {
+			AwAit this.view.selectResource(fileStAt.resource, reveAl);
 			return Promise.resolve(undefined);
 		}
 
-		// Stat needs to be resolved first and then revealed
-		const options: IResolveFileOptions = { resolveTo: [resource], resolveMetadata: this.sortOrder === SortOrder.Modified };
-		const workspaceFolder = this.contextService.getWorkspaceFolder(resource);
-		if (workspaceFolder === null) {
+		// StAt needs to be resolved first And then reveAled
+		const options: IResolveFileOptions = { resolveTo: [resource], resolveMetAdAtA: this.sortOrder === SortOrder.Modified };
+		const workspAceFolder = this.contextService.getWorkspAceFolder(resource);
+		if (workspAceFolder === null) {
 			return Promise.resolve(undefined);
 		}
-		const rootUri = workspaceFolder.uri;
+		const rootUri = workspAceFolder.uri;
 
 		const root = this.roots.find(r => r.resource.toString() === rootUri.toString())!;
 
 		try {
-			const stat = await this.fileService.resolve(rootUri, options);
+			const stAt = AwAit this.fileService.resolve(rootUri, options);
 
 			// Convert to model
-			const modelStat = ExplorerItem.create(this.fileService, stat, undefined, options.resolveTo);
-			// Update Input with disk Stat
-			ExplorerItem.mergeLocalWithDisk(modelStat, root);
+			const modelStAt = ExplorerItem.creAte(this.fileService, stAt, undefined, options.resolveTo);
+			// UpdAte Input with disk StAt
+			ExplorerItem.mergeLocAlWithDisk(modelStAt, root);
 			const item = root.find(resource);
-			await this.view.refresh(true, root);
+			AwAit this.view.refresh(true, root);
 
-			// Select and Reveal
-			await this.view.selectResource(item ? item.resource : undefined, reveal);
-		} catch (error) {
+			// Select And ReveAl
+			AwAit this.view.selectResource(item ? item.resource : undefined, reveAl);
+		} cAtch (error) {
 			root.isError = true;
-			await this.view.refresh(false, root);
+			AwAit this.view.refresh(fAlse, root);
 		}
 	}
 
-	async refresh(reveal = true): Promise<void> {
-		this.model.roots.forEach(r => r.forgetChildren());
+	Async refresh(reveAl = true): Promise<void> {
+		this.model.roots.forEAch(r => r.forgetChildren());
 		if (this.view) {
-			await this.view.refresh(true);
-			const resource = EditorResourceAccessor.getOriginalUri(this.editorService.activeEditor);
-			const autoReveal = this.configurationService.getValue<IFilesConfiguration>().explorer.autoReveal;
+			AwAit this.view.refresh(true);
+			const resource = EditorResourceAccessor.getOriginAlUri(this.editorService.ActiveEditor);
+			const AutoReveAl = this.configurAtionService.getVAlue<IFilesConfigurAtion>().explorer.AutoReveAl;
 
-			if (reveal && resource && autoReveal) {
-				// We did a top level refresh, reveal the active file #67118
-				this.select(resource, autoReveal);
+			if (reveAl && resource && AutoReveAl) {
+				// We did A top level refresh, reveAl the Active file #67118
+				this.select(resource, AutoReveAl);
 			}
 		}
 	}
 
 	// File events
 
-	private async onDidRunOperation(e: FileOperationEvent): Promise<void> {
+	privAte Async onDidRunOperAtion(e: FileOperAtionEvent): Promise<void> {
 		// Add
-		if (e.isOperation(FileOperation.CREATE) || e.isOperation(FileOperation.COPY)) {
-			const addedElement = e.target;
-			const parentResource = dirname(addedElement.resource)!;
-			const parents = this.model.findAll(parentResource);
+		if (e.isOperAtion(FileOperAtion.CREATE) || e.isOperAtion(FileOperAtion.COPY)) {
+			const AddedElement = e.tArget;
+			const pArentResource = dirnAme(AddedElement.resource)!;
+			const pArents = this.model.findAll(pArentResource);
 
-			if (parents.length) {
+			if (pArents.length) {
 
-				// Add the new file to its parent (Model)
-				parents.forEach(async p => {
-					// We have to check if the parent is resolved #29177
-					const resolveMetadata = this.sortOrder === `modified`;
+				// Add the new file to its pArent (Model)
+				pArents.forEAch(Async p => {
+					// We hAve to check if the pArent is resolved #29177
+					const resolveMetAdAtA = this.sortOrder === `modified`;
 					if (!p.isDirectoryResolved) {
-						const stat = await this.fileService.resolve(p.resource, { resolveMetadata });
-						if (stat) {
-							const modelStat = ExplorerItem.create(this.fileService, stat, p.parent);
-							ExplorerItem.mergeLocalWithDisk(modelStat, p);
+						const stAt = AwAit this.fileService.resolve(p.resource, { resolveMetAdAtA });
+						if (stAt) {
+							const modelStAt = ExplorerItem.creAte(this.fileService, stAt, p.pArent);
+							ExplorerItem.mergeLocAlWithDisk(modelStAt, p);
 						}
 					}
 
-					const childElement = ExplorerItem.create(this.fileService, addedElement, p.parent);
-					// Make sure to remove any previous version of the file if any
+					const childElement = ExplorerItem.creAte(this.fileService, AddedElement, p.pArent);
+					// MAke sure to remove Any previous version of the file if Any
 					p.removeChild(childElement);
-					p.addChild(childElement);
-					// Refresh the Parent (View)
-					await this.view?.refresh(false, p);
+					p.AddChild(childElement);
+					// Refresh the PArent (View)
+					AwAit this.view?.refresh(fAlse, p);
 				});
 			}
 		}
 
-		// Move (including Rename)
-		else if (e.isOperation(FileOperation.MOVE)) {
+		// Move (including RenAme)
+		else if (e.isOperAtion(FileOperAtion.MOVE)) {
 			const oldResource = e.resource;
-			const newElement = e.target;
-			const oldParentResource = dirname(oldResource);
-			const newParentResource = dirname(newElement.resource);
+			const newElement = e.tArget;
+			const oldPArentResource = dirnAme(oldResource);
+			const newPArentResource = dirnAme(newElement.resource);
 
-			// Handle Rename
-			if (oldParentResource.toString() === newParentResource.toString()) {
+			// HAndle RenAme
+			if (oldPArentResource.toString() === newPArentResource.toString()) {
 				const modelElements = this.model.findAll(oldResource);
-				modelElements.forEach(async modelElement => {
-					// Rename File (Model)
-					modelElement.rename(newElement);
-					await this.view?.refresh(false, modelElement.parent);
+				modelElements.forEAch(Async modelElement => {
+					// RenAme File (Model)
+					modelElement.renAme(newElement);
+					AwAit this.view?.refresh(fAlse, modelElement.pArent);
 				});
 			}
 
-			// Handle Move
+			// HAndle Move
 			else {
-				const newParents = this.model.findAll(newParentResource);
+				const newPArents = this.model.findAll(newPArentResource);
 				const modelElements = this.model.findAll(oldResource);
 
-				if (newParents.length && modelElements.length) {
+				if (newPArents.length && modelElements.length) {
 					// Move in Model
-					modelElements.forEach(async (modelElement, index) => {
-						const oldParent = modelElement.parent;
-						modelElement.move(newParents[index]);
-						await this.view?.refresh(false, oldParent);
-						await this.view?.refresh(false, newParents[index]);
+					modelElements.forEAch(Async (modelElement, index) => {
+						const oldPArent = modelElement.pArent;
+						modelElement.move(newPArents[index]);
+						AwAit this.view?.refresh(fAlse, oldPArent);
+						AwAit this.view?.refresh(fAlse, newPArents[index]);
 					});
 				}
 			}
 		}
 
 		// Delete
-		else if (e.isOperation(FileOperation.DELETE)) {
+		else if (e.isOperAtion(FileOperAtion.DELETE)) {
 			const modelElements = this.model.findAll(e.resource);
-			modelElements.forEach(async element => {
-				if (element.parent) {
-					const parent = element.parent;
-					// Remove Element from Parent (Model)
-					parent.removeChild(element);
+			modelElements.forEAch(Async element => {
+				if (element.pArent) {
+					const pArent = element.pArent;
+					// Remove Element from PArent (Model)
+					pArent.removeChild(element);
 					this.view?.focusNeighbourIfItemFocused(element);
-					// Refresh Parent (View)
-					await this.view?.refresh(false, parent);
+					// Refresh PArent (View)
+					AwAit this.view?.refresh(fAlse, pArent);
 				}
 			});
 		}
 	}
 
-	private onDidFilesChange(e: FileChangesEvent): void {
-		// Check if an explorer refresh is necessary (delayed to give internal events a chance to react first)
-		// Note: there is no guarantee when the internal events are fired vs real ones. Code has to deal with the fact that one might
-		// be fired first over the other or not at all.
-		setTimeout(async () => {
-			// Filter to the ones we care
+	privAte onDidFilesChAnge(e: FileChAngesEvent): void {
+		// Check if An explorer refresh is necessAry (delAyed to give internAl events A chAnce to reAct first)
+		// Note: there is no guArAntee when the internAl events Are fired vs reAl ones. Code hAs to deAl with the fAct thAt one might
+		// be fired first over the other or not At All.
+		setTimeout(Async () => {
+			// Filter to the ones we cAre
 			const shouldRefresh = () => {
-				e = this.filterToViewRelevantEvents(e);
-				// Handle added files/folders
-				const added = e.getAdded();
-				if (added.length) {
+				e = this.filterToViewRelevAntEvents(e);
+				// HAndle Added files/folders
+				const Added = e.getAdded();
+				if (Added.length) {
 
-					// Check added: Refresh if added file/folder is not part of resolved root and parent is part of it
-					const ignoredPaths: Set<string> = new Set();
-					for (let i = 0; i < added.length; i++) {
-						const change = added[i];
+					// Check Added: Refresh if Added file/folder is not pArt of resolved root And pArent is pArt of it
+					const ignoredPAths: Set<string> = new Set();
+					for (let i = 0; i < Added.length; i++) {
+						const chAnge = Added[i];
 
-						// Find parent
-						const parent = dirname(change.resource);
+						// Find pArent
+						const pArent = dirnAme(chAnge.resource);
 
-						// Continue if parent was already determined as to be ignored
-						if (ignoredPaths.has(parent.toString())) {
+						// Continue if pArent wAs AlreAdy determined As to be ignored
+						if (ignoredPAths.hAs(pArent.toString())) {
 							continue;
 						}
 
-						// Compute if parent is visible and added file not yet part of it
-						const parentStat = this.model.findClosest(parent);
-						if (parentStat && parentStat.isDirectoryResolved && !this.model.findClosest(change.resource)) {
+						// Compute if pArent is visible And Added file not yet pArt of it
+						const pArentStAt = this.model.findClosest(pArent);
+						if (pArentStAt && pArentStAt.isDirectoryResolved && !this.model.findClosest(chAnge.resource)) {
 							return true;
 						}
 
-						// Keep track of path that can be ignored for faster lookup
-						if (!parentStat || !parentStat.isDirectoryResolved) {
-							ignoredPaths.add(parent.toString());
+						// Keep trAck of pAth thAt cAn be ignored for fAster lookup
+						if (!pArentStAt || !pArentStAt.isDirectoryResolved) {
+							ignoredPAths.Add(pArent.toString());
 						}
 					}
 				}
 
-				// Handle deleted files/folders
+				// HAndle deleted files/folders
 				const deleted = e.getDeleted();
 				if (deleted.length) {
 
-					// Check deleted: Refresh if deleted file/folder part of resolved root
+					// Check deleted: Refresh if deleted file/folder pArt of resolved root
 					for (let j = 0; j < deleted.length; j++) {
 						const del = deleted[j];
 						const item = this.model.findClosest(del.resource);
-						if (item && item.parent) {
+						if (item && item.pArent) {
 							return true;
 						}
 					}
 				}
 
-				// Handle updated files/folders if we sort by modified
+				// HAndle updAted files/folders if we sort by modified
 				if (this._sortOrder === SortOrder.Modified) {
-					const updated = e.getUpdated();
+					const updAted = e.getUpdAted();
 
-					// Check updated: Refresh if updated file/folder part of resolved root
-					for (let j = 0; j < updated.length; j++) {
-						const upd = updated[j];
+					// Check updAted: Refresh if updAted file/folder pArt of resolved root
+					for (let j = 0; j < updAted.length; j++) {
+						const upd = updAted[j];
 						const item = this.model.findClosest(upd.resource);
 
-						if (item && item.parent) {
+						if (item && item.pArent) {
 							return true;
 						}
 					}
 				}
 
-				return false;
+				return fAlse;
 			};
 
 			if (shouldRefresh()) {
-				await this.refresh(false);
+				AwAit this.refresh(fAlse);
 			}
 		}, ExplorerService.EXPLORER_FILE_CHANGES_REACT_DELAY);
 	}
 
-	private filterToViewRelevantEvents(e: FileChangesEvent): FileChangesEvent {
-		return e.filter(change => {
-			if (change.type === FileChangeType.UPDATED && this._sortOrder !== SortOrder.Modified) {
-				return false; // we only are about updated if we sort by modified time
+	privAte filterToViewRelevAntEvents(e: FileChAngesEvent): FileChAngesEvent {
+		return e.filter(chAnge => {
+			if (chAnge.type === FileChAngeType.UPDATED && this._sortOrder !== SortOrder.Modified) {
+				return fAlse; // we only Are About updAted if we sort by modified time
 			}
 
-			if (!this.contextService.isInsideWorkspace(change.resource)) {
-				return false; // exclude changes for resources outside of workspace
+			if (!this.contextService.isInsideWorkspAce(chAnge.resource)) {
+				return fAlse; // exclude chAnges for resources outside of workspAce
 			}
 
-			if (this.fileEventsFilter.matches(change.resource)) {
-				return false; // excluded via files.exclude setting
+			if (this.fileEventsFilter.mAtches(chAnge.resource)) {
+				return fAlse; // excluded viA files.exclude setting
 			}
 
 			return true;
 		});
 	}
 
-	private async onConfigurationUpdated(configuration: IFilesConfiguration, event?: IConfigurationChangeEvent): Promise<void> {
-		const configSortOrder = configuration?.explorer?.sortOrder || 'default';
+	privAte Async onConfigurAtionUpdAted(configurAtion: IFilesConfigurAtion, event?: IConfigurAtionChAngeEvent): Promise<void> {
+		const configSortOrder = configurAtion?.explorer?.sortOrder || 'defAult';
 		if (this._sortOrder !== configSortOrder) {
 			const shouldRefresh = this._sortOrder !== undefined;
 			this._sortOrder = configSortOrder;
 			if (shouldRefresh) {
-				await this.refresh();
+				AwAit this.refresh();
 			}
 		}
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
+		this.disposAbles.dispose();
 	}
 }

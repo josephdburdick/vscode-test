@@ -1,220 +1,220 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { assertIsDefined, isFunction, withNullAsUndefined } from 'vs/base/common/types';
-import { ICodeEditor, getCodeEditor, IPasteEvent } from 'vs/editor/browser/editorBrowser';
+import * As nls from 'vs/nls';
+import { AssertIsDefined, isFunction, withNullAsUndefined } from 'vs/bAse/common/types';
+import { ICodeEditor, getCodeEditor, IPAsteEvent } from 'vs/editor/browser/editorBrowser';
 import { TextEditorOptions, EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workbench/common/editor';
 import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
+import { BAseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
 import { UntitledTextEditorInput } from 'vs/workbench/services/untitled/common/untitledTextEditorInput';
-import { BaseTextEditor } from 'vs/workbench/browser/parts/editor/textEditor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { Event } from 'vs/base/common/event';
+import { BAseTextEditor } from 'vs/workbench/browser/pArts/editor/textEditor';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ITextResourceConfigurAtionService } from 'vs/editor/common/services/textResourceConfigurAtionService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { Event } from 'vs/bAse/common/event';
 import { ScrollType, IEditor } from 'vs/editor/common/editorCommon';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 import { EditorOption, IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { ModelConstants } from 'vs/editor/common/model';
+import { ModelConstAnts } from 'vs/editor/common/model';
 
 /**
- * An editor implementation that is capable of showing the contents of resource inputs. Uses
+ * An editor implementAtion thAt is cApAble of showing the contents of resource inputs. Uses
  * the TextEditor widget to show the contents.
  */
-export class AbstractTextResourceEditor extends BaseTextEditor {
+export clAss AbstrActTextResourceEditor extends BAseTextEditor {
 
 	constructor(
 		id: string,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IStorageService storageService: IStorageService,
-		@ITextResourceConfigurationService textResourceConfigurationService: ITextResourceConfigurationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@ITextResourceConfigurAtionService textResourceConfigurAtionService: ITextResourceConfigurAtionService,
 		@IThemeService themeService: IThemeService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IEditorService editorService: IEditorService
 	) {
-		super(id, telemetryService, instantiationService, storageService, textResourceConfigurationService, themeService, editorService, editorGroupService);
+		super(id, telemetryService, instAntiAtionService, storAgeService, textResourceConfigurAtionService, themeService, editorService, editorGroupService);
 	}
 
 	getTitle(): string | undefined {
 		if (this.input) {
-			return this.input.getName();
+			return this.input.getNAme();
 		}
 
-		return nls.localize('textEditor', "Text Editor");
+		return nls.locAlize('textEditor', "Text Editor");
 	}
 
-	async setInput(input: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
+	Async setInput(input: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
 
-		// Remember view settings if input changes
-		this.saveTextResourceEditorViewState(this.input);
+		// Remember view settings if input chAnges
+		this.sAveTextResourceEditorViewStAte(this.input);
 
-		// Set input and resolve
-		await super.setInput(input, options, context, token);
-		const resolvedModel = await input.resolve();
+		// Set input And resolve
+		AwAit super.setInput(input, options, context, token);
+		const resolvedModel = AwAit input.resolve();
 
-		// Check for cancellation
-		if (token.isCancellationRequested) {
+		// Check for cAncellAtion
+		if (token.isCAncellAtionRequested) {
 			return undefined;
 		}
 
-		// Assert Model instance
-		if (!(resolvedModel instanceof BaseTextEditorModel)) {
-			throw new Error('Unable to open file as text');
+		// Assert Model instAnce
+		if (!(resolvedModel instAnceof BAseTextEditorModel)) {
+			throw new Error('UnAble to open file As text');
 		}
 
 		// Set Editor Model
-		const textEditor = assertIsDefined(this.getControl());
+		const textEditor = AssertIsDefined(this.getControl());
 		const textEditorModel = resolvedModel.textEditorModel;
 		textEditor.setModel(textEditorModel);
 
 		// Apply Options from TextOptions
-		let optionsGotApplied = false;
+		let optionsGotApplied = fAlse;
 		const textOptions = <TextEditorOptions>options;
-		if (textOptions && isFunction(textOptions.apply)) {
-			optionsGotApplied = textOptions.apply(textEditor, ScrollType.Immediate);
+		if (textOptions && isFunction(textOptions.Apply)) {
+			optionsGotApplied = textOptions.Apply(textEditor, ScrollType.ImmediAte);
 		}
 
-		// Otherwise restore View State unless disabled via settings
-		if (!optionsGotApplied && this.shouldRestoreTextEditorViewState(input, context)) {
-			this.restoreTextResourceEditorViewState(input, textEditor);
+		// Otherwise restore View StAte unless disAbled viA settings
+		if (!optionsGotApplied && this.shouldRestoreTextEditorViewStAte(input, context)) {
+			this.restoreTextResourceEditorViewStAte(input, textEditor);
 		}
 
-		// Since the resolved model provides information about being readonly
-		// or not, we apply it here to the editor even though the editor input
-		// was already asked for being readonly or not. The rationale is that
-		// a resolved model might have more specific information about being
-		// readonly or not that the input did not have.
-		textEditor.updateOptions({ readOnly: resolvedModel.isReadonly() });
+		// Since the resolved model provides informAtion About being reAdonly
+		// or not, we Apply it here to the editor even though the editor input
+		// wAs AlreAdy Asked for being reAdonly or not. The rAtionAle is thAt
+		// A resolved model might hAve more specific informAtion About being
+		// reAdonly or not thAt the input did not hAve.
+		textEditor.updAteOptions({ reAdOnly: resolvedModel.isReAdonly() });
 	}
 
-	private restoreTextResourceEditorViewState(editor: EditorInput, control: IEditor) {
-		if (editor instanceof UntitledTextEditorInput || editor instanceof ResourceEditorInput) {
-			const viewState = this.loadTextEditorViewState(editor.resource);
-			if (viewState) {
-				control.restoreViewState(viewState);
+	privAte restoreTextResourceEditorViewStAte(editor: EditorInput, control: IEditor) {
+		if (editor instAnceof UntitledTextEditorInput || editor instAnceof ResourceEditorInput) {
+			const viewStAte = this.loAdTextEditorViewStAte(editor.resource);
+			if (viewStAte) {
+				control.restoreViewStAte(viewStAte);
 			}
 		}
 	}
 
 	/**
-	 * Reveals the last line of this editor if it has a model set.
+	 * ReveAls the lAst line of this editor if it hAs A model set.
 	 */
-	revealLastLine(): void {
+	reveAlLAstLine(): void {
 		const codeEditor = <ICodeEditor>this.getControl();
 		const model = codeEditor.getModel();
 
 		if (model) {
-			const lastLine = model.getLineCount();
-			codeEditor.revealPosition({ lineNumber: lastLine, column: model.getLineMaxColumn(lastLine) }, ScrollType.Smooth);
+			const lAstLine = model.getLineCount();
+			codeEditor.reveAlPosition({ lineNumber: lAstLine, column: model.getLineMAxColumn(lAstLine) }, ScrollType.Smooth);
 		}
 	}
 
-	clearInput(): void {
+	cleArInput(): void {
 
-		// Keep editor view state in settings to restore when coming back
-		this.saveTextResourceEditorViewState(this.input);
+		// Keep editor view stAte in settings to restore when coming bAck
+		this.sAveTextResourceEditorViewStAte(this.input);
 
-		// Clear Model
+		// CleAr Model
 		const textEditor = this.getControl();
 		if (textEditor) {
 			textEditor.setModel(null);
 		}
 
-		super.clearInput();
+		super.cleArInput();
 	}
 
-	protected saveState(): void {
+	protected sAveStAte(): void {
 
-		// Save View State (only for untitled)
-		if (this.input instanceof UntitledTextEditorInput) {
-			this.saveTextResourceEditorViewState(this.input);
+		// SAve View StAte (only for untitled)
+		if (this.input instAnceof UntitledTextEditorInput) {
+			this.sAveTextResourceEditorViewStAte(this.input);
 		}
 
-		super.saveState();
+		super.sAveStAte();
 	}
 
-	private saveTextResourceEditorViewState(input: EditorInput | undefined): void {
-		if (!(input instanceof UntitledTextEditorInput) && !(input instanceof ResourceEditorInput)) {
-			return; // only enabled for untitled and resource inputs
+	privAte sAveTextResourceEditorViewStAte(input: EditorInput | undefined): void {
+		if (!(input instAnceof UntitledTextEditorInput) && !(input instAnceof ResourceEditorInput)) {
+			return; // only enAbled for untitled And resource inputs
 		}
 
 		const resource = input.resource;
 
-		// Clear view state if input is disposed
+		// CleAr view stAte if input is disposed
 		if (input.isDisposed()) {
-			super.clearTextEditorViewState([resource]);
+			super.cleArTextEditorViewStAte([resource]);
 		}
 
-		// Otherwise save it
+		// Otherwise sAve it
 		else {
-			super.saveTextEditorViewState(resource);
+			super.sAveTextEditorViewStAte(resource);
 
-			// Make sure to clean up when the input gets disposed
+			// MAke sure to cleAn up when the input gets disposed
 			Event.once(input.onDispose)(() => {
-				super.clearTextEditorViewState([resource]);
+				super.cleArTextEditorViewStAte([resource]);
 			});
 		}
 	}
 }
 
-export class TextResourceEditor extends AbstractTextResourceEditor {
+export clAss TextResourceEditor extends AbstrActTextResourceEditor {
 
-	static readonly ID = 'workbench.editors.textResourceEditor';
+	stAtic reAdonly ID = 'workbench.editors.textResourceEditor';
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IStorageService storageService: IStorageService,
-		@ITextResourceConfigurationService textResourceConfigurationService: ITextResourceConfigurationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@ITextResourceConfigurAtionService textResourceConfigurAtionService: ITextResourceConfigurAtionService,
 		@IThemeService themeService: IThemeService,
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
-		@IModelService private readonly modelService: IModelService,
-		@IModeService private readonly modeService: IModeService
+		@IModelService privAte reAdonly modelService: IModelService,
+		@IModeService privAte reAdonly modeService: IModeService
 	) {
-		super(TextResourceEditor.ID, telemetryService, instantiationService, storageService, textResourceConfigurationService, themeService, editorGroupService, editorService);
+		super(TextResourceEditor.ID, telemetryService, instAntiAtionService, storAgeService, textResourceConfigurAtionService, themeService, editorGroupService, editorService);
 	}
 
-	protected createEditorControl(parent: HTMLElement, configuration: IEditorOptions): IEditor {
-		const control = super.createEditorControl(parent, configuration);
+	protected creAteEditorControl(pArent: HTMLElement, configurAtion: IEditorOptions): IEditor {
+		const control = super.creAteEditorControl(pArent, configurAtion);
 
-		// Install a listener for paste to update this editors
-		// language mode if the paste includes a specific mode
+		// InstAll A listener for pAste to updAte this editors
+		// lAnguAge mode if the pAste includes A specific mode
 		const codeEditor = getCodeEditor(control);
 		if (codeEditor) {
-			this._register(codeEditor.onDidPaste(e => this.onDidEditorPaste(e, codeEditor)));
+			this._register(codeEditor.onDidPAste(e => this.onDidEditorPAste(e, codeEditor)));
 		}
 
 		return control;
 	}
 
-	private onDidEditorPaste(e: IPasteEvent, codeEditor: ICodeEditor): void {
-		if (this.input instanceof UntitledTextEditorInput && this.input.model.hasModeSetExplicitly) {
-			return; // do not override mode if it was set explicitly
+	privAte onDidEditorPAste(e: IPAsteEvent, codeEditor: ICodeEditor): void {
+		if (this.input instAnceof UntitledTextEditorInput && this.input.model.hAsModeSetExplicitly) {
+			return; // do not override mode if it wAs set explicitly
 		}
 
-		if (e.range.startLineNumber !== 1 || e.range.startColumn !== 1) {
-			return; // only when pasting into first line, first column (= empty document)
+		if (e.rAnge.stArtLineNumber !== 1 || e.rAnge.stArtColumn !== 1) {
+			return; // only when pAsting into first line, first column (= empty document)
 		}
 
-		if (codeEditor.getOption(EditorOption.readOnly)) {
-			return; // not for readonly editors
+		if (codeEditor.getOption(EditorOption.reAdOnly)) {
+			return; // not for reAdonly editors
 		}
 
 		const textModel = codeEditor.getModel();
 		if (!textModel) {
-			return; // require a live model
+			return; // require A live model
 		}
 
 		const currentMode = textModel.getModeId();
@@ -222,24 +222,24 @@ export class TextResourceEditor extends AbstractTextResourceEditor {
 			return; // require current mode to be unspecific
 		}
 
-		let candidateMode: string | undefined = undefined;
+		let cAndidAteMode: string | undefined = undefined;
 
-		// A mode is provided via the paste event so text was copied using
-		// VSCode. As such we trust this mode and use it if specific
+		// A mode is provided viA the pAste event so text wAs copied using
+		// VSCode. As such we trust this mode And use it if specific
 		if (e.mode) {
-			candidateMode = e.mode;
+			cAndidAteMode = e.mode;
 		}
 
-		// A mode was not provided, so the data comes from outside VSCode
-		// We can still try to guess a good mode from the first line if
-		// the paste changed the first line
+		// A mode wAs not provided, so the dAtA comes from outside VSCode
+		// We cAn still try to guess A good mode from the first line if
+		// the pAste chAnged the first line
 		else {
-			candidateMode = withNullAsUndefined(this.modeService.getModeIdByFilepathOrFirstLine(textModel.uri, textModel.getLineContent(1).substr(0, ModelConstants.FIRST_LINE_DETECTION_LENGTH_LIMIT)));
+			cAndidAteMode = withNullAsUndefined(this.modeService.getModeIdByFilepAthOrFirstLine(textModel.uri, textModel.getLineContent(1).substr(0, ModelConstAnts.FIRST_LINE_DETECTION_LENGTH_LIMIT)));
 		}
 
-		// Finally apply mode to model if specified
-		if (candidateMode !== PLAINTEXT_MODE_ID) {
-			this.modelService.setMode(textModel, this.modeService.create(candidateMode));
+		// FinAlly Apply mode to model if specified
+		if (cAndidAteMode !== PLAINTEXT_MODE_ID) {
+			this.modelService.setMode(textModel, this.modeService.creAte(cAndidAteMode));
 		}
 	}
 }

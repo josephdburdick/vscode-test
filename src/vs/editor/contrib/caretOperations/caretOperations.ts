@@ -1,64 +1,64 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, IActionOptions, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
-import { ICommand } from 'vs/editor/common/editorCommon';
+import { ICommAnd } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { MoveCaretCommand } from 'vs/editor/contrib/caretOperations/moveCaretCommand';
+import { MoveCAretCommAnd } from 'vs/editor/contrib/cAretOperAtions/moveCAretCommAnd';
 
-class MoveCaretAction extends EditorAction {
+clAss MoveCAretAction extends EditorAction {
 
-	private readonly left: boolean;
+	privAte reAdonly left: booleAn;
 
-	constructor(left: boolean, opts: IActionOptions) {
+	constructor(left: booleAn, opts: IActionOptions) {
 		super(opts);
 
 		this.left = left;
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (!editor.hasModel()) {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
-		let commands: ICommand[] = [];
+		let commAnds: ICommAnd[] = [];
 		let selections = editor.getSelections();
 
 		for (const selection of selections) {
-			commands.push(new MoveCaretCommand(selection, this.left));
+			commAnds.push(new MoveCAretCommAnd(selection, this.left));
 		}
 
 		editor.pushUndoStop();
-		editor.executeCommands(this.id, commands);
+		editor.executeCommAnds(this.id, commAnds);
 		editor.pushUndoStop();
 	}
 }
 
-class MoveCaretLeftAction extends MoveCaretAction {
+clAss MoveCAretLeftAction extends MoveCAretAction {
 	constructor() {
 		super(true, {
-			id: 'editor.action.moveCarretLeftAction',
-			label: nls.localize('caret.moveLeft', "Move Selected Text Left"),
-			alias: 'Move Selected Text Left',
-			precondition: EditorContextKeys.writable
+			id: 'editor.Action.moveCArretLeftAction',
+			lAbel: nls.locAlize('cAret.moveLeft', "Move Selected Text Left"),
+			AliAs: 'Move Selected Text Left',
+			precondition: EditorContextKeys.writAble
 		});
 	}
 }
 
-class MoveCaretRightAction extends MoveCaretAction {
+clAss MoveCAretRightAction extends MoveCAretAction {
 	constructor() {
-		super(false, {
-			id: 'editor.action.moveCarretRightAction',
-			label: nls.localize('caret.moveRight', "Move Selected Text Right"),
-			alias: 'Move Selected Text Right',
-			precondition: EditorContextKeys.writable
+		super(fAlse, {
+			id: 'editor.Action.moveCArretRightAction',
+			lAbel: nls.locAlize('cAret.moveRight', "Move Selected Text Right"),
+			AliAs: 'Move Selected Text Right',
+			precondition: EditorContextKeys.writAble
 		});
 	}
 }
 
-registerEditorAction(MoveCaretLeftAction);
-registerEditorAction(MoveCaretRightAction);
+registerEditorAction(MoveCAretLeftAction);
+registerEditorAction(MoveCAretRightAction);

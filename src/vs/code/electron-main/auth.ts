@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { FileAccess } from 'vs/base/common/network';
-import { BrowserWindow, BrowserWindowConstructorOptions, app, AuthInfo, WebContents, Event as ElectronEvent } from 'electron';
+import { locAlize } from 'vs/nls';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { FileAccess } from 'vs/bAse/common/network';
+import { BrowserWindow, BrowserWindowConstructorOptions, App, AuthInfo, WebContents, Event As ElectronEvent } from 'electron';
 
 type LoginEvent = {
 	event: ElectronEvent;
 	webContents: WebContents;
 	req: Request;
-	authInfo: AuthInfo;
-	cb: (username: string, password: string) => void;
+	AuthInfo: AuthInfo;
+	cb: (usernAme: string, pAssword: string) => void;
 };
 
-type Credentials = {
-	username: string;
-	password: string;
+type CredentiAls = {
+	usernAme: string;
+	pAssword: string;
 };
 
-export class ProxyAuthHandler extends Disposable {
+export clAss ProxyAuthHAndler extends DisposAble {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private retryCount = 0;
+	privAte retryCount = 0;
 
 	constructor() {
 		super();
@@ -34,13 +34,13 @@ export class ProxyAuthHandler extends Disposable {
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		const onLogin = Event.fromNodeEventEmitter<LoginEvent>(app, 'login', (event, webContents, req, authInfo, cb) => ({ event, webContents, req, authInfo, cb }));
+	privAte registerListeners(): void {
+		const onLogin = Event.fromNodeEventEmitter<LoginEvent>(App, 'login', (event, webContents, req, AuthInfo, cb) => ({ event, webContents, req, AuthInfo, cb }));
 		this._register(onLogin(this.onLogin, this));
 	}
 
-	private onLogin({ event, authInfo, cb }: LoginEvent): void {
-		if (!authInfo.isProxy) {
+	privAte onLogin({ event, AuthInfo, cb }: LoginEvent): void {
+		if (!AuthInfo.isProxy) {
 			return;
 		}
 
@@ -48,55 +48,55 @@ export class ProxyAuthHandler extends Disposable {
 			return;
 		}
 
-		event.preventDefault();
+		event.preventDefAult();
 
 		const opts: BrowserWindowConstructorOptions = {
-			alwaysOnTop: true,
-			skipTaskbar: true,
-			resizable: false,
+			AlwAysOnTop: true,
+			skipTAskbAr: true,
+			resizAble: fAlse,
 			width: 450,
 			height: 225,
 			show: true,
 			title: 'VS Code',
 			webPreferences: {
-				preload: FileAccess.asFileUri('vs/base/parts/sandbox/electron-browser/preload.js', require).fsPath,
-				sandbox: true,
-				contextIsolation: true,
-				enableWebSQL: false,
-				enableRemoteModule: false,
-				spellcheck: false,
-				devTools: false
+				preloAd: FileAccess.AsFileUri('vs/bAse/pArts/sAndbox/electron-browser/preloAd.js', require).fsPAth,
+				sAndbox: true,
+				contextIsolAtion: true,
+				enAbleWebSQL: fAlse,
+				enAbleRemoteModule: fAlse,
+				spellcheck: fAlse,
+				devTools: fAlse
 			}
 		};
 
 		const focusedWindow = BrowserWindow.getFocusedWindow();
 		if (focusedWindow) {
-			opts.parent = focusedWindow;
-			opts.modal = true;
+			opts.pArent = focusedWindow;
+			opts.modAl = true;
 		}
 
 		const win = new BrowserWindow(opts);
-		const windowUrl = FileAccess.asBrowserUri('vs/code/electron-sandbox/proxy/auth.html', require);
-		const proxyUrl = `${authInfo.host}:${authInfo.port}`;
-		const title = localize('authRequire', "Proxy Authentication Required");
-		const message = localize('proxyauth', "The proxy {0} requires authentication.", proxyUrl);
+		const windowUrl = FileAccess.AsBrowserUri('vs/code/electron-sAndbox/proxy/Auth.html', require);
+		const proxyUrl = `${AuthInfo.host}:${AuthInfo.port}`;
+		const title = locAlize('AuthRequire', "Proxy AuthenticAtion Required");
+		const messAge = locAlize('proxyAuth', "The proxy {0} requires AuthenticAtion.", proxyUrl);
 
 		const onWindowClose = () => cb('', '');
 		win.on('close', onWindowClose);
 
 		win.setMenu(null);
-		win.webContents.on('did-finish-load', () => {
-			const data = { title, message };
-			win.webContents.send('vscode:openProxyAuthDialog', data);
+		win.webContents.on('did-finish-loAd', () => {
+			const dAtA = { title, messAge };
+			win.webContents.send('vscode:openProxyAuthDiAlog', dAtA);
 		});
-		win.webContents.on('ipc-message', (event, channel, credentials: Credentials) => {
-			if (channel === 'vscode:proxyAuthResponse') {
-				const { username, password } = credentials;
-				cb(username, password);
+		win.webContents.on('ipc-messAge', (event, chAnnel, credentiAls: CredentiAls) => {
+			if (chAnnel === 'vscode:proxyAuthResponse') {
+				const { usernAme, pAssword } = credentiAls;
+				cb(usernAme, pAssword);
 				win.removeListener('close', onWindowClose);
 				win.close();
 			}
 		});
-		win.loadURL(windowUrl.toString(true));
+		win.loAdURL(windowUrl.toString(true));
 	}
 }

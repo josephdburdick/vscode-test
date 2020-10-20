@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as words from '../utils/strings';
+import * As Assert from 'Assert';
+import * As words from '../utils/strings';
 
 suite('HTML Words', () => {
 
 	let wordRegex = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
-	function assertWord(value: string, expected: string): void {
-		let offset = value.indexOf('|');
-		value = value.substr(0, offset) + value.substr(offset + 1);
+	function AssertWord(vAlue: string, expected: string): void {
+		let offset = vAlue.indexOf('|');
+		vAlue = vAlue.substr(0, offset) + vAlue.substr(offset + 1);
 
-		let actualRange = words.getWordAtText(value, offset, wordRegex);
-		assert(actualRange.start <= offset);
-		assert(actualRange.start + actualRange.length >= offset);
-		assert.equal(value.substr(actualRange.start, actualRange.length), expected);
+		let ActuAlRAnge = words.getWordAtText(vAlue, offset, wordRegex);
+		Assert(ActuAlRAnge.stArt <= offset);
+		Assert(ActuAlRAnge.stArt + ActuAlRAnge.length >= offset);
+		Assert.equAl(vAlue.substr(ActuAlRAnge.stArt, ActuAlRAnge.length), expected);
 	}
 
 
-	test('Basic', function (): any {
-		assertWord('|var x1 = new F<A>(a, b);', 'var');
-		assertWord('v|ar x1 = new F<A>(a, b);', 'var');
-		assertWord('var| x1 = new F<A>(a, b);', 'var');
-		assertWord('var |x1 = new F<A>(a, b);', 'x1');
-		assertWord('var x1| = new F<A>(a, b);', 'x1');
-		assertWord('var x1 = new |F<A>(a, b);', 'F');
-		assertWord('var x1 = new F<|A>(a, b);', 'A');
-		assertWord('var x1 = new F<A>(|a, b);', 'a');
-		assertWord('var x1 = new F<A>(a, b|);', 'b');
-		assertWord('var x1 = new F<A>(a, b)|;', '');
-		assertWord('var x1 = new F<A>(a, b)|;|', '');
-		assertWord('var x1 = |  new F<A>(a, b)|;|', '');
+	test('BAsic', function (): Any {
+		AssertWord('|vAr x1 = new F<A>(A, b);', 'vAr');
+		AssertWord('v|Ar x1 = new F<A>(A, b);', 'vAr');
+		AssertWord('vAr| x1 = new F<A>(A, b);', 'vAr');
+		AssertWord('vAr |x1 = new F<A>(A, b);', 'x1');
+		AssertWord('vAr x1| = new F<A>(A, b);', 'x1');
+		AssertWord('vAr x1 = new |F<A>(A, b);', 'F');
+		AssertWord('vAr x1 = new F<|A>(A, b);', 'A');
+		AssertWord('vAr x1 = new F<A>(|A, b);', 'A');
+		AssertWord('vAr x1 = new F<A>(A, b|);', 'b');
+		AssertWord('vAr x1 = new F<A>(A, b)|;', '');
+		AssertWord('vAr x1 = new F<A>(A, b)|;|', '');
+		AssertWord('vAr x1 = |  new F<A>(A, b)|;|', '');
 	});
 
-	test('Multiline', function (): any {
-		assertWord('console.log("hello");\n|var x1 = new F<A>(a, b);', 'var');
-		assertWord('console.log("hello");\n|\nvar x1 = new F<A>(a, b);', '');
-		assertWord('console.log("hello");\n\r |var x1 = new F<A>(a, b);', 'var');
+	test('Multiline', function (): Any {
+		AssertWord('console.log("hello");\n|vAr x1 = new F<A>(A, b);', 'vAr');
+		AssertWord('console.log("hello");\n|\nvAr x1 = new F<A>(A, b);', '');
+		AssertWord('console.log("hello");\n\r |vAr x1 = new F<A>(A, b);', 'vAr');
 	});
 
 });

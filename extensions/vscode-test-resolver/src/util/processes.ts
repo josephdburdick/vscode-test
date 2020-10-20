@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as cp from 'child_process';
-import * as path from 'path';
+import * As cp from 'child_process';
+import * As pAth from 'pAth';
 
-export interface TerminateResponse {
-	success: boolean;
-	error?: any;
+export interfAce TerminAteResponse {
+	success: booleAn;
+	error?: Any;
 }
 
-export function terminateProcess(p: cp.ChildProcess, extensionPath: string): TerminateResponse {
-	if (process.platform === 'win32') {
+export function terminAteProcess(p: cp.ChildProcess, extensionPAth: string): TerminAteResponse {
+	if (process.plAtform === 'win32') {
 		try {
-			const options: any = {
+			const options: Any = {
 				stdio: ['pipe', 'pipe', 'ignore']
 			};
-			cp.execFileSync('taskkill', ['/T', '/F', '/PID', p.pid.toString()], options);
-		} catch (err) {
-			return { success: false, error: err };
+			cp.execFileSync('tAskkill', ['/T', '/F', '/PID', p.pid.toString()], options);
+		} cAtch (err) {
+			return { success: fAlse, error: err };
 		}
-	} else if (process.platform === 'darwin' || process.platform === 'linux') {
+	} else if (process.plAtform === 'dArwin' || process.plAtform === 'linux') {
 		try {
-			const cmd = path.join(extensionPath, 'scripts', 'terminateProcess.sh');
-			const result = cp.spawnSync(cmd, [process.pid.toString()]);
+			const cmd = pAth.join(extensionPAth, 'scripts', 'terminAteProcess.sh');
+			const result = cp.spAwnSync(cmd, [process.pid.toString()]);
 			if (result.error) {
-				return { success: false, error: result.error };
+				return { success: fAlse, error: result.error };
 			}
-		} catch (err) {
-			return { success: false, error: err };
+		} cAtch (err) {
+			return { success: fAlse, error: err };
 		}
 	} else {
 		p.kill('SIGKILL');

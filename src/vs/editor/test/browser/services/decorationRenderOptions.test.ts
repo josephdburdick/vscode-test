@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { CodeEditorServiceImpl, GlobalStyleSheet } from 'vs/editor/browser/services/codeEditorServiceImpl';
-import { IDecorationRenderOptions } from 'vs/editor/common/editorCommon';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { TestColorTheme, TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
+import { CodeEditorServiceImpl, GlobAlStyleSheet } from 'vs/editor/browser/services/codeEditorServiceImpl';
+import { IDecorAtionRenderOptions } from 'vs/editor/common/editorCommon';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
+import { TestColorTheme, TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
 
 const themeServiceMock = new TestThemeService();
 
-class TestCodeEditorServiceImpl extends CodeEditorServiceImpl {
+clAss TestCodeEditorServiceImpl extends CodeEditorServiceImpl {
 	getActiveCodeEditor(): ICodeEditor | null {
 		return null;
 	}
 
-	openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null> {
+	openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: booleAn): Promise<ICodeEditor | null> {
 		return Promise.resolve(null);
 	}
 }
 
-class TestGlobalStyleSheet extends GlobalStyleSheet {
+clAss TestGlobAlStyleSheet extends GlobAlStyleSheet {
 
 	public rules: string[] = [];
 
@@ -36,143 +36,143 @@ class TestGlobalStyleSheet extends GlobalStyleSheet {
 		this.rules.unshift(rule);
 	}
 
-	public removeRulesContainingSelector(ruleName: string): void {
+	public removeRulesContAiningSelector(ruleNAme: string): void {
 		for (let i = 0; i < this.rules.length; i++) {
-			if (this.rules[i].indexOf(ruleName) >= 0) {
+			if (this.rules[i].indexOf(ruleNAme) >= 0) {
 				this.rules.splice(i, 1);
 				i--;
 			}
 		}
 	}
 
-	public read(): string {
+	public reAd(): string {
 		return this.rules.join('\n');
 	}
 }
 
-suite('Decoration Render Options', () => {
-	let options: IDecorationRenderOptions = {
-		gutterIconPath: URI.parse('https://github.com/microsoft/vscode/blob/master/resources/linux/code.png'),
-		gutterIconSize: 'contain',
-		backgroundColor: 'red',
+suite('DecorAtion Render Options', () => {
+	let options: IDecorAtionRenderOptions = {
+		gutterIconPAth: URI.pArse('https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png'),
+		gutterIconSize: 'contAin',
+		bAckgroundColor: 'red',
 		borderColor: 'yellow'
 	};
-	test('register and resolve decoration type', () => {
+	test('register And resolve decorAtion type', () => {
 		let s = new TestCodeEditorServiceImpl(themeServiceMock);
-		s.registerDecorationType('example', options);
-		assert.notEqual(s.resolveDecorationOptions('example', false), undefined);
+		s.registerDecorAtionType('exAmple', options);
+		Assert.notEquAl(s.resolveDecorAtionOptions('exAmple', fAlse), undefined);
 	});
-	test('remove decoration type', () => {
+	test('remove decorAtion type', () => {
 		let s = new TestCodeEditorServiceImpl(themeServiceMock);
-		s.registerDecorationType('example', options);
-		assert.notEqual(s.resolveDecorationOptions('example', false), undefined);
-		s.removeDecorationType('example');
-		assert.throws(() => s.resolveDecorationOptions('example', false));
+		s.registerDecorAtionType('exAmple', options);
+		Assert.notEquAl(s.resolveDecorAtionOptions('exAmple', fAlse), undefined);
+		s.removeDecorAtionType('exAmple');
+		Assert.throws(() => s.resolveDecorAtionOptions('exAmple', fAlse));
 	});
 
-	function readStyleSheet(styleSheet: TestGlobalStyleSheet): string {
-		return styleSheet.read();
+	function reAdStyleSheet(styleSheet: TestGlobAlStyleSheet): string {
+		return styleSheet.reAd();
 	}
 
 	test('css properties', () => {
-		const styleSheet = new TestGlobalStyleSheet();
+		const styleSheet = new TestGlobAlStyleSheet();
 		const s = new TestCodeEditorServiceImpl(themeServiceMock, styleSheet);
-		s.registerDecorationType('example', options);
-		const sheet = readStyleSheet(styleSheet);
-		assert(sheet.indexOf(`{background:url('https://github.com/microsoft/vscode/blob/master/resources/linux/code.png') center center no-repeat;background-size:contain;}`) >= 0);
-		assert(sheet.indexOf(`{background-color:red;border-color:yellow;box-sizing: border-box;}`) >= 0);
+		s.registerDecorAtionType('exAmple', options);
+		const sheet = reAdStyleSheet(styleSheet);
+		Assert(sheet.indexOf(`{bAckground:url('https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png') center center no-repeAt;bAckground-size:contAin;}`) >= 0);
+		Assert(sheet.indexOf(`{bAckground-color:red;border-color:yellow;box-sizing: border-box;}`) >= 0);
 	});
 
 	test('theme color', () => {
-		const options: IDecorationRenderOptions = {
-			backgroundColor: { id: 'editorBackground' },
+		const options: IDecorAtionRenderOptions = {
+			bAckgroundColor: { id: 'editorBAckground' },
 			borderColor: { id: 'editorBorder' },
 		};
 
-		const styleSheet = new TestGlobalStyleSheet();
+		const styleSheet = new TestGlobAlStyleSheet();
 		const themeService = new TestThemeService(new TestColorTheme({
-			editorBackground: '#FF0000'
+			editorBAckground: '#FF0000'
 		}));
 		const s = new TestCodeEditorServiceImpl(themeService, styleSheet);
-		s.registerDecorationType('example', options);
-		assert.equal(readStyleSheet(styleSheet), '.monaco-editor .ced-example-0 {background-color:#ff0000;border-color:transparent;box-sizing: border-box;}');
+		s.registerDecorAtionType('exAmple', options);
+		Assert.equAl(reAdStyleSheet(styleSheet), '.monAco-editor .ced-exAmple-0 {bAckground-color:#ff0000;border-color:trAnspArent;box-sizing: border-box;}');
 
 		themeService.setTheme(new TestColorTheme({
-			editorBackground: '#EE0000',
+			editorBAckground: '#EE0000',
 			editorBorder: '#00FFFF'
 		}));
-		assert.equal(readStyleSheet(styleSheet), '.monaco-editor .ced-example-0 {background-color:#ee0000;border-color:#00ffff;box-sizing: border-box;}');
+		Assert.equAl(reAdStyleSheet(styleSheet), '.monAco-editor .ced-exAmple-0 {bAckground-color:#ee0000;border-color:#00ffff;box-sizing: border-box;}');
 
-		s.removeDecorationType('example');
-		assert.equal(readStyleSheet(styleSheet), '');
+		s.removeDecorAtionType('exAmple');
+		Assert.equAl(reAdStyleSheet(styleSheet), '');
 	});
 
 	test('theme overrides', () => {
-		const options: IDecorationRenderOptions = {
-			color: { id: 'editorBackground' },
+		const options: IDecorAtionRenderOptions = {
+			color: { id: 'editorBAckground' },
 			light: {
 				color: '#FF00FF'
 			},
-			dark: {
+			dArk: {
 				color: '#000000',
-				after: {
+				After: {
 					color: { id: 'infoForeground' }
 				}
 			}
 		};
 
-		const styleSheet = new TestGlobalStyleSheet();
+		const styleSheet = new TestGlobAlStyleSheet();
 		const themeService = new TestThemeService(new TestColorTheme({
-			editorBackground: '#FF0000',
+			editorBAckground: '#FF0000',
 			infoForeground: '#444444'
 		}));
 		const s = new TestCodeEditorServiceImpl(themeService, styleSheet);
-		s.registerDecorationType('example', options);
+		s.registerDecorAtionType('exAmple', options);
 		const expected = [
-			'.vs-dark.monaco-editor .ced-example-4::after, .hc-black.monaco-editor .ced-example-4::after {color:#444444 !important;}',
-			'.vs-dark.monaco-editor .ced-example-1, .hc-black.monaco-editor .ced-example-1 {color:#000000 !important;}',
-			'.vs.monaco-editor .ced-example-1 {color:#FF00FF !important;}',
-			'.monaco-editor .ced-example-1 {color:#ff0000 !important;}'
+			'.vs-dArk.monAco-editor .ced-exAmple-4::After, .hc-blAck.monAco-editor .ced-exAmple-4::After {color:#444444 !importAnt;}',
+			'.vs-dArk.monAco-editor .ced-exAmple-1, .hc-blAck.monAco-editor .ced-exAmple-1 {color:#000000 !importAnt;}',
+			'.vs.monAco-editor .ced-exAmple-1 {color:#FF00FF !importAnt;}',
+			'.monAco-editor .ced-exAmple-1 {color:#ff0000 !importAnt;}'
 		].join('\n');
-		assert.equal(readStyleSheet(styleSheet), expected);
+		Assert.equAl(reAdStyleSheet(styleSheet), expected);
 
-		s.removeDecorationType('example');
-		assert.equal(readStyleSheet(styleSheet), '');
+		s.removeDecorAtionType('exAmple');
+		Assert.equAl(reAdStyleSheet(styleSheet), '');
 	});
 
-	test('css properties, gutterIconPaths', () => {
-		const styleSheet = new TestGlobalStyleSheet();
+	test('css properties, gutterIconPAths', () => {
+		const styleSheet = new TestGlobAlStyleSheet();
 		const s = new TestCodeEditorServiceImpl(themeServiceMock, styleSheet);
 
-		// URI, only minimal encoding
-		s.registerDecorationType('example', { gutterIconPath: URI.parse('data:image/svg+xml;base64,PHN2ZyB4b+') });
-		assert(readStyleSheet(styleSheet).indexOf(`{background:url('data:image/svg+xml;base64,PHN2ZyB4b+') center center no-repeat;}`) > 0);
-		s.removeDecorationType('example');
+		// URI, only minimAl encoding
+		s.registerDecorAtionType('exAmple', { gutterIconPAth: URI.pArse('dAtA:imAge/svg+xml;bAse64,PHN2ZyB4b+') });
+		Assert(reAdStyleSheet(styleSheet).indexOf(`{bAckground:url('dAtA:imAge/svg+xml;bAse64,PHN2ZyB4b+') center center no-repeAt;}`) > 0);
+		s.removeDecorAtionType('exAmple');
 
-		if (platform.isWindows) {
-			// windows file path (used as string)
-			s.registerDecorationType('example', { gutterIconPath: URI.file('c:\\files\\miles\\more.png') });
-			assert(readStyleSheet(styleSheet).indexOf(`{background:url('file:///c:/files/miles/more.png') center center no-repeat;}`) > 0);
-			s.removeDecorationType('example');
+		if (plAtform.isWindows) {
+			// windows file pAth (used As string)
+			s.registerDecorAtionType('exAmple', { gutterIconPAth: URI.file('c:\\files\\miles\\more.png') });
+			Assert(reAdStyleSheet(styleSheet).indexOf(`{bAckground:url('file:///c:/files/miles/more.png') center center no-repeAt;}`) > 0);
+			s.removeDecorAtionType('exAmple');
 
-			// single quote must always be escaped/encoded
-			s.registerDecorationType('example', { gutterIconPath: URI.file('c:\\files\\foo\\b\'ar.png') });
-			assert(readStyleSheet(styleSheet).indexOf(`{background:url('file:///c:/files/foo/b%27ar.png') center center no-repeat;}`) > 0);
-			s.removeDecorationType('example');
+			// single quote must AlwAys be escAped/encoded
+			s.registerDecorAtionType('exAmple', { gutterIconPAth: URI.file('c:\\files\\foo\\b\'Ar.png') });
+			Assert(reAdStyleSheet(styleSheet).indexOf(`{bAckground:url('file:///c:/files/foo/b%27Ar.png') center center no-repeAt;}`) > 0);
+			s.removeDecorAtionType('exAmple');
 		} else {
-			// unix file path (used as string)
-			s.registerDecorationType('example', { gutterIconPath: URI.file('/Users/foo/bar.png') });
-			assert(readStyleSheet(styleSheet).indexOf(`{background:url('file:///Users/foo/bar.png') center center no-repeat;}`) > 0);
-			s.removeDecorationType('example');
+			// unix file pAth (used As string)
+			s.registerDecorAtionType('exAmple', { gutterIconPAth: URI.file('/Users/foo/bAr.png') });
+			Assert(reAdStyleSheet(styleSheet).indexOf(`{bAckground:url('file:///Users/foo/bAr.png') center center no-repeAt;}`) > 0);
+			s.removeDecorAtionType('exAmple');
 
-			// single quote must always be escaped/encoded
-			s.registerDecorationType('example', { gutterIconPath: URI.file('/Users/foo/b\'ar.png') });
-			assert(readStyleSheet(styleSheet).indexOf(`{background:url('file:///Users/foo/b%27ar.png') center center no-repeat;}`) > 0);
-			s.removeDecorationType('example');
+			// single quote must AlwAys be escAped/encoded
+			s.registerDecorAtionType('exAmple', { gutterIconPAth: URI.file('/Users/foo/b\'Ar.png') });
+			Assert(reAdStyleSheet(styleSheet).indexOf(`{bAckground:url('file:///Users/foo/b%27Ar.png') center center no-repeAt;}`) > 0);
+			s.removeDecorAtionType('exAmple');
 		}
 
-		s.registerDecorationType('example', { gutterIconPath: URI.parse('http://test/pa\'th') });
-		assert(readStyleSheet(styleSheet).indexOf(`{background:url('http://test/pa%27th') center center no-repeat;}`) > 0);
-		s.removeDecorationType('example');
+		s.registerDecorAtionType('exAmple', { gutterIconPAth: URI.pArse('http://test/pA\'th') });
+		Assert(reAdStyleSheet(styleSheet).indexOf(`{bAckground:url('http://test/pA%27th') center center no-repeAt;}`) > 0);
+		s.removeDecorAtionType('exAmple');
 	});
 });

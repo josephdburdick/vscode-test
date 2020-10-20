@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import * as resources from 'vs/base/common/resources';
-import { isString } from 'vs/base/common/types';
+import * As resources from 'vs/bAse/common/resources';
+import { isString } from 'vs/bAse/common/types';
 
-interface IJSONValidationExtensionPoint {
-	fileMatch: string | string[];
+interfAce IJSONVAlidAtionExtensionPoint {
+	fileMAtch: string | string[];
 	url: string;
 }
 
-const configurationExtPoint = ExtensionsRegistry.registerExtensionPoint<IJSONValidationExtensionPoint[]>({
-	extensionPoint: 'jsonValidation',
-	defaultExtensionKind: 'workspace',
-	jsonSchema: {
-		description: nls.localize('contributes.jsonValidation', 'Contributes json schema configuration.'),
-		type: 'array',
-		defaultSnippets: [{ body: [{ fileMatch: '${1:file.json}', url: '${2:url}' }] }],
+const configurAtionExtPoint = ExtensionsRegistry.registerExtensionPoint<IJSONVAlidAtionExtensionPoint[]>({
+	extensionPoint: 'jsonVAlidAtion',
+	defAultExtensionKind: 'workspAce',
+	jsonSchemA: {
+		description: nls.locAlize('contributes.jsonVAlidAtion', 'Contributes json schemA configurAtion.'),
+		type: 'ArrAy',
+		defAultSnippets: [{ body: [{ fileMAtch: '${1:file.json}', url: '${2:url}' }] }],
 		items: {
 			type: 'object',
-			defaultSnippets: [{ body: { fileMatch: '${1:file.json}', url: '${2:url}' } }],
+			defAultSnippets: [{ body: { fileMAtch: '${1:file.json}', url: '${2:url}' } }],
 			properties: {
-				fileMatch: {
-					type: ['string', 'array'],
-					description: nls.localize('contributes.jsonValidation.fileMatch', 'The file pattern (or an array of patterns) to match, for example "package.json" or "*.launch". Exclusion patterns start with \'!\''),
+				fileMAtch: {
+					type: ['string', 'ArrAy'],
+					description: nls.locAlize('contributes.jsonVAlidAtion.fileMAtch', 'The file pAttern (or An ArrAy of pAtterns) to mAtch, for exAmple "pAckAge.json" or "*.lAunch". Exclusion pAtterns stArt with \'!\''),
 					items: {
 						type: ['string']
 					}
 				},
 				url: {
-					description: nls.localize('contributes.jsonValidation.url', 'A schema URL (\'http:\', \'https:\') or relative path to the extension folder (\'./\').'),
+					description: nls.locAlize('contributes.jsonVAlidAtion.url', 'A schemA URL (\'http:\', \'https:\') or relAtive pAth to the extension folder (\'./\').'),
 					type: 'string'
 				}
 			}
@@ -40,40 +40,40 @@ const configurationExtPoint = ExtensionsRegistry.registerExtensionPoint<IJSONVal
 	}
 });
 
-export class JSONValidationExtensionPoint {
+export clAss JSONVAlidAtionExtensionPoint {
 
 	constructor() {
-		configurationExtPoint.setHandler((extensions) => {
+		configurAtionExtPoint.setHAndler((extensions) => {
 			for (const extension of extensions) {
-				const extensionValue = <IJSONValidationExtensionPoint[]>extension.value;
+				const extensionVAlue = <IJSONVAlidAtionExtensionPoint[]>extension.vAlue;
 				const collector = extension.collector;
-				const extensionLocation = extension.description.extensionLocation;
+				const extensionLocAtion = extension.description.extensionLocAtion;
 
-				if (!extensionValue || !Array.isArray(extensionValue)) {
-					collector.error(nls.localize('invalid.jsonValidation', "'configuration.jsonValidation' must be a array"));
+				if (!extensionVAlue || !ArrAy.isArrAy(extensionVAlue)) {
+					collector.error(nls.locAlize('invAlid.jsonVAlidAtion', "'configurAtion.jsonVAlidAtion' must be A ArrAy"));
 					return;
 				}
-				extensionValue.forEach(extension => {
-					if (!isString(extension.fileMatch) && !(Array.isArray(extension.fileMatch) && extension.fileMatch.every(isString))) {
-						collector.error(nls.localize('invalid.fileMatch', "'configuration.jsonValidation.fileMatch' must be defined as a string or an array of strings."));
+				extensionVAlue.forEAch(extension => {
+					if (!isString(extension.fileMAtch) && !(ArrAy.isArrAy(extension.fileMAtch) && extension.fileMAtch.every(isString))) {
+						collector.error(nls.locAlize('invAlid.fileMAtch', "'configurAtion.jsonVAlidAtion.fileMAtch' must be defined As A string or An ArrAy of strings."));
 						return;
 					}
 					let uri = extension.url;
 					if (!isString(uri)) {
-						collector.error(nls.localize('invalid.url', "'configuration.jsonValidation.url' must be a URL or relative path"));
+						collector.error(nls.locAlize('invAlid.url', "'configurAtion.jsonVAlidAtion.url' must be A URL or relAtive pAth"));
 						return;
 					}
-					if (uri.startsWith('./')) {
+					if (uri.stArtsWith('./')) {
 						try {
-							const colorThemeLocation = resources.joinPath(extensionLocation, uri);
-							if (!resources.isEqualOrParent(colorThemeLocation, extensionLocation)) {
-								collector.warn(nls.localize('invalid.path.1', "Expected `contributes.{0}.url` ({1}) to be included inside extension's folder ({2}). This might make the extension non-portable.", configurationExtPoint.name, colorThemeLocation.toString(), extensionLocation.path));
+							const colorThemeLocAtion = resources.joinPAth(extensionLocAtion, uri);
+							if (!resources.isEquAlOrPArent(colorThemeLocAtion, extensionLocAtion)) {
+								collector.wArn(nls.locAlize('invAlid.pAth.1', "Expected `contributes.{0}.url` ({1}) to be included inside extension's folder ({2}). This might mAke the extension non-portAble.", configurAtionExtPoint.nAme, colorThemeLocAtion.toString(), extensionLocAtion.pAth));
 							}
-						} catch (e) {
-							collector.error(nls.localize('invalid.url.fileschema', "'configuration.jsonValidation.url' is an invalid relative URL: {0}", e.message));
+						} cAtch (e) {
+							collector.error(nls.locAlize('invAlid.url.fileschemA', "'configurAtion.jsonVAlidAtion.url' is An invAlid relAtive URL: {0}", e.messAge));
 						}
 					} else if (!/^[^:/?#]+:\/\//.test(uri)) {
-						collector.error(nls.localize('invalid.url.schema', "'configuration.jsonValidation.url' must be an absolute URL or start with './'  to reference schemas located in the extension."));
+						collector.error(nls.locAlize('invAlid.url.schemA', "'configurAtion.jsonVAlidAtion.url' must be An Absolute URL or stArt with './'  to reference schemAs locAted in the extension."));
 						return;
 					}
 				});

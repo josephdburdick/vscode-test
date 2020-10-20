@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { join } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import * as nls from 'vs/nls';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IFileService } from 'vs/platform/files/common/files';
+import { Action } from 'vs/bAse/common/Actions';
+import { join } from 'vs/bAse/common/pAth';
+import { URI } from 'vs/bAse/common/uri';
+import * As nls from 'vs/nls';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { IFileService } from 'vs/plAtform/files/common/files';
 
-export class OpenLogsFolderAction extends Action {
+export clAss OpenLogsFolderAction extends Action {
 
-	static readonly ID = 'workbench.action.openLogsFolder';
-	static readonly LABEL = nls.localize('openLogsFolder', "Open Logs Folder");
+	stAtic reAdonly ID = 'workbench.Action.openLogsFolder';
+	stAtic reAdonly LABEL = nls.locAlize('openLogsFolder', "Open Logs Folder");
 
-	constructor(id: string, label: string,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
+	constructor(id: string, lAbel: string,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly environmentService: INAtiveWorkbenchEnvironmentService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
 	run(): Promise<void> {
-		return this.nativeHostService.showItemInFolder(URI.file(join(this.environmentService.logsPath, 'main.log')).fsPath);
+		return this.nAtiveHostService.showItemInFolder(URI.file(join(this.environmentService.logsPAth, 'mAin.log')).fsPAth);
 	}
 }
 
-export class OpenExtensionLogsFolderAction extends Action {
+export clAss OpenExtensionLogsFolderAction extends Action {
 
-	static readonly ID = 'workbench.action.openExtensionLogsFolder';
-	static readonly LABEL = nls.localize('openExtensionLogsFolder', "Open Extension Logs Folder");
+	stAtic reAdonly ID = 'workbench.Action.openExtensionLogsFolder';
+	stAtic reAdonly LABEL = nls.locAlize('openExtensionLogsFolder', "Open Extension Logs Folder");
 
-	constructor(id: string, label: string,
-		@INativeWorkbenchEnvironmentService private readonly environmentSerice: INativeWorkbenchEnvironmentService,
-		@IFileService private readonly fileService: IFileService,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+	constructor(id: string, lAbel: string,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly environmentSerice: INAtiveWorkbenchEnvironmentService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<void> {
-		const folderStat = await this.fileService.resolve(this.environmentSerice.extHostLogsPath);
-		if (folderStat.children && folderStat.children[0]) {
-			return this.nativeHostService.showItemInFolder(folderStat.children[0].resource.fsPath);
+	Async run(): Promise<void> {
+		const folderStAt = AwAit this.fileService.resolve(this.environmentSerice.extHostLogsPAth);
+		if (folderStAt.children && folderStAt.children[0]) {
+			return this.nAtiveHostService.showItemInFolder(folderStAt.children[0].resource.fsPAth);
 		}
 	}
 }

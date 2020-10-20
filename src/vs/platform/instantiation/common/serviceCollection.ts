@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ServiceIdentifier } from 'vs/platform/instantiation/common/instantiation';
+import { ServiceIdentifier } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { SyncDescriptor } from './descriptors';
 
-export class ServiceCollection {
+export clAss ServiceCollection {
 
-	private _entries = new Map<ServiceIdentifier<any>, any>();
+	privAte _entries = new MAp<ServiceIdentifier<Any>, Any>();
 
-	constructor(...entries: [ServiceIdentifier<any>, any][]) {
+	constructor(...entries: [ServiceIdentifier<Any>, Any][]) {
 		for (let [id, service] of entries) {
 			this.set(id, service);
 		}
 	}
 
-	set<T>(id: ServiceIdentifier<T>, instanceOrDescriptor: T | SyncDescriptor<T>): T | SyncDescriptor<T> {
+	set<T>(id: ServiceIdentifier<T>, instAnceOrDescriptor: T | SyncDescriptor<T>): T | SyncDescriptor<T> {
 		const result = this._entries.get(id);
-		this._entries.set(id, instanceOrDescriptor);
+		this._entries.set(id, instAnceOrDescriptor);
 		return result;
 	}
 
-	has(id: ServiceIdentifier<any>): boolean {
-		return this._entries.has(id);
+	hAs(id: ServiceIdentifier<Any>): booleAn {
+		return this._entries.hAs(id);
 	}
 
 	get<T>(id: ServiceIdentifier<T>): T | SyncDescriptor<T> {

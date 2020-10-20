@@ -1,132 +1,132 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IFileSystemProviderWithOpenReadWriteCloseCapability, FileReadStreamOptions, createFileSystemProviderError, FileSystemProviderErrorCode, ensureFileSystemProviderError } from 'vs/platform/files/common/files';
-import { canceled } from 'vs/base/common/errors';
-import { IErrorTransformer, IDataTransformer, WriteableStream } from 'vs/base/common/stream';
+import { locAlize } from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IFileSystemProviderWithOpenReAdWriteCloseCApAbility, FileReAdStreAmOptions, creAteFileSystemProviderError, FileSystemProviderErrorCode, ensureFileSystemProviderError } from 'vs/plAtform/files/common/files';
+import { cAnceled } from 'vs/bAse/common/errors';
+import { IErrorTrAnsformer, IDAtATrAnsformer, WriteAbleStreAm } from 'vs/bAse/common/streAm';
 
-export interface ICreateReadStreamOptions extends FileReadStreamOptions {
+export interfAce ICreAteReAdStreAmOptions extends FileReAdStreAmOptions {
 
 	/**
-	 * The size of the buffer to use before sending to the stream.
+	 * The size of the buffer to use before sending to the streAm.
 	 */
 	bufferSize: number;
 
 	/**
-	 * Allows to massage any possibly error that happens during reading.
+	 * Allows to mAssAge Any possibly error thAt hAppens during reAding.
 	 */
-	errorTransformer?: IErrorTransformer;
+	errorTrAnsformer?: IErrorTrAnsformer;
 }
 
 /**
- * A helper to read a file from a provider with open/read/close capability into a stream.
+ * A helper to reAd A file from A provider with open/reAd/close cApAbility into A streAm.
  */
-export async function readFileIntoStream<T>(
-	provider: IFileSystemProviderWithOpenReadWriteCloseCapability,
+export Async function reAdFileIntoStreAm<T>(
+	provider: IFileSystemProviderWithOpenReAdWriteCloseCApAbility,
 	resource: URI,
-	target: WriteableStream<T>,
-	transformer: IDataTransformer<VSBuffer, T>,
-	options: ICreateReadStreamOptions,
-	token: CancellationToken
+	tArget: WriteAbleStreAm<T>,
+	trAnsformer: IDAtATrAnsformer<VSBuffer, T>,
+	options: ICreAteReAdStreAmOptions,
+	token: CAncellAtionToken
 ): Promise<void> {
 	let error: Error | undefined = undefined;
 
 	try {
-		await doReadFileIntoStream(provider, resource, target, transformer, options, token);
-	} catch (err) {
+		AwAit doReAdFileIntoStreAm(provider, resource, tArget, trAnsformer, options, token);
+	} cAtch (err) {
 		error = err;
-	} finally {
-		if (error && options.errorTransformer) {
-			error = options.errorTransformer(error);
+	} finAlly {
+		if (error && options.errorTrAnsformer) {
+			error = options.errorTrAnsformer(error);
 		}
 
-		target.end(error);
+		tArget.end(error);
 	}
 }
 
-async function doReadFileIntoStream<T>(provider: IFileSystemProviderWithOpenReadWriteCloseCapability, resource: URI, target: WriteableStream<T>, transformer: IDataTransformer<VSBuffer, T>, options: ICreateReadStreamOptions, token: CancellationToken): Promise<void> {
+Async function doReAdFileIntoStreAm<T>(provider: IFileSystemProviderWithOpenReAdWriteCloseCApAbility, resource: URI, tArget: WriteAbleStreAm<T>, trAnsformer: IDAtATrAnsformer<VSBuffer, T>, options: ICreAteReAdStreAmOptions, token: CAncellAtionToken): Promise<void> {
 
-	// Check for cancellation
-	throwIfCancelled(token);
+	// Check for cAncellAtion
+	throwIfCAncelled(token);
 
-	// open handle through provider
-	const handle = await provider.open(resource, { create: false });
+	// open hAndle through provider
+	const hAndle = AwAit provider.open(resource, { creAte: fAlse });
 
-	// Check for cancellation
-	throwIfCancelled(token);
+	// Check for cAncellAtion
+	throwIfCAncelled(token);
 
 	try {
-		let totalBytesRead = 0;
-		let bytesRead = 0;
-		let allowedRemainingBytes = (options && typeof options.length === 'number') ? options.length : undefined;
+		let totAlBytesReAd = 0;
+		let bytesReAd = 0;
+		let AllowedRemAiningBytes = (options && typeof options.length === 'number') ? options.length : undefined;
 
-		let buffer = VSBuffer.alloc(Math.min(options.bufferSize, typeof allowedRemainingBytes === 'number' ? allowedRemainingBytes : options.bufferSize));
+		let buffer = VSBuffer.Alloc(MAth.min(options.bufferSize, typeof AllowedRemAiningBytes === 'number' ? AllowedRemAiningBytes : options.bufferSize));
 
 		let posInFile = options && typeof options.position === 'number' ? options.position : 0;
 		let posInBuffer = 0;
 		do {
-			// read from source (handle) at current position (pos) into buffer (buffer) at
+			// reAd from source (hAndle) At current position (pos) into buffer (buffer) At
 			// buffer position (posInBuffer) up to the size of the buffer (buffer.byteLength).
-			bytesRead = await provider.read(handle, posInFile, buffer.buffer, posInBuffer, buffer.byteLength - posInBuffer);
+			bytesReAd = AwAit provider.reAd(hAndle, posInFile, buffer.buffer, posInBuffer, buffer.byteLength - posInBuffer);
 
-			posInFile += bytesRead;
-			posInBuffer += bytesRead;
-			totalBytesRead += bytesRead;
+			posInFile += bytesReAd;
+			posInBuffer += bytesReAd;
+			totAlBytesReAd += bytesReAd;
 
-			if (typeof allowedRemainingBytes === 'number') {
-				allowedRemainingBytes -= bytesRead;
+			if (typeof AllowedRemAiningBytes === 'number') {
+				AllowedRemAiningBytes -= bytesReAd;
 			}
 
-			// when buffer full, create a new one and emit it through stream
+			// when buffer full, creAte A new one And emit it through streAm
 			if (posInBuffer === buffer.byteLength) {
-				await target.write(transformer(buffer));
+				AwAit tArget.write(trAnsformer(buffer));
 
-				buffer = VSBuffer.alloc(Math.min(options.bufferSize, typeof allowedRemainingBytes === 'number' ? allowedRemainingBytes : options.bufferSize));
+				buffer = VSBuffer.Alloc(MAth.min(options.bufferSize, typeof AllowedRemAiningBytes === 'number' ? AllowedRemAiningBytes : options.bufferSize));
 
 				posInBuffer = 0;
 			}
-		} while (bytesRead > 0 && (typeof allowedRemainingBytes !== 'number' || allowedRemainingBytes > 0) && throwIfCancelled(token) && throwIfTooLarge(totalBytesRead, options));
+		} while (bytesReAd > 0 && (typeof AllowedRemAiningBytes !== 'number' || AllowedRemAiningBytes > 0) && throwIfCAncelled(token) && throwIfTooLArge(totAlBytesReAd, options));
 
-		// wrap up with last buffer (also respect maxBytes if provided)
+		// wrAp up with lAst buffer (Also respect mAxBytes if provided)
 		if (posInBuffer > 0) {
-			let lastChunkLength = posInBuffer;
-			if (typeof allowedRemainingBytes === 'number') {
-				lastChunkLength = Math.min(posInBuffer, allowedRemainingBytes);
+			let lAstChunkLength = posInBuffer;
+			if (typeof AllowedRemAiningBytes === 'number') {
+				lAstChunkLength = MAth.min(posInBuffer, AllowedRemAiningBytes);
 			}
 
-			target.write(transformer(buffer.slice(0, lastChunkLength)));
+			tArget.write(trAnsformer(buffer.slice(0, lAstChunkLength)));
 		}
-	} catch (error) {
+	} cAtch (error) {
 		throw ensureFileSystemProviderError(error);
-	} finally {
-		await provider.close(handle);
+	} finAlly {
+		AwAit provider.close(hAndle);
 	}
 }
 
-function throwIfCancelled(token: CancellationToken): boolean {
-	if (token.isCancellationRequested) {
-		throw canceled();
+function throwIfCAncelled(token: CAncellAtionToken): booleAn {
+	if (token.isCAncellAtionRequested) {
+		throw cAnceled();
 	}
 
 	return true;
 }
 
-function throwIfTooLarge(totalBytesRead: number, options: ICreateReadStreamOptions): boolean {
+function throwIfTooLArge(totAlBytesReAd: number, options: ICreAteReAdStreAmOptions): booleAn {
 
-	// Return early if file is too large to load and we have configured limits
+	// Return eArly if file is too lArge to loAd And we hAve configured limits
 	if (options?.limits) {
-		if (typeof options.limits.memory === 'number' && totalBytesRead > options.limits.memory) {
-			throw createFileSystemProviderError(localize('fileTooLargeForHeapError', "To open a file of this size, you need to restart and allow it to use more memory"), FileSystemProviderErrorCode.FileExceedsMemoryLimit);
+		if (typeof options.limits.memory === 'number' && totAlBytesReAd > options.limits.memory) {
+			throw creAteFileSystemProviderError(locAlize('fileTooLArgeForHeApError', "To open A file of this size, you need to restArt And Allow it to use more memory"), FileSystemProviderErrorCode.FileExceedsMemoryLimit);
 		}
 
-		if (typeof options.limits.size === 'number' && totalBytesRead > options.limits.size) {
-			throw createFileSystemProviderError(localize('fileTooLargeError', "File is too large to open"), FileSystemProviderErrorCode.FileTooLarge);
+		if (typeof options.limits.size === 'number' && totAlBytesReAd > options.limits.size) {
+			throw creAteFileSystemProviderError(locAlize('fileTooLArgeError', "File is too lArge to open"), FileSystemProviderErrorCode.FileTooLArge);
 		}
 	}
 

@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { Action } from 'vs/base/common/actions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { IEditorMouseEvent, MouseTargetType } from 'vs/editor/browser/editorBrowser';
-import { Range } from 'vs/editor/common/core/range';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { Action } from 'vs/bAse/common/Actions';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { IEditorMouseEvent, MouseTArgetType } from 'vs/editor/browser/editorBrowser';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { Codicon } from 'vs/base/common/codicons';
+import { Codicon } from 'vs/bAse/common/codicons';
 
-export interface IDiffLinesChange {
-	readonly originalStartLineNumber: number;
-	readonly originalEndLineNumber: number;
-	readonly modifiedStartLineNumber: number;
-	readonly modifiedEndLineNumber: number;
-	readonly originalContent: string[];
+export interfAce IDiffLinesChAnge {
+	reAdonly originAlStArtLineNumber: number;
+	reAdonly originAlEndLineNumber: number;
+	reAdonly modifiedStArtLineNumber: number;
+	reAdonly modifiedEndLineNumber: number;
+	reAdonly originAlContent: string[];
 }
 
-export class InlineDiffMargin extends Disposable {
-	private readonly _diffActions: HTMLElement;
+export clAss InlineDiffMArgin extends DisposAble {
+	privAte reAdonly _diffActions: HTMLElement;
 
-	private _visibility: boolean = false;
+	privAte _visibility: booleAn = fAlse;
 
-	get visibility(): boolean {
+	get visibility(): booleAn {
 		return this._visibility;
 	}
 
-	set visibility(_visibility: boolean) {
+	set visibility(_visibility: booleAn) {
 		if (this._visibility !== _visibility) {
 			this._visibility = _visibility;
 
@@ -45,78 +45,78 @@ export class InlineDiffMargin extends Disposable {
 	}
 
 	constructor(
-		private _viewZoneId: string,
-		private _marginDomNode: HTMLElement,
+		privAte _viewZoneId: string,
+		privAte _mArginDomNode: HTMLElement,
 		public editor: CodeEditorWidget,
-		public diff: IDiffLinesChange,
-		private _contextMenuService: IContextMenuService,
-		private _clipboardService: IClipboardService
+		public diff: IDiffLinesChAnge,
+		privAte _contextMenuService: IContextMenuService,
+		privAte _clipboArdService: IClipboArdService
 	) {
 		super();
 
-		// make sure the diff margin shows above overlay.
-		this._marginDomNode.style.zIndex = '10';
+		// mAke sure the diff mArgin shows Above overlAy.
+		this._mArginDomNode.style.zIndex = '10';
 
-		this._diffActions = document.createElement('div');
-		this._diffActions.className = Codicon.lightBulb.classNames + ' lightbulb-glyph';
-		this._diffActions.style.position = 'absolute';
+		this._diffActions = document.creAteElement('div');
+		this._diffActions.clAssNAme = Codicon.lightBulb.clAssNAmes + ' lightbulb-glyph';
+		this._diffActions.style.position = 'Absolute';
 		const lineHeight = editor.getOption(EditorOption.lineHeight);
 		const lineFeed = editor.getModel()!.getEOL();
 		this._diffActions.style.right = '0px';
 		this._diffActions.style.visibility = 'hidden';
 		this._diffActions.style.height = `${lineHeight}px`;
 		this._diffActions.style.lineHeight = `${lineHeight}px`;
-		this._marginDomNode.appendChild(this._diffActions);
+		this._mArginDomNode.AppendChild(this._diffActions);
 
-		const actions: Action[] = [];
+		const Actions: Action[] = [];
 
-		// default action
-		actions.push(new Action(
-			'diff.clipboard.copyDeletedContent',
-			diff.originalEndLineNumber > diff.modifiedStartLineNumber
-				? nls.localize('diff.clipboard.copyDeletedLinesContent.label', "Copy deleted lines")
-				: nls.localize('diff.clipboard.copyDeletedLinesContent.single.label', "Copy deleted line"),
+		// defAult Action
+		Actions.push(new Action(
+			'diff.clipboArd.copyDeletedContent',
+			diff.originAlEndLineNumber > diff.modifiedStArtLineNumber
+				? nls.locAlize('diff.clipboArd.copyDeletedLinesContent.lAbel', "Copy deleted lines")
+				: nls.locAlize('diff.clipboArd.copyDeletedLinesContent.single.lAbel', "Copy deleted line"),
 			undefined,
 			true,
-			async () => {
-				await this._clipboardService.writeText(diff.originalContent.join(lineFeed) + lineFeed);
+			Async () => {
+				AwAit this._clipboArdService.writeText(diff.originAlContent.join(lineFeed) + lineFeed);
 			}
 		));
 
 		let currentLineNumberOffset = 0;
 		let copyLineAction: Action | undefined = undefined;
-		if (diff.originalEndLineNumber > diff.modifiedStartLineNumber) {
+		if (diff.originAlEndLineNumber > diff.modifiedStArtLineNumber) {
 			copyLineAction = new Action(
-				'diff.clipboard.copyDeletedLineContent',
-				nls.localize('diff.clipboard.copyDeletedLineContent.label', "Copy deleted line ({0})", diff.originalStartLineNumber),
+				'diff.clipboArd.copyDeletedLineContent',
+				nls.locAlize('diff.clipboArd.copyDeletedLineContent.lAbel', "Copy deleted line ({0})", diff.originAlStArtLineNumber),
 				undefined,
 				true,
-				async () => {
-					await this._clipboardService.writeText(diff.originalContent[currentLineNumberOffset]);
+				Async () => {
+					AwAit this._clipboArdService.writeText(diff.originAlContent[currentLineNumberOffset]);
 				}
 			);
 
-			actions.push(copyLineAction);
+			Actions.push(copyLineAction);
 		}
 
-		const readOnly = editor.getOption(EditorOption.readOnly);
-		if (!readOnly) {
-			actions.push(new Action('diff.inline.revertChange', nls.localize('diff.inline.revertChange.label', "Revert this change"), undefined, true, async () => {
+		const reAdOnly = editor.getOption(EditorOption.reAdOnly);
+		if (!reAdOnly) {
+			Actions.push(new Action('diff.inline.revertChAnge', nls.locAlize('diff.inline.revertChAnge.lAbel', "Revert this chAnge"), undefined, true, Async () => {
 				if (diff.modifiedEndLineNumber === 0) {
 					// deletion only
-					const column = editor.getModel()!.getLineMaxColumn(diff.modifiedStartLineNumber);
+					const column = editor.getModel()!.getLineMAxColumn(diff.modifiedStArtLineNumber);
 					editor.executeEdits('diffEditor', [
 						{
-							range: new Range(diff.modifiedStartLineNumber, column, diff.modifiedStartLineNumber, column),
-							text: lineFeed + diff.originalContent.join(lineFeed)
+							rAnge: new RAnge(diff.modifiedStArtLineNumber, column, diff.modifiedStArtLineNumber, column),
+							text: lineFeed + diff.originAlContent.join(lineFeed)
 						}
 					]);
 				} else {
-					const column = editor.getModel()!.getLineMaxColumn(diff.modifiedEndLineNumber);
+					const column = editor.getModel()!.getLineMAxColumn(diff.modifiedEndLineNumber);
 					editor.executeEdits('diffEditor', [
 						{
-							range: new Range(diff.modifiedStartLineNumber, 1, diff.modifiedEndLineNumber, column),
-							text: diff.originalContent.join(lineFeed)
+							rAnge: new RAnge(diff.modifiedStArtLineNumber, 1, diff.modifiedEndLineNumber, column),
+							text: diff.originAlContent.join(lineFeed)
 						}
 					]);
 				}
@@ -134,35 +134,35 @@ export class InlineDiffMargin extends Disposable {
 				},
 				getActions: () => {
 					if (copyLineAction) {
-						copyLineAction.label = nls.localize('diff.clipboard.copyDeletedLineContent.label', "Copy deleted line ({0})", diff.originalStartLineNumber + currentLineNumberOffset);
+						copyLineAction.lAbel = nls.locAlize('diff.clipboArd.copyDeletedLineContent.lAbel', "Copy deleted line ({0})", diff.originAlStArtLineNumber + currentLineNumberOffset);
 					}
-					return actions;
+					return Actions;
 				},
-				autoSelectFirstItem: true
+				AutoSelectFirstItem: true
 			});
 		};
 
-		this._register(dom.addStandardDisposableListener(this._diffActions, 'mousedown', e => {
-			const { top, height } = dom.getDomNodePagePosition(this._diffActions);
-			let pad = Math.floor(lineHeight / 3);
-			e.preventDefault();
+		this._register(dom.AddStAndArdDisposAbleListener(this._diffActions, 'mousedown', e => {
+			const { top, height } = dom.getDomNodePAgePosition(this._diffActions);
+			let pAd = MAth.floor(lineHeight / 3);
+			e.preventDefAult();
 
-			showContextMenu(e.posx, top + height + pad);
+			showContextMenu(e.posx, top + height + pAd);
 
 		}));
 
 		this._register(editor.onMouseMove((e: IEditorMouseEvent) => {
-			if (e.target.type === MouseTargetType.CONTENT_VIEW_ZONE || e.target.type === MouseTargetType.GUTTER_VIEW_ZONE) {
-				const viewZoneId = e.target.detail.viewZoneId;
+			if (e.tArget.type === MouseTArgetType.CONTENT_VIEW_ZONE || e.tArget.type === MouseTArgetType.GUTTER_VIEW_ZONE) {
+				const viewZoneId = e.tArget.detAil.viewZoneId;
 
 				if (viewZoneId === this._viewZoneId) {
 					this.visibility = true;
-					currentLineNumberOffset = this._updateLightBulbPosition(this._marginDomNode, e.event.browserEvent.y, lineHeight);
+					currentLineNumberOffset = this._updAteLightBulbPosition(this._mArginDomNode, e.event.browserEvent.y, lineHeight);
 				} else {
-					this.visibility = false;
+					this.visibility = fAlse;
 				}
 			} else {
-				this.visibility = false;
+				this.visibility = fAlse;
 			}
 		}));
 
@@ -171,22 +171,22 @@ export class InlineDiffMargin extends Disposable {
 				return;
 			}
 
-			if (e.target.type === MouseTargetType.CONTENT_VIEW_ZONE || e.target.type === MouseTargetType.GUTTER_VIEW_ZONE) {
-				const viewZoneId = e.target.detail.viewZoneId;
+			if (e.tArget.type === MouseTArgetType.CONTENT_VIEW_ZONE || e.tArget.type === MouseTArgetType.GUTTER_VIEW_ZONE) {
+				const viewZoneId = e.tArget.detAil.viewZoneId;
 
 				if (viewZoneId === this._viewZoneId) {
-					e.event.preventDefault();
-					currentLineNumberOffset = this._updateLightBulbPosition(this._marginDomNode, e.event.browserEvent.y, lineHeight);
+					e.event.preventDefAult();
+					currentLineNumberOffset = this._updAteLightBulbPosition(this._mArginDomNode, e.event.browserEvent.y, lineHeight);
 					showContextMenu(e.event.posx, e.event.posy + lineHeight);
 				}
 			}
 		}));
 	}
 
-	private _updateLightBulbPosition(marginDomNode: HTMLElement, y: number, lineHeight: number): number {
-		const { top } = dom.getDomNodePagePosition(marginDomNode);
+	privAte _updAteLightBulbPosition(mArginDomNode: HTMLElement, y: number, lineHeight: number): number {
+		const { top } = dom.getDomNodePAgePosition(mArginDomNode);
 		const offset = y - top;
-		const lineNumberOffset = Math.floor(offset / lineHeight);
+		const lineNumberOffset = MAth.floor(offset / lineHeight);
 		const newTop = lineNumberOffset * lineHeight;
 		this._diffActions.style.top = `${newTop}px`;
 		return lineNumberOffset;

@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Position } from 'vs/editor/common/core/position';
 import { ITestCodeEditor, withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
 
-export function deserializePipePositions(text: string): [string, Position[]] {
+export function deseriAlizePipePositions(text: string): [string, Position[]] {
 	let resultText = '';
 	let lineNumber = 1;
-	let charIndex = 0;
+	let chArIndex = 0;
 	let positions: Position[] = [];
 	for (let i = 0, len = text.length; i < len; i++) {
-		const chr = text.charAt(i);
+		const chr = text.chArAt(i);
 		if (chr === '\n') {
 			resultText += chr;
 			lineNumber++;
-			charIndex = 0;
+			chArIndex = 0;
 			continue;
 		}
 		if (chr === '|') {
-			positions.push(new Position(lineNumber, charIndex + 1));
+			positions.push(new Position(lineNumber, chArIndex + 1));
 		} else {
 			resultText += chr;
-			charIndex++;
+			chArIndex++;
 		}
 	}
 	return [resultText, positions];
 }
 
-export function serializePipePositions(text: string, positions: Position[]): string {
-	positions.sort(Position.compare);
+export function seriAlizePipePositions(text: string, positions: Position[]): string {
+	positions.sort(Position.compAre);
 	let resultText = '';
 	let lineNumber = 1;
-	let charIndex = 0;
+	let chArIndex = 0;
 	for (let i = 0, len = text.length; i < len; i++) {
-		const chr = text.charAt(i);
-		if (positions.length > 0 && positions[0].lineNumber === lineNumber && positions[0].column === charIndex + 1) {
+		const chr = text.chArAt(i);
+		if (positions.length > 0 && positions[0].lineNumber === lineNumber && positions[0].column === chArIndex + 1) {
 			resultText += '|';
 			positions.shift();
 		}
 		resultText += chr;
 		if (chr === '\n') {
 			lineNumber++;
-			charIndex = 0;
+			chArIndex = 0;
 		} else {
-			charIndex++;
+			chArIndex++;
 		}
 	}
-	if (positions.length > 0 && positions[0].lineNumber === lineNumber && positions[0].column === charIndex + 1) {
+	if (positions.length > 0 && positions[0].lineNumber === lineNumber && positions[0].column === chArIndex + 1) {
 		resultText += '|';
 		positions.shift();
 	}
@@ -58,21 +58,21 @@ export function serializePipePositions(text: string, positions: Position[]): str
 	return resultText;
 }
 
-export function testRepeatedActionAndExtractPositions(text: string, initialPosition: Position, action: (editor: ITestCodeEditor) => void, record: (editor: ITestCodeEditor) => Position, stopCondition: (editor: ITestCodeEditor) => boolean): Position[] {
-	let actualStops: Position[] = [];
+export function testRepeAtedActionAndExtrActPositions(text: string, initiAlPosition: Position, Action: (editor: ITestCodeEditor) => void, record: (editor: ITestCodeEditor) => Position, stopCondition: (editor: ITestCodeEditor) => booleAn): Position[] {
+	let ActuAlStops: Position[] = [];
 	withTestCodeEditor(text, {}, (editor) => {
-		editor.setPosition(initialPosition);
+		editor.setPosition(initiAlPosition);
 		while (true) {
-			action(editor);
-			actualStops.push(record(editor));
+			Action(editor);
+			ActuAlStops.push(record(editor));
 			if (stopCondition(editor)) {
-				break;
+				breAk;
 			}
 
-			if (actualStops.length > 1000) {
+			if (ActuAlStops.length > 1000) {
 				throw new Error(`Endless loop detected involving position ${editor.getPosition()}!`);
 			}
 		}
 	});
-	return actualStops;
+	return ActuAlStops;
 }

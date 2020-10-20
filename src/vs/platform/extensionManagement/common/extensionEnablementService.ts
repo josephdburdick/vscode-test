@@ -1,159 +1,159 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IExtensionIdentifier, IGlobalExtensionEnablementService, DISABLED_EXTENSIONS_STORAGE_PATH } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { IStorageService, StorageScope, IWorkspaceStorageChangeEvent } from 'vs/platform/storage/common/storage';
-import { isUndefinedOrNull } from 'vs/base/common/types';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtensionIdentifier, IGlobAlExtensionEnAblementService, DISABLED_EXTENSIONS_STORAGE_PATH } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { IStorAgeService, StorAgeScope, IWorkspAceStorAgeChAngeEvent } from 'vs/plAtform/storAge/common/storAge';
+import { isUndefinedOrNull } from 'vs/bAse/common/types';
 
-export class GlobalExtensionEnablementService extends Disposable implements IGlobalExtensionEnablementService {
+export clAss GlobAlExtensionEnAblementService extends DisposAble implements IGlobAlExtensionEnAblementService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _onDidChangeEnablement = new Emitter<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }>();
-	readonly onDidChangeEnablement: Event<{ readonly extensions: IExtensionIdentifier[], readonly source?: string }> = this._onDidChangeEnablement.event;
-	private readonly storageManger: StorageManager;
+	privAte _onDidChAngeEnAblement = new Emitter<{ reAdonly extensions: IExtensionIdentifier[], reAdonly source?: string }>();
+	reAdonly onDidChAngeEnAblement: Event<{ reAdonly extensions: IExtensionIdentifier[], reAdonly source?: string }> = this._onDidChAngeEnAblement.event;
+	privAte reAdonly storAgeMAnger: StorAgeMAnAger;
 
 	constructor(
-		@IStorageService storageService: IStorageService,
+		@IStorAgeService storAgeService: IStorAgeService,
 	) {
 		super();
-		this.storageManger = this._register(new StorageManager(storageService));
-		this._register(this.storageManger.onDidChange(extensions => this._onDidChangeEnablement.fire({ extensions, source: 'storage' })));
+		this.storAgeMAnger = this._register(new StorAgeMAnAger(storAgeService));
+		this._register(this.storAgeMAnger.onDidChAnge(extensions => this._onDidChAngeEnAblement.fire({ extensions, source: 'storAge' })));
 	}
 
-	async enableExtension(extension: IExtensionIdentifier, source?: string): Promise<boolean> {
-		if (this._removeFromDisabledExtensions(extension)) {
-			this._onDidChangeEnablement.fire({ extensions: [extension], source });
+	Async enAbleExtension(extension: IExtensionIdentifier, source?: string): Promise<booleAn> {
+		if (this._removeFromDisAbledExtensions(extension)) {
+			this._onDidChAngeEnAblement.fire({ extensions: [extension], source });
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	async disableExtension(extension: IExtensionIdentifier, source?: string): Promise<boolean> {
-		if (this._addToDisabledExtensions(extension)) {
-			this._onDidChangeEnablement.fire({ extensions: [extension], source });
+	Async disAbleExtension(extension: IExtensionIdentifier, source?: string): Promise<booleAn> {
+		if (this._AddToDisAbledExtensions(extension)) {
+			this._onDidChAngeEnAblement.fire({ extensions: [extension], source });
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	getDisabledExtensions(): IExtensionIdentifier[] {
+	getDisAbledExtensions(): IExtensionIdentifier[] {
 		return this._getExtensions(DISABLED_EXTENSIONS_STORAGE_PATH);
 	}
 
-	async getDisabledExtensionsAsync(): Promise<IExtensionIdentifier[]> {
-		return this.getDisabledExtensions();
+	Async getDisAbledExtensionsAsync(): Promise<IExtensionIdentifier[]> {
+		return this.getDisAbledExtensions();
 	}
 
-	private _addToDisabledExtensions(identifier: IExtensionIdentifier): boolean {
-		let disabledExtensions = this.getDisabledExtensions();
-		if (disabledExtensions.every(e => !areSameExtensions(e, identifier))) {
-			disabledExtensions.push(identifier);
-			this._setDisabledExtensions(disabledExtensions);
+	privAte _AddToDisAbledExtensions(identifier: IExtensionIdentifier): booleAn {
+		let disAbledExtensions = this.getDisAbledExtensions();
+		if (disAbledExtensions.every(e => !AreSAmeExtensions(e, identifier))) {
+			disAbledExtensions.push(identifier);
+			this._setDisAbledExtensions(disAbledExtensions);
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private _removeFromDisabledExtensions(identifier: IExtensionIdentifier): boolean {
-		let disabledExtensions = this.getDisabledExtensions();
-		for (let index = 0; index < disabledExtensions.length; index++) {
-			const disabledExtension = disabledExtensions[index];
-			if (areSameExtensions(disabledExtension, identifier)) {
-				disabledExtensions.splice(index, 1);
-				this._setDisabledExtensions(disabledExtensions);
+	privAte _removeFromDisAbledExtensions(identifier: IExtensionIdentifier): booleAn {
+		let disAbledExtensions = this.getDisAbledExtensions();
+		for (let index = 0; index < disAbledExtensions.length; index++) {
+			const disAbledExtension = disAbledExtensions[index];
+			if (AreSAmeExtensions(disAbledExtension, identifier)) {
+				disAbledExtensions.splice(index, 1);
+				this._setDisAbledExtensions(disAbledExtensions);
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	private _setDisabledExtensions(disabledExtensions: IExtensionIdentifier[]): void {
-		this._setExtensions(DISABLED_EXTENSIONS_STORAGE_PATH, disabledExtensions);
+	privAte _setDisAbledExtensions(disAbledExtensions: IExtensionIdentifier[]): void {
+		this._setExtensions(DISABLED_EXTENSIONS_STORAGE_PATH, disAbledExtensions);
 	}
 
-	private _getExtensions(storageId: string): IExtensionIdentifier[] {
-		return this.storageManger.get(storageId, StorageScope.GLOBAL);
+	privAte _getExtensions(storAgeId: string): IExtensionIdentifier[] {
+		return this.storAgeMAnger.get(storAgeId, StorAgeScope.GLOBAL);
 	}
 
-	private _setExtensions(storageId: string, extensions: IExtensionIdentifier[]): void {
-		this.storageManger.set(storageId, extensions, StorageScope.GLOBAL);
+	privAte _setExtensions(storAgeId: string, extensions: IExtensionIdentifier[]): void {
+		this.storAgeMAnger.set(storAgeId, extensions, StorAgeScope.GLOBAL);
 	}
 
 }
 
-export class StorageManager extends Disposable {
+export clAss StorAgeMAnAger extends DisposAble {
 
-	private storage: { [key: string]: string } = Object.create(null);
+	privAte storAge: { [key: string]: string } = Object.creAte(null);
 
-	private _onDidChange: Emitter<IExtensionIdentifier[]> = this._register(new Emitter<IExtensionIdentifier[]>());
-	readonly onDidChange: Event<IExtensionIdentifier[]> = this._onDidChange.event;
+	privAte _onDidChAnge: Emitter<IExtensionIdentifier[]> = this._register(new Emitter<IExtensionIdentifier[]>());
+	reAdonly onDidChAnge: Event<IExtensionIdentifier[]> = this._onDidChAnge.event;
 
-	constructor(private storageService: IStorageService) {
+	constructor(privAte storAgeService: IStorAgeService) {
 		super();
-		this._register(storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));
+		this._register(storAgeService.onDidChAngeStorAge(e => this.onDidStorAgeChAnge(e)));
 	}
 
-	get(key: string, scope: StorageScope): IExtensionIdentifier[] {
-		let value: string;
-		if (scope === StorageScope.GLOBAL) {
-			if (isUndefinedOrNull(this.storage[key])) {
-				this.storage[key] = this._get(key, scope);
+	get(key: string, scope: StorAgeScope): IExtensionIdentifier[] {
+		let vAlue: string;
+		if (scope === StorAgeScope.GLOBAL) {
+			if (isUndefinedOrNull(this.storAge[key])) {
+				this.storAge[key] = this._get(key, scope);
 			}
-			value = this.storage[key];
+			vAlue = this.storAge[key];
 		} else {
-			value = this._get(key, scope);
+			vAlue = this._get(key, scope);
 		}
-		return JSON.parse(value);
+		return JSON.pArse(vAlue);
 	}
 
-	set(key: string, value: IExtensionIdentifier[], scope: StorageScope): void {
-		let newValue: string = JSON.stringify(value.map(({ id, uuid }) => (<IExtensionIdentifier>{ id, uuid })));
-		const oldValue = this._get(key, scope);
-		if (oldValue !== newValue) {
-			if (scope === StorageScope.GLOBAL) {
-				if (value.length) {
-					this.storage[key] = newValue;
+	set(key: string, vAlue: IExtensionIdentifier[], scope: StorAgeScope): void {
+		let newVAlue: string = JSON.stringify(vAlue.mAp(({ id, uuid }) => (<IExtensionIdentifier>{ id, uuid })));
+		const oldVAlue = this._get(key, scope);
+		if (oldVAlue !== newVAlue) {
+			if (scope === StorAgeScope.GLOBAL) {
+				if (vAlue.length) {
+					this.storAge[key] = newVAlue;
 				} else {
-					delete this.storage[key];
+					delete this.storAge[key];
 				}
 			}
-			this._set(key, value.length ? newValue : undefined, scope);
+			this._set(key, vAlue.length ? newVAlue : undefined, scope);
 		}
 	}
 
-	private onDidStorageChange(workspaceStorageChangeEvent: IWorkspaceStorageChangeEvent): void {
-		if (workspaceStorageChangeEvent.scope === StorageScope.GLOBAL) {
-			if (!isUndefinedOrNull(this.storage[workspaceStorageChangeEvent.key])) {
-				const newValue = this._get(workspaceStorageChangeEvent.key, workspaceStorageChangeEvent.scope);
-				if (newValue !== this.storage[workspaceStorageChangeEvent.key]) {
-					const oldValues = this.get(workspaceStorageChangeEvent.key, workspaceStorageChangeEvent.scope);
-					delete this.storage[workspaceStorageChangeEvent.key];
-					const newValues = this.get(workspaceStorageChangeEvent.key, workspaceStorageChangeEvent.scope);
-					const added = oldValues.filter(oldValue => !newValues.some(newValue => areSameExtensions(oldValue, newValue)));
-					const removed = newValues.filter(newValue => !oldValues.some(oldValue => areSameExtensions(oldValue, newValue)));
-					if (added.length || removed.length) {
-						this._onDidChange.fire([...added, ...removed]);
+	privAte onDidStorAgeChAnge(workspAceStorAgeChAngeEvent: IWorkspAceStorAgeChAngeEvent): void {
+		if (workspAceStorAgeChAngeEvent.scope === StorAgeScope.GLOBAL) {
+			if (!isUndefinedOrNull(this.storAge[workspAceStorAgeChAngeEvent.key])) {
+				const newVAlue = this._get(workspAceStorAgeChAngeEvent.key, workspAceStorAgeChAngeEvent.scope);
+				if (newVAlue !== this.storAge[workspAceStorAgeChAngeEvent.key]) {
+					const oldVAlues = this.get(workspAceStorAgeChAngeEvent.key, workspAceStorAgeChAngeEvent.scope);
+					delete this.storAge[workspAceStorAgeChAngeEvent.key];
+					const newVAlues = this.get(workspAceStorAgeChAngeEvent.key, workspAceStorAgeChAngeEvent.scope);
+					const Added = oldVAlues.filter(oldVAlue => !newVAlues.some(newVAlue => AreSAmeExtensions(oldVAlue, newVAlue)));
+					const removed = newVAlues.filter(newVAlue => !oldVAlues.some(oldVAlue => AreSAmeExtensions(oldVAlue, newVAlue)));
+					if (Added.length || removed.length) {
+						this._onDidChAnge.fire([...Added, ...removed]);
 					}
 				}
 			}
 		}
 	}
 
-	private _get(key: string, scope: StorageScope): string {
-		return this.storageService.get(key, scope, '[]');
+	privAte _get(key: string, scope: StorAgeScope): string {
+		return this.storAgeService.get(key, scope, '[]');
 	}
 
-	private _set(key: string, value: string | undefined, scope: StorageScope): void {
-		if (value) {
-			this.storageService.store(key, value, scope);
+	privAte _set(key: string, vAlue: string | undefined, scope: StorAgeScope): void {
+		if (vAlue) {
+			this.storAgeService.store(key, vAlue, scope);
 		} else {
-			this.storageService.remove(key, scope);
+			this.storAgeService.remove(key, scope);
 		}
 	}
 }

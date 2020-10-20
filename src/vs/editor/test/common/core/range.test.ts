@@ -1,128 +1,128 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 
-suite('Editor Core - Range', () => {
-	test('empty range', () => {
-		let s = new Range(1, 1, 1, 1);
-		assert.equal(s.startLineNumber, 1);
-		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 1);
-		assert.equal(s.endColumn, 1);
-		assert.equal(s.isEmpty(), true);
+suite('Editor Core - RAnge', () => {
+	test('empty rAnge', () => {
+		let s = new RAnge(1, 1, 1, 1);
+		Assert.equAl(s.stArtLineNumber, 1);
+		Assert.equAl(s.stArtColumn, 1);
+		Assert.equAl(s.endLineNumber, 1);
+		Assert.equAl(s.endColumn, 1);
+		Assert.equAl(s.isEmpty(), true);
 	});
 
-	test('swap start and stop same line', () => {
-		let s = new Range(1, 2, 1, 1);
-		assert.equal(s.startLineNumber, 1);
-		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 1);
-		assert.equal(s.endColumn, 2);
-		assert.equal(s.isEmpty(), false);
+	test('swAp stArt And stop sAme line', () => {
+		let s = new RAnge(1, 2, 1, 1);
+		Assert.equAl(s.stArtLineNumber, 1);
+		Assert.equAl(s.stArtColumn, 1);
+		Assert.equAl(s.endLineNumber, 1);
+		Assert.equAl(s.endColumn, 2);
+		Assert.equAl(s.isEmpty(), fAlse);
 	});
 
-	test('swap start and stop', () => {
-		let s = new Range(2, 1, 1, 2);
-		assert.equal(s.startLineNumber, 1);
-		assert.equal(s.startColumn, 2);
-		assert.equal(s.endLineNumber, 2);
-		assert.equal(s.endColumn, 1);
-		assert.equal(s.isEmpty(), false);
+	test('swAp stArt And stop', () => {
+		let s = new RAnge(2, 1, 1, 2);
+		Assert.equAl(s.stArtLineNumber, 1);
+		Assert.equAl(s.stArtColumn, 2);
+		Assert.equAl(s.endLineNumber, 2);
+		Assert.equAl(s.endColumn, 1);
+		Assert.equAl(s.isEmpty(), fAlse);
 	});
 
-	test('no swap same line', () => {
-		let s = new Range(1, 1, 1, 2);
-		assert.equal(s.startLineNumber, 1);
-		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 1);
-		assert.equal(s.endColumn, 2);
-		assert.equal(s.isEmpty(), false);
+	test('no swAp sAme line', () => {
+		let s = new RAnge(1, 1, 1, 2);
+		Assert.equAl(s.stArtLineNumber, 1);
+		Assert.equAl(s.stArtColumn, 1);
+		Assert.equAl(s.endLineNumber, 1);
+		Assert.equAl(s.endColumn, 2);
+		Assert.equAl(s.isEmpty(), fAlse);
 	});
 
-	test('no swap', () => {
-		let s = new Range(1, 1, 2, 1);
-		assert.equal(s.startLineNumber, 1);
-		assert.equal(s.startColumn, 1);
-		assert.equal(s.endLineNumber, 2);
-		assert.equal(s.endColumn, 1);
-		assert.equal(s.isEmpty(), false);
+	test('no swAp', () => {
+		let s = new RAnge(1, 1, 2, 1);
+		Assert.equAl(s.stArtLineNumber, 1);
+		Assert.equAl(s.stArtColumn, 1);
+		Assert.equAl(s.endLineNumber, 2);
+		Assert.equAl(s.endColumn, 1);
+		Assert.equAl(s.isEmpty(), fAlse);
 	});
 
-	test('compareRangesUsingEnds', () => {
-		let a: Range, b: Range;
+	test('compAreRAngesUsingEnds', () => {
+		let A: RAnge, b: RAnge;
 
-		a = new Range(1, 1, 1, 3);
-		b = new Range(1, 2, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start < b.start, a.end < b.end');
+		A = new RAnge(1, 1, 1, 3);
+		b = new RAnge(1, 2, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) < 0, 'A.stArt < b.stArt, A.end < b.end');
 
-		a = new Range(1, 1, 1, 3);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start = b.start, a.end < b.end');
+		A = new RAnge(1, 1, 1, 3);
+		b = new RAnge(1, 1, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) < 0, 'A.stArt = b.stArt, A.end < b.end');
 
-		a = new Range(1, 2, 1, 3);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start > b.start, a.end < b.end');
+		A = new RAnge(1, 2, 1, 3);
+		b = new RAnge(1, 1, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) < 0, 'A.stArt > b.stArt, A.end < b.end');
 
-		a = new Range(1, 1, 1, 4);
-		b = new Range(1, 2, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) < 0, 'a.start < b.start, a.end = b.end');
+		A = new RAnge(1, 1, 1, 4);
+		b = new RAnge(1, 2, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) < 0, 'A.stArt < b.stArt, A.end = b.end');
 
-		a = new Range(1, 1, 1, 4);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) === 0, 'a.start = b.start, a.end = b.end');
+		A = new RAnge(1, 1, 1, 4);
+		b = new RAnge(1, 1, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) === 0, 'A.stArt = b.stArt, A.end = b.end');
 
-		a = new Range(1, 2, 1, 4);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start > b.start, a.end = b.end');
+		A = new RAnge(1, 2, 1, 4);
+		b = new RAnge(1, 1, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) > 0, 'A.stArt > b.stArt, A.end = b.end');
 
-		a = new Range(1, 1, 1, 5);
-		b = new Range(1, 2, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start < b.start, a.end > b.end');
+		A = new RAnge(1, 1, 1, 5);
+		b = new RAnge(1, 2, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) > 0, 'A.stArt < b.stArt, A.end > b.end');
 
-		a = new Range(1, 1, 2, 4);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start = b.start, a.end > b.end');
+		A = new RAnge(1, 1, 2, 4);
+		b = new RAnge(1, 1, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) > 0, 'A.stArt = b.stArt, A.end > b.end');
 
-		a = new Range(1, 2, 5, 1);
-		b = new Range(1, 1, 1, 4);
-		assert.ok(Range.compareRangesUsingEnds(a, b) > 0, 'a.start > b.start, a.end > b.end');
+		A = new RAnge(1, 2, 5, 1);
+		b = new RAnge(1, 1, 1, 4);
+		Assert.ok(RAnge.compAreRAngesUsingEnds(A, b) > 0, 'A.stArt > b.stArt, A.end > b.end');
 	});
 
-	test('containsPosition', () => {
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(1, 3)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(2, 1)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(2, 2)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(2, 3)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(3, 1)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(5, 9)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(5, 10)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(5, 11)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsPosition(new Position(6, 1)), false);
+	test('contAinsPosition', () => {
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(1, 3)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(2, 1)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(2, 2)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(2, 3)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(3, 1)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(5, 9)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(5, 10)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(5, 11)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsPosition(new Position(6, 1)), fAlse);
 	});
 
-	test('containsRange', () => {
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(1, 3, 2, 2)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(2, 1, 2, 2)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(2, 2, 5, 11)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(2, 2, 6, 1)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(5, 9, 6, 1)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(5, 10, 6, 1)), false);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(2, 2, 5, 10)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(2, 3, 5, 9)), true);
-		assert.equal(new Range(2, 2, 5, 10).containsRange(new Range(3, 100, 4, 100)), true);
+	test('contAinsRAnge', () => {
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(1, 3, 2, 2)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(2, 1, 2, 2)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(2, 2, 5, 11)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(2, 2, 6, 1)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(5, 9, 6, 1)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(5, 10, 6, 1)), fAlse);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(2, 2, 5, 10)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(2, 3, 5, 9)), true);
+		Assert.equAl(new RAnge(2, 2, 5, 10).contAinsRAnge(new RAnge(3, 100, 4, 100)), true);
 	});
 
-	test('areIntersecting', () => {
-		assert.equal(Range.areIntersecting(new Range(2, 2, 3, 2), new Range(4, 2, 5, 2)), false);
-		assert.equal(Range.areIntersecting(new Range(4, 2, 5, 2), new Range(2, 2, 3, 2)), false);
-		assert.equal(Range.areIntersecting(new Range(4, 2, 5, 2), new Range(5, 2, 6, 2)), false);
-		assert.equal(Range.areIntersecting(new Range(5, 2, 6, 2), new Range(4, 2, 5, 2)), false);
-		assert.equal(Range.areIntersecting(new Range(2, 2, 2, 7), new Range(2, 4, 2, 6)), true);
-		assert.equal(Range.areIntersecting(new Range(2, 2, 2, 7), new Range(2, 4, 2, 9)), true);
-		assert.equal(Range.areIntersecting(new Range(2, 4, 2, 9), new Range(2, 2, 2, 7)), true);
+	test('AreIntersecting', () => {
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(2, 2, 3, 2), new RAnge(4, 2, 5, 2)), fAlse);
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(4, 2, 5, 2), new RAnge(2, 2, 3, 2)), fAlse);
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(4, 2, 5, 2), new RAnge(5, 2, 6, 2)), fAlse);
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(5, 2, 6, 2), new RAnge(4, 2, 5, 2)), fAlse);
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(2, 2, 2, 7), new RAnge(2, 4, 2, 6)), true);
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(2, 2, 2, 7), new RAnge(2, 4, 2, 9)), true);
+		Assert.equAl(RAnge.AreIntersecting(new RAnge(2, 4, 2, 9), new RAnge(2, 2, 2, 7)), true);
 	});
 });

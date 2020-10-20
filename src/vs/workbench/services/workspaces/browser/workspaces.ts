@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
-import { hash } from 'vs/base/common/hash';
+import { IWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { URI } from 'vs/bAse/common/uri';
+import { hAsh } from 'vs/bAse/common/hAsh';
 
-export function getWorkspaceIdentifier(workspacePath: URI): IWorkspaceIdentifier {
+export function getWorkspAceIdentifier(workspAcePAth: URI): IWorkspAceIdentifier {
 	return {
-		id: hash(workspacePath.toString()).toString(16),
-		configPath: workspacePath
+		id: hAsh(workspAcePAth.toString()).toString(16),
+		configPAth: workspAcePAth
 	};
 }

@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { resolveWorkbenchCommonProperties } from 'vs/workbench/services/telemetry/browser/workbenchCommonProperties';
-import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
+import { IStorAgeService, InMemoryStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 
 suite('Browser Telemetry - common properties', function () {
 
 	const commit: string = (undefined)!;
 	const version: string = (undefined)!;
-	let testStorageService: IStorageService;
+	let testStorAgeService: IStorAgeService;
 
 	setup(() => {
-		testStorageService = new InMemoryStorageService();
+		testStorAgeService = new InMemoryStorAgeService();
 	});
 
-	test('mixes in additional properties', async function () {
+	test('mixes in AdditionAl properties', Async function () {
 		const resolveCommonTelemetryProperties = () => {
 			return {
 				'userId': '1'
 			};
 		};
 
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
+		const props = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, undefined, resolveCommonTelemetryProperties);
 
-		assert.ok('commitHash' in props);
-		assert.ok('sessionID' in props);
-		assert.ok('timestamp' in props);
-		assert.ok('common.platform' in props);
-		assert.ok('common.timesincesessionstart' in props);
-		assert.ok('common.sequence' in props);
-		assert.ok('version' in props);
-		assert.ok('common.firstSessionDate' in props, 'firstSessionDate');
-		assert.ok('common.lastSessionDate' in props, 'lastSessionDate');
-		assert.ok('common.isNewSession' in props, 'isNewSession');
-		assert.ok('common.machineId' in props, 'machineId');
+		Assert.ok('commitHAsh' in props);
+		Assert.ok('sessionID' in props);
+		Assert.ok('timestAmp' in props);
+		Assert.ok('common.plAtform' in props);
+		Assert.ok('common.timesincesessionstArt' in props);
+		Assert.ok('common.sequence' in props);
+		Assert.ok('version' in props);
+		Assert.ok('common.firstSessionDAte' in props, 'firstSessionDAte');
+		Assert.ok('common.lAstSessionDAte' in props, 'lAstSessionDAte');
+		Assert.ok('common.isNewSession' in props, 'isNewSession');
+		Assert.ok('common.mAchineId' in props, 'mAchineId');
 
-		assert.equal(props['userId'], '1');
+		Assert.equAl(props['userId'], '1');
 	});
 
-	test('mixes in additional dyanmic properties', async function () {
+	test('mixes in AdditionAl dyAnmic properties', Async function () {
 		let i = 1;
 		const resolveCommonTelemetryProperties = () => {
 			return Object.defineProperties({}, {
@@ -48,15 +48,15 @@ suite('Browser Telemetry - common properties', function () {
 					get: () => {
 						return i++;
 					},
-					enumerable: true
+					enumerAble: true
 				}
 			});
 		};
 
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
-		assert.equal(props['userId'], '1');
+		const props = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, undefined, resolveCommonTelemetryProperties);
+		Assert.equAl(props['userId'], '1');
 
-		const props2 = await resolveWorkbenchCommonProperties(testStorageService, commit, version, undefined, resolveCommonTelemetryProperties);
-		assert.equal(props2['userId'], '2');
+		const props2 = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, undefined, resolveCommonTelemetryProperties);
+		Assert.equAl(props2['userId'], '2');
 	});
 });

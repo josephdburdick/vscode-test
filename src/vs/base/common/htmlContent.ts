@@ -1,135 +1,135 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/arrays';
-import { UriComponents } from 'vs/base/common/uri';
-import { escapeCodicons } from 'vs/base/common/codicons';
-import { illegalArgument } from 'vs/base/common/errors';
+import { equAls } from 'vs/bAse/common/ArrAys';
+import { UriComponents } from 'vs/bAse/common/uri';
+import { escApeCodicons } from 'vs/bAse/common/codicons';
+import { illegAlArgument } from 'vs/bAse/common/errors';
 
-export interface IMarkdownString {
-	readonly value: string;
-	readonly isTrusted?: boolean;
-	readonly supportThemeIcons?: boolean;
+export interfAce IMArkdownString {
+	reAdonly vAlue: string;
+	reAdonly isTrusted?: booleAn;
+	reAdonly supportThemeIcons?: booleAn;
 	uris?: { [href: string]: UriComponents };
 }
 
-export class MarkdownString implements IMarkdownString {
-	private readonly _isTrusted: boolean;
-	private readonly _supportThemeIcons: boolean;
+export clAss MArkdownString implements IMArkdownString {
+	privAte reAdonly _isTrusted: booleAn;
+	privAte reAdonly _supportThemeIcons: booleAn;
 
 	constructor(
-		private _value: string = '',
-		isTrustedOrOptions: boolean | { isTrusted?: boolean, supportThemeIcons?: boolean } = false,
+		privAte _vAlue: string = '',
+		isTrustedOrOptions: booleAn | { isTrusted?: booleAn, supportThemeIcons?: booleAn } = fAlse,
 	) {
-		if (typeof this._value !== 'string') {
-			throw illegalArgument('value');
+		if (typeof this._vAlue !== 'string') {
+			throw illegAlArgument('vAlue');
 		}
 
-		if (typeof isTrustedOrOptions === 'boolean') {
+		if (typeof isTrustedOrOptions === 'booleAn') {
 			this._isTrusted = isTrustedOrOptions;
-			this._supportThemeIcons = false;
+			this._supportThemeIcons = fAlse;
 		}
 		else {
-			this._isTrusted = isTrustedOrOptions.isTrusted ?? false;
-			this._supportThemeIcons = isTrustedOrOptions.supportThemeIcons ?? false;
+			this._isTrusted = isTrustedOrOptions.isTrusted ?? fAlse;
+			this._supportThemeIcons = isTrustedOrOptions.supportThemeIcons ?? fAlse;
 		}
 	}
 
-	get value() { return this._value; }
+	get vAlue() { return this._vAlue; }
 	get isTrusted() { return this._isTrusted; }
 	get supportThemeIcons() { return this._supportThemeIcons; }
 
-	appendText(value: string): MarkdownString {
-		// escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
-		this._value += (this._supportThemeIcons ? escapeCodicons(value) : value)
-			.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
-			.replace(/\n/g, '\n\n');
+	AppendText(vAlue: string): MArkdownString {
+		// escApe mArkdown syntAx tokens: http://dAringfirebAll.net/projects/mArkdown/syntAx#bAckslAsh
+		this._vAlue += (this._supportThemeIcons ? escApeCodicons(vAlue) : vAlue)
+			.replAce(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
+			.replAce(/\n/g, '\n\n');
 
 		return this;
 	}
 
-	appendMarkdown(value: string): MarkdownString {
-		this._value += value;
+	AppendMArkdown(vAlue: string): MArkdownString {
+		this._vAlue += vAlue;
 
 		return this;
 	}
 
-	appendCodeblock(langId: string, code: string): MarkdownString {
-		this._value += '\n```';
-		this._value += langId;
-		this._value += '\n';
-		this._value += code;
-		this._value += '\n```\n';
+	AppendCodeblock(lAngId: string, code: string): MArkdownString {
+		this._vAlue += '\n```';
+		this._vAlue += lAngId;
+		this._vAlue += '\n';
+		this._vAlue += code;
+		this._vAlue += '\n```\n';
 		return this;
 	}
 }
 
-export function isEmptyMarkdownString(oneOrMany: IMarkdownString | IMarkdownString[] | null | undefined): boolean {
-	if (isMarkdownString(oneOrMany)) {
-		return !oneOrMany.value;
-	} else if (Array.isArray(oneOrMany)) {
-		return oneOrMany.every(isEmptyMarkdownString);
+export function isEmptyMArkdownString(oneOrMAny: IMArkdownString | IMArkdownString[] | null | undefined): booleAn {
+	if (isMArkdownString(oneOrMAny)) {
+		return !oneOrMAny.vAlue;
+	} else if (ArrAy.isArrAy(oneOrMAny)) {
+		return oneOrMAny.every(isEmptyMArkdownString);
 	} else {
 		return true;
 	}
 }
 
-export function isMarkdownString(thing: any): thing is IMarkdownString {
-	if (thing instanceof MarkdownString) {
+export function isMArkdownString(thing: Any): thing is IMArkdownString {
+	if (thing instAnceof MArkdownString) {
 		return true;
 	} else if (thing && typeof thing === 'object') {
-		return typeof (<IMarkdownString>thing).value === 'string'
-			&& (typeof (<IMarkdownString>thing).isTrusted === 'boolean' || (<IMarkdownString>thing).isTrusted === undefined)
-			&& (typeof (<IMarkdownString>thing).supportThemeIcons === 'boolean' || (<IMarkdownString>thing).supportThemeIcons === undefined);
+		return typeof (<IMArkdownString>thing).vAlue === 'string'
+			&& (typeof (<IMArkdownString>thing).isTrusted === 'booleAn' || (<IMArkdownString>thing).isTrusted === undefined)
+			&& (typeof (<IMArkdownString>thing).supportThemeIcons === 'booleAn' || (<IMArkdownString>thing).supportThemeIcons === undefined);
 	}
-	return false;
+	return fAlse;
 }
 
-export function markedStringsEquals(a: IMarkdownString | IMarkdownString[], b: IMarkdownString | IMarkdownString[]): boolean {
-	if (!a && !b) {
+export function mArkedStringsEquAls(A: IMArkdownString | IMArkdownString[], b: IMArkdownString | IMArkdownString[]): booleAn {
+	if (!A && !b) {
 		return true;
-	} else if (!a || !b) {
-		return false;
-	} else if (Array.isArray(a) && Array.isArray(b)) {
-		return equals(a, b, markdownStringEqual);
-	} else if (isMarkdownString(a) && isMarkdownString(b)) {
-		return markdownStringEqual(a, b);
+	} else if (!A || !b) {
+		return fAlse;
+	} else if (ArrAy.isArrAy(A) && ArrAy.isArrAy(b)) {
+		return equAls(A, b, mArkdownStringEquAl);
+	} else if (isMArkdownString(A) && isMArkdownString(b)) {
+		return mArkdownStringEquAl(A, b);
 	} else {
-		return false;
+		return fAlse;
 	}
 }
 
-function markdownStringEqual(a: IMarkdownString, b: IMarkdownString): boolean {
-	if (a === b) {
+function mArkdownStringEquAl(A: IMArkdownString, b: IMArkdownString): booleAn {
+	if (A === b) {
 		return true;
-	} else if (!a || !b) {
-		return false;
+	} else if (!A || !b) {
+		return fAlse;
 	} else {
-		return a.value === b.value && a.isTrusted === b.isTrusted && a.supportThemeIcons === b.supportThemeIcons;
+		return A.vAlue === b.vAlue && A.isTrusted === b.isTrusted && A.supportThemeIcons === b.supportThemeIcons;
 	}
 }
 
-export function removeMarkdownEscapes(text: string): string {
+export function removeMArkdownEscApes(text: string): string {
 	if (!text) {
 		return text;
 	}
-	return text.replace(/\\([\\`*_{}[\]()#+\-.!])/g, '$1');
+	return text.replAce(/\\([\\`*_{}[\]()#+\-.!])/g, '$1');
 }
 
-export function parseHrefAndDimensions(href: string): { href: string, dimensions: string[] } {
+export function pArseHrefAndDimensions(href: string): { href: string, dimensions: string[] } {
 	const dimensions: string[] = [];
-	const splitted = href.split('|').map(s => s.trim());
+	const splitted = href.split('|').mAp(s => s.trim());
 	href = splitted[0];
-	const parameters = splitted[1];
-	if (parameters) {
-		const heightFromParams = /height=(\d+)/.exec(parameters);
-		const widthFromParams = /width=(\d+)/.exec(parameters);
-		const height = heightFromParams ? heightFromParams[1] : '';
-		const width = widthFromParams ? widthFromParams[1] : '';
-		const widthIsFinite = isFinite(parseInt(width));
-		const heightIsFinite = isFinite(parseInt(height));
+	const pArAmeters = splitted[1];
+	if (pArAmeters) {
+		const heightFromPArAms = /height=(\d+)/.exec(pArAmeters);
+		const widthFromPArAms = /width=(\d+)/.exec(pArAmeters);
+		const height = heightFromPArAms ? heightFromPArAms[1] : '';
+		const width = widthFromPArAms ? widthFromPArAms[1] : '';
+		const widthIsFinite = isFinite(pArseInt(width));
+		const heightIsFinite = isFinite(pArseInt(height));
 		if (widthIsFinite) {
 			dimensions.push(`width="${width}"`);
 		}

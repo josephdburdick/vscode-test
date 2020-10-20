@@ -1,98 +1,98 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application, Quality, StatusBarElement } from '../../../../automation';
+import { ApplicAtion, QuAlity, StAtusBArElement } from '../../../../AutomAtion';
 
 export function setup(isWeb) {
-	describe('Statusbar', () => {
-		it('verifies presence of all default status bar elements', async function () {
-			const app = this.app as Application;
+	describe('StAtusbAr', () => {
+		it('verifies presence of All defAult stAtus bAr elements', Async function () {
+			const App = this.App As ApplicAtion;
 
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.BRANCH_STATUS);
-			if (app.quality !== Quality.Dev) {
-				await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.FEEDBACK_ICON);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.BRANCH_STATUS);
+			if (App.quAlity !== QuAlity.Dev) {
+				AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.FEEDBACK_ICON);
 			}
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.SYNC_STATUS);
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.PROBLEMS_STATUS);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.SYNC_STATUS);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.PROBLEMS_STATUS);
 
-			await app.workbench.quickaccess.openFile('app.js');
+			AwAit App.workbench.quickAccess.openFile('App.js');
 			if (!isWeb) {
 				// Encoding picker currently hidden in web (only UTF-8 supported)
-				await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.ENCODING_STATUS);
+				AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.ENCODING_STATUS);
 			}
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.EOL_STATUS);
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.INDENTATION_STATUS);
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.LANGUAGE_STATUS);
-			await app.workbench.statusbar.waitForStatusbarElement(StatusBarElement.SELECTION_STATUS);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.EOL_STATUS);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.INDENTATION_STATUS);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.LANGUAGE_STATUS);
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArElement(StAtusBArElement.SELECTION_STATUS);
 		});
 
-		it(`verifies that 'quick input' opens when clicking on status bar elements`, async function () {
-			const app = this.app as Application;
+		it(`verifies thAt 'quick input' opens when clicking on stAtus bAr elements`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			await app.workbench.statusbar.clickOn(StatusBarElement.BRANCH_STATUS);
-			await app.workbench.quickinput.waitForQuickInputOpened();
-			await app.workbench.quickinput.closeQuickInput();
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.BRANCH_STATUS);
+			AwAit App.workbench.quickinput.wAitForQuickInputOpened();
+			AwAit App.workbench.quickinput.closeQuickInput();
 
-			await app.workbench.quickaccess.openFile('app.js');
-			await app.workbench.statusbar.clickOn(StatusBarElement.INDENTATION_STATUS);
-			await app.workbench.quickinput.waitForQuickInputOpened();
-			await app.workbench.quickinput.closeQuickInput();
+			AwAit App.workbench.quickAccess.openFile('App.js');
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.INDENTATION_STATUS);
+			AwAit App.workbench.quickinput.wAitForQuickInputOpened();
+			AwAit App.workbench.quickinput.closeQuickInput();
 			if (!isWeb) {
 				// Encoding picker currently hidden in web (only UTF-8 supported)
-				await app.workbench.statusbar.clickOn(StatusBarElement.ENCODING_STATUS);
-				await app.workbench.quickinput.waitForQuickInputOpened();
-				await app.workbench.quickinput.closeQuickInput();
+				AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.ENCODING_STATUS);
+				AwAit App.workbench.quickinput.wAitForQuickInputOpened();
+				AwAit App.workbench.quickinput.closeQuickInput();
 			}
-			await app.workbench.statusbar.clickOn(StatusBarElement.EOL_STATUS);
-			await app.workbench.quickinput.waitForQuickInputOpened();
-			await app.workbench.quickinput.closeQuickInput();
-			await app.workbench.statusbar.clickOn(StatusBarElement.LANGUAGE_STATUS);
-			await app.workbench.quickinput.waitForQuickInputOpened();
-			await app.workbench.quickinput.closeQuickInput();
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.EOL_STATUS);
+			AwAit App.workbench.quickinput.wAitForQuickInputOpened();
+			AwAit App.workbench.quickinput.closeQuickInput();
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.LANGUAGE_STATUS);
+			AwAit App.workbench.quickinput.wAitForQuickInputOpened();
+			AwAit App.workbench.quickinput.closeQuickInput();
 		});
 
-		it(`verifies that 'Problems View' appears when clicking on 'Problems' status element`, async function () {
-			const app = this.app as Application;
+		it(`verifies thAt 'Problems View' AppeArs when clicking on 'Problems' stAtus element`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			await app.workbench.statusbar.clickOn(StatusBarElement.PROBLEMS_STATUS);
-			await app.workbench.problems.waitForProblemsView();
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.PROBLEMS_STATUS);
+			AwAit App.workbench.problems.wAitForProblemsView();
 		});
 
-		it(`verifies that 'Tweet us feedback' pop-up appears when clicking on 'Feedback' icon`, async function () {
-			const app = this.app as Application;
+		it(`verifies thAt 'Tweet us feedbAck' pop-up AppeArs when clicking on 'FeedbAck' icon`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			if (app.quality === Quality.Dev) {
+			if (App.quAlity === QuAlity.Dev) {
 				return this.skip();
 			}
 
-			await app.workbench.statusbar.clickOn(StatusBarElement.FEEDBACK_ICON);
-			await app.code.waitForElement('.feedback-form');
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.FEEDBACK_ICON);
+			AwAit App.code.wAitForElement('.feedbAck-form');
 		});
 
-		it(`checks if 'Go to Line' works if called from the status bar`, async function () {
-			const app = this.app as Application;
+		it(`checks if 'Go to Line' works if cAlled from the stAtus bAr`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			await app.workbench.quickaccess.openFile('app.js');
-			await app.workbench.statusbar.clickOn(StatusBarElement.SELECTION_STATUS);
+			AwAit App.workbench.quickAccess.openFile('App.js');
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.SELECTION_STATUS);
 
-			await app.workbench.quickinput.waitForQuickInputOpened();
+			AwAit App.workbench.quickinput.wAitForQuickInputOpened();
 
-			await app.workbench.quickinput.submit(':15');
-			await app.workbench.editor.waitForHighlightingLine('app.js', 15);
+			AwAit App.workbench.quickinput.submit(':15');
+			AwAit App.workbench.editor.wAitForHighlightingLine('App.js', 15);
 		});
 
-		it(`verifies if changing EOL is reflected in the status bar`, async function () {
-			const app = this.app as Application;
+		it(`verifies if chAnging EOL is reflected in the stAtus bAr`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			await app.workbench.quickaccess.openFile('app.js');
-			await app.workbench.statusbar.clickOn(StatusBarElement.EOL_STATUS);
+			AwAit App.workbench.quickAccess.openFile('App.js');
+			AwAit App.workbench.stAtusbAr.clickOn(StAtusBArElement.EOL_STATUS);
 
-			await app.workbench.quickinput.waitForQuickInputOpened();
-			await app.workbench.quickinput.selectQuickInputElement(1);
+			AwAit App.workbench.quickinput.wAitForQuickInputOpened();
+			AwAit App.workbench.quickinput.selectQuickInputElement(1);
 
-			await app.workbench.statusbar.waitForEOL('CRLF');
+			AwAit App.workbench.stAtusbAr.wAitForEOL('CRLF');
 		});
 	});
 }

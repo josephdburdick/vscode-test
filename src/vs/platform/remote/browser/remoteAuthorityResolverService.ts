@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ResolvedAuthority, IRemoteAuthorityResolverService, ResolverResult, IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { RemoteAuthorities } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { ResolvedAuthority, IRemoteAuthorityResolverService, ResolverResult, IRemoteConnectionDAtA } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { RemoteAuthorities } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-export class RemoteAuthorityResolverService extends Disposable implements IRemoteAuthorityResolverService {
+export clAss RemoteAuthorityResolverService extends DisposAble implements IRemoteAuthorityResolverService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidChangeConnectionData = this._register(new Emitter<void>());
-	public readonly onDidChangeConnectionData = this._onDidChangeConnectionData.event;
+	privAte reAdonly _onDidChAngeConnectionDAtA = this._register(new Emitter<void>());
+	public reAdonly onDidChAngeConnectionDAtA = this._onDidChAngeConnectionDAtA.event;
 
-	private readonly _cache: Map<string, ResolverResult>;
-	private readonly _connectionTokens: Map<string, string>;
+	privAte reAdonly _cAche: MAp<string, ResolverResult>;
+	privAte reAdonly _connectionTokens: MAp<string, string>;
 
 	constructor(resourceUriProvider: ((uri: URI) => URI) | undefined) {
 		super();
-		this._cache = new Map<string, ResolverResult>();
-		this._connectionTokens = new Map<string, string>();
+		this._cAche = new MAp<string, ResolverResult>();
+		this._connectionTokens = new MAp<string, string>();
 		if (resourceUriProvider) {
-			RemoteAuthorities.setDelegate(resourceUriProvider);
+			RemoteAuthorities.setDelegAte(resourceUriProvider);
 		}
 	}
 
-	async resolveAuthority(authority: string): Promise<ResolverResult> {
-		if (!this._cache.has(authority)) {
-			const result = this._doResolveAuthority(authority);
-			RemoteAuthorities.set(authority, result.authority.host, result.authority.port);
-			this._cache.set(authority, result);
-			this._onDidChangeConnectionData.fire();
+	Async resolveAuthority(Authority: string): Promise<ResolverResult> {
+		if (!this._cAche.hAs(Authority)) {
+			const result = this._doResolveAuthority(Authority);
+			RemoteAuthorities.set(Authority, result.Authority.host, result.Authority.port);
+			this._cAche.set(Authority, result);
+			this._onDidChAngeConnectionDAtA.fire();
 		}
-		return this._cache.get(authority)!;
+		return this._cAche.get(Authority)!;
 	}
 
-	getConnectionData(authority: string): IRemoteConnectionData | null {
-		if (!this._cache.has(authority)) {
+	getConnectionDAtA(Authority: string): IRemoteConnectionDAtA | null {
+		if (!this._cAche.hAs(Authority)) {
 			return null;
 		}
-		const resolverResult = this._cache.get(authority)!;
-		const connectionToken = this._connectionTokens.get(authority);
+		const resolverResult = this._cAche.get(Authority)!;
+		const connectionToken = this._connectionTokens.get(Authority);
 		return {
-			host: resolverResult.authority.host,
-			port: resolverResult.authority.port,
+			host: resolverResult.Authority.host,
+			port: resolverResult.Authority.port,
 			connectionToken: connectionToken
 		};
 	}
 
-	private _doResolveAuthority(authority: string): ResolverResult {
-		if (authority.indexOf(':') >= 0) {
-			const pieces = authority.split(':');
-			return { authority: { authority, host: pieces[0], port: parseInt(pieces[1], 10) } };
+	privAte _doResolveAuthority(Authority: string): ResolverResult {
+		if (Authority.indexOf(':') >= 0) {
+			const pieces = Authority.split(':');
+			return { Authority: { Authority, host: pieces[0], port: pArseInt(pieces[1], 10) } };
 		}
-		return { authority: { authority, host: authority, port: 80 } };
+		return { Authority: { Authority, host: Authority, port: 80 } };
 	}
 
-	_clearResolvedAuthority(authority: string): void {
+	_cleArResolvedAuthority(Authority: string): void {
 	}
 
 	_setResolvedAuthority(resolvedAuthority: ResolvedAuthority) {
 	}
 
-	_setResolvedAuthorityError(authority: string, err: any): void {
+	_setResolvedAuthorityError(Authority: string, err: Any): void {
 	}
 
-	_setAuthorityConnectionToken(authority: string, connectionToken: string): void {
-		this._connectionTokens.set(authority, connectionToken);
-		RemoteAuthorities.setConnectionToken(authority, connectionToken);
-		this._onDidChangeConnectionData.fire();
+	_setAuthorityConnectionToken(Authority: string, connectionToken: string): void {
+		this._connectionTokens.set(Authority, connectionToken);
+		RemoteAuthorities.setConnectionToken(Authority, connectionToken);
+		this._onDidChAngeConnectionDAtA.fire();
 	}
 }

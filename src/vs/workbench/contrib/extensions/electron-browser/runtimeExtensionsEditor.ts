@@ -1,192 +1,192 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/runtimeExtensionsEditor';
-import * as nls from 'vs/nls';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { Action, IAction, Separator } from 'vs/base/common/actions';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IInstantiationService, createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import 'vs/css!./mediA/runtimeExtensionsEditor';
+import * As nls from 'vs/nls';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { Action, IAction, SepArAtor } from 'vs/bAse/common/Actions';
+import { EditorPAne } from 'vs/workbench/browser/pArts/editor/editorPAne';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IInstAntiAtionService, creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IExtensionsWorkbenchService, IExtension } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IExtensionService, IExtensionsStatus, IExtensionHostProfile } from 'vs/workbench/services/extensions/common/extensions';
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { WorkbenchList } from 'vs/platform/list/browser/listService';
-import { append, $, reset, Dimension, clearNode } from 'vs/base/browser/dom';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { EnablementState } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { memoize } from 'vs/base/common/decorators';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { Event } from 'vs/base/common/event';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { IExtensionService, IExtensionsStAtus, IExtensionHostProfile } from 'vs/workbench/services/extensions/common/extensions';
+import { IListVirtuAlDelegAte, IListRenderer } from 'vs/bAse/browser/ui/list/list';
+import { WorkbenchList } from 'vs/plAtform/list/browser/listService';
+import { Append, $, reset, Dimension, cleArNode } from 'vs/bAse/browser/dom';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { EnAblementStAte } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { Event } from 'vs/bAse/common/event';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { RuntimeExtensionsInput } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsInput';
 import { IDebugService } from 'vs/workbench/contrib/debug/common/debug';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { randomPort } from 'vs/base/node/ports';
-import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { renderCodicons } from 'vs/base/browser/codicons';
-import { ExtensionIdentifier, ExtensionType, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { Schemas } from 'vs/base/common/network';
-import { SlowExtensionAction } from 'vs/workbench/contrib/extensions/electron-sandbox/extensionsSlowActions';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { rAndomPort } from 'vs/bAse/node/ports';
+import { IContextKeyService, RAwContextKey, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { renderCodicons } from 'vs/bAse/browser/codicons';
+import { ExtensionIdentifier, ExtensionType, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { SchemAs } from 'vs/bAse/common/network';
+import { SlowExtensionAction } from 'vs/workbench/contrib/extensions/electron-sAndbox/extensionsSlowActions';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { editorBackground } from 'vs/platform/theme/common/colorRegistry';
-import { domEvent } from 'vs/base/browser/event';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import { IFileService } from 'vs/platform/files/common/files';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import { editorBAckground } from 'vs/plAtform/theme/common/colorRegistry';
+import { domEvent } from 'vs/bAse/browser/event';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 
-export const IExtensionHostProfileService = createDecorator<IExtensionHostProfileService>('extensionHostProfileService');
-export const CONTEXT_PROFILE_SESSION_STATE = new RawContextKey<string>('profileSessionState', 'none');
-export const CONTEXT_EXTENSION_HOST_PROFILE_RECORDED = new RawContextKey<boolean>('extensionHostProfileRecorded', false);
+export const IExtensionHostProfileService = creAteDecorAtor<IExtensionHostProfileService>('extensionHostProfileService');
+export const CONTEXT_PROFILE_SESSION_STATE = new RAwContextKey<string>('profileSessionStAte', 'none');
+export const CONTEXT_EXTENSION_HOST_PROFILE_RECORDED = new RAwContextKey<booleAn>('extensionHostProfileRecorded', fAlse);
 
-export enum ProfileSessionState {
+export enum ProfileSessionStAte {
 	None = 0,
-	Starting = 1,
+	StArting = 1,
 	Running = 2,
 	Stopping = 3
 }
 
-export interface IExtensionHostProfileService {
-	readonly _serviceBrand: undefined;
+export interfAce IExtensionHostProfileService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidChangeState: Event<void>;
-	readonly onDidChangeLastProfile: Event<void>;
+	reAdonly onDidChAngeStAte: Event<void>;
+	reAdonly onDidChAngeLAstProfile: Event<void>;
 
-	readonly state: ProfileSessionState;
-	readonly lastProfile: IExtensionHostProfile | null;
+	reAdonly stAte: ProfileSessionStAte;
+	reAdonly lAstProfile: IExtensionHostProfile | null;
 
-	startProfiling(): void;
+	stArtProfiling(): void;
 	stopProfiling(): void;
 
 	getUnresponsiveProfile(extensionId: ExtensionIdentifier): IExtensionHostProfile | undefined;
 	setUnresponsiveProfile(extensionId: ExtensionIdentifier, profile: IExtensionHostProfile): void;
 }
 
-interface IExtensionProfileInformation {
+interfAce IExtensionProfileInformAtion {
 	/**
-	 * segment when the extension was running.
-	 * 2*i = segment start time
+	 * segment when the extension wAs running.
+	 * 2*i = segment stArt time
 	 * 2*i+1 = segment end time
 	 */
 	segments: number[];
 	/**
-	 * total time when the extension was running.
-	 * (sum of all segment lengths).
+	 * totAl time when the extension wAs running.
+	 * (sum of All segment lengths).
 	 */
-	totalTime: number;
+	totAlTime: number;
 }
 
-interface IRuntimeExtension {
-	originalIndex: number;
+interfAce IRuntimeExtension {
+	originAlIndex: number;
 	description: IExtensionDescription;
-	marketplaceInfo: IExtension;
-	status: IExtensionsStatus;
-	profileInfo?: IExtensionProfileInformation;
+	mArketplAceInfo: IExtension;
+	stAtus: IExtensionsStAtus;
+	profileInfo?: IExtensionProfileInformAtion;
 	unresponsiveProfile?: IExtensionHostProfile;
 }
 
-export class RuntimeExtensionsEditor extends EditorPane {
+export clAss RuntimeExtensionsEditor extends EditorPAne {
 
-	public static readonly ID: string = 'workbench.editor.runtimeExtensions';
+	public stAtic reAdonly ID: string = 'workbench.editor.runtimeExtensions';
 
-	private _list: WorkbenchList<IRuntimeExtension> | null;
-	private _profileInfo: IExtensionHostProfile | null;
+	privAte _list: WorkbenchList<IRuntimeExtension> | null;
+	privAte _profileInfo: IExtensionHostProfile | null;
 
-	private _elements: IRuntimeExtension[] | null;
-	private _extensionsDescriptions: IExtensionDescription[];
-	private _updateSoon: RunOnceScheduler;
-	private _profileSessionState: IContextKey<string>;
-	private _extensionsHostRecorded: IContextKey<boolean>;
+	privAte _elements: IRuntimeExtension[] | null;
+	privAte _extensionsDescriptions: IExtensionDescription[];
+	privAte _updAteSoon: RunOnceScheduler;
+	privAte _profileSessionStAte: IContextKey<string>;
+	privAte _extensionsHostRecorded: IContextKey<booleAn>;
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IExtensionsWorkbenchService private readonly _extensionsWorkbenchService: IExtensionsWorkbenchService,
-		@IExtensionService private readonly _extensionService: IExtensionService,
-		@INotificationService private readonly _notificationService: INotificationService,
-		@IContextMenuService private readonly _contextMenuService: IContextMenuService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@IExtensionHostProfileService private readonly _extensionHostProfileService: IExtensionHostProfileService,
-		@IStorageService storageService: IStorageService,
-		@ILabelService private readonly _labelService: ILabelService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IClipboardService private readonly _clipboardService: IClipboardService,
-		@IProductService private readonly _productService: IProductService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService
+		@IExtensionsWorkbenchService privAte reAdonly _extensionsWorkbenchService: IExtensionsWorkbenchService,
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
+		@INotificAtionService privAte reAdonly _notificAtionService: INotificAtionService,
+		@IContextMenuService privAte reAdonly _contextMenuService: IContextMenuService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@IExtensionHostProfileService privAte reAdonly _extensionHostProfileService: IExtensionHostProfileService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@ILAbelService privAte reAdonly _lAbelService: ILAbelService,
+		@IWorkbenchEnvironmentService privAte reAdonly _environmentService: IWorkbenchEnvironmentService,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IClipboArdService privAte reAdonly _clipboArdService: IClipboArdService,
+		@IProductService privAte reAdonly _productService: IProductService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService
 	) {
-		super(RuntimeExtensionsEditor.ID, telemetryService, themeService, storageService);
+		super(RuntimeExtensionsEditor.ID, telemetryService, themeService, storAgeService);
 
 		this._list = null;
-		this._profileInfo = this._extensionHostProfileService.lastProfile;
-		this._register(this._extensionHostProfileService.onDidChangeLastProfile(() => {
-			this._profileInfo = this._extensionHostProfileService.lastProfile;
+		this._profileInfo = this._extensionHostProfileService.lAstProfile;
+		this._register(this._extensionHostProfileService.onDidChAngeLAstProfile(() => {
+			this._profileInfo = this._extensionHostProfileService.lAstProfile;
 			this._extensionsHostRecorded.set(!!this._profileInfo);
-			this._updateExtensions();
+			this._updAteExtensions();
 		}));
-		this._register(this._extensionHostProfileService.onDidChangeState(() => {
-			const state = this._extensionHostProfileService.state;
-			this._profileSessionState.set(ProfileSessionState[state].toLowerCase());
+		this._register(this._extensionHostProfileService.onDidChAngeStAte(() => {
+			const stAte = this._extensionHostProfileService.stAte;
+			this._profileSessionStAte.set(ProfileSessionStAte[stAte].toLowerCAse());
 		}));
 
 		this._elements = null;
 
 		this._extensionsDescriptions = [];
-		this._updateExtensions();
+		this._updAteExtensions();
 
-		this._profileSessionState = CONTEXT_PROFILE_SESSION_STATE.bindTo(contextKeyService);
+		this._profileSessionStAte = CONTEXT_PROFILE_SESSION_STATE.bindTo(contextKeyService);
 		this._extensionsHostRecorded = CONTEXT_EXTENSION_HOST_PROFILE_RECORDED.bindTo(contextKeyService);
 
-		this._updateSoon = this._register(new RunOnceScheduler(() => this._updateExtensions(), 200));
+		this._updAteSoon = this._register(new RunOnceScheduler(() => this._updAteExtensions(), 200));
 
 		this._extensionService.getExtensions().then((extensions) => {
-			// We only deal with extensions with source code!
+			// We only deAl with extensions with source code!
 			this._extensionsDescriptions = extensions.filter((extension) => {
-				return Boolean(extension.main) || Boolean(extension.browser);
+				return BooleAn(extension.mAin) || BooleAn(extension.browser);
 			});
-			this._updateExtensions();
+			this._updAteExtensions();
 		});
-		this._register(this._extensionService.onDidChangeExtensionsStatus(() => this._updateSoon.schedule()));
+		this._register(this._extensionService.onDidChAngeExtensionsStAtus(() => this._updAteSoon.schedule()));
 	}
 
-	private async _updateExtensions(): Promise<void> {
-		this._elements = await this._resolveExtensions();
+	privAte Async _updAteExtensions(): Promise<void> {
+		this._elements = AwAit this._resolveExtensions();
 		if (this._list) {
 			this._list.splice(0, this._list.length, this._elements);
 		}
 	}
 
-	private async _resolveExtensions(): Promise<IRuntimeExtension[]> {
-		let marketplaceMap: { [id: string]: IExtension; } = Object.create(null);
-		const marketPlaceExtensions = await this._extensionsWorkbenchService.queryLocal();
-		for (let extension of marketPlaceExtensions) {
-			marketplaceMap[ExtensionIdentifier.toKey(extension.identifier.id)] = extension;
+	privAte Async _resolveExtensions(): Promise<IRuntimeExtension[]> {
+		let mArketplAceMAp: { [id: string]: IExtension; } = Object.creAte(null);
+		const mArketPlAceExtensions = AwAit this._extensionsWorkbenchService.queryLocAl();
+		for (let extension of mArketPlAceExtensions) {
+			mArketplAceMAp[ExtensionIdentifier.toKey(extension.identifier.id)] = extension;
 		}
 
-		let statusMap = this._extensionService.getExtensionsStatus();
+		let stAtusMAp = this._extensionService.getExtensionsStAtus();
 
 		// group profile segments by extension
-		let segments: { [id: string]: number[]; } = Object.create(null);
+		let segments: { [id: string]: number[]; } = Object.creAte(null);
 
 		if (this._profileInfo) {
-			let currentStartTime = this._profileInfo.startTime;
-			for (let i = 0, len = this._profileInfo.deltas.length; i < len; i++) {
+			let currentStArtTime = this._profileInfo.stArtTime;
+			for (let i = 0, len = this._profileInfo.deltAs.length; i < len; i++) {
 				const id = this._profileInfo.ids[i];
-				const delta = this._profileInfo.deltas[i];
+				const deltA = this._profileInfo.deltAs[i];
 
 				let extensionSegments = segments[ExtensionIdentifier.toKey(id)];
 				if (!extensionSegments) {
@@ -194,9 +194,9 @@ export class RuntimeExtensionsEditor extends EditorPane {
 					segments[ExtensionIdentifier.toKey(id)] = extensionSegments;
 				}
 
-				extensionSegments.push(currentStartTime);
-				currentStartTime = currentStartTime + delta;
-				extensionSegments.push(currentStartTime);
+				extensionSegments.push(currentStArtTime);
+				currentStArtTime = currentStArtTime + deltA;
+				extensionSegments.push(currentStArtTime);
 			}
 		}
 
@@ -204,259 +204,259 @@ export class RuntimeExtensionsEditor extends EditorPane {
 		for (let i = 0, len = this._extensionsDescriptions.length; i < len; i++) {
 			const extensionDescription = this._extensionsDescriptions[i];
 
-			let profileInfo: IExtensionProfileInformation | null = null;
+			let profileInfo: IExtensionProfileInformAtion | null = null;
 			if (this._profileInfo) {
 				let extensionSegments = segments[ExtensionIdentifier.toKey(extensionDescription.identifier)] || [];
-				let extensionTotalTime = 0;
+				let extensionTotAlTime = 0;
 				for (let j = 0, lenJ = extensionSegments.length / 2; j < lenJ; j++) {
-					const startTime = extensionSegments[2 * j];
+					const stArtTime = extensionSegments[2 * j];
 					const endTime = extensionSegments[2 * j + 1];
-					extensionTotalTime += (endTime - startTime);
+					extensionTotAlTime += (endTime - stArtTime);
 				}
 				profileInfo = {
 					segments: extensionSegments,
-					totalTime: extensionTotalTime
+					totAlTime: extensionTotAlTime
 				};
 			}
 
 			result[i] = {
-				originalIndex: i,
+				originAlIndex: i,
 				description: extensionDescription,
-				marketplaceInfo: marketplaceMap[ExtensionIdentifier.toKey(extensionDescription.identifier)],
-				status: statusMap[extensionDescription.identifier.value],
+				mArketplAceInfo: mArketplAceMAp[ExtensionIdentifier.toKey(extensionDescription.identifier)],
+				stAtus: stAtusMAp[extensionDescription.identifier.vAlue],
 				profileInfo: profileInfo || undefined,
 				unresponsiveProfile: this._extensionHostProfileService.getUnresponsiveProfile(extensionDescription.identifier)
 			};
 		}
 
-		result = result.filter(element => element.status.activationTimes);
+		result = result.filter(element => element.stAtus.ActivAtionTimes);
 
-		// bubble up extensions that have caused slowness
+		// bubble up extensions thAt hAve cAused slowness
 
-		const isUnresponsive = (extension: IRuntimeExtension): boolean =>
+		const isUnresponsive = (extension: IRuntimeExtension): booleAn =>
 			extension.unresponsiveProfile === this._profileInfo;
 
 		const profileTime = (extension: IRuntimeExtension): number =>
-			extension.profileInfo?.totalTime ?? 0;
+			extension.profileInfo?.totAlTime ?? 0;
 
-		const activationTime = (extension: IRuntimeExtension): number =>
-			(extension.status.activationTimes?.codeLoadingTime ?? 0) +
-			(extension.status.activationTimes?.activateCallTime ?? 0);
+		const ActivAtionTime = (extension: IRuntimeExtension): number =>
+			(extension.stAtus.ActivAtionTimes?.codeLoAdingTime ?? 0) +
+			(extension.stAtus.ActivAtionTimes?.ActivAteCAllTime ?? 0);
 
-		result = result.sort((a, b) => {
-			if (isUnresponsive(a) || isUnresponsive(b)) {
-				return +isUnresponsive(b) - +isUnresponsive(a);
-			} else if (profileTime(a) || profileTime(b)) {
-				return profileTime(b) - profileTime(a);
-			} else if (activationTime(a) || activationTime(b)) {
-				return activationTime(b) - activationTime(a);
+		result = result.sort((A, b) => {
+			if (isUnresponsive(A) || isUnresponsive(b)) {
+				return +isUnresponsive(b) - +isUnresponsive(A);
+			} else if (profileTime(A) || profileTime(b)) {
+				return profileTime(b) - profileTime(A);
+			} else if (ActivAtionTime(A) || ActivAtionTime(b)) {
+				return ActivAtionTime(b) - ActivAtionTime(A);
 			}
-			return a.originalIndex - b.originalIndex;
+			return A.originAlIndex - b.originAlIndex;
 		});
 
 		return result;
 	}
 
-	protected createEditor(parent: HTMLElement): void {
-		parent.classList.add('runtime-extensions-editor');
+	protected creAteEditor(pArent: HTMLElement): void {
+		pArent.clAssList.Add('runtime-extensions-editor');
 
-		const TEMPLATE_ID = 'runtimeExtensionElementTemplate';
+		const TEMPLATE_ID = 'runtimeExtensionElementTemplAte';
 
-		const delegate = new class implements IListVirtualDelegate<IRuntimeExtension>{
+		const delegAte = new clAss implements IListVirtuAlDelegAte<IRuntimeExtension>{
 			getHeight(element: IRuntimeExtension): number {
 				return 62;
 			}
-			getTemplateId(element: IRuntimeExtension): string {
+			getTemplAteId(element: IRuntimeExtension): string {
 				return TEMPLATE_ID;
 			}
 		};
 
-		interface IRuntimeExtensionTemplateData {
+		interfAce IRuntimeExtensionTemplAteDAtA {
 			root: HTMLElement;
 			element: HTMLElement;
-			icon: HTMLImageElement;
-			name: HTMLElement;
+			icon: HTMLImAgeElement;
+			nAme: HTMLElement;
 			version: HTMLElement;
-			msgContainer: HTMLElement;
-			actionbar: ActionBar;
-			activationTime: HTMLElement;
+			msgContAiner: HTMLElement;
+			ActionbAr: ActionBAr;
+			ActivAtionTime: HTMLElement;
 			profileTime: HTMLElement;
-			disposables: IDisposable[];
-			elementDisposables: IDisposable[];
+			disposAbles: IDisposAble[];
+			elementDisposAbles: IDisposAble[];
 		}
 
-		const renderer: IListRenderer<IRuntimeExtension, IRuntimeExtensionTemplateData> = {
-			templateId: TEMPLATE_ID,
-			renderTemplate: (root: HTMLElement): IRuntimeExtensionTemplateData => {
-				const element = append(root, $('.extension'));
-				const iconContainer = append(element, $('.icon-container'));
-				const icon = append(iconContainer, $<HTMLImageElement>('img.icon'));
+		const renderer: IListRenderer<IRuntimeExtension, IRuntimeExtensionTemplAteDAtA> = {
+			templAteId: TEMPLATE_ID,
+			renderTemplAte: (root: HTMLElement): IRuntimeExtensionTemplAteDAtA => {
+				const element = Append(root, $('.extension'));
+				const iconContAiner = Append(element, $('.icon-contAiner'));
+				const icon = Append(iconContAiner, $<HTMLImAgeElement>('img.icon'));
 
-				const desc = append(element, $('div.desc'));
-				const headerContainer = append(desc, $('.header-container'));
-				const header = append(headerContainer, $('.header'));
-				const name = append(header, $('div.name'));
-				const version = append(header, $('span.version'));
+				const desc = Append(element, $('div.desc'));
+				const heAderContAiner = Append(desc, $('.heAder-contAiner'));
+				const heAder = Append(heAderContAiner, $('.heAder'));
+				const nAme = Append(heAder, $('div.nAme'));
+				const version = Append(heAder, $('spAn.version'));
 
-				const msgContainer = append(desc, $('div.msg'));
+				const msgContAiner = Append(desc, $('div.msg'));
 
-				const actionbar = new ActionBar(desc, { animated: false });
-				actionbar.onDidRun(({ error }) => error && this._notificationService.error(error));
+				const ActionbAr = new ActionBAr(desc, { AnimAted: fAlse });
+				ActionbAr.onDidRun(({ error }) => error && this._notificAtionService.error(error));
 
 
-				const timeContainer = append(element, $('.time'));
-				const activationTime = append(timeContainer, $('div.activation-time'));
-				const profileTime = append(timeContainer, $('div.profile-time'));
+				const timeContAiner = Append(element, $('.time'));
+				const ActivAtionTime = Append(timeContAiner, $('div.ActivAtion-time'));
+				const profileTime = Append(timeContAiner, $('div.profile-time'));
 
-				const disposables = [actionbar];
+				const disposAbles = [ActionbAr];
 
 				return {
 					root,
 					element,
 					icon,
-					name,
+					nAme,
 					version,
-					actionbar,
-					activationTime,
+					ActionbAr,
+					ActivAtionTime,
 					profileTime,
-					msgContainer,
-					disposables,
-					elementDisposables: [],
+					msgContAiner,
+					disposAbles,
+					elementDisposAbles: [],
 				};
 			},
 
-			renderElement: (element: IRuntimeExtension, index: number, data: IRuntimeExtensionTemplateData): void => {
+			renderElement: (element: IRuntimeExtension, index: number, dAtA: IRuntimeExtensionTemplAteDAtA): void => {
 
-				data.elementDisposables = dispose(data.elementDisposables);
+				dAtA.elementDisposAbles = dispose(dAtA.elementDisposAbles);
 
-				data.root.classList.toggle('odd', index % 2 === 1);
+				dAtA.root.clAssList.toggle('odd', index % 2 === 1);
 
-				const onError = Event.once(domEvent(data.icon, 'error'));
-				onError(() => data.icon.src = element.marketplaceInfo.iconUrlFallback, null, data.elementDisposables);
-				data.icon.src = element.marketplaceInfo.iconUrl;
+				const onError = Event.once(domEvent(dAtA.icon, 'error'));
+				onError(() => dAtA.icon.src = element.mArketplAceInfo.iconUrlFAllbAck, null, dAtA.elementDisposAbles);
+				dAtA.icon.src = element.mArketplAceInfo.iconUrl;
 
-				if (!data.icon.complete) {
-					data.icon.style.visibility = 'hidden';
-					data.icon.onload = () => data.icon.style.visibility = 'inherit';
+				if (!dAtA.icon.complete) {
+					dAtA.icon.style.visibility = 'hidden';
+					dAtA.icon.onloAd = () => dAtA.icon.style.visibility = 'inherit';
 				} else {
-					data.icon.style.visibility = 'inherit';
+					dAtA.icon.style.visibility = 'inherit';
 				}
-				data.name.textContent = element.marketplaceInfo.displayName;
-				data.version.textContent = element.description.version;
+				dAtA.nAme.textContent = element.mArketplAceInfo.displAyNAme;
+				dAtA.version.textContent = element.description.version;
 
-				const activationTimes = element.status.activationTimes!;
-				let syncTime = activationTimes.codeLoadingTime + activationTimes.activateCallTime;
-				data.activationTime.textContent = activationTimes.activationReason.startup ? `Startup Activation: ${syncTime}ms` : `Activation: ${syncTime}ms`;
+				const ActivAtionTimes = element.stAtus.ActivAtionTimes!;
+				let syncTime = ActivAtionTimes.codeLoAdingTime + ActivAtionTimes.ActivAteCAllTime;
+				dAtA.ActivAtionTime.textContent = ActivAtionTimes.ActivAtionReAson.stArtup ? `StArtup ActivAtion: ${syncTime}ms` : `ActivAtion: ${syncTime}ms`;
 
-				data.actionbar.clear();
+				dAtA.ActionbAr.cleAr();
 				if (element.unresponsiveProfile) {
-					data.actionbar.push(this._instantiationService.createInstance(SlowExtensionAction, element.description, element.unresponsiveProfile), { icon: true, label: true });
+					dAtA.ActionbAr.push(this._instAntiAtionService.creAteInstAnce(SlowExtensionAction, element.description, element.unresponsiveProfile), { icon: true, lAbel: true });
 				}
-				if (isNonEmptyArray(element.status.runtimeErrors)) {
-					data.actionbar.push(new ReportExtensionIssueAction(element, this._openerService, this._clipboardService, this._productService, this._nativeHostService), { icon: true, label: true });
+				if (isNonEmptyArrAy(element.stAtus.runtimeErrors)) {
+					dAtA.ActionbAr.push(new ReportExtensionIssueAction(element, this._openerService, this._clipboArdService, this._productService, this._nAtiveHostService), { icon: true, lAbel: true });
 				}
 
 				let title: string;
-				const activationId = activationTimes.activationReason.extensionId.value;
-				const activationEvent = activationTimes.activationReason.activationEvent;
-				if (activationEvent === '*') {
-					title = nls.localize('starActivation', "Activated by {0} on start-up", activationId);
-				} else if (/^workspaceContains:/.test(activationEvent)) {
-					let fileNameOrGlob = activationEvent.substr('workspaceContains:'.length);
-					if (fileNameOrGlob.indexOf('*') >= 0 || fileNameOrGlob.indexOf('?') >= 0) {
-						title = nls.localize({
-							key: 'workspaceContainsGlobActivation',
+				const ActivAtionId = ActivAtionTimes.ActivAtionReAson.extensionId.vAlue;
+				const ActivAtionEvent = ActivAtionTimes.ActivAtionReAson.ActivAtionEvent;
+				if (ActivAtionEvent === '*') {
+					title = nls.locAlize('stArActivAtion', "ActivAted by {0} on stArt-up", ActivAtionId);
+				} else if (/^workspAceContAins:/.test(ActivAtionEvent)) {
+					let fileNAmeOrGlob = ActivAtionEvent.substr('workspAceContAins:'.length);
+					if (fileNAmeOrGlob.indexOf('*') >= 0 || fileNAmeOrGlob.indexOf('?') >= 0) {
+						title = nls.locAlize({
+							key: 'workspAceContAinsGlobActivAtion',
 							comment: [
-								'{0} will be a glob pattern'
+								'{0} will be A glob pAttern'
 							]
-						}, "Activated by {1} because a file matching {1} exists in your workspace", fileNameOrGlob, activationId);
+						}, "ActivAted by {1} becAuse A file mAtching {1} exists in your workspAce", fileNAmeOrGlob, ActivAtionId);
 					} else {
-						title = nls.localize({
-							key: 'workspaceContainsFileActivation',
+						title = nls.locAlize({
+							key: 'workspAceContAinsFileActivAtion',
 							comment: [
-								'{0} will be a file name'
+								'{0} will be A file nAme'
 							]
-						}, "Activated by {1} because file {0} exists in your workspace", fileNameOrGlob, activationId);
+						}, "ActivAted by {1} becAuse file {0} exists in your workspAce", fileNAmeOrGlob, ActivAtionId);
 					}
-				} else if (/^workspaceContainsTimeout:/.test(activationEvent)) {
-					const glob = activationEvent.substr('workspaceContainsTimeout:'.length);
-					title = nls.localize({
-						key: 'workspaceContainsTimeout',
+				} else if (/^workspAceContAinsTimeout:/.test(ActivAtionEvent)) {
+					const glob = ActivAtionEvent.substr('workspAceContAinsTimeout:'.length);
+					title = nls.locAlize({
+						key: 'workspAceContAinsTimeout',
 						comment: [
-							'{0} will be a glob pattern'
+							'{0} will be A glob pAttern'
 						]
-					}, "Activated by {1} because searching for {0} took too long", glob, activationId);
-				} else if (activationEvent === 'onStartupFinished') {
-					title = nls.localize({
-						key: 'startupFinishedActivation',
+					}, "ActivAted by {1} becAuse seArching for {0} took too long", glob, ActivAtionId);
+				} else if (ActivAtionEvent === 'onStArtupFinished') {
+					title = nls.locAlize({
+						key: 'stArtupFinishedActivAtion',
 						comment: [
-							'This refers to an extension. {0} will be an activation event.'
+							'This refers to An extension. {0} will be An ActivAtion event.'
 						]
-					}, "Activated by {0} after start-up finished", activationId);
-				} else if (/^onLanguage:/.test(activationEvent)) {
-					let language = activationEvent.substr('onLanguage:'.length);
-					title = nls.localize('languageActivation', "Activated by {1} because you opened a {0} file", language, activationId);
+					}, "ActivAted by {0} After stArt-up finished", ActivAtionId);
+				} else if (/^onLAnguAge:/.test(ActivAtionEvent)) {
+					let lAnguAge = ActivAtionEvent.substr('onLAnguAge:'.length);
+					title = nls.locAlize('lAnguAgeActivAtion', "ActivAted by {1} becAuse you opened A {0} file", lAnguAge, ActivAtionId);
 				} else {
-					title = nls.localize({
-						key: 'workspaceGenericActivation',
+					title = nls.locAlize({
+						key: 'workspAceGenericActivAtion',
 						comment: [
-							'The {0} placeholder will be an activation event, like e.g. \'language:typescript\', \'debug\', etc.'
+							'The {0} plAceholder will be An ActivAtion event, like e.g. \'lAnguAge:typescript\', \'debug\', etc.'
 						]
-					}, "Activated by {1} on {0}", activationEvent, activationId);
+					}, "ActivAted by {1} on {0}", ActivAtionEvent, ActivAtionId);
 				}
-				data.activationTime.title = title;
+				dAtA.ActivAtionTime.title = title;
 
-				clearNode(data.msgContainer);
+				cleArNode(dAtA.msgContAiner);
 
 				if (this._extensionHostProfileService.getUnresponsiveProfile(element.description.identifier)) {
-					const el = $('span', undefined, ...renderCodicons(` $(alert) Unresponsive`));
-					el.title = nls.localize('unresponsive.title', "Extension has caused the extension host to freeze.");
-					data.msgContainer.appendChild(el);
+					const el = $('spAn', undefined, ...renderCodicons(` $(Alert) Unresponsive`));
+					el.title = nls.locAlize('unresponsive.title', "Extension hAs cAused the extension host to freeze.");
+					dAtA.msgContAiner.AppendChild(el);
 				}
 
-				if (isNonEmptyArray(element.status.runtimeErrors)) {
-					const el = $('span', undefined, ...renderCodicons(`$(bug) ${nls.localize('errors', "{0} uncaught errors", element.status.runtimeErrors.length)}`));
-					data.msgContainer.appendChild(el);
+				if (isNonEmptyArrAy(element.stAtus.runtimeErrors)) {
+					const el = $('spAn', undefined, ...renderCodicons(`$(bug) ${nls.locAlize('errors', "{0} uncAught errors", element.stAtus.runtimeErrors.length)}`));
+					dAtA.msgContAiner.AppendChild(el);
 				}
 
-				if (element.status.messages && element.status.messages.length > 0) {
-					const el = $('span', undefined, ...renderCodicons(`$(alert) ${element.status.messages[0].message}`));
-					data.msgContainer.appendChild(el);
+				if (element.stAtus.messAges && element.stAtus.messAges.length > 0) {
+					const el = $('spAn', undefined, ...renderCodicons(`$(Alert) ${element.stAtus.messAges[0].messAge}`));
+					dAtA.msgContAiner.AppendChild(el);
 				}
 
-				if (element.description.extensionLocation.scheme !== Schemas.file) {
-					const el = $('span', undefined, ...renderCodicons(`$(remote) ${element.description.extensionLocation.authority}`));
-					data.msgContainer.appendChild(el);
+				if (element.description.extensionLocAtion.scheme !== SchemAs.file) {
+					const el = $('spAn', undefined, ...renderCodicons(`$(remote) ${element.description.extensionLocAtion.Authority}`));
+					dAtA.msgContAiner.AppendChild(el);
 
-					const hostLabel = this._labelService.getHostLabel(Schemas.vscodeRemote, this._environmentService.remoteAuthority);
-					if (hostLabel) {
-						reset(el, ...renderCodicons(`$(remote) ${hostLabel}`));
+					const hostLAbel = this._lAbelService.getHostLAbel(SchemAs.vscodeRemote, this._environmentService.remoteAuthority);
+					if (hostLAbel) {
+						reset(el, ...renderCodicons(`$(remote) ${hostLAbel}`));
 					}
 				}
 
 				if (this._profileInfo && element.profileInfo) {
-					data.profileTime.textContent = `Profile: ${(element.profileInfo.totalTime / 1000).toFixed(2)}ms`;
+					dAtA.profileTime.textContent = `Profile: ${(element.profileInfo.totAlTime / 1000).toFixed(2)}ms`;
 				} else {
-					data.profileTime.textContent = '';
+					dAtA.profileTime.textContent = '';
 				}
 
 			},
 
-			disposeTemplate: (data: IRuntimeExtensionTemplateData): void => {
-				data.disposables = dispose(data.disposables);
+			disposeTemplAte: (dAtA: IRuntimeExtensionTemplAteDAtA): void => {
+				dAtA.disposAbles = dispose(dAtA.disposAbles);
 			}
 		};
 
-		this._list = <WorkbenchList<IRuntimeExtension>>this._instantiationService.createInstance(WorkbenchList,
+		this._list = <WorkbenchList<IRuntimeExtension>>this._instAntiAtionService.creAteInstAnce(WorkbenchList,
 			'RuntimeExtensions',
-			parent, delegate, [renderer], {
-			multipleSelectionSupport: false,
-			setRowLineHeight: false,
-			horizontalScrolling: false,
+			pArent, delegAte, [renderer], {
+			multipleSelectionSupport: fAlse,
+			setRowLineHeight: fAlse,
+			horizontAlScrolling: fAlse,
 			overrideStyles: {
-				listBackground: editorBackground
+				listBAckground: editorBAckground
 			},
-			accessibilityProvider: new RuntimeExtensionsEditorAccessibilityProvider()
+			AccessibilityProvider: new RuntimeExtensionsEditorAccessibilityProvider()
 		});
 
 		this._list.splice(0, this._list.length, this._elements || undefined);
@@ -466,264 +466,264 @@ export class RuntimeExtensionsEditor extends EditorPane {
 				return;
 			}
 
-			const actions: IAction[] = [];
+			const Actions: IAction[] = [];
 
-			actions.push(new ReportExtensionIssueAction(e.element, this._openerService, this._clipboardService, this._productService, this._nativeHostService));
-			actions.push(new Separator());
+			Actions.push(new ReportExtensionIssueAction(e.element, this._openerService, this._clipboArdService, this._productService, this._nAtiveHostService));
+			Actions.push(new SepArAtor());
 
-			actions.push(new Action('runtimeExtensionsEditor.action.disableWorkspace', nls.localize('disable workspace', "Disable (Workspace)"), undefined, true, () => this._extensionsWorkbenchService.setEnablement(e.element!.marketplaceInfo, EnablementState.DisabledWorkspace)));
-			actions.push(new Action('runtimeExtensionsEditor.action.disable', nls.localize('disable', "Disable"), undefined, true, () => this._extensionsWorkbenchService.setEnablement(e.element!.marketplaceInfo, EnablementState.DisabledGlobally)));
-			actions.push(new Separator());
+			Actions.push(new Action('runtimeExtensionsEditor.Action.disAbleWorkspAce', nls.locAlize('disAble workspAce', "DisAble (WorkspAce)"), undefined, true, () => this._extensionsWorkbenchService.setEnAblement(e.element!.mArketplAceInfo, EnAblementStAte.DisAbledWorkspAce)));
+			Actions.push(new Action('runtimeExtensionsEditor.Action.disAble', nls.locAlize('disAble', "DisAble"), undefined, true, () => this._extensionsWorkbenchService.setEnAblement(e.element!.mArketplAceInfo, EnAblementStAte.DisAbledGlobAlly)));
+			Actions.push(new SepArAtor());
 
-			const state = this._extensionHostProfileService.state;
-			if (state === ProfileSessionState.Running) {
-				actions.push(this._instantiationService.createInstance(StopExtensionHostProfileAction, StopExtensionHostProfileAction.ID, StopExtensionHostProfileAction.LABEL));
+			const stAte = this._extensionHostProfileService.stAte;
+			if (stAte === ProfileSessionStAte.Running) {
+				Actions.push(this._instAntiAtionService.creAteInstAnce(StopExtensionHostProfileAction, StopExtensionHostProfileAction.ID, StopExtensionHostProfileAction.LABEL));
 			} else {
-				actions.push(this._instantiationService.createInstance(StartExtensionHostProfileAction, StartExtensionHostProfileAction.ID, StartExtensionHostProfileAction.LABEL));
+				Actions.push(this._instAntiAtionService.creAteInstAnce(StArtExtensionHostProfileAction, StArtExtensionHostProfileAction.ID, StArtExtensionHostProfileAction.LABEL));
 			}
-			actions.push(this.saveExtensionHostProfileAction);
+			Actions.push(this.sAveExtensionHostProfileAction);
 
 			this._contextMenuService.showContextMenu({
-				getAnchor: () => e.anchor,
-				getActions: () => actions
+				getAnchor: () => e.Anchor,
+				getActions: () => Actions
 			});
 		});
 	}
 
 	@memoize
-	private get saveExtensionHostProfileAction(): IAction {
-		return this._instantiationService.createInstance(SaveExtensionHostProfileAction, SaveExtensionHostProfileAction.ID, SaveExtensionHostProfileAction.LABEL);
+	privAte get sAveExtensionHostProfileAction(): IAction {
+		return this._instAntiAtionService.creAteInstAnce(SAveExtensionHostProfileAction, SAveExtensionHostProfileAction.ID, SAveExtensionHostProfileAction.LABEL);
 	}
 
-	public layout(dimension: Dimension): void {
+	public lAyout(dimension: Dimension): void {
 		if (this._list) {
-			this._list.layout(dimension.height);
+			this._list.lAyout(dimension.height);
 		}
 	}
 }
 
-export class ShowRuntimeExtensionsAction extends Action {
-	static readonly ID = 'workbench.action.showRuntimeExtensions';
-	static readonly LABEL = nls.localize('showRuntimeExtensions', "Show Running Extensions");
+export clAss ShowRuntimeExtensionsAction extends Action {
+	stAtic reAdonly ID = 'workbench.Action.showRuntimeExtensions';
+	stAtic reAdonly LABEL = nls.locAlize('showRuntimeExtensions', "Show Running Extensions");
 
 	constructor(
-		id: string, label: string,
-		@IEditorService private readonly _editorService: IEditorService
+		id: string, lAbel: string,
+		@IEditorService privAte reAdonly _editorService: IEditorService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	public async run(e?: any): Promise<any> {
-		await this._editorService.openEditor(RuntimeExtensionsInput.instance, { revealIfOpened: true });
+	public Async run(e?: Any): Promise<Any> {
+		AwAit this._editorService.openEditor(RuntimeExtensionsInput.instAnce, { reveAlIfOpened: true });
 	}
 }
 
-export class ReportExtensionIssueAction extends Action {
+export clAss ReportExtensionIssueAction extends Action {
 
-	private static readonly _id = 'workbench.extensions.action.reportExtensionIssue';
-	private static readonly _label = nls.localize('reportExtensionIssue', "Report Issue");
+	privAte stAtic reAdonly _id = 'workbench.extensions.Action.reportExtensionIssue';
+	privAte stAtic reAdonly _lAbel = nls.locAlize('reportExtensionIssue', "Report Issue");
 
-	private _url: string | undefined;
+	privAte _url: string | undefined;
 
 	constructor(
-		private extension: {
+		privAte extension: {
 			description: IExtensionDescription;
-			marketplaceInfo: IExtension;
-			status?: IExtensionsStatus;
+			mArketplAceInfo: IExtension;
+			stAtus?: IExtensionsStAtus;
 			unresponsiveProfile?: IExtensionHostProfile
 		},
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IClipboardService private readonly clipboardService: IClipboardService,
-		@IProductService private readonly productService: IProductService,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IClipboArdService privAte reAdonly clipboArdService: IClipboArdService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(ReportExtensionIssueAction._id, ReportExtensionIssueAction._label, 'extension-action report-issue');
-		this.enabled = extension.marketplaceInfo
-			&& extension.marketplaceInfo.type === ExtensionType.User
+		super(ReportExtensionIssueAction._id, ReportExtensionIssueAction._lAbel, 'extension-Action report-issue');
+		this.enAbled = extension.mArketplAceInfo
+			&& extension.mArketplAceInfo.type === ExtensionType.User
 			&& !!extension.description.repository && !!extension.description.repository.url;
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 		if (!this._url) {
-			this._url = await this._generateNewIssueUrl(this.extension);
+			this._url = AwAit this._generAteNewIssueUrl(this.extension);
 		}
-		this.openerService.open(URI.parse(this._url));
+		this.openerService.open(URI.pArse(this._url));
 	}
 
-	private async _generateNewIssueUrl(extension: {
+	privAte Async _generAteNewIssueUrl(extension: {
 		description: IExtensionDescription;
-		marketplaceInfo: IExtension;
-		status?: IExtensionsStatus;
+		mArketplAceInfo: IExtension;
+		stAtus?: IExtensionsStAtus;
 		unresponsiveProfile?: IExtensionHostProfile
 	}): Promise<string> {
-		let baseUrl = extension.marketplaceInfo && extension.marketplaceInfo.type === ExtensionType.User && extension.description.repository ? extension.description.repository.url : undefined;
-		if (!!baseUrl) {
-			baseUrl = `${baseUrl.indexOf('.git') !== -1 ? baseUrl.substr(0, baseUrl.length - 4) : baseUrl}/issues/new/`;
+		let bAseUrl = extension.mArketplAceInfo && extension.mArketplAceInfo.type === ExtensionType.User && extension.description.repository ? extension.description.repository.url : undefined;
+		if (!!bAseUrl) {
+			bAseUrl = `${bAseUrl.indexOf('.git') !== -1 ? bAseUrl.substr(0, bAseUrl.length - 4) : bAseUrl}/issues/new/`;
 		} else {
-			baseUrl = this.productService.reportIssueUrl!;
+			bAseUrl = this.productService.reportIssueUrl!;
 		}
 
-		let reason = 'Bug';
+		let reAson = 'Bug';
 		let title = 'Extension issue';
-		let message = ':warning: We have written the needed data into your clipboard. Please paste! :warning:';
-		this.clipboardService.writeText('```json \n' + JSON.stringify(extension.status, null, '\t') + '\n```');
+		let messAge = ':wArning: We hAve written the needed dAtA into your clipboArd. PleAse pAste! :wArning:';
+		this.clipboArdService.writeText('```json \n' + JSON.stringify(extension.stAtus, null, '\t') + '\n```');
 
-		const os = await this.nativeHostService.getOSProperties();
-		const osVersion = `${os.type} ${os.arch} ${os.release}`;
-		const queryStringPrefix = baseUrl.indexOf('?') === -1 ? '?' : '&';
+		const os = AwAit this.nAtiveHostService.getOSProperties();
+		const osVersion = `${os.type} ${os.Arch} ${os.releAse}`;
+		const queryStringPrefix = bAseUrl.indexOf('?') === -1 ? '?' : '&';
 		const body = encodeURIComponent(
-			`- Issue Type: \`${reason}\`
-- Extension Name: \`${extension.description.name}\`
+			`- Issue Type: \`${reAson}\`
+- Extension NAme: \`${extension.description.nAme}\`
 - Extension Version: \`${extension.description.version}\`
 - OS Version: \`${osVersion}\`
-- VSCode version: \`${this.productService.version}\`\n\n${message}`
+- VSCode version: \`${this.productService.version}\`\n\n${messAge}`
 		);
 
-		return `${baseUrl}${queryStringPrefix}body=${body}&title=${encodeURIComponent(title)}`;
+		return `${bAseUrl}${queryStringPrefix}body=${body}&title=${encodeURIComponent(title)}`;
 	}
 }
 
-export class DebugExtensionHostAction extends Action {
-	static readonly ID = 'workbench.extensions.action.debugExtensionHost';
-	static readonly LABEL = nls.localize('debugExtensionHost', "Start Debugging Extension Host");
-	static readonly CSS_CLASS = 'debug-extension-host';
+export clAss DebugExtensionHostAction extends Action {
+	stAtic reAdonly ID = 'workbench.extensions.Action.debugExtensionHost';
+	stAtic reAdonly LABEL = nls.locAlize('debugExtensionHost', "StArt Debugging Extension Host");
+	stAtic reAdonly CSS_CLASS = 'debug-extension-host';
 
 	constructor(
-		@IDebugService private readonly _debugService: IDebugService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@IDialogService private readonly _dialogService: IDialogService,
-		@IExtensionService private readonly _extensionService: IExtensionService,
-		@IProductService private readonly productService: IProductService
+		@IDebugService privAte reAdonly _debugService: IDebugService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService,
+		@IDiAlogService privAte reAdonly _diAlogService: IDiAlogService,
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
+		@IProductService privAte reAdonly productService: IProductService
 	) {
 		super(DebugExtensionHostAction.ID, DebugExtensionHostAction.LABEL, DebugExtensionHostAction.CSS_CLASS);
 	}
 
-	async run(): Promise<any> {
+	Async run(): Promise<Any> {
 
-		const inspectPort = await this._extensionService.getInspectPort(false);
+		const inspectPort = AwAit this._extensionService.getInspectPort(fAlse);
 		if (!inspectPort) {
-			const res = await this._dialogService.confirm({
+			const res = AwAit this._diAlogService.confirm({
 				type: 'info',
-				message: nls.localize('restart1', "Profile Extensions"),
-				detail: nls.localize('restart2', "In order to profile extensions a restart is required. Do you want to restart '{0}' now?", this.productService.nameLong),
-				primaryButton: nls.localize('restart3', "&&Restart"),
-				secondaryButton: nls.localize('cancel', "&&Cancel")
+				messAge: nls.locAlize('restArt1', "Profile Extensions"),
+				detAil: nls.locAlize('restArt2', "In order to profile extensions A restArt is required. Do you wAnt to restArt '{0}' now?", this.productService.nAmeLong),
+				primAryButton: nls.locAlize('restArt3', "&&RestArt"),
+				secondAryButton: nls.locAlize('cAncel', "&&CAncel")
 			});
 			if (res.confirmed) {
-				await this._nativeHostService.relaunch({ addArgs: [`--inspect-extensions=${randomPort()}`] });
+				AwAit this._nAtiveHostService.relAunch({ AddArgs: [`--inspect-extensions=${rAndomPort()}`] });
 			}
 
 			return;
 		}
 
-		return this._debugService.startDebugging(undefined, {
+		return this._debugService.stArtDebugging(undefined, {
 			type: 'node',
-			name: nls.localize('debugExtensionHost.launch.name', "Attach Extension Host"),
-			request: 'attach',
+			nAme: nls.locAlize('debugExtensionHost.lAunch.nAme', "AttAch Extension Host"),
+			request: 'AttAch',
 			port: inspectPort
 		});
 	}
 }
 
-export class StartExtensionHostProfileAction extends Action {
-	static readonly ID = 'workbench.extensions.action.extensionHostProfile';
-	static readonly LABEL = nls.localize('extensionHostProfileStart', "Start Extension Host Profile");
+export clAss StArtExtensionHostProfileAction extends Action {
+	stAtic reAdonly ID = 'workbench.extensions.Action.extensionHostProfile';
+	stAtic reAdonly LABEL = nls.locAlize('extensionHostProfileStArt', "StArt Extension Host Profile");
 
 	constructor(
-		id: string = StartExtensionHostProfileAction.ID, label: string = StartExtensionHostProfileAction.LABEL,
-		@IExtensionHostProfileService private readonly _extensionHostProfileService: IExtensionHostProfileService,
+		id: string = StArtExtensionHostProfileAction.ID, lAbel: string = StArtExtensionHostProfileAction.LABEL,
+		@IExtensionHostProfileService privAte reAdonly _extensionHostProfileService: IExtensionHostProfileService,
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	run(): Promise<any> {
-		this._extensionHostProfileService.startProfiling();
+	run(): Promise<Any> {
+		this._extensionHostProfileService.stArtProfiling();
 		return Promise.resolve();
 	}
 }
 
-export class StopExtensionHostProfileAction extends Action {
-	static readonly ID = 'workbench.extensions.action.stopExtensionHostProfile';
-	static readonly LABEL = nls.localize('stopExtensionHostProfileStart', "Stop Extension Host Profile");
+export clAss StopExtensionHostProfileAction extends Action {
+	stAtic reAdonly ID = 'workbench.extensions.Action.stopExtensionHostProfile';
+	stAtic reAdonly LABEL = nls.locAlize('stopExtensionHostProfileStArt', "Stop Extension Host Profile");
 
 	constructor(
-		id: string = StartExtensionHostProfileAction.ID, label: string = StartExtensionHostProfileAction.LABEL,
-		@IExtensionHostProfileService private readonly _extensionHostProfileService: IExtensionHostProfileService,
+		id: string = StArtExtensionHostProfileAction.ID, lAbel: string = StArtExtensionHostProfileAction.LABEL,
+		@IExtensionHostProfileService privAte reAdonly _extensionHostProfileService: IExtensionHostProfileService,
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	run(): Promise<any> {
+	run(): Promise<Any> {
 		this._extensionHostProfileService.stopProfiling();
 		return Promise.resolve();
 	}
 }
 
-export class SaveExtensionHostProfileAction extends Action {
+export clAss SAveExtensionHostProfileAction extends Action {
 
-	static readonly LABEL = nls.localize('saveExtensionHostProfile', "Save Extension Host Profile");
-	static readonly ID = 'workbench.extensions.action.saveExtensionHostProfile';
+	stAtic reAdonly LABEL = nls.locAlize('sAveExtensionHostProfile', "SAve Extension Host Profile");
+	stAtic reAdonly ID = 'workbench.extensions.Action.sAveExtensionHostProfile';
 
 	constructor(
-		id: string = SaveExtensionHostProfileAction.ID, label: string = SaveExtensionHostProfileAction.LABEL,
-		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
-		@IExtensionHostProfileService private readonly _extensionHostProfileService: IExtensionHostProfileService,
-		@IFileService private readonly _fileService: IFileService
+		id: string = SAveExtensionHostProfileAction.ID, lAbel: string = SAveExtensionHostProfileAction.LABEL,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService,
+		@IWorkbenchEnvironmentService privAte reAdonly _environmentService: IWorkbenchEnvironmentService,
+		@IExtensionHostProfileService privAte reAdonly _extensionHostProfileService: IExtensionHostProfileService,
+		@IFileService privAte reAdonly _fileService: IFileService
 	) {
-		super(id, label, undefined, false);
-		this._extensionHostProfileService.onDidChangeLastProfile(() => {
-			this.enabled = (this._extensionHostProfileService.lastProfile !== null);
+		super(id, lAbel, undefined, fAlse);
+		this._extensionHostProfileService.onDidChAngeLAstProfile(() => {
+			this.enAbled = (this._extensionHostProfileService.lAstProfile !== null);
 		});
 	}
 
-	run(): Promise<any> {
-		return Promise.resolve(this._asyncRun());
+	run(): Promise<Any> {
+		return Promise.resolve(this._AsyncRun());
 	}
 
-	private async _asyncRun(): Promise<any> {
-		let picked = await this._nativeHostService.showSaveDialog({
-			title: 'Save Extension Host Profile',
-			buttonLabel: 'Save',
-			defaultPath: `CPU-${new Date().toISOString().replace(/[\-:]/g, '')}.cpuprofile`,
+	privAte Async _AsyncRun(): Promise<Any> {
+		let picked = AwAit this._nAtiveHostService.showSAveDiAlog({
+			title: 'SAve Extension Host Profile',
+			buttonLAbel: 'SAve',
+			defAultPAth: `CPU-${new DAte().toISOString().replAce(/[\-:]/g, '')}.cpuprofile`,
 			filters: [{
-				name: 'CPU Profiles',
+				nAme: 'CPU Profiles',
 				extensions: ['cpuprofile', 'txt']
 			}]
 		});
 
-		if (!picked || !picked.filePath || picked.canceled) {
+		if (!picked || !picked.filePAth || picked.cAnceled) {
 			return;
 		}
 
-		const profileInfo = this._extensionHostProfileService.lastProfile;
-		let dataToWrite: object = profileInfo ? profileInfo.data : {};
+		const profileInfo = this._extensionHostProfileService.lAstProfile;
+		let dAtAToWrite: object = profileInfo ? profileInfo.dAtA : {};
 
-		let savePath = picked.filePath;
+		let sAvePAth = picked.filePAth;
 
 		if (this._environmentService.isBuilt) {
-			const profiler = await import('v8-inspect-profiler');
-			// when running from a not-development-build we remove
-			// absolute filenames because we don't want to reveal anything
-			// about users. We also append the `.txt` suffix to make it
-			// easier to attach these files to GH issues
+			const profiler = AwAit import('v8-inspect-profiler');
+			// when running from A not-development-build we remove
+			// Absolute filenAmes becAuse we don't wAnt to reveAl Anything
+			// About users. We Also Append the `.txt` suffix to mAke it
+			// eAsier to AttAch these files to GH issues
 
-			let tmp = profiler.rewriteAbsolutePaths({ profile: dataToWrite as any }, 'piiRemoved');
-			dataToWrite = tmp.profile;
+			let tmp = profiler.rewriteAbsolutePAths({ profile: dAtAToWrite As Any }, 'piiRemoved');
+			dAtAToWrite = tmp.profile;
 
-			savePath = savePath + '.txt';
+			sAvePAth = sAvePAth + '.txt';
 		}
 
-		return this._fileService.writeFile(URI.file(savePath), VSBuffer.fromString(JSON.stringify(profileInfo ? profileInfo.data : {}, null, '\t')));
+		return this._fileService.writeFile(URI.file(sAvePAth), VSBuffer.fromString(JSON.stringify(profileInfo ? profileInfo.dAtA : {}, null, '\t')));
 	}
 }
 
-class RuntimeExtensionsEditorAccessibilityProvider implements IListAccessibilityProvider<IRuntimeExtension> {
-	getWidgetAriaLabel(): string {
-		return nls.localize('runtimeExtensions', "Runtime Extensions");
+clAss RuntimeExtensionsEditorAccessibilityProvider implements IListAccessibilityProvider<IRuntimeExtension> {
+	getWidgetAriALAbel(): string {
+		return nls.locAlize('runtimeExtensions', "Runtime Extensions");
 	}
 
-	getAriaLabel(element: IRuntimeExtension): string | null {
-		return element.description.name;
+	getAriALAbel(element: IRuntimeExtension): string | null {
+		return element.description.nAme;
 	}
 }

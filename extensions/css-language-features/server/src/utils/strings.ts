@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export function startsWith(haystack: string, needle: string): boolean {
-	if (haystack.length < needle.length) {
-		return false;
+export function stArtsWith(hAystAck: string, needle: string): booleAn {
+	if (hAystAck.length < needle.length) {
+		return fAlse;
 	}
 
 	for (let i = 0; i < needle.length; i++) {
-		if (haystack[i] !== needle[i]) {
-			return false;
+		if (hAystAck[i] !== needle[i]) {
+			return fAlse;
 		}
 	}
 
@@ -18,15 +18,15 @@ export function startsWith(haystack: string, needle: string): boolean {
 }
 
 /**
- * Determines if haystack ends with needle.
+ * Determines if hAystAck ends with needle.
  */
-export function endsWith(haystack: string, needle: string): boolean {
-	let diff = haystack.length - needle.length;
+export function endsWith(hAystAck: string, needle: string): booleAn {
+	let diff = hAystAck.length - needle.length;
 	if (diff > 0) {
-		return haystack.lastIndexOf(needle) === diff;
+		return hAystAck.lAstIndexOf(needle) === diff;
 	} else if (diff === 0) {
-		return haystack === needle;
+		return hAystAck === needle;
 	} else {
-		return false;
+		return fAlse;
 	}
 }

@@ -1,152 +1,152 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-import * as rimraf from 'rimraf';
-import * as es from 'event-stream';
-import * as rename from 'gulp-rename';
-import * as vfs from 'vinyl-fs';
-import * as ext from './extensions';
-import * as fancyLog from 'fancy-log';
-import * as ansiColors from 'ansi-colors';
-import { Stream } from 'stream';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
+import * As os from 'os';
+import * As rimrAf from 'rimrAf';
+import * As es from 'event-streAm';
+import * As renAme from 'gulp-renAme';
+import * As vfs from 'vinyl-fs';
+import * As ext from './extensions';
+import * As fAncyLog from 'fAncy-log';
+import * As AnsiColors from 'Ansi-colors';
+import { StreAm } from 'streAm';
 
 const mkdirp = require('mkdirp');
 
-interface IExtensionDefinition {
-	name: string;
+interfAce IExtensionDefinition {
+	nAme: string;
 	version: string;
 	repo: string;
-	metadata: {
+	metAdAtA: {
 		id: string;
 		publisherId: {
 			publisherId: string;
-			publisherName: string;
-			displayName: string;
-			flags: string;
+			publisherNAme: string;
+			displAyNAme: string;
+			flAgs: string;
 		};
-		publisherDisplayName: string;
+		publisherDisplAyNAme: string;
 	}
 }
 
-const root = path.dirname(path.dirname(__dirname));
-const productjson = JSON.parse(fs.readFileSync(path.join(__dirname, '../../product.json'), 'utf8'));
+const root = pAth.dirnAme(pAth.dirnAme(__dirnAme));
+const productjson = JSON.pArse(fs.reAdFileSync(pAth.join(__dirnAme, '../../product.json'), 'utf8'));
 const builtInExtensions = <IExtensionDefinition[]>productjson.builtInExtensions;
 const webBuiltInExtensions = <IExtensionDefinition[]>productjson.webBuiltInExtensions;
-const controlFilePath = path.join(os.homedir(), '.vscode-oss-dev', 'extensions', 'control.json');
+const controlFilePAth = pAth.join(os.homedir(), '.vscode-oss-dev', 'extensions', 'control.json');
 const ENABLE_LOGGING = !process.env['VSCODE_BUILD_BUILTIN_EXTENSIONS_SILENCE_PLEASE'];
 
-function log(...messages: string[]): void {
+function log(...messAges: string[]): void {
 	if (ENABLE_LOGGING) {
-		fancyLog(...messages);
+		fAncyLog(...messAges);
 	}
 }
 
-function getExtensionPath(extension: IExtensionDefinition): string {
-	return path.join(root, '.build', 'builtInExtensions', extension.name);
+function getExtensionPAth(extension: IExtensionDefinition): string {
+	return pAth.join(root, '.build', 'builtInExtensions', extension.nAme);
 }
 
-function isUpToDate(extension: IExtensionDefinition): boolean {
-	const packagePath = path.join(getExtensionPath(extension), 'package.json');
+function isUpToDAte(extension: IExtensionDefinition): booleAn {
+	const pAckAgePAth = pAth.join(getExtensionPAth(extension), 'pAckAge.json');
 
-	if (!fs.existsSync(packagePath)) {
-		return false;
+	if (!fs.existsSync(pAckAgePAth)) {
+		return fAlse;
 	}
 
-	const packageContents = fs.readFileSync(packagePath, { encoding: 'utf8' });
+	const pAckAgeContents = fs.reAdFileSync(pAckAgePAth, { encoding: 'utf8' });
 
 	try {
-		const diskVersion = JSON.parse(packageContents).version;
+		const diskVersion = JSON.pArse(pAckAgeContents).version;
 		return (diskVersion === extension.version);
-	} catch (err) {
-		return false;
+	} cAtch (err) {
+		return fAlse;
 	}
 }
 
-function syncMarketplaceExtension(extension: IExtensionDefinition): Stream {
-	if (isUpToDate(extension)) {
-		log(ansiColors.blue('[marketplace]'), `${extension.name}@${extension.version}`, ansiColors.green('✔︎'));
-		return es.readArray([]);
+function syncMArketplAceExtension(extension: IExtensionDefinition): StreAm {
+	if (isUpToDAte(extension)) {
+		log(AnsiColors.blue('[mArketplAce]'), `${extension.nAme}@${extension.version}`, AnsiColors.green('✔︎'));
+		return es.reAdArrAy([]);
 	}
 
-	rimraf.sync(getExtensionPath(extension));
+	rimrAf.sync(getExtensionPAth(extension));
 
-	return ext.fromMarketplace(extension.name, extension.version, extension.metadata)
-		.pipe(rename(p => p.dirname = `${extension.name}/${p.dirname}`))
+	return ext.fromMArketplAce(extension.nAme, extension.version, extension.metAdAtA)
+		.pipe(renAme(p => p.dirnAme = `${extension.nAme}/${p.dirnAme}`))
 		.pipe(vfs.dest('.build/builtInExtensions'))
-		.on('end', () => log(ansiColors.blue('[marketplace]'), extension.name, ansiColors.green('✔︎')));
+		.on('end', () => log(AnsiColors.blue('[mArketplAce]'), extension.nAme, AnsiColors.green('✔︎')));
 }
 
-function syncExtension(extension: IExtensionDefinition, controlState: 'disabled' | 'marketplace'): Stream {
-	switch (controlState) {
-		case 'disabled':
-			log(ansiColors.blue('[disabled]'), ansiColors.gray(extension.name));
-			return es.readArray([]);
+function syncExtension(extension: IExtensionDefinition, controlStAte: 'disAbled' | 'mArketplAce'): StreAm {
+	switch (controlStAte) {
+		cAse 'disAbled':
+			log(AnsiColors.blue('[disAbled]'), AnsiColors.grAy(extension.nAme));
+			return es.reAdArrAy([]);
 
-		case 'marketplace':
-			return syncMarketplaceExtension(extension);
+		cAse 'mArketplAce':
+			return syncMArketplAceExtension(extension);
 
-		default:
-			if (!fs.existsSync(controlState)) {
-				log(ansiColors.red(`Error: Built-in extension '${extension.name}' is configured to run from '${controlState}' but that path does not exist.`));
-				return es.readArray([]);
+		defAult:
+			if (!fs.existsSync(controlStAte)) {
+				log(AnsiColors.red(`Error: Built-in extension '${extension.nAme}' is configured to run from '${controlStAte}' but thAt pAth does not exist.`));
+				return es.reAdArrAy([]);
 
-			} else if (!fs.existsSync(path.join(controlState, 'package.json'))) {
-				log(ansiColors.red(`Error: Built-in extension '${extension.name}' is configured to run from '${controlState}' but there is no 'package.json' file in that directory.`));
-				return es.readArray([]);
+			} else if (!fs.existsSync(pAth.join(controlStAte, 'pAckAge.json'))) {
+				log(AnsiColors.red(`Error: Built-in extension '${extension.nAme}' is configured to run from '${controlStAte}' but there is no 'pAckAge.json' file in thAt directory.`));
+				return es.reAdArrAy([]);
 			}
 
-			log(ansiColors.blue('[local]'), `${extension.name}: ${ansiColors.cyan(controlState)}`, ansiColors.green('✔︎'));
-			return es.readArray([]);
+			log(AnsiColors.blue('[locAl]'), `${extension.nAme}: ${AnsiColors.cyAn(controlStAte)}`, AnsiColors.green('✔︎'));
+			return es.reAdArrAy([]);
 	}
 }
 
-interface IControlFile {
-	[name: string]: 'disabled' | 'marketplace';
+interfAce IControlFile {
+	[nAme: string]: 'disAbled' | 'mArketplAce';
 }
 
-function readControlFile(): IControlFile {
+function reAdControlFile(): IControlFile {
 	try {
-		return JSON.parse(fs.readFileSync(controlFilePath, 'utf8'));
-	} catch (err) {
+		return JSON.pArse(fs.reAdFileSync(controlFilePAth, 'utf8'));
+	} cAtch (err) {
 		return {};
 	}
 }
 
 function writeControlFile(control: IControlFile): void {
-	mkdirp.sync(path.dirname(controlFilePath));
-	fs.writeFileSync(controlFilePath, JSON.stringify(control, null, 2));
+	mkdirp.sync(pAth.dirnAme(controlFilePAth));
+	fs.writeFileSync(controlFilePAth, JSON.stringify(control, null, 2));
 }
 
 export function getBuiltInExtensions(): Promise<void> {
 	log('Syncronizing built-in extensions...');
-	log(`You can manage built-in extensions with the ${ansiColors.cyan('--builtin')} flag`);
+	log(`You cAn mAnAge built-in extensions with the ${AnsiColors.cyAn('--builtin')} flAg`);
 
-	const control = readControlFile();
-	const streams: Stream[] = [];
+	const control = reAdControlFile();
+	const streAms: StreAm[] = [];
 
 	for (const extension of [...builtInExtensions, ...webBuiltInExtensions]) {
-		let controlState = control[extension.name] || 'marketplace';
-		control[extension.name] = controlState;
+		let controlStAte = control[extension.nAme] || 'mArketplAce';
+		control[extension.nAme] = controlStAte;
 
-		streams.push(syncExtension(extension, controlState));
+		streAms.push(syncExtension(extension, controlStAte));
 	}
 
 	writeControlFile(control);
 
 	return new Promise((resolve, reject) => {
-		es.merge(streams)
+		es.merge(streAms)
 			.on('error', reject)
 			.on('end', resolve);
 	});
 }
 
-if (require.main === module) {
-	getBuiltInExtensions().then(() => process.exit(0)).catch(err => {
+if (require.mAin === module) {
+	getBuiltInExtensions().then(() => process.exit(0)).cAtch(err => {
 		console.error(err);
 		process.exit(1);
 	});

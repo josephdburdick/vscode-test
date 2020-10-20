@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { Event } from 'vs/base/common/event';
-import { Range } from 'vs/editor/common/core/range';
+import * As Assert from 'Assert';
+import { Event } from 'vs/bAse/common/event';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { Handler } from 'vs/editor/common/editorCommon';
+import { HAndler } from 'vs/editor/common/editorCommon';
 import { EndOfLineSequence } from 'vs/editor/common/model';
 import { CommonFindController } from 'vs/editor/contrib/find/findController';
-import { AddSelectionToNextFindMatchAction, InsertCursorAbove, InsertCursorBelow, MultiCursorSelectionController, SelectHighlightsAction } from 'vs/editor/contrib/multicursor/multicursor';
+import { AddSelectionToNextFindMAtchAction, InsertCursorAbove, InsertCursorBelow, MultiCursorSelectionController, SelectHighlightsAction } from 'vs/editor/contrib/multicursor/multicursor';
 import { ITestCodeEditor, withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 
 suite('Multicursor', () => {
 
-	test('issue #2205: Multi-cursor pastes in reverse order', () => {
+	test('issue #2205: Multi-cursor pAstes in reverse order', () => {
 		withTestCodeEditor([
-			'abc',
+			'Abc',
 			'def'
 		], {}, (editor, viewModel) => {
-			let addCursorUpAction = new InsertCursorAbove();
+			let AddCursorUpAction = new InsertCursorAbove();
 
 			editor.setSelection(new Selection(2, 1, 2, 1));
-			addCursorUpAction.run(null!, editor, {});
-			assert.equal(viewModel.getSelections().length, 2);
+			AddCursorUpAction.run(null!, editor, {});
+			Assert.equAl(viewModel.getSelections().length, 2);
 
-			editor.trigger('test', Handler.Paste, {
+			editor.trigger('test', HAndler.PAste, {
 				text: '1\n2',
 				multicursorText: [
 					'1',
@@ -35,75 +35,75 @@ suite('Multicursor', () => {
 				]
 			});
 
-			assert.equal(editor.getModel()!.getLineContent(1), '1abc');
-			assert.equal(editor.getModel()!.getLineContent(2), '2def');
+			Assert.equAl(editor.getModel()!.getLineContent(1), '1Abc');
+			Assert.equAl(editor.getModel()!.getLineContent(2), '2def');
 		});
 	});
 
-	test('issue #1336: Insert cursor below on last line adds a cursor to the end of the current line', () => {
+	test('issue #1336: Insert cursor below on lAst line Adds A cursor to the end of the current line', () => {
 		withTestCodeEditor([
-			'abc'
+			'Abc'
 		], {}, (editor, viewModel) => {
-			let addCursorDownAction = new InsertCursorBelow();
-			addCursorDownAction.run(null!, editor, {});
-			assert.equal(viewModel.getSelections().length, 1);
+			let AddCursorDownAction = new InsertCursorBelow();
+			AddCursorDownAction.run(null!, editor, {});
+			Assert.equAl(viewModel.getSelections().length, 1);
 		});
 	});
 
 });
 
-function fromRange(rng: Range): number[] {
-	return [rng.startLineNumber, rng.startColumn, rng.endLineNumber, rng.endColumn];
+function fromRAnge(rng: RAnge): number[] {
+	return [rng.stArtLineNumber, rng.stArtColumn, rng.endLineNumber, rng.endColumn];
 }
 
 suite('Multicursor selection', () => {
-	let queryState: { [key: string]: any; } = {};
+	let queryStAte: { [key: string]: Any; } = {};
 	let serviceCollection = new ServiceCollection();
-	serviceCollection.set(IStorageService, {
-		_serviceBrand: undefined,
-		onDidChangeStorage: Event.None,
-		onWillSaveState: Event.None,
-		get: (key: string) => queryState[key],
-		getBoolean: (key: string) => !!queryState[key],
+	serviceCollection.set(IStorAgeService, {
+		_serviceBrAnd: undefined,
+		onDidChAngeStorAge: Event.None,
+		onWillSAveStAte: Event.None,
+		get: (key: string) => queryStAte[key],
+		getBooleAn: (key: string) => !!queryStAte[key],
 		getNumber: (key: string) => undefined!,
-		store: (key: string, value: any) => { queryState[key] = value; return Promise.resolve(); },
+		store: (key: string, vAlue: Any) => { queryStAte[key] = vAlue; return Promise.resolve(); },
 		remove: (key) => undefined,
-		logStorage: () => undefined,
-		migrate: (toWorkspace) => Promise.resolve(undefined),
+		logStorAge: () => undefined,
+		migrAte: (toWorkspAce) => Promise.resolve(undefined),
 		flush: () => undefined,
 		isNew: () => true
-	} as IStorageService);
+	} As IStorAgeService);
 
-	test('issue #8817: Cursor position changes when you cancel multicursor', () => {
+	test('issue #8817: Cursor position chAnges when you cAncel multicursor', () => {
 		withTestCodeEditor([
-			'var x = (3 * 5)',
-			'var y = (3 * 5)',
-			'var z = (3 * 5)',
+			'vAr x = (3 * 5)',
+			'vAr y = (3 * 5)',
+			'vAr z = (3 * 5)',
 		], { serviceCollection: serviceCollection }, (editor) => {
 
-			let findController = editor.registerAndInstantiateContribution(CommonFindController.ID, CommonFindController);
-			let multiCursorSelectController = editor.registerAndInstantiateContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
+			let findController = editor.registerAndInstAntiAteContribution(CommonFindController.ID, CommonFindController);
+			let multiCursorSelectController = editor.registerAndInstAntiAteContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
 			let selectHighlightsAction = new SelectHighlightsAction();
 
 			editor.setSelection(new Selection(2, 9, 2, 16));
 
 			selectHighlightsAction.run(null!, editor);
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[2, 9, 2, 16],
 				[1, 9, 1, 16],
 				[3, 9, 3, 16],
 			]);
 
-			editor.trigger('test', 'removeSecondaryCursors', null);
+			editor.trigger('test', 'removeSecondAryCursors', null);
 
-			assert.deepEqual(fromRange(editor.getSelection()!), [2, 9, 2, 16]);
+			Assert.deepEquAl(fromRAnge(editor.getSelection()!), [2, 9, 2, 16]);
 
 			multiCursorSelectController.dispose();
 			findController.dispose();
 		});
 	});
 
-	test('issue #5400: "Select All Occurrences of Find Match" does not select all if find uses regex', () => {
+	test('issue #5400: "Select All Occurrences of Find MAtch" does not select All if find uses regex', () => {
 		withTestCodeEditor([
 			'something',
 			'someething',
@@ -111,28 +111,28 @@ suite('Multicursor selection', () => {
 			'nothing'
 		], { serviceCollection: serviceCollection }, (editor) => {
 
-			let findController = editor.registerAndInstantiateContribution(CommonFindController.ID, CommonFindController);
-			let multiCursorSelectController = editor.registerAndInstantiateContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
+			let findController = editor.registerAndInstAntiAteContribution(CommonFindController.ID, CommonFindController);
+			let multiCursorSelectController = editor.registerAndInstAntiAteContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
 			let selectHighlightsAction = new SelectHighlightsAction();
 
 			editor.setSelection(new Selection(1, 1, 1, 1));
-			findController.getState().change({ searchString: 'some+thing', isRegex: true, isRevealed: true }, false);
+			findController.getStAte().chAnge({ seArchString: 'some+thing', isRegex: true, isReveAled: true }, fAlse);
 
 			selectHighlightsAction.run(null!, editor);
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[1, 1, 1, 10],
 				[2, 1, 2, 11],
 				[3, 1, 3, 12],
 			]);
 
-			assert.equal(findController.getState().searchString, 'some+thing');
+			Assert.equAl(findController.getStAte().seArchString, 'some+thing');
 
 			multiCursorSelectController.dispose();
 			findController.dispose();
 		});
 	});
 
-	test('AddSelectionToNextFindMatchAction can work with multiline', () => {
+	test('AddSelectionToNextFindMAtchAction cAn work with multiline', () => {
 		withTestCodeEditor([
 			'',
 			'qwe',
@@ -145,50 +145,50 @@ suite('Multicursor selection', () => {
 			'rty'
 		], { serviceCollection: serviceCollection }, (editor) => {
 
-			let findController = editor.registerAndInstantiateContribution(CommonFindController.ID, CommonFindController);
-			let multiCursorSelectController = editor.registerAndInstantiateContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
-			let addSelectionToNextFindMatch = new AddSelectionToNextFindMatchAction();
+			let findController = editor.registerAndInstAntiAteContribution(CommonFindController.ID, CommonFindController);
+			let multiCursorSelectController = editor.registerAndInstAntiAteContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
+			let AddSelectionToNextFindMAtch = new AddSelectionToNextFindMAtchAction();
 
 			editor.setSelection(new Selection(2, 1, 3, 4));
 
-			addSelectionToNextFindMatch.run(null!, editor);
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			AddSelectionToNextFindMAtch.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[2, 1, 3, 4],
 				[8, 1, 9, 4]
 			]);
 
-			editor.trigger('test', 'removeSecondaryCursors', null);
+			editor.trigger('test', 'removeSecondAryCursors', null);
 
-			assert.deepEqual(fromRange(editor.getSelection()!), [2, 1, 3, 4]);
+			Assert.deepEquAl(fromRAnge(editor.getSelection()!), [2, 1, 3, 4]);
 
 			multiCursorSelectController.dispose();
 			findController.dispose();
 		});
 	});
 
-	test('issue #6661: AddSelectionToNextFindMatchAction can work with touching ranges', () => {
+	test('issue #6661: AddSelectionToNextFindMAtchAction cAn work with touching rAnges', () => {
 		withTestCodeEditor([
-			'abcabc',
-			'abc',
-			'abcabc',
+			'AbcAbc',
+			'Abc',
+			'AbcAbc',
 		], { serviceCollection: serviceCollection }, (editor) => {
 
-			let findController = editor.registerAndInstantiateContribution(CommonFindController.ID, CommonFindController);
-			let multiCursorSelectController = editor.registerAndInstantiateContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
-			let addSelectionToNextFindMatch = new AddSelectionToNextFindMatchAction();
+			let findController = editor.registerAndInstAntiAteContribution(CommonFindController.ID, CommonFindController);
+			let multiCursorSelectController = editor.registerAndInstAntiAteContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
+			let AddSelectionToNextFindMAtch = new AddSelectionToNextFindMAtchAction();
 
 			editor.setSelection(new Selection(1, 1, 1, 4));
 
-			addSelectionToNextFindMatch.run(null!, editor);
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			AddSelectionToNextFindMAtch.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[1, 1, 1, 4],
 				[1, 4, 1, 7]
 			]);
 
-			addSelectionToNextFindMatch.run(null!, editor);
-			addSelectionToNextFindMatch.run(null!, editor);
-			addSelectionToNextFindMatch.run(null!, editor);
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			AddSelectionToNextFindMAtch.run(null!, editor);
+			AddSelectionToNextFindMAtch.run(null!, editor);
+			AddSelectionToNextFindMAtch.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[1, 1, 1, 4],
 				[1, 4, 1, 7],
 				[2, 1, 2, 4],
@@ -196,15 +196,15 @@ suite('Multicursor selection', () => {
 				[3, 4, 3, 7]
 			]);
 
-			editor.trigger('test', Handler.Type, { text: 'z' });
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			editor.trigger('test', HAndler.Type, { text: 'z' });
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[1, 2, 1, 2],
 				[1, 3, 1, 3],
 				[2, 2, 2, 2],
 				[3, 2, 3, 2],
 				[3, 3, 3, 3]
 			]);
-			assert.equal(editor.getValue(), [
+			Assert.equAl(editor.getVAlue(), [
 				'zz',
 				'z',
 				'zz',
@@ -230,77 +230,77 @@ suite('Multicursor selection', () => {
 
 			editor.getModel()!.setEOL(EndOfLineSequence.CRLF);
 
-			let findController = editor.registerAndInstantiateContribution(CommonFindController.ID, CommonFindController);
-			let multiCursorSelectController = editor.registerAndInstantiateContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
-			let addSelectionToNextFindMatch = new AddSelectionToNextFindMatchAction();
+			let findController = editor.registerAndInstAntiAteContribution(CommonFindController.ID, CommonFindController);
+			let multiCursorSelectController = editor.registerAndInstAntiAteContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
+			let AddSelectionToNextFindMAtch = new AddSelectionToNextFindMAtchAction();
 
 			editor.setSelection(new Selection(2, 1, 3, 4));
 
-			addSelectionToNextFindMatch.run(null!, editor);
-			assert.deepEqual(editor.getSelections()!.map(fromRange), [
+			AddSelectionToNextFindMAtch.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections()!.mAp(fromRAnge), [
 				[2, 1, 3, 4],
 				[8, 1, 9, 4]
 			]);
 
-			editor.trigger('test', 'removeSecondaryCursors', null);
+			editor.trigger('test', 'removeSecondAryCursors', null);
 
-			assert.deepEqual(fromRange(editor.getSelection()!), [2, 1, 3, 4]);
+			Assert.deepEquAl(fromRAnge(editor.getSelection()!), [2, 1, 3, 4]);
 
 			multiCursorSelectController.dispose();
 			findController.dispose();
 		});
 	});
 
-	function testMulticursor(text: string[], callback: (editor: ITestCodeEditor, findController: CommonFindController) => void): void {
+	function testMulticursor(text: string[], cAllbAck: (editor: ITestCodeEditor, findController: CommonFindController) => void): void {
 		withTestCodeEditor(text, { serviceCollection: serviceCollection }, (editor) => {
-			let findController = editor.registerAndInstantiateContribution(CommonFindController.ID, CommonFindController);
-			let multiCursorSelectController = editor.registerAndInstantiateContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
+			let findController = editor.registerAndInstAntiAteContribution(CommonFindController.ID, CommonFindController);
+			let multiCursorSelectController = editor.registerAndInstAntiAteContribution(MultiCursorSelectionController.ID, MultiCursorSelectionController);
 
-			callback(editor, findController);
+			cAllbAck(editor, findController);
 
 			multiCursorSelectController.dispose();
 			findController.dispose();
 		});
 	}
 
-	function testAddSelectionToNextFindMatchAction(text: string[], callback: (editor: ITestCodeEditor, action: AddSelectionToNextFindMatchAction, findController: CommonFindController) => void): void {
+	function testAddSelectionToNextFindMAtchAction(text: string[], cAllbAck: (editor: ITestCodeEditor, Action: AddSelectionToNextFindMAtchAction, findController: CommonFindController) => void): void {
 		testMulticursor(text, (editor, findController) => {
-			let action = new AddSelectionToNextFindMatchAction();
-			callback(editor, action, findController);
+			let Action = new AddSelectionToNextFindMAtchAction();
+			cAllbAck(editor, Action, findController);
 		});
 	}
 
-	test('AddSelectionToNextFindMatchAction starting with single collapsed selection', () => {
+	test('AddSelectionToNextFindMAtchAction stArting with single collApsed selection', () => {
 		const text = [
-			'abc pizza',
-			'abc house',
-			'abc bar'
+			'Abc pizzA',
+			'Abc house',
+			'Abc bAr'
 		];
-		testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 			editor.setSelections([
 				new Selection(1, 2, 1, 2),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
@@ -308,33 +308,33 @@ suite('Multicursor selection', () => {
 		});
 	});
 
-	test('AddSelectionToNextFindMatchAction starting with two selections, one being collapsed 1)', () => {
+	test('AddSelectionToNextFindMAtchAction stArting with two selections, one being collApsed 1)', () => {
 		const text = [
-			'abc pizza',
-			'abc house',
-			'abc bar'
+			'Abc pizzA',
+			'Abc house',
+			'Abc bAr'
 		];
-		testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 			editor.setSelections([
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 2, 2, 2),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
@@ -342,33 +342,33 @@ suite('Multicursor selection', () => {
 		});
 	});
 
-	test('AddSelectionToNextFindMatchAction starting with two selections, one being collapsed 2)', () => {
+	test('AddSelectionToNextFindMAtchAction stArting with two selections, one being collApsed 2)', () => {
 		const text = [
-			'abc pizza',
-			'abc house',
-			'abc bar'
+			'Abc pizzA',
+			'Abc house',
+			'Abc bAr'
 		];
-		testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 			editor.setSelections([
 				new Selection(1, 2, 1, 2),
 				new Selection(2, 1, 2, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
@@ -376,28 +376,28 @@ suite('Multicursor selection', () => {
 		});
 	});
 
-	test('AddSelectionToNextFindMatchAction starting with all collapsed selections', () => {
+	test('AddSelectionToNextFindMAtchAction stArting with All collApsed selections', () => {
 		const text = [
-			'abc pizza',
-			'abc house',
-			'abc bar'
+			'Abc pizzA',
+			'Abc house',
+			'Abc bAr'
 		];
-		testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 			editor.setSelections([
 				new Selection(1, 2, 1, 2),
 				new Selection(2, 2, 2, 2),
 				new Selection(3, 1, 3, 1),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 4),
 				new Selection(2, 1, 2, 4),
 				new Selection(3, 1, 3, 4),
@@ -405,28 +405,28 @@ suite('Multicursor selection', () => {
 		});
 	});
 
-	test('AddSelectionToNextFindMatchAction starting with all collapsed selections on different words', () => {
+	test('AddSelectionToNextFindMAtchAction stArting with All collApsed selections on different words', () => {
 		const text = [
-			'abc pizza',
-			'abc house',
-			'abc bar'
+			'Abc pizzA',
+			'Abc house',
+			'Abc bAr'
 		];
-		testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 			editor.setSelections([
 				new Selection(1, 6, 1, 6),
 				new Selection(2, 6, 2, 6),
 				new Selection(3, 6, 3, 6),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 5, 1, 10),
 				new Selection(2, 5, 2, 10),
 				new Selection(3, 5, 3, 8),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 5, 1, 10),
 				new Selection(2, 5, 2, 10),
 				new Selection(3, 5, 3, 8),
@@ -434,7 +434,7 @@ suite('Multicursor selection', () => {
 		});
 	});
 
-	test('issue #20651: AddSelectionToNextFindMatchAction case insensitive', () => {
+	test('issue #20651: AddSelectionToNextFindMAtchAction cAse insensitive', () => {
 		const text = [
 			'test',
 			'testte',
@@ -442,34 +442,34 @@ suite('Multicursor selection', () => {
 			'testte',
 			'test'
 		];
-		testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 			editor.setSelections([
 				new Selection(1, 1, 1, 5),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 5),
 				new Selection(2, 1, 2, 5),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 5),
 				new Selection(2, 1, 2, 5),
 				new Selection(3, 1, 3, 5),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 5),
 				new Selection(2, 1, 2, 5),
 				new Selection(3, 1, 3, 5),
 				new Selection(4, 1, 4, 5),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 5),
 				new Selection(2, 1, 2, 5),
 				new Selection(3, 1, 3, 5),
@@ -477,8 +477,8 @@ suite('Multicursor selection', () => {
 				new Selection(5, 1, 5, 5),
 			]);
 
-			action.run(null!, editor);
-			assert.deepEqual(editor.getSelections(), [
+			Action.run(null!, editor);
+			Assert.deepEquAl(editor.getSelections(), [
 				new Selection(1, 1, 1, 5),
 				new Selection(2, 1, 2, 5),
 				new Selection(3, 1, 3, 5),
@@ -488,36 +488,36 @@ suite('Multicursor selection', () => {
 		});
 	});
 
-	suite('Find state disassociation', () => {
+	suite('Find stAte disAssociAtion', () => {
 
 		const text = [
-			'app',
-			'apples',
-			'whatsapp',
-			'app',
 			'App',
-			' app'
+			'Apples',
+			'whAtsApp',
+			'App',
+			'App',
+			' App'
 		];
 
 		test('enters mode', () => {
-			testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+			testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 				editor.setSelections([
 					new Selection(1, 2, 1, 2),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 					new Selection(4, 1, 4, 4),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 					new Selection(4, 1, 4, 4),
 					new Selection(6, 2, 6, 5),
@@ -525,30 +525,30 @@ suite('Multicursor selection', () => {
 			});
 		});
 
-		test('leaves mode when selection changes', () => {
-			testAddSelectionToNextFindMatchAction(text, (editor, action, findController) => {
+		test('leAves mode when selection chAnges', () => {
+			testAddSelectionToNextFindMAtchAction(text, (editor, Action, findController) => {
 				editor.setSelections([
 					new Selection(1, 2, 1, 2),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 					new Selection(4, 1, 4, 4),
 				]);
 
-				// change selection
+				// chAnge selection
 				editor.setSelections([
 					new Selection(1, 1, 1, 4),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 					new Selection(2, 1, 2, 4),
 				]);
@@ -557,20 +557,20 @@ suite('Multicursor selection', () => {
 
 		test('Select Highlights respects mode ', () => {
 			testMulticursor(text, (editor, findController) => {
-				let action = new SelectHighlightsAction();
+				let Action = new SelectHighlightsAction();
 				editor.setSelections([
 					new Selection(1, 2, 1, 2),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 					new Selection(4, 1, 4, 4),
 					new Selection(6, 2, 6, 5),
 				]);
 
-				action.run(null!, editor);
-				assert.deepEqual(editor.getSelections(), [
+				Action.run(null!, editor);
+				Assert.deepEquAl(editor.getSelections(), [
 					new Selection(1, 1, 1, 4),
 					new Selection(4, 1, 4, 4),
 					new Selection(6, 2, 6, 5),

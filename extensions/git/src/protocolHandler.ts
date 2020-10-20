@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriHandler, Uri, window, Disposable, commands } from 'vscode';
+import { UriHAndler, Uri, window, DisposAble, commAnds } from 'vscode';
 import { dispose } from './util';
-import * as querystring from 'querystring';
+import * As querystring from 'querystring';
 
-export class GitProtocolHandler implements UriHandler {
+export clAss GitProtocolHAndler implements UriHAndler {
 
-	private disposables: Disposable[] = [];
+	privAte disposAbles: DisposAble[] = [];
 
 	constructor() {
-		this.disposables.push(window.registerUriHandler(this));
+		this.disposAbles.push(window.registerUriHAndler(this));
 	}
 
-	handleUri(uri: Uri): void {
-		switch (uri.path) {
-			case '/clone': this.clone(uri);
+	hAndleUri(uri: Uri): void {
+		switch (uri.pAth) {
+			cAse '/clone': this.clone(uri);
 		}
 	}
 
-	private clone(uri: Uri): void {
-		const data = querystring.parse(uri.query);
+	privAte clone(uri: Uri): void {
+		const dAtA = querystring.pArse(uri.query);
 
-		if (!data.url) {
-			console.warn('Failed to open URI:', uri);
+		if (!dAtA.url) {
+			console.wArn('FAiled to open URI:', uri);
 		}
 
-		commands.executeCommand('git.clone', data.url);
+		commAnds.executeCommAnd('git.clone', dAtA.url);
 	}
 
 	dispose(): void {
-		this.disposables = dispose(this.disposables);
+		this.disposAbles = dispose(this.disposAbles);
 	}
 }

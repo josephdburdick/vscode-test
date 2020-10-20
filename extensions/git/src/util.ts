@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Disposable, EventEmitter } from 'vscode';
-import { dirname, sep } from 'path';
-import { Readable } from 'stream';
-import { promises as fs, createReadStream } from 'fs';
-import * as byline from 'byline';
+import { Event, DisposAble, EventEmitter } from 'vscode';
+import { dirnAme, sep } from 'pAth';
+import { ReAdAble } from 'streAm';
+import { promises As fs, creAteReAdStreAm } from 'fs';
+import * As byline from 'byline';
 
-export function log(...args: any[]): void {
-	console.log.apply(console, ['git:', ...args]);
+export function log(...Args: Any[]): void {
+	console.log.Apply(console, ['git:', ...Args]);
 }
 
-export interface IDisposable {
+export interfAce IDisposAble {
 	dispose(): void;
 }
 
-export function dispose<T extends IDisposable>(disposables: T[]): T[] {
-	disposables.forEach(d => d.dispose());
+export function dispose<T extends IDisposAble>(disposAbles: T[]): T[] {
+	disposAbles.forEAch(d => d.dispose());
 	return [];
 }
 
-export function toDisposable(dispose: () => void): IDisposable {
+export function toDisposAble(dispose: () => void): IDisposAble {
 	return { dispose };
 }
 
-export function combinedDisposable(disposables: IDisposable[]): IDisposable {
-	return toDisposable(() => dispose(disposables));
+export function combinedDisposAble(disposAbles: IDisposAble[]): IDisposAble {
+	return toDisposAble(() => dispose(disposAbles));
 }
 
-export const EmptyDisposable = toDisposable(() => null);
+export const EmptyDisposAble = toDisposAble(() => null);
 
 export function fireEvent<T>(event: Event<T>): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => event(_ => (listener as any).call(thisArgs), null, disposables);
+	return (listener: (e: T) => Any, thisArgs?: Any, disposAbles?: DisposAble[]) => event(_ => (listener As Any).cAll(thisArgs), null, disposAbles);
 }
 
-export function mapEvent<I, O>(event: Event<I>, map: (i: I) => O): Event<O> {
-	return (listener: (e: O) => any, thisArgs?: any, disposables?: Disposable[]) => event(i => listener.call(thisArgs, map(i)), null, disposables);
+export function mApEvent<I, O>(event: Event<I>, mAp: (i: I) => O): Event<O> {
+	return (listener: (e: O) => Any, thisArgs?: Any, disposAbles?: DisposAble[]) => event(i => listener.cAll(thisArgs, mAp(i)), null, disposAbles);
 }
 
-export function filterEvent<T>(event: Event<T>, filter: (e: T) => boolean): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => event(e => filter(e) && listener.call(thisArgs, e), null, disposables);
+export function filterEvent<T>(event: Event<T>, filter: (e: T) => booleAn): Event<T> {
+	return (listener: (e: T) => Any, thisArgs?: Any, disposAbles?: DisposAble[]) => event(e => filter(e) && listener.cAll(thisArgs, e), null, disposAbles);
 }
 
-export function anyEvent<T>(...events: Event<T>[]): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => {
-		const result = combinedDisposable(events.map(event => event(i => listener.call(thisArgs, i))));
+export function AnyEvent<T>(...events: Event<T>[]): Event<T> {
+	return (listener: (e: T) => Any, thisArgs?: Any, disposAbles?: DisposAble[]) => {
+		const result = combinedDisposAble(events.mAp(event => event(i => listener.cAll(thisArgs, i))));
 
-		if (disposables) {
-			disposables.push(result);
+		if (disposAbles) {
+			disposAbles.push(result);
 		}
 
 		return result;
@@ -61,23 +61,23 @@ export function done<T>(promise: Promise<T>): Promise<void> {
 }
 
 export function onceEvent<T>(event: Event<T>): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => {
+	return (listener: (e: T) => Any, thisArgs?: Any, disposAbles?: DisposAble[]) => {
 		const result = event(e => {
 			result.dispose();
-			return listener.call(thisArgs, e);
-		}, null, disposables);
+			return listener.cAll(thisArgs, e);
+		}, null, disposAbles);
 
 		return result;
 	};
 }
 
-export function debounceEvent<T>(event: Event<T>, delay: number): Event<T> {
-	return (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => {
+export function debounceEvent<T>(event: Event<T>, delAy: number): Event<T> {
+	return (listener: (e: T) => Any, thisArgs?: Any, disposAbles?: DisposAble[]) => {
 		let timer: NodeJS.Timer;
 		return event(e => {
-			clearTimeout(timer);
-			timer = setTimeout(() => listener.call(thisArgs, e), delay);
-		}, null, disposables);
+			cleArTimeout(timer);
+			timer = setTimeout(() => listener.cAll(thisArgs, e), delAy);
+		}, null, disposAbles);
 	};
 }
 
@@ -85,34 +85,34 @@ export function eventToPromise<T>(event: Event<T>): Promise<T> {
 	return new Promise<T>(c => onceEvent(event)(c));
 }
 
-export function once(fn: (...args: any[]) => any): (...args: any[]) => any {
-	let didRun = false;
+export function once(fn: (...Args: Any[]) => Any): (...Args: Any[]) => Any {
+	let didRun = fAlse;
 
-	return (...args) => {
+	return (...Args) => {
 		if (didRun) {
 			return;
 		}
 
-		return fn(...args);
+		return fn(...Args);
 	};
 }
 
-export function assign<T>(destination: T, ...sources: any[]): T {
+export function Assign<T>(destinAtion: T, ...sources: Any[]): T {
 	for (const source of sources) {
-		Object.keys(source).forEach(key => (destination as any)[key] = source[key]);
+		Object.keys(source).forEAch(key => (destinAtion As Any)[key] = source[key]);
 	}
 
-	return destination;
+	return destinAtion;
 }
 
-export function uniqBy<T>(arr: T[], fn: (el: T) => string): T[] {
-	const seen = Object.create(null);
+export function uniqBy<T>(Arr: T[], fn: (el: T) => string): T[] {
+	const seen = Object.creAte(null);
 
-	return arr.filter(el => {
+	return Arr.filter(el => {
 		const key = fn(el);
 
 		if (seen[key]) {
-			return false;
+			return fAlse;
 		}
 
 		seen[key] = true;
@@ -120,28 +120,28 @@ export function uniqBy<T>(arr: T[], fn: (el: T) => string): T[] {
 	});
 }
 
-export function groupBy<T>(arr: T[], fn: (el: T) => string): { [key: string]: T[] } {
-	return arr.reduce((result, el) => {
+export function groupBy<T>(Arr: T[], fn: (el: T) => string): { [key: string]: T[] } {
+	return Arr.reduce((result, el) => {
 		const key = fn(el);
 		result[key] = [...(result[key] || []), el];
 		return result;
-	}, Object.create(null));
+	}, Object.creAte(null));
 }
 
 
-export async function mkdirp(path: string, mode?: number): Promise<boolean> {
-	const mkdir = async () => {
+export Async function mkdirp(pAth: string, mode?: number): Promise<booleAn> {
+	const mkdir = Async () => {
 		try {
-			await fs.mkdir(path, mode);
-		} catch (err) {
+			AwAit fs.mkdir(pAth, mode);
+		} cAtch (err) {
 			if (err.code === 'EEXIST') {
-				const stat = await fs.stat(path);
+				const stAt = AwAit fs.stAt(pAth);
 
-				if (stat.isDirectory()) {
+				if (stAt.isDirectory()) {
 					return;
 				}
 
-				throw new Error(`'${path}' exists and is not a directory.`);
+				throw new Error(`'${pAth}' exists And is not A directory.`);
 			}
 
 			throw err;
@@ -149,32 +149,32 @@ export async function mkdirp(path: string, mode?: number): Promise<boolean> {
 	};
 
 	// is root?
-	if (path === dirname(path)) {
+	if (pAth === dirnAme(pAth)) {
 		return true;
 	}
 
 	try {
-		await mkdir();
-	} catch (err) {
+		AwAit mkdir();
+	} cAtch (err) {
 		if (err.code !== 'ENOENT') {
 			throw err;
 		}
 
-		await mkdirp(dirname(path), mode);
-		await mkdir();
+		AwAit mkdirp(dirnAme(pAth), mode);
+		AwAit mkdir();
 	}
 
 	return true;
 }
 
-export function uniqueFilter<T>(keyFn: (t: T) => string): (t: T) => boolean {
-	const seen: { [key: string]: boolean; } = Object.create(null);
+export function uniqueFilter<T>(keyFn: (t: T) => string): (t: T) => booleAn {
+	const seen: { [key: string]: booleAn; } = Object.creAte(null);
 
 	return element => {
 		const key = keyFn(element);
 
 		if (seen[key]) {
-			return false;
+			return fAlse;
 		}
 
 		seen[key] = true;
@@ -182,64 +182,64 @@ export function uniqueFilter<T>(keyFn: (t: T) => string): (t: T) => boolean {
 	};
 }
 
-export function find<T>(array: T[], fn: (t: T) => boolean): T | undefined {
+export function find<T>(ArrAy: T[], fn: (t: T) => booleAn): T | undefined {
 	let result: T | undefined = undefined;
 
-	array.some(e => {
+	ArrAy.some(e => {
 		if (fn(e)) {
 			result = e;
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	});
 
 	return result;
 }
 
-export async function grep(filename: string, pattern: RegExp): Promise<boolean> {
-	return new Promise<boolean>((c, e) => {
-		const fileStream = createReadStream(filename, { encoding: 'utf8' });
-		const stream = byline(fileStream);
-		stream.on('data', (line: string) => {
-			if (pattern.test(line)) {
-				fileStream.close();
+export Async function grep(filenAme: string, pAttern: RegExp): Promise<booleAn> {
+	return new Promise<booleAn>((c, e) => {
+		const fileStreAm = creAteReAdStreAm(filenAme, { encoding: 'utf8' });
+		const streAm = byline(fileStreAm);
+		streAm.on('dAtA', (line: string) => {
+			if (pAttern.test(line)) {
+				fileStreAm.close();
 				c(true);
 			}
 		});
 
-		stream.on('error', e);
-		stream.on('end', () => c(false));
+		streAm.on('error', e);
+		streAm.on('end', () => c(fAlse));
 	});
 }
 
-export function readBytes(stream: Readable, bytes: number): Promise<Buffer> {
+export function reAdBytes(streAm: ReAdAble, bytes: number): Promise<Buffer> {
 	return new Promise<Buffer>((complete, error) => {
-		let done = false;
-		let buffer = Buffer.allocUnsafe(bytes);
-		let bytesRead = 0;
+		let done = fAlse;
+		let buffer = Buffer.AllocUnsAfe(bytes);
+		let bytesReAd = 0;
 
-		stream.on('data', (data: Buffer) => {
-			let bytesToRead = Math.min(bytes - bytesRead, data.length);
-			data.copy(buffer, bytesRead, 0, bytesToRead);
-			bytesRead += bytesToRead;
+		streAm.on('dAtA', (dAtA: Buffer) => {
+			let bytesToReAd = MAth.min(bytes - bytesReAd, dAtA.length);
+			dAtA.copy(buffer, bytesReAd, 0, bytesToReAd);
+			bytesReAd += bytesToReAd;
 
-			if (bytesRead === bytes) {
-				(stream as any).destroy(); // Will trigger the close event eventually
+			if (bytesReAd === bytes) {
+				(streAm As Any).destroy(); // Will trigger the close event eventuAlly
 			}
 		});
 
-		stream.on('error', (e: Error) => {
+		streAm.on('error', (e: Error) => {
 			if (!done) {
 				done = true;
 				error(e);
 			}
 		});
 
-		stream.on('close', () => {
+		streAm.on('close', () => {
 			if (!done) {
 				done = true;
-				complete(buffer.slice(0, bytesRead));
+				complete(buffer.slice(0, bytesReAd));
 			}
 		});
 	});
@@ -256,8 +256,8 @@ export function detectUnicodeEncoding(buffer: Buffer): Encoding | null {
 		return null;
 	}
 
-	const b0 = buffer.readUInt8(0);
-	const b1 = buffer.readUInt8(1);
+	const b0 = buffer.reAdUInt8(0);
+	const b1 = buffer.reAdUInt8(1);
 
 	if (b0 === 0xFE && b1 === 0xFF) {
 		return Encoding.UTF16be;
@@ -271,7 +271,7 @@ export function detectUnicodeEncoding(buffer: Buffer): Encoding | null {
 		return null;
 	}
 
-	const b2 = buffer.readUInt8(2);
+	const b2 = buffer.reAdUInt8(2);
 
 	if (b0 === 0xEF && b1 === 0xBB && b2 === 0xBF) {
 		return Encoding.UTF8;
@@ -280,52 +280,52 @@ export function detectUnicodeEncoding(buffer: Buffer): Encoding | null {
 	return null;
 }
 
-function isWindowsPath(path: string): boolean {
-	return /^[a-zA-Z]:\\/.test(path);
+function isWindowsPAth(pAth: string): booleAn {
+	return /^[A-zA-Z]:\\/.test(pAth);
 }
 
-export function isDescendant(parent: string, descendant: string): boolean {
-	if (parent === descendant) {
+export function isDescendAnt(pArent: string, descendAnt: string): booleAn {
+	if (pArent === descendAnt) {
 		return true;
 	}
 
-	if (parent.charAt(parent.length - 1) !== sep) {
-		parent += sep;
+	if (pArent.chArAt(pArent.length - 1) !== sep) {
+		pArent += sep;
 	}
 
-	// Windows is case insensitive
-	if (isWindowsPath(parent)) {
-		parent = parent.toLowerCase();
-		descendant = descendant.toLowerCase();
+	// Windows is cAse insensitive
+	if (isWindowsPAth(pArent)) {
+		pArent = pArent.toLowerCAse();
+		descendAnt = descendAnt.toLowerCAse();
 	}
 
-	return descendant.startsWith(parent);
+	return descendAnt.stArtsWith(pArent);
 }
 
-export function pathEquals(a: string, b: string): boolean {
-	// Windows is case insensitive
-	if (isWindowsPath(a)) {
-		a = a.toLowerCase();
-		b = b.toLowerCase();
+export function pAthEquAls(A: string, b: string): booleAn {
+	// Windows is cAse insensitive
+	if (isWindowsPAth(A)) {
+		A = A.toLowerCAse();
+		b = b.toLowerCAse();
 	}
 
-	return a === b;
+	return A === b;
 }
 
-export function* splitInChunks(array: string[], maxChunkLength: number): IterableIterator<string[]> {
+export function* splitInChunks(ArrAy: string[], mAxChunkLength: number): IterAbleIterAtor<string[]> {
 	let current: string[] = [];
 	let length = 0;
 
-	for (const value of array) {
-		let newLength = length + value.length;
+	for (const vAlue of ArrAy) {
+		let newLength = length + vAlue.length;
 
-		if (newLength > maxChunkLength && current.length > 0) {
+		if (newLength > mAxChunkLength && current.length > 0) {
 			yield current;
 			current = [];
-			newLength = value.length;
+			newLength = vAlue.length;
 		}
 
-		current.push(value);
+		current.push(vAlue);
 		length = newLength;
 	}
 
@@ -334,58 +334,58 @@ export function* splitInChunks(array: string[], maxChunkLength: number): Iterabl
 	}
 }
 
-interface ILimitedTaskFactory<T> {
-	factory: () => Promise<T>;
-	c: (value: T | Promise<T>) => void;
-	e: (error?: any) => void;
+interfAce ILimitedTAskFActory<T> {
+	fActory: () => Promise<T>;
+	c: (vAlue: T | Promise<T>) => void;
+	e: (error?: Any) => void;
 }
 
-export class Limiter<T> {
+export clAss Limiter<T> {
 
-	private runningPromises: number;
-	private maxDegreeOfParalellism: number;
-	private outstandingPromises: ILimitedTaskFactory<T>[];
+	privAte runningPromises: number;
+	privAte mAxDegreeOfPArAlellism: number;
+	privAte outstAndingPromises: ILimitedTAskFActory<T>[];
 
-	constructor(maxDegreeOfParalellism: number) {
-		this.maxDegreeOfParalellism = maxDegreeOfParalellism;
-		this.outstandingPromises = [];
+	constructor(mAxDegreeOfPArAlellism: number) {
+		this.mAxDegreeOfPArAlellism = mAxDegreeOfPArAlellism;
+		this.outstAndingPromises = [];
 		this.runningPromises = 0;
 	}
 
-	queue(factory: () => Promise<T>): Promise<T> {
+	queue(fActory: () => Promise<T>): Promise<T> {
 		return new Promise<T>((c, e) => {
-			this.outstandingPromises.push({ factory, c, e });
+			this.outstAndingPromises.push({ fActory, c, e });
 			this.consume();
 		});
 	}
 
-	private consume(): void {
-		while (this.outstandingPromises.length && this.runningPromises < this.maxDegreeOfParalellism) {
-			const iLimitedTask = this.outstandingPromises.shift()!;
+	privAte consume(): void {
+		while (this.outstAndingPromises.length && this.runningPromises < this.mAxDegreeOfPArAlellism) {
+			const iLimitedTAsk = this.outstAndingPromises.shift()!;
 			this.runningPromises++;
 
-			const promise = iLimitedTask.factory();
-			promise.then(iLimitedTask.c, iLimitedTask.e);
+			const promise = iLimitedTAsk.fActory();
+			promise.then(iLimitedTAsk.c, iLimitedTAsk.e);
 			promise.then(() => this.consumed(), () => this.consumed());
 		}
 	}
 
-	private consumed(): void {
+	privAte consumed(): void {
 		this.runningPromises--;
 
-		if (this.outstandingPromises.length > 0) {
+		if (this.outstAndingPromises.length > 0) {
 			this.consume();
 		}
 	}
 }
 
-type Completion<T> = { success: true, value: T } | { success: false, err: any };
+type Completion<T> = { success: true, vAlue: T } | { success: fAlse, err: Any };
 
-export class PromiseSource<T> {
+export clAss PromiseSource<T> {
 
-	private _onDidComplete = new EventEmitter<Completion<T>>();
+	privAte _onDidComplete = new EventEmitter<Completion<T>>();
 
-	private _promise: Promise<T> | undefined;
+	privAte _promise: Promise<T> | undefined;
 	get promise(): Promise<T> {
 		if (this._promise) {
 			return this._promise;
@@ -393,24 +393,24 @@ export class PromiseSource<T> {
 
 		return eventToPromise(this._onDidComplete.event).then(completion => {
 			if (completion.success) {
-				return completion.value;
+				return completion.vAlue;
 			} else {
 				throw completion.err;
 			}
 		});
 	}
 
-	resolve(value: T): void {
+	resolve(vAlue: T): void {
 		if (!this._promise) {
-			this._promise = Promise.resolve(value);
-			this._onDidComplete.fire({ success: true, value });
+			this._promise = Promise.resolve(vAlue);
+			this._onDidComplete.fire({ success: true, vAlue });
 		}
 	}
 
-	reject(err: any): void {
+	reject(err: Any): void {
 		if (!this._promise) {
 			this._promise = Promise.reject(err);
-			this._onDidComplete.fire({ success: false, err });
+			this._onDidComplete.fire({ success: fAlse, err });
 		}
 	}
 }

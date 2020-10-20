@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { ITelemetryAppender } from 'vs/platform/telemetry/common/telemetryUtils';
-import { Event } from 'vs/base/common/event';
+import { IChAnnel, IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { ITelemetryAppender } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { Event } from 'vs/bAse/common/event';
 
-export interface ITelemetryLog {
-	eventName: string;
-	data?: any;
+export interfAce ITelemetryLog {
+	eventNAme: string;
+	dAtA?: Any;
 }
 
-export class TelemetryAppenderChannel implements IServerChannel {
+export clAss TelemetryAppenderChAnnel implements IServerChAnnel {
 
-	constructor(private appender: ITelemetryAppender) { }
+	constructor(privAte Appender: ITelemetryAppender) { }
 
 	listen<T>(_: unknown, event: string): Event<T> {
 		throw new Error(`Event not found: ${event}`);
 	}
 
-	call(_: unknown, command: string, { eventName, data }: ITelemetryLog): Promise<any> {
-		this.appender.log(eventName, data);
+	cAll(_: unknown, commAnd: string, { eventNAme, dAtA }: ITelemetryLog): Promise<Any> {
+		this.Appender.log(eventNAme, dAtA);
 		return Promise.resolve(null);
 	}
 }
 
-export class TelemetryAppenderClient implements ITelemetryAppender {
+export clAss TelemetryAppenderClient implements ITelemetryAppender {
 
-	constructor(private channel: IChannel) { }
+	constructor(privAte chAnnel: IChAnnel) { }
 
-	log(eventName: string, data?: any): any {
-		this.channel.call('log', { eventName, data })
-			.then(undefined, err => `Failed to log telemetry: ${console.warn(err)}`);
+	log(eventNAme: string, dAtA?: Any): Any {
+		this.chAnnel.cAll('log', { eventNAme, dAtA })
+			.then(undefined, err => `FAiled to log telemetry: ${console.wArn(err)}`);
 
 		return Promise.resolve(null);
 	}

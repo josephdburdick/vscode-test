@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { URI } from 'vs/bAse/common/uri';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IExtensionResourceLoAderService } from 'vs/workbench/services/extensionResourceLoAder/common/extensionResourceLoAder';
 
-export class ExtensionResourceLoaderService implements IExtensionResourceLoaderService {
+export clAss ExtensionResourceLoAderService implements IExtensionResourceLoAderService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IFileService private readonly _fileService: IFileService
+		@IFileService privAte reAdonly _fileService: IFileService
 	) { }
 
-	async readExtensionResource(uri: URI): Promise<string> {
-		const result = await this._fileService.readFile(uri);
-		return result.value.toString();
+	Async reAdExtensionResource(uri: URI): Promise<string> {
+		const result = AwAit this._fileService.reAdFile(uri);
+		return result.vAlue.toString();
 	}
 }
 
-registerSingleton(IExtensionResourceLoaderService, ExtensionResourceLoaderService);
+registerSingleton(IExtensionResourceLoAderService, ExtensionResourceLoAderService);

@@ -1,199 +1,199 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
-import * as assert from 'assert';
-import severity from 'vs/base/common/severity';
-import { DebugModel, StackFrame, Thread } from 'vs/workbench/contrib/debug/common/debugModel';
-import { MockRawSession, MockDebugAdapter, createMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
-import { SimpleReplElement, RawObjectReplElement, ReplEvaluationInput, ReplModel, ReplEvaluationResult, ReplGroup } from 'vs/workbench/contrib/debug/common/replModel';
-import { RawDebugSession } from 'vs/workbench/contrib/debug/browser/rawDebugSession';
-import { timeout } from 'vs/base/common/async';
-import { createMockSession } from 'vs/workbench/contrib/debug/test/browser/callStack.test';
+import * As Assert from 'Assert';
+import severity from 'vs/bAse/common/severity';
+import { DebugModel, StAckFrAme, ThreAd } from 'vs/workbench/contrib/debug/common/debugModel';
+import { MockRAwSession, MockDebugAdApter, creAteMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import { SimpleReplElement, RAwObjectReplElement, ReplEvAluAtionInput, ReplModel, ReplEvAluAtionResult, ReplGroup } from 'vs/workbench/contrib/debug/common/replModel';
+import { RAwDebugSession } from 'vs/workbench/contrib/debug/browser/rAwDebugSession';
+import { timeout } from 'vs/bAse/common/Async';
+import { creAteMockSession } from 'vs/workbench/contrib/debug/test/browser/cAllStAck.test';
 import { ReplFilter } from 'vs/workbench/contrib/debug/browser/replFilter';
-import { TreeVisibility } from 'vs/base/browser/ui/tree/tree';
+import { TreeVisibility } from 'vs/bAse/browser/ui/tree/tree';
 
 suite('Debug - REPL', () => {
 	let model: DebugModel;
-	let rawSession: MockRawSession;
+	let rAwSession: MockRAwSession;
 
 	setup(() => {
-		model = createMockDebugModel();
-		rawSession = new MockRawSession();
+		model = creAteMockDebugModel();
+		rAwSession = new MockRAwSession();
 	});
 
 	test('repl output', () => {
-		const session = createMockSession(model);
+		const session = creAteMockSession(model);
 		const repl = new ReplModel();
-		repl.appendToRepl(session, 'first line\n', severity.Error);
-		repl.appendToRepl(session, 'second line ', severity.Error);
-		repl.appendToRepl(session, 'third line ', severity.Error);
-		repl.appendToRepl(session, 'fourth line', severity.Error);
+		repl.AppendToRepl(session, 'first line\n', severity.Error);
+		repl.AppendToRepl(session, 'second line ', severity.Error);
+		repl.AppendToRepl(session, 'third line ', severity.Error);
+		repl.AppendToRepl(session, 'fourth line', severity.Error);
 
 		let elements = <SimpleReplElement[]>repl.getReplElements();
-		assert.equal(elements.length, 2);
-		assert.equal(elements[0].value, 'first line\n');
-		assert.equal(elements[0].severity, severity.Error);
-		assert.equal(elements[1].value, 'second line third line fourth line');
-		assert.equal(elements[1].severity, severity.Error);
+		Assert.equAl(elements.length, 2);
+		Assert.equAl(elements[0].vAlue, 'first line\n');
+		Assert.equAl(elements[0].severity, severity.Error);
+		Assert.equAl(elements[1].vAlue, 'second line third line fourth line');
+		Assert.equAl(elements[1].severity, severity.Error);
 
-		repl.appendToRepl(session, '1', severity.Warning);
+		repl.AppendToRepl(session, '1', severity.WArning);
 		elements = <SimpleReplElement[]>repl.getReplElements();
-		assert.equal(elements.length, 3);
-		assert.equal(elements[2].value, '1');
-		assert.equal(elements[2].severity, severity.Warning);
+		Assert.equAl(elements.length, 3);
+		Assert.equAl(elements[2].vAlue, '1');
+		Assert.equAl(elements[2].severity, severity.WArning);
 
-		const keyValueObject = { 'key1': 2, 'key2': 'value' };
-		repl.appendToRepl(session, new RawObjectReplElement('fakeid', 'fake', keyValueObject), severity.Info);
-		const element = <RawObjectReplElement>repl.getReplElements()[3];
-		assert.equal(element.value, 'Object');
-		assert.deepEqual(element.valueObj, keyValueObject);
+		const keyVAlueObject = { 'key1': 2, 'key2': 'vAlue' };
+		repl.AppendToRepl(session, new RAwObjectReplElement('fAkeid', 'fAke', keyVAlueObject), severity.Info);
+		const element = <RAwObjectReplElement>repl.getReplElements()[3];
+		Assert.equAl(element.vAlue, 'Object');
+		Assert.deepEquAl(element.vAlueObj, keyVAlueObject);
 
 		repl.removeReplExpressions();
-		assert.equal(repl.getReplElements().length, 0);
+		Assert.equAl(repl.getReplElements().length, 0);
 
-		repl.appendToRepl(session, '1\n', severity.Info);
-		repl.appendToRepl(session, '2', severity.Info);
-		repl.appendToRepl(session, '3\n4', severity.Info);
-		repl.appendToRepl(session, '5\n', severity.Info);
-		repl.appendToRepl(session, '6', severity.Info);
+		repl.AppendToRepl(session, '1\n', severity.Info);
+		repl.AppendToRepl(session, '2', severity.Info);
+		repl.AppendToRepl(session, '3\n4', severity.Info);
+		repl.AppendToRepl(session, '5\n', severity.Info);
+		repl.AppendToRepl(session, '6', severity.Info);
 		elements = <SimpleReplElement[]>repl.getReplElements();
-		assert.equal(elements.length, 3);
-		assert.equal(elements[0], '1\n');
-		assert.equal(elements[1], '23\n45\n');
-		assert.equal(elements[2], '6');
+		Assert.equAl(elements.length, 3);
+		Assert.equAl(elements[0], '1\n');
+		Assert.equAl(elements[1], '23\n45\n');
+		Assert.equAl(elements[2], '6');
 	});
 
 	test('repl merging', () => {
-		// 'mergeWithParent' should be ignored when there is no parent.
-		const parent = createMockSession(model, 'parent', { repl: 'mergeWithParent' });
-		const child1 = createMockSession(model, 'child1', { parentSession: parent, repl: 'separate' });
-		const child2 = createMockSession(model, 'child2', { parentSession: parent, repl: 'mergeWithParent' });
-		const grandChild = createMockSession(model, 'grandChild', { parentSession: child2, repl: 'mergeWithParent' });
-		const child3 = createMockSession(model, 'child3', { parentSession: parent });
+		// 'mergeWithPArent' should be ignored when there is no pArent.
+		const pArent = creAteMockSession(model, 'pArent', { repl: 'mergeWithPArent' });
+		const child1 = creAteMockSession(model, 'child1', { pArentSession: pArent, repl: 'sepArAte' });
+		const child2 = creAteMockSession(model, 'child2', { pArentSession: pArent, repl: 'mergeWithPArent' });
+		const grAndChild = creAteMockSession(model, 'grAndChild', { pArentSession: child2, repl: 'mergeWithPArent' });
+		const child3 = creAteMockSession(model, 'child3', { pArentSession: pArent });
 
-		let parentChanges = 0;
-		parent.onDidChangeReplElements(() => ++parentChanges);
+		let pArentChAnges = 0;
+		pArent.onDidChAngeReplElements(() => ++pArentChAnges);
 
-		parent.appendToRepl('1\n', severity.Info);
-		assert.equal(parentChanges, 1);
-		assert.equal(parent.getReplElements().length, 1);
-		assert.equal(child1.getReplElements().length, 0);
-		assert.equal(child2.getReplElements().length, 1);
-		assert.equal(grandChild.getReplElements().length, 1);
-		assert.equal(child3.getReplElements().length, 0);
+		pArent.AppendToRepl('1\n', severity.Info);
+		Assert.equAl(pArentChAnges, 1);
+		Assert.equAl(pArent.getReplElements().length, 1);
+		Assert.equAl(child1.getReplElements().length, 0);
+		Assert.equAl(child2.getReplElements().length, 1);
+		Assert.equAl(grAndChild.getReplElements().length, 1);
+		Assert.equAl(child3.getReplElements().length, 0);
 
-		grandChild.appendToRepl('1\n', severity.Info);
-		assert.equal(parentChanges, 2);
-		assert.equal(parent.getReplElements().length, 2);
-		assert.equal(child1.getReplElements().length, 0);
-		assert.equal(child2.getReplElements().length, 2);
-		assert.equal(grandChild.getReplElements().length, 2);
-		assert.equal(child3.getReplElements().length, 0);
+		grAndChild.AppendToRepl('1\n', severity.Info);
+		Assert.equAl(pArentChAnges, 2);
+		Assert.equAl(pArent.getReplElements().length, 2);
+		Assert.equAl(child1.getReplElements().length, 0);
+		Assert.equAl(child2.getReplElements().length, 2);
+		Assert.equAl(grAndChild.getReplElements().length, 2);
+		Assert.equAl(child3.getReplElements().length, 0);
 
-		child3.appendToRepl('1\n', severity.Info);
-		assert.equal(parentChanges, 2);
-		assert.equal(parent.getReplElements().length, 2);
-		assert.equal(child1.getReplElements().length, 0);
-		assert.equal(child2.getReplElements().length, 2);
-		assert.equal(grandChild.getReplElements().length, 2);
-		assert.equal(child3.getReplElements().length, 1);
+		child3.AppendToRepl('1\n', severity.Info);
+		Assert.equAl(pArentChAnges, 2);
+		Assert.equAl(pArent.getReplElements().length, 2);
+		Assert.equAl(child1.getReplElements().length, 0);
+		Assert.equAl(child2.getReplElements().length, 2);
+		Assert.equAl(grAndChild.getReplElements().length, 2);
+		Assert.equAl(child3.getReplElements().length, 1);
 
-		child1.appendToRepl('1\n', severity.Info);
-		assert.equal(parentChanges, 2);
-		assert.equal(parent.getReplElements().length, 2);
-		assert.equal(child1.getReplElements().length, 1);
-		assert.equal(child2.getReplElements().length, 2);
-		assert.equal(grandChild.getReplElements().length, 2);
-		assert.equal(child3.getReplElements().length, 1);
+		child1.AppendToRepl('1\n', severity.Info);
+		Assert.equAl(pArentChAnges, 2);
+		Assert.equAl(pArent.getReplElements().length, 2);
+		Assert.equAl(child1.getReplElements().length, 1);
+		Assert.equAl(child2.getReplElements().length, 2);
+		Assert.equAl(grAndChild.getReplElements().length, 2);
+		Assert.equAl(child3.getReplElements().length, 1);
 	});
 
 	test('repl expressions', () => {
-		const session = createMockSession(model);
-		assert.equal(session.getReplElements().length, 0);
-		model.addSession(session);
+		const session = creAteMockSession(model);
+		Assert.equAl(session.getReplElements().length, 0);
+		model.AddSession(session);
 
-		session['raw'] = <any>rawSession;
-		const thread = new Thread(session, 'mockthread', 1);
-		const stackFrame = new StackFrame(thread, 1, <any>undefined, 'app.js', 'normal', { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 10 }, 1);
+		session['rAw'] = <Any>rAwSession;
+		const threAd = new ThreAd(session, 'mockthreAd', 1);
+		const stAckFrAme = new StAckFrAme(threAd, 1, <Any>undefined, 'App.js', 'normAl', { stArtLineNumber: 1, stArtColumn: 1, endLineNumber: 1, endColumn: 10 }, 1);
 		const replModel = new ReplModel();
-		replModel.addReplExpression(session, stackFrame, 'myVariable').then();
-		replModel.addReplExpression(session, stackFrame, 'myVariable').then();
-		replModel.addReplExpression(session, stackFrame, 'myVariable').then();
+		replModel.AddReplExpression(session, stAckFrAme, 'myVAriAble').then();
+		replModel.AddReplExpression(session, stAckFrAme, 'myVAriAble').then();
+		replModel.AddReplExpression(session, stAckFrAme, 'myVAriAble').then();
 
-		assert.equal(replModel.getReplElements().length, 3);
-		replModel.getReplElements().forEach(re => {
-			assert.equal((<ReplEvaluationInput>re).value, 'myVariable');
+		Assert.equAl(replModel.getReplElements().length, 3);
+		replModel.getReplElements().forEAch(re => {
+			Assert.equAl((<ReplEvAluAtionInput>re).vAlue, 'myVAriAble');
 		});
 
 		replModel.removeReplExpressions();
-		assert.equal(replModel.getReplElements().length, 0);
+		Assert.equAl(replModel.getReplElements().length, 0);
 	});
 
-	test('repl ordering', async () => {
-		const session = createMockSession(model);
-		model.addSession(session);
+	test('repl ordering', Async () => {
+		const session = creAteMockSession(model);
+		model.AddSession(session);
 
-		const adapter = new MockDebugAdapter();
-		const raw = new RawDebugSession(adapter, undefined!, undefined!, undefined!, undefined!, undefined!, undefined!);
-		session.initializeForTest(raw);
+		const AdApter = new MockDebugAdApter();
+		const rAw = new RAwDebugSession(AdApter, undefined!, undefined!, undefined!, undefined!, undefined!, undefined!);
+		session.initiAlizeForTest(rAw);
 
-		await session.addReplExpression(undefined, 'before.1');
-		assert.equal(session.getReplElements().length, 3);
-		assert.equal((<ReplEvaluationInput>session.getReplElements()[0]).value, 'before.1');
-		assert.equal((<SimpleReplElement>session.getReplElements()[1]).value, 'before.1');
-		assert.equal((<ReplEvaluationResult>session.getReplElements()[2]).value, '=before.1');
+		AwAit session.AddReplExpression(undefined, 'before.1');
+		Assert.equAl(session.getReplElements().length, 3);
+		Assert.equAl((<ReplEvAluAtionInput>session.getReplElements()[0]).vAlue, 'before.1');
+		Assert.equAl((<SimpleReplElement>session.getReplElements()[1]).vAlue, 'before.1');
+		Assert.equAl((<ReplEvAluAtionResult>session.getReplElements()[2]).vAlue, '=before.1');
 
-		await session.addReplExpression(undefined, 'after.2');
-		await timeout(0);
-		assert.equal(session.getReplElements().length, 6);
-		assert.equal((<ReplEvaluationInput>session.getReplElements()[3]).value, 'after.2');
-		assert.equal((<ReplEvaluationResult>session.getReplElements()[4]).value, '=after.2');
-		assert.equal((<SimpleReplElement>session.getReplElements()[5]).value, 'after.2');
+		AwAit session.AddReplExpression(undefined, 'After.2');
+		AwAit timeout(0);
+		Assert.equAl(session.getReplElements().length, 6);
+		Assert.equAl((<ReplEvAluAtionInput>session.getReplElements()[3]).vAlue, 'After.2');
+		Assert.equAl((<ReplEvAluAtionResult>session.getReplElements()[4]).vAlue, '=After.2');
+		Assert.equAl((<SimpleReplElement>session.getReplElements()[5]).vAlue, 'After.2');
 	});
 
-	test('repl groups', async () => {
-		const session = createMockSession(model);
+	test('repl groups', Async () => {
+		const session = creAteMockSession(model);
 		const repl = new ReplModel();
 
-		repl.appendToRepl(session, 'first global line', severity.Info);
-		repl.startGroup('group_1', true);
-		repl.appendToRepl(session, 'first line in group', severity.Info);
-		repl.appendToRepl(session, 'second line in group', severity.Info);
+		repl.AppendToRepl(session, 'first globAl line', severity.Info);
+		repl.stArtGroup('group_1', true);
+		repl.AppendToRepl(session, 'first line in group', severity.Info);
+		repl.AppendToRepl(session, 'second line in group', severity.Info);
 		const elements = repl.getReplElements();
-		assert.equal(elements.length, 2);
-		const group = elements[1] as ReplGroup;
-		assert.equal(group.name, 'group_1');
-		assert.equal(group.autoExpand, true);
-		assert.equal(group.hasChildren, true);
-		assert.equal(group.hasEnded, false);
+		Assert.equAl(elements.length, 2);
+		const group = elements[1] As ReplGroup;
+		Assert.equAl(group.nAme, 'group_1');
+		Assert.equAl(group.AutoExpAnd, true);
+		Assert.equAl(group.hAsChildren, true);
+		Assert.equAl(group.hAsEnded, fAlse);
 
-		repl.startGroup('group_2', false);
-		repl.appendToRepl(session, 'first line in subgroup', severity.Info);
-		repl.appendToRepl(session, 'second line in subgroup', severity.Info);
+		repl.stArtGroup('group_2', fAlse);
+		repl.AppendToRepl(session, 'first line in subgroup', severity.Info);
+		repl.AppendToRepl(session, 'second line in subgroup', severity.Info);
 		const children = group.getChildren();
-		assert.equal(children.length, 3);
-		assert.equal((<SimpleReplElement>children[0]).value, 'first line in group');
-		assert.equal((<SimpleReplElement>children[1]).value, 'second line in group');
-		assert.equal((<ReplGroup>children[2]).name, 'group_2');
-		assert.equal((<ReplGroup>children[2]).hasEnded, false);
-		assert.equal((<ReplGroup>children[2]).getChildren().length, 2);
+		Assert.equAl(children.length, 3);
+		Assert.equAl((<SimpleReplElement>children[0]).vAlue, 'first line in group');
+		Assert.equAl((<SimpleReplElement>children[1]).vAlue, 'second line in group');
+		Assert.equAl((<ReplGroup>children[2]).nAme, 'group_2');
+		Assert.equAl((<ReplGroup>children[2]).hAsEnded, fAlse);
+		Assert.equAl((<ReplGroup>children[2]).getChildren().length, 2);
 		repl.endGroup();
-		assert.equal((<ReplGroup>children[2]).hasEnded, true);
-		repl.appendToRepl(session, 'third line in group', severity.Info);
-		assert.equal(group.getChildren().length, 4);
-		assert.equal(group.hasEnded, false);
+		Assert.equAl((<ReplGroup>children[2]).hAsEnded, true);
+		repl.AppendToRepl(session, 'third line in group', severity.Info);
+		Assert.equAl(group.getChildren().length, 4);
+		Assert.equAl(group.hAsEnded, fAlse);
 		repl.endGroup();
-		assert.equal(group.hasEnded, true);
-		repl.appendToRepl(session, 'second global line', severity.Info);
-		assert.equal(repl.getReplElements().length, 3);
-		assert.equal((<SimpleReplElement>repl.getReplElements()[2]).value, 'second global line');
+		Assert.equAl(group.hAsEnded, true);
+		repl.AppendToRepl(session, 'second globAl line', severity.Info);
+		Assert.equAl(repl.getReplElements().length, 3);
+		Assert.equAl((<SimpleReplElement>repl.getReplElements()[2]).vAlue, 'second globAl line');
 	});
 
-	test('repl filter', async () => {
-		const session = createMockSession(model);
+	test('repl filter', Async () => {
+		const session = creAteMockSession(model);
 		const repl = new ReplModel();
 		const replFilter = new ReplFilter();
 
@@ -205,48 +205,48 @@ suite('Debug - REPL', () => {
 			});
 		};
 
-		repl.appendToRepl(session, 'first line\n', severity.Info);
-		repl.appendToRepl(session, 'second line\n', severity.Info);
-		repl.appendToRepl(session, 'third line\n', severity.Info);
-		repl.appendToRepl(session, 'fourth line\n', severity.Info);
+		repl.AppendToRepl(session, 'first line\n', severity.Info);
+		repl.AppendToRepl(session, 'second line\n', severity.Info);
+		repl.AppendToRepl(session, 'third line\n', severity.Info);
+		repl.AppendToRepl(session, 'fourth line\n', severity.Info);
 
 		replFilter.filterQuery = 'first';
 		let r1 = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r1.length, 1);
-		assert.equal(r1[0].value, 'first line\n');
+		Assert.equAl(r1.length, 1);
+		Assert.equAl(r1[0].vAlue, 'first line\n');
 
 		replFilter.filterQuery = '!first';
 		let r2 = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r1.length, 1);
-		assert.equal(r2[0].value, 'second line\n');
-		assert.equal(r2[1].value, 'third line\n');
-		assert.equal(r2[2].value, 'fourth line\n');
+		Assert.equAl(r1.length, 1);
+		Assert.equAl(r2[0].vAlue, 'second line\n');
+		Assert.equAl(r2[1].vAlue, 'third line\n');
+		Assert.equAl(r2[2].vAlue, 'fourth line\n');
 
 		replFilter.filterQuery = 'first, line';
 		let r3 = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r3.length, 4);
-		assert.equal(r3[0].value, 'first line\n');
-		assert.equal(r3[1].value, 'second line\n');
-		assert.equal(r3[2].value, 'third line\n');
-		assert.equal(r3[3].value, 'fourth line\n');
+		Assert.equAl(r3.length, 4);
+		Assert.equAl(r3[0].vAlue, 'first line\n');
+		Assert.equAl(r3[1].vAlue, 'second line\n');
+		Assert.equAl(r3[2].vAlue, 'third line\n');
+		Assert.equAl(r3[3].vAlue, 'fourth line\n');
 
 		replFilter.filterQuery = 'line, !second';
 		let r4 = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r4.length, 3);
-		assert.equal(r4[0].value, 'first line\n');
-		assert.equal(r4[1].value, 'third line\n');
-		assert.equal(r4[2].value, 'fourth line\n');
+		Assert.equAl(r4.length, 3);
+		Assert.equAl(r4[0].vAlue, 'first line\n');
+		Assert.equAl(r4[1].vAlue, 'third line\n');
+		Assert.equAl(r4[2].vAlue, 'fourth line\n');
 
 		replFilter.filterQuery = '!second, line';
-		let r4_same = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r4.length, r4_same.length);
+		let r4_sAme = <SimpleReplElement[]>getFilteredElements();
+		Assert.equAl(r4.length, r4_sAme.length);
 
 		replFilter.filterQuery = '!line';
 		let r5 = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r5.length, 0);
+		Assert.equAl(r5.length, 0);
 
 		replFilter.filterQuery = 'smth';
 		let r6 = <SimpleReplElement[]>getFilteredElements();
-		assert.equal(r6.length, 0);
+		Assert.equAl(r6.length, 0);
 	});
 });

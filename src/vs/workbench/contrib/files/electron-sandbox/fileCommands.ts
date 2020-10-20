@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { sequence } from 'vs/base/common/async';
-import { Schemas } from 'vs/base/common/network';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import * As nls from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { sequence } from 'vs/bAse/common/Async';
+import { SchemAs } from 'vs/bAse/common/network';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-// Commands
+// CommAnds
 
-export function revealResourcesInOS(resources: URI[], nativeHostService: INativeHostService, notificationService: INotificationService, workspaceContextService: IWorkspaceContextService): void {
+export function reveAlResourcesInOS(resources: URI[], nAtiveHostService: INAtiveHostService, notificAtionService: INotificAtionService, workspAceContextService: IWorkspAceContextService): void {
 	if (resources.length) {
-		sequence(resources.map(r => async () => {
-			if (r.scheme === Schemas.file || r.scheme === Schemas.userData) {
-				nativeHostService.showItemInFolder(r.fsPath);
+		sequence(resources.mAp(r => Async () => {
+			if (r.scheme === SchemAs.file || r.scheme === SchemAs.userDAtA) {
+				nAtiveHostService.showItemInFolder(r.fsPAth);
 			}
 		}));
-	} else if (workspaceContextService.getWorkspace().folders.length) {
-		const uri = workspaceContextService.getWorkspace().folders[0].uri;
-		if (uri.scheme === Schemas.file) {
-			nativeHostService.showItemInFolder(uri.fsPath);
+	} else if (workspAceContextService.getWorkspAce().folders.length) {
+		const uri = workspAceContextService.getWorkspAce().folders[0].uri;
+		if (uri.scheme === SchemAs.file) {
+			nAtiveHostService.showItemInFolder(uri.fsPAth);
 		}
 	} else {
-		notificationService.info(nls.localize('openFileToReveal', "Open a file first to reveal"));
+		notificAtionService.info(nls.locAlize('openFileToReveAl', "Open A file first to reveAl"));
 	}
 }

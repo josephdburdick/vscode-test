@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { equalsIgnoreCase, startsWithIgnoreCase } from 'vs/base/common/strings';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { equAlsIgnoreCAse, stArtsWithIgnoreCAse } from 'vs/bAse/common/strings';
 
-export const IOpenerService = createDecorator<IOpenerService>('openerService');
+export const IOpenerService = creAteDecorAtor<IOpenerService>('openerService');
 
-type OpenInternalOptions = {
-
-	/**
-	 * Signals that the intent is to open an editor to the side
-	 * of the currently active editor.
-	 */
-	readonly openToSide?: boolean;
+type OpenInternAlOptions = {
 
 	/**
-	 * Signals that the editor to open was triggered through a user
-	 * action, such as keyboard or mouse usage.
+	 * SignAls thAt the intent is to open An editor to the side
+	 * of the currently Active editor.
 	 */
-	readonly fromUserGesture?: boolean;
+	reAdonly openToSide?: booleAn;
+
+	/**
+	 * SignAls thAt the editor to open wAs triggered through A user
+	 * Action, such As keyboArd or mouse usAge.
+	 */
+	reAdonly fromUserGesture?: booleAn;
 };
 
-type OpenExternalOptions = { readonly openExternal?: boolean; readonly allowTunneling?: boolean };
+type OpenExternAlOptions = { reAdonly openExternAl?: booleAn; reAdonly AllowTunneling?: booleAn };
 
-export type OpenOptions = OpenInternalOptions & OpenExternalOptions;
+export type OpenOptions = OpenInternAlOptions & OpenExternAlOptions;
 
-export type ResolveExternalUriOptions = { readonly allowTunneling?: boolean };
+export type ResolveExternAlUriOptions = { reAdonly AllowTunneling?: booleAn };
 
-export interface IResolvedExternalUri extends IDisposable {
+export interfAce IResolvedExternAlUri extends IDisposAble {
 	resolved: URI;
 }
 
-export interface IOpener {
-	open(resource: URI | string, options?: OpenInternalOptions | OpenExternalOptions): Promise<boolean>;
+export interfAce IOpener {
+	open(resource: URI | string, options?: OpenInternAlOptions | OpenExternAlOptions): Promise<booleAn>;
 }
 
-export interface IExternalOpener {
-	openExternal(href: string): Promise<boolean>;
+export interfAce IExternAlOpener {
+	openExternAl(href: string): Promise<booleAn>;
 }
 
-export interface IValidator {
-	shouldOpen(resource: URI | string): Promise<boolean>;
+export interfAce IVAlidAtor {
+	shouldOpen(resource: URI | string): Promise<booleAn>;
 }
 
-export interface IExternalUriResolver {
-	resolveExternalUri(resource: URI, options?: OpenOptions): Promise<{ resolved: URI, dispose(): void } | undefined>;
+export interfAce IExternAlUriResolver {
+	resolveExternAlUri(resource: URI, options?: OpenOptions): Promise<{ resolved: URI, dispose(): void } | undefined>;
 }
 
-export interface IOpenerService {
+export interfAce IOpenerService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Register a participant that can handle the open() call.
+	 * Register A pArticipAnt thAt cAn hAndle the open() cAll.
 	 */
-	registerOpener(opener: IOpener): IDisposable;
+	registerOpener(opener: IOpener): IDisposAble;
 
 	/**
-	 * Register a participant that can validate if the URI resource be opened.
-	 * Validators are run before openers.
+	 * Register A pArticipAnt thAt cAn vAlidAte if the URI resource be opened.
+	 * VAlidAtors Are run before openers.
 	 */
-	registerValidator(validator: IValidator): IDisposable;
+	registerVAlidAtor(vAlidAtor: IVAlidAtor): IDisposAble;
 
 	/**
-	 * Register a participant that can resolve an external URI resource to be opened.
+	 * Register A pArticipAnt thAt cAn resolve An externAl URI resource to be opened.
 	 */
-	registerExternalUriResolver(resolver: IExternalUriResolver): IDisposable;
+	registerExternAlUriResolver(resolver: IExternAlUriResolver): IDisposAble;
 
 	/**
-	 * Sets the handler for opening externally. If not provided,
-	 * a default handler will be used.
+	 * Sets the hAndler for opening externAlly. If not provided,
+	 * A defAult hAndler will be used.
 	 */
-	setExternalOpener(opener: IExternalOpener): void;
+	setExternAlOpener(opener: IExternAlOpener): void;
 
 	/**
-	 * Opens a resource, like a webaddress, a document uri, or executes command.
+	 * Opens A resource, like A webAddress, A document uri, or executes commAnd.
 	 *
-	 * @param resource A resource
-	 * @return A promise that resolves when the opening is done.
+	 * @pArAm resource A resource
+	 * @return A promise thAt resolves when the opening is done.
 	 */
-	open(resource: URI | string, options?: OpenInternalOptions | OpenExternalOptions): Promise<boolean>;
+	open(resource: URI | string, options?: OpenInternAlOptions | OpenExternAlOptions): Promise<booleAn>;
 
 	/**
-	 * Resolve a resource to its external form.
+	 * Resolve A resource to its externAl form.
 	 */
-	resolveExternalUri(resource: URI, options?: ResolveExternalUriOptions): Promise<IResolvedExternalUri>;
+	resolveExternAlUri(resource: URI, options?: ResolveExternAlUriOptions): Promise<IResolvedExternAlUri>;
 }
 
 export const NullOpenerService: IOpenerService = Object.freeze({
-	_serviceBrand: undefined,
-	registerOpener() { return Disposable.None; },
-	registerValidator() { return Disposable.None; },
-	registerExternalUriResolver() { return Disposable.None; },
-	setExternalOpener() { },
-	async open() { return false; },
-	async resolveExternalUri(uri: URI) { return { resolved: uri, dispose() { } }; },
+	_serviceBrAnd: undefined,
+	registerOpener() { return DisposAble.None; },
+	registerVAlidAtor() { return DisposAble.None; },
+	registerExternAlUriResolver() { return DisposAble.None; },
+	setExternAlOpener() { },
+	Async open() { return fAlse; },
+	Async resolveExternAlUri(uri: URI) { return { resolved: uri, dispose() { } }; },
 });
 
-export function matchesScheme(target: URI | string, scheme: string) {
-	if (URI.isUri(target)) {
-		return equalsIgnoreCase(target.scheme, scheme);
+export function mAtchesScheme(tArget: URI | string, scheme: string) {
+	if (URI.isUri(tArget)) {
+		return equAlsIgnoreCAse(tArget.scheme, scheme);
 	} else {
-		return startsWithIgnoreCase(target, scheme + ':');
+		return stArtsWithIgnoreCAse(tArget, scheme + ':');
 	}
 }

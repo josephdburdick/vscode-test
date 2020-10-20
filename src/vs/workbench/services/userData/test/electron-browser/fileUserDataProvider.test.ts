@@ -1,301 +1,301 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as uuid from 'vs/base/common/uuid';
-import { IFileService, FileChangeType, IFileChange, IFileSystemProviderWithFileReadWriteCapability, IStat, FileType, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { FileUserDataProvider } from 'vs/workbench/services/userData/common/fileUserDataProvider';
-import { joinPath, dirname } from 'vs/base/common/resources';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { DisposableStore, IDisposable, Disposable } from 'vs/base/common/lifecycle';
+import * As Assert from 'Assert';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As uuid from 'vs/bAse/common/uuid';
+import { IFileService, FileChAngeType, IFileChAnge, IFileSystemProviderWithFileReAdWriteCApAbility, IStAt, FileType, FileSystemProviderCApAbilities } from 'vs/plAtform/files/common/files';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { FileUserDAtAProvider } from 'vs/workbench/services/userDAtA/common/fileUserDAtAProvider';
+import { joinPAth, dirnAme } from 'vs/bAse/common/resources';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { DiskFileSystemProvider } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { DisposAbleStore, IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
 import { BrowserWorkbenchEnvironmentService } from 'vs/workbench/services/environment/browser/environmentService';
-import { Emitter, Event } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { timeout } from 'vs/bAse/common/Async';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { TestProductService } from 'vs/workbench/test/browser/workbenchTestServices';
 
-suite('FileUserDataProvider', () => {
+suite('FileUserDAtAProvider', () => {
 
 	let testObject: IFileService;
 	let rootResource: URI;
-	let userDataHomeOnDisk: URI;
-	let backupWorkspaceHomeOnDisk: URI;
+	let userDAtAHomeOnDisk: URI;
+	let bAckupWorkspAceHomeOnDisk: URI;
 	let environmentService: IWorkbenchEnvironmentService;
-	const disposables = new DisposableStore();
-	let fileUserDataProvider: FileUserDataProvider;
+	const disposAbles = new DisposAbleStore();
+	let fileUserDAtAProvider: FileUserDAtAProvider;
 
-	setup(async () => {
+	setup(Async () => {
 		const logService = new NullLogService();
 		testObject = new FileService(logService);
-		disposables.add(testObject);
+		disposAbles.Add(testObject);
 
 		const diskFileSystemProvider = new DiskFileSystemProvider(logService);
-		disposables.add(diskFileSystemProvider);
-		disposables.add(testObject.registerProvider(Schemas.file, diskFileSystemProvider));
+		disposAbles.Add(diskFileSystemProvider);
+		disposAbles.Add(testObject.registerProvider(SchemAs.file, diskFileSystemProvider));
 
-		const workspaceId = 'workspaceId';
-		environmentService = new BrowserWorkbenchEnvironmentService({ remoteAuthority: 'remote', workspaceId, logsPath: URI.file('logFile') }, TestProductService);
+		const workspAceId = 'workspAceId';
+		environmentService = new BrowserWorkbenchEnvironmentService({ remoteAuthority: 'remote', workspAceId, logsPAth: URI.file('logFile') }, TestProductService);
 
-		rootResource = URI.file(path.join(os.tmpdir(), 'vsctests', uuid.generateUuid()));
-		userDataHomeOnDisk = joinPath(rootResource, 'user');
-		const backupHome = joinPath(rootResource, 'Backups');
-		backupWorkspaceHomeOnDisk = joinPath(backupHome, workspaceId);
-		await Promise.all([testObject.createFolder(userDataHomeOnDisk), testObject.createFolder(backupWorkspaceHomeOnDisk)]);
+		rootResource = URI.file(pAth.join(os.tmpdir(), 'vsctests', uuid.generAteUuid()));
+		userDAtAHomeOnDisk = joinPAth(rootResource, 'user');
+		const bAckupHome = joinPAth(rootResource, 'BAckups');
+		bAckupWorkspAceHomeOnDisk = joinPAth(bAckupHome, workspAceId);
+		AwAit Promise.All([testObject.creAteFolder(userDAtAHomeOnDisk), testObject.creAteFolder(bAckupWorkspAceHomeOnDisk)]);
 
-		fileUserDataProvider = new FileUserDataProvider(userDataHomeOnDisk, backupWorkspaceHomeOnDisk, diskFileSystemProvider, environmentService, logService);
-		disposables.add(fileUserDataProvider);
-		disposables.add(testObject.registerProvider(Schemas.userData, fileUserDataProvider));
+		fileUserDAtAProvider = new FileUserDAtAProvider(userDAtAHomeOnDisk, bAckupWorkspAceHomeOnDisk, diskFileSystemProvider, environmentService, logService);
+		disposAbles.Add(fileUserDAtAProvider);
+		disposAbles.Add(testObject.registerProvider(SchemAs.userDAtA, fileUserDAtAProvider));
 	});
 
-	teardown(async () => {
-		fileUserDataProvider.dispose(); // need to dispose first, otherwise del will fail (https://github.com/microsoft/vscode/issues/106283)
-		await testObject.del(rootResource, { recursive: true });
-		disposables.clear();
+	teArdown(Async () => {
+		fileUserDAtAProvider.dispose(); // need to dispose first, otherwise del will fAil (https://github.com/microsoft/vscode/issues/106283)
+		AwAit testObject.del(rootResource, { recursive: true });
+		disposAbles.cleAr();
 	});
 
-	test('exists return false when file does not exist', async () => {
-		const exists = await testObject.exists(environmentService.settingsResource);
-		assert.equal(exists, false);
+	test('exists return fAlse when file does not exist', Async () => {
+		const exists = AwAit testObject.exists(environmentService.settingsResource);
+		Assert.equAl(exists, fAlse);
 	});
 
-	test('read file throws error if not exist', async () => {
+	test('reAd file throws error if not exist', Async () => {
 		try {
-			await testObject.readFile(environmentService.settingsResource);
-			assert.fail('Should fail since file does not exist');
-		} catch (e) { }
+			AwAit testObject.reAdFile(environmentService.settingsResource);
+			Assert.fAil('Should fAil since file does not exist');
+		} cAtch (e) { }
 	});
 
-	test('read existing file', async () => {
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'settings.json'), VSBuffer.fromString('{}'));
-		const result = await testObject.readFile(environmentService.settingsResource);
-		assert.equal(result.value, '{}');
+	test('reAd existing file', Async () => {
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'), VSBuffer.fromString('{}'));
+		const result = AwAit testObject.reAdFile(environmentService.settingsResource);
+		Assert.equAl(result.vAlue, '{}');
 	});
 
-	test('create file', async () => {
+	test('creAte file', Async () => {
 		const resource = environmentService.settingsResource;
-		const actual1 = await testObject.createFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual2 = await testObject.readFile(joinPath(userDataHomeOnDisk, 'settings.json'));
-		assert.equal(actual2.value.toString(), '{}');
+		const ActuAl1 = AwAit testObject.creAteFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl2 = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'));
+		Assert.equAl(ActuAl2.vAlue.toString(), '{}');
 	});
 
-	test('write file creates the file if not exist', async () => {
+	test('write file creAtes the file if not exist', Async () => {
 		const resource = environmentService.settingsResource;
-		const actual1 = await testObject.writeFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual2 = await testObject.readFile(joinPath(userDataHomeOnDisk, 'settings.json'));
-		assert.equal(actual2.value.toString(), '{}');
+		const ActuAl1 = AwAit testObject.writeFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl2 = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'));
+		Assert.equAl(ActuAl2.vAlue.toString(), '{}');
 	});
 
-	test('write to existing file', async () => {
+	test('write to existing file', Async () => {
 		const resource = environmentService.settingsResource;
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'settings.json'), VSBuffer.fromString('{}'));
-		const actual1 = await testObject.writeFile(resource, VSBuffer.fromString('{a:1}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual2 = await testObject.readFile(joinPath(userDataHomeOnDisk, 'settings.json'));
-		assert.equal(actual2.value.toString(), '{a:1}');
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'), VSBuffer.fromString('{}'));
+		const ActuAl1 = AwAit testObject.writeFile(resource, VSBuffer.fromString('{A:1}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl2 = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'));
+		Assert.equAl(ActuAl2.vAlue.toString(), '{A:1}');
 	});
 
-	test('delete file', async () => {
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'settings.json'), VSBuffer.fromString(''));
-		await testObject.del(environmentService.settingsResource);
-		const result = await testObject.exists(joinPath(userDataHomeOnDisk, 'settings.json'));
-		assert.equal(false, result);
+	test('delete file', Async () => {
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'), VSBuffer.fromString(''));
+		AwAit testObject.del(environmentService.settingsResource);
+		const result = AwAit testObject.exists(joinPAth(userDAtAHomeOnDisk, 'settings.json'));
+		Assert.equAl(fAlse, result);
 	});
 
-	test('resolve file', async () => {
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'settings.json'), VSBuffer.fromString(''));
-		const result = await testObject.resolve(environmentService.settingsResource);
-		assert.ok(!result.isDirectory);
-		assert.ok(result.children === undefined);
+	test('resolve file', Async () => {
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'settings.json'), VSBuffer.fromString(''));
+		const result = AwAit testObject.resolve(environmentService.settingsResource);
+		Assert.ok(!result.isDirectory);
+		Assert.ok(result.children === undefined);
 	});
 
-	test('exists return false for folder that does not exist', async () => {
-		const exists = await testObject.exists(environmentService.snippetsHome);
-		assert.equal(exists, false);
+	test('exists return fAlse for folder thAt does not exist', Async () => {
+		const exists = AwAit testObject.exists(environmentService.snippetsHome);
+		Assert.equAl(exists, fAlse);
 	});
 
-	test('exists return true for folder that exists', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		const exists = await testObject.exists(environmentService.snippetsHome);
-		assert.equal(exists, true);
+	test('exists return true for folder thAt exists', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		const exists = AwAit testObject.exists(environmentService.snippetsHome);
+		Assert.equAl(exists, true);
 	});
 
-	test('read file throws error for folder', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
+	test('reAd file throws error for folder', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
 		try {
-			await testObject.readFile(environmentService.snippetsHome);
-			assert.fail('Should fail since read file is not supported for folders');
-		} catch (e) { }
+			AwAit testObject.reAdFile(environmentService.snippetsHome);
+			Assert.fAil('Should fAil since reAd file is not supported for folders');
+		} cAtch (e) { }
 	});
 
-	test('read file under folder', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
-		const resource = joinPath(environmentService.snippetsHome, 'settings.json');
-		const actual = await testObject.readFile(resource);
-		assert.equal(actual.resource.toString(), resource.toString());
-		assert.equal(actual.value, '{}');
+	test('reAd file under folder', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
+		const resource = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const ActuAl = AwAit testObject.reAdFile(resource);
+		Assert.equAl(ActuAl.resource.toString(), resource.toString());
+		Assert.equAl(ActuAl.vAlue, '{}');
 	});
 
-	test('read file under sub folder', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets', 'java'));
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'snippets', 'java', 'settings.json'), VSBuffer.fromString('{}'));
-		const resource = joinPath(environmentService.snippetsHome, 'java/settings.json');
-		const actual = await testObject.readFile(resource);
-		assert.equal(actual.resource.toString(), resource.toString());
-		assert.equal(actual.value, '{}');
+	test('reAd file under sub folder', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets', 'jAvA'));
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'jAvA', 'settings.json'), VSBuffer.fromString('{}'));
+		const resource = joinPAth(environmentService.snippetsHome, 'jAvA/settings.json');
+		const ActuAl = AwAit testObject.reAdFile(resource);
+		Assert.equAl(ActuAl.resource.toString(), resource.toString());
+		Assert.equAl(ActuAl.vAlue, '{}');
 	});
 
-	test('create file under folder that exists', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		const resource = joinPath(environmentService.snippetsHome, 'settings.json');
-		const actual1 = await testObject.createFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual2 = await testObject.readFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'));
-		assert.equal(actual2.value.toString(), '{}');
+	test('creAte file under folder thAt exists', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		const resource = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const ActuAl1 = AwAit testObject.creAteFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl2 = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'));
+		Assert.equAl(ActuAl2.vAlue.toString(), '{}');
 	});
 
-	test('create file under folder that does not exist', async () => {
-		const resource = joinPath(environmentService.snippetsHome, 'settings.json');
-		const actual1 = await testObject.createFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual2 = await testObject.readFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'));
-		assert.equal(actual2.value.toString(), '{}');
+	test('creAte file under folder thAt does not exist', Async () => {
+		const resource = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const ActuAl1 = AwAit testObject.creAteFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl2 = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'));
+		Assert.equAl(ActuAl2.vAlue.toString(), '{}');
 	});
 
-	test('write to not existing file under container that exists', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		const resource = joinPath(environmentService.snippetsHome, 'settings.json');
-		const actual1 = await testObject.writeFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual = await testObject.readFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'));
-		assert.equal(actual.value.toString(), '{}');
+	test('write to not existing file under contAiner thAt exists', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		const resource = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const ActuAl1 = AwAit testObject.writeFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'));
+		Assert.equAl(ActuAl.vAlue.toString(), '{}');
 	});
 
-	test('write to not existing file under container that does not exists', async () => {
-		const resource = joinPath(environmentService.snippetsHome, 'settings.json');
-		const actual1 = await testObject.writeFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual = await testObject.readFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'));
-		assert.equal(actual.value.toString(), '{}');
+	test('write to not existing file under contAiner thAt does not exists', Async () => {
+		const resource = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const ActuAl1 = AwAit testObject.writeFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'));
+		Assert.equAl(ActuAl.vAlue.toString(), '{}');
 	});
 
-	test('write to existing file under container', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
-		const resource = joinPath(environmentService.snippetsHome, 'settings.json');
-		const actual1 = await testObject.writeFile(resource, VSBuffer.fromString('{a:1}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual = await testObject.readFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'));
-		assert.equal(actual.value.toString(), '{a:1}');
+	test('write to existing file under contAiner', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
+		const resource = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const ActuAl1 = AwAit testObject.writeFile(resource, VSBuffer.fromString('{A:1}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'));
+		Assert.equAl(ActuAl.vAlue.toString(), '{A:1}');
 	});
 
-	test('write file under sub container', async () => {
-		const resource = joinPath(environmentService.snippetsHome, 'java/settings.json');
-		const actual1 = await testObject.writeFile(resource, VSBuffer.fromString('{}'));
-		assert.equal(actual1.resource.toString(), resource.toString());
-		const actual = await testObject.readFile(joinPath(userDataHomeOnDisk, 'snippets', 'java', 'settings.json'));
-		assert.equal(actual.value.toString(), '{}');
+	test('write file under sub contAiner', Async () => {
+		const resource = joinPAth(environmentService.snippetsHome, 'jAvA/settings.json');
+		const ActuAl1 = AwAit testObject.writeFile(resource, VSBuffer.fromString('{}'));
+		Assert.equAl(ActuAl1.resource.toString(), resource.toString());
+		const ActuAl = AwAit testObject.reAdFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'jAvA', 'settings.json'));
+		Assert.equAl(ActuAl.vAlue.toString(), '{}');
 	});
 
-	test('delete throws error for folder that does not exist', async () => {
+	test('delete throws error for folder thAt does not exist', Async () => {
 		try {
-			await testObject.del(environmentService.snippetsHome);
-			assert.fail('Should fail the folder does not exist');
-		} catch (e) { }
+			AwAit testObject.del(environmentService.snippetsHome);
+			Assert.fAil('Should fAil the folder does not exist');
+		} cAtch (e) { }
 	});
 
-	test('delete not existing file under container that exists', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
+	test('delete not existing file under contAiner thAt exists', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
 		try {
-			await testObject.del(joinPath(environmentService.snippetsHome, 'settings.json'));
-			assert.fail('Should fail since file does not exist');
-		} catch (e) { }
+			AwAit testObject.del(joinPAth(environmentService.snippetsHome, 'settings.json'));
+			Assert.fAil('Should fAil since file does not exist');
+		} cAtch (e) { }
 	});
 
-	test('delete not existing file under container that does not exists', async () => {
+	test('delete not existing file under contAiner thAt does not exists', Async () => {
 		try {
-			await testObject.del(joinPath(environmentService.snippetsHome, 'settings.json'));
-			assert.fail('Should fail since file does not exist');
-		} catch (e) { }
+			AwAit testObject.del(joinPAth(environmentService.snippetsHome, 'settings.json'));
+			Assert.fAil('Should fAil since file does not exist');
+		} cAtch (e) { }
 	});
 
-	test('delete existing file under folder', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
-		await testObject.del(joinPath(environmentService.snippetsHome, 'settings.json'));
-		const exists = await testObject.exists(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'));
-		assert.equal(exists, false);
+	test('delete existing file under folder', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
+		AwAit testObject.del(joinPAth(environmentService.snippetsHome, 'settings.json'));
+		const exists = AwAit testObject.exists(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'));
+		Assert.equAl(exists, fAlse);
 	});
 
-	test('resolve folder', async () => {
-		await testObject.createFolder(joinPath(userDataHomeOnDisk, 'snippets'));
-		await testObject.writeFile(joinPath(userDataHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
-		const result = await testObject.resolve(environmentService.snippetsHome);
-		assert.ok(result.isDirectory);
-		assert.ok(result.children !== undefined);
-		assert.equal(result.children!.length, 1);
-		assert.equal(result.children![0].resource.toString(), joinPath(environmentService.snippetsHome, 'settings.json').toString());
+	test('resolve folder', Async () => {
+		AwAit testObject.creAteFolder(joinPAth(userDAtAHomeOnDisk, 'snippets'));
+		AwAit testObject.writeFile(joinPAth(userDAtAHomeOnDisk, 'snippets', 'settings.json'), VSBuffer.fromString('{}'));
+		const result = AwAit testObject.resolve(environmentService.snippetsHome);
+		Assert.ok(result.isDirectory);
+		Assert.ok(result.children !== undefined);
+		Assert.equAl(result.children!.length, 1);
+		Assert.equAl(result.children![0].resource.toString(), joinPAth(environmentService.snippetsHome, 'settings.json').toString());
 	});
 
-	test('read backup file', async () => {
-		await testObject.writeFile(joinPath(backupWorkspaceHomeOnDisk, 'backup.json'), VSBuffer.fromString('{}'));
-		const result = await testObject.readFile(joinPath(environmentService.backupWorkspaceHome!, `backup.json`));
-		assert.equal(result.value, '{}');
+	test('reAd bAckup file', Async () => {
+		AwAit testObject.writeFile(joinPAth(bAckupWorkspAceHomeOnDisk, 'bAckup.json'), VSBuffer.fromString('{}'));
+		const result = AwAit testObject.reAdFile(joinPAth(environmentService.bAckupWorkspAceHome!, `bAckup.json`));
+		Assert.equAl(result.vAlue, '{}');
 	});
 
-	test('create backup file', async () => {
-		await testObject.createFile(joinPath(environmentService.backupWorkspaceHome!, `backup.json`), VSBuffer.fromString('{}'));
-		const result = await testObject.readFile(joinPath(backupWorkspaceHomeOnDisk, 'backup.json'));
-		assert.equal(result.value.toString(), '{}');
+	test('creAte bAckup file', Async () => {
+		AwAit testObject.creAteFile(joinPAth(environmentService.bAckupWorkspAceHome!, `bAckup.json`), VSBuffer.fromString('{}'));
+		const result = AwAit testObject.reAdFile(joinPAth(bAckupWorkspAceHomeOnDisk, 'bAckup.json'));
+		Assert.equAl(result.vAlue.toString(), '{}');
 	});
 
-	test('write backup file', async () => {
-		await testObject.writeFile(joinPath(backupWorkspaceHomeOnDisk, 'backup.json'), VSBuffer.fromString('{}'));
-		await testObject.writeFile(joinPath(environmentService.backupWorkspaceHome!, `backup.json`), VSBuffer.fromString('{a:1}'));
-		const result = await testObject.readFile(joinPath(backupWorkspaceHomeOnDisk, 'backup.json'));
-		assert.equal(result.value.toString(), '{a:1}');
+	test('write bAckup file', Async () => {
+		AwAit testObject.writeFile(joinPAth(bAckupWorkspAceHomeOnDisk, 'bAckup.json'), VSBuffer.fromString('{}'));
+		AwAit testObject.writeFile(joinPAth(environmentService.bAckupWorkspAceHome!, `bAckup.json`), VSBuffer.fromString('{A:1}'));
+		const result = AwAit testObject.reAdFile(joinPAth(bAckupWorkspAceHomeOnDisk, 'bAckup.json'));
+		Assert.equAl(result.vAlue.toString(), '{A:1}');
 	});
 
-	test('resolve backups folder', async () => {
-		await testObject.writeFile(joinPath(backupWorkspaceHomeOnDisk, 'backup.json'), VSBuffer.fromString('{}'));
-		const result = await testObject.resolve(environmentService.backupWorkspaceHome!);
-		assert.ok(result.isDirectory);
-		assert.ok(result.children !== undefined);
-		assert.equal(result.children!.length, 1);
-		assert.equal(result.children![0].resource.toString(), joinPath(environmentService.backupWorkspaceHome!, `backup.json`).toString());
+	test('resolve bAckups folder', Async () => {
+		AwAit testObject.writeFile(joinPAth(bAckupWorkspAceHomeOnDisk, 'bAckup.json'), VSBuffer.fromString('{}'));
+		const result = AwAit testObject.resolve(environmentService.bAckupWorkspAceHome!);
+		Assert.ok(result.isDirectory);
+		Assert.ok(result.children !== undefined);
+		Assert.equAl(result.children!.length, 1);
+		Assert.equAl(result.children![0].resource.toString(), joinPAth(environmentService.bAckupWorkspAceHome!, `bAckup.json`).toString());
 	});
 });
 
-class TestFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapability {
+clAss TestFileSystemProvider implements IFileSystemProviderWithFileReAdWriteCApAbility {
 
-	constructor(readonly onDidChangeFile: Event<readonly IFileChange[]>) { }
+	constructor(reAdonly onDidChAngeFile: Event<reAdonly IFileChAnge[]>) { }
 
-	readonly capabilities: FileSystemProviderCapabilities = FileSystemProviderCapabilities.FileReadWrite;
+	reAdonly cApAbilities: FileSystemProviderCApAbilities = FileSystemProviderCApAbilities.FileReAdWrite;
 
-	readonly onDidChangeCapabilities: Event<void> = Event.None;
+	reAdonly onDidChAngeCApAbilities: Event<void> = Event.None;
 
-	watch(): IDisposable { return Disposable.None; }
+	wAtch(): IDisposAble { return DisposAble.None; }
 
-	stat(): Promise<IStat> { throw new Error('Not Supported'); }
+	stAt(): Promise<IStAt> { throw new Error('Not Supported'); }
 
 	mkdir(resource: URI): Promise<void> { throw new Error('Not Supported'); }
 
-	rename(): Promise<void> { throw new Error('Not Supported'); }
+	renAme(): Promise<void> { throw new Error('Not Supported'); }
 
-	readFile(resource: URI): Promise<Uint8Array> { throw new Error('Not Supported'); }
+	reAdFile(resource: URI): Promise<Uint8ArrAy> { throw new Error('Not Supported'); }
 
-	readdir(resource: URI): Promise<[string, FileType][]> { throw new Error('Not Supported'); }
+	reAddir(resource: URI): Promise<[string, FileType][]> { throw new Error('Not Supported'); }
 
 	writeFile(): Promise<void> { throw new Error('Not Supported'); }
 
@@ -303,172 +303,172 @@ class TestFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapa
 
 }
 
-suite('FileUserDataProvider - Watching', () => {
+suite('FileUserDAtAProvider - WAtching', () => {
 
 	let testObject: IFileService;
-	let localBackupsResource: URI;
-	let localUserDataResource: URI;
+	let locAlBAckupsResource: URI;
+	let locAlUserDAtAResource: URI;
 	let environmentService: IWorkbenchEnvironmentService;
-	const disposables = new DisposableStore();
+	const disposAbles = new DisposAbleStore();
 
-	const fileEventEmitter: Emitter<readonly IFileChange[]> = new Emitter<readonly IFileChange[]>();
-	disposables.add(fileEventEmitter);
+	const fileEventEmitter: Emitter<reAdonly IFileChAnge[]> = new Emitter<reAdonly IFileChAnge[]>();
+	disposAbles.Add(fileEventEmitter);
 
 	setup(() => {
 
-		environmentService = new BrowserWorkbenchEnvironmentService({ remoteAuthority: 'remote', workspaceId: 'workspaceId', logsPath: URI.file('logFile') }, TestProductService);
+		environmentService = new BrowserWorkbenchEnvironmentService({ remoteAuthority: 'remote', workspAceId: 'workspAceId', logsPAth: URI.file('logFile') }, TestProductService);
 
-		const rootResource = URI.file(path.join(os.tmpdir(), 'vsctests', uuid.generateUuid()));
-		localUserDataResource = joinPath(rootResource, 'user');
-		localBackupsResource = joinPath(rootResource, 'Backups');
+		const rootResource = URI.file(pAth.join(os.tmpdir(), 'vsctests', uuid.generAteUuid()));
+		locAlUserDAtAResource = joinPAth(rootResource, 'user');
+		locAlBAckupsResource = joinPAth(rootResource, 'BAckups');
 
-		const userDataFileSystemProvider = new FileUserDataProvider(localUserDataResource, localBackupsResource, new TestFileSystemProvider(fileEventEmitter.event), environmentService, new NullLogService());
-		disposables.add(userDataFileSystemProvider);
+		const userDAtAFileSystemProvider = new FileUserDAtAProvider(locAlUserDAtAResource, locAlBAckupsResource, new TestFileSystemProvider(fileEventEmitter.event), environmentService, new NullLogService());
+		disposAbles.Add(userDAtAFileSystemProvider);
 
 		testObject = new FileService(new NullLogService());
-		disposables.add(testObject);
-		disposables.add(testObject.registerProvider(Schemas.userData, userDataFileSystemProvider));
+		disposAbles.Add(testObject);
+		disposAbles.Add(testObject.registerProvider(SchemAs.userDAtA, userDAtAFileSystemProvider));
 	});
 
-	teardown(() => disposables.clear());
+	teArdown(() => disposAbles.cleAr());
 
-	test('file added change event', done => {
+	test('file Added chAnge event', done => {
 		const expected = environmentService.settingsResource;
-		const target = joinPath(localUserDataResource, 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.ADDED)) {
+		const tArget = joinPAth(locAlUserDAtAResource, 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.ADDED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.ADDED
+			resource: tArget,
+			type: FileChAngeType.ADDED
 		}]);
 	});
 
-	test('file updated change event', done => {
+	test('file updAted chAnge event', done => {
 		const expected = environmentService.settingsResource;
-		const target = joinPath(localUserDataResource, 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.UPDATED)) {
+		const tArget = joinPAth(locAlUserDAtAResource, 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.UPDATED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.UPDATED
+			resource: tArget,
+			type: FileChAngeType.UPDATED
 		}]);
 	});
 
-	test('file deleted change event', done => {
+	test('file deleted chAnge event', done => {
 		const expected = environmentService.settingsResource;
-		const target = joinPath(localUserDataResource, 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.DELETED)) {
+		const tArget = joinPAth(locAlUserDAtAResource, 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.DELETED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.DELETED
+			resource: tArget,
+			type: FileChAngeType.DELETED
 		}]);
 	});
 
-	test('file under folder created change event', done => {
-		const expected = joinPath(environmentService.snippetsHome, 'settings.json');
-		const target = joinPath(localUserDataResource, 'snippets', 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.ADDED)) {
+	test('file under folder creAted chAnge event', done => {
+		const expected = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const tArget = joinPAth(locAlUserDAtAResource, 'snippets', 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.ADDED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.ADDED
+			resource: tArget,
+			type: FileChAngeType.ADDED
 		}]);
 	});
 
-	test('file under folder updated change event', done => {
-		const expected = joinPath(environmentService.snippetsHome, 'settings.json');
-		const target = joinPath(localUserDataResource, 'snippets', 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.UPDATED)) {
+	test('file under folder updAted chAnge event', done => {
+		const expected = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const tArget = joinPAth(locAlUserDAtAResource, 'snippets', 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.UPDATED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.UPDATED
+			resource: tArget,
+			type: FileChAngeType.UPDATED
 		}]);
 	});
 
-	test('file under folder deleted change event', done => {
-		const expected = joinPath(environmentService.snippetsHome, 'settings.json');
-		const target = joinPath(localUserDataResource, 'snippets', 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.DELETED)) {
+	test('file under folder deleted chAnge event', done => {
+		const expected = joinPAth(environmentService.snippetsHome, 'settings.json');
+		const tArget = joinPAth(locAlUserDAtAResource, 'snippets', 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.DELETED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.DELETED
+			resource: tArget,
+			type: FileChAngeType.DELETED
 		}]);
 	});
 
-	test('event is not triggered if file is not under user data', async () => {
-		const target = joinPath(dirname(localUserDataResource), 'settings.json');
-		let triggered = false;
-		testObject.onDidFilesChange(() => triggered = true);
+	test('event is not triggered if file is not under user dAtA', Async () => {
+		const tArget = joinPAth(dirnAme(locAlUserDAtAResource), 'settings.json');
+		let triggered = fAlse;
+		testObject.onDidFilesChAnge(() => triggered = true);
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.DELETED
+			resource: tArget,
+			type: FileChAngeType.DELETED
 		}]);
-		await timeout(0);
+		AwAit timeout(0);
 		if (triggered) {
-			assert.fail('event should not be triggered');
+			Assert.fAil('event should not be triggered');
 		}
 	});
 
-	test('backup file created change event', done => {
-		const expected = joinPath(environmentService.backupWorkspaceHome!, 'settings.json');
-		const target = joinPath(localBackupsResource, 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.ADDED)) {
+	test('bAckup file creAted chAnge event', done => {
+		const expected = joinPAth(environmentService.bAckupWorkspAceHome!, 'settings.json');
+		const tArget = joinPAth(locAlBAckupsResource, 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.ADDED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.ADDED
+			resource: tArget,
+			type: FileChAngeType.ADDED
 		}]);
 	});
 
-	test('backup file update change event', done => {
-		const expected = joinPath(environmentService.backupWorkspaceHome!, 'settings.json');
-		const target = joinPath(localBackupsResource, 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.UPDATED)) {
+	test('bAckup file updAte chAnge event', done => {
+		const expected = joinPAth(environmentService.bAckupWorkspAceHome!, 'settings.json');
+		const tArget = joinPAth(locAlBAckupsResource, 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.UPDATED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.UPDATED
+			resource: tArget,
+			type: FileChAngeType.UPDATED
 		}]);
 	});
 
-	test('backup file delete change event', done => {
-		const expected = joinPath(environmentService.backupWorkspaceHome!, 'settings.json');
-		const target = joinPath(localBackupsResource, 'settings.json');
-		testObject.onDidFilesChange(e => {
-			if (e.contains(expected, FileChangeType.DELETED)) {
+	test('bAckup file delete chAnge event', done => {
+		const expected = joinPAth(environmentService.bAckupWorkspAceHome!, 'settings.json');
+		const tArget = joinPAth(locAlBAckupsResource, 'settings.json');
+		testObject.onDidFilesChAnge(e => {
+			if (e.contAins(expected, FileChAngeType.DELETED)) {
 				done();
 			}
 		});
 		fileEventEmitter.fire([{
-			resource: target,
-			type: FileChangeType.DELETED
+			resource: tArget,
+			type: FileChAngeType.DELETED
 		}]);
 	});
 });

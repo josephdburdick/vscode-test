@@ -1,106 +1,106 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Range, LineChange, Selection } from 'vscode';
+import { TextDocument, RAnge, LineChAnge, Selection } from 'vscode';
 
-export function applyLineChanges(original: TextDocument, modified: TextDocument, diffs: LineChange[]): string {
+export function ApplyLineChAnges(originAl: TextDocument, modified: TextDocument, diffs: LineChAnge[]): string {
 	const result: string[] = [];
 	let currentLine = 0;
 
 	for (let diff of diffs) {
-		const isInsertion = diff.originalEndLineNumber === 0;
+		const isInsertion = diff.originAlEndLineNumber === 0;
 		const isDeletion = diff.modifiedEndLineNumber === 0;
 
-		let endLine = isInsertion ? diff.originalStartLineNumber : diff.originalStartLineNumber - 1;
-		let endCharacter = 0;
+		let endLine = isInsertion ? diff.originAlStArtLineNumber : diff.originAlStArtLineNumber - 1;
+		let endChArActer = 0;
 
-		// if this is a deletion at the very end of the document,then we need to account
-		// for a newline at the end of the last line which may have been deleted
+		// if this is A deletion At the very end of the document,then we need to Account
+		// for A newline At the end of the lAst line which mAy hAve been deleted
 		// https://github.com/microsoft/vscode/issues/59670
-		if (isDeletion && diff.originalEndLineNumber === original.lineCount) {
+		if (isDeletion && diff.originAlEndLineNumber === originAl.lineCount) {
 			endLine -= 1;
-			endCharacter = original.lineAt(endLine).range.end.character;
+			endChArActer = originAl.lineAt(endLine).rAnge.end.chArActer;
 		}
 
-		result.push(original.getText(new Range(currentLine, 0, endLine, endCharacter)));
+		result.push(originAl.getText(new RAnge(currentLine, 0, endLine, endChArActer)));
 
 		if (!isDeletion) {
-			let fromLine = diff.modifiedStartLineNumber - 1;
-			let fromCharacter = 0;
+			let fromLine = diff.modifiedStArtLineNumber - 1;
+			let fromChArActer = 0;
 
-			// if this is an insertion at the very end of the document,
-			// then we must start the next range after the last character of the
-			// previous line, in order to take the correct eol
-			if (isInsertion && diff.originalStartLineNumber === original.lineCount) {
+			// if this is An insertion At the very end of the document,
+			// then we must stArt the next rAnge After the lAst chArActer of the
+			// previous line, in order to tAke the correct eol
+			if (isInsertion && diff.originAlStArtLineNumber === originAl.lineCount) {
 				fromLine -= 1;
-				fromCharacter = modified.lineAt(fromLine).range.end.character;
+				fromChArActer = modified.lineAt(fromLine).rAnge.end.chArActer;
 			}
 
-			result.push(modified.getText(new Range(fromLine, fromCharacter, diff.modifiedEndLineNumber, 0)));
+			result.push(modified.getText(new RAnge(fromLine, fromChArActer, diff.modifiedEndLineNumber, 0)));
 		}
 
-		currentLine = isInsertion ? diff.originalStartLineNumber : diff.originalEndLineNumber;
+		currentLine = isInsertion ? diff.originAlStArtLineNumber : diff.originAlEndLineNumber;
 	}
 
-	result.push(original.getText(new Range(currentLine, 0, original.lineCount, 0)));
+	result.push(originAl.getText(new RAnge(currentLine, 0, originAl.lineCount, 0)));
 
 	return result.join('');
 }
 
-export function toLineRanges(selections: Selection[], textDocument: TextDocument): Range[] {
-	const lineRanges = selections.map(s => {
-		const startLine = textDocument.lineAt(s.start.line);
+export function toLineRAnges(selections: Selection[], textDocument: TextDocument): RAnge[] {
+	const lineRAnges = selections.mAp(s => {
+		const stArtLine = textDocument.lineAt(s.stArt.line);
 		const endLine = textDocument.lineAt(s.end.line);
-		return new Range(startLine.range.start, endLine.range.end);
+		return new RAnge(stArtLine.rAnge.stArt, endLine.rAnge.end);
 	});
 
-	lineRanges.sort((a, b) => a.start.line - b.start.line);
+	lineRAnges.sort((A, b) => A.stArt.line - b.stArt.line);
 
-	const result = lineRanges.reduce((result, l) => {
+	const result = lineRAnges.reduce((result, l) => {
 		if (result.length === 0) {
 			result.push(l);
 			return result;
 		}
 
-		const [last, ...rest] = result;
-		const intersection = l.intersection(last);
+		const [lAst, ...rest] = result;
+		const intersection = l.intersection(lAst);
 
 		if (intersection) {
 			return [intersection, ...rest];
 		}
 
-		if (l.start.line === last.end.line + 1) {
-			const merge = new Range(last.start, l.end);
+		if (l.stArt.line === lAst.end.line + 1) {
+			const merge = new RAnge(lAst.stArt, l.end);
 			return [merge, ...rest];
 		}
 
 		return [l, ...result];
-	}, [] as Range[]);
+	}, [] As RAnge[]);
 
 	result.reverse();
 
 	return result;
 }
 
-export function getModifiedRange(textDocument: TextDocument, diff: LineChange): Range {
+export function getModifiedRAnge(textDocument: TextDocument, diff: LineChAnge): RAnge {
 	if (diff.modifiedEndLineNumber === 0) {
-		if (diff.modifiedStartLineNumber === 0) {
-			return new Range(textDocument.lineAt(diff.modifiedStartLineNumber).range.end, textDocument.lineAt(diff.modifiedStartLineNumber).range.start);
-		} else if (textDocument.lineCount === diff.modifiedStartLineNumber) {
-			return new Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end, textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end);
+		if (diff.modifiedStArtLineNumber === 0) {
+			return new RAnge(textDocument.lineAt(diff.modifiedStArtLineNumber).rAnge.end, textDocument.lineAt(diff.modifiedStArtLineNumber).rAnge.stArt);
+		} else if (textDocument.lineCount === diff.modifiedStArtLineNumber) {
+			return new RAnge(textDocument.lineAt(diff.modifiedStArtLineNumber - 1).rAnge.end, textDocument.lineAt(diff.modifiedStArtLineNumber - 1).rAnge.end);
 		} else {
-			return new Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end, textDocument.lineAt(diff.modifiedStartLineNumber).range.start);
+			return new RAnge(textDocument.lineAt(diff.modifiedStArtLineNumber - 1).rAnge.end, textDocument.lineAt(diff.modifiedStArtLineNumber).rAnge.stArt);
 		}
 	} else {
-		return new Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.start, textDocument.lineAt(diff.modifiedEndLineNumber - 1).range.end);
+		return new RAnge(textDocument.lineAt(diff.modifiedStArtLineNumber - 1).rAnge.stArt, textDocument.lineAt(diff.modifiedEndLineNumber - 1).rAnge.end);
 	}
 }
 
-export function intersectDiffWithRange(textDocument: TextDocument, diff: LineChange, range: Range): LineChange | null {
-	const modifiedRange = getModifiedRange(textDocument, diff);
-	const intersection = range.intersection(modifiedRange);
+export function intersectDiffWithRAnge(textDocument: TextDocument, diff: LineChAnge, rAnge: RAnge): LineChAnge | null {
+	const modifiedRAnge = getModifiedRAnge(textDocument, diff);
+	const intersection = rAnge.intersection(modifiedRAnge);
 
 	if (!intersection) {
 		return null;
@@ -110,19 +110,19 @@ export function intersectDiffWithRange(textDocument: TextDocument, diff: LineCha
 		return diff;
 	} else {
 		return {
-			originalStartLineNumber: diff.originalStartLineNumber,
-			originalEndLineNumber: diff.originalEndLineNumber,
-			modifiedStartLineNumber: intersection.start.line + 1,
+			originAlStArtLineNumber: diff.originAlStArtLineNumber,
+			originAlEndLineNumber: diff.originAlEndLineNumber,
+			modifiedStArtLineNumber: intersection.stArt.line + 1,
 			modifiedEndLineNumber: intersection.end.line + 1
 		};
 	}
 }
 
-export function invertLineChange(diff: LineChange): LineChange {
+export function invertLineChAnge(diff: LineChAnge): LineChAnge {
 	return {
-		modifiedStartLineNumber: diff.originalStartLineNumber,
-		modifiedEndLineNumber: diff.originalEndLineNumber,
-		originalStartLineNumber: diff.modifiedStartLineNumber,
-		originalEndLineNumber: diff.modifiedEndLineNumber
+		modifiedStArtLineNumber: diff.originAlStArtLineNumber,
+		modifiedEndLineNumber: diff.originAlEndLineNumber,
+		originAlStArtLineNumber: diff.modifiedStArtLineNumber,
+		originAlEndLineNumber: diff.modifiedEndLineNumber
 	};
 }

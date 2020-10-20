@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { ExtHostWindowShape, MainContext, MainThreadWindowShape, IOpenUriOptions } from './extHost.protocol';
-import { WindowState } from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { ExtHostWindowShApe, MAinContext, MAinThreAdWindowShApe, IOpenUriOptions } from './extHost.protocol';
+import { WindowStAte } from 'vscode';
+import { URI } from 'vs/bAse/common/uri';
+import { SchemAs } from 'vs/bAse/common/network';
+import { isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
 
-export class ExtHostWindow implements ExtHostWindowShape {
+export clAss ExtHostWindow implements ExtHostWindowShApe {
 
-	private static InitialState: WindowState = {
+	privAte stAtic InitiAlStAte: WindowStAte = {
 		focused: true
 	};
 
-	private _proxy: MainThreadWindowShape;
+	privAte _proxy: MAinThreAdWindowShApe;
 
-	private readonly _onDidChangeWindowState = new Emitter<WindowState>();
-	readonly onDidChangeWindowState: Event<WindowState> = this._onDidChangeWindowState.event;
+	privAte reAdonly _onDidChAngeWindowStAte = new Emitter<WindowStAte>();
+	reAdonly onDidChAngeWindowStAte: Event<WindowStAte> = this._onDidChAngeWindowStAte.event;
 
-	private _state = ExtHostWindow.InitialState;
-	get state(): WindowState { return this._state; }
+	privAte _stAte = ExtHostWindow.InitiAlStAte;
+	get stAte(): WindowStAte { return this._stAte; }
 
 	constructor(@IExtHostRpcService extHostRpc: IExtHostRpcService) {
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadWindow);
-		this._proxy.$getWindowVisibility().then(isFocused => this.$onDidChangeWindowFocus(isFocused));
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdWindow);
+		this._proxy.$getWindowVisibility().then(isFocused => this.$onDidChAngeWindowFocus(isFocused));
 	}
 
-	$onDidChangeWindowFocus(focused: boolean): void {
-		if (focused === this._state.focused) {
+	$onDidChAngeWindowFocus(focused: booleAn): void {
+		if (focused === this._stAte.focused) {
 			return;
 		}
 
-		this._state = { ...this._state, focused };
-		this._onDidChangeWindowState.fire(this._state);
+		this._stAte = { ...this._stAte, focused };
+		this._onDidChAngeWindowStAte.fire(this._stAte);
 	}
 
-	openUri(stringOrUri: string | URI, options: IOpenUriOptions): Promise<boolean> {
+	openUri(stringOrUri: string | URI, options: IOpenUriOptions): Promise<booleAn> {
 		let uriAsString: string | undefined;
 		if (typeof stringOrUri === 'string') {
 			uriAsString = stringOrUri;
 			try {
-				stringOrUri = URI.parse(stringOrUri);
-			} catch (e) {
-				return Promise.reject(`Invalid uri - '${stringOrUri}'`);
+				stringOrUri = URI.pArse(stringOrUri);
+			} cAtch (e) {
+				return Promise.reject(`InvAlid uri - '${stringOrUri}'`);
 			}
 		}
-		if (isFalsyOrWhitespace(stringOrUri.scheme)) {
-			return Promise.reject('Invalid scheme - cannot be empty');
-		} else if (stringOrUri.scheme === Schemas.command) {
-			return Promise.reject(`Invalid scheme '${stringOrUri.scheme}'`);
+		if (isFAlsyOrWhitespAce(stringOrUri.scheme)) {
+			return Promise.reject('InvAlid scheme - cAnnot be empty');
+		} else if (stringOrUri.scheme === SchemAs.commAnd) {
+			return Promise.reject(`InvAlid scheme '${stringOrUri.scheme}'`);
 		}
 		return this._proxy.$openUri(stringOrUri, uriAsString, options);
 	}
 
-	async asExternalUri(uri: URI, options: IOpenUriOptions): Promise<URI> {
-		if (isFalsyOrWhitespace(uri.scheme)) {
-			return Promise.reject('Invalid scheme - cannot be empty');
-		} else if (!new Set([Schemas.http, Schemas.https]).has(uri.scheme)) {
-			return Promise.reject(`Invalid scheme '${uri.scheme}'`);
+	Async AsExternAlUri(uri: URI, options: IOpenUriOptions): Promise<URI> {
+		if (isFAlsyOrWhitespAce(uri.scheme)) {
+			return Promise.reject('InvAlid scheme - cAnnot be empty');
+		} else if (!new Set([SchemAs.http, SchemAs.https]).hAs(uri.scheme)) {
+			return Promise.reject(`InvAlid scheme '${uri.scheme}'`);
 		}
 
-		const result = await this._proxy.$asExternalUri(uri, options);
+		const result = AwAit this._proxy.$AsExternAlUri(uri, options);
 		return URI.from(result);
 	}
 }
 
-export const IExtHostWindow = createDecorator<IExtHostWindow>('IExtHostWindow');
-export interface IExtHostWindow extends ExtHostWindow, ExtHostWindowShape { }
+export const IExtHostWindow = creAteDecorAtor<IExtHostWindow>('IExtHostWindow');
+export interfAce IExtHostWindow extends ExtHostWindow, ExtHostWindowShApe { }

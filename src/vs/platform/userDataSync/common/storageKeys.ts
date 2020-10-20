@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export interface IStorageKey {
+export interfAce IStorAgeKey {
 
-	readonly key: string;
-	readonly version: number;
-
-}
-
-export const IStorageKeysSyncRegistryService = createDecorator<IStorageKeysSyncRegistryService>('IStorageKeysSyncRegistryService');
-
-export interface IStorageKeysSyncRegistryService {
-
-	_serviceBrand: any;
-
-	/**
-	 * All registered storage keys
-	 */
-	readonly storageKeys: ReadonlyArray<IStorageKey>;
-
-	/**
-	 * Event that is triggered when storage keys are changed
-	 */
-	readonly onDidChangeStorageKeys: Event<ReadonlyArray<IStorageKey>>;
-
-	/**
-	 * Register a storage key that has to be synchronized during sync.
-	 */
-	registerStorageKey(key: IStorageKey): void;
+	reAdonly key: string;
+	reAdonly version: number;
 
 }
 
-export class StorageKeysSyncRegistryService extends Disposable implements IStorageKeysSyncRegistryService {
+export const IStorAgeKeysSyncRegistryService = creAteDecorAtor<IStorAgeKeysSyncRegistryService>('IStorAgeKeysSyncRegistryService');
 
-	_serviceBrand: any;
+export interfAce IStorAgeKeysSyncRegistryService {
 
-	private readonly _storageKeys = new Map<string, IStorageKey>();
-	get storageKeys(): ReadonlyArray<IStorageKey> { return [...this._storageKeys.values()]; }
+	_serviceBrAnd: Any;
 
-	private readonly _onDidChangeStorageKeys: Emitter<ReadonlyArray<IStorageKey>> = this._register(new Emitter<ReadonlyArray<IStorageKey>>());
-	readonly onDidChangeStorageKeys = this._onDidChangeStorageKeys.event;
+	/**
+	 * All registered storAge keys
+	 */
+	reAdonly storAgeKeys: ReAdonlyArrAy<IStorAgeKey>;
+
+	/**
+	 * Event thAt is triggered when storAge keys Are chAnged
+	 */
+	reAdonly onDidChAngeStorAgeKeys: Event<ReAdonlyArrAy<IStorAgeKey>>;
+
+	/**
+	 * Register A storAge key thAt hAs to be synchronized during sync.
+	 */
+	registerStorAgeKey(key: IStorAgeKey): void;
+
+}
+
+export clAss StorAgeKeysSyncRegistryService extends DisposAble implements IStorAgeKeysSyncRegistryService {
+
+	_serviceBrAnd: Any;
+
+	privAte reAdonly _storAgeKeys = new MAp<string, IStorAgeKey>();
+	get storAgeKeys(): ReAdonlyArrAy<IStorAgeKey> { return [...this._storAgeKeys.vAlues()]; }
+
+	privAte reAdonly _onDidChAngeStorAgeKeys: Emitter<ReAdonlyArrAy<IStorAgeKey>> = this._register(new Emitter<ReAdonlyArrAy<IStorAgeKey>>());
+	reAdonly onDidChAngeStorAgeKeys = this._onDidChAngeStorAgeKeys.event;
 
 	constructor() {
 		super();
-		this._register(toDisposable(() => this._storageKeys.clear()));
+		this._register(toDisposAble(() => this._storAgeKeys.cleAr()));
 	}
 
-	registerStorageKey(storageKey: IStorageKey): void {
-		if (!this._storageKeys.has(storageKey.key)) {
-			this._storageKeys.set(storageKey.key, storageKey);
-			this._onDidChangeStorageKeys.fire(this.storageKeys);
+	registerStorAgeKey(storAgeKey: IStorAgeKey): void {
+		if (!this._storAgeKeys.hAs(storAgeKey.key)) {
+			this._storAgeKeys.set(storAgeKey.key, storAgeKey);
+			this._onDidChAngeStorAgeKeys.fire(this.storAgeKeys);
 		}
 	}
 

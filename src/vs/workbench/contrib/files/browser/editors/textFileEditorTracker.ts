@@ -1,99 +1,99 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { URI } from 'vs/base/common/uri';
-import { ITextFileService, TextFileEditorModelState } from 'vs/workbench/services/textfile/common/textfiles';
+import { URI } from 'vs/bAse/common/uri';
+import { ITextFileService, TextFileEditorModelStAte } from 'vs/workbench/services/textfile/common/textfiles';
 import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { distinct, coalesce } from 'vs/base/common/arrays';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { distinct, coAlesce } from 'vs/bAse/common/ArrAys';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { RunOnceWorker } from 'vs/base/common/async';
+import { RunOnceWorker } from 'vs/bAse/common/Async';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { IFilesConfigurAtionService, AutoSAveMode } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
 
-export class TextFileEditorTracker extends Disposable implements IWorkbenchContribution {
+export clAss TextFileEditorTrAcker extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IHostService private readonly hostService: IHostService,
-		@ICodeEditorService private readonly codeEditorService: ICodeEditorService,
-		@IFilesConfigurationService private readonly filesConfigurationService: IFilesConfigurationService
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@ITextFileService privAte reAdonly textFileService: ITextFileService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IHostService privAte reAdonly hostService: IHostService,
+		@ICodeEditorService privAte reAdonly codeEditorService: ICodeEditorService,
+		@IFilesConfigurAtionService privAte reAdonly filesConfigurAtionService: IFilesConfigurAtionService
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Ensure dirty text file and untitled models are always opened as editors
-		this._register(this.textFileService.files.onDidChangeDirty(model => this.ensureDirtyFilesAreOpenedWorker.work(model.resource)));
-		this._register(this.textFileService.files.onDidSaveError(model => this.ensureDirtyFilesAreOpenedWorker.work(model.resource)));
-		this._register(this.textFileService.untitled.onDidChangeDirty(model => this.ensureDirtyFilesAreOpenedWorker.work(model.resource)));
+		// Ensure dirty text file And untitled models Are AlwAys opened As editors
+		this._register(this.textFileService.files.onDidChAngeDirty(model => this.ensureDirtyFilesAreOpenedWorker.work(model.resource)));
+		this._register(this.textFileService.files.onDidSAveError(model => this.ensureDirtyFilesAreOpenedWorker.work(model.resource)));
+		this._register(this.textFileService.untitled.onDidChAngeDirty(model => this.ensureDirtyFilesAreOpenedWorker.work(model.resource)));
 
-		// Update visible text file editors when focus is gained
-		this._register(this.hostService.onDidChangeFocus(hasFocus => hasFocus ? this.reloadVisibleTextFileEditors() : undefined));
+		// UpdAte visible text file editors when focus is gAined
+		this._register(this.hostService.onDidChAngeFocus(hAsFocus => hAsFocus ? this.reloAdVisibleTextFileEditors() : undefined));
 
 		// Lifecycle
 		this.lifecycleService.onShutdown(this.dispose, this);
 	}
 
-	//#region Text File: Ensure every dirty text and untitled file is opened in an editor
+	//#region Text File: Ensure every dirty text And untitled file is opened in An editor
 
-	private readonly ensureDirtyFilesAreOpenedWorker = this._register(new RunOnceWorker<URI>(units => this.ensureDirtyTextFilesAreOpened(units), 50));
+	privAte reAdonly ensureDirtyFilesAreOpenedWorker = this._register(new RunOnceWorker<URI>(units => this.ensureDirtyTextFilesAreOpened(units), 50));
 
-	private ensureDirtyTextFilesAreOpened(resources: URI[]): void {
+	privAte ensureDirtyTextFilesAreOpened(resources: URI[]): void {
 		this.doEnsureDirtyTextFilesAreOpened(distinct(resources.filter(resource => {
 			if (!this.textFileService.isDirty(resource)) {
-				return false; // resource must be dirty
+				return fAlse; // resource must be dirty
 			}
 
 			const model = this.textFileService.files.get(resource);
-			if (model?.hasState(TextFileEditorModelState.PENDING_SAVE)) {
-				return false; // resource must not be pending to save
+			if (model?.hAsStAte(TextFileEditorModelStAte.PENDING_SAVE)) {
+				return fAlse; // resource must not be pending to sAve
 			}
 
-			if (this.filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-				return false; // resource must not be pending to be auto saved
+			if (this.filesConfigurAtionService.getAutoSAveMode() === AutoSAveMode.AFTER_SHORT_DELAY) {
+				return fAlse; // resource must not be pending to be Auto sAved
 			}
 
 			if (this.editorService.isOpen({ resource })) {
-				return false; // model must not be opened already as file
+				return fAlse; // model must not be opened AlreAdy As file
 			}
 
 			return true;
 		}), resource => resource.toString()));
 	}
 
-	private doEnsureDirtyTextFilesAreOpened(resources: URI[]): void {
+	privAte doEnsureDirtyTextFilesAreOpened(resources: URI[]): void {
 		if (!resources.length) {
 			return;
 		}
 
-		this.editorService.openEditors(resources.map(resource => ({
+		this.editorService.openEditors(resources.mAp(resource => ({
 			resource,
-			options: { inactive: true, pinned: true, preserveFocus: true }
+			options: { inActive: true, pinned: true, preserveFocus: true }
 		})));
 	}
 
 	//#endregion
 
-	//#region Window Focus Change: Update visible code editors when focus is gained that have a known text file model
+	//#region Window Focus ChAnge: UpdAte visible code editors when focus is gAined thAt hAve A known text file model
 
-	private reloadVisibleTextFileEditors(): void {
-		// the window got focus and we use this as a hint that files might have been changed outside
-		// of this window. since file events can be unreliable, we queue a load for models that
-		// are visible in any editor. since this is a fast operation in the case nothing has changed,
-		// we tolerate the additional work.
+	privAte reloAdVisibleTextFileEditors(): void {
+		// the window got focus And we use this As A hint thAt files might hAve been chAnged outside
+		// of this window. since file events cAn be unreliAble, we queue A loAd for models thAt
+		// Are visible in Any editor. since this is A fAst operAtion in the cAse nothing hAs chAnged,
+		// we tolerAte the AdditionAl work.
 		distinct(
-			coalesce(this.codeEditorService.listCodeEditors()
-				.map(codeEditor => {
+			coAlesce(this.codeEditorService.listCodeEditors()
+				.mAp(codeEditor => {
 					const resource = codeEditor.getModel()?.uri;
 					if (!resource) {
 						return undefined;
@@ -107,7 +107,7 @@ export class TextFileEditorTracker extends Disposable implements IWorkbenchContr
 					return model;
 				})),
 			model => model.resource.toString()
-		).forEach(model => this.textFileService.files.resolve(model.resource, { reload: { async: true } }));
+		).forEAch(model => this.textFileService.files.resolve(model.resource, { reloAd: { Async: true } }));
 	}
 
 	//#endregion

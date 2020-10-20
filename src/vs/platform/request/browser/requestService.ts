@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILogService } from 'vs/platform/log/common/log';
-import { request } from 'vs/base/parts/request/browser/request';
-import { IRequestService } from 'vs/platform/request/common/request';
+import { IRequestOptions, IRequestContext } from 'vs/bAse/pArts/request/common/request';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { request } from 'vs/bAse/pArts/request/browser/request';
+import { IRequestService } from 'vs/plAtform/request/common/request';
 
 /**
- * This service exposes the `request` API, while using the global
+ * This service exposes the `request` API, while using the globAl
  * or configured proxy settings.
  */
-export class RequestService implements IRequestService {
+export clAss RequestService implements IRequestService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ILogService private readonly logService: ILogService
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ILogService privAte reAdonly logService: ILogService
 	) {
 	}
 
-	request(options: IRequestOptions, token: CancellationToken): Promise<IRequestContext> {
-		this.logService.trace('RequestService#request', options.url);
+	request(options: IRequestOptions, token: CAncellAtionToken): Promise<IRequestContext> {
+		this.logService.trAce('RequestService#request', options.url);
 
-		if (!options.proxyAuthorization) {
-			options.proxyAuthorization = this.configurationService.getValue<string>('http.proxyAuthorization');
+		if (!options.proxyAuthorizAtion) {
+			options.proxyAuthorizAtion = this.configurAtionService.getVAlue<string>('http.proxyAuthorizAtion');
 		}
 
 		return request(options, token);
 	}
 
-	async resolveProxy(url: string): Promise<string | undefined> {
+	Async resolveProxy(url: string): Promise<string | undefined> {
 		return undefined; // not implemented in the web
 	}
 }

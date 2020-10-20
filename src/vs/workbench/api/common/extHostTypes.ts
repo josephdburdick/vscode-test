@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { coalesceInPlace, equals } from 'vs/base/common/arrays';
-import { escapeCodicons } from 'vs/base/common/codicons';
-import { illegalArgument } from 'vs/base/common/errors';
-import { IRelativePattern } from 'vs/base/common/glob';
-import { isMarkdownString } from 'vs/base/common/htmlContent';
-import { ResourceMap } from 'vs/base/common/map';
-import { isStringArray } from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { FileSystemProviderErrorCode, markAsFileSystemProviderError } from 'vs/platform/files/common/files';
-import { RemoteAuthorityResolverErrorCode } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { addIdToOutput, CellEditType, ICellEditOperation, IDisplayOutput } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import type * as vscode from 'vscode';
+import { coAlesceInPlAce, equAls } from 'vs/bAse/common/ArrAys';
+import { escApeCodicons } from 'vs/bAse/common/codicons';
+import { illegAlArgument } from 'vs/bAse/common/errors';
+import { IRelAtivePAttern } from 'vs/bAse/common/glob';
+import { isMArkdownString } from 'vs/bAse/common/htmlContent';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { isStringArrAy } from 'vs/bAse/common/types';
+import { URI } from 'vs/bAse/common/uri';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { FileSystemProviderErrorCode, mArkAsFileSystemProviderError } from 'vs/plAtform/files/common/files';
+import { RemoteAuthorityResolverErrorCode } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { AddIdToOutput, CellEditType, ICellEditOperAtion, IDisplAyOutput } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import type * As vscode from 'vscode';
 
-function es5ClassCompat(target: Function): any {
+function es5ClAssCompAt(tArget: Function): Any {
 	///@ts-expect-error
-	function _() { return Reflect.construct(target, arguments, this.constructor); }
-	Object.defineProperty(_, 'name', Object.getOwnPropertyDescriptor(target, 'name')!);
-	Object.setPrototypeOf(_, target);
-	Object.setPrototypeOf(_.prototype, target.prototype);
+	function _() { return Reflect.construct(tArget, Arguments, this.constructor); }
+	Object.defineProperty(_, 'nAme', Object.getOwnPropertyDescriptor(tArget, 'nAme')!);
+	Object.setPrototypeOf(_, tArget);
+	Object.setPrototypeOf(_.prototype, tArget.prototype);
 	return _;
 }
 
-@es5ClassCompat
-export class Disposable {
+@es5ClAssCompAt
+export clAss DisposAble {
 
-	static from(...inDisposables: { dispose(): any; }[]): Disposable {
-		let disposables: ReadonlyArray<{ dispose(): any; }> | undefined = inDisposables;
-		return new Disposable(function () {
-			if (disposables) {
-				for (const disposable of disposables) {
-					if (disposable && typeof disposable.dispose === 'function') {
-						disposable.dispose();
+	stAtic from(...inDisposAbles: { dispose(): Any; }[]): DisposAble {
+		let disposAbles: ReAdonlyArrAy<{ dispose(): Any; }> | undefined = inDisposAbles;
+		return new DisposAble(function () {
+			if (disposAbles) {
+				for (const disposAble of disposAbles) {
+					if (disposAble && typeof disposAble.dispose === 'function') {
+						disposAble.dispose();
 					}
 				}
-				disposables = undefined;
+				disposAbles = undefined;
 			}
 		});
 	}
 
-	#callOnDispose?: () => any;
+	#cAllOnDispose?: () => Any;
 
-	constructor(callOnDispose: () => any) {
-		this.#callOnDispose = callOnDispose;
+	constructor(cAllOnDispose: () => Any) {
+		this.#cAllOnDispose = cAllOnDispose;
 	}
 
-	dispose(): any {
-		if (typeof this.#callOnDispose === 'function') {
-			this.#callOnDispose();
-			this.#callOnDispose = undefined;
+	dispose(): Any {
+		if (typeof this.#cAllOnDispose === 'function') {
+			this.#cAllOnDispose();
+			this.#cAllOnDispose = undefined;
 		}
 	}
 }
 
-@es5ClassCompat
-export class Position {
+@es5ClAssCompAt
+export clAss Position {
 
-	static Min(...positions: Position[]): Position {
+	stAtic Min(...positions: Position[]): Position {
 		if (positions.length === 0) {
 			throw new TypeError();
 		}
@@ -74,7 +74,7 @@ export class Position {
 		return result;
 	}
 
-	static Max(...positions: Position[]): Position {
+	stAtic MAx(...positions: Position[]): Position {
 		if (positions.length === 0) {
 			throw new TypeError();
 		}
@@ -88,389 +88,389 @@ export class Position {
 		return result;
 	}
 
-	static isPosition(other: any): other is Position {
+	stAtic isPosition(other: Any): other is Position {
 		if (!other) {
-			return false;
+			return fAlse;
 		}
-		if (other instanceof Position) {
+		if (other instAnceof Position) {
 			return true;
 		}
-		let { line, character } = <Position>other;
-		if (typeof line === 'number' && typeof character === 'number') {
+		let { line, chArActer } = <Position>other;
+		if (typeof line === 'number' && typeof chArActer === 'number') {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private _line: number;
-	private _character: number;
+	privAte _line: number;
+	privAte _chArActer: number;
 
 	get line(): number {
 		return this._line;
 	}
 
-	get character(): number {
-		return this._character;
+	get chArActer(): number {
+		return this._chArActer;
 	}
 
-	constructor(line: number, character: number) {
+	constructor(line: number, chArActer: number) {
 		if (line < 0) {
-			throw illegalArgument('line must be non-negative');
+			throw illegAlArgument('line must be non-negAtive');
 		}
-		if (character < 0) {
-			throw illegalArgument('character must be non-negative');
+		if (chArActer < 0) {
+			throw illegAlArgument('chArActer must be non-negAtive');
 		}
 		this._line = line;
-		this._character = character;
+		this._chArActer = chArActer;
 	}
 
-	isBefore(other: Position): boolean {
+	isBefore(other: Position): booleAn {
 		if (this._line < other._line) {
 			return true;
 		}
 		if (other._line < this._line) {
-			return false;
+			return fAlse;
 		}
-		return this._character < other._character;
+		return this._chArActer < other._chArActer;
 	}
 
-	isBeforeOrEqual(other: Position): boolean {
+	isBeforeOrEquAl(other: Position): booleAn {
 		if (this._line < other._line) {
 			return true;
 		}
 		if (other._line < this._line) {
-			return false;
+			return fAlse;
 		}
-		return this._character <= other._character;
+		return this._chArActer <= other._chArActer;
 	}
 
-	isAfter(other: Position): boolean {
-		return !this.isBeforeOrEqual(other);
+	isAfter(other: Position): booleAn {
+		return !this.isBeforeOrEquAl(other);
 	}
 
-	isAfterOrEqual(other: Position): boolean {
+	isAfterOrEquAl(other: Position): booleAn {
 		return !this.isBefore(other);
 	}
 
-	isEqual(other: Position): boolean {
-		return this._line === other._line && this._character === other._character;
+	isEquAl(other: Position): booleAn {
+		return this._line === other._line && this._chArActer === other._chArActer;
 	}
 
-	compareTo(other: Position): number {
+	compAreTo(other: Position): number {
 		if (this._line < other._line) {
 			return -1;
 		} else if (this._line > other.line) {
 			return 1;
 		} else {
-			// equal line
-			if (this._character < other._character) {
+			// equAl line
+			if (this._chArActer < other._chArActer) {
 				return -1;
-			} else if (this._character > other._character) {
+			} else if (this._chArActer > other._chArActer) {
 				return 1;
 			} else {
-				// equal line and character
+				// equAl line And chArActer
 				return 0;
 			}
 		}
 	}
 
-	translate(change: { lineDelta?: number; characterDelta?: number; }): Position;
-	translate(lineDelta?: number, characterDelta?: number): Position;
-	translate(lineDeltaOrChange: number | undefined | { lineDelta?: number; characterDelta?: number; }, characterDelta: number = 0): Position {
+	trAnslAte(chAnge: { lineDeltA?: number; chArActerDeltA?: number; }): Position;
+	trAnslAte(lineDeltA?: number, chArActerDeltA?: number): Position;
+	trAnslAte(lineDeltAOrChAnge: number | undefined | { lineDeltA?: number; chArActerDeltA?: number; }, chArActerDeltA: number = 0): Position {
 
-		if (lineDeltaOrChange === null || characterDelta === null) {
-			throw illegalArgument();
+		if (lineDeltAOrChAnge === null || chArActerDeltA === null) {
+			throw illegAlArgument();
 		}
 
-		let lineDelta: number;
-		if (typeof lineDeltaOrChange === 'undefined') {
-			lineDelta = 0;
-		} else if (typeof lineDeltaOrChange === 'number') {
-			lineDelta = lineDeltaOrChange;
+		let lineDeltA: number;
+		if (typeof lineDeltAOrChAnge === 'undefined') {
+			lineDeltA = 0;
+		} else if (typeof lineDeltAOrChAnge === 'number') {
+			lineDeltA = lineDeltAOrChAnge;
 		} else {
-			lineDelta = typeof lineDeltaOrChange.lineDelta === 'number' ? lineDeltaOrChange.lineDelta : 0;
-			characterDelta = typeof lineDeltaOrChange.characterDelta === 'number' ? lineDeltaOrChange.characterDelta : 0;
+			lineDeltA = typeof lineDeltAOrChAnge.lineDeltA === 'number' ? lineDeltAOrChAnge.lineDeltA : 0;
+			chArActerDeltA = typeof lineDeltAOrChAnge.chArActerDeltA === 'number' ? lineDeltAOrChAnge.chArActerDeltA : 0;
 		}
 
-		if (lineDelta === 0 && characterDelta === 0) {
+		if (lineDeltA === 0 && chArActerDeltA === 0) {
 			return this;
 		}
-		return new Position(this.line + lineDelta, this.character + characterDelta);
+		return new Position(this.line + lineDeltA, this.chArActer + chArActerDeltA);
 	}
 
-	with(change: { line?: number; character?: number; }): Position;
-	with(line?: number, character?: number): Position;
-	with(lineOrChange: number | undefined | { line?: number; character?: number; }, character: number = this.character): Position {
+	with(chAnge: { line?: number; chArActer?: number; }): Position;
+	with(line?: number, chArActer?: number): Position;
+	with(lineOrChAnge: number | undefined | { line?: number; chArActer?: number; }, chArActer: number = this.chArActer): Position {
 
-		if (lineOrChange === null || character === null) {
-			throw illegalArgument();
+		if (lineOrChAnge === null || chArActer === null) {
+			throw illegAlArgument();
 		}
 
 		let line: number;
-		if (typeof lineOrChange === 'undefined') {
+		if (typeof lineOrChAnge === 'undefined') {
 			line = this.line;
 
-		} else if (typeof lineOrChange === 'number') {
-			line = lineOrChange;
+		} else if (typeof lineOrChAnge === 'number') {
+			line = lineOrChAnge;
 
 		} else {
-			line = typeof lineOrChange.line === 'number' ? lineOrChange.line : this.line;
-			character = typeof lineOrChange.character === 'number' ? lineOrChange.character : this.character;
+			line = typeof lineOrChAnge.line === 'number' ? lineOrChAnge.line : this.line;
+			chArActer = typeof lineOrChAnge.chArActer === 'number' ? lineOrChAnge.chArActer : this.chArActer;
 		}
 
-		if (line === this.line && character === this.character) {
+		if (line === this.line && chArActer === this.chArActer) {
 			return this;
 		}
-		return new Position(line, character);
+		return new Position(line, chArActer);
 	}
 
-	toJSON(): any {
-		return { line: this.line, character: this.character };
+	toJSON(): Any {
+		return { line: this.line, chArActer: this.chArActer };
 	}
 }
 
-@es5ClassCompat
-export class Range {
+@es5ClAssCompAt
+export clAss RAnge {
 
-	static isRange(thing: any): thing is vscode.Range {
-		if (thing instanceof Range) {
+	stAtic isRAnge(thing: Any): thing is vscode.RAnge {
+		if (thing instAnceof RAnge) {
 			return true;
 		}
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return Position.isPosition((<Range>thing).start)
-			&& Position.isPosition((<Range>thing.end));
+		return Position.isPosition((<RAnge>thing).stArt)
+			&& Position.isPosition((<RAnge>thing.end));
 	}
 
-	protected _start: Position;
+	protected _stArt: Position;
 	protected _end: Position;
 
-	get start(): Position {
-		return this._start;
+	get stArt(): Position {
+		return this._stArt;
 	}
 
 	get end(): Position {
 		return this._end;
 	}
 
-	constructor(start: Position, end: Position);
-	constructor(startLine: number, startColumn: number, endLine: number, endColumn: number);
-	constructor(startLineOrStart: number | Position, startColumnOrEnd: number | Position, endLine?: number, endColumn?: number) {
-		let start: Position | undefined;
+	constructor(stArt: Position, end: Position);
+	constructor(stArtLine: number, stArtColumn: number, endLine: number, endColumn: number);
+	constructor(stArtLineOrStArt: number | Position, stArtColumnOrEnd: number | Position, endLine?: number, endColumn?: number) {
+		let stArt: Position | undefined;
 		let end: Position | undefined;
 
-		if (typeof startLineOrStart === 'number' && typeof startColumnOrEnd === 'number' && typeof endLine === 'number' && typeof endColumn === 'number') {
-			start = new Position(startLineOrStart, startColumnOrEnd);
+		if (typeof stArtLineOrStArt === 'number' && typeof stArtColumnOrEnd === 'number' && typeof endLine === 'number' && typeof endColumn === 'number') {
+			stArt = new Position(stArtLineOrStArt, stArtColumnOrEnd);
 			end = new Position(endLine, endColumn);
-		} else if (startLineOrStart instanceof Position && startColumnOrEnd instanceof Position) {
-			start = startLineOrStart;
-			end = startColumnOrEnd;
+		} else if (stArtLineOrStArt instAnceof Position && stArtColumnOrEnd instAnceof Position) {
+			stArt = stArtLineOrStArt;
+			end = stArtColumnOrEnd;
 		}
 
-		if (!start || !end) {
-			throw new Error('Invalid arguments');
+		if (!stArt || !end) {
+			throw new Error('InvAlid Arguments');
 		}
 
-		if (start.isBefore(end)) {
-			this._start = start;
+		if (stArt.isBefore(end)) {
+			this._stArt = stArt;
 			this._end = end;
 		} else {
-			this._start = end;
-			this._end = start;
+			this._stArt = end;
+			this._end = stArt;
 		}
 	}
 
-	contains(positionOrRange: Position | Range): boolean {
-		if (positionOrRange instanceof Range) {
-			return this.contains(positionOrRange._start)
-				&& this.contains(positionOrRange._end);
+	contAins(positionOrRAnge: Position | RAnge): booleAn {
+		if (positionOrRAnge instAnceof RAnge) {
+			return this.contAins(positionOrRAnge._stArt)
+				&& this.contAins(positionOrRAnge._end);
 
-		} else if (positionOrRange instanceof Position) {
-			if (positionOrRange.isBefore(this._start)) {
-				return false;
+		} else if (positionOrRAnge instAnceof Position) {
+			if (positionOrRAnge.isBefore(this._stArt)) {
+				return fAlse;
 			}
-			if (this._end.isBefore(positionOrRange)) {
-				return false;
+			if (this._end.isBefore(positionOrRAnge)) {
+				return fAlse;
 			}
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	isEqual(other: Range): boolean {
-		return this._start.isEqual(other._start) && this._end.isEqual(other._end);
+	isEquAl(other: RAnge): booleAn {
+		return this._stArt.isEquAl(other._stArt) && this._end.isEquAl(other._end);
 	}
 
-	intersection(other: Range): Range | undefined {
-		const start = Position.Max(other.start, this._start);
+	intersection(other: RAnge): RAnge | undefined {
+		const stArt = Position.MAx(other.stArt, this._stArt);
 		const end = Position.Min(other.end, this._end);
-		if (start.isAfter(end)) {
-			// this happens when there is no overlap:
+		if (stArt.isAfter(end)) {
+			// this hAppens when there is no overlAp:
 			// |-----|
 			//          |----|
 			return undefined;
 		}
-		return new Range(start, end);
+		return new RAnge(stArt, end);
 	}
 
-	union(other: Range): Range {
-		if (this.contains(other)) {
+	union(other: RAnge): RAnge {
+		if (this.contAins(other)) {
 			return this;
-		} else if (other.contains(this)) {
+		} else if (other.contAins(this)) {
 			return other;
 		}
-		const start = Position.Min(other.start, this._start);
-		const end = Position.Max(other.end, this.end);
-		return new Range(start, end);
+		const stArt = Position.Min(other.stArt, this._stArt);
+		const end = Position.MAx(other.end, this.end);
+		return new RAnge(stArt, end);
 	}
 
-	get isEmpty(): boolean {
-		return this._start.isEqual(this._end);
+	get isEmpty(): booleAn {
+		return this._stArt.isEquAl(this._end);
 	}
 
-	get isSingleLine(): boolean {
-		return this._start.line === this._end.line;
+	get isSingleLine(): booleAn {
+		return this._stArt.line === this._end.line;
 	}
 
-	with(change: { start?: Position, end?: Position; }): Range;
-	with(start?: Position, end?: Position): Range;
-	with(startOrChange: Position | undefined | { start?: Position, end?: Position; }, end: Position = this.end): Range {
+	with(chAnge: { stArt?: Position, end?: Position; }): RAnge;
+	with(stArt?: Position, end?: Position): RAnge;
+	with(stArtOrChAnge: Position | undefined | { stArt?: Position, end?: Position; }, end: Position = this.end): RAnge {
 
-		if (startOrChange === null || end === null) {
-			throw illegalArgument();
+		if (stArtOrChAnge === null || end === null) {
+			throw illegAlArgument();
 		}
 
-		let start: Position;
-		if (!startOrChange) {
-			start = this.start;
+		let stArt: Position;
+		if (!stArtOrChAnge) {
+			stArt = this.stArt;
 
-		} else if (Position.isPosition(startOrChange)) {
-			start = startOrChange;
+		} else if (Position.isPosition(stArtOrChAnge)) {
+			stArt = stArtOrChAnge;
 
 		} else {
-			start = startOrChange.start || this.start;
-			end = startOrChange.end || this.end;
+			stArt = stArtOrChAnge.stArt || this.stArt;
+			end = stArtOrChAnge.end || this.end;
 		}
 
-		if (start.isEqual(this._start) && end.isEqual(this.end)) {
+		if (stArt.isEquAl(this._stArt) && end.isEquAl(this.end)) {
 			return this;
 		}
-		return new Range(start, end);
+		return new RAnge(stArt, end);
 	}
 
-	toJSON(): any {
-		return [this.start, this.end];
+	toJSON(): Any {
+		return [this.stArt, this.end];
 	}
 }
 
-@es5ClassCompat
-export class Selection extends Range {
+@es5ClAssCompAt
+export clAss Selection extends RAnge {
 
-	static isSelection(thing: any): thing is Selection {
-		if (thing instanceof Selection) {
+	stAtic isSelection(thing: Any): thing is Selection {
+		if (thing instAnceof Selection) {
 			return true;
 		}
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return Range.isRange(thing)
-			&& Position.isPosition((<Selection>thing).anchor)
-			&& Position.isPosition((<Selection>thing).active)
-			&& typeof (<Selection>thing).isReversed === 'boolean';
+		return RAnge.isRAnge(thing)
+			&& Position.isPosition((<Selection>thing).Anchor)
+			&& Position.isPosition((<Selection>thing).Active)
+			&& typeof (<Selection>thing).isReversed === 'booleAn';
 	}
 
-	private _anchor: Position;
+	privAte _Anchor: Position;
 
-	public get anchor(): Position {
-		return this._anchor;
+	public get Anchor(): Position {
+		return this._Anchor;
 	}
 
-	private _active: Position;
+	privAte _Active: Position;
 
-	public get active(): Position {
-		return this._active;
+	public get Active(): Position {
+		return this._Active;
 	}
 
-	constructor(anchor: Position, active: Position);
-	constructor(anchorLine: number, anchorColumn: number, activeLine: number, activeColumn: number);
-	constructor(anchorLineOrAnchor: number | Position, anchorColumnOrActive: number | Position, activeLine?: number, activeColumn?: number) {
-		let anchor: Position | undefined;
-		let active: Position | undefined;
+	constructor(Anchor: Position, Active: Position);
+	constructor(AnchorLine: number, AnchorColumn: number, ActiveLine: number, ActiveColumn: number);
+	constructor(AnchorLineOrAnchor: number | Position, AnchorColumnOrActive: number | Position, ActiveLine?: number, ActiveColumn?: number) {
+		let Anchor: Position | undefined;
+		let Active: Position | undefined;
 
-		if (typeof anchorLineOrAnchor === 'number' && typeof anchorColumnOrActive === 'number' && typeof activeLine === 'number' && typeof activeColumn === 'number') {
-			anchor = new Position(anchorLineOrAnchor, anchorColumnOrActive);
-			active = new Position(activeLine, activeColumn);
-		} else if (anchorLineOrAnchor instanceof Position && anchorColumnOrActive instanceof Position) {
-			anchor = anchorLineOrAnchor;
-			active = anchorColumnOrActive;
-		}
-
-		if (!anchor || !active) {
-			throw new Error('Invalid arguments');
+		if (typeof AnchorLineOrAnchor === 'number' && typeof AnchorColumnOrActive === 'number' && typeof ActiveLine === 'number' && typeof ActiveColumn === 'number') {
+			Anchor = new Position(AnchorLineOrAnchor, AnchorColumnOrActive);
+			Active = new Position(ActiveLine, ActiveColumn);
+		} else if (AnchorLineOrAnchor instAnceof Position && AnchorColumnOrActive instAnceof Position) {
+			Anchor = AnchorLineOrAnchor;
+			Active = AnchorColumnOrActive;
 		}
 
-		super(anchor, active);
+		if (!Anchor || !Active) {
+			throw new Error('InvAlid Arguments');
+		}
 
-		this._anchor = anchor;
-		this._active = active;
+		super(Anchor, Active);
+
+		this._Anchor = Anchor;
+		this._Active = Active;
 	}
 
-	get isReversed(): boolean {
-		return this._anchor === this._end;
+	get isReversed(): booleAn {
+		return this._Anchor === this._end;
 	}
 
 	toJSON() {
 		return {
-			start: this.start,
+			stArt: this.stArt,
 			end: this.end,
-			active: this.active,
-			anchor: this.anchor
+			Active: this.Active,
+			Anchor: this.Anchor
 		};
 	}
 }
 
-export class ResolvedAuthority {
-	readonly host: string;
-	readonly port: number;
+export clAss ResolvedAuthority {
+	reAdonly host: string;
+	reAdonly port: number;
 
 	constructor(host: string, port: number) {
 		if (typeof host !== 'string' || host.length === 0) {
-			throw illegalArgument('host');
+			throw illegAlArgument('host');
 		}
-		if (typeof port !== 'number' || port === 0 || Math.round(port) !== port) {
-			throw illegalArgument('port');
+		if (typeof port !== 'number' || port === 0 || MAth.round(port) !== port) {
+			throw illegAlArgument('port');
 		}
 		this.host = host;
-		this.port = Math.round(port);
+		this.port = MAth.round(port);
 	}
 }
 
-export class RemoteAuthorityResolverError extends Error {
+export clAss RemoteAuthorityResolverError extends Error {
 
-	static NotAvailable(message?: string, handled?: boolean): RemoteAuthorityResolverError {
-		return new RemoteAuthorityResolverError(message, RemoteAuthorityResolverErrorCode.NotAvailable, handled);
+	stAtic NotAvAilAble(messAge?: string, hAndled?: booleAn): RemoteAuthorityResolverError {
+		return new RemoteAuthorityResolverError(messAge, RemoteAuthorityResolverErrorCode.NotAvAilAble, hAndled);
 	}
 
-	static TemporarilyNotAvailable(message?: string): RemoteAuthorityResolverError {
-		return new RemoteAuthorityResolverError(message, RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable);
+	stAtic TemporArilyNotAvAilAble(messAge?: string): RemoteAuthorityResolverError {
+		return new RemoteAuthorityResolverError(messAge, RemoteAuthorityResolverErrorCode.TemporArilyNotAvAilAble);
 	}
 
-	public readonly _message: string | undefined;
-	public readonly _code: RemoteAuthorityResolverErrorCode;
-	public readonly _detail: any;
+	public reAdonly _messAge: string | undefined;
+	public reAdonly _code: RemoteAuthorityResolverErrorCode;
+	public reAdonly _detAil: Any;
 
-	constructor(message?: string, code: RemoteAuthorityResolverErrorCode = RemoteAuthorityResolverErrorCode.Unknown, detail?: any) {
-		super(message);
+	constructor(messAge?: string, code: RemoteAuthorityResolverErrorCode = RemoteAuthorityResolverErrorCode.Unknown, detAil?: Any) {
+		super(messAge);
 
-		this._message = message;
+		this._messAge = messAge;
 		this._code = code;
-		this._detail = detail;
+		this._detAil = detAil;
 
-		// workaround when extending builtin objects and when compiling to ES5, see:
-		// https://github.com/microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
-		if (typeof (<any>Object).setPrototypeOf === 'function') {
-			(<any>Object).setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
+		// workAround when extending builtin objects And when compiling to ES5, see:
+		// https://github.com/microsoft/TypeScript-wiki/blob/mAster/BreAking-ChAnges.md#extending-built-ins-like-error-ArrAy-And-mAp-mAy-no-longer-work
+		if (typeof (<Any>Object).setPrototypeOf === 'function') {
+			(<Any>Object).setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
 		}
 	}
 }
@@ -480,100 +480,100 @@ export enum EndOfLine {
 	CRLF = 2
 }
 
-export enum EnvironmentVariableMutatorType {
-	Replace = 1,
+export enum EnvironmentVAriAbleMutAtorType {
+	ReplAce = 1,
 	Append = 2,
 	Prepend = 3
 }
 
-@es5ClassCompat
-export class TextEdit {
+@es5ClAssCompAt
+export clAss TextEdit {
 
-	static isTextEdit(thing: any): thing is TextEdit {
-		if (thing instanceof TextEdit) {
+	stAtic isTextEdit(thing: Any): thing is TextEdit {
+		if (thing instAnceof TextEdit) {
 			return true;
 		}
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return Range.isRange((<TextEdit>thing))
+		return RAnge.isRAnge((<TextEdit>thing))
 			&& typeof (<TextEdit>thing).newText === 'string';
 	}
 
-	static replace(range: Range, newText: string): TextEdit {
-		return new TextEdit(range, newText);
+	stAtic replAce(rAnge: RAnge, newText: string): TextEdit {
+		return new TextEdit(rAnge, newText);
 	}
 
-	static insert(position: Position, newText: string): TextEdit {
-		return TextEdit.replace(new Range(position, position), newText);
+	stAtic insert(position: Position, newText: string): TextEdit {
+		return TextEdit.replAce(new RAnge(position, position), newText);
 	}
 
-	static delete(range: Range): TextEdit {
-		return TextEdit.replace(range, '');
+	stAtic delete(rAnge: RAnge): TextEdit {
+		return TextEdit.replAce(rAnge, '');
 	}
 
-	static setEndOfLine(eol: EndOfLine): TextEdit {
-		const ret = new TextEdit(new Range(new Position(0, 0), new Position(0, 0)), '');
+	stAtic setEndOfLine(eol: EndOfLine): TextEdit {
+		const ret = new TextEdit(new RAnge(new Position(0, 0), new Position(0, 0)), '');
 		ret.newEol = eol;
 		return ret;
 	}
 
-	protected _range: Range;
+	protected _rAnge: RAnge;
 	protected _newText: string | null;
 	protected _newEol?: EndOfLine;
 
-	get range(): Range {
-		return this._range;
+	get rAnge(): RAnge {
+		return this._rAnge;
 	}
 
-	set range(value: Range) {
-		if (value && !Range.isRange(value)) {
-			throw illegalArgument('range');
+	set rAnge(vAlue: RAnge) {
+		if (vAlue && !RAnge.isRAnge(vAlue)) {
+			throw illegAlArgument('rAnge');
 		}
-		this._range = value;
+		this._rAnge = vAlue;
 	}
 
 	get newText(): string {
 		return this._newText || '';
 	}
 
-	set newText(value: string) {
-		if (value && typeof value !== 'string') {
-			throw illegalArgument('newText');
+	set newText(vAlue: string) {
+		if (vAlue && typeof vAlue !== 'string') {
+			throw illegAlArgument('newText');
 		}
-		this._newText = value;
+		this._newText = vAlue;
 	}
 
 	get newEol(): EndOfLine | undefined {
 		return this._newEol;
 	}
 
-	set newEol(value: EndOfLine | undefined) {
-		if (value && typeof value !== 'number') {
-			throw illegalArgument('newEol');
+	set newEol(vAlue: EndOfLine | undefined) {
+		if (vAlue && typeof vAlue !== 'number') {
+			throw illegAlArgument('newEol');
 		}
-		this._newEol = value;
+		this._newEol = vAlue;
 	}
 
-	constructor(range: Range, newText: string | null) {
-		this._range = range;
+	constructor(rAnge: RAnge, newText: string | null) {
+		this._rAnge = rAnge;
 		this._newText = newText;
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
-			range: this.range,
+			rAnge: this.rAnge,
 			newText: this.newText,
 			newEol: this._newEol
 		};
 	}
 }
 
-export interface IFileOperationOptions {
-	overwrite?: boolean;
-	ignoreIfExists?: boolean;
-	ignoreIfNotExists?: boolean;
-	recursive?: boolean;
+export interfAce IFileOperAtionOptions {
+	overwrite?: booleAn;
+	ignoreIfExists?: booleAn;
+	ignoreIfNotExists?: booleAn;
+	recursive?: booleAn;
 }
 
 export const enum FileEditType {
@@ -582,115 +582,115 @@ export const enum FileEditType {
 	Cell = 3
 }
 
-export interface IFileOperation {
+export interfAce IFileOperAtion {
 	_type: FileEditType.File;
 	from?: URI;
 	to?: URI;
-	options?: IFileOperationOptions;
-	metadata?: vscode.WorkspaceEditEntryMetadata;
+	options?: IFileOperAtionOptions;
+	metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA;
 }
 
-export interface IFileTextEdit {
+export interfAce IFileTextEdit {
 	_type: FileEditType.Text;
 	uri: URI;
 	edit: TextEdit;
-	metadata?: vscode.WorkspaceEditEntryMetadata;
+	metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA;
 }
 
-export interface IFileCellEdit {
+export interfAce IFileCellEdit {
 	_type: FileEditType.Cell;
 	uri: URI;
-	edit?: ICellEditOperation;
-	notebookMetadata?: vscode.NotebookDocumentMetadata;
-	metadata?: vscode.WorkspaceEditEntryMetadata;
+	edit?: ICellEditOperAtion;
+	notebookMetAdAtA?: vscode.NotebookDocumentMetAdAtA;
+	metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA;
 }
 
-@es5ClassCompat
-export class WorkspaceEdit implements vscode.WorkspaceEdit {
+@es5ClAssCompAt
+export clAss WorkspAceEdit implements vscode.WorkspAceEdit {
 
-	private readonly _edits = new Array<IFileOperation | IFileTextEdit | IFileCellEdit>();
+	privAte reAdonly _edits = new ArrAy<IFileOperAtion | IFileTextEdit | IFileCellEdit>();
 
 
-	_allEntries(): ReadonlyArray<IFileTextEdit | IFileOperation | IFileCellEdit> {
+	_AllEntries(): ReAdonlyArrAy<IFileTextEdit | IFileOperAtion | IFileCellEdit> {
 		return this._edits;
 	}
 
 	// --- file
 
-	renameFile(from: vscode.Uri, to: vscode.Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this._edits.push({ _type: FileEditType.File, from, to, options, metadata });
+	renAmeFile(from: vscode.Uri, to: vscode.Uri, options?: { overwrite?: booleAn, ignoreIfExists?: booleAn; }, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this._edits.push({ _type: FileEditType.File, from, to, options, metAdAtA });
 	}
 
-	createFile(uri: vscode.Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this._edits.push({ _type: FileEditType.File, from: undefined, to: uri, options, metadata });
+	creAteFile(uri: vscode.Uri, options?: { overwrite?: booleAn, ignoreIfExists?: booleAn; }, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this._edits.push({ _type: FileEditType.File, from: undefined, to: uri, options, metAdAtA });
 	}
 
-	deleteFile(uri: vscode.Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean; }, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this._edits.push({ _type: FileEditType.File, from: uri, to: undefined, options, metadata });
+	deleteFile(uri: vscode.Uri, options?: { recursive?: booleAn, ignoreIfNotExists?: booleAn; }, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this._edits.push({ _type: FileEditType.File, from: uri, to: undefined, options, metAdAtA });
 	}
 
 	// --- notebook
 
-	replaceNotebookMetadata(uri: URI, value: vscode.NotebookDocumentMetadata, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this._edits.push({ _type: FileEditType.Cell, metadata, uri, notebookMetadata: value });
+	replAceNotebookMetAdAtA(uri: URI, vAlue: vscode.NotebookDocumentMetAdAtA, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this._edits.push({ _type: FileEditType.Cell, metAdAtA, uri, notebookMetAdAtA: vAlue });
 	}
 
-	replaceNotebookCells(uri: URI, start: number, end: number, cells: vscode.NotebookCellData[], metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		if (start !== end || cells.length > 0) {
-			this._edits.push({ _type: FileEditType.Cell, metadata, uri, edit: { editType: CellEditType.Replace, index: start, count: end - start, cells: cells.map(cell => ({ ...cell, outputs: cell.outputs.map(output => addIdToOutput(output)) })) } });
+	replAceNotebookCells(uri: URI, stArt: number, end: number, cells: vscode.NotebookCellDAtA[], metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		if (stArt !== end || cells.length > 0) {
+			this._edits.push({ _type: FileEditType.Cell, metAdAtA, uri, edit: { editType: CellEditType.ReplAce, index: stArt, count: end - stArt, cells: cells.mAp(cell => ({ ...cell, outputs: cell.outputs.mAp(output => AddIdToOutput(output)) })) } });
 		}
 	}
 
-	replaceNotebookCellOutput(uri: URI, index: number, outputs: (vscode.NotebookCellOutput | vscode.CellOutput)[], metadata?: vscode.WorkspaceEditEntryMetadata): void {
+	replAceNotebookCellOutput(uri: URI, index: number, outputs: (vscode.NotebookCellOutput | vscode.CellOutput)[], metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
 		this._edits.push({
-			_type: FileEditType.Cell, metadata, uri, edit: {
-				editType: CellEditType.Output, index, outputs: outputs.map(output => {
+			_type: FileEditType.Cell, metAdAtA, uri, edit: {
+				editType: CellEditType.Output, index, outputs: outputs.mAp(output => {
 					if (NotebookCellOutput.isNotebookCellOutput(output)) {
-						return addIdToOutput(output.toJSON());
+						return AddIdToOutput(output.toJSON());
 					} else {
-						return addIdToOutput(output);
+						return AddIdToOutput(output);
 					}
 				})
 			}
 		});
 	}
 
-	replaceNotebookCellMetadata(uri: URI, index: number, cellMetadata: vscode.NotebookCellMetadata, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this._edits.push({ _type: FileEditType.Cell, metadata, uri, edit: { editType: CellEditType.Metadata, index, metadata: cellMetadata } });
+	replAceNotebookCellMetAdAtA(uri: URI, index: number, cellMetAdAtA: vscode.NotebookCellMetAdAtA, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this._edits.push({ _type: FileEditType.Cell, metAdAtA, uri, edit: { editType: CellEditType.MetAdAtA, index, metAdAtA: cellMetAdAtA } });
 	}
 
 	// --- text
 
-	replace(uri: URI, range: Range, newText: string, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this._edits.push({ _type: FileEditType.Text, uri, edit: new TextEdit(range, newText), metadata });
+	replAce(uri: URI, rAnge: RAnge, newText: string, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this._edits.push({ _type: FileEditType.Text, uri, edit: new TextEdit(rAnge, newText), metAdAtA });
 	}
 
-	insert(resource: URI, position: Position, newText: string, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this.replace(resource, new Range(position, position), newText, metadata);
+	insert(resource: URI, position: Position, newText: string, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this.replAce(resource, new RAnge(position, position), newText, metAdAtA);
 	}
 
-	delete(resource: URI, range: Range, metadata?: vscode.WorkspaceEditEntryMetadata): void {
-		this.replace(resource, range, '', metadata);
+	delete(resource: URI, rAnge: RAnge, metAdAtA?: vscode.WorkspAceEditEntryMetAdAtA): void {
+		this.replAce(resource, rAnge, '', metAdAtA);
 	}
 
-	// --- text (Maplike)
+	// --- text (MAplike)
 
-	has(uri: URI): boolean {
+	hAs(uri: URI): booleAn {
 		return this._edits.some(edit => edit._type === FileEditType.Text && edit.uri.toString() === uri.toString());
 	}
 
 	set(uri: URI, edits: TextEdit[]): void {
 		if (!edits) {
-			// remove all text edits for `uri`
+			// remove All text edits for `uri`
 			for (let i = 0; i < this._edits.length; i++) {
 				const element = this._edits[i];
 				if (element._type === FileEditType.Text && element.uri.toString() === uri.toString()) {
-					this._edits[i] = undefined!; // will be coalesced down below
+					this._edits[i] = undefined!; // will be coAlesced down below
 				}
 			}
-			coalesceInPlace(this._edits);
+			coAlesceInPlAce(this._edits);
 		} else {
-			// append edit to the end
+			// Append edit to the end
 			for (const edit of edits) {
 				if (edit) {
 					this._edits.push({ _type: FileEditType.Text, uri, edit });
@@ -701,313 +701,313 @@ export class WorkspaceEdit implements vscode.WorkspaceEdit {
 
 	get(uri: URI): TextEdit[] {
 		const res: TextEdit[] = [];
-		for (let candidate of this._edits) {
-			if (candidate._type === FileEditType.Text && candidate.uri.toString() === uri.toString()) {
-				res.push(candidate.edit);
+		for (let cAndidAte of this._edits) {
+			if (cAndidAte._type === FileEditType.Text && cAndidAte.uri.toString() === uri.toString()) {
+				res.push(cAndidAte.edit);
 			}
 		}
 		return res;
 	}
 
 	entries(): [URI, TextEdit[]][] {
-		const textEdits = new ResourceMap<[URI, TextEdit[]]>();
-		for (let candidate of this._edits) {
-			if (candidate._type === FileEditType.Text) {
-				let textEdit = textEdits.get(candidate.uri);
+		const textEdits = new ResourceMAp<[URI, TextEdit[]]>();
+		for (let cAndidAte of this._edits) {
+			if (cAndidAte._type === FileEditType.Text) {
+				let textEdit = textEdits.get(cAndidAte.uri);
 				if (!textEdit) {
-					textEdit = [candidate.uri, []];
-					textEdits.set(candidate.uri, textEdit);
+					textEdit = [cAndidAte.uri, []];
+					textEdits.set(cAndidAte.uri, textEdit);
 				}
-				textEdit[1].push(candidate.edit);
+				textEdit[1].push(cAndidAte.edit);
 			}
 		}
-		return [...textEdits.values()];
+		return [...textEdits.vAlues()];
 	}
 
 	get size(): number {
 		return this.entries().length;
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return this.entries();
 	}
 }
 
-@es5ClassCompat
-export class SnippetString {
+@es5ClAssCompAt
+export clAss SnippetString {
 
-	static isSnippetString(thing: any): thing is SnippetString {
-		if (thing instanceof SnippetString) {
+	stAtic isSnippetString(thing: Any): thing is SnippetString {
+		if (thing instAnceof SnippetString) {
 			return true;
 		}
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return typeof (<SnippetString>thing).value === 'string';
+		return typeof (<SnippetString>thing).vAlue === 'string';
 	}
 
-	private static _escape(value: string): string {
-		return value.replace(/\$|}|\\/g, '\\$&');
+	privAte stAtic _escApe(vAlue: string): string {
+		return vAlue.replAce(/\$|}|\\/g, '\\$&');
 	}
 
-	private _tabstop: number = 1;
+	privAte _tAbstop: number = 1;
 
-	value: string;
+	vAlue: string;
 
-	constructor(value?: string) {
-		this.value = value || '';
+	constructor(vAlue?: string) {
+		this.vAlue = vAlue || '';
 	}
 
-	appendText(string: string): SnippetString {
-		this.value += SnippetString._escape(string);
+	AppendText(string: string): SnippetString {
+		this.vAlue += SnippetString._escApe(string);
 		return this;
 	}
 
-	appendTabstop(number: number = this._tabstop++): SnippetString {
-		this.value += '$';
-		this.value += number;
+	AppendTAbstop(number: number = this._tAbstop++): SnippetString {
+		this.vAlue += '$';
+		this.vAlue += number;
 		return this;
 	}
 
-	appendPlaceholder(value: string | ((snippet: SnippetString) => any), number: number = this._tabstop++): SnippetString {
+	AppendPlAceholder(vAlue: string | ((snippet: SnippetString) => Any), number: number = this._tAbstop++): SnippetString {
 
-		if (typeof value === 'function') {
+		if (typeof vAlue === 'function') {
 			const nested = new SnippetString();
-			nested._tabstop = this._tabstop;
-			value(nested);
-			this._tabstop = nested._tabstop;
-			value = nested.value;
+			nested._tAbstop = this._tAbstop;
+			vAlue(nested);
+			this._tAbstop = nested._tAbstop;
+			vAlue = nested.vAlue;
 		} else {
-			value = SnippetString._escape(value);
+			vAlue = SnippetString._escApe(vAlue);
 		}
 
-		this.value += '${';
-		this.value += number;
-		this.value += ':';
-		this.value += value;
-		this.value += '}';
+		this.vAlue += '${';
+		this.vAlue += number;
+		this.vAlue += ':';
+		this.vAlue += vAlue;
+		this.vAlue += '}';
 
 		return this;
 	}
 
-	appendChoice(values: string[], number: number = this._tabstop++): SnippetString {
-		const value = values.map(s => s.replace(/\$|}|\\|,/g, '\\$&')).join(',');
+	AppendChoice(vAlues: string[], number: number = this._tAbstop++): SnippetString {
+		const vAlue = vAlues.mAp(s => s.replAce(/\$|}|\\|,/g, '\\$&')).join(',');
 
-		this.value += '${';
-		this.value += number;
-		this.value += '|';
-		this.value += value;
-		this.value += '|}';
+		this.vAlue += '${';
+		this.vAlue += number;
+		this.vAlue += '|';
+		this.vAlue += vAlue;
+		this.vAlue += '|}';
 
 		return this;
 	}
 
-	appendVariable(name: string, defaultValue?: string | ((snippet: SnippetString) => any)): SnippetString {
+	AppendVAriAble(nAme: string, defAultVAlue?: string | ((snippet: SnippetString) => Any)): SnippetString {
 
-		if (typeof defaultValue === 'function') {
+		if (typeof defAultVAlue === 'function') {
 			const nested = new SnippetString();
-			nested._tabstop = this._tabstop;
-			defaultValue(nested);
-			this._tabstop = nested._tabstop;
-			defaultValue = nested.value;
+			nested._tAbstop = this._tAbstop;
+			defAultVAlue(nested);
+			this._tAbstop = nested._tAbstop;
+			defAultVAlue = nested.vAlue;
 
-		} else if (typeof defaultValue === 'string') {
-			defaultValue = defaultValue.replace(/\$|}/g, '\\$&');
+		} else if (typeof defAultVAlue === 'string') {
+			defAultVAlue = defAultVAlue.replAce(/\$|}/g, '\\$&');
 		}
 
-		this.value += '${';
-		this.value += name;
-		if (defaultValue) {
-			this.value += ':';
-			this.value += defaultValue;
+		this.vAlue += '${';
+		this.vAlue += nAme;
+		if (defAultVAlue) {
+			this.vAlue += ':';
+			this.vAlue += defAultVAlue;
 		}
-		this.value += '}';
+		this.vAlue += '}';
 
 
 		return this;
 	}
 }
 
-export enum DiagnosticTag {
-	Unnecessary = 1,
-	Deprecated = 2
+export enum DiAgnosticTAg {
+	UnnecessAry = 1,
+	DeprecAted = 2
 }
 
-export enum DiagnosticSeverity {
+export enum DiAgnosticSeverity {
 	Hint = 3,
-	Information = 2,
-	Warning = 1,
+	InformAtion = 2,
+	WArning = 1,
 	Error = 0
 }
 
-@es5ClassCompat
-export class Location {
+@es5ClAssCompAt
+export clAss LocAtion {
 
-	static isLocation(thing: any): thing is Location {
-		if (thing instanceof Location) {
+	stAtic isLocAtion(thing: Any): thing is LocAtion {
+		if (thing instAnceof LocAtion) {
 			return true;
 		}
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return Range.isRange((<Location>thing).range)
-			&& URI.isUri((<Location>thing).uri);
+		return RAnge.isRAnge((<LocAtion>thing).rAnge)
+			&& URI.isUri((<LocAtion>thing).uri);
 	}
 
 	uri: URI;
-	range!: Range;
+	rAnge!: RAnge;
 
-	constructor(uri: URI, rangeOrPosition: Range | Position) {
+	constructor(uri: URI, rAngeOrPosition: RAnge | Position) {
 		this.uri = uri;
 
-		if (!rangeOrPosition) {
-			//that's OK
-		} else if (rangeOrPosition instanceof Range) {
-			this.range = rangeOrPosition;
-		} else if (rangeOrPosition instanceof Position) {
-			this.range = new Range(rangeOrPosition, rangeOrPosition);
+		if (!rAngeOrPosition) {
+			//thAt's OK
+		} else if (rAngeOrPosition instAnceof RAnge) {
+			this.rAnge = rAngeOrPosition;
+		} else if (rAngeOrPosition instAnceof Position) {
+			this.rAnge = new RAnge(rAngeOrPosition, rAngeOrPosition);
 		} else {
-			throw new Error('Illegal argument');
+			throw new Error('IllegAl Argument');
 		}
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
 			uri: this.uri,
-			range: this.range
+			rAnge: this.rAnge
 		};
 	}
 }
 
-@es5ClassCompat
-export class DiagnosticRelatedInformation {
+@es5ClAssCompAt
+export clAss DiAgnosticRelAtedInformAtion {
 
-	static is(thing: any): thing is DiagnosticRelatedInformation {
+	stAtic is(thing: Any): thing is DiAgnosticRelAtedInformAtion {
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return typeof (<DiagnosticRelatedInformation>thing).message === 'string'
-			&& (<DiagnosticRelatedInformation>thing).location
-			&& Range.isRange((<DiagnosticRelatedInformation>thing).location.range)
-			&& URI.isUri((<DiagnosticRelatedInformation>thing).location.uri);
+		return typeof (<DiAgnosticRelAtedInformAtion>thing).messAge === 'string'
+			&& (<DiAgnosticRelAtedInformAtion>thing).locAtion
+			&& RAnge.isRAnge((<DiAgnosticRelAtedInformAtion>thing).locAtion.rAnge)
+			&& URI.isUri((<DiAgnosticRelAtedInformAtion>thing).locAtion.uri);
 	}
 
-	location: Location;
-	message: string;
+	locAtion: LocAtion;
+	messAge: string;
 
-	constructor(location: Location, message: string) {
-		this.location = location;
-		this.message = message;
+	constructor(locAtion: LocAtion, messAge: string) {
+		this.locAtion = locAtion;
+		this.messAge = messAge;
 	}
 
-	static isEqual(a: DiagnosticRelatedInformation, b: DiagnosticRelatedInformation): boolean {
-		if (a === b) {
+	stAtic isEquAl(A: DiAgnosticRelAtedInformAtion, b: DiAgnosticRelAtedInformAtion): booleAn {
+		if (A === b) {
 			return true;
 		}
-		if (!a || !b) {
-			return false;
+		if (!A || !b) {
+			return fAlse;
 		}
-		return a.message === b.message
-			&& a.location.range.isEqual(b.location.range)
-			&& a.location.uri.toString() === b.location.uri.toString();
+		return A.messAge === b.messAge
+			&& A.locAtion.rAnge.isEquAl(b.locAtion.rAnge)
+			&& A.locAtion.uri.toString() === b.locAtion.uri.toString();
 	}
 }
 
-@es5ClassCompat
-export class Diagnostic {
+@es5ClAssCompAt
+export clAss DiAgnostic {
 
-	range: Range;
-	message: string;
-	severity: DiagnosticSeverity;
+	rAnge: RAnge;
+	messAge: string;
+	severity: DiAgnosticSeverity;
 	source?: string;
 	code?: string | number;
-	relatedInformation?: DiagnosticRelatedInformation[];
-	tags?: DiagnosticTag[];
+	relAtedInformAtion?: DiAgnosticRelAtedInformAtion[];
+	tAgs?: DiAgnosticTAg[];
 
-	constructor(range: Range, message: string, severity: DiagnosticSeverity = DiagnosticSeverity.Error) {
-		if (!Range.isRange(range)) {
-			throw new TypeError('range must be set');
+	constructor(rAnge: RAnge, messAge: string, severity: DiAgnosticSeverity = DiAgnosticSeverity.Error) {
+		if (!RAnge.isRAnge(rAnge)) {
+			throw new TypeError('rAnge must be set');
 		}
-		if (!message) {
-			throw new TypeError('message must be set');
+		if (!messAge) {
+			throw new TypeError('messAge must be set');
 		}
-		this.range = range;
-		this.message = message;
+		this.rAnge = rAnge;
+		this.messAge = messAge;
 		this.severity = severity;
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
-			severity: DiagnosticSeverity[this.severity],
-			message: this.message,
-			range: this.range,
+			severity: DiAgnosticSeverity[this.severity],
+			messAge: this.messAge,
+			rAnge: this.rAnge,
 			source: this.source,
 			code: this.code,
 		};
 	}
 
-	static isEqual(a: Diagnostic | undefined, b: Diagnostic | undefined): boolean {
-		if (a === b) {
+	stAtic isEquAl(A: DiAgnostic | undefined, b: DiAgnostic | undefined): booleAn {
+		if (A === b) {
 			return true;
 		}
-		if (!a || !b) {
-			return false;
+		if (!A || !b) {
+			return fAlse;
 		}
-		return a.message === b.message
-			&& a.severity === b.severity
-			&& a.code === b.code
-			&& a.severity === b.severity
-			&& a.source === b.source
-			&& a.range.isEqual(b.range)
-			&& equals(a.tags, b.tags)
-			&& equals(a.relatedInformation, b.relatedInformation, DiagnosticRelatedInformation.isEqual);
+		return A.messAge === b.messAge
+			&& A.severity === b.severity
+			&& A.code === b.code
+			&& A.severity === b.severity
+			&& A.source === b.source
+			&& A.rAnge.isEquAl(b.rAnge)
+			&& equAls(A.tAgs, b.tAgs)
+			&& equAls(A.relAtedInformAtion, b.relAtedInformAtion, DiAgnosticRelAtedInformAtion.isEquAl);
 	}
 }
 
-@es5ClassCompat
-export class Hover {
+@es5ClAssCompAt
+export clAss Hover {
 
-	public contents: vscode.MarkdownString[] | vscode.MarkedString[];
-	public range: Range | undefined;
+	public contents: vscode.MArkdownString[] | vscode.MArkedString[];
+	public rAnge: RAnge | undefined;
 
 	constructor(
-		contents: vscode.MarkdownString | vscode.MarkedString | vscode.MarkdownString[] | vscode.MarkedString[],
-		range?: Range
+		contents: vscode.MArkdownString | vscode.MArkedString | vscode.MArkdownString[] | vscode.MArkedString[],
+		rAnge?: RAnge
 	) {
 		if (!contents) {
-			throw new Error('Illegal argument, contents must be defined');
+			throw new Error('IllegAl Argument, contents must be defined');
 		}
-		if (Array.isArray(contents)) {
-			this.contents = <vscode.MarkdownString[] | vscode.MarkedString[]>contents;
-		} else if (isMarkdownString(contents)) {
+		if (ArrAy.isArrAy(contents)) {
+			this.contents = <vscode.MArkdownString[] | vscode.MArkedString[]>contents;
+		} else if (isMArkdownString(contents)) {
 			this.contents = [contents];
 		} else {
 			this.contents = [contents];
 		}
-		this.range = range;
+		this.rAnge = rAnge;
 	}
 }
 
 export enum DocumentHighlightKind {
 	Text = 0,
-	Read = 1,
+	ReAd = 1,
 	Write = 2
 }
 
-@es5ClassCompat
-export class DocumentHighlight {
+@es5ClAssCompAt
+export clAss DocumentHighlight {
 
-	range: Range;
+	rAnge: RAnge;
 	kind: DocumentHighlightKind;
 
-	constructor(range: Range, kind: DocumentHighlightKind = DocumentHighlightKind.Text) {
-		this.range = range;
+	constructor(rAnge: RAnge, kind: DocumentHighlightKind = DocumentHighlightKind.Text) {
+		this.rAnge = rAnge;
 		this.kind = kind;
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
-			range: this.range,
+			rAnge: this.rAnge,
 			kind: DocumentHighlightKind[this.kind]
 		};
 	}
@@ -1016,135 +1016,135 @@ export class DocumentHighlight {
 export enum SymbolKind {
 	File = 0,
 	Module = 1,
-	Namespace = 2,
-	Package = 3,
-	Class = 4,
+	NAmespAce = 2,
+	PAckAge = 3,
+	ClAss = 4,
 	Method = 5,
 	Property = 6,
 	Field = 7,
 	Constructor = 8,
 	Enum = 9,
-	Interface = 10,
+	InterfAce = 10,
 	Function = 11,
-	Variable = 12,
-	Constant = 13,
+	VAriAble = 12,
+	ConstAnt = 13,
 	String = 14,
 	Number = 15,
-	Boolean = 16,
-	Array = 17,
+	BooleAn = 16,
+	ArrAy = 17,
 	Object = 18,
 	Key = 19,
 	Null = 20,
 	EnumMember = 21,
 	Struct = 22,
 	Event = 23,
-	Operator = 24,
-	TypeParameter = 25
+	OperAtor = 24,
+	TypePArAmeter = 25
 }
 
-export enum SymbolTag {
-	Deprecated = 1,
+export enum SymbolTAg {
+	DeprecAted = 1,
 }
 
-@es5ClassCompat
-export class SymbolInformation {
+@es5ClAssCompAt
+export clAss SymbolInformAtion {
 
-	static validate(candidate: SymbolInformation): void {
-		if (!candidate.name) {
-			throw new Error('name must not be falsy');
+	stAtic vAlidAte(cAndidAte: SymbolInformAtion): void {
+		if (!cAndidAte.nAme) {
+			throw new Error('nAme must not be fAlsy');
 		}
 	}
 
-	name: string;
-	location!: Location;
+	nAme: string;
+	locAtion!: LocAtion;
 	kind: SymbolKind;
-	tags?: SymbolTag[];
-	containerName: string | undefined;
+	tAgs?: SymbolTAg[];
+	contAinerNAme: string | undefined;
 
-	constructor(name: string, kind: SymbolKind, containerName: string | undefined, location: Location);
-	constructor(name: string, kind: SymbolKind, range: Range, uri?: URI, containerName?: string);
-	constructor(name: string, kind: SymbolKind, rangeOrContainer: string | undefined | Range, locationOrUri?: Location | URI, containerName?: string) {
-		this.name = name;
+	constructor(nAme: string, kind: SymbolKind, contAinerNAme: string | undefined, locAtion: LocAtion);
+	constructor(nAme: string, kind: SymbolKind, rAnge: RAnge, uri?: URI, contAinerNAme?: string);
+	constructor(nAme: string, kind: SymbolKind, rAngeOrContAiner: string | undefined | RAnge, locAtionOrUri?: LocAtion | URI, contAinerNAme?: string) {
+		this.nAme = nAme;
 		this.kind = kind;
-		this.containerName = containerName;
+		this.contAinerNAme = contAinerNAme;
 
-		if (typeof rangeOrContainer === 'string') {
-			this.containerName = rangeOrContainer;
+		if (typeof rAngeOrContAiner === 'string') {
+			this.contAinerNAme = rAngeOrContAiner;
 		}
 
-		if (locationOrUri instanceof Location) {
-			this.location = locationOrUri;
-		} else if (rangeOrContainer instanceof Range) {
-			this.location = new Location(locationOrUri!, rangeOrContainer);
+		if (locAtionOrUri instAnceof LocAtion) {
+			this.locAtion = locAtionOrUri;
+		} else if (rAngeOrContAiner instAnceof RAnge) {
+			this.locAtion = new LocAtion(locAtionOrUri!, rAngeOrContAiner);
 		}
 
-		SymbolInformation.validate(this);
+		SymbolInformAtion.vAlidAte(this);
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
-			name: this.name,
+			nAme: this.nAme,
 			kind: SymbolKind[this.kind],
-			location: this.location,
-			containerName: this.containerName
+			locAtion: this.locAtion,
+			contAinerNAme: this.contAinerNAme
 		};
 	}
 }
 
-@es5ClassCompat
-export class DocumentSymbol {
+@es5ClAssCompAt
+export clAss DocumentSymbol {
 
-	static validate(candidate: DocumentSymbol): void {
-		if (!candidate.name) {
-			throw new Error('name must not be falsy');
+	stAtic vAlidAte(cAndidAte: DocumentSymbol): void {
+		if (!cAndidAte.nAme) {
+			throw new Error('nAme must not be fAlsy');
 		}
-		if (!candidate.range.contains(candidate.selectionRange)) {
-			throw new Error('selectionRange must be contained in fullRange');
+		if (!cAndidAte.rAnge.contAins(cAndidAte.selectionRAnge)) {
+			throw new Error('selectionRAnge must be contAined in fullRAnge');
 		}
-		if (candidate.children) {
-			candidate.children.forEach(DocumentSymbol.validate);
+		if (cAndidAte.children) {
+			cAndidAte.children.forEAch(DocumentSymbol.vAlidAte);
 		}
 	}
 
-	name: string;
-	detail: string;
+	nAme: string;
+	detAil: string;
 	kind: SymbolKind;
-	tags?: SymbolTag[];
-	range: Range;
-	selectionRange: Range;
+	tAgs?: SymbolTAg[];
+	rAnge: RAnge;
+	selectionRAnge: RAnge;
 	children: DocumentSymbol[];
 
-	constructor(name: string, detail: string, kind: SymbolKind, range: Range, selectionRange: Range) {
-		this.name = name;
-		this.detail = detail;
+	constructor(nAme: string, detAil: string, kind: SymbolKind, rAnge: RAnge, selectionRAnge: RAnge) {
+		this.nAme = nAme;
+		this.detAil = detAil;
 		this.kind = kind;
-		this.range = range;
-		this.selectionRange = selectionRange;
+		this.rAnge = rAnge;
+		this.selectionRAnge = selectionRAnge;
 		this.children = [];
 
-		DocumentSymbol.validate(this);
+		DocumentSymbol.vAlidAte(this);
 	}
 }
 
 
 export enum CodeActionTrigger {
-	Automatic = 1,
-	Manual = 2,
+	AutomAtic = 1,
+	MAnuAl = 2,
 }
 
-@es5ClassCompat
-export class CodeAction {
+@es5ClAssCompAt
+export clAss CodeAction {
 	title: string;
 
-	command?: vscode.Command;
+	commAnd?: vscode.CommAnd;
 
-	edit?: WorkspaceEdit;
+	edit?: WorkspAceEdit;
 
-	diagnostics?: Diagnostic[];
+	diAgnostics?: DiAgnostic[];
 
 	kind?: CodeActionKind;
 
-	isPreferred?: boolean;
+	isPreferred?: booleAn;
 
 	constructor(title: string, kind?: CodeActionKind) {
 		this.title = title;
@@ -1153,233 +1153,233 @@ export class CodeAction {
 }
 
 
-@es5ClassCompat
-export class CodeActionKind {
-	private static readonly sep = '.';
+@es5ClAssCompAt
+export clAss CodeActionKind {
+	privAte stAtic reAdonly sep = '.';
 
-	public static Empty: CodeActionKind;
-	public static QuickFix: CodeActionKind;
-	public static Refactor: CodeActionKind;
-	public static RefactorExtract: CodeActionKind;
-	public static RefactorInline: CodeActionKind;
-	public static RefactorRewrite: CodeActionKind;
-	public static Source: CodeActionKind;
-	public static SourceOrganizeImports: CodeActionKind;
-	public static SourceFixAll: CodeActionKind;
+	public stAtic Empty: CodeActionKind;
+	public stAtic QuickFix: CodeActionKind;
+	public stAtic RefActor: CodeActionKind;
+	public stAtic RefActorExtrAct: CodeActionKind;
+	public stAtic RefActorInline: CodeActionKind;
+	public stAtic RefActorRewrite: CodeActionKind;
+	public stAtic Source: CodeActionKind;
+	public stAtic SourceOrgAnizeImports: CodeActionKind;
+	public stAtic SourceFixAll: CodeActionKind;
 
 	constructor(
-		public readonly value: string
+		public reAdonly vAlue: string
 	) { }
 
-	public append(parts: string): CodeActionKind {
-		return new CodeActionKind(this.value ? this.value + CodeActionKind.sep + parts : parts);
+	public Append(pArts: string): CodeActionKind {
+		return new CodeActionKind(this.vAlue ? this.vAlue + CodeActionKind.sep + pArts : pArts);
 	}
 
-	public intersects(other: CodeActionKind): boolean {
-		return this.contains(other) || other.contains(this);
+	public intersects(other: CodeActionKind): booleAn {
+		return this.contAins(other) || other.contAins(this);
 	}
 
-	public contains(other: CodeActionKind): boolean {
-		return this.value === other.value || other.value.startsWith(this.value + CodeActionKind.sep);
+	public contAins(other: CodeActionKind): booleAn {
+		return this.vAlue === other.vAlue || other.vAlue.stArtsWith(this.vAlue + CodeActionKind.sep);
 	}
 }
 CodeActionKind.Empty = new CodeActionKind('');
-CodeActionKind.QuickFix = CodeActionKind.Empty.append('quickfix');
-CodeActionKind.Refactor = CodeActionKind.Empty.append('refactor');
-CodeActionKind.RefactorExtract = CodeActionKind.Refactor.append('extract');
-CodeActionKind.RefactorInline = CodeActionKind.Refactor.append('inline');
-CodeActionKind.RefactorRewrite = CodeActionKind.Refactor.append('rewrite');
-CodeActionKind.Source = CodeActionKind.Empty.append('source');
-CodeActionKind.SourceOrganizeImports = CodeActionKind.Source.append('organizeImports');
-CodeActionKind.SourceFixAll = CodeActionKind.Source.append('fixAll');
+CodeActionKind.QuickFix = CodeActionKind.Empty.Append('quickfix');
+CodeActionKind.RefActor = CodeActionKind.Empty.Append('refActor');
+CodeActionKind.RefActorExtrAct = CodeActionKind.RefActor.Append('extrAct');
+CodeActionKind.RefActorInline = CodeActionKind.RefActor.Append('inline');
+CodeActionKind.RefActorRewrite = CodeActionKind.RefActor.Append('rewrite');
+CodeActionKind.Source = CodeActionKind.Empty.Append('source');
+CodeActionKind.SourceOrgAnizeImports = CodeActionKind.Source.Append('orgAnizeImports');
+CodeActionKind.SourceFixAll = CodeActionKind.Source.Append('fixAll');
 
-@es5ClassCompat
-export class SelectionRange {
+@es5ClAssCompAt
+export clAss SelectionRAnge {
 
-	range: Range;
-	parent?: SelectionRange;
+	rAnge: RAnge;
+	pArent?: SelectionRAnge;
 
-	constructor(range: Range, parent?: SelectionRange) {
-		this.range = range;
-		this.parent = parent;
+	constructor(rAnge: RAnge, pArent?: SelectionRAnge) {
+		this.rAnge = rAnge;
+		this.pArent = pArent;
 
-		if (parent && !parent.range.contains(this.range)) {
-			throw new Error('Invalid argument: parent must contain this range');
+		if (pArent && !pArent.rAnge.contAins(this.rAnge)) {
+			throw new Error('InvAlid Argument: pArent must contAin this rAnge');
 		}
 	}
 }
 
-export class CallHierarchyItem {
+export clAss CAllHierArchyItem {
 
 	_sessionId?: string;
 	_itemId?: string;
 
 	kind: SymbolKind;
-	name: string;
-	detail?: string;
+	nAme: string;
+	detAil?: string;
 	uri: URI;
-	range: Range;
-	selectionRange: Range;
+	rAnge: RAnge;
+	selectionRAnge: RAnge;
 
-	constructor(kind: SymbolKind, name: string, detail: string, uri: URI, range: Range, selectionRange: Range) {
+	constructor(kind: SymbolKind, nAme: string, detAil: string, uri: URI, rAnge: RAnge, selectionRAnge: RAnge) {
 		this.kind = kind;
-		this.name = name;
-		this.detail = detail;
+		this.nAme = nAme;
+		this.detAil = detAil;
 		this.uri = uri;
-		this.range = range;
-		this.selectionRange = selectionRange;
+		this.rAnge = rAnge;
+		this.selectionRAnge = selectionRAnge;
 	}
 }
 
-export class CallHierarchyIncomingCall {
+export clAss CAllHierArchyIncomingCAll {
 
-	from: vscode.CallHierarchyItem;
-	fromRanges: vscode.Range[];
+	from: vscode.CAllHierArchyItem;
+	fromRAnges: vscode.RAnge[];
 
-	constructor(item: vscode.CallHierarchyItem, fromRanges: vscode.Range[]) {
-		this.fromRanges = fromRanges;
+	constructor(item: vscode.CAllHierArchyItem, fromRAnges: vscode.RAnge[]) {
+		this.fromRAnges = fromRAnges;
 		this.from = item;
 	}
 }
-export class CallHierarchyOutgoingCall {
+export clAss CAllHierArchyOutgoingCAll {
 
-	to: vscode.CallHierarchyItem;
-	fromRanges: vscode.Range[];
+	to: vscode.CAllHierArchyItem;
+	fromRAnges: vscode.RAnge[];
 
-	constructor(item: vscode.CallHierarchyItem, fromRanges: vscode.Range[]) {
-		this.fromRanges = fromRanges;
+	constructor(item: vscode.CAllHierArchyItem, fromRAnges: vscode.RAnge[]) {
+		this.fromRAnges = fromRAnges;
 		this.to = item;
 	}
 }
 
-@es5ClassCompat
-export class CodeLens {
+@es5ClAssCompAt
+export clAss CodeLens {
 
-	range: Range;
+	rAnge: RAnge;
 
-	command: vscode.Command | undefined;
+	commAnd: vscode.CommAnd | undefined;
 
-	constructor(range: Range, command?: vscode.Command) {
-		this.range = range;
-		this.command = command;
+	constructor(rAnge: RAnge, commAnd?: vscode.CommAnd) {
+		this.rAnge = rAnge;
+		this.commAnd = commAnd;
 	}
 
-	get isResolved(): boolean {
-		return !!this.command;
+	get isResolved(): booleAn {
+		return !!this.commAnd;
 	}
 }
 
 
-export class CodeInset {
+export clAss CodeInset {
 
-	range: Range;
+	rAnge: RAnge;
 	height?: number;
 
-	constructor(range: Range, height?: number) {
-		this.range = range;
+	constructor(rAnge: RAnge, height?: number) {
+		this.rAnge = rAnge;
 		this.height = height;
 	}
 }
 
 
-@es5ClassCompat
-export class MarkdownString {
+@es5ClAssCompAt
+export clAss MArkdownString {
 
-	value: string;
-	isTrusted?: boolean;
-	readonly supportThemeIcons?: boolean;
+	vAlue: string;
+	isTrusted?: booleAn;
+	reAdonly supportThemeIcons?: booleAn;
 
-	constructor(value?: string, supportThemeIcons: boolean = false) {
-		this.value = value ?? '';
+	constructor(vAlue?: string, supportThemeIcons: booleAn = fAlse) {
+		this.vAlue = vAlue ?? '';
 		this.supportThemeIcons = supportThemeIcons;
 	}
 
-	appendText(value: string): MarkdownString {
-		// escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
-		this.value += (this.supportThemeIcons ? escapeCodicons(value) : value)
-			.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
-			.replace(/\n/, '\n\n');
+	AppendText(vAlue: string): MArkdownString {
+		// escApe mArkdown syntAx tokens: http://dAringfirebAll.net/projects/mArkdown/syntAx#bAckslAsh
+		this.vAlue += (this.supportThemeIcons ? escApeCodicons(vAlue) : vAlue)
+			.replAce(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
+			.replAce(/\n/, '\n\n');
 
 		return this;
 	}
 
-	appendMarkdown(value: string): MarkdownString {
-		this.value += value;
+	AppendMArkdown(vAlue: string): MArkdownString {
+		this.vAlue += vAlue;
 
 		return this;
 	}
 
-	appendCodeblock(code: string, language: string = ''): MarkdownString {
-		this.value += '\n```';
-		this.value += language;
-		this.value += '\n';
-		this.value += code;
-		this.value += '\n```\n';
+	AppendCodeblock(code: string, lAnguAge: string = ''): MArkdownString {
+		this.vAlue += '\n```';
+		this.vAlue += lAnguAge;
+		this.vAlue += '\n';
+		this.vAlue += code;
+		this.vAlue += '\n```\n';
 		return this;
 	}
 
-	static isMarkdownString(thing: any): thing is vscode.MarkdownString {
-		if (thing instanceof MarkdownString) {
+	stAtic isMArkdownString(thing: Any): thing is vscode.MArkdownString {
+		if (thing instAnceof MArkdownString) {
 			return true;
 		}
-		return thing && thing.appendCodeblock && thing.appendMarkdown && thing.appendText && (thing.value !== undefined);
+		return thing && thing.AppendCodeblock && thing.AppendMArkdown && thing.AppendText && (thing.vAlue !== undefined);
 	}
 }
 
-@es5ClassCompat
-export class ParameterInformation {
+@es5ClAssCompAt
+export clAss PArAmeterInformAtion {
 
-	label: string | [number, number];
-	documentation?: string | MarkdownString;
+	lAbel: string | [number, number];
+	documentAtion?: string | MArkdownString;
 
-	constructor(label: string | [number, number], documentation?: string | MarkdownString) {
-		this.label = label;
-		this.documentation = documentation;
+	constructor(lAbel: string | [number, number], documentAtion?: string | MArkdownString) {
+		this.lAbel = lAbel;
+		this.documentAtion = documentAtion;
 	}
 }
 
-@es5ClassCompat
-export class SignatureInformation {
+@es5ClAssCompAt
+export clAss SignAtureInformAtion {
 
-	label: string;
-	documentation?: string | MarkdownString;
-	parameters: ParameterInformation[];
-	activeParameter?: number;
+	lAbel: string;
+	documentAtion?: string | MArkdownString;
+	pArAmeters: PArAmeterInformAtion[];
+	ActivePArAmeter?: number;
 
-	constructor(label: string, documentation?: string | MarkdownString) {
-		this.label = label;
-		this.documentation = documentation;
-		this.parameters = [];
+	constructor(lAbel: string, documentAtion?: string | MArkdownString) {
+		this.lAbel = lAbel;
+		this.documentAtion = documentAtion;
+		this.pArAmeters = [];
 	}
 }
 
-@es5ClassCompat
-export class SignatureHelp {
+@es5ClAssCompAt
+export clAss SignAtureHelp {
 
-	signatures: SignatureInformation[];
-	activeSignature: number = 0;
-	activeParameter: number = 0;
+	signAtures: SignAtureInformAtion[];
+	ActiveSignAture: number = 0;
+	ActivePArAmeter: number = 0;
 
 	constructor() {
-		this.signatures = [];
+		this.signAtures = [];
 	}
 }
 
-export enum SignatureHelpTriggerKind {
+export enum SignAtureHelpTriggerKind {
 	Invoke = 1,
-	TriggerCharacter = 2,
-	ContentChange = 3,
+	TriggerChArActer = 2,
+	ContentChAnge = 3,
 }
 
 export enum CompletionTriggerKind {
 	Invoke = 0,
-	TriggerCharacter = 1,
+	TriggerChArActer = 1,
 	TriggerForIncompleteCompletions = 2
 }
 
-export interface CompletionContext {
-	readonly triggerKind: CompletionTriggerKind;
-	readonly triggerCharacter?: string;
+export interfAce CompletionContext {
+	reAdonly triggerKind: CompletionTriggerKind;
+	reAdonly triggerChArActer?: string;
 }
 
 export enum CompletionItemKind {
@@ -1388,13 +1388,13 @@ export enum CompletionItemKind {
 	Function = 2,
 	Constructor = 3,
 	Field = 4,
-	Variable = 5,
-	Class = 6,
-	Interface = 7,
+	VAriAble = 5,
+	ClAss = 6,
+	InterfAce = 7,
 	Module = 8,
 	Property = 9,
 	Unit = 10,
-	Value = 11,
+	VAlue = 11,
 	Enum = 12,
 	Keyword = 13,
 	Snippet = 14,
@@ -1403,59 +1403,59 @@ export enum CompletionItemKind {
 	Reference = 17,
 	Folder = 18,
 	EnumMember = 19,
-	Constant = 20,
+	ConstAnt = 20,
 	Struct = 21,
 	Event = 22,
-	Operator = 23,
-	TypeParameter = 24,
+	OperAtor = 23,
+	TypePArAmeter = 24,
 	User = 25,
 	Issue = 26
 }
 
-export enum CompletionItemTag {
-	Deprecated = 1,
+export enum CompletionItemTAg {
+	DeprecAted = 1,
 }
 
-export interface CompletionItemLabel {
-	name: string;
-	parameters?: string;
-	qualifier?: string;
+export interfAce CompletionItemLAbel {
+	nAme: string;
+	pArAmeters?: string;
+	quAlifier?: string;
 	type?: string;
 }
 
 
-@es5ClassCompat
-export class CompletionItem implements vscode.CompletionItem {
+@es5ClAssCompAt
+export clAss CompletionItem implements vscode.CompletionItem {
 
-	label: string;
-	label2?: CompletionItemLabel;
+	lAbel: string;
+	lAbel2?: CompletionItemLAbel;
 	kind?: CompletionItemKind;
-	tags?: CompletionItemTag[];
-	detail?: string;
-	documentation?: string | MarkdownString;
+	tAgs?: CompletionItemTAg[];
+	detAil?: string;
+	documentAtion?: string | MArkdownString;
 	sortText?: string;
 	filterText?: string;
-	preselect?: boolean;
+	preselect?: booleAn;
 	insertText?: string | SnippetString;
-	keepWhitespace?: boolean;
-	range?: Range | { inserting: Range; replacing: Range; };
-	commitCharacters?: string[];
+	keepWhitespAce?: booleAn;
+	rAnge?: RAnge | { inserting: RAnge; replAcing: RAnge; };
+	commitChArActers?: string[];
 	textEdit?: TextEdit;
-	additionalTextEdits?: TextEdit[];
-	command?: vscode.Command;
+	AdditionAlTextEdits?: TextEdit[];
+	commAnd?: vscode.CommAnd;
 
-	constructor(label: string, kind?: CompletionItemKind) {
-		this.label = label;
+	constructor(lAbel: string, kind?: CompletionItemKind) {
+		this.lAbel = lAbel;
 		this.kind = kind;
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
-			label: this.label,
-			label2: this.label2,
+			lAbel: this.lAbel,
+			lAbel2: this.lAbel2,
 			kind: this.kind && CompletionItemKind[this.kind],
-			detail: this.detail,
-			documentation: this.documentation,
+			detAil: this.detAil,
+			documentAtion: this.documentAtion,
 			sortText: this.sortText,
 			filterText: this.filterText,
 			preselect: this.preselect,
@@ -1465,13 +1465,13 @@ export class CompletionItem implements vscode.CompletionItem {
 	}
 }
 
-@es5ClassCompat
-export class CompletionList {
+@es5ClAssCompAt
+export clAss CompletionList {
 
-	isIncomplete?: boolean;
+	isIncomplete?: booleAn;
 	items: vscode.CompletionItem[];
 
-	constructor(items: vscode.CompletionItem[] = [], isIncomplete: boolean = false) {
+	constructor(items: vscode.CompletionItem[] = [], isIncomplete: booleAn = fAlse) {
 		this.items = items;
 		this.isIncomplete = isIncomplete;
 	}
@@ -1491,7 +1491,7 @@ export enum ViewColumn {
 	Nine = 9
 }
 
-export enum StatusBarAlignment {
+export enum StAtusBArAlignment {
 	Left = 1,
 	Right = 2
 }
@@ -1499,193 +1499,193 @@ export enum StatusBarAlignment {
 export enum TextEditorLineNumbersStyle {
 	Off = 0,
 	On = 1,
-	Relative = 2
+	RelAtive = 2
 }
 
-export enum TextDocumentSaveReason {
-	Manual = 1,
-	AfterDelay = 2,
+export enum TextDocumentSAveReAson {
+	MAnuAl = 1,
+	AfterDelAy = 2,
 	FocusOut = 3
 }
 
-export enum TextEditorRevealType {
-	Default = 0,
+export enum TextEditorReveAlType {
+	DefAult = 0,
 	InCenter = 1,
 	InCenterIfOutsideViewport = 2,
 	AtTop = 3
 }
 
-export enum TextEditorSelectionChangeKind {
-	Keyboard = 1,
+export enum TextEditorSelectionChAngeKind {
+	KeyboArd = 1,
 	Mouse = 2,
-	Command = 3
+	CommAnd = 3
 }
 
 /**
- * These values match very carefully the values of `TrackedRangeStickiness`
+ * These vAlues mAtch very cArefully the vAlues of `TrAckedRAngeStickiness`
  */
-export enum DecorationRangeBehavior {
+export enum DecorAtionRAngeBehAvior {
 	/**
-	 * TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges
+	 * TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges
 	 */
 	OpenOpen = 0,
 	/**
-	 * TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+	 * TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges
 	 */
 	ClosedClosed = 1,
 	/**
-	 * TrackedRangeStickiness.GrowsOnlyWhenTypingBefore
+	 * TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore
 	 */
 	OpenClosed = 2,
 	/**
-	 * TrackedRangeStickiness.GrowsOnlyWhenTypingAfter
+	 * TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter
 	 */
 	ClosedOpen = 3
 }
 
-export namespace TextEditorSelectionChangeKind {
-	export function fromValue(s: string | undefined) {
+export nAmespAce TextEditorSelectionChAngeKind {
+	export function fromVAlue(s: string | undefined) {
 		switch (s) {
-			case 'keyboard': return TextEditorSelectionChangeKind.Keyboard;
-			case 'mouse': return TextEditorSelectionChangeKind.Mouse;
-			case 'api': return TextEditorSelectionChangeKind.Command;
+			cAse 'keyboArd': return TextEditorSelectionChAngeKind.KeyboArd;
+			cAse 'mouse': return TextEditorSelectionChAngeKind.Mouse;
+			cAse 'Api': return TextEditorSelectionChAngeKind.CommAnd;
 		}
 		return undefined;
 	}
 }
 
-@es5ClassCompat
-export class DocumentLink {
+@es5ClAssCompAt
+export clAss DocumentLink {
 
-	range: Range;
+	rAnge: RAnge;
 
-	target?: URI;
+	tArget?: URI;
 
 	tooltip?: string;
 
-	constructor(range: Range, target: URI | undefined) {
-		if (target && !(URI.isUri(target))) {
-			throw illegalArgument('target');
+	constructor(rAnge: RAnge, tArget: URI | undefined) {
+		if (tArget && !(URI.isUri(tArget))) {
+			throw illegAlArgument('tArget');
 		}
-		if (!Range.isRange(range) || range.isEmpty) {
-			throw illegalArgument('range');
+		if (!RAnge.isRAnge(rAnge) || rAnge.isEmpty) {
+			throw illegAlArgument('rAnge');
 		}
-		this.range = range;
-		this.target = target;
+		this.rAnge = rAnge;
+		this.tArget = tArget;
 	}
 }
 
-@es5ClassCompat
-export class Color {
-	readonly red: number;
-	readonly green: number;
-	readonly blue: number;
-	readonly alpha: number;
+@es5ClAssCompAt
+export clAss Color {
+	reAdonly red: number;
+	reAdonly green: number;
+	reAdonly blue: number;
+	reAdonly AlphA: number;
 
-	constructor(red: number, green: number, blue: number, alpha: number) {
+	constructor(red: number, green: number, blue: number, AlphA: number) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
-		this.alpha = alpha;
+		this.AlphA = AlphA;
 	}
 }
 
-export type IColorFormat = string | { opaque: string, transparent: string; };
+export type IColorFormAt = string | { opAque: string, trAnspArent: string; };
 
-@es5ClassCompat
-export class ColorInformation {
-	range: Range;
+@es5ClAssCompAt
+export clAss ColorInformAtion {
+	rAnge: RAnge;
 
 	color: Color;
 
-	constructor(range: Range, color: Color) {
-		if (color && !(color instanceof Color)) {
-			throw illegalArgument('color');
+	constructor(rAnge: RAnge, color: Color) {
+		if (color && !(color instAnceof Color)) {
+			throw illegAlArgument('color');
 		}
-		if (!Range.isRange(range) || range.isEmpty) {
-			throw illegalArgument('range');
+		if (!RAnge.isRAnge(rAnge) || rAnge.isEmpty) {
+			throw illegAlArgument('rAnge');
 		}
-		this.range = range;
+		this.rAnge = rAnge;
 		this.color = color;
 	}
 }
 
-@es5ClassCompat
-export class ColorPresentation {
-	label: string;
+@es5ClAssCompAt
+export clAss ColorPresentAtion {
+	lAbel: string;
 	textEdit?: TextEdit;
-	additionalTextEdits?: TextEdit[];
+	AdditionAlTextEdits?: TextEdit[];
 
-	constructor(label: string) {
-		if (!label || typeof label !== 'string') {
-			throw illegalArgument('label');
+	constructor(lAbel: string) {
+		if (!lAbel || typeof lAbel !== 'string') {
+			throw illegAlArgument('lAbel');
 		}
-		this.label = label;
+		this.lAbel = lAbel;
 	}
 }
 
-export enum ColorFormat {
+export enum ColorFormAt {
 	RGB = 0,
 	HEX = 1,
 	HSL = 2
 }
 
-export enum SourceControlInputBoxValidationType {
+export enum SourceControlInputBoxVAlidAtionType {
 	Error = 0,
-	Warning = 1,
-	Information = 2
+	WArning = 1,
+	InformAtion = 2
 }
 
-export enum TaskRevealKind {
-	Always = 1,
+export enum TAskReveAlKind {
+	AlwAys = 1,
 
 	Silent = 2,
 
 	Never = 3
 }
 
-export enum TaskPanelKind {
-	Shared = 1,
+export enum TAskPAnelKind {
+	ShAred = 1,
 
-	Dedicated = 2,
+	DedicAted = 2,
 
 	New = 3
 }
 
-@es5ClassCompat
-export class TaskGroup implements vscode.TaskGroup {
+@es5ClAssCompAt
+export clAss TAskGroup implements vscode.TAskGroup {
 
-	private _id: string;
+	privAte _id: string;
 
-	public static Clean: TaskGroup = new TaskGroup('clean', 'Clean');
+	public stAtic CleAn: TAskGroup = new TAskGroup('cleAn', 'CleAn');
 
-	public static Build: TaskGroup = new TaskGroup('build', 'Build');
+	public stAtic Build: TAskGroup = new TAskGroup('build', 'Build');
 
-	public static Rebuild: TaskGroup = new TaskGroup('rebuild', 'Rebuild');
+	public stAtic Rebuild: TAskGroup = new TAskGroup('rebuild', 'Rebuild');
 
-	public static Test: TaskGroup = new TaskGroup('test', 'Test');
+	public stAtic Test: TAskGroup = new TAskGroup('test', 'Test');
 
-	public static from(value: string) {
-		switch (value) {
-			case 'clean':
-				return TaskGroup.Clean;
-			case 'build':
-				return TaskGroup.Build;
-			case 'rebuild':
-				return TaskGroup.Rebuild;
-			case 'test':
-				return TaskGroup.Test;
-			default:
+	public stAtic from(vAlue: string) {
+		switch (vAlue) {
+			cAse 'cleAn':
+				return TAskGroup.CleAn;
+			cAse 'build':
+				return TAskGroup.Build;
+			cAse 'rebuild':
+				return TAskGroup.Rebuild;
+			cAse 'test':
+				return TAskGroup.Test;
+			defAult:
 				return undefined;
 		}
 	}
 
-	constructor(id: string, _label: string) {
+	constructor(id: string, _lAbel: string) {
 		if (typeof id !== 'string') {
-			throw illegalArgument('name');
+			throw illegAlArgument('nAme');
 		}
-		if (typeof _label !== 'string') {
-			throw illegalArgument('name');
+		if (typeof _lAbel !== 'string') {
+			throw illegAlArgument('nAme');
 		}
 		this._id = id;
 	}
@@ -1695,35 +1695,35 @@ export class TaskGroup implements vscode.TaskGroup {
 	}
 }
 
-function computeTaskExecutionId(values: string[]): string {
+function computeTAskExecutionId(vAlues: string[]): string {
 	let id: string = '';
-	for (let i = 0; i < values.length; i++) {
-		id += values[i].replace(/,/g, ',,') + ',';
+	for (let i = 0; i < vAlues.length; i++) {
+		id += vAlues[i].replAce(/,/g, ',,') + ',';
 	}
 	return id;
 }
 
-@es5ClassCompat
-export class ProcessExecution implements vscode.ProcessExecution {
+@es5ClAssCompAt
+export clAss ProcessExecution implements vscode.ProcessExecution {
 
-	private _process: string;
-	private _args: string[];
-	private _options: vscode.ProcessExecutionOptions | undefined;
+	privAte _process: string;
+	privAte _Args: string[];
+	privAte _options: vscode.ProcessExecutionOptions | undefined;
 
 	constructor(process: string, options?: vscode.ProcessExecutionOptions);
-	constructor(process: string, args: string[], options?: vscode.ProcessExecutionOptions);
-	constructor(process: string, varg1?: string[] | vscode.ProcessExecutionOptions, varg2?: vscode.ProcessExecutionOptions) {
+	constructor(process: string, Args: string[], options?: vscode.ProcessExecutionOptions);
+	constructor(process: string, vArg1?: string[] | vscode.ProcessExecutionOptions, vArg2?: vscode.ProcessExecutionOptions) {
 		if (typeof process !== 'string') {
-			throw illegalArgument('process');
+			throw illegAlArgument('process');
 		}
-		this._args = [];
+		this._Args = [];
 		this._process = process;
-		if (varg1 !== undefined) {
-			if (Array.isArray(varg1)) {
-				this._args = varg1;
-				this._options = varg2;
+		if (vArg1 !== undefined) {
+			if (ArrAy.isArrAy(vArg1)) {
+				this._Args = vArg1;
+				this._options = vArg2;
 			} else {
-				this._options = varg1;
+				this._options = vArg1;
 			}
 		}
 	}
@@ -1733,30 +1733,30 @@ export class ProcessExecution implements vscode.ProcessExecution {
 		return this._process;
 	}
 
-	set process(value: string) {
-		if (typeof value !== 'string') {
-			throw illegalArgument('process');
+	set process(vAlue: string) {
+		if (typeof vAlue !== 'string') {
+			throw illegAlArgument('process');
 		}
-		this._process = value;
+		this._process = vAlue;
 	}
 
-	get args(): string[] {
-		return this._args;
+	get Args(): string[] {
+		return this._Args;
 	}
 
-	set args(value: string[]) {
-		if (!Array.isArray(value)) {
-			value = [];
+	set Args(vAlue: string[]) {
+		if (!ArrAy.isArrAy(vAlue)) {
+			vAlue = [];
 		}
-		this._args = value;
+		this._Args = vAlue;
 	}
 
 	get options(): vscode.ProcessExecutionOptions | undefined {
 		return this._options;
 	}
 
-	set options(value: vscode.ProcessExecutionOptions | undefined) {
-		this._options = value;
+	set options(vAlue: vscode.ProcessExecutionOptions | undefined) {
+		this._options = vAlue;
 	}
 
 	public computeId(): string {
@@ -1765,423 +1765,423 @@ export class ProcessExecution implements vscode.ProcessExecution {
 		if (this._process !== undefined) {
 			props.push(this._process);
 		}
-		if (this._args && this._args.length > 0) {
-			for (let arg of this._args) {
-				props.push(arg);
+		if (this._Args && this._Args.length > 0) {
+			for (let Arg of this._Args) {
+				props.push(Arg);
 			}
 		}
-		return computeTaskExecutionId(props);
+		return computeTAskExecutionId(props);
 	}
 }
 
-@es5ClassCompat
-export class ShellExecution implements vscode.ShellExecution {
+@es5ClAssCompAt
+export clAss ShellExecution implements vscode.ShellExecution {
 
-	private _commandLine: string | undefined;
-	private _command: string | vscode.ShellQuotedString | undefined;
-	private _args: (string | vscode.ShellQuotedString)[] = [];
-	private _options: vscode.ShellExecutionOptions | undefined;
+	privAte _commAndLine: string | undefined;
+	privAte _commAnd: string | vscode.ShellQuotedString | undefined;
+	privAte _Args: (string | vscode.ShellQuotedString)[] = [];
+	privAte _options: vscode.ShellExecutionOptions | undefined;
 
-	constructor(commandLine: string, options?: vscode.ShellExecutionOptions);
-	constructor(command: string | vscode.ShellQuotedString, args: (string | vscode.ShellQuotedString)[], options?: vscode.ShellExecutionOptions);
-	constructor(arg0: string | vscode.ShellQuotedString, arg1?: vscode.ShellExecutionOptions | (string | vscode.ShellQuotedString)[], arg2?: vscode.ShellExecutionOptions) {
-		if (Array.isArray(arg1)) {
-			if (!arg0) {
-				throw illegalArgument('command can\'t be undefined or null');
+	constructor(commAndLine: string, options?: vscode.ShellExecutionOptions);
+	constructor(commAnd: string | vscode.ShellQuotedString, Args: (string | vscode.ShellQuotedString)[], options?: vscode.ShellExecutionOptions);
+	constructor(Arg0: string | vscode.ShellQuotedString, Arg1?: vscode.ShellExecutionOptions | (string | vscode.ShellQuotedString)[], Arg2?: vscode.ShellExecutionOptions) {
+		if (ArrAy.isArrAy(Arg1)) {
+			if (!Arg0) {
+				throw illegAlArgument('commAnd cAn\'t be undefined or null');
 			}
-			if (typeof arg0 !== 'string' && typeof arg0.value !== 'string') {
-				throw illegalArgument('command');
+			if (typeof Arg0 !== 'string' && typeof Arg0.vAlue !== 'string') {
+				throw illegAlArgument('commAnd');
 			}
-			this._command = arg0;
-			this._args = arg1 as (string | vscode.ShellQuotedString)[];
-			this._options = arg2;
+			this._commAnd = Arg0;
+			this._Args = Arg1 As (string | vscode.ShellQuotedString)[];
+			this._options = Arg2;
 		} else {
-			if (typeof arg0 !== 'string') {
-				throw illegalArgument('commandLine');
+			if (typeof Arg0 !== 'string') {
+				throw illegAlArgument('commAndLine');
 			}
-			this._commandLine = arg0;
-			this._options = arg1;
+			this._commAndLine = Arg0;
+			this._options = Arg1;
 		}
 	}
 
-	get commandLine(): string | undefined {
-		return this._commandLine;
+	get commAndLine(): string | undefined {
+		return this._commAndLine;
 	}
 
-	set commandLine(value: string | undefined) {
-		if (typeof value !== 'string') {
-			throw illegalArgument('commandLine');
+	set commAndLine(vAlue: string | undefined) {
+		if (typeof vAlue !== 'string') {
+			throw illegAlArgument('commAndLine');
 		}
-		this._commandLine = value;
+		this._commAndLine = vAlue;
 	}
 
-	get command(): string | vscode.ShellQuotedString {
-		return this._command ? this._command : '';
+	get commAnd(): string | vscode.ShellQuotedString {
+		return this._commAnd ? this._commAnd : '';
 	}
 
-	set command(value: string | vscode.ShellQuotedString) {
-		if (typeof value !== 'string' && typeof value.value !== 'string') {
-			throw illegalArgument('command');
+	set commAnd(vAlue: string | vscode.ShellQuotedString) {
+		if (typeof vAlue !== 'string' && typeof vAlue.vAlue !== 'string') {
+			throw illegAlArgument('commAnd');
 		}
-		this._command = value;
+		this._commAnd = vAlue;
 	}
 
-	get args(): (string | vscode.ShellQuotedString)[] {
-		return this._args;
+	get Args(): (string | vscode.ShellQuotedString)[] {
+		return this._Args;
 	}
 
-	set args(value: (string | vscode.ShellQuotedString)[]) {
-		this._args = value || [];
+	set Args(vAlue: (string | vscode.ShellQuotedString)[]) {
+		this._Args = vAlue || [];
 	}
 
 	get options(): vscode.ShellExecutionOptions | undefined {
 		return this._options;
 	}
 
-	set options(value: vscode.ShellExecutionOptions | undefined) {
-		this._options = value;
+	set options(vAlue: vscode.ShellExecutionOptions | undefined) {
+		this._options = vAlue;
 	}
 
 	public computeId(): string {
 		const props: string[] = [];
 		props.push('shell');
-		if (this._commandLine !== undefined) {
-			props.push(this._commandLine);
+		if (this._commAndLine !== undefined) {
+			props.push(this._commAndLine);
 		}
-		if (this._command !== undefined) {
-			props.push(typeof this._command === 'string' ? this._command : this._command.value);
+		if (this._commAnd !== undefined) {
+			props.push(typeof this._commAnd === 'string' ? this._commAnd : this._commAnd.vAlue);
 		}
-		if (this._args && this._args.length > 0) {
-			for (let arg of this._args) {
-				props.push(typeof arg === 'string' ? arg : arg.value);
+		if (this._Args && this._Args.length > 0) {
+			for (let Arg of this._Args) {
+				props.push(typeof Arg === 'string' ? Arg : Arg.vAlue);
 			}
 		}
-		return computeTaskExecutionId(props);
+		return computeTAskExecutionId(props);
 	}
 }
 
 export enum ShellQuoting {
-	Escape = 1,
+	EscApe = 1,
 	Strong = 2,
-	Weak = 3
+	WeAk = 3
 }
 
-export enum TaskScope {
-	Global = 1,
-	Workspace = 2
+export enum TAskScope {
+	GlobAl = 1,
+	WorkspAce = 2
 }
 
-export class CustomExecution implements vscode.CustomExecution {
-	private _callback: (resolvedDefintion: vscode.TaskDefinition) => Thenable<vscode.Pseudoterminal>;
-	constructor(callback: (resolvedDefintion: vscode.TaskDefinition) => Thenable<vscode.Pseudoterminal>) {
-		this._callback = callback;
+export clAss CustomExecution implements vscode.CustomExecution {
+	privAte _cAllbAck: (resolvedDefintion: vscode.TAskDefinition) => ThenAble<vscode.PseudoterminAl>;
+	constructor(cAllbAck: (resolvedDefintion: vscode.TAskDefinition) => ThenAble<vscode.PseudoterminAl>) {
+		this._cAllbAck = cAllbAck;
 	}
 	public computeId(): string {
-		return 'customExecution' + generateUuid();
+		return 'customExecution' + generAteUuid();
 	}
 
-	public set callback(value: (resolvedDefintion: vscode.TaskDefinition) => Thenable<vscode.Pseudoterminal>) {
-		this._callback = value;
+	public set cAllbAck(vAlue: (resolvedDefintion: vscode.TAskDefinition) => ThenAble<vscode.PseudoterminAl>) {
+		this._cAllbAck = vAlue;
 	}
 
-	public get callback(): ((resolvedDefintion: vscode.TaskDefinition) => Thenable<vscode.Pseudoterminal>) {
-		return this._callback;
+	public get cAllbAck(): ((resolvedDefintion: vscode.TAskDefinition) => ThenAble<vscode.PseudoterminAl>) {
+		return this._cAllbAck;
 	}
 }
 
-@es5ClassCompat
-export class Task implements vscode.Task {
+@es5ClAssCompAt
+export clAss TAsk implements vscode.TAsk {
 
-	private static ExtensionCallbackType: string = 'customExecution';
-	private static ProcessType: string = 'process';
-	private static ShellType: string = 'shell';
-	private static EmptyType: string = '$empty';
+	privAte stAtic ExtensionCAllbAckType: string = 'customExecution';
+	privAte stAtic ProcessType: string = 'process';
+	privAte stAtic ShellType: string = 'shell';
+	privAte stAtic EmptyType: string = '$empty';
 
-	private __id: string | undefined;
-	private __deprecated: boolean = false;
+	privAte __id: string | undefined;
+	privAte __deprecAted: booleAn = fAlse;
 
-	private _definition: vscode.TaskDefinition;
-	private _scope: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder | undefined;
-	private _name: string;
-	private _execution: ProcessExecution | ShellExecution | CustomExecution | undefined;
-	private _problemMatchers: string[];
-	private _hasDefinedMatchers: boolean;
-	private _isBackground: boolean;
-	private _source: string;
-	private _group: TaskGroup | undefined;
-	private _presentationOptions: vscode.TaskPresentationOptions;
-	private _runOptions: vscode.RunOptions;
-	private _detail: string | undefined;
+	privAte _definition: vscode.TAskDefinition;
+	privAte _scope: vscode.TAskScope.GlobAl | vscode.TAskScope.WorkspAce | vscode.WorkspAceFolder | undefined;
+	privAte _nAme: string;
+	privAte _execution: ProcessExecution | ShellExecution | CustomExecution | undefined;
+	privAte _problemMAtchers: string[];
+	privAte _hAsDefinedMAtchers: booleAn;
+	privAte _isBAckground: booleAn;
+	privAte _source: string;
+	privAte _group: TAskGroup | undefined;
+	privAte _presentAtionOptions: vscode.TAskPresentAtionOptions;
+	privAte _runOptions: vscode.RunOptions;
+	privAte _detAil: string | undefined;
 
-	constructor(definition: vscode.TaskDefinition, name: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMatchers?: string | string[]);
-	constructor(definition: vscode.TaskDefinition, scope: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder, name: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMatchers?: string | string[]);
-	constructor(definition: vscode.TaskDefinition, arg2: string | (vscode.TaskScope.Global | vscode.TaskScope.Workspace) | vscode.WorkspaceFolder, arg3: any, arg4?: any, arg5?: any, arg6?: any) {
+	constructor(definition: vscode.TAskDefinition, nAme: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMAtchers?: string | string[]);
+	constructor(definition: vscode.TAskDefinition, scope: vscode.TAskScope.GlobAl | vscode.TAskScope.WorkspAce | vscode.WorkspAceFolder, nAme: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMAtchers?: string | string[]);
+	constructor(definition: vscode.TAskDefinition, Arg2: string | (vscode.TAskScope.GlobAl | vscode.TAskScope.WorkspAce) | vscode.WorkspAceFolder, Arg3: Any, Arg4?: Any, Arg5?: Any, Arg6?: Any) {
 		this._definition = this.definition = definition;
-		let problemMatchers: string | string[];
-		if (typeof arg2 === 'string') {
-			this._name = this.name = arg2;
-			this._source = this.source = arg3;
-			this.execution = arg4;
-			problemMatchers = arg5;
-			this.__deprecated = true;
-		} else if (arg2 === TaskScope.Global || arg2 === TaskScope.Workspace) {
-			this.target = arg2;
-			this._name = this.name = arg3;
-			this._source = this.source = arg4;
-			this.execution = arg5;
-			problemMatchers = arg6;
+		let problemMAtchers: string | string[];
+		if (typeof Arg2 === 'string') {
+			this._nAme = this.nAme = Arg2;
+			this._source = this.source = Arg3;
+			this.execution = Arg4;
+			problemMAtchers = Arg5;
+			this.__deprecAted = true;
+		} else if (Arg2 === TAskScope.GlobAl || Arg2 === TAskScope.WorkspAce) {
+			this.tArget = Arg2;
+			this._nAme = this.nAme = Arg3;
+			this._source = this.source = Arg4;
+			this.execution = Arg5;
+			problemMAtchers = Arg6;
 		} else {
-			this.target = arg2;
-			this._name = this.name = arg3;
-			this._source = this.source = arg4;
-			this.execution = arg5;
-			problemMatchers = arg6;
+			this.tArget = Arg2;
+			this._nAme = this.nAme = Arg3;
+			this._source = this.source = Arg4;
+			this.execution = Arg5;
+			problemMAtchers = Arg6;
 		}
-		if (typeof problemMatchers === 'string') {
-			this._problemMatchers = [problemMatchers];
-			this._hasDefinedMatchers = true;
-		} else if (Array.isArray(problemMatchers)) {
-			this._problemMatchers = problemMatchers;
-			this._hasDefinedMatchers = true;
+		if (typeof problemMAtchers === 'string') {
+			this._problemMAtchers = [problemMAtchers];
+			this._hAsDefinedMAtchers = true;
+		} else if (ArrAy.isArrAy(problemMAtchers)) {
+			this._problemMAtchers = problemMAtchers;
+			this._hAsDefinedMAtchers = true;
 		} else {
-			this._problemMatchers = [];
-			this._hasDefinedMatchers = false;
+			this._problemMAtchers = [];
+			this._hAsDefinedMAtchers = fAlse;
 		}
-		this._isBackground = false;
-		this._presentationOptions = Object.create(null);
-		this._runOptions = Object.create(null);
+		this._isBAckground = fAlse;
+		this._presentAtionOptions = Object.creAte(null);
+		this._runOptions = Object.creAte(null);
 	}
 
 	get _id(): string | undefined {
 		return this.__id;
 	}
 
-	set _id(value: string | undefined) {
-		this.__id = value;
+	set _id(vAlue: string | undefined) {
+		this.__id = vAlue;
 	}
 
-	get _deprecated(): boolean {
-		return this.__deprecated;
+	get _deprecAted(): booleAn {
+		return this.__deprecAted;
 	}
 
-	private clear(): void {
+	privAte cleAr(): void {
 		if (this.__id === undefined) {
 			return;
 		}
 		this.__id = undefined;
 		this._scope = undefined;
-		this.computeDefinitionBasedOnExecution();
+		this.computeDefinitionBAsedOnExecution();
 	}
 
-	private computeDefinitionBasedOnExecution(): void {
-		if (this._execution instanceof ProcessExecution) {
+	privAte computeDefinitionBAsedOnExecution(): void {
+		if (this._execution instAnceof ProcessExecution) {
 			this._definition = {
-				type: Task.ProcessType,
+				type: TAsk.ProcessType,
 				id: this._execution.computeId()
 			};
-		} else if (this._execution instanceof ShellExecution) {
+		} else if (this._execution instAnceof ShellExecution) {
 			this._definition = {
-				type: Task.ShellType,
+				type: TAsk.ShellType,
 				id: this._execution.computeId()
 			};
-		} else if (this._execution instanceof CustomExecution) {
+		} else if (this._execution instAnceof CustomExecution) {
 			this._definition = {
-				type: Task.ExtensionCallbackType,
+				type: TAsk.ExtensionCAllbAckType,
 				id: this._execution.computeId()
 			};
 		} else {
 			this._definition = {
-				type: Task.EmptyType,
-				id: generateUuid()
+				type: TAsk.EmptyType,
+				id: generAteUuid()
 			};
 		}
 	}
 
-	get definition(): vscode.TaskDefinition {
+	get definition(): vscode.TAskDefinition {
 		return this._definition;
 	}
 
-	set definition(value: vscode.TaskDefinition) {
-		if (value === undefined || value === null) {
-			throw illegalArgument('Kind can\'t be undefined or null');
+	set definition(vAlue: vscode.TAskDefinition) {
+		if (vAlue === undefined || vAlue === null) {
+			throw illegAlArgument('Kind cAn\'t be undefined or null');
 		}
-		this.clear();
-		this._definition = value;
+		this.cleAr();
+		this._definition = vAlue;
 	}
 
-	get scope(): vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder | undefined {
+	get scope(): vscode.TAskScope.GlobAl | vscode.TAskScope.WorkspAce | vscode.WorkspAceFolder | undefined {
 		return this._scope;
 	}
 
-	set target(value: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder) {
-		this.clear();
-		this._scope = value;
+	set tArget(vAlue: vscode.TAskScope.GlobAl | vscode.TAskScope.WorkspAce | vscode.WorkspAceFolder) {
+		this.cleAr();
+		this._scope = vAlue;
 	}
 
-	get name(): string {
-		return this._name;
+	get nAme(): string {
+		return this._nAme;
 	}
 
-	set name(value: string) {
-		if (typeof value !== 'string') {
-			throw illegalArgument('name');
+	set nAme(vAlue: string) {
+		if (typeof vAlue !== 'string') {
+			throw illegAlArgument('nAme');
 		}
-		this.clear();
-		this._name = value;
+		this.cleAr();
+		this._nAme = vAlue;
 	}
 
 	get execution(): ProcessExecution | ShellExecution | CustomExecution | undefined {
 		return this._execution;
 	}
 
-	set execution(value: ProcessExecution | ShellExecution | CustomExecution | undefined) {
-		if (value === null) {
-			value = undefined;
+	set execution(vAlue: ProcessExecution | ShellExecution | CustomExecution | undefined) {
+		if (vAlue === null) {
+			vAlue = undefined;
 		}
-		this.clear();
-		this._execution = value;
+		this.cleAr();
+		this._execution = vAlue;
 		const type = this._definition.type;
-		if (Task.EmptyType === type || Task.ProcessType === type || Task.ShellType === type || Task.ExtensionCallbackType === type) {
-			this.computeDefinitionBasedOnExecution();
+		if (TAsk.EmptyType === type || TAsk.ProcessType === type || TAsk.ShellType === type || TAsk.ExtensionCAllbAckType === type) {
+			this.computeDefinitionBAsedOnExecution();
 		}
 	}
 
-	get problemMatchers(): string[] {
-		return this._problemMatchers;
+	get problemMAtchers(): string[] {
+		return this._problemMAtchers;
 	}
 
-	set problemMatchers(value: string[]) {
-		if (!Array.isArray(value)) {
-			this.clear();
-			this._problemMatchers = [];
-			this._hasDefinedMatchers = false;
+	set problemMAtchers(vAlue: string[]) {
+		if (!ArrAy.isArrAy(vAlue)) {
+			this.cleAr();
+			this._problemMAtchers = [];
+			this._hAsDefinedMAtchers = fAlse;
 			return;
 		} else {
-			this.clear();
-			this._problemMatchers = value;
-			this._hasDefinedMatchers = true;
+			this.cleAr();
+			this._problemMAtchers = vAlue;
+			this._hAsDefinedMAtchers = true;
 		}
 	}
 
-	get hasDefinedMatchers(): boolean {
-		return this._hasDefinedMatchers;
+	get hAsDefinedMAtchers(): booleAn {
+		return this._hAsDefinedMAtchers;
 	}
 
-	get isBackground(): boolean {
-		return this._isBackground;
+	get isBAckground(): booleAn {
+		return this._isBAckground;
 	}
 
-	set isBackground(value: boolean) {
-		if (value !== true && value !== false) {
-			value = false;
+	set isBAckground(vAlue: booleAn) {
+		if (vAlue !== true && vAlue !== fAlse) {
+			vAlue = fAlse;
 		}
-		this.clear();
-		this._isBackground = value;
+		this.cleAr();
+		this._isBAckground = vAlue;
 	}
 
 	get source(): string {
 		return this._source;
 	}
 
-	set source(value: string) {
-		if (typeof value !== 'string' || value.length === 0) {
-			throw illegalArgument('source must be a string of length > 0');
+	set source(vAlue: string) {
+		if (typeof vAlue !== 'string' || vAlue.length === 0) {
+			throw illegAlArgument('source must be A string of length > 0');
 		}
-		this.clear();
-		this._source = value;
+		this.cleAr();
+		this._source = vAlue;
 	}
 
-	get group(): TaskGroup | undefined {
+	get group(): TAskGroup | undefined {
 		return this._group;
 	}
 
-	set group(value: TaskGroup | undefined) {
-		if (value === null) {
-			value = undefined;
+	set group(vAlue: TAskGroup | undefined) {
+		if (vAlue === null) {
+			vAlue = undefined;
 		}
-		this.clear();
-		this._group = value;
+		this.cleAr();
+		this._group = vAlue;
 	}
 
-	get detail(): string | undefined {
-		return this._detail;
+	get detAil(): string | undefined {
+		return this._detAil;
 	}
 
-	set detail(value: string | undefined) {
-		if (value === null) {
-			value = undefined;
+	set detAil(vAlue: string | undefined) {
+		if (vAlue === null) {
+			vAlue = undefined;
 		}
-		this._detail = value;
+		this._detAil = vAlue;
 	}
 
-	get presentationOptions(): vscode.TaskPresentationOptions {
-		return this._presentationOptions;
+	get presentAtionOptions(): vscode.TAskPresentAtionOptions {
+		return this._presentAtionOptions;
 	}
 
-	set presentationOptions(value: vscode.TaskPresentationOptions) {
-		if (value === null || value === undefined) {
-			value = Object.create(null);
+	set presentAtionOptions(vAlue: vscode.TAskPresentAtionOptions) {
+		if (vAlue === null || vAlue === undefined) {
+			vAlue = Object.creAte(null);
 		}
-		this.clear();
-		this._presentationOptions = value;
+		this.cleAr();
+		this._presentAtionOptions = vAlue;
 	}
 
 	get runOptions(): vscode.RunOptions {
 		return this._runOptions;
 	}
 
-	set runOptions(value: vscode.RunOptions) {
-		if (value === null || value === undefined) {
-			value = Object.create(null);
+	set runOptions(vAlue: vscode.RunOptions) {
+		if (vAlue === null || vAlue === undefined) {
+			vAlue = Object.creAte(null);
 		}
-		this.clear();
-		this._runOptions = value;
+		this.cleAr();
+		this._runOptions = vAlue;
 	}
 }
 
 
-export enum ProgressLocation {
+export enum ProgressLocAtion {
 	SourceControl = 1,
 	Window = 10,
-	Notification = 15
+	NotificAtion = 15
 }
 
-@es5ClassCompat
-export class TreeItem {
+@es5ClAssCompAt
+export clAss TreeItem {
 
-	label?: string | vscode.TreeItemLabel;
+	lAbel?: string | vscode.TreeItemLAbel;
 	resourceUri?: URI;
-	iconPath?: string | URI | { light: string | URI; dark: string | URI; };
-	command?: vscode.Command;
-	contextValue?: string;
-	tooltip?: string | vscode.MarkdownString;
+	iconPAth?: string | URI | { light: string | URI; dArk: string | URI; };
+	commAnd?: vscode.CommAnd;
+	contextVAlue?: string;
+	tooltip?: string | vscode.MArkdownString;
 
-	constructor(label: string | vscode.TreeItemLabel, collapsibleState?: vscode.TreeItemCollapsibleState);
-	constructor(resourceUri: URI, collapsibleState?: vscode.TreeItemCollapsibleState);
-	constructor(arg1: string | vscode.TreeItemLabel | URI, public collapsibleState: vscode.TreeItemCollapsibleState = TreeItemCollapsibleState.None) {
-		if (URI.isUri(arg1)) {
-			this.resourceUri = arg1;
+	constructor(lAbel: string | vscode.TreeItemLAbel, collApsibleStAte?: vscode.TreeItemCollApsibleStAte);
+	constructor(resourceUri: URI, collApsibleStAte?: vscode.TreeItemCollApsibleStAte);
+	constructor(Arg1: string | vscode.TreeItemLAbel | URI, public collApsibleStAte: vscode.TreeItemCollApsibleStAte = TreeItemCollApsibleStAte.None) {
+		if (URI.isUri(Arg1)) {
+			this.resourceUri = Arg1;
 		} else {
-			this.label = arg1;
+			this.lAbel = Arg1;
 		}
 	}
 
 }
 
-export enum TreeItemCollapsibleState {
+export enum TreeItemCollApsibleStAte {
 	None = 0,
-	Collapsed = 1,
-	Expanded = 2
+	CollApsed = 1,
+	ExpAnded = 2
 }
 
-@es5ClassCompat
-export class ThemeIcon {
+@es5ClAssCompAt
+export clAss ThemeIcon {
 
-	static File: ThemeIcon;
-	static Folder: ThemeIcon;
+	stAtic File: ThemeIcon;
+	stAtic Folder: ThemeIcon;
 
-	readonly id: string;
-	readonly themeColor?: ThemeColor;
+	reAdonly id: string;
+	reAdonly themeColor?: ThemeColor;
 
 	constructor(id: string, color?: ThemeColor) {
 		this.id = id;
@@ -2192,143 +2192,143 @@ ThemeIcon.File = new ThemeIcon('file');
 ThemeIcon.Folder = new ThemeIcon('folder');
 
 
-@es5ClassCompat
-export class ThemeColor {
+@es5ClAssCompAt
+export clAss ThemeColor {
 	id: string;
 	constructor(id: string) {
 		this.id = id;
 	}
 }
 
-export enum ConfigurationTarget {
-	Global = 1,
+export enum ConfigurAtionTArget {
+	GlobAl = 1,
 
-	Workspace = 2,
+	WorkspAce = 2,
 
-	WorkspaceFolder = 3
+	WorkspAceFolder = 3
 }
 
-@es5ClassCompat
-export class RelativePattern implements IRelativePattern {
-	base: string;
-	baseFolder?: URI;
+@es5ClAssCompAt
+export clAss RelAtivePAttern implements IRelAtivePAttern {
+	bAse: string;
+	bAseFolder?: URI;
 
-	pattern: string;
+	pAttern: string;
 
-	constructor(base: vscode.WorkspaceFolder | string, pattern: string) {
-		if (typeof base !== 'string') {
-			if (!base || !URI.isUri(base.uri)) {
-				throw illegalArgument('base');
+	constructor(bAse: vscode.WorkspAceFolder | string, pAttern: string) {
+		if (typeof bAse !== 'string') {
+			if (!bAse || !URI.isUri(bAse.uri)) {
+				throw illegAlArgument('bAse');
 			}
 		}
 
-		if (typeof pattern !== 'string') {
-			throw illegalArgument('pattern');
+		if (typeof pAttern !== 'string') {
+			throw illegAlArgument('pAttern');
 		}
 
-		if (typeof base === 'string') {
-			this.base = base;
+		if (typeof bAse === 'string') {
+			this.bAse = bAse;
 		} else {
-			this.baseFolder = base.uri;
-			this.base = base.uri.fsPath;
+			this.bAseFolder = bAse.uri;
+			this.bAse = bAse.uri.fsPAth;
 		}
 
-		this.pattern = pattern;
+		this.pAttern = pAttern;
 	}
 }
 
-@es5ClassCompat
-export class Breakpoint {
+@es5ClAssCompAt
+export clAss BreAkpoint {
 
-	private _id: string | undefined;
+	privAte _id: string | undefined;
 
-	readonly enabled: boolean;
-	readonly condition?: string;
-	readonly hitCondition?: string;
-	readonly logMessage?: string;
+	reAdonly enAbled: booleAn;
+	reAdonly condition?: string;
+	reAdonly hitCondition?: string;
+	reAdonly logMessAge?: string;
 
-	protected constructor(enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string) {
-		this.enabled = typeof enabled === 'boolean' ? enabled : true;
+	protected constructor(enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string) {
+		this.enAbled = typeof enAbled === 'booleAn' ? enAbled : true;
 		if (typeof condition === 'string') {
 			this.condition = condition;
 		}
 		if (typeof hitCondition === 'string') {
 			this.hitCondition = hitCondition;
 		}
-		if (typeof logMessage === 'string') {
-			this.logMessage = logMessage;
+		if (typeof logMessAge === 'string') {
+			this.logMessAge = logMessAge;
 		}
 	}
 
 	get id(): string {
 		if (!this._id) {
-			this._id = generateUuid();
+			this._id = generAteUuid();
 		}
 		return this._id;
 	}
 }
 
-@es5ClassCompat
-export class SourceBreakpoint extends Breakpoint {
-	readonly location: Location;
+@es5ClAssCompAt
+export clAss SourceBreAkpoint extends BreAkpoint {
+	reAdonly locAtion: LocAtion;
 
-	constructor(location: Location, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string) {
-		super(enabled, condition, hitCondition, logMessage);
-		if (location === null) {
-			throw illegalArgument('location');
+	constructor(locAtion: LocAtion, enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string) {
+		super(enAbled, condition, hitCondition, logMessAge);
+		if (locAtion === null) {
+			throw illegAlArgument('locAtion');
 		}
-		this.location = location;
+		this.locAtion = locAtion;
 	}
 }
 
-@es5ClassCompat
-export class FunctionBreakpoint extends Breakpoint {
-	readonly functionName: string;
+@es5ClAssCompAt
+export clAss FunctionBreAkpoint extends BreAkpoint {
+	reAdonly functionNAme: string;
 
-	constructor(functionName: string, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string) {
-		super(enabled, condition, hitCondition, logMessage);
-		if (!functionName) {
-			throw illegalArgument('functionName');
+	constructor(functionNAme: string, enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string) {
+		super(enAbled, condition, hitCondition, logMessAge);
+		if (!functionNAme) {
+			throw illegAlArgument('functionNAme');
 		}
-		this.functionName = functionName;
+		this.functionNAme = functionNAme;
 	}
 }
 
-@es5ClassCompat
-export class DataBreakpoint extends Breakpoint {
-	readonly label: string;
-	readonly dataId: string;
-	readonly canPersist: boolean;
+@es5ClAssCompAt
+export clAss DAtABreAkpoint extends BreAkpoint {
+	reAdonly lAbel: string;
+	reAdonly dAtAId: string;
+	reAdonly cAnPersist: booleAn;
 
-	constructor(label: string, dataId: string, canPersist: boolean, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string) {
-		super(enabled, condition, hitCondition, logMessage);
-		if (!dataId) {
-			throw illegalArgument('dataId');
+	constructor(lAbel: string, dAtAId: string, cAnPersist: booleAn, enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string) {
+		super(enAbled, condition, hitCondition, logMessAge);
+		if (!dAtAId) {
+			throw illegAlArgument('dAtAId');
 		}
-		this.label = label;
-		this.dataId = dataId;
-		this.canPersist = canPersist;
+		this.lAbel = lAbel;
+		this.dAtAId = dAtAId;
+		this.cAnPersist = cAnPersist;
 	}
 }
 
 
-@es5ClassCompat
-export class DebugAdapterExecutable implements vscode.DebugAdapterExecutable {
-	readonly command: string;
-	readonly args: string[];
-	readonly options?: vscode.DebugAdapterExecutableOptions;
+@es5ClAssCompAt
+export clAss DebugAdApterExecutAble implements vscode.DebugAdApterExecutAble {
+	reAdonly commAnd: string;
+	reAdonly Args: string[];
+	reAdonly options?: vscode.DebugAdApterExecutAbleOptions;
 
-	constructor(command: string, args: string[], options?: vscode.DebugAdapterExecutableOptions) {
-		this.command = command;
-		this.args = args || [];
+	constructor(commAnd: string, Args: string[], options?: vscode.DebugAdApterExecutAbleOptions) {
+		this.commAnd = commAnd;
+		this.Args = Args || [];
 		this.options = options;
 	}
 }
 
-@es5ClassCompat
-export class DebugAdapterServer implements vscode.DebugAdapterServer {
-	readonly port: number;
-	readonly host?: string;
+@es5ClAssCompAt
+export clAss DebugAdApterServer implements vscode.DebugAdApterServer {
+	reAdonly port: number;
+	reAdonly host?: string;
 
 	constructor(port: number, host?: string) {
 		this.port = port;
@@ -2336,117 +2336,117 @@ export class DebugAdapterServer implements vscode.DebugAdapterServer {
 	}
 }
 
-@es5ClassCompat
-export class DebugAdapterNamedPipeServer implements vscode.DebugAdapterNamedPipeServer {
-	constructor(public readonly path: string) {
+@es5ClAssCompAt
+export clAss DebugAdApterNAmedPipeServer implements vscode.DebugAdApterNAmedPipeServer {
+	constructor(public reAdonly pAth: string) {
 	}
 }
 
-@es5ClassCompat
-export class DebugAdapterInlineImplementation implements vscode.DebugAdapterInlineImplementation {
-	readonly implementation: vscode.DebugAdapter;
+@es5ClAssCompAt
+export clAss DebugAdApterInlineImplementAtion implements vscode.DebugAdApterInlineImplementAtion {
+	reAdonly implementAtion: vscode.DebugAdApter;
 
-	constructor(impl: vscode.DebugAdapter) {
-		this.implementation = impl;
+	constructor(impl: vscode.DebugAdApter) {
+		this.implementAtion = impl;
 	}
 }
 
-@es5ClassCompat
-export class EvaluatableExpression implements vscode.EvaluatableExpression {
-	readonly range: vscode.Range;
-	readonly expression?: string;
+@es5ClAssCompAt
+export clAss EvAluAtAbleExpression implements vscode.EvAluAtAbleExpression {
+	reAdonly rAnge: vscode.RAnge;
+	reAdonly expression?: string;
 
-	constructor(range: vscode.Range, expression?: string) {
-		this.range = range;
+	constructor(rAnge: vscode.RAnge, expression?: string) {
+		this.rAnge = rAnge;
 		this.expression = expression;
 	}
 }
 
 export enum LogLevel {
-	Trace = 1,
+	TrAce = 1,
 	Debug = 2,
 	Info = 3,
-	Warning = 4,
+	WArning = 4,
 	Error = 5,
-	Critical = 6,
+	CriticAl = 6,
 	Off = 7
 }
 
-//#region file api
+//#region file Api
 
-export enum FileChangeType {
-	Changed = 1,
-	Created = 2,
+export enum FileChAngeType {
+	ChAnged = 1,
+	CreAted = 2,
 	Deleted = 3,
 }
 
-@es5ClassCompat
-export class FileSystemError extends Error {
+@es5ClAssCompAt
+export clAss FileSystemError extends Error {
 
-	static FileExists(messageOrUri?: string | URI): FileSystemError {
-		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileExists, FileSystemError.FileExists);
+	stAtic FileExists(messAgeOrUri?: string | URI): FileSystemError {
+		return new FileSystemError(messAgeOrUri, FileSystemProviderErrorCode.FileExists, FileSystemError.FileExists);
 	}
-	static FileNotFound(messageOrUri?: string | URI): FileSystemError {
-		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileNotFound, FileSystemError.FileNotFound);
+	stAtic FileNotFound(messAgeOrUri?: string | URI): FileSystemError {
+		return new FileSystemError(messAgeOrUri, FileSystemProviderErrorCode.FileNotFound, FileSystemError.FileNotFound);
 	}
-	static FileNotADirectory(messageOrUri?: string | URI): FileSystemError {
-		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileNotADirectory, FileSystemError.FileNotADirectory);
+	stAtic FileNotADirectory(messAgeOrUri?: string | URI): FileSystemError {
+		return new FileSystemError(messAgeOrUri, FileSystemProviderErrorCode.FileNotADirectory, FileSystemError.FileNotADirectory);
 	}
-	static FileIsADirectory(messageOrUri?: string | URI): FileSystemError {
-		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileIsADirectory, FileSystemError.FileIsADirectory);
+	stAtic FileIsADirectory(messAgeOrUri?: string | URI): FileSystemError {
+		return new FileSystemError(messAgeOrUri, FileSystemProviderErrorCode.FileIsADirectory, FileSystemError.FileIsADirectory);
 	}
-	static NoPermissions(messageOrUri?: string | URI): FileSystemError {
-		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.NoPermissions, FileSystemError.NoPermissions);
+	stAtic NoPermissions(messAgeOrUri?: string | URI): FileSystemError {
+		return new FileSystemError(messAgeOrUri, FileSystemProviderErrorCode.NoPermissions, FileSystemError.NoPermissions);
 	}
-	static Unavailable(messageOrUri?: string | URI): FileSystemError {
-		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.Unavailable, FileSystemError.Unavailable);
+	stAtic UnAvAilAble(messAgeOrUri?: string | URI): FileSystemError {
+		return new FileSystemError(messAgeOrUri, FileSystemProviderErrorCode.UnAvAilAble, FileSystemError.UnAvAilAble);
 	}
 
-	readonly code: string;
+	reAdonly code: string;
 
-	constructor(uriOrMessage?: string | URI, code: FileSystemProviderErrorCode = FileSystemProviderErrorCode.Unknown, terminator?: Function) {
-		super(URI.isUri(uriOrMessage) ? uriOrMessage.toString(true) : uriOrMessage);
+	constructor(uriOrMessAge?: string | URI, code: FileSystemProviderErrorCode = FileSystemProviderErrorCode.Unknown, terminAtor?: Function) {
+		super(URI.isUri(uriOrMessAge) ? uriOrMessAge.toString(true) : uriOrMessAge);
 
-		this.code = terminator?.name ?? 'Unknown';
+		this.code = terminAtor?.nAme ?? 'Unknown';
 
-		// mark the error as file system provider error so that
-		// we can extract the error code on the receiving side
-		markAsFileSystemProviderError(this, code);
+		// mArk the error As file system provider error so thAt
+		// we cAn extrAct the error code on the receiving side
+		mArkAsFileSystemProviderError(this, code);
 
-		// workaround when extending builtin objects and when compiling to ES5, see:
-		// https://github.com/microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
-		if (typeof (<any>Object).setPrototypeOf === 'function') {
-			(<any>Object).setPrototypeOf(this, FileSystemError.prototype);
+		// workAround when extending builtin objects And when compiling to ES5, see:
+		// https://github.com/microsoft/TypeScript-wiki/blob/mAster/BreAking-ChAnges.md#extending-built-ins-like-error-ArrAy-And-mAp-mAy-no-longer-work
+		if (typeof (<Any>Object).setPrototypeOf === 'function') {
+			(<Any>Object).setPrototypeOf(this, FileSystemError.prototype);
 		}
 
-		if (typeof Error.captureStackTrace === 'function' && typeof terminator === 'function') {
-			// nice stack traces
-			Error.captureStackTrace(this, terminator);
+		if (typeof Error.cAptureStAckTrAce === 'function' && typeof terminAtor === 'function') {
+			// nice stAck trAces
+			Error.cAptureStAckTrAce(this, terminAtor);
 		}
 	}
 }
 
 //#endregion
 
-//#region folding api
+//#region folding Api
 
-@es5ClassCompat
-export class FoldingRange {
+@es5ClAssCompAt
+export clAss FoldingRAnge {
 
-	start: number;
+	stArt: number;
 
 	end: number;
 
-	kind?: FoldingRangeKind;
+	kind?: FoldingRAngeKind;
 
-	constructor(start: number, end: number, kind?: FoldingRangeKind) {
-		this.start = start;
+	constructor(stArt: number, end: number, kind?: FoldingRAngeKind) {
+		this.stArt = stArt;
 		this.end = end;
 		this.kind = kind;
 	}
 }
 
-export enum FoldingRangeKind {
+export enum FoldingRAngeKind {
 	Comment = 1,
 	Imports = 2,
 	Region = 3
@@ -2455,15 +2455,15 @@ export enum FoldingRangeKind {
 //#endregion
 
 //#region Comment
-export enum CommentThreadCollapsibleState {
+export enum CommentThreAdCollApsibleStAte {
 	/**
-	 * Determines an item is collapsed
+	 * Determines An item is collApsed
 	 */
-	Collapsed = 0,
+	CollApsed = 0,
 	/**
-	 * Determines an item is expanded
+	 * Determines An item is expAnded
 	 */
-	Expanded = 1
+	ExpAnded = 1
 }
 
 export enum CommentMode {
@@ -2473,11 +2473,11 @@ export enum CommentMode {
 
 //#endregion
 
-//#region Semantic Coloring
+//#region SemAntic Coloring
 
-export class SemanticTokensLegend {
-	public readonly tokenTypes: string[];
-	public readonly tokenModifiers: string[];
+export clAss SemAnticTokensLegend {
+	public reAdonly tokenTypes: string[];
+	public reAdonly tokenModifiers: string[];
 
 	constructor(tokenTypes: string[], tokenModifiers: string[] = []) {
 		this.tokenTypes = tokenTypes;
@@ -2485,32 +2485,32 @@ export class SemanticTokensLegend {
 	}
 }
 
-function isStrArrayOrUndefined(arg: any): arg is string[] | undefined {
-	return ((typeof arg === 'undefined') || isStringArray(arg));
+function isStrArrAyOrUndefined(Arg: Any): Arg is string[] | undefined {
+	return ((typeof Arg === 'undefined') || isStringArrAy(Arg));
 }
 
-export class SemanticTokensBuilder {
+export clAss SemAnticTokensBuilder {
 
-	private _prevLine: number;
-	private _prevChar: number;
-	private _dataIsSortedAndDeltaEncoded: boolean;
-	private _data: number[];
-	private _dataLen: number;
-	private _tokenTypeStrToInt: Map<string, number>;
-	private _tokenModifierStrToInt: Map<string, number>;
-	private _hasLegend: boolean;
+	privAte _prevLine: number;
+	privAte _prevChAr: number;
+	privAte _dAtAIsSortedAndDeltAEncoded: booleAn;
+	privAte _dAtA: number[];
+	privAte _dAtALen: number;
+	privAte _tokenTypeStrToInt: MAp<string, number>;
+	privAte _tokenModifierStrToInt: MAp<string, number>;
+	privAte _hAsLegend: booleAn;
 
-	constructor(legend?: vscode.SemanticTokensLegend) {
+	constructor(legend?: vscode.SemAnticTokensLegend) {
 		this._prevLine = 0;
-		this._prevChar = 0;
-		this._dataIsSortedAndDeltaEncoded = true;
-		this._data = [];
-		this._dataLen = 0;
-		this._tokenTypeStrToInt = new Map<string, number>();
-		this._tokenModifierStrToInt = new Map<string, number>();
-		this._hasLegend = false;
+		this._prevChAr = 0;
+		this._dAtAIsSortedAndDeltAEncoded = true;
+		this._dAtA = [];
+		this._dAtALen = 0;
+		this._tokenTypeStrToInt = new MAp<string, number>();
+		this._tokenModifierStrToInt = new MAp<string, number>();
+		this._hAsLegend = fAlse;
 		if (legend) {
-			this._hasLegend = true;
+			this._hAsLegend = true;
 			for (let i = 0, len = legend.tokenTypes.length; i < len; i++) {
 				this._tokenTypeStrToInt.set(legend.tokenTypes[i], i);
 			}
@@ -2520,178 +2520,178 @@ export class SemanticTokensBuilder {
 		}
 	}
 
-	public push(line: number, char: number, length: number, tokenType: number, tokenModifiers?: number): void;
-	public push(range: Range, tokenType: string, tokenModifiers?: string[]): void;
-	public push(arg0: any, arg1: any, arg2: any, arg3?: any, arg4?: any): void {
-		if (typeof arg0 === 'number' && typeof arg1 === 'number' && typeof arg2 === 'number' && typeof arg3 === 'number' && (typeof arg4 === 'number' || typeof arg4 === 'undefined')) {
-			if (typeof arg4 === 'undefined') {
-				arg4 = 0;
+	public push(line: number, chAr: number, length: number, tokenType: number, tokenModifiers?: number): void;
+	public push(rAnge: RAnge, tokenType: string, tokenModifiers?: string[]): void;
+	public push(Arg0: Any, Arg1: Any, Arg2: Any, Arg3?: Any, Arg4?: Any): void {
+		if (typeof Arg0 === 'number' && typeof Arg1 === 'number' && typeof Arg2 === 'number' && typeof Arg3 === 'number' && (typeof Arg4 === 'number' || typeof Arg4 === 'undefined')) {
+			if (typeof Arg4 === 'undefined') {
+				Arg4 = 0;
 			}
-			// 1st overload
-			return this._pushEncoded(arg0, arg1, arg2, arg3, arg4);
+			// 1st overloAd
+			return this._pushEncoded(Arg0, Arg1, Arg2, Arg3, Arg4);
 		}
-		if (Range.isRange(arg0) && typeof arg1 === 'string' && isStrArrayOrUndefined(arg2)) {
-			// 2nd overload
-			return this._push(arg0, arg1, arg2);
+		if (RAnge.isRAnge(Arg0) && typeof Arg1 === 'string' && isStrArrAyOrUndefined(Arg2)) {
+			// 2nd overloAd
+			return this._push(Arg0, Arg1, Arg2);
 		}
-		throw illegalArgument();
+		throw illegAlArgument();
 	}
 
-	private _push(range: vscode.Range, tokenType: string, tokenModifiers?: string[]): void {
-		if (!this._hasLegend) {
+	privAte _push(rAnge: vscode.RAnge, tokenType: string, tokenModifiers?: string[]): void {
+		if (!this._hAsLegend) {
 			throw new Error('Legend must be provided in constructor');
 		}
-		if (range.start.line !== range.end.line) {
-			throw new Error('`range` cannot span multiple lines');
+		if (rAnge.stArt.line !== rAnge.end.line) {
+			throw new Error('`rAnge` cAnnot spAn multiple lines');
 		}
-		if (!this._tokenTypeStrToInt.has(tokenType)) {
+		if (!this._tokenTypeStrToInt.hAs(tokenType)) {
 			throw new Error('`tokenType` is not in the provided legend');
 		}
-		const line = range.start.line;
-		const char = range.start.character;
-		const length = range.end.character - range.start.character;
+		const line = rAnge.stArt.line;
+		const chAr = rAnge.stArt.chArActer;
+		const length = rAnge.end.chArActer - rAnge.stArt.chArActer;
 		const nTokenType = this._tokenTypeStrToInt.get(tokenType)!;
 		let nTokenModifiers = 0;
 		if (tokenModifiers) {
 			for (const tokenModifier of tokenModifiers) {
-				if (!this._tokenModifierStrToInt.has(tokenModifier)) {
+				if (!this._tokenModifierStrToInt.hAs(tokenModifier)) {
 					throw new Error('`tokenModifier` is not in the provided legend');
 				}
 				const nTokenModifier = this._tokenModifierStrToInt.get(tokenModifier)!;
 				nTokenModifiers |= (1 << nTokenModifier) >>> 0;
 			}
 		}
-		this._pushEncoded(line, char, length, nTokenType, nTokenModifiers);
+		this._pushEncoded(line, chAr, length, nTokenType, nTokenModifiers);
 	}
 
-	private _pushEncoded(line: number, char: number, length: number, tokenType: number, tokenModifiers: number): void {
-		if (this._dataIsSortedAndDeltaEncoded && (line < this._prevLine || (line === this._prevLine && char < this._prevChar))) {
-			// push calls were ordered and are no longer ordered
-			this._dataIsSortedAndDeltaEncoded = false;
+	privAte _pushEncoded(line: number, chAr: number, length: number, tokenType: number, tokenModifiers: number): void {
+		if (this._dAtAIsSortedAndDeltAEncoded && (line < this._prevLine || (line === this._prevLine && chAr < this._prevChAr))) {
+			// push cAlls were ordered And Are no longer ordered
+			this._dAtAIsSortedAndDeltAEncoded = fAlse;
 
-			// Remove delta encoding from data
-			const tokenCount = (this._data.length / 5) | 0;
+			// Remove deltA encoding from dAtA
+			const tokenCount = (this._dAtA.length / 5) | 0;
 			let prevLine = 0;
-			let prevChar = 0;
+			let prevChAr = 0;
 			for (let i = 0; i < tokenCount; i++) {
-				let line = this._data[5 * i];
-				let char = this._data[5 * i + 1];
+				let line = this._dAtA[5 * i];
+				let chAr = this._dAtA[5 * i + 1];
 
 				if (line === 0) {
-					// on the same line as previous token
+					// on the sAme line As previous token
 					line = prevLine;
-					char += prevChar;
+					chAr += prevChAr;
 				} else {
-					// on a different line than previous token
+					// on A different line thAn previous token
 					line += prevLine;
 				}
 
-				this._data[5 * i] = line;
-				this._data[5 * i + 1] = char;
+				this._dAtA[5 * i] = line;
+				this._dAtA[5 * i + 1] = chAr;
 
 				prevLine = line;
-				prevChar = char;
+				prevChAr = chAr;
 			}
 		}
 
 		let pushLine = line;
-		let pushChar = char;
-		if (this._dataIsSortedAndDeltaEncoded && this._dataLen > 0) {
+		let pushChAr = chAr;
+		if (this._dAtAIsSortedAndDeltAEncoded && this._dAtALen > 0) {
 			pushLine -= this._prevLine;
 			if (pushLine === 0) {
-				pushChar -= this._prevChar;
+				pushChAr -= this._prevChAr;
 			}
 		}
 
-		this._data[this._dataLen++] = pushLine;
-		this._data[this._dataLen++] = pushChar;
-		this._data[this._dataLen++] = length;
-		this._data[this._dataLen++] = tokenType;
-		this._data[this._dataLen++] = tokenModifiers;
+		this._dAtA[this._dAtALen++] = pushLine;
+		this._dAtA[this._dAtALen++] = pushChAr;
+		this._dAtA[this._dAtALen++] = length;
+		this._dAtA[this._dAtALen++] = tokenType;
+		this._dAtA[this._dAtALen++] = tokenModifiers;
 
 		this._prevLine = line;
-		this._prevChar = char;
+		this._prevChAr = chAr;
 	}
 
-	private static _sortAndDeltaEncode(data: number[]): Uint32Array {
+	privAte stAtic _sortAndDeltAEncode(dAtA: number[]): Uint32ArrAy {
 		let pos: number[] = [];
-		const tokenCount = (data.length / 5) | 0;
+		const tokenCount = (dAtA.length / 5) | 0;
 		for (let i = 0; i < tokenCount; i++) {
 			pos[i] = i;
 		}
-		pos.sort((a, b) => {
-			const aLine = data[5 * a];
-			const bLine = data[5 * b];
-			if (aLine === bLine) {
-				const aChar = data[5 * a + 1];
-				const bChar = data[5 * b + 1];
-				return aChar - bChar;
+		pos.sort((A, b) => {
+			const ALine = dAtA[5 * A];
+			const bLine = dAtA[5 * b];
+			if (ALine === bLine) {
+				const AChAr = dAtA[5 * A + 1];
+				const bChAr = dAtA[5 * b + 1];
+				return AChAr - bChAr;
 			}
-			return aLine - bLine;
+			return ALine - bLine;
 		});
-		const result = new Uint32Array(data.length);
+		const result = new Uint32ArrAy(dAtA.length);
 		let prevLine = 0;
-		let prevChar = 0;
+		let prevChAr = 0;
 		for (let i = 0; i < tokenCount; i++) {
 			const srcOffset = 5 * pos[i];
-			const line = data[srcOffset + 0];
-			const char = data[srcOffset + 1];
-			const length = data[srcOffset + 2];
-			const tokenType = data[srcOffset + 3];
-			const tokenModifiers = data[srcOffset + 4];
+			const line = dAtA[srcOffset + 0];
+			const chAr = dAtA[srcOffset + 1];
+			const length = dAtA[srcOffset + 2];
+			const tokenType = dAtA[srcOffset + 3];
+			const tokenModifiers = dAtA[srcOffset + 4];
 
 			const pushLine = line - prevLine;
-			const pushChar = (pushLine === 0 ? char - prevChar : char);
+			const pushChAr = (pushLine === 0 ? chAr - prevChAr : chAr);
 
 			const dstOffset = 5 * i;
 			result[dstOffset + 0] = pushLine;
-			result[dstOffset + 1] = pushChar;
+			result[dstOffset + 1] = pushChAr;
 			result[dstOffset + 2] = length;
 			result[dstOffset + 3] = tokenType;
 			result[dstOffset + 4] = tokenModifiers;
 
 			prevLine = line;
-			prevChar = char;
+			prevChAr = chAr;
 		}
 
 		return result;
 	}
 
-	public build(resultId?: string): SemanticTokens {
-		if (!this._dataIsSortedAndDeltaEncoded) {
-			return new SemanticTokens(SemanticTokensBuilder._sortAndDeltaEncode(this._data), resultId);
+	public build(resultId?: string): SemAnticTokens {
+		if (!this._dAtAIsSortedAndDeltAEncoded) {
+			return new SemAnticTokens(SemAnticTokensBuilder._sortAndDeltAEncode(this._dAtA), resultId);
 		}
-		return new SemanticTokens(new Uint32Array(this._data), resultId);
+		return new SemAnticTokens(new Uint32ArrAy(this._dAtA), resultId);
 	}
 }
 
-export class SemanticTokens {
-	readonly resultId?: string;
-	readonly data: Uint32Array;
+export clAss SemAnticTokens {
+	reAdonly resultId?: string;
+	reAdonly dAtA: Uint32ArrAy;
 
-	constructor(data: Uint32Array, resultId?: string) {
+	constructor(dAtA: Uint32ArrAy, resultId?: string) {
 		this.resultId = resultId;
-		this.data = data;
+		this.dAtA = dAtA;
 	}
 }
 
-export class SemanticTokensEdit {
-	readonly start: number;
-	readonly deleteCount: number;
-	readonly data?: Uint32Array;
+export clAss SemAnticTokensEdit {
+	reAdonly stArt: number;
+	reAdonly deleteCount: number;
+	reAdonly dAtA?: Uint32ArrAy;
 
-	constructor(start: number, deleteCount: number, data?: Uint32Array) {
-		this.start = start;
+	constructor(stArt: number, deleteCount: number, dAtA?: Uint32ArrAy) {
+		this.stArt = stArt;
 		this.deleteCount = deleteCount;
-		this.data = data;
+		this.dAtA = dAtA;
 	}
 }
 
-export class SemanticTokensEdits {
-	readonly resultId?: string;
-	readonly edits: SemanticTokensEdit[];
+export clAss SemAnticTokensEdits {
+	reAdonly resultId?: string;
+	reAdonly edits: SemAnticTokensEdit[];
 
-	constructor(edits: SemanticTokensEdit[], resultId?: string) {
+	constructor(edits: SemAnticTokensEdit[], resultId?: string) {
 		this.resultId = resultId;
 		this.edits = edits;
 	}
@@ -2702,63 +2702,63 @@ export class SemanticTokensEdits {
 //#region debug
 export enum DebugConsoleMode {
 	/**
-	 * Debug session should have a separate debug console.
+	 * Debug session should hAve A sepArAte debug console.
 	 */
-	Separate = 0,
+	SepArAte = 0,
 
 	/**
-	 * Debug session should share debug console with its parent session.
-	 * This value has no effect for sessions which do not have a parent session.
+	 * Debug session should shAre debug console with its pArent session.
+	 * This vAlue hAs no effect for sessions which do not hAve A pArent session.
 	 */
-	MergeWithParent = 1
+	MergeWithPArent = 1
 }
 
-export enum DebugConfigurationProviderTriggerKind {
+export enum DebugConfigurAtionProviderTriggerKind {
 	/**
-	 *	`DebugConfigurationProvider.provideDebugConfigurations` is called to provide the initial debug configurations for a newly created launch.json.
+	 *	`DebugConfigurAtionProvider.provideDebugConfigurAtions` is cAlled to provide the initiAl debug configurAtions for A newly creAted lAunch.json.
 	 */
-	Initial = 1,
+	InitiAl = 1,
 	/**
-	 * `DebugConfigurationProvider.provideDebugConfigurations` is called to provide dynamically generated debug configurations when the user asks for them through the UI (e.g. via the "Select and Start Debugging" command).
+	 * `DebugConfigurAtionProvider.provideDebugConfigurAtions` is cAlled to provide dynAmicAlly generAted debug configurAtions when the user Asks for them through the UI (e.g. viA the "Select And StArt Debugging" commAnd).
 	 */
-	Dynamic = 2
+	DynAmic = 2
 }
 
 //#endregion
 
-@es5ClassCompat
-export class QuickInputButtons {
+@es5ClAssCompAt
+export clAss QuickInputButtons {
 
-	static readonly Back: vscode.QuickInputButton = { iconPath: { id: 'back.svg' } };
+	stAtic reAdonly BAck: vscode.QuickInputButton = { iconPAth: { id: 'bAck.svg' } };
 
-	private constructor() { }
+	privAte constructor() { }
 }
 
 export enum ExtensionKind {
 	UI = 1,
-	Workspace = 2
+	WorkspAce = 2
 }
 
-export class FileDecoration {
+export clAss FileDecorAtion {
 
-	static validate(d: FileDecoration): void {
-		if (d.badge && d.badge.length !== 1) {
-			throw new Error(`The 'badge'-property must be undefined or a single character`);
+	stAtic vAlidAte(d: FileDecorAtion): void {
+		if (d.bAdge && d.bAdge.length !== 1) {
+			throw new Error(`The 'bAdge'-property must be undefined or A single chArActer`);
 		}
-		if (!d.color && !d.badge && !d.tooltip) {
-			throw new Error(`The decoration is empty`);
+		if (!d.color && !d.bAdge && !d.tooltip) {
+			throw new Error(`The decorAtion is empty`);
 		}
 	}
 
-	badge?: string;
+	bAdge?: string;
 	tooltip?: string;
 	color?: vscode.ThemeColor;
 	priority?: number;
-	propagate?: boolean;
+	propAgAte?: booleAn;
 
 
-	constructor(badge?: string, tooltip?: string, color?: ThemeColor) {
-		this.badge = badge;
+	constructor(bAdge?: string, tooltip?: string, color?: ThemeColor) {
+		this.bAdge = bAdge;
 		this.tooltip = tooltip;
 		this.color = color;
 	}
@@ -2766,68 +2766,68 @@ export class FileDecoration {
 
 //#region Theming
 
-@es5ClassCompat
-export class ColorTheme implements vscode.ColorTheme {
-	constructor(public readonly kind: ColorThemeKind) {
+@es5ClAssCompAt
+export clAss ColorTheme implements vscode.ColorTheme {
+	constructor(public reAdonly kind: ColorThemeKind) {
 	}
 }
 
 export enum ColorThemeKind {
 	Light = 1,
-	Dark = 2,
-	HighContrast = 3
+	DArk = 2,
+	HighContrAst = 3
 }
 
 //#endregion Theming
 
 //#region Notebook
 
-export class NotebookCellOutputItem {
+export clAss NotebookCellOutputItem {
 
-	static isNotebookCellOutputItem(obj: unknown): obj is vscode.NotebookCellOutputItem {
-		return obj instanceof NotebookCellOutputItem;
+	stAtic isNotebookCellOutputItem(obj: unknown): obj is vscode.NotebookCellOutputItem {
+		return obj instAnceof NotebookCellOutputItem;
 	}
 
 	constructor(
-		readonly mime: string,
-		readonly value: unknown, // JSON'able
-		readonly metadata?: Record<string, string | number | boolean>
+		reAdonly mime: string,
+		reAdonly vAlue: unknown, // JSON'Able
+		reAdonly metAdAtA?: Record<string, string | number | booleAn>
 	) { }
 }
 
-export class NotebookCellOutput {
+export clAss NotebookCellOutput {
 
-	static isNotebookCellOutput(obj: unknown): obj is vscode.NotebookCellOutput {
-		return obj instanceof NotebookCellOutput;
+	stAtic isNotebookCellOutput(obj: unknown): obj is vscode.NotebookCellOutput {
+		return obj instAnceof NotebookCellOutput;
 	}
 
 	constructor(
-		readonly outputs: NotebookCellOutputItem[],
-		readonly metadata?: Record<string, string | number | boolean>
+		reAdonly outputs: NotebookCellOutputItem[],
+		reAdonly metAdAtA?: Record<string, string | number | booleAn>
 	) { }
 
-	toJSON(): IDisplayOutput {
-		let data: { [key: string]: unknown; } = {};
+	toJSON(): IDisplAyOutput {
+		let dAtA: { [key: string]: unknown; } = {};
 		let custom: { [key: string]: unknown; } = {};
-		let hasMetadata = false;
+		let hAsMetAdAtA = fAlse;
 
 		for (let item of this.outputs) {
-			data[item.mime] = item.value;
-			if (item.metadata) {
-				custom[item.mime] = item.metadata;
-				hasMetadata = true;
+			dAtA[item.mime] = item.vAlue;
+			if (item.metAdAtA) {
+				custom[item.mime] = item.metAdAtA;
+				hAsMetAdAtA = true;
 			}
 		}
 		return {
 			outputKind: CellOutputKind.Rich,
-			data,
-			metadata: hasMetadata ? { custom } : undefined
+			dAtA,
+			metAdAtA: hAsMetAdAtA ? { custom } : undefined
 		};
 	}
 }
 
 export enum CellKind {
-	Markdown = 1,
+	MArkdown = 1,
 	Code = 2
 }
 
@@ -2837,25 +2837,25 @@ export enum CellOutputKind {
 	Rich = 3
 }
 
-export enum NotebookCellRunState {
+export enum NotebookCellRunStAte {
 	Running = 1,
 	Idle = 2,
 	Success = 3,
 	Error = 4
 }
 
-export enum NotebookRunState {
+export enum NotebookRunStAte {
 	Running = 1,
 	Idle = 2
 }
 
-export enum NotebookCellStatusBarAlignment {
+export enum NotebookCellStAtusBArAlignment {
 	Left = 1,
 	Right = 2
 }
 
-export enum NotebookEditorRevealType {
-	Default = 0,
+export enum NotebookEditorReveAlType {
+	DefAult = 0,
 	InCenter = 1,
 	InCenterIfOutsideViewport = 2
 }
@@ -2865,9 +2865,9 @@ export enum NotebookEditorRevealType {
 
 //#region Timeline
 
-@es5ClassCompat
-export class TimelineItem implements vscode.TimelineItem {
-	constructor(public label: string, public timestamp: number) { }
+@es5ClAssCompAt
+export clAss TimelineItem implements vscode.TimelineItem {
+	constructor(public lAbel: string, public timestAmp: number) { }
 }
 
 //#endregion Timeline
@@ -2876,19 +2876,19 @@ export class TimelineItem implements vscode.TimelineItem {
 
 export enum ExtensionMode {
 	/**
-	 * The extension is installed normally (for example, from the marketplace
+	 * The extension is instAlled normAlly (for exAmple, from the mArketplAce
 	 * or VSIX) in VS Code.
 	 */
 	Production = 1,
 
 	/**
-	 * The extension is running from an `--extensionDevelopmentPath` provided
-	 * when launching VS Code.
+	 * The extension is running from An `--extensionDevelopmentPAth` provided
+	 * when lAunching VS Code.
 	 */
 	Development = 2,
 
 	/**
-	 * The extension is running from an `--extensionDevelopmentPath` and
+	 * The extension is running from An `--extensionDevelopmentPAth` And
 	 * the extension host is running unit tests.
 	 */
 	Test = 3,
@@ -2896,18 +2896,18 @@ export enum ExtensionMode {
 
 export enum ExtensionRuntime {
 	/**
-	 * The extension is running in a NodeJS extension host. Runtime access to NodeJS APIs is available.
+	 * The extension is running in A NodeJS extension host. Runtime Access to NodeJS APIs is AvAilAble.
 	 */
 	Node = 1,
 	/**
-	 * The extension is running in a Webworker extension host. Runtime access is limited to Webworker APIs.
+	 * The extension is running in A Webworker extension host. Runtime Access is limited to Webworker APIs.
 	 */
 	Webworker = 2
 }
 
 //#endregion ExtensionContext
 
-export enum StandardTokenType {
+export enum StAndArdTokenType {
 	Other = 0,
 	Comment = 1,
 	String = 2,

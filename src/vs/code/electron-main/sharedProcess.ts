@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { memoize } from 'vs/base/common/decorators';
-import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { BrowserWindow, ipcMain, WebContents, Event as ElectronEvent } from 'electron';
-import { ISharedProcess } from 'vs/platform/ipc/electron-main/sharedProcessMainService';
-import { Barrier } from 'vs/base/common/async';
-import { ILogService } from 'vs/platform/log/common/log';
-import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
-import { IThemeMainService } from 'vs/platform/theme/electron-main/themeMainService';
-import { toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { FileAccess } from 'vs/base/common/network';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { IEnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
+import { BrowserWindow, ipcMAin, WebContents, Event As ElectronEvent } from 'electron';
+import { IShAredProcess } from 'vs/plAtform/ipc/electron-mAin/shAredProcessMAinService';
+import { BArrier } from 'vs/bAse/common/Async';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { ILifecycleMAinService } from 'vs/plAtform/lifecycle/electron-mAin/lifecycleMAinService';
+import { IThemeMAinService } from 'vs/plAtform/theme/electron-mAin/themeMAinService';
+import { toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { FileAccess } from 'vs/bAse/common/network';
 
-export class SharedProcess implements ISharedProcess {
+export clAss ShAredProcess implements IShAredProcess {
 
-	private barrier = new Barrier();
+	privAte bArrier = new BArrier();
 
-	private window: BrowserWindow | null = null;
+	privAte window: BrowserWindow | null = null;
 
-	private readonly _whenReady: Promise<void>;
+	privAte reAdonly _whenReAdy: Promise<void>;
 
 	constructor(
-		private readonly machineId: string,
-		private userEnv: NodeJS.ProcessEnv,
-		@IEnvironmentMainService private readonly environmentService: IEnvironmentMainService,
-		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
-		@ILogService private readonly logService: ILogService,
-		@IThemeMainService private readonly themeMainService: IThemeMainService
+		privAte reAdonly mAchineId: string,
+		privAte userEnv: NodeJS.ProcessEnv,
+		@IEnvironmentMAinService privAte reAdonly environmentService: IEnvironmentMAinService,
+		@ILifecycleMAinService privAte reAdonly lifecycleMAinService: ILifecycleMAinService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IThemeMAinService privAte reAdonly themeMAinService: IThemeMAinService
 	) {
-		// overall ready promise when shared process signals initialization is done
-		this._whenReady = new Promise<void>(c => ipcMain.once('vscode:shared-process->electron-main=init-done', () => c(undefined)));
+		// overAll reAdy promise when shAred process signAls initiAlizAtion is done
+		this._whenReAdy = new Promise<void>(c => ipcMAin.once('vscode:shAred-process->electron-mAin=init-done', () => c(undefined)));
 	}
 
 	@memoize
-	private get _whenIpcReady(): Promise<void> {
+	privAte get _whenIpcReAdy(): Promise<void> {
 		this.window = new BrowserWindow({
-			show: false,
-			backgroundColor: this.themeMainService.getBackgroundColor(),
+			show: fAlse,
+			bAckgroundColor: this.themeMAinService.getBAckgroundColor(),
 			webPreferences: {
-				preload: FileAccess.asFileUri('vs/base/parts/sandbox/electron-browser/preload.js', require).fsPath,
-				nodeIntegration: true,
-				enableWebSQL: false,
-				enableRemoteModule: false,
-				spellcheck: false,
-				nativeWindowOpen: true,
-				images: false,
-				webgl: false,
-				disableBlinkFeatures: 'Auxclick' // do NOT change, allows us to identify this window as shared-process in the process explorer
+				preloAd: FileAccess.AsFileUri('vs/bAse/pArts/sAndbox/electron-browser/preloAd.js', require).fsPAth,
+				nodeIntegrAtion: true,
+				enAbleWebSQL: fAlse,
+				enAbleRemoteModule: fAlse,
+				spellcheck: fAlse,
+				nAtiveWindowOpen: true,
+				imAges: fAlse,
+				webgl: fAlse,
+				disAbleBlinkFeAtures: 'Auxclick' // do NOT chAnge, Allows us to identify this window As shAred-process in the process explorer
 			}
 		});
 		const config = {
-			appRoot: this.environmentService.appRoot,
-			machineId: this.machineId,
-			nodeCachedDataDir: this.environmentService.nodeCachedDataDir,
+			AppRoot: this.environmentService.AppRoot,
+			mAchineId: this.mAchineId,
+			nodeCAchedDAtADir: this.environmentService.nodeCAchedDAtADir,
 			userEnv: this.userEnv,
 			windowId: this.window.id
 		};
 
 		const windowUrl = FileAccess
-			.asBrowserUri('vs/code/electron-browser/sharedProcess/sharedProcess.html', require)
+			.AsBrowserUri('vs/code/electron-browser/shAredProcess/shAredProcess.html', require)
 			.with({ query: `config=${encodeURIComponent(JSON.stringify(config))}` });
-		this.window.loadURL(windowUrl.toString(true));
+		this.window.loAdURL(windowUrl.toString(true));
 
 		// Prevent the window from dying
 		const onClose = (e: ElectronEvent) => {
-			this.logService.trace('SharedProcess#close prevented');
+			this.logService.trAce('ShAredProcess#close prevented');
 
-			// We never allow to close the shared process unless we get explicitly disposed()
-			e.preventDefault();
+			// We never Allow to close the shAred process unless we get explicitly disposed()
+			e.preventDefAult();
 
 			// Still hide the window though if visible
 			if (this.window && this.window.isVisible()) {
@@ -80,29 +80,29 @@ export class SharedProcess implements ISharedProcess {
 
 		this.window.on('close', onClose);
 
-		const disposables = new DisposableStore();
+		const disposAbles = new DisposAbleStore();
 
-		this.lifecycleMainService.onWillShutdown(() => {
-			disposables.dispose();
+		this.lifecycleMAinService.onWillShutdown(() => {
+			disposAbles.dispose();
 
-			// Shut the shared process down when we are quitting
+			// Shut the shAred process down when we Are quitting
 			//
-			// Note: because we veto the window close, we must first remove our veto.
-			// Otherwise the application would never quit because the shared process
+			// Note: becAuse we veto the window close, we must first remove our veto.
+			// Otherwise the ApplicAtion would never quit becAuse the shAred process
 			// window is refusing to close!
 			//
 			if (this.window) {
 				this.window.removeListener('close', onClose);
 			}
 
-			// Electron seems to crash on Windows without this setTimeout :|
+			// Electron seems to crAsh on Windows without this setTimeout :|
 			setTimeout(() => {
 				try {
 					if (this.window) {
 						this.window.close();
 					}
-				} catch (err) {
-					// ignore, as electron is already shutting down
+				} cAtch (err) {
+					// ignore, As electron is AlreAdy shutting down
 				}
 
 				this.window = null;
@@ -110,38 +110,38 @@ export class SharedProcess implements ISharedProcess {
 		});
 
 		return new Promise<void>(c => {
-			// send payload once shared process is ready to receive it
-			disposables.add(Event.once(Event.fromNodeEventEmitter(ipcMain, 'vscode:shared-process->electron-main=ready-for-payload', ({ sender }: { sender: WebContents }) => sender))(sender => {
-				sender.send('vscode:electron-main->shared-process=payload', {
-					sharedIPCHandle: this.environmentService.sharedIPCHandle,
-					args: this.environmentService.args,
+			// send pAyloAd once shAred process is reAdy to receive it
+			disposAbles.Add(Event.once(Event.fromNodeEventEmitter(ipcMAin, 'vscode:shAred-process->electron-mAin=reAdy-for-pAyloAd', ({ sender }: { sender: WebContents }) => sender))(sender => {
+				sender.send('vscode:electron-mAin->shAred-process=pAyloAd', {
+					shAredIPCHAndle: this.environmentService.shAredIPCHAndle,
+					Args: this.environmentService.Args,
 					logLevel: this.logService.getLevel(),
-					backupWorkspacesPath: this.environmentService.backupWorkspacesPath,
-					nodeCachedDataDir: this.environmentService.nodeCachedDataDir
+					bAckupWorkspAcesPAth: this.environmentService.bAckupWorkspAcesPAth,
+					nodeCAchedDAtADir: this.environmentService.nodeCAchedDAtADir
 				});
 
-				// signal exit to shared process when we get disposed
-				disposables.add(toDisposable(() => sender.send('vscode:electron-main->shared-process=exit')));
+				// signAl exit to shAred process when we get disposed
+				disposAbles.Add(toDisposAble(() => sender.send('vscode:electron-mAin->shAred-process=exit')));
 
-				// complete IPC-ready promise when shared process signals this to us
-				ipcMain.once('vscode:shared-process->electron-main=ipc-ready', () => c(undefined));
+				// complete IPC-reAdy promise when shAred process signAls this to us
+				ipcMAin.once('vscode:shAred-process->electron-mAin=ipc-reAdy', () => c(undefined));
 			}));
 		});
 	}
 
-	spawn(userEnv: NodeJS.ProcessEnv): void {
+	spAwn(userEnv: NodeJS.ProcessEnv): void {
 		this.userEnv = { ...this.userEnv, ...userEnv };
-		this.barrier.open();
+		this.bArrier.open();
 	}
 
-	async whenReady(): Promise<void> {
-		await this.barrier.wait();
-		await this._whenReady;
+	Async whenReAdy(): Promise<void> {
+		AwAit this.bArrier.wAit();
+		AwAit this._whenReAdy;
 	}
 
-	async whenIpcReady(): Promise<void> {
-		await this.barrier.wait();
-		await this._whenIpcReady;
+	Async whenIpcReAdy(): Promise<void> {
+		AwAit this.bArrier.wAit();
+		AwAit this._whenIpcReAdy;
 	}
 
 	toggle(): void {

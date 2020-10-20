@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
-import { OutOfProcessWin32FolderWatcher } from 'vs/platform/files/node/watcher/win32/csharpWatcherService';
-import { posix } from 'vs/base/common/path';
-import { rtrim } from 'vs/base/common/strings';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDiskFileChAnge, ILogMessAge } from 'vs/plAtform/files/node/wAtcher/wAtcher';
+import { OutOfProcessWin32FolderWAtcher } from 'vs/plAtform/files/node/wAtcher/win32/cshArpWAtcherService';
+import { posix } from 'vs/bAse/common/pAth';
+import { rtrim } from 'vs/bAse/common/strings';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export class FileWatcher implements IDisposable {
+export clAss FileWAtcher implements IDisposAble {
 
-	private folder: { path: string, excludes: string[] };
-	private service: OutOfProcessWin32FolderWatcher | undefined = undefined;
+	privAte folder: { pAth: string, excludes: string[] };
+	privAte service: OutOfProcessWin32FolderWAtcher | undefined = undefined;
 
 	constructor(
-		folders: { path: string, excludes: string[] }[],
-		private onDidFilesChange: (changes: IDiskFileChange[]) => void,
-		private onLogMessage: (msg: ILogMessage) => void,
-		private verboseLogging: boolean
+		folders: { pAth: string, excludes: string[] }[],
+		privAte onDidFilesChAnge: (chAnges: IDiskFileChAnge[]) => void,
+		privAte onLogMessAge: (msg: ILogMessAge) => void,
+		privAte verboseLogging: booleAn
 	) {
 		this.folder = folders[0];
 
-		if (this.folder.path.indexOf('\\\\') === 0 && this.folder.path.endsWith(posix.sep)) {
-			// for some weird reason, node adds a trailing slash to UNC paths
-			// we never ever want trailing slashes as our base path unless
+		if (this.folder.pAth.indexOf('\\\\') === 0 && this.folder.pAth.endsWith(posix.sep)) {
+			// for some weird reAson, node Adds A trAiling slAsh to UNC pAths
+			// we never ever wAnt trAiling slAshes As our bAse pAth unless
 			// someone opens root ("/").
-			// See also https://github.com/nodejs/io.js/issues/1765
-			this.folder.path = rtrim(this.folder.path, posix.sep);
+			// See Also https://github.com/nodejs/io.js/issues/1765
+			this.folder.pAth = rtrim(this.folder.pAth, posix.sep);
 		}
 
-		this.service = this.startWatching();
+		this.service = this.stArtWAtching();
 	}
 
-	private get isDisposed(): boolean {
+	privAte get isDisposed(): booleAn {
 		return !this.service;
 	}
 
-	private startWatching(): OutOfProcessWin32FolderWatcher {
-		return new OutOfProcessWin32FolderWatcher(
-			this.folder.path,
+	privAte stArtWAtching(): OutOfProcessWin32FolderWAtcher {
+		return new OutOfProcessWin32FolderWAtcher(
+			this.folder.pAth,
 			this.folder.excludes,
 			events => this.onFileEvents(events),
-			message => this.onLogMessage(message),
+			messAge => this.onLogMessAge(messAge),
 			this.verboseLogging
 		);
 	}
 
-	setVerboseLogging(verboseLogging: boolean): void {
+	setVerboseLogging(verboseLogging: booleAn): void {
 		this.verboseLogging = verboseLogging;
 		if (this.service) {
 			this.service.dispose();
-			this.service = this.startWatching();
+			this.service = this.stArtWAtching();
 		}
 	}
 
-	private onFileEvents(events: IDiskFileChange[]): void {
+	privAte onFileEvents(events: IDiskFileChAnge[]): void {
 		if (this.isDisposed) {
 			return;
 		}
 
 		// Emit through event emitter
 		if (events.length > 0) {
-			this.onDidFilesChange(events);
+			this.onDidFilesChAnge(events);
 		}
 	}
 

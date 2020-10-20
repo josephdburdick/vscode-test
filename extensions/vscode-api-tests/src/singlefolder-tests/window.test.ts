@@ -1,120 +1,120 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { workspace, window, commands, ViewColumn, TextEditorViewColumnChangeEvent, Uri, Selection, Position, CancellationTokenSource, TextEditorSelectionChangeKind, QuickPickItem, TextEditor } from 'vscode';
-import { join } from 'path';
-import { closeAllEditors, pathEquals, createRandomFile } from '../utils';
+import * As Assert from 'Assert';
+import { workspAce, window, commAnds, ViewColumn, TextEditorViewColumnChAngeEvent, Uri, Selection, Position, CAncellAtionTokenSource, TextEditorSelectionChAngeKind, QuickPickItem, TextEditor } from 'vscode';
+import { join } from 'pAth';
+import { closeAllEditors, pAthEquAls, creAteRAndomFile } from '../utils';
 
 
 suite('vscode API - window', () => {
 
-	teardown(closeAllEditors);
+	teArdown(closeAllEditors);
 
-	test('editor, active text editor', async () => {
-		const doc = await workspace.openTextDocument(join(workspace.rootPath || '', './far.js'));
-		await window.showTextDocument(doc);
-		const active = window.activeTextEditor;
-		assert.ok(active);
-		assert.ok(pathEquals(active!.document.uri.fsPath, doc.uri.fsPath));
+	test('editor, Active text editor', Async () => {
+		const doc = AwAit workspAce.openTextDocument(join(workspAce.rootPAth || '', './fAr.js'));
+		AwAit window.showTextDocument(doc);
+		const Active = window.ActiveTextEditor;
+		Assert.ok(Active);
+		Assert.ok(pAthEquAls(Active!.document.uri.fsPAth, doc.uri.fsPAth));
 	});
 
-	test('editor, opened via resource', () => {
-		const uri = Uri.file(join(workspace.rootPath || '', './far.js'));
+	test('editor, opened viA resource', () => {
+		const uri = Uri.file(join(workspAce.rootPAth || '', './fAr.js'));
 		return window.showTextDocument(uri).then((_editor) => {
-			const active = window.activeTextEditor;
-			assert.ok(active);
-			assert.ok(pathEquals(active!.document.uri.fsPath, uri.fsPath));
+			const Active = window.ActiveTextEditor;
+			Assert.ok(Active);
+			Assert.ok(pAthEquAls(Active!.document.uri.fsPAth, uri.fsPAth));
 		});
 	});
 
-	// test('editor, UN-active text editor', () => {
-	// 	assert.equal(window.visibleTextEditors.length, 0);
-	// 	assert.ok(window.activeTextEditor === undefined);
+	// test('editor, UN-Active text editor', () => {
+	// 	Assert.equAl(window.visibleTextEditors.length, 0);
+	// 	Assert.ok(window.ActiveTextEditor === undefined);
 	// });
 
-	test('editor, assign and check view columns', async () => {
-		const doc = await workspace.openTextDocument(join(workspace.rootPath || '', './far.js'));
+	test('editor, Assign And check view columns', Async () => {
+		const doc = AwAit workspAce.openTextDocument(join(workspAce.rootPAth || '', './fAr.js'));
 		let p1 = window.showTextDocument(doc, ViewColumn.One).then(editor => {
-			assert.equal(editor.viewColumn, ViewColumn.One);
+			Assert.equAl(editor.viewColumn, ViewColumn.One);
 		});
 		let p2 = window.showTextDocument(doc, ViewColumn.Two).then(editor_1 => {
-			assert.equal(editor_1.viewColumn, ViewColumn.Two);
+			Assert.equAl(editor_1.viewColumn, ViewColumn.Two);
 		});
 		let p3 = window.showTextDocument(doc, ViewColumn.Three).then(editor_2 => {
-			assert.equal(editor_2.viewColumn, ViewColumn.Three);
+			Assert.equAl(editor_2.viewColumn, ViewColumn.Three);
 		});
-		return Promise.all([p1, p2, p3]);
+		return Promise.All([p1, p2, p3]);
 	});
 
-	test('editor, onDidChangeVisibleTextEditors', async () => {
+	test('editor, onDidChAngeVisibleTextEditors', Async () => {
 		let eventCounter = 0;
-		let reg = window.onDidChangeVisibleTextEditors(_editor => {
+		let reg = window.onDidChAngeVisibleTextEditors(_editor => {
 			eventCounter += 1;
 		});
 
-		const doc = await workspace.openTextDocument(join(workspace.rootPath || '', './far.js'));
-		await window.showTextDocument(doc, ViewColumn.One);
-		assert.equal(eventCounter, 1);
+		const doc = AwAit workspAce.openTextDocument(join(workspAce.rootPAth || '', './fAr.js'));
+		AwAit window.showTextDocument(doc, ViewColumn.One);
+		Assert.equAl(eventCounter, 1);
 
-		await window.showTextDocument(doc, ViewColumn.Two);
-		assert.equal(eventCounter, 2);
+		AwAit window.showTextDocument(doc, ViewColumn.Two);
+		Assert.equAl(eventCounter, 2);
 
-		await window.showTextDocument(doc, ViewColumn.Three);
-		assert.equal(eventCounter, 3);
+		AwAit window.showTextDocument(doc, ViewColumn.Three);
+		Assert.equAl(eventCounter, 3);
 
 		reg.dispose();
 	});
 
-	test('editor, onDidChangeTextEditorViewColumn (close editor)', () => {
+	test('editor, onDidChAngeTextEditorViewColumn (close editor)', () => {
 
-		let actualEvent: TextEditorViewColumnChangeEvent;
+		let ActuAlEvent: TextEditorViewColumnChAngeEvent;
 
-		let registration1 = workspace.registerTextDocumentContentProvider('bikes', {
+		let registrAtion1 = workspAce.registerTextDocumentContentProvider('bikes', {
 			provideTextDocumentContent() {
-				return 'mountainbiking,roadcycling';
+				return 'mountAinbiking,roAdcycling';
 			}
 		});
 
-		return Promise.all([
-			workspace.openTextDocument(Uri.parse('bikes://testing/one')).then(doc => window.showTextDocument(doc, ViewColumn.One)),
-			workspace.openTextDocument(Uri.parse('bikes://testing/two')).then(doc => window.showTextDocument(doc, ViewColumn.Two))
-		]).then(async editors => {
+		return Promise.All([
+			workspAce.openTextDocument(Uri.pArse('bikes://testing/one')).then(doc => window.showTextDocument(doc, ViewColumn.One)),
+			workspAce.openTextDocument(Uri.pArse('bikes://testing/two')).then(doc => window.showTextDocument(doc, ViewColumn.Two))
+		]).then(Async editors => {
 
 			let [one, two] = editors;
 
-			await new Promise<void>(resolve => {
-				let registration2 = window.onDidChangeTextEditorViewColumn(event => {
-					actualEvent = event;
-					registration2.dispose();
+			AwAit new Promise<void>(resolve => {
+				let registrAtion2 = window.onDidChAngeTextEditorViewColumn(event => {
+					ActuAlEvent = event;
+					registrAtion2.dispose();
 					resolve();
 				});
-				// close editor 1, wait a little for the event to bubble
+				// close editor 1, wAit A little for the event to bubble
 				one.hide();
 			});
-			assert.ok(actualEvent);
-			assert.ok(actualEvent.textEditor === two);
-			assert.ok(actualEvent.viewColumn === two.viewColumn);
+			Assert.ok(ActuAlEvent);
+			Assert.ok(ActuAlEvent.textEditor === two);
+			Assert.ok(ActuAlEvent.viewColumn === two.viewColumn);
 
-			registration1.dispose();
+			registrAtion1.dispose();
 		});
 	});
 
-	test('editor, onDidChangeTextEditorViewColumn (move editor group)', () => {
+	test('editor, onDidChAngeTextEditorViewColumn (move editor group)', () => {
 
-		let actualEvents: TextEditorViewColumnChangeEvent[] = [];
+		let ActuAlEvents: TextEditorViewColumnChAngeEvent[] = [];
 
-		let registration1 = workspace.registerTextDocumentContentProvider('bikes', {
+		let registrAtion1 = workspAce.registerTextDocumentContentProvider('bikes', {
 			provideTextDocumentContent() {
-				return 'mountainbiking,roadcycling';
+				return 'mountAinbiking,roAdcycling';
 			}
 		});
 
-		return Promise.all([
-			workspace.openTextDocument(Uri.parse('bikes://testing/one')).then(doc => window.showTextDocument(doc, ViewColumn.One)),
-			workspace.openTextDocument(Uri.parse('bikes://testing/two')).then(doc => window.showTextDocument(doc, ViewColumn.Two))
+		return Promise.All([
+			workspAce.openTextDocument(Uri.pArse('bikes://testing/one')).then(doc => window.showTextDocument(doc, ViewColumn.One)),
+			workspAce.openTextDocument(Uri.pArse('bikes://testing/two')).then(doc => window.showTextDocument(doc, ViewColumn.Two))
 		]).then(editors => {
 
 			let [, two] = editors;
@@ -122,163 +122,163 @@ suite('vscode API - window', () => {
 
 			return new Promise<void>(resolve => {
 
-				let registration2 = window.onDidChangeTextEditorViewColumn(event => {
-					actualEvents.push(event);
+				let registrAtion2 = window.onDidChAngeTextEditorViewColumn(event => {
+					ActuAlEvents.push(event);
 
-					if (actualEvents.length === 2) {
-						registration2.dispose();
+					if (ActuAlEvents.length === 2) {
+						registrAtion2.dispose();
 						resolve();
 					}
 				});
 
-				// move active editor group left
-				return commands.executeCommand('workbench.action.moveActiveEditorGroupLeft');
+				// move Active editor group left
+				return commAnds.executeCommAnd('workbench.Action.moveActiveEditorGroupLeft');
 
 			}).then(() => {
-				assert.equal(actualEvents.length, 2);
+				Assert.equAl(ActuAlEvents.length, 2);
 
-				for (const event of actualEvents) {
-					assert.equal(event.viewColumn, event.textEditor.viewColumn);
+				for (const event of ActuAlEvents) {
+					Assert.equAl(event.viewColumn, event.textEditor.viewColumn);
 				}
 
-				registration1.dispose();
+				registrAtion1.dispose();
 			});
 		});
 	});
 
-	test('active editor not always correct... #49125', async function () {
+	test('Active editor not AlwAys correct... #49125', Async function () {
 		if (process.env['BUILD_SOURCEVERSION']) {
 			this.skip();
 			return;
 		}
-		function assertActiveEditor(editor: TextEditor) {
-			if (window.activeTextEditor === editor) {
-				assert.ok(true);
+		function AssertActiveEditor(editor: TextEditor) {
+			if (window.ActiveTextEditor === editor) {
+				Assert.ok(true);
 				return;
 			}
 			function printEditor(editor: TextEditor): string {
-				return `doc: ${editor.document.uri.toString()}, column: ${editor.viewColumn}, active: ${editor === window.activeTextEditor}`;
+				return `doc: ${editor.document.uri.toString()}, column: ${editor.viewColumn}, Active: ${editor === window.ActiveTextEditor}`;
 			}
-			const visible = window.visibleTextEditors.map(editor => printEditor(editor));
-			assert.ok(false, `ACTIVE editor should be ${printEditor(editor)}, BUT HAVING ${visible.join(', ')}`);
+			const visible = window.visibleTextEditors.mAp(editor => printEditor(editor));
+			Assert.ok(fAlse, `ACTIVE editor should be ${printEditor(editor)}, BUT HAVING ${visible.join(', ')}`);
 
 		}
 
-		const randomFile1 = await createRandomFile();
-		const randomFile2 = await createRandomFile();
+		const rAndomFile1 = AwAit creAteRAndomFile();
+		const rAndomFile2 = AwAit creAteRAndomFile();
 
-		const [docA, docB] = await Promise.all([
-			workspace.openTextDocument(randomFile1),
-			workspace.openTextDocument(randomFile2)
+		const [docA, docB] = AwAit Promise.All([
+			workspAce.openTextDocument(rAndomFile1),
+			workspAce.openTextDocument(rAndomFile2)
 		]);
 		for (let c = 0; c < 4; c++) {
-			let editorA = await window.showTextDocument(docA, ViewColumn.One);
-			assertActiveEditor(editorA);
+			let editorA = AwAit window.showTextDocument(docA, ViewColumn.One);
+			AssertActiveEditor(editorA);
 
-			let editorB = await window.showTextDocument(docB, ViewColumn.Two);
-			assertActiveEditor(editorB);
+			let editorB = AwAit window.showTextDocument(docB, ViewColumn.Two);
+			AssertActiveEditor(editorB);
 		}
 	});
 
-	test('default column when opening a file', async () => {
-		const [docA, docB, docC] = await Promise.all([
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile())
+	test('defAult column when opening A file', Async () => {
+		const [docA, docB, docC] = AwAit Promise.All([
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile())
 		]);
 
-		await window.showTextDocument(docA, ViewColumn.One);
-		await window.showTextDocument(docB, ViewColumn.Two);
+		AwAit window.showTextDocument(docA, ViewColumn.One);
+		AwAit window.showTextDocument(docB, ViewColumn.Two);
 
-		assert.ok(window.activeTextEditor);
-		assert.ok(window.activeTextEditor!.document === docB);
-		assert.equal(window.activeTextEditor!.viewColumn, ViewColumn.Two);
+		Assert.ok(window.ActiveTextEditor);
+		Assert.ok(window.ActiveTextEditor!.document === docB);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, ViewColumn.Two);
 
-		const editor = await window.showTextDocument(docC);
-		assert.ok(
-			window.activeTextEditor === editor,
-			`wanted fileName:${editor.document.fileName}/viewColumn:${editor.viewColumn} but got fileName:${window.activeTextEditor!.document.fileName}/viewColumn:${window.activeTextEditor!.viewColumn}. a:${docA.fileName}, b:${docB.fileName}, c:${docC.fileName}`
+		const editor = AwAit window.showTextDocument(docC);
+		Assert.ok(
+			window.ActiveTextEditor === editor,
+			`wAnted fileNAme:${editor.document.fileNAme}/viewColumn:${editor.viewColumn} but got fileNAme:${window.ActiveTextEditor!.document.fileNAme}/viewColumn:${window.ActiveTextEditor!.viewColumn}. A:${docA.fileNAme}, b:${docB.fileNAme}, c:${docC.fileNAme}`
 		);
-		assert.ok(window.activeTextEditor!.document === docC);
-		assert.equal(window.activeTextEditor!.viewColumn, ViewColumn.Two);
+		Assert.ok(window.ActiveTextEditor!.document === docC);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, ViewColumn.Two);
 	});
 
-	test('showTextDocument ViewColumn.BESIDE', async () => {
-		const [docA, docB, docC] = await Promise.all([
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile())
+	test('showTextDocument ViewColumn.BESIDE', Async () => {
+		const [docA, docB, docC] = AwAit Promise.All([
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile())
 		]);
 
-		await window.showTextDocument(docA, ViewColumn.One);
-		await window.showTextDocument(docB, ViewColumn.Beside);
+		AwAit window.showTextDocument(docA, ViewColumn.One);
+		AwAit window.showTextDocument(docB, ViewColumn.Beside);
 
-		assert.ok(window.activeTextEditor);
-		assert.ok(window.activeTextEditor!.document === docB);
-		assert.equal(window.activeTextEditor!.viewColumn, ViewColumn.Two);
+		Assert.ok(window.ActiveTextEditor);
+		Assert.ok(window.ActiveTextEditor!.document === docB);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, ViewColumn.Two);
 
-		await window.showTextDocument(docC, ViewColumn.Beside);
+		AwAit window.showTextDocument(docC, ViewColumn.Beside);
 
-		assert.ok(window.activeTextEditor!.document === docC);
-		assert.equal(window.activeTextEditor!.viewColumn, ViewColumn.Three);
+		Assert.ok(window.ActiveTextEditor!.document === docC);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, ViewColumn.Three);
 	});
 
-	test('showTextDocument ViewColumn is always defined (even when opening > ViewColumn.Nine)', async () => {
-		const [doc1, doc2, doc3, doc4, doc5, doc6, doc7, doc8, doc9, doc10] = await Promise.all([
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile())
+	test('showTextDocument ViewColumn is AlwAys defined (even when opening > ViewColumn.Nine)', Async () => {
+		const [doc1, doc2, doc3, doc4, doc5, doc6, doc7, doc8, doc9, doc10] = AwAit Promise.All([
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile())
 		]);
 
-		await window.showTextDocument(doc1, ViewColumn.One);
-		await window.showTextDocument(doc2, ViewColumn.Two);
-		await window.showTextDocument(doc3, ViewColumn.Three);
-		await window.showTextDocument(doc4, ViewColumn.Four);
-		await window.showTextDocument(doc5, ViewColumn.Five);
-		await window.showTextDocument(doc6, ViewColumn.Six);
-		await window.showTextDocument(doc7, ViewColumn.Seven);
-		await window.showTextDocument(doc8, ViewColumn.Eight);
-		await window.showTextDocument(doc9, ViewColumn.Nine);
-		await window.showTextDocument(doc10, ViewColumn.Beside);
+		AwAit window.showTextDocument(doc1, ViewColumn.One);
+		AwAit window.showTextDocument(doc2, ViewColumn.Two);
+		AwAit window.showTextDocument(doc3, ViewColumn.Three);
+		AwAit window.showTextDocument(doc4, ViewColumn.Four);
+		AwAit window.showTextDocument(doc5, ViewColumn.Five);
+		AwAit window.showTextDocument(doc6, ViewColumn.Six);
+		AwAit window.showTextDocument(doc7, ViewColumn.Seven);
+		AwAit window.showTextDocument(doc8, ViewColumn.Eight);
+		AwAit window.showTextDocument(doc9, ViewColumn.Nine);
+		AwAit window.showTextDocument(doc10, ViewColumn.Beside);
 
-		assert.ok(window.activeTextEditor);
-		assert.ok(window.activeTextEditor!.document === doc10);
-		assert.equal(window.activeTextEditor!.viewColumn, 10);
+		Assert.ok(window.ActiveTextEditor);
+		Assert.ok(window.ActiveTextEditor!.document === doc10);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, 10);
 	});
 
-	test('issue #27408 - showTextDocument & vscode.diff always default to ViewColumn.One', async () => {
-		const [docA, docB, docC] = await Promise.all([
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile()),
-			workspace.openTextDocument(await createRandomFile())
+	test('issue #27408 - showTextDocument & vscode.diff AlwAys defAult to ViewColumn.One', Async () => {
+		const [docA, docB, docC] = AwAit Promise.All([
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile()),
+			workspAce.openTextDocument(AwAit creAteRAndomFile())
 		]);
 
-		await window.showTextDocument(docA, ViewColumn.One);
-		await window.showTextDocument(docB, ViewColumn.Two);
+		AwAit window.showTextDocument(docA, ViewColumn.One);
+		AwAit window.showTextDocument(docB, ViewColumn.Two);
 
-		assert.ok(window.activeTextEditor);
-		assert.ok(window.activeTextEditor!.document === docB);
-		assert.equal(window.activeTextEditor!.viewColumn, ViewColumn.Two);
+		Assert.ok(window.ActiveTextEditor);
+		Assert.ok(window.ActiveTextEditor!.document === docB);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, ViewColumn.Two);
 
-		await window.showTextDocument(docC, ViewColumn.Active);
+		AwAit window.showTextDocument(docC, ViewColumn.Active);
 
-		assert.ok(window.activeTextEditor!.document === docC);
-		assert.equal(window.activeTextEditor!.viewColumn, ViewColumn.Two);
+		Assert.ok(window.ActiveTextEditor!.document === docC);
+		Assert.equAl(window.ActiveTextEditor!.viewColumn, ViewColumn.Two);
 	});
 
-	test('issue #5362 - Incorrect TextEditor passed by onDidChangeTextEditorSelection', (done) => {
-		const file10Path = join(workspace.rootPath || '', './10linefile.ts');
-		const file30Path = join(workspace.rootPath || '', './30linefile.ts');
+	test('issue #5362 - Incorrect TextEditor pAssed by onDidChAngeTextEditorSelection', (done) => {
+		const file10PAth = join(workspAce.rootPAth || '', './10linefile.ts');
+		const file30PAth = join(workspAce.rootPAth || '', './30linefile.ts');
 
-		let finished = false;
-		let failOncePlease = (err: Error) => {
+		let finished = fAlse;
+		let fAilOncePleAse = (err: Error) => {
 			if (finished) {
 				return;
 			}
@@ -286,7 +286,7 @@ suite('vscode API - window', () => {
 			done(err);
 		};
 
-		let passOncePlease = () => {
+		let pAssOncePleAse = () => {
 			if (finished) {
 				return;
 			}
@@ -294,18 +294,18 @@ suite('vscode API - window', () => {
 			done(null);
 		};
 
-		let subscription = window.onDidChangeTextEditorSelection((e) => {
+		let subscription = window.onDidChAngeTextEditorSelection((e) => {
 			let lineCount = e.textEditor.document.lineCount;
-			let pos1 = e.textEditor.selections[0].active.line;
-			let pos2 = e.selections[0].active.line;
+			let pos1 = e.textEditor.selections[0].Active.line;
+			let pos2 = e.selections[0].Active.line;
 
 			if (pos1 !== pos2) {
-				failOncePlease(new Error('received invalid selection changed event!'));
+				fAilOncePleAse(new Error('received invAlid selection chAnged event!'));
 				return;
 			}
 
 			if (pos1 >= lineCount) {
-				failOncePlease(new Error(`Cursor position (${pos1}) is not valid in the document ${e.textEditor.document.fileName} that has ${lineCount} lines.`));
+				fAilOncePleAse(new Error(`Cursor position (${pos1}) is not vAlid in the document ${e.textEditor.document.fileNAme} thAt hAs ${lineCount} lines.`));
 				return;
 			}
 		});
@@ -314,205 +314,205 @@ suite('vscode API - window', () => {
 		// Open 30 line file, show it in slot 1, set cursor to line 30
 		// Open 10 line file, show it in slot 1
 		// Open 30 line file, show it in slot 1
-		workspace.openTextDocument(file10Path).then((doc) => {
+		workspAce.openTextDocument(file10PAth).then((doc) => {
 			return window.showTextDocument(doc, ViewColumn.One);
 		}).then((editor10line) => {
 			editor10line.selection = new Selection(new Position(9, 0), new Position(9, 0));
 		}).then(() => {
-			return workspace.openTextDocument(file30Path);
+			return workspAce.openTextDocument(file30PAth);
 		}).then((doc) => {
 			return window.showTextDocument(doc, ViewColumn.One);
 		}).then((editor30line) => {
 			editor30line.selection = new Selection(new Position(29, 0), new Position(29, 0));
 		}).then(() => {
-			return workspace.openTextDocument(file10Path);
+			return workspAce.openTextDocument(file10PAth);
 		}).then((doc) => {
 			return window.showTextDocument(doc, ViewColumn.One);
 		}).then(() => {
-			return workspace.openTextDocument(file30Path);
+			return workspAce.openTextDocument(file30PAth);
 		}).then((doc) => {
 			return window.showTextDocument(doc, ViewColumn.One);
 		}).then(() => {
 			subscription.dispose();
-		}).then(passOncePlease, failOncePlease);
+		}).then(pAssOncePleAse, fAilOncePleAse);
 	});
 
 	test('#7013 - input without options', function () {
-		const source = new CancellationTokenSource();
+		const source = new CAncellAtionTokenSource();
 		let p = window.showInputBox(undefined, source.token);
-		assert.ok(typeof p === 'object');
+		Assert.ok(typeof p === 'object');
 		source.dispose();
 	});
 
-	test('showInputBox - undefined on cancel', async function () {
-		const source = new CancellationTokenSource();
+	test('showInputBox - undefined on cAncel', Async function () {
+		const source = new CAncellAtionTokenSource();
 		const p = window.showInputBox(undefined, source.token);
-		source.cancel();
-		const value = await p;
-		assert.equal(value, undefined);
+		source.cAncel();
+		const vAlue = AwAit p;
+		Assert.equAl(vAlue, undefined);
 	});
 
-	test('showInputBox - cancel early', async function () {
-		const source = new CancellationTokenSource();
-		source.cancel();
+	test('showInputBox - cAncel eArly', Async function () {
+		const source = new CAncellAtionTokenSource();
+		source.cAncel();
 		const p = window.showInputBox(undefined, source.token);
-		const value = await p;
-		assert.equal(value, undefined);
+		const vAlue = AwAit p;
+		Assert.equAl(vAlue, undefined);
 	});
 
 	test('showInputBox - \'\' on Enter', function () {
 		const p = window.showInputBox();
-		return Promise.all<any>([
-			commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem'),
-			p.then(value => assert.equal(value, ''))
+		return Promise.All<Any>([
+			commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem'),
+			p.then(vAlue => Assert.equAl(vAlue, ''))
 		]);
 	});
 
-	test('showInputBox - default value on Enter', function () {
-		const p = window.showInputBox({ value: 'farboo' });
-		return Promise.all<any>([
-			p.then(value => assert.equal(value, 'farboo')),
-			commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem'),
+	test('showInputBox - defAult vAlue on Enter', function () {
+		const p = window.showInputBox({ vAlue: 'fArboo' });
+		return Promise.All<Any>([
+			p.then(vAlue => Assert.equAl(vAlue, 'fArboo')),
+			commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem'),
 		]);
 	});
 
 	test('showInputBox - `undefined` on Esc', function () {
 		const p = window.showInputBox();
-		return Promise.all<any>([
-			commands.executeCommand('workbench.action.closeQuickOpen'),
-			p.then(value => assert.equal(value, undefined))
+		return Promise.All<Any>([
+			commAnds.executeCommAnd('workbench.Action.closeQuickOpen'),
+			p.then(vAlue => Assert.equAl(vAlue, undefined))
 		]);
 	});
 
-	test('showInputBox - `undefined` on Esc (despite default)', function () {
-		const p = window.showInputBox({ value: 'farboo' });
-		return Promise.all<any>([
-			commands.executeCommand('workbench.action.closeQuickOpen'),
-			p.then(value => assert.equal(value, undefined))
+	test('showInputBox - `undefined` on Esc (despite defAult)', function () {
+		const p = window.showInputBox({ vAlue: 'fArboo' });
+		return Promise.All<Any>([
+			commAnds.executeCommAnd('workbench.Action.closeQuickOpen'),
+			p.then(vAlue => Assert.equAl(vAlue, undefined))
 		]);
 	});
 
-	test('showInputBox - value not empty on second try', async function () {
-		const one = window.showInputBox({ value: 'notempty' });
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		assert.equal(await one, 'notempty');
-		const two = window.showInputBox({ value: 'notempty' });
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		assert.equal(await two, 'notempty');
+	test('showInputBox - vAlue not empty on second try', Async function () {
+		const one = window.showInputBox({ vAlue: 'notempty' });
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		Assert.equAl(AwAit one, 'notempty');
+		const two = window.showInputBox({ vAlue: 'notempty' });
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		Assert.equAl(AwAit two, 'notempty');
 	});
 
-	test('showQuickPick, accept first', async function () {
-		const tracker = createQuickPickTracker<string>();
-		const first = tracker.nextItem();
+	test('showQuickPick, Accept first', Async function () {
+		const trAcker = creAteQuickPickTrAcker<string>();
+		const first = trAcker.nextItem();
 		const pick = window.showQuickPick(['eins', 'zwei', 'drei'], {
-			onDidSelectItem: tracker.onDidSelectItem
+			onDidSelectItem: trAcker.onDidSelectItem
 		});
-		assert.equal(await first, 'eins');
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		assert.equal(await pick, 'eins');
-		return tracker.done();
+		Assert.equAl(AwAit first, 'eins');
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		Assert.equAl(AwAit pick, 'eins');
+		return trAcker.done();
 	});
 
-	test('showQuickPick, accept second', async function () {
-		const tracker = createQuickPickTracker<string>();
-		const first = tracker.nextItem();
+	test('showQuickPick, Accept second', Async function () {
+		const trAcker = creAteQuickPickTrAcker<string>();
+		const first = trAcker.nextItem();
 		const pick = window.showQuickPick(['eins', 'zwei', 'drei'], {
-			onDidSelectItem: tracker.onDidSelectItem
+			onDidSelectItem: trAcker.onDidSelectItem
 		});
-		assert.equal(await first, 'eins');
-		const second = tracker.nextItem();
-		await commands.executeCommand('workbench.action.quickOpenSelectNext');
-		assert.equal(await second, 'zwei');
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		assert.equal(await pick, 'zwei');
-		return tracker.done();
+		Assert.equAl(AwAit first, 'eins');
+		const second = trAcker.nextItem();
+		AwAit commAnds.executeCommAnd('workbench.Action.quickOpenSelectNext');
+		Assert.equAl(AwAit second, 'zwei');
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		Assert.equAl(AwAit pick, 'zwei');
+		return trAcker.done();
 	});
 
-	test('showQuickPick, select first two', async function () {
-		const label = 'showQuickPick, select first two';
+	test('showQuickPick, select first two', Async function () {
+		const lAbel = 'showQuickPick, select first two';
 		let i = 0;
-		const resolves: ((value: string) => void)[] = [];
+		const resolves: ((vAlue: string) => void)[] = [];
 		let done: () => void;
 		const unexpected = new Promise<void>((resolve, reject) => {
 			done = () => resolve();
 			resolves.push(reject);
 		});
 		const picks = window.showQuickPick(['eins', 'zwei', 'drei'], {
-			onDidSelectItem: item => resolves.pop()!(item as string),
-			canPickMany: true
+			onDidSelectItem: item => resolves.pop()!(item As string),
+			cAnPickMAny: true
 		});
 		const first = new Promise(resolve => resolves.push(resolve));
-		console.log(`${label}: ${++i}`);
-		await new Promise(resolve => setTimeout(resolve, 100)); // Allow UI to update.
-		console.log(`${label}: ${++i}`);
-		await commands.executeCommand('workbench.action.quickOpenSelectNext');
-		console.log(`${label}: ${++i}`);
-		assert.equal(await first, 'eins');
-		console.log(`${label}: ${++i}`);
-		await commands.executeCommand('workbench.action.quickPickManyToggle');
-		console.log(`${label}: ${++i}`);
+		console.log(`${lAbel}: ${++i}`);
+		AwAit new Promise(resolve => setTimeout(resolve, 100)); // Allow UI to updAte.
+		console.log(`${lAbel}: ${++i}`);
+		AwAit commAnds.executeCommAnd('workbench.Action.quickOpenSelectNext');
+		console.log(`${lAbel}: ${++i}`);
+		Assert.equAl(AwAit first, 'eins');
+		console.log(`${lAbel}: ${++i}`);
+		AwAit commAnds.executeCommAnd('workbench.Action.quickPickMAnyToggle');
+		console.log(`${lAbel}: ${++i}`);
 		const second = new Promise(resolve => resolves.push(resolve));
-		await commands.executeCommand('workbench.action.quickOpenSelectNext');
-		console.log(`${label}: ${++i}`);
-		assert.equal(await second, 'zwei');
-		console.log(`${label}: ${++i}`);
-		await commands.executeCommand('workbench.action.quickPickManyToggle');
-		console.log(`${label}: ${++i}`);
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		console.log(`${label}: ${++i}`);
-		assert.deepStrictEqual(await picks, ['eins', 'zwei']);
-		console.log(`${label}: ${++i}`);
+		AwAit commAnds.executeCommAnd('workbench.Action.quickOpenSelectNext');
+		console.log(`${lAbel}: ${++i}`);
+		Assert.equAl(AwAit second, 'zwei');
+		console.log(`${lAbel}: ${++i}`);
+		AwAit commAnds.executeCommAnd('workbench.Action.quickPickMAnyToggle');
+		console.log(`${lAbel}: ${++i}`);
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		console.log(`${lAbel}: ${++i}`);
+		Assert.deepStrictEquAl(AwAit picks, ['eins', 'zwei']);
+		console.log(`${lAbel}: ${++i}`);
 		done!();
 		return unexpected;
 	});
 
-	test('showQuickPick, keep selection (microsoft/vscode-azure-account#67)', async function () {
+	test('showQuickPick, keep selection (microsoft/vscode-Azure-Account#67)', Async function () {
 		const picks = window.showQuickPick([
-			{ label: 'eins' },
-			{ label: 'zwei', picked: true },
-			{ label: 'drei', picked: true }
+			{ lAbel: 'eins' },
+			{ lAbel: 'zwei', picked: true },
+			{ lAbel: 'drei', picked: true }
 		], {
-			canPickMany: true
+			cAnPickMAny: true
 		});
-		await new Promise<void>(resolve => setTimeout(() => resolve(), 100));
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		if (await Promise.race([picks, new Promise<boolean>(resolve => setTimeout(() => resolve(false), 100))]) === false) {
-			await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-			if (await Promise.race([picks, new Promise<boolean>(resolve => setTimeout(() => resolve(false), 1000))]) === false) {
-				await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-				if (await Promise.race([picks, new Promise<boolean>(resolve => setTimeout(() => resolve(false), 1000))]) === false) {
-					assert.ok(false, 'Picks not resolved!');
+		AwAit new Promise<void>(resolve => setTimeout(() => resolve(), 100));
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		if (AwAit Promise.rAce([picks, new Promise<booleAn>(resolve => setTimeout(() => resolve(fAlse), 100))]) === fAlse) {
+			AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+			if (AwAit Promise.rAce([picks, new Promise<booleAn>(resolve => setTimeout(() => resolve(fAlse), 1000))]) === fAlse) {
+				AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+				if (AwAit Promise.rAce([picks, new Promise<booleAn>(resolve => setTimeout(() => resolve(fAlse), 1000))]) === fAlse) {
+					Assert.ok(fAlse, 'Picks not resolved!');
 				}
 			}
 		}
-		assert.deepStrictEqual((await picks)!.map(pick => pick.label), ['zwei', 'drei']);
+		Assert.deepStrictEquAl((AwAit picks)!.mAp(pick => pick.lAbel), ['zwei', 'drei']);
 	});
 
-	test('showQuickPick, undefined on cancel', function () {
-		const source = new CancellationTokenSource();
+	test('showQuickPick, undefined on cAncel', function () {
+		const source = new CAncellAtionTokenSource();
 		const p = window.showQuickPick(['eins', 'zwei', 'drei'], undefined, source.token);
-		source.cancel();
-		return p.then(value => {
-			assert.equal(value, undefined);
+		source.cAncel();
+		return p.then(vAlue => {
+			Assert.equAl(vAlue, undefined);
 		});
 	});
 
-	test('showQuickPick, cancel early', function () {
-		const source = new CancellationTokenSource();
-		source.cancel();
+	test('showQuickPick, cAncel eArly', function () {
+		const source = new CAncellAtionTokenSource();
+		source.cAncel();
 		const p = window.showQuickPick(['eins', 'zwei', 'drei'], undefined, source.token);
-		return p.then(value => {
-			assert.equal(value, undefined);
+		return p.then(vAlue => {
+			Assert.equAl(vAlue, undefined);
 		});
 	});
 
-	test('showQuickPick, canceled by another picker', function () {
+	test('showQuickPick, cAnceled by Another picker', function () {
 
-		const source = new CancellationTokenSource();
+		const source = new CAncellAtionTokenSource();
 
 		const result = window.showQuickPick(['eins', 'zwei', 'drei'], { ignoreFocusOut: true }).then(result => {
-			source.cancel();
-			assert.equal(result, undefined);
+			source.cAncel();
+			Assert.equAl(result, undefined);
 		});
 
 		window.showQuickPick(['eins', 'zwei', 'drei'], undefined, source.token);
@@ -520,79 +520,79 @@ suite('vscode API - window', () => {
 		return result;
 	});
 
-	test('showQuickPick, canceled by input', function () {
+	test('showQuickPick, cAnceled by input', function () {
 
 		const result = window.showQuickPick(['eins', 'zwei', 'drei'], { ignoreFocusOut: true }).then(result => {
-			assert.equal(result, undefined);
+			Assert.equAl(result, undefined);
 		});
 
-		const source = new CancellationTokenSource();
+		const source = new CAncellAtionTokenSource();
 		window.showInputBox(undefined, source.token);
-		source.cancel();
+		source.cAncel();
 
 		return result;
 	});
 
-	test('showQuickPick, native promise - #11754', async function () {
+	test('showQuickPick, nAtive promise - #11754', Async function () {
 
-		const data = new Promise<string[]>(resolve => {
-			resolve(['a', 'b', 'c']);
+		const dAtA = new Promise<string[]>(resolve => {
+			resolve(['A', 'b', 'c']);
 		});
 
-		const source = new CancellationTokenSource();
-		const result = window.showQuickPick(data, undefined, source.token);
-		source.cancel();
-		const value_1 = await result;
-		assert.equal(value_1, undefined);
+		const source = new CAncellAtionTokenSource();
+		const result = window.showQuickPick(dAtA, undefined, source.token);
+		source.cAncel();
+		const vAlue_1 = AwAit result;
+		Assert.equAl(vAlue_1, undefined);
 	});
 
-	test('showQuickPick, never resolve promise and cancel - #22453', function () {
+	test('showQuickPick, never resolve promise And cAncel - #22453', function () {
 
 		const result = window.showQuickPick(new Promise<string[]>(_resolve => { }));
 
-		const a = result.then(value => {
-			assert.equal(value, undefined);
+		const A = result.then(vAlue => {
+			Assert.equAl(vAlue, undefined);
 		});
-		const b = commands.executeCommand('workbench.action.closeQuickOpen');
-		return Promise.all([a, b]);
+		const b = commAnds.executeCommAnd('workbench.Action.closeQuickOpen');
+		return Promise.All([A, b]);
 	});
 
-	test('showWorkspaceFolderPick', async function () {
-		const p = window.showWorkspaceFolderPick(undefined);
+	test('showWorkspAceFolderPick', Async function () {
+		const p = window.showWorkspAceFolderPick(undefined);
 
-		await new Promise(resolve => setTimeout(resolve, 10));
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		const r1 = await Promise.race([p, new Promise<boolean>(resolve => setTimeout(() => resolve(false), 100))]);
-		if (r1 !== false) {
+		AwAit new Promise(resolve => setTimeout(resolve, 10));
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		const r1 = AwAit Promise.rAce([p, new Promise<booleAn>(resolve => setTimeout(() => resolve(fAlse), 100))]);
+		if (r1 !== fAlse) {
 			return;
 		}
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		const r2 = await Promise.race([p, new Promise<boolean>(resolve => setTimeout(() => resolve(false), 1000))]);
-		if (r2 !== false) {
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		const r2 = AwAit Promise.rAce([p, new Promise<booleAn>(resolve => setTimeout(() => resolve(fAlse), 1000))]);
+		if (r2 !== fAlse) {
 			return;
 		}
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		const r3 = await Promise.race([p, new Promise<boolean>(resolve => setTimeout(() => resolve(false), 1000))]);
-		assert.ok(r3 !== false);
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		const r3 = AwAit Promise.rAce([p, new Promise<booleAn>(resolve => setTimeout(() => resolve(fAlse), 1000))]);
+		Assert.ok(r3 !== fAlse);
 	});
 
-	test('Default value for showInput Box not accepted when it fails validateInput, reversing #33691', async function () {
+	test('DefAult vAlue for showInput Box not Accepted when it fAils vAlidAteInput, reversing #33691', Async function () {
 		const result = window.showInputBox({
-			validateInput: (value: string) => {
-				if (!value || value.trim().length === 0) {
-					return 'Cannot set empty description';
+			vAlidAteInput: (vAlue: string) => {
+				if (!vAlue || vAlue.trim().length === 0) {
+					return 'CAnnot set empty description';
 				}
 				return null;
 			}
 		});
 
-		await commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
-		await commands.executeCommand('workbench.action.closeQuickOpen');
-		assert.equal(await result, undefined);
+		AwAit commAnds.executeCommAnd('workbench.Action.AcceptSelectedQuickOpenItem');
+		AwAit commAnds.executeCommAnd('workbench.Action.closeQuickOpen');
+		Assert.equAl(AwAit result, undefined);
 	});
 
-	function createQuickPickTracker<T extends string | QuickPickItem>() {
-		const resolves: ((value: T) => void)[] = [];
+	function creAteQuickPickTrAcker<T extends string | QuickPickItem>() {
+		const resolves: ((vAlue: T) => void)[] = [];
 		let done: () => void;
 		const unexpected = new Promise<void>((resolve, reject) => {
 			done = () => resolve();
@@ -609,21 +609,21 @@ suite('vscode API - window', () => {
 	}
 
 
-	test('editor, selection change kind', () => {
-		return workspace.openTextDocument(join(workspace.rootPath || '', './far.js')).then(doc => window.showTextDocument(doc)).then(editor => {
+	test('editor, selection chAnge kind', () => {
+		return workspAce.openTextDocument(join(workspAce.rootPAth || '', './fAr.js')).then(doc => window.showTextDocument(doc)).then(editor => {
 
 
 			return new Promise<void>((resolve, _reject) => {
 
-				let subscription = window.onDidChangeTextEditorSelection(e => {
-					assert.ok(e.textEditor === editor);
-					assert.equal(e.kind, TextEditorSelectionChangeKind.Command);
+				let subscription = window.onDidChAngeTextEditorSelection(e => {
+					Assert.ok(e.textEditor === editor);
+					Assert.equAl(e.kind, TextEditorSelectionChAngeKind.CommAnd);
 
 					subscription.dispose();
 					resolve();
 				});
 
-				editor.selection = new Selection(editor.selection.anchor, editor.selection.active.translate(2));
+				editor.selection = new Selection(editor.selection.Anchor, editor.selection.Active.trAnslAte(2));
 			});
 
 		});

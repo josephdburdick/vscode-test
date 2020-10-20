@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./iPadShowKeyboard';
-import * as browser from 'vs/base/browser/browser';
-import * as dom from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ICodeEditor, IOverlayWidget, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
+import 'vs/css!./iPAdShowKeyboArd';
+import * As browser from 'vs/bAse/browser/browser';
+import * As dom from 'vs/bAse/browser/dom';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ICodeEditor, IOverlAyWidget, IOverlAyWidgetPosition, OverlAyWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
 import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class IPadShowKeyboard extends Disposable implements IEditorContribution {
+export clAss IPAdShowKeyboArd extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.iPadShowKeyboard';
+	public stAtic reAdonly ID = 'editor.contrib.iPAdShowKeyboArd';
 
-	private readonly editor: ICodeEditor;
-	private widget: ShowKeyboardWidget | null;
+	privAte reAdonly editor: ICodeEditor;
+	privAte widget: ShowKeyboArdWidget | null;
 
 	constructor(editor: ICodeEditor) {
 		super();
 		this.editor = editor;
 		this.widget = null;
-		if (browser.isIPad) {
-			this._register(editor.onDidChangeConfiguration(() => this.update()));
-			this.update();
+		if (browser.isIPAd) {
+			this._register(editor.onDidChAngeConfigurAtion(() => this.updAte()));
+			this.updAte();
 		}
 	}
 
-	private update(): void {
-		const shouldHaveWidget = (!this.editor.getOption(EditorOption.readOnly));
+	privAte updAte(): void {
+		const shouldHAveWidget = (!this.editor.getOption(EditorOption.reAdOnly));
 
-		if (!this.widget && shouldHaveWidget) {
+		if (!this.widget && shouldHAveWidget) {
 
-			this.widget = new ShowKeyboardWidget(this.editor);
+			this.widget = new ShowKeyboArdWidget(this.editor);
 
-		} else if (this.widget && !shouldHaveWidget) {
+		} else if (this.widget && !shouldHAveWidget) {
 
 			this.widget.dispose();
 			this.widget = null;
@@ -53,50 +53,50 @@ export class IPadShowKeyboard extends Disposable implements IEditorContribution 
 	}
 }
 
-class ShowKeyboardWidget extends Disposable implements IOverlayWidget {
+clAss ShowKeyboArdWidget extends DisposAble implements IOverlAyWidget {
 
-	private static readonly ID = 'editor.contrib.ShowKeyboardWidget';
+	privAte stAtic reAdonly ID = 'editor.contrib.ShowKeyboArdWidget';
 
-	private readonly editor: ICodeEditor;
+	privAte reAdonly editor: ICodeEditor;
 
-	private readonly _domNode: HTMLElement;
+	privAte reAdonly _domNode: HTMLElement;
 
 	constructor(editor: ICodeEditor) {
 		super();
 		this.editor = editor;
-		this._domNode = document.createElement('textarea');
-		this._domNode.className = 'iPadShowKeyboard';
+		this._domNode = document.creAteElement('textAreA');
+		this._domNode.clAssNAme = 'iPAdShowKeyboArd';
 
-		this._register(dom.addDisposableListener(this._domNode, 'touchstart', (e) => {
+		this._register(dom.AddDisposAbleListener(this._domNode, 'touchstArt', (e) => {
 			this.editor.focus();
 		}));
-		this._register(dom.addDisposableListener(this._domNode, 'focus', (e) => {
+		this._register(dom.AddDisposAbleListener(this._domNode, 'focus', (e) => {
 			this.editor.focus();
 		}));
 
-		this.editor.addOverlayWidget(this);
+		this.editor.AddOverlAyWidget(this);
 	}
 
 	public dispose(): void {
-		this.editor.removeOverlayWidget(this);
+		this.editor.removeOverlAyWidget(this);
 		super.dispose();
 	}
 
-	// ----- IOverlayWidget API
+	// ----- IOverlAyWidget API
 
 	public getId(): string {
-		return ShowKeyboardWidget.ID;
+		return ShowKeyboArdWidget.ID;
 	}
 
 	public getDomNode(): HTMLElement {
 		return this._domNode;
 	}
 
-	public getPosition(): IOverlayWidgetPosition {
+	public getPosition(): IOverlAyWidgetPosition {
 		return {
-			preference: OverlayWidgetPositionPreference.BOTTOM_RIGHT_CORNER
+			preference: OverlAyWidgetPositionPreference.BOTTOM_RIGHT_CORNER
 		};
 	}
 }
 
-registerEditorContribution(IPadShowKeyboard.ID, IPadShowKeyboard);
+registerEditorContribution(IPAdShowKeyboArd.ID, IPAdShowKeyboArd);

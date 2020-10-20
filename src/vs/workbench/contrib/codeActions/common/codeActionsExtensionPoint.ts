@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import * As nls from 'vs/nls';
+import { IConfigurAtionPropertySchemA } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { lAnguAgesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
 
 export enum CodeActionExtensionPointFields {
-	languages = 'languages',
-	actions = 'actions',
+	lAnguAges = 'lAnguAges',
+	Actions = 'Actions',
 	kind = 'kind',
 	title = 'title',
 	description = 'description'
 }
 
-export interface ContributedCodeAction {
-	readonly [CodeActionExtensionPointFields.kind]: string;
-	readonly [CodeActionExtensionPointFields.title]: string;
-	readonly [CodeActionExtensionPointFields.description]?: string;
+export interfAce ContributedCodeAction {
+	reAdonly [CodeActionExtensionPointFields.kind]: string;
+	reAdonly [CodeActionExtensionPointFields.title]: string;
+	reAdonly [CodeActionExtensionPointFields.description]?: string;
 }
 
-export interface CodeActionsExtensionPoint {
-	readonly [CodeActionExtensionPointFields.languages]: readonly string[];
-	readonly [CodeActionExtensionPointFields.actions]: readonly ContributedCodeAction[];
+export interfAce CodeActionsExtensionPoint {
+	reAdonly [CodeActionExtensionPointFields.lAnguAges]: reAdonly string[];
+	reAdonly [CodeActionExtensionPointFields.Actions]: reAdonly ContributedCodeAction[];
 }
 
-const codeActionsExtensionPointSchema = Object.freeze<IConfigurationPropertySchema>({
-	type: 'array',
-	markdownDescription: nls.localize('contributes.codeActions', "Configure which editor to use for a resource."),
+const codeActionsExtensionPointSchemA = Object.freeze<IConfigurAtionPropertySchemA>({
+	type: 'ArrAy',
+	mArkdownDescription: nls.locAlize('contributes.codeActions', "Configure which editor to use for A resource."),
 	items: {
 		type: 'object',
-		required: [CodeActionExtensionPointFields.languages, CodeActionExtensionPointFields.actions],
+		required: [CodeActionExtensionPointFields.lAnguAges, CodeActionExtensionPointFields.Actions],
 		properties: {
-			[CodeActionExtensionPointFields.languages]: {
-				type: 'array',
-				description: nls.localize('contributes.codeActions.languages', "Language modes that the code actions are enabled for."),
+			[CodeActionExtensionPointFields.lAnguAges]: {
+				type: 'ArrAy',
+				description: nls.locAlize('contributes.codeActions.lAnguAges', "LAnguAge modes thAt the code Actions Are enAbled for."),
 				items: { type: 'string' }
 			},
-			[CodeActionExtensionPointFields.actions]: {
+			[CodeActionExtensionPointFields.Actions]: {
 				type: 'object',
 				required: [CodeActionExtensionPointFields.kind, CodeActionExtensionPointFields.title],
 				properties: {
 					[CodeActionExtensionPointFields.kind]: {
 						type: 'string',
-						markdownDescription: nls.localize('contributes.codeActions.kind', "`CodeActionKind` of the contributed code action."),
+						mArkdownDescription: nls.locAlize('contributes.codeActions.kind', "`CodeActionKind` of the contributed code Action."),
 					},
 					[CodeActionExtensionPointFields.title]: {
 						type: 'string',
-						description: nls.localize('contributes.codeActions.title', "Label for the code action used in the UI."),
+						description: nls.locAlize('contributes.codeActions.title', "LAbel for the code Action used in the UI."),
 					},
 					[CodeActionExtensionPointFields.description]: {
 						type: 'string',
-						description: nls.localize('contributes.codeActions.description', "Description of what the code action does."),
+						description: nls.locAlize('contributes.codeActions.description', "Description of whAt the code Action does."),
 					},
 				}
 			}
@@ -62,6 +62,6 @@ const codeActionsExtensionPointSchema = Object.freeze<IConfigurationPropertySche
 
 export const codeActionsExtensionPointDescriptor = {
 	extensionPoint: 'codeActions',
-	deps: [languagesExtPoint],
-	jsonSchema: codeActionsExtensionPointSchema
+	deps: [lAnguAgesExtPoint],
+	jsonSchemA: codeActionsExtensionPointSchemA
 };

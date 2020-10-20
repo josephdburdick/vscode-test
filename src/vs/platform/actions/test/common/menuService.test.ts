@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MenuRegistry, MenuId, isIMenuItem } from 'vs/platform/actions/common/actions';
-import { MenuService } from 'vs/platform/actions/common/menuService';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { NullCommandService } from 'vs/platform/commands/common/commands';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
+import * As Assert from 'Assert';
+import { MenuRegistry, MenuId, isIMenuItem } from 'vs/plAtform/Actions/common/Actions';
+import { MenuService } from 'vs/plAtform/Actions/common/menuService';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { NullCommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { MockContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
 
-// --- service instances
+// --- service instAnces
 
-const contextKeyService = new class extends MockContextKeyService {
-	contextMatchesRules() {
+const contextKeyService = new clAss extends MockContextKeyService {
+	contextMAtchesRules() {
 		return true;
 	}
 };
@@ -23,181 +23,181 @@ const contextKeyService = new class extends MockContextKeyService {
 suite('MenuService', function () {
 
 	let menuService: MenuService;
-	const disposables = new DisposableStore();
+	const disposAbles = new DisposAbleStore();
 	let testMenuId: MenuId;
 
 	setup(function () {
-		menuService = new MenuService(NullCommandService);
+		menuService = new MenuService(NullCommAndService);
 		testMenuId = new MenuId('testo');
-		disposables.clear();
+		disposAbles.cleAr();
 	});
 
-	teardown(function () {
-		disposables.clear();
+	teArdown(function () {
+		disposAbles.cleAr();
 	});
 
 	test('group sorting', function () {
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'one', title: 'FOO' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'one', title: 'FOO' },
 			group: '0_hello'
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'two', title: 'FOO' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'two', title: 'FOO' },
 			group: 'hello'
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'three', title: 'FOO' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'three', title: 'FOO' },
 			group: 'Hello'
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'four', title: 'FOO' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'four', title: 'FOO' },
 			group: ''
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'five', title: 'FOO' },
-			group: 'navigation'
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'five', title: 'FOO' },
+			group: 'nAvigAtion'
 		}));
 
-		const groups = menuService.createMenu(testMenuId, contextKeyService).getActions();
+		const groups = menuService.creAteMenu(testMenuId, contextKeyService).getActions();
 
-		assert.equal(groups.length, 5);
+		Assert.equAl(groups.length, 5);
 		const [one, two, three, four, five] = groups;
 
-		assert.equal(one[0], 'navigation');
-		assert.equal(two[0], '0_hello');
-		assert.equal(three[0], 'hello');
-		assert.equal(four[0], 'Hello');
-		assert.equal(five[0], '');
+		Assert.equAl(one[0], 'nAvigAtion');
+		Assert.equAl(two[0], '0_hello');
+		Assert.equAl(three[0], 'hello');
+		Assert.equAl(four[0], 'Hello');
+		Assert.equAl(five[0], '');
 	});
 
 	test('in group sorting, by title', function () {
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'a', title: 'aaa' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'A', title: 'AAA' },
 			group: 'Hello'
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'b', title: 'fff' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'b', title: 'fff' },
 			group: 'Hello'
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'c', title: 'zzz' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'c', title: 'zzz' },
 			group: 'Hello'
 		}));
 
-		const groups = menuService.createMenu(testMenuId, contextKeyService).getActions();
+		const groups = menuService.creAteMenu(testMenuId, contextKeyService).getActions();
 
-		assert.equal(groups.length, 1);
-		const [, actions] = groups[0];
+		Assert.equAl(groups.length, 1);
+		const [, Actions] = groups[0];
 
-		assert.equal(actions.length, 3);
-		const [one, two, three] = actions;
-		assert.equal(one.id, 'a');
-		assert.equal(two.id, 'b');
-		assert.equal(three.id, 'c');
+		Assert.equAl(Actions.length, 3);
+		const [one, two, three] = Actions;
+		Assert.equAl(one.id, 'A');
+		Assert.equAl(two.id, 'b');
+		Assert.equAl(three.id, 'c');
 	});
 
-	test('in group sorting, by title and order', function () {
+	test('in group sorting, by title And order', function () {
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'a', title: 'aaa' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'A', title: 'AAA' },
 			group: 'Hello',
 			order: 10
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'b', title: 'fff' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'b', title: 'fff' },
 			group: 'Hello'
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'c', title: 'zzz' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'c', title: 'zzz' },
 			group: 'Hello',
 			order: -1
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'd', title: 'yyy' },
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'd', title: 'yyy' },
 			group: 'Hello',
 			order: -1
 		}));
 
-		const groups = menuService.createMenu(testMenuId, contextKeyService).getActions();
+		const groups = menuService.creAteMenu(testMenuId, contextKeyService).getActions();
 
-		assert.equal(groups.length, 1);
-		const [, actions] = groups[0];
+		Assert.equAl(groups.length, 1);
+		const [, Actions] = groups[0];
 
-		assert.equal(actions.length, 4);
-		const [one, two, three, four] = actions;
-		assert.equal(one.id, 'd');
-		assert.equal(two.id, 'c');
-		assert.equal(three.id, 'b');
-		assert.equal(four.id, 'a');
+		Assert.equAl(Actions.length, 4);
+		const [one, two, three, four] = Actions;
+		Assert.equAl(one.id, 'd');
+		Assert.equAl(two.id, 'c');
+		Assert.equAl(three.id, 'b');
+		Assert.equAl(four.id, 'A');
 	});
 
 
-	test('in group sorting, special: navigation', function () {
+	test('in group sorting, speciAl: nAvigAtion', function () {
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'a', title: 'aaa' },
-			group: 'navigation',
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'A', title: 'AAA' },
+			group: 'nAvigAtion',
 			order: 1.3
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'b', title: 'fff' },
-			group: 'navigation',
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'b', title: 'fff' },
+			group: 'nAvigAtion',
 			order: 1.2
 		}));
 
-		disposables.add(MenuRegistry.appendMenuItem(testMenuId, {
-			command: { id: 'c', title: 'zzz' },
-			group: 'navigation',
+		disposAbles.Add(MenuRegistry.AppendMenuItem(testMenuId, {
+			commAnd: { id: 'c', title: 'zzz' },
+			group: 'nAvigAtion',
 			order: 1.1
 		}));
 
-		const groups = menuService.createMenu(testMenuId, contextKeyService).getActions();
+		const groups = menuService.creAteMenu(testMenuId, contextKeyService).getActions();
 
-		assert.equal(groups.length, 1);
-		const [[, actions]] = groups;
+		Assert.equAl(groups.length, 1);
+		const [[, Actions]] = groups;
 
-		assert.equal(actions.length, 3);
-		const [one, two, three] = actions;
-		assert.equal(one.id, 'c');
-		assert.equal(two.id, 'b');
-		assert.equal(three.id, 'a');
+		Assert.equAl(Actions.length, 3);
+		const [one, two, three] = Actions;
+		Assert.equAl(one.id, 'c');
+		Assert.equAl(two.id, 'b');
+		Assert.equAl(three.id, 'A');
 	});
 
-	test('special MenuId palette', function () {
+	test('speciAl MenuId pAlette', function () {
 
-		disposables.add(MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-			command: { id: 'a', title: 'Explicit' }
+		disposAbles.Add(MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+			commAnd: { id: 'A', title: 'Explicit' }
 		}));
 
-		MenuRegistry.addCommand({ id: 'b', title: 'Implicit' });
+		MenuRegistry.AddCommAnd({ id: 'b', title: 'Implicit' });
 
-		let foundA = false;
-		let foundB = false;
-		for (const item of MenuRegistry.getMenuItems(MenuId.CommandPalette)) {
+		let foundA = fAlse;
+		let foundB = fAlse;
+		for (const item of MenuRegistry.getMenuItems(MenuId.CommAndPAlette)) {
 			if (isIMenuItem(item)) {
-				if (item.command.id === 'a') {
-					assert.equal(item.command.title, 'Explicit');
+				if (item.commAnd.id === 'A') {
+					Assert.equAl(item.commAnd.title, 'Explicit');
 					foundA = true;
 				}
-				if (item.command.id === 'b') {
-					assert.equal(item.command.title, 'Implicit');
+				if (item.commAnd.id === 'b') {
+					Assert.equAl(item.commAnd.title, 'Implicit');
 					foundB = true;
 				}
 			}
 		}
-		assert.equal(foundA, true);
-		assert.equal(foundB, true);
+		Assert.equAl(foundA, true);
+		Assert.equAl(foundB, true);
 	});
 });

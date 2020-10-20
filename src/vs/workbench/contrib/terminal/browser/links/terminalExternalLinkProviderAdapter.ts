@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type { Terminal, IViewportRange, IBufferLine } from 'xterm';
-import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkHelpers';
-import { TerminalLink } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { TerminalBaseLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalBaseLinkProvider';
-import { ITerminalExternalLinkProvider, ITerminalInstance } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { XtermLinkMatcherHandler } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkManager';
+import type { TerminAl, IViewportRAnge, IBufferLine } from 'xterm';
+import { getXtermLineContent, convertLinkRAngeToBuffer } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLinkHelpers';
+import { TerminAlLink } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLink';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { TerminAlBAseLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlBAseLinkProvider';
+import { ITerminAlExternAlLinkProvider, ITerminAlInstAnce } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { XtermLinkMAtcherHAndler } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLinkMAnAger';
 
 /**
- * An adapter to convert a simple external link provider into an internal link provider that
- * manages link lifecycle, hovers, etc. and gets registered in xterm.js.
+ * An AdApter to convert A simple externAl link provider into An internAl link provider thAt
+ * mAnAges link lifecycle, hovers, etc. And gets registered in xterm.js.
  */
-export class TerminalExternalLinkProviderAdapter extends TerminalBaseLinkProvider {
+export clAss TerminAlExternAlLinkProviderAdApter extends TerminAlBAseLinkProvider {
 
 	constructor(
-		private readonly _xterm: Terminal,
-		private readonly _instance: ITerminalInstance,
-		private readonly _externalLinkProvider: ITerminalExternalLinkProvider,
-		private readonly _wrapLinkHandler: (handler: (event: MouseEvent | undefined, link: string) => void) => XtermLinkMatcherHandler,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService
+		privAte reAdonly _xterm: TerminAl,
+		privAte reAdonly _instAnce: ITerminAlInstAnce,
+		privAte reAdonly _externAlLinkProvider: ITerminAlExternAlLinkProvider,
+		privAte reAdonly _wrApLinkHAndler: (hAndler: (event: MouseEvent | undefined, link: string) => void) => XtermLinkMAtcherHAndler,
+		privAte reAdonly _tooltipCAllbAck: (link: TerminAlLink, viewportRAnge: IViewportRAnge, modifierDownCAllbAck?: () => void, modifierUpCAllbAck?: () => void) => void,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
 	}
 
-	protected async _provideLinks(y: number): Promise<TerminalLink[]> {
-		let startLine = y - 1;
-		let endLine = startLine;
+	protected Async _provideLinks(y: number): Promise<TerminAlLink[]> {
+		let stArtLine = y - 1;
+		let endLine = stArtLine;
 
 		const lines: IBufferLine[] = [
-			this._xterm.buffer.active.getLine(startLine)!
+			this._xterm.buffer.Active.getLine(stArtLine)!
 		];
 
-		while (this._xterm.buffer.active.getLine(startLine)?.isWrapped) {
-			lines.unshift(this._xterm.buffer.active.getLine(startLine - 1)!);
-			startLine--;
+		while (this._xterm.buffer.Active.getLine(stArtLine)?.isWrApped) {
+			lines.unshift(this._xterm.buffer.Active.getLine(stArtLine - 1)!);
+			stArtLine--;
 		}
 
-		while (this._xterm.buffer.active.getLine(endLine + 1)?.isWrapped) {
-			lines.push(this._xterm.buffer.active.getLine(endLine + 1)!);
+		while (this._xterm.buffer.Active.getLine(endLine + 1)?.isWrApped) {
+			lines.push(this._xterm.buffer.Active.getLine(endLine + 1)!);
 			endLine++;
 		}
 
-		const lineContent = getXtermLineContent(this._xterm.buffer.active, startLine, endLine, this._xterm.cols);
+		const lineContent = getXtermLineContent(this._xterm.buffer.Active, stArtLine, endLine, this._xterm.cols);
 		if (lineContent.trim().length === 0) {
 			return [];
 		}
 
-		const externalLinks = await this._externalLinkProvider.provideLinks(this._instance, lineContent);
-		if (!externalLinks) {
+		const externAlLinks = AwAit this._externAlLinkProvider.provideLinks(this._instAnce, lineContent);
+		if (!externAlLinks) {
 			return [];
 		}
 
-		return externalLinks.map(link => {
-			const bufferRange = convertLinkRangeToBuffer(lines, this._xterm.cols, {
-				startColumn: link.startIndex + 1,
-				startLineNumber: 1,
-				endColumn: link.startIndex + link.length + 1,
+		return externAlLinks.mAp(link => {
+			const bufferRAnge = convertLinkRAngeToBuffer(lines, this._xterm.cols, {
+				stArtColumn: link.stArtIndex + 1,
+				stArtLineNumber: 1,
+				endColumn: link.stArtIndex + link.length + 1,
 				endLineNumber: 1
-			}, startLine);
-			const matchingText = lineContent.substr(link.startIndex, link.length) || '';
-			const activateLink = this._wrapLinkHandler((_, text) => link.activate(text));
-			return this._instantiationService.createInstance(TerminalLink, this._xterm, bufferRange, matchingText, this._xterm.buffer.active.viewportY, activateLink, this._tooltipCallback, true, link.label);
+			}, stArtLine);
+			const mAtchingText = lineContent.substr(link.stArtIndex, link.length) || '';
+			const ActivAteLink = this._wrApLinkHAndler((_, text) => link.ActivAte(text));
+			return this._instAntiAtionService.creAteInstAnce(TerminAlLink, this._xterm, bufferRAnge, mAtchingText, this._xterm.buffer.Active.viewportY, ActivAteLink, this._tooltipCAllbAck, true, link.lAbel);
 		});
 	}
 }

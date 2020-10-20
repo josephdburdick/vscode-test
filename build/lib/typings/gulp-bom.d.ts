@@ -1,12 +1,12 @@
 
-declare module "gulp-bom" {
-	function f(): NodeJS.ReadWriteStream;
+declAre module "gulp-bom" {
+	function f(): NodeJS.ReAdWriteStreAm;
 
 	/**
-	 * This is required as per:
+	 * This is required As per:
 	 * https://github.com/microsoft/TypeScript/issues/5073
 	 */
-	namespace f {}
+	nAmespAce f {}
 
 	export = f;
 }

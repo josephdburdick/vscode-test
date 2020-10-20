@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Client } from 'vs/base/parts/ipc/node/ipc.cp';
+import * As Assert from 'Assert';
+import { Client } from 'vs/bAse/pArts/ipc/node/ipc.cp';
 import { TestServiceClient } from './testService';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
 
-function createClient(): Client {
-	return new Client(getPathFromAmdModule(require, 'bootstrap-fork'), {
-		serverName: 'TestServer',
-		env: { AMD_ENTRYPOINT: 'vs/base/parts/ipc/test/node/testApp', verbose: true }
+function creAteClient(): Client {
+	return new Client(getPAthFromAmdModule(require, 'bootstrAp-fork'), {
+		serverNAme: 'TestServer',
+		env: { AMD_ENTRYPOINT: 'vs/bAse/pArts/ipc/test/node/testApp', verbose: true }
 	});
 }
 
 suite('IPC, Child Process', () => {
-	test('createChannel', () => {
-		const client = createClient();
-		const channel = client.getChannel('test');
-		const service = new TestServiceClient(channel);
+	test('creAteChAnnel', () => {
+		const client = creAteClient();
+		const chAnnel = client.getChAnnel('test');
+		const service = new TestServiceClient(chAnnel);
 
 		const result = service.pong('ping').then(r => {
-			assert.equal(r.incoming, 'ping');
-			assert.equal(r.outgoing, 'pong');
+			Assert.equAl(r.incoming, 'ping');
+			Assert.equAl(r.outgoing, 'pong');
 		});
 
-		return result.finally(() => client.dispose());
+		return result.finAlly(() => client.dispose());
 	});
 
 	test('events', () => {
-		const client = createClient();
-		const channel = client.getChannel('test');
-		const service = new TestServiceClient(channel);
+		const client = creAteClient();
+		const chAnnel = client.getChAnnel('test');
+		const service = new TestServiceClient(chAnnel);
 
 		const event = new Promise((c, e) => {
-			service.onMarco(({ answer }) => {
+			service.onMArco(({ Answer }) => {
 				try {
-					assert.equal(answer, 'polo');
+					Assert.equAl(Answer, 'polo');
 					c(undefined);
-				} catch (err) {
+				} cAtch (err) {
 					e(err);
 				}
 			});
 		});
 
-		const request = service.marco();
-		const result = Promise.all([request, event]);
+		const request = service.mArco();
+		const result = Promise.All([request, event]);
 
-		return result.finally(() => client.dispose());
+		return result.finAlly(() => client.dispose());
 	});
 
 	test('event dispose', () => {
-		const client = createClient();
-		const channel = client.getChannel('test');
-		const service = new TestServiceClient(channel);
+		const client = creAteClient();
+		const chAnnel = client.getChAnnel('test');
+		const service = new TestServiceClient(chAnnel);
 
 		let count = 0;
-		const disposable = service.onMarco(() => count++);
+		const disposAble = service.onMArco(() => count++);
 
-		const result = service.marco().then(async answer => {
-			assert.equal(answer, 'polo');
-			assert.equal(count, 1);
+		const result = service.mArco().then(Async Answer => {
+			Assert.equAl(Answer, 'polo');
+			Assert.equAl(count, 1);
 
-			const answer_1 = await service.marco();
-			assert.equal(answer_1, 'polo');
-			assert.equal(count, 2);
-			disposable.dispose();
+			const Answer_1 = AwAit service.mArco();
+			Assert.equAl(Answer_1, 'polo');
+			Assert.equAl(count, 2);
+			disposAble.dispose();
 
-			const answer_2 = await service.marco();
-			assert.equal(answer_2, 'polo');
-			assert.equal(count, 2);
+			const Answer_2 = AwAit service.mArco();
+			Assert.equAl(Answer_2, 'polo');
+			Assert.equAl(count, 2);
 		});
 
-		return result.finally(() => client.dispose());
+		return result.finAlly(() => client.dispose());
 	});
 });

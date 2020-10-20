@@ -1,96 +1,96 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IAuthenticationProvider, SyncStatus, SyncResource, Change, MergeState } from 'vs/platform/userDataSync/common/userDataSync';
-import { Event } from 'vs/base/common/event';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { localize } from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IAuthenticAtionProvider, SyncStAtus, SyncResource, ChAnge, MergeStAte } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { Event } from 'vs/bAse/common/event';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { locAlize } from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
 
-export interface IUserDataSyncAccount {
-	readonly authenticationProviderId: string;
-	readonly accountName: string;
-	readonly accountId: string;
+export interfAce IUserDAtASyncAccount {
+	reAdonly AuthenticAtionProviderId: string;
+	reAdonly AccountNAme: string;
+	reAdonly AccountId: string;
 }
 
-export interface IUserDataSyncPreview {
-	readonly onDidChangeResources: Event<ReadonlyArray<IUserDataSyncResource>>;
-	readonly resources: ReadonlyArray<IUserDataSyncResource>;
+export interfAce IUserDAtASyncPreview {
+	reAdonly onDidChAngeResources: Event<ReAdonlyArrAy<IUserDAtASyncResource>>;
+	reAdonly resources: ReAdonlyArrAy<IUserDAtASyncResource>;
 
-	accept(syncResource: SyncResource, resource: URI, content?: string | null): Promise<void>;
+	Accept(syncResource: SyncResource, resource: URI, content?: string | null): Promise<void>;
 	merge(resource?: URI): Promise<void>;
-	discard(resource?: URI): Promise<void>;
+	discArd(resource?: URI): Promise<void>;
 	pull(): Promise<void>;
 	push(): Promise<void>;
-	apply(): Promise<void>;
-	cancel(): Promise<void>;
+	Apply(): Promise<void>;
+	cAncel(): Promise<void>;
 }
 
-export interface IUserDataSyncResource {
-	readonly syncResource: SyncResource;
-	readonly local: URI;
-	readonly remote: URI;
-	readonly merged: URI;
-	readonly accepted: URI;
-	readonly localChange: Change;
-	readonly remoteChange: Change;
-	readonly mergeState: MergeState;
+export interfAce IUserDAtASyncResource {
+	reAdonly syncResource: SyncResource;
+	reAdonly locAl: URI;
+	reAdonly remote: URI;
+	reAdonly merged: URI;
+	reAdonly Accepted: URI;
+	reAdonly locAlChAnge: ChAnge;
+	reAdonly remoteChAnge: ChAnge;
+	reAdonly mergeStAte: MergeStAte;
 }
 
-export const IUserDataSyncWorkbenchService = createDecorator<IUserDataSyncWorkbenchService>('IUserDataSyncWorkbenchService');
-export interface IUserDataSyncWorkbenchService {
-	_serviceBrand: any;
+export const IUserDAtASyncWorkbenchService = creAteDecorAtor<IUserDAtASyncWorkbenchService>('IUserDAtASyncWorkbenchService');
+export interfAce IUserDAtASyncWorkbenchService {
+	_serviceBrAnd: Any;
 
-	readonly enabled: boolean;
-	readonly authenticationProviders: IAuthenticationProvider[];
+	reAdonly enAbled: booleAn;
+	reAdonly AuthenticAtionProviders: IAuthenticAtionProvider[];
 
-	readonly all: IUserDataSyncAccount[];
-	readonly current: IUserDataSyncAccount | undefined;
+	reAdonly All: IUserDAtASyncAccount[];
+	reAdonly current: IUserDAtASyncAccount | undefined;
 
-	readonly accountStatus: AccountStatus;
-	readonly onDidChangeAccountStatus: Event<AccountStatus>;
+	reAdonly AccountStAtus: AccountStAtus;
+	reAdonly onDidChAngeAccountStAtus: Event<AccountStAtus>;
 
-	readonly userDataSyncPreview: IUserDataSyncPreview;
+	reAdonly userDAtASyncPreview: IUserDAtASyncPreview;
 
 	turnOn(): Promise<void>;
-	turnoff(everyWhere: boolean): Promise<void>;
+	turnoff(everyWhere: booleAn): Promise<void>;
 	signIn(): Promise<void>;
 
-	resetSyncedData(): Promise<void>;
+	resetSyncedDAtA(): Promise<void>;
 	showSyncActivity(): Promise<void>;
 }
 
-export function getSyncAreaLabel(source: SyncResource): string {
+export function getSyncAreALAbel(source: SyncResource): string {
 	switch (source) {
-		case SyncResource.Settings: return localize('settings', "Settings");
-		case SyncResource.Keybindings: return localize('keybindings', "Keyboard Shortcuts");
-		case SyncResource.Snippets: return localize('snippets', "User Snippets");
-		case SyncResource.Extensions: return localize('extensions', "Extensions");
-		case SyncResource.GlobalState: return localize('ui state label', "UI State");
+		cAse SyncResource.Settings: return locAlize('settings', "Settings");
+		cAse SyncResource.Keybindings: return locAlize('keybindings', "KeyboArd Shortcuts");
+		cAse SyncResource.Snippets: return locAlize('snippets', "User Snippets");
+		cAse SyncResource.Extensions: return locAlize('extensions', "Extensions");
+		cAse SyncResource.GlobAlStAte: return locAlize('ui stAte lAbel', "UI StAte");
 	}
 }
 
-export const enum AccountStatus {
-	Uninitialized = 'uninitialized',
-	Unavailable = 'unavailable',
-	Available = 'available',
+export const enum AccountStAtus {
+	UninitiAlized = 'uninitiAlized',
+	UnAvAilAble = 'unAvAilAble',
+	AvAilAble = 'AvAilAble',
 }
 
-export const SYNC_TITLE = localize('sync category', "Settings Sync");
+export const SYNC_TITLE = locAlize('sync cAtegory', "Settings Sync");
 
 // Contexts
-export const CONTEXT_SYNC_STATE = new RawContextKey<string>('syncStatus', SyncStatus.Uninitialized);
-export const CONTEXT_SYNC_ENABLEMENT = new RawContextKey<boolean>('syncEnabled', false);
-export const CONTEXT_ACCOUNT_STATE = new RawContextKey<string>('userDataSyncAccountStatus', AccountStatus.Uninitialized);
-export const CONTEXT_ENABLE_ACTIVITY_VIEWS = new RawContextKey<boolean>(`enableSyncActivityViews`, false);
-export const CONTEXT_ENABLE_SYNC_MERGES_VIEW = new RawContextKey<boolean>(`enableSyncMergesView`, false);
+export const CONTEXT_SYNC_STATE = new RAwContextKey<string>('syncStAtus', SyncStAtus.UninitiAlized);
+export const CONTEXT_SYNC_ENABLEMENT = new RAwContextKey<booleAn>('syncEnAbled', fAlse);
+export const CONTEXT_ACCOUNT_STATE = new RAwContextKey<string>('userDAtASyncAccountStAtus', AccountStAtus.UninitiAlized);
+export const CONTEXT_ENABLE_ACTIVITY_VIEWS = new RAwContextKey<booleAn>(`enAbleSyncActivityViews`, fAlse);
+export const CONTEXT_ENABLE_SYNC_MERGES_VIEW = new RAwContextKey<booleAn>(`enAbleSyncMergesView`, fAlse);
 
-// Commands
-export const CONFIGURE_SYNC_COMMAND_ID = 'workbench.userDataSync.actions.configure';
-export const SHOW_SYNC_LOG_COMMAND_ID = 'workbench.userDataSync.actions.showLog';
+// CommAnds
+export const CONFIGURE_SYNC_COMMAND_ID = 'workbench.userDAtASync.Actions.configure';
+export const SHOW_SYNC_LOG_COMMAND_ID = 'workbench.userDAtASync.Actions.showLog';
 
 // VIEWS
 export const SYNC_VIEW_CONTAINER_ID = 'workbench.view.sync';

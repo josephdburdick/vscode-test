@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { ISelectedSuggestion, SuggestWidget } from './suggestWidget';
-import { CharacterSet } from 'vs/editor/common/core/characterClassifier';
+import { ChArActerSet } from 'vs/editor/common/core/chArActerClAssifier';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class CommitCharacterController {
+export clAss CommitChArActerController {
 
-	private readonly _disposables = new DisposableStore();
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
-	private _active?: {
-		readonly acceptCharacters: CharacterSet;
-		readonly item: ISelectedSuggestion;
+	privAte _Active?: {
+		reAdonly AcceptChArActers: ChArActerSet;
+		reAdonly item: ISelectedSuggestion;
 	};
 
-	constructor(editor: ICodeEditor, widget: SuggestWidget, accept: (selected: ISelectedSuggestion) => any) {
+	constructor(editor: ICodeEditor, widget: SuggestWidget, Accept: (selected: ISelectedSuggestion) => Any) {
 
-		this._disposables.add(widget.onDidShow(() => this._onItem(widget.getFocusedItem())));
-		this._disposables.add(widget.onDidFocus(this._onItem, this));
-		this._disposables.add(widget.onDidHide(this.reset, this));
+		this._disposAbles.Add(widget.onDidShow(() => this._onItem(widget.getFocusedItem())));
+		this._disposAbles.Add(widget.onDidFocus(this._onItem, this));
+		this._disposAbles.Add(widget.onDidHide(this.reset, this));
 
-		this._disposables.add(editor.onWillType(text => {
-			if (this._active && !widget.isFrozen()) {
-				const ch = text.charCodeAt(text.length - 1);
-				if (this._active.acceptCharacters.has(ch) && editor.getOption(EditorOption.acceptSuggestionOnCommitCharacter)) {
-					accept(this._active.item);
+		this._disposAbles.Add(editor.onWillType(text => {
+			if (this._Active && !widget.isFrozen()) {
+				const ch = text.chArCodeAt(text.length - 1);
+				if (this._Active.AcceptChArActers.hAs(ch) && editor.getOption(EditorOption.AcceptSuggestionOnCommitChArActer)) {
+					Accept(this._Active.item);
 				}
 			}
 		}));
 	}
 
-	private _onItem(selected: ISelectedSuggestion | undefined): void {
-		if (!selected || !isNonEmptyArray(selected.item.completion.commitCharacters)) {
-			// no item or no commit characters
+	privAte _onItem(selected: ISelectedSuggestion | undefined): void {
+		if (!selected || !isNonEmptyArrAy(selected.item.completion.commitChArActers)) {
+			// no item or no commit chArActers
 			this.reset();
 			return;
 		}
 
-		if (this._active && this._active.item.item === selected.item) {
-			// still the same item
+		if (this._Active && this._Active.item.item === selected.item) {
+			// still the sAme item
 			return;
 		}
 
-		// keep item and its commit characters
-		const acceptCharacters = new CharacterSet();
-		for (const ch of selected.item.completion.commitCharacters) {
+		// keep item And its commit chArActers
+		const AcceptChArActers = new ChArActerSet();
+		for (const ch of selected.item.completion.commitChArActers) {
 			if (ch.length > 0) {
-				acceptCharacters.add(ch.charCodeAt(0));
+				AcceptChArActers.Add(ch.chArCodeAt(0));
 			}
 		}
-		this._active = { acceptCharacters, item: selected };
+		this._Active = { AcceptChArActers, item: selected };
 	}
 
 	reset(): void {
-		this._active = undefined;
+		this._Active = undefined;
 	}
 
 	dispose() {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 	}
 }

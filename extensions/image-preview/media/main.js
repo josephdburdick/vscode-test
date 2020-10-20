@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 "use strict";
 
 (function () {
 	/**
-	 * @param {number} value
-	 * @param {number} min
-	 * @param {number} max
+	 * @pArAm {number} vAlue
+	 * @pArAm {number} min
+	 * @pArAm {number} mAx
 	 * @return {number}
 	 */
-	function clamp(value, min, max) {
-		return Math.min(Math.max(value, min), max);
+	function clAmp(vAlue, min, mAx) {
+		return MAth.min(MAth.mAx(vAlue, min), mAx);
 	}
 
 	function getSettings() {
-		const element = document.getElementById('image-preview-settings');
+		const element = document.getElementById('imAge-preview-settings');
 		if (element) {
-			const data = element.getAttribute('data-settings');
-			if (data) {
-				return JSON.parse(data);
+			const dAtA = element.getAttribute('dAtA-settings');
+			if (dAtA) {
+				return JSON.pArse(dAtA);
 			}
 		}
 
-		throw new Error(`Could not load settings`);
+		throw new Error(`Could not loAd settings`);
 	}
 
 	/**
-	 * Enable image-rendering: pixelated for images scaled by more than this.
+	 * EnAble imAge-rendering: pixelAted for imAges scAled by more thAn this.
 	 */
 	const PIXELATION_THRESHOLD = 3;
 
@@ -59,149 +59,149 @@
 	];
 
 	const settings = getSettings();
-	const isMac = settings.isMac;
+	const isMAc = settings.isMAc;
 
-	const vscode = acquireVsCodeApi();
+	const vscode = AcquireVsCodeApi();
 
-	const initialState = vscode.getState() || { scale: 'fit', offsetX: 0, offsetY: 0 };
+	const initiAlStAte = vscode.getStAte() || { scAle: 'fit', offsetX: 0, offsetY: 0 };
 
-	// State
-	let scale = initialState.scale;
-	let ctrlPressed = false;
-	let altPressed = false;
-	let hasLoadedImage = false;
+	// StAte
+	let scAle = initiAlStAte.scAle;
+	let ctrlPressed = fAlse;
+	let AltPressed = fAlse;
+	let hAsLoAdedImAge = fAlse;
 	let consumeClick = true;
-	let isActive = false;
+	let isActive = fAlse;
 
 	// Elements
-	const container = document.body;
-	const image = document.createElement('img');
+	const contAiner = document.body;
+	const imAge = document.creAteElement('img');
 
-	function updateScale(newScale) {
-		if (!image || !hasLoadedImage || !image.parentElement) {
+	function updAteScAle(newScAle) {
+		if (!imAge || !hAsLoAdedImAge || !imAge.pArentElement) {
 			return;
 		}
 
-		if (newScale === 'fit') {
-			scale = 'fit';
-			image.classList.add('scale-to-fit');
-			image.classList.remove('pixelated');
-			image.style.minWidth = 'auto';
-			image.style.width = 'auto';
-			vscode.setState(undefined);
+		if (newScAle === 'fit') {
+			scAle = 'fit';
+			imAge.clAssList.Add('scAle-to-fit');
+			imAge.clAssList.remove('pixelAted');
+			imAge.style.minWidth = 'Auto';
+			imAge.style.width = 'Auto';
+			vscode.setStAte(undefined);
 		} else {
-			scale = clamp(newScale, MIN_SCALE, MAX_SCALE);
-			if (scale >= PIXELATION_THRESHOLD) {
-				image.classList.add('pixelated');
+			scAle = clAmp(newScAle, MIN_SCALE, MAX_SCALE);
+			if (scAle >= PIXELATION_THRESHOLD) {
+				imAge.clAssList.Add('pixelAted');
 			} else {
-				image.classList.remove('pixelated');
+				imAge.clAssList.remove('pixelAted');
 			}
 
-			const dx = (window.scrollX + container.clientWidth / 2) / container.scrollWidth;
-			const dy = (window.scrollY + container.clientHeight / 2) / container.scrollHeight;
+			const dx = (window.scrollX + contAiner.clientWidth / 2) / contAiner.scrollWidth;
+			const dy = (window.scrollY + contAiner.clientHeight / 2) / contAiner.scrollHeight;
 
-			image.classList.remove('scale-to-fit');
-			image.style.minWidth = `${(image.naturalWidth * scale)}px`;
-			image.style.width = `${(image.naturalWidth * scale)}px`;
+			imAge.clAssList.remove('scAle-to-fit');
+			imAge.style.minWidth = `${(imAge.nAturAlWidth * scAle)}px`;
+			imAge.style.width = `${(imAge.nAturAlWidth * scAle)}px`;
 
-			const newScrollX = container.scrollWidth * dx - container.clientWidth / 2;
-			const newScrollY = container.scrollHeight * dy - container.clientHeight / 2;
+			const newScrollX = contAiner.scrollWidth * dx - contAiner.clientWidth / 2;
+			const newScrollY = contAiner.scrollHeight * dy - contAiner.clientHeight / 2;
 
 			window.scrollTo(newScrollX, newScrollY);
 
-			vscode.setState({ scale: scale, offsetX: newScrollX, offsetY: newScrollY });
+			vscode.setStAte({ scAle: scAle, offsetX: newScrollX, offsetY: newScrollY });
 		}
 
-		vscode.postMessage({
+		vscode.postMessAge({
 			type: 'zoom',
-			value: scale
+			vAlue: scAle
 		});
 	}
 
-	function setActive(value) {
-		isActive = value;
-		if (value) {
-			if (isMac ? altPressed : ctrlPressed) {
-				container.classList.remove('zoom-in');
-				container.classList.add('zoom-out');
+	function setActive(vAlue) {
+		isActive = vAlue;
+		if (vAlue) {
+			if (isMAc ? AltPressed : ctrlPressed) {
+				contAiner.clAssList.remove('zoom-in');
+				contAiner.clAssList.Add('zoom-out');
 			} else {
-				container.classList.remove('zoom-out');
-				container.classList.add('zoom-in');
+				contAiner.clAssList.remove('zoom-out');
+				contAiner.clAssList.Add('zoom-in');
 			}
 		} else {
-			ctrlPressed = false;
-			altPressed = false;
-			container.classList.remove('zoom-out');
-			container.classList.remove('zoom-in');
+			ctrlPressed = fAlse;
+			AltPressed = fAlse;
+			contAiner.clAssList.remove('zoom-out');
+			contAiner.clAssList.remove('zoom-in');
 		}
 	}
 
 	function firstZoom() {
-		if (!image || !hasLoadedImage) {
+		if (!imAge || !hAsLoAdedImAge) {
 			return;
 		}
 
-		scale = image.clientWidth / image.naturalWidth;
-		updateScale(scale);
+		scAle = imAge.clientWidth / imAge.nAturAlWidth;
+		updAteScAle(scAle);
 	}
 
 	function zoomIn() {
-		if (scale === 'fit') {
+		if (scAle === 'fit') {
 			firstZoom();
 		}
 
 		let i = 0;
 		for (; i < zoomLevels.length; ++i) {
-			if (zoomLevels[i] > scale) {
-				break;
+			if (zoomLevels[i] > scAle) {
+				breAk;
 			}
 		}
-		updateScale(zoomLevels[i] || MAX_SCALE);
+		updAteScAle(zoomLevels[i] || MAX_SCALE);
 	}
 
 	function zoomOut() {
-		if (scale === 'fit') {
+		if (scAle === 'fit') {
 			firstZoom();
 		}
 
 		let i = zoomLevels.length - 1;
 		for (; i >= 0; --i) {
-			if (zoomLevels[i] < scale) {
-				break;
+			if (zoomLevels[i] < scAle) {
+				breAk;
 			}
 		}
-		updateScale(zoomLevels[i] || MIN_SCALE);
+		updAteScAle(zoomLevels[i] || MIN_SCALE);
 	}
 
-	window.addEventListener('keydown', (/** @type {KeyboardEvent} */ e) => {
-		if (!image || !hasLoadedImage) {
+	window.AddEventListener('keydown', (/** @type {KeyboArdEvent} */ e) => {
+		if (!imAge || !hAsLoAdedImAge) {
 			return;
 		}
 		ctrlPressed = e.ctrlKey;
-		altPressed = e.altKey;
+		AltPressed = e.AltKey;
 
-		if (isMac ? altPressed : ctrlPressed) {
-			container.classList.remove('zoom-in');
-			container.classList.add('zoom-out');
+		if (isMAc ? AltPressed : ctrlPressed) {
+			contAiner.clAssList.remove('zoom-in');
+			contAiner.clAssList.Add('zoom-out');
 		}
 	});
 
-	window.addEventListener('keyup', (/** @type {KeyboardEvent} */ e) => {
-		if (!image || !hasLoadedImage) {
+	window.AddEventListener('keyup', (/** @type {KeyboArdEvent} */ e) => {
+		if (!imAge || !hAsLoAdedImAge) {
 			return;
 		}
 
 		ctrlPressed = e.ctrlKey;
-		altPressed = e.altKey;
+		AltPressed = e.AltKey;
 
-		if (!(isMac ? altPressed : ctrlPressed)) {
-			container.classList.remove('zoom-out');
-			container.classList.add('zoom-in');
+		if (!(isMAc ? AltPressed : ctrlPressed)) {
+			contAiner.clAssList.remove('zoom-out');
+			contAiner.clAssList.Add('zoom-in');
 		}
 	});
 
-	container.addEventListener('mousedown', (/** @type {MouseEvent} */ e) => {
-		if (!image || !hasLoadedImage) {
+	contAiner.AddEventListener('mousedown', (/** @type {MouseEvent} */ e) => {
+		if (!imAge || !hAsLoAdedImAge) {
 			return;
 		}
 
@@ -210,13 +210,13 @@
 		}
 
 		ctrlPressed = e.ctrlKey;
-		altPressed = e.altKey;
+		AltPressed = e.AltKey;
 
 		consumeClick = !isActive;
 	});
 
-	container.addEventListener('click', (/** @type {MouseEvent} */ e) => {
-		if (!image || !hasLoadedImage) {
+	contAiner.AddEventListener('click', (/** @type {MouseEvent} */ e) => {
+		if (!imAge || !hAsLoAdedImAge) {
 			return;
 		}
 
@@ -225,116 +225,116 @@
 		}
 
 		if (consumeClick) {
-			consumeClick = false;
+			consumeClick = fAlse;
 			return;
 		}
 		// left click
-		if (scale === 'fit') {
+		if (scAle === 'fit') {
 			firstZoom();
 		}
 
-		if (!(isMac ? altPressed : ctrlPressed)) { // zoom in
+		if (!(isMAc ? AltPressed : ctrlPressed)) { // zoom in
 			zoomIn();
 		} else {
 			zoomOut();
 		}
 	});
 
-	container.addEventListener('wheel', (/** @type {WheelEvent} */ e) => {
+	contAiner.AddEventListener('wheel', (/** @type {WheelEvent} */ e) => {
 		// Prevent pinch to zoom
 		if (e.ctrlKey) {
-			e.preventDefault();
+			e.preventDefAult();
 		}
 
-		if (!image || !hasLoadedImage) {
+		if (!imAge || !hAsLoAdedImAge) {
 			return;
 		}
 
-		const isScrollWheelKeyPressed = isMac ? altPressed : ctrlPressed;
-		if (!isScrollWheelKeyPressed && !e.ctrlKey) { // pinching is reported as scroll wheel + ctrl
+		const isScrollWheelKeyPressed = isMAc ? AltPressed : ctrlPressed;
+		if (!isScrollWheelKeyPressed && !e.ctrlKey) { // pinching is reported As scroll wheel + ctrl
 			return;
 		}
 
-		if (scale === 'fit') {
+		if (scAle === 'fit') {
 			firstZoom();
 		}
 
-		let delta = e.deltaY > 0 ? 1 : -1;
-		updateScale(scale * (1 - delta * SCALE_PINCH_FACTOR));
-	}, { passive: false });
+		let deltA = e.deltAY > 0 ? 1 : -1;
+		updAteScAle(scAle * (1 - deltA * SCALE_PINCH_FACTOR));
+	}, { pAssive: fAlse });
 
-	window.addEventListener('scroll', e => {
-		if (!image || !hasLoadedImage || !image.parentElement || scale === 'fit') {
+	window.AddEventListener('scroll', e => {
+		if (!imAge || !hAsLoAdedImAge || !imAge.pArentElement || scAle === 'fit') {
 			return;
 		}
 
-		const entry = vscode.getState();
+		const entry = vscode.getStAte();
 		if (entry) {
-			vscode.setState({ scale: entry.scale, offsetX: window.scrollX, offsetY: window.scrollY });
+			vscode.setStAte({ scAle: entry.scAle, offsetX: window.scrollX, offsetY: window.scrollY });
 		}
-	}, { passive: true });
+	}, { pAssive: true });
 
-	container.classList.add('image');
+	contAiner.clAssList.Add('imAge');
 
-	image.classList.add('scale-to-fit');
+	imAge.clAssList.Add('scAle-to-fit');
 
-	image.addEventListener('load', () => {
-		if (hasLoadedImage) {
+	imAge.AddEventListener('loAd', () => {
+		if (hAsLoAdedImAge) {
 			return;
 		}
-		hasLoadedImage = true;
+		hAsLoAdedImAge = true;
 
-		vscode.postMessage({
+		vscode.postMessAge({
 			type: 'size',
-			value: `${image.naturalWidth}x${image.naturalHeight}`,
+			vAlue: `${imAge.nAturAlWidth}x${imAge.nAturAlHeight}`,
 		});
 
-		document.body.classList.remove('loading');
-		document.body.classList.add('ready');
-		document.body.append(image);
+		document.body.clAssList.remove('loAding');
+		document.body.clAssList.Add('reAdy');
+		document.body.Append(imAge);
 
-		updateScale(scale);
+		updAteScAle(scAle);
 
-		if (initialState.scale !== 'fit') {
-			window.scrollTo(initialState.offsetX, initialState.offsetY);
+		if (initiAlStAte.scAle !== 'fit') {
+			window.scrollTo(initiAlStAte.offsetX, initiAlStAte.offsetY);
 		}
 	});
 
-	image.addEventListener('error', e => {
-		if (hasLoadedImage) {
+	imAge.AddEventListener('error', e => {
+		if (hAsLoAdedImAge) {
 			return;
 		}
 
-		hasLoadedImage = true;
-		document.body.classList.add('error');
-		document.body.classList.remove('loading');
+		hAsLoAdedImAge = true;
+		document.body.clAssList.Add('error');
+		document.body.clAssList.remove('loAding');
 	});
 
-	image.src = settings.src;
+	imAge.src = settings.src;
 
-	document.querySelector('.open-file-link').addEventListener('click', () => {
-		vscode.postMessage({
-			type: 'reopen-as-text',
+	document.querySelector('.open-file-link').AddEventListener('click', () => {
+		vscode.postMessAge({
+			type: 'reopen-As-text',
 		});
 	});
 
-	window.addEventListener('message', e => {
-		switch (e.data.type) {
-			case 'setScale':
-				updateScale(e.data.scale);
-				break;
+	window.AddEventListener('messAge', e => {
+		switch (e.dAtA.type) {
+			cAse 'setScAle':
+				updAteScAle(e.dAtA.scAle);
+				breAk;
 
-			case 'setActive':
-				setActive(e.data.value);
-				break;
+			cAse 'setActive':
+				setActive(e.dAtA.vAlue);
+				breAk;
 
-			case 'zoomIn':
+			cAse 'zoomIn':
 				zoomIn();
-				break;
+				breAk;
 
-			case 'zoomOut':
+			cAse 'zoomOut':
 				zoomOut();
-				break;
+				breAk;
 		}
 	});
 }());

@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface IRPCProtocol {
+export interfAce IRPCProtocol {
 	/**
-	 * Returns a proxy to an object addressable/named in the extension host process or in the renderer process.
+	 * Returns A proxy to An object AddressAble/nAmed in the extension host process or in the renderer process.
 	 */
 	getProxy<T>(identifier: ProxyIdentifier<T>): T;
 
 	/**
-	 * Register manually created instance.
+	 * Register mAnuAlly creAted instAnce.
 	 */
-	set<T, R extends T>(identifier: ProxyIdentifier<T>, instance: R): R;
+	set<T, R extends T>(identifier: ProxyIdentifier<T>, instAnce: R): R;
 
 	/**
-	 * Assert these identifiers are already registered via `.set`.
+	 * Assert these identifiers Are AlreAdy registered viA `.set`.
 	 */
-	assertRegistered(identifiers: ProxyIdentifier<any>[]): void;
+	AssertRegistered(identifiers: ProxyIdentifier<Any>[]): void;
 
 	/**
-	 * Wait for the write buffer (if applicable) to become empty.
+	 * WAit for the write buffer (if ApplicAble) to become empty.
 	 */
-	drain(): Promise<void>;
+	drAin(): Promise<void>;
 }
 
-export class ProxyIdentifier<T> {
-	public static count = 0;
-	_proxyIdentifierBrand: void;
+export clAss ProxyIdentifier<T> {
+	public stAtic count = 0;
+	_proxyIdentifierBrAnd: void;
 
-	public readonly isMain: boolean;
-	public readonly sid: string;
-	public readonly nid: number;
+	public reAdonly isMAin: booleAn;
+	public reAdonly sid: string;
+	public reAdonly nid: number;
 
-	constructor(isMain: boolean, sid: string) {
-		this.isMain = isMain;
+	constructor(isMAin: booleAn, sid: string) {
+		this.isMAin = isMAin;
 		this.sid = sid;
 		this.nid = (++ProxyIdentifier.count);
 	}
 }
 
-const identifiers: ProxyIdentifier<any>[] = [];
+const identifiers: ProxyIdentifier<Any>[] = [];
 
-export function createMainContextProxyIdentifier<T>(identifier: string): ProxyIdentifier<T> {
+export function creAteMAinContextProxyIdentifier<T>(identifier: string): ProxyIdentifier<T> {
 	const result = new ProxyIdentifier<T>(true, identifier);
 	identifiers[result.nid] = result;
 	return result;
 }
 
-export function createExtHostContextProxyIdentifier<T>(identifier: string): ProxyIdentifier<T> {
-	const result = new ProxyIdentifier<T>(false, identifier);
+export function creAteExtHostContextProxyIdentifier<T>(identifier: string): ProxyIdentifier<T> {
+	const result = new ProxyIdentifier<T>(fAlse, identifier);
 	identifiers[result.nid] = result;
 	return result;
 }

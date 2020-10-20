@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { OperatingSystem } from 'vs/base/common/platform';
+import { URI } from 'vs/bAse/common/uri';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
 
-export interface IRemoteAgentEnvironment {
+export interfAce IRemoteAgentEnvironment {
 	pid: number;
 	connectionToken: string;
-	appRoot: URI;
-	settingsPath: URI;
-	logsPath: URI;
-	extensionsPath: URI;
-	extensionHostLogsPath: URI;
-	globalStorageHome: URI;
-	workspaceStorageHome: URI;
+	AppRoot: URI;
+	settingsPAth: URI;
+	logsPAth: URI;
+	extensionsPAth: URI;
+	extensionHostLogsPAth: URI;
+	globAlStorAgeHome: URI;
+	workspAceStorAgeHome: URI;
 	userHome: URI;
-	os: OperatingSystem;
+	os: OperAtingSystem;
 }
 
-export interface RemoteAgentConnectionContext {
+export interfAce RemoteAgentConnectionContext {
 	remoteAuthority: string;
 	clientId: string;
 }

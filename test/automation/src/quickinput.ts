@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-export class QuickInput {
+export clAss QuickInput {
 
-	static QUICK_INPUT = '.quick-input-widget';
-	static QUICK_INPUT_INPUT = `${QuickInput.QUICK_INPUT} .quick-input-box input`;
-	static QUICK_INPUT_ROW = `${QuickInput.QUICK_INPUT} .quick-input-list .monaco-list-row`;
-	static QUICK_INPUT_FOCUSED_ELEMENT = `${QuickInput.QUICK_INPUT_ROW}.focused .monaco-highlighted-label`;
-	static QUICK_INPUT_ENTRY_LABEL = `${QuickInput.QUICK_INPUT_ROW} .label-name`;
-	static QUICK_INPUT_ENTRY_LABEL_SPAN = `${QuickInput.QUICK_INPUT_ROW} .monaco-highlighted-label span`;
+	stAtic QUICK_INPUT = '.quick-input-widget';
+	stAtic QUICK_INPUT_INPUT = `${QuickInput.QUICK_INPUT} .quick-input-box input`;
+	stAtic QUICK_INPUT_ROW = `${QuickInput.QUICK_INPUT} .quick-input-list .monAco-list-row`;
+	stAtic QUICK_INPUT_FOCUSED_ELEMENT = `${QuickInput.QUICK_INPUT_ROW}.focused .monAco-highlighted-lAbel`;
+	stAtic QUICK_INPUT_ENTRY_LABEL = `${QuickInput.QUICK_INPUT_ROW} .lAbel-nAme`;
+	stAtic QUICK_INPUT_ENTRY_LABEL_SPAN = `${QuickInput.QUICK_INPUT_ROW} .monAco-highlighted-lAbel spAn`;
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	async submit(text: string): Promise<void> {
-		await this.code.waitForSetValue(QuickInput.QUICK_INPUT_INPUT, text);
-		await this.code.dispatchKeybinding('enter');
-		await this.waitForQuickInputClosed();
+	Async submit(text: string): Promise<void> {
+		AwAit this.code.wAitForSetVAlue(QuickInput.QUICK_INPUT_INPUT, text);
+		AwAit this.code.dispAtchKeybinding('enter');
+		AwAit this.wAitForQuickInputClosed();
 	}
 
-	async closeQuickInput(): Promise<void> {
-		await this.code.dispatchKeybinding('escape');
-		await this.waitForQuickInputClosed();
+	Async closeQuickInput(): Promise<void> {
+		AwAit this.code.dispAtchKeybinding('escApe');
+		AwAit this.wAitForQuickInputClosed();
 	}
 
-	async waitForQuickInputOpened(retryCount?: number): Promise<void> {
-		await this.code.waitForActiveElement(QuickInput.QUICK_INPUT_INPUT, retryCount);
+	Async wAitForQuickInputOpened(retryCount?: number): Promise<void> {
+		AwAit this.code.wAitForActiveElement(QuickInput.QUICK_INPUT_INPUT, retryCount);
 	}
 
-	async waitForQuickInputElements(accept: (names: string[]) => boolean): Promise<void> {
-		await this.code.waitForElements(QuickInput.QUICK_INPUT_ENTRY_LABEL, false, els => accept(els.map(e => e.textContent)));
+	Async wAitForQuickInputElements(Accept: (nAmes: string[]) => booleAn): Promise<void> {
+		AwAit this.code.wAitForElements(QuickInput.QUICK_INPUT_ENTRY_LABEL, fAlse, els => Accept(els.mAp(e => e.textContent)));
 	}
 
-	async waitForQuickInputClosed(): Promise<void> {
-		await this.code.waitForElement(QuickInput.QUICK_INPUT, r => !!r && r.attributes.style.indexOf('display: none;') !== -1);
+	Async wAitForQuickInputClosed(): Promise<void> {
+		AwAit this.code.wAitForElement(QuickInput.QUICK_INPUT, r => !!r && r.Attributes.style.indexOf('displAy: none;') !== -1);
 	}
 
-	async selectQuickInputElement(index: number): Promise<void> {
-		await this.waitForQuickInputOpened();
+	Async selectQuickInputElement(index: number): Promise<void> {
+		AwAit this.wAitForQuickInputOpened();
 		for (let from = 0; from < index; from++) {
-			await this.code.dispatchKeybinding('down');
+			AwAit this.code.dispAtchKeybinding('down');
 		}
-		await this.code.dispatchKeybinding('enter');
-		await this.waitForQuickInputClosed();
+		AwAit this.code.dispAtchKeybinding('enter');
+		AwAit this.wAitForQuickInputClosed();
 	}
 }

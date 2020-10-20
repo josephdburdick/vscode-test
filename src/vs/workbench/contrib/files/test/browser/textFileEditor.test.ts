@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { toResource } from 'vs/base/test/common/utils';
+import * As Assert from 'Assert';
+import { toResource } from 'vs/bAse/test/common/utils';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { workbenchInstantiationService, TestServiceAccessor, TestFilesConfigurationService, TestTextResourceConfigurationService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { workbenchInstAntiAtionService, TestServiceAccessor, TestFilesConfigurAtionService, TestTextResourceConfigurAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
-import { Registry } from 'vs/platform/registry/common/platform';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IEditorRegistry, EditorDescriptor, Extensions As EditorExtensions } from 'vs/workbench/browser/editor';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import { TextFileEditor } from 'vs/workbench/contrib/files/browser/editors/textFileEditor';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
 import { EditorInput } from 'vs/workbench/common/editor';
 import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
-import { EditorPart } from 'vs/workbench/browser/parts/editor/editorPart';
+import { TextFileEditorModelMAnAger } from 'vs/workbench/services/textfile/common/textFileEditorModelMAnAger';
+import { EditorPArt } from 'vs/workbench/browser/pArts/editor/editorPArt';
 import { EditorService } from 'vs/workbench/services/editor/browser/editorService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
 import { Selection } from 'vs/editor/common/core/selection';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { MockContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
+import { ITextResourceConfigurAtionService } from 'vs/editor/common/services/textResourceConfigurAtionService';
 
 suite('Files - TextFileEditor', () => {
 
-	let disposables: IDisposable[] = [];
+	let disposAbles: IDisposAble[] = [];
 
 	setup(() => {
-		disposables.push(Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
-			EditorDescriptor.create(
+		disposAbles.push(Registry.As<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
+			EditorDescriptor.creAte(
 				TextFileEditor,
 				TextFileEditor.ID,
 				'Text File Editor'
@@ -43,70 +43,70 @@ suite('Files - TextFileEditor', () => {
 		));
 	});
 
-	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+	teArdown(() => {
+		dispose(disposAbles);
+		disposAbles = [];
 	});
 
-	async function createPart(restoreViewState: boolean): Promise<[EditorPart, TestServiceAccessor, IInstantiationService, IEditorService]> {
-		const instantiationService = workbenchInstantiationService();
+	Async function creAtePArt(restoreViewStAte: booleAn): Promise<[EditorPArt, TestServiceAccessor, IInstAntiAtionService, IEditorService]> {
+		const instAntiAtionService = workbenchInstAntiAtionService();
 
-		const configurationService = new TestConfigurationService();
-		configurationService.setUserConfiguration('workbench', { editor: { restoreViewState } });
-		instantiationService.stub(IConfigurationService, configurationService);
+		const configurAtionService = new TestConfigurAtionService();
+		configurAtionService.setUserConfigurAtion('workbench', { editor: { restoreViewStAte } });
+		instAntiAtionService.stub(IConfigurAtionService, configurAtionService);
 
-		instantiationService.stub(ITextResourceConfigurationService, new TestTextResourceConfigurationService(configurationService));
+		instAntiAtionService.stub(ITextResourceConfigurAtionService, new TestTextResourceConfigurAtionService(configurAtionService));
 
-		instantiationService.stub(IFilesConfigurationService, new TestFilesConfigurationService(
-			<IContextKeyService>instantiationService.createInstance(MockContextKeyService),
-			configurationService
+		instAntiAtionService.stub(IFilesConfigurAtionService, new TestFilesConfigurAtionService(
+			<IContextKeyService>instAntiAtionService.creAteInstAnce(MockContextKeyService),
+			configurAtionService
 		));
 
-		const part = instantiationService.createInstance(EditorPart);
-		part.create(document.createElement('div'));
-		part.layout(400, 300);
+		const pArt = instAntiAtionService.creAteInstAnce(EditorPArt);
+		pArt.creAte(document.creAteElement('div'));
+		pArt.lAyout(400, 300);
 
-		instantiationService.stub(IEditorGroupsService, part);
+		instAntiAtionService.stub(IEditorGroupsService, pArt);
 
-		const editorService: EditorService = instantiationService.createInstance(EditorService);
-		instantiationService.stub(IEditorService, editorService);
+		const editorService: EditorService = instAntiAtionService.creAteInstAnce(EditorService);
+		instAntiAtionService.stub(IEditorService, editorService);
 
-		const accessor = instantiationService.createInstance(TestServiceAccessor);
+		const Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 
-		await part.whenRestored;
+		AwAit pArt.whenRestored;
 
-		return [part, accessor, instantiationService, editorService];
+		return [pArt, Accessor, instAntiAtionService, editorService];
 	}
 
-	test('text file editor preserves viewstate', async function () {
-		return viewStateTest(this, true);
+	test('text file editor preserves viewstAte', Async function () {
+		return viewStAteTest(this, true);
 	});
 
-	test('text file editor resets viewstate if configured as such', async function () {
-		return viewStateTest(this, false);
+	test('text file editor resets viewstAte if configured As such', Async function () {
+		return viewStAteTest(this, fAlse);
 	});
 
-	async function viewStateTest(context: Mocha.ITestCallbackContext, restoreViewState: boolean): Promise<void> {
-		const [part, accessor] = await createPart(restoreViewState);
+	Async function viewStAteTest(context: MochA.ITestCAllbAckContext, restoreViewStAte: booleAn): Promise<void> {
+		const [pArt, Accessor] = AwAit creAtePArt(restoreViewStAte);
 
-		let editor = await accessor.editorService.openEditor(accessor.editorService.createEditorInput({ resource: toResource.call(context, '/path/index.txt'), forceFile: true }));
+		let editor = AwAit Accessor.editorService.openEditor(Accessor.editorService.creAteEditorInput({ resource: toResource.cAll(context, '/pAth/index.txt'), forceFile: true }));
 
-		let codeEditor = editor?.getControl() as CodeEditorWidget;
+		let codeEditor = editor?.getControl() As CodeEditorWidget;
 		const selection = new Selection(1, 3, 1, 4);
 		codeEditor.setSelection(selection);
 
-		editor = await accessor.editorService.openEditor(accessor.editorService.createEditorInput({ resource: toResource.call(context, '/path/index-other.txt'), forceFile: true }));
-		editor = await accessor.editorService.openEditor(accessor.editorService.createEditorInput({ resource: toResource.call(context, '/path/index.txt'), forceFile: true }));
+		editor = AwAit Accessor.editorService.openEditor(Accessor.editorService.creAteEditorInput({ resource: toResource.cAll(context, '/pAth/index-other.txt'), forceFile: true }));
+		editor = AwAit Accessor.editorService.openEditor(Accessor.editorService.creAteEditorInput({ resource: toResource.cAll(context, '/pAth/index.txt'), forceFile: true }));
 
-		codeEditor = editor?.getControl() as CodeEditorWidget;
+		codeEditor = editor?.getControl() As CodeEditorWidget;
 
-		if (restoreViewState) {
-			assert.ok(codeEditor.getSelection()?.equalsSelection(selection));
+		if (restoreViewStAte) {
+			Assert.ok(codeEditor.getSelection()?.equAlsSelection(selection));
 		} else {
-			assert.ok(!codeEditor.getSelection()?.equalsSelection(selection));
+			Assert.ok(!codeEditor.getSelection()?.equAlsSelection(selection));
 		}
 
-		part.dispose();
-		(<TextFileEditorModelManager>accessor.textFileService.files).dispose();
+		pArt.dispose();
+		(<TextFileEditorModelMAnAger>Accessor.textFileService.files).dispose();
 	}
 });

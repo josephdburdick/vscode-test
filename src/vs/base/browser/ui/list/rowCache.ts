@@ -1,101 +1,101 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IListRenderer } from './list';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { $ } from 'vs/base/browser/dom';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { $ } from 'vs/bAse/browser/dom';
 
-export interface IRow {
+export interfAce IRow {
 	domNode: HTMLElement | null;
-	templateId: string;
-	templateData: any;
+	templAteId: string;
+	templAteDAtA: Any;
 }
 
-function removeFromParent(element: HTMLElement): void {
+function removeFromPArent(element: HTMLElement): void {
 	try {
-		if (element.parentElement) {
-			element.parentElement.removeChild(element);
+		if (element.pArentElement) {
+			element.pArentElement.removeChild(element);
 		}
-	} catch (e) {
-		// this will throw if this happens due to a blur event, nasty business
+	} cAtch (e) {
+		// this will throw if this hAppens due to A blur event, nAsty business
 	}
 }
 
-export class RowCache<T> implements IDisposable {
+export clAss RowCAche<T> implements IDisposAble {
 
-	private cache = new Map<string, IRow[]>();
+	privAte cAche = new MAp<string, IRow[]>();
 
-	constructor(private renderers: Map<string, IListRenderer<T, any>>) { }
+	constructor(privAte renderers: MAp<string, IListRenderer<T, Any>>) { }
 
 	/**
-	 * Returns a row either by creating a new one or reusing
-	 * a previously released row which shares the same templateId.
+	 * Returns A row either by creAting A new one or reusing
+	 * A previously releAsed row which shAres the sAme templAteId.
 	 */
-	alloc(templateId: string): IRow {
-		let result = this.getTemplateCache(templateId).pop();
+	Alloc(templAteId: string): IRow {
+		let result = this.getTemplAteCAche(templAteId).pop();
 
 		if (!result) {
-			const domNode = $('.monaco-list-row');
-			const renderer = this.getRenderer(templateId);
-			const templateData = renderer.renderTemplate(domNode);
-			result = { domNode, templateId, templateData };
+			const domNode = $('.monAco-list-row');
+			const renderer = this.getRenderer(templAteId);
+			const templAteDAtA = renderer.renderTemplAte(domNode);
+			result = { domNode, templAteId, templAteDAtA };
 		}
 
 		return result;
 	}
 
 	/**
-	 * Releases the row for eventual reuse.
+	 * ReleAses the row for eventuAl reuse.
 	 */
-	release(row: IRow): void {
+	releAse(row: IRow): void {
 		if (!row) {
 			return;
 		}
 
-		this.releaseRow(row);
+		this.releAseRow(row);
 	}
 
-	private releaseRow(row: IRow): void {
-		const { domNode, templateId } = row;
+	privAte releAseRow(row: IRow): void {
+		const { domNode, templAteId } = row;
 		if (domNode) {
-			domNode.classList.remove('scrolling');
-			removeFromParent(domNode);
+			domNode.clAssList.remove('scrolling');
+			removeFromPArent(domNode);
 		}
 
-		const cache = this.getTemplateCache(templateId);
-		cache.push(row);
+		const cAche = this.getTemplAteCAche(templAteId);
+		cAche.push(row);
 	}
 
-	private getTemplateCache(templateId: string): IRow[] {
-		let result = this.cache.get(templateId);
+	privAte getTemplAteCAche(templAteId: string): IRow[] {
+		let result = this.cAche.get(templAteId);
 
 		if (!result) {
 			result = [];
-			this.cache.set(templateId, result);
+			this.cAche.set(templAteId, result);
 		}
 
 		return result;
 	}
 
 	dispose(): void {
-		this.cache.forEach((cachedRows, templateId) => {
-			for (const cachedRow of cachedRows) {
-				const renderer = this.getRenderer(templateId);
-				renderer.disposeTemplate(cachedRow.templateData);
-				cachedRow.domNode = null;
-				cachedRow.templateData = null;
+		this.cAche.forEAch((cAchedRows, templAteId) => {
+			for (const cAchedRow of cAchedRows) {
+				const renderer = this.getRenderer(templAteId);
+				renderer.disposeTemplAte(cAchedRow.templAteDAtA);
+				cAchedRow.domNode = null;
+				cAchedRow.templAteDAtA = null;
 			}
 		});
 
-		this.cache.clear();
+		this.cAche.cleAr();
 	}
 
-	private getRenderer(templateId: string): IListRenderer<T, any> {
-		const renderer = this.renderers.get(templateId);
+	privAte getRenderer(templAteId: string): IListRenderer<T, Any> {
+		const renderer = this.renderers.get(templAteId);
 		if (!renderer) {
-			throw new Error(`No renderer found for ${templateId}`);
+			throw new Error(`No renderer found for ${templAteId}`);
 		}
 		return renderer;
 	}

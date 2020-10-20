@@ -1,97 +1,97 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import {
-	Connection, TextDocuments, InitializeParams, InitializeResult, RequestType,
-	DocumentRangeFormattingRequest, Disposable, DocumentSelector, TextDocumentPositionParams, ServerCapabilities,
-	ConfigurationRequest, ConfigurationParams, DidChangeWorkspaceFoldersNotification,
-	DocumentColorRequest, ColorPresentationRequest, TextDocumentSyncKind, NotificationType
-} from 'vscode-languageserver';
+	Connection, TextDocuments, InitiAlizePArAms, InitiAlizeResult, RequestType,
+	DocumentRAngeFormAttingRequest, DisposAble, DocumentSelector, TextDocumentPositionPArAms, ServerCApAbilities,
+	ConfigurAtionRequest, ConfigurAtionPArAms, DidChAngeWorkspAceFoldersNotificAtion,
+	DocumentColorRequest, ColorPresentAtionRequest, TextDocumentSyncKind, NotificAtionType
+} from 'vscode-lAnguAgeserver';
 import {
-	getLanguageModes, LanguageModes, Settings, TextDocument, Position, Diagnostic, WorkspaceFolder, ColorInformation,
-	Range, DocumentLink, SymbolInformation, TextDocumentIdentifier
-} from './modes/languageModes';
+	getLAnguAgeModes, LAnguAgeModes, Settings, TextDocument, Position, DiAgnostic, WorkspAceFolder, ColorInformAtion,
+	RAnge, DocumentLink, SymbolInformAtion, TextDocumentIdentifier
+} from './modes/lAnguAgeModes';
 
-import { format } from './modes/formatting';
-import { pushAll } from './utils/arrays';
+import { formAt } from './modes/formAtting';
+import { pushAll } from './utils/ArrAys';
 import { getDocumentContext } from './utils/documentContext';
 import { URI } from 'vscode-uri';
-import { formatError, runSafe } from './utils/runner';
+import { formAtError, runSAfe } from './utils/runner';
 
-import { getFoldingRanges } from './modes/htmlFolding';
-import { fetchHTMLDataProviders } from './customData';
-import { getSelectionRanges } from './modes/selectionRanges';
-import { SemanticTokenProvider, newSemanticTokenProvider } from './modes/semanticTokens';
+import { getFoldingRAnges } from './modes/htmlFolding';
+import { fetchHTMLDAtAProviders } from './customDAtA';
+import { getSelectionRAnges } from './modes/selectionRAnges';
+import { SemAnticTokenProvider, newSemAnticTokenProvider } from './modes/semAnticTokens';
 import { RequestService, getRequestService } from './requests';
 
-namespace CustomDataChangedNotification {
-	export const type: NotificationType<string[]> = new NotificationType('html/customDataChanged');
+nAmespAce CustomDAtAChAngedNotificAtion {
+	export const type: NotificAtionType<string[]> = new NotificAtionType('html/customDAtAChAnged');
 }
 
-namespace TagCloseRequest {
-	export const type: RequestType<TextDocumentPositionParams, string | null, any, any> = new RequestType('html/tag');
+nAmespAce TAgCloseRequest {
+	export const type: RequestType<TextDocumentPositionPArAms, string | null, Any, Any> = new RequestType('html/tAg');
 }
-namespace OnTypeRenameRequest {
-	export const type: RequestType<TextDocumentPositionParams, Range[] | null, any, any> = new RequestType('html/onTypeRename');
+nAmespAce OnTypeRenAmeRequest {
+	export const type: RequestType<TextDocumentPositionPArAms, RAnge[] | null, Any, Any> = new RequestType('html/onTypeRenAme');
 }
 
-// experimental: semantic tokens
-interface SemanticTokenParams {
+// experimentAl: semAntic tokens
+interfAce SemAnticTokenPArAms {
 	textDocument: TextDocumentIdentifier;
-	ranges?: Range[];
+	rAnges?: RAnge[];
 }
-namespace SemanticTokenRequest {
-	export const type: RequestType<SemanticTokenParams, number[] | null, any, any> = new RequestType('html/semanticTokens');
+nAmespAce SemAnticTokenRequest {
+	export const type: RequestType<SemAnticTokenPArAms, number[] | null, Any, Any> = new RequestType('html/semAnticTokens');
 }
-namespace SemanticTokenLegendRequest {
-	export const type: RequestType<void, { types: string[]; modifiers: string[] } | null, any, any> = new RequestType('html/semanticTokenLegend');
+nAmespAce SemAnticTokenLegendRequest {
+	export const type: RequestType<void, { types: string[]; modifiers: string[] } | null, Any, Any> = new RequestType('html/semAnticTokenLegend');
 }
 
-export interface RuntimeEnvironment {
+export interfAce RuntimeEnvironment {
 	file?: RequestService;
 	http?: RequestService
-	configureHttpRequests?(proxy: string, strictSSL: boolean): void;
+	configureHttpRequests?(proxy: string, strictSSL: booleAn): void;
 }
 
-export function startServer(connection: Connection, runtime: RuntimeEnvironment) {
+export function stArtServer(connection: Connection, runtime: RuntimeEnvironment) {
 
-	// Create a text document manager.
+	// CreAte A text document mAnAger.
 	const documents = new TextDocuments(TextDocument);
-	// Make the text document manager listen on the connection
-	// for open, change and close text document events
+	// MAke the text document mAnAger listen on the connection
+	// for open, chAnge And close text document events
 	documents.listen(connection);
 
-	let workspaceFolders: WorkspaceFolder[] = [];
+	let workspAceFolders: WorkspAceFolder[] = [];
 
-	let languageModes: LanguageModes;
+	let lAnguAgeModes: LAnguAgeModes;
 
-	let clientSnippetSupport = false;
-	let dynamicFormatterRegistration = false;
-	let scopedSettingsSupport = false;
-	let workspaceFoldersSupport = false;
-	let foldingRangeLimit = Number.MAX_VALUE;
+	let clientSnippetSupport = fAlse;
+	let dynAmicFormAtterRegistrAtion = fAlse;
+	let scopedSettingsSupport = fAlse;
+	let workspAceFoldersSupport = fAlse;
+	let foldingRAngeLimit = Number.MAX_VALUE;
 
-	const notReady = () => Promise.reject('Not Ready');
-	let requestService: RequestService = { getContent: notReady, stat: notReady, readDirectory: notReady };
+	const notReAdy = () => Promise.reject('Not ReAdy');
+	let requestService: RequestService = { getContent: notReAdy, stAt: notReAdy, reAdDirectory: notReAdy };
 
 
 
-	let globalSettings: Settings = {};
-	let documentSettings: { [key: string]: Thenable<Settings> } = {};
+	let globAlSettings: Settings = {};
+	let documentSettings: { [key: string]: ThenAble<Settings> } = {};
 	// remove document settings on close
 	documents.onDidClose(e => {
 		delete documentSettings[e.document.uri];
 	});
 
-	function getDocumentSettings(textDocument: TextDocument, needsDocumentSettings: () => boolean): Thenable<Settings | undefined> {
+	function getDocumentSettings(textDocument: TextDocument, needsDocumentSettings: () => booleAn): ThenAble<Settings | undefined> {
 		if (scopedSettingsSupport && needsDocumentSettings()) {
 			let promise = documentSettings[textDocument.uri];
 			if (!promise) {
 				const scopeUri = textDocument.uri;
-				const configRequestParam: ConfigurationParams = { items: [{ scopeUri, section: 'css' }, { scopeUri, section: 'html' }, { scopeUri, section: 'javascript' }] };
-				promise = connection.sendRequest(ConfigurationRequest.type, configRequestParam).then(s => ({ css: s[0], html: s[1], javascript: s[2] }));
+				const configRequestPArAm: ConfigurAtionPArAms = { items: [{ scopeUri, section: 'css' }, { scopeUri, section: 'html' }, { scopeUri, section: 'jAvAscript' }] };
+				promise = connection.sendRequest(ConfigurAtionRequest.type, configRequestPArAm).then(s => ({ css: s[0], html: s[1], jAvAscript: s[2] }));
 				documentSettings[textDocument.uri] = promise;
 			}
 			return promise;
@@ -99,45 +99,45 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		return Promise.resolve(undefined);
 	}
 
-	// After the server has started the client sends an initialize request. The server receives
-	// in the passed params the rootPath of the workspace plus the client capabilities
-	connection.onInitialize((params: InitializeParams): InitializeResult => {
-		const initializationOptions = params.initializationOptions;
+	// After the server hAs stArted the client sends An initiAlize request. The server receives
+	// in the pAssed pArAms the rootPAth of the workspAce plus the client cApAbilities
+	connection.onInitiAlize((pArAms: InitiAlizePArAms): InitiAlizeResult => {
+		const initiAlizAtionOptions = pArAms.initiAlizAtionOptions;
 
-		workspaceFolders = (<any>params).workspaceFolders;
-		if (!Array.isArray(workspaceFolders)) {
-			workspaceFolders = [];
-			if (params.rootPath) {
-				workspaceFolders.push({ name: '', uri: URI.file(params.rootPath).toString() });
+		workspAceFolders = (<Any>pArAms).workspAceFolders;
+		if (!ArrAy.isArrAy(workspAceFolders)) {
+			workspAceFolders = [];
+			if (pArAms.rootPAth) {
+				workspAceFolders.push({ nAme: '', uri: URI.file(pArAms.rootPAth).toString() });
 			}
 		}
 
-		requestService = getRequestService(initializationOptions?.handledSchemas || ['file'], connection, runtime);
+		requestService = getRequestService(initiAlizAtionOptions?.hAndledSchemAs || ['file'], connection, runtime);
 
-		const workspace = {
-			get settings() { return globalSettings; },
-			get folders() { return workspaceFolders; }
+		const workspAce = {
+			get settings() { return globAlSettings; },
+			get folders() { return workspAceFolders; }
 		};
 
-		languageModes = getLanguageModes(initializationOptions?.embeddedLanguages || { css: true, javascript: true }, workspace, params.capabilities, requestService);
+		lAnguAgeModes = getLAnguAgeModes(initiAlizAtionOptions?.embeddedLAnguAges || { css: true, jAvAscript: true }, workspAce, pArAms.cApAbilities, requestService);
 
-		const dataPaths: string[] = initializationOptions?.dataPaths || [];
-		fetchHTMLDataProviders(dataPaths, requestService).then(dataProviders => {
-			languageModes.updateDataProviders(dataProviders);
+		const dAtAPAths: string[] = initiAlizAtionOptions?.dAtAPAths || [];
+		fetchHTMLDAtAProviders(dAtAPAths, requestService).then(dAtAProviders => {
+			lAnguAgeModes.updAteDAtAProviders(dAtAProviders);
 		});
 
 		documents.onDidClose(e => {
-			languageModes.onDocumentRemoved(e.document);
+			lAnguAgeModes.onDocumentRemoved(e.document);
 		});
 		connection.onShutdown(() => {
-			languageModes.dispose();
+			lAnguAgeModes.dispose();
 		});
 
-		function getClientCapability<T>(name: string, def: T) {
-			const keys = name.split('.');
-			let c: any = params.capabilities;
+		function getClientCApAbility<T>(nAme: string, def: T) {
+			const keys = nAme.split('.');
+			let c: Any = pArAms.cApAbilities;
 			for (let i = 0; c && i < keys.length; i++) {
-				if (!c.hasOwnProperty(keys[i])) {
+				if (!c.hAsOwnProperty(keys[i])) {
 					return def;
 				}
 				c = c[keys[i]];
@@ -145,142 +145,142 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			return c;
 		}
 
-		clientSnippetSupport = getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
-		dynamicFormatterRegistration = getClientCapability('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof initializationOptions?.provideFormatter !== 'boolean');
-		scopedSettingsSupport = getClientCapability('workspace.configuration', false);
-		workspaceFoldersSupport = getClientCapability('workspace.workspaceFolders', false);
-		foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
-		const capabilities: ServerCapabilities = {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
-			completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : undefined,
+		clientSnippetSupport = getClientCApAbility('textDocument.completion.completionItem.snippetSupport', fAlse);
+		dynAmicFormAtterRegistrAtion = getClientCApAbility('textDocument.rAngeFormAtting.dynAmicRegistrAtion', fAlse) && (typeof initiAlizAtionOptions?.provideFormAtter !== 'booleAn');
+		scopedSettingsSupport = getClientCApAbility('workspAce.configurAtion', fAlse);
+		workspAceFoldersSupport = getClientCApAbility('workspAce.workspAceFolders', fAlse);
+		foldingRAngeLimit = getClientCApAbility('textDocument.foldingRAnge.rAngeLimit', Number.MAX_VALUE);
+		const cApAbilities: ServerCApAbilities = {
+			textDocumentSync: TextDocumentSyncKind.IncrementAl,
+			completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerChArActers: ['.', ':', '<', '"', '=', '/'] } : undefined,
 			hoverProvider: true,
 			documentHighlightProvider: true,
-			documentRangeFormattingProvider: initializationOptions?.provideFormatter === true,
-			documentLinkProvider: { resolveProvider: false },
+			documentRAngeFormAttingProvider: initiAlizAtionOptions?.provideFormAtter === true,
+			documentLinkProvider: { resolveProvider: fAlse },
 			documentSymbolProvider: true,
 			definitionProvider: true,
-			signatureHelpProvider: { triggerCharacters: ['('] },
+			signAtureHelpProvider: { triggerChArActers: ['('] },
 			referencesProvider: true,
 			colorProvider: {},
-			foldingRangeProvider: true,
-			selectionRangeProvider: true,
-			renameProvider: true
+			foldingRAngeProvider: true,
+			selectionRAngeProvider: true,
+			renAmeProvider: true
 		};
-		return { capabilities };
+		return { cApAbilities };
 	});
 
-	connection.onInitialized(() => {
-		if (workspaceFoldersSupport) {
-			connection.client.register(DidChangeWorkspaceFoldersNotification.type);
+	connection.onInitiAlized(() => {
+		if (workspAceFoldersSupport) {
+			connection.client.register(DidChAngeWorkspAceFoldersNotificAtion.type);
 
-			connection.onNotification(DidChangeWorkspaceFoldersNotification.type, e => {
-				const toAdd = e.event.added;
+			connection.onNotificAtion(DidChAngeWorkspAceFoldersNotificAtion.type, e => {
+				const toAdd = e.event.Added;
 				const toRemove = e.event.removed;
-				const updatedFolders = [];
-				if (workspaceFolders) {
-					for (const folder of workspaceFolders) {
+				const updAtedFolders = [];
+				if (workspAceFolders) {
+					for (const folder of workspAceFolders) {
 						if (!toRemove.some(r => r.uri === folder.uri) && !toAdd.some(r => r.uri === folder.uri)) {
-							updatedFolders.push(folder);
+							updAtedFolders.push(folder);
 						}
 					}
 				}
-				workspaceFolders = updatedFolders.concat(toAdd);
-				documents.all().forEach(triggerValidation);
+				workspAceFolders = updAtedFolders.concAt(toAdd);
+				documents.All().forEAch(triggerVAlidAtion);
 			});
 		}
 	});
 
-	let formatterRegistration: Thenable<Disposable> | null = null;
+	let formAtterRegistrAtion: ThenAble<DisposAble> | null = null;
 
-	// The settings have changed. Is send on server activation as well.
-	connection.onDidChangeConfiguration((change) => {
-		globalSettings = change.settings;
-		documentSettings = {}; // reset all document settings
-		documents.all().forEach(triggerValidation);
+	// The settings hAve chAnged. Is send on server ActivAtion As well.
+	connection.onDidChAngeConfigurAtion((chAnge) => {
+		globAlSettings = chAnge.settings;
+		documentSettings = {}; // reset All document settings
+		documents.All().forEAch(triggerVAlidAtion);
 
-		// dynamically enable & disable the formatter
-		if (dynamicFormatterRegistration) {
-			const enableFormatter = globalSettings && globalSettings.html && globalSettings.html.format && globalSettings.html.format.enable;
-			if (enableFormatter) {
-				if (!formatterRegistration) {
-					const documentSelector: DocumentSelector = [{ language: 'html' }, { language: 'handlebars' }];
-					formatterRegistration = connection.client.register(DocumentRangeFormattingRequest.type, { documentSelector });
+		// dynAmicAlly enAble & disAble the formAtter
+		if (dynAmicFormAtterRegistrAtion) {
+			const enAbleFormAtter = globAlSettings && globAlSettings.html && globAlSettings.html.formAt && globAlSettings.html.formAt.enAble;
+			if (enAbleFormAtter) {
+				if (!formAtterRegistrAtion) {
+					const documentSelector: DocumentSelector = [{ lAnguAge: 'html' }, { lAnguAge: 'hAndlebArs' }];
+					formAtterRegistrAtion = connection.client.register(DocumentRAngeFormAttingRequest.type, { documentSelector });
 				}
-			} else if (formatterRegistration) {
-				formatterRegistration.then(r => r.dispose());
-				formatterRegistration = null;
+			} else if (formAtterRegistrAtion) {
+				formAtterRegistrAtion.then(r => r.dispose());
+				formAtterRegistrAtion = null;
 			}
 		}
 	});
 
-	const pendingValidationRequests: { [uri: string]: NodeJS.Timer } = {};
-	const validationDelayMs = 500;
+	const pendingVAlidAtionRequests: { [uri: string]: NodeJS.Timer } = {};
+	const vAlidAtionDelAyMs = 500;
 
-	// The content of a text document has changed. This event is emitted
-	// when the text document first opened or when its content has changed.
-	documents.onDidChangeContent(change => {
-		triggerValidation(change.document);
+	// The content of A text document hAs chAnged. This event is emitted
+	// when the text document first opened or when its content hAs chAnged.
+	documents.onDidChAngeContent(chAnge => {
+		triggerVAlidAtion(chAnge.document);
 	});
 
-	// a document has closed: clear all diagnostics
+	// A document hAs closed: cleAr All diAgnostics
 	documents.onDidClose(event => {
-		cleanPendingValidation(event.document);
-		connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
+		cleAnPendingVAlidAtion(event.document);
+		connection.sendDiAgnostics({ uri: event.document.uri, diAgnostics: [] });
 	});
 
-	function cleanPendingValidation(textDocument: TextDocument): void {
-		const request = pendingValidationRequests[textDocument.uri];
+	function cleAnPendingVAlidAtion(textDocument: TextDocument): void {
+		const request = pendingVAlidAtionRequests[textDocument.uri];
 		if (request) {
-			clearTimeout(request);
-			delete pendingValidationRequests[textDocument.uri];
+			cleArTimeout(request);
+			delete pendingVAlidAtionRequests[textDocument.uri];
 		}
 	}
 
-	function triggerValidation(textDocument: TextDocument): void {
-		cleanPendingValidation(textDocument);
-		pendingValidationRequests[textDocument.uri] = setTimeout(() => {
-			delete pendingValidationRequests[textDocument.uri];
-			validateTextDocument(textDocument);
-		}, validationDelayMs);
+	function triggerVAlidAtion(textDocument: TextDocument): void {
+		cleAnPendingVAlidAtion(textDocument);
+		pendingVAlidAtionRequests[textDocument.uri] = setTimeout(() => {
+			delete pendingVAlidAtionRequests[textDocument.uri];
+			vAlidAteTextDocument(textDocument);
+		}, vAlidAtionDelAyMs);
 	}
 
-	function isValidationEnabled(languageId: string, settings: Settings = globalSettings) {
-		const validationSettings = settings && settings.html && settings.html.validate;
-		if (validationSettings) {
-			return languageId === 'css' && validationSettings.styles !== false || languageId === 'javascript' && validationSettings.scripts !== false;
+	function isVAlidAtionEnAbled(lAnguAgeId: string, settings: Settings = globAlSettings) {
+		const vAlidAtionSettings = settings && settings.html && settings.html.vAlidAte;
+		if (vAlidAtionSettings) {
+			return lAnguAgeId === 'css' && vAlidAtionSettings.styles !== fAlse || lAnguAgeId === 'jAvAscript' && vAlidAtionSettings.scripts !== fAlse;
 		}
 		return true;
 	}
 
-	async function validateTextDocument(textDocument: TextDocument) {
+	Async function vAlidAteTextDocument(textDocument: TextDocument) {
 		try {
 			const version = textDocument.version;
-			const diagnostics: Diagnostic[] = [];
-			if (textDocument.languageId === 'html') {
-				const modes = languageModes.getAllModesInDocument(textDocument);
-				const settings = await getDocumentSettings(textDocument, () => modes.some(m => !!m.doValidation));
-				const latestTextDocument = documents.get(textDocument.uri);
-				if (latestTextDocument && latestTextDocument.version === version) { // check no new version has come in after in after the async op
+			const diAgnostics: DiAgnostic[] = [];
+			if (textDocument.lAnguAgeId === 'html') {
+				const modes = lAnguAgeModes.getAllModesInDocument(textDocument);
+				const settings = AwAit getDocumentSettings(textDocument, () => modes.some(m => !!m.doVAlidAtion));
+				const lAtestTextDocument = documents.get(textDocument.uri);
+				if (lAtestTextDocument && lAtestTextDocument.version === version) { // check no new version hAs come in After in After the Async op
 					for (const mode of modes) {
-						if (mode.doValidation && isValidationEnabled(mode.getId(), settings)) {
-							pushAll(diagnostics, await mode.doValidation(latestTextDocument, settings));
+						if (mode.doVAlidAtion && isVAlidAtionEnAbled(mode.getId(), settings)) {
+							pushAll(diAgnostics, AwAit mode.doVAlidAtion(lAtestTextDocument, settings));
 						}
 					}
-					connection.sendDiagnostics({ uri: latestTextDocument.uri, diagnostics });
+					connection.sendDiAgnostics({ uri: lAtestTextDocument.uri, diAgnostics });
 				}
 			}
-		} catch (e) {
-			connection.console.error(formatError(`Error while validating ${textDocument.uri}`, e));
+		} cAtch (e) {
+			connection.console.error(formAtError(`Error while vAlidAting ${textDocument.uri}`, e));
 		}
 	}
 
-	connection.onCompletion(async (textDocumentPosition, token) => {
-		return runSafe(async () => {
+	connection.onCompletion(Async (textDocumentPosition, token) => {
+		return runSAfe(Async () => {
 			const document = documents.get(textDocumentPosition.textDocument.uri);
 			if (!document) {
 				return null;
 			}
-			const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
+			const mode = lAnguAgeModes.getModeAtPosition(document, textDocumentPosition.position);
 			if (!mode || !mode.doComplete) {
 				return { isIncomplete: true, items: [] };
 			}
@@ -289,38 +289,38 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 			if (mode.getId() !== 'html') {
 				/* __GDPR__
 					"html.embbedded.complete" : {
-						"languageId" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+						"lAnguAgeId" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 					}
 				 */
-				connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
+				connection.telemetry.logEvent({ key: 'html.embbedded.complete', vAlue: { lAnguAgeId: mode.getId() } });
 			}
 
-			const settings = await getDocumentSettings(document, () => doComplete.length > 2);
-			const documentContext = getDocumentContext(document.uri, workspaceFolders);
+			const settings = AwAit getDocumentSettings(document, () => doComplete.length > 2);
+			const documentContext = getDocumentContext(document.uri, workspAceFolders);
 			return doComplete(document, textDocumentPosition.position, documentContext, settings);
 
 		}, null, `Error while computing completions for ${textDocumentPosition.textDocument.uri}`, token);
 	});
 
 	connection.onCompletionResolve((item, token) => {
-		return runSafe(async () => {
-			const data = item.data;
-			if (data && data.languageId && data.uri) {
-				const mode = languageModes.getMode(data.languageId);
-				const document = documents.get(data.uri);
+		return runSAfe(Async () => {
+			const dAtA = item.dAtA;
+			if (dAtA && dAtA.lAnguAgeId && dAtA.uri) {
+				const mode = lAnguAgeModes.getMode(dAtA.lAnguAgeId);
+				const document = documents.get(dAtA.uri);
 				if (mode && mode.doResolve && document) {
 					return mode.doResolve(document, item);
 				}
 			}
 			return item;
-		}, item, `Error while resolving completion proposal`, token);
+		}, item, `Error while resolving completion proposAl`, token);
 	});
 
 	connection.onHover((textDocumentPosition, token) => {
-		return runSafe(async () => {
+		return runSAfe(Async () => {
 			const document = documents.get(textDocumentPosition.textDocument.uri);
 			if (document) {
-				const mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
+				const mode = lAnguAgeModes.getModeAtPosition(document, textDocumentPosition.position);
 				if (mode && mode.doHover) {
 					return mode.doHover(document, textDocumentPosition.position);
 				}
@@ -329,228 +329,228 @@ export function startServer(connection: Connection, runtime: RuntimeEnvironment)
 		}, null, `Error while computing hover for ${textDocumentPosition.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentHighlight((documentHighlightParams, token) => {
-		return runSafe(async () => {
-			const document = documents.get(documentHighlightParams.textDocument.uri);
+	connection.onDocumentHighlight((documentHighlightPArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(documentHighlightPArAms.textDocument.uri);
 			if (document) {
-				const mode = languageModes.getModeAtPosition(document, documentHighlightParams.position);
+				const mode = lAnguAgeModes.getModeAtPosition(document, documentHighlightPArAms.position);
 				if (mode && mode.findDocumentHighlight) {
-					return mode.findDocumentHighlight(document, documentHighlightParams.position);
+					return mode.findDocumentHighlight(document, documentHighlightPArAms.position);
 				}
 			}
 			return [];
-		}, [], `Error while computing document highlights for ${documentHighlightParams.textDocument.uri}`, token);
+		}, [], `Error while computing document highlights for ${documentHighlightPArAms.textDocument.uri}`, token);
 	});
 
-	connection.onDefinition((definitionParams, token) => {
-		return runSafe(async () => {
-			const document = documents.get(definitionParams.textDocument.uri);
+	connection.onDefinition((definitionPArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(definitionPArAms.textDocument.uri);
 			if (document) {
-				const mode = languageModes.getModeAtPosition(document, definitionParams.position);
+				const mode = lAnguAgeModes.getModeAtPosition(document, definitionPArAms.position);
 				if (mode && mode.findDefinition) {
-					return mode.findDefinition(document, definitionParams.position);
+					return mode.findDefinition(document, definitionPArAms.position);
 				}
 			}
 			return [];
-		}, null, `Error while computing definitions for ${definitionParams.textDocument.uri}`, token);
+		}, null, `Error while computing definitions for ${definitionPArAms.textDocument.uri}`, token);
 	});
 
-	connection.onReferences((referenceParams, token) => {
-		return runSafe(async () => {
-			const document = documents.get(referenceParams.textDocument.uri);
+	connection.onReferences((referencePArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(referencePArAms.textDocument.uri);
 			if (document) {
-				const mode = languageModes.getModeAtPosition(document, referenceParams.position);
+				const mode = lAnguAgeModes.getModeAtPosition(document, referencePArAms.position);
 				if (mode && mode.findReferences) {
-					return mode.findReferences(document, referenceParams.position);
+					return mode.findReferences(document, referencePArAms.position);
 				}
 			}
 			return [];
-		}, [], `Error while computing references for ${referenceParams.textDocument.uri}`, token);
+		}, [], `Error while computing references for ${referencePArAms.textDocument.uri}`, token);
 	});
 
-	connection.onSignatureHelp((signatureHelpParms, token) => {
-		return runSafe(async () => {
-			const document = documents.get(signatureHelpParms.textDocument.uri);
+	connection.onSignAtureHelp((signAtureHelpPArms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(signAtureHelpPArms.textDocument.uri);
 			if (document) {
-				const mode = languageModes.getModeAtPosition(document, signatureHelpParms.position);
-				if (mode && mode.doSignatureHelp) {
-					return mode.doSignatureHelp(document, signatureHelpParms.position);
+				const mode = lAnguAgeModes.getModeAtPosition(document, signAtureHelpPArms.position);
+				if (mode && mode.doSignAtureHelp) {
+					return mode.doSignAtureHelp(document, signAtureHelpPArms.position);
 				}
 			}
 			return null;
-		}, null, `Error while computing signature help for ${signatureHelpParms.textDocument.uri}`, token);
+		}, null, `Error while computing signAture help for ${signAtureHelpPArms.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentRangeFormatting(async (formatParams, token) => {
-		return runSafe(async () => {
-			const document = documents.get(formatParams.textDocument.uri);
+	connection.onDocumentRAngeFormAtting(Async (formAtPArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(formAtPArAms.textDocument.uri);
 			if (document) {
-				let settings = await getDocumentSettings(document, () => true);
+				let settings = AwAit getDocumentSettings(document, () => true);
 				if (!settings) {
-					settings = globalSettings;
+					settings = globAlSettings;
 				}
-				const unformattedTags: string = settings && settings.html && settings.html.format && settings.html.format.unformatted || '';
-				const enabledModes = { css: !unformattedTags.match(/\bstyle\b/), javascript: !unformattedTags.match(/\bscript\b/) };
+				const unformAttedTAgs: string = settings && settings.html && settings.html.formAt && settings.html.formAt.unformAtted || '';
+				const enAbledModes = { css: !unformAttedTAgs.mAtch(/\bstyle\b/), jAvAscript: !unformAttedTAgs.mAtch(/\bscript\b/) };
 
-				return format(languageModes, document, formatParams.range, formatParams.options, settings, enabledModes);
+				return formAt(lAnguAgeModes, document, formAtPArAms.rAnge, formAtPArAms.options, settings, enAbledModes);
 			}
 			return [];
-		}, [], `Error while formatting range for ${formatParams.textDocument.uri}`, token);
+		}, [], `Error while formAtting rAnge for ${formAtPArAms.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentLinks((documentLinkParam, token) => {
-		return runSafe(async () => {
-			const document = documents.get(documentLinkParam.textDocument.uri);
+	connection.onDocumentLinks((documentLinkPArAm, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(documentLinkPArAm.textDocument.uri);
 			const links: DocumentLink[] = [];
 			if (document) {
-				const documentContext = getDocumentContext(document.uri, workspaceFolders);
-				for (const m of languageModes.getAllModesInDocument(document)) {
+				const documentContext = getDocumentContext(document.uri, workspAceFolders);
+				for (const m of lAnguAgeModes.getAllModesInDocument(document)) {
 					if (m.findDocumentLinks) {
-						pushAll(links, await m.findDocumentLinks(document, documentContext));
+						pushAll(links, AwAit m.findDocumentLinks(document, documentContext));
 					}
 				}
 			}
 			return links;
-		}, [], `Error while document links for ${documentLinkParam.textDocument.uri}`, token);
+		}, [], `Error while document links for ${documentLinkPArAm.textDocument.uri}`, token);
 	});
 
-	connection.onDocumentSymbol((documentSymbolParms, token) => {
-		return runSafe(async () => {
-			const document = documents.get(documentSymbolParms.textDocument.uri);
-			const symbols: SymbolInformation[] = [];
+	connection.onDocumentSymbol((documentSymbolPArms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(documentSymbolPArms.textDocument.uri);
+			const symbols: SymbolInformAtion[] = [];
 			if (document) {
-				for (const m of languageModes.getAllModesInDocument(document)) {
+				for (const m of lAnguAgeModes.getAllModesInDocument(document)) {
 					if (m.findDocumentSymbols) {
-						pushAll(symbols, await m.findDocumentSymbols(document));
+						pushAll(symbols, AwAit m.findDocumentSymbols(document));
 					}
 				}
 			}
 			return symbols;
-		}, [], `Error while computing document symbols for ${documentSymbolParms.textDocument.uri}`, token);
+		}, [], `Error while computing document symbols for ${documentSymbolPArms.textDocument.uri}`, token);
 	});
 
-	connection.onRequest(DocumentColorRequest.type, (params, token) => {
-		return runSafe(async () => {
-			const infos: ColorInformation[] = [];
-			const document = documents.get(params.textDocument.uri);
+	connection.onRequest(DocumentColorRequest.type, (pArAms, token) => {
+		return runSAfe(Async () => {
+			const infos: ColorInformAtion[] = [];
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				for (const m of languageModes.getAllModesInDocument(document)) {
+				for (const m of lAnguAgeModes.getAllModesInDocument(document)) {
 					if (m.findDocumentColors) {
-						pushAll(infos, await m.findDocumentColors(document));
+						pushAll(infos, AwAit m.findDocumentColors(document));
 					}
 				}
 			}
 			return infos;
-		}, [], `Error while computing document colors for ${params.textDocument.uri}`, token);
+		}, [], `Error while computing document colors for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onRequest(ColorPresentationRequest.type, (params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onRequest(ColorPresentAtionRequest.type, (pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				const mode = languageModes.getModeAtPosition(document, params.range.start);
-				if (mode && mode.getColorPresentations) {
-					return mode.getColorPresentations(document, params.color, params.range);
+				const mode = lAnguAgeModes.getModeAtPosition(document, pArAms.rAnge.stArt);
+				if (mode && mode.getColorPresentAtions) {
+					return mode.getColorPresentAtions(document, pArAms.color, pArAms.rAnge);
 				}
 			}
 			return [];
-		}, [], `Error while computing color presentations for ${params.textDocument.uri}`, token);
+		}, [], `Error while computing color presentAtions for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onRequest(TagCloseRequest.type, (params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onRequest(TAgCloseRequest.type, (pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				const pos = params.position;
-				if (pos.character > 0) {
-					const mode = languageModes.getModeAtPosition(document, Position.create(pos.line, pos.character - 1));
+				const pos = pArAms.position;
+				if (pos.chArActer > 0) {
+					const mode = lAnguAgeModes.getModeAtPosition(document, Position.creAte(pos.line, pos.chArActer - 1));
 					if (mode && mode.doAutoClose) {
 						return mode.doAutoClose(document, pos);
 					}
 				}
 			}
 			return null;
-		}, null, `Error while computing tag close actions for ${params.textDocument.uri}`, token);
+		}, null, `Error while computing tAg close Actions for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onFoldingRanges((params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onFoldingRAnges((pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				return getFoldingRanges(languageModes, document, foldingRangeLimit, token);
+				return getFoldingRAnges(lAnguAgeModes, document, foldingRAngeLimit, token);
 			}
 			return null;
-		}, null, `Error while computing folding regions for ${params.textDocument.uri}`, token);
+		}, null, `Error while computing folding regions for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onSelectionRanges((params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onSelectionRAnges((pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				return getSelectionRanges(languageModes, document, params.positions);
+				return getSelectionRAnges(lAnguAgeModes, document, pArAms.positions);
 			}
 			return [];
-		}, [], `Error while computing selection ranges for ${params.textDocument.uri}`, token);
+		}, [], `Error while computing selection rAnges for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onRenameRequest((params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
-			const position: Position = params.position;
+	connection.onRenAmeRequest((pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
+			const position: Position = pArAms.position;
 
 			if (document) {
-				const htmlMode = languageModes.getMode('html');
-				if (htmlMode && htmlMode.doRename) {
-					return htmlMode.doRename(document, position, params.newName);
+				const htmlMode = lAnguAgeModes.getMode('html');
+				if (htmlMode && htmlMode.doRenAme) {
+					return htmlMode.doRenAme(document, position, pArAms.newNAme);
 				}
 			}
 			return null;
-		}, null, `Error while computing rename for ${params.textDocument.uri}`, token);
+		}, null, `Error while computing renAme for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onRequest(OnTypeRenameRequest.type, (params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onRequest(OnTypeRenAmeRequest.type, (pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				const pos = params.position;
-				if (pos.character > 0) {
-					const mode = languageModes.getModeAtPosition(document, Position.create(pos.line, pos.character - 1));
-					if (mode && mode.doOnTypeRename) {
-						return mode.doOnTypeRename(document, pos);
+				const pos = pArAms.position;
+				if (pos.chArActer > 0) {
+					const mode = lAnguAgeModes.getModeAtPosition(document, Position.creAte(pos.line, pos.chArActer - 1));
+					if (mode && mode.doOnTypeRenAme) {
+						return mode.doOnTypeRenAme(document, pos);
 					}
 				}
 			}
 			return null;
-		}, null, `Error while computing synced regions for ${params.textDocument.uri}`, token);
+		}, null, `Error while computing synced regions for ${pArAms.textDocument.uri}`, token);
 	});
 
-	let semanticTokensProvider: SemanticTokenProvider | undefined;
-	function getSemanticTokenProvider() {
-		if (!semanticTokensProvider) {
-			semanticTokensProvider = newSemanticTokenProvider(languageModes);
+	let semAnticTokensProvider: SemAnticTokenProvider | undefined;
+	function getSemAnticTokenProvider() {
+		if (!semAnticTokensProvider) {
+			semAnticTokensProvider = newSemAnticTokenProvider(lAnguAgeModes);
 		}
-		return semanticTokensProvider;
+		return semAnticTokensProvider;
 	}
 
-	connection.onRequest(SemanticTokenRequest.type, (params, token) => {
-		return runSafe(async () => {
-			const document = documents.get(params.textDocument.uri);
+	connection.onRequest(SemAnticTokenRequest.type, (pArAms, token) => {
+		return runSAfe(Async () => {
+			const document = documents.get(pArAms.textDocument.uri);
 			if (document) {
-				return getSemanticTokenProvider().getSemanticTokens(document, params.ranges);
+				return getSemAnticTokenProvider().getSemAnticTokens(document, pArAms.rAnges);
 			}
 			return null;
-		}, null, `Error while computing semantic tokens for ${params.textDocument.uri}`, token);
+		}, null, `Error while computing semAntic tokens for ${pArAms.textDocument.uri}`, token);
 	});
 
-	connection.onRequest(SemanticTokenLegendRequest.type, (_params, token) => {
-		return runSafe(async () => {
-			return getSemanticTokenProvider().legend;
-		}, null, `Error while computing semantic tokens legend`, token);
+	connection.onRequest(SemAnticTokenLegendRequest.type, (_pArAms, token) => {
+		return runSAfe(Async () => {
+			return getSemAnticTokenProvider().legend;
+		}, null, `Error while computing semAntic tokens legend`, token);
 	});
 
-	connection.onNotification(CustomDataChangedNotification.type, dataPaths => {
-		fetchHTMLDataProviders(dataPaths, requestService).then(dataProviders => {
-			languageModes.updateDataProviders(dataProviders);
+	connection.onNotificAtion(CustomDAtAChAngedNotificAtion.type, dAtAPAths => {
+		fetchHTMLDAtAProviders(dAtAPAths, requestService).then(dAtAProviders => {
+			lAnguAgeModes.updAteDAtAProviders(dAtAProviders);
 		});
 	});
 

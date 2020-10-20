@@ -1,135 +1,135 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { renderExpressionValue, renderVariable, renderViewTree } from 'vs/workbench/contrib/debug/browser/baseDebugView';
-import * as dom from 'vs/base/browser/dom';
-import { Expression, Variable, Scope, StackFrame, Thread } from 'vs/workbench/contrib/debug/common/debugModel';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
+import * As Assert from 'Assert';
+import { renderExpressionVAlue, renderVAriAble, renderViewTree } from 'vs/workbench/contrib/debug/browser/bAseDebugView';
+import * As dom from 'vs/bAse/browser/dom';
+import { Expression, VAriAble, Scope, StAckFrAme, ThreAd } from 'vs/workbench/contrib/debug/common/debugModel';
+import { HighlightedLAbel } from 'vs/bAse/browser/ui/highlightedlAbel/highlightedLAbel';
 import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { workbenchInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { createMockSession } from 'vs/workbench/contrib/debug/test/browser/callStack.test';
-import { isStatusbarInDebugMode } from 'vs/workbench/contrib/debug/browser/statusbarColorProvider';
-import { State } from 'vs/workbench/contrib/debug/common/debug';
-import { isWindows } from 'vs/base/common/platform';
-import { MockSession, createMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { workbenchInstAntiAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { creAteMockSession } from 'vs/workbench/contrib/debug/test/browser/cAllStAck.test';
+import { isStAtusbArInDebugMode } from 'vs/workbench/contrib/debug/browser/stAtusbArColorProvider';
+import { StAte } from 'vs/workbench/contrib/debug/common/debug';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { MockSession, creAteMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
 const $ = dom.$;
 
-suite('Debug - Base Debug View', () => {
+suite('Debug - BAse Debug View', () => {
 	let linkDetector: LinkDetector;
 
 	/**
-	 * Instantiate services for use by the functions being tested.
+	 * InstAntiAte services for use by the functions being tested.
 	 */
 	setup(() => {
-		const instantiationService: TestInstantiationService = <TestInstantiationService>workbenchInstantiationService();
-		linkDetector = instantiationService.createInstance(LinkDetector);
+		const instAntiAtionService: TestInstAntiAtionService = <TestInstAntiAtionService>workbenchInstAntiAtionService();
+		linkDetector = instAntiAtionService.creAteInstAnce(LinkDetector);
 	});
 
 	test('render view tree', () => {
-		const container = $('.container');
-		const treeContainer = renderViewTree(container);
+		const contAiner = $('.contAiner');
+		const treeContAiner = renderViewTree(contAiner);
 
-		assert.equal(treeContainer.className, 'debug-view-content');
-		assert.equal(container.childElementCount, 1);
-		assert.equal(container.firstChild, treeContainer);
-		assert.equal(treeContainer instanceof HTMLDivElement, true);
+		Assert.equAl(treeContAiner.clAssNAme, 'debug-view-content');
+		Assert.equAl(contAiner.childElementCount, 1);
+		Assert.equAl(contAiner.firstChild, treeContAiner);
+		Assert.equAl(treeContAiner instAnceof HTMLDivElement, true);
 	});
 
-	test('render expression value', () => {
-		let container = $('.container');
-		renderExpressionValue('render \n me', container, { showHover: true });
-		assert.equal(container.className, 'value');
-		assert.equal(container.title, 'render \n me');
-		assert.equal(container.textContent, 'render \n me');
+	test('render expression vAlue', () => {
+		let contAiner = $('.contAiner');
+		renderExpressionVAlue('render \n me', contAiner, { showHover: true });
+		Assert.equAl(contAiner.clAssNAme, 'vAlue');
+		Assert.equAl(contAiner.title, 'render \n me');
+		Assert.equAl(contAiner.textContent, 'render \n me');
 
 		const expression = new Expression('console');
-		expression.value = 'Object';
-		container = $('.container');
-		renderExpressionValue(expression, container, { colorize: true });
-		assert.equal(container.className, 'value unavailable error');
+		expression.vAlue = 'Object';
+		contAiner = $('.contAiner');
+		renderExpressionVAlue(expression, contAiner, { colorize: true });
+		Assert.equAl(contAiner.clAssNAme, 'vAlue unAvAilAble error');
 
-		expression.available = true;
-		expression.value = '"string value"';
-		container = $('.container');
-		renderExpressionValue(expression, container, { colorize: true, linkDetector });
-		assert.equal(container.className, 'value string');
-		assert.equal(container.textContent, '"string value"');
+		expression.AvAilAble = true;
+		expression.vAlue = '"string vAlue"';
+		contAiner = $('.contAiner');
+		renderExpressionVAlue(expression, contAiner, { colorize: true, linkDetector });
+		Assert.equAl(contAiner.clAssNAme, 'vAlue string');
+		Assert.equAl(contAiner.textContent, '"string vAlue"');
 
-		expression.type = 'boolean';
-		container = $('.container');
-		renderExpressionValue(expression, container, { colorize: true });
-		assert.equal(container.className, 'value boolean');
-		assert.equal(container.textContent, expression.value);
+		expression.type = 'booleAn';
+		contAiner = $('.contAiner');
+		renderExpressionVAlue(expression, contAiner, { colorize: true });
+		Assert.equAl(contAiner.clAssNAme, 'vAlue booleAn');
+		Assert.equAl(contAiner.textContent, expression.vAlue);
 
-		expression.value = 'this is a long string';
-		container = $('.container');
-		renderExpressionValue(expression, container, { colorize: true, maxValueLength: 4, linkDetector });
-		assert.equal(container.textContent, 'this...');
+		expression.vAlue = 'this is A long string';
+		contAiner = $('.contAiner');
+		renderExpressionVAlue(expression, contAiner, { colorize: true, mAxVAlueLength: 4, linkDetector });
+		Assert.equAl(contAiner.textContent, 'this...');
 
-		expression.value = isWindows ? 'C:\\foo.js:5' : '/foo.js:5';
-		container = $('.container');
-		renderExpressionValue(expression, container, { colorize: true, linkDetector });
-		assert.ok(container.querySelector('a'));
-		assert.equal(container.querySelector('a')!.textContent, expression.value);
+		expression.vAlue = isWindows ? 'C:\\foo.js:5' : '/foo.js:5';
+		contAiner = $('.contAiner');
+		renderExpressionVAlue(expression, contAiner, { colorize: true, linkDetector });
+		Assert.ok(contAiner.querySelector('A'));
+		Assert.equAl(contAiner.querySelector('A')!.textContent, expression.vAlue);
 	});
 
-	test('render variable', () => {
+	test('render vAriAble', () => {
 		const session = new MockSession();
-		const thread = new Thread(session, 'mockthread', 1);
-		const stackFrame = new StackFrame(thread, 1, null!, 'app.js', 'normal', { startLineNumber: 1, startColumn: 1, endLineNumber: undefined!, endColumn: undefined! }, 0);
-		const scope = new Scope(stackFrame, 1, 'local', 1, false, 10, 10);
+		const threAd = new ThreAd(session, 'mockthreAd', 1);
+		const stAckFrAme = new StAckFrAme(threAd, 1, null!, 'App.js', 'normAl', { stArtLineNumber: 1, stArtColumn: 1, endLineNumber: undefined!, endColumn: undefined! }, 0);
+		const scope = new Scope(stAckFrAme, 1, 'locAl', 1, fAlse, 10, 10);
 
-		let variable = new Variable(session, 1, scope, 2, 'foo', 'bar.foo', undefined!, 0, 0, {}, 'string');
+		let vAriAble = new VAriAble(session, 1, scope, 2, 'foo', 'bAr.foo', undefined!, 0, 0, {}, 'string');
 		let expression = $('.');
-		let name = $('.');
-		let value = $('.');
-		let label = new HighlightedLabel(name, false);
-		renderVariable(variable, { expression, name, value, label }, false, []);
+		let nAme = $('.');
+		let vAlue = $('.');
+		let lAbel = new HighlightedLAbel(nAme, fAlse);
+		renderVAriAble(vAriAble, { expression, nAme, vAlue, lAbel }, fAlse, []);
 
-		assert.equal(label.element.textContent, 'foo');
-		assert.equal(value.textContent, '');
-		assert.equal(value.title, '');
+		Assert.equAl(lAbel.element.textContent, 'foo');
+		Assert.equAl(vAlue.textContent, '');
+		Assert.equAl(vAlue.title, '');
 
-		variable.value = 'hey';
+		vAriAble.vAlue = 'hey';
 		expression = $('.');
-		name = $('.');
-		value = $('.');
-		renderVariable(variable, { expression, name, value, label }, false, [], linkDetector);
-		assert.equal(value.textContent, 'hey');
-		assert.equal(label.element.textContent, 'foo:');
-		assert.equal(label.element.title, 'string');
+		nAme = $('.');
+		vAlue = $('.');
+		renderVAriAble(vAriAble, { expression, nAme, vAlue, lAbel }, fAlse, [], linkDetector);
+		Assert.equAl(vAlue.textContent, 'hey');
+		Assert.equAl(lAbel.element.textContent, 'foo:');
+		Assert.equAl(lAbel.element.title, 'string');
 
-		variable.value = isWindows ? 'C:\\foo.js:5' : '/foo.js:5';
+		vAriAble.vAlue = isWindows ? 'C:\\foo.js:5' : '/foo.js:5';
 		expression = $('.');
-		name = $('.');
-		value = $('.');
-		renderVariable(variable, { expression, name, value, label }, false, [], linkDetector);
-		assert.ok(value.querySelector('a'));
-		assert.equal(value.querySelector('a')!.textContent, variable.value);
+		nAme = $('.');
+		vAlue = $('.');
+		renderVAriAble(vAriAble, { expression, nAme, vAlue, lAbel }, fAlse, [], linkDetector);
+		Assert.ok(vAlue.querySelector('A'));
+		Assert.equAl(vAlue.querySelector('A')!.textContent, vAriAble.vAlue);
 
-		variable = new Variable(session, 1, scope, 2, 'console', 'console', '5', 0, 0, { kind: 'virtual' });
+		vAriAble = new VAriAble(session, 1, scope, 2, 'console', 'console', '5', 0, 0, { kind: 'virtuAl' });
 		expression = $('.');
-		name = $('.');
-		value = $('.');
-		renderVariable(variable, { expression, name, value, label }, false, [], linkDetector);
-		assert.equal(name.className, 'virtual');
-		assert.equal(label.element.textContent, 'console:');
-		assert.equal(label.element.title, 'console');
-		assert.equal(value.className, 'value number');
+		nAme = $('.');
+		vAlue = $('.');
+		renderVAriAble(vAriAble, { expression, nAme, vAlue, lAbel }, fAlse, [], linkDetector);
+		Assert.equAl(nAme.clAssNAme, 'virtuAl');
+		Assert.equAl(lAbel.element.textContent, 'console:');
+		Assert.equAl(lAbel.element.title, 'console');
+		Assert.equAl(vAlue.clAssNAme, 'vAlue number');
 	});
 
-	test('statusbar in debug mode', () => {
-		const model = createMockDebugModel();
-		const session = createMockSession(model);
-		assert.equal(isStatusbarInDebugMode(State.Inactive, undefined), false);
-		assert.equal(isStatusbarInDebugMode(State.Initializing, session), false);
-		assert.equal(isStatusbarInDebugMode(State.Running, session), true);
-		assert.equal(isStatusbarInDebugMode(State.Stopped, session), true);
-		session.configuration.noDebug = true;
-		assert.equal(isStatusbarInDebugMode(State.Running, session), false);
+	test('stAtusbAr in debug mode', () => {
+		const model = creAteMockDebugModel();
+		const session = creAteMockSession(model);
+		Assert.equAl(isStAtusbArInDebugMode(StAte.InActive, undefined), fAlse);
+		Assert.equAl(isStAtusbArInDebugMode(StAte.InitiAlizing, session), fAlse);
+		Assert.equAl(isStAtusbArInDebugMode(StAte.Running, session), true);
+		Assert.equAl(isStAtusbArInDebugMode(StAte.Stopped, session), true);
+		session.configurAtion.noDebug = true;
+		Assert.equAl(isStAtusbArInDebugMode(StAte.Running, session), fAlse);
 	});
 });

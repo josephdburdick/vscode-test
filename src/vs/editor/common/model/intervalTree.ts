@@ -1,340 +1,340 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
-import { IModelDecoration, TrackedRangeStickiness, TrackedRangeStickiness as ActualTrackedRangeStickiness } from 'vs/editor/common/model';
-import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { IModelDecorAtion, TrAckedRAngeStickiness, TrAckedRAngeStickiness As ActuAlTrAckedRAngeStickiness } from 'vs/editor/common/model';
+import { ModelDecorAtionOptions } from 'vs/editor/common/model/textModel';
 
 //
-// The red-black tree is based on the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
+// The red-blAck tree is bAsed on the "Introduction to Algorithms" by Cormen, Leiserson And Rivest.
 //
 
-export const enum ClassName {
-	EditorHintDecoration = 'squiggly-hint',
-	EditorInfoDecoration = 'squiggly-info',
-	EditorWarningDecoration = 'squiggly-warning',
-	EditorErrorDecoration = 'squiggly-error',
-	EditorUnnecessaryDecoration = 'squiggly-unnecessary',
-	EditorUnnecessaryInlineDecoration = 'squiggly-inline-unnecessary',
-	EditorDeprecatedInlineDecoration = 'squiggly-inline-deprecated'
+export const enum ClAssNAme {
+	EditorHintDecorAtion = 'squiggly-hint',
+	EditorInfoDecorAtion = 'squiggly-info',
+	EditorWArningDecorAtion = 'squiggly-wArning',
+	EditorErrorDecorAtion = 'squiggly-error',
+	EditorUnnecessAryDecorAtion = 'squiggly-unnecessAry',
+	EditorUnnecessAryInlineDecorAtion = 'squiggly-inline-unnecessAry',
+	EditorDeprecAtedInlineDecorAtion = 'squiggly-inline-deprecAted'
 }
 
 export const enum NodeColor {
-	Black = 0,
+	BlAck = 0,
 	Red = 1,
 }
 
-const enum Constants {
-	ColorMask = 0b00000001,
-	ColorMaskInverse = 0b11111110,
+const enum ConstAnts {
+	ColorMAsk = 0b00000001,
+	ColorMAskInverse = 0b11111110,
 	ColorOffset = 0,
 
-	IsVisitedMask = 0b00000010,
-	IsVisitedMaskInverse = 0b11111101,
+	IsVisitedMAsk = 0b00000010,
+	IsVisitedMAskInverse = 0b11111101,
 	IsVisitedOffset = 1,
 
-	IsForValidationMask = 0b00000100,
-	IsForValidationMaskInverse = 0b11111011,
-	IsForValidationOffset = 2,
+	IsForVAlidAtionMAsk = 0b00000100,
+	IsForVAlidAtionMAskInverse = 0b11111011,
+	IsForVAlidAtionOffset = 2,
 
-	IsInOverviewRulerMask = 0b00001000,
-	IsInOverviewRulerMaskInverse = 0b11110111,
+	IsInOverviewRulerMAsk = 0b00001000,
+	IsInOverviewRulerMAskInverse = 0b11110111,
 	IsInOverviewRulerOffset = 3,
 
-	StickinessMask = 0b00110000,
-	StickinessMaskInverse = 0b11001111,
+	StickinessMAsk = 0b00110000,
+	StickinessMAskInverse = 0b11001111,
 	StickinessOffset = 4,
 
-	CollapseOnReplaceEditMask = 0b01000000,
-	CollapseOnReplaceEditMaskInverse = 0b10111111,
-	CollapseOnReplaceEditOffset = 6,
+	CollApseOnReplAceEditMAsk = 0b01000000,
+	CollApseOnReplAceEditMAskInverse = 0b10111111,
+	CollApseOnReplAceEditOffset = 6,
 
 	/**
-	 * Due to how deletion works (in order to avoid always walking the right subtree of the deleted node),
-	 * the deltas for nodes can grow and shrink dramatically. It has been observed, in practice, that unless
-	 * the deltas are corrected, integer overflow will occur.
+	 * Due to how deletion works (in order to Avoid AlwAys wAlking the right subtree of the deleted node),
+	 * the deltAs for nodes cAn grow And shrink drAmAticAlly. It hAs been observed, in prActice, thAt unless
+	 * the deltAs Are corrected, integer overflow will occur.
 	 *
-	 * The integer overflow occurs when 53 bits are used in the numbers, but we will try to avoid it as
-	 * a node's delta gets below a negative 30 bits number.
+	 * The integer overflow occurs when 53 bits Are used in the numbers, but we will try to Avoid it As
+	 * A node's deltA gets below A negAtive 30 bits number.
 	 *
-	 * MIN SMI (SMall Integer) as defined in v8.
-	 * one bit is lost for boxing/unboxing flag.
-	 * one bit is lost for sign flag.
-	 * See https://thibaultlaurens.github.io/javascript/2013/04/29/how-the-v8-engine-works/#tagged-values
+	 * MIN SMI (SMAll Integer) As defined in v8.
+	 * one bit is lost for boxing/unboxing flAg.
+	 * one bit is lost for sign flAg.
+	 * See https://thibAultlAurens.github.io/jAvAscript/2013/04/29/how-the-v8-engine-works/#tAgged-vAlues
 	 */
 	MIN_SAFE_DELTA = -(1 << 30),
 	/**
-	 * MAX SMI (SMall Integer) as defined in v8.
-	 * one bit is lost for boxing/unboxing flag.
-	 * one bit is lost for sign flag.
-	 * See https://thibaultlaurens.github.io/javascript/2013/04/29/how-the-v8-engine-works/#tagged-values
+	 * MAX SMI (SMAll Integer) As defined in v8.
+	 * one bit is lost for boxing/unboxing flAg.
+	 * one bit is lost for sign flAg.
+	 * See https://thibAultlAurens.github.io/jAvAscript/2013/04/29/how-the-v8-engine-works/#tAgged-vAlues
 	 */
 	MAX_SAFE_DELTA = 1 << 30,
 }
 
-export function getNodeColor(node: IntervalNode): NodeColor {
-	return ((node.metadata & Constants.ColorMask) >>> Constants.ColorOffset);
+export function getNodeColor(node: IntervAlNode): NodeColor {
+	return ((node.metAdAtA & ConstAnts.ColorMAsk) >>> ConstAnts.ColorOffset);
 }
-function setNodeColor(node: IntervalNode, color: NodeColor): void {
-	node.metadata = (
-		(node.metadata & Constants.ColorMaskInverse) | (color << Constants.ColorOffset)
+function setNodeColor(node: IntervAlNode, color: NodeColor): void {
+	node.metAdAtA = (
+		(node.metAdAtA & ConstAnts.ColorMAskInverse) | (color << ConstAnts.ColorOffset)
 	);
 }
-function getNodeIsVisited(node: IntervalNode): boolean {
-	return ((node.metadata & Constants.IsVisitedMask) >>> Constants.IsVisitedOffset) === 1;
+function getNodeIsVisited(node: IntervAlNode): booleAn {
+	return ((node.metAdAtA & ConstAnts.IsVisitedMAsk) >>> ConstAnts.IsVisitedOffset) === 1;
 }
-function setNodeIsVisited(node: IntervalNode, value: boolean): void {
-	node.metadata = (
-		(node.metadata & Constants.IsVisitedMaskInverse) | ((value ? 1 : 0) << Constants.IsVisitedOffset)
+function setNodeIsVisited(node: IntervAlNode, vAlue: booleAn): void {
+	node.metAdAtA = (
+		(node.metAdAtA & ConstAnts.IsVisitedMAskInverse) | ((vAlue ? 1 : 0) << ConstAnts.IsVisitedOffset)
 	);
 }
-function getNodeIsForValidation(node: IntervalNode): boolean {
-	return ((node.metadata & Constants.IsForValidationMask) >>> Constants.IsForValidationOffset) === 1;
+function getNodeIsForVAlidAtion(node: IntervAlNode): booleAn {
+	return ((node.metAdAtA & ConstAnts.IsForVAlidAtionMAsk) >>> ConstAnts.IsForVAlidAtionOffset) === 1;
 }
-function setNodeIsForValidation(node: IntervalNode, value: boolean): void {
-	node.metadata = (
-		(node.metadata & Constants.IsForValidationMaskInverse) | ((value ? 1 : 0) << Constants.IsForValidationOffset)
+function setNodeIsForVAlidAtion(node: IntervAlNode, vAlue: booleAn): void {
+	node.metAdAtA = (
+		(node.metAdAtA & ConstAnts.IsForVAlidAtionMAskInverse) | ((vAlue ? 1 : 0) << ConstAnts.IsForVAlidAtionOffset)
 	);
 }
-export function getNodeIsInOverviewRuler(node: IntervalNode): boolean {
-	return ((node.metadata & Constants.IsInOverviewRulerMask) >>> Constants.IsInOverviewRulerOffset) === 1;
+export function getNodeIsInOverviewRuler(node: IntervAlNode): booleAn {
+	return ((node.metAdAtA & ConstAnts.IsInOverviewRulerMAsk) >>> ConstAnts.IsInOverviewRulerOffset) === 1;
 }
-function setNodeIsInOverviewRuler(node: IntervalNode, value: boolean): void {
-	node.metadata = (
-		(node.metadata & Constants.IsInOverviewRulerMaskInverse) | ((value ? 1 : 0) << Constants.IsInOverviewRulerOffset)
+function setNodeIsInOverviewRuler(node: IntervAlNode, vAlue: booleAn): void {
+	node.metAdAtA = (
+		(node.metAdAtA & ConstAnts.IsInOverviewRulerMAskInverse) | ((vAlue ? 1 : 0) << ConstAnts.IsInOverviewRulerOffset)
 	);
 }
-function getNodeStickiness(node: IntervalNode): TrackedRangeStickiness {
-	return ((node.metadata & Constants.StickinessMask) >>> Constants.StickinessOffset);
+function getNodeStickiness(node: IntervAlNode): TrAckedRAngeStickiness {
+	return ((node.metAdAtA & ConstAnts.StickinessMAsk) >>> ConstAnts.StickinessOffset);
 }
-function _setNodeStickiness(node: IntervalNode, stickiness: TrackedRangeStickiness): void {
-	node.metadata = (
-		(node.metadata & Constants.StickinessMaskInverse) | (stickiness << Constants.StickinessOffset)
+function _setNodeStickiness(node: IntervAlNode, stickiness: TrAckedRAngeStickiness): void {
+	node.metAdAtA = (
+		(node.metAdAtA & ConstAnts.StickinessMAskInverse) | (stickiness << ConstAnts.StickinessOffset)
 	);
 }
-function getCollapseOnReplaceEdit(node: IntervalNode): boolean {
-	return ((node.metadata & Constants.CollapseOnReplaceEditMask) >>> Constants.CollapseOnReplaceEditOffset) === 1;
+function getCollApseOnReplAceEdit(node: IntervAlNode): booleAn {
+	return ((node.metAdAtA & ConstAnts.CollApseOnReplAceEditMAsk) >>> ConstAnts.CollApseOnReplAceEditOffset) === 1;
 }
-function setCollapseOnReplaceEdit(node: IntervalNode, value: boolean): void {
-	node.metadata = (
-		(node.metadata & Constants.CollapseOnReplaceEditMaskInverse) | ((value ? 1 : 0) << Constants.CollapseOnReplaceEditOffset)
+function setCollApseOnReplAceEdit(node: IntervAlNode, vAlue: booleAn): void {
+	node.metAdAtA = (
+		(node.metAdAtA & ConstAnts.CollApseOnReplAceEditMAskInverse) | ((vAlue ? 1 : 0) << ConstAnts.CollApseOnReplAceEditOffset)
 	);
 }
-export function setNodeStickiness(node: IntervalNode, stickiness: ActualTrackedRangeStickiness): void {
+export function setNodeStickiness(node: IntervAlNode, stickiness: ActuAlTrAckedRAngeStickiness): void {
 	_setNodeStickiness(node, <number>stickiness);
 }
 
-export class IntervalNode implements IModelDecoration {
+export clAss IntervAlNode implements IModelDecorAtion {
 
 	/**
-	 * contains binary encoded information for color, visited, isForValidation and stickiness.
+	 * contAins binAry encoded informAtion for color, visited, isForVAlidAtion And stickiness.
 	 */
-	public metadata: number;
+	public metAdAtA: number;
 
-	public parent: IntervalNode;
-	public left: IntervalNode;
-	public right: IntervalNode;
+	public pArent: IntervAlNode;
+	public left: IntervAlNode;
+	public right: IntervAlNode;
 
-	public start: number;
+	public stArt: number;
 	public end: number;
-	public delta: number;
-	public maxEnd: number;
+	public deltA: number;
+	public mAxEnd: number;
 
 	public id: string;
 	public ownerId: number;
-	public options: ModelDecorationOptions;
+	public options: ModelDecorAtionOptions;
 
-	public cachedVersionId: number;
-	public cachedAbsoluteStart: number;
-	public cachedAbsoluteEnd: number;
-	public range: Range;
+	public cAchedVersionId: number;
+	public cAchedAbsoluteStArt: number;
+	public cAchedAbsoluteEnd: number;
+	public rAnge: RAnge;
 
-	constructor(id: string, start: number, end: number) {
-		this.metadata = 0;
+	constructor(id: string, stArt: number, end: number) {
+		this.metAdAtA = 0;
 
-		this.parent = this;
+		this.pArent = this;
 		this.left = this;
 		this.right = this;
 		setNodeColor(this, NodeColor.Red);
 
-		this.start = start;
+		this.stArt = stArt;
 		this.end = end;
-		// FORCE_OVERFLOWING_TEST: this.delta = start;
-		this.delta = 0;
-		this.maxEnd = end;
+		// FORCE_OVERFLOWING_TEST: this.deltA = stArt;
+		this.deltA = 0;
+		this.mAxEnd = end;
 
 		this.id = id;
 		this.ownerId = 0;
 		this.options = null!;
-		setNodeIsForValidation(this, false);
-		_setNodeStickiness(this, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges);
-		setNodeIsInOverviewRuler(this, false);
-		setCollapseOnReplaceEdit(this, false);
+		setNodeIsForVAlidAtion(this, fAlse);
+		_setNodeStickiness(this, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges);
+		setNodeIsInOverviewRuler(this, fAlse);
+		setCollApseOnReplAceEdit(this, fAlse);
 
-		this.cachedVersionId = 0;
-		this.cachedAbsoluteStart = start;
-		this.cachedAbsoluteEnd = end;
-		this.range = null!;
+		this.cAchedVersionId = 0;
+		this.cAchedAbsoluteStArt = stArt;
+		this.cAchedAbsoluteEnd = end;
+		this.rAnge = null!;
 
-		setNodeIsVisited(this, false);
+		setNodeIsVisited(this, fAlse);
 	}
 
-	public reset(versionId: number, start: number, end: number, range: Range): void {
-		this.start = start;
+	public reset(versionId: number, stArt: number, end: number, rAnge: RAnge): void {
+		this.stArt = stArt;
 		this.end = end;
-		this.maxEnd = end;
-		this.cachedVersionId = versionId;
-		this.cachedAbsoluteStart = start;
-		this.cachedAbsoluteEnd = end;
-		this.range = range;
+		this.mAxEnd = end;
+		this.cAchedVersionId = versionId;
+		this.cAchedAbsoluteStArt = stArt;
+		this.cAchedAbsoluteEnd = end;
+		this.rAnge = rAnge;
 	}
 
-	public setOptions(options: ModelDecorationOptions) {
+	public setOptions(options: ModelDecorAtionOptions) {
 		this.options = options;
-		let className = this.options.className;
-		setNodeIsForValidation(this, (
-			className === ClassName.EditorErrorDecoration
-			|| className === ClassName.EditorWarningDecoration
-			|| className === ClassName.EditorInfoDecoration
+		let clAssNAme = this.options.clAssNAme;
+		setNodeIsForVAlidAtion(this, (
+			clAssNAme === ClAssNAme.EditorErrorDecorAtion
+			|| clAssNAme === ClAssNAme.EditorWArningDecorAtion
+			|| clAssNAme === ClAssNAme.EditorInfoDecorAtion
 		));
 		_setNodeStickiness(this, <number>this.options.stickiness);
-		setNodeIsInOverviewRuler(this, (this.options.overviewRuler && this.options.overviewRuler.color) ? true : false);
-		setCollapseOnReplaceEdit(this, this.options.collapseOnReplaceEdit);
+		setNodeIsInOverviewRuler(this, (this.options.overviewRuler && this.options.overviewRuler.color) ? true : fAlse);
+		setCollApseOnReplAceEdit(this, this.options.collApseOnReplAceEdit);
 	}
 
-	public setCachedOffsets(absoluteStart: number, absoluteEnd: number, cachedVersionId: number): void {
-		if (this.cachedVersionId !== cachedVersionId) {
-			this.range = null!;
+	public setCAchedOffsets(AbsoluteStArt: number, AbsoluteEnd: number, cAchedVersionId: number): void {
+		if (this.cAchedVersionId !== cAchedVersionId) {
+			this.rAnge = null!;
 		}
-		this.cachedVersionId = cachedVersionId;
-		this.cachedAbsoluteStart = absoluteStart;
-		this.cachedAbsoluteEnd = absoluteEnd;
+		this.cAchedVersionId = cAchedVersionId;
+		this.cAchedAbsoluteStArt = AbsoluteStArt;
+		this.cAchedAbsoluteEnd = AbsoluteEnd;
 	}
 
-	public detach(): void {
-		this.parent = null!;
+	public detAch(): void {
+		this.pArent = null!;
 		this.left = null!;
 		this.right = null!;
 	}
 }
 
-export const SENTINEL: IntervalNode = new IntervalNode(null!, 0, 0);
-SENTINEL.parent = SENTINEL;
+export const SENTINEL: IntervAlNode = new IntervAlNode(null!, 0, 0);
+SENTINEL.pArent = SENTINEL;
 SENTINEL.left = SENTINEL;
 SENTINEL.right = SENTINEL;
-setNodeColor(SENTINEL, NodeColor.Black);
+setNodeColor(SENTINEL, NodeColor.BlAck);
 
-export class IntervalTree {
+export clAss IntervAlTree {
 
-	public root: IntervalNode;
-	public requestNormalizeDelta: boolean;
+	public root: IntervAlNode;
+	public requestNormAlizeDeltA: booleAn;
 
 	constructor() {
 		this.root = SENTINEL;
-		this.requestNormalizeDelta = false;
+		this.requestNormAlizeDeltA = fAlse;
 	}
 
-	public intervalSearch(start: number, end: number, filterOwnerId: number, filterOutValidation: boolean, cachedVersionId: number): IntervalNode[] {
+	public intervAlSeArch(stArt: number, end: number, filterOwnerId: number, filterOutVAlidAtion: booleAn, cAchedVersionId: number): IntervAlNode[] {
 		if (this.root === SENTINEL) {
 			return [];
 		}
-		return intervalSearch(this, start, end, filterOwnerId, filterOutValidation, cachedVersionId);
+		return intervAlSeArch(this, stArt, end, filterOwnerId, filterOutVAlidAtion, cAchedVersionId);
 	}
 
-	public search(filterOwnerId: number, filterOutValidation: boolean, cachedVersionId: number): IntervalNode[] {
+	public seArch(filterOwnerId: number, filterOutVAlidAtion: booleAn, cAchedVersionId: number): IntervAlNode[] {
 		if (this.root === SENTINEL) {
 			return [];
 		}
-		return search(this, filterOwnerId, filterOutValidation, cachedVersionId);
+		return seArch(this, filterOwnerId, filterOutVAlidAtion, cAchedVersionId);
 	}
 
 	/**
-	 * Will not set `cachedAbsoluteStart` nor `cachedAbsoluteEnd` on the returned nodes!
+	 * Will not set `cAchedAbsoluteStArt` nor `cAchedAbsoluteEnd` on the returned nodes!
 	 */
-	public collectNodesFromOwner(ownerId: number): IntervalNode[] {
+	public collectNodesFromOwner(ownerId: number): IntervAlNode[] {
 		return collectNodesFromOwner(this, ownerId);
 	}
 
 	/**
-	 * Will not set `cachedAbsoluteStart` nor `cachedAbsoluteEnd` on the returned nodes!
+	 * Will not set `cAchedAbsoluteStArt` nor `cAchedAbsoluteEnd` on the returned nodes!
 	 */
-	public collectNodesPostOrder(): IntervalNode[] {
+	public collectNodesPostOrder(): IntervAlNode[] {
 		return collectNodesPostOrder(this);
 	}
 
-	public insert(node: IntervalNode): void {
+	public insert(node: IntervAlNode): void {
 		rbTreeInsert(this, node);
-		this._normalizeDeltaIfNecessary();
+		this._normAlizeDeltAIfNecessAry();
 	}
 
-	public delete(node: IntervalNode): void {
+	public delete(node: IntervAlNode): void {
 		rbTreeDelete(this, node);
-		this._normalizeDeltaIfNecessary();
+		this._normAlizeDeltAIfNecessAry();
 	}
 
-	public resolveNode(node: IntervalNode, cachedVersionId: number): void {
-		const initialNode = node;
-		let delta = 0;
+	public resolveNode(node: IntervAlNode, cAchedVersionId: number): void {
+		const initiAlNode = node;
+		let deltA = 0;
 		while (node !== this.root) {
-			if (node === node.parent.right) {
-				delta += node.parent.delta;
+			if (node === node.pArent.right) {
+				deltA += node.pArent.deltA;
 			}
-			node = node.parent;
+			node = node.pArent;
 		}
 
-		const nodeStart = initialNode.start + delta;
-		const nodeEnd = initialNode.end + delta;
-		initialNode.setCachedOffsets(nodeStart, nodeEnd, cachedVersionId);
+		const nodeStArt = initiAlNode.stArt + deltA;
+		const nodeEnd = initiAlNode.end + deltA;
+		initiAlNode.setCAchedOffsets(nodeStArt, nodeEnd, cAchedVersionId);
 	}
 
-	public acceptReplace(offset: number, length: number, textLength: number, forceMoveMarkers: boolean): void {
-		// Our strategy is to remove all directly impacted nodes, and then add them back to the tree.
+	public AcceptReplAce(offset: number, length: number, textLength: number, forceMoveMArkers: booleAn): void {
+		// Our strAtegy is to remove All directly impActed nodes, And then Add them bAck to the tree.
 
-		// (1) collect all nodes that are intersecting this edit as nodes of interest
-		const nodesOfInterest = searchForEditing(this, offset, offset + length);
+		// (1) collect All nodes thAt Are intersecting this edit As nodes of interest
+		const nodesOfInterest = seArchForEditing(this, offset, offset + length);
 
-		// (2) remove all nodes that are intersecting this edit
+		// (2) remove All nodes thAt Are intersecting this edit
 		for (let i = 0, len = nodesOfInterest.length; i < len; i++) {
 			const node = nodesOfInterest[i];
 			rbTreeDelete(this, node);
 		}
-		this._normalizeDeltaIfNecessary();
+		this._normAlizeDeltAIfNecessAry();
 
-		// (3) edit all tree nodes except the nodes of interest
-		noOverlapReplace(this, offset, offset + length, textLength);
-		this._normalizeDeltaIfNecessary();
+		// (3) edit All tree nodes except the nodes of interest
+		noOverlApReplAce(this, offset, offset + length, textLength);
+		this._normAlizeDeltAIfNecessAry();
 
-		// (4) edit the nodes of interest and insert them back in the tree
+		// (4) edit the nodes of interest And insert them bAck in the tree
 		for (let i = 0, len = nodesOfInterest.length; i < len; i++) {
 			const node = nodesOfInterest[i];
-			node.start = node.cachedAbsoluteStart;
-			node.end = node.cachedAbsoluteEnd;
-			nodeAcceptEdit(node, offset, (offset + length), textLength, forceMoveMarkers);
-			node.maxEnd = node.end;
+			node.stArt = node.cAchedAbsoluteStArt;
+			node.end = node.cAchedAbsoluteEnd;
+			nodeAcceptEdit(node, offset, (offset + length), textLength, forceMoveMArkers);
+			node.mAxEnd = node.end;
 			rbTreeInsert(this, node);
 		}
-		this._normalizeDeltaIfNecessary();
+		this._normAlizeDeltAIfNecessAry();
 	}
 
-	public getAllInOrder(): IntervalNode[] {
-		return search(this, 0, false, 0);
+	public getAllInOrder(): IntervAlNode[] {
+		return seArch(this, 0, fAlse, 0);
 	}
 
-	private _normalizeDeltaIfNecessary(): void {
-		if (!this.requestNormalizeDelta) {
+	privAte _normAlizeDeltAIfNecessAry(): void {
+		if (!this.requestNormAlizeDeltA) {
 			return;
 		}
-		this.requestNormalizeDelta = false;
-		normalizeDelta(this);
+		this.requestNormAlizeDeltA = fAlse;
+		normAlizeDeltA(this);
 	}
 }
 
-//#region Delta Normalization
-function normalizeDelta(T: IntervalTree): void {
+//#region DeltA NormAlizAtion
+function normAlizeDeltA(T: IntervAlTree): void {
 	let node = T.root;
-	let delta = 0;
+	let deltA = 0;
 	while (node !== SENTINEL) {
 
 		if (node.left !== SENTINEL && !getNodeIsVisited(node.left)) {
@@ -345,168 +345,168 @@ function normalizeDelta(T: IntervalTree): void {
 
 		if (node.right !== SENTINEL && !getNodeIsVisited(node.right)) {
 			// go right
-			delta += node.delta;
+			deltA += node.deltA;
 			node = node.right;
 			continue;
 		}
 
-		// handle current node
-		node.start = delta + node.start;
-		node.end = delta + node.end;
-		node.delta = 0;
-		recomputeMaxEnd(node);
+		// hAndle current node
+		node.stArt = deltA + node.stArt;
+		node.end = deltA + node.end;
+		node.deltA = 0;
+		recomputeMAxEnd(node);
 
 		setNodeIsVisited(node, true);
 
 		// going up from this node
-		setNodeIsVisited(node.left, false);
-		setNodeIsVisited(node.right, false);
-		if (node === node.parent.right) {
-			delta -= node.parent.delta;
+		setNodeIsVisited(node.left, fAlse);
+		setNodeIsVisited(node.right, fAlse);
+		if (node === node.pArent.right) {
+			deltA -= node.pArent.deltA;
 		}
-		node = node.parent;
+		node = node.pArent;
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 }
 //#endregion
 
 //#region Editing
 
-const enum MarkerMoveSemantics {
-	MarkerDefined = 0,
+const enum MArkerMoveSemAntics {
+	MArkerDefined = 0,
 	ForceMove = 1,
-	ForceStay = 2
+	ForceStAy = 2
 }
 
-function adjustMarkerBeforeColumn(markerOffset: number, markerStickToPreviousCharacter: boolean, checkOffset: number, moveSemantics: MarkerMoveSemantics): boolean {
-	if (markerOffset < checkOffset) {
+function AdjustMArkerBeforeColumn(mArkerOffset: number, mArkerStickToPreviousChArActer: booleAn, checkOffset: number, moveSemAntics: MArkerMoveSemAntics): booleAn {
+	if (mArkerOffset < checkOffset) {
 		return true;
 	}
-	if (markerOffset > checkOffset) {
-		return false;
+	if (mArkerOffset > checkOffset) {
+		return fAlse;
 	}
-	if (moveSemantics === MarkerMoveSemantics.ForceMove) {
-		return false;
+	if (moveSemAntics === MArkerMoveSemAntics.ForceMove) {
+		return fAlse;
 	}
-	if (moveSemantics === MarkerMoveSemantics.ForceStay) {
+	if (moveSemAntics === MArkerMoveSemAntics.ForceStAy) {
 		return true;
 	}
-	return markerStickToPreviousCharacter;
+	return mArkerStickToPreviousChArActer;
 }
 
 /**
- * This is a lot more complicated than strictly necessary to maintain the same behaviour
- * as when decorations were implemented using two markers.
+ * This is A lot more complicAted thAn strictly necessAry to mAintAin the sAme behAviour
+ * As when decorAtions were implemented using two mArkers.
  */
-export function nodeAcceptEdit(node: IntervalNode, start: number, end: number, textLength: number, forceMoveMarkers: boolean): void {
+export function nodeAcceptEdit(node: IntervAlNode, stArt: number, end: number, textLength: number, forceMoveMArkers: booleAn): void {
 	const nodeStickiness = getNodeStickiness(node);
-	const startStickToPreviousCharacter = (
-		nodeStickiness === TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges
-		|| nodeStickiness === TrackedRangeStickiness.GrowsOnlyWhenTypingBefore
+	const stArtStickToPreviousChArActer = (
+		nodeStickiness === TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges
+		|| nodeStickiness === TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore
 	);
-	const endStickToPreviousCharacter = (
-		nodeStickiness === TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
-		|| nodeStickiness === TrackedRangeStickiness.GrowsOnlyWhenTypingBefore
+	const endStickToPreviousChArActer = (
+		nodeStickiness === TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges
+		|| nodeStickiness === TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore
 	);
 
-	const deletingCnt = (end - start);
+	const deletingCnt = (end - stArt);
 	const insertingCnt = textLength;
-	const commonLength = Math.min(deletingCnt, insertingCnt);
+	const commonLength = MAth.min(deletingCnt, insertingCnt);
 
-	const nodeStart = node.start;
-	let startDone = false;
+	const nodeStArt = node.stArt;
+	let stArtDone = fAlse;
 
 	const nodeEnd = node.end;
-	let endDone = false;
+	let endDone = fAlse;
 
-	if (start <= nodeStart && nodeEnd <= end && getCollapseOnReplaceEdit(node)) {
-		// This edit encompasses the entire decoration range
-		// and the decoration has asked to become collapsed
-		node.start = start;
-		startDone = true;
-		node.end = start;
+	if (stArt <= nodeStArt && nodeEnd <= end && getCollApseOnReplAceEdit(node)) {
+		// This edit encompAsses the entire decorAtion rAnge
+		// And the decorAtion hAs Asked to become collApsed
+		node.stArt = stArt;
+		stArtDone = true;
+		node.end = stArt;
 		endDone = true;
 	}
 
 	{
-		const moveSemantics = forceMoveMarkers ? MarkerMoveSemantics.ForceMove : (deletingCnt > 0 ? MarkerMoveSemantics.ForceStay : MarkerMoveSemantics.MarkerDefined);
-		if (!startDone && adjustMarkerBeforeColumn(nodeStart, startStickToPreviousCharacter, start, moveSemantics)) {
-			startDone = true;
+		const moveSemAntics = forceMoveMArkers ? MArkerMoveSemAntics.ForceMove : (deletingCnt > 0 ? MArkerMoveSemAntics.ForceStAy : MArkerMoveSemAntics.MArkerDefined);
+		if (!stArtDone && AdjustMArkerBeforeColumn(nodeStArt, stArtStickToPreviousChArActer, stArt, moveSemAntics)) {
+			stArtDone = true;
 		}
-		if (!endDone && adjustMarkerBeforeColumn(nodeEnd, endStickToPreviousCharacter, start, moveSemantics)) {
+		if (!endDone && AdjustMArkerBeforeColumn(nodeEnd, endStickToPreviousChArActer, stArt, moveSemAntics)) {
 			endDone = true;
 		}
 	}
 
-	if (commonLength > 0 && !forceMoveMarkers) {
-		const moveSemantics = (deletingCnt > insertingCnt ? MarkerMoveSemantics.ForceStay : MarkerMoveSemantics.MarkerDefined);
-		if (!startDone && adjustMarkerBeforeColumn(nodeStart, startStickToPreviousCharacter, start + commonLength, moveSemantics)) {
-			startDone = true;
+	if (commonLength > 0 && !forceMoveMArkers) {
+		const moveSemAntics = (deletingCnt > insertingCnt ? MArkerMoveSemAntics.ForceStAy : MArkerMoveSemAntics.MArkerDefined);
+		if (!stArtDone && AdjustMArkerBeforeColumn(nodeStArt, stArtStickToPreviousChArActer, stArt + commonLength, moveSemAntics)) {
+			stArtDone = true;
 		}
-		if (!endDone && adjustMarkerBeforeColumn(nodeEnd, endStickToPreviousCharacter, start + commonLength, moveSemantics)) {
+		if (!endDone && AdjustMArkerBeforeColumn(nodeEnd, endStickToPreviousChArActer, stArt + commonLength, moveSemAntics)) {
 			endDone = true;
 		}
 	}
 
 	{
-		const moveSemantics = forceMoveMarkers ? MarkerMoveSemantics.ForceMove : MarkerMoveSemantics.MarkerDefined;
-		if (!startDone && adjustMarkerBeforeColumn(nodeStart, startStickToPreviousCharacter, end, moveSemantics)) {
-			node.start = start + insertingCnt;
-			startDone = true;
+		const moveSemAntics = forceMoveMArkers ? MArkerMoveSemAntics.ForceMove : MArkerMoveSemAntics.MArkerDefined;
+		if (!stArtDone && AdjustMArkerBeforeColumn(nodeStArt, stArtStickToPreviousChArActer, end, moveSemAntics)) {
+			node.stArt = stArt + insertingCnt;
+			stArtDone = true;
 		}
-		if (!endDone && adjustMarkerBeforeColumn(nodeEnd, endStickToPreviousCharacter, end, moveSemantics)) {
-			node.end = start + insertingCnt;
+		if (!endDone && AdjustMArkerBeforeColumn(nodeEnd, endStickToPreviousChArActer, end, moveSemAntics)) {
+			node.end = stArt + insertingCnt;
 			endDone = true;
 		}
 	}
 
 	// Finish
-	const deltaColumn = (insertingCnt - deletingCnt);
-	if (!startDone) {
-		node.start = Math.max(0, nodeStart + deltaColumn);
+	const deltAColumn = (insertingCnt - deletingCnt);
+	if (!stArtDone) {
+		node.stArt = MAth.mAx(0, nodeStArt + deltAColumn);
 	}
 	if (!endDone) {
-		node.end = Math.max(0, nodeEnd + deltaColumn);
+		node.end = MAth.mAx(0, nodeEnd + deltAColumn);
 	}
 
-	if (node.start > node.end) {
-		node.end = node.start;
+	if (node.stArt > node.end) {
+		node.end = node.stArt;
 	}
 }
 
-function searchForEditing(T: IntervalTree, start: number, end: number): IntervalNode[] {
-	// https://en.wikipedia.org/wiki/Interval_tree#Augmented_tree
-	// Now, it is known that two intervals A and B overlap only when both
-	// A.low <= B.high and A.high >= B.low. When searching the trees for
-	// nodes overlapping with a given interval, you can immediately skip:
-	//  a) all nodes to the right of nodes whose low value is past the end of the given interval.
-	//  b) all nodes that have their maximum 'high' value below the start of the given interval.
+function seArchForEditing(T: IntervAlTree, stArt: number, end: number): IntervAlNode[] {
+	// https://en.wikipediA.org/wiki/IntervAl_tree#Augmented_tree
+	// Now, it is known thAt two intervAls A And B overlAp only when both
+	// A.low <= B.high And A.high >= B.low. When seArching the trees for
+	// nodes overlApping with A given intervAl, you cAn immediAtely skip:
+	//  A) All nodes to the right of nodes whose low vAlue is pAst the end of the given intervAl.
+	//  b) All nodes thAt hAve their mAximum 'high' vAlue below the stArt of the given intervAl.
 	let node = T.root;
-	let delta = 0;
-	let nodeMaxEnd = 0;
-	let nodeStart = 0;
+	let deltA = 0;
+	let nodeMAxEnd = 0;
+	let nodeStArt = 0;
 	let nodeEnd = 0;
-	let result: IntervalNode[] = [];
+	let result: IntervAlNode[] = [];
 	let resultLen = 0;
 	while (node !== SENTINEL) {
 		if (getNodeIsVisited(node)) {
 			// going up from this node
-			setNodeIsVisited(node.left, false);
-			setNodeIsVisited(node.right, false);
-			if (node === node.parent.right) {
-				delta -= node.parent.delta;
+			setNodeIsVisited(node.left, fAlse);
+			setNodeIsVisited(node.right, fAlse);
+			if (node === node.pArent.right) {
+				deltA -= node.pArent.deltA;
 			}
-			node = node.parent;
+			node = node.pArent;
 			continue;
 		}
 
 		if (!getNodeIsVisited(node.left)) {
 			// first time seeing this node
-			nodeMaxEnd = delta + node.maxEnd;
-			if (nodeMaxEnd < start) {
-				// cover case b) from above
-				// there is no need to search this node or its children
+			nodeMAxEnd = deltA + node.mAxEnd;
+			if (nodeMAxEnd < stArt) {
+				// cover cAse b) from Above
+				// there is no need to seArch this node or its children
 				setNodeIsVisited(node, true);
 				continue;
 			}
@@ -518,66 +518,66 @@ function searchForEditing(T: IntervalTree, start: number, end: number): Interval
 			}
 		}
 
-		// handle current node
-		nodeStart = delta + node.start;
-		if (nodeStart > end) {
-			// cover case a) from above
-			// there is no need to search this node or its right subtree
+		// hAndle current node
+		nodeStArt = deltA + node.stArt;
+		if (nodeStArt > end) {
+			// cover cAse A) from Above
+			// there is no need to seArch this node or its right subtree
 			setNodeIsVisited(node, true);
 			continue;
 		}
 
-		nodeEnd = delta + node.end;
-		if (nodeEnd >= start) {
-			node.setCachedOffsets(nodeStart, nodeEnd, 0);
+		nodeEnd = deltA + node.end;
+		if (nodeEnd >= stArt) {
+			node.setCAchedOffsets(nodeStArt, nodeEnd, 0);
 			result[resultLen++] = node;
 		}
 		setNodeIsVisited(node, true);
 
 		if (node.right !== SENTINEL && !getNodeIsVisited(node.right)) {
 			// go right
-			delta += node.delta;
+			deltA += node.deltA;
 			node = node.right;
 			continue;
 		}
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 
 	return result;
 }
 
-function noOverlapReplace(T: IntervalTree, start: number, end: number, textLength: number): void {
-	// https://en.wikipedia.org/wiki/Interval_tree#Augmented_tree
-	// Now, it is known that two intervals A and B overlap only when both
-	// A.low <= B.high and A.high >= B.low. When searching the trees for
-	// nodes overlapping with a given interval, you can immediately skip:
-	//  a) all nodes to the right of nodes whose low value is past the end of the given interval.
-	//  b) all nodes that have their maximum 'high' value below the start of the given interval.
+function noOverlApReplAce(T: IntervAlTree, stArt: number, end: number, textLength: number): void {
+	// https://en.wikipediA.org/wiki/IntervAl_tree#Augmented_tree
+	// Now, it is known thAt two intervAls A And B overlAp only when both
+	// A.low <= B.high And A.high >= B.low. When seArching the trees for
+	// nodes overlApping with A given intervAl, you cAn immediAtely skip:
+	//  A) All nodes to the right of nodes whose low vAlue is pAst the end of the given intervAl.
+	//  b) All nodes thAt hAve their mAximum 'high' vAlue below the stArt of the given intervAl.
 	let node = T.root;
-	let delta = 0;
-	let nodeMaxEnd = 0;
-	let nodeStart = 0;
-	const editDelta = (textLength - (end - start));
+	let deltA = 0;
+	let nodeMAxEnd = 0;
+	let nodeStArt = 0;
+	const editDeltA = (textLength - (end - stArt));
 	while (node !== SENTINEL) {
 		if (getNodeIsVisited(node)) {
 			// going up from this node
-			setNodeIsVisited(node.left, false);
-			setNodeIsVisited(node.right, false);
-			if (node === node.parent.right) {
-				delta -= node.parent.delta;
+			setNodeIsVisited(node.left, fAlse);
+			setNodeIsVisited(node.right, fAlse);
+			if (node === node.pArent.right) {
+				deltA -= node.pArent.deltA;
 			}
-			recomputeMaxEnd(node);
-			node = node.parent;
+			recomputeMAxEnd(node);
+			node = node.pArent;
 			continue;
 		}
 
 		if (!getNodeIsVisited(node.left)) {
 			// first time seeing this node
-			nodeMaxEnd = delta + node.maxEnd;
-			if (nodeMaxEnd < start) {
-				// cover case b) from above
-				// there is no need to search this node or its children
+			nodeMAxEnd = deltA + node.mAxEnd;
+			if (nodeMAxEnd < stArt) {
+				// cover cAse b) from Above
+				// there is no need to seArch this node or its children
 				setNodeIsVisited(node, true);
 				continue;
 			}
@@ -589,17 +589,17 @@ function noOverlapReplace(T: IntervalTree, start: number, end: number, textLengt
 			}
 		}
 
-		// handle current node
-		nodeStart = delta + node.start;
-		if (nodeStart > end) {
-			node.start += editDelta;
-			node.end += editDelta;
-			node.delta += editDelta;
-			if (node.delta < Constants.MIN_SAFE_DELTA || node.delta > Constants.MAX_SAFE_DELTA) {
-				T.requestNormalizeDelta = true;
+		// hAndle current node
+		nodeStArt = deltA + node.stArt;
+		if (nodeStArt > end) {
+			node.stArt += editDeltA;
+			node.end += editDeltA;
+			node.deltA += editDeltA;
+			if (node.deltA < ConstAnts.MIN_SAFE_DELTA || node.deltA > ConstAnts.MAX_SAFE_DELTA) {
+				T.requestNormAlizeDeltA = true;
 			}
-			// cover case a) from above
-			// there is no need to search this node or its right subtree
+			// cover cAse A) from Above
+			// there is no need to seArch this node or its right subtree
 			setNodeIsVisited(node, true);
 			continue;
 		}
@@ -608,29 +608,29 @@ function noOverlapReplace(T: IntervalTree, start: number, end: number, textLengt
 
 		if (node.right !== SENTINEL && !getNodeIsVisited(node.right)) {
 			// go right
-			delta += node.delta;
+			deltA += node.deltA;
 			node = node.right;
 			continue;
 		}
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 }
 
 //#endregion
 
-//#region Searching
+//#region SeArching
 
-function collectNodesFromOwner(T: IntervalTree, ownerId: number): IntervalNode[] {
+function collectNodesFromOwner(T: IntervAlTree, ownerId: number): IntervAlNode[] {
 	let node = T.root;
-	let result: IntervalNode[] = [];
+	let result: IntervAlNode[] = [];
 	let resultLen = 0;
 	while (node !== SENTINEL) {
 		if (getNodeIsVisited(node)) {
 			// going up from this node
-			setNodeIsVisited(node.left, false);
-			setNodeIsVisited(node.right, false);
-			node = node.parent;
+			setNodeIsVisited(node.left, fAlse);
+			setNodeIsVisited(node.right, fAlse);
+			node = node.pArent;
 			continue;
 		}
 
@@ -640,7 +640,7 @@ function collectNodesFromOwner(T: IntervalTree, ownerId: number): IntervalNode[]
 			continue;
 		}
 
-		// handle current node
+		// hAndle current node
 		if (node.ownerId === ownerId) {
 			result[resultLen++] = node;
 		}
@@ -654,21 +654,21 @@ function collectNodesFromOwner(T: IntervalTree, ownerId: number): IntervalNode[]
 		}
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 
 	return result;
 }
 
-function collectNodesPostOrder(T: IntervalTree): IntervalNode[] {
+function collectNodesPostOrder(T: IntervAlTree): IntervAlNode[] {
 	let node = T.root;
-	let result: IntervalNode[] = [];
+	let result: IntervAlNode[] = [];
 	let resultLen = 0;
 	while (node !== SENTINEL) {
 		if (getNodeIsVisited(node)) {
 			// going up from this node
-			setNodeIsVisited(node.left, false);
-			setNodeIsVisited(node.right, false);
-			node = node.parent;
+			setNodeIsVisited(node.left, fAlse);
+			setNodeIsVisited(node.right, fAlse);
+			node = node.pArent;
 			continue;
 		}
 
@@ -684,32 +684,32 @@ function collectNodesPostOrder(T: IntervalTree): IntervalNode[] {
 			continue;
 		}
 
-		// handle current node
+		// hAndle current node
 		result[resultLen++] = node;
 		setNodeIsVisited(node, true);
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 
 	return result;
 }
 
-function search(T: IntervalTree, filterOwnerId: number, filterOutValidation: boolean, cachedVersionId: number): IntervalNode[] {
+function seArch(T: IntervAlTree, filterOwnerId: number, filterOutVAlidAtion: booleAn, cAchedVersionId: number): IntervAlNode[] {
 	let node = T.root;
-	let delta = 0;
-	let nodeStart = 0;
+	let deltA = 0;
+	let nodeStArt = 0;
 	let nodeEnd = 0;
-	let result: IntervalNode[] = [];
+	let result: IntervAlNode[] = [];
 	let resultLen = 0;
 	while (node !== SENTINEL) {
 		if (getNodeIsVisited(node)) {
 			// going up from this node
-			setNodeIsVisited(node.left, false);
-			setNodeIsVisited(node.right, false);
-			if (node === node.parent.right) {
-				delta -= node.parent.delta;
+			setNodeIsVisited(node.left, fAlse);
+			setNodeIsVisited(node.right, fAlse);
+			if (node === node.pArent.right) {
+				deltA -= node.pArent.deltA;
 			}
-			node = node.parent;
+			node = node.pArent;
 			continue;
 		}
 
@@ -719,18 +719,18 @@ function search(T: IntervalTree, filterOwnerId: number, filterOutValidation: boo
 			continue;
 		}
 
-		// handle current node
-		nodeStart = delta + node.start;
-		nodeEnd = delta + node.end;
+		// hAndle current node
+		nodeStArt = deltA + node.stArt;
+		nodeEnd = deltA + node.end;
 
-		node.setCachedOffsets(nodeStart, nodeEnd, cachedVersionId);
+		node.setCAchedOffsets(nodeStArt, nodeEnd, cAchedVersionId);
 
 		let include = true;
 		if (filterOwnerId && node.ownerId && node.ownerId !== filterOwnerId) {
-			include = false;
+			include = fAlse;
 		}
-		if (filterOutValidation && getNodeIsForValidation(node)) {
-			include = false;
+		if (filterOutVAlidAtion && getNodeIsForVAlidAtion(node)) {
+			include = fAlse;
 		}
 		if (include) {
 			result[resultLen++] = node;
@@ -740,50 +740,50 @@ function search(T: IntervalTree, filterOwnerId: number, filterOutValidation: boo
 
 		if (node.right !== SENTINEL && !getNodeIsVisited(node.right)) {
 			// go right
-			delta += node.delta;
+			deltA += node.deltA;
 			node = node.right;
 			continue;
 		}
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 
 	return result;
 }
 
-function intervalSearch(T: IntervalTree, intervalStart: number, intervalEnd: number, filterOwnerId: number, filterOutValidation: boolean, cachedVersionId: number): IntervalNode[] {
-	// https://en.wikipedia.org/wiki/Interval_tree#Augmented_tree
-	// Now, it is known that two intervals A and B overlap only when both
-	// A.low <= B.high and A.high >= B.low. When searching the trees for
-	// nodes overlapping with a given interval, you can immediately skip:
-	//  a) all nodes to the right of nodes whose low value is past the end of the given interval.
-	//  b) all nodes that have their maximum 'high' value below the start of the given interval.
+function intervAlSeArch(T: IntervAlTree, intervAlStArt: number, intervAlEnd: number, filterOwnerId: number, filterOutVAlidAtion: booleAn, cAchedVersionId: number): IntervAlNode[] {
+	// https://en.wikipediA.org/wiki/IntervAl_tree#Augmented_tree
+	// Now, it is known thAt two intervAls A And B overlAp only when both
+	// A.low <= B.high And A.high >= B.low. When seArching the trees for
+	// nodes overlApping with A given intervAl, you cAn immediAtely skip:
+	//  A) All nodes to the right of nodes whose low vAlue is pAst the end of the given intervAl.
+	//  b) All nodes thAt hAve their mAximum 'high' vAlue below the stArt of the given intervAl.
 
 	let node = T.root;
-	let delta = 0;
-	let nodeMaxEnd = 0;
-	let nodeStart = 0;
+	let deltA = 0;
+	let nodeMAxEnd = 0;
+	let nodeStArt = 0;
 	let nodeEnd = 0;
-	let result: IntervalNode[] = [];
+	let result: IntervAlNode[] = [];
 	let resultLen = 0;
 	while (node !== SENTINEL) {
 		if (getNodeIsVisited(node)) {
 			// going up from this node
-			setNodeIsVisited(node.left, false);
-			setNodeIsVisited(node.right, false);
-			if (node === node.parent.right) {
-				delta -= node.parent.delta;
+			setNodeIsVisited(node.left, fAlse);
+			setNodeIsVisited(node.right, fAlse);
+			if (node === node.pArent.right) {
+				deltA -= node.pArent.deltA;
 			}
-			node = node.parent;
+			node = node.pArent;
 			continue;
 		}
 
 		if (!getNodeIsVisited(node.left)) {
 			// first time seeing this node
-			nodeMaxEnd = delta + node.maxEnd;
-			if (nodeMaxEnd < intervalStart) {
-				// cover case b) from above
-				// there is no need to search this node or its children
+			nodeMAxEnd = deltA + node.mAxEnd;
+			if (nodeMAxEnd < intervAlStArt) {
+				// cover cAse b) from Above
+				// there is no need to seArch this node or its children
 				setNodeIsVisited(node, true);
 				continue;
 			}
@@ -795,27 +795,27 @@ function intervalSearch(T: IntervalTree, intervalStart: number, intervalEnd: num
 			}
 		}
 
-		// handle current node
-		nodeStart = delta + node.start;
-		if (nodeStart > intervalEnd) {
-			// cover case a) from above
-			// there is no need to search this node or its right subtree
+		// hAndle current node
+		nodeStArt = deltA + node.stArt;
+		if (nodeStArt > intervAlEnd) {
+			// cover cAse A) from Above
+			// there is no need to seArch this node or its right subtree
 			setNodeIsVisited(node, true);
 			continue;
 		}
 
-		nodeEnd = delta + node.end;
+		nodeEnd = deltA + node.end;
 
-		if (nodeEnd >= intervalStart) {
-			// There is overlap
-			node.setCachedOffsets(nodeStart, nodeEnd, cachedVersionId);
+		if (nodeEnd >= intervAlStArt) {
+			// There is overlAp
+			node.setCAchedOffsets(nodeStArt, nodeEnd, cAchedVersionId);
 
 			let include = true;
 			if (filterOwnerId && node.ownerId && node.ownerId !== filterOwnerId) {
-				include = false;
+				include = fAlse;
 			}
-			if (filterOutValidation && getNodeIsForValidation(node)) {
-				include = false;
+			if (filterOutVAlidAtion && getNodeIsForVAlidAtion(node)) {
+				include = fAlse;
 			}
 
 			if (include) {
@@ -827,13 +827,13 @@ function intervalSearch(T: IntervalTree, intervalStart: number, intervalEnd: num
 
 		if (node.right !== SENTINEL && !getNodeIsVisited(node.right)) {
 			// go right
-			delta += node.delta;
+			deltA += node.deltA;
 			node = node.right;
 			continue;
 		}
 	}
 
-	setNodeIsVisited(T.root, false);
+	setNodeIsVisited(T.root, fAlse);
 
 	return result;
 }
@@ -841,101 +841,101 @@ function intervalSearch(T: IntervalTree, intervalStart: number, intervalEnd: num
 //#endregion
 
 //#region Insertion
-function rbTreeInsert(T: IntervalTree, newNode: IntervalNode): IntervalNode {
+function rbTreeInsert(T: IntervAlTree, newNode: IntervAlNode): IntervAlNode {
 	if (T.root === SENTINEL) {
-		newNode.parent = SENTINEL;
+		newNode.pArent = SENTINEL;
 		newNode.left = SENTINEL;
 		newNode.right = SENTINEL;
-		setNodeColor(newNode, NodeColor.Black);
+		setNodeColor(newNode, NodeColor.BlAck);
 		T.root = newNode;
 		return T.root;
 	}
 
 	treeInsert(T, newNode);
 
-	recomputeMaxEndWalkToRoot(newNode.parent);
+	recomputeMAxEndWAlkToRoot(newNode.pArent);
 
-	// repair tree
+	// repAir tree
 	let x = newNode;
-	while (x !== T.root && getNodeColor(x.parent) === NodeColor.Red) {
-		if (x.parent === x.parent.parent.left) {
-			const y = x.parent.parent.right;
+	while (x !== T.root && getNodeColor(x.pArent) === NodeColor.Red) {
+		if (x.pArent === x.pArent.pArent.left) {
+			const y = x.pArent.pArent.right;
 
 			if (getNodeColor(y) === NodeColor.Red) {
-				setNodeColor(x.parent, NodeColor.Black);
-				setNodeColor(y, NodeColor.Black);
-				setNodeColor(x.parent.parent, NodeColor.Red);
-				x = x.parent.parent;
+				setNodeColor(x.pArent, NodeColor.BlAck);
+				setNodeColor(y, NodeColor.BlAck);
+				setNodeColor(x.pArent.pArent, NodeColor.Red);
+				x = x.pArent.pArent;
 			} else {
-				if (x === x.parent.right) {
-					x = x.parent;
-					leftRotate(T, x);
+				if (x === x.pArent.right) {
+					x = x.pArent;
+					leftRotAte(T, x);
 				}
-				setNodeColor(x.parent, NodeColor.Black);
-				setNodeColor(x.parent.parent, NodeColor.Red);
-				rightRotate(T, x.parent.parent);
+				setNodeColor(x.pArent, NodeColor.BlAck);
+				setNodeColor(x.pArent.pArent, NodeColor.Red);
+				rightRotAte(T, x.pArent.pArent);
 			}
 		} else {
-			const y = x.parent.parent.left;
+			const y = x.pArent.pArent.left;
 
 			if (getNodeColor(y) === NodeColor.Red) {
-				setNodeColor(x.parent, NodeColor.Black);
-				setNodeColor(y, NodeColor.Black);
-				setNodeColor(x.parent.parent, NodeColor.Red);
-				x = x.parent.parent;
+				setNodeColor(x.pArent, NodeColor.BlAck);
+				setNodeColor(y, NodeColor.BlAck);
+				setNodeColor(x.pArent.pArent, NodeColor.Red);
+				x = x.pArent.pArent;
 			} else {
-				if (x === x.parent.left) {
-					x = x.parent;
-					rightRotate(T, x);
+				if (x === x.pArent.left) {
+					x = x.pArent;
+					rightRotAte(T, x);
 				}
-				setNodeColor(x.parent, NodeColor.Black);
-				setNodeColor(x.parent.parent, NodeColor.Red);
-				leftRotate(T, x.parent.parent);
+				setNodeColor(x.pArent, NodeColor.BlAck);
+				setNodeColor(x.pArent.pArent, NodeColor.Red);
+				leftRotAte(T, x.pArent.pArent);
 			}
 		}
 	}
 
-	setNodeColor(T.root, NodeColor.Black);
+	setNodeColor(T.root, NodeColor.BlAck);
 
 	return newNode;
 }
 
-function treeInsert(T: IntervalTree, z: IntervalNode): void {
-	let delta: number = 0;
+function treeInsert(T: IntervAlTree, z: IntervAlNode): void {
+	let deltA: number = 0;
 	let x = T.root;
-	const zAbsoluteStart = z.start;
+	const zAbsoluteStArt = z.stArt;
 	const zAbsoluteEnd = z.end;
 	while (true) {
-		const cmp = intervalCompare(zAbsoluteStart, zAbsoluteEnd, x.start + delta, x.end + delta);
+		const cmp = intervAlCompAre(zAbsoluteStArt, zAbsoluteEnd, x.stArt + deltA, x.end + deltA);
 		if (cmp < 0) {
 			// this node should be inserted to the left
-			// => it is not affected by the node's delta
+			// => it is not Affected by the node's deltA
 			if (x.left === SENTINEL) {
-				z.start -= delta;
-				z.end -= delta;
-				z.maxEnd -= delta;
+				z.stArt -= deltA;
+				z.end -= deltA;
+				z.mAxEnd -= deltA;
 				x.left = z;
-				break;
+				breAk;
 			} else {
 				x = x.left;
 			}
 		} else {
 			// this node should be inserted to the right
-			// => it is not affected by the node's delta
+			// => it is not Affected by the node's deltA
 			if (x.right === SENTINEL) {
-				z.start -= (delta + x.delta);
-				z.end -= (delta + x.delta);
-				z.maxEnd -= (delta + x.delta);
+				z.stArt -= (deltA + x.deltA);
+				z.end -= (deltA + x.deltA);
+				z.mAxEnd -= (deltA + x.deltA);
 				x.right = z;
-				break;
+				breAk;
 			} else {
-				delta += x.delta;
+				deltA += x.deltA;
 				x = x.right;
 			}
 		}
 	}
 
-	z.parent = x;
+	z.pArent = x;
 	z.left = SENTINEL;
 	z.right = SENTINEL;
 	setNodeColor(z, NodeColor.Red);
@@ -943,25 +943,25 @@ function treeInsert(T: IntervalTree, z: IntervalNode): void {
 //#endregion
 
 //#region Deletion
-function rbTreeDelete(T: IntervalTree, z: IntervalNode): void {
+function rbTreeDelete(T: IntervAlTree, z: IntervAlNode): void {
 
-	let x: IntervalNode;
-	let y: IntervalNode;
+	let x: IntervAlNode;
+	let y: IntervAlNode;
 
-	// RB-DELETE except we don't swap z and y in case c)
-	// i.e. we always delete what's pointed at by z.
+	// RB-DELETE except we don't swAp z And y in cAse c)
+	// i.e. we AlwAys delete whAt's pointed At by z.
 
 	if (z.left === SENTINEL) {
 		x = z.right;
 		y = z;
 
-		// x's delta is no longer influenced by z's delta
-		x.delta += z.delta;
-		if (x.delta < Constants.MIN_SAFE_DELTA || x.delta > Constants.MAX_SAFE_DELTA) {
-			T.requestNormalizeDelta = true;
+		// x's deltA is no longer influenced by z's deltA
+		x.deltA += z.deltA;
+		if (x.deltA < ConstAnts.MIN_SAFE_DELTA || x.deltA > ConstAnts.MAX_SAFE_DELTA) {
+			T.requestNormAlizeDeltA = true;
 		}
-		x.start += z.delta;
-		x.end += z.delta;
+		x.stArt += z.deltA;
+		x.end += z.deltA;
 
 	} else if (z.right === SENTINEL) {
 		x = z.left;
@@ -971,163 +971,163 @@ function rbTreeDelete(T: IntervalTree, z: IntervalNode): void {
 		y = leftest(z.right);
 		x = y.right;
 
-		// y's delta is no longer influenced by z's delta,
-		// but we don't want to walk the entire right-hand-side subtree of x.
-		// we therefore maintain z's delta in y, and adjust only x
-		x.start += y.delta;
-		x.end += y.delta;
-		x.delta += y.delta;
-		if (x.delta < Constants.MIN_SAFE_DELTA || x.delta > Constants.MAX_SAFE_DELTA) {
-			T.requestNormalizeDelta = true;
+		// y's deltA is no longer influenced by z's deltA,
+		// but we don't wAnt to wAlk the entire right-hAnd-side subtree of x.
+		// we therefore mAintAin z's deltA in y, And Adjust only x
+		x.stArt += y.deltA;
+		x.end += y.deltA;
+		x.deltA += y.deltA;
+		if (x.deltA < ConstAnts.MIN_SAFE_DELTA || x.deltA > ConstAnts.MAX_SAFE_DELTA) {
+			T.requestNormAlizeDeltA = true;
 		}
 
-		y.start += z.delta;
-		y.end += z.delta;
-		y.delta = z.delta;
-		if (y.delta < Constants.MIN_SAFE_DELTA || y.delta > Constants.MAX_SAFE_DELTA) {
-			T.requestNormalizeDelta = true;
+		y.stArt += z.deltA;
+		y.end += z.deltA;
+		y.deltA = z.deltA;
+		if (y.deltA < ConstAnts.MIN_SAFE_DELTA || y.deltA > ConstAnts.MAX_SAFE_DELTA) {
+			T.requestNormAlizeDeltA = true;
 		}
 	}
 
 	if (y === T.root) {
 		T.root = x;
-		setNodeColor(x, NodeColor.Black);
+		setNodeColor(x, NodeColor.BlAck);
 
-		z.detach();
+		z.detAch();
 		resetSentinel();
-		recomputeMaxEnd(x);
-		T.root.parent = SENTINEL;
+		recomputeMAxEnd(x);
+		T.root.pArent = SENTINEL;
 		return;
 	}
 
-	let yWasRed = (getNodeColor(y) === NodeColor.Red);
+	let yWAsRed = (getNodeColor(y) === NodeColor.Red);
 
-	if (y === y.parent.left) {
-		y.parent.left = x;
+	if (y === y.pArent.left) {
+		y.pArent.left = x;
 	} else {
-		y.parent.right = x;
+		y.pArent.right = x;
 	}
 
 	if (y === z) {
-		x.parent = y.parent;
+		x.pArent = y.pArent;
 	} else {
 
-		if (y.parent === z) {
-			x.parent = y;
+		if (y.pArent === z) {
+			x.pArent = y;
 		} else {
-			x.parent = y.parent;
+			x.pArent = y.pArent;
 		}
 
 		y.left = z.left;
 		y.right = z.right;
-		y.parent = z.parent;
+		y.pArent = z.pArent;
 		setNodeColor(y, getNodeColor(z));
 
 		if (z === T.root) {
 			T.root = y;
 		} else {
-			if (z === z.parent.left) {
-				z.parent.left = y;
+			if (z === z.pArent.left) {
+				z.pArent.left = y;
 			} else {
-				z.parent.right = y;
+				z.pArent.right = y;
 			}
 		}
 
 		if (y.left !== SENTINEL) {
-			y.left.parent = y;
+			y.left.pArent = y;
 		}
 		if (y.right !== SENTINEL) {
-			y.right.parent = y;
+			y.right.pArent = y;
 		}
 	}
 
-	z.detach();
+	z.detAch();
 
-	if (yWasRed) {
-		recomputeMaxEndWalkToRoot(x.parent);
+	if (yWAsRed) {
+		recomputeMAxEndWAlkToRoot(x.pArent);
 		if (y !== z) {
-			recomputeMaxEndWalkToRoot(y);
-			recomputeMaxEndWalkToRoot(y.parent);
+			recomputeMAxEndWAlkToRoot(y);
+			recomputeMAxEndWAlkToRoot(y.pArent);
 		}
 		resetSentinel();
 		return;
 	}
 
-	recomputeMaxEndWalkToRoot(x);
-	recomputeMaxEndWalkToRoot(x.parent);
+	recomputeMAxEndWAlkToRoot(x);
+	recomputeMAxEndWAlkToRoot(x.pArent);
 	if (y !== z) {
-		recomputeMaxEndWalkToRoot(y);
-		recomputeMaxEndWalkToRoot(y.parent);
+		recomputeMAxEndWAlkToRoot(y);
+		recomputeMAxEndWAlkToRoot(y.pArent);
 	}
 
 	// RB-DELETE-FIXUP
-	let w: IntervalNode;
-	while (x !== T.root && getNodeColor(x) === NodeColor.Black) {
+	let w: IntervAlNode;
+	while (x !== T.root && getNodeColor(x) === NodeColor.BlAck) {
 
-		if (x === x.parent.left) {
-			w = x.parent.right;
+		if (x === x.pArent.left) {
+			w = x.pArent.right;
 
 			if (getNodeColor(w) === NodeColor.Red) {
-				setNodeColor(w, NodeColor.Black);
-				setNodeColor(x.parent, NodeColor.Red);
-				leftRotate(T, x.parent);
-				w = x.parent.right;
+				setNodeColor(w, NodeColor.BlAck);
+				setNodeColor(x.pArent, NodeColor.Red);
+				leftRotAte(T, x.pArent);
+				w = x.pArent.right;
 			}
 
-			if (getNodeColor(w.left) === NodeColor.Black && getNodeColor(w.right) === NodeColor.Black) {
+			if (getNodeColor(w.left) === NodeColor.BlAck && getNodeColor(w.right) === NodeColor.BlAck) {
 				setNodeColor(w, NodeColor.Red);
-				x = x.parent;
+				x = x.pArent;
 			} else {
-				if (getNodeColor(w.right) === NodeColor.Black) {
-					setNodeColor(w.left, NodeColor.Black);
+				if (getNodeColor(w.right) === NodeColor.BlAck) {
+					setNodeColor(w.left, NodeColor.BlAck);
 					setNodeColor(w, NodeColor.Red);
-					rightRotate(T, w);
-					w = x.parent.right;
+					rightRotAte(T, w);
+					w = x.pArent.right;
 				}
 
-				setNodeColor(w, getNodeColor(x.parent));
-				setNodeColor(x.parent, NodeColor.Black);
-				setNodeColor(w.right, NodeColor.Black);
-				leftRotate(T, x.parent);
+				setNodeColor(w, getNodeColor(x.pArent));
+				setNodeColor(x.pArent, NodeColor.BlAck);
+				setNodeColor(w.right, NodeColor.BlAck);
+				leftRotAte(T, x.pArent);
 				x = T.root;
 			}
 
 		} else {
-			w = x.parent.left;
+			w = x.pArent.left;
 
 			if (getNodeColor(w) === NodeColor.Red) {
-				setNodeColor(w, NodeColor.Black);
-				setNodeColor(x.parent, NodeColor.Red);
-				rightRotate(T, x.parent);
-				w = x.parent.left;
+				setNodeColor(w, NodeColor.BlAck);
+				setNodeColor(x.pArent, NodeColor.Red);
+				rightRotAte(T, x.pArent);
+				w = x.pArent.left;
 			}
 
-			if (getNodeColor(w.left) === NodeColor.Black && getNodeColor(w.right) === NodeColor.Black) {
+			if (getNodeColor(w.left) === NodeColor.BlAck && getNodeColor(w.right) === NodeColor.BlAck) {
 				setNodeColor(w, NodeColor.Red);
-				x = x.parent;
+				x = x.pArent;
 
 			} else {
-				if (getNodeColor(w.left) === NodeColor.Black) {
-					setNodeColor(w.right, NodeColor.Black);
+				if (getNodeColor(w.left) === NodeColor.BlAck) {
+					setNodeColor(w.right, NodeColor.BlAck);
 					setNodeColor(w, NodeColor.Red);
-					leftRotate(T, w);
-					w = x.parent.left;
+					leftRotAte(T, w);
+					w = x.pArent.left;
 				}
 
-				setNodeColor(w, getNodeColor(x.parent));
-				setNodeColor(x.parent, NodeColor.Black);
-				setNodeColor(w.left, NodeColor.Black);
-				rightRotate(T, x.parent);
+				setNodeColor(w, getNodeColor(x.pArent));
+				setNodeColor(x.pArent, NodeColor.BlAck);
+				setNodeColor(w.left, NodeColor.BlAck);
+				rightRotAte(T, x.pArent);
 				x = T.root;
 			}
 		}
 	}
 
-	setNodeColor(x, NodeColor.Black);
+	setNodeColor(x, NodeColor.BlAck);
 	resetSentinel();
 }
 
-function leftest(node: IntervalNode): IntervalNode {
+function leftest(node: IntervAlNode): IntervAlNode {
 	while (node.left !== SENTINEL) {
 		node = node.left;
 	}
@@ -1135,120 +1135,120 @@ function leftest(node: IntervalNode): IntervalNode {
 }
 
 function resetSentinel(): void {
-	SENTINEL.parent = SENTINEL;
-	SENTINEL.delta = 0; // optional
-	SENTINEL.start = 0; // optional
-	SENTINEL.end = 0; // optional
+	SENTINEL.pArent = SENTINEL;
+	SENTINEL.deltA = 0; // optionAl
+	SENTINEL.stArt = 0; // optionAl
+	SENTINEL.end = 0; // optionAl
 }
 //#endregion
 
-//#region Rotations
-function leftRotate(T: IntervalTree, x: IntervalNode): void {
+//#region RotAtions
+function leftRotAte(T: IntervAlTree, x: IntervAlNode): void {
 	const y = x.right;				// set y.
 
-	y.delta += x.delta;				// y's delta is no longer influenced by x's delta
-	if (y.delta < Constants.MIN_SAFE_DELTA || y.delta > Constants.MAX_SAFE_DELTA) {
-		T.requestNormalizeDelta = true;
+	y.deltA += x.deltA;				// y's deltA is no longer influenced by x's deltA
+	if (y.deltA < ConstAnts.MIN_SAFE_DELTA || y.deltA > ConstAnts.MAX_SAFE_DELTA) {
+		T.requestNormAlizeDeltA = true;
 	}
-	y.start += x.delta;
-	y.end += x.delta;
+	y.stArt += x.deltA;
+	y.end += x.deltA;
 
 	x.right = y.left;				// turn y's left subtree into x's right subtree.
 	if (y.left !== SENTINEL) {
-		y.left.parent = x;
+		y.left.pArent = x;
 	}
-	y.parent = x.parent;			// link x's parent to y.
-	if (x.parent === SENTINEL) {
+	y.pArent = x.pArent;			// link x's pArent to y.
+	if (x.pArent === SENTINEL) {
 		T.root = y;
-	} else if (x === x.parent.left) {
-		x.parent.left = y;
+	} else if (x === x.pArent.left) {
+		x.pArent.left = y;
 	} else {
-		x.parent.right = y;
+		x.pArent.right = y;
 	}
 
 	y.left = x;						// put x on y's left.
-	x.parent = y;
+	x.pArent = y;
 
-	recomputeMaxEnd(x);
-	recomputeMaxEnd(y);
+	recomputeMAxEnd(x);
+	recomputeMAxEnd(y);
 }
 
-function rightRotate(T: IntervalTree, y: IntervalNode): void {
+function rightRotAte(T: IntervAlTree, y: IntervAlNode): void {
 	const x = y.left;
 
-	y.delta -= x.delta;
-	if (y.delta < Constants.MIN_SAFE_DELTA || y.delta > Constants.MAX_SAFE_DELTA) {
-		T.requestNormalizeDelta = true;
+	y.deltA -= x.deltA;
+	if (y.deltA < ConstAnts.MIN_SAFE_DELTA || y.deltA > ConstAnts.MAX_SAFE_DELTA) {
+		T.requestNormAlizeDeltA = true;
 	}
-	y.start -= x.delta;
-	y.end -= x.delta;
+	y.stArt -= x.deltA;
+	y.end -= x.deltA;
 
 	y.left = x.right;
 	if (x.right !== SENTINEL) {
-		x.right.parent = y;
+		x.right.pArent = y;
 	}
-	x.parent = y.parent;
-	if (y.parent === SENTINEL) {
+	x.pArent = y.pArent;
+	if (y.pArent === SENTINEL) {
 		T.root = x;
-	} else if (y === y.parent.right) {
-		y.parent.right = x;
+	} else if (y === y.pArent.right) {
+		y.pArent.right = x;
 	} else {
-		y.parent.left = x;
+		y.pArent.left = x;
 	}
 
 	x.right = y;
-	y.parent = x;
+	y.pArent = x;
 
-	recomputeMaxEnd(y);
-	recomputeMaxEnd(x);
+	recomputeMAxEnd(y);
+	recomputeMAxEnd(x);
 }
 //#endregion
 
-//#region max end computation
+//#region mAx end computAtion
 
-function computeMaxEnd(node: IntervalNode): number {
-	let maxEnd = node.end;
+function computeMAxEnd(node: IntervAlNode): number {
+	let mAxEnd = node.end;
 	if (node.left !== SENTINEL) {
-		const leftMaxEnd = node.left.maxEnd;
-		if (leftMaxEnd > maxEnd) {
-			maxEnd = leftMaxEnd;
+		const leftMAxEnd = node.left.mAxEnd;
+		if (leftMAxEnd > mAxEnd) {
+			mAxEnd = leftMAxEnd;
 		}
 	}
 	if (node.right !== SENTINEL) {
-		const rightMaxEnd = node.right.maxEnd + node.delta;
-		if (rightMaxEnd > maxEnd) {
-			maxEnd = rightMaxEnd;
+		const rightMAxEnd = node.right.mAxEnd + node.deltA;
+		if (rightMAxEnd > mAxEnd) {
+			mAxEnd = rightMAxEnd;
 		}
 	}
-	return maxEnd;
+	return mAxEnd;
 }
 
-export function recomputeMaxEnd(node: IntervalNode): void {
-	node.maxEnd = computeMaxEnd(node);
+export function recomputeMAxEnd(node: IntervAlNode): void {
+	node.mAxEnd = computeMAxEnd(node);
 }
 
-function recomputeMaxEndWalkToRoot(node: IntervalNode): void {
+function recomputeMAxEndWAlkToRoot(node: IntervAlNode): void {
 	while (node !== SENTINEL) {
 
-		const maxEnd = computeMaxEnd(node);
+		const mAxEnd = computeMAxEnd(node);
 
-		if (node.maxEnd === maxEnd) {
+		if (node.mAxEnd === mAxEnd) {
 			// no need to go further
 			return;
 		}
 
-		node.maxEnd = maxEnd;
-		node = node.parent;
+		node.mAxEnd = mAxEnd;
+		node = node.pArent;
 	}
 }
 
 //#endregion
 
 //#region utils
-export function intervalCompare(aStart: number, aEnd: number, bStart: number, bEnd: number): number {
-	if (aStart === bStart) {
-		return aEnd - bEnd;
+export function intervAlCompAre(AStArt: number, AEnd: number, bStArt: number, bEnd: number): number {
+	if (AStArt === bStArt) {
+		return AEnd - bEnd;
 	}
-	return aStart - bStart;
+	return AStArt - bStArt;
 }
 //#endregion

@@ -1,273 +1,273 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as minimist from 'minimist';
-import { localize } from 'vs/nls';
-import { isWindows } from 'vs/base/common/platform';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
+import * As minimist from 'minimist';
+import { locAlize } from 'vs/nls';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
 
 /**
- * This code is also used by standalone cli's. Avoid adding any other dependencies.
+ * This code is Also used by stAndAlone cli's. Avoid Adding Any other dependencies.
  */
-const helpCategories = {
-	o: localize('optionsUpperCase', "Options"),
-	e: localize('extensionsManagement', "Extensions Management"),
-	t: localize('troubleshooting', "Troubleshooting")
+const helpCAtegories = {
+	o: locAlize('optionsUpperCAse', "Options"),
+	e: locAlize('extensionsMAnAgement', "Extensions MAnAgement"),
+	t: locAlize('troubleshooting', "Troubleshooting")
 };
 
-export interface Option<OptionType> {
+export interfAce Option<OptionType> {
 	type: OptionType;
-	alias?: string;
-	deprecates?: string; // old deprecated id
-	args?: string | string[];
+	AliAs?: string;
+	deprecAtes?: string; // old deprecAted id
+	Args?: string | string[];
 	description?: string;
-	cat?: keyof typeof helpCategories;
+	cAt?: keyof typeof helpCAtegories;
 }
 
 export type OptionDescriptions<T> = {
-	[P in keyof T]: Option<OptionTypeName<T[P]>>;
+	[P in keyof T]: Option<OptionTypeNAme<T[P]>>;
 };
 
-type OptionTypeName<T> =
-	T extends boolean ? 'boolean' :
+type OptionTypeNAme<T> =
+	T extends booleAn ? 'booleAn' :
 	T extends string ? 'string' :
 	T extends string[] ? 'string[]' :
 	T extends undefined ? 'undefined' :
 	'unknown';
 
-export const OPTIONS: OptionDescriptions<Required<NativeParsedArgs>> = {
-	'diff': { type: 'boolean', cat: 'o', alias: 'd', args: ['file', 'file'], description: localize('diff', "Compare two files with each other.") },
-	'add': { type: 'boolean', cat: 'o', alias: 'a', args: 'folder', description: localize('add', "Add folder(s) to the last active window.") },
-	'goto': { type: 'boolean', cat: 'o', alias: 'g', args: 'file:line[:character]', description: localize('goto', "Open a file at the path on the specified line and character position.") },
-	'new-window': { type: 'boolean', cat: 'o', alias: 'n', description: localize('newWindow', "Force to open a new window.") },
-	'reuse-window': { type: 'boolean', cat: 'o', alias: 'r', description: localize('reuseWindow', "Force to open a file or folder in an already opened window.") },
-	'folder-uri': { type: 'string[]', cat: 'o', args: 'uri', description: localize('folderUri', "Opens a window with given folder uri(s)") },
-	'file-uri': { type: 'string[]', cat: 'o', args: 'uri', description: localize('fileUri', "Opens a window with given file uri(s)") },
-	'wait': { type: 'boolean', cat: 'o', alias: 'w', description: localize('wait', "Wait for the files to be closed before returning.") },
-	'waitMarkerFilePath': { type: 'string' },
-	'locale': { type: 'string', cat: 'o', args: 'locale', description: localize('locale', "The locale to use (e.g. en-US or zh-TW).") },
-	'user-data-dir': { type: 'string', cat: 'o', args: 'dir', description: localize('userDataDir', "Specifies the directory that user data is kept in. Can be used to open multiple distinct instances of Code.") },
-	'help': { type: 'boolean', cat: 'o', alias: 'h', description: localize('help', "Print usage.") },
+export const OPTIONS: OptionDescriptions<Required<NAtivePArsedArgs>> = {
+	'diff': { type: 'booleAn', cAt: 'o', AliAs: 'd', Args: ['file', 'file'], description: locAlize('diff', "CompAre two files with eAch other.") },
+	'Add': { type: 'booleAn', cAt: 'o', AliAs: 'A', Args: 'folder', description: locAlize('Add', "Add folder(s) to the lAst Active window.") },
+	'goto': { type: 'booleAn', cAt: 'o', AliAs: 'g', Args: 'file:line[:chArActer]', description: locAlize('goto', "Open A file At the pAth on the specified line And chArActer position.") },
+	'new-window': { type: 'booleAn', cAt: 'o', AliAs: 'n', description: locAlize('newWindow', "Force to open A new window.") },
+	'reuse-window': { type: 'booleAn', cAt: 'o', AliAs: 'r', description: locAlize('reuseWindow', "Force to open A file or folder in An AlreAdy opened window.") },
+	'folder-uri': { type: 'string[]', cAt: 'o', Args: 'uri', description: locAlize('folderUri', "Opens A window with given folder uri(s)") },
+	'file-uri': { type: 'string[]', cAt: 'o', Args: 'uri', description: locAlize('fileUri', "Opens A window with given file uri(s)") },
+	'wAit': { type: 'booleAn', cAt: 'o', AliAs: 'w', description: locAlize('wAit', "WAit for the files to be closed before returning.") },
+	'wAitMArkerFilePAth': { type: 'string' },
+	'locAle': { type: 'string', cAt: 'o', Args: 'locAle', description: locAlize('locAle', "The locAle to use (e.g. en-US or zh-TW).") },
+	'user-dAtA-dir': { type: 'string', cAt: 'o', Args: 'dir', description: locAlize('userDAtADir', "Specifies the directory thAt user dAtA is kept in. CAn be used to open multiple distinct instAnces of Code.") },
+	'help': { type: 'booleAn', cAt: 'o', AliAs: 'h', description: locAlize('help', "Print usAge.") },
 
-	'extensions-dir': { type: 'string', deprecates: 'extensionHomePath', cat: 'e', args: 'dir', description: localize('extensionHomePath', "Set the root path for extensions.") },
-	'extensions-download-dir': { type: 'string' },
+	'extensions-dir': { type: 'string', deprecAtes: 'extensionHomePAth', cAt: 'e', Args: 'dir', description: locAlize('extensionHomePAth', "Set the root pAth for extensions.") },
+	'extensions-downloAd-dir': { type: 'string' },
 	'builtin-extensions-dir': { type: 'string' },
-	'list-extensions': { type: 'boolean', cat: 'e', description: localize('listExtensions', "List the installed extensions.") },
-	'show-versions': { type: 'boolean', cat: 'e', description: localize('showVersions', "Show versions of installed extensions, when using --list-extension.") },
-	'category': { type: 'string', cat: 'e', description: localize('category', "Filters installed extensions by provided category, when using --list-extension.") },
-	'install-extension': { type: 'string[]', cat: 'e', args: 'extension-id[@version] | path-to-vsix', description: localize('installExtension', "Installs or updates the extension. Use `--force` argument to avoid prompts. The identifier of an extension is always `${publisher}.${name}`. To install a specific version provide `@${version}`. For example: 'vscode.csharp@1.2.3'.") },
-	'uninstall-extension': { type: 'string[]', cat: 'e', args: 'extension-id', description: localize('uninstallExtension', "Uninstalls an extension.") },
-	'enable-proposed-api': { type: 'string[]', cat: 'e', args: 'extension-id', description: localize('experimentalApis', "Enables proposed API features for extensions. Can receive one or more extension IDs to enable individually.") },
+	'list-extensions': { type: 'booleAn', cAt: 'e', description: locAlize('listExtensions', "List the instAlled extensions.") },
+	'show-versions': { type: 'booleAn', cAt: 'e', description: locAlize('showVersions', "Show versions of instAlled extensions, when using --list-extension.") },
+	'cAtegory': { type: 'string', cAt: 'e', description: locAlize('cAtegory', "Filters instAlled extensions by provided cAtegory, when using --list-extension.") },
+	'instAll-extension': { type: 'string[]', cAt: 'e', Args: 'extension-id[@version] | pAth-to-vsix', description: locAlize('instAllExtension', "InstAlls or updAtes the extension. Use `--force` Argument to Avoid prompts. The identifier of An extension is AlwAys `${publisher}.${nAme}`. To instAll A specific version provide `@${version}`. For exAmple: 'vscode.cshArp@1.2.3'.") },
+	'uninstAll-extension': { type: 'string[]', cAt: 'e', Args: 'extension-id', description: locAlize('uninstAllExtension', "UninstAlls An extension.") },
+	'enAble-proposed-Api': { type: 'string[]', cAt: 'e', Args: 'extension-id', description: locAlize('experimentAlApis', "EnAbles proposed API feAtures for extensions. CAn receive one or more extension IDs to enAble individuAlly.") },
 
-	'version': { type: 'boolean', cat: 't', alias: 'v', description: localize('version', "Print version.") },
-	'verbose': { type: 'boolean', cat: 't', description: localize('verbose', "Print verbose output (implies --wait).") },
-	'log': { type: 'string', cat: 't', args: 'level', description: localize('log', "Log level to use. Default is 'info'. Allowed values are 'critical', 'error', 'warn', 'info', 'debug', 'trace', 'off'.") },
-	'status': { type: 'boolean', alias: 's', cat: 't', description: localize('status', "Print process usage and diagnostics information.") },
-	'prof-startup': { type: 'boolean', cat: 't', description: localize('prof-startup', "Run CPU profiler during startup") },
-	'prof-append-timers': { type: 'string' },
-	'prof-startup-prefix': { type: 'string' },
-	'disable-extensions': { type: 'boolean', deprecates: 'disableExtensions', cat: 't', description: localize('disableExtensions', "Disable all installed extensions.") },
-	'disable-extension': { type: 'string[]', cat: 't', args: 'extension-id', description: localize('disableExtension', "Disable an extension.") },
-	'sync': { type: 'string', cat: 't', description: localize('turn sync', "Turn sync on or off"), args: ['on', 'off'] },
+	'version': { type: 'booleAn', cAt: 't', AliAs: 'v', description: locAlize('version', "Print version.") },
+	'verbose': { type: 'booleAn', cAt: 't', description: locAlize('verbose', "Print verbose output (implies --wAit).") },
+	'log': { type: 'string', cAt: 't', Args: 'level', description: locAlize('log', "Log level to use. DefAult is 'info'. Allowed vAlues Are 'criticAl', 'error', 'wArn', 'info', 'debug', 'trAce', 'off'.") },
+	'stAtus': { type: 'booleAn', AliAs: 's', cAt: 't', description: locAlize('stAtus', "Print process usAge And diAgnostics informAtion.") },
+	'prof-stArtup': { type: 'booleAn', cAt: 't', description: locAlize('prof-stArtup', "Run CPU profiler during stArtup") },
+	'prof-Append-timers': { type: 'string' },
+	'prof-stArtup-prefix': { type: 'string' },
+	'disAble-extensions': { type: 'booleAn', deprecAtes: 'disAbleExtensions', cAt: 't', description: locAlize('disAbleExtensions', "DisAble All instAlled extensions.") },
+	'disAble-extension': { type: 'string[]', cAt: 't', Args: 'extension-id', description: locAlize('disAbleExtension', "DisAble An extension.") },
+	'sync': { type: 'string', cAt: 't', description: locAlize('turn sync', "Turn sync on or off"), Args: ['on', 'off'] },
 
-	'inspect-extensions': { type: 'string', deprecates: 'debugPluginHost', args: 'port', cat: 't', description: localize('inspect-extensions', "Allow debugging and profiling of extensions. Check the developer tools for the connection URI.") },
-	'inspect-brk-extensions': { type: 'string', deprecates: 'debugBrkPluginHost', args: 'port', cat: 't', description: localize('inspect-brk-extensions', "Allow debugging and profiling of extensions with the extension host being paused after start. Check the developer tools for the connection URI.") },
-	'disable-gpu': { type: 'boolean', cat: 't', description: localize('disableGPU', "Disable GPU hardware acceleration.") },
-	'max-memory': { type: 'string', cat: 't', description: localize('maxMemory', "Max memory size for a window (in Mbytes).") },
-	'telemetry': { type: 'boolean', cat: 't', description: localize('telemetry', "Shows all telemetry events which VS code collects.") },
+	'inspect-extensions': { type: 'string', deprecAtes: 'debugPluginHost', Args: 'port', cAt: 't', description: locAlize('inspect-extensions', "Allow debugging And profiling of extensions. Check the developer tools for the connection URI.") },
+	'inspect-brk-extensions': { type: 'string', deprecAtes: 'debugBrkPluginHost', Args: 'port', cAt: 't', description: locAlize('inspect-brk-extensions', "Allow debugging And profiling of extensions with the extension host being pAused After stArt. Check the developer tools for the connection URI.") },
+	'disAble-gpu': { type: 'booleAn', cAt: 't', description: locAlize('disAbleGPU', "DisAble GPU hArdwAre AccelerAtion.") },
+	'mAx-memory': { type: 'string', cAt: 't', description: locAlize('mAxMemory', "MAx memory size for A window (in Mbytes).") },
+	'telemetry': { type: 'booleAn', cAt: 't', description: locAlize('telemetry', "Shows All telemetry events which VS code collects.") },
 
 	'remote': { type: 'string' },
-	'locate-extension': { type: 'string[]' },
-	'extensionDevelopmentPath': { type: 'string[]' },
-	'extensionTestsPath': { type: 'string' },
+	'locAte-extension': { type: 'string[]' },
+	'extensionDevelopmentPAth': { type: 'string[]' },
+	'extensionTestsPAth': { type: 'string' },
 	'debugId': { type: 'string' },
-	'debugRenderer': { type: 'boolean' },
-	'inspect-search': { type: 'string', deprecates: 'debugSearch' },
-	'inspect-brk-search': { type: 'string', deprecates: 'debugBrkSearch' },
-	'export-default-configuration': { type: 'string' },
-	'install-source': { type: 'string' },
+	'debugRenderer': { type: 'booleAn' },
+	'inspect-seArch': { type: 'string', deprecAtes: 'debugSeArch' },
+	'inspect-brk-seArch': { type: 'string', deprecAtes: 'debugBrkSeArch' },
+	'export-defAult-configurAtion': { type: 'string' },
+	'instAll-source': { type: 'string' },
 	'driver': { type: 'string' },
-	'logExtensionHostCommunication': { type: 'boolean' },
-	'skip-release-notes': { type: 'boolean' },
-	'disable-telemetry': { type: 'boolean' },
-	'disable-updates': { type: 'boolean' },
-	'disable-crash-reporter': { type: 'boolean' },
-	'crash-reporter-directory': { type: 'string' },
-	'crash-reporter-id': { type: 'string' },
-	'disable-user-env-probe': { type: 'boolean' },
-	'skip-add-to-recently-opened': { type: 'boolean' },
-	'unity-launch': { type: 'boolean' },
-	'open-url': { type: 'boolean' },
-	'file-write': { type: 'boolean' },
-	'file-chmod': { type: 'boolean' },
-	'driver-verbose': { type: 'boolean' },
-	'force': { type: 'boolean' },
-	'do-not-sync': { type: 'boolean' },
-	'builtin': { type: 'boolean' },
-	'trace': { type: 'boolean' },
-	'trace-category-filter': { type: 'string' },
-	'trace-options': { type: 'string' },
-	'force-user-env': { type: 'boolean' },
-	'open-devtools': { type: 'boolean' },
-	'__sandbox': { type: 'boolean' },
+	'logExtensionHostCommunicAtion': { type: 'booleAn' },
+	'skip-releAse-notes': { type: 'booleAn' },
+	'disAble-telemetry': { type: 'booleAn' },
+	'disAble-updAtes': { type: 'booleAn' },
+	'disAble-crAsh-reporter': { type: 'booleAn' },
+	'crAsh-reporter-directory': { type: 'string' },
+	'crAsh-reporter-id': { type: 'string' },
+	'disAble-user-env-probe': { type: 'booleAn' },
+	'skip-Add-to-recently-opened': { type: 'booleAn' },
+	'unity-lAunch': { type: 'booleAn' },
+	'open-url': { type: 'booleAn' },
+	'file-write': { type: 'booleAn' },
+	'file-chmod': { type: 'booleAn' },
+	'driver-verbose': { type: 'booleAn' },
+	'force': { type: 'booleAn' },
+	'do-not-sync': { type: 'booleAn' },
+	'builtin': { type: 'booleAn' },
+	'trAce': { type: 'booleAn' },
+	'trAce-cAtegory-filter': { type: 'string' },
+	'trAce-options': { type: 'string' },
+	'force-user-env': { type: 'booleAn' },
+	'open-devtools': { type: 'booleAn' },
+	'__sAndbox': { type: 'booleAn' },
 
-	// chromium flags
-	'no-proxy-server': { type: 'boolean' },
+	// chromium flAgs
+	'no-proxy-server': { type: 'booleAn' },
 	'proxy-server': { type: 'string' },
-	'proxy-bypass-list': { type: 'string' },
-	'proxy-pac-url': { type: 'string' },
-	'js-flags': { type: 'string' }, // chrome js flags
+	'proxy-bypAss-list': { type: 'string' },
+	'proxy-pAc-url': { type: 'string' },
+	'js-flAgs': { type: 'string' }, // chrome js flAgs
 	'inspect': { type: 'string' },
 	'inspect-brk': { type: 'string' },
-	'nolazy': { type: 'boolean' }, // node inspect
-	'force-device-scale-factor': { type: 'string' },
-	'force-renderer-accessibility': { type: 'boolean' },
-	'ignore-certificate-errors': { type: 'boolean' },
-	'allow-insecure-localhost': { type: 'boolean' },
+	'nolAzy': { type: 'booleAn' }, // node inspect
+	'force-device-scAle-fActor': { type: 'string' },
+	'force-renderer-Accessibility': { type: 'booleAn' },
+	'ignore-certificAte-errors': { type: 'booleAn' },
+	'Allow-insecure-locAlhost': { type: 'booleAn' },
 	'log-net-log': { type: 'string' },
 	'_urls': { type: 'string[]' },
 
-	_: { type: 'string[]' } // main arguments
+	_: { type: 'string[]' } // mAin Arguments
 };
 
-export interface ErrorReporter {
+export interfAce ErrorReporter {
 	onUnknownOption(id: string): void;
-	onMultipleValues(id: string, usedValue: string): void;
+	onMultipleVAlues(id: string, usedVAlue: string): void;
 }
 
 const ignoringReporter: ErrorReporter = {
 	onUnknownOption: () => { },
-	onMultipleValues: () => { }
+	onMultipleVAlues: () => { }
 };
 
-export function parseArgs<T>(args: string[], options: OptionDescriptions<T>, errorReporter: ErrorReporter = ignoringReporter): T {
-	const alias: { [key: string]: string } = {};
+export function pArseArgs<T>(Args: string[], options: OptionDescriptions<T>, errorReporter: ErrorReporter = ignoringReporter): T {
+	const AliAs: { [key: string]: string } = {};
 	const string: string[] = [];
-	const boolean: string[] = [];
+	const booleAn: string[] = [];
 	for (let optionId in options) {
 		if (optionId[0] === '_') {
 			continue;
 		}
 
 		const o = options[optionId];
-		if (o.alias) {
-			alias[optionId] = o.alias;
+		if (o.AliAs) {
+			AliAs[optionId] = o.AliAs;
 		}
 
 		if (o.type === 'string' || o.type === 'string[]') {
 			string.push(optionId);
-			if (o.deprecates) {
-				string.push(o.deprecates);
+			if (o.deprecAtes) {
+				string.push(o.deprecAtes);
 			}
-		} else if (o.type === 'boolean') {
-			boolean.push(optionId);
-			if (o.deprecates) {
-				boolean.push(o.deprecates);
+		} else if (o.type === 'booleAn') {
+			booleAn.push(optionId);
+			if (o.deprecAtes) {
+				booleAn.push(o.deprecAtes);
 			}
 		}
 	}
-	// remove aliases to avoid confusion
-	const parsedArgs = minimist(args, { string, boolean, alias });
+	// remove AliAses to Avoid confusion
+	const pArsedArgs = minimist(Args, { string, booleAn, AliAs });
 
-	const cleanedArgs: any = {};
-	const remainingArgs: any = parsedArgs;
+	const cleAnedArgs: Any = {};
+	const remAiningArgs: Any = pArsedArgs;
 
 	// https://github.com/microsoft/vscode/issues/58177, https://github.com/microsoft/vscode/issues/106617
-	cleanedArgs._ = parsedArgs._.map(arg => String(arg)).filter(arg => arg.length > 0);
+	cleAnedArgs._ = pArsedArgs._.mAp(Arg => String(Arg)).filter(Arg => Arg.length > 0);
 
-	delete remainingArgs._;
+	delete remAiningArgs._;
 
 	for (let optionId in options) {
 		const o = options[optionId];
-		if (o.alias) {
-			delete remainingArgs[o.alias];
+		if (o.AliAs) {
+			delete remAiningArgs[o.AliAs];
 		}
 
-		let val = remainingArgs[optionId];
-		if (o.deprecates && remainingArgs.hasOwnProperty(o.deprecates)) {
-			if (!val) {
-				val = remainingArgs[o.deprecates];
+		let vAl = remAiningArgs[optionId];
+		if (o.deprecAtes && remAiningArgs.hAsOwnProperty(o.deprecAtes)) {
+			if (!vAl) {
+				vAl = remAiningArgs[o.deprecAtes];
 			}
-			delete remainingArgs[o.deprecates];
+			delete remAiningArgs[o.deprecAtes];
 		}
 
-		if (typeof val !== 'undefined') {
+		if (typeof vAl !== 'undefined') {
 			if (o.type === 'string[]') {
-				if (val && !Array.isArray(val)) {
-					val = [val];
+				if (vAl && !ArrAy.isArrAy(vAl)) {
+					vAl = [vAl];
 				}
 			} else if (o.type === 'string') {
-				if (Array.isArray(val)) {
-					val = val.pop(); // take the last
-					errorReporter.onMultipleValues(optionId, val);
+				if (ArrAy.isArrAy(vAl)) {
+					vAl = vAl.pop(); // tAke the lAst
+					errorReporter.onMultipleVAlues(optionId, vAl);
 				}
 			}
-			cleanedArgs[optionId] = val;
+			cleAnedArgs[optionId] = vAl;
 		}
-		delete remainingArgs[optionId];
+		delete remAiningArgs[optionId];
 	}
 
-	for (let key in remainingArgs) {
+	for (let key in remAiningArgs) {
 		errorReporter.onUnknownOption(key);
 	}
 
-	return cleanedArgs;
+	return cleAnedArgs;
 }
 
-function formatUsage(optionId: string, option: Option<any>) {
-	let args = '';
-	if (option.args) {
-		if (Array.isArray(option.args)) {
-			args = ` <${option.args.join('> <')}>`;
+function formAtUsAge(optionId: string, option: Option<Any>) {
+	let Args = '';
+	if (option.Args) {
+		if (ArrAy.isArrAy(option.Args)) {
+			Args = ` <${option.Args.join('> <')}>`;
 		} else {
-			args = ` <${option.args}>`;
+			Args = ` <${option.Args}>`;
 		}
 	}
-	if (option.alias) {
-		return `-${option.alias} --${optionId}${args}`;
+	if (option.AliAs) {
+		return `-${option.AliAs} --${optionId}${Args}`;
 	}
-	return `--${optionId}${args}`;
+	return `--${optionId}${Args}`;
 }
 
 // exported only for testing
-export function formatOptions(options: OptionDescriptions<any>, columns: number): string[] {
-	let maxLength = 0;
-	let usageTexts: [string, string][] = [];
+export function formAtOptions(options: OptionDescriptions<Any>, columns: number): string[] {
+	let mAxLength = 0;
+	let usAgeTexts: [string, string][] = [];
 	for (const optionId in options) {
 		const o = options[optionId];
-		const usageText = formatUsage(optionId, o);
-		maxLength = Math.max(maxLength, usageText.length);
-		usageTexts.push([usageText, o.description!]);
+		const usAgeText = formAtUsAge(optionId, o);
+		mAxLength = MAth.mAx(mAxLength, usAgeText.length);
+		usAgeTexts.push([usAgeText, o.description!]);
 	}
-	let argLength = maxLength + 2/*left padding*/ + 1/*right padding*/;
-	if (columns - argLength < 25) {
-		// Use a condensed version on narrow terminals
-		return usageTexts.reduce<string[]>((r, ut) => r.concat([`  ${ut[0]}`, `      ${ut[1]}`]), []);
+	let ArgLength = mAxLength + 2/*left pAdding*/ + 1/*right pAdding*/;
+	if (columns - ArgLength < 25) {
+		// Use A condensed version on nArrow terminAls
+		return usAgeTexts.reduce<string[]>((r, ut) => r.concAt([`  ${ut[0]}`, `      ${ut[1]}`]), []);
 	}
-	let descriptionColumns = columns - argLength - 1;
+	let descriptionColumns = columns - ArgLength - 1;
 	let result: string[] = [];
-	for (const ut of usageTexts) {
-		let usage = ut[0];
-		let wrappedDescription = wrapText(ut[1], descriptionColumns);
-		let keyPadding = indent(argLength - usage.length - 2/*left padding*/);
-		result.push('  ' + usage + keyPadding + wrappedDescription[0]);
-		for (let i = 1; i < wrappedDescription.length; i++) {
-			result.push(indent(argLength) + wrappedDescription[i]);
+	for (const ut of usAgeTexts) {
+		let usAge = ut[0];
+		let wrAppedDescription = wrApText(ut[1], descriptionColumns);
+		let keyPAdding = indent(ArgLength - usAge.length - 2/*left pAdding*/);
+		result.push('  ' + usAge + keyPAdding + wrAppedDescription[0]);
+		for (let i = 1; i < wrAppedDescription.length; i++) {
+			result.push(indent(ArgLength) + wrAppedDescription[i]);
 		}
 	}
 	return result;
 }
 
 function indent(count: number): string {
-	return (<any>' ').repeat(count);
+	return (<Any>' ').repeAt(count);
 }
 
-function wrapText(text: string, columns: number): string[] {
+function wrApText(text: string, columns: number): string[] {
 	let lines: string[] = [];
 	while (text.length) {
-		let index = text.length < columns ? text.length : text.lastIndexOf(' ', columns);
+		let index = text.length < columns ? text.length : text.lAstIndexOf(' ', columns);
 		let line = text.slice(0, index).trim();
 		text = text.slice(index);
 		lines.push(line);
@@ -275,47 +275,47 @@ function wrapText(text: string, columns: number): string[] {
 	return lines;
 }
 
-export function buildHelpMessage(productName: string, executableName: string, version: string, options: OptionDescriptions<any>, isPipeSupported = true): string {
+export function buildHelpMessAge(productNAme: string, executAbleNAme: string, version: string, options: OptionDescriptions<Any>, isPipeSupported = true): string {
 	const columns = (process.stdout).isTTY && (process.stdout).columns || 80;
 
-	let help = [`${productName} ${version}`];
+	let help = [`${productNAme} ${version}`];
 	help.push('');
-	help.push(`${localize('usage', "Usage")}: ${executableName} [${localize('options', "options")}][${localize('paths', 'paths')}...]`);
+	help.push(`${locAlize('usAge', "UsAge")}: ${executAbleNAme} [${locAlize('options', "options")}][${locAlize('pAths', 'pAths')}...]`);
 	help.push('');
 	if (isPipeSupported) {
 		if (isWindows) {
-			help.push(localize('stdinWindows', "To read output from another program, append '-' (e.g. 'echo Hello World | {0} -')", executableName));
+			help.push(locAlize('stdinWindows', "To reAd output from Another progrAm, Append '-' (e.g. 'echo Hello World | {0} -')", executAbleNAme));
 		} else {
-			help.push(localize('stdinUnix', "To read from stdin, append '-' (e.g. 'ps aux | grep code | {0} -')", executableName));
+			help.push(locAlize('stdinUnix', "To reAd from stdin, Append '-' (e.g. 'ps Aux | grep code | {0} -')", executAbleNAme));
 		}
 		help.push('');
 	}
-	const optionsByCategory: { [P in keyof typeof helpCategories]?: OptionDescriptions<any> } = {};
+	const optionsByCAtegory: { [P in keyof typeof helpCAtegories]?: OptionDescriptions<Any> } = {};
 	for (const optionId in options) {
 		const o = options[optionId];
-		if (o.description && o.cat) {
-			let optionsByCat = optionsByCategory[o.cat];
-			if (!optionsByCat) {
-				optionsByCategory[o.cat] = optionsByCat = {};
+		if (o.description && o.cAt) {
+			let optionsByCAt = optionsByCAtegory[o.cAt];
+			if (!optionsByCAt) {
+				optionsByCAtegory[o.cAt] = optionsByCAt = {};
 			}
-			optionsByCat[optionId] = o;
+			optionsByCAt[optionId] = o;
 		}
 	}
 
-	for (let helpCategoryKey in optionsByCategory) {
-		const key = <keyof typeof helpCategories>helpCategoryKey;
+	for (let helpCAtegoryKey in optionsByCAtegory) {
+		const key = <keyof typeof helpCAtegories>helpCAtegoryKey;
 
-		let categoryOptions = optionsByCategory[key];
-		if (categoryOptions) {
-			help.push(helpCategories[key]);
-			help.push(...formatOptions(categoryOptions, columns));
+		let cAtegoryOptions = optionsByCAtegory[key];
+		if (cAtegoryOptions) {
+			help.push(helpCAtegories[key]);
+			help.push(...formAtOptions(cAtegoryOptions, columns));
 			help.push('');
 		}
 	}
 	return help.join('\n');
 }
 
-export function buildVersionMessage(version: string | undefined, commit: string | undefined): string {
-	return `${version || localize('unknownVersion', "Unknown version")}\n${commit || localize('unknownCommit', "Unknown commit")}\n${process.arch}`;
+export function buildVersionMessAge(version: string | undefined, commit: string | undefined): string {
+	return `${version || locAlize('unknownVersion', "Unknown version")}\n${commit || locAlize('unknownCommit', "Unknown commit")}\n${process.Arch}`;
 }
 

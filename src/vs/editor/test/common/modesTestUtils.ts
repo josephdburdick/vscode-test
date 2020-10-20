@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { LineTokens } from 'vs/editor/common/core/lineTokens';
-import { MetadataConsts, StandardTokenType } from 'vs/editor/common/modes';
-import { ScopedLineTokens, createScopedLineTokens } from 'vs/editor/common/modes/supports';
+import { MetAdAtAConsts, StAndArdTokenType } from 'vs/editor/common/modes';
+import { ScopedLineTokens, creAteScopedLineTokens } from 'vs/editor/common/modes/supports';
 
-export interface TokenText {
+export interfAce TokenText {
 	text: string;
-	type: StandardTokenType;
+	type: StAndArdTokenType;
 }
 
-export function createFakeScopedLineTokens(rawTokens: TokenText[]): ScopedLineTokens {
-	let tokens = new Uint32Array(rawTokens.length << 1);
+export function creAteFAkeScopedLineTokens(rAwTokens: TokenText[]): ScopedLineTokens {
+	let tokens = new Uint32ArrAy(rAwTokens.length << 1);
 	let line = '';
 
-	for (let i = 0, len = rawTokens.length; i < len; i++) {
-		let rawToken = rawTokens[i];
+	for (let i = 0, len = rAwTokens.length; i < len; i++) {
+		let rAwToken = rAwTokens[i];
 
-		let startOffset = line.length;
-		let metadata = (
-			(rawToken.type << MetadataConsts.TOKEN_TYPE_OFFSET)
+		let stArtOffset = line.length;
+		let metAdAtA = (
+			(rAwToken.type << MetAdAtAConsts.TOKEN_TYPE_OFFSET)
 		) >>> 0;
 
-		tokens[(i << 1)] = startOffset;
-		tokens[(i << 1) + 1] = metadata;
-		line += rawToken.text;
+		tokens[(i << 1)] = stArtOffset;
+		tokens[(i << 1) + 1] = metAdAtA;
+		line += rAwToken.text;
 	}
 
 	LineTokens.convertToEndOffset(tokens, line.length);
-	return createScopedLineTokens(new LineTokens(tokens, line), 0);
+	return creAteScopedLineTokens(new LineTokens(tokens, line), 0);
 }

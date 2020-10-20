@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStringDictionary } from 'vs/base/common/collections';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
 
-export const IConfigurationResolverService = createDecorator<IConfigurationResolverService>('configurationResolverService');
+export const IConfigurAtionResolverService = creAteDecorAtor<IConfigurAtionResolverService>('configurAtionResolverService');
 
-export interface IConfigurationResolverService {
-	readonly _serviceBrand: undefined;
+export interfAce IConfigurAtionResolverService {
+	reAdonly _serviceBrAnd: undefined;
 
-	resolve(folder: IWorkspaceFolder | undefined, value: string): string;
-	resolve(folder: IWorkspaceFolder | undefined, value: string[]): string[];
-	resolve(folder: IWorkspaceFolder | undefined, value: IStringDictionary<string>): IStringDictionary<string>;
+	resolve(folder: IWorkspAceFolder | undefined, vAlue: string): string;
+	resolve(folder: IWorkspAceFolder | undefined, vAlue: string[]): string[];
+	resolve(folder: IWorkspAceFolder | undefined, vAlue: IStringDictionAry<string>): IStringDictionAry<string>;
 
 	/**
-	 * Recursively resolves all variables in the given config and returns a copy of it with substituted values.
-	 * Command variables are only substituted if a "commandValueMapping" dictionary is given and if it contains an entry for the command.
+	 * Recursively resolves All vAriAbles in the given config And returns A copy of it with substituted vAlues.
+	 * CommAnd vAriAbles Are only substituted if A "commAndVAlueMApping" dictionAry is given And if it contAins An entry for the commAnd.
 	 */
-	resolveAny(folder: IWorkspaceFolder | undefined, config: any, commandValueMapping?: IStringDictionary<string>): any;
+	resolveAny(folder: IWorkspAceFolder | undefined, config: Any, commAndVAlueMApping?: IStringDictionAry<string>): Any;
 
 	/**
-	 * Recursively resolves all variables (including commands and user input) in the given config and returns a copy of it with substituted values.
-	 * If a "variables" dictionary (with names -> command ids) is given, command variables are first mapped through it before being resolved.
+	 * Recursively resolves All vAriAbles (including commAnds And user input) in the given config And returns A copy of it with substituted vAlues.
+	 * If A "vAriAbles" dictionAry (with nAmes -> commAnd ids) is given, commAnd vAriAbles Are first mApped through it before being resolved.
 	 *
-	 * @param section For example, 'tasks' or 'debug'. Used for resolving inputs.
-	 * @param variables Aliases for commands.
+	 * @pArAm section For exAmple, 'tAsks' or 'debug'. Used for resolving inputs.
+	 * @pArAm vAriAbles AliAses for commAnds.
 	 */
-	resolveWithInteractionReplace(folder: IWorkspaceFolder | undefined, config: any, section?: string, variables?: IStringDictionary<string>, target?: ConfigurationTarget): Promise<any>;
+	resolveWithInterActionReplAce(folder: IWorkspAceFolder | undefined, config: Any, section?: string, vAriAbles?: IStringDictionAry<string>, tArget?: ConfigurAtionTArget): Promise<Any>;
 
 	/**
-	 * Similar to resolveWithInteractionReplace, except without the replace. Returns a map of variables and their resolution.
-	 * Keys in the map will be of the format input:variableName or command:variableName.
+	 * SimilAr to resolveWithInterActionReplAce, except without the replAce. Returns A mAp of vAriAbles And their resolution.
+	 * Keys in the mAp will be of the formAt input:vAriAbleNAme or commAnd:vAriAbleNAme.
 	 */
-	resolveWithInteraction(folder: IWorkspaceFolder | undefined, config: any, section?: string, variables?: IStringDictionary<string>, target?: ConfigurationTarget): Promise<Map<string, string> | undefined>;
+	resolveWithInterAction(folder: IWorkspAceFolder | undefined, config: Any, section?: string, vAriAbles?: IStringDictionAry<string>, tArget?: ConfigurAtionTArget): Promise<MAp<string, string> | undefined>;
 
 	/**
-	 * Contributes a variable that can be resolved later. Consumers that use resolveAny, resolveWithInteraction,
-	 * and resolveWithInteractionReplace will have contributed variables resolved.
+	 * Contributes A vAriAble thAt cAn be resolved lAter. Consumers thAt use resolveAny, resolveWithInterAction,
+	 * And resolveWithInterActionReplAce will hAve contributed vAriAbles resolved.
 	 */
-	contributeVariable(variable: string, resolution: () => Promise<string | undefined>): void;
+	contributeVAriAble(vAriAble: string, resolution: () => Promise<string | undefined>): void;
 }
 
-export interface PromptStringInputInfo {
+export interfAce PromptStringInputInfo {
 	id: string;
 	type: 'promptString';
 	description: string;
-	default?: string;
-	password?: boolean;
+	defAult?: string;
+	pAssword?: booleAn;
 }
 
-export interface PickStringInputInfo {
+export interfAce PickStringInputInfo {
 	id: string;
 	type: 'pickString';
 	description: string;
-	options: (string | { value: string, label?: string })[];
-	default?: string;
+	options: (string | { vAlue: string, lAbel?: string })[];
+	defAult?: string;
 }
 
-export interface CommandInputInfo {
+export interfAce CommAndInputInfo {
 	id: string;
-	type: 'command';
-	command: string;
-	args?: any;
+	type: 'commAnd';
+	commAnd: string;
+	Args?: Any;
 }
 
-export type ConfiguredInput = PromptStringInputInfo | PickStringInputInfo | CommandInputInfo;
+export type ConfiguredInput = PromptStringInputInfo | PickStringInputInfo | CommAndInputInfo;

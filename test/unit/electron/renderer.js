@@ -1,219 +1,219 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/*eslint-env mocha*/
+/*eslint-env mochA*/
 
 const { ipcRenderer } = require('electron');
-const assert = require('assert');
-const path = require('path');
+const Assert = require('Assert');
+const pAth = require('pAth');
 const glob = require('glob');
 const util = require('util');
-const bootstrap = require('../../../src/bootstrap');
-const coverage = require('../coverage');
+const bootstrAp = require('../../../src/bootstrAp');
+const coverAge = require('../coverAge');
 
-// Disabled custom inspect. See #38847
-if (util.inspect && util.inspect['defaultOptions']) {
-	util.inspect['defaultOptions'].customInspect = false;
+// DisAbled custom inspect. See #38847
+if (util.inspect && util.inspect['defAultOptions']) {
+	util.inspect['defAultOptions'].customInspect = fAlse;
 }
 
 let _tests_glob = '**/test/**/*.test.js';
-let loader;
+let loAder;
 let _out;
 
-function initLoader(opts) {
+function initLoAder(opts) {
 	let outdir = opts.build ? 'out-build' : 'out';
-	_out = path.join(__dirname, `../../../${outdir}`);
+	_out = pAth.join(__dirnAme, `../../../${outdir}`);
 
-	// setup loader
-	loader = require(`${_out}/vs/loader`);
-	const loaderConfig = {
+	// setup loAder
+	loAder = require(`${_out}/vs/loAder`);
+	const loAderConfig = {
 		nodeRequire: require,
-		nodeMain: __filename,
-		catchError: true,
-		baseUrl: bootstrap.fileUriFromPath(path.join(__dirname, '../../../src'), { isWindows: process.platform === 'win32' }),
-		paths: {
+		nodeMAin: __filenAme,
+		cAtchError: true,
+		bAseUrl: bootstrAp.fileUriFromPAth(pAth.join(__dirnAme, '../../../src'), { isWindows: process.plAtform === 'win32' }),
+		pAths: {
 			'vs': `../${outdir}/vs`,
 			'lib': `../${outdir}/lib`,
-			'bootstrap-fork': `../${outdir}/bootstrap-fork`
+			'bootstrAp-fork': `../${outdir}/bootstrAp-fork`
 		}
 	};
 
-	if (opts.coverage) {
-		// initialize coverage if requested
-		coverage.initialize(loaderConfig);
+	if (opts.coverAge) {
+		// initiAlize coverAge if requested
+		coverAge.initiAlize(loAderConfig);
 	}
 
-	loader.require.config(loaderConfig);
+	loAder.require.config(loAderConfig);
 }
 
-function createCoverageReport(opts) {
-	if (opts.coverage) {
-		return coverage.createReport(opts.run || opts.runGlob);
+function creAteCoverAgeReport(opts) {
+	if (opts.coverAge) {
+		return coverAge.creAteReport(opts.run || opts.runGlob);
 	}
 	return Promise.resolve(undefined);
 }
 
-function loadTestModules(opts) {
+function loAdTestModules(opts) {
 
 	if (opts.run) {
-		const files = Array.isArray(opts.run) ? opts.run : [opts.run];
-		const modules = files.map(file => {
-			file = file.replace(/^src/, 'out');
-			file = file.replace(/\.ts$/, '.js');
-			return path.relative(_out, file).replace(/\.js$/, '');
+		const files = ArrAy.isArrAy(opts.run) ? opts.run : [opts.run];
+		const modules = files.mAp(file => {
+			file = file.replAce(/^src/, 'out');
+			file = file.replAce(/\.ts$/, '.js');
+			return pAth.relAtive(_out, file).replAce(/\.js$/, '');
 		});
 		return new Promise((resolve, reject) => {
-			loader.require(modules, resolve, reject);
+			loAder.require(modules, resolve, reject);
 		});
 	}
 
-	const pattern = opts.runGlob || _tests_glob;
+	const pAttern = opts.runGlob || _tests_glob;
 
 	return new Promise((resolve, reject) => {
-		glob(pattern, { cwd: _out }, (err, files) => {
+		glob(pAttern, { cwd: _out }, (err, files) => {
 			if (err) {
 				reject(err);
 				return;
 			}
-			const modules = files.map(file => file.replace(/\.js$/, ''));
+			const modules = files.mAp(file => file.replAce(/\.js$/, ''));
 			resolve(modules);
 		});
 	}).then(modules => {
 		return new Promise((resolve, reject) => {
-			loader.require(modules, resolve, reject);
+			loAder.require(modules, resolve, reject);
 		});
 	});
 }
 
-function loadTests(opts) {
+function loAdTests(opts) {
 
 	const _unexpectedErrors = [];
-	const _loaderErrors = [];
+	const _loAderErrors = [];
 
-	// collect loader errors
-	loader.require.config({
+	// collect loAder errors
+	loAder.require.config({
 		onError(err) {
-			_loaderErrors.push(err);
+			_loAderErrors.push(err);
 			console.error(err);
 		}
 	});
 
 	// collect unexpected errors
-	loader.require(['vs/base/common/errors'], function (errors) {
-		errors.setUnexpectedErrorHandler(function (err) {
-			let stack = (err ? err.stack : null);
-			if (!stack) {
-				stack = new Error().stack;
+	loAder.require(['vs/bAse/common/errors'], function (errors) {
+		errors.setUnexpectedErrorHAndler(function (err) {
+			let stAck = (err ? err.stAck : null);
+			if (!stAck) {
+				stAck = new Error().stAck;
 			}
 
-			_unexpectedErrors.push((err && err.message ? err.message : err) + '\n' + stack);
+			_unexpectedErrors.push((err && err.messAge ? err.messAge : err) + '\n' + stAck);
 		});
 	});
 
-	return loadTestModules(opts).then(() => {
-		suite('Unexpected Errors & Loader Errors', function () {
-			test('should not have unexpected errors', function () {
-				const errors = _unexpectedErrors.concat(_loaderErrors);
+	return loAdTestModules(opts).then(() => {
+		suite('Unexpected Errors & LoAder Errors', function () {
+			test('should not hAve unexpected errors', function () {
+				const errors = _unexpectedErrors.concAt(_loAderErrors);
 				if (errors.length) {
-					errors.forEach(function (stack) {
+					errors.forEAch(function (stAck) {
 						console.error('');
-						console.error(stack);
+						console.error(stAck);
 					});
-					assert.ok(false, errors);
+					Assert.ok(fAlse, errors);
 				}
 			});
 		});
 	});
 }
 
-function serializeSuite(suite) {
+function seriAlizeSuite(suite) {
 	return {
 		root: suite.root,
-		suites: suite.suites.map(serializeSuite),
-		tests: suite.tests.map(serializeRunnable),
+		suites: suite.suites.mAp(seriAlizeSuite),
+		tests: suite.tests.mAp(seriAlizeRunnAble),
 		title: suite.title,
 		fullTitle: suite.fullTitle(),
 		timeout: suite.timeout(),
 		retries: suite.retries(),
-		enableTimeouts: suite.enableTimeouts(),
+		enAbleTimeouts: suite.enAbleTimeouts(),
 		slow: suite.slow(),
-		bail: suite.bail()
+		bAil: suite.bAil()
 	};
 }
 
-function serializeRunnable(runnable) {
+function seriAlizeRunnAble(runnAble) {
 	return {
-		title: runnable.title,
-		fullTitle: runnable.fullTitle(),
-		async: runnable.async,
-		slow: runnable.slow(),
-		speed: runnable.speed,
-		duration: runnable.duration
+		title: runnAble.title,
+		fullTitle: runnAble.fullTitle(),
+		Async: runnAble.Async,
+		slow: runnAble.slow(),
+		speed: runnAble.speed,
+		durAtion: runnAble.durAtion
 	};
 }
 
-function serializeError(err) {
+function seriAlizeError(err) {
 	return {
-		message: err.message,
-		stack: err.stack,
-		actual: err.actual,
+		messAge: err.messAge,
+		stAck: err.stAck,
+		ActuAl: err.ActuAl,
 		expected: err.expected,
-		uncaught: err.uncaught,
+		uncAught: err.uncAught,
 		showDiff: err.showDiff,
 		inspect: typeof err.inspect === 'function' ? err.inspect() : ''
 	};
 }
 
-class IPCReporter {
+clAss IPCReporter {
 
 	constructor(runner) {
-		runner.on('start', () => ipcRenderer.send('start'));
+		runner.on('stArt', () => ipcRenderer.send('stArt'));
 		runner.on('end', () => ipcRenderer.send('end'));
-		runner.on('suite', suite => ipcRenderer.send('suite', serializeSuite(suite)));
-		runner.on('suite end', suite => ipcRenderer.send('suite end', serializeSuite(suite)));
-		runner.on('test', test => ipcRenderer.send('test', serializeRunnable(test)));
-		runner.on('test end', test => ipcRenderer.send('test end', serializeRunnable(test)));
-		runner.on('hook', hook => ipcRenderer.send('hook', serializeRunnable(hook)));
-		runner.on('hook end', hook => ipcRenderer.send('hook end', serializeRunnable(hook)));
-		runner.on('pass', test => ipcRenderer.send('pass', serializeRunnable(test)));
-		runner.on('fail', (test, err) => ipcRenderer.send('fail', serializeRunnable(test), serializeError(err)));
-		runner.on('pending', test => ipcRenderer.send('pending', serializeRunnable(test)));
+		runner.on('suite', suite => ipcRenderer.send('suite', seriAlizeSuite(suite)));
+		runner.on('suite end', suite => ipcRenderer.send('suite end', seriAlizeSuite(suite)));
+		runner.on('test', test => ipcRenderer.send('test', seriAlizeRunnAble(test)));
+		runner.on('test end', test => ipcRenderer.send('test end', seriAlizeRunnAble(test)));
+		runner.on('hook', hook => ipcRenderer.send('hook', seriAlizeRunnAble(hook)));
+		runner.on('hook end', hook => ipcRenderer.send('hook end', seriAlizeRunnAble(hook)));
+		runner.on('pAss', test => ipcRenderer.send('pAss', seriAlizeRunnAble(test)));
+		runner.on('fAil', (test, err) => ipcRenderer.send('fAil', seriAlizeRunnAble(test), seriAlizeError(err)));
+		runner.on('pending', test => ipcRenderer.send('pending', seriAlizeRunnAble(test)));
 	}
 }
 
 function runTests(opts) {
 
-	return loadTests(opts).then(() => {
+	return loAdTests(opts).then(() => {
 
 		if (opts.grep) {
-			mocha.grep(opts.grep);
+			mochA.grep(opts.grep);
 		}
 
 		if (!opts.debug) {
-			mocha.reporter(IPCReporter);
+			mochA.reporter(IPCReporter);
 		}
 
-		const runner = mocha.run(() => {
-			createCoverageReport(opts).then(() => {
-				ipcRenderer.send('all done');
+		const runner = mochA.run(() => {
+			creAteCoverAgeReport(opts).then(() => {
+				ipcRenderer.send('All done');
 			});
 		});
 
 		if (opts.debug) {
-			runner.on('fail', (test, err) => {
+			runner.on('fAil', (test, err) => {
 
 				console.error(test.fullTitle());
-				console.error(err.stack);
+				console.error(err.stAck);
 			});
 		}
 	});
 }
 
 ipcRenderer.on('run', (e, opts) => {
-	initLoader(opts);
-	runTests(opts).catch(err => {
+	initLoAder(opts);
+	runTests(opts).cAtch(err => {
 		if (typeof err !== 'string') {
 			err = JSON.stringify(err);
 		}

@@ -1,256 +1,256 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ViewContainerLocation, IViewDescriptorService, ViewContainer, IViewsRegistry, IViewContainersRegistry, IViewDescriptor, Extensions as ViewExtensions, ViewVisibilityState } from 'vs/workbench/common/views';
-import { IContextKey, RawContextKey, IContextKeyService, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IStorageService, StorageScope, IWorkspaceStorageChangeEvent } from 'vs/platform/storage/common/storage';
+import { ViewContAinerLocAtion, IViewDescriptorService, ViewContAiner, IViewsRegistry, IViewContAinersRegistry, IViewDescriptor, Extensions As ViewExtensions, ViewVisibilityStAte } from 'vs/workbench/common/views';
+import { IContextKey, RAwContextKey, IContextKeyService, ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { IStorAgeService, StorAgeScope, IWorkspAceStorAgeChAngeEvent } from 'vs/plAtform/storAge/common/storAge';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { toDisposable, DisposableStore, Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { getViewsStateStorageId, ViewContainerModel } from 'vs/workbench/services/views/common/viewContainerModel';
-import { registerAction2, Action2, MenuId } from 'vs/platform/actions/common/actions';
-import { localize } from 'vs/nls';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { toDisposAble, DisposAbleStore, DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ViewPAneContAiner } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { getViewsStAteStorAgeId, ViewContAinerModel } from 'vs/workbench/services/views/common/viewContAinerModel';
+import { registerAction2, Action2, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { locAlize } from 'vs/nls';
 
-interface ICachedViewContainerInfo {
-	containerId: string;
+interfAce ICAchedViewContAinerInfo {
+	contAinerId: string;
 }
 
-function getViewContainerStorageId(viewContainerId: string): string { return `${viewContainerId}.state`; }
+function getViewContAinerStorAgeId(viewContAinerId: string): string { return `${viewContAinerId}.stAte`; }
 
-export class ViewDescriptorService extends Disposable implements IViewDescriptorService {
+export clAss ViewDescriptorService extends DisposAble implements IViewDescriptorService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly CACHED_VIEW_POSITIONS = 'views.cachedViewPositions';
-	private static readonly CACHED_VIEW_CONTAINER_LOCATIONS = 'views.cachedViewContainerLocations';
-	private static readonly COMMON_CONTAINER_ID_PREFIX = 'workbench.views.service';
+	privAte stAtic reAdonly CACHED_VIEW_POSITIONS = 'views.cAchedViewPositions';
+	privAte stAtic reAdonly CACHED_VIEW_CONTAINER_LOCATIONS = 'views.cAchedViewContAinerLocAtions';
+	privAte stAtic reAdonly COMMON_CONTAINER_ID_PREFIX = 'workbench.views.service';
 
-	private readonly _onDidChangeContainer: Emitter<{ views: IViewDescriptor[], from: ViewContainer, to: ViewContainer }> = this._register(new Emitter<{ views: IViewDescriptor[], from: ViewContainer, to: ViewContainer }>());
-	readonly onDidChangeContainer: Event<{ views: IViewDescriptor[], from: ViewContainer, to: ViewContainer }> = this._onDidChangeContainer.event;
+	privAte reAdonly _onDidChAngeContAiner: Emitter<{ views: IViewDescriptor[], from: ViewContAiner, to: ViewContAiner }> = this._register(new Emitter<{ views: IViewDescriptor[], from: ViewContAiner, to: ViewContAiner }>());
+	reAdonly onDidChAngeContAiner: Event<{ views: IViewDescriptor[], from: ViewContAiner, to: ViewContAiner }> = this._onDidChAngeContAiner.event;
 
-	private readonly _onDidChangeLocation: Emitter<{ views: IViewDescriptor[], from: ViewContainerLocation, to: ViewContainerLocation }> = this._register(new Emitter<{ views: IViewDescriptor[], from: ViewContainerLocation, to: ViewContainerLocation }>());
-	readonly onDidChangeLocation: Event<{ views: IViewDescriptor[], from: ViewContainerLocation, to: ViewContainerLocation }> = this._onDidChangeLocation.event;
+	privAte reAdonly _onDidChAngeLocAtion: Emitter<{ views: IViewDescriptor[], from: ViewContAinerLocAtion, to: ViewContAinerLocAtion }> = this._register(new Emitter<{ views: IViewDescriptor[], from: ViewContAinerLocAtion, to: ViewContAinerLocAtion }>());
+	reAdonly onDidChAngeLocAtion: Event<{ views: IViewDescriptor[], from: ViewContAinerLocAtion, to: ViewContAinerLocAtion }> = this._onDidChAngeLocAtion.event;
 
-	private readonly _onDidChangeContainerLocation: Emitter<{ viewContainer: ViewContainer, from: ViewContainerLocation, to: ViewContainerLocation }> = this._register(new Emitter<{ viewContainer: ViewContainer, from: ViewContainerLocation, to: ViewContainerLocation }>());
-	readonly onDidChangeContainerLocation: Event<{ viewContainer: ViewContainer, from: ViewContainerLocation, to: ViewContainerLocation }> = this._onDidChangeContainerLocation.event;
+	privAte reAdonly _onDidChAngeContAinerLocAtion: Emitter<{ viewContAiner: ViewContAiner, from: ViewContAinerLocAtion, to: ViewContAinerLocAtion }> = this._register(new Emitter<{ viewContAiner: ViewContAiner, from: ViewContAinerLocAtion, to: ViewContAinerLocAtion }>());
+	reAdonly onDidChAngeContAinerLocAtion: Event<{ viewContAiner: ViewContAiner, from: ViewContAinerLocAtion, to: ViewContAinerLocAtion }> = this._onDidChAngeContAinerLocAtion.event;
 
-	private readonly viewContainerModels: Map<ViewContainer, { viewContainerModel: ViewContainerModel, disposable: IDisposable; }>;
-	private readonly activeViewContextKeys: Map<string, IContextKey<boolean>>;
-	private readonly movableViewContextKeys: Map<string, IContextKey<boolean>>;
-	private readonly defaultViewLocationContextKeys: Map<string, IContextKey<boolean>>;
-	private readonly defaultViewContainerLocationContextKeys: Map<string, IContextKey<boolean>>;
+	privAte reAdonly viewContAinerModels: MAp<ViewContAiner, { viewContAinerModel: ViewContAinerModel, disposAble: IDisposAble; }>;
+	privAte reAdonly ActiveViewContextKeys: MAp<string, IContextKey<booleAn>>;
+	privAte reAdonly movAbleViewContextKeys: MAp<string, IContextKey<booleAn>>;
+	privAte reAdonly defAultViewLocAtionContextKeys: MAp<string, IContextKey<booleAn>>;
+	privAte reAdonly defAultViewContAinerLocAtionContextKeys: MAp<string, IContextKey<booleAn>>;
 
-	private readonly viewsRegistry: IViewsRegistry;
-	private readonly viewContainersRegistry: IViewContainersRegistry;
+	privAte reAdonly viewsRegistry: IViewsRegistry;
+	privAte reAdonly viewContAinersRegistry: IViewContAinersRegistry;
 
-	private cachedViewInfo: Map<string, ICachedViewContainerInfo>;
-	private cachedViewContainerInfo: Map<string, ViewContainerLocation>;
+	privAte cAchedViewInfo: MAp<string, ICAchedViewContAinerInfo>;
+	privAte cAchedViewContAinerInfo: MAp<string, ViewContAinerLocAtion>;
 
-	private _cachedViewPositionsValue: string | undefined;
-	private get cachedViewPositionsValue(): string {
-		if (!this._cachedViewPositionsValue) {
-			this._cachedViewPositionsValue = this.getStoredCachedViewPositionsValue();
+	privAte _cAchedViewPositionsVAlue: string | undefined;
+	privAte get cAchedViewPositionsVAlue(): string {
+		if (!this._cAchedViewPositionsVAlue) {
+			this._cAchedViewPositionsVAlue = this.getStoredCAchedViewPositionsVAlue();
 		}
 
-		return this._cachedViewPositionsValue;
+		return this._cAchedViewPositionsVAlue;
 	}
 
-	private set cachedViewPositionsValue(value: string) {
-		if (this.cachedViewPositionsValue !== value) {
-			this._cachedViewPositionsValue = value;
-			this.setStoredCachedViewPositionsValue(value);
-		}
-	}
-
-	private _cachedViewContainerLocationsValue: string | undefined;
-	private get cachedViewContainerLocationsValue(): string {
-		if (!this._cachedViewContainerLocationsValue) {
-			this._cachedViewContainerLocationsValue = this.getStoredCachedViewContainerLocationsValue();
-		}
-
-		return this._cachedViewContainerLocationsValue;
-	}
-
-	private set cachedViewContainerLocationsValue(value: string) {
-		if (this._cachedViewContainerLocationsValue !== value) {
-			this._cachedViewContainerLocationsValue = value;
-			this.setStoredCachedViewContainerLocationsValue(value);
+	privAte set cAchedViewPositionsVAlue(vAlue: string) {
+		if (this.cAchedViewPositionsVAlue !== vAlue) {
+			this._cAchedViewPositionsVAlue = vAlue;
+			this.setStoredCAchedViewPositionsVAlue(vAlue);
 		}
 	}
 
-	private readonly _onDidChangeViewContainers = this._register(new Emitter<{ added: ReadonlyArray<{ container: ViewContainer, location: ViewContainerLocation }>, removed: ReadonlyArray<{ container: ViewContainer, location: ViewContainerLocation }> }>());
-	readonly onDidChangeViewContainers = this._onDidChangeViewContainers.event;
-	get viewContainers(): ReadonlyArray<ViewContainer> { return this.viewContainersRegistry.all; }
+	privAte _cAchedViewContAinerLocAtionsVAlue: string | undefined;
+	privAte get cAchedViewContAinerLocAtionsVAlue(): string {
+		if (!this._cAchedViewContAinerLocAtionsVAlue) {
+			this._cAchedViewContAinerLocAtionsVAlue = this.getStoredCAchedViewContAinerLocAtionsVAlue();
+		}
+
+		return this._cAchedViewContAinerLocAtionsVAlue;
+	}
+
+	privAte set cAchedViewContAinerLocAtionsVAlue(vAlue: string) {
+		if (this._cAchedViewContAinerLocAtionsVAlue !== vAlue) {
+			this._cAchedViewContAinerLocAtionsVAlue = vAlue;
+			this.setStoredCAchedViewContAinerLocAtionsVAlue(vAlue);
+		}
+	}
+
+	privAte reAdonly _onDidChAngeViewContAiners = this._register(new Emitter<{ Added: ReAdonlyArrAy<{ contAiner: ViewContAiner, locAtion: ViewContAinerLocAtion }>, removed: ReAdonlyArrAy<{ contAiner: ViewContAiner, locAtion: ViewContAinerLocAtion }> }>());
+	reAdonly onDidChAngeViewContAiners = this._onDidChAngeViewContAiners.event;
+	get viewContAiners(): ReAdonlyArrAy<ViewContAiner> { return this.viewContAinersRegistry.All; }
 
 	constructor(
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
 	) {
 		super();
 
-		storageKeysSyncRegistryService.registerStorageKey({ key: ViewDescriptorService.CACHED_VIEW_POSITIONS, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS, version: 1 });
-		this.viewContainerModels = new Map<ViewContainer, { viewContainerModel: ViewContainerModel, disposable: IDisposable; }>();
-		this.activeViewContextKeys = new Map<string, IContextKey<boolean>>();
-		this.movableViewContextKeys = new Map<string, IContextKey<boolean>>();
-		this.defaultViewLocationContextKeys = new Map<string, IContextKey<boolean>>();
-		this.defaultViewContainerLocationContextKeys = new Map<string, IContextKey<boolean>>();
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: ViewDescriptorService.CACHED_VIEW_POSITIONS, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS, version: 1 });
+		this.viewContAinerModels = new MAp<ViewContAiner, { viewContAinerModel: ViewContAinerModel, disposAble: IDisposAble; }>();
+		this.ActiveViewContextKeys = new MAp<string, IContextKey<booleAn>>();
+		this.movAbleViewContextKeys = new MAp<string, IContextKey<booleAn>>();
+		this.defAultViewLocAtionContextKeys = new MAp<string, IContextKey<booleAn>>();
+		this.defAultViewContAinerLocAtionContextKeys = new MAp<string, IContextKey<booleAn>>();
 
-		this.viewContainersRegistry = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewContainersRegistry);
-		this.viewsRegistry = Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry);
+		this.viewContAinersRegistry = Registry.As<IViewContAinersRegistry>(ViewExtensions.ViewContAinersRegistry);
+		this.viewsRegistry = Registry.As<IViewsRegistry>(ViewExtensions.ViewsRegistry);
 
-		this.cachedViewContainerInfo = this.getCachedViewContainerLocations();
-		this.cachedViewInfo = this.getCachedViewPositions();
+		this.cAchedViewContAinerInfo = this.getCAchedViewContAinerLocAtions();
+		this.cAchedViewInfo = this.getCAchedViewPositions();
 
-		// Register all containers that were registered before this ctor
-		this.viewContainers.forEach(viewContainer => this.onDidRegisterViewContainer(viewContainer));
+		// Register All contAiners thAt were registered before this ctor
+		this.viewContAiners.forEAch(viewContAiner => this.onDidRegisterViewContAiner(viewContAiner));
 
 		this._register(this.viewsRegistry.onViewsRegistered(views => this.onDidRegisterViews(views)));
-		this._register(this.viewsRegistry.onViewsDeregistered(({ views, viewContainer }) => this.onDidDeregisterViews(views, viewContainer)));
+		this._register(this.viewsRegistry.onViewsDeregistered(({ views, viewContAiner }) => this.onDidDeregisterViews(views, viewContAiner)));
 
-		this._register(this.viewsRegistry.onDidChangeContainer(({ views, from, to }) => this.moveViews(views, from, to)));
+		this._register(this.viewsRegistry.onDidChAngeContAiner(({ views, from, to }) => this.moveViews(views, from, to)));
 
-		this._register(this.viewContainersRegistry.onDidRegister(({ viewContainer }) => {
-			this.onDidRegisterViewContainer(viewContainer);
-			this._onDidChangeViewContainers.fire({ added: [{ container: viewContainer, location: this.getViewContainerLocation(viewContainer) }], removed: [] });
+		this._register(this.viewContAinersRegistry.onDidRegister(({ viewContAiner }) => {
+			this.onDidRegisterViewContAiner(viewContAiner);
+			this._onDidChAngeViewContAiners.fire({ Added: [{ contAiner: viewContAiner, locAtion: this.getViewContAinerLocAtion(viewContAiner) }], removed: [] });
 		}));
 
-		this._register(this.viewContainersRegistry.onDidDeregister(({ viewContainer }) => {
-			this.onDidDeregisterViewContainer(viewContainer);
-			this._onDidChangeViewContainers.fire({ removed: [{ container: viewContainer, location: this.getViewContainerLocation(viewContainer) }], added: [] });
+		this._register(this.viewContAinersRegistry.onDidDeregister(({ viewContAiner }) => {
+			this.onDidDeregisterViewContAiner(viewContAiner);
+			this._onDidChAngeViewContAiners.fire({ removed: [{ contAiner: viewContAiner, locAtion: this.getViewContAinerLocAtion(viewContAiner) }], Added: [] });
 		}));
 
-		this._register(toDisposable(() => {
-			this.viewContainerModels.forEach(({ disposable }) => disposable.dispose());
-			this.viewContainerModels.clear();
+		this._register(toDisposAble(() => {
+			this.viewContAinerModels.forEAch(({ disposAble }) => disposAble.dispose());
+			this.viewContAinerModels.cleAr();
 		}));
 
-		this._register(this.storageService.onDidChangeStorage((e) => { this.onDidStorageChange(e); }));
+		this._register(this.storAgeService.onDidChAngeStorAge((e) => { this.onDidStorAgeChAnge(e); }));
 
 		this._register(this.extensionService.onDidRegisterExtensions(() => this.onDidRegisterExtensions()));
 	}
 
-	private registerGroupedViews(groupedViews: Map<string, { cachedContainerInfo?: ICachedViewContainerInfo, views: IViewDescriptor[] }>): void {
-		// Register views that have already been registered to their correct view containers
-		for (const containerId of groupedViews.keys()) {
-			const viewContainer = this.viewContainersRegistry.get(containerId);
-			const containerData = groupedViews.get(containerId)!;
+	privAte registerGroupedViews(groupedViews: MAp<string, { cAchedContAinerInfo?: ICAchedViewContAinerInfo, views: IViewDescriptor[] }>): void {
+		// Register views thAt hAve AlreAdy been registered to their correct view contAiners
+		for (const contAinerId of groupedViews.keys()) {
+			const viewContAiner = this.viewContAinersRegistry.get(contAinerId);
+			const contAinerDAtA = groupedViews.get(contAinerId)!;
 
-			// The container has not been registered yet
-			if (!viewContainer || !this.viewContainerModels.has(viewContainer)) {
-				if (containerData.cachedContainerInfo && this.isGeneratedContainerId(containerData.cachedContainerInfo.containerId)) {
-					if (!this.viewContainersRegistry.get(containerId)) {
-						this.registerGeneratedViewContainer(this.cachedViewContainerInfo.get(containerId)!, containerId);
+			// The contAiner hAs not been registered yet
+			if (!viewContAiner || !this.viewContAinerModels.hAs(viewContAiner)) {
+				if (contAinerDAtA.cAchedContAinerInfo && this.isGenerAtedContAinerId(contAinerDAtA.cAchedContAinerInfo.contAinerId)) {
+					if (!this.viewContAinersRegistry.get(contAinerId)) {
+						this.registerGenerAtedViewContAiner(this.cAchedViewContAinerInfo.get(contAinerId)!, contAinerId);
 					}
 				}
 
-				// Registration of a generated container handles registration of its views
+				// RegistrAtion of A generAted contAiner hAndles registrAtion of its views
 				continue;
 			}
 
-			// Filter out views that have already been added to the view container model
-			// This is needed when statically-registered views are moved to
-			// other statically registered containers as they will both try to add on startup
-			const viewsToAdd = containerData.views.filter(view => this.getViewContainerModel(viewContainer).allViewDescriptors.filter(vd => vd.id === view.id).length === 0);
-			this.addViews(viewContainer, viewsToAdd);
+			// Filter out views thAt hAve AlreAdy been Added to the view contAiner model
+			// This is needed when stAticAlly-registered views Are moved to
+			// other stAticAlly registered contAiners As they will both try to Add on stArtup
+			const viewsToAdd = contAinerDAtA.views.filter(view => this.getViewContAinerModel(viewContAiner).AllViewDescriptors.filter(vd => vd.id === view.id).length === 0);
+			this.AddViews(viewContAiner, viewsToAdd);
 		}
 	}
 
-	private deregisterGroupedViews(groupedViews: Map<string, { cachedContainerInfo?: ICachedViewContainerInfo, views: IViewDescriptor[] }>): void {
-		// Register views that have already been registered to their correct view containers
-		for (const viewContainerId of groupedViews.keys()) {
-			const viewContainer = this.viewContainersRegistry.get(viewContainerId);
+	privAte deregisterGroupedViews(groupedViews: MAp<string, { cAchedContAinerInfo?: ICAchedViewContAinerInfo, views: IViewDescriptor[] }>): void {
+		// Register views thAt hAve AlreAdy been registered to their correct view contAiners
+		for (const viewContAinerId of groupedViews.keys()) {
+			const viewContAiner = this.viewContAinersRegistry.get(viewContAinerId);
 
-			// The container has not been registered yet
-			if (!viewContainer || !this.viewContainerModels.has(viewContainer)) {
+			// The contAiner hAs not been registered yet
+			if (!viewContAiner || !this.viewContAinerModels.hAs(viewContAiner)) {
 				continue;
 			}
 
-			this.removeViews(viewContainer, groupedViews.get(viewContainerId)!.views);
+			this.removeViews(viewContAiner, groupedViews.get(viewContAinerId)!.views);
 		}
 	}
 
-	private fallbackOrphanedViews(): void {
-		for (const [viewId, containerInfo] of this.cachedViewInfo.entries()) {
-			const containerId = containerInfo.containerId;
+	privAte fAllbAckOrphAnedViews(): void {
+		for (const [viewId, contAinerInfo] of this.cAchedViewInfo.entries()) {
+			const contAinerId = contAinerInfo.contAinerId;
 
-			// check if cached view container is registered
-			if (this.viewContainersRegistry.get(containerId)) {
+			// check if cAched view contAiner is registered
+			if (this.viewContAinersRegistry.get(contAinerId)) {
 				continue;
 			}
 
-			// check if view has been registered to default location
-			const viewContainer = this.viewsRegistry.getViewContainer(viewId);
+			// check if view hAs been registered to defAult locAtion
+			const viewContAiner = this.viewsRegistry.getViewContAiner(viewId);
 			const viewDescriptor = this.getViewDescriptorById(viewId);
-			if (viewContainer && viewDescriptor) {
-				this.addViews(viewContainer, [viewDescriptor]);
+			if (viewContAiner && viewDescriptor) {
+				this.AddViews(viewContAiner, [viewDescriptor]);
 			}
 		}
 	}
 
-	private onDidRegisterExtensions(): void {
-		// If an extension is uninstalled, this method will handle resetting views to default locations
-		this.fallbackOrphanedViews();
+	privAte onDidRegisterExtensions(): void {
+		// If An extension is uninstAlled, this method will hAndle resetting views to defAult locAtions
+		this.fAllbAckOrphAnedViews();
 
-		// Clean up empty generated view containers
-		for (const viewContainerId of [...this.cachedViewContainerInfo.keys()]) {
-			this.cleanUpViewContainer(viewContainerId);
+		// CleAn up empty generAted view contAiners
+		for (const viewContAinerId of [...this.cAchedViewContAinerInfo.keys()]) {
+			this.cleAnUpViewContAiner(viewContAinerId);
 		}
 	}
 
-	private onDidRegisterViews(views: { views: IViewDescriptor[], viewContainer: ViewContainer }[]): void {
-		this.contextKeyService.bufferChangeEvents(() => {
-			views.forEach(({ views, viewContainer }) => {
-				// When views are registered, we need to regroup them based on the cache
-				const regroupedViews = this.regroupViews(viewContainer.id, views);
+	privAte onDidRegisterViews(views: { views: IViewDescriptor[], viewContAiner: ViewContAiner }[]): void {
+		this.contextKeyService.bufferChAngeEvents(() => {
+			views.forEAch(({ views, viewContAiner }) => {
+				// When views Are registered, we need to regroup them bAsed on the cAche
+				const regroupedViews = this.regroupViews(viewContAiner.id, views);
 
-				// Once they are grouped, try registering them which occurs
-				// if the container has already been registered within this service
-				// or we can generate the container from the source view id
+				// Once they Are grouped, try registering them which occurs
+				// if the contAiner hAs AlreAdy been registered within this service
+				// or we cAn generAte the contAiner from the source view id
 				this.registerGroupedViews(regroupedViews);
 
-				views.forEach(viewDescriptor => this.getOrCreateMovableViewContextKey(viewDescriptor).set(!!viewDescriptor.canMoveView));
+				views.forEAch(viewDescriptor => this.getOrCreAteMovAbleViewContextKey(viewDescriptor).set(!!viewDescriptor.cAnMoveView));
 			});
 		});
 	}
 
-	private isGeneratedContainerId(id: string): boolean {
-		return id.startsWith(ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX);
+	privAte isGenerAtedContAinerId(id: string): booleAn {
+		return id.stArtsWith(ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX);
 	}
 
-	private onDidDeregisterViews(views: IViewDescriptor[], viewContainer: ViewContainer): void {
-		// When views are registered, we need to regroup them based on the cache
-		const regroupedViews = this.regroupViews(viewContainer.id, views);
+	privAte onDidDeregisterViews(views: IViewDescriptor[], viewContAiner: ViewContAiner): void {
+		// When views Are registered, we need to regroup them bAsed on the cAche
+		const regroupedViews = this.regroupViews(viewContAiner.id, views);
 		this.deregisterGroupedViews(regroupedViews);
-		this.contextKeyService.bufferChangeEvents(() => {
-			views.forEach(viewDescriptor => this.getOrCreateMovableViewContextKey(viewDescriptor).set(false));
+		this.contextKeyService.bufferChAngeEvents(() => {
+			views.forEAch(viewDescriptor => this.getOrCreAteMovAbleViewContextKey(viewDescriptor).set(fAlse));
 		});
 	}
 
-	private regroupViews(containerId: string, views: IViewDescriptor[]): Map<string, { cachedContainerInfo?: ICachedViewContainerInfo, views: IViewDescriptor[] }> {
-		const ret = new Map<string, { cachedContainerInfo?: ICachedViewContainerInfo, views: IViewDescriptor[] }>();
+	privAte regroupViews(contAinerId: string, views: IViewDescriptor[]): MAp<string, { cAchedContAinerInfo?: ICAchedViewContAinerInfo, views: IViewDescriptor[] }> {
+		const ret = new MAp<string, { cAchedContAinerInfo?: ICAchedViewContAinerInfo, views: IViewDescriptor[] }>();
 
-		views.forEach(viewDescriptor => {
-			const containerInfo = this.cachedViewInfo.get(viewDescriptor.id);
-			const correctContainerId = containerInfo?.containerId || containerId;
+		views.forEAch(viewDescriptor => {
+			const contAinerInfo = this.cAchedViewInfo.get(viewDescriptor.id);
+			const correctContAinerId = contAinerInfo?.contAinerId || contAinerId;
 
-			const containerData = ret.get(correctContainerId) || { cachedContainerInfo: containerInfo, views: [] };
-			containerData.views.push(viewDescriptor);
-			ret.set(correctContainerId, containerData);
+			const contAinerDAtA = ret.get(correctContAinerId) || { cAchedContAinerInfo: contAinerInfo, views: [] };
+			contAinerDAtA.views.push(viewDescriptor);
+			ret.set(correctContAinerId, contAinerDAtA);
 		});
 
 		return ret;
@@ -260,240 +260,240 @@ export class ViewDescriptorService extends Disposable implements IViewDescriptor
 		return this.viewsRegistry.getView(viewId);
 	}
 
-	getViewLocationById(viewId: string): ViewContainerLocation | null {
-		const container = this.getViewContainerByViewId(viewId);
-		if (container === null) {
+	getViewLocAtionById(viewId: string): ViewContAinerLocAtion | null {
+		const contAiner = this.getViewContAinerByViewId(viewId);
+		if (contAiner === null) {
 			return null;
 		}
 
-		return this.getViewContainerLocation(container);
+		return this.getViewContAinerLocAtion(contAiner);
 	}
 
-	getViewContainerByViewId(viewId: string): ViewContainer | null {
-		const containerId = this.cachedViewInfo.get(viewId)?.containerId;
+	getViewContAinerByViewId(viewId: string): ViewContAiner | null {
+		const contAinerId = this.cAchedViewInfo.get(viewId)?.contAinerId;
 
-		return containerId ?
-			this.viewContainersRegistry.get(containerId) ?? null :
-			this.viewsRegistry.getViewContainer(viewId);
+		return contAinerId ?
+			this.viewContAinersRegistry.get(contAinerId) ?? null :
+			this.viewsRegistry.getViewContAiner(viewId);
 	}
 
-	getViewContainerLocation(viewContainer: ViewContainer): ViewContainerLocation {
-		const location = this.cachedViewContainerInfo.get(viewContainer.id);
-		return location !== undefined ? location : this.getDefaultViewContainerLocation(viewContainer);
+	getViewContAinerLocAtion(viewContAiner: ViewContAiner): ViewContAinerLocAtion {
+		const locAtion = this.cAchedViewContAinerInfo.get(viewContAiner.id);
+		return locAtion !== undefined ? locAtion : this.getDefAultViewContAinerLocAtion(viewContAiner);
 	}
 
-	getDefaultViewContainerLocation(viewContainer: ViewContainer): ViewContainerLocation {
-		return this.viewContainersRegistry.getViewContainerLocation(viewContainer);
+	getDefAultViewContAinerLocAtion(viewContAiner: ViewContAiner): ViewContAinerLocAtion {
+		return this.viewContAinersRegistry.getViewContAinerLocAtion(viewContAiner);
 	}
 
-	getDefaultContainerById(viewId: string): ViewContainer | null {
-		return this.viewsRegistry.getViewContainer(viewId) ?? null;
+	getDefAultContAinerById(viewId: string): ViewContAiner | null {
+		return this.viewsRegistry.getViewContAiner(viewId) ?? null;
 	}
 
-	getViewContainerModel(container: ViewContainer): ViewContainerModel {
-		return this.getOrRegisterViewContainerModel(container);
+	getViewContAinerModel(contAiner: ViewContAiner): ViewContAinerModel {
+		return this.getOrRegisterViewContAinerModel(contAiner);
 	}
 
-	getViewContainerById(id: string): ViewContainer | null {
-		return this.viewContainersRegistry.get(id) || null;
+	getViewContAinerById(id: string): ViewContAiner | null {
+		return this.viewContAinersRegistry.get(id) || null;
 	}
 
-	getViewContainersByLocation(location: ViewContainerLocation): ViewContainer[] {
-		return this.viewContainers.filter(v => this.getViewContainerLocation(v) === location);
+	getViewContAinersByLocAtion(locAtion: ViewContAinerLocAtion): ViewContAiner[] {
+		return this.viewContAiners.filter(v => this.getViewContAinerLocAtion(v) === locAtion);
 	}
 
-	getDefaultViewContainer(location: ViewContainerLocation): ViewContainer | undefined {
-		return this.viewContainersRegistry.getDefaultViewContainer(location);
+	getDefAultViewContAiner(locAtion: ViewContAinerLocAtion): ViewContAiner | undefined {
+		return this.viewContAinersRegistry.getDefAultViewContAiner(locAtion);
 	}
 
-	moveViewContainerToLocation(viewContainer: ViewContainer, location: ViewContainerLocation, requestedIndex?: number): void {
-		const from = this.getViewContainerLocation(viewContainer);
-		const to = location;
+	moveViewContAinerToLocAtion(viewContAiner: ViewContAiner, locAtion: ViewContAinerLocAtion, requestedIndex?: number): void {
+		const from = this.getViewContAinerLocAtion(viewContAiner);
+		const to = locAtion;
 		if (from !== to) {
-			this.cachedViewContainerInfo.set(viewContainer.id, to);
+			this.cAchedViewContAinerInfo.set(viewContAiner.id, to);
 
-			const defaultLocation = this.isGeneratedContainerId(viewContainer.id) ? true : this.getViewContainerLocation(viewContainer) === this.getDefaultViewContainerLocation(viewContainer);
-			this.getOrCreateDefaultViewContainerLocationContextKey(viewContainer).set(defaultLocation);
+			const defAultLocAtion = this.isGenerAtedContAinerId(viewContAiner.id) ? true : this.getViewContAinerLocAtion(viewContAiner) === this.getDefAultViewContAinerLocAtion(viewContAiner);
+			this.getOrCreAteDefAultViewContAinerLocAtionContextKey(viewContAiner).set(defAultLocAtion);
 
-			viewContainer.requestedIndex = requestedIndex;
-			this._onDidChangeContainerLocation.fire({ viewContainer, from, to });
+			viewContAiner.requestedIndex = requestedIndex;
+			this._onDidChAngeContAinerLocAtion.fire({ viewContAiner, from, to });
 
-			const views = this.getViewsByContainer(viewContainer);
-			this._onDidChangeLocation.fire({ views, from, to });
+			const views = this.getViewsByContAiner(viewContAiner);
+			this._onDidChAngeLocAtion.fire({ views, from, to });
 
-			this.saveViewContainerLocationsToCache();
+			this.sAveViewContAinerLocAtionsToCAche();
 		}
 	}
 
-	moveViewToLocation(view: IViewDescriptor, location: ViewContainerLocation): void {
-		let container = this.registerGeneratedViewContainer(location);
-		this.moveViewsToContainer([view], container);
+	moveViewToLocAtion(view: IViewDescriptor, locAtion: ViewContAinerLocAtion): void {
+		let contAiner = this.registerGenerAtedViewContAiner(locAtion);
+		this.moveViewsToContAiner([view], contAiner);
 	}
 
-	moveViewsToContainer(views: IViewDescriptor[], viewContainer: ViewContainer, visibilityState?: ViewVisibilityState): void {
+	moveViewsToContAiner(views: IViewDescriptor[], viewContAiner: ViewContAiner, visibilityStAte?: ViewVisibilityStAte): void {
 		if (!views.length) {
 			return;
 		}
 
-		const from = this.getViewContainerByViewId(views[0].id);
-		const to = viewContainer;
+		const from = this.getViewContAinerByViewId(views[0].id);
+		const to = viewContAiner;
 
 		if (from && to && from !== to) {
-			this.moveViews(views, from, to, visibilityState);
-			this.cleanUpViewContainer(from.id);
+			this.moveViews(views, from, to, visibilityStAte);
+			this.cleAnUpViewContAiner(from.id);
 		}
 	}
 
 	reset(): void {
-		this.viewContainers.forEach(viewContainer => {
-			const viewContainerModel = this.getViewContainerModel(viewContainer);
+		this.viewContAiners.forEAch(viewContAiner => {
+			const viewContAinerModel = this.getViewContAinerModel(viewContAiner);
 
-			viewContainerModel.allViewDescriptors.forEach(viewDescriptor => {
-				const defaultContainer = this.getDefaultContainerById(viewDescriptor.id);
-				const currentContainer = this.getViewContainerByViewId(viewDescriptor.id);
+			viewContAinerModel.AllViewDescriptors.forEAch(viewDescriptor => {
+				const defAultContAiner = this.getDefAultContAinerById(viewDescriptor.id);
+				const currentContAiner = this.getViewContAinerByViewId(viewDescriptor.id);
 
-				if (currentContainer && defaultContainer && currentContainer !== defaultContainer) {
-					this.moveViews([viewDescriptor], currentContainer, defaultContainer);
+				if (currentContAiner && defAultContAiner && currentContAiner !== defAultContAiner) {
+					this.moveViews([viewDescriptor], currentContAiner, defAultContAiner);
 				}
 			});
 
-			const defaultContainerLocation = this.getDefaultViewContainerLocation(viewContainer);
-			const currentContainerLocation = this.getViewContainerLocation(viewContainer);
-			if (defaultContainerLocation !== null && currentContainerLocation !== defaultContainerLocation) {
-				this.moveViewContainerToLocation(viewContainer, defaultContainerLocation);
+			const defAultContAinerLocAtion = this.getDefAultViewContAinerLocAtion(viewContAiner);
+			const currentContAinerLocAtion = this.getViewContAinerLocAtion(viewContAiner);
+			if (defAultContAinerLocAtion !== null && currentContAinerLocAtion !== defAultContAinerLocAtion) {
+				this.moveViewContAinerToLocAtion(viewContAiner, defAultContAinerLocAtion);
 			}
 
-			this.cleanUpViewContainer(viewContainer.id);
+			this.cleAnUpViewContAiner(viewContAiner.id);
 		});
 
-		this.cachedViewContainerInfo.clear();
-		this.saveViewContainerLocationsToCache();
-		this.cachedViewInfo.clear();
-		this.saveViewPositionsToCache();
+		this.cAchedViewContAinerInfo.cleAr();
+		this.sAveViewContAinerLocAtionsToCAche();
+		this.cAchedViewInfo.cleAr();
+		this.sAveViewPositionsToCAche();
 	}
 
-	isViewContainerRemovedPermanently(viewContainerId: string): boolean {
-		return this.isGeneratedContainerId(viewContainerId) && !this.cachedViewContainerInfo.has(viewContainerId);
+	isViewContAinerRemovedPermAnently(viewContAinerId: string): booleAn {
+		return this.isGenerAtedContAinerId(viewContAinerId) && !this.cAchedViewContAinerInfo.hAs(viewContAinerId);
 	}
 
-	private moveViews(views: IViewDescriptor[], from: ViewContainer, to: ViewContainer, visibilityState: ViewVisibilityState = ViewVisibilityState.Expand): void {
+	privAte moveViews(views: IViewDescriptor[], from: ViewContAiner, to: ViewContAiner, visibilityStAte: ViewVisibilityStAte = ViewVisibilityStAte.ExpAnd): void {
 		this.removeViews(from, views);
-		this.addViews(to, views, visibilityState);
+		this.AddViews(to, views, visibilityStAte);
 
-		const oldLocation = this.getViewContainerLocation(from);
-		const newLocation = this.getViewContainerLocation(to);
+		const oldLocAtion = this.getViewContAinerLocAtion(from);
+		const newLocAtion = this.getViewContAinerLocAtion(to);
 
-		if (oldLocation !== newLocation) {
-			this._onDidChangeLocation.fire({ views, from: oldLocation, to: newLocation });
+		if (oldLocAtion !== newLocAtion) {
+			this._onDidChAngeLocAtion.fire({ views, from: oldLocAtion, to: newLocAtion });
 		}
 
-		this._onDidChangeContainer.fire({ views, from, to });
+		this._onDidChAngeContAiner.fire({ views, from, to });
 
-		this.saveViewPositionsToCache();
+		this.sAveViewPositionsToCAche();
 
-		const containerToString = (container: ViewContainer): string => {
-			if (container.id.startsWith(ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX)) {
+		const contAinerToString = (contAiner: ViewContAiner): string => {
+			if (contAiner.id.stArtsWith(ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX)) {
 				return 'custom';
 			}
 
-			if (!container.extensionId) {
-				return container.id;
+			if (!contAiner.extensionId) {
+				return contAiner.id;
 			}
 
 			return 'extension';
 		};
 
-		// Log on cache update to avoid duplicate events in other windows
+		// Log on cAche updAte to Avoid duplicAte events in other windows
 		const viewCount = views.length;
-		const fromContainer = containerToString(from);
-		const toContainer = containerToString(to);
-		const fromLocation = oldLocation === ViewContainerLocation.Panel ? 'panel' : 'sidebar';
-		const toLocation = newLocation === ViewContainerLocation.Panel ? 'panel' : 'sidebar';
+		const fromContAiner = contAinerToString(from);
+		const toContAiner = contAinerToString(to);
+		const fromLocAtion = oldLocAtion === ViewContAinerLocAtion.PAnel ? 'pAnel' : 'sidebAr';
+		const toLocAtion = newLocAtion === ViewContAinerLocAtion.PAnel ? 'pAnel' : 'sidebAr';
 
-		interface ViewDescriptorServiceMoveViewsEvent {
+		interfAce ViewDescriptorServiceMoveViewsEvent {
 			viewCount: number;
-			fromContainer: string;
-			toContainer: string;
-			fromLocation: string;
-			toLocation: string;
+			fromContAiner: string;
+			toContAiner: string;
+			fromLocAtion: string;
+			toLocAtion: string;
 		}
 
-		type ViewDescriptorServiceMoveViewsClassification = {
-			viewCount: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-			fromContainer: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-			toContainer: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-			fromLocation: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-			toLocation: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
+		type ViewDescriptorServiceMoveViewsClAssificAtion = {
+			viewCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
+			fromContAiner: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
+			toContAiner: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
+			fromLocAtion: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
+			toLocAtion: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
 		};
 
-		this.telemetryService.publicLog2<ViewDescriptorServiceMoveViewsEvent, ViewDescriptorServiceMoveViewsClassification>('viewDescriptorService.moveViews', { viewCount, fromContainer, toContainer, fromLocation, toLocation });
+		this.telemetryService.publicLog2<ViewDescriptorServiceMoveViewsEvent, ViewDescriptorServiceMoveViewsClAssificAtion>('viewDescriptorService.moveViews', { viewCount, fromContAiner, toContAiner, fromLocAtion, toLocAtion });
 	}
 
-	private cleanUpViewContainer(viewContainerId: string): void {
-		// Skip if container is not generated
-		if (!this.isGeneratedContainerId(viewContainerId)) {
+	privAte cleAnUpViewContAiner(viewContAinerId: string): void {
+		// Skip if contAiner is not generAted
+		if (!this.isGenerAtedContAinerId(viewContAinerId)) {
 			return;
 		}
 
-		// Skip if container has views registered
-		const viewContainer = this.getViewContainerById(viewContainerId);
-		if (viewContainer && this.getViewContainerModel(viewContainer)?.allViewDescriptors.length) {
+		// Skip if contAiner hAs views registered
+		const viewContAiner = this.getViewContAinerById(viewContAinerId);
+		if (viewContAiner && this.getViewContAinerModel(viewContAiner)?.AllViewDescriptors.length) {
 			return;
 		}
 
-		// Skip if container has views in the cache
-		if ([...this.cachedViewInfo.values()].some(({ containerId }) => containerId === viewContainerId)) {
+		// Skip if contAiner hAs views in the cAche
+		if ([...this.cAchedViewInfo.vAlues()].some(({ contAinerId }) => contAinerId === viewContAinerId)) {
 			return;
 		}
 
-		// Deregister the container
-		if (viewContainer) {
-			this.viewContainersRegistry.deregisterViewContainer(viewContainer);
+		// Deregister the contAiner
+		if (viewContAiner) {
+			this.viewContAinersRegistry.deregisterViewContAiner(viewContAiner);
 		}
 
-		// Clean up caches of container
-		this.cachedViewContainerInfo.delete(viewContainerId);
-		this.cachedViewContainerLocationsValue = JSON.stringify([...this.cachedViewContainerInfo]);
-		this.storageService.remove(getViewsStateStorageId(viewContainer?.storageId || getViewContainerStorageId(viewContainerId)), StorageScope.GLOBAL);
+		// CleAn up cAches of contAiner
+		this.cAchedViewContAinerInfo.delete(viewContAinerId);
+		this.cAchedViewContAinerLocAtionsVAlue = JSON.stringify([...this.cAchedViewContAinerInfo]);
+		this.storAgeService.remove(getViewsStAteStorAgeId(viewContAiner?.storAgeId || getViewContAinerStorAgeId(viewContAinerId)), StorAgeScope.GLOBAL);
 	}
 
-	private registerGeneratedViewContainer(location: ViewContainerLocation, existingId?: string): ViewContainer {
-		const id = existingId || this.generateContainerId(location);
+	privAte registerGenerAtedViewContAiner(locAtion: ViewContAinerLocAtion, existingId?: string): ViewContAiner {
+		const id = existingId || this.generAteContAinerId(locAtion);
 
-		const container = this.viewContainersRegistry.registerViewContainer({
+		const contAiner = this.viewContAinersRegistry.registerViewContAiner({
 			id,
-			ctorDescriptor: new SyncDescriptor(ViewPaneContainer, [id, { mergeViewWithContainerWhenSingleView: true, donotShowContainerTitleWhenMergedWithContainer: true }]),
-			name: 'Custom Views', // we don't want to see this, so no need to localize
-			icon: location === ViewContainerLocation.Sidebar ? 'codicon-window' : undefined,
-			storageId: getViewContainerStorageId(id),
+			ctorDescriptor: new SyncDescriptor(ViewPAneContAiner, [id, { mergeViewWithContAinerWhenSingleView: true, donotShowContAinerTitleWhenMergedWithContAiner: true }]),
+			nAme: 'Custom Views', // we don't wAnt to see this, so no need to locAlize
+			icon: locAtion === ViewContAinerLocAtion.SidebAr ? 'codicon-window' : undefined,
+			storAgeId: getViewContAinerStorAgeId(id),
 			hideIfEmpty: true
-		}, location);
+		}, locAtion);
 
-		const cachedInfo = this.cachedViewContainerInfo.get(container.id);
-		if (cachedInfo !== location) {
-			this.cachedViewContainerInfo.set(container.id, location);
-			this.saveViewContainerLocationsToCache();
+		const cAchedInfo = this.cAchedViewContAinerInfo.get(contAiner.id);
+		if (cAchedInfo !== locAtion) {
+			this.cAchedViewContAinerInfo.set(contAiner.id, locAtion);
+			this.sAveViewContAinerLocAtionsToCAche();
 		}
 
-		this.getOrCreateDefaultViewContainerLocationContextKey(container).set(true);
+		this.getOrCreAteDefAultViewContAinerLocAtionContextKey(contAiner).set(true);
 
-		return container;
+		return contAiner;
 	}
 
-	private getCachedViewPositions(): Map<string, ICachedViewContainerInfo> {
-		const result = new Map<string, ICachedViewContainerInfo>(JSON.parse(this.cachedViewPositionsValue));
+	privAte getCAchedViewPositions(): MAp<string, ICAchedViewContAinerInfo> {
+		const result = new MAp<string, ICAchedViewContAinerInfo>(JSON.pArse(this.cAchedViewPositionsVAlue));
 
-		// Sanitize cache
-		for (const [viewId, containerInfo] of result.entries()) {
-			if (!containerInfo) {
+		// SAnitize cAche
+		for (const [viewId, contAinerInfo] of result.entries()) {
+			if (!contAinerInfo) {
 				result.delete(viewId);
 				continue;
 			}
 
-			// Verify a view that is in a generated has cached container info
-			const generated = this.isGeneratedContainerId(containerInfo.containerId);
-			const missingCacheData = this.cachedViewContainerInfo.get(containerInfo.containerId) === undefined;
-			if (generated && missingCacheData) {
+			// Verify A view thAt is in A generAted hAs cAched contAiner info
+			const generAted = this.isGenerAtedContAinerId(contAinerInfo.contAinerId);
+			const missingCAcheDAtA = this.cAchedViewContAinerInfo.get(contAinerInfo.contAinerId) === undefined;
+			if (generAted && missingCAcheDAtA) {
 				result.delete(viewId);
 			}
 		}
@@ -501,162 +501,162 @@ export class ViewDescriptorService extends Disposable implements IViewDescriptor
 		return result;
 	}
 
-	private getCachedViewContainerLocations(): Map<string, ViewContainerLocation> {
-		return new Map<string, ViewContainerLocation>(JSON.parse(this.cachedViewContainerLocationsValue));
+	privAte getCAchedViewContAinerLocAtions(): MAp<string, ViewContAinerLocAtion> {
+		return new MAp<string, ViewContAinerLocAtion>(JSON.pArse(this.cAchedViewContAinerLocAtionsVAlue));
 	}
 
-	private onDidStorageChange(e: IWorkspaceStorageChangeEvent): void {
-		if (e.key === ViewDescriptorService.CACHED_VIEW_POSITIONS && e.scope === StorageScope.GLOBAL
-			&& this.cachedViewPositionsValue !== this.getStoredCachedViewPositionsValue() /* This checks if current window changed the value or not */) {
-			this._cachedViewPositionsValue = this.getStoredCachedViewPositionsValue();
+	privAte onDidStorAgeChAnge(e: IWorkspAceStorAgeChAngeEvent): void {
+		if (e.key === ViewDescriptorService.CACHED_VIEW_POSITIONS && e.scope === StorAgeScope.GLOBAL
+			&& this.cAchedViewPositionsVAlue !== this.getStoredCAchedViewPositionsVAlue() /* This checks if current window chAnged the vAlue or not */) {
+			this._cAchedViewPositionsVAlue = this.getStoredCAchedViewPositionsVAlue();
 
-			const newCachedPositions = this.getCachedViewPositions();
+			const newCAchedPositions = this.getCAchedViewPositions();
 
-			for (let viewId of newCachedPositions.keys()) {
+			for (let viewId of newCAchedPositions.keys()) {
 				const viewDescriptor = this.getViewDescriptorById(viewId);
 				if (!viewDescriptor) {
 					continue;
 				}
 
-				const prevViewContainer = this.getViewContainerByViewId(viewId);
-				const newViewContainerInfo = newCachedPositions.get(viewId)!;
-				// Verify if we need to create the destination container
-				if (!this.viewContainersRegistry.get(newViewContainerInfo.containerId)) {
-					const location = this.cachedViewContainerInfo.get(newViewContainerInfo.containerId);
-					if (location !== undefined) {
-						this.registerGeneratedViewContainer(location, newViewContainerInfo.containerId);
+				const prevViewContAiner = this.getViewContAinerByViewId(viewId);
+				const newViewContAinerInfo = newCAchedPositions.get(viewId)!;
+				// Verify if we need to creAte the destinAtion contAiner
+				if (!this.viewContAinersRegistry.get(newViewContAinerInfo.contAinerId)) {
+					const locAtion = this.cAchedViewContAinerInfo.get(newViewContAinerInfo.contAinerId);
+					if (locAtion !== undefined) {
+						this.registerGenerAtedViewContAiner(locAtion, newViewContAinerInfo.contAinerId);
 					}
 				}
 
-				// Try moving to the new container
-				const newViewContainer = this.viewContainersRegistry.get(newViewContainerInfo.containerId);
-				if (prevViewContainer && newViewContainer && newViewContainer !== prevViewContainer) {
+				// Try moving to the new contAiner
+				const newViewContAiner = this.viewContAinersRegistry.get(newViewContAinerInfo.contAinerId);
+				if (prevViewContAiner && newViewContAiner && newViewContAiner !== prevViewContAiner) {
 					const viewDescriptor = this.getViewDescriptorById(viewId);
 					if (viewDescriptor) {
-						this.moveViews([viewDescriptor], prevViewContainer, newViewContainer);
+						this.moveViews([viewDescriptor], prevViewContAiner, newViewContAiner);
 					}
 				}
 			}
 
-			// If a value is not present in the cache, it must be reset to default
-			this.viewContainers.forEach(viewContainer => {
-				const viewContainerModel = this.getViewContainerModel(viewContainer);
-				viewContainerModel.allViewDescriptors.forEach(viewDescriptor => {
-					if (!newCachedPositions.has(viewDescriptor.id)) {
-						const currentContainer = this.getViewContainerByViewId(viewDescriptor.id);
-						const defaultContainer = this.getDefaultContainerById(viewDescriptor.id);
-						if (currentContainer && defaultContainer && currentContainer !== defaultContainer) {
-							this.moveViews([viewDescriptor], currentContainer, defaultContainer);
+			// If A vAlue is not present in the cAche, it must be reset to defAult
+			this.viewContAiners.forEAch(viewContAiner => {
+				const viewContAinerModel = this.getViewContAinerModel(viewContAiner);
+				viewContAinerModel.AllViewDescriptors.forEAch(viewDescriptor => {
+					if (!newCAchedPositions.hAs(viewDescriptor.id)) {
+						const currentContAiner = this.getViewContAinerByViewId(viewDescriptor.id);
+						const defAultContAiner = this.getDefAultContAinerById(viewDescriptor.id);
+						if (currentContAiner && defAultContAiner && currentContAiner !== defAultContAiner) {
+							this.moveViews([viewDescriptor], currentContAiner, defAultContAiner);
 						}
 
-						this.cachedViewInfo.delete(viewDescriptor.id);
+						this.cAchedViewInfo.delete(viewDescriptor.id);
 					}
 				});
 			});
 
-			this.cachedViewInfo = this.getCachedViewPositions();
+			this.cAchedViewInfo = this.getCAchedViewPositions();
 		}
 
 
-		if (e.key === ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS && e.scope === StorageScope.GLOBAL
-			&& this.cachedViewContainerLocationsValue !== this.getStoredCachedViewContainerLocationsValue() /* This checks if current window changed the value or not */) {
-			this._cachedViewContainerLocationsValue = this.getStoredCachedViewContainerLocationsValue();
-			const newCachedLocations = this.getCachedViewContainerLocations();
+		if (e.key === ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS && e.scope === StorAgeScope.GLOBAL
+			&& this.cAchedViewContAinerLocAtionsVAlue !== this.getStoredCAchedViewContAinerLocAtionsVAlue() /* This checks if current window chAnged the vAlue or not */) {
+			this._cAchedViewContAinerLocAtionsVAlue = this.getStoredCAchedViewContAinerLocAtionsVAlue();
+			const newCAchedLocAtions = this.getCAchedViewContAinerLocAtions();
 
-			for (const [containerId, location] of newCachedLocations.entries()) {
-				const container = this.getViewContainerById(containerId);
-				if (container) {
-					if (location !== this.getViewContainerLocation(container)) {
-						this.moveViewContainerToLocation(container, location);
+			for (const [contAinerId, locAtion] of newCAchedLocAtions.entries()) {
+				const contAiner = this.getViewContAinerById(contAinerId);
+				if (contAiner) {
+					if (locAtion !== this.getViewContAinerLocAtion(contAiner)) {
+						this.moveViewContAinerToLocAtion(contAiner, locAtion);
 					}
 				}
 			}
 
-			this.viewContainers.forEach(viewContainer => {
-				if (!newCachedLocations.has(viewContainer.id)) {
-					const currentLocation = this.getViewContainerLocation(viewContainer);
-					const defaultLocation = this.getDefaultViewContainerLocation(viewContainer);
+			this.viewContAiners.forEAch(viewContAiner => {
+				if (!newCAchedLocAtions.hAs(viewContAiner.id)) {
+					const currentLocAtion = this.getViewContAinerLocAtion(viewContAiner);
+					const defAultLocAtion = this.getDefAultViewContAinerLocAtion(viewContAiner);
 
-					if (currentLocation !== defaultLocation) {
-						this.moveViewContainerToLocation(viewContainer, defaultLocation);
+					if (currentLocAtion !== defAultLocAtion) {
+						this.moveViewContAinerToLocAtion(viewContAiner, defAultLocAtion);
 					}
 				}
 			});
 
-			this.cachedViewContainerInfo = this.getCachedViewContainerLocations();
+			this.cAchedViewContAinerInfo = this.getCAchedViewContAinerLocAtions();
 		}
 	}
 
-	// Generated Container Id Format
-	// {Common Prefix}.{Location}.{Uniqueness Id}
-	// Old Format (deprecated)
+	// GenerAted ContAiner Id FormAt
+	// {Common Prefix}.{LocAtion}.{Uniqueness Id}
+	// Old FormAt (deprecAted)
 	// {Common Prefix}.{Uniqueness Id}.{Source View Id}
-	private generateContainerId(location: ViewContainerLocation): string {
-		return `${ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX}.${location === ViewContainerLocation.Panel ? 'panel' : 'sidebar'}.${generateUuid()}`;
+	privAte generAteContAinerId(locAtion: ViewContAinerLocAtion): string {
+		return `${ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX}.${locAtion === ViewContAinerLocAtion.PAnel ? 'pAnel' : 'sidebAr'}.${generAteUuid()}`;
 	}
 
-	private getStoredCachedViewPositionsValue(): string {
-		return this.storageService.get(ViewDescriptorService.CACHED_VIEW_POSITIONS, StorageScope.GLOBAL, '[]');
+	privAte getStoredCAchedViewPositionsVAlue(): string {
+		return this.storAgeService.get(ViewDescriptorService.CACHED_VIEW_POSITIONS, StorAgeScope.GLOBAL, '[]');
 	}
 
-	private setStoredCachedViewPositionsValue(value: string): void {
-		this.storageService.store(ViewDescriptorService.CACHED_VIEW_POSITIONS, value, StorageScope.GLOBAL);
+	privAte setStoredCAchedViewPositionsVAlue(vAlue: string): void {
+		this.storAgeService.store(ViewDescriptorService.CACHED_VIEW_POSITIONS, vAlue, StorAgeScope.GLOBAL);
 	}
 
-	private getStoredCachedViewContainerLocationsValue(): string {
-		return this.storageService.get(ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS, StorageScope.GLOBAL, '[]');
+	privAte getStoredCAchedViewContAinerLocAtionsVAlue(): string {
+		return this.storAgeService.get(ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS, StorAgeScope.GLOBAL, '[]');
 	}
 
-	private setStoredCachedViewContainerLocationsValue(value: string): void {
-		this.storageService.store(ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS, value, StorageScope.GLOBAL);
+	privAte setStoredCAchedViewContAinerLocAtionsVAlue(vAlue: string): void {
+		this.storAgeService.store(ViewDescriptorService.CACHED_VIEW_CONTAINER_LOCATIONS, vAlue, StorAgeScope.GLOBAL);
 	}
 
-	private saveViewPositionsToCache(): void {
-		this.viewContainers.forEach(viewContainer => {
-			const viewContainerModel = this.getViewContainerModel(viewContainer);
-			viewContainerModel.allViewDescriptors.forEach(viewDescriptor => {
-				this.cachedViewInfo.set(viewDescriptor.id, {
-					containerId: viewContainer.id
+	privAte sAveViewPositionsToCAche(): void {
+		this.viewContAiners.forEAch(viewContAiner => {
+			const viewContAinerModel = this.getViewContAinerModel(viewContAiner);
+			viewContAinerModel.AllViewDescriptors.forEAch(viewDescriptor => {
+				this.cAchedViewInfo.set(viewDescriptor.id, {
+					contAinerId: viewContAiner.id
 				});
 			});
 		});
 
-		// Do no save default positions to the cache
-		// so that default changes can be recognized
+		// Do no sAve defAult positions to the cAche
+		// so thAt defAult chAnges cAn be recognized
 		// https://github.com/microsoft/vscode/issues/90414
-		for (const [viewId, containerInfo] of this.cachedViewInfo) {
-			const defaultContainer = this.getDefaultContainerById(viewId);
-			if (defaultContainer?.id === containerInfo.containerId) {
-				this.cachedViewInfo.delete(viewId);
+		for (const [viewId, contAinerInfo] of this.cAchedViewInfo) {
+			const defAultContAiner = this.getDefAultContAinerById(viewId);
+			if (defAultContAiner?.id === contAinerInfo.contAinerId) {
+				this.cAchedViewInfo.delete(viewId);
 			}
 		}
 
-		this.cachedViewPositionsValue = JSON.stringify([...this.cachedViewInfo]);
+		this.cAchedViewPositionsVAlue = JSON.stringify([...this.cAchedViewInfo]);
 	}
 
-	private saveViewContainerLocationsToCache(): void {
-		for (const [containerId, location] of this.cachedViewContainerInfo) {
-			const container = this.getViewContainerById(containerId);
-			if (container && location === this.getDefaultViewContainerLocation(container) && !this.isGeneratedContainerId(containerId)) {
-				this.cachedViewContainerInfo.delete(containerId);
+	privAte sAveViewContAinerLocAtionsToCAche(): void {
+		for (const [contAinerId, locAtion] of this.cAchedViewContAinerInfo) {
+			const contAiner = this.getViewContAinerById(contAinerId);
+			if (contAiner && locAtion === this.getDefAultViewContAinerLocAtion(contAiner) && !this.isGenerAtedContAinerId(contAinerId)) {
+				this.cAchedViewContAinerInfo.delete(contAinerId);
 			}
 		}
 
-		this.cachedViewContainerLocationsValue = JSON.stringify([...this.cachedViewContainerInfo]);
+		this.cAchedViewContAinerLocAtionsVAlue = JSON.stringify([...this.cAchedViewContAinerInfo]);
 	}
 
-	private getViewsByContainer(viewContainer: ViewContainer): IViewDescriptor[] {
-		const result = this.viewsRegistry.getViews(viewContainer).filter(viewDescriptor => {
-			const cachedContainer = this.cachedViewInfo.get(viewDescriptor.id)?.containerId || viewContainer.id;
-			return cachedContainer === viewContainer.id;
+	privAte getViewsByContAiner(viewContAiner: ViewContAiner): IViewDescriptor[] {
+		const result = this.viewsRegistry.getViews(viewContAiner).filter(viewDescriptor => {
+			const cAchedContAiner = this.cAchedViewInfo.get(viewDescriptor.id)?.contAinerId || viewContAiner.id;
+			return cAchedContAiner === viewContAiner.id;
 		});
 
-		for (const [viewId, containerInfo] of this.cachedViewInfo.entries()) {
-			if (!containerInfo || containerInfo.containerId !== viewContainer.id) {
+		for (const [viewId, contAinerInfo] of this.cAchedViewInfo.entries()) {
+			if (!contAinerInfo || contAinerInfo.contAinerId !== viewContAiner.id) {
 				continue;
 			}
 
-			if (this.viewsRegistry.getViewContainer(viewId) === viewContainer) {
+			if (this.viewsRegistry.getViewContAiner(viewId) === viewContAiner) {
 				continue;
 			}
 
@@ -669,150 +669,150 @@ export class ViewDescriptorService extends Disposable implements IViewDescriptor
 		return result;
 	}
 
-	private onDidRegisterViewContainer(viewContainer: ViewContainer): void {
-		const defaultLocation = this.isGeneratedContainerId(viewContainer.id) ? true : this.getViewContainerLocation(viewContainer) === this.getDefaultViewContainerLocation(viewContainer);
-		this.getOrCreateDefaultViewContainerLocationContextKey(viewContainer).set(defaultLocation);
-		this.getOrRegisterViewContainerModel(viewContainer);
+	privAte onDidRegisterViewContAiner(viewContAiner: ViewContAiner): void {
+		const defAultLocAtion = this.isGenerAtedContAinerId(viewContAiner.id) ? true : this.getViewContAinerLocAtion(viewContAiner) === this.getDefAultViewContAinerLocAtion(viewContAiner);
+		this.getOrCreAteDefAultViewContAinerLocAtionContextKey(viewContAiner).set(defAultLocAtion);
+		this.getOrRegisterViewContAinerModel(viewContAiner);
 	}
 
-	private getOrRegisterViewContainerModel(viewContainer: ViewContainer): ViewContainerModel {
-		let viewContainerModel = this.viewContainerModels.get(viewContainer)?.viewContainerModel;
+	privAte getOrRegisterViewContAinerModel(viewContAiner: ViewContAiner): ViewContAinerModel {
+		let viewContAinerModel = this.viewContAinerModels.get(viewContAiner)?.viewContAinerModel;
 
-		if (!viewContainerModel) {
-			const disposables = new DisposableStore();
-			viewContainerModel = disposables.add(this.instantiationService.createInstance(ViewContainerModel, viewContainer));
+		if (!viewContAinerModel) {
+			const disposAbles = new DisposAbleStore();
+			viewContAinerModel = disposAbles.Add(this.instAntiAtionService.creAteInstAnce(ViewContAinerModel, viewContAiner));
 
-			this.onDidChangeActiveViews({ added: viewContainerModel.activeViewDescriptors, removed: [] });
-			viewContainerModel.onDidChangeActiveViewDescriptors(changed => this.onDidChangeActiveViews(changed), this, disposables);
+			this.onDidChAngeActiveViews({ Added: viewContAinerModel.ActiveViewDescriptors, removed: [] });
+			viewContAinerModel.onDidChAngeActiveViewDescriptors(chAnged => this.onDidChAngeActiveViews(chAnged), this, disposAbles);
 
-			disposables.add(this.registerResetViewContainerAction(viewContainer));
+			disposAbles.Add(this.registerResetViewContAinerAction(viewContAiner));
 
-			this.viewContainerModels.set(viewContainer, { viewContainerModel: viewContainerModel, disposable: disposables });
+			this.viewContAinerModels.set(viewContAiner, { viewContAinerModel: viewContAinerModel, disposAble: disposAbles });
 
-			// Register all views that were statically registered to this container
-			// Potentially, this is registering something that was handled by another container
-			// addViews() handles this by filtering views that are already registered
-			this.onDidRegisterViews([{ views: this.viewsRegistry.getViews(viewContainer), viewContainer }]);
+			// Register All views thAt were stAticAlly registered to this contAiner
+			// PotentiAlly, this is registering something thAt wAs hAndled by Another contAiner
+			// AddViews() hAndles this by filtering views thAt Are AlreAdy registered
+			this.onDidRegisterViews([{ views: this.viewsRegistry.getViews(viewContAiner), viewContAiner }]);
 
-			// Add views that were registered prior to this view container
-			const viewsToRegister = this.getViewsByContainer(viewContainer).filter(view => this.getDefaultContainerById(view.id) !== viewContainer);
+			// Add views thAt were registered prior to this view contAiner
+			const viewsToRegister = this.getViewsByContAiner(viewContAiner).filter(view => this.getDefAultContAinerById(view.id) !== viewContAiner);
 			if (viewsToRegister.length) {
-				this.addViews(viewContainer, viewsToRegister);
-				this.contextKeyService.bufferChangeEvents(() => {
-					viewsToRegister.forEach(viewDescriptor => this.getOrCreateMovableViewContextKey(viewDescriptor).set(!!viewDescriptor.canMoveView));
+				this.AddViews(viewContAiner, viewsToRegister);
+				this.contextKeyService.bufferChAngeEvents(() => {
+					viewsToRegister.forEAch(viewDescriptor => this.getOrCreAteMovAbleViewContextKey(viewDescriptor).set(!!viewDescriptor.cAnMoveView));
 				});
 			}
 		}
 
-		return viewContainerModel;
+		return viewContAinerModel;
 	}
 
-	private onDidDeregisterViewContainer(viewContainer: ViewContainer): void {
-		const viewContainerModelItem = this.viewContainerModels.get(viewContainer);
-		if (viewContainerModelItem) {
-			viewContainerModelItem.disposable.dispose();
-			this.viewContainerModels.delete(viewContainer);
+	privAte onDidDeregisterViewContAiner(viewContAiner: ViewContAiner): void {
+		const viewContAinerModelItem = this.viewContAinerModels.get(viewContAiner);
+		if (viewContAinerModelItem) {
+			viewContAinerModelItem.disposAble.dispose();
+			this.viewContAinerModels.delete(viewContAiner);
 		}
 	}
 
-	private onDidChangeActiveViews({ added, removed }: { added: ReadonlyArray<IViewDescriptor>, removed: ReadonlyArray<IViewDescriptor>; }): void {
-		this.contextKeyService.bufferChangeEvents(() => {
-			added.forEach(viewDescriptor => this.getOrCreateActiveViewContextKey(viewDescriptor).set(true));
-			removed.forEach(viewDescriptor => this.getOrCreateActiveViewContextKey(viewDescriptor).set(false));
+	privAte onDidChAngeActiveViews({ Added, removed }: { Added: ReAdonlyArrAy<IViewDescriptor>, removed: ReAdonlyArrAy<IViewDescriptor>; }): void {
+		this.contextKeyService.bufferChAngeEvents(() => {
+			Added.forEAch(viewDescriptor => this.getOrCreAteActiveViewContextKey(viewDescriptor).set(true));
+			removed.forEAch(viewDescriptor => this.getOrCreAteActiveViewContextKey(viewDescriptor).set(fAlse));
 		});
 	}
 
-	private registerResetViewContainerAction(viewContainer: ViewContainer): IDisposable {
-		const that = this;
-		return registerAction2(class ResetViewLocationAction extends Action2 {
+	privAte registerResetViewContAinerAction(viewContAiner: ViewContAiner): IDisposAble {
+		const thAt = this;
+		return registerAction2(clAss ResetViewLocAtionAction extends Action2 {
 			constructor() {
 				super({
-					id: `${viewContainer.id}.resetViewContainerLocation`,
+					id: `${viewContAiner.id}.resetViewContAinerLocAtion`,
 					title: {
-						original: 'Reset Location',
-						value: localize('resetViewLocation', "Reset Location")
+						originAl: 'Reset LocAtion',
+						vAlue: locAlize('resetViewLocAtion', "Reset LocAtion")
 					},
 					menu: [{
-						id: MenuId.ViewContainerTitleContext,
+						id: MenuId.ViewContAinerTitleContext,
 						when: ContextKeyExpr.or(
-							ContextKeyExpr.and(
-								ContextKeyExpr.equals('container', viewContainer.id),
-								ContextKeyExpr.equals(`${viewContainer.id}.defaultViewContainerLocation`, false)
+							ContextKeyExpr.And(
+								ContextKeyExpr.equAls('contAiner', viewContAiner.id),
+								ContextKeyExpr.equAls(`${viewContAiner.id}.defAultViewContAinerLocAtion`, fAlse)
 							)
 						)
 					}],
 				});
 			}
 			run(): void {
-				that.moveViewContainerToLocation(viewContainer, that.getDefaultViewContainerLocation(viewContainer));
+				thAt.moveViewContAinerToLocAtion(viewContAiner, thAt.getDefAultViewContAinerLocAtion(viewContAiner));
 			}
 		});
 	}
 
-	private addViews(container: ViewContainer, views: IViewDescriptor[], visibilityState: ViewVisibilityState = ViewVisibilityState.Default): void {
-		// Update in memory cache
-		this.contextKeyService.bufferChangeEvents(() => {
-			views.forEach(view => {
-				this.cachedViewInfo.set(view.id, { containerId: container.id });
-				this.getOrCreateDefaultViewLocationContextKey(view).set(this.getDefaultContainerById(view.id) === container);
+	privAte AddViews(contAiner: ViewContAiner, views: IViewDescriptor[], visibilityStAte: ViewVisibilityStAte = ViewVisibilityStAte.DefAult): void {
+		// UpdAte in memory cAche
+		this.contextKeyService.bufferChAngeEvents(() => {
+			views.forEAch(view => {
+				this.cAchedViewInfo.set(view.id, { contAinerId: contAiner.id });
+				this.getOrCreAteDefAultViewLocAtionContextKey(view).set(this.getDefAultContAinerById(view.id) === contAiner);
 			});
 		});
 
-		this.getViewContainerModel(container).add(views.map(view => {
+		this.getViewContAinerModel(contAiner).Add(views.mAp(view => {
 			return {
 				viewDescriptor: view,
-				collapsed: visibilityState === ViewVisibilityState.Default ? undefined : false,
-				visible: visibilityState === ViewVisibilityState.Default ? undefined : true
+				collApsed: visibilityStAte === ViewVisibilityStAte.DefAult ? undefined : fAlse,
+				visible: visibilityStAte === ViewVisibilityStAte.DefAult ? undefined : true
 			};
 		}));
 	}
 
-	private removeViews(container: ViewContainer, views: IViewDescriptor[]): void {
-		// Set view default location keys to false
-		this.contextKeyService.bufferChangeEvents(() => {
-			views.forEach(view => this.getOrCreateDefaultViewLocationContextKey(view).set(false));
+	privAte removeViews(contAiner: ViewContAiner, views: IViewDescriptor[]): void {
+		// Set view defAult locAtion keys to fAlse
+		this.contextKeyService.bufferChAngeEvents(() => {
+			views.forEAch(view => this.getOrCreAteDefAultViewLocAtionContextKey(view).set(fAlse));
 		});
 
 		// Remove the views
-		this.getViewContainerModel(container).remove(views);
+		this.getViewContAinerModel(contAiner).remove(views);
 	}
 
-	private getOrCreateActiveViewContextKey(viewDescriptor: IViewDescriptor): IContextKey<boolean> {
-		const activeContextKeyId = `${viewDescriptor.id}.active`;
-		let contextKey = this.activeViewContextKeys.get(activeContextKeyId);
+	privAte getOrCreAteActiveViewContextKey(viewDescriptor: IViewDescriptor): IContextKey<booleAn> {
+		const ActiveContextKeyId = `${viewDescriptor.id}.Active`;
+		let contextKey = this.ActiveViewContextKeys.get(ActiveContextKeyId);
 		if (!contextKey) {
-			contextKey = new RawContextKey(activeContextKeyId, false).bindTo(this.contextKeyService);
-			this.activeViewContextKeys.set(activeContextKeyId, contextKey);
+			contextKey = new RAwContextKey(ActiveContextKeyId, fAlse).bindTo(this.contextKeyService);
+			this.ActiveViewContextKeys.set(ActiveContextKeyId, contextKey);
 		}
 		return contextKey;
 	}
 
-	private getOrCreateMovableViewContextKey(viewDescriptor: IViewDescriptor): IContextKey<boolean> {
-		const movableViewContextKeyId = `${viewDescriptor.id}.canMove`;
-		let contextKey = this.movableViewContextKeys.get(movableViewContextKeyId);
+	privAte getOrCreAteMovAbleViewContextKey(viewDescriptor: IViewDescriptor): IContextKey<booleAn> {
+		const movAbleViewContextKeyId = `${viewDescriptor.id}.cAnMove`;
+		let contextKey = this.movAbleViewContextKeys.get(movAbleViewContextKeyId);
 		if (!contextKey) {
-			contextKey = new RawContextKey(movableViewContextKeyId, false).bindTo(this.contextKeyService);
-			this.movableViewContextKeys.set(movableViewContextKeyId, contextKey);
+			contextKey = new RAwContextKey(movAbleViewContextKeyId, fAlse).bindTo(this.contextKeyService);
+			this.movAbleViewContextKeys.set(movAbleViewContextKeyId, contextKey);
 		}
 		return contextKey;
 	}
 
-	private getOrCreateDefaultViewLocationContextKey(viewDescriptor: IViewDescriptor): IContextKey<boolean> {
-		const defaultViewLocationContextKeyId = `${viewDescriptor.id}.defaultViewLocation`;
-		let contextKey = this.defaultViewLocationContextKeys.get(defaultViewLocationContextKeyId);
+	privAte getOrCreAteDefAultViewLocAtionContextKey(viewDescriptor: IViewDescriptor): IContextKey<booleAn> {
+		const defAultViewLocAtionContextKeyId = `${viewDescriptor.id}.defAultViewLocAtion`;
+		let contextKey = this.defAultViewLocAtionContextKeys.get(defAultViewLocAtionContextKeyId);
 		if (!contextKey) {
-			contextKey = new RawContextKey(defaultViewLocationContextKeyId, false).bindTo(this.contextKeyService);
-			this.defaultViewLocationContextKeys.set(defaultViewLocationContextKeyId, contextKey);
+			contextKey = new RAwContextKey(defAultViewLocAtionContextKeyId, fAlse).bindTo(this.contextKeyService);
+			this.defAultViewLocAtionContextKeys.set(defAultViewLocAtionContextKeyId, contextKey);
 		}
 		return contextKey;
 	}
 
-	private getOrCreateDefaultViewContainerLocationContextKey(viewContainer: ViewContainer): IContextKey<boolean> {
-		const defaultViewContainerLocationContextKeyId = `${viewContainer.id}.defaultViewContainerLocation`;
-		let contextKey = this.defaultViewContainerLocationContextKeys.get(defaultViewContainerLocationContextKeyId);
+	privAte getOrCreAteDefAultViewContAinerLocAtionContextKey(viewContAiner: ViewContAiner): IContextKey<booleAn> {
+		const defAultViewContAinerLocAtionContextKeyId = `${viewContAiner.id}.defAultViewContAinerLocAtion`;
+		let contextKey = this.defAultViewContAinerLocAtionContextKeys.get(defAultViewContAinerLocAtionContextKeyId);
 		if (!contextKey) {
-			contextKey = new RawContextKey(defaultViewContainerLocationContextKeyId, false).bindTo(this.contextKeyService);
-			this.defaultViewContainerLocationContextKeys.set(defaultViewContainerLocationContextKeyId, contextKey);
+			contextKey = new RAwContextKey(defAultViewContAinerLocAtionContextKeyId, fAlse).bindTo(this.contextKeyService);
+			this.defAultViewContAinerLocAtionContextKeys.set(defAultViewContAinerLocAtionContextKeyId, contextKey);
 		}
 		return contextKey;
 	}

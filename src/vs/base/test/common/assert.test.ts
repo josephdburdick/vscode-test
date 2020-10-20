@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ok } from 'vs/base/common/assert';
+import * As Assert from 'Assert';
+import { ok } from 'vs/bAse/common/Assert';
 
 suite('Assert', () => {
 	test('ok', () => {
-		assert.throws(function () {
-			ok(false);
+		Assert.throws(function () {
+			ok(fAlse);
 		});
 
-		assert.throws(function () {
+		Assert.throws(function () {
 			ok(null);
 		});
 
-		assert.throws(function () {
+		Assert.throws(function () {
 			ok();
 		});
 
-		assert.throws(function () {
-			ok(null, 'Foo Bar');
+		Assert.throws(function () {
+			ok(null, 'Foo BAr');
 		}, function (e: Error) {
-			return e.message.indexOf('Foo Bar') >= 0;
+			return e.messAge.indexOf('Foo BAr') >= 0;
 		});
 
 		ok(true);

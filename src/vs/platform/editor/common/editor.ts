@@ -1,112 +1,112 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
+import { URI } from 'vs/bAse/common/uri';
+import { Event } from 'vs/bAse/common/event';
 
-export interface IEditorModel {
+export interfAce IEditorModel {
 
 	/**
 	 * Emitted when the model is disposed.
 	 */
-	readonly onDispose: Event<void>;
+	reAdonly onDispose: Event<void>;
 
 	/**
-	 * Loads the model.
+	 * LoAds the model.
 	 */
-	load(): Promise<IEditorModel>;
+	loAd(): Promise<IEditorModel>;
 
 	/**
-	 * Find out if this model has been disposed.
+	 * Find out if this model hAs been disposed.
 	 */
-	isDisposed(): boolean;
+	isDisposed(): booleAn;
 
 	/**
-	 * Dispose associated resources
+	 * Dispose AssociAted resources
 	 */
 	dispose(): void;
 }
 
-export interface IBaseResourceEditorInput {
+export interfAce IBAseResourceEditorInput {
 
 	/**
-	 * Optional options to use when opening the text input.
+	 * OptionAl options to use when opening the text input.
 	 */
 	options?: ITextEditorOptions;
 
 	/**
-	 * Label to show for the diff editor
+	 * LAbel to show for the diff editor
 	 */
-	readonly label?: string;
+	reAdonly lAbel?: string;
 
 	/**
 	 * Description to show for the diff editor
 	 */
-	readonly description?: string;
+	reAdonly description?: string;
 
 	/**
-	 * Hint to indicate that this input should be treated as a file
-	 * that opens in an editor capable of showing file content.
+	 * Hint to indicAte thAt this input should be treAted As A file
+	 * thAt opens in An editor cApAble of showing file content.
 	 *
-	 * Without this hint, the editor service will make a guess by
-	 * looking at the scheme of the resource(s).
+	 * Without this hint, the editor service will mAke A guess by
+	 * looking At the scheme of the resource(s).
 	 */
-	readonly forceFile?: boolean;
+	reAdonly forceFile?: booleAn;
 
 	/**
-	 * Hint to indicate that this input should be treated as a
+	 * Hint to indicAte thAt this input should be treAted As A
 	 * untitled file.
 	 *
-	 * Without this hint, the editor service will make a guess by
-	 * looking at the scheme of the resource(s).
+	 * Without this hint, the editor service will mAke A guess by
+	 * looking At the scheme of the resource(s).
 	 */
-	readonly forceUntitled?: boolean;
+	reAdonly forceUntitled?: booleAn;
 }
 
-export interface IResourceEditorInput extends IBaseResourceEditorInput {
+export interfAce IResourceEditorInput extends IBAseResourceEditorInput {
 
 	/**
 	 * The resource URI of the resource to open.
 	 */
-	readonly resource: URI;
+	reAdonly resource: URI;
 
 	/**
 	 * The encoding of the text input if known.
 	 */
-	readonly encoding?: string;
+	reAdonly encoding?: string;
 
 	/**
-	 * The identifier of the language mode of the text input
-	 * if known to use when displaying the contents.
+	 * The identifier of the lAnguAge mode of the text input
+	 * if known to use when displAying the contents.
 	 */
-	readonly mode?: string;
+	reAdonly mode?: string;
 }
 
-export enum EditorActivation {
+export enum EditorActivAtion {
 
 	/**
-	 * Activate the editor after it opened. This will automatically restore
+	 * ActivAte the editor After it opened. This will AutomAticAlly restore
 	 * the editor if it is minimized.
 	 */
 	ACTIVATE,
 
 	/**
-	 * Only restore the editor if it is minimized but do not activate it.
+	 * Only restore the editor if it is minimized but do not ActivAte it.
 	 *
-	 * Note: will only work in combination with the `preserveFocus: true` option.
-	 * Otherwise, if focus moves into the editor, it will activate and restore
-	 * automatically.
+	 * Note: will only work in combinAtion with the `preserveFocus: true` option.
+	 * Otherwise, if focus moves into the editor, it will ActivAte And restore
+	 * AutomAticAlly.
 	 */
 	RESTORE,
 
 	/**
-	 * Preserve the current active editor.
+	 * Preserve the current Active editor.
 	 *
-	 * Note: will only work in combination with the `preserveFocus: true` option.
-	 * Otherwise, if focus moves into the editor, it will activate and restore
-	 * automatically.
+	 * Note: will only work in combinAtion with the `preserveFocus: true` option.
+	 * Otherwise, if focus moves into the editor, it will ActivAte And restore
+	 * AutomAticAlly.
 	 */
 	PRESERVE
 }
@@ -114,156 +114,156 @@ export enum EditorActivation {
 export enum EditorOpenContext {
 
 	/**
-	 * Default: the editor is opening via a programmatic call
+	 * DefAult: the editor is opening viA A progrAmmAtic cAll
 	 * to the editor service API.
 	 */
 	API,
 
 	/**
-	 * Indicates that a user action triggered the opening, e.g.
-	 * via mouse or keyboard use.
+	 * IndicAtes thAt A user Action triggered the opening, e.g.
+	 * viA mouse or keyboArd use.
 	 */
 	USER
 }
 
-export interface IEditorOptions {
+export interfAce IEditorOptions {
 
 	/**
-	 * Tells the editor to not receive keyboard focus when the editor is being opened.
+	 * Tells the editor to not receive keyboArd focus when the editor is being opened.
 	 *
-	 * Will also not activate the group the editor opens in unless the group is already
-	 * the active one. This behaviour can be overridden via the `activation` option.
+	 * Will Also not ActivAte the group the editor opens in unless the group is AlreAdy
+	 * the Active one. This behAviour cAn be overridden viA the `ActivAtion` option.
 	 */
-	readonly preserveFocus?: boolean;
+	reAdonly preserveFocus?: booleAn;
 
 	/**
-	 * This option is only relevant if an editor is opened into a group that is not active
-	 * already and allows to control if the inactive group should become active, restored
+	 * This option is only relevAnt if An editor is opened into A group thAt is not Active
+	 * AlreAdy And Allows to control if the inActive group should become Active, restored
 	 * or preserved.
 	 *
-	 * By default, the editor group will become active unless `preserveFocus` or `inactive`
+	 * By defAult, the editor group will become Active unless `preserveFocus` or `inActive`
 	 * is specified.
 	 */
-	readonly activation?: EditorActivation;
+	reAdonly ActivAtion?: EditorActivAtion;
 
 	/**
-	 * Tells the editor to reload the editor input in the editor even if it is identical to the one
-	 * already showing. By default, the editor will not reload the input if it is identical to the
+	 * Tells the editor to reloAd the editor input in the editor even if it is identicAl to the one
+	 * AlreAdy showing. By defAult, the editor will not reloAd the input if it is identicAl to the
 	 * one showing.
 	 */
-	readonly forceReload?: boolean;
+	reAdonly forceReloAd?: booleAn;
 
 	/**
-	 * Will reveal the editor if it is already opened and visible in any of the opened editor groups.
+	 * Will reveAl the editor if it is AlreAdy opened And visible in Any of the opened editor groups.
 	 *
-	 * Note that this option is just a hint that might be ignored if the user wants to open an editor explicitly
-	 * to the side of another one or into a specific editor group.
+	 * Note thAt this option is just A hint thAt might be ignored if the user wAnts to open An editor explicitly
+	 * to the side of Another one or into A specific editor group.
 	 */
-	readonly revealIfVisible?: boolean;
+	reAdonly reveAlIfVisible?: booleAn;
 
 	/**
-	 * Will reveal the editor if it is already opened (even when not visible) in any of the opened editor groups.
+	 * Will reveAl the editor if it is AlreAdy opened (even when not visible) in Any of the opened editor groups.
 	 *
-	 * Note that this option is just a hint that might be ignored if the user wants to open an editor explicitly
-	 * to the side of another one or into a specific editor group.
+	 * Note thAt this option is just A hint thAt might be ignored if the user wAnts to open An editor explicitly
+	 * to the side of Another one or into A specific editor group.
 	 */
-	readonly revealIfOpened?: boolean;
+	reAdonly reveAlIfOpened?: booleAn;
 
 	/**
-	 * An editor that is pinned remains in the editor stack even when another editor is being opened.
-	 * An editor that is not pinned will always get replaced by another editor that is not pinned.
+	 * An editor thAt is pinned remAins in the editor stAck even when Another editor is being opened.
+	 * An editor thAt is not pinned will AlwAys get replAced by Another editor thAt is not pinned.
 	 */
-	readonly pinned?: boolean;
+	reAdonly pinned?: booleAn;
 
 	/**
-	 * An editor that is sticky moves to the beginning of the editors list within the group and will remain
-	 * there unless explicitly closed. Operations such as "Close All" will not close sticky editors.
+	 * An editor thAt is sticky moves to the beginning of the editors list within the group And will remAin
+	 * there unless explicitly closed. OperAtions such As "Close All" will not close sticky editors.
 	 */
-	readonly sticky?: boolean;
+	reAdonly sticky?: booleAn;
 
 	/**
-	 * The index in the document stack where to insert the editor into when opening.
+	 * The index in the document stAck where to insert the editor into when opening.
 	 */
-	readonly index?: number;
+	reAdonly index?: number;
 
 	/**
-	 * An active editor that is opened will show its contents directly. Set to true to open an editor
-	 * in the background without loading its contents.
+	 * An Active editor thAt is opened will show its contents directly. Set to true to open An editor
+	 * in the bAckground without loAding its contents.
 	 *
-	 * Will also not activate the group the editor opens in unless the group is already
-	 * the active one. This behaviour can be overridden via the `activation` option.
+	 * Will Also not ActivAte the group the editor opens in unless the group is AlreAdy
+	 * the Active one. This behAviour cAn be overridden viA the `ActivAtion` option.
 	 */
-	readonly inactive?: boolean;
+	reAdonly inActive?: booleAn;
 
 	/**
-	 * Will not show an error in case opening the editor fails and thus allows to show a custom error
-	 * message as needed. By default, an error will be presented as notification if opening was not possible.
+	 * Will not show An error in cAse opening the editor fAils And thus Allows to show A custom error
+	 * messAge As needed. By defAult, An error will be presented As notificAtion if opening wAs not possible.
 	 */
-	readonly ignoreError?: boolean;
+	reAdonly ignoreError?: booleAn;
 
 	/**
-	 * Allows to override the editor that should be used to display the input:
+	 * Allows to override the editor thAt should be used to displAy the input:
 	 * - `undefined`: let the editor decide for itself
-	 * - `false`: disable overrides
+	 * - `fAlse`: disAble overrides
 	 * - `string`: specific override by id
 	 */
-	readonly override?: false | string;
+	reAdonly override?: fAlse | string;
 
 	/**
-	 * A optional hint to signal in which context the editor opens.
+	 * A optionAl hint to signAl in which context the editor opens.
 	 *
-	 * If configured to be `EditorOpenContext.USER`, this hint can be
-	 * used in various places to control the experience. For example,
-	 * if the editor to open fails with an error, a notification could
-	 * inform about this in a modal dialog. If the editor opened through
-	 * some background task, the notification would show in the background,
-	 * not as a modal dialog.
+	 * If configured to be `EditorOpenContext.USER`, this hint cAn be
+	 * used in vArious plAces to control the experience. For exAmple,
+	 * if the editor to open fAils with An error, A notificAtion could
+	 * inform About this in A modAl diAlog. If the editor opened through
+	 * some bAckground tAsk, the notificAtion would show in the bAckground,
+	 * not As A modAl diAlog.
 	 */
-	readonly context?: EditorOpenContext;
+	reAdonly context?: EditorOpenContext;
 }
 
-export interface ITextEditorSelection {
-	readonly startLineNumber: number;
-	readonly startColumn: number;
-	readonly endLineNumber?: number;
-	readonly endColumn?: number;
+export interfAce ITextEditorSelection {
+	reAdonly stArtLineNumber: number;
+	reAdonly stArtColumn: number;
+	reAdonly endLineNumber?: number;
+	reAdonly endColumn?: number;
 }
 
-export const enum TextEditorSelectionRevealType {
+export const enum TextEditorSelectionReveAlType {
 	/**
-	 * Option to scroll vertically or horizontally as necessary and reveal a range centered vertically.
+	 * Option to scroll verticAlly or horizontAlly As necessAry And reveAl A rAnge centered verticAlly.
 	 */
 	Center = 0,
 	/**
-	 * Option to scroll vertically or horizontally as necessary and reveal a range centered vertically only if it lies outside the viewport.
+	 * Option to scroll verticAlly or horizontAlly As necessAry And reveAl A rAnge centered verticAlly only if it lies outside the viewport.
 	 */
 	CenterIfOutsideViewport = 1,
 	/**
-	 * Option to scroll vertically or horizontally as necessary and reveal a range close to the top of the viewport, but not quite at the top.
+	 * Option to scroll verticAlly or horizontAlly As necessAry And reveAl A rAnge close to the top of the viewport, but not quite At the top.
 	 */
-	NearTop = 2,
+	NeArTop = 2,
 	/**
-	 * Option to scroll vertically or horizontally as necessary and reveal a range close to the top of the viewport, but not quite at the top.
+	 * Option to scroll verticAlly or horizontAlly As necessAry And reveAl A rAnge close to the top of the viewport, but not quite At the top.
 	 * Only if it lies outside the viewport
 	 */
-	NearTopIfOutsideViewport = 3,
+	NeArTopIfOutsideViewport = 3,
 }
 
-export interface ITextEditorOptions extends IEditorOptions {
+export interfAce ITextEditorOptions extends IEditorOptions {
 
 	/**
 	 * Text editor selection.
 	 */
-	readonly selection?: ITextEditorSelection;
+	reAdonly selection?: ITextEditorSelection;
 
 	/**
-	 * Text editor view state.
+	 * Text editor view stAte.
 	 */
-	readonly viewState?: object;
+	reAdonly viewStAte?: object;
 
 	/**
-	 * Option to control the text editor selection reveal type.
-	 * Defaults to TextEditorSelectionRevealType.Center
+	 * Option to control the text editor selection reveAl type.
+	 * DefAults to TextEditorSelectionReveAlType.Center
 	 */
-	readonly selectionRevealType?: TextEditorSelectionRevealType;
+	reAdonly selectionReveAlType?: TextEditorSelectionReveAlType;
 }

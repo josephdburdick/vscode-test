@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
-import { TerminalConfigHelper } from 'vs/workbench/contrib/terminal/browser/terminalConfigHelper';
-import { IBeforeProcessDataEvent, ITerminalProcessManager } from 'vs/workbench/contrib/terminal/common/terminal';
-import type { IBuffer, IBufferCell, IDisposable, ITerminalAddon, Terminal } from 'xterm';
+import { Color } from 'vs/bAse/common/color';
+import { TerminAlConfigHelper } from 'vs/workbench/contrib/terminAl/browser/terminAlConfigHelper';
+import { IBeforeProcessDAtAEvent, ITerminAlProcessMAnAger } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import type { IBuffer, IBufferCell, IDisposAble, ITerminAlAddon, TerminAl } from 'xterm';
 
 const ESC = '\x1b';
 const CSI = `${ESC}[`;
@@ -15,11 +15,11 @@ const HIDE_CURSOR = `${CSI}?25l`;
 const DELETE_CHAR = `${CSI}X`;
 const CSI_STYLE_RE = /^\x1b\[[0-9;]*m/;
 const CSI_MOVE_RE = /^\x1b\[([0-9]*)(;[35])?O?([DC])/;
-const PASSWORD_INPUT_RE = /(password|passphrase|passwd).*:/i;
+const PASSWORD_INPUT_RE = /(pAssword|pAssphrAse|pAsswd).*:/i;
 const NOT_WORD_RE = /\W/;
 
 /**
- * Codes that should be omitted from sending to the prediction engine and
+ * Codes thAt should be omitted from sending to the prediction engine And
  * insted omitted directly:
  *  - cursor hide/show
  *  - mode set/reset
@@ -27,93 +27,93 @@ const NOT_WORD_RE = /\W/;
 const PREDICTION_OMIT_RE = /^(\x1b\[\??25[hl])+/;
 
 const enum CursorMoveDirection {
-	Back = 'D',
-	Forwards = 'C',
+	BAck = 'D',
+	ForwArds = 'C',
 }
 
 const setCursorPos = (x: number, y: number) => `${CSI}${y + 1};${x + 1}H`;
-const setCursorCoordinate = (buffer: IBuffer, c: ICoordinate) => setCursorPos(c.x, c.y + (c.baseY - buffer.baseY));
+const setCursorCoordinAte = (buffer: IBuffer, c: ICoordinAte) => setCursorPos(c.x, c.y + (c.bAseY - buffer.bAseY));
 
-interface ICoordinate {
+interfAce ICoordinAte {
 	x: number;
 	y: number;
-	baseY: number;
+	bAseY: number;
 }
 
-const getCellAtCoordinate = (b: IBuffer, c: ICoordinate) => b.getLine(c.y + c.baseY)?.getCell(c.x);
+const getCellAtCoordinAte = (b: IBuffer, c: ICoordinAte) => b.getLine(c.y + c.bAseY)?.getCell(c.x);
 
-const moveToWordBoundary = (b: IBuffer, cursor: ICoordinate, direction: -1 | 1) => {
-	let ateLeadingWhitespace = false;
+const moveToWordBoundAry = (b: IBuffer, cursor: ICoordinAte, direction: -1 | 1) => {
+	let AteLeAdingWhitespAce = fAlse;
 	if (direction < 0) {
 		cursor.x--;
 	}
 
 	while (cursor.x >= 0) {
-		const cell = getCellAtCoordinate(b, cursor);
+		const cell = getCellAtCoordinAte(b, cursor);
 		if (!cell?.getCode()) {
 			return;
 		}
 
-		const chars = cell.getChars();
-		if (NOT_WORD_RE.test(chars)) {
-			if (ateLeadingWhitespace) {
-				break;
+		const chArs = cell.getChArs();
+		if (NOT_WORD_RE.test(chArs)) {
+			if (AteLeAdingWhitespAce) {
+				breAk;
 			}
 		} else {
-			ateLeadingWhitespace = true;
+			AteLeAdingWhitespAce = true;
 		}
 
 		cursor.x += direction;
 	}
 
 	if (direction < 0) {
-		cursor.x++; // we want to place the cursor after the whitespace starting the word
+		cursor.x++; // we wAnt to plAce the cursor After the whitespAce stArting the word
 	}
 
-	cursor.x = Math.max(0, cursor.x);
+	cursor.x = MAth.mAx(0, cursor.x);
 };
 
-const enum MatchResult {
-	/** matched successfully */
+const enum MAtchResult {
+	/** mAtched successfully */
 	Success,
-	/** failed to match */
-	Failure,
-	/** buffer data, it might match in the future one more data comes in */
+	/** fAiled to mAtch */
+	FAilure,
+	/** buffer dAtA, it might mAtch in the future one more dAtA comes in */
 	Buffer,
 }
 
-interface IPrediction {
+interfAce IPrediction {
 	/**
-	 * Returns a sequence to apply the prediction.
-	 * @param buffer to write to
-	 * @param cursor position to write the data. Should advance the cursor.
-	 * @returns a string to be written to the user terminal, or optionally a
-	 * string for the user terminal and real pty.
+	 * Returns A sequence to Apply the prediction.
+	 * @pArAm buffer to write to
+	 * @pArAm cursor position to write the dAtA. Should AdvAnce the cursor.
+	 * @returns A string to be written to the user terminAl, or optionAlly A
+	 * string for the user terminAl And reAl pty.
 	 */
-	apply(buffer: IBuffer, cursor: ICoordinate): string;
+	Apply(buffer: IBuffer, cursor: ICoordinAte): string;
 
 	/**
-	 * Returns a sequence to roll back a previous `apply()` call. If
-	 * `rollForwards` is not given, then this is also called if a prediction
-	 * is correct before show the user's data.
+	 * Returns A sequence to roll bAck A previous `Apply()` cAll. If
+	 * `rollForwArds` is not given, then this is Also cAlled if A prediction
+	 * is correct before show the user's dAtA.
 	 */
-	rollback(buffer: IBuffer): string;
+	rollbAck(buffer: IBuffer): string;
 
 	/**
-	 * If available, this will be called when the prediction is correct.
+	 * If AvAilAble, this will be cAlled when the prediction is correct.
 	 */
-	rollForwards?(buffer: IBuffer, withInput: string): string;
+	rollForwArds?(buffer: IBuffer, withInput: string): string;
 
 	/**
 	 * Returns whether the given input is one expected by this prediction.
 	 */
-	matches(input: StringReader): MatchResult;
+	mAtches(input: StringReAder): MAtchResult;
 }
 
-class StringReader {
+clAss StringReAder {
 	public index = 0;
 
-	public get remaining() {
+	public get remAining() {
 		return this.input.length - this.index;
 	}
 
@@ -125,24 +125,24 @@ class StringReader {
 		return this.input.slice(this.index);
 	}
 
-	constructor(private readonly input: string) { }
+	constructor(privAte reAdonly input: string) { }
 
 	/**
-	 * Advances the reader and returns the character if it matches.
+	 * AdvAnces the reAder And returns the chArActer if it mAtches.
 	 */
-	public eatChar(char: string) {
-		if (this.input[this.index] !== char) {
+	public eAtChAr(chAr: string) {
+		if (this.input[this.index] !== chAr) {
 			return;
 		}
 
 		this.index++;
-		return char;
+		return chAr;
 	}
 
 	/**
-	 * Advances the reader and returns the string if it matches.
+	 * AdvAnces the reAder And returns the string if it mAtches.
 	 */
-	public eatStr(substr: string) {
+	public eAtStr(substr: string) {
 		if (this.input.slice(this.index, substr.length) !== substr) {
 			return;
 		}
@@ -152,45 +152,45 @@ class StringReader {
 	}
 
 	/**
-	 * Matches and eats the substring character-by-character. If EOF is reached
+	 * MAtches And eAts the substring chArActer-by-chArActer. If EOF is reAched
 	 * before the substring is consumed, it will buffer. Index is not moved
-	 * if it's not a match.
+	 * if it's not A mAtch.
 	 */
-	public eatGradually(substr: string): MatchResult {
+	public eAtGrAduAlly(substr: string): MAtchResult {
 		let prevIndex = this.index;
 		for (let i = 0; i < substr.length; i++) {
 			if (i > 0 && this.eof) {
-				return MatchResult.Buffer;
+				return MAtchResult.Buffer;
 			}
 
-			if (!this.eatChar(substr[i])) {
+			if (!this.eAtChAr(substr[i])) {
 				this.index = prevIndex;
-				return MatchResult.Failure;
+				return MAtchResult.FAilure;
 			}
 		}
 
-		return MatchResult.Success;
+		return MAtchResult.Success;
 	}
 
 	/**
-	 * Advances the reader and returns the regex if it matches.
+	 * AdvAnces the reAder And returns the regex if it mAtches.
 	 */
-	public eatRe(re: RegExp) {
-		const match = re.exec(this.input.slice(this.index));
-		if (!match) {
+	public eAtRe(re: RegExp) {
+		const mAtch = re.exec(this.input.slice(this.index));
+		if (!mAtch) {
 			return;
 		}
 
-		this.index += match[0].length;
-		return match;
+		this.index += mAtch[0].length;
+		return mAtch;
 	}
 
 	/**
-	 * Advances the reader and returns the character if the code matches.
+	 * AdvAnces the reAder And returns the chArActer if the code mAtches.
 	 */
-	public eatCharCode(min = 0, max = min + 1) {
-		const code = this.input.charCodeAt(this.index);
-		if (code < min || code >= max) {
+	public eAtChArCode(min = 0, mAx = min + 1) {
+		const code = this.input.chArCodeAt(this.index);
+		if (code < min || code >= mAx) {
 			return undefined;
 		}
 
@@ -200,259 +200,259 @@ class StringReader {
 }
 
 /**
- * Preidction which never tests true. Will always discard predictions made
- * after it.
+ * Preidction which never tests true. Will AlwAys discArd predictions mAde
+ * After it.
  */
-class HardBoundary implements IPrediction {
-	public apply() {
+clAss HArdBoundAry implements IPrediction {
+	public Apply() {
 		return '';
 	}
 
-	public rollback() {
+	public rollbAck() {
 		return '';
 	}
 
-	public matches() {
-		return MatchResult.Failure;
+	public mAtches() {
+		return MAtchResult.FAilure;
 	}
 }
 
 /**
- * Wraps another prediction. Does not apply the prediction, but will pass
- * through its `matches` request.
+ * WrAps Another prediction. Does not Apply the prediction, but will pAss
+ * through its `mAtches` request.
  */
-class TentativeBoundary implements IPrediction {
-	constructor(private readonly inner: IPrediction) { }
+clAss TentAtiveBoundAry implements IPrediction {
+	constructor(privAte reAdonly inner: IPrediction) { }
 
-	public apply(buffer: IBuffer, cursor: ICoordinate) {
-		this.inner.apply(buffer, cursor);
+	public Apply(buffer: IBuffer, cursor: ICoordinAte) {
+		this.inner.Apply(buffer, cursor);
 		return '';
 	}
 
-	public rollback() {
+	public rollbAck() {
 		return '';
 	}
 
-	public matches(input: StringReader) {
-		return this.inner.matches(input);
+	public mAtches(input: StringReAder) {
+		return this.inner.mAtches(input);
 	}
 }
 
 /**
- * Prediction for a single alphanumeric character.
+ * Prediction for A single AlphAnumeric chArActer.
  */
-class CharacterPrediction implements IPrediction {
-	protected appliedAt?: ICoordinate & {
+clAss ChArActerPrediction implements IPrediction {
+	protected AppliedAt?: ICoordinAte & {
 		oldAttributes: string;
-		oldChar: string;
+		oldChAr: string;
 	};
 
-	constructor(private readonly style: string, private readonly char: string) { }
+	constructor(privAte reAdonly style: string, privAte reAdonly chAr: string) { }
 
-	public apply(buffer: IBuffer, cursor: ICoordinate) {
-		const cell = getCellAtCoordinate(buffer, cursor);
-		this.appliedAt = cell
-			? { ...cursor, oldAttributes: getBufferCellAttributes(cell), oldChar: cell.getChars() }
-			: { ...cursor, oldAttributes: '', oldChar: '' };
+	public Apply(buffer: IBuffer, cursor: ICoordinAte) {
+		const cell = getCellAtCoordinAte(buffer, cursor);
+		this.AppliedAt = cell
+			? { ...cursor, oldAttributes: getBufferCellAttributes(cell), oldChAr: cell.getChArs() }
+			: { ...cursor, oldAttributes: '', oldChAr: '' };
 
 		cursor.x++;
-		return this.style + this.char + `${CSI}0m`;
+		return this.style + this.chAr + `${CSI}0m`;
 	}
 
-	public rollback(buffer: IBuffer) {
-		if (!this.appliedAt) {
-			return ''; // not applied
+	public rollbAck(buffer: IBuffer) {
+		if (!this.AppliedAt) {
+			return ''; // not Applied
 		}
 
-		const a = this.appliedAt;
-		this.appliedAt = undefined;
-		return setCursorCoordinate(buffer, a) + (a.oldChar ? `${a.oldAttributes}${a.oldChar}${setCursorCoordinate(buffer, a)}` : DELETE_CHAR);
+		const A = this.AppliedAt;
+		this.AppliedAt = undefined;
+		return setCursorCoordinAte(buffer, A) + (A.oldChAr ? `${A.oldAttributes}${A.oldChAr}${setCursorCoordinAte(buffer, A)}` : DELETE_CHAR);
 	}
 
-	public matches(input: StringReader) {
-		let startIndex = input.index;
+	public mAtches(input: StringReAder) {
+		let stArtIndex = input.index;
 
-		// remove any styling CSI before checking the char
-		while (input.eatRe(CSI_STYLE_RE)) { }
+		// remove Any styling CSI before checking the chAr
+		while (input.eAtRe(CSI_STYLE_RE)) { }
 
 		if (input.eof) {
-			return MatchResult.Buffer;
+			return MAtchResult.Buffer;
 		}
 
-		if (input.eatChar(this.char)) {
-			return MatchResult.Success;
+		if (input.eAtChAr(this.chAr)) {
+			return MAtchResult.Success;
 		}
 
-		input.index = startIndex;
-		return MatchResult.Failure;
+		input.index = stArtIndex;
+		return MAtchResult.FAilure;
 	}
 }
 
-class BackspacePrediction extends CharacterPrediction {
+clAss BAckspAcePrediction extends ChArActerPrediction {
 	constructor() {
 		super('', '\b');
 	}
 
-	public apply(buffer: IBuffer, cursor: ICoordinate) {
-		const cell = getCellAtCoordinate(buffer, cursor);
-		this.appliedAt = cell
-			? { ...cursor, oldAttributes: getBufferCellAttributes(cell), oldChar: cell.getChars() }
-			: { ...cursor, oldAttributes: '', oldChar: '' };
+	public Apply(buffer: IBuffer, cursor: ICoordinAte) {
+		const cell = getCellAtCoordinAte(buffer, cursor);
+		this.AppliedAt = cell
+			? { ...cursor, oldAttributes: getBufferCellAttributes(cell), oldChAr: cell.getChArs() }
+			: { ...cursor, oldAttributes: '', oldChAr: '' };
 
 		cursor.x--;
-		return setCursorCoordinate(buffer, cursor) + DELETE_CHAR;
+		return setCursorCoordinAte(buffer, cursor) + DELETE_CHAR;
 	}
 
-	public matches(input: StringReader) {
-		// if at end of line, allow backspace + clear line. Zsh does this.
-		if (this.appliedAt?.oldChar === '') {
-			const r = input.eatGradually(`\b${CSI}K`);
-			if (r !== MatchResult.Failure) {
+	public mAtches(input: StringReAder) {
+		// if At end of line, Allow bAckspAce + cleAr line. Zsh does this.
+		if (this.AppliedAt?.oldChAr === '') {
+			const r = input.eAtGrAduAlly(`\b${CSI}K`);
+			if (r !== MAtchResult.FAilure) {
 				return r;
 			}
 		}
 
-		return input.eatGradually('\b');
+		return input.eAtGrAduAlly('\b');
 	}
 }
 
-class NewlinePrediction implements IPrediction {
-	protected prevPosition?: ICoordinate;
+clAss NewlinePrediction implements IPrediction {
+	protected prevPosition?: ICoordinAte;
 
-	public apply(_: IBuffer, cursor: ICoordinate) {
+	public Apply(_: IBuffer, cursor: ICoordinAte) {
 		this.prevPosition = { ...cursor };
 		cursor.x = 0;
 		cursor.y++;
 		return '\r\n';
 	}
 
-	public rollback(buffer: IBuffer) {
+	public rollbAck(buffer: IBuffer) {
 		if (!this.prevPosition) {
-			return ''; // not applied
+			return ''; // not Applied
 		}
 
 		const p = this.prevPosition;
 		this.prevPosition = undefined;
-		return setCursorCoordinate(buffer, p) + DELETE_CHAR;
+		return setCursorCoordinAte(buffer, p) + DELETE_CHAR;
 	}
 
-	public rollForwards() {
+	public rollForwArds() {
 		return ''; // does not need to rewrite
 	}
 
-	public matches(input: StringReader) {
-		return input.eatGradually('\r\n');
+	public mAtches(input: StringReAder) {
+		return input.eAtGrAduAlly('\r\n');
 	}
 }
 
-class CursorMovePrediction implements IPrediction {
-	private applied?: {
-		rollForward: string;
-		rollBack: string;
-		amount: number;
+clAss CursorMovePrediction implements IPrediction {
+	privAte Applied?: {
+		rollForwArd: string;
+		rollBAck: string;
+		Amount: number;
 	};
 
 	constructor(
-		private readonly direction: CursorMoveDirection,
-		private readonly moveByWords: boolean,
-		private readonly amount: number,
+		privAte reAdonly direction: CursorMoveDirection,
+		privAte reAdonly moveByWords: booleAn,
+		privAte reAdonly Amount: number,
 	) { }
 
-	public apply(buffer: IBuffer, cursor: ICoordinate) {
-		let rollBack = setCursorCoordinate(buffer, cursor);
-		const currentCell = getCellAtCoordinate(buffer, cursor);
+	public Apply(buffer: IBuffer, cursor: ICoordinAte) {
+		let rollBAck = setCursorCoordinAte(buffer, cursor);
+		const currentCell = getCellAtCoordinAte(buffer, cursor);
 		if (currentCell) {
-			rollBack += getBufferCellAttributes(currentCell);
+			rollBAck += getBufferCellAttributes(currentCell);
 		}
 
-		const { amount, direction, moveByWords } = this;
-		const delta = direction === CursorMoveDirection.Back ? -1 : 1;
-		const startX = cursor.x;
+		const { Amount, direction, moveByWords } = this;
+		const deltA = direction === CursorMoveDirection.BAck ? -1 : 1;
+		const stArtX = cursor.x;
 		if (moveByWords) {
-			for (let i = 0; i < amount; i++) {
-				moveToWordBoundary(buffer, cursor, delta);
+			for (let i = 0; i < Amount; i++) {
+				moveToWordBoundAry(buffer, cursor, deltA);
 			}
 		} else {
-			cursor.x += delta * amount;
+			cursor.x += deltA * Amount;
 		}
 
-		const rollForward = setCursorCoordinate(buffer, cursor);
-		this.applied = { amount: Math.abs(cursor.x - startX), rollBack, rollForward };
-		return this.applied.rollForward;
+		const rollForwArd = setCursorCoordinAte(buffer, cursor);
+		this.Applied = { Amount: MAth.Abs(cursor.x - stArtX), rollBAck, rollForwArd };
+		return this.Applied.rollForwArd;
 	}
 
-	public rollback() {
-		return this.applied?.rollBack ?? '';
+	public rollbAck() {
+		return this.Applied?.rollBAck ?? '';
 	}
 
-	public rollForwards() {
+	public rollForwArds() {
 		return ''; // does not need to rewrite
 	}
 
-	public matches(input: StringReader) {
-		if (!this.applied) {
-			return MatchResult.Failure;
+	public mAtches(input: StringReAder) {
+		if (!this.Applied) {
+			return MAtchResult.FAilure;
 		}
 
 		const direction = this.direction;
-		const { amount, rollForward } = this.applied;
+		const { Amount, rollForwArd } = this.Applied;
 
-		if (amount === 1) {
-			// arg can be omitted to move one character
-			const r = input.eatGradually(`${CSI}${direction}`);
-			if (r !== MatchResult.Failure) {
+		if (Amount === 1) {
+			// Arg cAn be omitted to move one chArActer
+			const r = input.eAtGrAduAlly(`${CSI}${direction}`);
+			if (r !== MAtchResult.FAilure) {
 				return r;
 			}
 
-			// \b is the equivalent to moving one character back
-			const r2 = input.eatGradually(`\b`);
-			if (r2 !== MatchResult.Failure) {
+			// \b is the equivAlent to moving one chArActer bAck
+			const r2 = input.eAtGrAduAlly(`\b`);
+			if (r2 !== MAtchResult.FAilure) {
 				return r2;
 			}
 		}
 
-		// check if the cursor position is set absolutely
-		if (rollForward) {
-			const r = input.eatGradually(rollForward);
-			if (r !== MatchResult.Failure) {
+		// check if the cursor position is set Absolutely
+		if (rollForwArd) {
+			const r = input.eAtGrAduAlly(rollForwArd);
+			if (r !== MAtchResult.FAilure) {
 				return r;
 			}
 		}
 
-		// check for a relative move in the direction
-		return input.eatGradually(`${CSI}${amount}${direction}`);
+		// check for A relAtive move in the direction
+		return input.eAtGrAduAlly(`${CSI}${Amount}${direction}`);
 	}
 }
 
 
-class PredictionTimeline {
+clAss PredictionTimeline {
 	/**
-	 * Expected queue of events. Only predictions for the lowest are
-	 * written into the terminal.
+	 * Expected queue of events. Only predictions for the lowest Are
+	 * written into the terminAl.
 	 */
-	private expected: ({ gen: number; p: IPrediction })[] = [];
+	privAte expected: ({ gen: number; p: IPrediction })[] = [];
 
 	/**
-	 * Current prediction generation.
+	 * Current prediction generAtion.
 	 */
-	private currentGen = 0;
+	privAte currentGen = 0;
 
 	/**
-	 * Cursor position -- kept outside the buffer since it can be ahead if
+	 * Cursor position -- kept outside the buffer since it cAn be AheAd if
 	 * typing swiftly.
 	 */
-	private cursor: ICoordinate | undefined;
+	privAte cursor: ICoordinAte | undefined;
 
 	/**
-	 * Previously sent data that was buffered and should be prepended to the
+	 * Previously sent dAtA thAt wAs buffered And should be prepended to the
 	 * next input.
 	 */
-	private inputBuffer?: string;
+	privAte inputBuffer?: string;
 
-	constructor(public readonly terminal: Terminal) { }
+	constructor(public reAdonly terminAl: TerminAl) { }
 
 	/**
-	 * Should be called when input is incoming to the temrinal.
+	 * Should be cAlled when input is incoming to the temrinAl.
 	 */
 	public beforeServerInput(input: string): string {
 		if (this.inputBuffer) {
@@ -473,66 +473,66 @@ class PredictionTimeline {
 
 		let output = '';
 
-		const reader = new StringReader(input);
-		const startingGen = this.expected[0].gen;
+		const reAder = new StringReAder(input);
+		const stArtingGen = this.expected[0].gen;
 		const emitPredictionOmitted = () => {
-			const omit = reader.eatRe(PREDICTION_OMIT_RE);
+			const omit = reAder.eAtRe(PREDICTION_OMIT_RE);
 			if (omit) {
 				output += omit[0];
 			}
 		};
 
-		ReadLoop: while (this.expected.length && reader.remaining > 0) {
+		ReAdLoop: while (this.expected.length && reAder.remAining > 0) {
 			emitPredictionOmitted();
 
 			const prediction = this.expected[0].p;
-			let beforeTestReaderIndex = reader.index;
-			switch (prediction.matches(reader)) {
-				case MatchResult.Success:
-					// if the input character matches what the next prediction expected, undo
-					// the prediction and write the real character out.
-					const eaten = input.slice(beforeTestReaderIndex, reader.index);
-					output += prediction.rollForwards?.(buffer, eaten)
-						?? (prediction.rollback(buffer) + input.slice(beforeTestReaderIndex, reader.index));
+			let beforeTestReAderIndex = reAder.index;
+			switch (prediction.mAtches(reAder)) {
+				cAse MAtchResult.Success:
+					// if the input chArActer mAtches whAt the next prediction expected, undo
+					// the prediction And write the reAl chArActer out.
+					const eAten = input.slice(beforeTestReAderIndex, reAder.index);
+					output += prediction.rollForwArds?.(buffer, eAten)
+						?? (prediction.rollbAck(buffer) + input.slice(beforeTestReAderIndex, reAder.index));
 					this.expected.shift();
-					break;
-				case MatchResult.Buffer:
-					// on a buffer, store the remaining data and completely read data
-					// to be output as normal.
-					this.inputBuffer = input.slice(beforeTestReaderIndex);
-					reader.index = input.length;
-					break ReadLoop;
-				case MatchResult.Failure:
-					// on a failure, roll back all remaining items in this generation
-					// and clear predictions, since they are no longer valid
-					output += this.expected.filter(p => p.gen === startingGen)
-						.map(({ p }) => p.rollback(buffer))
+					breAk;
+				cAse MAtchResult.Buffer:
+					// on A buffer, store the remAining dAtA And completely reAd dAtA
+					// to be output As normAl.
+					this.inputBuffer = input.slice(beforeTestReAderIndex);
+					reAder.index = input.length;
+					breAk ReAdLoop;
+				cAse MAtchResult.FAilure:
+					// on A fAilure, roll bAck All remAining items in this generAtion
+					// And cleAr predictions, since they Are no longer vAlid
+					output += this.expected.filter(p => p.gen === stArtingGen)
+						.mAp(({ p }) => p.rollbAck(buffer))
 						.reverse()
 						.join('');
 					this.expected = [];
 					this.cursor = undefined;
-					break ReadLoop;
+					breAk ReAdLoop;
 			}
 		}
 
 		emitPredictionOmitted();
 
-		// Extra data (like the result of running a command) should cause us to
+		// ExtrA dAtA (like the result of running A commAnd) should cAuse us to
 		// reset the cursor
-		if (!reader.eof) {
-			output += reader.rest;
+		if (!reAder.eof) {
+			output += reAder.rest;
 			this.expected = [];
 			this.cursor = undefined;
 		}
 
-		// If we passed a generation boundary, apply the current generation's predictions
-		if (this.expected.length && startingGen !== this.expected[0].gen) {
+		// If we pAssed A generAtion boundAry, Apply the current generAtion's predictions
+		if (this.expected.length && stArtingGen !== this.expected[0].gen) {
 			for (const { p, gen } of this.expected) {
 				if (gen !== this.expected[0].gen) {
-					break;
+					breAk;
 				}
 
-				output += p.apply(buffer, this.getCursor(buffer));
+				output += p.Apply(buffer, this.getCursor(buffer));
 			}
 		}
 
@@ -541,187 +541,187 @@ class PredictionTimeline {
 		}
 
 		if (this.cursor) {
-			output += setCursorCoordinate(buffer, this.cursor);
+			output += setCursorCoordinAte(buffer, this.cursor);
 		}
 
-		// prevent cursor flickering while typing, since output will *always*
-		// contains cursor moves if we did anything with predictions:
+		// prevent cursor flickering while typing, since output will *AlwAys*
+		// contAins cursor moves if we did Anything with predictions:
 		output = HIDE_CURSOR + output + SHOW_CURSOR;
 
 		return output;
 	}
 
 	/**
-	 * Appends a typeahead prediction.
+	 * Appends A typeAheAd prediction.
 	 */
-	public addPrediction(buffer: IBuffer, prediction: IPrediction) {
+	public AddPrediction(buffer: IBuffer, prediction: IPrediction) {
 		this.expected.push({ gen: this.currentGen, p: prediction });
 		if (this.currentGen === this.expected[0].gen) {
-			const text = prediction.apply(buffer, this.getCursor(buffer));
-			this.terminal.write(text);
+			const text = prediction.Apply(buffer, this.getCursor(buffer));
+			this.terminAl.write(text);
 		}
 	}
 
 	/**
-	 * Appends a prediction followed by a boundary. The predictions applied
-	 * after this one will only be displayed after the give prediction matches
+	 * Appends A prediction followed by A boundAry. The predictions Applied
+	 * After this one will only be displAyed After the give prediction mAtches
 	 * pty output/
 	 */
-	public addBoundary(buffer: IBuffer, prediction: IPrediction) {
-		this.addPrediction(buffer, prediction);
+	public AddBoundAry(buffer: IBuffer, prediction: IPrediction) {
+		this.AddPrediction(buffer, prediction);
 		this.currentGen++;
 	}
 
 	public getCursor(buffer: IBuffer) {
 		if (!this.cursor) {
-			this.cursor = { baseY: buffer.baseY, y: buffer.cursorY, x: buffer.cursorX };
+			this.cursor = { bAseY: buffer.bAseY, y: buffer.cursorY, x: buffer.cursorX };
 		}
 
 		return this.cursor;
 	}
 
-	private getActiveBuffer() {
-		const buffer = this.terminal.buffer.active;
-		return buffer.type === 'normal' ? buffer : undefined;
+	privAte getActiveBuffer() {
+		const buffer = this.terminAl.buffer.Active;
+		return buffer.type === 'normAl' ? buffer : undefined;
 	}
 }
 /**
- * Gets the escape sequence to restore state/appearence in the cell.
+ * Gets the escApe sequence to restore stAte/AppeArence in the cell.
  */
-const getBufferCellAttributes = (cell: IBufferCell) => cell.isAttributeDefault()
+const getBufferCellAttributes = (cell: IBufferCell) => cell.isAttributeDefAult()
 	? `${CSI}0m`
 	: [
 		cell.isBold() && `${CSI}1m`,
 		cell.isDim() && `${CSI}2m`,
-		cell.isItalic() && `${CSI}3m`,
+		cell.isItAlic() && `${CSI}3m`,
 		cell.isUnderline() && `${CSI}4m`,
 		cell.isBlink() && `${CSI}5m`,
 		cell.isInverse() && `${CSI}7m`,
 		cell.isInvisible() && `${CSI}8m`,
 
 		cell.isFgRGB() && `${CSI}38;2;${cell.getFgColor() >>> 24};${(cell.getFgColor() >>> 16) & 0xFF};${cell.getFgColor() & 0xFF}m`,
-		cell.isFgPalette() && `${CSI}38;5;${cell.getFgColor()}m`,
-		cell.isFgDefault() && `${CSI}39m`,
+		cell.isFgPAlette() && `${CSI}38;5;${cell.getFgColor()}m`,
+		cell.isFgDefAult() && `${CSI}39m`,
 
 		cell.isBgRGB() && `${CSI}48;2;${cell.getBgColor() >>> 24};${(cell.getBgColor() >>> 16) & 0xFF};${cell.getBgColor() & 0xFF}m`,
-		cell.isBgPalette() && `${CSI}48;5;${cell.getBgColor()}m`,
-		cell.isBgDefault() && `${CSI}49m`,
+		cell.isBgPAlette() && `${CSI}48;5;${cell.getBgColor()}m`,
+		cell.isBgDefAult() && `${CSI}49m`,
 	].filter(seq => !!seq).join('');
 
-const parseTypeheadStyle = (style: string | number) => {
+const pArseTypeheAdStyle = (style: string | number) => {
 	if (typeof style === 'number') {
 		return `${CSI}${style}m`;
 	}
 
-	const { r, g, b } = Color.fromHex(style).rgba;
+	const { r, g, b } = Color.fromHex(style).rgbA;
 	return `${CSI}32;${r};${g};${b}m`;
 };
 
-export class TypeAheadAddon implements ITerminalAddon {
-	private disposables: IDisposable[] = [];
-	private typeheadStyle = parseTypeheadStyle(this.config.config.typeaheadStyle);
-	private typeaheadThreshold = this.config.config.typeaheadThreshold;
-	private lastRow?: { y: number; startingX: number };
-	private timeline?: PredictionTimeline;
+export clAss TypeAheAdAddon implements ITerminAlAddon {
+	privAte disposAbles: IDisposAble[] = [];
+	privAte typeheAdStyle = pArseTypeheAdStyle(this.config.config.typeAheAdStyle);
+	privAte typeAheAdThreshold = this.config.config.typeAheAdThreshold;
+	privAte lAstRow?: { y: number; stArtingX: number };
+	privAte timeline?: PredictionTimeline;
 
-	constructor(private readonly _processManager: ITerminalProcessManager, private readonly config: TerminalConfigHelper) {
+	constructor(privAte reAdonly _processMAnAger: ITerminAlProcessMAnAger, privAte reAdonly config: TerminAlConfigHelper) {
 	}
 
-	public activate(terminal: Terminal): void {
-		this.timeline = new PredictionTimeline(terminal);
-		this.disposables.push(terminal.onData(e => this.onUserData(e)));
-		this.disposables.push(this.config.onConfigChanged(() => {
-			this.typeheadStyle = parseTypeheadStyle(this.config.config.typeaheadStyle);
-			this.typeaheadThreshold = this.config.config.typeaheadThreshold;
+	public ActivAte(terminAl: TerminAl): void {
+		this.timeline = new PredictionTimeline(terminAl);
+		this.disposAbles.push(terminAl.onDAtA(e => this.onUserDAtA(e)));
+		this.disposAbles.push(this.config.onConfigChAnged(() => {
+			this.typeheAdStyle = pArseTypeheAdStyle(this.config.config.typeAheAdStyle);
+			this.typeAheAdThreshold = this.config.config.typeAheAdThreshold;
 		}));
-		this.disposables.push(this._processManager.onBeforeProcessData(e => this.onBeforeProcessData(e)));
+		this.disposAbles.push(this._processMAnAger.onBeforeProcessDAtA(e => this.onBeforeProcessDAtA(e)));
 	}
 
 	public dispose(): void {
-		this.disposables.forEach(d => d.dispose());
+		this.disposAbles.forEAch(d => d.dispose());
 	}
 
-	private onUserData(data: string): void {
-		if (this.typeaheadThreshold !== 0) {
+	privAte onUserDAtA(dAtA: string): void {
+		if (this.typeAheAdThreshold !== 0) {
 			return;
 		}
 
-		if (this.timeline?.terminal.buffer.active.type !== 'normal') {
+		if (this.timeline?.terminAl.buffer.Active.type !== 'normAl') {
 			return;
 		}
 
-		// console.log('user data:', JSON.stringify(data));
+		// console.log('user dAtA:', JSON.stringify(dAtA));
 
-		const terminal = this.timeline.terminal;
-		const buffer = terminal.buffer.active;
+		const terminAl = this.timeline.terminAl;
+		const buffer = terminAl.buffer.Active;
 
-		// the following code guards the terminal prompt to avoid being able to
-		// arrow or backspace-into the prompt. Record the lowest X value at which
-		// the user gave input, and mark all additions before that as tentative.
-		const actualY = buffer.baseY + buffer.cursorY;
-		if (actualY !== this.lastRow?.y) {
-			this.lastRow = { y: actualY, startingX: buffer.cursorX };
+		// the following code guArds the terminAl prompt to Avoid being Able to
+		// Arrow or bAckspAce-into the prompt. Record the lowest X vAlue At which
+		// the user gAve input, And mArk All Additions before thAt As tentAtive.
+		const ActuAlY = buffer.bAseY + buffer.cursorY;
+		if (ActuAlY !== this.lAstRow?.y) {
+			this.lAstRow = { y: ActuAlY, stArtingX: buffer.cursorX };
 		} else {
-			this.lastRow.startingX = Math.min(this.lastRow.startingX, buffer.cursorX);
+			this.lAstRow.stArtingX = MAth.min(this.lAstRow.stArtingX, buffer.cursorX);
 		}
 
-		const addLeftNavigating = (p: IPrediction) =>
-			this.timeline!.getCursor(buffer).x <= this.lastRow!.startingX
-				? this.timeline!.addBoundary(buffer, new TentativeBoundary(p))
-				: this.timeline!.addPrediction(buffer, p);
+		const AddLeftNAvigAting = (p: IPrediction) =>
+			this.timeline!.getCursor(buffer).x <= this.lAstRow!.stArtingX
+				? this.timeline!.AddBoundAry(buffer, new TentAtiveBoundAry(p))
+				: this.timeline!.AddPrediction(buffer, p);
 
-		/** @see https://github.com/xtermjs/xterm.js/blob/1913e9512c048e3cf56bb5f5df51bfff6899c184/src/common/input/Keyboard.ts */
-		const reader = new StringReader(data);
-		while (reader.remaining > 0) {
-			if (reader.eatCharCode(127)) { // backspace
-				addLeftNavigating(new BackspacePrediction());
+		/** @see https://github.com/xtermjs/xterm.js/blob/1913e9512c048e3cf56bb5f5df51bfff6899c184/src/common/input/KeyboArd.ts */
+		const reAder = new StringReAder(dAtA);
+		while (reAder.remAining > 0) {
+			if (reAder.eAtChArCode(127)) { // bAckspAce
+				AddLeftNAvigAting(new BAckspAcePrediction());
 				continue;
 			}
 
-			if (reader.eatCharCode(32, 126)) { // alphanum
-				const char = data[reader.index - 1];
-				this.timeline.addPrediction(buffer, new CharacterPrediction(this.typeheadStyle, char));
-				if (this.timeline.getCursor(buffer).x === terminal.cols) {
-					this.timeline.addBoundary(buffer, new NewlinePrediction());
+			if (reAder.eAtChArCode(32, 126)) { // AlphAnum
+				const chAr = dAtA[reAder.index - 1];
+				this.timeline.AddPrediction(buffer, new ChArActerPrediction(this.typeheAdStyle, chAr));
+				if (this.timeline.getCursor(buffer).x === terminAl.cols) {
+					this.timeline.AddBoundAry(buffer, new NewlinePrediction());
 				}
 				continue;
 			}
 
-			const cursorMv = reader.eatRe(CSI_MOVE_RE);
+			const cursorMv = reAder.eAtRe(CSI_MOVE_RE);
 			if (cursorMv) {
-				const direction = cursorMv[3] as CursorMoveDirection;
+				const direction = cursorMv[3] As CursorMoveDirection;
 				const p = new CursorMovePrediction(direction, !!cursorMv[2], Number(cursorMv[1]) || 1);
-				if (direction === CursorMoveDirection.Back) {
-					addLeftNavigating(p);
+				if (direction === CursorMoveDirection.BAck) {
+					AddLeftNAvigAting(p);
 				} else {
-					this.timeline.addPrediction(buffer, p);
+					this.timeline.AddPrediction(buffer, p);
 				}
 				continue;
 			}
 
-			if (reader.eatStr(`${ESC}f`)) {
-				this.timeline.addPrediction(buffer, new CursorMovePrediction(CursorMoveDirection.Forwards, true, 1));
+			if (reAder.eAtStr(`${ESC}f`)) {
+				this.timeline.AddPrediction(buffer, new CursorMovePrediction(CursorMoveDirection.ForwArds, true, 1));
 				continue;
 			}
 
-			if (reader.eatStr(`${ESC}b`)) {
-				addLeftNavigating(new CursorMovePrediction(CursorMoveDirection.Back, true, 1));
+			if (reAder.eAtStr(`${ESC}b`)) {
+				AddLeftNAvigAting(new CursorMovePrediction(CursorMoveDirection.BAck, true, 1));
 				continue;
 			}
 
-			if (reader.eatChar('\r') && buffer.cursorY < terminal.rows - 1) {
-				this.timeline.addPrediction(buffer, new NewlinePrediction());
+			if (reAder.eAtChAr('\r') && buffer.cursorY < terminAl.rows - 1) {
+				this.timeline.AddPrediction(buffer, new NewlinePrediction());
 				continue;
 			}
 
 			// something else
-			this.timeline.addBoundary(buffer, new HardBoundary());
-			break;
+			this.timeline.AddBoundAry(buffer, new HArdBoundAry());
+			breAk;
 		}
 	}
 
-	private onBeforeProcessData(event: IBeforeProcessDataEvent): void {
-		if (this.typeaheadThreshold !== 0) {
+	privAte onBeforeProcessDAtA(event: IBeforeProcessDAtAEvent): void {
+		if (this.typeAheAdThreshold !== 0) {
 			return;
 		}
 
@@ -729,16 +729,16 @@ export class TypeAheadAddon implements ITerminalAddon {
 			return;
 		}
 
-		// console.log('incoming data:', JSON.stringify(event.data));
-		event.data = this.timeline.beforeServerInput(event.data);
-		// console.log('emitted data:', JSON.stringify(event.data));
+		// console.log('incoming dAtA:', JSON.stringify(event.dAtA));
+		event.dAtA = this.timeline.beforeServerInput(event.dAtA);
+		// console.log('emitted dAtA:', JSON.stringify(event.dAtA));
 
-		// If there's something that looks like a password prompt, omit giving
-		// input. This is approximate since there's no TTY "password here" code,
-		// but should be enough to cover common cases like sudo
-		if (PASSWORD_INPUT_RE.test(event.data)) {
-			const terminal = this.timeline.terminal;
-			this.timeline.addBoundary(terminal.buffer.active, new HardBoundary());
+		// If there's something thAt looks like A pAssword prompt, omit giving
+		// input. This is ApproximAte since there's no TTY "pAssword here" code,
+		// but should be enough to cover common cAses like sudo
+		if (PASSWORD_INPUT_RE.test(event.dAtA)) {
+			const terminAl = this.timeline.terminAl;
+			this.timeline.AddBoundAry(terminAl.buffer.Active, new HArdBoundAry());
 		}
 	}
 }

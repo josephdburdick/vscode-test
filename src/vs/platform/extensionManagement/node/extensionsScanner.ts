@@ -1,374 +1,374 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as semver from 'semver-umd';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as pfs from 'vs/base/node/pfs';
-import * as path from 'vs/base/common/path';
-import { ILogService } from 'vs/platform/log/common/log';
-import { ILocalExtension, IGalleryMetadata, ExtensionManagementError } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ExtensionType, IExtensionManifest, IExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { areSameExtensions, ExtensionIdentifierWithVersion, groupByExtension, getGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { Limiter, Queue } from 'vs/base/common/async';
-import { URI } from 'vs/base/common/uri';
-import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { localizeManifest } from 'vs/platform/extensionManagement/common/extensionNls';
-import { localize } from 'vs/nls';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { CancellationToken } from 'vscode';
-import { extract, ExtractError } from 'vs/base/node/zip';
-import { isWindows } from 'vs/base/common/platform';
-import { flatten } from 'vs/base/common/arrays';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { FileAccess } from 'vs/base/common/network';
+import * As semver from 'semver-umd';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import * As pfs from 'vs/bAse/node/pfs';
+import * As pAth from 'vs/bAse/common/pAth';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { ILocAlExtension, IGAlleryMetAdAtA, ExtensionMAnAgementError } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { ExtensionType, IExtensionMAnifest, IExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { AreSAmeExtensions, ExtensionIdentifierWithVersion, groupByExtension, getGAlleryExtensionId } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { Limiter, Queue } from 'vs/bAse/common/Async';
+import { URI } from 'vs/bAse/common/uri';
+import { INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { locAlizeMAnifest } from 'vs/plAtform/extensionMAnAgement/common/extensionNls';
+import { locAlize } from 'vs/nls';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { CAncellAtionToken } from 'vscode';
+import { extrAct, ExtrActError } from 'vs/bAse/node/zip';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { flAtten } from 'vs/bAse/common/ArrAys';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { FileAccess } from 'vs/bAse/common/network';
 
-const ERROR_SCANNING_SYS_EXTENSIONS = 'scanningSystem';
-const ERROR_SCANNING_USER_EXTENSIONS = 'scanningUser';
-const INSTALL_ERROR_EXTRACTING = 'extracting';
+const ERROR_SCANNING_SYS_EXTENSIONS = 'scAnningSystem';
+const ERROR_SCANNING_USER_EXTENSIONS = 'scAnningUser';
+const INSTALL_ERROR_EXTRACTING = 'extrActing';
 const INSTALL_ERROR_DELETING = 'deleting';
-const INSTALL_ERROR_RENAMING = 'renaming';
+const INSTALL_ERROR_RENAMING = 'renAming';
 
-export type IMetadata = Partial<IGalleryMetadata & { isMachineScoped: boolean; isBuiltin: boolean }>;
-type ILocalExtensionManifest = IExtensionManifest & { __metadata?: IMetadata };
-type IRelaxedLocalExtension = Omit<ILocalExtension, 'isBuiltin'> & { isBuiltin: boolean };
+export type IMetAdAtA = PArtiAl<IGAlleryMetAdAtA & { isMAchineScoped: booleAn; isBuiltin: booleAn }>;
+type ILocAlExtensionMAnifest = IExtensionMAnifest & { __metAdAtA?: IMetAdAtA };
+type IRelAxedLocAlExtension = Omit<ILocAlExtension, 'isBuiltin'> & { isBuiltin: booleAn };
 
-export class ExtensionsScanner extends Disposable {
+export clAss ExtensionsScAnner extends DisposAble {
 
-	private readonly systemExtensionsPath: string;
-	private readonly extensionsPath: string;
-	private readonly uninstalledPath: string;
-	private readonly uninstalledFileLimiter: Queue<any>;
+	privAte reAdonly systemExtensionsPAth: string;
+	privAte reAdonly extensionsPAth: string;
+	privAte reAdonly uninstAlledPAth: string;
+	privAte reAdonly uninstAlledFileLimiter: Queue<Any>;
 
 	constructor(
-		private readonly beforeRemovingExtension: (e: ILocalExtension) => Promise<void>,
-		@ILogService private readonly logService: ILogService,
-		@INativeEnvironmentService private readonly environmentService: INativeEnvironmentService,
-		@IProductService private readonly productService: IProductService,
+		privAte reAdonly beforeRemovingExtension: (e: ILocAlExtension) => Promise<void>,
+		@ILogService privAte reAdonly logService: ILogService,
+		@INAtiveEnvironmentService privAte reAdonly environmentService: INAtiveEnvironmentService,
+		@IProductService privAte reAdonly productService: IProductService,
 	) {
 		super();
-		this.systemExtensionsPath = environmentService.builtinExtensionsPath;
-		this.extensionsPath = environmentService.extensionsPath!;
-		this.uninstalledPath = path.join(this.extensionsPath, '.obsolete');
-		this.uninstalledFileLimiter = new Queue();
+		this.systemExtensionsPAth = environmentService.builtinExtensionsPAth;
+		this.extensionsPAth = environmentService.extensionsPAth!;
+		this.uninstAlledPAth = pAth.join(this.extensionsPAth, '.obsolete');
+		this.uninstAlledFileLimiter = new Queue();
 	}
 
-	async cleanUp(): Promise<void> {
-		await this.removeUninstalledExtensions();
-		await this.removeOutdatedExtensions();
+	Async cleAnUp(): Promise<void> {
+		AwAit this.removeUninstAlledExtensions();
+		AwAit this.removeOutdAtedExtensions();
 	}
 
-	async scanExtensions(type: ExtensionType | null): Promise<ILocalExtension[]> {
-		const promises: Promise<ILocalExtension[]>[] = [];
+	Async scAnExtensions(type: ExtensionType | null): Promise<ILocAlExtension[]> {
+		const promises: Promise<ILocAlExtension[]>[] = [];
 
 		if (type === null || type === ExtensionType.System) {
-			promises.push(this.scanSystemExtensions().then(null, e => Promise.reject(new ExtensionManagementError(this.joinErrors(e).message, ERROR_SCANNING_SYS_EXTENSIONS))));
+			promises.push(this.scAnSystemExtensions().then(null, e => Promise.reject(new ExtensionMAnAgementError(this.joinErrors(e).messAge, ERROR_SCANNING_SYS_EXTENSIONS))));
 		}
 
 		if (type === null || type === ExtensionType.User) {
-			promises.push(this.scanUserExtensions(true).then(null, e => Promise.reject(new ExtensionManagementError(this.joinErrors(e).message, ERROR_SCANNING_USER_EXTENSIONS))));
+			promises.push(this.scAnUserExtensions(true).then(null, e => Promise.reject(new ExtensionMAnAgementError(this.joinErrors(e).messAge, ERROR_SCANNING_USER_EXTENSIONS))));
 		}
 
 		try {
-			const result = await Promise.all(promises);
-			return flatten(result);
-		} catch (error) {
+			const result = AwAit Promise.All(promises);
+			return flAtten(result);
+		} cAtch (error) {
 			throw this.joinErrors(error);
 		}
 	}
 
-	async scanUserExtensions(excludeOutdated: boolean): Promise<ILocalExtension[]> {
-		this.logService.trace('Started scanning user extensions');
-		let [uninstalled, extensions] = await Promise.all([this.getUninstalledExtensions(), this.scanAllUserExtensions()]);
-		extensions = extensions.filter(e => !uninstalled[new ExtensionIdentifierWithVersion(e.identifier, e.manifest.version).key()]);
-		if (excludeOutdated) {
-			const byExtension: ILocalExtension[][] = groupByExtension(extensions, e => e.identifier);
-			extensions = byExtension.map(p => p.sort((a, b) => semver.rcompare(a.manifest.version, b.manifest.version))[0]);
+	Async scAnUserExtensions(excludeOutdAted: booleAn): Promise<ILocAlExtension[]> {
+		this.logService.trAce('StArted scAnning user extensions');
+		let [uninstAlled, extensions] = AwAit Promise.All([this.getUninstAlledExtensions(), this.scAnAllUserExtensions()]);
+		extensions = extensions.filter(e => !uninstAlled[new ExtensionIdentifierWithVersion(e.identifier, e.mAnifest.version).key()]);
+		if (excludeOutdAted) {
+			const byExtension: ILocAlExtension[][] = groupByExtension(extensions, e => e.identifier);
+			extensions = byExtension.mAp(p => p.sort((A, b) => semver.rcompAre(A.mAnifest.version, b.mAnifest.version))[0]);
 		}
-		this.logService.trace('Scanned user extensions:', extensions.length);
+		this.logService.trAce('ScAnned user extensions:', extensions.length);
 		return extensions;
 	}
 
-	async scanAllUserExtensions(): Promise<ILocalExtension[]> {
-		return this.scanExtensionsInDir(this.extensionsPath, ExtensionType.User);
+	Async scAnAllUserExtensions(): Promise<ILocAlExtension[]> {
+		return this.scAnExtensionsInDir(this.extensionsPAth, ExtensionType.User);
 	}
 
-	async extractUserExtension(identifierWithVersion: ExtensionIdentifierWithVersion, zipPath: string, token: CancellationToken): Promise<ILocalExtension> {
+	Async extrActUserExtension(identifierWithVersion: ExtensionIdentifierWithVersion, zipPAth: string, token: CAncellAtionToken): Promise<ILocAlExtension> {
 		const { identifier } = identifierWithVersion;
-		const folderName = identifierWithVersion.key();
-		const tempPath = path.join(this.extensionsPath, `.${folderName}`);
-		const extensionPath = path.join(this.extensionsPath, folderName);
+		const folderNAme = identifierWithVersion.key();
+		const tempPAth = pAth.join(this.extensionsPAth, `.${folderNAme}`);
+		const extensionPAth = pAth.join(this.extensionsPAth, folderNAme);
 
 		try {
-			await pfs.rimraf(extensionPath);
-		} catch (error) {
+			AwAit pfs.rimrAf(extensionPAth);
+		} cAtch (error) {
 			try {
-				await pfs.rimraf(extensionPath);
-			} catch (e) { /* ignore */ }
-			throw new ExtensionManagementError(localize('errorDeleting', "Unable to delete the existing folder '{0}' while installing the extension '{1}'. Please delete the folder manually and try again", extensionPath, identifier.id), INSTALL_ERROR_DELETING);
+				AwAit pfs.rimrAf(extensionPAth);
+			} cAtch (e) { /* ignore */ }
+			throw new ExtensionMAnAgementError(locAlize('errorDeleting', "UnAble to delete the existing folder '{0}' while instAlling the extension '{1}'. PleAse delete the folder mAnuAlly And try AgAin", extensionPAth, identifier.id), INSTALL_ERROR_DELETING);
 		}
 
-		await this.extractAtLocation(identifier, zipPath, tempPath, token);
+		AwAit this.extrActAtLocAtion(identifier, zipPAth, tempPAth, token);
 		try {
-			await this.rename(identifier, tempPath, extensionPath, Date.now() + (2 * 60 * 1000) /* Retry for 2 minutes */);
-			this.logService.info('Renamed to', extensionPath);
-		} catch (error) {
-			this.logService.info('Rename failed. Deleting from extracted location', tempPath);
+			AwAit this.renAme(identifier, tempPAth, extensionPAth, DAte.now() + (2 * 60 * 1000) /* Retry for 2 minutes */);
+			this.logService.info('RenAmed to', extensionPAth);
+		} cAtch (error) {
+			this.logService.info('RenAme fAiled. Deleting from extrActed locAtion', tempPAth);
 			try {
-				pfs.rimraf(tempPath);
-			} catch (e) { /* ignore */ }
+				pfs.rimrAf(tempPAth);
+			} cAtch (e) { /* ignore */ }
 			throw error;
 		}
 
-		let local: ILocalExtension | null = null;
+		let locAl: ILocAlExtension | null = null;
 		try {
-			local = await this.scanExtension(folderName, this.extensionsPath, ExtensionType.User);
-		} catch (e) { /*ignore */ }
+			locAl = AwAit this.scAnExtension(folderNAme, this.extensionsPAth, ExtensionType.User);
+		} cAtch (e) { /*ignore */ }
 
-		if (local) {
-			return local;
+		if (locAl) {
+			return locAl;
 		}
-		throw new Error(localize('cannot read', "Cannot read the extension from {0}", this.extensionsPath));
+		throw new Error(locAlize('cAnnot reAd', "CAnnot reAd the extension from {0}", this.extensionsPAth));
 	}
 
-	async saveMetadataForLocalExtension(local: ILocalExtension, metadata: IMetadata): Promise<ILocalExtension> {
-		this.setMetadata(local, metadata);
+	Async sAveMetAdAtAForLocAlExtension(locAl: ILocAlExtension, metAdAtA: IMetAdAtA): Promise<ILocAlExtension> {
+		this.setMetAdAtA(locAl, metAdAtA);
 
-		// unset if false
-		metadata.isMachineScoped = metadata.isMachineScoped || undefined;
-		metadata.isBuiltin = metadata.isBuiltin || undefined;
-		const manifestPath = path.join(local.location.fsPath, 'package.json');
-		const raw = await pfs.readFile(manifestPath, 'utf8');
-		const { manifest } = await this.parseManifest(raw);
-		(manifest as ILocalExtensionManifest).__metadata = metadata;
-		await pfs.writeFile(manifestPath, JSON.stringify(manifest, null, '\t'));
-		return local;
+		// unset if fAlse
+		metAdAtA.isMAchineScoped = metAdAtA.isMAchineScoped || undefined;
+		metAdAtA.isBuiltin = metAdAtA.isBuiltin || undefined;
+		const mAnifestPAth = pAth.join(locAl.locAtion.fsPAth, 'pAckAge.json');
+		const rAw = AwAit pfs.reAdFile(mAnifestPAth, 'utf8');
+		const { mAnifest } = AwAit this.pArseMAnifest(rAw);
+		(mAnifest As ILocAlExtensionMAnifest).__metAdAtA = metAdAtA;
+		AwAit pfs.writeFile(mAnifestPAth, JSON.stringify(mAnifest, null, '\t'));
+		return locAl;
 	}
 
-	getUninstalledExtensions(): Promise<{ [id: string]: boolean; }> {
-		return this.withUninstalledExtensions(uninstalled => uninstalled);
+	getUninstAlledExtensions(): Promise<{ [id: string]: booleAn; }> {
+		return this.withUninstAlledExtensions(uninstAlled => uninstAlled);
 	}
 
-	async withUninstalledExtensions<T>(fn: (uninstalled: IStringDictionary<boolean>) => T): Promise<T> {
-		return this.uninstalledFileLimiter.queue(async () => {
-			let raw: string | undefined;
+	Async withUninstAlledExtensions<T>(fn: (uninstAlled: IStringDictionAry<booleAn>) => T): Promise<T> {
+		return this.uninstAlledFileLimiter.queue(Async () => {
+			let rAw: string | undefined;
 			try {
-				raw = await pfs.readFile(this.uninstalledPath, 'utf8');
-			} catch (err) {
+				rAw = AwAit pfs.reAdFile(this.uninstAlledPAth, 'utf8');
+			} cAtch (err) {
 				if (err.code !== 'ENOENT') {
 					throw err;
 				}
 			}
 
-			let uninstalled = {};
-			if (raw) {
+			let uninstAlled = {};
+			if (rAw) {
 				try {
-					uninstalled = JSON.parse(raw);
-				} catch (e) { /* ignore */ }
+					uninstAlled = JSON.pArse(rAw);
+				} cAtch (e) { /* ignore */ }
 			}
 
-			const result = fn(uninstalled);
+			const result = fn(uninstAlled);
 
-			if (Object.keys(uninstalled).length) {
-				await pfs.writeFile(this.uninstalledPath, JSON.stringify(uninstalled));
+			if (Object.keys(uninstAlled).length) {
+				AwAit pfs.writeFile(this.uninstAlledPAth, JSON.stringify(uninstAlled));
 			} else {
-				await pfs.rimraf(this.uninstalledPath);
+				AwAit pfs.rimrAf(this.uninstAlledPAth);
 			}
 
 			return result;
 		});
 	}
 
-	async removeExtension(extension: ILocalExtension, type: string): Promise<void> {
-		this.logService.trace(`Deleting ${type} extension from disk`, extension.identifier.id, extension.location.fsPath);
-		await pfs.rimraf(extension.location.fsPath);
-		this.logService.info('Deleted from disk', extension.identifier.id, extension.location.fsPath);
+	Async removeExtension(extension: ILocAlExtension, type: string): Promise<void> {
+		this.logService.trAce(`Deleting ${type} extension from disk`, extension.identifier.id, extension.locAtion.fsPAth);
+		AwAit pfs.rimrAf(extension.locAtion.fsPAth);
+		this.logService.info('Deleted from disk', extension.identifier.id, extension.locAtion.fsPAth);
 	}
 
-	async removeUninstalledExtension(extension: ILocalExtension): Promise<void> {
-		await this.removeExtension(extension, 'uninstalled');
-		await this.withUninstalledExtensions(uninstalled => delete uninstalled[new ExtensionIdentifierWithVersion(extension.identifier, extension.manifest.version).key()]);
+	Async removeUninstAlledExtension(extension: ILocAlExtension): Promise<void> {
+		AwAit this.removeExtension(extension, 'uninstAlled');
+		AwAit this.withUninstAlledExtensions(uninstAlled => delete uninstAlled[new ExtensionIdentifierWithVersion(extension.identifier, extension.mAnifest.version).key()]);
 	}
 
-	private async extractAtLocation(identifier: IExtensionIdentifier, zipPath: string, location: string, token: CancellationToken): Promise<void> {
-		this.logService.trace(`Started extracting the extension from ${zipPath} to ${location}`);
+	privAte Async extrActAtLocAtion(identifier: IExtensionIdentifier, zipPAth: string, locAtion: string, token: CAncellAtionToken): Promise<void> {
+		this.logService.trAce(`StArted extrActing the extension from ${zipPAth} to ${locAtion}`);
 
-		// Clean the location
+		// CleAn the locAtion
 		try {
-			await pfs.rimraf(location);
-		} catch (e) {
-			throw new ExtensionManagementError(this.joinErrors(e).message, INSTALL_ERROR_DELETING);
+			AwAit pfs.rimrAf(locAtion);
+		} cAtch (e) {
+			throw new ExtensionMAnAgementError(this.joinErrors(e).messAge, INSTALL_ERROR_DELETING);
 		}
 
 		try {
-			await extract(zipPath, location, { sourcePath: 'extension', overwrite: true }, token);
-			this.logService.info(`Extracted extension to ${location}:`, identifier.id);
-		} catch (e) {
-			try { await pfs.rimraf(location); } catch (e) { /* Ignore */ }
-			throw new ExtensionManagementError(e.message, e instanceof ExtractError && e.type ? e.type : INSTALL_ERROR_EXTRACTING);
+			AwAit extrAct(zipPAth, locAtion, { sourcePAth: 'extension', overwrite: true }, token);
+			this.logService.info(`ExtrActed extension to ${locAtion}:`, identifier.id);
+		} cAtch (e) {
+			try { AwAit pfs.rimrAf(locAtion); } cAtch (e) { /* Ignore */ }
+			throw new ExtensionMAnAgementError(e.messAge, e instAnceof ExtrActError && e.type ? e.type : INSTALL_ERROR_EXTRACTING);
 		}
 	}
 
-	private async rename(identifier: IExtensionIdentifier, extractPath: string, renamePath: string, retryUntil: number): Promise<void> {
+	privAte Async renAme(identifier: IExtensionIdentifier, extrActPAth: string, renAmePAth: string, retryUntil: number): Promise<void> {
 		try {
-			await pfs.rename(extractPath, renamePath);
-		} catch (error) {
-			if (isWindows && error && error.code === 'EPERM' && Date.now() < retryUntil) {
-				this.logService.info(`Failed renaming ${extractPath} to ${renamePath} with 'EPERM' error. Trying again...`, identifier.id);
-				return this.rename(identifier, extractPath, renamePath, retryUntil);
+			AwAit pfs.renAme(extrActPAth, renAmePAth);
+		} cAtch (error) {
+			if (isWindows && error && error.code === 'EPERM' && DAte.now() < retryUntil) {
+				this.logService.info(`FAiled renAming ${extrActPAth} to ${renAmePAth} with 'EPERM' error. Trying AgAin...`, identifier.id);
+				return this.renAme(identifier, extrActPAth, renAmePAth, retryUntil);
 			}
-			throw new ExtensionManagementError(error.message || localize('renameError', "Unknown error while renaming {0} to {1}", extractPath, renamePath), error.code || INSTALL_ERROR_RENAMING);
+			throw new ExtensionMAnAgementError(error.messAge || locAlize('renAmeError', "Unknown error while renAming {0} to {1}", extrActPAth, renAmePAth), error.code || INSTALL_ERROR_RENAMING);
 		}
 	}
 
-	private async scanSystemExtensions(): Promise<ILocalExtension[]> {
-		this.logService.trace('Started scanning system extensions');
-		const systemExtensionsPromise = this.scanDefaultSystemExtensions();
+	privAte Async scAnSystemExtensions(): Promise<ILocAlExtension[]> {
+		this.logService.trAce('StArted scAnning system extensions');
+		const systemExtensionsPromise = this.scAnDefAultSystemExtensions();
 		if (this.environmentService.isBuilt) {
 			return systemExtensionsPromise;
 		}
 
-		// Scan other system extensions during development
-		const devSystemExtensionsPromise = this.scanDevSystemExtensions();
-		const [systemExtensions, devSystemExtensions] = await Promise.all([systemExtensionsPromise, devSystemExtensionsPromise]);
+		// ScAn other system extensions during development
+		const devSystemExtensionsPromise = this.scAnDevSystemExtensions();
+		const [systemExtensions, devSystemExtensions] = AwAit Promise.All([systemExtensionsPromise, devSystemExtensionsPromise]);
 		return [...systemExtensions, ...devSystemExtensions];
 	}
 
-	private async scanExtensionsInDir(dir: string, type: ExtensionType): Promise<ILocalExtension[]> {
-		const limiter = new Limiter<any>(10);
-		const extensionsFolders = await pfs.readdir(dir);
-		const extensions = await Promise.all<ILocalExtension>(extensionsFolders.map(extensionFolder => limiter.queue(() => this.scanExtension(extensionFolder, dir, type))));
+	privAte Async scAnExtensionsInDir(dir: string, type: ExtensionType): Promise<ILocAlExtension[]> {
+		const limiter = new Limiter<Any>(10);
+		const extensionsFolders = AwAit pfs.reAddir(dir);
+		const extensions = AwAit Promise.All<ILocAlExtension>(extensionsFolders.mAp(extensionFolder => limiter.queue(() => this.scAnExtension(extensionFolder, dir, type))));
 		return extensions.filter(e => e && e.identifier);
 	}
 
-	private async scanExtension(folderName: string, root: string, type: ExtensionType): Promise<ILocalExtension | null> {
-		if (type === ExtensionType.User && folderName.indexOf('.') === 0) { // Do not consider user extension folder starting with `.`
+	privAte Async scAnExtension(folderNAme: string, root: string, type: ExtensionType): Promise<ILocAlExtension | null> {
+		if (type === ExtensionType.User && folderNAme.indexOf('.') === 0) { // Do not consider user extension folder stArting with `.`
 			return null;
 		}
-		const extensionPath = path.join(root, folderName);
+		const extensionPAth = pAth.join(root, folderNAme);
 		try {
-			const children = await pfs.readdir(extensionPath);
-			const { manifest, metadata } = await this.readManifest(extensionPath);
-			const readme = children.filter(child => /^readme(\.txt|\.md|)$/i.test(child))[0];
-			const readmeUrl = readme ? URI.file(path.join(extensionPath, readme)) : undefined;
-			const changelog = children.filter(child => /^changelog(\.txt|\.md|)$/i.test(child))[0];
-			const changelogUrl = changelog ? URI.file(path.join(extensionPath, changelog)) : undefined;
-			const identifier = { id: getGalleryExtensionId(manifest.publisher, manifest.name) };
-			const local = <ILocalExtension>{ type, identifier, manifest, location: URI.file(extensionPath), readmeUrl, changelogUrl, publisherDisplayName: null, publisherId: null, isMachineScoped: false, isBuiltin: type === ExtensionType.System };
-			if (metadata) {
-				this.setMetadata(local, metadata);
+			const children = AwAit pfs.reAddir(extensionPAth);
+			const { mAnifest, metAdAtA } = AwAit this.reAdMAnifest(extensionPAth);
+			const reAdme = children.filter(child => /^reAdme(\.txt|\.md|)$/i.test(child))[0];
+			const reAdmeUrl = reAdme ? URI.file(pAth.join(extensionPAth, reAdme)) : undefined;
+			const chAngelog = children.filter(child => /^chAngelog(\.txt|\.md|)$/i.test(child))[0];
+			const chAngelogUrl = chAngelog ? URI.file(pAth.join(extensionPAth, chAngelog)) : undefined;
+			const identifier = { id: getGAlleryExtensionId(mAnifest.publisher, mAnifest.nAme) };
+			const locAl = <ILocAlExtension>{ type, identifier, mAnifest, locAtion: URI.file(extensionPAth), reAdmeUrl, chAngelogUrl, publisherDisplAyNAme: null, publisherId: null, isMAchineScoped: fAlse, isBuiltin: type === ExtensionType.System };
+			if (metAdAtA) {
+				this.setMetAdAtA(locAl, metAdAtA);
 			}
-			return local;
-		} catch (e) {
-			this.logService.trace(e);
+			return locAl;
+		} cAtch (e) {
+			this.logService.trAce(e);
 			return null;
 		}
 	}
 
-	private async scanDefaultSystemExtensions(): Promise<ILocalExtension[]> {
-		const result = await this.scanExtensionsInDir(this.systemExtensionsPath, ExtensionType.System);
-		this.logService.trace('Scanned system extensions:', result.length);
+	privAte Async scAnDefAultSystemExtensions(): Promise<ILocAlExtension[]> {
+		const result = AwAit this.scAnExtensionsInDir(this.systemExtensionsPAth, ExtensionType.System);
+		this.logService.trAce('ScAnned system extensions:', result.length);
 		return result;
 	}
 
-	private async scanDevSystemExtensions(): Promise<ILocalExtension[]> {
+	privAte Async scAnDevSystemExtensions(): Promise<ILocAlExtension[]> {
 		const devSystemExtensionsList = this.getDevSystemExtensionsList();
 		if (devSystemExtensionsList.length) {
-			const result = await this.scanExtensionsInDir(this.devSystemExtensionsPath, ExtensionType.System);
-			this.logService.trace('Scanned dev system extensions:', result.length);
-			return result.filter(r => devSystemExtensionsList.some(id => areSameExtensions(r.identifier, { id })));
+			const result = AwAit this.scAnExtensionsInDir(this.devSystemExtensionsPAth, ExtensionType.System);
+			this.logService.trAce('ScAnned dev system extensions:', result.length);
+			return result.filter(r => devSystemExtensionsList.some(id => AreSAmeExtensions(r.identifier, { id })));
 		} else {
 			return [];
 		}
 	}
 
-	private setMetadata(local: IRelaxedLocalExtension, metadata: IMetadata): void {
-		local.publisherDisplayName = metadata.publisherDisplayName || null;
-		local.publisherId = metadata.publisherId || null;
-		local.identifier.uuid = metadata.id;
-		local.isMachineScoped = !!metadata.isMachineScoped;
-		local.isBuiltin = local.type === ExtensionType.System || !!metadata.isBuiltin;
+	privAte setMetAdAtA(locAl: IRelAxedLocAlExtension, metAdAtA: IMetAdAtA): void {
+		locAl.publisherDisplAyNAme = metAdAtA.publisherDisplAyNAme || null;
+		locAl.publisherId = metAdAtA.publisherId || null;
+		locAl.identifier.uuid = metAdAtA.id;
+		locAl.isMAchineScoped = !!metAdAtA.isMAchineScoped;
+		locAl.isBuiltin = locAl.type === ExtensionType.System || !!metAdAtA.isBuiltin;
 	}
 
-	private async removeUninstalledExtensions(): Promise<void> {
-		const uninstalled = await this.getUninstalledExtensions();
-		const extensions = await this.scanAllUserExtensions(); // All user extensions
-		const installed: Set<string> = new Set<string>();
+	privAte Async removeUninstAlledExtensions(): Promise<void> {
+		const uninstAlled = AwAit this.getUninstAlledExtensions();
+		const extensions = AwAit this.scAnAllUserExtensions(); // All user extensions
+		const instAlled: Set<string> = new Set<string>();
 		for (const e of extensions) {
-			if (!uninstalled[new ExtensionIdentifierWithVersion(e.identifier, e.manifest.version).key()]) {
-				installed.add(e.identifier.id.toLowerCase());
+			if (!uninstAlled[new ExtensionIdentifierWithVersion(e.identifier, e.mAnifest.version).key()]) {
+				instAlled.Add(e.identifier.id.toLowerCAse());
 			}
 		}
-		const byExtension: ILocalExtension[][] = groupByExtension(extensions, e => e.identifier);
-		await Promise.all(byExtension.map(async e => {
-			const latest = e.sort((a, b) => semver.rcompare(a.manifest.version, b.manifest.version))[0];
-			if (!installed.has(latest.identifier.id.toLowerCase())) {
-				await this.beforeRemovingExtension(latest);
+		const byExtension: ILocAlExtension[][] = groupByExtension(extensions, e => e.identifier);
+		AwAit Promise.All(byExtension.mAp(Async e => {
+			const lAtest = e.sort((A, b) => semver.rcompAre(A.mAnifest.version, b.mAnifest.version))[0];
+			if (!instAlled.hAs(lAtest.identifier.id.toLowerCAse())) {
+				AwAit this.beforeRemovingExtension(lAtest);
 			}
 		}));
-		const toRemove: ILocalExtension[] = extensions.filter(e => uninstalled[new ExtensionIdentifierWithVersion(e.identifier, e.manifest.version).key()]);
-		await Promise.all(toRemove.map(e => this.removeUninstalledExtension(e)));
+		const toRemove: ILocAlExtension[] = extensions.filter(e => uninstAlled[new ExtensionIdentifierWithVersion(e.identifier, e.mAnifest.version).key()]);
+		AwAit Promise.All(toRemove.mAp(e => this.removeUninstAlledExtension(e)));
 	}
 
-	private async removeOutdatedExtensions(): Promise<void> {
-		const extensions = await this.scanAllUserExtensions();
-		const toRemove: ILocalExtension[] = [];
+	privAte Async removeOutdAtedExtensions(): Promise<void> {
+		const extensions = AwAit this.scAnAllUserExtensions();
+		const toRemove: ILocAlExtension[] = [];
 
-		// Outdated extensions
-		const byExtension: ILocalExtension[][] = groupByExtension(extensions, e => e.identifier);
-		toRemove.push(...flatten(byExtension.map(p => p.sort((a, b) => semver.rcompare(a.manifest.version, b.manifest.version)).slice(1))));
+		// OutdAted extensions
+		const byExtension: ILocAlExtension[][] = groupByExtension(extensions, e => e.identifier);
+		toRemove.push(...flAtten(byExtension.mAp(p => p.sort((A, b) => semver.rcompAre(A.mAnifest.version, b.mAnifest.version)).slice(1))));
 
-		await Promise.all(toRemove.map(extension => this.removeExtension(extension, 'outdated')));
+		AwAit Promise.All(toRemove.mAp(extension => this.removeExtension(extension, 'outdAted')));
 	}
 
-	private getDevSystemExtensionsList(): string[] {
-		return (this.productService.builtInExtensions || []).map(e => e.name);
+	privAte getDevSystemExtensionsList(): string[] {
+		return (this.productService.builtInExtensions || []).mAp(e => e.nAme);
 	}
 
-	private joinErrors(errorOrErrors: (Error | string) | (Array<Error | string>)): Error {
-		const errors = Array.isArray(errorOrErrors) ? errorOrErrors : [errorOrErrors];
+	privAte joinErrors(errorOrErrors: (Error | string) | (ArrAy<Error | string>)): Error {
+		const errors = ArrAy.isArrAy(errorOrErrors) ? errorOrErrors : [errorOrErrors];
 		if (errors.length === 1) {
-			return errors[0] instanceof Error ? <Error>errors[0] : new Error(<string>errors[0]);
+			return errors[0] instAnceof Error ? <Error>errors[0] : new Error(<string>errors[0]);
 		}
-		return errors.reduce<Error>((previousValue: Error, currentValue: Error | string) => {
-			return new Error(`${previousValue.message}${previousValue.message ? ',' : ''}${currentValue instanceof Error ? currentValue.message : currentValue}`);
+		return errors.reduce<Error>((previousVAlue: Error, currentVAlue: Error | string) => {
+			return new Error(`${previousVAlue.messAge}${previousVAlue.messAge ? ',' : ''}${currentVAlue instAnceof Error ? currentVAlue.messAge : currentVAlue}`);
 		}, new Error(''));
 	}
 
-	private _devSystemExtensionsPath: string | null = null;
-	private get devSystemExtensionsPath(): string {
-		if (!this._devSystemExtensionsPath) {
-			this._devSystemExtensionsPath = path.normalize(path.join(FileAccess.asFileUri('', require).fsPath, '..', '.build', 'builtInExtensions'));
+	privAte _devSystemExtensionsPAth: string | null = null;
+	privAte get devSystemExtensionsPAth(): string {
+		if (!this._devSystemExtensionsPAth) {
+			this._devSystemExtensionsPAth = pAth.normAlize(pAth.join(FileAccess.AsFileUri('', require).fsPAth, '..', '.build', 'builtInExtensions'));
 		}
-		return this._devSystemExtensionsPath;
+		return this._devSystemExtensionsPAth;
 	}
 
-	private async readManifest(extensionPath: string): Promise<{ manifest: IExtensionManifest; metadata: IMetadata | null; }> {
+	privAte Async reAdMAnifest(extensionPAth: string): Promise<{ mAnifest: IExtensionMAnifest; metAdAtA: IMetAdAtA | null; }> {
 		const promises = [
-			pfs.readFile(path.join(extensionPath, 'package.json'), 'utf8')
-				.then(raw => this.parseManifest(raw)),
-			pfs.readFile(path.join(extensionPath, 'package.nls.json'), 'utf8')
+			pfs.reAdFile(pAth.join(extensionPAth, 'pAckAge.json'), 'utf8')
+				.then(rAw => this.pArseMAnifest(rAw)),
+			pfs.reAdFile(pAth.join(extensionPAth, 'pAckAge.nls.json'), 'utf8')
 				.then(undefined, err => err.code !== 'ENOENT' ? Promise.reject<string>(err) : '{}')
-				.then(raw => JSON.parse(raw))
+				.then(rAw => JSON.pArse(rAw))
 		];
 
-		const [{ manifest, metadata }, translations] = await Promise.all(promises);
+		const [{ mAnifest, metAdAtA }, trAnslAtions] = AwAit Promise.All(promises);
 		return {
-			manifest: localizeManifest(manifest, translations),
-			metadata
+			mAnifest: locAlizeMAnifest(mAnifest, trAnslAtions),
+			metAdAtA
 		};
 	}
 
-	private parseManifest(raw: string): Promise<{ manifest: IExtensionManifest; metadata: IMetadata | null; }> {
+	privAte pArseMAnifest(rAw: string): Promise<{ mAnifest: IExtensionMAnifest; metAdAtA: IMetAdAtA | null; }> {
 		return new Promise((c, e) => {
 			try {
-				const manifest = JSON.parse(raw);
-				const metadata = manifest.__metadata || null;
-				delete manifest.__metadata;
-				c({ manifest, metadata });
-			} catch (err) {
-				e(new Error(localize('invalidManifest', "Extension invalid: package.json is not a JSON file.")));
+				const mAnifest = JSON.pArse(rAw);
+				const metAdAtA = mAnifest.__metAdAtA || null;
+				delete mAnifest.__metAdAtA;
+				c({ mAnifest, metAdAtA });
+			} cAtch (err) {
+				e(new Error(locAlize('invAlidMAnifest', "Extension invAlid: pAckAge.json is not A JSON file.")));
 			}
 		});
 	}

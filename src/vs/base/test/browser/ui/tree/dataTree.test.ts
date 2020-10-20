@@ -1,148 +1,148 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ITreeNode, ITreeRenderer, IDataSource } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate, IIdentityProvider } from 'vs/base/browser/ui/list/list';
-import { DataTree } from 'vs/base/browser/ui/tree/dataTree';
+import * As Assert from 'Assert';
+import { ITreeNode, ITreeRenderer, IDAtASource } from 'vs/bAse/browser/ui/tree/tree';
+import { IListVirtuAlDelegAte, IIdentityProvider } from 'vs/bAse/browser/ui/list/list';
+import { DAtATree } from 'vs/bAse/browser/ui/tree/dAtATree';
 
-interface E {
-	value: number;
+interfAce E {
+	vAlue: number;
 	children?: E[];
 }
 
-suite('DataTree', function () {
-	let tree: DataTree<E, E>;
+suite('DAtATree', function () {
+	let tree: DAtATree<E, E>;
 
 	const root: E = {
-		value: -1,
+		vAlue: -1,
 		children: [
-			{ value: 0, children: [{ value: 10 }, { value: 11 }, { value: 12 }] },
-			{ value: 1 },
-			{ value: 2 },
+			{ vAlue: 0, children: [{ vAlue: 10 }, { vAlue: 11 }, { vAlue: 12 }] },
+			{ vAlue: 1 },
+			{ vAlue: 2 },
 		]
 	};
 
 	const empty: E = {
-		value: -1,
+		vAlue: -1,
 		children: []
 	};
 
 	setup(() => {
-		const container = document.createElement('div');
-		container.style.width = '200px';
-		container.style.height = '200px';
+		const contAiner = document.creAteElement('div');
+		contAiner.style.width = '200px';
+		contAiner.style.height = '200px';
 
-		const delegate = new class implements IListVirtualDelegate<E> {
+		const delegAte = new clAss implements IListVirtuAlDelegAte<E> {
 			getHeight() { return 20; }
-			getTemplateId(): string { return 'default'; }
+			getTemplAteId(): string { return 'defAult'; }
 		};
 
-		const renderer = new class implements ITreeRenderer<E, void, HTMLElement> {
-			readonly templateId = 'default';
-			renderTemplate(container: HTMLElement): HTMLElement {
-				return container;
+		const renderer = new clAss implements ITreeRenderer<E, void, HTMLElement> {
+			reAdonly templAteId = 'defAult';
+			renderTemplAte(contAiner: HTMLElement): HTMLElement {
+				return contAiner;
 			}
-			renderElement(element: ITreeNode<E, void>, index: number, templateData: HTMLElement): void {
-				templateData.textContent = `${element.element.value}`;
+			renderElement(element: ITreeNode<E, void>, index: number, templAteDAtA: HTMLElement): void {
+				templAteDAtA.textContent = `${element.element.vAlue}`;
 			}
-			disposeTemplate(): void { }
+			disposeTemplAte(): void { }
 		};
 
-		const dataSource = new class implements IDataSource<E, E> {
+		const dAtASource = new clAss implements IDAtASource<E, E> {
 			getChildren(element: E): E[] {
 				return element.children || [];
 			}
 		};
 
-		const identityProvider = new class implements IIdentityProvider<E> {
+		const identityProvider = new clAss implements IIdentityProvider<E> {
 			getId(element: E): { toString(): string; } {
-				return `${element.value}`;
+				return `${element.vAlue}`;
 			}
 		};
 
-		tree = new DataTree<E, E>('test', container, delegate, [renderer], dataSource, {
+		tree = new DAtATree<E, E>('test', contAiner, delegAte, [renderer], dAtASource, {
 			identityProvider
 		});
-		tree.layout(200);
+		tree.lAyout(200);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		tree.dispose();
 	});
 
-	test('view state is lost implicitly', () => {
+	test('view stAte is lost implicitly', () => {
 		tree.setInput(root);
 
-		let navigator = tree.navigate();
-		assert.equal(navigator.next()!.value, 0);
-		assert.equal(navigator.next()!.value, 10);
-		assert.equal(navigator.next()!.value, 11);
-		assert.equal(navigator.next()!.value, 12);
-		assert.equal(navigator.next()!.value, 1);
-		assert.equal(navigator.next()!.value, 2);
-		assert.equal(navigator.next()!, null);
+		let nAvigAtor = tree.nAvigAte();
+		Assert.equAl(nAvigAtor.next()!.vAlue, 0);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 10);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 11);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 12);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 1);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 2);
+		Assert.equAl(nAvigAtor.next()!, null);
 
-		tree.collapse(root.children![0]);
-		navigator = tree.navigate();
-		assert.equal(navigator.next()!.value, 0);
-		assert.equal(navigator.next()!.value, 1);
-		assert.equal(navigator.next()!.value, 2);
-		assert.equal(navigator.next()!, null);
+		tree.collApse(root.children![0]);
+		nAvigAtor = tree.nAvigAte();
+		Assert.equAl(nAvigAtor.next()!.vAlue, 0);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 1);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 2);
+		Assert.equAl(nAvigAtor.next()!, null);
 
 		tree.setSelection([root.children![1]]);
 		tree.setFocus([root.children![2]]);
 
 		tree.setInput(empty);
 		tree.setInput(root);
-		navigator = tree.navigate();
-		assert.equal(navigator.next()!.value, 0);
-		assert.equal(navigator.next()!.value, 10);
-		assert.equal(navigator.next()!.value, 11);
-		assert.equal(navigator.next()!.value, 12);
-		assert.equal(navigator.next()!.value, 1);
-		assert.equal(navigator.next()!.value, 2);
-		assert.equal(navigator.next()!, null);
+		nAvigAtor = tree.nAvigAte();
+		Assert.equAl(nAvigAtor.next()!.vAlue, 0);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 10);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 11);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 12);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 1);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 2);
+		Assert.equAl(nAvigAtor.next()!, null);
 
-		assert.deepEqual(tree.getSelection(), []);
-		assert.deepEqual(tree.getFocus(), []);
+		Assert.deepEquAl(tree.getSelection(), []);
+		Assert.deepEquAl(tree.getFocus(), []);
 	});
 
-	test('view state can be preserved', () => {
+	test('view stAte cAn be preserved', () => {
 		tree.setInput(root);
 
-		let navigator = tree.navigate();
-		assert.equal(navigator.next()!.value, 0);
-		assert.equal(navigator.next()!.value, 10);
-		assert.equal(navigator.next()!.value, 11);
-		assert.equal(navigator.next()!.value, 12);
-		assert.equal(navigator.next()!.value, 1);
-		assert.equal(navigator.next()!.value, 2);
-		assert.equal(navigator.next()!, null);
+		let nAvigAtor = tree.nAvigAte();
+		Assert.equAl(nAvigAtor.next()!.vAlue, 0);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 10);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 11);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 12);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 1);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 2);
+		Assert.equAl(nAvigAtor.next()!, null);
 
-		tree.collapse(root.children![0]);
-		navigator = tree.navigate();
-		assert.equal(navigator.next()!.value, 0);
-		assert.equal(navigator.next()!.value, 1);
-		assert.equal(navigator.next()!.value, 2);
-		assert.equal(navigator.next()!, null);
+		tree.collApse(root.children![0]);
+		nAvigAtor = tree.nAvigAte();
+		Assert.equAl(nAvigAtor.next()!.vAlue, 0);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 1);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 2);
+		Assert.equAl(nAvigAtor.next()!, null);
 
 		tree.setSelection([root.children![1]]);
 		tree.setFocus([root.children![2]]);
 
-		const viewState = tree.getViewState();
+		const viewStAte = tree.getViewStAte();
 
 		tree.setInput(empty);
-		tree.setInput(root, viewState);
-		navigator = tree.navigate();
-		assert.equal(navigator.next()!.value, 0);
-		assert.equal(navigator.next()!.value, 1);
-		assert.equal(navigator.next()!.value, 2);
-		assert.equal(navigator.next()!, null);
+		tree.setInput(root, viewStAte);
+		nAvigAtor = tree.nAvigAte();
+		Assert.equAl(nAvigAtor.next()!.vAlue, 0);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 1);
+		Assert.equAl(nAvigAtor.next()!.vAlue, 2);
+		Assert.equAl(nAvigAtor.next()!, null);
 
-		assert.deepEqual(tree.getSelection(), [root.children![1]]);
-		assert.deepEqual(tree.getFocus(), [root.children![2]]);
+		Assert.deepEquAl(tree.getSelection(), [root.children![1]]);
+		Assert.deepEquAl(tree.getFocus(), [root.children![2]]);
 	});
 });

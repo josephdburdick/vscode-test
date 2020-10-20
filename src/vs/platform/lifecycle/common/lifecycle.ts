@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isThenable } from 'vs/base/common/async';
+import { isThenAble } from 'vs/bAse/common/Async';
 
-// Shared veto handling across main and renderer
-export function handleVetos(vetos: (boolean | Promise<boolean>)[], onError: (error: Error) => void): Promise<boolean /* veto */> {
+// ShAred veto hAndling Across mAin And renderer
+export function hAndleVetos(vetos: (booleAn | Promise<booleAn>)[], onError: (error: Error) => void): Promise<booleAn /* veto */> {
 	if (vetos.length === 0) {
-		return Promise.resolve(false);
+		return Promise.resolve(fAlse);
 	}
 
 	const promises: Promise<void>[] = [];
-	let lazyValue = false;
+	let lAzyVAlue = fAlse;
 
-	for (let valueOrPromise of vetos) {
+	for (let vAlueOrPromise of vetos) {
 
 		// veto, done
-		if (valueOrPromise === true) {
+		if (vAlueOrPromise === true) {
 			return Promise.resolve(true);
 		}
 
-		if (isThenable(valueOrPromise)) {
-			promises.push(valueOrPromise.then(value => {
-				if (value) {
-					lazyValue = true; // veto, done
+		if (isThenAble(vAlueOrPromise)) {
+			promises.push(vAlueOrPromise.then(vAlue => {
+				if (vAlue) {
+					lAzyVAlue = true; // veto, done
 				}
 			}, err => {
-				onError(err); // error, treated like a veto, done
-				lazyValue = true;
+				onError(err); // error, treAted like A veto, done
+				lAzyVAlue = true;
 			}));
 		}
 	}
 
-	return Promise.all(promises).then(() => lazyValue);
+	return Promise.All(promises).then(() => lAzyVAlue);
 }

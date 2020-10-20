@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as fs from 'fs';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
 import { URL } from 'url';
-import * as nls from 'vscode-nls';
-const localize = nls.loadMessageBundle();
+import * As nls from 'vscode-nls';
+const locAlize = nls.loAdMessAgeBundle();
 
-import { parseTree, findNodeAtLocation, Node as JsonNode } from 'jsonc-parser';
-import * as MarkdownItType from 'markdown-it';
+import { pArseTree, findNodeAtLocAtion, Node As JsonNode } from 'jsonc-pArser';
+import * As MArkdownItType from 'mArkdown-it';
 
-import { languages, workspace, Disposable, TextDocument, Uri, Diagnostic, Range, DiagnosticSeverity, Position, env } from 'vscode';
+import { lAnguAges, workspAce, DisposAble, TextDocument, Uri, DiAgnostic, RAnge, DiAgnosticSeverity, Position, env } from 'vscode';
 
-const product = JSON.parse(fs.readFileSync(path.join(env.appRoot, 'product.json'), { encoding: 'utf-8' }));
-const allowedBadgeProviders: string[] = (product.extensionAllowedBadgeProviders || []).map((s: string) => s.toLowerCase());
-const allowedBadgeProvidersRegex: RegExp[] = (product.extensionAllowedBadgeProvidersRegex || []).map((r: string) => new RegExp(r));
+const product = JSON.pArse(fs.reAdFileSync(pAth.join(env.AppRoot, 'product.json'), { encoding: 'utf-8' }));
+const AllowedBAdgeProviders: string[] = (product.extensionAllowedBAdgeProviders || []).mAp((s: string) => s.toLowerCAse());
+const AllowedBAdgeProvidersRegex: RegExp[] = (product.extensionAllowedBAdgeProvidersRegex || []).mAp((r: string) => new RegExp(r));
 
-function isTrustedSVGSource(uri: Uri): boolean {
-	return allowedBadgeProviders.includes(uri.authority.toLowerCase()) || allowedBadgeProvidersRegex.some(r => r.test(uri.toString()));
+function isTrustedSVGSource(uri: Uri): booleAn {
+	return AllowedBAdgeProviders.includes(uri.Authority.toLowerCAse()) || AllowedBAdgeProvidersRegex.some(r => r.test(uri.toString()));
 }
 
-const httpsRequired = localize('httpsRequired', "Images must use the HTTPS protocol.");
-const svgsNotValid = localize('svgsNotValid', "SVGs are not a valid image source.");
-const embeddedSvgsNotValid = localize('embeddedSvgsNotValid', "Embedded SVGs are not a valid image source.");
-const dataUrlsNotValid = localize('dataUrlsNotValid', "Data URLs are not a valid image source.");
-const relativeUrlRequiresHttpsRepository = localize('relativeUrlRequiresHttpsRepository', "Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.");
-const relativeIconUrlRequiresHttpsRepository = localize('relativeIconUrlRequiresHttpsRepository', "An icon requires a repository with HTTPS protocol to be specified in this package.json.");
-const relativeBadgeUrlRequiresHttpsRepository = localize('relativeBadgeUrlRequiresHttpsRepository', "Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json.");
+const httpsRequired = locAlize('httpsRequired', "ImAges must use the HTTPS protocol.");
+const svgsNotVAlid = locAlize('svgsNotVAlid', "SVGs Are not A vAlid imAge source.");
+const embeddedSvgsNotVAlid = locAlize('embeddedSvgsNotVAlid', "Embedded SVGs Are not A vAlid imAge source.");
+const dAtAUrlsNotVAlid = locAlize('dAtAUrlsNotVAlid', "DAtA URLs Are not A vAlid imAge source.");
+const relAtiveUrlRequiresHttpsRepository = locAlize('relAtiveUrlRequiresHttpsRepository', "RelAtive imAge URLs require A repository with HTTPS protocol to be specified in the pAckAge.json.");
+const relAtiveIconUrlRequiresHttpsRepository = locAlize('relAtiveIconUrlRequiresHttpsRepository', "An icon requires A repository with HTTPS protocol to be specified in this pAckAge.json.");
+const relAtiveBAdgeUrlRequiresHttpsRepository = locAlize('relAtiveBAdgeUrlRequiresHttpsRepository', "RelAtive bAdge URLs require A repository with HTTPS protocol to be specified in this pAckAge.json.");
 
 enum Context {
 	ICON,
@@ -36,207 +36,207 @@ enum Context {
 	MARKDOWN
 }
 
-interface TokenAndPosition {
-	token: MarkdownItType.Token;
+interfAce TokenAndPosition {
+	token: MArkdownItType.Token;
 	begin: number;
 	end: number;
 }
 
-interface PackageJsonInfo {
-	isExtension: boolean;
-	hasHttpsRepository: boolean;
+interfAce PAckAgeJsonInfo {
+	isExtension: booleAn;
+	hAsHttpsRepository: booleAn;
 	repository: Uri;
 }
 
-export class ExtensionLinter {
+export clAss ExtensionLinter {
 
-	private diagnosticsCollection = languages.createDiagnosticCollection('extension-editing');
-	private fileWatcher = workspace.createFileSystemWatcher('**/package.json');
-	private disposables: Disposable[] = [this.diagnosticsCollection, this.fileWatcher];
+	privAte diAgnosticsCollection = lAnguAges.creAteDiAgnosticCollection('extension-editing');
+	privAte fileWAtcher = workspAce.creAteFileSystemWAtcher('**/pAckAge.json');
+	privAte disposAbles: DisposAble[] = [this.diAgnosticsCollection, this.fileWAtcher];
 
-	private folderToPackageJsonInfo: Record<string, PackageJsonInfo> = {};
-	private packageJsonQ = new Set<TextDocument>();
-	private readmeQ = new Set<TextDocument>();
-	private timer: NodeJS.Timer | undefined;
-	private markdownIt: MarkdownItType.MarkdownIt | undefined;
+	privAte folderToPAckAgeJsonInfo: Record<string, PAckAgeJsonInfo> = {};
+	privAte pAckAgeJsonQ = new Set<TextDocument>();
+	privAte reAdmeQ = new Set<TextDocument>();
+	privAte timer: NodeJS.Timer | undefined;
+	privAte mArkdownIt: MArkdownItType.MArkdownIt | undefined;
 
 	constructor() {
-		this.disposables.push(
-			workspace.onDidOpenTextDocument(document => this.queue(document)),
-			workspace.onDidChangeTextDocument(event => this.queue(event.document)),
-			workspace.onDidCloseTextDocument(document => this.clear(document)),
-			this.fileWatcher.onDidChange(uri => this.packageJsonChanged(this.getUriFolder(uri))),
-			this.fileWatcher.onDidCreate(uri => this.packageJsonChanged(this.getUriFolder(uri))),
-			this.fileWatcher.onDidDelete(uri => this.packageJsonChanged(this.getUriFolder(uri))),
+		this.disposAbles.push(
+			workspAce.onDidOpenTextDocument(document => this.queue(document)),
+			workspAce.onDidChAngeTextDocument(event => this.queue(event.document)),
+			workspAce.onDidCloseTextDocument(document => this.cleAr(document)),
+			this.fileWAtcher.onDidChAnge(uri => this.pAckAgeJsonChAnged(this.getUriFolder(uri))),
+			this.fileWAtcher.onDidCreAte(uri => this.pAckAgeJsonChAnged(this.getUriFolder(uri))),
+			this.fileWAtcher.onDidDelete(uri => this.pAckAgeJsonChAnged(this.getUriFolder(uri))),
 		);
-		workspace.textDocuments.forEach(document => this.queue(document));
+		workspAce.textDocuments.forEAch(document => this.queue(document));
 	}
 
-	private queue(document: TextDocument) {
-		const p = document.uri.path;
-		if (document.languageId === 'json' && endsWith(p, '/package.json')) {
-			this.packageJsonQ.add(document);
-			this.startTimer();
+	privAte queue(document: TextDocument) {
+		const p = document.uri.pAth;
+		if (document.lAnguAgeId === 'json' && endsWith(p, '/pAckAge.json')) {
+			this.pAckAgeJsonQ.Add(document);
+			this.stArtTimer();
 		}
-		this.queueReadme(document);
+		this.queueReAdme(document);
 	}
 
-	private queueReadme(document: TextDocument) {
-		const p = document.uri.path;
-		if (document.languageId === 'markdown' && (endsWith(p.toLowerCase(), '/readme.md') || endsWith(p.toLowerCase(), '/changelog.md'))) {
-			this.readmeQ.add(document);
-			this.startTimer();
+	privAte queueReAdme(document: TextDocument) {
+		const p = document.uri.pAth;
+		if (document.lAnguAgeId === 'mArkdown' && (endsWith(p.toLowerCAse(), '/reAdme.md') || endsWith(p.toLowerCAse(), '/chAngelog.md'))) {
+			this.reAdmeQ.Add(document);
+			this.stArtTimer();
 		}
 	}
 
-	private startTimer() {
+	privAte stArtTimer() {
 		if (this.timer) {
-			clearTimeout(this.timer);
+			cleArTimeout(this.timer);
 		}
 		this.timer = setTimeout(() => {
 			this.lint()
-				.catch(console.error);
+				.cAtch(console.error);
 		}, 300);
 	}
 
-	private async lint() {
-		this.lintPackageJson();
-		await this.lintReadme();
+	privAte Async lint() {
+		this.lintPAckAgeJson();
+		AwAit this.lintReAdme();
 	}
 
-	private lintPackageJson() {
-		this.packageJsonQ.forEach(document => {
-			this.packageJsonQ.delete(document);
+	privAte lintPAckAgeJson() {
+		this.pAckAgeJsonQ.forEAch(document => {
+			this.pAckAgeJsonQ.delete(document);
 			if (document.isClosed) {
 				return;
 			}
 
-			const diagnostics: Diagnostic[] = [];
+			const diAgnostics: DiAgnostic[] = [];
 
-			const tree = parseTree(document.getText());
-			const info = this.readPackageJsonInfo(this.getUriFolder(document.uri), tree);
+			const tree = pArseTree(document.getText());
+			const info = this.reAdPAckAgeJsonInfo(this.getUriFolder(document.uri), tree);
 			if (info.isExtension) {
 
-				const icon = findNodeAtLocation(tree, ['icon']);
+				const icon = findNodeAtLocAtion(tree, ['icon']);
 				if (icon && icon.type === 'string') {
-					this.addDiagnostics(diagnostics, document, icon.offset + 1, icon.offset + icon.length - 1, icon.value, Context.ICON, info);
+					this.AddDiAgnostics(diAgnostics, document, icon.offset + 1, icon.offset + icon.length - 1, icon.vAlue, Context.ICON, info);
 				}
 
-				const badges = findNodeAtLocation(tree, ['badges']);
-				if (badges && badges.type === 'array' && badges.children) {
-					badges.children.map(child => findNodeAtLocation(child, ['url']))
+				const bAdges = findNodeAtLocAtion(tree, ['bAdges']);
+				if (bAdges && bAdges.type === 'ArrAy' && bAdges.children) {
+					bAdges.children.mAp(child => findNodeAtLocAtion(child, ['url']))
 						.filter(url => url && url.type === 'string')
-						.map(url => this.addDiagnostics(diagnostics, document, url!.offset + 1, url!.offset + url!.length - 1, url!.value, Context.BADGE, info));
+						.mAp(url => this.AddDiAgnostics(diAgnostics, document, url!.offset + 1, url!.offset + url!.length - 1, url!.vAlue, Context.BADGE, info));
 				}
 
 			}
-			this.diagnosticsCollection.set(document.uri, diagnostics);
+			this.diAgnosticsCollection.set(document.uri, diAgnostics);
 		});
 	}
 
-	private async lintReadme() {
-		for (const document of Array.from(this.readmeQ)) {
-			this.readmeQ.delete(document);
+	privAte Async lintReAdme() {
+		for (const document of ArrAy.from(this.reAdmeQ)) {
+			this.reAdmeQ.delete(document);
 			if (document.isClosed) {
 				return;
 			}
 
 			const folder = this.getUriFolder(document.uri);
-			let info = this.folderToPackageJsonInfo[folder.toString()];
+			let info = this.folderToPAckAgeJsonInfo[folder.toString()];
 			if (!info) {
-				const tree = await this.loadPackageJson(folder);
-				info = this.readPackageJsonInfo(folder, tree);
+				const tree = AwAit this.loAdPAckAgeJson(folder);
+				info = this.reAdPAckAgeJsonInfo(folder, tree);
 			}
 			if (!info.isExtension) {
-				this.diagnosticsCollection.set(document.uri, []);
+				this.diAgnosticsCollection.set(document.uri, []);
 				return;
 			}
 
 			const text = document.getText();
-			if (!this.markdownIt) {
-				this.markdownIt = new (await import('markdown-it'));
+			if (!this.mArkdownIt) {
+				this.mArkdownIt = new (AwAit import('mArkdown-it'));
 			}
-			const tokens = this.markdownIt.parse(text, {});
-			const tokensAndPositions: TokenAndPosition[] = (function toTokensAndPositions(this: ExtensionLinter, tokens: MarkdownItType.Token[], begin = 0, end = text.length): TokenAndPosition[] {
-				const tokensAndPositions = tokens.map<TokenAndPosition>(token => {
-					if (token.map) {
-						const tokenBegin = document.offsetAt(new Position(token.map[0], 0));
-						const tokenEnd = begin = document.offsetAt(new Position(token.map[1], 0));
+			const tokens = this.mArkdownIt.pArse(text, {});
+			const tokensAndPositions: TokenAndPosition[] = (function toTokensAndPositions(this: ExtensionLinter, tokens: MArkdownItType.Token[], begin = 0, end = text.length): TokenAndPosition[] {
+				const tokensAndPositions = tokens.mAp<TokenAndPosition>(token => {
+					if (token.mAp) {
+						const tokenBegin = document.offsetAt(new Position(token.mAp[0], 0));
+						const tokenEnd = begin = document.offsetAt(new Position(token.mAp[1], 0));
 						return {
 							token,
 							begin: tokenBegin,
 							end: tokenEnd
 						};
 					}
-					const image = token.type === 'image' && this.locateToken(text, begin, end, token, token.attrGet('src'));
-					const other = image || this.locateToken(text, begin, end, token, token.content);
+					const imAge = token.type === 'imAge' && this.locAteToken(text, begin, end, token, token.AttrGet('src'));
+					const other = imAge || this.locAteToken(text, begin, end, token, token.content);
 					return other || {
 						token,
 						begin,
 						end: begin
 					};
 				});
-				return tokensAndPositions.concat(
+				return tokensAndPositions.concAt(
 					...tokensAndPositions.filter(tnp => tnp.token.children && tnp.token.children.length)
-						.map(tnp => toTokensAndPositions.call(this, tnp.token.children, tnp.begin, tnp.end))
+						.mAp(tnp => toTokensAndPositions.cAll(this, tnp.token.children, tnp.begin, tnp.end))
 				);
-			}).call(this, tokens);
+			}).cAll(this, tokens);
 
-			const diagnostics: Diagnostic[] = [];
+			const diAgnostics: DiAgnostic[] = [];
 
-			tokensAndPositions.filter(tnp => tnp.token.type === 'image' && tnp.token.attrGet('src'))
-				.map(inp => {
-					const src = inp.token.attrGet('src')!;
+			tokensAndPositions.filter(tnp => tnp.token.type === 'imAge' && tnp.token.AttrGet('src'))
+				.mAp(inp => {
+					const src = inp.token.AttrGet('src')!;
 					const begin = text.indexOf(src, inp.begin);
 					if (begin !== -1 && begin < inp.end) {
-						this.addDiagnostics(diagnostics, document, begin, begin + src.length, src, Context.MARKDOWN, info);
+						this.AddDiAgnostics(diAgnostics, document, begin, begin + src.length, src, Context.MARKDOWN, info);
 					} else {
 						const content = inp.token.content;
 						const begin = text.indexOf(content, inp.begin);
 						if (begin !== -1 && begin < inp.end) {
-							this.addDiagnostics(diagnostics, document, begin, begin + content.length, src, Context.MARKDOWN, info);
+							this.AddDiAgnostics(diAgnostics, document, begin, begin + content.length, src, Context.MARKDOWN, info);
 						}
 					}
 				});
 
-			let svgStart: Diagnostic;
+			let svgStArt: DiAgnostic;
 			for (const tnp of tokensAndPositions) {
 				if (tnp.token.type === 'text' && tnp.token.content) {
-					const parse5 = await import('parse5');
-					const parser = new parse5.SAXParser({ locationInfo: true });
-					parser.on('startTag', (name, attrs, _selfClosing, location) => {
-						if (name === 'img') {
-							const src = attrs.find(a => a.name === 'src');
-							if (src && src.value && location) {
-								const begin = text.indexOf(src.value, tnp.begin + location.startOffset);
+					const pArse5 = AwAit import('pArse5');
+					const pArser = new pArse5.SAXPArser({ locAtionInfo: true });
+					pArser.on('stArtTAg', (nAme, Attrs, _selfClosing, locAtion) => {
+						if (nAme === 'img') {
+							const src = Attrs.find(A => A.nAme === 'src');
+							if (src && src.vAlue && locAtion) {
+								const begin = text.indexOf(src.vAlue, tnp.begin + locAtion.stArtOffset);
 								if (begin !== -1 && begin < tnp.end) {
-									this.addDiagnostics(diagnostics, document, begin, begin + src.value.length, src.value, Context.MARKDOWN, info);
+									this.AddDiAgnostics(diAgnostics, document, begin, begin + src.vAlue.length, src.vAlue, Context.MARKDOWN, info);
 								}
 							}
-						} else if (name === 'svg' && location) {
-							const begin = tnp.begin + location.startOffset;
-							const end = tnp.begin + location.endOffset;
-							const range = new Range(document.positionAt(begin), document.positionAt(end));
-							svgStart = new Diagnostic(range, embeddedSvgsNotValid, DiagnosticSeverity.Warning);
-							diagnostics.push(svgStart);
+						} else if (nAme === 'svg' && locAtion) {
+							const begin = tnp.begin + locAtion.stArtOffset;
+							const end = tnp.begin + locAtion.endOffset;
+							const rAnge = new RAnge(document.positionAt(begin), document.positionAt(end));
+							svgStArt = new DiAgnostic(rAnge, embeddedSvgsNotVAlid, DiAgnosticSeverity.WArning);
+							diAgnostics.push(svgStArt);
 						}
 					});
-					parser.on('endTag', (name, location) => {
-						if (name === 'svg' && svgStart && location) {
-							const end = tnp.begin + location.endOffset;
-							svgStart.range = new Range(svgStart.range.start, document.positionAt(end));
+					pArser.on('endTAg', (nAme, locAtion) => {
+						if (nAme === 'svg' && svgStArt && locAtion) {
+							const end = tnp.begin + locAtion.endOffset;
+							svgStArt.rAnge = new RAnge(svgStArt.rAnge.stArt, document.positionAt(end));
 						}
 					});
-					parser.write(tnp.token.content);
-					parser.end();
+					pArser.write(tnp.token.content);
+					pArser.end();
 				}
 			}
 
-			this.diagnosticsCollection.set(document.uri, diagnostics);
+			this.diAgnosticsCollection.set(document.uri, diAgnostics);
 		}
 	}
 
-	private locateToken(text: string, begin: number, end: number, token: MarkdownItType.Token, content: string | null) {
+	privAte locAteToken(text: string, begin: number, end: number, token: MArkdownItType.Token, content: string | null) {
 		if (content) {
 			const tokenBegin = text.indexOf(content, begin);
 			if (tokenBegin !== -1) {
@@ -254,113 +254,113 @@ export class ExtensionLinter {
 		return undefined;
 	}
 
-	private readPackageJsonInfo(folder: Uri, tree: JsonNode | undefined) {
-		const engine = tree && findNodeAtLocation(tree, ['engines', 'vscode']);
-		const repo = tree && findNodeAtLocation(tree, ['repository', 'url']);
-		const uri = repo && parseUri(repo.value);
-		const info: PackageJsonInfo = {
+	privAte reAdPAckAgeJsonInfo(folder: Uri, tree: JsonNode | undefined) {
+		const engine = tree && findNodeAtLocAtion(tree, ['engines', 'vscode']);
+		const repo = tree && findNodeAtLocAtion(tree, ['repository', 'url']);
+		const uri = repo && pArseUri(repo.vAlue);
+		const info: PAckAgeJsonInfo = {
 			isExtension: !!(engine && engine.type === 'string'),
-			hasHttpsRepository: !!(repo && repo.type === 'string' && repo.value && uri && uri.scheme.toLowerCase() === 'https'),
+			hAsHttpsRepository: !!(repo && repo.type === 'string' && repo.vAlue && uri && uri.scheme.toLowerCAse() === 'https'),
 			repository: uri!
 		};
 		const str = folder.toString();
-		const oldInfo = this.folderToPackageJsonInfo[str];
-		if (oldInfo && (oldInfo.isExtension !== info.isExtension || oldInfo.hasHttpsRepository !== info.hasHttpsRepository)) {
-			this.packageJsonChanged(folder); // clears this.folderToPackageJsonInfo[str]
+		const oldInfo = this.folderToPAckAgeJsonInfo[str];
+		if (oldInfo && (oldInfo.isExtension !== info.isExtension || oldInfo.hAsHttpsRepository !== info.hAsHttpsRepository)) {
+			this.pAckAgeJsonChAnged(folder); // cleArs this.folderToPAckAgeJsonInfo[str]
 		}
-		this.folderToPackageJsonInfo[str] = info;
+		this.folderToPAckAgeJsonInfo[str] = info;
 		return info;
 	}
 
-	private async loadPackageJson(folder: Uri) {
+	privAte Async loAdPAckAgeJson(folder: Uri) {
 		if (folder.scheme === 'git') { // #36236
 			return undefined;
 		}
-		const file = folder.with({ path: path.posix.join(folder.path, 'package.json') });
+		const file = folder.with({ pAth: pAth.posix.join(folder.pAth, 'pAckAge.json') });
 		try {
-			const document = await workspace.openTextDocument(file);
-			return parseTree(document.getText());
-		} catch (err) {
+			const document = AwAit workspAce.openTextDocument(file);
+			return pArseTree(document.getText());
+		} cAtch (err) {
 			return undefined;
 		}
 	}
 
-	private packageJsonChanged(folder: Uri) {
-		delete this.folderToPackageJsonInfo[folder.toString()];
-		const str = folder.toString().toLowerCase();
-		workspace.textDocuments.filter(document => this.getUriFolder(document.uri).toString().toLowerCase() === str)
-			.forEach(document => this.queueReadme(document));
+	privAte pAckAgeJsonChAnged(folder: Uri) {
+		delete this.folderToPAckAgeJsonInfo[folder.toString()];
+		const str = folder.toString().toLowerCAse();
+		workspAce.textDocuments.filter(document => this.getUriFolder(document.uri).toString().toLowerCAse() === str)
+			.forEAch(document => this.queueReAdme(document));
 	}
 
-	private getUriFolder(uri: Uri) {
-		return uri.with({ path: path.posix.dirname(uri.path) });
+	privAte getUriFolder(uri: Uri) {
+		return uri.with({ pAth: pAth.posix.dirnAme(uri.pAth) });
 	}
 
-	private addDiagnostics(diagnostics: Diagnostic[], document: TextDocument, begin: number, end: number, src: string, context: Context, info: PackageJsonInfo) {
-		const hasScheme = /^\w[\w\d+.-]*:/.test(src);
-		const uri = parseUri(src, info.repository ? info.repository.toString() : document.uri.toString());
+	privAte AddDiAgnostics(diAgnostics: DiAgnostic[], document: TextDocument, begin: number, end: number, src: string, context: Context, info: PAckAgeJsonInfo) {
+		const hAsScheme = /^\w[\w\d+.-]*:/.test(src);
+		const uri = pArseUri(src, info.repository ? info.repository.toString() : document.uri.toString());
 		if (!uri) {
 			return;
 		}
-		const scheme = uri.scheme.toLowerCase();
+		const scheme = uri.scheme.toLowerCAse();
 
-		if (hasScheme && scheme !== 'https' && scheme !== 'data') {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
-			diagnostics.push(new Diagnostic(range, httpsRequired, DiagnosticSeverity.Warning));
+		if (hAsScheme && scheme !== 'https' && scheme !== 'dAtA') {
+			const rAnge = new RAnge(document.positionAt(begin), document.positionAt(end));
+			diAgnostics.push(new DiAgnostic(rAnge, httpsRequired, DiAgnosticSeverity.WArning));
 		}
 
-		if (hasScheme && scheme === 'data') {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
-			diagnostics.push(new Diagnostic(range, dataUrlsNotValid, DiagnosticSeverity.Warning));
+		if (hAsScheme && scheme === 'dAtA') {
+			const rAnge = new RAnge(document.positionAt(begin), document.positionAt(end));
+			diAgnostics.push(new DiAgnostic(rAnge, dAtAUrlsNotVAlid, DiAgnosticSeverity.WArning));
 		}
 
-		if (!hasScheme && !info.hasHttpsRepository) {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
-			let message = (() => {
+		if (!hAsScheme && !info.hAsHttpsRepository) {
+			const rAnge = new RAnge(document.positionAt(begin), document.positionAt(end));
+			let messAge = (() => {
 				switch (context) {
-					case Context.ICON: return relativeIconUrlRequiresHttpsRepository;
-					case Context.BADGE: return relativeBadgeUrlRequiresHttpsRepository;
-					default: return relativeUrlRequiresHttpsRepository;
+					cAse Context.ICON: return relAtiveIconUrlRequiresHttpsRepository;
+					cAse Context.BADGE: return relAtiveBAdgeUrlRequiresHttpsRepository;
+					defAult: return relAtiveUrlRequiresHttpsRepository;
 				}
 			})();
-			diagnostics.push(new Diagnostic(range, message, DiagnosticSeverity.Warning));
+			diAgnostics.push(new DiAgnostic(rAnge, messAge, DiAgnosticSeverity.WArning));
 		}
 
-		if (endsWith(uri.path.toLowerCase(), '.svg') && !isTrustedSVGSource(uri)) {
-			const range = new Range(document.positionAt(begin), document.positionAt(end));
-			diagnostics.push(new Diagnostic(range, svgsNotValid, DiagnosticSeverity.Warning));
+		if (endsWith(uri.pAth.toLowerCAse(), '.svg') && !isTrustedSVGSource(uri)) {
+			const rAnge = new RAnge(document.positionAt(begin), document.positionAt(end));
+			diAgnostics.push(new DiAgnostic(rAnge, svgsNotVAlid, DiAgnosticSeverity.WArning));
 		}
 	}
 
-	private clear(document: TextDocument) {
-		this.diagnosticsCollection.delete(document.uri);
-		this.packageJsonQ.delete(document);
+	privAte cleAr(document: TextDocument) {
+		this.diAgnosticsCollection.delete(document.uri);
+		this.pAckAgeJsonQ.delete(document);
 	}
 
 	public dispose() {
-		this.disposables.forEach(d => d.dispose());
-		this.disposables = [];
+		this.disposAbles.forEAch(d => d.dispose());
+		this.disposAbles = [];
 	}
 }
 
-function endsWith(haystack: string, needle: string): boolean {
-	let diff = haystack.length - needle.length;
+function endsWith(hAystAck: string, needle: string): booleAn {
+	let diff = hAystAck.length - needle.length;
 	if (diff > 0) {
-		return haystack.indexOf(needle, diff) === diff;
+		return hAystAck.indexOf(needle, diff) === diff;
 	} else if (diff === 0) {
-		return haystack === needle;
+		return hAystAck === needle;
 	} else {
-		return false;
+		return fAlse;
 	}
 }
 
-function parseUri(src: string, base?: string, retry: boolean = true): Uri | null {
+function pArseUri(src: string, bAse?: string, retry: booleAn = true): Uri | null {
 	try {
-		let url = new URL(src, base);
-		return Uri.parse(url.toString());
-	} catch (err) {
+		let url = new URL(src, bAse);
+		return Uri.pArse(url.toString());
+	} cAtch (err) {
 		if (retry) {
-			return parseUri(encodeURI(src), base, false);
+			return pArseUri(encodeURI(src), bAse, fAlse);
 		} else {
 			return null;
 		}

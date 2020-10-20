@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
-import * as assert from 'assert';
-import { MarkdownString, LogLevel } from 'vs/workbench/api/common/extHostTypeConverters';
-import { isEmptyObject } from 'vs/base/common/types';
-import { forEach } from 'vs/base/common/collections';
-import * as types from 'vs/workbench/api/common/extHostTypes';
-import { LogLevel as _MainLogLevel } from 'vs/platform/log/common/log';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { MArkdownString, LogLevel } from 'vs/workbench/Api/common/extHostTypeConverters';
+import { isEmptyObject } from 'vs/bAse/common/types';
+import { forEAch } from 'vs/bAse/common/collections';
+import * As types from 'vs/workbench/Api/common/extHostTypes';
+import { LogLevel As _MAinLogLevel } from 'vs/plAtform/log/common/log';
+import { URI } from 'vs/bAse/common/uri';
 
 suite('ExtHostTypeConverter', function () {
-	function size<T>(from: Record<any, any>): number {
+	function size<T>(from: Record<Any, Any>): number {
 		let count = 0;
 		for (let key in from) {
-			if (Object.prototype.hasOwnProperty.call(from, key)) {
+			if (Object.prototype.hAsOwnProperty.cAll(from, key)) {
 				count += 1;
 			}
 		}
 		return count;
 	}
 
-	test('MarkdownConvert - uris', function () {
+	test('MArkdownConvert - uris', function () {
 
-		let data = MarkdownString.from('Hello');
-		assert.equal(isEmptyObject(data.uris), true);
-		assert.equal(data.value, 'Hello');
+		let dAtA = MArkdownString.from('Hello');
+		Assert.equAl(isEmptyObject(dAtA.uris), true);
+		Assert.equAl(dAtA.vAlue, 'Hello');
 
-		data = MarkdownString.from('Hello [link](foo)');
-		assert.equal(data.value, 'Hello [link](foo)');
-		assert.equal(isEmptyObject(data.uris), true); // no scheme, no uri
+		dAtA = MArkdownString.from('Hello [link](foo)');
+		Assert.equAl(dAtA.vAlue, 'Hello [link](foo)');
+		Assert.equAl(isEmptyObject(dAtA.uris), true); // no scheme, no uri
 
-		data = MarkdownString.from('Hello [link](www.noscheme.bad)');
-		assert.equal(data.value, 'Hello [link](www.noscheme.bad)');
-		assert.equal(isEmptyObject(data.uris), true); // no scheme, no uri
+		dAtA = MArkdownString.from('Hello [link](www.noscheme.bAd)');
+		Assert.equAl(dAtA.vAlue, 'Hello [link](www.noscheme.bAd)');
+		Assert.equAl(isEmptyObject(dAtA.uris), true); // no scheme, no uri
 
-		data = MarkdownString.from('Hello [link](foo:path)');
-		assert.equal(data.value, 'Hello [link](foo:path)');
-		assert.equal(size(data.uris!), 1);
-		assert.ok(!!data.uris!['foo:path']);
+		dAtA = MArkdownString.from('Hello [link](foo:pAth)');
+		Assert.equAl(dAtA.vAlue, 'Hello [link](foo:pAth)');
+		Assert.equAl(size(dAtA.uris!), 1);
+		Assert.ok(!!dAtA.uris!['foo:pAth']);
 
-		data = MarkdownString.from('hello@foo.bar');
-		assert.equal(data.value, 'hello@foo.bar');
-		assert.equal(size(data.uris!), 1);
-		// assert.ok(!!data.uris!['mailto:hello@foo.bar']);
+		dAtA = MArkdownString.from('hello@foo.bAr');
+		Assert.equAl(dAtA.vAlue, 'hello@foo.bAr');
+		Assert.equAl(size(dAtA.uris!), 1);
+		// Assert.ok(!!dAtA.uris!['mAilto:hello@foo.bAr']);
 
-		data = MarkdownString.from('*hello* [click](command:me)');
-		assert.equal(data.value, '*hello* [click](command:me)');
-		assert.equal(size(data.uris!), 1);
-		assert.ok(!!data.uris!['command:me']);
+		dAtA = MArkdownString.from('*hello* [click](commAnd:me)');
+		Assert.equAl(dAtA.vAlue, '*hello* [click](commAnd:me)');
+		Assert.equAl(size(dAtA.uris!), 1);
+		Assert.ok(!!dAtA.uris!['commAnd:me']);
 
-		data = MarkdownString.from('*hello* [click](file:///somepath/here). [click](file:///somepath/here)');
-		assert.equal(data.value, '*hello* [click](file:///somepath/here). [click](file:///somepath/here)');
-		assert.equal(size(data.uris!), 1);
-		assert.ok(!!data.uris!['file:///somepath/here']);
+		dAtA = MArkdownString.from('*hello* [click](file:///somepAth/here). [click](file:///somepAth/here)');
+		Assert.equAl(dAtA.vAlue, '*hello* [click](file:///somepAth/here). [click](file:///somepAth/here)');
+		Assert.equAl(size(dAtA.uris!), 1);
+		Assert.ok(!!dAtA.uris!['file:///somepAth/here']);
 
-		data = MarkdownString.from('*hello* [click](file:///somepath/here). [click](file:///somepath/here)');
-		assert.equal(data.value, '*hello* [click](file:///somepath/here). [click](file:///somepath/here)');
-		assert.equal(size(data.uris!), 1);
-		assert.ok(!!data.uris!['file:///somepath/here']);
+		dAtA = MArkdownString.from('*hello* [click](file:///somepAth/here). [click](file:///somepAth/here)');
+		Assert.equAl(dAtA.vAlue, '*hello* [click](file:///somepAth/here). [click](file:///somepAth/here)');
+		Assert.equAl(size(dAtA.uris!), 1);
+		Assert.ok(!!dAtA.uris!['file:///somepAth/here']);
 
-		data = MarkdownString.from('*hello* [click](file:///somepath/here). [click](file:///somepath/here2)');
-		assert.equal(data.value, '*hello* [click](file:///somepath/here). [click](file:///somepath/here2)');
-		assert.equal(size(data.uris!), 2);
-		assert.ok(!!data.uris!['file:///somepath/here']);
-		assert.ok(!!data.uris!['file:///somepath/here2']);
+		dAtA = MArkdownString.from('*hello* [click](file:///somepAth/here). [click](file:///somepAth/here2)');
+		Assert.equAl(dAtA.vAlue, '*hello* [click](file:///somepAth/here). [click](file:///somepAth/here2)');
+		Assert.equAl(size(dAtA.uris!), 2);
+		Assert.ok(!!dAtA.uris!['file:///somepAth/here']);
+		Assert.ok(!!dAtA.uris!['file:///somepAth/here2']);
 	});
 
-	test('NPM script explorer running a script from the hover does not work #65561', function () {
+	test('NPM script explorer running A script from the hover does not work #65561', function () {
 
-		let data = MarkdownString.from('*hello* [click](command:npm.runScriptFromHover?%7B%22documentUri%22%3A%7B%22%24mid%22%3A1%2C%22external%22%3A%22file%3A%2F%2F%2Fc%253A%2Ffoo%2Fbaz.ex%22%2C%22path%22%3A%22%2Fc%3A%2Ffoo%2Fbaz.ex%22%2C%22scheme%22%3A%22file%22%7D%2C%22script%22%3A%22dev%22%7D)');
-		// assert that both uri get extracted but that the latter is only decoded once...
-		assert.equal(size(data.uris!), 2);
-		forEach(data.uris!, entry => {
-			if (entry.value.scheme === 'file') {
-				assert.ok(URI.revive(entry.value).toString().indexOf('file:///c%3A') === 0);
+		let dAtA = MArkdownString.from('*hello* [click](commAnd:npm.runScriptFromHover?%7B%22documentUri%22%3A%7B%22%24mid%22%3A1%2C%22externAl%22%3A%22file%3A%2F%2F%2Fc%253A%2Ffoo%2FbAz.ex%22%2C%22pAth%22%3A%22%2Fc%3A%2Ffoo%2FbAz.ex%22%2C%22scheme%22%3A%22file%22%7D%2C%22script%22%3A%22dev%22%7D)');
+		// Assert thAt both uri get extrActed but thAt the lAtter is only decoded once...
+		Assert.equAl(size(dAtA.uris!), 2);
+		forEAch(dAtA.uris!, entry => {
+			if (entry.vAlue.scheme === 'file') {
+				Assert.ok(URI.revive(entry.vAlue).toString().indexOf('file:///c%3A') === 0);
 			} else {
-				assert.equal(entry.value.scheme, 'command');
+				Assert.equAl(entry.vAlue.scheme, 'commAnd');
 			}
 		});
 	});
 
 	test('LogLevel', () => {
-		assert.equal(LogLevel.from(types.LogLevel.Error), _MainLogLevel.Error);
-		assert.equal(LogLevel.from(types.LogLevel.Info), _MainLogLevel.Info);
-		assert.equal(LogLevel.from(types.LogLevel.Off), _MainLogLevel.Off);
+		Assert.equAl(LogLevel.from(types.LogLevel.Error), _MAinLogLevel.Error);
+		Assert.equAl(LogLevel.from(types.LogLevel.Info), _MAinLogLevel.Info);
+		Assert.equAl(LogLevel.from(types.LogLevel.Off), _MAinLogLevel.Off);
 
-		assert.equal(LogLevel.to(_MainLogLevel.Error), types.LogLevel.Error);
-		assert.equal(LogLevel.to(_MainLogLevel.Info), types.LogLevel.Info);
-		assert.equal(LogLevel.to(_MainLogLevel.Off), types.LogLevel.Off);
+		Assert.equAl(LogLevel.to(_MAinLogLevel.Error), types.LogLevel.Error);
+		Assert.equAl(LogLevel.to(_MAinLogLevel.Info), types.LogLevel.Info);
+		Assert.equAl(LogLevel.to(_MAinLogLevel.Off), types.LogLevel.Off);
 	});
 });

@@ -1,155 +1,155 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/quickInput';
-import { IQuickPickItem, IPickOptions, IInputOptions, IQuickNavigateConfiguration, IQuickPick, IQuickInput, IQuickInputButton, IInputBox, IQuickPickItemButtonEvent, QuickPickInput, IQuickPickSeparator, IKeyMods, IQuickPickAcceptEvent, NO_KEY_MODS, ItemActivation } from 'vs/base/parts/quickinput/common/quickInput';
-import * as dom from 'vs/base/browser/dom';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import 'vs/css!./mediA/quickInput';
+import { IQuickPickItem, IPickOptions, IInputOptions, IQuickNAvigAteConfigurAtion, IQuickPick, IQuickInput, IQuickInputButton, IInputBox, IQuickPickItemButtonEvent, QuickPickInput, IQuickPickSepArAtor, IKeyMods, IQuickPickAcceptEvent, NO_KEY_MODS, ItemActivAtion } from 'vs/bAse/pArts/quickinput/common/quickInput';
+import * As dom from 'vs/bAse/browser/dom';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { QuickInputList, QuickInputListFocus } from './quickInputList';
 import { QuickInputBox } from './quickInputBox';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { localize } from 'vs/nls';
-import { CountBadge, ICountBadgetyles } from 'vs/base/browser/ui/countBadge/countBadge';
-import { ProgressBar, IProgressBarStyles } from 'vs/base/browser/ui/progressbar/progressbar';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Button, IButtonStyles } from 'vs/base/browser/ui/button/button';
-import { dispose, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import Severity from 'vs/base/common/severity';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { Action } from 'vs/base/common/actions';
-import { equals } from 'vs/base/common/arrays';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { getIconClass } from 'vs/base/parts/quickinput/browser/quickInputUtils';
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { List, IListOptions, IListStyles } from 'vs/base/browser/ui/list/listWidget';
-import { IInputBoxStyles } from 'vs/base/browser/ui/inputbox/inputBox';
-import { Color } from 'vs/base/common/color';
-import { registerIcon, Codicon } from 'vs/base/common/codicons';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { locAlize } from 'vs/nls';
+import { CountBAdge, ICountBAdgetyles } from 'vs/bAse/browser/ui/countBAdge/countBAdge';
+import { ProgressBAr, IProgressBArStyles } from 'vs/bAse/browser/ui/progressbAr/progressbAr';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { Button, IButtonStyles } from 'vs/bAse/browser/ui/button/button';
+import { dispose, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import Severity from 'vs/bAse/common/severity';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { Action } from 'vs/bAse/common/Actions';
+import { equAls } from 'vs/bAse/common/ArrAys';
+import { TimeoutTimer } from 'vs/bAse/common/Async';
+import { getIconClAss } from 'vs/bAse/pArts/quickinput/browser/quickInputUtils';
+import { IListVirtuAlDelegAte, IListRenderer } from 'vs/bAse/browser/ui/list/list';
+import { List, IListOptions, IListStyles } from 'vs/bAse/browser/ui/list/listWidget';
+import { IInputBoxStyles } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { Color } from 'vs/bAse/common/color';
+import { registerIcon, Codicon } from 'vs/bAse/common/codicons';
+import { ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export interface IQuickInputOptions {
+export interfAce IQuickInputOptions {
 	idPrefix: string;
-	container: HTMLElement;
-	ignoreFocusOut(): boolean;
-	isScreenReaderOptimized(): boolean;
-	backKeybindingLabel(): string | undefined;
+	contAiner: HTMLElement;
+	ignoreFocusOut(): booleAn;
+	isScreenReAderOptimized(): booleAn;
+	bAckKeybindingLAbel(): string | undefined;
 	setContextKey(id?: string): void;
 	returnFocus(): void;
-	createList<T>(
+	creAteList<T>(
 		user: string,
-		container: HTMLElement,
-		delegate: IListVirtualDelegate<T>,
-		renderers: IListRenderer<T, any>[],
+		contAiner: HTMLElement,
+		delegAte: IListVirtuAlDelegAte<T>,
+		renderers: IListRenderer<T, Any>[],
 		options: IListOptions<T>,
 	): List<T>;
 	styles: IQuickInputStyles;
 }
 
-export interface IQuickInputStyles {
+export interfAce IQuickInputStyles {
 	widget: IQuickInputWidgetStyles;
 	inputBox: IInputBoxStyles;
-	countBadge: ICountBadgetyles;
+	countBAdge: ICountBAdgetyles;
 	button: IButtonStyles;
-	progressBar: IProgressBarStyles;
-	list: IListStyles & { listInactiveFocusForeground?: Color; pickerGroupBorder?: Color; pickerGroupForeground?: Color; };
+	progressBAr: IProgressBArStyles;
+	list: IListStyles & { listInActiveFocusForeground?: Color; pickerGroupBorder?: Color; pickerGroupForeground?: Color; };
 }
 
-export interface IQuickInputWidgetStyles {
-	quickInputBackground?: Color;
+export interfAce IQuickInputWidgetStyles {
+	quickInputBAckground?: Color;
 	quickInputForeground?: Color;
-	quickInputTitleBackground?: Color;
-	contrastBorder?: Color;
-	widgetShadow?: Color;
+	quickInputTitleBAckground?: Color;
+	contrAstBorder?: Color;
+	widgetShAdow?: Color;
 }
 
 const $ = dom.$;
 
-type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+type WriteAble<T> = { -reAdonly [P in keyof T]: T[P] };
 
 
-const backButtonIcon = registerIcon('quick-input-back', Codicon.arrowLeft);
+const bAckButtonIcon = registerIcon('quick-input-bAck', Codicon.ArrowLeft);
 
-const backButton = {
-	iconClass: backButtonIcon.classNames,
-	tooltip: localize('quickInput.back', "Back"),
-	handle: -1 // TODO
+const bAckButton = {
+	iconClAss: bAckButtonIcon.clAssNAmes,
+	tooltip: locAlize('quickInput.bAck', "BAck"),
+	hAndle: -1 // TODO
 };
 
-interface QuickInputUI {
-	container: HTMLElement;
+interfAce QuickInputUI {
+	contAiner: HTMLElement;
 	styleSheet: HTMLStyleElement;
-	leftActionBar: ActionBar;
-	titleBar: HTMLElement;
+	leftActionBAr: ActionBAr;
+	titleBAr: HTMLElement;
 	title: HTMLElement;
 	description1: HTMLElement;
 	description2: HTMLElement;
-	rightActionBar: ActionBar;
+	rightActionBAr: ActionBAr;
 	checkAll: HTMLInputElement;
-	filterContainer: HTMLElement;
+	filterContAiner: HTMLElement;
 	inputBox: QuickInputBox;
-	visibleCountContainer: HTMLElement;
-	visibleCount: CountBadge;
-	countContainer: HTMLElement;
-	count: CountBadge;
-	okContainer: HTMLElement;
+	visibleCountContAiner: HTMLElement;
+	visibleCount: CountBAdge;
+	countContAiner: HTMLElement;
+	count: CountBAdge;
+	okContAiner: HTMLElement;
 	ok: Button;
-	message: HTMLElement;
-	customButtonContainer: HTMLElement;
+	messAge: HTMLElement;
+	customButtonContAiner: HTMLElement;
 	customButton: Button;
-	progressBar: ProgressBar;
+	progressBAr: ProgressBAr;
 	list: QuickInputList;
 	onDidAccept: Event<void>;
 	onDidCustom: Event<void>;
 	onDidTriggerButton: Event<IQuickInputButton>;
-	ignoreFocusOut: boolean;
-	keyMods: Writeable<IKeyMods>;
-	isScreenReaderOptimized(): boolean;
+	ignoreFocusOut: booleAn;
+	keyMods: WriteAble<IKeyMods>;
+	isScreenReAderOptimized(): booleAn;
 	show(controller: QuickInput): void;
 	setVisibilities(visibilities: Visibilities): void;
-	setComboboxAccessibility(enabled: boolean): void;
-	setEnabled(enabled: boolean): void;
+	setComboboxAccessibility(enAbled: booleAn): void;
+	setEnAbled(enAbled: booleAn): void;
 	setContextKey(contextKey?: string): void;
 	hide(): void;
 }
 
 type Visibilities = {
-	title?: boolean;
-	description?: boolean;
-	checkAll?: boolean;
-	inputBox?: boolean;
-	checkBox?: boolean;
-	visibleCount?: boolean;
-	count?: boolean;
-	message?: boolean;
-	list?: boolean;
-	ok?: boolean;
-	customButton?: boolean;
-	progressBar?: boolean;
+	title?: booleAn;
+	description?: booleAn;
+	checkAll?: booleAn;
+	inputBox?: booleAn;
+	checkBox?: booleAn;
+	visibleCount?: booleAn;
+	count?: booleAn;
+	messAge?: booleAn;
+	list?: booleAn;
+	ok?: booleAn;
+	customButton?: booleAn;
+	progressBAr?: booleAn;
 };
 
-class QuickInput extends Disposable implements IQuickInput {
+clAss QuickInput extends DisposAble implements IQuickInput {
 
-	private _title: string | undefined;
-	private _description: string | undefined;
-	private _steps: number | undefined;
-	private _totalSteps: number | undefined;
-	protected visible = false;
-	private _enabled = true;
-	private _contextKey: string | undefined;
-	private _busy = false;
-	private _ignoreFocusOut = false;
-	private _buttons: IQuickInputButton[] = [];
-	private buttonsUpdated = false;
-	private readonly onDidTriggerButtonEmitter = this._register(new Emitter<IQuickInputButton>());
-	private readonly onDidHideEmitter = this._register(new Emitter<void>());
-	private readonly onDisposeEmitter = this._register(new Emitter<void>());
+	privAte _title: string | undefined;
+	privAte _description: string | undefined;
+	privAte _steps: number | undefined;
+	privAte _totAlSteps: number | undefined;
+	protected visible = fAlse;
+	privAte _enAbled = true;
+	privAte _contextKey: string | undefined;
+	privAte _busy = fAlse;
+	privAte _ignoreFocusOut = fAlse;
+	privAte _buttons: IQuickInputButton[] = [];
+	privAte buttonsUpdAted = fAlse;
+	privAte reAdonly onDidTriggerButtonEmitter = this._register(new Emitter<IQuickInputButton>());
+	privAte reAdonly onDidHideEmitter = this._register(new Emitter<void>());
+	privAte reAdonly onDisposeEmitter = this._register(new Emitter<void>());
 
-	protected readonly visibleDisposables = this._register(new DisposableStore());
+	protected reAdonly visibleDisposAbles = this._register(new DisposAbleStore());
 
-	private busyDelay: TimeoutTimer | undefined;
+	privAte busyDelAy: TimeoutTimer | undefined;
 
 	constructor(
 		protected ui: QuickInputUI
@@ -163,7 +163,7 @@ class QuickInput extends Disposable implements IQuickInput {
 
 	set title(title: string | undefined) {
 		this._title = title;
-		this.update();
+		this.updAte();
 	}
 
 	get description() {
@@ -172,7 +172,7 @@ class QuickInput extends Disposable implements IQuickInput {
 
 	set description(description: string | undefined) {
 		this._description = description;
-		this.update();
+		this.updAte();
 	}
 
 	get step() {
@@ -181,25 +181,25 @@ class QuickInput extends Disposable implements IQuickInput {
 
 	set step(step: number | undefined) {
 		this._steps = step;
-		this.update();
+		this.updAte();
 	}
 
-	get totalSteps() {
-		return this._totalSteps;
+	get totAlSteps() {
+		return this._totAlSteps;
 	}
 
-	set totalSteps(totalSteps: number | undefined) {
-		this._totalSteps = totalSteps;
-		this.update();
+	set totAlSteps(totAlSteps: number | undefined) {
+		this._totAlSteps = totAlSteps;
+		this.updAte();
 	}
 
-	get enabled() {
-		return this._enabled;
+	get enAbled() {
+		return this._enAbled;
 	}
 
-	set enabled(enabled: boolean) {
-		this._enabled = enabled;
-		this.update();
+	set enAbled(enAbled: booleAn) {
+		this._enAbled = enAbled;
+		this.updAte();
 	}
 
 	get contextKey() {
@@ -208,25 +208,25 @@ class QuickInput extends Disposable implements IQuickInput {
 
 	set contextKey(contextKey: string | undefined) {
 		this._contextKey = contextKey;
-		this.update();
+		this.updAte();
 	}
 
 	get busy() {
 		return this._busy;
 	}
 
-	set busy(busy: boolean) {
+	set busy(busy: booleAn) {
 		this._busy = busy;
-		this.update();
+		this.updAte();
 	}
 
 	get ignoreFocusOut() {
 		return this._ignoreFocusOut;
 	}
 
-	set ignoreFocusOut(ignoreFocusOut: boolean) {
+	set ignoreFocusOut(ignoreFocusOut: booleAn) {
 		this._ignoreFocusOut = ignoreFocusOut;
-		this.update();
+		this.updAte();
 	}
 
 	get buttons() {
@@ -235,17 +235,17 @@ class QuickInput extends Disposable implements IQuickInput {
 
 	set buttons(buttons: IQuickInputButton[]) {
 		this._buttons = buttons;
-		this.buttonsUpdated = true;
-		this.update();
+		this.buttonsUpdAted = true;
+		this.updAte();
 	}
 
-	readonly onDidTriggerButton = this.onDidTriggerButtonEmitter.event;
+	reAdonly onDidTriggerButton = this.onDidTriggerButtonEmitter.event;
 
 	show(): void {
 		if (this.visible) {
 			return;
 		}
-		this.visibleDisposables.add(
+		this.visibleDisposAbles.Add(
 			this.ui.onDidTriggerButton(button => {
 				if (this.buttons.indexOf(button) !== -1) {
 					this.onDidTriggerButtonEmitter.fire(button);
@@ -254,7 +254,7 @@ class QuickInput extends Disposable implements IQuickInput {
 		);
 		this.ui.show(this);
 		this.visible = true;
-		this.update();
+		this.updAte();
 	}
 
 	hide(): void {
@@ -265,14 +265,14 @@ class QuickInput extends Disposable implements IQuickInput {
 	}
 
 	didHide(): void {
-		this.visible = false;
-		this.visibleDisposables.clear();
+		this.visible = fAlse;
+		this.visibleDisposAbles.cleAr();
 		this.onDidHideEmitter.fire();
 	}
 
-	readonly onDidHide = this.onDidHideEmitter.event;
+	reAdonly onDidHide = this.onDidHideEmitter.event;
 
-	protected update() {
+	protected updAte() {
 		if (!this.visible) {
 			return;
 		}
@@ -280,7 +280,7 @@ class QuickInput extends Disposable implements IQuickInput {
 		if (title && this.ui.title.textContent !== title) {
 			this.ui.title.textContent = title;
 		} else if (!title && this.ui.title.innerHTML !== '&nbsp;') {
-			this.ui.title.innerText = '\u00a0;';
+			this.ui.title.innerText = '\u00A0;';
 		}
 		const description = this.getDescription();
 		if (this.ui.description1.textContent !== description) {
@@ -289,46 +289,46 @@ class QuickInput extends Disposable implements IQuickInput {
 		if (this.ui.description2.textContent !== description) {
 			this.ui.description2.textContent = description;
 		}
-		if (this.busy && !this.busyDelay) {
-			this.busyDelay = new TimeoutTimer();
-			this.busyDelay.setIfNotSet(() => {
+		if (this.busy && !this.busyDelAy) {
+			this.busyDelAy = new TimeoutTimer();
+			this.busyDelAy.setIfNotSet(() => {
 				if (this.visible) {
-					this.ui.progressBar.infinite();
+					this.ui.progressBAr.infinite();
 				}
 			}, 800);
 		}
-		if (!this.busy && this.busyDelay) {
-			this.ui.progressBar.stop();
-			this.busyDelay.cancel();
-			this.busyDelay = undefined;
+		if (!this.busy && this.busyDelAy) {
+			this.ui.progressBAr.stop();
+			this.busyDelAy.cAncel();
+			this.busyDelAy = undefined;
 		}
-		if (this.buttonsUpdated) {
-			this.buttonsUpdated = false;
-			this.ui.leftActionBar.clear();
-			const leftButtons = this.buttons.filter(button => button === backButton);
-			this.ui.leftActionBar.push(leftButtons.map((button, index) => {
-				const action = new Action(`id-${index}`, '', button.iconClass || getIconClass(button.iconPath), true, async () => {
+		if (this.buttonsUpdAted) {
+			this.buttonsUpdAted = fAlse;
+			this.ui.leftActionBAr.cleAr();
+			const leftButtons = this.buttons.filter(button => button === bAckButton);
+			this.ui.leftActionBAr.push(leftButtons.mAp((button, index) => {
+				const Action = new Action(`id-${index}`, '', button.iconClAss || getIconClAss(button.iconPAth), true, Async () => {
 					this.onDidTriggerButtonEmitter.fire(button);
 				});
-				action.tooltip = button.tooltip || '';
-				return action;
-			}), { icon: true, label: false });
-			this.ui.rightActionBar.clear();
-			const rightButtons = this.buttons.filter(button => button !== backButton);
-			this.ui.rightActionBar.push(rightButtons.map((button, index) => {
-				const action = new Action(`id-${index}`, '', button.iconClass || getIconClass(button.iconPath), true, async () => {
+				Action.tooltip = button.tooltip || '';
+				return Action;
+			}), { icon: true, lAbel: fAlse });
+			this.ui.rightActionBAr.cleAr();
+			const rightButtons = this.buttons.filter(button => button !== bAckButton);
+			this.ui.rightActionBAr.push(rightButtons.mAp((button, index) => {
+				const Action = new Action(`id-${index}`, '', button.iconClAss || getIconClAss(button.iconPAth), true, Async () => {
 					this.onDidTriggerButtonEmitter.fire(button);
 				});
-				action.tooltip = button.tooltip || '';
-				return action;
-			}), { icon: true, label: false });
+				Action.tooltip = button.tooltip || '';
+				return Action;
+			}), { icon: true, lAbel: fAlse });
 		}
 		this.ui.ignoreFocusOut = this.ignoreFocusOut;
-		this.ui.setEnabled(this.enabled);
+		this.ui.setEnAbled(this.enAbled);
 		this.ui.setContextKey(this.contextKey);
 	}
 
-	private getTitle() {
+	privAte getTitle() {
 		if (this.title && this.step) {
 			return `${this.title} (${this.getSteps()})`;
 		}
@@ -341,13 +341,13 @@ class QuickInput extends Disposable implements IQuickInput {
 		return '';
 	}
 
-	private getDescription() {
+	privAte getDescription() {
 		return this.description || '';
 	}
 
-	private getSteps() {
-		if (this.step && this.totalSteps) {
-			return localize('quickInput.steps', "{0}/{1}", this.step, this.totalSteps);
+	privAte getSteps() {
+		if (this.step && this.totAlSteps) {
+			return locAlize('quickInput.steps', "{0}/{1}", this.step, this.totAlSteps);
 		}
 		if (this.step) {
 			return String(this.step);
@@ -355,23 +355,23 @@ class QuickInput extends Disposable implements IQuickInput {
 		return '';
 	}
 
-	protected showMessageDecoration(severity: Severity) {
-		this.ui.inputBox.showDecoration(severity);
+	protected showMessAgeDecorAtion(severity: Severity) {
+		this.ui.inputBox.showDecorAtion(severity);
 		if (severity === Severity.Error) {
 			const styles = this.ui.inputBox.stylesForType(severity);
-			this.ui.message.style.color = styles.foreground ? `${styles.foreground}` : '';
-			this.ui.message.style.backgroundColor = styles.background ? `${styles.background}` : '';
-			this.ui.message.style.border = styles.border ? `1px solid ${styles.border}` : '';
-			this.ui.message.style.paddingBottom = '4px';
+			this.ui.messAge.style.color = styles.foreground ? `${styles.foreground}` : '';
+			this.ui.messAge.style.bAckgroundColor = styles.bAckground ? `${styles.bAckground}` : '';
+			this.ui.messAge.style.border = styles.border ? `1px solid ${styles.border}` : '';
+			this.ui.messAge.style.pAddingBottom = '4px';
 		} else {
-			this.ui.message.style.color = '';
-			this.ui.message.style.backgroundColor = '';
-			this.ui.message.style.border = '';
-			this.ui.message.style.paddingBottom = '';
+			this.ui.messAge.style.color = '';
+			this.ui.messAge.style.bAckgroundColor = '';
+			this.ui.messAge.style.border = '';
+			this.ui.messAge.style.pAddingBottom = '';
 		}
 	}
 
-	readonly onDispose = this.onDisposeEmitter.event;
+	reAdonly onDispose = this.onDisposeEmitter.event;
 
 	dispose(): void {
 		this.hide();
@@ -381,85 +381,85 @@ class QuickInput extends Disposable implements IQuickInput {
 	}
 }
 
-class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPick<T> {
+clAss QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPick<T> {
 
-	private static readonly DEFAULT_ARIA_LABEL = localize('quickInputBox.ariaLabel', "Type to narrow down results.");
+	privAte stAtic reAdonly DEFAULT_ARIA_LABEL = locAlize('quickInputBox.AriALAbel', "Type to nArrow down results.");
 
-	private _value = '';
-	private _ariaLabel: string | undefined;
-	private _placeholder: string | undefined;
-	private readonly onDidChangeValueEmitter = this._register(new Emitter<string>());
-	private readonly onDidAcceptEmitter = this._register(new Emitter<IQuickPickAcceptEvent>());
-	private readonly onDidCustomEmitter = this._register(new Emitter<void>());
-	private _items: Array<T | IQuickPickSeparator> = [];
-	private itemsUpdated = false;
-	private _canSelectMany = false;
-	private _canAcceptInBackground = false;
-	private _matchOnDescription = false;
-	private _matchOnDetail = false;
-	private _matchOnLabel = true;
-	private _sortByLabel = true;
-	private _autoFocusOnList = true;
-	private _itemActivation = this.ui.isScreenReaderOptimized() ? ItemActivation.NONE /* https://github.com/microsoft/vscode/issues/57501 */ : ItemActivation.FIRST;
-	private _activeItems: T[] = [];
-	private activeItemsUpdated = false;
-	private activeItemsToConfirm: T[] | null = [];
-	private readonly onDidChangeActiveEmitter = this._register(new Emitter<T[]>());
-	private _selectedItems: T[] = [];
-	private selectedItemsUpdated = false;
-	private selectedItemsToConfirm: T[] | null = [];
-	private readonly onDidChangeSelectionEmitter = this._register(new Emitter<T[]>());
-	private readonly onDidTriggerItemButtonEmitter = this._register(new Emitter<IQuickPickItemButtonEvent<T>>());
-	private _valueSelection: Readonly<[number, number]> | undefined;
-	private valueSelectionUpdated = true;
-	private _validationMessage: string | undefined;
-	private _ok: boolean | 'default' = 'default';
-	private _customButton = false;
-	private _customButtonLabel: string | undefined;
-	private _customButtonHover: string | undefined;
-	private _quickNavigate: IQuickNavigateConfiguration | undefined;
-	private _hideInput: boolean | undefined;
-	private _hideCheckAll: boolean | undefined;
+	privAte _vAlue = '';
+	privAte _AriALAbel: string | undefined;
+	privAte _plAceholder: string | undefined;
+	privAte reAdonly onDidChAngeVAlueEmitter = this._register(new Emitter<string>());
+	privAte reAdonly onDidAcceptEmitter = this._register(new Emitter<IQuickPickAcceptEvent>());
+	privAte reAdonly onDidCustomEmitter = this._register(new Emitter<void>());
+	privAte _items: ArrAy<T | IQuickPickSepArAtor> = [];
+	privAte itemsUpdAted = fAlse;
+	privAte _cAnSelectMAny = fAlse;
+	privAte _cAnAcceptInBAckground = fAlse;
+	privAte _mAtchOnDescription = fAlse;
+	privAte _mAtchOnDetAil = fAlse;
+	privAte _mAtchOnLAbel = true;
+	privAte _sortByLAbel = true;
+	privAte _AutoFocusOnList = true;
+	privAte _itemActivAtion = this.ui.isScreenReAderOptimized() ? ItemActivAtion.NONE /* https://github.com/microsoft/vscode/issues/57501 */ : ItemActivAtion.FIRST;
+	privAte _ActiveItems: T[] = [];
+	privAte ActiveItemsUpdAted = fAlse;
+	privAte ActiveItemsToConfirm: T[] | null = [];
+	privAte reAdonly onDidChAngeActiveEmitter = this._register(new Emitter<T[]>());
+	privAte _selectedItems: T[] = [];
+	privAte selectedItemsUpdAted = fAlse;
+	privAte selectedItemsToConfirm: T[] | null = [];
+	privAte reAdonly onDidChAngeSelectionEmitter = this._register(new Emitter<T[]>());
+	privAte reAdonly onDidTriggerItemButtonEmitter = this._register(new Emitter<IQuickPickItemButtonEvent<T>>());
+	privAte _vAlueSelection: ReAdonly<[number, number]> | undefined;
+	privAte vAlueSelectionUpdAted = true;
+	privAte _vAlidAtionMessAge: string | undefined;
+	privAte _ok: booleAn | 'defAult' = 'defAult';
+	privAte _customButton = fAlse;
+	privAte _customButtonLAbel: string | undefined;
+	privAte _customButtonHover: string | undefined;
+	privAte _quickNAvigAte: IQuickNAvigAteConfigurAtion | undefined;
+	privAte _hideInput: booleAn | undefined;
+	privAte _hideCheckAll: booleAn | undefined;
 
-	get quickNavigate() {
-		return this._quickNavigate;
+	get quickNAvigAte() {
+		return this._quickNAvigAte;
 	}
 
-	set quickNavigate(quickNavigate: IQuickNavigateConfiguration | undefined) {
-		this._quickNavigate = quickNavigate;
-		this.update();
+	set quickNAvigAte(quickNAvigAte: IQuickNAvigAteConfigurAtion | undefined) {
+		this._quickNAvigAte = quickNAvigAte;
+		this.updAte();
 	}
 
-	get value() {
-		return this._value;
+	get vAlue() {
+		return this._vAlue;
 	}
 
-	set value(value: string) {
-		this._value = value || '';
-		this.update();
+	set vAlue(vAlue: string) {
+		this._vAlue = vAlue || '';
+		this.updAte();
 	}
 
-	filterValue = (value: string) => value;
+	filterVAlue = (vAlue: string) => vAlue;
 
-	set ariaLabel(ariaLabel: string | undefined) {
-		this._ariaLabel = ariaLabel;
-		this.update();
+	set AriALAbel(AriALAbel: string | undefined) {
+		this._AriALAbel = AriALAbel;
+		this.updAte();
 	}
 
-	get ariaLabel() {
-		return this._ariaLabel;
+	get AriALAbel() {
+		return this._AriALAbel;
 	}
 
-	get placeholder() {
-		return this._placeholder;
+	get plAceholder() {
+		return this._plAceholder;
 	}
 
-	set placeholder(placeholder: string | undefined) {
-		this._placeholder = placeholder;
-		this.update();
+	set plAceholder(plAceholder: string | undefined) {
+		this._plAceholder = plAceholder;
+		this.updAte();
 	}
 
-	onDidChangeValue = this.onDidChangeValueEmitter.event;
+	onDidChAngeVAlue = this.onDidChAngeVAlueEmitter.event;
 
 	onDidAccept = this.onDidAcceptEmitter.event;
 
@@ -469,93 +469,93 @@ class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPi
 		return this._items;
 	}
 
-	set items(items: Array<T | IQuickPickSeparator>) {
+	set items(items: ArrAy<T | IQuickPickSepArAtor>) {
 		this._items = items;
-		this.itemsUpdated = true;
-		this.update();
+		this.itemsUpdAted = true;
+		this.updAte();
 	}
 
-	get canSelectMany() {
-		return this._canSelectMany;
+	get cAnSelectMAny() {
+		return this._cAnSelectMAny;
 	}
 
-	set canSelectMany(canSelectMany: boolean) {
-		this._canSelectMany = canSelectMany;
-		this.update();
+	set cAnSelectMAny(cAnSelectMAny: booleAn) {
+		this._cAnSelectMAny = cAnSelectMAny;
+		this.updAte();
 	}
 
-	get canAcceptInBackground() {
-		return this._canAcceptInBackground;
+	get cAnAcceptInBAckground() {
+		return this._cAnAcceptInBAckground;
 	}
 
-	set canAcceptInBackground(canAcceptInBackground: boolean) {
-		this._canAcceptInBackground = canAcceptInBackground;
+	set cAnAcceptInBAckground(cAnAcceptInBAckground: booleAn) {
+		this._cAnAcceptInBAckground = cAnAcceptInBAckground;
 	}
 
-	get matchOnDescription() {
-		return this._matchOnDescription;
+	get mAtchOnDescription() {
+		return this._mAtchOnDescription;
 	}
 
-	set matchOnDescription(matchOnDescription: boolean) {
-		this._matchOnDescription = matchOnDescription;
-		this.update();
+	set mAtchOnDescription(mAtchOnDescription: booleAn) {
+		this._mAtchOnDescription = mAtchOnDescription;
+		this.updAte();
 	}
 
-	get matchOnDetail() {
-		return this._matchOnDetail;
+	get mAtchOnDetAil() {
+		return this._mAtchOnDetAil;
 	}
 
-	set matchOnDetail(matchOnDetail: boolean) {
-		this._matchOnDetail = matchOnDetail;
-		this.update();
+	set mAtchOnDetAil(mAtchOnDetAil: booleAn) {
+		this._mAtchOnDetAil = mAtchOnDetAil;
+		this.updAte();
 	}
 
-	get matchOnLabel() {
-		return this._matchOnLabel;
+	get mAtchOnLAbel() {
+		return this._mAtchOnLAbel;
 	}
 
-	set matchOnLabel(matchOnLabel: boolean) {
-		this._matchOnLabel = matchOnLabel;
-		this.update();
+	set mAtchOnLAbel(mAtchOnLAbel: booleAn) {
+		this._mAtchOnLAbel = mAtchOnLAbel;
+		this.updAte();
 	}
 
-	get sortByLabel() {
-		return this._sortByLabel;
+	get sortByLAbel() {
+		return this._sortByLAbel;
 	}
 
-	set sortByLabel(sortByLabel: boolean) {
-		this._sortByLabel = sortByLabel;
-		this.update();
+	set sortByLAbel(sortByLAbel: booleAn) {
+		this._sortByLAbel = sortByLAbel;
+		this.updAte();
 	}
 
-	get autoFocusOnList() {
-		return this._autoFocusOnList;
+	get AutoFocusOnList() {
+		return this._AutoFocusOnList;
 	}
 
-	set autoFocusOnList(autoFocusOnList: boolean) {
-		this._autoFocusOnList = autoFocusOnList;
-		this.update();
+	set AutoFocusOnList(AutoFocusOnList: booleAn) {
+		this._AutoFocusOnList = AutoFocusOnList;
+		this.updAte();
 	}
 
-	get itemActivation() {
-		return this._itemActivation;
+	get itemActivAtion() {
+		return this._itemActivAtion;
 	}
 
-	set itemActivation(itemActivation: ItemActivation) {
-		this._itemActivation = itemActivation;
+	set itemActivAtion(itemActivAtion: ItemActivAtion) {
+		this._itemActivAtion = itemActivAtion;
 	}
 
-	get activeItems() {
-		return this._activeItems;
+	get ActiveItems() {
+		return this._ActiveItems;
 	}
 
-	set activeItems(activeItems: T[]) {
-		this._activeItems = activeItems;
-		this.activeItemsUpdated = true;
-		this.update();
+	set ActiveItems(ActiveItems: T[]) {
+		this._ActiveItems = ActiveItems;
+		this.ActiveItemsUpdAted = true;
+		this.updAte();
 	}
 
-	onDidChangeActive = this.onDidChangeActiveEmitter.event;
+	onDidChAngeActive = this.onDidChAngeActiveEmitter.event;
 
 	get selectedItems() {
 		return this._selectedItems;
@@ -563,52 +563,52 @@ class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPi
 
 	set selectedItems(selectedItems: T[]) {
 		this._selectedItems = selectedItems;
-		this.selectedItemsUpdated = true;
-		this.update();
+		this.selectedItemsUpdAted = true;
+		this.updAte();
 	}
 
 	get keyMods() {
-		if (this._quickNavigate) {
-			// Disable keyMods when quick navigate is enabled
-			// because in this model the interaction is purely
-			// keyboard driven and Ctrl/Alt are typically
-			// pressed and hold during this interaction.
+		if (this._quickNAvigAte) {
+			// DisAble keyMods when quick nAvigAte is enAbled
+			// becAuse in this model the interAction is purely
+			// keyboArd driven And Ctrl/Alt Are typicAlly
+			// pressed And hold during this interAction.
 			return NO_KEY_MODS;
 		}
 		return this.ui.keyMods;
 	}
 
-	set valueSelection(valueSelection: Readonly<[number, number]>) {
-		this._valueSelection = valueSelection;
-		this.valueSelectionUpdated = true;
-		this.update();
+	set vAlueSelection(vAlueSelection: ReAdonly<[number, number]>) {
+		this._vAlueSelection = vAlueSelection;
+		this.vAlueSelectionUpdAted = true;
+		this.updAte();
 	}
 
-	get validationMessage() {
-		return this._validationMessage;
+	get vAlidAtionMessAge() {
+		return this._vAlidAtionMessAge;
 	}
 
-	set validationMessage(validationMessage: string | undefined) {
-		this._validationMessage = validationMessage;
-		this.update();
+	set vAlidAtionMessAge(vAlidAtionMessAge: string | undefined) {
+		this._vAlidAtionMessAge = vAlidAtionMessAge;
+		this.updAte();
 	}
 
 	get customButton() {
 		return this._customButton;
 	}
 
-	set customButton(showCustomButton: boolean) {
+	set customButton(showCustomButton: booleAn) {
 		this._customButton = showCustomButton;
-		this.update();
+		this.updAte();
 	}
 
-	get customLabel() {
-		return this._customButtonLabel;
+	get customLAbel() {
+		return this._customButtonLAbel;
 	}
 
-	set customLabel(label: string | undefined) {
-		this._customButtonLabel = label;
-		this.update();
+	set customLAbel(lAbel: string | undefined) {
+		this._customButtonLAbel = lAbel;
+		this.updAte();
 	}
 
 	get customHover() {
@@ -617,20 +617,20 @@ class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPi
 
 	set customHover(hover: string | undefined) {
 		this._customButtonHover = hover;
-		this.update();
+		this.updAte();
 	}
 
 	get ok() {
 		return this._ok;
 	}
 
-	set ok(showOkButton: boolean | 'default') {
+	set ok(showOkButton: booleAn | 'defAult') {
 		this._ok = showOkButton;
-		this.update();
+		this.updAte();
 	}
 
-	inputHasFocus(): boolean {
-		return this.visible ? this.ui.inputBox.hasFocus() : false;
+	inputHAsFocus(): booleAn {
+		return this.visible ? this.ui.inputBox.hAsFocus() : fAlse;
 	}
 
 	focusOnInput() {
@@ -641,27 +641,27 @@ class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPi
 		return !!this._hideInput;
 	}
 
-	set hideInput(hideInput: boolean) {
+	set hideInput(hideInput: booleAn) {
 		this._hideInput = hideInput;
-		this.update();
+		this.updAte();
 	}
 
 	get hideCheckAll() {
 		return !!this._hideCheckAll;
 	}
 
-	set hideCheckAll(hideCheckAll: boolean) {
+	set hideCheckAll(hideCheckAll: booleAn) {
 		this._hideCheckAll = hideCheckAll;
-		this.update();
+		this.updAte();
 	}
 
-	onDidChangeSelection = this.onDidChangeSelectionEmitter.event;
+	onDidChAngeSelection = this.onDidChAngeSelectionEmitter.event;
 
 	onDidTriggerItemButton = this.onDidTriggerItemButtonEmitter.event;
 
-	private trySelectFirst() {
-		if (this.autoFocusOnList) {
-			if (!this.canSelectMany) {
+	privAte trySelectFirst() {
+		if (this.AutoFocusOnList) {
+			if (!this.cAnSelectMAny) {
 				this.ui.list.focus(QuickInputListFocus.First);
 			}
 		}
@@ -669,290 +669,290 @@ class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPi
 
 	show() {
 		if (!this.visible) {
-			this.visibleDisposables.add(
-				this.ui.inputBox.onDidChange(value => {
-					if (value === this.value) {
+			this.visibleDisposAbles.Add(
+				this.ui.inputBox.onDidChAnge(vAlue => {
+					if (vAlue === this.vAlue) {
 						return;
 					}
-					this._value = value;
-					const didFilter = this.ui.list.filter(this.filterValue(this.ui.inputBox.value));
+					this._vAlue = vAlue;
+					const didFilter = this.ui.list.filter(this.filterVAlue(this.ui.inputBox.vAlue));
 					if (didFilter) {
 						this.trySelectFirst();
 					}
-					this.onDidChangeValueEmitter.fire(value);
+					this.onDidChAngeVAlueEmitter.fire(vAlue);
 				}));
-			this.visibleDisposables.add(this.ui.inputBox.onMouseDown(event => {
-				if (!this.autoFocusOnList) {
-					this.ui.list.clearFocus();
+			this.visibleDisposAbles.Add(this.ui.inputBox.onMouseDown(event => {
+				if (!this.AutoFocusOnList) {
+					this.ui.list.cleArFocus();
 				}
 			}));
-			this.visibleDisposables.add((this._hideInput ? this.ui.list : this.ui.inputBox).onKeyDown((event: KeyboardEvent | StandardKeyboardEvent) => {
+			this.visibleDisposAbles.Add((this._hideInput ? this.ui.list : this.ui.inputBox).onKeyDown((event: KeyboArdEvent | StAndArdKeyboArdEvent) => {
 				switch (event.keyCode) {
-					case KeyCode.DownArrow:
+					cAse KeyCode.DownArrow:
 						this.ui.list.focus(QuickInputListFocus.Next);
-						if (this.canSelectMany) {
+						if (this.cAnSelectMAny) {
 							this.ui.list.domFocus();
 						}
 						dom.EventHelper.stop(event, true);
-						break;
-					case KeyCode.UpArrow:
+						breAk;
+					cAse KeyCode.UpArrow:
 						if (this.ui.list.getFocusedElements().length) {
 							this.ui.list.focus(QuickInputListFocus.Previous);
 						} else {
-							this.ui.list.focus(QuickInputListFocus.Last);
+							this.ui.list.focus(QuickInputListFocus.LAst);
 						}
-						if (this.canSelectMany) {
+						if (this.cAnSelectMAny) {
 							this.ui.list.domFocus();
 						}
 						dom.EventHelper.stop(event, true);
-						break;
-					case KeyCode.PageDown:
-						this.ui.list.focus(QuickInputListFocus.NextPage);
-						if (this.canSelectMany) {
+						breAk;
+					cAse KeyCode.PAgeDown:
+						this.ui.list.focus(QuickInputListFocus.NextPAge);
+						if (this.cAnSelectMAny) {
 							this.ui.list.domFocus();
 						}
 						dom.EventHelper.stop(event, true);
-						break;
-					case KeyCode.PageUp:
-						this.ui.list.focus(QuickInputListFocus.PreviousPage);
-						if (this.canSelectMany) {
+						breAk;
+					cAse KeyCode.PAgeUp:
+						this.ui.list.focus(QuickInputListFocus.PreviousPAge);
+						if (this.cAnSelectMAny) {
 							this.ui.list.domFocus();
 						}
 						dom.EventHelper.stop(event, true);
-						break;
-					case KeyCode.RightArrow:
-						if (!this._canAcceptInBackground) {
-							return; // needs to be enabled
+						breAk;
+					cAse KeyCode.RightArrow:
+						if (!this._cAnAcceptInBAckground) {
+							return; // needs to be enAbled
 						}
 
 						if (!this.ui.inputBox.isSelectionAtEnd()) {
-							return; // ensure input box selection at end
+							return; // ensure input box selection At end
 						}
 
-						if (this.activeItems[0]) {
-							this._selectedItems = [this.activeItems[0]];
-							this.onDidChangeSelectionEmitter.fire(this.selectedItems);
-							this.onDidAcceptEmitter.fire({ inBackground: true });
+						if (this.ActiveItems[0]) {
+							this._selectedItems = [this.ActiveItems[0]];
+							this.onDidChAngeSelectionEmitter.fire(this.selectedItems);
+							this.onDidAcceptEmitter.fire({ inBAckground: true });
 						}
 
-						break;
-					case KeyCode.Home:
-						if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey) {
+						breAk;
+					cAse KeyCode.Home:
+						if ((event.ctrlKey || event.metAKey) && !event.shiftKey && !event.AltKey) {
 							this.ui.list.focus(QuickInputListFocus.First);
 							dom.EventHelper.stop(event, true);
 						}
-						break;
-					case KeyCode.End:
-						if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey) {
-							this.ui.list.focus(QuickInputListFocus.Last);
+						breAk;
+					cAse KeyCode.End:
+						if ((event.ctrlKey || event.metAKey) && !event.shiftKey && !event.AltKey) {
+							this.ui.list.focus(QuickInputListFocus.LAst);
 							dom.EventHelper.stop(event, true);
 						}
-						break;
+						breAk;
 				}
 			}));
-			this.visibleDisposables.add(this.ui.onDidAccept(() => {
-				if (!this.canSelectMany && this.activeItems[0]) {
-					this._selectedItems = [this.activeItems[0]];
-					this.onDidChangeSelectionEmitter.fire(this.selectedItems);
+			this.visibleDisposAbles.Add(this.ui.onDidAccept(() => {
+				if (!this.cAnSelectMAny && this.ActiveItems[0]) {
+					this._selectedItems = [this.ActiveItems[0]];
+					this.onDidChAngeSelectionEmitter.fire(this.selectedItems);
 				}
-				this.onDidAcceptEmitter.fire({ inBackground: false });
+				this.onDidAcceptEmitter.fire({ inBAckground: fAlse });
 			}));
-			this.visibleDisposables.add(this.ui.onDidCustom(() => {
+			this.visibleDisposAbles.Add(this.ui.onDidCustom(() => {
 				this.onDidCustomEmitter.fire();
 			}));
-			this.visibleDisposables.add(this.ui.list.onDidChangeFocus(focusedItems => {
-				if (this.activeItemsUpdated) {
-					return; // Expect another event.
+			this.visibleDisposAbles.Add(this.ui.list.onDidChAngeFocus(focusedItems => {
+				if (this.ActiveItemsUpdAted) {
+					return; // Expect Another event.
 				}
-				if (this.activeItemsToConfirm !== this._activeItems && equals(focusedItems, this._activeItems, (a, b) => a === b)) {
+				if (this.ActiveItemsToConfirm !== this._ActiveItems && equAls(focusedItems, this._ActiveItems, (A, b) => A === b)) {
 					return;
 				}
-				this._activeItems = focusedItems as T[];
-				this.onDidChangeActiveEmitter.fire(focusedItems as T[]);
+				this._ActiveItems = focusedItems As T[];
+				this.onDidChAngeActiveEmitter.fire(focusedItems As T[]);
 			}));
-			this.visibleDisposables.add(this.ui.list.onDidChangeSelection(({ items: selectedItems, event }) => {
-				if (this.canSelectMany) {
+			this.visibleDisposAbles.Add(this.ui.list.onDidChAngeSelection(({ items: selectedItems, event }) => {
+				if (this.cAnSelectMAny) {
 					if (selectedItems.length) {
 						this.ui.list.setSelectedElements([]);
 					}
 					return;
 				}
-				if (this.selectedItemsToConfirm !== this._selectedItems && equals(selectedItems, this._selectedItems, (a, b) => a === b)) {
+				if (this.selectedItemsToConfirm !== this._selectedItems && equAls(selectedItems, this._selectedItems, (A, b) => A === b)) {
 					return;
 				}
-				this._selectedItems = selectedItems as T[];
-				this.onDidChangeSelectionEmitter.fire(selectedItems as T[]);
+				this._selectedItems = selectedItems As T[];
+				this.onDidChAngeSelectionEmitter.fire(selectedItems As T[]);
 				if (selectedItems.length) {
-					this.onDidAcceptEmitter.fire({ inBackground: event instanceof MouseEvent && event.button === 1 /* mouse middle click */ });
+					this.onDidAcceptEmitter.fire({ inBAckground: event instAnceof MouseEvent && event.button === 1 /* mouse middle click */ });
 				}
 			}));
-			this.visibleDisposables.add(this.ui.list.onChangedCheckedElements(checkedItems => {
-				if (!this.canSelectMany) {
+			this.visibleDisposAbles.Add(this.ui.list.onChAngedCheckedElements(checkedItems => {
+				if (!this.cAnSelectMAny) {
 					return;
 				}
-				if (this.selectedItemsToConfirm !== this._selectedItems && equals(checkedItems, this._selectedItems, (a, b) => a === b)) {
+				if (this.selectedItemsToConfirm !== this._selectedItems && equAls(checkedItems, this._selectedItems, (A, b) => A === b)) {
 					return;
 				}
-				this._selectedItems = checkedItems as T[];
-				this.onDidChangeSelectionEmitter.fire(checkedItems as T[]);
+				this._selectedItems = checkedItems As T[];
+				this.onDidChAngeSelectionEmitter.fire(checkedItems As T[]);
 			}));
-			this.visibleDisposables.add(this.ui.list.onButtonTriggered(event => this.onDidTriggerItemButtonEmitter.fire(event as IQuickPickItemButtonEvent<T>)));
-			this.visibleDisposables.add(this.registerQuickNavigation());
-			this.valueSelectionUpdated = true;
+			this.visibleDisposAbles.Add(this.ui.list.onButtonTriggered(event => this.onDidTriggerItemButtonEmitter.fire(event As IQuickPickItemButtonEvent<T>)));
+			this.visibleDisposAbles.Add(this.registerQuickNAvigAtion());
+			this.vAlueSelectionUpdAted = true;
 		}
-		super.show(); // TODO: Why have show() bubble up while update() trickles down? (Could move setComboboxAccessibility() here.)
+		super.show(); // TODO: Why hAve show() bubble up while updAte() trickles down? (Could move setComboboxAccessibility() here.)
 	}
 
-	private registerQuickNavigation() {
-		return dom.addDisposableListener(this.ui.container, dom.EventType.KEY_UP, e => {
-			if (this.canSelectMany || !this._quickNavigate) {
+	privAte registerQuickNAvigAtion() {
+		return dom.AddDisposAbleListener(this.ui.contAiner, dom.EventType.KEY_UP, e => {
+			if (this.cAnSelectMAny || !this._quickNAvigAte) {
 				return;
 			}
 
-			const keyboardEvent: StandardKeyboardEvent = new StandardKeyboardEvent(e);
-			const keyCode = keyboardEvent.keyCode;
+			const keyboArdEvent: StAndArdKeyboArdEvent = new StAndArdKeyboArdEvent(e);
+			const keyCode = keyboArdEvent.keyCode;
 
-			// Select element when keys are pressed that signal it
-			const quickNavKeys = this._quickNavigate.keybindings;
-			const wasTriggerKeyPressed = quickNavKeys.some(k => {
-				const [firstPart, chordPart] = k.getParts();
-				if (chordPart) {
-					return false;
+			// Select element when keys Are pressed thAt signAl it
+			const quickNAvKeys = this._quickNAvigAte.keybindings;
+			const wAsTriggerKeyPressed = quickNAvKeys.some(k => {
+				const [firstPArt, chordPArt] = k.getPArts();
+				if (chordPArt) {
+					return fAlse;
 				}
 
-				if (firstPart.shiftKey && keyCode === KeyCode.Shift) {
-					if (keyboardEvent.ctrlKey || keyboardEvent.altKey || keyboardEvent.metaKey) {
-						return false; // this is an optimistic check for the shift key being used to navigate back in quick input
+				if (firstPArt.shiftKey && keyCode === KeyCode.Shift) {
+					if (keyboArdEvent.ctrlKey || keyboArdEvent.AltKey || keyboArdEvent.metAKey) {
+						return fAlse; // this is An optimistic check for the shift key being used to nAvigAte bAck in quick input
 					}
 
 					return true;
 				}
 
-				if (firstPart.altKey && keyCode === KeyCode.Alt) {
+				if (firstPArt.AltKey && keyCode === KeyCode.Alt) {
 					return true;
 				}
 
-				if (firstPart.ctrlKey && keyCode === KeyCode.Ctrl) {
+				if (firstPArt.ctrlKey && keyCode === KeyCode.Ctrl) {
 					return true;
 				}
 
-				if (firstPart.metaKey && keyCode === KeyCode.Meta) {
+				if (firstPArt.metAKey && keyCode === KeyCode.MetA) {
 					return true;
 				}
 
-				return false;
+				return fAlse;
 			});
 
-			if (wasTriggerKeyPressed) {
-				if (this.activeItems[0]) {
-					this._selectedItems = [this.activeItems[0]];
-					this.onDidChangeSelectionEmitter.fire(this.selectedItems);
-					this.onDidAcceptEmitter.fire({ inBackground: false });
+			if (wAsTriggerKeyPressed) {
+				if (this.ActiveItems[0]) {
+					this._selectedItems = [this.ActiveItems[0]];
+					this.onDidChAngeSelectionEmitter.fire(this.selectedItems);
+					this.onDidAcceptEmitter.fire({ inBAckground: fAlse });
 				}
-				// Unset quick navigate after press. It is only valid once
-				// and should not result in any behaviour change afterwards
-				// if the picker remains open because there was no active item
-				this._quickNavigate = undefined;
+				// Unset quick nAvigAte After press. It is only vAlid once
+				// And should not result in Any behAviour chAnge AfterwArds
+				// if the picker remAins open becAuse there wAs no Active item
+				this._quickNAvigAte = undefined;
 			}
 		});
 	}
 
-	protected update() {
+	protected updAte() {
 		if (!this.visible) {
 			return;
 		}
-		let hideInput = false;
-		let inputShownJustForScreenReader = false;
+		let hideInput = fAlse;
+		let inputShownJustForScreenReAder = fAlse;
 		if (!!this._hideInput && this._items.length > 0) {
-			if (this.ui.isScreenReaderOptimized()) {
-				// Always show input if screen reader attached https://github.com/microsoft/vscode/issues/94360
-				inputShownJustForScreenReader = true;
+			if (this.ui.isScreenReAderOptimized()) {
+				// AlwAys show input if screen reAder AttAched https://github.com/microsoft/vscode/issues/94360
+				inputShownJustForScreenReAder = true;
 			} else {
 				hideInput = true;
 			}
 		}
-		this.ui.container.classList.toggle('hidden-input', hideInput && !this.description);
+		this.ui.contAiner.clAssList.toggle('hidden-input', hideInput && !this.description);
 		const visibilities: Visibilities = {
 			title: !!this.title || !!this.step || !!this.buttons.length,
 			description: !!this.description,
-			checkAll: this.canSelectMany && !this._hideCheckAll,
-			checkBox: this.canSelectMany,
+			checkAll: this.cAnSelectMAny && !this._hideCheckAll,
+			checkBox: this.cAnSelectMAny,
 			inputBox: !hideInput,
-			progressBar: !hideInput,
+			progressBAr: !hideInput,
 			visibleCount: true,
-			count: this.canSelectMany,
-			ok: this.ok === 'default' ? this.canSelectMany : this.ok,
+			count: this.cAnSelectMAny,
+			ok: this.ok === 'defAult' ? this.cAnSelectMAny : this.ok,
 			list: true,
-			message: !!this.validationMessage,
+			messAge: !!this.vAlidAtionMessAge,
 			customButton: this.customButton
 		};
 		this.ui.setVisibilities(visibilities);
-		super.update();
-		if (this.ui.inputBox.value !== this.value) {
-			this.ui.inputBox.value = this.value;
+		super.updAte();
+		if (this.ui.inputBox.vAlue !== this.vAlue) {
+			this.ui.inputBox.vAlue = this.vAlue;
 		}
-		if (this.valueSelectionUpdated) {
-			this.valueSelectionUpdated = false;
-			this.ui.inputBox.select(this._valueSelection && { start: this._valueSelection[0], end: this._valueSelection[1] });
+		if (this.vAlueSelectionUpdAted) {
+			this.vAlueSelectionUpdAted = fAlse;
+			this.ui.inputBox.select(this._vAlueSelection && { stArt: this._vAlueSelection[0], end: this._vAlueSelection[1] });
 		}
-		if (this.ui.inputBox.placeholder !== (this.placeholder || '')) {
-			this.ui.inputBox.placeholder = (this.placeholder || '');
+		if (this.ui.inputBox.plAceholder !== (this.plAceholder || '')) {
+			this.ui.inputBox.plAceholder = (this.plAceholder || '');
 		}
-		if (inputShownJustForScreenReader) {
-			this.ui.inputBox.ariaLabel = '';
+		if (inputShownJustForScreenReAder) {
+			this.ui.inputBox.AriALAbel = '';
 		} else {
-			const ariaLabel = this.ariaLabel || this.placeholder || QuickPick.DEFAULT_ARIA_LABEL;
-			if (this.ui.inputBox.ariaLabel !== ariaLabel) {
-				this.ui.inputBox.ariaLabel = ariaLabel;
+			const AriALAbel = this.AriALAbel || this.plAceholder || QuickPick.DEFAULT_ARIA_LABEL;
+			if (this.ui.inputBox.AriALAbel !== AriALAbel) {
+				this.ui.inputBox.AriALAbel = AriALAbel;
 			}
 		}
-		this.ui.list.matchOnDescription = this.matchOnDescription;
-		this.ui.list.matchOnDetail = this.matchOnDetail;
-		this.ui.list.matchOnLabel = this.matchOnLabel;
-		this.ui.list.sortByLabel = this.sortByLabel;
-		if (this.itemsUpdated) {
-			this.itemsUpdated = false;
+		this.ui.list.mAtchOnDescription = this.mAtchOnDescription;
+		this.ui.list.mAtchOnDetAil = this.mAtchOnDetAil;
+		this.ui.list.mAtchOnLAbel = this.mAtchOnLAbel;
+		this.ui.list.sortByLAbel = this.sortByLAbel;
+		if (this.itemsUpdAted) {
+			this.itemsUpdAted = fAlse;
 			this.ui.list.setElements(this.items);
-			this.ui.list.filter(this.filterValue(this.ui.inputBox.value));
+			this.ui.list.filter(this.filterVAlue(this.ui.inputBox.vAlue));
 			this.ui.checkAll.checked = this.ui.list.getAllVisibleChecked();
 			this.ui.visibleCount.setCount(this.ui.list.getVisibleCount());
 			this.ui.count.setCount(this.ui.list.getCheckedCount());
-			switch (this._itemActivation) {
-				case ItemActivation.NONE:
-					this._itemActivation = ItemActivation.FIRST; // only valid once, then unset
-					break;
-				case ItemActivation.SECOND:
+			switch (this._itemActivAtion) {
+				cAse ItemActivAtion.NONE:
+					this._itemActivAtion = ItemActivAtion.FIRST; // only vAlid once, then unset
+					breAk;
+				cAse ItemActivAtion.SECOND:
 					this.ui.list.focus(QuickInputListFocus.Second);
-					this._itemActivation = ItemActivation.FIRST; // only valid once, then unset
-					break;
-				case ItemActivation.LAST:
-					this.ui.list.focus(QuickInputListFocus.Last);
-					this._itemActivation = ItemActivation.FIRST; // only valid once, then unset
-					break;
-				default:
+					this._itemActivAtion = ItemActivAtion.FIRST; // only vAlid once, then unset
+					breAk;
+				cAse ItemActivAtion.LAST:
+					this.ui.list.focus(QuickInputListFocus.LAst);
+					this._itemActivAtion = ItemActivAtion.FIRST; // only vAlid once, then unset
+					breAk;
+				defAult:
 					this.trySelectFirst();
-					break;
+					breAk;
 			}
 		}
-		if (this.ui.container.classList.contains('show-checkboxes') !== !!this.canSelectMany) {
-			if (this.canSelectMany) {
-				this.ui.list.clearFocus();
+		if (this.ui.contAiner.clAssList.contAins('show-checkboxes') !== !!this.cAnSelectMAny) {
+			if (this.cAnSelectMAny) {
+				this.ui.list.cleArFocus();
 			} else {
 				this.trySelectFirst();
 			}
 		}
-		if (this.activeItemsUpdated) {
-			this.activeItemsUpdated = false;
-			this.activeItemsToConfirm = this._activeItems;
-			this.ui.list.setFocusedElements(this.activeItems);
-			if (this.activeItemsToConfirm === this._activeItems) {
-				this.activeItemsToConfirm = null;
+		if (this.ActiveItemsUpdAted) {
+			this.ActiveItemsUpdAted = fAlse;
+			this.ActiveItemsToConfirm = this._ActiveItems;
+			this.ui.list.setFocusedElements(this.ActiveItems);
+			if (this.ActiveItemsToConfirm === this._ActiveItems) {
+				this.ActiveItemsToConfirm = null;
 			}
 		}
-		if (this.selectedItemsUpdated) {
-			this.selectedItemsUpdated = false;
+		if (this.selectedItemsUpdAted) {
+			this.selectedItemsUpdAted = fAlse;
 			this.selectedItemsToConfirm = this._selectedItems;
-			if (this.canSelectMany) {
+			if (this.cAnSelectMAny) {
 				this.ui.list.setCheckedElements(this.selectedItems);
 			} else {
 				this.ui.list.setSelectedElements(this.selectedItems);
@@ -961,75 +961,75 @@ class QuickPick<T extends IQuickPickItem> extends QuickInput implements IQuickPi
 				this.selectedItemsToConfirm = null;
 			}
 		}
-		if (this.validationMessage) {
-			this.ui.message.textContent = this.validationMessage;
-			this.showMessageDecoration(Severity.Error);
+		if (this.vAlidAtionMessAge) {
+			this.ui.messAge.textContent = this.vAlidAtionMessAge;
+			this.showMessAgeDecorAtion(Severity.Error);
 		} else {
-			this.ui.message.textContent = null;
-			this.showMessageDecoration(Severity.Ignore);
+			this.ui.messAge.textContent = null;
+			this.showMessAgeDecorAtion(Severity.Ignore);
 		}
-		this.ui.customButton.label = this.customLabel || '';
+		this.ui.customButton.lAbel = this.customLAbel || '';
 		this.ui.customButton.element.title = this.customHover || '';
 		this.ui.setComboboxAccessibility(true);
 		if (!visibilities.inputBox) {
 			// we need to move focus into the tree to detect keybindings
-			// properly when the input box is not visible (quick nav)
+			// properly when the input box is not visible (quick nAv)
 			this.ui.list.domFocus();
 
-			// Focus the first element in the list if multiselect is enabled
-			if (this.canSelectMany) {
+			// Focus the first element in the list if multiselect is enAbled
+			if (this.cAnSelectMAny) {
 				this.ui.list.focus(QuickInputListFocus.First);
 			}
 		}
 	}
 }
 
-class InputBox extends QuickInput implements IInputBox {
+clAss InputBox extends QuickInput implements IInputBox {
 
-	private static readonly noPromptMessage = localize('inputModeEntry', "Press 'Enter' to confirm your input or 'Escape' to cancel");
+	privAte stAtic reAdonly noPromptMessAge = locAlize('inputModeEntry', "Press 'Enter' to confirm your input or 'EscApe' to cAncel");
 
-	private _value = '';
-	private _valueSelection: Readonly<[number, number]> | undefined;
-	private valueSelectionUpdated = true;
-	private _placeholder: string | undefined;
-	private _password = false;
-	private _prompt: string | undefined;
-	private noValidationMessage = InputBox.noPromptMessage;
-	private _validationMessage: string | undefined;
-	private readonly onDidValueChangeEmitter = this._register(new Emitter<string>());
-	private readonly onDidAcceptEmitter = this._register(new Emitter<void>());
+	privAte _vAlue = '';
+	privAte _vAlueSelection: ReAdonly<[number, number]> | undefined;
+	privAte vAlueSelectionUpdAted = true;
+	privAte _plAceholder: string | undefined;
+	privAte _pAssword = fAlse;
+	privAte _prompt: string | undefined;
+	privAte noVAlidAtionMessAge = InputBox.noPromptMessAge;
+	privAte _vAlidAtionMessAge: string | undefined;
+	privAte reAdonly onDidVAlueChAngeEmitter = this._register(new Emitter<string>());
+	privAte reAdonly onDidAcceptEmitter = this._register(new Emitter<void>());
 
-	get value() {
-		return this._value;
+	get vAlue() {
+		return this._vAlue;
 	}
 
-	set value(value: string) {
-		this._value = value || '';
-		this.update();
+	set vAlue(vAlue: string) {
+		this._vAlue = vAlue || '';
+		this.updAte();
 	}
 
-	set valueSelection(valueSelection: Readonly<[number, number]>) {
-		this._valueSelection = valueSelection;
-		this.valueSelectionUpdated = true;
-		this.update();
+	set vAlueSelection(vAlueSelection: ReAdonly<[number, number]>) {
+		this._vAlueSelection = vAlueSelection;
+		this.vAlueSelectionUpdAted = true;
+		this.updAte();
 	}
 
-	get placeholder() {
-		return this._placeholder;
+	get plAceholder() {
+		return this._plAceholder;
 	}
 
-	set placeholder(placeholder: string | undefined) {
-		this._placeholder = placeholder;
-		this.update();
+	set plAceholder(plAceholder: string | undefined) {
+		this._plAceholder = plAceholder;
+		this.updAte();
 	}
 
-	get password() {
-		return this._password;
+	get pAssword() {
+		return this._pAssword;
 	}
 
-	set password(password: boolean) {
-		this._password = password;
-		this.update();
+	set pAssword(pAssword: booleAn) {
+		this._pAssword = pAssword;
+		this.updAte();
 	}
 
 	get prompt() {
@@ -1038,308 +1038,308 @@ class InputBox extends QuickInput implements IInputBox {
 
 	set prompt(prompt: string | undefined) {
 		this._prompt = prompt;
-		this.noValidationMessage = prompt
-			? localize('inputModeEntryDescription', "{0} (Press 'Enter' to confirm or 'Escape' to cancel)", prompt)
-			: InputBox.noPromptMessage;
-		this.update();
+		this.noVAlidAtionMessAge = prompt
+			? locAlize('inputModeEntryDescription', "{0} (Press 'Enter' to confirm or 'EscApe' to cAncel)", prompt)
+			: InputBox.noPromptMessAge;
+		this.updAte();
 	}
 
-	get validationMessage() {
-		return this._validationMessage;
+	get vAlidAtionMessAge() {
+		return this._vAlidAtionMessAge;
 	}
 
-	set validationMessage(validationMessage: string | undefined) {
-		this._validationMessage = validationMessage;
-		this.update();
+	set vAlidAtionMessAge(vAlidAtionMessAge: string | undefined) {
+		this._vAlidAtionMessAge = vAlidAtionMessAge;
+		this.updAte();
 	}
 
-	readonly onDidChangeValue = this.onDidValueChangeEmitter.event;
+	reAdonly onDidChAngeVAlue = this.onDidVAlueChAngeEmitter.event;
 
-	readonly onDidAccept = this.onDidAcceptEmitter.event;
+	reAdonly onDidAccept = this.onDidAcceptEmitter.event;
 
 	show() {
 		if (!this.visible) {
-			this.visibleDisposables.add(
-				this.ui.inputBox.onDidChange(value => {
-					if (value === this.value) {
+			this.visibleDisposAbles.Add(
+				this.ui.inputBox.onDidChAnge(vAlue => {
+					if (vAlue === this.vAlue) {
 						return;
 					}
-					this._value = value;
-					this.onDidValueChangeEmitter.fire(value);
+					this._vAlue = vAlue;
+					this.onDidVAlueChAngeEmitter.fire(vAlue);
 				}));
-			this.visibleDisposables.add(this.ui.onDidAccept(() => this.onDidAcceptEmitter.fire()));
-			this.valueSelectionUpdated = true;
+			this.visibleDisposAbles.Add(this.ui.onDidAccept(() => this.onDidAcceptEmitter.fire()));
+			this.vAlueSelectionUpdAted = true;
 		}
 		super.show();
 	}
 
-	protected update() {
+	protected updAte() {
 		if (!this.visible) {
 			return;
 		}
 		const visibilities: Visibilities = {
 			title: !!this.title || !!this.step || !!this.buttons.length,
 			description: !!this.description || !!this.step,
-			inputBox: true, message: true
+			inputBox: true, messAge: true
 		};
 		this.ui.setVisibilities(visibilities);
-		super.update();
-		if (this.ui.inputBox.value !== this.value) {
-			this.ui.inputBox.value = this.value;
+		super.updAte();
+		if (this.ui.inputBox.vAlue !== this.vAlue) {
+			this.ui.inputBox.vAlue = this.vAlue;
 		}
-		if (this.valueSelectionUpdated) {
-			this.valueSelectionUpdated = false;
-			this.ui.inputBox.select(this._valueSelection && { start: this._valueSelection[0], end: this._valueSelection[1] });
+		if (this.vAlueSelectionUpdAted) {
+			this.vAlueSelectionUpdAted = fAlse;
+			this.ui.inputBox.select(this._vAlueSelection && { stArt: this._vAlueSelection[0], end: this._vAlueSelection[1] });
 		}
-		if (this.ui.inputBox.placeholder !== (this.placeholder || '')) {
-			this.ui.inputBox.placeholder = (this.placeholder || '');
+		if (this.ui.inputBox.plAceholder !== (this.plAceholder || '')) {
+			this.ui.inputBox.plAceholder = (this.plAceholder || '');
 		}
-		if (this.ui.inputBox.password !== this.password) {
-			this.ui.inputBox.password = this.password;
+		if (this.ui.inputBox.pAssword !== this.pAssword) {
+			this.ui.inputBox.pAssword = this.pAssword;
 		}
-		if (!this.validationMessage && this.ui.message.textContent !== this.noValidationMessage) {
-			this.ui.message.textContent = this.noValidationMessage;
-			this.showMessageDecoration(Severity.Ignore);
+		if (!this.vAlidAtionMessAge && this.ui.messAge.textContent !== this.noVAlidAtionMessAge) {
+			this.ui.messAge.textContent = this.noVAlidAtionMessAge;
+			this.showMessAgeDecorAtion(Severity.Ignore);
 		}
-		if (this.validationMessage && this.ui.message.textContent !== this.validationMessage) {
-			this.ui.message.textContent = this.validationMessage;
-			this.showMessageDecoration(Severity.Error);
+		if (this.vAlidAtionMessAge && this.ui.messAge.textContent !== this.vAlidAtionMessAge) {
+			this.ui.messAge.textContent = this.vAlidAtionMessAge;
+			this.showMessAgeDecorAtion(Severity.Error);
 		}
 	}
 }
 
-export class QuickInputController extends Disposable {
-	private static readonly MAX_WIDTH = 600; // Max total width of quick input widget
+export clAss QuickInputController extends DisposAble {
+	privAte stAtic reAdonly MAX_WIDTH = 600; // MAx totAl width of quick input widget
 
-	private idPrefix: string;
-	private ui: QuickInputUI | undefined;
-	private dimension?: dom.IDimension;
-	private titleBarOffset?: number;
-	private comboboxAccessibility = false;
-	private enabled = true;
-	private readonly onDidAcceptEmitter = this._register(new Emitter<void>());
-	private readonly onDidCustomEmitter = this._register(new Emitter<void>());
-	private readonly onDidTriggerButtonEmitter = this._register(new Emitter<IQuickInputButton>());
-	private keyMods: Writeable<IKeyMods> = { ctrlCmd: false, alt: false };
+	privAte idPrefix: string;
+	privAte ui: QuickInputUI | undefined;
+	privAte dimension?: dom.IDimension;
+	privAte titleBArOffset?: number;
+	privAte comboboxAccessibility = fAlse;
+	privAte enAbled = true;
+	privAte reAdonly onDidAcceptEmitter = this._register(new Emitter<void>());
+	privAte reAdonly onDidCustomEmitter = this._register(new Emitter<void>());
+	privAte reAdonly onDidTriggerButtonEmitter = this._register(new Emitter<IQuickInputButton>());
+	privAte keyMods: WriteAble<IKeyMods> = { ctrlCmd: fAlse, Alt: fAlse };
 
-	private controller: QuickInput | null = null;
+	privAte controller: QuickInput | null = null;
 
-	private parentElement: HTMLElement;
-	private styles: IQuickInputStyles;
+	privAte pArentElement: HTMLElement;
+	privAte styles: IQuickInputStyles;
 
-	private onShowEmitter = this._register(new Emitter<void>());
-	readonly onShow = this.onShowEmitter.event;
+	privAte onShowEmitter = this._register(new Emitter<void>());
+	reAdonly onShow = this.onShowEmitter.event;
 
-	private onHideEmitter = this._register(new Emitter<void>());
-	readonly onHide = this.onHideEmitter.event;
+	privAte onHideEmitter = this._register(new Emitter<void>());
+	reAdonly onHide = this.onHideEmitter.event;
 
-	private previousFocusElement?: HTMLElement;
+	privAte previousFocusElement?: HTMLElement;
 
-	constructor(private options: IQuickInputOptions) {
+	constructor(privAte options: IQuickInputOptions) {
 		super();
 		this.idPrefix = options.idPrefix;
-		this.parentElement = options.container;
+		this.pArentElement = options.contAiner;
 		this.styles = options.styles;
 		this.registerKeyModsListeners();
 	}
 
-	private registerKeyModsListeners() {
-		const listener = (e: KeyboardEvent | MouseEvent) => {
-			this.keyMods.ctrlCmd = e.ctrlKey || e.metaKey;
-			this.keyMods.alt = e.altKey;
+	privAte registerKeyModsListeners() {
+		const listener = (e: KeyboArdEvent | MouseEvent) => {
+			this.keyMods.ctrlCmd = e.ctrlKey || e.metAKey;
+			this.keyMods.Alt = e.AltKey;
 		};
-		this._register(dom.addDisposableListener(window, dom.EventType.KEY_DOWN, listener, true));
-		this._register(dom.addDisposableListener(window, dom.EventType.KEY_UP, listener, true));
-		this._register(dom.addDisposableListener(window, dom.EventType.MOUSE_DOWN, listener, true));
+		this._register(dom.AddDisposAbleListener(window, dom.EventType.KEY_DOWN, listener, true));
+		this._register(dom.AddDisposAbleListener(window, dom.EventType.KEY_UP, listener, true));
+		this._register(dom.AddDisposAbleListener(window, dom.EventType.MOUSE_DOWN, listener, true));
 	}
 
-	private getUI() {
+	privAte getUI() {
 		if (this.ui) {
 			return this.ui;
 		}
 
-		const container = dom.append(this.parentElement, $('.quick-input-widget.show-file-icons'));
-		container.tabIndex = -1;
-		container.style.display = 'none';
+		const contAiner = dom.Append(this.pArentElement, $('.quick-input-widget.show-file-icons'));
+		contAiner.tAbIndex = -1;
+		contAiner.style.displAy = 'none';
 
-		const styleSheet = dom.createStyleSheet(container);
+		const styleSheet = dom.creAteStyleSheet(contAiner);
 
-		const titleBar = dom.append(container, $('.quick-input-titlebar'));
+		const titleBAr = dom.Append(contAiner, $('.quick-input-titlebAr'));
 
-		const leftActionBar = this._register(new ActionBar(titleBar));
-		leftActionBar.domNode.classList.add('quick-input-left-action-bar');
+		const leftActionBAr = this._register(new ActionBAr(titleBAr));
+		leftActionBAr.domNode.clAssList.Add('quick-input-left-Action-bAr');
 
-		const title = dom.append(titleBar, $('.quick-input-title'));
+		const title = dom.Append(titleBAr, $('.quick-input-title'));
 
-		const rightActionBar = this._register(new ActionBar(titleBar));
-		rightActionBar.domNode.classList.add('quick-input-right-action-bar');
+		const rightActionBAr = this._register(new ActionBAr(titleBAr));
+		rightActionBAr.domNode.clAssList.Add('quick-input-right-Action-bAr');
 
-		const description1 = dom.append(container, $('.quick-input-description'));
-		const headerContainer = dom.append(container, $('.quick-input-header'));
+		const description1 = dom.Append(contAiner, $('.quick-input-description'));
+		const heAderContAiner = dom.Append(contAiner, $('.quick-input-heAder'));
 
-		const checkAll = <HTMLInputElement>dom.append(headerContainer, $('input.quick-input-check-all'));
+		const checkAll = <HTMLInputElement>dom.Append(heAderContAiner, $('input.quick-input-check-All'));
 		checkAll.type = 'checkbox';
-		this._register(dom.addStandardDisposableListener(checkAll, dom.EventType.CHANGE, e => {
+		this._register(dom.AddStAndArdDisposAbleListener(checkAll, dom.EventType.CHANGE, e => {
 			const checked = checkAll.checked;
 			list.setAllVisibleChecked(checked);
 		}));
-		this._register(dom.addDisposableListener(checkAll, dom.EventType.CLICK, e => {
-			if (e.x || e.y) { // Avoid 'click' triggered by 'space'...
+		this._register(dom.AddDisposAbleListener(checkAll, dom.EventType.CLICK, e => {
+			if (e.x || e.y) { // Avoid 'click' triggered by 'spAce'...
 				inputBox.setFocus();
 			}
 		}));
 
-		const description2 = dom.append(headerContainer, $('.quick-input-description'));
-		const extraContainer = dom.append(headerContainer, $('.quick-input-and-message'));
-		const filterContainer = dom.append(extraContainer, $('.quick-input-filter'));
+		const description2 = dom.Append(heAderContAiner, $('.quick-input-description'));
+		const extrAContAiner = dom.Append(heAderContAiner, $('.quick-input-And-messAge'));
+		const filterContAiner = dom.Append(extrAContAiner, $('.quick-input-filter'));
 
-		const inputBox = this._register(new QuickInputBox(filterContainer));
-		inputBox.setAttribute('aria-describedby', `${this.idPrefix}message`);
+		const inputBox = this._register(new QuickInputBox(filterContAiner));
+		inputBox.setAttribute('AriA-describedby', `${this.idPrefix}messAge`);
 
-		const visibleCountContainer = dom.append(filterContainer, $('.quick-input-visible-count'));
-		visibleCountContainer.setAttribute('aria-live', 'polite');
-		visibleCountContainer.setAttribute('aria-atomic', 'true');
-		const visibleCount = new CountBadge(visibleCountContainer, { countFormat: localize({ key: 'quickInput.visibleCount', comment: ['This tells the user how many items are shown in a list of items to select from. The items can be anything. Currently not visible, but read by screen readers.'] }, "{0} Results") });
+		const visibleCountContAiner = dom.Append(filterContAiner, $('.quick-input-visible-count'));
+		visibleCountContAiner.setAttribute('AriA-live', 'polite');
+		visibleCountContAiner.setAttribute('AriA-Atomic', 'true');
+		const visibleCount = new CountBAdge(visibleCountContAiner, { countFormAt: locAlize({ key: 'quickInput.visibleCount', comment: ['This tells the user how mAny items Are shown in A list of items to select from. The items cAn be Anything. Currently not visible, but reAd by screen reAders.'] }, "{0} Results") });
 
-		const countContainer = dom.append(filterContainer, $('.quick-input-count'));
-		countContainer.setAttribute('aria-live', 'polite');
-		const count = new CountBadge(countContainer, { countFormat: localize({ key: 'quickInput.countSelected', comment: ['This tells the user how many items are selected in a list of items to select from. The items can be anything.'] }, "{0} Selected") });
+		const countContAiner = dom.Append(filterContAiner, $('.quick-input-count'));
+		countContAiner.setAttribute('AriA-live', 'polite');
+		const count = new CountBAdge(countContAiner, { countFormAt: locAlize({ key: 'quickInput.countSelected', comment: ['This tells the user how mAny items Are selected in A list of items to select from. The items cAn be Anything.'] }, "{0} Selected") });
 
-		const okContainer = dom.append(headerContainer, $('.quick-input-action'));
-		const ok = new Button(okContainer);
-		ok.label = localize('ok', "OK");
+		const okContAiner = dom.Append(heAderContAiner, $('.quick-input-Action'));
+		const ok = new Button(okContAiner);
+		ok.lAbel = locAlize('ok', "OK");
 		this._register(ok.onDidClick(e => {
 			this.onDidAcceptEmitter.fire();
 		}));
 
-		const customButtonContainer = dom.append(headerContainer, $('.quick-input-action'));
-		const customButton = new Button(customButtonContainer);
-		customButton.label = localize('custom', "Custom");
+		const customButtonContAiner = dom.Append(heAderContAiner, $('.quick-input-Action'));
+		const customButton = new Button(customButtonContAiner);
+		customButton.lAbel = locAlize('custom', "Custom");
 		this._register(customButton.onDidClick(e => {
 			this.onDidCustomEmitter.fire();
 		}));
 
-		const message = dom.append(extraContainer, $(`#${this.idPrefix}message.quick-input-message`));
+		const messAge = dom.Append(extrAContAiner, $(`#${this.idPrefix}messAge.quick-input-messAge`));
 
-		const progressBar = new ProgressBar(container);
-		progressBar.getContainer().classList.add('quick-input-progress');
+		const progressBAr = new ProgressBAr(contAiner);
+		progressBAr.getContAiner().clAssList.Add('quick-input-progress');
 
-		const list = this._register(new QuickInputList(container, this.idPrefix + 'list', this.options));
-		this._register(list.onChangedAllVisibleChecked(checked => {
+		const list = this._register(new QuickInputList(contAiner, this.idPrefix + 'list', this.options));
+		this._register(list.onChAngedAllVisibleChecked(checked => {
 			checkAll.checked = checked;
 		}));
-		this._register(list.onChangedVisibleCount(c => {
+		this._register(list.onChAngedVisibleCount(c => {
 			visibleCount.setCount(c);
 		}));
-		this._register(list.onChangedCheckedCount(c => {
+		this._register(list.onChAngedCheckedCount(c => {
 			count.setCount(c);
 		}));
-		this._register(list.onLeave(() => {
-			// Defer to avoid the input field reacting to the triggering key.
+		this._register(list.onLeAve(() => {
+			// Defer to Avoid the input field reActing to the triggering key.
 			setTimeout(() => {
 				inputBox.setFocus();
-				if (this.controller instanceof QuickPick && this.controller.canSelectMany) {
-					list.clearFocus();
+				if (this.controller instAnceof QuickPick && this.controller.cAnSelectMAny) {
+					list.cleArFocus();
 				}
 			}, 0);
 		}));
-		this._register(list.onDidChangeFocus(() => {
+		this._register(list.onDidChAngeFocus(() => {
 			if (this.comboboxAccessibility) {
-				this.getUI().inputBox.setAttribute('aria-activedescendant', this.getUI().list.getActiveDescendant() || '');
+				this.getUI().inputBox.setAttribute('AriA-ActivedescendAnt', this.getUI().list.getActiveDescendAnt() || '');
 			}
 		}));
 
-		const focusTracker = dom.trackFocus(container);
-		this._register(focusTracker);
-		this._register(dom.addDisposableListener(container, dom.EventType.FOCUS, e => {
-			this.previousFocusElement = e.relatedTarget instanceof HTMLElement ? e.relatedTarget : undefined;
+		const focusTrAcker = dom.trAckFocus(contAiner);
+		this._register(focusTrAcker);
+		this._register(dom.AddDisposAbleListener(contAiner, dom.EventType.FOCUS, e => {
+			this.previousFocusElement = e.relAtedTArget instAnceof HTMLElement ? e.relAtedTArget : undefined;
 		}, true));
-		this._register(focusTracker.onDidBlur(() => {
+		this._register(focusTrAcker.onDidBlur(() => {
 			if (!this.getUI().ignoreFocusOut && !this.options.ignoreFocusOut()) {
 				this.hide();
 			}
 			this.previousFocusElement = undefined;
 		}));
-		this._register(dom.addDisposableListener(container, dom.EventType.FOCUS, (e: FocusEvent) => {
+		this._register(dom.AddDisposAbleListener(contAiner, dom.EventType.FOCUS, (e: FocusEvent) => {
 			inputBox.setFocus();
 		}));
-		this._register(dom.addDisposableListener(container, dom.EventType.KEY_DOWN, (e: KeyboardEvent) => {
-			const event = new StandardKeyboardEvent(e);
+		this._register(dom.AddDisposAbleListener(contAiner, dom.EventType.KEY_DOWN, (e: KeyboArdEvent) => {
+			const event = new StAndArdKeyboArdEvent(e);
 			switch (event.keyCode) {
-				case KeyCode.Enter:
+				cAse KeyCode.Enter:
 					dom.EventHelper.stop(e, true);
 					this.onDidAcceptEmitter.fire();
-					break;
-				case KeyCode.Escape:
+					breAk;
+				cAse KeyCode.EscApe:
 					dom.EventHelper.stop(e, true);
 					this.hide();
-					break;
-				case KeyCode.Tab:
-					if (!event.altKey && !event.ctrlKey && !event.metaKey) {
-						const selectors = ['.action-label.codicon'];
-						if (container.classList.contains('show-checkboxes')) {
+					breAk;
+				cAse KeyCode.TAb:
+					if (!event.AltKey && !event.ctrlKey && !event.metAKey) {
+						const selectors = ['.Action-lAbel.codicon'];
+						if (contAiner.clAssList.contAins('show-checkboxes')) {
 							selectors.push('input');
 						} else {
 							selectors.push('input[type=text]');
 						}
-						if (this.getUI().list.isDisplayed()) {
-							selectors.push('.monaco-list');
+						if (this.getUI().list.isDisplAyed()) {
+							selectors.push('.monAco-list');
 						}
-						const stops = container.querySelectorAll<HTMLElement>(selectors.join(', '));
-						if (event.shiftKey && event.target === stops[0]) {
+						const stops = contAiner.querySelectorAll<HTMLElement>(selectors.join(', '));
+						if (event.shiftKey && event.tArget === stops[0]) {
 							dom.EventHelper.stop(e, true);
 							stops[stops.length - 1].focus();
-						} else if (!event.shiftKey && event.target === stops[stops.length - 1]) {
+						} else if (!event.shiftKey && event.tArget === stops[stops.length - 1]) {
 							dom.EventHelper.stop(e, true);
 							stops[0].focus();
 						}
 					}
-					break;
+					breAk;
 			}
 		}));
 
 		this.ui = {
-			container,
+			contAiner,
 			styleSheet,
-			leftActionBar,
-			titleBar,
+			leftActionBAr,
+			titleBAr,
 			title,
 			description1,
 			description2,
-			rightActionBar,
+			rightActionBAr,
 			checkAll,
-			filterContainer,
+			filterContAiner,
 			inputBox,
-			visibleCountContainer,
+			visibleCountContAiner,
 			visibleCount,
-			countContainer,
+			countContAiner,
 			count,
-			okContainer,
+			okContAiner,
 			ok,
-			message,
-			customButtonContainer,
+			messAge,
+			customButtonContAiner,
 			customButton,
-			progressBar,
+			progressBAr,
 			list,
 			onDidAccept: this.onDidAcceptEmitter.event,
 			onDidCustom: this.onDidCustomEmitter.event,
 			onDidTriggerButton: this.onDidTriggerButtonEmitter.event,
-			ignoreFocusOut: false,
+			ignoreFocusOut: fAlse,
 			keyMods: this.keyMods,
-			isScreenReaderOptimized: () => this.options.isScreenReaderOptimized(),
+			isScreenReAderOptimized: () => this.options.isScreenReAderOptimized(),
 			show: controller => this.show(controller),
 			hide: () => this.hide(),
 			setVisibilities: visibilities => this.setVisibilities(visibilities),
-			setComboboxAccessibility: enabled => this.setComboboxAccessibility(enabled),
-			setEnabled: enabled => this.setEnabled(enabled),
+			setComboboxAccessibility: enAbled => this.setComboboxAccessibility(enAbled),
+			setEnAbled: enAbled => this.setEnAbled(enAbled),
 			setContextKey: contextKey => this.options.setContextKey(contextKey),
 		};
-		this.updateStyles();
+		this.updAteStyles();
 		return this.ui;
 	}
 
-	pick<T extends IQuickPickItem, O extends IPickOptions<T>>(picks: Promise<QuickPickInput<T>[]> | QuickPickInput<T>[], options: O = <O>{}, token: CancellationToken = CancellationToken.None): Promise<(O extends { canPickMany: true } ? T[] : T) | undefined> {
-		type R = (O extends { canPickMany: true } ? T[] : T) | undefined;
+	pick<T extends IQuickPickItem, O extends IPickOptions<T>>(picks: Promise<QuickPickInput<T>[]> | QuickPickInput<T>[], options: O = <O>{}, token: CAncellAtionToken = CAncellAtionToken.None): Promise<(O extends { cAnPickMAny: true } ? T[] : T) | undefined> {
+		type R = (O extends { cAnPickMAny: true } ? T[] : T) | undefined;
 		return new Promise<R>((doResolve, reject) => {
 			let resolve = (result: R) => {
 				resolve = doResolve;
@@ -1348,34 +1348,34 @@ export class QuickInputController extends Disposable {
 				}
 				doResolve(result);
 			};
-			if (token.isCancellationRequested) {
+			if (token.isCAncellAtionRequested) {
 				resolve(undefined);
 				return;
 			}
-			const input = this.createQuickPick<T>();
-			let activeItem: T | undefined;
-			const disposables = [
+			const input = this.creAteQuickPick<T>();
+			let ActiveItem: T | undefined;
+			const disposAbles = [
 				input,
 				input.onDidAccept(() => {
-					if (input.canSelectMany) {
+					if (input.cAnSelectMAny) {
 						resolve(<R>input.selectedItems.slice());
 						input.hide();
 					} else {
-						const result = input.activeItems[0];
+						const result = input.ActiveItems[0];
 						if (result) {
 							resolve(<R>result);
 							input.hide();
 						}
 					}
 				}),
-				input.onDidChangeActive(items => {
+				input.onDidChAngeActive(items => {
 					const focused = items[0];
 					if (focused && options.onDidFocus) {
 						options.onDidFocus(focused);
 					}
 				}),
-				input.onDidChangeSelection(items => {
-					if (!input.canSelectMany) {
+				input.onDidChAngeSelection(items => {
+					if (!input.cAnSelectMAny) {
 						const result = items[0];
 						if (result) {
 							resolve(<R>result);
@@ -1394,39 +1394,39 @@ export class QuickInputController extends Disposable {
 						}
 					}
 				})),
-				input.onDidChangeValue(value => {
-					if (activeItem && !value && (input.activeItems.length !== 1 || input.activeItems[0] !== activeItem)) {
-						input.activeItems = [activeItem];
+				input.onDidChAngeVAlue(vAlue => {
+					if (ActiveItem && !vAlue && (input.ActiveItems.length !== 1 || input.ActiveItems[0] !== ActiveItem)) {
+						input.ActiveItems = [ActiveItem];
 					}
 				}),
-				token.onCancellationRequested(() => {
+				token.onCAncellAtionRequested(() => {
 					input.hide();
 				}),
 				input.onDidHide(() => {
-					dispose(disposables);
+					dispose(disposAbles);
 					resolve(undefined);
 				}),
 			];
-			input.canSelectMany = !!options.canPickMany;
-			input.placeholder = options.placeHolder;
+			input.cAnSelectMAny = !!options.cAnPickMAny;
+			input.plAceholder = options.plAceHolder;
 			input.ignoreFocusOut = !!options.ignoreFocusLost;
-			input.matchOnDescription = !!options.matchOnDescription;
-			input.matchOnDetail = !!options.matchOnDetail;
-			input.matchOnLabel = (options.matchOnLabel === undefined) || options.matchOnLabel; // default to true
-			input.autoFocusOnList = (options.autoFocusOnList === undefined) || options.autoFocusOnList; // default to true
-			input.quickNavigate = options.quickNavigate;
+			input.mAtchOnDescription = !!options.mAtchOnDescription;
+			input.mAtchOnDetAil = !!options.mAtchOnDetAil;
+			input.mAtchOnLAbel = (options.mAtchOnLAbel === undefined) || options.mAtchOnLAbel; // defAult to true
+			input.AutoFocusOnList = (options.AutoFocusOnList === undefined) || options.AutoFocusOnList; // defAult to true
+			input.quickNAvigAte = options.quickNAvigAte;
 			input.contextKey = options.contextKey;
 			input.busy = true;
-			Promise.all<QuickPickInput<T>[], T | undefined>([picks, options.activeItem])
-				.then(([items, _activeItem]) => {
-					activeItem = _activeItem;
-					input.busy = false;
+			Promise.All<QuickPickInput<T>[], T | undefined>([picks, options.ActiveItem])
+				.then(([items, _ActiveItem]) => {
+					ActiveItem = _ActiveItem;
+					input.busy = fAlse;
 					input.items = items;
-					if (input.canSelectMany) {
-						input.selectedItems = items.filter(item => item.type !== 'separator' && item.picked) as T[];
+					if (input.cAnSelectMAny) {
+						input.selectedItems = items.filter(item => item.type !== 'sepArAtor' && item.picked) As T[];
 					}
-					if (activeItem) {
-						input.activeItems = [activeItem];
+					if (ActiveItem) {
+						input.ActiveItems = [ActiveItem];
 					}
 				});
 			input.show();
@@ -1437,76 +1437,76 @@ export class QuickInputController extends Disposable {
 		});
 	}
 
-	input(options: IInputOptions = {}, token: CancellationToken = CancellationToken.None): Promise<string | undefined> {
+	input(options: IInputOptions = {}, token: CAncellAtionToken = CAncellAtionToken.None): Promise<string | undefined> {
 		return new Promise<string | undefined>((resolve) => {
-			if (token.isCancellationRequested) {
+			if (token.isCAncellAtionRequested) {
 				resolve(undefined);
 				return;
 			}
-			const input = this.createInputBox();
-			const validateInput = options.validateInput || (() => <Promise<undefined>>Promise.resolve(undefined));
-			const onDidValueChange = Event.debounce(input.onDidChangeValue, (last, cur) => cur, 100);
-			let validationValue = options.value || '';
-			let validation = Promise.resolve(validateInput(validationValue));
-			const disposables = [
+			const input = this.creAteInputBox();
+			const vAlidAteInput = options.vAlidAteInput || (() => <Promise<undefined>>Promise.resolve(undefined));
+			const onDidVAlueChAnge = Event.debounce(input.onDidChAngeVAlue, (lAst, cur) => cur, 100);
+			let vAlidAtionVAlue = options.vAlue || '';
+			let vAlidAtion = Promise.resolve(vAlidAteInput(vAlidAtionVAlue));
+			const disposAbles = [
 				input,
-				onDidValueChange(value => {
-					if (value !== validationValue) {
-						validation = Promise.resolve(validateInput(value));
-						validationValue = value;
+				onDidVAlueChAnge(vAlue => {
+					if (vAlue !== vAlidAtionVAlue) {
+						vAlidAtion = Promise.resolve(vAlidAteInput(vAlue));
+						vAlidAtionVAlue = vAlue;
 					}
-					validation.then(result => {
-						if (value === validationValue) {
-							input.validationMessage = result || undefined;
+					vAlidAtion.then(result => {
+						if (vAlue === vAlidAtionVAlue) {
+							input.vAlidAtionMessAge = result || undefined;
 						}
 					});
 				}),
 				input.onDidAccept(() => {
-					const value = input.value;
-					if (value !== validationValue) {
-						validation = Promise.resolve(validateInput(value));
-						validationValue = value;
+					const vAlue = input.vAlue;
+					if (vAlue !== vAlidAtionVAlue) {
+						vAlidAtion = Promise.resolve(vAlidAteInput(vAlue));
+						vAlidAtionVAlue = vAlue;
 					}
-					validation.then(result => {
+					vAlidAtion.then(result => {
 						if (!result) {
-							resolve(value);
+							resolve(vAlue);
 							input.hide();
-						} else if (value === validationValue) {
-							input.validationMessage = result;
+						} else if (vAlue === vAlidAtionVAlue) {
+							input.vAlidAtionMessAge = result;
 						}
 					});
 				}),
-				token.onCancellationRequested(() => {
+				token.onCAncellAtionRequested(() => {
 					input.hide();
 				}),
 				input.onDidHide(() => {
-					dispose(disposables);
+					dispose(disposAbles);
 					resolve(undefined);
 				}),
 			];
-			input.value = options.value || '';
-			input.valueSelection = options.valueSelection;
+			input.vAlue = options.vAlue || '';
+			input.vAlueSelection = options.vAlueSelection;
 			input.prompt = options.prompt;
-			input.placeholder = options.placeHolder;
-			input.password = !!options.password;
+			input.plAceholder = options.plAceHolder;
+			input.pAssword = !!options.pAssword;
 			input.ignoreFocusOut = !!options.ignoreFocusLost;
 			input.show();
 		});
 	}
 
-	backButton = backButton;
+	bAckButton = bAckButton;
 
-	createQuickPick<T extends IQuickPickItem>(): IQuickPick<T> {
+	creAteQuickPick<T extends IQuickPickItem>(): IQuickPick<T> {
 		const ui = this.getUI();
 		return new QuickPick<T>(ui);
 	}
 
-	createInputBox(): IInputBox {
+	creAteInputBox(): IInputBox {
 		const ui = this.getUI();
 		return new InputBox(ui);
 	}
 
-	private show(controller: QuickInput) {
+	privAte show(controller: QuickInput) {
 		const ui = this.getUI();
 		this.onShowEmitter.fire();
 		const oldController = this.controller;
@@ -1515,99 +1515,99 @@ export class QuickInputController extends Disposable {
 			oldController.didHide();
 		}
 
-		this.setEnabled(true);
-		ui.leftActionBar.clear();
+		this.setEnAbled(true);
+		ui.leftActionBAr.cleAr();
 		ui.title.textContent = '';
 		ui.description1.textContent = '';
 		ui.description2.textContent = '';
-		ui.rightActionBar.clear();
-		ui.checkAll.checked = false;
-		// ui.inputBox.value = ''; Avoid triggering an event.
-		ui.inputBox.placeholder = '';
-		ui.inputBox.password = false;
-		ui.inputBox.showDecoration(Severity.Ignore);
+		ui.rightActionBAr.cleAr();
+		ui.checkAll.checked = fAlse;
+		// ui.inputBox.vAlue = ''; Avoid triggering An event.
+		ui.inputBox.plAceholder = '';
+		ui.inputBox.pAssword = fAlse;
+		ui.inputBox.showDecorAtion(Severity.Ignore);
 		ui.visibleCount.setCount(0);
 		ui.count.setCount(0);
-		ui.message.textContent = '';
-		ui.progressBar.stop();
+		ui.messAge.textContent = '';
+		ui.progressBAr.stop();
 		ui.list.setElements([]);
-		ui.list.matchOnDescription = false;
-		ui.list.matchOnDetail = false;
-		ui.list.matchOnLabel = true;
-		ui.list.sortByLabel = true;
-		ui.ignoreFocusOut = false;
-		this.setComboboxAccessibility(false);
-		ui.inputBox.ariaLabel = '';
+		ui.list.mAtchOnDescription = fAlse;
+		ui.list.mAtchOnDetAil = fAlse;
+		ui.list.mAtchOnLAbel = true;
+		ui.list.sortByLAbel = true;
+		ui.ignoreFocusOut = fAlse;
+		this.setComboboxAccessibility(fAlse);
+		ui.inputBox.AriALAbel = '';
 
-		const backKeybindingLabel = this.options.backKeybindingLabel();
-		backButton.tooltip = backKeybindingLabel ? localize('quickInput.backWithKeybinding', "Back ({0})", backKeybindingLabel) : localize('quickInput.back', "Back");
+		const bAckKeybindingLAbel = this.options.bAckKeybindingLAbel();
+		bAckButton.tooltip = bAckKeybindingLAbel ? locAlize('quickInput.bAckWithKeybinding', "BAck ({0})", bAckKeybindingLAbel) : locAlize('quickInput.bAck', "BAck");
 
-		ui.container.style.display = '';
-		this.updateLayout();
+		ui.contAiner.style.displAy = '';
+		this.updAteLAyout();
 		ui.inputBox.setFocus();
 	}
 
-	private setVisibilities(visibilities: Visibilities) {
+	privAte setVisibilities(visibilities: Visibilities) {
 		const ui = this.getUI();
-		ui.title.style.display = visibilities.title ? '' : 'none';
-		ui.description1.style.display = visibilities.description && (visibilities.inputBox || visibilities.checkAll) ? '' : 'none';
-		ui.description2.style.display = visibilities.description && !(visibilities.inputBox || visibilities.checkAll) ? '' : 'none';
-		ui.checkAll.style.display = visibilities.checkAll ? '' : 'none';
-		ui.filterContainer.style.display = visibilities.inputBox ? '' : 'none';
-		ui.visibleCountContainer.style.display = visibilities.visibleCount ? '' : 'none';
-		ui.countContainer.style.display = visibilities.count ? '' : 'none';
-		ui.okContainer.style.display = visibilities.ok ? '' : 'none';
-		ui.customButtonContainer.style.display = visibilities.customButton ? '' : 'none';
-		ui.message.style.display = visibilities.message ? '' : 'none';
-		ui.progressBar.getContainer().style.display = visibilities.progressBar ? '' : 'none';
-		ui.list.display(!!visibilities.list);
-		ui.container.classList[visibilities.checkBox ? 'add' : 'remove']('show-checkboxes');
-		this.updateLayout(); // TODO
+		ui.title.style.displAy = visibilities.title ? '' : 'none';
+		ui.description1.style.displAy = visibilities.description && (visibilities.inputBox || visibilities.checkAll) ? '' : 'none';
+		ui.description2.style.displAy = visibilities.description && !(visibilities.inputBox || visibilities.checkAll) ? '' : 'none';
+		ui.checkAll.style.displAy = visibilities.checkAll ? '' : 'none';
+		ui.filterContAiner.style.displAy = visibilities.inputBox ? '' : 'none';
+		ui.visibleCountContAiner.style.displAy = visibilities.visibleCount ? '' : 'none';
+		ui.countContAiner.style.displAy = visibilities.count ? '' : 'none';
+		ui.okContAiner.style.displAy = visibilities.ok ? '' : 'none';
+		ui.customButtonContAiner.style.displAy = visibilities.customButton ? '' : 'none';
+		ui.messAge.style.displAy = visibilities.messAge ? '' : 'none';
+		ui.progressBAr.getContAiner().style.displAy = visibilities.progressBAr ? '' : 'none';
+		ui.list.displAy(!!visibilities.list);
+		ui.contAiner.clAssList[visibilities.checkBox ? 'Add' : 'remove']('show-checkboxes');
+		this.updAteLAyout(); // TODO
 	}
 
-	private setComboboxAccessibility(enabled: boolean) {
-		if (enabled !== this.comboboxAccessibility) {
+	privAte setComboboxAccessibility(enAbled: booleAn) {
+		if (enAbled !== this.comboboxAccessibility) {
 			const ui = this.getUI();
-			this.comboboxAccessibility = enabled;
+			this.comboboxAccessibility = enAbled;
 			if (this.comboboxAccessibility) {
 				ui.inputBox.setAttribute('role', 'combobox');
-				ui.inputBox.setAttribute('aria-haspopup', 'true');
-				ui.inputBox.setAttribute('aria-autocomplete', 'list');
-				ui.inputBox.setAttribute('aria-activedescendant', ui.list.getActiveDescendant() || '');
+				ui.inputBox.setAttribute('AriA-hAspopup', 'true');
+				ui.inputBox.setAttribute('AriA-Autocomplete', 'list');
+				ui.inputBox.setAttribute('AriA-ActivedescendAnt', ui.list.getActiveDescendAnt() || '');
 			} else {
 				ui.inputBox.removeAttribute('role');
-				ui.inputBox.removeAttribute('aria-haspopup');
-				ui.inputBox.removeAttribute('aria-autocomplete');
-				ui.inputBox.removeAttribute('aria-activedescendant');
+				ui.inputBox.removeAttribute('AriA-hAspopup');
+				ui.inputBox.removeAttribute('AriA-Autocomplete');
+				ui.inputBox.removeAttribute('AriA-ActivedescendAnt');
 			}
 		}
 	}
 
-	private setEnabled(enabled: boolean) {
-		if (enabled !== this.enabled) {
-			this.enabled = enabled;
-			for (const item of this.getUI().leftActionBar.viewItems) {
-				(item as ActionViewItem).getAction().enabled = enabled;
+	privAte setEnAbled(enAbled: booleAn) {
+		if (enAbled !== this.enAbled) {
+			this.enAbled = enAbled;
+			for (const item of this.getUI().leftActionBAr.viewItems) {
+				(item As ActionViewItem).getAction().enAbled = enAbled;
 			}
-			for (const item of this.getUI().rightActionBar.viewItems) {
-				(item as ActionViewItem).getAction().enabled = enabled;
+			for (const item of this.getUI().rightActionBAr.viewItems) {
+				(item As ActionViewItem).getAction().enAbled = enAbled;
 			}
-			this.getUI().checkAll.disabled = !enabled;
-			// this.getUI().inputBox.enabled = enabled; Avoid loosing focus.
-			this.getUI().ok.enabled = enabled;
-			this.getUI().list.enabled = enabled;
+			this.getUI().checkAll.disAbled = !enAbled;
+			// this.getUI().inputBox.enAbled = enAbled; Avoid loosing focus.
+			this.getUI().ok.enAbled = enAbled;
+			this.getUI().list.enAbled = enAbled;
 		}
 	}
 
 	hide() {
 		const controller = this.controller;
 		if (controller) {
-			const focusChanged = !this.ui?.container.contains(document.activeElement);
+			const focusChAnged = !this.ui?.contAiner.contAins(document.ActiveElement);
 			this.controller = null;
 			this.onHideEmitter.fire();
-			this.getUI().container.style.display = 'none';
-			if (!focusChanged) {
-				if (this.previousFocusElement && this.previousFocusElement.offsetParent) {
+			this.getUI().contAiner.style.displAy = 'none';
+			if (!focusChAnged) {
+				if (this.previousFocusElement && this.previousFocusElement.offsetPArent) {
 					this.previousFocusElement.focus();
 					this.previousFocusElement = undefined;
 				} else {
@@ -1619,101 +1619,101 @@ export class QuickInputController extends Disposable {
 	}
 
 	focus() {
-		if (this.isDisplayed()) {
+		if (this.isDisplAyed()) {
 			this.getUI().inputBox.setFocus();
 		}
 	}
 
 	toggle() {
-		if (this.isDisplayed() && this.controller instanceof QuickPick && this.controller.canSelectMany) {
+		if (this.isDisplAyed() && this.controller instAnceof QuickPick && this.controller.cAnSelectMAny) {
 			this.getUI().list.toggleCheckbox();
 		}
 	}
 
-	navigate(next: boolean, quickNavigate?: IQuickNavigateConfiguration) {
-		if (this.isDisplayed() && this.getUI().list.isDisplayed()) {
+	nAvigAte(next: booleAn, quickNAvigAte?: IQuickNAvigAteConfigurAtion) {
+		if (this.isDisplAyed() && this.getUI().list.isDisplAyed()) {
 			this.getUI().list.focus(next ? QuickInputListFocus.Next : QuickInputListFocus.Previous);
-			if (quickNavigate && this.controller instanceof QuickPick) {
-				this.controller.quickNavigate = quickNavigate;
+			if (quickNAvigAte && this.controller instAnceof QuickPick) {
+				this.controller.quickNAvigAte = quickNAvigAte;
 			}
 		}
 	}
 
-	async accept(keyMods: IKeyMods = { alt: false, ctrlCmd: false }) {
-		// When accepting the item programmatically, it is important that
-		// we update `keyMods` either from the provided set or unset it
-		// because the accept did not happen from mouse or keyboard
-		// interaction on the list itself
-		this.keyMods.alt = keyMods.alt;
+	Async Accept(keyMods: IKeyMods = { Alt: fAlse, ctrlCmd: fAlse }) {
+		// When Accepting the item progrAmmAticAlly, it is importAnt thAt
+		// we updAte `keyMods` either from the provided set or unset it
+		// becAuse the Accept did not hAppen from mouse or keyboArd
+		// interAction on the list itself
+		this.keyMods.Alt = keyMods.Alt;
 		this.keyMods.ctrlCmd = keyMods.ctrlCmd;
 
 		this.onDidAcceptEmitter.fire();
 	}
 
-	async back() {
-		this.onDidTriggerButtonEmitter.fire(this.backButton);
+	Async bAck() {
+		this.onDidTriggerButtonEmitter.fire(this.bAckButton);
 	}
 
-	async cancel() {
+	Async cAncel() {
 		this.hide();
 	}
 
-	layout(dimension: dom.IDimension, titleBarOffset: number): void {
+	lAyout(dimension: dom.IDimension, titleBArOffset: number): void {
 		this.dimension = dimension;
-		this.titleBarOffset = titleBarOffset;
-		this.updateLayout();
+		this.titleBArOffset = titleBArOffset;
+		this.updAteLAyout();
 	}
 
-	private updateLayout() {
+	privAte updAteLAyout() {
 		if (this.ui) {
-			this.ui.container.style.top = `${this.titleBarOffset}px`;
+			this.ui.contAiner.style.top = `${this.titleBArOffset}px`;
 
-			const style = this.ui.container.style;
-			const width = Math.min(this.dimension!.width * 0.62 /* golden cut */, QuickInputController.MAX_WIDTH);
+			const style = this.ui.contAiner.style;
+			const width = MAth.min(this.dimension!.width * 0.62 /* golden cut */, QuickInputController.MAX_WIDTH);
 			style.width = width + 'px';
-			style.marginLeft = '-' + (width / 2) + 'px';
+			style.mArginLeft = '-' + (width / 2) + 'px';
 
-			this.ui.inputBox.layout();
-			this.ui.list.layout(this.dimension && this.dimension.height * 0.4);
+			this.ui.inputBox.lAyout();
+			this.ui.list.lAyout(this.dimension && this.dimension.height * 0.4);
 		}
 	}
 
-	applyStyles(styles: IQuickInputStyles) {
+	ApplyStyles(styles: IQuickInputStyles) {
 		this.styles = styles;
-		this.updateStyles();
+		this.updAteStyles();
 	}
 
-	private updateStyles() {
+	privAte updAteStyles() {
 		if (this.ui) {
 			const {
-				quickInputTitleBackground,
-				quickInputBackground,
+				quickInputTitleBAckground,
+				quickInputBAckground,
 				quickInputForeground,
-				contrastBorder,
-				widgetShadow,
+				contrAstBorder,
+				widgetShAdow,
 			} = this.styles.widget;
-			this.ui.titleBar.style.backgroundColor = quickInputTitleBackground ? quickInputTitleBackground.toString() : '';
-			this.ui.container.style.backgroundColor = quickInputBackground ? quickInputBackground.toString() : '';
-			this.ui.container.style.color = quickInputForeground ? quickInputForeground.toString() : '';
-			this.ui.container.style.border = contrastBorder ? `1px solid ${contrastBorder}` : '';
-			this.ui.container.style.boxShadow = widgetShadow ? `0 5px 8px ${widgetShadow}` : '';
+			this.ui.titleBAr.style.bAckgroundColor = quickInputTitleBAckground ? quickInputTitleBAckground.toString() : '';
+			this.ui.contAiner.style.bAckgroundColor = quickInputBAckground ? quickInputBAckground.toString() : '';
+			this.ui.contAiner.style.color = quickInputForeground ? quickInputForeground.toString() : '';
+			this.ui.contAiner.style.border = contrAstBorder ? `1px solid ${contrAstBorder}` : '';
+			this.ui.contAiner.style.boxShAdow = widgetShAdow ? `0 5px 8px ${widgetShAdow}` : '';
 			this.ui.inputBox.style(this.styles.inputBox);
-			this.ui.count.style(this.styles.countBadge);
+			this.ui.count.style(this.styles.countBAdge);
 			this.ui.ok.style(this.styles.button);
 			this.ui.customButton.style(this.styles.button);
-			this.ui.progressBar.style(this.styles.progressBar);
+			this.ui.progressBAr.style(this.styles.progressBAr);
 			this.ui.list.style(this.styles.list);
 
 			const content: string[] = [];
-			if (this.styles.list.listInactiveFocusForeground) {
-				content.push(`.monaco-list .monaco-list-row.focused { color:  ${this.styles.list.listInactiveFocusForeground}; }`);
-				content.push(`.monaco-list .monaco-list-row.focused:hover { color:  ${this.styles.list.listInactiveFocusForeground}; }`); // overwrite :hover style in this case!
+			if (this.styles.list.listInActiveFocusForeground) {
+				content.push(`.monAco-list .monAco-list-row.focused { color:  ${this.styles.list.listInActiveFocusForeground}; }`);
+				content.push(`.monAco-list .monAco-list-row.focused:hover { color:  ${this.styles.list.listInActiveFocusForeground}; }`); // overwrite :hover style in this cAse!
 			}
 			if (this.styles.list.pickerGroupBorder) {
 				content.push(`.quick-input-list .quick-input-list-entry { border-top-color:  ${this.styles.list.pickerGroupBorder}; }`);
 			}
 			if (this.styles.list.pickerGroupForeground) {
-				content.push(`.quick-input-list .quick-input-list-separator { color:  ${this.styles.list.pickerGroupForeground}; }`);
+				content.push(`.quick-input-list .quick-input-list-sepArAtor { color:  ${this.styles.list.pickerGroupForeground}; }`);
 			}
 			const newStyles = content.join('\n');
 			if (newStyles !== this.ui.styleSheet.textContent) {
@@ -1722,7 +1722,7 @@ export class QuickInputController extends Disposable {
 		}
 	}
 
-	private isDisplayed() {
-		return this.ui && this.ui.container.style.display !== 'none';
+	privAte isDisplAyed() {
+		return this.ui && this.ui.contAiner.style.displAy !== 'none';
 	}
 }

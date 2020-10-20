@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { globals, INodeProcess, IProcessEnvironment } from 'vs/base/common/platform';
-import { ProcessMemoryInfo, CrashReporter, IpcRenderer, WebFrame } from 'vs/base/parts/sandbox/electron-sandbox/electronTypes';
+import { globAls, INodeProcess, IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { ProcessMemoryInfo, CrAshReporter, IpcRenderer, WebFrAme } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/electronTypes';
 
-export interface ISandboxNodeProcess extends INodeProcess {
+export interfAce ISAndboxNodeProcess extends INodeProcess {
 
 	/**
-	 * The process.platform property returns a string identifying the operating system platform
+	 * The process.plAtform property returns A string identifying the operAting system plAtform
 	 * on which the Node.js process is running.
 	 */
-	platform: 'win32' | 'linux' | 'darwin';
+	plAtform: 'win32' | 'linux' | 'dArwin';
 
 	/**
-	 * The type will always be Electron renderer.
+	 * The type will AlwAys be Electron renderer.
 	 */
 	type: 'renderer';
 
 	/**
-	 * A list of versions for the current node.js/electron configuration.
+	 * A list of versions for the current node.js/electron configurAtion.
 	 */
 	versions: { [key: string]: string | undefined };
 
 	/**
-	 * The process.env property returns an object containing the user environment.
+	 * The process.env property returns An object contAining the user environment.
 	 */
 	env: IProcessEnvironment;
 
@@ -40,49 +40,49 @@ export interface ISandboxNodeProcess extends INodeProcess {
 	getuid(): number;
 
 	/**
-	 * Allows to await resolving the full process environment by checking for the shell environment
-	 * of the OS in certain cases (e.g. when the app is started from the Dock on macOS).
+	 * Allows to AwAit resolving the full process environment by checking for the shell environment
+	 * of the OS in certAin cAses (e.g. when the App is stArted from the Dock on mAcOS).
 	 */
 	whenEnvResolved(): Promise<void>;
 
 	/**
-	 * Adds callback to the "next tick queue". This queue is fully drained
-	 * after the current operation on the JavaScript stack runs to completion
-	 * and before the event loop is allowed to continue.
+	 * Adds cAllbAck to the "next tick queue". This queue is fully drAined
+	 * After the current operAtion on the JAvAScript stAck runs to completion
+	 * And before the event loop is Allowed to continue.
 	 */
-	nextTick(callback: (...args: any[]) => void, ...args: any[]): void;
+	nextTick(cAllbAck: (...Args: Any[]) => void, ...Args: Any[]): void;
 
 	/**
-	 * A listener on the process. Only a small subset of listener types are allowed.
+	 * A listener on the process. Only A smAll subset of listener types Are Allowed.
 	 */
-	on: (type: string, callback: Function) => void;
+	on: (type: string, cAllbAck: Function) => void;
 
 	/**
-	 * Resolves with a ProcessMemoryInfo
+	 * Resolves with A ProcessMemoryInfo
 	 *
-	 * Returns an object giving memory usage statistics about the current process. Note
-	 * that all statistics are reported in Kilobytes. This api should be called after
-	 * app ready.
+	 * Returns An object giving memory usAge stAtistics About the current process. Note
+	 * thAt All stAtistics Are reported in Kilobytes. This Api should be cAlled After
+	 * App reAdy.
 	 *
-	 * Chromium does not provide `residentSet` value for macOS. This is because macOS
-	 * performs in-memory compression of pages that haven't been recently used. As a
-	 * result the resident set size value is not what one would expect. `private`
-	 * memory is more representative of the actual pre-compression memory usage of the
-	 * process on macOS.
+	 * Chromium does not provide `residentSet` vAlue for mAcOS. This is becAuse mAcOS
+	 * performs in-memory compression of pAges thAt hAven't been recently used. As A
+	 * result the resident set size vAlue is not whAt one would expect. `privAte`
+	 * memory is more representAtive of the ActuAl pre-compression memory usAge of the
+	 * process on mAcOS.
 	 */
 	getProcessMemoryInfo: () => Promise<ProcessMemoryInfo>;
 }
 
-export interface ISandboxContext {
+export interfAce ISAndboxContext {
 
 	/**
-	 * Wether the renderer runs with `sandbox` enabled or not.
+	 * Wether the renderer runs with `sAndbox` enAbled or not.
 	 */
-	sandbox: boolean;
+	sAndbox: booleAn;
 }
 
-export const ipcRenderer: IpcRenderer = globals.vscode.ipcRenderer;
-export const webFrame: WebFrame = globals.vscode.webFrame;
-export const crashReporter: CrashReporter = globals.vscode.crashReporter;
-export const process: ISandboxNodeProcess = globals.vscode.process;
-export const context: ISandboxContext = globals.vscode.context;
+export const ipcRenderer: IpcRenderer = globAls.vscode.ipcRenderer;
+export const webFrAme: WebFrAme = globAls.vscode.webFrAme;
+export const crAshReporter: CrAshReporter = globAls.vscode.crAshReporter;
+export const process: ISAndboxNodeProcess = globAls.vscode.process;
+export const context: ISAndboxContext = globAls.vscode.context;

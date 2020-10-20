@@ -1,370 +1,370 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import * as glob from 'vs/base/common/glob';
-import * as resources from 'vs/base/common/resources';
-import { StopWatch } from 'vs/base/common/stopwatch';
-import { URI } from 'vs/base/common/uri';
-import { IFileMatch, IFileSearchProviderStats, IFolderQuery, ISearchCompleteStats, IFileQuery, QueryGlobTester, resolvePatternsForProvider } from 'vs/workbench/services/search/common/search';
-import { FileSearchProvider, FileSearchOptions } from 'vs/workbench/services/search/common/searchExtTypes';
-import { nextTick } from 'vs/base/common/process';
+import * As pAth from 'vs/bAse/common/pAth';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import * As glob from 'vs/bAse/common/glob';
+import * As resources from 'vs/bAse/common/resources';
+import { StopWAtch } from 'vs/bAse/common/stopwAtch';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileMAtch, IFileSeArchProviderStAts, IFolderQuery, ISeArchCompleteStAts, IFileQuery, QueryGlobTester, resolvePAtternsForProvider } from 'vs/workbench/services/seArch/common/seArch';
+import { FileSeArchProvider, FileSeArchOptions } from 'vs/workbench/services/seArch/common/seArchExtTypes';
+import { nextTick } from 'vs/bAse/common/process';
 
-export interface IInternalFileMatch {
-	base: URI;
-	original?: URI;
-	relativePath?: string; // Not present for extraFiles or absolute path matches
-	basename: string;
+export interfAce IInternAlFileMAtch {
+	bAse: URI;
+	originAl?: URI;
+	relAtivePAth?: string; // Not present for extrAFiles or Absolute pAth mAtches
+	bAsenAme: string;
 	size?: number;
 }
 
-export interface IDirectoryEntry {
-	base: URI;
-	relativePath: string;
-	basename: string;
+export interfAce IDirectoryEntry {
+	bAse: URI;
+	relAtivePAth: string;
+	bAsenAme: string;
 }
 
-export interface IDirectoryTree {
+export interfAce IDirectoryTree {
 	rootEntries: IDirectoryEntry[];
-	pathToEntries: { [relativePath: string]: IDirectoryEntry[] };
+	pAthToEntries: { [relAtivePAth: string]: IDirectoryEntry[] };
 }
 
-class FileSearchEngine {
-	private filePattern?: string;
-	private includePattern?: glob.ParsedExpression;
-	private maxResults?: number;
-	private exists?: boolean;
-	private isLimitHit = false;
-	private resultCount = 0;
-	private isCanceled = false;
+clAss FileSeArchEngine {
+	privAte filePAttern?: string;
+	privAte includePAttern?: glob.PArsedExpression;
+	privAte mAxResults?: number;
+	privAte exists?: booleAn;
+	privAte isLimitHit = fAlse;
+	privAte resultCount = 0;
+	privAte isCAnceled = fAlse;
 
-	private activeCancellationTokens: Set<CancellationTokenSource>;
+	privAte ActiveCAncellAtionTokens: Set<CAncellAtionTokenSource>;
 
-	private globalExcludePattern?: glob.ParsedExpression;
+	privAte globAlExcludePAttern?: glob.PArsedExpression;
 
-	constructor(private config: IFileQuery, private provider: FileSearchProvider, private sessionToken?: CancellationToken) {
-		this.filePattern = config.filePattern;
-		this.includePattern = config.includePattern && glob.parse(config.includePattern);
-		this.maxResults = config.maxResults || undefined;
+	constructor(privAte config: IFileQuery, privAte provider: FileSeArchProvider, privAte sessionToken?: CAncellAtionToken) {
+		this.filePAttern = config.filePAttern;
+		this.includePAttern = config.includePAttern && glob.pArse(config.includePAttern);
+		this.mAxResults = config.mAxResults || undefined;
 		this.exists = config.exists;
-		this.activeCancellationTokens = new Set<CancellationTokenSource>();
+		this.ActiveCAncellAtionTokens = new Set<CAncellAtionTokenSource>();
 
-		this.globalExcludePattern = config.excludePattern && glob.parse(config.excludePattern);
+		this.globAlExcludePAttern = config.excludePAttern && glob.pArse(config.excludePAttern);
 	}
 
-	cancel(): void {
-		this.isCanceled = true;
-		this.activeCancellationTokens.forEach(t => t.cancel());
-		this.activeCancellationTokens = new Set();
+	cAncel(): void {
+		this.isCAnceled = true;
+		this.ActiveCAncellAtionTokens.forEAch(t => t.cAncel());
+		this.ActiveCAncellAtionTokens = new Set();
 	}
 
-	search(_onResult: (match: IInternalFileMatch) => void): Promise<IInternalSearchComplete> {
+	seArch(_onResult: (mAtch: IInternAlFileMAtch) => void): Promise<IInternAlSeArchComplete> {
 		const folderQueries = this.config.folderQueries || [];
 
 		return new Promise((resolve, reject) => {
-			const onResult = (match: IInternalFileMatch) => {
+			const onResult = (mAtch: IInternAlFileMAtch) => {
 				this.resultCount++;
-				_onResult(match);
+				_onResult(mAtch);
 			};
 
-			// Support that the file pattern is a full path to a file that exists
-			if (this.isCanceled) {
+			// Support thAt the file pAttern is A full pAth to A file thAt exists
+			if (this.isCAnceled) {
 				return resolve({ limitHit: this.isLimitHit });
 			}
 
-			// For each extra file
-			if (this.config.extraFileResources) {
-				this.config.extraFileResources
-					.forEach(extraFile => {
-						const extraFileStr = extraFile.toString(); // ?
-						const basename = path.basename(extraFileStr);
-						if (this.globalExcludePattern && this.globalExcludePattern(extraFileStr, basename)) {
+			// For eAch extrA file
+			if (this.config.extrAFileResources) {
+				this.config.extrAFileResources
+					.forEAch(extrAFile => {
+						const extrAFileStr = extrAFile.toString(); // ?
+						const bAsenAme = pAth.bAsenAme(extrAFileStr);
+						if (this.globAlExcludePAttern && this.globAlExcludePAttern(extrAFileStr, bAsenAme)) {
 							return; // excluded
 						}
 
-						// File: Check for match on file pattern and include pattern
-						this.matchFile(onResult, { base: extraFile, basename });
+						// File: Check for mAtch on file pAttern And include pAttern
+						this.mAtchFile(onResult, { bAse: extrAFile, bAsenAme });
 					});
 			}
 
-			// For each root folder
-			Promise.all(folderQueries.map(fq => {
-				return this.searchInFolder(fq, onResult);
-			})).then(stats => {
+			// For eAch root folder
+			Promise.All(folderQueries.mAp(fq => {
+				return this.seArchInFolder(fq, onResult);
+			})).then(stAts => {
 				resolve({
 					limitHit: this.isLimitHit,
-					stats: stats[0] || undefined // Only looking at single-folder workspace stats...
+					stAts: stAts[0] || undefined // Only looking At single-folder workspAce stAts...
 				});
 			}, (err: Error) => {
-				reject(new Error(toErrorMessage(err)));
+				reject(new Error(toErrorMessAge(err)));
 			});
 		});
 	}
 
-	private searchInFolder(fq: IFolderQuery<URI>, onResult: (match: IInternalFileMatch) => void): Promise<IFileSearchProviderStats | null> {
-		const cancellation = new CancellationTokenSource();
+	privAte seArchInFolder(fq: IFolderQuery<URI>, onResult: (mAtch: IInternAlFileMAtch) => void): Promise<IFileSeArchProviderStAts | null> {
+		const cAncellAtion = new CAncellAtionTokenSource();
 		return new Promise((resolve, reject) => {
-			const options = this.getSearchOptionsForFolder(fq);
+			const options = this.getSeArchOptionsForFolder(fq);
 			const tree = this.initDirectoryTree();
 
 			const queryTester = new QueryGlobTester(this.config, fq);
-			const noSiblingsClauses = !queryTester.hasSiblingExcludeClauses();
+			const noSiblingsClAuses = !queryTester.hAsSiblingExcludeClAuses();
 
-			let providerSW: StopWatch;
+			let providerSW: StopWAtch;
 			new Promise(_resolve => nextTick(_resolve))
 				.then(() => {
-					this.activeCancellationTokens.add(cancellation);
+					this.ActiveCAncellAtionTokens.Add(cAncellAtion);
 
-					providerSW = StopWatch.create();
-					return this.provider.provideFileSearchResults(
+					providerSW = StopWAtch.creAte();
+					return this.provider.provideFileSeArchResults(
 						{
-							pattern: this.config.filePattern || ''
+							pAttern: this.config.filePAttern || ''
 						},
 						options,
-						cancellation.token);
+						cAncellAtion.token);
 				})
 				.then(results => {
-					const providerTime = providerSW.elapsed();
-					const postProcessSW = StopWatch.create();
+					const providerTime = providerSW.elApsed();
+					const postProcessSW = StopWAtch.creAte();
 
-					if (this.isCanceled && !this.isLimitHit) {
+					if (this.isCAnceled && !this.isLimitHit) {
 						return null;
 					}
 
 					if (results) {
-						results.forEach(result => {
-							const relativePath = path.posix.relative(fq.folder.path, result.path);
+						results.forEAch(result => {
+							const relAtivePAth = pAth.posix.relAtive(fq.folder.pAth, result.pAth);
 
-							if (noSiblingsClauses) {
-								const basename = path.basename(result.path);
-								this.matchFile(onResult, { base: fq.folder, relativePath, basename });
+							if (noSiblingsClAuses) {
+								const bAsenAme = pAth.bAsenAme(result.pAth);
+								this.mAtchFile(onResult, { bAse: fq.folder, relAtivePAth, bAsenAme });
 
 								return;
 							}
 
-							// TODO: Optimize siblings clauses with ripgrep here.
-							this.addDirectoryEntries(tree, fq.folder, relativePath, onResult);
+							// TODO: Optimize siblings clAuses with ripgrep here.
+							this.AddDirectoryEntries(tree, fq.folder, relAtivePAth, onResult);
 						});
 					}
 
-					this.activeCancellationTokens.delete(cancellation);
-					if (this.isCanceled && !this.isLimitHit) {
+					this.ActiveCAncellAtionTokens.delete(cAncellAtion);
+					if (this.isCAnceled && !this.isLimitHit) {
 						return null;
 					}
 
-					this.matchDirectoryTree(tree, queryTester, onResult);
-					return <IFileSearchProviderStats>{
+					this.mAtchDirectoryTree(tree, queryTester, onResult);
+					return <IFileSeArchProviderStAts>{
 						providerTime,
-						postProcessTime: postProcessSW.elapsed()
+						postProcessTime: postProcessSW.elApsed()
 					};
 				}).then(
-					stats => {
-						cancellation.dispose();
-						resolve(stats);
+					stAts => {
+						cAncellAtion.dispose();
+						resolve(stAts);
 					},
 					err => {
-						cancellation.dispose();
+						cAncellAtion.dispose();
 						reject(err);
 					});
 		});
 	}
 
-	private getSearchOptionsForFolder(fq: IFolderQuery<URI>): FileSearchOptions {
-		const includes = resolvePatternsForProvider(this.config.includePattern, fq.includePattern);
-		const excludes = resolvePatternsForProvider(this.config.excludePattern, fq.excludePattern);
+	privAte getSeArchOptionsForFolder(fq: IFolderQuery<URI>): FileSeArchOptions {
+		const includes = resolvePAtternsForProvider(this.config.includePAttern, fq.includePAttern);
+		const excludes = resolvePAtternsForProvider(this.config.excludePAttern, fq.excludePAttern);
 
 		return {
 			folder: fq.folder,
 			excludes,
 			includes,
-			useIgnoreFiles: !fq.disregardIgnoreFiles,
-			useGlobalIgnoreFiles: !fq.disregardGlobalIgnoreFiles,
+			useIgnoreFiles: !fq.disregArdIgnoreFiles,
+			useGlobAlIgnoreFiles: !fq.disregArdGlobAlIgnoreFiles,
 			followSymlinks: !fq.ignoreSymlinks,
-			maxResults: this.config.maxResults,
+			mAxResults: this.config.mAxResults,
 			session: this.sessionToken
 		};
 	}
 
-	private initDirectoryTree(): IDirectoryTree {
+	privAte initDirectoryTree(): IDirectoryTree {
 		const tree: IDirectoryTree = {
 			rootEntries: [],
-			pathToEntries: Object.create(null)
+			pAthToEntries: Object.creAte(null)
 		};
-		tree.pathToEntries['.'] = tree.rootEntries;
+		tree.pAthToEntries['.'] = tree.rootEntries;
 		return tree;
 	}
 
-	private addDirectoryEntries({ pathToEntries }: IDirectoryTree, base: URI, relativeFile: string, onResult: (result: IInternalFileMatch) => void) {
-		// Support relative paths to files from a root resource (ignores excludes)
-		if (relativeFile === this.filePattern) {
-			const basename = path.basename(this.filePattern);
-			this.matchFile(onResult, { base: base, relativePath: this.filePattern, basename });
+	privAte AddDirectoryEntries({ pAthToEntries }: IDirectoryTree, bAse: URI, relAtiveFile: string, onResult: (result: IInternAlFileMAtch) => void) {
+		// Support relAtive pAths to files from A root resource (ignores excludes)
+		if (relAtiveFile === this.filePAttern) {
+			const bAsenAme = pAth.bAsenAme(this.filePAttern);
+			this.mAtchFile(onResult, { bAse: bAse, relAtivePAth: this.filePAttern, bAsenAme });
 		}
 
-		function add(relativePath: string) {
-			const basename = path.basename(relativePath);
-			const dirname = path.dirname(relativePath);
-			let entries = pathToEntries[dirname];
+		function Add(relAtivePAth: string) {
+			const bAsenAme = pAth.bAsenAme(relAtivePAth);
+			const dirnAme = pAth.dirnAme(relAtivePAth);
+			let entries = pAthToEntries[dirnAme];
 			if (!entries) {
-				entries = pathToEntries[dirname] = [];
-				add(dirname);
+				entries = pAthToEntries[dirnAme] = [];
+				Add(dirnAme);
 			}
 			entries.push({
-				base,
-				relativePath,
-				basename
+				bAse,
+				relAtivePAth,
+				bAsenAme
 			});
 		}
 
-		add(relativeFile);
+		Add(relAtiveFile);
 	}
 
-	private matchDirectoryTree({ rootEntries, pathToEntries }: IDirectoryTree, queryTester: QueryGlobTester, onResult: (result: IInternalFileMatch) => void) {
+	privAte mAtchDirectoryTree({ rootEntries, pAthToEntries }: IDirectoryTree, queryTester: QueryGlobTester, onResult: (result: IInternAlFileMAtch) => void) {
 		const self = this;
-		const filePattern = this.filePattern;
-		function matchDirectory(entries: IDirectoryEntry[]) {
-			const hasSibling = glob.hasSiblingFn(() => entries.map(entry => entry.basename));
+		const filePAttern = this.filePAttern;
+		function mAtchDirectory(entries: IDirectoryEntry[]) {
+			const hAsSibling = glob.hAsSiblingFn(() => entries.mAp(entry => entry.bAsenAme));
 			for (let i = 0, n = entries.length; i < n; i++) {
 				const entry = entries[i];
-				const { relativePath, basename } = entry;
+				const { relAtivePAth, bAsenAme } = entry;
 
-				// Check exclude pattern
-				// If the user searches for the exact file name, we adjust the glob matching
-				// to ignore filtering by siblings because the user seems to know what she
-				// is searching for and we want to include the result in that case anyway
-				if (!queryTester.includedInQuerySync(relativePath, basename, filePattern !== basename ? hasSibling : undefined)) {
+				// Check exclude pAttern
+				// If the user seArches for the exAct file nAme, we Adjust the glob mAtching
+				// to ignore filtering by siblings becAuse the user seems to know whAt she
+				// is seArching for And we wAnt to include the result in thAt cAse AnywAy
+				if (!queryTester.includedInQuerySync(relAtivePAth, bAsenAme, filePAttern !== bAsenAme ? hAsSibling : undefined)) {
 					continue;
 				}
 
-				const sub = pathToEntries[relativePath];
+				const sub = pAthToEntries[relAtivePAth];
 				if (sub) {
-					matchDirectory(sub);
+					mAtchDirectory(sub);
 				} else {
-					if (relativePath === filePattern) {
-						continue; // ignore file if its path matches with the file pattern because that is already matched above
+					if (relAtivePAth === filePAttern) {
+						continue; // ignore file if its pAth mAtches with the file pAttern becAuse thAt is AlreAdy mAtched Above
 					}
 
-					self.matchFile(onResult, entry);
+					self.mAtchFile(onResult, entry);
 				}
 
 				if (self.isLimitHit) {
-					break;
+					breAk;
 				}
 			}
 		}
-		matchDirectory(rootEntries);
+		mAtchDirectory(rootEntries);
 	}
 
-	private matchFile(onResult: (result: IInternalFileMatch) => void, candidate: IInternalFileMatch): void {
-		if (!this.includePattern || (candidate.relativePath && this.includePattern(candidate.relativePath, candidate.basename))) {
-			if (this.exists || (this.maxResults && this.resultCount >= this.maxResults)) {
+	privAte mAtchFile(onResult: (result: IInternAlFileMAtch) => void, cAndidAte: IInternAlFileMAtch): void {
+		if (!this.includePAttern || (cAndidAte.relAtivePAth && this.includePAttern(cAndidAte.relAtivePAth, cAndidAte.bAsenAme))) {
+			if (this.exists || (this.mAxResults && this.resultCount >= this.mAxResults)) {
 				this.isLimitHit = true;
-				this.cancel();
+				this.cAncel();
 			}
 
 			if (!this.isLimitHit) {
-				onResult(candidate);
+				onResult(cAndidAte);
 			}
 		}
 	}
 }
 
-interface IInternalSearchComplete {
-	limitHit: boolean;
-	stats?: IFileSearchProviderStats;
+interfAce IInternAlSeArchComplete {
+	limitHit: booleAn;
+	stAts?: IFileSeArchProviderStAts;
 }
 
-export class FileSearchManager {
+export clAss FileSeArchMAnAger {
 
-	private static readonly BATCH_SIZE = 512;
+	privAte stAtic reAdonly BATCH_SIZE = 512;
 
-	private readonly sessions = new Map<string, CancellationTokenSource>();
+	privAte reAdonly sessions = new MAp<string, CAncellAtionTokenSource>();
 
-	fileSearch(config: IFileQuery, provider: FileSearchProvider, onBatch: (matches: IFileMatch[]) => void, token: CancellationToken): Promise<ISearchCompleteStats> {
-		const sessionTokenSource = this.getSessionTokenSource(config.cacheKey);
-		const engine = new FileSearchEngine(config, provider, sessionTokenSource && sessionTokenSource.token);
+	fileSeArch(config: IFileQuery, provider: FileSeArchProvider, onBAtch: (mAtches: IFileMAtch[]) => void, token: CAncellAtionToken): Promise<ISeArchCompleteStAts> {
+		const sessionTokenSource = this.getSessionTokenSource(config.cAcheKey);
+		const engine = new FileSeArchEngine(config, provider, sessionTokenSource && sessionTokenSource.token);
 
 		let resultCount = 0;
-		const onInternalResult = (batch: IInternalFileMatch[]) => {
-			resultCount += batch.length;
-			onBatch(batch.map(m => this.rawMatchToSearchItem(m)));
+		const onInternAlResult = (bAtch: IInternAlFileMAtch[]) => {
+			resultCount += bAtch.length;
+			onBAtch(bAtch.mAp(m => this.rAwMAtchToSeArchItem(m)));
 		};
 
-		return this.doSearch(engine, FileSearchManager.BATCH_SIZE, onInternalResult, token).then(
+		return this.doSeArch(engine, FileSeArchMAnAger.BATCH_SIZE, onInternAlResult, token).then(
 			result => {
-				return <ISearchCompleteStats>{
+				return <ISeArchCompleteStAts>{
 					limitHit: result.limitHit,
-					stats: {
-						fromCache: false,
-						type: 'fileSearchProvider',
+					stAts: {
+						fromCAche: fAlse,
+						type: 'fileSeArchProvider',
 						resultCount,
-						detailStats: result.stats
+						detAilStAts: result.stAts
 					}
 				};
 			});
 	}
 
-	clearCache(cacheKey: string): void {
-		const sessionTokenSource = this.getSessionTokenSource(cacheKey);
+	cleArCAche(cAcheKey: string): void {
+		const sessionTokenSource = this.getSessionTokenSource(cAcheKey);
 		if (sessionTokenSource) {
-			sessionTokenSource.cancel();
+			sessionTokenSource.cAncel();
 		}
 	}
 
-	private getSessionTokenSource(cacheKey: string | undefined): CancellationTokenSource | undefined {
-		if (!cacheKey) {
+	privAte getSessionTokenSource(cAcheKey: string | undefined): CAncellAtionTokenSource | undefined {
+		if (!cAcheKey) {
 			return undefined;
 		}
 
-		if (!this.sessions.has(cacheKey)) {
-			this.sessions.set(cacheKey, new CancellationTokenSource());
+		if (!this.sessions.hAs(cAcheKey)) {
+			this.sessions.set(cAcheKey, new CAncellAtionTokenSource());
 		}
 
-		return this.sessions.get(cacheKey);
+		return this.sessions.get(cAcheKey);
 	}
 
-	private rawMatchToSearchItem(match: IInternalFileMatch): IFileMatch {
-		if (match.relativePath) {
+	privAte rAwMAtchToSeArchItem(mAtch: IInternAlFileMAtch): IFileMAtch {
+		if (mAtch.relAtivePAth) {
 			return {
-				resource: resources.joinPath(match.base, match.relativePath)
+				resource: resources.joinPAth(mAtch.bAse, mAtch.relAtivePAth)
 			};
 		} else {
-			// extraFileResources
+			// extrAFileResources
 			return {
-				resource: match.base
+				resource: mAtch.bAse
 			};
 		}
 	}
 
-	private doSearch(engine: FileSearchEngine, batchSize: number, onResultBatch: (matches: IInternalFileMatch[]) => void, token: CancellationToken): Promise<IInternalSearchComplete> {
-		token.onCancellationRequested(() => {
-			engine.cancel();
+	privAte doSeArch(engine: FileSeArchEngine, bAtchSize: number, onResultBAtch: (mAtches: IInternAlFileMAtch[]) => void, token: CAncellAtionToken): Promise<IInternAlSeArchComplete> {
+		token.onCAncellAtionRequested(() => {
+			engine.cAncel();
 		});
 
-		const _onResult = (match: IInternalFileMatch) => {
-			if (match) {
-				batch.push(match);
-				if (batchSize > 0 && batch.length >= batchSize) {
-					onResultBatch(batch);
-					batch = [];
+		const _onResult = (mAtch: IInternAlFileMAtch) => {
+			if (mAtch) {
+				bAtch.push(mAtch);
+				if (bAtchSize > 0 && bAtch.length >= bAtchSize) {
+					onResultBAtch(bAtch);
+					bAtch = [];
 				}
 			}
 		};
 
-		let batch: IInternalFileMatch[] = [];
-		return engine.search(_onResult).then(result => {
-			if (batch.length) {
-				onResultBatch(batch);
+		let bAtch: IInternAlFileMAtch[] = [];
+		return engine.seArch(_onResult).then(result => {
+			if (bAtch.length) {
+				onResultBAtch(bAtch);
 			}
 
 			return result;
 		}, error => {
-			if (batch.length) {
-				onResultBatch(batch);
+			if (bAtch.length) {
+				onResultBAtch(bAtch);
 			}
 
 			return Promise.reject(error);

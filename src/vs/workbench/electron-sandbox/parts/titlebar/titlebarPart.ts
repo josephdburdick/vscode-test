@@ -1,229 +1,229 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { getZoomFactor } from 'vs/base/browser/browser';
-import * as DOM from 'vs/base/browser/dom';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { getZoomFActor } from 'vs/bAse/browser/browser';
+import * As DOM from 'vs/bAse/browser/dom';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IConfigurAtionService, IConfigurAtionChAngeEvent } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { isMacintosh, isWindows, isLinux } from 'vs/base/common/platform';
-import { IMenuService } from 'vs/platform/actions/common/actions';
-import { TitlebarPart as BrowserTitleBarPart } from 'vs/workbench/browser/parts/titlebar/titlebarPart';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { isMAcintosh, isWindows, isLinux } from 'vs/bAse/common/plAtform';
+import { IMenuService } from 'vs/plAtform/Actions/common/Actions';
+import { TitlebArPArt As BrowserTitleBArPArt } from 'vs/workbench/browser/pArts/titlebAr/titlebArPArt';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { getTitleBarStyle } from 'vs/platform/windows/common/windows';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Codicon } from 'vs/base/common/codicons';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { getTitleBArStyle } from 'vs/plAtform/windows/common/windows';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Codicon } from 'vs/bAse/common/codicons';
 
-export class TitlebarPart extends BrowserTitleBarPart {
-	private appIcon: HTMLElement | undefined;
-	private windowControls: HTMLElement | undefined;
-	private maxRestoreControl: HTMLElement | undefined;
-	private dragRegion: HTMLElement | undefined;
-	private resizer: HTMLElement | undefined;
+export clAss TitlebArPArt extends BrowserTitleBArPArt {
+	privAte AppIcon: HTMLElement | undefined;
+	privAte windowControls: HTMLElement | undefined;
+	privAte mAxRestoreControl: HTMLElement | undefined;
+	privAte drAgRegion: HTMLElement | undefined;
+	privAte resizer: HTMLElement | undefined;
 
 	constructor(
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IConfigurationService protected readonly configurationService: IConfigurationService,
+		@IConfigurAtionService protected reAdonly configurAtionService: IConfigurAtionService,
 		@IEditorService editorService: IEditorService,
-		@IWorkbenchEnvironmentService protected readonly environmentService: IWorkbenchEnvironmentService,
-		@IWorkspaceContextService contextService: IWorkspaceContextService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IWorkbenchEnvironmentService protected reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkspAceContextService contextService: IWorkspAceContextService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IThemeService themeService: IThemeService,
-		@ILabelService labelService: ILabelService,
-		@IStorageService storageService: IStorageService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@ILAbelService lAbelService: ILAbelService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@IMenuService menuService: IMenuService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IHostService hostService: IHostService,
 		@IProductService productService: IProductService,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(contextMenuService, configurationService, editorService, environmentService, contextService, instantiationService, themeService, labelService, storageService, layoutService, menuService, contextKeyService, hostService, productService);
+		super(contextMenuService, configurAtionService, editorService, environmentService, contextService, instAntiAtionService, themeService, lAbelService, storAgeService, lAyoutService, menuService, contextKeyService, hostService, productService);
 	}
 
-	private onUpdateAppIconDragBehavior() {
-		const setting = this.configurationService.getValue('window.doubleClickIconToClose');
-		if (setting && this.appIcon) {
-			(this.appIcon.style as any)['-webkit-app-region'] = 'no-drag';
-		} else if (this.appIcon) {
-			(this.appIcon.style as any)['-webkit-app-region'] = 'drag';
+	privAte onUpdAteAppIconDrAgBehAvior() {
+		const setting = this.configurAtionService.getVAlue('window.doubleClickIconToClose');
+		if (setting && this.AppIcon) {
+			(this.AppIcon.style As Any)['-webkit-App-region'] = 'no-drAg';
+		} else if (this.AppIcon) {
+			(this.AppIcon.style As Any)['-webkit-App-region'] = 'drAg';
 		}
 	}
 
-	private onDidChangeMaximized(maximized: boolean) {
-		if (this.maxRestoreControl) {
-			if (maximized) {
-				this.maxRestoreControl.classList.remove(...Codicon.chromeMaximize.classNamesArray);
-				this.maxRestoreControl.classList.add(...Codicon.chromeRestore.classNamesArray);
+	privAte onDidChAngeMAximized(mAximized: booleAn) {
+		if (this.mAxRestoreControl) {
+			if (mAximized) {
+				this.mAxRestoreControl.clAssList.remove(...Codicon.chromeMAximize.clAssNAmesArrAy);
+				this.mAxRestoreControl.clAssList.Add(...Codicon.chromeRestore.clAssNAmesArrAy);
 			} else {
-				this.maxRestoreControl.classList.remove(...Codicon.chromeRestore.classNamesArray);
-				this.maxRestoreControl.classList.add(...Codicon.chromeMaximize.classNamesArray);
+				this.mAxRestoreControl.clAssList.remove(...Codicon.chromeRestore.clAssNAmesArrAy);
+				this.mAxRestoreControl.clAssList.Add(...Codicon.chromeMAximize.clAssNAmesArrAy);
 			}
 		}
 
 		if (this.resizer) {
-			if (maximized) {
+			if (mAximized) {
 				DOM.hide(this.resizer);
 			} else {
 				DOM.show(this.resizer);
 			}
 		}
 
-		this.adjustTitleMarginToCenter();
+		this.AdjustTitleMArginToCenter();
 	}
 
-	private onMenubarFocusChanged(focused: boolean) {
-		if ((isWindows || isLinux) && this.currentMenubarVisibility !== 'compact' && this.dragRegion) {
+	privAte onMenubArFocusChAnged(focused: booleAn) {
+		if ((isWindows || isLinux) && this.currentMenubArVisibility !== 'compAct' && this.drAgRegion) {
 			if (focused) {
-				DOM.hide(this.dragRegion);
+				DOM.hide(this.drAgRegion);
 			} else {
-				DOM.show(this.dragRegion);
+				DOM.show(this.drAgRegion);
 			}
 		}
 	}
 
-	protected onMenubarVisibilityChanged(visible: boolean) {
-		// Hide title when toggling menu bar
-		if ((isWindows || isLinux) && this.currentMenubarVisibility === 'toggle' && visible) {
-			// Hack to fix issue #52522 with layered webkit-app-region elements appearing under cursor
-			if (this.dragRegion) {
-				DOM.hide(this.dragRegion);
-				setTimeout(() => DOM.show(this.dragRegion!), 50);
+	protected onMenubArVisibilityChAnged(visible: booleAn) {
+		// Hide title when toggling menu bAr
+		if ((isWindows || isLinux) && this.currentMenubArVisibility === 'toggle' && visible) {
+			// HAck to fix issue #52522 with lAyered webkit-App-region elements AppeAring under cursor
+			if (this.drAgRegion) {
+				DOM.hide(this.drAgRegion);
+				setTimeout(() => DOM.show(this.drAgRegion!), 50);
 			}
 		}
 
-		super.onMenubarVisibilityChanged(visible);
+		super.onMenubArVisibilityChAnged(visible);
 	}
 
-	protected onConfigurationChanged(event: IConfigurationChangeEvent): void {
+	protected onConfigurAtionChAnged(event: IConfigurAtionChAngeEvent): void {
 
-		super.onConfigurationChanged(event);
+		super.onConfigurAtionChAnged(event);
 
-		if (event.affectsConfiguration('window.doubleClickIconToClose')) {
-			if (this.appIcon) {
-				this.onUpdateAppIconDragBehavior();
+		if (event.AffectsConfigurAtion('window.doubleClickIconToClose')) {
+			if (this.AppIcon) {
+				this.onUpdAteAppIconDrAgBehAvior();
 			}
 		}
 	}
 
-	protected adjustTitleMarginToCenter(): void {
-		if (this.customMenubar && this.menubar) {
-			const leftMarker = (this.appIcon ? this.appIcon.clientWidth : 0) + this.menubar.clientWidth + 10;
-			const rightMarker = this.element.clientWidth - (this.windowControls ? this.windowControls.clientWidth : 0) - 10;
+	protected AdjustTitleMArginToCenter(): void {
+		if (this.customMenubAr && this.menubAr) {
+			const leftMArker = (this.AppIcon ? this.AppIcon.clientWidth : 0) + this.menubAr.clientWidth + 10;
+			const rightMArker = this.element.clientWidth - (this.windowControls ? this.windowControls.clientWidth : 0) - 10;
 
-			// Not enough space to center the titlebar within window,
-			// Center between menu and window controls
-			if (leftMarker > (this.element.clientWidth - this.title.clientWidth) / 2 ||
-				rightMarker < (this.element.clientWidth + this.title.clientWidth) / 2) {
+			// Not enough spAce to center the titlebAr within window,
+			// Center between menu And window controls
+			if (leftMArker > (this.element.clientWidth - this.title.clientWidth) / 2 ||
+				rightMArker < (this.element.clientWidth + this.title.clientWidth) / 2) {
 				this.title.style.position = '';
 				this.title.style.left = '';
-				this.title.style.transform = '';
+				this.title.style.trAnsform = '';
 				return;
 			}
 		}
 
-		this.title.style.position = 'absolute';
+		this.title.style.position = 'Absolute';
 		this.title.style.left = '50%';
-		this.title.style.transform = 'translate(-50%, 0)';
+		this.title.style.trAnsform = 'trAnslAte(-50%, 0)';
 	}
 
-	protected installMenubar(): void {
-		super.installMenubar();
+	protected instAllMenubAr(): void {
+		super.instAllMenubAr();
 
-		if (this.menubar) {
+		if (this.menubAr) {
 			return;
 		}
 
-		if (this.customMenubar) {
-			this._register(this.customMenubar.onFocusStateChange(e => this.onMenubarFocusChanged(e)));
+		if (this.customMenubAr) {
+			this._register(this.customMenubAr.onFocusStAteChAnge(e => this.onMenubArFocusChAnged(e)));
 		}
 	}
 
-	createContentArea(parent: HTMLElement): HTMLElement {
-		const ret = super.createContentArea(parent);
+	creAteContentAreA(pArent: HTMLElement): HTMLElement {
+		const ret = super.creAteContentAreA(pArent);
 
-		// App Icon (Native Windows/Linux)
-		if (!isMacintosh) {
-			this.appIcon = DOM.prepend(this.element, DOM.$('div.window-appicon'));
-			this.onUpdateAppIconDragBehavior();
+		// App Icon (NAtive Windows/Linux)
+		if (!isMAcintosh) {
+			this.AppIcon = DOM.prepend(this.element, DOM.$('div.window-Appicon'));
+			this.onUpdAteAppIconDrAgBehAvior();
 
-			this._register(DOM.addDisposableListener(this.appIcon, DOM.EventType.DBLCLICK, (e => {
-				this.nativeHostService.closeWindow();
+			this._register(DOM.AddDisposAbleListener(this.AppIcon, DOM.EventType.DBLCLICK, (e => {
+				this.nAtiveHostService.closeWindow();
 			})));
 		}
 
-		// Draggable region that we can manipulate for #52522
-		this.dragRegion = DOM.prepend(this.element, DOM.$('div.titlebar-drag-region'));
+		// DrAggAble region thAt we cAn mAnipulAte for #52522
+		this.drAgRegion = DOM.prepend(this.element, DOM.$('div.titlebAr-drAg-region'));
 
-		// Window Controls (Native Windows/Linux)
-		if (!isMacintosh) {
-			this.windowControls = DOM.append(this.element, DOM.$('div.window-controls-container'));
+		// Window Controls (NAtive Windows/Linux)
+		if (!isMAcintosh) {
+			this.windowControls = DOM.Append(this.element, DOM.$('div.window-controls-contAiner'));
 
 			// Minimize
-			const minimizeIcon = DOM.append(this.windowControls, DOM.$('div.window-icon.window-minimize' + Codicon.chromeMinimize.cssSelector));
-			this._register(DOM.addDisposableListener(minimizeIcon, DOM.EventType.CLICK, e => {
-				this.nativeHostService.minimizeWindow();
+			const minimizeIcon = DOM.Append(this.windowControls, DOM.$('div.window-icon.window-minimize' + Codicon.chromeMinimize.cssSelector));
+			this._register(DOM.AddDisposAbleListener(minimizeIcon, DOM.EventType.CLICK, e => {
+				this.nAtiveHostService.minimizeWindow();
 			}));
 
 			// Restore
-			this.maxRestoreControl = DOM.append(this.windowControls, DOM.$('div.window-icon.window-max-restore'));
-			this._register(DOM.addDisposableListener(this.maxRestoreControl, DOM.EventType.CLICK, async e => {
-				const maximized = await this.nativeHostService.isMaximized();
-				if (maximized) {
-					return this.nativeHostService.unmaximizeWindow();
+			this.mAxRestoreControl = DOM.Append(this.windowControls, DOM.$('div.window-icon.window-mAx-restore'));
+			this._register(DOM.AddDisposAbleListener(this.mAxRestoreControl, DOM.EventType.CLICK, Async e => {
+				const mAximized = AwAit this.nAtiveHostService.isMAximized();
+				if (mAximized) {
+					return this.nAtiveHostService.unmAximizeWindow();
 				}
 
-				return this.nativeHostService.maximizeWindow();
+				return this.nAtiveHostService.mAximizeWindow();
 			}));
 
 			// Close
-			const closeIcon = DOM.append(this.windowControls, DOM.$('div.window-icon.window-close' + Codicon.chromeClose.cssSelector));
-			this._register(DOM.addDisposableListener(closeIcon, DOM.EventType.CLICK, e => {
-				this.nativeHostService.closeWindow();
+			const closeIcon = DOM.Append(this.windowControls, DOM.$('div.window-icon.window-close' + Codicon.chromeClose.cssSelector));
+			this._register(DOM.AddDisposAbleListener(closeIcon, DOM.EventType.CLICK, e => {
+				this.nAtiveHostService.closeWindow();
 			}));
 
 			// Resizer
-			this.resizer = DOM.append(this.element, DOM.$('div.resizer'));
+			this.resizer = DOM.Append(this.element, DOM.$('div.resizer'));
 
-			this._register(this.layoutService.onMaximizeChange(maximized => this.onDidChangeMaximized(maximized)));
-			this.onDidChangeMaximized(this.layoutService.isWindowMaximized());
+			this._register(this.lAyoutService.onMAximizeChAnge(mAximized => this.onDidChAngeMAximized(mAximized)));
+			this.onDidChAngeMAximized(this.lAyoutService.isWindowMAximized());
 		}
 
 		return ret;
 	}
 
-	updateLayout(dimension: DOM.Dimension): void {
-		this.lastLayoutDimensions = dimension;
+	updAteLAyout(dimension: DOM.Dimension): void {
+		this.lAstLAyoutDimensions = dimension;
 
-		if (getTitleBarStyle(this.configurationService, this.environmentService) === 'custom') {
-			// Only prevent zooming behavior on macOS or when the menubar is not visible
-			if (isMacintosh || this.currentMenubarVisibility === 'hidden') {
-				this.title.style.zoom = `${1 / getZoomFactor()}`;
+		if (getTitleBArStyle(this.configurAtionService, this.environmentService) === 'custom') {
+			// Only prevent zooming behAvior on mAcOS or when the menubAr is not visible
+			if (isMAcintosh || this.currentMenubArVisibility === 'hidden') {
+				this.title.style.zoom = `${1 / getZoomFActor()}`;
 				if (isWindows || isLinux) {
-					if (this.appIcon) {
-						this.appIcon.style.zoom = `${1 / getZoomFactor()}`;
+					if (this.AppIcon) {
+						this.AppIcon.style.zoom = `${1 / getZoomFActor()}`;
 					}
 
 					if (this.windowControls) {
-						this.windowControls.style.zoom = `${1 / getZoomFactor()}`;
+						this.windowControls.style.zoom = `${1 / getZoomFActor()}`;
 					}
 				}
 			} else {
 				this.title.style.zoom = '';
 				if (isWindows || isLinux) {
-					if (this.appIcon) {
-						this.appIcon.style.zoom = '';
+					if (this.AppIcon) {
+						this.AppIcon.style.zoom = '';
 					}
 
 					if (this.windowControls) {
@@ -232,11 +232,11 @@ export class TitlebarPart extends BrowserTitleBarPart {
 				}
 			}
 
-			DOM.runAtThisOrScheduleAtNextAnimationFrame(() => this.adjustTitleMarginToCenter());
+			DOM.runAtThisOrScheduleAtNextAnimAtionFrAme(() => this.AdjustTitleMArginToCenter());
 
-			if (this.customMenubar) {
-				const menubarDimension = new DOM.Dimension(0, dimension.height);
-				this.customMenubar.layout(menubarDimension);
+			if (this.customMenubAr) {
+				const menubArDimension = new DOM.Dimension(0, dimension.height);
+				this.customMenubAr.lAyout(menubArDimension);
 			}
 		}
 	}

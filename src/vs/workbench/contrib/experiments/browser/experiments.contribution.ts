@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { locAlize } from 'vs/nls';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IExperimentService, ExperimentService } from 'vs/workbench/contrib/experiments/common/experimentService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { ExperimentalPrompts } from 'vs/workbench/contrib/experiments/browser/experimentalPrompt';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ExperimentAlPrompts } from 'vs/workbench/contrib/experiments/browser/experimentAlPrompt';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { workbenchConfigurAtionNodeBAse } from 'vs/workbench/common/configurAtion';
 
 registerSingleton(IExperimentService, ExperimentService, true);
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ExperimentalPrompts, LifecyclePhase.Eventually);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ExperimentAlPrompts, LifecyclePhAse.EventuAlly);
 
-const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
+const registry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
 
-// Configuration
-registry.registerConfiguration({
-	...workbenchConfigurationNodeBase,
+// ConfigurAtion
+registry.registerConfigurAtion({
+	...workbenchConfigurAtionNodeBAse,
 	'properties': {
-		'workbench.enableExperiments': {
-			'type': 'boolean',
-			'description': localize('workbench.enableExperiments', "Fetches experiments to run from a Microsoft online service."),
-			'default': true,
-			'tags': ['usesOnlineServices']
+		'workbench.enAbleExperiments': {
+			'type': 'booleAn',
+			'description': locAlize('workbench.enAbleExperiments', "Fetches experiments to run from A Microsoft online service."),
+			'defAult': true,
+			'tAgs': ['usesOnlineServices']
 		}
 	}
 });

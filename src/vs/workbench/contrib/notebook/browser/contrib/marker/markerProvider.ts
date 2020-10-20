@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { IMarkerListProvider, MarkerList, IMarkerNavigationService } from 'vs/editor/contrib/gotoError/markerNavigationService';
+import { URI } from 'vs/bAse/common/uri';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { IMArkerListProvider, MArkerList, IMArkerNAvigAtionService } from 'vs/editor/contrib/gotoError/mArkerNAvigAtionService';
 import { CellUri } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { IMarkerService } from 'vs/platform/markers/common/markers';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IMArkerService } from 'vs/plAtform/mArkers/common/mArkers';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-class MarkerListProvider implements IMarkerListProvider {
+clAss MArkerListProvider implements IMArkerListProvider {
 
-	private readonly _dispoables: IDisposable;
+	privAte reAdonly _dispoAbles: IDisposAble;
 
 	constructor(
-		@IMarkerService private readonly _markerService: IMarkerService,
-		@IMarkerNavigationService markerNavigation: IMarkerNavigationService,
+		@IMArkerService privAte reAdonly _mArkerService: IMArkerService,
+		@IMArkerNAvigAtionService mArkerNAvigAtion: IMArkerNAvigAtionService,
 	) {
-		this._dispoables = markerNavigation.registerProvider(this);
+		this._dispoAbles = mArkerNAvigAtion.registerProvider(this);
 	}
 
 	dispose() {
-		this._dispoables.dispose();
+		this._dispoAbles.dispose();
 	}
 
-	getMarkerList(resource: URI | undefined): MarkerList | undefined {
+	getMArkerList(resource: URI | undefined): MArkerList | undefined {
 		if (!resource) {
 			return undefined;
 		}
-		const data = CellUri.parse(resource);
-		if (!data) {
+		const dAtA = CellUri.pArse(resource);
+		if (!dAtA) {
 			return undefined;
 		}
-		return new MarkerList(uri => {
-			const otherData = CellUri.parse(uri);
-			return otherData?.notebook.toString() === data.notebook.toString();
-		}, this._markerService);
+		return new MArkerList(uri => {
+			const otherDAtA = CellUri.pArse(uri);
+			return otherDAtA?.notebook.toString() === dAtA.notebook.toString();
+		}, this._mArkerService);
 	}
 }
 
 Registry
-	.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(MarkerListProvider, LifecyclePhase.Ready);
+	.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(MArkerListProvider, LifecyclePhAse.ReAdy);

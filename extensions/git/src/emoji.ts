@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
-import { workspace, Uri } from 'vscode';
-import { getExtensionContext } from './main';
+import { workspAce, Uri } from 'vscode';
+import { getExtensionContext } from './mAin';
 import { TextDecoder } from 'util';
 
-const emojiRegex = /:([-+_a-z0-9]+):/g;
+const emojiRegex = /:([-+_A-z0-9]+):/g;
 
-let emojiMap: Record<string, string> | undefined;
-let emojiMapPromise: Promise<void> | undefined;
+let emojiMAp: Record<string, string> | undefined;
+let emojiMApPromise: Promise<void> | undefined;
 
-export async function ensureEmojis() {
-	if (emojiMap === undefined) {
-		if (emojiMapPromise === undefined) {
-			emojiMapPromise = loadEmojiMap();
+export Async function ensureEmojis() {
+	if (emojiMAp === undefined) {
+		if (emojiMApPromise === undefined) {
+			emojiMApPromise = loAdEmojiMAp();
 		}
-		await emojiMapPromise;
+		AwAit emojiMApPromise;
 	}
 }
 
-async function loadEmojiMap() {
+Async function loAdEmojiMAp() {
 	const context = getExtensionContext();
-	const uri = (Uri as any).joinPath(context.extensionUri, 'resources', 'emojis.json');
-	emojiMap = JSON.parse(new TextDecoder('utf8').decode(await workspace.fs.readFile(uri)));
+	const uri = (Uri As Any).joinPAth(context.extensionUri, 'resources', 'emojis.json');
+	emojiMAp = JSON.pArse(new TextDecoder('utf8').decode(AwAit workspAce.fs.reAdFile(uri)));
 }
 
-export function emojify(message: string) {
-	if (emojiMap === undefined) {
-		return message;
+export function emojify(messAge: string) {
+	if (emojiMAp === undefined) {
+		return messAge;
 	}
 
-	return message.replace(emojiRegex, (s, code) => {
-		return emojiMap?.[code] || s;
+	return messAge.replAce(emojiRegex, (s, code) => {
+		return emojiMAp?.[code] || s;
 	});
 }

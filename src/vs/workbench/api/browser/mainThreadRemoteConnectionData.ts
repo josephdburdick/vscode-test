@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { extHostCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ExtHostContext, IExtHostContext, ExtHostExtensionServiceShape } from '../common/extHost.protocol';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { extHostCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ExtHostContext, IExtHostContext, ExtHostExtensionServiceShApe } from '../common/extHost.protocol';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
 @extHostCustomer
-export class MainThreadRemoteConnectionData extends Disposable {
+export clAss MAinThreAdRemoteConnectionDAtA extends DisposAble {
 
-	private readonly _proxy: ExtHostExtensionServiceShape;
+	privAte reAdonly _proxy: ExtHostExtensionServiceShApe;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IWorkbenchEnvironmentService protected readonly _environmentService: IWorkbenchEnvironmentService,
+		@IWorkbenchEnvironmentService protected reAdonly _environmentService: IWorkbenchEnvironmentService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService
 	) {
 		super();
@@ -24,10 +24,10 @@ export class MainThreadRemoteConnectionData extends Disposable {
 
 		const remoteAuthority = this._environmentService.remoteAuthority;
 		if (remoteAuthority) {
-			this._register(remoteAuthorityResolverService.onDidChangeConnectionData(() => {
-				const connectionData = remoteAuthorityResolverService.getConnectionData(remoteAuthority);
-				if (connectionData) {
-					this._proxy.$updateRemoteConnectionData(connectionData);
+			this._register(remoteAuthorityResolverService.onDidChAngeConnectionDAtA(() => {
+				const connectionDAtA = remoteAuthorityResolverService.getConnectionDAtA(remoteAuthority);
+				if (connectionDAtA) {
+					this._proxy.$updAteRemoteConnectionDAtA(connectionDAtA);
 				}
 			}));
 		}

@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IIssueService } from 'vs/platform/issue/electron-sandbox/issue';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IIssueService } from 'vs/plAtform/issue/electron-sAndbox/issue';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-// @ts-ignore: interface is implemented via proxy
-export class IssueService implements IIssueService {
+// @ts-ignore: interfAce is implemented viA proxy
+export clAss IssueService implements IIssueService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(@IMainProcessService mainProcessService: IMainProcessService) {
-		return createChannelSender<IIssueService>(mainProcessService.getChannel('issue'));
+	constructor(@IMAinProcessService mAinProcessService: IMAinProcessService) {
+		return creAteChAnnelSender<IIssueService>(mAinProcessService.getChAnnel('issue'));
 	}
 }
 

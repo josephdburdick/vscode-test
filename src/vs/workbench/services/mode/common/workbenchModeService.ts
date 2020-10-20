@@ -1,233 +1,233 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as mime from 'vs/base/common/mime';
-import * as resources from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import * As nls from 'vs/nls';
+import * As mime from 'vs/bAse/common/mime';
+import * As resources from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
-import { ILanguageExtensionPoint, IModeService } from 'vs/editor/common/services/modeService';
+import { ILAnguAgeExtensionPoint, IModeService } from 'vs/editor/common/services/modeService';
 import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { FILES_ASSOCIATIONS_CONFIG, IFilesConfiguration } from 'vs/platform/files/common/files';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { FILES_ASSOCIATIONS_CONFIG, IFilesConfigurAtion } from 'vs/plAtform/files/common/files';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ExtensionMessageCollector, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { ExtensionMessAgeCollector, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-export interface IRawLanguageExtensionPoint {
+export interfAce IRAwLAnguAgeExtensionPoint {
 	id: string;
 	extensions: string[];
-	filenames: string[];
-	filenamePatterns: string[];
+	filenAmes: string[];
+	filenAmePAtterns: string[];
 	firstLine: string;
-	aliases: string[];
+	AliAses: string[];
 	mimetypes: string[];
-	configuration: string;
+	configurAtion: string;
 }
 
-export const languagesExtPoint: IExtensionPoint<IRawLanguageExtensionPoint[]> = ExtensionsRegistry.registerExtensionPoint<IRawLanguageExtensionPoint[]>({
-	extensionPoint: 'languages',
-	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.languages', 'Contributes language declarations.'),
-		type: 'array',
+export const lAnguAgesExtPoint: IExtensionPoint<IRAwLAnguAgeExtensionPoint[]> = ExtensionsRegistry.registerExtensionPoint<IRAwLAnguAgeExtensionPoint[]>({
+	extensionPoint: 'lAnguAges',
+	jsonSchemA: {
+		description: nls.locAlize('vscode.extension.contributes.lAnguAges', 'Contributes lAnguAge declArAtions.'),
+		type: 'ArrAy',
 		items: {
 			type: 'object',
-			defaultSnippets: [{ body: { id: '${1:languageId}', aliases: ['${2:label}'], extensions: ['${3:extension}'], configuration: './language-configuration.json' } }],
+			defAultSnippets: [{ body: { id: '${1:lAnguAgeId}', AliAses: ['${2:lAbel}'], extensions: ['${3:extension}'], configurAtion: './lAnguAge-configurAtion.json' } }],
 			properties: {
 				id: {
-					description: nls.localize('vscode.extension.contributes.languages.id', 'ID of the language.'),
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.id', 'ID of the lAnguAge.'),
 					type: 'string'
 				},
-				aliases: {
-					description: nls.localize('vscode.extension.contributes.languages.aliases', 'Name aliases for the language.'),
-					type: 'array',
+				AliAses: {
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.AliAses', 'NAme AliAses for the lAnguAge.'),
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					}
 				},
 				extensions: {
-					description: nls.localize('vscode.extension.contributes.languages.extensions', 'File extensions associated to the language.'),
-					default: ['.foo'],
-					type: 'array',
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.extensions', 'File extensions AssociAted to the lAnguAge.'),
+					defAult: ['.foo'],
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					}
 				},
-				filenames: {
-					description: nls.localize('vscode.extension.contributes.languages.filenames', 'File names associated to the language.'),
-					type: 'array',
+				filenAmes: {
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.filenAmes', 'File nAmes AssociAted to the lAnguAge.'),
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					}
 				},
-				filenamePatterns: {
-					description: nls.localize('vscode.extension.contributes.languages.filenamePatterns', 'File name glob patterns associated to the language.'),
-					type: 'array',
+				filenAmePAtterns: {
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.filenAmePAtterns', 'File nAme glob pAtterns AssociAted to the lAnguAge.'),
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					}
 				},
 				mimetypes: {
-					description: nls.localize('vscode.extension.contributes.languages.mimetypes', 'Mime types associated to the language.'),
-					type: 'array',
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.mimetypes', 'Mime types AssociAted to the lAnguAge.'),
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					}
 				},
 				firstLine: {
-					description: nls.localize('vscode.extension.contributes.languages.firstLine', 'A regular expression matching the first line of a file of the language.'),
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.firstLine', 'A regulAr expression mAtching the first line of A file of the lAnguAge.'),
 					type: 'string'
 				},
-				configuration: {
-					description: nls.localize('vscode.extension.contributes.languages.configuration', 'A relative path to a file containing configuration options for the language.'),
+				configurAtion: {
+					description: nls.locAlize('vscode.extension.contributes.lAnguAges.configurAtion', 'A relAtive pAth to A file contAining configurAtion options for the lAnguAge.'),
 					type: 'string',
-					default: './language-configuration.json'
+					defAult: './lAnguAge-configurAtion.json'
 				}
 			}
 		}
 	}
 });
 
-export class WorkbenchModeServiceImpl extends ModeServiceImpl {
-	private _configurationService: IConfigurationService;
-	private _extensionService: IExtensionService;
-	private _onReadyPromise: Promise<boolean> | undefined;
+export clAss WorkbenchModeServiceImpl extends ModeServiceImpl {
+	privAte _configurAtionService: IConfigurAtionService;
+	privAte _extensionService: IExtensionService;
+	privAte _onReAdyPromise: Promise<booleAn> | undefined;
 
 	constructor(
 		@IExtensionService extensionService: IExtensionService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IEnvironmentService environmentService: IEnvironmentService
 	) {
 		super(environmentService.verbose || environmentService.isExtensionDevelopment || !environmentService.isBuilt);
-		this._configurationService = configurationService;
+		this._configurAtionService = configurAtionService;
 		this._extensionService = extensionService;
 
-		languagesExtPoint.setHandler((extensions: readonly IExtensionPointUser<IRawLanguageExtensionPoint[]>[]) => {
-			let allValidLanguages: ILanguageExtensionPoint[] = [];
+		lAnguAgesExtPoint.setHAndler((extensions: reAdonly IExtensionPointUser<IRAwLAnguAgeExtensionPoint[]>[]) => {
+			let AllVAlidLAnguAges: ILAnguAgeExtensionPoint[] = [];
 
 			for (let i = 0, len = extensions.length; i < len; i++) {
 				let extension = extensions[i];
 
-				if (!Array.isArray(extension.value)) {
-					extension.collector.error(nls.localize('invalid', "Invalid `contributes.{0}`. Expected an array.", languagesExtPoint.name));
+				if (!ArrAy.isArrAy(extension.vAlue)) {
+					extension.collector.error(nls.locAlize('invAlid', "InvAlid `contributes.{0}`. Expected An ArrAy.", lAnguAgesExtPoint.nAme));
 					continue;
 				}
 
-				for (let j = 0, lenJ = extension.value.length; j < lenJ; j++) {
-					let ext = extension.value[j];
-					if (isValidLanguageExtensionPoint(ext, extension.collector)) {
-						let configuration: URI | undefined = undefined;
-						if (ext.configuration) {
-							configuration = resources.joinPath(extension.description.extensionLocation, ext.configuration);
+				for (let j = 0, lenJ = extension.vAlue.length; j < lenJ; j++) {
+					let ext = extension.vAlue[j];
+					if (isVAlidLAnguAgeExtensionPoint(ext, extension.collector)) {
+						let configurAtion: URI | undefined = undefined;
+						if (ext.configurAtion) {
+							configurAtion = resources.joinPAth(extension.description.extensionLocAtion, ext.configurAtion);
 						}
-						allValidLanguages.push({
+						AllVAlidLAnguAges.push({
 							id: ext.id,
 							extensions: ext.extensions,
-							filenames: ext.filenames,
-							filenamePatterns: ext.filenamePatterns,
+							filenAmes: ext.filenAmes,
+							filenAmePAtterns: ext.filenAmePAtterns,
 							firstLine: ext.firstLine,
-							aliases: ext.aliases,
+							AliAses: ext.AliAses,
 							mimetypes: ext.mimetypes,
-							configuration: configuration
+							configurAtion: configurAtion
 						});
 					}
 				}
 			}
 
-			ModesRegistry.setDynamicLanguages(allValidLanguages);
+			ModesRegistry.setDynAmicLAnguAges(AllVAlidLAnguAges);
 
 		});
 
-		this.updateMime();
-		this._configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration(FILES_ASSOCIATIONS_CONFIG)) {
-				this.updateMime();
+		this.updAteMime();
+		this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion(FILES_ASSOCIATIONS_CONFIG)) {
+				this.updAteMime();
 			}
 		});
-		this._extensionService.whenInstalledExtensionsRegistered().then(() => {
-			this.updateMime();
+		this._extensionService.whenInstAlledExtensionsRegistered().then(() => {
+			this.updAteMime();
 		});
 
-		this.onDidCreateMode((mode) => {
-			this._extensionService.activateByEvent(`onLanguage:${mode.getId()}`);
+		this.onDidCreAteMode((mode) => {
+			this._extensionService.ActivAteByEvent(`onLAnguAge:${mode.getId()}`);
 		});
 	}
 
-	protected _onReady(): Promise<boolean> {
-		if (!this._onReadyPromise) {
-			this._onReadyPromise = Promise.resolve(
-				this._extensionService.whenInstalledExtensionsRegistered().then(() => true)
+	protected _onReAdy(): Promise<booleAn> {
+		if (!this._onReAdyPromise) {
+			this._onReAdyPromise = Promise.resolve(
+				this._extensionService.whenInstAlledExtensionsRegistered().then(() => true)
 			);
 		}
 
-		return this._onReadyPromise;
+		return this._onReAdyPromise;
 	}
 
-	private updateMime(): void {
-		const configuration = this._configurationService.getValue<IFilesConfiguration>();
+	privAte updAteMime(): void {
+		const configurAtion = this._configurAtionService.getVAlue<IFilesConfigurAtion>();
 
-		// Clear user configured mime associations
-		mime.clearTextMimes(true /* user configured */);
+		// CleAr user configured mime AssociAtions
+		mime.cleArTextMimes(true /* user configured */);
 
-		// Register based on settings
-		if (configuration.files?.associations) {
-			Object.keys(configuration.files.associations).forEach(pattern => {
-				const langId = configuration.files.associations[pattern];
-				const mimetype = this.getMimeForMode(langId) || `text/x-${langId}`;
+		// Register bAsed on settings
+		if (configurAtion.files?.AssociAtions) {
+			Object.keys(configurAtion.files.AssociAtions).forEAch(pAttern => {
+				const lAngId = configurAtion.files.AssociAtions[pAttern];
+				const mimetype = this.getMimeForMode(lAngId) || `text/x-${lAngId}`;
 
-				mime.registerTextMime({ id: langId, mime: mimetype, filepattern: pattern, userConfigured: true });
+				mime.registerTextMime({ id: lAngId, mime: mimetype, filepAttern: pAttern, userConfigured: true });
 			});
 		}
 
-		this._onLanguagesMaybeChanged.fire();
+		this._onLAnguAgesMAybeChAnged.fire();
 	}
 }
 
-function isUndefinedOrStringArray(value: string[]): boolean {
-	if (typeof value === 'undefined') {
+function isUndefinedOrStringArrAy(vAlue: string[]): booleAn {
+	if (typeof vAlue === 'undefined') {
 		return true;
 	}
-	if (!Array.isArray(value)) {
-		return false;
+	if (!ArrAy.isArrAy(vAlue)) {
+		return fAlse;
 	}
-	return value.every(item => typeof item === 'string');
+	return vAlue.every(item => typeof item === 'string');
 }
 
-function isValidLanguageExtensionPoint(value: IRawLanguageExtensionPoint, collector: ExtensionMessageCollector): boolean {
-	if (!value) {
-		collector.error(nls.localize('invalid.empty', "Empty value for `contributes.{0}`", languagesExtPoint.name));
-		return false;
+function isVAlidLAnguAgeExtensionPoint(vAlue: IRAwLAnguAgeExtensionPoint, collector: ExtensionMessAgeCollector): booleAn {
+	if (!vAlue) {
+		collector.error(nls.locAlize('invAlid.empty', "Empty vAlue for `contributes.{0}`", lAnguAgesExtPoint.nAme));
+		return fAlse;
 	}
-	if (typeof value.id !== 'string') {
-		collector.error(nls.localize('require.id', "property `{0}` is mandatory and must be of type `string`", 'id'));
-		return false;
+	if (typeof vAlue.id !== 'string') {
+		collector.error(nls.locAlize('require.id', "property `{0}` is mAndAtory And must be of type `string`", 'id'));
+		return fAlse;
 	}
-	if (!isUndefinedOrStringArray(value.extensions)) {
-		collector.error(nls.localize('opt.extensions', "property `{0}` can be omitted and must be of type `string[]`", 'extensions'));
-		return false;
+	if (!isUndefinedOrStringArrAy(vAlue.extensions)) {
+		collector.error(nls.locAlize('opt.extensions', "property `{0}` cAn be omitted And must be of type `string[]`", 'extensions'));
+		return fAlse;
 	}
-	if (!isUndefinedOrStringArray(value.filenames)) {
-		collector.error(nls.localize('opt.filenames', "property `{0}` can be omitted and must be of type `string[]`", 'filenames'));
-		return false;
+	if (!isUndefinedOrStringArrAy(vAlue.filenAmes)) {
+		collector.error(nls.locAlize('opt.filenAmes', "property `{0}` cAn be omitted And must be of type `string[]`", 'filenAmes'));
+		return fAlse;
 	}
-	if (typeof value.firstLine !== 'undefined' && typeof value.firstLine !== 'string') {
-		collector.error(nls.localize('opt.firstLine', "property `{0}` can be omitted and must be of type `string`", 'firstLine'));
-		return false;
+	if (typeof vAlue.firstLine !== 'undefined' && typeof vAlue.firstLine !== 'string') {
+		collector.error(nls.locAlize('opt.firstLine', "property `{0}` cAn be omitted And must be of type `string`", 'firstLine'));
+		return fAlse;
 	}
-	if (typeof value.configuration !== 'undefined' && typeof value.configuration !== 'string') {
-		collector.error(nls.localize('opt.configuration', "property `{0}` can be omitted and must be of type `string`", 'configuration'));
-		return false;
+	if (typeof vAlue.configurAtion !== 'undefined' && typeof vAlue.configurAtion !== 'string') {
+		collector.error(nls.locAlize('opt.configurAtion', "property `{0}` cAn be omitted And must be of type `string`", 'configurAtion'));
+		return fAlse;
 	}
-	if (!isUndefinedOrStringArray(value.aliases)) {
-		collector.error(nls.localize('opt.aliases', "property `{0}` can be omitted and must be of type `string[]`", 'aliases'));
-		return false;
+	if (!isUndefinedOrStringArrAy(vAlue.AliAses)) {
+		collector.error(nls.locAlize('opt.AliAses', "property `{0}` cAn be omitted And must be of type `string[]`", 'AliAses'));
+		return fAlse;
 	}
-	if (!isUndefinedOrStringArray(value.mimetypes)) {
-		collector.error(nls.localize('opt.mimetypes', "property `{0}` can be omitted and must be of type `string[]`", 'mimetypes'));
-		return false;
+	if (!isUndefinedOrStringArrAy(vAlue.mimetypes)) {
+		collector.error(nls.locAlize('opt.mimetypes', "property `{0}` cAn be omitted And must be of type `string[]`", 'mimetypes'));
+		return fAlse;
 	}
 	return true;
 }

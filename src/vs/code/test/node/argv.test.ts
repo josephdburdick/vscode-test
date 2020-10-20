@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { formatOptions, Option } from 'vs/platform/environment/node/argv';
-import { addArg } from 'vs/platform/environment/node/argvHelper';
+import * As Assert from 'Assert';
+import { formAtOptions, Option } from 'vs/plAtform/environment/node/Argv';
+import { AddArg } from 'vs/plAtform/environment/node/ArgvHelper';
 
-suite('formatOptions', () => {
+suite('formAtOptions', () => {
 
-	function o(description: string): Option<any> {
+	function o(description: string): Option<Any> {
 		return {
 			description, type: 'string'
 		};
 	}
 
-	test('Text should display small columns correctly', () => {
-		assert.deepEqual(
-			formatOptions({
-				'add': o('bar')
+	test('Text should displAy smAll columns correctly', () => {
+		Assert.deepEquAl(
+			formAtOptions({
+				'Add': o('bAr')
 			}, 80),
-			['  --add bar']
+			['  --Add bAr']
 		);
-		assert.deepEqual(
-			formatOptions({
-				'add': o('bar'),
-				'wait': o('ba'),
-				'trace': o('b')
+		Assert.deepEquAl(
+			formAtOptions({
+				'Add': o('bAr'),
+				'wAit': o('bA'),
+				'trAce': o('b')
 			}, 80),
 			[
-				'  --add   bar',
-				'  --wait  ba',
-				'  --trace b'
+				'  --Add   bAr',
+				'  --wAit  bA',
+				'  --trAce b'
 			]);
 	});
 
-	test('Text should wrap', () => {
-		assert.deepEqual(
-			formatOptions({
-				'add': o((<any>'bar ').repeat(9))
+	test('Text should wrAp', () => {
+		Assert.deepEquAl(
+			formAtOptions({
+				'Add': o((<Any>'bAr ').repeAt(9))
 			}, 40),
 			[
-				'  --add bar bar bar bar bar bar bar bar',
-				'        bar'
+				'  --Add bAr bAr bAr bAr bAr bAr bAr bAr',
+				'        bAr'
 			]);
 	});
 
-	test('Text should revert to the condensed view when the terminal is too narrow', () => {
-		assert.deepEqual(
-			formatOptions({
-				'add': o((<any>'bar ').repeat(9))
+	test('Text should revert to the condensed view when the terminAl is too nArrow', () => {
+		Assert.deepEquAl(
+			formAtOptions({
+				'Add': o((<Any>'bAr ').repeAt(9))
 			}, 30),
 			[
-				'  --add',
-				'      bar bar bar bar bar bar bar bar bar '
+				'  --Add',
+				'      bAr bAr bAr bAr bAr bAr bAr bAr bAr '
 			]);
 	});
 
-	test('addArg', () => {
-		assert.deepEqual(addArg([], 'foo'), ['foo']);
-		assert.deepEqual(addArg([], 'foo', 'bar'), ['foo', 'bar']);
-		assert.deepEqual(addArg(['foo'], 'bar'), ['foo', 'bar']);
-		assert.deepEqual(addArg(['--wait'], 'bar'), ['--wait', 'bar']);
-		assert.deepEqual(addArg(['--wait', '--', '--foo'], 'bar'), ['--wait', 'bar', '--', '--foo']);
-		assert.deepEqual(addArg(['--', '--foo'], 'bar'), ['bar', '--', '--foo']);
+	test('AddArg', () => {
+		Assert.deepEquAl(AddArg([], 'foo'), ['foo']);
+		Assert.deepEquAl(AddArg([], 'foo', 'bAr'), ['foo', 'bAr']);
+		Assert.deepEquAl(AddArg(['foo'], 'bAr'), ['foo', 'bAr']);
+		Assert.deepEquAl(AddArg(['--wAit'], 'bAr'), ['--wAit', 'bAr']);
+		Assert.deepEquAl(AddArg(['--wAit', '--', '--foo'], 'bAr'), ['--wAit', 'bAr', '--', '--foo']);
+		Assert.deepEquAl(AddArg(['--', '--foo'], 'bAr'), ['bAr', '--', '--foo']);
 	});
 });

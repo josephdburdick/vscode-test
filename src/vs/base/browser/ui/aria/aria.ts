@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./aria';
-import { isMacintosh } from 'vs/base/common/platform';
-import * as dom from 'vs/base/browser/dom';
+import 'vs/css!./AriA';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import * As dom from 'vs/bAse/browser/dom';
 
-// Use a max length since we are inserting the whole msg in the DOM and that can cause browsers to freeze for long messages #94233
+// Use A mAx length since we Are inserting the whole msg in the DOM And thAt cAn cAuse browsers to freeze for long messAges #94233
 const MAX_MESSAGE_LENGTH = 20000;
-let ariaContainer: HTMLElement;
-let alertContainer: HTMLElement;
-let alertContainer2: HTMLElement;
-let statusContainer: HTMLElement;
-let statusContainer2: HTMLElement;
-export function setARIAContainer(parent: HTMLElement) {
-	ariaContainer = document.createElement('div');
-	ariaContainer.className = 'monaco-aria-container';
+let AriAContAiner: HTMLElement;
+let AlertContAiner: HTMLElement;
+let AlertContAiner2: HTMLElement;
+let stAtusContAiner: HTMLElement;
+let stAtusContAiner2: HTMLElement;
+export function setARIAContAiner(pArent: HTMLElement) {
+	AriAContAiner = document.creAteElement('div');
+	AriAContAiner.clAssNAme = 'monAco-AriA-contAiner';
 
-	const createAlertContainer = () => {
-		const element = document.createElement('div');
-		element.className = 'monaco-alert';
-		element.setAttribute('role', 'alert');
-		element.setAttribute('aria-atomic', 'true');
-		ariaContainer.appendChild(element);
+	const creAteAlertContAiner = () => {
+		const element = document.creAteElement('div');
+		element.clAssNAme = 'monAco-Alert';
+		element.setAttribute('role', 'Alert');
+		element.setAttribute('AriA-Atomic', 'true');
+		AriAContAiner.AppendChild(element);
 		return element;
 	};
-	alertContainer = createAlertContainer();
-	alertContainer2 = createAlertContainer();
+	AlertContAiner = creAteAlertContAiner();
+	AlertContAiner2 = creAteAlertContAiner();
 
-	const createStatusContainer = () => {
-		const element = document.createElement('div');
-		element.className = 'monaco-status';
-		element.setAttribute('role', 'complementary');
-		element.setAttribute('aria-live', 'polite');
-		element.setAttribute('aria-atomic', 'true');
-		ariaContainer.appendChild(element);
+	const creAteStAtusContAiner = () => {
+		const element = document.creAteElement('div');
+		element.clAssNAme = 'monAco-stAtus';
+		element.setAttribute('role', 'complementAry');
+		element.setAttribute('AriA-live', 'polite');
+		element.setAttribute('AriA-Atomic', 'true');
+		AriAContAiner.AppendChild(element);
 		return element;
 	};
-	statusContainer = createStatusContainer();
-	statusContainer2 = createStatusContainer();
+	stAtusContAiner = creAteStAtusContAiner();
+	stAtusContAiner2 = creAteStAtusContAiner();
 
-	parent.appendChild(ariaContainer);
+	pArent.AppendChild(AriAContAiner);
 }
 /**
- * Given the provided message, will make sure that it is read as alert to screen readers.
+ * Given the provided messAge, will mAke sure thAt it is reAd As Alert to screen reAders.
  */
-export function alert(msg: string): void {
-	if (!ariaContainer) {
+export function Alert(msg: string): void {
+	if (!AriAContAiner) {
 		return;
 	}
 
-	// Use alternate containers such that duplicated messages get read out by screen readers #99466
-	if (alertContainer.textContent !== msg) {
-		dom.clearNode(alertContainer2);
-		insertMessage(alertContainer, msg);
+	// Use AlternAte contAiners such thAt duplicAted messAges get reAd out by screen reAders #99466
+	if (AlertContAiner.textContent !== msg) {
+		dom.cleArNode(AlertContAiner2);
+		insertMessAge(AlertContAiner, msg);
 	} else {
-		dom.clearNode(alertContainer);
-		insertMessage(alertContainer2, msg);
+		dom.cleArNode(AlertContAiner);
+		insertMessAge(AlertContAiner2, msg);
 	}
 }
 
 /**
- * Given the provided message, will make sure that it is read as status to screen readers.
+ * Given the provided messAge, will mAke sure thAt it is reAd As stAtus to screen reAders.
  */
-export function status(msg: string): void {
-	if (!ariaContainer) {
+export function stAtus(msg: string): void {
+	if (!AriAContAiner) {
 		return;
 	}
 
-	if (isMacintosh) {
-		alert(msg); // VoiceOver does not seem to support status role
+	if (isMAcintosh) {
+		Alert(msg); // VoiceOver does not seem to support stAtus role
 	} else {
-		if (statusContainer.textContent !== msg) {
-			dom.clearNode(statusContainer2);
-			insertMessage(statusContainer, msg);
+		if (stAtusContAiner.textContent !== msg) {
+			dom.cleArNode(stAtusContAiner2);
+			insertMessAge(stAtusContAiner, msg);
 		} else {
-			dom.clearNode(statusContainer);
-			insertMessage(statusContainer2, msg);
+			dom.cleArNode(stAtusContAiner);
+			insertMessAge(stAtusContAiner2, msg);
 		}
 	}
 }
 
-function insertMessage(target: HTMLElement, msg: string): void {
-	dom.clearNode(target);
+function insertMessAge(tArget: HTMLElement, msg: string): void {
+	dom.cleArNode(tArget);
 	if (msg.length > MAX_MESSAGE_LENGTH) {
 		msg = msg.substr(0, MAX_MESSAGE_LENGTH);
 	}
-	target.textContent = msg;
+	tArget.textContent = msg;
 
-	// See https://www.paciellogroup.com/blog/2012/06/html5-accessibility-chops-aria-rolealert-browser-support/
-	target.style.visibility = 'hidden';
-	target.style.visibility = 'visible';
+	// See https://www.pAciellogroup.com/blog/2012/06/html5-Accessibility-chops-AriA-roleAlert-browser-support/
+	tArget.style.visibility = 'hidden';
+	tArget.style.visibility = 'visible';
 }

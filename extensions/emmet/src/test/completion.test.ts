@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import { CancellationTokenSource, CompletionTriggerKind, Selection } from 'vscode';
-import { DefaultCompletionItemProvider } from '../defaultCompletionProvider';
-import { closeAllEditors, withRandomFileEditor } from './testUtils';
+import * As Assert from 'Assert';
+import 'mochA';
+import { CAncellAtionTokenSource, CompletionTriggerKind, Selection } from 'vscode';
+import { DefAultCompletionItemProvider } from '../defAultCompletionProvider';
+import { closeAllEditors, withRAndomFileEditor } from './testUtils';
 
-const completionProvider = new DefaultCompletionItemProvider();
+const completionProvider = new DefAultCompletionItemProvider();
 
 suite('Tests for completion in CSS embedded in HTML', () => {
-	teardown(() => {
-		// close all editors
+	teArdown(() => {
+		// close All editors
 		return closeAllEditors;
 	});
 
-	test('style attribute & attribute value in html', async () => {
-		await testHtmlCompletionProvider('<div style="|"', [{ label: 'padding: ;' }]);
-		await testHtmlCompletionProvider(`<div style='|'`, [{ label: 'padding: ;' }]);
-		await testHtmlCompletionProvider(`<div style='p|'`, [{ label: 'padding: ;' }]);
-		await testHtmlCompletionProvider(`<div style='color: #0|'`, [{ label: '#000000' }]);
+	test('style Attribute & Attribute vAlue in html', Async () => {
+		AwAit testHtmlCompletionProvider('<div style="|"', [{ lAbel: 'pAdding: ;' }]);
+		AwAit testHtmlCompletionProvider(`<div style='|'`, [{ lAbel: 'pAdding: ;' }]);
+		AwAit testHtmlCompletionProvider(`<div style='p|'`, [{ lAbel: 'pAdding: ;' }]);
+		AwAit testHtmlCompletionProvider(`<div style='color: #0|'`, [{ lAbel: '#000000' }]);
 	});
 
 	// https://github.com/microsoft/vscode/issues/79766
-	test('#79766, correct region determination', async () => {
-		await testHtmlCompletionProvider(`<div style="color: #000">di|</div>`, [
-			{ label: 'div', documentation: `<div>|</div>` }
+	test('#79766, correct region determinAtion', Async () => {
+		AwAit testHtmlCompletionProvider(`<div style="color: #000">di|</div>`, [
+			{ lAbel: 'div', documentAtion: `<div>|</div>` }
 		]);
 	});
 
 	// https://github.com/microsoft/vscode/issues/86941
-	test('#86941, widows should not be completed', async () => {
-		await testCssCompletionProvider(`.foo { wi| }`, [
-			{ label: 'widows: ;', documentation: `widows: ;` }
+	test('#86941, widows should not be completed', Async () => {
+		AwAit testCssCompletionProvider(`.foo { wi| }`, [
+			{ lAbel: 'widows: ;', documentAtion: `widows: ;` }
 		]);
 	});
 });
 
-interface TestCompletionItem {
-	label: string;
+interfAce TestCompletionItem {
+	lAbel: string;
 
-	documentation?: string;
+	documentAtion?: string;
 }
 
-function testHtmlCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): Thenable<any> {
+function testHtmlCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): ThenAble<Any> {
 	const cursorPos = contents.indexOf('|');
 	const htmlContents = contents.slice(0, cursorPos) + contents.slice(cursorPos + 1);
 
-	return withRandomFileEditor(htmlContents, 'html', async (editor, _doc) => {
+	return withRAndomFileEditor(htmlContents, 'html', Async (editor, _doc) => {
 		const selection = new Selection(editor.document.positionAt(cursorPos), editor.document.positionAt(cursorPos));
 		editor.selection = selection;
-		const cancelSrc = new CancellationTokenSource();
+		const cAncelSrc = new CAncellAtionTokenSource();
 		const completionPromise = completionProvider.provideCompletionItems(
 			editor.document,
-			editor.selection.active,
-			cancelSrc.token,
+			editor.selection.Active,
+			cAncelSrc.token,
 			{ triggerKind: CompletionTriggerKind.Invoke }
 		);
 		if (!completionPromise) {
 			return Promise.resolve();
 		}
 
-		const completionList = await completionPromise;
+		const completionList = AwAit completionPromise;
 		if (!completionList || !completionList.items || !completionList.items.length) {
 			return Promise.resolve();
 		}
 
-		expectedItems.forEach(eItem => {
-			const matches = completionList.items.filter(i => i.label === eItem.label);
-			const match = matches && matches.length > 0 ? matches[0] : undefined;
-			assert.ok(match, `Didn't find completion item with label ${eItem.label}`);
+		expectedItems.forEAch(eItem => {
+			const mAtches = completionList.items.filter(i => i.lAbel === eItem.lAbel);
+			const mAtch = mAtches && mAtches.length > 0 ? mAtches[0] : undefined;
+			Assert.ok(mAtch, `Didn't find completion item with lAbel ${eItem.lAbel}`);
 
-			if (match) {
-				assert.equal(match.detail, 'Emmet Abbreviation', `Match needs to come from Emmet`);
+			if (mAtch) {
+				Assert.equAl(mAtch.detAil, 'Emmet AbbreviAtion', `MAtch needs to come from Emmet`);
 
-				if (eItem.documentation) {
-					assert.equal(match.documentation, eItem.documentation, `Emmet completion Documentation doesn't match`);
+				if (eItem.documentAtion) {
+					Assert.equAl(mAtch.documentAtion, eItem.documentAtion, `Emmet completion DocumentAtion doesn't mAtch`);
 				}
 			}
 		});
@@ -86,39 +86,39 @@ function testHtmlCompletionProvider(contents: string, expectedItems: TestComplet
 	});
 }
 
-function testCssCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): Thenable<any> {
+function testCssCompletionProvider(contents: string, expectedItems: TestCompletionItem[]): ThenAble<Any> {
 	const cursorPos = contents.indexOf('|');
 	const cssContents = contents.slice(0, cursorPos) + contents.slice(cursorPos + 1);
 
-	return withRandomFileEditor(cssContents, 'css', async (editor, _doc) => {
+	return withRAndomFileEditor(cssContents, 'css', Async (editor, _doc) => {
 		const selection = new Selection(editor.document.positionAt(cursorPos), editor.document.positionAt(cursorPos));
 		editor.selection = selection;
-		const cancelSrc = new CancellationTokenSource();
+		const cAncelSrc = new CAncellAtionTokenSource();
 		const completionPromise = completionProvider.provideCompletionItems(
 			editor.document,
-			editor.selection.active,
-			cancelSrc.token,
+			editor.selection.Active,
+			cAncelSrc.token,
 			{ triggerKind: CompletionTriggerKind.Invoke }
 		);
 		if (!completionPromise) {
 			return Promise.resolve();
 		}
 
-		const completionList = await completionPromise;
+		const completionList = AwAit completionPromise;
 		if (!completionList || !completionList.items || !completionList.items.length) {
 			return Promise.resolve();
 		}
 
-		expectedItems.forEach(eItem => {
-			const matches = completionList.items.filter(i => i.label === eItem.label);
-			const match = matches && matches.length > 0 ? matches[0] : undefined;
-			assert.ok(match, `Didn't find completion item with label ${eItem.label}`);
+		expectedItems.forEAch(eItem => {
+			const mAtches = completionList.items.filter(i => i.lAbel === eItem.lAbel);
+			const mAtch = mAtches && mAtches.length > 0 ? mAtches[0] : undefined;
+			Assert.ok(mAtch, `Didn't find completion item with lAbel ${eItem.lAbel}`);
 
-			if (match) {
-				assert.equal(match.detail, 'Emmet Abbreviation', `Match needs to come from Emmet`);
+			if (mAtch) {
+				Assert.equAl(mAtch.detAil, 'Emmet AbbreviAtion', `MAtch needs to come from Emmet`);
 
-				if (eItem.documentation) {
-					assert.equal(match.documentation, eItem.documentation, `Emmet completion Documentation doesn't match`);
+				if (eItem.documentAtion) {
+					Assert.equAl(mAtch.documentAtion, eItem.documentAtion, `Emmet completion DocumentAtion doesn't mAtch`);
 				}
 			}
 		});

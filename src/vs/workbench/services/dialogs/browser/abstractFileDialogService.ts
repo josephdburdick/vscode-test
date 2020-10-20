@@ -1,158 +1,158 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IWindowOpenable, isWorkspaceToOpen, isFileToOpen } from 'vs/platform/windows/common/windows';
-import { IPickAndOpenOptions, ISaveDialogOptions, IOpenDialogOptions, FileFilter, IFileDialogService, IDialogService, ConfirmResult, getFileNamesMessage } from 'vs/platform/dialogs/common/dialogs';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import * As nls from 'vs/nls';
+import { IWindowOpenAble, isWorkspAceToOpen, isFileToOpen } from 'vs/plAtform/windows/common/windows';
+import { IPickAndOpenOptions, ISAveDiAlogOptions, IOpenDiAlogOptions, FileFilter, IFileDiAlogService, IDiAlogService, ConfirmResult, getFileNAmesMessAge } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
 import { IHistoryService } from 'vs/workbench/services/history/common/history';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { URI } from 'vs/base/common/uri';
-import * as resources from 'vs/base/common/resources';
-import { IInstantiationService, } from 'vs/platform/instantiation/common/instantiation';
-import { SimpleFileDialog } from 'vs/workbench/services/dialogs/browser/simpleFileDialog';
-import { WORKSPACE_EXTENSION, isUntitledWorkspace, IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import * As resources from 'vs/bAse/common/resources';
+import { IInstAntiAtionService, } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { SimpleFileDiAlog } from 'vs/workbench/services/diAlogs/browser/simpleFileDiAlog';
+import { WORKSPACE_EXTENSION, isUntitledWorkspAce, IWorkspAcesService } from 'vs/plAtform/workspAces/common/workspAces';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import Severity from 'vs/base/common/severity';
-import { coalesce, distinct } from 'vs/base/common/arrays';
-import { trim } from 'vs/base/common/strings';
+import Severity from 'vs/bAse/common/severity';
+import { coAlesce, distinct } from 'vs/bAse/common/ArrAys';
+import { trim } from 'vs/bAse/common/strings';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 
-export abstract class AbstractFileDialogService implements IFileDialogService {
+export AbstrAct clAss AbstrActFileDiAlogService implements IFileDiAlogService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IHostService protected readonly hostService: IHostService,
-		@IWorkspaceContextService protected readonly contextService: IWorkspaceContextService,
-		@IHistoryService protected readonly historyService: IHistoryService,
-		@IWorkbenchEnvironmentService protected readonly environmentService: IWorkbenchEnvironmentService,
-		@IInstantiationService protected readonly instantiationService: IInstantiationService,
-		@IConfigurationService protected readonly configurationService: IConfigurationService,
-		@IFileService protected readonly fileService: IFileService,
-		@IOpenerService protected readonly openerService: IOpenerService,
-		@IDialogService private readonly dialogService: IDialogService,
-		@IModeService private readonly modeService: IModeService,
-		@IWorkspacesService private readonly workspacesService: IWorkspacesService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IPathService private readonly pathService: IPathService
+		@IHostService protected reAdonly hostService: IHostService,
+		@IWorkspAceContextService protected reAdonly contextService: IWorkspAceContextService,
+		@IHistoryService protected reAdonly historyService: IHistoryService,
+		@IWorkbenchEnvironmentService protected reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IInstAntiAtionService protected reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IConfigurAtionService protected reAdonly configurAtionService: IConfigurAtionService,
+		@IFileService protected reAdonly fileService: IFileService,
+		@IOpenerService protected reAdonly openerService: IOpenerService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService,
+		@IModeService privAte reAdonly modeService: IModeService,
+		@IWorkspAcesService privAte reAdonly workspAcesService: IWorkspAcesService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IPAthService privAte reAdonly pAthService: IPAthService
 	) { }
 
-	defaultFilePath(schemeFilter = this.getSchemeFilterForWindow()): URI | undefined {
+	defAultFilePAth(schemeFilter = this.getSchemeFilterForWindow()): URI | undefined {
 
-		// Check for last active file first...
-		let candidate = this.historyService.getLastActiveFile(schemeFilter);
+		// Check for lAst Active file first...
+		let cAndidAte = this.historyService.getLAstActiveFile(schemeFilter);
 
-		// ...then for last active file root
-		if (!candidate) {
-			candidate = this.historyService.getLastActiveWorkspaceRoot(schemeFilter);
+		// ...then for lAst Active file root
+		if (!cAndidAte) {
+			cAndidAte = this.historyService.getLAstActiveWorkspAceRoot(schemeFilter);
 		} else {
-			candidate = candidate && resources.dirname(candidate);
+			cAndidAte = cAndidAte && resources.dirnAme(cAndidAte);
 		}
 
-		return candidate || undefined;
+		return cAndidAte || undefined;
 	}
 
-	defaultFolderPath(schemeFilter = this.getSchemeFilterForWindow()): URI | undefined {
+	defAultFolderPAth(schemeFilter = this.getSchemeFilterForWindow()): URI | undefined {
 
-		// Check for last active file root first...
-		let candidate = this.historyService.getLastActiveWorkspaceRoot(schemeFilter);
+		// Check for lAst Active file root first...
+		let cAndidAte = this.historyService.getLAstActiveWorkspAceRoot(schemeFilter);
 
-		// ...then for last active file
-		if (!candidate) {
-			candidate = this.historyService.getLastActiveFile(schemeFilter);
+		// ...then for lAst Active file
+		if (!cAndidAte) {
+			cAndidAte = this.historyService.getLAstActiveFile(schemeFilter);
 		}
 
-		return candidate && resources.dirname(candidate) || undefined;
+		return cAndidAte && resources.dirnAme(cAndidAte) || undefined;
 	}
 
-	defaultWorkspacePath(schemeFilter = this.getSchemeFilterForWindow(), filename?: string): URI | undefined {
-		let defaultWorkspacePath: URI | undefined;
-		// Check for current workspace config file first...
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			const configuration = this.contextService.getWorkspace().configuration;
-			if (configuration && configuration.scheme === schemeFilter && !isUntitledWorkspace(configuration, this.environmentService)) {
-				defaultWorkspacePath = resources.dirname(configuration) || undefined;
+	defAultWorkspAcePAth(schemeFilter = this.getSchemeFilterForWindow(), filenAme?: string): URI | undefined {
+		let defAultWorkspAcePAth: URI | undefined;
+		// Check for current workspAce config file first...
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			const configurAtion = this.contextService.getWorkspAce().configurAtion;
+			if (configurAtion && configurAtion.scheme === schemeFilter && !isUntitledWorkspAce(configurAtion, this.environmentService)) {
+				defAultWorkspAcePAth = resources.dirnAme(configurAtion) || undefined;
 			}
 		}
 
-		// ...then fallback to default file path
-		if (!defaultWorkspacePath) {
-			defaultWorkspacePath = this.defaultFilePath(schemeFilter);
+		// ...then fAllbAck to defAult file pAth
+		if (!defAultWorkspAcePAth) {
+			defAultWorkspAcePAth = this.defAultFilePAth(schemeFilter);
 		}
 
-		if (defaultWorkspacePath && filename) {
-			defaultWorkspacePath = resources.joinPath(defaultWorkspacePath, filename);
+		if (defAultWorkspAcePAth && filenAme) {
+			defAultWorkspAcePAth = resources.joinPAth(defAultWorkspAcePAth, filenAme);
 		}
 
-		return defaultWorkspacePath;
+		return defAultWorkspAcePAth;
 	}
 
-	async showSaveConfirm(fileNamesOrResources: (string | URI)[]): Promise<ConfirmResult> {
-		if (this.environmentService.isExtensionDevelopment && this.environmentService.extensionTestsLocationURI) {
-			return ConfirmResult.DONT_SAVE; // no veto when we are in extension dev testing mode because we cannot assume we run interactive
+	Async showSAveConfirm(fileNAmesOrResources: (string | URI)[]): Promise<ConfirmResult> {
+		if (this.environmentService.isExtensionDevelopment && this.environmentService.extensionTestsLocAtionURI) {
+			return ConfirmResult.DONT_SAVE; // no veto when we Are in extension dev testing mode becAuse we cAnnot Assume we run interActive
 		}
 
-		return this.doShowSaveConfirm(fileNamesOrResources);
+		return this.doShowSAveConfirm(fileNAmesOrResources);
 	}
 
-	protected async doShowSaveConfirm(fileNamesOrResources: (string | URI)[]): Promise<ConfirmResult> {
-		if (fileNamesOrResources.length === 0) {
+	protected Async doShowSAveConfirm(fileNAmesOrResources: (string | URI)[]): Promise<ConfirmResult> {
+		if (fileNAmesOrResources.length === 0) {
 			return ConfirmResult.DONT_SAVE;
 		}
 
-		let message: string;
-		let detail = nls.localize('saveChangesDetail', "Your changes will be lost if you don't save them.");
-		if (fileNamesOrResources.length === 1) {
-			message = nls.localize('saveChangesMessage', "Do you want to save the changes you made to {0}?", typeof fileNamesOrResources[0] === 'string' ? fileNamesOrResources[0] : resources.basename(fileNamesOrResources[0]));
+		let messAge: string;
+		let detAil = nls.locAlize('sAveChAngesDetAil', "Your chAnges will be lost if you don't sAve them.");
+		if (fileNAmesOrResources.length === 1) {
+			messAge = nls.locAlize('sAveChAngesMessAge', "Do you wAnt to sAve the chAnges you mAde to {0}?", typeof fileNAmesOrResources[0] === 'string' ? fileNAmesOrResources[0] : resources.bAsenAme(fileNAmesOrResources[0]));
 		} else {
-			message = nls.localize('saveChangesMessages', "Do you want to save the changes to the following {0} files?", fileNamesOrResources.length);
-			detail = getFileNamesMessage(fileNamesOrResources) + '\n' + detail;
+			messAge = nls.locAlize('sAveChAngesMessAges', "Do you wAnt to sAve the chAnges to the following {0} files?", fileNAmesOrResources.length);
+			detAil = getFileNAmesMessAge(fileNAmesOrResources) + '\n' + detAil;
 		}
 
 		const buttons: string[] = [
-			fileNamesOrResources.length > 1 ? nls.localize({ key: 'saveAll', comment: ['&& denotes a mnemonic'] }, "&&Save All") : nls.localize({ key: 'save', comment: ['&& denotes a mnemonic'] }, "&&Save"),
-			nls.localize({ key: 'dontSave', comment: ['&& denotes a mnemonic'] }, "Do&&n't Save"),
-			nls.localize('cancel', "Cancel")
+			fileNAmesOrResources.length > 1 ? nls.locAlize({ key: 'sAveAll', comment: ['&& denotes A mnemonic'] }, "&&SAve All") : nls.locAlize({ key: 'sAve', comment: ['&& denotes A mnemonic'] }, "&&SAve"),
+			nls.locAlize({ key: 'dontSAve', comment: ['&& denotes A mnemonic'] }, "Do&&n't SAve"),
+			nls.locAlize('cAncel', "CAncel")
 		];
 
-		const { choice } = await this.dialogService.show(Severity.Warning, message, buttons, {
-			cancelId: 2,
-			detail
+		const { choice } = AwAit this.diAlogService.show(Severity.WArning, messAge, buttons, {
+			cAncelId: 2,
+			detAil
 		});
 
 		switch (choice) {
-			case 0: return ConfirmResult.SAVE;
-			case 1: return ConfirmResult.DONT_SAVE;
-			default: return ConfirmResult.CANCEL;
+			cAse 0: return ConfirmResult.SAVE;
+			cAse 1: return ConfirmResult.DONT_SAVE;
+			defAult: return ConfirmResult.CANCEL;
 		}
 	}
 
-	protected abstract addFileSchemaIfNeeded(schema: string): string[];
+	protected AbstrAct AddFileSchemAIfNeeded(schemA: string): string[];
 
-	protected async pickFileFolderAndOpenSimplified(schema: string, options: IPickAndOpenOptions, preferNewWindow: boolean): Promise<any> {
-		const title = nls.localize('openFileOrFolder.title', 'Open File Or Folder');
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async pickFileFolderAndOpenSimplified(schemA: string, options: IPickAndOpenOptions, preferNewWindow: booleAn): Promise<Any> {
+		const title = nls.locAlize('openFileOrFolder.title', 'Open File Or Folder');
+		const AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 
-		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: true, canSelectMany: false, defaultUri: options.defaultUri, title, availableFileSystems });
+		const uri = AwAit this.pickResource({ cAnSelectFiles: true, cAnSelectFolders: true, cAnSelectMAny: fAlse, defAultUri: options.defAultUri, title, AvAilAbleFileSystems });
 
 		if (uri) {
-			const stat = await this.fileService.resolve(uri);
+			const stAt = AwAit this.fileService.resolve(uri);
 
-			const toOpen: IWindowOpenable = stat.isDirectory ? { folderUri: uri } : { fileUri: uri };
-			if (!isWorkspaceToOpen(toOpen) && isFileToOpen(toOpen)) {
-				// add the picked file into the list of recently opened
-				this.workspacesService.addRecentlyOpened([{ fileUri: toOpen.fileUri, label: this.labelService.getUriLabel(toOpen.fileUri) }]);
+			const toOpen: IWindowOpenAble = stAt.isDirectory ? { folderUri: uri } : { fileUri: uri };
+			if (!isWorkspAceToOpen(toOpen) && isFileToOpen(toOpen)) {
+				// Add the picked file into the list of recently opened
+				this.workspAcesService.AddRecentlyOpened([{ fileUri: toOpen.fileUri, lAbel: this.lAbelService.getUriLAbel(toOpen.fileUri) }]);
 			}
 
-			if (stat.isDirectory || options.forceNewWindow || preferNewWindow) {
+			if (stAt.isDirectory || options.forceNewWindow || preferNewWindow) {
 				return this.hostService.openWindow([toOpen], { forceNewWindow: options.forceNewWindow });
 			} else {
 				return this.openerService.open(uri, { fromUserGesture: true });
@@ -160,14 +160,14 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		}
 	}
 
-	protected async pickFileAndOpenSimplified(schema: string, options: IPickAndOpenOptions, preferNewWindow: boolean): Promise<any> {
-		const title = nls.localize('openFile.title', 'Open File');
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async pickFileAndOpenSimplified(schemA: string, options: IPickAndOpenOptions, preferNewWindow: booleAn): Promise<Any> {
+		const title = nls.locAlize('openFile.title', 'Open File');
+		const AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 
-		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, defaultUri: options.defaultUri, title, availableFileSystems });
+		const uri = AwAit this.pickResource({ cAnSelectFiles: true, cAnSelectFolders: fAlse, cAnSelectMAny: fAlse, defAultUri: options.defAultUri, title, AvAilAbleFileSystems });
 		if (uri) {
-			// add the picked file into the list of recently opened
-			this.workspacesService.addRecentlyOpened([{ fileUri: uri, label: this.labelService.getUriLabel(uri) }]);
+			// Add the picked file into the list of recently opened
+			this.workspAcesService.AddRecentlyOpened([{ fileUri: uri, lAbel: this.lAbelService.getUriLAbel(uri) }]);
 
 			if (options.forceNewWindow || preferNewWindow) {
 				return this.hostService.openWindow([{ fileUri: uri }], { forceNewWindow: options.forceNewWindow });
@@ -177,130 +177,130 @@ export abstract class AbstractFileDialogService implements IFileDialogService {
 		}
 	}
 
-	protected async pickFolderAndOpenSimplified(schema: string, options: IPickAndOpenOptions): Promise<any> {
-		const title = nls.localize('openFolder.title', 'Open Folder');
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async pickFolderAndOpenSimplified(schemA: string, options: IPickAndOpenOptions): Promise<Any> {
+		const title = nls.locAlize('openFolder.title', 'Open Folder');
+		const AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 
-		const uri = await this.pickResource({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, defaultUri: options.defaultUri, title, availableFileSystems });
+		const uri = AwAit this.pickResource({ cAnSelectFiles: fAlse, cAnSelectFolders: true, cAnSelectMAny: fAlse, defAultUri: options.defAultUri, title, AvAilAbleFileSystems });
 		if (uri) {
 			return this.hostService.openWindow([{ folderUri: uri }], { forceNewWindow: options.forceNewWindow });
 		}
 	}
 
-	protected async pickWorkspaceAndOpenSimplified(schema: string, options: IPickAndOpenOptions): Promise<any> {
-		const title = nls.localize('openWorkspace.title', 'Open Workspace');
-		const filters: FileFilter[] = [{ name: nls.localize('filterName.workspace', 'Workspace'), extensions: [WORKSPACE_EXTENSION] }];
-		const availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async pickWorkspAceAndOpenSimplified(schemA: string, options: IPickAndOpenOptions): Promise<Any> {
+		const title = nls.locAlize('openWorkspAce.title', 'Open WorkspAce');
+		const filters: FileFilter[] = [{ nAme: nls.locAlize('filterNAme.workspAce', 'WorkspAce'), extensions: [WORKSPACE_EXTENSION] }];
+		const AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 
-		const uri = await this.pickResource({ canSelectFiles: true, canSelectFolders: false, canSelectMany: false, defaultUri: options.defaultUri, title, filters, availableFileSystems });
+		const uri = AwAit this.pickResource({ cAnSelectFiles: true, cAnSelectFolders: fAlse, cAnSelectMAny: fAlse, defAultUri: options.defAultUri, title, filters, AvAilAbleFileSystems });
 		if (uri) {
-			return this.hostService.openWindow([{ workspaceUri: uri }], { forceNewWindow: options.forceNewWindow });
+			return this.hostService.openWindow([{ workspAceUri: uri }], { forceNewWindow: options.forceNewWindow });
 		}
 	}
 
-	protected async pickFileToSaveSimplified(schema: string, options: ISaveDialogOptions): Promise<URI | undefined> {
-		if (!options.availableFileSystems) {
-			options.availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async pickFileToSAveSimplified(schemA: string, options: ISAveDiAlogOptions): Promise<URI | undefined> {
+		if (!options.AvAilAbleFileSystems) {
+			options.AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 		}
 
-		options.title = nls.localize('saveFileAs.title', 'Save As');
-		return this.saveRemoteResource(options);
+		options.title = nls.locAlize('sAveFileAs.title', 'SAve As');
+		return this.sAveRemoteResource(options);
 	}
 
-	protected async showSaveDialogSimplified(schema: string, options: ISaveDialogOptions): Promise<URI | undefined> {
-		if (!options.availableFileSystems) {
-			options.availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async showSAveDiAlogSimplified(schemA: string, options: ISAveDiAlogOptions): Promise<URI | undefined> {
+		if (!options.AvAilAbleFileSystems) {
+			options.AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 		}
 
-		return this.saveRemoteResource(options);
+		return this.sAveRemoteResource(options);
 	}
 
-	protected async showOpenDialogSimplified(schema: string, options: IOpenDialogOptions): Promise<URI[] | undefined> {
-		if (!options.availableFileSystems) {
-			options.availableFileSystems = this.addFileSchemaIfNeeded(schema);
+	protected Async showOpenDiAlogSimplified(schemA: string, options: IOpenDiAlogOptions): Promise<URI[] | undefined> {
+		if (!options.AvAilAbleFileSystems) {
+			options.AvAilAbleFileSystems = this.AddFileSchemAIfNeeded(schemA);
 		}
 
-		const uri = await this.pickResource(options);
+		const uri = AwAit this.pickResource(options);
 
 		return uri ? [uri] : undefined;
 	}
 
-	private pickResource(options: IOpenDialogOptions): Promise<URI | undefined> {
-		const simpleFileDialog = this.instantiationService.createInstance(SimpleFileDialog);
+	privAte pickResource(options: IOpenDiAlogOptions): Promise<URI | undefined> {
+		const simpleFileDiAlog = this.instAntiAtionService.creAteInstAnce(SimpleFileDiAlog);
 
-		return simpleFileDialog.showOpenDialog(options);
+		return simpleFileDiAlog.showOpenDiAlog(options);
 	}
 
-	private saveRemoteResource(options: ISaveDialogOptions): Promise<URI | undefined> {
-		const remoteFileDialog = this.instantiationService.createInstance(SimpleFileDialog);
+	privAte sAveRemoteResource(options: ISAveDiAlogOptions): Promise<URI | undefined> {
+		const remoteFileDiAlog = this.instAntiAtionService.creAteInstAnce(SimpleFileDiAlog);
 
-		return remoteFileDialog.showSaveDialog(options);
+		return remoteFileDiAlog.showSAveDiAlog(options);
 	}
 
-	protected getSchemeFilterForWindow(defaultUriScheme?: string): string {
-		return defaultUriScheme ?? this.pathService.defaultUriScheme;
+	protected getSchemeFilterForWindow(defAultUriScheme?: string): string {
+		return defAultUriScheme ?? this.pAthService.defAultUriScheme;
 	}
 
-	protected getFileSystemSchema(options: { availableFileSystems?: readonly string[], defaultUri?: URI }): string {
-		return options.availableFileSystems && options.availableFileSystems[0] || this.getSchemeFilterForWindow(options.defaultUri?.scheme);
+	protected getFileSystemSchemA(options: { AvAilAbleFileSystems?: reAdonly string[], defAultUri?: URI }): string {
+		return options.AvAilAbleFileSystems && options.AvAilAbleFileSystems[0] || this.getSchemeFilterForWindow(options.defAultUri?.scheme);
 	}
 
-	abstract pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract pickFileAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract pickFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract pickWorkspaceAndOpen(options: IPickAndOpenOptions): Promise<void>;
-	abstract showSaveDialog(options: ISaveDialogOptions): Promise<URI | undefined>;
-	abstract showOpenDialog(options: IOpenDialogOptions): Promise<URI[] | undefined>;
+	AbstrAct pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	AbstrAct pickFileAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	AbstrAct pickFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	AbstrAct pickWorkspAceAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	AbstrAct showSAveDiAlog(options: ISAveDiAlogOptions): Promise<URI | undefined>;
+	AbstrAct showOpenDiAlog(options: IOpenDiAlogOptions): Promise<URI[] | undefined>;
 
-	abstract pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined>;
+	AbstrAct pickFileToSAve(defAultUri: URI, AvAilAbleFileSystems?: string[]): Promise<URI | undefined>;
 
-	protected getPickFileToSaveDialogOptions(defaultUri: URI, availableFileSystems?: string[]): ISaveDialogOptions {
-		const options: ISaveDialogOptions = {
-			defaultUri,
-			title: nls.localize('saveAsTitle', "Save As"),
-			availableFileSystems
+	protected getPickFileToSAveDiAlogOptions(defAultUri: URI, AvAilAbleFileSystems?: string[]): ISAveDiAlogOptions {
+		const options: ISAveDiAlogOptions = {
+			defAultUri,
+			title: nls.locAlize('sAveAsTitle', "SAve As"),
+			AvAilAbleFileSystems
 		};
 
-		interface IFilter { name: string; extensions: string[]; }
+		interfAce IFilter { nAme: string; extensions: string[]; }
 
-		// Build the file filter by using our known languages
-		const ext: string | undefined = defaultUri ? resources.extname(defaultUri) : undefined;
-		let matchingFilter: IFilter | undefined;
-		const registeredLanguageFilters: IFilter[] = coalesce(this.modeService.getRegisteredLanguageNames().map(languageName => {
-			const extensions = this.modeService.getExtensions(languageName);
+		// Build the file filter by using our known lAnguAges
+		const ext: string | undefined = defAultUri ? resources.extnAme(defAultUri) : undefined;
+		let mAtchingFilter: IFilter | undefined;
+		const registeredLAnguAgeFilters: IFilter[] = coAlesce(this.modeService.getRegisteredLAnguAgeNAmes().mAp(lAnguAgeNAme => {
+			const extensions = this.modeService.getExtensions(lAnguAgeNAme);
 			if (!extensions || !extensions.length) {
 				return null;
 			}
 
-			const filter: IFilter = { name: languageName, extensions: distinct(extensions).slice(0, 10).map(e => trim(e, '.')) };
+			const filter: IFilter = { nAme: lAnguAgeNAme, extensions: distinct(extensions).slice(0, 10).mAp(e => trim(e, '.')) };
 
 			if (ext && extensions.indexOf(ext) >= 0) {
-				matchingFilter = filter;
+				mAtchingFilter = filter;
 
-				return null; // matching filter will be added last to the top
+				return null; // mAtching filter will be Added lAst to the top
 			}
 
 			return filter;
 		}));
 
-		// We have no matching filter, e.g. because the language
-		// is unknown. We still add the extension to the list of
-		// filters though so that it can be picked
+		// We hAve no mAtching filter, e.g. becAuse the lAnguAge
+		// is unknown. We still Add the extension to the list of
+		// filters though so thAt it cAn be picked
 		// (https://github.com/microsoft/vscode/issues/96283)
-		if (!matchingFilter && ext) {
-			matchingFilter = { name: trim(ext, '.').toUpperCase(), extensions: [trim(ext, '.')] };
+		if (!mAtchingFilter && ext) {
+			mAtchingFilter = { nAme: trim(ext, '.').toUpperCAse(), extensions: [trim(ext, '.')] };
 		}
 
 		// Order of filters is
-		// - All Files (we MUST do this to fix macOS issue https://github.com/microsoft/vscode/issues/102713)
-		// - File Extension Match (if any)
-		// - All Languages
+		// - All Files (we MUST do this to fix mAcOS issue https://github.com/microsoft/vscode/issues/102713)
+		// - File Extension MAtch (if Any)
+		// - All LAnguAges
 		// - No Extension
-		options.filters = coalesce([
-			{ name: nls.localize('allFiles', "All Files"), extensions: ['*'] },
-			matchingFilter,
-			...registeredLanguageFilters,
-			{ name: nls.localize('noExt', "No Extension"), extensions: [''] }
+		options.filters = coAlesce([
+			{ nAme: nls.locAlize('AllFiles', "All Files"), extensions: ['*'] },
+			mAtchingFilter,
+			...registeredLAnguAgeFilters,
+			{ nAme: nls.locAlize('noExt', "No Extension"), extensions: [''] }
 		]);
 
 		return options;

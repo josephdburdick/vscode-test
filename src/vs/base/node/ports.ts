@@ -1,109 +1,109 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as net from 'net';
+import * As net from 'net';
 
 /**
- * @returns Returns a random port between 1025 and 65535.
+ * @returns Returns A rAndom port between 1025 And 65535.
  */
-export function randomPort(): number {
+export function rAndomPort(): number {
 	const min = 1025;
-	const max = 65535;
-	return min + Math.floor((max - min) * Math.random());
+	const mAx = 65535;
+	return min + MAth.floor((mAx - min) * MAth.rAndom());
 }
 
 /**
- * Given a start point and a max number of retries, will find a port that
- * is openable. Will return 0 in case no free port can be found.
+ * Given A stArt point And A mAx number of retries, will find A port thAt
+ * is openAble. Will return 0 in cAse no free port cAn be found.
  */
-export function findFreePort(startPort: number, giveUpAfter: number, timeout: number): Promise<number> {
-	let done = false;
+export function findFreePort(stArtPort: number, giveUpAfter: number, timeout: number): Promise<number> {
+	let done = fAlse;
 
 	return new Promise(resolve => {
-		const timeoutHandle = setTimeout(() => {
+		const timeoutHAndle = setTimeout(() => {
 			if (!done) {
 				done = true;
 				return resolve(0);
 			}
 		}, timeout);
 
-		doFindFreePort(startPort, giveUpAfter, (port) => {
+		doFindFreePort(stArtPort, giveUpAfter, (port) => {
 			if (!done) {
 				done = true;
-				clearTimeout(timeoutHandle);
+				cleArTimeout(timeoutHAndle);
 				return resolve(port);
 			}
 		});
 	});
 }
 
-function doFindFreePort(startPort: number, giveUpAfter: number, clb: (port: number) => void): void {
+function doFindFreePort(stArtPort: number, giveUpAfter: number, clb: (port: number) => void): void {
 	if (giveUpAfter === 0) {
 		return clb(0);
 	}
 
 	const client = new net.Socket();
 
-	// If we can connect to the port it means the port is already taken so we continue searching
+	// If we cAn connect to the port it meAns the port is AlreAdy tAken so we continue seArching
 	client.once('connect', () => {
 		dispose(client);
 
-		return doFindFreePort(startPort + 1, giveUpAfter - 1, clb);
+		return doFindFreePort(stArtPort + 1, giveUpAfter - 1, clb);
 	});
 
-	client.once('data', () => {
+	client.once('dAtA', () => {
 		// this listener is required since node.js 8.x
 	});
 
 	client.once('error', (err: Error & { code?: string }) => {
 		dispose(client);
 
-		// If we receive any non ECONNREFUSED error, it means the port is used but we cannot connect
+		// If we receive Any non ECONNREFUSED error, it meAns the port is used but we cAnnot connect
 		if (err.code !== 'ECONNREFUSED') {
-			return doFindFreePort(startPort + 1, giveUpAfter - 1, clb);
+			return doFindFreePort(stArtPort + 1, giveUpAfter - 1, clb);
 		}
 
-		// Otherwise it means the port is free to use!
-		return clb(startPort);
+		// Otherwise it meAns the port is free to use!
+		return clb(stArtPort);
 	});
 
-	client.connect(startPort, '127.0.0.1');
+	client.connect(stArtPort, '127.0.0.1');
 }
 
 /**
- * Uses listen instead of connect. Is faster, but if there is another listener on 0.0.0.0 then this will take 127.0.0.1 from that listener.
+ * Uses listen insteAd of connect. Is fAster, but if there is Another listener on 0.0.0.0 then this will tAke 127.0.0.1 from thAt listener.
  */
-export function findFreePortFaster(startPort: number, giveUpAfter: number, timeout: number): Promise<number> {
-	let resolved: boolean = false;
-	let timeoutHandle: NodeJS.Timeout | undefined = undefined;
+export function findFreePortFAster(stArtPort: number, giveUpAfter: number, timeout: number): Promise<number> {
+	let resolved: booleAn = fAlse;
+	let timeoutHAndle: NodeJS.Timeout | undefined = undefined;
 	let countTried: number = 1;
-	const server = net.createServer({ pauseOnConnect: true });
+	const server = net.creAteServer({ pAuseOnConnect: true });
 	function doResolve(port: number, resolve: (port: number) => void) {
 		if (!resolved) {
 			resolved = true;
 			server.removeAllListeners();
 			server.close();
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
+			if (timeoutHAndle) {
+				cleArTimeout(timeoutHAndle);
 			}
 			resolve(port);
 		}
 	}
 	return new Promise<number>(resolve => {
-		timeoutHandle = setTimeout(() => {
+		timeoutHAndle = setTimeout(() => {
 			doResolve(0, resolve);
 		}, timeout);
 
 		server.on('listening', () => {
-			doResolve(startPort, resolve);
+			doResolve(stArtPort, resolve);
 		});
 		server.on('error', err => {
-			if (err && ((<any>err).code === 'EADDRINUSE' || (<any>err).code === 'EACCES') && (countTried < giveUpAfter)) {
-				startPort++;
+			if (err && ((<Any>err).code === 'EADDRINUSE' || (<Any>err).code === 'EACCES') && (countTried < giveUpAfter)) {
+				stArtPort++;
 				countTried++;
-				server.listen(startPort, '127.0.0.1');
+				server.listen(stArtPort, '127.0.0.1');
 			} else {
 				doResolve(0, resolve);
 			}
@@ -111,7 +111,7 @@ export function findFreePortFaster(startPort: number, giveUpAfter: number, timeo
 		server.on('close', () => {
 			doResolve(0, resolve);
 		});
-		server.listen(startPort, '127.0.0.1');
+		server.listen(stArtPort, '127.0.0.1');
 	});
 }
 
@@ -122,7 +122,7 @@ function dispose(socket: net.Socket): void {
 		socket.end();
 		socket.destroy();
 		socket.unref();
-	} catch (error) {
-		console.error(error); // otherwise this error would get lost in the callback chain
+	} cAtch (error) {
+		console.error(error); // otherwise this error would get lost in the cAllbAck chAin
 	}
 }

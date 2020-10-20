@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import { createRotatingLogger } from 'vs/platform/log/node/spdlogService';
-import { RotatingLogger } from 'spdlog';
+import { creAteRotAtingLogger } from 'vs/plAtform/log/node/spdlogService';
+import { RotAtingLogger } from 'spdlog';
 
-export class OutputAppender {
+export clAss OutputAppender {
 
-	private appender: RotatingLogger;
+	privAte Appender: RotAtingLogger;
 
-	constructor(name: string, readonly file: string) {
-		this.appender = createRotatingLogger(name, file, 1024 * 1024 * 30, 1);
-		this.appender.clearFormatters();
+	constructor(nAme: string, reAdonly file: string) {
+		this.Appender = creAteRotAtingLogger(nAme, file, 1024 * 1024 * 30, 1);
+		this.Appender.cleArFormAtters();
 	}
 
-	append(content: string): void {
-		this.appender.critical(content);
+	Append(content: string): void {
+		this.Appender.criticAl(content);
 	}
 
 	flush(): void {
-		this.appender.flush();
+		this.Appender.flush();
 	}
 }

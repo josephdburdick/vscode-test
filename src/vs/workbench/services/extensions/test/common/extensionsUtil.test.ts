@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { deduceExtensionKind } from 'vs/workbench/services/extensions/common/extensionsUtil';
-import { IExtensionManifest, ExtensionKind } from 'vs/platform/extensions/common/extensions';
+import { IExtensionMAnifest, ExtensionKind } from 'vs/plAtform/extensions/common/extensions';
 
 suite('ExtensionKind', () => {
 
-	function check(manifest: Partial<IExtensionManifest>, expected: ExtensionKind[]): void {
-		assert.deepEqual(deduceExtensionKind(<IExtensionManifest>manifest), expected);
+	function check(mAnifest: PArtiAl<IExtensionMAnifest>, expected: ExtensionKind[]): void {
+		Assert.deepEquAl(deduceExtensionKind(<IExtensionMAnifest>mAnifest), expected);
 	}
 
-	test('declarative with extension dependencies => workspace', () => {
-		check({ extensionDependencies: ['ext1'] }, ['workspace']);
+	test('declArAtive with extension dependencies => workspAce', () => {
+		check({ extensionDependencies: ['ext1'] }, ['workspAce']);
 	});
 
-	test('declarative extension pack => workspace', () => {
-		check({ extensionPack: ['ext1', 'ext2'] }, ['workspace']);
+	test('declArAtive extension pAck => workspAce', () => {
+		check({ extensionPAck: ['ext1', 'ext2'] }, ['workspAce']);
 	});
 
-	test('declarative with unknown contribution point => workspace', () => {
-		check({ contributes: <any>{ 'unknownPoint': { something: true } } }, ['workspace']);
+	test('declArAtive with unknown contribution point => workspAce', () => {
+		check({ contributes: <Any>{ 'unknownPoint': { something: true } } }, ['workspAce']);
 	});
 
-	test('simple declarative => ui, workspace, web', () => {
-		check({}, ['ui', 'workspace', 'web']);
+	test('simple declArAtive => ui, workspAce, web', () => {
+		check({}, ['ui', 'workspAce', 'web']);
 	});
 
 	test('only browser => web', () => {
-		check({ browser: 'main.browser.js' }, ['web']);
+		check({ browser: 'mAin.browser.js' }, ['web']);
 	});
 
-	test('only main => workspace', () => {
-		check({ main: 'main.js' }, ['workspace']);
+	test('only mAin => workspAce', () => {
+		check({ mAin: 'mAin.js' }, ['workspAce']);
 	});
 
-	test('main and browser => workspace, web', () => {
-		check({ main: 'main.js', browser: 'main.browser.js' }, ['workspace', 'web']);
+	test('mAin And browser => workspAce, web', () => {
+		check({ mAin: 'mAin.js', browser: 'mAin.browser.js' }, ['workspAce', 'web']);
 	});
 });

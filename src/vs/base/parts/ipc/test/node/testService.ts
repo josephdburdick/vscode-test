@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
+import { IChAnnel, IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { timeout } from 'vs/bAse/common/Async';
 
-export interface IMarcoPoloEvent {
-	answer: string;
+export interfAce IMArcoPoloEvent {
+	Answer: string;
 }
 
-export interface ITestService {
-	onMarco: Event<IMarcoPoloEvent>;
-	marco(): Promise<string>;
+export interfAce ITestService {
+	onMArco: Event<IMArcoPoloEvent>;
+	mArco(): Promise<string>;
 	pong(ping: string): Promise<{ incoming: string, outgoing: string }>;
-	cancelMe(): Promise<boolean>;
+	cAncelMe(): Promise<booleAn>;
 }
 
-export class TestService implements ITestService {
+export clAss TestService implements ITestService {
 
-	private readonly _onMarco = new Emitter<IMarcoPoloEvent>();
-	onMarco: Event<IMarcoPoloEvent> = this._onMarco.event;
+	privAte reAdonly _onMArco = new Emitter<IMArcoPoloEvent>();
+	onMArco: Event<IMArcoPoloEvent> = this._onMArco.event;
 
-	marco(): Promise<string> {
-		this._onMarco.fire({ answer: 'polo' });
+	mArco(): Promise<string> {
+		this._onMArco.fire({ Answer: 'polo' });
 		return Promise.resolve('polo');
 	}
 
@@ -32,48 +32,48 @@ export class TestService implements ITestService {
 		return Promise.resolve({ incoming: ping, outgoing: 'pong' });
 	}
 
-	cancelMe(): Promise<boolean> {
+	cAncelMe(): Promise<booleAn> {
 		return Promise.resolve(timeout(100)).then(() => true);
 	}
 }
 
-export class TestChannel implements IServerChannel {
+export clAss TestChAnnel implements IServerChAnnel {
 
-	constructor(private testService: ITestService) { }
+	constructor(privAte testService: ITestService) { }
 
-	listen(_: unknown, event: string): Event<any> {
+	listen(_: unknown, event: string): Event<Any> {
 		switch (event) {
-			case 'marco': return this.testService.onMarco;
+			cAse 'mArco': return this.testService.onMArco;
 		}
 
 		throw new Error('Event not found');
 	}
 
-	call(_: unknown, command: string, ...args: any[]): Promise<any> {
-		switch (command) {
-			case 'pong': return this.testService.pong(args[0]);
-			case 'cancelMe': return this.testService.cancelMe();
-			case 'marco': return this.testService.marco();
-			default: return Promise.reject(new Error(`command not found: ${command}`));
+	cAll(_: unknown, commAnd: string, ...Args: Any[]): Promise<Any> {
+		switch (commAnd) {
+			cAse 'pong': return this.testService.pong(Args[0]);
+			cAse 'cAncelMe': return this.testService.cAncelMe();
+			cAse 'mArco': return this.testService.mArco();
+			defAult: return Promise.reject(new Error(`commAnd not found: ${commAnd}`));
 		}
 	}
 }
 
-export class TestServiceClient implements ITestService {
+export clAss TestServiceClient implements ITestService {
 
-	get onMarco(): Event<IMarcoPoloEvent> { return this.channel.listen('marco'); }
+	get onMArco(): Event<IMArcoPoloEvent> { return this.chAnnel.listen('mArco'); }
 
-	constructor(private channel: IChannel) { }
+	constructor(privAte chAnnel: IChAnnel) { }
 
-	marco(): Promise<string> {
-		return this.channel.call('marco');
+	mArco(): Promise<string> {
+		return this.chAnnel.cAll('mArco');
 	}
 
 	pong(ping: string): Promise<{ incoming: string, outgoing: string }> {
-		return this.channel.call('pong', ping);
+		return this.chAnnel.cAll('pong', ping);
 	}
 
-	cancelMe(): Promise<boolean> {
-		return this.channel.call('cancelMe');
+	cAncelMe(): Promise<booleAn> {
+		return this.chAnnel.cAll('cAncelMe');
 	}
 }

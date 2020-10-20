@@ -1,111 +1,111 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { INotificationService, Severity, IPromptChoice } from 'vs/platform/notification/common/notification';
-import { IExperimentService, IExperiment, ExperimentActionType, IExperimentActionPromptProperties, IExperimentActionPromptCommand, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IExtensionsViewPaneContainer } from 'vs/workbench/contrib/extensions/common/extensions';
+import { INotificAtionService, Severity, IPromptChoice } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IExperimentService, IExperiment, ExperimentActionType, IExperimentActionPromptProperties, IExperimentActionPromptCommAnd, ExperimentStAte } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IExtensionsViewPAneContAiner } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { language } from 'vs/base/common/platform';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { ICommandService } from 'vs/platform/commands/common/commands';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { lAnguAge } from 'vs/bAse/common/plAtform';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
 
-export class ExperimentalPrompts extends Disposable implements IWorkbenchContribution {
+export clAss ExperimentAlPrompts extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IExperimentService private readonly experimentService: IExperimentService,
-		@IViewletService private readonly viewletService: IViewletService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@ICommandService private readonly commandService: ICommandService
+		@IExperimentService privAte reAdonly experimentService: IExperimentService,
+		@IViewletService privAte reAdonly viewletService: IViewletService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 
 	) {
 		super();
-		this._register(this.experimentService.onExperimentEnabled(e => {
-			if (e.action && e.action.type === ExperimentActionType.Prompt && e.state === ExperimentState.Run) {
-				this.showExperimentalPrompts(e);
+		this._register(this.experimentService.onExperimentEnAbled(e => {
+			if (e.Action && e.Action.type === ExperimentActionType.Prompt && e.stAte === ExperimentStAte.Run) {
+				this.showExperimentAlPrompts(e);
 			}
 		}, this));
 	}
 
-	private showExperimentalPrompts(experiment: IExperiment): void {
-		if (!experiment || !experiment.enabled || !experiment.action || experiment.state !== ExperimentState.Run) {
+	privAte showExperimentAlPrompts(experiment: IExperiment): void {
+		if (!experiment || !experiment.enAbled || !experiment.Action || experiment.stAte !== ExperimentStAte.Run) {
 			return;
 		}
 
-		const logTelemetry = (commandText?: string) => {
+		const logTelemetry = (commAndText?: string) => {
 			/* __GDPR__
-				"experimentalPrompts" : {
-					"experimentId": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-					"commandText": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-					"cancelled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
+				"experimentAlPrompts" : {
+					"experimentId": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+					"commAndText": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+					"cAncelled": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('experimentalPrompts', {
+			this.telemetryService.publicLog('experimentAlPrompts', {
 				experimentId: experiment.id,
-				commandText,
-				cancelled: !commandText
+				commAndText,
+				cAncelled: !commAndText
 			});
 		};
 
-		const actionProperties = (<IExperimentActionPromptProperties>experiment.action.properties);
-		const promptText = ExperimentalPrompts.getLocalizedText(actionProperties.promptText, language || '');
-		if (!actionProperties || !promptText) {
+		const ActionProperties = (<IExperimentActionPromptProperties>experiment.Action.properties);
+		const promptText = ExperimentAlPrompts.getLocAlizedText(ActionProperties.promptText, lAnguAge || '');
+		if (!ActionProperties || !promptText) {
 			return;
 		}
-		if (!actionProperties.commands) {
-			actionProperties.commands = [];
+		if (!ActionProperties.commAnds) {
+			ActionProperties.commAnds = [];
 		}
 
-		const choices: IPromptChoice[] = actionProperties.commands.map((command: IExperimentActionPromptCommand) => {
-			const commandText = ExperimentalPrompts.getLocalizedText(command.text, language || '');
+		const choices: IPromptChoice[] = ActionProperties.commAnds.mAp((commAnd: IExperimentActionPromptCommAnd) => {
+			const commAndText = ExperimentAlPrompts.getLocAlizedText(commAnd.text, lAnguAge || '');
 			return {
-				label: commandText,
+				lAbel: commAndText,
 				run: () => {
-					logTelemetry(commandText);
-					if (command.externalLink) {
-						this.openerService.open(URI.parse(command.externalLink));
-					} else if (command.curatedExtensionsKey && Array.isArray(command.curatedExtensionsList)) {
+					logTelemetry(commAndText);
+					if (commAnd.externAlLink) {
+						this.openerService.open(URI.pArse(commAnd.externAlLink));
+					} else if (commAnd.curAtedExtensionsKey && ArrAy.isArrAy(commAnd.curAtedExtensionsList)) {
 						this.viewletService.openViewlet('workbench.view.extensions', true)
-							.then(viewlet => viewlet?.getViewPaneContainer() as IExtensionsViewPaneContainer)
+							.then(viewlet => viewlet?.getViewPAneContAiner() As IExtensionsViewPAneContAiner)
 							.then(viewlet => {
 								if (viewlet) {
-									viewlet.search('curated:' + command.curatedExtensionsKey);
+									viewlet.seArch('curAted:' + commAnd.curAtedExtensionsKey);
 								}
 							});
-					} else if (command.codeCommand) {
-						this.commandService.executeCommand(command.codeCommand.id, ...command.codeCommand.arguments);
+					} else if (commAnd.codeCommAnd) {
+						this.commAndService.executeCommAnd(commAnd.codeCommAnd.id, ...commAnd.codeCommAnd.Arguments);
 					}
 
-					this.experimentService.markAsCompleted(experiment.id);
+					this.experimentService.mArkAsCompleted(experiment.id);
 
 				}
 			};
 		});
 
-		this.notificationService.prompt(Severity.Info, promptText, choices, {
-			onCancel: () => {
+		this.notificAtionService.prompt(Severity.Info, promptText, choices, {
+			onCAncel: () => {
 				logTelemetry();
-				this.experimentService.markAsCompleted(experiment.id);
+				this.experimentService.mArkAsCompleted(experiment.id);
 			}
 		});
 	}
 
-	static getLocalizedText(text: string | { [key: string]: string; }, displayLanguage: string): string {
+	stAtic getLocAlizedText(text: string | { [key: string]: string; }, displAyLAnguAge: string): string {
 		if (typeof text === 'string') {
 			return text;
 		}
 		const msgInEnglish = text['en'] || text['en-us'];
-		displayLanguage = displayLanguage.toLowerCase();
-		if (!text[displayLanguage] && displayLanguage.indexOf('-') === 2) {
-			displayLanguage = displayLanguage.substr(0, 2);
+		displAyLAnguAge = displAyLAnguAge.toLowerCAse();
+		if (!text[displAyLAnguAge] && displAyLAnguAge.indexOf('-') === 2) {
+			displAyLAnguAge = displAyLAnguAge.substr(0, 2);
 		}
-		return text[displayLanguage] || msgInEnglish;
+		return text[displAyLAnguAge] || msgInEnglish;
 	}
 }

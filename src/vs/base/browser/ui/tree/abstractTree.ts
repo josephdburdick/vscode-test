@@ -1,149 +1,149 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/tree';
-import { IDisposable, dispose, Disposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { IListOptions, List, IListStyles, MouseController, DefaultKeyboardNavigationDelegate, isInputElement, isMonacoEditor } from 'vs/base/browser/ui/list/listWidget';
-import { IListVirtualDelegate, IListRenderer, IListMouseEvent, IListContextMenuEvent, IListDragAndDrop, IListDragOverReaction, IKeyboardNavigationLabelProvider, IIdentityProvider, IKeyboardNavigationDelegate } from 'vs/base/browser/ui/list/list';
-import { append, $, getDomNodePagePosition, hasParentWithClass, createStyleSheet, clearNode } from 'vs/base/browser/dom';
-import { Event, Relay, Emitter, EventBufferer } from 'vs/base/common/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { ITreeModel, ITreeNode, ITreeRenderer, ITreeEvent, ITreeMouseEvent, ITreeContextMenuEvent, ITreeFilter, ITreeNavigator, ICollapseStateChangeEvent, ITreeDragAndDrop, TreeDragOverBubble, TreeVisibility, TreeFilterResult, ITreeModelSpliceEvent, TreeMouseEventTarget } from 'vs/base/browser/ui/tree/tree';
-import { ISpliceable } from 'vs/base/common/sequence';
-import { IDragAndDropData, StaticDND, DragAndDropData } from 'vs/base/browser/dnd';
-import { range, equals, distinctES6 } from 'vs/base/common/arrays';
-import { ElementsDragAndDropData } from 'vs/base/browser/ui/list/listView';
-import { domEvent } from 'vs/base/browser/event';
-import { fuzzyScore, FuzzyScore } from 'vs/base/common/filters';
-import { getVisibleState, isFilterResult } from 'vs/base/browser/ui/tree/indexTreeModel';
-import { localize } from 'vs/nls';
-import { disposableTimeout } from 'vs/base/common/async';
-import { isMacintosh } from 'vs/base/common/platform';
-import { clamp } from 'vs/base/common/numbers';
-import { ScrollEvent } from 'vs/base/common/scrollable';
-import { SetMap } from 'vs/base/common/collections';
-import { treeItemExpandedIcon, treeFilterOnTypeOnIcon, treeFilterOnTypeOffIcon, treeFilterClearIcon } from 'vs/base/browser/ui/tree/treeIcons';
+import 'vs/css!./mediA/tree';
+import { IDisposAble, dispose, DisposAble, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { IListOptions, List, IListStyles, MouseController, DefAultKeyboArdNAvigAtionDelegAte, isInputElement, isMonAcoEditor } from 'vs/bAse/browser/ui/list/listWidget';
+import { IListVirtuAlDelegAte, IListRenderer, IListMouseEvent, IListContextMenuEvent, IListDrAgAndDrop, IListDrAgOverReAction, IKeyboArdNAvigAtionLAbelProvider, IIdentityProvider, IKeyboArdNAvigAtionDelegAte } from 'vs/bAse/browser/ui/list/list';
+import { Append, $, getDomNodePAgePosition, hAsPArentWithClAss, creAteStyleSheet, cleArNode } from 'vs/bAse/browser/dom';
+import { Event, RelAy, Emitter, EventBufferer } from 'vs/bAse/common/event';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { ITreeModel, ITreeNode, ITreeRenderer, ITreeEvent, ITreeMouseEvent, ITreeContextMenuEvent, ITreeFilter, ITreeNAvigAtor, ICollApseStAteChAngeEvent, ITreeDrAgAndDrop, TreeDrAgOverBubble, TreeVisibility, TreeFilterResult, ITreeModelSpliceEvent, TreeMouseEventTArget } from 'vs/bAse/browser/ui/tree/tree';
+import { ISpliceAble } from 'vs/bAse/common/sequence';
+import { IDrAgAndDropDAtA, StAticDND, DrAgAndDropDAtA } from 'vs/bAse/browser/dnd';
+import { rAnge, equAls, distinctES6 } from 'vs/bAse/common/ArrAys';
+import { ElementsDrAgAndDropDAtA } from 'vs/bAse/browser/ui/list/listView';
+import { domEvent } from 'vs/bAse/browser/event';
+import { fuzzyScore, FuzzyScore } from 'vs/bAse/common/filters';
+import { getVisibleStAte, isFilterResult } from 'vs/bAse/browser/ui/tree/indexTreeModel';
+import { locAlize } from 'vs/nls';
+import { disposAbleTimeout } from 'vs/bAse/common/Async';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { clAmp } from 'vs/bAse/common/numbers';
+import { ScrollEvent } from 'vs/bAse/common/scrollAble';
+import { SetMAp } from 'vs/bAse/common/collections';
+import { treeItemExpAndedIcon, treeFilterOnTypeOnIcon, treeFilterOnTypeOffIcon, treeFilterCleArIcon } from 'vs/bAse/browser/ui/tree/treeIcons';
 
-class TreeElementsDragAndDropData<T, TFilterData, TContext> extends ElementsDragAndDropData<T, TContext> {
+clAss TreeElementsDrAgAndDropDAtA<T, TFilterDAtA, TContext> extends ElementsDrAgAndDropDAtA<T, TContext> {
 
 	set context(context: TContext | undefined) {
-		this.data.context = context;
+		this.dAtA.context = context;
 	}
 
 	get context(): TContext | undefined {
-		return this.data.context;
+		return this.dAtA.context;
 	}
 
-	constructor(private data: ElementsDragAndDropData<ITreeNode<T, TFilterData>, TContext>) {
-		super(data.elements.map(node => node.element));
+	constructor(privAte dAtA: ElementsDrAgAndDropDAtA<ITreeNode<T, TFilterDAtA>, TContext>) {
+		super(dAtA.elements.mAp(node => node.element));
 	}
 }
 
-function asTreeDragAndDropData<T, TFilterData>(data: IDragAndDropData): IDragAndDropData {
-	if (data instanceof ElementsDragAndDropData) {
-		return new TreeElementsDragAndDropData(data);
+function AsTreeDrAgAndDropDAtA<T, TFilterDAtA>(dAtA: IDrAgAndDropDAtA): IDrAgAndDropDAtA {
+	if (dAtA instAnceof ElementsDrAgAndDropDAtA) {
+		return new TreeElementsDrAgAndDropDAtA(dAtA);
 	}
 
-	return data;
+	return dAtA;
 }
 
-class TreeNodeListDragAndDrop<T, TFilterData, TRef> implements IListDragAndDrop<ITreeNode<T, TFilterData>> {
+clAss TreeNodeListDrAgAndDrop<T, TFilterDAtA, TRef> implements IListDrAgAndDrop<ITreeNode<T, TFilterDAtA>> {
 
-	private autoExpandNode: ITreeNode<T, TFilterData> | undefined;
-	private autoExpandDisposable: IDisposable = Disposable.None;
+	privAte AutoExpAndNode: ITreeNode<T, TFilterDAtA> | undefined;
+	privAte AutoExpAndDisposAble: IDisposAble = DisposAble.None;
 
-	constructor(private modelProvider: () => ITreeModel<T, TFilterData, TRef>, private dnd: ITreeDragAndDrop<T>) { }
+	constructor(privAte modelProvider: () => ITreeModel<T, TFilterDAtA, TRef>, privAte dnd: ITreeDrAgAndDrop<T>) { }
 
-	getDragURI(node: ITreeNode<T, TFilterData>): string | null {
-		return this.dnd.getDragURI(node.element);
+	getDrAgURI(node: ITreeNode<T, TFilterDAtA>): string | null {
+		return this.dnd.getDrAgURI(node.element);
 	}
 
-	getDragLabel(nodes: ITreeNode<T, TFilterData>[], originalEvent: DragEvent): string | undefined {
-		if (this.dnd.getDragLabel) {
-			return this.dnd.getDragLabel(nodes.map(node => node.element), originalEvent);
+	getDrAgLAbel(nodes: ITreeNode<T, TFilterDAtA>[], originAlEvent: DrAgEvent): string | undefined {
+		if (this.dnd.getDrAgLAbel) {
+			return this.dnd.getDrAgLAbel(nodes.mAp(node => node.element), originAlEvent);
 		}
 
 		return undefined;
 	}
 
-	onDragStart(data: IDragAndDropData, originalEvent: DragEvent): void {
-		if (this.dnd.onDragStart) {
-			this.dnd.onDragStart(asTreeDragAndDropData(data), originalEvent);
+	onDrAgStArt(dAtA: IDrAgAndDropDAtA, originAlEvent: DrAgEvent): void {
+		if (this.dnd.onDrAgStArt) {
+			this.dnd.onDrAgStArt(AsTreeDrAgAndDropDAtA(dAtA), originAlEvent);
 		}
 	}
 
-	onDragOver(data: IDragAndDropData, targetNode: ITreeNode<T, TFilterData> | undefined, targetIndex: number | undefined, originalEvent: DragEvent, raw = true): boolean | IListDragOverReaction {
-		const result = this.dnd.onDragOver(asTreeDragAndDropData(data), targetNode && targetNode.element, targetIndex, originalEvent);
-		const didChangeAutoExpandNode = this.autoExpandNode !== targetNode;
+	onDrAgOver(dAtA: IDrAgAndDropDAtA, tArgetNode: ITreeNode<T, TFilterDAtA> | undefined, tArgetIndex: number | undefined, originAlEvent: DrAgEvent, rAw = true): booleAn | IListDrAgOverReAction {
+		const result = this.dnd.onDrAgOver(AsTreeDrAgAndDropDAtA(dAtA), tArgetNode && tArgetNode.element, tArgetIndex, originAlEvent);
+		const didChAngeAutoExpAndNode = this.AutoExpAndNode !== tArgetNode;
 
-		if (didChangeAutoExpandNode) {
-			this.autoExpandDisposable.dispose();
-			this.autoExpandNode = targetNode;
+		if (didChAngeAutoExpAndNode) {
+			this.AutoExpAndDisposAble.dispose();
+			this.AutoExpAndNode = tArgetNode;
 		}
 
-		if (typeof targetNode === 'undefined') {
+		if (typeof tArgetNode === 'undefined') {
 			return result;
 		}
 
-		if (didChangeAutoExpandNode && typeof result !== 'boolean' && result.autoExpand) {
-			this.autoExpandDisposable = disposableTimeout(() => {
+		if (didChAngeAutoExpAndNode && typeof result !== 'booleAn' && result.AutoExpAnd) {
+			this.AutoExpAndDisposAble = disposAbleTimeout(() => {
 				const model = this.modelProvider();
-				const ref = model.getNodeLocation(targetNode);
+				const ref = model.getNodeLocAtion(tArgetNode);
 
-				if (model.isCollapsed(ref)) {
-					model.setCollapsed(ref, false);
+				if (model.isCollApsed(ref)) {
+					model.setCollApsed(ref, fAlse);
 				}
 
-				this.autoExpandNode = undefined;
+				this.AutoExpAndNode = undefined;
 			}, 500);
 		}
 
-		if (typeof result === 'boolean' || !result.accept || typeof result.bubble === 'undefined' || result.feedback) {
-			if (!raw) {
-				const accept = typeof result === 'boolean' ? result : result.accept;
-				const effect = typeof result === 'boolean' ? undefined : result.effect;
-				return { accept, effect, feedback: [targetIndex!] };
+		if (typeof result === 'booleAn' || !result.Accept || typeof result.bubble === 'undefined' || result.feedbAck) {
+			if (!rAw) {
+				const Accept = typeof result === 'booleAn' ? result : result.Accept;
+				const effect = typeof result === 'booleAn' ? undefined : result.effect;
+				return { Accept, effect, feedbAck: [tArgetIndex!] };
 			}
 
 			return result;
 		}
 
-		if (result.bubble === TreeDragOverBubble.Up) {
+		if (result.bubble === TreeDrAgOverBubble.Up) {
 			const model = this.modelProvider();
-			const ref = model.getNodeLocation(targetNode);
-			const parentRef = model.getParentNodeLocation(ref);
-			const parentNode = model.getNode(parentRef);
-			const parentIndex = parentRef && model.getListIndex(parentRef);
+			const ref = model.getNodeLocAtion(tArgetNode);
+			const pArentRef = model.getPArentNodeLocAtion(ref);
+			const pArentNode = model.getNode(pArentRef);
+			const pArentIndex = pArentRef && model.getListIndex(pArentRef);
 
-			return this.onDragOver(data, parentNode, parentIndex, originalEvent, false);
+			return this.onDrAgOver(dAtA, pArentNode, pArentIndex, originAlEvent, fAlse);
 		}
 
 		const model = this.modelProvider();
-		const ref = model.getNodeLocation(targetNode);
-		const start = model.getListIndex(ref);
+		const ref = model.getNodeLocAtion(tArgetNode);
+		const stArt = model.getListIndex(ref);
 		const length = model.getListRenderCount(ref);
 
-		return { ...result, feedback: range(start, start + length) };
+		return { ...result, feedbAck: rAnge(stArt, stArt + length) };
 	}
 
-	drop(data: IDragAndDropData, targetNode: ITreeNode<T, TFilterData> | undefined, targetIndex: number | undefined, originalEvent: DragEvent): void {
-		this.autoExpandDisposable.dispose();
-		this.autoExpandNode = undefined;
+	drop(dAtA: IDrAgAndDropDAtA, tArgetNode: ITreeNode<T, TFilterDAtA> | undefined, tArgetIndex: number | undefined, originAlEvent: DrAgEvent): void {
+		this.AutoExpAndDisposAble.dispose();
+		this.AutoExpAndNode = undefined;
 
-		this.dnd.drop(asTreeDragAndDropData(data), targetNode && targetNode.element, targetIndex, originalEvent);
+		this.dnd.drop(AsTreeDrAgAndDropDAtA(dAtA), tArgetNode && tArgetNode.element, tArgetIndex, originAlEvent);
 	}
 
-	onDragEnd(originalEvent: DragEvent): void {
-		if (this.dnd.onDragEnd) {
-			this.dnd.onDragEnd(originalEvent);
+	onDrAgEnd(originAlEvent: DrAgEvent): void {
+		if (this.dnd.onDrAgEnd) {
+			this.dnd.onDrAgEnd(originAlEvent);
 		}
 	}
 }
 
-function asListOptions<T, TFilterData, TRef>(modelProvider: () => ITreeModel<T, TFilterData, TRef>, options?: IAbstractTreeOptions<T, TFilterData>): IListOptions<ITreeNode<T, TFilterData>> | undefined {
+function AsListOptions<T, TFilterDAtA, TRef>(modelProvider: () => ITreeModel<T, TFilterDAtA, TRef>, options?: IAbstrActTreeOptions<T, TFilterDAtA>): IListOptions<ITreeNode<T, TFilterDAtA>> | undefined {
 	return options && {
 		...options,
 		identityProvider: options.identityProvider && {
@@ -151,162 +151,162 @@ function asListOptions<T, TFilterData, TRef>(modelProvider: () => ITreeModel<T, 
 				return options.identityProvider!.getId(el.element);
 			}
 		},
-		dnd: options.dnd && new TreeNodeListDragAndDrop(modelProvider, options.dnd),
+		dnd: options.dnd && new TreeNodeListDrAgAndDrop(modelProvider, options.dnd),
 		multipleSelectionController: options.multipleSelectionController && {
-			isSelectionSingleChangeEvent(e) {
-				return options.multipleSelectionController!.isSelectionSingleChangeEvent({ ...e, element: e.element } as any);
+			isSelectionSingleChAngeEvent(e) {
+				return options.multipleSelectionController!.isSelectionSingleChAngeEvent({ ...e, element: e.element } As Any);
 			},
-			isSelectionRangeChangeEvent(e) {
-				return options.multipleSelectionController!.isSelectionRangeChangeEvent({ ...e, element: e.element } as any);
+			isSelectionRAngeChAngeEvent(e) {
+				return options.multipleSelectionController!.isSelectionRAngeChAngeEvent({ ...e, element: e.element } As Any);
 			}
 		},
-		accessibilityProvider: options.accessibilityProvider && {
-			...options.accessibilityProvider,
+		AccessibilityProvider: options.AccessibilityProvider && {
+			...options.AccessibilityProvider,
 			getSetSize(node) {
 				const model = modelProvider();
-				const ref = model.getNodeLocation(node);
-				const parentRef = model.getParentNodeLocation(ref);
-				const parentNode = model.getNode(parentRef);
+				const ref = model.getNodeLocAtion(node);
+				const pArentRef = model.getPArentNodeLocAtion(ref);
+				const pArentNode = model.getNode(pArentRef);
 
-				return parentNode.visibleChildrenCount;
+				return pArentNode.visibleChildrenCount;
 			},
 			getPosInSet(node) {
 				return node.visibleChildIndex + 1;
 			},
-			isChecked: options.accessibilityProvider && options.accessibilityProvider.isChecked ? (node) => {
-				return options.accessibilityProvider!.isChecked!(node.element);
+			isChecked: options.AccessibilityProvider && options.AccessibilityProvider.isChecked ? (node) => {
+				return options.AccessibilityProvider!.isChecked!(node.element);
 			} : undefined,
-			getRole: options.accessibilityProvider && options.accessibilityProvider.getRole ? (node) => {
-				return options.accessibilityProvider!.getRole!(node.element);
+			getRole: options.AccessibilityProvider && options.AccessibilityProvider.getRole ? (node) => {
+				return options.AccessibilityProvider!.getRole!(node.element);
 			} : () => 'treeitem',
-			getAriaLabel(e) {
-				return options.accessibilityProvider!.getAriaLabel(e.element);
+			getAriALAbel(e) {
+				return options.AccessibilityProvider!.getAriALAbel(e.element);
 			},
-			getWidgetAriaLabel() {
-				return options.accessibilityProvider!.getWidgetAriaLabel();
+			getWidgetAriALAbel() {
+				return options.AccessibilityProvider!.getWidgetAriALAbel();
 			},
-			getWidgetRole: options.accessibilityProvider && options.accessibilityProvider.getWidgetRole ? () => options.accessibilityProvider!.getWidgetRole!() : () => 'tree',
-			getAriaLevel: options.accessibilityProvider && options.accessibilityProvider.getAriaLevel ? (node) => options.accessibilityProvider!.getAriaLevel!(node.element) : (node) => {
+			getWidgetRole: options.AccessibilityProvider && options.AccessibilityProvider.getWidgetRole ? () => options.AccessibilityProvider!.getWidgetRole!() : () => 'tree',
+			getAriALevel: options.AccessibilityProvider && options.AccessibilityProvider.getAriALevel ? (node) => options.AccessibilityProvider!.getAriALevel!(node.element) : (node) => {
 				return node.depth;
 			},
-			getActiveDescendantId: options.accessibilityProvider.getActiveDescendantId && (node => {
-				return options.accessibilityProvider!.getActiveDescendantId!(node.element);
+			getActiveDescendAntId: options.AccessibilityProvider.getActiveDescendAntId && (node => {
+				return options.AccessibilityProvider!.getActiveDescendAntId!(node.element);
 			})
 		},
-		keyboardNavigationLabelProvider: options.keyboardNavigationLabelProvider && {
-			...options.keyboardNavigationLabelProvider,
-			getKeyboardNavigationLabel(node) {
-				return options.keyboardNavigationLabelProvider!.getKeyboardNavigationLabel(node.element);
+		keyboArdNAvigAtionLAbelProvider: options.keyboArdNAvigAtionLAbelProvider && {
+			...options.keyboArdNAvigAtionLAbelProvider,
+			getKeyboArdNAvigAtionLAbel(node) {
+				return options.keyboArdNAvigAtionLAbelProvider!.getKeyboArdNAvigAtionLAbel(node.element);
 			}
 		},
-		enableKeyboardNavigation: options.simpleKeyboardNavigation
+		enAbleKeyboArdNAvigAtion: options.simpleKeyboArdNAvigAtion
 	};
 }
 
-export class ComposedTreeDelegate<T, N extends { element: T }> implements IListVirtualDelegate<N> {
+export clAss ComposedTreeDelegAte<T, N extends { element: T }> implements IListVirtuAlDelegAte<N> {
 
-	constructor(private delegate: IListVirtualDelegate<T>) { }
+	constructor(privAte delegAte: IListVirtuAlDelegAte<T>) { }
 
 	getHeight(element: N): number {
-		return this.delegate.getHeight(element.element);
+		return this.delegAte.getHeight(element.element);
 	}
 
-	getTemplateId(element: N): string {
-		return this.delegate.getTemplateId(element.element);
+	getTemplAteId(element: N): string {
+		return this.delegAte.getTemplAteId(element.element);
 	}
 
-	hasDynamicHeight(element: N): boolean {
-		return !!this.delegate.hasDynamicHeight && this.delegate.hasDynamicHeight(element.element);
+	hAsDynAmicHeight(element: N): booleAn {
+		return !!this.delegAte.hAsDynAmicHeight && this.delegAte.hAsDynAmicHeight(element.element);
 	}
 
-	setDynamicHeight(element: N, height: number): void {
-		if (this.delegate.setDynamicHeight) {
-			this.delegate.setDynamicHeight(element.element, height);
+	setDynAmicHeight(element: N, height: number): void {
+		if (this.delegAte.setDynAmicHeight) {
+			this.delegAte.setDynAmicHeight(element.element, height);
 		}
 	}
 }
 
-interface ITreeListTemplateData<T> {
-	readonly container: HTMLElement;
-	readonly indent: HTMLElement;
-	readonly twistie: HTMLElement;
-	indentGuidesDisposable: IDisposable;
-	readonly templateData: T;
+interfAce ITreeListTemplAteDAtA<T> {
+	reAdonly contAiner: HTMLElement;
+	reAdonly indent: HTMLElement;
+	reAdonly twistie: HTMLElement;
+	indentGuidesDisposAble: IDisposAble;
+	reAdonly templAteDAtA: T;
 }
 
 export enum RenderIndentGuides {
 	None = 'none',
 	OnHover = 'onHover',
-	Always = 'always'
+	AlwAys = 'AlwAys'
 }
 
-interface ITreeRendererOptions {
-	readonly indent?: number;
-	readonly renderIndentGuides?: RenderIndentGuides;
-	// TODO@joao replace this with collapsible: boolean | 'ondemand'
-	readonly hideTwistiesOfChildlessElements?: boolean;
+interfAce ITreeRendererOptions {
+	reAdonly indent?: number;
+	reAdonly renderIndentGuides?: RenderIndentGuides;
+	// TODO@joAo replAce this with collApsible: booleAn | 'ondemAnd'
+	reAdonly hideTwistiesOfChildlessElements?: booleAn;
 }
 
-interface IRenderData<TTemplateData> {
-	templateData: ITreeListTemplateData<TTemplateData>;
+interfAce IRenderDAtA<TTemplAteDAtA> {
+	templAteDAtA: ITreeListTemplAteDAtA<TTemplAteDAtA>;
 	height: number;
 }
 
-interface Collection<T> {
-	readonly elements: T[];
-	readonly onDidChange: Event<T[]>;
+interfAce Collection<T> {
+	reAdonly elements: T[];
+	reAdonly onDidChAnge: Event<T[]>;
 }
 
-class EventCollection<T> implements Collection<T> {
+clAss EventCollection<T> implements Collection<T> {
 
-	readonly onDidChange: Event<T[]>;
+	reAdonly onDidChAnge: Event<T[]>;
 
 	get elements(): T[] {
 		return this._elements;
 	}
 
-	constructor(onDidChange: Event<T[]>, private _elements: T[] = []) {
-		this.onDidChange = Event.forEach(onDidChange, elements => this._elements = elements);
+	constructor(onDidChAnge: Event<T[]>, privAte _elements: T[] = []) {
+		this.onDidChAnge = Event.forEAch(onDidChAnge, elements => this._elements = elements);
 	}
 }
 
-class TreeRenderer<T, TFilterData, TRef, TTemplateData> implements IListRenderer<ITreeNode<T, TFilterData>, ITreeListTemplateData<TTemplateData>> {
+clAss TreeRenderer<T, TFilterDAtA, TRef, TTemplAteDAtA> implements IListRenderer<ITreeNode<T, TFilterDAtA>, ITreeListTemplAteDAtA<TTemplAteDAtA>> {
 
-	private static readonly DefaultIndent = 8;
+	privAte stAtic reAdonly DefAultIndent = 8;
 
-	readonly templateId: string;
-	private renderedElements = new Map<T, ITreeNode<T, TFilterData>>();
-	private renderedNodes = new Map<ITreeNode<T, TFilterData>, IRenderData<TTemplateData>>();
-	private indent: number = TreeRenderer.DefaultIndent;
-	private hideTwistiesOfChildlessElements: boolean = false;
+	reAdonly templAteId: string;
+	privAte renderedElements = new MAp<T, ITreeNode<T, TFilterDAtA>>();
+	privAte renderedNodes = new MAp<ITreeNode<T, TFilterDAtA>, IRenderDAtA<TTemplAteDAtA>>();
+	privAte indent: number = TreeRenderer.DefAultIndent;
+	privAte hideTwistiesOfChildlessElements: booleAn = fAlse;
 
-	private shouldRenderIndentGuides: boolean = false;
-	private renderedIndentGuides = new SetMap<ITreeNode<T, TFilterData>, HTMLDivElement>();
-	private activeIndentNodes = new Set<ITreeNode<T, TFilterData>>();
-	private indentGuidesDisposable: IDisposable = Disposable.None;
+	privAte shouldRenderIndentGuides: booleAn = fAlse;
+	privAte renderedIndentGuides = new SetMAp<ITreeNode<T, TFilterDAtA>, HTMLDivElement>();
+	privAte ActiveIndentNodes = new Set<ITreeNode<T, TFilterDAtA>>();
+	privAte indentGuidesDisposAble: IDisposAble = DisposAble.None;
 
-	private readonly disposables = new DisposableStore();
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
 	constructor(
-		private renderer: ITreeRenderer<T, TFilterData, TTemplateData>,
-		private modelProvider: () => ITreeModel<T, TFilterData, TRef>,
-		onDidChangeCollapseState: Event<ICollapseStateChangeEvent<T, TFilterData>>,
-		private activeNodes: Collection<ITreeNode<T, TFilterData>>,
+		privAte renderer: ITreeRenderer<T, TFilterDAtA, TTemplAteDAtA>,
+		privAte modelProvider: () => ITreeModel<T, TFilterDAtA, TRef>,
+		onDidChAngeCollApseStAte: Event<ICollApseStAteChAngeEvent<T, TFilterDAtA>>,
+		privAte ActiveNodes: Collection<ITreeNode<T, TFilterDAtA>>,
 		options: ITreeRendererOptions = {}
 	) {
-		this.templateId = renderer.templateId;
-		this.updateOptions(options);
+		this.templAteId = renderer.templAteId;
+		this.updAteOptions(options);
 
-		Event.map(onDidChangeCollapseState, e => e.node)(this.onDidChangeNodeTwistieState, this, this.disposables);
+		Event.mAp(onDidChAngeCollApseStAte, e => e.node)(this.onDidChAngeNodeTwistieStAte, this, this.disposAbles);
 
-		if (renderer.onDidChangeTwistieState) {
-			renderer.onDidChangeTwistieState(this.onDidChangeTwistieState, this, this.disposables);
+		if (renderer.onDidChAngeTwistieStAte) {
+			renderer.onDidChAngeTwistieStAte(this.onDidChAngeTwistieStAte, this, this.disposAbles);
 		}
 	}
 
-	updateOptions(options: ITreeRendererOptions = {}): void {
+	updAteOptions(options: ITreeRendererOptions = {}): void {
 		if (typeof options.indent !== 'undefined') {
-			this.indent = clamp(options.indent, 0, 40);
+			this.indent = clAmp(options.indent, 0, 40);
 		}
 
 		if (typeof options.renderIndentGuides !== 'undefined') {
@@ -314,14 +314,14 @@ class TreeRenderer<T, TFilterData, TRef, TTemplateData> implements IListRenderer
 
 			if (shouldRenderIndentGuides !== this.shouldRenderIndentGuides) {
 				this.shouldRenderIndentGuides = shouldRenderIndentGuides;
-				this.indentGuidesDisposable.dispose();
+				this.indentGuidesDisposAble.dispose();
 
 				if (shouldRenderIndentGuides) {
-					const disposables = new DisposableStore();
-					this.activeNodes.onDidChange(this._onDidChangeActiveNodes, this, disposables);
-					this.indentGuidesDisposable = disposables;
+					const disposAbles = new DisposAbleStore();
+					this.ActiveNodes.onDidChAnge(this._onDidChAngeActiveNodes, this, disposAbles);
+					this.indentGuidesDisposAble = disposAbles;
 
-					this._onDidChangeActiveNodes(this.activeNodes.elements);
+					this._onDidChAngeActiveNodes(this.ActiveNodes.elements);
 				}
 			}
 		}
@@ -331,40 +331,40 @@ class TreeRenderer<T, TFilterData, TRef, TTemplateData> implements IListRenderer
 		}
 	}
 
-	renderTemplate(container: HTMLElement): ITreeListTemplateData<TTemplateData> {
-		const el = append(container, $('.monaco-tl-row'));
-		const indent = append(el, $('.monaco-tl-indent'));
-		const twistie = append(el, $('.monaco-tl-twistie'));
-		const contents = append(el, $('.monaco-tl-contents'));
-		const templateData = this.renderer.renderTemplate(contents);
+	renderTemplAte(contAiner: HTMLElement): ITreeListTemplAteDAtA<TTemplAteDAtA> {
+		const el = Append(contAiner, $('.monAco-tl-row'));
+		const indent = Append(el, $('.monAco-tl-indent'));
+		const twistie = Append(el, $('.monAco-tl-twistie'));
+		const contents = Append(el, $('.monAco-tl-contents'));
+		const templAteDAtA = this.renderer.renderTemplAte(contents);
 
-		return { container, indent, twistie, indentGuidesDisposable: Disposable.None, templateData };
+		return { contAiner, indent, twistie, indentGuidesDisposAble: DisposAble.None, templAteDAtA };
 	}
 
-	renderElement(node: ITreeNode<T, TFilterData>, index: number, templateData: ITreeListTemplateData<TTemplateData>, height: number | undefined): void {
+	renderElement(node: ITreeNode<T, TFilterDAtA>, index: number, templAteDAtA: ITreeListTemplAteDAtA<TTemplAteDAtA>, height: number | undefined): void {
 		if (typeof height === 'number') {
-			this.renderedNodes.set(node, { templateData, height });
+			this.renderedNodes.set(node, { templAteDAtA, height });
 			this.renderedElements.set(node.element, node);
 		}
 
-		const indent = TreeRenderer.DefaultIndent + (node.depth - 1) * this.indent;
-		templateData.twistie.style.paddingLeft = `${indent}px`;
-		templateData.indent.style.width = `${indent + this.indent - 16}px`;
+		const indent = TreeRenderer.DefAultIndent + (node.depth - 1) * this.indent;
+		templAteDAtA.twistie.style.pAddingLeft = `${indent}px`;
+		templAteDAtA.indent.style.width = `${indent + this.indent - 16}px`;
 
-		this.renderTwistie(node, templateData);
+		this.renderTwistie(node, templAteDAtA);
 
 		if (typeof height === 'number') {
-			this.renderIndentGuides(node, templateData);
+			this.renderIndentGuides(node, templAteDAtA);
 		}
 
-		this.renderer.renderElement(node, index, templateData.templateData, height);
+		this.renderer.renderElement(node, index, templAteDAtA.templAteDAtA, height);
 	}
 
-	disposeElement(node: ITreeNode<T, TFilterData>, index: number, templateData: ITreeListTemplateData<TTemplateData>, height: number | undefined): void {
-		templateData.indentGuidesDisposable.dispose();
+	disposeElement(node: ITreeNode<T, TFilterDAtA>, index: number, templAteDAtA: ITreeListTemplAteDAtA<TTemplAteDAtA>, height: number | undefined): void {
+		templAteDAtA.indentGuidesDisposAble.dispose();
 
 		if (this.renderer.disposeElement) {
-			this.renderer.disposeElement(node, index, templateData.templateData, height);
+			this.renderer.disposeElement(node, index, templAteDAtA.templAteDAtA, height);
 		}
 
 		if (typeof height === 'number') {
@@ -373,301 +373,301 @@ class TreeRenderer<T, TFilterData, TRef, TTemplateData> implements IListRenderer
 		}
 	}
 
-	disposeTemplate(templateData: ITreeListTemplateData<TTemplateData>): void {
-		this.renderer.disposeTemplate(templateData.templateData);
+	disposeTemplAte(templAteDAtA: ITreeListTemplAteDAtA<TTemplAteDAtA>): void {
+		this.renderer.disposeTemplAte(templAteDAtA.templAteDAtA);
 	}
 
-	private onDidChangeTwistieState(element: T): void {
+	privAte onDidChAngeTwistieStAte(element: T): void {
 		const node = this.renderedElements.get(element);
 
 		if (!node) {
 			return;
 		}
 
-		this.onDidChangeNodeTwistieState(node);
+		this.onDidChAngeNodeTwistieStAte(node);
 	}
 
-	private onDidChangeNodeTwistieState(node: ITreeNode<T, TFilterData>): void {
-		const data = this.renderedNodes.get(node);
+	privAte onDidChAngeNodeTwistieStAte(node: ITreeNode<T, TFilterDAtA>): void {
+		const dAtA = this.renderedNodes.get(node);
 
-		if (!data) {
+		if (!dAtA) {
 			return;
 		}
 
-		this.renderTwistie(node, data.templateData);
-		this._onDidChangeActiveNodes(this.activeNodes.elements);
-		this.renderIndentGuides(node, data.templateData);
+		this.renderTwistie(node, dAtA.templAteDAtA);
+		this._onDidChAngeActiveNodes(this.ActiveNodes.elements);
+		this.renderIndentGuides(node, dAtA.templAteDAtA);
 	}
 
-	private renderTwistie(node: ITreeNode<T, TFilterData>, templateData: ITreeListTemplateData<TTemplateData>) {
+	privAte renderTwistie(node: ITreeNode<T, TFilterDAtA>, templAteDAtA: ITreeListTemplAteDAtA<TTemplAteDAtA>) {
 		if (this.renderer.renderTwistie) {
-			this.renderer.renderTwistie(node.element, templateData.twistie);
+			this.renderer.renderTwistie(node.element, templAteDAtA.twistie);
 		}
 
-		if (node.collapsible && (!this.hideTwistiesOfChildlessElements || node.visibleChildrenCount > 0)) {
-			templateData.twistie.classList.add(...treeItemExpandedIcon.classNamesArray, 'collapsible');
-			templateData.twistie.classList.toggle('collapsed', node.collapsed);
+		if (node.collApsible && (!this.hideTwistiesOfChildlessElements || node.visibleChildrenCount > 0)) {
+			templAteDAtA.twistie.clAssList.Add(...treeItemExpAndedIcon.clAssNAmesArrAy, 'collApsible');
+			templAteDAtA.twistie.clAssList.toggle('collApsed', node.collApsed);
 		} else {
-			templateData.twistie.classList.remove(...treeItemExpandedIcon.classNamesArray, 'collapsible', 'collapsed');
+			templAteDAtA.twistie.clAssList.remove(...treeItemExpAndedIcon.clAssNAmesArrAy, 'collApsible', 'collApsed');
 		}
 
-		if (node.collapsible) {
-			templateData.container.setAttribute('aria-expanded', String(!node.collapsed));
+		if (node.collApsible) {
+			templAteDAtA.contAiner.setAttribute('AriA-expAnded', String(!node.collApsed));
 		} else {
-			templateData.container.removeAttribute('aria-expanded');
+			templAteDAtA.contAiner.removeAttribute('AriA-expAnded');
 		}
 	}
 
-	private renderIndentGuides(target: ITreeNode<T, TFilterData>, templateData: ITreeListTemplateData<TTemplateData>): void {
-		clearNode(templateData.indent);
-		templateData.indentGuidesDisposable.dispose();
+	privAte renderIndentGuides(tArget: ITreeNode<T, TFilterDAtA>, templAteDAtA: ITreeListTemplAteDAtA<TTemplAteDAtA>): void {
+		cleArNode(templAteDAtA.indent);
+		templAteDAtA.indentGuidesDisposAble.dispose();
 
 		if (!this.shouldRenderIndentGuides) {
 			return;
 		}
 
-		const disposableStore = new DisposableStore();
+		const disposAbleStore = new DisposAbleStore();
 		const model = this.modelProvider();
 
-		let node = target;
+		let node = tArget;
 
 		while (true) {
-			const ref = model.getNodeLocation(node);
-			const parentRef = model.getParentNodeLocation(ref);
+			const ref = model.getNodeLocAtion(node);
+			const pArentRef = model.getPArentNodeLocAtion(ref);
 
-			if (!parentRef) {
-				break;
+			if (!pArentRef) {
+				breAk;
 			}
 
-			const parent = model.getNode(parentRef);
+			const pArent = model.getNode(pArentRef);
 			const guide = $<HTMLDivElement>('.indent-guide', { style: `width: ${this.indent}px` });
 
-			if (this.activeIndentNodes.has(parent)) {
-				guide.classList.add('active');
+			if (this.ActiveIndentNodes.hAs(pArent)) {
+				guide.clAssList.Add('Active');
 			}
 
-			if (templateData.indent.childElementCount === 0) {
-				templateData.indent.appendChild(guide);
+			if (templAteDAtA.indent.childElementCount === 0) {
+				templAteDAtA.indent.AppendChild(guide);
 			} else {
-				templateData.indent.insertBefore(guide, templateData.indent.firstElementChild);
+				templAteDAtA.indent.insertBefore(guide, templAteDAtA.indent.firstElementChild);
 			}
 
-			this.renderedIndentGuides.add(parent, guide);
-			disposableStore.add(toDisposable(() => this.renderedIndentGuides.delete(parent, guide)));
+			this.renderedIndentGuides.Add(pArent, guide);
+			disposAbleStore.Add(toDisposAble(() => this.renderedIndentGuides.delete(pArent, guide)));
 
-			node = parent;
+			node = pArent;
 		}
 
-		templateData.indentGuidesDisposable = disposableStore;
+		templAteDAtA.indentGuidesDisposAble = disposAbleStore;
 	}
 
-	private _onDidChangeActiveNodes(nodes: ITreeNode<T, TFilterData>[]): void {
+	privAte _onDidChAngeActiveNodes(nodes: ITreeNode<T, TFilterDAtA>[]): void {
 		if (!this.shouldRenderIndentGuides) {
 			return;
 		}
 
-		const set = new Set<ITreeNode<T, TFilterData>>();
+		const set = new Set<ITreeNode<T, TFilterDAtA>>();
 		const model = this.modelProvider();
 
-		nodes.forEach(node => {
-			const ref = model.getNodeLocation(node);
+		nodes.forEAch(node => {
+			const ref = model.getNodeLocAtion(node);
 			try {
-				const parentRef = model.getParentNodeLocation(ref);
+				const pArentRef = model.getPArentNodeLocAtion(ref);
 
-				if (node.collapsible && node.children.length > 0 && !node.collapsed) {
-					set.add(node);
-				} else if (parentRef) {
-					set.add(model.getNode(parentRef));
+				if (node.collApsible && node.children.length > 0 && !node.collApsed) {
+					set.Add(node);
+				} else if (pArentRef) {
+					set.Add(model.getNode(pArentRef));
 				}
-			} catch {
+			} cAtch {
 				// noop
 			}
 		});
 
-		this.activeIndentNodes.forEach(node => {
-			if (!set.has(node)) {
-				this.renderedIndentGuides.forEach(node, line => line.classList.remove('active'));
+		this.ActiveIndentNodes.forEAch(node => {
+			if (!set.hAs(node)) {
+				this.renderedIndentGuides.forEAch(node, line => line.clAssList.remove('Active'));
 			}
 		});
 
-		set.forEach(node => {
-			if (!this.activeIndentNodes.has(node)) {
-				this.renderedIndentGuides.forEach(node, line => line.classList.add('active'));
+		set.forEAch(node => {
+			if (!this.ActiveIndentNodes.hAs(node)) {
+				this.renderedIndentGuides.forEAch(node, line => line.clAssList.Add('Active'));
 			}
 		});
 
-		this.activeIndentNodes = set;
+		this.ActiveIndentNodes = set;
 	}
 
 	dispose(): void {
-		this.renderedNodes.clear();
-		this.renderedElements.clear();
-		this.indentGuidesDisposable.dispose();
-		dispose(this.disposables);
+		this.renderedNodes.cleAr();
+		this.renderedElements.cleAr();
+		this.indentGuidesDisposAble.dispose();
+		dispose(this.disposAbles);
 	}
 }
 
-class TypeFilter<T> implements ITreeFilter<T, FuzzyScore>, IDisposable {
+clAss TypeFilter<T> implements ITreeFilter<T, FuzzyScore>, IDisposAble {
 
-	private _totalCount = 0;
-	get totalCount(): number { return this._totalCount; }
-	private _matchCount = 0;
-	get matchCount(): number { return this._matchCount; }
+	privAte _totAlCount = 0;
+	get totAlCount(): number { return this._totAlCount; }
+	privAte _mAtchCount = 0;
+	get mAtchCount(): number { return this._mAtchCount; }
 
-	private _pattern: string = '';
-	private _lowercasePattern: string = '';
-	private readonly disposables = new DisposableStore();
+	privAte _pAttern: string = '';
+	privAte _lowercAsePAttern: string = '';
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
-	set pattern(pattern: string) {
-		this._pattern = pattern;
-		this._lowercasePattern = pattern.toLowerCase();
+	set pAttern(pAttern: string) {
+		this._pAttern = pAttern;
+		this._lowercAsePAttern = pAttern.toLowerCAse();
 	}
 
 	constructor(
-		private tree: AbstractTree<T, any, any>,
-		private keyboardNavigationLabelProvider: IKeyboardNavigationLabelProvider<T>,
-		private _filter?: ITreeFilter<T, FuzzyScore>
+		privAte tree: AbstrActTree<T, Any, Any>,
+		privAte keyboArdNAvigAtionLAbelProvider: IKeyboArdNAvigAtionLAbelProvider<T>,
+		privAte _filter?: ITreeFilter<T, FuzzyScore>
 	) {
-		tree.onWillRefilter(this.reset, this, this.disposables);
+		tree.onWillRefilter(this.reset, this, this.disposAbles);
 	}
 
-	filter(element: T, parentVisibility: TreeVisibility): TreeFilterResult<FuzzyScore> {
+	filter(element: T, pArentVisibility: TreeVisibility): TreeFilterResult<FuzzyScore> {
 		if (this._filter) {
-			const result = this._filter.filter(element, parentVisibility);
+			const result = this._filter.filter(element, pArentVisibility);
 
-			if (this.tree.options.simpleKeyboardNavigation) {
+			if (this.tree.options.simpleKeyboArdNAvigAtion) {
 				return result;
 			}
 
 			let visibility: TreeVisibility;
 
-			if (typeof result === 'boolean') {
+			if (typeof result === 'booleAn') {
 				visibility = result ? TreeVisibility.Visible : TreeVisibility.Hidden;
 			} else if (isFilterResult(result)) {
-				visibility = getVisibleState(result.visibility);
+				visibility = getVisibleStAte(result.visibility);
 			} else {
 				visibility = result;
 			}
 
 			if (visibility === TreeVisibility.Hidden) {
-				return false;
+				return fAlse;
 			}
 		}
 
-		this._totalCount++;
+		this._totAlCount++;
 
-		if (this.tree.options.simpleKeyboardNavigation || !this._pattern) {
-			this._matchCount++;
-			return { data: FuzzyScore.Default, visibility: true };
+		if (this.tree.options.simpleKeyboArdNAvigAtion || !this._pAttern) {
+			this._mAtchCount++;
+			return { dAtA: FuzzyScore.DefAult, visibility: true };
 		}
 
-		const label = this.keyboardNavigationLabelProvider.getKeyboardNavigationLabel(element);
-		const labelStr = label && label.toString();
+		const lAbel = this.keyboArdNAvigAtionLAbelProvider.getKeyboArdNAvigAtionLAbel(element);
+		const lAbelStr = lAbel && lAbel.toString();
 
-		if (typeof labelStr === 'undefined') {
-			return { data: FuzzyScore.Default, visibility: true };
+		if (typeof lAbelStr === 'undefined') {
+			return { dAtA: FuzzyScore.DefAult, visibility: true };
 		}
 
-		const score = fuzzyScore(this._pattern, this._lowercasePattern, 0, labelStr, labelStr.toLowerCase(), 0, true);
+		const score = fuzzyScore(this._pAttern, this._lowercAsePAttern, 0, lAbelStr, lAbelStr.toLowerCAse(), 0, true);
 
 		if (!score) {
 			if (this.tree.options.filterOnType) {
 				return TreeVisibility.Recurse;
 			} else {
-				return { data: FuzzyScore.Default, visibility: true };
+				return { dAtA: FuzzyScore.DefAult, visibility: true };
 			}
 
-			// DEMO: smarter filter ?
-			// return parentVisibility === TreeVisibility.Visible ? true : TreeVisibility.Recurse;
+			// DEMO: smArter filter ?
+			// return pArentVisibility === TreeVisibility.Visible ? true : TreeVisibility.Recurse;
 		}
 
-		this._matchCount++;
-		return { data: score, visibility: true };
+		this._mAtchCount++;
+		return { dAtA: score, visibility: true };
 	}
 
-	private reset(): void {
-		this._totalCount = 0;
-		this._matchCount = 0;
+	privAte reset(): void {
+		this._totAlCount = 0;
+		this._mAtchCount = 0;
 	}
 
 	dispose(): void {
-		dispose(this.disposables);
+		dispose(this.disposAbles);
 	}
 }
 
-class TypeFilterController<T, TFilterData> implements IDisposable {
+clAss TypeFilterController<T, TFilterDAtA> implements IDisposAble {
 
-	private _enabled = false;
-	get enabled(): boolean { return this._enabled; }
+	privAte _enAbled = fAlse;
+	get enAbled(): booleAn { return this._enAbled; }
 
-	private _pattern = '';
-	get pattern(): string { return this._pattern; }
+	privAte _pAttern = '';
+	get pAttern(): string { return this._pAttern; }
 
-	private _filterOnType: boolean;
-	get filterOnType(): boolean { return this._filterOnType; }
+	privAte _filterOnType: booleAn;
+	get filterOnType(): booleAn { return this._filterOnType; }
 
-	private _empty: boolean = false;
-	get empty(): boolean { return this._empty; }
+	privAte _empty: booleAn = fAlse;
+	get empty(): booleAn { return this._empty; }
 
-	private readonly _onDidChangeEmptyState = new Emitter<boolean>();
-	readonly onDidChangeEmptyState: Event<boolean> = Event.latch(this._onDidChangeEmptyState.event);
+	privAte reAdonly _onDidChAngeEmptyStAte = new Emitter<booleAn>();
+	reAdonly onDidChAngeEmptyStAte: Event<booleAn> = Event.lAtch(this._onDidChAngeEmptyStAte.event);
 
-	private positionClassName = 'ne';
-	private domNode: HTMLElement;
-	private messageDomNode: HTMLElement;
-	private labelDomNode: HTMLElement;
-	private filterOnTypeDomNode: HTMLInputElement;
-	private clearDomNode: HTMLElement;
-	private keyboardNavigationEventFilter?: IKeyboardNavigationEventFilter;
+	privAte positionClAssNAme = 'ne';
+	privAte domNode: HTMLElement;
+	privAte messAgeDomNode: HTMLElement;
+	privAte lAbelDomNode: HTMLElement;
+	privAte filterOnTypeDomNode: HTMLInputElement;
+	privAte cleArDomNode: HTMLElement;
+	privAte keyboArdNAvigAtionEventFilter?: IKeyboArdNAvigAtionEventFilter;
 
-	private automaticKeyboardNavigation = true;
-	private triggered = false;
+	privAte AutomAticKeyboArdNAvigAtion = true;
+	privAte triggered = fAlse;
 
-	private readonly _onDidChangePattern = new Emitter<string>();
-	readonly onDidChangePattern = this._onDidChangePattern.event;
+	privAte reAdonly _onDidChAngePAttern = new Emitter<string>();
+	reAdonly onDidChAngePAttern = this._onDidChAngePAttern.event;
 
-	private readonly enabledDisposables = new DisposableStore();
-	private readonly disposables = new DisposableStore();
+	privAte reAdonly enAbledDisposAbles = new DisposAbleStore();
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
 	constructor(
-		private tree: AbstractTree<T, TFilterData, any>,
-		model: ITreeModel<T, TFilterData, any>,
-		private view: List<ITreeNode<T, TFilterData>>,
-		private filter: TypeFilter<T>,
-		private keyboardNavigationDelegate: IKeyboardNavigationDelegate
+		privAte tree: AbstrActTree<T, TFilterDAtA, Any>,
+		model: ITreeModel<T, TFilterDAtA, Any>,
+		privAte view: List<ITreeNode<T, TFilterDAtA>>,
+		privAte filter: TypeFilter<T>,
+		privAte keyboArdNAvigAtionDelegAte: IKeyboArdNAvigAtionDelegAte
 	) {
-		this.domNode = $(`.monaco-list-type-filter.${this.positionClassName}`);
-		this.domNode.draggable = true;
-		domEvent(this.domNode, 'dragstart')(this.onDragStart, this, this.disposables);
+		this.domNode = $(`.monAco-list-type-filter.${this.positionClAssNAme}`);
+		this.domNode.drAggAble = true;
+		domEvent(this.domNode, 'drAgstArt')(this.onDrAgStArt, this, this.disposAbles);
 
-		this.messageDomNode = append(view.getHTMLElement(), $(`.monaco-list-type-filter-message`));
+		this.messAgeDomNode = Append(view.getHTMLElement(), $(`.monAco-list-type-filter-messAge`));
 
-		this.labelDomNode = append(this.domNode, $('span.label'));
-		const controls = append(this.domNode, $('.controls'));
+		this.lAbelDomNode = Append(this.domNode, $('spAn.lAbel'));
+		const controls = Append(this.domNode, $('.controls'));
 
 		this._filterOnType = !!tree.options.filterOnType;
-		this.filterOnTypeDomNode = append(controls, $<HTMLInputElement>('input.filter'));
+		this.filterOnTypeDomNode = Append(controls, $<HTMLInputElement>('input.filter'));
 		this.filterOnTypeDomNode.type = 'checkbox';
 		this.filterOnTypeDomNode.checked = this._filterOnType;
-		this.filterOnTypeDomNode.tabIndex = -1;
-		this.updateFilterOnTypeTitleAndIcon();
-		domEvent(this.filterOnTypeDomNode, 'input')(this.onDidChangeFilterOnType, this, this.disposables);
+		this.filterOnTypeDomNode.tAbIndex = -1;
+		this.updAteFilterOnTypeTitleAndIcon();
+		domEvent(this.filterOnTypeDomNode, 'input')(this.onDidChAngeFilterOnType, this, this.disposAbles);
 
-		this.clearDomNode = append(controls, $<HTMLInputElement>('button.clear' + treeFilterClearIcon.cssSelector));
-		this.clearDomNode.tabIndex = -1;
-		this.clearDomNode.title = localize('clear', "Clear");
+		this.cleArDomNode = Append(controls, $<HTMLInputElement>('button.cleAr' + treeFilterCleArIcon.cssSelector));
+		this.cleArDomNode.tAbIndex = -1;
+		this.cleArDomNode.title = locAlize('cleAr', "CleAr");
 
-		this.keyboardNavigationEventFilter = tree.options.keyboardNavigationEventFilter;
+		this.keyboArdNAvigAtionEventFilter = tree.options.keyboArdNAvigAtionEventFilter;
 
-		model.onDidSplice(this.onDidSpliceModel, this, this.disposables);
-		this.updateOptions(tree.options);
+		model.onDidSplice(this.onDidSpliceModel, this, this.disposAbles);
+		this.updAteOptions(tree.options);
 	}
 
-	updateOptions(options: IAbstractTreeOptions<T, TFilterData>): void {
-		if (options.simpleKeyboardNavigation) {
-			this.disable();
+	updAteOptions(options: IAbstrActTreeOptions<T, TFilterDAtA>): void {
+		if (options.simpleKeyboArdNAvigAtion) {
+			this.disAble();
 		} else {
-			this.enable();
+			this.enAble();
 		}
 
 		if (typeof options.filterOnType !== 'undefined') {
@@ -675,14 +675,14 @@ class TypeFilterController<T, TFilterData> implements IDisposable {
 			this.filterOnTypeDomNode.checked = this._filterOnType;
 		}
 
-		if (typeof options.automaticKeyboardNavigation !== 'undefined') {
-			this.automaticKeyboardNavigation = options.automaticKeyboardNavigation;
+		if (typeof options.AutomAticKeyboArdNAvigAtion !== 'undefined') {
+			this.AutomAticKeyboArdNAvigAtion = options.AutomAticKeyboArdNAvigAtion;
 		}
 
 		this.tree.refilter();
 		this.render();
 
-		if (!this.automaticKeyboardNavigation) {
+		if (!this.AutomAticKeyboArdNAvigAtion) {
 			this.onEventOrInput('');
 		}
 	}
@@ -695,76 +695,76 @@ class TypeFilterController<T, TFilterData> implements IDisposable {
 		}
 	}
 
-	private enable(): void {
-		if (this._enabled) {
+	privAte enAble(): void {
+		if (this._enAbled) {
 			return;
 		}
 
-		const onKeyDown = Event.chain(domEvent(this.view.getHTMLElement(), 'keydown'))
-			.filter(e => !isInputElement(e.target as HTMLElement) || e.target === this.filterOnTypeDomNode)
-			.filter(e => e.key !== 'Dead' && !/^Media/.test(e.key))
-			.map(e => new StandardKeyboardEvent(e))
-			.filter(this.keyboardNavigationEventFilter || (() => true))
-			.filter(() => this.automaticKeyboardNavigation || this.triggered)
-			.filter(e => (this.keyboardNavigationDelegate.mightProducePrintableCharacter(e) && !(e.keyCode === KeyCode.DownArrow || e.keyCode === KeyCode.UpArrow || e.keyCode === KeyCode.LeftArrow || e.keyCode === KeyCode.RightArrow)) || ((this.pattern.length > 0 || this.triggered) && ((e.keyCode === KeyCode.Escape || e.keyCode === KeyCode.Backspace) && !e.altKey && !e.ctrlKey && !e.metaKey) || (e.keyCode === KeyCode.Backspace && (isMacintosh ? (e.altKey && !e.metaKey) : e.ctrlKey) && !e.shiftKey)))
-			.forEach(e => { e.stopPropagation(); e.preventDefault(); })
+		const onKeyDown = Event.chAin(domEvent(this.view.getHTMLElement(), 'keydown'))
+			.filter(e => !isInputElement(e.tArget As HTMLElement) || e.tArget === this.filterOnTypeDomNode)
+			.filter(e => e.key !== 'DeAd' && !/^MediA/.test(e.key))
+			.mAp(e => new StAndArdKeyboArdEvent(e))
+			.filter(this.keyboArdNAvigAtionEventFilter || (() => true))
+			.filter(() => this.AutomAticKeyboArdNAvigAtion || this.triggered)
+			.filter(e => (this.keyboArdNAvigAtionDelegAte.mightProducePrintAbleChArActer(e) && !(e.keyCode === KeyCode.DownArrow || e.keyCode === KeyCode.UpArrow || e.keyCode === KeyCode.LeftArrow || e.keyCode === KeyCode.RightArrow)) || ((this.pAttern.length > 0 || this.triggered) && ((e.keyCode === KeyCode.EscApe || e.keyCode === KeyCode.BAckspAce) && !e.AltKey && !e.ctrlKey && !e.metAKey) || (e.keyCode === KeyCode.BAckspAce && (isMAcintosh ? (e.AltKey && !e.metAKey) : e.ctrlKey) && !e.shiftKey)))
+			.forEAch(e => { e.stopPropAgAtion(); e.preventDefAult(); })
 			.event;
 
-		const onClear = domEvent(this.clearDomNode, 'click');
+		const onCleAr = domEvent(this.cleArDomNode, 'click');
 
-		Event.chain(Event.any<MouseEvent | StandardKeyboardEvent>(onKeyDown, onClear))
-			.event(this.onEventOrInput, this, this.enabledDisposables);
+		Event.chAin(Event.Any<MouseEvent | StAndArdKeyboArdEvent>(onKeyDown, onCleAr))
+			.event(this.onEventOrInput, this, this.enAbledDisposAbles);
 
-		this.filter.pattern = '';
+		this.filter.pAttern = '';
 		this.tree.refilter();
 		this.render();
-		this._enabled = true;
-		this.triggered = false;
+		this._enAbled = true;
+		this.triggered = fAlse;
 	}
 
-	private disable(): void {
-		if (!this._enabled) {
+	privAte disAble(): void {
+		if (!this._enAbled) {
 			return;
 		}
 
 		this.domNode.remove();
-		this.enabledDisposables.clear();
+		this.enAbledDisposAbles.cleAr();
 		this.tree.refilter();
 		this.render();
-		this._enabled = false;
-		this.triggered = false;
+		this._enAbled = fAlse;
+		this.triggered = fAlse;
 	}
 
-	private onEventOrInput(e: MouseEvent | StandardKeyboardEvent | string): void {
+	privAte onEventOrInput(e: MouseEvent | StAndArdKeyboArdEvent | string): void {
 		if (typeof e === 'string') {
 			this.onInput(e);
-		} else if (e instanceof MouseEvent || e.keyCode === KeyCode.Escape || (e.keyCode === KeyCode.Backspace && (isMacintosh ? e.altKey : e.ctrlKey))) {
+		} else if (e instAnceof MouseEvent || e.keyCode === KeyCode.EscApe || (e.keyCode === KeyCode.BAckspAce && (isMAcintosh ? e.AltKey : e.ctrlKey))) {
 			this.onInput('');
-		} else if (e.keyCode === KeyCode.Backspace) {
-			this.onInput(this.pattern.length === 0 ? '' : this.pattern.substr(0, this.pattern.length - 1));
+		} else if (e.keyCode === KeyCode.BAckspAce) {
+			this.onInput(this.pAttern.length === 0 ? '' : this.pAttern.substr(0, this.pAttern.length - 1));
 		} else {
-			this.onInput(this.pattern + e.browserEvent.key);
+			this.onInput(this.pAttern + e.browserEvent.key);
 		}
 	}
 
-	private onInput(pattern: string): void {
-		const container = this.view.getHTMLElement();
+	privAte onInput(pAttern: string): void {
+		const contAiner = this.view.getHTMLElement();
 
-		if (pattern && !this.domNode.parentElement) {
-			container.append(this.domNode);
-		} else if (!pattern && this.domNode.parentElement) {
+		if (pAttern && !this.domNode.pArentElement) {
+			contAiner.Append(this.domNode);
+		} else if (!pAttern && this.domNode.pArentElement) {
 			this.domNode.remove();
 			this.tree.domFocus();
 		}
 
-		this._pattern = pattern;
-		this._onDidChangePattern.fire(pattern);
+		this._pAttern = pAttern;
+		this._onDidChAngePAttern.fire(pAttern);
 
-		this.filter.pattern = pattern;
+		this.filter.pAttern = pAttern;
 		this.tree.refilter();
 
-		if (pattern) {
-			this.tree.focusNext(0, true, undefined, node => !FuzzyScore.isDefault(node.filterData as any as FuzzyScore));
+		if (pAttern) {
+			this.tree.focusNext(0, true, undefined, node => !FuzzyScore.isDefAult(node.filterDAtA As Any As FuzzyScore));
 		}
 
 		const focus = this.tree.getFocus();
@@ -772,81 +772,81 @@ class TypeFilterController<T, TFilterData> implements IDisposable {
 		if (focus.length > 0) {
 			const element = focus[0];
 
-			if (this.tree.getRelativeTop(element) === null) {
-				this.tree.reveal(element, 0.5);
+			if (this.tree.getRelAtiveTop(element) === null) {
+				this.tree.reveAl(element, 0.5);
 			}
 		}
 
 		this.render();
 
-		if (!pattern) {
-			this.triggered = false;
+		if (!pAttern) {
+			this.triggered = fAlse;
 		}
 	}
 
-	private onDragStart(): void {
-		const container = this.view.getHTMLElement();
-		const { left } = getDomNodePagePosition(container);
-		const containerWidth = container.clientWidth;
-		const midContainerWidth = containerWidth / 2;
+	privAte onDrAgStArt(): void {
+		const contAiner = this.view.getHTMLElement();
+		const { left } = getDomNodePAgePosition(contAiner);
+		const contAinerWidth = contAiner.clientWidth;
+		const midContAinerWidth = contAinerWidth / 2;
 		const width = this.domNode.clientWidth;
-		const disposables = new DisposableStore();
-		let positionClassName = this.positionClassName;
+		const disposAbles = new DisposAbleStore();
+		let positionClAssNAme = this.positionClAssNAme;
 
-		const updatePosition = () => {
-			switch (positionClassName) {
-				case 'nw':
+		const updAtePosition = () => {
+			switch (positionClAssNAme) {
+				cAse 'nw':
 					this.domNode.style.top = `4px`;
 					this.domNode.style.left = `4px`;
-					break;
-				case 'ne':
+					breAk;
+				cAse 'ne':
 					this.domNode.style.top = `4px`;
-					this.domNode.style.left = `${containerWidth - width - 6}px`;
-					break;
+					this.domNode.style.left = `${contAinerWidth - width - 6}px`;
+					breAk;
 			}
 		};
 
-		const onDragOver = (event: DragEvent) => {
-			event.preventDefault(); // needed so that the drop event fires (https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome)
+		const onDrAgOver = (event: DrAgEvent) => {
+			event.preventDefAult(); // needed so thAt the drop event fires (https://stAckoverflow.com/questions/21339924/drop-event-not-firing-in-chrome)
 
 			const x = event.screenX - left;
-			if (event.dataTransfer) {
-				event.dataTransfer.dropEffect = 'none';
+			if (event.dAtATrAnsfer) {
+				event.dAtATrAnsfer.dropEffect = 'none';
 			}
 
-			if (x < midContainerWidth) {
-				positionClassName = 'nw';
+			if (x < midContAinerWidth) {
+				positionClAssNAme = 'nw';
 			} else {
-				positionClassName = 'ne';
+				positionClAssNAme = 'ne';
 			}
 
-			updatePosition();
+			updAtePosition();
 		};
 
-		const onDragEnd = () => {
-			this.positionClassName = positionClassName;
-			this.domNode.className = `monaco-list-type-filter ${this.positionClassName}`;
+		const onDrAgEnd = () => {
+			this.positionClAssNAme = positionClAssNAme;
+			this.domNode.clAssNAme = `monAco-list-type-filter ${this.positionClAssNAme}`;
 			this.domNode.style.top = '';
 			this.domNode.style.left = '';
 
-			dispose(disposables);
+			dispose(disposAbles);
 		};
 
-		updatePosition();
-		this.domNode.classList.remove(positionClassName);
+		updAtePosition();
+		this.domNode.clAssList.remove(positionClAssNAme);
 
-		this.domNode.classList.add('dragging');
-		disposables.add(toDisposable(() => this.domNode.classList.remove('dragging')));
+		this.domNode.clAssList.Add('drAgging');
+		disposAbles.Add(toDisposAble(() => this.domNode.clAssList.remove('drAgging')));
 
-		domEvent(document, 'dragover')(onDragOver, null, disposables);
-		domEvent(this.domNode, 'dragend')(onDragEnd, null, disposables);
+		domEvent(document, 'drAgover')(onDrAgOver, null, disposAbles);
+		domEvent(this.domNode, 'drAgend')(onDrAgEnd, null, disposAbles);
 
-		StaticDND.CurrentDragAndDropData = new DragAndDropData('vscode-ui');
-		disposables.add(toDisposable(() => StaticDND.CurrentDragAndDropData = undefined));
+		StAticDND.CurrentDrAgAndDropDAtA = new DrAgAndDropDAtA('vscode-ui');
+		disposAbles.Add(toDisposAble(() => StAticDND.CurrentDrAgAndDropDAtA = undefined));
 	}
 
-	private onDidSpliceModel(): void {
-		if (!this._enabled || this.pattern.length === 0) {
+	privAte onDidSpliceModel(): void {
+		if (!this._enAbled || this.pAttern.length === 0) {
 			return;
 		}
 
@@ -854,205 +854,205 @@ class TypeFilterController<T, TFilterData> implements IDisposable {
 		this.render();
 	}
 
-	private onDidChangeFilterOnType(): void {
-		this.tree.updateOptions({ filterOnType: this.filterOnTypeDomNode.checked });
+	privAte onDidChAngeFilterOnType(): void {
+		this.tree.updAteOptions({ filterOnType: this.filterOnTypeDomNode.checked });
 		this.tree.refilter();
 		this.tree.domFocus();
 		this.render();
-		this.updateFilterOnTypeTitleAndIcon();
+		this.updAteFilterOnTypeTitleAndIcon();
 	}
 
-	private updateFilterOnTypeTitleAndIcon(): void {
+	privAte updAteFilterOnTypeTitleAndIcon(): void {
 		if (this.filterOnType) {
-			this.filterOnTypeDomNode.classList.remove(...treeFilterOnTypeOffIcon.classNamesArray);
-			this.filterOnTypeDomNode.classList.add(...treeFilterOnTypeOnIcon.classNamesArray);
-			this.filterOnTypeDomNode.title = localize('disable filter on type', "Disable Filter on Type");
+			this.filterOnTypeDomNode.clAssList.remove(...treeFilterOnTypeOffIcon.clAssNAmesArrAy);
+			this.filterOnTypeDomNode.clAssList.Add(...treeFilterOnTypeOnIcon.clAssNAmesArrAy);
+			this.filterOnTypeDomNode.title = locAlize('disAble filter on type', "DisAble Filter on Type");
 		} else {
-			this.filterOnTypeDomNode.classList.remove(...treeFilterOnTypeOnIcon.classNamesArray);
-			this.filterOnTypeDomNode.classList.add(...treeFilterOnTypeOffIcon.classNamesArray);
-			this.filterOnTypeDomNode.title = localize('enable filter on type', "Enable Filter on Type");
+			this.filterOnTypeDomNode.clAssList.remove(...treeFilterOnTypeOnIcon.clAssNAmesArrAy);
+			this.filterOnTypeDomNode.clAssList.Add(...treeFilterOnTypeOffIcon.clAssNAmesArrAy);
+			this.filterOnTypeDomNode.title = locAlize('enAble filter on type', "EnAble Filter on Type");
 		}
 	}
 
-	private render(): void {
-		const noMatches = this.filter.totalCount > 0 && this.filter.matchCount === 0;
+	privAte render(): void {
+		const noMAtches = this.filter.totAlCount > 0 && this.filter.mAtchCount === 0;
 
-		if (this.pattern && this.tree.options.filterOnType && noMatches) {
-			this.messageDomNode.textContent = localize('empty', "No elements found");
+		if (this.pAttern && this.tree.options.filterOnType && noMAtches) {
+			this.messAgeDomNode.textContent = locAlize('empty', "No elements found");
 			this._empty = true;
 		} else {
-			this.messageDomNode.innerText = '';
-			this._empty = false;
+			this.messAgeDomNode.innerText = '';
+			this._empty = fAlse;
 		}
 
-		this.domNode.classList.toggle('no-matches', noMatches);
-		this.domNode.title = localize('found', "Matched {0} out of {1} elements", this.filter.matchCount, this.filter.totalCount);
-		this.labelDomNode.textContent = this.pattern.length > 16 ? '…' + this.pattern.substr(this.pattern.length - 16) : this.pattern;
+		this.domNode.clAssList.toggle('no-mAtches', noMAtches);
+		this.domNode.title = locAlize('found', "MAtched {0} out of {1} elements", this.filter.mAtchCount, this.filter.totAlCount);
+		this.lAbelDomNode.textContent = this.pAttern.length > 16 ? '…' + this.pAttern.substr(this.pAttern.length - 16) : this.pAttern;
 
-		this._onDidChangeEmptyState.fire(this._empty);
+		this._onDidChAngeEmptyStAte.fire(this._empty);
 	}
 
-	shouldAllowFocus(node: ITreeNode<T, TFilterData>): boolean {
-		if (!this.enabled || !this.pattern || this.filterOnType) {
+	shouldAllowFocus(node: ITreeNode<T, TFilterDAtA>): booleAn {
+		if (!this.enAbled || !this.pAttern || this.filterOnType) {
 			return true;
 		}
 
-		if (this.filter.totalCount > 0 && this.filter.matchCount <= 1) {
+		if (this.filter.totAlCount > 0 && this.filter.mAtchCount <= 1) {
 			return true;
 		}
 
-		return !FuzzyScore.isDefault(node.filterData as any as FuzzyScore);
+		return !FuzzyScore.isDefAult(node.filterDAtA As Any As FuzzyScore);
 	}
 
 	dispose() {
-		if (this._enabled) {
+		if (this._enAbled) {
 			this.domNode.remove();
-			this.enabledDisposables.dispose();
-			this._enabled = false;
-			this.triggered = false;
+			this.enAbledDisposAbles.dispose();
+			this._enAbled = fAlse;
+			this.triggered = fAlse;
 		}
 
-		this._onDidChangePattern.dispose();
-		dispose(this.disposables);
+		this._onDidChAngePAttern.dispose();
+		dispose(this.disposAbles);
 	}
 }
 
-function asTreeMouseEvent<T>(event: IListMouseEvent<ITreeNode<T, any>>): ITreeMouseEvent<T> {
-	let target: TreeMouseEventTarget = TreeMouseEventTarget.Unknown;
+function AsTreeMouseEvent<T>(event: IListMouseEvent<ITreeNode<T, Any>>): ITreeMouseEvent<T> {
+	let tArget: TreeMouseEventTArget = TreeMouseEventTArget.Unknown;
 
-	if (hasParentWithClass(event.browserEvent.target as HTMLElement, 'monaco-tl-twistie', 'monaco-tl-row')) {
-		target = TreeMouseEventTarget.Twistie;
-	} else if (hasParentWithClass(event.browserEvent.target as HTMLElement, 'monaco-tl-contents', 'monaco-tl-row')) {
-		target = TreeMouseEventTarget.Element;
+	if (hAsPArentWithClAss(event.browserEvent.tArget As HTMLElement, 'monAco-tl-twistie', 'monAco-tl-row')) {
+		tArget = TreeMouseEventTArget.Twistie;
+	} else if (hAsPArentWithClAss(event.browserEvent.tArget As HTMLElement, 'monAco-tl-contents', 'monAco-tl-row')) {
+		tArget = TreeMouseEventTArget.Element;
 	}
 
 	return {
 		browserEvent: event.browserEvent,
 		element: event.element ? event.element.element : null,
-		target
+		tArget
 	};
 }
 
-function asTreeContextMenuEvent<T>(event: IListContextMenuEvent<ITreeNode<T, any>>): ITreeContextMenuEvent<T> {
+function AsTreeContextMenuEvent<T>(event: IListContextMenuEvent<ITreeNode<T, Any>>): ITreeContextMenuEvent<T> {
 	return {
 		element: event.element ? event.element.element : null,
 		browserEvent: event.browserEvent,
-		anchor: event.anchor
+		Anchor: event.Anchor
 	};
 }
 
-export interface IKeyboardNavigationEventFilter {
-	(e: StandardKeyboardEvent): boolean;
+export interfAce IKeyboArdNAvigAtionEventFilter {
+	(e: StAndArdKeyboArdEvent): booleAn;
 }
 
-export interface IAbstractTreeOptionsUpdate extends ITreeRendererOptions {
-	readonly automaticKeyboardNavigation?: boolean;
-	readonly simpleKeyboardNavigation?: boolean;
-	readonly filterOnType?: boolean;
-	readonly smoothScrolling?: boolean;
-	readonly horizontalScrolling?: boolean;
-	readonly expandOnlyOnDoubleClick?: boolean;
+export interfAce IAbstrActTreeOptionsUpdAte extends ITreeRendererOptions {
+	reAdonly AutomAticKeyboArdNAvigAtion?: booleAn;
+	reAdonly simpleKeyboArdNAvigAtion?: booleAn;
+	reAdonly filterOnType?: booleAn;
+	reAdonly smoothScrolling?: booleAn;
+	reAdonly horizontAlScrolling?: booleAn;
+	reAdonly expAndOnlyOnDoubleClick?: booleAn;
 }
 
-export interface IAbstractTreeOptions<T, TFilterData = void> extends IAbstractTreeOptionsUpdate, IListOptions<T> {
-	readonly collapseByDefault?: boolean; // defaults to false
-	readonly filter?: ITreeFilter<T, TFilterData>;
-	readonly dnd?: ITreeDragAndDrop<T>;
-	readonly keyboardNavigationEventFilter?: IKeyboardNavigationEventFilter;
-	readonly expandOnlyOnTwistieClick?: boolean | ((e: T) => boolean);
-	readonly additionalScrollHeight?: number;
+export interfAce IAbstrActTreeOptions<T, TFilterDAtA = void> extends IAbstrActTreeOptionsUpdAte, IListOptions<T> {
+	reAdonly collApseByDefAult?: booleAn; // defAults to fAlse
+	reAdonly filter?: ITreeFilter<T, TFilterDAtA>;
+	reAdonly dnd?: ITreeDrAgAndDrop<T>;
+	reAdonly keyboArdNAvigAtionEventFilter?: IKeyboArdNAvigAtionEventFilter;
+	reAdonly expAndOnlyOnTwistieClick?: booleAn | ((e: T) => booleAn);
+	reAdonly AdditionAlScrollHeight?: number;
 }
 
-function dfs<T, TFilterData>(node: ITreeNode<T, TFilterData>, fn: (node: ITreeNode<T, TFilterData>) => void): void {
+function dfs<T, TFilterDAtA>(node: ITreeNode<T, TFilterDAtA>, fn: (node: ITreeNode<T, TFilterDAtA>) => void): void {
 	fn(node);
-	node.children.forEach(child => dfs(child, fn));
+	node.children.forEAch(child => dfs(child, fn));
 }
 
 /**
- * The trait concept needs to exist at the tree level, because collapsed
+ * The trAit concept needs to exist At the tree level, becAuse collApsed
  * tree nodes will not be known by the list.
  */
-class Trait<T> {
+clAss TrAit<T> {
 
-	private nodes: ITreeNode<T, any>[] = [];
-	private elements: T[] | undefined;
+	privAte nodes: ITreeNode<T, Any>[] = [];
+	privAte elements: T[] | undefined;
 
-	private readonly _onDidChange = new Emitter<ITreeEvent<T>>();
-	readonly onDidChange = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<ITreeEvent<T>>();
+	reAdonly onDidChAnge = this._onDidChAnge.event;
 
-	private _nodeSet: Set<ITreeNode<T, any>> | undefined;
-	private get nodeSet(): Set<ITreeNode<T, any>> {
+	privAte _nodeSet: Set<ITreeNode<T, Any>> | undefined;
+	privAte get nodeSet(): Set<ITreeNode<T, Any>> {
 		if (!this._nodeSet) {
-			this._nodeSet = this.createNodeSet();
+			this._nodeSet = this.creAteNodeSet();
 		}
 
 		return this._nodeSet;
 	}
 
-	constructor(private identityProvider?: IIdentityProvider<T>) { }
+	constructor(privAte identityProvider?: IIdentityProvider<T>) { }
 
-	set(nodes: ITreeNode<T, any>[], browserEvent?: UIEvent): void {
-		if (equals(this.nodes, nodes)) {
+	set(nodes: ITreeNode<T, Any>[], browserEvent?: UIEvent): void {
+		if (equAls(this.nodes, nodes)) {
 			return;
 		}
 
-		this._set(nodes, false, browserEvent);
+		this._set(nodes, fAlse, browserEvent);
 	}
 
-	private _set(nodes: ITreeNode<T, any>[], silent: boolean, browserEvent?: UIEvent): void {
+	privAte _set(nodes: ITreeNode<T, Any>[], silent: booleAn, browserEvent?: UIEvent): void {
 		this.nodes = [...nodes];
 		this.elements = undefined;
 		this._nodeSet = undefined;
 
 		if (!silent) {
-			const that = this;
-			this._onDidChange.fire({ get elements() { return that.get(); }, browserEvent });
+			const thAt = this;
+			this._onDidChAnge.fire({ get elements() { return thAt.get(); }, browserEvent });
 		}
 	}
 
 	get(): T[] {
 		if (!this.elements) {
-			this.elements = this.nodes.map(node => node.element);
+			this.elements = this.nodes.mAp(node => node.element);
 		}
 
 		return [...this.elements];
 	}
 
-	getNodes(): readonly ITreeNode<T, any>[] {
+	getNodes(): reAdonly ITreeNode<T, Any>[] {
 		return this.nodes;
 	}
 
-	has(node: ITreeNode<T, any>): boolean {
-		return this.nodeSet.has(node);
+	hAs(node: ITreeNode<T, Any>): booleAn {
+		return this.nodeSet.hAs(node);
 	}
 
-	onDidModelSplice({ insertedNodes, deletedNodes }: ITreeModelSpliceEvent<T, any>): void {
+	onDidModelSplice({ insertedNodes, deletedNodes }: ITreeModelSpliceEvent<T, Any>): void {
 		if (!this.identityProvider) {
-			const set = this.createNodeSet();
-			const visit = (node: ITreeNode<T, any>) => set.delete(node);
-			deletedNodes.forEach(node => dfs(node, visit));
-			this.set([...set.values()]);
+			const set = this.creAteNodeSet();
+			const visit = (node: ITreeNode<T, Any>) => set.delete(node);
+			deletedNodes.forEAch(node => dfs(node, visit));
+			this.set([...set.vAlues()]);
 			return;
 		}
 
 		const deletedNodesIdSet = new Set<string>();
-		const deletedNodesVisitor = (node: ITreeNode<T, any>) => deletedNodesIdSet.add(this.identityProvider!.getId(node.element).toString());
-		deletedNodes.forEach(node => dfs(node, deletedNodesVisitor));
+		const deletedNodesVisitor = (node: ITreeNode<T, Any>) => deletedNodesIdSet.Add(this.identityProvider!.getId(node.element).toString());
+		deletedNodes.forEAch(node => dfs(node, deletedNodesVisitor));
 
-		const insertedNodesMap = new Map<string, ITreeNode<T, any>>();
-		const insertedNodesVisitor = (node: ITreeNode<T, any>) => insertedNodesMap.set(this.identityProvider!.getId(node.element).toString(), node);
-		insertedNodes.forEach(node => dfs(node, insertedNodesVisitor));
+		const insertedNodesMAp = new MAp<string, ITreeNode<T, Any>>();
+		const insertedNodesVisitor = (node: ITreeNode<T, Any>) => insertedNodesMAp.set(this.identityProvider!.getId(node.element).toString(), node);
+		insertedNodes.forEAch(node => dfs(node, insertedNodesVisitor));
 
-		const nodes: ITreeNode<T, any>[] = [];
+		const nodes: ITreeNode<T, Any>[] = [];
 
 		for (const node of this.nodes) {
 			const id = this.identityProvider.getId(node.element).toString();
-			const wasDeleted = deletedNodesIdSet.has(id);
+			const wAsDeleted = deletedNodesIdSet.hAs(id);
 
-			if (!wasDeleted) {
+			if (!wAsDeleted) {
 				nodes.push(node);
 			} else {
-				const insertedNode = insertedNodesMap.get(id);
+				const insertedNode = insertedNodesMAp.get(id);
 
 				if (insertedNode) {
 					nodes.push(insertedNode);
@@ -1063,25 +1063,25 @@ class Trait<T> {
 		this._set(nodes, true);
 	}
 
-	private createNodeSet(): Set<ITreeNode<T, any>> {
-		const set = new Set<ITreeNode<T, any>>();
+	privAte creAteNodeSet(): Set<ITreeNode<T, Any>> {
+		const set = new Set<ITreeNode<T, Any>>();
 
 		for (const node of this.nodes) {
-			set.add(node);
+			set.Add(node);
 		}
 
 		return set;
 	}
 }
 
-class TreeNodeListMouseController<T, TFilterData, TRef> extends MouseController<ITreeNode<T, TFilterData>> {
+clAss TreeNodeListMouseController<T, TFilterDAtA, TRef> extends MouseController<ITreeNode<T, TFilterDAtA>> {
 
-	constructor(list: TreeNodeList<T, TFilterData, TRef>, private tree: AbstractTree<T, TFilterData, TRef>) {
+	constructor(list: TreeNodeList<T, TFilterDAtA, TRef>, privAte tree: AbstrActTree<T, TFilterDAtA, TRef>) {
 		super(list);
 	}
 
-	protected onViewPointer(e: IListMouseEvent<ITreeNode<T, TFilterData>>): void {
-		if (isInputElement(e.browserEvent.target as HTMLElement) || isMonacoEditor(e.browserEvent.target as HTMLElement)) {
+	protected onViewPointer(e: IListMouseEvent<ITreeNode<T, TFilterDAtA>>): void {
+		if (isInputElement(e.browserEvent.tArget As HTMLElement) || isMonAcoEditor(e.browserEvent.tArget As HTMLElement)) {
 			return;
 		}
 
@@ -1091,37 +1091,37 @@ class TreeNodeListMouseController<T, TFilterData, TRef> extends MouseController<
 			return super.onViewPointer(e);
 		}
 
-		if (this.isSelectionRangeChangeEvent(e) || this.isSelectionSingleChangeEvent(e)) {
+		if (this.isSelectionRAngeChAngeEvent(e) || this.isSelectionSingleChAngeEvent(e)) {
 			return super.onViewPointer(e);
 		}
 
-		const target = e.browserEvent.target as HTMLElement;
-		const onTwistie = target.classList.contains('monaco-tl-twistie')
-			|| (target.classList.contains('monaco-icon-label') && target.classList.contains('folder-icon') && e.browserEvent.offsetX < 16);
+		const tArget = e.browserEvent.tArget As HTMLElement;
+		const onTwistie = tArget.clAssList.contAins('monAco-tl-twistie')
+			|| (tArget.clAssList.contAins('monAco-icon-lAbel') && tArget.clAssList.contAins('folder-icon') && e.browserEvent.offsetX < 16);
 
-		let expandOnlyOnTwistieClick = false;
+		let expAndOnlyOnTwistieClick = fAlse;
 
-		if (typeof this.tree.expandOnlyOnTwistieClick === 'function') {
-			expandOnlyOnTwistieClick = this.tree.expandOnlyOnTwistieClick(node.element);
+		if (typeof this.tree.expAndOnlyOnTwistieClick === 'function') {
+			expAndOnlyOnTwistieClick = this.tree.expAndOnlyOnTwistieClick(node.element);
 		} else {
-			expandOnlyOnTwistieClick = !!this.tree.expandOnlyOnTwistieClick;
+			expAndOnlyOnTwistieClick = !!this.tree.expAndOnlyOnTwistieClick;
 		}
 
-		if (expandOnlyOnTwistieClick && !onTwistie) {
+		if (expAndOnlyOnTwistieClick && !onTwistie) {
 			return super.onViewPointer(e);
 		}
 
-		if (this.tree.expandOnlyOnDoubleClick && e.browserEvent.detail !== 2 && !onTwistie) {
+		if (this.tree.expAndOnlyOnDoubleClick && e.browserEvent.detAil !== 2 && !onTwistie) {
 			return super.onViewPointer(e);
 		}
 
-		if (node.collapsible) {
-			const model = ((this.tree as any).model as ITreeModel<T, TFilterData, TRef>); // internal
-			const location = model.getNodeLocation(node);
-			const recursive = e.browserEvent.altKey;
-			model.setCollapsed(location, undefined, recursive);
+		if (node.collApsible) {
+			const model = ((this.tree As Any).model As ITreeModel<T, TFilterDAtA, TRef>); // internAl
+			const locAtion = model.getNodeLocAtion(node);
+			const recursive = e.browserEvent.AltKey;
+			model.setCollApsed(locAtion, undefined, recursive);
 
-			if (expandOnlyOnTwistieClick && onTwistie) {
+			if (expAndOnlyOnTwistieClick && onTwistie) {
 				return;
 			}
 		}
@@ -1129,8 +1129,8 @@ class TreeNodeListMouseController<T, TFilterData, TRef> extends MouseController<
 		super.onViewPointer(e);
 	}
 
-	protected onDoubleClick(e: IListMouseEvent<ITreeNode<T, TFilterData>>): void {
-		const onTwistie = (e.browserEvent.target as HTMLElement).classList.contains('monaco-tl-twistie');
+	protected onDoubleClick(e: IListMouseEvent<ITreeNode<T, TFilterDAtA>>): void {
+		const onTwistie = (e.browserEvent.tArget As HTMLElement).clAssList.contAins('monAco-tl-twistie');
 
 		if (onTwistie) {
 			return;
@@ -1140,244 +1140,244 @@ class TreeNodeListMouseController<T, TFilterData, TRef> extends MouseController<
 	}
 }
 
-interface ITreeNodeListOptions<T, TFilterData, TRef> extends IListOptions<ITreeNode<T, TFilterData>> {
-	readonly tree: AbstractTree<T, TFilterData, TRef>;
+interfAce ITreeNodeListOptions<T, TFilterDAtA, TRef> extends IListOptions<ITreeNode<T, TFilterDAtA>> {
+	reAdonly tree: AbstrActTree<T, TFilterDAtA, TRef>;
 }
 
 /**
- * We use this List subclass to restore selection and focus as nodes
- * get rendered in the list, possibly due to a node expand() call.
+ * We use this List subclAss to restore selection And focus As nodes
+ * get rendered in the list, possibly due to A node expAnd() cAll.
  */
-class TreeNodeList<T, TFilterData, TRef> extends List<ITreeNode<T, TFilterData>> {
+clAss TreeNodeList<T, TFilterDAtA, TRef> extends List<ITreeNode<T, TFilterDAtA>> {
 
 	constructor(
 		user: string,
-		container: HTMLElement,
-		virtualDelegate: IListVirtualDelegate<ITreeNode<T, TFilterData>>,
-		renderers: IListRenderer<any /* TODO@joao */, any>[],
-		private focusTrait: Trait<T>,
-		private selectionTrait: Trait<T>,
-		options: ITreeNodeListOptions<T, TFilterData, TRef>
+		contAiner: HTMLElement,
+		virtuAlDelegAte: IListVirtuAlDelegAte<ITreeNode<T, TFilterDAtA>>,
+		renderers: IListRenderer<Any /* TODO@joAo */, Any>[],
+		privAte focusTrAit: TrAit<T>,
+		privAte selectionTrAit: TrAit<T>,
+		options: ITreeNodeListOptions<T, TFilterDAtA, TRef>
 	) {
-		super(user, container, virtualDelegate, renderers, options);
+		super(user, contAiner, virtuAlDelegAte, renderers, options);
 	}
 
-	protected createMouseController(options: ITreeNodeListOptions<T, TFilterData, TRef>): MouseController<ITreeNode<T, TFilterData>> {
+	protected creAteMouseController(options: ITreeNodeListOptions<T, TFilterDAtA, TRef>): MouseController<ITreeNode<T, TFilterDAtA>> {
 		return new TreeNodeListMouseController(this, options.tree);
 	}
 
-	splice(start: number, deleteCount: number, elements: ITreeNode<T, TFilterData>[] = []): void {
-		super.splice(start, deleteCount, elements);
+	splice(stArt: number, deleteCount: number, elements: ITreeNode<T, TFilterDAtA>[] = []): void {
+		super.splice(stArt, deleteCount, elements);
 
 		if (elements.length === 0) {
 			return;
 		}
 
-		const additionalFocus: number[] = [];
-		const additionalSelection: number[] = [];
+		const AdditionAlFocus: number[] = [];
+		const AdditionAlSelection: number[] = [];
 
-		elements.forEach((node, index) => {
-			if (this.focusTrait.has(node)) {
-				additionalFocus.push(start + index);
+		elements.forEAch((node, index) => {
+			if (this.focusTrAit.hAs(node)) {
+				AdditionAlFocus.push(stArt + index);
 			}
 
-			if (this.selectionTrait.has(node)) {
-				additionalSelection.push(start + index);
+			if (this.selectionTrAit.hAs(node)) {
+				AdditionAlSelection.push(stArt + index);
 			}
 		});
 
-		if (additionalFocus.length > 0) {
-			super.setFocus(distinctES6([...super.getFocus(), ...additionalFocus]));
+		if (AdditionAlFocus.length > 0) {
+			super.setFocus(distinctES6([...super.getFocus(), ...AdditionAlFocus]));
 		}
 
-		if (additionalSelection.length > 0) {
-			super.setSelection(distinctES6([...super.getSelection(), ...additionalSelection]));
+		if (AdditionAlSelection.length > 0) {
+			super.setSelection(distinctES6([...super.getSelection(), ...AdditionAlSelection]));
 		}
 	}
 
-	setFocus(indexes: number[], browserEvent?: UIEvent, fromAPI = false): void {
+	setFocus(indexes: number[], browserEvent?: UIEvent, fromAPI = fAlse): void {
 		super.setFocus(indexes, browserEvent);
 
 		if (!fromAPI) {
-			this.focusTrait.set(indexes.map(i => this.element(i)), browserEvent);
+			this.focusTrAit.set(indexes.mAp(i => this.element(i)), browserEvent);
 		}
 	}
 
-	setSelection(indexes: number[], browserEvent?: UIEvent, fromAPI = false): void {
+	setSelection(indexes: number[], browserEvent?: UIEvent, fromAPI = fAlse): void {
 		super.setSelection(indexes, browserEvent);
 
 		if (!fromAPI) {
-			this.selectionTrait.set(indexes.map(i => this.element(i)), browserEvent);
+			this.selectionTrAit.set(indexes.mAp(i => this.element(i)), browserEvent);
 		}
 	}
 }
 
-export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable {
+export AbstrAct clAss AbstrActTree<T, TFilterDAtA, TRef> implements IDisposAble {
 
-	protected view: TreeNodeList<T, TFilterData, TRef>;
-	private renderers: TreeRenderer<T, TFilterData, TRef, any>[];
-	protected model: ITreeModel<T, TFilterData, TRef>;
-	private focus: Trait<T>;
-	private selection: Trait<T>;
-	private eventBufferer = new EventBufferer();
-	private typeFilterController?: TypeFilterController<T, TFilterData>;
-	private focusNavigationFilter: ((node: ITreeNode<T, TFilterData>) => boolean) | undefined;
-	private styleElement: HTMLStyleElement;
-	protected readonly disposables = new DisposableStore();
+	protected view: TreeNodeList<T, TFilterDAtA, TRef>;
+	privAte renderers: TreeRenderer<T, TFilterDAtA, TRef, Any>[];
+	protected model: ITreeModel<T, TFilterDAtA, TRef>;
+	privAte focus: TrAit<T>;
+	privAte selection: TrAit<T>;
+	privAte eventBufferer = new EventBufferer();
+	privAte typeFilterController?: TypeFilterController<T, TFilterDAtA>;
+	privAte focusNAvigAtionFilter: ((node: ITreeNode<T, TFilterDAtA>) => booleAn) | undefined;
+	privAte styleElement: HTMLStyleElement;
+	protected reAdonly disposAbles = new DisposAbleStore();
 
 	get onDidScroll(): Event<ScrollEvent> { return this.view.onDidScroll; }
 
-	get onDidChangeFocus(): Event<ITreeEvent<T>> { return this.eventBufferer.wrapEvent(this.focus.onDidChange); }
-	get onDidChangeSelection(): Event<ITreeEvent<T>> { return this.eventBufferer.wrapEvent(this.selection.onDidChange); }
+	get onDidChAngeFocus(): Event<ITreeEvent<T>> { return this.eventBufferer.wrApEvent(this.focus.onDidChAnge); }
+	get onDidChAngeSelection(): Event<ITreeEvent<T>> { return this.eventBufferer.wrApEvent(this.selection.onDidChAnge); }
 
-	get onMouseClick(): Event<ITreeMouseEvent<T>> { return Event.map(this.view.onMouseClick, asTreeMouseEvent); }
-	get onMouseDblClick(): Event<ITreeMouseEvent<T>> { return Event.map(this.view.onMouseDblClick, asTreeMouseEvent); }
-	get onContextMenu(): Event<ITreeContextMenuEvent<T>> { return Event.map(this.view.onContextMenu, asTreeContextMenuEvent); }
-	get onTap(): Event<ITreeMouseEvent<T>> { return Event.map(this.view.onTap, asTreeMouseEvent); }
-	get onPointer(): Event<ITreeMouseEvent<T>> { return Event.map(this.view.onPointer, asTreeMouseEvent); }
+	get onMouseClick(): Event<ITreeMouseEvent<T>> { return Event.mAp(this.view.onMouseClick, AsTreeMouseEvent); }
+	get onMouseDblClick(): Event<ITreeMouseEvent<T>> { return Event.mAp(this.view.onMouseDblClick, AsTreeMouseEvent); }
+	get onContextMenu(): Event<ITreeContextMenuEvent<T>> { return Event.mAp(this.view.onContextMenu, AsTreeContextMenuEvent); }
+	get onTAp(): Event<ITreeMouseEvent<T>> { return Event.mAp(this.view.onTAp, AsTreeMouseEvent); }
+	get onPointer(): Event<ITreeMouseEvent<T>> { return Event.mAp(this.view.onPointer, AsTreeMouseEvent); }
 
-	get onKeyDown(): Event<KeyboardEvent> { return this.view.onKeyDown; }
-	get onKeyUp(): Event<KeyboardEvent> { return this.view.onKeyUp; }
-	get onKeyPress(): Event<KeyboardEvent> { return this.view.onKeyPress; }
+	get onKeyDown(): Event<KeyboArdEvent> { return this.view.onKeyDown; }
+	get onKeyUp(): Event<KeyboArdEvent> { return this.view.onKeyUp; }
+	get onKeyPress(): Event<KeyboArdEvent> { return this.view.onKeyPress; }
 
 	get onDidFocus(): Event<void> { return this.view.onDidFocus; }
 	get onDidBlur(): Event<void> { return this.view.onDidBlur; }
 
-	get onDidChangeCollapseState(): Event<ICollapseStateChangeEvent<T, TFilterData>> { return this.model.onDidChangeCollapseState; }
-	get onDidChangeRenderNodeCount(): Event<ITreeNode<T, TFilterData>> { return this.model.onDidChangeRenderNodeCount; }
+	get onDidChAngeCollApseStAte(): Event<ICollApseStAteChAngeEvent<T, TFilterDAtA>> { return this.model.onDidChAngeCollApseStAte; }
+	get onDidChAngeRenderNodeCount(): Event<ITreeNode<T, TFilterDAtA>> { return this.model.onDidChAngeRenderNodeCount; }
 
-	private readonly _onWillRefilter = new Emitter<void>();
-	readonly onWillRefilter: Event<void> = this._onWillRefilter.event;
+	privAte reAdonly _onWillRefilter = new Emitter<void>();
+	reAdonly onWillRefilter: Event<void> = this._onWillRefilter.event;
 
-	get filterOnType(): boolean { return !!this._options.filterOnType; }
-	get onDidChangeTypeFilterPattern(): Event<string> { return this.typeFilterController ? this.typeFilterController.onDidChangePattern : Event.None; }
+	get filterOnType(): booleAn { return !!this._options.filterOnType; }
+	get onDidChAngeTypeFilterPAttern(): Event<string> { return this.typeFilterController ? this.typeFilterController.onDidChAngePAttern : Event.None; }
 
-	get expandOnlyOnDoubleClick(): boolean { return this._options.expandOnlyOnDoubleClick ?? false; }
-	get expandOnlyOnTwistieClick(): boolean | ((e: T) => boolean) { return typeof this._options.expandOnlyOnTwistieClick === 'undefined' ? false : this._options.expandOnlyOnTwistieClick; }
+	get expAndOnlyOnDoubleClick(): booleAn { return this._options.expAndOnlyOnDoubleClick ?? fAlse; }
+	get expAndOnlyOnTwistieClick(): booleAn | ((e: T) => booleAn) { return typeof this._options.expAndOnlyOnTwistieClick === 'undefined' ? fAlse : this._options.expAndOnlyOnTwistieClick; }
 
-	private readonly _onDidUpdateOptions = new Emitter<IAbstractTreeOptions<T, TFilterData>>();
-	readonly onDidUpdateOptions: Event<IAbstractTreeOptions<T, TFilterData>> = this._onDidUpdateOptions.event;
+	privAte reAdonly _onDidUpdAteOptions = new Emitter<IAbstrActTreeOptions<T, TFilterDAtA>>();
+	reAdonly onDidUpdAteOptions: Event<IAbstrActTreeOptions<T, TFilterDAtA>> = this._onDidUpdAteOptions.event;
 
 	get onDidDispose(): Event<void> { return this.view.onDidDispose; }
 
 	constructor(
 		user: string,
-		container: HTMLElement,
-		delegate: IListVirtualDelegate<T>,
-		renderers: ITreeRenderer<T, TFilterData, any>[],
-		private _options: IAbstractTreeOptions<T, TFilterData> = {}
+		contAiner: HTMLElement,
+		delegAte: IListVirtuAlDelegAte<T>,
+		renderers: ITreeRenderer<T, TFilterDAtA, Any>[],
+		privAte _options: IAbstrActTreeOptions<T, TFilterDAtA> = {}
 	) {
-		const treeDelegate = new ComposedTreeDelegate<T, ITreeNode<T, TFilterData>>(delegate);
+		const treeDelegAte = new ComposedTreeDelegAte<T, ITreeNode<T, TFilterDAtA>>(delegAte);
 
-		const onDidChangeCollapseStateRelay = new Relay<ICollapseStateChangeEvent<T, TFilterData>>();
-		const onDidChangeActiveNodes = new Relay<ITreeNode<T, TFilterData>[]>();
-		const activeNodes = new EventCollection(onDidChangeActiveNodes.event);
-		this.renderers = renderers.map(r => new TreeRenderer<T, TFilterData, TRef, any>(r, () => this.model, onDidChangeCollapseStateRelay.event, activeNodes, _options));
+		const onDidChAngeCollApseStAteRelAy = new RelAy<ICollApseStAteChAngeEvent<T, TFilterDAtA>>();
+		const onDidChAngeActiveNodes = new RelAy<ITreeNode<T, TFilterDAtA>[]>();
+		const ActiveNodes = new EventCollection(onDidChAngeActiveNodes.event);
+		this.renderers = renderers.mAp(r => new TreeRenderer<T, TFilterDAtA, TRef, Any>(r, () => this.model, onDidChAngeCollApseStAteRelAy.event, ActiveNodes, _options));
 		for (let r of this.renderers) {
-			this.disposables.add(r);
+			this.disposAbles.Add(r);
 		}
 
 		let filter: TypeFilter<T> | undefined;
 
-		if (_options.keyboardNavigationLabelProvider) {
-			filter = new TypeFilter(this, _options.keyboardNavigationLabelProvider, _options.filter as any as ITreeFilter<T, FuzzyScore>);
-			_options = { ..._options, filter: filter as ITreeFilter<T, TFilterData> }; // TODO need typescript help here
-			this.disposables.add(filter);
+		if (_options.keyboArdNAvigAtionLAbelProvider) {
+			filter = new TypeFilter(this, _options.keyboArdNAvigAtionLAbelProvider, _options.filter As Any As ITreeFilter<T, FuzzyScore>);
+			_options = { ..._options, filter: filter As ITreeFilter<T, TFilterDAtA> }; // TODO need typescript help here
+			this.disposAbles.Add(filter);
 		}
 
-		this.focus = new Trait(_options.identityProvider);
-		this.selection = new Trait(_options.identityProvider);
-		this.view = new TreeNodeList(user, container, treeDelegate, this.renderers, this.focus, this.selection, { ...asListOptions(() => this.model, _options), tree: this });
+		this.focus = new TrAit(_options.identityProvider);
+		this.selection = new TrAit(_options.identityProvider);
+		this.view = new TreeNodeList(user, contAiner, treeDelegAte, this.renderers, this.focus, this.selection, { ...AsListOptions(() => this.model, _options), tree: this });
 
-		this.model = this.createModel(user, this.view, _options);
-		onDidChangeCollapseStateRelay.input = this.model.onDidChangeCollapseState;
+		this.model = this.creAteModel(user, this.view, _options);
+		onDidChAngeCollApseStAteRelAy.input = this.model.onDidChAngeCollApseStAte;
 
-		const onDidModelSplice = Event.forEach(this.model.onDidSplice, e => {
+		const onDidModelSplice = Event.forEAch(this.model.onDidSplice, e => {
 			this.eventBufferer.bufferEvents(() => {
 				this.focus.onDidModelSplice(e);
 				this.selection.onDidModelSplice(e);
 			});
 		});
 
-		// Make sure the `forEach` always runs
-		onDidModelSplice(() => null, null, this.disposables);
+		// MAke sure the `forEAch` AlwAys runs
+		onDidModelSplice(() => null, null, this.disposAbles);
 
-		// Active nodes can change when the model changes or when focus or selection change.
-		// We debounce it with 0 delay since these events may fire in the same stack and we only
-		// want to run this once. It also doesn't matter if it runs on the next tick since it's only
-		// a nice to have UI feature.
-		onDidChangeActiveNodes.input = Event.chain(Event.any<any>(onDidModelSplice, this.focus.onDidChange, this.selection.onDidChange))
+		// Active nodes cAn chAnge when the model chAnges or when focus or selection chAnge.
+		// We debounce it with 0 delAy since these events mAy fire in the sAme stAck And we only
+		// wAnt to run this once. It Also doesn't mAtter if it runs on the next tick since it's only
+		// A nice to hAve UI feAture.
+		onDidChAngeActiveNodes.input = Event.chAin(Event.Any<Any>(onDidModelSplice, this.focus.onDidChAnge, this.selection.onDidChAnge))
 			.debounce(() => null, 0)
-			.map(() => {
-				const set = new Set<ITreeNode<T, TFilterData>>();
+			.mAp(() => {
+				const set = new Set<ITreeNode<T, TFilterDAtA>>();
 
 				for (const node of this.focus.getNodes()) {
-					set.add(node);
+					set.Add(node);
 				}
 
 				for (const node of this.selection.getNodes()) {
-					set.add(node);
+					set.Add(node);
 				}
 
-				return [...set.values()];
+				return [...set.vAlues()];
 			}).event;
 
-		if (_options.keyboardSupport !== false) {
-			const onKeyDown = Event.chain(this.view.onKeyDown)
-				.filter(e => !isInputElement(e.target as HTMLElement))
-				.map(e => new StandardKeyboardEvent(e));
+		if (_options.keyboArdSupport !== fAlse) {
+			const onKeyDown = Event.chAin(this.view.onKeyDown)
+				.filter(e => !isInputElement(e.tArget As HTMLElement))
+				.mAp(e => new StAndArdKeyboArdEvent(e));
 
-			onKeyDown.filter(e => e.keyCode === KeyCode.LeftArrow).on(this.onLeftArrow, this, this.disposables);
-			onKeyDown.filter(e => e.keyCode === KeyCode.RightArrow).on(this.onRightArrow, this, this.disposables);
-			onKeyDown.filter(e => e.keyCode === KeyCode.Space).on(this.onSpace, this, this.disposables);
+			onKeyDown.filter(e => e.keyCode === KeyCode.LeftArrow).on(this.onLeftArrow, this, this.disposAbles);
+			onKeyDown.filter(e => e.keyCode === KeyCode.RightArrow).on(this.onRightArrow, this, this.disposAbles);
+			onKeyDown.filter(e => e.keyCode === KeyCode.SpAce).on(this.onSpAce, this, this.disposAbles);
 		}
 
-		if (_options.keyboardNavigationLabelProvider) {
-			const delegate = _options.keyboardNavigationDelegate || DefaultKeyboardNavigationDelegate;
-			this.typeFilterController = new TypeFilterController(this, this.model, this.view, filter!, delegate);
-			this.focusNavigationFilter = node => this.typeFilterController!.shouldAllowFocus(node);
-			this.disposables.add(this.typeFilterController!);
+		if (_options.keyboArdNAvigAtionLAbelProvider) {
+			const delegAte = _options.keyboArdNAvigAtionDelegAte || DefAultKeyboArdNAvigAtionDelegAte;
+			this.typeFilterController = new TypeFilterController(this, this.model, this.view, filter!, delegAte);
+			this.focusNAvigAtionFilter = node => this.typeFilterController!.shouldAllowFocus(node);
+			this.disposAbles.Add(this.typeFilterController!);
 		}
 
-		this.styleElement = createStyleSheet(this.view.getHTMLElement());
-		this.getHTMLElement().classList.toggle('always', this._options.renderIndentGuides === RenderIndentGuides.Always);
+		this.styleElement = creAteStyleSheet(this.view.getHTMLElement());
+		this.getHTMLElement().clAssList.toggle('AlwAys', this._options.renderIndentGuides === RenderIndentGuides.AlwAys);
 	}
 
-	updateOptions(optionsUpdate: IAbstractTreeOptionsUpdate = {}): void {
-		this._options = { ...this._options, ...optionsUpdate };
+	updAteOptions(optionsUpdAte: IAbstrActTreeOptionsUpdAte = {}): void {
+		this._options = { ...this._options, ...optionsUpdAte };
 
 		for (const renderer of this.renderers) {
-			renderer.updateOptions(optionsUpdate);
+			renderer.updAteOptions(optionsUpdAte);
 		}
 
-		this.view.updateOptions({
-			enableKeyboardNavigation: this._options.simpleKeyboardNavigation,
-			automaticKeyboardNavigation: this._options.automaticKeyboardNavigation,
+		this.view.updAteOptions({
+			enAbleKeyboArdNAvigAtion: this._options.simpleKeyboArdNAvigAtion,
+			AutomAticKeyboArdNAvigAtion: this._options.AutomAticKeyboArdNAvigAtion,
 			smoothScrolling: this._options.smoothScrolling,
-			horizontalScrolling: this._options.horizontalScrolling
+			horizontAlScrolling: this._options.horizontAlScrolling
 		});
 
 		if (this.typeFilterController) {
-			this.typeFilterController.updateOptions(this._options);
+			this.typeFilterController.updAteOptions(this._options);
 		}
 
-		this._onDidUpdateOptions.fire(this._options);
+		this._onDidUpdAteOptions.fire(this._options);
 
-		this.getHTMLElement().classList.toggle('always', this._options.renderIndentGuides === RenderIndentGuides.Always);
+		this.getHTMLElement().clAssList.toggle('AlwAys', this._options.renderIndentGuides === RenderIndentGuides.AlwAys);
 	}
 
-	get options(): IAbstractTreeOptions<T, TFilterData> {
+	get options(): IAbstrActTreeOptions<T, TFilterDAtA> {
 		return this._options;
 	}
 
-	updateWidth(element: TRef): void {
+	updAteWidth(element: TRef): void {
 		const index = this.model.getListIndex(element);
 
 		if (index === -1) {
 			return;
 		}
 
-		this.view.updateWidth(index);
+		this.view.updAteWidth(index);
 	}
 
 	// Widget
@@ -1394,11 +1394,11 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		return this.view.contentHeight;
 	}
 
-	get onDidChangeContentHeight(): Event<number> {
-		let result = this.view.onDidChangeContentHeight;
+	get onDidChAngeContentHeight(): Event<number> {
+		let result = this.view.onDidChAngeContentHeight;
 
 		if (this.typeFilterController) {
-			result = Event.any(result, Event.map(this.typeFilterController.onDidChangeEmptyState, () => this.contentHeight));
+			result = Event.Any(result, Event.mAp(this.typeFilterController.onDidChAngeEmptyStAte, () => this.contentHeight));
 		}
 
 		return result;
@@ -1439,30 +1439,30 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		return node.element;
 	}
 
-	get lastVisibleElement(): T {
-		const index = this.view.lastVisibleIndex;
+	get lAstVisibleElement(): T {
+		const index = this.view.lAstVisibleIndex;
 		const node = this.view.element(index);
 		return node.element;
 	}
 
-	get ariaLabel(): string {
-		return this.view.ariaLabel;
+	get AriALAbel(): string {
+		return this.view.AriALAbel;
 	}
 
-	set ariaLabel(value: string) {
-		this.view.ariaLabel = value;
+	set AriALAbel(vAlue: string) {
+		this.view.AriALAbel = vAlue;
 	}
 
 	domFocus(): void {
 		this.view.domFocus();
 	}
 
-	isDOMFocused(): boolean {
-		return this.getHTMLElement() === document.activeElement;
+	isDOMFocused(): booleAn {
+		return this.getHTMLElement() === document.ActiveElement;
 	}
 
-	layout(height?: number, width?: number): void {
-		this.view.layout(height, width);
+	lAyout(height?: number, width?: number): void {
+		this.view.lAyout(height, width);
 	}
 
 	style(styles: IListStyles): void {
@@ -1470,66 +1470,66 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		const content: string[] = [];
 
 		if (styles.treeIndentGuidesStroke) {
-			content.push(`.monaco-list${suffix}:hover .monaco-tl-indent > .indent-guide, .monaco-list${suffix}.always .monaco-tl-indent > .indent-guide  { border-color: ${styles.treeIndentGuidesStroke.transparent(0.4)}; }`);
-			content.push(`.monaco-list${suffix} .monaco-tl-indent > .indent-guide.active { border-color: ${styles.treeIndentGuidesStroke}; }`);
+			content.push(`.monAco-list${suffix}:hover .monAco-tl-indent > .indent-guide, .monAco-list${suffix}.AlwAys .monAco-tl-indent > .indent-guide  { border-color: ${styles.treeIndentGuidesStroke.trAnspArent(0.4)}; }`);
+			content.push(`.monAco-list${suffix} .monAco-tl-indent > .indent-guide.Active { border-color: ${styles.treeIndentGuidesStroke}; }`);
 		}
 
 		this.styleElement.textContent = content.join('\n');
 		this.view.style(styles);
 	}
 
-	// Tree navigation
+	// Tree nAvigAtion
 
-	getParentElement(location: TRef): T {
-		const parentRef = this.model.getParentNodeLocation(location);
-		const parentNode = this.model.getNode(parentRef);
-		return parentNode.element;
+	getPArentElement(locAtion: TRef): T {
+		const pArentRef = this.model.getPArentNodeLocAtion(locAtion);
+		const pArentNode = this.model.getNode(pArentRef);
+		return pArentNode.element;
 	}
 
-	getFirstElementChild(location: TRef): T | undefined {
-		return this.model.getFirstElementChild(location);
+	getFirstElementChild(locAtion: TRef): T | undefined {
+		return this.model.getFirstElementChild(locAtion);
 	}
 
 	// Tree
 
-	getNode(location?: TRef): ITreeNode<T, TFilterData> {
-		return this.model.getNode(location);
+	getNode(locAtion?: TRef): ITreeNode<T, TFilterDAtA> {
+		return this.model.getNode(locAtion);
 	}
 
-	collapse(location: TRef, recursive: boolean = false): boolean {
-		return this.model.setCollapsed(location, true, recursive);
+	collApse(locAtion: TRef, recursive: booleAn = fAlse): booleAn {
+		return this.model.setCollApsed(locAtion, true, recursive);
 	}
 
-	expand(location: TRef, recursive: boolean = false): boolean {
-		return this.model.setCollapsed(location, false, recursive);
+	expAnd(locAtion: TRef, recursive: booleAn = fAlse): booleAn {
+		return this.model.setCollApsed(locAtion, fAlse, recursive);
 	}
 
-	toggleCollapsed(location: TRef, recursive: boolean = false): boolean {
-		return this.model.setCollapsed(location, undefined, recursive);
+	toggleCollApsed(locAtion: TRef, recursive: booleAn = fAlse): booleAn {
+		return this.model.setCollApsed(locAtion, undefined, recursive);
 	}
 
-	expandAll(): void {
-		this.model.setCollapsed(this.model.rootRef, false, true);
+	expAndAll(): void {
+		this.model.setCollApsed(this.model.rootRef, fAlse, true);
 	}
 
-	collapseAll(): void {
-		this.model.setCollapsed(this.model.rootRef, true, true);
+	collApseAll(): void {
+		this.model.setCollApsed(this.model.rootRef, true, true);
 	}
 
-	isCollapsible(location: TRef): boolean {
-		return this.model.isCollapsible(location);
+	isCollApsible(locAtion: TRef): booleAn {
+		return this.model.isCollApsible(locAtion);
 	}
 
-	setCollapsible(location: TRef, collapsible?: boolean): boolean {
-		return this.model.setCollapsible(location, collapsible);
+	setCollApsible(locAtion: TRef, collApsible?: booleAn): booleAn {
+		return this.model.setCollApsible(locAtion, collApsible);
 	}
 
-	isCollapsed(location: TRef): boolean {
-		return this.model.isCollapsed(location);
+	isCollApsed(locAtion: TRef): booleAn {
+		return this.model.isCollApsed(locAtion);
 	}
 
-	toggleKeyboardNavigation(): void {
-		this.view.toggleKeyboardNavigation();
+	toggleKeyboArdNAvigAtion(): void {
+		this.view.toggleKeyboArdNAvigAtion();
 
 		if (this.typeFilterController) {
 			this.typeFilterController.toggle();
@@ -1542,10 +1542,10 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 	}
 
 	setSelection(elements: TRef[], browserEvent?: UIEvent): void {
-		const nodes = elements.map(e => this.model.getNode(e));
+		const nodes = elements.mAp(e => this.model.getNode(e));
 		this.selection.set(nodes, browserEvent);
 
-		const indexes = elements.map(e => this.model.getListIndex(e)).filter(i => i > -1);
+		const indexes = elements.mAp(e => this.model.getListIndex(e)).filter(i => i > -1);
 		this.view.setSelection(indexes, browserEvent, true);
 	}
 
@@ -1554,34 +1554,34 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 	}
 
 	setFocus(elements: TRef[], browserEvent?: UIEvent): void {
-		const nodes = elements.map(e => this.model.getNode(e));
+		const nodes = elements.mAp(e => this.model.getNode(e));
 		this.focus.set(nodes, browserEvent);
 
-		const indexes = elements.map(e => this.model.getListIndex(e)).filter(i => i > -1);
+		const indexes = elements.mAp(e => this.model.getListIndex(e)).filter(i => i > -1);
 		this.view.setFocus(indexes, browserEvent, true);
 	}
 
-	focusNext(n = 1, loop = false, browserEvent?: UIEvent, filter = this.focusNavigationFilter): void {
+	focusNext(n = 1, loop = fAlse, browserEvent?: UIEvent, filter = this.focusNAvigAtionFilter): void {
 		this.view.focusNext(n, loop, browserEvent, filter);
 	}
 
-	focusPrevious(n = 1, loop = false, browserEvent?: UIEvent, filter = this.focusNavigationFilter): void {
+	focusPrevious(n = 1, loop = fAlse, browserEvent?: UIEvent, filter = this.focusNAvigAtionFilter): void {
 		this.view.focusPrevious(n, loop, browserEvent, filter);
 	}
 
-	focusNextPage(browserEvent?: UIEvent, filter = this.focusNavigationFilter): void {
-		this.view.focusNextPage(browserEvent, filter);
+	focusNextPAge(browserEvent?: UIEvent, filter = this.focusNAvigAtionFilter): void {
+		this.view.focusNextPAge(browserEvent, filter);
 	}
 
-	focusPreviousPage(browserEvent?: UIEvent, filter = this.focusNavigationFilter): void {
-		this.view.focusPreviousPage(browserEvent, filter);
+	focusPreviousPAge(browserEvent?: UIEvent, filter = this.focusNAvigAtionFilter): void {
+		this.view.focusPreviousPAge(browserEvent, filter);
 	}
 
-	focusLast(browserEvent?: UIEvent, filter = this.focusNavigationFilter): void {
-		this.view.focusLast(browserEvent, filter);
+	focusLAst(browserEvent?: UIEvent, filter = this.focusNAvigAtionFilter): void {
+		this.view.focusLAst(browserEvent, filter);
 	}
 
-	focusFirst(browserEvent?: UIEvent, filter = this.focusNavigationFilter): void {
+	focusFirst(browserEvent?: UIEvent, filter = this.focusNAvigAtionFilter): void {
 		this.view.focusFirst(browserEvent, filter);
 	}
 
@@ -1589,37 +1589,37 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		return this.focus.get();
 	}
 
-	reveal(location: TRef, relativeTop?: number): void {
-		this.model.expandTo(location);
+	reveAl(locAtion: TRef, relAtiveTop?: number): void {
+		this.model.expAndTo(locAtion);
 
-		const index = this.model.getListIndex(location);
+		const index = this.model.getListIndex(locAtion);
 
 		if (index === -1) {
 			return;
 		}
 
-		this.view.reveal(index, relativeTop);
+		this.view.reveAl(index, relAtiveTop);
 	}
 
 	/**
-	 * Returns the relative position of an element rendered in the list.
+	 * Returns the relAtive position of An element rendered in the list.
 	 * Returns `null` if the element isn't *entirely* in the visible viewport.
 	 */
-	getRelativeTop(location: TRef): number | null {
-		const index = this.model.getListIndex(location);
+	getRelAtiveTop(locAtion: TRef): number | null {
+		const index = this.model.getListIndex(locAtion);
 
 		if (index === -1) {
 			return null;
 		}
 
-		return this.view.getRelativeTop(index);
+		return this.view.getRelAtiveTop(index);
 	}
 
 	// List
 
-	private onLeftArrow(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
+	privAte onLeftArrow(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
 
 		const nodes = this.view.getFocusedElements();
 
@@ -1628,26 +1628,26 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		}
 
 		const node = nodes[0];
-		const location = this.model.getNodeLocation(node);
-		const didChange = this.model.setCollapsed(location, true);
+		const locAtion = this.model.getNodeLocAtion(node);
+		const didChAnge = this.model.setCollApsed(locAtion, true);
 
-		if (!didChange) {
-			const parentLocation = this.model.getParentNodeLocation(location);
+		if (!didChAnge) {
+			const pArentLocAtion = this.model.getPArentNodeLocAtion(locAtion);
 
-			if (!parentLocation) {
+			if (!pArentLocAtion) {
 				return;
 			}
 
-			const parentListIndex = this.model.getListIndex(parentLocation);
+			const pArentListIndex = this.model.getListIndex(pArentLocAtion);
 
-			this.view.reveal(parentListIndex);
-			this.view.setFocus([parentListIndex]);
+			this.view.reveAl(pArentListIndex);
+			this.view.setFocus([pArentListIndex]);
 		}
 	}
 
-	private onRightArrow(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
+	privAte onRightArrow(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
 
 		const nodes = this.view.getFocusedElements();
 
@@ -1656,10 +1656,10 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		}
 
 		const node = nodes[0];
-		const location = this.model.getNodeLocation(node);
-		const didChange = this.model.setCollapsed(location, false);
+		const locAtion = this.model.getNodeLocAtion(node);
+		const didChAnge = this.model.setCollApsed(locAtion, fAlse);
 
-		if (!didChange) {
+		if (!didChAnge) {
 			if (!node.children.some(child => child.visible)) {
 				return;
 			}
@@ -1667,14 +1667,14 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 			const [focusedIndex] = this.view.getFocus();
 			const firstChildIndex = focusedIndex + 1;
 
-			this.view.reveal(firstChildIndex);
+			this.view.reveAl(firstChildIndex);
 			this.view.setFocus([firstChildIndex]);
 		}
 	}
 
-	private onSpace(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
+	privAte onSpAce(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
 
 		const nodes = this.view.getFocusedElements();
 
@@ -1683,36 +1683,36 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		}
 
 		const node = nodes[0];
-		const location = this.model.getNodeLocation(node);
-		const recursive = e.browserEvent.altKey;
+		const locAtion = this.model.getNodeLocAtion(node);
+		const recursive = e.browserEvent.AltKey;
 
-		this.model.setCollapsed(location, undefined, recursive);
+		this.model.setCollApsed(locAtion, undefined, recursive);
 	}
 
-	protected abstract createModel(user: string, view: ISpliceable<ITreeNode<T, TFilterData>>, options: IAbstractTreeOptions<T, TFilterData>): ITreeModel<T, TFilterData, TRef>;
+	protected AbstrAct creAteModel(user: string, view: ISpliceAble<ITreeNode<T, TFilterDAtA>>, options: IAbstrActTreeOptions<T, TFilterDAtA>): ITreeModel<T, TFilterDAtA, TRef>;
 
-	navigate(start?: TRef): ITreeNavigator<T> {
-		return new TreeNavigator(this.view, this.model, start);
+	nAvigAte(stArt?: TRef): ITreeNAvigAtor<T> {
+		return new TreeNAvigAtor(this.view, this.model, stArt);
 	}
 
 	dispose(): void {
-		dispose(this.disposables);
+		dispose(this.disposAbles);
 		this.view.dispose();
 	}
 }
 
-interface ITreeNavigatorView<T extends NonNullable<any>, TFilterData> {
-	readonly length: number;
-	element(index: number): ITreeNode<T, TFilterData>;
+interfAce ITreeNAvigAtorView<T extends NonNullAble<Any>, TFilterDAtA> {
+	reAdonly length: number;
+	element(index: number): ITreeNode<T, TFilterDAtA>;
 }
 
-class TreeNavigator<T extends NonNullable<any>, TFilterData, TRef> implements ITreeNavigator<T> {
+clAss TreeNAvigAtor<T extends NonNullAble<Any>, TFilterDAtA, TRef> implements ITreeNAvigAtor<T> {
 
-	private index: number;
+	privAte index: number;
 
-	constructor(private view: ITreeNavigatorView<T, TFilterData>, private model: ITreeModel<T, TFilterData, TRef>, start?: TRef) {
-		if (start) {
-			this.index = this.model.getListIndex(start);
+	constructor(privAte view: ITreeNAvigAtorView<T, TFilterDAtA>, privAte model: ITreeModel<T, TFilterDAtA, TRef>, stArt?: TRef) {
+		if (stArt) {
+			this.index = this.model.getListIndex(stArt);
 		} else {
 			this.index = -1;
 		}
@@ -1741,7 +1741,7 @@ class TreeNavigator<T extends NonNullable<any>, TFilterData, TRef> implements IT
 		return this.current();
 	}
 
-	last(): T | null {
+	lAst(): T | null {
 		this.index = this.view.length - 1;
 		return this.current();
 	}

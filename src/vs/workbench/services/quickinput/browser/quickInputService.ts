@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { QuickInputController } from 'vs/base/parts/quickinput/browser/quickInput';
-import { QuickInputService as BaseQuickInputService } from 'vs/platform/quickinput/browser/quickInput';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { InQuickPickContextKey } from 'vs/workbench/browser/quickaccess';
+import { ILAyoutService } from 'vs/plAtform/lAyout/browser/lAyoutService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IAccessibilityService } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { QuickInputController } from 'vs/bAse/pArts/quickinput/browser/quickInput';
+import { QuickInputService As BAseQuickInputService } from 'vs/plAtform/quickinput/browser/quickInput';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { InQuickPickContextKey } from 'vs/workbench/browser/quickAccess';
 
-export class QuickInputService extends BaseQuickInputService {
+export clAss QuickInputService extends BAseQuickInputService {
 
-	private readonly inQuickInputContext = InQuickPickContextKey.bindTo(this.contextKeyService);
+	privAte reAdonly inQuickInputContext = InQuickPickContextKey.bindTo(this.contextKeyService);
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
-		@ILayoutService protected readonly layoutService: ILayoutService,
+		@IAccessibilityService AccessibilityService: IAccessibilityService,
+		@ILAyoutService protected reAdonly lAyoutService: ILAyoutService,
 	) {
-		super(instantiationService, contextKeyService, themeService, accessibilityService, layoutService);
+		super(instAntiAtionService, contextKeyService, themeService, AccessibilityService, lAyoutService);
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 		this._register(this.onShow(() => this.inQuickInputContext.set(true)));
-		this._register(this.onHide(() => this.inQuickInputContext.set(false)));
+		this._register(this.onHide(() => this.inQuickInputContext.set(fAlse)));
 	}
 
-	protected createController(): QuickInputController {
-		return super.createController(this.layoutService, {
-			ignoreFocusOut: () => !this.configurationService.getValue('workbench.quickOpen.closeOnFocusLost'),
-			backKeybindingLabel: () => this.keybindingService.lookupKeybinding('workbench.action.quickInputBack')?.getLabel() || undefined,
+	protected creAteController(): QuickInputController {
+		return super.creAteController(this.lAyoutService, {
+			ignoreFocusOut: () => !this.configurAtionService.getVAlue('workbench.quickOpen.closeOnFocusLost'),
+			bAckKeybindingLAbel: () => this.keybindingService.lookupKeybinding('workbench.Action.quickInputBAck')?.getLAbel() || undefined,
 		});
 	}
 }

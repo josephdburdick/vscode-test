@@ -1,189 +1,189 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as objects from 'vs/base/common/objects';
-import { Action } from 'vs/base/common/actions';
-import * as errors from 'vs/base/common/errors';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { formatPII, isUri } from 'vs/workbench/contrib/debug/common/debugUtils';
-import { IDebugAdapter, IConfig, AdapterEndEvent, IDebugger } from 'vs/workbench/contrib/debug/common/debug';
-import { createErrorWithActions } from 'vs/base/common/errorsWithActions';
-import { IExtensionHostDebugService, IOpenExtensionWindowResult } from 'vs/platform/debug/common/extensionHostDebug';
-import { URI } from 'vs/base/common/uri';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { env as processEnv } from 'vs/base/common/process';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import * As nls from 'vs/nls';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import * As objects from 'vs/bAse/common/objects';
+import { Action } from 'vs/bAse/common/Actions';
+import * As errors from 'vs/bAse/common/errors';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { formAtPII, isUri } from 'vs/workbench/contrib/debug/common/debugUtils';
+import { IDebugAdApter, IConfig, AdApterEndEvent, IDebugger } from 'vs/workbench/contrib/debug/common/debug';
+import { creAteErrorWithActions } from 'vs/bAse/common/errorsWithActions';
+import { IExtensionHostDebugService, IOpenExtensionWindowResult } from 'vs/plAtform/debug/common/extensionHostDebug';
+import { URI } from 'vs/bAse/common/uri';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { env As processEnv } from 'vs/bAse/common/process';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 
 /**
- * This interface represents a single command line argument split into a "prefix" and a "path" half.
- * The optional "prefix" contains arbitrary text and the optional "path" contains a file system path.
- * Concatenating both results in the original command line argument.
+ * This interfAce represents A single commAnd line Argument split into A "prefix" And A "pAth" hAlf.
+ * The optionAl "prefix" contAins ArbitrAry text And the optionAl "pAth" contAins A file system pAth.
+ * ConcAtenAting both results in the originAl commAnd line Argument.
  */
-interface ILaunchVSCodeArgument {
+interfAce ILAunchVSCodeArgument {
 	prefix?: string;
-	path?: string;
+	pAth?: string;
 }
 
-interface ILaunchVSCodeArguments {
-	args: ILaunchVSCodeArgument[];
-	debugRenderer?: boolean;
+interfAce ILAunchVSCodeArguments {
+	Args: ILAunchVSCodeArgument[];
+	debugRenderer?: booleAn;
 	env?: { [key: string]: string | null; };
 }
 
 /**
- * Encapsulates the DebugAdapter lifecycle and some idiosyncrasies of the Debug Adapter Protocol.
+ * EncApsulAtes the DebugAdApter lifecycle And some idiosyncrAsies of the Debug AdApter Protocol.
  */
-export class RawDebugSession implements IDisposable {
+export clAss RAwDebugSession implements IDisposAble {
 
-	private allThreadsContinued = true;
-	private _readyForBreakpoints = false;
-	private _capabilities: DebugProtocol.Capabilities;
+	privAte AllThreAdsContinued = true;
+	privAte _reAdyForBreAkpoints = fAlse;
+	privAte _cApAbilities: DebugProtocol.CApAbilities;
 
 	// shutdown
-	private debugAdapterStopped = false;
-	private inShutdown = false;
-	private terminated = false;
-	private firedAdapterExitEvent = false;
+	privAte debugAdApterStopped = fAlse;
+	privAte inShutdown = fAlse;
+	privAte terminAted = fAlse;
+	privAte firedAdApterExitEvent = fAlse;
 
 	// telemetry
-	private startTime = 0;
-	private didReceiveStoppedEvent = false;
+	privAte stArtTime = 0;
+	privAte didReceiveStoppedEvent = fAlse;
 
 	// DAP events
-	private readonly _onDidInitialize = new Emitter<DebugProtocol.InitializedEvent>();
-	private readonly _onDidStop = new Emitter<DebugProtocol.StoppedEvent>();
-	private readonly _onDidContinued = new Emitter<DebugProtocol.ContinuedEvent>();
-	private readonly _onDidTerminateDebugee = new Emitter<DebugProtocol.TerminatedEvent>();
-	private readonly _onDidExitDebugee = new Emitter<DebugProtocol.ExitedEvent>();
-	private readonly _onDidThread = new Emitter<DebugProtocol.ThreadEvent>();
-	private readonly _onDidOutput = new Emitter<DebugProtocol.OutputEvent>();
-	private readonly _onDidBreakpoint = new Emitter<DebugProtocol.BreakpointEvent>();
-	private readonly _onDidLoadedSource = new Emitter<DebugProtocol.LoadedSourceEvent>();
-	private readonly _onDidProgressStart = new Emitter<DebugProtocol.ProgressStartEvent>();
-	private readonly _onDidProgressUpdate = new Emitter<DebugProtocol.ProgressUpdateEvent>();
-	private readonly _onDidProgressEnd = new Emitter<DebugProtocol.ProgressEndEvent>();
-	private readonly _onDidInvalidated = new Emitter<DebugProtocol.InvalidatedEvent>();
-	private readonly _onDidCustomEvent = new Emitter<DebugProtocol.Event>();
-	private readonly _onDidEvent = new Emitter<DebugProtocol.Event>();
+	privAte reAdonly _onDidInitiAlize = new Emitter<DebugProtocol.InitiAlizedEvent>();
+	privAte reAdonly _onDidStop = new Emitter<DebugProtocol.StoppedEvent>();
+	privAte reAdonly _onDidContinued = new Emitter<DebugProtocol.ContinuedEvent>();
+	privAte reAdonly _onDidTerminAteDebugee = new Emitter<DebugProtocol.TerminAtedEvent>();
+	privAte reAdonly _onDidExitDebugee = new Emitter<DebugProtocol.ExitedEvent>();
+	privAte reAdonly _onDidThreAd = new Emitter<DebugProtocol.ThreAdEvent>();
+	privAte reAdonly _onDidOutput = new Emitter<DebugProtocol.OutputEvent>();
+	privAte reAdonly _onDidBreAkpoint = new Emitter<DebugProtocol.BreAkpointEvent>();
+	privAte reAdonly _onDidLoAdedSource = new Emitter<DebugProtocol.LoAdedSourceEvent>();
+	privAte reAdonly _onDidProgressStArt = new Emitter<DebugProtocol.ProgressStArtEvent>();
+	privAte reAdonly _onDidProgressUpdAte = new Emitter<DebugProtocol.ProgressUpdAteEvent>();
+	privAte reAdonly _onDidProgressEnd = new Emitter<DebugProtocol.ProgressEndEvent>();
+	privAte reAdonly _onDidInvAlidAted = new Emitter<DebugProtocol.InvAlidAtedEvent>();
+	privAte reAdonly _onDidCustomEvent = new Emitter<DebugProtocol.Event>();
+	privAte reAdonly _onDidEvent = new Emitter<DebugProtocol.Event>();
 
 	// DA events
-	private readonly _onDidExitAdapter = new Emitter<AdapterEndEvent>();
-	private debugAdapter: IDebugAdapter | null;
+	privAte reAdonly _onDidExitAdApter = new Emitter<AdApterEndEvent>();
+	privAte debugAdApter: IDebugAdApter | null;
 
-	private toDispose: IDisposable[] = [];
+	privAte toDispose: IDisposAble[] = [];
 
 	constructor(
-		debugAdapter: IDebugAdapter,
+		debugAdApter: IDebugAdApter,
 		dbgr: IDebugger,
-		private readonly telemetryService: ITelemetryService,
-		public readonly customTelemetryService: ITelemetryService | undefined,
-		private readonly extensionHostDebugService: IExtensionHostDebugService,
-		private readonly openerService: IOpenerService,
-		private readonly notificationService: INotificationService
+		privAte reAdonly telemetryService: ITelemetryService,
+		public reAdonly customTelemetryService: ITelemetryService | undefined,
+		privAte reAdonly extensionHostDebugService: IExtensionHostDebugService,
+		privAte reAdonly openerService: IOpenerService,
+		privAte reAdonly notificAtionService: INotificAtionService
 	) {
-		this.debugAdapter = debugAdapter;
-		this._capabilities = Object.create(null);
+		this.debugAdApter = debugAdApter;
+		this._cApAbilities = Object.creAte(null);
 
-		this.toDispose.push(this.debugAdapter.onError(err => {
+		this.toDispose.push(this.debugAdApter.onError(err => {
 			this.shutdown(err);
 		}));
 
-		this.toDispose.push(this.debugAdapter.onExit(code => {
+		this.toDispose.push(this.debugAdApter.onExit(code => {
 			if (code !== 0) {
 				this.shutdown(new Error(`exit code: ${code}`));
 			} else {
-				// normal exit
+				// normAl exit
 				this.shutdown();
 			}
 		}));
 
-		this.debugAdapter.onEvent(event => {
+		this.debugAdApter.onEvent(event => {
 			switch (event.event) {
-				case 'initialized':
-					this._readyForBreakpoints = true;
-					this._onDidInitialize.fire(event);
-					break;
-				case 'loadedSource':
-					this._onDidLoadedSource.fire(<DebugProtocol.LoadedSourceEvent>event);
-					break;
-				case 'capabilities':
+				cAse 'initiAlized':
+					this._reAdyForBreAkpoints = true;
+					this._onDidInitiAlize.fire(event);
+					breAk;
+				cAse 'loAdedSource':
+					this._onDidLoAdedSource.fire(<DebugProtocol.LoAdedSourceEvent>event);
+					breAk;
+				cAse 'cApAbilities':
 					if (event.body) {
-						const capabilities = (<DebugProtocol.CapabilitiesEvent>event).body.capabilities;
-						this.mergeCapabilities(capabilities);
+						const cApAbilities = (<DebugProtocol.CApAbilitiesEvent>event).body.cApAbilities;
+						this.mergeCApAbilities(cApAbilities);
 					}
-					break;
-				case 'stopped':
-					this.didReceiveStoppedEvent = true;		// telemetry: remember that debugger stopped successfully
+					breAk;
+				cAse 'stopped':
+					this.didReceiveStoppedEvent = true;		// telemetry: remember thAt debugger stopped successfully
 					this._onDidStop.fire(<DebugProtocol.StoppedEvent>event);
-					break;
-				case 'continued':
-					this.allThreadsContinued = (<DebugProtocol.ContinuedEvent>event).body.allThreadsContinued === false ? false : true;
+					breAk;
+				cAse 'continued':
+					this.AllThreAdsContinued = (<DebugProtocol.ContinuedEvent>event).body.AllThreAdsContinued === fAlse ? fAlse : true;
 					this._onDidContinued.fire(<DebugProtocol.ContinuedEvent>event);
-					break;
-				case 'thread':
-					this._onDidThread.fire(<DebugProtocol.ThreadEvent>event);
-					break;
-				case 'output':
+					breAk;
+				cAse 'threAd':
+					this._onDidThreAd.fire(<DebugProtocol.ThreAdEvent>event);
+					breAk;
+				cAse 'output':
 					this._onDidOutput.fire(<DebugProtocol.OutputEvent>event);
-					break;
-				case 'breakpoint':
-					this._onDidBreakpoint.fire(<DebugProtocol.BreakpointEvent>event);
-					break;
-				case 'terminated':
-					this._onDidTerminateDebugee.fire(<DebugProtocol.TerminatedEvent>event);
-					break;
-				case 'exit':
+					breAk;
+				cAse 'breAkpoint':
+					this._onDidBreAkpoint.fire(<DebugProtocol.BreAkpointEvent>event);
+					breAk;
+				cAse 'terminAted':
+					this._onDidTerminAteDebugee.fire(<DebugProtocol.TerminAtedEvent>event);
+					breAk;
+				cAse 'exit':
 					this._onDidExitDebugee.fire(<DebugProtocol.ExitedEvent>event);
-					break;
-				case 'progressStart':
-					this._onDidProgressStart.fire(event as DebugProtocol.ProgressStartEvent);
-					break;
-				case 'progressUpdate':
-					this._onDidProgressUpdate.fire(event as DebugProtocol.ProgressUpdateEvent);
-					break;
-				case 'progressEnd':
-					this._onDidProgressEnd.fire(event as DebugProtocol.ProgressEndEvent);
-					break;
-				case 'invalidated':
-					this._onDidInvalidated.fire(event as DebugProtocol.InvalidatedEvent);
-					break;
-				default:
+					breAk;
+				cAse 'progressStArt':
+					this._onDidProgressStArt.fire(event As DebugProtocol.ProgressStArtEvent);
+					breAk;
+				cAse 'progressUpdAte':
+					this._onDidProgressUpdAte.fire(event As DebugProtocol.ProgressUpdAteEvent);
+					breAk;
+				cAse 'progressEnd':
+					this._onDidProgressEnd.fire(event As DebugProtocol.ProgressEndEvent);
+					breAk;
+				cAse 'invAlidAted':
+					this._onDidInvAlidAted.fire(event As DebugProtocol.InvAlidAtedEvent);
+					breAk;
+				defAult:
 					this._onDidCustomEvent.fire(event);
-					break;
+					breAk;
 			}
 			this._onDidEvent.fire(event);
 		});
 
-		this.debugAdapter.onRequest(request => this.dispatchRequest(request, dbgr));
+		this.debugAdApter.onRequest(request => this.dispAtchRequest(request, dbgr));
 	}
 
-	get onDidExitAdapter(): Event<AdapterEndEvent> {
-		return this._onDidExitAdapter.event;
+	get onDidExitAdApter(): Event<AdApterEndEvent> {
+		return this._onDidExitAdApter.event;
 	}
 
-	get capabilities(): DebugProtocol.Capabilities {
-		return this._capabilities;
+	get cApAbilities(): DebugProtocol.CApAbilities {
+		return this._cApAbilities;
 	}
 
 	/**
-	 * DA is ready to accepts setBreakpoint requests.
-	 * Becomes true after "initialized" events has been received.
+	 * DA is reAdy to Accepts setBreAkpoint requests.
+	 * Becomes true After "initiAlized" events hAs been received.
 	 */
-	get readyForBreakpoints(): boolean {
-		return this._readyForBreakpoints;
+	get reAdyForBreAkpoints(): booleAn {
+		return this._reAdyForBreAkpoints;
 	}
 
 	//---- DAP events
 
-	get onDidInitialize(): Event<DebugProtocol.InitializedEvent> {
-		return this._onDidInitialize.event;
+	get onDidInitiAlize(): Event<DebugProtocol.InitiAlizedEvent> {
+		return this._onDidInitiAlize.event;
 	}
 
 	get onDidStop(): Event<DebugProtocol.StoppedEvent> {
@@ -194,93 +194,93 @@ export class RawDebugSession implements IDisposable {
 		return this._onDidContinued.event;
 	}
 
-	get onDidTerminateDebugee(): Event<DebugProtocol.TerminatedEvent> {
-		return this._onDidTerminateDebugee.event;
+	get onDidTerminAteDebugee(): Event<DebugProtocol.TerminAtedEvent> {
+		return this._onDidTerminAteDebugee.event;
 	}
 
 	get onDidExitDebugee(): Event<DebugProtocol.ExitedEvent> {
 		return this._onDidExitDebugee.event;
 	}
 
-	get onDidThread(): Event<DebugProtocol.ThreadEvent> {
-		return this._onDidThread.event;
+	get onDidThreAd(): Event<DebugProtocol.ThreAdEvent> {
+		return this._onDidThreAd.event;
 	}
 
 	get onDidOutput(): Event<DebugProtocol.OutputEvent> {
 		return this._onDidOutput.event;
 	}
 
-	get onDidBreakpoint(): Event<DebugProtocol.BreakpointEvent> {
-		return this._onDidBreakpoint.event;
+	get onDidBreAkpoint(): Event<DebugProtocol.BreAkpointEvent> {
+		return this._onDidBreAkpoint.event;
 	}
 
-	get onDidLoadedSource(): Event<DebugProtocol.LoadedSourceEvent> {
-		return this._onDidLoadedSource.event;
+	get onDidLoAdedSource(): Event<DebugProtocol.LoAdedSourceEvent> {
+		return this._onDidLoAdedSource.event;
 	}
 
 	get onDidCustomEvent(): Event<DebugProtocol.Event> {
 		return this._onDidCustomEvent.event;
 	}
 
-	get onDidProgressStart(): Event<DebugProtocol.ProgressStartEvent> {
-		return this._onDidProgressStart.event;
+	get onDidProgressStArt(): Event<DebugProtocol.ProgressStArtEvent> {
+		return this._onDidProgressStArt.event;
 	}
 
-	get onDidProgressUpdate(): Event<DebugProtocol.ProgressUpdateEvent> {
-		return this._onDidProgressUpdate.event;
+	get onDidProgressUpdAte(): Event<DebugProtocol.ProgressUpdAteEvent> {
+		return this._onDidProgressUpdAte.event;
 	}
 
 	get onDidProgressEnd(): Event<DebugProtocol.ProgressEndEvent> {
 		return this._onDidProgressEnd.event;
 	}
 
-	get onDidInvalidated(): Event<DebugProtocol.InvalidatedEvent> {
-		return this._onDidInvalidated.event;
+	get onDidInvAlidAted(): Event<DebugProtocol.InvAlidAtedEvent> {
+		return this._onDidInvAlidAted.event;
 	}
 
 	get onDidEvent(): Event<DebugProtocol.Event> {
 		return this._onDidEvent.event;
 	}
 
-	//---- DebugAdapter lifecycle
+	//---- DebugAdApter lifecycle
 
 	/**
-	 * Starts the underlying debug adapter and tracks the session time for telemetry.
+	 * StArts the underlying debug AdApter And trAcks the session time for telemetry.
 	 */
-	async start(): Promise<void> {
-		if (!this.debugAdapter) {
-			return Promise.reject(new Error(nls.localize('noDebugAdapterStart', "No debug adapter, can not start debug session.")));
+	Async stArt(): Promise<void> {
+		if (!this.debugAdApter) {
+			return Promise.reject(new Error(nls.locAlize('noDebugAdApterStArt', "No debug AdApter, cAn not stArt debug session.")));
 		}
 
-		await this.debugAdapter.startSession();
-		this.startTime = new Date().getTime();
+		AwAit this.debugAdApter.stArtSession();
+		this.stArtTime = new DAte().getTime();
 	}
 
 	/**
-	 * Send client capabilities to the debug adapter and receive DA capabilities in return.
+	 * Send client cApAbilities to the debug AdApter And receive DA cApAbilities in return.
 	 */
-	async initialize(args: DebugProtocol.InitializeRequestArguments): Promise<DebugProtocol.InitializeResponse | undefined> {
-		const response = await this.send('initialize', args);
+	Async initiAlize(Args: DebugProtocol.InitiAlizeRequestArguments): Promise<DebugProtocol.InitiAlizeResponse | undefined> {
+		const response = AwAit this.send('initiAlize', Args);
 		if (response) {
-			this.mergeCapabilities(response.body);
+			this.mergeCApAbilities(response.body);
 		}
 
 		return response;
 	}
 
 	/**
-	 * Terminate the debuggee and shutdown the adapter
+	 * TerminAte the debuggee And shutdown the AdApter
 	 */
-	disconnect(restart = false): Promise<any> {
-		return this.shutdown(undefined, restart);
+	disconnect(restArt = fAlse): Promise<Any> {
+		return this.shutdown(undefined, restArt);
 	}
 
 	//---- DAP requests
 
-	async launchOrAttach(config: IConfig): Promise<DebugProtocol.Response | undefined> {
-		const response = await this.send(config.request, config);
+	Async lAunchOrAttAch(config: IConfig): Promise<DebugProtocol.Response | undefined> {
+		const response = AwAit this.send(config.request, config);
 		if (response) {
-			this.mergeCapabilities(response.body);
+			this.mergeCApAbilities(response.body);
 		}
 
 		return response;
@@ -289,447 +289,447 @@ export class RawDebugSession implements IDisposable {
 	/**
 	 * Try killing the debuggee softly...
 	 */
-	terminate(restart = false): Promise<DebugProtocol.TerminateResponse | undefined> {
-		if (this.capabilities.supportsTerminateRequest) {
-			if (!this.terminated) {
-				this.terminated = true;
-				return this.send('terminate', { restart }, undefined, 2000);
+	terminAte(restArt = fAlse): Promise<DebugProtocol.TerminAteResponse | undefined> {
+		if (this.cApAbilities.supportsTerminAteRequest) {
+			if (!this.terminAted) {
+				this.terminAted = true;
+				return this.send('terminAte', { restArt }, undefined, 2000);
 			}
-			return this.disconnect(restart);
+			return this.disconnect(restArt);
 		}
-		return Promise.reject(new Error('terminated not supported'));
+		return Promise.reject(new Error('terminAted not supported'));
 	}
 
-	restart(): Promise<DebugProtocol.RestartResponse | undefined> {
-		if (this.capabilities.supportsRestartRequest) {
-			return this.send('restart', null);
+	restArt(): Promise<DebugProtocol.RestArtResponse | undefined> {
+		if (this.cApAbilities.supportsRestArtRequest) {
+			return this.send('restArt', null);
 		}
-		return Promise.reject(new Error('restart not supported'));
+		return Promise.reject(new Error('restArt not supported'));
 	}
 
-	async next(args: DebugProtocol.NextArguments): Promise<DebugProtocol.NextResponse | undefined> {
-		const response = await this.send('next', args);
-		this.fireSimulatedContinuedEvent(args.threadId);
+	Async next(Args: DebugProtocol.NextArguments): Promise<DebugProtocol.NextResponse | undefined> {
+		const response = AwAit this.send('next', Args);
+		this.fireSimulAtedContinuedEvent(Args.threAdId);
 		return response;
 	}
 
-	async stepIn(args: DebugProtocol.StepInArguments): Promise<DebugProtocol.StepInResponse | undefined> {
-		const response = await this.send('stepIn', args);
-		this.fireSimulatedContinuedEvent(args.threadId);
+	Async stepIn(Args: DebugProtocol.StepInArguments): Promise<DebugProtocol.StepInResponse | undefined> {
+		const response = AwAit this.send('stepIn', Args);
+		this.fireSimulAtedContinuedEvent(Args.threAdId);
 		return response;
 	}
 
-	async stepOut(args: DebugProtocol.StepOutArguments): Promise<DebugProtocol.StepOutResponse | undefined> {
-		const response = await this.send('stepOut', args);
-		this.fireSimulatedContinuedEvent(args.threadId);
+	Async stepOut(Args: DebugProtocol.StepOutArguments): Promise<DebugProtocol.StepOutResponse | undefined> {
+		const response = AwAit this.send('stepOut', Args);
+		this.fireSimulAtedContinuedEvent(Args.threAdId);
 		return response;
 	}
 
-	async continue(args: DebugProtocol.ContinueArguments): Promise<DebugProtocol.ContinueResponse | undefined> {
-		const response = await this.send<DebugProtocol.ContinueResponse>('continue', args);
-		if (response && response.body && response.body.allThreadsContinued !== undefined) {
-			this.allThreadsContinued = response.body.allThreadsContinued;
+	Async continue(Args: DebugProtocol.ContinueArguments): Promise<DebugProtocol.ContinueResponse | undefined> {
+		const response = AwAit this.send<DebugProtocol.ContinueResponse>('continue', Args);
+		if (response && response.body && response.body.AllThreAdsContinued !== undefined) {
+			this.AllThreAdsContinued = response.body.AllThreAdsContinued;
 		}
-		this.fireSimulatedContinuedEvent(args.threadId, this.allThreadsContinued);
+		this.fireSimulAtedContinuedEvent(Args.threAdId, this.AllThreAdsContinued);
 
 		return response;
 	}
 
-	pause(args: DebugProtocol.PauseArguments): Promise<DebugProtocol.PauseResponse | undefined> {
-		return this.send('pause', args);
+	pAuse(Args: DebugProtocol.PAuseArguments): Promise<DebugProtocol.PAuseResponse | undefined> {
+		return this.send('pAuse', Args);
 	}
 
-	terminateThreads(args: DebugProtocol.TerminateThreadsArguments): Promise<DebugProtocol.TerminateThreadsResponse | undefined> {
-		if (this.capabilities.supportsTerminateThreadsRequest) {
-			return this.send('terminateThreads', args);
+	terminAteThreAds(Args: DebugProtocol.TerminAteThreAdsArguments): Promise<DebugProtocol.TerminAteThreAdsResponse | undefined> {
+		if (this.cApAbilities.supportsTerminAteThreAdsRequest) {
+			return this.send('terminAteThreAds', Args);
 		}
-		return Promise.reject(new Error('terminateThreads not supported'));
+		return Promise.reject(new Error('terminAteThreAds not supported'));
 	}
 
-	setVariable(args: DebugProtocol.SetVariableArguments): Promise<DebugProtocol.SetVariableResponse | undefined> {
-		if (this.capabilities.supportsSetVariable) {
-			return this.send<DebugProtocol.SetVariableResponse>('setVariable', args);
+	setVAriAble(Args: DebugProtocol.SetVAriAbleArguments): Promise<DebugProtocol.SetVAriAbleResponse | undefined> {
+		if (this.cApAbilities.supportsSetVAriAble) {
+			return this.send<DebugProtocol.SetVAriAbleResponse>('setVAriAble', Args);
 		}
-		return Promise.reject(new Error('setVariable not supported'));
+		return Promise.reject(new Error('setVAriAble not supported'));
 	}
 
-	async restartFrame(args: DebugProtocol.RestartFrameArguments, threadId: number): Promise<DebugProtocol.RestartFrameResponse | undefined> {
-		if (this.capabilities.supportsRestartFrame) {
-			const response = await this.send('restartFrame', args);
-			this.fireSimulatedContinuedEvent(threadId);
+	Async restArtFrAme(Args: DebugProtocol.RestArtFrAmeArguments, threAdId: number): Promise<DebugProtocol.RestArtFrAmeResponse | undefined> {
+		if (this.cApAbilities.supportsRestArtFrAme) {
+			const response = AwAit this.send('restArtFrAme', Args);
+			this.fireSimulAtedContinuedEvent(threAdId);
 			return response;
 		}
-		return Promise.reject(new Error('restartFrame not supported'));
+		return Promise.reject(new Error('restArtFrAme not supported'));
 	}
 
-	stepInTargets(args: DebugProtocol.StepInTargetsArguments): Promise<DebugProtocol.StepInTargetsResponse | undefined> {
-		if (this.capabilities.supportsStepInTargetsRequest) {
-			return this.send('stepInTargets', args);
+	stepInTArgets(Args: DebugProtocol.StepInTArgetsArguments): Promise<DebugProtocol.StepInTArgetsResponse | undefined> {
+		if (this.cApAbilities.supportsStepInTArgetsRequest) {
+			return this.send('stepInTArgets', Args);
 		}
-		return Promise.reject(new Error('stepInTargets not supported'));
+		return Promise.reject(new Error('stepInTArgets not supported'));
 	}
 
-	completions(args: DebugProtocol.CompletionsArguments, token: CancellationToken): Promise<DebugProtocol.CompletionsResponse | undefined> {
-		if (this.capabilities.supportsCompletionsRequest) {
-			return this.send<DebugProtocol.CompletionsResponse>('completions', args, token);
+	completions(Args: DebugProtocol.CompletionsArguments, token: CAncellAtionToken): Promise<DebugProtocol.CompletionsResponse | undefined> {
+		if (this.cApAbilities.supportsCompletionsRequest) {
+			return this.send<DebugProtocol.CompletionsResponse>('completions', Args, token);
 		}
 		return Promise.reject(new Error('completions not supported'));
 	}
 
-	setBreakpoints(args: DebugProtocol.SetBreakpointsArguments): Promise<DebugProtocol.SetBreakpointsResponse | undefined> {
-		return this.send<DebugProtocol.SetBreakpointsResponse>('setBreakpoints', args);
+	setBreAkpoints(Args: DebugProtocol.SetBreAkpointsArguments): Promise<DebugProtocol.SetBreAkpointsResponse | undefined> {
+		return this.send<DebugProtocol.SetBreAkpointsResponse>('setBreAkpoints', Args);
 	}
 
-	setFunctionBreakpoints(args: DebugProtocol.SetFunctionBreakpointsArguments): Promise<DebugProtocol.SetFunctionBreakpointsResponse | undefined> {
-		if (this.capabilities.supportsFunctionBreakpoints) {
-			return this.send<DebugProtocol.SetFunctionBreakpointsResponse>('setFunctionBreakpoints', args);
+	setFunctionBreAkpoints(Args: DebugProtocol.SetFunctionBreAkpointsArguments): Promise<DebugProtocol.SetFunctionBreAkpointsResponse | undefined> {
+		if (this.cApAbilities.supportsFunctionBreAkpoints) {
+			return this.send<DebugProtocol.SetFunctionBreAkpointsResponse>('setFunctionBreAkpoints', Args);
 		}
-		return Promise.reject(new Error('setFunctionBreakpoints not supported'));
+		return Promise.reject(new Error('setFunctionBreAkpoints not supported'));
 	}
 
-	dataBreakpointInfo(args: DebugProtocol.DataBreakpointInfoArguments): Promise<DebugProtocol.DataBreakpointInfoResponse | undefined> {
-		if (this.capabilities.supportsDataBreakpoints) {
-			return this.send<DebugProtocol.DataBreakpointInfoResponse>('dataBreakpointInfo', args);
+	dAtABreAkpointInfo(Args: DebugProtocol.DAtABreAkpointInfoArguments): Promise<DebugProtocol.DAtABreAkpointInfoResponse | undefined> {
+		if (this.cApAbilities.supportsDAtABreAkpoints) {
+			return this.send<DebugProtocol.DAtABreAkpointInfoResponse>('dAtABreAkpointInfo', Args);
 		}
-		return Promise.reject(new Error('dataBreakpointInfo not supported'));
+		return Promise.reject(new Error('dAtABreAkpointInfo not supported'));
 	}
 
-	setDataBreakpoints(args: DebugProtocol.SetDataBreakpointsArguments): Promise<DebugProtocol.SetDataBreakpointsResponse | undefined> {
-		if (this.capabilities.supportsDataBreakpoints) {
-			return this.send<DebugProtocol.SetDataBreakpointsResponse>('setDataBreakpoints', args);
+	setDAtABreAkpoints(Args: DebugProtocol.SetDAtABreAkpointsArguments): Promise<DebugProtocol.SetDAtABreAkpointsResponse | undefined> {
+		if (this.cApAbilities.supportsDAtABreAkpoints) {
+			return this.send<DebugProtocol.SetDAtABreAkpointsResponse>('setDAtABreAkpoints', Args);
 		}
-		return Promise.reject(new Error('setDataBreakpoints not supported'));
+		return Promise.reject(new Error('setDAtABreAkpoints not supported'));
 	}
 
-	setExceptionBreakpoints(args: DebugProtocol.SetExceptionBreakpointsArguments): Promise<DebugProtocol.SetExceptionBreakpointsResponse | undefined> {
-		return this.send<DebugProtocol.SetExceptionBreakpointsResponse>('setExceptionBreakpoints', args);
+	setExceptionBreAkpoints(Args: DebugProtocol.SetExceptionBreAkpointsArguments): Promise<DebugProtocol.SetExceptionBreAkpointsResponse | undefined> {
+		return this.send<DebugProtocol.SetExceptionBreAkpointsResponse>('setExceptionBreAkpoints', Args);
 	}
 
-	breakpointLocations(args: DebugProtocol.BreakpointLocationsArguments): Promise<DebugProtocol.BreakpointLocationsResponse | undefined> {
-		if (this.capabilities.supportsBreakpointLocationsRequest) {
-			return this.send('breakpointLocations', args);
+	breAkpointLocAtions(Args: DebugProtocol.BreAkpointLocAtionsArguments): Promise<DebugProtocol.BreAkpointLocAtionsResponse | undefined> {
+		if (this.cApAbilities.supportsBreAkpointLocAtionsRequest) {
+			return this.send('breAkpointLocAtions', Args);
 		}
-		return Promise.reject(new Error('breakpointLocations is not supported'));
+		return Promise.reject(new Error('breAkpointLocAtions is not supported'));
 	}
 
-	configurationDone(): Promise<DebugProtocol.ConfigurationDoneResponse | undefined> {
-		if (this.capabilities.supportsConfigurationDoneRequest) {
-			return this.send('configurationDone', null);
+	configurAtionDone(): Promise<DebugProtocol.ConfigurAtionDoneResponse | undefined> {
+		if (this.cApAbilities.supportsConfigurAtionDoneRequest) {
+			return this.send('configurAtionDone', null);
 		}
-		return Promise.reject(new Error('configurationDone not supported'));
+		return Promise.reject(new Error('configurAtionDone not supported'));
 	}
 
-	stackTrace(args: DebugProtocol.StackTraceArguments, token: CancellationToken): Promise<DebugProtocol.StackTraceResponse | undefined> {
-		return this.send<DebugProtocol.StackTraceResponse>('stackTrace', args, token);
+	stAckTrAce(Args: DebugProtocol.StAckTrAceArguments, token: CAncellAtionToken): Promise<DebugProtocol.StAckTrAceResponse | undefined> {
+		return this.send<DebugProtocol.StAckTrAceResponse>('stAckTrAce', Args, token);
 	}
 
-	exceptionInfo(args: DebugProtocol.ExceptionInfoArguments): Promise<DebugProtocol.ExceptionInfoResponse | undefined> {
-		if (this.capabilities.supportsExceptionInfoRequest) {
-			return this.send<DebugProtocol.ExceptionInfoResponse>('exceptionInfo', args);
+	exceptionInfo(Args: DebugProtocol.ExceptionInfoArguments): Promise<DebugProtocol.ExceptionInfoResponse | undefined> {
+		if (this.cApAbilities.supportsExceptionInfoRequest) {
+			return this.send<DebugProtocol.ExceptionInfoResponse>('exceptionInfo', Args);
 		}
 		return Promise.reject(new Error('exceptionInfo not supported'));
 	}
 
-	scopes(args: DebugProtocol.ScopesArguments, token: CancellationToken): Promise<DebugProtocol.ScopesResponse | undefined> {
-		return this.send<DebugProtocol.ScopesResponse>('scopes', args, token);
+	scopes(Args: DebugProtocol.ScopesArguments, token: CAncellAtionToken): Promise<DebugProtocol.ScopesResponse | undefined> {
+		return this.send<DebugProtocol.ScopesResponse>('scopes', Args, token);
 	}
 
-	variables(args: DebugProtocol.VariablesArguments, token?: CancellationToken): Promise<DebugProtocol.VariablesResponse | undefined> {
-		return this.send<DebugProtocol.VariablesResponse>('variables', args, token);
+	vAriAbles(Args: DebugProtocol.VAriAblesArguments, token?: CAncellAtionToken): Promise<DebugProtocol.VAriAblesResponse | undefined> {
+		return this.send<DebugProtocol.VAriAblesResponse>('vAriAbles', Args, token);
 	}
 
-	source(args: DebugProtocol.SourceArguments): Promise<DebugProtocol.SourceResponse | undefined> {
-		return this.send<DebugProtocol.SourceResponse>('source', args);
+	source(Args: DebugProtocol.SourceArguments): Promise<DebugProtocol.SourceResponse | undefined> {
+		return this.send<DebugProtocol.SourceResponse>('source', Args);
 	}
 
-	loadedSources(args: DebugProtocol.LoadedSourcesArguments): Promise<DebugProtocol.LoadedSourcesResponse | undefined> {
-		if (this.capabilities.supportsLoadedSourcesRequest) {
-			return this.send<DebugProtocol.LoadedSourcesResponse>('loadedSources', args);
+	loAdedSources(Args: DebugProtocol.LoAdedSourcesArguments): Promise<DebugProtocol.LoAdedSourcesResponse | undefined> {
+		if (this.cApAbilities.supportsLoAdedSourcesRequest) {
+			return this.send<DebugProtocol.LoAdedSourcesResponse>('loAdedSources', Args);
 		}
-		return Promise.reject(new Error('loadedSources not supported'));
+		return Promise.reject(new Error('loAdedSources not supported'));
 	}
 
-	threads(): Promise<DebugProtocol.ThreadsResponse | undefined> {
-		return this.send<DebugProtocol.ThreadsResponse>('threads', null);
+	threAds(): Promise<DebugProtocol.ThreAdsResponse | undefined> {
+		return this.send<DebugProtocol.ThreAdsResponse>('threAds', null);
 	}
 
-	evaluate(args: DebugProtocol.EvaluateArguments): Promise<DebugProtocol.EvaluateResponse | undefined> {
-		return this.send<DebugProtocol.EvaluateResponse>('evaluate', args);
+	evAluAte(Args: DebugProtocol.EvAluAteArguments): Promise<DebugProtocol.EvAluAteResponse | undefined> {
+		return this.send<DebugProtocol.EvAluAteResponse>('evAluAte', Args);
 	}
 
-	async stepBack(args: DebugProtocol.StepBackArguments): Promise<DebugProtocol.StepBackResponse | undefined> {
-		if (this.capabilities.supportsStepBack) {
-			const response = await this.send('stepBack', args);
+	Async stepBAck(Args: DebugProtocol.StepBAckArguments): Promise<DebugProtocol.StepBAckResponse | undefined> {
+		if (this.cApAbilities.supportsStepBAck) {
+			const response = AwAit this.send('stepBAck', Args);
 			if (response && response.body === undefined) {	// TODO@AW why this check?
-				this.fireSimulatedContinuedEvent(args.threadId);
+				this.fireSimulAtedContinuedEvent(Args.threAdId);
 			}
 			return response;
 		}
-		return Promise.reject(new Error('stepBack not supported'));
+		return Promise.reject(new Error('stepBAck not supported'));
 	}
 
-	async reverseContinue(args: DebugProtocol.ReverseContinueArguments): Promise<DebugProtocol.ReverseContinueResponse | undefined> {
-		if (this.capabilities.supportsStepBack) {
-			const response = await this.send('reverseContinue', args);
+	Async reverseContinue(Args: DebugProtocol.ReverseContinueArguments): Promise<DebugProtocol.ReverseContinueResponse | undefined> {
+		if (this.cApAbilities.supportsStepBAck) {
+			const response = AwAit this.send('reverseContinue', Args);
 			if (response && response.body === undefined) {	// TODO@AW why this check?
-				this.fireSimulatedContinuedEvent(args.threadId);
+				this.fireSimulAtedContinuedEvent(Args.threAdId);
 			}
 			return response;
 		}
 		return Promise.reject(new Error('reverseContinue not supported'));
 	}
 
-	gotoTargets(args: DebugProtocol.GotoTargetsArguments): Promise<DebugProtocol.GotoTargetsResponse | undefined> {
-		if (this.capabilities.supportsGotoTargetsRequest) {
-			return this.send('gotoTargets', args);
+	gotoTArgets(Args: DebugProtocol.GotoTArgetsArguments): Promise<DebugProtocol.GotoTArgetsResponse | undefined> {
+		if (this.cApAbilities.supportsGotoTArgetsRequest) {
+			return this.send('gotoTArgets', Args);
 		}
-		return Promise.reject(new Error('gotoTargets is not supported'));
+		return Promise.reject(new Error('gotoTArgets is not supported'));
 	}
 
-	async goto(args: DebugProtocol.GotoArguments): Promise<DebugProtocol.GotoResponse | undefined> {
-		if (this.capabilities.supportsGotoTargetsRequest) {
-			const response = await this.send('goto', args);
-			this.fireSimulatedContinuedEvent(args.threadId);
+	Async goto(Args: DebugProtocol.GotoArguments): Promise<DebugProtocol.GotoResponse | undefined> {
+		if (this.cApAbilities.supportsGotoTArgetsRequest) {
+			const response = AwAit this.send('goto', Args);
+			this.fireSimulAtedContinuedEvent(Args.threAdId);
 			return response;
 		}
 
 		return Promise.reject(new Error('goto is not supported'));
 	}
 
-	cancel(args: DebugProtocol.CancelArguments): Promise<DebugProtocol.CancelResponse | undefined> {
-		return this.send('cancel', args);
+	cAncel(Args: DebugProtocol.CAncelArguments): Promise<DebugProtocol.CAncelResponse | undefined> {
+		return this.send('cAncel', Args);
 	}
 
-	custom(request: string, args: any): Promise<DebugProtocol.Response | undefined> {
-		return this.send(request, args);
+	custom(request: string, Args: Any): Promise<DebugProtocol.Response | undefined> {
+		return this.send(request, Args);
 	}
 
-	//---- private
+	//---- privAte
 
-	private async shutdown(error?: Error, restart = false): Promise<any> {
+	privAte Async shutdown(error?: Error, restArt = fAlse): Promise<Any> {
 		if (!this.inShutdown) {
 			this.inShutdown = true;
-			if (this.debugAdapter) {
+			if (this.debugAdApter) {
 				try {
-					await this.send('disconnect', { restart }, undefined, 2000);
-				} catch (e) {
-					// Catch the potential 'disconnect' error - no need to show it to the user since the adapter is shutting down
-				} finally {
-					this.stopAdapter(error);
+					AwAit this.send('disconnect', { restArt }, undefined, 2000);
+				} cAtch (e) {
+					// CAtch the potentiAl 'disconnect' error - no need to show it to the user since the AdApter is shutting down
+				} finAlly {
+					this.stopAdApter(error);
 				}
 			} else {
-				return this.stopAdapter(error);
+				return this.stopAdApter(error);
 			}
 		}
 	}
 
-	private async stopAdapter(error?: Error): Promise<any> {
+	privAte Async stopAdApter(error?: Error): Promise<Any> {
 		try {
-			if (this.debugAdapter) {
-				const da = this.debugAdapter;
-				this.debugAdapter = null;
-				await da.stopSession();
-				this.debugAdapterStopped = true;
+			if (this.debugAdApter) {
+				const dA = this.debugAdApter;
+				this.debugAdApter = null;
+				AwAit dA.stopSession();
+				this.debugAdApterStopped = true;
 			}
-		} finally {
-			this.fireAdapterExitEvent(error);
+		} finAlly {
+			this.fireAdApterExitEvent(error);
 		}
 	}
 
-	private fireAdapterExitEvent(error?: Error): void {
-		if (!this.firedAdapterExitEvent) {
-			this.firedAdapterExitEvent = true;
+	privAte fireAdApterExitEvent(error?: Error): void {
+		if (!this.firedAdApterExitEvent) {
+			this.firedAdApterExitEvent = true;
 
-			const e: AdapterEndEvent = {
+			const e: AdApterEndEvent = {
 				emittedStopped: this.didReceiveStoppedEvent,
-				sessionLengthInSeconds: (new Date().getTime() - this.startTime) / 1000
+				sessionLengthInSeconds: (new DAte().getTime() - this.stArtTime) / 1000
 			};
-			if (error && !this.debugAdapterStopped) {
+			if (error && !this.debugAdApterStopped) {
 				e.error = error;
 			}
-			this._onDidExitAdapter.fire(e);
+			this._onDidExitAdApter.fire(e);
 		}
 	}
 
-	private async dispatchRequest(request: DebugProtocol.Request, dbgr: IDebugger): Promise<void> {
+	privAte Async dispAtchRequest(request: DebugProtocol.Request, dbgr: IDebugger): Promise<void> {
 
 		const response: DebugProtocol.Response = {
 			type: 'response',
 			seq: 0,
-			command: request.command,
+			commAnd: request.commAnd,
 			request_seq: request.seq,
 			success: true
 		};
 
-		const safeSendResponse = (response: DebugProtocol.Response) => this.debugAdapter && this.debugAdapter.sendResponse(response);
+		const sAfeSendResponse = (response: DebugProtocol.Response) => this.debugAdApter && this.debugAdApter.sendResponse(response);
 
-		switch (request.command) {
-			case 'launchVSCode':
-				this.launchVsCode(<ILaunchVSCodeArguments>request.arguments).then(result => {
+		switch (request.commAnd) {
+			cAse 'lAunchVSCode':
+				this.lAunchVsCode(<ILAunchVSCodeArguments>request.Arguments).then(result => {
 					response.body = {
 						rendererDebugPort: result.rendererDebugPort,
 						//processId: pid
 					};
-					safeSendResponse(response);
+					sAfeSendResponse(response);
 				}, err => {
-					response.success = false;
-					response.message = err.message;
-					safeSendResponse(response);
+					response.success = fAlse;
+					response.messAge = err.messAge;
+					sAfeSendResponse(response);
 				});
-				break;
-			case 'runInTerminal':
+				breAk;
+			cAse 'runInTerminAl':
 				try {
-					const shellProcessId = await dbgr.runInTerminal(request.arguments as DebugProtocol.RunInTerminalRequestArguments);
-					const resp = response as DebugProtocol.RunInTerminalResponse;
+					const shellProcessId = AwAit dbgr.runInTerminAl(request.Arguments As DebugProtocol.RunInTerminAlRequestArguments);
+					const resp = response As DebugProtocol.RunInTerminAlResponse;
 					resp.body = {};
 					if (typeof shellProcessId === 'number') {
 						resp.body.shellProcessId = shellProcessId;
 					}
-					safeSendResponse(resp);
-				} catch (err) {
-					response.success = false;
-					response.message = err.message;
-					safeSendResponse(response);
+					sAfeSendResponse(resp);
+				} cAtch (err) {
+					response.success = fAlse;
+					response.messAge = err.messAge;
+					sAfeSendResponse(response);
 				}
-				break;
-			default:
-				response.success = false;
-				response.message = `unknown request '${request.command}'`;
-				safeSendResponse(response);
-				break;
+				breAk;
+			defAult:
+				response.success = fAlse;
+				response.messAge = `unknown request '${request.commAnd}'`;
+				sAfeSendResponse(response);
+				breAk;
 		}
 	}
 
-	private launchVsCode(vscodeArgs: ILaunchVSCodeArguments): Promise<IOpenExtensionWindowResult> {
+	privAte lAunchVsCode(vscodeArgs: ILAunchVSCodeArguments): Promise<IOpenExtensionWindowResult> {
 
-		const args: string[] = [];
+		const Args: string[] = [];
 
-		for (let arg of vscodeArgs.args) {
-			const a2 = (arg.prefix || '') + (arg.path || '');
-			const match = /^--(.+)=(.+)$/.exec(a2);
-			if (match && match.length === 3) {
-				const key = match[1];
-				let value = match[2];
+		for (let Arg of vscodeArgs.Args) {
+			const A2 = (Arg.prefix || '') + (Arg.pAth || '');
+			const mAtch = /^--(.+)=(.+)$/.exec(A2);
+			if (mAtch && mAtch.length === 3) {
+				const key = mAtch[1];
+				let vAlue = mAtch[2];
 
-				if ((key === 'file-uri' || key === 'folder-uri') && !isUri(arg.path)) {
-					value = URI.file(value).toString();
+				if ((key === 'file-uri' || key === 'folder-uri') && !isUri(Arg.pAth)) {
+					vAlue = URI.file(vAlue).toString();
 				}
-				args.push(`--${key}=${value}`);
+				Args.push(`--${key}=${vAlue}`);
 			} else {
-				args.push(a2);
+				Args.push(A2);
 			}
 		}
 
 		let env: IProcessEnvironment = {};
 		if (vscodeArgs.env) {
-			// merge environment variables into a copy of the process.env
+			// merge environment vAriAbles into A copy of the process.env
 			env = objects.mixin(processEnv, vscodeArgs.env);
-			// and delete some if necessary
-			Object.keys(env).filter(k => env[k] === null).forEach(key => delete env[key]);
+			// And delete some if necessAry
+			Object.keys(env).filter(k => env[k] === null).forEAch(key => delete env[key]);
 		}
 
-		return this.extensionHostDebugService.openExtensionDevelopmentHostWindow(args, env, !!vscodeArgs.debugRenderer);
+		return this.extensionHostDebugService.openExtensionDevelopmentHostWindow(Args, env, !!vscodeArgs.debugRenderer);
 	}
 
-	private send<R extends DebugProtocol.Response>(command: string, args: any, token?: CancellationToken, timeout?: number): Promise<R | undefined> {
-		return new Promise<DebugProtocol.Response | undefined>((completeDispatch, errorDispatch) => {
-			if (!this.debugAdapter) {
+	privAte send<R extends DebugProtocol.Response>(commAnd: string, Args: Any, token?: CAncellAtionToken, timeout?: number): Promise<R | undefined> {
+		return new Promise<DebugProtocol.Response | undefined>((completeDispAtch, errorDispAtch) => {
+			if (!this.debugAdApter) {
 				if (this.inShutdown) {
-					// We are in shutdown silently complete
-					completeDispatch(undefined);
+					// We Are in shutdown silently complete
+					completeDispAtch(undefined);
 				} else {
-					errorDispatch(new Error(nls.localize('noDebugAdapter', "No debugger available found. Can not send '{0}'.", command)));
+					errorDispAtch(new Error(nls.locAlize('noDebugAdApter', "No debugger AvAilAble found. CAn not send '{0}'.", commAnd)));
 				}
 				return;
 			}
 
-			let cancelationListener: IDisposable;
-			const requestId = this.debugAdapter.sendRequest(command, args, (response: DebugProtocol.Response) => {
-				if (cancelationListener) {
-					cancelationListener.dispose();
+			let cAncelAtionListener: IDisposAble;
+			const requestId = this.debugAdApter.sendRequest(commAnd, Args, (response: DebugProtocol.Response) => {
+				if (cAncelAtionListener) {
+					cAncelAtionListener.dispose();
 				}
 
 				if (response.success) {
-					completeDispatch(response);
+					completeDispAtch(response);
 				} else {
-					errorDispatch(response);
+					errorDispAtch(response);
 				}
 			}, timeout);
 
 			if (token) {
-				cancelationListener = token.onCancellationRequested(() => {
-					cancelationListener.dispose();
-					if (this.capabilities.supportsCancelRequest) {
-						this.cancel({ requestId });
+				cAncelAtionListener = token.onCAncellAtionRequested(() => {
+					cAncelAtionListener.dispose();
+					if (this.cApAbilities.supportsCAncelRequest) {
+						this.cAncel({ requestId });
 					}
 				});
 			}
-		}).then(undefined, err => Promise.reject(this.handleErrorResponse(err)));
+		}).then(undefined, err => Promise.reject(this.hAndleErrorResponse(err)));
 	}
 
-	private handleErrorResponse(errorResponse: DebugProtocol.Response): Error {
+	privAte hAndleErrorResponse(errorResponse: DebugProtocol.Response): Error {
 
-		if (errorResponse.command === 'canceled' && errorResponse.message === 'canceled') {
-			return errors.canceled();
+		if (errorResponse.commAnd === 'cAnceled' && errorResponse.messAge === 'cAnceled') {
+			return errors.cAnceled();
 		}
 
-		const error: DebugProtocol.Message | undefined = errorResponse?.body?.error;
-		const errorMessage = errorResponse?.message || '';
+		const error: DebugProtocol.MessAge | undefined = errorResponse?.body?.error;
+		const errorMessAge = errorResponse?.messAge || '';
 
 		if (error && error.sendTelemetry) {
-			const telemetryMessage = error ? formatPII(error.format, true, error.variables) : errorMessage;
-			this.telemetryDebugProtocolErrorResponse(telemetryMessage);
+			const telemetryMessAge = error ? formAtPII(error.formAt, true, error.vAriAbles) : errorMessAge;
+			this.telemetryDebugProtocolErrorResponse(telemetryMessAge);
 		}
 
-		const userMessage = error ? formatPII(error.format, false, error.variables) : errorMessage;
+		const userMessAge = error ? formAtPII(error.formAt, fAlse, error.vAriAbles) : errorMessAge;
 		const url = error?.url;
 		if (error && url) {
-			const label = error.urlLabel ? error.urlLabel : nls.localize('moreInfo', "More Info");
-			return createErrorWithActions(userMessage, {
-				actions: [new Action('debug.moreInfo', label, undefined, true, () => {
-					this.openerService.open(URI.parse(url));
+			const lAbel = error.urlLAbel ? error.urlLAbel : nls.locAlize('moreInfo', "More Info");
+			return creAteErrorWithActions(userMessAge, {
+				Actions: [new Action('debug.moreInfo', lAbel, undefined, true, () => {
+					this.openerService.open(URI.pArse(url));
 					return Promise.resolve(null);
 				})]
 			});
 		}
-		if (error && error.format && error.showUser) {
-			this.notificationService.error(userMessage);
+		if (error && error.formAt && error.showUser) {
+			this.notificAtionService.error(userMessAge);
 		}
 
-		return new Error(userMessage);
+		return new Error(userMessAge);
 	}
 
-	private mergeCapabilities(capabilities: DebugProtocol.Capabilities | undefined): void {
-		if (capabilities) {
-			this._capabilities = objects.mixin(this._capabilities, capabilities);
+	privAte mergeCApAbilities(cApAbilities: DebugProtocol.CApAbilities | undefined): void {
+		if (cApAbilities) {
+			this._cApAbilities = objects.mixin(this._cApAbilities, cApAbilities);
 		}
 	}
 
-	private fireSimulatedContinuedEvent(threadId: number, allThreadsContinued = false): void {
+	privAte fireSimulAtedContinuedEvent(threAdId: number, AllThreAdsContinued = fAlse): void {
 		this._onDidContinued.fire({
 			type: 'event',
 			event: 'continued',
 			body: {
-				threadId,
-				allThreadsContinued
+				threAdId,
+				AllThreAdsContinued
 			},
 			seq: undefined!
 		});
 	}
 
-	private telemetryDebugProtocolErrorResponse(telemetryMessage: string | undefined) {
+	privAte telemetryDebugProtocolErrorResponse(telemetryMessAge: string | undefined) {
 		/* __GDPR__
 			"debugProtocolErrorResponse" : {
-				"error" : { "classification": "CallstackOrException", "purpose": "FeatureInsight" }
+				"error" : { "clAssificAtion": "CAllstAckOrException", "purpose": "FeAtureInsight" }
 			}
 		*/
-		this.telemetryService.publicLogError('debugProtocolErrorResponse', { error: telemetryMessage });
+		this.telemetryService.publicLogError('debugProtocolErrorResponse', { error: telemetryMessAge });
 		if (this.customTelemetryService) {
 			/* __GDPR__TODO__
-				The message is sent in the name of the adapter but the adapter doesn't know about it.
-				However, since adapters are an open-ended set, we can not declared the events statically either.
+				The messAge is sent in the nAme of the AdApter but the AdApter doesn't know About it.
+				However, since AdApters Are An open-ended set, we cAn not declAred the events stAticAlly either.
 			*/
-			this.customTelemetryService.publicLogError('debugProtocolErrorResponse', { error: telemetryMessage });
+			this.customTelemetryService.publicLogError('debugProtocolErrorResponse', { error: telemetryMessAge });
 		}
 	}
 

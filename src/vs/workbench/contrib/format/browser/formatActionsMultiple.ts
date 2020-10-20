@@ -1,228 +1,228 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { DocumentRangeFormattingEditProviderRegistry, DocumentFormattingEditProvider, DocumentRangeFormattingEditProvider } from 'vs/editor/common/modes';
-import * as nls from 'vs/nls';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { formatDocumentRangesWithProvider, formatDocumentWithProvider, getRealAndSyntheticDocumentFormattersOrdered, FormattingConflicts, FormattingMode } from 'vs/editor/contrib/format/format';
-import { Range } from 'vs/editor/common/core/range';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry, IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { DocumentRAngeFormAttingEditProviderRegistry, DocumentFormAttingEditProvider, DocumentRAngeFormAttingEditProvider } from 'vs/editor/common/modes';
+import * As nls from 'vs/nls';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { IQuickInputService, IQuickPickItem } from 'vs/plAtform/quickinput/common/quickInput';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { formAtDocumentRAngesWithProvider, formAtDocumentWithProvider, getReAlAndSyntheticDocumentFormAttersOrdered, FormAttingConflicts, FormAttingMode } from 'vs/editor/contrib/formAt/formAt';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 import { IExtensionService, toExtension } from 'vs/workbench/services/extensions/common/extensions';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { ITextModel } from 'vs/editor/common/model';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IWorkbenchExtensionEnablementService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { editorConfigurationBaseNode } from 'vs/editor/common/config/commonEditorConfig';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IWorkbenchExtensionEnAblementService } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { editorConfigurAtionBAseNode } from 'vs/editor/common/config/commonEditorConfig';
 
-type FormattingEditProvider = DocumentFormattingEditProvider | DocumentRangeFormattingEditProvider;
+type FormAttingEditProvider = DocumentFormAttingEditProvider | DocumentRAngeFormAttingEditProvider;
 
-class DefaultFormatter extends Disposable implements IWorkbenchContribution {
+clAss DefAultFormAtter extends DisposAble implements IWorkbenchContribution {
 
-	static readonly configName = 'editor.defaultFormatter';
+	stAtic reAdonly configNAme = 'editor.defAultFormAtter';
 
-	static extensionIds: (string | null)[] = [];
-	static extensionDescriptions: string[] = [];
+	stAtic extensionIds: (string | null)[] = [];
+	stAtic extensionDescriptions: string[] = [];
 
 	constructor(
-		@IExtensionService private readonly _extensionService: IExtensionService,
-		@IWorkbenchExtensionEnablementService private readonly _extensionEnablementService: IWorkbenchExtensionEnablementService,
-		@IConfigurationService private readonly _configService: IConfigurationService,
-		@INotificationService private readonly _notificationService: INotificationService,
-		@IQuickInputService private readonly _quickInputService: IQuickInputService,
-		@IModeService private readonly _modeService: IModeService,
-		@ILabelService private readonly _labelService: ILabelService,
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
+		@IWorkbenchExtensionEnAblementService privAte reAdonly _extensionEnAblementService: IWorkbenchExtensionEnAblementService,
+		@IConfigurAtionService privAte reAdonly _configService: IConfigurAtionService,
+		@INotificAtionService privAte reAdonly _notificAtionService: INotificAtionService,
+		@IQuickInputService privAte reAdonly _quickInputService: IQuickInputService,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@ILAbelService privAte reAdonly _lAbelService: ILAbelService,
 	) {
 		super();
-		this._register(this._extensionService.onDidChangeExtensions(this._updateConfigValues, this));
-		this._register(FormattingConflicts.setFormatterSelector((formatter, document, mode) => this._selectFormatter(formatter, document, mode)));
-		this._updateConfigValues();
+		this._register(this._extensionService.onDidChAngeExtensions(this._updAteConfigVAlues, this));
+		this._register(FormAttingConflicts.setFormAtterSelector((formAtter, document, mode) => this._selectFormAtter(formAtter, document, mode)));
+		this._updAteConfigVAlues();
 	}
 
-	private async _updateConfigValues(): Promise<void> {
-		const extensions = await this._extensionService.getExtensions();
+	privAte Async _updAteConfigVAlues(): Promise<void> {
+		const extensions = AwAit this._extensionService.getExtensions();
 
-		DefaultFormatter.extensionIds.length = 0;
-		DefaultFormatter.extensionDescriptions.length = 0;
+		DefAultFormAtter.extensionIds.length = 0;
+		DefAultFormAtter.extensionDescriptions.length = 0;
 
-		DefaultFormatter.extensionIds.push(null);
-		DefaultFormatter.extensionDescriptions.push(nls.localize('nullFormatterDescription', "None"));
+		DefAultFormAtter.extensionIds.push(null);
+		DefAultFormAtter.extensionDescriptions.push(nls.locAlize('nullFormAtterDescription', "None"));
 
 		for (const extension of extensions) {
-			if (extension.main || extension.browser) {
-				DefaultFormatter.extensionIds.push(extension.identifier.value);
-				DefaultFormatter.extensionDescriptions.push(extension.description || '');
+			if (extension.mAin || extension.browser) {
+				DefAultFormAtter.extensionIds.push(extension.identifier.vAlue);
+				DefAultFormAtter.extensionDescriptions.push(extension.description || '');
 			}
 		}
 	}
 
-	static _maybeQuotes(s: string): string {
-		return s.match(/\s/) ? `'${s}'` : s;
+	stAtic _mAybeQuotes(s: string): string {
+		return s.mAtch(/\s/) ? `'${s}'` : s;
 	}
 
-	private async _selectFormatter<T extends FormattingEditProvider>(formatter: T[], document: ITextModel, mode: FormattingMode): Promise<T | undefined> {
+	privAte Async _selectFormAtter<T extends FormAttingEditProvider>(formAtter: T[], document: ITextModel, mode: FormAttingMode): Promise<T | undefined> {
 
-		const defaultFormatterId = this._configService.getValue<string>(DefaultFormatter.configName, {
+		const defAultFormAtterId = this._configService.getVAlue<string>(DefAultFormAtter.configNAme, {
 			resource: document.uri,
 			overrideIdentifier: document.getModeId()
 		});
 
-		if (defaultFormatterId) {
-			// good -> formatter configured
-			const defaultFormatter = formatter.find(formatter => ExtensionIdentifier.equals(formatter.extensionId, defaultFormatterId));
-			if (defaultFormatter) {
-				// formatter available
-				return defaultFormatter;
+		if (defAultFormAtterId) {
+			// good -> formAtter configured
+			const defAultFormAtter = formAtter.find(formAtter => ExtensionIdentifier.equAls(formAtter.extensionId, defAultFormAtterId));
+			if (defAultFormAtter) {
+				// formAtter AvAilAble
+				return defAultFormAtter;
 			}
 
-			// bad -> formatter gone
-			const extension = await this._extensionService.getExtension(defaultFormatterId);
-			if (extension && this._extensionEnablementService.isEnabled(toExtension(extension))) {
-				// formatter does not target this file
-				const label = this._labelService.getUriLabel(document.uri, { relative: true });
-				const message = nls.localize('miss', "Extension '{0}' cannot format '{1}'", extension.displayName || extension.name, label);
-				this._notificationService.status(message, { hideAfter: 4000 });
+			// bAd -> formAtter gone
+			const extension = AwAit this._extensionService.getExtension(defAultFormAtterId);
+			if (extension && this._extensionEnAblementService.isEnAbled(toExtension(extension))) {
+				// formAtter does not tArget this file
+				const lAbel = this._lAbelService.getUriLAbel(document.uri, { relAtive: true });
+				const messAge = nls.locAlize('miss', "Extension '{0}' cAnnot formAt '{1}'", extension.displAyNAme || extension.nAme, lAbel);
+				this._notificAtionService.stAtus(messAge, { hideAfter: 4000 });
 				return undefined;
 			}
-		} else if (formatter.length === 1) {
-			// ok -> nothing configured but only one formatter available
-			return formatter[0];
+		} else if (formAtter.length === 1) {
+			// ok -> nothing configured but only one formAtter AvAilAble
+			return formAtter[0];
 		}
 
-		const langName = this._modeService.getLanguageName(document.getModeId()) || document.getModeId();
-		const silent = mode === FormattingMode.Silent;
-		const message = !defaultFormatterId
-			? nls.localize('config.needed', "There are multiple formatters for '{0}' files. Select a default formatter to continue.", DefaultFormatter._maybeQuotes(langName))
-			: nls.localize('config.bad', "Extension '{0}' is configured as formatter but not available. Select a different default formatter to continue.", defaultFormatterId);
+		const lAngNAme = this._modeService.getLAnguAgeNAme(document.getModeId()) || document.getModeId();
+		const silent = mode === FormAttingMode.Silent;
+		const messAge = !defAultFormAtterId
+			? nls.locAlize('config.needed', "There Are multiple formAtters for '{0}' files. Select A defAult formAtter to continue.", DefAultFormAtter._mAybeQuotes(lAngNAme))
+			: nls.locAlize('config.bAd', "Extension '{0}' is configured As formAtter but not AvAilAble. Select A different defAult formAtter to continue.", defAultFormAtterId);
 
 		return new Promise<T | undefined>((resolve, reject) => {
-			this._notificationService.prompt(
+			this._notificAtionService.prompt(
 				Severity.Info,
-				message,
-				[{ label: nls.localize('do.config', "Configure..."), run: () => this._pickAndPersistDefaultFormatter(formatter, document).then(resolve, reject) }],
-				{ silent, onCancel: () => resolve(undefined) }
+				messAge,
+				[{ lAbel: nls.locAlize('do.config', "Configure..."), run: () => this._pickAndPersistDefAultFormAtter(formAtter, document).then(resolve, reject) }],
+				{ silent, onCAncel: () => resolve(undefined) }
 			);
 
 			if (silent) {
-				// don't wait when formatting happens without interaction
-				// but pick some formatter...
+				// don't wAit when formAtting hAppens without interAction
+				// but pick some formAtter...
 				resolve(undefined);
 			}
 		});
 	}
 
-	private async _pickAndPersistDefaultFormatter<T extends FormattingEditProvider>(formatter: T[], document: ITextModel): Promise<T | undefined> {
-		const picks = formatter.map((formatter, index): IIndexedPick => {
+	privAte Async _pickAndPersistDefAultFormAtter<T extends FormAttingEditProvider>(formAtter: T[], document: ITextModel): Promise<T | undefined> {
+		const picks = formAtter.mAp((formAtter, index): IIndexedPick => {
 			return {
 				index,
-				label: formatter.displayName || (formatter.extensionId ? formatter.extensionId.value : '?'),
-				description: formatter.extensionId && formatter.extensionId.value
+				lAbel: formAtter.displAyNAme || (formAtter.extensionId ? formAtter.extensionId.vAlue : '?'),
+				description: formAtter.extensionId && formAtter.extensionId.vAlue
 			};
 		});
-		const langName = this._modeService.getLanguageName(document.getModeId()) || document.getModeId();
-		const pick = await this._quickInputService.pick(picks, { placeHolder: nls.localize('select', "Select a default formatter for '{0}' files", DefaultFormatter._maybeQuotes(langName)) });
-		if (!pick || !formatter[pick.index].extensionId) {
+		const lAngNAme = this._modeService.getLAnguAgeNAme(document.getModeId()) || document.getModeId();
+		const pick = AwAit this._quickInputService.pick(picks, { plAceHolder: nls.locAlize('select', "Select A defAult formAtter for '{0}' files", DefAultFormAtter._mAybeQuotes(lAngNAme)) });
+		if (!pick || !formAtter[pick.index].extensionId) {
 			return undefined;
 		}
-		this._configService.updateValue(DefaultFormatter.configName, formatter[pick.index].extensionId!.value, {
+		this._configService.updAteVAlue(DefAultFormAtter.configNAme, formAtter[pick.index].extensionId!.vAlue, {
 			resource: document.uri,
 			overrideIdentifier: document.getModeId()
 		});
-		return formatter[pick.index];
+		return formAtter[pick.index];
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	DefaultFormatter,
-	LifecyclePhase.Restored
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
+	DefAultFormAtter,
+	LifecyclePhAse.Restored
 );
 
-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
-	...editorConfigurationBaseNode,
+Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion).registerConfigurAtion({
+	...editorConfigurAtionBAseNode,
 	properties: {
-		[DefaultFormatter.configName]: {
-			description: nls.localize('formatter.default', "Defines a default formatter which takes precedence over all other formatter settings. Must be the identifier of an extension contributing a formatter."),
+		[DefAultFormAtter.configNAme]: {
+			description: nls.locAlize('formAtter.defAult', "Defines A defAult formAtter which tAkes precedence over All other formAtter settings. Must be the identifier of An extension contributing A formAtter."),
 			type: ['string', 'null'],
-			default: null,
-			enum: DefaultFormatter.extensionIds,
-			markdownEnumDescriptions: DefaultFormatter.extensionDescriptions
+			defAult: null,
+			enum: DefAultFormAtter.extensionIds,
+			mArkdownEnumDescriptions: DefAultFormAtter.extensionDescriptions
 		}
 	}
 });
 
-interface IIndexedPick extends IQuickPickItem {
+interfAce IIndexedPick extends IQuickPickItem {
 	index: number;
 }
 
-function logFormatterTelemetry<T extends { extensionId?: ExtensionIdentifier }>(telemetryService: ITelemetryService, mode: 'document' | 'range', options: T[], pick?: T) {
+function logFormAtterTelemetry<T extends { extensionId?: ExtensionIdentifier }>(telemetryService: ITelemetryService, mode: 'document' | 'rAnge', options: T[], pick?: T) {
 
 	function extKey(obj: T): string {
 		return obj.extensionId ? ExtensionIdentifier.toKey(obj.extensionId) : 'unknown';
 	}
 	/*
 	 * __GDPR__
-		"formatterpick" : {
-			"mode" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-			"extensions" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-			"pick" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+		"formAtterpick" : {
+			"mode" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+			"extensions" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+			"pick" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 		}
 	 */
-	telemetryService.publicLog('formatterpick', {
+	telemetryService.publicLog('formAtterpick', {
 		mode,
-		extensions: options.map(extKey),
+		extensions: options.mAp(extKey),
 		pick: pick ? extKey(pick) : 'none'
 	});
 }
 
-async function showFormatterPick(accessor: ServicesAccessor, model: ITextModel, formatters: FormattingEditProvider[]): Promise<number | undefined> {
-	const quickPickService = accessor.get(IQuickInputService);
-	const configService = accessor.get(IConfigurationService);
-	const modeService = accessor.get(IModeService);
+Async function showFormAtterPick(Accessor: ServicesAccessor, model: ITextModel, formAtters: FormAttingEditProvider[]): Promise<number | undefined> {
+	const quickPickService = Accessor.get(IQuickInputService);
+	const configService = Accessor.get(IConfigurAtionService);
+	const modeService = Accessor.get(IModeService);
 
 	const overrides = { resource: model.uri, overrideIdentifier: model.getModeId() };
-	const defaultFormatter = configService.getValue<string>(DefaultFormatter.configName, overrides);
+	const defAultFormAtter = configService.getVAlue<string>(DefAultFormAtter.configNAme, overrides);
 
-	let defaultFormatterPick: IIndexedPick | undefined;
+	let defAultFormAtterPick: IIndexedPick | undefined;
 
-	const picks = formatters.map((provider, index) => {
-		const isDefault = ExtensionIdentifier.equals(provider.extensionId, defaultFormatter);
+	const picks = formAtters.mAp((provider, index) => {
+		const isDefAult = ExtensionIdentifier.equAls(provider.extensionId, defAultFormAtter);
 		const pick: IIndexedPick = {
 			index,
-			label: provider.displayName || '',
-			description: isDefault ? nls.localize('def', "(default)") : undefined,
+			lAbel: provider.displAyNAme || '',
+			description: isDefAult ? nls.locAlize('def', "(defAult)") : undefined,
 		};
 
-		if (isDefault) {
-			// autofocus default pick
-			defaultFormatterPick = pick;
+		if (isDefAult) {
+			// Autofocus defAult pick
+			defAultFormAtterPick = pick;
 		}
 
 		return pick;
 	});
 
 	const configurePick: IQuickPickItem = {
-		label: nls.localize('config', "Configure Default Formatter...")
+		lAbel: nls.locAlize('config', "Configure DefAult FormAtter...")
 	};
 
-	const pick = await quickPickService.pick([...picks, { type: 'separator' }, configurePick],
+	const pick = AwAit quickPickService.pick([...picks, { type: 'sepArAtor' }, configurePick],
 		{
-			placeHolder: nls.localize('format.placeHolder', "Select a formatter"),
-			activeItem: defaultFormatterPick
+			plAceHolder: nls.locAlize('formAt.plAceHolder', "Select A formAtter"),
+			ActiveItem: defAultFormAtterPick
 		}
 	);
 	if (!pick) {
@@ -230,11 +230,11 @@ async function showFormatterPick(accessor: ServicesAccessor, model: ITextModel, 
 		return undefined;
 
 	} else if (pick === configurePick) {
-		// config default
-		const langName = modeService.getLanguageName(model.getModeId()) || model.getModeId();
-		const pick = await quickPickService.pick(picks, { placeHolder: nls.localize('select', "Select a default formatter for '{0}' files", DefaultFormatter._maybeQuotes(langName)) });
-		if (pick && formatters[pick.index].extensionId) {
-			configService.updateValue(DefaultFormatter.configName, formatters[pick.index].extensionId!.value, overrides);
+		// config defAult
+		const lAngNAme = modeService.getLAnguAgeNAme(model.getModeId()) || model.getModeId();
+		const pick = AwAit quickPickService.pick(picks, { plAceHolder: nls.locAlize('select', "Select A defAult formAtter for '{0}' files", DefAultFormAtter._mAybeQuotes(lAngNAme)) });
+		if (pick && formAtters[pick.index].extensionId) {
+			configService.updAteVAlue(DefAultFormAtter.configNAme, formAtters[pick.index].extensionId!.vAlue, overrides);
 		}
 		return undefined;
 
@@ -245,72 +245,72 @@ async function showFormatterPick(accessor: ServicesAccessor, model: ITextModel, 
 
 }
 
-registerEditorAction(class FormatDocumentMultipleAction extends EditorAction {
+registerEditorAction(clAss FormAtDocumentMultipleAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.formatDocument.multiple',
-			label: nls.localize('formatDocument.label.multiple', "Format Document With..."),
-			alias: 'Format Document...',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasMultipleDocumentFormattingProvider),
+			id: 'editor.Action.formAtDocument.multiple',
+			lAbel: nls.locAlize('formAtDocument.lAbel.multiple', "FormAt Document With..."),
+			AliAs: 'FormAt Document...',
+			precondition: ContextKeyExpr.And(EditorContextKeys.writAble, EditorContextKeys.hAsMultipleDocumentFormAttingProvider),
 			contextMenuOpts: {
-				group: '1_modification',
+				group: '1_modificAtion',
 				order: 1.3
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor, args: any): Promise<void> {
-		if (!editor.hasModel()) {
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor, Args: Any): Promise<void> {
+		if (!editor.hAsModel()) {
 			return;
 		}
-		const instaService = accessor.get(IInstantiationService);
-		const telemetryService = accessor.get(ITelemetryService);
+		const instAService = Accessor.get(IInstAntiAtionService);
+		const telemetryService = Accessor.get(ITelemetryService);
 		const model = editor.getModel();
-		const provider = getRealAndSyntheticDocumentFormattersOrdered(model);
-		const pick = await instaService.invokeFunction(showFormatterPick, model, provider);
+		const provider = getReAlAndSyntheticDocumentFormAttersOrdered(model);
+		const pick = AwAit instAService.invokeFunction(showFormAtterPick, model, provider);
 		if (typeof pick === 'number') {
-			await instaService.invokeFunction(formatDocumentWithProvider, provider[pick], editor, FormattingMode.Explicit, CancellationToken.None);
+			AwAit instAService.invokeFunction(formAtDocumentWithProvider, provider[pick], editor, FormAttingMode.Explicit, CAncellAtionToken.None);
 		}
-		logFormatterTelemetry(telemetryService, 'document', provider, typeof pick === 'number' && provider[pick] || undefined);
+		logFormAtterTelemetry(telemetryService, 'document', provider, typeof pick === 'number' && provider[pick] || undefined);
 	}
 });
 
-registerEditorAction(class FormatSelectionMultipleAction extends EditorAction {
+registerEditorAction(clAss FormAtSelectionMultipleAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.formatSelection.multiple',
-			label: nls.localize('formatSelection.label.multiple', "Format Selection With..."),
-			alias: 'Format Code...',
-			precondition: ContextKeyExpr.and(ContextKeyExpr.and(EditorContextKeys.writable), EditorContextKeys.hasMultipleDocumentSelectionFormattingProvider),
+			id: 'editor.Action.formAtSelection.multiple',
+			lAbel: nls.locAlize('formAtSelection.lAbel.multiple', "FormAt Selection With..."),
+			AliAs: 'FormAt Code...',
+			precondition: ContextKeyExpr.And(ContextKeyExpr.And(EditorContextKeys.writAble), EditorContextKeys.hAsMultipleDocumentSelectionFormAttingProvider),
 			contextMenuOpts: {
-				when: ContextKeyExpr.and(EditorContextKeys.hasNonEmptySelection),
-				group: '1_modification',
+				when: ContextKeyExpr.And(EditorContextKeys.hAsNonEmptySelection),
+				group: '1_modificAtion',
 				order: 1.31
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		if (!editor.hasModel()) {
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		if (!editor.hAsModel()) {
 			return;
 		}
-		const instaService = accessor.get(IInstantiationService);
-		const telemetryService = accessor.get(ITelemetryService);
+		const instAService = Accessor.get(IInstAntiAtionService);
+		const telemetryService = Accessor.get(ITelemetryService);
 
 		const model = editor.getModel();
-		let range: Range = editor.getSelection();
-		if (range.isEmpty()) {
-			range = new Range(range.startLineNumber, 1, range.startLineNumber, model.getLineMaxColumn(range.startLineNumber));
+		let rAnge: RAnge = editor.getSelection();
+		if (rAnge.isEmpty()) {
+			rAnge = new RAnge(rAnge.stArtLineNumber, 1, rAnge.stArtLineNumber, model.getLineMAxColumn(rAnge.stArtLineNumber));
 		}
 
-		const provider = DocumentRangeFormattingEditProviderRegistry.ordered(model);
-		const pick = await instaService.invokeFunction(showFormatterPick, model, provider);
+		const provider = DocumentRAngeFormAttingEditProviderRegistry.ordered(model);
+		const pick = AwAit instAService.invokeFunction(showFormAtterPick, model, provider);
 		if (typeof pick === 'number') {
-			await instaService.invokeFunction(formatDocumentRangesWithProvider, provider[pick], editor, range, CancellationToken.None);
+			AwAit instAService.invokeFunction(formAtDocumentRAngesWithProvider, provider[pick], editor, rAnge, CAncellAtionToken.None);
 		}
 
-		logFormatterTelemetry(telemetryService, 'range', provider, typeof pick === 'number' && provider[pick] || undefined);
+		logFormAtterTelemetry(telemetryService, 'rAnge', provider, typeof pick === 'number' && provider[pick] || undefined);
 	}
 });

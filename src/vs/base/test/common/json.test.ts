@@ -1,300 +1,300 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import {
-	SyntaxKind, createScanner, parse, Node, ParseError, parseTree, ParseErrorCode, ParseOptions, ScanError
-} from 'vs/base/common/json';
-import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
+	SyntAxKind, creAteScAnner, pArse, Node, PArseError, pArseTree, PArseErrorCode, PArseOptions, ScAnError
+} from 'vs/bAse/common/json';
+import { getPArseErrorMessAge } from 'vs/bAse/common/jsonErrorMessAges';
 
-function assertKinds(text: string, ...kinds: SyntaxKind[]): void {
-	let scanner = createScanner(text);
-	let kind: SyntaxKind;
-	while ((kind = scanner.scan()) !== SyntaxKind.EOF) {
-		assert.equal(kind, kinds.shift());
+function AssertKinds(text: string, ...kinds: SyntAxKind[]): void {
+	let scAnner = creAteScAnner(text);
+	let kind: SyntAxKind;
+	while ((kind = scAnner.scAn()) !== SyntAxKind.EOF) {
+		Assert.equAl(kind, kinds.shift());
 	}
-	assert.equal(kinds.length, 0);
+	Assert.equAl(kinds.length, 0);
 }
-function assertScanError(text: string, expectedKind: SyntaxKind, scanError: ScanError): void {
-	let scanner = createScanner(text);
-	scanner.scan();
-	assert.equal(scanner.getToken(), expectedKind);
-	assert.equal(scanner.getTokenError(), scanError);
+function AssertScAnError(text: string, expectedKind: SyntAxKind, scAnError: ScAnError): void {
+	let scAnner = creAteScAnner(text);
+	scAnner.scAn();
+	Assert.equAl(scAnner.getToken(), expectedKind);
+	Assert.equAl(scAnner.getTokenError(), scAnError);
 }
 
-function assertValidParse(input: string, expected: any, options?: ParseOptions): void {
-	let errors: ParseError[] = [];
-	let actual = parse(input, errors, options);
+function AssertVAlidPArse(input: string, expected: Any, options?: PArseOptions): void {
+	let errors: PArseError[] = [];
+	let ActuAl = pArse(input, errors, options);
 
 	if (errors.length !== 0) {
-		assert(false, getParseErrorMessage(errors[0].error));
+		Assert(fAlse, getPArseErrorMessAge(errors[0].error));
 	}
-	assert.deepEqual(actual, expected);
+	Assert.deepEquAl(ActuAl, expected);
 }
 
-function assertInvalidParse(input: string, expected: any, options?: ParseOptions): void {
-	let errors: ParseError[] = [];
-	let actual = parse(input, errors, options);
+function AssertInvAlidPArse(input: string, expected: Any, options?: PArseOptions): void {
+	let errors: PArseError[] = [];
+	let ActuAl = pArse(input, errors, options);
 
-	assert(errors.length > 0);
-	assert.deepEqual(actual, expected);
+	Assert(errors.length > 0);
+	Assert.deepEquAl(ActuAl, expected);
 }
 
-function assertTree(input: string, expected: any, expectedErrors: number[] = [], options?: ParseOptions): void {
-	let errors: ParseError[] = [];
-	let actual = parseTree(input, errors, options);
+function AssertTree(input: string, expected: Any, expectedErrors: number[] = [], options?: PArseOptions): void {
+	let errors: PArseError[] = [];
+	let ActuAl = pArseTree(input, errors, options);
 
-	assert.deepEqual(errors.map(e => e.error, expected), expectedErrors);
-	let checkParent = (node: Node) => {
+	Assert.deepEquAl(errors.mAp(e => e.error, expected), expectedErrors);
+	let checkPArent = (node: Node) => {
 		if (node.children) {
 			for (let child of node.children) {
-				assert.equal(node, child.parent);
-				delete (<any>child).parent; // delete to avoid recursion in deep equal
-				checkParent(child);
+				Assert.equAl(node, child.pArent);
+				delete (<Any>child).pArent; // delete to Avoid recursion in deep equAl
+				checkPArent(child);
 			}
 		}
 	};
-	checkParent(actual);
+	checkPArent(ActuAl);
 
-	assert.deepEqual(actual, expected);
+	Assert.deepEquAl(ActuAl, expected);
 }
 
 suite('JSON', () => {
 	test('tokens', () => {
-		assertKinds('{', SyntaxKind.OpenBraceToken);
-		assertKinds('}', SyntaxKind.CloseBraceToken);
-		assertKinds('[', SyntaxKind.OpenBracketToken);
-		assertKinds(']', SyntaxKind.CloseBracketToken);
-		assertKinds(':', SyntaxKind.ColonToken);
-		assertKinds(',', SyntaxKind.CommaToken);
+		AssertKinds('{', SyntAxKind.OpenBrAceToken);
+		AssertKinds('}', SyntAxKind.CloseBrAceToken);
+		AssertKinds('[', SyntAxKind.OpenBrAcketToken);
+		AssertKinds(']', SyntAxKind.CloseBrAcketToken);
+		AssertKinds(':', SyntAxKind.ColonToken);
+		AssertKinds(',', SyntAxKind.CommAToken);
 	});
 
 	test('comments', () => {
-		assertKinds('// this is a comment', SyntaxKind.LineCommentTrivia);
-		assertKinds('// this is a comment\n', SyntaxKind.LineCommentTrivia, SyntaxKind.LineBreakTrivia);
-		assertKinds('/* this is a comment*/', SyntaxKind.BlockCommentTrivia);
-		assertKinds('/* this is a \r\ncomment*/', SyntaxKind.BlockCommentTrivia);
-		assertKinds('/* this is a \ncomment*/', SyntaxKind.BlockCommentTrivia);
+		AssertKinds('// this is A comment', SyntAxKind.LineCommentTriviA);
+		AssertKinds('// this is A comment\n', SyntAxKind.LineCommentTriviA, SyntAxKind.LineBreAkTriviA);
+		AssertKinds('/* this is A comment*/', SyntAxKind.BlockCommentTriviA);
+		AssertKinds('/* this is A \r\ncomment*/', SyntAxKind.BlockCommentTriviA);
+		AssertKinds('/* this is A \ncomment*/', SyntAxKind.BlockCommentTriviA);
 
 		// unexpected end
-		assertKinds('/* this is a', SyntaxKind.BlockCommentTrivia);
-		assertKinds('/* this is a \ncomment', SyntaxKind.BlockCommentTrivia);
+		AssertKinds('/* this is A', SyntAxKind.BlockCommentTriviA);
+		AssertKinds('/* this is A \ncomment', SyntAxKind.BlockCommentTriviA);
 
 		// broken comment
-		assertKinds('/ ttt', SyntaxKind.Unknown, SyntaxKind.Trivia, SyntaxKind.Unknown);
+		AssertKinds('/ ttt', SyntAxKind.Unknown, SyntAxKind.TriviA, SyntAxKind.Unknown);
 	});
 
 	test('strings', () => {
-		assertKinds('"test"', SyntaxKind.StringLiteral);
-		assertKinds('"\\""', SyntaxKind.StringLiteral);
-		assertKinds('"\\/"', SyntaxKind.StringLiteral);
-		assertKinds('"\\b"', SyntaxKind.StringLiteral);
-		assertKinds('"\\f"', SyntaxKind.StringLiteral);
-		assertKinds('"\\n"', SyntaxKind.StringLiteral);
-		assertKinds('"\\r"', SyntaxKind.StringLiteral);
-		assertKinds('"\\t"', SyntaxKind.StringLiteral);
-		assertKinds('"\\v"', SyntaxKind.StringLiteral);
-		assertKinds('"\u88ff"', SyntaxKind.StringLiteral);
-		assertKinds('"​\u2028"', SyntaxKind.StringLiteral);
+		AssertKinds('"test"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\""', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\/"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\b"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\f"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\n"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\r"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\t"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\\v"', SyntAxKind.StringLiterAl);
+		AssertKinds('"\u88ff"', SyntAxKind.StringLiterAl);
+		AssertKinds('"​\u2028"', SyntAxKind.StringLiterAl);
 
 		// unexpected end
-		assertKinds('"test', SyntaxKind.StringLiteral);
-		assertKinds('"test\n"', SyntaxKind.StringLiteral, SyntaxKind.LineBreakTrivia, SyntaxKind.StringLiteral);
+		AssertKinds('"test', SyntAxKind.StringLiterAl);
+		AssertKinds('"test\n"', SyntAxKind.StringLiterAl, SyntAxKind.LineBreAkTriviA, SyntAxKind.StringLiterAl);
 
-		// invalid characters
-		assertScanError('"\t"', SyntaxKind.StringLiteral, ScanError.InvalidCharacter);
-		assertScanError('"\t "', SyntaxKind.StringLiteral, ScanError.InvalidCharacter);
+		// invAlid chArActers
+		AssertScAnError('"\t"', SyntAxKind.StringLiterAl, ScAnError.InvAlidChArActer);
+		AssertScAnError('"\t "', SyntAxKind.StringLiterAl, ScAnError.InvAlidChArActer);
 	});
 
 	test('numbers', () => {
-		assertKinds('0', SyntaxKind.NumericLiteral);
-		assertKinds('0.1', SyntaxKind.NumericLiteral);
-		assertKinds('-0.1', SyntaxKind.NumericLiteral);
-		assertKinds('-1', SyntaxKind.NumericLiteral);
-		assertKinds('1', SyntaxKind.NumericLiteral);
-		assertKinds('123456789', SyntaxKind.NumericLiteral);
-		assertKinds('10', SyntaxKind.NumericLiteral);
-		assertKinds('90', SyntaxKind.NumericLiteral);
-		assertKinds('90E+123', SyntaxKind.NumericLiteral);
-		assertKinds('90e+123', SyntaxKind.NumericLiteral);
-		assertKinds('90e-123', SyntaxKind.NumericLiteral);
-		assertKinds('90E-123', SyntaxKind.NumericLiteral);
-		assertKinds('90E123', SyntaxKind.NumericLiteral);
-		assertKinds('90e123', SyntaxKind.NumericLiteral);
+		AssertKinds('0', SyntAxKind.NumericLiterAl);
+		AssertKinds('0.1', SyntAxKind.NumericLiterAl);
+		AssertKinds('-0.1', SyntAxKind.NumericLiterAl);
+		AssertKinds('-1', SyntAxKind.NumericLiterAl);
+		AssertKinds('1', SyntAxKind.NumericLiterAl);
+		AssertKinds('123456789', SyntAxKind.NumericLiterAl);
+		AssertKinds('10', SyntAxKind.NumericLiterAl);
+		AssertKinds('90', SyntAxKind.NumericLiterAl);
+		AssertKinds('90E+123', SyntAxKind.NumericLiterAl);
+		AssertKinds('90e+123', SyntAxKind.NumericLiterAl);
+		AssertKinds('90e-123', SyntAxKind.NumericLiterAl);
+		AssertKinds('90E-123', SyntAxKind.NumericLiterAl);
+		AssertKinds('90E123', SyntAxKind.NumericLiterAl);
+		AssertKinds('90e123', SyntAxKind.NumericLiterAl);
 
-		// zero handling
-		assertKinds('01', SyntaxKind.NumericLiteral, SyntaxKind.NumericLiteral);
-		assertKinds('-01', SyntaxKind.NumericLiteral, SyntaxKind.NumericLiteral);
+		// zero hAndling
+		AssertKinds('01', SyntAxKind.NumericLiterAl, SyntAxKind.NumericLiterAl);
+		AssertKinds('-01', SyntAxKind.NumericLiterAl, SyntAxKind.NumericLiterAl);
 
 		// unexpected end
-		assertKinds('-', SyntaxKind.Unknown);
-		assertKinds('.0', SyntaxKind.Unknown);
+		AssertKinds('-', SyntAxKind.Unknown);
+		AssertKinds('.0', SyntAxKind.Unknown);
 	});
 
-	test('keywords: true, false, null', () => {
-		assertKinds('true', SyntaxKind.TrueKeyword);
-		assertKinds('false', SyntaxKind.FalseKeyword);
-		assertKinds('null', SyntaxKind.NullKeyword);
+	test('keywords: true, fAlse, null', () => {
+		AssertKinds('true', SyntAxKind.TrueKeyword);
+		AssertKinds('fAlse', SyntAxKind.FAlseKeyword);
+		AssertKinds('null', SyntAxKind.NullKeyword);
 
 
-		assertKinds('true false null',
-			SyntaxKind.TrueKeyword,
-			SyntaxKind.Trivia,
-			SyntaxKind.FalseKeyword,
-			SyntaxKind.Trivia,
-			SyntaxKind.NullKeyword);
+		AssertKinds('true fAlse null',
+			SyntAxKind.TrueKeyword,
+			SyntAxKind.TriviA,
+			SyntAxKind.FAlseKeyword,
+			SyntAxKind.TriviA,
+			SyntAxKind.NullKeyword);
 
-		// invalid words
-		assertKinds('nulllll', SyntaxKind.Unknown);
-		assertKinds('True', SyntaxKind.Unknown);
-		assertKinds('foo-bar', SyntaxKind.Unknown);
-		assertKinds('foo bar', SyntaxKind.Unknown, SyntaxKind.Trivia, SyntaxKind.Unknown);
+		// invAlid words
+		AssertKinds('nulllll', SyntAxKind.Unknown);
+		AssertKinds('True', SyntAxKind.Unknown);
+		AssertKinds('foo-bAr', SyntAxKind.Unknown);
+		AssertKinds('foo bAr', SyntAxKind.Unknown, SyntAxKind.TriviA, SyntAxKind.Unknown);
 	});
 
-	test('trivia', () => {
-		assertKinds(' ', SyntaxKind.Trivia);
-		assertKinds('  \t  ', SyntaxKind.Trivia);
-		assertKinds('  \t  \n  \t  ', SyntaxKind.Trivia, SyntaxKind.LineBreakTrivia, SyntaxKind.Trivia);
-		assertKinds('\r\n', SyntaxKind.LineBreakTrivia);
-		assertKinds('\r', SyntaxKind.LineBreakTrivia);
-		assertKinds('\n', SyntaxKind.LineBreakTrivia);
-		assertKinds('\n\r', SyntaxKind.LineBreakTrivia, SyntaxKind.LineBreakTrivia);
-		assertKinds('\n   \n', SyntaxKind.LineBreakTrivia, SyntaxKind.Trivia, SyntaxKind.LineBreakTrivia);
+	test('triviA', () => {
+		AssertKinds(' ', SyntAxKind.TriviA);
+		AssertKinds('  \t  ', SyntAxKind.TriviA);
+		AssertKinds('  \t  \n  \t  ', SyntAxKind.TriviA, SyntAxKind.LineBreAkTriviA, SyntAxKind.TriviA);
+		AssertKinds('\r\n', SyntAxKind.LineBreAkTriviA);
+		AssertKinds('\r', SyntAxKind.LineBreAkTriviA);
+		AssertKinds('\n', SyntAxKind.LineBreAkTriviA);
+		AssertKinds('\n\r', SyntAxKind.LineBreAkTriviA, SyntAxKind.LineBreAkTriviA);
+		AssertKinds('\n   \n', SyntAxKind.LineBreAkTriviA, SyntAxKind.TriviA, SyntAxKind.LineBreAkTriviA);
 	});
 
-	test('parse: literals', () => {
+	test('pArse: literAls', () => {
 
-		assertValidParse('true', true);
-		assertValidParse('false', false);
-		assertValidParse('null', null);
-		assertValidParse('"foo"', 'foo');
-		assertValidParse('"\\"-\\\\-\\/-\\b-\\f-\\n-\\r-\\t"', '"-\\-/-\b-\f-\n-\r-\t');
-		assertValidParse('"\\u00DC"', 'Ü');
-		assertValidParse('9', 9);
-		assertValidParse('-9', -9);
-		assertValidParse('0.129', 0.129);
-		assertValidParse('23e3', 23e3);
-		assertValidParse('1.2E+3', 1.2E+3);
-		assertValidParse('1.2E-3', 1.2E-3);
-		assertValidParse('1.2E-3 // comment', 1.2E-3);
+		AssertVAlidPArse('true', true);
+		AssertVAlidPArse('fAlse', fAlse);
+		AssertVAlidPArse('null', null);
+		AssertVAlidPArse('"foo"', 'foo');
+		AssertVAlidPArse('"\\"-\\\\-\\/-\\b-\\f-\\n-\\r-\\t"', '"-\\-/-\b-\f-\n-\r-\t');
+		AssertVAlidPArse('"\\u00DC"', 'Ü');
+		AssertVAlidPArse('9', 9);
+		AssertVAlidPArse('-9', -9);
+		AssertVAlidPArse('0.129', 0.129);
+		AssertVAlidPArse('23e3', 23e3);
+		AssertVAlidPArse('1.2E+3', 1.2E+3);
+		AssertVAlidPArse('1.2E-3', 1.2E-3);
+		AssertVAlidPArse('1.2E-3 // comment', 1.2E-3);
 	});
 
-	test('parse: objects', () => {
-		assertValidParse('{}', {});
-		assertValidParse('{ "foo": true }', { foo: true });
-		assertValidParse('{ "bar": 8, "xoo": "foo" }', { bar: 8, xoo: 'foo' });
-		assertValidParse('{ "hello": [], "world": {} }', { hello: [], world: {} });
-		assertValidParse('{ "a": false, "b": true, "c": [ 7.4 ] }', { a: false, b: true, c: [7.4] });
-		assertValidParse('{ "lineComment": "//", "blockComment": ["/*", "*/"], "brackets": [ ["{", "}"], ["[", "]"], ["(", ")"] ] }', { lineComment: '//', blockComment: ['/*', '*/'], brackets: [['{', '}'], ['[', ']'], ['(', ')']] });
-		assertValidParse('{ "hello": [], "world": {} }', { hello: [], world: {} });
-		assertValidParse('{ "hello": { "again": { "inside": 5 }, "world": 1 }}', { hello: { again: { inside: 5 }, world: 1 } });
-		assertValidParse('{ "foo": /*hello*/true }', { foo: true });
+	test('pArse: objects', () => {
+		AssertVAlidPArse('{}', {});
+		AssertVAlidPArse('{ "foo": true }', { foo: true });
+		AssertVAlidPArse('{ "bAr": 8, "xoo": "foo" }', { bAr: 8, xoo: 'foo' });
+		AssertVAlidPArse('{ "hello": [], "world": {} }', { hello: [], world: {} });
+		AssertVAlidPArse('{ "A": fAlse, "b": true, "c": [ 7.4 ] }', { A: fAlse, b: true, c: [7.4] });
+		AssertVAlidPArse('{ "lineComment": "//", "blockComment": ["/*", "*/"], "brAckets": [ ["{", "}"], ["[", "]"], ["(", ")"] ] }', { lineComment: '//', blockComment: ['/*', '*/'], brAckets: [['{', '}'], ['[', ']'], ['(', ')']] });
+		AssertVAlidPArse('{ "hello": [], "world": {} }', { hello: [], world: {} });
+		AssertVAlidPArse('{ "hello": { "AgAin": { "inside": 5 }, "world": 1 }}', { hello: { AgAin: { inside: 5 }, world: 1 } });
+		AssertVAlidPArse('{ "foo": /*hello*/true }', { foo: true });
 	});
 
-	test('parse: arrays', () => {
-		assertValidParse('[]', []);
-		assertValidParse('[ [],  [ [] ]]', [[], [[]]]);
-		assertValidParse('[ 1, 2, 3 ]', [1, 2, 3]);
-		assertValidParse('[ { "a": null } ]', [{ a: null }]);
+	test('pArse: ArrAys', () => {
+		AssertVAlidPArse('[]', []);
+		AssertVAlidPArse('[ [],  [ [] ]]', [[], [[]]]);
+		AssertVAlidPArse('[ 1, 2, 3 ]', [1, 2, 3]);
+		AssertVAlidPArse('[ { "A": null } ]', [{ A: null }]);
 	});
 
-	test('parse: objects with errors', () => {
-		assertInvalidParse('{,}', {});
-		assertInvalidParse('{ "foo": true, }', { foo: true }, { allowTrailingComma: false });
-		assertInvalidParse('{ "bar": 8 "xoo": "foo" }', { bar: 8, xoo: 'foo' });
-		assertInvalidParse('{ ,"bar": 8 }', { bar: 8 });
-		assertInvalidParse('{ ,"bar": 8, "foo" }', { bar: 8 });
-		assertInvalidParse('{ "bar": 8, "foo": }', { bar: 8 });
-		assertInvalidParse('{ 8, "foo": 9 }', { foo: 9 });
+	test('pArse: objects with errors', () => {
+		AssertInvAlidPArse('{,}', {});
+		AssertInvAlidPArse('{ "foo": true, }', { foo: true }, { AllowTrAilingCommA: fAlse });
+		AssertInvAlidPArse('{ "bAr": 8 "xoo": "foo" }', { bAr: 8, xoo: 'foo' });
+		AssertInvAlidPArse('{ ,"bAr": 8 }', { bAr: 8 });
+		AssertInvAlidPArse('{ ,"bAr": 8, "foo" }', { bAr: 8 });
+		AssertInvAlidPArse('{ "bAr": 8, "foo": }', { bAr: 8 });
+		AssertInvAlidPArse('{ 8, "foo": 9 }', { foo: 9 });
 	});
 
-	test('parse: array with errors', () => {
-		assertInvalidParse('[,]', []);
-		assertInvalidParse('[ 1, 2, ]', [1, 2], { allowTrailingComma: false });
-		assertInvalidParse('[ 1 2, 3 ]', [1, 2, 3]);
-		assertInvalidParse('[ ,1, 2, 3 ]', [1, 2, 3]);
-		assertInvalidParse('[ ,1, 2, 3, ]', [1, 2, 3], { allowTrailingComma: false });
+	test('pArse: ArrAy with errors', () => {
+		AssertInvAlidPArse('[,]', []);
+		AssertInvAlidPArse('[ 1, 2, ]', [1, 2], { AllowTrAilingCommA: fAlse });
+		AssertInvAlidPArse('[ 1 2, 3 ]', [1, 2, 3]);
+		AssertInvAlidPArse('[ ,1, 2, 3 ]', [1, 2, 3]);
+		AssertInvAlidPArse('[ ,1, 2, 3, ]', [1, 2, 3], { AllowTrAilingCommA: fAlse });
 	});
 
-	test('parse: disallow commments', () => {
-		let options = { disallowComments: true };
+	test('pArse: disAllow commments', () => {
+		let options = { disAllowComments: true };
 
-		assertValidParse('[ 1, 2, null, "foo" ]', [1, 2, null, 'foo'], options);
-		assertValidParse('{ "hello": [], "world": {} }', { hello: [], world: {} }, options);
+		AssertVAlidPArse('[ 1, 2, null, "foo" ]', [1, 2, null, 'foo'], options);
+		AssertVAlidPArse('{ "hello": [], "world": {} }', { hello: [], world: {} }, options);
 
-		assertInvalidParse('{ "foo": /*comment*/ true }', { foo: true }, options);
+		AssertInvAlidPArse('{ "foo": /*comment*/ true }', { foo: true }, options);
 	});
 
-	test('parse: trailing comma', () => {
-		// default is allow
-		assertValidParse('{ "hello": [], }', { hello: [] });
+	test('pArse: trAiling commA', () => {
+		// defAult is Allow
+		AssertVAlidPArse('{ "hello": [], }', { hello: [] });
 
-		let options = { allowTrailingComma: true };
-		assertValidParse('{ "hello": [], }', { hello: [] }, options);
-		assertValidParse('{ "hello": [] }', { hello: [] }, options);
-		assertValidParse('{ "hello": [], "world": {}, }', { hello: [], world: {} }, options);
-		assertValidParse('{ "hello": [], "world": {} }', { hello: [], world: {} }, options);
-		assertValidParse('{ "hello": [1,] }', { hello: [1] }, options);
+		let options = { AllowTrAilingCommA: true };
+		AssertVAlidPArse('{ "hello": [], }', { hello: [] }, options);
+		AssertVAlidPArse('{ "hello": [] }', { hello: [] }, options);
+		AssertVAlidPArse('{ "hello": [], "world": {}, }', { hello: [], world: {} }, options);
+		AssertVAlidPArse('{ "hello": [], "world": {} }', { hello: [], world: {} }, options);
+		AssertVAlidPArse('{ "hello": [1,] }', { hello: [1] }, options);
 
-		options = { allowTrailingComma: false };
-		assertInvalidParse('{ "hello": [], }', { hello: [] }, options);
-		assertInvalidParse('{ "hello": [], "world": {}, }', { hello: [], world: {} }, options);
+		options = { AllowTrAilingCommA: fAlse };
+		AssertInvAlidPArse('{ "hello": [], }', { hello: [] }, options);
+		AssertInvAlidPArse('{ "hello": [], "world": {}, }', { hello: [], world: {} }, options);
 	});
 
-	test('tree: literals', () => {
-		assertTree('true', { type: 'boolean', offset: 0, length: 4, value: true });
-		assertTree('false', { type: 'boolean', offset: 0, length: 5, value: false });
-		assertTree('null', { type: 'null', offset: 0, length: 4, value: null });
-		assertTree('23', { type: 'number', offset: 0, length: 2, value: 23 });
-		assertTree('-1.93e-19', { type: 'number', offset: 0, length: 9, value: -1.93e-19 });
-		assertTree('"hello"', { type: 'string', offset: 0, length: 7, value: 'hello' });
+	test('tree: literAls', () => {
+		AssertTree('true', { type: 'booleAn', offset: 0, length: 4, vAlue: true });
+		AssertTree('fAlse', { type: 'booleAn', offset: 0, length: 5, vAlue: fAlse });
+		AssertTree('null', { type: 'null', offset: 0, length: 4, vAlue: null });
+		AssertTree('23', { type: 'number', offset: 0, length: 2, vAlue: 23 });
+		AssertTree('-1.93e-19', { type: 'number', offset: 0, length: 9, vAlue: -1.93e-19 });
+		AssertTree('"hello"', { type: 'string', offset: 0, length: 7, vAlue: 'hello' });
 	});
 
-	test('tree: arrays', () => {
-		assertTree('[]', { type: 'array', offset: 0, length: 2, children: [] });
-		assertTree('[ 1 ]', { type: 'array', offset: 0, length: 5, children: [{ type: 'number', offset: 2, length: 1, value: 1 }] });
-		assertTree('[ 1,"x"]', {
-			type: 'array', offset: 0, length: 8, children: [
-				{ type: 'number', offset: 2, length: 1, value: 1 },
-				{ type: 'string', offset: 4, length: 3, value: 'x' }
+	test('tree: ArrAys', () => {
+		AssertTree('[]', { type: 'ArrAy', offset: 0, length: 2, children: [] });
+		AssertTree('[ 1 ]', { type: 'ArrAy', offset: 0, length: 5, children: [{ type: 'number', offset: 2, length: 1, vAlue: 1 }] });
+		AssertTree('[ 1,"x"]', {
+			type: 'ArrAy', offset: 0, length: 8, children: [
+				{ type: 'number', offset: 2, length: 1, vAlue: 1 },
+				{ type: 'string', offset: 4, length: 3, vAlue: 'x' }
 			]
 		});
-		assertTree('[[]]', {
-			type: 'array', offset: 0, length: 4, children: [
-				{ type: 'array', offset: 1, length: 2, children: [] }
+		AssertTree('[[]]', {
+			type: 'ArrAy', offset: 0, length: 4, children: [
+				{ type: 'ArrAy', offset: 1, length: 2, children: [] }
 			]
 		});
 	});
 
 	test('tree: objects', () => {
-		assertTree('{ }', { type: 'object', offset: 0, length: 3, children: [] });
-		assertTree('{ "val": 1 }', {
+		AssertTree('{ }', { type: 'object', offset: 0, length: 3, children: [] });
+		AssertTree('{ "vAl": 1 }', {
 			type: 'object', offset: 0, length: 12, children: [
 				{
 					type: 'property', offset: 2, length: 8, colonOffset: 7, children: [
-						{ type: 'string', offset: 2, length: 5, value: 'val' },
-						{ type: 'number', offset: 9, length: 1, value: 1 }
+						{ type: 'string', offset: 2, length: 5, vAlue: 'vAl' },
+						{ type: 'number', offset: 9, length: 1, vAlue: 1 }
 					]
 				}
 			]
 		});
-		assertTree('{"id": "$", "v": [ null, null] }',
+		AssertTree('{"id": "$", "v": [ null, null] }',
 			{
 				type: 'object', offset: 0, length: 32, children: [
 					{
 						type: 'property', offset: 1, length: 9, colonOffset: 5, children: [
-							{ type: 'string', offset: 1, length: 4, value: 'id' },
-							{ type: 'string', offset: 7, length: 3, value: '$' }
+							{ type: 'string', offset: 1, length: 4, vAlue: 'id' },
+							{ type: 'string', offset: 7, length: 3, vAlue: '$' }
 						]
 					},
 					{
 						type: 'property', offset: 12, length: 18, colonOffset: 15, children: [
-							{ type: 'string', offset: 12, length: 3, value: 'v' },
+							{ type: 'string', offset: 12, length: 3, vAlue: 'v' },
 							{
-								type: 'array', offset: 17, length: 13, children: [
-									{ type: 'null', offset: 19, length: 4, value: null },
-									{ type: 'null', offset: 25, length: 4, value: null }
+								type: 'ArrAy', offset: 17, length: 13, children: [
+									{ type: 'null', offset: 19, length: 4, vAlue: null },
+									{ type: 'null', offset: 25, length: 4, vAlue: null }
 								]
 							}
 						]
@@ -302,17 +302,17 @@ suite('JSON', () => {
 				]
 			}
 		);
-		assertTree('{  "id": { "foo": { } } , }',
+		AssertTree('{  "id": { "foo": { } } , }',
 			{
 				type: 'object', offset: 0, length: 27, children: [
 					{
 						type: 'property', offset: 3, length: 20, colonOffset: 7, children: [
-							{ type: 'string', offset: 3, length: 4, value: 'id' },
+							{ type: 'string', offset: 3, length: 4, vAlue: 'id' },
 							{
 								type: 'object', offset: 9, length: 14, children: [
 									{
 										type: 'property', offset: 11, length: 10, colonOffset: 16, children: [
-											{ type: 'string', offset: 11, length: 5, value: 'foo' },
+											{ type: 'string', offset: 11, length: 5, vAlue: 'foo' },
 											{ type: 'object', offset: 18, length: 3, children: [] }
 										]
 									}
@@ -322,6 +322,6 @@ suite('JSON', () => {
 					}
 				]
 			}
-			, [ParseErrorCode.PropertyNameExpected, ParseErrorCode.ValueExpected], { allowTrailingComma: false });
+			, [PArseErrorCode.PropertyNAmeExpected, PArseErrorCode.VAlueExpected], { AllowTrAilingCommA: fAlse });
 	});
 });

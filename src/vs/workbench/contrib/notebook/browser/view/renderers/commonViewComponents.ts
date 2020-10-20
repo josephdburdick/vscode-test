@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { MenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { MenuItemAction } from 'vs/platform/actions/common/actions';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { renderCodicons } from 'vs/base/browser/codicons';
+import * As DOM from 'vs/bAse/browser/dom';
+import { MenuEntryActionViewItem } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { MenuItemAction } from 'vs/plAtform/Actions/common/Actions';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { renderCodicons } from 'vs/bAse/browser/codicons';
 
-export class CodiconActionViewItem extends MenuEntryActionViewItem {
+export clAss CodiconActionViewItem extends MenuEntryActionViewItem {
 	constructor(
-		readonly _action: MenuItemAction,
+		reAdonly _Action: MenuItemAction,
 		keybindingService: IKeybindingService,
-		notificationService: INotificationService,
+		notificAtionService: INotificAtionService,
 		contextMenuService: IContextMenuService
 	) {
-		super(_action, keybindingService, notificationService, contextMenuService);
+		super(_Action, keybindingService, notificAtionService, contextMenuService);
 	}
-	updateLabel(): void {
-		if (this.options.label && this.label) {
-			DOM.reset(this.label, ...renderCodicons(this._commandAction.label ?? ''));
+	updAteLAbel(): void {
+		if (this.options.lAbel && this.lAbel) {
+			DOM.reset(this.lAbel, ...renderCodicons(this._commAndAction.lAbel ?? ''));
 		}
 	}
 }

@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import * as os from 'os';
-import { extract } from 'vs/base/node/zip';
-import { generateUuid } from 'vs/base/common/uuid';
-import { rimraf, exists } from 'vs/base/node/pfs';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { createCancelablePromise } from 'vs/base/common/async';
+import * As Assert from 'Assert';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As os from 'os';
+import { extrAct } from 'vs/bAse/node/zip';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { rimrAf, exists } from 'vs/bAse/node/pfs';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
+import { creAteCAncelAblePromise } from 'vs/bAse/common/Async';
 
-const fixtures = getPathFromAmdModule(require, './fixtures');
+const fixtures = getPAthFromAmdModule(require, './fixtures');
 
 suite('Zip', () => {
 
-	test('extract should handle directories', () => {
-		const fixture = path.join(fixtures, 'extract.zip');
-		const target = path.join(os.tmpdir(), generateUuid());
+	test('extrAct should hAndle directories', () => {
+		const fixture = pAth.join(fixtures, 'extrAct.zip');
+		const tArget = pAth.join(os.tmpdir(), generAteUuid());
 
-		return createCancelablePromise(token => extract(fixture, target, {}, token)
-			.then(() => exists(path.join(target, 'extension')))
-			.then(exists => assert(exists))
-			.then(() => rimraf(target)));
+		return creAteCAncelAblePromise(token => extrAct(fixture, tArget, {}, token)
+			.then(() => exists(pAth.join(tArget, 'extension')))
+			.then(exists => Assert(exists))
+			.then(() => rimrAf(tArget)));
 	});
 });

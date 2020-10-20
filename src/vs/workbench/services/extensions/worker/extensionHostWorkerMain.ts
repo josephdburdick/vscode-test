@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 (function () {
 
-	let MonacoEnvironment = (<any>self).MonacoEnvironment;
-	let monacoBaseUrl = MonacoEnvironment && MonacoEnvironment.baseUrl ? MonacoEnvironment.baseUrl : '../../../../../';
+	let MonAcoEnvironment = (<Any>self).MonAcoEnvironment;
+	let monAcoBAseUrl = MonAcoEnvironment && MonAcoEnvironment.bAseUrl ? MonAcoEnvironment.bAseUrl : '../../../../../';
 
-	if (typeof (<any>self).define !== 'function' || !(<any>self).define.amd) {
-		importScripts(monacoBaseUrl + 'vs/loader.js');
+	if (typeof (<Any>self).define !== 'function' || !(<Any>self).define.Amd) {
+		importScripts(monAcoBAseUrl + 'vs/loAder.js');
 	}
 
 	require.config({
-		baseUrl: monacoBaseUrl,
-		catchError: true,
-		createTrustedScriptURL: (value: string) => value
+		bAseUrl: monAcoBAseUrl,
+		cAtchError: true,
+		creAteTrustedScriptURL: (vAlue: string) => vAlue
 	});
 
 	require(['vs/workbench/services/extensions/worker/extensionHostWorker'], () => { }, err => console.error(err));

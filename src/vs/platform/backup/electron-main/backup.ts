@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceIdentifier, isWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
-import { IEmptyWindowBackupInfo } from 'vs/platform/backup/node/backup';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWorkspAceIdentifier, isWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { URI } from 'vs/bAse/common/uri';
+import { IEmptyWindowBAckupInfo } from 'vs/plAtform/bAckup/node/bAckup';
 
-export const IBackupMainService = createDecorator<IBackupMainService>('backupMainService');
+export const IBAckupMAinService = creAteDecorAtor<IBAckupMAinService>('bAckupMAinService');
 
-export interface IWorkspaceBackupInfo {
-	workspace: IWorkspaceIdentifier;
+export interfAce IWorkspAceBAckupInfo {
+	workspAce: IWorkspAceIdentifier;
 	remoteAuthority?: string;
 }
 
-export function isWorkspaceBackupInfo(obj: unknown): obj is IWorkspaceBackupInfo {
-	const candidate = obj as IWorkspaceBackupInfo;
+export function isWorkspAceBAckupInfo(obj: unknown): obj is IWorkspAceBAckupInfo {
+	const cAndidAte = obj As IWorkspAceBAckupInfo;
 
-	return candidate && isWorkspaceIdentifier(candidate.workspace);
+	return cAndidAte && isWorkspAceIdentifier(cAndidAte.workspAce);
 }
 
-export interface IBackupMainService {
-	readonly _serviceBrand: undefined;
+export interfAce IBAckupMAinService {
+	reAdonly _serviceBrAnd: undefined;
 
-	isHotExitEnabled(): boolean;
+	isHotExitEnAbled(): booleAn;
 
-	getWorkspaceBackups(): IWorkspaceBackupInfo[];
-	getFolderBackupPaths(): URI[];
-	getEmptyWindowBackupPaths(): IEmptyWindowBackupInfo[];
+	getWorkspAceBAckups(): IWorkspAceBAckupInfo[];
+	getFolderBAckupPAths(): URI[];
+	getEmptyWindowBAckupPAths(): IEmptyWindowBAckupInfo[];
 
-	registerWorkspaceBackupSync(workspace: IWorkspaceBackupInfo, migrateFrom?: string): string;
-	registerFolderBackupSync(folderUri: URI): string;
-	registerEmptyWindowBackupSync(backupFolder?: string, remoteAuthority?: string): string;
+	registerWorkspAceBAckupSync(workspAce: IWorkspAceBAckupInfo, migrAteFrom?: string): string;
+	registerFolderBAckupSync(folderUri: URI): string;
+	registerEmptyWindowBAckupSync(bAckupFolder?: string, remoteAuthority?: string): string;
 
-	unregisterWorkspaceBackupSync(workspace: IWorkspaceIdentifier): void;
-	unregisterFolderBackupSync(folderUri: URI): void;
-	unregisterEmptyWindowBackupSync(backupFolder: string): void;
+	unregisterWorkspAceBAckupSync(workspAce: IWorkspAceIdentifier): void;
+	unregisterFolderBAckupSync(folderUri: URI): void;
+	unregisterEmptyWindowBAckupSync(bAckupFolder: string): void;
 
 	/**
-	 * All folders or workspaces that are known to have
-	 * backups stored. This call is long running because
-	 * it checks for each backup location if any backups
-	 * are stored.
+	 * All folders or workspAces thAt Are known to hAve
+	 * bAckups stored. This cAll is long running becAuse
+	 * it checks for eAch bAckup locAtion if Any bAckups
+	 * Are stored.
 	 */
-	getDirtyWorkspaces(): Promise<Array<IWorkspaceIdentifier | URI>>;
+	getDirtyWorkspAces(): Promise<ArrAy<IWorkspAceIdentifier | URI>>;
 }

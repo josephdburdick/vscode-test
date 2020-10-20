@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
-import { URI } from 'vs/base/common/uri';
-import * as nls from 'vs/nls';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IJSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditing';
-import { IWorkspacesService, isUntitledWorkspace, IWorkspaceIdentifier, hasWorkspaceFileExtension } from 'vs/platform/workspaces/common/workspaces';
-import { WorkspaceService } from 'vs/workbench/services/configuration/browser/configurationService';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { IWorkspAceEditingService } from 'vs/workbench/services/workspAces/common/workspAceEditing';
+import { URI } from 'vs/bAse/common/uri';
+import * As nls from 'vs/nls';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IJSONEditingService } from 'vs/workbench/services/configurAtion/common/jsonEditing';
+import { IWorkspAcesService, isUntitledWorkspAce, IWorkspAceIdentifier, hAsWorkspAceFileExtension } from 'vs/plAtform/workspAces/common/workspAces';
+import { WorkspAceService } from 'vs/workbench/services/configurAtion/browser/configurAtionService';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { basename } from 'vs/base/common/resources';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IFileService } from 'vs/platform/files/common/files';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { ILifecycleService, ShutdownReason } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IFileDialogService, IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { ILifecycleService, ShutdownReAson } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IFileDiAlogService, IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { AbstractWorkspaceEditingService } from 'vs/workbench/services/workspaces/browser/abstractWorkspaceEditingService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { isMacintosh } from 'vs/base/common/platform';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
-import { BackupFileService } from 'vs/workbench/services/backup/common/backupFileService';
+import { AbstrActWorkspAceEditingService } from 'vs/workbench/services/workspAces/browser/AbstrActWorkspAceEditingService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { mnemonicButtonLAbel } from 'vs/bAse/common/lAbels';
+import { BAckupFileService } from 'vs/workbench/services/bAckup/common/bAckupFileService';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
-export class NativeWorkspaceEditingService extends AbstractWorkspaceEditingService {
+export clAss NAtiveWorkspAceEditingService extends AbstrActWorkspAceEditingService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
 		@IJSONEditingService jsonEditingService: IJSONEditingService,
-		@IWorkspaceContextService contextService: WorkspaceService,
-		@INativeHostService private nativeHostService: INativeHostService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IStorageService private storageService: IStorageService,
-		@IExtensionService private extensionService: IExtensionService,
-		@IBackupFileService private backupFileService: IBackupFileService,
-		@INotificationService notificationService: INotificationService,
-		@ICommandService commandService: ICommandService,
+		@IWorkspAceContextService contextService: WorkspAceService,
+		@INAtiveHostService privAte nAtiveHostService: INAtiveHostService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IStorAgeService privAte storAgeService: IStorAgeService,
+		@IExtensionService privAte extensionService: IExtensionService,
+		@IBAckupFileService privAte bAckupFileService: IBAckupFileService,
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@ICommAndService commAndService: ICommAndService,
 		@IFileService fileService: IFileService,
 		@ITextFileService textFileService: ITextFileService,
-		@IWorkspacesService workspacesService: IWorkspacesService,
-		@INativeWorkbenchEnvironmentService protected environmentService: INativeWorkbenchEnvironmentService,
-		@IFileDialogService fileDialogService: IFileDialogService,
-		@IDialogService protected dialogService: IDialogService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@ILabelService private readonly labelService: ILabelService,
+		@IWorkspAcesService workspAcesService: IWorkspAcesService,
+		@INAtiveWorkbenchEnvironmentService protected environmentService: INAtiveWorkbenchEnvironmentService,
+		@IFileDiAlogService fileDiAlogService: IFileDiAlogService,
+		@IDiAlogService protected diAlogService: IDiAlogService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
 		@IHostService hostService: IHostService,
 		@IUriIdentityService uriIdentityService: IUriIdentityService
 	) {
-		super(jsonEditingService, contextService, configurationService, notificationService, commandService, fileService, textFileService, workspacesService, environmentService, fileDialogService, dialogService, hostService, uriIdentityService);
+		super(jsonEditingService, contextService, configurAtionService, notificAtionService, commAndService, fileService, textFileService, workspAcesService, environmentService, fileDiAlogService, diAlogService, hostService, uriIdentityService);
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 		this.lifecycleService.onBeforeShutdown(e => {
-			const saveOperation = this.saveUntitledBeforeShutdown(e.reason);
-			if (saveOperation) {
-				e.veto(saveOperation);
+			const sAveOperAtion = this.sAveUntitledBeforeShutdown(e.reAson);
+			if (sAveOperAtion) {
+				e.veto(sAveOperAtion);
 			}
 		});
 	}
 
-	private async saveUntitledBeforeShutdown(reason: ShutdownReason): Promise<boolean> {
-		if (reason !== ShutdownReason.LOAD && reason !== ShutdownReason.CLOSE) {
-			return false; // only interested when window is closing or loading
+	privAte Async sAveUntitledBeforeShutdown(reAson: ShutdownReAson): Promise<booleAn> {
+		if (reAson !== ShutdownReAson.LOAD && reAson !== ShutdownReAson.CLOSE) {
+			return fAlse; // only interested when window is closing or loAding
 		}
 
-		const workspaceIdentifier = this.getCurrentWorkspaceIdentifier();
-		if (!workspaceIdentifier || !isUntitledWorkspace(workspaceIdentifier.configPath, this.environmentService)) {
-			return false; // only care about untitled workspaces to ask for saving
+		const workspAceIdentifier = this.getCurrentWorkspAceIdentifier();
+		if (!workspAceIdentifier || !isUntitledWorkspAce(workspAceIdentifier.configPAth, this.environmentService)) {
+			return fAlse; // only cAre About untitled workspAces to Ask for sAving
 		}
 
-		const windowCount = await this.nativeHostService.getWindowCount();
-		if (reason === ShutdownReason.CLOSE && !isMacintosh && windowCount === 1) {
-			return false; // Windows/Linux: quits when last window is closed, so do not ask then
+		const windowCount = AwAit this.nAtiveHostService.getWindowCount();
+		if (reAson === ShutdownReAson.CLOSE && !isMAcintosh && windowCount === 1) {
+			return fAlse; // Windows/Linux: quits when lAst window is closed, so do not Ask then
 		}
 
 		enum ConfirmResult {
@@ -92,105 +92,105 @@ export class NativeWorkspaceEditingService extends AbstractWorkspaceEditingServi
 			CANCEL
 		}
 
-		const buttons: { label: string; result: ConfirmResult; }[] = [
-			{ label: mnemonicButtonLabel(nls.localize('save', "Save")), result: ConfirmResult.SAVE },
-			{ label: mnemonicButtonLabel(nls.localize('doNotSave', "Don't Save")), result: ConfirmResult.DONT_SAVE },
-			{ label: nls.localize('cancel', "Cancel"), result: ConfirmResult.CANCEL }
+		const buttons: { lAbel: string; result: ConfirmResult; }[] = [
+			{ lAbel: mnemonicButtonLAbel(nls.locAlize('sAve', "SAve")), result: ConfirmResult.SAVE },
+			{ lAbel: mnemonicButtonLAbel(nls.locAlize('doNotSAve', "Don't SAve")), result: ConfirmResult.DONT_SAVE },
+			{ lAbel: nls.locAlize('cAncel', "CAncel"), result: ConfirmResult.CANCEL }
 		];
-		const message = nls.localize('saveWorkspaceMessage', "Do you want to save your workspace configuration as a file?");
-		const detail = nls.localize('saveWorkspaceDetail', "Save your workspace if you plan to open it again.");
-		const cancelId = 2;
+		const messAge = nls.locAlize('sAveWorkspAceMessAge', "Do you wAnt to sAve your workspAce configurAtion As A file?");
+		const detAil = nls.locAlize('sAveWorkspAceDetAil', "SAve your workspAce if you plAn to open it AgAin.");
+		const cAncelId = 2;
 
-		const { choice } = await this.dialogService.show(Severity.Warning, message, buttons.map(button => button.label), { detail, cancelId });
+		const { choice } = AwAit this.diAlogService.show(Severity.WArning, messAge, buttons.mAp(button => button.lAbel), { detAil, cAncelId });
 
 		switch (buttons[choice].result) {
 
-			// Cancel: veto unload
-			case ConfirmResult.CANCEL:
+			// CAncel: veto unloAd
+			cAse ConfirmResult.CANCEL:
 				return true;
 
-			// Don't Save: delete workspace
-			case ConfirmResult.DONT_SAVE:
-				this.workspacesService.deleteUntitledWorkspace(workspaceIdentifier);
-				return false;
+			// Don't SAve: delete workspAce
+			cAse ConfirmResult.DONT_SAVE:
+				this.workspAcesService.deleteUntitledWorkspAce(workspAceIdentifier);
+				return fAlse;
 
-			// Save: save workspace, but do not veto unload if path provided
-			case ConfirmResult.SAVE: {
-				const newWorkspacePath = await this.pickNewWorkspacePath();
-				if (!newWorkspacePath || !hasWorkspaceFileExtension(newWorkspacePath)) {
-					return true; // keep veto if no target was provided
+			// SAve: sAve workspAce, but do not veto unloAd if pAth provided
+			cAse ConfirmResult.SAVE: {
+				const newWorkspAcePAth = AwAit this.pickNewWorkspAcePAth();
+				if (!newWorkspAcePAth || !hAsWorkspAceFileExtension(newWorkspAcePAth)) {
+					return true; // keep veto if no tArget wAs provided
 				}
 
 				try {
-					await this.saveWorkspaceAs(workspaceIdentifier, newWorkspacePath);
+					AwAit this.sAveWorkspAceAs(workspAceIdentifier, newWorkspAcePAth);
 
-					// Make sure to add the new workspace to the history to find it again
-					const newWorkspaceIdentifier = await this.workspacesService.getWorkspaceIdentifier(newWorkspacePath);
-					this.workspacesService.addRecentlyOpened([{
-						label: this.labelService.getWorkspaceLabel(newWorkspaceIdentifier, { verbose: true }),
-						workspace: newWorkspaceIdentifier
+					// MAke sure to Add the new workspAce to the history to find it AgAin
+					const newWorkspAceIdentifier = AwAit this.workspAcesService.getWorkspAceIdentifier(newWorkspAcePAth);
+					this.workspAcesService.AddRecentlyOpened([{
+						lAbel: this.lAbelService.getWorkspAceLAbel(newWorkspAceIdentifier, { verbose: true }),
+						workspAce: newWorkspAceIdentifier
 					}]);
 
 					// Delete the untitled one
-					this.workspacesService.deleteUntitledWorkspace(workspaceIdentifier);
-				} catch (error) {
+					this.workspAcesService.deleteUntitledWorkspAce(workspAceIdentifier);
+				} cAtch (error) {
 					// ignore
 				}
 
-				return false;
+				return fAlse;
 			}
 		}
 	}
 
-	async isValidTargetWorkspacePath(path: URI): Promise<boolean> {
-		const windows = await this.nativeHostService.getWindows();
+	Async isVAlidTArgetWorkspAcePAth(pAth: URI): Promise<booleAn> {
+		const windows = AwAit this.nAtiveHostService.getWindows();
 
-		// Prevent overwriting a workspace that is currently opened in another window
-		if (windows.some(window => !!window.workspace && this.uriIdentityService.extUri.isEqual(window.workspace.configPath, path))) {
-			await this.dialogService.show(
+		// Prevent overwriting A workspAce thAt is currently opened in Another window
+		if (windows.some(window => !!window.workspAce && this.uriIdentityService.extUri.isEquAl(window.workspAce.configPAth, pAth))) {
+			AwAit this.diAlogService.show(
 				Severity.Info,
-				nls.localize('workspaceOpenedMessage', "Unable to save workspace '{0}'", basename(path)),
-				[nls.localize('ok', "OK")],
+				nls.locAlize('workspAceOpenedMessAge', "UnAble to sAve workspAce '{0}'", bAsenAme(pAth)),
+				[nls.locAlize('ok', "OK")],
 				{
-					detail: nls.localize('workspaceOpenedDetail', "The workspace is already opened in another window. Please close that window first and then try again.")
+					detAil: nls.locAlize('workspAceOpenedDetAil', "The workspAce is AlreAdy opened in Another window. PleAse close thAt window first And then try AgAin.")
 				}
 			);
 
-			return false;
+			return fAlse;
 		}
 
 		return true; // OK
 	}
 
-	async enterWorkspace(path: URI): Promise<void> {
-		const result = await this.doEnterWorkspace(path);
+	Async enterWorkspAce(pAth: URI): Promise<void> {
+		const result = AwAit this.doEnterWorkspAce(pAth);
 		if (result) {
 
-			// Migrate storage to new workspace
-			await this.migrateStorage(result.workspace);
+			// MigrAte storAge to new workspAce
+			AwAit this.migrAteStorAge(result.workspAce);
 
-			// Reinitialize backup service
-			this.environmentService.updateBackupPath(result.backupPath);
-			if (this.backupFileService instanceof BackupFileService) {
-				this.backupFileService.reinitialize();
+			// ReinitiAlize bAckup service
+			this.environmentService.updAteBAckupPAth(result.bAckupPAth);
+			if (this.bAckupFileService instAnceof BAckupFileService) {
+				this.bAckupFileService.reinitiAlize();
 			}
 		}
 
-		// TODO@aeschli: workaround until restarting works
+		// TODO@Aeschli: workAround until restArting works
 		if (this.environmentService.remoteAuthority) {
-			this.hostService.reload();
+			this.hostService.reloAd();
 		}
 
-		// Restart the extension host: entering a workspace means a new location for
-		// storage and potentially a change in the workspace.rootPath property.
+		// RestArt the extension host: entering A workspAce meAns A new locAtion for
+		// storAge And potentiAlly A chAnge in the workspAce.rootPAth property.
 		else {
-			this.extensionService.restartExtensionHost();
+			this.extensionService.restArtExtensionHost();
 		}
 	}
 
-	private migrateStorage(toWorkspace: IWorkspaceIdentifier): Promise<void> {
-		return this.storageService.migrate(toWorkspace);
+	privAte migrAteStorAge(toWorkspAce: IWorkspAceIdentifier): Promise<void> {
+		return this.storAgeService.migrAte(toWorkspAce);
 	}
 }
 
-registerSingleton(IWorkspaceEditingService, NativeWorkspaceEditingService, true);
+registerSingleton(IWorkspAceEditingService, NAtiveWorkspAceEditingService, true);

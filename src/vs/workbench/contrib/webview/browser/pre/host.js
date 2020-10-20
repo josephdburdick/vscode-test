@@ -1,126 +1,126 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 (function () {
-	const id = document.location.search.match(/\bid=([\w-]+)/)[1];
-	const onElectron = /platform=electron/.test(document.location.search);
+	const id = document.locAtion.seArch.mAtch(/\bid=([\w-]+)/)[1];
+	const onElectron = /plAtform=electron/.test(document.locAtion.seArch);
 
-	const hostMessaging = new class HostMessaging {
+	const hostMessAging = new clAss HostMessAging {
 		constructor() {
-			this.handlers = new Map();
-			window.addEventListener('message', (e) => {
-				if (e.data && (e.data.command === 'onmessage' || e.data.command === 'do-update-state')) {
-					// Came from inner iframe
-					this.postMessage(e.data.command, e.data.data);
+			this.hAndlers = new MAp();
+			window.AddEventListener('messAge', (e) => {
+				if (e.dAtA && (e.dAtA.commAnd === 'onmessAge' || e.dAtA.commAnd === 'do-updAte-stAte')) {
+					// CAme from inner ifrAme
+					this.postMessAge(e.dAtA.commAnd, e.dAtA.dAtA);
 					return;
 				}
 
-				const channel = e.data.channel;
-				const handler = this.handlers.get(channel);
-				if (handler) {
-					handler(e, e.data.args);
+				const chAnnel = e.dAtA.chAnnel;
+				const hAndler = this.hAndlers.get(chAnnel);
+				if (hAndler) {
+					hAndler(e, e.dAtA.Args);
 				} else {
-					console.log('no handler for ', e);
+					console.log('no hAndler for ', e);
 				}
 			});
 		}
 
-		postMessage(channel, data) {
-			window.parent.postMessage({ target: id, channel, data }, '*');
+		postMessAge(chAnnel, dAtA) {
+			window.pArent.postMessAge({ tArget: id, chAnnel, dAtA }, '*');
 		}
 
-		onMessage(channel, handler) {
-			this.handlers.set(channel, handler);
+		onMessAge(chAnnel, hAndler) {
+			this.hAndlers.set(chAnnel, hAndler);
 		}
 	}();
 
-	function fatalError(/** @type {string} */ message) {
-		console.error(`Webview fatal error: ${message}`);
-		hostMessaging.postMessage('fatal-error', { message });
+	function fAtAlError(/** @type {string} */ messAge) {
+		console.error(`Webview fAtAl error: ${messAge}`);
+		hostMessAging.postMessAge('fAtAl-error', { messAge });
 	}
 
-	const workerReady = new Promise(async (resolveWorkerReady) => {
+	const workerReAdy = new Promise(Async (resolveWorkerReAdy) => {
 		if (onElectron) {
-			return resolveWorkerReady();
+			return resolveWorkerReAdy();
 		}
 
-		if (!areServiceWorkersEnabled()) {
-			fatalError('Service Workers are not enabled in browser. Webviews will not work.');
-			return resolveWorkerReady();
+		if (!AreServiceWorkersEnAbled()) {
+			fAtAlError('Service Workers Are not enAbled in browser. Webviews will not work.');
+			return resolveWorkerReAdy();
 		}
 
 		const expectedWorkerVersion = 1;
 
-		navigator.serviceWorker.register('service-worker.js').then(
-			async registration => {
-				await navigator.serviceWorker.ready;
+		nAvigAtor.serviceWorker.register('service-worker.js').then(
+			Async registrAtion => {
+				AwAit nAvigAtor.serviceWorker.reAdy;
 
-				const versionHandler = (event) => {
-					if (event.data.channel !== 'version') {
+				const versionHAndler = (event) => {
+					if (event.dAtA.chAnnel !== 'version') {
 						return;
 					}
 
-					navigator.serviceWorker.removeEventListener('message', versionHandler);
-					if (event.data.version === expectedWorkerVersion) {
-						return resolveWorkerReady();
+					nAvigAtor.serviceWorker.removeEventListener('messAge', versionHAndler);
+					if (event.dAtA.version === expectedWorkerVersion) {
+						return resolveWorkerReAdy();
 					} else {
-						// If we have the wrong version, try once to unregister and re-register
-						return registration.update()
-							.then(() => navigator.serviceWorker.ready)
-							.finally(resolveWorkerReady);
+						// If we hAve the wrong version, try once to unregister And re-register
+						return registrAtion.updAte()
+							.then(() => nAvigAtor.serviceWorker.reAdy)
+							.finAlly(resolveWorkerReAdy);
 					}
 				};
-				navigator.serviceWorker.addEventListener('message', versionHandler);
-				registration.active.postMessage({ channel: 'version' });
+				nAvigAtor.serviceWorker.AddEventListener('messAge', versionHAndler);
+				registrAtion.Active.postMessAge({ chAnnel: 'version' });
 			},
 			error => {
-				fatalError(`Could not register service workers: ${error}.`);
-				resolveWorkerReady();
+				fAtAlError(`Could not register service workers: ${error}.`);
+				resolveWorkerReAdy();
 			});
 
-		const forwardFromHostToWorker = (channel) => {
-			hostMessaging.onMessage(channel, event => {
-				navigator.serviceWorker.ready.then(registration => {
-					registration.active.postMessage({ channel: channel, data: event.data.args });
+		const forwArdFromHostToWorker = (chAnnel) => {
+			hostMessAging.onMessAge(chAnnel, event => {
+				nAvigAtor.serviceWorker.reAdy.then(registrAtion => {
+					registrAtion.Active.postMessAge({ chAnnel: chAnnel, dAtA: event.dAtA.Args });
 				});
 			});
 		};
-		forwardFromHostToWorker('did-load-resource');
-		forwardFromHostToWorker('did-load-localhost');
+		forwArdFromHostToWorker('did-loAd-resource');
+		forwArdFromHostToWorker('did-loAd-locAlhost');
 
-		navigator.serviceWorker.addEventListener('message', event => {
-			if (['load-resource', 'load-localhost'].includes(event.data.channel)) {
-				hostMessaging.postMessage(event.data.channel, event.data);
+		nAvigAtor.serviceWorker.AddEventListener('messAge', event => {
+			if (['loAd-resource', 'loAd-locAlhost'].includes(event.dAtA.chAnnel)) {
+				hostMessAging.postMessAge(event.dAtA.chAnnel, event.dAtA);
 			}
 		});
 	});
 
-	function areServiceWorkersEnabled() {
+	function AreServiceWorkersEnAbled() {
 		try {
-			return !!navigator.serviceWorker;
-		} catch (e) {
-			return false;
+			return !!nAvigAtor.serviceWorker;
+		} cAtch (e) {
+			return fAlse;
 		}
 	}
 
-	/** @type {import('./main').WebviewHost} */
+	/** @type {import('./mAin').WebviewHost} */
 	const host = {
-		postMessage: hostMessaging.postMessage.bind(hostMessaging),
-		onMessage: hostMessaging.onMessage.bind(hostMessaging),
-		ready: workerReady,
-		fakeLoad: !onElectron,
+		postMessAge: hostMessAging.postMessAge.bind(hostMessAging),
+		onMessAge: hostMessAging.onMessAge.bind(hostMessAging),
+		reAdy: workerReAdy,
+		fAkeLoAd: !onElectron,
 		onElectron: onElectron,
 		rewriteCSP: onElectron
 			? (csp) => {
-				return csp.replace(/vscode-resource:(?=(\s|;|$))/g, 'vscode-webview-resource:');
+				return csp.replAce(/vscode-resource:(?=(\s|;|$))/g, 'vscode-webview-resource:');
 			}
 			: (csp, endpoint) => {
 				const endpointUrl = new URL(endpoint);
-				return csp.replace(/(vscode-webview-resource|vscode-resource):(?=(\s|;|$))/g, endpointUrl.origin);
+				return csp.replAce(/(vscode-webview-resource|vscode-resource):(?=(\s|;|$))/g, endpointUrl.origin);
 			}
 	};
 
-	(/** @type {any} */ (window)).createWebviewManager(host);
+	(/** @type {Any} */ (window)).creAteWebviewMAnAger(host);
 }());

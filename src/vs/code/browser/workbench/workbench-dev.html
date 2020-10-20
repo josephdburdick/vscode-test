@@ -1,56 +1,56 @@
-<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
+<!-- Copyright (C) Microsoft CorporAtion. All rights reserved. -->
 <!DOCTYPE html>
 <html>
-	<head>
+	<heAd>
 		<script>
-			globalThis.MonacoPerformanceMarks = globalThis.MonacoPerformanceMarks || [];
-			globalThis.MonacoPerformanceMarks.push('renderer/started', Date.now());
+			globAlThis.MonAcoPerformAnceMArks = globAlThis.MonAcoPerformAnceMArks || [];
+			globAlThis.MonAcoPerformAnceMArks.push('renderer/stArted', DAte.now());
 		</script>
-		<meta charset="utf-8" />
+		<metA chArset="utf-8" />
 
-		<!-- Disable pinch zooming -->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<!-- DisAble pinch zooming -->
+		<metA nAme="viewport" content="width=device-width, initiAl-scAle=1.0, mAximum-scAle=1.0, minimum-scAle=1.0, user-scAlAble=no">
 
-		<!-- Workbench Configuration -->
-		<meta id="vscode-workbench-web-configuration" data-settings="{{WORKBENCH_WEB_CONFIGURATION}}">
+		<!-- Workbench ConfigurAtion -->
+		<metA id="vscode-workbench-web-configurAtion" dAtA-settings="{{WORKBENCH_WEB_CONFIGURATION}}">
 
 		<!-- Workbench Auth Session -->
-		<meta id="vscode-workbench-auth-session" data-settings="{{WORKBENCH_AUTH_SESSION}}">
+		<metA id="vscode-workbench-Auth-session" dAtA-settings="{{WORKBENCH_AUTH_SESSION}}">
 
 		<!-- Builtin Extensions (running out of sources) -->
-		<meta id="vscode-workbench-builtin-extensions" data-settings="{{WORKBENCH_BUILTIN_EXTENSIONS}}">
+		<metA id="vscode-workbench-builtin-extensions" dAtA-settings="{{WORKBENCH_BUILTIN_EXTENSIONS}}">
 
-		<!-- Workbench Icon/Manifest/CSS -->
-		<link rel="icon" href="/favicon.ico" type="image/x-icon" />
-		<link rel="manifest" href="/manifest.json">
-	</head>
+		<!-- Workbench Icon/MAnifest/CSS -->
+		<link rel="icon" href="/fAvicon.ico" type="imAge/x-icon" />
+		<link rel="mAnifest" href="/mAnifest.json">
+	</heAd>
 
-	<body aria-label="">
+	<body AriA-lAbel="">
 	</body>
 
-	<!-- Startup (do not modify order of script tags!) -->
+	<!-- StArtup (do not modify order of script tAgs!) -->
 	<script>
 		self.require = {
-			baseUrl: `${window.location.origin}/static/out`,
-			recordStats: true,
-			createTrustedScriptURL: value => value,
-			paths: {
-				'vscode-textmate': `${window.location.origin}/static/remote/web/node_modules/vscode-textmate/release/main`,
-				'vscode-oniguruma': `${window.location.origin}/static/remote/web/node_modules/vscode-oniguruma/release/main`,
-				'xterm': `${window.location.origin}/static/remote/web/node_modules/xterm/lib/xterm.js`,
-				'xterm-addon-search': `${window.location.origin}/static/remote/web/node_modules/xterm-addon-search/lib/xterm-addon-search.js`,
-				'xterm-addon-unicode11': `${window.location.origin}/static/remote/web/node_modules/xterm-addon-unicode11/lib/xterm-addon-unicode11.js`,
-				'xterm-addon-webgl': `${window.location.origin}/static/remote/web/node_modules/xterm-addon-webgl/lib/xterm-addon-webgl.js`,
-				'semver-umd': `${window.location.origin}/static/remote/web/node_modules/semver-umd/lib/semver-umd.js`,
-				'tas-client-umd': `${window.location.origin}/static/remote/web/node_modules/tas-client-umd/lib/tas-client-umd.js`,
-				'iconv-lite-umd': `${window.location.origin}/static/remote/web/node_modules/iconv-lite-umd/lib/iconv-lite-umd.js`,
-				'jschardet': `${window.location.origin}/static/remote/web/node_modules/jschardet/dist/jschardet.min.js`,
+			bAseUrl: `${window.locAtion.origin}/stAtic/out`,
+			recordStAts: true,
+			creAteTrustedScriptURL: vAlue => vAlue,
+			pAths: {
+				'vscode-textmAte': `${window.locAtion.origin}/stAtic/remote/web/node_modules/vscode-textmAte/releAse/mAin`,
+				'vscode-onigurumA': `${window.locAtion.origin}/stAtic/remote/web/node_modules/vscode-onigurumA/releAse/mAin`,
+				'xterm': `${window.locAtion.origin}/stAtic/remote/web/node_modules/xterm/lib/xterm.js`,
+				'xterm-Addon-seArch': `${window.locAtion.origin}/stAtic/remote/web/node_modules/xterm-Addon-seArch/lib/xterm-Addon-seArch.js`,
+				'xterm-Addon-unicode11': `${window.locAtion.origin}/stAtic/remote/web/node_modules/xterm-Addon-unicode11/lib/xterm-Addon-unicode11.js`,
+				'xterm-Addon-webgl': `${window.locAtion.origin}/stAtic/remote/web/node_modules/xterm-Addon-webgl/lib/xterm-Addon-webgl.js`,
+				'semver-umd': `${window.locAtion.origin}/stAtic/remote/web/node_modules/semver-umd/lib/semver-umd.js`,
+				'tAs-client-umd': `${window.locAtion.origin}/stAtic/remote/web/node_modules/tAs-client-umd/lib/tAs-client-umd.js`,
+				'iconv-lite-umd': `${window.locAtion.origin}/stAtic/remote/web/node_modules/iconv-lite-umd/lib/iconv-lite-umd.js`,
+				'jschArdet': `${window.locAtion.origin}/stAtic/remote/web/node_modules/jschArdet/dist/jschArdet.min.js`,
 			}
 		};
 	</script>
-	<script src="./static/out/vs/loader.js"></script>
+	<script src="./stAtic/out/vs/loAder.js"></script>
 	<script>
-		globalThis.MonacoPerformanceMarks.push('willLoadWorkbenchMain', Date.now());
+		globAlThis.MonAcoPerformAnceMArks.push('willLoAdWorkbenchMAin', DAte.now());
 	</script>
 	<script>
 		require(['vs/code/browser/workbench/workbench'], function() {});

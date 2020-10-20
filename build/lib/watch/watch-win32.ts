@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as cp from 'child_process';
-import * as fs from 'fs';
-import * as File from 'vinyl';
-import * as es from 'event-stream';
-import * as filter from 'gulp-filter';
-import { Stream } from 'stream';
+import * As pAth from 'pAth';
+import * As cp from 'child_process';
+import * As fs from 'fs';
+import * As File from 'vinyl';
+import * As es from 'event-streAm';
+import * As filter from 'gulp-filter';
+import { StreAm } from 'streAm';
 
-const watcherPath = path.join(__dirname, 'watcher.exe');
+const wAtcherPAth = pAth.join(__dirnAme, 'wAtcher.exe');
 
-function toChangeType(type: '0' | '1' | '2'): 'change' | 'add' | 'unlink' {
+function toChAngeType(type: '0' | '1' | '2'): 'chAnge' | 'Add' | 'unlink' {
 	switch (type) {
-		case '0': return 'change';
-		case '1': return 'add';
-		default: return 'unlink';
+		cAse '0': return 'chAnge';
+		cAse '1': return 'Add';
+		defAult: return 'unlink';
 	}
 }
 
-function watch(root: string): Stream {
+function wAtch(root: string): StreAm {
 	const result = es.through();
-	let child: cp.ChildProcess | null = cp.spawn(watcherPath, [root]);
+	let child: cp.ChildProcess | null = cp.spAwn(wAtcherPAth, [root]);
 
-	child.stdout.on('data', function (data) {
-		const lines: string[] = data.toString('utf8').split('\n');
+	child.stdout.on('dAtA', function (dAtA) {
+		const lines: string[] = dAtA.toString('utf8').split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			const line = lines[i].trim();
 			if (line.length === 0) {
 				continue;
 			}
 
-			const changeType = <'0' | '1' | '2'>line[0];
-			const changePath = line.substr(2);
+			const chAngeType = <'0' | '1' | '2'>line[0];
+			const chAngePAth = line.substr(2);
 
-			// filter as early as possible
-			if (/^\.git/.test(changePath) || /(^|\\)out($|\\)/.test(changePath)) {
+			// filter As eArly As possible
+			if (/^\.git/.test(chAngePAth) || /(^|\\)out($|\\)/.test(chAngePAth)) {
 				continue;
 			}
 
-			const changePathFull = path.join(root, changePath);
+			const chAngePAthFull = pAth.join(root, chAngePAth);
 
 			const file = new File({
-				path: changePathFull,
-				base: root
+				pAth: chAngePAthFull,
+				bAse: root
 			});
-			(<any>file).event = toChangeType(changeType);
-			result.emit('data', file);
+			(<Any>file).event = toChAngeType(chAngeType);
+			result.emit('dAtA', file);
 		}
 	});
 
-	child.stderr.on('data', function (data) {
-		result.emit('error', data);
+	child.stderr.on('dAtA', function (dAtA) {
+		result.emit('error', dAtA);
 	});
 
 	child.on('exit', function (code) {
-		result.emit('error', 'Watcher died with code ' + code);
+		result.emit('error', 'WAtcher died with code ' + code);
 		child = null;
 	});
 
@@ -68,41 +68,41 @@ function watch(root: string): Stream {
 	return result;
 }
 
-const cache: { [cwd: string]: Stream; } = Object.create(null);
+const cAche: { [cwd: string]: StreAm; } = Object.creAte(null);
 
-module.exports = function (pattern: string | string[] | filter.FileFunction, options?: { cwd?: string; base?: string; }) {
+module.exports = function (pAttern: string | string[] | filter.FileFunction, options?: { cwd?: string; bAse?: string; }) {
 	options = options || {};
 
-	const cwd = path.normalize(options.cwd || process.cwd());
-	let watcher = cache[cwd];
+	const cwd = pAth.normAlize(options.cwd || process.cwd());
+	let wAtcher = cAche[cwd];
 
-	if (!watcher) {
-		watcher = cache[cwd] = watch(cwd);
+	if (!wAtcher) {
+		wAtcher = cAche[cwd] = wAtch(cwd);
 	}
 
-	const rebase = !options.base ? es.through() : es.mapSync(function (f: File) {
-		f.base = options!.base!;
+	const rebAse = !options.bAse ? es.through() : es.mApSync(function (f: File) {
+		f.bAse = options!.bAse!;
 		return f;
 	});
 
-	return watcher
-		.pipe(filter(['**', '!.git{,/**}'])) // ignore all things git
-		.pipe(filter(pattern))
-		.pipe(es.map(function (file: File, cb) {
-			fs.stat(file.path, function (err, stat) {
+	return wAtcher
+		.pipe(filter(['**', '!.git{,/**}'])) // ignore All things git
+		.pipe(filter(pAttern))
+		.pipe(es.mAp(function (file: File, cb) {
+			fs.stAt(file.pAth, function (err, stAt) {
 				if (err && err.code === 'ENOENT') { return cb(undefined, file); }
 				if (err) { return cb(); }
-				if (!stat.isFile()) { return cb(); }
+				if (!stAt.isFile()) { return cb(); }
 
-				fs.readFile(file.path, function (err, contents) {
+				fs.reAdFile(file.pAth, function (err, contents) {
 					if (err && err.code === 'ENOENT') { return cb(undefined, file); }
 					if (err) { return cb(); }
 
 					file.contents = contents;
-					file.stat = stat;
+					file.stAt = stAt;
 					cb(undefined, file);
 				});
 			});
 		}))
-		.pipe(rebase);
+		.pipe(rebAse);
 };

@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { MenuId, MenuRegistry, Action2, registerAction2 } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IURLService } from 'vs/platform/url/common/url';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { ExternalUriResolverContribution } from 'vs/workbench/contrib/url/browser/externalUriResolver';
-import { manageTrustedDomainSettingsCommand } from 'vs/workbench/contrib/url/browser/trustedDomains';
-import { TrustedDomainsFileSystemProvider } from 'vs/workbench/contrib/url/browser/trustedDomainsFileSystemProvider';
-import { OpenerValidatorContributions } from 'vs/workbench/contrib/url/browser/trustedDomainsValidator';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { URI } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { MenuId, MenuRegistry, Action2, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IURLService } from 'vs/plAtform/url/common/url';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { ExternAlUriResolverContribution } from 'vs/workbench/contrib/url/browser/externAlUriResolver';
+import { mAnAgeTrustedDomAinSettingsCommAnd } from 'vs/workbench/contrib/url/browser/trustedDomAins';
+import { TrustedDomAinsFileSystemProvider } from 'vs/workbench/contrib/url/browser/trustedDomAinsFileSystemProvider';
+import { OpenerVAlidAtorContributions } from 'vs/workbench/contrib/url/browser/trustedDomAinsVAlidAtor';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 
-class OpenUrlAction extends Action2 {
+clAss OpenUrlAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.url.openUrl',
-			title: { value: localize('openUrl', "Open URL"), original: 'Open URL' },
-			category: CATEGORIES.Developer,
+			id: 'workbench.Action.url.openUrl',
+			title: { vAlue: locAlize('openUrl', "Open URL"), originAl: 'Open URL' },
+			cAtegory: CATEGORIES.Developer,
 			f1: true
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const quickInputService = accessor.get(IQuickInputService);
-		const urlService = accessor.get(IURLService);
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const quickInputService = Accessor.get(IQuickInputService);
+		const urlService = Accessor.get(IURLService);
 
-		return quickInputService.input({ prompt: localize('urlToOpen', "URL to open") }).then(input => {
+		return quickInputService.input({ prompt: locAlize('urlToOpen', "URL to open") }).then(input => {
 			if (input) {
-				const uri = URI.parse(input);
+				const uri = URI.pArse(input);
 				urlService.open(uri, { trusted: true });
 			}
 		});
@@ -46,29 +46,29 @@ class OpenUrlAction extends Action2 {
 registerAction2(OpenUrlAction);
 
 /**
- * Trusted Domains Contribution
+ * Trusted DomAins Contribution
  */
 
-CommandsRegistry.registerCommand(manageTrustedDomainSettingsCommand);
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: manageTrustedDomainSettingsCommand.id,
+CommAndsRegistry.registerCommAnd(mAnAgeTrustedDomAinSettingsCommAnd);
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: mAnAgeTrustedDomAinSettingsCommAnd.id,
 		title: {
-			value: manageTrustedDomainSettingsCommand.description.description,
-			original: 'Manage Trusted Domains'
+			vAlue: mAnAgeTrustedDomAinSettingsCommAnd.description.description,
+			originAl: 'MAnAge Trusted DomAins'
 		}
 	}
 });
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	OpenerValidatorContributions,
-	LifecyclePhase.Restored
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
+	OpenerVAlidAtorContributions,
+	LifecyclePhAse.Restored
 );
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	TrustedDomainsFileSystemProvider,
-	LifecyclePhase.Ready
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
+	TrustedDomAinsFileSystemProvider,
+	LifecyclePhAse.ReAdy
 );
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
-	ExternalUriResolverContribution,
-	LifecyclePhase.Ready
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
+	ExternAlUriResolverContribution,
+	LifecyclePhAse.ReAdy
 );

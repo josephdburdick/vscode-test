@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IIntegrityService = createDecorator<IIntegrityService>('integrityService');
+export const IIntegrityService = creAteDecorAtor<IIntegrityService>('integrityService');
 
-export interface ChecksumPair {
+export interfAce ChecksumPAir {
 	uri: URI;
-	actual: string;
+	ActuAl: string;
 	expected: string;
-	isPure: boolean;
+	isPure: booleAn;
 }
 
-export interface IntegrityTestResult {
-	isPure: boolean;
-	proof: ChecksumPair[];
+export interfAce IntegrityTestResult {
+	isPure: booleAn;
+	proof: ChecksumPAir[];
 }
 
-export interface IIntegrityService {
-	readonly _serviceBrand: undefined;
+export interfAce IIntegrityService {
+	reAdonly _serviceBrAnd: undefined;
 
 	isPure(): Promise<IntegrityTestResult>;
 }

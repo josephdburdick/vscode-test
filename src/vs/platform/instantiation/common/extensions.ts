@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { SyncDescriptor } from './descriptors';
-import { ServiceIdentifier, BrandedService } from './instantiation';
+import { ServiceIdentifier, BrAndedService } from './instAntiAtion';
 
-const _registry: [ServiceIdentifier<any>, SyncDescriptor<any>][] = [];
+const _registry: [ServiceIdentifier<Any>, SyncDescriptor<Any>][] = [];
 
-export function registerSingleton<T, Services extends BrandedService[]>(id: ServiceIdentifier<T>, ctor: new (...services: Services) => T, supportsDelayedInstantiation?: boolean): void {
-	_registry.push([id, new SyncDescriptor<T>(ctor as new (...args: any[]) => T, [], supportsDelayedInstantiation)]);
+export function registerSingleton<T, Services extends BrAndedService[]>(id: ServiceIdentifier<T>, ctor: new (...services: Services) => T, supportsDelAyedInstAntiAtion?: booleAn): void {
+	_registry.push([id, new SyncDescriptor<T>(ctor As new (...Args: Any[]) => T, [], supportsDelAyedInstAntiAtion)]);
 }
 
-export function getSingletonServiceDescriptors(): [ServiceIdentifier<any>, SyncDescriptor<any>][] {
+export function getSingletonServiceDescriptors(): [ServiceIdentifier<Any>, SyncDescriptor<Any>][] {
 	return _registry;
 }

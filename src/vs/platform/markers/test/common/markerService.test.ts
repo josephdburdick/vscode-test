@@ -1,203 +1,203 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import * as markerService from 'vs/platform/markers/common/markerService';
-import { IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import * As mArkerService from 'vs/plAtform/mArkers/common/mArkerService';
+import { IMArkerDAtA, MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
 
-function randomMarkerData(severity = MarkerSeverity.Error): IMarkerData {
+function rAndomMArkerDAtA(severity = MArkerSeverity.Error): IMArkerDAtA {
 	return {
 		severity,
-		message: Math.random().toString(16),
-		startLineNumber: 1,
-		startColumn: 1,
+		messAge: MAth.rAndom().toString(16),
+		stArtLineNumber: 1,
+		stArtColumn: 1,
 		endLineNumber: 1,
 		endColumn: 1
 	};
 }
 
-suite('Marker Service', () => {
+suite('MArker Service', () => {
 
 	test('query', () => {
 
-		let service = new markerService.MarkerService();
+		let service = new mArkerService.MArkerService();
 
-		service.changeAll('far', [{
-			resource: URI.parse('file:///c/test/file.cs'),
-			marker: randomMarkerData(MarkerSeverity.Error)
+		service.chAngeAll('fAr', [{
+			resource: URI.pArse('file:///c/test/file.cs'),
+			mArker: rAndomMArkerDAtA(MArkerSeverity.Error)
 		}]);
 
-		assert.equal(service.read().length, 1);
-		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ resource: URI.parse('file:///c/test/file.cs') }).length, 1);
-		assert.equal(service.read({ owner: 'far', resource: URI.parse('file:///c/test/file.cs') }).length, 1);
+		Assert.equAl(service.reAd().length, 1);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 1);
+		Assert.equAl(service.reAd({ resource: URI.pArse('file:///c/test/file.cs') }).length, 1);
+		Assert.equAl(service.reAd({ owner: 'fAr', resource: URI.pArse('file:///c/test/file.cs') }).length, 1);
 
 
-		service.changeAll('boo', [{
-			resource: URI.parse('file:///c/test/file.cs'),
-			marker: randomMarkerData(MarkerSeverity.Warning)
+		service.chAngeAll('boo', [{
+			resource: URI.pArse('file:///c/test/file.cs'),
+			mArker: rAndomMArkerDAtA(MArkerSeverity.WArning)
 		}]);
 
-		assert.equal(service.read().length, 2);
-		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		Assert.equAl(service.reAd().length, 2);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 1);
+		Assert.equAl(service.reAd({ owner: 'boo' }).length, 1);
 
-		assert.equal(service.read({ severities: MarkerSeverity.Error }).length, 1);
-		assert.equal(service.read({ severities: MarkerSeverity.Warning }).length, 1);
-		assert.equal(service.read({ severities: MarkerSeverity.Hint }).length, 0);
-		assert.equal(service.read({ severities: MarkerSeverity.Error | MarkerSeverity.Warning }).length, 2);
-
-	});
-
-
-	test('changeOne override', () => {
-
-		let service = new markerService.MarkerService();
-		service.changeOne('far', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
-		assert.equal(service.read().length, 1);
-		assert.equal(service.read({ owner: 'far' }).length, 1);
-
-		service.changeOne('boo', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
-		assert.equal(service.read().length, 2);
-		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
-
-		service.changeOne('far', URI.parse('file:///path/only.cs'), [randomMarkerData(), randomMarkerData()]);
-		assert.equal(service.read({ owner: 'far' }).length, 2);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
+		Assert.equAl(service.reAd({ severities: MArkerSeverity.Error }).length, 1);
+		Assert.equAl(service.reAd({ severities: MArkerSeverity.WArning }).length, 1);
+		Assert.equAl(service.reAd({ severities: MArkerSeverity.Hint }).length, 0);
+		Assert.equAl(service.reAd({ severities: MArkerSeverity.Error | MArkerSeverity.WArning }).length, 2);
 
 	});
 
-	test('changeOne/All clears', () => {
 
-		let service = new markerService.MarkerService();
-		service.changeOne('far', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
-		service.changeOne('boo', URI.parse('file:///path/only.cs'), [randomMarkerData()]);
-		assert.equal(service.read({ owner: 'far' }).length, 1);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
-		assert.equal(service.read().length, 2);
+	test('chAngeOne override', () => {
 
-		service.changeOne('far', URI.parse('file:///path/only.cs'), []);
-		assert.equal(service.read({ owner: 'far' }).length, 0);
-		assert.equal(service.read({ owner: 'boo' }).length, 1);
-		assert.equal(service.read().length, 1);
+		let service = new mArkerService.MArkerService();
+		service.chAngeOne('fAr', URI.pArse('file:///pAth/only.cs'), [rAndomMArkerDAtA()]);
+		Assert.equAl(service.reAd().length, 1);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 1);
 
-		service.changeAll('boo', []);
-		assert.equal(service.read({ owner: 'far' }).length, 0);
-		assert.equal(service.read({ owner: 'boo' }).length, 0);
-		assert.equal(service.read().length, 0);
+		service.chAngeOne('boo', URI.pArse('file:///pAth/only.cs'), [rAndomMArkerDAtA()]);
+		Assert.equAl(service.reAd().length, 2);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 1);
+		Assert.equAl(service.reAd({ owner: 'boo' }).length, 1);
+
+		service.chAngeOne('fAr', URI.pArse('file:///pAth/only.cs'), [rAndomMArkerDAtA(), rAndomMArkerDAtA()]);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 2);
+		Assert.equAl(service.reAd({ owner: 'boo' }).length, 1);
+
 	});
 
-	test('changeAll sends event for cleared', () => {
+	test('chAngeOne/All cleArs', () => {
 
-		let service = new markerService.MarkerService();
-		service.changeAll('far', [{
-			resource: URI.parse('file:///d/path'),
-			marker: randomMarkerData()
+		let service = new mArkerService.MArkerService();
+		service.chAngeOne('fAr', URI.pArse('file:///pAth/only.cs'), [rAndomMArkerDAtA()]);
+		service.chAngeOne('boo', URI.pArse('file:///pAth/only.cs'), [rAndomMArkerDAtA()]);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 1);
+		Assert.equAl(service.reAd({ owner: 'boo' }).length, 1);
+		Assert.equAl(service.reAd().length, 2);
+
+		service.chAngeOne('fAr', URI.pArse('file:///pAth/only.cs'), []);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 0);
+		Assert.equAl(service.reAd({ owner: 'boo' }).length, 1);
+		Assert.equAl(service.reAd().length, 1);
+
+		service.chAngeAll('boo', []);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 0);
+		Assert.equAl(service.reAd({ owner: 'boo' }).length, 0);
+		Assert.equAl(service.reAd().length, 0);
+	});
+
+	test('chAngeAll sends event for cleAred', () => {
+
+		let service = new mArkerService.MArkerService();
+		service.chAngeAll('fAr', [{
+			resource: URI.pArse('file:///d/pAth'),
+			mArker: rAndomMArkerDAtA()
 		}, {
-			resource: URI.parse('file:///d/path'),
-			marker: randomMarkerData()
+			resource: URI.pArse('file:///d/pAth'),
+			mArker: rAndomMArkerDAtA()
 		}]);
 
-		assert.equal(service.read({ owner: 'far' }).length, 2);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 2);
 
-		service.onMarkerChanged(changedResources => {
-			assert.equal(changedResources.length, 1);
-			changedResources.forEach(u => assert.equal(u.toString(), 'file:///d/path'));
-			assert.equal(service.read({ owner: 'far' }).length, 0);
+		service.onMArkerChAnged(chAngedResources => {
+			Assert.equAl(chAngedResources.length, 1);
+			chAngedResources.forEAch(u => Assert.equAl(u.toString(), 'file:///d/pAth'));
+			Assert.equAl(service.reAd({ owner: 'fAr' }).length, 0);
 		});
 
-		service.changeAll('far', []);
+		service.chAngeAll('fAr', []);
 	});
 
-	test('changeAll merges', () => {
-		let service = new markerService.MarkerService();
+	test('chAngeAll merges', () => {
+		let service = new mArkerService.MArkerService();
 
-		service.changeAll('far', [{
-			resource: URI.parse('file:///c/test/file.cs'),
-			marker: randomMarkerData()
+		service.chAngeAll('fAr', [{
+			resource: URI.pArse('file:///c/test/file.cs'),
+			mArker: rAndomMArkerDAtA()
 		}, {
-			resource: URI.parse('file:///c/test/file.cs'),
-			marker: randomMarkerData()
+			resource: URI.pArse('file:///c/test/file.cs'),
+			mArker: rAndomMArkerDAtA()
 		}]);
 
-		assert.equal(service.read({ owner: 'far' }).length, 2);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 2);
 	});
 
-	test('changeAll must not break integrety, issue #12635', () => {
-		let service = new markerService.MarkerService();
+	test('chAngeAll must not breAk integrety, issue #12635', () => {
+		let service = new mArkerService.MArkerService();
 
-		service.changeAll('far', [{
-			resource: URI.parse('scheme:path1'),
-			marker: randomMarkerData()
+		service.chAngeAll('fAr', [{
+			resource: URI.pArse('scheme:pAth1'),
+			mArker: rAndomMArkerDAtA()
 		}, {
-			resource: URI.parse('scheme:path2'),
-			marker: randomMarkerData()
+			resource: URI.pArse('scheme:pAth2'),
+			mArker: rAndomMArkerDAtA()
 		}]);
 
-		service.changeAll('boo', [{
-			resource: URI.parse('scheme:path1'),
-			marker: randomMarkerData()
+		service.chAngeAll('boo', [{
+			resource: URI.pArse('scheme:pAth1'),
+			mArker: rAndomMArkerDAtA()
 		}]);
 
-		service.changeAll('far', [{
-			resource: URI.parse('scheme:path1'),
-			marker: randomMarkerData()
+		service.chAngeAll('fAr', [{
+			resource: URI.pArse('scheme:pAth1'),
+			mArker: rAndomMArkerDAtA()
 		}, {
-			resource: URI.parse('scheme:path2'),
-			marker: randomMarkerData()
+			resource: URI.pArse('scheme:pAth2'),
+			mArker: rAndomMArkerDAtA()
 		}]);
 
-		assert.equal(service.read({ owner: 'far' }).length, 2);
-		assert.equal(service.read({ resource: URI.parse('scheme:path1') }).length, 2);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 2);
+		Assert.equAl(service.reAd({ resource: URI.pArse('scheme:pAth1') }).length, 2);
 	});
 
-	test('invalid marker data', () => {
+	test('invAlid mArker dAtA', () => {
 
-		let data = randomMarkerData();
-		let service = new markerService.MarkerService();
+		let dAtA = rAndomMArkerDAtA();
+		let service = new mArkerService.MArkerService();
 
-		data.message = undefined!;
-		service.changeOne('far', URI.parse('some:uri/path'), [data]);
-		assert.equal(service.read({ owner: 'far' }).length, 0);
+		dAtA.messAge = undefined!;
+		service.chAngeOne('fAr', URI.pArse('some:uri/pAth'), [dAtA]);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 0);
 
-		data.message = null!;
-		service.changeOne('far', URI.parse('some:uri/path'), [data]);
-		assert.equal(service.read({ owner: 'far' }).length, 0);
+		dAtA.messAge = null!;
+		service.chAngeOne('fAr', URI.pArse('some:uri/pAth'), [dAtA]);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 0);
 
-		data.message = 'null';
-		service.changeOne('far', URI.parse('some:uri/path'), [data]);
-		assert.equal(service.read({ owner: 'far' }).length, 1);
+		dAtA.messAge = 'null';
+		service.chAngeOne('fAr', URI.pArse('some:uri/pAth'), [dAtA]);
+		Assert.equAl(service.reAd({ owner: 'fAr' }).length, 1);
 	});
 
-	test('MapMap#remove returns bad values, https://github.com/microsoft/vscode/issues/13548', () => {
-		let service = new markerService.MarkerService();
+	test('MApMAp#remove returns bAd vAlues, https://github.com/microsoft/vscode/issues/13548', () => {
+		let service = new mArkerService.MArkerService();
 
-		service.changeOne('o', URI.parse('some:uri/1'), [randomMarkerData()]);
-		service.changeOne('o', URI.parse('some:uri/2'), []);
+		service.chAngeOne('o', URI.pArse('some:uri/1'), [rAndomMArkerDAtA()]);
+		service.chAngeOne('o', URI.pArse('some:uri/2'), []);
 
 	});
 
-	test('Error code of zero in markers get removed, #31275', function () {
-		let data = <IMarkerData>{
+	test('Error code of zero in mArkers get removed, #31275', function () {
+		let dAtA = <IMArkerDAtA>{
 			code: '0',
-			startLineNumber: 1,
-			startColumn: 2,
+			stArtLineNumber: 1,
+			stArtColumn: 2,
 			endLineNumber: 1,
 			endColumn: 5,
-			message: 'test',
+			messAge: 'test',
 			severity: 0,
 			source: 'me'
 		};
-		let service = new markerService.MarkerService();
+		let service = new mArkerService.MArkerService();
 
-		service.changeOne('far', URI.parse('some:thing'), [data]);
-		let marker = service.read({ resource: URI.parse('some:thing') });
+		service.chAngeOne('fAr', URI.pArse('some:thing'), [dAtA]);
+		let mArker = service.reAd({ resource: URI.pArse('some:thing') });
 
-		assert.equal(marker.length, 1);
-		assert.equal(marker[0].code, '0');
+		Assert.equAl(mArker.length, 1);
+		Assert.equAl(mArker[0].code, '0');
 	});
 });

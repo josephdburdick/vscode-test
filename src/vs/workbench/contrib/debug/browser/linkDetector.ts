@@ -1,204 +1,204 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as osPath from 'vs/base/common/path';
-import * as platform from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import * as nls from 'vs/nls';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import * As osPAth from 'vs/bAse/common/pAth';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
+import * As nls from 'vs/nls';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 
 const CONTROL_CODES = '\\u0000-\\u0020\\u007f-\\u009f';
-const WEB_LINK_REGEX = new RegExp('(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + CONTROL_CODES + '"]{2,}[^\\s' + CONTROL_CODES + '"\')}\\],:;.!?]', 'ug');
+const WEB_LINK_REGEX = new RegExp('(?:[A-zA-Z][A-zA-Z0-9+.-]{2,}:\\/\\/|dAtA:|www\\.)[^\\s' + CONTROL_CODES + '"]{2,}[^\\s' + CONTROL_CODES + '"\')}\\],:;.!?]', 'ug');
 
-const WIN_ABSOLUTE_PATH = /(?:[a-zA-Z]:(?:(?:\\|\/)[\w\.-]*)+)/;
+const WIN_ABSOLUTE_PATH = /(?:[A-zA-Z]:(?:(?:\\|\/)[\w\.-]*)+)/;
 const WIN_RELATIVE_PATH = /(?:(?:\~|\.)(?:(?:\\|\/)[\w\.-]*)+)/;
 const WIN_PATH = new RegExp(`(${WIN_ABSOLUTE_PATH.source}|${WIN_RELATIVE_PATH.source})`);
 const POSIX_PATH = /((?:\~|\.)?(?:\/[\w\.-]*)+)/;
 const LINE_COLUMN = /(?:\:([\d]+))?(?:\:([\d]+))?/;
-const PATH_LINK_REGEX = new RegExp(`${platform.isWindows ? WIN_PATH.source : POSIX_PATH.source}${LINE_COLUMN.source}`, 'g');
+const PATH_LINK_REGEX = new RegExp(`${plAtform.isWindows ? WIN_PATH.source : POSIX_PATH.source}${LINE_COLUMN.source}`, 'g');
 
 const MAX_LENGTH = 2000;
 
-type LinkKind = 'web' | 'path' | 'text';
-type LinkPart = {
+type LinkKind = 'web' | 'pAth' | 'text';
+type LinkPArt = {
 	kind: LinkKind;
-	value: string;
-	captures: string[];
+	vAlue: string;
+	cAptures: string[];
 };
 
-export class LinkDetector {
+export clAss LinkDetector {
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@IFileService private readonly fileService: IFileService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IPathService private readonly pathService: IPathService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IPAthService privAte reAdonly pAthService: IPAthService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService
 	) {
 		// noop
 	}
 
 	/**
-	 * Matches and handles web urls, absolute and relative file links in the string provided.
-	 * Returns <span/> element that wraps the processed string, where matched links are replaced by <a/>.
-	 * 'onclick' event is attached to all anchored links that opens them in the editor.
-	 * When splitLines is true, each line of the text, even if it contains no links, is wrapped in a <span>
-	 * and added as a child of the returned <span>.
+	 * MAtches And hAndles web urls, Absolute And relAtive file links in the string provided.
+	 * Returns <spAn/> element thAt wrAps the processed string, where mAtched links Are replAced by <A/>.
+	 * 'onclick' event is AttAched to All Anchored links thAt opens them in the editor.
+	 * When splitLines is true, eAch line of the text, even if it contAins no links, is wrApped in A <spAn>
+	 * And Added As A child of the returned <spAn>.
 	 */
-	linkify(text: string, splitLines?: boolean, workspaceFolder?: IWorkspaceFolder): HTMLElement {
+	linkify(text: string, splitLines?: booleAn, workspAceFolder?: IWorkspAceFolder): HTMLElement {
 		if (splitLines) {
 			const lines = text.split('\n');
 			for (let i = 0; i < lines.length - 1; i++) {
 				lines[i] = lines[i] + '\n';
 			}
 			if (!lines[lines.length - 1]) {
-				// Remove the last element ('') that split added.
+				// Remove the lAst element ('') thAt split Added.
 				lines.pop();
 			}
-			const elements = lines.map(line => this.linkify(line, false, workspaceFolder));
+			const elements = lines.mAp(line => this.linkify(line, fAlse, workspAceFolder));
 			if (elements.length === 1) {
-				// Do not wrap single line with extra span.
+				// Do not wrAp single line with extrA spAn.
 				return elements[0];
 			}
-			const container = document.createElement('span');
-			elements.forEach(e => container.appendChild(e));
-			return container;
+			const contAiner = document.creAteElement('spAn');
+			elements.forEAch(e => contAiner.AppendChild(e));
+			return contAiner;
 		}
 
-		const container = document.createElement('span');
-		for (const part of this.detectLinks(text)) {
+		const contAiner = document.creAteElement('spAn');
+		for (const pArt of this.detectLinks(text)) {
 			try {
-				switch (part.kind) {
-					case 'text':
-						container.appendChild(document.createTextNode(part.value));
-						break;
-					case 'web':
-						container.appendChild(this.createWebLink(part.value));
-						break;
-					case 'path':
-						const path = part.captures[0];
-						const lineNumber = part.captures[1] ? Number(part.captures[1]) : 0;
-						const columnNumber = part.captures[2] ? Number(part.captures[2]) : 0;
-						container.appendChild(this.createPathLink(part.value, path, lineNumber, columnNumber, workspaceFolder));
-						break;
+				switch (pArt.kind) {
+					cAse 'text':
+						contAiner.AppendChild(document.creAteTextNode(pArt.vAlue));
+						breAk;
+					cAse 'web':
+						contAiner.AppendChild(this.creAteWebLink(pArt.vAlue));
+						breAk;
+					cAse 'pAth':
+						const pAth = pArt.cAptures[0];
+						const lineNumber = pArt.cAptures[1] ? Number(pArt.cAptures[1]) : 0;
+						const columnNumber = pArt.cAptures[2] ? Number(pArt.cAptures[2]) : 0;
+						contAiner.AppendChild(this.creAtePAthLink(pArt.vAlue, pAth, lineNumber, columnNumber, workspAceFolder));
+						breAk;
 				}
-			} catch (e) {
-				container.appendChild(document.createTextNode(part.value));
+			} cAtch (e) {
+				contAiner.AppendChild(document.creAteTextNode(pArt.vAlue));
 			}
 		}
-		return container;
+		return contAiner;
 	}
 
-	private createWebLink(url: string): Node {
-		const link = this.createLink(url);
-		const uri = URI.parse(url);
-		this.decorateLink(link, () => this.openerService.open(uri, { allowTunneling: !!this.environmentService.remoteAuthority }));
+	privAte creAteWebLink(url: string): Node {
+		const link = this.creAteLink(url);
+		const uri = URI.pArse(url);
+		this.decorAteLink(link, () => this.openerService.open(uri, { AllowTunneling: !!this.environmentService.remoteAuthority }));
 		return link;
 	}
 
-	private createPathLink(text: string, path: string, lineNumber: number, columnNumber: number, workspaceFolder: IWorkspaceFolder | undefined): Node {
-		if (path[0] === '/' && path[1] === '/') {
-			// Most likely a url part which did not match, for example ftp://path.
-			return document.createTextNode(text);
+	privAte creAtePAthLink(text: string, pAth: string, lineNumber: number, columnNumber: number, workspAceFolder: IWorkspAceFolder | undefined): Node {
+		if (pAth[0] === '/' && pAth[1] === '/') {
+			// Most likely A url pArt which did not mAtch, for exAmple ftp://pAth.
+			return document.creAteTextNode(text);
 		}
 
-		if (path[0] === '.') {
-			if (!workspaceFolder) {
-				return document.createTextNode(text);
+		if (pAth[0] === '.') {
+			if (!workspAceFolder) {
+				return document.creAteTextNode(text);
 			}
-			const uri = workspaceFolder.toResource(path);
-			const options = { selection: { startLineNumber: lineNumber, startColumn: columnNumber } };
-			const link = this.createLink(text);
-			this.decorateLink(link, () => this.editorService.openEditor({ resource: uri, options }));
+			const uri = workspAceFolder.toResource(pAth);
+			const options = { selection: { stArtLineNumber: lineNumber, stArtColumn: columnNumber } };
+			const link = this.creAteLink(text);
+			this.decorAteLink(link, () => this.editorService.openEditor({ resource: uri, options }));
 			return link;
 		}
 
-		if (path[0] === '~') {
-			const userHome = this.pathService.resolvedUserHome;
+		if (pAth[0] === '~') {
+			const userHome = this.pAthService.resolvedUserHome;
 			if (userHome) {
-				path = osPath.join(userHome.fsPath, path.substring(1));
+				pAth = osPAth.join(userHome.fsPAth, pAth.substring(1));
 			}
 		}
 
-		const link = this.createLink(text);
-		const uri = URI.file(osPath.normalize(path));
-		this.fileService.resolve(uri).then(stat => {
-			if (stat.isDirectory) {
+		const link = this.creAteLink(text);
+		const uri = URI.file(osPAth.normAlize(pAth));
+		this.fileService.resolve(uri).then(stAt => {
+			if (stAt.isDirectory) {
 				return;
 			}
-			const options = { selection: { startLineNumber: lineNumber, startColumn: columnNumber } };
-			this.decorateLink(link, () => this.editorService.openEditor({ resource: uri, options }));
-		}).catch(() => {
-			// If the uri can not be resolved we should not spam the console with error, remain quite #86587
+			const options = { selection: { stArtLineNumber: lineNumber, stArtColumn: columnNumber } };
+			this.decorAteLink(link, () => this.editorService.openEditor({ resource: uri, options }));
+		}).cAtch(() => {
+			// If the uri cAn not be resolved we should not spAm the console with error, remAin quite #86587
 		});
 		return link;
 	}
 
-	private createLink(text: string): HTMLElement {
-		const link = document.createElement('a');
+	privAte creAteLink(text: string): HTMLElement {
+		const link = document.creAteElement('A');
 		link.textContent = text;
 		return link;
 	}
 
-	private decorateLink(link: HTMLElement, onclick: () => void) {
-		link.classList.add('link');
-		link.title = platform.isMacintosh ? nls.localize('fileLinkMac', "Cmd + click to follow link") : nls.localize('fileLink', "Ctrl + click to follow link");
-		link.onmousemove = (event) => { link.classList.toggle('pointer', platform.isMacintosh ? event.metaKey : event.ctrlKey); };
-		link.onmouseleave = () => link.classList.remove('pointer');
+	privAte decorAteLink(link: HTMLElement, onclick: () => void) {
+		link.clAssList.Add('link');
+		link.title = plAtform.isMAcintosh ? nls.locAlize('fileLinkMAc', "Cmd + click to follow link") : nls.locAlize('fileLink', "Ctrl + click to follow link");
+		link.onmousemove = (event) => { link.clAssList.toggle('pointer', plAtform.isMAcintosh ? event.metAKey : event.ctrlKey); };
+		link.onmouseleAve = () => link.clAssList.remove('pointer');
 		link.onclick = (event) => {
 			const selection = window.getSelection();
-			if (!selection || selection.type === 'Range') {
-				return; // do not navigate when user is selecting
+			if (!selection || selection.type === 'RAnge') {
+				return; // do not nAvigAte when user is selecting
 			}
-			if (!(platform.isMacintosh ? event.metaKey : event.ctrlKey)) {
+			if (!(plAtform.isMAcintosh ? event.metAKey : event.ctrlKey)) {
 				return;
 			}
-			event.preventDefault();
-			event.stopImmediatePropagation();
+			event.preventDefAult();
+			event.stopImmediAtePropAgAtion();
 			onclick();
 		};
 	}
 
-	private detectLinks(text: string): LinkPart[] {
+	privAte detectLinks(text: string): LinkPArt[] {
 		if (text.length > MAX_LENGTH) {
-			return [{ kind: 'text', value: text, captures: [] }];
+			return [{ kind: 'text', vAlue: text, cAptures: [] }];
 		}
 
 		const regexes: RegExp[] = [WEB_LINK_REGEX, PATH_LINK_REGEX];
-		const kinds: LinkKind[] = ['web', 'path'];
-		const result: LinkPart[] = [];
+		const kinds: LinkKind[] = ['web', 'pAth'];
+		const result: LinkPArt[] = [];
 
 		const splitOne = (text: string, regexIndex: number) => {
 			if (regexIndex >= regexes.length) {
-				result.push({ value: text, kind: 'text', captures: [] });
+				result.push({ vAlue: text, kind: 'text', cAptures: [] });
 				return;
 			}
 			const regex = regexes[regexIndex];
 			let currentIndex = 0;
-			let match;
-			regex.lastIndex = 0;
-			while ((match = regex.exec(text)) !== null) {
-				const stringBeforeMatch = text.substring(currentIndex, match.index);
-				if (stringBeforeMatch) {
-					splitOne(stringBeforeMatch, regexIndex + 1);
+			let mAtch;
+			regex.lAstIndex = 0;
+			while ((mAtch = regex.exec(text)) !== null) {
+				const stringBeforeMAtch = text.substring(currentIndex, mAtch.index);
+				if (stringBeforeMAtch) {
+					splitOne(stringBeforeMAtch, regexIndex + 1);
 				}
-				const value = match[0];
+				const vAlue = mAtch[0];
 				result.push({
-					value: value,
+					vAlue: vAlue,
 					kind: kinds[regexIndex],
-					captures: match.slice(1)
+					cAptures: mAtch.slice(1)
 				});
-				currentIndex = match.index + value.length;
+				currentIndex = mAtch.index + vAlue.length;
 			}
-			const stringAfterMatches = text.substring(currentIndex);
-			if (stringAfterMatches) {
-				splitOne(stringAfterMatches, regexIndex + 1);
+			const stringAfterMAtches = text.substring(currentIndex);
+			if (stringAfterMAtches) {
+				splitOne(stringAfterMAtches, regexIndex + 1);
 			}
 		};
 

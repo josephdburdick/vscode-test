@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ColorId, LanguageId, StandardTokenType, TokenMetadata } from 'vs/editor/common/modes';
+import { ColorId, LAnguAgeId, StAndArdTokenType, TokenMetAdAtA } from 'vs/editor/common/modes';
 
-export interface IViewLineTokens {
-	equals(other: IViewLineTokens): boolean;
+export interfAce IViewLineTokens {
+	equAls(other: IViewLineTokens): booleAn;
 	getCount(): number;
 	getForeground(tokenIndex: number): ColorId;
 	getEndOffset(tokenIndex: number): number;
-	getClassName(tokenIndex: number): string;
-	getInlineStyle(tokenIndex: number, colorMap: string[]): string;
+	getClAssNAme(tokenIndex: number): string;
+	getInlineStyle(tokenIndex: number, colorMAp: string[]): string;
 	findTokenIndexAtOffset(offset: number): number;
 }
 
-export class LineTokens implements IViewLineTokens {
-	_lineTokensBrand: void;
+export clAss LineTokens implements IViewLineTokens {
+	_lineTokensBrAnd: void;
 
-	private readonly _tokens: Uint32Array;
-	private readonly _tokensCount: number;
-	private readonly _text: string;
+	privAte reAdonly _tokens: Uint32ArrAy;
+	privAte reAdonly _tokensCount: number;
+	privAte reAdonly _text: string;
 
-	constructor(tokens: Uint32Array, text: string) {
+	constructor(tokens: Uint32ArrAy, text: string) {
 		this._tokens = tokens;
 		this._tokensCount = (this._tokens.length >>> 1);
 		this._text = text;
 	}
 
-	public equals(other: IViewLineTokens): boolean {
-		if (other instanceof LineTokens) {
-			return this.slicedEquals(other, 0, this._tokensCount);
+	public equAls(other: IViewLineTokens): booleAn {
+		if (other instAnceof LineTokens) {
+			return this.slicedEquAls(other, 0, this._tokensCount);
 		}
-		return false;
+		return fAlse;
 	}
 
-	public slicedEquals(other: LineTokens, sliceFromTokenIndex: number, sliceTokenCount: number): boolean {
+	public slicedEquAls(other: LineTokens, sliceFromTokenIndex: number, sliceTokenCount: number): booleAn {
 		if (this._text !== other._text) {
-			return false;
+			return fAlse;
 		}
 		if (this._tokensCount !== other._tokensCount) {
-			return false;
+			return fAlse;
 		}
 		const from = (sliceFromTokenIndex << 1);
 		const to = from + (sliceTokenCount << 1);
 		for (let i = from; i < to; i++) {
 			if (this._tokens[i] !== other._tokens[i]) {
-				return false;
+				return fAlse;
 			}
 		}
 		return true;
@@ -60,41 +60,41 @@ export class LineTokens implements IViewLineTokens {
 		return this._tokensCount;
 	}
 
-	public getStartOffset(tokenIndex: number): number {
+	public getStArtOffset(tokenIndex: number): number {
 		if (tokenIndex > 0) {
 			return this._tokens[(tokenIndex - 1) << 1];
 		}
 		return 0;
 	}
 
-	public getMetadata(tokenIndex: number): number {
-		const metadata = this._tokens[(tokenIndex << 1) + 1];
-		return metadata;
+	public getMetAdAtA(tokenIndex: number): number {
+		const metAdAtA = this._tokens[(tokenIndex << 1) + 1];
+		return metAdAtA;
 	}
 
-	public getLanguageId(tokenIndex: number): LanguageId {
-		const metadata = this._tokens[(tokenIndex << 1) + 1];
-		return TokenMetadata.getLanguageId(metadata);
+	public getLAnguAgeId(tokenIndex: number): LAnguAgeId {
+		const metAdAtA = this._tokens[(tokenIndex << 1) + 1];
+		return TokenMetAdAtA.getLAnguAgeId(metAdAtA);
 	}
 
-	public getStandardTokenType(tokenIndex: number): StandardTokenType {
-		const metadata = this._tokens[(tokenIndex << 1) + 1];
-		return TokenMetadata.getTokenType(metadata);
+	public getStAndArdTokenType(tokenIndex: number): StAndArdTokenType {
+		const metAdAtA = this._tokens[(tokenIndex << 1) + 1];
+		return TokenMetAdAtA.getTokenType(metAdAtA);
 	}
 
 	public getForeground(tokenIndex: number): ColorId {
-		const metadata = this._tokens[(tokenIndex << 1) + 1];
-		return TokenMetadata.getForeground(metadata);
+		const metAdAtA = this._tokens[(tokenIndex << 1) + 1];
+		return TokenMetAdAtA.getForeground(metAdAtA);
 	}
 
-	public getClassName(tokenIndex: number): string {
-		const metadata = this._tokens[(tokenIndex << 1) + 1];
-		return TokenMetadata.getClassNameFromMetadata(metadata);
+	public getClAssNAme(tokenIndex: number): string {
+		const metAdAtA = this._tokens[(tokenIndex << 1) + 1];
+		return TokenMetAdAtA.getClAssNAmeFromMetAdAtA(metAdAtA);
 	}
 
-	public getInlineStyle(tokenIndex: number, colorMap: string[]): string {
-		const metadata = this._tokens[(tokenIndex << 1) + 1];
-		return TokenMetadata.getInlineStyleFromMetadata(metadata, colorMap);
+	public getInlineStyle(tokenIndex: number, colorMAp: string[]): string {
+		const metAdAtA = this._tokens[(tokenIndex << 1) + 1];
+		return TokenMetAdAtA.getInlineStyleFromMetAdAtA(metAdAtA, colorMAp);
 	}
 
 	public getEndOffset(tokenIndex: number): number {
@@ -102,32 +102,32 @@ export class LineTokens implements IViewLineTokens {
 	}
 
 	/**
-	 * Find the token containing offset `offset`.
-	 * @param offset The search offset
-	 * @return The index of the token containing the offset.
+	 * Find the token contAining offset `offset`.
+	 * @pArAm offset The seArch offset
+	 * @return The index of the token contAining the offset.
 	 */
 	public findTokenIndexAtOffset(offset: number): number {
-		return LineTokens.findIndexInTokensArray(this._tokens, offset);
+		return LineTokens.findIndexInTokensArrAy(this._tokens, offset);
 	}
 
-	public inflate(): IViewLineTokens {
+	public inflAte(): IViewLineTokens {
 		return this;
 	}
 
-	public sliceAndInflate(startOffset: number, endOffset: number, deltaOffset: number): IViewLineTokens {
-		return new SlicedLineTokens(this, startOffset, endOffset, deltaOffset);
+	public sliceAndInflAte(stArtOffset: number, endOffset: number, deltAOffset: number): IViewLineTokens {
+		return new SlicedLineTokens(this, stArtOffset, endOffset, deltAOffset);
 	}
 
-	public static convertToEndOffset(tokens: Uint32Array, lineTextLength: number): void {
+	public stAtic convertToEndOffset(tokens: Uint32ArrAy, lineTextLength: number): void {
 		const tokenCount = (tokens.length >>> 1);
-		const lastTokenIndex = tokenCount - 1;
-		for (let tokenIndex = 0; tokenIndex < lastTokenIndex; tokenIndex++) {
+		const lAstTokenIndex = tokenCount - 1;
+		for (let tokenIndex = 0; tokenIndex < lAstTokenIndex; tokenIndex++) {
 			tokens[tokenIndex << 1] = tokens[(tokenIndex + 1) << 1];
 		}
-		tokens[lastTokenIndex << 1] = lineTextLength;
+		tokens[lAstTokenIndex << 1] = lineTextLength;
 	}
 
-	public static findIndexInTokensArray(tokens: Uint32Array, desiredIndex: number): number {
+	public stAtic findIndexInTokensArrAy(tokens: Uint32ArrAy, desiredIndex: number): number {
 		if (tokens.length <= 2) {
 			return 0;
 		}
@@ -137,7 +137,7 @@ export class LineTokens implements IViewLineTokens {
 
 		while (low < high) {
 
-			const mid = low + Math.floor((high - low) / 2);
+			const mid = low + MAth.floor((high - low) / 2);
 			const endOffset = tokens[(mid << 1)];
 
 			if (endOffset === desiredIndex) {
@@ -153,43 +153,43 @@ export class LineTokens implements IViewLineTokens {
 	}
 }
 
-export class SlicedLineTokens implements IViewLineTokens {
+export clAss SlicedLineTokens implements IViewLineTokens {
 
-	private readonly _source: LineTokens;
-	private readonly _startOffset: number;
-	private readonly _endOffset: number;
-	private readonly _deltaOffset: number;
+	privAte reAdonly _source: LineTokens;
+	privAte reAdonly _stArtOffset: number;
+	privAte reAdonly _endOffset: number;
+	privAte reAdonly _deltAOffset: number;
 
-	private readonly _firstTokenIndex: number;
-	private readonly _tokensCount: number;
+	privAte reAdonly _firstTokenIndex: number;
+	privAte reAdonly _tokensCount: number;
 
-	constructor(source: LineTokens, startOffset: number, endOffset: number, deltaOffset: number) {
+	constructor(source: LineTokens, stArtOffset: number, endOffset: number, deltAOffset: number) {
 		this._source = source;
-		this._startOffset = startOffset;
+		this._stArtOffset = stArtOffset;
 		this._endOffset = endOffset;
-		this._deltaOffset = deltaOffset;
-		this._firstTokenIndex = source.findTokenIndexAtOffset(startOffset);
+		this._deltAOffset = deltAOffset;
+		this._firstTokenIndex = source.findTokenIndexAtOffset(stArtOffset);
 
 		this._tokensCount = 0;
 		for (let i = this._firstTokenIndex, len = source.getCount(); i < len; i++) {
-			const tokenStartOffset = source.getStartOffset(i);
-			if (tokenStartOffset >= endOffset) {
-				break;
+			const tokenStArtOffset = source.getStArtOffset(i);
+			if (tokenStArtOffset >= endOffset) {
+				breAk;
 			}
 			this._tokensCount++;
 		}
 	}
 
-	public equals(other: IViewLineTokens): boolean {
-		if (other instanceof SlicedLineTokens) {
+	public equAls(other: IViewLineTokens): booleAn {
+		if (other instAnceof SlicedLineTokens) {
 			return (
-				this._startOffset === other._startOffset
+				this._stArtOffset === other._stArtOffset
 				&& this._endOffset === other._endOffset
-				&& this._deltaOffset === other._deltaOffset
-				&& this._source.slicedEquals(other._source, this._firstTokenIndex, this._tokensCount)
+				&& this._deltAOffset === other._deltAOffset
+				&& this._source.slicedEquAls(other._source, this._firstTokenIndex, this._tokensCount)
 			);
 		}
-		return false;
+		return fAlse;
 	}
 
 	public getCount(): number {
@@ -202,18 +202,18 @@ export class SlicedLineTokens implements IViewLineTokens {
 
 	public getEndOffset(tokenIndex: number): number {
 		const tokenEndOffset = this._source.getEndOffset(this._firstTokenIndex + tokenIndex);
-		return Math.min(this._endOffset, tokenEndOffset) - this._startOffset + this._deltaOffset;
+		return MAth.min(this._endOffset, tokenEndOffset) - this._stArtOffset + this._deltAOffset;
 	}
 
-	public getClassName(tokenIndex: number): string {
-		return this._source.getClassName(this._firstTokenIndex + tokenIndex);
+	public getClAssNAme(tokenIndex: number): string {
+		return this._source.getClAssNAme(this._firstTokenIndex + tokenIndex);
 	}
 
-	public getInlineStyle(tokenIndex: number, colorMap: string[]): string {
-		return this._source.getInlineStyle(this._firstTokenIndex + tokenIndex, colorMap);
+	public getInlineStyle(tokenIndex: number, colorMAp: string[]): string {
+		return this._source.getInlineStyle(this._firstTokenIndex + tokenIndex, colorMAp);
 	}
 
 	public findTokenIndexAtOffset(offset: number): number {
-		return this._source.findTokenIndexAtOffset(offset + this._startOffset - this._deltaOffset) - this._firstTokenIndex;
+		return this._source.findTokenIndexAtOffset(offset + this._stArtOffset - this._deltAOffset) - this._firstTokenIndex;
 	}
 }

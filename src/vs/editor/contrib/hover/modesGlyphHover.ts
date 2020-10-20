@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { $ } from 'vs/base/browser/dom';
-import { IMarkdownString, isEmptyMarkdownString } from 'vs/base/common/htmlContent';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { $ } from 'vs/bAse/browser/dom';
+import { IMArkdownString, isEmptyMArkdownString } from 'vs/bAse/common/htmlContent';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { HoverOperation, HoverStartMode, IHoverComputer } from 'vs/editor/contrib/hover/hoverOperation';
+import { HoverOperAtion, HoverStArtMode, IHoverComputer } from 'vs/editor/contrib/hover/hoverOperAtion';
 import { GlyphHoverWidget } from 'vs/editor/contrib/hover/hoverWidgets';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
+import { MArkdownRenderer } from 'vs/editor/browser/core/mArkdownRenderer';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IOpenerService, NullOpenerService } from 'vs/platform/opener/common/opener';
-import { asArray } from 'vs/base/common/arrays';
+import { IOpenerService, NullOpenerService } from 'vs/plAtform/opener/common/opener';
+import { AsArrAy } from 'vs/bAse/common/ArrAys';
 
-export interface IHoverMessage {
-	value: IMarkdownString;
+export interfAce IHoverMessAge {
+	vAlue: IMArkdownString;
 }
 
-class MarginComputer implements IHoverComputer<IHoverMessage[]> {
+clAss MArginComputer implements IHoverComputer<IHoverMessAge[]> {
 
-	private readonly _editor: ICodeEditor;
-	private _lineNumber: number;
-	private _result: IHoverMessage[];
+	privAte reAdonly _editor: ICodeEditor;
+	privAte _lineNumber: number;
+	privAte _result: IHoverMessAge[];
 
 	constructor(editor: ICodeEditor) {
 		this._editor = editor;
@@ -35,64 +35,64 @@ class MarginComputer implements IHoverComputer<IHoverMessage[]> {
 		this._result = [];
 	}
 
-	public clearResult(): void {
+	public cleArResult(): void {
 		this._result = [];
 	}
 
-	public computeSync(): IHoverMessage[] {
+	public computeSync(): IHoverMessAge[] {
 
-		const toHoverMessage = (contents: IMarkdownString): IHoverMessage => {
+		const toHoverMessAge = (contents: IMArkdownString): IHoverMessAge => {
 			return {
-				value: contents
+				vAlue: contents
 			};
 		};
 
-		const lineDecorations = this._editor.getLineDecorations(this._lineNumber);
+		const lineDecorAtions = this._editor.getLineDecorAtions(this._lineNumber);
 
-		const result: IHoverMessage[] = [];
-		if (!lineDecorations) {
+		const result: IHoverMessAge[] = [];
+		if (!lineDecorAtions) {
 			return result;
 		}
 
-		for (const d of lineDecorations) {
-			if (!d.options.glyphMarginClassName) {
+		for (const d of lineDecorAtions) {
+			if (!d.options.glyphMArginClAssNAme) {
 				continue;
 			}
 
-			const hoverMessage = d.options.glyphMarginHoverMessage;
-			if (!hoverMessage || isEmptyMarkdownString(hoverMessage)) {
+			const hoverMessAge = d.options.glyphMArginHoverMessAge;
+			if (!hoverMessAge || isEmptyMArkdownString(hoverMessAge)) {
 				continue;
 			}
 
-			result.push(...asArray(hoverMessage).map(toHoverMessage));
+			result.push(...AsArrAy(hoverMessAge).mAp(toHoverMessAge));
 		}
 
 		return result;
 	}
 
-	public onResult(result: IHoverMessage[], isFromSynchronousComputation: boolean): void {
-		this._result = this._result.concat(result);
+	public onResult(result: IHoverMessAge[], isFromSynchronousComputAtion: booleAn): void {
+		this._result = this._result.concAt(result);
 	}
 
-	public getResult(): IHoverMessage[] {
+	public getResult(): IHoverMessAge[] {
 		return this._result;
 	}
 
-	public getResultWithLoadingMessage(): IHoverMessage[] {
+	public getResultWithLoAdingMessAge(): IHoverMessAge[] {
 		return this.getResult();
 	}
 }
 
-export class ModesGlyphHoverWidget extends GlyphHoverWidget {
+export clAss ModesGlyphHoverWidget extends GlyphHoverWidget {
 
-	public static readonly ID = 'editor.contrib.modesGlyphHoverWidget';
-	private _messages: IHoverMessage[];
-	private _lastLineNumber: number;
+	public stAtic reAdonly ID = 'editor.contrib.modesGlyphHoverWidget';
+	privAte _messAges: IHoverMessAge[];
+	privAte _lAstLineNumber: number;
 
-	private readonly _markdownRenderer: MarkdownRenderer;
-	private readonly _computer: MarginComputer;
-	private readonly _hoverOperation: HoverOperation<IHoverMessage[]>;
-	private readonly _renderDisposeables = this._register(new DisposableStore());
+	privAte reAdonly _mArkdownRenderer: MArkdownRenderer;
+	privAte reAdonly _computer: MArginComputer;
+	privAte reAdonly _hoverOperAtion: HoverOperAtion<IHoverMessAge[]>;
+	privAte reAdonly _renderDisposeAbles = this._register(new DisposAbleStore());
 
 	constructor(
 		editor: ICodeEditor,
@@ -101,80 +101,80 @@ export class ModesGlyphHoverWidget extends GlyphHoverWidget {
 	) {
 		super(ModesGlyphHoverWidget.ID, editor);
 
-		this._messages = [];
-		this._lastLineNumber = -1;
+		this._messAges = [];
+		this._lAstLineNumber = -1;
 
-		this._markdownRenderer = this._register(new MarkdownRenderer({ editor: this._editor }, modeService, openerService));
-		this._computer = new MarginComputer(this._editor);
+		this._mArkdownRenderer = this._register(new MArkdownRenderer({ editor: this._editor }, modeService, openerService));
+		this._computer = new MArginComputer(this._editor);
 
-		this._hoverOperation = new HoverOperation(
+		this._hoverOperAtion = new HoverOperAtion(
 			this._computer,
-			(result: IHoverMessage[]) => this._withResult(result),
+			(result: IHoverMessAge[]) => this._withResult(result),
 			undefined,
-			(result: any) => this._withResult(result),
+			(result: Any) => this._withResult(result),
 			300
 		);
 
 	}
 
 	public dispose(): void {
-		this._hoverOperation.cancel();
+		this._hoverOperAtion.cAncel();
 		super.dispose();
 	}
 
-	public onModelDecorationsChanged(): void {
+	public onModelDecorAtionsChAnged(): void {
 		if (this.isVisible) {
-			// The decorations have changed and the hover is visible,
-			// we need to recompute the displayed text
-			this._hoverOperation.cancel();
-			this._computer.clearResult();
-			this._hoverOperation.start(HoverStartMode.Delayed);
+			// The decorAtions hAve chAnged And the hover is visible,
+			// we need to recompute the displAyed text
+			this._hoverOperAtion.cAncel();
+			this._computer.cleArResult();
+			this._hoverOperAtion.stArt(HoverStArtMode.DelAyed);
 		}
 	}
 
-	public startShowingAt(lineNumber: number): void {
-		if (this._lastLineNumber === lineNumber) {
-			// We have to show the widget at the exact same line number as before, so no work is needed
+	public stArtShowingAt(lineNumber: number): void {
+		if (this._lAstLineNumber === lineNumber) {
+			// We hAve to show the widget At the exAct sAme line number As before, so no work is needed
 			return;
 		}
 
-		this._hoverOperation.cancel();
+		this._hoverOperAtion.cAncel();
 
 		this.hide();
 
-		this._lastLineNumber = lineNumber;
+		this._lAstLineNumber = lineNumber;
 		this._computer.setLineNumber(lineNumber);
-		this._hoverOperation.start(HoverStartMode.Delayed);
+		this._hoverOperAtion.stArt(HoverStArtMode.DelAyed);
 	}
 
 	public hide(): void {
-		this._lastLineNumber = -1;
-		this._hoverOperation.cancel();
+		this._lAstLineNumber = -1;
+		this._hoverOperAtion.cAncel();
 		super.hide();
 	}
 
-	public _withResult(result: IHoverMessage[]): void {
-		this._messages = result;
+	public _withResult(result: IHoverMessAge[]): void {
+		this._messAges = result;
 
-		if (this._messages.length > 0) {
-			this._renderMessages(this._lastLineNumber, this._messages);
+		if (this._messAges.length > 0) {
+			this._renderMessAges(this._lAstLineNumber, this._messAges);
 		} else {
 			this.hide();
 		}
 	}
 
-	private _renderMessages(lineNumber: number, messages: IHoverMessage[]): void {
-		this._renderDisposeables.clear();
+	privAte _renderMessAges(lineNumber: number, messAges: IHoverMessAge[]): void {
+		this._renderDisposeAbles.cleAr();
 
-		const fragment = document.createDocumentFragment();
+		const frAgment = document.creAteDocumentFrAgment();
 
-		for (const msg of messages) {
-			const renderedContents = this._markdownRenderer.render(msg.value);
-			this._renderDisposeables.add(renderedContents);
-			fragment.appendChild($('div.hover-row', undefined, renderedContents.element));
+		for (const msg of messAges) {
+			const renderedContents = this._mArkdownRenderer.render(msg.vAlue);
+			this._renderDisposeAbles.Add(renderedContents);
+			frAgment.AppendChild($('div.hover-row', undefined, renderedContents.element));
 		}
 
-		this.updateContents(fragment);
+		this.updAteContents(frAgment);
 		this.showAt(lineNumber);
 	}
 }

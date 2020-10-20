@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
@@ -11,22 +11,22 @@
 // #######################################################################
 
 
-//#region --- workbench common & sandbox
+//#region --- workbench common & sAndbox
 
-import 'vs/workbench/workbench.sandbox.main';
-
-//#endregion
-
-
-//#region --- workbench actions
-
+import 'vs/workbench/workbench.sAndbox.mAin';
 
 //#endregion
 
 
-//#region --- workbench (desktop main)
+//#region --- workbench Actions
 
-import 'vs/workbench/electron-sandbox/desktop.main';
+
+//#endregion
+
+
+//#region --- workbench (desktop mAin)
+
+import 'vs/workbench/electron-sAndbox/desktop.mAin';
 
 //#endregion
 

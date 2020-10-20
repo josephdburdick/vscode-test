@@ -1,90 +1,90 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { transformErrorForSerialization } from 'vs/base/common/errors';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { isWeb } from 'vs/base/common/platform';
-import * as types from 'vs/base/common/types';
+import { trAnsformErrorForSeriAlizAtion } from 'vs/bAse/common/errors';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { isWeb } from 'vs/bAse/common/plAtform';
+import * As types from 'vs/bAse/common/types';
 
-const INITIALIZE = '$initialize';
+const INITIALIZE = '$initiAlize';
 
-export interface IWorker extends IDisposable {
+export interfAce IWorker extends IDisposAble {
 	getId(): number;
-	postMessage(message: any, transfer: ArrayBuffer[]): void;
+	postMessAge(messAge: Any, trAnsfer: ArrAyBuffer[]): void;
 }
 
-export interface IWorkerCallback {
-	(message: any): void;
+export interfAce IWorkerCAllbAck {
+	(messAge: Any): void;
 }
 
-export interface IWorkerFactory {
-	create(moduleId: string, callback: IWorkerCallback, onErrorCallback: (err: any) => void): IWorker;
+export interfAce IWorkerFActory {
+	creAte(moduleId: string, cAllbAck: IWorkerCAllbAck, onErrorCAllbAck: (err: Any) => void): IWorker;
 }
 
-let webWorkerWarningLogged = false;
-export function logOnceWebWorkerWarning(err: any): void {
+let webWorkerWArningLogged = fAlse;
+export function logOnceWebWorkerWArning(err: Any): void {
 	if (!isWeb) {
 		// running tests
 		return;
 	}
-	if (!webWorkerWarningLogged) {
-		webWorkerWarningLogged = true;
-		console.warn('Could not create web worker(s). Falling back to loading web worker code in main thread, which might cause UI freezes. Please see https://github.com/microsoft/monaco-editor#faq');
+	if (!webWorkerWArningLogged) {
+		webWorkerWArningLogged = true;
+		console.wArn('Could not creAte web worker(s). FAlling bAck to loAding web worker code in mAin threAd, which might cAuse UI freezes. PleAse see https://github.com/microsoft/monAco-editor#fAq');
 	}
-	console.warn(err.message);
+	console.wArn(err.messAge);
 }
 
-interface IMessage {
+interfAce IMessAge {
 	vsWorker: number;
 	req?: string;
 	seq?: string;
 }
 
-interface IRequestMessage extends IMessage {
+interfAce IRequestMessAge extends IMessAge {
 	req: string;
 	method: string;
-	args: any[];
+	Args: Any[];
 }
 
-interface IReplyMessage extends IMessage {
+interfAce IReplyMessAge extends IMessAge {
 	seq: string;
-	err: any;
-	res: any;
+	err: Any;
+	res: Any;
 }
 
-interface IMessageReply {
-	resolve: (value?: any) => void;
-	reject: (error?: any) => void;
+interfAce IMessAgeReply {
+	resolve: (vAlue?: Any) => void;
+	reject: (error?: Any) => void;
 }
 
-interface IMessageHandler {
-	sendMessage(msg: any, transfer?: ArrayBuffer[]): void;
-	handleMessage(method: string, args: any[]): Promise<any>;
+interfAce IMessAgeHAndler {
+	sendMessAge(msg: Any, trAnsfer?: ArrAyBuffer[]): void;
+	hAndleMessAge(method: string, Args: Any[]): Promise<Any>;
 }
 
-class SimpleWorkerProtocol {
+clAss SimpleWorkerProtocol {
 
-	private _workerId: number;
-	private _lastSentReq: number;
-	private _pendingReplies: { [req: string]: IMessageReply; };
-	private _handler: IMessageHandler;
+	privAte _workerId: number;
+	privAte _lAstSentReq: number;
+	privAte _pendingReplies: { [req: string]: IMessAgeReply; };
+	privAte _hAndler: IMessAgeHAndler;
 
-	constructor(handler: IMessageHandler) {
+	constructor(hAndler: IMessAgeHAndler) {
 		this._workerId = -1;
-		this._handler = handler;
-		this._lastSentReq = 0;
-		this._pendingReplies = Object.create(null);
+		this._hAndler = hAndler;
+		this._lAstSentReq = 0;
+		this._pendingReplies = Object.creAte(null);
 	}
 
 	public setWorkerId(workerId: number): void {
 		this._workerId = workerId;
 	}
 
-	public sendMessage(method: string, args: any[]): Promise<any> {
-		let req = String(++this._lastSentReq);
-		return new Promise<any>((resolve, reject) => {
+	public sendMessAge(method: string, Args: Any[]): Promise<Any> {
+		let req = String(++this._lAstSentReq);
+		return new Promise<Any>((resolve, reject) => {
 			this._pendingReplies[req] = {
 				resolve: resolve,
 				reject: reject
@@ -93,51 +93,51 @@ class SimpleWorkerProtocol {
 				vsWorker: this._workerId,
 				req: req,
 				method: method,
-				args: args
+				Args: Args
 			});
 		});
 	}
 
-	public handleMessage(message: IMessage): void {
-		if (!message || !message.vsWorker) {
+	public hAndleMessAge(messAge: IMessAge): void {
+		if (!messAge || !messAge.vsWorker) {
 			return;
 		}
-		if (this._workerId !== -1 && message.vsWorker !== this._workerId) {
+		if (this._workerId !== -1 && messAge.vsWorker !== this._workerId) {
 			return;
 		}
-		this._handleMessage(message);
+		this._hAndleMessAge(messAge);
 	}
 
-	private _handleMessage(msg: IMessage): void {
+	privAte _hAndleMessAge(msg: IMessAge): void {
 		if (msg.seq) {
-			let replyMessage = <IReplyMessage>msg;
-			if (!this._pendingReplies[replyMessage.seq]) {
-				console.warn('Got reply to unknown seq');
+			let replyMessAge = <IReplyMessAge>msg;
+			if (!this._pendingReplies[replyMessAge.seq]) {
+				console.wArn('Got reply to unknown seq');
 				return;
 			}
 
-			let reply = this._pendingReplies[replyMessage.seq];
-			delete this._pendingReplies[replyMessage.seq];
+			let reply = this._pendingReplies[replyMessAge.seq];
+			delete this._pendingReplies[replyMessAge.seq];
 
-			if (replyMessage.err) {
-				let err = replyMessage.err;
-				if (replyMessage.err.$isError) {
+			if (replyMessAge.err) {
+				let err = replyMessAge.err;
+				if (replyMessAge.err.$isError) {
 					err = new Error();
-					err.name = replyMessage.err.name;
-					err.message = replyMessage.err.message;
-					err.stack = replyMessage.err.stack;
+					err.nAme = replyMessAge.err.nAme;
+					err.messAge = replyMessAge.err.messAge;
+					err.stAck = replyMessAge.err.stAck;
 				}
 				reply.reject(err);
 				return;
 			}
 
-			reply.resolve(replyMessage.res);
+			reply.resolve(replyMessAge.res);
 			return;
 		}
 
-		let requestMessage = <IRequestMessage>msg;
-		let req = requestMessage.req;
-		let result = this._handler.handleMessage(requestMessage.method, requestMessage.args);
+		let requestMessAge = <IRequestMessAge>msg;
+		let req = requestMessAge.req;
+		let result = this._hAndler.hAndleMessAge(requestMessAge.method, requestMessAge.Args);
 		result.then((r) => {
 			this._send({
 				vsWorker: this._workerId,
@@ -146,243 +146,243 @@ class SimpleWorkerProtocol {
 				err: undefined
 			});
 		}, (e) => {
-			if (e.detail instanceof Error) {
-				// Loading errors have a detail property that points to the actual error
-				e.detail = transformErrorForSerialization(e.detail);
+			if (e.detAil instAnceof Error) {
+				// LoAding errors hAve A detAil property thAt points to the ActuAl error
+				e.detAil = trAnsformErrorForSeriAlizAtion(e.detAil);
 			}
 			this._send({
 				vsWorker: this._workerId,
 				seq: req,
 				res: undefined,
-				err: transformErrorForSerialization(e)
+				err: trAnsformErrorForSeriAlizAtion(e)
 			});
 		});
 	}
 
-	private _send(msg: IRequestMessage | IReplyMessage): void {
-		let transfer: ArrayBuffer[] = [];
+	privAte _send(msg: IRequestMessAge | IReplyMessAge): void {
+		let trAnsfer: ArrAyBuffer[] = [];
 		if (msg.req) {
-			const m = <IRequestMessage>msg;
-			for (let i = 0; i < m.args.length; i++) {
-				if (m.args[i] instanceof ArrayBuffer) {
-					transfer.push(m.args[i]);
+			const m = <IRequestMessAge>msg;
+			for (let i = 0; i < m.Args.length; i++) {
+				if (m.Args[i] instAnceof ArrAyBuffer) {
+					trAnsfer.push(m.Args[i]);
 				}
 			}
 		} else {
-			const m = <IReplyMessage>msg;
-			if (m.res instanceof ArrayBuffer) {
-				transfer.push(m.res);
+			const m = <IReplyMessAge>msg;
+			if (m.res instAnceof ArrAyBuffer) {
+				trAnsfer.push(m.res);
 			}
 		}
-		this._handler.sendMessage(msg, transfer);
+		this._hAndler.sendMessAge(msg, trAnsfer);
 	}
 }
 
-export interface IWorkerClient<W> {
+export interfAce IWorkerClient<W> {
 	getProxyObject(): Promise<W>;
 	dispose(): void;
 }
 
 /**
- * Main thread side
+ * MAin threAd side
  */
-export class SimpleWorkerClient<W extends object, H extends object> extends Disposable implements IWorkerClient<W> {
+export clAss SimpleWorkerClient<W extends object, H extends object> extends DisposAble implements IWorkerClient<W> {
 
-	private readonly _worker: IWorker;
-	private readonly _onModuleLoaded: Promise<string[]>;
-	private readonly _protocol: SimpleWorkerProtocol;
-	private readonly _lazyProxy: Promise<W>;
+	privAte reAdonly _worker: IWorker;
+	privAte reAdonly _onModuleLoAded: Promise<string[]>;
+	privAte reAdonly _protocol: SimpleWorkerProtocol;
+	privAte reAdonly _lAzyProxy: Promise<W>;
 
-	constructor(workerFactory: IWorkerFactory, moduleId: string, host: H) {
+	constructor(workerFActory: IWorkerFActory, moduleId: string, host: H) {
 		super();
 
-		let lazyProxyReject: ((err: any) => void) | null = null;
+		let lAzyProxyReject: ((err: Any) => void) | null = null;
 
-		this._worker = this._register(workerFactory.create(
-			'vs/base/common/worker/simpleWorker',
-			(msg: any) => {
-				this._protocol.handleMessage(msg);
+		this._worker = this._register(workerFActory.creAte(
+			'vs/bAse/common/worker/simpleWorker',
+			(msg: Any) => {
+				this._protocol.hAndleMessAge(msg);
 			},
-			(err: any) => {
-				// in Firefox, web workers fail lazily :(
+			(err: Any) => {
+				// in Firefox, web workers fAil lAzily :(
 				// we will reject the proxy
-				if (lazyProxyReject) {
-					lazyProxyReject(err);
+				if (lAzyProxyReject) {
+					lAzyProxyReject(err);
 				}
 			}
 		));
 
 		this._protocol = new SimpleWorkerProtocol({
-			sendMessage: (msg: any, transfer: ArrayBuffer[]): void => {
-				this._worker.postMessage(msg, transfer);
+			sendMessAge: (msg: Any, trAnsfer: ArrAyBuffer[]): void => {
+				this._worker.postMessAge(msg, trAnsfer);
 			},
-			handleMessage: (method: string, args: any[]): Promise<any> => {
-				if (typeof (host as any)[method] !== 'function') {
-					return Promise.reject(new Error('Missing method ' + method + ' on main thread host.'));
+			hAndleMessAge: (method: string, Args: Any[]): Promise<Any> => {
+				if (typeof (host As Any)[method] !== 'function') {
+					return Promise.reject(new Error('Missing method ' + method + ' on mAin threAd host.'));
 				}
 
 				try {
-					return Promise.resolve((host as any)[method].apply(host, args));
-				} catch (e) {
+					return Promise.resolve((host As Any)[method].Apply(host, Args));
+				} cAtch (e) {
 					return Promise.reject(e);
 				}
 			}
 		});
 		this._protocol.setWorkerId(this._worker.getId());
 
-		// Gather loader configuration
-		let loaderConfiguration: any = null;
-		if (typeof (<any>self).require !== 'undefined' && typeof (<any>self).require.getConfig === 'function') {
-			// Get the configuration from the Monaco AMD Loader
-			loaderConfiguration = (<any>self).require.getConfig();
-		} else if (typeof (<any>self).requirejs !== 'undefined') {
-			// Get the configuration from requirejs
-			loaderConfiguration = (<any>self).requirejs.s.contexts._.config;
+		// GAther loAder configurAtion
+		let loAderConfigurAtion: Any = null;
+		if (typeof (<Any>self).require !== 'undefined' && typeof (<Any>self).require.getConfig === 'function') {
+			// Get the configurAtion from the MonAco AMD LoAder
+			loAderConfigurAtion = (<Any>self).require.getConfig();
+		} else if (typeof (<Any>self).requirejs !== 'undefined') {
+			// Get the configurAtion from requirejs
+			loAderConfigurAtion = (<Any>self).requirejs.s.contexts._.config;
 		}
 
-		const hostMethods = types.getAllMethodNames(host);
+		const hostMethods = types.getAllMethodNAmes(host);
 
-		// Send initialize message
-		this._onModuleLoaded = this._protocol.sendMessage(INITIALIZE, [
+		// Send initiAlize messAge
+		this._onModuleLoAded = this._protocol.sendMessAge(INITIALIZE, [
 			this._worker.getId(),
-			JSON.parse(JSON.stringify(loaderConfiguration)),
+			JSON.pArse(JSON.stringify(loAderConfigurAtion)),
 			moduleId,
 			hostMethods,
 		]);
 
-		// Create proxy to loaded code
-		const proxyMethodRequest = (method: string, args: any[]): Promise<any> => {
-			return this._request(method, args);
+		// CreAte proxy to loAded code
+		const proxyMethodRequest = (method: string, Args: Any[]): Promise<Any> => {
+			return this._request(method, Args);
 		};
 
-		this._lazyProxy = new Promise<W>((resolve, reject) => {
-			lazyProxyReject = reject;
-			this._onModuleLoaded.then((availableMethods: string[]) => {
-				resolve(types.createProxyObject<W>(availableMethods, proxyMethodRequest));
+		this._lAzyProxy = new Promise<W>((resolve, reject) => {
+			lAzyProxyReject = reject;
+			this._onModuleLoAded.then((AvAilAbleMethods: string[]) => {
+				resolve(types.creAteProxyObject<W>(AvAilAbleMethods, proxyMethodRequest));
 			}, (e) => {
 				reject(e);
-				this._onError('Worker failed to load ' + moduleId, e);
+				this._onError('Worker fAiled to loAd ' + moduleId, e);
 			});
 		});
 	}
 
 	public getProxyObject(): Promise<W> {
-		return this._lazyProxy;
+		return this._lAzyProxy;
 	}
 
-	private _request(method: string, args: any[]): Promise<any> {
-		return new Promise<any>((resolve, reject) => {
-			this._onModuleLoaded.then(() => {
-				this._protocol.sendMessage(method, args).then(resolve, reject);
+	privAte _request(method: string, Args: Any[]): Promise<Any> {
+		return new Promise<Any>((resolve, reject) => {
+			this._onModuleLoAded.then(() => {
+				this._protocol.sendMessAge(method, Args).then(resolve, reject);
 			}, reject);
 		});
 	}
 
-	private _onError(message: string, error?: any): void {
-		console.error(message);
+	privAte _onError(messAge: string, error?: Any): void {
+		console.error(messAge);
 		console.info(error);
 	}
 }
 
-export interface IRequestHandler {
-	_requestHandlerBrand: any;
-	[prop: string]: any;
+export interfAce IRequestHAndler {
+	_requestHAndlerBrAnd: Any;
+	[prop: string]: Any;
 }
 
-export interface IRequestHandlerFactory<H> {
-	(host: H): IRequestHandler;
+export interfAce IRequestHAndlerFActory<H> {
+	(host: H): IRequestHAndler;
 }
 
 /**
  * Worker side
  */
-export class SimpleWorkerServer<H extends object> {
+export clAss SimpleWorkerServer<H extends object> {
 
-	private _requestHandlerFactory: IRequestHandlerFactory<H> | null;
-	private _requestHandler: IRequestHandler | null;
-	private _protocol: SimpleWorkerProtocol;
+	privAte _requestHAndlerFActory: IRequestHAndlerFActory<H> | null;
+	privAte _requestHAndler: IRequestHAndler | null;
+	privAte _protocol: SimpleWorkerProtocol;
 
-	constructor(postMessage: (msg: any, transfer?: ArrayBuffer[]) => void, requestHandlerFactory: IRequestHandlerFactory<H> | null) {
-		this._requestHandlerFactory = requestHandlerFactory;
-		this._requestHandler = null;
+	constructor(postMessAge: (msg: Any, trAnsfer?: ArrAyBuffer[]) => void, requestHAndlerFActory: IRequestHAndlerFActory<H> | null) {
+		this._requestHAndlerFActory = requestHAndlerFActory;
+		this._requestHAndler = null;
 		this._protocol = new SimpleWorkerProtocol({
-			sendMessage: (msg: any, transfer: ArrayBuffer[]): void => {
-				postMessage(msg, transfer);
+			sendMessAge: (msg: Any, trAnsfer: ArrAyBuffer[]): void => {
+				postMessAge(msg, trAnsfer);
 			},
-			handleMessage: (method: string, args: any[]): Promise<any> => this._handleMessage(method, args)
+			hAndleMessAge: (method: string, Args: Any[]): Promise<Any> => this._hAndleMessAge(method, Args)
 		});
 	}
 
-	public onmessage(msg: any): void {
-		this._protocol.handleMessage(msg);
+	public onmessAge(msg: Any): void {
+		this._protocol.hAndleMessAge(msg);
 	}
 
-	private _handleMessage(method: string, args: any[]): Promise<any> {
+	privAte _hAndleMessAge(method: string, Args: Any[]): Promise<Any> {
 		if (method === INITIALIZE) {
-			return this.initialize(<number>args[0], <any>args[1], <string>args[2], <string[]>args[3]);
+			return this.initiAlize(<number>Args[0], <Any>Args[1], <string>Args[2], <string[]>Args[3]);
 		}
 
-		if (!this._requestHandler || typeof this._requestHandler[method] !== 'function') {
-			return Promise.reject(new Error('Missing requestHandler or method: ' + method));
+		if (!this._requestHAndler || typeof this._requestHAndler[method] !== 'function') {
+			return Promise.reject(new Error('Missing requestHAndler or method: ' + method));
 		}
 
 		try {
-			return Promise.resolve(this._requestHandler[method].apply(this._requestHandler, args));
-		} catch (e) {
+			return Promise.resolve(this._requestHAndler[method].Apply(this._requestHAndler, Args));
+		} cAtch (e) {
 			return Promise.reject(e);
 		}
 	}
 
-	private initialize(workerId: number, loaderConfig: any, moduleId: string, hostMethods: string[]): Promise<string[]> {
+	privAte initiAlize(workerId: number, loAderConfig: Any, moduleId: string, hostMethods: string[]): Promise<string[]> {
 		this._protocol.setWorkerId(workerId);
 
-		const proxyMethodRequest = (method: string, args: any[]): Promise<any> => {
-			return this._protocol.sendMessage(method, args);
+		const proxyMethodRequest = (method: string, Args: Any[]): Promise<Any> => {
+			return this._protocol.sendMessAge(method, Args);
 		};
 
-		const hostProxy = types.createProxyObject<H>(hostMethods, proxyMethodRequest);
+		const hostProxy = types.creAteProxyObject<H>(hostMethods, proxyMethodRequest);
 
-		if (this._requestHandlerFactory) {
-			// static request handler
-			this._requestHandler = this._requestHandlerFactory(hostProxy);
-			return Promise.resolve(types.getAllMethodNames(this._requestHandler));
+		if (this._requestHAndlerFActory) {
+			// stAtic request hAndler
+			this._requestHAndler = this._requestHAndlerFActory(hostProxy);
+			return Promise.resolve(types.getAllMethodNAmes(this._requestHAndler));
 		}
 
-		if (loaderConfig) {
-			// Remove 'baseUrl', handling it is beyond scope for now
-			if (typeof loaderConfig.baseUrl !== 'undefined') {
-				delete loaderConfig['baseUrl'];
+		if (loAderConfig) {
+			// Remove 'bAseUrl', hAndling it is beyond scope for now
+			if (typeof loAderConfig.bAseUrl !== 'undefined') {
+				delete loAderConfig['bAseUrl'];
 			}
-			if (typeof loaderConfig.paths !== 'undefined') {
-				if (typeof loaderConfig.paths.vs !== 'undefined') {
-					delete loaderConfig.paths['vs'];
+			if (typeof loAderConfig.pAths !== 'undefined') {
+				if (typeof loAderConfig.pAths.vs !== 'undefined') {
+					delete loAderConfig.pAths['vs'];
 				}
 			}
 
-			// Since this is in a web worker, enable catching errors
-			loaderConfig.catchError = true;
-			(<any>self).require.config(loaderConfig);
+			// Since this is in A web worker, enAble cAtching errors
+			loAderConfig.cAtchError = true;
+			(<Any>self).require.config(loAderConfig);
 		}
 
 		return new Promise<string[]>((resolve, reject) => {
-			// Use the global require to be sure to get the global config
-			(<any>self).require([moduleId], (module: { create: IRequestHandlerFactory<H> }) => {
-				this._requestHandler = module.create(hostProxy);
+			// Use the globAl require to be sure to get the globAl config
+			(<Any>self).require([moduleId], (module: { creAte: IRequestHAndlerFActory<H> }) => {
+				this._requestHAndler = module.creAte(hostProxy);
 
-				if (!this._requestHandler) {
-					reject(new Error(`No RequestHandler!`));
+				if (!this._requestHAndler) {
+					reject(new Error(`No RequestHAndler!`));
 					return;
 				}
 
-				resolve(types.getAllMethodNames(this._requestHandler));
+				resolve(types.getAllMethodNAmes(this._requestHAndler));
 			}, reject);
 		});
 	}
 }
 
 /**
- * Called on the worker side
+ * CAlled on the worker side
  */
-export function create(postMessage: (msg: string) => void): SimpleWorkerServer<any> {
-	return new SimpleWorkerServer(postMessage, null);
+export function creAte(postMessAge: (msg: string) => void): SimpleWorkerServer<Any> {
+	return new SimpleWorkerServer(postMessAge, null);
 }

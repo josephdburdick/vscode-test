@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { IColorRegistry, Extensions as ColorRegistryExtensions } from 'vs/platform/theme/common/colorRegistry';
-import { Color } from 'vs/base/common/color';
-import { Registry } from 'vs/platform/registry/common/platform';
+import { IColorRegistry, Extensions As ColorRegistryExtensions } from 'vs/plAtform/theme/common/colorRegistry';
+import { Color } from 'vs/bAse/common/color';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 
-interface IColorExtensionPoint {
+interfAce IColorExtensionPoint {
 	id: string;
 	description: string;
-	defaults: { light: string, dark: string, highContrast: string };
+	defAults: { light: string, dArk: string, highContrAst: string };
 }
 
-const colorRegistry: IColorRegistry = Registry.as<IColorRegistry>(ColorRegistryExtensions.ColorContribution);
+const colorRegistry: IColorRegistry = Registry.As<IColorRegistry>(ColorRegistryExtensions.ColorContribution);
 
-const colorReferenceSchema = colorRegistry.getColorReferenceSchema();
-const colorIdPattern = '^\\w+[.\\w+]*$';
+const colorReferenceSchemA = colorRegistry.getColorReferenceSchemA();
+const colorIdPAttern = '^\\w+[.\\w+]*$';
 
-const configurationExtPoint = ExtensionsRegistry.registerExtensionPoint<IColorExtensionPoint[]>({
+const configurAtionExtPoint = ExtensionsRegistry.registerExtensionPoint<IColorExtensionPoint[]>({
 	extensionPoint: 'colors',
-	jsonSchema: {
-		description: nls.localize('contributes.color', 'Contributes extension defined themable colors'),
-		type: 'array',
+	jsonSchemA: {
+		description: nls.locAlize('contributes.color', 'Contributes extension defined themAble colors'),
+		type: 'ArrAy',
 		items: {
 			type: 'object',
 			properties: {
 				id: {
 					type: 'string',
-					description: nls.localize('contributes.color.id', 'The identifier of the themable color'),
-					pattern: colorIdPattern,
-					patternErrorMessage: nls.localize('contributes.color.id.format', 'Identifiers must only contain letters, digits and dots and can not start with a dot'),
+					description: nls.locAlize('contributes.color.id', 'The identifier of the themAble color'),
+					pAttern: colorIdPAttern,
+					pAtternErrorMessAge: nls.locAlize('contributes.color.id.formAt', 'Identifiers must only contAin letters, digits And dots And cAn not stArt with A dot'),
 				},
 				description: {
 					type: 'string',
-					description: nls.localize('contributes.color.description', 'The description of the themable color'),
+					description: nls.locAlize('contributes.color.description', 'The description of the themAble color'),
 				},
-				defaults: {
+				defAults: {
 					type: 'object',
 					properties: {
 						light: {
-							description: nls.localize('contributes.defaults.light', 'The default color for light themes. Either a color value in hex (#RRGGBB[AA]) or the identifier of a themable color which provides the default.'),
+							description: nls.locAlize('contributes.defAults.light', 'The defAult color for light themes. Either A color vAlue in hex (#RRGGBB[AA]) or the identifier of A themAble color which provides the defAult.'),
 							type: 'string',
-							anyOf: [
-								colorReferenceSchema,
-								{ type: 'string', format: 'color-hex' }
+							AnyOf: [
+								colorReferenceSchemA,
+								{ type: 'string', formAt: 'color-hex' }
 							]
 						},
-						dark: {
-							description: nls.localize('contributes.defaults.dark', 'The default color for dark themes. Either a color value in hex (#RRGGBB[AA]) or the identifier of a themable color which provides the default.'),
+						dArk: {
+							description: nls.locAlize('contributes.defAults.dArk', 'The defAult color for dArk themes. Either A color vAlue in hex (#RRGGBB[AA]) or the identifier of A themAble color which provides the defAult.'),
 							type: 'string',
-							anyOf: [
-								colorReferenceSchema,
-								{ type: 'string', format: 'color-hex' }
+							AnyOf: [
+								colorReferenceSchemA,
+								{ type: 'string', formAt: 'color-hex' }
 							]
 						},
-						highContrast: {
-							description: nls.localize('contributes.defaults.highContrast', 'The default color for high contrast themes. Either a color value in hex (#RRGGBB[AA]) or the identifier of a themable color which provides the default.'),
+						highContrAst: {
+							description: nls.locAlize('contributes.defAults.highContrAst', 'The defAult color for high contrAst themes. Either A color vAlue in hex (#RRGGBB[AA]) or the identifier of A themAble color which provides the defAult.'),
 							type: 'string',
-							anyOf: [
-								colorReferenceSchema,
-								{ type: 'string', format: 'color-hex' }
+							AnyOf: [
+								colorReferenceSchemA,
+								{ type: 'string', formAt: 'color-hex' }
 							]
 						}
 					}
@@ -72,58 +72,58 @@ const configurationExtPoint = ExtensionsRegistry.registerExtensionPoint<IColorEx
 	}
 });
 
-export class ColorExtensionPoint {
+export clAss ColorExtensionPoint {
 
 	constructor() {
-		configurationExtPoint.setHandler((extensions, delta) => {
-			for (const extension of delta.added) {
-				const extensionValue = <IColorExtensionPoint[]>extension.value;
+		configurAtionExtPoint.setHAndler((extensions, deltA) => {
+			for (const extension of deltA.Added) {
+				const extensionVAlue = <IColorExtensionPoint[]>extension.vAlue;
 				const collector = extension.collector;
 
-				if (!extensionValue || !Array.isArray(extensionValue)) {
-					collector.error(nls.localize('invalid.colorConfiguration', "'configuration.colors' must be a array"));
+				if (!extensionVAlue || !ArrAy.isArrAy(extensionVAlue)) {
+					collector.error(nls.locAlize('invAlid.colorConfigurAtion', "'configurAtion.colors' must be A ArrAy"));
 					return;
 				}
-				let parseColorValue = (s: string, name: string) => {
+				let pArseColorVAlue = (s: string, nAme: string) => {
 					if (s.length > 0) {
 						if (s[0] === '#') {
-							return Color.Format.CSS.parseHex(s);
+							return Color.FormAt.CSS.pArseHex(s);
 						} else {
 							return s;
 						}
 					}
-					collector.error(nls.localize('invalid.default.colorType', "{0} must be either a color value in hex (#RRGGBB[AA] or #RGB[A]) or the identifier of a themable color which provides the default.", name));
+					collector.error(nls.locAlize('invAlid.defAult.colorType', "{0} must be either A color vAlue in hex (#RRGGBB[AA] or #RGB[A]) or the identifier of A themAble color which provides the defAult.", nAme));
 					return Color.red;
 				};
 
-				for (const colorContribution of extensionValue) {
+				for (const colorContribution of extensionVAlue) {
 					if (typeof colorContribution.id !== 'string' || colorContribution.id.length === 0) {
-						collector.error(nls.localize('invalid.id', "'configuration.colors.id' must be defined and can not be empty"));
+						collector.error(nls.locAlize('invAlid.id', "'configurAtion.colors.id' must be defined And cAn not be empty"));
 						return;
 					}
-					if (!colorContribution.id.match(colorIdPattern)) {
-						collector.error(nls.localize('invalid.id.format', "'configuration.colors.id' must only contain letters, digits and dots and can not start with a dot"));
+					if (!colorContribution.id.mAtch(colorIdPAttern)) {
+						collector.error(nls.locAlize('invAlid.id.formAt', "'configurAtion.colors.id' must only contAin letters, digits And dots And cAn not stArt with A dot"));
 						return;
 					}
 					if (typeof colorContribution.description !== 'string' || colorContribution.id.length === 0) {
-						collector.error(nls.localize('invalid.description', "'configuration.colors.description' must be defined and can not be empty"));
+						collector.error(nls.locAlize('invAlid.description', "'configurAtion.colors.description' must be defined And cAn not be empty"));
 						return;
 					}
-					let defaults = colorContribution.defaults;
-					if (!defaults || typeof defaults !== 'object' || typeof defaults.light !== 'string' || typeof defaults.dark !== 'string' || typeof defaults.highContrast !== 'string') {
-						collector.error(nls.localize('invalid.defaults', "'configuration.colors.defaults' must be defined and must contain 'light', 'dark' and 'highContrast'"));
+					let defAults = colorContribution.defAults;
+					if (!defAults || typeof defAults !== 'object' || typeof defAults.light !== 'string' || typeof defAults.dArk !== 'string' || typeof defAults.highContrAst !== 'string') {
+						collector.error(nls.locAlize('invAlid.defAults', "'configurAtion.colors.defAults' must be defined And must contAin 'light', 'dArk' And 'highContrAst'"));
 						return;
 					}
 					colorRegistry.registerColor(colorContribution.id, {
-						light: parseColorValue(defaults.light, 'configuration.colors.defaults.light'),
-						dark: parseColorValue(defaults.dark, 'configuration.colors.defaults.dark'),
-						hc: parseColorValue(defaults.highContrast, 'configuration.colors.defaults.highContrast')
+						light: pArseColorVAlue(defAults.light, 'configurAtion.colors.defAults.light'),
+						dArk: pArseColorVAlue(defAults.dArk, 'configurAtion.colors.defAults.dArk'),
+						hc: pArseColorVAlue(defAults.highContrAst, 'configurAtion.colors.defAults.highContrAst')
 					}, colorContribution.description);
 				}
 			}
-			for (const extension of delta.removed) {
-				const extensionValue = <IColorExtensionPoint[]>extension.value;
-				for (const colorContribution of extensionValue) {
+			for (const extension of deltA.removed) {
+				const extensionVAlue = <IColorExtensionPoint[]>extension.vAlue;
+				for (const colorContribution of extensionVAlue) {
 					colorRegistry.deregisterColor(colorContribution.id);
 				}
 			}

@@ -1,266 +1,266 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { Disposable } from './dispose';
-import { SizeStatusBarEntry } from './sizeStatusBarEntry';
-import { Scale, ZoomStatusBarEntry } from './zoomStatusBarEntry';
-import { BinarySizeStatusBarEntry } from './binarySizeStatusBarEntry';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { DisposAble } from './dispose';
+import { SizeStAtusBArEntry } from './sizeStAtusBArEntry';
+import { ScAle, ZoomStAtusBArEntry } from './zoomStAtusBArEntry';
+import { BinArySizeStAtusBArEntry } from './binArySizeStAtusBArEntry';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
 
-export class PreviewManager implements vscode.CustomReadonlyEditorProvider {
+export clAss PreviewMAnAger implements vscode.CustomReAdonlyEditorProvider {
 
-	public static readonly viewType = 'imagePreview.previewEditor';
+	public stAtic reAdonly viewType = 'imAgePreview.previewEditor';
 
-	private readonly _previews = new Set<Preview>();
-	private _activePreview: Preview | undefined;
+	privAte reAdonly _previews = new Set<Preview>();
+	privAte _ActivePreview: Preview | undefined;
 
 	constructor(
-		private readonly extensionRoot: vscode.Uri,
-		private readonly sizeStatusBarEntry: SizeStatusBarEntry,
-		private readonly binarySizeStatusBarEntry: BinarySizeStatusBarEntry,
-		private readonly zoomStatusBarEntry: ZoomStatusBarEntry,
+		privAte reAdonly extensionRoot: vscode.Uri,
+		privAte reAdonly sizeStAtusBArEntry: SizeStAtusBArEntry,
+		privAte reAdonly binArySizeStAtusBArEntry: BinArySizeStAtusBArEntry,
+		privAte reAdonly zoomStAtusBArEntry: ZoomStAtusBArEntry,
 	) { }
 
-	public async openCustomDocument(uri: vscode.Uri) {
+	public Async openCustomDocument(uri: vscode.Uri) {
 		return { uri, dispose: () => { } };
 	}
 
-	public async resolveCustomEditor(
+	public Async resolveCustomEditor(
 		document: vscode.CustomDocument,
-		webviewEditor: vscode.WebviewPanel,
+		webviewEditor: vscode.WebviewPAnel,
 	): Promise<void> {
-		const preview = new Preview(this.extensionRoot, document.uri, webviewEditor, this.sizeStatusBarEntry, this.binarySizeStatusBarEntry, this.zoomStatusBarEntry);
-		this._previews.add(preview);
+		const preview = new Preview(this.extensionRoot, document.uri, webviewEditor, this.sizeStAtusBArEntry, this.binArySizeStAtusBArEntry, this.zoomStAtusBArEntry);
+		this._previews.Add(preview);
 		this.setActivePreview(preview);
 
 		webviewEditor.onDidDispose(() => { this._previews.delete(preview); });
 
-		webviewEditor.onDidChangeViewState(() => {
-			if (webviewEditor.active) {
+		webviewEditor.onDidChAngeViewStAte(() => {
+			if (webviewEditor.Active) {
 				this.setActivePreview(preview);
-			} else if (this._activePreview === preview && !webviewEditor.active) {
+			} else if (this._ActivePreview === preview && !webviewEditor.Active) {
 				this.setActivePreview(undefined);
 			}
 		});
 	}
 
-	public get activePreview() { return this._activePreview; }
+	public get ActivePreview() { return this._ActivePreview; }
 
-	private setActivePreview(value: Preview | undefined): void {
-		this._activePreview = value;
-		this.setPreviewActiveContext(!!value);
+	privAte setActivePreview(vAlue: Preview | undefined): void {
+		this._ActivePreview = vAlue;
+		this.setPreviewActiveContext(!!vAlue);
 	}
 
-	private setPreviewActiveContext(value: boolean) {
-		vscode.commands.executeCommand('setContext', 'imagePreviewFocus', value);
+	privAte setPreviewActiveContext(vAlue: booleAn) {
+		vscode.commAnds.executeCommAnd('setContext', 'imAgePreviewFocus', vAlue);
 	}
 }
 
-const enum PreviewState {
+const enum PreviewStAte {
 	Disposed,
 	Visible,
 	Active,
 }
 
-class Preview extends Disposable {
+clAss Preview extends DisposAble {
 
-	private readonly id: string = `${Date.now()}-${Math.random().toString()}`;
+	privAte reAdonly id: string = `${DAte.now()}-${MAth.rAndom().toString()}`;
 
-	private _previewState = PreviewState.Visible;
-	private _imageSize: string | undefined;
-	private _imageBinarySize: number | undefined;
-	private _imageZoom: Scale | undefined;
+	privAte _previewStAte = PreviewStAte.Visible;
+	privAte _imAgeSize: string | undefined;
+	privAte _imAgeBinArySize: number | undefined;
+	privAte _imAgeZoom: ScAle | undefined;
 
-	private readonly emptyPngDataUri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAEElEQVR42gEFAPr/AP///wAI/AL+Sr4t6gAAAABJRU5ErkJggg==';
+	privAte reAdonly emptyPngDAtAUri = 'dAtA:imAge/png;bAse64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAEElEQVR42gEFAPr/AP///wAI/AL+Sr4t6gAAAABJRU5ErkJggg==';
 
 	constructor(
-		private readonly extensionRoot: vscode.Uri,
-		private readonly resource: vscode.Uri,
-		private readonly webviewEditor: vscode.WebviewPanel,
-		private readonly sizeStatusBarEntry: SizeStatusBarEntry,
-		private readonly binarySizeStatusBarEntry: BinarySizeStatusBarEntry,
-		private readonly zoomStatusBarEntry: ZoomStatusBarEntry,
+		privAte reAdonly extensionRoot: vscode.Uri,
+		privAte reAdonly resource: vscode.Uri,
+		privAte reAdonly webviewEditor: vscode.WebviewPAnel,
+		privAte reAdonly sizeStAtusBArEntry: SizeStAtusBArEntry,
+		privAte reAdonly binArySizeStAtusBArEntry: BinArySizeStAtusBArEntry,
+		privAte reAdonly zoomStAtusBArEntry: ZoomStAtusBArEntry,
 	) {
 		super();
 		const resourceRoot = resource.with({
-			path: resource.path.replace(/\/[^\/]+?\.\w+$/, '/'),
+			pAth: resource.pAth.replAce(/\/[^\/]+?\.\w+$/, '/'),
 		});
 
 		webviewEditor.webview.options = {
-			enableScripts: true,
-			localResourceRoots: [
+			enAbleScripts: true,
+			locAlResourceRoots: [
 				resourceRoot,
 				extensionRoot,
 			]
 		};
 
-		this._register(webviewEditor.webview.onDidReceiveMessage(message => {
-			switch (message.type) {
-				case 'size':
+		this._register(webviewEditor.webview.onDidReceiveMessAge(messAge => {
+			switch (messAge.type) {
+				cAse 'size':
 					{
-						this._imageSize = message.value;
-						this.update();
-						break;
+						this._imAgeSize = messAge.vAlue;
+						this.updAte();
+						breAk;
 					}
-				case 'zoom':
+				cAse 'zoom':
 					{
-						this._imageZoom = message.value;
-						this.update();
-						break;
+						this._imAgeZoom = messAge.vAlue;
+						this.updAte();
+						breAk;
 					}
 
-				case 'reopen-as-text':
+				cAse 'reopen-As-text':
 					{
-						vscode.commands.executeCommand('vscode.openWith', resource, 'default', webviewEditor.viewColumn);
-						break;
+						vscode.commAnds.executeCommAnd('vscode.openWith', resource, 'defAult', webviewEditor.viewColumn);
+						breAk;
 					}
 			}
 		}));
 
-		this._register(zoomStatusBarEntry.onDidChangeScale(e => {
-			if (this._previewState === PreviewState.Active) {
-				this.webviewEditor.webview.postMessage({ type: 'setScale', scale: e.scale });
+		this._register(zoomStAtusBArEntry.onDidChAngeScAle(e => {
+			if (this._previewStAte === PreviewStAte.Active) {
+				this.webviewEditor.webview.postMessAge({ type: 'setScAle', scAle: e.scAle });
 			}
 		}));
 
-		this._register(webviewEditor.onDidChangeViewState(() => {
-			this.update();
-			this.webviewEditor.webview.postMessage({ type: 'setActive', value: this.webviewEditor.active });
+		this._register(webviewEditor.onDidChAngeViewStAte(() => {
+			this.updAte();
+			this.webviewEditor.webview.postMessAge({ type: 'setActive', vAlue: this.webviewEditor.Active });
 		}));
 
 		this._register(webviewEditor.onDidDispose(() => {
-			if (this._previewState === PreviewState.Active) {
-				this.sizeStatusBarEntry.hide(this.id);
-				this.binarySizeStatusBarEntry.hide(this.id);
-				this.zoomStatusBarEntry.hide(this.id);
+			if (this._previewStAte === PreviewStAte.Active) {
+				this.sizeStAtusBArEntry.hide(this.id);
+				this.binArySizeStAtusBArEntry.hide(this.id);
+				this.zoomStAtusBArEntry.hide(this.id);
 			}
-			this._previewState = PreviewState.Disposed;
+			this._previewStAte = PreviewStAte.Disposed;
 		}));
 
-		const watcher = this._register(vscode.workspace.createFileSystemWatcher(resource.fsPath));
-		this._register(watcher.onDidChange(e => {
+		const wAtcher = this._register(vscode.workspAce.creAteFileSystemWAtcher(resource.fsPAth));
+		this._register(wAtcher.onDidChAnge(e => {
 			if (e.toString() === this.resource.toString()) {
 				this.render();
 			}
 		}));
-		this._register(watcher.onDidDelete(e => {
+		this._register(wAtcher.onDidDelete(e => {
 			if (e.toString() === this.resource.toString()) {
 				this.webviewEditor.dispose();
 			}
 		}));
 
-		vscode.workspace.fs.stat(resource).then(({ size }) => {
-			this._imageBinarySize = size;
-			this.update();
+		vscode.workspAce.fs.stAt(resource).then(({ size }) => {
+			this._imAgeBinArySize = size;
+			this.updAte();
 		});
 
 		this.render();
-		this.update();
-		this.webviewEditor.webview.postMessage({ type: 'setActive', value: this.webviewEditor.active });
+		this.updAte();
+		this.webviewEditor.webview.postMessAge({ type: 'setActive', vAlue: this.webviewEditor.Active });
 	}
 
 	public zoomIn() {
-		if (this._previewState === PreviewState.Active) {
-			this.webviewEditor.webview.postMessage({ type: 'zoomIn' });
+		if (this._previewStAte === PreviewStAte.Active) {
+			this.webviewEditor.webview.postMessAge({ type: 'zoomIn' });
 		}
 	}
 
 	public zoomOut() {
-		if (this._previewState === PreviewState.Active) {
-			this.webviewEditor.webview.postMessage({ type: 'zoomOut' });
+		if (this._previewStAte === PreviewStAte.Active) {
+			this.webviewEditor.webview.postMessAge({ type: 'zoomOut' });
 		}
 	}
 
-	private async render() {
-		if (this._previewState !== PreviewState.Disposed) {
-			this.webviewEditor.webview.html = await this.getWebviewContents();
+	privAte Async render() {
+		if (this._previewStAte !== PreviewStAte.Disposed) {
+			this.webviewEditor.webview.html = AwAit this.getWebviewContents();
 		}
 	}
 
-	private update() {
-		if (this._previewState === PreviewState.Disposed) {
+	privAte updAte() {
+		if (this._previewStAte === PreviewStAte.Disposed) {
 			return;
 		}
 
-		if (this.webviewEditor.active) {
-			this._previewState = PreviewState.Active;
-			this.sizeStatusBarEntry.show(this.id, this._imageSize || '');
-			this.binarySizeStatusBarEntry.show(this.id, this._imageBinarySize);
-			this.zoomStatusBarEntry.show(this.id, this._imageZoom || 'fit');
+		if (this.webviewEditor.Active) {
+			this._previewStAte = PreviewStAte.Active;
+			this.sizeStAtusBArEntry.show(this.id, this._imAgeSize || '');
+			this.binArySizeStAtusBArEntry.show(this.id, this._imAgeBinArySize);
+			this.zoomStAtusBArEntry.show(this.id, this._imAgeZoom || 'fit');
 		} else {
-			if (this._previewState === PreviewState.Active) {
-				this.sizeStatusBarEntry.hide(this.id);
-				this.binarySizeStatusBarEntry.hide(this.id);
-				this.zoomStatusBarEntry.hide(this.id);
+			if (this._previewStAte === PreviewStAte.Active) {
+				this.sizeStAtusBArEntry.hide(this.id);
+				this.binArySizeStAtusBArEntry.hide(this.id);
+				this.zoomStAtusBArEntry.hide(this.id);
 			}
-			this._previewState = PreviewState.Visible;
+			this._previewStAte = PreviewStAte.Visible;
 		}
 	}
 
-	private async getWebviewContents(): Promise<string> {
-		const version = Date.now().toString();
+	privAte Async getWebviewContents(): Promise<string> {
+		const version = DAte.now().toString();
 		const settings = {
-			isMac: process.platform === 'darwin',
-			src: await this.getResourcePath(this.webviewEditor, this.resource, version),
+			isMAc: process.plAtform === 'dArwin',
+			src: AwAit this.getResourcePAth(this.webviewEditor, this.resource, version),
 		};
 
-		const nonce = Date.now().toString();
+		const nonce = DAte.now().toString();
 
 		return /* html */`<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
+<html lAng="en">
+<heAd>
+	<metA chArset="UTF-8">
 
-	<!-- Disable pinch zooming -->
-	<meta name="viewport"
-		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	<!-- DisAble pinch zooming -->
+	<metA nAme="viewport"
+		content="width=device-width, initiAl-scAle=1.0, mAximum-scAle=1.0, minimum-scAle=1.0, user-scAlAble=no">
 
-	<title>Image Preview</title>
+	<title>ImAge Preview</title>
 
-	<link rel="stylesheet" href="${escapeAttribute(this.extensionResource('/media/main.css'))}" type="text/css" media="screen" nonce="${nonce}">
+	<link rel="stylesheet" href="${escApeAttribute(this.extensionResource('/mediA/mAin.css'))}" type="text/css" mediA="screen" nonce="${nonce}">
 
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data: ${this.webviewEditor.webview.cspSource}; script-src 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}';">
-	<meta id="image-preview-settings" data-settings="${escapeAttribute(JSON.stringify(settings))}">
-</head>
-<body class="container image scale-to-fit loading">
-	<div class="loading-indicator"></div>
-	<div class="image-load-error">
-		<p>${localize('preview.imageLoadError', "An error occurred while loading the image.")}</p>
-		<a href="#" class="open-file-link">${localize('preview.imageLoadErrorLink', "Open file using VS Code's standard text/binary editor?")}</a>
+	<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; img-src 'self' dAtA: ${this.webviewEditor.webview.cspSource}; script-src 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}';">
+	<metA id="imAge-preview-settings" dAtA-settings="${escApeAttribute(JSON.stringify(settings))}">
+</heAd>
+<body clAss="contAiner imAge scAle-to-fit loAding">
+	<div clAss="loAding-indicAtor"></div>
+	<div clAss="imAge-loAd-error">
+		<p>${locAlize('preview.imAgeLoAdError', "An error occurred while loAding the imAge.")}</p>
+		<A href="#" clAss="open-file-link">${locAlize('preview.imAgeLoAdErrorLink', "Open file using VS Code's stAndArd text/binAry editor?")}</A>
 	</div>
-	<script src="${escapeAttribute(this.extensionResource('/media/main.js'))}" nonce="${nonce}"></script>
+	<script src="${escApeAttribute(this.extensionResource('/mediA/mAin.js'))}" nonce="${nonce}"></script>
 </body>
 </html>`;
 	}
 
-	private async getResourcePath(webviewEditor: vscode.WebviewPanel, resource: vscode.Uri, version: string): Promise<string> {
+	privAte Async getResourcePAth(webviewEditor: vscode.WebviewPAnel, resource: vscode.Uri, version: string): Promise<string> {
 		if (resource.scheme === 'git') {
-			const stat = await vscode.workspace.fs.stat(resource);
-			if (stat.size === 0) {
-				return this.emptyPngDataUri;
+			const stAt = AwAit vscode.workspAce.fs.stAt(resource);
+			if (stAt.size === 0) {
+				return this.emptyPngDAtAUri;
 			}
 		}
 
-		// Avoid adding cache busting if there is already a query string
+		// Avoid Adding cAche busting if there is AlreAdy A query string
 		if (resource.query) {
-			return webviewEditor.webview.asWebviewUri(resource).toString();
+			return webviewEditor.webview.AsWebviewUri(resource).toString();
 		}
-		return webviewEditor.webview.asWebviewUri(resource).with({ query: `version=${version}` }).toString();
+		return webviewEditor.webview.AsWebviewUri(resource).with({ query: `version=${version}` }).toString();
 	}
 
-	private extensionResource(path: string) {
-		return this.webviewEditor.webview.asWebviewUri(this.extensionRoot.with({
-			path: this.extensionRoot.path + path
+	privAte extensionResource(pAth: string) {
+		return this.webviewEditor.webview.AsWebviewUri(this.extensionRoot.with({
+			pAth: this.extensionRoot.pAth + pAth
 		}));
 	}
 }
 
-function escapeAttribute(value: string | vscode.Uri): string {
-	return value.toString().replace(/"/g, '&quot;');
+function escApeAttribute(vAlue: string | vscode.Uri): string {
+	return vAlue.toString().replAce(/"/g, '&quot;');
 }

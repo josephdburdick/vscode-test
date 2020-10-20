@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableService } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { EnvironmentVariableService } from 'vs/workbench/contrib/terminal/common/environmentVariableService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IEnvironmentVAriAbleService } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
+import { EnvironmentVAriAbleService } from 'vs/workbench/contrib/terminAl/common/environmentVAriAbleService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-registerSingleton(IEnvironmentVariableService, EnvironmentVariableService, true);
+registerSingleton(IEnvironmentVAriAbleService, EnvironmentVAriAbleService, true);

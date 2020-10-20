@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
 import { ViewsWelcomeContribution } from 'vs/workbench/contrib/welcome/common/viewsWelcomeContribution';
 import { ViewsWelcomeExtensionPoint, viewsWelcomeExtensionPointDescriptor } from 'vs/workbench/contrib/welcome/common/viewsWelcomeExtensionPoint';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 
 const extensionPoint = ExtensionsRegistry.registerExtensionPoint<ViewsWelcomeExtensionPoint>(viewsWelcomeExtensionPointDescriptor);
 
-class WorkbenchConfigurationContribution {
+clAss WorkbenchConfigurAtionContribution {
 	constructor(
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 	) {
-		instantiationService.createInstance(ViewsWelcomeContribution, extensionPoint);
+		instAntiAtionService.creAteInstAnce(ViewsWelcomeContribution, extensionPoint);
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WorkbenchConfigurationContribution, LifecyclePhase.Eventually);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(WorkbenchConfigurAtionContribution, LifecyclePhAse.EventuAlly);

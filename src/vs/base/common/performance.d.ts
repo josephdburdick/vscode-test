@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface PerformanceEntry {
-	readonly name: string;
-	readonly startTime: number;
+export interfAce PerformAnceEntry {
+	reAdonly nAme: string;
+	reAdonly stArtTime: number;
 }
 
-export function mark(name: string): void;
+export function mArk(nAme: string): void;
 
 /**
- * All entries filtered by type and sorted by `startTime`.
+ * All entries filtered by type And sorted by `stArtTime`.
  */
-export function getEntries(): PerformanceEntry[];
+export function getEntries(): PerformAnceEntry[];
 
-export function getDuration(from: string, to: string): number;
+export function getDurAtion(from: string, to: string): number;
 
-type ExportData = any[];
-export function importEntries(data: ExportData): void;
-export function exportEntries(): ExportData;
+type ExportDAtA = Any[];
+export function importEntries(dAtA: ExportDAtA): void;
+export function exportEntries(): ExportDAtA;

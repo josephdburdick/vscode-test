@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { MainThreadTelemetryShape, MainContext, IExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { MAinThreAdTelemetryShApe, MAinContext, IExtHostContext } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ClAssifiedEvent, StrictPropertyCheck, GDPRClAssificAtion } from 'vs/plAtform/telemetry/common/gdprTypings';
 
-@extHostNamedCustomer(MainContext.MainThreadTelemetry)
-export class MainThreadTelemetry implements MainThreadTelemetryShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdTelemetry)
+export clAss MAinThreAdTelemetry implements MAinThreAdTelemetryShApe {
 
-	private static readonly _name = 'pluginHostTelemetry';
+	privAte stAtic reAdonly _nAme = 'pluginHostTelemetry';
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService
 	) {
 		//
 	}
@@ -24,14 +24,14 @@ export class MainThreadTelemetry implements MainThreadTelemetryShape {
 		//
 	}
 
-	$publicLog(eventName: string, data: any = Object.create(null)): void {
-		// __GDPR__COMMON__ "pluginHostTelemetry" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
-		data[MainThreadTelemetry._name] = true;
-		this._telemetryService.publicLog(eventName, data);
+	$publicLog(eventNAme: string, dAtA: Any = Object.creAte(null)): void {
+		// __GDPR__COMMON__ "pluginHostTelemetry" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
+		dAtA[MAinThreAdTelemetry._nAme] = true;
+		this._telemetryService.publicLog(eventNAme, dAtA);
 	}
 
-	$publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data: StrictPropertyCheck<T, E>): void {
-		this.$publicLog(eventName, data as any);
+	$publicLog2<E extends ClAssifiedEvent<T> = never, T extends GDPRClAssificAtion<T> = never>(eventNAme: string, dAtA: StrictPropertyCheck<T, E>): void {
+		this.$publicLog(eventNAme, dAtA As Any);
 	}
 }
 

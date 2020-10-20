@@ -1,176 +1,176 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { Disposable, IDisposable, dispose, toDisposable } from 'vs/base/common/lifecycle';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
+import { DisposAble, IDisposAble, dispose, toDisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkingCopyService, IWorkingCopy } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { ShutdownReason, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { ShutdownReAson, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
 
-export abstract class BackupTracker extends Disposable {
+export AbstrAct clAss BAckupTrAcker extends DisposAble {
 
-	// A map from working copy to a version ID we compute on each content
-	// change. This version ID allows to e.g. ask if a backup for a specific
-	// content has been made before closing.
-	private readonly mapWorkingCopyToContentVersion = new Map<IWorkingCopy, number>();
+	// A mAp from working copy to A version ID we compute on eAch content
+	// chAnge. This version ID Allows to e.g. Ask if A bAckup for A specific
+	// content hAs been mAde before closing.
+	privAte reAdonly mApWorkingCopyToContentVersion = new MAp<IWorkingCopy, number>();
 
-	// A map of scheduled pending backups for working copies
-	private readonly pendingBackups = new Map<IWorkingCopy, IDisposable>();
+	// A mAp of scheduled pending bAckups for working copies
+	privAte reAdonly pendingBAckups = new MAp<IWorkingCopy, IDisposAble>();
 
 	constructor(
-		protected readonly backupFileService: IBackupFileService,
-		protected readonly workingCopyService: IWorkingCopyService,
-		protected readonly logService: ILogService,
-		protected readonly lifecycleService: ILifecycleService
+		protected reAdonly bAckupFileService: IBAckupFileService,
+		protected reAdonly workingCopyService: IWorkingCopyService,
+		protected reAdonly logService: ILogService,
+		protected reAdonly lifecycleService: ILifecycleService
 	) {
 		super();
 
-		// Fill in initial dirty working copies
-		this.workingCopyService.dirtyWorkingCopies.forEach(workingCopy => this.onDidRegister(workingCopy));
+		// Fill in initiAl dirty working copies
+		this.workingCopyService.dirtyWorkingCopies.forEAch(workingCopy => this.onDidRegister(workingCopy));
 
 		this.registerListeners();
 	}
 
-	private registerListeners() {
+	privAte registerListeners() {
 
 		// Working Copy events
 		this._register(this.workingCopyService.onDidRegister(workingCopy => this.onDidRegister(workingCopy)));
 		this._register(this.workingCopyService.onDidUnregister(workingCopy => this.onDidUnregister(workingCopy)));
-		this._register(this.workingCopyService.onDidChangeDirty(workingCopy => this.onDidChangeDirty(workingCopy)));
-		this._register(this.workingCopyService.onDidChangeContent(workingCopy => this.onDidChangeContent(workingCopy)));
+		this._register(this.workingCopyService.onDidChAngeDirty(workingCopy => this.onDidChAngeDirty(workingCopy)));
+		this._register(this.workingCopyService.onDidChAngeContent(workingCopy => this.onDidChAngeContent(workingCopy)));
 
-		// Lifecycle (handled in subclasses)
-		this.lifecycleService.onBeforeShutdown(event => event.veto(this.onBeforeShutdown(event.reason)));
+		// Lifecycle (hAndled in subclAsses)
+		this.lifecycleService.onBeforeShutdown(event => event.veto(this.onBeforeShutdown(event.reAson)));
 	}
 
-	private onDidRegister(workingCopy: IWorkingCopy): void {
+	privAte onDidRegister(workingCopy: IWorkingCopy): void {
 		if (workingCopy.isDirty()) {
-			this.scheduleBackup(workingCopy);
+			this.scheduleBAckup(workingCopy);
 		}
 	}
 
-	private onDidUnregister(workingCopy: IWorkingCopy): void {
+	privAte onDidUnregister(workingCopy: IWorkingCopy): void {
 
-		// Remove from content version map
-		this.mapWorkingCopyToContentVersion.delete(workingCopy);
+		// Remove from content version mAp
+		this.mApWorkingCopyToContentVersion.delete(workingCopy);
 
-		// Discard backup
-		this.discardBackup(workingCopy);
+		// DiscArd bAckup
+		this.discArdBAckup(workingCopy);
 	}
 
-	private onDidChangeDirty(workingCopy: IWorkingCopy): void {
+	privAte onDidChAngeDirty(workingCopy: IWorkingCopy): void {
 		if (workingCopy.isDirty()) {
-			this.scheduleBackup(workingCopy);
+			this.scheduleBAckup(workingCopy);
 		} else {
-			this.discardBackup(workingCopy);
+			this.discArdBAckup(workingCopy);
 		}
 	}
 
-	private onDidChangeContent(workingCopy: IWorkingCopy): void {
+	privAte onDidChAngeContent(workingCopy: IWorkingCopy): void {
 
 		// Increment content version ID
 		const contentVersionId = this.getContentVersion(workingCopy);
-		this.mapWorkingCopyToContentVersion.set(workingCopy, contentVersionId + 1);
+		this.mApWorkingCopyToContentVersion.set(workingCopy, contentVersionId + 1);
 
-		// Schedule backup if dirty
+		// Schedule bAckup if dirty
 		if (workingCopy.isDirty()) {
-			// this listener will make sure that the backup is
-			// pushed out for as long as the user is still changing
+			// this listener will mAke sure thAt the bAckup is
+			// pushed out for As long As the user is still chAnging
 			// the content of the working copy.
-			this.scheduleBackup(workingCopy);
+			this.scheduleBAckup(workingCopy);
 		}
 	}
 
 	/**
-	 * Allows subclasses to conditionally opt-out of doing a backup, e.g. if
-	 * auto save is enabled.
+	 * Allows subclAsses to conditionAlly opt-out of doing A bAckup, e.g. if
+	 * Auto sAve is enAbled.
 	 */
-	protected abstract shouldScheduleBackup(workingCopy: IWorkingCopy): boolean;
+	protected AbstrAct shouldScheduleBAckup(workingCopy: IWorkingCopy): booleAn;
 
 	/**
-	 * Allows subclasses to control the delay before performing a backup from
-	 * working copy content changes.
+	 * Allows subclAsses to control the delAy before performing A bAckup from
+	 * working copy content chAnges.
 	 */
-	protected abstract getBackupScheduleDelay(workingCopy: IWorkingCopy): number;
+	protected AbstrAct getBAckupScheduleDelAy(workingCopy: IWorkingCopy): number;
 
-	private scheduleBackup(workingCopy: IWorkingCopy): void {
+	privAte scheduleBAckup(workingCopy: IWorkingCopy): void {
 
-		// Clear any running backup operation
-		this.cancelBackup(workingCopy);
+		// CleAr Any running bAckup operAtion
+		this.cAncelBAckup(workingCopy);
 
-		// subclass prevented backup for working copy
-		if (!this.shouldScheduleBackup(workingCopy)) {
+		// subclAss prevented bAckup for working copy
+		if (!this.shouldScheduleBAckup(workingCopy)) {
 			return;
 		}
 
-		this.logService.trace(`[backup tracker] scheduling backup`, workingCopy.resource.toString());
+		this.logService.trAce(`[bAckup trAcker] scheduling bAckup`, workingCopy.resource.toString());
 
-		// Schedule new backup
-		const cts = new CancellationTokenSource();
-		const handle = setTimeout(async () => {
-			if (cts.token.isCancellationRequested) {
+		// Schedule new bAckup
+		const cts = new CAncellAtionTokenSource();
+		const hAndle = setTimeout(Async () => {
+			if (cts.token.isCAncellAtionRequested) {
 				return;
 			}
 
-			// Backup if dirty
+			// BAckup if dirty
 			if (workingCopy.isDirty()) {
-				this.logService.trace(`[backup tracker] creating backup`, workingCopy.resource.toString());
+				this.logService.trAce(`[bAckup trAcker] creAting bAckup`, workingCopy.resource.toString());
 
 				try {
-					const backup = await workingCopy.backup(cts.token);
-					if (cts.token.isCancellationRequested) {
+					const bAckup = AwAit workingCopy.bAckup(cts.token);
+					if (cts.token.isCAncellAtionRequested) {
 						return;
 					}
 
 					if (workingCopy.isDirty()) {
-						this.logService.trace(`[backup tracker] storing backup`, workingCopy.resource.toString());
+						this.logService.trAce(`[bAckup trAcker] storing bAckup`, workingCopy.resource.toString());
 
-						await this.backupFileService.backup(workingCopy.resource, backup.content, this.getContentVersion(workingCopy), backup.meta, cts.token);
+						AwAit this.bAckupFileService.bAckup(workingCopy.resource, bAckup.content, this.getContentVersion(workingCopy), bAckup.metA, cts.token);
 					}
-				} catch (error) {
+				} cAtch (error) {
 					this.logService.error(error);
 				}
 			}
 
-			if (cts.token.isCancellationRequested) {
+			if (cts.token.isCAncellAtionRequested) {
 				return;
 			}
 
-			// Clear disposable
-			this.pendingBackups.delete(workingCopy);
+			// CleAr disposAble
+			this.pendingBAckups.delete(workingCopy);
 
-		}, this.getBackupScheduleDelay(workingCopy));
+		}, this.getBAckupScheduleDelAy(workingCopy));
 
-		// Keep in map for disposal as needed
-		this.pendingBackups.set(workingCopy, toDisposable(() => {
-			this.logService.trace(`[backup tracker] clearing pending backup`, workingCopy.resource.toString());
+		// Keep in mAp for disposAl As needed
+		this.pendingBAckups.set(workingCopy, toDisposAble(() => {
+			this.logService.trAce(`[bAckup trAcker] cleAring pending bAckup`, workingCopy.resource.toString());
 
 			cts.dispose(true);
-			clearTimeout(handle);
+			cleArTimeout(hAndle);
 		}));
 	}
 
 	protected getContentVersion(workingCopy: IWorkingCopy): number {
-		return this.mapWorkingCopyToContentVersion.get(workingCopy) || 0;
+		return this.mApWorkingCopyToContentVersion.get(workingCopy) || 0;
 	}
 
-	private discardBackup(workingCopy: IWorkingCopy): void {
-		this.logService.trace(`[backup tracker] discarding backup`, workingCopy.resource.toString());
+	privAte discArdBAckup(workingCopy: IWorkingCopy): void {
+		this.logService.trAce(`[bAckup trAcker] discArding bAckup`, workingCopy.resource.toString());
 
-		// Clear any running backup operation
-		this.cancelBackup(workingCopy);
+		// CleAr Any running bAckup operAtion
+		this.cAncelBAckup(workingCopy);
 
-		// Forward to backup file service
-		this.backupFileService.discardBackup(workingCopy.resource);
+		// ForwArd to bAckup file service
+		this.bAckupFileService.discArdBAckup(workingCopy.resource);
 	}
 
-	private cancelBackup(workingCopy: IWorkingCopy): void {
-		dispose(this.pendingBackups.get(workingCopy));
-		this.pendingBackups.delete(workingCopy);
+	privAte cAncelBAckup(workingCopy: IWorkingCopy): void {
+		dispose(this.pendingBAckups.get(workingCopy));
+		this.pendingBAckups.delete(workingCopy);
 	}
 
-	protected abstract onBeforeShutdown(reason: ShutdownReason): boolean | Promise<boolean>;
+	protected AbstrAct onBeforeShutdown(reAson: ShutdownReAson): booleAn | Promise<booleAn>;
 }

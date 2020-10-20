@@ -1,700 +1,700 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isWindows } from 'vs/base/common/platform';
-import { CharCode } from 'vs/base/common/charCode';
-import * as paths from 'vs/base/common/path';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import * As pAths from 'vs/bAse/common/pAth';
 
-const _schemePattern = /^\w[\w\d+.-]*$/;
-const _singleSlashStart = /^\//;
-const _doubleSlashStart = /^\/\//;
+const _schemePAttern = /^\w[\w\d+.-]*$/;
+const _singleSlAshStArt = /^\//;
+const _doubleSlAshStArt = /^\/\//;
 
-function _validateUri(ret: URI, _strict?: boolean): void {
+function _vAlidAteUri(ret: URI, _strict?: booleAn): void {
 
 	// scheme, must be set
 	if (!ret.scheme && _strict) {
-		throw new Error(`[UriError]: Scheme is missing: {scheme: "", authority: "${ret.authority}", path: "${ret.path}", query: "${ret.query}", fragment: "${ret.fragment}"}`);
+		throw new Error(`[UriError]: Scheme is missing: {scheme: "", Authority: "${ret.Authority}", pAth: "${ret.pAth}", query: "${ret.query}", frAgment: "${ret.frAgment}"}`);
 	}
 
 	// scheme, https://tools.ietf.org/html/rfc3986#section-3.1
 	// ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
-	if (ret.scheme && !_schemePattern.test(ret.scheme)) {
-		throw new Error('[UriError]: Scheme contains illegal characters.');
+	if (ret.scheme && !_schemePAttern.test(ret.scheme)) {
+		throw new Error('[UriError]: Scheme contAins illegAl chArActers.');
 	}
 
-	// path, http://tools.ietf.org/html/rfc3986#section-3.3
-	// If a URI contains an authority component, then the path component
-	// must either be empty or begin with a slash ("/") character.  If a URI
-	// does not contain an authority component, then the path cannot begin
-	// with two slash characters ("//").
-	if (ret.path) {
-		if (ret.authority) {
-			if (!_singleSlashStart.test(ret.path)) {
-				throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character');
+	// pAth, http://tools.ietf.org/html/rfc3986#section-3.3
+	// If A URI contAins An Authority component, then the pAth component
+	// must either be empty or begin with A slAsh ("/") chArActer.  If A URI
+	// does not contAin An Authority component, then the pAth cAnnot begin
+	// with two slAsh chArActers ("//").
+	if (ret.pAth) {
+		if (ret.Authority) {
+			if (!_singleSlAshStArt.test(ret.pAth)) {
+				throw new Error('[UriError]: If A URI contAins An Authority component, then the pAth component must either be empty or begin with A slAsh ("/") chArActer');
 			}
 		} else {
-			if (_doubleSlashStart.test(ret.path)) {
-				throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")');
+			if (_doubleSlAshStArt.test(ret.pAth)) {
+				throw new Error('[UriError]: If A URI does not contAin An Authority component, then the pAth cAnnot begin with two slAsh chArActers ("//")');
 			}
 		}
 	}
 }
 
-// for a while we allowed uris *without* schemes and this is the migration
-// for them, e.g. an uri without scheme and without strict-mode warns and falls
-// back to the file-scheme. that should cause the least carnage and still be a
-// clear warning
-function _schemeFix(scheme: string, _strict: boolean): string {
+// for A while we Allowed uris *without* schemes And this is the migrAtion
+// for them, e.g. An uri without scheme And without strict-mode wArns And fAlls
+// bAck to the file-scheme. thAt should cAuse the leAst cArnAge And still be A
+// cleAr wArning
+function _schemeFix(scheme: string, _strict: booleAn): string {
 	if (!scheme && !_strict) {
 		return 'file';
 	}
 	return scheme;
 }
 
-// implements a bit of https://tools.ietf.org/html/rfc3986#section-5
-function _referenceResolution(scheme: string, path: string): string {
+// implements A bit of https://tools.ietf.org/html/rfc3986#section-5
+function _referenceResolution(scheme: string, pAth: string): string {
 
-	// the slash-character is our 'default base' as we don't
-	// support constructing URIs relative to other URIs. This
-	// also means that we alter and potentially break paths.
+	// the slAsh-chArActer is our 'defAult bAse' As we don't
+	// support constructing URIs relAtive to other URIs. This
+	// Also meAns thAt we Alter And potentiAlly breAk pAths.
 	// see https://tools.ietf.org/html/rfc3986#section-5.1.4
 	switch (scheme) {
-		case 'https':
-		case 'http':
-		case 'file':
-			if (!path) {
-				path = _slash;
-			} else if (path[0] !== _slash) {
-				path = _slash + path;
+		cAse 'https':
+		cAse 'http':
+		cAse 'file':
+			if (!pAth) {
+				pAth = _slAsh;
+			} else if (pAth[0] !== _slAsh) {
+				pAth = _slAsh + pAth;
 			}
-			break;
+			breAk;
 	}
-	return path;
+	return pAth;
 }
 
 const _empty = '';
-const _slash = '/';
+const _slAsh = '/';
 const _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 
 /**
  * Uniform Resource Identifier (URI) http://tools.ietf.org/html/rfc3986.
- * This class is a simple parser which creates the basic component parts
- * (http://tools.ietf.org/html/rfc3986#section-3) with minimal validation
- * and encoding.
+ * This clAss is A simple pArser which creAtes the bAsic component pArts
+ * (http://tools.ietf.org/html/rfc3986#section-3) with minimAl vAlidAtion
+ * And encoding.
  *
  * ```txt
- *       foo://example.com:8042/over/there?name=ferret#nose
+ *       foo://exAmple.com:8042/over/there?nAme=ferret#nose
  *       \_/   \______________/\_________/ \_________/ \__/
  *        |           |            |            |        |
- *     scheme     authority       path        query   fragment
+ *     scheme     Authority       pAth        query   frAgment
  *        |   _____________________|__
  *       / \ /                        \
- *       urn:example:animal:ferret:nose
+ *       urn:exAmple:AnimAl:ferret:nose
  * ```
  */
-export class URI implements UriComponents {
+export clAss URI implements UriComponents {
 
-	static isUri(thing: any): thing is URI {
-		if (thing instanceof URI) {
+	stAtic isUri(thing: Any): thing is URI {
+		if (thing instAnceof URI) {
 			return true;
 		}
 		if (!thing) {
-			return false;
+			return fAlse;
 		}
-		return typeof (<URI>thing).authority === 'string'
-			&& typeof (<URI>thing).fragment === 'string'
-			&& typeof (<URI>thing).path === 'string'
+		return typeof (<URI>thing).Authority === 'string'
+			&& typeof (<URI>thing).frAgment === 'string'
+			&& typeof (<URI>thing).pAth === 'string'
 			&& typeof (<URI>thing).query === 'string'
 			&& typeof (<URI>thing).scheme === 'string'
-			&& typeof (<URI>thing).fsPath === 'function'
+			&& typeof (<URI>thing).fsPAth === 'function'
 			&& typeof (<URI>thing).with === 'function'
 			&& typeof (<URI>thing).toString === 'function';
 	}
 
 	/**
-	 * scheme is the 'http' part of 'http://www.msft.com/some/path?query#fragment'.
-	 * The part before the first colon.
+	 * scheme is the 'http' pArt of 'http://www.msft.com/some/pAth?query#frAgment'.
+	 * The pArt before the first colon.
 	 */
-	readonly scheme: string;
+	reAdonly scheme: string;
 
 	/**
-	 * authority is the 'www.msft.com' part of 'http://www.msft.com/some/path?query#fragment'.
-	 * The part between the first double slashes and the next slash.
+	 * Authority is the 'www.msft.com' pArt of 'http://www.msft.com/some/pAth?query#frAgment'.
+	 * The pArt between the first double slAshes And the next slAsh.
 	 */
-	readonly authority: string;
+	reAdonly Authority: string;
 
 	/**
-	 * path is the '/some/path' part of 'http://www.msft.com/some/path?query#fragment'.
+	 * pAth is the '/some/pAth' pArt of 'http://www.msft.com/some/pAth?query#frAgment'.
 	 */
-	readonly path: string;
+	reAdonly pAth: string;
 
 	/**
-	 * query is the 'query' part of 'http://www.msft.com/some/path?query#fragment'.
+	 * query is the 'query' pArt of 'http://www.msft.com/some/pAth?query#frAgment'.
 	 */
-	readonly query: string;
+	reAdonly query: string;
 
 	/**
-	 * fragment is the 'fragment' part of 'http://www.msft.com/some/path?query#fragment'.
+	 * frAgment is the 'frAgment' pArt of 'http://www.msft.com/some/pAth?query#frAgment'.
 	 */
-	readonly fragment: string;
+	reAdonly frAgment: string;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	protected constructor(scheme: string, authority?: string, path?: string, query?: string, fragment?: string, _strict?: boolean);
+	protected constructor(scheme: string, Authority?: string, pAth?: string, query?: string, frAgment?: string, _strict?: booleAn);
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	protected constructor(components: UriComponents);
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	protected constructor(schemeOrData: string | UriComponents, authority?: string, path?: string, query?: string, fragment?: string, _strict: boolean = false) {
+	protected constructor(schemeOrDAtA: string | UriComponents, Authority?: string, pAth?: string, query?: string, frAgment?: string, _strict: booleAn = fAlse) {
 
-		if (typeof schemeOrData === 'object') {
-			this.scheme = schemeOrData.scheme || _empty;
-			this.authority = schemeOrData.authority || _empty;
-			this.path = schemeOrData.path || _empty;
-			this.query = schemeOrData.query || _empty;
-			this.fragment = schemeOrData.fragment || _empty;
-			// no validation because it's this URI
-			// that creates uri components.
-			// _validateUri(this);
+		if (typeof schemeOrDAtA === 'object') {
+			this.scheme = schemeOrDAtA.scheme || _empty;
+			this.Authority = schemeOrDAtA.Authority || _empty;
+			this.pAth = schemeOrDAtA.pAth || _empty;
+			this.query = schemeOrDAtA.query || _empty;
+			this.frAgment = schemeOrDAtA.frAgment || _empty;
+			// no vAlidAtion becAuse it's this URI
+			// thAt creAtes uri components.
+			// _vAlidAteUri(this);
 		} else {
-			this.scheme = _schemeFix(schemeOrData, _strict);
-			this.authority = authority || _empty;
-			this.path = _referenceResolution(this.scheme, path || _empty);
+			this.scheme = _schemeFix(schemeOrDAtA, _strict);
+			this.Authority = Authority || _empty;
+			this.pAth = _referenceResolution(this.scheme, pAth || _empty);
 			this.query = query || _empty;
-			this.fragment = fragment || _empty;
+			this.frAgment = frAgment || _empty;
 
-			_validateUri(this, _strict);
+			_vAlidAteUri(this, _strict);
 		}
 	}
 
-	// ---- filesystem path -----------------------
+	// ---- filesystem pAth -----------------------
 
 	/**
-	 * Returns a string representing the corresponding file system path of this URI.
-	 * Will handle UNC paths, normalizes windows drive letters to lower-case, and uses the
-	 * platform specific path separator.
+	 * Returns A string representing the corresponding file system pAth of this URI.
+	 * Will hAndle UNC pAths, normAlizes windows drive letters to lower-cAse, And uses the
+	 * plAtform specific pAth sepArAtor.
 	 *
-	 * * Will *not* validate the path for invalid characters and semantics.
-	 * * Will *not* look at the scheme of this URI.
-	 * * The result shall *not* be used for display purposes but for accessing a file on disk.
+	 * * Will *not* vAlidAte the pAth for invAlid chArActers And semAntics.
+	 * * Will *not* look At the scheme of this URI.
+	 * * The result shAll *not* be used for displAy purposes but for Accessing A file on disk.
 	 *
 	 *
-	 * The *difference* to `URI#path` is the use of the platform specific separator and the handling
-	 * of UNC paths. See the below sample of a file-uri with an authority (UNC path).
+	 * The *difference* to `URI#pAth` is the use of the plAtform specific sepArAtor And the hAndling
+	 * of UNC pAths. See the below sAmple of A file-uri with An Authority (UNC pAth).
 	 *
 	 * ```ts
-		const u = URI.parse('file://server/c$/folder/file.txt')
-		u.authority === 'server'
-		u.path === '/shares/c$/file.txt'
-		u.fsPath === '\\server\c$\folder\file.txt'
+		const u = URI.pArse('file://server/c$/folder/file.txt')
+		u.Authority === 'server'
+		u.pAth === '/shAres/c$/file.txt'
+		u.fsPAth === '\\server\c$\folder\file.txt'
 	```
 	 *
-	 * Using `URI#path` to read a file (using fs-apis) would not be enough because parts of the path,
-	 * namely the server name, would be missing. Therefore `URI#fsPath` exists - it's sugar to ease working
-	 * with URIs that represent files on disk (`file` scheme).
+	 * Using `URI#pAth` to reAd A file (using fs-Apis) would not be enough becAuse pArts of the pAth,
+	 * nAmely the server nAme, would be missing. Therefore `URI#fsPAth` exists - it's sugAr to eAse working
+	 * with URIs thAt represent files on disk (`file` scheme).
 	 */
-	get fsPath(): string {
+	get fsPAth(): string {
 		// if (this.scheme !== 'file') {
-		// 	console.warn(`[UriError] calling fsPath with scheme ${this.scheme}`);
+		// 	console.wArn(`[UriError] cAlling fsPAth with scheme ${this.scheme}`);
 		// }
-		return uriToFsPath(this, false);
+		return uriToFsPAth(this, fAlse);
 	}
 
 	// ---- modify to new -------------------------
 
-	with(change: { scheme?: string; authority?: string | null; path?: string | null; query?: string | null; fragment?: string | null }): URI {
+	with(chAnge: { scheme?: string; Authority?: string | null; pAth?: string | null; query?: string | null; frAgment?: string | null }): URI {
 
-		if (!change) {
+		if (!chAnge) {
 			return this;
 		}
 
-		let { scheme, authority, path, query, fragment } = change;
+		let { scheme, Authority, pAth, query, frAgment } = chAnge;
 		if (scheme === undefined) {
 			scheme = this.scheme;
 		} else if (scheme === null) {
 			scheme = _empty;
 		}
-		if (authority === undefined) {
-			authority = this.authority;
-		} else if (authority === null) {
-			authority = _empty;
+		if (Authority === undefined) {
+			Authority = this.Authority;
+		} else if (Authority === null) {
+			Authority = _empty;
 		}
-		if (path === undefined) {
-			path = this.path;
-		} else if (path === null) {
-			path = _empty;
+		if (pAth === undefined) {
+			pAth = this.pAth;
+		} else if (pAth === null) {
+			pAth = _empty;
 		}
 		if (query === undefined) {
 			query = this.query;
 		} else if (query === null) {
 			query = _empty;
 		}
-		if (fragment === undefined) {
-			fragment = this.fragment;
-		} else if (fragment === null) {
-			fragment = _empty;
+		if (frAgment === undefined) {
+			frAgment = this.frAgment;
+		} else if (frAgment === null) {
+			frAgment = _empty;
 		}
 
 		if (scheme === this.scheme
-			&& authority === this.authority
-			&& path === this.path
+			&& Authority === this.Authority
+			&& pAth === this.pAth
 			&& query === this.query
-			&& fragment === this.fragment) {
+			&& frAgment === this.frAgment) {
 
 			return this;
 		}
 
-		return new Uri(scheme, authority, path, query, fragment);
+		return new Uri(scheme, Authority, pAth, query, frAgment);
 	}
 
-	// ---- parse & validate ------------------------
+	// ---- pArse & vAlidAte ------------------------
 
 	/**
-	 * Creates a new URI from a string, e.g. `http://www.msft.com/some/path`,
-	 * `file:///usr/home`, or `scheme:with/path`.
+	 * CreAtes A new URI from A string, e.g. `http://www.msft.com/some/pAth`,
+	 * `file:///usr/home`, or `scheme:with/pAth`.
 	 *
-	 * @param value A string which represents an URI (see `URI#toString`).
+	 * @pArAm vAlue A string which represents An URI (see `URI#toString`).
 	 */
-	static parse(value: string, _strict: boolean = false): URI {
-		const match = _regexp.exec(value);
-		if (!match) {
+	stAtic pArse(vAlue: string, _strict: booleAn = fAlse): URI {
+		const mAtch = _regexp.exec(vAlue);
+		if (!mAtch) {
 			return new Uri(_empty, _empty, _empty, _empty, _empty);
 		}
 		return new Uri(
-			match[2] || _empty,
-			percentDecode(match[4] || _empty),
-			percentDecode(match[5] || _empty),
-			percentDecode(match[7] || _empty),
-			percentDecode(match[9] || _empty),
+			mAtch[2] || _empty,
+			percentDecode(mAtch[4] || _empty),
+			percentDecode(mAtch[5] || _empty),
+			percentDecode(mAtch[7] || _empty),
+			percentDecode(mAtch[9] || _empty),
 			_strict
 		);
 	}
 
 	/**
-	 * Creates a new URI from a file system path, e.g. `c:\my\files`,
-	 * `/usr/home`, or `\\server\share\some\path`.
+	 * CreAtes A new URI from A file system pAth, e.g. `c:\my\files`,
+	 * `/usr/home`, or `\\server\shAre\some\pAth`.
 	 *
-	 * The *difference* between `URI#parse` and `URI#file` is that the latter treats the argument
-	 * as path, not as stringified-uri. E.g. `URI.file(path)` is **not the same as**
-	 * `URI.parse('file://' + path)` because the path might contain characters that are
-	 * interpreted (# and ?). See the following sample:
+	 * The *difference* between `URI#pArse` And `URI#file` is thAt the lAtter treAts the Argument
+	 * As pAth, not As stringified-uri. E.g. `URI.file(pAth)` is **not the sAme As**
+	 * `URI.pArse('file://' + pAth)` becAuse the pAth might contAin chArActers thAt Are
+	 * interpreted (# And ?). See the following sAmple:
 	 * ```ts
 	const good = URI.file('/coding/c#/project1');
 	good.scheme === 'file';
-	good.path === '/coding/c#/project1';
-	good.fragment === '';
-	const bad = URI.parse('file://' + '/coding/c#/project1');
-	bad.scheme === 'file';
-	bad.path === '/coding/c'; // path is now broken
-	bad.fragment === '/project1';
+	good.pAth === '/coding/c#/project1';
+	good.frAgment === '';
+	const bAd = URI.pArse('file://' + '/coding/c#/project1');
+	bAd.scheme === 'file';
+	bAd.pAth === '/coding/c'; // pAth is now broken
+	bAd.frAgment === '/project1';
 	```
 	 *
-	 * @param path A file system path (see `URI#fsPath`)
+	 * @pArAm pAth A file system pAth (see `URI#fsPAth`)
 	 */
-	static file(path: string): URI {
+	stAtic file(pAth: string): URI {
 
-		let authority = _empty;
+		let Authority = _empty;
 
-		// normalize to fwd-slashes on windows,
-		// on other systems bwd-slashes are valid
-		// filename character, eg /f\oo/ba\r.txt
+		// normAlize to fwd-slAshes on windows,
+		// on other systems bwd-slAshes Are vAlid
+		// filenAme chArActer, eg /f\oo/bA\r.txt
 		if (isWindows) {
-			path = path.replace(/\\/g, _slash);
+			pAth = pAth.replAce(/\\/g, _slAsh);
 		}
 
-		// check for authority as used in UNC shares
-		// or use the path as given
-		if (path[0] === _slash && path[1] === _slash) {
-			const idx = path.indexOf(_slash, 2);
+		// check for Authority As used in UNC shAres
+		// or use the pAth As given
+		if (pAth[0] === _slAsh && pAth[1] === _slAsh) {
+			const idx = pAth.indexOf(_slAsh, 2);
 			if (idx === -1) {
-				authority = path.substring(2);
-				path = _slash;
+				Authority = pAth.substring(2);
+				pAth = _slAsh;
 			} else {
-				authority = path.substring(2, idx);
-				path = path.substring(idx) || _slash;
+				Authority = pAth.substring(2, idx);
+				pAth = pAth.substring(idx) || _slAsh;
 			}
 		}
 
-		return new Uri('file', authority, path, _empty, _empty);
+		return new Uri('file', Authority, pAth, _empty, _empty);
 	}
 
-	static from(components: { scheme: string; authority?: string; path?: string; query?: string; fragment?: string }): URI {
+	stAtic from(components: { scheme: string; Authority?: string; pAth?: string; query?: string; frAgment?: string }): URI {
 		return new Uri(
 			components.scheme,
-			components.authority,
-			components.path,
+			components.Authority,
+			components.pAth,
 			components.query,
-			components.fragment,
+			components.frAgment,
 		);
 	}
 
 	/**
-	 * Join a URI path with path fragments and normalizes the resulting path.
+	 * Join A URI pAth with pAth frAgments And normAlizes the resulting pAth.
 	 *
-	 * @param uri The input URI.
-	 * @param pathFragment The path fragment to add to the URI path.
+	 * @pArAm uri The input URI.
+	 * @pArAm pAthFrAgment The pAth frAgment to Add to the URI pAth.
 	 * @returns The resulting URI.
 	 */
-	static joinPath(uri: URI, ...pathFragment: string[]): URI {
-		if (!uri.path) {
-			throw new Error(`[UriError]: cannot call joinPaths on URI without path`);
+	stAtic joinPAth(uri: URI, ...pAthFrAgment: string[]): URI {
+		if (!uri.pAth) {
+			throw new Error(`[UriError]: cAnnot cAll joinPAths on URI without pAth`);
 		}
-		let newPath: string;
+		let newPAth: string;
 		if (isWindows && uri.scheme === 'file') {
-			newPath = URI.file(paths.win32.join(uriToFsPath(uri, true), ...pathFragment)).path;
+			newPAth = URI.file(pAths.win32.join(uriToFsPAth(uri, true), ...pAthFrAgment)).pAth;
 		} else {
-			newPath = paths.posix.join(uri.path, ...pathFragment);
+			newPAth = pAths.posix.join(uri.pAth, ...pAthFrAgment);
 		}
-		return uri.with({ path: newPath });
+		return uri.with({ pAth: newPAth });
 	}
 
-	// ---- printing/externalize ---------------------------
+	// ---- printing/externAlize ---------------------------
 
 	/**
-	 * Creates a string representation for this URI. It's guaranteed that calling
-	 * `URI.parse` with the result of this function creates an URI which is equal
+	 * CreAtes A string representAtion for this URI. It's guArAnteed thAt cAlling
+	 * `URI.pArse` with the result of this function creAtes An URI which is equAl
 	 * to this URI.
 	 *
-	 * * The result shall *not* be used for display purposes but for externalization or transport.
-	 * * The result will be encoded using the percentage encoding and encoding happens mostly
+	 * * The result shAll *not* be used for displAy purposes but for externAlizAtion or trAnsport.
+	 * * The result will be encoded using the percentAge encoding And encoding hAppens mostly
 	 * ignore the scheme-specific encoding rules.
 	 *
-	 * @param skipEncoding Do not encode the result, default is `false`
+	 * @pArAm skipEncoding Do not encode the result, defAult is `fAlse`
 	 */
-	toString(skipEncoding: boolean = false): string {
-		return _asFormatted(this, skipEncoding);
+	toString(skipEncoding: booleAn = fAlse): string {
+		return _AsFormAtted(this, skipEncoding);
 	}
 
 	toJSON(): UriComponents {
 		return this;
 	}
 
-	static revive(data: UriComponents | URI): URI;
-	static revive(data: UriComponents | URI | undefined): URI | undefined;
-	static revive(data: UriComponents | URI | null): URI | null;
-	static revive(data: UriComponents | URI | undefined | null): URI | undefined | null;
-	static revive(data: UriComponents | URI | undefined | null): URI | undefined | null {
-		if (!data) {
-			return data;
-		} else if (data instanceof URI) {
-			return data;
+	stAtic revive(dAtA: UriComponents | URI): URI;
+	stAtic revive(dAtA: UriComponents | URI | undefined): URI | undefined;
+	stAtic revive(dAtA: UriComponents | URI | null): URI | null;
+	stAtic revive(dAtA: UriComponents | URI | undefined | null): URI | undefined | null;
+	stAtic revive(dAtA: UriComponents | URI | undefined | null): URI | undefined | null {
+		if (!dAtA) {
+			return dAtA;
+		} else if (dAtA instAnceof URI) {
+			return dAtA;
 		} else {
-			const result = new Uri(data);
-			result._formatted = (<UriState>data).external;
-			result._fsPath = (<UriState>data)._sep === _pathSepMarker ? (<UriState>data).fsPath : null;
+			const result = new Uri(dAtA);
+			result._formAtted = (<UriStAte>dAtA).externAl;
+			result._fsPAth = (<UriStAte>dAtA)._sep === _pAthSepMArker ? (<UriStAte>dAtA).fsPAth : null;
 			return result;
 		}
 	}
 }
 
-export interface UriComponents {
+export interfAce UriComponents {
 	scheme: string;
-	authority: string;
-	path: string;
+	Authority: string;
+	pAth: string;
 	query: string;
-	fragment: string;
+	frAgment: string;
 }
 
-interface UriState extends UriComponents {
+interfAce UriStAte extends UriComponents {
 	$mid: number;
-	external: string;
-	fsPath: string;
+	externAl: string;
+	fsPAth: string;
 	_sep: 1 | undefined;
 }
 
-const _pathSepMarker = isWindows ? 1 : undefined;
+const _pAthSepMArker = isWindows ? 1 : undefined;
 
-// This class exists so that URI is compatibile with vscode.Uri (API).
-class Uri extends URI {
+// This clAss exists so thAt URI is compAtibile with vscode.Uri (API).
+clAss Uri extends URI {
 
-	_formatted: string | null = null;
-	_fsPath: string | null = null;
+	_formAtted: string | null = null;
+	_fsPAth: string | null = null;
 
-	get fsPath(): string {
-		if (!this._fsPath) {
-			this._fsPath = uriToFsPath(this, false);
+	get fsPAth(): string {
+		if (!this._fsPAth) {
+			this._fsPAth = uriToFsPAth(this, fAlse);
 		}
-		return this._fsPath;
+		return this._fsPAth;
 	}
 
-	toString(skipEncoding: boolean = false): string {
+	toString(skipEncoding: booleAn = fAlse): string {
 		if (!skipEncoding) {
-			if (!this._formatted) {
-				this._formatted = _asFormatted(this, false);
+			if (!this._formAtted) {
+				this._formAtted = _AsFormAtted(this, fAlse);
 			}
-			return this._formatted;
+			return this._formAtted;
 		} else {
-			// we don't cache that
-			return _asFormatted(this, true);
+			// we don't cAche thAt
+			return _AsFormAtted(this, true);
 		}
 	}
 
 	toJSON(): UriComponents {
-		const res = <UriState>{
+		const res = <UriStAte>{
 			$mid: 1
 		};
-		// cached state
-		if (this._fsPath) {
-			res.fsPath = this._fsPath;
-			res._sep = _pathSepMarker;
+		// cAched stAte
+		if (this._fsPAth) {
+			res.fsPAth = this._fsPAth;
+			res._sep = _pAthSepMArker;
 		}
-		if (this._formatted) {
-			res.external = this._formatted;
+		if (this._formAtted) {
+			res.externAl = this._formAtted;
 		}
 		// uri components
-		if (this.path) {
-			res.path = this.path;
+		if (this.pAth) {
+			res.pAth = this.pAth;
 		}
 		if (this.scheme) {
 			res.scheme = this.scheme;
 		}
-		if (this.authority) {
-			res.authority = this.authority;
+		if (this.Authority) {
+			res.Authority = this.Authority;
 		}
 		if (this.query) {
 			res.query = this.query;
 		}
-		if (this.fragment) {
-			res.fragment = this.fragment;
+		if (this.frAgment) {
+			res.frAgment = this.frAgment;
 		}
 		return res;
 	}
 }
 
-// reserved characters: https://tools.ietf.org/html/rfc3986#section-2.2
-const encodeTable: { [ch: number]: string } = {
-	[CharCode.Colon]: '%3A', // gen-delims
-	[CharCode.Slash]: '%2F',
-	[CharCode.QuestionMark]: '%3F',
-	[CharCode.Hash]: '%23',
-	[CharCode.OpenSquareBracket]: '%5B',
-	[CharCode.CloseSquareBracket]: '%5D',
-	[CharCode.AtSign]: '%40',
+// reserved chArActers: https://tools.ietf.org/html/rfc3986#section-2.2
+const encodeTAble: { [ch: number]: string } = {
+	[ChArCode.Colon]: '%3A', // gen-delims
+	[ChArCode.SlAsh]: '%2F',
+	[ChArCode.QuestionMArk]: '%3F',
+	[ChArCode.HAsh]: '%23',
+	[ChArCode.OpenSquAreBrAcket]: '%5B',
+	[ChArCode.CloseSquAreBrAcket]: '%5D',
+	[ChArCode.AtSign]: '%40',
 
-	[CharCode.ExclamationMark]: '%21', // sub-delims
-	[CharCode.DollarSign]: '%24',
-	[CharCode.Ampersand]: '%26',
-	[CharCode.SingleQuote]: '%27',
-	[CharCode.OpenParen]: '%28',
-	[CharCode.CloseParen]: '%29',
-	[CharCode.Asterisk]: '%2A',
-	[CharCode.Plus]: '%2B',
-	[CharCode.Comma]: '%2C',
-	[CharCode.Semicolon]: '%3B',
-	[CharCode.Equals]: '%3D',
+	[ChArCode.ExclAmAtionMArk]: '%21', // sub-delims
+	[ChArCode.DollArSign]: '%24',
+	[ChArCode.AmpersAnd]: '%26',
+	[ChArCode.SingleQuote]: '%27',
+	[ChArCode.OpenPAren]: '%28',
+	[ChArCode.ClosePAren]: '%29',
+	[ChArCode.Asterisk]: '%2A',
+	[ChArCode.Plus]: '%2B',
+	[ChArCode.CommA]: '%2C',
+	[ChArCode.Semicolon]: '%3B',
+	[ChArCode.EquAls]: '%3D',
 
-	[CharCode.Space]: '%20',
+	[ChArCode.SpAce]: '%20',
 };
 
-function encodeURIComponentFast(uriComponent: string, allowSlash: boolean): string {
+function encodeURIComponentFAst(uriComponent: string, AllowSlAsh: booleAn): string {
 	let res: string | undefined = undefined;
-	let nativeEncodePos = -1;
+	let nAtiveEncodePos = -1;
 
 	for (let pos = 0; pos < uriComponent.length; pos++) {
-		const code = uriComponent.charCodeAt(pos);
+		const code = uriComponent.chArCodeAt(pos);
 
-		// unreserved characters: https://tools.ietf.org/html/rfc3986#section-2.3
+		// unreserved chArActers: https://tools.ietf.org/html/rfc3986#section-2.3
 		if (
-			(code >= CharCode.a && code <= CharCode.z)
-			|| (code >= CharCode.A && code <= CharCode.Z)
-			|| (code >= CharCode.Digit0 && code <= CharCode.Digit9)
-			|| code === CharCode.Dash
-			|| code === CharCode.Period
-			|| code === CharCode.Underline
-			|| code === CharCode.Tilde
-			|| (allowSlash && code === CharCode.Slash)
+			(code >= ChArCode.A && code <= ChArCode.z)
+			|| (code >= ChArCode.A && code <= ChArCode.Z)
+			|| (code >= ChArCode.Digit0 && code <= ChArCode.Digit9)
+			|| code === ChArCode.DAsh
+			|| code === ChArCode.Period
+			|| code === ChArCode.Underline
+			|| code === ChArCode.Tilde
+			|| (AllowSlAsh && code === ChArCode.SlAsh)
 		) {
-			// check if we are delaying native encode
-			if (nativeEncodePos !== -1) {
-				res += encodeURIComponent(uriComponent.substring(nativeEncodePos, pos));
-				nativeEncodePos = -1;
+			// check if we Are delAying nAtive encode
+			if (nAtiveEncodePos !== -1) {
+				res += encodeURIComponent(uriComponent.substring(nAtiveEncodePos, pos));
+				nAtiveEncodePos = -1;
 			}
-			// check if we write into a new string (by default we try to return the param)
+			// check if we write into A new string (by defAult we try to return the pArAm)
 			if (res !== undefined) {
-				res += uriComponent.charAt(pos);
+				res += uriComponent.chArAt(pos);
 			}
 
 		} else {
-			// encoding needed, we need to allocate a new string
+			// encoding needed, we need to AllocAte A new string
 			if (res === undefined) {
 				res = uriComponent.substr(0, pos);
 			}
 
-			// check with default table first
-			const escaped = encodeTable[code];
-			if (escaped !== undefined) {
+			// check with defAult tAble first
+			const escAped = encodeTAble[code];
+			if (escAped !== undefined) {
 
-				// check if we are delaying native encode
-				if (nativeEncodePos !== -1) {
-					res += encodeURIComponent(uriComponent.substring(nativeEncodePos, pos));
-					nativeEncodePos = -1;
+				// check if we Are delAying nAtive encode
+				if (nAtiveEncodePos !== -1) {
+					res += encodeURIComponent(uriComponent.substring(nAtiveEncodePos, pos));
+					nAtiveEncodePos = -1;
 				}
 
-				// append escaped variant to result
-				res += escaped;
+				// Append escAped vAriAnt to result
+				res += escAped;
 
-			} else if (nativeEncodePos === -1) {
-				// use native encode only when needed
-				nativeEncodePos = pos;
+			} else if (nAtiveEncodePos === -1) {
+				// use nAtive encode only when needed
+				nAtiveEncodePos = pos;
 			}
 		}
 	}
 
-	if (nativeEncodePos !== -1) {
-		res += encodeURIComponent(uriComponent.substring(nativeEncodePos));
+	if (nAtiveEncodePos !== -1) {
+		res += encodeURIComponent(uriComponent.substring(nAtiveEncodePos));
 	}
 
 	return res !== undefined ? res : uriComponent;
 }
 
-function encodeURIComponentMinimal(path: string): string {
+function encodeURIComponentMinimAl(pAth: string): string {
 	let res: string | undefined = undefined;
-	for (let pos = 0; pos < path.length; pos++) {
-		const code = path.charCodeAt(pos);
-		if (code === CharCode.Hash || code === CharCode.QuestionMark) {
+	for (let pos = 0; pos < pAth.length; pos++) {
+		const code = pAth.chArCodeAt(pos);
+		if (code === ChArCode.HAsh || code === ChArCode.QuestionMArk) {
 			if (res === undefined) {
-				res = path.substr(0, pos);
+				res = pAth.substr(0, pos);
 			}
-			res += encodeTable[code];
+			res += encodeTAble[code];
 		} else {
 			if (res !== undefined) {
-				res += path[pos];
+				res += pAth[pos];
 			}
 		}
 	}
-	return res !== undefined ? res : path;
+	return res !== undefined ? res : pAth;
 }
 
 /**
- * Compute `fsPath` for the given uri
+ * Compute `fsPAth` for the given uri
  */
-export function uriToFsPath(uri: URI, keepDriveLetterCasing: boolean): string {
+export function uriToFsPAth(uri: URI, keepDriveLetterCAsing: booleAn): string {
 
-	let value: string;
-	if (uri.authority && uri.path.length > 1 && uri.scheme === 'file') {
-		// unc path: file://shares/c$/far/boo
-		value = `//${uri.authority}${uri.path}`;
+	let vAlue: string;
+	if (uri.Authority && uri.pAth.length > 1 && uri.scheme === 'file') {
+		// unc pAth: file://shAres/c$/fAr/boo
+		vAlue = `//${uri.Authority}${uri.pAth}`;
 	} else if (
-		uri.path.charCodeAt(0) === CharCode.Slash
-		&& (uri.path.charCodeAt(1) >= CharCode.A && uri.path.charCodeAt(1) <= CharCode.Z || uri.path.charCodeAt(1) >= CharCode.a && uri.path.charCodeAt(1) <= CharCode.z)
-		&& uri.path.charCodeAt(2) === CharCode.Colon
+		uri.pAth.chArCodeAt(0) === ChArCode.SlAsh
+		&& (uri.pAth.chArCodeAt(1) >= ChArCode.A && uri.pAth.chArCodeAt(1) <= ChArCode.Z || uri.pAth.chArCodeAt(1) >= ChArCode.A && uri.pAth.chArCodeAt(1) <= ChArCode.z)
+		&& uri.pAth.chArCodeAt(2) === ChArCode.Colon
 	) {
-		if (!keepDriveLetterCasing) {
-			// windows drive letter: file:///c:/far/boo
-			value = uri.path[1].toLowerCase() + uri.path.substr(2);
+		if (!keepDriveLetterCAsing) {
+			// windows drive letter: file:///c:/fAr/boo
+			vAlue = uri.pAth[1].toLowerCAse() + uri.pAth.substr(2);
 		} else {
-			value = uri.path.substr(1);
+			vAlue = uri.pAth.substr(1);
 		}
 	} else {
-		// other path
-		value = uri.path;
+		// other pAth
+		vAlue = uri.pAth;
 	}
 	if (isWindows) {
-		value = value.replace(/\//g, '\\');
+		vAlue = vAlue.replAce(/\//g, '\\');
 	}
-	return value;
+	return vAlue;
 }
 
 /**
- * Create the external version of a uri
+ * CreAte the externAl version of A uri
  */
-function _asFormatted(uri: URI, skipEncoding: boolean): string {
+function _AsFormAtted(uri: URI, skipEncoding: booleAn): string {
 
 	const encoder = !skipEncoding
-		? encodeURIComponentFast
-		: encodeURIComponentMinimal;
+		? encodeURIComponentFAst
+		: encodeURIComponentMinimAl;
 
 	let res = '';
-	let { scheme, authority, path, query, fragment } = uri;
+	let { scheme, Authority, pAth, query, frAgment } = uri;
 	if (scheme) {
 		res += scheme;
 		res += ':';
 	}
-	if (authority || scheme === 'file') {
-		res += _slash;
-		res += _slash;
+	if (Authority || scheme === 'file') {
+		res += _slAsh;
+		res += _slAsh;
 	}
-	if (authority) {
-		let idx = authority.indexOf('@');
+	if (Authority) {
+		let idx = Authority.indexOf('@');
 		if (idx !== -1) {
-			// <user>@<auth>
-			const userinfo = authority.substr(0, idx);
-			authority = authority.substr(idx + 1);
+			// <user>@<Auth>
+			const userinfo = Authority.substr(0, idx);
+			Authority = Authority.substr(idx + 1);
 			idx = userinfo.indexOf(':');
 			if (idx === -1) {
-				res += encoder(userinfo, false);
+				res += encoder(userinfo, fAlse);
 			} else {
-				// <user>:<pass>@<auth>
-				res += encoder(userinfo.substr(0, idx), false);
+				// <user>:<pAss>@<Auth>
+				res += encoder(userinfo.substr(0, idx), fAlse);
 				res += ':';
-				res += encoder(userinfo.substr(idx + 1), false);
+				res += encoder(userinfo.substr(idx + 1), fAlse);
 			}
 			res += '@';
 		}
-		authority = authority.toLowerCase();
-		idx = authority.indexOf(':');
+		Authority = Authority.toLowerCAse();
+		idx = Authority.indexOf(':');
 		if (idx === -1) {
-			res += encoder(authority, false);
+			res += encoder(Authority, fAlse);
 		} else {
-			// <auth>:<port>
-			res += encoder(authority.substr(0, idx), false);
-			res += authority.substr(idx);
+			// <Auth>:<port>
+			res += encoder(Authority.substr(0, idx), fAlse);
+			res += Authority.substr(idx);
 		}
 	}
-	if (path) {
-		// lower-case windows drive letters in /C:/fff or C:/fff
-		if (path.length >= 3 && path.charCodeAt(0) === CharCode.Slash && path.charCodeAt(2) === CharCode.Colon) {
-			const code = path.charCodeAt(1);
-			if (code >= CharCode.A && code <= CharCode.Z) {
-				path = `/${String.fromCharCode(code + 32)}:${path.substr(3)}`; // "/c:".length === 3
+	if (pAth) {
+		// lower-cAse windows drive letters in /C:/fff or C:/fff
+		if (pAth.length >= 3 && pAth.chArCodeAt(0) === ChArCode.SlAsh && pAth.chArCodeAt(2) === ChArCode.Colon) {
+			const code = pAth.chArCodeAt(1);
+			if (code >= ChArCode.A && code <= ChArCode.Z) {
+				pAth = `/${String.fromChArCode(code + 32)}:${pAth.substr(3)}`; // "/c:".length === 3
 			}
-		} else if (path.length >= 2 && path.charCodeAt(1) === CharCode.Colon) {
-			const code = path.charCodeAt(0);
-			if (code >= CharCode.A && code <= CharCode.Z) {
-				path = `${String.fromCharCode(code + 32)}:${path.substr(2)}`; // "/c:".length === 3
+		} else if (pAth.length >= 2 && pAth.chArCodeAt(1) === ChArCode.Colon) {
+			const code = pAth.chArCodeAt(0);
+			if (code >= ChArCode.A && code <= ChArCode.Z) {
+				pAth = `${String.fromChArCode(code + 32)}:${pAth.substr(2)}`; // "/c:".length === 3
 			}
 		}
-		// encode the rest of the path
-		res += encoder(path, true);
+		// encode the rest of the pAth
+		res += encoder(pAth, true);
 	}
 	if (query) {
 		res += '?';
-		res += encoder(query, false);
+		res += encoder(query, fAlse);
 	}
-	if (fragment) {
+	if (frAgment) {
 		res += '#';
-		res += !skipEncoding ? encodeURIComponentFast(fragment, false) : fragment;
+		res += !skipEncoding ? encodeURIComponentFAst(frAgment, fAlse) : frAgment;
 	}
 	return res;
 }
 
 // --- decode
 
-function decodeURIComponentGraceful(str: string): string {
+function decodeURIComponentGrAceful(str: string): string {
 	try {
 		return decodeURIComponent(str);
-	} catch {
+	} cAtch {
 		if (str.length > 3) {
-			return str.substr(0, 3) + decodeURIComponentGraceful(str.substr(3));
+			return str.substr(0, 3) + decodeURIComponentGrAceful(str.substr(3));
 		} else {
 			return str;
 		}
 	}
 }
 
-const _rEncodedAsHex = /(%[0-9A-Za-z][0-9A-Za-z])+/g;
+const _rEncodedAsHex = /(%[0-9A-ZA-z][0-9A-ZA-z])+/g;
 
 function percentDecode(str: string): string {
-	if (!str.match(_rEncodedAsHex)) {
+	if (!str.mAtch(_rEncodedAsHex)) {
 		return str;
 	}
-	return str.replace(_rEncodedAsHex, (match) => decodeURIComponentGraceful(match));
+	return str.replAce(_rEncodedAsHex, (mAtch) => decodeURIComponentGrAceful(mAtch));
 }

@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export interface Command {
-	readonly id: string | string[];
+export interfAce CommAnd {
+	reAdonly id: string | string[];
 
-	execute(...args: any[]): void;
+	execute(...Args: Any[]): void;
 }
 
-export class CommandManager {
-	private readonly commands = new Map<string, vscode.Disposable>();
+export clAss CommAndMAnAger {
+	privAte reAdonly commAnds = new MAp<string, vscode.DisposAble>();
 
 	public dispose() {
-		for (const registration of this.commands.values()) {
-			registration.dispose();
+		for (const registrAtion of this.commAnds.vAlues()) {
+			registrAtion.dispose();
 		}
-		this.commands.clear();
+		this.commAnds.cleAr();
 	}
 
-	public register<T extends Command>(command: T): T {
-		for (const id of Array.isArray(command.id) ? command.id : [command.id]) {
-			this.registerCommand(id, command.execute, command);
+	public register<T extends CommAnd>(commAnd: T): T {
+		for (const id of ArrAy.isArrAy(commAnd.id) ? commAnd.id : [commAnd.id]) {
+			this.registerCommAnd(id, commAnd.execute, commAnd);
 		}
-		return command;
+		return commAnd;
 	}
 
-	private registerCommand(id: string, impl: (...args: any[]) => void, thisArg?: any) {
-		if (this.commands.has(id)) {
+	privAte registerCommAnd(id: string, impl: (...Args: Any[]) => void, thisArg?: Any) {
+		if (this.commAnds.hAs(id)) {
 			return;
 		}
 
-		this.commands.set(id, vscode.commands.registerCommand(id, impl, thisArg));
+		this.commAnds.set(id, vscode.commAnds.registerCommAnd(id, impl, thisArg));
 	}
 }

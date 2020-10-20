@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as cp from 'child_process';
-import * as path from 'vs/base/common/path';
-import * as processes from 'vs/base/node/processes';
-import * as nls from 'vs/nls';
-import * as pfs from 'vs/base/node/pfs';
-import * as env from 'vs/base/common/platform';
-import { IExternalTerminalService, IExternalTerminalConfiguration, IExternalTerminalSettings } from 'vs/workbench/contrib/externalTerminal/common/externalTerminal';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { optional } from 'vs/platform/instantiation/common/instantiation';
-import { DEFAULT_TERMINAL_OSX } from 'vs/workbench/contrib/externalTerminal/node/externalTerminal';
-import { FileAccess } from 'vs/base/common/network';
+import * As cp from 'child_process';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As processes from 'vs/bAse/node/processes';
+import * As nls from 'vs/nls';
+import * As pfs from 'vs/bAse/node/pfs';
+import * As env from 'vs/bAse/common/plAtform';
+import { IExternAlTerminAlService, IExternAlTerminAlConfigurAtion, IExternAlTerminAlSettings } from 'vs/workbench/contrib/externAlTerminAl/common/externAlTerminAl';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { optionAl } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { DEFAULT_TERMINAL_OSX } from 'vs/workbench/contrib/externAlTerminAl/node/externAlTerminAl';
+import { FileAccess } from 'vs/bAse/common/network';
 
-const TERMINAL_TITLE = nls.localize('console.title', "VS Code Console");
+const TERMINAL_TITLE = nls.locAlize('console.title', "VS Code Console");
 
-export class WindowsExternalTerminalService implements IExternalTerminalService {
-	public _serviceBrand: undefined;
+export clAss WindowsExternAlTerminAlService implements IExternAlTerminAlService {
+	public _serviceBrAnd: undefined;
 
-	private static readonly CMD = 'cmd.exe';
+	privAte stAtic reAdonly CMD = 'cmd.exe';
 
 	constructor(
-		@optional(IConfigurationService) private readonly _configurationService: IConfigurationService
+		@optionAl(IConfigurAtionService) privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
 	}
 
-	public openTerminal(cwd?: string): void {
-		if (this._configurationService) {
-			const configuration = this._configurationService.getValue<IExternalTerminalConfiguration>();
-			this.spawnTerminal(cp, configuration, processes.getWindowsShell(), cwd);
+	public openTerminAl(cwd?: string): void {
+		if (this._configurAtionService) {
+			const configurAtion = this._configurAtionService.getVAlue<IExternAlTerminAlConfigurAtion>();
+			this.spAwnTerminAl(cp, configurAtion, processes.getWindowsShell(), cwd);
 		}
 	}
 
-	public runInTerminal(title: string, dir: string, args: string[], envVars: env.IProcessEnvironment, settings: IExternalTerminalSettings): Promise<number | undefined> {
+	public runInTerminAl(title: string, dir: string, Args: string[], envVArs: env.IProcessEnvironment, settings: IExternAlTerminAlSettings): Promise<number | undefined> {
 
-		const exec = settings.windowsExec || WindowsExternalTerminalService.getDefaultTerminalWindows();
+		const exec = settings.windowsExec || WindowsExternAlTerminAlService.getDefAultTerminAlWindows();
 
 		return new Promise<number | undefined>((resolve, reject) => {
 
 			const title = `"${dir} - ${TERMINAL_TITLE}"`;
-			const command = `""${args.join('" "')}" & pause"`; // use '|' to only pause on non-zero exit code
+			const commAnd = `""${Args.join('" "')}" & pAuse"`; // use '|' to only pAuse on non-zero exit code
 
 			const cmdArgs = [
-				'/c', 'start', title, '/wait', exec, '/c', command
+				'/c', 'stArt', title, '/wAit', exec, '/c', commAnd
 			];
 
-			// merge environment variables into a copy of the process.env
-			const env = Object.assign({}, process.env, envVars);
+			// merge environment vAriAbles into A copy of the process.env
+			const env = Object.Assign({}, process.env, envVArs);
 
-			// delete environment variables that have a null value
-			Object.keys(env).filter(v => env[v] === null).forEach(key => delete env[key]);
+			// delete environment vAriAbles thAt hAve A null vAlue
+			Object.keys(env).filter(v => env[v] === null).forEAch(key => delete env[key]);
 
-			const options: any = {
+			const options: Any = {
 				cwd: dir,
 				env: env,
-				windowsVerbatimArguments: true
+				windowsVerbAtimArguments: true
 			};
 
-			const cmd = cp.spawn(WindowsExternalTerminalService.CMD, cmdArgs, options);
+			const cmd = cp.spAwn(WindowsExternAlTerminAlService.CMD, cmdArgs, options);
 			cmd.on('error', err => {
 				reject(improveError(err));
 			});
@@ -68,117 +68,117 @@ export class WindowsExternalTerminalService implements IExternalTerminalService 
 		});
 	}
 
-	private spawnTerminal(spawner: typeof cp, configuration: IExternalTerminalConfiguration, command: string, cwd?: string): Promise<void> {
-		const terminalConfig = configuration.terminal.external;
-		const exec = terminalConfig.windowsExec || WindowsExternalTerminalService.getDefaultTerminalWindows();
+	privAte spAwnTerminAl(spAwner: typeof cp, configurAtion: IExternAlTerminAlConfigurAtion, commAnd: string, cwd?: string): Promise<void> {
+		const terminAlConfig = configurAtion.terminAl.externAl;
+		const exec = terminAlConfig.windowsExec || WindowsExternAlTerminAlService.getDefAultTerminAlWindows();
 
-		// Make the drive letter uppercase on Windows (see #9448)
+		// MAke the drive letter uppercAse on Windows (see #9448)
 		if (cwd && cwd[1] === ':') {
-			cwd = cwd[0].toUpperCase() + cwd.substr(1);
+			cwd = cwd[0].toUpperCAse() + cwd.substr(1);
 		}
 
-		// cmder ignores the environment cwd and instead opts to always open in %USERPROFILE%
+		// cmder ignores the environment cwd And insteAd opts to AlwAys open in %USERPROFILE%
 		// unless otherwise specified
-		const basename = path.basename(exec).toLowerCase();
-		if (basename === 'cmder' || basename === 'cmder.exe') {
-			spawner.spawn(exec, cwd ? [cwd] : undefined);
+		const bAsenAme = pAth.bAsenAme(exec).toLowerCAse();
+		if (bAsenAme === 'cmder' || bAsenAme === 'cmder.exe') {
+			spAwner.spAwn(exec, cwd ? [cwd] : undefined);
 			return Promise.resolve(undefined);
 		}
 
-		const cmdArgs = ['/c', 'start', '/wait'];
+		const cmdArgs = ['/c', 'stArt', '/wAit'];
 		if (exec.indexOf(' ') >= 0) {
-			// The "" argument is the window title. Without this, exec doesn't work when the path
-			// contains spaces
+			// The "" Argument is the window title. Without this, exec doesn't work when the pAth
+			// contAins spAces
 			cmdArgs.push('""');
 		}
 		cmdArgs.push(exec);
-		// Add starting directory parameter for Windows Terminal (see #90734)
-		if (basename === 'wt' || basename === 'wt.exe') {
+		// Add stArting directory pArAmeter for Windows TerminAl (see #90734)
+		if (bAsenAme === 'wt' || bAsenAme === 'wt.exe') {
 			cmdArgs.push('-d .');
 		}
 
 		return new Promise<void>((c, e) => {
 			const env = cwd ? { cwd: cwd } : undefined;
-			const child = spawner.spawn(command, cmdArgs, env);
+			const child = spAwner.spAwn(commAnd, cmdArgs, env);
 			child.on('error', e);
 			child.on('exit', () => c());
 		});
 	}
 
-	private static _DEFAULT_TERMINAL_WINDOWS: string;
+	privAte stAtic _DEFAULT_TERMINAL_WINDOWS: string;
 
-	public static getDefaultTerminalWindows(): string {
-		if (!WindowsExternalTerminalService._DEFAULT_TERMINAL_WINDOWS) {
-			const isWoW64 = !!process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
-			WindowsExternalTerminalService._DEFAULT_TERMINAL_WINDOWS = `${process.env.windir ? process.env.windir : 'C:\\Windows'}\\${isWoW64 ? 'Sysnative' : 'System32'}\\cmd.exe`;
+	public stAtic getDefAultTerminAlWindows(): string {
+		if (!WindowsExternAlTerminAlService._DEFAULT_TERMINAL_WINDOWS) {
+			const isWoW64 = !!process.env.hAsOwnProperty('PROCESSOR_ARCHITEW6432');
+			WindowsExternAlTerminAlService._DEFAULT_TERMINAL_WINDOWS = `${process.env.windir ? process.env.windir : 'C:\\Windows'}\\${isWoW64 ? 'SysnAtive' : 'System32'}\\cmd.exe`;
 		}
-		return WindowsExternalTerminalService._DEFAULT_TERMINAL_WINDOWS;
+		return WindowsExternAlTerminAlService._DEFAULT_TERMINAL_WINDOWS;
 	}
 }
 
-export class MacExternalTerminalService implements IExternalTerminalService {
-	public _serviceBrand: undefined;
+export clAss MAcExternAlTerminAlService implements IExternAlTerminAlService {
+	public _serviceBrAnd: undefined;
 
-	private static readonly OSASCRIPT = '/usr/bin/osascript';	// osascript is the AppleScript interpreter on OS X
+	privAte stAtic reAdonly OSASCRIPT = '/usr/bin/osAscript';	// osAscript is the AppleScript interpreter on OS X
 
 	constructor(
-		@optional(IConfigurationService) private readonly _configurationService: IConfigurationService
+		@optionAl(IConfigurAtionService) privAte reAdonly _configurAtionService: IConfigurAtionService
 	) { }
 
-	public openTerminal(cwd?: string): void {
-		if (this._configurationService) {
-			const configuration = this._configurationService.getValue<IExternalTerminalConfiguration>();
-			this.spawnTerminal(cp, configuration, cwd);
+	public openTerminAl(cwd?: string): void {
+		if (this._configurAtionService) {
+			const configurAtion = this._configurAtionService.getVAlue<IExternAlTerminAlConfigurAtion>();
+			this.spAwnTerminAl(cp, configurAtion, cwd);
 		}
 	}
 
-	public runInTerminal(title: string, dir: string, args: string[], envVars: env.IProcessEnvironment, settings: IExternalTerminalSettings): Promise<number | undefined> {
+	public runInTerminAl(title: string, dir: string, Args: string[], envVArs: env.IProcessEnvironment, settings: IExternAlTerminAlSettings): Promise<number | undefined> {
 
-		const terminalApp = settings.osxExec || DEFAULT_TERMINAL_OSX;
+		const terminAlApp = settings.osxExec || DEFAULT_TERMINAL_OSX;
 
 		return new Promise<number | undefined>((resolve, reject) => {
 
-			if (terminalApp === DEFAULT_TERMINAL_OSX || terminalApp === 'iTerm.app') {
+			if (terminAlApp === DEFAULT_TERMINAL_OSX || terminAlApp === 'iTerm.App') {
 
-				// On OS X we launch an AppleScript that creates (or reuses) a Terminal window
-				// and then launches the program inside that window.
+				// On OS X we lAunch An AppleScript thAt creAtes (or reuses) A TerminAl window
+				// And then lAunches the progrAm inside thAt window.
 
-				const script = terminalApp === DEFAULT_TERMINAL_OSX ? 'TerminalHelper' : 'iTermHelper';
-				const scriptpath = FileAccess.asFileUri(`vs/workbench/contrib/externalTerminal/node/${script}.scpt`, require).fsPath;
+				const script = terminAlApp === DEFAULT_TERMINAL_OSX ? 'TerminAlHelper' : 'iTermHelper';
+				const scriptpAth = FileAccess.AsFileUri(`vs/workbench/contrib/externAlTerminAl/node/${script}.scpt`, require).fsPAth;
 
-				const osaArgs = [
-					scriptpath,
+				const osAArgs = [
+					scriptpAth,
 					'-t', title || TERMINAL_TITLE,
 					'-w', dir,
 				];
 
-				for (let a of args) {
-					osaArgs.push('-a');
-					osaArgs.push(a);
+				for (let A of Args) {
+					osAArgs.push('-A');
+					osAArgs.push(A);
 				}
 
-				if (envVars) {
-					for (let key in envVars) {
-						const value = envVars[key];
-						if (value === null) {
-							osaArgs.push('-u');
-							osaArgs.push(key);
+				if (envVArs) {
+					for (let key in envVArs) {
+						const vAlue = envVArs[key];
+						if (vAlue === null) {
+							osAArgs.push('-u');
+							osAArgs.push(key);
 						} else {
-							osaArgs.push('-e');
-							osaArgs.push(`${key}=${value}`);
+							osAArgs.push('-e');
+							osAArgs.push(`${key}=${vAlue}`);
 						}
 					}
 				}
 
 				let stderr = '';
-				const osa = cp.spawn(MacExternalTerminalService.OSASCRIPT, osaArgs);
-				osa.on('error', err => {
+				const osA = cp.spAwn(MAcExternAlTerminAlService.OSASCRIPT, osAArgs);
+				osA.on('error', err => {
 					reject(improveError(err));
 				});
-				osa.stderr.on('data', (data) => {
-					stderr += data.toString();
+				osA.stderr.on('dAtA', (dAtA) => {
+					stderr += dAtA.toString();
 				});
-				osa.on('exit', (code: number) => {
+				osA.on('exit', (code: number) => {
 					if (code === 0) {	// OK
 						resolve(undefined);
 					} else {
@@ -186,51 +186,51 @@ export class MacExternalTerminalService implements IExternalTerminalService {
 							const lines = stderr.split('\n', 1);
 							reject(new Error(lines[0]));
 						} else {
-							reject(new Error(nls.localize('mac.terminal.script.failed', "Script '{0}' failed with exit code {1}", script, code)));
+							reject(new Error(nls.locAlize('mAc.terminAl.script.fAiled', "Script '{0}' fAiled with exit code {1}", script, code)));
 						}
 					}
 				});
 			} else {
-				reject(new Error(nls.localize('mac.terminal.type.not.supported', "'{0}' not supported", terminalApp)));
+				reject(new Error(nls.locAlize('mAc.terminAl.type.not.supported', "'{0}' not supported", terminAlApp)));
 			}
 		});
 	}
 
-	private spawnTerminal(spawner: typeof cp, configuration: IExternalTerminalConfiguration, cwd?: string): Promise<void> {
-		const terminalConfig = configuration.terminal.external;
-		const terminalApp = terminalConfig.osxExec || DEFAULT_TERMINAL_OSX;
+	privAte spAwnTerminAl(spAwner: typeof cp, configurAtion: IExternAlTerminAlConfigurAtion, cwd?: string): Promise<void> {
+		const terminAlConfig = configurAtion.terminAl.externAl;
+		const terminAlApp = terminAlConfig.osxExec || DEFAULT_TERMINAL_OSX;
 
 		return new Promise<void>((c, e) => {
-			const args = ['-a', terminalApp];
+			const Args = ['-A', terminAlApp];
 			if (cwd) {
-				args.push(cwd);
+				Args.push(cwd);
 			}
-			const child = spawner.spawn('/usr/bin/open', args);
+			const child = spAwner.spAwn('/usr/bin/open', Args);
 			child.on('error', e);
 			child.on('exit', () => c());
 		});
 	}
 }
 
-export class LinuxExternalTerminalService implements IExternalTerminalService {
-	public _serviceBrand: undefined;
+export clAss LinuxExternAlTerminAlService implements IExternAlTerminAlService {
+	public _serviceBrAnd: undefined;
 
-	private static readonly WAIT_MESSAGE = nls.localize('press.any.key', "Press any key to continue...");
+	privAte stAtic reAdonly WAIT_MESSAGE = nls.locAlize('press.Any.key', "Press Any key to continue...");
 
 	constructor(
-		@optional(IConfigurationService) private readonly _configurationService: IConfigurationService
+		@optionAl(IConfigurAtionService) privAte reAdonly _configurAtionService: IConfigurAtionService
 	) { }
 
-	public openTerminal(cwd?: string): void {
-		if (this._configurationService) {
-			const configuration = this._configurationService.getValue<IExternalTerminalConfiguration>();
-			this.spawnTerminal(cp, configuration, cwd);
+	public openTerminAl(cwd?: string): void {
+		if (this._configurAtionService) {
+			const configurAtion = this._configurAtionService.getVAlue<IExternAlTerminAlConfigurAtion>();
+			this.spAwnTerminAl(cp, configurAtion, cwd);
 		}
 	}
 
-	public runInTerminal(title: string, dir: string, args: string[], envVars: env.IProcessEnvironment, settings: IExternalTerminalSettings): Promise<number | undefined> {
+	public runInTerminAl(title: string, dir: string, Args: string[], envVArs: env.IProcessEnvironment, settings: IExternAlTerminAlSettings): Promise<number | undefined> {
 
-		const execPromise = settings.linuxExec ? Promise.resolve(settings.linuxExec) : LinuxExternalTerminalService.getDefaultTerminalLinuxReady();
+		const execPromise = settings.linuxExec ? Promise.resolve(settings.linuxExec) : LinuxExternAlTerminAlService.getDefAultTerminAlLinuxReAdy();
 
 		return new Promise<number | undefined>((resolve, reject) => {
 
@@ -238,35 +238,35 @@ export class LinuxExternalTerminalService implements IExternalTerminalService {
 			//termArgs.push('--title');
 			//termArgs.push(`"${TERMINAL_TITLE}"`);
 			execPromise.then(exec => {
-				if (exec.indexOf('gnome-terminal') >= 0) {
+				if (exec.indexOf('gnome-terminAl') >= 0) {
 					termArgs.push('-x');
 				} else {
 					termArgs.push('-e');
 				}
-				termArgs.push('bash');
+				termArgs.push('bAsh');
 				termArgs.push('-c');
 
-				const bashCommand = `${quote(args)}; echo; read -p "${LinuxExternalTerminalService.WAIT_MESSAGE}" -n1;`;
-				termArgs.push(`''${bashCommand}''`);	// wrapping argument in two sets of ' because node is so "friendly" that it removes one set...
+				const bAshCommAnd = `${quote(Args)}; echo; reAd -p "${LinuxExternAlTerminAlService.WAIT_MESSAGE}" -n1;`;
+				termArgs.push(`''${bAshCommAnd}''`);	// wrApping Argument in two sets of ' becAuse node is so "friendly" thAt it removes one set...
 
-				// merge environment variables into a copy of the process.env
-				const env = Object.assign({}, process.env, envVars);
+				// merge environment vAriAbles into A copy of the process.env
+				const env = Object.Assign({}, process.env, envVArs);
 
-				// delete environment variables that have a null value
-				Object.keys(env).filter(v => env[v] === null).forEach(key => delete env[key]);
+				// delete environment vAriAbles thAt hAve A null vAlue
+				Object.keys(env).filter(v => env[v] === null).forEAch(key => delete env[key]);
 
-				const options: any = {
+				const options: Any = {
 					cwd: dir,
 					env: env
 				};
 
 				let stderr = '';
-				const cmd = cp.spawn(exec, termArgs, options);
+				const cmd = cp.spAwn(exec, termArgs, options);
 				cmd.on('error', err => {
 					reject(improveError(err));
 				});
-				cmd.stderr.on('data', (data) => {
-					stderr += data.toString();
+				cmd.stderr.on('dAtA', (dAtA) => {
+					stderr += dAtA.toString();
 				});
 				cmd.on('exit', (code: number) => {
 					if (code === 0) {	// OK
@@ -276,7 +276,7 @@ export class LinuxExternalTerminalService implements IExternalTerminalService {
 							const lines = stderr.split('\n', 1);
 							reject(new Error(lines[0]));
 						} else {
-							reject(new Error(nls.localize('linux.term.failed', "'{0}' failed with exit code {1}", exec, code)));
+							reject(new Error(nls.locAlize('linux.term.fAiled', "'{0}' fAiled with exit code {1}", exec, code)));
 						}
 					}
 				});
@@ -284,32 +284,32 @@ export class LinuxExternalTerminalService implements IExternalTerminalService {
 		});
 	}
 
-	private spawnTerminal(spawner: typeof cp, configuration: IExternalTerminalConfiguration, cwd?: string): Promise<void> {
-		const terminalConfig = configuration.terminal.external;
-		const execPromise = terminalConfig.linuxExec ? Promise.resolve(terminalConfig.linuxExec) : LinuxExternalTerminalService.getDefaultTerminalLinuxReady();
+	privAte spAwnTerminAl(spAwner: typeof cp, configurAtion: IExternAlTerminAlConfigurAtion, cwd?: string): Promise<void> {
+		const terminAlConfig = configurAtion.terminAl.externAl;
+		const execPromise = terminAlConfig.linuxExec ? Promise.resolve(terminAlConfig.linuxExec) : LinuxExternAlTerminAlService.getDefAultTerminAlLinuxReAdy();
 
 		return new Promise<void>((c, e) => {
 			execPromise.then(exec => {
 				const env = cwd ? { cwd } : undefined;
-				const child = spawner.spawn(exec, [], env);
+				const child = spAwner.spAwn(exec, [], env);
 				child.on('error', e);
 				child.on('exit', () => c());
 			});
 		});
 	}
 
-	private static _DEFAULT_TERMINAL_LINUX_READY: Promise<string>;
+	privAte stAtic _DEFAULT_TERMINAL_LINUX_READY: Promise<string>;
 
-	public static async getDefaultTerminalLinuxReady(): Promise<string> {
-		if (!LinuxExternalTerminalService._DEFAULT_TERMINAL_LINUX_READY) {
-			LinuxExternalTerminalService._DEFAULT_TERMINAL_LINUX_READY = new Promise(async r => {
+	public stAtic Async getDefAultTerminAlLinuxReAdy(): Promise<string> {
+		if (!LinuxExternAlTerminAlService._DEFAULT_TERMINAL_LINUX_READY) {
+			LinuxExternAlTerminAlService._DEFAULT_TERMINAL_LINUX_READY = new Promise(Async r => {
 				if (env.isLinux) {
-					const isDebian = await pfs.exists('/etc/debian_version');
-					if (isDebian) {
-						r('x-terminal-emulator');
-					} else if (process.env.DESKTOP_SESSION === 'gnome' || process.env.DESKTOP_SESSION === 'gnome-classic') {
-						r('gnome-terminal');
-					} else if (process.env.DESKTOP_SESSION === 'kde-plasma') {
+					const isDebiAn = AwAit pfs.exists('/etc/debiAn_version');
+					if (isDebiAn) {
+						r('x-terminAl-emulAtor');
+					} else if (process.env.DESKTOP_SESSION === 'gnome' || process.env.DESKTOP_SESSION === 'gnome-clAssic') {
+						r('gnome-terminAl');
+					} else if (process.env.DESKTOP_SESSION === 'kde-plAsmA') {
 						r('konsole');
 					} else if (process.env.COLORTERM) {
 						r(process.env.COLORTERM);
@@ -323,30 +323,30 @@ export class LinuxExternalTerminalService implements IExternalTerminalService {
 				}
 			});
 		}
-		return LinuxExternalTerminalService._DEFAULT_TERMINAL_LINUX_READY;
+		return LinuxExternAlTerminAlService._DEFAULT_TERMINAL_LINUX_READY;
 	}
 }
 
 /**
- * tries to turn OS errors into more meaningful error messages
+ * tries to turn OS errors into more meAningful error messAges
  */
 function improveError(err: Error): Error {
-	if ('errno' in err && err['errno'] === 'ENOENT' && 'path' in err && typeof err['path'] === 'string') {
-		return new Error(nls.localize('ext.term.app.not.found', "can't find terminal application '{0}'", err['path']));
+	if ('errno' in err && err['errno'] === 'ENOENT' && 'pAth' in err && typeof err['pAth'] === 'string') {
+		return new Error(nls.locAlize('ext.term.App.not.found', "cAn't find terminAl ApplicAtion '{0}'", err['pAth']));
 	}
 	return err;
 }
 
 /**
- * Quote args if necessary and combine into a space separated string.
+ * Quote Args if necessAry And combine into A spAce sepArAted string.
  */
-function quote(args: string[]): string {
+function quote(Args: string[]): string {
 	let r = '';
-	for (let a of args) {
-		if (a.indexOf(' ') >= 0) {
-			r += '"' + a + '"';
+	for (let A of Args) {
+		if (A.indexOf(' ') >= 0) {
+			r += '"' + A + '"';
 		} else {
-			r += a;
+			r += A;
 		}
 		r += ' ';
 	}

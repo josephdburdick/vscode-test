@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { setUnexpectedErrorHandler, errorHandler } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import * as types from 'vs/workbench/api/common/extHostTypes';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import * As Assert from 'Assert';
+import { setUnexpectedErrorHAndler, errorHAndler } from 'vs/bAse/common/errors';
+import { URI } from 'vs/bAse/common/uri';
+import * As types from 'vs/workbench/Api/common/extHostTypes';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 import { TestRPCProtocol } from './testRPCProtocol';
-import { MarkerService } from 'vs/platform/markers/common/markerService';
-import { IMarkerService } from 'vs/platform/markers/common/markers';
-import { ICommandService, CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { MArkerService } from 'vs/plAtform/mArkers/common/mArkerService';
+import { IMArkerService } from 'vs/plAtform/mArkers/common/mArkers';
+import { ICommAndService, CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ExtHostLanguageFeatures } from 'vs/workbench/api/common/extHostLanguageFeatures';
-import { MainThreadLanguageFeatures } from 'vs/workbench/api/browser/mainThreadLanguageFeatures';
-import { ExtHostApiCommands } from 'vs/workbench/api/common/extHostApiCommands';
-import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { MainThreadCommands } from 'vs/workbench/api/browser/mainThreadCommands';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { MainContext, ExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDiagnostics } from 'vs/workbench/api/common/extHostDiagnostics';
-import type * as vscode from 'vscode';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import 'vs/workbench/contrib/search/browser/search.contribution';
-import { NullLogService } from 'vs/platform/log/common/log';
+import { ExtHostLAnguAgeFeAtures } from 'vs/workbench/Api/common/extHostLAnguAgeFeAtures';
+import { MAinThreAdLAnguAgeFeAtures } from 'vs/workbench/Api/browser/mAinThreAdLAnguAgeFeAtures';
+import { ExtHostApiCommAnds } from 'vs/workbench/Api/common/extHostApiCommAnds';
+import { ExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { MAinThreAdCommAnds } from 'vs/workbench/Api/browser/mAinThreAdCommAnds';
+import { ExtHostDocuments } from 'vs/workbench/Api/common/extHostDocuments';
+import { ExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { MAinContext, ExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostDiAgnostics } from 'vs/workbench/Api/common/extHostDiAgnostics';
+import type * As vscode from 'vscode';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import 'vs/workbench/contrib/seArch/browser/seArch.contribution';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 import { ITextModel } from 'vs/editor/common/model';
 import { nullExtensionDescription, IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { dispose } from 'vs/base/common/lifecycle';
+import { dispose } from 'vs/bAse/common/lifecycle';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { mock } from 'vs/base/test/common/mock';
-import { NullApiDeprecationService } from 'vs/workbench/api/common/extHostApiDeprecationService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
+import { mock } from 'vs/bAse/test/common/mock';
+import { NullApiDeprecAtionService } from 'vs/workbench/Api/common/extHostApiDeprecAtionService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
 
 import 'vs/editor/contrib/codeAction/codeAction';
 import 'vs/editor/contrib/codelens/codelens';
 import 'vs/editor/contrib/colorPicker/color';
-import 'vs/editor/contrib/format/format';
-import 'vs/editor/contrib/gotoSymbol/goToCommands';
+import 'vs/editor/contrib/formAt/formAt';
+import 'vs/editor/contrib/gotoSymbol/goToCommAnds';
 import 'vs/editor/contrib/gotoSymbol/documentSymbols';
 import 'vs/editor/contrib/hover/getHover';
 import 'vs/editor/contrib/links/getLinks';
-import 'vs/editor/contrib/parameterHints/provideSignatureHelp';
-import 'vs/editor/contrib/smartSelect/smartSelect';
+import 'vs/editor/contrib/pArAmeterHints/provideSignAtureHelp';
+import 'vs/editor/contrib/smArtSelect/smArtSelect';
 import 'vs/editor/contrib/suggest/suggest';
-import 'vs/editor/contrib/rename/rename';
+import 'vs/editor/contrib/renAme/renAme';
 
-const defaultSelector = { scheme: 'far' };
-const model: ITextModel = createTextModel(
+const defAultSelector = { scheme: 'fAr' };
+const model: ITextModel = creAteTextModel(
 	[
 		'This is the first line',
 		'This is the second line',
@@ -58,323 +58,323 @@ const model: ITextModel = createTextModel(
 	].join('\n'),
 	undefined,
 	undefined,
-	URI.parse('far://testing/file.b'));
+	URI.pArse('fAr://testing/file.b'));
 
 let rpcProtocol: TestRPCProtocol;
-let extHost: ExtHostLanguageFeatures;
-let mainThread: MainThreadLanguageFeatures;
-let commands: ExtHostCommands;
-let disposables: vscode.Disposable[] = [];
-let originalErrorHandler: (e: any) => any;
+let extHost: ExtHostLAnguAgeFeAtures;
+let mAinThreAd: MAinThreAdLAnguAgeFeAtures;
+let commAnds: ExtHostCommAnds;
+let disposAbles: vscode.DisposAble[] = [];
+let originAlErrorHAndler: (e: Any) => Any;
 
-function assertRejects(fn: () => Promise<any>, message: string = 'Expected rejection') {
-	return fn().then(() => assert.ok(false, message), _err => assert.ok(true));
+function AssertRejects(fn: () => Promise<Any>, messAge: string = 'Expected rejection') {
+	return fn().then(() => Assert.ok(fAlse, messAge), _err => Assert.ok(true));
 }
 
-function isLocation(value: vscode.Location | vscode.LocationLink): value is vscode.Location {
-	const candidate = value as vscode.Location;
-	return candidate && candidate.uri instanceof URI && candidate.range instanceof types.Range;
+function isLocAtion(vAlue: vscode.LocAtion | vscode.LocAtionLink): vAlue is vscode.LocAtion {
+	const cAndidAte = vAlue As vscode.LocAtion;
+	return cAndidAte && cAndidAte.uri instAnceof URI && cAndidAte.rAnge instAnceof types.RAnge;
 }
 
-suite('ExtHostLanguageFeatureCommands', function () {
+suite('ExtHostLAnguAgeFeAtureCommAnds', function () {
 
 	suiteSetup(() => {
 
-		originalErrorHandler = errorHandler.getUnexpectedErrorHandler();
-		setUnexpectedErrorHandler(() => { });
+		originAlErrorHAndler = errorHAndler.getUnexpectedErrorHAndler();
+		setUnexpectedErrorHAndler(() => { });
 
-		// Use IInstantiationService to get typechecking when instantiating
-		let insta: IInstantiationService;
+		// Use IInstAntiAtionService to get typechecking when instAntiAting
+		let instA: IInstAntiAtionService;
 		rpcProtocol = new TestRPCProtocol();
 		const services = new ServiceCollection();
-		services.set(IExtensionService, new class extends mock<IExtensionService>() {
-			async activateByEvent() {
+		services.set(IExtensionService, new clAss extends mock<IExtensionService>() {
+			Async ActivAteByEvent() {
 
 			}
 
 		});
-		services.set(ICommandService, new SyncDescriptor(class extends mock<ICommandService>() {
+		services.set(ICommAndService, new SyncDescriptor(clAss extends mock<ICommAndService>() {
 
-			executeCommand(id: string, ...args: any): any {
-				const command = CommandsRegistry.getCommands().get(id);
-				if (!command) {
+			executeCommAnd(id: string, ...Args: Any): Any {
+				const commAnd = CommAndsRegistry.getCommAnds().get(id);
+				if (!commAnd) {
 					return Promise.reject(new Error(id + ' NOT known'));
 				}
-				const { handler } = command;
-				return Promise.resolve(insta.invokeFunction(handler, ...args));
+				const { hAndler } = commAnd;
+				return Promise.resolve(instA.invokeFunction(hAndler, ...Args));
 			}
 		}));
-		services.set(IMarkerService, new MarkerService());
-		services.set(IModelService, new class extends mock<IModelService>() {
+		services.set(IMArkerService, new MArkerService());
+		services.set(IModelService, new clAss extends mock<IModelService>() {
 			getModel() { return model; }
 		});
-		services.set(IEditorWorkerService, new class extends mock<IEditorWorkerService>() {
-			async computeMoreMinimalEdits(_uri: any, edits: any) {
+		services.set(IEditorWorkerService, new clAss extends mock<IEditorWorkerService>() {
+			Async computeMoreMinimAlEdits(_uri: Any, edits: Any) {
 				return edits || undefined;
 			}
 		});
 
-		insta = new InstantiationService(services);
+		instA = new InstAntiAtionService(services);
 
 		const extHostDocumentsAndEditors = new ExtHostDocumentsAndEditors(rpcProtocol, new NullLogService());
-		extHostDocumentsAndEditors.$acceptDocumentsAndEditorsDelta({
-			addedDocuments: [{
-				isDirty: false,
+		extHostDocumentsAndEditors.$AcceptDocumentsAndEditorsDeltA({
+			AddedDocuments: [{
+				isDirty: fAlse,
 				versionId: model.getVersionId(),
-				modeId: model.getLanguageIdentifier().language,
+				modeId: model.getLAnguAgeIdentifier().lAnguAge,
 				uri: model.uri,
-				lines: model.getValue().split(model.getEOL()),
+				lines: model.getVAlue().split(model.getEOL()),
 				EOL: model.getEOL(),
 			}]
 		});
 		const extHostDocuments = new ExtHostDocuments(rpcProtocol, extHostDocumentsAndEditors);
 		rpcProtocol.set(ExtHostContext.ExtHostDocuments, extHostDocuments);
 
-		commands = new ExtHostCommands(rpcProtocol, new NullLogService());
-		rpcProtocol.set(ExtHostContext.ExtHostCommands, commands);
-		rpcProtocol.set(MainContext.MainThreadCommands, insta.createInstance(MainThreadCommands, rpcProtocol));
-		ExtHostApiCommands.register(commands);
+		commAnds = new ExtHostCommAnds(rpcProtocol, new NullLogService());
+		rpcProtocol.set(ExtHostContext.ExtHostCommAnds, commAnds);
+		rpcProtocol.set(MAinContext.MAinThreAdCommAnds, instA.creAteInstAnce(MAinThreAdCommAnds, rpcProtocol));
+		ExtHostApiCommAnds.register(commAnds);
 
-		const diagnostics = new ExtHostDiagnostics(rpcProtocol, new NullLogService());
-		rpcProtocol.set(ExtHostContext.ExtHostDiagnostics, diagnostics);
+		const diAgnostics = new ExtHostDiAgnostics(rpcProtocol, new NullLogService());
+		rpcProtocol.set(ExtHostContext.ExtHostDiAgnostics, diAgnostics);
 
-		extHost = new ExtHostLanguageFeatures(rpcProtocol, null, extHostDocuments, commands, diagnostics, new NullLogService(), NullApiDeprecationService);
-		rpcProtocol.set(ExtHostContext.ExtHostLanguageFeatures, extHost);
+		extHost = new ExtHostLAnguAgeFeAtures(rpcProtocol, null, extHostDocuments, commAnds, diAgnostics, new NullLogService(), NullApiDeprecAtionService);
+		rpcProtocol.set(ExtHostContext.ExtHostLAnguAgeFeAtures, extHost);
 
-		mainThread = rpcProtocol.set(MainContext.MainThreadLanguageFeatures, insta.createInstance(MainThreadLanguageFeatures, rpcProtocol));
+		mAinThreAd = rpcProtocol.set(MAinContext.MAinThreAdLAnguAgeFeAtures, instA.creAteInstAnce(MAinThreAdLAnguAgeFeAtures, rpcProtocol));
 
 		return rpcProtocol.sync();
 	});
 
-	suiteTeardown(() => {
-		setUnexpectedErrorHandler(originalErrorHandler);
+	suiteTeArdown(() => {
+		setUnexpectedErrorHAndler(originAlErrorHAndler);
 		model.dispose();
-		mainThread.dispose();
+		mAinThreAd.dispose();
 	});
 
-	teardown(() => {
-		disposables = dispose(disposables);
+	teArdown(() => {
+		disposAbles = dispose(disposAbles);
 		return rpcProtocol.sync();
 	});
 
-	// --- workspace symbols
+	// --- workspAce symbols
 
-	test('WorkspaceSymbols, invalid arguments', function () {
+	test('WorkspAceSymbols, invAlid Arguments', function () {
 		let promises = [
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider')),
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider', null)),
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider', undefined)),
-			assertRejects(() => commands.executeCommand('vscode.executeWorkspaceSymbolProvider', true))
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeWorkspAceSymbolProvider')),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeWorkspAceSymbolProvider', null)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeWorkspAceSymbolProvider', undefined)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeWorkspAceSymbolProvider', true))
 		];
-		return Promise.all(promises);
+		return Promise.All(promises);
 	});
 
-	test('WorkspaceSymbols, back and forth', function () {
+	test('WorkspAceSymbols, bAck And forth', function () {
 
-		disposables.push(extHost.registerWorkspaceSymbolProvider(nullExtensionDescription, <vscode.WorkspaceSymbolProvider>{
-			provideWorkspaceSymbols(query): any {
+		disposAbles.push(extHost.registerWorkspAceSymbolProvider(nullExtensionDescription, <vscode.WorkspAceSymbolProvider>{
+			provideWorkspAceSymbols(query): Any {
 				return [
-					new types.SymbolInformation(query, types.SymbolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/first')),
-					new types.SymbolInformation(query, types.SymbolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/second'))
+					new types.SymbolInformAtion(query, types.SymbolKind.ArrAy, new types.RAnge(0, 0, 1, 1), URI.pArse('fAr://testing/first')),
+					new types.SymbolInformAtion(query, types.SymbolKind.ArrAy, new types.RAnge(0, 0, 1, 1), URI.pArse('fAr://testing/second'))
 				];
 			}
 		}));
 
-		disposables.push(extHost.registerWorkspaceSymbolProvider(nullExtensionDescription, <vscode.WorkspaceSymbolProvider>{
-			provideWorkspaceSymbols(query): any {
+		disposAbles.push(extHost.registerWorkspAceSymbolProvider(nullExtensionDescription, <vscode.WorkspAceSymbolProvider>{
+			provideWorkspAceSymbols(query): Any {
 				return [
-					new types.SymbolInformation(query, types.SymbolKind.Array, new types.Range(0, 0, 1, 1), URI.parse('far://testing/first'))
+					new types.SymbolInformAtion(query, types.SymbolKind.ArrAy, new types.RAnge(0, 0, 1, 1), URI.pArse('fAr://testing/first'))
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', 'testing').then(value => {
+			return commAnds.executeCommAnd<vscode.SymbolInformAtion[]>('vscode.executeWorkspAceSymbolProvider', 'testing').then(vAlue => {
 
-				for (let info of value) {
-					assert.ok(info instanceof types.SymbolInformation);
-					assert.equal(info.name, 'testing');
-					assert.equal(info.kind, types.SymbolKind.Array);
+				for (let info of vAlue) {
+					Assert.ok(info instAnceof types.SymbolInformAtion);
+					Assert.equAl(info.nAme, 'testing');
+					Assert.equAl(info.kind, types.SymbolKind.ArrAy);
 				}
-				assert.equal(value.length, 3);
+				Assert.equAl(vAlue.length, 3);
 			});
 		});
 	});
 
-	test('executeWorkspaceSymbolProvider should accept empty string, #39522', async function () {
+	test('executeWorkspAceSymbolProvider should Accept empty string, #39522', Async function () {
 
-		disposables.push(extHost.registerWorkspaceSymbolProvider(nullExtensionDescription, {
-			provideWorkspaceSymbols(): vscode.SymbolInformation[] {
-				return [new types.SymbolInformation('hello', types.SymbolKind.Array, new types.Range(0, 0, 0, 0), URI.parse('foo:bar')) as vscode.SymbolInformation];
+		disposAbles.push(extHost.registerWorkspAceSymbolProvider(nullExtensionDescription, {
+			provideWorkspAceSymbols(): vscode.SymbolInformAtion[] {
+				return [new types.SymbolInformAtion('hello', types.SymbolKind.ArrAy, new types.RAnge(0, 0, 0, 0), URI.pArse('foo:bAr')) As vscode.SymbolInformAtion];
 			}
 		}));
 
-		await rpcProtocol.sync();
-		let symbols = await commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', '');
-		assert.equal(symbols.length, 1);
+		AwAit rpcProtocol.sync();
+		let symbols = AwAit commAnds.executeCommAnd<vscode.SymbolInformAtion[]>('vscode.executeWorkspAceSymbolProvider', '');
+		Assert.equAl(symbols.length, 1);
 
-		await rpcProtocol.sync();
-		symbols = await commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', '*');
-		assert.equal(symbols.length, 1);
+		AwAit rpcProtocol.sync();
+		symbols = AwAit commAnds.executeCommAnd<vscode.SymbolInformAtion[]>('vscode.executeWorkspAceSymbolProvider', '*');
+		Assert.equAl(symbols.length, 1);
 	});
 
-	// --- formatting
-	test('executeFormatDocumentProvider, back and forth', async function () {
+	// --- formAtting
+	test('executeFormAtDocumentProvider, bAck And forth', Async function () {
 
-		disposables.push(extHost.registerDocumentFormattingEditProvider(nullExtensionDescription, defaultSelector, new class implements vscode.DocumentFormattingEditProvider {
-			provideDocumentFormattingEdits() {
+		disposAbles.push(extHost.registerDocumentFormAttingEditProvider(nullExtensionDescription, defAultSelector, new clAss implements vscode.DocumentFormAttingEditProvider {
+			provideDocumentFormAttingEdits() {
 				return [types.TextEdit.insert(new types.Position(0, 0), '42')];
 			}
 		}));
 
-		await rpcProtocol.sync();
-		let edits = await commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeFormatDocumentProvider', model.uri);
-		assert.equal(edits.length, 1);
+		AwAit rpcProtocol.sync();
+		let edits = AwAit commAnds.executeCommAnd<vscode.SymbolInformAtion[]>('vscode.executeFormAtDocumentProvider', model.uri);
+		Assert.equAl(edits.length, 1);
 	});
 
 
-	// --- rename
-	test('vscode.executeDocumentRenameProvider', async function () {
-		disposables.push(extHost.registerRenameProvider(nullExtensionDescription, defaultSelector, new class implements vscode.RenameProvider {
-			provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string) {
-				const edit = new types.WorkspaceEdit();
-				edit.insert(document.uri, <types.Position>position, newName);
+	// --- renAme
+	test('vscode.executeDocumentRenAmeProvider', Async function () {
+		disposAbles.push(extHost.registerRenAmeProvider(nullExtensionDescription, defAultSelector, new clAss implements vscode.RenAmeProvider {
+			provideRenAmeEdits(document: vscode.TextDocument, position: vscode.Position, newNAme: string) {
+				const edit = new types.WorkspAceEdit();
+				edit.insert(document.uri, <types.Position>position, newNAme);
 				return edit;
 			}
 		}));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		const edit = await commands.executeCommand<vscode.WorkspaceEdit>('vscode.executeDocumentRenameProvider', model.uri, new types.Position(0, 12), 'newNameOfThis');
+		const edit = AwAit commAnds.executeCommAnd<vscode.WorkspAceEdit>('vscode.executeDocumentRenAmeProvider', model.uri, new types.Position(0, 12), 'newNAmeOfThis');
 
-		assert.ok(edit);
-		assert.equal(edit.has(model.uri), true);
+		Assert.ok(edit);
+		Assert.equAl(edit.hAs(model.uri), true);
 		const textEdits = edit.get(model.uri);
-		assert.equal(textEdits.length, 1);
-		assert.equal(textEdits[0].newText, 'newNameOfThis');
+		Assert.equAl(textEdits.length, 1);
+		Assert.equAl(textEdits[0].newText, 'newNAmeOfThis');
 	});
 
 	// --- definition
 
-	test('Definition, invalid arguments', function () {
+	test('Definition, invAlid Arguments', function () {
 		let promises = [
-			assertRejects(() => commands.executeCommand('vscode.executeDefinitionProvider')),
-			assertRejects(() => commands.executeCommand('vscode.executeDefinitionProvider', null)),
-			assertRejects(() => commands.executeCommand('vscode.executeDefinitionProvider', undefined)),
-			assertRejects(() => commands.executeCommand('vscode.executeDefinitionProvider', true, false))
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeDefinitionProvider')),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeDefinitionProvider', null)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeDefinitionProvider', undefined)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeDefinitionProvider', true, fAlse))
 		];
 
-		return Promise.all(promises);
+		return Promise.All(promises);
 	});
 
-	test('Definition, back and forth', function () {
+	test('Definition, bAck And forth', function () {
 
-		disposables.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
-			provideDefinition(doc: any): any {
-				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
+		disposAbles.push(extHost.registerDefinitionProvider(nullExtensionDescription, defAultSelector, <vscode.DefinitionProvider>{
+			provideDefinition(doc: Any): Any {
+				return new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
-			provideDefinition(doc: any): any {
+		disposAbles.push(extHost.registerDefinitionProvider(nullExtensionDescription, defAultSelector, <vscode.DefinitionProvider>{
+			provideDefinition(doc: Any): Any {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.Location[]>('vscode.executeDefinitionProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 4);
-				for (let v of values) {
-					assert.ok(v.uri instanceof URI);
-					assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<vscode.LocAtion[]>('vscode.executeDefinitionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 4);
+				for (let v of vAlues) {
+					Assert.ok(v.uri instAnceof URI);
+					Assert.ok(v.rAnge instAnceof types.RAnge);
 				}
 			});
 		});
 	});
 
 	test('Definition Link', () => {
-		disposables.push(extHost.registerDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.DefinitionProvider>{
-			provideDefinition(doc: any): (vscode.Location | vscode.LocationLink)[] {
+		disposAbles.push(extHost.registerDefinitionProvider(nullExtensionDescription, defAultSelector, <vscode.DefinitionProvider>{
+			provideDefinition(doc: Any): (vscode.LocAtion | vscode.LocAtionLink)[] {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					{ targetUri: doc.uri, targetRange: new types.Range(0, 0, 0, 0), targetSelectionRange: new types.Range(1, 1, 1, 1), originSelectionRange: new types.Range(2, 2, 2, 2) }
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					{ tArgetUri: doc.uri, tArgetRAnge: new types.RAnge(0, 0, 0, 0), tArgetSelectionRAnge: new types.RAnge(1, 1, 1, 1), originSelectionRAnge: new types.RAnge(2, 2, 2, 2) }
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<(vscode.Location | vscode.LocationLink)[]>('vscode.executeDefinitionProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 2);
-				for (let v of values) {
-					if (isLocation(v)) {
-						assert.ok(v.uri instanceof URI);
-						assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<(vscode.LocAtion | vscode.LocAtionLink)[]>('vscode.executeDefinitionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 2);
+				for (let v of vAlues) {
+					if (isLocAtion(v)) {
+						Assert.ok(v.uri instAnceof URI);
+						Assert.ok(v.rAnge instAnceof types.RAnge);
 					} else {
-						assert.ok(v.targetUri instanceof URI);
-						assert.ok(v.targetRange instanceof types.Range);
-						assert.ok(v.targetSelectionRange instanceof types.Range);
-						assert.ok(v.originSelectionRange instanceof types.Range);
+						Assert.ok(v.tArgetUri instAnceof URI);
+						Assert.ok(v.tArgetRAnge instAnceof types.RAnge);
+						Assert.ok(v.tArgetSelectionRAnge instAnceof types.RAnge);
+						Assert.ok(v.originSelectionRAnge instAnceof types.RAnge);
 					}
 				}
 			});
 		});
 	});
 
-	// --- declaration
+	// --- declArAtion
 
-	test('Declaration, back and forth', function () {
+	test('DeclArAtion, bAck And forth', function () {
 
-		disposables.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
-			provideDeclaration(doc: any): any {
-				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
+		disposAbles.push(extHost.registerDeclArAtionProvider(nullExtensionDescription, defAultSelector, <vscode.DeclArAtionProvider>{
+			provideDeclArAtion(doc: Any): Any {
+				return new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
-			provideDeclaration(doc: any): any {
+		disposAbles.push(extHost.registerDeclArAtionProvider(nullExtensionDescription, defAultSelector, <vscode.DeclArAtionProvider>{
+			provideDeclArAtion(doc: Any): Any {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.Location[]>('vscode.executeDeclarationProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 4);
-				for (let v of values) {
-					assert.ok(v.uri instanceof URI);
-					assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<vscode.LocAtion[]>('vscode.executeDeclArAtionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 4);
+				for (let v of vAlues) {
+					Assert.ok(v.uri instAnceof URI);
+					Assert.ok(v.rAnge instAnceof types.RAnge);
 				}
 			});
 		});
 	});
 
-	test('Declaration Link', () => {
-		disposables.push(extHost.registerDeclarationProvider(nullExtensionDescription, defaultSelector, <vscode.DeclarationProvider>{
-			provideDeclaration(doc: any): (vscode.Location | vscode.LocationLink)[] {
+	test('DeclArAtion Link', () => {
+		disposAbles.push(extHost.registerDeclArAtionProvider(nullExtensionDescription, defAultSelector, <vscode.DeclArAtionProvider>{
+			provideDeclArAtion(doc: Any): (vscode.LocAtion | vscode.LocAtionLink)[] {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					{ targetUri: doc.uri, targetRange: new types.Range(0, 0, 0, 0), targetSelectionRange: new types.Range(1, 1, 1, 1), originSelectionRange: new types.Range(2, 2, 2, 2) }
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					{ tArgetUri: doc.uri, tArgetRAnge: new types.RAnge(0, 0, 0, 0), tArgetSelectionRAnge: new types.RAnge(1, 1, 1, 1), originSelectionRAnge: new types.RAnge(2, 2, 2, 2) }
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<(vscode.Location | vscode.LocationLink)[]>('vscode.executeDeclarationProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 2);
-				for (let v of values) {
-					if (isLocation(v)) {
-						assert.ok(v.uri instanceof URI);
-						assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<(vscode.LocAtion | vscode.LocAtionLink)[]>('vscode.executeDeclArAtionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 2);
+				for (let v of vAlues) {
+					if (isLocAtion(v)) {
+						Assert.ok(v.uri instAnceof URI);
+						Assert.ok(v.rAnge instAnceof types.RAnge);
 					} else {
-						assert.ok(v.targetUri instanceof URI);
-						assert.ok(v.targetRange instanceof types.Range);
-						assert.ok(v.targetSelectionRange instanceof types.Range);
-						assert.ok(v.originSelectionRange instanceof types.Range);
+						Assert.ok(v.tArgetUri instAnceof URI);
+						Assert.ok(v.tArgetRAnge instAnceof types.RAnge);
+						Assert.ok(v.tArgetSelectionRAnge instAnceof types.RAnge);
+						Assert.ok(v.originSelectionRAnge instAnceof types.RAnge);
 					}
 				}
 			});
@@ -383,136 +383,136 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- type definition
 
-	test('Type Definition, invalid arguments', function () {
+	test('Type Definition, invAlid Arguments', function () {
 		const promises = [
-			assertRejects(() => commands.executeCommand('vscode.executeTypeDefinitionProvider')),
-			assertRejects(() => commands.executeCommand('vscode.executeTypeDefinitionProvider', null)),
-			assertRejects(() => commands.executeCommand('vscode.executeTypeDefinitionProvider', undefined)),
-			assertRejects(() => commands.executeCommand('vscode.executeTypeDefinitionProvider', true, false))
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeTypeDefinitionProvider')),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeTypeDefinitionProvider', null)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeTypeDefinitionProvider', undefined)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeTypeDefinitionProvider', true, fAlse))
 		];
 
-		return Promise.all(promises);
+		return Promise.All(promises);
 	});
 
-	test('Type Definition, back and forth', function () {
+	test('Type Definition, bAck And forth', function () {
 
-		disposables.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
-			provideTypeDefinition(doc: any): any {
-				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
+		disposAbles.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defAultSelector, <vscode.TypeDefinitionProvider>{
+			provideTypeDefinition(doc: Any): Any {
+				return new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
-			provideTypeDefinition(doc: any): any {
+		disposAbles.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defAultSelector, <vscode.TypeDefinitionProvider>{
+			provideTypeDefinition(doc: Any): Any {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.Location[]>('vscode.executeTypeDefinitionProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 4);
-				for (const v of values) {
-					assert.ok(v.uri instanceof URI);
-					assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<vscode.LocAtion[]>('vscode.executeTypeDefinitionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 4);
+				for (const v of vAlues) {
+					Assert.ok(v.uri instAnceof URI);
+					Assert.ok(v.rAnge instAnceof types.RAnge);
 				}
 			});
 		});
 	});
 
 	test('Type Definition Link', () => {
-		disposables.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defaultSelector, <vscode.TypeDefinitionProvider>{
-			provideTypeDefinition(doc: any): (vscode.Location | vscode.LocationLink)[] {
+		disposAbles.push(extHost.registerTypeDefinitionProvider(nullExtensionDescription, defAultSelector, <vscode.TypeDefinitionProvider>{
+			provideTypeDefinition(doc: Any): (vscode.LocAtion | vscode.LocAtionLink)[] {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					{ targetUri: doc.uri, targetRange: new types.Range(0, 0, 0, 0), targetSelectionRange: new types.Range(1, 1, 1, 1), originSelectionRange: new types.Range(2, 2, 2, 2) }
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					{ tArgetUri: doc.uri, tArgetRAnge: new types.RAnge(0, 0, 0, 0), tArgetSelectionRAnge: new types.RAnge(1, 1, 1, 1), originSelectionRAnge: new types.RAnge(2, 2, 2, 2) }
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<(vscode.Location | vscode.LocationLink)[]>('vscode.executeTypeDefinitionProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 2);
-				for (let v of values) {
-					if (isLocation(v)) {
-						assert.ok(v.uri instanceof URI);
-						assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<(vscode.LocAtion | vscode.LocAtionLink)[]>('vscode.executeTypeDefinitionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 2);
+				for (let v of vAlues) {
+					if (isLocAtion(v)) {
+						Assert.ok(v.uri instAnceof URI);
+						Assert.ok(v.rAnge instAnceof types.RAnge);
 					} else {
-						assert.ok(v.targetUri instanceof URI);
-						assert.ok(v.targetRange instanceof types.Range);
-						assert.ok(v.targetSelectionRange instanceof types.Range);
-						assert.ok(v.originSelectionRange instanceof types.Range);
+						Assert.ok(v.tArgetUri instAnceof URI);
+						Assert.ok(v.tArgetRAnge instAnceof types.RAnge);
+						Assert.ok(v.tArgetSelectionRAnge instAnceof types.RAnge);
+						Assert.ok(v.originSelectionRAnge instAnceof types.RAnge);
 					}
 				}
 			});
 		});
 	});
 
-	// --- implementation
+	// --- implementAtion
 
-	test('Implementation, invalid arguments', function () {
+	test('ImplementAtion, invAlid Arguments', function () {
 		const promises = [
-			assertRejects(() => commands.executeCommand('vscode.executeImplementationProvider')),
-			assertRejects(() => commands.executeCommand('vscode.executeImplementationProvider', null)),
-			assertRejects(() => commands.executeCommand('vscode.executeImplementationProvider', undefined)),
-			assertRejects(() => commands.executeCommand('vscode.executeImplementationProvider', true, false))
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeImplementAtionProvider')),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeImplementAtionProvider', null)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeImplementAtionProvider', undefined)),
+			AssertRejects(() => commAnds.executeCommAnd('vscode.executeImplementAtionProvider', true, fAlse))
 		];
 
-		return Promise.all(promises);
+		return Promise.All(promises);
 	});
 
-	test('Implementation, back and forth', function () {
+	test('ImplementAtion, bAck And forth', function () {
 
-		disposables.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
-			provideImplementation(doc: any): any {
-				return new types.Location(doc.uri, new types.Range(0, 0, 0, 0));
+		disposAbles.push(extHost.registerImplementAtionProvider(nullExtensionDescription, defAultSelector, <vscode.ImplementAtionProvider>{
+			provideImplementAtion(doc: Any): Any {
+				return new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0));
 			}
 		}));
-		disposables.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
-			provideImplementation(doc: any): any {
+		disposAbles.push(extHost.registerImplementAtionProvider(nullExtensionDescription, defAultSelector, <vscode.ImplementAtionProvider>{
+			provideImplementAtion(doc: Any): Any {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.Location[]>('vscode.executeImplementationProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 4);
-				for (const v of values) {
-					assert.ok(v.uri instanceof URI);
-					assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<vscode.LocAtion[]>('vscode.executeImplementAtionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 4);
+				for (const v of vAlues) {
+					Assert.ok(v.uri instAnceof URI);
+					Assert.ok(v.rAnge instAnceof types.RAnge);
 				}
 			});
 		});
 	});
 
-	test('Implementation Definition Link', () => {
-		disposables.push(extHost.registerImplementationProvider(nullExtensionDescription, defaultSelector, <vscode.ImplementationProvider>{
-			provideImplementation(doc: any): (vscode.Location | vscode.LocationLink)[] {
+	test('ImplementAtion Definition Link', () => {
+		disposAbles.push(extHost.registerImplementAtionProvider(nullExtensionDescription, defAultSelector, <vscode.ImplementAtionProvider>{
+			provideImplementAtion(doc: Any): (vscode.LocAtion | vscode.LocAtionLink)[] {
 				return [
-					new types.Location(doc.uri, new types.Range(0, 0, 0, 0)),
-					{ targetUri: doc.uri, targetRange: new types.Range(0, 0, 0, 0), targetSelectionRange: new types.Range(1, 1, 1, 1), originSelectionRange: new types.Range(2, 2, 2, 2) }
+					new types.LocAtion(doc.uri, new types.RAnge(0, 0, 0, 0)),
+					{ tArgetUri: doc.uri, tArgetRAnge: new types.RAnge(0, 0, 0, 0), tArgetSelectionRAnge: new types.RAnge(1, 1, 1, 1), originSelectionRAnge: new types.RAnge(2, 2, 2, 2) }
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<(vscode.Location | vscode.LocationLink)[]>('vscode.executeImplementationProvider', model.uri, new types.Position(0, 0)).then(values => {
-				assert.equal(values.length, 2);
-				for (let v of values) {
-					if (isLocation(v)) {
-						assert.ok(v.uri instanceof URI);
-						assert.ok(v.range instanceof types.Range);
+			return commAnds.executeCommAnd<(vscode.LocAtion | vscode.LocAtionLink)[]>('vscode.executeImplementAtionProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+				Assert.equAl(vAlues.length, 2);
+				for (let v of vAlues) {
+					if (isLocAtion(v)) {
+						Assert.ok(v.uri instAnceof URI);
+						Assert.ok(v.rAnge instAnceof types.RAnge);
 					} else {
-						assert.ok(v.targetUri instanceof URI);
-						assert.ok(v.targetRange instanceof types.Range);
-						assert.ok(v.targetSelectionRange instanceof types.Range);
-						assert.ok(v.originSelectionRange instanceof types.Range);
+						Assert.ok(v.tArgetUri instAnceof URI);
+						Assert.ok(v.tArgetRAnge instAnceof types.RAnge);
+						Assert.ok(v.tArgetSelectionRAnge instAnceof types.RAnge);
+						Assert.ok(v.originSelectionRAnge instAnceof types.RAnge);
 					}
 				}
 			});
@@ -521,169 +521,169 @@ suite('ExtHostLanguageFeatureCommands', function () {
 
 	// --- references
 
-	test('reference search, back and forth', function () {
+	test('reference seArch, bAck And forth', function () {
 
-		disposables.push(extHost.registerReferenceProvider(nullExtensionDescription, defaultSelector, <vscode.ReferenceProvider>{
+		disposAbles.push(extHost.registerReferenceProvider(nullExtensionDescription, defAultSelector, <vscode.ReferenceProvider>{
 			provideReferences() {
 				return [
-					new types.Location(URI.parse('some:uri/path'), new types.Range(0, 1, 0, 5))
+					new types.LocAtion(URI.pArse('some:uri/pAth'), new types.RAnge(0, 1, 0, 5))
 				];
 			}
 		}));
 
-		return commands.executeCommand<vscode.Location[]>('vscode.executeReferenceProvider', model.uri, new types.Position(0, 0)).then(values => {
-			assert.equal(values.length, 1);
-			let [first] = values;
-			assert.equal(first.uri.toString(), 'some:uri/path');
-			assert.equal(first.range.start.line, 0);
-			assert.equal(first.range.start.character, 1);
-			assert.equal(first.range.end.line, 0);
-			assert.equal(first.range.end.character, 5);
+		return commAnds.executeCommAnd<vscode.LocAtion[]>('vscode.executeReferenceProvider', model.uri, new types.Position(0, 0)).then(vAlues => {
+			Assert.equAl(vAlues.length, 1);
+			let [first] = vAlues;
+			Assert.equAl(first.uri.toString(), 'some:uri/pAth');
+			Assert.equAl(first.rAnge.stArt.line, 0);
+			Assert.equAl(first.rAnge.stArt.chArActer, 1);
+			Assert.equAl(first.rAnge.end.line, 0);
+			Assert.equAl(first.rAnge.end.chArActer, 5);
 		});
 	});
 
 	// --- outline
 
-	test('Outline, back and forth', function () {
-		disposables.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymbolProvider>{
-			provideDocumentSymbols(): any {
+	test('Outline, bAck And forth', function () {
+		disposAbles.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defAultSelector, <vscode.DocumentSymbolProvider>{
+			provideDocumentSymbols(): Any {
 				return [
-					new types.SymbolInformation('testing1', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0)),
-					new types.SymbolInformation('testing2', types.SymbolKind.Enum, new types.Range(0, 1, 0, 3)),
+					new types.SymbolInformAtion('testing1', types.SymbolKind.Enum, new types.RAnge(1, 0, 1, 0)),
+					new types.SymbolInformAtion('testing2', types.SymbolKind.Enum, new types.RAnge(0, 1, 0, 3)),
 				];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeDocumentSymbolProvider', model.uri).then(values => {
-				assert.equal(values.length, 2);
-				let [first, second] = values;
-				assert.ok(first instanceof types.SymbolInformation);
-				assert.ok(second instanceof types.SymbolInformation);
-				assert.equal(first.name, 'testing2');
-				assert.equal(second.name, 'testing1');
+			return commAnds.executeCommAnd<vscode.SymbolInformAtion[]>('vscode.executeDocumentSymbolProvider', model.uri).then(vAlues => {
+				Assert.equAl(vAlues.length, 2);
+				let [first, second] = vAlues;
+				Assert.ok(first instAnceof types.SymbolInformAtion);
+				Assert.ok(second instAnceof types.SymbolInformAtion);
+				Assert.equAl(first.nAme, 'testing2');
+				Assert.equAl(second.nAme, 'testing1');
 			});
 		});
 	});
 
-	test('vscode.executeDocumentSymbolProvider command only returns SymbolInformation[] rather than DocumentSymbol[] #57984', function () {
-		disposables.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymbolProvider>{
-			provideDocumentSymbols(): any {
+	test('vscode.executeDocumentSymbolProvider commAnd only returns SymbolInformAtion[] rAther thAn DocumentSymbol[] #57984', function () {
+		disposAbles.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defAultSelector, <vscode.DocumentSymbolProvider>{
+			provideDocumentSymbols(): Any {
 				return [
-					new types.SymbolInformation('SymbolInformation', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0))
+					new types.SymbolInformAtion('SymbolInformAtion', types.SymbolKind.Enum, new types.RAnge(1, 0, 1, 0))
 				];
 			}
 		}));
-		disposables.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentSymbolProvider>{
-			provideDocumentSymbols(): any {
-				let root = new types.DocumentSymbol('DocumentSymbol', 'DocumentSymbol#detail', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0), new types.Range(1, 0, 1, 0));
-				root.children = [new types.DocumentSymbol('DocumentSymbol#child', 'DocumentSymbol#detail#child', types.SymbolKind.Enum, new types.Range(1, 0, 1, 0), new types.Range(1, 0, 1, 0))];
+		disposAbles.push(extHost.registerDocumentSymbolProvider(nullExtensionDescription, defAultSelector, <vscode.DocumentSymbolProvider>{
+			provideDocumentSymbols(): Any {
+				let root = new types.DocumentSymbol('DocumentSymbol', 'DocumentSymbol#detAil', types.SymbolKind.Enum, new types.RAnge(1, 0, 1, 0), new types.RAnge(1, 0, 1, 0));
+				root.children = [new types.DocumentSymbol('DocumentSymbol#child', 'DocumentSymbol#detAil#child', types.SymbolKind.Enum, new types.RAnge(1, 0, 1, 0), new types.RAnge(1, 0, 1, 0))];
 				return [root];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<(vscode.SymbolInformation & vscode.DocumentSymbol)[]>('vscode.executeDocumentSymbolProvider', model.uri).then(values => {
-				assert.equal(values.length, 2);
-				let [first, second] = values;
-				assert.ok(first instanceof types.SymbolInformation);
-				assert.ok(!(first instanceof types.DocumentSymbol));
-				assert.ok(second instanceof types.SymbolInformation);
-				assert.equal(first.name, 'DocumentSymbol');
-				assert.equal(first.children.length, 1);
-				assert.equal(second.name, 'SymbolInformation');
+			return commAnds.executeCommAnd<(vscode.SymbolInformAtion & vscode.DocumentSymbol)[]>('vscode.executeDocumentSymbolProvider', model.uri).then(vAlues => {
+				Assert.equAl(vAlues.length, 2);
+				let [first, second] = vAlues;
+				Assert.ok(first instAnceof types.SymbolInformAtion);
+				Assert.ok(!(first instAnceof types.DocumentSymbol));
+				Assert.ok(second instAnceof types.SymbolInformAtion);
+				Assert.equAl(first.nAme, 'DocumentSymbol');
+				Assert.equAl(first.children.length, 1);
+				Assert.equAl(second.nAme, 'SymbolInformAtion');
 			});
 		});
 	});
 
 	// --- suggest
 
-	test('Suggest, back and forth', function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
-			provideCompletionItems(): any {
-				let a = new types.CompletionItem('item1');
+	test('Suggest, bAck And forth', function () {
+		disposAbles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defAultSelector, <vscode.CompletionItemProvider>{
+			provideCompletionItems(): Any {
+				let A = new types.CompletionItem('item1');
 				let b = new types.CompletionItem('item2');
-				b.textEdit = types.TextEdit.replace(new types.Range(0, 4, 0, 8), 'foo'); // overwite after
+				b.textEdit = types.TextEdit.replAce(new types.RAnge(0, 4, 0, 8), 'foo'); // overwite After
 				let c = new types.CompletionItem('item3');
-				c.textEdit = types.TextEdit.replace(new types.Range(0, 1, 0, 6), 'foobar'); // overwite before & after
+				c.textEdit = types.TextEdit.replAce(new types.RAnge(0, 1, 0, 6), 'foobAr'); // overwite before & After
 
 				// snippet string!
 				let d = new types.CompletionItem('item4');
-				d.range = new types.Range(0, 1, 0, 4);// overwite before
-				d.insertText = new types.SnippetString('foo$0bar');
-				return [a, b, c, d];
+				d.rAnge = new types.RAnge(0, 1, 0, 4);// overwite before
+				d.insertText = new types.SnippetString('foo$0bAr');
+				return [A, b, c, d];
 			}
 		}, []));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.CompletionList>('vscode.executeCompletionItemProvider', model.uri, new types.Position(0, 4)).then(list => {
+			return commAnds.executeCommAnd<vscode.CompletionList>('vscode.executeCompletionItemProvider', model.uri, new types.Position(0, 4)).then(list => {
 
-				assert.ok(list instanceof types.CompletionList);
-				let values = list.items;
-				assert.ok(Array.isArray(values));
-				assert.equal(values.length, 4);
-				let [first, second, third, fourth] = values;
-				assert.equal(first.label, 'item1');
-				assert.equal(first.textEdit, undefined);// no text edit, default ranges
-				assert.ok(!types.Range.isRange(first.range));
+				Assert.ok(list instAnceof types.CompletionList);
+				let vAlues = list.items;
+				Assert.ok(ArrAy.isArrAy(vAlues));
+				Assert.equAl(vAlues.length, 4);
+				let [first, second, third, fourth] = vAlues;
+				Assert.equAl(first.lAbel, 'item1');
+				Assert.equAl(first.textEdit, undefined);// no text edit, defAult rAnges
+				Assert.ok(!types.RAnge.isRAnge(first.rAnge));
 
-				assert.equal(second.label, 'item2');
-				assert.equal(second.textEdit!.newText, 'foo');
-				assert.equal(second.textEdit!.range.start.line, 0);
-				assert.equal(second.textEdit!.range.start.character, 4);
-				assert.equal(second.textEdit!.range.end.line, 0);
-				assert.equal(second.textEdit!.range.end.character, 8);
+				Assert.equAl(second.lAbel, 'item2');
+				Assert.equAl(second.textEdit!.newText, 'foo');
+				Assert.equAl(second.textEdit!.rAnge.stArt.line, 0);
+				Assert.equAl(second.textEdit!.rAnge.stArt.chArActer, 4);
+				Assert.equAl(second.textEdit!.rAnge.end.line, 0);
+				Assert.equAl(second.textEdit!.rAnge.end.chArActer, 8);
 
-				assert.equal(third.label, 'item3');
-				assert.equal(third.textEdit!.newText, 'foobar');
-				assert.equal(third.textEdit!.range.start.line, 0);
-				assert.equal(third.textEdit!.range.start.character, 1);
-				assert.equal(third.textEdit!.range.end.line, 0);
-				assert.equal(third.textEdit!.range.end.character, 6);
+				Assert.equAl(third.lAbel, 'item3');
+				Assert.equAl(third.textEdit!.newText, 'foobAr');
+				Assert.equAl(third.textEdit!.rAnge.stArt.line, 0);
+				Assert.equAl(third.textEdit!.rAnge.stArt.chArActer, 1);
+				Assert.equAl(third.textEdit!.rAnge.end.line, 0);
+				Assert.equAl(third.textEdit!.rAnge.end.chArActer, 6);
 
-				assert.equal(fourth.label, 'item4');
-				assert.equal(fourth.textEdit, undefined);
+				Assert.equAl(fourth.lAbel, 'item4');
+				Assert.equAl(fourth.textEdit, undefined);
 
-				const range: any = fourth.range!;
-				assert.ok(types.Range.isRange(range));
-				assert.equal(range.start.line, 0);
-				assert.equal(range.start.character, 1);
-				assert.equal(range.end.line, 0);
-				assert.equal(range.end.character, 4);
-				assert.ok(fourth.insertText instanceof types.SnippetString);
-				assert.equal((<types.SnippetString>fourth.insertText).value, 'foo$0bar');
+				const rAnge: Any = fourth.rAnge!;
+				Assert.ok(types.RAnge.isRAnge(rAnge));
+				Assert.equAl(rAnge.stArt.line, 0);
+				Assert.equAl(rAnge.stArt.chArActer, 1);
+				Assert.equAl(rAnge.end.line, 0);
+				Assert.equAl(rAnge.end.chArActer, 4);
+				Assert.ok(fourth.insertText instAnceof types.SnippetString);
+				Assert.equAl((<types.SnippetString>fourth.insertText).vAlue, 'foo$0bAr');
 			});
 		});
 	});
 
-	test('Suggest, return CompletionList !array', function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
-			provideCompletionItems(): any {
-				let a = new types.CompletionItem('item1');
+	test('Suggest, return CompletionList !ArrAy', function () {
+		disposAbles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defAultSelector, <vscode.CompletionItemProvider>{
+			provideCompletionItems(): Any {
+				let A = new types.CompletionItem('item1');
 				let b = new types.CompletionItem('item2');
-				return new types.CompletionList(<any>[a, b], true);
+				return new types.CompletionList(<Any>[A, b], true);
 			}
 		}, []));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.CompletionList>('vscode.executeCompletionItemProvider', model.uri, new types.Position(0, 4)).then(list => {
-				assert.ok(list instanceof types.CompletionList);
-				assert.equal(list.isIncomplete, true);
+			return commAnds.executeCommAnd<vscode.CompletionList>('vscode.executeCompletionItemProvider', model.uri, new types.Position(0, 4)).then(list => {
+				Assert.ok(list instAnceof types.CompletionList);
+				Assert.equAl(list.isIncomplete, true);
 			});
 		});
 	});
 
-	test('Suggest, resolve completion items', async function () {
+	test('Suggest, resolve completion items', Async function () {
 
 		let resolveCount = 0;
 
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
-			provideCompletionItems(): any {
-				let a = new types.CompletionItem('item1');
+		disposAbles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defAultSelector, <vscode.CompletionItemProvider>{
+			provideCompletionItems(): Any {
+				let A = new types.CompletionItem('item1');
 				let b = new types.CompletionItem('item2');
 				let c = new types.CompletionItem('item3');
 				let d = new types.CompletionItem('item4');
-				return new types.CompletionList([a, b, c, d], false);
+				return new types.CompletionList([A, b, c, d], fAlse);
 			},
 			resolveCompletionItem(item) {
 				resolveCount += 1;
@@ -691,83 +691,83 @@ suite('ExtHostLanguageFeatureCommands', function () {
 			}
 		}, []));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		let list = await commands.executeCommand<vscode.CompletionList>(
+		let list = AwAit commAnds.executeCommAnd<vscode.CompletionList>(
 			'vscode.executeCompletionItemProvider',
 			model.uri,
 			new types.Position(0, 4),
 			undefined,
-			2 // maxItemsToResolve
+			2 // mAxItemsToResolve
 		);
 
-		assert.ok(list instanceof types.CompletionList);
-		assert.equal(resolveCount, 2);
+		Assert.ok(list instAnceof types.CompletionList);
+		Assert.equAl(resolveCount, 2);
 
 	});
 
-	test('"vscode.executeCompletionItemProvider" doesnot return a preselect field #53749', async function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
-			provideCompletionItems(): any {
-				let a = new types.CompletionItem('item1');
-				a.preselect = true;
+	test('"vscode.executeCompletionItemProvider" doesnot return A preselect field #53749', Async function () {
+		disposAbles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defAultSelector, <vscode.CompletionItemProvider>{
+			provideCompletionItems(): Any {
+				let A = new types.CompletionItem('item1');
+				A.preselect = true;
 				let b = new types.CompletionItem('item2');
 				let c = new types.CompletionItem('item3');
 				c.preselect = true;
 				let d = new types.CompletionItem('item4');
-				return new types.CompletionList([a, b, c, d], false);
+				return new types.CompletionList([A, b, c, d], fAlse);
 			}
 		}, []));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		let list = await commands.executeCommand<vscode.CompletionList>(
+		let list = AwAit commAnds.executeCommAnd<vscode.CompletionList>(
 			'vscode.executeCompletionItemProvider',
 			model.uri,
 			new types.Position(0, 4),
 			undefined
 		);
 
-		assert.ok(list instanceof types.CompletionList);
-		assert.equal(list.items.length, 4);
+		Assert.ok(list instAnceof types.CompletionList);
+		Assert.equAl(list.items.length, 4);
 
-		let [a, b, c, d] = list.items;
-		assert.equal(a.preselect, true);
-		assert.equal(b.preselect, undefined);
-		assert.equal(c.preselect, true);
-		assert.equal(d.preselect, undefined);
+		let [A, b, c, d] = list.items;
+		Assert.equAl(A.preselect, true);
+		Assert.equAl(b.preselect, undefined);
+		Assert.equAl(c.preselect, true);
+		Assert.equAl(d.preselect, undefined);
 	});
 
-	test('executeCompletionItemProvider doesn\'t capture commitCharacters #58228', async function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
-			provideCompletionItems(): any {
-				let a = new types.CompletionItem('item1');
-				a.commitCharacters = ['a', 'b'];
+	test('executeCompletionItemProvider doesn\'t cApture commitChArActers #58228', Async function () {
+		disposAbles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defAultSelector, <vscode.CompletionItemProvider>{
+			provideCompletionItems(): Any {
+				let A = new types.CompletionItem('item1');
+				A.commitChArActers = ['A', 'b'];
 				let b = new types.CompletionItem('item2');
-				return new types.CompletionList([a, b], false);
+				return new types.CompletionList([A, b], fAlse);
 			}
 		}, []));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		let list = await commands.executeCommand<vscode.CompletionList>(
+		let list = AwAit commAnds.executeCommAnd<vscode.CompletionList>(
 			'vscode.executeCompletionItemProvider',
 			model.uri,
 			new types.Position(0, 4),
 			undefined
 		);
 
-		assert.ok(list instanceof types.CompletionList);
-		assert.equal(list.items.length, 2);
+		Assert.ok(list instAnceof types.CompletionList);
+		Assert.equAl(list.items.length, 2);
 
-		let [a, b] = list.items;
-		assert.deepEqual(a.commitCharacters, ['a', 'b']);
-		assert.equal(b.commitCharacters, undefined);
+		let [A, b] = list.items;
+		Assert.deepEquAl(A.commitChArActers, ['A', 'b']);
+		Assert.equAl(b.commitChArActers, undefined);
 	});
 
-	test('vscode.executeCompletionItemProvider returns the wrong CompletionItemKinds in insiders #95715', async function () {
-		disposables.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defaultSelector, <vscode.CompletionItemProvider>{
-			provideCompletionItems(): any {
+	test('vscode.executeCompletionItemProvider returns the wrong CompletionItemKinds in insiders #95715', Async function () {
+		disposAbles.push(extHost.registerCompletionItemProvider(nullExtensionDescription, defAultSelector, <vscode.CompletionItemProvider>{
+			provideCompletionItems(): Any {
 				return [
 					new types.CompletionItem('My Method', types.CompletionItemKind.Method),
 					new types.CompletionItem('My Property', types.CompletionItemKind.Property),
@@ -775,111 +775,111 @@ suite('ExtHostLanguageFeatureCommands', function () {
 			}
 		}, []));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		let list = await commands.executeCommand<vscode.CompletionList>(
+		let list = AwAit commAnds.executeCommAnd<vscode.CompletionList>(
 			'vscode.executeCompletionItemProvider',
 			model.uri,
 			new types.Position(0, 4),
 			undefined
 		);
 
-		assert.ok(list instanceof types.CompletionList);
-		assert.equal(list.items.length, 2);
+		Assert.ok(list instAnceof types.CompletionList);
+		Assert.equAl(list.items.length, 2);
 
-		const [a, b] = list.items;
-		assert.equal(a.kind, types.CompletionItemKind.Method);
-		assert.equal(b.kind, types.CompletionItemKind.Property);
+		const [A, b] = list.items;
+		Assert.equAl(A.kind, types.CompletionItemKind.Method);
+		Assert.equAl(b.kind, types.CompletionItemKind.Property);
 	});
 
-	// --- signatureHelp
+	// --- signAtureHelp
 
-	test('Parameter Hints, back and forth', async () => {
-		disposables.push(extHost.registerSignatureHelpProvider(nullExtensionDescription, defaultSelector, new class implements vscode.SignatureHelpProvider {
-			provideSignatureHelp(_document: vscode.TextDocument, _position: vscode.Position, _token: vscode.CancellationToken, context: vscode.SignatureHelpContext): vscode.SignatureHelp {
+	test('PArAmeter Hints, bAck And forth', Async () => {
+		disposAbles.push(extHost.registerSignAtureHelpProvider(nullExtensionDescription, defAultSelector, new clAss implements vscode.SignAtureHelpProvider {
+			provideSignAtureHelp(_document: vscode.TextDocument, _position: vscode.Position, _token: vscode.CAncellAtionToken, context: vscode.SignAtureHelpContext): vscode.SignAtureHelp {
 				return {
-					activeSignature: 0,
-					activeParameter: 1,
-					signatures: [
+					ActiveSignAture: 0,
+					ActivePArAmeter: 1,
+					signAtures: [
 						{
-							label: 'abc',
-							documentation: `${context.triggerKind === 1 /* vscode.SignatureHelpTriggerKind.Invoke */ ? 'invoked' : 'unknown'} ${context.triggerCharacter}`,
-							parameters: []
+							lAbel: 'Abc',
+							documentAtion: `${context.triggerKind === 1 /* vscode.SignAtureHelpTriggerKind.Invoke */ ? 'invoked' : 'unknown'} ${context.triggerChArActer}`,
+							pArAmeters: []
 						}
 					]
 				};
 			}
 		}, []));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		const firstValue = await commands.executeCommand<vscode.SignatureHelp>('vscode.executeSignatureHelpProvider', model.uri, new types.Position(0, 1), ',');
-		assert.strictEqual(firstValue.activeSignature, 0);
-		assert.strictEqual(firstValue.activeParameter, 1);
-		assert.strictEqual(firstValue.signatures.length, 1);
-		assert.strictEqual(firstValue.signatures[0].label, 'abc');
-		assert.strictEqual(firstValue.signatures[0].documentation, 'invoked ,');
+		const firstVAlue = AwAit commAnds.executeCommAnd<vscode.SignAtureHelp>('vscode.executeSignAtureHelpProvider', model.uri, new types.Position(0, 1), ',');
+		Assert.strictEquAl(firstVAlue.ActiveSignAture, 0);
+		Assert.strictEquAl(firstVAlue.ActivePArAmeter, 1);
+		Assert.strictEquAl(firstVAlue.signAtures.length, 1);
+		Assert.strictEquAl(firstVAlue.signAtures[0].lAbel, 'Abc');
+		Assert.strictEquAl(firstVAlue.signAtures[0].documentAtion, 'invoked ,');
 	});
 
 	// --- quickfix
 
-	test('QuickFix, back and forth', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
-			provideCodeActions(): vscode.Command[] {
-				return [{ command: 'testing', title: 'Title', arguments: [1, 2, true] }];
+	test('QuickFix, bAck And forth', function () {
+		disposAbles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defAultSelector, {
+			provideCodeActions(): vscode.CommAnd[] {
+				return [{ commAnd: 'testing', title: 'Title', Arguments: [1, 2, true] }];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.Command[]>('vscode.executeCodeActionProvider', model.uri, new types.Range(0, 0, 1, 1)).then(value => {
-				assert.equal(value.length, 1);
-				let [first] = value;
-				assert.equal(first.title, 'Title');
-				assert.equal(first.command, 'testing');
-				assert.deepEqual(first.arguments, [1, 2, true]);
+			return commAnds.executeCommAnd<vscode.CommAnd[]>('vscode.executeCodeActionProvider', model.uri, new types.RAnge(0, 0, 1, 1)).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				let [first] = vAlue;
+				Assert.equAl(first.title, 'Title');
+				Assert.equAl(first.commAnd, 'testing');
+				Assert.deepEquAl(first.Arguments, [1, 2, true]);
 			});
 		});
 	});
 
-	test('vscode.executeCodeActionProvider results seem to be missing their `command` property #45124', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
-			provideCodeActions(document, range): vscode.CodeAction[] {
+	test('vscode.executeCodeActionProvider results seem to be missing their `commAnd` property #45124', function () {
+		disposAbles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defAultSelector, {
+			provideCodeActions(document, rAnge): vscode.CodeAction[] {
 				return [{
-					command: {
-						arguments: [document, range],
-						command: 'command',
-						title: 'command_title',
+					commAnd: {
+						Arguments: [document, rAnge],
+						commAnd: 'commAnd',
+						title: 'commAnd_title',
 					},
-					kind: types.CodeActionKind.Empty.append('foo'),
+					kind: types.CodeActionKind.Empty.Append('foo'),
 					title: 'title',
 				}];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, new types.Range(0, 0, 1, 1)).then(value => {
-				assert.equal(value.length, 1);
-				const [first] = value;
-				assert.ok(first.command);
-				assert.equal(first.command!.command, 'command');
-				assert.equal(first.command!.title, 'command_title');
-				assert.equal(first.kind!.value, 'foo');
-				assert.equal(first.title, 'title');
+			return commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, new types.RAnge(0, 0, 1, 1)).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				const [first] = vAlue;
+				Assert.ok(first.commAnd);
+				Assert.equAl(first.commAnd!.commAnd, 'commAnd');
+				Assert.equAl(first.commAnd!.title, 'commAnd_title');
+				Assert.equAl(first.kind!.vAlue, 'foo');
+				Assert.equAl(first.title, 'title');
 
 			});
 		});
 	});
 
-	test('vscode.executeCodeActionProvider passes Range to provider although Selection is passed in #77997', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
-			provideCodeActions(document, rangeOrSelection): vscode.CodeAction[] {
+	test('vscode.executeCodeActionProvider pAsses RAnge to provider Although Selection is pAssed in #77997', function () {
+		disposAbles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defAultSelector, {
+			provideCodeActions(document, rAngeOrSelection): vscode.CodeAction[] {
 				return [{
-					command: {
-						arguments: [document, rangeOrSelection],
-						command: 'command',
-						title: 'command_title',
+					commAnd: {
+						Arguments: [document, rAngeOrSelection],
+						commAnd: 'commAnd',
+						title: 'commAnd_title',
 					},
-					kind: types.CodeActionKind.Empty.append('foo'),
+					kind: types.CodeActionKind.Empty.Append('foo'),
 					title: 'title',
 				}];
 			}
@@ -888,26 +888,26 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		const selection = new types.Selection(0, 0, 1, 1);
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, selection).then(value => {
-				assert.equal(value.length, 1);
-				const [first] = value;
-				assert.ok(first.command);
-				assert.ok(first.command!.arguments![1] instanceof types.Selection);
-				assert.ok(first.command!.arguments![1].isEqual(selection));
+			return commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, selection).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				const [first] = vAlue;
+				Assert.ok(first.commAnd);
+				Assert.ok(first.commAnd!.Arguments![1] instAnceof types.Selection);
+				Assert.ok(first.commAnd!.Arguments![1].isEquAl(selection));
 			});
 		});
 	});
 
 	test('vscode.executeCodeActionProvider results seem to be missing their `isPreferred` property #78098', function () {
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
-			provideCodeActions(document, rangeOrSelection): vscode.CodeAction[] {
+		disposAbles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defAultSelector, {
+			provideCodeActions(document, rAngeOrSelection): vscode.CodeAction[] {
 				return [{
-					command: {
-						arguments: [document, rangeOrSelection],
-						command: 'command',
-						title: 'command_title',
+					commAnd: {
+						Arguments: [document, rAngeOrSelection],
+						commAnd: 'commAnd',
+						title: 'commAnd_title',
 					},
-					kind: types.CodeActionKind.Empty.append('foo'),
+					kind: types.CodeActionKind.Empty.Append('foo'),
 					title: 'title',
 					isPreferred: true
 				}];
@@ -917,329 +917,329 @@ suite('ExtHostLanguageFeatureCommands', function () {
 		const selection = new types.Selection(0, 0, 1, 1);
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, selection).then(value => {
-				assert.equal(value.length, 1);
-				const [first] = value;
-				assert.equal(first.isPreferred, true);
+			return commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, selection).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				const [first] = vAlue;
+				Assert.equAl(first.isPreferred, true);
 			});
 		});
 	});
 
-	test('resolving code action', async function () {
+	test('resolving code Action', Async function () {
 
-		let didCallResolve = 0;
-		class MyAction extends types.CodeAction { }
+		let didCAllResolve = 0;
+		clAss MyAction extends types.CodeAction { }
 
-		disposables.push(extHost.registerCodeActionProvider(nullExtensionDescription, defaultSelector, {
-			provideCodeActions(document, rangeOrSelection): vscode.CodeAction[] {
-				return [new MyAction('title', types.CodeActionKind.Empty.append('foo'))];
+		disposAbles.push(extHost.registerCodeActionProvider(nullExtensionDescription, defAultSelector, {
+			provideCodeActions(document, rAngeOrSelection): vscode.CodeAction[] {
+				return [new MyAction('title', types.CodeActionKind.Empty.Append('foo'))];
 			},
-			resolveCodeAction(action): vscode.CodeAction {
-				assert.ok(action instanceof MyAction);
+			resolveCodeAction(Action): vscode.CodeAction {
+				Assert.ok(Action instAnceof MyAction);
 
-				didCallResolve += 1;
-				action.title = 'resolved title';
-				action.edit = new types.WorkspaceEdit();
-				return action;
+				didCAllResolve += 1;
+				Action.title = 'resolved title';
+				Action.edit = new types.WorkspAceEdit();
+				return Action;
 			}
 		}));
 
 		const selection = new types.Selection(0, 0, 1, 1);
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		const value = await commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, selection, undefined, 1000);
-		assert.equal(didCallResolve, 1);
-		assert.equal(value.length, 1);
+		const vAlue = AwAit commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider', model.uri, selection, undefined, 1000);
+		Assert.equAl(didCAllResolve, 1);
+		Assert.equAl(vAlue.length, 1);
 
-		const [first] = value;
-		assert.equal(first.title, 'title'); // does NOT change
-		assert.ok(first.edit); // is set
+		const [first] = vAlue;
+		Assert.equAl(first.title, 'title'); // does NOT chAnge
+		Assert.ok(first.edit); // is set
 	});
 
 	// --- code lens
 
-	test('CodeLens, back and forth', function () {
+	test('CodeLens, bAck And forth', function () {
 
 		const complexArg = {
 			foo() { },
-			bar() { },
+			bAr() { },
 			big: extHost
 		};
 
-		disposables.push(extHost.registerCodeLensProvider(nullExtensionDescription, defaultSelector, <vscode.CodeLensProvider>{
-			provideCodeLenses(): any {
-				return [new types.CodeLens(new types.Range(0, 0, 1, 1), { title: 'Title', command: 'cmd', arguments: [1, true, complexArg] })];
+		disposAbles.push(extHost.registerCodeLensProvider(nullExtensionDescription, defAultSelector, <vscode.CodeLensProvider>{
+			provideCodeLenses(): Any {
+				return [new types.CodeLens(new types.RAnge(0, 0, 1, 1), { title: 'Title', commAnd: 'cmd', Arguments: [1, true, complexArg] })];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri).then(value => {
-				assert.equal(value.length, 1);
-				const [first] = value;
+			return commAnds.executeCommAnd<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				const [first] = vAlue;
 
-				assert.equal(first.command!.title, 'Title');
-				assert.equal(first.command!.command, 'cmd');
-				assert.equal(first.command!.arguments![0], 1);
-				assert.equal(first.command!.arguments![1], true);
-				assert.equal(first.command!.arguments![2], complexArg);
+				Assert.equAl(first.commAnd!.title, 'Title');
+				Assert.equAl(first.commAnd!.commAnd, 'cmd');
+				Assert.equAl(first.commAnd!.Arguments![0], 1);
+				Assert.equAl(first.commAnd!.Arguments![1], true);
+				Assert.equAl(first.commAnd!.Arguments![2], complexArg);
 			});
 		});
 	});
 
-	test('CodeLens, resolve', async function () {
+	test('CodeLens, resolve', Async function () {
 
 		let resolveCount = 0;
 
-		disposables.push(extHost.registerCodeLensProvider(nullExtensionDescription, defaultSelector, <vscode.CodeLensProvider>{
-			provideCodeLenses(): any {
+		disposAbles.push(extHost.registerCodeLensProvider(nullExtensionDescription, defAultSelector, <vscode.CodeLensProvider>{
+			provideCodeLenses(): Any {
 				return [
-					new types.CodeLens(new types.Range(0, 0, 1, 1)),
-					new types.CodeLens(new types.Range(0, 0, 1, 1)),
-					new types.CodeLens(new types.Range(0, 0, 1, 1)),
-					new types.CodeLens(new types.Range(0, 0, 1, 1), { title: 'Already resolved', command: 'fff' })
+					new types.CodeLens(new types.RAnge(0, 0, 1, 1)),
+					new types.CodeLens(new types.RAnge(0, 0, 1, 1)),
+					new types.CodeLens(new types.RAnge(0, 0, 1, 1)),
+					new types.CodeLens(new types.RAnge(0, 0, 1, 1), { title: 'AlreAdy resolved', commAnd: 'fff' })
 				];
 			},
 			resolveCodeLens(codeLens: types.CodeLens) {
-				codeLens.command = { title: resolveCount.toString(), command: 'resolved' };
+				codeLens.commAnd = { title: resolveCount.toString(), commAnd: 'resolved' };
 				resolveCount += 1;
 				return codeLens;
 			}
 		}));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		let value = await commands.executeCommand<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri, 2);
+		let vAlue = AwAit commAnds.executeCommAnd<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri, 2);
 
-		assert.equal(value.length, 3); // the resolve argument defines the number of results being returned
-		assert.equal(resolveCount, 2);
+		Assert.equAl(vAlue.length, 3); // the resolve Argument defines the number of results being returned
+		Assert.equAl(resolveCount, 2);
 
 		resolveCount = 0;
-		value = await commands.executeCommand<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri);
+		vAlue = AwAit commAnds.executeCommAnd<vscode.CodeLens[]>('vscode.executeCodeLensProvider', model.uri);
 
-		assert.equal(value.length, 4);
-		assert.equal(resolveCount, 0);
+		Assert.equAl(vAlue.length, 4);
+		Assert.equAl(resolveCount, 0);
 	});
 
-	test('Links, back and forth', function () {
+	test('Links, bAck And forth', function () {
 
-		disposables.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentLinkProvider>{
-			provideDocumentLinks(): any {
-				return [new types.DocumentLink(new types.Range(0, 0, 0, 20), URI.parse('foo:bar'))];
+		disposAbles.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defAultSelector, <vscode.DocumentLinkProvider>{
+			provideDocumentLinks(): Any {
+				return [new types.DocumentLink(new types.RAnge(0, 0, 0, 20), URI.pArse('foo:bAr'))];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri).then(value => {
-				assert.equal(value.length, 1);
-				let [first] = value;
+			return commAnds.executeCommAnd<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				let [first] = vAlue;
 
-				assert.equal(first.target + '', 'foo:bar');
-				assert.equal(first.range.start.line, 0);
-				assert.equal(first.range.start.character, 0);
-				assert.equal(first.range.end.line, 0);
-				assert.equal(first.range.end.character, 20);
+				Assert.equAl(first.tArget + '', 'foo:bAr');
+				Assert.equAl(first.rAnge.stArt.line, 0);
+				Assert.equAl(first.rAnge.stArt.chArActer, 0);
+				Assert.equAl(first.rAnge.end.line, 0);
+				Assert.equAl(first.rAnge.end.chArActer, 20);
 			});
 		});
 	});
 
-	test('What\'s the condition for DocumentLink target to be undefined? #106308', async function () {
-		disposables.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentLinkProvider>{
-			provideDocumentLinks(): any {
-				return [new types.DocumentLink(new types.Range(0, 0, 0, 20), undefined)];
+	test('WhAt\'s the condition for DocumentLink tArget to be undefined? #106308', Async function () {
+		disposAbles.push(extHost.registerDocumentLinkProvider(nullExtensionDescription, defAultSelector, <vscode.DocumentLinkProvider>{
+			provideDocumentLinks(): Any {
+				return [new types.DocumentLink(new types.RAnge(0, 0, 0, 20), undefined)];
 			},
 			resolveDocumentLink(link) {
-				link.target = URI.parse('foo:bar');
+				link.tArget = URI.pArse('foo:bAr');
 				return link;
 			}
 		}));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		const links1 = await commands.executeCommand<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri);
-		assert.equal(links1.length, 1);
-		assert.equal(links1[0].target, undefined);
+		const links1 = AwAit commAnds.executeCommAnd<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri);
+		Assert.equAl(links1.length, 1);
+		Assert.equAl(links1[0].tArget, undefined);
 
-		const links2 = await commands.executeCommand<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri, 1000);
-		assert.equal(links2.length, 1);
-		assert.equal(links2[0].target!.toString(), URI.parse('foo:bar').toString());
+		const links2 = AwAit commAnds.executeCommAnd<vscode.DocumentLink[]>('vscode.executeLinkProvider', model.uri, 1000);
+		Assert.equAl(links2.length, 1);
+		Assert.equAl(links2[0].tArget!.toString(), URI.pArse('foo:bAr').toString());
 
 	});
 
 
 	test('Color provider', function () {
 
-		disposables.push(extHost.registerColorProvider(nullExtensionDescription, defaultSelector, <vscode.DocumentColorProvider>{
-			provideDocumentColors(): vscode.ColorInformation[] {
-				return [new types.ColorInformation(new types.Range(0, 0, 0, 20), new types.Color(0.1, 0.2, 0.3, 0.4))];
+		disposAbles.push(extHost.registerColorProvider(nullExtensionDescription, defAultSelector, <vscode.DocumentColorProvider>{
+			provideDocumentColors(): vscode.ColorInformAtion[] {
+				return [new types.ColorInformAtion(new types.RAnge(0, 0, 0, 20), new types.Color(0.1, 0.2, 0.3, 0.4))];
 			},
-			provideColorPresentations(): vscode.ColorPresentation[] {
-				const cp = new types.ColorPresentation('#ABC');
-				cp.textEdit = types.TextEdit.replace(new types.Range(1, 0, 1, 20), '#ABC');
-				cp.additionalTextEdits = [types.TextEdit.insert(new types.Position(2, 20), '*')];
+			provideColorPresentAtions(): vscode.ColorPresentAtion[] {
+				const cp = new types.ColorPresentAtion('#ABC');
+				cp.textEdit = types.TextEdit.replAce(new types.RAnge(1, 0, 1, 20), '#ABC');
+				cp.AdditionAlTextEdits = [types.TextEdit.insert(new types.Position(2, 20), '*')];
 				return [cp];
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.ColorInformation[]>('vscode.executeDocumentColorProvider', model.uri).then(value => {
-				assert.equal(value.length, 1);
-				let [first] = value;
+			return commAnds.executeCommAnd<vscode.ColorInformAtion[]>('vscode.executeDocumentColorProvider', model.uri).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				let [first] = vAlue;
 
-				assert.equal(first.color.red, 0.1);
-				assert.equal(first.color.green, 0.2);
-				assert.equal(first.color.blue, 0.3);
-				assert.equal(first.color.alpha, 0.4);
-				assert.equal(first.range.start.line, 0);
-				assert.equal(first.range.start.character, 0);
-				assert.equal(first.range.end.line, 0);
-				assert.equal(first.range.end.character, 20);
+				Assert.equAl(first.color.red, 0.1);
+				Assert.equAl(first.color.green, 0.2);
+				Assert.equAl(first.color.blue, 0.3);
+				Assert.equAl(first.color.AlphA, 0.4);
+				Assert.equAl(first.rAnge.stArt.line, 0);
+				Assert.equAl(first.rAnge.stArt.chArActer, 0);
+				Assert.equAl(first.rAnge.end.line, 0);
+				Assert.equAl(first.rAnge.end.chArActer, 20);
 			});
 		}).then(() => {
 			const color = new types.Color(0.5, 0.6, 0.7, 0.8);
-			const range = new types.Range(0, 0, 0, 20);
-			return commands.executeCommand<vscode.ColorPresentation[]>('vscode.executeColorPresentationProvider', color, { uri: model.uri, range }).then(value => {
-				assert.equal(value.length, 1);
-				let [first] = value;
+			const rAnge = new types.RAnge(0, 0, 0, 20);
+			return commAnds.executeCommAnd<vscode.ColorPresentAtion[]>('vscode.executeColorPresentAtionProvider', color, { uri: model.uri, rAnge }).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				let [first] = vAlue;
 
-				assert.equal(first.label, '#ABC');
-				assert.equal(first.textEdit!.newText, '#ABC');
-				assert.equal(first.textEdit!.range.start.line, 1);
-				assert.equal(first.textEdit!.range.start.character, 0);
-				assert.equal(first.textEdit!.range.end.line, 1);
-				assert.equal(first.textEdit!.range.end.character, 20);
-				assert.equal(first.additionalTextEdits!.length, 1);
-				assert.equal(first.additionalTextEdits![0].range.start.line, 2);
-				assert.equal(first.additionalTextEdits![0].range.start.character, 20);
-				assert.equal(first.additionalTextEdits![0].range.end.line, 2);
-				assert.equal(first.additionalTextEdits![0].range.end.character, 20);
+				Assert.equAl(first.lAbel, '#ABC');
+				Assert.equAl(first.textEdit!.newText, '#ABC');
+				Assert.equAl(first.textEdit!.rAnge.stArt.line, 1);
+				Assert.equAl(first.textEdit!.rAnge.stArt.chArActer, 0);
+				Assert.equAl(first.textEdit!.rAnge.end.line, 1);
+				Assert.equAl(first.textEdit!.rAnge.end.chArActer, 20);
+				Assert.equAl(first.AdditionAlTextEdits!.length, 1);
+				Assert.equAl(first.AdditionAlTextEdits![0].rAnge.stArt.line, 2);
+				Assert.equAl(first.AdditionAlTextEdits![0].rAnge.stArt.chArActer, 20);
+				Assert.equAl(first.AdditionAlTextEdits![0].rAnge.end.line, 2);
+				Assert.equAl(first.AdditionAlTextEdits![0].rAnge.end.chArActer, 20);
 			});
 		});
 	});
 
-	test('"TypeError: e.onCancellationRequested is not a function" calling hover provider in Insiders #54174', function () {
+	test('"TypeError: e.onCAncellAtionRequested is not A function" cAlling hover provider in Insiders #54174', function () {
 
-		disposables.push(extHost.registerHoverProvider(nullExtensionDescription, defaultSelector, <vscode.HoverProvider>{
-			provideHover(): any {
+		disposAbles.push(extHost.registerHoverProvider(nullExtensionDescription, defAultSelector, <vscode.HoverProvider>{
+			provideHover(): Any {
 				return new types.Hover('fofofofo');
 			}
 		}));
 
 		return rpcProtocol.sync().then(() => {
-			return commands.executeCommand<vscode.Hover[]>('vscode.executeHoverProvider', model.uri, new types.Position(1, 1)).then(value => {
-				assert.equal(value.length, 1);
-				assert.equal(value[0].contents.length, 1);
+			return commAnds.executeCommAnd<vscode.Hover[]>('vscode.executeHoverProvider', model.uri, new types.Position(1, 1)).then(vAlue => {
+				Assert.equAl(vAlue.length, 1);
+				Assert.equAl(vAlue[0].contents.length, 1);
 			});
 		});
 	});
 
-	// --- selection ranges
+	// --- selection rAnges
 
-	test('Selection Range, back and forth', async function () {
+	test('Selection RAnge, bAck And forth', Async function () {
 
-		disposables.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
-			provideSelectionRanges() {
+		disposAbles.push(extHost.registerSelectionRAngeProvider(nullExtensionDescription, defAultSelector, <vscode.SelectionRAngeProvider>{
+			provideSelectionRAnges() {
 				return [
-					new types.SelectionRange(new types.Range(0, 10, 0, 18), new types.SelectionRange(new types.Range(0, 2, 0, 20))),
+					new types.SelectionRAnge(new types.RAnge(0, 10, 0, 18), new types.SelectionRAnge(new types.RAnge(0, 2, 0, 20))),
 				];
 			}
 		}));
 
-		await rpcProtocol.sync();
-		let value = await commands.executeCommand<vscode.SelectionRange[]>('vscode.executeSelectionRangeProvider', model.uri, [new types.Position(0, 10)]);
-		assert.equal(value.length, 1);
-		assert.ok(value[0].parent);
+		AwAit rpcProtocol.sync();
+		let vAlue = AwAit commAnds.executeCommAnd<vscode.SelectionRAnge[]>('vscode.executeSelectionRAngeProvider', model.uri, [new types.Position(0, 10)]);
+		Assert.equAl(vAlue.length, 1);
+		Assert.ok(vAlue[0].pArent);
 	});
 
-	// --- call hierarcht
+	// --- cAll hierArcht
 
-	test('CallHierarchy, back and forth', async function () {
+	test('CAllHierArchy, bAck And forth', Async function () {
 
-		disposables.push(extHost.registerCallHierarchyProvider(nullExtensionDescription, defaultSelector, new class implements vscode.CallHierarchyProvider {
+		disposAbles.push(extHost.registerCAllHierArchyProvider(nullExtensionDescription, defAultSelector, new clAss implements vscode.CAllHierArchyProvider {
 
-			prepareCallHierarchy(document: vscode.TextDocument, position: vscode.Position,): vscode.ProviderResult<vscode.CallHierarchyItem> {
-				return new types.CallHierarchyItem(types.SymbolKind.Constant, 'ROOT', 'ROOT', document.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0));
+			prepAreCAllHierArchy(document: vscode.TextDocument, position: vscode.Position,): vscode.ProviderResult<vscode.CAllHierArchyItem> {
+				return new types.CAllHierArchyItem(types.SymbolKind.ConstAnt, 'ROOT', 'ROOT', document.uri, new types.RAnge(0, 0, 0, 0), new types.RAnge(0, 0, 0, 0));
 			}
 
-			provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyIncomingCall[]> {
+			provideCAllHierArchyIncomingCAlls(item: vscode.CAllHierArchyItem, token: vscode.CAncellAtionToken): vscode.ProviderResult<vscode.CAllHierArchyIncomingCAll[]> {
 
-				return [new types.CallHierarchyIncomingCall(
-					new types.CallHierarchyItem(types.SymbolKind.Constant, 'INCOMING', 'INCOMING', item.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0)),
-					[new types.Range(0, 0, 0, 0)]
+				return [new types.CAllHierArchyIncomingCAll(
+					new types.CAllHierArchyItem(types.SymbolKind.ConstAnt, 'INCOMING', 'INCOMING', item.uri, new types.RAnge(0, 0, 0, 0), new types.RAnge(0, 0, 0, 0)),
+					[new types.RAnge(0, 0, 0, 0)]
 				)];
 			}
 
-			provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CallHierarchyOutgoingCall[]> {
-				return [new types.CallHierarchyOutgoingCall(
-					new types.CallHierarchyItem(types.SymbolKind.Constant, 'OUTGOING', 'OUTGOING', item.uri, new types.Range(0, 0, 0, 0), new types.Range(0, 0, 0, 0)),
-					[new types.Range(0, 0, 0, 0)]
+			provideCAllHierArchyOutgoingCAlls(item: vscode.CAllHierArchyItem, token: vscode.CAncellAtionToken): vscode.ProviderResult<vscode.CAllHierArchyOutgoingCAll[]> {
+				return [new types.CAllHierArchyOutgoingCAll(
+					new types.CAllHierArchyItem(types.SymbolKind.ConstAnt, 'OUTGOING', 'OUTGOING', item.uri, new types.RAnge(0, 0, 0, 0), new types.RAnge(0, 0, 0, 0)),
+					[new types.RAnge(0, 0, 0, 0)]
 				)];
 			}
 		}));
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 
-		const root = await commands.executeCommand<vscode.CallHierarchyItem[]>('vscode.prepareCallHierarchy', model.uri, new types.Position(0, 0));
+		const root = AwAit commAnds.executeCommAnd<vscode.CAllHierArchyItem[]>('vscode.prepAreCAllHierArchy', model.uri, new types.Position(0, 0));
 
-		assert.ok(Array.isArray(root));
-		assert.equal(root.length, 1);
-		assert.equal(root[0].name, 'ROOT');
+		Assert.ok(ArrAy.isArrAy(root));
+		Assert.equAl(root.length, 1);
+		Assert.equAl(root[0].nAme, 'ROOT');
 
-		const incoming = await commands.executeCommand<vscode.CallHierarchyIncomingCall[]>('vscode.provideIncomingCalls', root[0]);
-		assert.equal(incoming.length, 1);
-		assert.equal(incoming[0].from.name, 'INCOMING');
+		const incoming = AwAit commAnds.executeCommAnd<vscode.CAllHierArchyIncomingCAll[]>('vscode.provideIncomingCAlls', root[0]);
+		Assert.equAl(incoming.length, 1);
+		Assert.equAl(incoming[0].from.nAme, 'INCOMING');
 
-		const outgoing = await commands.executeCommand<vscode.CallHierarchyOutgoingCall[]>('vscode.provideOutgoingCalls', root[0]);
-		assert.equal(outgoing.length, 1);
-		assert.equal(outgoing[0].to.name, 'OUTGOING');
+		const outgoing = AwAit commAnds.executeCommAnd<vscode.CAllHierArchyOutgoingCAll[]>('vscode.provideOutgoingCAlls', root[0]);
+		Assert.equAl(outgoing.length, 1);
+		Assert.equAl(outgoing[0].to.nAme, 'OUTGOING');
 	});
 
-	test('selectionRangeProvider on inner array always returns outer array #91852', async function () {
+	test('selectionRAngeProvider on inner ArrAy AlwAys returns outer ArrAy #91852', Async function () {
 
-		disposables.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
-			provideSelectionRanges(_doc, positions) {
+		disposAbles.push(extHost.registerSelectionRAngeProvider(nullExtensionDescription, defAultSelector, <vscode.SelectionRAngeProvider>{
+			provideSelectionRAnges(_doc, positions) {
 				const [first] = positions;
 				return [
-					new types.SelectionRange(new types.Range(first.line, first.character, first.line, first.character)),
+					new types.SelectionRAnge(new types.RAnge(first.line, first.chArActer, first.line, first.chArActer)),
 				];
 			}
 		}));
 
-		await rpcProtocol.sync();
-		let value = await commands.executeCommand<vscode.SelectionRange[]>('vscode.executeSelectionRangeProvider', model.uri, [new types.Position(0, 10)]);
-		assert.equal(value.length, 1);
-		assert.equal(value[0].range.start.line, 0);
-		assert.equal(value[0].range.start.character, 10);
-		assert.equal(value[0].range.end.line, 0);
-		assert.equal(value[0].range.end.character, 10);
+		AwAit rpcProtocol.sync();
+		let vAlue = AwAit commAnds.executeCommAnd<vscode.SelectionRAnge[]>('vscode.executeSelectionRAngeProvider', model.uri, [new types.Position(0, 10)]);
+		Assert.equAl(vAlue.length, 1);
+		Assert.equAl(vAlue[0].rAnge.stArt.line, 0);
+		Assert.equAl(vAlue[0].rAnge.stArt.chArActer, 10);
+		Assert.equAl(vAlue[0].rAnge.end.line, 0);
+		Assert.equAl(vAlue[0].rAnge.end.chArActer, 10);
 	});
 
-	test('selectionRangeProvider on inner array always returns outer array #91852', async function () {
+	test('selectionRAngeProvider on inner ArrAy AlwAys returns outer ArrAy #91852', Async function () {
 
-		disposables.push(extHost.registerSelectionRangeProvider(nullExtensionDescription, defaultSelector, <vscode.SelectionRangeProvider>{
-			provideSelectionRanges(_doc, positions) {
+		disposAbles.push(extHost.registerSelectionRAngeProvider(nullExtensionDescription, defAultSelector, <vscode.SelectionRAngeProvider>{
+			provideSelectionRAnges(_doc, positions) {
 				const [first, second] = positions;
 				return [
-					new types.SelectionRange(new types.Range(first.line, first.character, first.line, first.character)),
-					new types.SelectionRange(new types.Range(second.line, second.character, second.line, second.character)),
+					new types.SelectionRAnge(new types.RAnge(first.line, first.chArActer, first.line, first.chArActer)),
+					new types.SelectionRAnge(new types.RAnge(second.line, second.chArActer, second.line, second.chArActer)),
 				];
 			}
 		}));
 
-		await rpcProtocol.sync();
-		let value = await commands.executeCommand<vscode.SelectionRange[]>(
-			'vscode.executeSelectionRangeProvider',
+		AwAit rpcProtocol.sync();
+		let vAlue = AwAit commAnds.executeCommAnd<vscode.SelectionRAnge[]>(
+			'vscode.executeSelectionRAngeProvider',
 			model.uri,
 			[new types.Position(0, 0), new types.Position(0, 10)]
 		);
-		assert.equal(value.length, 2);
-		assert.equal(value[0].range.start.line, 0);
-		assert.equal(value[0].range.start.character, 0);
-		assert.equal(value[0].range.end.line, 0);
-		assert.equal(value[0].range.end.character, 0);
-		assert.equal(value[1].range.start.line, 0);
-		assert.equal(value[1].range.start.character, 10);
-		assert.equal(value[1].range.end.line, 0);
-		assert.equal(value[1].range.end.character, 10);
+		Assert.equAl(vAlue.length, 2);
+		Assert.equAl(vAlue[0].rAnge.stArt.line, 0);
+		Assert.equAl(vAlue[0].rAnge.stArt.chArActer, 0);
+		Assert.equAl(vAlue[0].rAnge.end.line, 0);
+		Assert.equAl(vAlue[0].rAnge.end.chArActer, 0);
+		Assert.equAl(vAlue[1].rAnge.stArt.line, 0);
+		Assert.equAl(vAlue[1].rAnge.stArt.chArActer, 10);
+		Assert.equAl(vAlue[1].rAnge.end.line, 0);
+		Assert.equAl(vAlue[1].rAnge.end.chArActer, 10);
 	});
 });

@@ -1,168 +1,168 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { zoomLevelToZoomFactor } from 'vs/platform/windows/common/windows';
-import { importEntries, mark } from 'vs/base/common/performance';
+import { zoomLevelToZoomFActor } from 'vs/plAtform/windows/common/windows';
+import { importEntries, mArk } from 'vs/bAse/common/performAnce';
 import { Workbench } from 'vs/workbench/browser/workbench';
-import { NativeWindow } from 'vs/workbench/electron-sandbox/window';
-import { setZoomLevel, setZoomFactor, setFullscreen } from 'vs/base/browser/browser';
-import { domContentLoaded, addDisposableListener, EventType, scheduleAtNextAnimationFrame } from 'vs/base/browser/dom';
-import { URI } from 'vs/base/common/uri';
+import { NAtiveWindow } from 'vs/workbench/electron-sAndbox/window';
+import { setZoomLevel, setZoomFActor, setFullscreen } from 'vs/bAse/browser/browser';
+import { domContentLoAded, AddDisposAbleListener, EventType, scheduleAtNextAnimAtionFrAme } from 'vs/bAse/browser/dom';
+import { URI } from 'vs/bAse/common/uri';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { reviveWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { ILogService } from 'vs/platform/log/common/log';
-import { Schemas } from 'vs/base/common/network';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IMainProcessService, MainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { reviveWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IMAinProcessService, MAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { RemoteFileSystemProvider } from 'vs/workbench/services/remote/common/remoteAgentFileSystemChannel';
-import { ISignService } from 'vs/platform/sign/common/sign';
-import { FileUserDataProvider } from 'vs/workbench/services/userData/common/fileUserDataProvider';
-import { IProductService } from 'vs/platform/product/common/productService';
-import product from 'vs/platform/product/common/product';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { RemoteFileSystemProvider } from 'vs/workbench/services/remote/common/remoteAgentFileSystemChAnnel';
+import { ISignService } from 'vs/plAtform/sign/common/sign';
+import { FileUserDAtAProvider } from 'vs/workbench/services/userDAtA/common/fileUserDAtAProvider';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import product from 'vs/plAtform/product/common/product';
 import { IResourceIdentityService } from 'vs/workbench/services/resourceIdentity/common/resourceIdentityService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { NativeHostService } from 'vs/platform/native/electron-sandbox/nativeHostService';
-import { SimpleConfigurationService, simpleFileSystemProvider, SimpleLogService, SimpleRemoteAgentService, SimpleResourceIdentityService, SimpleSignService, SimpleStorageService, SimpleNativeWorkbenchEnvironmentService, SimpleWorkspaceService } from 'vs/workbench/electron-sandbox/sandbox.simpleservices';
-import { INativeWorkbenchConfiguration, INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { RemoteAuthorityResolverService } from 'vs/platform/remote/electron-sandbox/remoteAuthorityResolverService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { NAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtiveHostService';
+import { SimpleConfigurAtionService, simpleFileSystemProvider, SimpleLogService, SimpleRemoteAgentService, SimpleResourceIdentityService, SimpleSignService, SimpleStorAgeService, SimpleNAtiveWorkbenchEnvironmentService, SimpleWorkspAceService } from 'vs/workbench/electron-sAndbox/sAndbox.simpleservices';
+import { INAtiveWorkbenchConfigurAtion, INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { RemoteAuthorityResolverService } from 'vs/plAtform/remote/electron-sAndbox/remoteAuthorityResolverService';
 
-class DesktopMain extends Disposable {
+clAss DesktopMAin extends DisposAble {
 
-	private readonly environmentService = new SimpleNativeWorkbenchEnvironmentService(this.configuration);
+	privAte reAdonly environmentService = new SimpleNAtiveWorkbenchEnvironmentService(this.configurAtion);
 
-	constructor(private configuration: INativeWorkbenchConfiguration) {
+	constructor(privAte configurAtion: INAtiveWorkbenchConfigurAtion) {
 		super();
 
 		this.init();
 	}
 
-	private init(): void {
+	privAte init(): void {
 
-		// Massage configuration file URIs
+		// MAssAge configurAtion file URIs
 		this.reviveUris();
 
 		// Setup perf
-		importEntries(this.configuration.perfEntries);
+		importEntries(this.configurAtion.perfEntries);
 
 		// Browser config
-		const zoomLevel = this.configuration.zoomLevel || 0;
-		setZoomFactor(zoomLevelToZoomFactor(zoomLevel));
+		const zoomLevel = this.configurAtion.zoomLevel || 0;
+		setZoomFActor(zoomLevelToZoomFActor(zoomLevel));
 		setZoomLevel(zoomLevel, true /* isTrusted */);
-		setFullscreen(!!this.configuration.fullscreen);
+		setFullscreen(!!this.configurAtion.fullscreen);
 	}
 
-	private reviveUris() {
-		if (this.configuration.folderUri) {
-			this.configuration.folderUri = URI.revive(this.configuration.folderUri);
+	privAte reviveUris() {
+		if (this.configurAtion.folderUri) {
+			this.configurAtion.folderUri = URI.revive(this.configurAtion.folderUri);
 		}
 
-		if (this.configuration.workspace) {
-			this.configuration.workspace = reviveWorkspaceIdentifier(this.configuration.workspace);
+		if (this.configurAtion.workspAce) {
+			this.configurAtion.workspAce = reviveWorkspAceIdentifier(this.configurAtion.workspAce);
 		}
 
-		const filesToWait = this.configuration.filesToWait;
-		const filesToWaitPaths = filesToWait?.paths;
-		[filesToWaitPaths, this.configuration.filesToOpenOrCreate, this.configuration.filesToDiff].forEach(paths => {
-			if (Array.isArray(paths)) {
-				paths.forEach(path => {
-					if (path.fileUri) {
-						path.fileUri = URI.revive(path.fileUri);
+		const filesToWAit = this.configurAtion.filesToWAit;
+		const filesToWAitPAths = filesToWAit?.pAths;
+		[filesToWAitPAths, this.configurAtion.filesToOpenOrCreAte, this.configurAtion.filesToDiff].forEAch(pAths => {
+			if (ArrAy.isArrAy(pAths)) {
+				pAths.forEAch(pAth => {
+					if (pAth.fileUri) {
+						pAth.fileUri = URI.revive(pAth.fileUri);
 					}
 				});
 			}
 		});
 
-		if (filesToWait) {
-			filesToWait.waitMarkerFileUri = URI.revive(filesToWait.waitMarkerFileUri);
+		if (filesToWAit) {
+			filesToWAit.wAitMArkerFileUri = URI.revive(filesToWAit.wAitMArkerFileUri);
 		}
 	}
 
-	async open(): Promise<void> {
-		const services = await this.initServices();
+	Async open(): Promise<void> {
+		const services = AwAit this.initServices();
 
-		await domContentLoaded();
-		mark('willStartWorkbench');
+		AwAit domContentLoAded();
+		mArk('willStArtWorkbench');
 
-		// Create Workbench
+		// CreAte Workbench
 		const workbench = new Workbench(document.body, services.serviceCollection, services.logService);
 
 		// Listeners
-		this.registerListeners(workbench, services.storageService);
+		this.registerListeners(workbench, services.storAgeService);
 
-		// Startup
-		const instantiationService = workbench.startup();
+		// StArtup
+		const instAntiAtionService = workbench.stArtup();
 
 		// Window
-		this._register(instantiationService.createInstance(NativeWindow));
+		this._register(instAntiAtionService.creAteInstAnce(NAtiveWindow));
 
 		// Logging
-		services.logService.trace('workbench configuration', JSON.stringify(this.configuration));
+		services.logService.trAce('workbench configurAtion', JSON.stringify(this.configurAtion));
 	}
 
-	private registerListeners(workbench: Workbench, storageService: SimpleStorageService): void {
+	privAte registerListeners(workbench: Workbench, storAgeService: SimpleStorAgeService): void {
 
-		// Layout
-		this._register(addDisposableListener(window, EventType.RESIZE, e => this.onWindowResize(e, true, workbench)));
+		// LAyout
+		this._register(AddDisposAbleListener(window, EventType.RESIZE, e => this.onWindowResize(e, true, workbench)));
 
 		// Workbench Lifecycle
 		this._register(workbench.onShutdown(() => this.dispose()));
-		this._register(workbench.onWillShutdown(event => event.join(storageService.close())));
+		this._register(workbench.onWillShutdown(event => event.join(storAgeService.close())));
 	}
 
-	private onWindowResize(e: Event, retry: boolean, workbench: Workbench): void {
-		if (e.target === window) {
+	privAte onWindowResize(e: Event, retry: booleAn, workbench: Workbench): void {
+		if (e.tArget === window) {
 			if (window.document && window.document.body && window.document.body.clientWidth === 0) {
-				// TODO@Ben this is an electron issue on macOS when simple fullscreen is enabled
-				// where for some reason the window clientWidth is reported as 0 when switching
-				// between simple fullscreen and normal screen. In that case we schedule the layout
-				// call at the next animation frame once, in the hope that the dimensions are
+				// TODO@Ben this is An electron issue on mAcOS when simple fullscreen is enAbled
+				// where for some reAson the window clientWidth is reported As 0 when switching
+				// between simple fullscreen And normAl screen. In thAt cAse we schedule the lAyout
+				// cAll At the next AnimAtion frAme once, in the hope thAt the dimensions Are
 				// proper then.
 				if (retry) {
-					scheduleAtNextAnimationFrame(() => this.onWindowResize(e, false, workbench));
+					scheduleAtNextAnimAtionFrAme(() => this.onWindowResize(e, fAlse, workbench));
 				}
 				return;
 			}
 
-			workbench.layout();
+			workbench.lAyout();
 		}
 	}
 
-	private async initServices(): Promise<{ serviceCollection: ServiceCollection, logService: ILogService, storageService: SimpleStorageService }> {
+	privAte Async initServices(): Promise<{ serviceCollection: ServiceCollection, logService: ILogService, storAgeService: SimpleStorAgeService }> {
 		const serviceCollection = new ServiceCollection();
 
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
-		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		// NOTE: PleAse do NOT register services here. Use `registerSingleton()`
+		//       from `workbench.common.mAin.ts` if the service is shAred between
+		//       desktop And web or `workbench.sAndbox.mAin.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT Add services to `workbench.desktop.mAin.ts`, AlwAys Add
+		//       to `workbench.sAndbox.mAin.ts` to support our Electron sAndbox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-		// Main Process
-		const mainProcessService = this._register(new MainProcessService(this.configuration.windowId));
-		serviceCollection.set(IMainProcessService, mainProcessService);
+		// MAin Process
+		const mAinProcessService = this._register(new MAinProcessService(this.configurAtion.windowId));
+		serviceCollection.set(IMAinProcessService, mAinProcessService);
 
 		// Environment
 		serviceCollection.set(IWorkbenchEnvironmentService, this.environmentService);
-		serviceCollection.set(INativeWorkbenchEnvironmentService, this.environmentService);
+		serviceCollection.set(INAtiveWorkbenchEnvironmentService, this.environmentService);
 
 		// Product
-		const productService: IProductService = { _serviceBrand: undefined, ...product };
+		const productService: IProductService = { _serviceBrAnd: undefined, ...product };
 		serviceCollection.set(IProductService, productService);
 
 		// Log
@@ -184,34 +184,34 @@ class DesktopMain extends Disposable {
 
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
-		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		// NOTE: PleAse do NOT register services here. Use `registerSingleton()`
+		//       from `workbench.common.mAin.ts` if the service is shAred between
+		//       desktop And web or `workbench.sAndbox.mAin.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT Add services to `workbench.desktop.mAin.ts`, AlwAys Add
+		//       to `workbench.sAndbox.mAin.ts` to support our Electron sAndbox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-		// Native Host
-		const nativeHostService = new NativeHostService(this.configuration.windowId, mainProcessService) as INativeHostService;
-		serviceCollection.set(INativeHostService, nativeHostService);
+		// NAtive Host
+		const nAtiveHostService = new NAtiveHostService(this.configurAtion.windowId, mAinProcessService) As INAtiveHostService;
+		serviceCollection.set(INAtiveHostService, nAtiveHostService);
 
 		// Files
 		const fileService = this._register(new FileService(logService));
 		serviceCollection.set(IFileService, fileService);
 
-		fileService.registerProvider(Schemas.file, simpleFileSystemProvider);
+		fileService.registerProvider(SchemAs.file, simpleFileSystemProvider);
 
-		// User Data Provider
-		fileService.registerProvider(Schemas.userData, new FileUserDataProvider(URI.file('user-home'), undefined, simpleFileSystemProvider, this.environmentService, logService));
+		// User DAtA Provider
+		fileService.registerProvider(SchemAs.userDAtA, new FileUserDAtAProvider(URI.file('user-home'), undefined, simpleFileSystemProvider, this.environmentService, logService));
 
 		const connection = remoteAgentService.getConnection();
 		if (connection) {
 			const remoteFileSystemProvider = this._register(new RemoteFileSystemProvider(remoteAgentService));
-			fileService.registerProvider(Schemas.vscodeRemote, remoteFileSystemProvider);
+			fileService.registerProvider(SchemAs.vscodeRemote, remoteFileSystemProvider);
 		}
 
 		const resourceIdentityService = new SimpleResourceIdentityService();
@@ -220,33 +220,33 @@ class DesktopMain extends Disposable {
 
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
-		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		// NOTE: PleAse do NOT register services here. Use `registerSingleton()`
+		//       from `workbench.common.mAin.ts` if the service is shAred between
+		//       desktop And web or `workbench.sAndbox.mAin.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT Add services to `workbench.desktop.mAin.ts`, AlwAys Add
+		//       to `workbench.sAndbox.mAin.ts` to support our Electron sAndbox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-		const services = await Promise.all([
-			this.createWorkspaceService().then(service => {
+		const services = AwAit Promise.All([
+			this.creAteWorkspAceService().then(service => {
 
-				// Workspace
-				serviceCollection.set(IWorkspaceContextService, service);
+				// WorkspAce
+				serviceCollection.set(IWorkspAceContextService, service);
 
-				// Configuration
-				serviceCollection.set(IConfigurationService, new SimpleConfigurationService());
+				// ConfigurAtion
+				serviceCollection.set(IConfigurAtionService, new SimpleConfigurAtionService());
 
 				return service;
 			}),
 
-			this.createStorageService().then(service => {
+			this.creAteStorAgeService().then(service => {
 
-				// Storage
-				serviceCollection.set(IStorageService, service);
+				// StorAge
+				serviceCollection.set(IStorAgeService, service);
 
 				return service;
 			})
@@ -255,31 +255,31 @@ class DesktopMain extends Disposable {
 
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//
-		// NOTE: Please do NOT register services here. Use `registerSingleton()`
-		//       from `workbench.common.main.ts` if the service is shared between
-		//       desktop and web or `workbench.sandbox.main.ts` if the service
+		// NOTE: PleAse do NOT register services here. Use `registerSingleton()`
+		//       from `workbench.common.mAin.ts` if the service is shAred between
+		//       desktop And web or `workbench.sAndbox.mAin.ts` if the service
 		//       is desktop only.
 		//
-		//       DO NOT add services to `workbench.desktop.main.ts`, always add
-		//       to `workbench.sandbox.main.ts` to support our Electron sandbox
+		//       DO NOT Add services to `workbench.desktop.mAin.ts`, AlwAys Add
+		//       to `workbench.sAndbox.mAin.ts` to support our Electron sAndbox
 		//
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-		return { serviceCollection, logService, storageService: services[1] };
+		return { serviceCollection, logService, storAgeService: services[1] };
 	}
 
-	private async createWorkspaceService(): Promise<IWorkspaceContextService> {
-		return new SimpleWorkspaceService();
+	privAte Async creAteWorkspAceService(): Promise<IWorkspAceContextService> {
+		return new SimpleWorkspAceService();
 	}
 
-	private async createStorageService(): Promise<SimpleStorageService> {
-		return new SimpleStorageService();
+	privAte Async creAteStorAgeService(): Promise<SimpleStorAgeService> {
+		return new SimpleStorAgeService();
 	}
 }
 
-export function main(configuration: INativeWorkbenchConfiguration): Promise<void> {
-	const workbench = new DesktopMain(configuration);
+export function mAin(configurAtion: INAtiveWorkbenchConfigurAtion): Promise<void> {
+	const workbench = new DesktopMAin(configurAtion);
 
 	return workbench.open();
 }

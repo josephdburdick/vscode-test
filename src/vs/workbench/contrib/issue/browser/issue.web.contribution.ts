@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { ICommandAction, MenuId, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { CATEGORIES } from 'vs/workbench/common/actions';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import * As nls from 'vs/nls';
+import { ICommAndAction, MenuId, MenuRegistry } from 'vs/plAtform/Actions/common/Actions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
+import { Extensions As WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
 import { IWebIssueService, WebIssueService } from 'vs/workbench/contrib/issue/browser/issueService';
-import { OpenIssueReporterArgs, OpenIssueReporterActionId } from 'vs/workbench/contrib/issue/common/commands';
+import { OpenIssueReporterArgs, OpenIssueReporterActionId } from 'vs/workbench/contrib/issue/common/commAnds';
 
-class RegisterIssueContribution implements IWorkbenchContribution {
+clAss RegisterIssueContribution implements IWorkbenchContribution {
 
-	constructor(@IProductService readonly productService: IProductService) {
+	constructor(@IProductService reAdonly productService: IProductService) {
 		if (productService.reportIssueUrl) {
-			const OpenIssueReporterActionLabel = nls.localize({ key: 'reportIssueInEnglish', comment: ['Translate this to "Report Issue in English" in all languages please!'] }, "Report Issue");
+			const OpenIssueReporterActionLAbel = nls.locAlize({ key: 'reportIssueInEnglish', comment: ['TrAnslAte this to "Report Issue in English" in All lAnguAges pleAse!'] }, "Report Issue");
 
-			CommandsRegistry.registerCommand(OpenIssueReporterActionId, function (accessor, args?: [string] | OpenIssueReporterArgs) {
+			CommAndsRegistry.registerCommAnd(OpenIssueReporterActionId, function (Accessor, Args?: [string] | OpenIssueReporterArgs) {
 				let extensionId: string | undefined;
-				if (args) {
-					if (Array.isArray(args)) {
-						[extensionId] = args;
+				if (Args) {
+					if (ArrAy.isArrAy(Args)) {
+						[extensionId] = Args;
 					} else {
-						extensionId = args.extensionId;
+						extensionId = Args.extensionId;
 					}
 				}
 
-				return accessor.get(IWebIssueService).openReporter({ extensionId });
+				return Accessor.get(IWebIssueService).openReporter({ extensionId });
 			});
 
-			const command: ICommandAction = {
+			const commAnd: ICommAndAction = {
 				id: OpenIssueReporterActionId,
-				title: { value: OpenIssueReporterActionLabel, original: 'Report Issue' },
-				category: CATEGORIES.Help
+				title: { vAlue: OpenIssueReporterActionLAbel, originAl: 'Report Issue' },
+				cAtegory: CATEGORIES.Help
 			};
 
-			MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command });
+			MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, { commAnd });
 		}
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(RegisterIssueContribution, LifecyclePhase.Starting);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(RegisterIssueContribution, LifecyclePhAse.StArting);
 
-CommandsRegistry.registerCommand('_issues.getSystemStatus', (accessor) => {
-	return nls.localize('statusUnsupported', "The --status argument is not yet supported in browsers.");
+CommAndsRegistry.registerCommAnd('_issues.getSystemStAtus', (Accessor) => {
+	return nls.locAlize('stAtusUnsupported', "The --stAtus Argument is not yet supported in browsers.");
 });
 
 registerSingleton(IWebIssueService, WebIssueService, true);

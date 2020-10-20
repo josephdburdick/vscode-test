@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { HtmlNode } from 'EmmetNode';
-import { getHtmlNode, parseDocument, validate } from './util';
+import { getHtmlNode, pArseDocument, vAlidAte } from './util';
 
 
-export function matchTag() {
-	if (!validate(false) || !vscode.window.activeTextEditor) {
+export function mAtchTAg() {
+	if (!vAlidAte(fAlse) || !vscode.window.ActiveTextEditor) {
 		return;
 	}
 
-	const editor = vscode.window.activeTextEditor;
-	let rootNode: HtmlNode = <HtmlNode>parseDocument(editor.document);
+	const editor = vscode.window.ActiveTextEditor;
+	let rootNode: HtmlNode = <HtmlNode>pArseDocument(editor.document);
 	if (!rootNode) { return; }
 
-	let updatedSelections: vscode.Selection[] = [];
-	editor.selections.forEach(selection => {
-		let updatedSelection = getUpdatedSelections(editor, selection.start, rootNode);
-		if (updatedSelection) {
-			updatedSelections.push(updatedSelection);
+	let updAtedSelections: vscode.Selection[] = [];
+	editor.selections.forEAch(selection => {
+		let updAtedSelection = getUpdAtedSelections(editor, selection.stArt, rootNode);
+		if (updAtedSelection) {
+			updAtedSelections.push(updAtedSelection);
 		}
 	});
-	if (updatedSelections.length > 0) {
-		editor.selections = updatedSelections;
-		editor.revealRange(editor.selections[updatedSelections.length - 1]);
+	if (updAtedSelections.length > 0) {
+		editor.selections = updAtedSelections;
+		editor.reveAlRAnge(editor.selections[updAtedSelections.length - 1]);
 	}
 }
 
-function getUpdatedSelections(editor: vscode.TextEditor, position: vscode.Position, rootNode: HtmlNode): vscode.Selection | undefined {
+function getUpdAtedSelections(editor: vscode.TextEditor, position: vscode.Position, rootNode: HtmlNode): vscode.Selection | undefined {
 	let currentNode = getHtmlNode(editor.document, rootNode, position, true);
 	if (!currentNode) { return; }
 
-	// If no closing tag or cursor is between open and close tag, then no-op
-	if (!currentNode.close || (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start))) {
+	// If no closing tAg or cursor is between open And close tAg, then no-op
+	if (!currentNode.close || (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.stArt))) {
 		return;
 	}
 
-	// Place cursor inside the close tag if cursor is inside the open tag, else place it inside the open tag
-	let finalPosition = position.isBeforeOrEqual(currentNode.open.end) ? currentNode.close.start.translate(0, 2) : currentNode.open.start.translate(0, 1);
-	return new vscode.Selection(finalPosition, finalPosition);
+	// PlAce cursor inside the close tAg if cursor is inside the open tAg, else plAce it inside the open tAg
+	let finAlPosition = position.isBeforeOrEquAl(currentNode.open.end) ? currentNode.close.stArt.trAnslAte(0, 2) : currentNode.open.stArt.trAnslAte(0, 1);
+	return new vscode.Selection(finAlPosition, finAlPosition);
 }

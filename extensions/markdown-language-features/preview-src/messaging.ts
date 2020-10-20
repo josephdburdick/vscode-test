@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { getSettings } from './settings';
 
-export interface MessagePoster {
+export interfAce MessAgePoster {
 	/**
-	 * Post a message to the markdown extension
+	 * Post A messAge to the mArkdown extension
 	 */
-	postMessage(type: string, body: object): void;
+	postMessAge(type: string, body: object): void;
 }
 
-export const createPosterForVsCode = (vscode: any) => {
-	return new class implements MessagePoster {
-		postMessage(type: string, body: object): void {
-			vscode.postMessage({
+export const creAtePosterForVsCode = (vscode: Any) => {
+	return new clAss implements MessAgePoster {
+		postMessAge(type: string, body: object): void {
+			vscode.postMessAge({
 				type,
 				source: getSettings().source,
 				body

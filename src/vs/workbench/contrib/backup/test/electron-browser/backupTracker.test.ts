@@ -1,104 +1,104 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as pfs from 'vs/base/node/pfs';
-import { URI } from 'vs/base/common/uri';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { hashPath } from 'vs/workbench/services/backup/node/backupFileService';
-import { NativeBackupTracker } from 'vs/workbench/contrib/backup/electron-sandbox/backupTracker';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
+import * As Assert from 'Assert';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As pfs from 'vs/bAse/node/pfs';
+import { URI } from 'vs/bAse/common/uri';
+import { getRAndomTestPAth } from 'vs/bAse/test/node/testUtils';
+import { hAshPAth } from 'vs/workbench/services/bAckup/node/bAckupFileService';
+import { NAtiveBAckupTrAcker } from 'vs/workbench/contrib/bAckup/electron-sAndbox/bAckupTrAcker';
+import { TextFileEditorModelMAnAger } from 'vs/workbench/services/textfile/common/textFileEditorModelMAnAger';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { EditorPart } from 'vs/workbench/browser/parts/editor/editorPart';
+import { EditorPArt } from 'vs/workbench/browser/pArts/editor/editorPArt';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { EditorService } from 'vs/workbench/services/editor/browser/editorService';
-import { Registry } from 'vs/platform/registry/common/platform';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import { EditorInput, IUntitledTextResourceEditorInput } from 'vs/workbench/common/editor';
 import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { IEditorRegistry, EditorDescriptor, Extensions As EditorExtensions } from 'vs/workbench/browser/editor';
 import { TextFileEditor } from 'vs/workbench/contrib/files/browser/editors/textFileEditor';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { NodeTestBackupFileService } from 'vs/workbench/services/backup/test/electron-browser/backupFileService.test';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { toResource } from 'vs/base/test/common/utils';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IWorkingCopyBackup, IWorkingCopyService } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { HotExitConfiguration } from 'vs/platform/files/common/files';
-import { ShutdownReason, ILifecycleService, BeforeShutdownEvent } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IFileDialogService, ConfirmResult, IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IWorkspaceContextService, Workspace } from 'vs/platform/workspace/common/workspace';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { BackupTracker } from 'vs/workbench/contrib/backup/common/backupTracker';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
+import { NodeTestBAckupFileService } from 'vs/workbench/services/bAckup/test/electron-browser/bAckupFileService.test';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { toResource } from 'vs/bAse/test/common/utils';
+import { IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IWorkingCopyBAckup, IWorkingCopyService } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { HotExitConfigurAtion } from 'vs/plAtform/files/common/files';
+import { ShutdownReAson, ILifecycleService, BeforeShutdownEvent } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IFileDiAlogService, ConfirmResult, IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IWorkspAceContextService, WorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { BAckupTrAcker } from 'vs/workbench/contrib/bAckup/common/bAckupTrAcker';
+import { workbenchInstAntiAtionService, TestServiceAccessor } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { UntitledTextEditorInput } from 'vs/workbench/services/untitled/common/untitledTextEditorInput';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestFilesConfigurationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestFilesConfigurAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { MockContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 import { TestWorkingCopy } from 'vs/workbench/test/common/workbenchTestServices';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { timeout } from 'vs/base/common/async';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { timeout } from 'vs/bAse/common/Async';
 
-const userdataDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'backuprestorer');
-const backupHome = path.join(userdataDir, 'Backups');
-const workspacesJsonPath = path.join(backupHome, 'workspaces.json');
+const userdAtADir = getRAndomTestPAth(os.tmpdir(), 'vsctests', 'bAckuprestorer');
+const bAckupHome = pAth.join(userdAtADir, 'BAckups');
+const workspAcesJsonPAth = pAth.join(bAckupHome, 'workspAces.json');
 
-const workspaceResource = URI.file(platform.isWindows ? 'c:\\workspace' : '/workspace');
-const workspaceBackupPath = path.join(backupHome, hashPath(workspaceResource));
+const workspAceResource = URI.file(plAtform.isWindows ? 'c:\\workspAce' : '/workspAce');
+const workspAceBAckupPAth = pAth.join(bAckupHome, hAshPAth(workspAceResource));
 
-class TestBackupTracker extends NativeBackupTracker {
+clAss TestBAckupTrAcker extends NAtiveBAckupTrAcker {
 
 	constructor(
-		@IBackupFileService backupFileService: IBackupFileService,
-		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService,
+		@IBAckupFileService bAckupFileService: IBAckupFileService,
+		@IFilesConfigurAtionService filesConfigurAtionService: IFilesConfigurAtionService,
 		@IWorkingCopyService workingCopyService: IWorkingCopyService,
 		@ILifecycleService lifecycleService: ILifecycleService,
-		@IFileDialogService fileDialogService: IFileDialogService,
-		@IDialogService dialogService: IDialogService,
-		@IWorkspaceContextService contextService: IWorkspaceContextService,
-		@INativeHostService nativeHostService: INativeHostService,
+		@IFileDiAlogService fileDiAlogService: IFileDiAlogService,
+		@IDiAlogService diAlogService: IDiAlogService,
+		@IWorkspAceContextService contextService: IWorkspAceContextService,
+		@INAtiveHostService nAtiveHostService: INAtiveHostService,
 		@ILogService logService: ILogService,
 		@IEditorService editorService: IEditorService,
 		@IEnvironmentService environmentService: IEnvironmentService
 	) {
-		super(backupFileService, filesConfigurationService, workingCopyService, lifecycleService, fileDialogService, dialogService, contextService, nativeHostService, logService, editorService, environmentService);
+		super(bAckupFileService, filesConfigurAtionService, workingCopyService, lifecycleService, fileDiAlogService, diAlogService, contextService, nAtiveHostService, logService, editorService, environmentService);
 	}
 
-	protected getBackupScheduleDelay(): number {
+	protected getBAckupScheduleDelAy(): number {
 		return 10; // Reduce timeout for tests
 	}
 }
 
-class BeforeShutdownEventImpl implements BeforeShutdownEvent {
+clAss BeforeShutdownEventImpl implements BeforeShutdownEvent {
 
-	value: boolean | Promise<boolean> | undefined;
-	reason = ShutdownReason.CLOSE;
+	vAlue: booleAn | Promise<booleAn> | undefined;
+	reAson = ShutdownReAson.CLOSE;
 
-	veto(value: boolean | Promise<boolean>): void {
-		this.value = value;
+	veto(vAlue: booleAn | Promise<booleAn>): void {
+		this.vAlue = vAlue;
 	}
 }
 
-suite('BackupTracker', () => {
-	let accessor: TestServiceAccessor;
-	let disposables: IDisposable[] = [];
+suite('BAckupTrAcker', () => {
+	let Accessor: TestServiceAccessor;
+	let disposAbles: IDisposAble[] = [];
 
-	setup(async () => {
-		const instantiationService = workbenchInstantiationService();
-		accessor = instantiationService.createInstance(TestServiceAccessor);
+	setup(Async () => {
+		const instAntiAtionService = workbenchInstAntiAtionService();
+		Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 
-		disposables.push(Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
-			EditorDescriptor.create(
+		disposAbles.push(Registry.As<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
+			EditorDescriptor.creAte(
 				TextFileEditor,
 				TextFileEditor.ID,
 				'Text File Editor'
@@ -106,424 +106,424 @@ suite('BackupTracker', () => {
 			[new SyncDescriptor<EditorInput>(FileEditorInput)]
 		));
 
-		// Delete any existing backups completely and then re-create it.
-		await pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
-		await pfs.mkdirp(backupHome);
-		await pfs.mkdirp(workspaceBackupPath);
+		// Delete Any existing bAckups completely And then re-creAte it.
+		AwAit pfs.rimrAf(bAckupHome, pfs.RimRAfMode.MOVE);
+		AwAit pfs.mkdirp(bAckupHome);
+		AwAit pfs.mkdirp(workspAceBAckupPAth);
 
-		return pfs.writeFile(workspacesJsonPath, '');
+		return pfs.writeFile(workspAcesJsonPAth, '');
 	});
 
-	teardown(async () => {
-		dispose(disposables);
-		disposables = [];
+	teArdown(Async () => {
+		dispose(disposAbles);
+		disposAbles = [];
 
-		(<TextFileEditorModelManager>accessor.textFileService.files).dispose();
+		(<TextFileEditorModelMAnAger>Accessor.textFileService.files).dispose();
 
-		return pfs.rimraf(backupHome, pfs.RimRafMode.MOVE);
+		return pfs.rimrAf(bAckupHome, pfs.RimRAfMode.MOVE);
 	});
 
-	async function createTracker(autoSaveEnabled = false): Promise<[TestServiceAccessor, EditorPart, BackupTracker, IInstantiationService]> {
-		const backupFileService = new NodeTestBackupFileService(workspaceBackupPath);
-		const instantiationService = workbenchInstantiationService();
-		instantiationService.stub(IBackupFileService, backupFileService);
+	Async function creAteTrAcker(AutoSAveEnAbled = fAlse): Promise<[TestServiceAccessor, EditorPArt, BAckupTrAcker, IInstAntiAtionService]> {
+		const bAckupFileService = new NodeTestBAckupFileService(workspAceBAckupPAth);
+		const instAntiAtionService = workbenchInstAntiAtionService();
+		instAntiAtionService.stub(IBAckupFileService, bAckupFileService);
 
-		const configurationService = new TestConfigurationService();
-		if (autoSaveEnabled) {
-			configurationService.setUserConfiguration('files', { autoSave: 'afterDelay', autoSaveDelay: 1 });
+		const configurAtionService = new TestConfigurAtionService();
+		if (AutoSAveEnAbled) {
+			configurAtionService.setUserConfigurAtion('files', { AutoSAve: 'AfterDelAy', AutoSAveDelAy: 1 });
 		}
-		instantiationService.stub(IConfigurationService, configurationService);
+		instAntiAtionService.stub(IConfigurAtionService, configurAtionService);
 
-		instantiationService.stub(IFilesConfigurationService, new TestFilesConfigurationService(
-			<IContextKeyService>instantiationService.createInstance(MockContextKeyService),
-			configurationService
+		instAntiAtionService.stub(IFilesConfigurAtionService, new TestFilesConfigurAtionService(
+			<IContextKeyService>instAntiAtionService.creAteInstAnce(MockContextKeyService),
+			configurAtionService
 		));
 
-		const part = instantiationService.createInstance(EditorPart);
-		part.create(document.createElement('div'));
-		part.layout(400, 300);
+		const pArt = instAntiAtionService.creAteInstAnce(EditorPArt);
+		pArt.creAte(document.creAteElement('div'));
+		pArt.lAyout(400, 300);
 
-		instantiationService.stub(IEditorGroupsService, part);
+		instAntiAtionService.stub(IEditorGroupsService, pArt);
 
-		const editorService: EditorService = instantiationService.createInstance(EditorService);
-		instantiationService.stub(IEditorService, editorService);
+		const editorService: EditorService = instAntiAtionService.creAteInstAnce(EditorService);
+		instAntiAtionService.stub(IEditorService, editorService);
 
-		accessor = instantiationService.createInstance(TestServiceAccessor);
+		Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 
-		await part.whenRestored;
+		AwAit pArt.whenRestored;
 
-		const tracker = instantiationService.createInstance(TestBackupTracker);
+		const trAcker = instAntiAtionService.creAteInstAnce(TestBAckupTrAcker);
 
-		return [accessor, part, tracker, instantiationService];
+		return [Accessor, pArt, trAcker, instAntiAtionService];
 	}
 
-	async function untitledBackupTest(untitled: IUntitledTextResourceEditorInput = {}): Promise<void> {
-		const [accessor, part, tracker] = await createTracker();
+	Async function untitledBAckupTest(untitled: IUntitledTextResourceEditorInput = {}): Promise<void> {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		const untitledEditor = (await accessor.editorService.openEditor(untitled))?.input as UntitledTextEditorInput;
+		const untitledEditor = (AwAit Accessor.editorService.openEditor(untitled))?.input As UntitledTextEditorInput;
 
-		const untitledModel = await untitledEditor.resolve();
+		const untitledModel = AwAit untitledEditor.resolve();
 
 		if (!untitled?.contents) {
-			untitledModel.textEditorModel.setValue('Super Good');
+			untitledModel.textEditorModel.setVAlue('Super Good');
 		}
 
-		await accessor.backupFileService.joinBackupResource();
+		AwAit Accessor.bAckupFileService.joinBAckupResource();
 
-		assert.equal(accessor.backupFileService.hasBackupSync(untitledEditor.resource), true);
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(untitledEditor.resource), true);
 
 		untitledModel.dispose();
 
-		await accessor.backupFileService.joinDiscardBackup();
+		AwAit Accessor.bAckupFileService.joinDiscArdBAckup();
 
-		assert.equal(accessor.backupFileService.hasBackupSync(untitledEditor.resource), false);
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(untitledEditor.resource), fAlse);
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	}
 
-	test('Track backups (untitled)', function () {
+	test('TrAck bAckups (untitled)', function () {
 		this.timeout(20000);
 
-		return untitledBackupTest();
+		return untitledBAckupTest();
 	});
 
-	test('Track backups (untitled with initial contents)', function () {
+	test('TrAck bAckups (untitled with initiAl contents)', function () {
 		this.timeout(20000);
 
-		return untitledBackupTest({ contents: 'Foo Bar' });
+		return untitledBAckupTest({ contents: 'Foo BAr' });
 	});
 
-	test('Track backups (file)', async function () {
+	test('TrAck bAckups (file)', Async function () {
 		this.timeout(20000);
 
-		const [accessor, part, tracker] = await createTracker();
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
-		const fileModel = accessor.textFileService.files.get(resource);
-		fileModel?.textEditorModel?.setValue('Super Good');
+		const fileModel = Accessor.textFileService.files.get(resource);
+		fileModel?.textEditorModel?.setVAlue('Super Good');
 
-		await accessor.backupFileService.joinBackupResource();
+		AwAit Accessor.bAckupFileService.joinBAckupResource();
 
-		assert.equal(accessor.backupFileService.hasBackupSync(resource), true);
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(resource), true);
 
 		fileModel?.dispose();
 
-		await accessor.backupFileService.joinDiscardBackup();
+		AwAit Accessor.bAckupFileService.joinDiscArdBAckup();
 
-		assert.equal(accessor.backupFileService.hasBackupSync(resource), false);
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(resource), fAlse);
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
-	test('Track backups (custom)', async function () {
-		const [accessor, part, tracker] = await createTracker();
+	test('TrAck bAckups (custom)', Async function () {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		class TestBackupWorkingCopy extends TestWorkingCopy {
+		clAss TestBAckupWorkingCopy extends TestWorkingCopy {
 
-			backupDelay = 0;
+			bAckupDelAy = 0;
 
 			constructor(resource: URI) {
 				super(resource);
 
-				accessor.workingCopyService.registerWorkingCopy(this);
+				Accessor.workingCopyService.registerWorkingCopy(this);
 			}
 
-			async backup(token: CancellationToken): Promise<IWorkingCopyBackup> {
-				await timeout(this.backupDelay);
+			Async bAckup(token: CAncellAtionToken): Promise<IWorkingCopyBAckup> {
+				AwAit timeout(this.bAckupDelAy);
 
 				return {};
 			}
 		}
 
-		const resource = toResource.call(this, '/path/custom.txt');
-		const customWorkingCopy = new TestBackupWorkingCopy(resource);
+		const resource = toResource.cAll(this, '/pAth/custom.txt');
+		const customWorkingCopy = new TestBAckupWorkingCopy(resource);
 
-		// Normal
+		// NormAl
 		customWorkingCopy.setDirty(true);
-		await accessor.backupFileService.joinBackupResource();
-		assert.equal(accessor.backupFileService.hasBackupSync(resource), true);
+		AwAit Accessor.bAckupFileService.joinBAckupResource();
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(resource), true);
 
-		customWorkingCopy.setDirty(false);
+		customWorkingCopy.setDirty(fAlse);
 		customWorkingCopy.setDirty(true);
-		await accessor.backupFileService.joinBackupResource();
-		assert.equal(accessor.backupFileService.hasBackupSync(resource), true);
+		AwAit Accessor.bAckupFileService.joinBAckupResource();
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(resource), true);
 
-		customWorkingCopy.setDirty(false);
-		await accessor.backupFileService.joinDiscardBackup();
-		assert.equal(accessor.backupFileService.hasBackupSync(resource), false);
+		customWorkingCopy.setDirty(fAlse);
+		AwAit Accessor.bAckupFileService.joinDiscArdBAckup();
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(resource), fAlse);
 
-		// Cancellation
+		// CAncellAtion
 		customWorkingCopy.setDirty(true);
-		await timeout(0);
-		customWorkingCopy.setDirty(false);
-		await accessor.backupFileService.joinDiscardBackup();
-		assert.equal(accessor.backupFileService.hasBackupSync(resource), false);
+		AwAit timeout(0);
+		customWorkingCopy.setDirty(fAlse);
+		AwAit Accessor.bAckupFileService.joinDiscArdBAckup();
+		Assert.equAl(Accessor.bAckupFileService.hAsBAckupSync(resource), fAlse);
 
 		customWorkingCopy.dispose();
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
-	test('onWillShutdown - no veto if no dirty files', async function () {
-		const [accessor, part, tracker] = await createTracker();
+	test('onWillShutdown - no veto if no dirty files', Async function () {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
 		const event = new BeforeShutdownEventImpl();
-		accessor.lifecycleService.fireWillShutdown(event);
+		Accessor.lifecycleService.fireWillShutdown(event);
 
-		const veto = await event.value;
-		assert.ok(!veto);
+		const veto = AwAit event.vAlue;
+		Assert.ok(!veto);
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
-	test('onWillShutdown - veto if user cancels (hot.exit: off)', async function () {
-		const [accessor, part, tracker] = await createTracker();
+	test('onWillShutdown - veto if user cAncels (hot.exit: off)', Async function () {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
-		const model = accessor.textFileService.files.get(resource);
+		const model = Accessor.textFileService.files.get(resource);
 
-		accessor.fileDialogService.setConfirmResult(ConfirmResult.CANCEL);
-		accessor.filesConfigurationService.onFilesConfigurationChange({ files: { hotExit: 'off' } });
+		Accessor.fileDiAlogService.setConfirmResult(ConfirmResult.CANCEL);
+		Accessor.filesConfigurAtionService.onFilesConfigurAtionChAnge({ files: { hotExit: 'off' } });
 
-		await model?.load();
-		model?.textEditorModel?.setValue('foo');
-		assert.equal(accessor.workingCopyService.dirtyCount, 1);
+		AwAit model?.loAd();
+		model?.textEditorModel?.setVAlue('foo');
+		Assert.equAl(Accessor.workingCopyService.dirtyCount, 1);
 
 		const event = new BeforeShutdownEventImpl();
-		accessor.lifecycleService.fireWillShutdown(event);
+		Accessor.lifecycleService.fireWillShutdown(event);
 
-		const veto = await event.value;
-		assert.ok(veto);
+		const veto = AwAit event.vAlue;
+		Assert.ok(veto);
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
-	test('onWillShutdown - no veto if auto save is on', async function () {
-		const [accessor, part, tracker] = await createTracker(true /* auto save enabled */);
+	test('onWillShutdown - no veto if Auto sAve is on', Async function () {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker(true /* Auto sAve enAbled */);
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
-		const model = accessor.textFileService.files.get(resource);
+		const model = Accessor.textFileService.files.get(resource);
 
-		await model?.load();
-		model?.textEditorModel?.setValue('foo');
-		assert.equal(accessor.workingCopyService.dirtyCount, 1);
+		AwAit model?.loAd();
+		model?.textEditorModel?.setVAlue('foo');
+		Assert.equAl(Accessor.workingCopyService.dirtyCount, 1);
 
 		const event = new BeforeShutdownEventImpl();
-		accessor.lifecycleService.fireWillShutdown(event);
+		Accessor.lifecycleService.fireWillShutdown(event);
 
-		const veto = await event.value;
-		assert.ok(!veto);
+		const veto = AwAit event.vAlue;
+		Assert.ok(!veto);
 
-		assert.equal(accessor.workingCopyService.dirtyCount, 0);
+		Assert.equAl(Accessor.workingCopyService.dirtyCount, 0);
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
-	test('onWillShutdown - no veto and backups cleaned up if user does not want to save (hot.exit: off)', async function () {
-		const [accessor, part, tracker] = await createTracker();
+	test('onWillShutdown - no veto And bAckups cleAned up if user does not wAnt to sAve (hot.exit: off)', Async function () {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
-		const model = accessor.textFileService.files.get(resource);
+		const model = Accessor.textFileService.files.get(resource);
 
-		accessor.fileDialogService.setConfirmResult(ConfirmResult.DONT_SAVE);
-		accessor.filesConfigurationService.onFilesConfigurationChange({ files: { hotExit: 'off' } });
+		Accessor.fileDiAlogService.setConfirmResult(ConfirmResult.DONT_SAVE);
+		Accessor.filesConfigurAtionService.onFilesConfigurAtionChAnge({ files: { hotExit: 'off' } });
 
-		await model?.load();
-		model?.textEditorModel?.setValue('foo');
-		assert.equal(accessor.workingCopyService.dirtyCount, 1);
+		AwAit model?.loAd();
+		model?.textEditorModel?.setVAlue('foo');
+		Assert.equAl(Accessor.workingCopyService.dirtyCount, 1);
 		const event = new BeforeShutdownEventImpl();
-		accessor.lifecycleService.fireWillShutdown(event);
+		Accessor.lifecycleService.fireWillShutdown(event);
 
-		const veto = await event.value;
-		assert.ok(!veto);
-		assert.ok(accessor.backupFileService.discardedBackups.length > 0);
+		const veto = AwAit event.vAlue;
+		Assert.ok(!veto);
+		Assert.ok(Accessor.bAckupFileService.discArdedBAckups.length > 0);
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
-	test('onWillShutdown - save (hot.exit: off)', async function () {
-		const [accessor, part, tracker] = await createTracker();
+	test('onWillShutdown - sAve (hot.exit: off)', Async function () {
+		const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
-		const model = accessor.textFileService.files.get(resource);
+		const model = Accessor.textFileService.files.get(resource);
 
-		accessor.fileDialogService.setConfirmResult(ConfirmResult.SAVE);
-		accessor.filesConfigurationService.onFilesConfigurationChange({ files: { hotExit: 'off' } });
+		Accessor.fileDiAlogService.setConfirmResult(ConfirmResult.SAVE);
+		Accessor.filesConfigurAtionService.onFilesConfigurAtionChAnge({ files: { hotExit: 'off' } });
 
-		await model?.load();
-		model?.textEditorModel?.setValue('foo');
-		assert.equal(accessor.workingCopyService.dirtyCount, 1);
+		AwAit model?.loAd();
+		model?.textEditorModel?.setVAlue('foo');
+		Assert.equAl(Accessor.workingCopyService.dirtyCount, 1);
 		const event = new BeforeShutdownEventImpl();
-		accessor.lifecycleService.fireWillShutdown(event);
+		Accessor.lifecycleService.fireWillShutdown(event);
 
-		const veto = await event.value;
-		assert.ok(!veto);
-		assert.ok(!model?.isDirty());
+		const veto = AwAit event.vAlue;
+		Assert.ok(!veto);
+		Assert.ok(!model?.isDirty());
 
-		part.dispose();
-		tracker.dispose();
+		pArt.dispose();
+		trAcker.dispose();
 	});
 
 	suite('Hot Exit', () => {
 		suite('"onExit" setting', () => {
-			test('should hot exit on non-Mac (reason: CLOSE, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.CLOSE, false, true, !!platform.isMacintosh);
+			test('should hot exit on non-MAc (reAson: CLOSE, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.CLOSE, fAlse, true, !!plAtform.isMAcintosh);
 			});
-			test('should hot exit on non-Mac (reason: CLOSE, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.CLOSE, false, false, !!platform.isMacintosh);
+			test('should hot exit on non-MAc (reAson: CLOSE, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.CLOSE, fAlse, fAlse, !!plAtform.isMAcintosh);
 			});
-			test('should NOT hot exit (reason: CLOSE, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.CLOSE, true, true, true);
+			test('should NOT hot exit (reAson: CLOSE, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.CLOSE, true, true, true);
 			});
-			test('should NOT hot exit (reason: CLOSE, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.CLOSE, true, false, true);
+			test('should NOT hot exit (reAson: CLOSE, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.CLOSE, true, fAlse, true);
 			});
-			test('should hot exit (reason: QUIT, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.QUIT, false, true, false);
+			test('should hot exit (reAson: QUIT, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.QUIT, fAlse, true, fAlse);
 			});
-			test('should hot exit (reason: QUIT, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.QUIT, false, false, false);
+			test('should hot exit (reAson: QUIT, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.QUIT, fAlse, fAlse, fAlse);
 			});
-			test('should hot exit (reason: QUIT, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.QUIT, true, true, false);
+			test('should hot exit (reAson: QUIT, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.QUIT, true, true, fAlse);
 			});
-			test('should hot exit (reason: QUIT, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.QUIT, true, false, false);
+			test('should hot exit (reAson: QUIT, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.QUIT, true, fAlse, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.RELOAD, false, true, false);
+			test('should hot exit (reAson: RELOAD, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.RELOAD, fAlse, true, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.RELOAD, false, false, false);
+			test('should hot exit (reAson: RELOAD, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.RELOAD, fAlse, fAlse, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.RELOAD, true, true, false);
+			test('should hot exit (reAson: RELOAD, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.RELOAD, true, true, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.RELOAD, true, false, false);
+			test('should hot exit (reAson: RELOAD, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.RELOAD, true, fAlse, fAlse);
 			});
-			test('should NOT hot exit (reason: LOAD, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.LOAD, false, true, true);
+			test('should NOT hot exit (reAson: LOAD, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.LOAD, fAlse, true, true);
 			});
-			test('should NOT hot exit (reason: LOAD, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.LOAD, false, false, true);
+			test('should NOT hot exit (reAson: LOAD, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.LOAD, fAlse, fAlse, true);
 			});
-			test('should NOT hot exit (reason: LOAD, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.LOAD, true, true, true);
+			test('should NOT hot exit (reAson: LOAD, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.LOAD, true, true, true);
 			});
-			test('should NOT hot exit (reason: LOAD, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT, ShutdownReason.LOAD, true, false, true);
+			test('should NOT hot exit (reAson: LOAD, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT, ShutdownReAson.LOAD, true, fAlse, true);
 			});
 		});
 
 		suite('"onExitAndWindowClose" setting', () => {
-			test('should hot exit (reason: CLOSE, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.CLOSE, false, true, false);
+			test('should hot exit (reAson: CLOSE, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.CLOSE, fAlse, true, fAlse);
 			});
-			test('should hot exit (reason: CLOSE, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.CLOSE, false, false, !!platform.isMacintosh);
+			test('should hot exit (reAson: CLOSE, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.CLOSE, fAlse, fAlse, !!plAtform.isMAcintosh);
 			});
-			test('should hot exit (reason: CLOSE, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.CLOSE, true, true, false);
+			test('should hot exit (reAson: CLOSE, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.CLOSE, true, true, fAlse);
 			});
-			test('should NOT hot exit (reason: CLOSE, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.CLOSE, true, false, true);
+			test('should NOT hot exit (reAson: CLOSE, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.CLOSE, true, fAlse, true);
 			});
-			test('should hot exit (reason: QUIT, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.QUIT, false, true, false);
+			test('should hot exit (reAson: QUIT, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.QUIT, fAlse, true, fAlse);
 			});
-			test('should hot exit (reason: QUIT, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.QUIT, false, false, false);
+			test('should hot exit (reAson: QUIT, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.QUIT, fAlse, fAlse, fAlse);
 			});
-			test('should hot exit (reason: QUIT, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.QUIT, true, true, false);
+			test('should hot exit (reAson: QUIT, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.QUIT, true, true, fAlse);
 			});
-			test('should hot exit (reason: QUIT, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.QUIT, true, false, false);
+			test('should hot exit (reAson: QUIT, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.QUIT, true, fAlse, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.RELOAD, false, true, false);
+			test('should hot exit (reAson: RELOAD, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.RELOAD, fAlse, true, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.RELOAD, false, false, false);
+			test('should hot exit (reAson: RELOAD, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.RELOAD, fAlse, fAlse, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.RELOAD, true, true, false);
+			test('should hot exit (reAson: RELOAD, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.RELOAD, true, true, fAlse);
 			});
-			test('should hot exit (reason: RELOAD, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.RELOAD, true, false, false);
+			test('should hot exit (reAson: RELOAD, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.RELOAD, true, fAlse, fAlse);
 			});
-			test('should hot exit (reason: LOAD, windows: single, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.LOAD, false, true, false);
+			test('should hot exit (reAson: LOAD, windows: single, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.LOAD, fAlse, true, fAlse);
 			});
-			test('should NOT hot exit (reason: LOAD, windows: single, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.LOAD, false, false, true);
+			test('should NOT hot exit (reAson: LOAD, windows: single, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.LOAD, fAlse, fAlse, true);
 			});
-			test('should hot exit (reason: LOAD, windows: multiple, workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.LOAD, true, true, false);
+			test('should hot exit (reAson: LOAD, windows: multiple, workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.LOAD, true, true, fAlse);
 			});
-			test('should NOT hot exit (reason: LOAD, windows: multiple, empty workspace)', function () {
-				return hotExitTest.call(this, HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReason.LOAD, true, false, true);
+			test('should NOT hot exit (reAson: LOAD, windows: multiple, empty workspAce)', function () {
+				return hotExitTest.cAll(this, HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE, ShutdownReAson.LOAD, true, fAlse, true);
 			});
 		});
 
-		async function hotExitTest(this: any, setting: string, shutdownReason: ShutdownReason, multipleWindows: boolean, workspace: boolean, shouldVeto: boolean): Promise<void> {
-			const [accessor, part, tracker] = await createTracker();
+		Async function hotExitTest(this: Any, setting: string, shutdownReAson: ShutdownReAson, multipleWindows: booleAn, workspAce: booleAn, shouldVeto: booleAn): Promise<void> {
+			const [Accessor, pArt, trAcker] = AwAit creAteTrAcker();
 
-			const resource = toResource.call(this, '/path/index.txt');
-			await accessor.editorService.openEditor({ resource, options: { pinned: true } });
+			const resource = toResource.cAll(this, '/pAth/index.txt');
+			AwAit Accessor.editorService.openEditor({ resource, options: { pinned: true } });
 
-			const model = accessor.textFileService.files.get(resource);
+			const model = Accessor.textFileService.files.get(resource);
 
 			// Set hot exit config
-			accessor.filesConfigurationService.onFilesConfigurationChange({ files: { hotExit: setting } });
+			Accessor.filesConfigurAtionService.onFilesConfigurAtionChAnge({ files: { hotExit: setting } });
 
-			// Set empty workspace if required
-			if (!workspace) {
-				accessor.contextService.setWorkspace(new Workspace('empty:1508317022751'));
+			// Set empty workspAce if required
+			if (!workspAce) {
+				Accessor.contextService.setWorkspAce(new WorkspAce('empty:1508317022751'));
 			}
 
 			// Set multiple windows if required
 			if (multipleWindows) {
-				accessor.nativeHostService.windowCount = Promise.resolve(2);
+				Accessor.nAtiveHostService.windowCount = Promise.resolve(2);
 			}
 
-			// Set cancel to force a veto if hot exit does not trigger
-			accessor.fileDialogService.setConfirmResult(ConfirmResult.CANCEL);
+			// Set cAncel to force A veto if hot exit does not trigger
+			Accessor.fileDiAlogService.setConfirmResult(ConfirmResult.CANCEL);
 
-			await model?.load();
-			model?.textEditorModel?.setValue('foo');
-			assert.equal(accessor.workingCopyService.dirtyCount, 1);
+			AwAit model?.loAd();
+			model?.textEditorModel?.setVAlue('foo');
+			Assert.equAl(Accessor.workingCopyService.dirtyCount, 1);
 
 			const event = new BeforeShutdownEventImpl();
-			event.reason = shutdownReason;
-			accessor.lifecycleService.fireWillShutdown(event);
+			event.reAson = shutdownReAson;
+			Accessor.lifecycleService.fireWillShutdown(event);
 
-			const veto = await event.value;
-			assert.equal(accessor.backupFileService.discardedBackups.length, 0); // When hot exit is set, backups should never be cleaned since the confirm result is cancel
-			assert.equal(veto, shouldVeto);
+			const veto = AwAit event.vAlue;
+			Assert.equAl(Accessor.bAckupFileService.discArdedBAckups.length, 0); // When hot exit is set, bAckups should never be cleAned since the confirm result is cAncel
+			Assert.equAl(veto, shouldVeto);
 
-			part.dispose();
-			tracker.dispose();
+			pArt.dispose();
+			trAcker.dispose();
 		}
 	});
 });

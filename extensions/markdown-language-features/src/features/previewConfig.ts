@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { equals } from '../util/arrays';
+import * As vscode from 'vscode';
+import { equAls } from '../util/ArrAys';
 
-export class MarkdownPreviewConfiguration {
-	public static getForResource(resource: vscode.Uri) {
-		return new MarkdownPreviewConfiguration(resource);
+export clAss MArkdownPreviewConfigurAtion {
+	public stAtic getForResource(resource: vscode.Uri) {
+		return new MArkdownPreviewConfigurAtion(resource);
 	}
 
-	public readonly scrollBeyondLastLine: boolean;
-	public readonly wordWrap: boolean;
-	public readonly lineBreaks: boolean;
-	public readonly doubleClickToSwitchToEditor: boolean;
-	public readonly scrollEditorWithPreview: boolean;
-	public readonly scrollPreviewWithEditor: boolean;
-	public readonly markEditorSelection: boolean;
+	public reAdonly scrollBeyondLAstLine: booleAn;
+	public reAdonly wordWrAp: booleAn;
+	public reAdonly lineBreAks: booleAn;
+	public reAdonly doubleClickToSwitchToEditor: booleAn;
+	public reAdonly scrollEditorWithPreview: booleAn;
+	public reAdonly scrollPreviewWithEditor: booleAn;
+	public reAdonly mArkEditorSelection: booleAn;
 
-	public readonly lineHeight: number;
-	public readonly fontSize: number;
-	public readonly fontFamily: string | undefined;
-	public readonly styles: readonly string[];
+	public reAdonly lineHeight: number;
+	public reAdonly fontSize: number;
+	public reAdonly fontFAmily: string | undefined;
+	public reAdonly styles: reAdonly string[];
 
-	private constructor(resource: vscode.Uri) {
-		const editorConfig = vscode.workspace.getConfiguration('editor', resource);
-		const markdownConfig = vscode.workspace.getConfiguration('markdown', resource);
-		const markdownEditorConfig = vscode.workspace.getConfiguration('[markdown]', resource);
+	privAte constructor(resource: vscode.Uri) {
+		const editorConfig = vscode.workspAce.getConfigurAtion('editor', resource);
+		const mArkdownConfig = vscode.workspAce.getConfigurAtion('mArkdown', resource);
+		const mArkdownEditorConfig = vscode.workspAce.getConfigurAtion('[mArkdown]', resource);
 
-		this.scrollBeyondLastLine = editorConfig.get<boolean>('scrollBeyondLastLine', false);
+		this.scrollBeyondLAstLine = editorConfig.get<booleAn>('scrollBeyondLAstLine', fAlse);
 
-		this.wordWrap = editorConfig.get<string>('wordWrap', 'off') !== 'off';
-		if (markdownEditorConfig && markdownEditorConfig['editor.wordWrap']) {
-			this.wordWrap = markdownEditorConfig['editor.wordWrap'] !== 'off';
+		this.wordWrAp = editorConfig.get<string>('wordWrAp', 'off') !== 'off';
+		if (mArkdownEditorConfig && mArkdownEditorConfig['editor.wordWrAp']) {
+			this.wordWrAp = mArkdownEditorConfig['editor.wordWrAp'] !== 'off';
 		}
 
-		this.scrollPreviewWithEditor = !!markdownConfig.get<boolean>('preview.scrollPreviewWithEditor', true);
-		this.scrollEditorWithPreview = !!markdownConfig.get<boolean>('preview.scrollEditorWithPreview', true);
-		this.lineBreaks = !!markdownConfig.get<boolean>('preview.breaks', false);
-		this.doubleClickToSwitchToEditor = !!markdownConfig.get<boolean>('preview.doubleClickToSwitchToEditor', true);
-		this.markEditorSelection = !!markdownConfig.get<boolean>('preview.markEditorSelection', true);
+		this.scrollPreviewWithEditor = !!mArkdownConfig.get<booleAn>('preview.scrollPreviewWithEditor', true);
+		this.scrollEditorWithPreview = !!mArkdownConfig.get<booleAn>('preview.scrollEditorWithPreview', true);
+		this.lineBreAks = !!mArkdownConfig.get<booleAn>('preview.breAks', fAlse);
+		this.doubleClickToSwitchToEditor = !!mArkdownConfig.get<booleAn>('preview.doubleClickToSwitchToEditor', true);
+		this.mArkEditorSelection = !!mArkdownConfig.get<booleAn>('preview.mArkEditorSelection', true);
 
-		this.fontFamily = markdownConfig.get<string | undefined>('preview.fontFamily', undefined);
-		this.fontSize = Math.max(8, +markdownConfig.get<number>('preview.fontSize', NaN));
-		this.lineHeight = Math.max(0.6, +markdownConfig.get<number>('preview.lineHeight', NaN));
+		this.fontFAmily = mArkdownConfig.get<string | undefined>('preview.fontFAmily', undefined);
+		this.fontSize = MAth.mAx(8, +mArkdownConfig.get<number>('preview.fontSize', NAN));
+		this.lineHeight = MAth.mAx(0.6, +mArkdownConfig.get<number>('preview.lineHeight', NAN));
 
-		this.styles = markdownConfig.get<string[]>('styles', []);
+		this.styles = mArkdownConfig.get<string[]>('styles', []);
 	}
 
-	public isEqualTo(otherConfig: MarkdownPreviewConfiguration) {
+	public isEquAlTo(otherConfig: MArkdownPreviewConfigurAtion) {
 		for (const key in this) {
-			if (this.hasOwnProperty(key) && key !== 'styles') {
+			if (this.hAsOwnProperty(key) && key !== 'styles') {
 				if (this[key] !== otherConfig[key]) {
-					return false;
+					return fAlse;
 				}
 			}
 		}
 
-		return equals(this.styles, otherConfig.styles);
+		return equAls(this.styles, otherConfig.styles);
 	}
 
-	[key: string]: any;
+	[key: string]: Any;
 }
 
-export class MarkdownPreviewConfigurationManager {
-	private readonly previewConfigurationsForWorkspaces = new Map<string, MarkdownPreviewConfiguration>();
+export clAss MArkdownPreviewConfigurAtionMAnAger {
+	privAte reAdonly previewConfigurAtionsForWorkspAces = new MAp<string, MArkdownPreviewConfigurAtion>();
 
-	public loadAndCacheConfiguration(
+	public loAdAndCAcheConfigurAtion(
 		resource: vscode.Uri
-	): MarkdownPreviewConfiguration {
-		const config = MarkdownPreviewConfiguration.getForResource(resource);
-		this.previewConfigurationsForWorkspaces.set(this.getKey(resource), config);
+	): MArkdownPreviewConfigurAtion {
+		const config = MArkdownPreviewConfigurAtion.getForResource(resource);
+		this.previewConfigurAtionsForWorkspAces.set(this.getKey(resource), config);
 		return config;
 	}
 
-	public hasConfigurationChanged(
+	public hAsConfigurAtionChAnged(
 		resource: vscode.Uri
-	): boolean {
+	): booleAn {
 		const key = this.getKey(resource);
-		const currentConfig = this.previewConfigurationsForWorkspaces.get(key);
-		const newConfig = MarkdownPreviewConfiguration.getForResource(resource);
-		return (!currentConfig || !currentConfig.isEqualTo(newConfig));
+		const currentConfig = this.previewConfigurAtionsForWorkspAces.get(key);
+		const newConfig = MArkdownPreviewConfigurAtion.getForResource(resource);
+		return (!currentConfig || !currentConfig.isEquAlTo(newConfig));
 	}
 
-	private getKey(
+	privAte getKey(
 		resource: vscode.Uri
 	): string {
-		const folder = vscode.workspace.getWorkspaceFolder(resource);
+		const folder = vscode.workspAce.getWorkspAceFolder(resource);
 		return folder ? folder.uri.toString() : '';
 	}
 }

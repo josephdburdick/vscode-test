@@ -1,129 +1,129 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { GlobalMouseMoveMonitor, IStandardMouseMoveEventData, standardMouseMoveMerger } from 'vs/base/browser/globalMouseMoveMonitor';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * As dom from 'vs/bAse/browser/dom';
+import { GlobAlMouseMoveMonitor, IStAndArdMouseMoveEventDAtA, stAndArdMouseMoveMerger } from 'vs/bAse/browser/globAlMouseMoveMonitor';
+import { Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import 'vs/css!./lightBulbWidget';
 import { ContentWidgetPositionPreference, ICodeEditor, IContentWidget, IContentWidgetPosition } from 'vs/editor/browser/editorBrowser';
 import { IPosition } from 'vs/editor/common/core/position';
 import { TextModel } from 'vs/editor/common/model/textModel';
 import { CodeActionSet } from 'vs/editor/contrib/codeAction/codeAction';
-import * as nls from 'vs/nls';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import * As nls from 'vs/nls';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { registerThemingParticipant, IColorTheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
-import { editorLightBulbForeground, editorLightBulbAutoFixForeground } from 'vs/platform/theme/common/colorRegistry';
-import { Gesture } from 'vs/base/browser/touch';
+import { registerThemingPArticipAnt, IColorTheme, ICssStyleCollector } from 'vs/plAtform/theme/common/themeService';
+import { editorLightBulbForeground, editorLightBulbAutoFixForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { Gesture } from 'vs/bAse/browser/touch';
 import type { CodeActionTrigger } from 'vs/editor/contrib/codeAction/types';
-import { Codicon } from 'vs/base/common/codicons';
+import { Codicon } from 'vs/bAse/common/codicons';
 
-namespace LightBulbState {
+nAmespAce LightBulbStAte {
 
 	export const enum Type {
 		Hidden,
 		Showing,
 	}
 
-	export const Hidden = { type: Type.Hidden } as const;
+	export const Hidden = { type: Type.Hidden } As const;
 
-	export class Showing {
-		readonly type = Type.Showing;
+	export clAss Showing {
+		reAdonly type = Type.Showing;
 
 		constructor(
-			public readonly actions: CodeActionSet,
-			public readonly trigger: CodeActionTrigger,
-			public readonly editorPosition: IPosition,
-			public readonly widgetPosition: IContentWidgetPosition,
+			public reAdonly Actions: CodeActionSet,
+			public reAdonly trigger: CodeActionTrigger,
+			public reAdonly editorPosition: IPosition,
+			public reAdonly widgetPosition: IContentWidgetPosition,
 		) { }
 	}
 
-	export type State = typeof Hidden | Showing;
+	export type StAte = typeof Hidden | Showing;
 }
 
 
-export class LightBulbWidget extends Disposable implements IContentWidget {
+export clAss LightBulbWidget extends DisposAble implements IContentWidget {
 
-	private static readonly _posPref = [ContentWidgetPositionPreference.EXACT];
+	privAte stAtic reAdonly _posPref = [ContentWidgetPositionPreference.EXACT];
 
-	private readonly _domNode: HTMLDivElement;
+	privAte reAdonly _domNode: HTMLDivElement;
 
-	private readonly _onClick = this._register(new Emitter<{ x: number; y: number; actions: CodeActionSet; trigger: CodeActionTrigger }>());
-	public readonly onClick = this._onClick.event;
+	privAte reAdonly _onClick = this._register(new Emitter<{ x: number; y: number; Actions: CodeActionSet; trigger: CodeActionTrigger }>());
+	public reAdonly onClick = this._onClick.event;
 
-	private _state: LightBulbState.State = LightBulbState.Hidden;
+	privAte _stAte: LightBulbStAte.StAte = LightBulbStAte.Hidden;
 
 	constructor(
-		private readonly _editor: ICodeEditor,
-		private readonly _quickFixActionId: string,
-		private readonly _preferredFixActionId: string,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService
+		privAte reAdonly _editor: ICodeEditor,
+		privAte reAdonly _quickFixActionId: string,
+		privAte reAdonly _preferredFixActionId: string,
+		@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService
 	) {
 		super();
-		this._domNode = document.createElement('div');
-		this._domNode.className = Codicon.lightBulb.classNames;
+		this._domNode = document.creAteElement('div');
+		this._domNode.clAssNAme = Codicon.lightBulb.clAssNAmes;
 
-		this._editor.addContentWidget(this);
+		this._editor.AddContentWidget(this);
 
-		this._register(this._editor.onDidChangeModelContent(_ => {
-			// cancel when the line in question has been removed
+		this._register(this._editor.onDidChAngeModelContent(_ => {
+			// cAncel when the line in question hAs been removed
 			const editorModel = this._editor.getModel();
-			if (this.state.type !== LightBulbState.Type.Showing || !editorModel || this.state.editorPosition.lineNumber >= editorModel.getLineCount()) {
+			if (this.stAte.type !== LightBulbStAte.Type.Showing || !editorModel || this.stAte.editorPosition.lineNumber >= editorModel.getLineCount()) {
 				this.hide();
 			}
 		}));
 
-		Gesture.ignoreTarget(this._domNode);
-		this._register(dom.addStandardDisposableGenericMouseDownListner(this._domNode, e => {
-			if (this.state.type !== LightBulbState.Type.Showing) {
+		Gesture.ignoreTArget(this._domNode);
+		this._register(dom.AddStAndArdDisposAbleGenericMouseDownListner(this._domNode, e => {
+			if (this.stAte.type !== LightBulbStAte.Type.Showing) {
 				return;
 			}
 
-			// Make sure that focus / cursor location is not lost when clicking widget icon
+			// MAke sure thAt focus / cursor locAtion is not lost when clicking widget icon
 			this._editor.focus();
-			e.preventDefault();
-			// a bit of extra work to make sure the menu
+			e.preventDefAult();
+			// A bit of extrA work to mAke sure the menu
 			// doesn't cover the line-text
-			const { top, height } = dom.getDomNodePagePosition(this._domNode);
+			const { top, height } = dom.getDomNodePAgePosition(this._domNode);
 			const lineHeight = this._editor.getOption(EditorOption.lineHeight);
 
-			let pad = Math.floor(lineHeight / 3);
-			if (this.state.widgetPosition.position !== null && this.state.widgetPosition.position.lineNumber < this.state.editorPosition.lineNumber) {
-				pad += lineHeight;
+			let pAd = MAth.floor(lineHeight / 3);
+			if (this.stAte.widgetPosition.position !== null && this.stAte.widgetPosition.position.lineNumber < this.stAte.editorPosition.lineNumber) {
+				pAd += lineHeight;
 			}
 
 			this._onClick.fire({
 				x: e.posx,
-				y: top + height + pad,
-				actions: this.state.actions,
-				trigger: this.state.trigger,
+				y: top + height + pAd,
+				Actions: this.stAte.Actions,
+				trigger: this.stAte.trigger,
 			});
 		}));
-		this._register(dom.addDisposableListener(this._domNode, 'mouseenter', (e: MouseEvent) => {
+		this._register(dom.AddDisposAbleListener(this._domNode, 'mouseenter', (e: MouseEvent) => {
 			if ((e.buttons & 1) !== 1) {
 				return;
 			}
-			// mouse enters lightbulb while the primary/left button
-			// is being pressed -> hide the lightbulb and block future
-			// showings until mouse is released
+			// mouse enters lightbulb while the primAry/left button
+			// is being pressed -> hide the lightbulb And block future
+			// showings until mouse is releAsed
 			this.hide();
-			const monitor = new GlobalMouseMoveMonitor<IStandardMouseMoveEventData>();
-			monitor.startMonitoring(<HTMLElement>e.target, e.buttons, standardMouseMoveMerger, () => { }, () => {
+			const monitor = new GlobAlMouseMoveMonitor<IStAndArdMouseMoveEventDAtA>();
+			monitor.stArtMonitoring(<HTMLElement>e.tArget, e.buttons, stAndArdMouseMoveMerger, () => { }, () => {
 				monitor.dispose();
 			});
 		}));
-		this._register(this._editor.onDidChangeConfiguration(e => {
+		this._register(this._editor.onDidChAngeConfigurAtion(e => {
 			// hide when told to do so
-			if (e.hasChanged(EditorOption.lightbulb) && !this._editor.getOption(EditorOption.lightbulb).enabled) {
+			if (e.hAsChAnged(EditorOption.lightbulb) && !this._editor.getOption(EditorOption.lightbulb).enAbled) {
 				this.hide();
 			}
 		}));
 
-		this._updateLightBulbTitleAndIcon();
-		this._register(this._keybindingService.onDidUpdateKeybindings(this._updateLightBulbTitleAndIcon, this));
+		this._updAteLightBulbTitleAndIcon();
+		this._register(this._keybindingService.onDidUpdAteKeybindings(this._updAteLightBulbTitleAndIcon, this));
 	}
 
 	dispose(): void {
@@ -140,16 +140,16 @@ export class LightBulbWidget extends Disposable implements IContentWidget {
 	}
 
 	getPosition(): IContentWidgetPosition | null {
-		return this._state.type === LightBulbState.Type.Showing ? this._state.widgetPosition : null;
+		return this._stAte.type === LightBulbStAte.Type.Showing ? this._stAte.widgetPosition : null;
 	}
 
-	public update(actions: CodeActionSet, trigger: CodeActionTrigger, atPosition: IPosition) {
-		if (actions.validActions.length <= 0) {
+	public updAte(Actions: CodeActionSet, trigger: CodeActionTrigger, AtPosition: IPosition) {
+		if (Actions.vAlidActions.length <= 0) {
 			return this.hide();
 		}
 
 		const options = this._editor.getOptions();
-		if (!options.get(EditorOption.lightbulb).enabled) {
+		if (!options.get(EditorOption.lightbulb).enAbled) {
 			return this.hide();
 		}
 
@@ -158,86 +158,86 @@ export class LightBulbWidget extends Disposable implements IContentWidget {
 			return this.hide();
 		}
 
-		const { lineNumber, column } = model.validatePosition(atPosition);
+		const { lineNumber, column } = model.vAlidAtePosition(AtPosition);
 
-		const tabSize = model.getOptions().tabSize;
+		const tAbSize = model.getOptions().tAbSize;
 		const fontInfo = options.get(EditorOption.fontInfo);
 		const lineContent = model.getLineContent(lineNumber);
-		const indent = TextModel.computeIndentLevel(lineContent, tabSize);
-		const lineHasSpace = fontInfo.spaceWidth * indent > 22;
+		const indent = TextModel.computeIndentLevel(lineContent, tAbSize);
+		const lineHAsSpAce = fontInfo.spAceWidth * indent > 22;
 		const isFolded = (lineNumber: number) => {
 			return lineNumber > 2 && this._editor.getTopForLineNumber(lineNumber) === this._editor.getTopForLineNumber(lineNumber - 1);
 		};
 
 		let effectiveLineNumber = lineNumber;
-		if (!lineHasSpace) {
+		if (!lineHAsSpAce) {
 			if (lineNumber > 1 && !isFolded(lineNumber - 1)) {
 				effectiveLineNumber -= 1;
 			} else if (!isFolded(lineNumber + 1)) {
 				effectiveLineNumber += 1;
-			} else if (column * fontInfo.spaceWidth < 22) {
-				// cannot show lightbulb above/below and showing
-				// it inline would overlay the cursor...
+			} else if (column * fontInfo.spAceWidth < 22) {
+				// cAnnot show lightbulb Above/below And showing
+				// it inline would overlAy the cursor...
 				return this.hide();
 			}
 		}
 
-		this.state = new LightBulbState.Showing(actions, trigger, atPosition, {
+		this.stAte = new LightBulbStAte.Showing(Actions, trigger, AtPosition, {
 			position: { lineNumber: effectiveLineNumber, column: 1 },
 			preference: LightBulbWidget._posPref
 		});
-		this._editor.layoutContentWidget(this);
+		this._editor.lAyoutContentWidget(this);
 	}
 
 	public hide(): void {
-		this.state = LightBulbState.Hidden;
-		this._editor.layoutContentWidget(this);
+		this.stAte = LightBulbStAte.Hidden;
+		this._editor.lAyoutContentWidget(this);
 	}
 
-	private get state(): LightBulbState.State { return this._state; }
+	privAte get stAte(): LightBulbStAte.StAte { return this._stAte; }
 
-	private set state(value) {
-		this._state = value;
-		this._updateLightBulbTitleAndIcon();
+	privAte set stAte(vAlue) {
+		this._stAte = vAlue;
+		this._updAteLightBulbTitleAndIcon();
 	}
 
-	private _updateLightBulbTitleAndIcon(): void {
-		if (this.state.type === LightBulbState.Type.Showing && this.state.actions.hasAutoFix) {
-			// update icon
-			this._domNode.classList.remove(...Codicon.lightBulb.classNamesArray);
-			this._domNode.classList.add(...Codicon.lightbulbAutofix.classNamesArray);
+	privAte _updAteLightBulbTitleAndIcon(): void {
+		if (this.stAte.type === LightBulbStAte.Type.Showing && this.stAte.Actions.hAsAutoFix) {
+			// updAte icon
+			this._domNode.clAssList.remove(...Codicon.lightBulb.clAssNAmesArrAy);
+			this._domNode.clAssList.Add(...Codicon.lightbulbAutofix.clAssNAmesArrAy);
 
 			const preferredKb = this._keybindingService.lookupKeybinding(this._preferredFixActionId);
 			if (preferredKb) {
-				this.title = nls.localize('prefferedQuickFixWithKb', "Show Fixes. Preferred Fix Available ({0})", preferredKb.getLabel());
+				this.title = nls.locAlize('prefferedQuickFixWithKb', "Show Fixes. Preferred Fix AvAilAble ({0})", preferredKb.getLAbel());
 				return;
 			}
 		}
 
-		// update icon
-		this._domNode.classList.remove(...Codicon.lightbulbAutofix.classNamesArray);
-		this._domNode.classList.add(...Codicon.lightBulb.classNamesArray);
+		// updAte icon
+		this._domNode.clAssList.remove(...Codicon.lightbulbAutofix.clAssNAmesArrAy);
+		this._domNode.clAssList.Add(...Codicon.lightBulb.clAssNAmesArrAy);
 
 		const kb = this._keybindingService.lookupKeybinding(this._quickFixActionId);
 		if (kb) {
-			this.title = nls.localize('quickFixWithKb', "Show Fixes ({0})", kb.getLabel());
+			this.title = nls.locAlize('quickFixWithKb', "Show Fixes ({0})", kb.getLAbel());
 		} else {
-			this.title = nls.localize('quickFix', "Show Fixes");
+			this.title = nls.locAlize('quickFix', "Show Fixes");
 		}
 	}
 
-	private set title(value: string) {
-		this._domNode.title = value;
+	privAte set title(vAlue: string) {
+		this._domNode.title = vAlue;
 	}
 }
 
-registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
+registerThemingPArticipAnt((theme: IColorTheme, collector: ICssStyleCollector) => {
 
 	// Lightbulb Icon
 	const editorLightBulbForegroundColor = theme.getColor(editorLightBulbForeground);
 	if (editorLightBulbForegroundColor) {
-		collector.addRule(`
-		.monaco-editor .contentWidgets ${Codicon.lightBulb.cssSelector} {
+		collector.AddRule(`
+		.monAco-editor .contentWidgets ${Codicon.lightBulb.cssSelector} {
 			color: ${editorLightBulbForegroundColor};
 		}`);
 	}
@@ -245,8 +245,8 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	// Lightbulb Auto Fix Icon
 	const editorLightBulbAutoFixForegroundColor = theme.getColor(editorLightBulbAutoFixForeground);
 	if (editorLightBulbAutoFixForegroundColor) {
-		collector.addRule(`
-		.monaco-editor .contentWidgets ${Codicon.lightbulbAutofix.cssSelector} {
+		collector.AddRule(`
+		.monAco-editor .contentWidgets ${Codicon.lightbulbAutofix.cssSelector} {
 			color: ${editorLightBulbAutoFixForegroundColor};
 		}`);
 	}

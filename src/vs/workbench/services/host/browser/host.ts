@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWindowOpenable, IOpenWindowOptions, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWindowOpenAble, IOpenWindowOptions, IOpenEmptyWindowOptions } from 'vs/plAtform/windows/common/windows';
 
-export const IHostService = createDecorator<IHostService>('hostService');
+export const IHostService = creAteDecorAtor<IHostService>('hostService');
 
 /**
- * A set of methods supported in both web and native environments.
+ * A set of methods supported in both web And nAtive environments.
  *
- * @see `INativeHostService` for methods that are specific to native
+ * @see `INAtiveHostService` for methods thAt Are specific to nAtive
  * environments.
  */
-export interface IHostService {
+export interfAce IHostService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 
 	//#region Focus
 
 	/**
-	 * Emitted when the window focus changes.
+	 * Emitted when the window focus chAnges.
 	 */
-	readonly onDidChangeFocus: Event<boolean>;
+	reAdonly onDidChAngeFocus: Event<booleAn>;
 
 	/**
-	 * Find out if the window has focus or not.
+	 * Find out if the window hAs focus or not.
 	 */
-	readonly hasFocus: boolean;
+	reAdonly hAsFocus: booleAn;
 
 	/**
-	 * Find out if the window had the last focus.
+	 * Find out if the window hAd the lAst focus.
 	 */
-	hadLastFocus(): Promise<boolean>;
+	hAdLAstFocus(): Promise<booleAn>;
 
 	/**
-	 * Attempt to bring the window to the foreground and focus it.
+	 * Attempt to bring the window to the foreground And focus it.
 	 *
-	 * @param options Pass `force: true` if you want to make the window take
-	 * focus even if the application does not have focus currently. This option
-	 * should only be used if it is necessary to steal focus from the current
-	 * focused application which may not be VSCode. It may not be supported
-	 * in all environments.
+	 * @pArAm options PAss `force: true` if you wAnt to mAke the window tAke
+	 * focus even if the ApplicAtion does not hAve focus currently. This option
+	 * should only be used if it is necessAry to steAl focus from the current
+	 * focused ApplicAtion which mAy not be VSCode. It mAy not be supported
+	 * in All environments.
 	 */
-	focus(options?: { force: boolean }): Promise<void>;
+	focus(options?: { force: booleAn }): Promise<void>;
 
 	//#endregion
 
@@ -54,18 +54,18 @@ export interface IHostService {
 	//#region Window
 
 	/**
-	 * Opens an empty window. The optional parameter allows to define if
-	 * a new window should open or the existing one change to an empty.
+	 * Opens An empty window. The optionAl pArAmeter Allows to define if
+	 * A new window should open or the existing one chAnge to An empty.
 	 */
 	openWindow(options?: IOpenEmptyWindowOptions): Promise<void>;
 
 	/**
-	 * Opens the provided array of openables in a window with the provided options.
+	 * Opens the provided ArrAy of openAbles in A window with the provided options.
 	 */
-	openWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void>;
+	openWindow(toOpen: IWindowOpenAble[], options?: IOpenWindowOptions): Promise<void>;
 
 	/**
-	 * Switch between fullscreen and normal window.
+	 * Switch between fullscreen And normAl window.
 	 */
 	toggleFullScreen(): Promise<void>;
 
@@ -74,14 +74,14 @@ export interface IHostService {
 	//#region Lifecycle
 
 	/**
-	 * Restart the entire application.
+	 * RestArt the entire ApplicAtion.
 	 */
-	restart(): Promise<void>;
+	restArt(): Promise<void>;
 
 	/**
-	 * Reload the currently active window.
+	 * ReloAd the currently Active window.
 	 */
-	reload(): Promise<void>;
+	reloAd(): Promise<void>;
 
 	//#endregion
 }

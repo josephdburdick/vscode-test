@@ -1,122 +1,122 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MarkdownString, CompletionItemKind, CompletionItem, DocumentSelector, SnippetString, workspace } from 'vscode';
+import { MArkdownString, CompletionItemKind, CompletionItem, DocumentSelector, SnippetString, workspAce } from 'vscode';
 import { IJSONContribution, ISuggestionsCollector } from './jsonContributions';
 import { XHRRequest } from 'request-light';
-import { Location } from 'jsonc-parser';
+import { LocAtion } from 'jsonc-pArser';
 
-import * as nls from 'vscode-nls';
-const localize = nls.loadMessageBundle();
+import * As nls from 'vscode-nls';
+const locAlize = nls.loAdMessAgeBundle();
 
-const USER_AGENT = 'Visual Studio Code';
+const USER_AGENT = 'VisuAl Studio Code';
 
-export class BowerJSONContribution implements IJSONContribution {
+export clAss BowerJSONContribution implements IJSONContribution {
 
-	private topRanked = ['twitter', 'bootstrap', 'angular-1.1.6', 'angular-latest', 'angulerjs', 'd3', 'myjquery', 'jq', 'abcdef1234567890', 'jQuery', 'jquery-1.11.1', 'jquery',
-		'sushi-vanilla-x-data', 'font-awsome', 'Font-Awesome', 'font-awesome', 'fontawesome', 'html5-boilerplate', 'impress.js', 'homebrew',
-		'backbone', 'moment1', 'momentjs', 'moment', 'linux', 'animate.css', 'animate-css', 'reveal.js', 'jquery-file-upload', 'blueimp-file-upload', 'threejs', 'express', 'chosen',
-		'normalize-css', 'normalize.css', 'semantic', 'semantic-ui', 'Semantic-UI', 'modernizr', 'underscore', 'underscore1',
-		'material-design-icons', 'ionic', 'chartjs', 'Chart.js', 'nnnick-chartjs', 'select2-ng', 'select2-dist', 'phantom', 'skrollr', 'scrollr', 'less.js', 'leancss', 'parser-lib',
-		'hui', 'bootstrap-languages', 'async', 'gulp', 'jquery-pjax', 'coffeescript', 'hammer.js', 'ace', 'leaflet', 'jquery-mobile', 'sweetalert', 'typeahead.js', 'soup', 'typehead.js',
-		'sails', 'codeigniter2'];
+	privAte topRAnked = ['twitter', 'bootstrAp', 'AngulAr-1.1.6', 'AngulAr-lAtest', 'Angulerjs', 'd3', 'myjquery', 'jq', 'Abcdef1234567890', 'jQuery', 'jquery-1.11.1', 'jquery',
+		'sushi-vAnillA-x-dAtA', 'font-Awsome', 'Font-Awesome', 'font-Awesome', 'fontAwesome', 'html5-boilerplAte', 'impress.js', 'homebrew',
+		'bAckbone', 'moment1', 'momentjs', 'moment', 'linux', 'AnimAte.css', 'AnimAte-css', 'reveAl.js', 'jquery-file-uploAd', 'blueimp-file-uploAd', 'threejs', 'express', 'chosen',
+		'normAlize-css', 'normAlize.css', 'semAntic', 'semAntic-ui', 'SemAntic-UI', 'modernizr', 'underscore', 'underscore1',
+		'mAteriAl-design-icons', 'ionic', 'chArtjs', 'ChArt.js', 'nnnick-chArtjs', 'select2-ng', 'select2-dist', 'phAntom', 'skrollr', 'scrollr', 'less.js', 'leAncss', 'pArser-lib',
+		'hui', 'bootstrAp-lAnguAges', 'Async', 'gulp', 'jquery-pjAx', 'coffeescript', 'hAmmer.js', 'Ace', 'leAflet', 'jquery-mobile', 'sweetAlert', 'typeAheAd.js', 'soup', 'typeheAd.js',
+		'sAils', 'codeigniter2'];
 
-	private xhr: XHRRequest;
+	privAte xhr: XHRRequest;
 
 	public constructor(xhr: XHRRequest) {
 		this.xhr = xhr;
 	}
 
 	public getDocumentSelector(): DocumentSelector {
-		return [{ language: 'json', scheme: '*', pattern: '**/bower.json' }, { language: 'json', scheme: '*', pattern: '**/.bower.json' }];
+		return [{ lAnguAge: 'json', scheme: '*', pAttern: '**/bower.json' }, { lAnguAge: 'json', scheme: '*', pAttern: '**/.bower.json' }];
 	}
 
-	private isEnabled() {
-		return !!workspace.getConfiguration('npm').get('fetchOnlinePackageInfo');
+	privAte isEnAbled() {
+		return !!workspAce.getConfigurAtion('npm').get('fetchOnlinePAckAgeInfo');
 	}
 
-	public collectDefaultSuggestions(_resource: string, collector: ISuggestionsCollector): Thenable<any> {
-		const defaultValue = {
-			'name': '${1:name}',
+	public collectDefAultSuggestions(_resource: string, collector: ISuggestionsCollector): ThenAble<Any> {
+		const defAultVAlue = {
+			'nAme': '${1:nAme}',
 			'description': '${2:description}',
-			'authors': ['${3:author}'],
+			'Authors': ['${3:Author}'],
 			'version': '${4:1.0.0}',
-			'main': '${5:pathToMain}',
+			'mAin': '${5:pAthToMAin}',
 			'dependencies': {}
 		};
-		const proposal = new CompletionItem(localize('json.bower.default', 'Default bower.json'));
-		proposal.kind = CompletionItemKind.Class;
-		proposal.insertText = new SnippetString(JSON.stringify(defaultValue, null, '\t'));
-		collector.add(proposal);
+		const proposAl = new CompletionItem(locAlize('json.bower.defAult', 'DefAult bower.json'));
+		proposAl.kind = CompletionItemKind.ClAss;
+		proposAl.insertText = new SnippetString(JSON.stringify(defAultVAlue, null, '\t'));
+		collector.Add(proposAl);
 		return Promise.resolve(null);
 	}
 
-	public collectPropertySuggestions(_resource: string, location: Location, currentWord: string, addValue: boolean, isLast: boolean, collector: ISuggestionsCollector): Thenable<any> | null {
-		if (!this.isEnabled()) {
+	public collectPropertySuggestions(_resource: string, locAtion: LocAtion, currentWord: string, AddVAlue: booleAn, isLAst: booleAn, collector: ISuggestionsCollector): ThenAble<Any> | null {
+		if (!this.isEnAbled()) {
 			return null;
 		}
-		if ((location.matches(['dependencies']) || location.matches(['devDependencies']))) {
+		if ((locAtion.mAtches(['dependencies']) || locAtion.mAtches(['devDependencies']))) {
 			if (currentWord.length > 0) {
-				const queryUrl = 'https://registry.bower.io/packages/search/' + encodeURIComponent(currentWord);
+				const queryUrl = 'https://registry.bower.io/pAckAges/seArch/' + encodeURIComponent(currentWord);
 
 				return this.xhr({
 					url: queryUrl,
-					agent: USER_AGENT
+					Agent: USER_AGENT
 				}).then((success) => {
-					if (success.status === 200) {
+					if (success.stAtus === 200) {
 						try {
-							const obj = JSON.parse(success.responseText);
-							if (Array.isArray(obj)) {
-								const results = <{ name: string; description: string; }[]>obj;
+							const obj = JSON.pArse(success.responseText);
+							if (ArrAy.isArrAy(obj)) {
+								const results = <{ nAme: string; description: string; }[]>obj;
 								for (const result of results) {
-									const name = result.name;
+									const nAme = result.nAme;
 									const description = result.description || '';
-									const insertText = new SnippetString().appendText(JSON.stringify(name));
-									if (addValue) {
-										insertText.appendText(': ').appendPlaceholder('latest');
-										if (!isLast) {
-											insertText.appendText(',');
+									const insertText = new SnippetString().AppendText(JSON.stringify(nAme));
+									if (AddVAlue) {
+										insertText.AppendText(': ').AppendPlAceholder('lAtest');
+										if (!isLAst) {
+											insertText.AppendText(',');
 										}
 									}
-									const proposal = new CompletionItem(name);
-									proposal.kind = CompletionItemKind.Property;
-									proposal.insertText = insertText;
-									proposal.filterText = JSON.stringify(name);
-									proposal.documentation = description;
-									collector.add(proposal);
+									const proposAl = new CompletionItem(nAme);
+									proposAl.kind = CompletionItemKind.Property;
+									proposAl.insertText = insertText;
+									proposAl.filterText = JSON.stringify(nAme);
+									proposAl.documentAtion = description;
+									collector.Add(proposAl);
 								}
 								collector.setAsIncomplete();
 							}
-						} catch (e) {
+						} cAtch (e) {
 							// ignore
 						}
 					} else {
-						collector.error(localize('json.bower.error.repoaccess', 'Request to the bower repository failed: {0}', success.responseText));
+						collector.error(locAlize('json.bower.error.repoAccess', 'Request to the bower repository fAiled: {0}', success.responseText));
 						return 0;
 					}
 					return undefined;
 				}, (error) => {
-					collector.error(localize('json.bower.error.repoaccess', 'Request to the bower repository failed: {0}', error.responseText));
+					collector.error(locAlize('json.bower.error.repoAccess', 'Request to the bower repository fAiled: {0}', error.responseText));
 					return 0;
 				});
 			} else {
-				this.topRanked.forEach((name) => {
-					const insertText = new SnippetString().appendText(JSON.stringify(name));
-					if (addValue) {
-						insertText.appendText(': ').appendPlaceholder('latest');
-						if (!isLast) {
-							insertText.appendText(',');
+				this.topRAnked.forEAch((nAme) => {
+					const insertText = new SnippetString().AppendText(JSON.stringify(nAme));
+					if (AddVAlue) {
+						insertText.AppendText(': ').AppendPlAceholder('lAtest');
+						if (!isLAst) {
+							insertText.AppendText(',');
 						}
 					}
 
-					const proposal = new CompletionItem(name);
-					proposal.kind = CompletionItemKind.Property;
-					proposal.insertText = insertText;
-					proposal.filterText = JSON.stringify(name);
-					proposal.documentation = '';
-					collector.add(proposal);
+					const proposAl = new CompletionItem(nAme);
+					proposAl.kind = CompletionItemKind.Property;
+					proposAl.insertText = insertText;
+					proposAl.filterText = JSON.stringify(nAme);
+					proposAl.documentAtion = '';
+					collector.Add(proposAl);
 				});
 				collector.setAsIncomplete();
 				return Promise.resolve(null);
@@ -125,27 +125,27 @@ export class BowerJSONContribution implements IJSONContribution {
 		return null;
 	}
 
-	public collectValueSuggestions(_resource: string, location: Location, collector: ISuggestionsCollector): Promise<any> | null {
-		if (!this.isEnabled()) {
+	public collectVAlueSuggestions(_resource: string, locAtion: LocAtion, collector: ISuggestionsCollector): Promise<Any> | null {
+		if (!this.isEnAbled()) {
 			return null;
 		}
-		if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']))) {
-			// not implemented. Could be do done calling the bower command. Waiting for web API: https://github.com/bower/registry/issues/26
-			const proposal = new CompletionItem(localize('json.bower.latest.version', 'latest'));
-			proposal.insertText = new SnippetString('"${1:latest}"');
-			proposal.filterText = '""';
-			proposal.kind = CompletionItemKind.Value;
-			proposal.documentation = 'The latest version of the package';
-			collector.add(proposal);
+		if ((locAtion.mAtches(['dependencies', '*']) || locAtion.mAtches(['devDependencies', '*']))) {
+			// not implemented. Could be do done cAlling the bower commAnd. WAiting for web API: https://github.com/bower/registry/issues/26
+			const proposAl = new CompletionItem(locAlize('json.bower.lAtest.version', 'lAtest'));
+			proposAl.insertText = new SnippetString('"${1:lAtest}"');
+			proposAl.filterText = '""';
+			proposAl.kind = CompletionItemKind.VAlue;
+			proposAl.documentAtion = 'The lAtest version of the pAckAge';
+			collector.Add(proposAl);
 		}
 		return null;
 	}
 
-	public resolveSuggestion(item: CompletionItem): Thenable<CompletionItem | null> | null {
-		if (item.kind === CompletionItemKind.Property && item.documentation === '') {
-			return this.getInfo(item.label).then(documentation => {
-				if (documentation) {
-					item.documentation = documentation;
+	public resolveSuggestion(item: CompletionItem): ThenAble<CompletionItem | null> | null {
+		if (item.kind === CompletionItemKind.Property && item.documentAtion === '') {
+			return this.getInfo(item.lAbel).then(documentAtion => {
+				if (documentAtion) {
+					item.documentAtion = documentAtion;
 					return item;
 				}
 				return null;
@@ -154,15 +154,15 @@ export class BowerJSONContribution implements IJSONContribution {
 		return null;
 	}
 
-	private getInfo(pack: string): Thenable<string | undefined> {
-		const queryUrl = 'https://registry.bower.io/packages/' + encodeURIComponent(pack);
+	privAte getInfo(pAck: string): ThenAble<string | undefined> {
+		const queryUrl = 'https://registry.bower.io/pAckAges/' + encodeURIComponent(pAck);
 
 		return this.xhr({
 			url: queryUrl,
-			agent: USER_AGENT
+			Agent: USER_AGENT
 		}).then((success) => {
 			try {
-				const obj = JSON.parse(success.responseText);
+				const obj = JSON.pArse(success.responseText);
 				if (obj && obj.url) {
 					let url: string = obj.url;
 					if (url.indexOf('git://') === 0) {
@@ -173,7 +173,7 @@ export class BowerJSONContribution implements IJSONContribution {
 					}
 					return url;
 				}
-			} catch (e) {
+			} cAtch (e) {
 				// ignore
 			}
 			return undefined;
@@ -182,17 +182,17 @@ export class BowerJSONContribution implements IJSONContribution {
 		});
 	}
 
-	public getInfoContribution(_resource: string, location: Location): Thenable<MarkdownString[] | null> | null {
-		if (!this.isEnabled()) {
+	public getInfoContribution(_resource: string, locAtion: LocAtion): ThenAble<MArkdownString[] | null> | null {
+		if (!this.isEnAbled()) {
 			return null;
 		}
-		if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']))) {
-			const pack = location.path[location.path.length - 1];
-			if (typeof pack === 'string') {
-				return this.getInfo(pack).then(documentation => {
-					if (documentation) {
-						const str = new MarkdownString();
-						str.appendText(documentation);
+		if ((locAtion.mAtches(['dependencies', '*']) || locAtion.mAtches(['devDependencies', '*']))) {
+			const pAck = locAtion.pAth[locAtion.pAth.length - 1];
+			if (typeof pAck === 'string') {
+				return this.getInfo(pAck).then(documentAtion => {
+					if (documentAtion) {
+						const str = new MArkdownString();
+						str.AppendText(documentAtion);
 						return [str];
 					}
 					return null;

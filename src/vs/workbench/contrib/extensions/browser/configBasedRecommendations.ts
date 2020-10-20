@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IExtensionTipsService, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { localize } from 'vs/nls';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { IWorkspaceContextService, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
-import { Emitter } from 'vs/base/common/event';
+import { IExtensionTipsService, IConfigBAsedExtensionTip } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { ExtensionRecommendAtions, ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { locAlize } from 'vs/nls';
+import { ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { IWorkspAceContextService, IWorkspAceFoldersChAngeEvent } from 'vs/plAtform/workspAce/common/workspAce';
+import { Emitter } from 'vs/bAse/common/event';
 
-export class ConfigBasedRecommendations extends ExtensionRecommendations {
+export clAss ConfigBAsedRecommendAtions extends ExtensionRecommendAtions {
 
-	private importantTips: IConfigBasedExtensionTip[] = [];
-	private otherTips: IConfigBasedExtensionTip[] = [];
+	privAte importAntTips: IConfigBAsedExtensionTip[] = [];
+	privAte otherTips: IConfigBAsedExtensionTip[] = [];
 
-	private _onDidChangeRecommendations = this._register(new Emitter<void>());
-	readonly onDidChangeRecommendations = this._onDidChangeRecommendations.event;
+	privAte _onDidChAngeRecommendAtions = this._register(new Emitter<void>());
+	reAdonly onDidChAngeRecommendAtions = this._onDidChAngeRecommendAtions.event;
 
-	private _otherRecommendations: ExtensionRecommendation[] = [];
-	get otherRecommendations(): ReadonlyArray<ExtensionRecommendation> { return this._otherRecommendations; }
+	privAte _otherRecommendAtions: ExtensionRecommendAtion[] = [];
+	get otherRecommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._otherRecommendAtions; }
 
-	private _importantRecommendations: ExtensionRecommendation[] = [];
-	get importantRecommendations(): ReadonlyArray<ExtensionRecommendation> { return this._importantRecommendations; }
+	privAte _importAntRecommendAtions: ExtensionRecommendAtion[] = [];
+	get importAntRecommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._importAntRecommendAtions; }
 
-	get recommendations(): ReadonlyArray<ExtensionRecommendation> { return [...this.importantRecommendations, ...this.otherRecommendations]; }
+	get recommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return [...this.importAntRecommendAtions, ...this.otherRecommendAtions]; }
 
 	constructor(
-		@IExtensionTipsService private readonly extensionTipsService: IExtensionTipsService,
-		@IWorkspaceContextService private readonly workspaceContextService: IWorkspaceContextService,
+		@IExtensionTipsService privAte reAdonly extensionTipsService: IExtensionTipsService,
+		@IWorkspAceContextService privAte reAdonly workspAceContextService: IWorkspAceContextService,
 	) {
 		super();
 	}
 
-	protected async doActivate(): Promise<void> {
-		await this.fetch();
-		this._register(this.workspaceContextService.onDidChangeWorkspaceFolders(e => this.onWorkspaceFoldersChanged(e)));
+	protected Async doActivAte(): Promise<void> {
+		AwAit this.fetch();
+		this._register(this.workspAceContextService.onDidChAngeWorkspAceFolders(e => this.onWorkspAceFoldersChAnged(e)));
 	}
 
-	private async fetch(): Promise<void> {
-		const workspace = this.workspaceContextService.getWorkspace();
-		const importantTips: Map<string, IConfigBasedExtensionTip> = new Map<string, IConfigBasedExtensionTip>();
-		const otherTips: Map<string, IConfigBasedExtensionTip> = new Map<string, IConfigBasedExtensionTip>();
-		for (const folder of workspace.folders) {
-			const configBasedTips = await this.extensionTipsService.getConfigBasedTips(folder.uri);
-			for (const tip of configBasedTips) {
-				if (tip.important) {
-					importantTips.set(tip.extensionId, tip);
+	privAte Async fetch(): Promise<void> {
+		const workspAce = this.workspAceContextService.getWorkspAce();
+		const importAntTips: MAp<string, IConfigBAsedExtensionTip> = new MAp<string, IConfigBAsedExtensionTip>();
+		const otherTips: MAp<string, IConfigBAsedExtensionTip> = new MAp<string, IConfigBAsedExtensionTip>();
+		for (const folder of workspAce.folders) {
+			const configBAsedTips = AwAit this.extensionTipsService.getConfigBAsedTips(folder.uri);
+			for (const tip of configBAsedTips) {
+				if (tip.importAnt) {
+					importAntTips.set(tip.extensionId, tip);
 				} else {
 					otherTips.set(tip.extensionId, tip);
 				}
 			}
 		}
-		this.importantTips = [...importantTips.values()];
-		this.otherTips = [...otherTips.values()].filter(tip => !importantTips.has(tip.extensionId));
-		this._otherRecommendations = this.otherTips.map(tip => this.toExtensionRecommendation(tip));
-		this._importantRecommendations = this.importantTips.map(tip => this.toExtensionRecommendation(tip));
+		this.importAntTips = [...importAntTips.vAlues()];
+		this.otherTips = [...otherTips.vAlues()].filter(tip => !importAntTips.hAs(tip.extensionId));
+		this._otherRecommendAtions = this.otherTips.mAp(tip => this.toExtensionRecommendAtion(tip));
+		this._importAntRecommendAtions = this.importAntTips.mAp(tip => this.toExtensionRecommendAtion(tip));
 	}
 
-	private async onWorkspaceFoldersChanged(event: IWorkspaceFoldersChangeEvent): Promise<void> {
-		if (event.added.length) {
-			const oldImportantRecommended = this.importantTips;
-			await this.fetch();
-			// Suggest only if at least one of the newly added recommendations was not suggested before
-			if (this.importantTips.some(current => oldImportantRecommended.every(old => current.extensionId !== old.extensionId))) {
-				this._onDidChangeRecommendations.fire();
+	privAte Async onWorkspAceFoldersChAnged(event: IWorkspAceFoldersChAngeEvent): Promise<void> {
+		if (event.Added.length) {
+			const oldImportAntRecommended = this.importAntTips;
+			AwAit this.fetch();
+			// Suggest only if At leAst one of the newly Added recommendAtions wAs not suggested before
+			if (this.importAntTips.some(current => oldImportAntRecommended.every(old => current.extensionId !== old.extensionId))) {
+				this._onDidChAngeRecommendAtions.fire();
 			}
 		}
 	}
 
-	private toExtensionRecommendation(tip: IConfigBasedExtensionTip): ExtensionRecommendation {
+	privAte toExtensionRecommendAtion(tip: IConfigBAsedExtensionTip): ExtensionRecommendAtion {
 		return {
 			extensionId: tip.extensionId,
-			reason: {
-				reasonId: ExtensionRecommendationReason.WorkspaceConfig,
-				reasonText: localize('exeBasedRecommendation', "This extension is recommended because of the current workspace configuration")
+			reAson: {
+				reAsonId: ExtensionRecommendAtionReAson.WorkspAceConfig,
+				reAsonText: locAlize('exeBAsedRecommendAtion', "This extension is recommended becAuse of the current workspAce configurAtion")
 			}
 		};
 	}

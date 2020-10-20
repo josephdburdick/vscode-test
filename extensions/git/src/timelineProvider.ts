@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vscode-nls';
-import { CancellationToken, ConfigurationChangeEvent, Disposable, env, Event, EventEmitter, ThemeIcon, Timeline, TimelineChangeEvent, TimelineItem, TimelineOptions, TimelineProvider, Uri, workspace } from 'vscode';
+import * As nls from 'vscode-nls';
+import { CAncellAtionToken, ConfigurAtionChAngeEvent, DisposAble, env, Event, EventEmitter, ThemeIcon, Timeline, TimelineChAngeEvent, TimelineItem, TimelineOptions, TimelineProvider, Uri, workspAce } from 'vscode';
 import { Model } from './model';
 import { Repository, Resource } from './repository';
-import { debounce } from './decorators';
+import { debounce } from './decorAtors';
 import { emojify, ensureEmojis } from './emoji';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-export class GitTimelineItem extends TimelineItem {
-	static is(item: TimelineItem): item is GitTimelineItem {
-		return item instanceof GitTimelineItem;
+export clAss GitTimelineItem extends TimelineItem {
+	stAtic is(item: TimelineItem): item is GitTimelineItem {
+		return item instAnceof GitTimelineItem;
 	}
 
-	readonly ref: string;
-	readonly previousRef: string;
-	readonly message: string;
+	reAdonly ref: string;
+	reAdonly previousRef: string;
+	reAdonly messAge: string;
 
 	constructor(
 		ref: string,
 		previousRef: string,
-		message: string,
-		timestamp: number,
+		messAge: string,
+		timestAmp: number,
 		id: string,
-		contextValue: string
+		contextVAlue: string
 	) {
-		const index = message.indexOf('\n');
-		const label = index !== -1 ? `${message.substring(0, index)} \u2026` : message;
+		const index = messAge.indexOf('\n');
+		const lAbel = index !== -1 ? `${messAge.substring(0, index)} \u2026` : messAge;
 
-		super(label, timestamp);
+		super(lAbel, timestAmp);
 
 		this.ref = ref;
 		this.previousRef = previousRef;
-		this.message = message;
+		this.messAge = messAge;
 		this.id = id;
-		this.contextValue = contextValue;
+		this.contextVAlue = contextVAlue;
 	}
 
 	get shortRef() {
@@ -49,7 +49,7 @@ export class GitTimelineItem extends TimelineItem {
 		return this.shortenRef(this.previousRef);
 	}
 
-	private shortenRef(ref: string): string {
+	privAte shortenRef(ref: string): string {
 		if (ref === '' || ref === '~' || ref === 'HEAD') {
 			return ref;
 		}
@@ -57,158 +57,158 @@ export class GitTimelineItem extends TimelineItem {
 	}
 }
 
-export class GitTimelineProvider implements TimelineProvider {
-	private _onDidChange = new EventEmitter<TimelineChangeEvent>();
-	get onDidChange(): Event<TimelineChangeEvent> {
-		return this._onDidChange.event;
+export clAss GitTimelineProvider implements TimelineProvider {
+	privAte _onDidChAnge = new EventEmitter<TimelineChAngeEvent>();
+	get onDidChAnge(): Event<TimelineChAngeEvent> {
+		return this._onDidChAnge.event;
 	}
 
-	readonly id = 'git-history';
-	readonly label = localize('git.timeline.source', 'Git History');
+	reAdonly id = 'git-history';
+	reAdonly lAbel = locAlize('git.timeline.source', 'Git History');
 
-	private readonly disposable: Disposable;
-	private providerDisposable: Disposable | undefined;
+	privAte reAdonly disposAble: DisposAble;
+	privAte providerDisposAble: DisposAble | undefined;
 
-	private repo: Repository | undefined;
-	private repoDisposable: Disposable | undefined;
-	private repoStatusDate: Date | undefined;
+	privAte repo: Repository | undefined;
+	privAte repoDisposAble: DisposAble | undefined;
+	privAte repoStAtusDAte: DAte | undefined;
 
-	constructor(private readonly model: Model) {
-		this.disposable = Disposable.from(
-			model.onDidOpenRepository(this.onRepositoriesChanged, this),
-			workspace.onDidChangeConfiguration(this.onConfigurationChanged, this)
+	constructor(privAte reAdonly model: Model) {
+		this.disposAble = DisposAble.from(
+			model.onDidOpenRepository(this.onRepositoriesChAnged, this),
+			workspAce.onDidChAngeConfigurAtion(this.onConfigurAtionChAnged, this)
 		);
 
 		if (model.repositories.length) {
-			this.ensureProviderRegistration();
+			this.ensureProviderRegistrAtion();
 		}
 	}
 
 	dispose() {
-		this.providerDisposable?.dispose();
-		this.disposable.dispose();
+		this.providerDisposAble?.dispose();
+		this.disposAble.dispose();
 	}
 
-	async provideTimeline(uri: Uri, options: TimelineOptions, _token: CancellationToken): Promise<Timeline> {
-		// console.log(`GitTimelineProvider.provideTimeline: uri=${uri} state=${this._model.state}`);
+	Async provideTimeline(uri: Uri, options: TimelineOptions, _token: CAncellAtionToken): Promise<Timeline> {
+		// console.log(`GitTimelineProvider.provideTimeline: uri=${uri} stAte=${this._model.stAte}`);
 
 		const repo = this.model.getRepository(uri);
 		if (!repo) {
-			this.repoDisposable?.dispose();
-			this.repoStatusDate = undefined;
+			this.repoDisposAble?.dispose();
+			this.repoStAtusDAte = undefined;
 			this.repo = undefined;
 
 			return { items: [] };
 		}
 
 		if (this.repo?.root !== repo.root) {
-			this.repoDisposable?.dispose();
+			this.repoDisposAble?.dispose();
 
 			this.repo = repo;
-			this.repoStatusDate = new Date();
-			this.repoDisposable = Disposable.from(
-				repo.onDidChangeRepository(uri => this.onRepositoryChanged(repo, uri)),
-				repo.onDidRunGitStatus(() => this.onRepositoryStatusChanged(repo))
+			this.repoStAtusDAte = new DAte();
+			this.repoDisposAble = DisposAble.from(
+				repo.onDidChAngeRepository(uri => this.onRepositoryChAnged(repo, uri)),
+				repo.onDidRunGitStAtus(() => this.onRepositoryStAtusChAnged(repo))
 			);
 		}
 
-		const config = workspace.getConfiguration('git.timeline');
+		const config = workspAce.getConfigurAtion('git.timeline');
 
-		// TODO@eamodio: Ensure that the uri is a file -- if not we could get the history of the repo?
+		// TODO@eAmodio: Ensure thAt the uri is A file -- if not we could get the history of the repo?
 
 		let limit: number | undefined;
 		if (options.limit !== undefined && typeof options.limit !== 'number') {
 			try {
-				const result = await this.model.git.exec(repo.root, ['rev-list', '--count', `${options.limit.id}..`, '--', uri.fsPath]);
+				const result = AwAit this.model.git.exec(repo.root, ['rev-list', '--count', `${options.limit.id}..`, '--', uri.fsPAth]);
 				if (!result.exitCode) {
-					// Ask for 2 more (1 for the limit commit and 1 for the next commit) than so we can determine if there are more commits
+					// Ask for 2 more (1 for the limit commit And 1 for the next commit) thAn so we cAn determine if there Are more commits
 					limit = Number(result.stdout) + 2;
 				}
 			}
-			catch {
+			cAtch {
 				limit = undefined;
 			}
 		} else {
-			// If we are not getting everything, ask for 1 more than so we can determine if there are more commits
+			// If we Are not getting everything, Ask for 1 more thAn so we cAn determine if there Are more commits
 			limit = options.limit === undefined ? undefined : options.limit + 1;
 		}
 
-		await ensureEmojis();
+		AwAit ensureEmojis();
 
-		const commits = await repo.logFile(uri, {
-			maxEntries: limit,
-			hash: options.cursor,
-			// sortByAuthorDate: true
+		const commits = AwAit repo.logFile(uri, {
+			mAxEntries: limit,
+			hAsh: options.cursor,
+			// sortByAuthorDAte: true
 		});
 
-		const paging = commits.length ? {
-			cursor: limit === undefined ? undefined : (commits.length >= limit ? commits[commits.length - 1]?.hash : undefined)
+		const pAging = commits.length ? {
+			cursor: limit === undefined ? undefined : (commits.length >= limit ? commits[commits.length - 1]?.hAsh : undefined)
 		} : undefined;
 
-		// If we asked for an extra commit, strip it off
+		// If we Asked for An extrA commit, strip it off
 		if (limit !== undefined && commits.length >= limit) {
 			commits.splice(commits.length - 1, 1);
 		}
 
-		const dateFormatter = new Intl.DateTimeFormat(env.language, { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+		const dAteFormAtter = new Intl.DAteTimeFormAt(env.lAnguAge, { yeAr: 'numeric', month: 'long', dAy: 'numeric', hour: 'numeric', minute: 'numeric' });
 
-		const dateType = config.get<'committed' | 'authored'>('date');
-		const showAuthor = config.get<boolean>('showAuthor');
+		const dAteType = config.get<'committed' | 'Authored'>('dAte');
+		const showAuthor = config.get<booleAn>('showAuthor');
 
-		const items = commits.map<GitTimelineItem>((c, i) => {
-			const date = dateType === 'authored' ? c.authorDate : c.commitDate;
+		const items = commits.mAp<GitTimelineItem>((c, i) => {
+			const dAte = dAteType === 'Authored' ? c.AuthorDAte : c.commitDAte;
 
-			const message = emojify(c.message);
+			const messAge = emojify(c.messAge);
 
-			const item = new GitTimelineItem(c.hash, commits[i + 1]?.hash ?? `${c.hash}^`, message, date?.getTime() ?? 0, c.hash, 'git:file:commit');
-			item.iconPath = new (ThemeIcon as any)('git-commit');
+			const item = new GitTimelineItem(c.hAsh, commits[i + 1]?.hAsh ?? `${c.hAsh}^`, messAge, dAte?.getTime() ?? 0, c.hAsh, 'git:file:commit');
+			item.iconPAth = new (ThemeIcon As Any)('git-commit');
 			if (showAuthor) {
-				item.description = c.authorName;
+				item.description = c.AuthorNAme;
 			}
-			item.detail = `${c.authorName} (${c.authorEmail}) — ${c.hash.substr(0, 8)}\n${dateFormatter.format(date)}\n\n${message}`;
-			item.command = {
-				title: 'Open Comparison',
-				command: 'git.timeline.openDiff',
-				arguments: [item, uri, this.id]
+			item.detAil = `${c.AuthorNAme} (${c.AuthorEmAil}) — ${c.hAsh.substr(0, 8)}\n${dAteFormAtter.formAt(dAte)}\n\n${messAge}`;
+			item.commAnd = {
+				title: 'Open CompArison',
+				commAnd: 'git.timeline.openDiff',
+				Arguments: [item, uri, this.id]
 			};
 
 			return item;
 		});
 
 		if (options.cursor === undefined) {
-			const you = localize('git.timeline.you', 'You');
+			const you = locAlize('git.timeline.you', 'You');
 
-			const index = repo.indexGroup.resourceStates.find(r => r.resourceUri.fsPath === uri.fsPath);
+			const index = repo.indexGroup.resourceStAtes.find(r => r.resourceUri.fsPAth === uri.fsPAth);
 			if (index) {
-				const date = this.repoStatusDate ?? new Date();
+				const dAte = this.repoStAtusDAte ?? new DAte();
 
-				const item = new GitTimelineItem('~', 'HEAD', localize('git.timeline.stagedChanges', 'Staged Changes'), date.getTime(), 'index', 'git:file:index');
-				// TODO@eamodio: Replace with a better icon -- reflecting its status maybe?
-				item.iconPath = new (ThemeIcon as any)('git-commit');
+				const item = new GitTimelineItem('~', 'HEAD', locAlize('git.timeline.stAgedChAnges', 'StAged ChAnges'), dAte.getTime(), 'index', 'git:file:index');
+				// TODO@eAmodio: ReplAce with A better icon -- reflecting its stAtus mAybe?
+				item.iconPAth = new (ThemeIcon As Any)('git-commit');
 				item.description = '';
-				item.detail = localize('git.timeline.detail', '{0}  — {1}\n{2}\n\n{3}', you, localize('git.index', 'Index'), dateFormatter.format(date), Resource.getStatusText(index.type));
-				item.command = {
-					title: 'Open Comparison',
-					command: 'git.timeline.openDiff',
-					arguments: [item, uri, this.id]
+				item.detAil = locAlize('git.timeline.detAil', '{0}  — {1}\n{2}\n\n{3}', you, locAlize('git.index', 'Index'), dAteFormAtter.formAt(dAte), Resource.getStAtusText(index.type));
+				item.commAnd = {
+					title: 'Open CompArison',
+					commAnd: 'git.timeline.openDiff',
+					Arguments: [item, uri, this.id]
 				};
 
 				items.splice(0, 0, item);
 			}
 
-			const working = repo.workingTreeGroup.resourceStates.find(r => r.resourceUri.fsPath === uri.fsPath);
+			const working = repo.workingTreeGroup.resourceStAtes.find(r => r.resourceUri.fsPAth === uri.fsPAth);
 			if (working) {
-				const date = new Date();
+				const dAte = new DAte();
 
-				const item = new GitTimelineItem('', index ? '~' : 'HEAD', localize('git.timeline.uncommitedChanges', 'Uncommited Changes'), date.getTime(), 'working', 'git:file:working');
-				// TODO@eamodio: Replace with a better icon -- reflecting its status maybe?
-				item.iconPath = new (ThemeIcon as any)('git-commit');
+				const item = new GitTimelineItem('', index ? '~' : 'HEAD', locAlize('git.timeline.uncommitedChAnges', 'Uncommited ChAnges'), dAte.getTime(), 'working', 'git:file:working');
+				// TODO@eAmodio: ReplAce with A better icon -- reflecting its stAtus mAybe?
+				item.iconPAth = new (ThemeIcon As Any)('git-commit');
 				item.description = '';
-				item.detail = localize('git.timeline.detail', '{0}  — {1}\n{2}\n\n{3}', you, localize('git.workingTree', 'Working Tree'), dateFormatter.format(date), Resource.getStatusText(working.type));
-				item.command = {
-					title: 'Open Comparison',
-					command: 'git.timeline.openDiff',
-					arguments: [item, uri, this.id]
+				item.detAil = locAlize('git.timeline.detAil', '{0}  — {1}\n{2}\n\n{3}', you, locAlize('git.workingTree', 'Working Tree'), dAteFormAtter.formAt(dAte), Resource.getStAtusText(working.type));
+				item.commAnd = {
+					title: 'Open CompArison',
+					commAnd: 'git.timeline.openDiff',
+					Arguments: [item, uri, this.id]
 				};
 
 				items.splice(0, 0, item);
@@ -217,48 +217,48 @@ export class GitTimelineProvider implements TimelineProvider {
 
 		return {
 			items: items,
-			paging: paging
+			pAging: pAging
 		};
 	}
 
-	private ensureProviderRegistration() {
-		if (this.providerDisposable === undefined) {
-			this.providerDisposable = workspace.registerTimelineProvider(['file', 'git', 'vscode-remote', 'gitlens-git'], this);
+	privAte ensureProviderRegistrAtion() {
+		if (this.providerDisposAble === undefined) {
+			this.providerDisposAble = workspAce.registerTimelineProvider(['file', 'git', 'vscode-remote', 'gitlens-git'], this);
 		}
 	}
 
-	private onConfigurationChanged(e: ConfigurationChangeEvent) {
-		if (e.affectsConfiguration('git.timeline.date') || e.affectsConfiguration('git.timeline.showAuthor')) {
-			this.fireChanged();
+	privAte onConfigurAtionChAnged(e: ConfigurAtionChAngeEvent) {
+		if (e.AffectsConfigurAtion('git.timeline.dAte') || e.AffectsConfigurAtion('git.timeline.showAuthor')) {
+			this.fireChAnged();
 		}
 	}
 
-	private onRepositoriesChanged(_repo: Repository) {
-		// console.log(`GitTimelineProvider.onRepositoriesChanged`);
+	privAte onRepositoriesChAnged(_repo: Repository) {
+		// console.log(`GitTimelineProvider.onRepositoriesChAnged`);
 
-		this.ensureProviderRegistration();
+		this.ensureProviderRegistrAtion();
 
-		// TODO@eamodio: Being naive for now and just always refreshing each time there is a new repository
-		this.fireChanged();
+		// TODO@eAmodio: Being nAive for now And just AlwAys refreshing eAch time there is A new repository
+		this.fireChAnged();
 	}
 
-	private onRepositoryChanged(_repo: Repository, _uri: Uri) {
-		// console.log(`GitTimelineProvider.onRepositoryChanged: uri=${uri.toString(true)}`);
+	privAte onRepositoryChAnged(_repo: Repository, _uri: Uri) {
+		// console.log(`GitTimelineProvider.onRepositoryChAnged: uri=${uri.toString(true)}`);
 
-		this.fireChanged();
+		this.fireChAnged();
 	}
 
-	private onRepositoryStatusChanged(_repo: Repository) {
-		// console.log(`GitTimelineProvider.onRepositoryStatusChanged`);
+	privAte onRepositoryStAtusChAnged(_repo: Repository) {
+		// console.log(`GitTimelineProvider.onRepositoryStAtusChAnged`);
 
-		// This is less than ideal, but for now just save the last time a status was run and use that as the timestamp for staged items
-		this.repoStatusDate = new Date();
+		// This is less thAn ideAl, but for now just sAve the lAst time A stAtus wAs run And use thAt As the timestAmp for stAged items
+		this.repoStAtusDAte = new DAte();
 
-		this.fireChanged();
+		this.fireChAnged();
 	}
 
 	@debounce(500)
-	private fireChanged() {
-		this._onDidChange.fire(undefined);
+	privAte fireChAnged() {
+		this._onDidChAnge.fire(undefined);
 	}
 }

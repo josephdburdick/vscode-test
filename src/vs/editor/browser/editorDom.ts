@@ -1,213 +1,213 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { GlobalMouseMoveMonitor } from 'vs/base/browser/globalMouseMoveMonitor';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
+import * As dom from 'vs/bAse/browser/dom';
+import { GlobAlMouseMoveMonitor } from 'vs/bAse/browser/globAlMouseMoveMonitor';
+import { StAndArdMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
 
 /**
- * Coordinates relative to the whole document (e.g. mouse event's pageX and pageY)
+ * CoordinAtes relAtive to the whole document (e.g. mouse event's pAgeX And pAgeY)
  */
-export class PageCoordinates {
-	_pageCoordinatesBrand: void;
+export clAss PAgeCoordinAtes {
+	_pAgeCoordinAtesBrAnd: void;
 
 	constructor(
-		public readonly x: number,
-		public readonly y: number
+		public reAdonly x: number,
+		public reAdonly y: number
 	) { }
 
-	public toClientCoordinates(): ClientCoordinates {
-		return new ClientCoordinates(this.x - dom.StandardWindow.scrollX, this.y - dom.StandardWindow.scrollY);
+	public toClientCoordinAtes(): ClientCoordinAtes {
+		return new ClientCoordinAtes(this.x - dom.StAndArdWindow.scrollX, this.y - dom.StAndArdWindow.scrollY);
 	}
 }
 
 /**
- * Coordinates within the application's client area (i.e. origin is document's scroll position).
+ * CoordinAtes within the ApplicAtion's client AreA (i.e. origin is document's scroll position).
  *
- * For example, clicking in the top-left corner of the client area will
- * always result in a mouse event with a client.x value of 0, regardless
- * of whether the page is scrolled horizontally.
+ * For exAmple, clicking in the top-left corner of the client AreA will
+ * AlwAys result in A mouse event with A client.x vAlue of 0, regArdless
+ * of whether the pAge is scrolled horizontAlly.
  */
-export class ClientCoordinates {
-	_clientCoordinatesBrand: void;
+export clAss ClientCoordinAtes {
+	_clientCoordinAtesBrAnd: void;
 
 	constructor(
-		public readonly clientX: number,
-		public readonly clientY: number
+		public reAdonly clientX: number,
+		public reAdonly clientY: number
 	) { }
 
-	public toPageCoordinates(): PageCoordinates {
-		return new PageCoordinates(this.clientX + dom.StandardWindow.scrollX, this.clientY + dom.StandardWindow.scrollY);
+	public toPAgeCoordinAtes(): PAgeCoordinAtes {
+		return new PAgeCoordinAtes(this.clientX + dom.StAndArdWindow.scrollX, this.clientY + dom.StAndArdWindow.scrollY);
 	}
 }
 
 /**
- * The position of the editor in the page.
+ * The position of the editor in the pAge.
  */
-export class EditorPagePosition {
-	_editorPagePositionBrand: void;
+export clAss EditorPAgePosition {
+	_editorPAgePositionBrAnd: void;
 
 	constructor(
-		public readonly x: number,
-		public readonly y: number,
-		public readonly width: number,
-		public readonly height: number
+		public reAdonly x: number,
+		public reAdonly y: number,
+		public reAdonly width: number,
+		public reAdonly height: number
 	) { }
 }
 
-export function createEditorPagePosition(editorViewDomNode: HTMLElement): EditorPagePosition {
-	const editorPos = dom.getDomNodePagePosition(editorViewDomNode);
-	return new EditorPagePosition(editorPos.left, editorPos.top, editorPos.width, editorPos.height);
+export function creAteEditorPAgePosition(editorViewDomNode: HTMLElement): EditorPAgePosition {
+	const editorPos = dom.getDomNodePAgePosition(editorViewDomNode);
+	return new EditorPAgePosition(editorPos.left, editorPos.top, editorPos.width, editorPos.height);
 }
 
-export class EditorMouseEvent extends StandardMouseEvent {
-	_editorMouseEventBrand: void;
+export clAss EditorMouseEvent extends StAndArdMouseEvent {
+	_editorMouseEventBrAnd: void;
 
 	/**
-	 * Coordinates relative to the whole document.
+	 * CoordinAtes relAtive to the whole document.
 	 */
-	public readonly pos: PageCoordinates;
+	public reAdonly pos: PAgeCoordinAtes;
 
 	/**
-	 * Editor's coordinates relative to the whole document.
+	 * Editor's coordinAtes relAtive to the whole document.
 	 */
-	public readonly editorPos: EditorPagePosition;
+	public reAdonly editorPos: EditorPAgePosition;
 
 	constructor(e: MouseEvent, editorViewDomNode: HTMLElement) {
 		super(e);
-		this.pos = new PageCoordinates(this.posx, this.posy);
-		this.editorPos = createEditorPagePosition(editorViewDomNode);
+		this.pos = new PAgeCoordinAtes(this.posx, this.posy);
+		this.editorPos = creAteEditorPAgePosition(editorViewDomNode);
 	}
 }
 
-export interface EditorMouseEventMerger {
-	(lastEvent: EditorMouseEvent | null, currentEvent: EditorMouseEvent): EditorMouseEvent;
+export interfAce EditorMouseEventMerger {
+	(lAstEvent: EditorMouseEvent | null, currentEvent: EditorMouseEvent): EditorMouseEvent;
 }
 
-export class EditorMouseEventFactory {
+export clAss EditorMouseEventFActory {
 
-	private readonly _editorViewDomNode: HTMLElement;
+	privAte reAdonly _editorViewDomNode: HTMLElement;
 
 	constructor(editorViewDomNode: HTMLElement) {
 		this._editorViewDomNode = editorViewDomNode;
 	}
 
-	private _create(e: MouseEvent): EditorMouseEvent {
+	privAte _creAte(e: MouseEvent): EditorMouseEvent {
 		return new EditorMouseEvent(e, this._editorViewDomNode);
 	}
 
-	public onContextMenu(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'contextmenu', (e: MouseEvent) => {
-			callback(this._create(e));
+	public onContextMenu(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleListener(tArget, 'contextmenu', (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onMouseUp(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'mouseup', (e: MouseEvent) => {
-			callback(this._create(e));
+	public onMouseUp(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleListener(tArget, 'mouseup', (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onMouseDown(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'mousedown', (e: MouseEvent) => {
-			callback(this._create(e));
+	public onMouseDown(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleListener(tArget, 'mousedown', (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onMouseLeave(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableNonBubblingMouseOutListener(target, (e: MouseEvent) => {
-			callback(this._create(e));
+	public onMouseLeAve(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleNonBubblingMouseOutListener(tArget, (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onMouseMoveThrottled(target: HTMLElement, callback: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: number): IDisposable {
-		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lastEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
-			return merger(lastEvent, this._create(currentEvent));
+	public onMouseMoveThrottled(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: number): IDisposAble {
+		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lAstEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
+			return merger(lAstEvent, this._creAte(currentEvent));
 		};
-		return dom.addDisposableThrottledListener<EditorMouseEvent, MouseEvent>(target, 'mousemove', callback, myMerger, minimumTimeMs);
+		return dom.AddDisposAbleThrottledListener<EditorMouseEvent, MouseEvent>(tArget, 'mousemove', cAllbAck, myMerger, minimumTimeMs);
 	}
 }
 
-export class EditorPointerEventFactory {
+export clAss EditorPointerEventFActory {
 
-	private readonly _editorViewDomNode: HTMLElement;
+	privAte reAdonly _editorViewDomNode: HTMLElement;
 
 	constructor(editorViewDomNode: HTMLElement) {
 		this._editorViewDomNode = editorViewDomNode;
 	}
 
-	private _create(e: MouseEvent): EditorMouseEvent {
+	privAte _creAte(e: MouseEvent): EditorMouseEvent {
 		return new EditorMouseEvent(e, this._editorViewDomNode);
 	}
 
-	public onPointerUp(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'pointerup', (e: MouseEvent) => {
-			callback(this._create(e));
+	public onPointerUp(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleListener(tArget, 'pointerup', (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onPointerDown(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableListener(target, 'pointerdown', (e: MouseEvent) => {
-			callback(this._create(e));
+	public onPointerDown(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleListener(tArget, 'pointerdown', (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onPointerLeave(target: HTMLElement, callback: (e: EditorMouseEvent) => void): IDisposable {
-		return dom.addDisposableNonBubblingPointerOutListener(target, (e: MouseEvent) => {
-			callback(this._create(e));
+	public onPointerLeAve(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void): IDisposAble {
+		return dom.AddDisposAbleNonBubblingPointerOutListener(tArget, (e: MouseEvent) => {
+			cAllbAck(this._creAte(e));
 		});
 	}
 
-	public onPointerMoveThrottled(target: HTMLElement, callback: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: number): IDisposable {
-		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lastEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
-			return merger(lastEvent, this._create(currentEvent));
+	public onPointerMoveThrottled(tArget: HTMLElement, cAllbAck: (e: EditorMouseEvent) => void, merger: EditorMouseEventMerger, minimumTimeMs: number): IDisposAble {
+		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lAstEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
+			return merger(lAstEvent, this._creAte(currentEvent));
 		};
-		return dom.addDisposableThrottledListener<EditorMouseEvent, MouseEvent>(target, 'pointermove', callback, myMerger, minimumTimeMs);
+		return dom.AddDisposAbleThrottledListener<EditorMouseEvent, MouseEvent>(tArget, 'pointermove', cAllbAck, myMerger, minimumTimeMs);
 	}
 }
 
-export class GlobalEditorMouseMoveMonitor extends Disposable {
+export clAss GlobAlEditorMouseMoveMonitor extends DisposAble {
 
-	private readonly _editorViewDomNode: HTMLElement;
-	private readonly _globalMouseMoveMonitor: GlobalMouseMoveMonitor<EditorMouseEvent>;
-	private _keydownListener: IDisposable | null;
+	privAte reAdonly _editorViewDomNode: HTMLElement;
+	privAte reAdonly _globAlMouseMoveMonitor: GlobAlMouseMoveMonitor<EditorMouseEvent>;
+	privAte _keydownListener: IDisposAble | null;
 
 	constructor(editorViewDomNode: HTMLElement) {
 		super();
 		this._editorViewDomNode = editorViewDomNode;
-		this._globalMouseMoveMonitor = this._register(new GlobalMouseMoveMonitor<EditorMouseEvent>());
+		this._globAlMouseMoveMonitor = this._register(new GlobAlMouseMoveMonitor<EditorMouseEvent>());
 		this._keydownListener = null;
 	}
 
-	public startMonitoring(
-		initialElement: HTMLElement,
-		initialButtons: number,
+	public stArtMonitoring(
+		initiAlElement: HTMLElement,
+		initiAlButtons: number,
 		merger: EditorMouseEventMerger,
-		mouseMoveCallback: (e: EditorMouseEvent) => void,
-		onStopCallback: () => void
+		mouseMoveCAllbAck: (e: EditorMouseEvent) => void,
+		onStopCAllbAck: () => void
 	): void {
 
-		// Add a <<capture>> keydown event listener that will cancel the monitoring
-		// if something other than a modifier key is pressed
-		this._keydownListener = dom.addStandardDisposableListener(<any>document, 'keydown', (e) => {
+		// Add A <<cApture>> keydown event listener thAt will cAncel the monitoring
+		// if something other thAn A modifier key is pressed
+		this._keydownListener = dom.AddStAndArdDisposAbleListener(<Any>document, 'keydown', (e) => {
 			const kb = e.toKeybinding();
 			if (kb.isModifierKey()) {
 				// Allow modifier keys
 				return;
 			}
-			this._globalMouseMoveMonitor.stopMonitoring(true);
+			this._globAlMouseMoveMonitor.stopMonitoring(true);
 		}, true);
 
-		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lastEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
-			return merger(lastEvent, new EditorMouseEvent(currentEvent, this._editorViewDomNode));
+		const myMerger: dom.IEventMerger<EditorMouseEvent, MouseEvent> = (lAstEvent: EditorMouseEvent | null, currentEvent: MouseEvent): EditorMouseEvent => {
+			return merger(lAstEvent, new EditorMouseEvent(currentEvent, this._editorViewDomNode));
 		};
 
-		this._globalMouseMoveMonitor.startMonitoring(initialElement, initialButtons, myMerger, mouseMoveCallback, () => {
+		this._globAlMouseMoveMonitor.stArtMonitoring(initiAlElement, initiAlButtons, myMerger, mouseMoveCAllbAck, () => {
 			this._keydownListener!.dispose();
-			onStopCallback();
+			onStopCAllbAck();
 		});
 	}
 }

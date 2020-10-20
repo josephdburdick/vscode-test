@@ -1,27 +1,27 @@
-declare module "event-stream" {
-	import { Stream } from 'stream';
-	import { ThroughStream as _ThroughStream } from 'through';
-	import * as File from 'vinyl';
+declAre module "event-streAm" {
+	import { StreAm } from 'streAm';
+	import { ThroughStreAm As _ThroughStreAm } from 'through';
+	import * As File from 'vinyl';
 
-	export interface ThroughStream extends _ThroughStream {
-		queue(data: File | null): any;
-		push(data: File | null): any;
-		paused: boolean;
+	export interfAce ThroughStreAm extends _ThroughStreAm {
+		queue(dAtA: File | null): Any;
+		push(dAtA: File | null): Any;
+		pAused: booleAn;
 	}
 
-	function merge(streams: Stream[]): ThroughStream;
-	function merge(...streams: Stream[]): ThroughStream;
-	function concat(...stream: Stream[]): ThroughStream;
-	function duplex(istream: Stream, ostream: Stream): ThroughStream;
+	function merge(streAms: StreAm[]): ThroughStreAm;
+	function merge(...streAms: StreAm[]): ThroughStreAm;
+	function concAt(...streAm: StreAm[]): ThroughStreAm;
+	function duplex(istreAm: StreAm, ostreAm: StreAm): ThroughStreAm;
 
-	function through(write?: (this: ThroughStream, data: any) => void, end?: (this: ThroughStream) => void,
-		opts?: { autoDestroy: boolean; }): ThroughStream;
+	function through(write?: (this: ThroughStreAm, dAtA: Any) => void, end?: (this: ThroughStreAm) => void,
+		opts?: { AutoDestroy: booleAn; }): ThroughStreAm;
 
-	function readArray<T>(array: T[]): ThroughStream;
-	function writeArray<T>(cb: (err: Error, array: T[]) => void): ThroughStream;
+	function reAdArrAy<T>(ArrAy: T[]): ThroughStreAm;
+	function writeArrAy<T>(cb: (err: Error, ArrAy: T[]) => void): ThroughStreAm;
 
-	function mapSync<I, O>(cb: (data: I) => O): ThroughStream;
-	function map<I, O>(cb: (data: I, cb: (err?: Error, data?: O) => void) => O): ThroughStream;
+	function mApSync<I, O>(cb: (dAtA: I) => O): ThroughStreAm;
+	function mAp<I, O>(cb: (dAtA: I, cb: (err?: Error, dAtA?: O) => void) => O): ThroughStreAm;
 
-	function readable(asyncFunction: (this: ThroughStream, ...args: any[]) => any): any;
+	function reAdAble(AsyncFunction: (this: ThroughStreAm, ...Args: Any[]) => Any): Any;
 }

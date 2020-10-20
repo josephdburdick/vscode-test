@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import * As nls from 'vs/nls';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 
-import { Schemas } from 'vs/workbench/contrib/tasks/common/problemMatcher';
+import { SchemAs } from 'vs/workbench/contrib/tAsks/common/problemMAtcher';
 
-const schema: IJSONSchema = {
+const schemA: IJSONSchemA = {
 	definitions: {
 		showOutputType: {
 			type: 'string',
-			enum: ['always', 'silent', 'never']
+			enum: ['AlwAys', 'silent', 'never']
 		},
 		options: {
 			type: 'object',
-			description: nls.localize('JsonSchema.options', 'Additional command options'),
+			description: nls.locAlize('JsonSchemA.options', 'AdditionAl commAnd options'),
 			properties: {
 				cwd: {
 					type: 'string',
-					description: nls.localize('JsonSchema.options.cwd', 'The current working directory of the executed program or script. If omitted Code\'s current workspace root is used.')
+					description: nls.locAlize('JsonSchemA.options.cwd', 'The current working directory of the executed progrAm or script. If omitted Code\'s current workspAce root is used.')
 				},
 				env: {
 					type: 'object',
-					additionalProperties: {
+					AdditionAlProperties: {
 						type: 'string'
 					},
-					description: nls.localize('JsonSchema.options.env', 'The environment of the executed program or shell. If omitted the parent process\' environment is used.')
+					description: nls.locAlize('JsonSchemA.options.env', 'The environment of the executed progrAm or shell. If omitted the pArent process\' environment is used.')
 				}
 			},
-			additionalProperties: {
-				type: ['string', 'array', 'object']
+			AdditionAlProperties: {
+				type: ['string', 'ArrAy', 'object']
 			}
 		},
-		problemMatcherType: {
+		problemMAtcherType: {
 			oneOf: [
 				{
 					type: 'string',
-					errorMessage: nls.localize('JsonSchema.tasks.matcherError', 'Unrecognized problem matcher. Is the extension that contributes this problem matcher installed?')
+					errorMessAge: nls.locAlize('JsonSchemA.tAsks.mAtcherError', 'Unrecognized problem mAtcher. Is the extension thAt contributes this problem mAtcher instAlled?')
 				},
-				Schemas.LegacyProblemMatcher,
+				SchemAs.LegAcyProblemMAtcher,
 				{
-					type: 'array',
+					type: 'ArrAy',
 					items: {
-						anyOf: [
+						AnyOf: [
 							{
 								type: 'string',
-								errorMessage: nls.localize('JsonSchema.tasks.matcherError', 'Unrecognized problem matcher. Is the extension that contributes this problem matcher installed?')
+								errorMessAge: nls.locAlize('JsonSchemA.tAsks.mAtcherError', 'Unrecognized problem mAtcher. Is the extension thAt contributes this problem mAtcher instAlled?')
 							},
-							Schemas.LegacyProblemMatcher
+							SchemAs.LegAcyProblemMAtcher
 						]
 					}
 				}
 			]
 		},
-		shellConfiguration: {
+		shellConfigurAtion: {
 			type: 'object',
-			additionalProperties: false,
-			description: nls.localize('JsonSchema.shellConfiguration', 'Configures the shell to be used.'),
+			AdditionAlProperties: fAlse,
+			description: nls.locAlize('JsonSchemA.shellConfigurAtion', 'Configures the shell to be used.'),
 			properties: {
-				executable: {
+				executAble: {
 					type: 'string',
-					description: nls.localize('JsonSchema.shell.executable', 'The shell to be used.')
+					description: nls.locAlize('JsonSchemA.shell.executAble', 'The shell to be used.')
 				},
-				args: {
-					type: 'array',
-					description: nls.localize('JsonSchema.shell.args', 'The shell arguments.'),
+				Args: {
+					type: 'ArrAy',
+					description: nls.locAlize('JsonSchemA.shell.Args', 'The shell Arguments.'),
 					items: {
 						type: 'string'
 					}
 				}
 			}
 		},
-		commandConfiguration: {
+		commAndConfigurAtion: {
 			type: 'object',
-			additionalProperties: false,
+			AdditionAlProperties: fAlse,
 			properties: {
-				command: {
+				commAnd: {
 					type: 'string',
-					description: nls.localize('JsonSchema.command', 'The command to be executed. Can be an external program or a shell command.')
+					description: nls.locAlize('JsonSchemA.commAnd', 'The commAnd to be executed. CAn be An externAl progrAm or A shell commAnd.')
 				},
-				args: {
-					type: 'array',
-					description: nls.localize('JsonSchema.tasks.args', 'Arguments passed to the command when this task is invoked.'),
+				Args: {
+					type: 'ArrAy',
+					description: nls.locAlize('JsonSchemA.tAsks.Args', 'Arguments pAssed to the commAnd when this tAsk is invoked.'),
 					items: {
 						type: 'string'
 					}
@@ -93,22 +93,22 @@ const schema: IJSONSchema = {
 				}
 			}
 		},
-		taskDescription: {
+		tAskDescription: {
 			type: 'object',
-			required: ['taskName'],
-			additionalProperties: false,
+			required: ['tAskNAme'],
+			AdditionAlProperties: fAlse,
 			properties: {
-				taskName: {
+				tAskNAme: {
 					type: 'string',
-					description: nls.localize('JsonSchema.tasks.taskName', "The task's name")
+					description: nls.locAlize('JsonSchemA.tAsks.tAskNAme', "The tAsk's nAme")
 				},
-				command: {
+				commAnd: {
 					type: 'string',
-					description: nls.localize('JsonSchema.command', 'The command to be executed. Can be an external program or a shell command.')
+					description: nls.locAlize('JsonSchemA.commAnd', 'The commAnd to be executed. CAn be An externAl progrAm or A shell commAnd.')
 				},
-				args: {
-					type: 'array',
-					description: nls.localize('JsonSchema.tasks.args', 'Arguments passed to the command when this task is invoked.'),
+				Args: {
+					type: 'ArrAy',
+					description: nls.locAlize('JsonSchemA.tAsks.Args', 'Arguments pAssed to the commAnd when this tAsk is invoked.'),
 					items: {
 						type: 'string'
 					}
@@ -117,110 +117,110 @@ const schema: IJSONSchema = {
 					$ref: '#/definitions/options'
 				},
 				windows: {
-					anyOf: [
+					AnyOf: [
 						{
-							$ref: '#/definitions/commandConfiguration',
-							description: nls.localize('JsonSchema.tasks.windows', 'Windows specific command configuration'),
+							$ref: '#/definitions/commAndConfigurAtion',
+							description: nls.locAlize('JsonSchemA.tAsks.windows', 'Windows specific commAnd configurAtion'),
 						},
 						{
 							properties: {
-								problemMatcher: {
-									$ref: '#/definitions/problemMatcherType',
-									description: nls.localize('JsonSchema.tasks.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+								problemMAtcher: {
+									$ref: '#/definitions/problemMAtcherType',
+									description: nls.locAlize('JsonSchemA.tAsks.mAtchers', 'The problem mAtcher(s) to use. CAn either be A string or A problem mAtcher definition or An ArrAy of strings And problem mAtchers.')
 								}
 							}
 						}
 					]
 				},
 				osx: {
-					anyOf: [
+					AnyOf: [
 						{
-							$ref: '#/definitions/commandConfiguration',
-							description: nls.localize('JsonSchema.tasks.mac', 'Mac specific command configuration')
+							$ref: '#/definitions/commAndConfigurAtion',
+							description: nls.locAlize('JsonSchemA.tAsks.mAc', 'MAc specific commAnd configurAtion')
 						},
 						{
 							properties: {
-								problemMatcher: {
-									$ref: '#/definitions/problemMatcherType',
-									description: nls.localize('JsonSchema.tasks.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+								problemMAtcher: {
+									$ref: '#/definitions/problemMAtcherType',
+									description: nls.locAlize('JsonSchemA.tAsks.mAtchers', 'The problem mAtcher(s) to use. CAn either be A string or A problem mAtcher definition or An ArrAy of strings And problem mAtchers.')
 								}
 							}
 						}
 					]
 				},
 				linux: {
-					anyOf: [
+					AnyOf: [
 						{
-							$ref: '#/definitions/commandConfiguration',
-							description: nls.localize('JsonSchema.tasks.linux', 'Linux specific command configuration')
+							$ref: '#/definitions/commAndConfigurAtion',
+							description: nls.locAlize('JsonSchemA.tAsks.linux', 'Linux specific commAnd configurAtion')
 						},
 						{
 							properties: {
-								problemMatcher: {
-									$ref: '#/definitions/problemMatcherType',
-									description: nls.localize('JsonSchema.tasks.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+								problemMAtcher: {
+									$ref: '#/definitions/problemMAtcherType',
+									description: nls.locAlize('JsonSchemA.tAsks.mAtchers', 'The problem mAtcher(s) to use. CAn either be A string or A problem mAtcher definition or An ArrAy of strings And problem mAtchers.')
 								}
 							}
 						}
 					]
 				},
-				suppressTaskName: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.tasks.suppressTaskName', 'Controls whether the task name is added as an argument to the command. If omitted the globally defined value is used.'),
-					default: true
+				suppressTAskNAme: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.tAsks.suppressTAskNAme', 'Controls whether the tAsk nAme is Added As An Argument to the commAnd. If omitted the globAlly defined vAlue is used.'),
+					defAult: true
 				},
 				showOutput: {
 					$ref: '#/definitions/showOutputType',
-					description: nls.localize('JsonSchema.tasks.showOutput', 'Controls whether the output of the running task is shown or not. If omitted the globally defined value is used.')
+					description: nls.locAlize('JsonSchemA.tAsks.showOutput', 'Controls whether the output of the running tAsk is shown or not. If omitted the globAlly defined vAlue is used.')
 				},
-				echoCommand: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.echoCommand', 'Controls whether the executed command is echoed to the output. Default is false.'),
-					default: true
+				echoCommAnd: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.echoCommAnd', 'Controls whether the executed commAnd is echoed to the output. DefAult is fAlse.'),
+					defAult: true
 				},
-				isWatching: {
-					type: 'boolean',
-					deprecationMessage: nls.localize('JsonSchema.tasks.watching.deprecation', 'Deprecated. Use isBackground instead.'),
-					description: nls.localize('JsonSchema.tasks.watching', 'Whether the executed task is kept alive and is watching the file system.'),
-					default: true
+				isWAtching: {
+					type: 'booleAn',
+					deprecAtionMessAge: nls.locAlize('JsonSchemA.tAsks.wAtching.deprecAtion', 'DeprecAted. Use isBAckground insteAd.'),
+					description: nls.locAlize('JsonSchemA.tAsks.wAtching', 'Whether the executed tAsk is kept Alive And is wAtching the file system.'),
+					defAult: true
 				},
-				isBackground: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.tasks.background', 'Whether the executed task is kept alive and is running in the background.'),
-					default: true
+				isBAckground: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.tAsks.bAckground', 'Whether the executed tAsk is kept Alive And is running in the bAckground.'),
+					defAult: true
 				},
 				promptOnClose: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VS Code closes with a running task.'),
-					default: false
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.tAsks.promptOnClose', 'Whether the user is prompted when VS Code closes with A running tAsk.'),
+					defAult: fAlse
 				},
-				isBuildCommand: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.tasks.build', 'Maps this task to Code\'s default build command.'),
-					default: true
+				isBuildCommAnd: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.tAsks.build', 'MAps this tAsk to Code\'s defAult build commAnd.'),
+					defAult: true
 				},
-				isTestCommand: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.tasks.test', 'Maps this task to Code\'s default test command.'),
-					default: true
+				isTestCommAnd: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.tAsks.test', 'MAps this tAsk to Code\'s defAult test commAnd.'),
+					defAult: true
 				},
-				problemMatcher: {
-					$ref: '#/definitions/problemMatcherType',
-					description: nls.localize('JsonSchema.tasks.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+				problemMAtcher: {
+					$ref: '#/definitions/problemMAtcherType',
+					description: nls.locAlize('JsonSchemA.tAsks.mAtchers', 'The problem mAtcher(s) to use. CAn either be A string or A problem mAtcher definition or An ArrAy of strings And problem mAtchers.')
 				}
 			}
 		},
-		taskRunnerConfiguration: {
+		tAskRunnerConfigurAtion: {
 			type: 'object',
 			required: [],
 			properties: {
-				command: {
+				commAnd: {
 					type: 'string',
-					description: nls.localize('JsonSchema.command', 'The command to be executed. Can be an external program or a shell command.')
+					description: nls.locAlize('JsonSchemA.commAnd', 'The commAnd to be executed. CAn be An externAl progrAm or A shell commAnd.')
 				},
-				args: {
-					type: 'array',
-					description: nls.localize('JsonSchema.args', 'Additional arguments passed to the command.'),
+				Args: {
+					type: 'ArrAy',
+					description: nls.locAlize('JsonSchemA.Args', 'AdditionAl Arguments pAssed to the commAnd.'),
 					items: {
 						type: 'string'
 					}
@@ -230,48 +230,48 @@ const schema: IJSONSchema = {
 				},
 				showOutput: {
 					$ref: '#/definitions/showOutputType',
-					description: nls.localize('JsonSchema.showOutput', 'Controls whether the output of the running task is shown or not. If omitted \'always\' is used.')
+					description: nls.locAlize('JsonSchemA.showOutput', 'Controls whether the output of the running tAsk is shown or not. If omitted \'AlwAys\' is used.')
 				},
-				isWatching: {
-					type: 'boolean',
-					deprecationMessage: nls.localize('JsonSchema.watching.deprecation', 'Deprecated. Use isBackground instead.'),
-					description: nls.localize('JsonSchema.watching', 'Whether the executed task is kept alive and is watching the file system.'),
-					default: true
+				isWAtching: {
+					type: 'booleAn',
+					deprecAtionMessAge: nls.locAlize('JsonSchemA.wAtching.deprecAtion', 'DeprecAted. Use isBAckground insteAd.'),
+					description: nls.locAlize('JsonSchemA.wAtching', 'Whether the executed tAsk is kept Alive And is wAtching the file system.'),
+					defAult: true
 				},
-				isBackground: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.background', 'Whether the executed task is kept alive and is running in the background.'),
-					default: true
+				isBAckground: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.bAckground', 'Whether the executed tAsk is kept Alive And is running in the bAckground.'),
+					defAult: true
 				},
 				promptOnClose: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.promptOnClose', 'Whether the user is prompted when VS Code closes with a running background task.'),
-					default: false
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.promptOnClose', 'Whether the user is prompted when VS Code closes with A running bAckground tAsk.'),
+					defAult: fAlse
 				},
-				echoCommand: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.echoCommand', 'Controls whether the executed command is echoed to the output. Default is false.'),
-					default: true
+				echoCommAnd: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.echoCommAnd', 'Controls whether the executed commAnd is echoed to the output. DefAult is fAlse.'),
+					defAult: true
 				},
-				suppressTaskName: {
-					type: 'boolean',
-					description: nls.localize('JsonSchema.suppressTaskName', 'Controls whether the task name is added as an argument to the command. Default is false.'),
-					default: true
+				suppressTAskNAme: {
+					type: 'booleAn',
+					description: nls.locAlize('JsonSchemA.suppressTAskNAme', 'Controls whether the tAsk nAme is Added As An Argument to the commAnd. DefAult is fAlse.'),
+					defAult: true
 				},
-				taskSelector: {
+				tAskSelector: {
 					type: 'string',
-					description: nls.localize('JsonSchema.taskSelector', 'Prefix to indicate that an argument is task.')
+					description: nls.locAlize('JsonSchemA.tAskSelector', 'Prefix to indicAte thAt An Argument is tAsk.')
 				},
-				problemMatcher: {
-					$ref: '#/definitions/problemMatcherType',
-					description: nls.localize('JsonSchema.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+				problemMAtcher: {
+					$ref: '#/definitions/problemMAtcherType',
+					description: nls.locAlize('JsonSchemA.mAtchers', 'The problem mAtcher(s) to use. CAn either be A string or A problem mAtcher definition or An ArrAy of strings And problem mAtchers.')
 				},
-				tasks: {
-					type: 'array',
-					description: nls.localize('JsonSchema.tasks', 'The task configurations. Usually these are enrichments of task already defined in the external task runner.'),
+				tAsks: {
+					type: 'ArrAy',
+					description: nls.locAlize('JsonSchemA.tAsks', 'The tAsk configurAtions. UsuAlly these Are enrichments of tAsk AlreAdy defined in the externAl tAsk runner.'),
 					items: {
 						type: 'object',
-						$ref: '#/definitions/taskDescription'
+						$ref: '#/definitions/tAskDescription'
 					}
 				}
 			}
@@ -279,4 +279,4 @@ const schema: IJSONSchema = {
 	}
 };
 
-export default schema;
+export defAult schemA;

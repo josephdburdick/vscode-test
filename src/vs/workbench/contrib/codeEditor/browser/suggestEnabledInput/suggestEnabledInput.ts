@@ -1,136 +1,136 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./suggestEnabledInput';
-import { $, Dimension, append } from 'vs/base/browser/dom';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { mixin } from 'vs/base/common/objects';
-import { isMacintosh } from 'vs/base/common/platform';
-import { URI as uri } from 'vs/base/common/uri';
+import 'vs/css!./suggestEnAbledInput';
+import { $, Dimension, Append } from 'vs/bAse/browser/dom';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { Color } from 'vs/bAse/common/color';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { mixin } from 'vs/bAse/common/objects';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { URI As uri } from 'vs/bAse/common/uri';
 import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
+import * As modes from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ContextMenuController } from 'vs/editor/contrib/contextmenu/contextmenu';
 import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
 import { SuggestController } from 'vs/editor/contrib/suggest/suggestController';
-import { IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ColorIdentifier, editorSelectionBackground, inputBackground, inputBorder, inputForeground, inputPlaceholderForeground, selectionBackground } from 'vs/platform/theme/common/colorRegistry';
-import { IStyleOverrides, attachStyler } from 'vs/platform/theme/common/styler';
-import { IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
+import { IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ColorIdentifier, editorSelectionBAckground, inputBAckground, inputBorder, inputForeground, inputPlAceholderForeground, selectionBAckground } from 'vs/plAtform/theme/common/colorRegistry';
+import { IStyleOverrides, AttAchStyler } from 'vs/plAtform/theme/common/styler';
+import { IThemeService, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
 import { MenuPreventer } from 'vs/workbench/contrib/codeEditor/browser/menuPreventer';
 import { getSimpleEditorOptions } from 'vs/workbench/contrib/codeEditor/browser/simpleEditorOptions';
-import { SelectionClipboardContributionID } from 'vs/workbench/contrib/codeEditor/browser/selectionClipboard';
+import { SelectionClipboArdContributionID } from 'vs/workbench/contrib/codeEditor/browser/selectionClipboArd';
 import { EditorExtensionsRegistry } from 'vs/editor/browser/editorExtensions';
-import { IThemable } from 'vs/base/common/styler';
+import { IThemAble } from 'vs/bAse/common/styler';
 import { DEFAULT_FONT_FAMILY } from 'vs/workbench/browser/style';
 
-interface SuggestResultsProvider {
+interfAce SuggestResultsProvider {
 	/**
 	 * Provider function for suggestion results.
 	 *
-	 * @param query the full text of the input.
+	 * @pArAm query the full text of the input.
 	 */
 	provideResults: (query: string) => string[];
 
 	/**
-	 * Trigger characters for this input. Suggestions will appear when one of these is typed,
-	 * or upon `ctrl+space` triggering at a word boundary.
+	 * Trigger chArActers for this input. Suggestions will AppeAr when one of these is typed,
+	 * or upon `ctrl+spAce` triggering At A word boundAry.
 	 *
-	 * Defaults to the empty array.
+	 * DefAults to the empty ArrAy.
 	 */
-	triggerCharacters?: string[];
+	triggerChArActers?: string[];
 
 	/**
 	 * Defines the sorting function used when showing results.
 	 *
-	 * Defaults to the identity function.
+	 * DefAults to the identity function.
 	 */
 	sortKey?: (result: string) => string;
 }
 
-interface SuggestEnabledInputOptions {
+interfAce SuggestEnAbledInputOptions {
 	/**
 	 * The text to show when no input is present.
 	 *
-	 * Defaults to the empty string.
+	 * DefAults to the empty string.
 	 */
-	placeholderText?: string;
-	value?: string;
+	plAceholderText?: string;
+	vAlue?: string;
 
 	/**
-	 * Context key tracking the focus state of this element
+	 * Context key trAcking the focus stAte of this element
 	 */
-	focusContextKey?: IContextKey<boolean>;
+	focusContextKey?: IContextKey<booleAn>;
 }
 
-export interface ISuggestEnabledInputStyleOverrides extends IStyleOverrides {
-	inputBackground?: ColorIdentifier;
+export interfAce ISuggestEnAbledInputStyleOverrides extends IStyleOverrides {
+	inputBAckground?: ColorIdentifier;
 	inputForeground?: ColorIdentifier;
 	inputBorder?: ColorIdentifier;
-	inputPlaceholderForeground?: ColorIdentifier;
+	inputPlAceholderForeground?: ColorIdentifier;
 }
 
-type ISuggestEnabledInputStyles = {
-	[P in keyof ISuggestEnabledInputStyleOverrides]: Color | undefined;
+type ISuggestEnAbledInputStyles = {
+	[P in keyof ISuggestEnAbledInputStyleOverrides]: Color | undefined;
 };
 
-export function attachSuggestEnabledInputBoxStyler(widget: IThemable, themeService: IThemeService, style?: ISuggestEnabledInputStyleOverrides): IDisposable {
-	return attachStyler(themeService, {
-		inputBackground: (style && style.inputBackground) || inputBackground,
+export function AttAchSuggestEnAbledInputBoxStyler(widget: IThemAble, themeService: IThemeService, style?: ISuggestEnAbledInputStyleOverrides): IDisposAble {
+	return AttAchStyler(themeService, {
+		inputBAckground: (style && style.inputBAckground) || inputBAckground,
 		inputForeground: (style && style.inputForeground) || inputForeground,
 		inputBorder: (style && style.inputBorder) || inputBorder,
-		inputPlaceholderForeground: (style && style.inputPlaceholderForeground) || inputPlaceholderForeground,
-	} as ISuggestEnabledInputStyleOverrides, widget);
+		inputPlAceholderForeground: (style && style.inputPlAceholderForeground) || inputPlAceholderForeground,
+	} As ISuggestEnAbledInputStyleOverrides, widget);
 }
 
-export class SuggestEnabledInput extends Widget implements IThemable {
+export clAss SuggestEnAbledInput extends Widget implements IThemAble {
 
-	private readonly _onShouldFocusResults = new Emitter<void>();
-	readonly onShouldFocusResults: Event<void> = this._onShouldFocusResults.event;
+	privAte reAdonly _onShouldFocusResults = new Emitter<void>();
+	reAdonly onShouldFocusResults: Event<void> = this._onShouldFocusResults.event;
 
-	private readonly _onEnter = new Emitter<void>();
-	readonly onEnter: Event<void> = this._onEnter.event;
+	privAte reAdonly _onEnter = new Emitter<void>();
+	reAdonly onEnter: Event<void> = this._onEnter.event;
 
-	private readonly _onInputDidChange = new Emitter<string | undefined>();
-	readonly onInputDidChange: Event<string | undefined> = this._onInputDidChange.event;
+	privAte reAdonly _onInputDidChAnge = new Emitter<string | undefined>();
+	reAdonly onInputDidChAnge: Event<string | undefined> = this._onInputDidChAnge.event;
 
-	private readonly inputWidget: CodeEditorWidget;
-	private readonly inputModel: ITextModel;
-	private stylingContainer: HTMLDivElement;
-	private placeholderText: HTMLDivElement;
+	privAte reAdonly inputWidget: CodeEditorWidget;
+	privAte reAdonly inputModel: ITextModel;
+	privAte stylingContAiner: HTMLDivElement;
+	privAte plAceholderText: HTMLDivElement;
 
 	constructor(
 		id: string,
-		parent: HTMLElement,
+		pArent: HTMLElement,
 		suggestionProvider: SuggestResultsProvider,
-		ariaLabel: string,
-		resourceHandle: string,
-		options: SuggestEnabledInputOptions,
-		@IInstantiationService instantiationService: IInstantiationService,
+		AriALAbel: string,
+		resourceHAndle: string,
+		options: SuggestEnAbledInputOptions,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IModelService modelService: IModelService,
 	) {
 		super();
 
-		this.stylingContainer = append(parent, $('.suggest-input-container'));
-		this.placeholderText = append(this.stylingContainer, $('.suggest-input-placeholder', undefined, options.placeholderText || ''));
+		this.stylingContAiner = Append(pArent, $('.suggest-input-contAiner'));
+		this.plAceholderText = Append(this.stylingContAiner, $('.suggest-input-plAceholder', undefined, options.plAceholderText || ''));
 
 		const editorOptions: IEditorOptions = mixin(
 			getSimpleEditorOptions(),
-			getSuggestEnabledInputOptions(ariaLabel));
+			getSuggestEnAbledInputOptions(AriALAbel));
 
-		this.inputWidget = instantiationService.createInstance(CodeEditorWidget, this.stylingContainer,
+		this.inputWidget = instAntiAtionService.creAteInstAnce(CodeEditorWidget, this.stylingContAiner,
 			editorOptions,
 			{
 				contributions: EditorExtensionsRegistry.getSomeEditorContributions([
@@ -138,73 +138,73 @@ export class SuggestEnabledInput extends Widget implements IThemable {
 					SnippetController2.ID,
 					ContextMenuController.ID,
 					MenuPreventer.ID,
-					SelectionClipboardContributionID,
+					SelectionClipboArdContributionID,
 				]),
 				isSimpleWidget: true,
 			});
 		this._register(this.inputWidget);
 
-		let scopeHandle = uri.parse(resourceHandle);
-		this.inputModel = modelService.createModel('', null, scopeHandle, true);
+		let scopeHAndle = uri.pArse(resourceHAndle);
+		this.inputModel = modelService.creAteModel('', null, scopeHAndle, true);
 		this.inputWidget.setModel(this.inputModel);
 
-		this._register(this.inputWidget.onDidPaste(() => this.setValue(this.getValue()))); // setter cleanses
+		this._register(this.inputWidget.onDidPAste(() => this.setVAlue(this.getVAlue()))); // setter cleAnses
 
 		this._register((this.inputWidget.onDidFocusEditorText(() => {
 			if (options.focusContextKey) { options.focusContextKey.set(true); }
-			this.stylingContainer.classList.add('synthetic-focus');
+			this.stylingContAiner.clAssList.Add('synthetic-focus');
 		})));
 		this._register((this.inputWidget.onDidBlurEditorText(() => {
-			if (options.focusContextKey) { options.focusContextKey.set(false); }
-			this.stylingContainer.classList.remove('synthetic-focus');
+			if (options.focusContextKey) { options.focusContextKey.set(fAlse); }
+			this.stylingContAiner.clAssList.remove('synthetic-focus');
 		})));
 
-		const onKeyDownMonaco = Event.chain(this.inputWidget.onKeyDown);
-		this._register(onKeyDownMonaco.filter(e => e.keyCode === KeyCode.Enter).on(e => { e.preventDefault(); this._onEnter.fire(); }, this));
-		this._register(onKeyDownMonaco.filter(e => e.keyCode === KeyCode.DownArrow && (isMacintosh ? e.metaKey : e.ctrlKey)).on(() => this._onShouldFocusResults.fire(), this));
+		const onKeyDownMonAco = Event.chAin(this.inputWidget.onKeyDown);
+		this._register(onKeyDownMonAco.filter(e => e.keyCode === KeyCode.Enter).on(e => { e.preventDefAult(); this._onEnter.fire(); }, this));
+		this._register(onKeyDownMonAco.filter(e => e.keyCode === KeyCode.DownArrow && (isMAcintosh ? e.metAKey : e.ctrlKey)).on(() => this._onShouldFocusResults.fire(), this));
 
-		let preexistingContent = this.getValue();
+		let preexistingContent = this.getVAlue();
 		const inputWidgetModel = this.inputWidget.getModel();
 		if (inputWidgetModel) {
-			this._register(inputWidgetModel.onDidChangeContent(() => {
-				let content = this.getValue();
-				this.placeholderText.style.visibility = content ? 'hidden' : 'visible';
+			this._register(inputWidgetModel.onDidChAngeContent(() => {
+				let content = this.getVAlue();
+				this.plAceholderText.style.visibility = content ? 'hidden' : 'visible';
 				if (preexistingContent.trim() === content.trim()) { return; }
-				this._onInputDidChange.fire(undefined);
+				this._onInputDidChAnge.fire(undefined);
 				preexistingContent = content;
 			}));
 		}
 
-		let validatedSuggestProvider = {
+		let vAlidAtedSuggestProvider = {
 			provideResults: suggestionProvider.provideResults,
-			sortKey: suggestionProvider.sortKey || (a => a),
-			triggerCharacters: suggestionProvider.triggerCharacters || []
+			sortKey: suggestionProvider.sortKey || (A => A),
+			triggerChArActers: suggestionProvider.triggerChArActers || []
 		};
 
-		this.setValue(options.value || '');
+		this.setVAlue(options.vAlue || '');
 
-		this._register(modes.CompletionProviderRegistry.register({ scheme: scopeHandle.scheme, pattern: '**/' + scopeHandle.path, hasAccessToAllModels: true }, {
-			triggerCharacters: validatedSuggestProvider.triggerCharacters,
+		this._register(modes.CompletionProviderRegistry.register({ scheme: scopeHAndle.scheme, pAttern: '**/' + scopeHAndle.pAth, hAsAccessToAllModels: true }, {
+			triggerChArActers: vAlidAtedSuggestProvider.triggerChArActers,
 			provideCompletionItems: (model: ITextModel, position: Position, _context: modes.CompletionContext) => {
-				let query = model.getValue();
+				let query = model.getVAlue();
 
 				const zeroIndexedColumn = position.column - 1;
 
-				let zeroIndexedWordStart = query.lastIndexOf(' ', zeroIndexedColumn - 1) + 1;
-				let alreadyTypedCount = zeroIndexedColumn - zeroIndexedWordStart;
+				let zeroIndexedWordStArt = query.lAstIndexOf(' ', zeroIndexedColumn - 1) + 1;
+				let AlreAdyTypedCount = zeroIndexedColumn - zeroIndexedWordStArt;
 
-				// dont show suggestions if the user has typed something, but hasn't used the trigger character
-				if (alreadyTypedCount > 0 && validatedSuggestProvider.triggerCharacters.indexOf(query[zeroIndexedWordStart]) === -1) {
+				// dont show suggestions if the user hAs typed something, but hAsn't used the trigger chArActer
+				if (AlreAdyTypedCount > 0 && vAlidAtedSuggestProvider.triggerChArActers.indexOf(query[zeroIndexedWordStArt]) === -1) {
 					return { suggestions: [] };
 				}
 
 				return {
-					suggestions: suggestionProvider.provideResults(query).map(result => {
+					suggestions: suggestionProvider.provideResults(query).mAp(result => {
 						return <modes.CompletionItem>{
-							label: result,
+							lAbel: result,
 							insertText: result,
-							range: Range.fromPositions(position.delta(0, -alreadyTypedCount), position),
-							sortText: validatedSuggestProvider.sortKey(result),
+							rAnge: RAnge.fromPositions(position.deltA(0, -AlreAdyTypedCount), position),
+							sortText: vAlidAtedSuggestProvider.sortKey(result),
 							kind: modes.CompletionItemKind.Keyword
 						};
 					})
@@ -213,46 +213,46 @@ export class SuggestEnabledInput extends Widget implements IThemable {
 		}));
 	}
 
-	public updateAriaLabel(label: string): void {
-		this.inputWidget.updateOptions({ ariaLabel: label });
+	public updAteAriALAbel(lAbel: string): void {
+		this.inputWidget.updAteOptions({ AriALAbel: lAbel });
 	}
 
 	public get onFocus(): Event<void> { return this.inputWidget.onDidFocusEditorText; }
 
-	public setValue(val: string) {
-		val = val.replace(/\s/g, ' ');
-		const fullRange = this.inputModel.getFullModelRange();
-		this.inputWidget.executeEdits('suggestEnabledInput.setValue', [EditOperation.replace(fullRange, val)]);
+	public setVAlue(vAl: string) {
+		vAl = vAl.replAce(/\s/g, ' ');
+		const fullRAnge = this.inputModel.getFullModelRAnge();
+		this.inputWidget.executeEdits('suggestEnAbledInput.setVAlue', [EditOperAtion.replAce(fullRAnge, vAl)]);
 		this.inputWidget.setScrollTop(0);
-		this.inputWidget.setPosition(new Position(1, val.length + 1));
+		this.inputWidget.setPosition(new Position(1, vAl.length + 1));
 	}
 
-	public getValue(): string {
-		return this.inputWidget.getValue();
+	public getVAlue(): string {
+		return this.inputWidget.getVAlue();
 	}
 
 
-	public style(colors: ISuggestEnabledInputStyles): void {
-		this.stylingContainer.style.backgroundColor = colors.inputBackground ? colors.inputBackground.toString() : '';
-		this.stylingContainer.style.color = colors.inputForeground ? colors.inputForeground.toString() : '';
-		this.placeholderText.style.color = colors.inputPlaceholderForeground ? colors.inputPlaceholderForeground.toString() : '';
+	public style(colors: ISuggestEnAbledInputStyles): void {
+		this.stylingContAiner.style.bAckgroundColor = colors.inputBAckground ? colors.inputBAckground.toString() : '';
+		this.stylingContAiner.style.color = colors.inputForeground ? colors.inputForeground.toString() : '';
+		this.plAceholderText.style.color = colors.inputPlAceholderForeground ? colors.inputPlAceholderForeground.toString() : '';
 
-		this.stylingContainer.style.borderWidth = '1px';
-		this.stylingContainer.style.borderStyle = 'solid';
-		this.stylingContainer.style.borderColor = colors.inputBorder ?
+		this.stylingContAiner.style.borderWidth = '1px';
+		this.stylingContAiner.style.borderStyle = 'solid';
+		this.stylingContAiner.style.borderColor = colors.inputBorder ?
 			colors.inputBorder.toString() :
-			'transparent';
+			'trAnspArent';
 
-		const cursor = this.stylingContainer.getElementsByClassName('cursor')[0] as HTMLDivElement;
+		const cursor = this.stylingContAiner.getElementsByClAssNAme('cursor')[0] As HTMLDivElement;
 		if (cursor) {
-			cursor.style.backgroundColor = colors.inputForeground ? colors.inputForeground.toString() : '';
+			cursor.style.bAckgroundColor = colors.inputForeground ? colors.inputForeground.toString() : '';
 		}
 	}
 
-	public focus(selectAll?: boolean): void {
+	public focus(selectAll?: booleAn): void {
 		this.inputWidget.focus();
 
-		if (selectAll && this.inputWidget.getValue()) {
+		if (selectAll && this.inputWidget.getVAlue()) {
 			this.selectAll();
 		}
 	}
@@ -261,61 +261,61 @@ export class SuggestEnabledInput extends Widget implements IThemable {
 		this.inputWidget.onHide();
 	}
 
-	public layout(dimension: Dimension): void {
-		this.inputWidget.layout(dimension);
-		this.placeholderText.style.width = `${dimension.width - 2}px`;
+	public lAyout(dimension: Dimension): void {
+		this.inputWidget.lAyout(dimension);
+		this.plAceholderText.style.width = `${dimension.width - 2}px`;
 	}
 
-	private selectAll(): void {
-		this.inputWidget.setSelection(new Range(1, 1, 1, this.getValue().length + 1));
+	privAte selectAll(): void {
+		this.inputWidget.setSelection(new RAnge(1, 1, 1, this.getVAlue().length + 1));
 	}
 }
 
 // Override styles in selections.ts
-registerThemingParticipant((theme, collector) => {
-	let selectionColor = theme.getColor(selectionBackground);
+registerThemingPArticipAnt((theme, collector) => {
+	let selectionColor = theme.getColor(selectionBAckground);
 	if (selectionColor) {
-		selectionColor = selectionColor.transparent(0.4);
+		selectionColor = selectionColor.trAnspArent(0.4);
 	} else {
-		selectionColor = theme.getColor(editorSelectionBackground);
+		selectionColor = theme.getColor(editorSelectionBAckground);
 	}
 
 	if (selectionColor) {
-		collector.addRule(`.suggest-input-container .monaco-editor .focused .selected-text { background-color: ${selectionColor}; }`);
+		collector.AddRule(`.suggest-input-contAiner .monAco-editor .focused .selected-text { bAckground-color: ${selectionColor}; }`);
 	}
 
-	// Override inactive selection bg
-	const inputBackgroundColor = theme.getColor(inputBackground);
-	if (inputBackgroundColor) {
-		collector.addRule(`.suggest-input-container .monaco-editor .selected-text { background-color: ${inputBackgroundColor.transparent(0.4)}; }`);
+	// Override inActive selection bg
+	const inputBAckgroundColor = theme.getColor(inputBAckground);
+	if (inputBAckgroundColor) {
+		collector.AddRule(`.suggest-input-contAiner .monAco-editor .selected-text { bAckground-color: ${inputBAckgroundColor.trAnspArent(0.4)}; }`);
 	}
 
 	// Override selected fg
 	const inputForegroundColor = theme.getColor(inputForeground);
 	if (inputForegroundColor) {
-		collector.addRule(`.suggest-input-container .monaco-editor .view-line span.inline-selected-text { color: ${inputForegroundColor}; }`);
+		collector.AddRule(`.suggest-input-contAiner .monAco-editor .view-line spAn.inline-selected-text { color: ${inputForegroundColor}; }`);
 	}
 
-	const backgroundColor = theme.getColor(inputBackground);
-	if (backgroundColor) {
-		collector.addRule(`.suggest-input-container .monaco-editor-background { background-color: ${backgroundColor}; } `);
+	const bAckgroundColor = theme.getColor(inputBAckground);
+	if (bAckgroundColor) {
+		collector.AddRule(`.suggest-input-contAiner .monAco-editor-bAckground { bAckground-color: ${bAckgroundColor}; } `);
 	}
 });
 
 
-function getSuggestEnabledInputOptions(ariaLabel?: string): IEditorOptions {
+function getSuggestEnAbledInputOptions(AriALAbel?: string): IEditorOptions {
 	return {
 		fontSize: 13,
 		lineHeight: 20,
-		wordWrap: 'off',
-		scrollbar: { vertical: 'hidden', },
-		roundedSelection: false,
-		renderIndentGuides: false,
+		wordWrAp: 'off',
+		scrollbAr: { verticAl: 'hidden', },
+		roundedSelection: fAlse,
+		renderIndentGuides: fAlse,
 		cursorWidth: 1,
-		fontFamily: DEFAULT_FONT_FAMILY,
-		ariaLabel: ariaLabel || '',
+		fontFAmily: DEFAULT_FONT_FAMILY,
+		AriALAbel: AriALAbel || '',
 		snippetSuggestions: 'none',
-		suggest: { filterGraceful: false, showIcons: false },
-		autoClosingBrackets: 'never'
+		suggest: { filterGrAceful: fAlse, showIcons: fAlse },
+		AutoClosingBrAckets: 'never'
 	};
 }

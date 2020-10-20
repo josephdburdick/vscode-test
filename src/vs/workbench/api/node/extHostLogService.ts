@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService, DelegatedLogService, LogLevel } from 'vs/platform/log/common/log';
-import { ExtHostLogServiceShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtensionHostLogFileName } from 'vs/workbench/services/extensions/common/extensions';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { Schemas } from 'vs/base/common/network';
-import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { dirname } from 'vs/base/common/resources';
+import { ILogService, DelegAtedLogService, LogLevel } from 'vs/plAtform/log/common/log';
+import { ExtHostLogServiceShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtensionHostLogFileNAme } from 'vs/workbench/services/extensions/common/extensions';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { SchemAs } from 'vs/bAse/common/network';
+import { SpdLogService } from 'vs/plAtform/log/node/spdlogService';
+import { dirnAme } from 'vs/bAse/common/resources';
 
-export class ExtHostLogService extends DelegatedLogService implements ILogService, ExtHostLogServiceShape {
+export clAss ExtHostLogService extends DelegAtedLogService implements ILogService, ExtHostLogServiceShApe {
 
 	constructor(
-		@IExtHostInitDataService initData: IExtHostInitDataService,
+		@IExtHostInitDAtAService initDAtA: IExtHostInitDAtAService,
 	) {
-		if (initData.logFile.scheme !== Schemas.file) { throw new Error('Only file-logging supported'); }
-		super(new SpdLogService(ExtensionHostLogFileName, dirname(initData.logFile).fsPath, initData.logLevel));
+		if (initDAtA.logFile.scheme !== SchemAs.file) { throw new Error('Only file-logging supported'); }
+		super(new SpdLogService(ExtensionHostLogFileNAme, dirnAme(initDAtA.logFile).fsPAth, initDAtA.logLevel));
 	}
 
 	$setLevel(level: LogLevel): void {

@@ -1,146 +1,146 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// FORKED FROM https://github.com/eslint/eslint/blob/b23ad0d789a909baf8d7c41a35bc53df932eaf30/lib/rules/no-unused-expressions.js
-// and added support for `OptionalCallExpression`, see https://github.com/facebook/create-react-app/issues/8107 and https://github.com/eslint/eslint/issues/12642
+// FORKED FROM https://github.com/eslint/eslint/blob/b23Ad0d789A909bAf8d7c41A35bc53df932eAf30/lib/rules/no-unused-expressions.js
+// And Added support for `OptionAlCAllExpression`, see https://github.com/fAcebook/creAte-reAct-App/issues/8107 And https://github.com/eslint/eslint/issues/12642
 
 /**
- * @fileoverview Flag expressions in statement position that do not side effect
- * @author Michael Ficarra
+ * @fileoverview FlAg expressions in stAtement position thAt do not side effect
+ * @Author MichAel FicArrA
  */
 
 'use strict';
 
-import * as eslint from 'eslint';
-import { TSESTree } from '@typescript-eslint/experimental-utils';
-import * as ESTree from 'estree';
+import * As eslint from 'eslint';
+import { TSESTree } from '@typescript-eslint/experimentAl-utils';
+import * As ESTree from 'estree';
 
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
 module.exports = {
-	meta: {
+	metA: {
 		type: 'suggestion',
 
 		docs: {
-			description: 'disallow unused expressions',
-			category: 'Best Practices',
-			recommended: false,
+			description: 'disAllow unused expressions',
+			cAtegory: 'Best PrActices',
+			recommended: fAlse,
 			url: 'https://eslint.org/docs/rules/no-unused-expressions'
 		},
 
-		schema: [
+		schemA: [
 			{
 				type: 'object',
 				properties: {
-					allowShortCircuit: {
-						type: 'boolean',
-						default: false
+					AllowShortCircuit: {
+						type: 'booleAn',
+						defAult: fAlse
 					},
-					allowTernary: {
-						type: 'boolean',
-						default: false
+					AllowTernAry: {
+						type: 'booleAn',
+						defAult: fAlse
 					},
-					allowTaggedTemplates: {
-						type: 'boolean',
-						default: false
+					AllowTAggedTemplAtes: {
+						type: 'booleAn',
+						defAult: fAlse
 					}
 				},
-				additionalProperties: false
+				AdditionAlProperties: fAlse
 			}
 		]
 	},
 
-	create(context: eslint.Rule.RuleContext) {
+	creAte(context: eslint.Rule.RuleContext) {
 		const config = context.options[0] || {},
-			allowShortCircuit = config.allowShortCircuit || false,
-			allowTernary = config.allowTernary || false,
-			allowTaggedTemplates = config.allowTaggedTemplates || false;
+			AllowShortCircuit = config.AllowShortCircuit || fAlse,
+			AllowTernAry = config.AllowTernAry || fAlse,
+			AllowTAggedTemplAtes = config.AllowTAggedTemplAtes || fAlse;
 
-		// eslint-disable-next-line jsdoc/require-description
+		// eslint-disAble-next-line jsdoc/require-description
 		/**
-		 * @param node any node
-		 * @returns whether the given node structurally represents a directive
+		 * @pArAm node Any node
+		 * @returns whether the given node structurAlly represents A directive
 		 */
-		function looksLikeDirective(node: TSESTree.Node): boolean {
-			return node.type === 'ExpressionStatement' &&
-				node.expression.type === 'Literal' && typeof node.expression.value === 'string';
+		function looksLikeDirective(node: TSESTree.Node): booleAn {
+			return node.type === 'ExpressionStAtement' &&
+				node.expression.type === 'LiterAl' && typeof node.expression.vAlue === 'string';
 		}
 
-		// eslint-disable-next-line jsdoc/require-description
+		// eslint-disAble-next-line jsdoc/require-description
 		/**
-		 * @param predicate ([a] -> Boolean) the function used to make the determination
-		 * @param list the input list
-		 * @returns the leading sequence of members in the given list that pass the given predicate
+		 * @pArAm predicAte ([A] -> BooleAn) the function used to mAke the determinAtion
+		 * @pArAm list the input list
+		 * @returns the leAding sequence of members in the given list thAt pAss the given predicAte
 		 */
-		function takeWhile<T>(predicate: (item: T) => boolean, list: T[]): T[] {
+		function tAkeWhile<T>(predicAte: (item: T) => booleAn, list: T[]): T[] {
 			for (let i = 0; i < list.length; ++i) {
-				if (!predicate(list[i])) {
+				if (!predicAte(list[i])) {
 					return list.slice(0, i);
 				}
 			}
 			return list.slice();
 		}
 
-		// eslint-disable-next-line jsdoc/require-description
+		// eslint-disAble-next-line jsdoc/require-description
 		/**
-		 * @param node a Program or BlockStatement node
-		 * @returns the leading sequence of directive nodes in the given node's body
+		 * @pArAm node A ProgrAm or BlockStAtement node
+		 * @returns the leAding sequence of directive nodes in the given node's body
 		 */
-		function directives(node: TSESTree.Program | TSESTree.BlockStatement): TSESTree.Node[] {
-			return takeWhile(looksLikeDirective, node.body);
+		function directives(node: TSESTree.ProgrAm | TSESTree.BlockStAtement): TSESTree.Node[] {
+			return tAkeWhile(looksLikeDirective, node.body);
 		}
 
-		// eslint-disable-next-line jsdoc/require-description
+		// eslint-disAble-next-line jsdoc/require-description
 		/**
-		 * @param node any node
-		 * @param ancestors the given node's ancestors
-		 * @returns whether the given node is considered a directive in its current position
+		 * @pArAm node Any node
+		 * @pArAm Ancestors the given node's Ancestors
+		 * @returns whether the given node is considered A directive in its current position
 		 */
-		function isDirective(node: TSESTree.Node, ancestors: TSESTree.Node[]): boolean {
-			const parent = ancestors[ancestors.length - 1],
-				grandparent = ancestors[ancestors.length - 2];
+		function isDirective(node: TSESTree.Node, Ancestors: TSESTree.Node[]): booleAn {
+			const pArent = Ancestors[Ancestors.length - 1],
+				grAndpArent = Ancestors[Ancestors.length - 2];
 
-			return (parent.type === 'Program' || parent.type === 'BlockStatement' &&
-				(/Function/u.test(grandparent.type))) &&
-				directives(parent).indexOf(node) >= 0;
+			return (pArent.type === 'ProgrAm' || pArent.type === 'BlockStAtement' &&
+				(/Function/u.test(grAndpArent.type))) &&
+				directives(pArent).indexOf(node) >= 0;
 		}
 
 		/**
-		 * Determines whether or not a given node is a valid expression. Recurses on short circuit eval and ternary nodes if enabled by flags.
-		 * @param node any node
-		 * @returns whether the given node is a valid expression
+		 * Determines whether or not A given node is A vAlid expression. Recurses on short circuit evAl And ternAry nodes if enAbled by flAgs.
+		 * @pArAm node Any node
+		 * @returns whether the given node is A vAlid expression
 		 */
-		function isValidExpression(node: TSESTree.Node): boolean {
-			if (allowTernary) {
+		function isVAlidExpression(node: TSESTree.Node): booleAn {
+			if (AllowTernAry) {
 
-				// Recursive check for ternary and logical expressions
-				if (node.type === 'ConditionalExpression') {
-					return isValidExpression(node.consequent) && isValidExpression(node.alternate);
+				// Recursive check for ternAry And logicAl expressions
+				if (node.type === 'ConditionAlExpression') {
+					return isVAlidExpression(node.consequent) && isVAlidExpression(node.AlternAte);
 				}
 			}
 
-			if (allowShortCircuit) {
-				if (node.type === 'LogicalExpression') {
-					return isValidExpression(node.right);
+			if (AllowShortCircuit) {
+				if (node.type === 'LogicAlExpression') {
+					return isVAlidExpression(node.right);
 				}
 			}
 
-			if (allowTaggedTemplates && node.type === 'TaggedTemplateExpression') {
+			if (AllowTAggedTemplAtes && node.type === 'TAggedTemplAteExpression') {
 				return true;
 			}
 
-			return /^(?:Assignment|OptionalCall|Call|New|Update|Yield|Await)Expression$/u.test(node.type) ||
-				(node.type === 'UnaryExpression' && ['delete', 'void'].indexOf(node.operator) >= 0);
+			return /^(?:Assignment|OptionAlCAll|CAll|New|UpdAte|Yield|AwAit)Expression$/u.test(node.type) ||
+				(node.type === 'UnAryExpression' && ['delete', 'void'].indexOf(node.operAtor) >= 0);
 		}
 
 		return {
-			ExpressionStatement(node: TSESTree.ExpressionStatement) {
-				if (!isValidExpression(node.expression) && !isDirective(node, <TSESTree.Node[]>context.getAncestors())) {
-					context.report({ node: <ESTree.Node>node, message: 'Expected an assignment or function call and instead saw an expression.' });
+			ExpressionStAtement(node: TSESTree.ExpressionStAtement) {
+				if (!isVAlidExpression(node.expression) && !isDirective(node, <TSESTree.Node[]>context.getAncestors())) {
+					context.report({ node: <ESTree.Node>node, messAge: 'Expected An Assignment or function cAll And insteAd sAw An expression.' });
 				}
 			}
 		};

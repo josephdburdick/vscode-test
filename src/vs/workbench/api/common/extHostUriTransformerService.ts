@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IURITransformer } from 'vs/base/common/uriIpc';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { IURITrAnsformer } from 'vs/bAse/common/uriIpc';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
 
-export interface IURITransformerService extends IURITransformer {
-	readonly _serviceBrand: undefined;
+export interfAce IURITrAnsformerService extends IURITrAnsformer {
+	reAdonly _serviceBrAnd: undefined;
 }
 
-export const IURITransformerService = createDecorator<IURITransformerService>('IURITransformerService');
+export const IURITrAnsformerService = creAteDecorAtor<IURITrAnsformerService>('IURITrAnsformerService');
 
-export class URITransformerService implements IURITransformerService {
-	declare readonly _serviceBrand: undefined;
+export clAss URITrAnsformerService implements IURITrAnsformerService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	transformIncoming: (uri: UriComponents) => UriComponents;
-	transformOutgoing: (uri: UriComponents) => UriComponents;
-	transformOutgoingURI: (uri: URI) => URI;
-	transformOutgoingScheme: (scheme: string) => string;
+	trAnsformIncoming: (uri: UriComponents) => UriComponents;
+	trAnsformOutgoing: (uri: UriComponents) => UriComponents;
+	trAnsformOutgoingURI: (uri: URI) => URI;
+	trAnsformOutgoingScheme: (scheme: string) => string;
 
-	constructor(delegate: IURITransformer | null) {
-		if (!delegate) {
-			this.transformIncoming = arg => arg;
-			this.transformOutgoing = arg => arg;
-			this.transformOutgoingURI = arg => arg;
-			this.transformOutgoingScheme = arg => arg;
+	constructor(delegAte: IURITrAnsformer | null) {
+		if (!delegAte) {
+			this.trAnsformIncoming = Arg => Arg;
+			this.trAnsformOutgoing = Arg => Arg;
+			this.trAnsformOutgoingURI = Arg => Arg;
+			this.trAnsformOutgoingScheme = Arg => Arg;
 		} else {
-			this.transformIncoming = delegate.transformIncoming.bind(delegate);
-			this.transformOutgoing = delegate.transformOutgoing.bind(delegate);
-			this.transformOutgoingURI = delegate.transformOutgoingURI.bind(delegate);
-			this.transformOutgoingScheme = delegate.transformOutgoingScheme.bind(delegate);
+			this.trAnsformIncoming = delegAte.trAnsformIncoming.bind(delegAte);
+			this.trAnsformOutgoing = delegAte.trAnsformOutgoing.bind(delegAte);
+			this.trAnsformOutgoingURI = delegAte.trAnsformOutgoingURI.bind(delegAte);
+			this.trAnsformOutgoingScheme = delegAte.trAnsformOutgoingScheme.bind(delegAte);
 		}
 	}
 }

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { AbstractTextFileService } from 'vs/workbench/services/textfile/browser/textFileService';
-import { ITextFileService, TextFileEditorModelState } from 'vs/workbench/services/textfile/common/textfiles';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ShutdownReason } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { AbstrActTextFileService } from 'vs/workbench/services/textfile/browser/textFileService';
+import { ITextFileService, TextFileEditorModelStAte } from 'vs/workbench/services/textfile/common/textfiles';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ShutdownReAson } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
-export class BrowserTextFileService extends AbstractTextFileService {
+export clAss BrowserTextFileService extends AbstrActTextFileService {
 
 	protected registerListeners(): void {
 		super.registerListeners();
 
 		// Lifecycle
-		this.lifecycleService.onBeforeShutdown(event => event.veto(this.onBeforeShutdown(event.reason)));
+		this.lifecycleService.onBeforeShutdown(event => event.veto(this.onBeforeShutdown(event.reAson)));
 	}
 
-	protected onBeforeShutdown(reason: ShutdownReason): boolean {
-		if (this.files.models.some(model => model.hasState(TextFileEditorModelState.PENDING_SAVE))) {
-			console.warn('Unload veto: pending file saves');
+	protected onBeforeShutdown(reAson: ShutdownReAson): booleAn {
+		if (this.files.models.some(model => model.hAsStAte(TextFileEditorModelStAte.PENDING_SAVE))) {
+			console.wArn('UnloAd veto: pending file sAves');
 
-			return true; // files are pending to be saved: veto
+			return true; // files Are pending to be sAved: veto
 		}
 
-		return false;
+		return fAlse;
 	}
 }
 

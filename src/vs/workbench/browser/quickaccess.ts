@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ContextKeyExpr, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { ICommandHandler } from 'vs/platform/commands/common/commands';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
+import { ContextKeyExpr, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { ICommAndHAndler } from 'vs/plAtform/commAnds/common/commAnds';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
 
-export const inQuickPickContextKeyValue = 'inQuickOpen';
-export const InQuickPickContextKey = new RawContextKey<boolean>(inQuickPickContextKeyValue, false);
-export const inQuickPickContext = ContextKeyExpr.has(inQuickPickContextKeyValue);
+export const inQuickPickContextKeyVAlue = 'inQuickOpen';
+export const InQuickPickContextKey = new RAwContextKey<booleAn>(inQuickPickContextKeyVAlue, fAlse);
+export const inQuickPickContext = ContextKeyExpr.hAs(inQuickPickContextKeyVAlue);
 
-export const defaultQuickAccessContextKeyValue = 'inFilesPicker';
-export const defaultQuickAccessContext = ContextKeyExpr.and(inQuickPickContext, ContextKeyExpr.has(defaultQuickAccessContextKeyValue));
+export const defAultQuickAccessContextKeyVAlue = 'inFilesPicker';
+export const defAultQuickAccessContext = ContextKeyExpr.And(inQuickPickContext, ContextKeyExpr.hAs(defAultQuickAccessContextKeyVAlue));
 
-export interface IWorkbenchQuickAccessConfiguration {
+export interfAce IWorkbenchQuickAccessConfigurAtion {
 	workbench: {
-		commandPalette: {
+		commAndPAlette: {
 			history: number;
-			preserveInput: boolean;
+			preserveInput: booleAn;
 		},
 		quickOpen: {
-			enableExperimentalNewVersion: boolean;
-			preserveInput: boolean;
+			enAbleExperimentAlNewVersion: booleAn;
+			preserveInput: booleAn;
 		}
 	};
 }
 
-export function getQuickNavigateHandler(id: string, next?: boolean): ICommandHandler {
-	return accessor => {
-		const keybindingService = accessor.get(IKeybindingService);
-		const quickInputService = accessor.get(IQuickInputService);
+export function getQuickNAvigAteHAndler(id: string, next?: booleAn): ICommAndHAndler {
+	return Accessor => {
+		const keybindingService = Accessor.get(IKeybindingService);
+		const quickInputService = Accessor.get(IQuickInputService);
 
 		const keys = keybindingService.lookupKeybindings(id);
-		const quickNavigate = { keybindings: keys };
+		const quickNAvigAte = { keybindings: keys };
 
-		quickInputService.navigate(!!next, quickNavigate);
+		quickInputService.nAvigAte(!!next, quickNAvigAte);
 	};
 }

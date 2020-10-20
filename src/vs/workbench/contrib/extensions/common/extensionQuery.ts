@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { flatten } from 'vs/base/common/arrays';
-import { EXTENSION_CATEGORIES } from 'vs/platform/extensions/common/extensions';
+import { flAtten } from 'vs/bAse/common/ArrAys';
+import { EXTENSION_CATEGORIES } from 'vs/plAtform/extensions/common/extensions';
 
-export class Query {
+export clAss Query {
 
-	constructor(public value: string, public sortBy: string, public groupBy: string) {
-		this.value = value.trim();
+	constructor(public vAlue: string, public sortBy: string, public groupBy: string) {
+		this.vAlue = vAlue.trim();
 	}
 
-	static suggestions(query: string): string[] {
-		const commands = ['installed', 'outdated', 'enabled', 'disabled', 'builtin', 'recommended', 'sort', 'category', 'tag', 'ext', 'id'] as const;
-		const subcommands = {
-			'sort': ['installs', 'rating', 'name'],
-			'category': EXTENSION_CATEGORIES.map(c => `"${c.toLowerCase()}"`),
-			'tag': [''],
+	stAtic suggestions(query: string): string[] {
+		const commAnds = ['instAlled', 'outdAted', 'enAbled', 'disAbled', 'builtin', 'recommended', 'sort', 'cAtegory', 'tAg', 'ext', 'id'] As const;
+		const subcommAnds = {
+			'sort': ['instAlls', 'rAting', 'nAme'],
+			'cAtegory': EXTENSION_CATEGORIES.mAp(c => `"${c.toLowerCAse()}"`),
+			'tAg': [''],
 			'ext': [''],
 			'id': ['']
-		} as const;
+		} As const;
 
-		const queryContains = (substr: string) => query.indexOf(substr) > -1;
-		const hasSort = subcommands.sort.some(subcommand => queryContains(`@sort:${subcommand}`));
-		const hasCategory = subcommands.category.some(subcommand => queryContains(`@category:${subcommand}`));
+		const queryContAins = (substr: string) => query.indexOf(substr) > -1;
+		const hAsSort = subcommAnds.sort.some(subcommAnd => queryContAins(`@sort:${subcommAnd}`));
+		const hAsCAtegory = subcommAnds.cAtegory.some(subcommAnd => queryContAins(`@cAtegory:${subcommAnd}`));
 
-		return flatten(
-			commands.map(command => {
-				if (hasSort && command === 'sort' || hasCategory && command === 'category') {
+		return flAtten(
+			commAnds.mAp(commAnd => {
+				if (hAsSort && commAnd === 'sort' || hAsCAtegory && commAnd === 'cAtegory') {
 					return [];
 				}
-				if (command in subcommands) {
-					return (subcommands as Record<string, readonly string[]>)[command]
-						.map(subcommand => `@${command}:${subcommand}${subcommand === '' ? '' : ' '}`);
+				if (commAnd in subcommAnds) {
+					return (subcommAnds As Record<string, reAdonly string[]>)[commAnd]
+						.mAp(subcommAnd => `@${commAnd}:${subcommAnd}${subcommAnd === '' ? '' : ' '}`);
 				}
 				else {
-					return queryContains(`@${command}`) ? [] : [`@${command} `];
+					return queryContAins(`@${commAnd}`) ? [] : [`@${commAnd} `];
 				}
 			}));
 	}
 
-	static parse(value: string): Query {
+	stAtic pArse(vAlue: string): Query {
 		let sortBy = '';
-		value = value.replace(/@sort:(\w+)(-\w*)?/g, (match, by: string, order: string) => {
+		vAlue = vAlue.replAce(/@sort:(\w+)(-\w*)?/g, (mAtch, by: string, order: string) => {
 			sortBy = by;
 
 			return '';
 		});
 
 		let groupBy = '';
-		value = value.replace(/@group:(\w+)(-\w*)?/g, (match, by: string, order: string) => {
+		vAlue = vAlue.replAce(/@group:(\w+)(-\w*)?/g, (mAtch, by: string, order: string) => {
 			groupBy = by;
 
 			return '';
 		});
 
-		return new Query(value, sortBy, groupBy);
+		return new Query(vAlue, sortBy, groupBy);
 	}
 
 	toString(): string {
-		let result = this.value;
+		let result = this.vAlue;
 
 		if (this.sortBy) {
 			result = `${result}${result ? ' ' : ''}@sort:${this.sortBy}`;
@@ -72,11 +72,11 @@ export class Query {
 		return result;
 	}
 
-	isValid(): boolean {
-		return !/@outdated/.test(this.value);
+	isVAlid(): booleAn {
+		return !/@outdAted/.test(this.vAlue);
 	}
 
-	equals(other: Query): boolean {
-		return this.value === other.value && this.sortBy === other.sortBy;
+	equAls(other: Query): booleAn {
+		return this.vAlue === other.vAlue && this.sortBy === other.sortBy;
 	}
 }

@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event } from 'vs/base/common/event';
-import { IUpdateService } from 'vs/platform/update/common/update';
+import { IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Event } from 'vs/bAse/common/event';
+import { IUpdAteService } from 'vs/plAtform/updAte/common/updAte';
 
-export class UpdateChannel implements IServerChannel {
+export clAss UpdAteChAnnel implements IServerChAnnel {
 
-	constructor(private service: IUpdateService) { }
+	constructor(privAte service: IUpdAteService) { }
 
-	listen(_: unknown, event: string): Event<any> {
+	listen(_: unknown, event: string): Event<Any> {
 		switch (event) {
-			case 'onStateChange': return this.service.onStateChange;
+			cAse 'onStAteChAnge': return this.service.onStAteChAnge;
 		}
 
 		throw new Error(`Event not found: ${event}`);
 	}
 
-	call(_: unknown, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'checkForUpdates': return this.service.checkForUpdates(arg);
-			case 'downloadUpdate': return this.service.downloadUpdate();
-			case 'applyUpdate': return this.service.applyUpdate();
-			case 'quitAndInstall': return this.service.quitAndInstall();
-			case '_getInitialState': return Promise.resolve(this.service.state);
-			case 'isLatestVersion': return this.service.isLatestVersion();
+	cAll(_: unknown, commAnd: string, Arg?: Any): Promise<Any> {
+		switch (commAnd) {
+			cAse 'checkForUpdAtes': return this.service.checkForUpdAtes(Arg);
+			cAse 'downloAdUpdAte': return this.service.downloAdUpdAte();
+			cAse 'ApplyUpdAte': return this.service.ApplyUpdAte();
+			cAse 'quitAndInstAll': return this.service.quitAndInstAll();
+			cAse '_getInitiAlStAte': return Promise.resolve(this.service.stAte);
+			cAse 'isLAtestVersion': return this.service.isLAtestVersion();
 		}
 
-		throw new Error(`Call not found: ${command}`);
+		throw new Error(`CAll not found: ${commAnd}`);
 	}
 }

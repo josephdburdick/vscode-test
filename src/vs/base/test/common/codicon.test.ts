@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { IMatch } from 'vs/base/common/filters';
-import { matchesFuzzyCodiconAware, parseCodicons, IParsedCodicons } from 'vs/base/common/codicon';
-import { stripCodicons } from 'vs/base/common/codicons';
+import * As Assert from 'Assert';
+import { IMAtch } from 'vs/bAse/common/filters';
+import { mAtchesFuzzyCodiconAwAre, pArseCodicons, IPArsedCodicons } from 'vs/bAse/common/codicon';
+import { stripCodicons } from 'vs/bAse/common/codicons';
 
-export interface ICodiconFilter {
-	// Returns null if word doesn't match.
-	(query: string, target: IParsedCodicons): IMatch[] | null;
+export interfAce ICodiconFilter {
+	// Returns null if word doesn't mAtch.
+	(query: string, tArget: IPArsedCodicons): IMAtch[] | null;
 }
 
-function filterOk(filter: ICodiconFilter, word: string, target: IParsedCodicons, highlights?: { start: number; end: number; }[]) {
-	let r = filter(word, target);
-	assert(r);
+function filterOk(filter: ICodiconFilter, word: string, tArget: IPArsedCodicons, highlights?: { stArt: number; end: number; }[]) {
+	let r = filter(word, tArget);
+	Assert(r);
 	if (highlights) {
-		assert.deepEqual(r, highlights);
+		Assert.deepEquAl(r, highlights);
 	}
 }
 
 suite('Codicon', () => {
-	test('matchesFuzzzyCodiconAware', () => {
+	test('mAtchesFuzzzyCodiconAwAre', () => {
 
-		// Camel Case
+		// CAmel CAse
 
-		filterOk(matchesFuzzyCodiconAware, 'ccr', parseCodicons('$(codicon)CamelCaseRocks$(codicon)'), [
-			{ start: 10, end: 11 },
-			{ start: 15, end: 16 },
-			{ start: 19, end: 20 }
+		filterOk(mAtchesFuzzyCodiconAwAre, 'ccr', pArseCodicons('$(codicon)CAmelCAseRocks$(codicon)'), [
+			{ stArt: 10, end: 11 },
+			{ stArt: 15, end: 16 },
+			{ stArt: 19, end: 20 }
 		]);
 
-		filterOk(matchesFuzzyCodiconAware, 'ccr', parseCodicons('$(codicon) CamelCaseRocks $(codicon)'), [
-			{ start: 11, end: 12 },
-			{ start: 16, end: 17 },
-			{ start: 20, end: 21 }
+		filterOk(mAtchesFuzzyCodiconAwAre, 'ccr', pArseCodicons('$(codicon) CAmelCAseRocks $(codicon)'), [
+			{ stArt: 11, end: 12 },
+			{ stArt: 16, end: 17 },
+			{ stArt: 20, end: 21 }
 		]);
 
-		filterOk(matchesFuzzyCodiconAware, 'iut', parseCodicons('$(codicon) Indent $(octico) Using $(octic) Tpaces'), [
-			{ start: 11, end: 12 },
-			{ start: 28, end: 29 },
-			{ start: 43, end: 44 },
+		filterOk(mAtchesFuzzyCodiconAwAre, 'iut', pArseCodicons('$(codicon) Indent $(octico) Using $(octic) TpAces'), [
+			{ stArt: 11, end: 12 },
+			{ stArt: 28, end: 29 },
+			{ stArt: 43, end: 44 },
 		]);
 
 		// Prefix
 
-		filterOk(matchesFuzzyCodiconAware, 'using', parseCodicons('$(codicon) Indent Using Spaces'), [
-			{ start: 18, end: 23 },
+		filterOk(mAtchesFuzzyCodiconAwAre, 'using', pArseCodicons('$(codicon) Indent Using SpAces'), [
+			{ stArt: 18, end: 23 },
 		]);
 
 		// Broken Codicon
 
-		filterOk(matchesFuzzyCodiconAware, 'codicon', parseCodicons('This $(codicon Indent Using Spaces'), [
-			{ start: 7, end: 14 },
+		filterOk(mAtchesFuzzyCodiconAwAre, 'codicon', pArseCodicons('This $(codicon Indent Using SpAces'), [
+			{ stArt: 7, end: 14 },
 		]);
 
-		filterOk(matchesFuzzyCodiconAware, 'indent', parseCodicons('This $codicon Indent Using Spaces'), [
-			{ start: 14, end: 20 },
+		filterOk(mAtchesFuzzyCodiconAwAre, 'indent', pArseCodicons('This $codicon Indent Using SpAces'), [
+			{ stArt: 14, end: 20 },
 		]);
 
 		// Testing #59343
-		filterOk(matchesFuzzyCodiconAware, 'unt', parseCodicons('$(primitive-dot) $(file-text) Untitled-1'), [
-			{ start: 30, end: 33 },
+		filterOk(mAtchesFuzzyCodiconAwAre, 'unt', pArseCodicons('$(primitive-dot) $(file-text) Untitled-1'), [
+			{ stArt: 30, end: 33 },
 		]);
 	});
 });
@@ -70,9 +70,9 @@ suite('Codicon', () => {
 suite('Codicons', () => {
 
 	test('stripCodicons', () => {
-		assert.equal(stripCodicons('Hello World'), 'Hello World');
-		assert.equal(stripCodicons('$(Hello World'), '$(Hello World');
-		assert.equal(stripCodicons('$(Hello) World'), ' World');
-		assert.equal(stripCodicons('$(Hello) W$(oi)rld'), ' Wrld');
+		Assert.equAl(stripCodicons('Hello World'), 'Hello World');
+		Assert.equAl(stripCodicons('$(Hello World'), '$(Hello World');
+		Assert.equAl(stripCodicons('$(Hello) World'), ' World');
+		Assert.equAl(stripCodicons('$(Hello) W$(oi)rld'), ' Wrld');
 	});
 });

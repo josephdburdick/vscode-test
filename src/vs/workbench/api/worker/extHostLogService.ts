@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService, LogLevel, AbstractLogService } from 'vs/platform/log/common/log';
-import { ExtHostLogServiceShape, MainThreadLogShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { UriComponents } from 'vs/base/common/uri';
+import { ILogService, LogLevel, AbstrActLogService } from 'vs/plAtform/log/common/log';
+import { ExtHostLogServiceShApe, MAinThreAdLogShApe, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { UriComponents } from 'vs/bAse/common/uri';
 
-export class ExtHostLogService extends AbstractLogService implements ILogService, ExtHostLogServiceShape {
+export clAss ExtHostLogService extends AbstrActLogService implements ILogService, ExtHostLogServiceShApe {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _proxy: MainThreadLogShape;
-	private readonly _logFile: UriComponents;
+	privAte reAdonly _proxy: MAinThreAdLogShApe;
+	privAte reAdonly _logFile: UriComponents;
 
 	constructor(
 		@IExtHostRpcService rpc: IExtHostRpcService,
-		@IExtHostInitDataService initData: IExtHostInitDataService,
+		@IExtHostInitDAtAService initDAtA: IExtHostInitDAtAService,
 	) {
 		super();
-		this._proxy = rpc.getProxy(MainContext.MainThreadLog);
-		this._logFile = initData.logFile.toJSON();
-		this.setLevel(initData.logLevel);
+		this._proxy = rpc.getProxy(MAinContext.MAinThreAdLog);
+		this._logFile = initDAtA.logFile.toJSON();
+		this.setLevel(initDAtA.logLevel);
 	}
 
 	$setLevel(level: LogLevel): void {
 		this.setLevel(level);
 	}
 
-	trace(_message: string, ..._args: any[]): void {
-		if (this.getLevel() <= LogLevel.Trace) {
-			this._proxy.$log(this._logFile, LogLevel.Trace, Array.from(arguments));
+	trAce(_messAge: string, ..._Args: Any[]): void {
+		if (this.getLevel() <= LogLevel.TrAce) {
+			this._proxy.$log(this._logFile, LogLevel.TrAce, ArrAy.from(Arguments));
 		}
 	}
 
-	debug(_message: string, ..._args: any[]): void {
+	debug(_messAge: string, ..._Args: Any[]): void {
 		if (this.getLevel() <= LogLevel.Debug) {
-			this._proxy.$log(this._logFile, LogLevel.Debug, Array.from(arguments));
+			this._proxy.$log(this._logFile, LogLevel.Debug, ArrAy.from(Arguments));
 		}
 	}
 
-	info(_message: string, ..._args: any[]): void {
+	info(_messAge: string, ..._Args: Any[]): void {
 		if (this.getLevel() <= LogLevel.Info) {
-			this._proxy.$log(this._logFile, LogLevel.Info, Array.from(arguments));
+			this._proxy.$log(this._logFile, LogLevel.Info, ArrAy.from(Arguments));
 		}
 	}
 
-	warn(_message: string, ..._args: any[]): void {
-		if (this.getLevel() <= LogLevel.Warning) {
-			this._proxy.$log(this._logFile, LogLevel.Warning, Array.from(arguments));
+	wArn(_messAge: string, ..._Args: Any[]): void {
+		if (this.getLevel() <= LogLevel.WArning) {
+			this._proxy.$log(this._logFile, LogLevel.WArning, ArrAy.from(Arguments));
 		}
 	}
 
-	error(_message: string | Error, ..._args: any[]): void {
+	error(_messAge: string | Error, ..._Args: Any[]): void {
 		if (this.getLevel() <= LogLevel.Error) {
-			this._proxy.$log(this._logFile, LogLevel.Error, Array.from(arguments));
+			this._proxy.$log(this._logFile, LogLevel.Error, ArrAy.from(Arguments));
 		}
 	}
 
-	critical(_message: string | Error, ..._args: any[]): void {
-		if (this.getLevel() <= LogLevel.Critical) {
-			this._proxy.$log(this._logFile, LogLevel.Critical, Array.from(arguments));
+	criticAl(_messAge: string | Error, ..._Args: Any[]): void {
+		if (this.getLevel() <= LogLevel.CriticAl) {
+			this._proxy.$log(this._logFile, LogLevel.CriticAl, ArrAy.from(Arguments));
 		}
 	}
 

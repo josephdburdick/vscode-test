@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /*
- * This module exports common types and functionality shared between
- * the Monarch compiler that compiles JSON to ILexer, and the Monarch
- * Tokenizer (that highlights at runtime)
+ * This module exports common types And functionAlity shAred between
+ * the MonArch compiler thAt compiles JSON to ILexer, And the MonArch
+ * Tokenizer (thAt highlights At runtime)
  */
 
 /*
- * Type definitions to be used internally to Monarch.
- * Inside monarch we use fully typed definitions and compiled versions of the more abstract JSON descriptions.
+ * Type definitions to be used internAlly to MonArch.
+ * Inside monArch we use fully typed definitions And compiled versions of the more AbstrAct JSON descriptions.
  */
 
-export const enum MonarchBracket {
+export const enum MonArchBrAcket {
 	None = 0,
 	Open = 1,
 	Close = -1
 }
 
-export interface ILexerMin {
-	languageId: string;
-	noThrow: boolean;
-	ignoreCase: boolean;
-	unicode: boolean;
-	usesEmbedded: boolean;
-	defaultToken: string;
-	stateNames: { [stateName: string]: any; };
-	[attr: string]: any;
+export interfAce ILexerMin {
+	lAnguAgeId: string;
+	noThrow: booleAn;
+	ignoreCAse: booleAn;
+	unicode: booleAn;
+	usesEmbedded: booleAn;
+	defAultToken: string;
+	stAteNAmes: { [stAteNAme: string]: Any; };
+	[Attr: string]: Any;
 }
 
-export interface ILexer extends ILexerMin {
-	maxStack: number;
-	start: string | null;
-	ignoreCase: boolean;
-	unicode: boolean;
+export interfAce ILexer extends ILexerMin {
+	mAxStAck: number;
+	stArt: string | null;
+	ignoreCAse: booleAn;
+	unicode: booleAn;
 	tokenPostfix: string;
 
-	tokenizer: { [stateName: string]: IRule[]; };
-	brackets: IBracket[];
+	tokenizer: { [stAteNAme: string]: IRule[]; };
+	brAckets: IBrAcket[];
 }
 
-export interface IBracket {
+export interfAce IBrAcket {
 	token: string;
 	open: string;
 	close: string;
@@ -50,170 +50,170 @@ export interface IBracket {
 
 export type FuzzyAction = IAction | string;
 
-export function isFuzzyActionArr(what: FuzzyAction | FuzzyAction[]): what is FuzzyAction[] {
-	return (Array.isArray(what));
+export function isFuzzyActionArr(whAt: FuzzyAction | FuzzyAction[]): whAt is FuzzyAction[] {
+	return (ArrAy.isArrAy(whAt));
 }
 
-export function isFuzzyAction(what: FuzzyAction | FuzzyAction[]): what is FuzzyAction {
-	return !isFuzzyActionArr(what);
+export function isFuzzyAction(whAt: FuzzyAction | FuzzyAction[]): whAt is FuzzyAction {
+	return !isFuzzyActionArr(whAt);
 }
 
-export function isString(what: FuzzyAction): what is string {
-	return (typeof what === 'string');
+export function isString(whAt: FuzzyAction): whAt is string {
+	return (typeof whAt === 'string');
 }
 
-export function isIAction(what: FuzzyAction): what is IAction {
-	return !isString(what);
+export function isIAction(whAt: FuzzyAction): whAt is IAction {
+	return !isString(whAt);
 }
 
-export interface IRule {
+export interfAce IRule {
 	regex: RegExp;
-	action: FuzzyAction;
-	matchOnlyAtLineStart: boolean;
-	name: string;
+	Action: FuzzyAction;
+	mAtchOnlyAtLineStArt: booleAn;
+	nAme: string;
 }
 
-export interface IAction {
-	// an action is either a group of actions
+export interfAce IAction {
+	// An Action is either A group of Actions
 	group?: FuzzyAction[];
 
-	// or a function that returns a fresh action
-	test?: (id: string, matches: string[], state: string, eos: boolean) => FuzzyAction;
+	// or A function thAt returns A fresh Action
+	test?: (id: string, mAtches: string[], stAte: string, eos: booleAn) => FuzzyAction;
 
-	// or it is a declarative action with a token value and various other attributes
+	// or it is A declArAtive Action with A token vAlue And vArious other Attributes
 	token?: string;
-	tokenSubst?: boolean;
+	tokenSubst?: booleAn;
 	next?: string;
 	nextEmbedded?: string;
-	bracket?: MonarchBracket;
+	brAcket?: MonArchBrAcket;
 	log?: string;
 	switchTo?: string;
-	goBack?: number;
-	transform?: (states: string[]) => string[];
+	goBAck?: number;
+	trAnsform?: (stAtes: string[]) => string[];
 }
 
-export interface IBranch {
-	name: string;
-	value: FuzzyAction;
-	test?: (id: string, matches: string[], state: string, eos: boolean) => boolean;
+export interfAce IBrAnch {
+	nAme: string;
+	vAlue: FuzzyAction;
+	test?: (id: string, mAtches: string[], stAte: string, eos: booleAn) => booleAn;
 }
 
-// Small helper functions
+// SmAll helper functions
 
 /**
- * Is a string null, undefined, or empty?
+ * Is A string null, undefined, or empty?
  */
-export function empty(s: string): boolean {
-	return (s ? false : true);
-}
-
-/**
- * Puts a string to lower case if 'ignoreCase' is set.
- */
-export function fixCase(lexer: ILexerMin, str: string): string {
-	return (lexer.ignoreCase && str ? str.toLowerCase() : str);
+export function empty(s: string): booleAn {
+	return (s ? fAlse : true);
 }
 
 /**
- * Ensures there are no bad characters in a CSS token class.
+ * Puts A string to lower cAse if 'ignoreCAse' is set.
  */
-export function sanitize(s: string) {
-	return s.replace(/[&<>'"_]/g, '-'); // used on all output token CSS classes
+export function fixCAse(lexer: ILexerMin, str: string): string {
+	return (lexer.ignoreCAse && str ? str.toLowerCAse() : str);
+}
+
+/**
+ * Ensures there Are no bAd chArActers in A CSS token clAss.
+ */
+export function sAnitize(s: string) {
+	return s.replAce(/[&<>'"_]/g, '-'); // used on All output token CSS clAsses
 }
 
 // Logging
 
 /**
- * Logs a message.
+ * Logs A messAge.
  */
 export function log(lexer: ILexerMin, msg: string) {
-	console.log(`${lexer.languageId}: ${msg}`);
+	console.log(`${lexer.lAnguAgeId}: ${msg}`);
 }
 
 // Throwing errors
 
-export function createError(lexer: ILexerMin, msg: string): Error {
-	return new Error(`${lexer.languageId}: ${msg}`);
+export function creAteError(lexer: ILexerMin, msg: string): Error {
+	return new Error(`${lexer.lAnguAgeId}: ${msg}`);
 }
 
-// Helper functions for rule finding and substitution
+// Helper functions for rule finding And substitution
 
 /**
- * substituteMatches is used on lexer strings and can substitutes predefined patterns:
+ * substituteMAtches is used on lexer strings And cAn substitutes predefined pAtterns:
  * 		$$  => $
  * 		$#  => id
- * 		$n  => matched entry n
- * 		@attr => contents of lexer[attr]
+ * 		$n  => mAtched entry n
+ * 		@Attr => contents of lexer[Attr]
  *
- * See documentation for more info
+ * See documentAtion for more info
  */
-export function substituteMatches(lexer: ILexerMin, str: string, id: string, matches: string[], state: string): string {
+export function substituteMAtches(lexer: ILexerMin, str: string, id: string, mAtches: string[], stAte: string): string {
 	const re = /\$((\$)|(#)|(\d\d?)|[sS](\d\d?)|@(\w+))/g;
-	let stateMatches: string[] | null = null;
-	return str.replace(re, function (full, sub?, dollar?, hash?, n?, s?, attr?, ofs?, total?) {
-		if (!empty(dollar)) {
+	let stAteMAtches: string[] | null = null;
+	return str.replAce(re, function (full, sub?, dollAr?, hAsh?, n?, s?, Attr?, ofs?, totAl?) {
+		if (!empty(dollAr)) {
 			return '$'; // $$
 		}
-		if (!empty(hash)) {
-			return fixCase(lexer, id);   // default $#
+		if (!empty(hAsh)) {
+			return fixCAse(lexer, id);   // defAult $#
 		}
-		if (!empty(n) && n < matches.length) {
-			return fixCase(lexer, matches[n]); // $n
+		if (!empty(n) && n < mAtches.length) {
+			return fixCAse(lexer, mAtches[n]); // $n
 		}
-		if (!empty(attr) && lexer && typeof (lexer[attr]) === 'string') {
-			return lexer[attr]; //@attribute
+		if (!empty(Attr) && lexer && typeof (lexer[Attr]) === 'string') {
+			return lexer[Attr]; //@Attribute
 		}
-		if (stateMatches === null) { // split state on demand
-			stateMatches = state.split('.');
-			stateMatches.unshift(state);
+		if (stAteMAtches === null) { // split stAte on demAnd
+			stAteMAtches = stAte.split('.');
+			stAteMAtches.unshift(stAte);
 		}
-		if (!empty(s) && s < stateMatches.length) {
-			return fixCase(lexer, stateMatches[s]); //$Sn
+		if (!empty(s) && s < stAteMAtches.length) {
+			return fixCAse(lexer, stAteMAtches[s]); //$Sn
 		}
 		return '';
 	});
 }
 
 /**
- * Find the tokenizer rules for a specific state (i.e. next action)
+ * Find the tokenizer rules for A specific stAte (i.e. next Action)
  */
-export function findRules(lexer: ILexer, inState: string): IRule[] | null {
-	let state: string | null = inState;
-	while (state && state.length > 0) {
-		const rules = lexer.tokenizer[state];
+export function findRules(lexer: ILexer, inStAte: string): IRule[] | null {
+	let stAte: string | null = inStAte;
+	while (stAte && stAte.length > 0) {
+		const rules = lexer.tokenizer[stAte];
 		if (rules) {
 			return rules;
 		}
 
-		const idx = state.lastIndexOf('.');
+		const idx = stAte.lAstIndexOf('.');
 		if (idx < 0) {
-			state = null; // no further parent
+			stAte = null; // no further pArent
 		} else {
-			state = state.substr(0, idx);
+			stAte = stAte.substr(0, idx);
 		}
 	}
 	return null;
 }
 
 /**
- * Is a certain state defined? In contrast to 'findRules' this works on a ILexerMin.
- * This is used during compilation where we may know the defined states
- * but not yet whether the corresponding rules are correct.
+ * Is A certAin stAte defined? In contrAst to 'findRules' this works on A ILexerMin.
+ * This is used during compilAtion where we mAy know the defined stAtes
+ * but not yet whether the corresponding rules Are correct.
  */
-export function stateExists(lexer: ILexerMin, inState: string): boolean {
-	let state: string | null = inState;
-	while (state && state.length > 0) {
-		const exist = lexer.stateNames[state];
+export function stAteExists(lexer: ILexerMin, inStAte: string): booleAn {
+	let stAte: string | null = inStAte;
+	while (stAte && stAte.length > 0) {
+		const exist = lexer.stAteNAmes[stAte];
 		if (exist) {
 			return true;
 		}
 
-		const idx = state.lastIndexOf('.');
+		const idx = stAte.lAstIndexOf('.');
 		if (idx < 0) {
-			state = null; // no further parent
+			stAte = null; // no further pArent
 		} else {
-			state = state.substr(0, idx);
+			stAte = stAte.substr(0, idx);
 		}
 	}
-	return false;
+	return fAlse;
 }

@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { PluginManager } from './utils/plugins';
+import * As vscode from 'vscode';
+import { PluginMAnAger } from './utils/plugins';
 
-class ApiV0 {
+clAss ApiV0 {
 	public constructor(
-		public readonly onCompletionAccepted: vscode.Event<vscode.CompletionItem & { metadata?: any }>,
-		private readonly _pluginManager: PluginManager,
+		public reAdonly onCompletionAccepted: vscode.Event<vscode.CompletionItem & { metAdAtA?: Any }>,
+		privAte reAdonly _pluginMAnAger: PluginMAnAger,
 	) { }
 
-	configurePlugin(pluginId: string, configuration: {}): void {
-		this._pluginManager.setConfiguration(pluginId, configuration);
+	configurePlugin(pluginId: string, configurAtion: {}): void {
+		this._pluginMAnAger.setConfigurAtion(pluginId, configurAtion);
 	}
 }
 
-export interface Api {
+export interfAce Api {
 	getAPI(version: 0): ApiV0 | undefined;
 }
 
 export function getExtensionApi(
 	onCompletionAccepted: vscode.Event<vscode.CompletionItem>,
-	pluginManager: PluginManager,
+	pluginMAnAger: PluginMAnAger,
 ): Api {
 	return {
 		getAPI(version) {
 			if (version === 0) {
-				return new ApiV0(onCompletionAccepted, pluginManager);
+				return new ApiV0(onCompletionAccepted, pluginMAnAger);
 			}
 			return undefined;
 		}

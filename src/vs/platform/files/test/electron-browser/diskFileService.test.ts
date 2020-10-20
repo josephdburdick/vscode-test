@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { tmpdir } from 'os';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { Schemas } from 'vs/base/common/network';
-import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { generateUuid } from 'vs/base/common/uuid';
-import { join, basename, dirname, posix } from 'vs/base/common/path';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { copy, rimraf, symlink, RimRafMode, rimrafSync } from 'vs/base/node/pfs';
-import { URI } from 'vs/base/common/uri';
-import { existsSync, statSync, readdirSync, readFileSync, writeFileSync, renameSync, unlinkSync, mkdirSync, createReadStream } from 'fs';
-import { FileOperation, FileOperationEvent, IFileStat, FileOperationResult, FileSystemProviderCapabilities, FileChangeType, IFileChange, FileChangesEvent, FileOperationError, etag, IStat, IFileStatWithMetadata } from 'vs/platform/files/common/files';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { isLinux, isWindows } from 'vs/base/common/platform';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { isEqual, joinPath } from 'vs/base/common/resources';
-import { VSBuffer, VSBufferReadable, streamToBufferReadableStream, VSBufferReadableStream, bufferToReadable, bufferToStream, streamToBuffer } from 'vs/base/common/buffer';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { SchemAs } from 'vs/bAse/common/network';
+import { DiskFileSystemProvider } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { getRAndomTestPAth } from 'vs/bAse/test/node/testUtils';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { join, bAsenAme, dirnAme, posix } from 'vs/bAse/common/pAth';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
+import { copy, rimrAf, symlink, RimRAfMode, rimrAfSync } from 'vs/bAse/node/pfs';
+import { URI } from 'vs/bAse/common/uri';
+import { existsSync, stAtSync, reAddirSync, reAdFileSync, writeFileSync, renAmeSync, unlinkSync, mkdirSync, creAteReAdStreAm } from 'fs';
+import { FileOperAtion, FileOperAtionEvent, IFileStAt, FileOperAtionResult, FileSystemProviderCApAbilities, FileChAngeType, IFileChAnge, FileChAngesEvent, FileOperAtionError, etAg, IStAt, IFileStAtWithMetAdAtA } from 'vs/plAtform/files/common/files';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { isLinux, isWindows } from 'vs/bAse/common/plAtform';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isEquAl, joinPAth } from 'vs/bAse/common/resources';
+import { VSBuffer, VSBufferReAdAble, streAmToBufferReAdAbleStreAm, VSBufferReAdAbleStreAm, bufferToReAdAble, bufferToStreAm, streAmToBuffer } from 'vs/bAse/common/buffer';
 
-function getByName(root: IFileStat, name: string): IFileStat | undefined {
+function getByNAme(root: IFileStAt, nAme: string): IFileStAt | undefined {
 	if (root.children === undefined) {
 		return undefined;
 	}
 
-	return root.children.find(child => child.name === name);
+	return root.children.find(child => child.nAme === nAme);
 }
 
-function toLineByLineReadable(content: string): VSBufferReadable {
+function toLineByLineReAdAble(content: string): VSBufferReAdAble {
 	let chunks = content.split('\n');
-	chunks = chunks.map((chunk, index) => {
+	chunks = chunks.mAp((chunk, index) => {
 		if (index === 0) {
 			return chunk;
 		}
@@ -41,7 +41,7 @@ function toLineByLineReadable(content: string): VSBufferReadable {
 	});
 
 	return {
-		read(): VSBuffer | null {
+		reAd(): VSBuffer | null {
 			const chunk = chunks.shift();
 			if (typeof chunk === 'string') {
 				return VSBuffer.fromString(chunk);
@@ -52,67 +52,67 @@ function toLineByLineReadable(content: string): VSBufferReadable {
 	};
 }
 
-export class TestDiskFileSystemProvider extends DiskFileSystemProvider {
+export clAss TestDiskFileSystemProvider extends DiskFileSystemProvider {
 
-	totalBytesRead: number = 0;
+	totAlBytesReAd: number = 0;
 
-	private invalidStatSize: boolean = false;
-	private smallStatSize: boolean = false;
+	privAte invAlidStAtSize: booleAn = fAlse;
+	privAte smAllStAtSize: booleAn = fAlse;
 
-	private _testCapabilities!: FileSystemProviderCapabilities;
-	get capabilities(): FileSystemProviderCapabilities {
-		if (!this._testCapabilities) {
-			this._testCapabilities =
-				FileSystemProviderCapabilities.FileReadWrite |
-				FileSystemProviderCapabilities.FileOpenReadWriteClose |
-				FileSystemProviderCapabilities.FileReadStream |
-				FileSystemProviderCapabilities.Trash |
-				FileSystemProviderCapabilities.FileFolderCopy;
+	privAte _testCApAbilities!: FileSystemProviderCApAbilities;
+	get cApAbilities(): FileSystemProviderCApAbilities {
+		if (!this._testCApAbilities) {
+			this._testCApAbilities =
+				FileSystemProviderCApAbilities.FileReAdWrite |
+				FileSystemProviderCApAbilities.FileOpenReAdWriteClose |
+				FileSystemProviderCApAbilities.FileReAdStreAm |
+				FileSystemProviderCApAbilities.TrAsh |
+				FileSystemProviderCApAbilities.FileFolderCopy;
 
 			if (isLinux) {
-				this._testCapabilities |= FileSystemProviderCapabilities.PathCaseSensitive;
+				this._testCApAbilities |= FileSystemProviderCApAbilities.PAthCAseSensitive;
 			}
 		}
 
-		return this._testCapabilities;
+		return this._testCApAbilities;
 	}
 
-	set capabilities(capabilities: FileSystemProviderCapabilities) {
-		this._testCapabilities = capabilities;
+	set cApAbilities(cApAbilities: FileSystemProviderCApAbilities) {
+		this._testCApAbilities = cApAbilities;
 	}
 
-	setInvalidStatSize(enabled: boolean): void {
-		this.invalidStatSize = enabled;
+	setInvAlidStAtSize(enAbled: booleAn): void {
+		this.invAlidStAtSize = enAbled;
 	}
 
-	setSmallStatSize(enabled: boolean): void {
-		this.smallStatSize = enabled;
+	setSmAllStAtSize(enAbled: booleAn): void {
+		this.smAllStAtSize = enAbled;
 	}
 
-	async stat(resource: URI): Promise<IStat> {
-		const res = await super.stat(resource);
+	Async stAt(resource: URI): Promise<IStAt> {
+		const res = AwAit super.stAt(resource);
 
-		if (this.invalidStatSize) {
-			res.size = String(res.size) as any; // for https://github.com/microsoft/vscode/issues/72909
-		} else if (this.smallStatSize) {
+		if (this.invAlidStAtSize) {
+			res.size = String(res.size) As Any; // for https://github.com/microsoft/vscode/issues/72909
+		} else if (this.smAllStAtSize) {
 			res.size = 1;
 		}
 
 		return res;
 	}
 
-	async read(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
-		const bytesRead = await super.read(fd, pos, data, offset, length);
+	Async reAd(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): Promise<number> {
+		const bytesReAd = AwAit super.reAd(fd, pos, dAtA, offset, length);
 
-		this.totalBytesRead += bytesRead;
+		this.totAlBytesReAd += bytesReAd;
 
-		return bytesRead;
+		return bytesReAd;
 	}
 
-	async readFile(resource: URI): Promise<Uint8Array> {
-		const res = await super.readFile(resource);
+	Async reAdFile(resource: URI): Promise<Uint8ArrAy> {
+		const res = AwAit super.reAdFile(resource);
 
-		this.totalBytesRead += res.byteLength;
+		this.totAlBytesReAd += res.byteLength;
 
 		return res;
 	}
@@ -120,2199 +120,2199 @@ export class TestDiskFileSystemProvider extends DiskFileSystemProvider {
 
 suite('Disk File Service', function () {
 
-	const parentDir = getRandomTestPath(tmpdir(), 'vsctests', 'diskfileservice');
-	const testSchema = 'test';
+	const pArentDir = getRAndomTestPAth(tmpdir(), 'vsctests', 'diskfileservice');
+	const testSchemA = 'test';
 
 	let service: FileService;
 	let fileProvider: TestDiskFileSystemProvider;
 	let testProvider: TestDiskFileSystemProvider;
 	let testDir: string;
 
-	const disposables = new DisposableStore();
+	const disposAbles = new DisposAbleStore();
 
-	// Given issues such as https://github.com/microsoft/vscode/issues/78602
-	// and https://github.com/microsoft/vscode/issues/92334 we see random test
-	// failures when accessing the native file system. To diagnose further, we
-	// retry node.js file access tests up to 3 times to rule out any random disk
-	// issue and increase the timeout.
+	// Given issues such As https://github.com/microsoft/vscode/issues/78602
+	// And https://github.com/microsoft/vscode/issues/92334 we see rAndom test
+	// fAilures when Accessing the nAtive file system. To diAgnose further, we
+	// retry node.js file Access tests up to 3 times to rule out Any rAndom disk
+	// issue And increAse the timeout.
 	this.retries(3);
 	this.timeout(1000 * 10);
 
-	setup(async () => {
+	setup(Async () => {
 		const logService = new NullLogService();
 
 		service = new FileService(logService);
-		disposables.add(service);
+		disposAbles.Add(service);
 
 		fileProvider = new TestDiskFileSystemProvider(logService);
-		disposables.add(service.registerProvider(Schemas.file, fileProvider));
-		disposables.add(fileProvider);
+		disposAbles.Add(service.registerProvider(SchemAs.file, fileProvider));
+		disposAbles.Add(fileProvider);
 
 		testProvider = new TestDiskFileSystemProvider(logService);
-		disposables.add(service.registerProvider(testSchema, testProvider));
-		disposables.add(testProvider);
+		disposAbles.Add(service.registerProvider(testSchemA, testProvider));
+		disposAbles.Add(testProvider);
 
-		const id = generateUuid();
-		testDir = join(parentDir, id);
-		const sourceDir = getPathFromAmdModule(require, './fixtures/service');
+		const id = generAteUuid();
+		testDir = join(pArentDir, id);
+		const sourceDir = getPAthFromAmdModule(require, './fixtures/service');
 
-		await copy(sourceDir, testDir);
+		AwAit copy(sourceDir, testDir);
 	});
 
-	teardown(async () => {
-		disposables.clear();
+	teArdown(Async () => {
+		disposAbles.cleAr();
 
-		await rimraf(parentDir, RimRafMode.MOVE);
+		AwAit rimrAf(pArentDir, RimRAfMode.MOVE);
 	});
 
-	test('createFolder', async () => {
-		let event: FileOperationEvent | undefined;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('creAteFolder', Async () => {
+		let event: FileOperAtionEvent | undefined;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const parent = await service.resolve(URI.file(testDir));
+		const pArent = AwAit service.resolve(URI.file(testDir));
 
-		const newFolderResource = URI.file(join(parent.resource.fsPath, 'newFolder'));
+		const newFolderResource = URI.file(join(pArent.resource.fsPAth, 'newFolder'));
 
-		const newFolder = await service.createFolder(newFolderResource);
+		const newFolder = AwAit service.creAteFolder(newFolderResource);
 
-		assert.equal(newFolder.name, 'newFolder');
-		assert.equal(existsSync(newFolder.resource.fsPath), true);
+		Assert.equAl(newFolder.nAme, 'newFolder');
+		Assert.equAl(existsSync(newFolder.resource.fsPAth), true);
 
-		assert.ok(event);
-		assert.equal(event!.resource.fsPath, newFolderResource.fsPath);
-		assert.equal(event!.operation, FileOperation.CREATE);
-		assert.equal(event!.target!.resource.fsPath, newFolderResource.fsPath);
-		assert.equal(event!.target!.isDirectory, true);
+		Assert.ok(event);
+		Assert.equAl(event!.resource.fsPAth, newFolderResource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.CREATE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, newFolderResource.fsPAth);
+		Assert.equAl(event!.tArget!.isDirectory, true);
 	});
 
-	test('createFolder: creating multiple folders at once', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('creAteFolder: creAting multiple folders At once', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const multiFolderPaths = ['a', 'couple', 'of', 'folders'];
-		const parent = await service.resolve(URI.file(testDir));
+		const multiFolderPAths = ['A', 'couple', 'of', 'folders'];
+		const pArent = AwAit service.resolve(URI.file(testDir));
 
-		const newFolderResource = URI.file(join(parent.resource.fsPath, ...multiFolderPaths));
+		const newFolderResource = URI.file(join(pArent.resource.fsPAth, ...multiFolderPAths));
 
-		const newFolder = await service.createFolder(newFolderResource);
+		const newFolder = AwAit service.creAteFolder(newFolderResource);
 
-		const lastFolderName = multiFolderPaths[multiFolderPaths.length - 1];
-		assert.equal(newFolder.name, lastFolderName);
-		assert.equal(existsSync(newFolder.resource.fsPath), true);
+		const lAstFolderNAme = multiFolderPAths[multiFolderPAths.length - 1];
+		Assert.equAl(newFolder.nAme, lAstFolderNAme);
+		Assert.equAl(existsSync(newFolder.resource.fsPAth), true);
 
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, newFolderResource.fsPath);
-		assert.equal(event!.operation, FileOperation.CREATE);
-		assert.equal(event!.target!.resource.fsPath, newFolderResource.fsPath);
-		assert.equal(event!.target!.isDirectory, true);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, newFolderResource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.CREATE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, newFolderResource.fsPAth);
+		Assert.equAl(event!.tArget!.isDirectory, true);
 	});
 
-	test('exists', async () => {
-		let exists = await service.exists(URI.file(testDir));
-		assert.equal(exists, true);
+	test('exists', Async () => {
+		let exists = AwAit service.exists(URI.file(testDir));
+		Assert.equAl(exists, true);
 
-		exists = await service.exists(URI.file(testDir + 'something'));
-		assert.equal(exists, false);
+		exists = AwAit service.exists(URI.file(testDir + 'something'));
+		Assert.equAl(exists, fAlse);
 	});
 
-	test('resolve - file', async () => {
-		const resource = URI.file(getPathFromAmdModule(require, './fixtures/resolver/index.html'));
-		const resolved = await service.resolve(resource);
+	test('resolve - file', Async () => {
+		const resource = URI.file(getPAthFromAmdModule(require, './fixtures/resolver/index.html'));
+		const resolved = AwAit service.resolve(resource);
 
-		assert.equal(resolved.name, 'index.html');
-		assert.equal(resolved.isFile, true);
-		assert.equal(resolved.isDirectory, false);
-		assert.equal(resolved.isSymbolicLink, false);
-		assert.equal(resolved.resource.toString(), resource.toString());
-		assert.equal(resolved.children, undefined);
-		assert.ok(resolved.mtime! > 0);
-		assert.ok(resolved.ctime! > 0);
-		assert.ok(resolved.size! > 0);
+		Assert.equAl(resolved.nAme, 'index.html');
+		Assert.equAl(resolved.isFile, true);
+		Assert.equAl(resolved.isDirectory, fAlse);
+		Assert.equAl(resolved.isSymbolicLink, fAlse);
+		Assert.equAl(resolved.resource.toString(), resource.toString());
+		Assert.equAl(resolved.children, undefined);
+		Assert.ok(resolved.mtime! > 0);
+		Assert.ok(resolved.ctime! > 0);
+		Assert.ok(resolved.size! > 0);
 	});
 
-	test('resolve - directory', async () => {
-		const testsElements = ['examples', 'other', 'index.html', 'site.css'];
+	test('resolve - directory', Async () => {
+		const testsElements = ['exAmples', 'other', 'index.html', 'site.css'];
 
-		const resource = URI.file(getPathFromAmdModule(require, './fixtures/resolver'));
-		const result = await service.resolve(resource);
+		const resource = URI.file(getPAthFromAmdModule(require, './fixtures/resolver'));
+		const result = AwAit service.resolve(resource);
 
-		assert.ok(result);
-		assert.equal(result.resource.toString(), resource.toString());
-		assert.equal(result.name, 'resolver');
-		assert.ok(result.children);
-		assert.ok(result.children!.length > 0);
-		assert.ok(result!.isDirectory);
-		assert.ok(result.mtime! > 0);
-		assert.ok(result.ctime! > 0);
-		assert.equal(result.children!.length, testsElements.length);
+		Assert.ok(result);
+		Assert.equAl(result.resource.toString(), resource.toString());
+		Assert.equAl(result.nAme, 'resolver');
+		Assert.ok(result.children);
+		Assert.ok(result.children!.length > 0);
+		Assert.ok(result!.isDirectory);
+		Assert.ok(result.mtime! > 0);
+		Assert.ok(result.ctime! > 0);
+		Assert.equAl(result.children!.length, testsElements.length);
 
-		assert.ok(result.children!.every(entry => {
-			return testsElements.some(name => {
-				return basename(entry.resource.fsPath) === name;
+		Assert.ok(result.children!.every(entry => {
+			return testsElements.some(nAme => {
+				return bAsenAme(entry.resource.fsPAth) === nAme;
 			});
 		}));
 
-		result.children!.forEach(value => {
-			assert.ok(basename(value.resource.fsPath));
-			if (['examples', 'other'].indexOf(basename(value.resource.fsPath)) >= 0) {
-				assert.ok(value.isDirectory);
-				assert.equal(value.mtime, undefined);
-				assert.equal(value.ctime, undefined);
-			} else if (basename(value.resource.fsPath) === 'index.html') {
-				assert.ok(!value.isDirectory);
-				assert.ok(!value.children);
-				assert.equal(value.mtime, undefined);
-				assert.equal(value.ctime, undefined);
-			} else if (basename(value.resource.fsPath) === 'site.css') {
-				assert.ok(!value.isDirectory);
-				assert.ok(!value.children);
-				assert.equal(value.mtime, undefined);
-				assert.equal(value.ctime, undefined);
+		result.children!.forEAch(vAlue => {
+			Assert.ok(bAsenAme(vAlue.resource.fsPAth));
+			if (['exAmples', 'other'].indexOf(bAsenAme(vAlue.resource.fsPAth)) >= 0) {
+				Assert.ok(vAlue.isDirectory);
+				Assert.equAl(vAlue.mtime, undefined);
+				Assert.equAl(vAlue.ctime, undefined);
+			} else if (bAsenAme(vAlue.resource.fsPAth) === 'index.html') {
+				Assert.ok(!vAlue.isDirectory);
+				Assert.ok(!vAlue.children);
+				Assert.equAl(vAlue.mtime, undefined);
+				Assert.equAl(vAlue.ctime, undefined);
+			} else if (bAsenAme(vAlue.resource.fsPAth) === 'site.css') {
+				Assert.ok(!vAlue.isDirectory);
+				Assert.ok(!vAlue.children);
+				Assert.equAl(vAlue.mtime, undefined);
+				Assert.equAl(vAlue.ctime, undefined);
 			} else {
-				assert.ok(!'Unexpected value ' + basename(value.resource.fsPath));
+				Assert.ok(!'Unexpected vAlue ' + bAsenAme(vAlue.resource.fsPAth));
 			}
 		});
 	});
 
-	test('resolve - directory - with metadata', async () => {
-		const testsElements = ['examples', 'other', 'index.html', 'site.css'];
+	test('resolve - directory - with metAdAtA', Async () => {
+		const testsElements = ['exAmples', 'other', 'index.html', 'site.css'];
 
-		const result = await service.resolve(URI.file(getPathFromAmdModule(require, './fixtures/resolver')), { resolveMetadata: true });
+		const result = AwAit service.resolve(URI.file(getPAthFromAmdModule(require, './fixtures/resolver')), { resolveMetAdAtA: true });
 
-		assert.ok(result);
-		assert.equal(result.name, 'resolver');
-		assert.ok(result.children);
-		assert.ok(result.children!.length > 0);
-		assert.ok(result!.isDirectory);
-		assert.ok(result.mtime! > 0);
-		assert.ok(result.ctime! > 0);
-		assert.equal(result.children!.length, testsElements.length);
+		Assert.ok(result);
+		Assert.equAl(result.nAme, 'resolver');
+		Assert.ok(result.children);
+		Assert.ok(result.children!.length > 0);
+		Assert.ok(result!.isDirectory);
+		Assert.ok(result.mtime! > 0);
+		Assert.ok(result.ctime! > 0);
+		Assert.equAl(result.children!.length, testsElements.length);
 
-		assert.ok(result.children!.every(entry => {
-			return testsElements.some(name => {
-				return basename(entry.resource.fsPath) === name;
+		Assert.ok(result.children!.every(entry => {
+			return testsElements.some(nAme => {
+				return bAsenAme(entry.resource.fsPAth) === nAme;
 			});
 		}));
 
-		assert.ok(result.children!.every(entry => entry.etag.length > 0));
+		Assert.ok(result.children!.every(entry => entry.etAg.length > 0));
 
-		result.children!.forEach(value => {
-			assert.ok(basename(value.resource.fsPath));
-			if (['examples', 'other'].indexOf(basename(value.resource.fsPath)) >= 0) {
-				assert.ok(value.isDirectory);
-				assert.ok(value.mtime! > 0);
-				assert.ok(value.ctime! > 0);
-			} else if (basename(value.resource.fsPath) === 'index.html') {
-				assert.ok(!value.isDirectory);
-				assert.ok(!value.children);
-				assert.ok(value.mtime! > 0);
-				assert.ok(value.ctime! > 0);
-			} else if (basename(value.resource.fsPath) === 'site.css') {
-				assert.ok(!value.isDirectory);
-				assert.ok(!value.children);
-				assert.ok(value.mtime! > 0);
-				assert.ok(value.ctime! > 0);
+		result.children!.forEAch(vAlue => {
+			Assert.ok(bAsenAme(vAlue.resource.fsPAth));
+			if (['exAmples', 'other'].indexOf(bAsenAme(vAlue.resource.fsPAth)) >= 0) {
+				Assert.ok(vAlue.isDirectory);
+				Assert.ok(vAlue.mtime! > 0);
+				Assert.ok(vAlue.ctime! > 0);
+			} else if (bAsenAme(vAlue.resource.fsPAth) === 'index.html') {
+				Assert.ok(!vAlue.isDirectory);
+				Assert.ok(!vAlue.children);
+				Assert.ok(vAlue.mtime! > 0);
+				Assert.ok(vAlue.ctime! > 0);
+			} else if (bAsenAme(vAlue.resource.fsPAth) === 'site.css') {
+				Assert.ok(!vAlue.isDirectory);
+				Assert.ok(!vAlue.children);
+				Assert.ok(vAlue.mtime! > 0);
+				Assert.ok(vAlue.ctime! > 0);
 			} else {
-				assert.ok(!'Unexpected value ' + basename(value.resource.fsPath));
+				Assert.ok(!'Unexpected vAlue ' + bAsenAme(vAlue.resource.fsPAth));
 			}
 		});
 	});
 
-	test('resolve - directory with resolveTo', async () => {
-		const resolved = await service.resolve(URI.file(testDir), { resolveTo: [URI.file(join(testDir, 'deep'))] });
-		assert.equal(resolved.children!.length, 8);
+	test('resolve - directory with resolveTo', Async () => {
+		const resolved = AwAit service.resolve(URI.file(testDir), { resolveTo: [URI.file(join(testDir, 'deep'))] });
+		Assert.equAl(resolved.children!.length, 8);
 
-		const deep = (getByName(resolved, 'deep')!);
-		assert.equal(deep.children!.length, 4);
+		const deep = (getByNAme(resolved, 'deep')!);
+		Assert.equAl(deep.children!.length, 4);
 	});
 
-	test('resolve - directory - resolveTo single directory', async () => {
-		const resolverFixturesPath = getPathFromAmdModule(require, './fixtures/resolver');
-		const result = await service.resolve(URI.file(resolverFixturesPath), { resolveTo: [URI.file(join(resolverFixturesPath, 'other/deep'))] });
+	test('resolve - directory - resolveTo single directory', Async () => {
+		const resolverFixturesPAth = getPAthFromAmdModule(require, './fixtures/resolver');
+		const result = AwAit service.resolve(URI.file(resolverFixturesPAth), { resolveTo: [URI.file(join(resolverFixturesPAth, 'other/deep'))] });
 
-		assert.ok(result);
-		assert.ok(result.children);
-		assert.ok(result.children!.length > 0);
-		assert.ok(result.isDirectory);
+		Assert.ok(result);
+		Assert.ok(result.children);
+		Assert.ok(result.children!.length > 0);
+		Assert.ok(result.isDirectory);
 
 		const children = result.children!;
-		assert.equal(children.length, 4);
+		Assert.equAl(children.length, 4);
 
-		const other = getByName(result, 'other');
-		assert.ok(other);
-		assert.ok(other!.children!.length > 0);
+		const other = getByNAme(result, 'other');
+		Assert.ok(other);
+		Assert.ok(other!.children!.length > 0);
 
-		const deep = getByName(other!, 'deep');
-		assert.ok(deep);
-		assert.ok(deep!.children!.length > 0);
-		assert.equal(deep!.children!.length, 4);
+		const deep = getByNAme(other!, 'deep');
+		Assert.ok(deep);
+		Assert.ok(deep!.children!.length > 0);
+		Assert.equAl(deep!.children!.length, 4);
 	});
 
-	test('resolve directory - resolveTo multiple directories', async () => {
-		const resolverFixturesPath = getPathFromAmdModule(require, './fixtures/resolver');
-		const result = await service.resolve(URI.file(resolverFixturesPath), {
+	test('resolve directory - resolveTo multiple directories', Async () => {
+		const resolverFixturesPAth = getPAthFromAmdModule(require, './fixtures/resolver');
+		const result = AwAit service.resolve(URI.file(resolverFixturesPAth), {
 			resolveTo: [
-				URI.file(join(resolverFixturesPath, 'other/deep')),
-				URI.file(join(resolverFixturesPath, 'examples'))
+				URI.file(join(resolverFixturesPAth, 'other/deep')),
+				URI.file(join(resolverFixturesPAth, 'exAmples'))
 			]
 		});
 
-		assert.ok(result);
-		assert.ok(result.children);
-		assert.ok(result.children!.length > 0);
-		assert.ok(result.isDirectory);
+		Assert.ok(result);
+		Assert.ok(result.children);
+		Assert.ok(result.children!.length > 0);
+		Assert.ok(result.isDirectory);
 
 		const children = result.children!;
-		assert.equal(children.length, 4);
+		Assert.equAl(children.length, 4);
 
-		const other = getByName(result, 'other');
-		assert.ok(other);
-		assert.ok(other!.children!.length > 0);
+		const other = getByNAme(result, 'other');
+		Assert.ok(other);
+		Assert.ok(other!.children!.length > 0);
 
-		const deep = getByName(other!, 'deep');
-		assert.ok(deep);
-		assert.ok(deep!.children!.length > 0);
-		assert.equal(deep!.children!.length, 4);
+		const deep = getByNAme(other!, 'deep');
+		Assert.ok(deep);
+		Assert.ok(deep!.children!.length > 0);
+		Assert.equAl(deep!.children!.length, 4);
 
-		const examples = getByName(result, 'examples');
-		assert.ok(examples);
-		assert.ok(examples!.children!.length > 0);
-		assert.equal(examples!.children!.length, 4);
+		const exAmples = getByNAme(result, 'exAmples');
+		Assert.ok(exAmples);
+		Assert.ok(exAmples!.children!.length > 0);
+		Assert.equAl(exAmples!.children!.length, 4);
 	});
 
-	test('resolve directory - resolveSingleChildFolders', async () => {
-		const resolverFixturesPath = getPathFromAmdModule(require, './fixtures/resolver/other');
-		const result = await service.resolve(URI.file(resolverFixturesPath), { resolveSingleChildDescendants: true });
+	test('resolve directory - resolveSingleChildFolders', Async () => {
+		const resolverFixturesPAth = getPAthFromAmdModule(require, './fixtures/resolver/other');
+		const result = AwAit service.resolve(URI.file(resolverFixturesPAth), { resolveSingleChildDescendAnts: true });
 
-		assert.ok(result);
-		assert.ok(result.children);
-		assert.ok(result.children!.length > 0);
-		assert.ok(result.isDirectory);
+		Assert.ok(result);
+		Assert.ok(result.children);
+		Assert.ok(result.children!.length > 0);
+		Assert.ok(result.isDirectory);
 
 		const children = result.children!;
-		assert.equal(children.length, 1);
+		Assert.equAl(children.length, 1);
 
-		let deep = getByName(result, 'deep');
-		assert.ok(deep);
-		assert.ok(deep!.children!.length > 0);
-		assert.equal(deep!.children!.length, 4);
+		let deep = getByNAme(result, 'deep');
+		Assert.ok(deep);
+		Assert.ok(deep!.children!.length > 0);
+		Assert.equAl(deep!.children!.length, 4);
 	});
 
-	test('resolves', async () => {
-		const res = await service.resolveAll([
+	test('resolves', Async () => {
+		const res = AwAit service.resolveAll([
 			{ resource: URI.file(testDir), options: { resolveTo: [URI.file(join(testDir, 'deep'))] } },
 			{ resource: URI.file(join(testDir, 'deep')) }
 		]);
 
-		const r1 = (res[0].stat!);
-		assert.equal(r1.children!.length, 8);
+		const r1 = (res[0].stAt!);
+		Assert.equAl(r1.children!.length, 8);
 
-		const deep = (getByName(r1, 'deep')!);
-		assert.equal(deep.children!.length, 4);
+		const deep = (getByNAme(r1, 'deep')!);
+		Assert.equAl(deep.children!.length, 4);
 
-		const r2 = (res[1].stat!);
-		assert.equal(r2.children!.length, 4);
-		assert.equal(r2.name, 'deep');
+		const r2 = (res[1].stAt!);
+		Assert.equAl(r2.children!.length, 4);
+		Assert.equAl(r2.nAme, 'deep');
 	});
 
-	(isWindows /* not reliable on windows */ ? test.skip : test)('resolve - folder symbolic link', async () => {
+	(isWindows /* not reliAble on windows */ ? test.skip : test)('resolve - folder symbolic link', Async () => {
 		const link = URI.file(join(testDir, 'deep-link'));
-		await symlink(join(testDir, 'deep'), link.fsPath);
+		AwAit symlink(join(testDir, 'deep'), link.fsPAth);
 
-		const resolved = await service.resolve(link);
-		assert.equal(resolved.children!.length, 4);
-		assert.equal(resolved.isDirectory, true);
-		assert.equal(resolved.isSymbolicLink, true);
+		const resolved = AwAit service.resolve(link);
+		Assert.equAl(resolved.children!.length, 4);
+		Assert.equAl(resolved.isDirectory, true);
+		Assert.equAl(resolved.isSymbolicLink, true);
 	});
 
-	(isWindows /* not reliable on windows */ ? test.skip : test)('resolve - file symbolic link', async () => {
+	(isWindows /* not reliAble on windows */ ? test.skip : test)('resolve - file symbolic link', Async () => {
 		const link = URI.file(join(testDir, 'lorem.txt-linked'));
-		await symlink(join(testDir, 'lorem.txt'), link.fsPath);
+		AwAit symlink(join(testDir, 'lorem.txt'), link.fsPAth);
 
-		const resolved = await service.resolve(link);
-		assert.equal(resolved.isDirectory, false);
-		assert.equal(resolved.isSymbolicLink, true);
+		const resolved = AwAit service.resolve(link);
+		Assert.equAl(resolved.isDirectory, fAlse);
+		Assert.equAl(resolved.isSymbolicLink, true);
 	});
 
-	(isWindows /* not reliable on windows */ ? test.skip : test)('resolve - symbolic link pointing to non-existing file does not break', async () => {
-		await symlink(join(testDir, 'foo'), join(testDir, 'bar'));
+	(isWindows /* not reliAble on windows */ ? test.skip : test)('resolve - symbolic link pointing to non-existing file does not breAk', Async () => {
+		AwAit symlink(join(testDir, 'foo'), join(testDir, 'bAr'));
 
-		const resolved = await service.resolve(URI.file(testDir));
-		assert.equal(resolved.isDirectory, true);
-		assert.equal(resolved.children!.length, 9);
+		const resolved = AwAit service.resolve(URI.file(testDir));
+		Assert.equAl(resolved.isDirectory, true);
+		Assert.equAl(resolved.children!.length, 9);
 
-		const resolvedLink = resolved.children?.find(child => child.name === 'bar' && child.isSymbolicLink);
-		assert.ok(resolvedLink);
+		const resolvedLink = resolved.children?.find(child => child.nAme === 'bAr' && child.isSymbolicLink);
+		Assert.ok(resolvedLink);
 
-		assert.ok(!resolvedLink?.isDirectory);
-		assert.ok(!resolvedLink?.isFile);
+		Assert.ok(!resolvedLink?.isDirectory);
+		Assert.ok(!resolvedLink?.isFile);
 	});
 
-	test('deleteFile', async () => {
-		return testDeleteFile(false);
+	test('deleteFile', Async () => {
+		return testDeleteFile(fAlse);
 	});
 
-	(isLinux /* trash is unreliable on Linux */ ? test.skip : test)('deleteFile (useTrash)', async () => {
+	(isLinux /* trAsh is unreliAble on Linux */ ? test.skip : test)('deleteFile (useTrAsh)', Async () => {
 		return testDeleteFile(true);
 	});
 
-	async function testDeleteFile(useTrash: boolean): Promise<void> {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	Async function testDeleteFile(useTrAsh: booleAn): Promise<void> {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const resource = URI.file(join(testDir, 'deep', 'conway.js'));
-		const source = await service.resolve(resource);
+		const resource = URI.file(join(testDir, 'deep', 'conwAy.js'));
+		const source = AwAit service.resolve(resource);
 
-		assert.equal(await service.canDelete(source.resource, { useTrash }), true);
-		await service.del(source.resource, { useTrash });
+		Assert.equAl(AwAit service.cAnDelete(source.resource, { useTrAsh }), true);
+		AwAit service.del(source.resource, { useTrAsh });
 
-		assert.equal(existsSync(source.resource.fsPath), false);
+		Assert.equAl(existsSync(source.resource.fsPAth), fAlse);
 
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, resource.fsPath);
-		assert.equal(event!.operation, FileOperation.DELETE);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.DELETE);
 
 		let error: Error | undefined = undefined;
 		try {
-			await service.del(source.resource, { useTrash });
-		} catch (e) {
+			AwAit service.del(source.resource, { useTrAsh });
+		} cAtch (e) {
 			error = e;
 		}
 
-		assert.ok(error);
-		assert.equal((<FileOperationError>error).fileOperationResult, FileOperationResult.FILE_NOT_FOUND);
+		Assert.ok(error);
+		Assert.equAl((<FileOperAtionError>error).fileOperAtionResult, FileOperAtionResult.FILE_NOT_FOUND);
 	}
 
-	(isWindows /* not reliable on windows */ ? test.skip : test)('deleteFile - symbolic link (exists)', async () => {
-		const target = URI.file(join(testDir, 'lorem.txt'));
+	(isWindows /* not reliAble on windows */ ? test.skip : test)('deleteFile - symbolic link (exists)', Async () => {
+		const tArget = URI.file(join(testDir, 'lorem.txt'));
 		const link = URI.file(join(testDir, 'lorem.txt-linked'));
-		await symlink(target.fsPath, link.fsPath);
+		AwAit symlink(tArget.fsPAth, link.fsPAth);
 
-		const source = await service.resolve(link);
+		const source = AwAit service.resolve(link);
 
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		assert.equal(await service.canDelete(source.resource), true);
-		await service.del(source.resource);
+		Assert.equAl(AwAit service.cAnDelete(source.resource), true);
+		AwAit service.del(source.resource);
 
-		assert.equal(existsSync(source.resource.fsPath), false);
+		Assert.equAl(existsSync(source.resource.fsPAth), fAlse);
 
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, link.fsPath);
-		assert.equal(event!.operation, FileOperation.DELETE);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, link.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.DELETE);
 
-		assert.equal(existsSync(target.fsPath), true); // target the link pointed to is never deleted
+		Assert.equAl(existsSync(tArget.fsPAth), true); // tArget the link pointed to is never deleted
 	});
 
-	(isWindows /* not reliable on windows */ ? test.skip : test)('deleteFile - symbolic link (pointing to non-existing file)', async () => {
-		const target = URI.file(join(testDir, 'foo'));
-		const link = URI.file(join(testDir, 'bar'));
-		await symlink(target.fsPath, link.fsPath);
+	(isWindows /* not reliAble on windows */ ? test.skip : test)('deleteFile - symbolic link (pointing to non-existing file)', Async () => {
+		const tArget = URI.file(join(testDir, 'foo'));
+		const link = URI.file(join(testDir, 'bAr'));
+		AwAit symlink(tArget.fsPAth, link.fsPAth);
 
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		assert.equal(await service.canDelete(link), true);
-		await service.del(link);
+		Assert.equAl(AwAit service.cAnDelete(link), true);
+		AwAit service.del(link);
 
-		assert.equal(existsSync(link.fsPath), false);
+		Assert.equAl(existsSync(link.fsPAth), fAlse);
 
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, link.fsPath);
-		assert.equal(event!.operation, FileOperation.DELETE);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, link.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.DELETE);
 	});
 
-	test('deleteFolder (recursive)', async () => {
-		return testDeleteFolderRecursive(false);
+	test('deleteFolder (recursive)', Async () => {
+		return testDeleteFolderRecursive(fAlse);
 	});
 
-	(isLinux /* trash is unreliable on Linux */ ? test.skip : test)('deleteFolder (recursive, useTrash)', async () => {
+	(isLinux /* trAsh is unreliAble on Linux */ ? test.skip : test)('deleteFolder (recursive, useTrAsh)', Async () => {
 		return testDeleteFolderRecursive(true);
 	});
 
-	async function testDeleteFolderRecursive(useTrash: boolean): Promise<void> {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	Async function testDeleteFolderRecursive(useTrAsh: booleAn): Promise<void> {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const resource = URI.file(join(testDir, 'deep'));
-		const source = await service.resolve(resource);
+		const source = AwAit service.resolve(resource);
 
-		assert.equal(await service.canDelete(source.resource, { recursive: true, useTrash }), true);
-		await service.del(source.resource, { recursive: true, useTrash });
+		Assert.equAl(AwAit service.cAnDelete(source.resource, { recursive: true, useTrAsh }), true);
+		AwAit service.del(source.resource, { recursive: true, useTrAsh });
 
-		assert.equal(existsSync(source.resource.fsPath), false);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, resource.fsPath);
-		assert.equal(event!.operation, FileOperation.DELETE);
+		Assert.equAl(existsSync(source.resource.fsPAth), fAlse);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.DELETE);
 	}
 
-	test('deleteFolder (non recursive)', async () => {
+	test('deleteFolder (non recursive)', Async () => {
 		const resource = URI.file(join(testDir, 'deep'));
-		const source = await service.resolve(resource);
+		const source = AwAit service.resolve(resource);
 
-		assert.ok((await service.canDelete(source.resource)) instanceof Error);
+		Assert.ok((AwAit service.cAnDelete(source.resource)) instAnceof Error);
 
 		let error;
 		try {
-			await service.del(source.resource);
-		} catch (e) {
+			AwAit service.del(source.resource);
+		} cAtch (e) {
 			error = e;
 		}
 
-		assert.ok(error);
+		Assert.ok(error);
 	});
 
-	test('move', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const source = URI.file(join(testDir, 'index.html'));
-		const sourceContents = readFileSync(source.fsPath);
+		const sourceContents = reAdFileSync(source.fsPAth);
 
-		const target = URI.file(join(dirname(source.fsPath), 'other.html'));
+		const tArget = URI.file(join(dirnAme(source.fsPAth), 'other.html'));
 
-		assert.equal(await service.canMove(source, target), true);
-		const renamed = await service.move(source, target);
+		Assert.equAl(AwAit service.cAnMove(source, tArget), true);
+		const renAmed = AwAit service.move(source, tArget);
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(existsSync(source.fsPath), false);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.fsPath);
-		assert.equal(event!.operation, FileOperation.MOVE);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(existsSync(source.fsPAth), fAlse);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.MOVE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 
-		const targetContents = readFileSync(target.fsPath);
+		const tArgetContents = reAdFileSync(tArget.fsPAth);
 
-		assert.equal(sourceContents.byteLength, targetContents.byteLength);
-		assert.equal(sourceContents.toString(), targetContents.toString());
+		Assert.equAl(sourceContents.byteLength, tArgetContents.byteLength);
+		Assert.equAl(sourceContents.toString(), tArgetContents.toString());
 	});
 
-	test('move - across providers (buffered => buffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('move - Across providers (buffered => buffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testMoveAcrossProviders();
 	});
 
-	test('move - across providers (unbuffered => unbuffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('move - Across providers (unbuffered => unbuffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testMoveAcrossProviders();
 	});
 
-	test('move - across providers (buffered => unbuffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('move - Across providers (buffered => unbuffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testMoveAcrossProviders();
 	});
 
-	test('move - across providers (unbuffered => buffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('move - Across providers (unbuffered => buffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testMoveAcrossProviders();
 	});
 
-	test('move - across providers - large (buffered => buffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('move - Across providers - lArge (buffered => buffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testMoveAcrossProviders('lorem.txt');
 	});
 
-	test('move - across providers - large (unbuffered => unbuffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('move - Across providers - lArge (unbuffered => unbuffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testMoveAcrossProviders('lorem.txt');
 	});
 
-	test('move - across providers - large (buffered => unbuffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('move - Across providers - lArge (buffered => unbuffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testMoveAcrossProviders('lorem.txt');
 	});
 
-	test('move - across providers - large (unbuffered => buffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('move - Across providers - lArge (unbuffered => buffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testMoveAcrossProviders('lorem.txt');
 	});
 
-	async function testMoveAcrossProviders(sourceFile = 'index.html'): Promise<void> {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	Async function testMoveAcrossProviders(sourceFile = 'index.html'): Promise<void> {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const source = URI.file(join(testDir, sourceFile));
-		const sourceContents = readFileSync(source.fsPath);
+		const sourceContents = reAdFileSync(source.fsPAth);
 
-		const target = URI.file(join(dirname(source.fsPath), 'other.html')).with({ scheme: testSchema });
+		const tArget = URI.file(join(dirnAme(source.fsPAth), 'other.html')).with({ scheme: testSchemA });
 
-		assert.equal(await service.canMove(source, target), true);
-		const renamed = await service.move(source, target);
+		Assert.equAl(AwAit service.cAnMove(source, tArget), true);
+		const renAmed = AwAit service.move(source, tArget);
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(existsSync(source.fsPath), false);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.fsPath);
-		assert.equal(event!.operation, FileOperation.COPY);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(existsSync(source.fsPAth), fAlse);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.COPY);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 
-		const targetContents = readFileSync(target.fsPath);
+		const tArgetContents = reAdFileSync(tArget.fsPAth);
 
-		assert.equal(sourceContents.byteLength, targetContents.byteLength);
-		assert.equal(sourceContents.toString(), targetContents.toString());
+		Assert.equAl(sourceContents.byteLength, tArgetContents.byteLength);
+		Assert.equAl(sourceContents.toString(), tArgetContents.toString());
 	}
 
-	test('move - multi folder', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - multi folder', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const multiFolderPaths = ['a', 'couple', 'of', 'folders'];
-		const renameToPath = join(...multiFolderPaths, 'other.html');
+		const multiFolderPAths = ['A', 'couple', 'of', 'folders'];
+		const renAmeToPAth = join(...multiFolderPAths, 'other.html');
 
 		const source = URI.file(join(testDir, 'index.html'));
 
-		assert.equal(await service.canMove(source, URI.file(join(dirname(source.fsPath), renameToPath))), true);
-		const renamed = await service.move(source, URI.file(join(dirname(source.fsPath), renameToPath)));
+		Assert.equAl(AwAit service.cAnMove(source, URI.file(join(dirnAme(source.fsPAth), renAmeToPAth))), true);
+		const renAmed = AwAit service.move(source, URI.file(join(dirnAme(source.fsPAth), renAmeToPAth)));
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(existsSync(source.fsPath), false);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.fsPath);
-		assert.equal(event!.operation, FileOperation.MOVE);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(existsSync(source.fsPAth), fAlse);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.MOVE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 	});
 
-	test('move - directory', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - directory', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const source = URI.file(join(testDir, 'deep'));
 
-		assert.equal(await service.canMove(source, URI.file(join(dirname(source.fsPath), 'deeper'))), true);
-		const renamed = await service.move(source, URI.file(join(dirname(source.fsPath), 'deeper')));
+		Assert.equAl(AwAit service.cAnMove(source, URI.file(join(dirnAme(source.fsPAth), 'deeper'))), true);
+		const renAmed = AwAit service.move(source, URI.file(join(dirnAme(source.fsPAth), 'deeper')));
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(existsSync(source.fsPath), false);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.fsPath);
-		assert.equal(event!.operation, FileOperation.MOVE);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(existsSync(source.fsPAth), fAlse);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.MOVE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 	});
 
-	test('move - directory - across providers (buffered => buffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('move - directory - Across providers (buffered => buffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testMoveFolderAcrossProviders();
 	});
 
-	test('move - directory - across providers (unbuffered => unbuffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('move - directory - Across providers (unbuffered => unbuffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testMoveFolderAcrossProviders();
 	});
 
-	test('move - directory - across providers (buffered => unbuffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('move - directory - Across providers (buffered => unbuffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testMoveFolderAcrossProviders();
 	});
 
-	test('move - directory - across providers (unbuffered => buffered)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
-		setCapabilities(testProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('move - directory - Across providers (unbuffered => buffered)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
+		setCApAbilities(testProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testMoveFolderAcrossProviders();
 	});
 
-	async function testMoveFolderAcrossProviders(): Promise<void> {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	Async function testMoveFolderAcrossProviders(): Promise<void> {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const source = URI.file(join(testDir, 'deep'));
-		const sourceChildren = readdirSync(source.fsPath);
+		const sourceChildren = reAddirSync(source.fsPAth);
 
-		const target = URI.file(join(dirname(source.fsPath), 'deeper')).with({ scheme: testSchema });
+		const tArget = URI.file(join(dirnAme(source.fsPAth), 'deeper')).with({ scheme: testSchemA });
 
-		assert.equal(await service.canMove(source, target), true);
-		const renamed = await service.move(source, target);
+		Assert.equAl(AwAit service.cAnMove(source, tArget), true);
+		const renAmed = AwAit service.move(source, tArget);
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(existsSync(source.fsPath), false);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.fsPath);
-		assert.equal(event!.operation, FileOperation.COPY);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(existsSync(source.fsPAth), fAlse);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.COPY);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 
-		const targetChildren = readdirSync(target.fsPath);
-		assert.equal(sourceChildren.length, targetChildren.length);
+		const tArgetChildren = reAddirSync(tArget.fsPAth);
+		Assert.equAl(sourceChildren.length, tArgetChildren.length);
 		for (let i = 0; i < sourceChildren.length; i++) {
-			assert.equal(sourceChildren[i], targetChildren[i]);
+			Assert.equAl(sourceChildren[i], tArgetChildren[i]);
 		}
 	}
 
-	test('move - MIX CASE', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - MIX CASE', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		assert.ok(source.size > 0);
+		const source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		Assert.ok(source.size > 0);
 
-		const renamedResource = URI.file(join(dirname(source.resource.fsPath), 'INDEX.html'));
-		assert.equal(await service.canMove(source.resource, renamedResource), true);
-		let renamed = await service.move(source.resource, renamedResource);
+		const renAmedResource = URI.file(join(dirnAme(source.resource.fsPAth), 'INDEX.html'));
+		Assert.equAl(AwAit service.cAnMove(source.resource, renAmedResource), true);
+		let renAmed = AwAit service.move(source.resource, renAmedResource);
 
-		assert.equal(existsSync(renamedResource.fsPath), true);
-		assert.equal(basename(renamedResource.fsPath), 'INDEX.html');
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.resource.fsPath);
-		assert.equal(event!.operation, FileOperation.MOVE);
-		assert.equal(event!.target!.resource.fsPath, renamedResource.fsPath);
+		Assert.equAl(existsSync(renAmedResource.fsPAth), true);
+		Assert.equAl(bAsenAme(renAmedResource.fsPAth), 'INDEX.html');
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.MOVE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmedResource.fsPAth);
 
-		renamed = await service.resolve(renamedResource, { resolveMetadata: true });
-		assert.equal(source.size, renamed.size);
+		renAmed = AwAit service.resolve(renAmedResource, { resolveMetAdAtA: true });
+		Assert.equAl(source.size, renAmed.size);
 	});
 
-	test('move - same file', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - sAme file', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		assert.ok(source.size > 0);
+		const source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		Assert.ok(source.size > 0);
 
-		assert.equal(await service.canMove(source.resource, URI.file(source.resource.fsPath)), true);
-		let renamed = await service.move(source.resource, URI.file(source.resource.fsPath));
+		Assert.equAl(AwAit service.cAnMove(source.resource, URI.file(source.resource.fsPAth)), true);
+		let renAmed = AwAit service.move(source.resource, URI.file(source.resource.fsPAth));
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(basename(renamed.resource.fsPath), 'index.html');
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.resource.fsPath);
-		assert.equal(event!.operation, FileOperation.MOVE);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(bAsenAme(renAmed.resource.fsPAth), 'index.html');
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.MOVE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 
-		renamed = await service.resolve(renamed.resource, { resolveMetadata: true });
-		assert.equal(source.size, renamed.size);
+		renAmed = AwAit service.resolve(renAmed.resource, { resolveMetAdAtA: true });
+		Assert.equAl(source.size, renAmed.size);
 	});
 
-	test('move - same file #2', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - sAme file #2', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		assert.ok(source.size > 0);
+		const source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		Assert.ok(source.size > 0);
 
-		const targetParent = URI.file(testDir);
-		const target = targetParent.with({ path: posix.join(targetParent.path, posix.basename(source.resource.path)) });
+		const tArgetPArent = URI.file(testDir);
+		const tArget = tArgetPArent.with({ pAth: posix.join(tArgetPArent.pAth, posix.bAsenAme(source.resource.pAth)) });
 
-		assert.equal(await service.canMove(source.resource, target), true);
-		let renamed = await service.move(source.resource, target);
+		Assert.equAl(AwAit service.cAnMove(source.resource, tArget), true);
+		let renAmed = AwAit service.move(source.resource, tArget);
 
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.equal(basename(renamed.resource.fsPath), 'index.html');
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.resource.fsPath);
-		assert.equal(event!.operation, FileOperation.MOVE);
-		assert.equal(event!.target!.resource.fsPath, renamed.resource.fsPath);
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.equAl(bAsenAme(renAmed.resource.fsPAth), 'index.html');
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.MOVE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, renAmed.resource.fsPAth);
 
-		renamed = await service.resolve(renamed.resource, { resolveMetadata: true });
-		assert.equal(source.size, renamed.size);
+		renAmed = AwAit service.resolve(renAmed.resource, { resolveMetAdAtA: true });
+		Assert.equAl(source.size, renAmed.size);
 	});
 
-	test('move - source parent of target', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - source pArent of tArget', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		let source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		const originalSize = source.size;
-		assert.ok(originalSize > 0);
+		let source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		const originAlSize = source.size;
+		Assert.ok(originAlSize > 0);
 
-		assert.ok((await service.canMove(URI.file(testDir), URI.file(join(testDir, 'binary.txt'))) instanceof Error));
+		Assert.ok((AwAit service.cAnMove(URI.file(testDir), URI.file(join(testDir, 'binAry.txt'))) instAnceof Error));
 
 		let error;
 		try {
-			await service.move(URI.file(testDir), URI.file(join(testDir, 'binary.txt')));
-		} catch (e) {
+			AwAit service.move(URI.file(testDir), URI.file(join(testDir, 'binAry.txt')));
+		} cAtch (e) {
 			error = e;
 		}
 
-		assert.ok(error);
-		assert.ok(!event!);
+		Assert.ok(error);
+		Assert.ok(!event!);
 
-		source = await service.resolve(source.resource, { resolveMetadata: true });
-		assert.equal(originalSize, source.size);
+		source = AwAit service.resolve(source.resource, { resolveMetAdAtA: true });
+		Assert.equAl(originAlSize, source.size);
 	});
 
-	test('move - FILE_MOVE_CONFLICT', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('move - FILE_MOVE_CONFLICT', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		let source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		const originalSize = source.size;
-		assert.ok(originalSize > 0);
+		let source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		const originAlSize = source.size;
+		Assert.ok(originAlSize > 0);
 
-		assert.ok((await service.canMove(source.resource, URI.file(join(testDir, 'binary.txt'))) instanceof Error));
+		Assert.ok((AwAit service.cAnMove(source.resource, URI.file(join(testDir, 'binAry.txt'))) instAnceof Error));
 
 		let error;
 		try {
-			await service.move(source.resource, URI.file(join(testDir, 'binary.txt')));
-		} catch (e) {
+			AwAit service.move(source.resource, URI.file(join(testDir, 'binAry.txt')));
+		} cAtch (e) {
 			error = e;
 		}
 
-		assert.equal(error.fileOperationResult, FileOperationResult.FILE_MOVE_CONFLICT);
-		assert.ok(!event!);
+		Assert.equAl(error.fileOperAtionResult, FileOperAtionResult.FILE_MOVE_CONFLICT);
+		Assert.ok(!event!);
 
-		source = await service.resolve(source.resource, { resolveMetadata: true });
-		assert.equal(originalSize, source.size);
+		source = AwAit service.resolve(source.resource, { resolveMetAdAtA: true });
+		Assert.equAl(originAlSize, source.size);
 	});
 
-	test('move - overwrite folder with file', async () => {
-		let createEvent: FileOperationEvent;
-		let moveEvent: FileOperationEvent;
-		let deleteEvent: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => {
-			if (e.operation === FileOperation.CREATE) {
-				createEvent = e;
-			} else if (e.operation === FileOperation.DELETE) {
+	test('move - overwrite folder with file', Async () => {
+		let creAteEvent: FileOperAtionEvent;
+		let moveEvent: FileOperAtionEvent;
+		let deleteEvent: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => {
+			if (e.operAtion === FileOperAtion.CREATE) {
+				creAteEvent = e;
+			} else if (e.operAtion === FileOperAtion.DELETE) {
 				deleteEvent = e;
-			} else if (e.operation === FileOperation.MOVE) {
+			} else if (e.operAtion === FileOperAtion.MOVE) {
 				moveEvent = e;
 			}
 		}));
 
-		const parent = await service.resolve(URI.file(testDir));
-		const folderResource = URI.file(join(parent.resource.fsPath, 'conway.js'));
-		const f = await service.createFolder(folderResource);
-		const source = URI.file(join(testDir, 'deep', 'conway.js'));
+		const pArent = AwAit service.resolve(URI.file(testDir));
+		const folderResource = URI.file(join(pArent.resource.fsPAth, 'conwAy.js'));
+		const f = AwAit service.creAteFolder(folderResource);
+		const source = URI.file(join(testDir, 'deep', 'conwAy.js'));
 
-		assert.equal(await service.canMove(source, f.resource, true), true);
-		const moved = await service.move(source, f.resource, true);
+		Assert.equAl(AwAit service.cAnMove(source, f.resource, true), true);
+		const moved = AwAit service.move(source, f.resource, true);
 
-		assert.equal(existsSync(moved.resource.fsPath), true);
-		assert.ok(statSync(moved.resource.fsPath).isFile);
-		assert.ok(createEvent!);
-		assert.ok(deleteEvent!);
-		assert.ok(moveEvent!);
-		assert.equal(moveEvent!.resource.fsPath, source.fsPath);
-		assert.equal(moveEvent!.target!.resource.fsPath, moved.resource.fsPath);
-		assert.equal(deleteEvent!.resource.fsPath, folderResource.fsPath);
+		Assert.equAl(existsSync(moved.resource.fsPAth), true);
+		Assert.ok(stAtSync(moved.resource.fsPAth).isFile);
+		Assert.ok(creAteEvent!);
+		Assert.ok(deleteEvent!);
+		Assert.ok(moveEvent!);
+		Assert.equAl(moveEvent!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(moveEvent!.tArget!.resource.fsPAth, moved.resource.fsPAth);
+		Assert.equAl(deleteEvent!.resource.fsPAth, folderResource.fsPAth);
 	});
 
-	test('copy', async () => {
-		await doTestCopy();
+	test('copy', Async () => {
+		AwAit doTestCopy();
 	});
 
-	test('copy - unbuffered (FileSystemProviderCapabilities.FileReadWrite)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('copy - unbuffered (FileSystemProviderCApAbilities.FileReAdWrite)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		await doTestCopy();
+		AwAit doTestCopy();
 	});
 
-	test('copy - unbuffered large (FileSystemProviderCapabilities.FileReadWrite)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('copy - unbuffered lArge (FileSystemProviderCApAbilities.FileReAdWrite)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		await doTestCopy('lorem.txt');
+		AwAit doTestCopy('lorem.txt');
 	});
 
-	test('copy - buffered (FileSystemProviderCapabilities.FileOpenReadWriteClose)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('copy - buffered (FileSystemProviderCApAbilities.FileOpenReAdWriteClose)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		await doTestCopy();
+		AwAit doTestCopy();
 	});
 
-	test('copy - buffered large (FileSystemProviderCapabilities.FileOpenReadWriteClose)', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('copy - buffered lArge (FileSystemProviderCApAbilities.FileOpenReAdWriteClose)', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		await doTestCopy('lorem.txt');
+		AwAit doTestCopy('lorem.txt');
 	});
 
-	function setCapabilities(provider: TestDiskFileSystemProvider, capabilities: FileSystemProviderCapabilities): void {
-		provider.capabilities = capabilities;
+	function setCApAbilities(provider: TestDiskFileSystemProvider, cApAbilities: FileSystemProviderCApAbilities): void {
+		provider.cApAbilities = cApAbilities;
 		if (isLinux) {
-			provider.capabilities |= FileSystemProviderCapabilities.PathCaseSensitive;
+			provider.cApAbilities |= FileSystemProviderCApAbilities.PAthCAseSensitive;
 		}
 	}
 
-	async function doTestCopy(sourceName: string = 'index.html') {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	Async function doTestCopy(sourceNAme: string = 'index.html') {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const source = await service.resolve(URI.file(join(testDir, sourceName)));
-		const target = URI.file(join(testDir, 'other.html'));
+		const source = AwAit service.resolve(URI.file(join(testDir, sourceNAme)));
+		const tArget = URI.file(join(testDir, 'other.html'));
 
-		assert.equal(await service.canCopy(source.resource, target), true);
-		const copied = await service.copy(source.resource, target);
+		Assert.equAl(AwAit service.cAnCopy(source.resource, tArget), true);
+		const copied = AwAit service.copy(source.resource, tArget);
 
-		assert.equal(existsSync(copied.resource.fsPath), true);
-		assert.equal(existsSync(source.resource.fsPath), true);
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.resource.fsPath);
-		assert.equal(event!.operation, FileOperation.COPY);
-		assert.equal(event!.target!.resource.fsPath, copied.resource.fsPath);
+		Assert.equAl(existsSync(copied.resource.fsPAth), true);
+		Assert.equAl(existsSync(source.resource.fsPAth), true);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.COPY);
+		Assert.equAl(event!.tArget!.resource.fsPAth, copied.resource.fsPAth);
 
-		const sourceContents = readFileSync(source.resource.fsPath);
-		const targetContents = readFileSync(target.fsPath);
+		const sourceContents = reAdFileSync(source.resource.fsPAth);
+		const tArgetContents = reAdFileSync(tArget.fsPAth);
 
-		assert.equal(sourceContents.byteLength, targetContents.byteLength);
-		assert.equal(sourceContents.toString(), targetContents.toString());
+		Assert.equAl(sourceContents.byteLength, tArgetContents.byteLength);
+		Assert.equAl(sourceContents.toString(), tArgetContents.toString());
 	}
 
-	test('copy - overwrite folder with file', async () => {
-		let createEvent: FileOperationEvent;
-		let copyEvent: FileOperationEvent;
-		let deleteEvent: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => {
-			if (e.operation === FileOperation.CREATE) {
-				createEvent = e;
-			} else if (e.operation === FileOperation.DELETE) {
+	test('copy - overwrite folder with file', Async () => {
+		let creAteEvent: FileOperAtionEvent;
+		let copyEvent: FileOperAtionEvent;
+		let deleteEvent: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => {
+			if (e.operAtion === FileOperAtion.CREATE) {
+				creAteEvent = e;
+			} else if (e.operAtion === FileOperAtion.DELETE) {
 				deleteEvent = e;
-			} else if (e.operation === FileOperation.COPY) {
+			} else if (e.operAtion === FileOperAtion.COPY) {
 				copyEvent = e;
 			}
 		}));
 
-		const parent = await service.resolve(URI.file(testDir));
-		const folderResource = URI.file(join(parent.resource.fsPath, 'conway.js'));
-		const f = await service.createFolder(folderResource);
-		const source = URI.file(join(testDir, 'deep', 'conway.js'));
+		const pArent = AwAit service.resolve(URI.file(testDir));
+		const folderResource = URI.file(join(pArent.resource.fsPAth, 'conwAy.js'));
+		const f = AwAit service.creAteFolder(folderResource);
+		const source = URI.file(join(testDir, 'deep', 'conwAy.js'));
 
-		assert.equal(await service.canCopy(source, f.resource, true), true);
-		const copied = await service.copy(source, f.resource, true);
+		Assert.equAl(AwAit service.cAnCopy(source, f.resource, true), true);
+		const copied = AwAit service.copy(source, f.resource, true);
 
-		assert.equal(existsSync(copied.resource.fsPath), true);
-		assert.ok(statSync(copied.resource.fsPath).isFile);
-		assert.ok(createEvent!);
-		assert.ok(deleteEvent!);
-		assert.ok(copyEvent!);
-		assert.equal(copyEvent!.resource.fsPath, source.fsPath);
-		assert.equal(copyEvent!.target!.resource.fsPath, copied.resource.fsPath);
-		assert.equal(deleteEvent!.resource.fsPath, folderResource.fsPath);
+		Assert.equAl(existsSync(copied.resource.fsPAth), true);
+		Assert.ok(stAtSync(copied.resource.fsPAth).isFile);
+		Assert.ok(creAteEvent!);
+		Assert.ok(deleteEvent!);
+		Assert.ok(copyEvent!);
+		Assert.equAl(copyEvent!.resource.fsPAth, source.fsPAth);
+		Assert.equAl(copyEvent!.tArget!.resource.fsPAth, copied.resource.fsPAth);
+		Assert.equAl(deleteEvent!.resource.fsPAth, folderResource.fsPAth);
 	});
 
-	test('copy - MIX CASE same target - no overwrite', async () => {
-		let source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		const originalSize = source.size;
-		assert.ok(originalSize > 0);
+	test('copy - MIX CASE sAme tArget - no overwrite', Async () => {
+		let source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		const originAlSize = source.size;
+		Assert.ok(originAlSize > 0);
 
-		const target = URI.file(join(dirname(source.resource.fsPath), 'INDEX.html'));
+		const tArget = URI.file(join(dirnAme(source.resource.fsPAth), 'INDEX.html'));
 
-		const canCopy = await service.canCopy(source.resource, target);
+		const cAnCopy = AwAit service.cAnCopy(source.resource, tArget);
 
 		let error;
-		let copied: IFileStatWithMetadata;
+		let copied: IFileStAtWithMetAdAtA;
 		try {
-			copied = await service.copy(source.resource, target);
-		} catch (e) {
+			copied = AwAit service.copy(source.resource, tArget);
+		} cAtch (e) {
 			error = e;
 		}
 
 		if (isLinux) {
-			assert.ok(!error);
-			assert.equal(canCopy, true);
+			Assert.ok(!error);
+			Assert.equAl(cAnCopy, true);
 
-			assert.equal(existsSync(copied!.resource.fsPath), true);
-			assert.ok(readdirSync(testDir).some(f => f === 'INDEX.html'));
-			assert.equal(source.size, copied!.size);
+			Assert.equAl(existsSync(copied!.resource.fsPAth), true);
+			Assert.ok(reAddirSync(testDir).some(f => f === 'INDEX.html'));
+			Assert.equAl(source.size, copied!.size);
 		} else {
-			assert.ok(error);
-			assert.ok(canCopy instanceof Error);
+			Assert.ok(error);
+			Assert.ok(cAnCopy instAnceof Error);
 
-			source = await service.resolve(source.resource, { resolveMetadata: true });
-			assert.equal(originalSize, source.size);
+			source = AwAit service.resolve(source.resource, { resolveMetAdAtA: true });
+			Assert.equAl(originAlSize, source.size);
 		}
 	});
 
-	test('copy - MIX CASE same target - overwrite', async () => {
-		let source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		const originalSize = source.size;
-		assert.ok(originalSize > 0);
+	test('copy - MIX CASE sAme tArget - overwrite', Async () => {
+		let source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		const originAlSize = source.size;
+		Assert.ok(originAlSize > 0);
 
-		const target = URI.file(join(dirname(source.resource.fsPath), 'INDEX.html'));
+		const tArget = URI.file(join(dirnAme(source.resource.fsPAth), 'INDEX.html'));
 
-		const canCopy = await service.canCopy(source.resource, target, true);
+		const cAnCopy = AwAit service.cAnCopy(source.resource, tArget, true);
 
 		let error;
-		let copied: IFileStatWithMetadata;
+		let copied: IFileStAtWithMetAdAtA;
 		try {
-			copied = await service.copy(source.resource, target, true);
-		} catch (e) {
+			copied = AwAit service.copy(source.resource, tArget, true);
+		} cAtch (e) {
 			error = e;
 		}
 
 		if (isLinux) {
-			assert.ok(!error);
-			assert.equal(canCopy, true);
+			Assert.ok(!error);
+			Assert.equAl(cAnCopy, true);
 
-			assert.equal(existsSync(copied!.resource.fsPath), true);
-			assert.ok(readdirSync(testDir).some(f => f === 'INDEX.html'));
-			assert.equal(source.size, copied!.size);
+			Assert.equAl(existsSync(copied!.resource.fsPAth), true);
+			Assert.ok(reAddirSync(testDir).some(f => f === 'INDEX.html'));
+			Assert.equAl(source.size, copied!.size);
 		} else {
-			assert.ok(error);
-			assert.ok(canCopy instanceof Error);
+			Assert.ok(error);
+			Assert.ok(cAnCopy instAnceof Error);
 
-			source = await service.resolve(source.resource, { resolveMetadata: true });
-			assert.equal(originalSize, source.size);
+			source = AwAit service.resolve(source.resource, { resolveMetAdAtA: true });
+			Assert.equAl(originAlSize, source.size);
 		}
 	});
 
-	test('copy - MIX CASE different taget - overwrite', async () => {
-		const source1 = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		assert.ok(source1.size > 0);
+	test('copy - MIX CASE different tAget - overwrite', Async () => {
+		const source1 = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		Assert.ok(source1.size > 0);
 
-		const renamed = await service.move(source1.resource, URI.file(join(dirname(source1.resource.fsPath), 'CONWAY.js')));
-		assert.equal(existsSync(renamed.resource.fsPath), true);
-		assert.ok(readdirSync(testDir).some(f => f === 'CONWAY.js'));
-		assert.equal(source1.size, renamed.size);
+		const renAmed = AwAit service.move(source1.resource, URI.file(join(dirnAme(source1.resource.fsPAth), 'CONWAY.js')));
+		Assert.equAl(existsSync(renAmed.resource.fsPAth), true);
+		Assert.ok(reAddirSync(testDir).some(f => f === 'CONWAY.js'));
+		Assert.equAl(source1.size, renAmed.size);
 
-		const source2 = await service.resolve(URI.file(join(testDir, 'deep', 'conway.js')), { resolveMetadata: true });
-		const target = URI.file(join(testDir, basename(source2.resource.path)));
+		const source2 = AwAit service.resolve(URI.file(join(testDir, 'deep', 'conwAy.js')), { resolveMetAdAtA: true });
+		const tArget = URI.file(join(testDir, bAsenAme(source2.resource.pAth)));
 
-		assert.equal(await service.canCopy(source2.resource, target, true), true);
-		const res = await service.copy(source2.resource, target, true);
-		assert.equal(existsSync(res.resource.fsPath), true);
-		assert.ok(readdirSync(testDir).some(f => f === 'conway.js'));
-		assert.equal(source2.size, res.size);
+		Assert.equAl(AwAit service.cAnCopy(source2.resource, tArget, true), true);
+		const res = AwAit service.copy(source2.resource, tArget, true);
+		Assert.equAl(existsSync(res.resource.fsPAth), true);
+		Assert.ok(reAddirSync(testDir).some(f => f === 'conwAy.js'));
+		Assert.equAl(source2.size, res.size);
 	});
 
-	test('copy - same file', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('copy - sAme file', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		assert.ok(source.size > 0);
+		const source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		Assert.ok(source.size > 0);
 
-		assert.equal(await service.canCopy(source.resource, URI.file(source.resource.fsPath)), true);
-		let copied = await service.copy(source.resource, URI.file(source.resource.fsPath));
+		Assert.equAl(AwAit service.cAnCopy(source.resource, URI.file(source.resource.fsPAth)), true);
+		let copied = AwAit service.copy(source.resource, URI.file(source.resource.fsPAth));
 
-		assert.equal(existsSync(copied.resource.fsPath), true);
-		assert.equal(basename(copied.resource.fsPath), 'index.html');
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.resource.fsPath);
-		assert.equal(event!.operation, FileOperation.COPY);
-		assert.equal(event!.target!.resource.fsPath, copied.resource.fsPath);
+		Assert.equAl(existsSync(copied.resource.fsPAth), true);
+		Assert.equAl(bAsenAme(copied.resource.fsPAth), 'index.html');
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.COPY);
+		Assert.equAl(event!.tArget!.resource.fsPAth, copied.resource.fsPAth);
 
-		copied = await service.resolve(source.resource, { resolveMetadata: true });
-		assert.equal(source.size, copied.size);
+		copied = AwAit service.resolve(source.resource, { resolveMetAdAtA: true });
+		Assert.equAl(source.size, copied.size);
 	});
 
-	test('copy - same file #2', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('copy - sAme file #2', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
-		const source = await service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetadata: true });
-		assert.ok(source.size > 0);
+		const source = AwAit service.resolve(URI.file(join(testDir, 'index.html')), { resolveMetAdAtA: true });
+		Assert.ok(source.size > 0);
 
-		const targetParent = URI.file(testDir);
-		const target = targetParent.with({ path: posix.join(targetParent.path, posix.basename(source.resource.path)) });
+		const tArgetPArent = URI.file(testDir);
+		const tArget = tArgetPArent.with({ pAth: posix.join(tArgetPArent.pAth, posix.bAsenAme(source.resource.pAth)) });
 
-		assert.equal(await service.canCopy(source.resource, URI.file(target.fsPath)), true);
-		let copied = await service.copy(source.resource, URI.file(target.fsPath));
+		Assert.equAl(AwAit service.cAnCopy(source.resource, URI.file(tArget.fsPAth)), true);
+		let copied = AwAit service.copy(source.resource, URI.file(tArget.fsPAth));
 
-		assert.equal(existsSync(copied.resource.fsPath), true);
-		assert.equal(basename(copied.resource.fsPath), 'index.html');
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, source.resource.fsPath);
-		assert.equal(event!.operation, FileOperation.COPY);
-		assert.equal(event!.target!.resource.fsPath, copied.resource.fsPath);
+		Assert.equAl(existsSync(copied.resource.fsPAth), true);
+		Assert.equAl(bAsenAme(copied.resource.fsPAth), 'index.html');
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, source.resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.COPY);
+		Assert.equAl(event!.tArget!.resource.fsPAth, copied.resource.fsPAth);
 
-		copied = await service.resolve(source.resource, { resolveMetadata: true });
-		assert.equal(source.size, copied.size);
+		copied = AwAit service.resolve(source.resource, { resolveMetAdAtA: true });
+		Assert.equAl(source.size, copied.size);
 	});
 
-	test('readFile - small file - default', () => {
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+	test('reAdFile - smAll file - defAult', () => {
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - small file - buffered', () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - smAll file - buffered', () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - small file - buffered / readonly', () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose | FileSystemProviderCapabilities.Readonly);
+	test('reAdFile - smAll file - buffered / reAdonly', () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose | FileSystemProviderCApAbilities.ReAdonly);
 
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - small file - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - smAll file - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - small file - unbuffered / readonly', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite | FileSystemProviderCapabilities.Readonly);
+	test('reAdFile - smAll file - unbuffered / reAdonly', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite | FileSystemProviderCApAbilities.ReAdonly);
 
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - small file - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - smAll file - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - small file - streamed / readonly', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream | FileSystemProviderCapabilities.Readonly);
+	test('reAdFile - smAll file - streAmed / reAdonly', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm | FileSystemProviderCApAbilities.ReAdonly);
 
-		return testReadFile(URI.file(join(testDir, 'small.txt')));
+		return testReAdFile(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFile - large file - default', async () => {
-		return testReadFile(URI.file(join(testDir, 'lorem.txt')));
+	test('reAdFile - lArge file - defAult', Async () => {
+		return testReAdFile(URI.file(join(testDir, 'lorem.txt')));
 	});
 
-	test('readFile - large file - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - lArge file - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testReadFile(URI.file(join(testDir, 'lorem.txt')));
+		return testReAdFile(URI.file(join(testDir, 'lorem.txt')));
 	});
 
-	test('readFile - large file - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - lArge file - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testReadFile(URI.file(join(testDir, 'lorem.txt')));
+		return testReAdFile(URI.file(join(testDir, 'lorem.txt')));
 	});
 
-	test('readFile - large file - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - lArge file - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testReadFile(URI.file(join(testDir, 'lorem.txt')));
+		return testReAdFile(URI.file(join(testDir, 'lorem.txt')));
 	});
 
-	async function testReadFile(resource: URI): Promise<void> {
-		const content = await service.readFile(resource);
+	Async function testReAdFile(resource: URI): Promise<void> {
+		const content = AwAit service.reAdFile(resource);
 
-		assert.equal(content.value.toString(), readFileSync(resource.fsPath));
+		Assert.equAl(content.vAlue.toString(), reAdFileSync(resource.fsPAth));
 	}
 
-	test('readFileStream - small file - default', () => {
-		return testReadFileStream(URI.file(join(testDir, 'small.txt')));
+	test('reAdFileStreAm - smAll file - defAult', () => {
+		return testReAdFileStreAm(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFileStream - small file - buffered', () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFileStreAm - smAll file - buffered', () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testReadFileStream(URI.file(join(testDir, 'small.txt')));
+		return testReAdFileStreAm(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFileStream - small file - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFileStreAm - smAll file - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testReadFileStream(URI.file(join(testDir, 'small.txt')));
+		return testReAdFileStreAm(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	test('readFileStream - small file - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFileStreAm - smAll file - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testReadFileStream(URI.file(join(testDir, 'small.txt')));
+		return testReAdFileStreAm(URI.file(join(testDir, 'smAll.txt')));
 	});
 
-	async function testReadFileStream(resource: URI): Promise<void> {
-		const content = await service.readFileStream(resource);
+	Async function testReAdFileStreAm(resource: URI): Promise<void> {
+		const content = AwAit service.reAdFileStreAm(resource);
 
-		assert.equal((await streamToBuffer(content.value)).toString(), readFileSync(resource.fsPath));
+		Assert.equAl((AwAit streAmToBuffer(content.vAlue)).toString(), reAdFileSync(resource.fsPAth));
 	}
 
-	test('readFile - Files are intermingled #38331 - default', async () => {
+	test('reAdFile - Files Are intermingled #38331 - defAult', Async () => {
 		return testFilesNotIntermingled();
 	});
 
-	test('readFile - Files are intermingled #38331 - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-
-		return testFilesNotIntermingled();
-	});
-
-	test('readFile - Files are intermingled #38331 - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - Files Are intermingled #38331 - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testFilesNotIntermingled();
 	});
 
-	test('readFile - Files are intermingled #38331 - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - Files Are intermingled #38331 - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testFilesNotIntermingled();
 	});
 
-	async function testFilesNotIntermingled() {
+	test('reAdFile - Files Are intermingled #38331 - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
+
+		return testFilesNotIntermingled();
+	});
+
+	Async function testFilesNotIntermingled() {
 		let resource1 = URI.file(join(testDir, 'lorem.txt'));
 		let resource2 = URI.file(join(testDir, 'some_utf16le.css'));
 
-		// load in sequence and keep data
-		const value1 = await service.readFile(resource1);
-		const value2 = await service.readFile(resource2);
+		// loAd in sequence And keep dAtA
+		const vAlue1 = AwAit service.reAdFile(resource1);
+		const vAlue2 = AwAit service.reAdFile(resource2);
 
-		// load in parallel in expect the same result
-		const result = await Promise.all([
-			service.readFile(resource1),
-			service.readFile(resource2)
+		// loAd in pArAllel in expect the sAme result
+		const result = AwAit Promise.All([
+			service.reAdFile(resource1),
+			service.reAdFile(resource2)
 		]);
 
-		assert.equal(result[0].value.toString(), value1.value.toString());
-		assert.equal(result[1].value.toString(), value2.value.toString());
+		Assert.equAl(result[0].vAlue.toString(), vAlue1.vAlue.toString());
+		Assert.equAl(result[1].vAlue.toString(), vAlue2.vAlue.toString());
 	}
 
-	test('readFile - from position (ASCII) - default', async () => {
-		return testReadFileFromPositionAscii();
+	test('reAdFile - from position (ASCII) - defAult', Async () => {
+		return testReAdFileFromPositionAscii();
 	});
 
-	test('readFile - from position (ASCII) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - from position (ASCII) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testReadFileFromPositionAscii();
+		return testReAdFileFromPositionAscii();
 	});
 
-	test('readFile - from position (ASCII) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - from position (ASCII) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testReadFileFromPositionAscii();
+		return testReAdFileFromPositionAscii();
 	});
 
-	test('readFile - from position (ASCII) - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - from position (ASCII) - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testReadFileFromPositionAscii();
+		return testReAdFileFromPositionAscii();
 	});
 
-	async function testReadFileFromPositionAscii() {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	Async function testReAdFileFromPositionAscii() {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const contents = await service.readFile(resource, { position: 6 });
+		const contents = AwAit service.reAdFile(resource, { position: 6 });
 
-		assert.equal(contents.value.toString(), 'File');
+		Assert.equAl(contents.vAlue.toString(), 'File');
 	}
 
-	test('readFile - from position (with umlaut) - default', async () => {
-		return testReadFileFromPositionUmlaut();
+	test('reAdFile - from position (with umlAut) - defAult', Async () => {
+		return testReAdFileFromPositionUmlAut();
 	});
 
-	test('readFile - from position (with umlaut) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - from position (with umlAut) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testReadFileFromPositionUmlaut();
+		return testReAdFileFromPositionUmlAut();
 	});
 
-	test('readFile - from position (with umlaut) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - from position (with umlAut) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testReadFileFromPositionUmlaut();
+		return testReAdFileFromPositionUmlAut();
 	});
 
-	test('readFile - from position (with umlaut) - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - from position (with umlAut) - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testReadFileFromPositionUmlaut();
+		return testReAdFileFromPositionUmlAut();
 	});
 
-	async function testReadFileFromPositionUmlaut() {
-		const resource = URI.file(join(testDir, 'small_umlaut.txt'));
+	Async function testReAdFileFromPositionUmlAut() {
+		const resource = URI.file(join(testDir, 'smAll_umlAut.txt'));
 
-		const contents = await service.readFile(resource, { position: Buffer.from('Small File with Ü').length });
+		const contents = AwAit service.reAdFile(resource, { position: Buffer.from('SmAll File with Ü').length });
 
-		assert.equal(contents.value.toString(), 'mlaut');
+		Assert.equAl(contents.vAlue.toString(), 'mlAut');
 	}
 
-	test('readFile - 3 bytes (ASCII) - default', async () => {
-		return testReadThreeBytesFromFile();
+	test('reAdFile - 3 bytes (ASCII) - defAult', Async () => {
+		return testReAdThreeBytesFromFile();
 	});
 
-	test('readFile - 3 bytes (ASCII) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - 3 bytes (ASCII) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testReadThreeBytesFromFile();
+		return testReAdThreeBytesFromFile();
 	});
 
-	test('readFile - 3 bytes (ASCII) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - 3 bytes (ASCII) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testReadThreeBytesFromFile();
+		return testReAdThreeBytesFromFile();
 	});
 
-	test('readFile - 3 bytes (ASCII) - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - 3 bytes (ASCII) - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testReadThreeBytesFromFile();
+		return testReAdThreeBytesFromFile();
 	});
 
-	async function testReadThreeBytesFromFile() {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	Async function testReAdThreeBytesFromFile() {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const contents = await service.readFile(resource, { length: 3 });
+		const contents = AwAit service.reAdFile(resource, { length: 3 });
 
-		assert.equal(contents.value.toString(), 'Sma');
+		Assert.equAl(contents.vAlue.toString(), 'SmA');
 	}
 
-	test('readFile - 20000 bytes (large) - default', async () => {
-		return readLargeFileWithLength(20000);
+	test('reAdFile - 20000 bytes (lArge) - defAult', Async () => {
+		return reAdLArgeFileWithLength(20000);
 	});
 
-	test('readFile - 20000 bytes (large) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - 20000 bytes (lArge) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return readLargeFileWithLength(20000);
+		return reAdLArgeFileWithLength(20000);
 	});
 
-	test('readFile - 20000 bytes (large) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - 20000 bytes (lArge) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return readLargeFileWithLength(20000);
+		return reAdLArgeFileWithLength(20000);
 	});
 
-	test('readFile - 20000 bytes (large) - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - 20000 bytes (lArge) - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return readLargeFileWithLength(20000);
+		return reAdLArgeFileWithLength(20000);
 	});
 
-	test('readFile - 80000 bytes (large) - default', async () => {
-		return readLargeFileWithLength(80000);
+	test('reAdFile - 80000 bytes (lArge) - defAult', Async () => {
+		return reAdLArgeFileWithLength(80000);
 	});
 
-	test('readFile - 80000 bytes (large) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('reAdFile - 80000 bytes (lArge) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return readLargeFileWithLength(80000);
+		return reAdLArgeFileWithLength(80000);
 	});
 
-	test('readFile - 80000 bytes (large) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - 80000 bytes (lArge) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return readLargeFileWithLength(80000);
+		return reAdLArgeFileWithLength(80000);
 	});
 
-	test('readFile - 80000 bytes (large) - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - 80000 bytes (lArge) - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return readLargeFileWithLength(80000);
+		return reAdLArgeFileWithLength(80000);
 	});
 
-	async function readLargeFileWithLength(length: number) {
+	Async function reAdLArgeFileWithLength(length: number) {
 		const resource = URI.file(join(testDir, 'lorem.txt'));
 
-		const contents = await service.readFile(resource, { length });
+		const contents = AwAit service.reAdFile(resource, { length });
 
-		assert.equal(contents.value.byteLength, length);
+		Assert.equAl(contents.vAlue.byteLength, length);
 	}
 
-	test('readFile - FILE_IS_DIRECTORY', async () => {
+	test('reAdFile - FILE_IS_DIRECTORY', Async () => {
 		const resource = URI.file(join(testDir, 'deep'));
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource);
-		} catch (err) {
+			AwAit service.reAdFile(resource);
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_IS_DIRECTORY);
+		Assert.ok(error);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_IS_DIRECTORY);
 	});
 
-	(isWindows /* error code does not seem to be supported on windows */ ? test.skip : test)('readFile - FILE_NOT_DIRECTORY', async () => {
+	(isWindows /* error code does not seem to be supported on windows */ ? test.skip : test)('reAdFile - FILE_NOT_DIRECTORY', Async () => {
 		const resource = URI.file(join(testDir, 'lorem.txt', 'file.txt'));
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource);
-		} catch (err) {
+			AwAit service.reAdFile(resource);
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_NOT_DIRECTORY);
+		Assert.ok(error);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_NOT_DIRECTORY);
 	});
 
-	test('readFile - FILE_NOT_FOUND', async () => {
+	test('reAdFile - FILE_NOT_FOUND', Async () => {
 		const resource = URI.file(join(testDir, '404.html'));
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource);
-		} catch (err) {
+			AwAit service.reAdFile(resource);
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_NOT_FOUND);
+		Assert.ok(error);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_NOT_FOUND);
 	});
 
-	test('readFile - FILE_NOT_MODIFIED_SINCE - default', async () => {
+	test('reAdFile - FILE_NOT_MODIFIED_SINCE - defAult', Async () => {
 		return testNotModifiedSince();
 	});
 
-	test('readFile - FILE_NOT_MODIFIED_SINCE - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-
-		return testNotModifiedSince();
-	});
-
-	test('readFile - FILE_NOT_MODIFIED_SINCE - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - FILE_NOT_MODIFIED_SINCE - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testNotModifiedSince();
 	});
 
-	test('readFile - FILE_NOT_MODIFIED_SINCE - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - FILE_NOT_MODIFIED_SINCE - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testNotModifiedSince();
 	});
 
-	async function testNotModifiedSince() {
+	test('reAdFile - FILE_NOT_MODIFIED_SINCE - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
+
+		return testNotModifiedSince();
+	});
+
+	Async function testNotModifiedSince() {
 		const resource = URI.file(join(testDir, 'index.html'));
 
-		const contents = await service.readFile(resource);
-		fileProvider.totalBytesRead = 0;
+		const contents = AwAit service.reAdFile(resource);
+		fileProvider.totAlBytesReAd = 0;
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource, { etag: contents.etag });
-		} catch (err) {
+			AwAit service.reAdFile(resource, { etAg: contents.etAg });
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_NOT_MODIFIED_SINCE);
-		assert.equal(fileProvider.totalBytesRead, 0);
+		Assert.ok(error);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_NOT_MODIFIED_SINCE);
+		Assert.equAl(fileProvider.totAlBytesReAd, 0);
 	}
 
-	test('readFile - FILE_NOT_MODIFIED_SINCE does not fire wrongly - https://github.com/microsoft/vscode/issues/72909', async () => {
-		fileProvider.setInvalidStatSize(true);
+	test('reAdFile - FILE_NOT_MODIFIED_SINCE does not fire wrongly - https://github.com/microsoft/vscode/issues/72909', Async () => {
+		fileProvider.setInvAlidStAtSize(true);
 
 		const resource = URI.file(join(testDir, 'index.html'));
 
-		await service.readFile(resource);
+		AwAit service.reAdFile(resource);
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource, { etag: undefined });
-		} catch (err) {
+			AwAit service.reAdFile(resource, { etAg: undefined });
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(!error);
+		Assert.ok(!error);
 	});
 
-	test('readFile - FILE_EXCEEDS_MEMORY_LIMIT - default', async () => {
+	test('reAdFile - FILE_EXCEEDS_MEMORY_LIMIT - defAult', Async () => {
 		return testFileExceedsMemoryLimit();
 	});
 
-	test('readFile - FILE_EXCEEDS_MEMORY_LIMIT - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-
-		return testFileExceedsMemoryLimit();
-	});
-
-	test('readFile - FILE_EXCEEDS_MEMORY_LIMIT - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('reAdFile - FILE_EXCEEDS_MEMORY_LIMIT - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testFileExceedsMemoryLimit();
 	});
 
-	test('readFile - FILE_EXCEEDS_MEMORY_LIMIT - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	test('reAdFile - FILE_EXCEEDS_MEMORY_LIMIT - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
 		return testFileExceedsMemoryLimit();
 	});
 
-	async function testFileExceedsMemoryLimit() {
-		await doTestFileExceedsMemoryLimit();
+	test('reAdFile - FILE_EXCEEDS_MEMORY_LIMIT - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		// Also test when the stat size is wrong
-		fileProvider.setSmallStatSize(true);
+		return testFileExceedsMemoryLimit();
+	});
+
+	Async function testFileExceedsMemoryLimit() {
+		AwAit doTestFileExceedsMemoryLimit();
+
+		// Also test when the stAt size is wrong
+		fileProvider.setSmAllStAtSize(true);
 		return doTestFileExceedsMemoryLimit();
 	}
 
-	async function doTestFileExceedsMemoryLimit() {
+	Async function doTestFileExceedsMemoryLimit() {
 		const resource = URI.file(join(testDir, 'index.html'));
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource, { limits: { memory: 10 } });
-		} catch (err) {
+			AwAit service.reAdFile(resource, { limits: { memory: 10 } });
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_EXCEEDS_MEMORY_LIMIT);
+		Assert.ok(error);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_EXCEEDS_MEMORY_LIMIT);
 	}
 
-	(isWindows ? test.skip /* flaky test */ : test)('readFile - FILE_TOO_LARGE - default', async () => {
-		return testFileTooLarge();
+	(isWindows ? test.skip /* flAky test */ : test)('reAdFile - FILE_TOO_LARGE - defAult', Async () => {
+		return testFileTooLArge();
 	});
 
-	(isWindows ? test.skip /* flaky test */ : test)('readFile - FILE_TOO_LARGE - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	(isWindows ? test.skip /* flAky test */ : test)('reAdFile - FILE_TOO_LARGE - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testFileTooLarge();
+		return testFileTooLArge();
 	});
 
-	(isWindows ? test.skip /* flaky test */ : test)('readFile - FILE_TOO_LARGE - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	(isWindows ? test.skip /* flAky test */ : test)('reAdFile - FILE_TOO_LARGE - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testFileTooLarge();
+		return testFileTooLArge();
 	});
 
-	(isWindows ? test.skip /* flaky test */ : test)('readFile - FILE_TOO_LARGE - streamed', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadStream);
+	(isWindows ? test.skip /* flAky test */ : test)('reAdFile - FILE_TOO_LARGE - streAmed', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdStreAm);
 
-		return testFileTooLarge();
+		return testFileTooLArge();
 	});
 
-	async function testFileTooLarge() {
-		await doTestFileTooLarge();
+	Async function testFileTooLArge() {
+		AwAit doTestFileTooLArge();
 
-		// Also test when the stat size is wrong
-		fileProvider.setSmallStatSize(true);
-		return doTestFileTooLarge();
+		// Also test when the stAt size is wrong
+		fileProvider.setSmAllStAtSize(true);
+		return doTestFileTooLArge();
 	}
 
-	async function doTestFileTooLarge() {
+	Async function doTestFileTooLArge() {
 		const resource = URI.file(join(testDir, 'index.html'));
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.readFile(resource, { limits: { size: 10 } });
-		} catch (err) {
+			AwAit service.reAdFile(resource, { limits: { size: 10 } });
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_TOO_LARGE);
+		Assert.ok(error);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_TOO_LARGE);
 	}
 
-	test('createFile', async () => {
-		return assertCreateFile(contents => VSBuffer.fromString(contents));
+	test('creAteFile', Async () => {
+		return AssertCreAteFile(contents => VSBuffer.fromString(contents));
 	});
 
-	test('createFile (readable)', async () => {
-		return assertCreateFile(contents => bufferToReadable(VSBuffer.fromString(contents)));
+	test('creAteFile (reAdAble)', Async () => {
+		return AssertCreAteFile(contents => bufferToReAdAble(VSBuffer.fromString(contents)));
 	});
 
-	test('createFile (stream)', async () => {
-		return assertCreateFile(contents => bufferToStream(VSBuffer.fromString(contents)));
+	test('creAteFile (streAm)', Async () => {
+		return AssertCreAteFile(contents => bufferToStreAm(VSBuffer.fromString(contents)));
 	});
 
-	async function assertCreateFile(converter: (content: string) => VSBuffer | VSBufferReadable | VSBufferReadableStream): Promise<void> {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	Async function AssertCreAteFile(converter: (content: string) => VSBuffer | VSBufferReAdAble | VSBufferReAdAbleStreAm): Promise<void> {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const contents = 'Hello World';
 		const resource = URI.file(join(testDir, 'test.txt'));
 
-		assert.equal(await service.canCreateFile(resource), true);
-		const fileStat = await service.createFile(resource, converter(contents));
-		assert.equal(fileStat.name, 'test.txt');
-		assert.equal(existsSync(fileStat.resource.fsPath), true);
-		assert.equal(readFileSync(fileStat.resource.fsPath), contents);
+		Assert.equAl(AwAit service.cAnCreAteFile(resource), true);
+		const fileStAt = AwAit service.creAteFile(resource, converter(contents));
+		Assert.equAl(fileStAt.nAme, 'test.txt');
+		Assert.equAl(existsSync(fileStAt.resource.fsPAth), true);
+		Assert.equAl(reAdFileSync(fileStAt.resource.fsPAth), contents);
 
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, resource.fsPath);
-		assert.equal(event!.operation, FileOperation.CREATE);
-		assert.equal(event!.target!.resource.fsPath, resource.fsPath);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.CREATE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, resource.fsPAth);
 	}
 
-	test('createFile (does not overwrite by default)', async () => {
+	test('creAteFile (does not overwrite by defAult)', Async () => {
 		const contents = 'Hello World';
 		const resource = URI.file(join(testDir, 'test.txt'));
 
-		writeFileSync(resource.fsPath, ''); // create file
+		writeFileSync(resource.fsPAth, ''); // creAte file
 
-		assert.ok((await service.canCreateFile(resource)) instanceof Error);
+		Assert.ok((AwAit service.cAnCreAteFile(resource)) instAnceof Error);
 
 		let error;
 		try {
-			await service.createFile(resource, VSBuffer.fromString(contents));
-		} catch (err) {
+			AwAit service.creAteFile(resource, VSBuffer.fromString(contents));
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
+		Assert.ok(error);
 	});
 
-	test('createFile (allows to overwrite existing)', async () => {
-		let event: FileOperationEvent;
-		disposables.add(service.onDidRunOperation(e => event = e));
+	test('creAteFile (Allows to overwrite existing)', Async () => {
+		let event: FileOperAtionEvent;
+		disposAbles.Add(service.onDidRunOperAtion(e => event = e));
 
 		const contents = 'Hello World';
 		const resource = URI.file(join(testDir, 'test.txt'));
 
-		writeFileSync(resource.fsPath, ''); // create file
+		writeFileSync(resource.fsPAth, ''); // creAte file
 
-		assert.equal(await service.canCreateFile(resource, { overwrite: true }), true);
-		const fileStat = await service.createFile(resource, VSBuffer.fromString(contents), { overwrite: true });
-		assert.equal(fileStat.name, 'test.txt');
-		assert.equal(existsSync(fileStat.resource.fsPath), true);
-		assert.equal(readFileSync(fileStat.resource.fsPath), contents);
+		Assert.equAl(AwAit service.cAnCreAteFile(resource, { overwrite: true }), true);
+		const fileStAt = AwAit service.creAteFile(resource, VSBuffer.fromString(contents), { overwrite: true });
+		Assert.equAl(fileStAt.nAme, 'test.txt');
+		Assert.equAl(existsSync(fileStAt.resource.fsPAth), true);
+		Assert.equAl(reAdFileSync(fileStAt.resource.fsPAth), contents);
 
-		assert.ok(event!);
-		assert.equal(event!.resource.fsPath, resource.fsPath);
-		assert.equal(event!.operation, FileOperation.CREATE);
-		assert.equal(event!.target!.resource.fsPath, resource.fsPath);
+		Assert.ok(event!);
+		Assert.equAl(event!.resource.fsPAth, resource.fsPAth);
+		Assert.equAl(event!.operAtion, FileOperAtion.CREATE);
+		Assert.equAl(event!.tArget!.resource.fsPAth, resource.fsPAth);
 	});
 
-	test('writeFile - default', async () => {
+	test('writeFile - defAult', Async () => {
 		return testWriteFile();
 	});
 
-	test('writeFile - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
-
-		return testWriteFile();
-	});
-
-	test('writeFile - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('writeFile - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
 		return testWriteFile();
 	});
 
-	async function testWriteFile() {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	test('writeFile - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		const content = readFileSync(resource.fsPath);
-		assert.equal(content, 'Small File');
+		return testWriteFile();
+	});
 
-		const newContent = 'Updates to the small file';
-		await service.writeFile(resource, VSBuffer.fromString(newContent));
+	Async function testWriteFile() {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		assert.equal(readFileSync(resource.fsPath), newContent);
+		const content = reAdFileSync(resource.fsPAth);
+		Assert.equAl(content, 'SmAll File');
+
+		const newContent = 'UpdAtes to the smAll file';
+		AwAit service.writeFile(resource, VSBuffer.fromString(newContent));
+
+		Assert.equAl(reAdFileSync(resource.fsPAth), newContent);
 	}
 
-	test('writeFile (large file) - default', async () => {
-		return testWriteFileLarge();
+	test('writeFile (lArge file) - defAult', Async () => {
+		return testWriteFileLArge();
 	});
 
-	test('writeFile (large file) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('writeFile (lArge file) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testWriteFileLarge();
+		return testWriteFileLArge();
 	});
 
-	test('writeFile (large file) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('writeFile (lArge file) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testWriteFileLarge();
+		return testWriteFileLArge();
 	});
 
-	async function testWriteFileLarge() {
+	Async function testWriteFileLArge() {
 		const resource = URI.file(join(testDir, 'lorem.txt'));
 
-		const content = readFileSync(resource.fsPath);
+		const content = reAdFileSync(resource.fsPAth);
 		const newContent = content.toString() + content.toString();
 
-		const fileStat = await service.writeFile(resource, VSBuffer.fromString(newContent));
-		assert.equal(fileStat.name, 'lorem.txt');
+		const fileStAt = AwAit service.writeFile(resource, VSBuffer.fromString(newContent));
+		Assert.equAl(fileStAt.nAme, 'lorem.txt');
 
-		assert.equal(readFileSync(resource.fsPath), newContent);
+		Assert.equAl(reAdFileSync(resource.fsPAth), newContent);
 	}
 
-	test('writeFile - buffered - readonly throws', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose | FileSystemProviderCapabilities.Readonly);
+	test('writeFile - buffered - reAdonly throws', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose | FileSystemProviderCApAbilities.ReAdonly);
 
-		return testWriteFileReadonlyThrows();
+		return testWriteFileReAdonlyThrows();
 	});
 
-	test('writeFile - unbuffered - readonly throws', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite | FileSystemProviderCapabilities.Readonly);
+	test('writeFile - unbuffered - reAdonly throws', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite | FileSystemProviderCApAbilities.ReAdonly);
 
-		return testWriteFileReadonlyThrows();
+		return testWriteFileReAdonlyThrows();
 	});
 
-	async function testWriteFileReadonlyThrows() {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	Async function testWriteFileReAdonlyThrows() {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const content = readFileSync(resource.fsPath);
-		assert.equal(content, 'Small File');
+		const content = reAdFileSync(resource.fsPAth);
+		Assert.equAl(content, 'SmAll File');
 
-		const newContent = 'Updates to the small file';
+		const newContent = 'UpdAtes to the smAll file';
 
 		let error: Error;
 		try {
-			await service.writeFile(resource, VSBuffer.fromString(newContent));
-		} catch (err) {
+			AwAit service.writeFile(resource, VSBuffer.fromString(newContent));
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error!);
+		Assert.ok(error!);
 	}
 
-	test('writeFile (large file) - multiple parallel writes queue up', async () => {
+	test('writeFile (lArge file) - multiple pArAllel writes queue up', Async () => {
 		const resource = URI.file(join(testDir, 'lorem.txt'));
 
-		const content = readFileSync(resource.fsPath);
+		const content = reAdFileSync(resource.fsPAth);
 		const newContent = content.toString() + content.toString();
 
-		await Promise.all(['0', '00', '000', '0000', '00000'].map(async offset => {
-			const fileStat = await service.writeFile(resource, VSBuffer.fromString(offset + newContent));
-			assert.equal(fileStat.name, 'lorem.txt');
+		AwAit Promise.All(['0', '00', '000', '0000', '00000'].mAp(Async offset => {
+			const fileStAt = AwAit service.writeFile(resource, VSBuffer.fromString(offset + newContent));
+			Assert.equAl(fileStAt.nAme, 'lorem.txt');
 		}));
 
-		const fileContent = readFileSync(resource.fsPath).toString();
-		assert.ok(['0', '00', '000', '0000', '00000'].some(offset => fileContent === offset + newContent));
+		const fileContent = reAdFileSync(resource.fsPAth).toString();
+		Assert.ok(['0', '00', '000', '0000', '00000'].some(offset => fileContent === offset + newContent));
 	});
 
-	test('writeFile (readable) - default', async () => {
-		return testWriteFileReadable();
+	test('writeFile (reAdAble) - defAult', Async () => {
+		return testWriteFileReAdAble();
 	});
 
-	test('writeFile (readable) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('writeFile (reAdAble) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testWriteFileReadable();
+		return testWriteFileReAdAble();
 	});
 
-	test('writeFile (readable) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('writeFile (reAdAble) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testWriteFileReadable();
+		return testWriteFileReAdAble();
 	});
 
-	async function testWriteFileReadable() {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	Async function testWriteFileReAdAble() {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const content = readFileSync(resource.fsPath);
-		assert.equal(content, 'Small File');
+		const content = reAdFileSync(resource.fsPAth);
+		Assert.equAl(content, 'SmAll File');
 
-		const newContent = 'Updates to the small file';
-		await service.writeFile(resource, toLineByLineReadable(newContent));
+		const newContent = 'UpdAtes to the smAll file';
+		AwAit service.writeFile(resource, toLineByLineReAdAble(newContent));
 
-		assert.equal(readFileSync(resource.fsPath), newContent);
+		Assert.equAl(reAdFileSync(resource.fsPAth), newContent);
 	}
 
-	test('writeFile (large file - readable) - default', async () => {
-		return testWriteFileLargeReadable();
+	test('writeFile (lArge file - reAdAble) - defAult', Async () => {
+		return testWriteFileLArgeReAdAble();
 	});
 
-	test('writeFile (large file - readable) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('writeFile (lArge file - reAdAble) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testWriteFileLargeReadable();
+		return testWriteFileLArgeReAdAble();
 	});
 
-	test('writeFile (large file - readable) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('writeFile (lArge file - reAdAble) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testWriteFileLargeReadable();
+		return testWriteFileLArgeReAdAble();
 	});
 
-	async function testWriteFileLargeReadable() {
+	Async function testWriteFileLArgeReAdAble() {
 		const resource = URI.file(join(testDir, 'lorem.txt'));
 
-		const content = readFileSync(resource.fsPath);
+		const content = reAdFileSync(resource.fsPAth);
 		const newContent = content.toString() + content.toString();
 
-		const fileStat = await service.writeFile(resource, toLineByLineReadable(newContent));
-		assert.equal(fileStat.name, 'lorem.txt');
+		const fileStAt = AwAit service.writeFile(resource, toLineByLineReAdAble(newContent));
+		Assert.equAl(fileStAt.nAme, 'lorem.txt');
 
-		assert.equal(readFileSync(resource.fsPath), newContent);
+		Assert.equAl(reAdFileSync(resource.fsPAth), newContent);
 	}
 
-	test('writeFile (stream) - default', async () => {
-		return testWriteFileStream();
+	test('writeFile (streAm) - defAult', Async () => {
+		return testWriteFileStreAm();
 	});
 
-	test('writeFile (stream) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('writeFile (streAm) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testWriteFileStream();
+		return testWriteFileStreAm();
 	});
 
-	test('writeFile (stream) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('writeFile (streAm) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testWriteFileStream();
+		return testWriteFileStreAm();
 	});
 
-	async function testWriteFileStream() {
-		const source = URI.file(join(testDir, 'small.txt'));
-		const target = URI.file(join(testDir, 'small-copy.txt'));
+	Async function testWriteFileStreAm() {
+		const source = URI.file(join(testDir, 'smAll.txt'));
+		const tArget = URI.file(join(testDir, 'smAll-copy.txt'));
 
-		const fileStat = await service.writeFile(target, streamToBufferReadableStream(createReadStream(source.fsPath)));
-		assert.equal(fileStat.name, 'small-copy.txt');
+		const fileStAt = AwAit service.writeFile(tArget, streAmToBufferReAdAbleStreAm(creAteReAdStreAm(source.fsPAth)));
+		Assert.equAl(fileStAt.nAme, 'smAll-copy.txt');
 
-		const targetContents = readFileSync(target.fsPath).toString();
-		assert.equal(readFileSync(source.fsPath).toString(), targetContents);
+		const tArgetContents = reAdFileSync(tArget.fsPAth).toString();
+		Assert.equAl(reAdFileSync(source.fsPAth).toString(), tArgetContents);
 	}
 
-	test('writeFile (large file - stream) - default', async () => {
-		return testWriteFileLargeStream();
+	test('writeFile (lArge file - streAm) - defAult', Async () => {
+		return testWriteFileLArgeStreAm();
 	});
 
-	test('writeFile (large file - stream) - buffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
+	test('writeFile (lArge file - streAm) - buffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileOpenReAdWriteClose);
 
-		return testWriteFileLargeStream();
+		return testWriteFileLArgeStreAm();
 	});
 
-	test('writeFile (large file - stream) - unbuffered', async () => {
-		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileReadWrite);
+	test('writeFile (lArge file - streAm) - unbuffered', Async () => {
+		setCApAbilities(fileProvider, FileSystemProviderCApAbilities.FileReAdWrite);
 
-		return testWriteFileLargeStream();
+		return testWriteFileLArgeStreAm();
 	});
 
-	async function testWriteFileLargeStream() {
+	Async function testWriteFileLArgeStreAm() {
 		const source = URI.file(join(testDir, 'lorem.txt'));
-		const target = URI.file(join(testDir, 'lorem-copy.txt'));
+		const tArget = URI.file(join(testDir, 'lorem-copy.txt'));
 
-		const fileStat = await service.writeFile(target, streamToBufferReadableStream(createReadStream(source.fsPath)));
-		assert.equal(fileStat.name, 'lorem-copy.txt');
+		const fileStAt = AwAit service.writeFile(tArget, streAmToBufferReAdAbleStreAm(creAteReAdStreAm(source.fsPAth)));
+		Assert.equAl(fileStAt.nAme, 'lorem-copy.txt');
 
-		const targetContents = readFileSync(target.fsPath).toString();
-		assert.equal(readFileSync(source.fsPath).toString(), targetContents);
+		const tArgetContents = reAdFileSync(tArget.fsPAth).toString();
+		Assert.equAl(reAdFileSync(source.fsPAth).toString(), tArgetContents);
 	}
 
-	test('writeFile (file is created including parents)', async () => {
+	test('writeFile (file is creAted including pArents)', Async () => {
 		const resource = URI.file(join(testDir, 'other', 'newfile.txt'));
 
-		const content = 'File is created including parent';
-		const fileStat = await service.writeFile(resource, VSBuffer.fromString(content));
-		assert.equal(fileStat.name, 'newfile.txt');
+		const content = 'File is creAted including pArent';
+		const fileStAt = AwAit service.writeFile(resource, VSBuffer.fromString(content));
+		Assert.equAl(fileStAt.nAme, 'newfile.txt');
 
-		assert.equal(readFileSync(resource.fsPath), content);
+		Assert.equAl(reAdFileSync(resource.fsPAth), content);
 	});
 
-	test('writeFile (error when folder is encountered)', async () => {
+	test('writeFile (error when folder is encountered)', Async () => {
 		const resource = URI.file(testDir);
 
 		let error: Error | undefined = undefined;
 		try {
-			await service.writeFile(resource, VSBuffer.fromString('File is created including parent'));
-		} catch (err) {
+			AwAit service.writeFile(resource, VSBuffer.fromString('File is creAted including pArent'));
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
+		Assert.ok(error);
 	});
 
-	test('writeFile (no error when providing up to date etag)', async () => {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	test('writeFile (no error when providing up to dAte etAg)', Async () => {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const stat = await service.resolve(resource);
+		const stAt = AwAit service.resolve(resource);
 
-		const content = readFileSync(resource.fsPath);
-		assert.equal(content, 'Small File');
+		const content = reAdFileSync(resource.fsPAth);
+		Assert.equAl(content, 'SmAll File');
 
-		const newContent = 'Updates to the small file';
-		await service.writeFile(resource, VSBuffer.fromString(newContent), { etag: stat.etag, mtime: stat.mtime });
+		const newContent = 'UpdAtes to the smAll file';
+		AwAit service.writeFile(resource, VSBuffer.fromString(newContent), { etAg: stAt.etAg, mtime: stAt.mtime });
 
-		assert.equal(readFileSync(resource.fsPath), newContent);
+		Assert.equAl(reAdFileSync(resource.fsPAth), newContent);
 	});
 
-	test('writeFile - error when writing to file that has been updated meanwhile', async () => {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	test('writeFile - error when writing to file thAt hAs been updAted meAnwhile', Async () => {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const stat = await service.resolve(resource);
+		const stAt = AwAit service.resolve(resource);
 
-		const content = readFileSync(resource.fsPath).toString();
-		assert.equal(content, 'Small File');
+		const content = reAdFileSync(resource.fsPAth).toString();
+		Assert.equAl(content, 'SmAll File');
 
-		const newContent = 'Updates to the small file';
-		await service.writeFile(resource, VSBuffer.fromString(newContent), { etag: stat.etag, mtime: stat.mtime });
+		const newContent = 'UpdAtes to the smAll file';
+		AwAit service.writeFile(resource, VSBuffer.fromString(newContent), { etAg: stAt.etAg, mtime: stAt.mtime });
 
-		const newContentLeadingToError = newContent + newContent;
+		const newContentLeAdingToError = newContent + newContent;
 
-		const fakeMtime = 1000;
-		const fakeSize = 1000;
+		const fAkeMtime = 1000;
+		const fAkeSize = 1000;
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.writeFile(resource, VSBuffer.fromString(newContentLeadingToError), { etag: etag({ mtime: fakeMtime, size: fakeSize }), mtime: fakeMtime });
-		} catch (err) {
+			AwAit service.writeFile(resource, VSBuffer.fromString(newContentLeAdingToError), { etAg: etAg({ mtime: fAkeMtime, size: fAkeSize }), mtime: fAkeMtime });
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(error);
-		assert.ok(error instanceof FileOperationError);
-		assert.equal(error!.fileOperationResult, FileOperationResult.FILE_MODIFIED_SINCE);
+		Assert.ok(error);
+		Assert.ok(error instAnceof FileOperAtionError);
+		Assert.equAl(error!.fileOperAtionResult, FileOperAtionResult.FILE_MODIFIED_SINCE);
 	});
 
-	test('writeFile - no error when writing to file where size is the same', async () => {
-		const resource = URI.file(join(testDir, 'small.txt'));
+	test('writeFile - no error when writing to file where size is the sAme', Async () => {
+		const resource = URI.file(join(testDir, 'smAll.txt'));
 
-		const stat = await service.resolve(resource);
+		const stAt = AwAit service.resolve(resource);
 
-		const content = readFileSync(resource.fsPath).toString();
-		assert.equal(content, 'Small File');
+		const content = reAdFileSync(resource.fsPAth).toString();
+		Assert.equAl(content, 'SmAll File');
 
-		const newContent = content; // same content
-		await service.writeFile(resource, VSBuffer.fromString(newContent), { etag: stat.etag, mtime: stat.mtime });
+		const newContent = content; // sAme content
+		AwAit service.writeFile(resource, VSBuffer.fromString(newContent), { etAg: stAt.etAg, mtime: stAt.mtime });
 
-		const newContentLeadingToNoError = newContent; // writing the same content should be OK
+		const newContentLeAdingToNoError = newContent; // writing the sAme content should be OK
 
-		const fakeMtime = 1000;
-		const actualSize = newContent.length;
+		const fAkeMtime = 1000;
+		const ActuAlSize = newContent.length;
 
-		let error: FileOperationError | undefined = undefined;
+		let error: FileOperAtionError | undefined = undefined;
 		try {
-			await service.writeFile(resource, VSBuffer.fromString(newContentLeadingToNoError), { etag: etag({ mtime: fakeMtime, size: actualSize }), mtime: fakeMtime });
-		} catch (err) {
+			AwAit service.writeFile(resource, VSBuffer.fromString(newContentLeAdingToNoError), { etAg: etAg({ mtime: fAkeMtime, size: ActuAlSize }), mtime: fAkeMtime });
+		} cAtch (err) {
 			error = err;
 		}
 
-		assert.ok(!error);
+		Assert.ok(!error);
 	});
 
-	test('writeFile - no error when writing to same non-existing folder multiple times different new files', async () => {
+	test('writeFile - no error when writing to sAme non-existing folder multiple times different new files', Async () => {
 		const newFolder = URI.file(join(testDir, 'some', 'new', 'folder'));
 
-		const file1 = joinPath(newFolder, 'file-1');
-		const file2 = joinPath(newFolder, 'file-2');
-		const file3 = joinPath(newFolder, 'file-3');
+		const file1 = joinPAth(newFolder, 'file-1');
+		const file2 = joinPAth(newFolder, 'file-2');
+		const file3 = joinPAth(newFolder, 'file-3');
 
-		// this essentially verifies that the mkdirp logic implemented
-		// in the file service is able to receive multiple requests for
-		// the same folder and will not throw errors if another racing
-		// call succeeded first.
-		const newContent = 'Updates to the small file';
-		await Promise.all([
+		// this essentiAlly verifies thAt the mkdirp logic implemented
+		// in the file service is Able to receive multiple requests for
+		// the sAme folder And will not throw errors if Another rAcing
+		// cAll succeeded first.
+		const newContent = 'UpdAtes to the smAll file';
+		AwAit Promise.All([
 			service.writeFile(file1, VSBuffer.fromString(newContent)),
 			service.writeFile(file2, VSBuffer.fromString(newContent)),
 			service.writeFile(file3, VSBuffer.fromString(newContent))
 		]);
 
-		assert.ok(service.exists(file1));
-		assert.ok(service.exists(file2));
-		assert.ok(service.exists(file3));
+		Assert.ok(service.exists(file1));
+		Assert.ok(service.exists(file2));
+		Assert.ok(service.exists(file3));
 	});
 
-	test('writeFile - error when writing to folder that is a file', async () => {
+	test('writeFile - error when writing to folder thAt is A file', Async () => {
 		const existingFile = URI.file(join(testDir, 'my-file'));
 
-		await service.createFile(existingFile);
+		AwAit service.creAteFile(existingFile);
 
-		const newFile = joinPath(existingFile, 'file-1');
+		const newFile = joinPAth(existingFile, 'file-1');
 
 		let error;
-		const newContent = 'Updates to the small file';
+		const newContent = 'UpdAtes to the smAll file';
 		try {
-			await service.writeFile(newFile, VSBuffer.fromString(newContent));
-		} catch (e) {
+			AwAit service.writeFile(newFile, VSBuffer.fromString(newContent));
+		} cAtch (e) {
 			error = e;
 		}
 
-		assert.ok(error);
+		Assert.ok(error);
 	});
 
-	const runWatchTests = isLinux;
+	const runWAtchTests = isLinux;
 
-	(runWatchTests ? test : test.skip)('watch - file', done => {
-		const toWatch = URI.file(join(testDir, 'index-watch1.html'));
-		writeFileSync(toWatch.fsPath, 'Init');
+	(runWAtchTests ? test : test.skip)('wAtch - file', done => {
+		const toWAtch = URI.file(join(testDir, 'index-wAtch1.html'));
+		writeFileSync(toWAtch.fsPAth, 'Init');
 
-		assertWatch(toWatch, [[FileChangeType.UPDATED, toWatch]], done);
+		AssertWAtch(toWAtch, [[FileChAngeType.UPDATED, toWAtch]], done);
 
-		setTimeout(() => writeFileSync(toWatch.fsPath, 'Changes'), 50);
+		setTimeout(() => writeFileSync(toWAtch.fsPAth, 'ChAnges'), 50);
 	});
 
-	(runWatchTests && !isWindows /* symbolic links not reliable on windows */ ? test : test.skip)('watch - file symbolic link', async done => {
-		const toWatch = URI.file(join(testDir, 'lorem.txt-linked'));
-		await symlink(join(testDir, 'lorem.txt'), toWatch.fsPath);
+	(runWAtchTests && !isWindows /* symbolic links not reliAble on windows */ ? test : test.skip)('wAtch - file symbolic link', Async done => {
+		const toWAtch = URI.file(join(testDir, 'lorem.txt-linked'));
+		AwAit symlink(join(testDir, 'lorem.txt'), toWAtch.fsPAth);
 
-		assertWatch(toWatch, [[FileChangeType.UPDATED, toWatch]], done);
+		AssertWAtch(toWAtch, [[FileChAngeType.UPDATED, toWAtch]], done);
 
-		setTimeout(() => writeFileSync(toWatch.fsPath, 'Changes'), 50);
+		setTimeout(() => writeFileSync(toWAtch.fsPAth, 'ChAnges'), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - file - multiple writes', done => {
-		const toWatch = URI.file(join(testDir, 'index-watch1.html'));
-		writeFileSync(toWatch.fsPath, 'Init');
+	(runWAtchTests ? test : test.skip)('wAtch - file - multiple writes', done => {
+		const toWAtch = URI.file(join(testDir, 'index-wAtch1.html'));
+		writeFileSync(toWAtch.fsPAth, 'Init');
 
-		assertWatch(toWatch, [[FileChangeType.UPDATED, toWatch]], done);
+		AssertWAtch(toWAtch, [[FileChAngeType.UPDATED, toWAtch]], done);
 
-		setTimeout(() => writeFileSync(toWatch.fsPath, 'Changes 1'), 0);
-		setTimeout(() => writeFileSync(toWatch.fsPath, 'Changes 2'), 10);
-		setTimeout(() => writeFileSync(toWatch.fsPath, 'Changes 3'), 20);
+		setTimeout(() => writeFileSync(toWAtch.fsPAth, 'ChAnges 1'), 0);
+		setTimeout(() => writeFileSync(toWAtch.fsPAth, 'ChAnges 2'), 10);
+		setTimeout(() => writeFileSync(toWAtch.fsPAth, 'ChAnges 3'), 20);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - file - delete file', done => {
-		const toWatch = URI.file(join(testDir, 'index-watch1.html'));
-		writeFileSync(toWatch.fsPath, 'Init');
+	(runWAtchTests ? test : test.skip)('wAtch - file - delete file', done => {
+		const toWAtch = URI.file(join(testDir, 'index-wAtch1.html'));
+		writeFileSync(toWAtch.fsPAth, 'Init');
 
-		assertWatch(toWatch, [[FileChangeType.DELETED, toWatch]], done);
+		AssertWAtch(toWAtch, [[FileChAngeType.DELETED, toWAtch]], done);
 
-		setTimeout(() => unlinkSync(toWatch.fsPath), 50);
+		setTimeout(() => unlinkSync(toWAtch.fsPAth), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - file - rename file', done => {
-		const toWatch = URI.file(join(testDir, 'index-watch1.html'));
-		const toWatchRenamed = URI.file(join(testDir, 'index-watch1-renamed.html'));
-		writeFileSync(toWatch.fsPath, 'Init');
+	(runWAtchTests ? test : test.skip)('wAtch - file - renAme file', done => {
+		const toWAtch = URI.file(join(testDir, 'index-wAtch1.html'));
+		const toWAtchRenAmed = URI.file(join(testDir, 'index-wAtch1-renAmed.html'));
+		writeFileSync(toWAtch.fsPAth, 'Init');
 
-		assertWatch(toWatch, [[FileChangeType.DELETED, toWatch]], done);
+		AssertWAtch(toWAtch, [[FileChAngeType.DELETED, toWAtch]], done);
 
-		setTimeout(() => renameSync(toWatch.fsPath, toWatchRenamed.fsPath), 50);
+		setTimeout(() => renAmeSync(toWAtch.fsPAth, toWAtchRenAmed.fsPAth), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - file - rename file (different case)', done => {
-		const toWatch = URI.file(join(testDir, 'index-watch1.html'));
-		const toWatchRenamed = URI.file(join(testDir, 'INDEX-watch1.html'));
-		writeFileSync(toWatch.fsPath, 'Init');
+	(runWAtchTests ? test : test.skip)('wAtch - file - renAme file (different cAse)', done => {
+		const toWAtch = URI.file(join(testDir, 'index-wAtch1.html'));
+		const toWAtchRenAmed = URI.file(join(testDir, 'INDEX-wAtch1.html'));
+		writeFileSync(toWAtch.fsPAth, 'Init');
 
 		if (isLinux) {
-			assertWatch(toWatch, [[FileChangeType.DELETED, toWatch]], done);
+			AssertWAtch(toWAtch, [[FileChAngeType.DELETED, toWAtch]], done);
 		} else {
-			assertWatch(toWatch, [[FileChangeType.UPDATED, toWatch]], done); // case insensitive file system treat this as change
+			AssertWAtch(toWAtch, [[FileChAngeType.UPDATED, toWAtch]], done); // cAse insensitive file system treAt this As chAnge
 		}
 
-		setTimeout(() => renameSync(toWatch.fsPath, toWatchRenamed.fsPath), 50);
+		setTimeout(() => renAmeSync(toWAtch.fsPAth, toWAtchRenAmed.fsPAth), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - file (atomic save)', function (done) {
-		const toWatch = URI.file(join(testDir, 'index-watch2.html'));
-		writeFileSync(toWatch.fsPath, 'Init');
+	(runWAtchTests ? test : test.skip)('wAtch - file (Atomic sAve)', function (done) {
+		const toWAtch = URI.file(join(testDir, 'index-wAtch2.html'));
+		writeFileSync(toWAtch.fsPAth, 'Init');
 
-		assertWatch(toWatch, [[FileChangeType.UPDATED, toWatch]], done);
+		AssertWAtch(toWAtch, [[FileChAngeType.UPDATED, toWAtch]], done);
 
 		setTimeout(() => {
-			// Simulate atomic save by deleting the file, creating it under different name
-			// and then replacing the previously deleted file with those contents
-			const renamed = `${toWatch.fsPath}.bak`;
-			unlinkSync(toWatch.fsPath);
-			writeFileSync(renamed, 'Changes');
-			renameSync(renamed, toWatch.fsPath);
+			// SimulAte Atomic sAve by deleting the file, creAting it under different nAme
+			// And then replAcing the previously deleted file with those contents
+			const renAmed = `${toWAtch.fsPAth}.bAk`;
+			unlinkSync(toWAtch.fsPAth);
+			writeFileSync(renAmed, 'ChAnges');
+			renAmeSync(renAmed, toWAtch.fsPAth);
 		}, 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - folder (non recursive) - change file', done => {
-		const watchDir = URI.file(join(testDir, 'watch3'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests ? test : test.skip)('wAtch - folder (non recursive) - chAnge file', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch3'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const file = URI.file(join(watchDir.fsPath, 'index.html'));
-		writeFileSync(file.fsPath, 'Init');
+		const file = URI.file(join(wAtchDir.fsPAth, 'index.html'));
+		writeFileSync(file.fsPAth, 'Init');
 
-		assertWatch(watchDir, [[FileChangeType.UPDATED, file]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.UPDATED, file]], done);
 
-		setTimeout(() => writeFileSync(file.fsPath, 'Changes'), 50);
+		setTimeout(() => writeFileSync(file.fsPAth, 'ChAnges'), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - folder (non recursive) - add file', done => {
-		const watchDir = URI.file(join(testDir, 'watch4'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests ? test : test.skip)('wAtch - folder (non recursive) - Add file', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch4'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const file = URI.file(join(watchDir.fsPath, 'index.html'));
+		const file = URI.file(join(wAtchDir.fsPAth, 'index.html'));
 
-		assertWatch(watchDir, [[FileChangeType.ADDED, file]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.ADDED, file]], done);
 
-		setTimeout(() => writeFileSync(file.fsPath, 'Changes'), 50);
+		setTimeout(() => writeFileSync(file.fsPAth, 'ChAnges'), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - folder (non recursive) - delete file', done => {
-		const watchDir = URI.file(join(testDir, 'watch5'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests ? test : test.skip)('wAtch - folder (non recursive) - delete file', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch5'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const file = URI.file(join(watchDir.fsPath, 'index.html'));
-		writeFileSync(file.fsPath, 'Init');
+		const file = URI.file(join(wAtchDir.fsPAth, 'index.html'));
+		writeFileSync(file.fsPAth, 'Init');
 
-		assertWatch(watchDir, [[FileChangeType.DELETED, file]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.DELETED, file]], done);
 
-		setTimeout(() => unlinkSync(file.fsPath), 50);
+		setTimeout(() => unlinkSync(file.fsPAth), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - folder (non recursive) - add folder', done => {
-		const watchDir = URI.file(join(testDir, 'watch6'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests ? test : test.skip)('wAtch - folder (non recursive) - Add folder', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch6'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const folder = URI.file(join(watchDir.fsPath, 'folder'));
+		const folder = URI.file(join(wAtchDir.fsPAth, 'folder'));
 
-		assertWatch(watchDir, [[FileChangeType.ADDED, folder]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.ADDED, folder]], done);
 
-		setTimeout(() => mkdirSync(folder.fsPath), 50);
+		setTimeout(() => mkdirSync(folder.fsPAth), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - folder (non recursive) - delete folder', done => {
-		const watchDir = URI.file(join(testDir, 'watch7'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests ? test : test.skip)('wAtch - folder (non recursive) - delete folder', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch7'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const folder = URI.file(join(watchDir.fsPath, 'folder'));
-		mkdirSync(folder.fsPath);
+		const folder = URI.file(join(wAtchDir.fsPAth, 'folder'));
+		mkdirSync(folder.fsPAth);
 
-		assertWatch(watchDir, [[FileChangeType.DELETED, folder]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.DELETED, folder]], done);
 
-		setTimeout(() => rimrafSync(folder.fsPath), 50);
+		setTimeout(() => rimrAfSync(folder.fsPAth), 50);
 	});
 
-	(runWatchTests && !isWindows /* symbolic links not reliable on windows */ ? test : test.skip)('watch - folder (non recursive) - symbolic link - change file', async done => {
-		const watchDir = URI.file(join(testDir, 'deep-link'));
-		await symlink(join(testDir, 'deep'), watchDir.fsPath);
+	(runWAtchTests && !isWindows /* symbolic links not reliAble on windows */ ? test : test.skip)('wAtch - folder (non recursive) - symbolic link - chAnge file', Async done => {
+		const wAtchDir = URI.file(join(testDir, 'deep-link'));
+		AwAit symlink(join(testDir, 'deep'), wAtchDir.fsPAth);
 
-		const file = URI.file(join(watchDir.fsPath, 'index.html'));
-		writeFileSync(file.fsPath, 'Init');
+		const file = URI.file(join(wAtchDir.fsPAth, 'index.html'));
+		writeFileSync(file.fsPAth, 'Init');
 
-		assertWatch(watchDir, [[FileChangeType.UPDATED, file]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.UPDATED, file]], done);
 
-		setTimeout(() => writeFileSync(file.fsPath, 'Changes'), 50);
+		setTimeout(() => writeFileSync(file.fsPAth, 'ChAnges'), 50);
 	});
 
-	(runWatchTests ? test : test.skip)('watch - folder (non recursive) - rename file', done => {
-		const watchDir = URI.file(join(testDir, 'watch8'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests ? test : test.skip)('wAtch - folder (non recursive) - renAme file', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch8'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const file = URI.file(join(watchDir.fsPath, 'index.html'));
-		writeFileSync(file.fsPath, 'Init');
+		const file = URI.file(join(wAtchDir.fsPAth, 'index.html'));
+		writeFileSync(file.fsPAth, 'Init');
 
-		const fileRenamed = URI.file(join(watchDir.fsPath, 'index-renamed.html'));
+		const fileRenAmed = URI.file(join(wAtchDir.fsPAth, 'index-renAmed.html'));
 
-		assertWatch(watchDir, [[FileChangeType.DELETED, file], [FileChangeType.ADDED, fileRenamed]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.DELETED, file], [FileChAngeType.ADDED, fileRenAmed]], done);
 
-		setTimeout(() => renameSync(file.fsPath, fileRenamed.fsPath), 50);
+		setTimeout(() => renAmeSync(file.fsPAth, fileRenAmed.fsPAth), 50);
 	});
 
-	(runWatchTests && isLinux /* this test requires a case sensitive file system */ ? test : test.skip)('watch - folder (non recursive) - rename file (different case)', done => {
-		const watchDir = URI.file(join(testDir, 'watch8'));
-		mkdirSync(watchDir.fsPath);
+	(runWAtchTests && isLinux /* this test requires A cAse sensitive file system */ ? test : test.skip)('wAtch - folder (non recursive) - renAme file (different cAse)', done => {
+		const wAtchDir = URI.file(join(testDir, 'wAtch8'));
+		mkdirSync(wAtchDir.fsPAth);
 
-		const file = URI.file(join(watchDir.fsPath, 'index.html'));
-		writeFileSync(file.fsPath, 'Init');
+		const file = URI.file(join(wAtchDir.fsPAth, 'index.html'));
+		writeFileSync(file.fsPAth, 'Init');
 
-		const fileRenamed = URI.file(join(watchDir.fsPath, 'INDEX.html'));
+		const fileRenAmed = URI.file(join(wAtchDir.fsPAth, 'INDEX.html'));
 
-		assertWatch(watchDir, [[FileChangeType.DELETED, file], [FileChangeType.ADDED, fileRenamed]], done);
+		AssertWAtch(wAtchDir, [[FileChAngeType.DELETED, file], [FileChAngeType.ADDED, fileRenAmed]], done);
 
-		setTimeout(() => renameSync(file.fsPath, fileRenamed.fsPath), 50);
+		setTimeout(() => renAmeSync(file.fsPAth, fileRenAmed.fsPAth), 50);
 	});
 
-	function assertWatch(toWatch: URI, expected: [FileChangeType, URI][], done: MochaDone): void {
-		const watcherDisposable = service.watch(toWatch);
+	function AssertWAtch(toWAtch: URI, expected: [FileChAngeType, URI][], done: MochADone): void {
+		const wAtcherDisposAble = service.wAtch(toWAtch);
 
-		function toString(type: FileChangeType): string {
+		function toString(type: FileChAngeType): string {
 			switch (type) {
-				case FileChangeType.ADDED: return 'added';
-				case FileChangeType.DELETED: return 'deleted';
-				case FileChangeType.UPDATED: return 'updated';
+				cAse FileChAngeType.ADDED: return 'Added';
+				cAse FileChAngeType.DELETED: return 'deleted';
+				cAse FileChAngeType.UPDATED: return 'updAted';
 			}
 		}
 
-		function printEvents(event: FileChangesEvent): string {
-			return event.changes.map(change => `Change: type ${toString(change.type)} path ${change.resource.toString()}`).join('\n');
+		function printEvents(event: FileChAngesEvent): string {
+			return event.chAnges.mAp(chAnge => `ChAnge: type ${toString(chAnge.type)} pAth ${chAnge.resource.toString()}`).join('\n');
 		}
 
-		const listenerDisposable = service.onDidFilesChange(event => {
-			watcherDisposable.dispose();
-			listenerDisposable.dispose();
+		const listenerDisposAble = service.onDidFilesChAnge(event => {
+			wAtcherDisposAble.dispose();
+			listenerDisposAble.dispose();
 
 			try {
-				assert.equal(event.changes.length, expected.length, `Expected ${expected.length} events, but got ${event.changes.length}. Details (${printEvents(event)})`);
+				Assert.equAl(event.chAnges.length, expected.length, `Expected ${expected.length} events, but got ${event.chAnges.length}. DetAils (${printEvents(event)})`);
 
 				if (expected.length === 1) {
-					assert.equal(event.changes[0].type, expected[0][0], `Expected ${toString(expected[0][0])} but got ${toString(event.changes[0].type)}. Details (${printEvents(event)})`);
-					assert.equal(event.changes[0].resource.fsPath, expected[0][1].fsPath);
+					Assert.equAl(event.chAnges[0].type, expected[0][0], `Expected ${toString(expected[0][0])} but got ${toString(event.chAnges[0].type)}. DetAils (${printEvents(event)})`);
+					Assert.equAl(event.chAnges[0].resource.fsPAth, expected[0][1].fsPAth);
 				} else {
 					for (const expect of expected) {
-						assert.equal(hasChange(event.changes, expect[0], expect[1]), true, `Unable to find ${toString(expect[0])} for ${expect[1].fsPath}. Details (${printEvents(event)})`);
+						Assert.equAl(hAsChAnge(event.chAnges, expect[0], expect[1]), true, `UnAble to find ${toString(expect[0])} for ${expect[1].fsPAth}. DetAils (${printEvents(event)})`);
 					}
 				}
 
 				done();
-			} catch (error) {
+			} cAtch (error) {
 				done(error);
 			}
 		});
 	}
 
-	function hasChange(changes: readonly IFileChange[], type: FileChangeType, resource: URI): boolean {
-		return changes.some(change => change.type === type && isEqual(change.resource, resource));
+	function hAsChAnge(chAnges: reAdonly IFileChAnge[], type: FileChAngeType, resource: URI): booleAn {
+		return chAnges.some(chAnge => chAnge.type === type && isEquAl(chAnge.resource, resource));
 	}
 
-	test('read - mixed positions', async () => {
+	test('reAd - mixed positions', Async () => {
 		const resource = URI.file(join(testDir, 'lorem.txt'));
 
-		// read multiple times from position 0
-		let buffer = VSBuffer.alloc(1024);
-		let fd = await fileProvider.open(resource, { create: false });
+		// reAd multiple times from position 0
+		let buffer = VSBuffer.Alloc(1024);
+		let fd = AwAit fileProvider.open(resource, { creAte: fAlse });
 		for (let i = 0; i < 3; i++) {
-			await fileProvider.read(fd, 0, buffer.buffer, 0, 26);
-			assert.equal(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit amet');
+			AwAit fileProvider.reAd(fd, 0, buffer.buffer, 0, 26);
+			Assert.equAl(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit Amet');
 		}
-		await fileProvider.close(fd);
+		AwAit fileProvider.close(fd);
 
-		// read multiple times at various locations
-		buffer = VSBuffer.alloc(1024);
-		fd = await fileProvider.open(resource, { create: false });
+		// reAd multiple times At vArious locAtions
+		buffer = VSBuffer.Alloc(1024);
+		fd = AwAit fileProvider.open(resource, { creAte: fAlse });
 
 		let posInFile = 0;
 
-		await fileProvider.read(fd, posInFile, buffer.buffer, 0, 26);
-		assert.equal(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit amet');
+		AwAit fileProvider.reAd(fd, posInFile, buffer.buffer, 0, 26);
+		Assert.equAl(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit Amet');
 		posInFile += 26;
 
-		await fileProvider.read(fd, posInFile, buffer.buffer, 0, 1);
-		assert.equal(buffer.slice(0, 1).toString(), ',');
+		AwAit fileProvider.reAd(fd, posInFile, buffer.buffer, 0, 1);
+		Assert.equAl(buffer.slice(0, 1).toString(), ',');
 		posInFile += 1;
 
-		await fileProvider.read(fd, posInFile, buffer.buffer, 0, 12);
-		assert.equal(buffer.slice(0, 12).toString(), ' consectetur');
+		AwAit fileProvider.reAd(fd, posInFile, buffer.buffer, 0, 12);
+		Assert.equAl(buffer.slice(0, 12).toString(), ' consectetur');
 		posInFile += 12;
 
-		await fileProvider.read(fd, 98 /* no longer in sequence of posInFile */, buffer.buffer, 0, 9);
-		assert.equal(buffer.slice(0, 9).toString(), 'fermentum');
+		AwAit fileProvider.reAd(fd, 98 /* no longer in sequence of posInFile */, buffer.buffer, 0, 9);
+		Assert.equAl(buffer.slice(0, 9).toString(), 'fermentum');
 
-		await fileProvider.read(fd, 27, buffer.buffer, 0, 12);
-		assert.equal(buffer.slice(0, 12).toString(), ' consectetur');
+		AwAit fileProvider.reAd(fd, 27, buffer.buffer, 0, 12);
+		Assert.equAl(buffer.slice(0, 12).toString(), ' consectetur');
 
-		await fileProvider.read(fd, 26, buffer.buffer, 0, 1);
-		assert.equal(buffer.slice(0, 1).toString(), ',');
+		AwAit fileProvider.reAd(fd, 26, buffer.buffer, 0, 1);
+		Assert.equAl(buffer.slice(0, 1).toString(), ',');
 
-		await fileProvider.read(fd, 0, buffer.buffer, 0, 26);
-		assert.equal(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit amet');
+		AwAit fileProvider.reAd(fd, 0, buffer.buffer, 0, 26);
+		Assert.equAl(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit Amet');
 
-		await fileProvider.read(fd, posInFile /* back in sequence */, buffer.buffer, 0, 11);
-		assert.equal(buffer.slice(0, 11).toString(), ' adipiscing');
+		AwAit fileProvider.reAd(fd, posInFile /* bAck in sequence */, buffer.buffer, 0, 11);
+		Assert.equAl(buffer.slice(0, 11).toString(), ' Adipiscing');
 
-		await fileProvider.close(fd);
+		AwAit fileProvider.close(fd);
 	});
 
-	test('write - mixed positions', async () => {
+	test('write - mixed positions', Async () => {
 		const resource = URI.file(join(testDir, 'lorem.txt'));
 
-		const buffer = VSBuffer.alloc(1024);
-		const fdWrite = await fileProvider.open(resource, { create: true });
-		const fdRead = await fileProvider.open(resource, { create: false });
+		const buffer = VSBuffer.Alloc(1024);
+		const fdWrite = AwAit fileProvider.open(resource, { creAte: true });
+		const fdReAd = AwAit fileProvider.open(resource, { creAte: fAlse });
 
 		let posInFileWrite = 0;
-		let posInFileRead = 0;
+		let posInFileReAd = 0;
 
-		const initialContents = VSBuffer.fromString('Lorem ipsum dolor sit amet');
-		await fileProvider.write(fdWrite, posInFileWrite, initialContents.buffer, 0, initialContents.byteLength);
-		posInFileWrite += initialContents.byteLength;
+		const initiAlContents = VSBuffer.fromString('Lorem ipsum dolor sit Amet');
+		AwAit fileProvider.write(fdWrite, posInFileWrite, initiAlContents.buffer, 0, initiAlContents.byteLength);
+		posInFileWrite += initiAlContents.byteLength;
 
-		await fileProvider.read(fdRead, posInFileRead, buffer.buffer, 0, 26);
-		assert.equal(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit amet');
-		posInFileRead += 26;
+		AwAit fileProvider.reAd(fdReAd, posInFileReAd, buffer.buffer, 0, 26);
+		Assert.equAl(buffer.slice(0, 26).toString(), 'Lorem ipsum dolor sit Amet');
+		posInFileReAd += 26;
 
 		const contents = VSBuffer.fromString('Hello World');
 
-		await fileProvider.write(fdWrite, posInFileWrite, contents.buffer, 0, contents.byteLength);
+		AwAit fileProvider.write(fdWrite, posInFileWrite, contents.buffer, 0, contents.byteLength);
 		posInFileWrite += contents.byteLength;
 
-		await fileProvider.read(fdRead, posInFileRead, buffer.buffer, 0, contents.byteLength);
-		assert.equal(buffer.slice(0, contents.byteLength).toString(), 'Hello World');
-		posInFileRead += contents.byteLength;
+		AwAit fileProvider.reAd(fdReAd, posInFileReAd, buffer.buffer, 0, contents.byteLength);
+		Assert.equAl(buffer.slice(0, contents.byteLength).toString(), 'Hello World');
+		posInFileReAd += contents.byteLength;
 
-		await fileProvider.write(fdWrite, 6, contents.buffer, 0, contents.byteLength);
+		AwAit fileProvider.write(fdWrite, 6, contents.buffer, 0, contents.byteLength);
 
-		await fileProvider.read(fdRead, 0, buffer.buffer, 0, 11);
-		assert.equal(buffer.slice(0, 11).toString(), 'Lorem Hello');
+		AwAit fileProvider.reAd(fdReAd, 0, buffer.buffer, 0, 11);
+		Assert.equAl(buffer.slice(0, 11).toString(), 'Lorem Hello');
 
-		await fileProvider.write(fdWrite, posInFileWrite, contents.buffer, 0, contents.byteLength);
+		AwAit fileProvider.write(fdWrite, posInFileWrite, contents.buffer, 0, contents.byteLength);
 		posInFileWrite += contents.byteLength;
 
-		await fileProvider.read(fdRead, posInFileWrite - contents.byteLength, buffer.buffer, 0, contents.byteLength);
-		assert.equal(buffer.slice(0, contents.byteLength).toString(), 'Hello World');
+		AwAit fileProvider.reAd(fdReAd, posInFileWrite - contents.byteLength, buffer.buffer, 0, contents.byteLength);
+		Assert.equAl(buffer.slice(0, contents.byteLength).toString(), 'Hello World');
 
-		await fileProvider.close(fdWrite);
-		await fileProvider.close(fdRead);
+		AwAit fileProvider.close(fdWrite);
+		AwAit fileProvider.close(fdReAd);
 	});
 });

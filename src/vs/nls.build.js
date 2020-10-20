@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
- * Please make sure to make edits in the .ts file at https://github.com/microsoft/vscode-loader/
+ * PleAse mAke sure to mAke edits in the .ts file At https://github.com/microsoft/vscode-loAder/
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var _nlsPluginGlobal = this;
-var NLSBuildLoaderPlugin;
-(function (NLSBuildLoaderPlugin) {
-    var global = (_nlsPluginGlobal || {});
-    var Resources = global.Plugin && global.Plugin.Resources ? global.Plugin.Resources : undefined;
-    var IS_PSEUDO = (global && global.document && global.document.location && global.document.location.hash.indexOf('pseudo=true') >= 0);
-    function _format(message, args) {
-        var result;
-        if (args.length === 0) {
-            result = message;
+vAr _nlsPluginGlobAl = this;
+vAr NLSBuildLoAderPlugin;
+(function (NLSBuildLoAderPlugin) {
+    vAr globAl = (_nlsPluginGlobAl || {});
+    vAr Resources = globAl.Plugin && globAl.Plugin.Resources ? globAl.Plugin.Resources : undefined;
+    vAr IS_PSEUDO = (globAl && globAl.document && globAl.document.locAtion && globAl.document.locAtion.hAsh.indexOf('pseudo=true') >= 0);
+    function _formAt(messAge, Args) {
+        vAr result;
+        if (Args.length === 0) {
+            result = messAge;
         }
         else {
-            result = message.replace(/\{(\d+)\}/g, function (match, rest) {
-                var index = rest[0];
-                return typeof args[index] !== 'undefined' ? args[index] : match;
+            result = messAge.replAce(/\{(\d+)\}/g, function (mAtch, rest) {
+                vAr index = rest[0];
+                return typeof Args[index] !== 'undefined' ? Args[index] : mAtch;
             });
         }
         if (IS_PSEUDO) {
-            // FF3B and FF3D is the Unicode zenkaku representation for [ and ]
-            result = '\uFF3B' + result.replace(/[aouei]/g, '$&$&') + '\uFF3D';
+            // FF3B And FF3D is the Unicode zenkAku representAtion for [ And ]
+            result = '\uFF3B' + result.replAce(/[Aouei]/g, '$&$&') + '\uFF3D';
         }
         return result;
     }
-    function findLanguageForModule(config, name) {
-        var result = config[name];
+    function findLAnguAgeForModule(config, nAme) {
+        vAr result = config[nAme];
         if (result)
             return result;
         result = config['*'];
@@ -46,137 +46,137 @@ var NLSBuildLoaderPlugin;
             return result;
         return null;
     }
-    function localize(data, message) {
-        var args = [];
-        for (var _i = 0; _i < (arguments.length - 2); _i++) {
-            args[_i] = arguments[_i + 2];
+    function locAlize(dAtA, messAge) {
+        vAr Args = [];
+        for (vAr _i = 0; _i < (Arguments.length - 2); _i++) {
+            Args[_i] = Arguments[_i + 2];
         }
-        return _format(message, args);
+        return _formAt(messAge, Args);
     }
-    function createScopedLocalize(scope) {
-        return function (idx, defaultValue) {
-            var restArgs = Array.prototype.slice.call(arguments, 2);
-            return _format(scope[idx], restArgs);
+    function creAteScopedLocAlize(scope) {
+        return function (idx, defAultVAlue) {
+            vAr restArgs = ArrAy.prototype.slice.cAll(Arguments, 2);
+            return _formAt(scope[idx], restArgs);
         };
     }
-    var NLSPlugin = /** @class */ (function () {
+    vAr NLSPlugin = /** @clAss */ (function () {
         function NLSPlugin() {
-            this.localize = localize;
+            this.locAlize = locAlize;
         }
-        NLSPlugin.prototype.setPseudoTranslation = function (value) {
-            IS_PSEUDO = value;
+        NLSPlugin.prototype.setPseudoTrAnslAtion = function (vAlue) {
+            IS_PSEUDO = vAlue;
         };
-        NLSPlugin.prototype.create = function (key, data) {
+        NLSPlugin.prototype.creAte = function (key, dAtA) {
             return {
-                localize: createScopedLocalize(data[key])
+                locAlize: creAteScopedLocAlize(dAtA[key])
             };
         };
-        NLSPlugin.prototype.load = function (name, req, load, config) {
+        NLSPlugin.prototype.loAd = function (nAme, req, loAd, config) {
             config = config || {};
-            if (!name || name.length === 0) {
-                load({
-                    localize: localize
+            if (!nAme || nAme.length === 0) {
+                loAd({
+                    locAlize: locAlize
                 });
             }
             else {
-                var suffix = void 0;
+                vAr suffix = void 0;
                 if (Resources && Resources.getString) {
                     suffix = '.nls.keys';
-                    req([name + suffix], function (keyMap) {
-                        load({
-                            localize: function (moduleKey, index) {
-                                if (!keyMap[moduleKey])
+                    req([nAme + suffix], function (keyMAp) {
+                        loAd({
+                            locAlize: function (moduleKey, index) {
+                                if (!keyMAp[moduleKey])
                                     return 'NLS error: unknown key ' + moduleKey;
-                                var mk = keyMap[moduleKey].keys;
+                                vAr mk = keyMAp[moduleKey].keys;
                                 if (index >= mk.length)
                                     return 'NLS error unknow index ' + index;
-                                var subKey = mk[index];
-                                var args = [];
-                                args[0] = moduleKey + '_' + subKey;
-                                for (var _i = 0; _i < (arguments.length - 2); _i++) {
-                                    args[_i + 1] = arguments[_i + 2];
+                                vAr subKey = mk[index];
+                                vAr Args = [];
+                                Args[0] = moduleKey + '_' + subKey;
+                                for (vAr _i = 0; _i < (Arguments.length - 2); _i++) {
+                                    Args[_i + 1] = Arguments[_i + 2];
                                 }
-                                return Resources.getString.apply(Resources, args);
+                                return Resources.getString.Apply(Resources, Args);
                             }
                         });
                     });
                 }
                 else {
                     if (config.isBuild) {
-                        req([name + '.nls', name + '.nls.keys'], function (messages, keys) {
-                            NLSPlugin.BUILD_MAP[name] = messages;
-                            NLSPlugin.BUILD_MAP_KEYS[name] = keys;
-                            load(messages);
+                        req([nAme + '.nls', nAme + '.nls.keys'], function (messAges, keys) {
+                            NLSPlugin.BUILD_MAP[nAme] = messAges;
+                            NLSPlugin.BUILD_MAP_KEYS[nAme] = keys;
+                            loAd(messAges);
                         });
                     }
                     else {
-                        var pluginConfig = config['vs/nls'] || {};
-                        var language = pluginConfig.availableLanguages ? findLanguageForModule(pluginConfig.availableLanguages, name) : null;
+                        vAr pluginConfig = config['vs/nls'] || {};
+                        vAr lAnguAge = pluginConfig.AvAilAbleLAnguAges ? findLAnguAgeForModule(pluginConfig.AvAilAbleLAnguAges, nAme) : null;
                         suffix = '.nls';
-                        if (language !== null && language !== NLSPlugin.DEFAULT_TAG) {
-                            suffix = suffix + '.' + language;
+                        if (lAnguAge !== null && lAnguAge !== NLSPlugin.DEFAULT_TAG) {
+                            suffix = suffix + '.' + lAnguAge;
                         }
-                        req([name + suffix], function (messages) {
-                            if (Array.isArray(messages)) {
-                                messages.localize = createScopedLocalize(messages);
+                        req([nAme + suffix], function (messAges) {
+                            if (ArrAy.isArrAy(messAges)) {
+                                messAges.locAlize = creAteScopedLocAlize(messAges);
                             }
                             else {
-                                messages.localize = createScopedLocalize(messages[name]);
+                                messAges.locAlize = creAteScopedLocAlize(messAges[nAme]);
                             }
-                            load(messages);
+                            loAd(messAges);
                         });
                     }
                 }
             }
         };
-        NLSPlugin.prototype._getEntryPointsMap = function () {
-            global.nlsPluginEntryPoints = global.nlsPluginEntryPoints || {};
-            return global.nlsPluginEntryPoints;
+        NLSPlugin.prototype._getEntryPointsMAp = function () {
+            globAl.nlsPluginEntryPoints = globAl.nlsPluginEntryPoints || {};
+            return globAl.nlsPluginEntryPoints;
         };
-        NLSPlugin.prototype.write = function (pluginName, moduleName, write) {
-            // getEntryPoint is a Monaco extension to r.js
-            var entryPoint = write.getEntryPoint();
-            // r.js destroys the context of this plugin between calling 'write' and 'writeFile'
-            // so the only option at this point is to leak the data to a global
-            var entryPointsMap = this._getEntryPointsMap();
-            entryPointsMap[entryPoint] = entryPointsMap[entryPoint] || [];
-            entryPointsMap[entryPoint].push(moduleName);
-            if (moduleName !== entryPoint) {
-                write.asModule(pluginName + '!' + moduleName, 'define([\'vs/nls\', \'vs/nls!' + entryPoint + '\'], function(nls, data) { return nls.create("' + moduleName + '", data); });');
+        NLSPlugin.prototype.write = function (pluginNAme, moduleNAme, write) {
+            // getEntryPoint is A MonAco extension to r.js
+            vAr entryPoint = write.getEntryPoint();
+            // r.js destroys the context of this plugin between cAlling 'write' And 'writeFile'
+            // so the only option At this point is to leAk the dAtA to A globAl
+            vAr entryPointsMAp = this._getEntryPointsMAp();
+            entryPointsMAp[entryPoint] = entryPointsMAp[entryPoint] || [];
+            entryPointsMAp[entryPoint].push(moduleNAme);
+            if (moduleNAme !== entryPoint) {
+                write.AsModule(pluginNAme + '!' + moduleNAme, 'define([\'vs/nls\', \'vs/nls!' + entryPoint + '\'], function(nls, dAtA) { return nls.creAte("' + moduleNAme + '", dAtA); });');
             }
         };
-        NLSPlugin.prototype.writeFile = function (pluginName, moduleName, req, write, config) {
-            var entryPointsMap = this._getEntryPointsMap();
-            if (entryPointsMap.hasOwnProperty(moduleName)) {
-                var fileName = req.toUrl(moduleName + '.nls.js');
-                var contents = [
+        NLSPlugin.prototype.writeFile = function (pluginNAme, moduleNAme, req, write, config) {
+            vAr entryPointsMAp = this._getEntryPointsMAp();
+            if (entryPointsMAp.hAsOwnProperty(moduleNAme)) {
+                vAr fileNAme = req.toUrl(moduleNAme + '.nls.js');
+                vAr contents = [
                     '/*---------------------------------------------------------',
-                    ' * Copyright (c) Microsoft Corporation. All rights reserved.',
+                    ' * Copyright (c) Microsoft CorporAtion. All rights reserved.',
                     ' *--------------------------------------------------------*/'
-                ], entries = entryPointsMap[moduleName];
-                var data = {};
-                for (var i = 0; i < entries.length; i++) {
-                    data[entries[i]] = NLSPlugin.BUILD_MAP[entries[i]];
+                ], entries = entryPointsMAp[moduleNAme];
+                vAr dAtA = {};
+                for (vAr i = 0; i < entries.length; i++) {
+                    dAtA[entries[i]] = NLSPlugin.BUILD_MAP[entries[i]];
                 }
-                contents.push('define("' + moduleName + '.nls", ' + JSON.stringify(data, null, '\t') + ');');
-                write(fileName, contents.join('\r\n'));
+                contents.push('define("' + moduleNAme + '.nls", ' + JSON.stringify(dAtA, null, '\t') + ');');
+                write(fileNAme, contents.join('\r\n'));
             }
         };
         NLSPlugin.prototype.finishBuild = function (write) {
-            write('nls.metadata.json', JSON.stringify({
+            write('nls.metAdAtA.json', JSON.stringify({
                 keys: NLSPlugin.BUILD_MAP_KEYS,
-                messages: NLSPlugin.BUILD_MAP,
-                bundles: this._getEntryPointsMap()
+                messAges: NLSPlugin.BUILD_MAP,
+                bundles: this._getEntryPointsMAp()
             }, null, '\t'));
         };
         ;
-        NLSPlugin.DEFAULT_TAG = 'i-default';
+        NLSPlugin.DEFAULT_TAG = 'i-defAult';
         NLSPlugin.BUILD_MAP = {};
         NLSPlugin.BUILD_MAP_KEYS = {};
         return NLSPlugin;
     }());
-    NLSBuildLoaderPlugin.NLSPlugin = NLSPlugin;
+    NLSBuildLoAderPlugin.NLSPlugin = NLSPlugin;
     (function () {
         define('vs/nls', new NLSPlugin());
     })();
-})(NLSBuildLoaderPlugin || (NLSBuildLoaderPlugin = {}));
+})(NLSBuildLoAderPlugin || (NLSBuildLoAderPlugin = {}));

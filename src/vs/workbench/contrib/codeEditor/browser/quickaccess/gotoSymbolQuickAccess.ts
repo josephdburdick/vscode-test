@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IKeyMods, IQuickPickSeparator, IQuickInputService, IQuickPick } from 'vs/platform/quickinput/common/quickInput';
+import { locAlize } from 'vs/nls';
+import { IKeyMods, IQuickPickSepArAtor, IQuickInputService, IQuickPick } from 'vs/plAtform/quickinput/common/quickInput';
 import { IEditor } from 'vs/editor/common/editorCommon';
 import { IEditorService, SIDE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { IRange } from 'vs/editor/common/core/range';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IQuickAccessRegistry, Extensions as QuickaccessExtensions } from 'vs/platform/quickinput/common/quickAccess';
-import { AbstractGotoSymbolQuickAccessProvider, IGotoSymbolQuickPickItem } from 'vs/editor/contrib/quickAccess/gotoSymbolQuickAccess';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchEditorConfiguration, IEditorPane } from 'vs/workbench/common/editor';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IQuickAccessRegistry, Extensions As QuickAccessExtensions } from 'vs/plAtform/quickinput/common/quickAccess';
+import { AbstrActGotoSymbolQuickAccessProvider, IGotoSymbolQuickPickItem } from 'vs/editor/contrib/quickAccess/gotoSymbolQuickAccess';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWorkbenchEditorConfigurAtion, IEditorPAne } from 'vs/workbench/common/editor';
 import { ITextModel } from 'vs/editor/common/model';
-import { DisposableStore, IDisposable, toDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { timeout } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { prepareQuery } from 'vs/base/common/fuzzyScorer';
+import { DisposAbleStore, IDisposAble, toDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { timeout } from 'vs/bAse/common/Async';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { registerAction2, Action2 } from 'vs/plAtform/Actions/common/Actions';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import { prepAreQuery } from 'vs/bAse/common/fuzzyScorer';
 import { SymbolKind } from 'vs/editor/common/modes';
-import { fuzzyScore, createMatches } from 'vs/base/common/filters';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { ThemeIcon } from 'vs/platform/theme/common/themeService';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { fuzzyScore, creAteMAtches } from 'vs/bAse/common/filters';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { ThemeIcon } from 'vs/plAtform/theme/common/themeService';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 
-export class GotoSymbolQuickAccessProvider extends AbstractGotoSymbolQuickAccessProvider {
+export clAss GotoSymbolQuickAccessProvider extends AbstrActGotoSymbolQuickAccessProvider {
 
-	protected readonly onDidActiveTextEditorControlChange = this.editorService.onDidActiveEditorChange;
+	protected reAdonly onDidActiveTextEditorControlChAnge = this.editorService.onDidActiveEditorChAnge;
 
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
 		super({
-			openSideBySideDirection: () => this.configuration.openSideBySideDirection
+			openSideBySideDirection: () => this.configurAtion.openSideBySideDirection
 		});
 	}
 
 	//#region DocumentSymbols (text editor required)
 
-	protected provideWithTextEditor(editor: IEditor, picker: IQuickPick<IGotoSymbolQuickPickItem>, token: CancellationToken): IDisposable {
-		if (this.canPickFromTableOfContents()) {
-			return this.doGetTableOfContentsPicks(picker);
+	protected provideWithTextEditor(editor: IEditor, picker: IQuickPick<IGotoSymbolQuickPickItem>, token: CAncellAtionToken): IDisposAble {
+		if (this.cAnPickFromTAbleOfContents()) {
+			return this.doGetTAbleOfContentsPicks(picker);
 		}
 		return super.provideWithTextEditor(editor, picker, token);
 	}
 
-	private get configuration() {
-		const editorConfig = this.configurationService.getValue<IWorkbenchEditorConfiguration>().workbench.editor;
+	privAte get configurAtion() {
+		const editorConfig = this.configurAtionService.getVAlue<IWorkbenchEditorConfigurAtion>().workbench.editor;
 
 		return {
-			openEditorPinned: !editorConfig.enablePreviewFromQuickOpen,
+			openEditorPinned: !editorConfig.enAblePreviewFromQuickOpen,
 			openSideBySideDirection: editorConfig.openSideBySideDirection
 		};
 	}
 
-	protected get activeTextEditorControl() {
-		return this.editorService.activeTextEditorControl;
+	protected get ActiveTextEditorControl() {
+		return this.editorService.ActiveTextEditorControl;
 	}
 
-	protected gotoLocation(editor: IEditor, options: { range: IRange, keyMods: IKeyMods, forceSideBySide?: boolean, preserveFocus?: boolean }): void {
+	protected gotoLocAtion(editor: IEditor, options: { rAnge: IRAnge, keyMods: IKeyMods, forceSideBySide?: booleAn, preserveFocus?: booleAn }): void {
 
 		// Check for sideBySide use
-		if ((options.keyMods.ctrlCmd || options.forceSideBySide) && this.editorService.activeEditor) {
-			this.editorService.openEditor(this.editorService.activeEditor, {
-				selection: options.range,
-				pinned: options.keyMods.alt || this.configuration.openEditorPinned,
+		if ((options.keyMods.ctrlCmd || options.forceSideBySide) && this.editorService.ActiveEditor) {
+			this.editorService.openEditor(this.editorService.ActiveEditor, {
+				selection: options.rAnge,
+				pinned: options.keyMods.Alt || this.configurAtion.openEditorPinned,
 				preserveFocus: options.preserveFocus
 			}, SIDE_GROUP);
 		}
 
-		// Otherwise let parent handle it
+		// Otherwise let pArent hAndle it
 		else {
-			super.gotoLocation(editor, options);
+			super.gotoLocAtion(editor, options);
 		}
 	}
 
@@ -83,201 +83,201 @@ export class GotoSymbolQuickAccessProvider extends AbstractGotoSymbolQuickAccess
 
 	//#region public methods to use this picker from other pickers
 
-	private static readonly SYMBOL_PICKS_TIMEOUT = 8000;
+	privAte stAtic reAdonly SYMBOL_PICKS_TIMEOUT = 8000;
 
-	async getSymbolPicks(model: ITextModel, filter: string, options: { extraContainerLabel?: string }, disposables: DisposableStore, token: CancellationToken): Promise<Array<IGotoSymbolQuickPickItem | IQuickPickSeparator>> {
+	Async getSymbolPicks(model: ITextModel, filter: string, options: { extrAContAinerLAbel?: string }, disposAbles: DisposAbleStore, token: CAncellAtionToken): Promise<ArrAy<IGotoSymbolQuickPickItem | IQuickPickSepArAtor>> {
 
-		// If the registry does not know the model, we wait for as long as
-		// the registry knows it. This helps in cases where a language
-		// registry was not activated yet for providing any symbols.
-		// To not wait forever, we eventually timeout though.
-		const result = await Promise.race([
-			this.waitForLanguageSymbolRegistry(model, disposables),
+		// If the registry does not know the model, we wAit for As long As
+		// the registry knows it. This helps in cAses where A lAnguAge
+		// registry wAs not ActivAted yet for providing Any symbols.
+		// To not wAit forever, we eventuAlly timeout though.
+		const result = AwAit Promise.rAce([
+			this.wAitForLAnguAgeSymbolRegistry(model, disposAbles),
 			timeout(GotoSymbolQuickAccessProvider.SYMBOL_PICKS_TIMEOUT)
 		]);
 
-		if (!result || token.isCancellationRequested) {
+		if (!result || token.isCAncellAtionRequested) {
 			return [];
 		}
 
-		return this.doGetSymbolPicks(this.getDocumentSymbols(model, true, token), prepareQuery(filter), options, token);
+		return this.doGetSymbolPicks(this.getDocumentSymbols(model, true, token), prepAreQuery(filter), options, token);
 	}
 
-	addDecorations(editor: IEditor, range: IRange): void {
-		super.addDecorations(editor, range);
+	AddDecorAtions(editor: IEditor, rAnge: IRAnge): void {
+		super.AddDecorAtions(editor, rAnge);
 	}
 
-	clearDecorations(editor: IEditor): void {
-		super.clearDecorations(editor);
+	cleArDecorAtions(editor: IEditor): void {
+		super.cleArDecorAtions(editor);
 	}
 
 	//#endregion
 
-	protected provideWithoutTextEditor(picker: IQuickPick<IGotoSymbolQuickPickItem>): IDisposable {
-		if (this.canPickFromTableOfContents()) {
-			return this.doGetTableOfContentsPicks(picker);
+	protected provideWithoutTextEditor(picker: IQuickPick<IGotoSymbolQuickPickItem>): IDisposAble {
+		if (this.cAnPickFromTAbleOfContents()) {
+			return this.doGetTAbleOfContentsPicks(picker);
 		}
 		return super.provideWithoutTextEditor(picker);
 	}
 
-	private canPickFromTableOfContents(): boolean {
-		return this.editorService.activeEditorPane ? TableOfContentsProviderRegistry.has(this.editorService.activeEditorPane.getId()) : false;
+	privAte cAnPickFromTAbleOfContents(): booleAn {
+		return this.editorService.ActiveEditorPAne ? TAbleOfContentsProviderRegistry.hAs(this.editorService.ActiveEditorPAne.getId()) : fAlse;
 	}
 
-	private doGetTableOfContentsPicks(picker: IQuickPick<IGotoSymbolQuickPickItem>): IDisposable {
-		const pane = this.editorService.activeEditorPane;
-		if (!pane) {
-			return Disposable.None;
+	privAte doGetTAbleOfContentsPicks(picker: IQuickPick<IGotoSymbolQuickPickItem>): IDisposAble {
+		const pAne = this.editorService.ActiveEditorPAne;
+		if (!pAne) {
+			return DisposAble.None;
 		}
-		const provider = TableOfContentsProviderRegistry.get(pane.getId())!;
-		const cts = new CancellationTokenSource();
+		const provider = TAbleOfContentsProviderRegistry.get(pAne.getId())!;
+		const cts = new CAncellAtionTokenSource();
 
-		const disposables = new DisposableStore();
-		disposables.add(toDisposable(() => cts.dispose(true)));
+		const disposAbles = new DisposAbleStore();
+		disposAbles.Add(toDisposAble(() => cts.dispose(true)));
 
 		picker.busy = true;
 
-		provider.provideTableOfContents(pane, { disposables }, cts.token).then(entries => {
+		provider.provideTAbleOfContents(pAne, { disposAbles }, cts.token).then(entries => {
 
-			picker.busy = false;
+			picker.busy = fAlse;
 
-			if (cts.token.isCancellationRequested || !entries || entries.length === 0) {
+			if (cts.token.isCAncellAtionRequested || !entries || entries.length === 0) {
 				return;
 			}
 
-			const items: IGotoSymbolQuickPickItem[] = entries.map((entry, idx) => {
+			const items: IGotoSymbolQuickPickItem[] = entries.mAp((entry, idx) => {
 				return {
 					kind: SymbolKind.File,
 					index: idx,
 					score: 0,
-					label: entry.icon ? `$(${entry.icon.id}) ${entry.label}` : entry.label,
-					ariaLabel: entry.detail ? `${entry.label}, ${entry.detail}` : entry.label,
-					detail: entry.detail,
+					lAbel: entry.icon ? `$(${entry.icon.id}) ${entry.lAbel}` : entry.lAbel,
+					AriALAbel: entry.detAil ? `${entry.lAbel}, ${entry.detAil}` : entry.lAbel,
+					detAil: entry.detAil,
 					description: entry.description,
 				};
 			});
 
-			disposables.add(picker.onDidAccept(() => {
+			disposAbles.Add(picker.onDidAccept(() => {
 				picker.hide();
 				const [entry] = picker.selectedItems;
 				entries[entry.index]?.pick();
 			}));
 
-			const updatePickerItems = () => {
+			const updAtePickerItems = () => {
 				const filteredItems = items.filter(item => {
-					if (picker.value === '@') {
-						// default, no filtering, scoring...
+					if (picker.vAlue === '@') {
+						// defAult, no filtering, scoring...
 						item.score = 0;
 						item.highlights = undefined;
 						return true;
 					}
-					const score = fuzzyScore(picker.value, picker.value.toLowerCase(), 1 /*@-character*/, item.label, item.label.toLowerCase(), 0, true);
+					const score = fuzzyScore(picker.vAlue, picker.vAlue.toLowerCAse(), 1 /*@-chArActer*/, item.lAbel, item.lAbel.toLowerCAse(), 0, true);
 					if (!score) {
-						return false;
+						return fAlse;
 					}
 					item.score = score[1];
-					item.highlights = { label: createMatches(score) };
+					item.highlights = { lAbel: creAteMAtches(score) };
 					return true;
 				});
 				if (filteredItems.length === 0) {
-					const label = localize('empty', 'No matching entries');
-					picker.items = [{ label, index: -1, kind: SymbolKind.String }];
-					picker.ariaLabel = label;
+					const lAbel = locAlize('empty', 'No mAtching entries');
+					picker.items = [{ lAbel, index: -1, kind: SymbolKind.String }];
+					picker.AriALAbel = lAbel;
 				} else {
 					picker.items = filteredItems;
 				}
 			};
-			updatePickerItems();
-			disposables.add(picker.onDidChangeValue(updatePickerItems));
+			updAtePickerItems();
+			disposAbles.Add(picker.onDidChAngeVAlue(updAtePickerItems));
 
-			disposables.add(picker.onDidChangeActive(() => {
-				const [entry] = picker.activeItems;
+			disposAbles.Add(picker.onDidChAngeActive(() => {
+				const [entry] = picker.ActiveItems;
 				if (entry) {
 					entries[entry.index]?.preview();
 				}
 			}));
 
-		}).catch(err => {
+		}).cAtch(err => {
 			onUnexpectedError(err);
 			picker.hide();
 		});
 
-		return disposables;
+		return disposAbles;
 	}
 }
 
-Registry.as<IQuickAccessRegistry>(QuickaccessExtensions.Quickaccess).registerQuickAccessProvider({
+Registry.As<IQuickAccessRegistry>(QuickAccessExtensions.QuickAccess).registerQuickAccessProvider({
 	ctor: GotoSymbolQuickAccessProvider,
-	prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX,
+	prefix: AbstrActGotoSymbolQuickAccessProvider.PREFIX,
 	contextKey: 'inFileSymbolsPicker',
-	placeholder: localize('gotoSymbolQuickAccessPlaceholder', "Type the name of a symbol to go to."),
+	plAceholder: locAlize('gotoSymbolQuickAccessPlAceholder', "Type the nAme of A symbol to go to."),
 	helpEntries: [
-		{ description: localize('gotoSymbolQuickAccess', "Go to Symbol in Editor"), prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX, needsEditor: true },
-		{ description: localize('gotoSymbolByCategoryQuickAccess', "Go to Symbol in Editor by Category"), prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX_BY_CATEGORY, needsEditor: true }
+		{ description: locAlize('gotoSymbolQuickAccess', "Go to Symbol in Editor"), prefix: AbstrActGotoSymbolQuickAccessProvider.PREFIX, needsEditor: true },
+		{ description: locAlize('gotoSymbolByCAtegoryQuickAccess', "Go to Symbol in Editor by CAtegory"), prefix: AbstrActGotoSymbolQuickAccessProvider.PREFIX_BY_CATEGORY, needsEditor: true }
 	]
 });
 
-registerAction2(class GotoSymbolAction extends Action2 {
+registerAction2(clAss GotoSymbolAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.gotoSymbol',
+			id: 'workbench.Action.gotoSymbol',
 			title: {
-				value: localize('gotoSymbol', "Go to Symbol in Editor..."),
-				original: 'Go to Symbol in Editor...'
+				vAlue: locAlize('gotoSymbol', "Go to Symbol in Editor..."),
+				originAl: 'Go to Symbol in Editor...'
 			},
 			f1: true,
 			keybinding: {
 				when: undefined,
 				weight: KeybindingWeight.WorkbenchContrib,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_O
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_O
 			}
 		});
 	}
 
-	run(accessor: ServicesAccessor) {
-		accessor.get(IQuickInputService).quickAccess.show(GotoSymbolQuickAccessProvider.PREFIX);
+	run(Accessor: ServicesAccessor) {
+		Accessor.get(IQuickInputService).quickAccess.show(GotoSymbolQuickAccessProvider.PREFIX);
 	}
 });
 
-//#region toc definition and logic
+//#region toc definition And logic
 
-export interface ITableOfContentsEntry {
+export interfAce ITAbleOfContentsEntry {
 	icon?: ThemeIcon;
-	label: string;
-	detail?: string;
+	lAbel: string;
+	detAil?: string;
 	description?: string;
-	pick(): any;
-	preview(): any;
+	pick(): Any;
+	preview(): Any;
 }
 
-export interface ITableOfContentsProvider<T extends IEditorPane = IEditorPane> {
+export interfAce ITAbleOfContentsProvider<T extends IEditorPAne = IEditorPAne> {
 
-	provideTableOfContents(editor: T, context: { disposables: DisposableStore }, token: CancellationToken): Promise<ITableOfContentsEntry[] | undefined | null>;
+	provideTAbleOfContents(editor: T, context: { disposAbles: DisposAbleStore }, token: CAncellAtionToken): Promise<ITAbleOfContentsEntry[] | undefined | null>;
 }
 
-class ProviderRegistry {
+clAss ProviderRegistry {
 
-	private readonly _provider = new Map<string, ITableOfContentsProvider>();
+	privAte reAdonly _provider = new MAp<string, ITAbleOfContentsProvider>();
 
-	register(type: string, provider: ITableOfContentsProvider): IDisposable {
+	register(type: string, provider: ITAbleOfContentsProvider): IDisposAble {
 		this._provider.set(type, provider);
-		return toDisposable(() => {
+		return toDisposAble(() => {
 			if (this._provider.get(type) === provider) {
 				this._provider.delete(type);
 			}
 		});
 	}
 
-	get(type: string): ITableOfContentsProvider | undefined {
+	get(type: string): ITAbleOfContentsProvider | undefined {
 		return this._provider.get(type);
 	}
 
-	has(type: string): boolean {
-		return this._provider.has(type);
+	hAs(type: string): booleAn {
+		return this._provider.hAs(type);
 	}
 }
 
-export const TableOfContentsProviderRegistry = new ProviderRegistry();
+export const TAbleOfContentsProviderRegistry = new ProviderRegistry();
 
 //#endregion

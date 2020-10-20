@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
 /**
- * Maps of file resources
+ * MAps of file resources
  *
- * Attempts to handle correct mapping on both case sensitive and case in-sensitive
+ * Attempts to hAndle correct mApping on both cAse sensitive And cAse in-sensitive
  * file systems.
  */
-export class ResourceMap<T> {
-	private readonly _map = new Map<string, { resource: vscode.Uri, value: T }>();
+export clAss ResourceMAp<T> {
+	privAte reAdonly _mAp = new MAp<string, { resource: vscode.Uri, vAlue: T }>();
 
 	constructor(
-		private readonly _normalizePath: (resource: vscode.Uri) => string | undefined = (resource) => resource.fsPath,
-		protected readonly config: {
-			readonly onCaseInsenitiveFileSystem: boolean,
+		privAte reAdonly _normAlizePAth: (resource: vscode.Uri) => string | undefined = (resource) => resource.fsPAth,
+		protected reAdonly config: {
+			reAdonly onCAseInsenitiveFileSystem: booleAn,
 		},
 	) { }
 
 	public get size() {
-		return this._map.size;
+		return this._mAp.size;
 	}
 
-	public has(resource: vscode.Uri): boolean {
+	public hAs(resource: vscode.Uri): booleAn {
 		const file = this.toKey(resource);
-		return !!file && this._map.has(file);
+		return !!file && this._mAp.hAs(file);
 	}
 
 	public get(resource: vscode.Uri): T | undefined {
@@ -35,58 +35,58 @@ export class ResourceMap<T> {
 		if (!file) {
 			return undefined;
 		}
-		const entry = this._map.get(file);
-		return entry ? entry.value : undefined;
+		const entry = this._mAp.get(file);
+		return entry ? entry.vAlue : undefined;
 	}
 
-	public set(resource: vscode.Uri, value: T) {
+	public set(resource: vscode.Uri, vAlue: T) {
 		const file = this.toKey(resource);
 		if (!file) {
 			return;
 		}
-		const entry = this._map.get(file);
+		const entry = this._mAp.get(file);
 		if (entry) {
-			entry.value = value;
+			entry.vAlue = vAlue;
 		} else {
-			this._map.set(file, { resource, value });
+			this._mAp.set(file, { resource, vAlue });
 		}
 	}
 
 	public delete(resource: vscode.Uri): void {
 		const file = this.toKey(resource);
 		if (file) {
-			this._map.delete(file);
+			this._mAp.delete(file);
 		}
 	}
 
-	public clear(): void {
-		this._map.clear();
+	public cleAr(): void {
+		this._mAp.cleAr();
 	}
 
-	public get values(): Iterable<T> {
-		return Array.from(this._map.values()).map(x => x.value);
+	public get vAlues(): IterAble<T> {
+		return ArrAy.from(this._mAp.vAlues()).mAp(x => x.vAlue);
 	}
 
-	public get entries(): Iterable<{ resource: vscode.Uri, value: T }> {
-		return this._map.values();
+	public get entries(): IterAble<{ resource: vscode.Uri, vAlue: T }> {
+		return this._mAp.vAlues();
 	}
 
-	private toKey(resource: vscode.Uri): string | undefined {
-		const key = this._normalizePath(resource);
+	privAte toKey(resource: vscode.Uri): string | undefined {
+		const key = this._normAlizePAth(resource);
 		if (!key) {
 			return key;
 		}
-		return this.isCaseInsensitivePath(key) ? key.toLowerCase() : key;
+		return this.isCAseInsensitivePAth(key) ? key.toLowerCAse() : key;
 	}
 
-	private isCaseInsensitivePath(path: string) {
-		if (isWindowsPath(path)) {
+	privAte isCAseInsensitivePAth(pAth: string) {
+		if (isWindowsPAth(pAth)) {
 			return true;
 		}
-		return path[0] === '/' && this.config.onCaseInsenitiveFileSystem;
+		return pAth[0] === '/' && this.config.onCAseInsenitiveFileSystem;
 	}
 }
 
-function isWindowsPath(path: string): boolean {
-	return /^[a-zA-Z]:[\/\\]/.test(path);
+function isWindowsPAth(pAth: string): booleAn {
+	return /^[A-zA-Z]:[\/\\]/.test(pAth);
 }

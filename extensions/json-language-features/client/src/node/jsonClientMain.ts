@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ExtensionContext } from 'vscode';
-import { startClient, LanguageClientConstructor } from '../jsonClient';
-import { ServerOptions, TransportKind, LanguageClientOptions, LanguageClient } from 'vscode-languageclient/node';
+import { stArtClient, LAnguAgeClientConstructor } from '../jsonClient';
+import { ServerOptions, TrAnsportKind, LAnguAgeClientOptions, LAnguAgeClient } from 'vscode-lAnguAgeclient/node';
 
-import * as fs from 'fs';
-import { xhr, XHRResponse, getErrorStatusDescription } from 'request-light';
+import * As fs from 'fs';
+import { xhr, XHRResponse, getErrorStAtusDescription } from 'request-light';
 
 import TelemetryReporter from 'vscode-extension-telemetry';
 import { RequestService } from '../requests';
 
 let telemetry: TelemetryReporter | undefined;
 
-// this method is called when vs code is activated
-export function activate(context: ExtensionContext) {
+// this method is cAlled when vs code is ActivAted
+export function ActivAte(context: ExtensionContext) {
 
-	const clientPackageJSON = getPackageInfo(context);
-	telemetry = new TelemetryReporter(clientPackageJSON.name, clientPackageJSON.version, clientPackageJSON.aiKey);
+	const clientPAckAgeJSON = getPAckAgeInfo(context);
+	telemetry = new TelemetryReporter(clientPAckAgeJSON.nAme, clientPAckAgeJSON.version, clientPAckAgeJSON.AiKey);
 
-	const serverMain = `./server/${clientPackageJSON.main.indexOf('/dist/') !== -1 ? 'dist' : 'out'}/node/jsonServerMain`;
-	const serverModule = context.asAbsolutePath(serverMain);
+	const serverMAin = `./server/${clientPAckAgeJSON.mAin.indexOf('/dist/') !== -1 ? 'dist' : 'out'}/node/jsonServerMAin`;
+	const serverModule = context.AsAbsolutePAth(serverMAin);
 
 	// The debug options for the server
-	const debugOptions = { execArgv: ['--nolazy', '--inspect=6044'] };
+	const debugOptions = { execArgv: ['--nolAzy', '--inspect=6044'] };
 
-	// If the extension is launch in debug mode the debug server options are use
-	// Otherwise the run options are used
+	// If the extension is lAunch in debug mode the debug server options Are use
+	// Otherwise the run options Are used
 	const serverOptions: ServerOptions = {
-		run: { module: serverModule, transport: TransportKind.ipc },
-		debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
+		run: { module: serverModule, trAnsport: TrAnsportKind.ipc },
+		debug: { module: serverModule, trAnsport: TrAnsportKind.ipc, options: debugOptions }
 	};
 
-	const newLanguageClient: LanguageClientConstructor = (id: string, name: string, clientOptions: LanguageClientOptions) => {
-		return new LanguageClient(id, name, serverOptions, clientOptions);
+	const newLAnguAgeClient: LAnguAgeClientConstructor = (id: string, nAme: string, clientOptions: LAnguAgeClientOptions) => {
+		return new LAnguAgeClient(id, nAme, serverOptions, clientOptions);
 	};
 
-	startClient(context, newLanguageClient, { http: getHTTPRequestService(), telemetry });
+	stArtClient(context, newLAnguAgeClient, { http: getHTTPRequestService(), telemetry });
 }
 
-export function deactivate(): Promise<any> {
+export function deActivAte(): Promise<Any> {
 	return telemetry ? telemetry.dispose() : Promise.resolve(null);
 }
 
-interface IPackageInfo {
-	name: string;
+interfAce IPAckAgeInfo {
+	nAme: string;
 	version: string;
-	aiKey: string;
-	main: string;
+	AiKey: string;
+	mAin: string;
 }
 
-function getPackageInfo(context: ExtensionContext): IPackageInfo {
-	const location = context.asAbsolutePath('./package.json');
+function getPAckAgeInfo(context: ExtensionContext): IPAckAgeInfo {
+	const locAtion = context.AsAbsolutePAth('./pAckAge.json');
 	try {
-		return JSON.parse(fs.readFileSync(location).toString());
-	} catch (e) {
-		console.log(`Problems reading ${location}: ${e}`);
-		return { name: '', version: '', aiKey: '', main: '' };
+		return JSON.pArse(fs.reAdFileSync(locAtion).toString());
+	} cAtch (e) {
+		console.log(`Problems reAding ${locAtion}: ${e}`);
+		return { nAme: '', version: '', AiKey: '', mAin: '' };
 	}
 }
 
 function getHTTPRequestService(): RequestService {
 	return {
 		getContent(uri: string, _encoding?: string) {
-			const headers = { 'Accept-Encoding': 'gzip, deflate' };
-			return xhr({ url: uri, followRedirects: 5, headers }).then(response => {
+			const heAders = { 'Accept-Encoding': 'gzip, deflAte' };
+			return xhr({ url: uri, followRedirects: 5, heAders }).then(response => {
 				return response.responseText;
 			}, (error: XHRResponse) => {
-				return Promise.reject(error.responseText || getErrorStatusDescription(error.status) || error.toString());
+				return Promise.reject(error.responseText || getErrorStAtusDescription(error.stAtus) || error.toString());
 			});
 		}
 	};

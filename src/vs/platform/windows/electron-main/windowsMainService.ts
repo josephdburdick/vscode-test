@@ -1,375 +1,375 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import { basename, normalize, join, posix } from 'vs/base/common/path';
-import { localize } from 'vs/nls';
-import * as arrays from 'vs/base/common/arrays';
-import { mixin } from 'vs/base/common/objects';
-import { IBackupMainService } from 'vs/platform/backup/electron-main/backup';
-import { IEmptyWindowBackupInfo } from 'vs/platform/backup/node/backup';
-import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { IStateService } from 'vs/platform/state/node/state';
-import { CodeWindow, defaultWindowState } from 'vs/code/electron-main/window';
-import { screen, BrowserWindow, MessageBoxOptions, Display, app } from 'electron';
-import { ILifecycleMainService, UnloadReason, LifecycleMainService, LifecycleMainPhase } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IWindowSettings, IPath, isFileToOpen, isWorkspaceToOpen, isFolderToOpen, IWindowOpenable, IOpenEmptyWindowOptions, IAddFoldersRequest, IPathsToWaitFor, INativeWindowConfiguration } from 'vs/platform/windows/common/windows';
-import { getLastActiveWindow, findBestWindowOrFolderForFile, findWindowOnWorkspace, findWindowOnExtensionDevelopmentPath, findWindowOnWorkspaceOrFolderUri, OpenContext } from 'vs/platform/windows/node/window';
-import { Emitter } from 'vs/base/common/event';
-import product from 'vs/platform/product/common/product';
-import { IWindowsMainService, IOpenConfiguration, IWindowsCountChangedEvent, ICodeWindow, IWindowState as ISingleWindowState, WindowMode, IOpenEmptyConfiguration } from 'vs/platform/windows/electron-main/windows';
-import { IWorkspacesHistoryMainService } from 'vs/platform/workspaces/electron-main/workspacesHistoryMainService';
-import { IProcessEnvironment, isMacintosh, isWindows } from 'vs/base/common/platform';
-import { IWorkspaceIdentifier, isSingleFolderWorkspaceIdentifier, hasWorkspaceFileExtension, IRecent } from 'vs/platform/workspaces/common/workspaces';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { normalizePath, originalFSPath, removeTrailingPathSeparator, extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
-import { getRemoteAuthority } from 'vs/platform/remote/common/remoteHosts';
-import { restoreWindowsState, WindowsStateStorageData, getWindowsStateStoreData } from 'vs/platform/windows/electron-main/windowsStateStorage';
-import { getWorkspaceIdentifier, IWorkspacesMainService } from 'vs/platform/workspaces/electron-main/workspacesMainService';
-import { once } from 'vs/base/common/functional';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IDialogMainService } from 'vs/platform/dialogs/electron-main/dialogs';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { isWindowsDriveLetter, toSlashes, parseLineAndColumnAware } from 'vs/base/common/extpath';
-import { CharCode } from 'vs/base/common/charCode';
-import { getPathLabel } from 'vs/base/common/labels';
+import * As fs from 'fs';
+import { bAsenAme, normAlize, join, posix } from 'vs/bAse/common/pAth';
+import { locAlize } from 'vs/nls';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { mixin } from 'vs/bAse/common/objects';
+import { IBAckupMAinService } from 'vs/plAtform/bAckup/electron-mAin/bAckup';
+import { IEmptyWindowBAckupInfo } from 'vs/plAtform/bAckup/node/bAckup';
+import { IEnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { IStAteService } from 'vs/plAtform/stAte/node/stAte';
+import { CodeWindow, defAultWindowStAte } from 'vs/code/electron-mAin/window';
+import { screen, BrowserWindow, MessAgeBoxOptions, DisplAy, App } from 'electron';
+import { ILifecycleMAinService, UnloAdReAson, LifecycleMAinService, LifecycleMAinPhAse } from 'vs/plAtform/lifecycle/electron-mAin/lifecycleMAinService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IWindowSettings, IPAth, isFileToOpen, isWorkspAceToOpen, isFolderToOpen, IWindowOpenAble, IOpenEmptyWindowOptions, IAddFoldersRequest, IPAthsToWAitFor, INAtiveWindowConfigurAtion } from 'vs/plAtform/windows/common/windows';
+import { getLAstActiveWindow, findBestWindowOrFolderForFile, findWindowOnWorkspAce, findWindowOnExtensionDevelopmentPAth, findWindowOnWorkspAceOrFolderUri, OpenContext } from 'vs/plAtform/windows/node/window';
+import { Emitter } from 'vs/bAse/common/event';
+import product from 'vs/plAtform/product/common/product';
+import { IWindowsMAinService, IOpenConfigurAtion, IWindowsCountChAngedEvent, ICodeWindow, IWindowStAte As ISingleWindowStAte, WindowMode, IOpenEmptyConfigurAtion } from 'vs/plAtform/windows/electron-mAin/windows';
+import { IWorkspAcesHistoryMAinService } from 'vs/plAtform/workspAces/electron-mAin/workspAcesHistoryMAinService';
+import { IProcessEnvironment, isMAcintosh, isWindows } from 'vs/bAse/common/plAtform';
+import { IWorkspAceIdentifier, isSingleFolderWorkspAceIdentifier, hAsWorkspAceFileExtension, IRecent } from 'vs/plAtform/workspAces/common/workspAces';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { normAlizePAth, originAlFSPAth, removeTrAilingPAthSepArAtor, extUriBiAsedIgnorePAthCAse } from 'vs/bAse/common/resources';
+import { getRemoteAuthority } from 'vs/plAtform/remote/common/remoteHosts';
+import { restoreWindowsStAte, WindowsStAteStorAgeDAtA, getWindowsStAteStoreDAtA } from 'vs/plAtform/windows/electron-mAin/windowsStAteStorAge';
+import { getWorkspAceIdentifier, IWorkspAcesMAinService } from 'vs/plAtform/workspAces/electron-mAin/workspAcesMAinService';
+import { once } from 'vs/bAse/common/functionAl';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IDiAlogMAinService } from 'vs/plAtform/diAlogs/electron-mAin/diAlogs';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { isWindowsDriveLetter, toSlAshes, pArseLineAndColumnAwAre } from 'vs/bAse/common/extpAth';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { getPAthLAbel } from 'vs/bAse/common/lAbels';
 
-export interface IWindowState {
-	workspace?: IWorkspaceIdentifier;
+export interfAce IWindowStAte {
+	workspAce?: IWorkspAceIdentifier;
 	folderUri?: URI;
-	backupPath?: string;
+	bAckupPAth?: string;
 	remoteAuthority?: string;
-	uiState: ISingleWindowState;
+	uiStAte: ISingleWindowStAte;
 }
 
-export interface IWindowsState {
-	lastActiveWindow?: IWindowState;
-	lastPluginDevelopmentHostWindow?: IWindowState;
-	openedWindows: IWindowState[];
+export interfAce IWindowsStAte {
+	lAstActiveWindow?: IWindowStAte;
+	lAstPluginDevelopmentHostWindow?: IWindowStAte;
+	openedWindows: IWindowStAte[];
 }
 
-interface INewWindowState extends ISingleWindowState {
-	hasDefaultState?: boolean;
+interfAce INewWindowStAte extends ISingleWindowStAte {
+	hAsDefAultStAte?: booleAn;
 }
 
-type RestoreWindowsSetting = 'all' | 'folders' | 'one' | 'none';
+type RestoreWindowsSetting = 'All' | 'folders' | 'one' | 'none';
 
-interface IOpenBrowserWindowOptions {
+interfAce IOpenBrowserWindowOptions {
 	userEnv?: IProcessEnvironment;
-	cli?: NativeParsedArgs;
+	cli?: NAtivePArsedArgs;
 
-	workspace?: IWorkspaceIdentifier;
+	workspAce?: IWorkspAceIdentifier;
 	folderUri?: URI;
 
 	remoteAuthority?: string;
 
-	initialStartup?: boolean;
+	initiAlStArtup?: booleAn;
 
 	fileInputs?: IFileInputs;
 
-	forceNewWindow?: boolean;
-	forceNewTabbedWindow?: boolean;
+	forceNewWindow?: booleAn;
+	forceNewTAbbedWindow?: booleAn;
 	windowToUse?: ICodeWindow;
 
-	emptyWindowBackupInfo?: IEmptyWindowBackupInfo;
+	emptyWindowBAckupInfo?: IEmptyWindowBAckupInfo;
 }
 
-interface IPathParseOptions {
-	ignoreFileNotFound?: boolean;
-	gotoLineMode?: boolean;
+interfAce IPAthPArseOptions {
+	ignoreFileNotFound?: booleAn;
+	gotoLineMode?: booleAn;
 	remoteAuthority?: string;
 }
 
-interface IFileInputs {
-	filesToOpenOrCreate: IPath[];
-	filesToDiff: IPath[];
-	filesToWait?: IPathsToWaitFor;
+interfAce IFileInputs {
+	filesToOpenOrCreAte: IPAth[];
+	filesToDiff: IPAth[];
+	filesToWAit?: IPAthsToWAitFor;
 	remoteAuthority?: string;
 }
 
-interface IPathToOpen extends IPath {
+interfAce IPAthToOpen extends IPAth {
 
-	// the workspace for a Code instance to open
-	workspace?: IWorkspaceIdentifier;
+	// the workspAce for A Code instAnce to open
+	workspAce?: IWorkspAceIdentifier;
 
-	// the folder path for a Code instance to open
+	// the folder pAth for A Code instAnce to open
 	folderUri?: URI;
 
-	// the backup path for a Code instance to use
-	backupPath?: string;
+	// the bAckup pAth for A Code instAnce to use
+	bAckupPAth?: string;
 
-	// the remote authority for the Code instance to open. Undefined if not remote.
+	// the remote Authority for the Code instAnce to open. Undefined if not remote.
 	remoteAuthority?: string;
 
-	// optional label for the recent history
-	label?: string;
+	// optionAl lAbel for the recent history
+	lAbel?: string;
 }
 
-function isFolderPathToOpen(path: IPathToOpen): path is IFolderPathToOpen {
-	return !!path.folderUri;
+function isFolderPAthToOpen(pAth: IPAthToOpen): pAth is IFolderPAthToOpen {
+	return !!pAth.folderUri;
 }
 
-interface IFolderPathToOpen {
+interfAce IFolderPAthToOpen {
 
-	// the folder path for a Code instance to open
+	// the folder pAth for A Code instAnce to open
 	folderUri: URI;
 
-	// the backup path for a Code instance to use
-	backupPath?: string;
+	// the bAckup pAth for A Code instAnce to use
+	bAckupPAth?: string;
 
-	// the remote authority for the Code instance to open. Undefined if not remote.
+	// the remote Authority for the Code instAnce to open. Undefined if not remote.
 	remoteAuthority?: string;
 
-	// optional label for the recent history
-	label?: string;
+	// optionAl lAbel for the recent history
+	lAbel?: string;
 }
 
-function isWorkspacePathToOpen(path: IPathToOpen): path is IWorkspacePathToOpen {
-	return !!path.workspace;
+function isWorkspAcePAthToOpen(pAth: IPAthToOpen): pAth is IWorkspAcePAthToOpen {
+	return !!pAth.workspAce;
 }
 
-interface IWorkspacePathToOpen {
+interfAce IWorkspAcePAthToOpen {
 
-	// the workspace for a Code instance to open
-	workspace: IWorkspaceIdentifier;
+	// the workspAce for A Code instAnce to open
+	workspAce: IWorkspAceIdentifier;
 
-	// the backup path for a Code instance to use
-	backupPath?: string;
+	// the bAckup pAth for A Code instAnce to use
+	bAckupPAth?: string;
 
-	// the remote authority for the Code instance to open. Undefined if not remote.
+	// the remote Authority for the Code instAnce to open. Undefined if not remote.
 	remoteAuthority?: string;
 
-	// optional label for the recent history
-	label?: string;
+	// optionAl lAbel for the recent history
+	lAbel?: string;
 }
 
-export class WindowsMainService extends Disposable implements IWindowsMainService {
+export clAss WindowsMAinService extends DisposAble implements IWindowsMAinService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly windowsStateStorageKey = 'windowsState';
+	privAte stAtic reAdonly windowsStAteStorAgeKey = 'windowsStAte';
 
-	private static readonly WINDOWS: ICodeWindow[] = [];
+	privAte stAtic reAdonly WINDOWS: ICodeWindow[] = [];
 
-	private readonly windowsState: IWindowsState;
-	private lastClosedWindowState?: IWindowState;
+	privAte reAdonly windowsStAte: IWindowsStAte;
+	privAte lAstClosedWindowStAte?: IWindowStAte;
 
-	private shuttingDown = false;
+	privAte shuttingDown = fAlse;
 
-	private readonly _onWindowOpened = this._register(new Emitter<ICodeWindow>());
-	readonly onWindowOpened = this._onWindowOpened.event;
+	privAte reAdonly _onWindowOpened = this._register(new Emitter<ICodeWindow>());
+	reAdonly onWindowOpened = this._onWindowOpened.event;
 
-	private readonly _onWindowReady = this._register(new Emitter<ICodeWindow>());
-	readonly onWindowReady = this._onWindowReady.event;
+	privAte reAdonly _onWindowReAdy = this._register(new Emitter<ICodeWindow>());
+	reAdonly onWindowReAdy = this._onWindowReAdy.event;
 
-	private readonly _onWindowsCountChanged = this._register(new Emitter<IWindowsCountChangedEvent>());
-	readonly onWindowsCountChanged = this._onWindowsCountChanged.event;
+	privAte reAdonly _onWindowsCountChAnged = this._register(new Emitter<IWindowsCountChAngedEvent>());
+	reAdonly onWindowsCountChAnged = this._onWindowsCountChAnged.event;
 
 	constructor(
-		private readonly machineId: string,
-		private readonly initialUserEnv: IProcessEnvironment,
-		@ILogService private readonly logService: ILogService,
-		@IStateService private readonly stateService: IStateService,
-		@IEnvironmentMainService private readonly environmentService: IEnvironmentMainService,
-		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
-		@IBackupMainService private readonly backupMainService: IBackupMainService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IWorkspacesHistoryMainService private readonly workspacesHistoryMainService: IWorkspacesHistoryMainService,
-		@IWorkspacesMainService private readonly workspacesMainService: IWorkspacesMainService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IDialogMainService private readonly dialogMainService: IDialogMainService
+		privAte reAdonly mAchineId: string,
+		privAte reAdonly initiAlUserEnv: IProcessEnvironment,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IStAteService privAte reAdonly stAteService: IStAteService,
+		@IEnvironmentMAinService privAte reAdonly environmentService: IEnvironmentMAinService,
+		@ILifecycleMAinService privAte reAdonly lifecycleMAinService: ILifecycleMAinService,
+		@IBAckupMAinService privAte reAdonly bAckupMAinService: IBAckupMAinService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IWorkspAcesHistoryMAinService privAte reAdonly workspAcesHistoryMAinService: IWorkspAcesHistoryMAinService,
+		@IWorkspAcesMAinService privAte reAdonly workspAcesMAinService: IWorkspAcesMAinService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IDiAlogMAinService privAte reAdonly diAlogMAinService: IDiAlogMAinService
 	) {
 		super();
 
-		this.windowsState = restoreWindowsState(this.stateService.getItem<WindowsStateStorageData>(WindowsMainService.windowsStateStorageKey));
-		if (!Array.isArray(this.windowsState.openedWindows)) {
-			this.windowsState.openedWindows = [];
+		this.windowsStAte = restoreWindowsStAte(this.stAteService.getItem<WindowsStAteStorAgeDAtA>(WindowsMAinService.windowsStAteStorAgeKey));
+		if (!ArrAy.isArrAy(this.windowsStAte.openedWindows)) {
+			this.windowsStAte.openedWindows = [];
 		}
 
-		this.lifecycleMainService.when(LifecycleMainPhase.Ready).then(() => this.registerListeners());
-		this.lifecycleMainService.when(LifecycleMainPhase.AfterWindowOpen).then(() => this.installWindowsMutex());
+		this.lifecycleMAinService.when(LifecycleMAinPhAse.ReAdy).then(() => this.registerListeners());
+		this.lifecycleMAinService.when(LifecycleMAinPhAse.AfterWindowOpen).then(() => this.instAllWindowsMutex());
 	}
 
-	private installWindowsMutex(): void {
-		const win32MutexName = product.win32MutexName;
-		if (isWindows && win32MutexName) {
+	privAte instAllWindowsMutex(): void {
+		const win32MutexNAme = product.win32MutexNAme;
+		if (isWindows && win32MutexNAme) {
 			try {
-				const WindowsMutex = (require.__$__nodeRequire('windows-mutex') as typeof import('windows-mutex')).Mutex;
-				const mutex = new WindowsMutex(win32MutexName);
-				once(this.lifecycleMainService.onWillShutdown)(() => mutex.release());
-			} catch (e) {
+				const WindowsMutex = (require.__$__nodeRequire('windows-mutex') As typeof import('windows-mutex')).Mutex;
+				const mutex = new WindowsMutex(win32MutexNAme);
+				once(this.lifecycleMAinService.onWillShutdown)(() => mutex.releAse());
+			} cAtch (e) {
 				this.logService.error(e);
 			}
 		}
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// When a window looses focus, save all windows state. This allows to
-		// prevent loss of window-state data when OS is restarted without properly
-		// shutting down the application (https://github.com/microsoft/vscode/issues/87171)
-		app.on('browser-window-blur', () => {
+		// When A window looses focus, sAve All windows stAte. This Allows to
+		// prevent loss of window-stAte dAtA when OS is restArted without properly
+		// shutting down the ApplicAtion (https://github.com/microsoft/vscode/issues/87171)
+		App.on('browser-window-blur', () => {
 			if (!this.shuttingDown) {
-				this.saveWindowsState();
+				this.sAveWindowsStAte();
 			}
 		});
 
-		// Handle various lifecycle events around windows
-		this.lifecycleMainService.onBeforeWindowClose(window => this.onBeforeWindowClose(window));
-		this.lifecycleMainService.onBeforeShutdown(() => this.onBeforeShutdown());
-		this.onWindowsCountChanged(e => {
+		// HAndle vArious lifecycle events Around windows
+		this.lifecycleMAinService.onBeforeWindowClose(window => this.onBeforeWindowClose(window));
+		this.lifecycleMAinService.onBeforeShutdown(() => this.onBeforeShutdown());
+		this.onWindowsCountChAnged(e => {
 			if (e.newCount - e.oldCount > 0) {
-				// clear last closed window state when a new window opens. this helps on macOS where
-				// otherwise closing the last window, opening a new window and then quitting would
-				// use the state of the previously closed window when restarting.
-				this.lastClosedWindowState = undefined;
+				// cleAr lAst closed window stAte when A new window opens. this helps on mAcOS where
+				// otherwise closing the lAst window, opening A new window And then quitting would
+				// use the stAte of the previously closed window when restArting.
+				this.lAstClosedWindowStAte = undefined;
 			}
 		});
 
-		// Signal a window is ready after having entered a workspace
-		this._register(this.workspacesMainService.onWorkspaceEntered(event => {
-			this._onWindowReady.fire(event.window);
+		// SignAl A window is reAdy After hAving entered A workspAce
+		this._register(this.workspAcesMAinService.onWorkspAceEntered(event => {
+			this._onWindowReAdy.fire(event.window);
 		}));
 	}
 
-	// Note that onBeforeShutdown() and onBeforeWindowClose() are fired in different order depending on the OS:
-	// - macOS: since the app will not quit when closing the last window, you will always first get
-	//          the onBeforeShutdown() event followed by N onBeforeWindowClose() events for each window
-	// - other: on other OS, closing the last window will quit the app so the order depends on the
-	//          user interaction: closing the last window will first trigger onBeforeWindowClose()
-	//          and then onBeforeShutdown(). Using the quit action however will first issue onBeforeShutdown()
-	//          and then onBeforeWindowClose().
+	// Note thAt onBeforeShutdown() And onBeforeWindowClose() Are fired in different order depending on the OS:
+	// - mAcOS: since the App will not quit when closing the lAst window, you will AlwAys first get
+	//          the onBeforeShutdown() event followed by N onBeforeWindowClose() events for eAch window
+	// - other: on other OS, closing the lAst window will quit the App so the order depends on the
+	//          user interAction: closing the lAst window will first trigger onBeforeWindowClose()
+	//          And then onBeforeShutdown(). Using the quit Action however will first issue onBeforeShutdown()
+	//          And then onBeforeWindowClose().
 	//
-	// Here is the behavior on different OS depending on action taken (Electron 1.7.x):
+	// Here is the behAvior on different OS depending on Action tAken (Electron 1.7.x):
 	//
 	// Legend
-	// -  quit(N): quit application with N windows opened
-	// - close(1): close one window via the window close button
-	// - closeAll: close all windows via the taskbar command
-	// - onBeforeShutdown(N): number of windows reported in this event handler
-	// - onBeforeWindowClose(N, M): number of windows reported and quitRequested boolean in this event handler
+	// -  quit(N): quit ApplicAtion with N windows opened
+	// - close(1): close one window viA the window close button
+	// - closeAll: close All windows viA the tAskbAr commAnd
+	// - onBeforeShutdown(N): number of windows reported in this event hAndler
+	// - onBeforeWindowClose(N, M): number of windows reported And quitRequested booleAn in this event hAndler
 	//
-	// macOS
+	// mAcOS
 	// 	-     quit(1): onBeforeShutdown(1), onBeforeWindowClose(1, true)
 	// 	-     quit(2): onBeforeShutdown(2), onBeforeWindowClose(2, true), onBeforeWindowClose(2, true)
 	// 	-     quit(0): onBeforeShutdown(0)
-	// 	-    close(1): onBeforeWindowClose(1, false)
+	// 	-    close(1): onBeforeWindowClose(1, fAlse)
 	//
 	// Windows
 	// 	-     quit(1): onBeforeShutdown(1), onBeforeWindowClose(1, true)
 	// 	-     quit(2): onBeforeShutdown(2), onBeforeWindowClose(2, true), onBeforeWindowClose(2, true)
-	// 	-    close(1): onBeforeWindowClose(2, false)[not last window]
-	// 	-    close(1): onBeforeWindowClose(1, false), onBeforeShutdown(0)[last window]
-	// 	- closeAll(2): onBeforeWindowClose(2, false), onBeforeWindowClose(2, false), onBeforeShutdown(0)
+	// 	-    close(1): onBeforeWindowClose(2, fAlse)[not lAst window]
+	// 	-    close(1): onBeforeWindowClose(1, fAlse), onBeforeShutdown(0)[lAst window]
+	// 	- closeAll(2): onBeforeWindowClose(2, fAlse), onBeforeWindowClose(2, fAlse), onBeforeShutdown(0)
 	//
 	// Linux
 	// 	-     quit(1): onBeforeShutdown(1), onBeforeWindowClose(1, true)
 	// 	-     quit(2): onBeforeShutdown(2), onBeforeWindowClose(2, true), onBeforeWindowClose(2, true)
-	// 	-    close(1): onBeforeWindowClose(2, false)[not last window]
-	// 	-    close(1): onBeforeWindowClose(1, false), onBeforeShutdown(0)[last window]
-	// 	- closeAll(2): onBeforeWindowClose(2, false), onBeforeWindowClose(2, false), onBeforeShutdown(0)
+	// 	-    close(1): onBeforeWindowClose(2, fAlse)[not lAst window]
+	// 	-    close(1): onBeforeWindowClose(1, fAlse), onBeforeShutdown(0)[lAst window]
+	// 	- closeAll(2): onBeforeWindowClose(2, fAlse), onBeforeWindowClose(2, fAlse), onBeforeShutdown(0)
 	//
-	private onBeforeShutdown(): void {
+	privAte onBeforeShutdown(): void {
 		this.shuttingDown = true;
 
-		this.saveWindowsState();
+		this.sAveWindowsStAte();
 	}
 
-	private saveWindowsState(): void {
-		const currentWindowsState: IWindowsState = {
+	privAte sAveWindowsStAte(): void {
+		const currentWindowsStAte: IWindowsStAte = {
 			openedWindows: [],
-			lastPluginDevelopmentHostWindow: this.windowsState.lastPluginDevelopmentHostWindow,
-			lastActiveWindow: this.lastClosedWindowState
+			lAstPluginDevelopmentHostWindow: this.windowsStAte.lAstPluginDevelopmentHostWindow,
+			lAstActiveWindow: this.lAstClosedWindowStAte
 		};
 
-		// 1.) Find a last active window (pick any other first window otherwise)
-		if (!currentWindowsState.lastActiveWindow) {
-			let activeWindow = this.getLastActiveWindow();
-			if (!activeWindow || activeWindow.isExtensionDevelopmentHost) {
-				activeWindow = WindowsMainService.WINDOWS.find(window => !window.isExtensionDevelopmentHost);
+		// 1.) Find A lAst Active window (pick Any other first window otherwise)
+		if (!currentWindowsStAte.lAstActiveWindow) {
+			let ActiveWindow = this.getLAstActiveWindow();
+			if (!ActiveWindow || ActiveWindow.isExtensionDevelopmentHost) {
+				ActiveWindow = WindowsMAinService.WINDOWS.find(window => !window.isExtensionDevelopmentHost);
 			}
 
-			if (activeWindow) {
-				currentWindowsState.lastActiveWindow = this.toWindowState(activeWindow);
+			if (ActiveWindow) {
+				currentWindowsStAte.lAstActiveWindow = this.toWindowStAte(ActiveWindow);
 			}
 		}
 
 		// 2.) Find extension host window
-		const extensionHostWindow = WindowsMainService.WINDOWS.find(window => window.isExtensionDevelopmentHost && !window.isExtensionTestHost);
+		const extensionHostWindow = WindowsMAinService.WINDOWS.find(window => window.isExtensionDevelopmentHost && !window.isExtensionTestHost);
 		if (extensionHostWindow) {
-			currentWindowsState.lastPluginDevelopmentHostWindow = this.toWindowState(extensionHostWindow);
+			currentWindowsStAte.lAstPluginDevelopmentHostWindow = this.toWindowStAte(extensionHostWindow);
 		}
 
-		// 3.) All windows (except extension host) for N >= 2 to support restoreWindows: all or for auto update
+		// 3.) All windows (except extension host) for N >= 2 to support restoreWindows: All or for Auto updAte
 		//
-		// Careful here: asking a window for its window state after it has been closed returns bogus values (width: 0, height: 0)
-		// so if we ever want to persist the UI state of the last closed window (window count === 1), it has
-		// to come from the stored lastClosedWindowState on Win/Linux at least
+		// CAreful here: Asking A window for its window stAte After it hAs been closed returns bogus vAlues (width: 0, height: 0)
+		// so if we ever wAnt to persist the UI stAte of the lAst closed window (window count === 1), it hAs
+		// to come from the stored lAstClosedWindowStAte on Win/Linux At leAst
 		if (this.getWindowCount() > 1) {
-			currentWindowsState.openedWindows = WindowsMainService.WINDOWS.filter(window => !window.isExtensionDevelopmentHost).map(window => this.toWindowState(window));
+			currentWindowsStAte.openedWindows = WindowsMAinService.WINDOWS.filter(window => !window.isExtensionDevelopmentHost).mAp(window => this.toWindowStAte(window));
 		}
 
 		// Persist
-		const state = getWindowsStateStoreData(currentWindowsState);
-		this.stateService.setItem(WindowsMainService.windowsStateStorageKey, state);
+		const stAte = getWindowsStAteStoreDAtA(currentWindowsStAte);
+		this.stAteService.setItem(WindowsMAinService.windowsStAteStorAgeKey, stAte);
 
 		if (this.shuttingDown) {
-			this.logService.trace('onBeforeShutdown', state);
+			this.logService.trAce('onBeforeShutdown', stAte);
 		}
 	}
 
-	// See note on #onBeforeShutdown() for details how these events are flowing
-	private onBeforeWindowClose(win: ICodeWindow): void {
-		if (this.lifecycleMainService.quitRequested) {
-			return; // during quit, many windows close in parallel so let it be handled in the before-quit handler
+	// See note on #onBeforeShutdown() for detAils how these events Are flowing
+	privAte onBeforeWindowClose(win: ICodeWindow): void {
+		if (this.lifecycleMAinService.quitRequested) {
+			return; // during quit, mAny windows close in pArAllel so let it be hAndled in the before-quit hAndler
 		}
 
-		// On Window close, update our stored UI state of this window
-		const state: IWindowState = this.toWindowState(win);
+		// On Window close, updAte our stored UI stAte of this window
+		const stAte: IWindowStAte = this.toWindowStAte(win);
 		if (win.isExtensionDevelopmentHost && !win.isExtensionTestHost) {
-			this.windowsState.lastPluginDevelopmentHostWindow = state; // do not let test run window state overwrite our extension development state
+			this.windowsStAte.lAstPluginDevelopmentHostWindow = stAte; // do not let test run window stAte overwrite our extension development stAte
 		}
 
-		// Any non extension host window with same workspace or folder
-		else if (!win.isExtensionDevelopmentHost && (!!win.openedWorkspace || !!win.openedFolderUri)) {
-			this.windowsState.openedWindows.forEach(o => {
-				const sameWorkspace = win.openedWorkspace && o.workspace && o.workspace.id === win.openedWorkspace.id;
-				const sameFolder = win.openedFolderUri && o.folderUri && extUriBiasedIgnorePathCase.isEqual(o.folderUri, win.openedFolderUri);
+		// Any non extension host window with sAme workspAce or folder
+		else if (!win.isExtensionDevelopmentHost && (!!win.openedWorkspAce || !!win.openedFolderUri)) {
+			this.windowsStAte.openedWindows.forEAch(o => {
+				const sAmeWorkspAce = win.openedWorkspAce && o.workspAce && o.workspAce.id === win.openedWorkspAce.id;
+				const sAmeFolder = win.openedFolderUri && o.folderUri && extUriBiAsedIgnorePAthCAse.isEquAl(o.folderUri, win.openedFolderUri);
 
-				if (sameWorkspace || sameFolder) {
-					o.uiState = state.uiState;
+				if (sAmeWorkspAce || sAmeFolder) {
+					o.uiStAte = stAte.uiStAte;
 				}
 			});
 		}
 
-		// On Windows and Linux closing the last window will trigger quit. Since we are storing all UI state
-		// before quitting, we need to remember the UI state of this window to be able to persist it.
-		// On macOS we keep the last closed window state ready in case the user wants to quit right after or
-		// wants to open another window, in which case we use this state over the persisted one.
+		// On Windows And Linux closing the lAst window will trigger quit. Since we Are storing All UI stAte
+		// before quitting, we need to remember the UI stAte of this window to be Able to persist it.
+		// On mAcOS we keep the lAst closed window stAte reAdy in cAse the user wAnts to quit right After or
+		// wAnts to open Another window, in which cAse we use this stAte over the persisted one.
 		if (this.getWindowCount() === 1) {
-			this.lastClosedWindowState = state;
+			this.lAstClosedWindowStAte = stAte;
 		}
 	}
 
-	private toWindowState(win: ICodeWindow): IWindowState {
+	privAte toWindowStAte(win: ICodeWindow): IWindowStAte {
 		return {
-			workspace: win.openedWorkspace,
+			workspAce: win.openedWorkspAce,
 			folderUri: win.openedFolderUri,
-			backupPath: win.backupPath,
+			bAckupPAth: win.bAckupPAth,
 			remoteAuthority: win.remoteAuthority,
-			uiState: win.serializeWindowState()
+			uiStAte: win.seriAlizeWindowStAte()
 		};
 	}
 
-	openEmptyWindow(openConfig: IOpenEmptyConfiguration, options?: IOpenEmptyWindowOptions): ICodeWindow[] {
-		let cli = this.environmentService.args;
+	openEmptyWindow(openConfig: IOpenEmptyConfigurAtion, options?: IOpenEmptyWindowOptions): ICodeWindow[] {
+		let cli = this.environmentService.Args;
 		const remote = options?.remoteAuthority;
 		if (cli && (cli.remote !== remote)) {
 			cli = { ...cli, remote };
@@ -381,200 +381,200 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return this.open({ ...openConfig, cli, forceEmpty: true, forceNewWindow, forceReuseWindow });
 	}
 
-	open(openConfig: IOpenConfiguration): ICodeWindow[] {
-		this.logService.trace('windowsManager#open');
-		openConfig = this.validateOpenConfig(openConfig);
+	open(openConfig: IOpenConfigurAtion): ICodeWindow[] {
+		this.logService.trAce('windowsMAnAger#open');
+		openConfig = this.vAlidAteOpenConfig(openConfig);
 
-		const pathsToOpen = this.getPathsToOpen(openConfig);
-		this.logService.trace('windowsManager#open pathsToOpen', pathsToOpen);
+		const pAthsToOpen = this.getPAthsToOpen(openConfig);
+		this.logService.trAce('windowsMAnAger#open pAthsToOpen', pAthsToOpen);
 
-		const foldersToAdd: IFolderPathToOpen[] = [];
-		const foldersToOpen: IFolderPathToOpen[] = [];
-		const workspacesToOpen: IWorkspacePathToOpen[] = [];
-		const workspacesToRestore: IWorkspacePathToOpen[] = [];
-		const emptyToRestore: IEmptyWindowBackupInfo[] = []; // empty windows with backupPath
+		const foldersToAdd: IFolderPAthToOpen[] = [];
+		const foldersToOpen: IFolderPAthToOpen[] = [];
+		const workspAcesToOpen: IWorkspAcePAthToOpen[] = [];
+		const workspAcesToRestore: IWorkspAcePAthToOpen[] = [];
+		const emptyToRestore: IEmptyWindowBAckupInfo[] = []; // empty windows with bAckupPAth
 
 		let emptyToOpen: number = 0;
-		let fileInputs: IFileInputs | undefined; 		// collect all file inputs
-		for (const path of pathsToOpen) {
-			if (isFolderPathToOpen(path)) {
-				if (openConfig.addMode) {
-					// When run with --add, take the folders that are to be opened as
-					// folders that should be added to the currently active window.
-					foldersToAdd.push(path);
+		let fileInputs: IFileInputs | undefined; 		// collect All file inputs
+		for (const pAth of pAthsToOpen) {
+			if (isFolderPAthToOpen(pAth)) {
+				if (openConfig.AddMode) {
+					// When run with --Add, tAke the folders thAt Are to be opened As
+					// folders thAt should be Added to the currently Active window.
+					foldersToAdd.push(pAth);
 				} else {
-					foldersToOpen.push(path);
+					foldersToOpen.push(pAth);
 				}
-			} else if (isWorkspacePathToOpen(path)) {
-				workspacesToOpen.push(path);
-			} else if (path.fileUri) {
+			} else if (isWorkspAcePAthToOpen(pAth)) {
+				workspAcesToOpen.push(pAth);
+			} else if (pAth.fileUri) {
 				if (!fileInputs) {
-					fileInputs = { filesToOpenOrCreate: [], filesToDiff: [], remoteAuthority: path.remoteAuthority };
+					fileInputs = { filesToOpenOrCreAte: [], filesToDiff: [], remoteAuthority: pAth.remoteAuthority };
 				}
-				fileInputs.filesToOpenOrCreate.push(path);
-			} else if (path.backupPath) {
-				emptyToRestore.push({ backupFolder: basename(path.backupPath), remoteAuthority: path.remoteAuthority });
+				fileInputs.filesToOpenOrCreAte.push(pAth);
+			} else if (pAth.bAckupPAth) {
+				emptyToRestore.push({ bAckupFolder: bAsenAme(pAth.bAckupPAth), remoteAuthority: pAth.remoteAuthority });
 			} else {
 				emptyToOpen++;
 			}
 		}
 
-		// When run with --diff, take the files to open as files to diff
-		// if there are exactly two files provided.
-		if (fileInputs && openConfig.diffMode && fileInputs.filesToOpenOrCreate.length === 2) {
-			fileInputs.filesToDiff = fileInputs.filesToOpenOrCreate;
-			fileInputs.filesToOpenOrCreate = [];
+		// When run with --diff, tAke the files to open As files to diff
+		// if there Are exActly two files provided.
+		if (fileInputs && openConfig.diffMode && fileInputs.filesToOpenOrCreAte.length === 2) {
+			fileInputs.filesToDiff = fileInputs.filesToOpenOrCreAte;
+			fileInputs.filesToOpenOrCreAte = [];
 		}
 
-		// When run with --wait, make sure we keep the paths to wait for
-		if (fileInputs && openConfig.waitMarkerFileURI) {
-			fileInputs.filesToWait = { paths: [...fileInputs.filesToDiff, ...fileInputs.filesToOpenOrCreate], waitMarkerFileUri: openConfig.waitMarkerFileURI };
+		// When run with --wAit, mAke sure we keep the pAths to wAit for
+		if (fileInputs && openConfig.wAitMArkerFileURI) {
+			fileInputs.filesToWAit = { pAths: [...fileInputs.filesToDiff, ...fileInputs.filesToOpenOrCreAte], wAitMArkerFileUri: openConfig.wAitMArkerFileURI };
 		}
 
 		//
-		// These are windows to restore because of hot-exit or from previous session (only performed once on startup!)
+		// These Are windows to restore becAuse of hot-exit or from previous session (only performed once on stArtup!)
 		//
-		if (openConfig.initialStartup) {
+		if (openConfig.initiAlStArtup) {
 
-			// Untitled workspaces are always restored
-			workspacesToRestore.push(...this.workspacesMainService.getUntitledWorkspacesSync());
-			workspacesToOpen.push(...workspacesToRestore);
+			// Untitled workspAces Are AlwAys restored
+			workspAcesToRestore.push(...this.workspAcesMAinService.getUntitledWorkspAcesSync());
+			workspAcesToOpen.push(...workspAcesToRestore);
 
-			// Empty windows with backups are always restored
-			emptyToRestore.push(...this.backupMainService.getEmptyWindowBackupPaths());
+			// Empty windows with bAckups Are AlwAys restored
+			emptyToRestore.push(...this.bAckupMAinService.getEmptyWindowBAckupPAths());
 		} else {
 			emptyToRestore.length = 0;
 		}
 
-		// Open based on config
-		const usedWindows = this.doOpen(openConfig, workspacesToOpen, foldersToOpen, emptyToRestore, emptyToOpen, fileInputs, foldersToAdd);
+		// Open bAsed on config
+		const usedWindows = this.doOpen(openConfig, workspAcesToOpen, foldersToOpen, emptyToRestore, emptyToOpen, fileInputs, foldersToAdd);
 
-		this.logService.trace(`windowsManager#open used window count ${usedWindows.length} (workspacesToOpen: ${workspacesToOpen.length}, foldersToOpen: ${foldersToOpen.length}, emptyToRestore: ${emptyToRestore.length}, emptyToOpen: ${emptyToOpen})`);
+		this.logService.trAce(`windowsMAnAger#open used window count ${usedWindows.length} (workspAcesToOpen: ${workspAcesToOpen.length}, foldersToOpen: ${foldersToOpen.length}, emptyToRestore: ${emptyToRestore.length}, emptyToOpen: ${emptyToOpen})`);
 
-		// Make sure to pass focus to the most relevant of the windows if we open multiple
+		// MAke sure to pAss focus to the most relevAnt of the windows if we open multiple
 		if (usedWindows.length > 1) {
-			const focusLastActive = this.windowsState.lastActiveWindow && !openConfig.forceEmpty && openConfig.cli._.length && !openConfig.cli['file-uri'] && !openConfig.cli['folder-uri'] && !(openConfig.urisToOpen && openConfig.urisToOpen.length);
-			let focusLastOpened = true;
-			let focusLastWindow = true;
+			const focusLAstActive = this.windowsStAte.lAstActiveWindow && !openConfig.forceEmpty && openConfig.cli._.length && !openConfig.cli['file-uri'] && !openConfig.cli['folder-uri'] && !(openConfig.urisToOpen && openConfig.urisToOpen.length);
+			let focusLAstOpened = true;
+			let focusLAstWindow = true;
 
-			// 1.) focus last active window if we are not instructed to open any paths
-			if (focusLastActive) {
-				const lastActiveWindow = usedWindows.filter(window => this.windowsState.lastActiveWindow && window.backupPath === this.windowsState.lastActiveWindow.backupPath);
-				if (lastActiveWindow.length) {
-					lastActiveWindow[0].focus();
-					focusLastOpened = false;
-					focusLastWindow = false;
+			// 1.) focus lAst Active window if we Are not instructed to open Any pAths
+			if (focusLAstActive) {
+				const lAstActiveWindow = usedWindows.filter(window => this.windowsStAte.lAstActiveWindow && window.bAckupPAth === this.windowsStAte.lAstActiveWindow.bAckupPAth);
+				if (lAstActiveWindow.length) {
+					lAstActiveWindow[0].focus();
+					focusLAstOpened = fAlse;
+					focusLAstWindow = fAlse;
 				}
 			}
 
-			// 2.) if instructed to open paths, focus last window which is not restored
-			if (focusLastOpened) {
+			// 2.) if instructed to open pAths, focus lAst window which is not restored
+			if (focusLAstOpened) {
 				for (let i = usedWindows.length - 1; i >= 0; i--) {
 					const usedWindow = usedWindows[i];
 					if (
-						(usedWindow.openedWorkspace && workspacesToRestore.some(workspace => usedWindow.openedWorkspace && workspace.workspace.id === usedWindow.openedWorkspace.id)) ||	// skip over restored workspace
-						(usedWindow.backupPath && emptyToRestore.some(empty => usedWindow.backupPath && empty.backupFolder === basename(usedWindow.backupPath)))							// skip over restored empty window
+						(usedWindow.openedWorkspAce && workspAcesToRestore.some(workspAce => usedWindow.openedWorkspAce && workspAce.workspAce.id === usedWindow.openedWorkspAce.id)) ||	// skip over restored workspAce
+						(usedWindow.bAckupPAth && emptyToRestore.some(empty => usedWindow.bAckupPAth && empty.bAckupFolder === bAsenAme(usedWindow.bAckupPAth)))							// skip over restored empty window
 					) {
 						continue;
 					}
 
 					usedWindow.focus();
-					focusLastWindow = false;
-					break;
+					focusLAstWindow = fAlse;
+					breAk;
 				}
 			}
 
-			// 3.) finally, always ensure to have at least last used window focused
-			if (focusLastWindow) {
+			// 3.) finAlly, AlwAys ensure to hAve At leAst lAst used window focused
+			if (focusLAstWindow) {
 				usedWindows[usedWindows.length - 1].focus();
 			}
 		}
 
 		// Remember in recent document list (unless this opens for extension development)
-		// Also do not add paths when files are opened for diffing, only if opened individually
+		// Also do not Add pAths when files Are opened for diffing, only if opened individuAlly
 		const isDiff = fileInputs && fileInputs.filesToDiff.length > 0;
 		if (!usedWindows.some(window => window.isExtensionDevelopmentHost) && !isDiff && !openConfig.noRecentEntry) {
 			const recents: IRecent[] = [];
-			for (let pathToOpen of pathsToOpen) {
-				if (pathToOpen.workspace) {
-					recents.push({ label: pathToOpen.label, workspace: pathToOpen.workspace });
-				} else if (pathToOpen.folderUri) {
-					recents.push({ label: pathToOpen.label, folderUri: pathToOpen.folderUri });
-				} else if (pathToOpen.fileUri) {
-					recents.push({ label: pathToOpen.label, fileUri: pathToOpen.fileUri });
+			for (let pAthToOpen of pAthsToOpen) {
+				if (pAthToOpen.workspAce) {
+					recents.push({ lAbel: pAthToOpen.lAbel, workspAce: pAthToOpen.workspAce });
+				} else if (pAthToOpen.folderUri) {
+					recents.push({ lAbel: pAthToOpen.lAbel, folderUri: pAthToOpen.folderUri });
+				} else if (pAthToOpen.fileUri) {
+					recents.push({ lAbel: pAthToOpen.lAbel, fileUri: pAthToOpen.fileUri });
 				}
 			}
-			this.workspacesHistoryMainService.addRecentlyOpened(recents);
+			this.workspAcesHistoryMAinService.AddRecentlyOpened(recents);
 		}
 
-		// If we got started with --wait from the CLI, we need to signal to the outside when the window
-		// used for the edit operation is closed or loaded to a different folder so that the waiting
-		// process can continue. We do this by deleting the waitMarkerFilePath.
-		const waitMarkerFileURI = openConfig.waitMarkerFileURI;
-		if (openConfig.context === OpenContext.CLI && waitMarkerFileURI && usedWindows.length === 1 && usedWindows[0]) {
-			usedWindows[0].whenClosedOrLoaded.then(() => fs.unlink(waitMarkerFileURI.fsPath, _error => undefined));
+		// If we got stArted with --wAit from the CLI, we need to signAl to the outside when the window
+		// used for the edit operAtion is closed or loAded to A different folder so thAt the wAiting
+		// process cAn continue. We do this by deleting the wAitMArkerFilePAth.
+		const wAitMArkerFileURI = openConfig.wAitMArkerFileURI;
+		if (openConfig.context === OpenContext.CLI && wAitMArkerFileURI && usedWindows.length === 1 && usedWindows[0]) {
+			usedWindows[0].whenClosedOrLoAded.then(() => fs.unlink(wAitMArkerFileURI.fsPAth, _error => undefined));
 		}
 
 		return usedWindows;
 	}
 
-	private validateOpenConfig(config: IOpenConfiguration): IOpenConfiguration {
+	privAte vAlidAteOpenConfig(config: IOpenConfigurAtion): IOpenConfigurAtion {
 
-		// Make sure addMode is only enabled if we have an active window
-		if (config.addMode && (config.initialStartup || !this.getLastActiveWindow())) {
-			config.addMode = false;
+		// MAke sure AddMode is only enAbled if we hAve An Active window
+		if (config.AddMode && (config.initiAlStArtup || !this.getLAstActiveWindow())) {
+			config.AddMode = fAlse;
 		}
 
 		return config;
 	}
 
-	private doOpen(
-		openConfig: IOpenConfiguration,
-		workspacesToOpen: IWorkspacePathToOpen[],
-		foldersToOpen: IFolderPathToOpen[],
-		emptyToRestore: IEmptyWindowBackupInfo[],
+	privAte doOpen(
+		openConfig: IOpenConfigurAtion,
+		workspAcesToOpen: IWorkspAcePAthToOpen[],
+		foldersToOpen: IFolderPAthToOpen[],
+		emptyToRestore: IEmptyWindowBAckupInfo[],
 		emptyToOpen: number,
 		fileInputs: IFileInputs | undefined,
-		foldersToAdd: IFolderPathToOpen[]
+		foldersToAdd: IFolderPAthToOpen[]
 	) {
 		const usedWindows: ICodeWindow[] = [];
 
-		// Settings can decide if files/folders open in new window or not
+		// Settings cAn decide if files/folders open in new window or not
 		let { openFolderInNewWindow, openFilesInNewWindow } = this.shouldOpenNewWindow(openConfig);
 
-		// Handle folders to add by looking for the last active workspace (not on initial startup)
-		if (!openConfig.initialStartup && foldersToAdd.length > 0) {
-			const authority = foldersToAdd[0].remoteAuthority;
-			const lastActiveWindow = this.getLastActiveWindowForAuthority(authority);
-			if (lastActiveWindow) {
-				usedWindows.push(this.doAddFoldersToExistingWindow(lastActiveWindow, foldersToAdd.map(f => f.folderUri)));
+		// HAndle folders to Add by looking for the lAst Active workspAce (not on initiAl stArtup)
+		if (!openConfig.initiAlStArtup && foldersToAdd.length > 0) {
+			const Authority = foldersToAdd[0].remoteAuthority;
+			const lAstActiveWindow = this.getLAstActiveWindowForAuthority(Authority);
+			if (lAstActiveWindow) {
+				usedWindows.push(this.doAddFoldersToExistingWindow(lAstActiveWindow, foldersToAdd.mAp(f => f.folderUri)));
 			}
 		}
 
-		// Handle files to open/diff or to create when we dont open a folder and we do not restore any folder/untitled from hot-exit
-		const potentialWindowsCount = foldersToOpen.length + workspacesToOpen.length + emptyToRestore.length;
-		if (potentialWindowsCount === 0 && fileInputs) {
+		// HAndle files to open/diff or to creAte when we dont open A folder And we do not restore Any folder/untitled from hot-exit
+		const potentiAlWindowsCount = foldersToOpen.length + workspAcesToOpen.length + emptyToRestore.length;
+		if (potentiAlWindowsCount === 0 && fileInputs) {
 
-			// Find suitable window or folder path to open files in
-			const fileToCheck = fileInputs.filesToOpenOrCreate[0] || fileInputs.filesToDiff[0];
+			// Find suitAble window or folder pAth to open files in
+			const fileToCheck = fileInputs.filesToOpenOrCreAte[0] || fileInputs.filesToDiff[0];
 
-			// only look at the windows with correct authority
-			const windows = WindowsMainService.WINDOWS.filter(window => fileInputs && window.remoteAuthority === fileInputs.remoteAuthority);
+			// only look At the windows with correct Authority
+			const windows = WindowsMAinService.WINDOWS.filter(window => fileInputs && window.remoteAuthority === fileInputs.remoteAuthority);
 
 			const bestWindowOrFolder = findBestWindowOrFolderForFile({
 				windows,
 				newWindow: openFilesInNewWindow,
 				context: openConfig.context,
 				fileUri: fileToCheck?.fileUri,
-				localWorkspaceResolver: workspace => workspace.configPath.scheme === Schemas.file ? this.workspacesMainService.resolveLocalWorkspaceSync(workspace.configPath) : null
+				locAlWorkspAceResolver: workspAce => workspAce.configPAth.scheme === SchemAs.file ? this.workspAcesMAinService.resolveLocAlWorkspAceSync(workspAce.configPAth) : null
 			});
 
-			// We found a window to open the files in
-			if (bestWindowOrFolder instanceof CodeWindow) {
+			// We found A window to open the files in
+			if (bestWindowOrFolder instAnceof CodeWindow) {
 
-				// Window is workspace
-				if (bestWindowOrFolder.openedWorkspace) {
-					workspacesToOpen.push({ workspace: bestWindowOrFolder.openedWorkspace, remoteAuthority: bestWindowOrFolder.remoteAuthority });
+				// Window is workspAce
+				if (bestWindowOrFolder.openedWorkspAce) {
+					workspAcesToOpen.push({ workspAce: bestWindowOrFolder.openedWorkspAce, remoteAuthority: bestWindowOrFolder.remoteAuthority });
 				}
 
 				// Window is single folder
@@ -588,141 +588,141 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 					// Do open files
 					usedWindows.push(this.doOpenFilesInExistingWindow(openConfig, bestWindowOrFolder, fileInputs));
 
-					// Reset these because we handled them
+					// Reset these becAuse we hAndled them
 					fileInputs = undefined;
 				}
 			}
 
-			// Finally, if no window or folder is found, just open the files in an empty window
+			// FinAlly, if no window or folder is found, just open the files in An empty window
 			else {
 				usedWindows.push(this.openInBrowserWindow({
 					userEnv: openConfig.userEnv,
 					cli: openConfig.cli,
-					initialStartup: openConfig.initialStartup,
+					initiAlStArtup: openConfig.initiAlStArtup,
 					fileInputs,
 					forceNewWindow: true,
 					remoteAuthority: fileInputs.remoteAuthority,
-					forceNewTabbedWindow: openConfig.forceNewTabbedWindow
+					forceNewTAbbedWindow: openConfig.forceNewTAbbedWindow
 				}));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				fileInputs = undefined;
 			}
 		}
 
-		// Handle workspaces to open (instructed and to restore)
-		const allWorkspacesToOpen = arrays.distinct(workspacesToOpen, workspace => workspace.workspace.id); // prevent duplicates
-		if (allWorkspacesToOpen.length > 0) {
+		// HAndle workspAces to open (instructed And to restore)
+		const AllWorkspAcesToOpen = ArrAys.distinct(workspAcesToOpen, workspAce => workspAce.workspAce.id); // prevent duplicAtes
+		if (AllWorkspAcesToOpen.length > 0) {
 
-			// Check for existing instances
-			const windowsOnWorkspace = arrays.coalesce(allWorkspacesToOpen.map(workspaceToOpen => findWindowOnWorkspace(WindowsMainService.WINDOWS, workspaceToOpen.workspace)));
-			if (windowsOnWorkspace.length > 0) {
-				const windowOnWorkspace = windowsOnWorkspace[0];
-				const fileInputsForWindow = (fileInputs?.remoteAuthority === windowOnWorkspace.remoteAuthority) ? fileInputs : undefined;
+			// Check for existing instAnces
+			const windowsOnWorkspAce = ArrAys.coAlesce(AllWorkspAcesToOpen.mAp(workspAceToOpen => findWindowOnWorkspAce(WindowsMAinService.WINDOWS, workspAceToOpen.workspAce)));
+			if (windowsOnWorkspAce.length > 0) {
+				const windowOnWorkspAce = windowsOnWorkspAce[0];
+				const fileInputsForWindow = (fileInputs?.remoteAuthority === windowOnWorkspAce.remoteAuthority) ? fileInputs : undefined;
 
 				// Do open files
-				usedWindows.push(this.doOpenFilesInExistingWindow(openConfig, windowOnWorkspace, fileInputsForWindow));
+				usedWindows.push(this.doOpenFilesInExistingWindow(openConfig, windowOnWorkspAce, fileInputsForWindow));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				if (fileInputsForWindow) {
 					fileInputs = undefined;
 				}
 
-				openFolderInNewWindow = true; // any other folders to open must open in new window then
+				openFolderInNewWindow = true; // Any other folders to open must open in new window then
 			}
 
-			// Open remaining ones
-			allWorkspacesToOpen.forEach(workspaceToOpen => {
-				if (windowsOnWorkspace.some(win => win.openedWorkspace && win.openedWorkspace.id === workspaceToOpen.workspace.id)) {
-					return; // ignore folders that are already open
+			// Open remAining ones
+			AllWorkspAcesToOpen.forEAch(workspAceToOpen => {
+				if (windowsOnWorkspAce.some(win => win.openedWorkspAce && win.openedWorkspAce.id === workspAceToOpen.workspAce.id)) {
+					return; // ignore folders thAt Are AlreAdy open
 				}
 
-				const remoteAuthority = workspaceToOpen.remoteAuthority;
+				const remoteAuthority = workspAceToOpen.remoteAuthority;
 				const fileInputsForWindow = (fileInputs?.remoteAuthority === remoteAuthority) ? fileInputs : undefined;
 
 				// Do open folder
-				usedWindows.push(this.doOpenFolderOrWorkspace(openConfig, workspaceToOpen, openFolderInNewWindow, fileInputsForWindow));
+				usedWindows.push(this.doOpenFolderOrWorkspAce(openConfig, workspAceToOpen, openFolderInNewWindow, fileInputsForWindow));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				if (fileInputsForWindow) {
 					fileInputs = undefined;
 				}
 
-				openFolderInNewWindow = true; // any other folders to open must open in new window then
+				openFolderInNewWindow = true; // Any other folders to open must open in new window then
 			});
 		}
 
-		// Handle folders to open (instructed and to restore)
-		const allFoldersToOpen = arrays.distinct(foldersToOpen, folder => extUriBiasedIgnorePathCase.getComparisonKey(folder.folderUri)); // prevent duplicates
-		if (allFoldersToOpen.length > 0) {
+		// HAndle folders to open (instructed And to restore)
+		const AllFoldersToOpen = ArrAys.distinct(foldersToOpen, folder => extUriBiAsedIgnorePAthCAse.getCompArisonKey(folder.folderUri)); // prevent duplicAtes
+		if (AllFoldersToOpen.length > 0) {
 
-			// Check for existing instances
-			const windowsOnFolderPath = arrays.coalesce(allFoldersToOpen.map(folderToOpen => findWindowOnWorkspace(WindowsMainService.WINDOWS, folderToOpen.folderUri)));
-			if (windowsOnFolderPath.length > 0) {
-				const windowOnFolderPath = windowsOnFolderPath[0];
-				const fileInputsForWindow = fileInputs?.remoteAuthority === windowOnFolderPath.remoteAuthority ? fileInputs : undefined;
+			// Check for existing instAnces
+			const windowsOnFolderPAth = ArrAys.coAlesce(AllFoldersToOpen.mAp(folderToOpen => findWindowOnWorkspAce(WindowsMAinService.WINDOWS, folderToOpen.folderUri)));
+			if (windowsOnFolderPAth.length > 0) {
+				const windowOnFolderPAth = windowsOnFolderPAth[0];
+				const fileInputsForWindow = fileInputs?.remoteAuthority === windowOnFolderPAth.remoteAuthority ? fileInputs : undefined;
 
 				// Do open files
-				usedWindows.push(this.doOpenFilesInExistingWindow(openConfig, windowOnFolderPath, fileInputsForWindow));
+				usedWindows.push(this.doOpenFilesInExistingWindow(openConfig, windowOnFolderPAth, fileInputsForWindow));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				if (fileInputsForWindow) {
 					fileInputs = undefined;
 				}
 
-				openFolderInNewWindow = true; // any other folders to open must open in new window then
+				openFolderInNewWindow = true; // Any other folders to open must open in new window then
 			}
 
-			// Open remaining ones
-			allFoldersToOpen.forEach(folderToOpen => {
+			// Open remAining ones
+			AllFoldersToOpen.forEAch(folderToOpen => {
 
-				if (windowsOnFolderPath.some(win => extUriBiasedIgnorePathCase.isEqual(win.openedFolderUri, folderToOpen.folderUri))) {
-					return; // ignore folders that are already open
+				if (windowsOnFolderPAth.some(win => extUriBiAsedIgnorePAthCAse.isEquAl(win.openedFolderUri, folderToOpen.folderUri))) {
+					return; // ignore folders thAt Are AlreAdy open
 				}
 
 				const remoteAuthority = folderToOpen.remoteAuthority;
 				const fileInputsForWindow = (fileInputs?.remoteAuthority === remoteAuthority) ? fileInputs : undefined;
 
 				// Do open folder
-				usedWindows.push(this.doOpenFolderOrWorkspace(openConfig, folderToOpen, openFolderInNewWindow, fileInputsForWindow));
+				usedWindows.push(this.doOpenFolderOrWorkspAce(openConfig, folderToOpen, openFolderInNewWindow, fileInputsForWindow));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				if (fileInputsForWindow) {
 					fileInputs = undefined;
 				}
 
-				openFolderInNewWindow = true; // any other folders to open must open in new window then
+				openFolderInNewWindow = true; // Any other folders to open must open in new window then
 			});
 		}
 
-		// Handle empty to restore
-		const allEmptyToRestore = arrays.distinct(emptyToRestore, info => info.backupFolder); // prevent duplicates
-		if (allEmptyToRestore.length > 0) {
-			allEmptyToRestore.forEach(emptyWindowBackupInfo => {
-				const remoteAuthority = emptyWindowBackupInfo.remoteAuthority;
+		// HAndle empty to restore
+		const AllEmptyToRestore = ArrAys.distinct(emptyToRestore, info => info.bAckupFolder); // prevent duplicAtes
+		if (AllEmptyToRestore.length > 0) {
+			AllEmptyToRestore.forEAch(emptyWindowBAckupInfo => {
+				const remoteAuthority = emptyWindowBAckupInfo.remoteAuthority;
 				const fileInputsForWindow = (fileInputs?.remoteAuthority === remoteAuthority) ? fileInputs : undefined;
 
 				usedWindows.push(this.openInBrowserWindow({
 					userEnv: openConfig.userEnv,
 					cli: openConfig.cli,
-					initialStartup: openConfig.initialStartup,
+					initiAlStArtup: openConfig.initiAlStArtup,
 					fileInputs: fileInputsForWindow,
 					remoteAuthority,
 					forceNewWindow: true,
-					forceNewTabbedWindow: openConfig.forceNewTabbedWindow,
-					emptyWindowBackupInfo
+					forceNewTAbbedWindow: openConfig.forceNewTAbbedWindow,
+					emptyWindowBAckupInfo
 				}));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				if (fileInputsForWindow) {
 					fileInputs = undefined;
 				}
 
-				openFolderInNewWindow = true; // any other folders to open must open in new window then
+				openFolderInNewWindow = true; // Any other folders to open must open in new window then
 			});
 		}
 
-		// Handle empty to open (only if no other window opened)
+		// HAndle empty to open (only if no other window opened)
 		if (usedWindows.length === 0 || fileInputs) {
 			if (fileInputs && !emptyToOpen) {
 				emptyToOpen++;
@@ -733,47 +733,47 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 			for (let i = 0; i < emptyToOpen; i++) {
 				usedWindows.push(this.doOpenEmpty(openConfig, openFolderInNewWindow, remoteAuthority, fileInputs));
 
-				// Reset these because we handled them
+				// Reset these becAuse we hAndled them
 				fileInputs = undefined;
-				openFolderInNewWindow = true; // any other window to open must open in new window then
+				openFolderInNewWindow = true; // Any other window to open must open in new window then
 			}
 		}
 
-		return arrays.distinct(usedWindows);
+		return ArrAys.distinct(usedWindows);
 	}
 
-	private doOpenFilesInExistingWindow(configuration: IOpenConfiguration, window: ICodeWindow, fileInputs?: IFileInputs): ICodeWindow {
-		this.logService.trace('windowsManager#doOpenFilesInExistingWindow');
+	privAte doOpenFilesInExistingWindow(configurAtion: IOpenConfigurAtion, window: ICodeWindow, fileInputs?: IFileInputs): ICodeWindow {
+		this.logService.trAce('windowsMAnAger#doOpenFilesInExistingWindow');
 
-		window.focus(); // make sure window has focus
+		window.focus(); // mAke sure window hAs focus
 
-		const params: { filesToOpenOrCreate?: IPath[], filesToDiff?: IPath[], filesToWait?: IPathsToWaitFor, termProgram?: string } = {};
+		const pArAms: { filesToOpenOrCreAte?: IPAth[], filesToDiff?: IPAth[], filesToWAit?: IPAthsToWAitFor, termProgrAm?: string } = {};
 		if (fileInputs) {
-			params.filesToOpenOrCreate = fileInputs.filesToOpenOrCreate;
-			params.filesToDiff = fileInputs.filesToDiff;
-			params.filesToWait = fileInputs.filesToWait;
+			pArAms.filesToOpenOrCreAte = fileInputs.filesToOpenOrCreAte;
+			pArAms.filesToDiff = fileInputs.filesToDiff;
+			pArAms.filesToWAit = fileInputs.filesToWAit;
 		}
 
-		if (configuration.userEnv) {
-			params.termProgram = configuration.userEnv['TERM_PROGRAM'];
+		if (configurAtion.userEnv) {
+			pArAms.termProgrAm = configurAtion.userEnv['TERM_PROGRAM'];
 		}
 
-		window.sendWhenReady('vscode:openFiles', params);
+		window.sendWhenReAdy('vscode:openFiles', pArAms);
 
 		return window;
 	}
 
-	private doAddFoldersToExistingWindow(window: ICodeWindow, foldersToAdd: URI[]): ICodeWindow {
-		window.focus(); // make sure window has focus
+	privAte doAddFoldersToExistingWindow(window: ICodeWindow, foldersToAdd: URI[]): ICodeWindow {
+		window.focus(); // mAke sure window hAs focus
 
 		const request: IAddFoldersRequest = { foldersToAdd };
 
-		window.sendWhenReady('vscode:addFolders', request);
+		window.sendWhenReAdy('vscode:AddFolders', request);
 
 		return window;
 	}
 
-	private doOpenEmpty(openConfig: IOpenConfiguration, forceNewWindow: boolean, remoteAuthority: string | undefined, fileInputs: IFileInputs | undefined, windowToUse?: ICodeWindow): ICodeWindow {
+	privAte doOpenEmpty(openConfig: IOpenConfigurAtion, forceNewWindow: booleAn, remoteAuthority: string | undefined, fileInputs: IFileInputs | undefined, windowToUse?: ICodeWindow): ICodeWindow {
 		if (!forceNewWindow && !windowToUse && typeof openConfig.contextWindowId === 'number') {
 			windowToUse = this.getWindowById(openConfig.contextWindowId); // fix for https://github.com/microsoft/vscode/issues/97172
 		}
@@ -781,16 +781,16 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return this.openInBrowserWindow({
 			userEnv: openConfig.userEnv,
 			cli: openConfig.cli,
-			initialStartup: openConfig.initialStartup,
+			initiAlStArtup: openConfig.initiAlStArtup,
 			remoteAuthority,
 			forceNewWindow,
-			forceNewTabbedWindow: openConfig.forceNewTabbedWindow,
+			forceNewTAbbedWindow: openConfig.forceNewTAbbedWindow,
 			fileInputs,
 			windowToUse
 		});
 	}
 
-	private doOpenFolderOrWorkspace(openConfig: IOpenConfiguration, folderOrWorkspace: IPathToOpen, forceNewWindow: boolean, fileInputs: IFileInputs | undefined, windowToUse?: ICodeWindow): ICodeWindow {
+	privAte doOpenFolderOrWorkspAce(openConfig: IOpenConfigurAtion, folderOrWorkspAce: IPAthToOpen, forceNewWindow: booleAn, fileInputs: IFileInputs | undefined, windowToUse?: ICodeWindow): ICodeWindow {
 		if (!forceNewWindow && !windowToUse && typeof openConfig.contextWindowId === 'number') {
 			windowToUse = this.getWindowById(openConfig.contextWindowId); // fix for https://github.com/microsoft/vscode/issues/49587
 		}
@@ -798,57 +798,57 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return this.openInBrowserWindow({
 			userEnv: openConfig.userEnv,
 			cli: openConfig.cli,
-			initialStartup: openConfig.initialStartup,
-			workspace: folderOrWorkspace.workspace,
-			folderUri: folderOrWorkspace.folderUri,
+			initiAlStArtup: openConfig.initiAlStArtup,
+			workspAce: folderOrWorkspAce.workspAce,
+			folderUri: folderOrWorkspAce.folderUri,
 			fileInputs,
-			remoteAuthority: folderOrWorkspace.remoteAuthority,
+			remoteAuthority: folderOrWorkspAce.remoteAuthority,
 			forceNewWindow,
-			forceNewTabbedWindow: openConfig.forceNewTabbedWindow,
+			forceNewTAbbedWindow: openConfig.forceNewTAbbedWindow,
 			windowToUse
 		});
 	}
 
-	private getPathsToOpen(openConfig: IOpenConfiguration): IPathToOpen[] {
-		let windowsToOpen: IPathToOpen[];
-		let isCommandLineOrAPICall = false;
+	privAte getPAthsToOpen(openConfig: IOpenConfigurAtion): IPAthToOpen[] {
+		let windowsToOpen: IPAthToOpen[];
+		let isCommAndLineOrAPICAll = fAlse;
 
-		// Extract paths: from API
+		// ExtrAct pAths: from API
 		if (openConfig.urisToOpen && openConfig.urisToOpen.length > 0) {
-			windowsToOpen = this.doExtractPathsFromAPI(openConfig);
-			isCommandLineOrAPICall = true;
+			windowsToOpen = this.doExtrActPAthsFromAPI(openConfig);
+			isCommAndLineOrAPICAll = true;
 		}
 
 		// Check for force empty
 		else if (openConfig.forceEmpty) {
-			windowsToOpen = [Object.create(null)];
+			windowsToOpen = [Object.creAte(null)];
 		}
 
-		// Extract paths: from CLI
+		// ExtrAct pAths: from CLI
 		else if (openConfig.cli._.length || openConfig.cli['folder-uri'] || openConfig.cli['file-uri']) {
-			windowsToOpen = this.doExtractPathsFromCLI(openConfig.cli);
-			isCommandLineOrAPICall = true;
+			windowsToOpen = this.doExtrActPAthsFromCLI(openConfig.cli);
+			isCommAndLineOrAPICAll = true;
 		}
 
-		// Extract windows: from previous session
+		// ExtrAct windows: from previous session
 		else {
-			windowsToOpen = this.doGetWindowsFromLastSession();
+			windowsToOpen = this.doGetWindowsFromLAstSession();
 		}
 
-		// Convert multiple folders into workspace (if opened via API or CLI)
-		// This will ensure to open these folders in one window instead of multiple
-		// If we are in addMode, we should not do this because in that case all
-		// folders should be added to the existing window.
-		if (!openConfig.addMode && isCommandLineOrAPICall) {
-			const foldersToOpen = windowsToOpen.filter(path => !!path.folderUri);
+		// Convert multiple folders into workspAce (if opened viA API or CLI)
+		// This will ensure to open these folders in one window insteAd of multiple
+		// If we Are in AddMode, we should not do this becAuse in thAt cAse All
+		// folders should be Added to the existing window.
+		if (!openConfig.AddMode && isCommAndLineOrAPICAll) {
+			const foldersToOpen = windowsToOpen.filter(pAth => !!pAth.folderUri);
 			if (foldersToOpen.length > 1) {
 				const remoteAuthority = foldersToOpen[0].remoteAuthority;
-				if (foldersToOpen.every(f => f.remoteAuthority === remoteAuthority)) { // only if all folder have the same authority
-					const workspace = this.workspacesMainService.createUntitledWorkspaceSync(foldersToOpen.map(folder => ({ uri: folder.folderUri! })));
+				if (foldersToOpen.every(f => f.remoteAuthority === remoteAuthority)) { // only if All folder hAve the sAme Authority
+					const workspAce = this.workspAcesMAinService.creAteUntitledWorkspAceSync(foldersToOpen.mAp(folder => ({ uri: folder.folderUri! })));
 
-					// Add workspace and remove folders thereby
-					windowsToOpen.push({ workspace, remoteAuthority });
-					windowsToOpen = windowsToOpen.filter(path => !path.folderUri);
+					// Add workspAce And remove folders thereby
+					windowsToOpen.push({ workspAce, remoteAuthority });
+					windowsToOpen = windowsToOpen.filter(pAth => !pAth.folderUri);
 				}
 			}
 		}
@@ -856,59 +856,59 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return windowsToOpen;
 	}
 
-	private doExtractPathsFromAPI(openConfig: IOpenConfiguration): IPathToOpen[] {
-		const pathsToOpen: IPathToOpen[] = [];
-		const parseOptions: IPathParseOptions = { gotoLineMode: openConfig.gotoLineMode };
-		for (const pathToOpen of openConfig.urisToOpen || []) {
-			if (!pathToOpen) {
+	privAte doExtrActPAthsFromAPI(openConfig: IOpenConfigurAtion): IPAthToOpen[] {
+		const pAthsToOpen: IPAthToOpen[] = [];
+		const pArseOptions: IPAthPArseOptions = { gotoLineMode: openConfig.gotoLineMode };
+		for (const pAthToOpen of openConfig.urisToOpen || []) {
+			if (!pAthToOpen) {
 				continue;
 			}
 
-			const path = this.parseUri(pathToOpen, parseOptions);
-			if (path) {
-				path.label = pathToOpen.label;
-				pathsToOpen.push(path);
+			const pAth = this.pArseUri(pAthToOpen, pArseOptions);
+			if (pAth) {
+				pAth.lAbel = pAthToOpen.lAbel;
+				pAthsToOpen.push(pAth);
 			} else {
-				const uri = this.resourceFromURIToOpen(pathToOpen);
+				const uri = this.resourceFromURIToOpen(pAthToOpen);
 
-				// Warn about the invalid URI or path
-				let message, detail;
-				if (uri.scheme === Schemas.file) {
-					message = localize('pathNotExistTitle', "Path does not exist");
-					detail = localize('pathNotExistDetail', "The path '{0}' does not seem to exist anymore on disk.", getPathLabel(uri.fsPath, this.environmentService));
+				// WArn About the invAlid URI or pAth
+				let messAge, detAil;
+				if (uri.scheme === SchemAs.file) {
+					messAge = locAlize('pAthNotExistTitle', "PAth does not exist");
+					detAil = locAlize('pAthNotExistDetAil', "The pAth '{0}' does not seem to exist Anymore on disk.", getPAthLAbel(uri.fsPAth, this.environmentService));
 				} else {
-					message = localize('uriInvalidTitle', "URI can not be opened");
-					detail = localize('uriInvalidDetail', "The URI '{0}' is not valid and can not be opened.", uri.toString());
+					messAge = locAlize('uriInvAlidTitle', "URI cAn not be opened");
+					detAil = locAlize('uriInvAlidDetAil', "The URI '{0}' is not vAlid And cAn not be opened.", uri.toString());
 				}
 
-				const options: MessageBoxOptions = {
-					title: product.nameLong,
+				const options: MessAgeBoxOptions = {
+					title: product.nAmeLong,
 					type: 'info',
-					buttons: [localize('ok', "OK")],
-					message,
-					detail,
+					buttons: [locAlize('ok', "OK")],
+					messAge,
+					detAil,
 					noLink: true
 				};
 
-				this.dialogMainService.showMessageBox(options, withNullAsUndefined(BrowserWindow.getFocusedWindow()));
+				this.diAlogMAinService.showMessAgeBox(options, withNullAsUndefined(BrowserWindow.getFocusedWindow()));
 			}
 		}
-		return pathsToOpen;
+		return pAthsToOpen;
 	}
 
-	private doExtractPathsFromCLI(cli: NativeParsedArgs): IPath[] {
-		const pathsToOpen: IPathToOpen[] = [];
-		const parseOptions: IPathParseOptions = { ignoreFileNotFound: true, gotoLineMode: cli.goto, remoteAuthority: cli.remote || undefined };
+	privAte doExtrActPAthsFromCLI(cli: NAtivePArsedArgs): IPAth[] {
+		const pAthsToOpen: IPAthToOpen[] = [];
+		const pArseOptions: IPAthPArseOptions = { ignoreFileNotFound: true, gotoLineMode: cli.goto, remoteAuthority: cli.remote || undefined };
 
 		// folder uris
 		const folderUris = cli['folder-uri'];
 		if (folderUris) {
 			for (let f of folderUris) {
-				const folderUri = this.argToUri(f);
+				const folderUri = this.ArgToUri(f);
 				if (folderUri) {
-					const path = this.parseUri({ folderUri }, parseOptions);
-					if (path) {
-						pathsToOpen.push(path);
+					const pAth = this.pArseUri({ folderUri }, pArseOptions);
+					if (pAth) {
+						pAthsToOpen.push(pAth);
 					}
 				}
 			}
@@ -919,70 +919,70 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		const fileUris = cli['file-uri'];
 		if (fileUris) {
 			for (let f of fileUris) {
-				const fileUri = this.argToUri(f);
+				const fileUri = this.ArgToUri(f);
 				if (fileUri) {
-					const path = this.parseUri(hasWorkspaceFileExtension(f) ? { workspaceUri: fileUri } : { fileUri }, parseOptions);
-					if (path) {
-						pathsToOpen.push(path);
+					const pAth = this.pArseUri(hAsWorkspAceFileExtension(f) ? { workspAceUri: fileUri } : { fileUri }, pArseOptions);
+					if (pAth) {
+						pAthsToOpen.push(pAth);
 					}
 				}
 			}
 		}
 
-		// folder or file paths
+		// folder or file pAths
 		const cliArgs = cli._;
 		for (let cliArg of cliArgs) {
-			const path = this.parsePath(cliArg, parseOptions);
-			if (path) {
-				pathsToOpen.push(path);
+			const pAth = this.pArsePAth(cliArg, pArseOptions);
+			if (pAth) {
+				pAthsToOpen.push(pAth);
 			}
 		}
 
-		if (pathsToOpen.length) {
-			return pathsToOpen;
+		if (pAthsToOpen.length) {
+			return pAthsToOpen;
 		}
 
-		// No path provided, return empty to open empty
-		return [Object.create(null)];
+		// No pAth provided, return empty to open empty
+		return [Object.creAte(null)];
 	}
 
-	private doGetWindowsFromLastSession(): IPathToOpen[] {
+	privAte doGetWindowsFromLAstSession(): IPAthToOpen[] {
 		const restoreWindows = this.getRestoreWindowsSetting();
 
 		switch (restoreWindows) {
 
-			// none: we always open an empty window
-			case 'none':
-				return [Object.create(null)];
+			// none: we AlwAys open An empty window
+			cAse 'none':
+				return [Object.creAte(null)];
 
-			// one: restore last opened workspace/folder or empty window
-			// all: restore all windows
-			// folders: restore last opened folders only
-			case 'one':
-			case 'all':
-			case 'folders':
-				const openedWindows: IWindowState[] = [];
+			// one: restore lAst opened workspAce/folder or empty window
+			// All: restore All windows
+			// folders: restore lAst opened folders only
+			cAse 'one':
+			cAse 'All':
+			cAse 'folders':
+				const openedWindows: IWindowStAte[] = [];
 				if (restoreWindows !== 'one') {
-					openedWindows.push(...this.windowsState.openedWindows);
+					openedWindows.push(...this.windowsStAte.openedWindows);
 				}
-				if (this.windowsState.lastActiveWindow) {
-					openedWindows.push(this.windowsState.lastActiveWindow);
+				if (this.windowsStAte.lAstActiveWindow) {
+					openedWindows.push(this.windowsStAte.lAstActiveWindow);
 				}
 
-				const windowsToOpen: IPathToOpen[] = [];
+				const windowsToOpen: IPAthToOpen[] = [];
 				for (const openedWindow of openedWindows) {
-					if (openedWindow.workspace) { // Workspaces
-						const pathToOpen = this.parseUri({ workspaceUri: openedWindow.workspace.configPath }, { remoteAuthority: openedWindow.remoteAuthority });
-						if (pathToOpen?.workspace) {
-							windowsToOpen.push(pathToOpen);
+					if (openedWindow.workspAce) { // WorkspAces
+						const pAthToOpen = this.pArseUri({ workspAceUri: openedWindow.workspAce.configPAth }, { remoteAuthority: openedWindow.remoteAuthority });
+						if (pAthToOpen?.workspAce) {
+							windowsToOpen.push(pAthToOpen);
 						}
 					} else if (openedWindow.folderUri) { // Folders
-						const pathToOpen = this.parseUri({ folderUri: openedWindow.folderUri }, { remoteAuthority: openedWindow.remoteAuthority });
-						if (pathToOpen?.folderUri) {
-							windowsToOpen.push(pathToOpen);
+						const pAthToOpen = this.pArseUri({ folderUri: openedWindow.folderUri }, { remoteAuthority: openedWindow.remoteAuthority });
+						if (pAthToOpen?.folderUri) {
+							windowsToOpen.push(pAthToOpen);
 						}
-					} else if (restoreWindows !== 'folders' && openedWindow.backupPath) { // Empty window, potentially editors open to be restored
-						windowsToOpen.push({ backupPath: openedWindow.backupPath, remoteAuthority: openedWindow.remoteAuthority });
+					} else if (restoreWindows !== 'folders' && openedWindow.bAckupPAth) { // Empty window, potentiAlly editors open to be restored
+						windowsToOpen.push({ bAckupPAth: openedWindow.bAckupPAth, remoteAuthority: openedWindow.remoteAuthority });
 					}
 				}
 
@@ -990,72 +990,72 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 					return windowsToOpen;
 				}
 
-				break;
+				breAk;
 		}
 
-		// Always fallback to empty window
-		return [Object.create(null)];
+		// AlwAys fAllbAck to empty window
+		return [Object.creAte(null)];
 	}
 
-	private getRestoreWindowsSetting(): RestoreWindowsSetting {
+	privAte getRestoreWindowsSetting(): RestoreWindowsSetting {
 		let restoreWindows: RestoreWindowsSetting;
-		if (this.lifecycleMainService.wasRestarted) {
-			restoreWindows = 'all'; // always reopen all windows when an update was applied
+		if (this.lifecycleMAinService.wAsRestArted) {
+			restoreWindows = 'All'; // AlwAys reopen All windows when An updAte wAs Applied
 		} else {
-			const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-			restoreWindows = windowConfig?.restoreWindows || 'all'; // by default restore all windows
+			const windowConfig = this.configurAtionService.getVAlue<IWindowSettings>('window');
+			restoreWindows = windowConfig?.restoreWindows || 'All'; // by defAult restore All windows
 
-			if (!['all', 'folders', 'one', 'none'].includes(restoreWindows)) {
-				restoreWindows = 'all'; // by default restore all windows
+			if (!['All', 'folders', 'one', 'none'].includes(restoreWindows)) {
+				restoreWindows = 'All'; // by defAult restore All windows
 			}
 		}
 
 		return restoreWindows;
 	}
 
-	private argToUri(arg: string): URI | undefined {
+	privAte ArgToUri(Arg: string): URI | undefined {
 		try {
-			const uri = URI.parse(arg);
+			const uri = URI.pArse(Arg);
 			if (!uri.scheme) {
-				this.logService.error(`Invalid URI input string, scheme missing: ${arg}`);
+				this.logService.error(`InvAlid URI input string, scheme missing: ${Arg}`);
 				return undefined;
 			}
 
 			return uri;
-		} catch (e) {
-			this.logService.error(`Invalid URI input string: ${arg}, ${e.message}`);
+		} cAtch (e) {
+			this.logService.error(`InvAlid URI input string: ${Arg}, ${e.messAge}`);
 		}
 
 		return undefined;
 	}
 
-	private parseUri(toOpen: IWindowOpenable, options: IPathParseOptions = {}): IPathToOpen | undefined {
+	privAte pArseUri(toOpen: IWindowOpenAble, options: IPAthPArseOptions = {}): IPAthToOpen | undefined {
 		if (!toOpen) {
 			return undefined;
 		}
 
 		let uri = this.resourceFromURIToOpen(toOpen);
-		if (uri.scheme === Schemas.file) {
-			return this.parsePath(uri.fsPath, options, isFileToOpen(toOpen));
+		if (uri.scheme === SchemAs.file) {
+			return this.pArsePAth(uri.fsPAth, options, isFileToOpen(toOpen));
 		}
 
-		// open remote if either specified in the cli or if it's a remotehost URI
+		// open remote if either specified in the cli or if it's A remotehost URI
 		const remoteAuthority = options.remoteAuthority || getRemoteAuthority(uri);
 
-		// normalize URI
-		uri = normalizePath(uri);
+		// normAlize URI
+		uri = normAlizePAth(uri);
 
-		// remove trailing slash
-		uri = removeTrailingPathSeparator(uri);
+		// remove trAiling slAsh
+		uri = removeTrAilingPAthSepArAtor(uri);
 
 		// File
 		if (isFileToOpen(toOpen)) {
 			if (options.gotoLineMode) {
-				const parsedPath = parseLineAndColumnAware(uri.path);
+				const pArsedPAth = pArseLineAndColumnAwAre(uri.pAth);
 				return {
-					fileUri: uri.with({ path: parsedPath.path }),
-					lineNumber: parsedPath.line,
-					columnNumber: parsedPath.column,
+					fileUri: uri.with({ pAth: pArsedPAth.pAth }),
+					lineNumber: pArsedPAth.line,
+					columnNumber: pArsedPAth.column,
 					remoteAuthority
 				};
 			}
@@ -1066,10 +1066,10 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 			};
 		}
 
-		// Workspace
-		else if (isWorkspaceToOpen(toOpen)) {
+		// WorkspAce
+		else if (isWorkspAceToOpen(toOpen)) {
 			return {
-				workspace: getWorkspaceIdentifier(uri),
+				workspAce: getWorkspAceIdentifier(uri),
 				remoteAuthority
 			};
 		}
@@ -1081,76 +1081,76 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		};
 	}
 
-	private resourceFromURIToOpen(openable: IWindowOpenable): URI {
-		if (isWorkspaceToOpen(openable)) {
-			return openable.workspaceUri;
+	privAte resourceFromURIToOpen(openAble: IWindowOpenAble): URI {
+		if (isWorkspAceToOpen(openAble)) {
+			return openAble.workspAceUri;
 		}
 
-		if (isFolderToOpen(openable)) {
-			return openable.folderUri;
+		if (isFolderToOpen(openAble)) {
+			return openAble.folderUri;
 		}
 
-		return openable.fileUri;
+		return openAble.fileUri;
 	}
 
-	private parsePath(anyPath: string, options: IPathParseOptions, forceOpenWorkspaceAsFile?: boolean): IPathToOpen | undefined {
-		if (!anyPath) {
+	privAte pArsePAth(AnyPAth: string, options: IPAthPArseOptions, forceOpenWorkspAceAsFile?: booleAn): IPAthToOpen | undefined {
+		if (!AnyPAth) {
 			return undefined;
 		}
 
 		let lineNumber, columnNumber: number | undefined;
 
 		if (options.gotoLineMode) {
-			const parsedPath = parseLineAndColumnAware(anyPath);
-			lineNumber = parsedPath.line;
-			columnNumber = parsedPath.column;
+			const pArsedPAth = pArseLineAndColumnAwAre(AnyPAth);
+			lineNumber = pArsedPAth.line;
+			columnNumber = pArsedPAth.column;
 
-			anyPath = parsedPath.path;
+			AnyPAth = pArsedPAth.pAth;
 		}
 
-		// open remote if either specified in the cli even if it is a local file.
+		// open remote if either specified in the cli even if it is A locAl file.
 		const remoteAuthority = options.remoteAuthority;
 
 		if (remoteAuthority) {
-			const first = anyPath.charCodeAt(0);
+			const first = AnyPAth.chArCodeAt(0);
 
-			// make absolute
-			if (first !== CharCode.Slash) {
-				if (isWindowsDriveLetter(first) && anyPath.charCodeAt(anyPath.charCodeAt(1)) === CharCode.Colon) {
-					anyPath = toSlashes(anyPath);
+			// mAke Absolute
+			if (first !== ChArCode.SlAsh) {
+				if (isWindowsDriveLetter(first) && AnyPAth.chArCodeAt(AnyPAth.chArCodeAt(1)) === ChArCode.Colon) {
+					AnyPAth = toSlAshes(AnyPAth);
 				}
-				anyPath = '/' + anyPath;
+				AnyPAth = '/' + AnyPAth;
 			}
 
-			const uri = URI.from({ scheme: Schemas.vscodeRemote, authority: remoteAuthority, path: anyPath });
+			const uri = URI.from({ scheme: SchemAs.vscodeRemote, Authority: remoteAuthority, pAth: AnyPAth });
 
-			// guess the file type: If it ends with a slash it's a folder. If it has a file extension, it's a file or a workspace. By defaults it's a folder.
-			if (anyPath.charCodeAt(anyPath.length - 1) !== CharCode.Slash) {
-				if (hasWorkspaceFileExtension(anyPath)) {
-					if (forceOpenWorkspaceAsFile) {
+			// guess the file type: If it ends with A slAsh it's A folder. If it hAs A file extension, it's A file or A workspAce. By defAults it's A folder.
+			if (AnyPAth.chArCodeAt(AnyPAth.length - 1) !== ChArCode.SlAsh) {
+				if (hAsWorkspAceFileExtension(AnyPAth)) {
+					if (forceOpenWorkspAceAsFile) {
 						return { fileUri: uri, remoteAuthority };
 					}
-				} else if (posix.basename(anyPath).indexOf('.') !== -1) { // file name starts with a dot or has an file extension
+				} else if (posix.bAsenAme(AnyPAth).indexOf('.') !== -1) { // file nAme stArts with A dot or hAs An file extension
 					return { fileUri: uri, remoteAuthority };
 				}
 			}
 			return { folderUri: uri, remoteAuthority };
 		}
 
-		let candidate = normalize(anyPath);
+		let cAndidAte = normAlize(AnyPAth);
 
 		try {
 
-			const candidateStat = fs.statSync(candidate);
-			if (candidateStat.isFile()) {
+			const cAndidAteStAt = fs.stAtSync(cAndidAte);
+			if (cAndidAteStAt.isFile()) {
 
-				// Workspace (unless disabled via flag)
-				if (!forceOpenWorkspaceAsFile) {
-					const workspace = this.workspacesMainService.resolveLocalWorkspaceSync(URI.file(candidate));
-					if (workspace) {
+				// WorkspAce (unless disAbled viA flAg)
+				if (!forceOpenWorkspAceAsFile) {
+					const workspAce = this.workspAcesMAinService.resolveLocAlWorkspAceSync(URI.file(cAndidAte));
+					if (workspAce) {
 						return {
-							workspace: { id: workspace.id, configPath: workspace.configPath },
-							remoteAuthority: workspace.remoteAuthority,
+							workspAce: { id: workspAce.id, configPAth: workspAce.configPAth },
+							remoteAuthority: workspAce.remoteAuthority,
 							exists: true
 						};
 					}
@@ -1158,7 +1158,7 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 
 				// File
 				return {
-					fileUri: URI.file(candidate),
+					fileUri: URI.file(cAndidAte),
 					lineNumber,
 					columnNumber,
 					remoteAuthority,
@@ -1166,26 +1166,26 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 				};
 			}
 
-			// Folder (we check for isDirectory() because e.g. paths like /dev/null
-			// are neither file nor folder but some external tools might pass them
+			// Folder (we check for isDirectory() becAuse e.g. pAths like /dev/null
+			// Are neither file nor folder but some externAl tools might pAss them
 			// over to us)
-			else if (candidateStat.isDirectory()) {
+			else if (cAndidAteStAt.isDirectory()) {
 				return {
-					folderUri: URI.file(candidate),
+					folderUri: URI.file(cAndidAte),
 					remoteAuthority,
 					exists: true
 				};
 			}
-		} catch (error) {
-			const fileUri = URI.file(candidate);
-			this.workspacesHistoryMainService.removeRecentlyOpened([fileUri]); // since file does not seem to exist anymore, remove from recent
+		} cAtch (error) {
+			const fileUri = URI.file(cAndidAte);
+			this.workspAcesHistoryMAinService.removeRecentlyOpened([fileUri]); // since file does not seem to exist Anymore, remove from recent
 
-			// assume this is a file that does not yet exist
+			// Assume this is A file thAt does not yet exist
 			if (options?.ignoreFileNotFound) {
 				return {
 					fileUri,
 					remoteAuthority,
-					exists: false
+					exists: fAlse
 				};
 			}
 		}
@@ -1193,41 +1193,41 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return undefined;
 	}
 
-	private shouldOpenNewWindow(openConfig: IOpenConfiguration): { openFolderInNewWindow: boolean; openFilesInNewWindow: boolean; } {
+	privAte shouldOpenNewWindow(openConfig: IOpenConfigurAtion): { openFolderInNewWindow: booleAn; openFilesInNewWindow: booleAn; } {
 
-		// let the user settings override how folders are open in a new window or same window unless we are forced
-		const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-		const openFolderInNewWindowConfig = windowConfig?.openFoldersInNewWindow || 'default' /* default */;
-		const openFilesInNewWindowConfig = windowConfig?.openFilesInNewWindow || 'off' /* default */;
+		// let the user settings override how folders Are open in A new window or sAme window unless we Are forced
+		const windowConfig = this.configurAtionService.getVAlue<IWindowSettings>('window');
+		const openFolderInNewWindowConfig = windowConfig?.openFoldersInNewWindow || 'defAult' /* defAult */;
+		const openFilesInNewWindowConfig = windowConfig?.openFilesInNewWindow || 'off' /* defAult */;
 
 		let openFolderInNewWindow = (openConfig.preferNewWindow || openConfig.forceNewWindow) && !openConfig.forceReuseWindow;
 		if (!openConfig.forceNewWindow && !openConfig.forceReuseWindow && (openFolderInNewWindowConfig === 'on' || openFolderInNewWindowConfig === 'off')) {
 			openFolderInNewWindow = (openFolderInNewWindowConfig === 'on');
 		}
 
-		// let the user settings override how files are open in a new window or same window unless we are forced (not for extension development though)
-		let openFilesInNewWindow: boolean = false;
+		// let the user settings override how files Are open in A new window or sAme window unless we Are forced (not for extension development though)
+		let openFilesInNewWindow: booleAn = fAlse;
 		if (openConfig.forceNewWindow || openConfig.forceReuseWindow) {
 			openFilesInNewWindow = !!openConfig.forceNewWindow && !openConfig.forceReuseWindow;
 		} else {
 
-			// macOS: by default we open files in a new window if this is triggered via DOCK context
-			if (isMacintosh) {
+			// mAcOS: by defAult we open files in A new window if this is triggered viA DOCK context
+			if (isMAcintosh) {
 				if (openConfig.context === OpenContext.DOCK) {
 					openFilesInNewWindow = true;
 				}
 			}
 
-			// Linux/Windows: by default we open files in the new window unless triggered via DIALOG / MENU context
-			// or from the integrated terminal where we assume the user prefers to open in the current window
+			// Linux/Windows: by defAult we open files in the new window unless triggered viA DIALOG / MENU context
+			// or from the integrAted terminAl where we Assume the user prefers to open in the current window
 			else {
 				if (openConfig.context !== OpenContext.DIALOG && openConfig.context !== OpenContext.MENU && !(openConfig.userEnv && openConfig.userEnv['TERM_PROGRAM'] === 'vscode')) {
 					openFilesInNewWindow = true;
 				}
 			}
 
-			// finally check for overrides of default
-			if (!openConfig.cli.extensionDevelopmentPath && (openFilesInNewWindowConfig === 'on' || openFilesInNewWindowConfig === 'off')) {
+			// finAlly check for overrides of defAult
+			if (!openConfig.cli.extensionDevelopmentPAth && (openFilesInNewWindowConfig === 'on' || openFilesInNewWindowConfig === 'off')) {
 				openFilesInNewWindow = (openFilesInNewWindowConfig === 'on');
 			}
 		}
@@ -1235,15 +1235,15 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return { openFolderInNewWindow: !!openFolderInNewWindow, openFilesInNewWindow };
 	}
 
-	openExtensionDevelopmentHostWindow(extensionDevelopmentPath: string[], openConfig: IOpenConfiguration): ICodeWindow[] {
+	openExtensionDevelopmentHostWindow(extensionDevelopmentPAth: string[], openConfig: IOpenConfigurAtion): ICodeWindow[] {
 
-		// Reload an existing extension development host window on the same path
-		// We currently do not allow more than one extension development window
-		// on the same extension path.
-		const existingWindow = findWindowOnExtensionDevelopmentPath(WindowsMainService.WINDOWS, extensionDevelopmentPath);
+		// ReloAd An existing extension development host window on the sAme pAth
+		// We currently do not Allow more thAn one extension development window
+		// on the sAme extension pAth.
+		const existingWindow = findWindowOnExtensionDevelopmentPAth(WindowsMAinService.WINDOWS, extensionDevelopmentPAth);
 		if (existingWindow) {
-			this.lifecycleMainService.reload(existingWindow, openConfig.cli);
-			existingWindow.focus(); // make sure it gets focus and is restored
+			this.lifecycleMAinService.reloAd(existingWindow, openConfig.cli);
+			existingWindow.focus(); // mAke sure it gets focus And is restored
 
 			return [existingWindow];
 		}
@@ -1251,128 +1251,128 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		let fileUris = openConfig.cli['file-uri'] || [];
 		let cliArgs = openConfig.cli._;
 
-		// Fill in previously opened workspace unless an explicit path is provided and we are not unit testing
-		if (!cliArgs.length && !folderUris.length && !fileUris.length && !openConfig.cli.extensionTestsPath) {
-			const extensionDevelopmentWindowState = this.windowsState.lastPluginDevelopmentHostWindow;
-			const workspaceToOpen = extensionDevelopmentWindowState && (extensionDevelopmentWindowState.workspace || extensionDevelopmentWindowState.folderUri);
-			if (workspaceToOpen) {
-				if (isSingleFolderWorkspaceIdentifier(workspaceToOpen)) {
-					if (workspaceToOpen.scheme === Schemas.file) {
-						cliArgs = [workspaceToOpen.fsPath];
+		// Fill in previously opened workspAce unless An explicit pAth is provided And we Are not unit testing
+		if (!cliArgs.length && !folderUris.length && !fileUris.length && !openConfig.cli.extensionTestsPAth) {
+			const extensionDevelopmentWindowStAte = this.windowsStAte.lAstPluginDevelopmentHostWindow;
+			const workspAceToOpen = extensionDevelopmentWindowStAte && (extensionDevelopmentWindowStAte.workspAce || extensionDevelopmentWindowStAte.folderUri);
+			if (workspAceToOpen) {
+				if (isSingleFolderWorkspAceIdentifier(workspAceToOpen)) {
+					if (workspAceToOpen.scheme === SchemAs.file) {
+						cliArgs = [workspAceToOpen.fsPAth];
 					} else {
-						folderUris = [workspaceToOpen.toString()];
+						folderUris = [workspAceToOpen.toString()];
 					}
 				} else {
-					if (workspaceToOpen.configPath.scheme === Schemas.file) {
-						cliArgs = [originalFSPath(workspaceToOpen.configPath)];
+					if (workspAceToOpen.configPAth.scheme === SchemAs.file) {
+						cliArgs = [originAlFSPAth(workspAceToOpen.configPAth)];
 					} else {
-						fileUris = [workspaceToOpen.configPath.toString()];
+						fileUris = [workspAceToOpen.configPAth.toString()];
 					}
 				}
 			}
 		}
 
-		let authority = '';
-		for (let p of extensionDevelopmentPath) {
-			if (p.match(/^[a-zA-Z][a-zA-Z0-9\+\-\.]+:/)) {
-				const url = URI.parse(p);
-				if (url.scheme === Schemas.vscodeRemote) {
-					if (authority) {
-						if (url.authority !== authority) {
-							this.logService.error('more than one extension development path authority');
+		let Authority = '';
+		for (let p of extensionDevelopmentPAth) {
+			if (p.mAtch(/^[A-zA-Z][A-zA-Z0-9\+\-\.]+:/)) {
+				const url = URI.pArse(p);
+				if (url.scheme === SchemAs.vscodeRemote) {
+					if (Authority) {
+						if (url.Authority !== Authority) {
+							this.logService.error('more thAn one extension development pAth Authority');
 						}
 					} else {
-						authority = url.authority;
+						Authority = url.Authority;
 					}
 				}
 			}
 		}
 
-		// Make sure that we do not try to open:
-		// - a workspace or folder that is already opened
-		// - a workspace or file that has a different authority as the extension development.
+		// MAke sure thAt we do not try to open:
+		// - A workspAce or folder thAt is AlreAdy opened
+		// - A workspAce or file thAt hAs A different Authority As the extension development.
 
-		cliArgs = cliArgs.filter(path => {
-			const uri = URI.file(path);
-			if (!!findWindowOnWorkspaceOrFolderUri(WindowsMainService.WINDOWS, uri)) {
-				return false;
+		cliArgs = cliArgs.filter(pAth => {
+			const uri = URI.file(pAth);
+			if (!!findWindowOnWorkspAceOrFolderUri(WindowsMAinService.WINDOWS, uri)) {
+				return fAlse;
 			}
-			return uri.authority === authority;
+			return uri.Authority === Authority;
 		});
 
 		folderUris = folderUris.filter(uri => {
-			const u = this.argToUri(uri);
-			if (!!findWindowOnWorkspaceOrFolderUri(WindowsMainService.WINDOWS, u)) {
-				return false;
+			const u = this.ArgToUri(uri);
+			if (!!findWindowOnWorkspAceOrFolderUri(WindowsMAinService.WINDOWS, u)) {
+				return fAlse;
 			}
-			return u ? u.authority === authority : false;
+			return u ? u.Authority === Authority : fAlse;
 		});
 
 		fileUris = fileUris.filter(uri => {
-			const u = this.argToUri(uri);
-			if (!!findWindowOnWorkspaceOrFolderUri(WindowsMainService.WINDOWS, u)) {
-				return false;
+			const u = this.ArgToUri(uri);
+			if (!!findWindowOnWorkspAceOrFolderUri(WindowsMAinService.WINDOWS, u)) {
+				return fAlse;
 			}
-			return u ? u.authority === authority : false;
+			return u ? u.Authority === Authority : fAlse;
 		});
 
 		openConfig.cli._ = cliArgs;
 		openConfig.cli['folder-uri'] = folderUris;
 		openConfig.cli['file-uri'] = fileUris;
 
-		// if there are no files or folders cli args left, use the "remote" cli argument
+		// if there Are no files or folders cli Args left, use the "remote" cli Argument
 		const noFilesOrFolders = !cliArgs.length && !folderUris.length && !fileUris.length;
-		if (noFilesOrFolders && authority) {
-			openConfig.cli.remote = authority;
+		if (noFilesOrFolders && Authority) {
+			openConfig.cli.remote = Authority;
 		}
 
 		// Open it
-		const openArgs: IOpenConfiguration = {
+		const openArgs: IOpenConfigurAtion = {
 			context: openConfig.context,
 			cli: openConfig.cli,
 			forceNewWindow: true,
 			forceEmpty: noFilesOrFolders,
 			userEnv: openConfig.userEnv,
 			noRecentEntry: true,
-			waitMarkerFileURI: openConfig.waitMarkerFileURI
+			wAitMArkerFileURI: openConfig.wAitMArkerFileURI
 		};
 
 		return this.open(openArgs);
 	}
 
-	private openInBrowserWindow(options: IOpenBrowserWindowOptions): ICodeWindow {
+	privAte openInBrowserWindow(options: IOpenBrowserWindowOptions): ICodeWindow {
 
-		// Build INativeWindowConfiguration from config and options
-		const configuration: INativeWindowConfiguration = mixin({}, options.cli); // inherit all properties from CLI
-		configuration.appRoot = this.environmentService.appRoot;
-		configuration.machineId = this.machineId;
-		configuration.nodeCachedDataDir = this.environmentService.nodeCachedDataDir;
-		configuration.mainPid = process.pid;
-		configuration.execPath = process.execPath;
-		configuration.userEnv = { ...this.initialUserEnv, ...options.userEnv };
-		configuration.isInitialStartup = options.initialStartup;
-		configuration.workspace = options.workspace;
-		configuration.folderUri = options.folderUri;
-		configuration.remoteAuthority = options.remoteAuthority;
+		// Build INAtiveWindowConfigurAtion from config And options
+		const configurAtion: INAtiveWindowConfigurAtion = mixin({}, options.cli); // inherit All properties from CLI
+		configurAtion.AppRoot = this.environmentService.AppRoot;
+		configurAtion.mAchineId = this.mAchineId;
+		configurAtion.nodeCAchedDAtADir = this.environmentService.nodeCAchedDAtADir;
+		configurAtion.mAinPid = process.pid;
+		configurAtion.execPAth = process.execPAth;
+		configurAtion.userEnv = { ...this.initiAlUserEnv, ...options.userEnv };
+		configurAtion.isInitiAlStArtup = options.initiAlStArtup;
+		configurAtion.workspAce = options.workspAce;
+		configurAtion.folderUri = options.folderUri;
+		configurAtion.remoteAuthority = options.remoteAuthority;
 
 		const fileInputs = options.fileInputs;
 		if (fileInputs) {
-			configuration.filesToOpenOrCreate = fileInputs.filesToOpenOrCreate;
-			configuration.filesToDiff = fileInputs.filesToDiff;
-			configuration.filesToWait = fileInputs.filesToWait;
+			configurAtion.filesToOpenOrCreAte = fileInputs.filesToOpenOrCreAte;
+			configurAtion.filesToDiff = fileInputs.filesToDiff;
+			configurAtion.filesToWAit = fileInputs.filesToWAit;
 		}
 
-		// if we know the backup folder upfront (for empty windows to restore), we can set it
-		// directly here which helps for restoring UI state associated with that window.
-		// For all other cases we first call into registerEmptyWindowBackupSync() to set it before
-		// loading the window.
-		if (options.emptyWindowBackupInfo) {
-			configuration.backupPath = join(this.environmentService.backupHome, options.emptyWindowBackupInfo.backupFolder);
+		// if we know the bAckup folder upfront (for empty windows to restore), we cAn set it
+		// directly here which helps for restoring UI stAte AssociAted with thAt window.
+		// For All other cAses we first cAll into registerEmptyWindowBAckupSync() to set it before
+		// loAding the window.
+		if (options.emptyWindowBAckupInfo) {
+			configurAtion.bAckupPAth = join(this.environmentService.bAckupHome, options.emptyWindowBAckupInfo.bAckupFolder);
 		}
 
 		let window: ICodeWindow | undefined;
-		if (!options.forceNewWindow && !options.forceNewTabbedWindow) {
-			window = options.windowToUse || this.getLastActiveWindow();
+		if (!options.forceNewWindow && !options.forceNewTAbbedWindow) {
+			window = options.windowToUse || this.getLAstActiveWindow();
 			if (window) {
 				window.focus();
 			}
@@ -1380,276 +1380,276 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 
 		// New window
 		if (!window) {
-			const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-			const state = this.getNewWindowState(configuration);
+			const windowConfig = this.configurAtionService.getVAlue<IWindowSettings>('window');
+			const stAte = this.getNewWindowStAte(configurAtion);
 
-			// Window state is not from a previous session: only allow fullscreen if we inherit it or user wants fullscreen
-			let allowFullscreen: boolean;
-			if (state.hasDefaultState) {
-				allowFullscreen = (windowConfig?.newWindowDimensions && ['fullscreen', 'inherit', 'offset'].indexOf(windowConfig.newWindowDimensions) >= 0);
+			// Window stAte is not from A previous session: only Allow fullscreen if we inherit it or user wAnts fullscreen
+			let AllowFullscreen: booleAn;
+			if (stAte.hAsDefAultStAte) {
+				AllowFullscreen = (windowConfig?.newWindowDimensions && ['fullscreen', 'inherit', 'offset'].indexOf(windowConfig.newWindowDimensions) >= 0);
 			}
 
-			// Window state is from a previous session: only allow fullscreen when we got updated or user wants to restore
+			// Window stAte is from A previous session: only Allow fullscreen when we got updAted or user wAnts to restore
 			else {
-				allowFullscreen = this.lifecycleMainService.wasRestarted || windowConfig?.restoreFullscreen;
+				AllowFullscreen = this.lifecycleMAinService.wAsRestArted || windowConfig?.restoreFullscreen;
 
-				if (allowFullscreen && isMacintosh && WindowsMainService.WINDOWS.some(win => win.isFullScreen)) {
-					// macOS: Electron does not allow to restore multiple windows in
-					// fullscreen. As such, if we already restored a window in that
-					// state, we cannot allow more fullscreen windows. See
-					// https://github.com/microsoft/vscode/issues/41691 and
+				if (AllowFullscreen && isMAcintosh && WindowsMAinService.WINDOWS.some(win => win.isFullScreen)) {
+					// mAcOS: Electron does not Allow to restore multiple windows in
+					// fullscreen. As such, if we AlreAdy restored A window in thAt
+					// stAte, we cAnnot Allow more fullscreen windows. See
+					// https://github.com/microsoft/vscode/issues/41691 And
 					// https://github.com/electron/electron/issues/13077
-					allowFullscreen = false;
+					AllowFullscreen = fAlse;
 				}
 			}
 
-			if (state.mode === WindowMode.Fullscreen && !allowFullscreen) {
-				state.mode = WindowMode.Normal;
+			if (stAte.mode === WindowMode.Fullscreen && !AllowFullscreen) {
+				stAte.mode = WindowMode.NormAl;
 			}
 
-			// Create the window
-			const createdWindow = window = this.instantiationService.createInstance(CodeWindow, {
-				state,
-				extensionDevelopmentPath: configuration.extensionDevelopmentPath,
-				isExtensionTestHost: !!configuration.extensionTestsPath
+			// CreAte the window
+			const creAtedWindow = window = this.instAntiAtionService.creAteInstAnce(CodeWindow, {
+				stAte,
+				extensionDevelopmentPAth: configurAtion.extensionDevelopmentPAth,
+				isExtensionTestHost: !!configurAtion.extensionTestsPAth
 			});
 
-			// Add as window tab if configured (macOS only)
-			if (options.forceNewTabbedWindow) {
-				const activeWindow = this.getLastActiveWindow();
-				if (activeWindow) {
-					activeWindow.addTabbedWindow(createdWindow);
+			// Add As window tAb if configured (mAcOS only)
+			if (options.forceNewTAbbedWindow) {
+				const ActiveWindow = this.getLAstActiveWindow();
+				if (ActiveWindow) {
+					ActiveWindow.AddTAbbedWindow(creAtedWindow);
 				}
 			}
 
 			// Add to our list of windows
-			WindowsMainService.WINDOWS.push(createdWindow);
+			WindowsMAinService.WINDOWS.push(creAtedWindow);
 
-			// Indicate new window via event
-			this._onWindowOpened.fire(createdWindow);
+			// IndicAte new window viA event
+			this._onWindowOpened.fire(creAtedWindow);
 
-			// Indicate number change via event
-			this._onWindowsCountChanged.fire({ oldCount: WindowsMainService.WINDOWS.length - 1, newCount: WindowsMainService.WINDOWS.length });
+			// IndicAte number chAnge viA event
+			this._onWindowsCountChAnged.fire({ oldCount: WindowsMAinService.WINDOWS.length - 1, newCount: WindowsMAinService.WINDOWS.length });
 
 			// Window Events
-			once(createdWindow.onReady)(() => this._onWindowReady.fire(createdWindow));
-			once(createdWindow.onClose)(() => this.onWindowClosed(createdWindow));
-			once(createdWindow.onDestroy)(() => this.onBeforeWindowClose(createdWindow)); // try to save state before destroy because close will not fire
-			createdWindow.win.webContents.removeAllListeners('devtools-reload-page'); // remove built in listener so we can handle this on our own
-			createdWindow.win.webContents.on('devtools-reload-page', () => this.lifecycleMainService.reload(createdWindow));
+			once(creAtedWindow.onReAdy)(() => this._onWindowReAdy.fire(creAtedWindow));
+			once(creAtedWindow.onClose)(() => this.onWindowClosed(creAtedWindow));
+			once(creAtedWindow.onDestroy)(() => this.onBeforeWindowClose(creAtedWindow)); // try to sAve stAte before destroy becAuse close will not fire
+			creAtedWindow.win.webContents.removeAllListeners('devtools-reloAd-pAge'); // remove built in listener so we cAn hAndle this on our own
+			creAtedWindow.win.webContents.on('devtools-reloAd-pAge', () => this.lifecycleMAinService.reloAd(creAtedWindow));
 
 			// Lifecycle
-			(this.lifecycleMainService as LifecycleMainService).registerWindow(createdWindow);
+			(this.lifecycleMAinService As LifecycleMAinService).registerWindow(creAtedWindow);
 		}
 
 		// Existing window
 		else {
 
-			// Some configuration things get inherited if the window is being reused and we are
-			// in extension development host mode. These options are all development related.
+			// Some configurAtion things get inherited if the window is being reused And we Are
+			// in extension development host mode. These options Are All development relAted.
 			const currentWindowConfig = window.config;
-			if (!configuration.extensionDevelopmentPath && currentWindowConfig && !!currentWindowConfig.extensionDevelopmentPath) {
-				configuration.extensionDevelopmentPath = currentWindowConfig.extensionDevelopmentPath;
-				configuration.verbose = currentWindowConfig.verbose;
-				configuration['inspect-brk-extensions'] = currentWindowConfig['inspect-brk-extensions'];
-				configuration.debugId = currentWindowConfig.debugId;
-				configuration['inspect-extensions'] = currentWindowConfig['inspect-extensions'];
-				configuration['extensions-dir'] = currentWindowConfig['extensions-dir'];
+			if (!configurAtion.extensionDevelopmentPAth && currentWindowConfig && !!currentWindowConfig.extensionDevelopmentPAth) {
+				configurAtion.extensionDevelopmentPAth = currentWindowConfig.extensionDevelopmentPAth;
+				configurAtion.verbose = currentWindowConfig.verbose;
+				configurAtion['inspect-brk-extensions'] = currentWindowConfig['inspect-brk-extensions'];
+				configurAtion.debugId = currentWindowConfig.debugId;
+				configurAtion['inspect-extensions'] = currentWindowConfig['inspect-extensions'];
+				configurAtion['extensions-dir'] = currentWindowConfig['extensions-dir'];
 			}
 		}
 
-		// If the window was already loaded, make sure to unload it
-		// first and only load the new configuration if that was
+		// If the window wAs AlreAdy loAded, mAke sure to unloAd it
+		// first And only loAd the new configurAtion if thAt wAs
 		// not vetoed
-		if (window.isReady) {
-			this.lifecycleMainService.unload(window, UnloadReason.LOAD).then(veto => {
+		if (window.isReAdy) {
+			this.lifecycleMAinService.unloAd(window, UnloAdReAson.LOAD).then(veto => {
 				if (!veto) {
-					this.doOpenInBrowserWindow(window!, configuration, options);
+					this.doOpenInBrowserWindow(window!, configurAtion, options);
 				}
 			});
 		} else {
-			this.doOpenInBrowserWindow(window, configuration, options);
+			this.doOpenInBrowserWindow(window, configurAtion, options);
 		}
 
 		return window;
 	}
 
-	private doOpenInBrowserWindow(window: ICodeWindow, configuration: INativeWindowConfiguration, options: IOpenBrowserWindowOptions): void {
+	privAte doOpenInBrowserWindow(window: ICodeWindow, configurAtion: INAtiveWindowConfigurAtion, options: IOpenBrowserWindowOptions): void {
 
-		// Register window for backups
-		if (!configuration.extensionDevelopmentPath) {
-			if (configuration.workspace) {
-				configuration.backupPath = this.backupMainService.registerWorkspaceBackupSync({ workspace: configuration.workspace, remoteAuthority: configuration.remoteAuthority });
-			} else if (configuration.folderUri) {
-				configuration.backupPath = this.backupMainService.registerFolderBackupSync(configuration.folderUri);
+		// Register window for bAckups
+		if (!configurAtion.extensionDevelopmentPAth) {
+			if (configurAtion.workspAce) {
+				configurAtion.bAckupPAth = this.bAckupMAinService.registerWorkspAceBAckupSync({ workspAce: configurAtion.workspAce, remoteAuthority: configurAtion.remoteAuthority });
+			} else if (configurAtion.folderUri) {
+				configurAtion.bAckupPAth = this.bAckupMAinService.registerFolderBAckupSync(configurAtion.folderUri);
 			} else {
-				const backupFolder = options.emptyWindowBackupInfo && options.emptyWindowBackupInfo.backupFolder;
-				configuration.backupPath = this.backupMainService.registerEmptyWindowBackupSync(backupFolder, configuration.remoteAuthority);
+				const bAckupFolder = options.emptyWindowBAckupInfo && options.emptyWindowBAckupInfo.bAckupFolder;
+				configurAtion.bAckupPAth = this.bAckupMAinService.registerEmptyWindowBAckupSync(bAckupFolder, configurAtion.remoteAuthority);
 			}
 		}
 
-		// Load it
-		window.load(configuration);
+		// LoAd it
+		window.loAd(configurAtion);
 	}
 
-	private getNewWindowState(configuration: INativeWindowConfiguration): INewWindowState {
-		const lastActive = this.getLastActiveWindow();
+	privAte getNewWindowStAte(configurAtion: INAtiveWindowConfigurAtion): INewWindowStAte {
+		const lAstActive = this.getLAstActiveWindow();
 
-		// Restore state unless we are running extension tests
-		if (!configuration.extensionTestsPath) {
+		// Restore stAte unless we Are running extension tests
+		if (!configurAtion.extensionTestsPAth) {
 
-			// extension development host Window - load from stored settings if any
-			if (!!configuration.extensionDevelopmentPath && this.windowsState.lastPluginDevelopmentHostWindow) {
-				return this.windowsState.lastPluginDevelopmentHostWindow.uiState;
+			// extension development host Window - loAd from stored settings if Any
+			if (!!configurAtion.extensionDevelopmentPAth && this.windowsStAte.lAstPluginDevelopmentHostWindow) {
+				return this.windowsStAte.lAstPluginDevelopmentHostWindow.uiStAte;
 			}
 
-			// Known Workspace - load from stored settings
-			const workspace = configuration.workspace;
-			if (workspace) {
-				const stateForWorkspace = this.windowsState.openedWindows.filter(o => o.workspace && o.workspace.id === workspace.id).map(o => o.uiState);
-				if (stateForWorkspace.length) {
-					return stateForWorkspace[0];
+			// Known WorkspAce - loAd from stored settings
+			const workspAce = configurAtion.workspAce;
+			if (workspAce) {
+				const stAteForWorkspAce = this.windowsStAte.openedWindows.filter(o => o.workspAce && o.workspAce.id === workspAce.id).mAp(o => o.uiStAte);
+				if (stAteForWorkspAce.length) {
+					return stAteForWorkspAce[0];
 				}
 			}
 
-			// Known Folder - load from stored settings
-			if (configuration.folderUri) {
-				const stateForFolder = this.windowsState.openedWindows.filter(o => o.folderUri && extUriBiasedIgnorePathCase.isEqual(o.folderUri, configuration.folderUri)).map(o => o.uiState);
-				if (stateForFolder.length) {
-					return stateForFolder[0];
+			// Known Folder - loAd from stored settings
+			if (configurAtion.folderUri) {
+				const stAteForFolder = this.windowsStAte.openedWindows.filter(o => o.folderUri && extUriBiAsedIgnorePAthCAse.isEquAl(o.folderUri, configurAtion.folderUri)).mAp(o => o.uiStAte);
+				if (stAteForFolder.length) {
+					return stAteForFolder[0];
 				}
 			}
 
-			// Empty windows with backups
-			else if (configuration.backupPath) {
-				const stateForEmptyWindow = this.windowsState.openedWindows.filter(o => o.backupPath === configuration.backupPath).map(o => o.uiState);
-				if (stateForEmptyWindow.length) {
-					return stateForEmptyWindow[0];
+			// Empty windows with bAckups
+			else if (configurAtion.bAckupPAth) {
+				const stAteForEmptyWindow = this.windowsStAte.openedWindows.filter(o => o.bAckupPAth === configurAtion.bAckupPAth).mAp(o => o.uiStAte);
+				if (stAteForEmptyWindow.length) {
+					return stAteForEmptyWindow[0];
 				}
 			}
 
 			// First Window
-			const lastActiveState = this.lastClosedWindowState || this.windowsState.lastActiveWindow;
-			if (!lastActive && lastActiveState) {
-				return lastActiveState.uiState;
+			const lAstActiveStAte = this.lAstClosedWindowStAte || this.windowsStAte.lAstActiveWindow;
+			if (!lAstActive && lAstActiveStAte) {
+				return lAstActiveStAte.uiStAte;
 			}
 		}
 
 		//
-		// In any other case, we do not have any stored settings for the window state, so we come up with something smart
+		// In Any other cAse, we do not hAve Any stored settings for the window stAte, so we come up with something smArt
 		//
 
-		// We want the new window to open on the same display that the last active one is in
-		let displayToUse: Display | undefined;
-		const displays = screen.getAllDisplays();
+		// We wAnt the new window to open on the sAme displAy thAt the lAst Active one is in
+		let displAyToUse: DisplAy | undefined;
+		const displAys = screen.getAllDisplAys();
 
-		// Single Display
-		if (displays.length === 1) {
-			displayToUse = displays[0];
+		// Single DisplAy
+		if (displAys.length === 1) {
+			displAyToUse = displAys[0];
 		}
 
-		// Multi Display
+		// Multi DisplAy
 		else {
 
-			// on mac there is 1 menu per window so we need to use the monitor where the cursor currently is
-			if (isMacintosh) {
+			// on mAc there is 1 menu per window so we need to use the monitor where the cursor currently is
+			if (isMAcintosh) {
 				const cursorPoint = screen.getCursorScreenPoint();
-				displayToUse = screen.getDisplayNearestPoint(cursorPoint);
+				displAyToUse = screen.getDisplAyNeArestPoint(cursorPoint);
 			}
 
-			// if we have a last active window, use that display for the new window
-			if (!displayToUse && lastActive) {
-				displayToUse = screen.getDisplayMatching(lastActive.getBounds());
+			// if we hAve A lAst Active window, use thAt displAy for the new window
+			if (!displAyToUse && lAstActive) {
+				displAyToUse = screen.getDisplAyMAtching(lAstActive.getBounds());
 			}
 
-			// fallback to primary display or first display
-			if (!displayToUse) {
-				displayToUse = screen.getPrimaryDisplay() || displays[0];
+			// fAllbAck to primAry displAy or first displAy
+			if (!displAyToUse) {
+				displAyToUse = screen.getPrimAryDisplAy() || displAys[0];
 			}
 		}
 
-		// Compute x/y based on display bounds
-		// Note: important to use Math.round() because Electron does not seem to be too happy about
-		// display coordinates that are not absolute numbers.
-		let state = defaultWindowState();
-		state.x = Math.round(displayToUse.bounds.x + (displayToUse.bounds.width / 2) - (state.width! / 2));
-		state.y = Math.round(displayToUse.bounds.y + (displayToUse.bounds.height / 2) - (state.height! / 2));
+		// Compute x/y bAsed on displAy bounds
+		// Note: importAnt to use MAth.round() becAuse Electron does not seem to be too hAppy About
+		// displAy coordinAtes thAt Are not Absolute numbers.
+		let stAte = defAultWindowStAte();
+		stAte.x = MAth.round(displAyToUse.bounds.x + (displAyToUse.bounds.width / 2) - (stAte.width! / 2));
+		stAte.y = MAth.round(displAyToUse.bounds.y + (displAyToUse.bounds.height / 2) - (stAte.height! / 2));
 
-		// Check for newWindowDimensions setting and adjust accordingly
-		const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-		let ensureNoOverlap = true;
+		// Check for newWindowDimensions setting And Adjust Accordingly
+		const windowConfig = this.configurAtionService.getVAlue<IWindowSettings>('window');
+		let ensureNoOverlAp = true;
 		if (windowConfig?.newWindowDimensions) {
-			if (windowConfig.newWindowDimensions === 'maximized') {
-				state.mode = WindowMode.Maximized;
-				ensureNoOverlap = false;
+			if (windowConfig.newWindowDimensions === 'mAximized') {
+				stAte.mode = WindowMode.MAximized;
+				ensureNoOverlAp = fAlse;
 			} else if (windowConfig.newWindowDimensions === 'fullscreen') {
-				state.mode = WindowMode.Fullscreen;
-				ensureNoOverlap = false;
-			} else if ((windowConfig.newWindowDimensions === 'inherit' || windowConfig.newWindowDimensions === 'offset') && lastActive) {
-				const lastActiveState = lastActive.serializeWindowState();
-				if (lastActiveState.mode === WindowMode.Fullscreen) {
-					state.mode = WindowMode.Fullscreen; // only take mode (fixes https://github.com/microsoft/vscode/issues/19331)
+				stAte.mode = WindowMode.Fullscreen;
+				ensureNoOverlAp = fAlse;
+			} else if ((windowConfig.newWindowDimensions === 'inherit' || windowConfig.newWindowDimensions === 'offset') && lAstActive) {
+				const lAstActiveStAte = lAstActive.seriAlizeWindowStAte();
+				if (lAstActiveStAte.mode === WindowMode.Fullscreen) {
+					stAte.mode = WindowMode.Fullscreen; // only tAke mode (fixes https://github.com/microsoft/vscode/issues/19331)
 				} else {
-					state = lastActiveState;
+					stAte = lAstActiveStAte;
 				}
 
-				ensureNoOverlap = state.mode !== WindowMode.Fullscreen && windowConfig.newWindowDimensions === 'offset';
+				ensureNoOverlAp = stAte.mode !== WindowMode.Fullscreen && windowConfig.newWindowDimensions === 'offset';
 			}
 		}
 
-		if (ensureNoOverlap) {
-			state = this.ensureNoOverlap(state);
+		if (ensureNoOverlAp) {
+			stAte = this.ensureNoOverlAp(stAte);
 		}
 
-		(state as INewWindowState).hasDefaultState = true; // flag as default state
+		(stAte As INewWindowStAte).hAsDefAultStAte = true; // flAg As defAult stAte
 
-		return state;
+		return stAte;
 	}
 
-	private ensureNoOverlap(state: ISingleWindowState): ISingleWindowState {
-		if (WindowsMainService.WINDOWS.length === 0) {
-			return state;
+	privAte ensureNoOverlAp(stAte: ISingleWindowStAte): ISingleWindowStAte {
+		if (WindowsMAinService.WINDOWS.length === 0) {
+			return stAte;
 		}
 
-		state.x = typeof state.x === 'number' ? state.x : 0;
-		state.y = typeof state.y === 'number' ? state.y : 0;
+		stAte.x = typeof stAte.x === 'number' ? stAte.x : 0;
+		stAte.y = typeof stAte.y === 'number' ? stAte.y : 0;
 
-		const existingWindowBounds = WindowsMainService.WINDOWS.map(win => win.getBounds());
-		while (existingWindowBounds.some(b => b.x === state.x || b.y === state.y)) {
-			state.x += 30;
-			state.y += 30;
+		const existingWindowBounds = WindowsMAinService.WINDOWS.mAp(win => win.getBounds());
+		while (existingWindowBounds.some(b => b.x === stAte.x || b.y === stAte.y)) {
+			stAte.x += 30;
+			stAte.y += 30;
 		}
 
-		return state;
+		return stAte;
 	}
 
-	getLastActiveWindow(): ICodeWindow | undefined {
-		return getLastActiveWindow(WindowsMainService.WINDOWS);
+	getLAstActiveWindow(): ICodeWindow | undefined {
+		return getLAstActiveWindow(WindowsMAinService.WINDOWS);
 	}
 
-	private getLastActiveWindowForAuthority(remoteAuthority: string | undefined): ICodeWindow | undefined {
-		return getLastActiveWindow(WindowsMainService.WINDOWS.filter(window => window.remoteAuthority === remoteAuthority));
+	privAte getLAstActiveWindowForAuthority(remoteAuthority: string | undefined): ICodeWindow | undefined {
+		return getLAstActiveWindow(WindowsMAinService.WINDOWS.filter(window => window.remoteAuthority === remoteAuthority));
 	}
 
-	sendToFocused(channel: string, ...args: any[]): void {
-		const focusedWindow = this.getFocusedWindow() || this.getLastActiveWindow();
+	sendToFocused(chAnnel: string, ...Args: Any[]): void {
+		const focusedWindow = this.getFocusedWindow() || this.getLAstActiveWindow();
 
 		if (focusedWindow) {
-			focusedWindow.sendWhenReady(channel, ...args);
+			focusedWindow.sendWhenReAdy(chAnnel, ...Args);
 		}
 	}
 
-	sendToAll(channel: string, payload?: any, windowIdsToIgnore?: number[]): void {
-		for (const window of WindowsMainService.WINDOWS) {
+	sendToAll(chAnnel: string, pAyloAd?: Any, windowIdsToIgnore?: number[]): void {
+		for (const window of WindowsMAinService.WINDOWS) {
 			if (windowIdsToIgnore && windowIdsToIgnore.indexOf(window.id) >= 0) {
-				continue; // do not send if we are instructed to ignore it
+				continue; // do not send if we Are instructed to ignore it
 			}
 
-			window.sendWhenReady(channel, payload);
+			window.sendWhenReAdy(chAnnel, pAyloAd);
 		}
 	}
 
-	private getFocusedWindow(): ICodeWindow | undefined {
+	privAte getFocusedWindow(): ICodeWindow | undefined {
 		const win = BrowserWindow.getFocusedWindow();
 		if (win) {
 			return this.getWindowById(win.id);
@@ -1659,26 +1659,26 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 	}
 
 	getWindowById(windowId: number): ICodeWindow | undefined {
-		const res = WindowsMainService.WINDOWS.filter(window => window.id === windowId);
+		const res = WindowsMAinService.WINDOWS.filter(window => window.id === windowId);
 
-		return arrays.firstOrDefault(res);
+		return ArrAys.firstOrDefAult(res);
 	}
 
 	getWindows(): ICodeWindow[] {
-		return WindowsMainService.WINDOWS;
+		return WindowsMAinService.WINDOWS;
 	}
 
 	getWindowCount(): number {
-		return WindowsMainService.WINDOWS.length;
+		return WindowsMAinService.WINDOWS.length;
 	}
 
-	private onWindowClosed(win: ICodeWindow): void {
+	privAte onWindowClosed(win: ICodeWindow): void {
 
-		// Remove from our list so that Electron can clean it up
-		const index = WindowsMainService.WINDOWS.indexOf(win);
-		WindowsMainService.WINDOWS.splice(index, 1);
+		// Remove from our list so thAt Electron cAn cleAn it up
+		const index = WindowsMAinService.WINDOWS.indexOf(win);
+		WindowsMAinService.WINDOWS.splice(index, 1);
 
 		// Emit
-		this._onWindowsCountChanged.fire({ oldCount: WindowsMainService.WINDOWS.length + 1, newCount: WindowsMainService.WINDOWS.length });
+		this._onWindowsCountChAnged.fire({ oldCount: WindowsMAinService.WINDOWS.length + 1, newCount: WindowsMAinService.WINDOWS.length });
 	}
 }

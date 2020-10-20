@@ -1,70 +1,70 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { Disposable } from '../util/dispose';
-import { isMarkdownFile } from './file';
+import * As vscode from 'vscode';
+import { DisposAble } from '../util/dispose';
+import { isMArkdownFile } from './file';
 
-export class TopmostLineMonitor extends Disposable {
+export clAss TopmostLineMonitor extends DisposAble {
 
-	private readonly pendingUpdates = new Map<string, number>();
-	private readonly throttle = 50;
+	privAte reAdonly pendingUpdAtes = new MAp<string, number>();
+	privAte reAdonly throttle = 50;
 
 	constructor() {
 		super();
-		this._register(vscode.window.onDidChangeTextEditorVisibleRanges(event => {
-			if (isMarkdownFile(event.textEditor.document)) {
+		this._register(vscode.window.onDidChAngeTextEditorVisibleRAnges(event => {
+			if (isMArkdownFile(event.textEditor.document)) {
 				const line = getVisibleLine(event.textEditor);
 				if (typeof line === 'number') {
-					this.updateLine(event.textEditor.document.uri, line);
+					this.updAteLine(event.textEditor.document.uri, line);
 				}
 			}
 		}));
 	}
 
-	private readonly _onChanged = this._register(new vscode.EventEmitter<{ readonly resource: vscode.Uri, readonly line: number }>());
-	public readonly onDidChanged = this._onChanged.event;
+	privAte reAdonly _onChAnged = this._register(new vscode.EventEmitter<{ reAdonly resource: vscode.Uri, reAdonly line: number }>());
+	public reAdonly onDidChAnged = this._onChAnged.event;
 
-	private updateLine(
+	privAte updAteLine(
 		resource: vscode.Uri,
 		line: number
 	) {
 		const key = resource.toString();
-		if (!this.pendingUpdates.has(key)) {
-			// schedule update
+		if (!this.pendingUpdAtes.hAs(key)) {
+			// schedule updAte
 			setTimeout(() => {
-				if (this.pendingUpdates.has(key)) {
-					this._onChanged.fire({
+				if (this.pendingUpdAtes.hAs(key)) {
+					this._onChAnged.fire({
 						resource,
-						line: this.pendingUpdates.get(key) as number
+						line: this.pendingUpdAtes.get(key) As number
 					});
-					this.pendingUpdates.delete(key);
+					this.pendingUpdAtes.delete(key);
 				}
 			}, this.throttle);
 		}
 
-		this.pendingUpdates.set(key, line);
+		this.pendingUpdAtes.set(key, line);
 	}
 }
 
 /**
- * Get the top-most visible range of `editor`.
+ * Get the top-most visible rAnge of `editor`.
  *
- * Returns a fractional line number based the visible character within the line.
- * Floor to get real line number
+ * Returns A frActionAl line number bAsed the visible chArActer within the line.
+ * Floor to get reAl line number
  */
 export function getVisibleLine(
 	editor: vscode.TextEditor
 ): number | undefined {
-	if (!editor.visibleRanges.length) {
+	if (!editor.visibleRAnges.length) {
 		return undefined;
 	}
 
-	const firstVisiblePosition = editor.visibleRanges[0].start;
+	const firstVisiblePosition = editor.visibleRAnges[0].stArt;
 	const lineNumber = firstVisiblePosition.line;
 	const line = editor.document.lineAt(lineNumber);
-	const progress = firstVisiblePosition.character / (line.text.length + 2);
+	const progress = firstVisiblePosition.chArActer / (line.text.length + 2);
 	return lineNumber + progress;
 }

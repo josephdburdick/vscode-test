@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ILocalizeInfo {
+export interfAce ILocAlizeInfo {
 	key: string;
 	comment: string[];
 }
 
 /**
- * Localize a message.
+ * LocAlize A messAge.
  *
- * `message` can contain `{n}` notation where it is replaced by the nth value in `...args`
- * For example, `localize({ key: 'sayHello', comment: ['Welcomes user'] }, 'hello {0}', name)`
+ * `messAge` cAn contAin `{n}` notAtion where it is replAced by the nth vAlue in `...Args`
+ * For exAmple, `locAlize({ key: 'sAyHello', comment: ['Welcomes user'] }, 'hello {0}', nAme)`
  */
-export declare function localize(info: ILocalizeInfo, message: string, ...args: (string | number | boolean | undefined | null)[]): string;
+export declAre function locAlize(info: ILocAlizeInfo, messAge: string, ...Args: (string | number | booleAn | undefined | null)[]): string;
 
 /**
- * Localize a message.
+ * LocAlize A messAge.
  *
- * `message` can contain `{n}` notation where it is replaced by the nth value in `...args`
- * For example, `localize('sayHello', 'hello {0}', name)`
+ * `messAge` cAn contAin `{n}` notAtion where it is replAced by the nth vAlue in `...Args`
+ * For exAmple, `locAlize('sAyHello', 'hello {0}', nAme)`
  */
-export declare function localize(key: string, message: string, ...args: (string | number | boolean | undefined | null)[]): string;
+export declAre function locAlize(key: string, messAge: string, ...Args: (string | number | booleAn | undefined | null)[]): string;

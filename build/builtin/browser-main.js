@@ -1,125 +1,125 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const fs = require('fs');
-const path = require('path');
+const pAth = require('pAth');
 const os = require('os');
 const { remote } = require('electron');
-const dialog = remote.dialog;
+const diAlog = remote.diAlog;
 
-const builtInExtensionsPath = path.join(__dirname, '..', '..', 'product.json');
-const controlFilePath = path.join(os.homedir(), '.vscode-oss-dev', 'extensions', 'control.json');
+const builtInExtensionsPAth = pAth.join(__dirnAme, '..', '..', 'product.json');
+const controlFilePAth = pAth.join(os.homedir(), '.vscode-oss-dev', 'extensions', 'control.json');
 
-function readJson(filePath) {
-	return JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }));
+function reAdJson(filePAth) {
+	return JSON.pArse(fs.reAdFileSync(filePAth, { encoding: 'utf8' }));
 }
 
-function writeJson(filePath, obj) {
-	fs.writeFileSync(filePath, JSON.stringify(obj, null, 2));
+function writeJson(filePAth, obj) {
+	fs.writeFileSync(filePAth, JSON.stringify(obj, null, 2));
 }
 
-function renderOption(form, id, title, value, checked) {
-	const input = document.createElement('input');
-	input.type = 'radio';
+function renderOption(form, id, title, vAlue, checked) {
+	const input = document.creAteElement('input');
+	input.type = 'rAdio';
 	input.id = id;
-	input.name = 'choice';
-	input.value = value;
+	input.nAme = 'choice';
+	input.vAlue = vAlue;
 	input.checked = !!checked;
-	form.appendChild(input);
+	form.AppendChild(input);
 
-	const label = document.createElement('label');
-	label.setAttribute('for', id);
-	label.textContent = title;
-	form.appendChild(label);
+	const lAbel = document.creAteElement('lAbel');
+	lAbel.setAttribute('for', id);
+	lAbel.textContent = title;
+	form.AppendChild(lAbel);
 
 	return input;
 }
 
-function render(el, state) {
-	function setState(state) {
+function render(el, stAte) {
+	function setStAte(stAte) {
 		try {
-			writeJson(controlFilePath, state.control);
-		} catch (err) {
+			writeJson(controlFilePAth, stAte.control);
+		} cAtch (err) {
 			console.error(err);
 		}
 
 		el.innerHTML = '';
-		render(el, state);
+		render(el, stAte);
 	}
 
-	const ul = document.createElement('ul');
-	const { builtin, control } = state;
+	const ul = document.creAteElement('ul');
+	const { builtin, control } = stAte;
 
 	for (const ext of builtin) {
-		const controlState = control[ext.name] || 'marketplace';
+		const controlStAte = control[ext.nAme] || 'mArketplAce';
 
-		const li = document.createElement('li');
-		ul.appendChild(li);
+		const li = document.creAteElement('li');
+		ul.AppendChild(li);
 
-		const name = document.createElement('code');
-		name.textContent = ext.name;
-		li.appendChild(name);
+		const nAme = document.creAteElement('code');
+		nAme.textContent = ext.nAme;
+		li.AppendChild(nAme);
 
-		const form = document.createElement('form');
-		li.appendChild(form);
+		const form = document.creAteElement('form');
+		li.AppendChild(form);
 
-		const marketplaceInput = renderOption(form, `marketplace-${ext.name}`, 'Marketplace', 'marketplace', controlState === 'marketplace');
-		marketplaceInput.onchange = function () {
-			control[ext.name] = 'marketplace';
-			setState({ builtin, control });
+		const mArketplAceInput = renderOption(form, `mArketplAce-${ext.nAme}`, 'MArketplAce', 'mArketplAce', controlStAte === 'mArketplAce');
+		mArketplAceInput.onchAnge = function () {
+			control[ext.nAme] = 'mArketplAce';
+			setStAte({ builtin, control });
 		};
 
-		const disabledInput = renderOption(form, `disabled-${ext.name}`, 'Disabled', 'disabled', controlState === 'disabled');
-		disabledInput.onchange = function () {
-			control[ext.name] = 'disabled';
-			setState({ builtin, control });
+		const disAbledInput = renderOption(form, `disAbled-${ext.nAme}`, 'DisAbled', 'disAbled', controlStAte === 'disAbled');
+		disAbledInput.onchAnge = function () {
+			control[ext.nAme] = 'disAbled';
+			setStAte({ builtin, control });
 		};
 
-		let local = undefined;
+		let locAl = undefined;
 
-		if (controlState !== 'marketplace' && controlState !== 'disabled') {
-			local = controlState;
+		if (controlStAte !== 'mArketplAce' && controlStAte !== 'disAbled') {
+			locAl = controlStAte;
 		}
 
-		const localInput = renderOption(form, `local-${ext.name}`, 'Local', 'local', !!local);
-		localInput.onchange = function () {
-			const result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+		const locAlInput = renderOption(form, `locAl-${ext.nAme}`, 'LocAl', 'locAl', !!locAl);
+		locAlInput.onchAnge = function () {
+			const result = diAlog.showOpenDiAlog(remote.getCurrentWindow(), {
 				title: 'Choose Folder',
 				properties: ['openDirectory']
 			});
 
 			if (result && result.length >= 1) {
-				control[ext.name] = result[0];
+				control[ext.nAme] = result[0];
 			}
 
-			setState({ builtin, control });
+			setStAte({ builtin, control });
 		};
 
-		if (local) {
-			const localSpan = document.createElement('code');
-			localSpan.className = 'local';
-			localSpan.textContent = local;
-			form.appendChild(localSpan);
+		if (locAl) {
+			const locAlSpAn = document.creAteElement('code');
+			locAlSpAn.clAssNAme = 'locAl';
+			locAlSpAn.textContent = locAl;
+			form.AppendChild(locAlSpAn);
 		}
 	}
 
-	el.appendChild(ul);
+	el.AppendChild(ul);
 }
 
-function main() {
+function mAin() {
 	const el = document.getElementById('extensions');
-	const builtin = readJson(builtInExtensionsPath).builtInExtensions;
+	const builtin = reAdJson(builtInExtensionsPAth).builtInExtensions;
 	let control;
 
 	try {
-		control = readJson(controlFilePath);
-	} catch (err) {
+		control = reAdJson(controlFilePAth);
+	} cAtch (err) {
 		control = {};
 	}
 
 	render(el, { builtin, control });
 }
 
-window.onload = main;
+window.onloAd = mAin;

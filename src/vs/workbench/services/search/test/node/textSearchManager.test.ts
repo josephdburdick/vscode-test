@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
-import { Progress } from 'vs/platform/progress/common/progress';
-import { ITextQuery, QueryType } from 'vs/workbench/services/search/common/search';
-import { ProviderResult, TextSearchComplete, TextSearchOptions, TextSearchProvider, TextSearchQuery, TextSearchResult } from 'vs/workbench/services/search/common/searchExtTypes';
-import { NativeTextSearchManager } from 'vs/workbench/services/search/node/textSearchManager';
+import * As Assert from 'Assert';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { Progress } from 'vs/plAtform/progress/common/progress';
+import { ITextQuery, QueryType } from 'vs/workbench/services/seArch/common/seArch';
+import { ProviderResult, TextSeArchComplete, TextSeArchOptions, TextSeArchProvider, TextSeArchQuery, TextSeArchResult } from 'vs/workbench/services/seArch/common/seArchExtTypes';
+import { NAtiveTextSeArchMAnAger } from 'vs/workbench/services/seArch/node/textSeArchMAnAger';
 
-suite('NativeTextSearchManager', () => {
-	test('fixes encoding', async () => {
-		let correctEncoding = false;
-		const provider: TextSearchProvider = {
-			provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: Progress<TextSearchResult>, token: CancellationToken): ProviderResult<TextSearchComplete> {
+suite('NAtiveTextSeArchMAnAger', () => {
+	test('fixes encoding', Async () => {
+		let correctEncoding = fAlse;
+		const provider: TextSeArchProvider = {
+			provideTextSeArchResults(query: TextSeArchQuery, options: TextSeArchOptions, progress: Progress<TextSeArchResult>, token: CAncellAtionToken): ProviderResult<TextSeArchComplete> {
 				correctEncoding = options.encoding === 'windows-1252';
 
 				return null;
@@ -24,8 +24,8 @@ suite('NativeTextSearchManager', () => {
 
 		const query: ITextQuery = {
 			type: QueryType.Text,
-			contentPattern: {
-				pattern: 'a'
+			contentPAttern: {
+				pAttern: 'A'
 			},
 			folderQueries: [{
 				folder: URI.file('/some/folder'),
@@ -33,9 +33,9 @@ suite('NativeTextSearchManager', () => {
 			}]
 		};
 
-		const m = new NativeTextSearchManager(query, provider);
-		await m.search(() => { }, new CancellationTokenSource().token);
+		const m = new NAtiveTextSeArchMAnAger(query, provider);
+		AwAit m.seArch(() => { }, new CAncellAtionTokenSource().token);
 
-		assert.ok(correctEncoding);
+		Assert.ok(correctEncoding);
 	});
 });

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import type * as vscode from 'vscode';
+import { URI } from 'vs/bAse/common/uri';
+import type * As vscode from 'vscode';
 
-export interface WebviewInitData {
-	readonly isExtensionDevelopmentDebug: boolean;
-	readonly webviewResourceRoot: string;
-	readonly webviewCspSource: string;
+export interfAce WebviewInitDAtA {
+	reAdonly isExtensionDevelopmentDebug: booleAn;
+	reAdonly webviewResourceRoot: string;
+	reAdonly webviewCspSource: string;
 }
 
-export function asWebviewUri(
-	initData: WebviewInitData,
+export function AsWebviewUri(
+	initDAtA: WebviewInitDAtA,
 	uuid: string,
 	resource: vscode.Uri,
 ): vscode.Uri {
-	const uri = initData.webviewResourceRoot
-		// Make sure we preserve the scheme of the resource but convert it into a normal path segment
-		// The scheme is important as we need to know if we are requesting a local or a remote resource.
-		.replace('{{resource}}', resource.scheme + withoutScheme(resource))
-		.replace('{{uuid}}', uuid);
-	return URI.parse(uri);
+	const uri = initDAtA.webviewResourceRoot
+		// MAke sure we preserve the scheme of the resource but convert it into A normAl pAth segment
+		// The scheme is importAnt As we need to know if we Are requesting A locAl or A remote resource.
+		.replAce('{{resource}}', resource.scheme + withoutScheme(resource))
+		.replAce('{{uuid}}', uuid);
+	return URI.pArse(uri);
 }
 
 function withoutScheme(resource: vscode.Uri): string {
-	return resource.toString().replace(/^\S+?:/, '');
+	return resource.toString().replAce(/^\S+?:/, '');
 }

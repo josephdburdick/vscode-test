@@ -1,481 +1,481 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { CharCode } from 'vs/base/common/charCode';
-import * as errors from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IURITransformer, transformIncomingURIs } from 'vs/base/common/uriIpc';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { LazyPromise } from 'vs/workbench/services/extensions/common/lazyPromise';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import * As errors from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IURITrAnsformer, trAnsformIncomingURIs } from 'vs/bAse/common/uriIpc';
+import { IMessAgePAssingProtocol } from 'vs/bAse/pArts/ipc/common/ipc';
+import { LAzyPromise } from 'vs/workbench/services/extensions/common/lAzyPromise';
 import { IRPCProtocol, ProxyIdentifier, getStringIdentifierForProxy } from 'vs/workbench/services/extensions/common/proxyIdentifier';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 
-export interface JSONStringifyReplacer {
-	(key: string, value: any): any;
+export interfAce JSONStringifyReplAcer {
+	(key: string, vAlue: Any): Any;
 }
 
-function safeStringify(obj: any, replacer: JSONStringifyReplacer | null): string {
+function sAfeStringify(obj: Any, replAcer: JSONStringifyReplAcer | null): string {
 	try {
-		return JSON.stringify(obj, <(key: string, value: any) => any>replacer);
-	} catch (err) {
+		return JSON.stringify(obj, <(key: string, vAlue: Any) => Any>replAcer);
+	} cAtch (err) {
 		return 'null';
 	}
 }
 
-function stringify(obj: any, replacer: JSONStringifyReplacer | null): string {
-	return JSON.stringify(obj, <(key: string, value: any) => any>replacer);
+function stringify(obj: Any, replAcer: JSONStringifyReplAcer | null): string {
+	return JSON.stringify(obj, <(key: string, vAlue: Any) => Any>replAcer);
 }
 
-function createURIReplacer(transformer: IURITransformer | null): JSONStringifyReplacer | null {
-	if (!transformer) {
+function creAteURIReplAcer(trAnsformer: IURITrAnsformer | null): JSONStringifyReplAcer | null {
+	if (!trAnsformer) {
 		return null;
 	}
-	return (key: string, value: any): any => {
-		if (value && value.$mid === 1) {
-			return transformer.transformOutgoing(value);
+	return (key: string, vAlue: Any): Any => {
+		if (vAlue && vAlue.$mid === 1) {
+			return trAnsformer.trAnsformOutgoing(vAlue);
 		}
-		return value;
+		return vAlue;
 	};
 }
 
-export const enum RequestInitiator {
-	LocalSide = 0,
+export const enum RequestInitiAtor {
+	LocAlSide = 0,
 	OtherSide = 1
 }
 
-export const enum ResponsiveState {
+export const enum ResponsiveStAte {
 	Responsive = 0,
 	Unresponsive = 1
 }
 
-export interface IRPCProtocolLogger {
-	logIncoming(msgLength: number, req: number, initiator: RequestInitiator, str: string, data?: any): void;
-	logOutgoing(msgLength: number, req: number, initiator: RequestInitiator, str: string, data?: any): void;
+export interfAce IRPCProtocolLogger {
+	logIncoming(msgLength: number, req: number, initiAtor: RequestInitiAtor, str: string, dAtA?: Any): void;
+	logOutgoing(msgLength: number, req: number, initiAtor: RequestInitiAtor, str: string, dAtA?: Any): void;
 }
 
 const noop = () => { };
 
-export class RPCProtocol extends Disposable implements IRPCProtocol {
+export clAss RPCProtocol extends DisposAble implements IRPCProtocol {
 
-	private static readonly UNRESPONSIVE_TIME = 3 * 1000; // 3s
+	privAte stAtic reAdonly UNRESPONSIVE_TIME = 3 * 1000; // 3s
 
-	private readonly _onDidChangeResponsiveState: Emitter<ResponsiveState> = this._register(new Emitter<ResponsiveState>());
-	public readonly onDidChangeResponsiveState: Event<ResponsiveState> = this._onDidChangeResponsiveState.event;
+	privAte reAdonly _onDidChAngeResponsiveStAte: Emitter<ResponsiveStAte> = this._register(new Emitter<ResponsiveStAte>());
+	public reAdonly onDidChAngeResponsiveStAte: Event<ResponsiveStAte> = this._onDidChAngeResponsiveStAte.event;
 
-	private readonly _protocol: IMessagePassingProtocol;
-	private readonly _logger: IRPCProtocolLogger | null;
-	private readonly _uriTransformer: IURITransformer | null;
-	private readonly _uriReplacer: JSONStringifyReplacer | null;
-	private _isDisposed: boolean;
-	private readonly _locals: any[];
-	private readonly _proxies: any[];
-	private _lastMessageId: number;
-	private readonly _cancelInvokedHandlers: { [req: string]: () => void; };
-	private readonly _pendingRPCReplies: { [msgId: string]: LazyPromise; };
-	private _responsiveState: ResponsiveState;
-	private _unacknowledgedCount: number;
-	private _unresponsiveTime: number;
-	private _asyncCheckUresponsive: RunOnceScheduler;
+	privAte reAdonly _protocol: IMessAgePAssingProtocol;
+	privAte reAdonly _logger: IRPCProtocolLogger | null;
+	privAte reAdonly _uriTrAnsformer: IURITrAnsformer | null;
+	privAte reAdonly _uriReplAcer: JSONStringifyReplAcer | null;
+	privAte _isDisposed: booleAn;
+	privAte reAdonly _locAls: Any[];
+	privAte reAdonly _proxies: Any[];
+	privAte _lAstMessAgeId: number;
+	privAte reAdonly _cAncelInvokedHAndlers: { [req: string]: () => void; };
+	privAte reAdonly _pendingRPCReplies: { [msgId: string]: LAzyPromise; };
+	privAte _responsiveStAte: ResponsiveStAte;
+	privAte _unAcknowledgedCount: number;
+	privAte _unresponsiveTime: number;
+	privAte _AsyncCheckUresponsive: RunOnceScheduler;
 
-	constructor(protocol: IMessagePassingProtocol, logger: IRPCProtocolLogger | null = null, transformer: IURITransformer | null = null) {
+	constructor(protocol: IMessAgePAssingProtocol, logger: IRPCProtocolLogger | null = null, trAnsformer: IURITrAnsformer | null = null) {
 		super();
 		this._protocol = protocol;
 		this._logger = logger;
-		this._uriTransformer = transformer;
-		this._uriReplacer = createURIReplacer(this._uriTransformer);
-		this._isDisposed = false;
-		this._locals = [];
+		this._uriTrAnsformer = trAnsformer;
+		this._uriReplAcer = creAteURIReplAcer(this._uriTrAnsformer);
+		this._isDisposed = fAlse;
+		this._locAls = [];
 		this._proxies = [];
 		for (let i = 0, len = ProxyIdentifier.count; i < len; i++) {
-			this._locals[i] = null;
+			this._locAls[i] = null;
 			this._proxies[i] = null;
 		}
-		this._lastMessageId = 0;
-		this._cancelInvokedHandlers = Object.create(null);
+		this._lAstMessAgeId = 0;
+		this._cAncelInvokedHAndlers = Object.creAte(null);
 		this._pendingRPCReplies = {};
-		this._responsiveState = ResponsiveState.Responsive;
-		this._unacknowledgedCount = 0;
+		this._responsiveStAte = ResponsiveStAte.Responsive;
+		this._unAcknowledgedCount = 0;
 		this._unresponsiveTime = 0;
-		this._asyncCheckUresponsive = this._register(new RunOnceScheduler(() => this._checkUnresponsive(), 1000));
-		this._protocol.onMessage((msg) => this._receiveOneMessage(msg));
+		this._AsyncCheckUresponsive = this._register(new RunOnceScheduler(() => this._checkUnresponsive(), 1000));
+		this._protocol.onMessAge((msg) => this._receiveOneMessAge(msg));
 	}
 
 	public dispose(): void {
 		this._isDisposed = true;
 
-		// Release all outstanding promises with a canceled error
-		Object.keys(this._pendingRPCReplies).forEach((msgId) => {
+		// ReleAse All outstAnding promises with A cAnceled error
+		Object.keys(this._pendingRPCReplies).forEAch((msgId) => {
 			const pending = this._pendingRPCReplies[msgId];
-			pending.resolveErr(errors.canceled());
+			pending.resolveErr(errors.cAnceled());
 		});
 	}
 
-	public drain(): Promise<void> {
-		if (typeof this._protocol.drain === 'function') {
-			return this._protocol.drain();
+	public drAin(): Promise<void> {
+		if (typeof this._protocol.drAin === 'function') {
+			return this._protocol.drAin();
 		}
 		return Promise.resolve();
 	}
 
-	private _onWillSendRequest(req: number): void {
-		if (this._unacknowledgedCount === 0) {
-			// Since this is the first request we are sending in a while,
-			// mark this moment as the start for the countdown to unresponsive time
-			this._unresponsiveTime = Date.now() + RPCProtocol.UNRESPONSIVE_TIME;
+	privAte _onWillSendRequest(req: number): void {
+		if (this._unAcknowledgedCount === 0) {
+			// Since this is the first request we Are sending in A while,
+			// mArk this moment As the stArt for the countdown to unresponsive time
+			this._unresponsiveTime = DAte.now() + RPCProtocol.UNRESPONSIVE_TIME;
 		}
-		this._unacknowledgedCount++;
-		if (!this._asyncCheckUresponsive.isScheduled()) {
-			this._asyncCheckUresponsive.schedule();
+		this._unAcknowledgedCount++;
+		if (!this._AsyncCheckUresponsive.isScheduled()) {
+			this._AsyncCheckUresponsive.schedule();
 		}
 	}
 
-	private _onDidReceiveAcknowledge(req: number): void {
-		// The next possible unresponsive time is now + delta.
-		this._unresponsiveTime = Date.now() + RPCProtocol.UNRESPONSIVE_TIME;
-		this._unacknowledgedCount--;
-		if (this._unacknowledgedCount === 0) {
+	privAte _onDidReceiveAcknowledge(req: number): void {
+		// The next possible unresponsive time is now + deltA.
+		this._unresponsiveTime = DAte.now() + RPCProtocol.UNRESPONSIVE_TIME;
+		this._unAcknowledgedCount--;
+		if (this._unAcknowledgedCount === 0) {
 			// No more need to check for unresponsive
-			this._asyncCheckUresponsive.cancel();
+			this._AsyncCheckUresponsive.cAncel();
 		}
 		// The ext host is responsive!
-		this._setResponsiveState(ResponsiveState.Responsive);
+		this._setResponsiveStAte(ResponsiveStAte.Responsive);
 	}
 
-	private _checkUnresponsive(): void {
-		if (this._unacknowledgedCount === 0) {
-			// Not waiting for anything => cannot say if it is responsive or not
+	privAte _checkUnresponsive(): void {
+		if (this._unAcknowledgedCount === 0) {
+			// Not wAiting for Anything => cAnnot sAy if it is responsive or not
 			return;
 		}
 
-		if (Date.now() > this._unresponsiveTime) {
+		if (DAte.now() > this._unresponsiveTime) {
 			// Unresponsive!!
-			this._setResponsiveState(ResponsiveState.Unresponsive);
+			this._setResponsiveStAte(ResponsiveStAte.Unresponsive);
 		} else {
-			// Not (yet) unresponsive, be sure to check again soon
-			this._asyncCheckUresponsive.schedule();
+			// Not (yet) unresponsive, be sure to check AgAin soon
+			this._AsyncCheckUresponsive.schedule();
 		}
 	}
 
-	private _setResponsiveState(newResponsiveState: ResponsiveState): void {
-		if (this._responsiveState === newResponsiveState) {
-			// no change
+	privAte _setResponsiveStAte(newResponsiveStAte: ResponsiveStAte): void {
+		if (this._responsiveStAte === newResponsiveStAte) {
+			// no chAnge
 			return;
 		}
-		this._responsiveState = newResponsiveState;
-		this._onDidChangeResponsiveState.fire(this._responsiveState);
+		this._responsiveStAte = newResponsiveStAte;
+		this._onDidChAngeResponsiveStAte.fire(this._responsiveStAte);
 	}
 
-	public get responsiveState(): ResponsiveState {
-		return this._responsiveState;
+	public get responsiveStAte(): ResponsiveStAte {
+		return this._responsiveStAte;
 	}
 
-	public transformIncomingURIs<T>(obj: T): T {
-		if (!this._uriTransformer) {
+	public trAnsformIncomingURIs<T>(obj: T): T {
+		if (!this._uriTrAnsformer) {
 			return obj;
 		}
-		return transformIncomingURIs(obj, this._uriTransformer);
+		return trAnsformIncomingURIs(obj, this._uriTrAnsformer);
 	}
 
 	public getProxy<T>(identifier: ProxyIdentifier<T>): T {
 		const rpcId = identifier.nid;
 		if (!this._proxies[rpcId]) {
-			this._proxies[rpcId] = this._createProxy(rpcId);
+			this._proxies[rpcId] = this._creAteProxy(rpcId);
 		}
 		return this._proxies[rpcId];
 	}
 
-	private _createProxy<T>(rpcId: number): T {
-		let handler = {
-			get: (target: any, name: PropertyKey) => {
-				if (typeof name === 'string' && !target[name] && name.charCodeAt(0) === CharCode.DollarSign) {
-					target[name] = (...myArgs: any[]) => {
-						return this._remoteCall(rpcId, name, myArgs);
+	privAte _creAteProxy<T>(rpcId: number): T {
+		let hAndler = {
+			get: (tArget: Any, nAme: PropertyKey) => {
+				if (typeof nAme === 'string' && !tArget[nAme] && nAme.chArCodeAt(0) === ChArCode.DollArSign) {
+					tArget[nAme] = (...myArgs: Any[]) => {
+						return this._remoteCAll(rpcId, nAme, myArgs);
 					};
 				}
-				return target[name];
+				return tArget[nAme];
 			}
 		};
-		return new Proxy(Object.create(null), handler);
+		return new Proxy(Object.creAte(null), hAndler);
 	}
 
-	public set<T, R extends T>(identifier: ProxyIdentifier<T>, value: R): R {
-		this._locals[identifier.nid] = value;
-		return value;
+	public set<T, R extends T>(identifier: ProxyIdentifier<T>, vAlue: R): R {
+		this._locAls[identifier.nid] = vAlue;
+		return vAlue;
 	}
 
-	public assertRegistered(identifiers: ProxyIdentifier<any>[]): void {
+	public AssertRegistered(identifiers: ProxyIdentifier<Any>[]): void {
 		for (let i = 0, len = identifiers.length; i < len; i++) {
 			const identifier = identifiers[i];
-			if (!this._locals[identifier.nid]) {
-				throw new Error(`Missing actor ${identifier.sid} (isMain: ${identifier.isMain})`);
+			if (!this._locAls[identifier.nid]) {
+				throw new Error(`Missing Actor ${identifier.sid} (isMAin: ${identifier.isMAin})`);
 			}
 		}
 	}
 
-	private _receiveOneMessage(rawmsg: VSBuffer): void {
+	privAte _receiveOneMessAge(rAwmsg: VSBuffer): void {
 		if (this._isDisposed) {
 			return;
 		}
 
-		const msgLength = rawmsg.byteLength;
-		const buff = MessageBuffer.read(rawmsg, 0);
-		const messageType = <MessageType>buff.readUInt8();
-		const req = buff.readUInt32();
+		const msgLength = rAwmsg.byteLength;
+		const buff = MessAgeBuffer.reAd(rAwmsg, 0);
+		const messAgeType = <MessAgeType>buff.reAdUInt8();
+		const req = buff.reAdUInt32();
 
-		switch (messageType) {
-			case MessageType.RequestJSONArgs:
-			case MessageType.RequestJSONArgsWithCancellation: {
-				let { rpcId, method, args } = MessageIO.deserializeRequestJSONArgs(buff);
-				if (this._uriTransformer) {
-					args = transformIncomingURIs(args, this._uriTransformer);
+		switch (messAgeType) {
+			cAse MessAgeType.RequestJSONArgs:
+			cAse MessAgeType.RequestJSONArgsWithCAncellAtion: {
+				let { rpcId, method, Args } = MessAgeIO.deseriAlizeRequestJSONArgs(buff);
+				if (this._uriTrAnsformer) {
+					Args = trAnsformIncomingURIs(Args, this._uriTrAnsformer);
 				}
-				this._receiveRequest(msgLength, req, rpcId, method, args, (messageType === MessageType.RequestJSONArgsWithCancellation));
-				break;
+				this._receiveRequest(msgLength, req, rpcId, method, Args, (messAgeType === MessAgeType.RequestJSONArgsWithCAncellAtion));
+				breAk;
 			}
-			case MessageType.RequestMixedArgs:
-			case MessageType.RequestMixedArgsWithCancellation: {
-				let { rpcId, method, args } = MessageIO.deserializeRequestMixedArgs(buff);
-				if (this._uriTransformer) {
-					args = transformIncomingURIs(args, this._uriTransformer);
+			cAse MessAgeType.RequestMixedArgs:
+			cAse MessAgeType.RequestMixedArgsWithCAncellAtion: {
+				let { rpcId, method, Args } = MessAgeIO.deseriAlizeRequestMixedArgs(buff);
+				if (this._uriTrAnsformer) {
+					Args = trAnsformIncomingURIs(Args, this._uriTrAnsformer);
 				}
-				this._receiveRequest(msgLength, req, rpcId, method, args, (messageType === MessageType.RequestMixedArgsWithCancellation));
-				break;
+				this._receiveRequest(msgLength, req, rpcId, method, Args, (messAgeType === MessAgeType.RequestMixedArgsWithCAncellAtion));
+				breAk;
 			}
-			case MessageType.Acknowledged: {
+			cAse MessAgeType.Acknowledged: {
 				if (this._logger) {
-					this._logger.logIncoming(msgLength, req, RequestInitiator.LocalSide, `ack`);
+					this._logger.logIncoming(msgLength, req, RequestInitiAtor.LocAlSide, `Ack`);
 				}
 				this._onDidReceiveAcknowledge(req);
-				break;
+				breAk;
 			}
-			case MessageType.Cancel: {
-				this._receiveCancel(msgLength, req);
-				break;
+			cAse MessAgeType.CAncel: {
+				this._receiveCAncel(msgLength, req);
+				breAk;
 			}
-			case MessageType.ReplyOKEmpty: {
+			cAse MessAgeType.ReplyOKEmpty: {
 				this._receiveReply(msgLength, req, undefined);
-				break;
+				breAk;
 			}
-			case MessageType.ReplyOKJSON: {
-				let value = MessageIO.deserializeReplyOKJSON(buff);
-				if (this._uriTransformer) {
-					value = transformIncomingURIs(value, this._uriTransformer);
+			cAse MessAgeType.ReplyOKJSON: {
+				let vAlue = MessAgeIO.deseriAlizeReplyOKJSON(buff);
+				if (this._uriTrAnsformer) {
+					vAlue = trAnsformIncomingURIs(vAlue, this._uriTrAnsformer);
 				}
-				this._receiveReply(msgLength, req, value);
-				break;
+				this._receiveReply(msgLength, req, vAlue);
+				breAk;
 			}
-			case MessageType.ReplyOKVSBuffer: {
-				let value = MessageIO.deserializeReplyOKVSBuffer(buff);
-				this._receiveReply(msgLength, req, value);
-				break;
+			cAse MessAgeType.ReplyOKVSBuffer: {
+				let vAlue = MessAgeIO.deseriAlizeReplyOKVSBuffer(buff);
+				this._receiveReply(msgLength, req, vAlue);
+				breAk;
 			}
-			case MessageType.ReplyErrError: {
-				let err = MessageIO.deserializeReplyErrError(buff);
-				if (this._uriTransformer) {
-					err = transformIncomingURIs(err, this._uriTransformer);
+			cAse MessAgeType.ReplyErrError: {
+				let err = MessAgeIO.deseriAlizeReplyErrError(buff);
+				if (this._uriTrAnsformer) {
+					err = trAnsformIncomingURIs(err, this._uriTrAnsformer);
 				}
 				this._receiveReplyErr(msgLength, req, err);
-				break;
+				breAk;
 			}
-			case MessageType.ReplyErrEmpty: {
+			cAse MessAgeType.ReplyErrEmpty: {
 				this._receiveReplyErr(msgLength, req, undefined);
-				break;
+				breAk;
 			}
-			default:
-				console.error(`received unexpected message`);
-				console.error(rawmsg);
+			defAult:
+				console.error(`received unexpected messAge`);
+				console.error(rAwmsg);
 		}
 	}
 
-	private _receiveRequest(msgLength: number, req: number, rpcId: number, method: string, args: any[], usesCancellationToken: boolean): void {
+	privAte _receiveRequest(msgLength: number, req: number, rpcId: number, method: string, Args: Any[], usesCAncellAtionToken: booleAn): void {
 		if (this._logger) {
-			this._logger.logIncoming(msgLength, req, RequestInitiator.OtherSide, `receiveRequest ${getStringIdentifierForProxy(rpcId)}.${method}(`, args);
+			this._logger.logIncoming(msgLength, req, RequestInitiAtor.OtherSide, `receiveRequest ${getStringIdentifierForProxy(rpcId)}.${method}(`, Args);
 		}
-		const callId = String(req);
+		const cAllId = String(req);
 
-		let promise: Promise<any>;
-		let cancel: () => void;
-		if (usesCancellationToken) {
-			const cancellationTokenSource = new CancellationTokenSource();
-			args.push(cancellationTokenSource.token);
-			promise = this._invokeHandler(rpcId, method, args);
-			cancel = () => cancellationTokenSource.cancel();
+		let promise: Promise<Any>;
+		let cAncel: () => void;
+		if (usesCAncellAtionToken) {
+			const cAncellAtionTokenSource = new CAncellAtionTokenSource();
+			Args.push(cAncellAtionTokenSource.token);
+			promise = this._invokeHAndler(rpcId, method, Args);
+			cAncel = () => cAncellAtionTokenSource.cAncel();
 		} else {
-			// cannot be cancelled
-			promise = this._invokeHandler(rpcId, method, args);
-			cancel = noop;
+			// cAnnot be cAncelled
+			promise = this._invokeHAndler(rpcId, method, Args);
+			cAncel = noop;
 		}
 
-		this._cancelInvokedHandlers[callId] = cancel;
+		this._cAncelInvokedHAndlers[cAllId] = cAncel;
 
 		// Acknowledge the request
-		const msg = MessageIO.serializeAcknowledged(req);
+		const msg = MessAgeIO.seriAlizeAcknowledged(req);
 		if (this._logger) {
-			this._logger.logOutgoing(msg.byteLength, req, RequestInitiator.OtherSide, `ack`);
+			this._logger.logOutgoing(msg.byteLength, req, RequestInitiAtor.OtherSide, `Ack`);
 		}
 		this._protocol.send(msg);
 
 		promise.then((r) => {
-			delete this._cancelInvokedHandlers[callId];
-			const msg = MessageIO.serializeReplyOK(req, r, this._uriReplacer);
+			delete this._cAncelInvokedHAndlers[cAllId];
+			const msg = MessAgeIO.seriAlizeReplyOK(req, r, this._uriReplAcer);
 			if (this._logger) {
-				this._logger.logOutgoing(msg.byteLength, req, RequestInitiator.OtherSide, `reply:`, r);
+				this._logger.logOutgoing(msg.byteLength, req, RequestInitiAtor.OtherSide, `reply:`, r);
 			}
 			this._protocol.send(msg);
 		}, (err) => {
-			delete this._cancelInvokedHandlers[callId];
-			const msg = MessageIO.serializeReplyErr(req, err);
+			delete this._cAncelInvokedHAndlers[cAllId];
+			const msg = MessAgeIO.seriAlizeReplyErr(req, err);
 			if (this._logger) {
-				this._logger.logOutgoing(msg.byteLength, req, RequestInitiator.OtherSide, `replyErr:`, err);
+				this._logger.logOutgoing(msg.byteLength, req, RequestInitiAtor.OtherSide, `replyErr:`, err);
 			}
 			this._protocol.send(msg);
 		});
 	}
 
-	private _receiveCancel(msgLength: number, req: number): void {
+	privAte _receiveCAncel(msgLength: number, req: number): void {
 		if (this._logger) {
-			this._logger.logIncoming(msgLength, req, RequestInitiator.OtherSide, `receiveCancel`);
+			this._logger.logIncoming(msgLength, req, RequestInitiAtor.OtherSide, `receiveCAncel`);
 		}
-		const callId = String(req);
-		if (this._cancelInvokedHandlers[callId]) {
-			this._cancelInvokedHandlers[callId]();
+		const cAllId = String(req);
+		if (this._cAncelInvokedHAndlers[cAllId]) {
+			this._cAncelInvokedHAndlers[cAllId]();
 		}
 	}
 
-	private _receiveReply(msgLength: number, req: number, value: any): void {
+	privAte _receiveReply(msgLength: number, req: number, vAlue: Any): void {
 		if (this._logger) {
-			this._logger.logIncoming(msgLength, req, RequestInitiator.LocalSide, `receiveReply:`, value);
+			this._logger.logIncoming(msgLength, req, RequestInitiAtor.LocAlSide, `receiveReply:`, vAlue);
 		}
-		const callId = String(req);
-		if (!this._pendingRPCReplies.hasOwnProperty(callId)) {
+		const cAllId = String(req);
+		if (!this._pendingRPCReplies.hAsOwnProperty(cAllId)) {
 			return;
 		}
 
-		const pendingReply = this._pendingRPCReplies[callId];
-		delete this._pendingRPCReplies[callId];
+		const pendingReply = this._pendingRPCReplies[cAllId];
+		delete this._pendingRPCReplies[cAllId];
 
-		pendingReply.resolveOk(value);
+		pendingReply.resolveOk(vAlue);
 	}
 
-	private _receiveReplyErr(msgLength: number, req: number, value: any): void {
+	privAte _receiveReplyErr(msgLength: number, req: number, vAlue: Any): void {
 		if (this._logger) {
-			this._logger.logIncoming(msgLength, req, RequestInitiator.LocalSide, `receiveReplyErr:`, value);
+			this._logger.logIncoming(msgLength, req, RequestInitiAtor.LocAlSide, `receiveReplyErr:`, vAlue);
 		}
 
-		const callId = String(req);
-		if (!this._pendingRPCReplies.hasOwnProperty(callId)) {
+		const cAllId = String(req);
+		if (!this._pendingRPCReplies.hAsOwnProperty(cAllId)) {
 			return;
 		}
 
-		const pendingReply = this._pendingRPCReplies[callId];
-		delete this._pendingRPCReplies[callId];
+		const pendingReply = this._pendingRPCReplies[cAllId];
+		delete this._pendingRPCReplies[cAllId];
 
-		let err: any = undefined;
-		if (value) {
-			if (value.$isError) {
+		let err: Any = undefined;
+		if (vAlue) {
+			if (vAlue.$isError) {
 				err = new Error();
-				err.name = value.name;
-				err.message = value.message;
-				err.stack = value.stack;
+				err.nAme = vAlue.nAme;
+				err.messAge = vAlue.messAge;
+				err.stAck = vAlue.stAck;
 			} else {
-				err = value;
+				err = vAlue;
 			}
 		}
 		pendingReply.resolveErr(err);
 	}
 
-	private _invokeHandler(rpcId: number, methodName: string, args: any[]): Promise<any> {
+	privAte _invokeHAndler(rpcId: number, methodNAme: string, Args: Any[]): Promise<Any> {
 		try {
-			return Promise.resolve(this._doInvokeHandler(rpcId, methodName, args));
-		} catch (err) {
+			return Promise.resolve(this._doInvokeHAndler(rpcId, methodNAme, Args));
+		} cAtch (err) {
 			return Promise.reject(err);
 		}
 	}
 
-	private _doInvokeHandler(rpcId: number, methodName: string, args: any[]): any {
-		const actor = this._locals[rpcId];
-		if (!actor) {
-			throw new Error('Unknown actor ' + getStringIdentifierForProxy(rpcId));
+	privAte _doInvokeHAndler(rpcId: number, methodNAme: string, Args: Any[]): Any {
+		const Actor = this._locAls[rpcId];
+		if (!Actor) {
+			throw new Error('Unknown Actor ' + getStringIdentifierForProxy(rpcId));
 		}
-		let method = actor[methodName];
+		let method = Actor[methodNAme];
 		if (typeof method !== 'function') {
-			throw new Error('Unknown method ' + methodName + ' on actor ' + getStringIdentifierForProxy(rpcId));
+			throw new Error('Unknown method ' + methodNAme + ' on Actor ' + getStringIdentifierForProxy(rpcId));
 		}
-		return method.apply(actor, args);
+		return method.Apply(Actor, Args);
 	}
 
-	private _remoteCall(rpcId: number, methodName: string, args: any[]): Promise<any> {
+	privAte _remoteCAll(rpcId: number, methodNAme: string, Args: Any[]): Promise<Any> {
 		if (this._isDisposed) {
-			return Promise.reject<any>(errors.canceled());
+			return Promise.reject<Any>(errors.cAnceled());
 		}
-		let cancellationToken: CancellationToken | null = null;
-		if (args.length > 0 && CancellationToken.isCancellationToken(args[args.length - 1])) {
-			cancellationToken = args.pop();
-		}
-
-		if (cancellationToken && cancellationToken.isCancellationRequested) {
-			// No need to do anything...
-			return Promise.reject<any>(errors.canceled());
+		let cAncellAtionToken: CAncellAtionToken | null = null;
+		if (Args.length > 0 && CAncellAtionToken.isCAncellAtionToken(Args[Args.length - 1])) {
+			cAncellAtionToken = Args.pop();
 		}
 
-		const serializedRequestArguments = MessageIO.serializeRequestArguments(args, this._uriReplacer);
+		if (cAncellAtionToken && cAncellAtionToken.isCAncellAtionRequested) {
+			// No need to do Anything...
+			return Promise.reject<Any>(errors.cAnceled());
+		}
 
-		const req = ++this._lastMessageId;
-		const callId = String(req);
-		const result = new LazyPromise();
+		const seriAlizedRequestArguments = MessAgeIO.seriAlizeRequestArguments(Args, this._uriReplAcer);
 
-		if (cancellationToken) {
-			cancellationToken.onCancellationRequested(() => {
-				const msg = MessageIO.serializeCancel(req);
+		const req = ++this._lAstMessAgeId;
+		const cAllId = String(req);
+		const result = new LAzyPromise();
+
+		if (cAncellAtionToken) {
+			cAncellAtionToken.onCAncellAtionRequested(() => {
+				const msg = MessAgeIO.seriAlizeCAncel(req);
 				if (this._logger) {
-					this._logger.logOutgoing(msg.byteLength, req, RequestInitiator.LocalSide, `cancel`);
+					this._logger.logOutgoing(msg.byteLength, req, RequestInitiAtor.LocAlSide, `cAncel`);
 				}
-				this._protocol.send(MessageIO.serializeCancel(req));
+				this._protocol.send(MessAgeIO.seriAlizeCAncel(req));
 			});
 		}
 
-		this._pendingRPCReplies[callId] = result;
+		this._pendingRPCReplies[cAllId] = result;
 		this._onWillSendRequest(req);
-		const msg = MessageIO.serializeRequest(req, rpcId, methodName, serializedRequestArguments, !!cancellationToken);
+		const msg = MessAgeIO.seriAlizeRequest(req, rpcId, methodNAme, seriAlizedRequestArguments, !!cAncellAtionToken);
 		if (this._logger) {
-			this._logger.logOutgoing(msg.byteLength, req, RequestInitiator.LocalSide, `request: ${getStringIdentifierForProxy(rpcId)}.${methodName}(`, args);
+			this._logger.logOutgoing(msg.byteLength, req, RequestInitiAtor.LocAlSide, `request: ${getStringIdentifierForProxy(rpcId)}.${methodNAme}(`, Args);
 		}
 		this._protocol.send(msg);
 		return result;
 	}
 }
 
-class MessageBuffer {
+clAss MessAgeBuffer {
 
-	public static alloc(type: MessageType, req: number, messageSize: number): MessageBuffer {
-		let result = new MessageBuffer(VSBuffer.alloc(messageSize + 1 /* type */ + 4 /* req */), 0);
+	public stAtic Alloc(type: MessAgeType, req: number, messAgeSize: number): MessAgeBuffer {
+		let result = new MessAgeBuffer(VSBuffer.Alloc(messAgeSize + 1 /* type */ + 4 /* req */), 0);
 		result.writeUInt8(type);
 		result.writeUInt32(req);
 		return result;
 	}
 
-	public static read(buff: VSBuffer, offset: number): MessageBuffer {
-		return new MessageBuffer(buff, offset);
+	public stAtic reAd(buff: VSBuffer, offset: number): MessAgeBuffer {
+		return new MessAgeBuffer(buff, offset);
 	}
 
-	private _buff: VSBuffer;
-	private _offset: number;
+	privAte _buff: VSBuffer;
+	privAte _offset: number;
 
 	public get buffer(): VSBuffer {
 		return this._buff;
 	}
 
-	private constructor(buff: VSBuffer, offset: number) {
+	privAte constructor(buff: VSBuffer, offset: number) {
 		this._buff = buff;
 		this._offset = offset;
 	}
 
-	public static sizeUInt8(): number {
+	public stAtic sizeUInt8(): number {
 		return 1;
 	}
 
@@ -483,8 +483,8 @@ class MessageBuffer {
 		this._buff.writeUInt8(n, this._offset); this._offset += 1;
 	}
 
-	public readUInt8(): number {
-		const n = this._buff.readUInt8(this._offset); this._offset += 1;
+	public reAdUInt8(): number {
+		const n = this._buff.reAdUInt8(this._offset); this._offset += 1;
 		return n;
 	}
 
@@ -492,13 +492,13 @@ class MessageBuffer {
 		this._buff.writeUInt32BE(n, this._offset); this._offset += 4;
 	}
 
-	public readUInt32(): number {
-		const n = this._buff.readUInt32BE(this._offset); this._offset += 4;
+	public reAdUInt32(): number {
+		const n = this._buff.reAdUInt32BE(this._offset); this._offset += 4;
 		return n;
 	}
 
-	public static sizeShortString(str: VSBuffer): number {
-		return 1 /* string length */ + str.byteLength /* actual string */;
+	public stAtic sizeShortString(str: VSBuffer): number {
+		return 1 /* string length */ + str.byteLength /* ActuAl string */;
 	}
 
 	public writeShortString(str: VSBuffer): void {
@@ -506,15 +506,15 @@ class MessageBuffer {
 		this._buff.set(str, this._offset); this._offset += str.byteLength;
 	}
 
-	public readShortString(): string {
-		const strByteLength = this._buff.readUInt8(this._offset); this._offset += 1;
+	public reAdShortString(): string {
+		const strByteLength = this._buff.reAdUInt8(this._offset); this._offset += 1;
 		const strBuff = this._buff.slice(this._offset, this._offset + strByteLength);
 		const str = strBuff.toString(); this._offset += strByteLength;
 		return str;
 	}
 
-	public static sizeLongString(str: VSBuffer): number {
-		return 4 /* string length */ + str.byteLength /* actual string */;
+	public stAtic sizeLongString(str: VSBuffer): number {
+		return 4 /* string length */ + str.byteLength /* ActuAl string */;
 	}
 
 	public writeLongString(str: VSBuffer): void {
@@ -522,8 +522,8 @@ class MessageBuffer {
 		this._buff.set(str, this._offset); this._offset += str.byteLength;
 	}
 
-	public readLongString(): string {
-		const strByteLength = this._buff.readUInt32BE(this._offset); this._offset += 4;
+	public reAdLongString(): string {
+		const strByteLength = this._buff.reAdUInt32BE(this._offset); this._offset += 4;
 		const strBuff = this._buff.slice(this._offset, this._offset + strByteLength);
 		const str = strBuff.toString(); this._offset += strByteLength;
 		return str;
@@ -534,8 +534,8 @@ class MessageBuffer {
 		this._buff.set(buff, this._offset); this._offset += buff.byteLength;
 	}
 
-	public static sizeVSBuffer(buff: VSBuffer): number {
-		return 4 /* buffer length */ + buff.byteLength /* actual buffer */;
+	public stAtic sizeVSBuffer(buff: VSBuffer): number {
+		return 4 /* buffer length */ + buff.byteLength /* ActuAl buffer */;
 	}
 
 	public writeVSBuffer(buff: VSBuffer): void {
@@ -543,276 +543,276 @@ class MessageBuffer {
 		this._buff.set(buff, this._offset); this._offset += buff.byteLength;
 	}
 
-	public readVSBuffer(): VSBuffer {
-		const buffLength = this._buff.readUInt32BE(this._offset); this._offset += 4;
+	public reAdVSBuffer(): VSBuffer {
+		const buffLength = this._buff.reAdUInt32BE(this._offset); this._offset += 4;
 		const buff = this._buff.slice(this._offset, this._offset + buffLength); this._offset += buffLength;
 		return buff;
 	}
 
-	public static sizeMixedArray(arr: VSBuffer[], arrType: ArgType[]): number {
+	public stAtic sizeMixedArrAy(Arr: VSBuffer[], ArrType: ArgType[]): number {
 		let size = 0;
-		size += 1; // arr length
-		for (let i = 0, len = arr.length; i < len; i++) {
-			const el = arr[i];
-			const elType = arrType[i];
-			size += 1; // arg type
+		size += 1; // Arr length
+		for (let i = 0, len = Arr.length; i < len; i++) {
+			const el = Arr[i];
+			const elType = ArrType[i];
+			size += 1; // Arg type
 			switch (elType) {
-				case ArgType.String:
+				cAse ArgType.String:
 					size += this.sizeLongString(el);
-					break;
-				case ArgType.VSBuffer:
+					breAk;
+				cAse ArgType.VSBuffer:
 					size += this.sizeVSBuffer(el);
-					break;
-				case ArgType.Undefined:
+					breAk;
+				cAse ArgType.Undefined:
 					// empty...
-					break;
+					breAk;
 			}
 		}
 		return size;
 	}
 
-	public writeMixedArray(arr: VSBuffer[], arrType: ArgType[]): void {
-		this._buff.writeUInt8(arr.length, this._offset); this._offset += 1;
-		for (let i = 0, len = arr.length; i < len; i++) {
-			const el = arr[i];
-			const elType = arrType[i];
+	public writeMixedArrAy(Arr: VSBuffer[], ArrType: ArgType[]): void {
+		this._buff.writeUInt8(Arr.length, this._offset); this._offset += 1;
+		for (let i = 0, len = Arr.length; i < len; i++) {
+			const el = Arr[i];
+			const elType = ArrType[i];
 			switch (elType) {
-				case ArgType.String:
+				cAse ArgType.String:
 					this.writeUInt8(ArgType.String);
 					this.writeLongString(el);
-					break;
-				case ArgType.VSBuffer:
+					breAk;
+				cAse ArgType.VSBuffer:
 					this.writeUInt8(ArgType.VSBuffer);
 					this.writeVSBuffer(el);
-					break;
-				case ArgType.Undefined:
+					breAk;
+				cAse ArgType.Undefined:
 					this.writeUInt8(ArgType.Undefined);
-					break;
+					breAk;
 			}
 		}
 	}
 
-	public readMixedArray(): Array<string | VSBuffer | undefined> {
-		const arrLen = this._buff.readUInt8(this._offset); this._offset += 1;
-		let arr: Array<string | VSBuffer | undefined> = new Array(arrLen);
-		for (let i = 0; i < arrLen; i++) {
-			const argType = <ArgType>this.readUInt8();
-			switch (argType) {
-				case ArgType.String:
-					arr[i] = this.readLongString();
-					break;
-				case ArgType.VSBuffer:
-					arr[i] = this.readVSBuffer();
-					break;
-				case ArgType.Undefined:
-					arr[i] = undefined;
-					break;
+	public reAdMixedArrAy(): ArrAy<string | VSBuffer | undefined> {
+		const ArrLen = this._buff.reAdUInt8(this._offset); this._offset += 1;
+		let Arr: ArrAy<string | VSBuffer | undefined> = new ArrAy(ArrLen);
+		for (let i = 0; i < ArrLen; i++) {
+			const ArgType = <ArgType>this.reAdUInt8();
+			switch (ArgType) {
+				cAse ArgType.String:
+					Arr[i] = this.reAdLongString();
+					breAk;
+				cAse ArgType.VSBuffer:
+					Arr[i] = this.reAdVSBuffer();
+					breAk;
+				cAse ArgType.Undefined:
+					Arr[i] = undefined;
+					breAk;
 			}
 		}
-		return arr;
+		return Arr;
 	}
 }
 
-type SerializedRequestArguments = { type: 'mixed'; args: VSBuffer[]; argsType: ArgType[]; } | { type: 'simple'; args: string; };
+type SeriAlizedRequestArguments = { type: 'mixed'; Args: VSBuffer[]; ArgsType: ArgType[]; } | { type: 'simple'; Args: string; };
 
-class MessageIO {
+clAss MessAgeIO {
 
-	private static _arrayContainsBufferOrUndefined(arr: any[]): boolean {
-		for (let i = 0, len = arr.length; i < len; i++) {
-			if (arr[i] instanceof VSBuffer) {
+	privAte stAtic _ArrAyContAinsBufferOrUndefined(Arr: Any[]): booleAn {
+		for (let i = 0, len = Arr.length; i < len; i++) {
+			if (Arr[i] instAnceof VSBuffer) {
 				return true;
 			}
-			if (typeof arr[i] === 'undefined') {
+			if (typeof Arr[i] === 'undefined') {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	public static serializeRequestArguments(args: any[], replacer: JSONStringifyReplacer | null): SerializedRequestArguments {
-		if (this._arrayContainsBufferOrUndefined(args)) {
-			let massagedArgs: VSBuffer[] = [];
-			let massagedArgsType: ArgType[] = [];
-			for (let i = 0, len = args.length; i < len; i++) {
-				const arg = args[i];
-				if (arg instanceof VSBuffer) {
-					massagedArgs[i] = arg;
-					massagedArgsType[i] = ArgType.VSBuffer;
-				} else if (typeof arg === 'undefined') {
-					massagedArgs[i] = VSBuffer.alloc(0);
-					massagedArgsType[i] = ArgType.Undefined;
+	public stAtic seriAlizeRequestArguments(Args: Any[], replAcer: JSONStringifyReplAcer | null): SeriAlizedRequestArguments {
+		if (this._ArrAyContAinsBufferOrUndefined(Args)) {
+			let mAssAgedArgs: VSBuffer[] = [];
+			let mAssAgedArgsType: ArgType[] = [];
+			for (let i = 0, len = Args.length; i < len; i++) {
+				const Arg = Args[i];
+				if (Arg instAnceof VSBuffer) {
+					mAssAgedArgs[i] = Arg;
+					mAssAgedArgsType[i] = ArgType.VSBuffer;
+				} else if (typeof Arg === 'undefined') {
+					mAssAgedArgs[i] = VSBuffer.Alloc(0);
+					mAssAgedArgsType[i] = ArgType.Undefined;
 				} else {
-					massagedArgs[i] = VSBuffer.fromString(stringify(arg, replacer));
-					massagedArgsType[i] = ArgType.String;
+					mAssAgedArgs[i] = VSBuffer.fromString(stringify(Arg, replAcer));
+					mAssAgedArgsType[i] = ArgType.String;
 				}
 			}
 			return {
 				type: 'mixed',
-				args: massagedArgs,
-				argsType: massagedArgsType
+				Args: mAssAgedArgs,
+				ArgsType: mAssAgedArgsType
 			};
 		}
 		return {
 			type: 'simple',
-			args: stringify(args, replacer)
+			Args: stringify(Args, replAcer)
 		};
 	}
 
-	public static serializeRequest(req: number, rpcId: number, method: string, serializedArgs: SerializedRequestArguments, usesCancellationToken: boolean): VSBuffer {
-		if (serializedArgs.type === 'mixed') {
-			return this._requestMixedArgs(req, rpcId, method, serializedArgs.args, serializedArgs.argsType, usesCancellationToken);
+	public stAtic seriAlizeRequest(req: number, rpcId: number, method: string, seriAlizedArgs: SeriAlizedRequestArguments, usesCAncellAtionToken: booleAn): VSBuffer {
+		if (seriAlizedArgs.type === 'mixed') {
+			return this._requestMixedArgs(req, rpcId, method, seriAlizedArgs.Args, seriAlizedArgs.ArgsType, usesCAncellAtionToken);
 		}
-		return this._requestJSONArgs(req, rpcId, method, serializedArgs.args, usesCancellationToken);
+		return this._requestJSONArgs(req, rpcId, method, seriAlizedArgs.Args, usesCAncellAtionToken);
 	}
 
-	private static _requestJSONArgs(req: number, rpcId: number, method: string, args: string, usesCancellationToken: boolean): VSBuffer {
+	privAte stAtic _requestJSONArgs(req: number, rpcId: number, method: string, Args: string, usesCAncellAtionToken: booleAn): VSBuffer {
 		const methodBuff = VSBuffer.fromString(method);
-		const argsBuff = VSBuffer.fromString(args);
+		const ArgsBuff = VSBuffer.fromString(Args);
 
 		let len = 0;
-		len += MessageBuffer.sizeUInt8();
-		len += MessageBuffer.sizeShortString(methodBuff);
-		len += MessageBuffer.sizeLongString(argsBuff);
+		len += MessAgeBuffer.sizeUInt8();
+		len += MessAgeBuffer.sizeShortString(methodBuff);
+		len += MessAgeBuffer.sizeLongString(ArgsBuff);
 
-		let result = MessageBuffer.alloc(usesCancellationToken ? MessageType.RequestJSONArgsWithCancellation : MessageType.RequestJSONArgs, req, len);
+		let result = MessAgeBuffer.Alloc(usesCAncellAtionToken ? MessAgeType.RequestJSONArgsWithCAncellAtion : MessAgeType.RequestJSONArgs, req, len);
 		result.writeUInt8(rpcId);
 		result.writeShortString(methodBuff);
-		result.writeLongString(argsBuff);
+		result.writeLongString(ArgsBuff);
 		return result.buffer;
 	}
 
-	public static deserializeRequestJSONArgs(buff: MessageBuffer): { rpcId: number; method: string; args: any[]; } {
-		const rpcId = buff.readUInt8();
-		const method = buff.readShortString();
-		const args = buff.readLongString();
+	public stAtic deseriAlizeRequestJSONArgs(buff: MessAgeBuffer): { rpcId: number; method: string; Args: Any[]; } {
+		const rpcId = buff.reAdUInt8();
+		const method = buff.reAdShortString();
+		const Args = buff.reAdLongString();
 		return {
 			rpcId: rpcId,
 			method: method,
-			args: JSON.parse(args)
+			Args: JSON.pArse(Args)
 		};
 	}
 
-	private static _requestMixedArgs(req: number, rpcId: number, method: string, args: VSBuffer[], argsType: ArgType[], usesCancellationToken: boolean): VSBuffer {
+	privAte stAtic _requestMixedArgs(req: number, rpcId: number, method: string, Args: VSBuffer[], ArgsType: ArgType[], usesCAncellAtionToken: booleAn): VSBuffer {
 		const methodBuff = VSBuffer.fromString(method);
 
 		let len = 0;
-		len += MessageBuffer.sizeUInt8();
-		len += MessageBuffer.sizeShortString(methodBuff);
-		len += MessageBuffer.sizeMixedArray(args, argsType);
+		len += MessAgeBuffer.sizeUInt8();
+		len += MessAgeBuffer.sizeShortString(methodBuff);
+		len += MessAgeBuffer.sizeMixedArrAy(Args, ArgsType);
 
-		let result = MessageBuffer.alloc(usesCancellationToken ? MessageType.RequestMixedArgsWithCancellation : MessageType.RequestMixedArgs, req, len);
+		let result = MessAgeBuffer.Alloc(usesCAncellAtionToken ? MessAgeType.RequestMixedArgsWithCAncellAtion : MessAgeType.RequestMixedArgs, req, len);
 		result.writeUInt8(rpcId);
 		result.writeShortString(methodBuff);
-		result.writeMixedArray(args, argsType);
+		result.writeMixedArrAy(Args, ArgsType);
 		return result.buffer;
 	}
 
-	public static deserializeRequestMixedArgs(buff: MessageBuffer): { rpcId: number; method: string; args: any[]; } {
-		const rpcId = buff.readUInt8();
-		const method = buff.readShortString();
-		const rawargs = buff.readMixedArray();
-		const args: any[] = new Array(rawargs.length);
-		for (let i = 0, len = rawargs.length; i < len; i++) {
-			const rawarg = rawargs[i];
-			if (typeof rawarg === 'string') {
-				args[i] = JSON.parse(rawarg);
+	public stAtic deseriAlizeRequestMixedArgs(buff: MessAgeBuffer): { rpcId: number; method: string; Args: Any[]; } {
+		const rpcId = buff.reAdUInt8();
+		const method = buff.reAdShortString();
+		const rAwArgs = buff.reAdMixedArrAy();
+		const Args: Any[] = new ArrAy(rAwArgs.length);
+		for (let i = 0, len = rAwArgs.length; i < len; i++) {
+			const rAwArg = rAwArgs[i];
+			if (typeof rAwArg === 'string') {
+				Args[i] = JSON.pArse(rAwArg);
 			} else {
-				args[i] = rawarg;
+				Args[i] = rAwArg;
 			}
 		}
 		return {
 			rpcId: rpcId,
 			method: method,
-			args: args
+			Args: Args
 		};
 	}
 
-	public static serializeAcknowledged(req: number): VSBuffer {
-		return MessageBuffer.alloc(MessageType.Acknowledged, req, 0).buffer;
+	public stAtic seriAlizeAcknowledged(req: number): VSBuffer {
+		return MessAgeBuffer.Alloc(MessAgeType.Acknowledged, req, 0).buffer;
 	}
 
-	public static serializeCancel(req: number): VSBuffer {
-		return MessageBuffer.alloc(MessageType.Cancel, req, 0).buffer;
+	public stAtic seriAlizeCAncel(req: number): VSBuffer {
+		return MessAgeBuffer.Alloc(MessAgeType.CAncel, req, 0).buffer;
 	}
 
-	public static serializeReplyOK(req: number, res: any, replacer: JSONStringifyReplacer | null): VSBuffer {
+	public stAtic seriAlizeReplyOK(req: number, res: Any, replAcer: JSONStringifyReplAcer | null): VSBuffer {
 		if (typeof res === 'undefined') {
-			return this._serializeReplyOKEmpty(req);
+			return this._seriAlizeReplyOKEmpty(req);
 		}
-		if (res instanceof VSBuffer) {
-			return this._serializeReplyOKVSBuffer(req, res);
+		if (res instAnceof VSBuffer) {
+			return this._seriAlizeReplyOKVSBuffer(req, res);
 		}
-		return this._serializeReplyOKJSON(req, safeStringify(res, replacer));
+		return this._seriAlizeReplyOKJSON(req, sAfeStringify(res, replAcer));
 	}
 
-	private static _serializeReplyOKEmpty(req: number): VSBuffer {
-		return MessageBuffer.alloc(MessageType.ReplyOKEmpty, req, 0).buffer;
+	privAte stAtic _seriAlizeReplyOKEmpty(req: number): VSBuffer {
+		return MessAgeBuffer.Alloc(MessAgeType.ReplyOKEmpty, req, 0).buffer;
 	}
 
-	private static _serializeReplyOKVSBuffer(req: number, res: VSBuffer): VSBuffer {
+	privAte stAtic _seriAlizeReplyOKVSBuffer(req: number, res: VSBuffer): VSBuffer {
 		let len = 0;
-		len += MessageBuffer.sizeVSBuffer(res);
+		len += MessAgeBuffer.sizeVSBuffer(res);
 
-		let result = MessageBuffer.alloc(MessageType.ReplyOKVSBuffer, req, len);
+		let result = MessAgeBuffer.Alloc(MessAgeType.ReplyOKVSBuffer, req, len);
 		result.writeVSBuffer(res);
 		return result.buffer;
 	}
 
-	public static deserializeReplyOKVSBuffer(buff: MessageBuffer): VSBuffer {
-		return buff.readVSBuffer();
+	public stAtic deseriAlizeReplyOKVSBuffer(buff: MessAgeBuffer): VSBuffer {
+		return buff.reAdVSBuffer();
 	}
 
-	private static _serializeReplyOKJSON(req: number, res: string): VSBuffer {
+	privAte stAtic _seriAlizeReplyOKJSON(req: number, res: string): VSBuffer {
 		const resBuff = VSBuffer.fromString(res);
 
 		let len = 0;
-		len += MessageBuffer.sizeLongString(resBuff);
+		len += MessAgeBuffer.sizeLongString(resBuff);
 
-		let result = MessageBuffer.alloc(MessageType.ReplyOKJSON, req, len);
+		let result = MessAgeBuffer.Alloc(MessAgeType.ReplyOKJSON, req, len);
 		result.writeLongString(resBuff);
 		return result.buffer;
 	}
 
-	public static deserializeReplyOKJSON(buff: MessageBuffer): any {
-		const res = buff.readLongString();
-		return JSON.parse(res);
+	public stAtic deseriAlizeReplyOKJSON(buff: MessAgeBuffer): Any {
+		const res = buff.reAdLongString();
+		return JSON.pArse(res);
 	}
 
-	public static serializeReplyErr(req: number, err: any): VSBuffer {
+	public stAtic seriAlizeReplyErr(req: number, err: Any): VSBuffer {
 		if (err) {
-			return this._serializeReplyErrEror(req, err);
+			return this._seriAlizeReplyErrEror(req, err);
 		}
-		return this._serializeReplyErrEmpty(req);
+		return this._seriAlizeReplyErrEmpty(req);
 	}
 
-	private static _serializeReplyErrEror(req: number, _err: Error): VSBuffer {
-		const errBuff = VSBuffer.fromString(safeStringify(errors.transformErrorForSerialization(_err), null));
+	privAte stAtic _seriAlizeReplyErrEror(req: number, _err: Error): VSBuffer {
+		const errBuff = VSBuffer.fromString(sAfeStringify(errors.trAnsformErrorForSeriAlizAtion(_err), null));
 
 		let len = 0;
-		len += MessageBuffer.sizeLongString(errBuff);
+		len += MessAgeBuffer.sizeLongString(errBuff);
 
-		let result = MessageBuffer.alloc(MessageType.ReplyErrError, req, len);
+		let result = MessAgeBuffer.Alloc(MessAgeType.ReplyErrError, req, len);
 		result.writeLongString(errBuff);
 		return result.buffer;
 	}
 
-	public static deserializeReplyErrError(buff: MessageBuffer): Error {
-		const err = buff.readLongString();
-		return JSON.parse(err);
+	public stAtic deseriAlizeReplyErrError(buff: MessAgeBuffer): Error {
+		const err = buff.reAdLongString();
+		return JSON.pArse(err);
 	}
 
-	private static _serializeReplyErrEmpty(req: number): VSBuffer {
-		return MessageBuffer.alloc(MessageType.ReplyErrEmpty, req, 0).buffer;
+	privAte stAtic _seriAlizeReplyErrEmpty(req: number): VSBuffer {
+		return MessAgeBuffer.Alloc(MessAgeType.ReplyErrEmpty, req, 0).buffer;
 	}
 }
 
-const enum MessageType {
+const enum MessAgeType {
 	RequestJSONArgs = 1,
-	RequestJSONArgsWithCancellation = 2,
+	RequestJSONArgsWithCAncellAtion = 2,
 	RequestMixedArgs = 3,
-	RequestMixedArgsWithCancellation = 4,
+	RequestMixedArgsWithCAncellAtion = 4,
 	Acknowledged = 5,
-	Cancel = 6,
+	CAncel = 6,
 	ReplyOKEmpty = 7,
 	ReplyOKVSBuffer = 8,
 	ReplyOKJSON = 9,

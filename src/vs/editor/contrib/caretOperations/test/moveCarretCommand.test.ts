@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Selection } from 'vs/editor/common/core/selection';
-import { MoveCaretCommand } from 'vs/editor/contrib/caretOperations/moveCaretCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { MoveCAretCommAnd } from 'vs/editor/contrib/cAretOperAtions/moveCAretCommAnd';
+import { testCommAnd } from 'vs/editor/test/browser/testCommAnd';
 
 
-function testMoveCaretLeftCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new MoveCaretCommand(sel, true), expectedLines, expectedSelection);
+function testMoveCAretLeftCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	testCommAnd(lines, null, selection, (sel) => new MoveCAretCommAnd(sel, true), expectedLines, expectedSelection);
 }
 
-function testMoveCaretRightCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new MoveCaretCommand(sel, false), expectedLines, expectedSelection);
+function testMoveCAretRightCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	testCommAnd(lines, null, selection, (sel) => new MoveCAretCommAnd(sel, fAlse), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Move Caret Command', () => {
+suite('Editor Contrib - Move CAret CommAnd', () => {
 
 	test('move selection to left', function () {
-		testMoveCaretLeftCommand(
+		testMoveCAretLeftCommAnd(
 			[
 				'012345'
 			],
@@ -31,7 +31,7 @@ suite('Editor Contrib - Move Caret Command', () => {
 		);
 	});
 	test('move selection to right', function () {
-		testMoveCaretRightCommand(
+		testMoveCAretRightCommAnd(
 			[
 				'012345'
 			],
@@ -42,8 +42,8 @@ suite('Editor Contrib - Move Caret Command', () => {
 			new Selection(1, 4, 1, 6)
 		);
 	});
-	test('move selection to left - from first column - no change', function () {
-		testMoveCaretLeftCommand(
+	test('move selection to left - from first column - no chAnge', function () {
+		testMoveCAretLeftCommAnd(
 			[
 				'012345'
 			],
@@ -54,8 +54,8 @@ suite('Editor Contrib - Move Caret Command', () => {
 			new Selection(1, 1, 1, 1)
 		);
 	});
-	test('move selection to right - from last column - no change', function () {
-		testMoveCaretRightCommand(
+	test('move selection to right - from lAst column - no chAnge', function () {
+		testMoveCAretRightCommAnd(
 			[
 				'012345'
 			],

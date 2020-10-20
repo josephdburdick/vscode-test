@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Match, FileMatch, FileMatchOrMatch } from 'vs/workbench/contrib/search/common/searchModel';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
+import { MAtch, FileMAtch, FileMAtchOrMAtch } from 'vs/workbench/contrib/seArch/common/seArchModel';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IProgress, IProgressStep } from 'vs/plAtform/progress/common/progress';
 
-export const IReplaceService = createDecorator<IReplaceService>('replaceService');
+export const IReplAceService = creAteDecorAtor<IReplAceService>('replAceService');
 
-export interface IReplaceService {
+export interfAce IReplAceService {
 
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Replaces the given match in the file that match belongs to
-	 */
-	replace(match: Match): Promise<any>;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 *	Replace all the matches from the given file matches in the files
-	 *  You can also pass the progress runner to update the progress of replacing.
+	 * ReplAces the given mAtch in the file thAt mAtch belongs to
 	 */
-	replace(files: FileMatch[], progress?: IProgress<IProgressStep>): Promise<any>;
+	replAce(mAtch: MAtch): Promise<Any>;
 
 	/**
-	 * Opens the replace preview for given file match or match
+	 *	ReplAce All the mAtches from the given file mAtches in the files
+	 *  You cAn Also pAss the progress runner to updAte the progress of replAcing.
 	 */
-	openReplacePreview(element: FileMatchOrMatch, preserveFocus?: boolean, sideBySide?: boolean, pinned?: boolean): Promise<any>;
+	replAce(files: FileMAtch[], progress?: IProgress<IProgressStep>): Promise<Any>;
 
 	/**
-	 * Update the replace preview for the given file.
-	 * If `override` is `true`, then replace preview is constructed from source model
+	 * Opens the replAce preview for given file mAtch or mAtch
 	 */
-	updateReplacePreview(file: FileMatch, override?: boolean): Promise<void>;
+	openReplAcePreview(element: FileMAtchOrMAtch, preserveFocus?: booleAn, sideBySide?: booleAn, pinned?: booleAn): Promise<Any>;
+
+	/**
+	 * UpdAte the replAce preview for the given file.
+	 * If `override` is `true`, then replAce preview is constructed from source model
+	 */
+	updAteReplAcePreview(file: FileMAtch, override?: booleAn): Promise<void>;
 }

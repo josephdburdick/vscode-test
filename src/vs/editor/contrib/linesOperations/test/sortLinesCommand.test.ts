@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Selection } from 'vs/editor/common/core/selection';
-import { SortLinesCommand } from 'vs/editor/contrib/linesOperations/sortLinesCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { SortLinesCommAnd } from 'vs/editor/contrib/linesOperAtions/sortLinesCommAnd';
+import { testCommAnd } from 'vs/editor/test/browser/testCommAnd';
 
-function testSortLinesAscendingCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new SortLinesCommand(sel, false), expectedLines, expectedSelection);
+function testSortLinesAscendingCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	testCommAnd(lines, null, selection, (sel) => new SortLinesCommAnd(sel, fAlse), expectedLines, expectedSelection);
 }
 
-function testSortLinesDescendingCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new SortLinesCommand(sel, true), expectedLines, expectedSelection);
+function testSortLinesDescendingCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	testCommAnd(lines, null, selection, (sel) => new SortLinesCommAnd(sel, true), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Sort Lines Command', () => {
+suite('Editor Contrib - Sort Lines CommAnd', () => {
 
-	test('no op unless at least two lines selected 1', function () {
-		testSortLinesAscendingCommand(
+	test('no op unless At leAst two lines selected 1', function () {
+		testSortLinesAscendingCommAnd(
 			[
 				'first',
 				'second line',
@@ -38,8 +38,8 @@ suite('Editor Contrib - Sort Lines Command', () => {
 		);
 	});
 
-	test('no op unless at least two lines selected 2', function () {
-		testSortLinesAscendingCommand(
+	test('no op unless At leAst two lines selected 2', function () {
+		testSortLinesAscendingCommAnd(
 			[
 				'first',
 				'second line',
@@ -59,8 +59,8 @@ suite('Editor Contrib - Sort Lines Command', () => {
 		);
 	});
 
-	test('sorting two lines ascending', function () {
-		testSortLinesAscendingCommand(
+	test('sorting two lines Ascending', function () {
+		testSortLinesAscendingCommAnd(
 			[
 				'first',
 				'second line',
@@ -80,8 +80,8 @@ suite('Editor Contrib - Sort Lines Command', () => {
 		);
 	});
 
-	test('sorting first 4 lines ascending', function () {
-		testSortLinesAscendingCommand(
+	test('sorting first 4 lines Ascending', function () {
+		testSortLinesAscendingCommAnd(
 			[
 				'first',
 				'second line',
@@ -101,8 +101,8 @@ suite('Editor Contrib - Sort Lines Command', () => {
 		);
 	});
 
-	test('sorting all lines ascending', function () {
-		testSortLinesAscendingCommand(
+	test('sorting All lines Ascending', function () {
+		testSortLinesAscendingCommAnd(
 			[
 				'first',
 				'second line',
@@ -123,7 +123,7 @@ suite('Editor Contrib - Sort Lines Command', () => {
 	});
 
 	test('sorting first 4 lines descending', function () {
-		testSortLinesDescendingCommand(
+		testSortLinesDescendingCommAnd(
 			[
 				'first',
 				'second line',
@@ -143,8 +143,8 @@ suite('Editor Contrib - Sort Lines Command', () => {
 		);
 	});
 
-	test('sorting all lines descending', function () {
-		testSortLinesDescendingCommand(
+	test('sorting All lines descending', function () {
+		testSortLinesDescendingCommAnd(
 			[
 				'first',
 				'second line',

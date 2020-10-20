@@ -1,179 +1,179 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService, LogLevel, AbstractLogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
-import { URI } from 'vs/base/common/uri';
-import { FileOperationError, FileOperationResult, IFileService, whenProviderRegistered } from 'vs/platform/files/common/files';
-import { Queue } from 'vs/base/common/async';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { dirname, joinPath, basename } from 'vs/base/common/resources';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { BufferLogService } from 'vs/platform/log/common/bufferLog';
+import { ILogService, LogLevel, AbstrActLogService, ILoggerService, ILogger } from 'vs/plAtform/log/common/log';
+import { URI } from 'vs/bAse/common/uri';
+import { FileOperAtionError, FileOperAtionResult, IFileService, whenProviderRegistered } from 'vs/plAtform/files/common/files';
+import { Queue } from 'vs/bAse/common/Async';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { dirnAme, joinPAth, bAsenAme } from 'vs/bAse/common/resources';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { BufferLogService } from 'vs/plAtform/log/common/bufferLog';
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 
-export class FileLogService extends AbstractLogService implements ILogService {
+export clAss FileLogService extends AbstrActLogService implements ILogService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly initializePromise: Promise<void>;
-	private readonly queue: Queue<void>;
-	private backupIndex: number = 1;
+	privAte reAdonly initiAlizePromise: Promise<void>;
+	privAte reAdonly queue: Queue<void>;
+	privAte bAckupIndex: number = 1;
 
 	constructor(
-		private readonly name: string,
-		private readonly resource: URI,
+		privAte reAdonly nAme: string,
+		privAte reAdonly resource: URI,
 		level: LogLevel,
-		@IFileService private readonly fileService: IFileService
+		@IFileService privAte reAdonly fileService: IFileService
 	) {
 		super();
 		this.setLevel(level);
 		this.queue = this._register(new Queue<void>());
-		this.initializePromise = this.initialize();
+		this.initiAlizePromise = this.initiAlize();
 	}
 
-	trace(): void {
-		if (this.getLevel() <= LogLevel.Trace) {
-			this._log(LogLevel.Trace, this.format(arguments));
+	trAce(): void {
+		if (this.getLevel() <= LogLevel.TrAce) {
+			this._log(LogLevel.TrAce, this.formAt(Arguments));
 		}
 	}
 
 	debug(): void {
 		if (this.getLevel() <= LogLevel.Debug) {
-			this._log(LogLevel.Debug, this.format(arguments));
+			this._log(LogLevel.Debug, this.formAt(Arguments));
 		}
 	}
 
 	info(): void {
 		if (this.getLevel() <= LogLevel.Info) {
-			this._log(LogLevel.Info, this.format(arguments));
+			this._log(LogLevel.Info, this.formAt(Arguments));
 		}
 	}
 
-	warn(): void {
-		if (this.getLevel() <= LogLevel.Warning) {
-			this._log(LogLevel.Warning, this.format(arguments));
+	wArn(): void {
+		if (this.getLevel() <= LogLevel.WArning) {
+			this._log(LogLevel.WArning, this.formAt(Arguments));
 		}
 	}
 
 	error(): void {
 		if (this.getLevel() <= LogLevel.Error) {
-			const arg = arguments[0];
+			const Arg = Arguments[0];
 
-			if (arg instanceof Error) {
-				const array = Array.prototype.slice.call(arguments) as any[];
-				array[0] = arg.stack;
-				this._log(LogLevel.Error, this.format(array));
+			if (Arg instAnceof Error) {
+				const ArrAy = ArrAy.prototype.slice.cAll(Arguments) As Any[];
+				ArrAy[0] = Arg.stAck;
+				this._log(LogLevel.Error, this.formAt(ArrAy));
 			} else {
-				this._log(LogLevel.Error, this.format(arguments));
+				this._log(LogLevel.Error, this.formAt(Arguments));
 			}
 		}
 	}
 
-	critical(): void {
-		if (this.getLevel() <= LogLevel.Critical) {
-			this._log(LogLevel.Critical, this.format(arguments));
+	criticAl(): void {
+		if (this.getLevel() <= LogLevel.CriticAl) {
+			this._log(LogLevel.CriticAl, this.formAt(Arguments));
 		}
 	}
 
 	flush(): void {
 	}
 
-	log(level: LogLevel, args: any[]): void {
-		this._log(level, this.format(args));
+	log(level: LogLevel, Args: Any[]): void {
+		this._log(level, this.formAt(Args));
 	}
 
-	private async initialize(): Promise<void> {
+	privAte Async initiAlize(): Promise<void> {
 		try {
-			await this.fileService.createFile(this.resource);
-		} catch (error) {
-			if ((<FileOperationError>error).fileOperationResult !== FileOperationResult.FILE_MODIFIED_SINCE) {
+			AwAit this.fileService.creAteFile(this.resource);
+		} cAtch (error) {
+			if ((<FileOperAtionError>error).fileOperAtionResult !== FileOperAtionResult.FILE_MODIFIED_SINCE) {
 				throw error;
 			}
 		}
 	}
 
-	private _log(level: LogLevel, message: string): void {
-		this.queue.queue(async () => {
-			await this.initializePromise;
-			let content = await this.loadContent();
+	privAte _log(level: LogLevel, messAge: string): void {
+		this.queue.queue(Async () => {
+			AwAit this.initiAlizePromise;
+			let content = AwAit this.loAdContent();
 			if (content.length > MAX_FILE_SIZE) {
-				await this.fileService.writeFile(this.getBackupResource(), VSBuffer.fromString(content));
+				AwAit this.fileService.writeFile(this.getBAckupResource(), VSBuffer.fromString(content));
 				content = '';
 			}
-			content += `[${this.getCurrentTimestamp()}] [${this.name}] [${this.stringifyLogLevel(level)}] ${message}\n`;
-			await this.fileService.writeFile(this.resource, VSBuffer.fromString(content));
+			content += `[${this.getCurrentTimestAmp()}] [${this.nAme}] [${this.stringifyLogLevel(level)}] ${messAge}\n`;
+			AwAit this.fileService.writeFile(this.resource, VSBuffer.fromString(content));
 		});
 	}
 
-	private getCurrentTimestamp(): string {
+	privAte getCurrentTimestAmp(): string {
 		const toTwoDigits = (v: number) => v < 10 ? `0${v}` : v;
 		const toThreeDigits = (v: number) => v < 10 ? `00${v}` : v < 100 ? `0${v}` : v;
-		const currentTime = new Date();
-		return `${currentTime.getFullYear()}-${toTwoDigits(currentTime.getMonth() + 1)}-${toTwoDigits(currentTime.getDate())} ${toTwoDigits(currentTime.getHours())}:${toTwoDigits(currentTime.getMinutes())}:${toTwoDigits(currentTime.getSeconds())}.${toThreeDigits(currentTime.getMilliseconds())}`;
+		const currentTime = new DAte();
+		return `${currentTime.getFullYeAr()}-${toTwoDigits(currentTime.getMonth() + 1)}-${toTwoDigits(currentTime.getDAte())} ${toTwoDigits(currentTime.getHours())}:${toTwoDigits(currentTime.getMinutes())}:${toTwoDigits(currentTime.getSeconds())}.${toThreeDigits(currentTime.getMilliseconds())}`;
 	}
 
-	private getBackupResource(): URI {
-		this.backupIndex = this.backupIndex > 5 ? 1 : this.backupIndex;
-		return joinPath(dirname(this.resource), `${basename(this.resource)}_${this.backupIndex++}`);
+	privAte getBAckupResource(): URI {
+		this.bAckupIndex = this.bAckupIndex > 5 ? 1 : this.bAckupIndex;
+		return joinPAth(dirnAme(this.resource), `${bAsenAme(this.resource)}_${this.bAckupIndex++}`);
 	}
 
-	private async loadContent(): Promise<string> {
+	privAte Async loAdContent(): Promise<string> {
 		try {
-			const content = await this.fileService.readFile(this.resource);
-			return content.value.toString();
-		} catch (e) {
+			const content = AwAit this.fileService.reAdFile(this.resource);
+			return content.vAlue.toString();
+		} cAtch (e) {
 			return '';
 		}
 	}
 
-	private stringifyLogLevel(level: LogLevel): string {
+	privAte stringifyLogLevel(level: LogLevel): string {
 		switch (level) {
-			case LogLevel.Critical: return 'critical';
-			case LogLevel.Debug: return 'debug';
-			case LogLevel.Error: return 'error';
-			case LogLevel.Info: return 'info';
-			case LogLevel.Trace: return 'trace';
-			case LogLevel.Warning: return 'warning';
+			cAse LogLevel.CriticAl: return 'criticAl';
+			cAse LogLevel.Debug: return 'debug';
+			cAse LogLevel.Error: return 'error';
+			cAse LogLevel.Info: return 'info';
+			cAse LogLevel.TrAce: return 'trAce';
+			cAse LogLevel.WArning: return 'wArning';
 		}
 		return '';
 	}
 
-	private format(args: any): string {
+	privAte formAt(Args: Any): string {
 		let result = '';
 
-		for (let i = 0; i < args.length; i++) {
-			let a = args[i];
+		for (let i = 0; i < Args.length; i++) {
+			let A = Args[i];
 
-			if (typeof a === 'object') {
+			if (typeof A === 'object') {
 				try {
-					a = JSON.stringify(a);
-				} catch (e) { }
+					A = JSON.stringify(A);
+				} cAtch (e) { }
 			}
 
-			result += (i > 0 ? ' ' : '') + a;
+			result += (i > 0 ? ' ' : '') + A;
 		}
 
 		return result;
 	}
 }
 
-export class FileLoggerService extends Disposable implements ILoggerService {
+export clAss FileLoggerService extends DisposAble implements ILoggerService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly loggers = new Map<string, ILogger>();
+	privAte reAdonly loggers = new MAp<string, ILogger>();
 
 	constructor(
-		@ILogService private logService: ILogService,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@IFileService private fileService: IFileService,
+		@ILogService privAte logService: ILogService,
+		@IInstAntiAtionService privAte instAntiAtionService: IInstAntiAtionService,
+		@IFileService privAte fileService: IFileService,
 	) {
 		super();
-		this._register(logService.onDidChangeLogLevel(level => this.loggers.forEach(logger => logger.setLevel(level))));
+		this._register(logService.onDidChAngeLogLevel(level => this.loggers.forEAch(logger => logger.setLevel(level))));
 	}
 
 	getLogger(resource: URI): ILogger {
@@ -181,14 +181,14 @@ export class FileLoggerService extends Disposable implements ILoggerService {
 		if (!logger) {
 			logger = new BufferLogService(this.logService.getLevel());
 			this.loggers.set(resource.toString(), logger);
-			whenProviderRegistered(resource, this.fileService).then(() => (<BufferLogService>logger).logger = this.instantiationService.createInstance(FileLogService, basename(resource), resource, this.logService.getLevel()));
+			whenProviderRegistered(resource, this.fileService).then(() => (<BufferLogService>logger).logger = this.instAntiAtionService.creAteInstAnce(FileLogService, bAsenAme(resource), resource, this.logService.getLevel()));
 		}
 		return logger;
 	}
 
 	dispose(): void {
-		this.loggers.forEach(logger => logger.dispose());
-		this.loggers.clear();
+		this.loggers.forEAch(logger => logger.dispose());
+		this.loggers.cleAr();
 		super.dispose();
 	}
 }

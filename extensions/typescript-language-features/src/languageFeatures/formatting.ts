@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import { conditionalRegistration, requireConfiguration } from '../utils/dependentRegistration';
+import { conditionAlRegistrAtion, requireConfigurAtion } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as typeConverters from '../utils/typeConverters';
-import FileConfigurationManager from './fileConfigurationManager';
+import * As typeConverters from '../utils/typeConverters';
+import FileConfigurAtionMAnAger from './fileConfigurAtionMAnAger';
 
-class TypeScriptFormattingProvider implements vscode.DocumentRangeFormattingEditProvider, vscode.OnTypeFormattingEditProvider {
+clAss TypeScriptFormAttingProvider implements vscode.DocumentRAngeFormAttingEditProvider, vscode.OnTypeFormAttingEditProvider {
 	public constructor(
-		private readonly client: ITypeScriptServiceClient,
-		private readonly formattingOptionsManager: FileConfigurationManager
+		privAte reAdonly client: ITypeScriptServiceClient,
+		privAte reAdonly formAttingOptionsMAnAger: FileConfigurAtionMAnAger
 	) { }
 
-	public async provideDocumentRangeFormattingEdits(
+	public Async provideDocumentRAngeFormAttingEdits(
 		document: vscode.TextDocument,
-		range: vscode.Range,
-		options: vscode.FormattingOptions,
-		token: vscode.CancellationToken
+		rAnge: vscode.RAnge,
+		options: vscode.FormAttingOptions,
+		token: vscode.CAncellAtionToken
 	): Promise<vscode.TextEdit[] | undefined> {
-		const file = this.client.toOpenedFilePath(document);
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return undefined;
 		}
 
-		await this.formattingOptionsManager.ensureConfigurationOptions(document, options, token);
+		AwAit this.formAttingOptionsMAnAger.ensureConfigurAtionOptions(document, options, token);
 
-		const args = typeConverters.Range.toFormattingRequestArgs(file, range);
-		const response = await this.client.execute('format', args, token);
+		const Args = typeConverters.RAnge.toFormAttingRequestArgs(file, rAnge);
+		const response = AwAit this.client.execute('formAt', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
-		return response.body.map(typeConverters.TextEdit.fromCodeEdit);
+		return response.body.mAp(typeConverters.TextEdit.fromCodeEdit);
 	}
 
-	public async provideOnTypeFormattingEdits(
+	public Async provideOnTypeFormAttingEdits(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		ch: string,
-		options: vscode.FormattingOptions,
-		token: vscode.CancellationToken
+		options: vscode.FormAttingOptions,
+		token: vscode.CAncellAtionToken
 	): Promise<vscode.TextEdit[]> {
-		const file = this.client.toOpenedFilePath(document);
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return [];
 		}
 
-		await this.formattingOptionsManager.ensureConfigurationOptions(document, options, token);
+		AwAit this.formAttingOptionsMAnAger.ensureConfigurAtionOptions(document, options, token);
 
-		const args: Proto.FormatOnKeyRequestArgs = {
-			...typeConverters.Position.toFileLocationRequestArgs(file, position),
+		const Args: Proto.FormAtOnKeyRequestArgs = {
+			...typeConverters.Position.toFileLocAtionRequestArgs(file, position),
 			key: ch
 		};
-		const response = await this.client.execute('formatonkey', args, token);
+		const response = AwAit this.client.execute('formAtonkey', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return [];
 		}
@@ -65,15 +65,15 @@ class TypeScriptFormattingProvider implements vscode.DocumentRangeFormattingEdit
 		const result: vscode.TextEdit[] = [];
 		for (const edit of response.body) {
 			const textEdit = typeConverters.TextEdit.fromCodeEdit(edit);
-			const range = textEdit.range;
-			// Work around for https://github.com/microsoft/TypeScript/issues/6700.
-			// Check if we have an edit at the beginning of the line which only removes white spaces and leaves
-			// an empty line. Drop those edits
-			if (range.start.character === 0 && range.start.line === range.end.line && textEdit.newText === '') {
-				const lText = document.lineAt(range.start.line).text;
-				// If the edit leaves something on the line keep the edit (note that the end character is exclusive).
-				// Keep it also if it removes something else than whitespace
-				if (lText.trim().length > 0 || lText.length > range.end.character) {
+			const rAnge = textEdit.rAnge;
+			// Work Around for https://github.com/microsoft/TypeScript/issues/6700.
+			// Check if we hAve An edit At the beginning of the line which only removes white spAces And leAves
+			// An empty line. Drop those edits
+			if (rAnge.stArt.chArActer === 0 && rAnge.stArt.line === rAnge.end.line && textEdit.newText === '') {
+				const lText = document.lineAt(rAnge.stArt.line).text;
+				// If the edit leAves something on the line keep the edit (note thAt the end chArActer is exclusive).
+				// Keep it Also if it removes something else thAn whitespAce
+				if (lText.trim().length > 0 || lText.length > rAnge.end.chArActer) {
 					result.push(textEdit);
 				}
 			} else {
@@ -88,15 +88,15 @@ export function register(
 	selector: DocumentSelector,
 	modeId: string,
 	client: ITypeScriptServiceClient,
-	fileConfigurationManager: FileConfigurationManager
+	fileConfigurAtionMAnAger: FileConfigurAtionMAnAger
 ) {
-	return conditionalRegistration([
-		requireConfiguration(modeId, 'format.enable'),
+	return conditionAlRegistrAtion([
+		requireConfigurAtion(modeId, 'formAt.enAble'),
 	], () => {
-		const formattingProvider = new TypeScriptFormattingProvider(client, fileConfigurationManager);
-		return vscode.Disposable.from(
-			vscode.languages.registerOnTypeFormattingEditProvider(selector.syntax, formattingProvider, ';', '}', '\n'),
-			vscode.languages.registerDocumentRangeFormattingEditProvider(selector.syntax, formattingProvider),
+		const formAttingProvider = new TypeScriptFormAttingProvider(client, fileConfigurAtionMAnAger);
+		return vscode.DisposAble.from(
+			vscode.lAnguAges.registerOnTypeFormAttingEditProvider(selector.syntAx, formAttingProvider, ';', '}', '\n'),
+			vscode.lAnguAges.registerDocumentRAngeFormAttingEditProvider(selector.syntAx, formAttingProvider),
 		);
 	});
 }

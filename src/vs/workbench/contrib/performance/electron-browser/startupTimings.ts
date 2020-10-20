@@ -1,106 +1,106 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { appendFile } from 'fs';
-import { timeout } from 'vs/base/common/async';
+import { AppendFile } from 'fs';
+import { timeout } from 'vs/bAse/common/Async';
 import { promisify } from 'util';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { ILifecycleService, StartupKind, StartupKindToString } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IUpdateService } from 'vs/platform/update/common/update';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { ILifecycleService, StArtupKind, StArtupKindToString } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IUpdAteService } from 'vs/plAtform/updAte/common/updAte';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import * as files from 'vs/workbench/contrib/files/common/files';
+import * As files from 'vs/workbench/contrib/files/common/files';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { didUseCachedData } from 'vs/workbench/services/timer/electron-sandbox/timerService';
+import { IPAnelService } from 'vs/workbench/services/pAnel/common/pAnelService';
+import { didUseCAchedDAtA } from 'vs/workbench/services/timer/electron-sAndbox/timerService';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { ITimerService } from 'vs/workbench/services/timer/browser/timerService';
 
-export class StartupTimings implements IWorkbenchContribution {
+export clAss StArtupTimings implements IWorkbenchContribution {
 
 	constructor(
-		@ITimerService private readonly _timerService: ITimerService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@IEditorService private readonly _editorService: IEditorService,
-		@IViewletService private readonly _viewletService: IViewletService,
-		@IPanelService private readonly _panelService: IPanelService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
-		@ILifecycleService private readonly _lifecycleService: ILifecycleService,
-		@IUpdateService private readonly _updateService: IUpdateService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService,
-		@IProductService private readonly _productService: IProductService
+		@ITimerService privAte reAdonly _timerService: ITimerService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
+		@IViewletService privAte reAdonly _viewletService: IViewletService,
+		@IPAnelService privAte reAdonly _pAnelService: IPAnelService,
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService,
+		@ILifecycleService privAte reAdonly _lifecycleService: ILifecycleService,
+		@IUpdAteService privAte reAdonly _updAteService: IUpdAteService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly _environmentService: INAtiveWorkbenchEnvironmentService,
+		@IProductService privAte reAdonly _productService: IProductService
 	) {
 		//
-		this._report().catch(onUnexpectedError);
+		this._report().cAtch(onUnexpectedError);
 	}
 
-	private async _report() {
-		const standardStartupError = await this._isStandardStartup();
-		this._appendStartupTimes(standardStartupError).catch(onUnexpectedError);
+	privAte Async _report() {
+		const stAndArdStArtupError = AwAit this._isStAndArdStArtup();
+		this._AppendStArtupTimes(stAndArdStArtupError).cAtch(onUnexpectedError);
 	}
 
-	private async _appendStartupTimes(standardStartupError: string | undefined) {
-		const appendTo = this._environmentService.args['prof-append-timers'];
-		if (!appendTo) {
+	privAte Async _AppendStArtupTimes(stAndArdStArtupError: string | undefined) {
+		const AppendTo = this._environmentService.Args['prof-Append-timers'];
+		if (!AppendTo) {
 			// nothing to do
 			return;
 		}
 
-		const { sessionId } = await this._telemetryService.getTelemetryInfo();
+		const { sessionId } = AwAit this._telemetryService.getTelemetryInfo();
 
-		Promise.all([
-			this._timerService.startupMetrics,
-			timeout(15000), // wait: cached data creation, telemetry sending
-		]).then(([startupMetrics]) => {
-			return promisify(appendFile)(appendTo, `${startupMetrics.ellapsed}\t${this._productService.nameShort}\t${(this._productService.commit || '').slice(0, 10) || '0000000000'}\t${sessionId}\t${standardStartupError === undefined ? 'standard_start' : 'NO_standard_start : ' + standardStartupError}\n`);
+		Promise.All([
+			this._timerService.stArtupMetrics,
+			timeout(15000), // wAit: cAched dAtA creAtion, telemetry sending
+		]).then(([stArtupMetrics]) => {
+			return promisify(AppendFile)(AppendTo, `${stArtupMetrics.ellApsed}\t${this._productService.nAmeShort}\t${(this._productService.commit || '').slice(0, 10) || '0000000000'}\t${sessionId}\t${stAndArdStArtupError === undefined ? 'stAndArd_stArt' : 'NO_stAndArd_stArt : ' + stAndArdStArtupError}\n`);
 		}).then(() => {
-			this._nativeHostService.quit();
-		}).catch(err => {
+			this._nAtiveHostService.quit();
+		}).cAtch(err => {
 			console.error(err);
-			this._nativeHostService.quit();
+			this._nAtiveHostService.quit();
 		});
 	}
 
-	private async _isStandardStartup(): Promise<string | undefined> {
-		// check for standard startup:
-		// * new window (no reload)
+	privAte Async _isStAndArdStArtup(): Promise<string | undefined> {
+		// check for stAndArd stArtup:
+		// * new window (no reloAd)
 		// * just one window
 		// * explorer viewlet visible
 		// * one text editor (not multiple, not webview, welcome etc...)
-		// * cached data present (not rejected, not created)
-		if (this._lifecycleService.startupKind !== StartupKind.NewWindow) {
-			return StartupKindToString(this._lifecycleService.startupKind);
+		// * cAched dAtA present (not rejected, not creAted)
+		if (this._lifecycleService.stArtupKind !== StArtupKind.NewWindow) {
+			return StArtupKindToString(this._lifecycleService.stArtupKind);
 		}
-		const windowCount = await this._nativeHostService.getWindowCount();
+		const windowCount = AwAit this._nAtiveHostService.getWindowCount();
 		if (windowCount !== 1) {
-			return 'Expected window count : 1, Actual : ' + windowCount;
+			return 'Expected window count : 1, ActuAl : ' + windowCount;
 		}
-		const activeViewlet = this._viewletService.getActiveViewlet();
-		if (!activeViewlet || activeViewlet.getId() !== files.VIEWLET_ID) {
+		const ActiveViewlet = this._viewletService.getActiveViewlet();
+		if (!ActiveViewlet || ActiveViewlet.getId() !== files.VIEWLET_ID) {
 			return 'Explorer viewlet not visible';
 		}
-		const visibleEditorPanes = this._editorService.visibleEditorPanes;
-		if (visibleEditorPanes.length !== 1) {
-			return 'Expected text editor count : 1, Actual : ' + visibleEditorPanes.length;
+		const visibleEditorPAnes = this._editorService.visibleEditorPAnes;
+		if (visibleEditorPAnes.length !== 1) {
+			return 'Expected text editor count : 1, ActuAl : ' + visibleEditorPAnes.length;
 		}
-		if (!isCodeEditor(visibleEditorPanes[0].getControl())) {
-			return 'Active editor is not a text editor';
+		if (!isCodeEditor(visibleEditorPAnes[0].getControl())) {
+			return 'Active editor is not A text editor';
 		}
-		const activePanel = this._panelService.getActivePanel();
-		if (activePanel) {
-			return 'Current active panel : ' + this._panelService.getPanel(activePanel.getId())?.name;
+		const ActivePAnel = this._pAnelService.getActivePAnel();
+		if (ActivePAnel) {
+			return 'Current Active pAnel : ' + this._pAnelService.getPAnel(ActivePAnel.getId())?.nAme;
 		}
-		if (!didUseCachedData()) {
-			return 'Either cache data is rejected or not created';
+		if (!didUseCAchedDAtA()) {
+			return 'Either cAche dAtA is rejected or not creAted';
 		}
-		if (!await this._updateService.isLatestVersion()) {
-			return 'Not on latest version, updates available';
+		if (!AwAit this._updAteService.isLAtestVersion()) {
+			return 'Not on lAtest version, updAtes AvAilAble';
 		}
 		return undefined;
 	}

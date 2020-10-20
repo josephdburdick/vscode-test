@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { cloneAndChange } from 'vs/base/common/objects';
-import { IExtensionManifest } from 'vs/platform/extensions/common/extensions';
+import { cloneAndChAnge } from 'vs/bAse/common/objects';
+import { IExtensionMAnifest } from 'vs/plAtform/extensions/common/extensions';
 
 const nlsRegex = /^%([\w\d.-]+)%$/i;
 
-export interface ITranslations {
+export interfAce ITrAnslAtions {
 	[key: string]: string;
 }
 
-export function localizeManifest(manifest: IExtensionManifest, translations: ITranslations): IExtensionManifest {
-	const patcher = (value: string) => {
-		if (typeof value !== 'string') {
+export function locAlizeMAnifest(mAnifest: IExtensionMAnifest, trAnslAtions: ITrAnslAtions): IExtensionMAnifest {
+	const pAtcher = (vAlue: string) => {
+		if (typeof vAlue !== 'string') {
 			return undefined;
 		}
 
-		const match = nlsRegex.exec(value);
+		const mAtch = nlsRegex.exec(vAlue);
 
-		if (!match) {
+		if (!mAtch) {
 			return undefined;
 		}
 
-		return translations[match[1]] || value;
+		return trAnslAtions[mAtch[1]] || vAlue;
 	};
 
-	return cloneAndChange(manifest, patcher);
+	return cloneAndChAnge(mAnifest, pAtcher);
 }

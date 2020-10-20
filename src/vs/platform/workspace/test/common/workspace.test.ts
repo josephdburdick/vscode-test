@@ -1,217 +1,217 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import { Workspace, toWorkspaceFolders, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
-import { IRawFileWorkspaceFolder } from 'vs/platform/workspaces/common/workspaces';
-import { isWindows } from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import * As pAth from 'vs/bAse/common/pAth';
+import { WorkspAce, toWorkspAceFolders, WorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { URI } from 'vs/bAse/common/uri';
+import { IRAwFileWorkspAceFolder } from 'vs/plAtform/workspAces/common/workspAces';
+import { isWindows } from 'vs/bAse/common/plAtform';
 
-suite('Workspace', () => {
+suite('WorkspAce', () => {
 
 	const fileFolder = isWindows ? 'c:\\src' : '/src';
-	const abcFolder = isWindows ? 'c:\\abc' : '/abc';
+	const AbcFolder = isWindows ? 'c:\\Abc' : '/Abc';
 
-	const testFolderUri = URI.file(path.join(fileFolder, 'test'));
-	const mainFolderUri = URI.file(path.join(fileFolder, 'main'));
-	const test1FolderUri = URI.file(path.join(fileFolder, 'test1'));
-	const test2FolderUri = URI.file(path.join(fileFolder, 'test2'));
-	const test3FolderUri = URI.file(path.join(fileFolder, 'test3'));
-	const abcTest1FolderUri = URI.file(path.join(abcFolder, 'test1'));
-	const abcTest3FolderUri = URI.file(path.join(abcFolder, 'test3'));
+	const testFolderUri = URI.file(pAth.join(fileFolder, 'test'));
+	const mAinFolderUri = URI.file(pAth.join(fileFolder, 'mAin'));
+	const test1FolderUri = URI.file(pAth.join(fileFolder, 'test1'));
+	const test2FolderUri = URI.file(pAth.join(fileFolder, 'test2'));
+	const test3FolderUri = URI.file(pAth.join(fileFolder, 'test3'));
+	const AbcTest1FolderUri = URI.file(pAth.join(AbcFolder, 'test1'));
+	const AbcTest3FolderUri = URI.file(pAth.join(AbcFolder, 'test3'));
 
-	const workspaceConfigUri = URI.file(path.join(fileFolder, 'test.code-workspace'));
+	const workspAceConfigUri = URI.file(pAth.join(fileFolder, 'test.code-workspAce'));
 
 	test('getFolder returns the folder with given uri', () => {
-		const expected = new WorkspaceFolder({ uri: testFolderUri, name: '', index: 2 });
-		let testObject = new Workspace('', [new WorkspaceFolder({ uri: mainFolderUri, name: '', index: 0 }), expected, new WorkspaceFolder({ uri: URI.file('/src/code'), name: '', index: 2 })]);
+		const expected = new WorkspAceFolder({ uri: testFolderUri, nAme: '', index: 2 });
+		let testObject = new WorkspAce('', [new WorkspAceFolder({ uri: mAinFolderUri, nAme: '', index: 0 }), expected, new WorkspAceFolder({ uri: URI.file('/src/code'), nAme: '', index: 2 })]);
 
-		const actual = testObject.getFolder(expected.uri);
+		const ActuAl = testObject.getFolder(expected.uri);
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
 	test('getFolder returns the folder if the uri is sub', () => {
-		const expected = new WorkspaceFolder({ uri: testFolderUri, name: '', index: 0 });
-		let testObject = new Workspace('', [expected, new WorkspaceFolder({ uri: mainFolderUri, name: '', index: 1 }), new WorkspaceFolder({ uri: URI.file('/src/code'), name: '', index: 2 })]);
+		const expected = new WorkspAceFolder({ uri: testFolderUri, nAme: '', index: 0 });
+		let testObject = new WorkspAce('', [expected, new WorkspAceFolder({ uri: mAinFolderUri, nAme: '', index: 1 }), new WorkspAceFolder({ uri: URI.file('/src/code'), nAme: '', index: 2 })]);
 
-		const actual = testObject.getFolder(URI.file(path.join(fileFolder, 'test/a')));
+		const ActuAl = testObject.getFolder(URI.file(pAth.join(fileFolder, 'test/A')));
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
 	test('getFolder returns the closest folder if the uri is sub', () => {
-		const expected = new WorkspaceFolder({ uri: testFolderUri, name: '', index: 2 });
-		let testObject = new Workspace('', [new WorkspaceFolder({ uri: mainFolderUri, name: '', index: 0 }), new WorkspaceFolder({ uri: URI.file('/src/code'), name: '', index: 1 }), expected]);
+		const expected = new WorkspAceFolder({ uri: testFolderUri, nAme: '', index: 2 });
+		let testObject = new WorkspAce('', [new WorkspAceFolder({ uri: mAinFolderUri, nAme: '', index: 0 }), new WorkspAceFolder({ uri: URI.file('/src/code'), nAme: '', index: 1 }), expected]);
 
-		const actual = testObject.getFolder(URI.file(path.join(fileFolder, 'test/a')));
+		const ActuAl = testObject.getFolder(URI.file(pAth.join(fileFolder, 'test/A')));
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
-	test('getFolder returns the folder even if the uri has query path', () => {
-		const expected = new WorkspaceFolder({ uri: testFolderUri, name: '', index: 2 });
-		let testObject = new Workspace('', [new WorkspaceFolder({ uri: mainFolderUri, name: '', index: 0 }), new WorkspaceFolder({ uri: URI.file('/src/code'), name: '', index: 1 }), expected]);
+	test('getFolder returns the folder even if the uri hAs query pAth', () => {
+		const expected = new WorkspAceFolder({ uri: testFolderUri, nAme: '', index: 2 });
+		let testObject = new WorkspAce('', [new WorkspAceFolder({ uri: mAinFolderUri, nAme: '', index: 0 }), new WorkspAceFolder({ uri: URI.file('/src/code'), nAme: '', index: 1 }), expected]);
 
-		const actual = testObject.getFolder(URI.file(path.join(fileFolder, 'test/a')).with({ query: 'somequery' }));
+		const ActuAl = testObject.getFolder(URI.file(pAth.join(fileFolder, 'test/A')).with({ query: 'somequery' }));
 
-		assert.equal(actual, expected);
+		Assert.equAl(ActuAl, expected);
 	});
 
 	test('getFolder returns null if the uri is not sub', () => {
-		let testObject = new Workspace('', [new WorkspaceFolder({ uri: testFolderUri, name: '', index: 0 }), new WorkspaceFolder({ uri: URI.file('/src/code'), name: '', index: 1 })]);
+		let testObject = new WorkspAce('', [new WorkspAceFolder({ uri: testFolderUri, nAme: '', index: 0 }), new WorkspAceFolder({ uri: URI.file('/src/code'), nAme: '', index: 1 })]);
 
-		const actual = testObject.getFolder(URI.file(path.join(fileFolder, 'main/a')));
+		const ActuAl = testObject.getFolder(URI.file(pAth.join(fileFolder, 'mAin/A')));
 
-		assert.equal(actual, undefined);
+		Assert.equAl(ActuAl, undefined);
 	});
 
-	test('toWorkspaceFolders with single absolute folder', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test' }], workspaceConfigUri);
+	test('toWorkspAceFolders with single Absolute folder', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 1);
-		assert.equal(actual[0].uri.fsPath, testFolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test');
+		Assert.equAl(ActuAl.length, 1);
+		Assert.equAl(ActuAl[0].uri.fsPAth, testFolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test');
 	});
 
-	test('toWorkspaceFolders with single relative folder', () => {
-		const actual = toWorkspaceFolders([{ path: './test' }], workspaceConfigUri);
+	test('toWorkspAceFolders with single relAtive folder', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: './test' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 1);
-		assert.equal(actual[0].uri.fsPath, testFolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, './test');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test');
+		Assert.equAl(ActuAl.length, 1);
+		Assert.equAl(ActuAl[0].uri.fsPAth, testFolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, './test');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test');
 	});
 
-	test('toWorkspaceFolders with single absolute folder with name', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test', name: 'hello' }], workspaceConfigUri);
+	test('toWorkspAceFolders with single Absolute folder with nAme', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test', nAme: 'hello' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 1);
+		Assert.equAl(ActuAl.length, 1);
 
-		assert.equal(actual[0].uri.fsPath, testFolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'hello');
+		Assert.equAl(ActuAl[0].uri.fsPAth, testFolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'hello');
 	});
 
-	test('toWorkspaceFolders with multiple unique absolute folders', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test2' }, { path: '/src/test3' }, { path: '/src/test1' }], workspaceConfigUri);
+	test('toWorkspAceFolders with multiple unique Absolute folders', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test2' }, { pAth: '/src/test3' }, { pAth: '/src/test1' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 3);
-		assert.equal(actual[0].uri.fsPath, test2FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test2');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test2');
+		Assert.equAl(ActuAl.length, 3);
+		Assert.equAl(ActuAl[0].uri.fsPAth, test2FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test2');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test2');
 
-		assert.equal(actual[1].uri.fsPath, test3FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[1].raw).path, '/src/test3');
-		assert.equal(actual[1].index, 1);
-		assert.equal(actual[1].name, 'test3');
+		Assert.equAl(ActuAl[1].uri.fsPAth, test3FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[1].rAw).pAth, '/src/test3');
+		Assert.equAl(ActuAl[1].index, 1);
+		Assert.equAl(ActuAl[1].nAme, 'test3');
 
-		assert.equal(actual[2].uri.fsPath, test1FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[2].raw).path, '/src/test1');
-		assert.equal(actual[2].index, 2);
-		assert.equal(actual[2].name, 'test1');
+		Assert.equAl(ActuAl[2].uri.fsPAth, test1FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[2].rAw).pAth, '/src/test1');
+		Assert.equAl(ActuAl[2].index, 2);
+		Assert.equAl(ActuAl[2].nAme, 'test1');
 	});
 
-	test('toWorkspaceFolders with multiple unique absolute folders with names', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test2' }, { path: '/src/test3', name: 'noName' }, { path: '/src/test1' }], workspaceConfigUri);
+	test('toWorkspAceFolders with multiple unique Absolute folders with nAmes', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test2' }, { pAth: '/src/test3', nAme: 'noNAme' }, { pAth: '/src/test1' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 3);
-		assert.equal(actual[0].uri.fsPath, test2FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test2');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test2');
+		Assert.equAl(ActuAl.length, 3);
+		Assert.equAl(ActuAl[0].uri.fsPAth, test2FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test2');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test2');
 
-		assert.equal(actual[1].uri.fsPath, test3FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[1].raw).path, '/src/test3');
-		assert.equal(actual[1].index, 1);
-		assert.equal(actual[1].name, 'noName');
+		Assert.equAl(ActuAl[1].uri.fsPAth, test3FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[1].rAw).pAth, '/src/test3');
+		Assert.equAl(ActuAl[1].index, 1);
+		Assert.equAl(ActuAl[1].nAme, 'noNAme');
 
-		assert.equal(actual[2].uri.fsPath, test1FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[2].raw).path, '/src/test1');
-		assert.equal(actual[2].index, 2);
-		assert.equal(actual[2].name, 'test1');
+		Assert.equAl(ActuAl[2].uri.fsPAth, test1FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[2].rAw).pAth, '/src/test1');
+		Assert.equAl(ActuAl[2].index, 2);
+		Assert.equAl(ActuAl[2].nAme, 'test1');
 	});
 
-	test('toWorkspaceFolders with multiple unique absolute and relative folders', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test2' }, { path: '/abc/test3', name: 'noName' }, { path: './test1' }], workspaceConfigUri);
+	test('toWorkspAceFolders with multiple unique Absolute And relAtive folders', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test2' }, { pAth: '/Abc/test3', nAme: 'noNAme' }, { pAth: './test1' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 3);
-		assert.equal(actual[0].uri.fsPath, test2FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test2');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test2');
+		Assert.equAl(ActuAl.length, 3);
+		Assert.equAl(ActuAl[0].uri.fsPAth, test2FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test2');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test2');
 
-		assert.equal(actual[1].uri.fsPath, abcTest3FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[1].raw).path, '/abc/test3');
-		assert.equal(actual[1].index, 1);
-		assert.equal(actual[1].name, 'noName');
+		Assert.equAl(ActuAl[1].uri.fsPAth, AbcTest3FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[1].rAw).pAth, '/Abc/test3');
+		Assert.equAl(ActuAl[1].index, 1);
+		Assert.equAl(ActuAl[1].nAme, 'noNAme');
 
-		assert.equal(actual[2].uri.fsPath, test1FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[2].raw).path, './test1');
-		assert.equal(actual[2].index, 2);
-		assert.equal(actual[2].name, 'test1');
+		Assert.equAl(ActuAl[2].uri.fsPAth, test1FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[2].rAw).pAth, './test1');
+		Assert.equAl(ActuAl[2].index, 2);
+		Assert.equAl(ActuAl[2].nAme, 'test1');
 	});
 
-	test('toWorkspaceFolders with multiple absolute folders with duplicates', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test2' }, { path: '/src/test2', name: 'noName' }, { path: '/src/test1' }], workspaceConfigUri);
+	test('toWorkspAceFolders with multiple Absolute folders with duplicAtes', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test2' }, { pAth: '/src/test2', nAme: 'noNAme' }, { pAth: '/src/test1' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 2);
-		assert.equal(actual[0].uri.fsPath, test2FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test2');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test2');
+		Assert.equAl(ActuAl.length, 2);
+		Assert.equAl(ActuAl[0].uri.fsPAth, test2FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test2');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test2');
 
-		assert.equal(actual[1].uri.fsPath, test1FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[1].raw).path, '/src/test1');
-		assert.equal(actual[1].index, 1);
-		assert.equal(actual[1].name, 'test1');
+		Assert.equAl(ActuAl[1].uri.fsPAth, test1FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[1].rAw).pAth, '/src/test1');
+		Assert.equAl(ActuAl[1].index, 1);
+		Assert.equAl(ActuAl[1].nAme, 'test1');
 	});
 
-	test('toWorkspaceFolders with multiple absolute and relative folders with duplicates', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test2' }, { path: '/src/test3', name: 'noName' }, { path: './test3' }, { path: '/abc/test1' }], workspaceConfigUri);
+	test('toWorkspAceFolders with multiple Absolute And relAtive folders with duplicAtes', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test2' }, { pAth: '/src/test3', nAme: 'noNAme' }, { pAth: './test3' }, { pAth: '/Abc/test1' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 3);
-		assert.equal(actual[0].uri.fsPath, test2FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test2');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test2');
+		Assert.equAl(ActuAl.length, 3);
+		Assert.equAl(ActuAl[0].uri.fsPAth, test2FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test2');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test2');
 
-		assert.equal(actual[1].uri.fsPath, test3FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[1].raw).path, '/src/test3');
-		assert.equal(actual[1].index, 1);
-		assert.equal(actual[1].name, 'noName');
+		Assert.equAl(ActuAl[1].uri.fsPAth, test3FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[1].rAw).pAth, '/src/test3');
+		Assert.equAl(ActuAl[1].index, 1);
+		Assert.equAl(ActuAl[1].nAme, 'noNAme');
 
-		assert.equal(actual[2].uri.fsPath, abcTest1FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[2].raw).path, '/abc/test1');
-		assert.equal(actual[2].index, 2);
-		assert.equal(actual[2].name, 'test1');
+		Assert.equAl(ActuAl[2].uri.fsPAth, AbcTest1FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[2].rAw).pAth, '/Abc/test1');
+		Assert.equAl(ActuAl[2].index, 2);
+		Assert.equAl(ActuAl[2].nAme, 'test1');
 	});
 
-	test('toWorkspaceFolders with multiple absolute and relative folders with invalid paths', () => {
-		const actual = toWorkspaceFolders([{ path: '/src/test2' }, { path: '', name: 'noName' }, { path: './test3' }, { path: '/abc/test1' }], workspaceConfigUri);
+	test('toWorkspAceFolders with multiple Absolute And relAtive folders with invAlid pAths', () => {
+		const ActuAl = toWorkspAceFolders([{ pAth: '/src/test2' }, { pAth: '', nAme: 'noNAme' }, { pAth: './test3' }, { pAth: '/Abc/test1' }], workspAceConfigUri);
 
-		assert.equal(actual.length, 3);
-		assert.equal(actual[0].uri.fsPath, test2FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[0].raw).path, '/src/test2');
-		assert.equal(actual[0].index, 0);
-		assert.equal(actual[0].name, 'test2');
+		Assert.equAl(ActuAl.length, 3);
+		Assert.equAl(ActuAl[0].uri.fsPAth, test2FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[0].rAw).pAth, '/src/test2');
+		Assert.equAl(ActuAl[0].index, 0);
+		Assert.equAl(ActuAl[0].nAme, 'test2');
 
-		assert.equal(actual[1].uri.fsPath, test3FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[1].raw).path, './test3');
-		assert.equal(actual[1].index, 1);
-		assert.equal(actual[1].name, 'test3');
+		Assert.equAl(ActuAl[1].uri.fsPAth, test3FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[1].rAw).pAth, './test3');
+		Assert.equAl(ActuAl[1].index, 1);
+		Assert.equAl(ActuAl[1].nAme, 'test3');
 
-		assert.equal(actual[2].uri.fsPath, abcTest1FolderUri.fsPath);
-		assert.equal((<IRawFileWorkspaceFolder>actual[2].raw).path, '/abc/test1');
-		assert.equal(actual[2].index, 2);
-		assert.equal(actual[2].name, 'test1');
+		Assert.equAl(ActuAl[2].uri.fsPAth, AbcTest1FolderUri.fsPAth);
+		Assert.equAl((<IRAwFileWorkspAceFolder>ActuAl[2].rAw).pAth, '/Abc/test1');
+		Assert.equAl(ActuAl[2].index, 2);
+		Assert.equAl(ActuAl[2].nAme, 'test1');
 	});
 });

@@ -1,295 +1,295 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import * as errors from 'vs/base/common/errors';
-import { equals } from 'vs/base/common/objects';
-import * as DOM from 'vs/base/browser/dom';
-import { IAction, Separator } from 'vs/base/common/actions';
-import { IFileService } from 'vs/platform/files/common/files';
-import { EditorResourceAccessor, IUntitledTextResourceEditorInput, SideBySideEditor, pathsToEditors } from 'vs/workbench/common/editor';
+import * As nls from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
+import * As errors from 'vs/bAse/common/errors';
+import { equAls } from 'vs/bAse/common/objects';
+import * As DOM from 'vs/bAse/browser/dom';
+import { IAction, SepArAtor } from 'vs/bAse/common/Actions';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { EditorResourceAccessor, IUntitledTextResourceEditorInput, SideBySideEditor, pAthsToEditors } from 'vs/workbench/common/editor';
 import { IEditorService, IResourceEditorInputType } from 'vs/workbench/services/editor/common/editorService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { WindowMinimumSize, IOpenFileRequest, IWindowsConfiguration, getTitleBarStyle, IAddFoldersRequest, INativeRunActionInWindowRequest, INativeRunKeybindingInWindowRequest, INativeOpenFileRequest } from 'vs/platform/windows/common/windows';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { WindowMinimumSize, IOpenFileRequest, IWindowsConfigurAtion, getTitleBArStyle, IAddFoldersRequest, INAtiveRunActionInWindowRequest, INAtiveRunKeybindingInWindowRequest, INAtiveOpenFileRequest } from 'vs/plAtform/windows/common/windows';
 import { ITitleService } from 'vs/workbench/services/title/common/titleService';
 import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { applyZoom } from 'vs/platform/windows/electron-sandbox/window';
-import { setFullscreen, getZoomLevel } from 'vs/base/browser/browser';
-import { ICommandService, CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
-import { IMenuService, MenuId, IMenu, MenuItemAction, ICommandAction, SubmenuItemAction, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { createAndFillInActionBarActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { LifecyclePhase, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IWorkspaceFolderCreationData, IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
+import { ApplyZoom } from 'vs/plAtform/windows/electron-sAndbox/window';
+import { setFullscreen, getZoomLevel } from 'vs/bAse/browser/browser';
+import { ICommAndService, CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { IWorkspAceEditingService } from 'vs/workbench/services/workspAces/common/workspAceEditing';
+import { IMenuService, MenuId, IMenu, MenuItemAction, ICommAndAction, SubmenuItemAction, MenuRegistry } from 'vs/plAtform/Actions/common/Actions';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { creAteAndFillInActionBArActions } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { LifecyclePhAse, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkspAceFolderCreAtionDAtA, IWorkspAcesService } from 'vs/plAtform/workspAces/common/workspAces';
 import { IIntegrityService } from 'vs/workbench/services/integrity/common/integrity';
-import { isWindows, isMacintosh } from 'vs/base/common/platform';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IAccessibilityService, AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
-import { WorkbenchState, IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { coalesce } from 'vs/base/common/arrays';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { MenubarControl } from '../browser/parts/titlebar/menubarControl';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IUpdateService } from 'vs/platform/update/common/update';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { isWindows, isMAcintosh } from 'vs/bAse/common/plAtform';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { IAccessibilityService, AccessibilitySupport } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { WorkbenchStAte, IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { MenubArControl } from '../browser/pArts/titlebAr/menubArControl';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IUpdAteService } from 'vs/plAtform/updAte/common/updAte';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 import { IPreferencesService } from '../services/preferences/common/preferences';
-import { IMenubarData, IMenubarMenu, IMenubarKeybinding, IMenubarMenuItemSubmenu, IMenubarMenuItemAction, MenubarMenuItem } from 'vs/platform/menubar/common/menubar';
-import { IMenubarService } from 'vs/platform/menubar/electron-sandbox/menubar';
-import { withNullAsUndefined, assertIsDefined } from 'vs/base/common/types';
-import { IOpenerService, OpenOptions } from 'vs/platform/opener/common/opener';
-import { Schemas } from 'vs/base/common/network';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { posix, dirname } from 'vs/base/common/path';
-import { getBaseLabel } from 'vs/base/common/labels';
-import { ITunnelService, extractLocalHostUriMetaDataForPortMapping } from 'vs/platform/remote/common/tunnel';
-import { IWorkbenchLayoutService, Parts, positionFromString, Position } from 'vs/workbench/services/layout/browser/layoutService';
+import { IMenubArDAtA, IMenubArMenu, IMenubArKeybinding, IMenubArMenuItemSubmenu, IMenubArMenuItemAction, MenubArMenuItem } from 'vs/plAtform/menubAr/common/menubAr';
+import { IMenubArService } from 'vs/plAtform/menubAr/electron-sAndbox/menubAr';
+import { withNullAsUndefined, AssertIsDefined } from 'vs/bAse/common/types';
+import { IOpenerService, OpenOptions } from 'vs/plAtform/opener/common/opener';
+import { SchemAs } from 'vs/bAse/common/network';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { posix, dirnAme } from 'vs/bAse/common/pAth';
+import { getBAseLAbel } from 'vs/bAse/common/lAbels';
+import { ITunnelService, extrActLocAlHostUriMetADAtAForPortMApping } from 'vs/plAtform/remote/common/tunnel';
+import { IWorkbenchLAyoutService, PArts, positionFromString, Position } from 'vs/workbench/services/lAyout/browser/lAyoutService';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IWorkingCopyService, WorkingCopyCapabilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { AutoSaveMode, IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { Event } from 'vs/base/common/event';
-import { clearAllFontInfos } from 'vs/editor/browser/config/configuration';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IAddressProvider, IAddress } from 'vs/platform/remote/common/remoteAgentConnection';
+import { IWorkingCopyService, WorkingCopyCApAbilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { AutoSAveMode, IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { Event } from 'vs/bAse/common/event';
+import { cleArAllFontInfos } from 'vs/editor/browser/config/configurAtion';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { IAddressProvider, IAddress } from 'vs/plAtform/remote/common/remoteAgentConnection';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 
-export class NativeWindow extends Disposable {
+export clAss NAtiveWindow extends DisposAble {
 
-	private touchBarMenu: IMenu | undefined;
-	private readonly touchBarDisposables = this._register(new DisposableStore());
-	private lastInstalledTouchedBar: ICommandAction[][] | undefined;
+	privAte touchBArMenu: IMenu | undefined;
+	privAte reAdonly touchBArDisposAbles = this._register(new DisposAbleStore());
+	privAte lAstInstAlledTouchedBAr: ICommAndAction[][] | undefined;
 
-	private readonly customTitleContextMenuDisposable = this._register(new DisposableStore());
+	privAte reAdonly customTitleContextMenuDisposAble = this._register(new DisposAbleStore());
 
-	private previousConfiguredZoomLevel: number | undefined;
+	privAte previousConfiguredZoomLevel: number | undefined;
 
-	private readonly addFoldersScheduler = this._register(new RunOnceScheduler(() => this.doAddFolders(), 100));
-	private pendingFoldersToAdd: URI[] = [];
+	privAte reAdonly AddFoldersScheduler = this._register(new RunOnceScheduler(() => this.doAddFolders(), 100));
+	privAte pendingFoldersToAdd: URI[] = [];
 
-	private readonly closeEmptyWindowScheduler = this._register(new RunOnceScheduler(() => this.onAllEditorsClosed(), 50));
+	privAte reAdonly closeEmptyWindowScheduler = this._register(new RunOnceScheduler(() => this.onAllEditorsClosed(), 50));
 
-	private isDocumentedEdited = false;
+	privAte isDocumentedEdited = fAlse;
 
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@IEditorGroupsService private readonly editorGroupService: IEditorGroupsService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ITitleService private readonly titleService: ITitleService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IEditorGroupsService privAte reAdonly editorGroupService: IEditorGroupsService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ITitleService privAte reAdonly titleService: ITitleService,
 		@IWorkbenchThemeService protected themeService: IWorkbenchThemeService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@ICommandService private readonly commandService: ICommandService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IWorkspaceEditingService private readonly workspaceEditingService: IWorkspaceEditingService,
-		@IFileService private readonly fileService: IFileService,
-		@IMenuService private readonly menuService: IMenuService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IIntegrityService private readonly integrityService: IIntegrityService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService,
-		@IAccessibilityService private readonly accessibilityService: IAccessibilityService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@ITunnelService private readonly tunnelService: ITunnelService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IWorkingCopyService private readonly workingCopyService: IWorkingCopyService,
-		@IFilesConfigurationService private readonly filesConfigurationService: IFilesConfigurationService,
-		@IProductService private readonly productService: IProductService,
-		@IRemoteAuthorityResolverService private readonly remoteAuthorityResolverService: IRemoteAuthorityResolverService
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IWorkspAceEditingService privAte reAdonly workspAceEditingService: IWorkspAceEditingService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IMenuService privAte reAdonly menuService: IMenuService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IIntegrityService privAte reAdonly integrityService: IIntegrityService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly environmentService: INAtiveWorkbenchEnvironmentService,
+		@IAccessibilityService privAte reAdonly AccessibilityService: IAccessibilityService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@ITunnelService privAte reAdonly tunnelService: ITunnelService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IWorkingCopyService privAte reAdonly workingCopyService: IWorkingCopyService,
+		@IFilesConfigurAtionService privAte reAdonly filesConfigurAtionService: IFilesConfigurAtionService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IRemoteAuthorityResolverService privAte reAdonly remoteAuthorityResolverService: IRemoteAuthorityResolverService
 	) {
 		super();
 
 		this.registerListeners();
-		this.create();
+		this.creAte();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// React to editor input changes
-		this._register(this.editorService.onDidActiveEditorChange(() => this.updateTouchbarMenu()));
+		// ReAct to editor input chAnges
+		this._register(this.editorService.onDidActiveEditorChAnge(() => this.updAteTouchbArMenu()));
 
-		// prevent opening a real URL inside the shell
-		[DOM.EventType.DRAG_OVER, DOM.EventType.DROP].forEach(event => {
-			window.document.body.addEventListener(event, (e: DragEvent) => {
+		// prevent opening A reAl URL inside the shell
+		[DOM.EventType.DRAG_OVER, DOM.EventType.DROP].forEAch(event => {
+			window.document.body.AddEventListener(event, (e: DrAgEvent) => {
 				DOM.EventHelper.stop(e);
 			});
 		});
 
 		// Support runAction event
-		ipcRenderer.on('vscode:runAction', async (event: unknown, request: INativeRunActionInWindowRequest) => {
-			const args: unknown[] = request.args || [];
+		ipcRenderer.on('vscode:runAction', Async (event: unknown, request: INAtiveRunActionInWindowRequest) => {
+			const Args: unknown[] = request.Args || [];
 
-			// If we run an action from the touchbar, we fill in the currently active resource
-			// as payload because the touch bar items are context aware depending on the editor
-			if (request.from === 'touchbar') {
-				const activeEditor = this.editorService.activeEditor;
-				if (activeEditor) {
-					const resource = EditorResourceAccessor.getOriginalUri(activeEditor, { supportSideBySide: SideBySideEditor.PRIMARY });
+			// If we run An Action from the touchbAr, we fill in the currently Active resource
+			// As pAyloAd becAuse the touch bAr items Are context AwAre depending on the editor
+			if (request.from === 'touchbAr') {
+				const ActiveEditor = this.editorService.ActiveEditor;
+				if (ActiveEditor) {
+					const resource = EditorResourceAccessor.getOriginAlUri(ActiveEditor, { supportSideBySide: SideBySideEditor.PRIMARY });
 					if (resource) {
-						args.push(resource);
+						Args.push(resource);
 					}
 				}
 			} else {
-				args.push({ from: request.from });
+				Args.push({ from: request.from });
 			}
 
 			try {
-				await this.commandService.executeCommand(request.id, ...args);
+				AwAit this.commAndService.executeCommAnd(request.id, ...Args);
 
-				type CommandExecutedClassifcation = {
-					id: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-					from: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
+				type CommAndExecutedClAssifcAtion = {
+					id: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
+					from: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
 				};
-				this.telemetryService.publicLog2<{ id: String, from: String }, CommandExecutedClassifcation>('commandExecuted', { id: request.id, from: request.from });
-			} catch (error) {
-				this.notificationService.error(error);
+				this.telemetryService.publicLog2<{ id: String, from: String }, CommAndExecutedClAssifcAtion>('commAndExecuted', { id: request.id, from: request.from });
+			} cAtch (error) {
+				this.notificAtionService.error(error);
 			}
 		});
 
 		// Support runKeybinding event
-		ipcRenderer.on('vscode:runKeybinding', (event: unknown, request: INativeRunKeybindingInWindowRequest) => {
-			if (document.activeElement) {
-				this.keybindingService.dispatchByUserSettingsLabel(request.userSettingsLabel, document.activeElement);
+		ipcRenderer.on('vscode:runKeybinding', (event: unknown, request: INAtiveRunKeybindingInWindowRequest) => {
+			if (document.ActiveElement) {
+				this.keybindingService.dispAtchByUserSettingsLAbel(request.userSettingsLAbel, document.ActiveElement);
 			}
 		});
 
-		// Error reporting from main
+		// Error reporting from mAin
 		ipcRenderer.on('vscode:reportError', (event: unknown, error: string) => {
 			if (error) {
-				errors.onUnexpectedError(JSON.parse(error));
+				errors.onUnexpectedError(JSON.pArse(error));
 			}
 		});
 
-		// Support openFiles event for existing and new files
+		// Support openFiles event for existing And new files
 		ipcRenderer.on('vscode:openFiles', (event: unknown, request: IOpenFileRequest) => this.onOpenFiles(request));
 
-		// Support addFolders event if we have a workspace opened
-		ipcRenderer.on('vscode:addFolders', (event: unknown, request: IAddFoldersRequest) => this.onAddFoldersRequest(request));
+		// Support AddFolders event if we hAve A workspAce opened
+		ipcRenderer.on('vscode:AddFolders', (event: unknown, request: IAddFoldersRequest) => this.onAddFoldersRequest(request));
 
-		// Message support
-		ipcRenderer.on('vscode:showInfoMessage', (event: unknown, message: string) => {
-			this.notificationService.info(message);
+		// MessAge support
+		ipcRenderer.on('vscode:showInfoMessAge', (event: unknown, messAge: string) => {
+			this.notificAtionService.info(messAge);
 		});
 
-		// Display change events
-		ipcRenderer.on('vscode:displayChanged', () => {
-			clearAllFontInfos();
+		// DisplAy chAnge events
+		ipcRenderer.on('vscode:displAyChAnged', () => {
+			cleArAllFontInfos();
 		});
 
 		// Fullscreen Events
-		ipcRenderer.on('vscode:enterFullScreen', async () => {
-			await this.lifecycleService.when(LifecyclePhase.Ready);
+		ipcRenderer.on('vscode:enterFullScreen', Async () => {
+			AwAit this.lifecycleService.when(LifecyclePhAse.ReAdy);
 			setFullscreen(true);
 		});
 
-		ipcRenderer.on('vscode:leaveFullScreen', async () => {
-			await this.lifecycleService.when(LifecyclePhase.Ready);
-			setFullscreen(false);
+		ipcRenderer.on('vscode:leAveFullScreen', Async () => {
+			AwAit this.lifecycleService.when(LifecyclePhAse.ReAdy);
+			setFullscreen(fAlse);
 		});
 
-		// accessibility support changed event
-		ipcRenderer.on('vscode:accessibilitySupportChanged', (event: unknown, accessibilitySupportEnabled: boolean) => {
-			this.accessibilityService.setAccessibilitySupport(accessibilitySupportEnabled ? AccessibilitySupport.Enabled : AccessibilitySupport.Disabled);
+		// Accessibility support chAnged event
+		ipcRenderer.on('vscode:AccessibilitySupportChAnged', (event: unknown, AccessibilitySupportEnAbled: booleAn) => {
+			this.AccessibilityService.setAccessibilitySupport(AccessibilitySupportEnAbled ? AccessibilitySupport.EnAbled : AccessibilitySupport.DisAbled);
 		});
 
-		// Zoom level changes
-		this.updateWindowZoomLevel();
-		this._register(this.configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('window.zoomLevel')) {
-				this.updateWindowZoomLevel();
-			} else if (e.affectsConfiguration('keyboard.touchbar.enabled') || e.affectsConfiguration('keyboard.touchbar.ignored')) {
-				this.updateTouchbarMenu();
+		// Zoom level chAnges
+		this.updAteWindowZoomLevel();
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('window.zoomLevel')) {
+				this.updAteWindowZoomLevel();
+			} else if (e.AffectsConfigurAtion('keyboArd.touchbAr.enAbled') || e.AffectsConfigurAtion('keyboArd.touchbAr.ignored')) {
+				this.updAteTouchbArMenu();
 			}
 		}));
 
-		// Listen to visible editor changes
-		this._register(this.editorService.onDidVisibleEditorsChange(() => this.onDidVisibleEditorsChange()));
+		// Listen to visible editor chAnges
+		this._register(this.editorService.onDidVisibleEditorsChAnge(() => this.onDidVisibleEditorsChAnge()));
 
-		// Listen to editor closing (if we run with --wait)
-		const filesToWait = this.environmentService.configuration.filesToWait;
-		if (filesToWait) {
-			this.trackClosedWaitFiles(filesToWait.waitMarkerFileUri, coalesce(filesToWait.paths.map(path => path.fileUri)));
+		// Listen to editor closing (if we run with --wAit)
+		const filesToWAit = this.environmentService.configurAtion.filesToWAit;
+		if (filesToWAit) {
+			this.trAckClosedWAitFiles(filesToWAit.wAitMArkerFileUri, coAlesce(filesToWAit.pAths.mAp(pAth => pAth.fileUri)));
 		}
 
-		// macOS OS integration
-		if (isMacintosh) {
-			this._register(this.editorService.onDidActiveEditorChange(() => {
-				const file = EditorResourceAccessor.getOriginalUri(this.editorService.activeEditor, { supportSideBySide: SideBySideEditor.PRIMARY, filterByScheme: Schemas.file });
+		// mAcOS OS integrAtion
+		if (isMAcintosh) {
+			this._register(this.editorService.onDidActiveEditorChAnge(() => {
+				const file = EditorResourceAccessor.getOriginAlUri(this.editorService.ActiveEditor, { supportSideBySide: SideBySideEditor.PRIMARY, filterByScheme: SchemAs.file });
 
-				// Represented Filename
-				this.updateRepresentedFilename(file?.fsPath);
+				// Represented FilenAme
+				this.updAteRepresentedFilenAme(file?.fsPAth);
 
 				// Custom title menu
-				this.provideCustomTitleContextMenu(file?.fsPath);
+				this.provideCustomTitleContextMenu(file?.fsPAth);
 			}));
 		}
 
-		// Maximize/Restore on doubleclick (for macOS custom title)
-		if (isMacintosh && getTitleBarStyle(this.configurationService, this.environmentService) === 'custom') {
-			const titlePart = assertIsDefined(this.layoutService.getContainer(Parts.TITLEBAR_PART));
+		// MAximize/Restore on doubleclick (for mAcOS custom title)
+		if (isMAcintosh && getTitleBArStyle(this.configurAtionService, this.environmentService) === 'custom') {
+			const titlePArt = AssertIsDefined(this.lAyoutService.getContAiner(PArts.TITLEBAR_PART));
 
-			this._register(DOM.addDisposableListener(titlePart, DOM.EventType.DBLCLICK, e => {
+			this._register(DOM.AddDisposAbleListener(titlePArt, DOM.EventType.DBLCLICK, e => {
 				DOM.EventHelper.stop(e);
 
-				this.nativeHostService.handleTitleDoubleClick();
+				this.nAtiveHostService.hAndleTitleDoubleClick();
 			}));
 		}
 
-		// Document edited: indicate for dirty working copies
-		this._register(this.workingCopyService.onDidChangeDirty(workingCopy => {
+		// Document edited: indicAte for dirty working copies
+		this._register(this.workingCopyService.onDidChAngeDirty(workingCopy => {
 			const gotDirty = workingCopy.isDirty();
-			if (gotDirty && !(workingCopy.capabilities & WorkingCopyCapabilities.Untitled) && this.filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-				return; // do not indicate dirty of working copies that are auto saved after short delay
+			if (gotDirty && !(workingCopy.cApAbilities & WorkingCopyCApAbilities.Untitled) && this.filesConfigurAtionService.getAutoSAveMode() === AutoSAveMode.AFTER_SHORT_DELAY) {
+				return; // do not indicAte dirty of working copies thAt Are Auto sAved After short delAy
 			}
 
-			this.updateDocumentEdited(gotDirty);
+			this.updAteDocumentEdited(gotDirty);
 		}));
 
-		this.updateDocumentEdited();
+		this.updAteDocumentEdited();
 
-		// Detect minimize / maximize
-		this._register(Event.any(
-			Event.map(Event.filter(this.nativeHostService.onDidMaximizeWindow, id => id === this.nativeHostService.windowId), () => true),
-			Event.map(Event.filter(this.nativeHostService.onDidUnmaximizeWindow, id => id === this.nativeHostService.windowId), () => false)
-		)(e => this.onDidChangeMaximized(e)));
+		// Detect minimize / mAximize
+		this._register(Event.Any(
+			Event.mAp(Event.filter(this.nAtiveHostService.onDidMAximizeWindow, id => id === this.nAtiveHostService.windowId), () => true),
+			Event.mAp(Event.filter(this.nAtiveHostService.onDidUnmAximizeWindow, id => id === this.nAtiveHostService.windowId), () => fAlse)
+		)(e => this.onDidChAngeMAximized(e)));
 
-		this.onDidChangeMaximized(this.environmentService.configuration.maximized ?? false);
+		this.onDidChAngeMAximized(this.environmentService.configurAtion.mAximized ?? fAlse);
 
-		// Detect panel position to determine minimum width
-		this._register(this.layoutService.onPanelPositionChange(pos => {
-			this.onDidPanelPositionChange(positionFromString(pos));
+		// Detect pAnel position to determine minimum width
+		this._register(this.lAyoutService.onPAnelPositionChAnge(pos => {
+			this.onDidPAnelPositionChAnge(positionFromString(pos));
 		}));
-		this.onDidPanelPositionChange(this.layoutService.getPanelPosition());
+		this.onDidPAnelPositionChAnge(this.lAyoutService.getPAnelPosition());
 	}
 
-	private updateDocumentEdited(isDirty = this.workingCopyService.hasDirty): void {
+	privAte updAteDocumentEdited(isDirty = this.workingCopyService.hAsDirty): void {
 		if ((!this.isDocumentedEdited && isDirty) || (this.isDocumentedEdited && !isDirty)) {
 			this.isDocumentedEdited = isDirty;
 
-			this.nativeHostService.setDocumentEdited(isDirty);
+			this.nAtiveHostService.setDocumentEdited(isDirty);
 		}
 	}
 
-	private onDidChangeMaximized(maximized: boolean): void {
-		this.layoutService.updateWindowMaximizedState(maximized);
+	privAte onDidChAngeMAximized(mAximized: booleAn): void {
+		this.lAyoutService.updAteWindowMAximizedStAte(mAximized);
 	}
 
-	private getWindowMinimumWidth(panelPosition: Position = this.layoutService.getPanelPosition()): number {
-		// if panel is on the side, then return the larger minwidth
-		const panelOnSide = panelPosition === Position.LEFT || panelPosition === Position.RIGHT;
-		if (panelOnSide) {
+	privAte getWindowMinimumWidth(pAnelPosition: Position = this.lAyoutService.getPAnelPosition()): number {
+		// if pAnel is on the side, then return the lArger minwidth
+		const pAnelOnSide = pAnelPosition === Position.LEFT || pAnelPosition === Position.RIGHT;
+		if (pAnelOnSide) {
 			return WindowMinimumSize.WIDTH_WITH_VERTICAL_PANEL;
 		}
 		else {
@@ -297,40 +297,40 @@ export class NativeWindow extends Disposable {
 		}
 	}
 
-	private onDidPanelPositionChange(pos: Position): void {
+	privAte onDidPAnelPositionChAnge(pos: Position): void {
 		const minWidth = this.getWindowMinimumWidth(pos);
-		this.nativeHostService.setMinimumSize(minWidth, undefined);
+		this.nAtiveHostService.setMinimumSize(minWidth, undefined);
 	}
 
-	private onDidVisibleEditorsChange(): void {
+	privAte onDidVisibleEditorsChAnge(): void {
 
-		// Close when empty: check if we should close the window based on the setting
-		// Overruled by: window has a workspace opened or this window is for extension development
-		// or setting is disabled. Also enabled when running with --wait from the command line.
-		const visibleEditorPanes = this.editorService.visibleEditorPanes;
-		if (visibleEditorPanes.length === 0 && this.contextService.getWorkbenchState() === WorkbenchState.EMPTY && !this.environmentService.isExtensionDevelopment) {
-			const closeWhenEmpty = this.configurationService.getValue<boolean>('window.closeWhenEmpty');
-			if (closeWhenEmpty || this.environmentService.args.wait) {
+		// Close when empty: check if we should close the window bAsed on the setting
+		// Overruled by: window hAs A workspAce opened or this window is for extension development
+		// or setting is disAbled. Also enAbled when running with --wAit from the commAnd line.
+		const visibleEditorPAnes = this.editorService.visibleEditorPAnes;
+		if (visibleEditorPAnes.length === 0 && this.contextService.getWorkbenchStAte() === WorkbenchStAte.EMPTY && !this.environmentService.isExtensionDevelopment) {
+			const closeWhenEmpty = this.configurAtionService.getVAlue<booleAn>('window.closeWhenEmpty');
+			if (closeWhenEmpty || this.environmentService.Args.wAit) {
 				this.closeEmptyWindowScheduler.schedule();
 			}
 		}
 	}
 
-	private onAllEditorsClosed(): void {
-		const visibleEditorPanes = this.editorService.visibleEditorPanes.length;
-		if (visibleEditorPanes === 0) {
-			this.nativeHostService.closeWindow();
+	privAte onAllEditorsClosed(): void {
+		const visibleEditorPAnes = this.editorService.visibleEditorPAnes.length;
+		if (visibleEditorPAnes === 0) {
+			this.nAtiveHostService.closeWindow();
 		}
 	}
 
-	private updateWindowZoomLevel(): void {
-		const windowConfig = this.configurationService.getValue<IWindowsConfiguration>();
+	privAte updAteWindowZoomLevel(): void {
+		const windowConfig = this.configurAtionService.getVAlue<IWindowsConfigurAtion>();
 
 		let configuredZoomLevel = 0;
 		if (windowConfig.window && typeof windowConfig.window.zoomLevel === 'number') {
 			configuredZoomLevel = windowConfig.window.zoomLevel;
 
-			// Leave early if the configured zoom level did not change (https://github.com/microsoft/vscode/issues/1536)
+			// LeAve eArly if the configured zoom level did not chAnge (https://github.com/microsoft/vscode/issues/1536)
 			if (this.previousConfiguredZoomLevel === configuredZoomLevel) {
 				return;
 			}
@@ -339,98 +339,98 @@ export class NativeWindow extends Disposable {
 		}
 
 		if (getZoomLevel() !== configuredZoomLevel) {
-			applyZoom(configuredZoomLevel);
+			ApplyZoom(configuredZoomLevel);
 		}
 	}
 
-	private updateRepresentedFilename(filePath: string | undefined): void {
-		this.nativeHostService.setRepresentedFilename(filePath ? filePath : '');
+	privAte updAteRepresentedFilenAme(filePAth: string | undefined): void {
+		this.nAtiveHostService.setRepresentedFilenAme(filePAth ? filePAth : '');
 	}
 
-	private provideCustomTitleContextMenu(filePath: string | undefined): void {
+	privAte provideCustomTitleContextMenu(filePAth: string | undefined): void {
 
-		// Clear old menu
-		this.customTitleContextMenuDisposable.clear();
+		// CleAr old menu
+		this.customTitleContextMenuDisposAble.cleAr();
 
-		// Provide new menu if a file is opened and we are on a custom title
-		if (!filePath || getTitleBarStyle(this.configurationService, this.environmentService) !== 'custom') {
+		// Provide new menu if A file is opened And we Are on A custom title
+		if (!filePAth || getTitleBArStyle(this.configurAtionService, this.environmentService) !== 'custom') {
 			return;
 		}
 
-		// Split up filepath into segments
-		const segments = filePath.split(posix.sep);
+		// Split up filepAth into segments
+		const segments = filePAth.split(posix.sep);
 		for (let i = segments.length; i > 0; i--) {
 			const isFile = (i === segments.length);
 
-			let pathOffset = i;
+			let pAthOffset = i;
 			if (!isFile) {
-				pathOffset++; // for segments which are not the file name we want to open the folder
+				pAthOffset++; // for segments which Are not the file nAme we wAnt to open the folder
 			}
 
-			const path = segments.slice(0, pathOffset).join(posix.sep);
+			const pAth = segments.slice(0, pAthOffset).join(posix.sep);
 
-			let label: string;
+			let lAbel: string;
 			if (!isFile) {
-				label = getBaseLabel(dirname(path));
+				lAbel = getBAseLAbel(dirnAme(pAth));
 			} else {
-				label = getBaseLabel(path);
+				lAbel = getBAseLAbel(pAth);
 			}
 
-			const commandId = `workbench.action.revealPathInFinder${i}`;
-			this.customTitleContextMenuDisposable.add(CommandsRegistry.registerCommand(commandId, () => this.nativeHostService.showItemInFolder(path)));
-			this.customTitleContextMenuDisposable.add(MenuRegistry.appendMenuItem(MenuId.TitleBarContext, { command: { id: commandId, title: label || posix.sep }, order: -i }));
+			const commAndId = `workbench.Action.reveAlPAthInFinder${i}`;
+			this.customTitleContextMenuDisposAble.Add(CommAndsRegistry.registerCommAnd(commAndId, () => this.nAtiveHostService.showItemInFolder(pAth)));
+			this.customTitleContextMenuDisposAble.Add(MenuRegistry.AppendMenuItem(MenuId.TitleBArContext, { commAnd: { id: commAndId, title: lAbel || posix.sep }, order: -i }));
 		}
 	}
 
-	private create(): void {
+	privAte creAte(): void {
 
-		// Native menu controller
-		if (isMacintosh || getTitleBarStyle(this.configurationService, this.environmentService) === 'native') {
-			this._register(this.instantiationService.createInstance(NativeMenubarControl));
+		// NAtive menu controller
+		if (isMAcintosh || getTitleBArStyle(this.configurAtionService, this.environmentService) === 'nAtive') {
+			this._register(this.instAntiAtionService.creAteInstAnce(NAtiveMenubArControl));
 		}
 
-		// Handle open calls
-		this.setupOpenHandlers();
+		// HAndle open cAlls
+		this.setupOpenHAndlers();
 
-		// Notify main side when window ready
-		this.lifecycleService.when(LifecyclePhase.Ready).then(() => this.nativeHostService.notifyReady());
+		// Notify mAin side when window reAdy
+		this.lifecycleService.when(LifecyclePhAse.ReAdy).then(() => this.nAtiveHostService.notifyReAdy());
 
-		// Integrity warning
-		this.integrityService.isPure().then(res => this.titleService.updateProperties({ isPure: res.isPure }));
+		// Integrity wArning
+		this.integrityService.isPure().then(res => this.titleService.updAteProperties({ isPure: res.isPure }));
 
-		// Root warning
-		this.lifecycleService.when(LifecyclePhase.Restored).then(async () => {
-			const isAdmin = await this.nativeHostService.isAdmin();
+		// Root wArning
+		this.lifecycleService.when(LifecyclePhAse.Restored).then(Async () => {
+			const isAdmin = AwAit this.nAtiveHostService.isAdmin();
 
-			// Update title
-			this.titleService.updateProperties({ isAdmin });
+			// UpdAte title
+			this.titleService.updAteProperties({ isAdmin });
 
-			// Show warning message (unix only)
+			// Show wArning messAge (unix only)
 			if (isAdmin && !isWindows) {
-				this.notificationService.warn(nls.localize('runningAsRoot', "It is not recommended to run {0} as root user.", this.productService.nameShort));
+				this.notificAtionService.wArn(nls.locAlize('runningAsRoot', "It is not recommended to run {0} As root user.", this.productService.nAmeShort));
 			}
 		});
 
-		// Touchbar menu (if enabled)
-		this.updateTouchbarMenu();
+		// TouchbAr menu (if enAbled)
+		this.updAteTouchbArMenu();
 	}
 
-	private setupOpenHandlers(): void {
+	privAte setupOpenHAndlers(): void {
 
-		// Block window.open() calls
+		// Block window.open() cAlls
 		window.open = function (): Window | null {
-			throw new Error('Prevented call to window.open(). Use IOpenerService instead!');
+			throw new Error('Prevented cAll to window.open(). Use IOpenerService insteAd!');
 		};
 
-		// Handle external open() calls
-		this.openerService.setExternalOpener({
-			openExternal: async (href: string) => {
-				const success = await this.nativeHostService.openExternal(href);
+		// HAndle externAl open() cAlls
+		this.openerService.setExternAlOpener({
+			openExternAl: Async (href: string) => {
+				const success = AwAit this.nAtiveHostService.openExternAl(href);
 				if (!success) {
-					const fileCandidate = URI.parse(href);
-					if (fileCandidate.scheme === Schemas.file) {
-						// if opening failed, and this is a file, we can still try to reveal it
-						await this.nativeHostService.showItemInFolder(fileCandidate.fsPath);
+					const fileCAndidAte = URI.pArse(href);
+					if (fileCAndidAte.scheme === SchemAs.file) {
+						// if opening fAiled, And this is A file, we cAn still try to reveAl it
+						AwAit this.nAtiveHostService.showItemInFolder(fileCAndidAte.fsPAth);
 					}
 				}
 
@@ -438,22 +438,22 @@ export class NativeWindow extends Disposable {
 			}
 		});
 
-		// Register external URI resolver
-		this.openerService.registerExternalUriResolver({
-			resolveExternalUri: async (uri: URI, options?: OpenOptions) => {
-				if (options?.allowTunneling) {
-					const portMappingRequest = extractLocalHostUriMetaDataForPortMapping(uri);
-					if (portMappingRequest) {
+		// Register externAl URI resolver
+		this.openerService.registerExternAlUriResolver({
+			resolveExternAlUri: Async (uri: URI, options?: OpenOptions) => {
+				if (options?.AllowTunneling) {
+					const portMAppingRequest = extrActLocAlHostUriMetADAtAForPortMApping(uri);
+					if (portMAppingRequest) {
 						const remoteAuthority = this.environmentService.remoteAuthority;
-						const addressProvider: IAddressProvider | undefined = remoteAuthority ? {
-							getAddress: async (): Promise<IAddress> => {
-								return (await this.remoteAuthorityResolverService.resolveAuthority(remoteAuthority)).authority;
+						const AddressProvider: IAddressProvider | undefined = remoteAuthority ? {
+							getAddress: Async (): Promise<IAddress> => {
+								return (AwAit this.remoteAuthorityResolverService.resolveAuthority(remoteAuthority)).Authority;
 							}
 						} : undefined;
-						const tunnel = await this.tunnelService.openTunnel(addressProvider, portMappingRequest.address, portMappingRequest.port);
+						const tunnel = AwAit this.tunnelService.openTunnel(AddressProvider, portMAppingRequest.Address, portMAppingRequest.port);
 						if (tunnel) {
 							return {
-								resolved: uri.with({ authority: tunnel.localAddress }),
+								resolved: uri.with({ Authority: tunnel.locAlAddress }),
 								dispose: () => tunnel.dispose(),
 							};
 						}
@@ -464,53 +464,53 @@ export class NativeWindow extends Disposable {
 		});
 	}
 
-	private updateTouchbarMenu(): void {
-		if (!isMacintosh) {
-			return; // macOS only
+	privAte updAteTouchbArMenu(): void {
+		if (!isMAcintosh) {
+			return; // mAcOS only
 		}
 
 		// Dispose old
-		this.touchBarDisposables.clear();
-		this.touchBarMenu = undefined;
+		this.touchBArDisposAbles.cleAr();
+		this.touchBArMenu = undefined;
 
-		// Create new (delayed)
-		const scheduler: RunOnceScheduler = this.touchBarDisposables.add(new RunOnceScheduler(() => this.doUpdateTouchbarMenu(scheduler), 300));
+		// CreAte new (delAyed)
+		const scheduler: RunOnceScheduler = this.touchBArDisposAbles.Add(new RunOnceScheduler(() => this.doUpdAteTouchbArMenu(scheduler), 300));
 		scheduler.schedule();
 	}
 
-	private doUpdateTouchbarMenu(scheduler: RunOnceScheduler): void {
-		if (!this.touchBarMenu) {
-			const scopedContextKeyService = this.editorService.activeEditorPane?.scopedContextKeyService || this.editorGroupService.activeGroup.scopedContextKeyService;
-			this.touchBarMenu = this.menuService.createMenu(MenuId.TouchBarContext, scopedContextKeyService);
-			this.touchBarDisposables.add(this.touchBarMenu);
-			this.touchBarDisposables.add(this.touchBarMenu.onDidChange(() => scheduler.schedule()));
+	privAte doUpdAteTouchbArMenu(scheduler: RunOnceScheduler): void {
+		if (!this.touchBArMenu) {
+			const scopedContextKeyService = this.editorService.ActiveEditorPAne?.scopedContextKeyService || this.editorGroupService.ActiveGroup.scopedContextKeyService;
+			this.touchBArMenu = this.menuService.creAteMenu(MenuId.TouchBArContext, scopedContextKeyService);
+			this.touchBArDisposAbles.Add(this.touchBArMenu);
+			this.touchBArDisposAbles.Add(this.touchBArMenu.onDidChAnge(() => scheduler.schedule()));
 		}
 
-		const actions: Array<MenuItemAction | Separator> = [];
+		const Actions: ArrAy<MenuItemAction | SepArAtor> = [];
 
-		const disabled = this.configurationService.getValue<boolean>('keyboard.touchbar.enabled') === false;
-		const ignoredItems = this.configurationService.getValue<string[]>('keyboard.touchbar.ignored') || [];
+		const disAbled = this.configurAtionService.getVAlue<booleAn>('keyboArd.touchbAr.enAbled') === fAlse;
+		const ignoredItems = this.configurAtionService.getVAlue<string[]>('keyboArd.touchbAr.ignored') || [];
 
-		// Fill actions into groups respecting order
-		this.touchBarDisposables.add(createAndFillInActionBarActions(this.touchBarMenu, undefined, actions));
+		// Fill Actions into groups respecting order
+		this.touchBArDisposAbles.Add(creAteAndFillInActionBArActions(this.touchBArMenu, undefined, Actions));
 
-		// Convert into command action multi array
-		const items: ICommandAction[][] = [];
-		let group: ICommandAction[] = [];
-		if (!disabled) {
-			for (const action of actions) {
+		// Convert into commAnd Action multi ArrAy
+		const items: ICommAndAction[][] = [];
+		let group: ICommAndAction[] = [];
+		if (!disAbled) {
+			for (const Action of Actions) {
 
-				// Command
-				if (action instanceof MenuItemAction) {
-					if (ignoredItems.indexOf(action.item.id) >= 0) {
+				// CommAnd
+				if (Action instAnceof MenuItemAction) {
+					if (ignoredItems.indexOf(Action.item.id) >= 0) {
 						continue; // ignored
 					}
 
-					group.push(action.item);
+					group.push(Action.item);
 				}
 
-				// Separator
-				else if (action instanceof Separator) {
+				// SepArAtor
+				else if (Action instAnceof SepArAtor) {
 					if (group.length) {
 						items.push(group);
 					}
@@ -524,277 +524,277 @@ export class NativeWindow extends Disposable {
 			}
 		}
 
-		// Only update if the actions have changed
-		if (!equals(this.lastInstalledTouchedBar, items)) {
-			this.lastInstalledTouchedBar = items;
-			this.nativeHostService.updateTouchBar(items);
+		// Only updAte if the Actions hAve chAnged
+		if (!equAls(this.lAstInstAlledTouchedBAr, items)) {
+			this.lAstInstAlledTouchedBAr = items;
+			this.nAtiveHostService.updAteTouchBAr(items);
 		}
 	}
 
-	private onAddFoldersRequest(request: IAddFoldersRequest): void {
+	privAte onAddFoldersRequest(request: IAddFoldersRequest): void {
 
-		// Buffer all pending requests
-		this.pendingFoldersToAdd.push(...request.foldersToAdd.map(folder => URI.revive(folder)));
+		// Buffer All pending requests
+		this.pendingFoldersToAdd.push(...request.foldersToAdd.mAp(folder => URI.revive(folder)));
 
-		// Delay the adding of folders a bit to buffer in case more requests are coming
-		if (!this.addFoldersScheduler.isScheduled()) {
-			this.addFoldersScheduler.schedule();
+		// DelAy the Adding of folders A bit to buffer in cAse more requests Are coming
+		if (!this.AddFoldersScheduler.isScheduled()) {
+			this.AddFoldersScheduler.schedule();
 		}
 	}
 
-	private doAddFolders(): void {
-		const foldersToAdd: IWorkspaceFolderCreationData[] = [];
+	privAte doAddFolders(): void {
+		const foldersToAdd: IWorkspAceFolderCreAtionDAtA[] = [];
 
-		this.pendingFoldersToAdd.forEach(folder => {
+		this.pendingFoldersToAdd.forEAch(folder => {
 			foldersToAdd.push(({ uri: folder }));
 		});
 
 		this.pendingFoldersToAdd = [];
 
-		this.workspaceEditingService.addFolders(foldersToAdd);
+		this.workspAceEditingService.AddFolders(foldersToAdd);
 	}
 
-	private async onOpenFiles(request: INativeOpenFileRequest): Promise<void> {
+	privAte Async onOpenFiles(request: INAtiveOpenFileRequest): Promise<void> {
 		const inputs: IResourceEditorInputType[] = [];
 		const diffMode = !!(request.filesToDiff && (request.filesToDiff.length === 2));
 
-		if (!diffMode && request.filesToOpenOrCreate) {
-			inputs.push(...(await pathsToEditors(request.filesToOpenOrCreate, this.fileService)));
+		if (!diffMode && request.filesToOpenOrCreAte) {
+			inputs.push(...(AwAit pAthsToEditors(request.filesToOpenOrCreAte, this.fileService)));
 		}
 
 		if (diffMode && request.filesToDiff) {
-			inputs.push(...(await pathsToEditors(request.filesToDiff, this.fileService)));
+			inputs.push(...(AwAit pAthsToEditors(request.filesToDiff, this.fileService)));
 		}
 
 		if (inputs.length) {
 			this.openResources(inputs, diffMode);
 		}
 
-		if (request.filesToWait && inputs.length) {
-			// In wait mode, listen to changes to the editors and wait until the files
-			// are closed that the user wants to wait for. When this happens we delete
-			// the wait marker file to signal to the outside that editing is done.
-			this.trackClosedWaitFiles(URI.revive(request.filesToWait.waitMarkerFileUri), coalesce(request.filesToWait.paths.map(p => URI.revive(p.fileUri))));
+		if (request.filesToWAit && inputs.length) {
+			// In wAit mode, listen to chAnges to the editors And wAit until the files
+			// Are closed thAt the user wAnts to wAit for. When this hAppens we delete
+			// the wAit mArker file to signAl to the outside thAt editing is done.
+			this.trAckClosedWAitFiles(URI.revive(request.filesToWAit.wAitMArkerFileUri), coAlesce(request.filesToWAit.pAths.mAp(p => URI.revive(p.fileUri))));
 		}
 	}
 
-	private async trackClosedWaitFiles(waitMarkerFile: URI, resourcesToWaitFor: URI[]): Promise<void> {
+	privAte Async trAckClosedWAitFiles(wAitMArkerFile: URI, resourcesToWAitFor: URI[]): Promise<void> {
 
-		// Wait for the resources to be closed in the editor...
-		await this.editorService.whenClosed(resourcesToWaitFor.map(resource => ({ resource })), { waitForSaved: true });
+		// WAit for the resources to be closed in the editor...
+		AwAit this.editorService.whenClosed(resourcesToWAitFor.mAp(resource => ({ resource })), { wAitForSAved: true });
 
-		// ...before deleting the wait marker file
-		await this.fileService.del(waitMarkerFile);
+		// ...before deleting the wAit mArker file
+		AwAit this.fileService.del(wAitMArkerFile);
 	}
 
-	private async openResources(resources: Array<IResourceEditorInput | IUntitledTextResourceEditorInput>, diffMode: boolean): Promise<unknown> {
-		await this.lifecycleService.when(LifecyclePhase.Ready);
+	privAte Async openResources(resources: ArrAy<IResourceEditorInput | IUntitledTextResourceEditorInput>, diffMode: booleAn): Promise<unknown> {
+		AwAit this.lifecycleService.when(LifecyclePhAse.ReAdy);
 
-		// In diffMode we open 2 resources as diff
+		// In diffMode we open 2 resources As diff
 		if (diffMode && resources.length === 2 && resources[0].resource && resources[1].resource) {
 			return this.editorService.openEditor({ leftResource: resources[0].resource, rightResource: resources[1].resource, options: { pinned: true } });
 		}
 
-		// For one file, just put it into the current active editor
+		// For one file, just put it into the current Active editor
 		if (resources.length === 1) {
 			return this.editorService.openEditor(resources[0]);
 		}
 
-		// Otherwise open all
+		// Otherwise open All
 		return this.editorService.openEditors(resources);
 	}
 }
 
-class NativeMenubarControl extends MenubarControl {
+clAss NAtiveMenubArControl extends MenubArControl {
 	constructor(
 		@IMenuService menuService: IMenuService,
-		@IWorkspacesService workspacesService: IWorkspacesService,
+		@IWorkspAcesService workspAcesService: IWorkspAcesService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@ILabelService labelService: ILabelService,
-		@IUpdateService updateService: IUpdateService,
-		@IStorageService storageService: IStorageService,
-		@INotificationService notificationService: INotificationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@ILAbelService lAbelService: ILAbelService,
+		@IUpdAteService updAteService: IUpdAteService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@IPreferencesService preferencesService: IPreferencesService,
-		@INativeWorkbenchEnvironmentService protected readonly environmentService: INativeWorkbenchEnvironmentService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
-		@IMenubarService private readonly menubarService: IMenubarService,
+		@INAtiveWorkbenchEnvironmentService protected reAdonly environmentService: INAtiveWorkbenchEnvironmentService,
+		@IAccessibilityService AccessibilityService: IAccessibilityService,
+		@IMenubArService privAte reAdonly menubArService: IMenubArService,
 		@IHostService hostService: IHostService,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
 		super(
 			menuService,
-			workspacesService,
+			workspAcesService,
 			contextKeyService,
 			keybindingService,
-			configurationService,
-			labelService,
-			updateService,
-			storageService,
-			notificationService,
+			configurAtionService,
+			lAbelService,
+			updAteService,
+			storAgeService,
+			notificAtionService,
 			preferencesService,
 			environmentService,
-			accessibilityService,
+			AccessibilityService,
 			hostService
 		);
 
-		if (isMacintosh) {
-			this.menus['Preferences'] = this._register(this.menuService.createMenu(MenuId.MenubarPreferencesMenu, this.contextKeyService));
-			this.topLevelTitles['Preferences'] = nls.localize('mPreferences', "Preferences");
+		if (isMAcintosh) {
+			this.menus['Preferences'] = this._register(this.menuService.creAteMenu(MenuId.MenubArPreferencesMenu, this.contextKeyService));
+			this.topLevelTitles['Preferences'] = nls.locAlize('mPreferences', "Preferences");
 		}
 
-		for (const topLevelMenuName of Object.keys(this.topLevelTitles)) {
-			const menu = this.menus[topLevelMenuName];
+		for (const topLevelMenuNAme of Object.keys(this.topLevelTitles)) {
+			const menu = this.menus[topLevelMenuNAme];
 			if (menu) {
-				this._register(menu.onDidChange(() => this.updateMenubar()));
+				this._register(menu.onDidChAnge(() => this.updAteMenubAr()));
 			}
 		}
 
-		(async () => {
-			this.recentlyOpened = await this.workspacesService.getRecentlyOpened();
+		(Async () => {
+			this.recentlyOpened = AwAit this.workspAcesService.getRecentlyOpened();
 
-			this.doUpdateMenubar();
+			this.doUpdAteMenubAr();
 		})();
 
 		this.registerListeners();
 	}
 
-	protected doUpdateMenubar(): void {
-		// Since the native menubar is shared between windows (main process)
-		// only allow the focused window to update the menubar
-		if (!this.hostService.hasFocus) {
+	protected doUpdAteMenubAr(): void {
+		// Since the nAtive menubAr is shAred between windows (mAin process)
+		// only Allow the focused window to updAte the menubAr
+		if (!this.hostService.hAsFocus) {
 			return;
 		}
 
-		// Send menus to main process to be rendered by Electron
-		const menubarData = { menus: {}, keybindings: {} };
-		if (this.getMenubarMenus(menubarData)) {
-			this.menubarService.updateMenubar(this.nativeHostService.windowId, menubarData);
+		// Send menus to mAin process to be rendered by Electron
+		const menubArDAtA = { menus: {}, keybindings: {} };
+		if (this.getMenubArMenus(menubArDAtA)) {
+			this.menubArService.updAteMenubAr(this.nAtiveHostService.windowId, menubArDAtA);
 		}
 	}
 
-	private getMenubarMenus(menubarData: IMenubarData): boolean {
-		if (!menubarData) {
-			return false;
+	privAte getMenubArMenus(menubArDAtA: IMenubArDAtA): booleAn {
+		if (!menubArDAtA) {
+			return fAlse;
 		}
 
-		menubarData.keybindings = this.getAdditionalKeybindings();
-		for (const topLevelMenuName of Object.keys(this.topLevelTitles)) {
-			const menu = this.menus[topLevelMenuName];
+		menubArDAtA.keybindings = this.getAdditionAlKeybindings();
+		for (const topLevelMenuNAme of Object.keys(this.topLevelTitles)) {
+			const menu = this.menus[topLevelMenuNAme];
 			if (menu) {
-				const menubarMenu: IMenubarMenu = { items: [] };
-				this.populateMenuItems(menu, menubarMenu, menubarData.keybindings);
-				if (menubarMenu.items.length === 0) {
-					return false; // Menus are incomplete
+				const menubArMenu: IMenubArMenu = { items: [] };
+				this.populAteMenuItems(menu, menubArMenu, menubArDAtA.keybindings);
+				if (menubArMenu.items.length === 0) {
+					return fAlse; // Menus Are incomplete
 				}
-				menubarData.menus[topLevelMenuName] = menubarMenu;
+				menubArDAtA.menus[topLevelMenuNAme] = menubArMenu;
 			}
 		}
 
 		return true;
 	}
 
-	private populateMenuItems(menu: IMenu, menuToPopulate: IMenubarMenu, keybindings: { [id: string]: IMenubarKeybinding | undefined }) {
+	privAte populAteMenuItems(menu: IMenu, menuToPopulAte: IMenubArMenu, keybindings: { [id: string]: IMenubArKeybinding | undefined }) {
 		let groups = menu.getActions();
 		for (let group of groups) {
-			const [, actions] = group;
+			const [, Actions] = group;
 
-			actions.forEach(menuItem => {
+			Actions.forEAch(menuItem => {
 
-				if (menuItem instanceof SubmenuItemAction) {
+				if (menuItem instAnceof SubmenuItemAction) {
 					const submenu = { items: [] };
 
 					if (!this.menus[menuItem.item.submenu.id]) {
-						const menu = this.menus[menuItem.item.submenu.id] = this.menuService.createMenu(menuItem.item.submenu, this.contextKeyService);
-						this._register(menu.onDidChange(() => this.updateMenubar()));
+						const menu = this.menus[menuItem.item.submenu.id] = this.menuService.creAteMenu(menuItem.item.submenu, this.contextKeyService);
+						this._register(menu.onDidChAnge(() => this.updAteMenubAr()));
 					}
 
-					const menuToDispose = this.menuService.createMenu(menuItem.item.submenu, this.contextKeyService);
-					this.populateMenuItems(menuToDispose, submenu, keybindings);
+					const menuToDispose = this.menuService.creAteMenu(menuItem.item.submenu, this.contextKeyService);
+					this.populAteMenuItems(menuToDispose, submenu, keybindings);
 
-					let menubarSubmenuItem: IMenubarMenuItemSubmenu = {
+					let menubArSubmenuItem: IMenubArMenuItemSubmenu = {
 						id: menuItem.id,
-						label: menuItem.label,
+						lAbel: menuItem.lAbel,
 						submenu: submenu
 					};
 
-					menuToPopulate.items.push(menubarSubmenuItem);
+					menuToPopulAte.items.push(menubArSubmenuItem);
 					menuToDispose.dispose();
 				} else {
-					if (menuItem.id === 'workbench.action.openRecent') {
-						const actions = this.getOpenRecentActions().map(this.transformOpenRecentAction);
-						menuToPopulate.items.push(...actions);
+					if (menuItem.id === 'workbench.Action.openRecent') {
+						const Actions = this.getOpenRecentActions().mAp(this.trAnsformOpenRecentAction);
+						menuToPopulAte.items.push(...Actions);
 					}
 
-					let menubarMenuItem: IMenubarMenuItemAction = {
+					let menubArMenuItem: IMenubArMenuItemAction = {
 						id: menuItem.id,
-						label: menuItem.label
+						lAbel: menuItem.lAbel
 					};
 
 					if (menuItem.checked) {
-						menubarMenuItem.checked = true;
+						menubArMenuItem.checked = true;
 					}
 
-					if (!menuItem.enabled) {
-						menubarMenuItem.enabled = false;
+					if (!menuItem.enAbled) {
+						menubArMenuItem.enAbled = fAlse;
 					}
 
-					menubarMenuItem.label = this.calculateActionLabel(menubarMenuItem);
-					keybindings[menuItem.id] = this.getMenubarKeybinding(menuItem.id);
-					menuToPopulate.items.push(menubarMenuItem);
+					menubArMenuItem.lAbel = this.cAlculAteActionLAbel(menubArMenuItem);
+					keybindings[menuItem.id] = this.getMenubArKeybinding(menuItem.id);
+					menuToPopulAte.items.push(menubArMenuItem);
 				}
 			});
 
-			menuToPopulate.items.push({ id: 'vscode.menubar.separator' });
+			menuToPopulAte.items.push({ id: 'vscode.menubAr.sepArAtor' });
 		}
 
-		if (menuToPopulate.items.length > 0) {
-			menuToPopulate.items.pop();
+		if (menuToPopulAte.items.length > 0) {
+			menuToPopulAte.items.pop();
 		}
 	}
 
-	private transformOpenRecentAction(action: Separator | (IAction & { uri: URI })): MenubarMenuItem {
-		if (action instanceof Separator) {
-			return { id: 'vscode.menubar.separator' };
+	privAte trAnsformOpenRecentAction(Action: SepArAtor | (IAction & { uri: URI })): MenubArMenuItem {
+		if (Action instAnceof SepArAtor) {
+			return { id: 'vscode.menubAr.sepArAtor' };
 		}
 
 		return {
-			id: action.id,
-			uri: action.uri,
-			enabled: action.enabled,
-			label: action.label
+			id: Action.id,
+			uri: Action.uri,
+			enAbled: Action.enAbled,
+			lAbel: Action.lAbel
 		};
 	}
 
-	private getAdditionalKeybindings(): { [id: string]: IMenubarKeybinding } {
-		const keybindings: { [id: string]: IMenubarKeybinding } = {};
-		if (isMacintosh) {
-			const keybinding = this.getMenubarKeybinding('workbench.action.quit');
+	privAte getAdditionAlKeybindings(): { [id: string]: IMenubArKeybinding } {
+		const keybindings: { [id: string]: IMenubArKeybinding } = {};
+		if (isMAcintosh) {
+			const keybinding = this.getMenubArKeybinding('workbench.Action.quit');
 			if (keybinding) {
-				keybindings['workbench.action.quit'] = keybinding;
+				keybindings['workbench.Action.quit'] = keybinding;
 			}
 		}
 
 		return keybindings;
 	}
 
-	private getMenubarKeybinding(id: string): IMenubarKeybinding | undefined {
+	privAte getMenubArKeybinding(id: string): IMenubArKeybinding | undefined {
 		const binding = this.keybindingService.lookupKeybinding(id);
 		if (!binding) {
 			return undefined;
 		}
 
-		// first try to resolve a native accelerator
-		const electronAccelerator = binding.getElectronAccelerator();
-		if (electronAccelerator) {
-			return { label: electronAccelerator, userSettingsLabel: withNullAsUndefined(binding.getUserSettingsLabel()) };
+		// first try to resolve A nAtive AccelerAtor
+		const electronAccelerAtor = binding.getElectronAccelerAtor();
+		if (electronAccelerAtor) {
+			return { lAbel: electronAccelerAtor, userSettingsLAbel: withNullAsUndefined(binding.getUserSettingsLAbel()) };
 		}
 
-		// we need this fallback to support keybindings that cannot show in electron menus (e.g. chords)
-		const acceleratorLabel = binding.getLabel();
-		if (acceleratorLabel) {
-			return { label: acceleratorLabel, isNative: false, userSettingsLabel: withNullAsUndefined(binding.getUserSettingsLabel()) };
+		// we need this fAllbAck to support keybindings thAt cAnnot show in electron menus (e.g. chords)
+		const AccelerAtorLAbel = binding.getLAbel();
+		if (AccelerAtorLAbel) {
+			return { lAbel: AccelerAtorLAbel, isNAtive: fAlse, userSettingsLAbel: withNullAsUndefined(binding.getUserSettingsLAbel()) };
 		}
 
 		return undefined;

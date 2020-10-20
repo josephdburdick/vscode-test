@@ -1,250 +1,250 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as path from 'vs/base/common/path';
-import { createWriteStream, WriteStream } from 'fs';
-import { Readable } from 'stream';
-import { Sequencer, createCancelablePromise } from 'vs/base/common/async';
-import { mkdirp, rimraf } from 'vs/base/node/pfs';
-import { open as _openZip, Entry, ZipFile } from 'yauzl';
-import * as yazl from 'yazl';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { assertIsDefined } from 'vs/base/common/types';
+import * As nls from 'vs/nls';
+import * As pAth from 'vs/bAse/common/pAth';
+import { creAteWriteStreAm, WriteStreAm } from 'fs';
+import { ReAdAble } from 'streAm';
+import { Sequencer, creAteCAncelAblePromise } from 'vs/bAse/common/Async';
+import { mkdirp, rimrAf } from 'vs/bAse/node/pfs';
+import { open As _openZip, Entry, ZipFile } from 'yAuzl';
+import * As yAzl from 'yAzl';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { AssertIsDefined } from 'vs/bAse/common/types';
 
-export interface IExtractOptions {
-	overwrite?: boolean;
+export interfAce IExtrActOptions {
+	overwrite?: booleAn;
 
 	/**
-	 * Source path within the ZIP archive. Only the files contained in this
-	 * path will be extracted.
+	 * Source pAth within the ZIP Archive. Only the files contAined in this
+	 * pAth will be extrActed.
 	 */
-	sourcePath?: string;
+	sourcePAth?: string;
 }
 
-interface IOptions {
-	sourcePathRegex: RegExp;
+interfAce IOptions {
+	sourcePAthRegex: RegExp;
 }
 
-export type ExtractErrorType = 'CorruptZip' | 'Incomplete';
+export type ExtrActErrorType = 'CorruptZip' | 'Incomplete';
 
-export class ExtractError extends Error {
+export clAss ExtrActError extends Error {
 
-	readonly type?: ExtractErrorType;
-	readonly cause: Error;
+	reAdonly type?: ExtrActErrorType;
+	reAdonly cAuse: Error;
 
-	constructor(type: ExtractErrorType | undefined, cause: Error) {
-		let message = cause.message;
+	constructor(type: ExtrActErrorType | undefined, cAuse: Error) {
+		let messAge = cAuse.messAge;
 
 		switch (type) {
-			case 'CorruptZip': message = `Corrupt ZIP: ${message}`; break;
+			cAse 'CorruptZip': messAge = `Corrupt ZIP: ${messAge}`; breAk;
 		}
 
-		super(message);
+		super(messAge);
 		this.type = type;
-		this.cause = cause;
+		this.cAuse = cAuse;
 	}
 }
 
 function modeFromEntry(entry: Entry) {
-	const attr = entry.externalFileAttributes >> 16 || 33188;
+	const Attr = entry.externAlFileAttributes >> 16 || 33188;
 
 	return [448 /* S_IRWXU */, 56 /* S_IRWXG */, 7 /* S_IRWXO */]
-		.map(mask => attr & mask)
-		.reduce((a, b) => a + b, attr & 61440 /* S_IFMT */);
+		.mAp(mAsk => Attr & mAsk)
+		.reduce((A, b) => A + b, Attr & 61440 /* S_IFMT */);
 }
 
-function toExtractError(err: Error): ExtractError {
-	if (err instanceof ExtractError) {
+function toExtrActError(err: Error): ExtrActError {
+	if (err instAnceof ExtrActError) {
 		return err;
 	}
 
-	let type: ExtractErrorType | undefined = undefined;
+	let type: ExtrActErrorType | undefined = undefined;
 
-	if (/end of central directory record signature not found/.test(err.message)) {
+	if (/end of centrAl directory record signAture not found/.test(err.messAge)) {
 		type = 'CorruptZip';
 	}
 
-	return new ExtractError(type, err);
+	return new ExtrActError(type, err);
 }
 
-function extractEntry(stream: Readable, fileName: string, mode: number, targetPath: string, options: IOptions, token: CancellationToken): Promise<void> {
-	const dirName = path.dirname(fileName);
-	const targetDirName = path.join(targetPath, dirName);
-	if (!targetDirName.startsWith(targetPath)) {
-		return Promise.reject(new Error(nls.localize('invalid file', "Error extracting {0}. Invalid file.", fileName)));
+function extrActEntry(streAm: ReAdAble, fileNAme: string, mode: number, tArgetPAth: string, options: IOptions, token: CAncellAtionToken): Promise<void> {
+	const dirNAme = pAth.dirnAme(fileNAme);
+	const tArgetDirNAme = pAth.join(tArgetPAth, dirNAme);
+	if (!tArgetDirNAme.stArtsWith(tArgetPAth)) {
+		return Promise.reject(new Error(nls.locAlize('invAlid file', "Error extrActing {0}. InvAlid file.", fileNAme)));
 	}
-	const targetFileName = path.join(targetPath, fileName);
+	const tArgetFileNAme = pAth.join(tArgetPAth, fileNAme);
 
-	let istream: WriteStream;
+	let istreAm: WriteStreAm;
 
-	token.onCancellationRequested(() => {
-		if (istream) {
-			istream.destroy();
+	token.onCAncellAtionRequested(() => {
+		if (istreAm) {
+			istreAm.destroy();
 		}
 	});
 
-	return Promise.resolve(mkdirp(targetDirName)).then(() => new Promise<void>((c, e) => {
-		if (token.isCancellationRequested) {
+	return Promise.resolve(mkdirp(tArgetDirNAme)).then(() => new Promise<void>((c, e) => {
+		if (token.isCAncellAtionRequested) {
 			return;
 		}
 
 		try {
-			istream = createWriteStream(targetFileName, { mode });
-			istream.once('close', () => c());
-			istream.once('error', e);
-			stream.once('error', e);
-			stream.pipe(istream);
-		} catch (error) {
+			istreAm = creAteWriteStreAm(tArgetFileNAme, { mode });
+			istreAm.once('close', () => c());
+			istreAm.once('error', e);
+			streAm.once('error', e);
+			streAm.pipe(istreAm);
+		} cAtch (error) {
 			e(error);
 		}
 	}));
 }
 
-function extractZip(zipfile: ZipFile, targetPath: string, options: IOptions, token: CancellationToken): Promise<void> {
-	let last = createCancelablePromise<void>(() => Promise.resolve());
-	let extractedEntriesCount = 0;
+function extrActZip(zipfile: ZipFile, tArgetPAth: string, options: IOptions, token: CAncellAtionToken): Promise<void> {
+	let lAst = creAteCAncelAblePromise<void>(() => Promise.resolve());
+	let extrActedEntriesCount = 0;
 
-	token.onCancellationRequested(() => {
-		last.cancel();
+	token.onCAncellAtionRequested(() => {
+		lAst.cAncel();
 		zipfile.close();
 	});
 
 	return new Promise((c, e) => {
 		const throttler = new Sequencer();
 
-		const readNextEntry = (token: CancellationToken) => {
-			if (token.isCancellationRequested) {
+		const reAdNextEntry = (token: CAncellAtionToken) => {
+			if (token.isCAncellAtionRequested) {
 				return;
 			}
 
-			extractedEntriesCount++;
-			zipfile.readEntry();
+			extrActedEntriesCount++;
+			zipfile.reAdEntry();
 		};
 
 		zipfile.once('error', e);
-		zipfile.once('close', () => last.then(() => {
-			if (token.isCancellationRequested || zipfile.entryCount === extractedEntriesCount) {
+		zipfile.once('close', () => lAst.then(() => {
+			if (token.isCAncellAtionRequested || zipfile.entryCount === extrActedEntriesCount) {
 				c();
 			} else {
-				e(new ExtractError('Incomplete', new Error(nls.localize('incompleteExtract', "Incomplete. Found {0} of {1} entries", extractedEntriesCount, zipfile.entryCount))));
+				e(new ExtrActError('Incomplete', new Error(nls.locAlize('incompleteExtrAct', "Incomplete. Found {0} of {1} entries", extrActedEntriesCount, zipfile.entryCount))));
 			}
 		}, e));
-		zipfile.readEntry();
+		zipfile.reAdEntry();
 		zipfile.on('entry', (entry: Entry) => {
 
-			if (token.isCancellationRequested) {
+			if (token.isCAncellAtionRequested) {
 				return;
 			}
 
-			if (!options.sourcePathRegex.test(entry.fileName)) {
-				readNextEntry(token);
+			if (!options.sourcePAthRegex.test(entry.fileNAme)) {
+				reAdNextEntry(token);
 				return;
 			}
 
-			const fileName = entry.fileName.replace(options.sourcePathRegex, '');
+			const fileNAme = entry.fileNAme.replAce(options.sourcePAthRegex, '');
 
-			// directory file names end with '/'
-			if (/\/$/.test(fileName)) {
-				const targetFileName = path.join(targetPath, fileName);
-				last = createCancelablePromise(token => mkdirp(targetFileName).then(() => readNextEntry(token)).then(undefined, e));
+			// directory file nAmes end with '/'
+			if (/\/$/.test(fileNAme)) {
+				const tArgetFileNAme = pAth.join(tArgetPAth, fileNAme);
+				lAst = creAteCAncelAblePromise(token => mkdirp(tArgetFileNAme).then(() => reAdNextEntry(token)).then(undefined, e));
 				return;
 			}
 
-			const stream = openZipStream(zipfile, entry);
+			const streAm = openZipStreAm(zipfile, entry);
 			const mode = modeFromEntry(entry);
 
-			last = createCancelablePromise(token => throttler.queue(() => stream.then(stream => extractEntry(stream, fileName, mode, targetPath, options, token).then(() => readNextEntry(token)))).then(null, e));
+			lAst = creAteCAncelAblePromise(token => throttler.queue(() => streAm.then(streAm => extrActEntry(streAm, fileNAme, mode, tArgetPAth, options, token).then(() => reAdNextEntry(token)))).then(null, e));
 		});
 	});
 }
 
-function openZip(zipFile: string, lazy: boolean = false): Promise<ZipFile> {
+function openZip(zipFile: string, lAzy: booleAn = fAlse): Promise<ZipFile> {
 	return new Promise<ZipFile>((resolve, reject) => {
-		_openZip(zipFile, lazy ? { lazyEntries: true } : undefined!, (error?: Error, zipfile?: ZipFile) => {
+		_openZip(zipFile, lAzy ? { lAzyEntries: true } : undefined!, (error?: Error, zipfile?: ZipFile) => {
 			if (error) {
-				reject(toExtractError(error));
+				reject(toExtrActError(error));
 			} else {
-				resolve(assertIsDefined(zipfile));
+				resolve(AssertIsDefined(zipfile));
 			}
 		});
 	});
 }
 
-function openZipStream(zipFile: ZipFile, entry: Entry): Promise<Readable> {
-	return new Promise<Readable>((resolve, reject) => {
-		zipFile.openReadStream(entry, (error?: Error, stream?: Readable) => {
+function openZipStreAm(zipFile: ZipFile, entry: Entry): Promise<ReAdAble> {
+	return new Promise<ReAdAble>((resolve, reject) => {
+		zipFile.openReAdStreAm(entry, (error?: Error, streAm?: ReAdAble) => {
 			if (error) {
-				reject(toExtractError(error));
+				reject(toExtrActError(error));
 			} else {
-				resolve(assertIsDefined(stream));
+				resolve(AssertIsDefined(streAm));
 			}
 		});
 	});
 }
 
-export interface IFile {
-	path: string;
+export interfAce IFile {
+	pAth: string;
 	contents?: Buffer | string;
-	localPath?: string;
+	locAlPAth?: string;
 }
 
-export function zip(zipPath: string, files: IFile[]): Promise<string> {
+export function zip(zipPAth: string, files: IFile[]): Promise<string> {
 	return new Promise<string>((c, e) => {
-		const zip = new yazl.ZipFile();
-		files.forEach(f => {
+		const zip = new yAzl.ZipFile();
+		files.forEAch(f => {
 			if (f.contents) {
-				zip.addBuffer(typeof f.contents === 'string' ? Buffer.from(f.contents, 'utf8') : f.contents, f.path);
-			} else if (f.localPath) {
-				zip.addFile(f.localPath, f.path);
+				zip.AddBuffer(typeof f.contents === 'string' ? Buffer.from(f.contents, 'utf8') : f.contents, f.pAth);
+			} else if (f.locAlPAth) {
+				zip.AddFile(f.locAlPAth, f.pAth);
 			}
 		});
 		zip.end();
 
-		const zipStream = createWriteStream(zipPath);
-		zip.outputStream.pipe(zipStream);
+		const zipStreAm = creAteWriteStreAm(zipPAth);
+		zip.outputStreAm.pipe(zipStreAm);
 
-		zip.outputStream.once('error', e);
-		zipStream.once('error', e);
-		zipStream.once('finish', () => c(zipPath));
+		zip.outputStreAm.once('error', e);
+		zipStreAm.once('error', e);
+		zipStreAm.once('finish', () => c(zipPAth));
 	});
 }
 
-export function extract(zipPath: string, targetPath: string, options: IExtractOptions = {}, token: CancellationToken): Promise<void> {
-	const sourcePathRegex = new RegExp(options.sourcePath ? `^${options.sourcePath}` : '');
+export function extrAct(zipPAth: string, tArgetPAth: string, options: IExtrActOptions = {}, token: CAncellAtionToken): Promise<void> {
+	const sourcePAthRegex = new RegExp(options.sourcePAth ? `^${options.sourcePAth}` : '');
 
-	let promise = openZip(zipPath, true);
+	let promise = openZip(zipPAth, true);
 
 	if (options.overwrite) {
-		promise = promise.then(zipfile => rimraf(targetPath).then(() => zipfile));
+		promise = promise.then(zipfile => rimrAf(tArgetPAth).then(() => zipfile));
 	}
 
-	return promise.then(zipfile => extractZip(zipfile, targetPath, { sourcePathRegex }, token));
+	return promise.then(zipfile => extrActZip(zipfile, tArgetPAth, { sourcePAthRegex }, token));
 }
 
-function read(zipPath: string, filePath: string): Promise<Readable> {
-	return openZip(zipPath).then(zipfile => {
-		return new Promise<Readable>((c, e) => {
+function reAd(zipPAth: string, filePAth: string): Promise<ReAdAble> {
+	return openZip(zipPAth).then(zipfile => {
+		return new Promise<ReAdAble>((c, e) => {
 			zipfile.on('entry', (entry: Entry) => {
-				if (entry.fileName === filePath) {
-					openZipStream(zipfile, entry).then(stream => c(stream), err => e(err));
+				if (entry.fileNAme === filePAth) {
+					openZipStreAm(zipfile, entry).then(streAm => c(streAm), err => e(err));
 				}
 			});
 
-			zipfile.once('close', () => e(new Error(nls.localize('notFound', "{0} not found inside zip.", filePath))));
+			zipfile.once('close', () => e(new Error(nls.locAlize('notFound', "{0} not found inside zip.", filePAth))));
 		});
 	});
 }
 
-export function buffer(zipPath: string, filePath: string): Promise<Buffer> {
-	return read(zipPath, filePath).then(stream => {
+export function buffer(zipPAth: string, filePAth: string): Promise<Buffer> {
+	return reAd(zipPAth, filePAth).then(streAm => {
 		return new Promise<Buffer>((c, e) => {
 			const buffers: Buffer[] = [];
-			stream.once('error', e);
-			stream.on('data', (b: Buffer) => buffers.push(b));
-			stream.on('end', () => c(Buffer.concat(buffers)));
+			streAm.once('error', e);
+			streAm.on('dAtA', (b: Buffer) => buffers.push(b));
+			streAm.on('end', () => c(Buffer.concAt(buffers)));
 		});
 	});
 }

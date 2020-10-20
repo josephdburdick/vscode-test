@@ -1,202 +1,202 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { isNative } from 'vs/base/common/platform';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFileMatch, IPatternInfo, ISearchProgressItem, ISearchService } from 'vs/workbench/services/search/common/search';
-import { IWorkspaceContextService, WorkbenchState, IWorkspace, toWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ITextQueryBuilderOptions, QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { isNAtive } from 'vs/bAse/common/plAtform';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IFileMAtch, IPAtternInfo, ISeArchProgressItem, ISeArchService } from 'vs/workbench/services/seArch/common/seArch';
+import { IWorkspAceContextService, WorkbenchStAte, IWorkspAce, toWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ITextQueryBuilderOptions, QueryBuilder } from 'vs/workbench/contrib/seArch/common/queryBuilder';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
-import { ExtHostContext, ExtHostWorkspaceShape, IExtHostContext, MainContext, MainThreadWorkspaceShape, IWorkspaceData, ITextSearchComplete } from '../common/extHost.protocol';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { isUntitledWorkspace } from 'vs/platform/workspaces/common/workspaces';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { checkGlobFileExists } from 'vs/workbench/api/common/shared/workspaceContains';
+import { IWorkspAceEditingService } from 'vs/workbench/services/workspAces/common/workspAceEditing';
+import { ExtHostContext, ExtHostWorkspAceShApe, IExtHostContext, MAinContext, MAinThreAdWorkspAceShApe, IWorkspAceDAtA, ITextSeArchComplete } from '../common/extHost.protocol';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { isUntitledWorkspAce } from 'vs/plAtform/workspAces/common/workspAces';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { checkGlobFileExists } from 'vs/workbench/Api/common/shAred/workspAceContAins';
 
-@extHostNamedCustomer(MainContext.MainThreadWorkspace)
-export class MainThreadWorkspace implements MainThreadWorkspaceShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdWorkspAce)
+export clAss MAinThreAdWorkspAce implements MAinThreAdWorkspAceShApe {
 
-	private readonly _toDispose = new DisposableStore();
-	private readonly _activeCancelTokens: { [id: number]: CancellationTokenSource } = Object.create(null);
-	private readonly _proxy: ExtHostWorkspaceShape;
-	private readonly _queryBuilder = this._instantiationService.createInstance(QueryBuilder);
+	privAte reAdonly _toDispose = new DisposAbleStore();
+	privAte reAdonly _ActiveCAncelTokens: { [id: number]: CAncellAtionTokenSource } = Object.creAte(null);
+	privAte reAdonly _proxy: ExtHostWorkspAceShApe;
+	privAte reAdonly _queryBuilder = this._instAntiAtionService.creAteInstAnce(QueryBuilder);
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@ISearchService private readonly _searchService: ISearchService,
-		@IWorkspaceContextService private readonly _contextService: IWorkspaceContextService,
-		@IEditorService private readonly _editorService: IEditorService,
-		@IWorkspaceEditingService private readonly _workspaceEditingService: IWorkspaceEditingService,
-		@INotificationService private readonly _notificationService: INotificationService,
-		@IRequestService private readonly _requestService: IRequestService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@ILabelService private readonly _labelService: ILabelService,
-		@IEnvironmentService private readonly _environmentService: IEnvironmentService,
+		@ISeArchService privAte reAdonly _seArchService: ISeArchService,
+		@IWorkspAceContextService privAte reAdonly _contextService: IWorkspAceContextService,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
+		@IWorkspAceEditingService privAte reAdonly _workspAceEditingService: IWorkspAceEditingService,
+		@INotificAtionService privAte reAdonly _notificAtionService: INotificAtionService,
+		@IRequestService privAte reAdonly _requestService: IRequestService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@ILAbelService privAte reAdonly _lAbelService: ILAbelService,
+		@IEnvironmentService privAte reAdonly _environmentService: IEnvironmentService,
 		@IFileService fileService: IFileService
 	) {
-		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostWorkspace);
-		const workspace = this._contextService.getWorkspace();
-		// The workspace file is provided be a unknown file system provider. It might come
-		// from the extension host. So initialize now knowing that `rootPath` is undefined.
-		if (workspace.configuration && !isNative && !fileService.canHandleResource(workspace.configuration)) {
-			this._proxy.$initializeWorkspace(this.getWorkspaceData(workspace));
+		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostWorkspAce);
+		const workspAce = this._contextService.getWorkspAce();
+		// The workspAce file is provided be A unknown file system provider. It might come
+		// from the extension host. So initiAlize now knowing thAt `rootPAth` is undefined.
+		if (workspAce.configurAtion && !isNAtive && !fileService.cAnHAndleResource(workspAce.configurAtion)) {
+			this._proxy.$initiAlizeWorkspAce(this.getWorkspAceDAtA(workspAce));
 		} else {
-			this._contextService.getCompleteWorkspace().then(workspace => this._proxy.$initializeWorkspace(this.getWorkspaceData(workspace)));
+			this._contextService.getCompleteWorkspAce().then(workspAce => this._proxy.$initiAlizeWorkspAce(this.getWorkspAceDAtA(workspAce)));
 		}
-		this._contextService.onDidChangeWorkspaceFolders(this._onDidChangeWorkspace, this, this._toDispose);
-		this._contextService.onDidChangeWorkbenchState(this._onDidChangeWorkspace, this, this._toDispose);
+		this._contextService.onDidChAngeWorkspAceFolders(this._onDidChAngeWorkspAce, this, this._toDispose);
+		this._contextService.onDidChAngeWorkbenchStAte(this._onDidChAngeWorkspAce, this, this._toDispose);
 	}
 
 	dispose(): void {
 		this._toDispose.dispose();
 
-		for (let requestId in this._activeCancelTokens) {
-			const tokenSource = this._activeCancelTokens[requestId];
-			tokenSource.cancel();
+		for (let requestId in this._ActiveCAncelTokens) {
+			const tokenSource = this._ActiveCAncelTokens[requestId];
+			tokenSource.cAncel();
 		}
 	}
 
-	// --- workspace ---
+	// --- workspAce ---
 
-	$updateWorkspaceFolders(extensionName: string, index: number, deleteCount: number, foldersToAdd: { uri: UriComponents, name?: string }[]): Promise<void> {
-		const workspaceFoldersToAdd = foldersToAdd.map(f => ({ uri: URI.revive(f.uri), name: f.name }));
+	$updAteWorkspAceFolders(extensionNAme: string, index: number, deleteCount: number, foldersToAdd: { uri: UriComponents, nAme?: string }[]): Promise<void> {
+		const workspAceFoldersToAdd = foldersToAdd.mAp(f => ({ uri: URI.revive(f.uri), nAme: f.nAme }));
 
-		// Indicate in status message
-		this._notificationService.status(this.getStatusMessage(extensionName, workspaceFoldersToAdd.length, deleteCount), { hideAfter: 10 * 1000 /* 10s */ });
+		// IndicAte in stAtus messAge
+		this._notificAtionService.stAtus(this.getStAtusMessAge(extensionNAme, workspAceFoldersToAdd.length, deleteCount), { hideAfter: 10 * 1000 /* 10s */ });
 
-		return this._workspaceEditingService.updateFolders(index, deleteCount, workspaceFoldersToAdd, true);
+		return this._workspAceEditingService.updAteFolders(index, deleteCount, workspAceFoldersToAdd, true);
 	}
 
-	private getStatusMessage(extensionName: string, addCount: number, removeCount: number): string {
-		let message: string;
+	privAte getStAtusMessAge(extensionNAme: string, AddCount: number, removeCount: number): string {
+		let messAge: string;
 
-		const wantsToAdd = addCount > 0;
-		const wantsToDelete = removeCount > 0;
+		const wAntsToAdd = AddCount > 0;
+		const wAntsToDelete = removeCount > 0;
 
 		// Add Folders
-		if (wantsToAdd && !wantsToDelete) {
-			if (addCount === 1) {
-				message = localize('folderStatusMessageAddSingleFolder', "Extension '{0}' added 1 folder to the workspace", extensionName);
+		if (wAntsToAdd && !wAntsToDelete) {
+			if (AddCount === 1) {
+				messAge = locAlize('folderStAtusMessAgeAddSingleFolder', "Extension '{0}' Added 1 folder to the workspAce", extensionNAme);
 			} else {
-				message = localize('folderStatusMessageAddMultipleFolders', "Extension '{0}' added {1} folders to the workspace", extensionName, addCount);
+				messAge = locAlize('folderStAtusMessAgeAddMultipleFolders', "Extension '{0}' Added {1} folders to the workspAce", extensionNAme, AddCount);
 			}
 		}
 
 		// Delete Folders
-		else if (wantsToDelete && !wantsToAdd) {
+		else if (wAntsToDelete && !wAntsToAdd) {
 			if (removeCount === 1) {
-				message = localize('folderStatusMessageRemoveSingleFolder', "Extension '{0}' removed 1 folder from the workspace", extensionName);
+				messAge = locAlize('folderStAtusMessAgeRemoveSingleFolder', "Extension '{0}' removed 1 folder from the workspAce", extensionNAme);
 			} else {
-				message = localize('folderStatusMessageRemoveMultipleFolders', "Extension '{0}' removed {1} folders from the workspace", extensionName, removeCount);
+				messAge = locAlize('folderStAtusMessAgeRemoveMultipleFolders', "Extension '{0}' removed {1} folders from the workspAce", extensionNAme, removeCount);
 			}
 		}
 
-		// Change Folders
+		// ChAnge Folders
 		else {
-			message = localize('folderStatusChangeFolder', "Extension '{0}' changed folders of the workspace", extensionName);
+			messAge = locAlize('folderStAtusChAngeFolder', "Extension '{0}' chAnged folders of the workspAce", extensionNAme);
 		}
 
-		return message;
+		return messAge;
 	}
 
-	private _onDidChangeWorkspace(): void {
-		this._proxy.$acceptWorkspaceData(this.getWorkspaceData(this._contextService.getWorkspace()));
+	privAte _onDidChAngeWorkspAce(): void {
+		this._proxy.$AcceptWorkspAceDAtA(this.getWorkspAceDAtA(this._contextService.getWorkspAce()));
 	}
 
-	private getWorkspaceData(workspace: IWorkspace): IWorkspaceData | null {
-		if (this._contextService.getWorkbenchState() === WorkbenchState.EMPTY) {
+	privAte getWorkspAceDAtA(workspAce: IWorkspAce): IWorkspAceDAtA | null {
+		if (this._contextService.getWorkbenchStAte() === WorkbenchStAte.EMPTY) {
 			return null;
 		}
 		return {
-			configuration: workspace.configuration || undefined,
-			isUntitled: workspace.configuration ? isUntitledWorkspace(workspace.configuration, this._environmentService) : false,
-			folders: workspace.folders,
-			id: workspace.id,
-			name: this._labelService.getWorkspaceLabel(workspace)
+			configurAtion: workspAce.configurAtion || undefined,
+			isUntitled: workspAce.configurAtion ? isUntitledWorkspAce(workspAce.configurAtion, this._environmentService) : fAlse,
+			folders: workspAce.folders,
+			id: workspAce.id,
+			nAme: this._lAbelService.getWorkspAceLAbel(workspAce)
 		};
 	}
 
-	// --- search ---
+	// --- seArch ---
 
-	$startFileSearch(includePattern: string | null, _includeFolder: UriComponents | null, excludePatternOrDisregardExcludes: string | false | null, maxResults: number | null, token: CancellationToken): Promise<UriComponents[] | null> {
+	$stArtFileSeArch(includePAttern: string | null, _includeFolder: UriComponents | null, excludePAtternOrDisregArdExcludes: string | fAlse | null, mAxResults: number | null, token: CAncellAtionToken): Promise<UriComponents[] | null> {
 		const includeFolder = URI.revive(_includeFolder);
-		const workspace = this._contextService.getWorkspace();
-		if (!workspace.folders.length) {
+		const workspAce = this._contextService.getWorkspAce();
+		if (!workspAce.folders.length) {
 			return Promise.resolve(null);
 		}
 
 		const query = this._queryBuilder.file(
-			includeFolder ? [toWorkspaceFolder(includeFolder)] : workspace.folders,
+			includeFolder ? [toWorkspAceFolder(includeFolder)] : workspAce.folders,
 			{
-				maxResults: withNullAsUndefined(maxResults),
-				disregardExcludeSettings: (excludePatternOrDisregardExcludes === false) || undefined,
-				disregardSearchExcludeSettings: true,
-				disregardIgnoreFiles: true,
-				includePattern: withNullAsUndefined(includePattern),
-				excludePattern: typeof excludePatternOrDisregardExcludes === 'string' ? excludePatternOrDisregardExcludes : undefined,
-				_reason: 'startFileSearch'
+				mAxResults: withNullAsUndefined(mAxResults),
+				disregArdExcludeSettings: (excludePAtternOrDisregArdExcludes === fAlse) || undefined,
+				disregArdSeArchExcludeSettings: true,
+				disregArdIgnoreFiles: true,
+				includePAttern: withNullAsUndefined(includePAttern),
+				excludePAttern: typeof excludePAtternOrDisregArdExcludes === 'string' ? excludePAtternOrDisregArdExcludes : undefined,
+				_reAson: 'stArtFileSeArch'
 			});
 
-		return this._searchService.fileSearch(query, token).then(result => {
-			return result.results.map(m => m.resource);
+		return this._seArchService.fileSeArch(query, token).then(result => {
+			return result.results.mAp(m => m.resource);
 		}, err => {
-			if (!isPromiseCanceledError(err)) {
+			if (!isPromiseCAnceledError(err)) {
 				return Promise.reject(err);
 			}
 			return null;
 		});
 	}
 
-	$startTextSearch(pattern: IPatternInfo, _folder: UriComponents | null, options: ITextQueryBuilderOptions, requestId: number, token: CancellationToken): Promise<ITextSearchComplete | null> {
+	$stArtTextSeArch(pAttern: IPAtternInfo, _folder: UriComponents | null, options: ITextQueryBuilderOptions, requestId: number, token: CAncellAtionToken): Promise<ITextSeArchComplete | null> {
 		const folder = URI.revive(_folder);
-		const workspace = this._contextService.getWorkspace();
-		const folders = folder ? [folder] : workspace.folders.map(folder => folder.uri);
+		const workspAce = this._contextService.getWorkspAce();
+		const folders = folder ? [folder] : workspAce.folders.mAp(folder => folder.uri);
 
-		const query = this._queryBuilder.text(pattern, folders, options);
-		query._reason = 'startTextSearch';
+		const query = this._queryBuilder.text(pAttern, folders, options);
+		query._reAson = 'stArtTextSeArch';
 
-		const onProgress = (p: ISearchProgressItem) => {
-			if ((<IFileMatch>p).results) {
-				this._proxy.$handleTextSearchResult(<IFileMatch>p, requestId);
+		const onProgress = (p: ISeArchProgressItem) => {
+			if ((<IFileMAtch>p).results) {
+				this._proxy.$hAndleTextSeArchResult(<IFileMAtch>p, requestId);
 			}
 		};
 
-		const search = this._searchService.textSearch(query, token, onProgress).then(
+		const seArch = this._seArchService.textSeArch(query, token, onProgress).then(
 			result => {
 				return { limitHit: result.limitHit };
 			},
 			err => {
-				if (!isPromiseCanceledError(err)) {
+				if (!isPromiseCAnceledError(err)) {
 					return Promise.reject(err);
 				}
 
 				return null;
 			});
 
-		return search;
+		return seArch;
 	}
 
-	$checkExists(folders: readonly UriComponents[], includes: string[], token: CancellationToken): Promise<boolean> {
-		return this._instantiationService.invokeFunction((accessor) => checkGlobFileExists(accessor, folders, includes, token));
+	$checkExists(folders: reAdonly UriComponents[], includes: string[], token: CAncellAtionToken): Promise<booleAn> {
+		return this._instAntiAtionService.invokeFunction((Accessor) => checkGlobFileExists(Accessor, folders, includes, token));
 	}
 
-	// --- save & edit resources ---
+	// --- sAve & edit resources ---
 
-	$saveAll(includeUntitled?: boolean): Promise<boolean> {
-		return this._editorService.saveAll({ includeUntitled });
+	$sAveAll(includeUntitled?: booleAn): Promise<booleAn> {
+		return this._editorService.sAveAll({ includeUntitled });
 	}
 
 	$resolveProxy(url: string): Promise<string | undefined> {

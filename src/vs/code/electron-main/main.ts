@@ -1,507 +1,507 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/platform/update/common/update.config.contribution';
-import { app, dialog } from 'electron';
-import * as fs from 'fs';
-import { isWindows, IProcessEnvironment, isMacintosh } from 'vs/base/common/platform';
-import product from 'vs/platform/product/common/product';
-import { parseMainProcessArgv, addArg } from 'vs/platform/environment/node/argvHelper';
-import { createWaitMarkerFile } from 'vs/platform/environment/node/waitMarkerFile';
-import { mkdirp } from 'vs/base/node/pfs';
-import { LifecycleMainService, ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
-import { Server, serve, connect, XDG_RUNTIME_DIR } from 'vs/base/parts/ipc/node/ipc.net';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { ILaunchMainService } from 'vs/platform/launch/electron-main/launchMainService';
-import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { ILogService, ConsoleLogMainService, MultiplexLogService, getLogLevel } from 'vs/platform/log/common/log';
-import { StateService } from 'vs/platform/state/node/stateService';
-import { IStateService } from 'vs/platform/state/node/state';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ConfigurationService } from 'vs/platform/configuration/common/configurationService';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { RequestMainService } from 'vs/platform/request/electron-main/requestMainService';
-import { CodeApplication } from 'vs/code/electron-main/app';
-import { localize } from 'vs/nls';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
-import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { BufferLogService } from 'vs/platform/log/common/bufferLog';
-import { setUnexpectedErrorHandler } from 'vs/base/common/errors';
-import { IThemeMainService, ThemeMainService } from 'vs/platform/theme/electron-main/themeMainService';
-import { Client } from 'vs/base/parts/ipc/common/ipc.net';
-import { once } from 'vs/base/common/functional';
-import { ISignService } from 'vs/platform/sign/common/sign';
-import { SignService } from 'vs/platform/sign/node/signService';
-import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { Schemas } from 'vs/base/common/network';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IStorageKeysSyncRegistryService, StorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { ITunnelService } from 'vs/platform/remote/common/tunnel';
-import { TunnelService } from 'vs/platform/remote/node/tunnelService';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IPathWithLineAndColumn, isValidBasename, parseLineAndColumnAware, sanitizeFilePath } from 'vs/base/common/extpath';
-import { isNumber } from 'vs/base/common/types';
-import { rtrim, trim } from 'vs/base/common/strings';
-import { basename, resolve } from 'vs/base/common/path';
-import { coalesce, distinct } from 'vs/base/common/arrays';
-import { EnvironmentMainService, IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
+import 'vs/plAtform/updAte/common/updAte.config.contribution';
+import { App, diAlog } from 'electron';
+import * As fs from 'fs';
+import { isWindows, IProcessEnvironment, isMAcintosh } from 'vs/bAse/common/plAtform';
+import product from 'vs/plAtform/product/common/product';
+import { pArseMAinProcessArgv, AddArg } from 'vs/plAtform/environment/node/ArgvHelper';
+import { creAteWAitMArkerFile } from 'vs/plAtform/environment/node/wAitMArkerFile';
+import { mkdirp } from 'vs/bAse/node/pfs';
+import { LifecycleMAinService, ILifecycleMAinService } from 'vs/plAtform/lifecycle/electron-mAin/lifecycleMAinService';
+import { Server, serve, connect, XDG_RUNTIME_DIR } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { ILAunchMAinService } from 'vs/plAtform/lAunch/electron-mAin/lAunchMAinService';
+import { ServicesAccessor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { ILogService, ConsoleLogMAinService, MultiplexLogService, getLogLevel } from 'vs/plAtform/log/common/log';
+import { StAteService } from 'vs/plAtform/stAte/node/stAteService';
+import { IStAteService } from 'vs/plAtform/stAte/node/stAte';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtionService';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { RequestMAinService } from 'vs/plAtform/request/electron-mAin/requestMAinService';
+import { CodeApplicAtion } from 'vs/code/electron-mAin/App';
+import { locAlize } from 'vs/nls';
+import { mnemonicButtonLAbel } from 'vs/bAse/common/lAbels';
+import { SpdLogService } from 'vs/plAtform/log/node/spdlogService';
+import { BufferLogService } from 'vs/plAtform/log/common/bufferLog';
+import { setUnexpectedErrorHAndler } from 'vs/bAse/common/errors';
+import { IThemeMAinService, ThemeMAinService } from 'vs/plAtform/theme/electron-mAin/themeMAinService';
+import { Client } from 'vs/bAse/pArts/ipc/common/ipc.net';
+import { once } from 'vs/bAse/common/functionAl';
+import { ISignService } from 'vs/plAtform/sign/common/sign';
+import { SignService } from 'vs/plAtform/sign/node/signService';
+import { IDiAgnosticsService } from 'vs/plAtform/diAgnostics/node/diAgnosticsService';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { DiskFileSystemProvider } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IStorAgeKeysSyncRegistryService, StorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { ITunnelService } from 'vs/plAtform/remote/common/tunnel';
+import { TunnelService } from 'vs/plAtform/remote/node/tunnelService';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IPAthWithLineAndColumn, isVAlidBAsenAme, pArseLineAndColumnAwAre, sAnitizeFilePAth } from 'vs/bAse/common/extpAth';
+import { isNumber } from 'vs/bAse/common/types';
+import { rtrim, trim } from 'vs/bAse/common/strings';
+import { bAsenAme, resolve } from 'vs/bAse/common/pAth';
+import { coAlesce, distinct } from 'vs/bAse/common/ArrAys';
+import { EnvironmentMAinService, IEnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
 
-class ExpectedError extends Error {
-	readonly isExpected = true;
+clAss ExpectedError extends Error {
+	reAdonly isExpected = true;
 }
 
-class CodeMain {
+clAss CodeMAin {
 
-	main(): void {
+	mAin(): void {
 
-		// Set the error handler early enough so that we are not getting the
-		// default electron error dialog popping up
-		setUnexpectedErrorHandler(err => console.error(err));
+		// Set the error hAndler eArly enough so thAt we Are not getting the
+		// defAult electron error diAlog popping up
+		setUnexpectedErrorHAndler(err => console.error(err));
 
-		// Parse arguments
-		let args: NativeParsedArgs;
+		// PArse Arguments
+		let Args: NAtivePArsedArgs;
 		try {
-			args = parseMainProcessArgv(process.argv);
-			args = this.validatePaths(args);
-		} catch (err) {
-			console.error(err.message);
-			app.exit(1);
+			Args = pArseMAinProcessArgv(process.Argv);
+			Args = this.vAlidAtePAths(Args);
+		} cAtch (err) {
+			console.error(err.messAge);
+			App.exit(1);
 
 			return;
 		}
 
-		// If we are started with --wait create a random temporary file
-		// and pass it over to the starting instance. We can use this file
-		// to wait for it to be deleted to monitor that the edited file
-		// is closed and then exit the waiting process.
+		// If we Are stArted with --wAit creAte A rAndom temporAry file
+		// And pAss it over to the stArting instAnce. We cAn use this file
+		// to wAit for it to be deleted to monitor thAt the edited file
+		// is closed And then exit the wAiting process.
 		//
-		// Note: we are not doing this if the wait marker has been already
-		// added as argument. This can happen if Code was started from CLI.
-		if (args.wait && !args.waitMarkerFilePath) {
-			const waitMarkerFilePath = createWaitMarkerFile(args.verbose);
-			if (waitMarkerFilePath) {
-				addArg(process.argv, '--waitMarkerFilePath', waitMarkerFilePath);
-				args.waitMarkerFilePath = waitMarkerFilePath;
+		// Note: we Are not doing this if the wAit mArker hAs been AlreAdy
+		// Added As Argument. This cAn hAppen if Code wAs stArted from CLI.
+		if (Args.wAit && !Args.wAitMArkerFilePAth) {
+			const wAitMArkerFilePAth = creAteWAitMArkerFile(Args.verbose);
+			if (wAitMArkerFilePAth) {
+				AddArg(process.Argv, '--wAitMArkerFilePAth', wAitMArkerFilePAth);
+				Args.wAitMArkerFilePAth = wAitMArkerFilePAth;
 			}
 		}
 
-		// Launch
-		this.startup(args);
+		// LAunch
+		this.stArtup(Args);
 	}
 
-	private async startup(args: NativeParsedArgs): Promise<void> {
+	privAte Async stArtup(Args: NAtivePArsedArgs): Promise<void> {
 
-		// We need to buffer the spdlog logs until we are sure
-		// we are the only instance running, otherwise we'll have concurrent
-		// log file access on Windows (https://github.com/microsoft/vscode/issues/41218)
+		// We need to buffer the spdlog logs until we Are sure
+		// we Are the only instAnce running, otherwise we'll hAve concurrent
+		// log file Access on Windows (https://github.com/microsoft/vscode/issues/41218)
 		const bufferLogService = new BufferLogService();
 
-		const [instantiationService, instanceEnvironment, environmentService] = this.createServices(args, bufferLogService);
+		const [instAntiAtionService, instAnceEnvironment, environmentService] = this.creAteServices(Args, bufferLogService);
 		try {
 
 			// Init services
-			await instantiationService.invokeFunction(async accessor => {
-				const configurationService = accessor.get(IConfigurationService);
-				const stateService = accessor.get(IStateService);
+			AwAit instAntiAtionService.invokeFunction(Async Accessor => {
+				const configurAtionService = Accessor.get(IConfigurAtionService);
+				const stAteService = Accessor.get(IStAteService);
 
 				try {
-					await this.initServices(environmentService, configurationService as ConfigurationService, stateService as StateService);
-				} catch (error) {
+					AwAit this.initServices(environmentService, configurAtionService As ConfigurAtionService, stAteService As StAteService);
+				} cAtch (error) {
 
-					// Show a dialog for errors that can be resolved by the user
-					this.handleStartupDataDirError(environmentService, error);
+					// Show A diAlog for errors thAt cAn be resolved by the user
+					this.hAndleStArtupDAtADirError(environmentService, error);
 
 					throw error;
 				}
 			});
 
-			// Startup
-			await instantiationService.invokeFunction(async accessor => {
-				const logService = accessor.get(ILogService);
-				const lifecycleMainService = accessor.get(ILifecycleMainService);
-				const fileService = accessor.get(IFileService);
-				const configurationService = accessor.get(IConfigurationService);
+			// StArtup
+			AwAit instAntiAtionService.invokeFunction(Async Accessor => {
+				const logService = Accessor.get(ILogService);
+				const lifecycleMAinService = Accessor.get(ILifecycleMAinService);
+				const fileService = Accessor.get(IFileService);
+				const configurAtionService = Accessor.get(IConfigurAtionService);
 
-				const mainIpcServer = await this.doStartup(args, logService, environmentService, lifecycleMainService, instantiationService, true);
+				const mAinIpcServer = AwAit this.doStArtup(Args, logService, environmentService, lifecycleMAinService, instAntiAtionService, true);
 
-				bufferLogService.logger = new SpdLogService('main', environmentService.logsPath, bufferLogService.getLevel());
-				once(lifecycleMainService.onWillShutdown)(() => {
+				bufferLogService.logger = new SpdLogService('mAin', environmentService.logsPAth, bufferLogService.getLevel());
+				once(lifecycleMAinService.onWillShutdown)(() => {
 					fileService.dispose();
-					(configurationService as ConfigurationService).dispose();
+					(configurAtionService As ConfigurAtionService).dispose();
 				});
 
-				return instantiationService.createInstance(CodeApplication, mainIpcServer, instanceEnvironment).startup();
+				return instAntiAtionService.creAteInstAnce(CodeApplicAtion, mAinIpcServer, instAnceEnvironment).stArtup();
 			});
-		} catch (error) {
-			instantiationService.invokeFunction(this.quit, error);
+		} cAtch (error) {
+			instAntiAtionService.invokeFunction(this.quit, error);
 		}
 	}
 
-	private createServices(args: NativeParsedArgs, bufferLogService: BufferLogService): [IInstantiationService, IProcessEnvironment, IEnvironmentMainService] {
+	privAte creAteServices(Args: NAtivePArsedArgs, bufferLogService: BufferLogService): [IInstAntiAtionService, IProcessEnvironment, IEnvironmentMAinService] {
 		const services = new ServiceCollection();
 
-		const environmentService = new EnvironmentMainService(args);
-		const instanceEnvironment = this.patchEnvironment(environmentService); // Patch `process.env` with the instance's environment
+		const environmentService = new EnvironmentMAinService(Args);
+		const instAnceEnvironment = this.pAtchEnvironment(environmentService); // PAtch `process.env` with the instAnce's environment
 		services.set(IEnvironmentService, environmentService);
-		services.set(IEnvironmentMainService, environmentService);
+		services.set(IEnvironmentMAinService, environmentService);
 
-		const logService = new MultiplexLogService([new ConsoleLogMainService(getLogLevel(environmentService)), bufferLogService]);
+		const logService = new MultiplexLogService([new ConsoleLogMAinService(getLogLevel(environmentService)), bufferLogService]);
 		process.once('exit', () => logService.dispose());
 		services.set(ILogService, logService);
 
 		const fileService = new FileService(logService);
 		services.set(IFileService, fileService);
 		const diskFileSystemProvider = new DiskFileSystemProvider(logService);
-		fileService.registerProvider(Schemas.file, diskFileSystemProvider);
+		fileService.registerProvider(SchemAs.file, diskFileSystemProvider);
 
-		services.set(IConfigurationService, new ConfigurationService(environmentService.settingsResource, fileService));
-		services.set(ILifecycleMainService, new SyncDescriptor(LifecycleMainService));
-		services.set(IStateService, new SyncDescriptor(StateService));
-		services.set(IRequestService, new SyncDescriptor(RequestMainService));
-		services.set(IThemeMainService, new SyncDescriptor(ThemeMainService));
+		services.set(IConfigurAtionService, new ConfigurAtionService(environmentService.settingsResource, fileService));
+		services.set(ILifecycleMAinService, new SyncDescriptor(LifecycleMAinService));
+		services.set(IStAteService, new SyncDescriptor(StAteService));
+		services.set(IRequestService, new SyncDescriptor(RequestMAinService));
+		services.set(IThemeMAinService, new SyncDescriptor(ThemeMAinService));
 		services.set(ISignService, new SyncDescriptor(SignService));
-		services.set(IStorageKeysSyncRegistryService, new SyncDescriptor(StorageKeysSyncRegistryService));
-		services.set(IProductService, { _serviceBrand: undefined, ...product });
+		services.set(IStorAgeKeysSyncRegistryService, new SyncDescriptor(StorAgeKeysSyncRegistryService));
+		services.set(IProductService, { _serviceBrAnd: undefined, ...product });
 		services.set(ITunnelService, new SyncDescriptor(TunnelService));
 
-		return [new InstantiationService(services, true), instanceEnvironment, environmentService];
+		return [new InstAntiAtionService(services, true), instAnceEnvironment, environmentService];
 	}
 
-	private initServices(environmentService: IEnvironmentMainService, configurationService: ConfigurationService, stateService: StateService): Promise<unknown> {
+	privAte initServices(environmentService: IEnvironmentMAinService, configurAtionService: ConfigurAtionService, stAteService: StAteService): Promise<unknown> {
 
-		// Environment service (paths)
-		const environmentServiceInitialization = Promise.all<void | undefined>([
-			environmentService.extensionsPath,
-			environmentService.nodeCachedDataDir,
-			environmentService.logsPath,
-			environmentService.globalStorageHome.fsPath,
-			environmentService.workspaceStorageHome.fsPath,
-			environmentService.backupHome
-		].map((path): undefined | Promise<void> => path ? mkdirp(path) : undefined));
+		// Environment service (pAths)
+		const environmentServiceInitiAlizAtion = Promise.All<void | undefined>([
+			environmentService.extensionsPAth,
+			environmentService.nodeCAchedDAtADir,
+			environmentService.logsPAth,
+			environmentService.globAlStorAgeHome.fsPAth,
+			environmentService.workspAceStorAgeHome.fsPAth,
+			environmentService.bAckupHome
+		].mAp((pAth): undefined | Promise<void> => pAth ? mkdirp(pAth) : undefined));
 
-		// Configuration service
-		const configurationServiceInitialization = configurationService.initialize();
+		// ConfigurAtion service
+		const configurAtionServiceInitiAlizAtion = configurAtionService.initiAlize();
 
-		// State service
-		const stateServiceInitialization = stateService.init();
+		// StAte service
+		const stAteServiceInitiAlizAtion = stAteService.init();
 
-		return Promise.all([environmentServiceInitialization, configurationServiceInitialization, stateServiceInitialization]);
+		return Promise.All([environmentServiceInitiAlizAtion, configurAtionServiceInitiAlizAtion, stAteServiceInitiAlizAtion]);
 	}
 
-	private patchEnvironment(environmentService: IEnvironmentMainService): IProcessEnvironment {
-		const instanceEnvironment: IProcessEnvironment = {
-			VSCODE_IPC_HOOK: environmentService.mainIPCHandle
+	privAte pAtchEnvironment(environmentService: IEnvironmentMAinService): IProcessEnvironment {
+		const instAnceEnvironment: IProcessEnvironment = {
+			VSCODE_IPC_HOOK: environmentService.mAinIPCHAndle
 		};
 
-		['VSCODE_NLS_CONFIG', 'VSCODE_LOGS', 'VSCODE_PORTABLE'].forEach(key => {
-			const value = process.env[key];
-			if (typeof value === 'string') {
-				instanceEnvironment[key] = value;
+		['VSCODE_NLS_CONFIG', 'VSCODE_LOGS', 'VSCODE_PORTABLE'].forEAch(key => {
+			const vAlue = process.env[key];
+			if (typeof vAlue === 'string') {
+				instAnceEnvironment[key] = vAlue;
 			}
 		});
 
-		Object.assign(process.env, instanceEnvironment);
+		Object.Assign(process.env, instAnceEnvironment);
 
-		return instanceEnvironment;
+		return instAnceEnvironment;
 	}
 
-	private async doStartup(args: NativeParsedArgs, logService: ILogService, environmentService: IEnvironmentMainService, lifecycleMainService: ILifecycleMainService, instantiationService: IInstantiationService, retry: boolean): Promise<Server> {
+	privAte Async doStArtup(Args: NAtivePArsedArgs, logService: ILogService, environmentService: IEnvironmentMAinService, lifecycleMAinService: ILifecycleMAinService, instAntiAtionService: IInstAntiAtionService, retry: booleAn): Promise<Server> {
 
-		// Try to setup a server for running. If that succeeds it means
-		// we are the first instance to startup. Otherwise it is likely
-		// that another instance is already running.
+		// Try to setup A server for running. If thAt succeeds it meAns
+		// we Are the first instAnce to stArtup. Otherwise it is likely
+		// thAt Another instAnce is AlreAdy running.
 		let server: Server;
 		try {
-			server = await serve(environmentService.mainIPCHandle);
-			once(lifecycleMainService.onWillShutdown)(() => server.dispose());
-		} catch (error) {
+			server = AwAit serve(environmentService.mAinIPCHAndle);
+			once(lifecycleMAinService.onWillShutdown)(() => server.dispose());
+		} cAtch (error) {
 
-			// Handle unexpected errors (the only expected error is EADDRINUSE that
-			// indicates a second instance of Code is running)
+			// HAndle unexpected errors (the only expected error is EADDRINUSE thAt
+			// indicAtes A second instAnce of Code is running)
 			if (error.code !== 'EADDRINUSE') {
 
-				// Show a dialog for errors that can be resolved by the user
-				this.handleStartupDataDirError(environmentService, error);
+				// Show A diAlog for errors thAt cAn be resolved by the user
+				this.hAndleStArtupDAtADirError(environmentService, error);
 
 				// Any other runtime error is just printed to the console
 				throw error;
 			}
 
-			// there's a running instance, let's connect to it
+			// there's A running instAnce, let's connect to it
 			let client: Client<string>;
 			try {
-				client = await connect(environmentService.mainIPCHandle, 'main');
-			} catch (error) {
+				client = AwAit connect(environmentService.mAinIPCHAndle, 'mAin');
+			} cAtch (error) {
 
-				// Handle unexpected connection errors by showing a dialog to the user
+				// HAndle unexpected connection errors by showing A diAlog to the user
 				if (!retry || isWindows || error.code !== 'ECONNREFUSED') {
 					if (error.code === 'EPERM') {
-						this.showStartupWarningDialog(
-							localize('secondInstanceAdmin', "A second instance of {0} is already running as administrator.", product.nameShort),
-							localize('secondInstanceAdminDetail', "Please close the other instance and try again.")
+						this.showStArtupWArningDiAlog(
+							locAlize('secondInstAnceAdmin', "A second instAnce of {0} is AlreAdy running As AdministrAtor.", product.nAmeShort),
+							locAlize('secondInstAnceAdminDetAil', "PleAse close the other instAnce And try AgAin.")
 						);
 					}
 
 					throw error;
 				}
 
-				// it happens on Linux and OS X that the pipe is left behind
-				// let's delete it, since we can't connect to it and then
+				// it hAppens on Linux And OS X thAt the pipe is left behind
+				// let's delete it, since we cAn't connect to it And then
 				// retry the whole thing
 				try {
-					fs.unlinkSync(environmentService.mainIPCHandle);
-				} catch (error) {
-					logService.warn('Could not delete obsolete instance handle', error);
+					fs.unlinkSync(environmentService.mAinIPCHAndle);
+				} cAtch (error) {
+					logService.wArn('Could not delete obsolete instAnce hAndle', error);
 
 					throw error;
 				}
 
-				return this.doStartup(args, logService, environmentService, lifecycleMainService, instantiationService, false);
+				return this.doStArtup(Args, logService, environmentService, lifecycleMAinService, instAntiAtionService, fAlse);
 			}
 
-			// Tests from CLI require to be the only instance currently
-			if (environmentService.extensionTestsLocationURI && !environmentService.debugExtensionHost.break) {
-				const msg = 'Running extension tests from the command line is currently only supported if no other instance of Code is running.';
+			// Tests from CLI require to be the only instAnce currently
+			if (environmentService.extensionTestsLocAtionURI && !environmentService.debugExtensionHost.breAk) {
+				const msg = 'Running extension tests from the commAnd line is currently only supported if no other instAnce of Code is running.';
 				logService.error(msg);
 				client.dispose();
 
 				throw new Error(msg);
 			}
 
-			// Show a warning dialog after some timeout if it takes long to talk to the other instance
-			// Skip this if we are running with --wait where it is expected that we wait for a while.
-			// Also skip when gathering diagnostics (--status) which can take a longer time.
-			let startupWarningDialogHandle: NodeJS.Timeout | undefined = undefined;
-			if (!args.wait && !args.status) {
-				startupWarningDialogHandle = setTimeout(() => {
-					this.showStartupWarningDialog(
-						localize('secondInstanceNoResponse', "Another instance of {0} is running but not responding", product.nameShort),
-						localize('secondInstanceNoResponseDetail', "Please close all other instances and try again.")
+			// Show A wArning diAlog After some timeout if it tAkes long to tAlk to the other instAnce
+			// Skip this if we Are running with --wAit where it is expected thAt we wAit for A while.
+			// Also skip when gAthering diAgnostics (--stAtus) which cAn tAke A longer time.
+			let stArtupWArningDiAlogHAndle: NodeJS.Timeout | undefined = undefined;
+			if (!Args.wAit && !Args.stAtus) {
+				stArtupWArningDiAlogHAndle = setTimeout(() => {
+					this.showStArtupWArningDiAlog(
+						locAlize('secondInstAnceNoResponse', "Another instAnce of {0} is running but not responding", product.nAmeShort),
+						locAlize('secondInstAnceNoResponseDetAil', "PleAse close All other instAnces And try AgAin.")
 					);
 				}, 10000);
 			}
 
-			const launchService = createChannelSender<ILaunchMainService>(client.getChannel('launch'), { disableMarshalling: true });
+			const lAunchService = creAteChAnnelSender<ILAunchMAinService>(client.getChAnnel('lAunch'), { disAbleMArshAlling: true });
 
 			// Process Info
-			if (args.status) {
-				return instantiationService.invokeFunction(async () => {
+			if (Args.stAtus) {
+				return instAntiAtionService.invokeFunction(Async () => {
 
-					// Create a diagnostic service connected to the existing shared process
-					const sharedProcessClient = await connect(environmentService.sharedIPCHandle, 'main');
-					const diagnosticsChannel = sharedProcessClient.getChannel('diagnostics');
-					const diagnosticsService = createChannelSender<IDiagnosticsService>(diagnosticsChannel);
-					const mainProcessInfo = await launchService.getMainProcessInfo();
-					const remoteDiagnostics = await launchService.getRemoteDiagnostics({ includeProcesses: true, includeWorkspaceMetadata: true });
-					const diagnostics = await diagnosticsService.getDiagnostics(mainProcessInfo, remoteDiagnostics);
-					console.log(diagnostics);
+					// CreAte A diAgnostic service connected to the existing shAred process
+					const shAredProcessClient = AwAit connect(environmentService.shAredIPCHAndle, 'mAin');
+					const diAgnosticsChAnnel = shAredProcessClient.getChAnnel('diAgnostics');
+					const diAgnosticsService = creAteChAnnelSender<IDiAgnosticsService>(diAgnosticsChAnnel);
+					const mAinProcessInfo = AwAit lAunchService.getMAinProcessInfo();
+					const remoteDiAgnostics = AwAit lAunchService.getRemoteDiAgnostics({ includeProcesses: true, includeWorkspAceMetAdAtA: true });
+					const diAgnostics = AwAit diAgnosticsService.getDiAgnostics(mAinProcessInfo, remoteDiAgnostics);
+					console.log(diAgnostics);
 
 					throw new ExpectedError();
 				});
 			}
 
-			// Windows: allow to set foreground
+			// Windows: Allow to set foreground
 			if (isWindows) {
-				await this.windowsAllowSetForegroundWindow(launchService, logService);
+				AwAit this.windowsAllowSetForegroundWindow(lAunchService, logService);
 			}
 
 			// Send environment over...
-			logService.trace('Sending env to running instance...');
-			await launchService.start(args, process.env as IProcessEnvironment);
+			logService.trAce('Sending env to running instAnce...');
+			AwAit lAunchService.stArt(Args, process.env As IProcessEnvironment);
 
-			// Cleanup
+			// CleAnup
 			client.dispose();
 
-			// Now that we started, make sure the warning dialog is prevented
-			if (startupWarningDialogHandle) {
-				clearTimeout(startupWarningDialogHandle);
+			// Now thAt we stArted, mAke sure the wArning diAlog is prevented
+			if (stArtupWArningDiAlogHAndle) {
+				cleArTimeout(stArtupWArningDiAlogHAndle);
 			}
 
-			throw new ExpectedError('Sent env to running instance. Terminating...');
+			throw new ExpectedError('Sent env to running instAnce. TerminAting...');
 		}
 
-		// Print --status usage info
-		if (args.status) {
-			logService.warn('Warning: The --status argument can only be used if Code is already running. Please run it again after Code has started.');
+		// Print --stAtus usAge info
+		if (Args.stAtus) {
+			logService.wArn('WArning: The --stAtus Argument cAn only be used if Code is AlreAdy running. PleAse run it AgAin After Code hAs stArted.');
 
-			throw new ExpectedError('Terminating...');
+			throw new ExpectedError('TerminAting...');
 		}
 
-		// Set the VSCODE_PID variable here when we are sure we are the first
-		// instance to startup. Otherwise we would wrongly overwrite the PID
+		// Set the VSCODE_PID vAriAble here when we Are sure we Are the first
+		// instAnce to stArtup. Otherwise we would wrongly overwrite the PID
 		process.env['VSCODE_PID'] = String(process.pid);
 
 		return server;
 	}
 
-	private handleStartupDataDirError(environmentService: IEnvironmentMainService, error: NodeJS.ErrnoException): void {
+	privAte hAndleStArtupDAtADirError(environmentService: IEnvironmentMAinService, error: NodeJS.ErrnoException): void {
 		if (error.code === 'EACCES' || error.code === 'EPERM') {
-			const directories = [environmentService.userDataPath];
+			const directories = [environmentService.userDAtAPAth];
 
-			if (environmentService.extensionsPath) {
-				directories.push(environmentService.extensionsPath);
+			if (environmentService.extensionsPAth) {
+				directories.push(environmentService.extensionsPAth);
 			}
 
 			if (XDG_RUNTIME_DIR) {
 				directories.push(XDG_RUNTIME_DIR);
 			}
 
-			this.showStartupWarningDialog(
-				localize('startupDataDirError', "Unable to write program user data."),
-				localize('startupUserDataAndExtensionsDirErrorDetail', "Please make sure the following directories are writeable:\n\n{0}", directories.join('\n'))
+			this.showStArtupWArningDiAlog(
+				locAlize('stArtupDAtADirError', "UnAble to write progrAm user dAtA."),
+				locAlize('stArtupUserDAtAAndExtensionsDirErrorDetAil', "PleAse mAke sure the following directories Are writeAble:\n\n{0}", directories.join('\n'))
 			);
 		}
 	}
 
-	private showStartupWarningDialog(message: string, detail: string): void {
-		// use sync variant here because we likely exit after this method
-		// due to startup issues and otherwise the dialog seems to disappear
+	privAte showStArtupWArningDiAlog(messAge: string, detAil: string): void {
+		// use sync vAriAnt here becAuse we likely exit After this method
+		// due to stArtup issues And otherwise the diAlog seems to disAppeAr
 		// https://github.com/microsoft/vscode/issues/104493
-		dialog.showMessageBoxSync({
-			title: product.nameLong,
-			type: 'warning',
-			buttons: [mnemonicButtonLabel(localize({ key: 'close', comment: ['&& denotes a mnemonic'] }, "&&Close"))],
-			message,
-			detail,
+		diAlog.showMessAgeBoxSync({
+			title: product.nAmeLong,
+			type: 'wArning',
+			buttons: [mnemonicButtonLAbel(locAlize({ key: 'close', comment: ['&& denotes A mnemonic'] }, "&&Close"))],
+			messAge,
+			detAil,
 			noLink: true
 		});
 	}
 
-	private async windowsAllowSetForegroundWindow(launchService: ILaunchMainService, logService: ILogService): Promise<void> {
+	privAte Async windowsAllowSetForegroundWindow(lAunchService: ILAunchMAinService, logService: ILogService): Promise<void> {
 		if (isWindows) {
-			const processId = await launchService.getMainProcessId();
+			const processId = AwAit lAunchService.getMAinProcessId();
 
-			logService.trace('Sending some foreground love to the running instance:', processId);
+			logService.trAce('Sending some foreground love to the running instAnce:', processId);
 
 			try {
-				(await import('windows-foreground-love')).allowSetForegroundWindow(processId);
-			} catch (error) {
+				(AwAit import('windows-foreground-love')).AllowSetForegroundWindow(processId);
+			} cAtch (error) {
 				logService.error(error);
 			}
 		}
 	}
 
-	private quit(accessor: ServicesAccessor, reason?: ExpectedError | Error): void {
-		const logService = accessor.get(ILogService);
-		const lifecycleMainService = accessor.get(ILifecycleMainService);
+	privAte quit(Accessor: ServicesAccessor, reAson?: ExpectedError | Error): void {
+		const logService = Accessor.get(ILogService);
+		const lifecycleMAinService = Accessor.get(ILifecycleMAinService);
 
 		let exitCode = 0;
 
-		if (reason) {
-			if ((reason as ExpectedError).isExpected) {
-				if (reason.message) {
-					logService.trace(reason.message);
+		if (reAson) {
+			if ((reAson As ExpectedError).isExpected) {
+				if (reAson.messAge) {
+					logService.trAce(reAson.messAge);
 				}
 			} else {
-				exitCode = 1; // signal error to the outside
+				exitCode = 1; // signAl error to the outside
 
-				if (reason.stack) {
-					logService.error(reason.stack);
+				if (reAson.stAck) {
+					logService.error(reAson.stAck);
 				} else {
-					logService.error(`Startup error: ${reason.toString()}`);
+					logService.error(`StArtup error: ${reAson.toString()}`);
 				}
 			}
 		}
 
-		lifecycleMainService.kill(exitCode);
+		lifecycleMAinService.kill(exitCode);
 	}
 
 	//#region Helpers
 
-	private validatePaths(args: NativeParsedArgs): NativeParsedArgs {
+	privAte vAlidAtePAths(Args: NAtivePArsedArgs): NAtivePArsedArgs {
 
-		// Track URLs if they're going to be used
-		if (args['open-url']) {
-			args._urls = args._;
-			args._ = [];
+		// TrAck URLs if they're going to be used
+		if (Args['open-url']) {
+			Args._urls = Args._;
+			Args._ = [];
 		}
 
-		// Normalize paths and watch out for goto line mode
-		if (!args['remote']) {
-			const paths = this.doValidatePaths(args._, args.goto);
-			args._ = paths;
+		// NormAlize pAths And wAtch out for goto line mode
+		if (!Args['remote']) {
+			const pAths = this.doVAlidAtePAths(Args._, Args.goto);
+			Args._ = pAths;
 		}
 
-		return args;
+		return Args;
 	}
 
-	private doValidatePaths(args: string[], gotoLineMode?: boolean): string[] {
+	privAte doVAlidAtePAths(Args: string[], gotoLineMode?: booleAn): string[] {
 		const cwd = process.env['VSCODE_CWD'] || process.cwd();
-		const result = args.map(arg => {
-			let pathCandidate = String(arg);
+		const result = Args.mAp(Arg => {
+			let pAthCAndidAte = String(Arg);
 
-			let parsedPath: IPathWithLineAndColumn | undefined = undefined;
+			let pArsedPAth: IPAthWithLineAndColumn | undefined = undefined;
 			if (gotoLineMode) {
-				parsedPath = parseLineAndColumnAware(pathCandidate);
-				pathCandidate = parsedPath.path;
+				pArsedPAth = pArseLineAndColumnAwAre(pAthCAndidAte);
+				pAthCAndidAte = pArsedPAth.pAth;
 			}
 
-			if (pathCandidate) {
-				pathCandidate = this.preparePath(cwd, pathCandidate);
+			if (pAthCAndidAte) {
+				pAthCAndidAte = this.prepArePAth(cwd, pAthCAndidAte);
 			}
 
-			const sanitizedFilePath = sanitizeFilePath(pathCandidate, cwd);
+			const sAnitizedFilePAth = sAnitizeFilePAth(pAthCAndidAte, cwd);
 
-			const filePathBasename = basename(sanitizedFilePath);
-			if (filePathBasename /* can be empty if code is opened on root */ && !isValidBasename(filePathBasename)) {
-				return null; // do not allow invalid file names
+			const filePAthBAsenAme = bAsenAme(sAnitizedFilePAth);
+			if (filePAthBAsenAme /* cAn be empty if code is opened on root */ && !isVAlidBAsenAme(filePAthBAsenAme)) {
+				return null; // do not Allow invAlid file nAmes
 			}
 
-			if (gotoLineMode && parsedPath) {
-				parsedPath.path = sanitizedFilePath;
+			if (gotoLineMode && pArsedPAth) {
+				pArsedPAth.pAth = sAnitizedFilePAth;
 
-				return this.toPath(parsedPath);
+				return this.toPAth(pArsedPAth);
 			}
 
-			return sanitizedFilePath;
+			return sAnitizedFilePAth;
 		});
 
-		const caseInsensitive = isWindows || isMacintosh;
-		const distinctPaths = distinct(result, path => path && caseInsensitive ? path.toLowerCase() : (path || ''));
+		const cAseInsensitive = isWindows || isMAcintosh;
+		const distinctPAths = distinct(result, pAth => pAth && cAseInsensitive ? pAth.toLowerCAse() : (pAth || ''));
 
-		return coalesce(distinctPaths);
+		return coAlesce(distinctPAths);
 	}
 
-	private preparePath(cwd: string, path: string): string {
+	privAte prepArePAth(cwd: string, pAth: string): string {
 
-		// Trim trailing quotes
+		// Trim trAiling quotes
 		if (isWindows) {
-			path = rtrim(path, '"'); // https://github.com/microsoft/vscode/issues/1498
+			pAth = rtrim(pAth, '"'); // https://github.com/microsoft/vscode/issues/1498
 		}
 
-		// Trim whitespaces
-		path = trim(trim(path, ' '), '\t');
+		// Trim whitespAces
+		pAth = trim(trim(pAth, ' '), '\t');
 
 		if (isWindows) {
 
-			// Resolve the path against cwd if it is relative
-			path = resolve(cwd, path);
+			// Resolve the pAth AgAinst cwd if it is relAtive
+			pAth = resolve(cwd, pAth);
 
-			// Trim trailing '.' chars on Windows to prevent invalid file names
-			path = rtrim(path, '.');
+			// Trim trAiling '.' chArs on Windows to prevent invAlid file nAmes
+			pAth = rtrim(pAth, '.');
 		}
 
-		return path;
+		return pAth;
 	}
 
-	private toPath(pathWithLineAndCol: IPathWithLineAndColumn): string {
-		const segments = [pathWithLineAndCol.path];
+	privAte toPAth(pAthWithLineAndCol: IPAthWithLineAndColumn): string {
+		const segments = [pAthWithLineAndCol.pAth];
 
-		if (isNumber(pathWithLineAndCol.line)) {
-			segments.push(String(pathWithLineAndCol.line));
+		if (isNumber(pAthWithLineAndCol.line)) {
+			segments.push(String(pAthWithLineAndCol.line));
 		}
 
-		if (isNumber(pathWithLineAndCol.column)) {
-			segments.push(String(pathWithLineAndCol.column));
+		if (isNumber(pAthWithLineAndCol.column)) {
+			segments.push(String(pAthWithLineAndCol.column));
 		}
 
 		return segments.join(':');
@@ -510,6 +510,6 @@ class CodeMain {
 	//#endregion
 }
 
-// Main Startup
-const code = new CodeMain();
-code.main();
+// MAin StArtup
+const code = new CodeMAin();
+code.mAin();

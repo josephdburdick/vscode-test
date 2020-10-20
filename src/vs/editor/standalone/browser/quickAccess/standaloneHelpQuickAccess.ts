@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
-import { QuickHelpNLS } from 'vs/editor/common/standaloneStrings';
-import { HelpQuickAccessProvider } from 'vs/platform/quickinput/browser/helpQuickAccess';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IQuickAccessRegistry, Extensions } from 'vs/plAtform/quickinput/common/quickAccess';
+import { QuickHelpNLS } from 'vs/editor/common/stAndAloneStrings';
+import { HelpQuickAccessProvider } from 'vs/plAtform/quickinput/browser/helpQuickAccess';
 
-Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess).registerQuickAccessProvider({
+Registry.As<IQuickAccessRegistry>(Extensions.QuickAccess).registerQuickAccessProvider({
 	ctor: HelpQuickAccessProvider,
 	prefix: '',
-	helpEntries: [{ description: QuickHelpNLS.helpQuickAccessActionLabel, needsEditor: true }]
+	helpEntries: [{ description: QuickHelpNLS.helpQuickAccessActionLAbel, needsEditor: true }]
 });

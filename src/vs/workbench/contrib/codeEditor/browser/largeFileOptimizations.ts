@@ -1,70 +1,70 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as path from 'vs/base/common/path';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * As nls from 'vs/nls';
+import * As pAth from 'vs/bAse/common/pAth';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
 
 /**
- * Shows a message when opening a large file which has been memory optimized (and features disabled).
+ * Shows A messAge when opening A lArge file which hAs been memory optimized (And feAtures disAbled).
  */
-export class LargeFileOptimizationsWarner extends Disposable implements IEditorContribution {
+export clAss LArgeFileOptimizAtionsWArner extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.largeFileOptimizationsWarner';
+	public stAtic reAdonly ID = 'editor.contrib.lArgeFileOptimizAtionsWArner';
 
 	constructor(
-		private readonly _editor: ICodeEditor,
-		@INotificationService private readonly _notificationService: INotificationService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService
+		privAte reAdonly _editor: ICodeEditor,
+		@INotificAtionService privAte reAdonly _notificAtionService: INotificAtionService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService
 	) {
 		super();
 
 		// opt-in to syncing
-		const neverShowAgainId = 'editor.contrib.largeFileOptimizationsWarner';
-		storageKeysSyncRegistryService.registerStorageKey({ key: neverShowAgainId, version: 1 });
+		const neverShowAgAinId = 'editor.contrib.lArgeFileOptimizAtionsWArner';
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: neverShowAgAinId, version: 1 });
 
-		this._register(this._editor.onDidChangeModel((e) => {
+		this._register(this._editor.onDidChAngeModel((e) => {
 			const model = this._editor.getModel();
 			if (!model) {
 				return;
 			}
 
-			if (model.isTooLargeForTokenization()) {
-				const message = nls.localize(
+			if (model.isTooLArgeForTokenizAtion()) {
+				const messAge = nls.locAlize(
 					{
-						key: 'largeFile',
+						key: 'lArgeFile',
 						comment: [
-							'Variable 0 will be a file name.'
+							'VAriAble 0 will be A file nAme.'
 						]
 					},
-					"{0}: tokenization, wrapping and folding have been turned off for this large file in order to reduce memory usage and avoid freezing or crashing.",
-					path.basename(model.uri.path)
+					"{0}: tokenizAtion, wrApping And folding hAve been turned off for this lArge file in order to reduce memory usAge And Avoid freezing or crAshing.",
+					pAth.bAsenAme(model.uri.pAth)
 				);
 
-				this._notificationService.prompt(Severity.Info, message, [
+				this._notificAtionService.prompt(Severity.Info, messAge, [
 					{
-						label: nls.localize('removeOptimizations', "Forcefully enable features"),
+						lAbel: nls.locAlize('removeOptimizAtions', "Forcefully enAble feAtures"),
 						run: () => {
-							this._configurationService.updateValue(`editor.largeFileOptimizations`, false).then(() => {
-								this._notificationService.info(nls.localize('reopenFilePrompt', "Please reopen file in order for this setting to take effect."));
+							this._configurAtionService.updAteVAlue(`editor.lArgeFileOptimizAtions`, fAlse).then(() => {
+								this._notificAtionService.info(nls.locAlize('reopenFilePrompt', "PleAse reopen file in order for this setting to tAke effect."));
 							}, (err) => {
-								this._notificationService.error(err);
+								this._notificAtionService.error(err);
 							});
 						}
 					}
-				], { neverShowAgain: { id: neverShowAgainId } });
+				], { neverShowAgAin: { id: neverShowAgAinId } });
 			}
 		}));
 	}
 }
 
-registerEditorContribution(LargeFileOptimizationsWarner.ID, LargeFileOptimizationsWarner);
+registerEditorContribution(LArgeFileOptimizAtionsWArner.ID, LArgeFileOptimizAtionsWArner);

@@ -1,272 +1,272 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, EventMultiplexer } from 'vs/base/common/event';
+import { Event, EventMultiplexer } from 'vs/bAse/common/event';
 import {
-	IExtensionManagementService, ILocalExtension, IGalleryExtension, InstallExtensionEvent, DidInstallExtensionEvent, IExtensionIdentifier, DidUninstallExtensionEvent, IReportedExtension, IGalleryMetadata, IExtensionGalleryService, INSTALL_ERROR_NOT_SUPPORTED
-} from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IExtensionManagementServer, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { ExtensionType, isLanguagePackExtension, IExtensionManifest } from 'vs/platform/extensions/common/extensions';
-import { URI } from 'vs/base/common/uri';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { localize } from 'vs/nls';
-import { prefersExecuteOnUI, canExecuteOnWorkspace, prefersExecuteOnWorkspace, canExecuteOnUI, prefersExecuteOnWeb, canExecuteOnWeb } from 'vs/workbench/services/extensions/common/extensionsUtil';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { Schemas } from 'vs/base/common/network';
-import { IDownloadService } from 'vs/platform/download/common/download';
-import { flatten } from 'vs/base/common/arrays';
+	IExtensionMAnAgementService, ILocAlExtension, IGAlleryExtension, InstAllExtensionEvent, DidInstAllExtensionEvent, IExtensionIdentifier, DidUninstAllExtensionEvent, IReportedExtension, IGAlleryMetAdAtA, IExtensionGAlleryService, INSTALL_ERROR_NOT_SUPPORTED
+} from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IExtensionMAnAgementServer, IExtensionMAnAgementServerService } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { ExtensionType, isLAnguAgePAckExtension, IExtensionMAnifest } from 'vs/plAtform/extensions/common/extensions';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { locAlize } from 'vs/nls';
+import { prefersExecuteOnUI, cAnExecuteOnWorkspAce, prefersExecuteOnWorkspAce, cAnExecuteOnUI, prefersExecuteOnWeb, cAnExecuteOnWeb } from 'vs/workbench/services/extensions/common/extensionsUtil';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IDownloAdService } from 'vs/plAtform/downloAd/common/downloAd';
+import { flAtten } from 'vs/bAse/common/ArrAys';
 
-export class ExtensionManagementService extends Disposable implements IExtensionManagementService {
+export clAss ExtensionMAnAgementService extends DisposAble implements IExtensionMAnAgementService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	readonly onInstallExtension: Event<InstallExtensionEvent>;
-	readonly onDidInstallExtension: Event<DidInstallExtensionEvent>;
-	readonly onUninstallExtension: Event<IExtensionIdentifier>;
-	readonly onDidUninstallExtension: Event<DidUninstallExtensionEvent>;
+	reAdonly onInstAllExtension: Event<InstAllExtensionEvent>;
+	reAdonly onDidInstAllExtension: Event<DidInstAllExtensionEvent>;
+	reAdonly onUninstAllExtension: Event<IExtensionIdentifier>;
+	reAdonly onDidUninstAllExtension: Event<DidUninstAllExtensionEvent>;
 
-	protected readonly servers: IExtensionManagementServer[] = [];
+	protected reAdonly servers: IExtensionMAnAgementServer[] = [];
 
 	constructor(
-		@IExtensionManagementServerService protected readonly extensionManagementServerService: IExtensionManagementServerService,
-		@IExtensionGalleryService private readonly extensionGalleryService: IExtensionGalleryService,
-		@IConfigurationService protected readonly configurationService: IConfigurationService,
-		@IProductService protected readonly productService: IProductService,
-		@IDownloadService protected readonly downloadService: IDownloadService,
+		@IExtensionMAnAgementServerService protected reAdonly extensionMAnAgementServerService: IExtensionMAnAgementServerService,
+		@IExtensionGAlleryService privAte reAdonly extensionGAlleryService: IExtensionGAlleryService,
+		@IConfigurAtionService protected reAdonly configurAtionService: IConfigurAtionService,
+		@IProductService protected reAdonly productService: IProductService,
+		@IDownloAdService protected reAdonly downloAdService: IDownloAdService,
 	) {
 		super();
-		if (this.extensionManagementServerService.localExtensionManagementServer) {
-			this.servers.push(this.extensionManagementServerService.localExtensionManagementServer);
+		if (this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			this.servers.push(this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer);
 		}
-		if (this.extensionManagementServerService.remoteExtensionManagementServer) {
-			this.servers.push(this.extensionManagementServerService.remoteExtensionManagementServer);
+		if (this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			this.servers.push(this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer);
 		}
-		if (this.extensionManagementServerService.webExtensionManagementServer) {
-			this.servers.push(this.extensionManagementServerService.webExtensionManagementServer);
+		if (this.extensionMAnAgementServerService.webExtensionMAnAgementServer) {
+			this.servers.push(this.extensionMAnAgementServerService.webExtensionMAnAgementServer);
 		}
 
-		this.onInstallExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<InstallExtensionEvent>, server) => { emitter.add(server.extensionManagementService.onInstallExtension); return emitter; }, new EventMultiplexer<InstallExtensionEvent>())).event;
-		this.onDidInstallExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<DidInstallExtensionEvent>, server) => { emitter.add(server.extensionManagementService.onDidInstallExtension); return emitter; }, new EventMultiplexer<DidInstallExtensionEvent>())).event;
-		this.onUninstallExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<IExtensionIdentifier>, server) => { emitter.add(server.extensionManagementService.onUninstallExtension); return emitter; }, new EventMultiplexer<IExtensionIdentifier>())).event;
-		this.onDidUninstallExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<DidUninstallExtensionEvent>, server) => { emitter.add(server.extensionManagementService.onDidUninstallExtension); return emitter; }, new EventMultiplexer<DidUninstallExtensionEvent>())).event;
+		this.onInstAllExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<InstAllExtensionEvent>, server) => { emitter.Add(server.extensionMAnAgementService.onInstAllExtension); return emitter; }, new EventMultiplexer<InstAllExtensionEvent>())).event;
+		this.onDidInstAllExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<DidInstAllExtensionEvent>, server) => { emitter.Add(server.extensionMAnAgementService.onDidInstAllExtension); return emitter; }, new EventMultiplexer<DidInstAllExtensionEvent>())).event;
+		this.onUninstAllExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<IExtensionIdentifier>, server) => { emitter.Add(server.extensionMAnAgementService.onUninstAllExtension); return emitter; }, new EventMultiplexer<IExtensionIdentifier>())).event;
+		this.onDidUninstAllExtension = this._register(this.servers.reduce((emitter: EventMultiplexer<DidUninstAllExtensionEvent>, server) => { emitter.Add(server.extensionMAnAgementService.onDidUninstAllExtension); return emitter; }, new EventMultiplexer<DidUninstAllExtensionEvent>())).event;
 	}
 
-	async getInstalled(type?: ExtensionType): Promise<ILocalExtension[]> {
-		const result = await Promise.all(this.servers.map(({ extensionManagementService }) => extensionManagementService.getInstalled(type)));
-		return flatten(result);
+	Async getInstAlled(type?: ExtensionType): Promise<ILocAlExtension[]> {
+		const result = AwAit Promise.All(this.servers.mAp(({ extensionMAnAgementService }) => extensionMAnAgementService.getInstAlled(type)));
+		return flAtten(result);
 	}
 
-	async uninstall(extension: ILocalExtension): Promise<void> {
+	Async uninstAll(extension: ILocAlExtension): Promise<void> {
 		const server = this.getServer(extension);
 		if (!server) {
-			return Promise.reject(`Invalid location ${extension.location.toString()}`);
+			return Promise.reject(`InvAlid locAtion ${extension.locAtion.toString()}`);
 		}
 		if (this.servers.length > 1) {
-			if (isLanguagePackExtension(extension.manifest)) {
-				return this.uninstallEverywhere(extension);
+			if (isLAnguAgePAckExtension(extension.mAnifest)) {
+				return this.uninstAllEverywhere(extension);
 			}
-			return this.uninstallInServer(extension, server);
+			return this.uninstAllInServer(extension, server);
 		}
-		return server.extensionManagementService.uninstall(extension);
+		return server.extensionMAnAgementService.uninstAll(extension);
 	}
 
-	private async uninstallEverywhere(extension: ILocalExtension): Promise<void> {
+	privAte Async uninstAllEverywhere(extension: ILocAlExtension): Promise<void> {
 		const server = this.getServer(extension);
 		if (!server) {
-			return Promise.reject(`Invalid location ${extension.location.toString()}`);
+			return Promise.reject(`InvAlid locAtion ${extension.locAtion.toString()}`);
 		}
-		const promise = server.extensionManagementService.uninstall(extension);
-		const otherServers: IExtensionManagementServer[] = this.servers.filter(s => s !== server);
+		const promise = server.extensionMAnAgementService.uninstAll(extension);
+		const otherServers: IExtensionMAnAgementServer[] = this.servers.filter(s => s !== server);
 		if (otherServers.length) {
 			for (const otherServer of otherServers) {
-				const installed = await otherServer.extensionManagementService.getInstalled();
-				extension = installed.filter(i => !i.isBuiltin && areSameExtensions(i.identifier, extension.identifier))[0];
+				const instAlled = AwAit otherServer.extensionMAnAgementService.getInstAlled();
+				extension = instAlled.filter(i => !i.isBuiltin && AreSAmeExtensions(i.identifier, extension.identifier))[0];
 				if (extension) {
-					await otherServer.extensionManagementService.uninstall(extension);
+					AwAit otherServer.extensionMAnAgementService.uninstAll(extension);
 				}
 			}
 		}
 		return promise;
 	}
 
-	private async uninstallInServer(extension: ILocalExtension, server: IExtensionManagementServer, force?: boolean): Promise<void> {
-		if (server === this.extensionManagementServerService.localExtensionManagementServer) {
-			const installedExtensions = await this.extensionManagementServerService.remoteExtensionManagementServer!.extensionManagementService.getInstalled(ExtensionType.User);
-			const dependentNonUIExtensions = installedExtensions.filter(i => !prefersExecuteOnUI(i.manifest, this.productService, this.configurationService)
-				&& i.manifest.extensionDependencies && i.manifest.extensionDependencies.some(id => areSameExtensions({ id }, extension.identifier)));
+	privAte Async uninstAllInServer(extension: ILocAlExtension, server: IExtensionMAnAgementServer, force?: booleAn): Promise<void> {
+		if (server === this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			const instAlledExtensions = AwAit this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer!.extensionMAnAgementService.getInstAlled(ExtensionType.User);
+			const dependentNonUIExtensions = instAlledExtensions.filter(i => !prefersExecuteOnUI(i.mAnifest, this.productService, this.configurAtionService)
+				&& i.mAnifest.extensionDependencies && i.mAnifest.extensionDependencies.some(id => AreSAmeExtensions({ id }, extension.identifier)));
 			if (dependentNonUIExtensions.length) {
-				return Promise.reject(new Error(this.getDependentsErrorMessage(extension, dependentNonUIExtensions)));
+				return Promise.reject(new Error(this.getDependentsErrorMessAge(extension, dependentNonUIExtensions)));
 			}
 		}
-		return server.extensionManagementService.uninstall(extension, force);
+		return server.extensionMAnAgementService.uninstAll(extension, force);
 	}
 
-	private getDependentsErrorMessage(extension: ILocalExtension, dependents: ILocalExtension[]): string {
+	privAte getDependentsErrorMessAge(extension: ILocAlExtension, dependents: ILocAlExtension[]): string {
 		if (dependents.length === 1) {
-			return localize('singleDependentError', "Cannot uninstall extension '{0}'. Extension '{1}' depends on this.",
-				extension.manifest.displayName || extension.manifest.name, dependents[0].manifest.displayName || dependents[0].manifest.name);
+			return locAlize('singleDependentError', "CAnnot uninstAll extension '{0}'. Extension '{1}' depends on this.",
+				extension.mAnifest.displAyNAme || extension.mAnifest.nAme, dependents[0].mAnifest.displAyNAme || dependents[0].mAnifest.nAme);
 		}
 		if (dependents.length === 2) {
-			return localize('twoDependentsError', "Cannot uninstall extension '{0}'. Extensions '{1}' and '{2}' depend on this.",
-				extension.manifest.displayName || extension.manifest.name, dependents[0].manifest.displayName || dependents[0].manifest.name, dependents[1].manifest.displayName || dependents[1].manifest.name);
+			return locAlize('twoDependentsError', "CAnnot uninstAll extension '{0}'. Extensions '{1}' And '{2}' depend on this.",
+				extension.mAnifest.displAyNAme || extension.mAnifest.nAme, dependents[0].mAnifest.displAyNAme || dependents[0].mAnifest.nAme, dependents[1].mAnifest.displAyNAme || dependents[1].mAnifest.nAme);
 		}
-		return localize('multipleDependentsError', "Cannot uninstall extension '{0}'. Extensions '{1}', '{2}' and others depend on this.",
-			extension.manifest.displayName || extension.manifest.name, dependents[0].manifest.displayName || dependents[0].manifest.name, dependents[1].manifest.displayName || dependents[1].manifest.name);
+		return locAlize('multipleDependentsError', "CAnnot uninstAll extension '{0}'. Extensions '{1}', '{2}' And others depend on this.",
+			extension.mAnifest.displAyNAme || extension.mAnifest.nAme, dependents[0].mAnifest.displAyNAme || dependents[0].mAnifest.nAme, dependents[1].mAnifest.displAyNAme || dependents[1].mAnifest.nAme);
 
 	}
 
-	reinstallFromGallery(extension: ILocalExtension): Promise<void> {
+	reinstAllFromGAllery(extension: ILocAlExtension): Promise<void> {
 		const server = this.getServer(extension);
 		if (server) {
-			return server.extensionManagementService.reinstallFromGallery(extension);
+			return server.extensionMAnAgementService.reinstAllFromGAllery(extension);
 		}
-		return Promise.reject(`Invalid location ${extension.location.toString()}`);
+		return Promise.reject(`InvAlid locAtion ${extension.locAtion.toString()}`);
 	}
 
-	updateMetadata(extension: ILocalExtension, metadata: IGalleryMetadata): Promise<ILocalExtension> {
+	updAteMetAdAtA(extension: ILocAlExtension, metAdAtA: IGAlleryMetAdAtA): Promise<ILocAlExtension> {
 		const server = this.getServer(extension);
 		if (server) {
-			return server.extensionManagementService.updateMetadata(extension, metadata);
+			return server.extensionMAnAgementService.updAteMetAdAtA(extension, metAdAtA);
 		}
-		return Promise.reject(`Invalid location ${extension.location.toString()}`);
+		return Promise.reject(`InvAlid locAtion ${extension.locAtion.toString()}`);
 	}
 
-	zip(extension: ILocalExtension): Promise<URI> {
+	zip(extension: ILocAlExtension): Promise<URI> {
 		const server = this.getServer(extension);
 		if (server) {
-			return server.extensionManagementService.zip(extension);
+			return server.extensionMAnAgementService.zip(extension);
 		}
-		return Promise.reject(`Invalid location ${extension.location.toString()}`);
+		return Promise.reject(`InvAlid locAtion ${extension.locAtion.toString()}`);
 	}
 
-	unzip(zipLocation: URI): Promise<IExtensionIdentifier> {
-		return Promise.all(this.servers
+	unzip(zipLocAtion: URI): Promise<IExtensionIdentifier> {
+		return Promise.All(this.servers
 			// Filter out web server
-			.filter(server => server !== this.extensionManagementServerService.webExtensionManagementServer)
-			.map(({ extensionManagementService }) => extensionManagementService.unzip(zipLocation))).then(([extensionIdentifier]) => extensionIdentifier);
+			.filter(server => server !== this.extensionMAnAgementServerService.webExtensionMAnAgementServer)
+			.mAp(({ extensionMAnAgementService }) => extensionMAnAgementService.unzip(zipLocAtion))).then(([extensionIdentifier]) => extensionIdentifier);
 	}
 
-	async install(vsix: URI): Promise<ILocalExtension> {
-		if (this.extensionManagementServerService.localExtensionManagementServer && this.extensionManagementServerService.remoteExtensionManagementServer) {
-			const manifest = await this.getManifest(vsix);
-			if (isLanguagePackExtension(manifest)) {
-				// Install on both servers
-				const [local] = await Promise.all([this.extensionManagementServerService.localExtensionManagementServer, this.extensionManagementServerService.remoteExtensionManagementServer].map(server => this.installVSIX(vsix, server)));
-				return local;
+	Async instAll(vsix: URI): Promise<ILocAlExtension> {
+		if (this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			const mAnifest = AwAit this.getMAnifest(vsix);
+			if (isLAnguAgePAckExtension(mAnifest)) {
+				// InstAll on both servers
+				const [locAl] = AwAit Promise.All([this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer, this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer].mAp(server => this.instAllVSIX(vsix, server)));
+				return locAl;
 			}
-			if (prefersExecuteOnUI(manifest, this.productService, this.configurationService)) {
-				// Install only on local server
-				return this.installVSIX(vsix, this.extensionManagementServerService.localExtensionManagementServer);
+			if (prefersExecuteOnUI(mAnifest, this.productService, this.configurAtionService)) {
+				// InstAll only on locAl server
+				return this.instAllVSIX(vsix, this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer);
 			}
-			// Install only on remote server
-			return this.installVSIX(vsix, this.extensionManagementServerService.remoteExtensionManagementServer);
+			// InstAll only on remote server
+			return this.instAllVSIX(vsix, this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer);
 		}
-		if (this.extensionManagementServerService.localExtensionManagementServer) {
-			return this.installVSIX(vsix, this.extensionManagementServerService.localExtensionManagementServer);
+		if (this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			return this.instAllVSIX(vsix, this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer);
 		}
-		if (this.extensionManagementServerService.remoteExtensionManagementServer) {
-			return this.installVSIX(vsix, this.extensionManagementServerService.remoteExtensionManagementServer);
+		if (this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			return this.instAllVSIX(vsix, this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer);
 		}
-		return Promise.reject('No Servers to Install');
+		return Promise.reject('No Servers to InstAll');
 	}
 
-	protected installVSIX(vsix: URI, server: IExtensionManagementServer): Promise<ILocalExtension> {
-		return server.extensionManagementService.install(vsix);
+	protected instAllVSIX(vsix: URI, server: IExtensionMAnAgementServer): Promise<ILocAlExtension> {
+		return server.extensionMAnAgementService.instAll(vsix);
 	}
 
-	getManifest(vsix: URI): Promise<IExtensionManifest> {
-		if (vsix.scheme === Schemas.file && this.extensionManagementServerService.localExtensionManagementServer) {
-			return this.extensionManagementServerService.localExtensionManagementServer.extensionManagementService.getManifest(vsix);
+	getMAnifest(vsix: URI): Promise<IExtensionMAnifest> {
+		if (vsix.scheme === SchemAs.file && this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer.extensionMAnAgementService.getMAnifest(vsix);
 		}
-		if (vsix.scheme === Schemas.vscodeRemote && this.extensionManagementServerService.remoteExtensionManagementServer) {
-			return this.extensionManagementServerService.remoteExtensionManagementServer.extensionManagementService.getManifest(vsix);
+		if (vsix.scheme === SchemAs.vscodeRemote && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer.extensionMAnAgementService.getMAnifest(vsix);
 		}
 		return Promise.reject('No Servers');
 	}
 
-	async canInstall(gallery: IGalleryExtension): Promise<boolean> {
+	Async cAnInstAll(gAllery: IGAlleryExtension): Promise<booleAn> {
 		for (const server of this.servers) {
-			if (await server.extensionManagementService.canInstall(gallery)) {
+			if (AwAit server.extensionMAnAgementService.cAnInstAll(gAllery)) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	async installFromGallery(gallery: IGalleryExtension): Promise<ILocalExtension> {
+	Async instAllFromGAllery(gAllery: IGAlleryExtension): Promise<ILocAlExtension> {
 
-		// Only local server, install without any checks
-		if (this.servers.length === 1 && this.extensionManagementServerService.localExtensionManagementServer) {
-			return this.extensionManagementServerService.localExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
-		}
-
-		const manifest = await this.extensionGalleryService.getManifest(gallery, CancellationToken.None);
-		if (!manifest) {
-			return Promise.reject(localize('Manifest is not found', "Installing Extension {0} failed: Manifest is not found.", gallery.displayName || gallery.name));
+		// Only locAl server, instAll without Any checks
+		if (this.servers.length === 1 && this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
 		}
 
-		// Install Language pack on all servers
-		if (isLanguagePackExtension(manifest)) {
-			return Promise.all(this.servers.map(server => server.extensionManagementService.installFromGallery(gallery))).then(([local]) => local);
+		const mAnifest = AwAit this.extensionGAlleryService.getMAnifest(gAllery, CAncellAtionToken.None);
+		if (!mAnifest) {
+			return Promise.reject(locAlize('MAnifest is not found', "InstAlling Extension {0} fAiled: MAnifest is not found.", gAllery.displAyNAme || gAllery.nAme));
 		}
 
-		// 1. Install on preferred location
-
-		// Install UI preferred extension on local server
-		if (prefersExecuteOnUI(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.localExtensionManagementServer) {
-			return this.extensionManagementServerService.localExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
-		}
-		// Install Workspace preferred extension on remote server
-		if (prefersExecuteOnWorkspace(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.remoteExtensionManagementServer) {
-			return this.extensionManagementServerService.remoteExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
-		}
-		// Install Web preferred extension on web server
-		if (prefersExecuteOnWeb(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.webExtensionManagementServer) {
-			return this.extensionManagementServerService.webExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
+		// InstAll LAnguAge pAck on All servers
+		if (isLAnguAgePAckExtension(mAnifest)) {
+			return Promise.All(this.servers.mAp(server => server.extensionMAnAgementService.instAllFromGAllery(gAllery))).then(([locAl]) => locAl);
 		}
 
-		// 2. Install on supported location
+		// 1. InstAll on preferred locAtion
 
-		// Install UI supported extension on local server
-		if (canExecuteOnUI(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.localExtensionManagementServer) {
-			return this.extensionManagementServerService.localExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
+		// InstAll UI preferred extension on locAl server
+		if (prefersExecuteOnUI(mAnifest, this.productService, this.configurAtionService) && this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
 		}
-		// Install Workspace supported extension on remote server
-		if (canExecuteOnWorkspace(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.remoteExtensionManagementServer) {
-			return this.extensionManagementServerService.remoteExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
+		// InstAll WorkspAce preferred extension on remote server
+		if (prefersExecuteOnWorkspAce(mAnifest, this.productService, this.configurAtionService) && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
 		}
-		// Install Web supported extension on web server
-		if (canExecuteOnWeb(manifest, this.productService, this.configurationService) && this.extensionManagementServerService.webExtensionManagementServer) {
-			return this.extensionManagementServerService.webExtensionManagementServer.extensionManagementService.installFromGallery(gallery);
+		// InstAll Web preferred extension on web server
+		if (prefersExecuteOnWeb(mAnifest, this.productService, this.configurAtionService) && this.extensionMAnAgementServerService.webExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.webExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
 		}
 
-		if (this.extensionManagementServerService.remoteExtensionManagementServer) {
-			const error = new Error(localize('cannot be installed', "Cannot install '{0}' because this extension has defined that it cannot run on the remote server.", gallery.displayName || gallery.name));
-			error.name = INSTALL_ERROR_NOT_SUPPORTED;
+		// 2. InstAll on supported locAtion
+
+		// InstAll UI supported extension on locAl server
+		if (cAnExecuteOnUI(mAnifest, this.productService, this.configurAtionService) && this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
+		}
+		// InstAll WorkspAce supported extension on remote server
+		if (cAnExecuteOnWorkspAce(mAnifest, this.productService, this.configurAtionService) && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
+		}
+		// InstAll Web supported extension on web server
+		if (cAnExecuteOnWeb(mAnifest, this.productService, this.configurAtionService) && this.extensionMAnAgementServerService.webExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.webExtensionMAnAgementServer.extensionMAnAgementService.instAllFromGAllery(gAllery);
+		}
+
+		if (this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			const error = new Error(locAlize('cAnnot be instAlled', "CAnnot instAll '{0}' becAuse this extension hAs defined thAt it cAnnot run on the remote server.", gAllery.displAyNAme || gAllery.nAme));
+			error.nAme = INSTALL_ERROR_NOT_SUPPORTED;
 			return Promise.reject(error);
 		}
 
-		const error = new Error(localize('cannot be installed on web', "Cannot install '{0}' because this extension has defined that it cannot run on the web server.", gallery.displayName || gallery.name));
-		error.name = INSTALL_ERROR_NOT_SUPPORTED;
+		const error = new Error(locAlize('cAnnot be instAlled on web', "CAnnot instAll '{0}' becAuse this extension hAs defined thAt it cAnnot run on the web server.", gAllery.displAyNAme || gAllery.nAme));
+		error.nAme = INSTALL_ERROR_NOT_SUPPORTED;
 		return Promise.reject(error);
 	}
 
 	getExtensionsReport(): Promise<IReportedExtension[]> {
-		if (this.extensionManagementServerService.localExtensionManagementServer) {
-			return this.extensionManagementServerService.localExtensionManagementServer.extensionManagementService.getExtensionsReport();
+		if (this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer.extensionMAnAgementService.getExtensionsReport();
 		}
-		if (this.extensionManagementServerService.remoteExtensionManagementServer) {
-			return this.extensionManagementServerService.remoteExtensionManagementServer.extensionManagementService.getExtensionsReport();
+		if (this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			return this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer.extensionMAnAgementService.getExtensionsReport();
 		}
 		return Promise.resolve([]);
 	}
 
-	private getServer(extension: ILocalExtension): IExtensionManagementServer | null {
-		return this.extensionManagementServerService.getExtensionManagementServer(extension);
+	privAte getServer(extension: ILocAlExtension): IExtensionMAnAgementServer | null {
+		return this.extensionMAnAgementServerService.getExtensionMAnAgementServer(extension);
 	}
 }

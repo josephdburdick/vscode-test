@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
-import { coalesce } from '../utils/arrays';
-import { conditionalRegistration, requireMinVersion } from '../utils/dependentRegistration';
+import API from '../utils/Api';
+import { coAlesce } from '../utils/ArrAys';
+import { conditionAlRegistrAtion, requireMinVersion } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as typeConverters from '../utils/typeConverters';
+import * As typeConverters from '../utils/typeConverters';
 
-class TypeScriptFoldingProvider implements vscode.FoldingRangeProvider {
-	public static readonly minVersion = API.v280;
+clAss TypeScriptFoldingProvider implements vscode.FoldingRAngeProvider {
+	public stAtic reAdonly minVersion = API.v280;
 
 	public constructor(
-		private readonly client: ITypeScriptServiceClient
+		privAte reAdonly client: ITypeScriptServiceClient
 	) { }
 
-	async provideFoldingRanges(
+	Async provideFoldingRAnges(
 		document: vscode.TextDocument,
 		_context: vscode.FoldingContext,
-		token: vscode.CancellationToken
-	): Promise<vscode.FoldingRange[] | undefined> {
-		const file = this.client.toOpenedFilePath(document);
+		token: vscode.CAncellAtionToken
+	): Promise<vscode.FoldingRAnge[] | undefined> {
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return;
 		}
 
-		const args: Proto.FileRequestArgs = { file };
-		const response = await this.client.execute('getOutliningSpans', args, token);
+		const Args: Proto.FileRequestArgs = { file };
+		const response = AwAit this.client.execute('getOutliningSpAns', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return;
 		}
 
-		return coalesce(response.body.map(span => this.convertOutliningSpan(span, document)));
+		return coAlesce(response.body.mAp(spAn => this.convertOutliningSpAn(spAn, document)));
 	}
 
-	private convertOutliningSpan(
-		span: Proto.OutliningSpan,
+	privAte convertOutliningSpAn(
+		spAn: Proto.OutliningSpAn,
 		document: vscode.TextDocument
-	): vscode.FoldingRange | undefined {
-		const range = typeConverters.Range.fromTextSpan(span.textSpan);
-		const kind = TypeScriptFoldingProvider.getFoldingRangeKind(span);
+	): vscode.FoldingRAnge | undefined {
+		const rAnge = typeConverters.RAnge.fromTextSpAn(spAn.textSpAn);
+		const kind = TypeScriptFoldingProvider.getFoldingRAngeKind(spAn);
 
-		// Workaround for #49904
-		if (span.kind === 'comment') {
-			const line = document.lineAt(range.start.line).text;
-			if (line.match(/\/\/\s*#endregion/gi)) {
+		// WorkAround for #49904
+		if (spAn.kind === 'comment') {
+			const line = document.lineAt(rAnge.stArt.line).text;
+			if (line.mAtch(/\/\/\s*#endregion/gi)) {
 				return undefined;
 			}
 		}
 
-		const start = range.start.line;
-		// workaround for #47240
-		const end = (range.end.character > 0 && ['}', ']'].includes(document.getText(new vscode.Range(range.end.translate(0, -1), range.end))))
-			? Math.max(range.end.line - 1, range.start.line)
-			: range.end.line;
+		const stArt = rAnge.stArt.line;
+		// workAround for #47240
+		const end = (rAnge.end.chArActer > 0 && ['}', ']'].includes(document.getText(new vscode.RAnge(rAnge.end.trAnslAte(0, -1), rAnge.end))))
+			? MAth.mAx(rAnge.end.line - 1, rAnge.stArt.line)
+			: rAnge.end.line;
 
-		return new vscode.FoldingRange(start, end, kind);
+		return new vscode.FoldingRAnge(stArt, end, kind);
 	}
 
-	private static getFoldingRangeKind(span: Proto.OutliningSpan): vscode.FoldingRangeKind | undefined {
-		switch (span.kind) {
-			case 'comment': return vscode.FoldingRangeKind.Comment;
-			case 'region': return vscode.FoldingRangeKind.Region;
-			case 'imports': return vscode.FoldingRangeKind.Imports;
-			case 'code':
-			default: return undefined;
+	privAte stAtic getFoldingRAngeKind(spAn: Proto.OutliningSpAn): vscode.FoldingRAngeKind | undefined {
+		switch (spAn.kind) {
+			cAse 'comment': return vscode.FoldingRAngeKind.Comment;
+			cAse 'region': return vscode.FoldingRAngeKind.Region;
+			cAse 'imports': return vscode.FoldingRAngeKind.Imports;
+			cAse 'code':
+			defAult: return undefined;
 		}
 	}
 }
@@ -76,11 +76,11 @@ class TypeScriptFoldingProvider implements vscode.FoldingRangeProvider {
 export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
-): vscode.Disposable {
-	return conditionalRegistration([
+): vscode.DisposAble {
+	return conditionAlRegistrAtion([
 		requireMinVersion(client, TypeScriptFoldingProvider.minVersion),
 	], () => {
-		return vscode.languages.registerFoldingRangeProvider(selector.syntax,
+		return vscode.lAnguAges.registerFoldingRAngeProvider(selector.syntAx,
 			new TypeScriptFoldingProvider(client));
 	});
 }

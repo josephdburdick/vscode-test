@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-export class Editors {
+export clAss Editors {
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	async saveOpenedFile(): Promise<any> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+s');
+	Async sAveOpenedFile(): Promise<Any> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+s');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+s');
+			AwAit this.code.dispAtchKeybinding('ctrl+s');
 		}
 	}
 
-	async selectTab(fileName: string): Promise<void> {
-		await this.code.waitAndClick(`.tabs-container div.tab[data-resource-name$="${fileName}"]`);
-		await this.waitForEditorFocus(fileName);
+	Async selectTAb(fileNAme: string): Promise<void> {
+		AwAit this.code.wAitAndClick(`.tAbs-contAiner div.tAb[dAtA-resource-nAme$="${fileNAme}"]`);
+		AwAit this.wAitForEditorFocus(fileNAme);
 	}
 
-	async waitForActiveEditor(fileName: string): Promise<any> {
-		const selector = `.editor-instance .monaco-editor[data-uri$="${fileName}"] textarea`;
-		return this.code.waitForActiveElement(selector);
+	Async wAitForActiveEditor(fileNAme: string): Promise<Any> {
+		const selector = `.editor-instAnce .monAco-editor[dAtA-uri$="${fileNAme}"] textAreA`;
+		return this.code.wAitForActiveElement(selector);
 	}
 
-	async waitForEditorFocus(fileName: string): Promise<void> {
-		await this.waitForActiveTab(fileName);
-		await this.waitForActiveEditor(fileName);
+	Async wAitForEditorFocus(fileNAme: string): Promise<void> {
+		AwAit this.wAitForActiveTAb(fileNAme);
+		AwAit this.wAitForActiveEditor(fileNAme);
 	}
 
-	async waitForActiveTab(fileName: string, isDirty: boolean = false): Promise<void> {
-		await this.code.waitForElement(`.tabs-container div.tab.active${isDirty ? '.dirty' : ''}[aria-selected="true"][data-resource-name$="${fileName}"]`);
+	Async wAitForActiveTAb(fileNAme: string, isDirty: booleAn = fAlse): Promise<void> {
+		AwAit this.code.wAitForElement(`.tAbs-contAiner div.tAb.Active${isDirty ? '.dirty' : ''}[AriA-selected="true"][dAtA-resource-nAme$="${fileNAme}"]`);
 	}
 
-	async waitForTab(fileName: string, isDirty: boolean = false): Promise<void> {
-		await this.code.waitForElement(`.tabs-container div.tab${isDirty ? '.dirty' : ''}[data-resource-name$="${fileName}"]`);
+	Async wAitForTAb(fileNAme: string, isDirty: booleAn = fAlse): Promise<void> {
+		AwAit this.code.wAitForElement(`.tAbs-contAiner div.tAb${isDirty ? '.dirty' : ''}[dAtA-resource-nAme$="${fileNAme}"]`);
 	}
 
-	async newUntitledFile(): Promise<void> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+n');
+	Async newUntitledFile(): Promise<void> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+n');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+n');
+			AwAit this.code.dispAtchKeybinding('ctrl+n');
 		}
 
-		await this.waitForEditorFocus('Untitled-1');
+		AwAit this.wAitForEditorFocus('Untitled-1');
 	}
 }

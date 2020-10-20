@@ -1,28 +1,28 @@
 <html>
-<head>
-	<meta charset="utf-8">
+<heAd>
+	<metA chArset="utf-8">
 	<title>VSCode Tests</title>
-	<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
-</head>
+	<link href="https://cdn.rAwgit.com/mochAjs/mochA/2.2.5/mochA.css" rel="stylesheet" />
+</heAd>
 <body>
-	<div id="mocha"></div>
+	<div id="mochA"></div>
 
-	<script src="/out/vs/loader.js"></script>
-	<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+	<script src="/out/vs/loAder.js"></script>
+	<script src="https://cdn.rAwgit.com/mochAjs/mochA/2.2.5/mochA.js"></script>
 
 	<script>
-		mocha.setup('tdd');
+		mochA.setup('tdd');
 
 		require.config({
-			baseUrl: '/out',
-			paths: {
-				assert: '/test/unit/assert.js',
+			bAseUrl: '/out',
+			pAths: {
+				Assert: '/test/unit/Assert.js',
 				sinon: '/node_modules/sinon/pkg/sinon-1.17.7.js'
 			}
 		});
 
 		require({{ modules }}, function () {
-			mocha.run();
+			mochA.run();
 		});
 	</script>
 </body>

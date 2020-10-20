@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { localize } from 'vs/nls';
-import { isWindows, isWeb } from 'vs/base/common/platform';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions, ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { locAlize } from 'vs/nls';
+import { isWindows, isWeb } from 'vs/bAse/common/plAtform';
 
-const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
-configurationRegistry.registerConfiguration({
-	id: 'update',
+const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
+configurAtionRegistry.registerConfigurAtion({
+	id: 'updAte',
 	order: 15,
-	title: localize('updateConfigurationTitle', "Update"),
+	title: locAlize('updAteConfigurAtionTitle', "UpdAte"),
 	type: 'object',
 	properties: {
-		'update.mode': {
+		'updAte.mode': {
 			type: 'string',
-			enum: ['none', 'manual', 'start', 'default'],
-			default: 'default',
-			scope: ConfigurationScope.APPLICATION,
-			description: localize('updateMode', "Configure whether you receive automatic updates. Requires a restart after change. The updates are fetched from a Microsoft online service."),
-			tags: ['usesOnlineServices'],
+			enum: ['none', 'mAnuAl', 'stArt', 'defAult'],
+			defAult: 'defAult',
+			scope: ConfigurAtionScope.APPLICATION,
+			description: locAlize('updAteMode', "Configure whether you receive AutomAtic updAtes. Requires A restArt After chAnge. The updAtes Are fetched from A Microsoft online service."),
+			tAgs: ['usesOnlineServices'],
 			enumDescriptions: [
-				localize('none', "Disable updates."),
-				localize('manual', "Disable automatic background update checks. Updates will be available if you manually check for updates."),
-				localize('start', "Check for updates only on startup. Disable automatic background update checks."),
-				localize('default', "Enable automatic update checks. Code will check for updates automatically and periodically.")
+				locAlize('none', "DisAble updAtes."),
+				locAlize('mAnuAl', "DisAble AutomAtic bAckground updAte checks. UpdAtes will be AvAilAble if you mAnuAlly check for updAtes."),
+				locAlize('stArt', "Check for updAtes only on stArtup. DisAble AutomAtic bAckground updAte checks."),
+				locAlize('defAult', "EnAble AutomAtic updAte checks. Code will check for updAtes AutomAticAlly And periodicAlly.")
 			]
 		},
-		'update.channel': {
+		'updAte.chAnnel': {
 			type: 'string',
-			default: 'default',
-			scope: ConfigurationScope.APPLICATION,
-			description: localize('updateMode', "Configure whether you receive automatic updates. Requires a restart after change. The updates are fetched from a Microsoft online service."),
-			deprecationMessage: localize('deprecated', "This setting is deprecated, please use '{0}' instead.", 'update.mode')
+			defAult: 'defAult',
+			scope: ConfigurAtionScope.APPLICATION,
+			description: locAlize('updAteMode', "Configure whether you receive AutomAtic updAtes. Requires A restArt After chAnge. The updAtes Are fetched from A Microsoft online service."),
+			deprecAtionMessAge: locAlize('deprecAted', "This setting is deprecAted, pleAse use '{0}' insteAd.", 'updAte.mode')
 		},
-		'update.enableWindowsBackgroundUpdates': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.APPLICATION,
-			title: localize('enableWindowsBackgroundUpdatesTitle', "Enable Background Updates on Windows"),
-			description: localize('enableWindowsBackgroundUpdates', "Enable to download and install new VS Code Versions in the background on Windows"),
+		'updAte.enAbleWindowsBAckgroundUpdAtes': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.APPLICATION,
+			title: locAlize('enAbleWindowsBAckgroundUpdAtesTitle', "EnAble BAckground UpdAtes on Windows"),
+			description: locAlize('enAbleWindowsBAckgroundUpdAtes', "EnAble to downloAd And instAll new VS Code Versions in the bAckground on Windows"),
 			included: isWindows && !isWeb
 		},
-		'update.showReleaseNotes': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.APPLICATION,
-			description: localize('showReleaseNotes', "Show Release Notes after an update. The Release Notes are fetched from a Microsoft online service."),
-			tags: ['usesOnlineServices']
+		'updAte.showReleAseNotes': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.APPLICATION,
+			description: locAlize('showReleAseNotes', "Show ReleAse Notes After An updAte. The ReleAse Notes Are fetched from A Microsoft online service."),
+			tAgs: ['usesOnlineServices']
 		}
 	}
 });

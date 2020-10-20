@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
 
-export function setupTerminalCommands(): void {
-	registerOpenTerminalAtIndexCommands();
+export function setupTerminAlCommAnds(): void {
+	registerOpenTerminAlAtIndexCommAnds();
 }
 
-function registerOpenTerminalAtIndexCommands(): void {
+function registerOpenTerminAlAtIndexCommAnds(): void {
 	for (let i = 0; i < 9; i++) {
-		const terminalIndex = i;
+		const terminAlIndex = i;
 		const visibleIndex = i + 1;
 
-		KeybindingsRegistry.registerCommandAndKeybindingRule({
-			id: `workbench.action.terminal.focusAtIndex${visibleIndex}`,
+		KeybindingsRegistry.registerCommAndAndKeybindingRule({
+			id: `workbench.Action.terminAl.focusAtIndex${visibleIndex}`,
 			weight: KeybindingWeight.WorkbenchContrib,
 			when: undefined,
-			primary: 0,
-			handler: accessor => {
-				const terminalService = accessor.get(ITerminalService);
-				terminalService.setActiveInstanceByIndex(terminalIndex);
-				return terminalService.showPanel(true);
+			primAry: 0,
+			hAndler: Accessor => {
+				const terminAlService = Accessor.get(ITerminAlService);
+				terminAlService.setActiveInstAnceByIndex(terminAlIndex);
+				return terminAlService.showPAnel(true);
 			}
 		});
 	}

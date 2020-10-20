@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Event, EventEmitter } from 'vscode';
 
 /**
- * The severity level of a log message
+ * The severity level of A log messAge
  */
 export enum LogLevel {
-	Trace = 1,
+	TrAce = 1,
 	Debug = 2,
 	Info = 3,
-	Warning = 4,
+	WArning = 4,
 	Error = 5,
-	Critical = 6,
+	CriticAl = 6,
 	Off = 7
 }
 
 let _logLevel: LogLevel = LogLevel.Info;
-const _onDidChangeLogLevel = new EventEmitter<LogLevel>();
+const _onDidChAngeLogLevel = new EventEmitter<LogLevel>();
 
 export const Log = {
 	/**
@@ -38,13 +38,13 @@ export const Log = {
 		}
 
 		_logLevel = logLevel;
-		_onDidChangeLogLevel.fire(logLevel);
+		_onDidChAngeLogLevel.fire(logLevel);
 	},
 
 	/**
-	 * An [event](#Event) that fires when the log level has changed.
+	 * An [event](#Event) thAt fires when the log level hAs chAnged.
 	 */
-	get onDidChangeLogLevel(): Event<LogLevel> {
-		return _onDidChangeLogLevel.event;
+	get onDidChAngeLogLevel(): Event<LogLevel> {
+		return _onDidChAngeLogLevel.event;
 	}
 };

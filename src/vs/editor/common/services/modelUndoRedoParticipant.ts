@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { IUndoRedoDelegate, MultiModelEditStackElement } from 'vs/editor/common/model/editStack';
+import { DisposAble, IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { IUndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { IUndoRedoDelegAte, MultiModelEditStAckElement } from 'vs/editor/common/model/editStAck';
 
-export class ModelUndoRedoParticipant extends Disposable implements IUndoRedoDelegate {
+export clAss ModelUndoRedoPArticipAnt extends DisposAble implements IUndoRedoDelegAte {
 	constructor(
-		@IModelService private readonly _modelService: IModelService,
-		@ITextModelService private readonly _textModelService: ITextModelService,
-		@IUndoRedoService private readonly _undoRedoService: IUndoRedoService,
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@ITextModelService privAte reAdonly _textModelService: ITextModelService,
+		@IUndoRedoService privAte reAdonly _undoRedoService: IUndoRedoService,
 	) {
 		super();
 		this._register(this._modelService.onModelRemoved((model) => {
-			// a model will get disposed, so let's check if the undo redo stack is maintained
+			// A model will get disposed, so let's check if the undo redo stAck is mAintAined
 			const elements = this._undoRedoService.getElements(model.uri);
-			if (elements.past.length === 0 && elements.future.length === 0) {
+			if (elements.pAst.length === 0 && elements.future.length === 0) {
 				return;
 			}
-			for (const element of elements.past) {
-				if (element instanceof MultiModelEditStackElement) {
-					element.setDelegate(this);
+			for (const element of elements.pAst) {
+				if (element instAnceof MultiModelEditStAckElement) {
+					element.setDelegAte(this);
 				}
 			}
 			for (const element of elements.future) {
-				if (element instanceof MultiModelEditStackElement) {
-					element.setDelegate(this);
+				if (element instAnceof MultiModelEditStAckElement) {
+					element.setDelegAte(this);
 				}
 			}
 		}));
 	}
 
-	public prepareUndoRedo(element: MultiModelEditStackElement): IDisposable | Promise<IDisposable> {
-		// Load all the needed text models
+	public prepAreUndoRedo(element: MultiModelEditStAckElement): IDisposAble | Promise<IDisposAble> {
+		// LoAd All the needed text models
 		const missingModels = element.getMissingModels();
 		if (missingModels.length === 0) {
-			// All models are available!
-			return Disposable.None;
+			// All models Are AvAilAble!
+			return DisposAble.None;
 		}
 
-		const disposablesPromises = missingModels.map(async (uri) => {
+		const disposAblesPromises = missingModels.mAp(Async (uri) => {
 			try {
-				const reference = await this._textModelService.createModelReference(uri);
-				return <IDisposable>reference;
-			} catch (err) {
-				// This model could not be loaded, maybe it was deleted in the meantime?
-				return Disposable.None;
+				const reference = AwAit this._textModelService.creAteModelReference(uri);
+				return <IDisposAble>reference;
+			} cAtch (err) {
+				// This model could not be loAded, mAybe it wAs deleted in the meAntime?
+				return DisposAble.None;
 			}
 		});
 
-		return Promise.all(disposablesPromises).then(disposables => {
+		return Promise.All(disposAblesPromises).then(disposAbles => {
 			return {
-				dispose: () => dispose(disposables)
+				dispose: () => dispose(disposAbles)
 			};
 		});
 	}

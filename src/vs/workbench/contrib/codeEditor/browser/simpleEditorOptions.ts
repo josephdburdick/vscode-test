@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
@@ -9,33 +9,33 @@ import { ContextMenuController } from 'vs/editor/contrib/contextmenu/contextmenu
 import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
 import { SuggestController } from 'vs/editor/contrib/suggest/suggestController';
 import { MenuPreventer } from 'vs/workbench/contrib/codeEditor/browser/menuPreventer';
-import { SelectionClipboardContributionID } from 'vs/workbench/contrib/codeEditor/browser/selectionClipboard';
-import { TabCompletionController } from 'vs/workbench/contrib/snippets/browser/tabCompletion';
+import { SelectionClipboArdContributionID } from 'vs/workbench/contrib/codeEditor/browser/selectionClipboArd';
+import { TAbCompletionController } from 'vs/workbench/contrib/snippets/browser/tAbCompletion';
 import { EditorExtensionsRegistry } from 'vs/editor/browser/editorExtensions';
 
 export function getSimpleEditorOptions(): IEditorOptions {
 	return {
-		wordWrap: 'on',
-		overviewRulerLanes: 0,
-		glyphMargin: false,
+		wordWrAp: 'on',
+		overviewRulerLAnes: 0,
+		glyphMArgin: fAlse,
 		lineNumbers: 'off',
-		folding: false,
-		selectOnLineNumbers: false,
+		folding: fAlse,
+		selectOnLineNumbers: fAlse,
 		hideCursorInOverviewRuler: true,
-		selectionHighlight: false,
-		scrollbar: {
-			horizontal: 'hidden'
+		selectionHighlight: fAlse,
+		scrollbAr: {
+			horizontAl: 'hidden'
 		},
-		lineDecorationsWidth: 0,
-		overviewRulerBorder: false,
-		scrollBeyondLastLine: false,
+		lineDecorAtionsWidth: 0,
+		overviewRulerBorder: fAlse,
+		scrollBeyondLAstLine: fAlse,
 		renderLineHighlight: 'none',
 		fixedOverflowWidgets: true,
-		acceptSuggestionOnEnter: 'smart',
-		minimap: {
-			enabled: false
+		AcceptSuggestionOnEnter: 'smArt',
+		minimAp: {
+			enAbled: fAlse
 		},
-		renderIndentGuides: false
+		renderIndentGuides: fAlse
 	};
 }
 
@@ -44,11 +44,11 @@ export function getSimpleCodeEditorWidgetOptions(): ICodeEditorWidgetOptions {
 		isSimpleWidget: true,
 		contributions: EditorExtensionsRegistry.getSomeEditorContributions([
 			MenuPreventer.ID,
-			SelectionClipboardContributionID,
+			SelectionClipboArdContributionID,
 			ContextMenuController.ID,
 			SuggestController.ID,
 			SnippetController2.ID,
-			TabCompletionController.ID,
+			TAbCompletionController.ID,
 		])
 	};
 }

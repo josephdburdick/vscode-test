@@ -1,318 +1,318 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as objects from 'vs/base/common/objects';
-import * as arrays from 'vs/base/common/arrays';
-import { IEditorOptions, editorOptionsRegistry, ValidatedEditorOptions, IEnvironmentalOptions, IComputedEditorOptions, ConfigurationChangedEvent, EDITOR_MODEL_DEFAULTS, EditorOption, FindComputedEditorOptionValueById, ComputeOptionsMemory } from 'vs/editor/common/config/editorOptions';
+import * As nls from 'vs/nls';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import * As objects from 'vs/bAse/common/objects';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { IEditorOptions, editorOptionsRegistry, VAlidAtedEditorOptions, IEnvironmentAlOptions, IComputedEditorOptions, ConfigurAtionChAngedEvent, EDITOR_MODEL_DEFAULTS, EditorOption, FindComputedEditorOptionVAlueById, ComputeOptionsMemory } from 'vs/editor/common/config/editorOptions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
-import { BareFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
-import { IConfiguration, IDimension } from 'vs/editor/common/editorCommon';
-import { ConfigurationScope, Extensions, IConfigurationNode, IConfigurationRegistry, IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
-import { forEach } from 'vs/base/common/collections';
+import { BAreFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
+import { IConfigurAtion, IDimension } from 'vs/editor/common/editorCommon';
+import { ConfigurAtionScope, Extensions, IConfigurAtionNode, IConfigurAtionRegistry, IConfigurAtionPropertySchemA } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { AccessibilitySupport } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { forEAch } from 'vs/bAse/common/collections';
 
 /**
- * Control what pressing Tab does.
- * If it is false, pressing Tab or Shift-Tab will be handled by the editor.
- * If it is true, pressing Tab or Shift-Tab will move the browser focus.
- * Defaults to false.
+ * Control whAt pressing TAb does.
+ * If it is fAlse, pressing TAb or Shift-TAb will be hAndled by the editor.
+ * If it is true, pressing TAb or Shift-TAb will move the browser focus.
+ * DefAults to fAlse.
  */
-export interface ITabFocus {
-	onDidChangeTabFocus: Event<boolean>;
-	getTabFocusMode(): boolean;
-	setTabFocusMode(tabFocusMode: boolean): void;
+export interfAce ITAbFocus {
+	onDidChAngeTAbFocus: Event<booleAn>;
+	getTAbFocusMode(): booleAn;
+	setTAbFocusMode(tAbFocusMode: booleAn): void;
 }
 
-export const TabFocus: ITabFocus = new class implements ITabFocus {
-	private _tabFocus: boolean = false;
+export const TAbFocus: ITAbFocus = new clAss implements ITAbFocus {
+	privAte _tAbFocus: booleAn = fAlse;
 
-	private readonly _onDidChangeTabFocus = new Emitter<boolean>();
-	public readonly onDidChangeTabFocus: Event<boolean> = this._onDidChangeTabFocus.event;
+	privAte reAdonly _onDidChAngeTAbFocus = new Emitter<booleAn>();
+	public reAdonly onDidChAngeTAbFocus: Event<booleAn> = this._onDidChAngeTAbFocus.event;
 
-	public getTabFocusMode(): boolean {
-		return this._tabFocus;
+	public getTAbFocusMode(): booleAn {
+		return this._tAbFocus;
 	}
 
-	public setTabFocusMode(tabFocusMode: boolean): void {
-		if (this._tabFocus === tabFocusMode) {
+	public setTAbFocusMode(tAbFocusMode: booleAn): void {
+		if (this._tAbFocus === tAbFocusMode) {
 			return;
 		}
 
-		this._tabFocus = tabFocusMode;
-		this._onDidChangeTabFocus.fire(this._tabFocus);
+		this._tAbFocus = tAbFocusMode;
+		this._onDidChAngeTAbFocus.fire(this._tAbFocus);
 	}
 };
 
-export interface IEnvConfiguration {
-	extraEditorClassName: string;
+export interfAce IEnvConfigurAtion {
+	extrAEditorClAssNAme: string;
 	outerWidth: number;
 	outerHeight: number;
-	emptySelectionClipboard: boolean;
-	pixelRatio: number;
+	emptySelectionClipboArd: booleAn;
+	pixelRAtio: number;
 	zoomLevel: number;
-	accessibilitySupport: AccessibilitySupport;
+	AccessibilitySupport: AccessibilitySupport;
 }
 
-const hasOwnProperty = Object.hasOwnProperty;
+const hAsOwnProperty = Object.hAsOwnProperty;
 
-export class ComputedEditorOptions implements IComputedEditorOptions {
-	private readonly _values: any[] = [];
-	public _read<T>(id: EditorOption): T {
-		return this._values[id];
+export clAss ComputedEditorOptions implements IComputedEditorOptions {
+	privAte reAdonly _vAlues: Any[] = [];
+	public _reAd<T>(id: EditorOption): T {
+		return this._vAlues[id];
 	}
-	public get<T extends EditorOption>(id: T): FindComputedEditorOptionValueById<T> {
-		return this._values[id];
+	public get<T extends EditorOption>(id: T): FindComputedEditorOptionVAlueById<T> {
+		return this._vAlues[id];
 	}
-	public _write<T>(id: EditorOption, value: T): void {
-		this._values[id] = value;
-	}
-}
-
-class RawEditorOptions {
-	private readonly _values: any[] = [];
-	public _read<T>(id: EditorOption): T | undefined {
-		return this._values[id];
-	}
-	public _write<T>(id: EditorOption, value: T | undefined): void {
-		this._values[id] = value;
+	public _write<T>(id: EditorOption, vAlue: T): void {
+		this._vAlues[id] = vAlue;
 	}
 }
 
-class EditorConfiguration2 {
-	public static readOptions(_options: IEditorOptions): RawEditorOptions {
-		const options: { [key: string]: any; } = _options;
-		const result = new RawEditorOptions();
+clAss RAwEditorOptions {
+	privAte reAdonly _vAlues: Any[] = [];
+	public _reAd<T>(id: EditorOption): T | undefined {
+		return this._vAlues[id];
+	}
+	public _write<T>(id: EditorOption, vAlue: T | undefined): void {
+		this._vAlues[id] = vAlue;
+	}
+}
+
+clAss EditorConfigurAtion2 {
+	public stAtic reAdOptions(_options: IEditorOptions): RAwEditorOptions {
+		const options: { [key: string]: Any; } = _options;
+		const result = new RAwEditorOptions();
 		for (const editorOption of editorOptionsRegistry) {
-			const value = (editorOption.name === '_never_' ? undefined : options[editorOption.name]);
-			result._write(editorOption.id, value);
+			const vAlue = (editorOption.nAme === '_never_' ? undefined : options[editorOption.nAme]);
+			result._write(editorOption.id, vAlue);
 		}
 		return result;
 	}
 
-	public static validateOptions(options: RawEditorOptions): ValidatedEditorOptions {
-		const result = new ValidatedEditorOptions();
+	public stAtic vAlidAteOptions(options: RAwEditorOptions): VAlidAtedEditorOptions {
+		const result = new VAlidAtedEditorOptions();
 		for (const editorOption of editorOptionsRegistry) {
-			result._write(editorOption.id, editorOption.validate(options._read(editorOption.id)));
+			result._write(editorOption.id, editorOption.vAlidAte(options._reAd(editorOption.id)));
 		}
 		return result;
 	}
 
-	public static computeOptions(options: ValidatedEditorOptions, env: IEnvironmentalOptions): ComputedEditorOptions {
+	public stAtic computeOptions(options: VAlidAtedEditorOptions, env: IEnvironmentAlOptions): ComputedEditorOptions {
 		const result = new ComputedEditorOptions();
 		for (const editorOption of editorOptionsRegistry) {
-			result._write(editorOption.id, editorOption.compute(env, result, options._read(editorOption.id)));
+			result._write(editorOption.id, editorOption.compute(env, result, options._reAd(editorOption.id)));
 		}
 		return result;
 	}
 
-	private static _deepEquals<T>(a: T, b: T): boolean {
-		if (typeof a !== 'object' || typeof b !== 'object') {
-			return (a === b);
+	privAte stAtic _deepEquAls<T>(A: T, b: T): booleAn {
+		if (typeof A !== 'object' || typeof b !== 'object') {
+			return (A === b);
 		}
-		if (Array.isArray(a) || Array.isArray(b)) {
-			return (Array.isArray(a) && Array.isArray(b) ? arrays.equals(a, b) : false);
+		if (ArrAy.isArrAy(A) || ArrAy.isArrAy(b)) {
+			return (ArrAy.isArrAy(A) && ArrAy.isArrAy(b) ? ArrAys.equAls(A, b) : fAlse);
 		}
-		for (let key in a) {
-			if (!EditorConfiguration2._deepEquals(a[key], b[key])) {
-				return false;
+		for (let key in A) {
+			if (!EditorConfigurAtion2._deepEquAls(A[key], b[key])) {
+				return fAlse;
 			}
 		}
 		return true;
 	}
 
-	public static checkEquals(a: ComputedEditorOptions, b: ComputedEditorOptions): ConfigurationChangedEvent | null {
-		const result: boolean[] = [];
-		let somethingChanged = false;
+	public stAtic checkEquAls(A: ComputedEditorOptions, b: ComputedEditorOptions): ConfigurAtionChAngedEvent | null {
+		const result: booleAn[] = [];
+		let somethingChAnged = fAlse;
 		for (const editorOption of editorOptionsRegistry) {
-			const changed = !EditorConfiguration2._deepEquals(a._read(editorOption.id), b._read(editorOption.id));
-			result[editorOption.id] = changed;
-			if (changed) {
-				somethingChanged = true;
+			const chAnged = !EditorConfigurAtion2._deepEquAls(A._reAd(editorOption.id), b._reAd(editorOption.id));
+			result[editorOption.id] = chAnged;
+			if (chAnged) {
+				somethingChAnged = true;
 			}
 		}
-		return (somethingChanged ? new ConfigurationChangedEvent(result) : null);
+		return (somethingChAnged ? new ConfigurAtionChAngedEvent(result) : null);
 	}
 }
 
 /**
- * Compatibility with old options
+ * CompAtibility with old options
  */
-function migrateOptions(options: IEditorOptions): void {
-	const wordWrap = options.wordWrap;
-	if (<any>wordWrap === true) {
-		options.wordWrap = 'on';
-	} else if (<any>wordWrap === false) {
-		options.wordWrap = 'off';
+function migrAteOptions(options: IEditorOptions): void {
+	const wordWrAp = options.wordWrAp;
+	if (<Any>wordWrAp === true) {
+		options.wordWrAp = 'on';
+	} else if (<Any>wordWrAp === fAlse) {
+		options.wordWrAp = 'off';
 	}
 
 	const lineNumbers = options.lineNumbers;
-	if (<any>lineNumbers === true) {
+	if (<Any>lineNumbers === true) {
 		options.lineNumbers = 'on';
-	} else if (<any>lineNumbers === false) {
+	} else if (<Any>lineNumbers === fAlse) {
 		options.lineNumbers = 'off';
 	}
 
-	const autoClosingBrackets = options.autoClosingBrackets;
-	if (<any>autoClosingBrackets === false) {
-		options.autoClosingBrackets = 'never';
-		options.autoClosingQuotes = 'never';
-		options.autoSurround = 'never';
+	const AutoClosingBrAckets = options.AutoClosingBrAckets;
+	if (<Any>AutoClosingBrAckets === fAlse) {
+		options.AutoClosingBrAckets = 'never';
+		options.AutoClosingQuotes = 'never';
+		options.AutoSurround = 'never';
 	}
 
 	const cursorBlinking = options.cursorBlinking;
-	if (<any>cursorBlinking === 'visible') {
+	if (<Any>cursorBlinking === 'visible') {
 		options.cursorBlinking = 'solid';
 	}
 
-	const renderWhitespace = options.renderWhitespace;
-	if (<any>renderWhitespace === true) {
-		options.renderWhitespace = 'boundary';
-	} else if (<any>renderWhitespace === false) {
-		options.renderWhitespace = 'none';
+	const renderWhitespAce = options.renderWhitespAce;
+	if (<Any>renderWhitespAce === true) {
+		options.renderWhitespAce = 'boundAry';
+	} else if (<Any>renderWhitespAce === fAlse) {
+		options.renderWhitespAce = 'none';
 	}
 
 	const renderLineHighlight = options.renderLineHighlight;
-	if (<any>renderLineHighlight === true) {
+	if (<Any>renderLineHighlight === true) {
 		options.renderLineHighlight = 'line';
-	} else if (<any>renderLineHighlight === false) {
+	} else if (<Any>renderLineHighlight === fAlse) {
 		options.renderLineHighlight = 'none';
 	}
 
-	const acceptSuggestionOnEnter = options.acceptSuggestionOnEnter;
-	if (<any>acceptSuggestionOnEnter === true) {
-		options.acceptSuggestionOnEnter = 'on';
-	} else if (<any>acceptSuggestionOnEnter === false) {
-		options.acceptSuggestionOnEnter = 'off';
+	const AcceptSuggestionOnEnter = options.AcceptSuggestionOnEnter;
+	if (<Any>AcceptSuggestionOnEnter === true) {
+		options.AcceptSuggestionOnEnter = 'on';
+	} else if (<Any>AcceptSuggestionOnEnter === fAlse) {
+		options.AcceptSuggestionOnEnter = 'off';
 	}
 
-	const tabCompletion = options.tabCompletion;
-	if (<any>tabCompletion === false) {
-		options.tabCompletion = 'off';
-	} else if (<any>tabCompletion === true) {
-		options.tabCompletion = 'onlySnippets';
+	const tAbCompletion = options.tAbCompletion;
+	if (<Any>tAbCompletion === fAlse) {
+		options.tAbCompletion = 'off';
+	} else if (<Any>tAbCompletion === true) {
+		options.tAbCompletion = 'onlySnippets';
 	}
 
 	const suggest = options.suggest;
-	if (suggest && typeof (<any>suggest).filteredTypes === 'object' && (<any>suggest).filteredTypes) {
-		const mapping: Record<string, string> = {};
-		mapping['method'] = 'showMethods';
-		mapping['function'] = 'showFunctions';
-		mapping['constructor'] = 'showConstructors';
-		mapping['field'] = 'showFields';
-		mapping['variable'] = 'showVariables';
-		mapping['class'] = 'showClasses';
-		mapping['struct'] = 'showStructs';
-		mapping['interface'] = 'showInterfaces';
-		mapping['module'] = 'showModules';
-		mapping['property'] = 'showProperties';
-		mapping['event'] = 'showEvents';
-		mapping['operator'] = 'showOperators';
-		mapping['unit'] = 'showUnits';
-		mapping['value'] = 'showValues';
-		mapping['constant'] = 'showConstants';
-		mapping['enum'] = 'showEnums';
-		mapping['enumMember'] = 'showEnumMembers';
-		mapping['keyword'] = 'showKeywords';
-		mapping['text'] = 'showWords';
-		mapping['color'] = 'showColors';
-		mapping['file'] = 'showFiles';
-		mapping['reference'] = 'showReferences';
-		mapping['folder'] = 'showFolders';
-		mapping['typeParameter'] = 'showTypeParameters';
-		mapping['snippet'] = 'showSnippets';
-		forEach(mapping, entry => {
-			const value = (<any>suggest).filteredTypes[entry.key];
-			if (value === false) {
-				(<any>suggest)[entry.value] = value;
+	if (suggest && typeof (<Any>suggest).filteredTypes === 'object' && (<Any>suggest).filteredTypes) {
+		const mApping: Record<string, string> = {};
+		mApping['method'] = 'showMethods';
+		mApping['function'] = 'showFunctions';
+		mApping['constructor'] = 'showConstructors';
+		mApping['field'] = 'showFields';
+		mApping['vAriAble'] = 'showVAriAbles';
+		mApping['clAss'] = 'showClAsses';
+		mApping['struct'] = 'showStructs';
+		mApping['interfAce'] = 'showInterfAces';
+		mApping['module'] = 'showModules';
+		mApping['property'] = 'showProperties';
+		mApping['event'] = 'showEvents';
+		mApping['operAtor'] = 'showOperAtors';
+		mApping['unit'] = 'showUnits';
+		mApping['vAlue'] = 'showVAlues';
+		mApping['constAnt'] = 'showConstAnts';
+		mApping['enum'] = 'showEnums';
+		mApping['enumMember'] = 'showEnumMembers';
+		mApping['keyword'] = 'showKeywords';
+		mApping['text'] = 'showWords';
+		mApping['color'] = 'showColors';
+		mApping['file'] = 'showFiles';
+		mApping['reference'] = 'showReferences';
+		mApping['folder'] = 'showFolders';
+		mApping['typePArAmeter'] = 'showTypePArAmeters';
+		mApping['snippet'] = 'showSnippets';
+		forEAch(mApping, entry => {
+			const vAlue = (<Any>suggest).filteredTypes[entry.key];
+			if (vAlue === fAlse) {
+				(<Any>suggest)[entry.vAlue] = vAlue;
 			}
 		});
-		// delete (<any>suggest).filteredTypes;
+		// delete (<Any>suggest).filteredTypes;
 	}
 
 	const hover = options.hover;
-	if (<any>hover === true) {
+	if (<Any>hover === true) {
 		options.hover = {
-			enabled: true
+			enAbled: true
 		};
-	} else if (<any>hover === false) {
+	} else if (<Any>hover === fAlse) {
 		options.hover = {
-			enabled: false
+			enAbled: fAlse
 		};
 	}
 
-	const parameterHints = options.parameterHints;
-	if (<any>parameterHints === true) {
-		options.parameterHints = {
-			enabled: true
+	const pArAmeterHints = options.pArAmeterHints;
+	if (<Any>pArAmeterHints === true) {
+		options.pArAmeterHints = {
+			enAbled: true
 		};
-	} else if (<any>parameterHints === false) {
-		options.parameterHints = {
-			enabled: false
+	} else if (<Any>pArAmeterHints === fAlse) {
+		options.pArAmeterHints = {
+			enAbled: fAlse
 		};
 	}
 
-	const autoIndent = options.autoIndent;
-	if (<any>autoIndent === true) {
-		options.autoIndent = 'full';
-	} else if (<any>autoIndent === false) {
-		options.autoIndent = 'advanced';
+	const AutoIndent = options.AutoIndent;
+	if (<Any>AutoIndent === true) {
+		options.AutoIndent = 'full';
+	} else if (<Any>AutoIndent === fAlse) {
+		options.AutoIndent = 'AdvAnced';
 	}
 
-	const matchBrackets = options.matchBrackets;
-	if (<any>matchBrackets === true) {
-		options.matchBrackets = 'always';
-	} else if (<any>matchBrackets === false) {
-		options.matchBrackets = 'never';
+	const mAtchBrAckets = options.mAtchBrAckets;
+	if (<Any>mAtchBrAckets === true) {
+		options.mAtchBrAckets = 'AlwAys';
+	} else if (<Any>mAtchBrAckets === fAlse) {
+		options.mAtchBrAckets = 'never';
 	}
 }
 
-function deepCloneAndMigrateOptions(_options: IEditorOptions): IEditorOptions {
+function deepCloneAndMigrAteOptions(_options: IEditorOptions): IEditorOptions {
 	const options = objects.deepClone(_options);
-	migrateOptions(options);
+	migrAteOptions(options);
 	return options;
 }
 
-export abstract class CommonEditorConfiguration extends Disposable implements IConfiguration {
+export AbstrAct clAss CommonEditorConfigurAtion extends DisposAble implements IConfigurAtion {
 
-	private _onDidChange = this._register(new Emitter<ConfigurationChangedEvent>());
-	public readonly onDidChange: Event<ConfigurationChangedEvent> = this._onDidChange.event;
+	privAte _onDidChAnge = this._register(new Emitter<ConfigurAtionChAngedEvent>());
+	public reAdonly onDidChAnge: Event<ConfigurAtionChAngedEvent> = this._onDidChAnge.event;
 
-	private _onDidChangeFast = this._register(new Emitter<ConfigurationChangedEvent>());
-	public readonly onDidChangeFast: Event<ConfigurationChangedEvent> = this._onDidChangeFast.event;
+	privAte _onDidChAngeFAst = this._register(new Emitter<ConfigurAtionChAngedEvent>());
+	public reAdonly onDidChAngeFAst: Event<ConfigurAtionChAngedEvent> = this._onDidChAngeFAst.event;
 
-	public readonly isSimpleWidget: boolean;
-	private _computeOptionsMemory: ComputeOptionsMemory;
+	public reAdonly isSimpleWidget: booleAn;
+	privAte _computeOptionsMemory: ComputeOptionsMemory;
 	public options!: ComputedEditorOptions;
 
-	private _isDominatedByLongLines: boolean;
-	private _viewLineCount: number;
-	private _lineNumbersDigitCount: number;
+	privAte _isDominAtedByLongLines: booleAn;
+	privAte _viewLineCount: number;
+	privAte _lineNumbersDigitCount: number;
 
-	private _rawOptions: IEditorOptions;
-	private _readOptions: RawEditorOptions;
-	protected _validatedOptions: ValidatedEditorOptions;
+	privAte _rAwOptions: IEditorOptions;
+	privAte _reAdOptions: RAwEditorOptions;
+	protected _vAlidAtedOptions: VAlidAtedEditorOptions;
 
-	constructor(isSimpleWidget: boolean, _options: IEditorOptions) {
+	constructor(isSimpleWidget: booleAn, _options: IEditorOptions) {
 		super();
 		this.isSimpleWidget = isSimpleWidget;
 
-		this._isDominatedByLongLines = false;
+		this._isDominAtedByLongLines = fAlse;
 		this._computeOptionsMemory = new ComputeOptionsMemory();
 		this._viewLineCount = 1;
 		this._lineNumbersDigitCount = 1;
 
-		this._rawOptions = deepCloneAndMigrateOptions(_options);
-		this._readOptions = EditorConfiguration2.readOptions(this._rawOptions);
-		this._validatedOptions = EditorConfiguration2.validateOptions(this._readOptions);
+		this._rAwOptions = deepCloneAndMigrAteOptions(_options);
+		this._reAdOptions = EditorConfigurAtion2.reAdOptions(this._rAwOptions);
+		this._vAlidAtedOptions = EditorConfigurAtion2.vAlidAteOptions(this._reAdOptions);
 
-		this._register(EditorZoom.onDidChangeZoomLevel(_ => this._recomputeOptions()));
-		this._register(TabFocus.onDidChangeTabFocus(_ => this._recomputeOptions()));
+		this._register(EditorZoom.onDidChAngeZoomLevel(_ => this._recomputeOptions()));
+		this._register(TAbFocus.onDidChAngeTAbFocus(_ => this._recomputeOptions()));
 	}
 
 	public observeReferenceElement(dimension?: IDimension): void {
@@ -324,98 +324,98 @@ export abstract class CommonEditorConfiguration extends Disposable implements IC
 
 	protected _recomputeOptions(): void {
 		const oldOptions = this.options;
-		const newOptions = this._computeInternalOptions();
+		const newOptions = this._computeInternAlOptions();
 
 		if (!oldOptions) {
 			this.options = newOptions;
 		} else {
-			const changeEvent = EditorConfiguration2.checkEquals(oldOptions, newOptions);
+			const chAngeEvent = EditorConfigurAtion2.checkEquAls(oldOptions, newOptions);
 
-			if (changeEvent === null) {
-				// nothing changed!
+			if (chAngeEvent === null) {
+				// nothing chAnged!
 				return;
 			}
 
 			this.options = newOptions;
-			this._onDidChangeFast.fire(changeEvent);
-			this._onDidChange.fire(changeEvent);
+			this._onDidChAngeFAst.fire(chAngeEvent);
+			this._onDidChAnge.fire(chAngeEvent);
 		}
 	}
 
-	public getRawOptions(): IEditorOptions {
-		return this._rawOptions;
+	public getRAwOptions(): IEditorOptions {
+		return this._rAwOptions;
 	}
 
-	private _computeInternalOptions(): ComputedEditorOptions {
-		const partialEnv = this._getEnvConfiguration();
-		const bareFontInfo = BareFontInfo.createFromValidatedSettings(this._validatedOptions, partialEnv.zoomLevel, this.isSimpleWidget);
-		const env: IEnvironmentalOptions = {
+	privAte _computeInternAlOptions(): ComputedEditorOptions {
+		const pArtiAlEnv = this._getEnvConfigurAtion();
+		const bAreFontInfo = BAreFontInfo.creAteFromVAlidAtedSettings(this._vAlidAtedOptions, pArtiAlEnv.zoomLevel, this.isSimpleWidget);
+		const env: IEnvironmentAlOptions = {
 			memory: this._computeOptionsMemory,
-			outerWidth: partialEnv.outerWidth,
-			outerHeight: partialEnv.outerHeight,
-			fontInfo: this.readConfiguration(bareFontInfo),
-			extraEditorClassName: partialEnv.extraEditorClassName,
-			isDominatedByLongLines: this._isDominatedByLongLines,
+			outerWidth: pArtiAlEnv.outerWidth,
+			outerHeight: pArtiAlEnv.outerHeight,
+			fontInfo: this.reAdConfigurAtion(bAreFontInfo),
+			extrAEditorClAssNAme: pArtiAlEnv.extrAEditorClAssNAme,
+			isDominAtedByLongLines: this._isDominAtedByLongLines,
 			viewLineCount: this._viewLineCount,
 			lineNumbersDigitCount: this._lineNumbersDigitCount,
-			emptySelectionClipboard: partialEnv.emptySelectionClipboard,
-			pixelRatio: partialEnv.pixelRatio,
-			tabFocusMode: TabFocus.getTabFocusMode(),
-			accessibilitySupport: partialEnv.accessibilitySupport
+			emptySelectionClipboArd: pArtiAlEnv.emptySelectionClipboArd,
+			pixelRAtio: pArtiAlEnv.pixelRAtio,
+			tAbFocusMode: TAbFocus.getTAbFocusMode(),
+			AccessibilitySupport: pArtiAlEnv.AccessibilitySupport
 		};
-		return EditorConfiguration2.computeOptions(this._validatedOptions, env);
+		return EditorConfigurAtion2.computeOptions(this._vAlidAtedOptions, env);
 	}
 
-	private static _subsetEquals(base: { [key: string]: any }, subset: { [key: string]: any }): boolean {
+	privAte stAtic _subsetEquAls(bAse: { [key: string]: Any }, subset: { [key: string]: Any }): booleAn {
 		for (const key in subset) {
-			if (hasOwnProperty.call(subset, key)) {
-				const subsetValue = subset[key];
-				const baseValue = base[key];
+			if (hAsOwnProperty.cAll(subset, key)) {
+				const subsetVAlue = subset[key];
+				const bAseVAlue = bAse[key];
 
-				if (baseValue === subsetValue) {
+				if (bAseVAlue === subsetVAlue) {
 					continue;
 				}
-				if (Array.isArray(baseValue) && Array.isArray(subsetValue)) {
-					if (!arrays.equals(baseValue, subsetValue)) {
-						return false;
+				if (ArrAy.isArrAy(bAseVAlue) && ArrAy.isArrAy(subsetVAlue)) {
+					if (!ArrAys.equAls(bAseVAlue, subsetVAlue)) {
+						return fAlse;
 					}
 					continue;
 				}
-				if (baseValue && typeof baseValue === 'object' && subsetValue && typeof subsetValue === 'object') {
-					if (!this._subsetEquals(baseValue, subsetValue)) {
-						return false;
+				if (bAseVAlue && typeof bAseVAlue === 'object' && subsetVAlue && typeof subsetVAlue === 'object') {
+					if (!this._subsetEquAls(bAseVAlue, subsetVAlue)) {
+						return fAlse;
 					}
 					continue;
 				}
 
-				return false;
+				return fAlse;
 			}
 		}
 		return true;
 	}
 
-	public updateOptions(_newOptions: IEditorOptions): void {
+	public updAteOptions(_newOptions: IEditorOptions): void {
 		if (typeof _newOptions === 'undefined') {
 			return;
 		}
-		const newOptions = deepCloneAndMigrateOptions(_newOptions);
-		if (CommonEditorConfiguration._subsetEquals(this._rawOptions, newOptions)) {
+		const newOptions = deepCloneAndMigrAteOptions(_newOptions);
+		if (CommonEditorConfigurAtion._subsetEquAls(this._rAwOptions, newOptions)) {
 			return;
 		}
-		this._rawOptions = objects.mixin(this._rawOptions, newOptions || {});
-		this._readOptions = EditorConfiguration2.readOptions(this._rawOptions);
-		this._validatedOptions = EditorConfiguration2.validateOptions(this._readOptions);
+		this._rAwOptions = objects.mixin(this._rAwOptions, newOptions || {});
+		this._reAdOptions = EditorConfigurAtion2.reAdOptions(this._rAwOptions);
+		this._vAlidAtedOptions = EditorConfigurAtion2.vAlidAteOptions(this._reAdOptions);
 
 		this._recomputeOptions();
 	}
 
-	public setIsDominatedByLongLines(isDominatedByLongLines: boolean): void {
-		this._isDominatedByLongLines = isDominatedByLongLines;
+	public setIsDominAtedByLongLines(isDominAtedByLongLines: booleAn): void {
+		this._isDominAtedByLongLines = isDominAtedByLongLines;
 		this._recomputeOptions();
 	}
 
-	public setMaxLineNumber(maxLineNumber: number): void {
-		const lineNumbersDigitCount = CommonEditorConfiguration._digitCount(maxLineNumber);
+	public setMAxLineNumber(mAxLineNumber: number): void {
+		const lineNumbersDigitCount = CommonEditorConfigurAtion._digitCount(mAxLineNumber);
 		if (this._lineNumbersDigitCount === lineNumbersDigitCount) {
 			return;
 		}
@@ -431,164 +431,164 @@ export abstract class CommonEditorConfiguration extends Disposable implements IC
 		this._recomputeOptions();
 	}
 
-	private static _digitCount(n: number): number {
+	privAte stAtic _digitCount(n: number): number {
 		let r = 0;
 		while (n) {
-			n = Math.floor(n / 10);
+			n = MAth.floor(n / 10);
 			r++;
 		}
 		return r ? r : 1;
 	}
-	protected abstract _getEnvConfiguration(): IEnvConfiguration;
+	protected AbstrAct _getEnvConfigurAtion(): IEnvConfigurAtion;
 
-	protected abstract readConfiguration(styling: BareFontInfo): FontInfo;
+	protected AbstrAct reAdConfigurAtion(styling: BAreFontInfo): FontInfo;
 
 }
 
-export const editorConfigurationBaseNode = Object.freeze<IConfigurationNode>({
+export const editorConfigurAtionBAseNode = Object.freeze<IConfigurAtionNode>({
 	id: 'editor',
 	order: 5,
 	type: 'object',
-	title: nls.localize('editorConfigurationTitle', "Editor"),
-	scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
+	title: nls.locAlize('editorConfigurAtionTitle', "Editor"),
+	scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
 });
 
-const configurationRegistry = Registry.as<IConfigurationRegistry>(Extensions.Configuration);
-const editorConfiguration: IConfigurationNode = {
-	...editorConfigurationBaseNode,
+const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion);
+const editorConfigurAtion: IConfigurAtionNode = {
+	...editorConfigurAtionBAseNode,
 	properties: {
-		'editor.tabSize': {
+		'editor.tAbSize': {
 			type: 'number',
-			default: EDITOR_MODEL_DEFAULTS.tabSize,
+			defAult: EDITOR_MODEL_DEFAULTS.tAbSize,
 			minimum: 1,
-			markdownDescription: nls.localize('tabSize', "The number of spaces a tab is equal to. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.")
+			mArkdownDescription: nls.locAlize('tAbSize', "The number of spAces A tAb is equAl to. This setting is overridden bAsed on the file contents when `#editor.detectIndentAtion#` is on.")
 		},
 		// 'editor.indentSize': {
-		// 	'anyOf': [
+		// 	'AnyOf': [
 		// 		{
 		// 			type: 'string',
-		// 			enum: ['tabSize']
+		// 			enum: ['tAbSize']
 		// 		},
 		// 		{
 		// 			type: 'number',
 		// 			minimum: 1
 		// 		}
 		// 	],
-		// 	default: 'tabSize',
-		// 	markdownDescription: nls.localize('indentSize', "The number of spaces used for indentation or 'tabSize' to use the value from `#editor.tabSize#`. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.")
+		// 	defAult: 'tAbSize',
+		// 	mArkdownDescription: nls.locAlize('indentSize', "The number of spAces used for indentAtion or 'tAbSize' to use the vAlue from `#editor.tAbSize#`. This setting is overridden bAsed on the file contents when `#editor.detectIndentAtion#` is on.")
 		// },
-		'editor.insertSpaces': {
-			type: 'boolean',
-			default: EDITOR_MODEL_DEFAULTS.insertSpaces,
-			markdownDescription: nls.localize('insertSpaces', "Insert spaces when pressing `Tab`. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.")
+		'editor.insertSpAces': {
+			type: 'booleAn',
+			defAult: EDITOR_MODEL_DEFAULTS.insertSpAces,
+			mArkdownDescription: nls.locAlize('insertSpAces', "Insert spAces when pressing `TAb`. This setting is overridden bAsed on the file contents when `#editor.detectIndentAtion#` is on.")
 		},
-		'editor.detectIndentation': {
-			type: 'boolean',
-			default: EDITOR_MODEL_DEFAULTS.detectIndentation,
-			markdownDescription: nls.localize('detectIndentation', "Controls whether `#editor.tabSize#` and `#editor.insertSpaces#` will be automatically detected when a file is opened based on the file contents.")
+		'editor.detectIndentAtion': {
+			type: 'booleAn',
+			defAult: EDITOR_MODEL_DEFAULTS.detectIndentAtion,
+			mArkdownDescription: nls.locAlize('detectIndentAtion', "Controls whether `#editor.tAbSize#` And `#editor.insertSpAces#` will be AutomAticAlly detected when A file is opened bAsed on the file contents.")
 		},
-		'editor.trimAutoWhitespace': {
-			type: 'boolean',
-			default: EDITOR_MODEL_DEFAULTS.trimAutoWhitespace,
-			description: nls.localize('trimAutoWhitespace', "Remove trailing auto inserted whitespace.")
+		'editor.trimAutoWhitespAce': {
+			type: 'booleAn',
+			defAult: EDITOR_MODEL_DEFAULTS.trimAutoWhitespAce,
+			description: nls.locAlize('trimAutoWhitespAce', "Remove trAiling Auto inserted whitespAce.")
 		},
-		'editor.largeFileOptimizations': {
-			type: 'boolean',
-			default: EDITOR_MODEL_DEFAULTS.largeFileOptimizations,
-			description: nls.localize('largeFileOptimizations', "Special handling for large files to disable certain memory intensive features.")
+		'editor.lArgeFileOptimizAtions': {
+			type: 'booleAn',
+			defAult: EDITOR_MODEL_DEFAULTS.lArgeFileOptimizAtions,
+			description: nls.locAlize('lArgeFileOptimizAtions', "SpeciAl hAndling for lArge files to disAble certAin memory intensive feAtures.")
 		},
-		'editor.wordBasedSuggestions': {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('wordBasedSuggestions', "Controls whether completions should be computed based on words in the document.")
+		'editor.wordBAsedSuggestions': {
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('wordBAsedSuggestions', "Controls whether completions should be computed bAsed on words in the document.")
 		},
-		'editor.semanticHighlighting.enabled': {
-			enum: [true, false, 'configuredByTheme'],
+		'editor.semAnticHighlighting.enAbled': {
+			enum: [true, fAlse, 'configuredByTheme'],
 			enumDescriptions: [
-				nls.localize('semanticHighlighting.true', 'Semantic highlighting enabled for all color themes.'),
-				nls.localize('semanticHighlighting.false', 'Semantic highlighting disabled for all color themes.'),
-				nls.localize('semanticHighlighting.configuredByTheme', 'Semantic highlighting is configured by the current color theme\'s `semanticHighlighting` setting.')
+				nls.locAlize('semAnticHighlighting.true', 'SemAntic highlighting enAbled for All color themes.'),
+				nls.locAlize('semAnticHighlighting.fAlse', 'SemAntic highlighting disAbled for All color themes.'),
+				nls.locAlize('semAnticHighlighting.configuredByTheme', 'SemAntic highlighting is configured by the current color theme\'s `semAnticHighlighting` setting.')
 			],
-			default: 'configuredByTheme',
-			description: nls.localize('semanticHighlighting.enabled', "Controls whether the semanticHighlighting is shown for the languages that support it.")
+			defAult: 'configuredByTheme',
+			description: nls.locAlize('semAnticHighlighting.enAbled', "Controls whether the semAnticHighlighting is shown for the lAnguAges thAt support it.")
 		},
-		'editor.stablePeek': {
-			type: 'boolean',
-			default: false,
-			markdownDescription: nls.localize('stablePeek', "Keep peek editors open even when double clicking their content or when hitting `Escape`.")
+		'editor.stAblePeek': {
+			type: 'booleAn',
+			defAult: fAlse,
+			mArkdownDescription: nls.locAlize('stAblePeek', "Keep peek editors open even when double clicking their content or when hitting `EscApe`.")
 		},
-		'editor.maxTokenizationLineLength': {
+		'editor.mAxTokenizAtionLineLength': {
 			type: 'integer',
-			default: 20_000,
-			description: nls.localize('maxTokenizationLineLength', "Lines above this length will not be tokenized for performance reasons")
+			defAult: 20_000,
+			description: nls.locAlize('mAxTokenizAtionLineLength', "Lines Above this length will not be tokenized for performAnce reAsons")
 		},
-		'diffEditor.maxComputationTime': {
+		'diffEditor.mAxComputAtionTime': {
 			type: 'number',
-			default: 5000,
-			description: nls.localize('maxComputationTime', "Timeout in milliseconds after which diff computation is cancelled. Use 0 for no timeout.")
+			defAult: 5000,
+			description: nls.locAlize('mAxComputAtionTime', "Timeout in milliseconds After which diff computAtion is cAncelled. Use 0 for no timeout.")
 		},
 		'diffEditor.renderSideBySide': {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('sideBySide', "Controls whether the diff editor shows the diff side by side or inline.")
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('sideBySide', "Controls whether the diff editor shows the diff side by side or inline.")
 		},
-		'diffEditor.ignoreTrimWhitespace': {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('ignoreTrimWhitespace', "When enabled, the diff editor ignores changes in leading or trailing whitespace.")
+		'diffEditor.ignoreTrimWhitespAce': {
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('ignoreTrimWhitespAce', "When enAbled, the diff editor ignores chAnges in leAding or trAiling whitespAce.")
 		},
-		'diffEditor.renderIndicators': {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('renderIndicators', "Controls whether the diff editor shows +/- indicators for added/removed changes.")
+		'diffEditor.renderIndicAtors': {
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('renderIndicAtors', "Controls whether the diff editor shows +/- indicAtors for Added/removed chAnges.")
 		},
 		'diffEditor.codeLens': {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('codeLens', "Controls whether the editor shows CodeLens.")
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('codeLens', "Controls whether the editor shows CodeLens.")
 		}
 	}
 };
 
-function isConfigurationPropertySchema(x: IConfigurationPropertySchema | { [path: string]: IConfigurationPropertySchema; }): x is IConfigurationPropertySchema {
-	return (typeof x.type !== 'undefined' || typeof x.anyOf !== 'undefined');
+function isConfigurAtionPropertySchemA(x: IConfigurAtionPropertySchemA | { [pAth: string]: IConfigurAtionPropertySchemA; }): x is IConfigurAtionPropertySchemA {
+	return (typeof x.type !== 'undefined' || typeof x.AnyOf !== 'undefined');
 }
 
 // Add properties from the Editor Option Registry
 for (const editorOption of editorOptionsRegistry) {
-	const schema = editorOption.schema;
-	if (typeof schema !== 'undefined') {
-		if (isConfigurationPropertySchema(schema)) {
-			// This is a single schema contribution
-			editorConfiguration.properties![`editor.${editorOption.name}`] = schema;
+	const schemA = editorOption.schemA;
+	if (typeof schemA !== 'undefined') {
+		if (isConfigurAtionPropertySchemA(schemA)) {
+			// This is A single schemA contribution
+			editorConfigurAtion.properties![`editor.${editorOption.nAme}`] = schemA;
 		} else {
-			for (let key in schema) {
-				if (hasOwnProperty.call(schema, key)) {
-					editorConfiguration.properties![key] = schema[key];
+			for (let key in schemA) {
+				if (hAsOwnProperty.cAll(schemA, key)) {
+					editorConfigurAtion.properties![key] = schemA[key];
 				}
 			}
 		}
 	}
 }
 
-let cachedEditorConfigurationKeys: { [key: string]: boolean; } | null = null;
-function getEditorConfigurationKeys(): { [key: string]: boolean; } {
-	if (cachedEditorConfigurationKeys === null) {
-		cachedEditorConfigurationKeys = <{ [key: string]: boolean; }>Object.create(null);
-		Object.keys(editorConfiguration.properties!).forEach((prop) => {
-			cachedEditorConfigurationKeys![prop] = true;
+let cAchedEditorConfigurAtionKeys: { [key: string]: booleAn; } | null = null;
+function getEditorConfigurAtionKeys(): { [key: string]: booleAn; } {
+	if (cAchedEditorConfigurAtionKeys === null) {
+		cAchedEditorConfigurAtionKeys = <{ [key: string]: booleAn; }>Object.creAte(null);
+		Object.keys(editorConfigurAtion.properties!).forEAch((prop) => {
+			cAchedEditorConfigurAtionKeys![prop] = true;
 		});
 	}
-	return cachedEditorConfigurationKeys;
+	return cAchedEditorConfigurAtionKeys;
 }
 
-export function isEditorConfigurationKey(key: string): boolean {
-	const editorConfigurationKeys = getEditorConfigurationKeys();
-	return (editorConfigurationKeys[`editor.${key}`] || false);
+export function isEditorConfigurAtionKey(key: string): booleAn {
+	const editorConfigurAtionKeys = getEditorConfigurAtionKeys();
+	return (editorConfigurAtionKeys[`editor.${key}`] || fAlse);
 }
-export function isDiffEditorConfigurationKey(key: string): boolean {
-	const editorConfigurationKeys = getEditorConfigurationKeys();
-	return (editorConfigurationKeys[`diffEditor.${key}`] || false);
+export function isDiffEditorConfigurAtionKey(key: string): booleAn {
+	const editorConfigurAtionKeys = getEditorConfigurAtionKeys();
+	return (editorConfigurAtionKeys[`diffEditor.${key}`] || fAlse);
 }
 
-configurationRegistry.registerConfiguration(editorConfiguration);
+configurAtionRegistry.registerConfigurAtion(editorConfigurAtion);

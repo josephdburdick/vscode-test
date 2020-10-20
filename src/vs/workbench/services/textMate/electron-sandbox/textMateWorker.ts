@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IWorkerContext } from 'vs/editor/common/services/editorSimpleWorker';
-import { UriComponents, URI } from 'vs/base/common/uri';
-import { LanguageId } from 'vs/editor/common/modes';
-import { IValidEmbeddedLanguagesMap, IValidTokenTypeMap, IValidGrammarDefinition } from 'vs/workbench/services/textMate/common/TMScopeRegistry';
-import { TMGrammarFactory, ICreateGrammarResult } from 'vs/workbench/services/textMate/common/TMGrammarFactory';
-import { IModelChangedEvent, MirrorTextModel } from 'vs/editor/common/model/mirrorTextModel';
-import { TextMateWorkerHost } from 'vs/workbench/services/textMate/electron-sandbox/textMateService';
-import { TokenizationStateStore } from 'vs/editor/common/model/textModelTokens';
-import type { IGrammar, StackElement, IRawTheme, IOnigLib } from 'vscode-textmate';
+import { UriComponents, URI } from 'vs/bAse/common/uri';
+import { LAnguAgeId } from 'vs/editor/common/modes';
+import { IVAlidEmbeddedLAnguAgesMAp, IVAlidTokenTypeMAp, IVAlidGrAmmArDefinition } from 'vs/workbench/services/textMAte/common/TMScopeRegistry';
+import { TMGrAmmArFActory, ICreAteGrAmmArResult } from 'vs/workbench/services/textMAte/common/TMGrAmmArFActory';
+import { IModelChAngedEvent, MirrorTextModel } from 'vs/editor/common/model/mirrorTextModel';
+import { TextMAteWorkerHost } from 'vs/workbench/services/textMAte/electron-sAndbox/textMAteService';
+import { TokenizAtionStAteStore } from 'vs/editor/common/model/textModelTokens';
+import type { IGrAmmAr, StAckElement, IRAwTheme, IOnigLib } from 'vscode-textmAte';
 import { MultilineTokensBuilder, countEOL } from 'vs/editor/common/model/tokensStore';
 import { LineTokens } from 'vs/editor/common/core/lineTokens';
-import { FileAccess } from 'vs/base/common/network';
+import { FileAccess } from 'vs/bAse/common/network';
 
-export interface IValidGrammarDefinitionDTO {
-	location: UriComponents;
-	language?: LanguageId;
-	scopeName: string;
-	embeddedLanguages: IValidEmbeddedLanguagesMap;
-	tokenTypes: IValidTokenTypeMap;
+export interfAce IVAlidGrAmmArDefinitionDTO {
+	locAtion: UriComponents;
+	lAnguAge?: LAnguAgeId;
+	scopeNAme: string;
+	embeddedLAnguAges: IVAlidEmbeddedLAnguAgesMAp;
+	tokenTypes: IVAlidTokenTypeMAp;
 	injectTo?: string[];
 }
 
-export interface ICreateData {
-	grammarDefinitions: IValidGrammarDefinitionDTO[];
+export interfAce ICreAteDAtA {
+	grAmmArDefinitions: IVAlidGrAmmArDefinitionDTO[];
 }
 
-export interface IRawModelData {
+export interfAce IRAwModelDAtA {
 	uri: UriComponents;
 	versionId: number;
 	lines: string[];
 	EOL: string;
-	languageId: LanguageId;
+	lAnguAgeId: LAnguAgeId;
 }
 
-class TextMateWorkerModel extends MirrorTextModel {
+clAss TextMAteWorkerModel extends MirrorTextModel {
 
-	private readonly _tokenizationStateStore: TokenizationStateStore;
-	private readonly _worker: TextMateWorker;
-	private _languageId: LanguageId;
-	private _grammar: IGrammar | null;
-	private _isDisposed: boolean;
+	privAte reAdonly _tokenizAtionStAteStore: TokenizAtionStAteStore;
+	privAte reAdonly _worker: TextMAteWorker;
+	privAte _lAnguAgeId: LAnguAgeId;
+	privAte _grAmmAr: IGrAmmAr | null;
+	privAte _isDisposed: booleAn;
 
-	constructor(uri: URI, lines: string[], eol: string, versionId: number, worker: TextMateWorker, languageId: LanguageId) {
+	constructor(uri: URI, lines: string[], eol: string, versionId: number, worker: TextMAteWorker, lAnguAgeId: LAnguAgeId) {
 		super(uri, lines, eol, versionId);
-		this._tokenizationStateStore = new TokenizationStateStore();
+		this._tokenizAtionStAteStore = new TokenizAtionStAteStore();
 		this._worker = worker;
-		this._languageId = languageId;
-		this._isDisposed = false;
-		this._grammar = null;
-		this._resetTokenization();
+		this._lAnguAgeId = lAnguAgeId;
+		this._isDisposed = fAlse;
+		this._grAmmAr = null;
+		this._resetTokenizAtion();
 	}
 
 	public dispose(): void {
@@ -60,156 +60,156 @@ class TextMateWorkerModel extends MirrorTextModel {
 		super.dispose();
 	}
 
-	public onLanguageId(languageId: LanguageId): void {
-		this._languageId = languageId;
-		this._resetTokenization();
+	public onLAnguAgeId(lAnguAgeId: LAnguAgeId): void {
+		this._lAnguAgeId = lAnguAgeId;
+		this._resetTokenizAtion();
 	}
 
-	onEvents(e: IModelChangedEvent): void {
+	onEvents(e: IModelChAngedEvent): void {
 		super.onEvents(e);
-		for (let i = 0; i < e.changes.length; i++) {
-			const change = e.changes[i];
-			const [eolCount] = countEOL(change.text);
-			this._tokenizationStateStore.applyEdits(change.range, eolCount);
+		for (let i = 0; i < e.chAnges.length; i++) {
+			const chAnge = e.chAnges[i];
+			const [eolCount] = countEOL(chAnge.text);
+			this._tokenizAtionStAteStore.ApplyEdits(chAnge.rAnge, eolCount);
 		}
 		this._ensureTokens();
 	}
 
-	private _resetTokenization(): void {
-		this._grammar = null;
-		this._tokenizationStateStore.flush(null);
+	privAte _resetTokenizAtion(): void {
+		this._grAmmAr = null;
+		this._tokenizAtionStAteStore.flush(null);
 
-		const languageId = this._languageId;
-		this._worker.getOrCreateGrammar(languageId).then((r) => {
-			if (this._isDisposed || languageId !== this._languageId || !r) {
+		const lAnguAgeId = this._lAnguAgeId;
+		this._worker.getOrCreAteGrAmmAr(lAnguAgeId).then((r) => {
+			if (this._isDisposed || lAnguAgeId !== this._lAnguAgeId || !r) {
 				return;
 			}
 
-			this._grammar = r.grammar;
-			this._tokenizationStateStore.flush(r.initialState);
+			this._grAmmAr = r.grAmmAr;
+			this._tokenizAtionStAteStore.flush(r.initiAlStAte);
 			this._ensureTokens();
 		});
 	}
 
-	private _ensureTokens(): void {
-		if (!this._grammar) {
+	privAte _ensureTokens(): void {
+		if (!this._grAmmAr) {
 			return;
 		}
 		const builder = new MultilineTokensBuilder();
 		const lineCount = this._lines.length;
 
-		// Validate all states up to and including endLineIndex
-		for (let lineIndex = this._tokenizationStateStore.invalidLineStartIndex; lineIndex < lineCount; lineIndex++) {
+		// VAlidAte All stAtes up to And including endLineIndex
+		for (let lineIndex = this._tokenizAtionStAteStore.invAlidLineStArtIndex; lineIndex < lineCount; lineIndex++) {
 			const text = this._lines[lineIndex];
-			const lineStartState = this._tokenizationStateStore.getBeginState(lineIndex);
+			const lineStArtStAte = this._tokenizAtionStAteStore.getBeginStAte(lineIndex);
 
-			const r = this._grammar.tokenizeLine2(text, <StackElement>lineStartState!);
+			const r = this._grAmmAr.tokenizeLine2(text, <StAckElement>lineStArtStAte!);
 			LineTokens.convertToEndOffset(r.tokens, text.length);
-			builder.add(lineIndex + 1, r.tokens);
-			this._tokenizationStateStore.setEndState(lineCount, lineIndex, r.ruleStack);
-			lineIndex = this._tokenizationStateStore.invalidLineStartIndex - 1; // -1 because the outer loop increments it
+			builder.Add(lineIndex + 1, r.tokens);
+			this._tokenizAtionStAteStore.setEndStAte(lineCount, lineIndex, r.ruleStAck);
+			lineIndex = this._tokenizAtionStAteStore.invAlidLineStArtIndex - 1; // -1 becAuse the outer loop increments it
 		}
 
-		this._worker._setTokens(this._uri, this._versionId, builder.serialize());
+		this._worker._setTokens(this._uri, this._versionId, builder.seriAlize());
 	}
 }
 
-export class TextMateWorker {
+export clAss TextMAteWorker {
 
-	private readonly _host: TextMateWorkerHost;
-	private readonly _models: { [uri: string]: TextMateWorkerModel; };
-	private readonly _grammarCache: Promise<ICreateGrammarResult>[];
-	private readonly _grammarFactory: Promise<TMGrammarFactory | null>;
+	privAte reAdonly _host: TextMAteWorkerHost;
+	privAte reAdonly _models: { [uri: string]: TextMAteWorkerModel; };
+	privAte reAdonly _grAmmArCAche: Promise<ICreAteGrAmmArResult>[];
+	privAte reAdonly _grAmmArFActory: Promise<TMGrAmmArFActory | null>;
 
-	constructor(ctx: IWorkerContext<TextMateWorkerHost>, createData: ICreateData) {
+	constructor(ctx: IWorkerContext<TextMAteWorkerHost>, creAteDAtA: ICreAteDAtA) {
 		this._host = ctx.host;
-		this._models = Object.create(null);
-		this._grammarCache = [];
-		const grammarDefinitions = createData.grammarDefinitions.map<IValidGrammarDefinition>((def) => {
+		this._models = Object.creAte(null);
+		this._grAmmArCAche = [];
+		const grAmmArDefinitions = creAteDAtA.grAmmArDefinitions.mAp<IVAlidGrAmmArDefinition>((def) => {
 			return {
-				location: URI.revive(def.location),
-				language: def.language,
-				scopeName: def.scopeName,
-				embeddedLanguages: def.embeddedLanguages,
+				locAtion: URI.revive(def.locAtion),
+				lAnguAge: def.lAnguAge,
+				scopeNAme: def.scopeNAme,
+				embeddedLAnguAges: def.embeddedLAnguAges,
 				tokenTypes: def.tokenTypes,
 				injectTo: def.injectTo,
 			};
 		});
-		this._grammarFactory = this._loadTMGrammarFactory(grammarDefinitions);
+		this._grAmmArFActory = this._loAdTMGrAmmArFActory(grAmmArDefinitions);
 	}
 
-	private async _loadTMGrammarFactory(grammarDefinitions: IValidGrammarDefinition[]): Promise<TMGrammarFactory> {
+	privAte Async _loAdTMGrAmmArFActory(grAmmArDefinitions: IVAlidGrAmmArDefinition[]): Promise<TMGrAmmArFActory> {
 		require.config({
-			paths: {
-				'vscode-textmate': '../node_modules/vscode-textmate/release/main',
-				'vscode-oniguruma': '../node_modules/vscode-oniguruma/release/main',
+			pAths: {
+				'vscode-textmAte': '../node_modules/vscode-textmAte/releAse/mAin',
+				'vscode-onigurumA': '../node_modules/vscode-onigurumA/releAse/mAin',
 			}
 		});
-		const vscodeTextmate = await import('vscode-textmate');
-		const vscodeOniguruma = await import('vscode-oniguruma');
-		const response = await fetch(FileAccess.asBrowserUri('vscode-oniguruma/../onig.wasm', require).toString(true));
-		// Using the response directly only works if the server sets the MIME type 'application/wasm'.
-		// Otherwise, a TypeError is thrown when using the streaming compiler.
-		// We therefore use the non-streaming compiler :(.
-		const bytes = await response.arrayBuffer();
-		await vscodeOniguruma.loadWASM(bytes);
+		const vscodeTextmAte = AwAit import('vscode-textmAte');
+		const vscodeOnigurumA = AwAit import('vscode-onigurumA');
+		const response = AwAit fetch(FileAccess.AsBrowserUri('vscode-onigurumA/../onig.wAsm', require).toString(true));
+		// Using the response directly only works if the server sets the MIME type 'ApplicAtion/wAsm'.
+		// Otherwise, A TypeError is thrown when using the streAming compiler.
+		// We therefore use the non-streAming compiler :(.
+		const bytes = AwAit response.ArrAyBuffer();
+		AwAit vscodeOnigurumA.loAdWASM(bytes);
 
 		const onigLib: Promise<IOnigLib> = Promise.resolve({
-			createOnigScanner: (sources) => vscodeOniguruma.createOnigScanner(sources),
-			createOnigString: (str) => vscodeOniguruma.createOnigString(str)
+			creAteOnigScAnner: (sources) => vscodeOnigurumA.creAteOnigScAnner(sources),
+			creAteOnigString: (str) => vscodeOnigurumA.creAteOnigString(str)
 		});
 
-		return new TMGrammarFactory({
-			logTrace: (msg: string) => {/* console.log(msg) */ },
-			logError: (msg: string, err: any) => console.error(msg, err),
-			readFile: (resource: URI) => this._host.readFile(resource)
-		}, grammarDefinitions, vscodeTextmate, onigLib);
+		return new TMGrAmmArFActory({
+			logTrAce: (msg: string) => {/* console.log(msg) */ },
+			logError: (msg: string, err: Any) => console.error(msg, err),
+			reAdFile: (resource: URI) => this._host.reAdFile(resource)
+		}, grAmmArDefinitions, vscodeTextmAte, onigLib);
 	}
 
-	public acceptNewModel(data: IRawModelData): void {
-		const uri = URI.revive(data.uri);
+	public AcceptNewModel(dAtA: IRAwModelDAtA): void {
+		const uri = URI.revive(dAtA.uri);
 		const key = uri.toString();
-		this._models[key] = new TextMateWorkerModel(uri, data.lines, data.EOL, data.versionId, this, data.languageId);
+		this._models[key] = new TextMAteWorkerModel(uri, dAtA.lines, dAtA.EOL, dAtA.versionId, this, dAtA.lAnguAgeId);
 	}
 
-	public acceptModelChanged(strURL: string, e: IModelChangedEvent): void {
+	public AcceptModelChAnged(strURL: string, e: IModelChAngedEvent): void {
 		this._models[strURL].onEvents(e);
 	}
 
-	public acceptModelLanguageChanged(strURL: string, newLanguageId: LanguageId): void {
-		this._models[strURL].onLanguageId(newLanguageId);
+	public AcceptModelLAnguAgeChAnged(strURL: string, newLAnguAgeId: LAnguAgeId): void {
+		this._models[strURL].onLAnguAgeId(newLAnguAgeId);
 	}
 
-	public acceptRemovedModel(strURL: string): void {
+	public AcceptRemovedModel(strURL: string): void {
 		if (this._models[strURL]) {
 			this._models[strURL].dispose();
 			delete this._models[strURL];
 		}
 	}
 
-	public async getOrCreateGrammar(languageId: LanguageId): Promise<ICreateGrammarResult | null> {
-		const grammarFactory = await this._grammarFactory;
-		if (!grammarFactory) {
+	public Async getOrCreAteGrAmmAr(lAnguAgeId: LAnguAgeId): Promise<ICreAteGrAmmArResult | null> {
+		const grAmmArFActory = AwAit this._grAmmArFActory;
+		if (!grAmmArFActory) {
 			return Promise.resolve(null);
 		}
-		if (!this._grammarCache[languageId]) {
-			this._grammarCache[languageId] = grammarFactory.createGrammar(languageId);
+		if (!this._grAmmArCAche[lAnguAgeId]) {
+			this._grAmmArCAche[lAnguAgeId] = grAmmArFActory.creAteGrAmmAr(lAnguAgeId);
 		}
-		return this._grammarCache[languageId];
+		return this._grAmmArCAche[lAnguAgeId];
 	}
 
-	public async acceptTheme(theme: IRawTheme, colorMap: string[]): Promise<void> {
-		const grammarFactory = await this._grammarFactory;
-		if (grammarFactory) {
-			grammarFactory.setTheme(theme, colorMap);
+	public Async AcceptTheme(theme: IRAwTheme, colorMAp: string[]): Promise<void> {
+		const grAmmArFActory = AwAit this._grAmmArFActory;
+		if (grAmmArFActory) {
+			grAmmArFActory.setTheme(theme, colorMAp);
 		}
 	}
 
-	public _setTokens(resource: URI, versionId: number, tokens: Uint8Array): void {
+	public _setTokens(resource: URI, versionId: number, tokens: Uint8ArrAy): void {
 		this._host.setTokens(resource, versionId, tokens);
 	}
 }
 
-export function create(ctx: IWorkerContext<TextMateWorkerHost>, createData: ICreateData): TextMateWorker {
-	return new TextMateWorker(ctx, createData);
+export function creAte(ctx: IWorkerContext<TextMAteWorkerHost>, creAteDAtA: ICreAteDAtA): TextMAteWorker {
+	return new TextMAteWorker(ctx, creAteDAtA);
 }

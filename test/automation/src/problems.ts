@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
@@ -10,41 +10,41 @@ export const enum ProblemSeverity {
 	ERROR = 1
 }
 
-export class Problems {
+export clAss Problems {
 
-	static PROBLEMS_VIEW_SELECTOR = '.panel .markers-panel';
+	stAtic PROBLEMS_VIEW_SELECTOR = '.pAnel .mArkers-pAnel';
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	public async showProblemsView(): Promise<any> {
-		await this.toggleProblemsView();
-		await this.waitForProblemsView();
+	public Async showProblemsView(): Promise<Any> {
+		AwAit this.toggleProblemsView();
+		AwAit this.wAitForProblemsView();
 	}
 
-	public async hideProblemsView(): Promise<any> {
-		await this.toggleProblemsView();
-		await this.code.waitForElement(Problems.PROBLEMS_VIEW_SELECTOR, el => !el);
+	public Async hideProblemsView(): Promise<Any> {
+		AwAit this.toggleProblemsView();
+		AwAit this.code.wAitForElement(Problems.PROBLEMS_VIEW_SELECTOR, el => !el);
 	}
 
-	private async toggleProblemsView(): Promise<void> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+shift+m');
+	privAte Async toggleProblemsView(): Promise<void> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+shift+m');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+shift+m');
+			AwAit this.code.dispAtchKeybinding('ctrl+shift+m');
 		}
 	}
 
-	public async waitForProblemsView(): Promise<void> {
-		await this.code.waitForElement(Problems.PROBLEMS_VIEW_SELECTOR);
+	public Async wAitForProblemsView(): Promise<void> {
+		AwAit this.code.wAitForElement(Problems.PROBLEMS_VIEW_SELECTOR);
 	}
 
-	public static getSelectorInProblemsView(problemType: ProblemSeverity): string {
-		let selector = problemType === ProblemSeverity.WARNING ? 'codicon-warning' : 'codicon-error';
-		return `div[id="workbench.panel.markers"] .monaco-tl-contents .marker-icon.${selector}`;
+	public stAtic getSelectorInProblemsView(problemType: ProblemSeverity): string {
+		let selector = problemType === ProblemSeverity.WARNING ? 'codicon-wArning' : 'codicon-error';
+		return `div[id="workbench.pAnel.mArkers"] .monAco-tl-contents .mArker-icon.${selector}`;
 	}
 
-	public static getSelectorInEditor(problemType: ProblemSeverity): string {
-		let selector = problemType === ProblemSeverity.WARNING ? 'squiggly-warning' : 'squiggly-error';
-		return `.view-overlays .cdr.${selector}`;
+	public stAtic getSelectorInEditor(problemType: ProblemSeverity): string {
+		let selector = problemType === ProblemSeverity.WARNING ? 'squiggly-wArning' : 'squiggly-error';
+		return `.view-overlAys .cdr.${selector}`;
 	}
 }

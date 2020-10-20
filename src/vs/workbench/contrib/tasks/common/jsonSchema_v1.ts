@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as Objects from 'vs/base/common/objects';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import * As nls from 'vs/nls';
+import * As Objects from 'vs/bAse/common/objects';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 
-import { ProblemMatcherRegistry } from 'vs/workbench/contrib/tasks/common/problemMatcher';
+import { ProblemMAtcherRegistry } from 'vs/workbench/contrib/tAsks/common/problemMAtcher';
 
-import commonSchema from './jsonSchemaCommon';
+import commonSchemA from './jsonSchemACommon';
 
-const schema: IJSONSchema = {
+const schemA: IJSONSchemA = {
 	oneOf: [
 		{
-			allOf: [
+			AllOf: [
 				{
 					type: 'object',
 					required: ['version'],
@@ -22,83 +22,83 @@ const schema: IJSONSchema = {
 						version: {
 							type: 'string',
 							enum: ['0.1.0'],
-							deprecationMessage: nls.localize('JsonSchema.version.deprecated', 'Task version 0.1.0 is deprecated. Please use 2.0.0'),
-							description: nls.localize('JsonSchema.version', 'The config\'s version number')
+							deprecAtionMessAge: nls.locAlize('JsonSchemA.version.deprecAted', 'TAsk version 0.1.0 is deprecAted. PleAse use 2.0.0'),
+							description: nls.locAlize('JsonSchemA.version', 'The config\'s version number')
 						},
 						_runner: {
-							deprecationMessage: nls.localize('JsonSchema._runner', 'The runner has graduated. Use the offical runner property')
+							deprecAtionMessAge: nls.locAlize('JsonSchemA._runner', 'The runner hAs grAduAted. Use the officAl runner property')
 						},
 						runner: {
 							type: 'string',
-							enum: ['process', 'terminal'],
-							default: 'process',
-							description: nls.localize('JsonSchema.runner', 'Defines whether the task is executed as a process and the output is shown in the output window or inside the terminal.')
+							enum: ['process', 'terminAl'],
+							defAult: 'process',
+							description: nls.locAlize('JsonSchemA.runner', 'Defines whether the tAsk is executed As A process And the output is shown in the output window or inside the terminAl.')
 						},
 						windows: {
-							$ref: '#/definitions/taskRunnerConfiguration',
-							description: nls.localize('JsonSchema.windows', 'Windows specific command configuration')
+							$ref: '#/definitions/tAskRunnerConfigurAtion',
+							description: nls.locAlize('JsonSchemA.windows', 'Windows specific commAnd configurAtion')
 						},
 						osx: {
-							$ref: '#/definitions/taskRunnerConfiguration',
-							description: nls.localize('JsonSchema.mac', 'Mac specific command configuration')
+							$ref: '#/definitions/tAskRunnerConfigurAtion',
+							description: nls.locAlize('JsonSchemA.mAc', 'MAc specific commAnd configurAtion')
 						},
 						linux: {
-							$ref: '#/definitions/taskRunnerConfiguration',
-							description: nls.localize('JsonSchema.linux', 'Linux specific command configuration')
+							$ref: '#/definitions/tAskRunnerConfigurAtion',
+							description: nls.locAlize('JsonSchemA.linux', 'Linux specific commAnd configurAtion')
 						}
 					}
 				},
 				{
-					$ref: '#/definitions/taskRunnerConfiguration'
+					$ref: '#/definitions/tAskRunnerConfigurAtion'
 				}
 			]
 		}
 	]
 };
 
-const shellCommand: IJSONSchema = {
-	type: 'boolean',
-	default: true,
-	description: nls.localize('JsonSchema.shell', 'Specifies whether the command is a shell command or an external program. Defaults to false if omitted.')
+const shellCommAnd: IJSONSchemA = {
+	type: 'booleAn',
+	defAult: true,
+	description: nls.locAlize('JsonSchemA.shell', 'Specifies whether the commAnd is A shell commAnd or An externAl progrAm. DefAults to fAlse if omitted.')
 };
 
-schema.definitions = Objects.deepClone(commonSchema.definitions);
-let definitions = schema.definitions!;
-definitions['commandConfiguration']['properties']!['isShellCommand'] = Objects.deepClone(shellCommand);
-definitions['taskDescription']['properties']!['isShellCommand'] = Objects.deepClone(shellCommand);
-definitions['taskRunnerConfiguration']['properties']!['isShellCommand'] = Objects.deepClone(shellCommand);
+schemA.definitions = Objects.deepClone(commonSchemA.definitions);
+let definitions = schemA.definitions!;
+definitions['commAndConfigurAtion']['properties']!['isShellCommAnd'] = Objects.deepClone(shellCommAnd);
+definitions['tAskDescription']['properties']!['isShellCommAnd'] = Objects.deepClone(shellCommAnd);
+definitions['tAskRunnerConfigurAtion']['properties']!['isShellCommAnd'] = Objects.deepClone(shellCommAnd);
 
-Object.getOwnPropertyNames(definitions).forEach(key => {
+Object.getOwnPropertyNAmes(definitions).forEAch(key => {
 	let newKey = key + '1';
 	definitions[newKey] = definitions[key];
 	delete definitions[key];
 });
 
-function fixReferences(literal: any) {
-	if (Array.isArray(literal)) {
-		literal.forEach(fixReferences);
-	} else if (typeof literal === 'object') {
-		if (literal['$ref']) {
-			literal['$ref'] = literal['$ref'] + '1';
+function fixReferences(literAl: Any) {
+	if (ArrAy.isArrAy(literAl)) {
+		literAl.forEAch(fixReferences);
+	} else if (typeof literAl === 'object') {
+		if (literAl['$ref']) {
+			literAl['$ref'] = literAl['$ref'] + '1';
 		}
-		Object.getOwnPropertyNames(literal).forEach(property => {
-			let value = literal[property];
-			if (Array.isArray(value) || typeof value === 'object') {
-				fixReferences(value);
+		Object.getOwnPropertyNAmes(literAl).forEAch(property => {
+			let vAlue = literAl[property];
+			if (ArrAy.isArrAy(vAlue) || typeof vAlue === 'object') {
+				fixReferences(vAlue);
 			}
 		});
 	}
 }
-fixReferences(schema);
+fixReferences(schemA);
 
-ProblemMatcherRegistry.onReady().then(() => {
+ProblemMAtcherRegistry.onReAdy().then(() => {
 	try {
-		let matcherIds = ProblemMatcherRegistry.keys().map(key => '$' + key);
-		definitions.problemMatcherType1.oneOf![0].enum = matcherIds;
-		(definitions.problemMatcherType1.oneOf![2].items as IJSONSchema).anyOf![1].enum = matcherIds;
-	} catch (err) {
-		console.log('Installing problem matcher ids failed');
+		let mAtcherIds = ProblemMAtcherRegistry.keys().mAp(key => '$' + key);
+		definitions.problemMAtcherType1.oneOf![0].enum = mAtcherIds;
+		(definitions.problemMAtcherType1.oneOf![2].items As IJSONSchemA).AnyOf![1].enum = mAtcherIds;
+	} cAtch (err) {
+		console.log('InstAlling problem mAtcher ids fAiled');
 	}
 });
 
-export default schema;
+export defAult schemA;

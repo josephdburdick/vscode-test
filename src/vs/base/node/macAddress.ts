@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { networkInterfaces } from 'os';
+import { networkInterfAces } from 'os';
 
-const invalidMacAddresses = new Set([
+const invAlidMAcAddresses = new Set([
 	'00:00:00:00:00:00',
 	'ff:ff:ff:ff:ff:ff',
-	'ac:de:48:00:11:22'
+	'Ac:de:48:00:11:22'
 ]);
 
-function validateMacAddress(candidate: string): boolean {
-	const tempCandidate = candidate.replace(/\-/g, ':').toLowerCase();
-	return !invalidMacAddresses.has(tempCandidate);
+function vAlidAteMAcAddress(cAndidAte: string): booleAn {
+	const tempCAndidAte = cAndidAte.replAce(/\-/g, ':').toLowerCAse();
+	return !invAlidMAcAddresses.hAs(tempCAndidAte);
 }
 
-export function getMac(): Promise<string> {
-	return new Promise(async (resolve, reject) => {
-		const timeout = setTimeout(() => reject('Unable to retrieve mac address (timeout after 10s)'), 10000);
+export function getMAc(): Promise<string> {
+	return new Promise(Async (resolve, reject) => {
+		const timeout = setTimeout(() => reject('UnAble to retrieve mAc Address (timeout After 10s)'), 10000);
 
 		try {
-			resolve(await doGetMac());
-		} catch (error) {
+			resolve(AwAit doGetMAc());
+		} cAtch (error) {
 			reject(error);
-		} finally {
-			clearTimeout(timeout);
+		} finAlly {
+			cleArTimeout(timeout);
 		}
 	});
 }
 
-function doGetMac(): Promise<string> {
+function doGetMAc(): Promise<string> {
 	return new Promise((resolve, reject) => {
 		try {
-			const ifaces = networkInterfaces();
-			for (const [, infos] of Object.entries(ifaces)) {
+			const ifAces = networkInterfAces();
+			for (const [, infos] of Object.entries(ifAces)) {
 				for (const info of infos) {
-					if (validateMacAddress(info.mac)) {
-						return resolve(info.mac);
+					if (vAlidAteMAcAddress(info.mAc)) {
+						return resolve(info.mAc);
 					}
 				}
 			}
 
-			reject('Unable to retrieve mac address (unexpected format)');
-		} catch (err) {
+			reject('UnAble to retrieve mAc Address (unexpected formAt)');
+		} cAtch (err) {
 			reject(err);
 		}
 	});

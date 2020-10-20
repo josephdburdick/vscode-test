@@ -1,99 +1,99 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { ISettingsEditorModel, ISearchResult } from 'vs/workbench/services/preferences/common/preferences';
-import { IEditorPane } from 'vs/workbench/common/editor';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { ISettingsEditorModel, ISeArchResult } from 'vs/workbench/services/preferences/common/preferences';
+import { IEditorPAne } from 'vs/workbench/common/editor';
 import { IKeybindingItemEntry } from 'vs/workbench/services/preferences/common/keybindingsEditorModel';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Event } from 'vs/base/common/event';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Event } from 'vs/bAse/common/event';
 
-export interface IWorkbenchSettingsConfiguration {
+export interfAce IWorkbenchSettingsConfigurAtion {
 	workbench: {
 		settings: {
-			openDefaultSettings: boolean;
-			naturalLanguageSearchEndpoint: string;
-			naturalLanguageSearchKey: string;
-			naturalLanguageSearchAutoIngestFeedback: boolean;
-			useNaturalLanguageSearchPost: boolean;
-			enableNaturalLanguageSearch: boolean;
-			enableNaturalLanguageSearchFeedback: boolean;
+			openDefAultSettings: booleAn;
+			nAturAlLAnguAgeSeArchEndpoint: string;
+			nAturAlLAnguAgeSeArchKey: string;
+			nAturAlLAnguAgeSeArchAutoIngestFeedbAck: booleAn;
+			useNAturAlLAnguAgeSeArchPost: booleAn;
+			enAbleNAturAlLAnguAgeSeArch: booleAn;
+			enAbleNAturAlLAnguAgeSeArchFeedbAck: booleAn;
 		}
 	};
 }
 
-export interface IEndpointDetails {
-	urlBase: string;
+export interfAce IEndpointDetAils {
+	urlBAse: string;
 	key?: string;
 }
 
-export const IPreferencesSearchService = createDecorator<IPreferencesSearchService>('preferencesSearchService');
+export const IPreferencesSeArchService = creAteDecorAtor<IPreferencesSeArchService>('preferencesSeArchService');
 
-export interface IPreferencesSearchService {
-	readonly _serviceBrand: undefined;
+export interfAce IPreferencesSeArchService {
+	reAdonly _serviceBrAnd: undefined;
 
-	getLocalSearchProvider(filter: string): ISearchProvider;
-	getRemoteSearchProvider(filter: string, newExtensionsOnly?: boolean): ISearchProvider | undefined;
+	getLocAlSeArchProvider(filter: string): ISeArchProvider;
+	getRemoteSeArchProvider(filter: string, newExtensionsOnly?: booleAn): ISeArchProvider | undefined;
 }
 
-export interface ISearchProvider {
-	searchModel(preferencesModel: ISettingsEditorModel, token?: CancellationToken): Promise<ISearchResult | null>;
+export interfAce ISeArchProvider {
+	seArchModel(preferencesModel: ISettingsEditorModel, token?: CAncellAtionToken): Promise<ISeArchResult | null>;
 }
 
-export interface IKeybindingsEditorPane extends IEditorPane {
+export interfAce IKeybindingsEditorPAne extends IEditorPAne {
 
-	readonly activeKeybindingEntry: IKeybindingItemEntry | null;
-	readonly onDefineWhenExpression: Event<IKeybindingItemEntry>;
-	readonly onLayout: Event<void>;
+	reAdonly ActiveKeybindingEntry: IKeybindingItemEntry | null;
+	reAdonly onDefineWhenExpression: Event<IKeybindingItemEntry>;
+	reAdonly onLAyout: Event<void>;
 
-	search(filter: string): void;
-	focusSearch(): void;
-	clearSearchResults(): void;
+	seArch(filter: string): void;
+	focusSeArch(): void;
+	cleArSeArchResults(): void;
 	focusKeybindings(): void;
-	recordSearchKeys(): void;
+	recordSeArchKeys(): void;
 	toggleSortByPrecedence(): void;
 	selectKeybinding(keybindingEntry: IKeybindingItemEntry): void;
 	defineKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<void>;
 	defineWhenExpression(keybindingEntry: IKeybindingItemEntry): void;
-	updateKeybinding(keybindingEntry: IKeybindingItemEntry, key: string, when: string | undefined): Promise<any>;
-	removeKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<any>;
-	resetKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<any>;
+	updAteKeybinding(keybindingEntry: IKeybindingItemEntry, key: string, when: string | undefined): Promise<Any>;
+	removeKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<Any>;
+	resetKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<Any>;
 	copyKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<void>;
-	copyKeybindingCommand(keybindingEntry: IKeybindingItemEntry): Promise<void>;
-	showSimilarKeybindings(keybindingEntry: IKeybindingItemEntry): void;
+	copyKeybindingCommAnd(keybindingEntry: IKeybindingItemEntry): Promise<void>;
+	showSimilArKeybindings(keybindingEntry: IKeybindingItemEntry): void;
 }
 
-export const SETTINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS = 'settings.action.clearSearchResults';
-export const SETTINGS_EDITOR_COMMAND_SHOW_CONTEXT_MENU = 'settings.action.showContextMenu';
+export const SETTINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS = 'settings.Action.cleArSeArchResults';
+export const SETTINGS_EDITOR_COMMAND_SHOW_CONTEXT_MENU = 'settings.Action.showContextMenu';
 
-export const CONTEXT_SETTINGS_EDITOR = new RawContextKey<boolean>('inSettingsEditor', false);
-export const CONTEXT_SETTINGS_JSON_EDITOR = new RawContextKey<boolean>('inSettingsJSONEditor', false);
-export const CONTEXT_SETTINGS_SEARCH_FOCUS = new RawContextKey<boolean>('inSettingsSearch', false);
-export const CONTEXT_TOC_ROW_FOCUS = new RawContextKey<boolean>('settingsTocRowFocus', false);
-export const CONTEXT_SETTINGS_ROW_FOCUS = new RawContextKey<boolean>('settingRowFocus', false);
-export const CONTEXT_KEYBINDINGS_EDITOR = new RawContextKey<boolean>('inKeybindings', false);
-export const CONTEXT_KEYBINDINGS_SEARCH_FOCUS = new RawContextKey<boolean>('inKeybindingsSearch', false);
-export const CONTEXT_KEYBINDING_FOCUS = new RawContextKey<boolean>('keybindingFocus', false);
+export const CONTEXT_SETTINGS_EDITOR = new RAwContextKey<booleAn>('inSettingsEditor', fAlse);
+export const CONTEXT_SETTINGS_JSON_EDITOR = new RAwContextKey<booleAn>('inSettingsJSONEditor', fAlse);
+export const CONTEXT_SETTINGS_SEARCH_FOCUS = new RAwContextKey<booleAn>('inSettingsSeArch', fAlse);
+export const CONTEXT_TOC_ROW_FOCUS = new RAwContextKey<booleAn>('settingsTocRowFocus', fAlse);
+export const CONTEXT_SETTINGS_ROW_FOCUS = new RAwContextKey<booleAn>('settingRowFocus', fAlse);
+export const CONTEXT_KEYBINDINGS_EDITOR = new RAwContextKey<booleAn>('inKeybindings', fAlse);
+export const CONTEXT_KEYBINDINGS_SEARCH_FOCUS = new RAwContextKey<booleAn>('inKeybindingsSeArch', fAlse);
+export const CONTEXT_KEYBINDING_FOCUS = new RAwContextKey<booleAn>('keybindingFocus', fAlse);
 
-export const KEYBINDINGS_EDITOR_COMMAND_SEARCH = 'keybindings.editor.searchKeybindings';
-export const KEYBINDINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS = 'keybindings.editor.clearSearchResults';
-export const KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS = 'keybindings.editor.recordSearchKeys';
+export const KEYBINDINGS_EDITOR_COMMAND_SEARCH = 'keybindings.editor.seArchKeybindings';
+export const KEYBINDINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS = 'keybindings.editor.cleArSeArchResults';
+export const KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS = 'keybindings.editor.recordSeArchKeys';
 export const KEYBINDINGS_EDITOR_COMMAND_SORTBY_PRECEDENCE = 'keybindings.editor.toggleSortByPrecedence';
 export const KEYBINDINGS_EDITOR_COMMAND_DEFINE = 'keybindings.editor.defineKeybinding';
 export const KEYBINDINGS_EDITOR_COMMAND_DEFINE_WHEN = 'keybindings.editor.defineWhenExpression';
 export const KEYBINDINGS_EDITOR_COMMAND_REMOVE = 'keybindings.editor.removeKeybinding';
 export const KEYBINDINGS_EDITOR_COMMAND_RESET = 'keybindings.editor.resetKeybinding';
 export const KEYBINDINGS_EDITOR_COMMAND_COPY = 'keybindings.editor.copyKeybindingEntry';
-export const KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND = 'keybindings.editor.copyCommandKeybindingEntry';
+export const KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND = 'keybindings.editor.copyCommAndKeybindingEntry';
 export const KEYBINDINGS_EDITOR_COMMAND_SHOW_SIMILAR = 'keybindings.editor.showConflicts';
 export const KEYBINDINGS_EDITOR_COMMAND_FOCUS_KEYBINDINGS = 'keybindings.editor.focusKeybindings';
-export const KEYBINDINGS_EDITOR_SHOW_DEFAULT_KEYBINDINGS = 'keybindings.editor.showDefaultKeybindings';
+export const KEYBINDINGS_EDITOR_SHOW_DEFAULT_KEYBINDINGS = 'keybindings.editor.showDefAultKeybindings';
 export const KEYBINDINGS_EDITOR_SHOW_USER_KEYBINDINGS = 'keybindings.editor.showUserKeybindings';
 
 export const MODIFIED_SETTING_TAG = 'modified';
 export const EXTENSION_SETTING_TAG = 'ext:';
 
-export const KEYBOARD_LAYOUT_OPEN_PICKER = 'workbench.action.openKeyboardLayoutPicker';
+export const KEYBOARD_LAYOUT_OPEN_PICKER = 'workbench.Action.openKeyboArdLAyoutPicker';

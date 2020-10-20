@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MainThreadCommands } from 'vs/workbench/api/browser/mainThreadCommands';
-import { CommandsRegistry, ICommandService } from 'vs/platform/commands/common/commands';
+import * As Assert from 'Assert';
+import { MAinThreAdCommAnds } from 'vs/workbench/Api/browser/mAinThreAdCommAnds';
+import { CommAndsRegistry, ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
 import { SingleProxyRPCProtocol } from './testRPCProtocol';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { mock } from 'vs/base/test/common/mock';
+import { mock } from 'vs/bAse/test/common/mock';
 
-suite('MainThreadCommands', function () {
+suite('MAinThreAdCommAnds', function () {
 
 	test('dispose on unregister', function () {
 
-		const commands = new MainThreadCommands(SingleProxyRPCProtocol(null), undefined!, new class extends mock<IExtensionService>() { });
-		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
+		const commAnds = new MAinThreAdCommAnds(SingleProxyRPCProtocol(null), undefined!, new clAss extends mock<IExtensionService>() { });
+		Assert.equAl(CommAndsRegistry.getCommAnd('foo'), undefined);
 
 		// register
-		commands.$registerCommand('foo');
-		assert.ok(CommandsRegistry.getCommand('foo'));
+		commAnds.$registerCommAnd('foo');
+		Assert.ok(CommAndsRegistry.getCommAnd('foo'));
 
 		// unregister
-		commands.$unregisterCommand('foo');
-		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
+		commAnds.$unregisterCommAnd('foo');
+		Assert.equAl(CommAndsRegistry.getCommAnd('foo'), undefined);
 	});
 
-	test('unregister all on dispose', function () {
+	test('unregister All on dispose', function () {
 
-		const commands = new MainThreadCommands(SingleProxyRPCProtocol(null), undefined!, new class extends mock<IExtensionService>() { });
-		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
+		const commAnds = new MAinThreAdCommAnds(SingleProxyRPCProtocol(null), undefined!, new clAss extends mock<IExtensionService>() { });
+		Assert.equAl(CommAndsRegistry.getCommAnd('foo'), undefined);
 
-		commands.$registerCommand('foo');
-		commands.$registerCommand('bar');
+		commAnds.$registerCommAnd('foo');
+		commAnds.$registerCommAnd('bAr');
 
-		assert.ok(CommandsRegistry.getCommand('foo'));
-		assert.ok(CommandsRegistry.getCommand('bar'));
+		Assert.ok(CommAndsRegistry.getCommAnd('foo'));
+		Assert.ok(CommAndsRegistry.getCommAnd('bAr'));
 
-		commands.dispose();
+		commAnds.dispose();
 
-		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
-		assert.equal(CommandsRegistry.getCommand('bar'), undefined);
+		Assert.equAl(CommAndsRegistry.getCommAnd('foo'), undefined);
+		Assert.equAl(CommAndsRegistry.getCommAnd('bAr'), undefined);
 	});
 
-	test('activate and throw when needed', async function () {
+	test('ActivAte And throw when needed', Async function () {
 
-		const activations: string[] = [];
+		const ActivAtions: string[] = [];
 		const runs: string[] = [];
 
-		const commands = new MainThreadCommands(
+		const commAnds = new MAinThreAdCommAnds(
 			SingleProxyRPCProtocol(null),
-			new class extends mock<ICommandService>() {
-				executeCommand<T>(id: string): Promise<T | undefined> {
+			new clAss extends mock<ICommAndService>() {
+				executeCommAnd<T>(id: string): Promise<T | undefined> {
 					runs.push(id);
 					return Promise.resolve(undefined);
 				}
 			},
-			new class extends mock<IExtensionService>() {
-				activateByEvent(id: string) {
-					activations.push(id);
+			new clAss extends mock<IExtensionService>() {
+				ActivAteByEvent(id: string) {
+					ActivAtions.push(id);
 					return Promise.resolve();
 				}
 			}
 		);
 
-		// case 1: arguments and retry
+		// cAse 1: Arguments And retry
 		try {
-			activations.length = 0;
-			await commands.$executeCommand('bazz', [1, 2, { n: 3 }], true);
-			assert.ok(false);
-		} catch (e) {
-			assert.deepEqual(activations, ['onCommand:bazz']);
-			assert.equal((<Error>e).message, '$executeCommand:retry');
+			ActivAtions.length = 0;
+			AwAit commAnds.$executeCommAnd('bAzz', [1, 2, { n: 3 }], true);
+			Assert.ok(fAlse);
+		} cAtch (e) {
+			Assert.deepEquAl(ActivAtions, ['onCommAnd:bAzz']);
+			Assert.equAl((<Error>e).messAge, '$executeCommAnd:retry');
 		}
 
-		// case 2: no arguments and retry
+		// cAse 2: no Arguments And retry
 		runs.length = 0;
-		await commands.$executeCommand('bazz', [], true);
-		assert.deepEqual(runs, ['bazz']);
+		AwAit commAnds.$executeCommAnd('bAzz', [], true);
+		Assert.deepEquAl(runs, ['bAzz']);
 
-		// case 3: arguments and no retry
+		// cAse 3: Arguments And no retry
 		runs.length = 0;
-		await commands.$executeCommand('bazz', [1, 2, true], false);
-		assert.deepEqual(runs, ['bazz']);
+		AwAit commAnds.$executeCommAnd('bAzz', [1, 2, true], fAlse);
+		Assert.deepEquAl(runs, ['bAzz']);
 	});
 });

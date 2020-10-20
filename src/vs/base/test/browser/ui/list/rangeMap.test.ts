@@ -1,148 +1,148 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { RangeMap, groupIntersect, consolidate } from 'vs/base/browser/ui/list/rangeMap';
-import { Range } from 'vs/base/common/range';
+import * As Assert from 'Assert';
+import { RAngeMAp, groupIntersect, consolidAte } from 'vs/bAse/browser/ui/list/rAngeMAp';
+import { RAnge } from 'vs/bAse/common/rAnge';
 
-suite('RangeMap', () => {
-	let rangeMap: RangeMap;
+suite('RAngeMAp', () => {
+	let rAngeMAp: RAngeMAp;
 
 	setup(() => {
-		rangeMap = new RangeMap();
+		rAngeMAp = new RAngeMAp();
 	});
 
 	test('intersection', () => {
-		assert.deepEqual(Range.intersect({ start: 0, end: 0 }, { start: 0, end: 0 }), { start: 0, end: 0 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 0 }, { start: 5, end: 5 }), { start: 0, end: 0 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 1 }, { start: 5, end: 6 }), { start: 0, end: 0 });
-		assert.deepEqual(Range.intersect({ start: 5, end: 6 }, { start: 0, end: 1 }), { start: 0, end: 0 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 5 }, { start: 2, end: 2 }), { start: 0, end: 0 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 1 }, { start: 0, end: 1 }), { start: 0, end: 1 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 10 }, { start: 0, end: 5 }), { start: 0, end: 5 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 5 }, { start: 0, end: 10 }), { start: 0, end: 5 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 10 }, { start: 5, end: 10 }), { start: 5, end: 10 });
-		assert.deepEqual(Range.intersect({ start: 5, end: 10 }, { start: 0, end: 10 }), { start: 5, end: 10 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 10 }, { start: 2, end: 8 }), { start: 2, end: 8 });
-		assert.deepEqual(Range.intersect({ start: 2, end: 8 }, { start: 0, end: 10 }), { start: 2, end: 8 });
-		assert.deepEqual(Range.intersect({ start: 0, end: 10 }, { start: 5, end: 15 }), { start: 5, end: 10 });
-		assert.deepEqual(Range.intersect({ start: 5, end: 15 }, { start: 0, end: 10 }), { start: 5, end: 10 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 0 }, { stArt: 0, end: 0 }), { stArt: 0, end: 0 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 0 }, { stArt: 5, end: 5 }), { stArt: 0, end: 0 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 1 }, { stArt: 5, end: 6 }), { stArt: 0, end: 0 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 5, end: 6 }, { stArt: 0, end: 1 }), { stArt: 0, end: 0 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 5 }, { stArt: 2, end: 2 }), { stArt: 0, end: 0 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 1 }, { stArt: 0, end: 1 }), { stArt: 0, end: 1 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 10 }, { stArt: 0, end: 5 }), { stArt: 0, end: 5 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 5 }, { stArt: 0, end: 10 }), { stArt: 0, end: 5 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 10 }, { stArt: 5, end: 10 }), { stArt: 5, end: 10 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 5, end: 10 }, { stArt: 0, end: 10 }), { stArt: 5, end: 10 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 10 }, { stArt: 2, end: 8 }), { stArt: 2, end: 8 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 2, end: 8 }, { stArt: 0, end: 10 }), { stArt: 2, end: 8 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 0, end: 10 }, { stArt: 5, end: 15 }), { stArt: 5, end: 10 });
+		Assert.deepEquAl(RAnge.intersect({ stArt: 5, end: 15 }, { stArt: 0, end: 10 }), { stArt: 5, end: 10 });
 	});
 
 	test('multiIntersect', () => {
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 0, end: 0 },
-				[{ range: { start: 0, end: 10 }, size: 1 }]
+				{ stArt: 0, end: 0 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }]
 			),
 			[]
 		);
 
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 10, end: 20 },
-				[{ range: { start: 0, end: 10 }, size: 1 }]
+				{ stArt: 10, end: 20 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }]
 			),
 			[]
 		);
 
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 2, end: 8 },
-				[{ range: { start: 0, end: 10 }, size: 1 }]
+				{ stArt: 2, end: 8 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }]
 			),
-			[{ range: { start: 2, end: 8 }, size: 1 }]
+			[{ rAnge: { stArt: 2, end: 8 }, size: 1 }]
 		);
 
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 2, end: 8 },
-				[{ range: { start: 0, end: 10 }, size: 1 }, { range: { start: 10, end: 20 }, size: 5 }]
+				{ stArt: 2, end: 8 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }, { rAnge: { stArt: 10, end: 20 }, size: 5 }]
 			),
-			[{ range: { start: 2, end: 8 }, size: 1 }]
+			[{ rAnge: { stArt: 2, end: 8 }, size: 1 }]
 		);
 
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 12, end: 18 },
-				[{ range: { start: 0, end: 10 }, size: 1 }, { range: { start: 10, end: 20 }, size: 5 }]
+				{ stArt: 12, end: 18 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }, { rAnge: { stArt: 10, end: 20 }, size: 5 }]
 			),
-			[{ range: { start: 12, end: 18 }, size: 5 }]
+			[{ rAnge: { stArt: 12, end: 18 }, size: 5 }]
 		);
 
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 2, end: 18 },
-				[{ range: { start: 0, end: 10 }, size: 1 }, { range: { start: 10, end: 20 }, size: 5 }]
+				{ stArt: 2, end: 18 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }, { rAnge: { stArt: 10, end: 20 }, size: 5 }]
 			),
-			[{ range: { start: 2, end: 10 }, size: 1 }, { range: { start: 10, end: 18 }, size: 5 }]
+			[{ rAnge: { stArt: 2, end: 10 }, size: 1 }, { rAnge: { stArt: 10, end: 18 }, size: 5 }]
 		);
 
-		assert.deepEqual(
+		Assert.deepEquAl(
 			groupIntersect(
-				{ start: 2, end: 28 },
-				[{ range: { start: 0, end: 10 }, size: 1 }, { range: { start: 10, end: 20 }, size: 5 }, { range: { start: 20, end: 30 }, size: 10 }]
+				{ stArt: 2, end: 28 },
+				[{ rAnge: { stArt: 0, end: 10 }, size: 1 }, { rAnge: { stArt: 10, end: 20 }, size: 5 }, { rAnge: { stArt: 20, end: 30 }, size: 10 }]
 			),
-			[{ range: { start: 2, end: 10 }, size: 1 }, { range: { start: 10, end: 20 }, size: 5 }, { range: { start: 20, end: 28 }, size: 10 }]
+			[{ rAnge: { stArt: 2, end: 10 }, size: 1 }, { rAnge: { stArt: 10, end: 20 }, size: 5 }, { rAnge: { stArt: 20, end: 28 }, size: 10 }]
 		);
 	});
 
-	test('consolidate', () => {
-		assert.deepEqual(consolidate([]), []);
+	test('consolidAte', () => {
+		Assert.deepEquAl(consolidAte([]), []);
 
-		assert.deepEqual(
-			consolidate([{ range: { start: 0, end: 10 }, size: 1 }]),
-			[{ range: { start: 0, end: 10 }, size: 1 }]
+		Assert.deepEquAl(
+			consolidAte([{ rAnge: { stArt: 0, end: 10 }, size: 1 }]),
+			[{ rAnge: { stArt: 0, end: 10 }, size: 1 }]
 		);
 
-		assert.deepEqual(
-			consolidate([
-				{ range: { start: 0, end: 10 }, size: 1 },
-				{ range: { start: 10, end: 20 }, size: 1 }
+		Assert.deepEquAl(
+			consolidAte([
+				{ rAnge: { stArt: 0, end: 10 }, size: 1 },
+				{ rAnge: { stArt: 10, end: 20 }, size: 1 }
 			]),
-			[{ range: { start: 0, end: 20 }, size: 1 }]
+			[{ rAnge: { stArt: 0, end: 20 }, size: 1 }]
 		);
 
-		assert.deepEqual(
-			consolidate([
-				{ range: { start: 0, end: 10 }, size: 1 },
-				{ range: { start: 10, end: 20 }, size: 1 },
-				{ range: { start: 20, end: 100 }, size: 1 }
+		Assert.deepEquAl(
+			consolidAte([
+				{ rAnge: { stArt: 0, end: 10 }, size: 1 },
+				{ rAnge: { stArt: 10, end: 20 }, size: 1 },
+				{ rAnge: { stArt: 20, end: 100 }, size: 1 }
 			]),
-			[{ range: { start: 0, end: 100 }, size: 1 }]
+			[{ rAnge: { stArt: 0, end: 100 }, size: 1 }]
 		);
 
-		assert.deepEqual(
-			consolidate([
-				{ range: { start: 0, end: 10 }, size: 1 },
-				{ range: { start: 10, end: 20 }, size: 5 },
-				{ range: { start: 20, end: 30 }, size: 10 }
+		Assert.deepEquAl(
+			consolidAte([
+				{ rAnge: { stArt: 0, end: 10 }, size: 1 },
+				{ rAnge: { stArt: 10, end: 20 }, size: 5 },
+				{ rAnge: { stArt: 20, end: 30 }, size: 10 }
 			]),
 			[
-				{ range: { start: 0, end: 10 }, size: 1 },
-				{ range: { start: 10, end: 20 }, size: 5 },
-				{ range: { start: 20, end: 30 }, size: 10 }
+				{ rAnge: { stArt: 0, end: 10 }, size: 1 },
+				{ rAnge: { stArt: 10, end: 20 }, size: 5 },
+				{ rAnge: { stArt: 20, end: 30 }, size: 10 }
 			]
 		);
 
-		assert.deepEqual(
-			consolidate([
-				{ range: { start: 0, end: 10 }, size: 1 },
-				{ range: { start: 10, end: 20 }, size: 2 },
-				{ range: { start: 20, end: 100 }, size: 2 }
+		Assert.deepEquAl(
+			consolidAte([
+				{ rAnge: { stArt: 0, end: 10 }, size: 1 },
+				{ rAnge: { stArt: 10, end: 20 }, size: 2 },
+				{ rAnge: { stArt: 20, end: 100 }, size: 2 }
 			]),
 			[
-				{ range: { start: 0, end: 10 }, size: 1 },
-				{ range: { start: 10, end: 100 }, size: 2 }
+				{ rAnge: { stArt: 0, end: 10 }, size: 1 },
+				{ rAnge: { stArt: 10, end: 100 }, size: 2 }
 			]
 		);
 	});
 
 	test('empty', () => {
-		assert.equal(rangeMap.size, 0);
-		assert.equal(rangeMap.count, 0);
+		Assert.equAl(rAngeMAp.size, 0);
+		Assert.equAl(rAngeMAp.count, 0);
 	});
 
 	const one = { size: 1 };
@@ -152,194 +152,194 @@ suite('RangeMap', () => {
 	const ten = { size: 10 };
 
 	test('length & count', () => {
-		rangeMap.splice(0, 0, [one]);
-		assert.equal(rangeMap.size, 1);
-		assert.equal(rangeMap.count, 1);
+		rAngeMAp.splice(0, 0, [one]);
+		Assert.equAl(rAngeMAp.size, 1);
+		Assert.equAl(rAngeMAp.count, 1);
 	});
 
 	test('length & count #2', () => {
-		rangeMap.splice(0, 0, [one, one, one, one, one]);
-		assert.equal(rangeMap.size, 5);
-		assert.equal(rangeMap.count, 5);
+		rAngeMAp.splice(0, 0, [one, one, one, one, one]);
+		Assert.equAl(rAngeMAp.size, 5);
+		Assert.equAl(rAngeMAp.count, 5);
 	});
 
 	test('length & count #3', () => {
-		rangeMap.splice(0, 0, [five]);
-		assert.equal(rangeMap.size, 5);
-		assert.equal(rangeMap.count, 1);
+		rAngeMAp.splice(0, 0, [five]);
+		Assert.equAl(rAngeMAp.size, 5);
+		Assert.equAl(rAngeMAp.count, 1);
 	});
 
 	test('length & count #4', () => {
-		rangeMap.splice(0, 0, [five, five, five, five, five]);
-		assert.equal(rangeMap.size, 25);
-		assert.equal(rangeMap.count, 5);
+		rAngeMAp.splice(0, 0, [five, five, five, five, five]);
+		Assert.equAl(rAngeMAp.size, 25);
+		Assert.equAl(rAngeMAp.count, 5);
 	});
 
 	test('insert', () => {
-		rangeMap.splice(0, 0, [five, five, five, five, five]);
-		assert.equal(rangeMap.size, 25);
-		assert.equal(rangeMap.count, 5);
+		rAngeMAp.splice(0, 0, [five, five, five, five, five]);
+		Assert.equAl(rAngeMAp.size, 25);
+		Assert.equAl(rAngeMAp.count, 5);
 
-		rangeMap.splice(0, 0, [five, five, five, five, five]);
-		assert.equal(rangeMap.size, 50);
-		assert.equal(rangeMap.count, 10);
+		rAngeMAp.splice(0, 0, [five, five, five, five, five]);
+		Assert.equAl(rAngeMAp.size, 50);
+		Assert.equAl(rAngeMAp.count, 10);
 
-		rangeMap.splice(5, 0, [ten, ten]);
-		assert.equal(rangeMap.size, 70);
-		assert.equal(rangeMap.count, 12);
+		rAngeMAp.splice(5, 0, [ten, ten]);
+		Assert.equAl(rAngeMAp.size, 70);
+		Assert.equAl(rAngeMAp.count, 12);
 
-		rangeMap.splice(12, 0, [{ size: 200 }]);
-		assert.equal(rangeMap.size, 270);
-		assert.equal(rangeMap.count, 13);
+		rAngeMAp.splice(12, 0, [{ size: 200 }]);
+		Assert.equAl(rAngeMAp.size, 270);
+		Assert.equAl(rAngeMAp.count, 13);
 	});
 
 	test('delete', () => {
-		rangeMap.splice(0, 0, [five, five, five, five, five,
+		rAngeMAp.splice(0, 0, [five, five, five, five, five,
 			five, five, five, five, five,
 			five, five, five, five, five,
 			five, five, five, five, five]);
-		assert.equal(rangeMap.size, 100);
-		assert.equal(rangeMap.count, 20);
+		Assert.equAl(rAngeMAp.size, 100);
+		Assert.equAl(rAngeMAp.count, 20);
 
-		rangeMap.splice(10, 5);
-		assert.equal(rangeMap.size, 75);
-		assert.equal(rangeMap.count, 15);
+		rAngeMAp.splice(10, 5);
+		Assert.equAl(rAngeMAp.size, 75);
+		Assert.equAl(rAngeMAp.count, 15);
 
-		rangeMap.splice(0, 1);
-		assert.equal(rangeMap.size, 70);
-		assert.equal(rangeMap.count, 14);
+		rAngeMAp.splice(0, 1);
+		Assert.equAl(rAngeMAp.size, 70);
+		Assert.equAl(rAngeMAp.count, 14);
 
-		rangeMap.splice(1, 13);
-		assert.equal(rangeMap.size, 5);
-		assert.equal(rangeMap.count, 1);
+		rAngeMAp.splice(1, 13);
+		Assert.equAl(rAngeMAp.size, 5);
+		Assert.equAl(rAngeMAp.count, 1);
 
-		rangeMap.splice(1, 1);
-		assert.equal(rangeMap.size, 5);
-		assert.equal(rangeMap.count, 1);
+		rAngeMAp.splice(1, 1);
+		Assert.equAl(rAngeMAp.size, 5);
+		Assert.equAl(rAngeMAp.count, 1);
 	});
 
 	test('insert & delete', () => {
-		assert.equal(rangeMap.size, 0);
-		assert.equal(rangeMap.count, 0);
+		Assert.equAl(rAngeMAp.size, 0);
+		Assert.equAl(rAngeMAp.count, 0);
 
-		rangeMap.splice(0, 0, [one]);
-		assert.equal(rangeMap.size, 1);
-		assert.equal(rangeMap.count, 1);
+		rAngeMAp.splice(0, 0, [one]);
+		Assert.equAl(rAngeMAp.size, 1);
+		Assert.equAl(rAngeMAp.count, 1);
 
-		rangeMap.splice(0, 1);
-		assert.equal(rangeMap.size, 0);
-		assert.equal(rangeMap.count, 0);
+		rAngeMAp.splice(0, 1);
+		Assert.equAl(rAngeMAp.size, 0);
+		Assert.equAl(rAngeMAp.count, 0);
 	});
 
 	test('insert & delete #2', () => {
-		rangeMap.splice(0, 0, [one, one, one, one, one,
+		rAngeMAp.splice(0, 0, [one, one, one, one, one,
 			one, one, one, one, one]);
-		rangeMap.splice(2, 6);
-		assert.equal(rangeMap.count, 4);
-		assert.equal(rangeMap.size, 4);
+		rAngeMAp.splice(2, 6);
+		Assert.equAl(rAngeMAp.count, 4);
+		Assert.equAl(rAngeMAp.size, 4);
 	});
 
 	test('insert & delete #3', () => {
-		rangeMap.splice(0, 0, [one, one, one, one, one,
+		rAngeMAp.splice(0, 0, [one, one, one, one, one,
 			one, one, one, one, one,
 			two, two, two, two, two,
 			two, two, two, two, two]);
-		rangeMap.splice(8, 4);
-		assert.equal(rangeMap.count, 16);
-		assert.equal(rangeMap.size, 24);
+		rAngeMAp.splice(8, 4);
+		Assert.equAl(rAngeMAp.count, 16);
+		Assert.equAl(rAngeMAp.size, 24);
 	});
 
 	test('insert & delete #3', () => {
-		rangeMap.splice(0, 0, [one, one, one, one, one,
+		rAngeMAp.splice(0, 0, [one, one, one, one, one,
 			one, one, one, one, one,
 			two, two, two, two, two,
 			two, two, two, two, two]);
-		rangeMap.splice(5, 0, [three, three, three, three, three]);
-		assert.equal(rangeMap.count, 25);
-		assert.equal(rangeMap.size, 45);
+		rAngeMAp.splice(5, 0, [three, three, three, three, three]);
+		Assert.equAl(rAngeMAp.count, 25);
+		Assert.equAl(rAngeMAp.size, 45);
 
-		rangeMap.splice(4, 7);
-		assert.equal(rangeMap.count, 18);
-		assert.equal(rangeMap.size, 28);
+		rAngeMAp.splice(4, 7);
+		Assert.equAl(rAngeMAp.count, 18);
+		Assert.equAl(rAngeMAp.size, 28);
 	});
 
 	suite('indexAt, positionAt', () => {
 		test('empty', () => {
-			assert.equal(rangeMap.indexAt(0), 0);
-			assert.equal(rangeMap.indexAt(10), 0);
-			assert.equal(rangeMap.indexAt(-1), -1);
-			assert.equal(rangeMap.positionAt(0), -1);
-			assert.equal(rangeMap.positionAt(10), -1);
-			assert.equal(rangeMap.positionAt(-1), -1);
+			Assert.equAl(rAngeMAp.indexAt(0), 0);
+			Assert.equAl(rAngeMAp.indexAt(10), 0);
+			Assert.equAl(rAngeMAp.indexAt(-1), -1);
+			Assert.equAl(rAngeMAp.positionAt(0), -1);
+			Assert.equAl(rAngeMAp.positionAt(10), -1);
+			Assert.equAl(rAngeMAp.positionAt(-1), -1);
 		});
 
 		test('simple', () => {
-			rangeMap.splice(0, 0, [one]);
-			assert.equal(rangeMap.indexAt(0), 0);
-			assert.equal(rangeMap.indexAt(1), 1);
-			assert.equal(rangeMap.positionAt(0), 0);
-			assert.equal(rangeMap.positionAt(1), -1);
+			rAngeMAp.splice(0, 0, [one]);
+			Assert.equAl(rAngeMAp.indexAt(0), 0);
+			Assert.equAl(rAngeMAp.indexAt(1), 1);
+			Assert.equAl(rAngeMAp.positionAt(0), 0);
+			Assert.equAl(rAngeMAp.positionAt(1), -1);
 		});
 
 		test('simple #2', () => {
-			rangeMap.splice(0, 0, [ten]);
-			assert.equal(rangeMap.indexAt(0), 0);
-			assert.equal(rangeMap.indexAt(5), 0);
-			assert.equal(rangeMap.indexAt(9), 0);
-			assert.equal(rangeMap.indexAt(10), 1);
-			assert.equal(rangeMap.positionAt(0), 0);
-			assert.equal(rangeMap.positionAt(1), -1);
+			rAngeMAp.splice(0, 0, [ten]);
+			Assert.equAl(rAngeMAp.indexAt(0), 0);
+			Assert.equAl(rAngeMAp.indexAt(5), 0);
+			Assert.equAl(rAngeMAp.indexAt(9), 0);
+			Assert.equAl(rAngeMAp.indexAt(10), 1);
+			Assert.equAl(rAngeMAp.positionAt(0), 0);
+			Assert.equAl(rAngeMAp.positionAt(1), -1);
 		});
 
 		test('insert', () => {
-			rangeMap.splice(0, 0, [one, one, one, one, one, one, one, one, one, one]);
-			assert.equal(rangeMap.indexAt(0), 0);
-			assert.equal(rangeMap.indexAt(1), 1);
-			assert.equal(rangeMap.indexAt(5), 5);
-			assert.equal(rangeMap.indexAt(9), 9);
-			assert.equal(rangeMap.indexAt(10), 10);
-			assert.equal(rangeMap.indexAt(11), 10);
+			rAngeMAp.splice(0, 0, [one, one, one, one, one, one, one, one, one, one]);
+			Assert.equAl(rAngeMAp.indexAt(0), 0);
+			Assert.equAl(rAngeMAp.indexAt(1), 1);
+			Assert.equAl(rAngeMAp.indexAt(5), 5);
+			Assert.equAl(rAngeMAp.indexAt(9), 9);
+			Assert.equAl(rAngeMAp.indexAt(10), 10);
+			Assert.equAl(rAngeMAp.indexAt(11), 10);
 
-			rangeMap.splice(10, 0, [one, one, one, one, one, one, one, one, one, one]);
-			assert.equal(rangeMap.indexAt(10), 10);
-			assert.equal(rangeMap.indexAt(19), 19);
-			assert.equal(rangeMap.indexAt(20), 20);
-			assert.equal(rangeMap.indexAt(21), 20);
-			assert.equal(rangeMap.positionAt(0), 0);
-			assert.equal(rangeMap.positionAt(1), 1);
-			assert.equal(rangeMap.positionAt(19), 19);
-			assert.equal(rangeMap.positionAt(20), -1);
+			rAngeMAp.splice(10, 0, [one, one, one, one, one, one, one, one, one, one]);
+			Assert.equAl(rAngeMAp.indexAt(10), 10);
+			Assert.equAl(rAngeMAp.indexAt(19), 19);
+			Assert.equAl(rAngeMAp.indexAt(20), 20);
+			Assert.equAl(rAngeMAp.indexAt(21), 20);
+			Assert.equAl(rAngeMAp.positionAt(0), 0);
+			Assert.equAl(rAngeMAp.positionAt(1), 1);
+			Assert.equAl(rAngeMAp.positionAt(19), 19);
+			Assert.equAl(rAngeMAp.positionAt(20), -1);
 		});
 
 		test('delete', () => {
-			rangeMap.splice(0, 0, [one, one, one, one, one, one, one, one, one, one]);
-			rangeMap.splice(2, 6);
+			rAngeMAp.splice(0, 0, [one, one, one, one, one, one, one, one, one, one]);
+			rAngeMAp.splice(2, 6);
 
-			assert.equal(rangeMap.indexAt(0), 0);
-			assert.equal(rangeMap.indexAt(1), 1);
-			assert.equal(rangeMap.indexAt(3), 3);
-			assert.equal(rangeMap.indexAt(4), 4);
-			assert.equal(rangeMap.indexAt(5), 4);
-			assert.equal(rangeMap.positionAt(0), 0);
-			assert.equal(rangeMap.positionAt(1), 1);
-			assert.equal(rangeMap.positionAt(3), 3);
-			assert.equal(rangeMap.positionAt(4), -1);
+			Assert.equAl(rAngeMAp.indexAt(0), 0);
+			Assert.equAl(rAngeMAp.indexAt(1), 1);
+			Assert.equAl(rAngeMAp.indexAt(3), 3);
+			Assert.equAl(rAngeMAp.indexAt(4), 4);
+			Assert.equAl(rAngeMAp.indexAt(5), 4);
+			Assert.equAl(rAngeMAp.positionAt(0), 0);
+			Assert.equAl(rAngeMAp.positionAt(1), 1);
+			Assert.equAl(rAngeMAp.positionAt(3), 3);
+			Assert.equAl(rAngeMAp.positionAt(4), -1);
 		});
 
 		test('delete #2', () => {
-			rangeMap.splice(0, 0, [ten, ten, ten, ten, ten, ten, ten, ten, ten, ten]);
-			rangeMap.splice(2, 6);
+			rAngeMAp.splice(0, 0, [ten, ten, ten, ten, ten, ten, ten, ten, ten, ten]);
+			rAngeMAp.splice(2, 6);
 
-			assert.equal(rangeMap.indexAt(0), 0);
-			assert.equal(rangeMap.indexAt(1), 0);
-			assert.equal(rangeMap.indexAt(30), 3);
-			assert.equal(rangeMap.indexAt(40), 4);
-			assert.equal(rangeMap.indexAt(50), 4);
-			assert.equal(rangeMap.positionAt(0), 0);
-			assert.equal(rangeMap.positionAt(1), 10);
-			assert.equal(rangeMap.positionAt(2), 20);
-			assert.equal(rangeMap.positionAt(3), 30);
-			assert.equal(rangeMap.positionAt(4), -1);
+			Assert.equAl(rAngeMAp.indexAt(0), 0);
+			Assert.equAl(rAngeMAp.indexAt(1), 0);
+			Assert.equAl(rAngeMAp.indexAt(30), 3);
+			Assert.equAl(rAngeMAp.indexAt(40), 4);
+			Assert.equAl(rAngeMAp.indexAt(50), 4);
+			Assert.equAl(rAngeMAp.positionAt(0), 0);
+			Assert.equAl(rAngeMAp.positionAt(1), 10);
+			Assert.equAl(rAngeMAp.positionAt(2), 20);
+			Assert.equAl(rAngeMAp.positionAt(3), 30);
+			Assert.equAl(rAngeMAp.positionAt(4), -1);
 		});
 	});
 });

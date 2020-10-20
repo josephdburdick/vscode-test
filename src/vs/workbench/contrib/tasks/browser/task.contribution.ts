@@ -1,116 +1,116 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { MenuRegistry, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { MenuRegistry, MenuId, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
 
-import { ProblemMatcherRegistry } from 'vs/workbench/contrib/tasks/common/problemMatcher';
-import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
+import { ProblemMAtcherRegistry } from 'vs/workbench/contrib/tAsks/common/problemMAtcher';
+import { IProgressService, ProgressLocAtion } from 'vs/plAtform/progress/common/progress';
 
-import * as jsonContributionRegistry from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import * As jsonContributionRegistry from 'vs/plAtform/jsonschemAs/common/jsonContributionRegistry';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 
-import { StatusbarAlignment, IStatusbarService, IStatusbarEntryAccessor, IStatusbarEntry } from 'vs/workbench/services/statusbar/common/statusbar';
+import { StAtusbArAlignment, IStAtusbArService, IStAtusbArEntryAccessor, IStAtusbArEntry } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
 
-import { IOutputChannelRegistry, Extensions as OutputExt } from 'vs/workbench/services/output/common/output';
+import { IOutputChAnnelRegistry, Extensions As OutputExt } from 'vs/workbench/services/output/common/output';
 
-import { TaskEvent, TaskEventKind, TaskGroup, TASKS_CATEGORY, TASK_RUNNING_STATE } from 'vs/workbench/contrib/tasks/common/tasks';
-import { ITaskService, ProcessExecutionSupportedContext, ShellExecutionSupportedContext } from 'vs/workbench/contrib/tasks/common/taskService';
+import { TAskEvent, TAskEventKind, TAskGroup, TASKS_CATEGORY, TASK_RUNNING_STATE } from 'vs/workbench/contrib/tAsks/common/tAsks';
+import { ITAskService, ProcessExecutionSupportedContext, ShellExecutionSupportedContext } from 'vs/workbench/contrib/tAsks/common/tAskService';
 
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry, IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { RunAutomaticTasks, ManageAutomaticTaskRunning } from 'vs/workbench/contrib/tasks/browser/runAutomaticTasks';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import schemaVersion1 from '../common/jsonSchema_v1';
-import schemaVersion2, { updateProblemMatchers } from '../common/jsonSchema_v2';
-import { AbstractTaskService, ConfigureTaskAction } from 'vs/workbench/contrib/tasks/browser/abstractTaskService';
-import { tasksSchemaId } from 'vs/workbench/services/configuration/common/configuration';
-import { Extensions as ConfigurationExtensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
-import { WorkbenchStateContext } from 'vs/workbench/browser/contextkeys';
-import { IQuickAccessRegistry, Extensions as QuickAccessExtensions } from 'vs/platform/quickinput/common/quickAccess';
-import { TasksQuickAccessProvider } from 'vs/workbench/contrib/tasks/browser/tasksQuickAccess';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { RunAutomAticTAsks, MAnAgeAutomAticTAskRunning } from 'vs/workbench/contrib/tAsks/browser/runAutomAticTAsks';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import schemAVersion1 from '../common/jsonSchemA_v1';
+import schemAVersion2, { updAteProblemMAtchers } from '../common/jsonSchemA_v2';
+import { AbstrActTAskService, ConfigureTAskAction } from 'vs/workbench/contrib/tAsks/browser/AbstrActTAskService';
+import { tAsksSchemAId } from 'vs/workbench/services/configurAtion/common/configurAtion';
+import { Extensions As ConfigurAtionExtensions, IConfigurAtionRegistry } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { WorkbenchStAteContext } from 'vs/workbench/browser/contextkeys';
+import { IQuickAccessRegistry, Extensions As QuickAccessExtensions } from 'vs/plAtform/quickinput/common/quickAccess';
+import { TAsksQuickAccessProvider } from 'vs/workbench/contrib/tAsks/browser/tAsksQuickAccess';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
 
 const SHOW_TASKS_COMMANDS_CONTEXT = ContextKeyExpr.or(ShellExecutionSupportedContext, ProcessExecutionSupportedContext);
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(RunAutomaticTasks, LifecyclePhase.Eventually);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(RunAutomAticTAsks, LifecyclePhAse.EventuAlly);
 
-registerAction2(ManageAutomaticTaskRunning);
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: ManageAutomaticTaskRunning.ID,
-		title: ManageAutomaticTaskRunning.LABEL,
-		category: TASKS_CATEGORY
+registerAction2(MAnAgeAutomAticTAskRunning);
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: MAnAgeAutomAticTAskRunning.ID,
+		title: MAnAgeAutomAticTAskRunning.LABEL,
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-export class TaskStatusBarContributions extends Disposable implements IWorkbenchContribution {
-	private runningTasksStatusItem: IStatusbarEntryAccessor | undefined;
-	private activeTasksCount: number = 0;
+export clAss TAskStAtusBArContributions extends DisposAble implements IWorkbenchContribution {
+	privAte runningTAsksStAtusItem: IStAtusbArEntryAccessor | undefined;
+	privAte ActiveTAsksCount: number = 0;
 
 	constructor(
-		@ITaskService private readonly taskService: ITaskService,
-		@IStatusbarService private readonly statusbarService: IStatusbarService,
-		@IProgressService private readonly progressService: IProgressService
+		@ITAskService privAte reAdonly tAskService: ITAskService,
+		@IStAtusbArService privAte reAdonly stAtusbArService: IStAtusbArService,
+		@IProgressService privAte reAdonly progressService: IProgressService
 	) {
 		super();
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 		let promise: Promise<void> | undefined = undefined;
-		let resolver: (value?: void | Thenable<void>) => void;
-		this.taskService.onDidStateChange(event => {
-			if (event.kind === TaskEventKind.Changed) {
-				this.updateRunningTasksStatus();
+		let resolver: (vAlue?: void | ThenAble<void>) => void;
+		this.tAskService.onDidStAteChAnge(event => {
+			if (event.kind === TAskEventKind.ChAnged) {
+				this.updAteRunningTAsksStAtus();
 			}
 
-			if (!this.ignoreEventForUpdateRunningTasksCount(event)) {
+			if (!this.ignoreEventForUpdAteRunningTAsksCount(event)) {
 				switch (event.kind) {
-					case TaskEventKind.Active:
-						this.activeTasksCount++;
-						if (this.activeTasksCount === 1) {
+					cAse TAskEventKind.Active:
+						this.ActiveTAsksCount++;
+						if (this.ActiveTAsksCount === 1) {
 							if (!promise) {
 								promise = new Promise<void>((resolve) => {
 									resolver = resolve;
 								});
 							}
 						}
-						break;
-					case TaskEventKind.Inactive:
-						// Since the exiting of the sub process is communicated async we can't order inactive and terminate events.
-						// So try to treat them accordingly.
-						if (this.activeTasksCount > 0) {
-							this.activeTasksCount--;
-							if (this.activeTasksCount === 0) {
+						breAk;
+					cAse TAskEventKind.InActive:
+						// Since the exiting of the sub process is communicAted Async we cAn't order inActive And terminAte events.
+						// So try to treAt them Accordingly.
+						if (this.ActiveTAsksCount > 0) {
+							this.ActiveTAsksCount--;
+							if (this.ActiveTAsksCount === 0) {
 								if (promise && resolver!) {
 									resolver!();
 								}
 							}
 						}
-						break;
-					case TaskEventKind.Terminated:
-						if (this.activeTasksCount !== 0) {
-							this.activeTasksCount = 0;
+						breAk;
+					cAse TAskEventKind.TerminAted:
+						if (this.ActiveTAsksCount !== 0) {
+							this.ActiveTAsksCount = 0;
 							if (promise && resolver!) {
 								resolver!();
 							}
 						}
-						break;
+						breAk;
 				}
 			}
 
-			if (promise && (event.kind === TaskEventKind.Active) && (this.activeTasksCount === 1)) {
-				this.progressService.withProgress({ location: ProgressLocation.Window, command: 'workbench.action.tasks.showTasks' }, progress => {
-					progress.report({ message: nls.localize('building', 'Building...') });
+			if (promise && (event.kind === TAskEventKind.Active) && (this.ActiveTAsksCount === 1)) {
+				this.progressService.withProgress({ locAtion: ProgressLocAtion.Window, commAnd: 'workbench.Action.tAsks.showTAsks' }, progress => {
+					progress.report({ messAge: nls.locAlize('building', 'Building...') });
 					return promise!;
 				}).then(() => {
 					promise = undefined;
@@ -119,281 +119,281 @@ export class TaskStatusBarContributions extends Disposable implements IWorkbench
 		});
 	}
 
-	private async updateRunningTasksStatus(): Promise<void> {
-		const tasks = await this.taskService.getActiveTasks();
-		if (tasks.length === 0) {
-			if (this.runningTasksStatusItem) {
-				this.runningTasksStatusItem.dispose();
-				this.runningTasksStatusItem = undefined;
+	privAte Async updAteRunningTAsksStAtus(): Promise<void> {
+		const tAsks = AwAit this.tAskService.getActiveTAsks();
+		if (tAsks.length === 0) {
+			if (this.runningTAsksStAtusItem) {
+				this.runningTAsksStAtusItem.dispose();
+				this.runningTAsksStAtusItem = undefined;
 			}
 		} else {
-			const itemProps: IStatusbarEntry = {
-				text: `$(tools) ${tasks.length}`,
-				ariaLabel: nls.localize('numberOfRunningTasks', "{0} running tasks", tasks.length),
-				tooltip: nls.localize('runningTasks', "Show Running Tasks"),
-				command: 'workbench.action.tasks.showTasks',
+			const itemProps: IStAtusbArEntry = {
+				text: `$(tools) ${tAsks.length}`,
+				AriALAbel: nls.locAlize('numberOfRunningTAsks', "{0} running tAsks", tAsks.length),
+				tooltip: nls.locAlize('runningTAsks', "Show Running TAsks"),
+				commAnd: 'workbench.Action.tAsks.showTAsks',
 			};
 
-			if (!this.runningTasksStatusItem) {
-				this.runningTasksStatusItem = this.statusbarService.addEntry(itemProps, 'status.runningTasks', nls.localize('status.runningTasks', "Running Tasks"), StatusbarAlignment.LEFT, 49 /* Medium Priority, next to Markers */);
+			if (!this.runningTAsksStAtusItem) {
+				this.runningTAsksStAtusItem = this.stAtusbArService.AddEntry(itemProps, 'stAtus.runningTAsks', nls.locAlize('stAtus.runningTAsks', "Running TAsks"), StAtusbArAlignment.LEFT, 49 /* Medium Priority, next to MArkers */);
 			} else {
-				this.runningTasksStatusItem.update(itemProps);
+				this.runningTAsksStAtusItem.updAte(itemProps);
 			}
 		}
 	}
 
-	private ignoreEventForUpdateRunningTasksCount(event: TaskEvent): boolean {
-		if (!this.taskService.inTerminal()) {
-			return false;
+	privAte ignoreEventForUpdAteRunningTAsksCount(event: TAskEvent): booleAn {
+		if (!this.tAskService.inTerminAl()) {
+			return fAlse;
 		}
 
-		if (event.group !== TaskGroup.Build) {
+		if (event.group !== TAskGroup.Build) {
 			return true;
 		}
 
-		if (!event.__task) {
-			return false;
+		if (!event.__tAsk) {
+			return fAlse;
 		}
 
-		return event.__task.configurationProperties.problemMatchers === undefined || event.__task.configurationProperties.problemMatchers.length === 0;
+		return event.__tAsk.configurAtionProperties.problemMAtchers === undefined || event.__tAsk.configurAtionProperties.problemMAtchers.length === 0;
 	}
 }
 
-workbenchRegistry.registerWorkbenchContribution(TaskStatusBarContributions, LifecyclePhase.Restored);
+workbenchRegistry.registerWorkbenchContribution(TAskStAtusBArContributions, LifecyclePhAse.Restored);
 
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
 	group: '2_run',
-	command: {
-		id: 'workbench.action.tasks.runTask',
-		title: nls.localize({ key: 'miRunTask', comment: ['&& denotes a mnemonic'] }, "&&Run Task...")
+	commAnd: {
+		id: 'workbench.Action.tAsks.runTAsk',
+		title: nls.locAlize({ key: 'miRunTAsk', comment: ['&& denotes A mnemonic'] }, "&&Run TAsk...")
 	},
 	order: 1,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
 	group: '2_run',
-	command: {
-		id: 'workbench.action.tasks.build',
-		title: nls.localize({ key: 'miBuildTask', comment: ['&& denotes a mnemonic'] }, "Run &&Build Task...")
+	commAnd: {
+		id: 'workbench.Action.tAsks.build',
+		title: nls.locAlize({ key: 'miBuildTAsk', comment: ['&& denotes A mnemonic'] }, "Run &&Build TAsk...")
 	},
 	order: 2,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-// Manage Tasks
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
-	group: '3_manage',
-	command: {
+// MAnAge TAsks
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
+	group: '3_mAnAge',
+	commAnd: {
 		precondition: TASK_RUNNING_STATE,
-		id: 'workbench.action.tasks.showTasks',
-		title: nls.localize({ key: 'miRunningTask', comment: ['&& denotes a mnemonic'] }, "Show Runnin&&g Tasks...")
+		id: 'workbench.Action.tAsks.showTAsks',
+		title: nls.locAlize({ key: 'miRunningTAsk', comment: ['&& denotes A mnemonic'] }, "Show Runnin&&g TAsks...")
 	},
 	order: 1,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
-	group: '3_manage',
-	command: {
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
+	group: '3_mAnAge',
+	commAnd: {
 		precondition: TASK_RUNNING_STATE,
-		id: 'workbench.action.tasks.restartTask',
-		title: nls.localize({ key: 'miRestartTask', comment: ['&& denotes a mnemonic'] }, "R&&estart Running Task...")
+		id: 'workbench.Action.tAsks.restArtTAsk',
+		title: nls.locAlize({ key: 'miRestArtTAsk', comment: ['&& denotes A mnemonic'] }, "R&&estArt Running TAsk...")
 	},
 	order: 2,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
-	group: '3_manage',
-	command: {
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
+	group: '3_mAnAge',
+	commAnd: {
 		precondition: TASK_RUNNING_STATE,
-		id: 'workbench.action.tasks.terminate',
-		title: nls.localize({ key: 'miTerminateTask', comment: ['&& denotes a mnemonic'] }, "&&Terminate Task...")
+		id: 'workbench.Action.tAsks.terminAte',
+		title: nls.locAlize({ key: 'miTerminAteTAsk', comment: ['&& denotes A mnemonic'] }, "&&TerminAte TAsk...")
 	},
 	order: 3,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-// Configure Tasks
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+// Configure TAsks
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
 	group: '4_configure',
-	command: {
-		id: 'workbench.action.tasks.configureTaskRunner',
-		title: nls.localize({ key: 'miConfigureTask', comment: ['&& denotes a mnemonic'] }, "&&Configure Tasks...")
+	commAnd: {
+		id: 'workbench.Action.tAsks.configureTAskRunner',
+		title: nls.locAlize({ key: 'miConfigureTAsk', comment: ['&& denotes A mnemonic'] }, "&&Configure TAsks...")
 	},
 	order: 1,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarTerminalMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArTerminAlMenu, {
 	group: '4_configure',
-	command: {
-		id: 'workbench.action.tasks.configureDefaultBuildTask',
-		title: nls.localize({ key: 'miConfigureBuildTask', comment: ['&& denotes a mnemonic'] }, "Configure De&&fault Build Task...")
+	commAnd: {
+		id: 'workbench.Action.tAsks.configureDefAultBuildTAsk',
+		title: nls.locAlize({ key: 'miConfigureBuildTAsk', comment: ['&& denotes A mnemonic'] }, "Configure De&&fAult Build TAsk...")
 	},
 	order: 2,
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
 
 
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.openWorkspaceFileTasks',
-		title: { value: nls.localize('workbench.action.tasks.openWorkspaceFileTasks', "Open Workspace Tasks"), original: 'Open Workspace Tasks' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.openWorkspAceFileTAsks',
+		title: { vAlue: nls.locAlize('workbench.Action.tAsks.openWorkspAceFileTAsks', "Open WorkspAce TAsks"), originAl: 'Open WorkspAce TAsks' },
+		cAtegory: TASKS_CATEGORY
 	},
-	when: ContextKeyExpr.and(WorkbenchStateContext.isEqualTo('workspace'), SHOW_TASKS_COMMANDS_CONTEXT)
+	when: ContextKeyExpr.And(WorkbenchStAteContext.isEquAlTo('workspAce'), SHOW_TASKS_COMMANDS_CONTEXT)
 });
 
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: ConfigureTaskAction.ID,
-		title: { value: ConfigureTaskAction.TEXT, original: 'Configure Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: ConfigureTAskAction.ID,
+		title: { vAlue: ConfigureTAskAction.TEXT, originAl: 'Configure TAsk' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.showLog',
-		title: { value: nls.localize('ShowLogAction.label', "Show Task Log"), original: 'Show Task Log' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.showLog',
+		title: { vAlue: nls.locAlize('ShowLogAction.lAbel', "Show TAsk Log"), originAl: 'Show TAsk Log' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.runTask',
-		title: { value: nls.localize('RunTaskAction.label', "Run Task"), original: 'Run Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.runTAsk',
+		title: { vAlue: nls.locAlize('RunTAskAction.lAbel', "Run TAsk"), originAl: 'Run TAsk' },
+		cAtegory: TASKS_CATEGORY
 	}
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.reRunTask',
-		title: { value: nls.localize('ReRunTaskAction.label', "Rerun Last Task"), original: 'Rerun Last Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.reRunTAsk',
+		title: { vAlue: nls.locAlize('ReRunTAskAction.lAbel', "Rerun LAst TAsk"), originAl: 'Rerun LAst TAsk' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.restartTask',
-		title: { value: nls.localize('RestartTaskAction.label', "Restart Running Task"), original: 'Restart Running Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.restArtTAsk',
+		title: { vAlue: nls.locAlize('RestArtTAskAction.lAbel', "RestArt Running TAsk"), originAl: 'RestArt Running TAsk' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.showTasks',
-		title: { value: nls.localize('ShowTasksAction.label', "Show Running Tasks"), original: 'Show Running Tasks' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.showTAsks',
+		title: { vAlue: nls.locAlize('ShowTAsksAction.lAbel', "Show Running TAsks"), originAl: 'Show Running TAsks' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.terminate',
-		title: { value: nls.localize('TerminateAction.label', "Terminate Task"), original: 'Terminate Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.terminAte',
+		title: { vAlue: nls.locAlize('TerminAteAction.lAbel', "TerminAte TAsk"), originAl: 'TerminAte TAsk' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.build',
-		title: { value: nls.localize('BuildAction.label', "Run Build Task"), original: 'Run Build Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.build',
+		title: { vAlue: nls.locAlize('BuildAction.lAbel', "Run Build TAsk"), originAl: 'Run Build TAsk' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.test',
-		title: { value: nls.localize('TestAction.label', "Run Test Task"), original: 'Run Test Task' },
-		category: TASKS_CATEGORY
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.test',
+		title: { vAlue: nls.locAlize('TestAction.lAbel', "Run Test TAsk"), originAl: 'Run Test TAsk' },
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.configureDefaultBuildTask',
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.configureDefAultBuildTAsk',
 		title: {
-			value: nls.localize('ConfigureDefaultBuildTask.label', "Configure Default Build Task"),
-			original: 'Configure Default Build Task'
+			vAlue: nls.locAlize('ConfigureDefAultBuildTAsk.lAbel', "Configure DefAult Build TAsk"),
+			originAl: 'Configure DefAult Build TAsk'
 		},
-		category: TASKS_CATEGORY
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.configureDefaultTestTask',
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.configureDefAultTestTAsk',
 		title: {
-			value: nls.localize('ConfigureDefaultTestTask.label', "Configure Default Test Task"),
-			original: 'Configure Default Test Task'
+			vAlue: nls.locAlize('ConfigureDefAultTestTAsk.lAbel', "Configure DefAult Test TAsk"),
+			originAl: 'Configure DefAult Test TAsk'
 		},
-		category: TASKS_CATEGORY
+		cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
-		id: 'workbench.action.tasks.openUserTasks',
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
+		id: 'workbench.Action.tAsks.openUserTAsks',
 		title: {
-			value: nls.localize('workbench.action.tasks.openUserTasks', "Open User Tasks"),
-			original: 'Open User Tasks'
-		}, category: TASKS_CATEGORY
+			vAlue: nls.locAlize('workbench.Action.tAsks.openUserTAsks', "Open User TAsks"),
+			originAl: 'Open User TAsks'
+		}, cAtegory: TASKS_CATEGORY
 	},
 	when: SHOW_TASKS_COMMANDS_CONTEXT
 });
-// MenuRegistry.addCommand( { id: 'workbench.action.tasks.rebuild', title: nls.localize('RebuildAction.label', 'Run Rebuild Task'), category: tasksCategory });
-// MenuRegistry.addCommand( { id: 'workbench.action.tasks.clean', title: nls.localize('CleanAction.label', 'Run Clean Task'), category: tasksCategory });
+// MenuRegistry.AddCommAnd( { id: 'workbench.Action.tAsks.rebuild', title: nls.locAlize('RebuildAction.lAbel', 'Run Rebuild TAsk'), cAtegory: tAsksCAtegory });
+// MenuRegistry.AddCommAnd( { id: 'workbench.Action.tAsks.cleAn', title: nls.locAlize('CleAnAction.lAbel', 'Run CleAn TAsk'), cAtegory: tAsksCAtegory });
 
 KeybindingsRegistry.registerKeybindingRule({
-	id: 'workbench.action.tasks.build',
+	id: 'workbench.Action.tAsks.build',
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: undefined,
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_B
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_B
 });
 
-// Tasks Output channel. Register it before using it in Task Service.
-let outputChannelRegistry = Registry.as<IOutputChannelRegistry>(OutputExt.OutputChannels);
-outputChannelRegistry.registerChannel({ id: AbstractTaskService.OutputChannelId, label: AbstractTaskService.OutputChannelLabel, log: false });
+// TAsks Output chAnnel. Register it before using it in TAsk Service.
+let outputChAnnelRegistry = Registry.As<IOutputChAnnelRegistry>(OutputExt.OutputChAnnels);
+outputChAnnelRegistry.registerChAnnel({ id: AbstrActTAskService.OutputChAnnelId, lAbel: AbstrActTAskService.OutputChAnnelLAbel, log: fAlse });
 
 
 // Register Quick Access
-const quickAccessRegistry = (Registry.as<IQuickAccessRegistry>(QuickAccessExtensions.Quickaccess));
-const tasksPickerContextKey = 'inTasksPicker';
+const quickAccessRegistry = (Registry.As<IQuickAccessRegistry>(QuickAccessExtensions.QuickAccess));
+const tAsksPickerContextKey = 'inTAsksPicker';
 
 quickAccessRegistry.registerQuickAccessProvider({
-	ctor: TasksQuickAccessProvider,
-	prefix: TasksQuickAccessProvider.PREFIX,
-	contextKey: tasksPickerContextKey,
-	placeholder: nls.localize('tasksQuickAccessPlaceholder', "Type the name of a task to run."),
-	helpEntries: [{ description: nls.localize('tasksQuickAccessHelp', "Run Task"), needsEditor: false }]
+	ctor: TAsksQuickAccessProvider,
+	prefix: TAsksQuickAccessProvider.PREFIX,
+	contextKey: tAsksPickerContextKey,
+	plAceholder: nls.locAlize('tAsksQuickAccessPlAceholder', "Type the nAme of A tAsk to run."),
+	helpEntries: [{ description: nls.locAlize('tAsksQuickAccessHelp', "Run TAsk"), needsEditor: fAlse }]
 });
 
-// tasks.json validation
-let schema: IJSONSchema = {
-	id: tasksSchemaId,
-	description: 'Task definition file',
+// tAsks.json vAlidAtion
+let schemA: IJSONSchemA = {
+	id: tAsksSchemAId,
+	description: 'TAsk definition file',
 	type: 'object',
-	allowTrailingCommas: true,
-	allowComments: true,
-	default: {
+	AllowTrAilingCommAs: true,
+	AllowComments: true,
+	defAult: {
 		version: '2.0.0',
-		tasks: [
+		tAsks: [
 			{
-				label: 'My Task',
-				command: 'echo hello',
+				lAbel: 'My TAsk',
+				commAnd: 'echo hello',
 				type: 'shell',
-				args: [],
-				problemMatcher: ['$tsc'],
-				presentation: {
-					reveal: 'always'
+				Args: [],
+				problemMAtcher: ['$tsc'],
+				presentAtion: {
+					reveAl: 'AlwAys'
 				},
 				group: 'build'
 			}
@@ -401,105 +401,105 @@ let schema: IJSONSchema = {
 	}
 };
 
-schema.definitions = {
-	...schemaVersion1.definitions,
-	...schemaVersion2.definitions,
+schemA.definitions = {
+	...schemAVersion1.definitions,
+	...schemAVersion2.definitions,
 };
-schema.oneOf = [...(schemaVersion2.oneOf || []), ...(schemaVersion1.oneOf || [])];
+schemA.oneOf = [...(schemAVersion2.oneOf || []), ...(schemAVersion1.oneOf || [])];
 
-let jsonRegistry = <jsonContributionRegistry.IJSONContributionRegistry>Registry.as(jsonContributionRegistry.Extensions.JSONContribution);
-jsonRegistry.registerSchema(tasksSchemaId, schema);
+let jsonRegistry = <jsonContributionRegistry.IJSONContributionRegistry>Registry.As(jsonContributionRegistry.Extensions.JSONContribution);
+jsonRegistry.registerSchemA(tAsksSchemAId, schemA);
 
-ProblemMatcherRegistry.onMatcherChanged(() => {
-	updateProblemMatchers();
-	jsonRegistry.notifySchemaChanged(tasksSchemaId);
+ProblemMAtcherRegistry.onMAtcherChAnged(() => {
+	updAteProblemMAtchers();
+	jsonRegistry.notifySchemAChAnged(tAsksSchemAId);
 });
 
-const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
-configurationRegistry.registerConfiguration({
-	id: 'task',
+const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
+configurAtionRegistry.registerConfigurAtion({
+	id: 'tAsk',
 	order: 100,
-	title: nls.localize('tasksConfigurationTitle', "Tasks"),
+	title: nls.locAlize('tAsksConfigurAtionTitle', "TAsks"),
 	type: 'object',
 	properties: {
-		'task.problemMatchers.neverPrompt': {
-			markdownDescription: nls.localize('task.problemMatchers.neverPrompt', "Configures whether to show the problem matcher prompt when running a task. Set to `true` to never prompt, or use a dictionary of task types to turn off prompting only for specific task types."),
+		'tAsk.problemMAtchers.neverPrompt': {
+			mArkdownDescription: nls.locAlize('tAsk.problemMAtchers.neverPrompt', "Configures whether to show the problem mAtcher prompt when running A tAsk. Set to `true` to never prompt, or use A dictionAry of tAsk types to turn off prompting only for specific tAsk types."),
 			'oneOf': [
 				{
-					type: 'boolean',
-					markdownDescription: nls.localize('task.problemMatchers.neverPrompt.boolean', 'Sets problem matcher prompting behavior for all tasks.')
+					type: 'booleAn',
+					mArkdownDescription: nls.locAlize('tAsk.problemMAtchers.neverPrompt.booleAn', 'Sets problem mAtcher prompting behAvior for All tAsks.')
 				},
 				{
 					type: 'object',
-					patternProperties: {
+					pAtternProperties: {
 						'.*': {
-							type: 'boolean'
+							type: 'booleAn'
 						}
 					},
-					markdownDescription: nls.localize('task.problemMatchers.neverPrompt.array', 'An object containing task type-boolean pairs to never prompt for problem matchers on.'),
-					default: {
+					mArkdownDescription: nls.locAlize('tAsk.problemMAtchers.neverPrompt.ArrAy', 'An object contAining tAsk type-booleAn pAirs to never prompt for problem mAtchers on.'),
+					defAult: {
 						'shell': true
 					}
 				}
 			],
-			default: false
+			defAult: fAlse
 		},
-		'task.autoDetect': {
-			markdownDescription: nls.localize('task.autoDetect', "Controls enablement of `provideTasks` for all task provider extension. If the Tasks: Run Task command is slow, disabling auto detect for task providers may help. Individual extensions may also provide settings that disable auto detection."),
+		'tAsk.AutoDetect': {
+			mArkdownDescription: nls.locAlize('tAsk.AutoDetect', "Controls enAblement of `provideTAsks` for All tAsk provider extension. If the TAsks: Run TAsk commAnd is slow, disAbling Auto detect for tAsk providers mAy help. IndividuAl extensions mAy Also provide settings thAt disAble Auto detection."),
 			type: 'string',
 			enum: ['on', 'off'],
-			default: 'on'
+			defAult: 'on'
 		},
-		'task.slowProviderWarning': {
-			markdownDescription: nls.localize('task.slowProviderWarning', "Configures whether a warning is shown when a provider is slow"),
+		'tAsk.slowProviderWArning': {
+			mArkdownDescription: nls.locAlize('tAsk.slowProviderWArning', "Configures whether A wArning is shown when A provider is slow"),
 			'oneOf': [
 				{
-					type: 'boolean',
-					markdownDescription: nls.localize('task.slowProviderWarning.boolean', 'Sets the slow provider warning for all tasks.')
+					type: 'booleAn',
+					mArkdownDescription: nls.locAlize('tAsk.slowProviderWArning.booleAn', 'Sets the slow provider wArning for All tAsks.')
 				},
 				{
-					type: 'array',
+					type: 'ArrAy',
 					items: {
 						type: 'string',
-						markdownDescription: nls.localize('task.slowProviderWarning.array', 'An array of task types to never show the slow provider warning.')
+						mArkdownDescription: nls.locAlize('tAsk.slowProviderWArning.ArrAy', 'An ArrAy of tAsk types to never show the slow provider wArning.')
 					}
 				}
 			],
-			default: true
+			defAult: true
 		},
-		'task.quickOpen.history': {
-			markdownDescription: nls.localize('task.quickOpen.history', "Controls the number of recent items tracked in task quick open dialog."),
+		'tAsk.quickOpen.history': {
+			mArkdownDescription: nls.locAlize('tAsk.quickOpen.history', "Controls the number of recent items trAcked in tAsk quick open diAlog."),
 			type: 'number',
-			default: 30, minimum: 0, maximum: 30
+			defAult: 30, minimum: 0, mAximum: 30
 		},
-		'task.quickOpen.detail': {
-			markdownDescription: nls.localize('task.quickOpen.detail', "Controls whether to show the task detail for tasks that have a detail in task quick picks, such as Run Task."),
-			type: 'boolean',
-			default: true
+		'tAsk.quickOpen.detAil': {
+			mArkdownDescription: nls.locAlize('tAsk.quickOpen.detAil', "Controls whether to show the tAsk detAil for tAsks thAt hAve A detAil in tAsk quick picks, such As Run TAsk."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'task.quickOpen.skip': {
-			type: 'boolean',
-			description: nls.localize('task.quickOpen.skip', "Controls whether the task quick pick is skipped when there is only one task to pick from."),
-			default: false
+		'tAsk.quickOpen.skip': {
+			type: 'booleAn',
+			description: nls.locAlize('tAsk.quickOpen.skip', "Controls whether the tAsk quick pick is skipped when there is only one tAsk to pick from."),
+			defAult: fAlse
 		},
-		'task.quickOpen.showAll': {
-			type: 'boolean',
-			description: nls.localize('task.quickOpen.showAll', "Causes the Tasks: Run Task command to use the slower \"show all\" behavior instead of the faster two level picker where tasks are grouped by provider."),
-			default: false
+		'tAsk.quickOpen.showAll': {
+			type: 'booleAn',
+			description: nls.locAlize('tAsk.quickOpen.showAll', "CAuses the TAsks: Run TAsk commAnd to use the slower \"show All\" behAvior insteAd of the fAster two level picker where tAsks Are grouped by provider."),
+			defAult: fAlse
 		},
-		'task.saveBeforeRun': {
-			markdownDescription: nls.localize(
-				'task.saveBeforeRun',
-				'Save all dirty editors before running a task.'
+		'tAsk.sAveBeforeRun': {
+			mArkdownDescription: nls.locAlize(
+				'tAsk.sAveBeforeRun',
+				'SAve All dirty editors before running A tAsk.'
 			),
 			type: 'string',
-			enum: ['always', 'never', 'prompt'],
+			enum: ['AlwAys', 'never', 'prompt'],
 			enumDescriptions: [
-				nls.localize('task.saveBeforeRun.always', 'Always saves all editors before running.'),
-				nls.localize('task.saveBeforeRun.never', 'Never saves editors before running.'),
-				nls.localize('task.SaveBeforeRun.prompt', 'Prompts whether to save editors before running.'),
+				nls.locAlize('tAsk.sAveBeforeRun.AlwAys', 'AlwAys sAves All editors before running.'),
+				nls.locAlize('tAsk.sAveBeforeRun.never', 'Never sAves editors before running.'),
+				nls.locAlize('tAsk.SAveBeforeRun.prompt', 'Prompts whether to sAve editors before running.'),
 			],
-			default: 'always',
+			defAult: 'AlwAys',
 		},
 	}
 });

@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IPathService, AbstractPathService } from 'vs/workbench/services/path/common/pathService';
-import { Schemas } from 'vs/base/common/network';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { IPAthService, AbstrActPAthService } from 'vs/workbench/services/pAth/common/pAthService';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class NativePathService extends AbstractPathService {
+export clAss NAtivePAthService extends AbstrActPAthService {
 
-	readonly defaultUriScheme = this.environmentService.remoteAuthority ? Schemas.vscodeRemote : Schemas.file;
+	reAdonly defAultUriScheme = this.environmentService.remoteAuthority ? SchemAs.vscodeRemote : SchemAs.file;
 
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly environmentService: INAtiveWorkbenchEnvironmentService
 	) {
 		super(environmentService.userHome, remoteAgentService);
 	}
 }
 
-registerSingleton(IPathService, NativePathService, true);
+registerSingleton(IPAthService, NAtivePAthService, true);

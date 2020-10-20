@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vscode-nls';
-import * as vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import * As vscode from 'vscode';
 
 import {
 	detectNpmScriptsForFolder,
 	findScriptAtPosition,
 	runScript,
-	FolderTaskItem
-} from './tasks';
+	FolderTAskItem
+} from './tAsks';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
 export function runSelectedScript() {
-	let editor = vscode.window.activeTextEditor;
+	let editor = vscode.window.ActiveTextEditor;
 	if (!editor) {
 		return;
 	}
 	let document = editor.document;
 	let contents = document.getText();
 	let selection = editor.selection;
-	let offset = document.offsetAt(selection.anchor);
+	let offset = document.offsetAt(selection.Anchor);
 
 	let script = findScriptAtPosition(contents, offset);
 	if (script) {
 		runScript(script, document);
 	} else {
-		let message = localize('noScriptFound', 'Could not find a valid npm script at the selection.');
-		vscode.window.showErrorMessage(message);
+		let messAge = locAlize('noScriptFound', 'Could not find A vAlid npm script At the selection.');
+		vscode.window.showErrorMessAge(messAge);
 	}
 }
 
-export async function selectAndRunScriptFromFolder(selectedFolder: vscode.Uri) {
-	let taskList: FolderTaskItem[] = await detectNpmScriptsForFolder(selectedFolder);
+export Async function selectAndRunScriptFromFolder(selectedFolder: vscode.Uri) {
+	let tAskList: FolderTAskItem[] = AwAit detectNpmScriptsForFolder(selectedFolder);
 
-	if (taskList && taskList.length > 0) {
-		const quickPick = vscode.window.createQuickPick<FolderTaskItem>();
+	if (tAskList && tAskList.length > 0) {
+		const quickPick = vscode.window.creAteQuickPick<FolderTAskItem>();
 		quickPick.title = 'Run NPM script in Folder';
-		quickPick.placeholder = 'Select an npm script';
-		quickPick.items = taskList;
+		quickPick.plAceholder = 'Select An npm script';
+		quickPick.items = tAskList;
 
-		const toDispose: vscode.Disposable[] = [];
+		const toDispose: vscode.DisposAble[] = [];
 
-		let pickPromise = new Promise<FolderTaskItem | undefined>((c) => {
+		let pickPromise = new Promise<FolderTAskItem | undefined>((c) => {
 			toDispose.push(quickPick.onDidAccept(() => {
-				toDispose.forEach(d => d.dispose());
+				toDispose.forEAch(d => d.dispose());
 				c(quickPick.selectedItems[0]);
 			}));
 			toDispose.push(quickPick.onDidHide(() => {
-				toDispose.forEach(d => d.dispose());
+				toDispose.forEAch(d => d.dispose());
 				c(undefined);
 			}));
 		});
 		quickPick.show();
-		let result = await pickPromise;
+		let result = AwAit pickPromise;
 		quickPick.dispose();
 		if (result) {
-			vscode.tasks.executeTask(result.task);
+			vscode.tAsks.executeTAsk(result.tAsk);
 		}
 	}
 	else {
-		vscode.window.showInformationMessage(`No npm scripts found in ${selectedFolder.fsPath}`, { modal: true });
+		vscode.window.showInformAtionMessAge(`No npm scripts found in ${selectedFolder.fsPAth}`, { modAl: true });
 	}
 }

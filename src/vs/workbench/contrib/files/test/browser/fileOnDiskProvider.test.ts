@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { workbenchInstAntiAtionService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { TextFileContentProvider } from 'vs/workbench/contrib/files/common/files';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
+import { snApshotToString } from 'vs/workbench/services/textfile/common/textfiles';
 
 suite('Files - FileOnDiskContentProvider', () => {
 
-	let instantiationService: IInstantiationService;
-	let accessor: TestServiceAccessor;
+	let instAntiAtionService: IInstAntiAtionService;
+	let Accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
-		accessor = instantiationService.createInstance(TestServiceAccessor);
+		instAntiAtionService = workbenchInstAntiAtionService();
+		Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 	});
 
-	test('provideTextContent', async () => {
-		const provider = instantiationService.createInstance(TextFileContentProvider);
-		const uri = URI.parse('testFileOnDiskContentProvider://foo');
+	test('provideTextContent', Async () => {
+		const provider = instAntiAtionService.creAteInstAnce(TextFileContentProvider);
+		const uri = URI.pArse('testFileOnDiskContentProvider://foo');
 
-		const content = await provider.provideTextContent(uri.with({ scheme: 'conflictResolution', query: JSON.stringify({ scheme: uri.scheme }) }));
+		const content = AwAit provider.provideTextContent(uri.with({ scheme: 'conflictResolution', query: JSON.stringify({ scheme: uri.scheme }) }));
 
-		assert.ok(content);
-		assert.equal(snapshotToString(content!.createSnapshot()), 'Hello Html');
-		assert.equal(accessor.fileService.getLastReadFileUri().scheme, uri.scheme);
-		assert.equal(accessor.fileService.getLastReadFileUri().path, uri.path);
+		Assert.ok(content);
+		Assert.equAl(snApshotToString(content!.creAteSnApshot()), 'Hello Html');
+		Assert.equAl(Accessor.fileService.getLAstReAdFileUri().scheme, uri.scheme);
+		Assert.equAl(Accessor.fileService.getLAstReAdFileUri().pAth, uri.pAth);
 	});
 });

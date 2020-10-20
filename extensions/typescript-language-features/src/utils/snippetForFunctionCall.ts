@@ -1,107 +1,107 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
-import * as PConst from '../protocol.const';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
+import * As PConst from '../protocol.const';
 
-export function snippetForFunctionCall(
-	item: { insertText?: string | vscode.SnippetString; label: string; },
-	displayParts: ReadonlyArray<Proto.SymbolDisplayPart>
-): { snippet: vscode.SnippetString, parameterCount: number } {
+export function snippetForFunctionCAll(
+	item: { insertText?: string | vscode.SnippetString; lAbel: string; },
+	displAyPArts: ReAdonlyArrAy<Proto.SymbolDisplAyPArt>
+): { snippet: vscode.SnippetString, pArAmeterCount: number } {
 	if (item.insertText && typeof item.insertText !== 'string') {
-		return { snippet: item.insertText, parameterCount: 0 };
+		return { snippet: item.insertText, pArAmeterCount: 0 };
 	}
 
-	const parameterListParts = getParameterListParts(displayParts);
+	const pArAmeterListPArts = getPArAmeterListPArts(displAyPArts);
 	const snippet = new vscode.SnippetString();
-	snippet.appendText(`${item.insertText || item.label}(`);
-	appendJoinedPlaceholders(snippet, parameterListParts.parts, ', ');
-	if (parameterListParts.hasOptionalParameters) {
-		snippet.appendTabstop();
+	snippet.AppendText(`${item.insertText || item.lAbel}(`);
+	AppendJoinedPlAceholders(snippet, pArAmeterListPArts.pArts, ', ');
+	if (pArAmeterListPArts.hAsOptionAlPArAmeters) {
+		snippet.AppendTAbstop();
 	}
-	snippet.appendText(')');
-	snippet.appendTabstop(0);
-	return { snippet, parameterCount: parameterListParts.parts.length + (parameterListParts.hasOptionalParameters ? 1 : 0) };
+	snippet.AppendText(')');
+	snippet.AppendTAbstop(0);
+	return { snippet, pArAmeterCount: pArAmeterListPArts.pArts.length + (pArAmeterListPArts.hAsOptionAlPArAmeters ? 1 : 0) };
 }
 
-function appendJoinedPlaceholders(
+function AppendJoinedPlAceholders(
 	snippet: vscode.SnippetString,
-	parts: ReadonlyArray<Proto.SymbolDisplayPart>,
+	pArts: ReAdonlyArrAy<Proto.SymbolDisplAyPArt>,
 	joiner: string
 ) {
-	for (let i = 0; i < parts.length; ++i) {
-		const paramterPart = parts[i];
-		snippet.appendPlaceholder(paramterPart.text);
-		if (i !== parts.length - 1) {
-			snippet.appendText(joiner);
+	for (let i = 0; i < pArts.length; ++i) {
+		const pArAmterPArt = pArts[i];
+		snippet.AppendPlAceholder(pArAmterPArt.text);
+		if (i !== pArts.length - 1) {
+			snippet.AppendText(joiner);
 		}
 	}
 }
 
-interface ParamterListParts {
-	readonly parts: ReadonlyArray<Proto.SymbolDisplayPart>;
-	readonly hasOptionalParameters: boolean;
+interfAce PArAmterListPArts {
+	reAdonly pArts: ReAdonlyArrAy<Proto.SymbolDisplAyPArt>;
+	reAdonly hAsOptionAlPArAmeters: booleAn;
 }
 
-function getParameterListParts(
-	displayParts: ReadonlyArray<Proto.SymbolDisplayPart>
-): ParamterListParts {
-	const parts: Proto.SymbolDisplayPart[] = [];
-	let isInMethod = false;
-	let hasOptionalParameters = false;
-	let parenCount = 0;
-	let braceCount = 0;
+function getPArAmeterListPArts(
+	displAyPArts: ReAdonlyArrAy<Proto.SymbolDisplAyPArt>
+): PArAmterListPArts {
+	const pArts: Proto.SymbolDisplAyPArt[] = [];
+	let isInMethod = fAlse;
+	let hAsOptionAlPArAmeters = fAlse;
+	let pArenCount = 0;
+	let brAceCount = 0;
 
-	outer: for (let i = 0; i < displayParts.length; ++i) {
-		const part = displayParts[i];
-		switch (part.kind) {
-			case PConst.DisplayPartKind.methodName:
-			case PConst.DisplayPartKind.functionName:
-			case PConst.DisplayPartKind.text:
-			case PConst.DisplayPartKind.propertyName:
-				if (parenCount === 0 && braceCount === 0) {
+	outer: for (let i = 0; i < displAyPArts.length; ++i) {
+		const pArt = displAyPArts[i];
+		switch (pArt.kind) {
+			cAse PConst.DisplAyPArtKind.methodNAme:
+			cAse PConst.DisplAyPArtKind.functionNAme:
+			cAse PConst.DisplAyPArtKind.text:
+			cAse PConst.DisplAyPArtKind.propertyNAme:
+				if (pArenCount === 0 && brAceCount === 0) {
 					isInMethod = true;
 				}
-				break;
+				breAk;
 
-			case PConst.DisplayPartKind.parameterName:
-				if (parenCount === 1 && braceCount === 0 && isInMethod) {
-					// Only take top level paren names
-					const next = displayParts[i + 1];
-					// Skip optional parameters
-					const nameIsFollowedByOptionalIndicator = next && next.text === '?';
-					// Skip this parameter
-					const nameIsThis = part.text === 'this';
-					if (!nameIsFollowedByOptionalIndicator && !nameIsThis) {
-						parts.push(part);
+			cAse PConst.DisplAyPArtKind.pArAmeterNAme:
+				if (pArenCount === 1 && brAceCount === 0 && isInMethod) {
+					// Only tAke top level pAren nAmes
+					const next = displAyPArts[i + 1];
+					// Skip optionAl pArAmeters
+					const nAmeIsFollowedByOptionAlIndicAtor = next && next.text === '?';
+					// Skip this pArAmeter
+					const nAmeIsThis = pArt.text === 'this';
+					if (!nAmeIsFollowedByOptionAlIndicAtor && !nAmeIsThis) {
+						pArts.push(pArt);
 					}
-					hasOptionalParameters = hasOptionalParameters || nameIsFollowedByOptionalIndicator;
+					hAsOptionAlPArAmeters = hAsOptionAlPArAmeters || nAmeIsFollowedByOptionAlIndicAtor;
 				}
-				break;
+				breAk;
 
-			case PConst.DisplayPartKind.punctuation:
-				if (part.text === '(') {
-					++parenCount;
-				} else if (part.text === ')') {
-					--parenCount;
-					if (parenCount <= 0 && isInMethod) {
-						break outer;
+			cAse PConst.DisplAyPArtKind.punctuAtion:
+				if (pArt.text === '(') {
+					++pArenCount;
+				} else if (pArt.text === ')') {
+					--pArenCount;
+					if (pArenCount <= 0 && isInMethod) {
+						breAk outer;
 					}
-				} else if (part.text === '...' && parenCount === 1) {
-					// Found rest parmeter. Do not fill in any further arguments
-					hasOptionalParameters = true;
-					break outer;
-				} else if (part.text === '{') {
-					++braceCount;
-				} else if (part.text === '}') {
-					--braceCount;
+				} else if (pArt.text === '...' && pArenCount === 1) {
+					// Found rest pArmeter. Do not fill in Any further Arguments
+					hAsOptionAlPArAmeters = true;
+					breAk outer;
+				} else if (pArt.text === '{') {
+					++brAceCount;
+				} else if (pArt.text === '}') {
+					--brAceCount;
 				}
-				break;
+				breAk;
 		}
 	}
 
-	return { hasOptionalParameters, parts };
+	return { hAsOptionAlPArAmeters, pArts };
 }

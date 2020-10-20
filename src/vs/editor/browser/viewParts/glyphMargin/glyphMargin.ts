@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./glyphMargin';
-import { DynamicViewOverlay } from 'vs/editor/browser/view/dynamicViewOverlay';
+import 'vs/css!./glyphMArgin';
+import { DynAmicViewOverlAy } from 'vs/editor/browser/view/dynAmicViewOverlAy';
 import { RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 
-export class DecorationToRender {
-	_decorationToRenderBrand: void;
+export clAss DecorAtionToRender {
+	_decorAtionToRenderBrAnd: void;
 
-	public startLineNumber: number;
+	public stArtLineNumber: number;
 	public endLineNumber: number;
-	public className: string;
+	public clAssNAme: string;
 
-	constructor(startLineNumber: number, endLineNumber: number, className: string) {
-		this.startLineNumber = +startLineNumber;
+	constructor(stArtLineNumber: number, endLineNumber: number, clAssNAme: string) {
+		this.stArtLineNumber = +stArtLineNumber;
 		this.endLineNumber = +endLineNumber;
-		this.className = String(className);
+		this.clAssNAme = String(clAssNAme);
 	}
 }
 
-export abstract class DedupOverlay extends DynamicViewOverlay {
+export AbstrAct clAss DedupOverlAy extends DynAmicViewOverlAy {
 
-	protected _render(visibleStartLineNumber: number, visibleEndLineNumber: number, decorations: DecorationToRender[]): string[][] {
+	protected _render(visibleStArtLineNumber: number, visibleEndLineNumber: number, decorAtions: DecorAtionToRender[]): string[][] {
 
 		const output: string[][] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		for (let lineNumber = visibleStArtLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
+			const lineIndex = lineNumber - visibleStArtLineNumber;
 			output[lineIndex] = [];
 		}
 
-		if (decorations.length === 0) {
+		if (decorAtions.length === 0) {
 			return output;
 		}
 
-		decorations.sort((a, b) => {
-			if (a.className === b.className) {
-				if (a.startLineNumber === b.startLineNumber) {
-					return a.endLineNumber - b.endLineNumber;
+		decorAtions.sort((A, b) => {
+			if (A.clAssNAme === b.clAssNAme) {
+				if (A.stArtLineNumber === b.stArtLineNumber) {
+					return A.endLineNumber - b.endLineNumber;
 				}
-				return a.startLineNumber - b.startLineNumber;
+				return A.stArtLineNumber - b.stArtLineNumber;
 			}
-			return (a.className < b.className ? -1 : 1);
+			return (A.clAssNAme < b.clAssNAme ? -1 : 1);
 		});
 
-		let prevClassName: string | null = null;
+		let prevClAssNAme: string | null = null;
 		let prevEndLineIndex = 0;
-		for (let i = 0, len = decorations.length; i < len; i++) {
-			const d = decorations[i];
-			const className = d.className;
-			let startLineIndex = Math.max(d.startLineNumber, visibleStartLineNumber) - visibleStartLineNumber;
-			const endLineIndex = Math.min(d.endLineNumber, visibleEndLineNumber) - visibleStartLineNumber;
+		for (let i = 0, len = decorAtions.length; i < len; i++) {
+			const d = decorAtions[i];
+			const clAssNAme = d.clAssNAme;
+			let stArtLineIndex = MAth.mAx(d.stArtLineNumber, visibleStArtLineNumber) - visibleStArtLineNumber;
+			const endLineIndex = MAth.min(d.endLineNumber, visibleEndLineNumber) - visibleStArtLineNumber;
 
-			if (prevClassName === className) {
-				startLineIndex = Math.max(prevEndLineIndex + 1, startLineIndex);
-				prevEndLineIndex = Math.max(prevEndLineIndex, endLineIndex);
+			if (prevClAssNAme === clAssNAme) {
+				stArtLineIndex = MAth.mAx(prevEndLineIndex + 1, stArtLineIndex);
+				prevEndLineIndex = MAth.mAx(prevEndLineIndex, endLineIndex);
 			} else {
-				prevClassName = className;
+				prevClAssNAme = clAssNAme;
 				prevEndLineIndex = endLineIndex;
 			}
 
-			for (let i = startLineIndex; i <= prevEndLineIndex; i++) {
-				output[i].push(prevClassName);
+			for (let i = stArtLineIndex; i <= prevEndLineIndex; i++) {
+				output[i].push(prevClAssNAme);
 			}
 		}
 
@@ -74,111 +74,111 @@ export abstract class DedupOverlay extends DynamicViewOverlay {
 	}
 }
 
-export class GlyphMarginOverlay extends DedupOverlay {
+export clAss GlyphMArginOverlAy extends DedupOverlAy {
 
-	private readonly _context: ViewContext;
-	private _lineHeight: number;
-	private _glyphMargin: boolean;
-	private _glyphMarginLeft: number;
-	private _glyphMarginWidth: number;
-	private _renderResult: string[] | null;
+	privAte reAdonly _context: ViewContext;
+	privAte _lineHeight: number;
+	privAte _glyphMArgin: booleAn;
+	privAte _glyphMArginLeft: number;
+	privAte _glyphMArginWidth: number;
+	privAte _renderResult: string[] | null;
 
 	constructor(context: ViewContext) {
 		super();
 		this._context = context;
 
-		const options = this._context.configuration.options;
-		const layoutInfo = options.get(EditorOption.layoutInfo);
+		const options = this._context.configurAtion.options;
+		const lAyoutInfo = options.get(EditorOption.lAyoutInfo);
 
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		this._glyphMargin = options.get(EditorOption.glyphMargin);
-		this._glyphMarginLeft = layoutInfo.glyphMarginLeft;
-		this._glyphMarginWidth = layoutInfo.glyphMarginWidth;
+		this._glyphMArgin = options.get(EditorOption.glyphMArgin);
+		this._glyphMArginLeft = lAyoutInfo.glyphMArginLeft;
+		this._glyphMArginWidth = lAyoutInfo.glyphMArginWidth;
 		this._renderResult = null;
-		this._context.addEventHandler(this);
+		this._context.AddEventHAndler(this);
 	}
 
 	public dispose(): void {
-		this._context.removeEventHandler(this);
+		this._context.removeEventHAndler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const options = this._context.configuration.options;
-		const layoutInfo = options.get(EditorOption.layoutInfo);
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		const options = this._context.configurAtion.options;
+		const lAyoutInfo = options.get(EditorOption.lAyoutInfo);
 
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		this._glyphMargin = options.get(EditorOption.glyphMargin);
-		this._glyphMarginLeft = layoutInfo.glyphMarginLeft;
-		this._glyphMarginWidth = layoutInfo.glyphMarginWidth;
+		this._glyphMArgin = options.get(EditorOption.glyphMArgin);
+		this._glyphMArginLeft = lAyoutInfo.glyphMArginLeft;
+		this._glyphMArginWidth = lAyoutInfo.glyphMArginWidth;
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	public onDecorAtionsChAnged(e: viewEvents.ViewDecorAtionsChAngedEvent): booleAn {
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	public onFlushed(e: viewEvents.ViewFlushedEvent): booleAn {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	public onLinesChAnged(e: viewEvents.ViewLinesChAngedEvent): booleAn {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): booleAn {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): booleAn {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return e.scrollTopChanged;
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		return e.scrollTopChAnged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	public onZonesChAnged(e: viewEvents.ViewZonesChAngedEvent): booleAn {
 		return true;
 	}
 
-	// --- end event handlers
+	// --- end event hAndlers
 
-	protected _getDecorations(ctx: RenderingContext): DecorationToRender[] {
-		const decorations = ctx.getDecorationsInViewport();
-		let r: DecorationToRender[] = [], rLen = 0;
-		for (let i = 0, len = decorations.length; i < len; i++) {
-			const d = decorations[i];
-			const glyphMarginClassName = d.options.glyphMarginClassName;
-			if (glyphMarginClassName) {
-				r[rLen++] = new DecorationToRender(d.range.startLineNumber, d.range.endLineNumber, glyphMarginClassName);
+	protected _getDecorAtions(ctx: RenderingContext): DecorAtionToRender[] {
+		const decorAtions = ctx.getDecorAtionsInViewport();
+		let r: DecorAtionToRender[] = [], rLen = 0;
+		for (let i = 0, len = decorAtions.length; i < len; i++) {
+			const d = decorAtions[i];
+			const glyphMArginClAssNAme = d.options.glyphMArginClAssNAme;
+			if (glyphMArginClAssNAme) {
+				r[rLen++] = new DecorAtionToRender(d.rAnge.stArtLineNumber, d.rAnge.endLineNumber, glyphMArginClAssNAme);
 			}
 		}
 		return r;
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
-		if (!this._glyphMargin) {
+	public prepAreRender(ctx: RenderingContext): void {
+		if (!this._glyphMArgin) {
 			this._renderResult = null;
 			return;
 		}
 
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
-		const toRender = this._render(visibleStartLineNumber, visibleEndLineNumber, this._getDecorations(ctx));
+		const visibleStArtLineNumber = ctx.visibleRAnge.stArtLineNumber;
+		const visibleEndLineNumber = ctx.visibleRAnge.endLineNumber;
+		const toRender = this._render(visibleStArtLineNumber, visibleEndLineNumber, this._getDecorAtions(ctx));
 
 		const lineHeight = this._lineHeight.toString();
-		const left = this._glyphMarginLeft.toString();
-		const width = this._glyphMarginWidth.toString();
+		const left = this._glyphMArginLeft.toString();
+		const width = this._glyphMArginWidth.toString();
 		const common = '" style="left:' + left + 'px;width:' + width + 'px' + ';height:' + lineHeight + 'px;"></div>';
 
 		const output: string[] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
-			const classNames = toRender[lineIndex];
+		for (let lineNumber = visibleStArtLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
+			const lineIndex = lineNumber - visibleStArtLineNumber;
+			const clAssNAmes = toRender[lineIndex];
 
-			if (classNames.length === 0) {
+			if (clAssNAmes.length === 0) {
 				output[lineIndex] = '';
 			} else {
 				output[lineIndex] = (
-					'<div class="cgmr codicon '
-					+ classNames.join(' ')
+					'<div clAss="cgmr codicon '
+					+ clAssNAmes.join(' ')
 					+ common
 				);
 			}
@@ -187,11 +187,11 @@ export class GlyphMarginOverlay extends DedupOverlay {
 		this._renderResult = output;
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	public render(stArtLineNumber: number, lineNumber: number): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		const lineIndex = lineNumber - startLineNumber;
+		const lineIndex = lineNumber - stArtLineNumber;
 		if (lineIndex < 0 || lineIndex >= this._renderResult.length) {
 			return '';
 		}

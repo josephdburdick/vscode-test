@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 
 /**
  * @typedef {{
- *   postMessage: (channel: string, data?: any) => void,
- *   onMessage: (channel: string, handler: any) => void,
- *   focusIframeOnCreate?: boolean,
- *   ready?: Promise<void>,
- *   onIframeLoaded?: (iframe: HTMLIFrameElement) => void,
- *   fakeLoad?: boolean,
+ *   postMessAge: (chAnnel: string, dAtA?: Any) => void,
+ *   onMessAge: (chAnnel: string, hAndler: Any) => void,
+ *   focusIfrAmeOnCreAte?: booleAn,
+ *   reAdy?: Promise<void>,
+ *   onIfrAmeLoAded?: (ifrAme: HTMLIFrAmeElement) => void,
+ *   fAkeLoAd?: booleAn,
  *   rewriteCSP: (existingCSP: string, endpoint?: string) => string,
- *   onElectron?: boolean
+ *   onElectron?: booleAn
  * }} WebviewHost
  */
 
 (function () {
 	'use strict';
 
-	const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-		navigator.userAgent &&
-		navigator.userAgent.indexOf('CriOS') === -1 &&
-		navigator.userAgent.indexOf('FxiOS') === -1;
+	const isSAfAri = nAvigAtor.vendor && nAvigAtor.vendor.indexOf('Apple') > -1 &&
+		nAvigAtor.userAgent &&
+		nAvigAtor.userAgent.indexOf('CriOS') === -1 &&
+		nAvigAtor.userAgent.indexOf('FxiOS') === -1;
 
 	/**
-	 * Use polling to track focus of main webview and iframes within the webview
+	 * Use polling to trAck focus of mAin webview And ifrAmes within the webview
 	 *
-	 * @param {Object} handlers
-	 * @param {() => void} handlers.onFocus
-	 * @param {() => void} handlers.onBlur
+	 * @pArAm {Object} hAndlers
+	 * @pArAm {() => void} hAndlers.onFocus
+	 * @pArAm {() => void} hAndlers.onBlur
 	 */
-	const trackFocus = ({ onFocus, onBlur }) => {
-		const interval = 50;
-		let isFocused = document.hasFocus();
-		setInterval(() => {
-			const isCurrentlyFocused = document.hasFocus();
+	const trAckFocus = ({ onFocus, onBlur }) => {
+		const intervAl = 50;
+		let isFocused = document.hAsFocus();
+		setIntervAl(() => {
+			const isCurrentlyFocused = document.hAsFocus();
 			if (isCurrentlyFocused === isFocused) {
 				return;
 			}
@@ -46,628 +46,628 @@
 			} else {
 				onBlur();
 			}
-		}, interval);
+		}, intervAl);
 	};
 
-	const getActiveFrame = () => {
-		return /** @type {HTMLIFrameElement} */ (document.getElementById('active-frame'));
+	const getActiveFrAme = () => {
+		return /** @type {HTMLIFrAmeElement} */ (document.getElementById('Active-frAme'));
 	};
 
-	const getPendingFrame = () => {
-		return /** @type {HTMLIFrameElement} */ (document.getElementById('pending-frame'));
+	const getPendingFrAme = () => {
+		return /** @type {HTMLIFrAmeElement} */ (document.getElementById('pending-frAme'));
 	};
 
-	const defaultCssRules = `
+	const defAultCssRules = `
 	body {
-		background-color: transparent;
-		color: var(--vscode-editor-foreground);
-		font-family: var(--vscode-font-family);
-		font-weight: var(--vscode-font-weight);
-		font-size: var(--vscode-font-size);
-		margin: 0;
-		padding: 0 20px;
+		bAckground-color: trAnspArent;
+		color: vAr(--vscode-editor-foreground);
+		font-fAmily: vAr(--vscode-font-fAmily);
+		font-weight: vAr(--vscode-font-weight);
+		font-size: vAr(--vscode-font-size);
+		mArgin: 0;
+		pAdding: 0 20px;
 	}
 
 	img {
-		max-width: 100%;
-		max-height: 100%;
+		mAx-width: 100%;
+		mAx-height: 100%;
 	}
 
-	a {
-		color: var(--vscode-textLink-foreground);
+	A {
+		color: vAr(--vscode-textLink-foreground);
 	}
 
-	a:hover {
-		color: var(--vscode-textLink-activeForeground);
+	A:hover {
+		color: vAr(--vscode-textLink-ActiveForeground);
 	}
 
-	a:focus,
+	A:focus,
 	input:focus,
 	select:focus,
-	textarea:focus {
+	textAreA:focus {
 		outline: 1px solid -webkit-focus-ring-color;
 		outline-offset: -1px;
 	}
 
 	code {
-		color: var(--vscode-textPreformat-foreground);
+		color: vAr(--vscode-textPreformAt-foreground);
 	}
 
 	blockquote {
-		background: var(--vscode-textBlockQuote-background);
-		border-color: var(--vscode-textBlockQuote-border);
+		bAckground: vAr(--vscode-textBlockQuote-bAckground);
+		border-color: vAr(--vscode-textBlockQuote-border);
 	}
 
 	kbd {
-		color: var(--vscode-editor-foreground);
-		border-radius: 3px;
-		vertical-align: middle;
-		padding: 1px 3px;
+		color: vAr(--vscode-editor-foreground);
+		border-rAdius: 3px;
+		verticAl-Align: middle;
+		pAdding: 1px 3px;
 
-		background-color: hsla(0,0%,50%,.17);
-		border: 1px solid rgba(71,71,71,.4);
-		border-bottom-color: rgba(88,88,88,.4);
-		box-shadow: inset 0 -1px 0 rgba(88,88,88,.4);
+		bAckground-color: hslA(0,0%,50%,.17);
+		border: 1px solid rgbA(71,71,71,.4);
+		border-bottom-color: rgbA(88,88,88,.4);
+		box-shAdow: inset 0 -1px 0 rgbA(88,88,88,.4);
 	}
 	.vscode-light kbd {
-		background-color: hsla(0,0%,87%,.5);
-		border: 1px solid hsla(0,0%,80%,.7);
-		border-bottom-color: hsla(0,0%,73%,.7);
-		box-shadow: inset 0 -1px 0 hsla(0,0%,73%,.7);
+		bAckground-color: hslA(0,0%,87%,.5);
+		border: 1px solid hslA(0,0%,80%,.7);
+		border-bottom-color: hslA(0,0%,73%,.7);
+		box-shAdow: inset 0 -1px 0 hslA(0,0%,73%,.7);
 	}
 
-	::-webkit-scrollbar {
+	::-webkit-scrollbAr {
 		width: 10px;
 		height: 10px;
 	}
 
-	::-webkit-scrollbar-corner {
-		background-color: var(--vscode-editor-background);
+	::-webkit-scrollbAr-corner {
+		bAckground-color: vAr(--vscode-editor-bAckground);
 	}
 
-	::-webkit-scrollbar-thumb {
-		background-color: var(--vscode-scrollbarSlider-background);
+	::-webkit-scrollbAr-thumb {
+		bAckground-color: vAr(--vscode-scrollbArSlider-bAckground);
 	}
-	::-webkit-scrollbar-thumb:hover {
-		background-color: var(--vscode-scrollbarSlider-hoverBackground);
+	::-webkit-scrollbAr-thumb:hover {
+		bAckground-color: vAr(--vscode-scrollbArSlider-hoverBAckground);
 	}
-	::-webkit-scrollbar-thumb:active {
-		background-color: var(--vscode-scrollbarSlider-activeBackground);
+	::-webkit-scrollbAr-thumb:Active {
+		bAckground-color: vAr(--vscode-scrollbArSlider-ActiveBAckground);
 	}`;
 
 	/**
-	 * @param {boolean} allowMultipleAPIAcquire
-	 * @param {*} [state]
+	 * @pArAm {booleAn} AllowMultipleAPIAcquire
+	 * @pArAm {*} [stAte]
 	 * @return {string}
 	 */
-	function getVsCodeApiScript(allowMultipleAPIAcquire, state) {
-		const encodedState = state ? encodeURIComponent(state) : undefined;
+	function getVsCodeApiScript(AllowMultipleAPIAcquire, stAte) {
+		const encodedStAte = stAte ? encodeURIComponent(stAte) : undefined;
 		return `
-			const acquireVsCodeApi = (function() {
-				const originalPostMessage = window.parent.postMessage.bind(window.parent);
-				const targetOrigin = '*';
-				let acquired = false;
+			const AcquireVsCodeApi = (function() {
+				const originAlPostMessAge = window.pArent.postMessAge.bind(window.pArent);
+				const tArgetOrigin = '*';
+				let Acquired = fAlse;
 
-				let state = ${state ? `JSON.parse(decodeURIComponent("${encodedState}"))` : undefined};
+				let stAte = ${stAte ? `JSON.pArse(decodeURIComponent("${encodedStAte}"))` : undefined};
 
 				return () => {
-					if (acquired && !${allowMultipleAPIAcquire}) {
-						throw new Error('An instance of the VS Code API has already been acquired');
+					if (Acquired && !${AllowMultipleAPIAcquire}) {
+						throw new Error('An instAnce of the VS Code API hAs AlreAdy been Acquired');
 					}
-					acquired = true;
+					Acquired = true;
 					return Object.freeze({
-						postMessage: function(msg) {
-							return originalPostMessage({ command: 'onmessage', data: msg }, targetOrigin);
+						postMessAge: function(msg) {
+							return originAlPostMessAge({ commAnd: 'onmessAge', dAtA: msg }, tArgetOrigin);
 						},
-						setState: function(newState) {
-							state = newState;
-							originalPostMessage({ command: 'do-update-state', data: JSON.stringify(newState) }, targetOrigin);
-							return newState;
+						setStAte: function(newStAte) {
+							stAte = newStAte;
+							originAlPostMessAge({ commAnd: 'do-updAte-stAte', dAtA: JSON.stringify(newStAte) }, tArgetOrigin);
+							return newStAte;
 						},
-						getState: function() {
-							return state;
+						getStAte: function() {
+							return stAte;
 						}
 					});
 				};
 			})();
-			delete window.parent;
+			delete window.pArent;
 			delete window.top;
-			delete window.frameElement;
+			delete window.frAmeElement;
 		`;
 	}
 
 	/**
-	 * @param {WebviewHost} host
+	 * @pArAm {WebviewHost} host
 	 */
-	function createWebviewManager(host) {
-		// state
-		let firstLoad = true;
-		let loadTimeout;
-		let pendingMessages = [];
+	function creAteWebviewMAnAger(host) {
+		// stAte
+		let firstLoAd = true;
+		let loAdTimeout;
+		let pendingMessAges = [];
 
-		const initData = {
-			initialScrollProgress: undefined,
+		const initDAtA = {
+			initiAlScrollProgress: undefined,
 		};
 
 
 		/**
-		 * @param {HTMLDocument?} document
-		 * @param {HTMLElement?} body
+		 * @pArAm {HTMLDocument?} document
+		 * @pArAm {HTMLElement?} body
 		 */
-		const applyStyles = (document, body) => {
+		const ApplyStyles = (document, body) => {
 			if (!document) {
 				return;
 			}
 
 			if (body) {
-				body.classList.remove('vscode-light', 'vscode-dark', 'vscode-high-contrast');
-				body.classList.add(initData.activeTheme);
+				body.clAssList.remove('vscode-light', 'vscode-dArk', 'vscode-high-contrAst');
+				body.clAssList.Add(initDAtA.ActiveTheme);
 
-				body.dataset.vscodeThemeKind = initData.activeTheme;
-				body.dataset.vscodeThemeName = initData.themeName || '';
+				body.dAtAset.vscodeThemeKind = initDAtA.ActiveTheme;
+				body.dAtAset.vscodeThemeNAme = initDAtA.themeNAme || '';
 			}
 
-			if (initData.styles) {
+			if (initDAtA.styles) {
 				const documentStyle = document.documentElement.style;
 
-				// Remove stale properties
+				// Remove stAle properties
 				for (let i = documentStyle.length - 1; i >= 0; i--) {
 					const property = documentStyle[i];
 
-					// Don't remove properties that the webview might have added separately
-					if (property && property.startsWith('--vscode-')) {
+					// Don't remove properties thAt the webview might hAve Added sepArAtely
+					if (property && property.stArtsWith('--vscode-')) {
 						documentStyle.removeProperty(property);
 					}
 				}
 
-				// Re-add new properties
-				for (const variable of Object.keys(initData.styles)) {
-					documentStyle.setProperty(`--${variable}`, initData.styles[variable]);
+				// Re-Add new properties
+				for (const vAriAble of Object.keys(initDAtA.styles)) {
+					documentStyle.setProperty(`--${vAriAble}`, initDAtA.styles[vAriAble]);
 				}
 			}
 		};
 
 		/**
-		 * @param {MouseEvent} event
+		 * @pArAm {MouseEvent} event
 		 */
-		const handleInnerClick = (event) => {
+		const hAndleInnerClick = (event) => {
 			if (!event || !event.view || !event.view.document) {
 				return;
 			}
 
-			let baseElement = event.view.document.getElementsByTagName('base')[0];
-			/** @type {any} */
-			let node = event.target;
+			let bAseElement = event.view.document.getElementsByTAgNAme('bAse')[0];
+			/** @type {Any} */
+			let node = event.tArget;
 			while (node) {
-				if (node.tagName && node.tagName.toLowerCase() === 'a' && node.href) {
+				if (node.tAgNAme && node.tAgNAme.toLowerCAse() === 'A' && node.href) {
 					if (node.getAttribute('href') === '#') {
 						event.view.scrollTo(0, 0);
-					} else if (node.hash && (node.getAttribute('href') === node.hash || (baseElement && node.href.indexOf(baseElement.href) >= 0))) {
-						let scrollTarget = event.view.document.getElementById(node.hash.substr(1, node.hash.length - 1));
-						if (scrollTarget) {
-							scrollTarget.scrollIntoView();
+					} else if (node.hAsh && (node.getAttribute('href') === node.hAsh || (bAseElement && node.href.indexOf(bAseElement.href) >= 0))) {
+						let scrollTArget = event.view.document.getElementById(node.hAsh.substr(1, node.hAsh.length - 1));
+						if (scrollTArget) {
+							scrollTArget.scrollIntoView();
 						}
 					} else {
-						host.postMessage('did-click-link', node.href.baseVal || node.href);
+						host.postMessAge('did-click-link', node.href.bAseVAl || node.href);
 					}
-					event.preventDefault();
-					break;
+					event.preventDefAult();
+					breAk;
 				}
-				node = node.parentNode;
+				node = node.pArentNode;
 			}
 		};
 
 		/**
-		 * @param {MouseEvent} event
+		 * @pArAm {MouseEvent} event
 		 */
-		const handleAuxClick =
+		const hAndleAuxClick =
 			(event) => {
-				// Prevent middle clicks opening a broken link in the browser
+				// Prevent middle clicks opening A broken link in the browser
 				if (!event.view || !event.view.document) {
 					return;
 				}
 
 				if (event.button === 1) {
-					let node = /** @type {any} */ (event.target);
+					let node = /** @type {Any} */ (event.tArget);
 					while (node) {
-						if (node.tagName && node.tagName.toLowerCase() === 'a' && node.href) {
-							event.preventDefault();
-							break;
+						if (node.tAgNAme && node.tAgNAme.toLowerCAse() === 'A' && node.href) {
+							event.preventDefAult();
+							breAk;
 						}
-						node = node.parentNode;
+						node = node.pArentNode;
 					}
 				}
 			};
 
 		/**
-		 * @param {KeyboardEvent} e
+		 * @pArAm {KeyboArdEvent} e
 		 */
-		const handleInnerKeydown = (e) => {
-			// If the keypress would trigger a browser event, such as copy or paste,
-			// make sure we block the browser from dispatching it. Instead VS Code
-			// handles these events and will dispatch a copy/paste back to the webview
+		const hAndleInnerKeydown = (e) => {
+			// If the keypress would trigger A browser event, such As copy or pAste,
+			// mAke sure we block the browser from dispAtching it. InsteAd VS Code
+			// hAndles these events And will dispAtch A copy/pAste bAck to the webview
 			// if needed
 			if (isUndoRedo(e)) {
-				e.preventDefault();
-			} else if (isCopyPasteOrCut(e)) {
+				e.preventDefAult();
+			} else if (isCopyPAsteOrCut(e)) {
 				if (host.onElectron) {
-					e.preventDefault();
+					e.preventDefAult();
 				} else {
-					return; // let the browser handle this
+					return; // let the browser hAndle this
 				}
 			}
 
-			host.postMessage('did-keydown', {
+			host.postMessAge('did-keydown', {
 				key: e.key,
 				keyCode: e.keyCode,
 				code: e.code,
 				shiftKey: e.shiftKey,
-				altKey: e.altKey,
+				AltKey: e.AltKey,
 				ctrlKey: e.ctrlKey,
-				metaKey: e.metaKey,
-				repeat: e.repeat
+				metAKey: e.metAKey,
+				repeAt: e.repeAt
 			});
 		};
 
 		/**
-		 * @param {KeyboardEvent} e
-		 * @return {boolean}
+		 * @pArAm {KeyboArdEvent} e
+		 * @return {booleAn}
 		 */
-		function isCopyPasteOrCut(e) {
-			const hasMeta = e.ctrlKey || e.metaKey;
-			return hasMeta && ['c', 'v', 'x'].includes(e.key);
+		function isCopyPAsteOrCut(e) {
+			const hAsMetA = e.ctrlKey || e.metAKey;
+			return hAsMetA && ['c', 'v', 'x'].includes(e.key);
 		}
 
 		/**
-		 * @param {KeyboardEvent} e
-		 * @return {boolean}
+		 * @pArAm {KeyboArdEvent} e
+		 * @return {booleAn}
 		 */
 		function isUndoRedo(e) {
-			const hasMeta = e.ctrlKey || e.metaKey;
-			return hasMeta && ['z', 'y'].includes(e.key);
+			const hAsMetA = e.ctrlKey || e.metAKey;
+			return hAsMetA && ['z', 'y'].includes(e.key);
 		}
 
-		let isHandlingScroll = false;
+		let isHAndlingScroll = fAlse;
 
-		const handleWheel = (event) => {
-			if (isHandlingScroll) {
+		const hAndleWheel = (event) => {
+			if (isHAndlingScroll) {
 				return;
 			}
 
-			host.postMessage('did-scroll-wheel', {
-				deltaMode: event.deltaMode,
-				deltaX: event.deltaX,
-				deltaY: event.deltaY,
-				deltaZ: event.deltaZ,
-				detail: event.detail,
+			host.postMessAge('did-scroll-wheel', {
+				deltAMode: event.deltAMode,
+				deltAX: event.deltAX,
+				deltAY: event.deltAY,
+				deltAZ: event.deltAZ,
+				detAil: event.detAil,
 				type: event.type
 			});
 		};
 
-		const handleInnerScroll = (event) => {
-			if (!event.target || !event.target.body) {
+		const hAndleInnerScroll = (event) => {
+			if (!event.tArget || !event.tArget.body) {
 				return;
 			}
-			if (isHandlingScroll) {
-				return;
-			}
-
-			const progress = event.currentTarget.scrollY / event.target.body.clientHeight;
-			if (isNaN(progress)) {
+			if (isHAndlingScroll) {
 				return;
 			}
 
-			isHandlingScroll = true;
-			window.requestAnimationFrame(() => {
+			const progress = event.currentTArget.scrollY / event.tArget.body.clientHeight;
+			if (isNAN(progress)) {
+				return;
+			}
+
+			isHAndlingScroll = true;
+			window.requestAnimAtionFrAme(() => {
 				try {
-					host.postMessage('did-scroll', progress);
-				} catch (e) {
+					host.postMessAge('did-scroll', progress);
+				} cAtch (e) {
 					// noop
 				}
-				isHandlingScroll = false;
+				isHAndlingScroll = fAlse;
 			});
 		};
 
 		/**
 		 * @return {string}
 		 */
-		function toContentHtml(data) {
-			const options = data.options;
-			const text = data.contents;
-			const newDocument = new DOMParser().parseFromString(text, 'text/html');
+		function toContentHtml(dAtA) {
+			const options = dAtA.options;
+			const text = dAtA.contents;
+			const newDocument = new DOMPArser().pArseFromString(text, 'text/html');
 
-			newDocument.querySelectorAll('a').forEach(a => {
-				if (!a.title) {
-					a.title = a.getAttribute('href');
+			newDocument.querySelectorAll('A').forEAch(A => {
+				if (!A.title) {
+					A.title = A.getAttribute('href');
 				}
 			});
 
-			// apply default script
-			if (options.allowScripts) {
-				const defaultScript = newDocument.createElement('script');
-				defaultScript.id = '_vscodeApiScript';
-				defaultScript.textContent = getVsCodeApiScript(options.allowMultipleAPIAcquire, data.state);
-				newDocument.head.prepend(defaultScript);
+			// Apply defAult script
+			if (options.AllowScripts) {
+				const defAultScript = newDocument.creAteElement('script');
+				defAultScript.id = '_vscodeApiScript';
+				defAultScript.textContent = getVsCodeApiScript(options.AllowMultipleAPIAcquire, dAtA.stAte);
+				newDocument.heAd.prepend(defAultScript);
 			}
 
-			// apply default styles
-			const defaultStyles = newDocument.createElement('style');
-			defaultStyles.id = '_defaultStyles';
-			defaultStyles.textContent = defaultCssRules;
-			newDocument.head.prepend(defaultStyles);
+			// Apply defAult styles
+			const defAultStyles = newDocument.creAteElement('style');
+			defAultStyles.id = '_defAultStyles';
+			defAultStyles.textContent = defAultCssRules;
+			newDocument.heAd.prepend(defAultStyles);
 
-			applyStyles(newDocument, newDocument.body);
+			ApplyStyles(newDocument, newDocument.body);
 
 			// Check for CSP
-			const csp = newDocument.querySelector('meta[http-equiv="Content-Security-Policy"]');
+			const csp = newDocument.querySelector('metA[http-equiv="Content-Security-Policy"]');
 			if (!csp) {
-				host.postMessage('no-csp-found');
+				host.postMessAge('no-csp-found');
 			} else {
 				try {
-					csp.setAttribute('content', host.rewriteCSP(csp.getAttribute('content'), data.endpoint));
-				} catch (e) {
+					csp.setAttribute('content', host.rewriteCSP(csp.getAttribute('content'), dAtA.endpoint));
+				} cAtch (e) {
 					console.error(`Could not rewrite csp: ${e}`);
 				}
 			}
 
-			// set DOCTYPE for newDocument explicitly as DOMParser.parseFromString strips it off
-			// and DOCTYPE is needed in the iframe to ensure that the user agent stylesheet is correctly overridden
+			// set DOCTYPE for newDocument explicitly As DOMPArser.pArseFromString strips it off
+			// And DOCTYPE is needed in the ifrAme to ensure thAt the user Agent stylesheet is correctly overridden
 			return '<!DOCTYPE html>\n' + newDocument.documentElement.outerHTML;
 		}
 
-		document.addEventListener('DOMContentLoaded', () => {
-			const idMatch = document.location.search.match(/\bid=([\w-]+)/);
-			const ID = idMatch ? idMatch[1] : undefined;
+		document.AddEventListener('DOMContentLoAded', () => {
+			const idMAtch = document.locAtion.seArch.mAtch(/\bid=([\w-]+)/);
+			const ID = idMAtch ? idMAtch[1] : undefined;
 			if (!document.body) {
 				return;
 			}
 
-			host.onMessage('styles', (_event, data) => {
-				initData.styles = data.styles;
-				initData.activeTheme = data.activeTheme;
-				initData.themeName = data.themeName;
+			host.onMessAge('styles', (_event, dAtA) => {
+				initDAtA.styles = dAtA.styles;
+				initDAtA.ActiveTheme = dAtA.ActiveTheme;
+				initDAtA.themeNAme = dAtA.themeNAme;
 
-				const target = getActiveFrame();
-				if (!target) {
+				const tArget = getActiveFrAme();
+				if (!tArget) {
 					return;
 				}
 
-				if (target.contentDocument) {
-					applyStyles(target.contentDocument, target.contentDocument.body);
+				if (tArget.contentDocument) {
+					ApplyStyles(tArget.contentDocument, tArget.contentDocument.body);
 				}
 			});
 
-			// propagate focus
-			host.onMessage('focus', () => {
-				const target = getActiveFrame();
-				if (target) {
-					target.contentWindow.focus();
+			// propAgAte focus
+			host.onMessAge('focus', () => {
+				const tArget = getActiveFrAme();
+				if (tArget) {
+					tArget.contentWindow.focus();
 				}
 			});
 
-			// update iframe-contents
-			let updateId = 0;
-			host.onMessage('content', async (_event, data) => {
-				const currentUpdateId = ++updateId;
-				await host.ready;
-				if (currentUpdateId !== updateId) {
+			// updAte ifrAme-contents
+			let updAteId = 0;
+			host.onMessAge('content', Async (_event, dAtA) => {
+				const currentUpdAteId = ++updAteId;
+				AwAit host.reAdy;
+				if (currentUpdAteId !== updAteId) {
 					return;
 				}
 
-				const options = data.options;
-				const newDocument = toContentHtml(data);
+				const options = dAtA.options;
+				const newDocument = toContentHtml(dAtA);
 
-				const frame = getActiveFrame();
-				const wasFirstLoad = firstLoad;
-				// keep current scrollY around and use later
-				let setInitialScrollPosition;
-				if (firstLoad) {
-					firstLoad = false;
-					setInitialScrollPosition = (body, window) => {
-						if (!isNaN(initData.initialScrollProgress)) {
+				const frAme = getActiveFrAme();
+				const wAsFirstLoAd = firstLoAd;
+				// keep current scrollY Around And use lAter
+				let setInitiAlScrollPosition;
+				if (firstLoAd) {
+					firstLoAd = fAlse;
+					setInitiAlScrollPosition = (body, window) => {
+						if (!isNAN(initDAtA.initiAlScrollProgress)) {
 							if (window.scrollY === 0) {
-								window.scroll(0, body.clientHeight * initData.initialScrollProgress);
+								window.scroll(0, body.clientHeight * initDAtA.initiAlScrollProgress);
 							}
 						}
 					};
 				} else {
-					const scrollY = frame && frame.contentDocument && frame.contentDocument.body ? frame.contentWindow.scrollY : 0;
-					setInitialScrollPosition = (body, window) => {
+					const scrollY = frAme && frAme.contentDocument && frAme.contentDocument.body ? frAme.contentWindow.scrollY : 0;
+					setInitiAlScrollPosition = (body, window) => {
 						if (window.scrollY === 0) {
 							window.scroll(0, scrollY);
 						}
 					};
 				}
 
-				// Clean up old pending frames and set current one as new one
-				const previousPendingFrame = getPendingFrame();
-				if (previousPendingFrame) {
-					previousPendingFrame.setAttribute('id', '');
-					document.body.removeChild(previousPendingFrame);
+				// CleAn up old pending frAmes And set current one As new one
+				const previousPendingFrAme = getPendingFrAme();
+				if (previousPendingFrAme) {
+					previousPendingFrAme.setAttribute('id', '');
+					document.body.removeChild(previousPendingFrAme);
 				}
-				if (!wasFirstLoad) {
-					pendingMessages = [];
+				if (!wAsFirstLoAd) {
+					pendingMessAges = [];
 				}
 
-				const newFrame = document.createElement('iframe');
-				newFrame.setAttribute('id', 'pending-frame');
-				newFrame.setAttribute('frameborder', '0');
-				newFrame.setAttribute('sandbox', options.allowScripts ? 'allow-scripts allow-forms allow-same-origin allow-pointer-lock allow-downloads' : 'allow-same-origin allow-pointer-lock');
-				if (host.fakeLoad) {
-					// We should just be able to use srcdoc, but I wasn't
-					// seeing the service worker applying properly.
-					// Fake load an empty on the correct origin and then write real html
-					// into it to get around this.
-					newFrame.src = `./fake.html?id=${ID}`;
+				const newFrAme = document.creAteElement('ifrAme');
+				newFrAme.setAttribute('id', 'pending-frAme');
+				newFrAme.setAttribute('frAmeborder', '0');
+				newFrAme.setAttribute('sAndbox', options.AllowScripts ? 'Allow-scripts Allow-forms Allow-sAme-origin Allow-pointer-lock Allow-downloAds' : 'Allow-sAme-origin Allow-pointer-lock');
+				if (host.fAkeLoAd) {
+					// We should just be Able to use srcdoc, but I wAsn't
+					// seeing the service worker Applying properly.
+					// FAke loAd An empty on the correct origin And then write reAl html
+					// into it to get Around this.
+					newFrAme.src = `./fAke.html?id=${ID}`;
 				}
-				newFrame.style.cssText = 'display: block; margin: 0; overflow: hidden; position: absolute; width: 100%; height: 100%; visibility: hidden';
-				document.body.appendChild(newFrame);
+				newFrAme.style.cssText = 'displAy: block; mArgin: 0; overflow: hidden; position: Absolute; width: 100%; height: 100%; visibility: hidden';
+				document.body.AppendChild(newFrAme);
 
-				if (!host.fakeLoad) {
-					// write new content onto iframe
-					newFrame.contentDocument.open();
+				if (!host.fAkeLoAd) {
+					// write new content onto ifrAme
+					newFrAme.contentDocument.open();
 				}
 
 				/**
-				 * @param {Document} contentDocument
+				 * @pArAm {Document} contentDocument
 				 */
-				function onFrameLoaded(contentDocument) {
-					// Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=978325
+				function onFrAmeLoAded(contentDocument) {
+					// WorkAround for https://bugs.chromium.org/p/chromium/issues/detAil?id=978325
 					setTimeout(() => {
-						if (host.fakeLoad) {
+						if (host.fAkeLoAd) {
 							contentDocument.open();
 							contentDocument.write(newDocument);
 							contentDocument.close();
-							hookupOnLoadHandlers(newFrame);
+							hookupOnLoAdHAndlers(newFrAme);
 						}
 						if (contentDocument) {
-							applyStyles(contentDocument, contentDocument.body);
+							ApplyStyles(contentDocument, contentDocument.body);
 						}
 					}, 0);
 				}
 
-				if (host.fakeLoad && !options.allowScripts && isSafari) {
-					// On Safari for iframes with scripts disabled, the `DOMContentLoaded` never seems to be fired.
-					// Use polling instead.
-					const interval = setInterval(() => {
-						// If the frame is no longer mounted, loading has stopped
-						if (!newFrame.parentElement) {
-							clearInterval(interval);
+				if (host.fAkeLoAd && !options.AllowScripts && isSAfAri) {
+					// On SAfAri for ifrAmes with scripts disAbled, the `DOMContentLoAded` never seems to be fired.
+					// Use polling insteAd.
+					const intervAl = setIntervAl(() => {
+						// If the frAme is no longer mounted, loAding hAs stopped
+						if (!newFrAme.pArentElement) {
+							cleArIntervAl(intervAl);
 							return;
 						}
 
-						if (newFrame.contentDocument.readyState !== 'loading') {
-							clearInterval(interval);
-							onFrameLoaded(newFrame.contentDocument);
+						if (newFrAme.contentDocument.reAdyStAte !== 'loAding') {
+							cleArIntervAl(intervAl);
+							onFrAmeLoAded(newFrAme.contentDocument);
 						}
 					}, 10);
 				} else {
-					newFrame.contentWindow.addEventListener('DOMContentLoaded', e => {
-						const contentDocument = e.target ? (/** @type {HTMLDocument} */ (e.target)) : undefined;
-						onFrameLoaded(contentDocument);
+					newFrAme.contentWindow.AddEventListener('DOMContentLoAded', e => {
+						const contentDocument = e.tArget ? (/** @type {HTMLDocument} */ (e.tArget)) : undefined;
+						onFrAmeLoAded(contentDocument);
 					});
 				}
 
 				/**
-				 * @param {Document} contentDocument
-				 * @param {Window} contentWindow
+				 * @pArAm {Document} contentDocument
+				 * @pArAm {Window} contentWindow
 				 */
-				const onLoad = (contentDocument, contentWindow) => {
+				const onLoAd = (contentDocument, contentWindow) => {
 					if (contentDocument && contentDocument.body) {
-						// Workaround for https://github.com/microsoft/vscode/issues/12865
-						// check new scrollY and reset if necessary
-						setInitialScrollPosition(contentDocument.body, contentWindow);
+						// WorkAround for https://github.com/microsoft/vscode/issues/12865
+						// check new scrollY And reset if necessAry
+						setInitiAlScrollPosition(contentDocument.body, contentWindow);
 					}
 
-					const newFrame = getPendingFrame();
-					if (newFrame && newFrame.contentDocument && newFrame.contentDocument === contentDocument) {
-						const oldActiveFrame = getActiveFrame();
-						if (oldActiveFrame) {
-							document.body.removeChild(oldActiveFrame);
+					const newFrAme = getPendingFrAme();
+					if (newFrAme && newFrAme.contentDocument && newFrAme.contentDocument === contentDocument) {
+						const oldActiveFrAme = getActiveFrAme();
+						if (oldActiveFrAme) {
+							document.body.removeChild(oldActiveFrAme);
 						}
-						// Styles may have changed since we created the element. Make sure we re-style
-						applyStyles(newFrame.contentDocument, newFrame.contentDocument.body);
-						newFrame.setAttribute('id', 'active-frame');
-						newFrame.style.visibility = 'visible';
-						if (host.focusIframeOnCreate) {
-							newFrame.contentWindow.focus();
+						// Styles mAy hAve chAnged since we creAted the element. MAke sure we re-style
+						ApplyStyles(newFrAme.contentDocument, newFrAme.contentDocument.body);
+						newFrAme.setAttribute('id', 'Active-frAme');
+						newFrAme.style.visibility = 'visible';
+						if (host.focusIfrAmeOnCreAte) {
+							newFrAme.contentWindow.focus();
 						}
 
-						contentWindow.addEventListener('scroll', handleInnerScroll);
-						contentWindow.addEventListener('wheel', handleWheel);
+						contentWindow.AddEventListener('scroll', hAndleInnerScroll);
+						contentWindow.AddEventListener('wheel', hAndleWheel);
 
-						pendingMessages.forEach((data) => {
-							contentWindow.postMessage(data, '*');
+						pendingMessAges.forEAch((dAtA) => {
+							contentWindow.postMessAge(dAtA, '*');
 						});
-						pendingMessages = [];
+						pendingMessAges = [];
 					}
 
-					host.postMessage('did-load');
+					host.postMessAge('did-loAd');
 				};
 
 				/**
-				 * @param {HTMLIFrameElement} newFrame
+				 * @pArAm {HTMLIFrAmeElement} newFrAme
 				 */
-				function hookupOnLoadHandlers(newFrame) {
-					clearTimeout(loadTimeout);
-					loadTimeout = undefined;
-					loadTimeout = setTimeout(() => {
-						clearTimeout(loadTimeout);
-						loadTimeout = undefined;
-						onLoad(newFrame.contentDocument, newFrame.contentWindow);
+				function hookupOnLoAdHAndlers(newFrAme) {
+					cleArTimeout(loAdTimeout);
+					loAdTimeout = undefined;
+					loAdTimeout = setTimeout(() => {
+						cleArTimeout(loAdTimeout);
+						loAdTimeout = undefined;
+						onLoAd(newFrAme.contentDocument, newFrAme.contentWindow);
 					}, 200);
 
-					newFrame.contentWindow.addEventListener('load', function (e) {
-						const contentDocument = /** @type {Document} */ (e.target);
+					newFrAme.contentWindow.AddEventListener('loAd', function (e) {
+						const contentDocument = /** @type {Document} */ (e.tArget);
 
-						if (loadTimeout) {
-							clearTimeout(loadTimeout);
-							loadTimeout = undefined;
-							onLoad(contentDocument, this);
+						if (loAdTimeout) {
+							cleArTimeout(loAdTimeout);
+							loAdTimeout = undefined;
+							onLoAd(contentDocument, this);
 						}
 					});
 
-					// Bubble out various events
-					newFrame.contentWindow.addEventListener('click', handleInnerClick);
-					newFrame.contentWindow.addEventListener('auxclick', handleAuxClick);
-					newFrame.contentWindow.addEventListener('keydown', handleInnerKeydown);
-					newFrame.contentWindow.addEventListener('contextmenu', e => e.preventDefault());
+					// Bubble out vArious events
+					newFrAme.contentWindow.AddEventListener('click', hAndleInnerClick);
+					newFrAme.contentWindow.AddEventListener('Auxclick', hAndleAuxClick);
+					newFrAme.contentWindow.AddEventListener('keydown', hAndleInnerKeydown);
+					newFrAme.contentWindow.AddEventListener('contextmenu', e => e.preventDefAult());
 
-					if (host.onIframeLoaded) {
-						host.onIframeLoaded(newFrame);
+					if (host.onIfrAmeLoAded) {
+						host.onIfrAmeLoAded(newFrAme);
 					}
 				}
 
-				if (!host.fakeLoad) {
-					hookupOnLoadHandlers(newFrame);
+				if (!host.fAkeLoAd) {
+					hookupOnLoAdHAndlers(newFrAme);
 				}
 
-				if (!host.fakeLoad) {
-					newFrame.contentDocument.write(newDocument);
-					newFrame.contentDocument.close();
+				if (!host.fAkeLoAd) {
+					newFrAme.contentDocument.write(newDocument);
+					newFrAme.contentDocument.close();
 				}
 
-				host.postMessage('did-set-content', undefined);
+				host.postMessAge('did-set-content', undefined);
 			});
 
-			// Forward message to the embedded iframe
-			host.onMessage('message', (_event, data) => {
-				const pending = getPendingFrame();
+			// ForwArd messAge to the embedded ifrAme
+			host.onMessAge('messAge', (_event, dAtA) => {
+				const pending = getPendingFrAme();
 				if (!pending) {
-					const target = getActiveFrame();
-					if (target) {
-						target.contentWindow.postMessage(data, '*');
+					const tArget = getActiveFrAme();
+					if (tArget) {
+						tArget.contentWindow.postMessAge(dAtA, '*');
 						return;
 					}
 				}
-				pendingMessages.push(data);
+				pendingMessAges.push(dAtA);
 			});
 
-			host.onMessage('initial-scroll-position', (_event, progress) => {
-				initData.initialScrollProgress = progress;
+			host.onMessAge('initiAl-scroll-position', (_event, progress) => {
+				initDAtA.initiAlScrollProgress = progress;
 			});
 
-			host.onMessage('execCommand', (_event, data) => {
-				const target = getActiveFrame();
-				if (!target) {
+			host.onMessAge('execCommAnd', (_event, dAtA) => {
+				const tArget = getActiveFrAme();
+				if (!tArget) {
 					return;
 				}
-				target.contentDocument.execCommand(data);
+				tArget.contentDocument.execCommAnd(dAtA);
 			});
 
-			trackFocus({
-				onFocus: () => host.postMessage('did-focus'),
-				onBlur: () => host.postMessage('did-blur')
+			trAckFocus({
+				onFocus: () => host.postMessAge('did-focus'),
+				onBlur: () => host.postMessAge('did-blur')
 			});
 
-			// signal ready
-			host.postMessage('webview-ready', {});
+			// signAl reAdy
+			host.postMessAge('webview-reAdy', {});
 		});
 	}
 
 	if (typeof module !== 'undefined') {
-		module.exports = createWebviewManager;
+		module.exports = creAteWebviewMAnAger;
 	} else {
-		(/** @type {any} */ (window)).createWebviewManager = createWebviewManager;
+		(/** @type {Any} */ (window)).creAteWebviewMAnAger = creAteWebviewMAnAger;
 	}
 }());

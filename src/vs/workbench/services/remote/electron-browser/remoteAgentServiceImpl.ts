@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { nodeSocketFactory } from 'vs/platform/remote/node/nodeSocketFactory';
-import { AbstractRemoteAgentService } from 'vs/workbench/services/remote/common/abstractRemoteAgentService';
-import { ISignService } from 'vs/platform/sign/common/sign';
-import { ILogService } from 'vs/platform/log/common/log';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { nodeSocketFActory } from 'vs/plAtform/remote/node/nodeSocketFActory';
+import { AbstrActRemoteAgentService } from 'vs/workbench/services/remote/common/AbstrActRemoteAgentService';
+import { ISignService } from 'vs/plAtform/sign/common/sign';
+import { ILogService } from 'vs/plAtform/log/common/log';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
-export class RemoteAgentService extends AbstractRemoteAgentService implements IRemoteAgentService {
+export clAss RemoteAgentService extends AbstrActRemoteAgentService implements IRemoteAgentService {
 	constructor(
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IProductService productService: IProductService,
@@ -20,6 +20,6 @@ export class RemoteAgentService extends AbstractRemoteAgentService implements IR
 		@ISignService signService: ISignService,
 		@ILogService logService: ILogService,
 	) {
-		super(nodeSocketFactory, environmentService, productService, remoteAuthorityResolverService, signService, logService);
+		super(nodeSocketFActory, environmentService, productService, remoteAuthorityResolverService, signService, logService);
 	}
 }

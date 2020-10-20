@@ -1,134 +1,134 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ISCMResource, ISCMRepository, ISCMResourceGroup, ISCMInput, ISCMService, ISCMViewService } from 'vs/workbench/contrib/scm/common/scm';
-import { IMenu } from 'vs/platform/actions/common/actions';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { IDisposable, Disposable, combinedDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { Action, IAction } from 'vs/base/common/actions';
-import { createAndFillInActionBarActions, createAndFillInContextMenuActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { equals } from 'vs/base/common/arrays';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { renderCodicons } from 'vs/base/browser/codicons';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { Command } from 'vs/editor/common/modes';
-import { basename } from 'vs/base/common/resources';
-import { Iterable } from 'vs/base/common/iterator';
-import { reset } from 'vs/base/browser/dom';
+import { IMenu } from 'vs/plAtform/Actions/common/Actions';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { IDisposAble, DisposAble, combinedDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { Action, IAction } from 'vs/bAse/common/Actions';
+import { creAteAndFillInActionBArActions, creAteAndFillInContextMenuActions } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { equAls } from 'vs/bAse/common/ArrAys';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { renderCodicons } from 'vs/bAse/browser/codicons';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { CommAnd } from 'vs/editor/common/modes';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { IterAble } from 'vs/bAse/common/iterAtor';
+import { reset } from 'vs/bAse/browser/dom';
 
-export function isSCMRepository(element: any): element is ISCMRepository {
-	return !!(element as ISCMRepository).provider && typeof (element as ISCMRepository).setSelected === 'function';
+export function isSCMRepository(element: Any): element is ISCMRepository {
+	return !!(element As ISCMRepository).provider && typeof (element As ISCMRepository).setSelected === 'function';
 }
 
-export function isSCMInput(element: any): element is ISCMInput {
-	return !!(element as ISCMInput).validateInput && typeof (element as ISCMInput).value === 'string';
+export function isSCMInput(element: Any): element is ISCMInput {
+	return !!(element As ISCMInput).vAlidAteInput && typeof (element As ISCMInput).vAlue === 'string';
 }
 
-export function isSCMResourceGroup(element: any): element is ISCMResourceGroup {
-	return !!(element as ISCMResourceGroup).provider && !!(element as ISCMResourceGroup).elements;
+export function isSCMResourceGroup(element: Any): element is ISCMResourceGroup {
+	return !!(element As ISCMResourceGroup).provider && !!(element As ISCMResourceGroup).elements;
 }
 
-export function isSCMResource(element: any): element is ISCMResource {
-	return !!(element as ISCMResource).sourceUri && isSCMResourceGroup((element as ISCMResource).resourceGroup);
+export function isSCMResource(element: Any): element is ISCMResource {
+	return !!(element As ISCMResource).sourceUri && isSCMResourceGroup((element As ISCMResource).resourceGroup);
 }
 
-const compareActions = (a: IAction, b: IAction) => a.id === b.id;
+const compAreActions = (A: IAction, b: IAction) => A.id === b.id;
 
-export function connectPrimaryMenu(menu: IMenu, callback: (primary: IAction[], secondary: IAction[]) => void, isPrimaryGroup?: (group: string) => boolean): IDisposable {
-	let cachedDisposable: IDisposable = Disposable.None;
-	let cachedPrimary: IAction[] = [];
-	let cachedSecondary: IAction[] = [];
+export function connectPrimAryMenu(menu: IMenu, cAllbAck: (primAry: IAction[], secondAry: IAction[]) => void, isPrimAryGroup?: (group: string) => booleAn): IDisposAble {
+	let cAchedDisposAble: IDisposAble = DisposAble.None;
+	let cAchedPrimAry: IAction[] = [];
+	let cAchedSecondAry: IAction[] = [];
 
-	const updateActions = () => {
-		const primary: IAction[] = [];
-		const secondary: IAction[] = [];
+	const updAteActions = () => {
+		const primAry: IAction[] = [];
+		const secondAry: IAction[] = [];
 
-		const disposable = createAndFillInActionBarActions(menu, { shouldForwardArgs: true }, { primary, secondary }, isPrimaryGroup);
+		const disposAble = creAteAndFillInActionBArActions(menu, { shouldForwArdArgs: true }, { primAry, secondAry }, isPrimAryGroup);
 
-		if (equals(cachedPrimary, primary, compareActions) && equals(cachedSecondary, secondary, compareActions)) {
-			disposable.dispose();
+		if (equAls(cAchedPrimAry, primAry, compAreActions) && equAls(cAchedSecondAry, secondAry, compAreActions)) {
+			disposAble.dispose();
 			return;
 		}
 
-		cachedDisposable = disposable;
-		cachedPrimary = primary;
-		cachedSecondary = secondary;
+		cAchedDisposAble = disposAble;
+		cAchedPrimAry = primAry;
+		cAchedSecondAry = secondAry;
 
-		callback(primary, secondary);
+		cAllbAck(primAry, secondAry);
 	};
 
-	updateActions();
+	updAteActions();
 
-	return combinedDisposable(
-		menu.onDidChange(updateActions),
-		toDisposable(() => cachedDisposable.dispose())
+	return combinedDisposAble(
+		menu.onDidChAnge(updAteActions),
+		toDisposAble(() => cAchedDisposAble.dispose())
 	);
 }
 
-export function connectPrimaryMenuToInlineActionBar(menu: IMenu, actionBar: ActionBar): IDisposable {
-	return connectPrimaryMenu(menu, (primary) => {
-		actionBar.clear();
-		actionBar.push(primary, { icon: true, label: false });
+export function connectPrimAryMenuToInlineActionBAr(menu: IMenu, ActionBAr: ActionBAr): IDisposAble {
+	return connectPrimAryMenu(menu, (primAry) => {
+		ActionBAr.cleAr();
+		ActionBAr.push(primAry, { icon: true, lAbel: fAlse });
 	}, g => /^inline/.test(g));
 }
 
-export function collectContextMenuActions(menu: IMenu, contextMenuService: IContextMenuService): [IAction[], IDisposable] {
-	const primary: IAction[] = [];
-	const actions: IAction[] = [];
-	const disposable = createAndFillInContextMenuActions(menu, { shouldForwardArgs: true }, { primary, secondary: actions }, contextMenuService, g => /^inline/.test(g));
-	return [actions, disposable];
+export function collectContextMenuActions(menu: IMenu, contextMenuService: IContextMenuService): [IAction[], IDisposAble] {
+	const primAry: IAction[] = [];
+	const Actions: IAction[] = [];
+	const disposAble = creAteAndFillInContextMenuActions(menu, { shouldForwArdArgs: true }, { primAry, secondAry: Actions }, contextMenuService, g => /^inline/.test(g));
+	return [Actions, disposAble];
 }
 
-export class StatusBarAction extends Action {
+export clAss StAtusBArAction extends Action {
 
 	constructor(
-		private command: Command,
-		private commandService: ICommandService
+		privAte commAnd: CommAnd,
+		privAte commAndService: ICommAndService
 	) {
-		super(`statusbaraction{${command.id}}`, command.title, '', true);
-		this.tooltip = command.tooltip || '';
+		super(`stAtusbArAction{${commAnd.id}}`, commAnd.title, '', true);
+		this.tooltip = commAnd.tooltip || '';
 	}
 
 	run(): Promise<void> {
-		return this.commandService.executeCommand(this.command.id, ...(this.command.arguments || []));
+		return this.commAndService.executeCommAnd(this.commAnd.id, ...(this.commAnd.Arguments || []));
 	}
 }
 
-export class StatusBarActionViewItem extends ActionViewItem {
+export clAss StAtusBArActionViewItem extends ActionViewItem {
 
-	constructor(action: StatusBarAction) {
-		super(null, action, {});
+	constructor(Action: StAtusBArAction) {
+		super(null, Action, {});
 	}
 
-	updateLabel(): void {
-		if (this.options.label && this.label) {
-			reset(this.label, ...renderCodicons(this.getAction().label));
+	updAteLAbel(): void {
+		if (this.options.lAbel && this.lAbel) {
+			reset(this.lAbel, ...renderCodicons(this.getAction().lAbel));
 		}
 	}
 }
 
 export function getRepositoryVisibilityActions(scmService: ISCMService, scmViewService: ISCMViewService): IAction[] {
 	const visible = new Set<IAction>();
-	const actions = scmService.repositories.map(repository => {
-		const label = repository.provider.rootUri ? basename(repository.provider.rootUri) : repository.provider.label;
-		const action = new Action('scm.repository.toggleVisibility', label, undefined, true, async () => {
+	const Actions = scmService.repositories.mAp(repository => {
+		const lAbel = repository.provider.rootUri ? bAsenAme(repository.provider.rootUri) : repository.provider.lAbel;
+		const Action = new Action('scm.repository.toggleVisibility', lAbel, undefined, true, Async () => {
 			scmViewService.toggleVisibility(repository);
 		});
 
 		if (scmViewService.isVisible(repository)) {
-			action.checked = true;
-			visible.add(action);
+			Action.checked = true;
+			visible.Add(Action);
 		}
 
-		return action;
+		return Action;
 	});
 
 	if (visible.size === 1) {
-		Iterable.first(visible.values())!.enabled = false;
+		IterAble.first(visible.vAlues())!.enAbled = fAlse;
 	}
 
-	return actions;
+	return Actions;
 }

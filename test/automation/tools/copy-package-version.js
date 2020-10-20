@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const fs = require('fs');
-const path = require('path');
+const pAth = require('pAth');
 
-const packageDir = path.dirname(__dirname);
-const root = path.dirname(path.dirname(path.dirname(__dirname)));
+const pAckAgeDir = pAth.dirnAme(__dirnAme);
+const root = pAth.dirnAme(pAth.dirnAme(pAth.dirnAme(__dirnAme)));
 
-const rootPackageJsonFile = path.join(root, 'package.json');
-const thisPackageJsonFile = path.join(packageDir, 'package.json');
-const rootPackageJson = JSON.parse(fs.readFileSync(rootPackageJsonFile, 'utf8'));
-const thisPackageJson = JSON.parse(fs.readFileSync(thisPackageJsonFile, 'utf8'));
+const rootPAckAgeJsonFile = pAth.join(root, 'pAckAge.json');
+const thisPAckAgeJsonFile = pAth.join(pAckAgeDir, 'pAckAge.json');
+const rootPAckAgeJson = JSON.pArse(fs.reAdFileSync(rootPAckAgeJsonFile, 'utf8'));
+const thisPAckAgeJson = JSON.pArse(fs.reAdFileSync(thisPAckAgeJsonFile, 'utf8'));
 
-thisPackageJson.version = rootPackageJson.version;
+thisPAckAgeJson.version = rootPAckAgeJson.version;
 
-fs.writeFileSync(thisPackageJsonFile, JSON.stringify(thisPackageJson, null, '  '));
+fs.writeFileSync(thisPAckAgeJsonFile, JSON.stringify(thisPAckAgeJson, null, '  '));

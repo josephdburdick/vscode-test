@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { Queue } from 'vs/base/common/async';
-import * as json from 'vs/base/common/json';
-import * as objects from 'vs/base/common/objects';
-import { setProperty } from 'vs/base/common/jsonEdit';
-import { Edit } from 'vs/base/common/jsonFormatter';
-import { Disposable, IReference } from 'vs/base/common/lifecycle';
-import { isArray } from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
-import { Range } from 'vs/editor/common/core/range';
+import { locAlize } from 'vs/nls';
+import { Queue } from 'vs/bAse/common/Async';
+import * As json from 'vs/bAse/common/json';
+import * As objects from 'vs/bAse/common/objects';
+import { setProperty } from 'vs/bAse/common/jsonEdit';
+import { Edit } from 'vs/bAse/common/jsonFormAtter';
+import { DisposAble, IReference } from 'vs/bAse/common/lifecycle';
+import { isArrAy } from 'vs/bAse/common/types';
+import { URI } from 'vs/bAse/common/uri';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
 import { ITextModelService, IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IFileService } from 'vs/platform/files/common/files';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IUserFriendlyKeybinding } from 'vs/platform/keybinding/common/keybinding';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IUserFriendlyKeybinding } from 'vs/plAtform/keybinding/common/keybinding';
+import { ResolvedKeybindingItem } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-export const IKeybindingEditingService = createDecorator<IKeybindingEditingService>('keybindingEditingService');
+export const IKeybindingEditingService = creAteDecorAtor<IKeybindingEditingService>('keybindingEditingService');
 
-export interface IKeybindingEditingService {
+export interfAce IKeybindingEditingService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	editKeybinding(keybindingItem: ResolvedKeybindingItem, key: string, when: string | undefined): Promise<void>;
 
@@ -40,138 +40,138 @@ export interface IKeybindingEditingService {
 	resetKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void>;
 }
 
-export class KeybindingsEditingService extends Disposable implements IKeybindingEditingService {
+export clAss KeybindingsEditingService extends DisposAble implements IKeybindingEditingService {
 
-	public _serviceBrand: undefined;
-	private queue: Queue<void>;
+	public _serviceBrAnd: undefined;
+	privAte queue: Queue<void>;
 
-	private resource: URI = this.environmentService.keybindingsResource;
+	privAte resource: URI = this.environmentService.keybindingsResource;
 
 	constructor(
-		@ITextModelService private readonly textModelResolverService: ITextModelService,
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@IFileService private readonly fileService: IFileService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService
+		@ITextModelService privAte reAdonly textModelResolverService: ITextModelService,
+		@ITextFileService privAte reAdonly textFileService: ITextFileService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService
 	) {
 		super();
 		this.queue = new Queue<void>();
 	}
 
 	editKeybinding(keybindingItem: ResolvedKeybindingItem, key: string, when: string | undefined): Promise<void> {
-		return this.queue.queue(() => this.doEditKeybinding(keybindingItem, key, when)); // queue up writes to prevent race conditions
+		return this.queue.queue(() => this.doEditKeybinding(keybindingItem, key, when)); // queue up writes to prevent rAce conditions
 	}
 
 	resetKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void> {
-		return this.queue.queue(() => this.doResetKeybinding(keybindingItem)); // queue up writes to prevent race conditions
+		return this.queue.queue(() => this.doResetKeybinding(keybindingItem)); // queue up writes to prevent rAce conditions
 	}
 
 	removeKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void> {
-		return this.queue.queue(() => this.doRemoveKeybinding(keybindingItem)); // queue up writes to prevent race conditions
+		return this.queue.queue(() => this.doRemoveKeybinding(keybindingItem)); // queue up writes to prevent rAce conditions
 	}
 
-	private doEditKeybinding(keybindingItem: ResolvedKeybindingItem, key: string, when: string | undefined): Promise<void> {
-		return this.resolveAndValidate()
+	privAte doEditKeybinding(keybindingItem: ResolvedKeybindingItem, key: string, when: string | undefined): Promise<void> {
+		return this.resolveAndVAlidAte()
 			.then(reference => {
 				const model = reference.object.textEditorModel;
-				const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.parse(model.getValue());
+				const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.pArse(model.getVAlue());
 				const userKeybindingEntryIndex = this.findUserKeybindingEntryIndex(keybindingItem, userKeybindingEntries);
-				this.updateKeybinding(keybindingItem, key, when, model, userKeybindingEntryIndex);
-				if (keybindingItem.isDefault && keybindingItem.resolvedKeybinding) {
-					this.removeDefaultKeybinding(keybindingItem, model);
+				this.updAteKeybinding(keybindingItem, key, when, model, userKeybindingEntryIndex);
+				if (keybindingItem.isDefAult && keybindingItem.resolvedKeybinding) {
+					this.removeDefAultKeybinding(keybindingItem, model);
 				}
-				return this.save().finally(() => reference.dispose());
+				return this.sAve().finAlly(() => reference.dispose());
 			});
 	}
 
-	private doRemoveKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void> {
-		return this.resolveAndValidate()
+	privAte doRemoveKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void> {
+		return this.resolveAndVAlidAte()
 			.then(reference => {
 				const model = reference.object.textEditorModel;
-				if (keybindingItem.isDefault) {
-					this.removeDefaultKeybinding(keybindingItem, model);
+				if (keybindingItem.isDefAult) {
+					this.removeDefAultKeybinding(keybindingItem, model);
 				} else {
 					this.removeUserKeybinding(keybindingItem, model);
 				}
-				return this.save().finally(() => reference.dispose());
+				return this.sAve().finAlly(() => reference.dispose());
 			});
 	}
 
-	private doResetKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void> {
-		return this.resolveAndValidate()
+	privAte doResetKeybinding(keybindingItem: ResolvedKeybindingItem): Promise<void> {
+		return this.resolveAndVAlidAte()
 			.then(reference => {
 				const model = reference.object.textEditorModel;
-				if (!keybindingItem.isDefault) {
+				if (!keybindingItem.isDefAult) {
 					this.removeUserKeybinding(keybindingItem, model);
-					this.removeUnassignedDefaultKeybinding(keybindingItem, model);
+					this.removeUnAssignedDefAultKeybinding(keybindingItem, model);
 				}
-				return this.save().finally(() => reference.dispose());
+				return this.sAve().finAlly(() => reference.dispose());
 			});
 	}
 
-	private save(): Promise<any> {
-		return this.textFileService.save(this.resource);
+	privAte sAve(): Promise<Any> {
+		return this.textFileService.sAve(this.resource);
 	}
 
-	private updateKeybinding(keybindingItem: ResolvedKeybindingItem, newKey: string, when: string | undefined, model: ITextModel, userKeybindingEntryIndex: number): void {
-		const { tabSize, insertSpaces } = model.getOptions();
+	privAte updAteKeybinding(keybindingItem: ResolvedKeybindingItem, newKey: string, when: string | undefined, model: ITextModel, userKeybindingEntryIndex: number): void {
+		const { tAbSize, insertSpAces } = model.getOptions();
 		const eol = model.getEOL();
 		if (userKeybindingEntryIndex !== -1) {
-			// Update the keybinding with new key
-			this.applyEditsToBuffer(setProperty(model.getValue(), [userKeybindingEntryIndex, 'key'], newKey, { tabSize, insertSpaces, eol })[0], model);
-			const edits = setProperty(model.getValue(), [userKeybindingEntryIndex, 'when'], when, { tabSize, insertSpaces, eol });
+			// UpdAte the keybinding with new key
+			this.ApplyEditsToBuffer(setProperty(model.getVAlue(), [userKeybindingEntryIndex, 'key'], newKey, { tAbSize, insertSpAces, eol })[0], model);
+			const edits = setProperty(model.getVAlue(), [userKeybindingEntryIndex, 'when'], when, { tAbSize, insertSpAces, eol });
 			if (edits.length > 0) {
-				this.applyEditsToBuffer(edits[0], model);
+				this.ApplyEditsToBuffer(edits[0], model);
 			}
 		} else {
 			// Add the new keybinding with new key
-			this.applyEditsToBuffer(setProperty(model.getValue(), [-1], this.asObject(newKey, keybindingItem.command, when, false), { tabSize, insertSpaces, eol })[0], model);
+			this.ApplyEditsToBuffer(setProperty(model.getVAlue(), [-1], this.AsObject(newKey, keybindingItem.commAnd, when, fAlse), { tAbSize, insertSpAces, eol })[0], model);
 		}
 	}
 
-	private removeUserKeybinding(keybindingItem: ResolvedKeybindingItem, model: ITextModel): void {
-		const { tabSize, insertSpaces } = model.getOptions();
+	privAte removeUserKeybinding(keybindingItem: ResolvedKeybindingItem, model: ITextModel): void {
+		const { tAbSize, insertSpAces } = model.getOptions();
 		const eol = model.getEOL();
-		const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.parse(model.getValue());
+		const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.pArse(model.getVAlue());
 		const userKeybindingEntryIndex = this.findUserKeybindingEntryIndex(keybindingItem, userKeybindingEntries);
 		if (userKeybindingEntryIndex !== -1) {
-			this.applyEditsToBuffer(setProperty(model.getValue(), [userKeybindingEntryIndex], undefined, { tabSize, insertSpaces, eol })[0], model);
+			this.ApplyEditsToBuffer(setProperty(model.getVAlue(), [userKeybindingEntryIndex], undefined, { tAbSize, insertSpAces, eol })[0], model);
 		}
 	}
 
-	private removeDefaultKeybinding(keybindingItem: ResolvedKeybindingItem, model: ITextModel): void {
-		const { tabSize, insertSpaces } = model.getOptions();
+	privAte removeDefAultKeybinding(keybindingItem: ResolvedKeybindingItem, model: ITextModel): void {
+		const { tAbSize, insertSpAces } = model.getOptions();
 		const eol = model.getEOL();
-		const key = keybindingItem.resolvedKeybinding ? keybindingItem.resolvedKeybinding.getUserSettingsLabel() : null;
+		const key = keybindingItem.resolvedKeybinding ? keybindingItem.resolvedKeybinding.getUserSettingsLAbel() : null;
 		if (key) {
-			const entry: IUserFriendlyKeybinding = this.asObject(key, keybindingItem.command, keybindingItem.when ? keybindingItem.when.serialize() : undefined, true);
-			const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.parse(model.getValue());
-			if (userKeybindingEntries.every(e => !this.areSame(e, entry))) {
-				this.applyEditsToBuffer(setProperty(model.getValue(), [-1], entry, { tabSize, insertSpaces, eol })[0], model);
+			const entry: IUserFriendlyKeybinding = this.AsObject(key, keybindingItem.commAnd, keybindingItem.when ? keybindingItem.when.seriAlize() : undefined, true);
+			const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.pArse(model.getVAlue());
+			if (userKeybindingEntries.every(e => !this.AreSAme(e, entry))) {
+				this.ApplyEditsToBuffer(setProperty(model.getVAlue(), [-1], entry, { tAbSize, insertSpAces, eol })[0], model);
 			}
 		}
 	}
 
-	private removeUnassignedDefaultKeybinding(keybindingItem: ResolvedKeybindingItem, model: ITextModel): void {
-		const { tabSize, insertSpaces } = model.getOptions();
+	privAte removeUnAssignedDefAultKeybinding(keybindingItem: ResolvedKeybindingItem, model: ITextModel): void {
+		const { tAbSize, insertSpAces } = model.getOptions();
 		const eol = model.getEOL();
-		const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.parse(model.getValue());
-		const indices = this.findUnassignedDefaultKeybindingEntryIndex(keybindingItem, userKeybindingEntries).reverse();
+		const userKeybindingEntries = <IUserFriendlyKeybinding[]>json.pArse(model.getVAlue());
+		const indices = this.findUnAssignedDefAultKeybindingEntryIndex(keybindingItem, userKeybindingEntries).reverse();
 		for (const index of indices) {
-			this.applyEditsToBuffer(setProperty(model.getValue(), [index], undefined, { tabSize, insertSpaces, eol })[0], model);
+			this.ApplyEditsToBuffer(setProperty(model.getVAlue(), [index], undefined, { tAbSize, insertSpAces, eol })[0], model);
 		}
 	}
 
-	private findUserKeybindingEntryIndex(keybindingItem: ResolvedKeybindingItem, userKeybindingEntries: IUserFriendlyKeybinding[]): number {
+	privAte findUserKeybindingEntryIndex(keybindingItem: ResolvedKeybindingItem, userKeybindingEntries: IUserFriendlyKeybinding[]): number {
 		for (let index = 0; index < userKeybindingEntries.length; index++) {
 			const keybinding = userKeybindingEntries[index];
-			if (keybinding.command === keybindingItem.command) {
+			if (keybinding.commAnd === keybindingItem.commAnd) {
 				if (!keybinding.when && !keybindingItem.when) {
 					return index;
 				}
 				if (keybinding.when && keybindingItem.when) {
-					const contextKeyExpr = ContextKeyExpr.deserialize(keybinding.when);
-					if (contextKeyExpr && contextKeyExpr.serialize() === keybindingItem.when.serialize()) {
+					const contextKeyExpr = ContextKeyExpr.deseriAlize(keybinding.when);
+					if (contextKeyExpr && contextKeyExpr.seriAlize() === keybindingItem.when.seriAlize()) {
 						return index;
 					}
 				}
@@ -180,20 +180,20 @@ export class KeybindingsEditingService extends Disposable implements IKeybinding
 		return -1;
 	}
 
-	private findUnassignedDefaultKeybindingEntryIndex(keybindingItem: ResolvedKeybindingItem, userKeybindingEntries: IUserFriendlyKeybinding[]): number[] {
+	privAte findUnAssignedDefAultKeybindingEntryIndex(keybindingItem: ResolvedKeybindingItem, userKeybindingEntries: IUserFriendlyKeybinding[]): number[] {
 		const indices: number[] = [];
 		for (let index = 0; index < userKeybindingEntries.length; index++) {
-			if (userKeybindingEntries[index].command === `-${keybindingItem.command}`) {
+			if (userKeybindingEntries[index].commAnd === `-${keybindingItem.commAnd}`) {
 				indices.push(index);
 			}
 		}
 		return indices;
 	}
 
-	private asObject(key: string, command: string | null, when: string | undefined, negate: boolean): any {
-		const object: any = { key };
-		if (command) {
-			object['command'] = negate ? `-${command}` : command;
+	privAte AsObject(key: string, commAnd: string | null, when: string | undefined, negAte: booleAn): Any {
+		const object: Any = { key };
+		if (commAnd) {
+			object['commAnd'] = negAte ? `-${commAnd}` : commAnd;
 		}
 		if (when) {
 			object['when'] = when;
@@ -201,87 +201,87 @@ export class KeybindingsEditingService extends Disposable implements IKeybinding
 		return object;
 	}
 
-	private areSame(a: IUserFriendlyKeybinding, b: IUserFriendlyKeybinding): boolean {
-		if (a.command !== b.command) {
-			return false;
+	privAte AreSAme(A: IUserFriendlyKeybinding, b: IUserFriendlyKeybinding): booleAn {
+		if (A.commAnd !== b.commAnd) {
+			return fAlse;
 		}
-		if (a.key !== b.key) {
-			return false;
+		if (A.key !== b.key) {
+			return fAlse;
 		}
-		const whenA = ContextKeyExpr.deserialize(a.when);
-		const whenB = ContextKeyExpr.deserialize(b.when);
+		const whenA = ContextKeyExpr.deseriAlize(A.when);
+		const whenB = ContextKeyExpr.deseriAlize(b.when);
 		if ((whenA && !whenB) || (!whenA && whenB)) {
-			return false;
+			return fAlse;
 		}
-		if (whenA && whenB && !whenA.equals(whenB)) {
-			return false;
+		if (whenA && whenB && !whenA.equAls(whenB)) {
+			return fAlse;
 		}
-		if (!objects.equals(a.args, b.args)) {
-			return false;
+		if (!objects.equAls(A.Args, b.Args)) {
+			return fAlse;
 		}
 		return true;
 	}
 
-	private applyEditsToBuffer(edit: Edit, model: ITextModel): void {
-		const startPosition = model.getPositionAt(edit.offset);
+	privAte ApplyEditsToBuffer(edit: Edit, model: ITextModel): void {
+		const stArtPosition = model.getPositionAt(edit.offset);
 		const endPosition = model.getPositionAt(edit.offset + edit.length);
-		const range = new Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column);
-		let currentText = model.getValueInRange(range);
-		const editOperation = currentText ? EditOperation.replace(range, edit.content) : EditOperation.insert(startPosition, edit.content);
-		model.pushEditOperations([new Selection(startPosition.lineNumber, startPosition.column, startPosition.lineNumber, startPosition.column)], [editOperation], () => []);
+		const rAnge = new RAnge(stArtPosition.lineNumber, stArtPosition.column, endPosition.lineNumber, endPosition.column);
+		let currentText = model.getVAlueInRAnge(rAnge);
+		const editOperAtion = currentText ? EditOperAtion.replAce(rAnge, edit.content) : EditOperAtion.insert(stArtPosition, edit.content);
+		model.pushEditOperAtions([new Selection(stArtPosition.lineNumber, stArtPosition.column, stArtPosition.lineNumber, stArtPosition.column)], [editOperAtion], () => []);
 	}
 
-	private resolveModelReference(): Promise<IReference<IResolvedTextEditorModel>> {
+	privAte resolveModelReference(): Promise<IReference<IResolvedTextEditorModel>> {
 		return this.fileService.exists(this.resource)
 			.then(exists => {
-				const EOL = this.configurationService.getValue<{ eol: string }>('files', { overrideIdentifier: 'json' })['eol'];
-				const result: Promise<any> = exists ? Promise.resolve(null) : this.textFileService.write(this.resource, this.getEmptyContent(EOL), { encoding: 'utf8' });
-				return result.then(() => this.textModelResolverService.createModelReference(this.resource));
+				const EOL = this.configurAtionService.getVAlue<{ eol: string }>('files', { overrideIdentifier: 'json' })['eol'];
+				const result: Promise<Any> = exists ? Promise.resolve(null) : this.textFileService.write(this.resource, this.getEmptyContent(EOL), { encoding: 'utf8' });
+				return result.then(() => this.textModelResolverService.creAteModelReference(this.resource));
 			});
 	}
 
-	private resolveAndValidate(): Promise<IReference<IResolvedTextEditorModel>> {
+	privAte resolveAndVAlidAte(): Promise<IReference<IResolvedTextEditorModel>> {
 
-		// Target cannot be dirty if not writing into buffer
+		// TArget cAnnot be dirty if not writing into buffer
 		if (this.textFileService.isDirty(this.resource)) {
-			return Promise.reject(new Error(localize('errorKeybindingsFileDirty', "Unable to write because the keybindings configuration file is dirty. Please save it first and then try again.")));
+			return Promise.reject(new Error(locAlize('errorKeybindingsFileDirty', "UnAble to write becAuse the keybindings configurAtion file is dirty. PleAse sAve it first And then try AgAin.")));
 		}
 
 		return this.resolveModelReference()
 			.then(reference => {
 				const model = reference.object.textEditorModel;
 				const EOL = model.getEOL();
-				if (model.getValue()) {
-					const parsed = this.parse(model);
-					if (parsed.parseErrors.length) {
+				if (model.getVAlue()) {
+					const pArsed = this.pArse(model);
+					if (pArsed.pArseErrors.length) {
 						reference.dispose();
-						return Promise.reject<any>(new Error(localize('parseErrors', "Unable to write to the keybindings configuration file. Please open it to correct errors/warnings in the file and try again.")));
+						return Promise.reject<Any>(new Error(locAlize('pArseErrors', "UnAble to write to the keybindings configurAtion file. PleAse open it to correct errors/wArnings in the file And try AgAin.")));
 					}
-					if (parsed.result) {
-						if (!isArray(parsed.result)) {
+					if (pArsed.result) {
+						if (!isArrAy(pArsed.result)) {
 							reference.dispose();
-							return Promise.reject<any>(new Error(localize('errorInvalidConfiguration', "Unable to write to the keybindings configuration file. It has an object which is not of type Array. Please open the file to clean up and try again.")));
+							return Promise.reject<Any>(new Error(locAlize('errorInvAlidConfigurAtion', "UnAble to write to the keybindings configurAtion file. It hAs An object which is not of type ArrAy. PleAse open the file to cleAn up And try AgAin.")));
 						}
 					} else {
 						const content = EOL + '[]';
-						this.applyEditsToBuffer({ content, length: content.length, offset: model.getValue().length }, model);
+						this.ApplyEditsToBuffer({ content, length: content.length, offset: model.getVAlue().length }, model);
 					}
 				} else {
 					const content = this.getEmptyContent(EOL);
-					this.applyEditsToBuffer({ content, length: content.length, offset: 0 }, model);
+					this.ApplyEditsToBuffer({ content, length: content.length, offset: 0 }, model);
 				}
 				return reference;
 			});
 	}
 
-	private parse(model: ITextModel): { result: IUserFriendlyKeybinding[], parseErrors: json.ParseError[] } {
-		const parseErrors: json.ParseError[] = [];
-		const result = json.parse(model.getValue(), parseErrors, { allowTrailingComma: true, allowEmptyContent: true });
-		return { result, parseErrors };
+	privAte pArse(model: ITextModel): { result: IUserFriendlyKeybinding[], pArseErrors: json.PArseError[] } {
+		const pArseErrors: json.PArseError[] = [];
+		const result = json.pArse(model.getVAlue(), pArseErrors, { AllowTrAilingCommA: true, AllowEmptyContent: true });
+		return { result, pArseErrors };
 	}
 
-	private getEmptyContent(EOL: string): string {
-		return '// ' + localize('emptyKeybindingsHeader', "Place your key bindings in this file to override the defaults") + EOL + '[]';
+	privAte getEmptyContent(EOL: string): string {
+		return '// ' + locAlize('emptyKeybindingsHeAder', "PlAce your key bindings in this file to override the defAults") + EOL + '[]';
 	}
 }
 

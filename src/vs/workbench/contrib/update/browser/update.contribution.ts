@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/platform/update/common/update.config.contribution';
-import { localize } from 'vs/nls';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions } from 'vs/workbench/common/actions';
-import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { ShowCurrentReleaseNotesAction, ProductContribution, UpdateContribution, CheckForVSCodeUpdateAction, CONTEXT_UPDATE_STATE, SwitchProductQualityContribution } from 'vs/workbench/contrib/update/browser/update';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import product from 'vs/platform/product/common/product';
-import { StateType } from 'vs/platform/update/common/update';
+import 'vs/plAtform/updAte/common/updAte.config.contribution';
+import { locAlize } from 'vs/nls';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IWorkbenchActionRegistry, Extensions As ActionExtensions } from 'vs/workbench/common/Actions';
+import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { ShowCurrentReleAseNotesAction, ProductContribution, UpdAteContribution, CheckForVSCodeUpdAteAction, CONTEXT_UPDATE_STATE, SwitchProductQuAlityContribution } from 'vs/workbench/contrib/updAte/browser/updAte';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import product from 'vs/plAtform/product/common/product';
+import { StAteType } from 'vs/plAtform/updAte/common/updAte';
 
-const workbench = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+const workbench = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
 
-workbench.registerWorkbenchContribution(ProductContribution, LifecyclePhase.Restored);
-workbench.registerWorkbenchContribution(UpdateContribution, LifecyclePhase.Restored);
-workbench.registerWorkbenchContribution(SwitchProductQualityContribution, LifecyclePhase.Restored);
+workbench.registerWorkbenchContribution(ProductContribution, LifecyclePhAse.Restored);
+workbench.registerWorkbenchContribution(UpdAteContribution, LifecyclePhAse.Restored);
+workbench.registerWorkbenchContribution(SwitchProductQuAlityContribution, LifecyclePhAse.Restored);
 
-const actionRegistry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+const ActionRegistry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
 
 // Editor
-actionRegistry
-	.registerWorkbenchAction(SyncActionDescriptor.from(ShowCurrentReleaseNotesAction), `${product.nameShort}: Show Release Notes`, product.nameShort);
+ActionRegistry
+	.registerWorkbenchAction(SyncActionDescriptor.from(ShowCurrentReleAseNotesAction), `${product.nAmeShort}: Show ReleAse Notes`, product.nAmeShort);
 
-actionRegistry
-	.registerWorkbenchAction(SyncActionDescriptor.from(CheckForVSCodeUpdateAction), `${product.nameShort}: Check for Update`, product.nameShort, CONTEXT_UPDATE_STATE.isEqualTo(StateType.Idle));
+ActionRegistry
+	.registerWorkbenchAction(SyncActionDescriptor.from(CheckForVSCodeUpdAteAction), `${product.nAmeShort}: Check for UpdAte`, product.nAmeShort, CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.Idle));
 
 // Menu
-if (ShowCurrentReleaseNotesAction.AVAILABE) {
-	MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+if (ShowCurrentReleAseNotesAction.AVAILABE) {
+	MenuRegistry.AppendMenuItem(MenuId.MenubArHelpMenu, {
 		group: '1_welcome',
-		command: {
-			id: ShowCurrentReleaseNotesAction.ID,
-			title: localize({ key: 'miReleaseNotes', comment: ['&& denotes a mnemonic'] }, "&&Release Notes")
+		commAnd: {
+			id: ShowCurrentReleAseNotesAction.ID,
+			title: locAlize({ key: 'miReleAseNotes', comment: ['&& denotes A mnemonic'] }, "&&ReleAse Notes")
 		},
 		order: 4
 	});

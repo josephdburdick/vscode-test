@@ -1,157 +1,157 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IDecorationsService, IDecoration, IResourceDecorationChangeEvent, IDecorationsProvider, IDecorationData } from './decorations';
-import { TernarySearchTree } from 'vs/base/common/map';
-import { IDisposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { isThenable } from 'vs/base/common/async';
-import { LinkedList } from 'vs/base/common/linkedList';
-import { createStyleSheet, createCSSRule, removeCSSRulesContainingSelector } from 'vs/base/browser/dom';
-import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
-import { localize } from 'vs/nls';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
-import { hash } from 'vs/base/common/hash';
+import { URI } from 'vs/bAse/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IDecorAtionsService, IDecorAtion, IResourceDecorAtionChAngeEvent, IDecorAtionsProvider, IDecorAtionDAtA } from './decorAtions';
+import { TernArySeArchTree } from 'vs/bAse/common/mAp';
+import { IDisposAble, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isThenAble } from 'vs/bAse/common/Async';
+import { LinkedList } from 'vs/bAse/common/linkedList';
+import { creAteStyleSheet, creAteCSSRule, removeCSSRulesContAiningSelector } from 'vs/bAse/browser/dom';
+import { IThemeService, IColorTheme } from 'vs/plAtform/theme/common/themeService';
+import { isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
+import { locAlize } from 'vs/nls';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { hAsh } from 'vs/bAse/common/hAsh';
 
-class DecorationRule {
+clAss DecorAtionRule {
 
-	static keyOf(data: IDecorationData | IDecorationData[]): string {
-		if (Array.isArray(data)) {
-			return data.map(DecorationRule.keyOf).join(',');
+	stAtic keyOf(dAtA: IDecorAtionDAtA | IDecorAtionDAtA[]): string {
+		if (ArrAy.isArrAy(dAtA)) {
+			return dAtA.mAp(DecorAtionRule.keyOf).join(',');
 		} else {
-			const { color, letter } = data;
+			const { color, letter } = dAtA;
 			return `${color}/${letter}`;
 		}
 	}
 
-	private static readonly _classNamesPrefix = 'monaco-decoration';
+	privAte stAtic reAdonly _clAssNAmesPrefix = 'monAco-decorAtion';
 
-	readonly data: IDecorationData | IDecorationData[];
-	readonly itemColorClassName: string;
-	readonly itemBadgeClassName: string;
-	readonly bubbleBadgeClassName: string;
+	reAdonly dAtA: IDecorAtionDAtA | IDecorAtionDAtA[];
+	reAdonly itemColorClAssNAme: string;
+	reAdonly itemBAdgeClAssNAme: string;
+	reAdonly bubbleBAdgeClAssNAme: string;
 
-	private _refCounter: number = 0;
+	privAte _refCounter: number = 0;
 
-	constructor(data: IDecorationData | IDecorationData[], key: string) {
-		this.data = data;
-		const suffix = hash(key).toString(36);
-		this.itemColorClassName = `${DecorationRule._classNamesPrefix}-itemColor-${suffix}`;
-		this.itemBadgeClassName = `${DecorationRule._classNamesPrefix}-itemBadge-${suffix}`;
-		this.bubbleBadgeClassName = `${DecorationRule._classNamesPrefix}-bubbleBadge-${suffix}`;
+	constructor(dAtA: IDecorAtionDAtA | IDecorAtionDAtA[], key: string) {
+		this.dAtA = dAtA;
+		const suffix = hAsh(key).toString(36);
+		this.itemColorClAssNAme = `${DecorAtionRule._clAssNAmesPrefix}-itemColor-${suffix}`;
+		this.itemBAdgeClAssNAme = `${DecorAtionRule._clAssNAmesPrefix}-itemBAdge-${suffix}`;
+		this.bubbleBAdgeClAssNAme = `${DecorAtionRule._clAssNAmesPrefix}-bubbleBAdge-${suffix}`;
 	}
 
-	acquire(): void {
+	Acquire(): void {
 		this._refCounter += 1;
 	}
 
-	release(): boolean {
+	releAse(): booleAn {
 		return --this._refCounter === 0;
 	}
 
-	appendCSSRules(element: HTMLStyleElement, theme: IColorTheme): void {
-		if (!Array.isArray(this.data)) {
-			this._appendForOne(this.data, element, theme);
+	AppendCSSRules(element: HTMLStyleElement, theme: IColorTheme): void {
+		if (!ArrAy.isArrAy(this.dAtA)) {
+			this._AppendForOne(this.dAtA, element, theme);
 		} else {
-			this._appendForMany(this.data, element, theme);
+			this._AppendForMAny(this.dAtA, element, theme);
 		}
 	}
 
-	private _appendForOne(data: IDecorationData, element: HTMLStyleElement, theme: IColorTheme): void {
-		const { color, letter } = data;
-		// label
-		createCSSRule(`.${this.itemColorClassName}`, `color: ${getColor(theme, color)};`, element);
+	privAte _AppendForOne(dAtA: IDecorAtionDAtA, element: HTMLStyleElement, theme: IColorTheme): void {
+		const { color, letter } = dAtA;
+		// lAbel
+		creAteCSSRule(`.${this.itemColorClAssNAme}`, `color: ${getColor(theme, color)};`, element);
 		// letter
 		if (letter) {
-			createCSSRule(`.${this.itemBadgeClassName}::after`, `content: "${letter}"; color: ${getColor(theme, color)};`, element);
+			creAteCSSRule(`.${this.itemBAdgeClAssNAme}::After`, `content: "${letter}"; color: ${getColor(theme, color)};`, element);
 		}
 	}
 
-	private _appendForMany(data: IDecorationData[], element: HTMLStyleElement, theme: IColorTheme): void {
-		// label
-		const { color } = data[0];
-		createCSSRule(`.${this.itemColorClassName}`, `color: ${getColor(theme, color)};`, element);
+	privAte _AppendForMAny(dAtA: IDecorAtionDAtA[], element: HTMLStyleElement, theme: IColorTheme): void {
+		// lAbel
+		const { color } = dAtA[0];
+		creAteCSSRule(`.${this.itemColorClAssNAme}`, `color: ${getColor(theme, color)};`, element);
 
-		// badge
-		const letters = data.filter(d => !isFalsyOrWhitespace(d.letter)).map(d => d.letter);
+		// bAdge
+		const letters = dAtA.filter(d => !isFAlsyOrWhitespAce(d.letter)).mAp(d => d.letter);
 		if (letters.length) {
-			createCSSRule(`.${this.itemBadgeClassName}::after`, `content: "${letters.join(', ')}"; color: ${getColor(theme, color)};`, element);
+			creAteCSSRule(`.${this.itemBAdgeClAssNAme}::After`, `content: "${letters.join(', ')}"; color: ${getColor(theme, color)};`, element);
 		}
 
-		// bubble badge
-		// TODO @misolori update bubble badge to use class name instead of unicode
-		createCSSRule(
-			`.${this.bubbleBadgeClassName}::after`,
-			`content: "\uea71"; color: ${getColor(theme, color)}; font-family: codicon; font-size: 14px; padding-right: 14px; opacity: 0.4;`,
+		// bubble bAdge
+		// TODO @misolori updAte bubble bAdge to use clAss nAme insteAd of unicode
+		creAteCSSRule(
+			`.${this.bubbleBAdgeClAssNAme}::After`,
+			`content: "\ueA71"; color: ${getColor(theme, color)}; font-fAmily: codicon; font-size: 14px; pAdding-right: 14px; opAcity: 0.4;`,
 			element
 		);
 	}
 
 	removeCSSRules(element: HTMLStyleElement): void {
-		removeCSSRulesContainingSelector(this.itemColorClassName, element);
-		removeCSSRulesContainingSelector(this.itemBadgeClassName, element);
-		removeCSSRulesContainingSelector(this.bubbleBadgeClassName, element);
+		removeCSSRulesContAiningSelector(this.itemColorClAssNAme, element);
+		removeCSSRulesContAiningSelector(this.itemBAdgeClAssNAme, element);
+		removeCSSRulesContAiningSelector(this.bubbleBAdgeClAssNAme, element);
 	}
 }
 
-class DecorationStyles {
+clAss DecorAtionStyles {
 
-	private readonly _styleElement = createStyleSheet();
-	private readonly _decorationRules = new Map<string, DecorationRule>();
-	private readonly _dispoables = new DisposableStore();
+	privAte reAdonly _styleElement = creAteStyleSheet();
+	privAte reAdonly _decorAtionRules = new MAp<string, DecorAtionRule>();
+	privAte reAdonly _dispoAbles = new DisposAbleStore();
 
 	constructor(
-		private _themeService: IThemeService,
+		privAte _themeService: IThemeService,
 	) {
-		this._themeService.onDidColorThemeChange(this._onThemeChange, this, this._dispoables);
+		this._themeService.onDidColorThemeChAnge(this._onThemeChAnge, this, this._dispoAbles);
 	}
 
 	dispose(): void {
-		this._dispoables.dispose();
+		this._dispoAbles.dispose();
 		this._styleElement.remove();
 	}
 
-	asDecoration(data: IDecorationData[], onlyChildren: boolean): IDecoration {
+	AsDecorAtion(dAtA: IDecorAtionDAtA[], onlyChildren: booleAn): IDecorAtion {
 
 		// sort by weight
-		data.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+		dAtA.sort((A, b) => (b.weight || 0) - (A.weight || 0));
 
-		let key = DecorationRule.keyOf(data);
-		let rule = this._decorationRules.get(key);
+		let key = DecorAtionRule.keyOf(dAtA);
+		let rule = this._decorAtionRules.get(key);
 
 		if (!rule) {
 			// new css rule
-			rule = new DecorationRule(data, key);
-			this._decorationRules.set(key, rule);
-			rule.appendCSSRules(this._styleElement, this._themeService.getColorTheme());
+			rule = new DecorAtionRule(dAtA, key);
+			this._decorAtionRules.set(key, rule);
+			rule.AppendCSSRules(this._styleElement, this._themeService.getColorTheme());
 		}
 
-		rule.acquire();
+		rule.Acquire();
 
-		let labelClassName = rule.itemColorClassName;
-		let badgeClassName = rule.itemBadgeClassName;
-		let tooltip = data.filter(d => !isFalsyOrWhitespace(d.tooltip)).map(d => d.tooltip).join(' • ');
+		let lAbelClAssNAme = rule.itemColorClAssNAme;
+		let bAdgeClAssNAme = rule.itemBAdgeClAssNAme;
+		let tooltip = dAtA.filter(d => !isFAlsyOrWhitespAce(d.tooltip)).mAp(d => d.tooltip).join(' • ');
 
 		if (onlyChildren) {
 			// show items from its children only
-			badgeClassName = rule.bubbleBadgeClassName;
-			tooltip = localize('bubbleTitle', "Contains emphasized items");
+			bAdgeClAssNAme = rule.bubbleBAdgeClAssNAme;
+			tooltip = locAlize('bubbleTitle', "ContAins emphAsized items");
 		}
 
 		return {
-			labelClassName,
-			badgeClassName,
+			lAbelClAssNAme,
+			bAdgeClAssNAme,
 			tooltip,
 			dispose: () => {
-				if (rule && rule.release()) {
-					this._decorationRules.delete(key);
+				if (rule && rule.releAse()) {
+					this._decorAtionRules.delete(key);
 					rule.removeCSSRules(this._styleElement);
 					rule = undefined;
 				}
@@ -159,223 +159,223 @@ class DecorationStyles {
 		};
 	}
 
-	private _onThemeChange(): void {
-		this._decorationRules.forEach(rule => {
+	privAte _onThemeChAnge(): void {
+		this._decorAtionRules.forEAch(rule => {
 			rule.removeCSSRules(this._styleElement);
-			rule.appendCSSRules(this._styleElement, this._themeService.getColorTheme());
+			rule.AppendCSSRules(this._styleElement, this._themeService.getColorTheme());
 		});
 	}
 }
 
-class FileDecorationChangeEvent implements IResourceDecorationChangeEvent {
+clAss FileDecorAtionChAngeEvent implements IResourceDecorAtionChAngeEvent {
 
-	private readonly _data = TernarySearchTree.forUris<boolean>();
+	privAte reAdonly _dAtA = TernArySeArchTree.forUris<booleAn>();
 
-	affectsResource(uri: URI): boolean {
-		return this._data.get(uri) || this._data.findSuperstr(uri) !== undefined;
+	AffectsResource(uri: URI): booleAn {
+		return this._dAtA.get(uri) || this._dAtA.findSuperstr(uri) !== undefined;
 	}
 
-	static debouncer(last: FileDecorationChangeEvent | undefined, current: URI | URI[]) {
-		if (!last) {
-			last = new FileDecorationChangeEvent();
+	stAtic debouncer(lAst: FileDecorAtionChAngeEvent | undefined, current: URI | URI[]) {
+		if (!lAst) {
+			lAst = new FileDecorAtionChAngeEvent();
 		}
-		if (Array.isArray(current)) {
-			// many
+		if (ArrAy.isArrAy(current)) {
+			// mAny
 			for (const uri of current) {
-				last._data.set(uri, true);
+				lAst._dAtA.set(uri, true);
 			}
 		} else {
 			// one
-			last._data.set(current, true);
+			lAst._dAtA.set(current, true);
 		}
 
-		return last;
+		return lAst;
 	}
 }
 
-class DecorationDataRequest {
+clAss DecorAtionDAtARequest {
 	constructor(
-		readonly source: CancellationTokenSource,
-		readonly thenable: Promise<void>,
+		reAdonly source: CAncellAtionTokenSource,
+		reAdonly thenAble: Promise<void>,
 	) { }
 }
 
-class DecorationProviderWrapper {
+clAss DecorAtionProviderWrApper {
 
-	readonly data = TernarySearchTree.forUris<DecorationDataRequest | IDecorationData | null>();
-	private readonly _dispoable: IDisposable;
+	reAdonly dAtA = TernArySeArchTree.forUris<DecorAtionDAtARequest | IDecorAtionDAtA | null>();
+	privAte reAdonly _dispoAble: IDisposAble;
 
 	constructor(
-		readonly provider: IDecorationsProvider,
-		private readonly _uriEmitter: Emitter<URI | URI[]>,
-		private readonly _flushEmitter: Emitter<IResourceDecorationChangeEvent>
+		reAdonly provider: IDecorAtionsProvider,
+		privAte reAdonly _uriEmitter: Emitter<URI | URI[]>,
+		privAte reAdonly _flushEmitter: Emitter<IResourceDecorAtionChAngeEvent>
 	) {
-		this._dispoable = this.provider.onDidChange(uris => {
+		this._dispoAble = this.provider.onDidChAnge(uris => {
 			if (!uris) {
-				// flush event -> drop all data, can affect everything
-				this.data.clear();
-				this._flushEmitter.fire({ affectsResource() { return true; } });
+				// flush event -> drop All dAtA, cAn Affect everything
+				this.dAtA.cleAr();
+				this._flushEmitter.fire({ AffectsResource() { return true; } });
 
 			} else {
-				// selective changes -> drop for resource, fetch again, send event
-				// perf: the map stores thenables, decorations, or `null`-markers.
-				// we make us of that and ignore all uris in which we have never
+				// selective chAnges -> drop for resource, fetch AgAin, send event
+				// perf: the mAp stores thenAbles, decorAtions, or `null`-mArkers.
+				// we mAke us of thAt And ignore All uris in which we hAve never
 				// been interested.
 				for (const uri of uris) {
-					this._fetchData(uri);
+					this._fetchDAtA(uri);
 				}
 			}
 		});
 	}
 
 	dispose(): void {
-		this._dispoable.dispose();
-		this.data.clear();
+		this._dispoAble.dispose();
+		this.dAtA.cleAr();
 	}
 
-	knowsAbout(uri: URI): boolean {
-		return Boolean(this.data.get(uri)) || Boolean(this.data.findSuperstr(uri));
+	knowsAbout(uri: URI): booleAn {
+		return BooleAn(this.dAtA.get(uri)) || BooleAn(this.dAtA.findSuperstr(uri));
 	}
 
-	getOrRetrieve(uri: URI, includeChildren: boolean, callback: (data: IDecorationData, isChild: boolean) => void): void {
+	getOrRetrieve(uri: URI, includeChildren: booleAn, cAllbAck: (dAtA: IDecorAtionDAtA, isChild: booleAn) => void): void {
 
-		let item = this.data.get(uri);
+		let item = this.dAtA.get(uri);
 
 		if (item === undefined) {
 			// unknown -> trigger request
-			item = this._fetchData(uri);
+			item = this._fetchDAtA(uri);
 		}
 
-		if (item && !(item instanceof DecorationDataRequest)) {
-			// found something (which isn't pending anymore)
-			callback(item, false);
+		if (item && !(item instAnceof DecorAtionDAtARequest)) {
+			// found something (which isn't pending Anymore)
+			cAllbAck(item, fAlse);
 		}
 
 		if (includeChildren) {
 			// (resolved) children
-			const iter = this.data.findSuperstr(uri);
+			const iter = this.dAtA.findSuperstr(uri);
 			if (iter) {
 				for (let item = iter.next(); !item.done; item = iter.next()) {
-					if (item.value && !(item.value instanceof DecorationDataRequest)) {
-						callback(item.value, true);
+					if (item.vAlue && !(item.vAlue instAnceof DecorAtionDAtARequest)) {
+						cAllbAck(item.vAlue, true);
 					}
 				}
 			}
 		}
 	}
 
-	private _fetchData(uri: URI): IDecorationData | null {
+	privAte _fetchDAtA(uri: URI): IDecorAtionDAtA | null {
 
-		// check for pending request and cancel it
-		const pendingRequest = this.data.get(uri);
-		if (pendingRequest instanceof DecorationDataRequest) {
-			pendingRequest.source.cancel();
-			this.data.delete(uri);
+		// check for pending request And cAncel it
+		const pendingRequest = this.dAtA.get(uri);
+		if (pendingRequest instAnceof DecorAtionDAtARequest) {
+			pendingRequest.source.cAncel();
+			this.dAtA.delete(uri);
 		}
 
-		const source = new CancellationTokenSource();
-		const dataOrThenable = this.provider.provideDecorations(uri, source.token);
-		if (!isThenable<IDecorationData | Promise<IDecorationData | undefined> | undefined>(dataOrThenable)) {
-			// sync -> we have a result now
-			return this._keepItem(uri, dataOrThenable);
+		const source = new CAncellAtionTokenSource();
+		const dAtAOrThenAble = this.provider.provideDecorAtions(uri, source.token);
+		if (!isThenAble<IDecorAtionDAtA | Promise<IDecorAtionDAtA | undefined> | undefined>(dAtAOrThenAble)) {
+			// sync -> we hAve A result now
+			return this._keepItem(uri, dAtAOrThenAble);
 
 		} else {
-			// async -> we have a result soon
-			const request = new DecorationDataRequest(source, Promise.resolve(dataOrThenable).then(data => {
-				if (this.data.get(uri) === request) {
-					this._keepItem(uri, data);
+			// Async -> we hAve A result soon
+			const request = new DecorAtionDAtARequest(source, Promise.resolve(dAtAOrThenAble).then(dAtA => {
+				if (this.dAtA.get(uri) === request) {
+					this._keepItem(uri, dAtA);
 				}
-			}).catch(err => {
-				if (!isPromiseCanceledError(err) && this.data.get(uri) === request) {
-					this.data.delete(uri);
+			}).cAtch(err => {
+				if (!isPromiseCAnceledError(err) && this.dAtA.get(uri) === request) {
+					this.dAtA.delete(uri);
 				}
 			}));
 
-			this.data.set(uri, request);
+			this.dAtA.set(uri, request);
 			return null;
 		}
 	}
 
-	private _keepItem(uri: URI, data: IDecorationData | undefined): IDecorationData | null {
-		const deco = data ? data : null;
-		const old = this.data.set(uri, deco);
+	privAte _keepItem(uri: URI, dAtA: IDecorAtionDAtA | undefined): IDecorAtionDAtA | null {
+		const deco = dAtA ? dAtA : null;
+		const old = this.dAtA.set(uri, deco);
 		if (deco || old) {
-			// only fire event when something changed
+			// only fire event when something chAnged
 			this._uriEmitter.fire(uri);
 		}
 		return deco;
 	}
 }
 
-export class DecorationsService implements IDecorationsService {
+export clAss DecorAtionsService implements IDecorAtionsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _data = new LinkedList<DecorationProviderWrapper>();
-	private readonly _onDidChangeDecorationsDelayed = new Emitter<URI | URI[]>();
-	private readonly _onDidChangeDecorations = new Emitter<IResourceDecorationChangeEvent>();
-	private readonly _decorationStyles: DecorationStyles;
+	privAte reAdonly _dAtA = new LinkedList<DecorAtionProviderWrApper>();
+	privAte reAdonly _onDidChAngeDecorAtionsDelAyed = new Emitter<URI | URI[]>();
+	privAte reAdonly _onDidChAngeDecorAtions = new Emitter<IResourceDecorAtionChAngeEvent>();
+	privAte reAdonly _decorAtionStyles: DecorAtionStyles;
 
-	readonly onDidChangeDecorations: Event<IResourceDecorationChangeEvent> = Event.any(
-		this._onDidChangeDecorations.event,
-		Event.debounce<URI | URI[], FileDecorationChangeEvent>(
-			this._onDidChangeDecorationsDelayed.event,
-			FileDecorationChangeEvent.debouncer,
+	reAdonly onDidChAngeDecorAtions: Event<IResourceDecorAtionChAngeEvent> = Event.Any(
+		this._onDidChAngeDecorAtions.event,
+		Event.debounce<URI | URI[], FileDecorAtionChAngeEvent>(
+			this._onDidChAngeDecorAtionsDelAyed.event,
+			FileDecorAtionChAngeEvent.debouncer,
 			undefined, undefined, 500
 		)
 	);
 
 	constructor(
 		@IThemeService themeService: IThemeService,
-		@ILogService private readonly _logService: ILogService,
+		@ILogService privAte reAdonly _logService: ILogService,
 	) {
-		this._decorationStyles = new DecorationStyles(themeService);
+		this._decorAtionStyles = new DecorAtionStyles(themeService);
 	}
 
 	dispose(): void {
-		this._decorationStyles.dispose();
-		this._onDidChangeDecorations.dispose();
-		this._onDidChangeDecorationsDelayed.dispose();
+		this._decorAtionStyles.dispose();
+		this._onDidChAngeDecorAtions.dispose();
+		this._onDidChAngeDecorAtionsDelAyed.dispose();
 	}
 
-	registerDecorationsProvider(provider: IDecorationsProvider): IDisposable {
+	registerDecorAtionsProvider(provider: IDecorAtionsProvider): IDisposAble {
 
-		const wrapper = new DecorationProviderWrapper(
+		const wrApper = new DecorAtionProviderWrApper(
 			provider,
-			this._onDidChangeDecorationsDelayed,
-			this._onDidChangeDecorations
+			this._onDidChAngeDecorAtionsDelAyed,
+			this._onDidChAngeDecorAtions
 		);
-		const remove = this._data.push(wrapper);
+		const remove = this._dAtA.push(wrApper);
 
-		this._onDidChangeDecorations.fire({
-			// everything might have changed
-			affectsResource() { return true; }
+		this._onDidChAngeDecorAtions.fire({
+			// everything might hAve chAnged
+			AffectsResource() { return true; }
 		});
 
-		return toDisposable(() => {
-			// fire event that says 'yes' for any resource
-			// known to this provider. then dispose and remove it.
+		return toDisposAble(() => {
+			// fire event thAt sAys 'yes' for Any resource
+			// known to this provider. then dispose And remove it.
 			remove();
-			this._onDidChangeDecorations.fire({ affectsResource: uri => wrapper.knowsAbout(uri) });
-			wrapper.dispose();
+			this._onDidChAngeDecorAtions.fire({ AffectsResource: uri => wrApper.knowsAbout(uri) });
+			wrApper.dispose();
 		});
 	}
 
-	getDecoration(uri: URI, includeChildren: boolean): IDecoration | undefined {
-		let data: IDecorationData[] = [];
-		let containsChildren: boolean = false;
-		for (let wrapper of this._data) {
-			wrapper.getOrRetrieve(uri, includeChildren, (deco, isChild) => {
+	getDecorAtion(uri: URI, includeChildren: booleAn): IDecorAtion | undefined {
+		let dAtA: IDecorAtionDAtA[] = [];
+		let contAinsChildren: booleAn = fAlse;
+		for (let wrApper of this._dAtA) {
+			wrApper.getOrRetrieve(uri, includeChildren, (deco, isChild) => {
 				if (!isChild || deco.bubble) {
-					data.push(deco);
-					containsChildren = isChild || containsChildren;
-					this._logService.trace('DecorationsService#getDecoration#getOrRetrieve', wrapper.provider.label, deco, isChild, uri);
+					dAtA.push(deco);
+					contAinsChildren = isChild || contAinsChildren;
+					this._logService.trAce('DecorAtionsService#getDecorAtion#getOrRetrieve', wrApper.provider.lAbel, deco, isChild, uri);
 				}
 			});
 		}
-		return data.length === 0
+		return dAtA.length === 0
 			? undefined
-			: this._decorationStyles.asDecoration(data, containsChildren);
+			: this._decorAtionStyles.AsDecorAtion(dAtA, contAinsChildren);
 	}
 }
 function getColor(theme: IColorTheme, color: string | undefined) {
@@ -388,4 +388,4 @@ function getColor(theme: IColorTheme, color: string | undefined) {
 	return 'inherit';
 }
 
-registerSingleton(IDecorationsService, DecorationsService, true);
+registerSingleton(IDecorAtionsService, DecorAtionsService, true);

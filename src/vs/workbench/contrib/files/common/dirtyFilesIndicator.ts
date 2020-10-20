@@ -1,69 +1,69 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { VIEWLET_ID } from 'vs/workbench/contrib/files/common/files';
 import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { IActivityService, NumberBadge } from 'vs/workbench/services/activity/common/activity';
-import { IWorkingCopyService, IWorkingCopy, WorkingCopyCapabilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
+import { DisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { IActivityService, NumberBAdge } from 'vs/workbench/services/Activity/common/Activity';
+import { IWorkingCopyService, IWorkingCopy, WorkingCopyCApAbilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { IFilesConfigurAtionService, AutoSAveMode } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
 
-export class DirtyFilesIndicator extends Disposable implements IWorkbenchContribution {
-	private readonly badgeHandle = this._register(new MutableDisposable());
+export clAss DirtyFilesIndicAtor extends DisposAble implements IWorkbenchContribution {
+	privAte reAdonly bAdgeHAndle = this._register(new MutAbleDisposAble());
 
-	private lastKnownDirtyCount = 0;
+	privAte lAstKnownDirtyCount = 0;
 
 	constructor(
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IActivityService private readonly activityService: IActivityService,
-		@IWorkingCopyService private readonly workingCopyService: IWorkingCopyService,
-		@IFilesConfigurationService private readonly filesConfigurationService: IFilesConfigurationService
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IActivityService privAte reAdonly ActivityService: IActivityService,
+		@IWorkingCopyService privAte reAdonly workingCopyService: IWorkingCopyService,
+		@IFilesConfigurAtionService privAte reAdonly filesConfigurAtionService: IFilesConfigurAtionService
 	) {
 		super();
 
-		this.updateActivityBadge();
+		this.updAteActivityBAdge();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Working copy dirty indicator
-		this._register(this.workingCopyService.onDidChangeDirty(workingCopy => this.onWorkingCopyDidChangeDirty(workingCopy)));
+		// Working copy dirty indicAtor
+		this._register(this.workingCopyService.onDidChAngeDirty(workingCopy => this.onWorkingCopyDidChAngeDirty(workingCopy)));
 
 		// Lifecycle
 		this.lifecycleService.onShutdown(this.dispose, this);
 	}
 
-	private onWorkingCopyDidChangeDirty(workingCopy: IWorkingCopy): void {
+	privAte onWorkingCopyDidChAngeDirty(workingCopy: IWorkingCopy): void {
 		const gotDirty = workingCopy.isDirty();
-		if (gotDirty && !(workingCopy.capabilities & WorkingCopyCapabilities.Untitled) && this.filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-			return; // do not indicate dirty of working copies that are auto saved after short delay
+		if (gotDirty && !(workingCopy.cApAbilities & WorkingCopyCApAbilities.Untitled) && this.filesConfigurAtionService.getAutoSAveMode() === AutoSAveMode.AFTER_SHORT_DELAY) {
+			return; // do not indicAte dirty of working copies thAt Are Auto sAved After short delAy
 		}
 
-		if (gotDirty || this.lastKnownDirtyCount > 0) {
-			this.updateActivityBadge();
+		if (gotDirty || this.lAstKnownDirtyCount > 0) {
+			this.updAteActivityBAdge();
 		}
 	}
 
-	private updateActivityBadge(): void {
-		const dirtyCount = this.lastKnownDirtyCount = this.workingCopyService.dirtyCount;
+	privAte updAteActivityBAdge(): void {
+		const dirtyCount = this.lAstKnownDirtyCount = this.workingCopyService.dirtyCount;
 
-		// Indicate dirty count in badge if any
+		// IndicAte dirty count in bAdge if Any
 		if (dirtyCount > 0) {
-			this.badgeHandle.value = this.activityService.showViewContainerActivity(
+			this.bAdgeHAndle.vAlue = this.ActivityService.showViewContAinerActivity(
 				VIEWLET_ID,
 				{
-					badge: new NumberBadge(dirtyCount, num => num === 1 ? nls.localize('dirtyFile', "1 unsaved file") : nls.localize('dirtyFiles', "{0} unsaved files", dirtyCount)),
-					clazz: 'explorer-viewlet-label'
+					bAdge: new NumberBAdge(dirtyCount, num => num === 1 ? nls.locAlize('dirtyFile', "1 unsAved file") : nls.locAlize('dirtyFiles', "{0} unsAved files", dirtyCount)),
+					clAzz: 'explorer-viewlet-lAbel'
 				}
 			);
 		} else {
-			this.badgeHandle.clear();
+			this.bAdgeHAndle.cleAr();
 		}
 	}
 }

@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
+import { ViewEventHAndler } from 'vs/editor/common/viewModel/viewEventHAndler';
 import { ViewEvent } from 'vs/editor/common/view/viewEvents';
-import { IContentSizeChangedEvent } from 'vs/editor/common/editorCommon';
-import { Emitter } from 'vs/base/common/event';
+import { IContentSizeChAngedEvent } from 'vs/editor/common/editorCommon';
+import { Emitter } from 'vs/bAse/common/event';
 import { Selection } from 'vs/editor/common/core/selection';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { CursorChangeReason } from 'vs/editor/common/controller/cursorEvents';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { CursorChAngeReAson } from 'vs/editor/common/controller/cursorEvents';
 
-export class ViewModelEventDispatcher extends Disposable {
+export clAss ViewModelEventDispAtcher extends DisposAble {
 
-	private readonly _onEvent = this._register(new Emitter<OutgoingViewModelEvent>());
-	public readonly onEvent = this._onEvent.event;
+	privAte reAdonly _onEvent = this._register(new Emitter<OutgoingViewModelEvent>());
+	public reAdonly onEvent = this._onEvent.event;
 
-	private readonly _eventHandlers: ViewEventHandler[];
-	private _viewEventQueue: ViewEvent[] | null;
-	private _isConsumingViewEventQueue: boolean;
-	private _collector: ViewModelEventsCollector | null;
-	private _collectorCnt: number;
-	private _outgoingEvents: OutgoingViewModelEvent[];
+	privAte reAdonly _eventHAndlers: ViewEventHAndler[];
+	privAte _viewEventQueue: ViewEvent[] | null;
+	privAte _isConsumingViewEventQueue: booleAn;
+	privAte _collector: ViewModelEventsCollector | null;
+	privAte _collectorCnt: number;
+	privAte _outgoingEvents: OutgoingViewModelEvent[];
 
 	constructor() {
 		super();
-		this._eventHandlers = [];
+		this._eventHAndlers = [];
 		this._viewEventQueue = null;
-		this._isConsumingViewEventQueue = false;
+		this._isConsumingViewEventQueue = fAlse;
 		this._collector = null;
 		this._collectorCnt = 0;
 		this._outgoingEvents = [];
 	}
 
 	public emitOutgoingEvent(e: OutgoingViewModelEvent): void {
-		this._addOutgoingEvent(e);
+		this._AddOutgoingEvent(e);
 		this._emitOugoingEvents();
 	}
 
-	private _addOutgoingEvent(e: OutgoingViewModelEvent): void {
+	privAte _AddOutgoingEvent(e: OutgoingViewModelEvent): void {
 		for (let i = 0, len = this._outgoingEvents.length; i < len; i++) {
 			if (this._outgoingEvents[i].kind === e.kind) {
 				this._outgoingEvents[i] = this._outgoingEvents[i].merge(e);
@@ -49,7 +49,7 @@ export class ViewModelEventDispatcher extends Disposable {
 		this._outgoingEvents.push(e);
 	}
 
-	private _emitOugoingEvents(): void {
+	privAte _emitOugoingEvents(): void {
 		while (this._outgoingEvents.length > 0) {
 			if (this._collector || this._isConsumingViewEventQueue) {
 				// right now collecting or emitting view events, so let's postpone emitting
@@ -63,20 +63,20 @@ export class ViewModelEventDispatcher extends Disposable {
 		}
 	}
 
-	public addViewEventHandler(eventHandler: ViewEventHandler): void {
-		for (let i = 0, len = this._eventHandlers.length; i < len; i++) {
-			if (this._eventHandlers[i] === eventHandler) {
-				console.warn('Detected duplicate listener in ViewEventDispatcher', eventHandler);
+	public AddViewEventHAndler(eventHAndler: ViewEventHAndler): void {
+		for (let i = 0, len = this._eventHAndlers.length; i < len; i++) {
+			if (this._eventHAndlers[i] === eventHAndler) {
+				console.wArn('Detected duplicAte listener in ViewEventDispAtcher', eventHAndler);
 			}
 		}
-		this._eventHandlers.push(eventHandler);
+		this._eventHAndlers.push(eventHAndler);
 	}
 
-	public removeViewEventHandler(eventHandler: ViewEventHandler): void {
-		for (let i = 0; i < this._eventHandlers.length; i++) {
-			if (this._eventHandlers[i] === eventHandler) {
-				this._eventHandlers.splice(i, 1);
-				break;
+	public removeViewEventHAndler(eventHAndler: ViewEventHAndler): void {
+		for (let i = 0; i < this._eventHAndlers.length; i++) {
+			if (this._eventHAndlers[i] === eventHAndler) {
+				this._eventHAndlers.splice(i, 1);
+				breAk;
 			}
 		}
 	}
@@ -97,11 +97,11 @@ export class ViewModelEventDispatcher extends Disposable {
 			this._collector = null;
 
 			for (const outgoingEvent of outgoingEvents) {
-				this._addOutgoingEvent(outgoingEvent);
+				this._AddOutgoingEvent(outgoingEvent);
 			}
 
 			if (viewEvents.length > 0) {
-				this._emitMany(viewEvents);
+				this._emitMAny(viewEvents);
 			}
 		}
 		this._emitOugoingEvents();
@@ -111,14 +111,14 @@ export class ViewModelEventDispatcher extends Disposable {
 		try {
 			const eventsCollector = this.beginEmitViewEvents();
 			eventsCollector.emitViewEvent(event);
-		} finally {
+		} finAlly {
 			this.endEmitViewEvents();
 		}
 	}
 
-	private _emitMany(events: ViewEvent[]): void {
+	privAte _emitMAny(events: ViewEvent[]): void {
 		if (this._viewEventQueue) {
-			this._viewEventQueue = this._viewEventQueue.concat(events);
+			this._viewEventQueue = this._viewEventQueue.concAt(events);
 		} else {
 			this._viewEventQueue = events;
 		}
@@ -128,34 +128,34 @@ export class ViewModelEventDispatcher extends Disposable {
 		}
 	}
 
-	private _consumeViewEventQueue(): void {
+	privAte _consumeViewEventQueue(): void {
 		try {
 			this._isConsumingViewEventQueue = true;
 			this._doConsumeQueue();
-		} finally {
-			this._isConsumingViewEventQueue = false;
+		} finAlly {
+			this._isConsumingViewEventQueue = fAlse;
 		}
 	}
 
-	private _doConsumeQueue(): void {
+	privAte _doConsumeQueue(): void {
 		while (this._viewEventQueue) {
-			// Empty event queue, as events might come in while sending these off
+			// Empty event queue, As events might come in while sending these off
 			const events = this._viewEventQueue;
 			this._viewEventQueue = null;
 
-			// Use a clone of the event handlers list, as they might remove themselves
-			const eventHandlers = this._eventHandlers.slice(0);
-			for (const eventHandler of eventHandlers) {
-				eventHandler.handleEvents(events);
+			// Use A clone of the event hAndlers list, As they might remove themselves
+			const eventHAndlers = this._eventHAndlers.slice(0);
+			for (const eventHAndler of eventHAndlers) {
+				eventHAndler.hAndleEvents(events);
 			}
 		}
 	}
 }
 
-export class ViewModelEventsCollector {
+export clAss ViewModelEventsCollector {
 
-	public readonly viewEvents: ViewEvent[];
-	public readonly outgoingEvents: OutgoingViewModelEvent[];
+	public reAdonly viewEvents: ViewEvent[];
+	public reAdonly outgoingEvents: OutgoingViewModelEvent[];
 
 	constructor() {
 		this.viewEvents = [];
@@ -172,90 +172,90 @@ export class ViewModelEventsCollector {
 }
 
 export const enum OutgoingViewModelEventKind {
-	ContentSizeChanged,
-	FocusChanged,
-	ScrollChanged,
-	ViewZonesChanged,
-	ReadOnlyEditAttempt,
-	CursorStateChanged,
+	ContentSizeChAnged,
+	FocusChAnged,
+	ScrollChAnged,
+	ViewZonesChAnged,
+	ReAdOnlyEditAttempt,
+	CursorStAteChAnged,
 }
 
-export class ContentSizeChangedEvent implements IContentSizeChangedEvent {
+export clAss ContentSizeChAngedEvent implements IContentSizeChAngedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ContentSizeChanged;
+	public reAdonly kind = OutgoingViewModelEventKind.ContentSizeChAnged;
 
-	private readonly _oldContentWidth: number;
-	private readonly _oldContentHeight: number;
+	privAte reAdonly _oldContentWidth: number;
+	privAte reAdonly _oldContentHeight: number;
 
-	readonly contentWidth: number;
-	readonly contentHeight: number;
-	readonly contentWidthChanged: boolean;
-	readonly contentHeightChanged: boolean;
+	reAdonly contentWidth: number;
+	reAdonly contentHeight: number;
+	reAdonly contentWidthChAnged: booleAn;
+	reAdonly contentHeightChAnged: booleAn;
 
 	constructor(oldContentWidth: number, oldContentHeight: number, contentWidth: number, contentHeight: number) {
 		this._oldContentWidth = oldContentWidth;
 		this._oldContentHeight = oldContentHeight;
 		this.contentWidth = contentWidth;
 		this.contentHeight = contentHeight;
-		this.contentWidthChanged = (this._oldContentWidth !== this.contentWidth);
-		this.contentHeightChanged = (this._oldContentHeight !== this.contentHeight);
+		this.contentWidthChAnged = (this._oldContentWidth !== this.contentWidth);
+		this.contentHeightChAnged = (this._oldContentHeight !== this.contentHeight);
 	}
 
-	public isNoOp(): boolean {
-		return (!this.contentWidthChanged && !this.contentHeightChanged);
+	public isNoOp(): booleAn {
+		return (!this.contentWidthChAnged && !this.contentHeightChAnged);
 	}
 
 
-	public merge(other: OutgoingViewModelEvent): ContentSizeChangedEvent {
-		if (other.kind !== OutgoingViewModelEventKind.ContentSizeChanged) {
+	public merge(other: OutgoingViewModelEvent): ContentSizeChAngedEvent {
+		if (other.kind !== OutgoingViewModelEventKind.ContentSizeChAnged) {
 			return this;
 		}
-		return new ContentSizeChangedEvent(this._oldContentWidth, this._oldContentHeight, other.contentWidth, other.contentHeight);
+		return new ContentSizeChAngedEvent(this._oldContentWidth, this._oldContentHeight, other.contentWidth, other.contentHeight);
 	}
 }
 
-export class FocusChangedEvent {
+export clAss FocusChAngedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.FocusChanged;
+	public reAdonly kind = OutgoingViewModelEventKind.FocusChAnged;
 
-	readonly oldHasFocus: boolean;
-	readonly hasFocus: boolean;
+	reAdonly oldHAsFocus: booleAn;
+	reAdonly hAsFocus: booleAn;
 
-	constructor(oldHasFocus: boolean, hasFocus: boolean) {
-		this.oldHasFocus = oldHasFocus;
-		this.hasFocus = hasFocus;
+	constructor(oldHAsFocus: booleAn, hAsFocus: booleAn) {
+		this.oldHAsFocus = oldHAsFocus;
+		this.hAsFocus = hAsFocus;
 	}
 
-	public isNoOp(): boolean {
-		return (this.oldHasFocus === this.hasFocus);
+	public isNoOp(): booleAn {
+		return (this.oldHAsFocus === this.hAsFocus);
 	}
 
-	public merge(other: OutgoingViewModelEvent): FocusChangedEvent {
-		if (other.kind !== OutgoingViewModelEventKind.FocusChanged) {
+	public merge(other: OutgoingViewModelEvent): FocusChAngedEvent {
+		if (other.kind !== OutgoingViewModelEventKind.FocusChAnged) {
 			return this;
 		}
-		return new FocusChangedEvent(this.oldHasFocus, other.hasFocus);
+		return new FocusChAngedEvent(this.oldHAsFocus, other.hAsFocus);
 	}
 }
 
-export class ScrollChangedEvent {
+export clAss ScrollChAngedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ScrollChanged;
+	public reAdonly kind = OutgoingViewModelEventKind.ScrollChAnged;
 
-	private readonly _oldScrollWidth: number;
-	private readonly _oldScrollLeft: number;
-	private readonly _oldScrollHeight: number;
-	private readonly _oldScrollTop: number;
+	privAte reAdonly _oldScrollWidth: number;
+	privAte reAdonly _oldScrollLeft: number;
+	privAte reAdonly _oldScrollHeight: number;
+	privAte reAdonly _oldScrollTop: number;
 
-	public readonly scrollWidth: number;
-	public readonly scrollLeft: number;
-	public readonly scrollHeight: number;
-	public readonly scrollTop: number;
+	public reAdonly scrollWidth: number;
+	public reAdonly scrollLeft: number;
+	public reAdonly scrollHeight: number;
+	public reAdonly scrollTop: number;
 
-	public readonly scrollWidthChanged: boolean;
-	public readonly scrollLeftChanged: boolean;
-	public readonly scrollHeightChanged: boolean;
-	public readonly scrollTopChanged: boolean;
+	public reAdonly scrollWidthChAnged: booleAn;
+	public reAdonly scrollLeftChAnged: booleAn;
+	public reAdonly scrollHeightChAnged: booleAn;
+	public reAdonly scrollTopChAnged: booleAn;
 
 	constructor(
 		oldScrollWidth: number, oldScrollLeft: number, oldScrollHeight: number, oldScrollTop: number,
@@ -271,123 +271,123 @@ export class ScrollChangedEvent {
 		this.scrollHeight = scrollHeight;
 		this.scrollTop = scrollTop;
 
-		this.scrollWidthChanged = (this._oldScrollWidth !== this.scrollWidth);
-		this.scrollLeftChanged = (this._oldScrollLeft !== this.scrollLeft);
-		this.scrollHeightChanged = (this._oldScrollHeight !== this.scrollHeight);
-		this.scrollTopChanged = (this._oldScrollTop !== this.scrollTop);
+		this.scrollWidthChAnged = (this._oldScrollWidth !== this.scrollWidth);
+		this.scrollLeftChAnged = (this._oldScrollLeft !== this.scrollLeft);
+		this.scrollHeightChAnged = (this._oldScrollHeight !== this.scrollHeight);
+		this.scrollTopChAnged = (this._oldScrollTop !== this.scrollTop);
 	}
 
-	public isNoOp(): boolean {
-		return (!this.scrollWidthChanged && !this.scrollLeftChanged && !this.scrollHeightChanged && !this.scrollTopChanged);
+	public isNoOp(): booleAn {
+		return (!this.scrollWidthChAnged && !this.scrollLeftChAnged && !this.scrollHeightChAnged && !this.scrollTopChAnged);
 	}
 
-	public merge(other: OutgoingViewModelEvent): ScrollChangedEvent {
-		if (other.kind !== OutgoingViewModelEventKind.ScrollChanged) {
+	public merge(other: OutgoingViewModelEvent): ScrollChAngedEvent {
+		if (other.kind !== OutgoingViewModelEventKind.ScrollChAnged) {
 			return this;
 		}
-		return new ScrollChangedEvent(
+		return new ScrollChAngedEvent(
 			this._oldScrollWidth, this._oldScrollLeft, this._oldScrollHeight, this._oldScrollTop,
 			other.scrollWidth, other.scrollLeft, other.scrollHeight, other.scrollTop
 		);
 	}
 }
 
-export class ViewZonesChangedEvent {
+export clAss ViewZonesChAngedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ViewZonesChanged;
+	public reAdonly kind = OutgoingViewModelEventKind.ViewZonesChAnged;
 
 	constructor() {
 	}
 
-	public isNoOp(): boolean {
-		return false;
+	public isNoOp(): booleAn {
+		return fAlse;
 	}
 
-	public merge(other: OutgoingViewModelEvent): ViewZonesChangedEvent {
+	public merge(other: OutgoingViewModelEvent): ViewZonesChAngedEvent {
 		return this;
 	}
 }
 
-export class CursorStateChangedEvent {
+export clAss CursorStAteChAngedEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.CursorStateChanged;
+	public reAdonly kind = OutgoingViewModelEventKind.CursorStAteChAnged;
 
-	public readonly oldSelections: Selection[] | null;
-	public readonly selections: Selection[];
-	public readonly oldModelVersionId: number;
-	public readonly modelVersionId: number;
-	public readonly source: string;
-	public readonly reason: CursorChangeReason;
-	public readonly reachedMaxCursorCount: boolean;
+	public reAdonly oldSelections: Selection[] | null;
+	public reAdonly selections: Selection[];
+	public reAdonly oldModelVersionId: number;
+	public reAdonly modelVersionId: number;
+	public reAdonly source: string;
+	public reAdonly reAson: CursorChAngeReAson;
+	public reAdonly reAchedMAxCursorCount: booleAn;
 
-	constructor(oldSelections: Selection[] | null, selections: Selection[], oldModelVersionId: number, modelVersionId: number, source: string, reason: CursorChangeReason, reachedMaxCursorCount: boolean) {
+	constructor(oldSelections: Selection[] | null, selections: Selection[], oldModelVersionId: number, modelVersionId: number, source: string, reAson: CursorChAngeReAson, reAchedMAxCursorCount: booleAn) {
 		this.oldSelections = oldSelections;
 		this.selections = selections;
 		this.oldModelVersionId = oldModelVersionId;
 		this.modelVersionId = modelVersionId;
 		this.source = source;
-		this.reason = reason;
-		this.reachedMaxCursorCount = reachedMaxCursorCount;
+		this.reAson = reAson;
+		this.reAchedMAxCursorCount = reAchedMAxCursorCount;
 	}
 
-	private static _selectionsAreEqual(a: Selection[] | null, b: Selection[] | null): boolean {
-		if (!a && !b) {
+	privAte stAtic _selectionsAreEquAl(A: Selection[] | null, b: Selection[] | null): booleAn {
+		if (!A && !b) {
 			return true;
 		}
-		if (!a || !b) {
-			return false;
+		if (!A || !b) {
+			return fAlse;
 		}
-		const aLen = a.length;
+		const ALen = A.length;
 		const bLen = b.length;
-		if (aLen !== bLen) {
-			return false;
+		if (ALen !== bLen) {
+			return fAlse;
 		}
-		for (let i = 0; i < aLen; i++) {
-			if (!a[i].equalsSelection(b[i])) {
-				return false;
+		for (let i = 0; i < ALen; i++) {
+			if (!A[i].equAlsSelection(b[i])) {
+				return fAlse;
 			}
 		}
 		return true;
 	}
 
-	public isNoOp(): boolean {
+	public isNoOp(): booleAn {
 		return (
-			CursorStateChangedEvent._selectionsAreEqual(this.oldSelections, this.selections)
+			CursorStAteChAngedEvent._selectionsAreEquAl(this.oldSelections, this.selections)
 			&& this.oldModelVersionId === this.modelVersionId
 		);
 	}
 
-	public merge(other: OutgoingViewModelEvent): CursorStateChangedEvent {
-		if (other.kind !== OutgoingViewModelEventKind.CursorStateChanged) {
+	public merge(other: OutgoingViewModelEvent): CursorStAteChAngedEvent {
+		if (other.kind !== OutgoingViewModelEventKind.CursorStAteChAnged) {
 			return this;
 		}
-		return new CursorStateChangedEvent(
-			this.oldSelections, other.selections, this.oldModelVersionId, other.modelVersionId, other.source, other.reason, this.reachedMaxCursorCount || other.reachedMaxCursorCount
+		return new CursorStAteChAngedEvent(
+			this.oldSelections, other.selections, this.oldModelVersionId, other.modelVersionId, other.source, other.reAson, this.reAchedMAxCursorCount || other.reAchedMAxCursorCount
 		);
 	}
 }
 
-export class ReadOnlyEditAttemptEvent {
+export clAss ReAdOnlyEditAttemptEvent {
 
-	public readonly kind = OutgoingViewModelEventKind.ReadOnlyEditAttempt;
+	public reAdonly kind = OutgoingViewModelEventKind.ReAdOnlyEditAttempt;
 
 	constructor() {
 	}
 
-	public isNoOp(): boolean {
-		return false;
+	public isNoOp(): booleAn {
+		return fAlse;
 	}
 
-	public merge(other: OutgoingViewModelEvent): ReadOnlyEditAttemptEvent {
+	public merge(other: OutgoingViewModelEvent): ReAdOnlyEditAttemptEvent {
 		return this;
 	}
 }
 
 export type OutgoingViewModelEvent = (
-	ContentSizeChangedEvent
-	| FocusChangedEvent
-	| ScrollChangedEvent
-	| ViewZonesChangedEvent
-	| ReadOnlyEditAttemptEvent
-	| CursorStateChangedEvent
+	ContentSizeChAngedEvent
+	| FocusChAngedEvent
+	| ScrollChAngedEvent
+	| ViewZonesChAngedEvent
+	| ReAdOnlyEditAttemptEvent
+	| CursorStAteChAngedEvent
 );

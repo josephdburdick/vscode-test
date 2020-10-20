@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IPCClient } from 'vs/base/parts/ipc/common/ipc';
-import { Protocol } from 'vs/base/parts/ipc/common/ipc.electron';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import { Event } from 'vs/bAse/common/event';
+import { IPCClient } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Protocol } from 'vs/bAse/pArts/ipc/common/ipc.electron';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
 
-export class Client extends IPCClient implements IDisposable {
+export clAss Client extends IPCClient implements IDisposAble {
 
-	private protocol: Protocol;
+	privAte protocol: Protocol;
 
-	private static createProtocol(): Protocol {
-		const onMessage = Event.fromNodeEventEmitter<VSBuffer>(ipcRenderer, 'vscode:message', (_, message) => VSBuffer.wrap(message));
+	privAte stAtic creAteProtocol(): Protocol {
+		const onMessAge = Event.fromNodeEventEmitter<VSBuffer>(ipcRenderer, 'vscode:messAge', (_, messAge) => VSBuffer.wrAp(messAge));
 		ipcRenderer.send('vscode:hello');
-		return new Protocol(ipcRenderer, onMessage);
+		return new Protocol(ipcRenderer, onMessAge);
 	}
 
 	constructor(id: string) {
-		const protocol = Client.createProtocol();
+		const protocol = Client.creAteProtocol();
 		super(protocol, id);
 		this.protocol = protocol;
 	}

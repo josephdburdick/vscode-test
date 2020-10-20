@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { URI } from 'vs/base/common/uri';
+import { ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { URI } from 'vs/bAse/common/uri';
 
 export const FOLDER_CONFIG_FOLDER_NAME = '.vscode';
 export const FOLDER_SETTINGS_NAME = 'settings';
 export const FOLDER_SETTINGS_PATH = `${FOLDER_CONFIG_FOLDER_NAME}/${FOLDER_SETTINGS_NAME}.json`;
 
-export const defaultSettingsSchemaId = 'vscode://schemas/settings/default';
-export const userSettingsSchemaId = 'vscode://schemas/settings/user';
-export const machineSettingsSchemaId = 'vscode://schemas/settings/machine';
-export const workspaceSettingsSchemaId = 'vscode://schemas/settings/workspace';
-export const folderSettingsSchemaId = 'vscode://schemas/settings/folder';
-export const launchSchemaId = 'vscode://schemas/launch';
-export const tasksSchemaId = 'vscode://schemas/tasks';
+export const defAultSettingsSchemAId = 'vscode://schemAs/settings/defAult';
+export const userSettingsSchemAId = 'vscode://schemAs/settings/user';
+export const mAchineSettingsSchemAId = 'vscode://schemAs/settings/mAchine';
+export const workspAceSettingsSchemAId = 'vscode://schemAs/settings/workspAce';
+export const folderSettingsSchemAId = 'vscode://schemAs/settings/folder';
+export const lAunchSchemAId = 'vscode://schemAs/lAunch';
+export const tAsksSchemAId = 'vscode://schemAs/tAsks';
 
-export const LOCAL_MACHINE_SCOPES = [ConfigurationScope.APPLICATION, ConfigurationScope.WINDOW, ConfigurationScope.RESOURCE, ConfigurationScope.LANGUAGE_OVERRIDABLE];
-export const REMOTE_MACHINE_SCOPES = [ConfigurationScope.MACHINE, ConfigurationScope.WINDOW, ConfigurationScope.RESOURCE, ConfigurationScope.LANGUAGE_OVERRIDABLE, ConfigurationScope.MACHINE_OVERRIDABLE];
-export const WORKSPACE_SCOPES = [ConfigurationScope.WINDOW, ConfigurationScope.RESOURCE, ConfigurationScope.LANGUAGE_OVERRIDABLE, ConfigurationScope.MACHINE_OVERRIDABLE];
-export const FOLDER_SCOPES = [ConfigurationScope.RESOURCE, ConfigurationScope.LANGUAGE_OVERRIDABLE, ConfigurationScope.MACHINE_OVERRIDABLE];
+export const LOCAL_MACHINE_SCOPES = [ConfigurAtionScope.APPLICATION, ConfigurAtionScope.WINDOW, ConfigurAtionScope.RESOURCE, ConfigurAtionScope.LANGUAGE_OVERRIDABLE];
+export const REMOTE_MACHINE_SCOPES = [ConfigurAtionScope.MACHINE, ConfigurAtionScope.WINDOW, ConfigurAtionScope.RESOURCE, ConfigurAtionScope.LANGUAGE_OVERRIDABLE, ConfigurAtionScope.MACHINE_OVERRIDABLE];
+export const WORKSPACE_SCOPES = [ConfigurAtionScope.WINDOW, ConfigurAtionScope.RESOURCE, ConfigurAtionScope.LANGUAGE_OVERRIDABLE, ConfigurAtionScope.MACHINE_OVERRIDABLE];
+export const FOLDER_SCOPES = [ConfigurAtionScope.RESOURCE, ConfigurAtionScope.LANGUAGE_OVERRIDABLE, ConfigurAtionScope.MACHINE_OVERRIDABLE];
 
-export const TASKS_CONFIGURATION_KEY = 'tasks';
-export const LAUNCH_CONFIGURATION_KEY = 'launch';
+export const TASKS_CONFIGURATION_KEY = 'tAsks';
+export const LAUNCH_CONFIGURATION_KEY = 'lAunch';
 
-export const WORKSPACE_STANDALONE_CONFIGURATIONS = Object.create(null);
+export const WORKSPACE_STANDALONE_CONFIGURATIONS = Object.creAte(null);
 WORKSPACE_STANDALONE_CONFIGURATIONS[TASKS_CONFIGURATION_KEY] = `${FOLDER_CONFIG_FOLDER_NAME}/${TASKS_CONFIGURATION_KEY}.json`;
 WORKSPACE_STANDALONE_CONFIGURATIONS[LAUNCH_CONFIGURATION_KEY] = `${FOLDER_CONFIG_FOLDER_NAME}/${LAUNCH_CONFIGURATION_KEY}.json`;
-export const USER_STANDALONE_CONFIGURATIONS = Object.create(null);
+export const USER_STANDALONE_CONFIGURATIONS = Object.creAte(null);
 USER_STANDALONE_CONFIGURATIONS[TASKS_CONFIGURATION_KEY] = `${TASKS_CONFIGURATION_KEY}.json`;
 
-export type ConfigurationKey = { type: 'user' | 'workspaces' | 'folder', key: string };
+export type ConfigurAtionKey = { type: 'user' | 'workspAces' | 'folder', key: string };
 
-export interface IConfigurationCache {
+export interfAce IConfigurAtionCAche {
 
-	needsCaching(resource: URI): boolean;
-	read(key: ConfigurationKey): Promise<string>;
-	write(key: ConfigurationKey, content: string): Promise<void>;
-	remove(key: ConfigurationKey): Promise<void>;
+	needsCAching(resource: URI): booleAn;
+	reAd(key: ConfigurAtionKey): Promise<string>;
+	write(key: ConfigurAtionKey, content: string): Promise<void>;
+	remove(key: ConfigurAtionKey): Promise<void>;
 
 }
 
-export const TASKS_DEFAULT = '{\n\t\"version\": \"2.0.0\",\n\t\"tasks\": []\n}';
+export const TASKS_DEFAULT = '{\n\t\"version\": \"2.0.0\",\n\t\"tAsks\": []\n}';

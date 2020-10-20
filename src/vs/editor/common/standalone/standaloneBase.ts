@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { Emitter } from 'vs/base/common/event';
-import { KeyChord, KeyMod as ConstKeyMod } from 'vs/base/common/keyCodes';
-import { URI } from 'vs/base/common/uri';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { Emitter } from 'vs/bAse/common/event';
+import { KeyChord, KeyMod As ConstKeyMod } from 'vs/bAse/common/keyCodes';
+import { URI } from 'vs/bAse/common/uri';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { Token } from 'vs/editor/common/core/token';
-import * as standaloneEnums from 'vs/editor/common/standalone/standaloneEnums';
+import * As stAndAloneEnums from 'vs/editor/common/stAndAlone/stAndAloneEnums';
 
-export class KeyMod {
-	public static readonly CtrlCmd: number = ConstKeyMod.CtrlCmd;
-	public static readonly Shift: number = ConstKeyMod.Shift;
-	public static readonly Alt: number = ConstKeyMod.Alt;
-	public static readonly WinCtrl: number = ConstKeyMod.WinCtrl;
+export clAss KeyMod {
+	public stAtic reAdonly CtrlCmd: number = ConstKeyMod.CtrlCmd;
+	public stAtic reAdonly Shift: number = ConstKeyMod.Shift;
+	public stAtic reAdonly Alt: number = ConstKeyMod.Alt;
+	public stAtic reAdonly WinCtrl: number = ConstKeyMod.WinCtrl;
 
-	public static chord(firstPart: number, secondPart: number): number {
-		return KeyChord(firstPart, secondPart);
+	public stAtic chord(firstPArt: number, secondPArt: number): number {
+		return KeyChord(firstPArt, secondPArt);
 	}
 }
 
-export function createMonacoBaseAPI(): typeof monaco {
+export function creAteMonAcoBAseAPI(): typeof monAco {
 	return {
 		editor: undefined!, // undefined override expected here
-		languages: undefined!, // undefined override expected here
-		CancellationTokenSource: CancellationTokenSource,
+		lAnguAges: undefined!, // undefined override expected here
+		CAncellAtionTokenSource: CAncellAtionTokenSource,
 		Emitter: Emitter,
-		KeyCode: standaloneEnums.KeyCode,
+		KeyCode: stAndAloneEnums.KeyCode,
 		KeyMod: KeyMod,
 		Position: Position,
-		Range: Range,
-		Selection: <any>Selection,
-		SelectionDirection: standaloneEnums.SelectionDirection,
-		MarkerSeverity: standaloneEnums.MarkerSeverity,
-		MarkerTag: standaloneEnums.MarkerTag,
-		Uri: <any>URI,
+		RAnge: RAnge,
+		Selection: <Any>Selection,
+		SelectionDirection: stAndAloneEnums.SelectionDirection,
+		MArkerSeverity: stAndAloneEnums.MArkerSeverity,
+		MArkerTAg: stAndAloneEnums.MArkerTAg,
+		Uri: <Any>URI,
 		Token: Token
 	};
 }

@@ -1,121 +1,121 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { extname } from 'path';
+import * As vscode from 'vscode';
+import { extnAme } from 'pAth';
 
-import { Command } from '../commandManager';
-import { MarkdownEngine } from '../markdownEngine';
-import { TableOfContentsProvider } from '../tableOfContentsProvider';
-import { isMarkdownFile } from '../util/file';
+import { CommAnd } from '../commAndMAnAger';
+import { MArkdownEngine } from '../mArkdownEngine';
+import { TAbleOfContentsProvider } from '../tAbleOfContentsProvider';
+import { isMArkdownFile } from '../util/file';
 
 
-export interface OpenDocumentLinkArgs {
-	readonly path: {};
-	readonly fragment: string;
-	readonly fromResource: {};
+export interfAce OpenDocumentLinkArgs {
+	reAdonly pAth: {};
+	reAdonly frAgment: string;
+	reAdonly fromResource: {};
 }
 
-enum OpenMarkdownLinks {
+enum OpenMArkdownLinks {
 	beside = 'beside',
 	currentGroup = 'currentGroup',
 }
 
-export class OpenDocumentLinkCommand implements Command {
-	private static readonly id = '_markdown.openDocumentLink';
-	public readonly id = OpenDocumentLinkCommand.id;
+export clAss OpenDocumentLinkCommAnd implements CommAnd {
+	privAte stAtic reAdonly id = '_mArkdown.openDocumentLink';
+	public reAdonly id = OpenDocumentLinkCommAnd.id;
 
-	public static createCommandUri(
+	public stAtic creAteCommAndUri(
 		fromResource: vscode.Uri,
-		path: vscode.Uri,
-		fragment: string,
+		pAth: vscode.Uri,
+		frAgment: string,
 	): vscode.Uri {
 		const toJson = (uri: vscode.Uri) => {
 			return {
 				scheme: uri.scheme,
-				authority: uri.authority,
-				path: uri.path,
-				fragment: uri.fragment,
+				Authority: uri.Authority,
+				pAth: uri.pAth,
+				frAgment: uri.frAgment,
 				query: uri.query,
 			};
 		};
-		return vscode.Uri.parse(`command:${OpenDocumentLinkCommand.id}?${encodeURIComponent(JSON.stringify(<OpenDocumentLinkArgs>{
-			path: toJson(path),
-			fragment,
+		return vscode.Uri.pArse(`commAnd:${OpenDocumentLinkCommAnd.id}?${encodeURIComponent(JSON.stringify(<OpenDocumentLinkArgs>{
+			pAth: toJson(pAth),
+			frAgment,
 			fromResource: toJson(fromResource),
 		}))}`);
 	}
 
 	public constructor(
-		private readonly engine: MarkdownEngine
+		privAte reAdonly engine: MArkdownEngine
 	) { }
 
-	public async execute(args: OpenDocumentLinkArgs) {
-		return OpenDocumentLinkCommand.execute(this.engine, args);
+	public Async execute(Args: OpenDocumentLinkArgs) {
+		return OpenDocumentLinkCommAnd.execute(this.engine, Args);
 	}
 
-	public static async execute(engine: MarkdownEngine, args: OpenDocumentLinkArgs) {
-		const fromResource = vscode.Uri.parse('').with(args.fromResource);
-		const targetResource = vscode.Uri.parse('').with(args.path);
+	public stAtic Async execute(engine: MArkdownEngine, Args: OpenDocumentLinkArgs) {
+		const fromResource = vscode.Uri.pArse('').with(Args.fromResource);
+		const tArgetResource = vscode.Uri.pArse('').with(Args.pAth);
 		const column = this.getViewColumn(fromResource);
 		try {
-			return await this.tryOpen(engine, targetResource, args, column);
-		} catch {
-			if (extname(targetResource.path) === '') {
-				return this.tryOpen(engine, targetResource.with({ path: targetResource.path + '.md' }), args, column);
+			return AwAit this.tryOpen(engine, tArgetResource, Args, column);
+		} cAtch {
+			if (extnAme(tArgetResource.pAth) === '') {
+				return this.tryOpen(engine, tArgetResource.with({ pAth: tArgetResource.pAth + '.md' }), Args, column);
 			}
-			await vscode.commands.executeCommand('vscode.open', targetResource, column);
+			AwAit vscode.commAnds.executeCommAnd('vscode.open', tArgetResource, column);
 			return undefined;
 		}
 	}
 
-	private static async tryOpen(engine: MarkdownEngine, resource: vscode.Uri, args: OpenDocumentLinkArgs, column: vscode.ViewColumn) {
-		if (vscode.window.activeTextEditor && isMarkdownFile(vscode.window.activeTextEditor.document)) {
-			if (vscode.window.activeTextEditor.document.uri.fsPath === resource.fsPath) {
-				return this.tryRevealLine(engine, vscode.window.activeTextEditor, args.fragment);
+	privAte stAtic Async tryOpen(engine: MArkdownEngine, resource: vscode.Uri, Args: OpenDocumentLinkArgs, column: vscode.ViewColumn) {
+		if (vscode.window.ActiveTextEditor && isMArkdownFile(vscode.window.ActiveTextEditor.document)) {
+			if (vscode.window.ActiveTextEditor.document.uri.fsPAth === resource.fsPAth) {
+				return this.tryReveAlLine(engine, vscode.window.ActiveTextEditor, Args.frAgment);
 			}
 		}
 
-		const stat = await vscode.workspace.fs.stat(resource);
-		if (stat.type === vscode.FileType.Directory) {
-			return vscode.commands.executeCommand('revealInExplorer', resource);
+		const stAt = AwAit vscode.workspAce.fs.stAt(resource);
+		if (stAt.type === vscode.FileType.Directory) {
+			return vscode.commAnds.executeCommAnd('reveAlInExplorer', resource);
 		}
 
-		return vscode.workspace.openTextDocument(resource)
+		return vscode.workspAce.openTextDocument(resource)
 			.then(document => vscode.window.showTextDocument(document, column))
-			.then(editor => this.tryRevealLine(engine, editor, args.fragment));
+			.then(editor => this.tryReveAlLine(engine, editor, Args.frAgment));
 	}
 
-	private static getViewColumn(resource: vscode.Uri): vscode.ViewColumn {
-		const config = vscode.workspace.getConfiguration('markdown', resource);
-		const openLinks = config.get<OpenMarkdownLinks>('links.openLocation', OpenMarkdownLinks.currentGroup);
+	privAte stAtic getViewColumn(resource: vscode.Uri): vscode.ViewColumn {
+		const config = vscode.workspAce.getConfigurAtion('mArkdown', resource);
+		const openLinks = config.get<OpenMArkdownLinks>('links.openLocAtion', OpenMArkdownLinks.currentGroup);
 		switch (openLinks) {
-			case OpenMarkdownLinks.beside:
+			cAse OpenMArkdownLinks.beside:
 				return vscode.ViewColumn.Beside;
-			case OpenMarkdownLinks.currentGroup:
-			default:
+			cAse OpenMArkdownLinks.currentGroup:
+			defAult:
 				return vscode.ViewColumn.Active;
 		}
 	}
 
-	private static async tryRevealLine(engine: MarkdownEngine, editor: vscode.TextEditor, fragment?: string) {
-		if (editor && fragment) {
-			const toc = new TableOfContentsProvider(engine, editor.document);
-			const entry = await toc.lookup(fragment);
+	privAte stAtic Async tryReveAlLine(engine: MArkdownEngine, editor: vscode.TextEditor, frAgment?: string) {
+		if (editor && frAgment) {
+			const toc = new TAbleOfContentsProvider(engine, editor.document);
+			const entry = AwAit toc.lookup(frAgment);
 			if (entry) {
-				const lineStart = new vscode.Range(entry.line, 0, entry.line, 0);
-				editor.selection = new vscode.Selection(lineStart.start, lineStart.end);
-				return editor.revealRange(lineStart, vscode.TextEditorRevealType.AtTop);
+				const lineStArt = new vscode.RAnge(entry.line, 0, entry.line, 0);
+				editor.selection = new vscode.Selection(lineStArt.stArt, lineStArt.end);
+				return editor.reveAlRAnge(lineStArt, vscode.TextEditorReveAlType.AtTop);
 			}
-			const lineNumberFragment = fragment.match(/^L(\d+)$/i);
-			if (lineNumberFragment) {
-				const line = +lineNumberFragment[1] - 1;
-				if (!isNaN(line)) {
-					const lineStart = new vscode.Range(line, 0, line, 0);
-					editor.selection = new vscode.Selection(lineStart.start, lineStart.end);
-					return editor.revealRange(lineStart, vscode.TextEditorRevealType.AtTop);
+			const lineNumberFrAgment = frAgment.mAtch(/^L(\d+)$/i);
+			if (lineNumberFrAgment) {
+				const line = +lineNumberFrAgment[1] - 1;
+				if (!isNAN(line)) {
+					const lineStArt = new vscode.RAnge(line, 0, line, 0);
+					editor.selection = new vscode.Selection(lineStArt.stArt, lineStArt.end);
+					return editor.reveAlRAnge(lineStArt, vscode.TextEditorReveAlType.AtTop);
 				}
 			}
 		}
@@ -123,34 +123,34 @@ export class OpenDocumentLinkCommand implements Command {
 }
 
 
-export async function resolveLinkToMarkdownFile(path: string): Promise<vscode.Uri | undefined> {
+export Async function resolveLinkToMArkdownFile(pAth: string): Promise<vscode.Uri | undefined> {
 	try {
-		const standardLink = await tryResolveLinkToMarkdownFile(path);
-		if (standardLink) {
-			return standardLink;
+		const stAndArdLink = AwAit tryResolveLinkToMArkdownFile(pAth);
+		if (stAndArdLink) {
+			return stAndArdLink;
 		}
-	} catch {
+	} cAtch {
 		// Noop
 	}
 
 	// If no extension, try with `.md` extension
-	if (extname(path) === '') {
-		return tryResolveLinkToMarkdownFile(path + '.md');
+	if (extnAme(pAth) === '') {
+		return tryResolveLinkToMArkdownFile(pAth + '.md');
 	}
 
 	return undefined;
 }
 
-async function tryResolveLinkToMarkdownFile(path: string): Promise<vscode.Uri | undefined> {
-	const resource = vscode.Uri.file(path);
+Async function tryResolveLinkToMArkdownFile(pAth: string): Promise<vscode.Uri | undefined> {
+	const resource = vscode.Uri.file(pAth);
 
 	let document: vscode.TextDocument;
 	try {
-		document = await vscode.workspace.openTextDocument(resource);
-	} catch {
+		document = AwAit vscode.workspAce.openTextDocument(resource);
+	} cAtch {
 		return undefined;
 	}
-	if (isMarkdownFile(document)) {
+	if (isMArkdownFile(document)) {
 		return document.uri;
 	}
 	return undefined;

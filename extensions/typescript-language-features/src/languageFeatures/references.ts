@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import { ClientCApAbility, ITypeScriptServiceClient } from '../typescriptService';
+import { conditionAlRegistrAtion, requireSomeCApAbility } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as typeConverters from '../utils/typeConverters';
+import * As typeConverters from '../utils/typeConverters';
 
-class TypeScriptReferenceSupport implements vscode.ReferenceProvider {
+clAss TypeScriptReferenceSupport implements vscode.ReferenceProvider {
 	public constructor(
-		private readonly client: ITypeScriptServiceClient) { }
+		privAte reAdonly client: ITypeScriptServiceClient) { }
 
-	public async provideReferences(
+	public Async provideReferences(
 		document: vscode.TextDocument,
 		position: vscode.Position,
 		options: vscode.ReferenceContext,
-		token: vscode.CancellationToken
-	): Promise<vscode.Location[]> {
-		const filepath = this.client.toOpenedFilePath(document);
-		if (!filepath) {
+		token: vscode.CAncellAtionToken
+	): Promise<vscode.LocAtion[]> {
+		const filepAth = this.client.toOpenedFilePAth(document);
+		if (!filepAth) {
 			return [];
 		}
 
-		const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
-		const response = await this.client.execute('references', args, token);
+		const Args = typeConverters.Position.toFileLocAtionRequestArgs(filepAth, position);
+		const response = AwAit this.client.execute('references', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return [];
 		}
 
-		const result: vscode.Location[] = [];
+		const result: vscode.LocAtion[] = [];
 		for (const ref of response.body.refs) {
-			if (!options.includeDeclaration && ref.isDefinition) {
+			if (!options.includeDeclArAtion && ref.isDefinition) {
 				continue;
 			}
 			const url = this.client.toResource(ref.file);
-			const location = typeConverters.Location.fromTextSpan(url, ref);
-			result.push(location);
+			const locAtion = typeConverters.LocAtion.fromTextSpAn(url, ref);
+			result.push(locAtion);
 		}
 		return result;
 	}
@@ -47,10 +47,10 @@ export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient
 ) {
-	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+	return conditionAlRegistrAtion([
+		requireSomeCApAbility(client, ClientCApAbility.EnhAncedSyntAx, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerReferenceProvider(selector.syntax,
+		return vscode.lAnguAges.registerReferenceProvider(selector.syntAx,
 			new TypeScriptReferenceSupport(client));
 	});
 }

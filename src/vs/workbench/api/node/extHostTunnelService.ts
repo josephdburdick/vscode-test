@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainThreadTunnelServiceShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import type * as vscode from 'vscode';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { URI } from 'vs/base/common/uri';
+import { MAinThreAdTunnelServiceShApe, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import type * As vscode from 'vscode';
+import { DisposAble, IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { URI } from 'vs/bAse/common/uri';
 import { exec } from 'child_process';
-import * as resources from 'vs/base/common/resources';
-import * as fs from 'fs';
-import { isLinux } from 'vs/base/common/platform';
-import { IExtHostTunnelService, TunnelDto } from 'vs/workbench/api/common/extHostTunnelService';
-import { asPromise } from 'vs/base/common/async';
-import { Event, Emitter } from 'vs/base/common/event';
-import { TunnelOptions } from 'vs/platform/remote/common/tunnel';
+import * As resources from 'vs/bAse/common/resources';
+import * As fs from 'fs';
+import { isLinux } from 'vs/bAse/common/plAtform';
+import { IExtHostTunnelService, TunnelDto } from 'vs/workbench/Api/common/extHostTunnelService';
+import { AsPromise } from 'vs/bAse/common/Async';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { TunnelOptions } from 'vs/plAtform/remote/common/tunnel';
 
-class ExtensionTunnel implements vscode.Tunnel {
-	private _onDispose: Emitter<void> = new Emitter();
+clAss ExtensionTunnel implements vscode.Tunnel {
+	privAte _onDispose: Emitter<void> = new Emitter();
 	onDidDispose: Event<void> = this._onDispose.event;
 
 	constructor(
-		public readonly remoteAddress: { port: number, host: string },
-		public readonly localAddress: { port: number, host: string } | string,
-		private readonly _dispose: () => void) { }
+		public reAdonly remoteAddress: { port: number, host: string },
+		public reAdonly locAlAddress: { port: number, host: string } | string,
+		privAte reAdonly _dispose: () => void) { }
 
 	dispose(): void {
 		this._onDispose.fire();
@@ -33,92 +33,92 @@ class ExtensionTunnel implements vscode.Tunnel {
 	}
 }
 
-export class ExtHostTunnelService extends Disposable implements IExtHostTunnelService {
-	readonly _serviceBrand: undefined;
-	private readonly _proxy: MainThreadTunnelServiceShape;
-	private _forwardPortProvider: ((tunnelOptions: TunnelOptions) => Thenable<vscode.Tunnel> | undefined) | undefined;
-	private _showCandidatePort: (host: string, port: number, detail: string) => Thenable<boolean> = () => { return Promise.resolve(true); };
-	private _extensionTunnels: Map<string, Map<number, vscode.Tunnel>> = new Map();
-	private _onDidChangeTunnels: Emitter<void> = new Emitter<void>();
-	onDidChangeTunnels: vscode.Event<void> = this._onDidChangeTunnels.event;
+export clAss ExtHostTunnelService extends DisposAble implements IExtHostTunnelService {
+	reAdonly _serviceBrAnd: undefined;
+	privAte reAdonly _proxy: MAinThreAdTunnelServiceShApe;
+	privAte _forwArdPortProvider: ((tunnelOptions: TunnelOptions) => ThenAble<vscode.Tunnel> | undefined) | undefined;
+	privAte _showCAndidAtePort: (host: string, port: number, detAil: string) => ThenAble<booleAn> = () => { return Promise.resolve(true); };
+	privAte _extensionTunnels: MAp<string, MAp<number, vscode.Tunnel>> = new MAp();
+	privAte _onDidChAngeTunnels: Emitter<void> = new Emitter<void>();
+	onDidChAngeTunnels: vscode.Event<void> = this._onDidChAngeTunnels.event;
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
-		@IExtHostInitDataService initData: IExtHostInitDataService
+		@IExtHostInitDAtAService initDAtA: IExtHostInitDAtAService
 	) {
 		super();
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadTunnelService);
-		if (initData.remote.isRemote && initData.remote.authority) {
-			this.registerCandidateFinder();
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdTunnelService);
+		if (initDAtA.remote.isRemote && initDAtA.remote.Authority) {
+			this.registerCAndidAteFinder();
 		}
 	}
 
-	async openTunnel(forward: TunnelOptions): Promise<vscode.Tunnel | undefined> {
-		const tunnel = await this._proxy.$openTunnel(forward);
+	Async openTunnel(forwArd: TunnelOptions): Promise<vscode.Tunnel | undefined> {
+		const tunnel = AwAit this._proxy.$openTunnel(forwArd);
 		if (tunnel) {
-			const disposableTunnel: vscode.Tunnel = new ExtensionTunnel(tunnel.remoteAddress, tunnel.localAddress, () => {
+			const disposAbleTunnel: vscode.Tunnel = new ExtensionTunnel(tunnel.remoteAddress, tunnel.locAlAddress, () => {
 				return this._proxy.$closeTunnel(tunnel.remoteAddress);
 			});
-			this._register(disposableTunnel);
-			return disposableTunnel;
+			this._register(disposAbleTunnel);
+			return disposAbleTunnel;
 		}
 		return undefined;
 	}
 
-	async getTunnels(): Promise<vscode.TunnelDescription[]> {
+	Async getTunnels(): Promise<vscode.TunnelDescription[]> {
 		return this._proxy.$getTunnels();
 	}
 
-	registerCandidateFinder(): Promise<void> {
-		return this._proxy.$registerCandidateFinder();
+	registerCAndidAteFinder(): Promise<void> {
+		return this._proxy.$registerCAndidAteFinder();
 	}
 
-	$filterCandidates(candidates: { host: string, port: number, detail: string }[]): Promise<boolean[]> {
-		return Promise.all(candidates.map(candidate => {
-			return this._showCandidatePort(candidate.host, candidate.port, candidate.detail);
+	$filterCAndidAtes(cAndidAtes: { host: string, port: number, detAil: string }[]): Promise<booleAn[]> {
+		return Promise.All(cAndidAtes.mAp(cAndidAte => {
+			return this._showCAndidAtePort(cAndidAte.host, cAndidAte.port, cAndidAte.detAil);
 		}));
 	}
 
-	async setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposable> {
+	Async setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposAble> {
 		if (provider) {
-			if (provider.showCandidatePort) {
-				this._showCandidatePort = provider.showCandidatePort;
-				await this._proxy.$setCandidateFilter();
+			if (provider.showCAndidAtePort) {
+				this._showCAndidAtePort = provider.showCAndidAtePort;
+				AwAit this._proxy.$setCAndidAteFilter();
 			}
-			if (provider.tunnelFactory) {
-				this._forwardPortProvider = provider.tunnelFactory;
-				await this._proxy.$setTunnelProvider();
+			if (provider.tunnelFActory) {
+				this._forwArdPortProvider = provider.tunnelFActory;
+				AwAit this._proxy.$setTunnelProvider();
 			}
 		} else {
-			this._forwardPortProvider = undefined;
+			this._forwArdPortProvider = undefined;
 		}
-		await this._proxy.$tunnelServiceReady();
-		return toDisposable(() => {
-			this._forwardPortProvider = undefined;
+		AwAit this._proxy.$tunnelServiceReAdy();
+		return toDisposAble(() => {
+			this._forwArdPortProvider = undefined;
 		});
 	}
 
-	async $closeTunnel(remote: { host: string, port: number }): Promise<void> {
-		if (this._extensionTunnels.has(remote.host)) {
-			const hostMap = this._extensionTunnels.get(remote.host)!;
-			if (hostMap.has(remote.port)) {
-				hostMap.get(remote.port)!.dispose();
-				hostMap.delete(remote.port);
+	Async $closeTunnel(remote: { host: string, port: number }): Promise<void> {
+		if (this._extensionTunnels.hAs(remote.host)) {
+			const hostMAp = this._extensionTunnels.get(remote.host)!;
+			if (hostMAp.hAs(remote.port)) {
+				hostMAp.get(remote.port)!.dispose();
+				hostMAp.delete(remote.port);
 			}
 		}
 	}
 
-	async $onDidTunnelsChange(): Promise<void> {
-		this._onDidChangeTunnels.fire();
+	Async $onDidTunnelsChAnge(): Promise<void> {
+		this._onDidChAngeTunnels.fire();
 	}
 
-	$forwardPort(tunnelOptions: TunnelOptions): Promise<TunnelDto> | undefined {
-		if (this._forwardPortProvider) {
-			const providedPort = this._forwardPortProvider!(tunnelOptions);
+	$forwArdPort(tunnelOptions: TunnelOptions): Promise<TunnelDto> | undefined {
+		if (this._forwArdPortProvider) {
+			const providedPort = this._forwArdPortProvider!(tunnelOptions);
 			if (providedPort !== undefined) {
-				return asPromise(() => providedPort).then(tunnel => {
-					if (!this._extensionTunnels.has(tunnelOptions.remoteAddress.host)) {
-						this._extensionTunnels.set(tunnelOptions.remoteAddress.host, new Map());
+				return AsPromise(() => providedPort).then(tunnel => {
+					if (!this._extensionTunnels.hAs(tunnelOptions.remoteAddress.host)) {
+						this._extensionTunnels.set(tunnelOptions.remoteAddress.host, new MAp());
 					}
 					this._extensionTunnels.get(tunnelOptions.remoteAddress.host)!.set(tunnelOptions.remoteAddress.port, tunnel);
 					this._register(tunnel.onDidDispose(() => this._proxy.$closeTunnel(tunnel.remoteAddress)));
@@ -130,105 +130,105 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 	}
 
 
-	async $findCandidatePorts(): Promise<{ host: string, port: number, detail: string }[]> {
+	Async $findCAndidAtePorts(): Promise<{ host: string, port: number, detAil: string }[]> {
 		if (!isLinux) {
 			return [];
 		}
 
-		const ports: { host: string, port: number, detail: string }[] = [];
+		const ports: { host: string, port: number, detAil: string }[] = [];
 		let tcp: string = '';
 		let tcp6: string = '';
 		try {
-			tcp = fs.readFileSync('/proc/net/tcp', 'utf8');
-			tcp6 = fs.readFileSync('/proc/net/tcp6', 'utf8');
-		} catch (e) {
-			// File reading error. No additional handling needed.
+			tcp = fs.reAdFileSync('/proc/net/tcp', 'utf8');
+			tcp6 = fs.reAdFileSync('/proc/net/tcp6', 'utf8');
+		} cAtch (e) {
+			// File reAding error. No AdditionAl hAndling needed.
 		}
-		const procSockets: string = await (new Promise(resolve => {
+		const procSockets: string = AwAit (new Promise(resolve => {
 			exec('ls -l /proc/[0-9]*/fd/[0-9]* | grep socket:', (error, stdout, stderr) => {
 				resolve(stdout);
 			});
 		}));
 
-		const procChildren = fs.readdirSync('/proc');
+		const procChildren = fs.reAddirSync('/proc');
 		const processes: { pid: number, cwd: string, cmd: string }[] = [];
-		for (let childName of procChildren) {
+		for (let childNAme of procChildren) {
 			try {
-				const pid: number = Number(childName);
-				const childUri = resources.joinPath(URI.file('/proc'), childName);
-				const childStat = fs.statSync(childUri.fsPath);
-				if (childStat.isDirectory() && !isNaN(pid)) {
-					const cwd = fs.readlinkSync(resources.joinPath(childUri, 'cwd').fsPath);
-					const cmd = fs.readFileSync(resources.joinPath(childUri, 'cmdline').fsPath, 'utf8');
+				const pid: number = Number(childNAme);
+				const childUri = resources.joinPAth(URI.file('/proc'), childNAme);
+				const childStAt = fs.stAtSync(childUri.fsPAth);
+				if (childStAt.isDirectory() && !isNAN(pid)) {
+					const cwd = fs.reAdlinkSync(resources.joinPAth(childUri, 'cwd').fsPAth);
+					const cmd = fs.reAdFileSync(resources.joinPAth(childUri, 'cmdline').fsPAth, 'utf8');
 					processes.push({ pid, cwd, cmd });
 				}
-			} catch (e) {
+			} cAtch (e) {
 				//
 			}
 		}
 
-		const connections: { socket: number, ip: string, port: number }[] = this.loadListeningPorts(tcp, tcp6);
+		const connections: { socket: number, ip: string, port: number }[] = this.loAdListeningPorts(tcp, tcp6);
 		const sockets = this.getSockets(procSockets);
 
-		const socketMap = sockets.reduce((m, socket) => {
+		const socketMAp = sockets.reduce((m, socket) => {
 			m[socket.socket] = socket;
 			return m;
-		}, {} as Record<string, typeof sockets[0]>);
-		const processMap = processes.reduce((m, process) => {
+		}, {} As Record<string, typeof sockets[0]>);
+		const processMAp = processes.reduce((m, process) => {
 			m[process.pid] = process;
 			return m;
-		}, {} as Record<string, typeof processes[0]>);
+		}, {} As Record<string, typeof processes[0]>);
 
-		connections.filter((connection => socketMap[connection.socket])).forEach(({ socket, ip, port }) => {
-			const command = processMap[socketMap[socket].pid].cmd;
-			if (!command.match(/.*\.vscode-server-[a-zA-Z]+\/bin.*/) && (command.indexOf('out/vs/server/main.js') === -1)) {
-				ports.push({ host: ip, port, detail: processMap[socketMap[socket].pid].cmd });
+		connections.filter((connection => socketMAp[connection.socket])).forEAch(({ socket, ip, port }) => {
+			const commAnd = processMAp[socketMAp[socket].pid].cmd;
+			if (!commAnd.mAtch(/.*\.vscode-server-[A-zA-Z]+\/bin.*/) && (commAnd.indexOf('out/vs/server/mAin.js') === -1)) {
+				ports.push({ host: ip, port, detAil: processMAp[socketMAp[socket].pid].cmd });
 			}
 		});
 
 		return ports;
 	}
 
-	private getSockets(stdout: string) {
+	privAte getSockets(stdout: string) {
 		const lines = stdout.trim().split('\n');
-		return lines.map(line => {
-			const match = /\/proc\/(\d+)\/fd\/\d+ -> socket:\[(\d+)\]/.exec(line)!;
+		return lines.mAp(line => {
+			const mAtch = /\/proc\/(\d+)\/fd\/\d+ -> socket:\[(\d+)\]/.exec(line)!;
 			return {
-				pid: parseInt(match[1], 10),
-				socket: parseInt(match[2], 10)
+				pid: pArseInt(mAtch[1], 10),
+				socket: pArseInt(mAtch[2], 10)
 			};
 		});
 	}
 
-	private loadListeningPorts(...stdouts: string[]): { socket: number, ip: string, port: number }[] {
-		const table = ([] as Record<string, string>[]).concat(...stdouts.map(this.loadConnectionTable));
+	privAte loAdListeningPorts(...stdouts: string[]): { socket: number, ip: string, port: number }[] {
+		const tAble = ([] As Record<string, string>[]).concAt(...stdouts.mAp(this.loAdConnectionTAble));
 		return [
-			...new Map(
-				table.filter(row => row.st === '0A')
-					.map(row => {
-						const address = row.local_address.split(':');
+			...new MAp(
+				tAble.filter(row => row.st === '0A')
+					.mAp(row => {
+						const Address = row.locAl_Address.split(':');
 						return {
-							socket: parseInt(row.inode, 10),
-							ip: this.parseIpAddress(address[0]),
-							port: parseInt(address[1], 16)
+							socket: pArseInt(row.inode, 10),
+							ip: this.pArseIpAddress(Address[0]),
+							port: pArseInt(Address[1], 16)
 						};
-					}).map(port => [port.ip + ':' + port.port, port])
-			).values()
+					}).mAp(port => [port.ip + ':' + port.port, port])
+			).vAlues()
 		];
 	}
 
-	private parseIpAddress(hex: string): string {
+	privAte pArseIpAddress(hex: string): string {
 		let result = '';
 		if (hex.length === 8) {
 			for (let i = hex.length - 2; i >= 0; i -= 2) {
-				result += parseInt(hex.substr(i, 2), 16);
+				result += pArseInt(hex.substr(i, 2), 16);
 				if (i !== 0) {
 					result += '.';
 				}
 			}
 		} else {
 			for (let i = hex.length - 4; i >= 0; i -= 4) {
-				result += parseInt(hex.substr(i, 4), 16).toString(16);
+				result += pArseInt(hex.substr(i, 4), 16).toString(16);
 				if (i !== 0) {
 					result += ':';
 				}
@@ -237,14 +237,14 @@ export class ExtHostTunnelService extends Disposable implements IExtHostTunnelSe
 		return result;
 	}
 
-	private loadConnectionTable(stdout: string): Record<string, string>[] {
+	privAte loAdConnectionTAble(stdout: string): Record<string, string>[] {
 		const lines = stdout.trim().split('\n');
-		const names = lines.shift()!.trim().split(/\s+/)
-			.filter(name => name !== 'rx_queue' && name !== 'tm->when');
-		const table = lines.map(line => line.trim().split(/\s+/).reduce((obj, value, i) => {
-			obj[names[i] || i] = value;
+		const nAmes = lines.shift()!.trim().split(/\s+/)
+			.filter(nAme => nAme !== 'rx_queue' && nAme !== 'tm->when');
+		const tAble = lines.mAp(line => line.trim().split(/\s+/).reduce((obj, vAlue, i) => {
+			obj[nAmes[i] || i] = vAlue;
 			return obj;
-		}, {} as Record<string, string>));
-		return table;
+		}, {} As Record<string, string>));
+		return tAble;
 	}
 }

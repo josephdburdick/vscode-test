@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { toCanonicalName } from 'vs/workbench/services/textfile/common/encoding';
-import * as pfs from 'vs/base/node/pfs';
-import { ITextQuery } from 'vs/workbench/services/search/common/search';
-import { TextSearchProvider } from 'vs/workbench/services/search/common/searchExtTypes';
-import { TextSearchManager } from 'vs/workbench/services/search/common/textSearchManager';
+import { toCAnonicAlNAme } from 'vs/workbench/services/textfile/common/encoding';
+import * As pfs from 'vs/bAse/node/pfs';
+import { ITextQuery } from 'vs/workbench/services/seArch/common/seArch';
+import { TextSeArchProvider } from 'vs/workbench/services/seArch/common/seArchExtTypes';
+import { TextSeArchMAnAger } from 'vs/workbench/services/seArch/common/textSeArchMAnAger';
 
-export class NativeTextSearchManager extends TextSearchManager {
+export clAss NAtiveTextSeArchMAnAger extends TextSeArchMAnAger {
 
-	constructor(query: ITextQuery, provider: TextSearchProvider, _pfs: typeof pfs = pfs) {
+	constructor(query: ITextQuery, provider: TextSeArchProvider, _pfs: typeof pfs = pfs) {
 		super(query, provider, {
-			readdir: resource => _pfs.readdir(resource.fsPath),
-			toCanonicalName: name => toCanonicalName(name)
+			reAddir: resource => _pfs.reAddir(resource.fsPAth),
+			toCAnonicAlNAme: nAme => toCAnonicAlNAme(nAme)
 		});
 	}
 }

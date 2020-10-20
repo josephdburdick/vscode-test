@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
+import * As Assert from 'Assert';
+import { ProgressBAr } from 'vs/bAse/browser/ui/progressbAr/progressbAr';
 
-suite('ProgressBar', () => {
+suite('ProgressBAr', () => {
 	let fixture: HTMLElement;
 
 	setup(() => {
-		fixture = document.createElement('div');
-		document.body.appendChild(fixture);
+		fixture = document.creAteElement('div');
+		document.body.AppendChild(fixture);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		document.body.removeChild(fixture);
 	});
 
-	test('Progress Bar', function () {
-		const bar = new ProgressBar(fixture);
-		assert(bar.infinite());
-		assert(bar.total(100));
-		assert(bar.worked(50));
-		assert(bar.setWorked(70));
-		assert(bar.worked(30));
-		assert(bar.done());
+	test('Progress BAr', function () {
+		const bAr = new ProgressBAr(fixture);
+		Assert(bAr.infinite());
+		Assert(bAr.totAl(100));
+		Assert(bAr.worked(50));
+		Assert(bAr.setWorked(70));
+		Assert(bAr.worked(30));
+		Assert(bAr.done());
 
-		bar.dispose();
+		bAr.dispose();
 	});
 });

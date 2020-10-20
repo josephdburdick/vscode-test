@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 // @ts-check
@@ -10,192 +10,192 @@
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
-const path = require('path');
+const pAth = require('pAth');
 const util = require('util');
 const opn = require('opn');
 const minimist = require('minimist');
-const fancyLog = require('fancy-log');
-const ansiColors = require('ansi-colors');
+const fAncyLog = require('fAncy-log');
+const AnsiColors = require('Ansi-colors');
 const remote = require('gulp-remote-retry-src');
 const vfs = require('vinyl-fs');
 const uuid = require('uuid');
 
 const extensions = require('../../build/lib/extensions');
 
-const APP_ROOT = path.join(__dirname, '..', '..');
-const BUILTIN_EXTENSIONS_ROOT = path.join(APP_ROOT, 'extensions');
-const BUILTIN_MARKETPLACE_EXTENSIONS_ROOT = path.join(APP_ROOT, '.build', 'builtInExtensions');
-const WEB_DEV_EXTENSIONS_ROOT = path.join(APP_ROOT, '.build', 'builtInWebDevExtensions');
-const WEB_MAIN = path.join(APP_ROOT, 'src', 'vs', 'code', 'browser', 'workbench', 'workbench-dev.html');
+const APP_ROOT = pAth.join(__dirnAme, '..', '..');
+const BUILTIN_EXTENSIONS_ROOT = pAth.join(APP_ROOT, 'extensions');
+const BUILTIN_MARKETPLACE_EXTENSIONS_ROOT = pAth.join(APP_ROOT, '.build', 'builtInExtensions');
+const WEB_DEV_EXTENSIONS_ROOT = pAth.join(APP_ROOT, '.build', 'builtInWebDevExtensions');
+const WEB_MAIN = pAth.join(APP_ROOT, 'src', 'vs', 'code', 'browser', 'workbench', 'workbench-dev.html');
 
 const WEB_PLAYGROUND_VERSION = '0.0.9';
 
-const args = minimist(process.argv, {
-	boolean: [
-		'no-launch',
+const Args = minimist(process.Argv, {
+	booleAn: [
+		'no-lAunch',
 		'help',
 		'verbose',
-		'wrap-iframe',
-		'enable-sync',
+		'wrAp-ifrAme',
+		'enAble-sync',
 		'trusted-types'
 	],
 	string: [
 		'scheme',
 		'host',
 		'port',
-		'local_port',
+		'locAl_port',
 		'extension',
-		'github-auth'
+		'github-Auth'
 	],
 });
 
-if (args.help) {
+if (Args.help) {
 	console.log(
-		'yarn web [options]\n' +
-		' --no-launch      Do not open VSCode web in the browser\n' +
-		' --wrap-iframe    Wrap the Web Worker Extension Host in an iframe\n' +
-		' --trusted-types  Enable trusted types (report only)\n' +
-		' --enable-sync    Enable sync by default\n' +
+		'yArn web [options]\n' +
+		' --no-lAunch      Do not open VSCode web in the browser\n' +
+		' --wrAp-ifrAme    WrAp the Web Worker Extension Host in An ifrAme\n' +
+		' --trusted-types  EnAble trusted types (report only)\n' +
+		' --enAble-sync    EnAble sync by defAult\n' +
 		' --scheme         Protocol (https or http)\n' +
 		' --host           Remote host\n' +
-		' --port           Remote/Local port\n' +
-		' --local_port     Local port override\n' +
-		' --extension      Path of an extension to include\n' +
-		' --github-auth    Github authentication token\n' +
-		' --verbose        Print out more information\n' +
+		' --port           Remote/LocAl port\n' +
+		' --locAl_port     LocAl port override\n' +
+		' --extension      PAth of An extension to include\n' +
+		' --github-Auth    Github AuthenticAtion token\n' +
+		' --verbose        Print out more informAtion\n' +
 		' --help\n' +
-		'[Example]\n' +
-		' yarn web --scheme https --host example.com --port 8080 --local_port 30000'
+		'[ExAmple]\n' +
+		' yArn web --scheme https --host exAmple.com --port 8080 --locAl_port 30000'
 	);
 	process.exit(0);
 }
 
-const PORT = args.port || process.env.PORT || 8080;
-const LOCAL_PORT = args.local_port || process.env.LOCAL_PORT || PORT;
-const SCHEME = args.scheme || process.env.VSCODE_SCHEME || 'http';
-const HOST = args.host || 'localhost';
+const PORT = Args.port || process.env.PORT || 8080;
+const LOCAL_PORT = Args.locAl_port || process.env.LOCAL_PORT || PORT;
+const SCHEME = Args.scheme || process.env.VSCODE_SCHEME || 'http';
+const HOST = Args.host || 'locAlhost';
 const AUTHORITY = process.env.VSCODE_AUTHORITY || `${HOST}:${PORT}`;
 
-const exists = (path) => util.promisify(fs.exists)(path);
-const readFile = (path) => util.promisify(fs.readFile)(path);
+const exists = (pAth) => util.promisify(fs.exists)(pAth);
+const reAdFile = (pAth) => util.promisify(fs.reAdFile)(pAth);
 
-async function getBuiltInExtensionInfos() {
-	const allExtensions = [];
+Async function getBuiltInExtensionInfos() {
+	const AllExtensions = [];
 	/** @type {Object.<string, string>} */
-	const locations = {};
+	const locAtions = {};
 
-	const [localExtensions, marketplaceExtensions, webDevExtensions] = await Promise.all([
-		extensions.scanBuiltinExtensions(BUILTIN_EXTENSIONS_ROOT),
-		extensions.scanBuiltinExtensions(BUILTIN_MARKETPLACE_EXTENSIONS_ROOT),
-		ensureWebDevExtensions().then(() => extensions.scanBuiltinExtensions(WEB_DEV_EXTENSIONS_ROOT))
+	const [locAlExtensions, mArketplAceExtensions, webDevExtensions] = AwAit Promise.All([
+		extensions.scAnBuiltinExtensions(BUILTIN_EXTENSIONS_ROOT),
+		extensions.scAnBuiltinExtensions(BUILTIN_MARKETPLACE_EXTENSIONS_ROOT),
+		ensureWebDevExtensions().then(() => extensions.scAnBuiltinExtensions(WEB_DEV_EXTENSIONS_ROOT))
 	]);
-	for (const ext of localExtensions) {
-		allExtensions.push(ext);
-		locations[ext.extensionPath] = path.join(BUILTIN_EXTENSIONS_ROOT, ext.extensionPath);
+	for (const ext of locAlExtensions) {
+		AllExtensions.push(ext);
+		locAtions[ext.extensionPAth] = pAth.join(BUILTIN_EXTENSIONS_ROOT, ext.extensionPAth);
 	}
-	for (const ext of marketplaceExtensions) {
-		allExtensions.push(ext);
-		locations[ext.extensionPath] = path.join(BUILTIN_MARKETPLACE_EXTENSIONS_ROOT, ext.extensionPath);
+	for (const ext of mArketplAceExtensions) {
+		AllExtensions.push(ext);
+		locAtions[ext.extensionPAth] = pAth.join(BUILTIN_MARKETPLACE_EXTENSIONS_ROOT, ext.extensionPAth);
 	}
 	for (const ext of webDevExtensions) {
-		allExtensions.push(ext);
-		locations[ext.extensionPath] = path.join(WEB_DEV_EXTENSIONS_ROOT, ext.extensionPath);
+		AllExtensions.push(ext);
+		locAtions[ext.extensionPAth] = pAth.join(WEB_DEV_EXTENSIONS_ROOT, ext.extensionPAth);
 	}
-	for (const ext of allExtensions) {
-		if (ext.packageJSON.browser) {
-			let mainFilePath = path.join(locations[ext.extensionPath], ext.packageJSON.browser);
-			if (path.extname(mainFilePath) !== '.js') {
-				mainFilePath += '.js';
+	for (const ext of AllExtensions) {
+		if (ext.pAckAgeJSON.browser) {
+			let mAinFilePAth = pAth.join(locAtions[ext.extensionPAth], ext.pAckAgeJSON.browser);
+			if (pAth.extnAme(mAinFilePAth) !== '.js') {
+				mAinFilePAth += '.js';
 			}
-			if (!await exists(mainFilePath)) {
-				fancyLog(`${ansiColors.red('Error')}: Could not find ${mainFilePath}. Use ${ansiColors.cyan('yarn watch-web')} to build the built-in extensions.`);
+			if (!AwAit exists(mAinFilePAth)) {
+				fAncyLog(`${AnsiColors.red('Error')}: Could not find ${mAinFilePAth}. Use ${AnsiColors.cyAn('yArn wAtch-web')} to build the built-in extensions.`);
 			}
 		}
 	}
-	return { extensions: allExtensions, locations };
+	return { extensions: AllExtensions, locAtions };
 }
 
-async function ensureWebDevExtensions() {
+Async function ensureWebDevExtensions() {
 
-	// Playground (https://github.com/microsoft/vscode-web-playground)
-	const webDevPlaygroundRoot = path.join(WEB_DEV_EXTENSIONS_ROOT, 'vscode-web-playground');
-	const webDevPlaygroundExists = await exists(webDevPlaygroundRoot);
+	// PlAyground (https://github.com/microsoft/vscode-web-plAyground)
+	const webDevPlAygroundRoot = pAth.join(WEB_DEV_EXTENSIONS_ROOT, 'vscode-web-plAyground');
+	const webDevPlAygroundExists = AwAit exists(webDevPlAygroundRoot);
 
-	let downloadPlayground = false;
-	if (webDevPlaygroundExists) {
+	let downloAdPlAyground = fAlse;
+	if (webDevPlAygroundExists) {
 		try {
-			const webDevPlaygroundPackageJson = JSON.parse(((await readFile(path.join(webDevPlaygroundRoot, 'package.json'))).toString()));
-			if (webDevPlaygroundPackageJson.version !== WEB_PLAYGROUND_VERSION) {
-				downloadPlayground = true;
+			const webDevPlAygroundPAckAgeJson = JSON.pArse(((AwAit reAdFile(pAth.join(webDevPlAygroundRoot, 'pAckAge.json'))).toString()));
+			if (webDevPlAygroundPAckAgeJson.version !== WEB_PLAYGROUND_VERSION) {
+				downloAdPlAyground = true;
 			}
-		} catch (error) {
-			downloadPlayground = true;
+		} cAtch (error) {
+			downloAdPlAyground = true;
 		}
 	} else {
-		downloadPlayground = true;
+		downloAdPlAyground = true;
 	}
 
-	if (downloadPlayground) {
-		if (args.verbose) {
-			fancyLog(`${ansiColors.magenta('Web Development extensions')}: Downloading vscode-web-playground to ${webDevPlaygroundRoot}`);
+	if (downloAdPlAyground) {
+		if (Args.verbose) {
+			fAncyLog(`${AnsiColors.mAgentA('Web Development extensions')}: DownloAding vscode-web-plAyground to ${webDevPlAygroundRoot}`);
 		}
-		await new Promise((resolve, reject) => {
-			remote(['package.json', 'dist/extension.js', 'dist/extension.js.map'], {
-				base: 'https://raw.githubusercontent.com/microsoft/vscode-web-playground/main/'
-			}).pipe(vfs.dest(webDevPlaygroundRoot)).on('end', resolve).on('error', reject);
+		AwAit new Promise((resolve, reject) => {
+			remote(['pAckAge.json', 'dist/extension.js', 'dist/extension.js.mAp'], {
+				bAse: 'https://rAw.githubusercontent.com/microsoft/vscode-web-plAyground/mAin/'
+			}).pipe(vfs.dest(webDevPlAygroundRoot)).on('end', resolve).on('error', reject);
 		});
 	} else {
-		if (args.verbose) {
-			fancyLog(`${ansiColors.magenta('Web Development extensions')}: Using existing vscode-web-playground in ${webDevPlaygroundRoot}`);
+		if (Args.verbose) {
+			fAncyLog(`${AnsiColors.mAgentA('Web Development extensions')}: Using existing vscode-web-plAyground in ${webDevPlAygroundRoot}`);
 		}
 	}
 }
 
-async function getCommandlineProvidedExtensionInfos() {
+Async function getCommAndlineProvidedExtensionInfos() {
 	const extensions = [];
 
 	/** @type {Object.<string, string>} */
-	const locations = {};
+	const locAtions = {};
 
-	let extensionArg = args['extension'];
+	let extensionArg = Args['extension'];
 	if (!extensionArg) {
-		return { extensions, locations };
+		return { extensions, locAtions };
 	}
 
-	const extensionPaths = Array.isArray(extensionArg) ? extensionArg : [extensionArg];
-	await Promise.all(extensionPaths.map(async extensionPath => {
-		extensionPath = path.resolve(process.cwd(), extensionPath);
-		const packageJSON = await getExtensionPackageJSON(extensionPath);
-		if (packageJSON) {
-			const extensionId = `${packageJSON.publisher}.${packageJSON.name}`;
+	const extensionPAths = ArrAy.isArrAy(extensionArg) ? extensionArg : [extensionArg];
+	AwAit Promise.All(extensionPAths.mAp(Async extensionPAth => {
+		extensionPAth = pAth.resolve(process.cwd(), extensionPAth);
+		const pAckAgeJSON = AwAit getExtensionPAckAgeJSON(extensionPAth);
+		if (pAckAgeJSON) {
+			const extensionId = `${pAckAgeJSON.publisher}.${pAckAgeJSON.nAme}`;
 			extensions.push({
-				packageJSON,
-				extensionLocation: { scheme: SCHEME, authority: AUTHORITY, path: `/extension/${extensionId}` }
+				pAckAgeJSON,
+				extensionLocAtion: { scheme: SCHEME, Authority: AUTHORITY, pAth: `/extension/${extensionId}` }
 			});
-			locations[extensionId] = extensionPath;
+			locAtions[extensionId] = extensionPAth;
 		}
 	}));
-	return { extensions, locations };
+	return { extensions, locAtions };
 }
 
-async function getExtensionPackageJSON(extensionPath) {
+Async function getExtensionPAckAgeJSON(extensionPAth) {
 
-	const packageJSONPath = path.join(extensionPath, 'package.json');
-	if (await exists(packageJSONPath)) {
+	const pAckAgeJSONPAth = pAth.join(extensionPAth, 'pAckAge.json');
+	if (AwAit exists(pAckAgeJSONPAth)) {
 		try {
-			let packageJSON = JSON.parse((await readFile(packageJSONPath)).toString());
-			if (packageJSON.main && !packageJSON.browser) {
+			let pAckAgeJSON = JSON.pArse((AwAit reAdFile(pAckAgeJSONPAth)).toString());
+			if (pAckAgeJSON.mAin && !pAckAgeJSON.browser) {
 				return; // unsupported
 			}
 
-			const packageNLSPath = path.join(extensionPath, 'package.nls.json');
-			const packageNLSExists = await exists(packageNLSPath);
-			if (packageNLSExists) {
-				packageJSON = extensions.translatePackageJSON(packageJSON, packageNLSPath); // temporary, until fixed in core
+			const pAckAgeNLSPAth = pAth.join(extensionPAth, 'pAckAge.nls.json');
+			const pAckAgeNLSExists = AwAit exists(pAckAgeNLSPAth);
+			if (pAckAgeNLSExists) {
+				pAckAgeJSON = extensions.trAnslAtePAckAgeJSON(pAckAgeJSON, pAckAgeNLSPAth); // temporAry, until fixed in core
 			}
 
-			return packageJSON;
-		} catch (e) {
+			return pAckAgeJSON;
+		} cAtch (e) {
 			console.log(e);
 		}
 	}
@@ -203,62 +203,62 @@ async function getExtensionPackageJSON(extensionPath) {
 }
 
 const builtInExtensionsPromise = getBuiltInExtensionInfos();
-const commandlineProvidedExtensionsPromise = getCommandlineProvidedExtensionInfos();
+const commAndlineProvidedExtensionsPromise = getCommAndlineProvidedExtensionInfos();
 
-const mapCallbackUriToRequestId = new Map();
+const mApCAllbAckUriToRequestId = new MAp();
 
-const server = http.createServer((req, res) => {
-	const parsedUrl = url.parse(req.url, true);
-	const pathname = parsedUrl.pathname;
+const server = http.creAteServer((req, res) => {
+	const pArsedUrl = url.pArse(req.url, true);
+	const pAthnAme = pArsedUrl.pAthnAme;
 
 	try {
-		if (pathname === '/favicon.ico') {
-			// favicon
-			return serveFile(req, res, path.join(APP_ROOT, 'resources', 'win32', 'code.ico'));
+		if (pAthnAme === '/fAvicon.ico') {
+			// fAvicon
+			return serveFile(req, res, pAth.join(APP_ROOT, 'resources', 'win32', 'code.ico'));
 		}
-		if (pathname === '/manifest.json') {
-			// manifest
-			res.writeHead(200, { 'Content-Type': 'application/json' });
+		if (pAthnAme === '/mAnifest.json') {
+			// mAnifest
+			res.writeHeAd(200, { 'Content-Type': 'ApplicAtion/json' });
 			return res.end(JSON.stringify({
-				'name': 'Code Web - OSS',
-				'short_name': 'Code Web - OSS',
-				'start_url': '/',
-				'lang': 'en-US',
-				'display': 'standalone'
+				'nAme': 'Code Web - OSS',
+				'short_nAme': 'Code Web - OSS',
+				'stArt_url': '/',
+				'lAng': 'en-US',
+				'displAy': 'stAndAlone'
 			}));
 		}
-		if (/^\/static\//.test(pathname)) {
-			// static requests
-			return handleStatic(req, res, parsedUrl);
+		if (/^\/stAtic\//.test(pAthnAme)) {
+			// stAtic requests
+			return hAndleStAtic(req, res, pArsedUrl);
 		}
-		if (/^\/extension\//.test(pathname)) {
-			// default extension requests
-			return handleExtension(req, res, parsedUrl);
+		if (/^\/extension\//.test(pAthnAme)) {
+			// defAult extension requests
+			return hAndleExtension(req, res, pArsedUrl);
 		}
-		if (pathname === '/') {
-			// main web
-			return handleRoot(req, res);
-		} else if (pathname === '/callback') {
-			// callback support
-			return handleCallback(req, res, parsedUrl);
-		} else if (pathname === '/fetch-callback') {
-			// callback fetch support
-			return handleFetchCallback(req, res, parsedUrl);
+		if (pAthnAme === '/') {
+			// mAin web
+			return hAndleRoot(req, res);
+		} else if (pAthnAme === '/cAllbAck') {
+			// cAllbAck support
+			return hAndleCAllbAck(req, res, pArsedUrl);
+		} else if (pAthnAme === '/fetch-cAllbAck') {
+			// cAllbAck fetch support
+			return hAndleFetchCAllbAck(req, res, pArsedUrl);
 		}
 
 		return serveError(req, res, 404, 'Not found.');
-	} catch (error) {
+	} cAtch (error) {
 		console.error(error.toString());
 
-		return serveError(req, res, 500, 'Internal Server Error.');
+		return serveError(req, res, 500, 'InternAl Server Error.');
 	}
 });
 
 server.listen(LOCAL_PORT, () => {
 	if (LOCAL_PORT !== PORT) {
-		console.log(`Operating location at http://0.0.0.0:${LOCAL_PORT}`);
+		console.log(`OperAting locAtion At http://0.0.0.0:${LOCAL_PORT}`);
 	}
-	console.log(`Web UI available at   ${SCHEME}://${AUTHORITY}`);
+	console.log(`Web UI AvAilAble At   ${SCHEME}://${AUTHORITY}`);
 });
 
 server.on('error', err => {
@@ -267,331 +267,331 @@ server.on('error', err => {
 });
 
 /**
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @param {import('url').UrlWithParsedQuery} parsedUrl
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
+ * @pArAm {import('url').UrlWithPArsedQuery} pArsedUrl
  */
-async function handleStatic(req, res, parsedUrl) {
+Async function hAndleStAtic(req, res, pArsedUrl) {
 
-	if (/^\/static\/extensions\//.test(parsedUrl.pathname)) {
-		const relativePath = decodeURIComponent(parsedUrl.pathname.substr('/static/extensions/'.length));
-		const filePath = getExtensionFilePath(relativePath, (await builtInExtensionsPromise).locations);
-		const responseHeaders = {
+	if (/^\/stAtic\/extensions\//.test(pArsedUrl.pAthnAme)) {
+		const relAtivePAth = decodeURIComponent(pArsedUrl.pAthnAme.substr('/stAtic/extensions/'.length));
+		const filePAth = getExtensionFilePAth(relAtivePAth, (AwAit builtInExtensionsPromise).locAtions);
+		const responseHeAders = {
 			'Access-Control-Allow-Origin': '*'
 		};
-		if (!filePath) {
-			return serveError(req, res, 400, `Bad request.`, responseHeaders);
+		if (!filePAth) {
+			return serveError(req, res, 400, `BAd request.`, responseHeAders);
 		}
-		return serveFile(req, res, filePath, responseHeaders);
+		return serveFile(req, res, filePAth, responseHeAders);
 	}
 
-	// Strip `/static/` from the path
-	const relativeFilePath = path.normalize(decodeURIComponent(parsedUrl.pathname.substr('/static/'.length)));
+	// Strip `/stAtic/` from the pAth
+	const relAtiveFilePAth = pAth.normAlize(decodeURIComponent(pArsedUrl.pAthnAme.substr('/stAtic/'.length)));
 
-	return serveFile(req, res, path.join(APP_ROOT, relativeFilePath));
+	return serveFile(req, res, pAth.join(APP_ROOT, relAtiveFilePAth));
 }
 
 /**
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @param {import('url').UrlWithParsedQuery} parsedUrl
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
+ * @pArAm {import('url').UrlWithPArsedQuery} pArsedUrl
  */
-async function handleExtension(req, res, parsedUrl) {
-	// Strip `/extension/` from the path
-	const relativePath = decodeURIComponent(parsedUrl.pathname.substr('/extension/'.length));
-	const filePath = getExtensionFilePath(relativePath, (await commandlineProvidedExtensionsPromise).locations);
-	const responseHeaders = {
+Async function hAndleExtension(req, res, pArsedUrl) {
+	// Strip `/extension/` from the pAth
+	const relAtivePAth = decodeURIComponent(pArsedUrl.pAthnAme.substr('/extension/'.length));
+	const filePAth = getExtensionFilePAth(relAtivePAth, (AwAit commAndlineProvidedExtensionsPromise).locAtions);
+	const responseHeAders = {
 		'Access-Control-Allow-Origin': '*'
 	};
-	if (!filePath) {
-		return serveError(req, res, 400, `Bad request.`, responseHeaders);
+	if (!filePAth) {
+		return serveError(req, res, 400, `BAd request.`, responseHeAders);
 	}
-	return serveFile(req, res, filePath, responseHeaders);
+	return serveFile(req, res, filePAth, responseHeAders);
 }
 
 /**
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
  */
-async function handleRoot(req, res) {
-	let folderUri = { scheme: 'memfs', path: `/sample-folder` };
+Async function hAndleRoot(req, res) {
+	let folderUri = { scheme: 'memfs', pAth: `/sAmple-folder` };
 
-	const match = req.url && req.url.match(/\?([^#]+)/);
-	if (match) {
-		const qs = new URLSearchParams(match[1]);
+	const mAtch = req.url && req.url.mAtch(/\?([^#]+)/);
+	if (mAtch) {
+		const qs = new URLSeArchPArAms(mAtch[1]);
 
 		let gh = qs.get('gh');
 		if (gh) {
-			if (gh.startsWith('/')) {
+			if (gh.stArtsWith('/')) {
 				gh = gh.substr(1);
 			}
 
-			const [owner, repo, ...branch] = gh.split('/', 3);
-			const ref = branch.join('/');
-			folderUri = { scheme: 'github', authority: `${owner}+${repo}${ref ? `+${ref}` : ''}`, path: '/' };
+			const [owner, repo, ...brAnch] = gh.split('/', 3);
+			const ref = brAnch.join('/');
+			folderUri = { scheme: 'github', Authority: `${owner}+${repo}${ref ? `+${ref}` : ''}`, pAth: '/' };
 		} else {
 			let cs = qs.get('cs');
 			if (cs) {
-				if (cs.startsWith('/')) {
+				if (cs.stArtsWith('/')) {
 					cs = cs.substr(1);
 				}
 
-				const [owner, repo, ...branch] = cs.split('/');
-				const ref = branch.join('/');
-				folderUri = { scheme: 'codespace', authority: `${owner}+${repo}${ref ? `+${ref}` : ''}`, path: '/' };
+				const [owner, repo, ...brAnch] = cs.split('/');
+				const ref = brAnch.join('/');
+				folderUri = { scheme: 'codespAce', Authority: `${owner}+${repo}${ref ? `+${ref}` : ''}`, pAth: '/' };
 			}
 		}
 	}
 
-	const { extensions: builtInExtensions } = await builtInExtensionsPromise;
-	const { extensions: staticExtensions, locations: staticLocations } = await commandlineProvidedExtensionsPromise;
+	const { extensions: builtInExtensions } = AwAit builtInExtensionsPromise;
+	const { extensions: stAticExtensions, locAtions: stAticLocAtions } = AwAit commAndlineProvidedExtensionsPromise;
 
 	const dedupedBuiltInExtensions = [];
 	for (const builtInExtension of builtInExtensions) {
-		const extensionId = `${builtInExtension.packageJSON.publisher}.${builtInExtension.packageJSON.name}`;
-		if (staticLocations[extensionId]) {
-			fancyLog(`${ansiColors.magenta('BuiltIn extensions')}: Ignoring built-in ${extensionId} because it was overridden via --extension argument`);
+		const extensionId = `${builtInExtension.pAckAgeJSON.publisher}.${builtInExtension.pAckAgeJSON.nAme}`;
+		if (stAticLocAtions[extensionId]) {
+			fAncyLog(`${AnsiColors.mAgentA('BuiltIn extensions')}: Ignoring built-in ${extensionId} becAuse it wAs overridden viA --extension Argument`);
 			continue;
 		}
 
 		dedupedBuiltInExtensions.push(builtInExtension);
 	}
 
-	if (args.verbose) {
-		fancyLog(`${ansiColors.magenta('BuiltIn extensions')}: ${dedupedBuiltInExtensions.map(e => path.basename(e.extensionPath)).join(', ')}`);
-		fancyLog(`${ansiColors.magenta('Additional extensions')}: ${staticExtensions.map(e => path.basename(e.extensionLocation.path)).join(', ') || 'None'}`);
+	if (Args.verbose) {
+		fAncyLog(`${AnsiColors.mAgentA('BuiltIn extensions')}: ${dedupedBuiltInExtensions.mAp(e => pAth.bAsenAme(e.extensionPAth)).join(', ')}`);
+		fAncyLog(`${AnsiColors.mAgentA('AdditionAl extensions')}: ${stAticExtensions.mAp(e => pAth.bAsenAme(e.extensionLocAtion.pAth)).join(', ') || 'None'}`);
 	}
 
 	const webConfigJSON = {
 		folderUri: folderUri,
-		staticExtensions,
-		enableSyncByDefault: args['enable-sync'],
+		stAticExtensions,
+		enAbleSyncByDefAult: Args['enAble-sync'],
 	};
-	if (args['wrap-iframe']) {
-		webConfigJSON._wrapWebWorkerExtHostInIframe = true;
+	if (Args['wrAp-ifrAme']) {
+		webConfigJSON._wrApWebWorkerExtHostInIfrAme = true;
 	}
 
-	const authSessionInfo = args['github-auth'] ? {
+	const AuthSessionInfo = Args['github-Auth'] ? {
 		id: uuid.v4(),
 		providerId: 'github',
-		accessToken: args['github-auth'],
-		scopes: [['user:email'], ['repo']]
+		AccessToken: Args['github-Auth'],
+		scopes: [['user:emAil'], ['repo']]
 	} : undefined;
 
-	const data = (await readFile(WEB_MAIN)).toString()
-		.replace('{{WORKBENCH_WEB_CONFIGURATION}}', () => escapeAttribute(JSON.stringify(webConfigJSON))) // use a replace function to avoid that regexp replace patterns ($&, $0, ...) are applied
-		.replace('{{WORKBENCH_BUILTIN_EXTENSIONS}}', () => escapeAttribute(JSON.stringify(dedupedBuiltInExtensions)))
-		.replace('{{WORKBENCH_AUTH_SESSION}}', () => authSessionInfo ? escapeAttribute(JSON.stringify(authSessionInfo)) : '')
-		.replace('{{WEBVIEW_ENDPOINT}}', '');
+	const dAtA = (AwAit reAdFile(WEB_MAIN)).toString()
+		.replAce('{{WORKBENCH_WEB_CONFIGURATION}}', () => escApeAttribute(JSON.stringify(webConfigJSON))) // use A replAce function to Avoid thAt regexp replAce pAtterns ($&, $0, ...) Are Applied
+		.replAce('{{WORKBENCH_BUILTIN_EXTENSIONS}}', () => escApeAttribute(JSON.stringify(dedupedBuiltInExtensions)))
+		.replAce('{{WORKBENCH_AUTH_SESSION}}', () => AuthSessionInfo ? escApeAttribute(JSON.stringify(AuthSessionInfo)) : '')
+		.replAce('{{WEBVIEW_ENDPOINT}}', '');
 
 
-	const headers = { 'Content-Type': 'text/html' };
-	if (args['trusted-types']) {
-		headers['Content-Security-Policy-Report-Only'] = 'require-trusted-types-for \'script\';';
+	const heAders = { 'Content-Type': 'text/html' };
+	if (Args['trusted-types']) {
+		heAders['Content-Security-Policy-Report-Only'] = 'require-trusted-types-for \'script\';';
 	}
 
-	res.writeHead(200, headers);
-	return res.end(data);
+	res.writeHeAd(200, heAders);
+	return res.end(dAtA);
 }
 
 /**
- * Handle HTTP requests for /callback
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @param {import('url').UrlWithParsedQuery} parsedUrl
+ * HAndle HTTP requests for /cAllbAck
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
+ * @pArAm {import('url').UrlWithPArsedQuery} pArsedUrl
 */
-async function handleCallback(req, res, parsedUrl) {
-	const wellKnownKeys = ['vscode-requestId', 'vscode-scheme', 'vscode-authority', 'vscode-path', 'vscode-query', 'vscode-fragment'];
-	const [requestId, vscodeScheme, vscodeAuthority, vscodePath, vscodeQuery, vscodeFragment] = wellKnownKeys.map(key => {
-		const value = getFirstQueryValue(parsedUrl, key);
-		if (value) {
-			return decodeURIComponent(value);
+Async function hAndleCAllbAck(req, res, pArsedUrl) {
+	const wellKnownKeys = ['vscode-requestId', 'vscode-scheme', 'vscode-Authority', 'vscode-pAth', 'vscode-query', 'vscode-frAgment'];
+	const [requestId, vscodeScheme, vscodeAuthority, vscodePAth, vscodeQuery, vscodeFrAgment] = wellKnownKeys.mAp(key => {
+		const vAlue = getFirstQueryVAlue(pArsedUrl, key);
+		if (vAlue) {
+			return decodeURIComponent(vAlue);
 		}
 
-		return value;
+		return vAlue;
 	});
 
 	if (!requestId) {
-		res.writeHead(400, { 'Content-Type': 'text/plain' });
-		return res.end(`Bad request.`);
+		res.writeHeAd(400, { 'Content-Type': 'text/plAin' });
+		return res.end(`BAd request.`);
 	}
 
-	// merge over additional query values that we got
+	// merge over AdditionAl query vAlues thAt we got
 	let query = vscodeQuery;
 	let index = 0;
-	getFirstQueryValues(parsedUrl, wellKnownKeys).forEach((value, key) => {
+	getFirstQueryVAlues(pArsedUrl, wellKnownKeys).forEAch((vAlue, key) => {
 		if (!query) {
 			query = '';
 		}
 
 		const prefix = (index++ === 0) ? '' : '&';
-		query += `${prefix}${key}=${value}`;
+		query += `${prefix}${key}=${vAlue}`;
 	});
 
 
-	// add to map of known callbacks
-	mapCallbackUriToRequestId.set(requestId, JSON.stringify({ scheme: vscodeScheme || 'code-oss', authority: vscodeAuthority, path: vscodePath, query, fragment: vscodeFragment }));
-	return serveFile(req, res, path.join(APP_ROOT, 'resources', 'web', 'callback.html'), { 'Content-Type': 'text/html' });
+	// Add to mAp of known cAllbAcks
+	mApCAllbAckUriToRequestId.set(requestId, JSON.stringify({ scheme: vscodeScheme || 'code-oss', Authority: vscodeAuthority, pAth: vscodePAth, query, frAgment: vscodeFrAgment }));
+	return serveFile(req, res, pAth.join(APP_ROOT, 'resources', 'web', 'cAllbAck.html'), { 'Content-Type': 'text/html' });
 }
 
 /**
- * Handle HTTP requests for /fetch-callback
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @param {import('url').UrlWithParsedQuery} parsedUrl
+ * HAndle HTTP requests for /fetch-cAllbAck
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
+ * @pArAm {import('url').UrlWithPArsedQuery} pArsedUrl
 */
-async function handleFetchCallback(req, res, parsedUrl) {
-	const requestId = getFirstQueryValue(parsedUrl, 'vscode-requestId');
+Async function hAndleFetchCAllbAck(req, res, pArsedUrl) {
+	const requestId = getFirstQueryVAlue(pArsedUrl, 'vscode-requestId');
 	if (!requestId) {
-		res.writeHead(400, { 'Content-Type': 'text/plain' });
-		return res.end(`Bad request.`);
+		res.writeHeAd(400, { 'Content-Type': 'text/plAin' });
+		return res.end(`BAd request.`);
 	}
 
-	const knownCallbackUri = mapCallbackUriToRequestId.get(requestId);
-	if (knownCallbackUri) {
-		mapCallbackUriToRequestId.delete(requestId);
+	const knownCAllbAckUri = mApCAllbAckUriToRequestId.get(requestId);
+	if (knownCAllbAckUri) {
+		mApCAllbAckUriToRequestId.delete(requestId);
 	}
 
-	res.writeHead(200, { 'Content-Type': 'text/json' });
-	return res.end(knownCallbackUri);
+	res.writeHeAd(200, { 'Content-Type': 'text/json' });
+	return res.end(knownCAllbAckUri);
 }
 
 /**
- * @param {import('url').UrlWithParsedQuery} parsedUrl
- * @param {string} key
+ * @pArAm {import('url').UrlWithPArsedQuery} pArsedUrl
+ * @pArAm {string} key
  * @returns {string | undefined}
 */
-function getFirstQueryValue(parsedUrl, key) {
-	const result = parsedUrl.query[key];
-	return Array.isArray(result) ? result[0] : result;
+function getFirstQueryVAlue(pArsedUrl, key) {
+	const result = pArsedUrl.query[key];
+	return ArrAy.isArrAy(result) ? result[0] : result;
 }
 
 /**
- * @param {import('url').UrlWithParsedQuery} parsedUrl
- * @param {string[] | undefined} ignoreKeys
- * @returns {Map<string, string>}
+ * @pArAm {import('url').UrlWithPArsedQuery} pArsedUrl
+ * @pArAm {string[] | undefined} ignoreKeys
+ * @returns {MAp<string, string>}
 */
-function getFirstQueryValues(parsedUrl, ignoreKeys) {
-	const queryValues = new Map();
+function getFirstQueryVAlues(pArsedUrl, ignoreKeys) {
+	const queryVAlues = new MAp();
 
-	for (const key in parsedUrl.query) {
+	for (const key in pArsedUrl.query) {
 		if (ignoreKeys && ignoreKeys.indexOf(key) >= 0) {
 			continue;
 		}
 
-		const value = getFirstQueryValue(parsedUrl, key);
-		if (typeof value === 'string') {
-			queryValues.set(key, value);
+		const vAlue = getFirstQueryVAlue(pArsedUrl, key);
+		if (typeof vAlue === 'string') {
+			queryVAlues.set(key, vAlue);
 		}
 	}
 
-	return queryValues;
+	return queryVAlues;
 }
 
 /**
- * @param {string} value
+ * @pArAm {string} vAlue
  */
-function escapeAttribute(value) {
-	return value.replace(/"/g, '&quot;');
+function escApeAttribute(vAlue) {
+	return vAlue.replAce(/"/g, '&quot;');
 }
 
 /**
- * @param {string} relativePath
- * @param {Object.<string, string>} locations
+ * @pArAm {string} relAtivePAth
+ * @pArAm {Object.<string, string>} locAtions
  * @returns {string | undefined}
 */
-function getExtensionFilePath(relativePath, locations) {
-	const firstSlash = relativePath.indexOf('/');
-	if (firstSlash === -1) {
+function getExtensionFilePAth(relAtivePAth, locAtions) {
+	const firstSlAsh = relAtivePAth.indexOf('/');
+	if (firstSlAsh === -1) {
 		return undefined;
 	}
-	const extensionId = relativePath.substr(0, firstSlash);
+	const extensionId = relAtivePAth.substr(0, firstSlAsh);
 
-	const extensionPath = locations[extensionId];
-	if (!extensionPath) {
+	const extensionPAth = locAtions[extensionId];
+	if (!extensionPAth) {
 		return undefined;
 	}
-	return path.join(extensionPath, relativePath.substr(firstSlash + 1));
+	return pAth.join(extensionPAth, relAtivePAth.substr(firstSlAsh + 1));
 }
 
 /**
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @param {string} errorMessage
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
+ * @pArAm {string} errorMessAge
  */
-function serveError(req, res, errorCode, errorMessage, responseHeaders = Object.create(null)) {
-	responseHeaders['Content-Type'] = 'text/plain';
-	res.writeHead(errorCode, responseHeaders);
-	res.end(errorMessage);
+function serveError(req, res, errorCode, errorMessAge, responseHeAders = Object.creAte(null)) {
+	responseHeAders['Content-Type'] = 'text/plAin';
+	res.writeHeAd(errorCode, responseHeAders);
+	res.end(errorMessAge);
 }
 
 const textMimeType = {
 	'.html': 'text/html',
-	'.js': 'text/javascript',
-	'.json': 'application/json',
+	'.js': 'text/jAvAscript',
+	'.json': 'ApplicAtion/json',
 	'.css': 'text/css',
-	'.svg': 'image/svg+xml',
+	'.svg': 'imAge/svg+xml',
 };
 
-const mapExtToMediaMimes = {
-	'.bmp': 'image/bmp',
-	'.gif': 'image/gif',
-	'.ico': 'image/x-icon',
-	'.jpe': 'image/jpg',
-	'.jpeg': 'image/jpg',
-	'.jpg': 'image/jpg',
-	'.png': 'image/png',
-	'.tga': 'image/x-tga',
-	'.tif': 'image/tiff',
-	'.tiff': 'image/tiff',
-	'.woff': 'application/font-woff'
+const mApExtToMediAMimes = {
+	'.bmp': 'imAge/bmp',
+	'.gif': 'imAge/gif',
+	'.ico': 'imAge/x-icon',
+	'.jpe': 'imAge/jpg',
+	'.jpeg': 'imAge/jpg',
+	'.jpg': 'imAge/jpg',
+	'.png': 'imAge/png',
+	'.tgA': 'imAge/x-tgA',
+	'.tif': 'imAge/tiff',
+	'.tiff': 'imAge/tiff',
+	'.woff': 'ApplicAtion/font-woff'
 };
 
 /**
- * @param {string} forPath
+ * @pArAm {string} forPAth
  */
-function getMediaMime(forPath) {
-	const ext = path.extname(forPath);
+function getMediAMime(forPAth) {
+	const ext = pAth.extnAme(forPAth);
 
-	return mapExtToMediaMimes[ext.toLowerCase()];
+	return mApExtToMediAMimes[ext.toLowerCAse()];
 }
 
 /**
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @param {string} filePath
+ * @pArAm {import('http').IncomingMessAge} req
+ * @pArAm {import('http').ServerResponse} res
+ * @pArAm {string} filePAth
  */
-async function serveFile(req, res, filePath, responseHeaders = Object.create(null)) {
+Async function serveFile(req, res, filePAth, responseHeAders = Object.creAte(null)) {
 	try {
 
-		// Sanity checks
-		filePath = path.normalize(filePath); // ensure no "." and ".."
+		// SAnity checks
+		filePAth = pAth.normAlize(filePAth); // ensure no "." And ".."
 
-		const stat = await util.promisify(fs.stat)(filePath);
+		const stAt = AwAit util.promisify(fs.stAt)(filePAth);
 
 		// Check if file modified since
-		const etag = `W/"${[stat.ino, stat.size, stat.mtime.getTime()].join('-')}"`; // weak validator (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag)
-		if (req.headers['if-none-match'] === etag) {
-			res.writeHead(304);
+		const etAg = `W/"${[stAt.ino, stAt.size, stAt.mtime.getTime()].join('-')}"`; // weAk vAlidAtor (https://developer.mozillA.org/en-US/docs/Web/HTTP/HeAders/ETAg)
+		if (req.heAders['if-none-mAtch'] === etAg) {
+			res.writeHeAd(304);
 			return res.end();
 		}
 
-		// Headers
-		responseHeaders['Content-Type'] = textMimeType[path.extname(filePath)] || getMediaMime(filePath) || 'text/plain';
-		responseHeaders['Etag'] = etag;
+		// HeAders
+		responseHeAders['Content-Type'] = textMimeType[pAth.extnAme(filePAth)] || getMediAMime(filePAth) || 'text/plAin';
+		responseHeAders['EtAg'] = etAg;
 
-		res.writeHead(200, responseHeaders);
+		res.writeHeAd(200, responseHeAders);
 
-		// Data
-		fs.createReadStream(filePath).pipe(res);
-	} catch (error) {
+		// DAtA
+		fs.creAteReAdStreAm(filePAth).pipe(res);
+	} cAtch (error) {
 		console.error(error.toString());
-		responseHeaders['Content-Type'] = 'text/plain';
-		res.writeHead(404, responseHeaders);
+		responseHeAders['Content-Type'] = 'text/plAin';
+		res.writeHeAd(404, responseHeAders);
 		return res.end('Not found');
 	}
 }
 
-if (args.launch !== false) {
+if (Args.lAunch !== fAlse) {
 	opn(`${SCHEME}://${HOST}:${PORT}`);
 }

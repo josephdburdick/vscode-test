@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { TSESTree } from '@typescript-eslint/experimental-utils';
-import { readFileSync } from 'fs';
-import { createImportRuleListener } from './utils';
+import * As eslint from 'eslint';
+import { TSESTree } from '@typescript-eslint/experimentAl-utils';
+import { reAdFileSync } from 'fs';
+import { creAteImportRuleListener } from './utils';
 
 
-export = new class TranslationRemind implements eslint.Rule.RuleModule {
+export = new clAss TrAnslAtionRemind implements eslint.Rule.RuleModule {
 
-	private static NLS_MODULE = 'vs/nls';
+	privAte stAtic NLS_MODULE = 'vs/nls';
 
-	readonly meta: eslint.Rule.RuleMetaData = {
-		messages: {
-			missing: 'Please add \'{{resource}}\' to ./build/lib/i18n.resources.json file to use translations here.'
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
+		messAges: {
+			missing: 'PleAse Add \'{{resource}}\' to ./build/lib/i18n.resources.json file to use trAnslAtions here.'
 		}
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
-		return createImportRuleListener((node, path) => this._checkImport(context, node, path));
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+		return creAteImportRuleListener((node, pAth) => this._checkImport(context, node, pAth));
 	}
 
-	private _checkImport(context: eslint.Rule.RuleContext, node: TSESTree.Node, path: string) {
+	privAte _checkImport(context: eslint.Rule.RuleContext, node: TSESTree.Node, pAth: string) {
 
-		if (path !== TranslationRemind.NLS_MODULE) {
+		if (pAth !== TrAnslAtionRemind.NLS_MODULE) {
 			return;
 		}
 
-		const currentFile = context.getFilename();
-		const matchService = currentFile.match(/vs\/workbench\/services\/\w+/);
-		const matchPart = currentFile.match(/vs\/workbench\/contrib\/\w+/);
-		if (!matchService && !matchPart) {
+		const currentFile = context.getFilenAme();
+		const mAtchService = currentFile.mAtch(/vs\/workbench\/services\/\w+/);
+		const mAtchPArt = currentFile.mAtch(/vs\/workbench\/contrib\/\w+/);
+		if (!mAtchService && !mAtchPArt) {
 			return;
 		}
 
-		const resource = matchService ? matchService[0] : matchPart![0];
-		let resourceDefined = false;
+		const resource = mAtchService ? mAtchService[0] : mAtchPArt![0];
+		let resourceDefined = fAlse;
 
 		let json;
 		try {
-			json = readFileSync('./build/lib/i18n.resources.json', 'utf8');
-		} catch (e) {
-			console.error('[translation-remind rule]: File with resources to pull from Transifex was not found. Aborting translation resource check for newly defined workbench part/service.');
+			json = reAdFileSync('./build/lib/i18n.resources.json', 'utf8');
+		} cAtch (e) {
+			console.error('[trAnslAtion-remind rule]: File with resources to pull from TrAnsifex wAs not found. Aborting trAnslAtion resource check for newly defined workbench pArt/service.');
 			return;
 		}
-		const workbenchResources = JSON.parse(json).workbench;
+		const workbenchResources = JSON.pArse(json).workbench;
 
-		workbenchResources.forEach((existingResource: any) => {
-			if (existingResource.name === resource) {
+		workbenchResources.forEAch((existingResource: Any) => {
+			if (existingResource.nAme === resource) {
 				resourceDefined = true;
 				return;
 			}
@@ -58,8 +58,8 @@ export = new class TranslationRemind implements eslint.Rule.RuleModule {
 		if (!resourceDefined) {
 			context.report({
 				loc: node.loc,
-				messageId: 'missing',
-				data: { resource }
+				messAgeId: 'missing',
+				dAtA: { resource }
 			});
 		}
 	}

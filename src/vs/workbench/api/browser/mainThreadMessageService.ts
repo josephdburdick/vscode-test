@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import Severity from 'vs/base/common/severity';
-import { Action, IAction } from 'vs/base/common/actions';
-import { MainThreadMessageServiceShape, MainContext, IExtHostContext, MainThreadMessageOptions } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { Event } from 'vs/base/common/event';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { dispose } from 'vs/base/common/lifecycle';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import * As nls from 'vs/nls';
+import Severity from 'vs/bAse/common/severity';
+import { Action, IAction } from 'vs/bAse/common/Actions';
+import { MAinThreAdMessAgeServiceShApe, MAinContext, IExtHostContext, MAinThreAdMessAgeOptions } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { Event } from 'vs/bAse/common/event';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { dispose } from 'vs/bAse/common/lifecycle';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
 
-@extHostNamedCustomer(MainContext.MainThreadMessageService)
-export class MainThreadMessageService implements MainThreadMessageServiceShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdMessAgeService)
+export clAss MAinThreAdMessAgeService implements MAinThreAdMessAgeServiceShApe {
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@INotificationService private readonly _notificationService: INotificationService,
-		@ICommandService private readonly _commandService: ICommandService,
-		@IDialogService private readonly _dialogService: IDialogService
+		@INotificAtionService privAte reAdonly _notificAtionService: INotificAtionService,
+		@ICommAndService privAte reAdonly _commAndService: ICommAndService,
+		@IDiAlogService privAte reAdonly _diAlogService: IDiAlogService
 	) {
 		//
 	}
@@ -31,94 +31,94 @@ export class MainThreadMessageService implements MainThreadMessageServiceShape {
 		//
 	}
 
-	$showMessage(severity: Severity, message: string, options: MainThreadMessageOptions, commands: { title: string; isCloseAffordance: boolean; handle: number; }[]): Promise<number | undefined> {
-		if (options.modal) {
-			return this._showModalMessage(severity, message, commands);
+	$showMessAge(severity: Severity, messAge: string, options: MAinThreAdMessAgeOptions, commAnds: { title: string; isCloseAffordAnce: booleAn; hAndle: number; }[]): Promise<number | undefined> {
+		if (options.modAl) {
+			return this._showModAlMessAge(severity, messAge, commAnds);
 		} else {
-			return this._showMessage(severity, message, commands, options.extension);
+			return this._showMessAge(severity, messAge, commAnds, options.extension);
 		}
 	}
 
-	private _showMessage(severity: Severity, message: string, commands: { title: string; isCloseAffordance: boolean; handle: number; }[], extension: IExtensionDescription | undefined): Promise<number | undefined> {
+	privAte _showMessAge(severity: Severity, messAge: string, commAnds: { title: string; isCloseAffordAnce: booleAn; hAndle: number; }[], extension: IExtensionDescription | undefined): Promise<number | undefined> {
 
 		return new Promise<number | undefined>(resolve => {
 
-			const primaryActions: MessageItemAction[] = [];
+			const primAryActions: MessAgeItemAction[] = [];
 
-			class MessageItemAction extends Action {
-				constructor(id: string, label: string, handle: number) {
-					super(id, label, undefined, true, () => {
-						resolve(handle);
+			clAss MessAgeItemAction extends Action {
+				constructor(id: string, lAbel: string, hAndle: number) {
+					super(id, lAbel, undefined, true, () => {
+						resolve(hAndle);
 						return Promise.resolve();
 					});
 				}
 			}
 
-			class ManageExtensionAction extends Action {
-				constructor(id: ExtensionIdentifier, label: string, commandService: ICommandService) {
-					super(id.value, label, undefined, true, () => {
-						return commandService.executeCommand('_extensions.manage', id.value);
+			clAss MAnAgeExtensionAction extends Action {
+				constructor(id: ExtensionIdentifier, lAbel: string, commAndService: ICommAndService) {
+					super(id.vAlue, lAbel, undefined, true, () => {
+						return commAndService.executeCommAnd('_extensions.mAnAge', id.vAlue);
 					});
 				}
 			}
 
-			commands.forEach(command => {
-				primaryActions.push(new MessageItemAction('_extension_message_handle_' + command.handle, command.title, command.handle));
+			commAnds.forEAch(commAnd => {
+				primAryActions.push(new MessAgeItemAction('_extension_messAge_hAndle_' + commAnd.hAndle, commAnd.title, commAnd.hAndle));
 			});
 
 			let source: string | undefined;
 			if (extension) {
-				source = nls.localize('extensionSource', "{0} (Extension)", extension.displayName || extension.name);
+				source = nls.locAlize('extensionSource', "{0} (Extension)", extension.displAyNAme || extension.nAme);
 			}
 
 			if (!source) {
-				source = nls.localize('defaultSource', "Extension");
+				source = nls.locAlize('defAultSource', "Extension");
 			}
 
-			const secondaryActions: IAction[] = [];
+			const secondAryActions: IAction[] = [];
 			if (extension && !extension.isUnderDevelopment) {
-				secondaryActions.push(new ManageExtensionAction(extension.identifier, nls.localize('manageExtension', "Manage Extension"), this._commandService));
+				secondAryActions.push(new MAnAgeExtensionAction(extension.identifier, nls.locAlize('mAnAgeExtension', "MAnAge Extension"), this._commAndService));
 			}
 
-			const messageHandle = this._notificationService.notify({
+			const messAgeHAndle = this._notificAtionService.notify({
 				severity,
-				message,
-				actions: { primary: primaryActions, secondary: secondaryActions },
+				messAge,
+				Actions: { primAry: primAryActions, secondAry: secondAryActions },
 				source
 			});
 
-			// if promise has not been resolved yet, now is the time to ensure a return value
-			// otherwise if already resolved it means the user clicked one of the buttons
-			Event.once(messageHandle.onDidClose)(() => {
-				dispose(primaryActions);
-				dispose(secondaryActions);
+			// if promise hAs not been resolved yet, now is the time to ensure A return vAlue
+			// otherwise if AlreAdy resolved it meAns the user clicked one of the buttons
+			Event.once(messAgeHAndle.onDidClose)(() => {
+				dispose(primAryActions);
+				dispose(secondAryActions);
 				resolve(undefined);
 			});
 		});
 	}
 
-	private async _showModalMessage(severity: Severity, message: string, commands: { title: string; isCloseAffordance: boolean; handle: number; }[]): Promise<number | undefined> {
-		let cancelId: number | undefined = undefined;
+	privAte Async _showModAlMessAge(severity: Severity, messAge: string, commAnds: { title: string; isCloseAffordAnce: booleAn; hAndle: number; }[]): Promise<number | undefined> {
+		let cAncelId: number | undefined = undefined;
 
-		const buttons = commands.map((command, index) => {
-			if (command.isCloseAffordance === true) {
-				cancelId = index;
+		const buttons = commAnds.mAp((commAnd, index) => {
+			if (commAnd.isCloseAffordAnce === true) {
+				cAncelId = index;
 			}
 
-			return command.title;
+			return commAnd.title;
 		});
 
-		if (cancelId === undefined) {
+		if (cAncelId === undefined) {
 			if (buttons.length > 0) {
-				buttons.push(nls.localize('cancel', "Cancel"));
+				buttons.push(nls.locAlize('cAncel', "CAncel"));
 			} else {
-				buttons.push(nls.localize('ok', "OK"));
+				buttons.push(nls.locAlize('ok', "OK"));
 			}
 
-			cancelId = buttons.length - 1;
+			cAncelId = buttons.length - 1;
 		}
 
-		const { choice } = await this._dialogService.show(severity, message, buttons, { cancelId });
-		return choice === commands.length ? undefined : commands[choice].handle;
+		const { choice } = AwAit this._diAlogService.show(severity, messAge, buttons, { cAncelId });
+		return choice === commAnds.length ? undefined : commAnds[choice].hAndle;
 	}
 }

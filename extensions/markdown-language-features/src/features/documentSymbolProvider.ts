@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { MarkdownEngine } from '../markdownEngine';
-import { TableOfContentsProvider, SkinnyTextDocument, TocEntry } from '../tableOfContentsProvider';
+import * As vscode from 'vscode';
+import { MArkdownEngine } from '../mArkdownEngine';
+import { TAbleOfContentsProvider, SkinnyTextDocument, TocEntry } from '../tAbleOfContentsProvider';
 
-interface MarkdownSymbol {
-	readonly level: number;
-	readonly parent: MarkdownSymbol | undefined;
-	readonly children: vscode.DocumentSymbol[];
+interfAce MArkdownSymbol {
+	reAdonly level: number;
+	reAdonly pArent: MArkdownSymbol | undefined;
+	reAdonly children: vscode.DocumentSymbol[];
 }
 
-export default class MDDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+export defAult clAss MDDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
 	constructor(
-		private readonly engine: MarkdownEngine
+		privAte reAdonly engine: MArkdownEngine
 	) { }
 
-	public async provideDocumentSymbolInformation(document: SkinnyTextDocument): Promise<vscode.SymbolInformation[]> {
-		const toc = await new TableOfContentsProvider(this.engine, document).getToc();
-		return toc.map(entry => this.toSymbolInformation(entry));
+	public Async provideDocumentSymbolInformAtion(document: SkinnyTextDocument): Promise<vscode.SymbolInformAtion[]> {
+		const toc = AwAit new TAbleOfContentsProvider(this.engine, document).getToc();
+		return toc.mAp(entry => this.toSymbolInformAtion(entry));
 	}
 
-	public async provideDocumentSymbols(document: SkinnyTextDocument): Promise<vscode.DocumentSymbol[]> {
-		const toc = await new TableOfContentsProvider(this.engine, document).getToc();
-		const root: MarkdownSymbol = {
+	public Async provideDocumentSymbols(document: SkinnyTextDocument): Promise<vscode.DocumentSymbol[]> {
+		const toc = AwAit new TAbleOfContentsProvider(this.engine, document).getToc();
+		const root: MArkdownSymbol = {
 			level: -Infinity,
 			children: [],
-			parent: undefined
+			pArent: undefined
 		};
 		this.buildTree(root, toc);
 		return root.children;
 	}
 
-	private buildTree(parent: MarkdownSymbol, entries: TocEntry[]) {
+	privAte buildTree(pArent: MArkdownSymbol, entries: TocEntry[]) {
 		if (!entries.length) {
 			return;
 		}
@@ -44,32 +44,32 @@ export default class MDDocumentSymbolProvider implements vscode.DocumentSymbolPr
 		const symbol = this.toDocumentSymbol(entry);
 		symbol.children = [];
 
-		while (parent && entry.level <= parent.level) {
-			parent = parent.parent!;
+		while (pArent && entry.level <= pArent.level) {
+			pArent = pArent.pArent!;
 		}
-		parent.children.push(symbol);
-		this.buildTree({ level: entry.level, children: symbol.children, parent }, entries.slice(1));
+		pArent.children.push(symbol);
+		this.buildTree({ level: entry.level, children: symbol.children, pArent }, entries.slice(1));
 	}
 
 
-	private toSymbolInformation(entry: TocEntry): vscode.SymbolInformation {
-		return new vscode.SymbolInformation(
-			this.getSymbolName(entry),
+	privAte toSymbolInformAtion(entry: TocEntry): vscode.SymbolInformAtion {
+		return new vscode.SymbolInformAtion(
+			this.getSymbolNAme(entry),
 			vscode.SymbolKind.String,
 			'',
-			entry.location);
+			entry.locAtion);
 	}
 
-	private toDocumentSymbol(entry: TocEntry) {
+	privAte toDocumentSymbol(entry: TocEntry) {
 		return new vscode.DocumentSymbol(
-			this.getSymbolName(entry),
+			this.getSymbolNAme(entry),
 			'',
 			vscode.SymbolKind.String,
-			entry.location.range,
-			entry.location.range);
+			entry.locAtion.rAnge,
+			entry.locAtion.rAnge);
 	}
 
-	private getSymbolName(entry: TocEntry): string {
-		return '#'.repeat(entry.level) + ' ' + entry.text;
+	privAte getSymbolNAme(entry: TocEntry): string {
+		return '#'.repeAt(entry.level) + ' ' + entry.text;
 	}
 }

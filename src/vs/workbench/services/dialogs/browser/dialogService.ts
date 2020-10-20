@@ -1,119 +1,119 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IDialogService, IDialogOptions, IConfirmation, IConfirmationResult, DialogType, IShowResult } from 'vs/platform/dialogs/common/dialogs';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
-import { ILogService } from 'vs/platform/log/common/log';
-import Severity from 'vs/base/common/severity';
-import { Dialog } from 'vs/base/browser/ui/dialog/dialog';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { attachDialogStyler } from 'vs/platform/theme/common/styler';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { EventHelper } from 'vs/base/browser/dom';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { fromNow } from 'vs/base/common/date';
+import * As nls from 'vs/nls';
+import { IDiAlogService, IDiAlogOptions, IConfirmAtion, IConfirmAtionResult, DiAlogType, IShowResult } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { ILAyoutService } from 'vs/plAtform/lAyout/browser/lAyoutService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import Severity from 'vs/bAse/common/severity';
+import { DiAlog } from 'vs/bAse/browser/ui/diAlog/diAlog';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { AttAchDiAlogStyler } from 'vs/plAtform/theme/common/styler';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { EventHelper } from 'vs/bAse/browser/dom';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { fromNow } from 'vs/bAse/common/dAte';
 
-export class DialogService implements IDialogService {
+export clAss DiAlogService implements IDiAlogService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private allowableCommands = ['copy', 'cut', 'editor.action.clipboardCopyAction', 'editor.action.clipboardCutAction'];
+	privAte AllowAbleCommAnds = ['copy', 'cut', 'editor.Action.clipboArdCopyAction', 'editor.Action.clipboArdCutAction'];
 
 	constructor(
-		@ILogService private readonly logService: ILogService,
-		@ILayoutService private readonly layoutService: ILayoutService,
-		@IThemeService private readonly themeService: IThemeService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
-		@IProductService private readonly productService: IProductService,
-		@IClipboardService private readonly clipboardService: IClipboardService
+		@ILogService privAte reAdonly logService: ILogService,
+		@ILAyoutService privAte reAdonly lAyoutService: ILAyoutService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IClipboArdService privAte reAdonly clipboArdService: IClipboArdService
 	) { }
 
-	async confirm(confirmation: IConfirmation): Promise<IConfirmationResult> {
-		this.logService.trace('DialogService#confirm', confirmation.message);
+	Async confirm(confirmAtion: IConfirmAtion): Promise<IConfirmAtionResult> {
+		this.logService.trAce('DiAlogService#confirm', confirmAtion.messAge);
 
 		const buttons: string[] = [];
-		if (confirmation.primaryButton) {
-			buttons.push(confirmation.primaryButton);
+		if (confirmAtion.primAryButton) {
+			buttons.push(confirmAtion.primAryButton);
 		} else {
-			buttons.push(nls.localize({ key: 'yesButton', comment: ['&& denotes a mnemonic'] }, "&&Yes"));
+			buttons.push(nls.locAlize({ key: 'yesButton', comment: ['&& denotes A mnemonic'] }, "&&Yes"));
 		}
 
-		if (confirmation.secondaryButton) {
-			buttons.push(confirmation.secondaryButton);
-		} else if (typeof confirmation.secondaryButton === 'undefined') {
-			buttons.push(nls.localize('cancelButton', "Cancel"));
+		if (confirmAtion.secondAryButton) {
+			buttons.push(confirmAtion.secondAryButton);
+		} else if (typeof confirmAtion.secondAryButton === 'undefined') {
+			buttons.push(nls.locAlize('cAncelButton', "CAncel"));
 		}
 
-		const dialogDisposables = new DisposableStore();
-		const dialog = new Dialog(
-			this.layoutService.container,
-			confirmation.message,
+		const diAlogDisposAbles = new DisposAbleStore();
+		const diAlog = new DiAlog(
+			this.lAyoutService.contAiner,
+			confirmAtion.messAge,
 			buttons,
 			{
-				detail: confirmation.detail,
-				cancelId: 1,
-				type: confirmation.type,
-				keyEventProcessor: (event: StandardKeyboardEvent) => {
-					const resolved = this.keybindingService.softDispatch(event, this.layoutService.container);
-					if (resolved && resolved.commandId) {
-						if (this.allowableCommands.indexOf(resolved.commandId) === -1) {
+				detAil: confirmAtion.detAil,
+				cAncelId: 1,
+				type: confirmAtion.type,
+				keyEventProcessor: (event: StAndArdKeyboArdEvent) => {
+					const resolved = this.keybindingService.softDispAtch(event, this.lAyoutService.contAiner);
+					if (resolved && resolved.commAndId) {
+						if (this.AllowAbleCommAnds.indexOf(resolved.commAndId) === -1) {
 							EventHelper.stop(event, true);
 						}
 					}
 				},
-				checkboxChecked: confirmation.checkbox ? confirmation.checkbox.checked : undefined,
-				checkboxLabel: confirmation.checkbox ? confirmation.checkbox.label : undefined
+				checkboxChecked: confirmAtion.checkbox ? confirmAtion.checkbox.checked : undefined,
+				checkboxLAbel: confirmAtion.checkbox ? confirmAtion.checkbox.lAbel : undefined
 			});
 
-		dialogDisposables.add(dialog);
-		dialogDisposables.add(attachDialogStyler(dialog, this.themeService));
+		diAlogDisposAbles.Add(diAlog);
+		diAlogDisposAbles.Add(AttAchDiAlogStyler(diAlog, this.themeService));
 
-		const result = await dialog.show();
-		dialogDisposables.dispose();
+		const result = AwAit diAlog.show();
+		diAlogDisposAbles.dispose();
 
 		return { confirmed: result.button === 0, checkboxChecked: result.checkboxChecked };
 	}
 
-	private getDialogType(severity: Severity): DialogType {
-		return (severity === Severity.Info) ? 'question' : (severity === Severity.Error) ? 'error' : (severity === Severity.Warning) ? 'warning' : 'none';
+	privAte getDiAlogType(severity: Severity): DiAlogType {
+		return (severity === Severity.Info) ? 'question' : (severity === Severity.Error) ? 'error' : (severity === Severity.WArning) ? 'wArning' : 'none';
 	}
 
-	async show(severity: Severity, message: string, buttons: string[], options?: IDialogOptions): Promise<IShowResult> {
-		this.logService.trace('DialogService#show', message);
+	Async show(severity: Severity, messAge: string, buttons: string[], options?: IDiAlogOptions): Promise<IShowResult> {
+		this.logService.trAce('DiAlogService#show', messAge);
 
-		const dialogDisposables = new DisposableStore();
-		const dialog = new Dialog(
-			this.layoutService.container,
-			message,
+		const diAlogDisposAbles = new DisposAbleStore();
+		const diAlog = new DiAlog(
+			this.lAyoutService.contAiner,
+			messAge,
 			buttons,
 			{
-				detail: options ? options.detail : undefined,
-				cancelId: options ? options.cancelId : undefined,
-				type: this.getDialogType(severity),
-				keyEventProcessor: (event: StandardKeyboardEvent) => {
-					const resolved = this.keybindingService.softDispatch(event, this.layoutService.container);
-					if (resolved && resolved.commandId) {
-						if (this.allowableCommands.indexOf(resolved.commandId) === -1) {
+				detAil: options ? options.detAil : undefined,
+				cAncelId: options ? options.cAncelId : undefined,
+				type: this.getDiAlogType(severity),
+				keyEventProcessor: (event: StAndArdKeyboArdEvent) => {
+					const resolved = this.keybindingService.softDispAtch(event, this.lAyoutService.contAiner);
+					if (resolved && resolved.commAndId) {
+						if (this.AllowAbleCommAnds.indexOf(resolved.commAndId) === -1) {
 							EventHelper.stop(event, true);
 						}
 					}
 				},
-				checkboxLabel: options && options.checkbox ? options.checkbox.label : undefined,
+				checkboxLAbel: options && options.checkbox ? options.checkbox.lAbel : undefined,
 				checkboxChecked: options && options.checkbox ? options.checkbox.checked : undefined
 			});
 
-		dialogDisposables.add(dialog);
-		dialogDisposables.add(attachDialogStyler(dialog, this.themeService));
+		diAlogDisposAbles.Add(diAlog);
+		diAlogDisposAbles.Add(AttAchDiAlogStyler(diAlog, this.themeService));
 
-		const result = await dialog.show();
-		dialogDisposables.dispose();
+		const result = AwAit diAlog.show();
+		diAlogDisposAbles.dispose();
 
 		return {
 			choice: result.button,
@@ -121,27 +121,27 @@ export class DialogService implements IDialogService {
 		};
 	}
 
-	async about(): Promise<void> {
-		const detailString = (useAgo: boolean): string => {
-			return nls.localize('aboutDetail',
-				"Version: {0}\nCommit: {1}\nDate: {2}\nBrowser: {3}",
+	Async About(): Promise<void> {
+		const detAilString = (useAgo: booleAn): string => {
+			return nls.locAlize('AboutDetAil',
+				"Version: {0}\nCommit: {1}\nDAte: {2}\nBrowser: {3}",
 				this.productService.version || 'Unknown',
 				this.productService.commit || 'Unknown',
-				this.productService.date ? `${this.productService.date}${useAgo ? ' (' + fromNow(new Date(this.productService.date), true) + ')' : ''}` : 'Unknown',
-				navigator.userAgent
+				this.productService.dAte ? `${this.productService.dAte}${useAgo ? ' (' + fromNow(new DAte(this.productService.dAte), true) + ')' : ''}` : 'Unknown',
+				nAvigAtor.userAgent
 			);
 		};
 
-		const detail = detailString(true);
-		const detailToCopy = detailString(false);
+		const detAil = detAilString(true);
+		const detAilToCopy = detAilString(fAlse);
 
 
-		const { choice } = await this.show(Severity.Info, this.productService.nameLong, [nls.localize('copy', "Copy"), nls.localize('ok', "OK")], { detail, cancelId: 1 });
+		const { choice } = AwAit this.show(Severity.Info, this.productService.nAmeLong, [nls.locAlize('copy', "Copy"), nls.locAlize('ok', "OK")], { detAil, cAncelId: 1 });
 
 		if (choice === 0) {
-			this.clipboardService.writeText(detailToCopy);
+			this.clipboArdService.writeText(detAilToCopy);
 		}
 	}
 }
 
-registerSingleton(IDialogService, DialogService, true);
+registerSingleton(IDiAlogService, DiAlogService, true);

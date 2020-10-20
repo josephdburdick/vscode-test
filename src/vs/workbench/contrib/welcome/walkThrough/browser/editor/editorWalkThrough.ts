@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/contrib/welcome/walkThrough/browser/editor/vs_code_editor_walkthrough';
-import { localize } from 'vs/nls';
+import 'vs/workbench/contrib/welcome/wAlkThrough/browser/editor/vs_code_editor_wAlkthrough';
+import { locAlize } from 'vs/nls';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { Action } from 'vs/base/common/actions';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { WalkThroughInput, WalkThroughInputOptions } from 'vs/workbench/contrib/welcome/walkThrough/browser/walkThroughInput';
-import { FileAccess, Schemas } from 'vs/base/common/network';
-import { IEditorInputFactory, EditorInput } from 'vs/workbench/common/editor';
+import { Action } from 'vs/bAse/common/Actions';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { WAlkThroughInput, WAlkThroughInputOptions } from 'vs/workbench/contrib/welcome/wAlkThrough/browser/wAlkThroughInput';
+import { FileAccess, SchemAs } from 'vs/bAse/common/network';
+import { IEditorInputFActory, EditorInput } from 'vs/workbench/common/editor';
 
-const typeId = 'workbench.editors.walkThroughInput';
-const inputOptions: WalkThroughInputOptions = {
+const typeId = 'workbench.editors.wAlkThroughInput';
+const inputOptions: WAlkThroughInputOptions = {
 	typeId,
-	name: localize('editorWalkThrough.title', "Interactive Playground"),
-	resource: FileAccess.asBrowserUri('./vs_code_editor_walkthrough.md', require)
+	nAme: locAlize('editorWAlkThrough.title', "InterActive PlAyground"),
+	resource: FileAccess.AsBrowserUri('./vs_code_editor_wAlkthrough.md', require)
 		.with({
-			scheme: Schemas.walkThrough,
-			query: JSON.stringify({ moduleId: 'vs/workbench/contrib/welcome/walkThrough/browser/editor/vs_code_editor_walkthrough' })
+			scheme: SchemAs.wAlkThrough,
+			query: JSON.stringify({ moduleId: 'vs/workbench/contrib/welcome/wAlkThrough/browser/editor/vs_code_editor_wAlkthrough' })
 		}),
-	telemetryFrom: 'walkThrough'
+	telemetryFrom: 'wAlkThrough'
 };
 
-export class EditorWalkThroughAction extends Action {
+export clAss EditorWAlkThroughAction extends Action {
 
-	public static readonly ID = 'workbench.action.showInteractivePlayground';
-	public static readonly LABEL = localize('editorWalkThrough', "Interactive Playground");
+	public stAtic reAdonly ID = 'workbench.Action.showInterActivePlAyground';
+	public stAtic reAdonly LABEL = locAlize('editorWAlkThrough', "InterActive PlAyground");
 
 	constructor(
 		id: string,
-		label: string,
-		@IEditorService private readonly editorService: IEditorService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		lAbel: string,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
 	public run(): Promise<void> {
-		const input = this.instantiationService.createInstance(WalkThroughInput, inputOptions);
+		const input = this.instAntiAtionService.creAteInstAnce(WAlkThroughInput, inputOptions);
 		return this.editorService.openEditor(input, { pinned: true })
 			.then(() => void (0));
 	}
 }
 
-export class EditorWalkThroughInputFactory implements IEditorInputFactory {
+export clAss EditorWAlkThroughInputFActory implements IEditorInputFActory {
 
-	static readonly ID = typeId;
+	stAtic reAdonly ID = typeId;
 
-	public canSerialize(editorInput: EditorInput): boolean {
+	public cAnSeriAlize(editorInput: EditorInput): booleAn {
 		return true;
 	}
 
-	public serialize(editorInput: EditorInput): string {
+	public seriAlize(editorInput: EditorInput): string {
 		return '{}';
 	}
 
-	public deserialize(instantiationService: IInstantiationService, serializedEditorInput: string): WalkThroughInput {
-		return instantiationService.createInstance(WalkThroughInput, inputOptions);
+	public deseriAlize(instAntiAtionService: IInstAntiAtionService, seriAlizedEditorInput: string): WAlkThroughInput {
+		return instAntiAtionService.creAteInstAnce(WAlkThroughInput, inputOptions);
 	}
 }

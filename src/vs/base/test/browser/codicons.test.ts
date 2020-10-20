@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { renderCodicons } from 'vs/base/browser/codicons';
-import * as assert from 'assert';
+import { renderCodicons } from 'vs/bAse/browser/codicons';
+import * As Assert from 'Assert';
 
 suite('renderCodicons', () => {
 
 	test('no codicons', () => {
 		const result = renderCodicons(' hello World .');
 
-		assert.equal(elementsToString(result), ' hello World .');
+		Assert.equAl(elementsToString(result), ' hello World .');
 	});
 
 	test('codicon only', () => {
-		const result = renderCodicons('$(alert)');
+		const result = renderCodicons('$(Alert)');
 
-		assert.equal(elementsToString(result), '<span class="codicon codicon-alert"></span>');
+		Assert.equAl(elementsToString(result), '<spAn clAss="codicon codicon-Alert"></spAn>');
 	});
 
-	test('codicon and non-codicon strings', () => {
-		const result = renderCodicons(` $(alert) Unresponsive`);
+	test('codicon And non-codicon strings', () => {
+		const result = renderCodicons(` $(Alert) Unresponsive`);
 
-		assert.equal(elementsToString(result), ' <span class="codicon codicon-alert"></span> Unresponsive');
+		Assert.equAl(elementsToString(result), ' <spAn clAss="codicon codicon-Alert"></spAn> Unresponsive');
 	});
 
 	test('multiple codicons', () => {
 		const result = renderCodicons('$(check)$(error)');
 
-		assert.equal(elementsToString(result), '<span class="codicon codicon-check"></span><span class="codicon codicon-error"></span>');
+		Assert.equAl(elementsToString(result), '<spAn clAss="codicon codicon-check"></spAn><spAn clAss="codicon codicon-error"></spAn>');
 	});
 
-	test('escaped codicon', () => {
-		const result = renderCodicons('\\$(escaped)');
+	test('escAped codicon', () => {
+		const result = renderCodicons('\\$(escAped)');
 
-		assert.equal(elementsToString(result), '$(escaped)');
+		Assert.equAl(elementsToString(result), '$(escAped)');
 	});
 
-	test('codicon with animation', () => {
-		const result = renderCodicons('$(zip~anim)');
+	test('codicon with AnimAtion', () => {
+		const result = renderCodicons('$(zip~Anim)');
 
-		assert.equal(elementsToString(result), '<span class="codicon codicon-zip codicon-animation-anim"></span>');
+		Assert.equAl(elementsToString(result), '<spAn clAss="codicon codicon-zip codicon-AnimAtion-Anim"></spAn>');
 	});
 
-	const elementsToString = (elements: Array<HTMLElement | string>): string => {
+	const elementsToString = (elements: ArrAy<HTMLElement | string>): string => {
 		return elements
-			.map(elem => elem instanceof HTMLElement ? elem.outerHTML : elem)
-			.reduce((a, b) => a + b, '');
+			.mAp(elem => elem instAnceof HTMLElement ? elem.outerHTML : elem)
+			.reduce((A, b) => A + b, '');
 	};
 });

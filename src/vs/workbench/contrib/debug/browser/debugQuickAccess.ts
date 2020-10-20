@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-import { PickerQuickAccessProvider, IPickerQuickAccessItem, TriggerAction } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { localize } from 'vs/nls';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { IQuickPickSepArAtor } from 'vs/plAtform/quickinput/common/quickInput';
+import { PickerQuickAccessProvider, IPickerQuickAccessItem, TriggerAction } from 'vs/plAtform/quickinput/browser/pickerQuickAccess';
+import { locAlize } from 'vs/nls';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { IDebugService } from 'vs/workbench/contrib/debug/common/debug';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { matchesFuzzy } from 'vs/base/common/filters';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { ADD_CONFIGURATION_ID } from 'vs/workbench/contrib/debug/browser/debugCommands';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { mAtchesFuzzy } from 'vs/bAse/common/filters';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { ADD_CONFIGURATION_ID } from 'vs/workbench/contrib/debug/browser/debugCommAnds';
 
-export class StartDebugQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
+export clAss StArtDebugQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
 
-	static PREFIX = 'debug ';
+	stAtic PREFIX = 'debug ';
 
 	constructor(
-		@IDebugService private readonly debugService: IDebugService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@ICommandService private readonly commandService: ICommandService,
-		@INotificationService private readonly notificationService: INotificationService,
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
 	) {
-		super(StartDebugQuickAccessProvider.PREFIX, {
+		super(StArtDebugQuickAccessProvider.PREFIX, {
 			noResultsPick: {
-				label: localize('noDebugResults', "No matching launch configurations")
+				lAbel: locAlize('noDebugResults', "No mAtching lAunch configurAtions")
 			}
 		});
 	}
 
-	protected async getPicks(filter: string): Promise<(IQuickPickSeparator | IPickerQuickAccessItem)[]> {
-		const picks: Array<IPickerQuickAccessItem | IQuickPickSeparator> = [];
-		picks.push({ type: 'separator', label: 'launch.json' });
+	protected Async getPicks(filter: string): Promise<(IQuickPickSepArAtor | IPickerQuickAccessItem)[]> {
+		const picks: ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor> = [];
+		picks.push({ type: 'sepArAtor', lAbel: 'lAunch.json' });
 
-		const configManager = this.debugService.getConfigurationManager();
+		const configMAnAger = this.debugService.getConfigurAtionMAnAger();
 
 		// Entries: configs
-		let lastGroup: string | undefined;
-		for (let config of configManager.getAllConfigurations()) {
-			const highlights = matchesFuzzy(filter, config.name, true);
+		let lAstGroup: string | undefined;
+		for (let config of configMAnAger.getAllConfigurAtions()) {
+			const highlights = mAtchesFuzzy(filter, config.nAme, true);
 			if (highlights) {
 
-				// Separator
-				if (lastGroup !== config.presentation?.group) {
-					picks.push({ type: 'separator' });
-					lastGroup = config.presentation?.group;
+				// SepArAtor
+				if (lAstGroup !== config.presentAtion?.group) {
+					picks.push({ type: 'sepArAtor' });
+					lAstGroup = config.presentAtion?.group;
 				}
 
-				// Launch entry
+				// LAunch entry
 				picks.push({
-					label: config.name,
-					description: this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE ? config.launch.name : '',
-					highlights: { label: highlights },
+					lAbel: config.nAme,
+					description: this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE ? config.lAunch.nAme : '',
+					highlights: { lAbel: highlights },
 					buttons: [{
-						iconClass: 'codicon-gear',
-						tooltip: localize('customizeLaunchConfig', "Configure Launch Configuration")
+						iconClAss: 'codicon-geAr',
+						tooltip: locAlize('customizeLAunchConfig', "Configure LAunch ConfigurAtion")
 					}],
 					trigger: () => {
-						config.launch.openConfigFile(false);
+						config.lAunch.openConfigFile(fAlse);
 
 						return TriggerAction.CLOSE_PICKER;
 					},
-					accept: async () => {
-						await this.debugService.getConfigurationManager().selectConfiguration(config.launch, config.name);
+					Accept: Async () => {
+						AwAit this.debugService.getConfigurAtionMAnAger().selectConfigurAtion(config.lAunch, config.nAme);
 						try {
-							await this.debugService.startDebugging(config.launch);
-						} catch (error) {
-							this.notificationService.error(error);
+							AwAit this.debugService.stArtDebugging(config.lAunch);
+						} cAtch (error) {
+							this.notificAtionService.error(error);
 						}
 					}
 				});
 			}
 		}
 
-		// Entries detected configurations
-		const dynamicProviders = await configManager.getDynamicProviders();
-		if (dynamicProviders.length > 0) {
+		// Entries detected configurAtions
+		const dynAmicProviders = AwAit configMAnAger.getDynAmicProviders();
+		if (dynAmicProviders.length > 0) {
 			picks.push({
-				type: 'separator', label: localize({
+				type: 'sepArAtor', lAbel: locAlize({
 					key: 'contributed',
-					comment: ['contributed is lower case because it looks better like that in UI. Nothing preceeds it. It is a name of the grouping of debug configurations.']
+					comment: ['contributed is lower cAse becAuse it looks better like thAt in UI. Nothing preceeds it. It is A nAme of the grouping of debug configurAtions.']
 				}, "contributed")
 			});
 		}
 
-		dynamicProviders.forEach(provider => {
+		dynAmicProviders.forEAch(provider => {
 			picks.push({
-				label: `$(folder) ${provider.label}...`,
-				ariaLabel: localize({ key: 'providerAriaLabel', comment: ['Placeholder stands for the provider label. For example "NodeJS".'] }, "{0} contributed configurations", provider.label),
-				accept: async () => {
-					const pick = await provider.pick();
+				lAbel: `$(folder) ${provider.lAbel}...`,
+				AriALAbel: locAlize({ key: 'providerAriALAbel', comment: ['PlAceholder stAnds for the provider lAbel. For exAmple "NodeJS".'] }, "{0} contributed configurAtions", provider.lAbel),
+				Accept: Async () => {
+					const pick = AwAit provider.pick();
 					if (pick) {
-						this.debugService.startDebugging(pick.launch, pick.config);
+						this.debugService.stArtDebugging(pick.lAunch, pick.config);
 					}
 				}
 			});
 		});
 
 
-		// Entries: launches
-		const visibleLaunches = configManager.getLaunches().filter(launch => !launch.hidden);
+		// Entries: lAunches
+		const visibleLAunches = configMAnAger.getLAunches().filter(lAunch => !lAunch.hidden);
 
-		// Separator
-		if (visibleLaunches.length > 0) {
-			picks.push({ type: 'separator', label: localize('configure', "configure") });
+		// SepArAtor
+		if (visibleLAunches.length > 0) {
+			picks.push({ type: 'sepArAtor', lAbel: locAlize('configure', "configure") });
 		}
 
-		for (const launch of visibleLaunches) {
-			const label = this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE ?
-				localize("addConfigTo", "Add Config ({0})...", launch.name) :
-				localize('addConfiguration', "Add Configuration...");
+		for (const lAunch of visibleLAunches) {
+			const lAbel = this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE ?
+				locAlize("AddConfigTo", "Add Config ({0})...", lAunch.nAme) :
+				locAlize('AddConfigurAtion', "Add ConfigurAtion...");
 
 			// Add Config entry
 			picks.push({
-				label,
-				description: this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE ? launch.name : '',
-				highlights: { label: withNullAsUndefined(matchesFuzzy(filter, label, true)) },
-				accept: () => this.commandService.executeCommand(ADD_CONFIGURATION_ID, launch.uri.toString())
+				lAbel,
+				description: this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE ? lAunch.nAme : '',
+				highlights: { lAbel: withNullAsUndefined(mAtchesFuzzy(filter, lAbel, true)) },
+				Accept: () => this.commAndService.executeCommAnd(ADD_CONFIGURATION_ID, lAunch.uri.toString())
 			});
 		}
 

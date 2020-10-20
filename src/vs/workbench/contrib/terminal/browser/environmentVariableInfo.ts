@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableInfo, IMergedEnvironmentVariableCollection, IMergedEnvironmentVariableCollectionDiff, EnvironmentVariableMutatorType } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { localize } from 'vs/nls';
+import { IEnvironmentVAriAbleInfo, IMergedEnvironmentVAriAbleCollection, IMergedEnvironmentVAriAbleCollectionDiff, EnvironmentVAriAbleMutAtorType } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
+import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { locAlize } from 'vs/nls';
 
-export class EnvironmentVariableInfoStale implements IEnvironmentVariableInfo {
-	readonly requiresAction = true;
+export clAss EnvironmentVAriAbleInfoStAle implements IEnvironmentVAriAbleInfo {
+	reAdonly requiresAction = true;
 
 	constructor(
-		private readonly _diff: IMergedEnvironmentVariableCollectionDiff,
-		private readonly _terminalId: number,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		privAte reAdonly _diff: IMergedEnvironmentVAriAbleCollectionDiff,
+		privAte reAdonly _terminAlId: number,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
 	}
 
 	getInfo(): string {
-		const addsAndChanges: string[] = [];
-		const removals: string[] = [];
-		this._diff.added.forEach((mutators, variable) => {
-			mutators.forEach(mutator => addsAndChanges.push(mutatorTypeLabel(mutator.type, mutator.value, variable)));
+		const AddsAndChAnges: string[] = [];
+		const removAls: string[] = [];
+		this._diff.Added.forEAch((mutAtors, vAriAble) => {
+			mutAtors.forEAch(mutAtor => AddsAndChAnges.push(mutAtorTypeLAbel(mutAtor.type, mutAtor.vAlue, vAriAble)));
 		});
-		this._diff.changed.forEach((mutators, variable) => {
-			mutators.forEach(mutator => addsAndChanges.push(mutatorTypeLabel(mutator.type, mutator.value, variable)));
+		this._diff.chAnged.forEAch((mutAtors, vAriAble) => {
+			mutAtors.forEAch(mutAtor => AddsAndChAnges.push(mutAtorTypeLAbel(mutAtor.type, mutAtor.vAlue, vAriAble)));
 		});
-		this._diff.removed.forEach((mutators, variable) => {
-			mutators.forEach(mutator => removals.push(mutatorTypeLabel(mutator.type, mutator.value, variable)));
+		this._diff.removed.forEAch((mutAtors, vAriAble) => {
+			mutAtors.forEAch(mutAtor => removAls.push(mutAtorTypeLAbel(mutAtor.type, mutAtor.vAlue, vAriAble)));
 		});
 
 		let info: string = '';
 
-		if (addsAndChanges.length > 0) {
-			info = localize('extensionEnvironmentContributionChanges', "Extensions want to make the following changes to the terminal's environment:");
+		if (AddsAndChAnges.length > 0) {
+			info = locAlize('extensionEnvironmentContributionChAnges', "Extensions wAnt to mAke the following chAnges to the terminAl's environment:");
 			info += '\n\n';
 			info += '```\n';
-			info += addsAndChanges.join('\n');
+			info += AddsAndChAnges.join('\n');
 			info += '\n```';
 		}
 
-		if (removals.length > 0) {
+		if (removAls.length > 0) {
 			info += info.length > 0 ? '\n\n' : '';
-			info += localize('extensionEnvironmentContributionRemoval', "Extensions want to remove these existing changes from the terminal's environment:");
+			info += locAlize('extensionEnvironmentContributionRemovAl', "Extensions wAnt to remove these existing chAnges from the terminAl's environment:");
 			info += '\n\n';
 			info += '```\n';
-			info += removals.join('\n');
+			info += removAls.join('\n');
 			info += '\n```';
 		}
 
@@ -54,33 +54,33 @@ export class EnvironmentVariableInfoStale implements IEnvironmentVariableInfo {
 	}
 
 	getIcon(): string {
-		return 'warning';
+		return 'wArning';
 	}
 
-	getActions(): { label: string, iconClass?: string, run: () => void, commandId: string }[] {
+	getActions(): { lAbel: string, iconClAss?: string, run: () => void, commAndId: string }[] {
 		return [{
-			label: localize('relaunchTerminalLabel', "Relaunch terminal"),
-			run: () => this._terminalService.getInstanceFromId(this._terminalId)?.relaunch(),
-			commandId: TERMINAL_COMMAND_ID.RELAUNCH
+			lAbel: locAlize('relAunchTerminAlLAbel', "RelAunch terminAl"),
+			run: () => this._terminAlService.getInstAnceFromId(this._terminAlId)?.relAunch(),
+			commAndId: TERMINAL_COMMAND_ID.RELAUNCH
 		}];
 	}
 }
 
-export class EnvironmentVariableInfoChangesActive implements IEnvironmentVariableInfo {
-	readonly requiresAction = false;
+export clAss EnvironmentVAriAbleInfoChAngesActive implements IEnvironmentVAriAbleInfo {
+	reAdonly requiresAction = fAlse;
 
 	constructor(
-		private _collection: IMergedEnvironmentVariableCollection
+		privAte _collection: IMergedEnvironmentVAriAbleCollection
 	) {
 	}
 
 	getInfo(): string {
-		const changes: string[] = [];
-		this._collection.map.forEach((mutators, variable) => {
-			mutators.forEach(mutator => changes.push(mutatorTypeLabel(mutator.type, mutator.value, variable)));
+		const chAnges: string[] = [];
+		this._collection.mAp.forEAch((mutAtors, vAriAble) => {
+			mutAtors.forEAch(mutAtor => chAnges.push(mutAtorTypeLAbel(mutAtor.type, mutAtor.vAlue, vAriAble)));
 		});
-		const message = localize('extensionEnvironmentContributionInfo', "Extensions have made changes to this terminal's environment");
-		return message + '\n\n```\n' + changes.join('\n') + '\n```';
+		const messAge = locAlize('extensionEnvironmentContributionInfo', "Extensions hAve mAde chAnges to this terminAl's environment");
+		return messAge + '\n\n```\n' + chAnges.join('\n') + '\n```';
 	}
 
 	getIcon(): string {
@@ -88,10 +88,10 @@ export class EnvironmentVariableInfoChangesActive implements IEnvironmentVariabl
 	}
 }
 
-function mutatorTypeLabel(type: EnvironmentVariableMutatorType, value: string, variable: string): string {
+function mutAtorTypeLAbel(type: EnvironmentVAriAbleMutAtorType, vAlue: string, vAriAble: string): string {
 	switch (type) {
-		case EnvironmentVariableMutatorType.Prepend: return `${variable}=${value}\${env:${variable}}`;
-		case EnvironmentVariableMutatorType.Append: return `${variable}=\${env:${variable}}${value}`;
-		default: return `${variable}=${value}`;
+		cAse EnvironmentVAriAbleMutAtorType.Prepend: return `${vAriAble}=${vAlue}\${env:${vAriAble}}`;
+		cAse EnvironmentVAriAbleMutAtorType.Append: return `${vAriAble}=\${env:${vAriAble}}${vAlue}`;
+		defAult: return `${vAriAble}=${vAlue}`;
 	}
 }

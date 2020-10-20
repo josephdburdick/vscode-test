@@ -1,161 +1,161 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Command } from 'vs/editor/common/modes';
-import { ISequence } from 'vs/base/common/sequence';
-import { IAction } from 'vs/base/common/actions';
-import { IMenu } from 'vs/platform/actions/common/actions';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { CommAnd } from 'vs/editor/common/modes';
+import { ISequence } from 'vs/bAse/common/sequence';
+import { IAction } from 'vs/bAse/common/Actions';
+import { IMenu } from 'vs/plAtform/Actions/common/Actions';
 
 export const VIEWLET_ID = 'workbench.view.scm';
 export const VIEW_PANE_ID = 'workbench.scm';
 export const REPOSITORIES_VIEW_PANE_ID = 'workbench.scm.repositories';
 
-export interface IBaselineResourceProvider {
-	getBaselineResource(resource: URI): Promise<URI>;
+export interfAce IBAselineResourceProvider {
+	getBAselineResource(resource: URI): Promise<URI>;
 }
 
-export const ISCMService = createDecorator<ISCMService>('scm');
+export const ISCMService = creAteDecorAtor<ISCMService>('scm');
 
-export interface ISCMResourceDecorations {
+export interfAce ISCMResourceDecorAtions {
 	icon?: URI;
-	iconDark?: URI;
+	iconDArk?: URI;
 	tooltip?: string;
-	strikeThrough?: boolean;
-	faded?: boolean;
+	strikeThrough?: booleAn;
+	fAded?: booleAn;
 }
 
-export interface ISCMResource {
-	readonly resourceGroup: ISCMResourceGroup;
-	readonly sourceUri: URI;
-	readonly decorations: ISCMResourceDecorations;
-	readonly contextValue?: string;
-	open(preserveFocus: boolean): Promise<void>;
+export interfAce ISCMResource {
+	reAdonly resourceGroup: ISCMResourceGroup;
+	reAdonly sourceUri: URI;
+	reAdonly decorAtions: ISCMResourceDecorAtions;
+	reAdonly contextVAlue?: string;
+	open(preserveFocus: booleAn): Promise<void>;
 }
 
-export interface ISCMResourceGroup extends ISequence<ISCMResource> {
-	readonly provider: ISCMProvider;
-	readonly label: string;
-	readonly id: string;
-	readonly hideWhenEmpty: boolean;
-	readonly onDidChange: Event<void>;
+export interfAce ISCMResourceGroup extends ISequence<ISCMResource> {
+	reAdonly provider: ISCMProvider;
+	reAdonly lAbel: string;
+	reAdonly id: string;
+	reAdonly hideWhenEmpty: booleAn;
+	reAdonly onDidChAnge: Event<void>;
 }
 
-export interface ISCMProvider extends IDisposable {
-	readonly label: string;
-	readonly id: string;
-	readonly contextValue: string;
+export interfAce ISCMProvider extends IDisposAble {
+	reAdonly lAbel: string;
+	reAdonly id: string;
+	reAdonly contextVAlue: string;
 
-	readonly groups: ISequence<ISCMResourceGroup>;
+	reAdonly groups: ISequence<ISCMResourceGroup>;
 
-	// TODO@Joao: remove
-	readonly onDidChangeResources: Event<void>;
+	// TODO@JoAo: remove
+	reAdonly onDidChAngeResources: Event<void>;
 
-	readonly rootUri?: URI;
-	readonly count?: number;
-	readonly commitTemplate: string;
-	readonly onDidChangeCommitTemplate: Event<string>;
-	readonly onDidChangeStatusBarCommands?: Event<Command[]>;
-	readonly acceptInputCommand?: Command;
-	readonly statusBarCommands?: Command[];
-	readonly onDidChange: Event<void>;
+	reAdonly rootUri?: URI;
+	reAdonly count?: number;
+	reAdonly commitTemplAte: string;
+	reAdonly onDidChAngeCommitTemplAte: Event<string>;
+	reAdonly onDidChAngeStAtusBArCommAnds?: Event<CommAnd[]>;
+	reAdonly AcceptInputCommAnd?: CommAnd;
+	reAdonly stAtusBArCommAnds?: CommAnd[];
+	reAdonly onDidChAnge: Event<void>;
 
-	getOriginalResource(uri: URI): Promise<URI | null>;
+	getOriginAlResource(uri: URI): Promise<URI | null>;
 }
 
-export const enum InputValidationType {
+export const enum InputVAlidAtionType {
 	Error = 0,
-	Warning = 1,
-	Information = 2
+	WArning = 1,
+	InformAtion = 2
 }
 
-export interface IInputValidation {
-	message: string;
-	type: InputValidationType;
+export interfAce IInputVAlidAtion {
+	messAge: string;
+	type: InputVAlidAtionType;
 }
 
-export interface IInputValidator {
-	(value: string, cursorPosition: number): Promise<IInputValidation | undefined>;
+export interfAce IInputVAlidAtor {
+	(vAlue: string, cursorPosition: number): Promise<IInputVAlidAtion | undefined>;
 }
 
-export interface ISCMInput {
-	readonly repository: ISCMRepository;
+export interfAce ISCMInput {
+	reAdonly repository: ISCMRepository;
 
-	readonly value: string;
-	setValue(value: string, fromKeyboard: boolean): void;
-	readonly onDidChange: Event<string>;
+	reAdonly vAlue: string;
+	setVAlue(vAlue: string, fromKeyboArd: booleAn): void;
+	reAdonly onDidChAnge: Event<string>;
 
-	placeholder: string;
-	readonly onDidChangePlaceholder: Event<string>;
+	plAceholder: string;
+	reAdonly onDidChAngePlAceholder: Event<string>;
 
-	validateInput: IInputValidator;
-	readonly onDidChangeValidateInput: Event<void>;
+	vAlidAteInput: IInputVAlidAtor;
+	reAdonly onDidChAngeVAlidAteInput: Event<void>;
 
-	visible: boolean;
-	readonly onDidChangeVisibility: Event<boolean>;
+	visible: booleAn;
+	reAdonly onDidChAngeVisibility: Event<booleAn>;
 
-	showNextHistoryValue(): void;
-	showPreviousHistoryValue(): void;
+	showNextHistoryVAlue(): void;
+	showPreviousHistoryVAlue(): void;
 }
 
-export interface ISCMRepository extends IDisposable {
-	readonly selected: boolean;
-	readonly onDidChangeSelection: Event<boolean>;
-	readonly provider: ISCMProvider;
-	readonly input: ISCMInput;
-	setSelected(selected: boolean): void;
+export interfAce ISCMRepository extends IDisposAble {
+	reAdonly selected: booleAn;
+	reAdonly onDidChAngeSelection: Event<booleAn>;
+	reAdonly provider: ISCMProvider;
+	reAdonly input: ISCMInput;
+	setSelected(selected: booleAn): void;
 }
 
-export interface ISCMService {
+export interfAce ISCMService {
 
-	readonly _serviceBrand: undefined;
-	readonly onDidAddRepository: Event<ISCMRepository>;
-	readonly onDidRemoveRepository: Event<ISCMRepository>;
-	readonly repositories: ISCMRepository[];
+	reAdonly _serviceBrAnd: undefined;
+	reAdonly onDidAddRepository: Event<ISCMRepository>;
+	reAdonly onDidRemoveRepository: Event<ISCMRepository>;
+	reAdonly repositories: ISCMRepository[];
 
 	registerSCMProvider(provider: ISCMProvider): ISCMRepository;
 }
 
-export interface ISCMTitleMenu {
-	readonly actions: IAction[];
-	readonly secondaryActions: IAction[];
-	readonly onDidChangeTitle: Event<void>;
-	readonly menu: IMenu;
+export interfAce ISCMTitleMenu {
+	reAdonly Actions: IAction[];
+	reAdonly secondAryActions: IAction[];
+	reAdonly onDidChAngeTitle: Event<void>;
+	reAdonly menu: IMenu;
 }
 
-export interface ISCMRepositoryMenus {
-	readonly titleMenu: ISCMTitleMenu;
-	readonly repositoryMenu: IMenu;
+export interfAce ISCMRepositoryMenus {
+	reAdonly titleMenu: ISCMTitleMenu;
+	reAdonly repositoryMenu: IMenu;
 	getResourceGroupMenu(group: ISCMResourceGroup): IMenu;
 	getResourceMenu(resource: ISCMResource): IMenu;
 	getResourceFolderMenu(group: ISCMResourceGroup): IMenu;
 }
 
-export interface ISCMMenus {
-	readonly titleMenu: ISCMTitleMenu;
+export interfAce ISCMMenus {
+	reAdonly titleMenu: ISCMTitleMenu;
 	getRepositoryMenus(provider: ISCMProvider): ISCMRepositoryMenus;
 }
 
-export const ISCMViewService = createDecorator<ISCMViewService>('scmView');
+export const ISCMViewService = creAteDecorAtor<ISCMViewService>('scmView');
 
-export interface ISCMViewVisibleRepositoryChangeEvent {
-	readonly added: Iterable<ISCMRepository>;
-	readonly removed: Iterable<ISCMRepository>;
+export interfAce ISCMViewVisibleRepositoryChAngeEvent {
+	reAdonly Added: IterAble<ISCMRepository>;
+	reAdonly removed: IterAble<ISCMRepository>;
 }
 
-export interface ISCMViewService {
-	readonly _serviceBrand: undefined;
+export interfAce ISCMViewService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly menus: ISCMMenus;
+	reAdonly menus: ISCMMenus;
 
 	visibleRepositories: ISCMRepository[];
-	readonly onDidChangeVisibleRepositories: Event<ISCMViewVisibleRepositoryChangeEvent>;
+	reAdonly onDidChAngeVisibleRepositories: Event<ISCMViewVisibleRepositoryChAngeEvent>;
 
-	isVisible(repository: ISCMRepository): boolean;
-	toggleVisibility(repository: ISCMRepository, visible?: boolean): void;
+	isVisible(repository: ISCMRepository): booleAn;
+	toggleVisibility(repository: ISCMRepository, visible?: booleAn): void;
 }

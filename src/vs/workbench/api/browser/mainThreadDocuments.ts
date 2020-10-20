@@ -1,125 +1,125 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { IReference, dispose, Disposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import { IReference, dispose, DisposAble } from 'vs/bAse/common/lifecycle';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService, shouldSynchronizeModel } from 'vs/editor/common/services/modelService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { IFileService, FileOperation } from 'vs/platform/files/common/files';
-import { MainThreadDocumentsAndEditors } from 'vs/workbench/api/browser/mainThreadDocumentsAndEditors';
-import { ExtHostContext, ExtHostDocumentsShape, IExtHostContext, MainThreadDocumentsShape } from 'vs/workbench/api/common/extHost.protocol';
+import { IFileService, FileOperAtion } from 'vs/plAtform/files/common/files';
+import { MAinThreAdDocumentsAndEditors } from 'vs/workbench/Api/browser/mAinThreAdDocumentsAndEditors';
+import { ExtHostContext, ExtHostDocumentsShApe, IExtHostContext, MAinThreAdDocumentsShApe } from 'vs/workbench/Api/common/extHost.protocol';
 import { ITextEditorModel } from 'vs/workbench/common/editor';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { toLocalResource, extUri, IExtUri } from 'vs/base/common/resources';
+import { toLocAlResource, extUri, IExtUri } from 'vs/bAse/common/resources';
 import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
-import { Emitter } from 'vs/base/common/event';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { Emitter } from 'vs/bAse/common/event';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 
-export class BoundModelReferenceCollection {
+export clAss BoundModelReferenceCollection {
 
-	private _data = new Array<{ uri: URI, length: number, dispose(): void }>();
-	private _length = 0;
+	privAte _dAtA = new ArrAy<{ uri: URI, length: number, dispose(): void }>();
+	privAte _length = 0;
 
 	constructor(
-		private readonly _extUri: IExtUri,
-		private readonly _maxAge: number = 1000 * 60 * 3,
-		private readonly _maxLength: number = 1024 * 1024 * 80,
+		privAte reAdonly _extUri: IExtUri,
+		privAte reAdonly _mAxAge: number = 1000 * 60 * 3,
+		privAte reAdonly _mAxLength: number = 1024 * 1024 * 80,
 	) {
 		//
 	}
 
 	dispose(): void {
-		this._data = dispose(this._data);
+		this._dAtA = dispose(this._dAtA);
 	}
 
 	remove(uri: URI): void {
-		for (const entry of [...this._data] /* copy array because dispose will modify it */) {
-			if (this._extUri.isEqualOrParent(entry.uri, uri)) {
+		for (const entry of [...this._dAtA] /* copy ArrAy becAuse dispose will modify it */) {
+			if (this._extUri.isEquAlOrPArent(entry.uri, uri)) {
 				entry.dispose();
 			}
 		}
 	}
 
-	add(uri: URI, ref: IReference<ITextEditorModel>): void {
-		const length = ref.object.textEditorModel.getValueLength();
-		let handle: any;
+	Add(uri: URI, ref: IReference<ITextEditorModel>): void {
+		const length = ref.object.textEditorModel.getVAlueLength();
+		let hAndle: Any;
 		let entry: { uri: URI, length: number, dispose(): void };
 		const dispose = () => {
-			const idx = this._data.indexOf(entry);
+			const idx = this._dAtA.indexOf(entry);
 			if (idx >= 0) {
 				this._length -= length;
 				ref.dispose();
-				clearTimeout(handle);
-				this._data.splice(idx, 1);
+				cleArTimeout(hAndle);
+				this._dAtA.splice(idx, 1);
 			}
 		};
-		handle = setTimeout(dispose, this._maxAge);
+		hAndle = setTimeout(dispose, this._mAxAge);
 		entry = { uri, length, dispose };
 
-		this._data.push(entry);
+		this._dAtA.push(entry);
 		this._length += length;
-		this._cleanup();
+		this._cleAnup();
 	}
 
-	private _cleanup(): void {
-		while (this._length > this._maxLength) {
-			this._data[0].dispose();
+	privAte _cleAnup(): void {
+		while (this._length > this._mAxLength) {
+			this._dAtA[0].dispose();
 		}
 	}
 }
 
-class ModelTracker extends Disposable {
+clAss ModelTrAcker extends DisposAble {
 
-	private _knownVersionId: number;
+	privAte _knownVersionId: number;
 
 	constructor(
-		private readonly _model: ITextModel,
-		private readonly _onIsCaughtUpWithContentChanges: Emitter<URI>,
-		private readonly _proxy: ExtHostDocumentsShape,
-		private readonly _textFileService: ITextFileService,
+		privAte reAdonly _model: ITextModel,
+		privAte reAdonly _onIsCAughtUpWithContentChAnges: Emitter<URI>,
+		privAte reAdonly _proxy: ExtHostDocumentsShApe,
+		privAte reAdonly _textFileService: ITextFileService,
 	) {
 		super();
 		this._knownVersionId = this._model.getVersionId();
-		this._register(this._model.onDidChangeContent((e) => {
+		this._register(this._model.onDidChAngeContent((e) => {
 			this._knownVersionId = e.versionId;
-			this._proxy.$acceptModelChanged(this._model.uri, e, this._textFileService.isDirty(this._model.uri));
-			if (this.isCaughtUpWithContentChanges()) {
-				this._onIsCaughtUpWithContentChanges.fire(this._model.uri);
+			this._proxy.$AcceptModelChAnged(this._model.uri, e, this._textFileService.isDirty(this._model.uri));
+			if (this.isCAughtUpWithContentChAnges()) {
+				this._onIsCAughtUpWithContentChAnges.fire(this._model.uri);
 			}
 		}));
 	}
 
-	public isCaughtUpWithContentChanges(): boolean {
+	public isCAughtUpWithContentChAnges(): booleAn {
 		return (this._model.getVersionId() === this._knownVersionId);
 	}
 }
 
-export class MainThreadDocuments extends Disposable implements MainThreadDocumentsShape {
+export clAss MAinThreAdDocuments extends DisposAble implements MAinThreAdDocumentsShApe {
 
-	private _onIsCaughtUpWithContentChanges = this._register(new Emitter<URI>());
-	public readonly onIsCaughtUpWithContentChanges = this._onIsCaughtUpWithContentChanges.event;
+	privAte _onIsCAughtUpWithContentChAnges = this._register(new Emitter<URI>());
+	public reAdonly onIsCAughtUpWithContentChAnges = this._onIsCAughtUpWithContentChAnges.event;
 
-	private readonly _modelService: IModelService;
-	private readonly _textModelResolverService: ITextModelService;
-	private readonly _textFileService: ITextFileService;
-	private readonly _fileService: IFileService;
-	private readonly _environmentService: IWorkbenchEnvironmentService;
-	private readonly _uriIdentityService: IUriIdentityService;
+	privAte reAdonly _modelService: IModelService;
+	privAte reAdonly _textModelResolverService: ITextModelService;
+	privAte reAdonly _textFileService: ITextFileService;
+	privAte reAdonly _fileService: IFileService;
+	privAte reAdonly _environmentService: IWorkbenchEnvironmentService;
+	privAte reAdonly _uriIdentityService: IUriIdentityService;
 
-	private _modelTrackers: { [modelUrl: string]: ModelTracker; };
-	private readonly _proxy: ExtHostDocumentsShape;
-	private readonly _modelIsSynced = new Set<string>();
-	private readonly _modelReferenceCollection: BoundModelReferenceCollection;
+	privAte _modelTrAckers: { [modelUrl: string]: ModelTrAcker; };
+	privAte reAdonly _proxy: ExtHostDocumentsShApe;
+	privAte reAdonly _modelIsSynced = new Set<string>();
+	privAte reAdonly _modelReferenceCollection: BoundModelReferenceCollection;
 
 	constructor(
-		documentsAndEditors: MainThreadDocumentsAndEditors,
+		documentsAndEditors: MAinThreAdDocumentsAndEditors,
 		extHostContext: IExtHostContext,
 		@IModelService modelService: IModelService,
 		@ITextFileService textFileService: ITextFileService,
@@ -128,7 +128,7 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IUriIdentityService uriIdentityService: IUriIdentityService,
 		@IWorkingCopyFileService workingCopyFileService: IWorkingCopyFileService,
-		@IPathService private readonly _pathService: IPathService
+		@IPAthService privAte reAdonly _pAthService: IPAthService
 	) {
 		super();
 		this._modelService = modelService;
@@ -142,23 +142,23 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostDocuments);
 
-		this._register(documentsAndEditors.onDocumentAdd(models => models.forEach(this._onModelAdded, this)));
-		this._register(documentsAndEditors.onDocumentRemove(urls => urls.forEach(this._onModelRemoved, this)));
-		this._register(modelService.onModelModeChanged(this._onModelModeChanged, this));
+		this._register(documentsAndEditors.onDocumentAdd(models => models.forEAch(this._onModelAdded, this)));
+		this._register(documentsAndEditors.onDocumentRemove(urls => urls.forEAch(this._onModelRemoved, this)));
+		this._register(modelService.onModelModeChAnged(this._onModelModeChAnged, this));
 
-		this._register(textFileService.files.onDidSave(e => {
-			if (this._shouldHandleFileEvent(e.model.resource)) {
-				this._proxy.$acceptModelSaved(e.model.resource);
+		this._register(textFileService.files.onDidSAve(e => {
+			if (this._shouldHAndleFileEvent(e.model.resource)) {
+				this._proxy.$AcceptModelSAved(e.model.resource);
 			}
 		}));
-		this._register(textFileService.files.onDidChangeDirty(m => {
-			if (this._shouldHandleFileEvent(m.resource)) {
-				this._proxy.$acceptDirtyStateChanged(m.resource, m.isDirty());
+		this._register(textFileService.files.onDidChAngeDirty(m => {
+			if (this._shouldHAndleFileEvent(m.resource)) {
+				this._proxy.$AcceptDirtyStAteChAnged(m.resource, m.isDirty());
 			}
 		}));
 
-		this._register(workingCopyFileService.onDidRunWorkingCopyFileOperation(e => {
-			if (e.operation === FileOperation.MOVE || e.operation === FileOperation.DELETE) {
+		this._register(workingCopyFileService.onDidRunWorkingCopyFileOperAtion(e => {
+			if (e.operAtion === FileOperAtion.MOVE || e.operAtion === FileOperAtion.DELETE) {
 				for (const { source } of e.files) {
 					if (source) {
 						this._modelReferenceCollection.remove(source);
@@ -167,134 +167,134 @@ export class MainThreadDocuments extends Disposable implements MainThreadDocumen
 			}
 		}));
 
-		this._modelTrackers = Object.create(null);
+		this._modelTrAckers = Object.creAte(null);
 	}
 
 	public dispose(): void {
-		Object.keys(this._modelTrackers).forEach((modelUrl) => {
-			this._modelTrackers[modelUrl].dispose();
+		Object.keys(this._modelTrAckers).forEAch((modelUrl) => {
+			this._modelTrAckers[modelUrl].dispose();
 		});
-		this._modelTrackers = Object.create(null);
+		this._modelTrAckers = Object.creAte(null);
 		super.dispose();
 	}
 
-	public isCaughtUpWithContentChanges(resource: URI): boolean {
+	public isCAughtUpWithContentChAnges(resource: URI): booleAn {
 		const modelUrl = resource.toString();
-		if (this._modelTrackers[modelUrl]) {
-			return this._modelTrackers[modelUrl].isCaughtUpWithContentChanges();
+		if (this._modelTrAckers[modelUrl]) {
+			return this._modelTrAckers[modelUrl].isCAughtUpWithContentChAnges();
 		}
 		return true;
 	}
 
-	private _shouldHandleFileEvent(resource: URI): boolean {
+	privAte _shouldHAndleFileEvent(resource: URI): booleAn {
 		const model = this._modelService.getModel(resource);
 		return !!model && shouldSynchronizeModel(model);
 	}
 
-	private _onModelAdded(model: ITextModel): void {
-		// Same filter as in mainThreadEditorsTracker
+	privAte _onModelAdded(model: ITextModel): void {
+		// SAme filter As in mAinThreAdEditorsTrAcker
 		if (!shouldSynchronizeModel(model)) {
-			// don't synchronize too large models
+			// don't synchronize too lArge models
 			return;
 		}
 		const modelUrl = model.uri;
-		this._modelIsSynced.add(modelUrl.toString());
-		this._modelTrackers[modelUrl.toString()] = new ModelTracker(model, this._onIsCaughtUpWithContentChanges, this._proxy, this._textFileService);
+		this._modelIsSynced.Add(modelUrl.toString());
+		this._modelTrAckers[modelUrl.toString()] = new ModelTrAcker(model, this._onIsCAughtUpWithContentChAnges, this._proxy, this._textFileService);
 	}
 
-	private _onModelModeChanged(event: { model: ITextModel; oldModeId: string; }): void {
+	privAte _onModelModeChAnged(event: { model: ITextModel; oldModeId: string; }): void {
 		let { model, oldModeId } = event;
 		const modelUrl = model.uri;
-		if (!this._modelIsSynced.has(modelUrl.toString())) {
+		if (!this._modelIsSynced.hAs(modelUrl.toString())) {
 			return;
 		}
-		this._proxy.$acceptModelModeChanged(model.uri, oldModeId, model.getLanguageIdentifier().language);
+		this._proxy.$AcceptModelModeChAnged(model.uri, oldModeId, model.getLAnguAgeIdentifier().lAnguAge);
 	}
 
-	private _onModelRemoved(modelUrl: URI): void {
+	privAte _onModelRemoved(modelUrl: URI): void {
 		const strModelUrl = modelUrl.toString();
-		if (!this._modelIsSynced.has(strModelUrl)) {
+		if (!this._modelIsSynced.hAs(strModelUrl)) {
 			return;
 		}
 		this._modelIsSynced.delete(strModelUrl);
-		this._modelTrackers[strModelUrl].dispose();
-		delete this._modelTrackers[strModelUrl];
+		this._modelTrAckers[strModelUrl].dispose();
+		delete this._modelTrAckers[strModelUrl];
 	}
 
 	// --- from extension host process
 
-	$trySaveDocument(uri: UriComponents): Promise<boolean> {
-		return this._textFileService.save(URI.revive(uri)).then(target => !!target);
+	$trySAveDocument(uri: UriComponents): Promise<booleAn> {
+		return this._textFileService.sAve(URI.revive(uri)).then(tArget => !!tArget);
 	}
 
-	$tryOpenDocument(uriData: UriComponents): Promise<URI> {
-		const inputUri = URI.revive(uriData);
-		if (!inputUri.scheme || !(inputUri.fsPath || inputUri.authority)) {
-			return Promise.reject(new Error(`Invalid uri. Scheme and authority or path must be set.`));
+	$tryOpenDocument(uriDAtA: UriComponents): Promise<URI> {
+		const inputUri = URI.revive(uriDAtA);
+		if (!inputUri.scheme || !(inputUri.fsPAth || inputUri.Authority)) {
+			return Promise.reject(new Error(`InvAlid uri. Scheme And Authority or pAth must be set.`));
 		}
 
-		const canonicalUri = this._uriIdentityService.asCanonicalUri(inputUri);
+		const cAnonicAlUri = this._uriIdentityService.AsCAnonicAlUri(inputUri);
 
 		let promise: Promise<URI>;
-		switch (canonicalUri.scheme) {
-			case Schemas.untitled:
-				promise = this._handleUntitledScheme(canonicalUri);
-				break;
-			case Schemas.file:
-			default:
-				promise = this._handleAsResourceInput(canonicalUri);
-				break;
+		switch (cAnonicAlUri.scheme) {
+			cAse SchemAs.untitled:
+				promise = this._hAndleUntitledScheme(cAnonicAlUri);
+				breAk;
+			cAse SchemAs.file:
+			defAult:
+				promise = this._hAndleAsResourceInput(cAnonicAlUri);
+				breAk;
 		}
 
 		return promise.then(documentUri => {
 			if (!documentUri) {
-				return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}`));
-			} else if (!extUri.isEqual(documentUri, canonicalUri)) {
-				return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}. Detail: Actual document opened as ${documentUri.toString()}`));
-			} else if (!this._modelIsSynced.has(canonicalUri.toString())) {
-				return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}. Detail: Files above 50MB cannot be synchronized with extensions.`));
+				return Promise.reject(new Error(`cAnnot open ${cAnonicAlUri.toString()}`));
+			} else if (!extUri.isEquAl(documentUri, cAnonicAlUri)) {
+				return Promise.reject(new Error(`cAnnot open ${cAnonicAlUri.toString()}. DetAil: ActuAl document opened As ${documentUri.toString()}`));
+			} else if (!this._modelIsSynced.hAs(cAnonicAlUri.toString())) {
+				return Promise.reject(new Error(`cAnnot open ${cAnonicAlUri.toString()}. DetAil: Files Above 50MB cAnnot be synchronized with extensions.`));
 			} else {
-				return canonicalUri;
+				return cAnonicAlUri;
 			}
 		}, err => {
-			return Promise.reject(new Error(`cannot open ${canonicalUri.toString()}. Detail: ${toErrorMessage(err)}`));
+			return Promise.reject(new Error(`cAnnot open ${cAnonicAlUri.toString()}. DetAil: ${toErrorMessAge(err)}`));
 		});
 	}
 
-	$tryCreateDocument(options?: { language?: string, content?: string }): Promise<URI> {
-		return this._doCreateUntitled(undefined, options ? options.language : undefined, options ? options.content : undefined);
+	$tryCreAteDocument(options?: { lAnguAge?: string, content?: string }): Promise<URI> {
+		return this._doCreAteUntitled(undefined, options ? options.lAnguAge : undefined, options ? options.content : undefined);
 	}
 
-	private _handleAsResourceInput(uri: URI): Promise<URI> {
-		return this._textModelResolverService.createModelReference(uri).then(ref => {
-			this._modelReferenceCollection.add(uri, ref);
+	privAte _hAndleAsResourceInput(uri: URI): Promise<URI> {
+		return this._textModelResolverService.creAteModelReference(uri).then(ref => {
+			this._modelReferenceCollection.Add(uri, ref);
 			return ref.object.textEditorModel.uri;
 		});
 	}
 
-	private _handleUntitledScheme(uri: URI): Promise<URI> {
-		const asLocalUri = toLocalResource(uri, this._environmentService.remoteAuthority, this._pathService.defaultUriScheme);
-		return this._fileService.resolve(asLocalUri).then(stats => {
-			// don't create a new file ontop of an existing file
-			return Promise.reject(new Error('file already exists'));
+	privAte _hAndleUntitledScheme(uri: URI): Promise<URI> {
+		const AsLocAlUri = toLocAlResource(uri, this._environmentService.remoteAuthority, this._pAthService.defAultUriScheme);
+		return this._fileService.resolve(AsLocAlUri).then(stAts => {
+			// don't creAte A new file ontop of An existing file
+			return Promise.reject(new Error('file AlreAdy exists'));
 		}, err => {
-			return this._doCreateUntitled(Boolean(uri.path) ? uri : undefined);
+			return this._doCreAteUntitled(BooleAn(uri.pAth) ? uri : undefined);
 		});
 	}
 
-	private _doCreateUntitled(associatedResource?: URI, mode?: string, initialValue?: string): Promise<URI> {
+	privAte _doCreAteUntitled(AssociAtedResource?: URI, mode?: string, initiAlVAlue?: string): Promise<URI> {
 		return this._textFileService.untitled.resolve({
-			associatedResource,
+			AssociAtedResource,
 			mode,
-			initialValue
+			initiAlVAlue
 		}).then(model => {
 			const resource = model.resource;
 
-			if (!this._modelIsSynced.has(resource.toString())) {
-				throw new Error(`expected URI ${resource.toString()} to have come to LIFE`);
+			if (!this._modelIsSynced.hAs(resource.toString())) {
+				throw new Error(`expected URI ${resource.toString()} to hAve come to LIFE`);
 			}
 
-			this._proxy.$acceptDirtyStateChanged(resource, true); // mark as dirty
+			this._proxy.$AcceptDirtyStAteChAnged(resource, true); // mArk As dirty
 
 			return resource;
 		});

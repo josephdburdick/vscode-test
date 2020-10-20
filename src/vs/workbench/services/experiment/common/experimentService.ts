@@ -1,97 +1,97 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation'; import * as platform from 'vs/base/common/platform';
-import type { IKeyValueStorage, IExperimentationTelemetry, IExperimentationFilterProvider, ExperimentationService as TASClient } from 'tas-client-umd';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion'; import * As plAtform from 'vs/bAse/common/plAtform';
+import type { IKeyVAlueStorAge, IExperimentAtionTelemetry, IExperimentAtionFilterProvider, ExperimentAtionService As TASClient } from 'tAs-client-umd';
 import { MementoObject, Memento } from 'vs/workbench/common/memento';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryData } from 'vs/base/common/actions';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryDAtA } from 'vs/bAse/common/Actions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 
-export const ITASExperimentService = createDecorator<ITASExperimentService>('TASExperimentService');
+export const ITASExperimentService = creAteDecorAtor<ITASExperimentService>('TASExperimentService');
 
-export interface ITASExperimentService {
-	readonly _serviceBrand: undefined;
-	getTreatment<T extends string | number | boolean>(name: string): Promise<T | undefined>;
+export interfAce ITASExperimentService {
+	reAdonly _serviceBrAnd: undefined;
+	getTreAtment<T extends string | number | booleAn>(nAme: string): Promise<T | undefined>;
 }
 
-const storageKey = 'VSCode.ABExp.FeatureData';
-const refetchInterval = 0; // no polling
+const storAgeKey = 'VSCode.ABExp.FeAtureDAtA';
+const refetchIntervAl = 0; // no polling
 
-class MementoKeyValueStorage implements IKeyValueStorage {
-	constructor(private mementoObj: MementoObject) { }
+clAss MementoKeyVAlueStorAge implements IKeyVAlueStorAge {
+	constructor(privAte mementoObj: MementoObject) { }
 
-	async getValue<T>(key: string, defaultValue?: T | undefined): Promise<T | undefined> {
-		const value = await this.mementoObj[key];
-		return value || defaultValue;
+	Async getVAlue<T>(key: string, defAultVAlue?: T | undefined): Promise<T | undefined> {
+		const vAlue = AwAit this.mementoObj[key];
+		return vAlue || defAultVAlue;
 	}
 
-	setValue<T>(key: string, value: T): void {
-		this.mementoObj[key] = value;
+	setVAlue<T>(key: string, vAlue: T): void {
+		this.mementoObj[key] = vAlue;
 	}
 }
 
-class ExperimentServiceTelemetry implements IExperimentationTelemetry {
-	constructor(private telemetryService: ITelemetryService) { }
+clAss ExperimentServiceTelemetry implements IExperimentAtionTelemetry {
+	constructor(privAte telemetryService: ITelemetryService) { }
 
-	// __GDPR__COMMON__ "VSCode.ABExp.Features" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-	// __GDPR__COMMON__ "abexp.assignmentcontext" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-	setSharedProperty(name: string, value: string): void {
-		this.telemetryService.setExperimentProperty(name, value);
+	// __GDPR__COMMON__ "VSCode.ABExp.FeAtures" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+	// __GDPR__COMMON__ "Abexp.Assignmentcontext" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+	setShAredProperty(nAme: string, vAlue: string): void {
+		this.telemetryService.setExperimentProperty(nAme, vAlue);
 	}
 
-	postEvent(eventName: string, props: Map<string, string>): void {
-		const data: ITelemetryData = {};
-		for (const [key, value] of props.entries()) {
-			data[key] = value;
+	postEvent(eventNAme: string, props: MAp<string, string>): void {
+		const dAtA: ITelemetryDAtA = {};
+		for (const [key, vAlue] of props.entries()) {
+			dAtA[key] = vAlue;
 		}
 
 		/* __GDPR__
-			"query-expfeature" : {
-				"ABExp.queriedFeature": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+			"query-expfeAture" : {
+				"ABExp.queriedFeAture": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 			}
 		*/
-		this.telemetryService.publicLog(eventName, data);
+		this.telemetryService.publicLog(eventNAme, dAtA);
 	}
 }
 
-class ExperimentServiceFilterProvider implements IExperimentationFilterProvider {
+clAss ExperimentServiceFilterProvider implements IExperimentAtionFilterProvider {
 	constructor(
-		private version: string,
-		private appName: string,
-		private machineId: string,
-		private targetPopulation: TargetPopulation
+		privAte version: string,
+		privAte AppNAme: string,
+		privAte mAchineId: string,
+		privAte tArgetPopulAtion: TArgetPopulAtion
 	) { }
 
-	getFilterValue(filter: string): string | null {
+	getFilterVAlue(filter: string): string | null {
 		switch (filter) {
-			case Filters.ApplicationVersion:
+			cAse Filters.ApplicAtionVersion:
 				return this.version; // productService.version
-			case Filters.Build:
-				return this.appName; // productService.nameLong
-			case Filters.ClientId:
-				return this.machineId;
-			case Filters.Language:
-				return platform.language;
-			case Filters.ExtensionName:
-				return 'vscode-core'; // always return vscode-core for exp service
-			case Filters.TargetPopulation:
-				return this.targetPopulation;
-			default:
+			cAse Filters.Build:
+				return this.AppNAme; // productService.nAmeLong
+			cAse Filters.ClientId:
+				return this.mAchineId;
+			cAse Filters.LAnguAge:
+				return plAtform.lAnguAge;
+			cAse Filters.ExtensionNAme:
+				return 'vscode-core'; // AlwAys return vscode-core for exp service
+			cAse Filters.TArgetPopulAtion:
+				return this.tArgetPopulAtion;
+			defAult:
 				return '';
 		}
 	}
 
-	getFilters(): Map<string, any> {
-		let filters: Map<string, any> = new Map<string, any>();
-		let filterValues = Object.values(Filters);
-		for (let value of filterValues) {
-			filters.set(value, this.getFilterValue(value));
+	getFilters(): MAp<string, Any> {
+		let filters: MAp<string, Any> = new MAp<string, Any>();
+		let filterVAlues = Object.vAlues(Filters);
+		for (let vAlue of filterVAlues) {
+			filters.set(vAlue, this.getFilterVAlue(vAlue));
 		}
 
 		return filters;
@@ -99,135 +99,135 @@ class ExperimentServiceFilterProvider implements IExperimentationFilterProvider 
 }
 
 /*
-Based upon the official VSCode currently existing filters in the
-ExP backend for the VSCode cluster.
-https://experimentation.visualstudio.com/Analysis%20and%20Experimentation/_git/AnE.ExP.TAS.TachyonHost.Configuration?path=%2FConfigurations%2Fvscode%2Fvscode.json&version=GBmaster
-"X-MSEdge-Market": "detection.market",
+BAsed upon the officiAl VSCode currently existing filters in the
+ExP bAckend for the VSCode cluster.
+https://experimentAtion.visuAlstudio.com/AnAlysis%20And%20ExperimentAtion/_git/AnE.ExP.TAS.TAchyonHost.ConfigurAtion?pAth=%2FConfigurAtions%2Fvscode%2Fvscode.json&version=GBmAster
+"X-MSEdge-MArket": "detection.mArket",
 "X-FD-Corpnet": "detection.corpnet",
-"X-VSCode–AppVersion": "appversion",
+"X-VSCode–AppVersion": "Appversion",
 "X-VSCode-Build": "build",
 "X-MSEdge-ClientId": "clientid",
-"X-VSCode-ExtensionName": "extensionname",
-"X-VSCode-TargetPopulation": "targetpopulation",
-"X-VSCode-Language": "language"
+"X-VSCode-ExtensionNAme": "extensionnAme",
+"X-VSCode-TArgetPopulAtion": "tArgetpopulAtion",
+"X-VSCode-LAnguAge": "lAnguAge"
 */
 
 enum Filters {
 	/**
-	 * The market in which the extension is distributed.
+	 * The mArket in which the extension is distributed.
 	 */
-	Market = 'X-MSEdge-Market',
+	MArket = 'X-MSEdge-MArket',
 
 	/**
-	 * The corporation network.
+	 * The corporAtion network.
 	 */
 	CorpNet = 'X-FD-Corpnet',
 
 	/**
-	 * Version of the application which uses experimentation service.
+	 * Version of the ApplicAtion which uses experimentAtion service.
 	 */
-	ApplicationVersion = 'X-VSCode-AppVersion',
+	ApplicAtionVersion = 'X-VSCode-AppVersion',
 
 	/**
-	 * Insiders vs Stable.
+	 * Insiders vs StAble.
 	 */
 	Build = 'X-VSCode-Build',
 
 	/**
-	 * Client Id which is used as primary unit for the experimentation.
+	 * Client Id which is used As primAry unit for the experimentAtion.
 	 */
 	ClientId = 'X-MSEdge-ClientId',
 
 	/**
-	 * Extension header.
+	 * Extension heAder.
 	 */
-	ExtensionName = 'X-VSCode-ExtensionName',
+	ExtensionNAme = 'X-VSCode-ExtensionNAme',
 
 	/**
-	 * The language in use by VS Code
+	 * The lAnguAge in use by VS Code
 	 */
-	Language = 'X-VSCode-Language',
+	LAnguAge = 'X-VSCode-LAnguAge',
 
 	/**
-	 * The target population.
-	 * This is used to separate internal, early preview, GA, etc.
+	 * The tArget populAtion.
+	 * This is used to sepArAte internAl, eArly preview, GA, etc.
 	 */
-	TargetPopulation = 'X-VSCode-TargetPopulation',
+	TArgetPopulAtion = 'X-VSCode-TArgetPopulAtion',
 }
 
-enum TargetPopulation {
-	Team = 'team',
-	Internal = 'internal',
+enum TArgetPopulAtion {
+	TeAm = 'teAm',
+	InternAl = 'internAl',
 	Insiders = 'insider',
 	Public = 'public',
 }
 
-export class ExperimentService implements ITASExperimentService {
-	_serviceBrand: undefined;
-	private tasClient: Promise<TASClient> | undefined;
-	private static MEMENTO_ID = 'experiment.service.memento';
+export clAss ExperimentService implements ITASExperimentService {
+	_serviceBrAnd: undefined;
+	privAte tAsClient: Promise<TASClient> | undefined;
+	privAte stAtic MEMENTO_ID = 'experiment.service.memento';
 
-	private get experimentsEnabled(): boolean {
-		return this.configurationService.getValue('workbench.enableExperiments') === true;
+	privAte get experimentsEnAbled(): booleAn {
+		return this.configurAtionService.getVAlue('workbench.enAbleExperiments') === true;
 	}
 
 	constructor(
-		@IProductService private productService: IProductService,
-		@ITelemetryService private telemetryService: ITelemetryService,
-		@IStorageService private storageService: IStorageService,
-		@IConfigurationService private configurationService: IConfigurationService,
+		@IProductService privAte productService: IProductService,
+		@ITelemetryService privAte telemetryService: ITelemetryService,
+		@IStorAgeService privAte storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte configurAtionService: IConfigurAtionService,
 	) {
 
-		if (this.productService.tasConfig && this.experimentsEnabled && this.telemetryService.isOptedIn) {
-			this.tasClient = this.setupTASClient();
+		if (this.productService.tAsConfig && this.experimentsEnAbled && this.telemetryService.isOptedIn) {
+			this.tAsClient = this.setupTASClient();
 		}
 	}
 
-	async getTreatment<T extends string | number | boolean>(name: string): Promise<T | undefined> {
-		if (!this.tasClient) {
+	Async getTreAtment<T extends string | number | booleAn>(nAme: string): Promise<T | undefined> {
+		if (!this.tAsClient) {
 			return undefined;
 		}
 
-		if (!this.experimentsEnabled) {
+		if (!this.experimentsEnAbled) {
 			return undefined;
 		}
 
-		return (await this.tasClient).getTreatmentVariable<T>('vscode', name);
+		return (AwAit this.tAsClient).getTreAtmentVAriAble<T>('vscode', nAme);
 	}
 
-	private async setupTASClient(): Promise<TASClient> {
-		const telemetryInfo = await this.telemetryService.getTelemetryInfo();
-		const targetPopulation = telemetryInfo.msftInternal ? TargetPopulation.Internal : (this.productService.quality === 'stable' ? TargetPopulation.Public : TargetPopulation.Insiders);
-		const machineId = telemetryInfo.machineId;
+	privAte Async setupTASClient(): Promise<TASClient> {
+		const telemetryInfo = AwAit this.telemetryService.getTelemetryInfo();
+		const tArgetPopulAtion = telemetryInfo.msftInternAl ? TArgetPopulAtion.InternAl : (this.productService.quAlity === 'stAble' ? TArgetPopulAtion.Public : TArgetPopulAtion.Insiders);
+		const mAchineId = telemetryInfo.mAchineId;
 		const filterProvider = new ExperimentServiceFilterProvider(
 			this.productService.version,
-			this.productService.nameLong,
-			machineId,
-			targetPopulation
+			this.productService.nAmeLong,
+			mAchineId,
+			tArgetPopulAtion
 		);
 
-		const memento = new Memento(ExperimentService.MEMENTO_ID, this.storageService);
-		const keyValueStorage = new MementoKeyValueStorage(memento.getMemento(StorageScope.GLOBAL));
+		const memento = new Memento(ExperimentService.MEMENTO_ID, this.storAgeService);
+		const keyVAlueStorAge = new MementoKeyVAlueStorAge(memento.getMemento(StorAgeScope.GLOBAL));
 
 		const telemetry = new ExperimentServiceTelemetry(this.telemetryService);
 
-		const tasConfig = this.productService.tasConfig!;
-		const tasClient = new (await import('tas-client-umd')).ExperimentationService({
+		const tAsConfig = this.productService.tAsConfig!;
+		const tAsClient = new (AwAit import('tAs-client-umd')).ExperimentAtionService({
 			filterProviders: [filterProvider],
 			telemetry: telemetry,
-			storageKey: storageKey,
-			keyValueStorage: keyValueStorage,
-			featuresTelemetryPropertyName: tasConfig.featuresTelemetryPropertyName,
-			assignmentContextTelemetryPropertyName: tasConfig.assignmentContextTelemetryPropertyName,
-			telemetryEventName: tasConfig.telemetryEventName,
-			endpoint: tasConfig.endpoint,
-			refetchInterval: refetchInterval,
+			storAgeKey: storAgeKey,
+			keyVAlueStorAge: keyVAlueStorAge,
+			feAturesTelemetryPropertyNAme: tAsConfig.feAturesTelemetryPropertyNAme,
+			AssignmentContextTelemetryPropertyNAme: tAsConfig.AssignmentContextTelemetryPropertyNAme,
+			telemetryEventNAme: tAsConfig.telemetryEventNAme,
+			endpoint: tAsConfig.endpoint,
+			refetchIntervAl: refetchIntervAl,
 		});
 
-		await tasClient.initializePromise;
-		return tasClient;
+		AwAit tAsClient.initiAlizePromise;
+		return tAsClient;
 	}
 }
 
-registerSingleton(ITASExperimentService, ExperimentService, false);
+registerSingleton(ITASExperimentService, ExperimentService, fAlse);
 

@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { SashSizeController, minSize, maxSize } from 'vs/workbench/contrib/sash/browser/sash';
-import { isIPad } from 'vs/base/browser/browser';
+import { locAlize } from 'vs/nls';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { workbenchConfigurAtionNodeBAse } from 'vs/workbench/common/configurAtion';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { SAshSizeController, minSize, mAxSize } from 'vs/workbench/contrib/sAsh/browser/sAsh';
+import { isIPAd } from 'vs/bAse/browser/browser';
 
-// Sash size contribution
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(SashSizeController, LifecyclePhase.Restored);
+// SAsh size contribution
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(SAshSizeController, LifecyclePhAse.Restored);
 
-// Sash size configuration contribution
-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
-	.registerConfiguration({
-		...workbenchConfigurationNodeBase,
+// SAsh size configurAtion contribution
+Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion)
+	.registerConfigurAtion({
+		...workbenchConfigurAtionNodeBAse,
 		'properties': {
-			'workbench.sash.size': {
+			'workbench.sAsh.size': {
 				'type': 'number',
-				'default': isIPad ? maxSize : minSize,
+				'defAult': isIPAd ? mAxSize : minSize,
 				'minimum': minSize,
-				'maximum': maxSize,
-				'description': localize('sashSize', "Controls the feedback area size in pixels of the dragging area in between views/editors. Set it to a larger value if you feel it's hard to resize views using the mouse.")
+				'mAximum': mAxSize,
+				'description': locAlize('sAshSize', "Controls the feedbAck AreA size in pixels of the drAgging AreA in between views/editors. Set it to A lArger vAlue if you feel it's hArd to resize views using the mouse.")
 			},
 		}
 	});

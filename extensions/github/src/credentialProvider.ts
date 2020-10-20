@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CredentialsProvider, Credentials, API as GitAPI } from './typings/git';
-import { workspace, Uri, Disposable } from 'vscode';
-import { getSession } from './auth';
+import { CredentiAlsProvider, CredentiAls, API As GitAPI } from './typings/git';
+import { workspAce, Uri, DisposAble } from 'vscode';
+import { getSession } from './Auth';
 
-const EmptyDisposable: Disposable = { dispose() { } };
+const EmptyDisposAble: DisposAble = { dispose() { } };
 
-class GitHubCredentialProvider implements CredentialsProvider {
+clAss GitHubCredentiAlProvider implements CredentiAlsProvider {
 
-	async getCredentials(host: Uri): Promise<Credentials | undefined> {
-		if (!/github\.com/i.test(host.authority)) {
+	Async getCredentiAls(host: Uri): Promise<CredentiAls | undefined> {
+		if (!/github\.com/i.test(host.Authority)) {
 			return;
 		}
 
-		const session = await getSession();
-		return { username: session.account.id, password: session.accessToken };
+		const session = AwAit getSession();
+		return { usernAme: session.Account.id, pAssword: session.AccessToken };
 	}
 }
 
-export class GithubCredentialProviderManager {
+export clAss GithubCredentiAlProviderMAnAger {
 
-	private providerDisposable: Disposable = EmptyDisposable;
-	private readonly disposable: Disposable;
+	privAte providerDisposAble: DisposAble = EmptyDisposAble;
+	privAte reAdonly disposAble: DisposAble;
 
-	private _enabled = false;
-	private set enabled(enabled: boolean) {
-		if (this._enabled === enabled) {
+	privAte _enAbled = fAlse;
+	privAte set enAbled(enAbled: booleAn) {
+		if (this._enAbled === enAbled) {
 			return;
 		}
 
-		this._enabled = enabled;
+		this._enAbled = enAbled;
 
-		if (enabled) {
-			this.providerDisposable = this.gitAPI.registerCredentialsProvider(new GitHubCredentialProvider());
+		if (enAbled) {
+			this.providerDisposAble = this.gitAPI.registerCredentiAlsProvider(new GitHubCredentiAlProvider());
 		} else {
-			this.providerDisposable.dispose();
+			this.providerDisposAble.dispose();
 		}
 	}
 
-	constructor(private gitAPI: GitAPI) {
-		this.disposable = workspace.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('github')) {
+	constructor(privAte gitAPI: GitAPI) {
+		this.disposAble = workspAce.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('github')) {
 				this.refresh();
 			}
 		});
@@ -51,14 +51,14 @@ export class GithubCredentialProviderManager {
 		this.refresh();
 	}
 
-	private refresh(): void {
-		const config = workspace.getConfiguration('github', null);
-		const enabled = config.get<boolean>('gitAuthentication', true);
-		this.enabled = !!enabled;
+	privAte refresh(): void {
+		const config = workspAce.getConfigurAtion('github', null);
+		const enAbled = config.get<booleAn>('gitAuthenticAtion', true);
+		this.enAbled = !!enAbled;
 	}
 
 	dispose(): void {
-		this.enabled = false;
-		this.disposable.dispose();
+		this.enAbled = fAlse;
+		this.disposAble.dispose();
 	}
 }

@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./outlinePane';
-import * as dom from 'vs/base/browser/dom';
-import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
-import { Action, IAction, RadioGroup, Separator } from 'vs/base/common/actions';
-import { createCancelablePromise, TimeoutTimer } from 'vs/base/common/async';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { defaultGenerator } from 'vs/base/common/idGenerator';
-import { IDisposable, toDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { LRUCache } from 'vs/base/common/map';
+import 'vs/css!./outlinePAne';
+import * As dom from 'vs/bAse/browser/dom';
+import { ProgressBAr } from 'vs/bAse/browser/ui/progressbAr/progressbAr';
+import { Action, IAction, RAdioGroup, SepArAtor } from 'vs/bAse/common/Actions';
+import { creAteCAncelAblePromise, TimeoutTimer } from 'vs/bAse/common/Async';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { defAultGenerAtor } from 'vs/bAse/common/idGenerAtor';
+import { IDisposAble, toDisposAble, DisposAbleStore, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { LRUCAche } from 'vs/bAse/common/mAp';
 import { ICodeEditor, isCodeEditor, isDiffEditor } from 'vs/editor/browser/editorBrowser';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
-import { IModelContentChangedEvent } from 'vs/editor/common/model/textModelEvents';
+import { IModelContentChAngedEvent } from 'vs/editor/common/model/textModelEvents';
 import { DocumentSymbolProviderRegistry } from 'vs/editor/common/modes';
-import { LanguageFeatureRegistry } from 'vs/editor/common/modes/languageFeatureRegistry';
-import { OutlineElement, OutlineModel, TreeElement, IOutlineMarker } from 'vs/editor/contrib/documentSymbols/outlineModel';
-import { localize } from 'vs/nls';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { TextEditorSelectionRevealType } from 'vs/platform/editor/common/editor';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { WorkbenchDataTree } from 'vs/platform/list/browser/listService';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { attachProgressBarStyler } from 'vs/platform/theme/common/styler';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
-import { CollapseAction } from 'vs/workbench/browser/viewlet';
+import { LAnguAgeFeAtureRegistry } from 'vs/editor/common/modes/lAnguAgeFeAtureRegistry';
+import { OutlineElement, OutlineModel, TreeElement, IOutlineMArker } from 'vs/editor/contrib/documentSymbols/outlineModel';
+import { locAlize } from 'vs/nls';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { TextEditorSelectionReveAlType } from 'vs/plAtform/editor/common/editor';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { WorkbenchDAtATree } from 'vs/plAtform/list/browser/listService';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { AttAchProgressBArStyler } from 'vs/plAtform/theme/common/styler';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { ViewPAne } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { IViewletViewOptions } from 'vs/workbench/browser/pArts/views/viewsViewlet';
+import { CollApseAction } from 'vs/workbench/browser/viewlet';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { OutlineConfigKeys, OutlineViewFocused, OutlineViewFiltered } from 'vs/editor/contrib/documentSymbols/outline';
-import { FuzzyScore } from 'vs/base/common/filters';
-import { OutlineDataSource, OutlineItemComparator, OutlineSortOrder, OutlineVirtualDelegate, OutlineGroupRenderer, OutlineElementRenderer, OutlineItem, OutlineIdentityProvider, OutlineNavigationLabelProvider, OutlineFilter, OutlineAccessibilityProvider } from 'vs/editor/contrib/documentSymbols/outlineTree';
-import { IDataTreeViewState } from 'vs/base/browser/ui/tree/dataTree';
-import { basename } from 'vs/base/common/resources';
-import { IDataSource } from 'vs/base/browser/ui/tree/tree';
-import { IMarkerDecorationsService } from 'vs/editor/common/services/markersDecorationService';
-import { MarkerSeverity } from 'vs/platform/markers/common/markers';
+import { FuzzyScore } from 'vs/bAse/common/filters';
+import { OutlineDAtASource, OutlineItemCompArAtor, OutlineSortOrder, OutlineVirtuAlDelegAte, OutlineGroupRenderer, OutlineElementRenderer, OutlineItem, OutlineIdentityProvider, OutlineNAvigAtionLAbelProvider, OutlineFilter, OutlineAccessibilityProvider } from 'vs/editor/contrib/documentSymbols/outlineTree';
+import { IDAtATreeViewStAte } from 'vs/bAse/browser/ui/tree/dAtATree';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { IDAtASource } from 'vs/bAse/browser/ui/tree/tree';
+import { IMArkerDecorAtionsService } from 'vs/editor/common/services/mArkersDecorAtionService';
+import { MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 
-class RequestState {
+clAss RequestStAte {
 
 	constructor(
-		private _editorId: string,
-		private _modelId: string,
-		private _modelVersion: number,
-		private _providerCount: number
+		privAte _editorId: string,
+		privAte _modelId: string,
+		privAte _modelVersion: number,
+		privAte _providerCount: number
 	) {
 		//
 	}
 
-	equals(other: RequestState): boolean {
+	equAls(other: RequestStAte): booleAn {
 		return other
 			&& this._editorId === other._editorId
 			&& this._modelId === other._modelId
@@ -69,30 +69,30 @@ class RequestState {
 	}
 }
 
-class RequestOracle {
+clAss RequestOrAcle {
 
-	private readonly _disposables = new DisposableStore();
-	private _sessionDisposable = new MutableDisposable();
-	private _lastState?: RequestState;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
+	privAte _sessionDisposAble = new MutAbleDisposAble();
+	privAte _lAstStAte?: RequestStAte;
 
 	constructor(
-		private readonly _callback: (editor: ICodeEditor | undefined, change: IModelContentChangedEvent | undefined) => any,
-		private readonly _featureRegistry: LanguageFeatureRegistry<any>,
-		@IEditorService private readonly _editorService: IEditorService,
+		privAte reAdonly _cAllbAck: (editor: ICodeEditor | undefined, chAnge: IModelContentChAngedEvent | undefined) => Any,
+		privAte reAdonly _feAtureRegistry: LAnguAgeFeAtureRegistry<Any>,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
 	) {
-		_editorService.onDidActiveEditorChange(this._update, this, this._disposables);
-		_featureRegistry.onDidChange(this._update, this, this._disposables);
-		this._update();
+		_editorService.onDidActiveEditorChAnge(this._updAte, this, this._disposAbles);
+		_feAtureRegistry.onDidChAnge(this._updAte, this, this._disposAbles);
+		this._updAte();
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
-		this._sessionDisposable.dispose();
+		this._disposAbles.dispose();
+		this._sessionDisposAble.dispose();
 	}
 
-	private _update(): void {
+	privAte _updAte(): void {
 
-		let control = this._editorService.activeTextEditorControl;
+		let control = this._editorService.ActiveTextEditorControl;
 		let codeEditor: ICodeEditor | undefined = undefined;
 		if (isCodeEditor(control)) {
 			codeEditor = control;
@@ -100,42 +100,42 @@ class RequestOracle {
 			codeEditor = control.getModifiedEditor();
 		}
 
-		if (!codeEditor || !codeEditor.hasModel()) {
-			this._lastState = undefined;
-			this._callback(undefined, undefined);
+		if (!codeEditor || !codeEditor.hAsModel()) {
+			this._lAstStAte = undefined;
+			this._cAllbAck(undefined, undefined);
 			return;
 		}
 
-		let thisState = new RequestState(
+		let thisStAte = new RequestStAte(
 			codeEditor.getId(),
 			codeEditor.getModel().id,
 			codeEditor.getModel().getVersionId(),
-			this._featureRegistry.all(codeEditor.getModel()).length
+			this._feAtureRegistry.All(codeEditor.getModel()).length
 		);
 
-		if (this._lastState && thisState.equals(this._lastState)) {
-			// prevent unnecessary changes...
+		if (this._lAstStAte && thisStAte.equAls(this._lAstStAte)) {
+			// prevent unnecessAry chAnges...
 			return;
 		}
-		this._lastState = thisState;
-		this._callback(codeEditor, undefined);
+		this._lAstStAte = thisStAte;
+		this._cAllbAck(codeEditor, undefined);
 
-		let handle: any;
-		let contentListener = codeEditor.onDidChangeModelContent(event => {
-			clearTimeout(handle);
-			const timeout = OutlineModel.getRequestDelay(codeEditor!.getModel());
-			handle = setTimeout(() => this._callback(codeEditor!, event), timeout);
+		let hAndle: Any;
+		let contentListener = codeEditor.onDidChAngeModelContent(event => {
+			cleArTimeout(hAndle);
+			const timeout = OutlineModel.getRequestDelAy(codeEditor!.getModel());
+			hAndle = setTimeout(() => this._cAllbAck(codeEditor!, event), timeout);
 		});
-		let modeListener = codeEditor.onDidChangeModelLanguage(_ => {
-			this._callback(codeEditor!, undefined);
+		let modeListener = codeEditor.onDidChAngeModelLAnguAge(_ => {
+			this._cAllbAck(codeEditor!, undefined);
 		});
 		let disposeListener = codeEditor.onDidDispose(() => {
-			this._callback(undefined, undefined);
+			this._cAllbAck(undefined, undefined);
 		});
-		this._sessionDisposable.value = {
+		this._sessionDisposAble.vAlue = {
 			dispose() {
 				contentListener.dispose();
-				clearTimeout(handle);
+				cleArTimeout(hAndle);
 				modeListener.dispose();
 				disposeListener.dispose();
 			}
@@ -143,18 +143,18 @@ class RequestOracle {
 	}
 }
 
-class SimpleToggleAction extends Action {
+clAss SimpleToggleAction extends Action {
 
-	private readonly _listener: IDisposable;
+	privAte reAdonly _listener: IDisposAble;
 
-	constructor(state: OutlineViewState, label: string, isChecked: () => boolean, callback: (action: SimpleToggleAction) => any, className?: string) {
-		super(`simple` + defaultGenerator.nextId(), label, className, true, () => {
+	constructor(stAte: OutlineViewStAte, lAbel: string, isChecked: () => booleAn, cAllbAck: (Action: SimpleToggleAction) => Any, clAssNAme?: string) {
+		super(`simple` + defAultGenerAtor.nextId(), lAbel, clAssNAme, true, () => {
 			this.checked = !this.checked;
-			callback(this);
+			cAllbAck(this);
 			return Promise.resolve();
 		});
 		this.checked = isChecked();
-		this._listener = state.onDidChange(() => this.checked = isChecked());
+		this._listener = stAte.onDidChAnge(() => this.checked = isChecked());
 	}
 
 	dispose(): void {
@@ -164,23 +164,23 @@ class SimpleToggleAction extends Action {
 }
 
 
-class OutlineViewState {
+clAss OutlineViewStAte {
 
-	private _followCursor = false;
-	private _filterOnType = true;
-	private _sortBy = OutlineSortOrder.ByKind;
+	privAte _followCursor = fAlse;
+	privAte _filterOnType = true;
+	privAte _sortBy = OutlineSortOrder.ByKind;
 
-	private readonly _onDidChange = new Emitter<{ followCursor?: boolean, sortBy?: boolean, filterOnType?: boolean }>();
-	readonly onDidChange = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<{ followCursor?: booleAn, sortBy?: booleAn, filterOnType?: booleAn }>();
+	reAdonly onDidChAnge = this._onDidChAnge.event;
 
-	set followCursor(value: boolean) {
-		if (value !== this._followCursor) {
-			this._followCursor = value;
-			this._onDidChange.fire({ followCursor: true });
+	set followCursor(vAlue: booleAn) {
+		if (vAlue !== this._followCursor) {
+			this._followCursor = vAlue;
+			this._onDidChAnge.fire({ followCursor: true });
 		}
 	}
 
-	get followCursor(): boolean {
+	get followCursor(): booleAn {
 		return this._followCursor;
 	}
 
@@ -188,17 +188,17 @@ class OutlineViewState {
 		return this._filterOnType;
 	}
 
-	set filterOnType(value) {
-		if (value !== this._filterOnType) {
-			this._filterOnType = value;
-			this._onDidChange.fire({ filterOnType: true });
+	set filterOnType(vAlue) {
+		if (vAlue !== this._filterOnType) {
+			this._filterOnType = vAlue;
+			this._onDidChAnge.fire({ filterOnType: true });
 		}
 	}
 
-	set sortBy(value: OutlineSortOrder) {
-		if (value !== this._sortBy) {
-			this._sortBy = value;
-			this._onDidChange.fire({ sortBy: true });
+	set sortBy(vAlue: OutlineSortOrder) {
+		if (vAlue !== this._sortBy) {
+			this._sortBy = vAlue;
+			this._onDidChAnge.fire({ sortBy: true });
 		}
 	}
 
@@ -206,62 +206,62 @@ class OutlineViewState {
 		return this._sortBy;
 	}
 
-	persist(storageService: IStorageService): void {
-		storageService.store('outline/state', JSON.stringify({
+	persist(storAgeService: IStorAgeService): void {
+		storAgeService.store('outline/stAte', JSON.stringify({
 			followCursor: this.followCursor,
 			sortBy: this.sortBy,
 			filterOnType: this.filterOnType,
-		}), StorageScope.WORKSPACE);
+		}), StorAgeScope.WORKSPACE);
 	}
 
-	restore(storageService: IStorageService): void {
-		let raw = storageService.get('outline/state', StorageScope.WORKSPACE);
-		if (!raw) {
+	restore(storAgeService: IStorAgeService): void {
+		let rAw = storAgeService.get('outline/stAte', StorAgeScope.WORKSPACE);
+		if (!rAw) {
 			return;
 		}
-		let data: any;
+		let dAtA: Any;
 		try {
-			data = JSON.parse(raw);
-		} catch (e) {
+			dAtA = JSON.pArse(rAw);
+		} cAtch (e) {
 			return;
 		}
-		this.followCursor = data.followCursor;
-		this.sortBy = data.sortBy;
-		if (typeof data.filterOnType === 'boolean') {
-			this.filterOnType = data.filterOnType;
+		this.followCursor = dAtA.followCursor;
+		this.sortBy = dAtA.sortBy;
+		if (typeof dAtA.filterOnType === 'booleAn') {
+			this.filterOnType = dAtA.filterOnType;
 		}
 	}
 }
 
-export class OutlinePane extends ViewPane {
+export clAss OutlinePAne extends ViewPAne {
 
-	private _disposables = new DisposableStore();
+	privAte _disposAbles = new DisposAbleStore();
 
-	private _editorDisposables = new DisposableStore();
-	private _outlineViewState = new OutlineViewState();
-	private _requestOracle?: RequestOracle;
-	private _domNode!: HTMLElement;
-	private _message!: HTMLDivElement;
-	private _progressBar!: ProgressBar;
-	private _tree!: WorkbenchDataTree<OutlineModel, OutlineItem, FuzzyScore>;
-	private _treeDataSource!: OutlineDataSource;
-	private _treeRenderer!: OutlineElementRenderer;
-	private _treeComparator!: OutlineItemComparator;
-	private _treeFilter!: OutlineFilter;
-	private _treeStates = new LRUCache<string, IDataTreeViewState>(10);
+	privAte _editorDisposAbles = new DisposAbleStore();
+	privAte _outlineViewStAte = new OutlineViewStAte();
+	privAte _requestOrAcle?: RequestOrAcle;
+	privAte _domNode!: HTMLElement;
+	privAte _messAge!: HTMLDivElement;
+	privAte _progressBAr!: ProgressBAr;
+	privAte _tree!: WorkbenchDAtATree<OutlineModel, OutlineItem, FuzzyScore>;
+	privAte _treeDAtASource!: OutlineDAtASource;
+	privAte _treeRenderer!: OutlineElementRenderer;
+	privAte _treeCompArAtor!: OutlineItemCompArAtor;
+	privAte _treeFilter!: OutlineFilter;
+	privAte _treeStAtes = new LRUCAche<string, IDAtATreeViewStAte>(10);
 
-	private readonly _contextKeyFocused: IContextKey<boolean>;
-	private readonly _contextKeyFiltered: IContextKey<boolean>;
+	privAte reAdonly _contextKeyFocused: IContextKey<booleAn>;
+	privAte reAdonly _contextKeyFiltered: IContextKey<booleAn>;
 
 	constructor(
 		options: IViewletViewOptions,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
-		@IThemeService private readonly _themeService: IThemeService,
-		@IStorageService private readonly _storageService: IStorageService,
-		@ICodeEditorService private readonly _editorService: ICodeEditorService,
-		@IMarkerDecorationsService private readonly _markerDecorationService: IMarkerDecorationsService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		@IStorAgeService privAte reAdonly _storAgeService: IStorAgeService,
+		@ICodeEditorService privAte reAdonly _editorService: ICodeEditorService,
+		@IMArkerDecorAtionsService privAte reAdonly _mArkerDecorAtionService: IMArkerDecorAtionsService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IContextMenuService contextMenuService: IContextMenuService,
@@ -269,18 +269,18 @@ export class OutlinePane extends ViewPane {
 		@IThemeService themeService: IThemeService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, _configurationService, contextKeyService, viewDescriptorService, _instantiationService, openerService, themeService, telemetryService);
-		this._outlineViewState.restore(this._storageService);
+		super(options, keybindingService, contextMenuService, _configurAtionService, contextKeyService, viewDescriptorService, _instAntiAtionService, openerService, themeService, telemetryService);
+		this._outlineViewStAte.restore(this._storAgeService);
 		this._contextKeyFocused = OutlineViewFocused.bindTo(contextKeyService);
 		this._contextKeyFiltered = OutlineViewFiltered.bindTo(contextKeyService);
-		this._disposables.add(this.onDidFocus(_ => this._contextKeyFocused.set(true)));
-		this._disposables.add(this.onDidBlur(_ => this._contextKeyFocused.set(false)));
+		this._disposAbles.Add(this.onDidFocus(_ => this._contextKeyFocused.set(true)));
+		this._disposAbles.Add(this.onDidBlur(_ => this._contextKeyFocused.set(fAlse)));
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
-		this._requestOracle?.dispose();
-		this._editorDisposables.dispose();
+		this._disposAbles.dispose();
+		this._requestOrAcle?.dispose();
+		this._editorDisposAbles.dispose();
 		super.dispose();
 	}
 
@@ -290,130 +290,130 @@ export class OutlinePane extends ViewPane {
 		}
 	}
 
-	protected renderBody(container: HTMLElement): void {
-		super.renderBody(container);
+	protected renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
 
-		this._domNode = container;
-		container.classList.add('outline-pane');
+		this._domNode = contAiner;
+		contAiner.clAssList.Add('outline-pAne');
 
-		let progressContainer = dom.$('.outline-progress');
-		this._message = dom.$('.outline-message');
+		let progressContAiner = dom.$('.outline-progress');
+		this._messAge = dom.$('.outline-messAge');
 
-		this._progressBar = new ProgressBar(progressContainer);
-		this._register(attachProgressBarStyler(this._progressBar, this._themeService));
+		this._progressBAr = new ProgressBAr(progressContAiner);
+		this._register(AttAchProgressBArStyler(this._progressBAr, this._themeService));
 
-		let treeContainer = dom.$('.outline-tree');
-		dom.append(
-			container,
-			progressContainer, this._message, treeContainer
+		let treeContAiner = dom.$('.outline-tree');
+		dom.Append(
+			contAiner,
+			progressContAiner, this._messAge, treeContAiner
 		);
 
-		this._treeRenderer = this._instantiationService.createInstance(OutlineElementRenderer);
-		this._treeDataSource = new OutlineDataSource();
-		this._treeComparator = new OutlineItemComparator(this._outlineViewState.sortBy);
-		this._treeFilter = this._instantiationService.createInstance(OutlineFilter, 'outline');
-		this._tree = <WorkbenchDataTree<OutlineModel, OutlineItem, FuzzyScore>>this._instantiationService.createInstance(
-			WorkbenchDataTree,
-			'OutlinePane',
-			treeContainer,
-			new OutlineVirtualDelegate(),
+		this._treeRenderer = this._instAntiAtionService.creAteInstAnce(OutlineElementRenderer);
+		this._treeDAtASource = new OutlineDAtASource();
+		this._treeCompArAtor = new OutlineItemCompArAtor(this._outlineViewStAte.sortBy);
+		this._treeFilter = this._instAntiAtionService.creAteInstAnce(OutlineFilter, 'outline');
+		this._tree = <WorkbenchDAtATree<OutlineModel, OutlineItem, FuzzyScore>>this._instAntiAtionService.creAteInstAnce(
+			WorkbenchDAtATree,
+			'OutlinePAne',
+			treeContAiner,
+			new OutlineVirtuAlDelegAte(),
 			[new OutlineGroupRenderer(), this._treeRenderer],
 			// https://github.com/microsoft/TypeScript/issues/32526
-			this._treeDataSource as IDataSource<OutlineModel, OutlineItem>,
+			this._treeDAtASource As IDAtASource<OutlineModel, OutlineItem>,
 			{
-				expandOnlyOnTwistieClick: true,
-				multipleSelectionSupport: false,
-				filterOnType: this._outlineViewState.filterOnType,
-				sorter: this._treeComparator,
+				expAndOnlyOnTwistieClick: true,
+				multipleSelectionSupport: fAlse,
+				filterOnType: this._outlineViewStAte.filterOnType,
+				sorter: this._treeCompArAtor,
 				filter: this._treeFilter,
 				identityProvider: new OutlineIdentityProvider(),
-				keyboardNavigationLabelProvider: new OutlineNavigationLabelProvider(),
-				accessibilityProvider: new OutlineAccessibilityProvider(localize('outline', "Outline")),
+				keyboArdNAvigAtionLAbelProvider: new OutlineNAvigAtionLAbelProvider(),
+				AccessibilityProvider: new OutlineAccessibilityProvider(locAlize('outline', "Outline")),
 				hideTwistiesOfChildlessElements: true,
 				overrideStyles: {
-					listBackground: this.getBackgroundColor()
+					listBAckground: this.getBAckgroundColor()
 				},
 				openOnSingleClick: true
 			}
 		);
 
 
-		this._disposables.add(this._tree);
-		this._disposables.add(this._outlineViewState.onDidChange(this._onDidChangeUserState, this));
-		this._disposables.add(this.viewDescriptorService.onDidChangeLocation(({ views }) => {
+		this._disposAbles.Add(this._tree);
+		this._disposAbles.Add(this._outlineViewStAte.onDidChAnge(this._onDidChAngeUserStAte, this));
+		this._disposAbles.Add(this.viewDescriptorService.onDidChAngeLocAtion(({ views }) => {
 			if (views.some(v => v.id === this.id)) {
-				this._tree.updateOptions({ overrideStyles: { listBackground: this.getBackgroundColor() } });
+				this._tree.updAteOptions({ overrideStyles: { listBAckground: this.getBAckgroundColor() } });
 			}
 		}));
 
-		// override the globally defined behaviour
-		this._tree.updateOptions({
-			filterOnType: this._outlineViewState.filterOnType
+		// override the globAlly defined behAviour
+		this._tree.updAteOptions({
+			filterOnType: this._outlineViewStAte.filterOnType
 		});
 
-		// feature: filter on type - keep tree and menu in sync
-		this._register(this._tree.onDidUpdateOptions(e => {
-			this._outlineViewState.filterOnType = Boolean(e.filterOnType);
+		// feAture: filter on type - keep tree And menu in sync
+		this._register(this._tree.onDidUpdAteOptions(e => {
+			this._outlineViewStAte.filterOnType = BooleAn(e.filterOnType);
 		}));
 
-		// feature: expand all nodes when filtering (not when finding)
-		let viewState: IDataTreeViewState | undefined;
-		this._register(this._tree.onDidChangeTypeFilterPattern(pattern => {
+		// feAture: expAnd All nodes when filtering (not when finding)
+		let viewStAte: IDAtATreeViewStAte | undefined;
+		this._register(this._tree.onDidChAngeTypeFilterPAttern(pAttern => {
 			if (!this._tree.options.filterOnType) {
 				return;
 			}
-			if (!viewState && pattern) {
-				viewState = this._tree.getViewState();
-				this._tree.expandAll();
-			} else if (!pattern && viewState) {
-				this._tree.setInput(this._tree.getInput()!, viewState);
-				viewState = undefined;
+			if (!viewStAte && pAttern) {
+				viewStAte = this._tree.getViewStAte();
+				this._tree.expAndAll();
+			} else if (!pAttern && viewStAte) {
+				this._tree.setInput(this._tree.getInput()!, viewStAte);
+				viewStAte = undefined;
 			}
 		}));
 
-		// feature: toggle icons
-		this._register(this._configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration(OutlineConfigKeys.icons)) {
-				this._tree.updateChildren();
+		// feAture: toggle icons
+		this._register(this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion(OutlineConfigKeys.icons)) {
+				this._tree.updAteChildren();
 			}
-			if (e.affectsConfiguration('outline')) {
+			if (e.AffectsConfigurAtion('outline')) {
 				this._tree.refilter();
 			}
 		}));
 
-		this._register(this.onDidChangeBodyVisibility(visible => {
-			if (visible && !this._requestOracle) {
-				this._requestOracle = this._instantiationService.createInstance(RequestOracle, (editor, event) => this._doUpdate(editor, event), DocumentSymbolProviderRegistry);
+		this._register(this.onDidChAngeBodyVisibility(visible => {
+			if (visible && !this._requestOrAcle) {
+				this._requestOrAcle = this._instAntiAtionService.creAteInstAnce(RequestOrAcle, (editor, event) => this._doUpdAte(editor, event), DocumentSymbolProviderRegistry);
 			} else if (!visible) {
-				this._requestOracle?.dispose();
-				this._requestOracle = undefined;
-				this._doUpdate(undefined, undefined);
+				this._requestOrAcle?.dispose();
+				this._requestOrAcle = undefined;
+				this._doUpdAte(undefined, undefined);
 			}
 		}));
 	}
 
-	protected layoutBody(height: number, width: number): void {
-		super.layoutBody(height, width);
-		this._tree.layout(height, width);
+	protected lAyoutBody(height: number, width: number): void {
+		super.lAyoutBody(height, width);
+		this._tree.lAyout(height, width);
 	}
 
 	getActions(): IAction[] {
 		return [
-			new CollapseAction(() => this._tree, true, 'explorer-action codicon-collapse-all')
+			new CollApseAction(() => this._tree, true, 'explorer-Action codicon-collApse-All')
 		];
 	}
 
-	getSecondaryActions(): IAction[] {
-		const group = this._register(new RadioGroup([
-			new SimpleToggleAction(this._outlineViewState, localize('sortByPosition', "Sort By: Position"), () => this._outlineViewState.sortBy === OutlineSortOrder.ByPosition, _ => this._outlineViewState.sortBy = OutlineSortOrder.ByPosition),
-			new SimpleToggleAction(this._outlineViewState, localize('sortByName', "Sort By: Name"), () => this._outlineViewState.sortBy === OutlineSortOrder.ByName, _ => this._outlineViewState.sortBy = OutlineSortOrder.ByName),
-			new SimpleToggleAction(this._outlineViewState, localize('sortByKind', "Sort By: Category"), () => this._outlineViewState.sortBy === OutlineSortOrder.ByKind, _ => this._outlineViewState.sortBy = OutlineSortOrder.ByKind),
+	getSecondAryActions(): IAction[] {
+		const group = this._register(new RAdioGroup([
+			new SimpleToggleAction(this._outlineViewStAte, locAlize('sortByPosition', "Sort By: Position"), () => this._outlineViewStAte.sortBy === OutlineSortOrder.ByPosition, _ => this._outlineViewStAte.sortBy = OutlineSortOrder.ByPosition),
+			new SimpleToggleAction(this._outlineViewStAte, locAlize('sortByNAme', "Sort By: NAme"), () => this._outlineViewStAte.sortBy === OutlineSortOrder.ByNAme, _ => this._outlineViewStAte.sortBy = OutlineSortOrder.ByNAme),
+			new SimpleToggleAction(this._outlineViewStAte, locAlize('sortByKind', "Sort By: CAtegory"), () => this._outlineViewStAte.sortBy === OutlineSortOrder.ByKind, _ => this._outlineViewStAte.sortBy = OutlineSortOrder.ByKind),
 		]));
 		const result = [
-			new SimpleToggleAction(this._outlineViewState, localize('followCur', "Follow Cursor"), () => this._outlineViewState.followCursor, action => this._outlineViewState.followCursor = action.checked),
-			new SimpleToggleAction(this._outlineViewState, localize('filterOnType', "Filter on Type"), () => this._outlineViewState.filterOnType, action => this._outlineViewState.filterOnType = action.checked),
-			new Separator(),
-			...group.actions,
+			new SimpleToggleAction(this._outlineViewStAte, locAlize('followCur', "Follow Cursor"), () => this._outlineViewStAte.followCursor, Action => this._outlineViewStAte.followCursor = Action.checked),
+			new SimpleToggleAction(this._outlineViewStAte, locAlize('filterOnType', "Filter on Type"), () => this._outlineViewStAte.filterOnType, Action => this._outlineViewStAte.filterOnType = Action.checked),
+			new SepArAtor(),
+			...group.Actions,
 		];
 		for (const r of result) {
 			this._register(r);
@@ -422,216 +422,216 @@ export class OutlinePane extends ViewPane {
 		return result;
 	}
 
-	private _onDidChangeUserState(e: { followCursor?: boolean, sortBy?: boolean, filterOnType?: boolean }) {
-		this._outlineViewState.persist(this._storageService);
+	privAte _onDidChAngeUserStAte(e: { followCursor?: booleAn, sortBy?: booleAn, filterOnType?: booleAn }) {
+		this._outlineViewStAte.persist(this._storAgeService);
 		if (e.followCursor) {
-			// todo@joh update immediately
+			// todo@joh updAte immediAtely
 		}
 		if (e.sortBy) {
-			this._treeComparator.type = this._outlineViewState.sortBy;
+			this._treeCompArAtor.type = this._outlineViewStAte.sortBy;
 			this._tree.resort();
 		}
 		if (e.filterOnType) {
-			this._tree.updateOptions({
-				filterOnType: this._outlineViewState.filterOnType
+			this._tree.updAteOptions({
+				filterOnType: this._outlineViewStAte.filterOnType
 			});
 		}
 	}
 
-	private _showMessage(message: string) {
-		this._domNode.classList.add('message');
+	privAte _showMessAge(messAge: string) {
+		this._domNode.clAssList.Add('messAge');
 		this._tree.setInput(undefined!);
-		this._progressBar.stop().hide();
-		this._message.innerText = message;
+		this._progressBAr.stop().hide();
+		this._messAge.innerText = messAge;
 	}
 
-	private static _createOutlineModel(model: ITextModel, disposables: DisposableStore): Promise<OutlineModel | undefined> {
-		let promise = createCancelablePromise(token => OutlineModel.create(model, token));
-		disposables.add({ dispose() { promise.cancel(); } });
-		return promise.catch(err => {
-			if (!isPromiseCanceledError(err)) {
+	privAte stAtic _creAteOutlineModel(model: ITextModel, disposAbles: DisposAbleStore): Promise<OutlineModel | undefined> {
+		let promise = creAteCAncelAblePromise(token => OutlineModel.creAte(model, token));
+		disposAbles.Add({ dispose() { promise.cAncel(); } });
+		return promise.cAtch(err => {
+			if (!isPromiseCAnceledError(err)) {
 				throw err;
 			}
 			return undefined;
 		});
 	}
 
-	private async _doUpdate(editor: ICodeEditor | undefined, event: IModelContentChangedEvent | undefined): Promise<void> {
-		this._editorDisposables.clear();
+	privAte Async _doUpdAte(editor: ICodeEditor | undefined, event: IModelContentChAngedEvent | undefined): Promise<void> {
+		this._editorDisposAbles.cleAr();
 
 
 		const oldModel = this._tree.getInput();
 
-		// persist state
+		// persist stAte
 		if (oldModel) {
-			this._treeStates.set(oldModel.uri.toString(), this._tree.getViewState());
+			this._treeStAtes.set(oldModel.uri.toString(), this._tree.getViewStAte());
 		}
 
-		if (!editor || !editor.hasModel() || !DocumentSymbolProviderRegistry.has(editor.getModel())) {
-			return this._showMessage(localize('no-editor', "The active editor cannot provide outline information."));
+		if (!editor || !editor.hAsModel() || !DocumentSymbolProviderRegistry.hAs(editor.getModel())) {
+			return this._showMessAge(locAlize('no-editor', "The Active editor cAnnot provide outline informAtion."));
 		}
 
 		const textModel = editor.getModel();
 
-		let loadingMessage: IDisposable | undefined;
+		let loAdingMessAge: IDisposAble | undefined;
 		if (!oldModel) {
-			loadingMessage = new TimeoutTimer(
-				() => this._showMessage(localize('loading', "Loading document symbols for '{0}'...", basename(textModel.uri))),
+			loAdingMessAge = new TimeoutTimer(
+				() => this._showMessAge(locAlize('loAding', "LoAding document symbols for '{0}'...", bAsenAme(textModel.uri))),
 				100
 			);
 		}
 
-		const requestDelay = OutlineModel.getRequestDelay(textModel);
-		this._progressBar.infinite().show(requestDelay);
+		const requestDelAy = OutlineModel.getRequestDelAy(textModel);
+		this._progressBAr.infinite().show(requestDelAy);
 
-		const createdModel = await OutlinePane._createOutlineModel(textModel, this._editorDisposables);
-		loadingMessage?.dispose();
-		if (!createdModel) {
+		const creAtedModel = AwAit OutlinePAne._creAteOutlineModel(textModel, this._editorDisposAbles);
+		loAdingMessAge?.dispose();
+		if (!creAtedModel) {
 			return;
 		}
 
-		let newModel = createdModel;
+		let newModel = creAtedModel;
 		if (TreeElement.empty(newModel)) {
-			return this._showMessage(localize('no-symbols', "No symbols found in document '{0}'", basename(textModel.uri)));
+			return this._showMessAge(locAlize('no-symbols', "No symbols found in document '{0}'", bAsenAme(textModel.uri)));
 		}
 
-		this._domNode.classList.remove('message');
+		this._domNode.clAssList.remove('messAge');
 
 		if (event && oldModel && textModel.getLineCount() >= 25) {
-			// heuristic: when the symbols-to-lines ratio changes by 50% between edits
-			// wait a little (and hope that the next change isn't as drastic).
+			// heuristic: when the symbols-to-lines rAtio chAnges by 50% between edits
+			// wAit A little (And hope thAt the next chAnge isn't As drAstic).
 			let newSize = TreeElement.size(newModel);
-			let newLength = textModel.getValueLength();
-			let newRatio = newSize / newLength;
+			let newLength = textModel.getVAlueLength();
+			let newRAtio = newSize / newLength;
 			let oldSize = TreeElement.size(oldModel);
-			let oldLength = newLength - event.changes.reduce((prev, value) => prev + value.rangeLength, 0);
-			let oldRatio = oldSize / oldLength;
-			if (newRatio <= oldRatio * 0.5 || newRatio >= oldRatio * 1.5) {
+			let oldLength = newLength - event.chAnges.reduce((prev, vAlue) => prev + vAlue.rAngeLength, 0);
+			let oldRAtio = oldSize / oldLength;
+			if (newRAtio <= oldRAtio * 0.5 || newRAtio >= oldRAtio * 1.5) {
 
-				let waitPromise = new Promise<boolean>(resolve => {
-					let handle: any = setTimeout(() => {
-						handle = undefined;
+				let wAitPromise = new Promise<booleAn>(resolve => {
+					let hAndle: Any = setTimeout(() => {
+						hAndle = undefined;
 						resolve(true);
 					}, 2000);
-					this._disposables.add({
+					this._disposAbles.Add({
 						dispose() {
-							clearTimeout(handle);
-							resolve(false);
+							cleArTimeout(hAndle);
+							resolve(fAlse);
 						}
 					});
 				});
 
-				if (!await waitPromise) {
+				if (!AwAit wAitPromise) {
 					return;
 				}
 			}
 		}
 
-		this._progressBar.stop().hide();
+		this._progressBAr.stop().hide();
 
 		if (oldModel && oldModel.merge(newModel)) {
-			this._tree.updateChildren();
+			this._tree.updAteChildren();
 			newModel = oldModel;
 		} else {
-			let state = this._treeStates.get(newModel.uri.toString());
-			this._tree.setInput(newModel, state);
+			let stAte = this._treeStAtes.get(newModel.uri.toString());
+			this._tree.setInput(newModel, stAte);
 		}
 
-		this._editorDisposables.add(toDisposable(() => this._contextKeyFiltered.reset()));
+		this._editorDisposAbles.Add(toDisposAble(() => this._contextKeyFiltered.reset()));
 
-		// feature: reveal outline selection in editor
-		// on change -> reveal/select defining range
-		this._editorDisposables.add(this._tree.onDidOpen(e => {
-			if (!(e.element instanceof OutlineElement)) {
+		// feAture: reveAl outline selection in editor
+		// on chAnge -> reveAl/select defining rAnge
+		this._editorDisposAbles.Add(this._tree.onDidOpen(e => {
+			if (!(e.element instAnceof OutlineElement)) {
 				return;
 			}
 
-			this._revealTreeSelection(newModel, e.element, !!e.editorOptions.preserveFocus, !!e.editorOptions.pinned, e.sideBySide);
+			this._reveAlTreeSelection(newModel, e.element, !!e.editorOptions.preserveFocus, !!e.editorOptions.pinned, e.sideBySide);
 		}));
 
-		// feature: reveal editor selection in outline
-		this._revealEditorSelection(newModel, editor.getSelection());
+		// feAture: reveAl editor selection in outline
+		this._reveAlEditorSelection(newModel, editor.getSelection());
 		const versionIdThen = textModel.getVersionId();
-		this._editorDisposables.add(editor.onDidChangeCursorSelection(e => {
-			// first check if the document has changed and stop revealing the
-			// cursor position iff it has -> we will update/recompute the
-			// outline view then anyways
+		this._editorDisposAbles.Add(editor.onDidChAngeCursorSelection(e => {
+			// first check if the document hAs chAnged And stop reveAling the
+			// cursor position iff it hAs -> we will updAte/recompute the
+			// outline view then AnywAys
 			if (!textModel.isDisposed() && textModel.getVersionId() === versionIdThen) {
-				this._revealEditorSelection(newModel, e.selection);
+				this._reveAlEditorSelection(newModel, e.selection);
 			}
 		}));
 
-		// feature: show markers in outline
-		const updateMarker = (model: ITextModel, ignoreEmpty?: boolean) => {
-			if (!this._configurationService.getValue(OutlineConfigKeys.problemsEnabled)) {
+		// feAture: show mArkers in outline
+		const updAteMArker = (model: ITextModel, ignoreEmpty?: booleAn) => {
+			if (!this._configurAtionService.getVAlue(OutlineConfigKeys.problemsEnAbled)) {
 				return;
 			}
 			if (model !== textModel) {
 				return;
 			}
-			const markers: IOutlineMarker[] = [];
-			for (const [range, marker] of this._markerDecorationService.getLiveMarkers(textModel)) {
-				if (marker.severity === MarkerSeverity.Error || marker.severity === MarkerSeverity.Warning) {
-					markers.push({ ...range, severity: marker.severity });
+			const mArkers: IOutlineMArker[] = [];
+			for (const [rAnge, mArker] of this._mArkerDecorAtionService.getLiveMArkers(textModel)) {
+				if (mArker.severity === MArkerSeverity.Error || mArker.severity === MArkerSeverity.WArning) {
+					mArkers.push({ ...rAnge, severity: mArker.severity });
 				}
 			}
-			if (markers.length > 0 || !ignoreEmpty) {
-				newModel.updateMarker(markers);
-				this._tree.updateChildren();
+			if (mArkers.length > 0 || !ignoreEmpty) {
+				newModel.updAteMArker(mArkers);
+				this._tree.updAteChildren();
 			}
 		};
-		updateMarker(textModel, true);
-		this._editorDisposables.add(Event.debounce(this._markerDecorationService.onDidChangeMarker, (_, e) => e, 64)(updateMarker));
+		updAteMArker(textModel, true);
+		this._editorDisposAbles.Add(Event.debounce(this._mArkerDecorAtionService.onDidChAngeMArker, (_, e) => e, 64)(updAteMArker));
 
-		this._editorDisposables.add(this.configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration(OutlineConfigKeys.problemsBadges) || e.affectsConfiguration(OutlineConfigKeys.problemsColors)) {
-				this._tree.updateChildren();
+		this._editorDisposAbles.Add(this.configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion(OutlineConfigKeys.problemsBAdges) || e.AffectsConfigurAtion(OutlineConfigKeys.problemsColors)) {
+				this._tree.updAteChildren();
 				return;
 			}
-			if (!e.affectsConfiguration(OutlineConfigKeys.problemsEnabled)) {
+			if (!e.AffectsConfigurAtion(OutlineConfigKeys.problemsEnAbled)) {
 				return;
 			}
-			if (!this._configurationService.getValue(OutlineConfigKeys.problemsEnabled)) {
-				newModel.updateMarker([]);
-				this._tree.updateChildren();
+			if (!this._configurAtionService.getVAlue(OutlineConfigKeys.problemsEnAbled)) {
+				newModel.updAteMArker([]);
+				this._tree.updAteChildren();
 			} else {
-				updateMarker(textModel, true);
+				updAteMArker(textModel, true);
 			}
 		}));
 	}
 
-	private async _revealTreeSelection(model: OutlineModel, element: OutlineElement, preserveFocus: boolean, pinned: boolean, aside: boolean): Promise<void> {
-		await this._editorService.openCodeEditor(
+	privAte Async _reveAlTreeSelection(model: OutlineModel, element: OutlineElement, preserveFocus: booleAn, pinned: booleAn, Aside: booleAn): Promise<void> {
+		AwAit this._editorService.openCodeEditor(
 			{
 				resource: model.uri,
 				options: {
 					preserveFocus,
 					pinned,
-					selection: Range.collapseToStart(element.symbol.selectionRange),
-					selectionRevealType: TextEditorSelectionRevealType.NearTopIfOutsideViewport,
+					selection: RAnge.collApseToStArt(element.symbol.selectionRAnge),
+					selectionReveAlType: TextEditorSelectionReveAlType.NeArTopIfOutsideViewport,
 				}
 			},
 			this._editorService.getActiveCodeEditor(),
-			aside
+			Aside
 		);
 	}
 
-	private _revealEditorSelection(model: OutlineModel, selection: Selection): void {
-		if (!this._outlineViewState.followCursor || !this._tree.getInput() || !selection) {
+	privAte _reveAlEditorSelection(model: OutlineModel, selection: Selection): void {
+		if (!this._outlineViewStAte.followCursor || !this._tree.getInput() || !selection) {
 			return;
 		}
 		let [first] = this._tree.getSelection();
 		let item = model.getItemEnclosingPosition({
-			lineNumber: selection.selectionStartLineNumber,
-			column: selection.selectionStartColumn
-		}, first instanceof OutlineElement ? first : undefined);
+			lineNumber: selection.selectionStArtLineNumber,
+			column: selection.selectionStArtColumn
+		}, first instAnceof OutlineElement ? first : undefined);
 		if (!item) {
-			// nothing to reveal
+			// nothing to reveAl
 			return;
 		}
-		let top = this._tree.getRelativeTop(item);
+		let top = this._tree.getRelAtiveTop(item);
 		if (top === null) {
-			this._tree.reveal(item, 0.5);
+			this._tree.reveAl(item, 0.5);
 		}
 		this._tree.setFocus([item]);
 		this._tree.setSelection([item]);

@@ -1,86 +1,86 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ExtHostTreeViewsShape, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { mock } from 'vs/base/test/common/mock';
-import { ITreeItem, IViewsRegistry, Extensions, ViewContainerLocation, IViewContainersRegistry, ITreeViewDescriptor, ITreeView, ViewContainer, IViewDescriptorService, TreeItemCollapsibleState } from 'vs/workbench/common/views';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { MainThreadTreeViews } from 'vs/workbench/api/browser/mainThreadTreeViews';
-import { TestViewsService, workbenchInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
+import * As Assert from 'Assert';
+import { ExtHostTreeViewsShApe, IExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { mock } from 'vs/bAse/test/common/mock';
+import { ITreeItem, IViewsRegistry, Extensions, ViewContAinerLocAtion, IViewContAinersRegistry, ITreeViewDescriptor, ITreeView, ViewContAiner, IViewDescriptorService, TreeItemCollApsibleStAte } from 'vs/workbench/common/views';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { MAinThreAdTreeViews } from 'vs/workbench/Api/browser/mAinThreAdTreeViews';
+import { TestViewsService, workbenchInstAntiAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { TestExtensionService } from 'vs/workbench/test/common/workbenchTestServices';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
 import { CustomTreeView } from 'vs/workbench/contrib/views/browser/treeView';
 import { ViewDescriptorService } from 'vs/workbench/services/views/browser/viewDescriptorService';
 
-suite('MainThreadHostTreeView', function () {
+suite('MAinThreAdHostTreeView', function () {
 	const testTreeViewId = 'testTreeView';
-	const customValue = 'customValue';
-	const ViewsRegistry = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry);
+	const customVAlue = 'customVAlue';
+	const ViewsRegistry = Registry.As<IViewsRegistry>(Extensions.ViewsRegistry);
 
-	interface CustomTreeItem extends ITreeItem {
+	interfAce CustomTreeItem extends ITreeItem {
 		customProp: string;
 	}
 
-	class MockExtHostTreeViewsShape extends mock<ExtHostTreeViewsShape>() {
-		async $getChildren(treeViewId: string, treeItemHandle?: string): Promise<ITreeItem[]> {
-			return [<CustomTreeItem>{ handle: 'testItem1', collapsibleState: TreeItemCollapsibleState.Expanded, customProp: customValue }];
+	clAss MockExtHostTreeViewsShApe extends mock<ExtHostTreeViewsShApe>() {
+		Async $getChildren(treeViewId: string, treeItemHAndle?: string): Promise<ITreeItem[]> {
+			return [<CustomTreeItem>{ hAndle: 'testItem1', collApsibleStAte: TreeItemCollApsibleStAte.ExpAnded, customProp: customVAlue }];
 		}
 
-		async $hasResolve(): Promise<boolean> {
-			return false;
+		Async $hAsResolve(): Promise<booleAn> {
+			return fAlse;
 		}
 
 		$setVisible(): void { }
 	}
 
-	let container: ViewContainer;
-	let mainThreadTreeViews: MainThreadTreeViews;
-	let extHostTreeViewsShape: MockExtHostTreeViewsShape;
+	let contAiner: ViewContAiner;
+	let mAinThreAdTreeViews: MAinThreAdTreeViews;
+	let extHostTreeViewsShApe: MockExtHostTreeViewsShApe;
 
-	setup(async () => {
-		const instantiationService: TestInstantiationService = <TestInstantiationService>workbenchInstantiationService();
-		const viewDescriptorService = instantiationService.createInstance(ViewDescriptorService);
-		instantiationService.stub(IViewDescriptorService, viewDescriptorService);
-		container = Registry.as<IViewContainersRegistry>(Extensions.ViewContainersRegistry).registerViewContainer({ id: 'testContainer', name: 'test', ctorDescriptor: new SyncDescriptor(<any>{}) }, ViewContainerLocation.Sidebar);
+	setup(Async () => {
+		const instAntiAtionService: TestInstAntiAtionService = <TestInstAntiAtionService>workbenchInstAntiAtionService();
+		const viewDescriptorService = instAntiAtionService.creAteInstAnce(ViewDescriptorService);
+		instAntiAtionService.stub(IViewDescriptorService, viewDescriptorService);
+		contAiner = Registry.As<IViewContAinersRegistry>(Extensions.ViewContAinersRegistry).registerViewContAiner({ id: 'testContAiner', nAme: 'test', ctorDescriptor: new SyncDescriptor(<Any>{}) }, ViewContAinerLocAtion.SidebAr);
 		const viewDescriptor: ITreeViewDescriptor = {
 			id: testTreeViewId,
 			ctorDescriptor: null!,
-			name: 'Test View 1',
-			treeView: instantiationService.createInstance(CustomTreeView, 'testTree', 'Test Title'),
+			nAme: 'Test View 1',
+			treeView: instAntiAtionService.creAteInstAnce(CustomTreeView, 'testTree', 'Test Title'),
 		};
-		ViewsRegistry.registerViews([viewDescriptor], container);
+		ViewsRegistry.registerViews([viewDescriptor], contAiner);
 
 		const testExtensionService = new TestExtensionService();
-		extHostTreeViewsShape = new MockExtHostTreeViewsShape();
-		mainThreadTreeViews = new MainThreadTreeViews(
-			new class implements IExtHostContext {
+		extHostTreeViewsShApe = new MockExtHostTreeViewsShApe();
+		mAinThreAdTreeViews = new MAinThreAdTreeViews(
+			new clAss implements IExtHostContext {
 				remoteAuthority = '';
-				assertRegistered() { }
-				set(v: any): any { return null; }
-				getProxy(): any {
-					return extHostTreeViewsShape;
+				AssertRegistered() { }
+				set(v: Any): Any { return null; }
+				getProxy(): Any {
+					return extHostTreeViewsShApe;
 				}
-				drain(): any { return null; }
-			}, new TestViewsService(), new TestNotificationService(), testExtensionService, new NullLogService());
-		mainThreadTreeViews.$registerTreeViewDataProvider(testTreeViewId, { showCollapseAll: false, canSelectMany: false });
-		await testExtensionService.whenInstalledExtensionsRegistered();
+				drAin(): Any { return null; }
+			}, new TestViewsService(), new TestNotificAtionService(), testExtensionService, new NullLogService());
+		mAinThreAdTreeViews.$registerTreeViewDAtAProvider(testTreeViewId, { showCollApseAll: fAlse, cAnSelectMAny: fAlse });
+		AwAit testExtensionService.whenInstAlledExtensionsRegistered();
 	});
 
-	teardown(() => {
-		ViewsRegistry.deregisterViews(ViewsRegistry.getViews(container), container);
+	teArdown(() => {
+		ViewsRegistry.deregisterViews(ViewsRegistry.getViews(contAiner), contAiner);
 	});
 
-	test('getChildren keeps custom properties', async () => {
+	test('getChildren keeps custom properties', Async () => {
 		const treeView: ITreeView = (<ITreeViewDescriptor>ViewsRegistry.getView(testTreeViewId)).treeView;
-		const children = await treeView.dataProvider?.getChildren({ handle: 'root', collapsibleState: TreeItemCollapsibleState.Expanded });
-		assert(children!.length === 1, 'Exactly one child should be returned');
-		assert((<CustomTreeItem>children![0]).customProp === customValue, 'Tree Items should keep custom properties');
+		const children = AwAit treeView.dAtAProvider?.getChildren({ hAndle: 'root', collApsibleStAte: TreeItemCollApsibleStAte.ExpAnded });
+		Assert(children!.length === 1, 'ExActly one child should be returned');
+		Assert((<CustomTreeItem>children![0]).customProp === customVAlue, 'Tree Items should keep custom properties');
 	});
 
 

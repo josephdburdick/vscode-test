@@ -1,200 +1,200 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { URI } from 'vs/base/common/uri';
-import 'vs/css!./media/searchEditor';
+import { Action } from 'vs/bAse/common/Actions';
+import { URI } from 'vs/bAse/common/uri';
+import 'vs/css!./mediA/seArchEditor';
 import { ICodeEditor, isDiffEditor } from 'vs/editor/browser/editorBrowser';
-import { localize } from 'vs/nls';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { SearchResult } from 'vs/workbench/contrib/search/common/searchModel';
-import { SearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditor';
-import { getOrMakeSearchEditorInput, SearchEditorInput } from 'vs/workbench/contrib/searchEditor/browser/searchEditorInput';
-import { serializeSearchResultForEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditorSerialization';
+import { locAlize } from 'vs/nls';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { SeArchResult } from 'vs/workbench/contrib/seArch/common/seArchModel';
+import { SeArchEditor } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditor';
+import { getOrMAkeSeArchEditorInput, SeArchEditorInput } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorInput';
+import { seriAlizeSeArchResultForEditor } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorSeriAlizAtion';
 import { IEditorService, SIDE_GROUP, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { ISearchConfigurationProperties } from 'vs/workbench/services/search/common/search';
-import { searchNewEditorIcon } from 'vs/workbench/contrib/search/browser/searchIcons';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { ISeArchConfigurAtionProperties } from 'vs/workbench/services/seArch/common/seArch';
+import { seArchNewEditorIcon } from 'vs/workbench/contrib/seArch/browser/seArchIcons';
+import { IConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolver';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { Schemas } from 'vs/base/common/network';
-import { withNullAsUndefined, assertIsDefined } from 'vs/base/common/types';
-import { OpenNewEditorCommandId } from 'vs/workbench/contrib/searchEditor/browser/constants';
-import { OpenSearchEditorArgs } from 'vs/workbench/contrib/searchEditor/browser/searchEditor.contribution';
+import { SchemAs } from 'vs/bAse/common/network';
+import { withNullAsUndefined, AssertIsDefined } from 'vs/bAse/common/types';
+import { OpenNewEditorCommAndId } from 'vs/workbench/contrib/seArchEditor/browser/constAnts';
+import { OpenSeArchEditorArgs } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditor.contribution';
 import { EditorsOrder } from 'vs/workbench/common/editor';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 
-export const toggleSearchEditorCaseSensitiveCommand = (accessor: ServicesAccessor) => {
-	const editorService = accessor.get(IEditorService);
-	const input = editorService.activeEditor;
-	if (input instanceof SearchEditorInput) {
-		(editorService.activeEditorPane as SearchEditor).toggleCaseSensitive();
+export const toggleSeArchEditorCAseSensitiveCommAnd = (Accessor: ServicesAccessor) => {
+	const editorService = Accessor.get(IEditorService);
+	const input = editorService.ActiveEditor;
+	if (input instAnceof SeArchEditorInput) {
+		(editorService.ActiveEditorPAne As SeArchEditor).toggleCAseSensitive();
 	}
 };
 
-export const toggleSearchEditorWholeWordCommand = (accessor: ServicesAccessor) => {
-	const editorService = accessor.get(IEditorService);
-	const input = editorService.activeEditor;
-	if (input instanceof SearchEditorInput) {
-		(editorService.activeEditorPane as SearchEditor).toggleWholeWords();
+export const toggleSeArchEditorWholeWordCommAnd = (Accessor: ServicesAccessor) => {
+	const editorService = Accessor.get(IEditorService);
+	const input = editorService.ActiveEditor;
+	if (input instAnceof SeArchEditorInput) {
+		(editorService.ActiveEditorPAne As SeArchEditor).toggleWholeWords();
 	}
 };
 
-export const toggleSearchEditorRegexCommand = (accessor: ServicesAccessor) => {
-	const editorService = accessor.get(IEditorService);
-	const input = editorService.activeEditor;
-	if (input instanceof SearchEditorInput) {
-		(editorService.activeEditorPane as SearchEditor).toggleRegex();
+export const toggleSeArchEditorRegexCommAnd = (Accessor: ServicesAccessor) => {
+	const editorService = Accessor.get(IEditorService);
+	const input = editorService.ActiveEditor;
+	if (input instAnceof SeArchEditorInput) {
+		(editorService.ActiveEditorPAne As SeArchEditor).toggleRegex();
 	}
 };
 
-export const toggleSearchEditorContextLinesCommand = (accessor: ServicesAccessor) => {
-	const editorService = accessor.get(IEditorService);
-	const input = editorService.activeEditor;
-	if (input instanceof SearchEditorInput) {
-		(editorService.activeEditorPane as SearchEditor).toggleContextLines();
+export const toggleSeArchEditorContextLinesCommAnd = (Accessor: ServicesAccessor) => {
+	const editorService = Accessor.get(IEditorService);
+	const input = editorService.ActiveEditor;
+	if (input instAnceof SeArchEditorInput) {
+		(editorService.ActiveEditorPAne As SeArchEditor).toggleContextLines();
 	}
 };
 
-export const modifySearchEditorContextLinesCommand = (accessor: ServicesAccessor, increase: boolean) => {
-	const editorService = accessor.get(IEditorService);
-	const input = editorService.activeEditor;
-	if (input instanceof SearchEditorInput) {
-		(editorService.activeEditorPane as SearchEditor).modifyContextLines(increase);
+export const modifySeArchEditorContextLinesCommAnd = (Accessor: ServicesAccessor, increAse: booleAn) => {
+	const editorService = Accessor.get(IEditorService);
+	const input = editorService.ActiveEditor;
+	if (input instAnceof SeArchEditorInput) {
+		(editorService.ActiveEditorPAne As SeArchEditor).modifyContextLines(increAse);
 	}
 };
 
-export const selectAllSearchEditorMatchesCommand = (accessor: ServicesAccessor) => {
-	const editorService = accessor.get(IEditorService);
-	const input = editorService.activeEditor;
-	if (input instanceof SearchEditorInput) {
-		(editorService.activeEditorPane as SearchEditor).focusAllResults();
+export const selectAllSeArchEditorMAtchesCommAnd = (Accessor: ServicesAccessor) => {
+	const editorService = Accessor.get(IEditorService);
+	const input = editorService.ActiveEditor;
+	if (input instAnceof SeArchEditorInput) {
+		(editorService.ActiveEditorPAne As SeArchEditor).focusAllResults();
 	}
 };
 
-export class OpenSearchEditorAction extends Action {
+export clAss OpenSeArchEditorAction extends Action {
 
-	static readonly ID: string = OpenNewEditorCommandId;
-	static readonly LABEL = localize('search.openNewEditor', "Open New Search Editor");
+	stAtic reAdonly ID: string = OpenNewEditorCommAndId;
+	stAtic reAdonly LABEL = locAlize('seArch.openNewEditor', "Open New SeArch Editor");
 
-	constructor(id: string, label: string,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
+	constructor(id: string, lAbel: string,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
 	) {
-		super(id, label, searchNewEditorIcon.classNames);
+		super(id, lAbel, seArchNewEditorIcon.clAssNAmes);
 	}
 
-	update() {
-		// pass
+	updAte() {
+		// pAss
 	}
 
-	get enabled(): boolean {
+	get enAbled(): booleAn {
 		return true;
 	}
 
-	async run() {
-		await this.instantiationService.invokeFunction(openNewSearchEditor);
+	Async run() {
+		AwAit this.instAntiAtionService.invokeFunction(openNewSeArchEditor);
 	}
 }
 
-export const openNewSearchEditor =
-	async (accessor: ServicesAccessor, _args: OpenSearchEditorArgs = {}, toSide = false) => {
-		const editorService = accessor.get(IEditorService);
-		const editorGroupsService = accessor.get(IEditorGroupsService);
-		const telemetryService = accessor.get(ITelemetryService);
-		const instantiationService = accessor.get(IInstantiationService);
-		const configurationService = accessor.get(IConfigurationService);
+export const openNewSeArchEditor =
+	Async (Accessor: ServicesAccessor, _Args: OpenSeArchEditorArgs = {}, toSide = fAlse) => {
+		const editorService = Accessor.get(IEditorService);
+		const editorGroupsService = Accessor.get(IEditorGroupsService);
+		const telemetryService = Accessor.get(ITelemetryService);
+		const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+		const configurAtionService = Accessor.get(IConfigurAtionService);
 
-		const configurationResolverService = accessor.get(IConfigurationResolverService);
-		const workspaceContextService = accessor.get(IWorkspaceContextService);
-		const historyService = accessor.get(IHistoryService);
-		const activeWorkspaceRootUri = historyService.getLastActiveWorkspaceRoot(Schemas.file);
-		const lastActiveWorkspaceRoot = activeWorkspaceRootUri ? withNullAsUndefined(workspaceContextService.getWorkspaceFolder(activeWorkspaceRootUri)) : undefined;
+		const configurAtionResolverService = Accessor.get(IConfigurAtionResolverService);
+		const workspAceContextService = Accessor.get(IWorkspAceContextService);
+		const historyService = Accessor.get(IHistoryService);
+		const ActiveWorkspAceRootUri = historyService.getLAstActiveWorkspAceRoot(SchemAs.file);
+		const lAstActiveWorkspAceRoot = ActiveWorkspAceRootUri ? withNullAsUndefined(workspAceContextService.getWorkspAceFolder(ActiveWorkspAceRootUri)) : undefined;
 
-		const activeEditorControl = editorService.activeTextEditorControl;
-		let activeModel: ICodeEditor | undefined;
+		const ActiveEditorControl = editorService.ActiveTextEditorControl;
+		let ActiveModel: ICodeEditor | undefined;
 		let selected = '';
-		if (activeEditorControl) {
-			if (isDiffEditor(activeEditorControl)) {
-				if (activeEditorControl.getOriginalEditor().hasTextFocus()) {
-					activeModel = activeEditorControl.getOriginalEditor();
+		if (ActiveEditorControl) {
+			if (isDiffEditor(ActiveEditorControl)) {
+				if (ActiveEditorControl.getOriginAlEditor().hAsTextFocus()) {
+					ActiveModel = ActiveEditorControl.getOriginAlEditor();
 				} else {
-					activeModel = activeEditorControl.getModifiedEditor();
+					ActiveModel = ActiveEditorControl.getModifiedEditor();
 				}
 			} else {
-				activeModel = activeEditorControl as ICodeEditor;
+				ActiveModel = ActiveEditorControl As ICodeEditor;
 			}
-			const selection = activeModel?.getSelection();
-			selected = (selection && activeModel?.getModel()?.getValueInRange(selection)) ?? '';
+			const selection = ActiveModel?.getSelection();
+			selected = (selection && ActiveModel?.getModel()?.getVAlueInRAnge(selection)) ?? '';
 		} else {
-			if (editorService.activeEditor instanceof SearchEditorInput) {
-				const active = editorService.activeEditorPane as SearchEditor;
-				selected = active.getSelected();
+			if (editorService.ActiveEditor instAnceof SeArchEditorInput) {
+				const Active = editorService.ActiveEditorPAne As SeArchEditor;
+				selected = Active.getSelected();
 			}
 		}
 
-		telemetryService.publicLog2('searchEditor/openNewSearchEditor');
+		telemetryService.publicLog2('seArchEditor/openNewSeArchEditor');
 
-		const args: OpenSearchEditorArgs = { query: selected };
-		Object.entries(_args).forEach(([name, value]) => {
-			(args as any)[name as any] = (typeof value === 'string') ? configurationResolverService.resolve(lastActiveWorkspaceRoot, value) : value;
+		const Args: OpenSeArchEditorArgs = { query: selected };
+		Object.entries(_Args).forEAch(([nAme, vAlue]) => {
+			(Args As Any)[nAme As Any] = (typeof vAlue === 'string') ? configurAtionResolverService.resolve(lAstActiveWorkspAceRoot, vAlue) : vAlue;
 		});
-		const existing = editorService.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).find(id => id.editor.getTypeId() === SearchEditorInput.ID);
-		let editor: SearchEditor;
-		if (existing && args.location === 'reuse') {
-			const input = existing.editor as SearchEditorInput;
-			editor = assertIsDefined(await assertIsDefined(editorGroupsService.getGroup(existing.groupId)).openEditor(input)) as SearchEditor;
+		const existing = editorService.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).find(id => id.editor.getTypeId() === SeArchEditorInput.ID);
+		let editor: SeArchEditor;
+		if (existing && Args.locAtion === 'reuse') {
+			const input = existing.editor As SeArchEditorInput;
+			editor = AssertIsDefined(AwAit AssertIsDefined(editorGroupsService.getGroup(existing.groupId)).openEditor(input)) As SeArchEditor;
 			if (selected) { editor.setQuery(selected); }
 			else { editor.selectQuery(); }
 		} else {
-			const input = instantiationService.invokeFunction(getOrMakeSearchEditorInput, { config: args, text: '' });
-			editor = await editorService.openEditor(input, { pinned: true }, toSide ? SIDE_GROUP : ACTIVE_GROUP) as SearchEditor;
+			const input = instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput, { config: Args, text: '' });
+			editor = AwAit editorService.openEditor(input, { pinned: true }, toSide ? SIDE_GROUP : ACTIVE_GROUP) As SeArchEditor;
 		}
 
-		const searchOnType = configurationService.getValue<ISearchConfigurationProperties>('search').searchOnType;
+		const seArchOnType = configurAtionService.getVAlue<ISeArchConfigurAtionProperties>('seArch').seArchOnType;
 		if (
-			args.triggerSearch === true ||
-			args.triggerSearch !== false && searchOnType && args.query
+			Args.triggerSeArch === true ||
+			Args.triggerSeArch !== fAlse && seArchOnType && Args.query
 		) {
-			editor.triggerSearch({ focusResults: args.focusResults });
+			editor.triggerSeArch({ focusResults: Args.focusResults });
 		}
 
-		if (!args.focusResults) { editor.focusSearchInput(); }
+		if (!Args.focusResults) { editor.focusSeArchInput(); }
 	};
 
-export const createEditorFromSearchResult =
-	async (accessor: ServicesAccessor, searchResult: SearchResult, rawIncludePattern: string, rawExcludePattern: string) => {
-		if (!searchResult.query) {
-			console.error('Expected searchResult.query to be defined. Got', searchResult);
+export const creAteEditorFromSeArchResult =
+	Async (Accessor: ServicesAccessor, seArchResult: SeArchResult, rAwIncludePAttern: string, rAwExcludePAttern: string) => {
+		if (!seArchResult.query) {
+			console.error('Expected seArchResult.query to be defined. Got', seArchResult);
 			return;
 		}
 
-		const editorService = accessor.get(IEditorService);
-		const telemetryService = accessor.get(ITelemetryService);
-		const instantiationService = accessor.get(IInstantiationService);
-		const labelService = accessor.get(ILabelService);
-		const configurationService = accessor.get(IConfigurationService);
-		const sortOrder = configurationService.getValue<ISearchConfigurationProperties>('search').sortOrder;
+		const editorService = Accessor.get(IEditorService);
+		const telemetryService = Accessor.get(ITelemetryService);
+		const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+		const lAbelService = Accessor.get(ILAbelService);
+		const configurAtionService = Accessor.get(IConfigurAtionService);
+		const sortOrder = configurAtionService.getVAlue<ISeArchConfigurAtionProperties>('seArch').sortOrder;
 
 
-		telemetryService.publicLog2('searchEditor/createEditorFromSearchResult');
+		telemetryService.publicLog2('seArchEditor/creAteEditorFromSeArchResult');
 
-		const labelFormatter = (uri: URI): string => labelService.getUriLabel(uri, { relative: true });
+		const lAbelFormAtter = (uri: URI): string => lAbelService.getUriLAbel(uri, { relAtive: true });
 
-		const { text, matchRanges, config } = serializeSearchResultForEditor(searchResult, rawIncludePattern, rawExcludePattern, 0, labelFormatter, sortOrder);
-		const contextLines = configurationService.getValue<ISearchConfigurationProperties>('search').searchEditor.defaultNumberOfContextLines;
+		const { text, mAtchRAnges, config } = seriAlizeSeArchResultForEditor(seArchResult, rAwIncludePAttern, rAwExcludePAttern, 0, lAbelFormAtter, sortOrder);
+		const contextLines = configurAtionService.getVAlue<ISeArchConfigurAtionProperties>('seArch').seArchEditor.defAultNumberOfContextLines;
 
-		if (searchResult.isDirty || contextLines === 0 || contextLines === null) {
-			const input = instantiationService.invokeFunction(getOrMakeSearchEditorInput, { text, config });
-			await editorService.openEditor(input, { pinned: true });
-			input.setMatchRanges(matchRanges);
+		if (seArchResult.isDirty || contextLines === 0 || contextLines === null) {
+			const input = instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput, { text, config });
+			AwAit editorService.openEditor(input, { pinned: true });
+			input.setMAtchRAnges(mAtchRAnges);
 		} else {
-			const input = instantiationService.invokeFunction(getOrMakeSearchEditorInput, { text: '', config: { ...config, contextLines } });
-			const editor = await editorService.openEditor(input, { pinned: true }) as SearchEditor;
-			editor.triggerSearch({ focusResults: true });
+			const input = instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput, { text: '', config: { ...config, contextLines } });
+			const editor = AwAit editorService.openEditor(input, { pinned: true }) As SeArchEditor;
+			editor.triggerSeArch({ focusResults: true });
 		}
 	};

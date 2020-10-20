@@ -1,165 +1,165 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import * As nls from 'vs/nls';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IExtensionHostProfile, ProfileSession, IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { Disposable, toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { StatusbarAlignment, IStatusbarService, IStatusbarEntryAccessor, IStatusbarEntry } from 'vs/workbench/services/statusbar/common/statusbar';
-import { IExtensionHostProfileService, ProfileSessionState } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor';
+import { DisposAble, toDisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { StAtusbArAlignment, IStAtusbArService, IStAtusbArEntryAccessor, IStAtusbArEntry } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
+import { IExtensionHostProfileService, ProfileSessionStAte } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { randomPort } from 'vs/base/node/ports';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { rAndomPort } from 'vs/bAse/node/ports';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 import { RuntimeExtensionsInput } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsInput';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 import { ExtensionHostProfiler } from 'vs/workbench/services/extensions/electron-browser/extensionHostProfiler';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 
-export class ExtensionHostProfileService extends Disposable implements IExtensionHostProfileService {
+export clAss ExtensionHostProfileService extends DisposAble implements IExtensionHostProfileService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidChangeState: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onDidChangeState: Event<void> = this._onDidChangeState.event;
+	privAte reAdonly _onDidChAngeStAte: Emitter<void> = this._register(new Emitter<void>());
+	public reAdonly onDidChAngeStAte: Event<void> = this._onDidChAngeStAte.event;
 
-	private readonly _onDidChangeLastProfile: Emitter<void> = this._register(new Emitter<void>());
-	public readonly onDidChangeLastProfile: Event<void> = this._onDidChangeLastProfile.event;
+	privAte reAdonly _onDidChAngeLAstProfile: Emitter<void> = this._register(new Emitter<void>());
+	public reAdonly onDidChAngeLAstProfile: Event<void> = this._onDidChAngeLAstProfile.event;
 
-	private readonly _unresponsiveProfiles = new Map<string, IExtensionHostProfile>();
-	private _profile: IExtensionHostProfile | null;
-	private _profileSession: ProfileSession | null;
-	private _state: ProfileSessionState = ProfileSessionState.None;
+	privAte reAdonly _unresponsiveProfiles = new MAp<string, IExtensionHostProfile>();
+	privAte _profile: IExtensionHostProfile | null;
+	privAte _profileSession: ProfileSession | null;
+	privAte _stAte: ProfileSessionStAte = ProfileSessionStAte.None;
 
-	private profilingStatusBarIndicator: IStatusbarEntryAccessor | undefined;
-	private readonly profilingStatusBarIndicatorLabelUpdater = this._register(new MutableDisposable());
+	privAte profilingStAtusBArIndicAtor: IStAtusbArEntryAccessor | undefined;
+	privAte reAdonly profilingStAtusBArIndicAtorLAbelUpdAter = this._register(new MutAbleDisposAble());
 
-	public get state() { return this._state; }
-	public get lastProfile() { return this._profile; }
+	public get stAte() { return this._stAte; }
+	public get lAstProfile() { return this._profile; }
 
 	constructor(
-		@IExtensionService private readonly _extensionService: IExtensionService,
-		@IEditorService private readonly _editorService: IEditorService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@IDialogService private readonly _dialogService: IDialogService,
-		@IStatusbarService private readonly _statusbarService: IStatusbarService,
-		@IProductService private readonly _productService: IProductService
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService,
+		@IDiAlogService privAte reAdonly _diAlogService: IDiAlogService,
+		@IStAtusbArService privAte reAdonly _stAtusbArService: IStAtusbArService,
+		@IProductService privAte reAdonly _productService: IProductService
 	) {
 		super();
 		this._profile = null;
 		this._profileSession = null;
-		this._setState(ProfileSessionState.None);
+		this._setStAte(ProfileSessionStAte.None);
 
-		CommandsRegistry.registerCommand('workbench.action.extensionHostProfilder.stop', () => {
+		CommAndsRegistry.registerCommAnd('workbench.Action.extensionHostProfilder.stop', () => {
 			this.stopProfiling();
-			this._editorService.openEditor(RuntimeExtensionsInput.instance, { revealIfOpened: true });
+			this._editorService.openEditor(RuntimeExtensionsInput.instAnce, { reveAlIfOpened: true });
 		});
 	}
 
-	private _setState(state: ProfileSessionState): void {
-		if (this._state === state) {
+	privAte _setStAte(stAte: ProfileSessionStAte): void {
+		if (this._stAte === stAte) {
 			return;
 		}
-		this._state = state;
+		this._stAte = stAte;
 
-		if (this._state === ProfileSessionState.Running) {
-			this.updateProfilingStatusBarIndicator(true);
-		} else if (this._state === ProfileSessionState.Stopping) {
-			this.updateProfilingStatusBarIndicator(false);
+		if (this._stAte === ProfileSessionStAte.Running) {
+			this.updAteProfilingStAtusBArIndicAtor(true);
+		} else if (this._stAte === ProfileSessionStAte.Stopping) {
+			this.updAteProfilingStAtusBArIndicAtor(fAlse);
 		}
 
-		this._onDidChangeState.fire(undefined);
+		this._onDidChAngeStAte.fire(undefined);
 	}
 
-	private updateProfilingStatusBarIndicator(visible: boolean): void {
-		this.profilingStatusBarIndicatorLabelUpdater.clear();
+	privAte updAteProfilingStAtusBArIndicAtor(visible: booleAn): void {
+		this.profilingStAtusBArIndicAtorLAbelUpdAter.cleAr();
 
 		if (visible) {
-			const indicator: IStatusbarEntry = {
-				text: nls.localize('profilingExtensionHost', "Profiling Extension Host"),
+			const indicAtor: IStAtusbArEntry = {
+				text: nls.locAlize('profilingExtensionHost', "Profiling Extension Host"),
 				showProgress: true,
-				ariaLabel: nls.localize('profilingExtensionHost', "Profiling Extension Host"),
-				tooltip: nls.localize('selectAndStartDebug', "Click to stop profiling."),
-				command: 'workbench.action.extensionHostProfilder.stop'
+				AriALAbel: nls.locAlize('profilingExtensionHost', "Profiling Extension Host"),
+				tooltip: nls.locAlize('selectAndStArtDebug', "Click to stop profiling."),
+				commAnd: 'workbench.Action.extensionHostProfilder.stop'
 			};
 
-			const timeStarted = Date.now();
-			const handle = setInterval(() => {
-				if (this.profilingStatusBarIndicator) {
-					this.profilingStatusBarIndicator.update({ ...indicator, text: nls.localize('profilingExtensionHostTime', "Profiling Extension Host ({0} sec)", Math.round((new Date().getTime() - timeStarted) / 1000)), });
+			const timeStArted = DAte.now();
+			const hAndle = setIntervAl(() => {
+				if (this.profilingStAtusBArIndicAtor) {
+					this.profilingStAtusBArIndicAtor.updAte({ ...indicAtor, text: nls.locAlize('profilingExtensionHostTime', "Profiling Extension Host ({0} sec)", MAth.round((new DAte().getTime() - timeStArted) / 1000)), });
 				}
 			}, 1000);
-			this.profilingStatusBarIndicatorLabelUpdater.value = toDisposable(() => clearInterval(handle));
+			this.profilingStAtusBArIndicAtorLAbelUpdAter.vAlue = toDisposAble(() => cleArIntervAl(hAndle));
 
-			if (!this.profilingStatusBarIndicator) {
-				this.profilingStatusBarIndicator = this._statusbarService.addEntry(indicator, 'status.profiler', nls.localize('status.profiler', "Extension Profiler"), StatusbarAlignment.RIGHT);
+			if (!this.profilingStAtusBArIndicAtor) {
+				this.profilingStAtusBArIndicAtor = this._stAtusbArService.AddEntry(indicAtor, 'stAtus.profiler', nls.locAlize('stAtus.profiler', "Extension Profiler"), StAtusbArAlignment.RIGHT);
 			} else {
-				this.profilingStatusBarIndicator.update(indicator);
+				this.profilingStAtusBArIndicAtor.updAte(indicAtor);
 			}
 		} else {
-			if (this.profilingStatusBarIndicator) {
-				this.profilingStatusBarIndicator.dispose();
-				this.profilingStatusBarIndicator = undefined;
+			if (this.profilingStAtusBArIndicAtor) {
+				this.profilingStAtusBArIndicAtor.dispose();
+				this.profilingStAtusBArIndicAtor = undefined;
 			}
 		}
 	}
 
-	public async startProfiling(): Promise<any> {
-		if (this._state !== ProfileSessionState.None) {
+	public Async stArtProfiling(): Promise<Any> {
+		if (this._stAte !== ProfileSessionStAte.None) {
 			return null;
 		}
 
-		const inspectPort = await this._extensionService.getInspectPort(true);
+		const inspectPort = AwAit this._extensionService.getInspectPort(true);
 		if (!inspectPort) {
-			return this._dialogService.confirm({
+			return this._diAlogService.confirm({
 				type: 'info',
-				message: nls.localize('restart1', "Profile Extensions"),
-				detail: nls.localize('restart2', "In order to profile extensions a restart is required. Do you want to restart '{0}' now?", this._productService.nameLong),
-				primaryButton: nls.localize('restart3', "&&Restart"),
-				secondaryButton: nls.localize('cancel', "&&Cancel")
+				messAge: nls.locAlize('restArt1', "Profile Extensions"),
+				detAil: nls.locAlize('restArt2', "In order to profile extensions A restArt is required. Do you wAnt to restArt '{0}' now?", this._productService.nAmeLong),
+				primAryButton: nls.locAlize('restArt3', "&&RestArt"),
+				secondAryButton: nls.locAlize('cAncel', "&&CAncel")
 			}).then(res => {
 				if (res.confirmed) {
-					this._nativeHostService.relaunch({ addArgs: [`--inspect-extensions=${randomPort()}`] });
+					this._nAtiveHostService.relAunch({ AddArgs: [`--inspect-extensions=${rAndomPort()}`] });
 				}
 			});
 		}
 
-		this._setState(ProfileSessionState.Starting);
+		this._setStAte(ProfileSessionStAte.StArting);
 
-		return this._instantiationService.createInstance(ExtensionHostProfiler, inspectPort).start().then((value) => {
-			this._profileSession = value;
-			this._setState(ProfileSessionState.Running);
+		return this._instAntiAtionService.creAteInstAnce(ExtensionHostProfiler, inspectPort).stArt().then((vAlue) => {
+			this._profileSession = vAlue;
+			this._setStAte(ProfileSessionStAte.Running);
 		}, (err) => {
 			onUnexpectedError(err);
-			this._setState(ProfileSessionState.None);
+			this._setStAte(ProfileSessionStAte.None);
 		});
 	}
 
 	public stopProfiling(): void {
-		if (this._state !== ProfileSessionState.Running || !this._profileSession) {
+		if (this._stAte !== ProfileSessionStAte.Running || !this._profileSession) {
 			return;
 		}
 
-		this._setState(ProfileSessionState.Stopping);
+		this._setStAte(ProfileSessionStAte.Stopping);
 		this._profileSession.stop().then((result) => {
-			this._setLastProfile(result);
-			this._setState(ProfileSessionState.None);
+			this._setLAstProfile(result);
+			this._setStAte(ProfileSessionStAte.None);
 		}, (err) => {
 			onUnexpectedError(err);
-			this._setState(ProfileSessionState.None);
+			this._setStAte(ProfileSessionStAte.None);
 		});
 		this._profileSession = null;
 	}
 
-	private _setLastProfile(profile: IExtensionHostProfile) {
+	privAte _setLAstProfile(profile: IExtensionHostProfile) {
 		this._profile = profile;
-		this._onDidChangeLastProfile.fire(undefined);
+		this._onDidChAngeLAstProfile.fire(undefined);
 	}
 
 	getUnresponsiveProfile(extensionId: ExtensionIdentifier): IExtensionHostProfile | undefined {
@@ -168,7 +168,7 @@ export class ExtensionHostProfileService extends Disposable implements IExtensio
 
 	setUnresponsiveProfile(extensionId: ExtensionIdentifier, profile: IExtensionHostProfile): void {
 		this._unresponsiveProfiles.set(ExtensionIdentifier.toKey(extensionId), profile);
-		this._setLastProfile(profile);
+		this._setLAstProfile(profile);
 	}
 
 }

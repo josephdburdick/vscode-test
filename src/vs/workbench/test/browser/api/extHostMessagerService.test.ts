@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MainThreadMessageService } from 'vs/workbench/api/browser/mainThreadMessageService';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { INotificationService, INotification, NoOpNotification, INotificationHandle, Severity, IPromptChoice, IPromptOptions, IStatusMessageOptions, NotificationsFilter } from 'vs/platform/notification/common/notification';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { mock } from 'vs/base/test/common/mock';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import * as platform from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import { MAinThreAdMessAgeService } from 'vs/workbench/Api/browser/mAinThreAdMessAgeService';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { INotificAtionService, INotificAtion, NoOpNotificAtion, INotificAtionHAndle, Severity, IPromptChoice, IPromptOptions, IStAtusMessAgeOptions, NotificAtionsFilter } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { mock } from 'vs/bAse/test/common/mock';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import * As plAtform from 'vs/bAse/common/plAtform';
 
-const emptyDialogService = new class implements IDialogService {
-	declare readonly _serviceBrand: undefined;
+const emptyDiAlogService = new clAss implements IDiAlogService {
+	declAre reAdonly _serviceBrAnd: undefined;
 	show(): never {
 		throw new Error('not implemented');
 	}
@@ -22,126 +22,126 @@ const emptyDialogService = new class implements IDialogService {
 		throw new Error('not implemented');
 	}
 
-	about(): never {
+	About(): never {
 		throw new Error('not implemented');
 	}
 };
 
-const emptyCommandService: ICommandService = {
-	_serviceBrand: undefined,
-	onWillExecuteCommand: () => Disposable.None,
-	onDidExecuteCommand: () => Disposable.None,
-	executeCommand: (commandId: string, ...args: any[]): Promise<any> => {
+const emptyCommAndService: ICommAndService = {
+	_serviceBrAnd: undefined,
+	onWillExecuteCommAnd: () => DisposAble.None,
+	onDidExecuteCommAnd: () => DisposAble.None,
+	executeCommAnd: (commAndId: string, ...Args: Any[]): Promise<Any> => {
 		return Promise.resolve(undefined);
 	}
 };
 
-const emptyNotificationService = new class implements INotificationService {
-	declare readonly _serviceBrand: undefined;
-	notify(...args: any[]): never {
+const emptyNotificAtionService = new clAss implements INotificAtionService {
+	declAre reAdonly _serviceBrAnd: undefined;
+	notify(...Args: Any[]): never {
 		throw new Error('not implemented');
 	}
-	info(...args: any[]): never {
+	info(...Args: Any[]): never {
 		throw new Error('not implemented');
 	}
-	warn(...args: any[]): never {
+	wArn(...Args: Any[]): never {
 		throw new Error('not implemented');
 	}
-	error(...args: any[]): never {
+	error(...Args: Any[]): never {
 		throw new Error('not implemented');
 	}
-	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
+	prompt(severity: Severity, messAge: string, choices: IPromptChoice[], options?: IPromptOptions): INotificAtionHAndle {
 		throw new Error('not implemented');
 	}
-	status(message: string | Error, options?: IStatusMessageOptions): IDisposable {
-		return Disposable.None;
+	stAtus(messAge: string | Error, options?: IStAtusMessAgeOptions): IDisposAble {
+		return DisposAble.None;
 	}
-	setFilter(filter: NotificationsFilter): void {
+	setFilter(filter: NotificAtionsFilter): void {
 		throw new Error('not implemented.');
 	}
 };
 
-class EmptyNotificationService implements INotificationService {
-	declare readonly _serviceBrand: undefined;
+clAss EmptyNotificAtionService implements INotificAtionService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(private withNotify: (notification: INotification) => void) {
+	constructor(privAte withNotify: (notificAtion: INotificAtion) => void) {
 	}
 
-	notify(notification: INotification): INotificationHandle {
-		this.withNotify(notification);
+	notify(notificAtion: INotificAtion): INotificAtionHAndle {
+		this.withNotify(notificAtion);
 
-		return new NoOpNotification();
+		return new NoOpNotificAtion();
 	}
-	info(message: any): void {
+	info(messAge: Any): void {
 		throw new Error('Method not implemented.');
 	}
-	warn(message: any): void {
+	wArn(messAge: Any): void {
 		throw new Error('Method not implemented.');
 	}
-	error(message: any): void {
+	error(messAge: Any): void {
 		throw new Error('Method not implemented.');
 	}
-	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
+	prompt(severity: Severity, messAge: string, choices: IPromptChoice[], options?: IPromptOptions): INotificAtionHAndle {
 		throw new Error('Method not implemented');
 	}
-	status(message: string, options?: IStatusMessageOptions): IDisposable {
-		return Disposable.None;
+	stAtus(messAge: string, options?: IStAtusMessAgeOptions): IDisposAble {
+		return DisposAble.None;
 	}
-	setFilter(filter: NotificationsFilter): void {
+	setFilter(filter: NotificAtionsFilter): void {
 		throw new Error('Method not implemented.');
 	}
 }
 
-suite('ExtHostMessageService', function () {
+suite('ExtHostMessAgeService', function () {
 
-	test('propagte handle on select', async function () {
+	test('propAgte hAndle on select', Async function () {
 
-		let service = new MainThreadMessageService(null!, new EmptyNotificationService(notification => {
-			assert.equal(notification.actions!.primary!.length, 1);
-			platform.setImmediate(() => notification.actions!.primary![0].run());
-		}), emptyCommandService, emptyDialogService);
+		let service = new MAinThreAdMessAgeService(null!, new EmptyNotificAtionService(notificAtion => {
+			Assert.equAl(notificAtion.Actions!.primAry!.length, 1);
+			plAtform.setImmediAte(() => notificAtion.Actions!.primAry![0].run());
+		}), emptyCommAndService, emptyDiAlogService);
 
-		const handle = await service.$showMessage(1, 'h', {}, [{ handle: 42, title: 'a thing', isCloseAffordance: true }]);
-		assert.equal(handle, 42);
+		const hAndle = AwAit service.$showMessAge(1, 'h', {}, [{ hAndle: 42, title: 'A thing', isCloseAffordAnce: true }]);
+		Assert.equAl(hAndle, 42);
 	});
 
-	suite('modal', () => {
-		test('calls dialog service', async () => {
-			const service = new MainThreadMessageService(null!, emptyNotificationService, emptyCommandService, new class extends mock<IDialogService>() {
-				show(severity: Severity, message: string, buttons: string[]) {
-					assert.equal(severity, 1);
-					assert.equal(message, 'h');
-					assert.equal(buttons.length, 2);
-					assert.equal(buttons[1], 'Cancel');
+	suite('modAl', () => {
+		test('cAlls diAlog service', Async () => {
+			const service = new MAinThreAdMessAgeService(null!, emptyNotificAtionService, emptyCommAndService, new clAss extends mock<IDiAlogService>() {
+				show(severity: Severity, messAge: string, buttons: string[]) {
+					Assert.equAl(severity, 1);
+					Assert.equAl(messAge, 'h');
+					Assert.equAl(buttons.length, 2);
+					Assert.equAl(buttons[1], 'CAncel');
 					return Promise.resolve({ choice: 0 });
 				}
-			} as IDialogService);
+			} As IDiAlogService);
 
-			const handle = await service.$showMessage(1, 'h', { modal: true }, [{ handle: 42, title: 'a thing', isCloseAffordance: false }]);
-			assert.equal(handle, 42);
+			const hAndle = AwAit service.$showMessAge(1, 'h', { modAl: true }, [{ hAndle: 42, title: 'A thing', isCloseAffordAnce: fAlse }]);
+			Assert.equAl(hAndle, 42);
 		});
 
-		test('returns undefined when cancelled', async () => {
-			const service = new MainThreadMessageService(null!, emptyNotificationService, emptyCommandService, new class extends mock<IDialogService>() {
+		test('returns undefined when cAncelled', Async () => {
+			const service = new MAinThreAdMessAgeService(null!, emptyNotificAtionService, emptyCommAndService, new clAss extends mock<IDiAlogService>() {
 				show() {
 					return Promise.resolve({ choice: 1 });
 				}
-			} as IDialogService);
+			} As IDiAlogService);
 
-			const handle = await service.$showMessage(1, 'h', { modal: true }, [{ handle: 42, title: 'a thing', isCloseAffordance: false }]);
-			assert.equal(handle, undefined);
+			const hAndle = AwAit service.$showMessAge(1, 'h', { modAl: true }, [{ hAndle: 42, title: 'A thing', isCloseAffordAnce: fAlse }]);
+			Assert.equAl(hAndle, undefined);
 		});
 
-		test('hides Cancel button when not needed', async () => {
-			const service = new MainThreadMessageService(null!, emptyNotificationService, emptyCommandService, new class extends mock<IDialogService>() {
-				show(severity: Severity, message: string, buttons: string[]) {
-					assert.equal(buttons.length, 1);
+		test('hides CAncel button when not needed', Async () => {
+			const service = new MAinThreAdMessAgeService(null!, emptyNotificAtionService, emptyCommAndService, new clAss extends mock<IDiAlogService>() {
+				show(severity: Severity, messAge: string, buttons: string[]) {
+					Assert.equAl(buttons.length, 1);
 					return Promise.resolve({ choice: 0 });
 				}
-			} as IDialogService);
+			} As IDiAlogService);
 
-			const handle = await service.$showMessage(1, 'h', { modal: true }, [{ handle: 42, title: 'a thing', isCloseAffordance: true }]);
-			assert.equal(handle, 42);
+			const hAndle = AwAit service.$showMessAge(1, 'h', { modAl: true }, [{ hAndle: 42, title: 'A thing', isCloseAffordAnce: true }]);
+			Assert.equAl(hAndle, 42);
 		});
 	});
 });

@@ -1,376 +1,376 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import * as modes from 'vs/editor/common/modes';
-import { ActionsOrientation, ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { Action, IActionRunner, IAction, Separator } from 'vs/base/common/actions';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import * As modes from 'vs/editor/common/modes';
+import { ActionsOrientAtion, ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { Action, IActionRunner, IAction, SepArAtor } from 'vs/bAse/common/Actions';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { MArkdownRenderer } from 'vs/editor/browser/core/mArkdownRenderer';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { ICommentService } from 'vs/workbench/contrib/comments/browser/commentService';
 import { SimpleCommentEditor } from 'vs/workbench/contrib/comments/browser/simpleCommentEditor';
 import { Selection } from 'vs/editor/common/core/selection';
-import { Emitter, Event } from 'vs/base/common/event';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
-import { ToggleReactionsAction, ReactionAction, ReactionActionViewItem } from './reactionsAction';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ToolBAr } from 'vs/bAse/browser/ui/toolbAr/toolbAr';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { AnchorAlignment } from 'vs/bAse/browser/ui/contextview/contextview';
+import { ToggleReActionsAction, ReActionAction, ReActionActionViewItem } from './reActionsAction';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ICommentThreadWidget } from 'vs/workbench/contrib/comments/common/commentThreadWidget';
-import { MenuItemAction, SubmenuItemAction, IMenu } from 'vs/platform/actions/common/actions';
-import { MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { ICommentThreAdWidget } from 'vs/workbench/contrib/comments/common/commentThreAdWidget';
+import { MenuItemAction, SubmenuItemAction, IMenu } from 'vs/plAtform/Actions/common/Actions';
+import { MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { CommentFormActions } from 'vs/workbench/contrib/comments/browser/commentFormActions';
-import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from 'vs/base/browser/ui/mouseCursor/mouseCursor';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { DropdownMenuActionViewItem } from 'vs/base/browser/ui/dropdown/dropdownActionViewItem';
+import { MOUSE_CURSOR_TEXT_CSS_CLASS_NAME } from 'vs/bAse/browser/ui/mouseCursor/mouseCursor';
+import { ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { DropdownMenuActionViewItem } from 'vs/bAse/browser/ui/dropdown/dropdownActionViewItem';
 
-export class CommentNode extends Disposable {
-	private _domNode: HTMLElement;
-	private _body: HTMLElement;
-	private _md: HTMLElement;
-	private _clearTimeout: any;
+export clAss CommentNode extends DisposAble {
+	privAte _domNode: HTMLElement;
+	privAte _body: HTMLElement;
+	privAte _md: HTMLElement;
+	privAte _cleArTimeout: Any;
 
-	private _editAction: Action | null = null;
-	private _commentEditContainer: HTMLElement | null = null;
-	private _commentDetailsContainer: HTMLElement;
-	private _actionsToolbarContainer!: HTMLElement;
-	private _reactionsActionBar?: ActionBar;
-	private _reactionActionsContainer?: HTMLElement;
-	private _commentEditor: SimpleCommentEditor | null = null;
-	private _commentEditorDisposables: IDisposable[] = [];
-	private _commentEditorModel: ITextModel | null = null;
-	private _isPendingLabel!: HTMLElement;
-	private _contextKeyService: IContextKeyService;
-	private _commentContextValue: IContextKey<string>;
+	privAte _editAction: Action | null = null;
+	privAte _commentEditContAiner: HTMLElement | null = null;
+	privAte _commentDetAilsContAiner: HTMLElement;
+	privAte _ActionsToolbArContAiner!: HTMLElement;
+	privAte _reActionsActionBAr?: ActionBAr;
+	privAte _reActionActionsContAiner?: HTMLElement;
+	privAte _commentEditor: SimpleCommentEditor | null = null;
+	privAte _commentEditorDisposAbles: IDisposAble[] = [];
+	privAte _commentEditorModel: ITextModel | null = null;
+	privAte _isPendingLAbel!: HTMLElement;
+	privAte _contextKeyService: IContextKeyService;
+	privAte _commentContextVAlue: IContextKey<string>;
 
-	protected actionRunner?: IActionRunner;
-	protected toolbar: ToolBar | undefined;
-	private _commentFormActions: CommentFormActions | null = null;
+	protected ActionRunner?: IActionRunner;
+	protected toolbAr: ToolBAr | undefined;
+	privAte _commentFormActions: CommentFormActions | null = null;
 
-	private readonly _onDidClick = new Emitter<CommentNode>();
+	privAte reAdonly _onDidClick = new Emitter<CommentNode>();
 
 	public get domNode(): HTMLElement {
 		return this._domNode;
 	}
 
-	public isEditing: boolean = false;
+	public isEditing: booleAn = fAlse;
 
 	constructor(
-		private commentThread: modes.CommentThread,
+		privAte commentThreAd: modes.CommentThreAd,
 		public comment: modes.Comment,
-		private owner: string,
-		private resource: URI,
-		private parentEditor: ICodeEditor,
-		private parentThread: ICommentThreadWidget,
-		private markdownRenderer: MarkdownRenderer,
-		@IThemeService private themeService: IThemeService,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@ICommentService private commentService: ICommentService,
-		@IModelService private modelService: IModelService,
-		@IModeService private modeService: IModeService,
-		@INotificationService private notificationService: INotificationService,
-		@IContextMenuService private contextMenuService: IContextMenuService,
+		privAte owner: string,
+		privAte resource: URI,
+		privAte pArentEditor: ICodeEditor,
+		privAte pArentThreAd: ICommentThreAdWidget,
+		privAte mArkdownRenderer: MArkdownRenderer,
+		@IThemeService privAte themeService: IThemeService,
+		@IInstAntiAtionService privAte instAntiAtionService: IInstAntiAtionService,
+		@ICommentService privAte commentService: ICommentService,
+		@IModelService privAte modelService: IModelService,
+		@IModeService privAte modeService: IModeService,
+		@INotificAtionService privAte notificAtionService: INotificAtionService,
+		@IContextMenuService privAte contextMenuService: IContextMenuService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		super();
 
 		this._domNode = dom.$('div.review-comment');
-		this._contextKeyService = contextKeyService.createScoped(this._domNode);
-		this._commentContextValue = this._contextKeyService.createKey('comment', comment.contextValue);
+		this._contextKeyService = contextKeyService.creAteScoped(this._domNode);
+		this._commentContextVAlue = this._contextKeyService.creAteKey('comment', comment.contextVAlue);
 
-		this._domNode.tabIndex = -1;
-		const avatar = dom.append(this._domNode, dom.$('div.avatar-container'));
-		if (comment.userIconPath) {
-			const img = <HTMLImageElement>dom.append(avatar, dom.$('img.avatar'));
-			img.src = comment.userIconPath.toString();
+		this._domNode.tAbIndex = -1;
+		const AvAtAr = dom.Append(this._domNode, dom.$('div.AvAtAr-contAiner'));
+		if (comment.userIconPAth) {
+			const img = <HTMLImAgeElement>dom.Append(AvAtAr, dom.$('img.AvAtAr'));
+			img.src = comment.userIconPAth.toString();
 			img.onerror = _ => img.remove();
 		}
-		this._commentDetailsContainer = dom.append(this._domNode, dom.$('.review-comment-contents'));
+		this._commentDetAilsContAiner = dom.Append(this._domNode, dom.$('.review-comment-contents'));
 
-		this.createHeader(this._commentDetailsContainer);
+		this.creAteHeAder(this._commentDetAilsContAiner);
 
-		this._body = dom.append(this._commentDetailsContainer, dom.$(`div.comment-body.${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME}`));
-		this._md = this.markdownRenderer.render(comment.body).element;
-		this._body.appendChild(this._md);
+		this._body = dom.Append(this._commentDetAilsContAiner, dom.$(`div.comment-body.${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME}`));
+		this._md = this.mArkdownRenderer.render(comment.body).element;
+		this._body.AppendChild(this._md);
 
-		if (this.comment.commentReactions && this.comment.commentReactions.length && this.comment.commentReactions.filter(reaction => !!reaction.count).length) {
-			this.createReactionsContainer(this._commentDetailsContainer);
+		if (this.comment.commentReActions && this.comment.commentReActions.length && this.comment.commentReActions.filter(reAction => !!reAction.count).length) {
+			this.creAteReActionsContAiner(this._commentDetAilsContAiner);
 		}
 
-		this._domNode.setAttribute('aria-label', `${comment.userName}, ${comment.body.value}`);
+		this._domNode.setAttribute('AriA-lAbel', `${comment.userNAme}, ${comment.body.vAlue}`);
 		this._domNode.setAttribute('role', 'treeitem');
-		this._clearTimeout = null;
+		this._cleArTimeout = null;
 
-		this._register(dom.addDisposableListener(this._domNode, dom.EventType.CLICK, () => this.isEditing || this._onDidClick.fire(this)));
+		this._register(dom.AddDisposAbleListener(this._domNode, dom.EventType.CLICK, () => this.isEditing || this._onDidClick.fire(this)));
 	}
 
 	public get onDidClick(): Event<CommentNode> {
 		return this._onDidClick.event;
 	}
 
-	private createHeader(commentDetailsContainer: HTMLElement): void {
-		const header = dom.append(commentDetailsContainer, dom.$(`div.comment-title.${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME}`));
-		const author = dom.append(header, dom.$('strong.author'));
-		author.innerText = this.comment.userName;
+	privAte creAteHeAder(commentDetAilsContAiner: HTMLElement): void {
+		const heAder = dom.Append(commentDetAilsContAiner, dom.$(`div.comment-title.${MOUSE_CURSOR_TEXT_CSS_CLASS_NAME}`));
+		const Author = dom.Append(heAder, dom.$('strong.Author'));
+		Author.innerText = this.comment.userNAme;
 
-		this._isPendingLabel = dom.append(header, dom.$('span.isPending'));
+		this._isPendingLAbel = dom.Append(heAder, dom.$('spAn.isPending'));
 
-		if (this.comment.label) {
-			this._isPendingLabel.innerText = this.comment.label;
+		if (this.comment.lAbel) {
+			this._isPendingLAbel.innerText = this.comment.lAbel;
 		} else {
-			this._isPendingLabel.innerText = '';
+			this._isPendingLAbel.innerText = '';
 		}
 
-		this._actionsToolbarContainer = dom.append(header, dom.$('.comment-actions.hidden'));
-		this.createActionsToolbar();
+		this._ActionsToolbArContAiner = dom.Append(heAder, dom.$('.comment-Actions.hidden'));
+		this.creAteActionsToolbAr();
 	}
 
-	private getToolbarActions(menu: IMenu): { primary: IAction[], secondary: IAction[] } {
-		const contributedActions = menu.getActions({ shouldForwardArgs: true });
-		const primary: IAction[] = [];
-		const secondary: IAction[] = [];
-		const result = { primary, secondary };
-		fillInActions(contributedActions, result, false, g => /^inline/.test(g));
+	privAte getToolbArActions(menu: IMenu): { primAry: IAction[], secondAry: IAction[] } {
+		const contributedActions = menu.getActions({ shouldForwArdArgs: true });
+		const primAry: IAction[] = [];
+		const secondAry: IAction[] = [];
+		const result = { primAry, secondAry };
+		fillInActions(contributedActions, result, fAlse, g => /^inline/.test(g));
 		return result;
 	}
 
-	private createToolbar() {
-		this.toolbar = new ToolBar(this._actionsToolbarContainer, this.contextMenuService, {
-			actionViewItemProvider: action => {
-				if (action.id === ToggleReactionsAction.ID) {
+	privAte creAteToolbAr() {
+		this.toolbAr = new ToolBAr(this._ActionsToolbArContAiner, this.contextMenuService, {
+			ActionViewItemProvider: Action => {
+				if (Action.id === ToggleReActionsAction.ID) {
 					return new DropdownMenuActionViewItem(
-						action,
-						(<ToggleReactionsAction>action).menuActions,
+						Action,
+						(<ToggleReActionsAction>Action).menuActions,
 						this.contextMenuService,
 						{
-							actionViewItemProvider: action => this.actionViewItemProvider(action as Action),
-							actionRunner: this.actionRunner,
-							classNames: ['toolbar-toggle-pickReactions', 'codicon', 'codicon-reactions'],
-							anchorAlignmentProvider: () => AnchorAlignment.RIGHT
+							ActionViewItemProvider: Action => this.ActionViewItemProvider(Action As Action),
+							ActionRunner: this.ActionRunner,
+							clAssNAmes: ['toolbAr-toggle-pickReActions', 'codicon', 'codicon-reActions'],
+							AnchorAlignmentProvider: () => AnchorAlignment.RIGHT
 						}
 					);
 				}
-				return this.actionViewItemProvider(action as Action);
+				return this.ActionViewItemProvider(Action As Action);
 			},
-			orientation: ActionsOrientation.HORIZONTAL
+			orientAtion: ActionsOrientAtion.HORIZONTAL
 		});
 
-		this.toolbar.context = {
-			thread: this.commentThread,
-			commentUniqueId: this.comment.uniqueIdInThread,
+		this.toolbAr.context = {
+			threAd: this.commentThreAd,
+			commentUniqueId: this.comment.uniqueIdInThreAd,
 			$mid: 9
 		};
 
-		this.registerActionBarListeners(this._actionsToolbarContainer);
-		this._register(this.toolbar);
+		this.registerActionBArListeners(this._ActionsToolbArContAiner);
+		this._register(this.toolbAr);
 	}
 
-	private createActionsToolbar() {
-		const actions: IAction[] = [];
+	privAte creAteActionsToolbAr() {
+		const Actions: IAction[] = [];
 
-		let hasReactionHandler = this.commentService.hasReactionHandler(this.owner);
+		let hAsReActionHAndler = this.commentService.hAsReActionHAndler(this.owner);
 
-		if (hasReactionHandler) {
-			let toggleReactionAction = this.createReactionPicker(this.comment.commentReactions || []);
-			actions.push(toggleReactionAction);
+		if (hAsReActionHAndler) {
+			let toggleReActionAction = this.creAteReActionPicker(this.comment.commentReActions || []);
+			Actions.push(toggleReActionAction);
 		}
 
 		let commentMenus = this.commentService.getCommentMenus(this.owner);
 		const menu = commentMenus.getCommentTitleActions(this.comment, this._contextKeyService);
 		this._register(menu);
-		this._register(menu.onDidChange(e => {
-			const { primary, secondary } = this.getToolbarActions(menu);
-			if (!this.toolbar && (primary.length || secondary.length)) {
-				this.createToolbar();
+		this._register(menu.onDidChAnge(e => {
+			const { primAry, secondAry } = this.getToolbArActions(menu);
+			if (!this.toolbAr && (primAry.length || secondAry.length)) {
+				this.creAteToolbAr();
 			}
 
-			this.toolbar!.setActions(primary, secondary);
+			this.toolbAr!.setActions(primAry, secondAry);
 		}));
 
-		const { primary, secondary } = this.getToolbarActions(menu);
-		actions.push(...primary);
+		const { primAry, secondAry } = this.getToolbArActions(menu);
+		Actions.push(...primAry);
 
-		if (actions.length || secondary.length) {
-			this.createToolbar();
-			this.toolbar!.setActions(actions, secondary);
+		if (Actions.length || secondAry.length) {
+			this.creAteToolbAr();
+			this.toolbAr!.setActions(Actions, secondAry);
 		}
 	}
 
-	actionViewItemProvider(action: Action) {
+	ActionViewItemProvider(Action: Action) {
 		let options = {};
-		if (action.id === ToggleReactionsAction.ID) {
-			options = { label: false, icon: true };
+		if (Action.id === ToggleReActionsAction.ID) {
+			options = { lAbel: fAlse, icon: true };
 		} else {
-			options = { label: false, icon: true };
+			options = { lAbel: fAlse, icon: true };
 		}
 
-		if (action.id === ReactionAction.ID) {
-			let item = new ReactionActionViewItem(action);
+		if (Action.id === ReActionAction.ID) {
+			let item = new ReActionActionViewItem(Action);
 			return item;
-		} else if (action instanceof MenuItemAction) {
-			return this.instantiationService.createInstance(MenuEntryActionViewItem, action);
-		} else if (action instanceof SubmenuItemAction) {
-			return this.instantiationService.createInstance(SubmenuEntryActionViewItem, action);
+		} else if (Action instAnceof MenuItemAction) {
+			return this.instAntiAtionService.creAteInstAnce(MenuEntryActionViewItem, Action);
+		} else if (Action instAnceof SubmenuItemAction) {
+			return this.instAntiAtionService.creAteInstAnce(SubmenuEntryActionViewItem, Action);
 		} else {
-			let item = new ActionViewItem({}, action, options);
+			let item = new ActionViewItem({}, Action, options);
 			return item;
 		}
 	}
 
-	private createReactionPicker(reactionGroup: modes.CommentReaction[]): ToggleReactionsAction {
-		let toggleReactionActionViewItem: DropdownMenuActionViewItem;
-		let toggleReactionAction = this._register(new ToggleReactionsAction(() => {
-			if (toggleReactionActionViewItem) {
-				toggleReactionActionViewItem.show();
+	privAte creAteReActionPicker(reActionGroup: modes.CommentReAction[]): ToggleReActionsAction {
+		let toggleReActionActionViewItem: DropdownMenuActionViewItem;
+		let toggleReActionAction = this._register(new ToggleReActionsAction(() => {
+			if (toggleReActionActionViewItem) {
+				toggleReActionActionViewItem.show();
 			}
-		}, nls.localize('commentToggleReaction', "Toggle Reaction")));
+		}, nls.locAlize('commentToggleReAction', "Toggle ReAction")));
 
-		let reactionMenuActions: Action[] = [];
-		if (reactionGroup && reactionGroup.length) {
-			reactionMenuActions = reactionGroup.map((reaction) => {
-				return new Action(`reaction.command.${reaction.label}`, `${reaction.label}`, '', true, async () => {
+		let reActionMenuActions: Action[] = [];
+		if (reActionGroup && reActionGroup.length) {
+			reActionMenuActions = reActionGroup.mAp((reAction) => {
+				return new Action(`reAction.commAnd.${reAction.lAbel}`, `${reAction.lAbel}`, '', true, Async () => {
 					try {
-						await this.commentService.toggleReaction(this.owner, this.resource, this.commentThread, this.comment, reaction);
-					} catch (e) {
-						const error = e.message
-							? nls.localize('commentToggleReactionError', "Toggling the comment reaction failed: {0}.", e.message)
-							: nls.localize('commentToggleReactionDefaultError', "Toggling the comment reaction failed");
-						this.notificationService.error(error);
+						AwAit this.commentService.toggleReAction(this.owner, this.resource, this.commentThreAd, this.comment, reAction);
+					} cAtch (e) {
+						const error = e.messAge
+							? nls.locAlize('commentToggleReActionError', "Toggling the comment reAction fAiled: {0}.", e.messAge)
+							: nls.locAlize('commentToggleReActionDefAultError', "Toggling the comment reAction fAiled");
+						this.notificAtionService.error(error);
 					}
 				});
 			});
 		}
 
-		toggleReactionAction.menuActions = reactionMenuActions;
+		toggleReActionAction.menuActions = reActionMenuActions;
 
-		toggleReactionActionViewItem = new DropdownMenuActionViewItem(
-			toggleReactionAction,
-			(<ToggleReactionsAction>toggleReactionAction).menuActions,
+		toggleReActionActionViewItem = new DropdownMenuActionViewItem(
+			toggleReActionAction,
+			(<ToggleReActionsAction>toggleReActionAction).menuActions,
 			this.contextMenuService,
 			{
-				actionViewItemProvider: action => {
-					if (action.id === ToggleReactionsAction.ID) {
-						return toggleReactionActionViewItem;
+				ActionViewItemProvider: Action => {
+					if (Action.id === ToggleReActionsAction.ID) {
+						return toggleReActionActionViewItem;
 					}
-					return this.actionViewItemProvider(action as Action);
+					return this.ActionViewItemProvider(Action As Action);
 				},
-				actionRunner: this.actionRunner,
-				classNames: 'toolbar-toggle-pickReactions',
-				anchorAlignmentProvider: () => AnchorAlignment.RIGHT
+				ActionRunner: this.ActionRunner,
+				clAssNAmes: 'toolbAr-toggle-pickReActions',
+				AnchorAlignmentProvider: () => AnchorAlignment.RIGHT
 			}
 		);
 
-		return toggleReactionAction;
+		return toggleReActionAction;
 	}
 
-	private createReactionsContainer(commentDetailsContainer: HTMLElement): void {
-		this._reactionActionsContainer = dom.append(commentDetailsContainer, dom.$('div.comment-reactions'));
-		this._reactionsActionBar = new ActionBar(this._reactionActionsContainer, {
-			actionViewItemProvider: action => {
-				if (action.id === ToggleReactionsAction.ID) {
+	privAte creAteReActionsContAiner(commentDetAilsContAiner: HTMLElement): void {
+		this._reActionActionsContAiner = dom.Append(commentDetAilsContAiner, dom.$('div.comment-reActions'));
+		this._reActionsActionBAr = new ActionBAr(this._reActionActionsContAiner, {
+			ActionViewItemProvider: Action => {
+				if (Action.id === ToggleReActionsAction.ID) {
 					return new DropdownMenuActionViewItem(
-						action,
-						(<ToggleReactionsAction>action).menuActions,
+						Action,
+						(<ToggleReActionsAction>Action).menuActions,
 						this.contextMenuService,
 						{
-							actionViewItemProvider: action => this.actionViewItemProvider(action as Action),
-							actionRunner: this.actionRunner,
-							classNames: 'toolbar-toggle-pickReactions',
-							anchorAlignmentProvider: () => AnchorAlignment.RIGHT
+							ActionViewItemProvider: Action => this.ActionViewItemProvider(Action As Action),
+							ActionRunner: this.ActionRunner,
+							clAssNAmes: 'toolbAr-toggle-pickReActions',
+							AnchorAlignmentProvider: () => AnchorAlignment.RIGHT
 						}
 					);
 				}
-				return this.actionViewItemProvider(action as Action);
+				return this.ActionViewItemProvider(Action As Action);
 			}
 		});
-		this._register(this._reactionsActionBar);
+		this._register(this._reActionsActionBAr);
 
-		let hasReactionHandler = this.commentService.hasReactionHandler(this.owner);
-		this.comment.commentReactions!.filter(reaction => !!reaction.count).map(reaction => {
-			let action = new ReactionAction(`reaction.${reaction.label}`, `${reaction.label}`, reaction.hasReacted && (reaction.canEdit || hasReactionHandler) ? 'active' : '', (reaction.canEdit || hasReactionHandler), async () => {
+		let hAsReActionHAndler = this.commentService.hAsReActionHAndler(this.owner);
+		this.comment.commentReActions!.filter(reAction => !!reAction.count).mAp(reAction => {
+			let Action = new ReActionAction(`reAction.${reAction.lAbel}`, `${reAction.lAbel}`, reAction.hAsReActed && (reAction.cAnEdit || hAsReActionHAndler) ? 'Active' : '', (reAction.cAnEdit || hAsReActionHAndler), Async () => {
 				try {
-					await this.commentService.toggleReaction(this.owner, this.resource, this.commentThread, this.comment, reaction);
-				} catch (e) {
+					AwAit this.commentService.toggleReAction(this.owner, this.resource, this.commentThreAd, this.comment, reAction);
+				} cAtch (e) {
 					let error: string;
 
-					if (reaction.hasReacted) {
-						error = e.message
-							? nls.localize('commentDeleteReactionError', "Deleting the comment reaction failed: {0}.", e.message)
-							: nls.localize('commentDeleteReactionDefaultError', "Deleting the comment reaction failed");
+					if (reAction.hAsReActed) {
+						error = e.messAge
+							? nls.locAlize('commentDeleteReActionError', "Deleting the comment reAction fAiled: {0}.", e.messAge)
+							: nls.locAlize('commentDeleteReActionDefAultError', "Deleting the comment reAction fAiled");
 					} else {
-						error = e.message
-							? nls.localize('commentAddReactionError', "Deleting the comment reaction failed: {0}.", e.message)
-							: nls.localize('commentAddReactionDefaultError', "Deleting the comment reaction failed");
+						error = e.messAge
+							? nls.locAlize('commentAddReActionError', "Deleting the comment reAction fAiled: {0}.", e.messAge)
+							: nls.locAlize('commentAddReActionDefAultError', "Deleting the comment reAction fAiled");
 					}
-					this.notificationService.error(error);
+					this.notificAtionService.error(error);
 				}
-			}, reaction.iconPath, reaction.count);
+			}, reAction.iconPAth, reAction.count);
 
-			if (this._reactionsActionBar) {
-				this._reactionsActionBar.push(action, { label: true, icon: true });
+			if (this._reActionsActionBAr) {
+				this._reActionsActionBAr.push(Action, { lAbel: true, icon: true });
 			}
 		});
 
-		if (hasReactionHandler) {
-			let toggleReactionAction = this.createReactionPicker(this.comment.commentReactions || []);
-			this._reactionsActionBar.push(toggleReactionAction, { label: false, icon: true });
+		if (hAsReActionHAndler) {
+			let toggleReActionAction = this.creAteReActionPicker(this.comment.commentReActions || []);
+			this._reActionsActionBAr.push(toggleReActionAction, { lAbel: fAlse, icon: true });
 		}
 	}
 
-	private createCommentEditor(editContainer: HTMLElement): void {
-		const container = dom.append(editContainer, dom.$('.edit-textarea'));
-		this._commentEditor = this.instantiationService.createInstance(SimpleCommentEditor, container, SimpleCommentEditor.getEditorOptions(), this.parentEditor, this.parentThread);
-		const resource = URI.parse(`comment:commentinput-${this.comment.uniqueIdInThread}-${Date.now()}.md`);
-		this._commentEditorModel = this.modelService.createModel('', this.modeService.createByFilepathOrFirstLine(resource), resource, false);
+	privAte creAteCommentEditor(editContAiner: HTMLElement): void {
+		const contAiner = dom.Append(editContAiner, dom.$('.edit-textAreA'));
+		this._commentEditor = this.instAntiAtionService.creAteInstAnce(SimpleCommentEditor, contAiner, SimpleCommentEditor.getEditorOptions(), this.pArentEditor, this.pArentThreAd);
+		const resource = URI.pArse(`comment:commentinput-${this.comment.uniqueIdInThreAd}-${DAte.now()}.md`);
+		this._commentEditorModel = this.modelService.creAteModel('', this.modeService.creAteByFilepAthOrFirstLine(resource), resource, fAlse);
 
 		this._commentEditor.setModel(this._commentEditorModel);
-		this._commentEditor.setValue(this.comment.body.value);
-		this._commentEditor.layout({ width: container.clientWidth - 14, height: 90 });
+		this._commentEditor.setVAlue(this.comment.body.vAlue);
+		this._commentEditor.lAyout({ width: contAiner.clientWidth - 14, height: 90 });
 		this._commentEditor.focus();
 
-		dom.scheduleAtNextAnimationFrame(() => {
-			this._commentEditor!.layout({ width: container.clientWidth - 14, height: 90 });
+		dom.scheduleAtNextAnimAtionFrAme(() => {
+			this._commentEditor!.lAyout({ width: contAiner.clientWidth - 14, height: 90 });
 			this._commentEditor!.focus();
 		});
 
-		const lastLine = this._commentEditorModel.getLineCount();
-		const lastColumn = this._commentEditorModel.getLineContent(lastLine).length + 1;
-		this._commentEditor.setSelection(new Selection(lastLine, lastColumn, lastLine, lastColumn));
+		const lAstLine = this._commentEditorModel.getLineCount();
+		const lAstColumn = this._commentEditorModel.getLineContent(lAstLine).length + 1;
+		this._commentEditor.setSelection(new Selection(lAstLine, lAstColumn, lAstLine, lAstColumn));
 
-		let commentThread = this.commentThread;
-		commentThread.input = {
+		let commentThreAd = this.commentThreAd;
+		commentThreAd.input = {
 			uri: this._commentEditor.getModel()!.uri,
-			value: this.comment.body.value
+			vAlue: this.comment.body.vAlue
 		};
-		this.commentService.setActiveCommentThread(commentThread);
+		this.commentService.setActiveCommentThreAd(commentThreAd);
 
-		this._commentEditorDisposables.push(this._commentEditor.onDidFocusEditorWidget(() => {
-			commentThread.input = {
+		this._commentEditorDisposAbles.push(this._commentEditor.onDidFocusEditorWidget(() => {
+			commentThreAd.input = {
 				uri: this._commentEditor!.getModel()!.uri,
-				value: this.comment.body.value
+				vAlue: this.comment.body.vAlue
 			};
-			this.commentService.setActiveCommentThread(commentThread);
+			this.commentService.setActiveCommentThreAd(commentThreAd);
 		}));
 
-		this._commentEditorDisposables.push(this._commentEditor.onDidChangeModelContent(e => {
-			if (commentThread.input && this._commentEditor && this._commentEditor.getModel()!.uri === commentThread.input.uri) {
-				let newVal = this._commentEditor.getValue();
-				if (newVal !== commentThread.input.value) {
-					let input = commentThread.input;
-					input.value = newVal;
-					commentThread.input = input;
-					this.commentService.setActiveCommentThread(commentThread);
+		this._commentEditorDisposAbles.push(this._commentEditor.onDidChAngeModelContent(e => {
+			if (commentThreAd.input && this._commentEditor && this._commentEditor.getModel()!.uri === commentThreAd.input.uri) {
+				let newVAl = this._commentEditor.getVAlue();
+				if (newVAl !== commentThreAd.input.vAlue) {
+					let input = commentThreAd.input;
+					input.vAlue = newVAl;
+					commentThreAd.input = input;
+					this.commentService.setActiveCommentThreAd(commentThreAd);
 				}
 			}
 		}));
@@ -379,29 +379,29 @@ export class CommentNode extends Disposable {
 		this._register(this._commentEditorModel);
 	}
 
-	private removeCommentEditor() {
-		this.isEditing = false;
+	privAte removeCommentEditor() {
+		this.isEditing = fAlse;
 		if (this._editAction) {
-			this._editAction.enabled = true;
+			this._editAction.enAbled = true;
 		}
-		this._body.classList.remove('hidden');
+		this._body.clAssList.remove('hidden');
 
 		if (this._commentEditorModel) {
 			this._commentEditorModel.dispose();
 		}
 
-		this._commentEditorDisposables.forEach(dispose => dispose.dispose());
-		this._commentEditorDisposables = [];
+		this._commentEditorDisposAbles.forEAch(dispose => dispose.dispose());
+		this._commentEditorDisposAbles = [];
 		if (this._commentEditor) {
 			this._commentEditor.dispose();
 			this._commentEditor = null;
 		}
 
-		this._commentEditContainer!.remove();
+		this._commentEditContAiner!.remove();
 	}
 
-	layout() {
-		this._commentEditor?.layout();
+	lAyout() {
+		this._commentEditor?.lAyout();
 	}
 
 	public switchToEditMode() {
@@ -410,27 +410,27 @@ export class CommentNode extends Disposable {
 		}
 
 		this.isEditing = true;
-		this._body.classList.add('hidden');
-		this._commentEditContainer = dom.append(this._commentDetailsContainer, dom.$('.edit-container'));
-		this.createCommentEditor(this._commentEditContainer);
-		const formActions = dom.append(this._commentEditContainer, dom.$('.form-actions'));
+		this._body.clAssList.Add('hidden');
+		this._commentEditContAiner = dom.Append(this._commentDetAilsContAiner, dom.$('.edit-contAiner'));
+		this.creAteCommentEditor(this._commentEditContAiner);
+		const formActions = dom.Append(this._commentEditContAiner, dom.$('.form-Actions'));
 
 		const menus = this.commentService.getCommentMenus(this.owner);
 		const menu = menus.getCommentActions(this.comment, this._contextKeyService);
 
 		this._register(menu);
-		this._register(menu.onDidChange(() => {
+		this._register(menu.onDidChAnge(() => {
 			if (this._commentFormActions) {
 				this._commentFormActions.setActions(menu);
 			}
 		}));
 
-		this._commentFormActions = new CommentFormActions(formActions, (action: IAction): void => {
-			let text = this._commentEditor!.getValue();
+		this._commentFormActions = new CommentFormActions(formActions, (Action: IAction): void => {
+			let text = this._commentEditor!.getVAlue();
 
-			action.run({
-				thread: this.commentThread,
-				commentUniqueId: this.comment.uniqueIdInThread,
+			Action.run({
+				threAd: this.commentThreAd,
+				commentUniqueId: this.comment.uniqueIdInThreAd,
 				text: text,
 				$mid: 10
 			});
@@ -441,43 +441,43 @@ export class CommentNode extends Disposable {
 		this._commentFormActions.setActions(menu);
 	}
 
-	setFocus(focused: boolean, visible: boolean = false) {
+	setFocus(focused: booleAn, visible: booleAn = fAlse) {
 		if (focused) {
 			this._domNode.focus();
-			this._actionsToolbarContainer.classList.remove('hidden');
-			this._actionsToolbarContainer.classList.add('tabfocused');
-			this._domNode.tabIndex = 0;
+			this._ActionsToolbArContAiner.clAssList.remove('hidden');
+			this._ActionsToolbArContAiner.clAssList.Add('tAbfocused');
+			this._domNode.tAbIndex = 0;
 			if (this.comment.mode === modes.CommentMode.Editing) {
 				this._commentEditor?.focus();
 			}
 		} else {
-			if (this._actionsToolbarContainer.classList.contains('tabfocused') && !this._actionsToolbarContainer.classList.contains('mouseover')) {
-				this._actionsToolbarContainer.classList.add('hidden');
-				this._domNode.tabIndex = -1;
+			if (this._ActionsToolbArContAiner.clAssList.contAins('tAbfocused') && !this._ActionsToolbArContAiner.clAssList.contAins('mouseover')) {
+				this._ActionsToolbArContAiner.clAssList.Add('hidden');
+				this._domNode.tAbIndex = -1;
 			}
-			this._actionsToolbarContainer.classList.remove('tabfocused');
+			this._ActionsToolbArContAiner.clAssList.remove('tAbfocused');
 		}
 	}
 
-	private registerActionBarListeners(actionsContainer: HTMLElement): void {
-		this._register(dom.addDisposableListener(this._domNode, 'mouseenter', () => {
-			actionsContainer.classList.remove('hidden');
-			actionsContainer.classList.add('mouseover');
+	privAte registerActionBArListeners(ActionsContAiner: HTMLElement): void {
+		this._register(dom.AddDisposAbleListener(this._domNode, 'mouseenter', () => {
+			ActionsContAiner.clAssList.remove('hidden');
+			ActionsContAiner.clAssList.Add('mouseover');
 		}));
-		this._register(dom.addDisposableListener(this._domNode, 'mouseleave', () => {
-			if (actionsContainer.classList.contains('mouseover') && !actionsContainer.classList.contains('tabfocused')) {
-				actionsContainer.classList.add('hidden');
+		this._register(dom.AddDisposAbleListener(this._domNode, 'mouseleAve', () => {
+			if (ActionsContAiner.clAssList.contAins('mouseover') && !ActionsContAiner.clAssList.contAins('tAbfocused')) {
+				ActionsContAiner.clAssList.Add('hidden');
 			}
-			actionsContainer.classList.remove('mouseover');
+			ActionsContAiner.clAssList.remove('mouseover');
 		}));
 	}
 
-	update(newComment: modes.Comment) {
+	updAte(newComment: modes.Comment) {
 
 		if (newComment.body !== this.comment.body) {
 			this._body.removeChild(this._md);
-			this._md = this.markdownRenderer.render(newComment.body).element;
-			this._body.appendChild(this._md);
+			this._md = this.mArkdownRenderer.render(newComment.body).element;
+			this._body.AppendChild(this._md);
 		}
 
 		if (newComment.mode !== undefined && newComment.mode !== this.comment.mode) {
@@ -490,62 +490,62 @@ export class CommentNode extends Disposable {
 
 		this.comment = newComment;
 
-		if (newComment.label) {
-			this._isPendingLabel.innerText = newComment.label;
+		if (newComment.lAbel) {
+			this._isPendingLAbel.innerText = newComment.lAbel;
 		} else {
-			this._isPendingLabel.innerText = '';
+			this._isPendingLAbel.innerText = '';
 		}
 
-		// update comment reactions
-		if (this._reactionActionsContainer) {
-			this._reactionActionsContainer.remove();
+		// updAte comment reActions
+		if (this._reActionActionsContAiner) {
+			this._reActionActionsContAiner.remove();
 		}
 
-		if (this._reactionsActionBar) {
-			this._reactionsActionBar.clear();
+		if (this._reActionsActionBAr) {
+			this._reActionsActionBAr.cleAr();
 		}
 
-		if (this.comment.commentReactions && this.comment.commentReactions.some(reaction => !!reaction.count)) {
-			this.createReactionsContainer(this._commentDetailsContainer);
+		if (this.comment.commentReActions && this.comment.commentReActions.some(reAction => !!reAction.count)) {
+			this.creAteReActionsContAiner(this._commentDetAilsContAiner);
 		}
 
-		if (this.comment.contextValue) {
-			this._commentContextValue.set(this.comment.contextValue);
+		if (this.comment.contextVAlue) {
+			this._commentContextVAlue.set(this.comment.contextVAlue);
 		} else {
-			this._commentContextValue.reset();
+			this._commentContextVAlue.reset();
 		}
 	}
 
 	focus() {
 		this.domNode.focus();
-		if (!this._clearTimeout) {
-			this.domNode.classList.add('focus');
-			this._clearTimeout = setTimeout(() => {
-				this.domNode.classList.remove('focus');
+		if (!this._cleArTimeout) {
+			this.domNode.clAssList.Add('focus');
+			this._cleArTimeout = setTimeout(() => {
+				this.domNode.clAssList.remove('focus');
 			}, 3000);
 		}
 	}
 }
 
-function fillInActions(groups: [string, Array<MenuItemAction | SubmenuItemAction>][], target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, useAlternativeActions: boolean, isPrimaryGroup: (group: string) => boolean = group => group === 'navigation'): void {
+function fillInActions(groups: [string, ArrAy<MenuItemAction | SubmenuItemAction>][], tArget: IAction[] | { primAry: IAction[]; secondAry: IAction[]; }, useAlternAtiveActions: booleAn, isPrimAryGroup: (group: string) => booleAn = group => group === 'nAvigAtion'): void {
 	for (let tuple of groups) {
-		let [group, actions] = tuple;
-		if (useAlternativeActions) {
-			actions = actions.map(a => (a instanceof MenuItemAction) && !!a.alt ? a.alt : a);
+		let [group, Actions] = tuple;
+		if (useAlternAtiveActions) {
+			Actions = Actions.mAp(A => (A instAnceof MenuItemAction) && !!A.Alt ? A.Alt : A);
 		}
 
-		if (isPrimaryGroup(group)) {
-			const to = Array.isArray(target) ? target : target.primary;
+		if (isPrimAryGroup(group)) {
+			const to = ArrAy.isArrAy(tArget) ? tArget : tArget.primAry;
 
-			to.unshift(...actions);
+			to.unshift(...Actions);
 		} else {
-			const to = Array.isArray(target) ? target : target.secondary;
+			const to = ArrAy.isArrAy(tArget) ? tArget : tArget.secondAry;
 
 			if (to.length > 0) {
-				to.push(new Separator());
+				to.push(new SepArAtor());
 			}
 
-			to.push(...actions);
+			to.push(...Actions);
 		}
 	}
 }

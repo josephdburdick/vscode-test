@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITokenThemeRule, TokenTheme } from 'vs/editor/common/modes/supports/tokenization';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IColorTheme, IThemeService } from 'vs/platform/theme/common/themeService';
+import { ITokenThemeRule, TokenTheme } from 'vs/editor/common/modes/supports/tokenizAtion';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IColorTheme, IThemeService } from 'vs/plAtform/theme/common/themeService';
 
-export const IStandaloneThemeService = createDecorator<IStandaloneThemeService>('themeService');
+export const IStAndAloneThemeService = creAteDecorAtor<IStAndAloneThemeService>('themeService');
 
-export type BuiltinTheme = 'vs' | 'vs-dark' | 'hc-black';
+export type BuiltinTheme = 'vs' | 'vs-dArk' | 'hc-blAck';
 export type IColors = { [colorId: string]: string; };
 
-export interface IStandaloneThemeData {
-	base: BuiltinTheme;
-	inherit: boolean;
+export interfAce IStAndAloneThemeDAtA {
+	bAse: BuiltinTheme;
+	inherit: booleAn;
 	rules: ITokenThemeRule[];
 	encodedTokensColors?: string[];
 	colors: IColors;
 }
 
-export interface IStandaloneTheme extends IColorTheme {
+export interfAce IStAndAloneTheme extends IColorTheme {
 	tokenTheme: TokenTheme;
-	themeName: string;
+	themeNAme: string;
 }
 
-export interface IStandaloneThemeService extends IThemeService {
-	readonly _serviceBrand: undefined;
+export interfAce IStAndAloneThemeService extends IThemeService {
+	reAdonly _serviceBrAnd: undefined;
 
-	setTheme(themeName: string): string;
+	setTheme(themeNAme: string): string;
 
-	defineTheme(themeName: string, themeData: IStandaloneThemeData): void;
+	defineTheme(themeNAme: string, themeDAtA: IStAndAloneThemeDAtA): void;
 
-	getColorTheme(): IStandaloneTheme;
+	getColorTheme(): IStAndAloneTheme;
 }

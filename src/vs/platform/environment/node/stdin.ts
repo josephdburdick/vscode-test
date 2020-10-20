@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 /**
- * This code is also used by standalone cli's. Avoid adding dependencies to keep the size of the cli small.
+ * This code is Also used by stAndAlone cli's. Avoid Adding dependencies to keep the size of the cli smAll.
  */
-import * as paths from 'vs/base/common/path';
-import * as fs from 'fs';
-import * as os from 'os';
-import { resolveTerminalEncoding } from 'vs/base/node/terminalEncoding';
+import * As pAths from 'vs/bAse/common/pAth';
+import * As fs from 'fs';
+import * As os from 'os';
+import { resolveTerminAlEncoding } from 'vs/bAse/node/terminAlEncoding';
 
-export function hasStdinWithoutTty() {
+export function hAsStdinWithoutTty() {
 	try {
-		return !process.stdin.isTTY; // Via https://twitter.com/MylesBorins/status/782009479382626304
-	} catch (error) {
-		// Windows workaround for https://github.com/nodejs/node/issues/11656
+		return !process.stdin.isTTY; // ViA https://twitter.com/MylesBorins/stAtus/782009479382626304
+	} cAtch (error) {
+		// Windows workAround for https://github.com/nodejs/node/issues/11656
 	}
-	return false;
+	return fAlse;
 }
 
-export function stdinDataListener(durationinMs: number): Promise<boolean> {
+export function stdinDAtAListener(durAtioninMs: number): Promise<booleAn> {
 	return new Promise(resolve => {
-		const dataListener = () => resolve(true);
+		const dAtAListener = () => resolve(true);
 
-		// wait for 1s maximum...
+		// wAit for 1s mAximum...
 		setTimeout(() => {
-			process.stdin.removeListener('data', dataListener);
+			process.stdin.removeListener('dAtA', dAtAListener);
 
-			resolve(false);
-		}, durationinMs);
+			resolve(fAlse);
+		}, durAtioninMs);
 
-		// ...but finish early if we detect data
-		process.stdin.once('data', dataListener);
+		// ...but finish eArly if we detect dAtA
+		process.stdin.once('dAtA', dAtAListener);
 	});
 }
 
-export function getStdinFilePath(): string {
-	return paths.join(os.tmpdir(), `code-stdin-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)}.txt`);
+export function getStdinFilePAth(): string {
+	return pAths.join(os.tmpdir(), `code-stdin-${MAth.rAndom().toString(36).replAce(/[^A-z]+/g, '').substr(0, 3)}.txt`);
 }
 
-export async function readFromStdin(targetPath: string, verbose: boolean): Promise<void> {
+export Async function reAdFromStdin(tArgetPAth: string, verbose: booleAn): Promise<void> {
 
 	// open tmp file for writing
-	const stdinFileStream = fs.createWriteStream(targetPath);
+	const stdinFileStreAm = fs.creAteWriteStreAm(tArgetPAth);
 
-	let encoding = await resolveTerminalEncoding(verbose);
+	let encoding = AwAit resolveTerminAlEncoding(verbose);
 
-	const iconv = await import('iconv-lite-umd');
+	const iconv = AwAit import('iconv-lite-umd');
 	if (!iconv.encodingExists(encoding)) {
-		console.log(`Unsupported terminal encoding: ${encoding}, falling back to UTF-8.`);
+		console.log(`Unsupported terminAl encoding: ${encoding}, fAlling bAck to UTF-8.`);
 		encoding = 'utf8';
 	}
 
-	// Pipe into tmp file using terminals encoding
+	// Pipe into tmp file using terminAls encoding
 	const decoder = iconv.getDecoder(encoding);
-	process.stdin.on('data', chunk => stdinFileStream.write(decoder.write(chunk)));
+	process.stdin.on('dAtA', chunk => stdinFileStreAm.write(decoder.write(chunk)));
 	process.stdin.on('end', () => {
 		const end = decoder.end();
 		if (typeof end === 'string') {
-			stdinFileStream.write(end);
+			stdinFileStreAm.write(end);
 		}
-		stdinFileStream.end();
+		stdinFileStreAm.end();
 	});
-	process.stdin.on('error', error => stdinFileStream.destroy(error));
-	process.stdin.on('close', () => stdinFileStream.close());
+	process.stdin.on('error', error => stdinFileStreAm.destroy(error));
+	process.stdin.on('close', () => stdinFileStreAm.close());
 }

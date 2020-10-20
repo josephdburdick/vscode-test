@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { LanguageId } from 'vs/editor/common/modes';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Event } from 'vs/bAse/common/event';
+import { LAnguAgeId } from 'vs/editor/common/modes';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const ITextMateService = createDecorator<ITextMateService>('textMateService');
+export const ITextMAteService = creAteDecorAtor<ITextMAteService>('textMAteService');
 
-export interface ITextMateService {
-	readonly _serviceBrand: undefined;
+export interfAce ITextMAteService {
+	reAdonly _serviceBrAnd: undefined;
 
-	onDidEncounterLanguage: Event<LanguageId>;
+	onDidEncounterLAnguAge: Event<LAnguAgeId>;
 
-	createGrammar(modeId: string): Promise<IGrammar | null>;
+	creAteGrAmmAr(modeId: string): Promise<IGrAmmAr | null>;
 
-	startDebugMode(printFn: (str: string) => void, onStop: () => void): void;
+	stArtDebugMode(printFn: (str: string) => void, onStop: () => void): void;
 }
 
-// -------------- Types "liberated" from vscode-textmate due to usage in /common/
+// -------------- Types "liberAted" from vscode-textmAte due to usAge in /common/
 
-export const enum StandardTokenType {
+export const enum StAndArdTokenType {
 	Other = 0,
 	Comment = 1,
 	String = 2,
 	RegEx = 4,
 }
 /**
- * A grammar
+ * A grAmmAr
  */
-export interface IGrammar {
+export interfAce IGrAmmAr {
 	/**
-	 * Tokenize `lineText` using previous line state `prevState`.
+	 * Tokenize `lineText` using previous line stAte `prevStAte`.
 	 */
-	tokenizeLine(lineText: string, prevState: StackElement | null): ITokenizeLineResult;
+	tokenizeLine(lineText: string, prevStAte: StAckElement | null): ITokenizeLineResult;
 	/**
-	 * Tokenize `lineText` using previous line state `prevState`.
-	 * The result contains the tokens in binary format, resolved with the following information:
-	 *  - language
+	 * Tokenize `lineText` using previous line stAte `prevStAte`.
+	 * The result contAins the tokens in binAry formAt, resolved with the following informAtion:
+	 *  - lAnguAge
 	 *  - token type (regex, string, comment, other)
 	 *  - font style
 	 *  - foreground color
-	 *  - background color
-	 * e.g. for getting the languageId: `(metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET`
+	 *  - bAckground color
+	 * e.g. for getting the lAnguAgeId: `(metAdAtA & MetAdAtAConsts.LANGUAGEID_MASK) >>> MetAdAtAConsts.LANGUAGEID_OFFSET`
 	 */
-	tokenizeLine2(lineText: string, prevState: StackElement | null): ITokenizeLineResult2;
+	tokenizeLine2(lineText: string, prevStAte: StAckElement | null): ITokenizeLineResult2;
 }
-export interface ITokenizeLineResult {
-	readonly tokens: IToken[];
+export interfAce ITokenizeLineResult {
+	reAdonly tokens: IToken[];
 	/**
-	 * The `prevState` to be passed on to the next line tokenization.
+	 * The `prevStAte` to be pAssed on to the next line tokenizAtion.
 	 */
-	readonly ruleStack: StackElement;
+	reAdonly ruleStAck: StAckElement;
 }
 /**
- * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
- * The following assumptions have been made:
- *  - languageId < 256 => needs 8 bits
+ * Helpers to mAnAge the "collApsed" metAdAtA of An entire StAckElement stAck.
+ * The following Assumptions hAve been mAde:
+ *  - lAnguAgeId < 256 => needs 8 bits
  *  - unique color count < 512 => needs 9 bits
  *
- * The binary format is:
+ * The binAry formAt is:
  * - -------------------------------------------
  *     3322 2222 2222 1111 1111 1100 0000 0000
  *     1098 7654 3210 9876 5432 1098 7654 3210
@@ -68,13 +68,13 @@ export interface ITokenizeLineResult {
  *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
  * - -------------------------------------------
- *  - L = LanguageId (8 bits)
- *  - T = StandardTokenType (3 bits)
+ *  - L = LAnguAgeId (8 bits)
+ *  - T = StAndArdTokenType (3 bits)
  *  - F = FontStyle (3 bits)
  *  - f = foreground color (9 bits)
- *  - b = background color (9 bits)
+ *  - b = bAckground color (9 bits)
  */
-export const enum MetadataConsts {
+export const enum MetAdAtAConsts {
 	LANGUAGEID_MASK = 255,
 	TOKEN_TYPE_MASK = 1792,
 	FONT_STYLE_MASK = 14336,
@@ -86,31 +86,31 @@ export const enum MetadataConsts {
 	FOREGROUND_OFFSET = 14,
 	BACKGROUND_OFFSET = 23,
 }
-export interface ITokenizeLineResult2 {
+export interfAce ITokenizeLineResult2 {
 	/**
-	 * The tokens in binary format. Each token occupies two array indices. For token i:
-	 *  - at offset 2*i => startIndex
-	 *  - at offset 2*i + 1 => metadata
+	 * The tokens in binAry formAt. EAch token occupies two ArrAy indices. For token i:
+	 *  - At offset 2*i => stArtIndex
+	 *  - At offset 2*i + 1 => metAdAtA
 	 *
 	 */
-	readonly tokens: Uint32Array;
+	reAdonly tokens: Uint32ArrAy;
 	/**
-	 * The `prevState` to be passed on to the next line tokenization.
+	 * The `prevStAte` to be pAssed on to the next line tokenizAtion.
 	 */
-	readonly ruleStack: StackElement;
+	reAdonly ruleStAck: StAckElement;
 }
-export interface IToken {
-	startIndex: number;
-	readonly endIndex: number;
-	readonly scopes: string[];
+export interfAce IToken {
+	stArtIndex: number;
+	reAdonly endIndex: number;
+	reAdonly scopes: string[];
 }
 /**
- * **IMPORTANT** - Immutable!
+ * **IMPORTANT** - ImmutAble!
  */
-export interface StackElement {
-	_stackElementBrand: void;
-	readonly depth: number;
-	clone(): StackElement;
-	equals(other: StackElement): boolean;
+export interfAce StAckElement {
+	_stAckElementBrAnd: void;
+	reAdonly depth: number;
+	clone(): StAckElement;
+	equAls(other: StAckElement): booleAn;
 }
-// -------------- End Types "liberated" from vscode-textmate due to usage in /common/
+// -------------- End Types "liberAted" from vscode-textmAte due to usAge in /common/

@@ -1,192 +1,192 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/debugToolBar';
-import * as errors from 'vs/base/common/errors';
-import * as browser from 'vs/base/browser/browser';
-import * as dom from 'vs/base/browser/dom';
-import * as arrays from 'vs/base/common/arrays';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
-import { IAction, IRunEvent, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification, Separator } from 'vs/base/common/actions';
-import { ActionBar, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
+import 'vs/css!./mediA/debugToolBAr';
+import * As errors from 'vs/bAse/common/errors';
+import * As browser from 'vs/bAse/browser/browser';
+import * As dom from 'vs/bAse/browser/dom';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { StAndArdMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { IAction, IRunEvent, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion, SepArAtor } from 'vs/bAse/common/Actions';
+import { ActionBAr, ActionsOrientAtion } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IDebugConfiguration, IDebugService, State } from 'vs/workbench/contrib/debug/common/debug';
+import { IDebugConfigurAtion, IDebugService, StAte } from 'vs/workbench/contrib/debug/common/debug';
 import { FocusSessionActionViewItem } from 'vs/workbench/contrib/debug/browser/debugActionViewItems';
-import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { registerThemingParticipant, IThemeService, Themable } from 'vs/platform/theme/common/themeService';
-import { registerColor, contrastBorder, widgetShadow } from 'vs/platform/theme/common/colorRegistry';
-import { localize } from 'vs/nls';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { createAndFillInActionBarActions, MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IMenu, IMenuService, MenuId, MenuItemAction, SubmenuItemAction } from 'vs/platform/actions/common/actions';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+import { IConfigurAtionService, IConfigurAtionChAngeEvent } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { registerThemingPArticipAnt, IThemeService, ThemAble } from 'vs/plAtform/theme/common/themeService';
+import { registerColor, contrAstBorder, widgetShAdow } from 'vs/plAtform/theme/common/colorRegistry';
+import { locAlize } from 'vs/nls';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { creAteAndFillInActionBArActions, MenuEntryActionViewItem, SubmenuEntryActionViewItem } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { IMenu, IMenuService, MenuId, MenuItemAction, SubmenuItemAction } from 'vs/plAtform/Actions/common/Actions';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
 import { FocusSessionAction } from 'vs/workbench/contrib/debug/browser/debugActions';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
 
-const DEBUG_TOOLBAR_POSITION_KEY = 'debug.actionswidgetposition';
-const DEBUG_TOOLBAR_Y_KEY = 'debug.actionswidgety';
+const DEBUG_TOOLBAR_POSITION_KEY = 'debug.Actionswidgetposition';
+const DEBUG_TOOLBAR_Y_KEY = 'debug.Actionswidgety';
 
-export class DebugToolBar extends Themable implements IWorkbenchContribution {
+export clAss DebugToolBAr extends ThemAble implements IWorkbenchContribution {
 
-	private $el: HTMLElement;
-	private dragArea: HTMLElement;
-	private actionBar: ActionBar;
-	private activeActions: IAction[];
-	private updateScheduler: RunOnceScheduler;
-	private debugToolBarMenu: IMenu;
-	private disposeOnUpdate: IDisposable | undefined;
-	private yCoordinate = 0;
+	privAte $el: HTMLElement;
+	privAte drAgAreA: HTMLElement;
+	privAte ActionBAr: ActionBAr;
+	privAte ActiveActions: IAction[];
+	privAte updAteScheduler: RunOnceScheduler;
+	privAte debugToolBArMenu: IMenu;
+	privAte disposeOnUpdAte: IDisposAble | undefined;
+	privAte yCoordinAte = 0;
 
-	private isVisible = false;
-	private isBuilt = false;
+	privAte isVisible = fAlse;
+	privAte isBuilt = fAlse;
 
 	constructor(
-		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IDebugService private readonly debugService: IDebugService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
 		@IThemeService themeService: IThemeService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
 		@IMenuService menuService: IMenuService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		super(themeService);
 
-		this.$el = dom.$('div.debug-toolbar');
-		this.$el.style.top = `${layoutService.offset?.top ?? 0}px`;
+		this.$el = dom.$('div.debug-toolbAr');
+		this.$el.style.top = `${lAyoutService.offset?.top ?? 0}px`;
 
-		this.dragArea = dom.append(this.$el, dom.$('div.drag-area.codicon.codicon-gripper'));
+		this.drAgAreA = dom.Append(this.$el, dom.$('div.drAg-AreA.codicon.codicon-gripper'));
 
-		const actionBarContainer = dom.append(this.$el, dom.$('div.action-bar-container'));
-		this.debugToolBarMenu = menuService.createMenu(MenuId.DebugToolBar, contextKeyService);
-		this._register(this.debugToolBarMenu);
+		const ActionBArContAiner = dom.Append(this.$el, dom.$('div.Action-bAr-contAiner'));
+		this.debugToolBArMenu = menuService.creAteMenu(MenuId.DebugToolBAr, contextKeyService);
+		this._register(this.debugToolBArMenu);
 
-		this.activeActions = [];
-		this.actionBar = this._register(new ActionBar(actionBarContainer, {
-			orientation: ActionsOrientation.HORIZONTAL,
-			actionViewItemProvider: (action: IAction) => {
-				if (action.id === FocusSessionAction.ID) {
-					return this.instantiationService.createInstance(FocusSessionActionViewItem, action);
-				} else if (action instanceof MenuItemAction) {
-					return this.instantiationService.createInstance(MenuEntryActionViewItem, action);
-				} else if (action instanceof SubmenuItemAction) {
-					return this.instantiationService.createInstance(SubmenuEntryActionViewItem, action);
+		this.ActiveActions = [];
+		this.ActionBAr = this._register(new ActionBAr(ActionBArContAiner, {
+			orientAtion: ActionsOrientAtion.HORIZONTAL,
+			ActionViewItemProvider: (Action: IAction) => {
+				if (Action.id === FocusSessionAction.ID) {
+					return this.instAntiAtionService.creAteInstAnce(FocusSessionActionViewItem, Action);
+				} else if (Action instAnceof MenuItemAction) {
+					return this.instAntiAtionService.creAteInstAnce(MenuEntryActionViewItem, Action);
+				} else if (Action instAnceof SubmenuItemAction) {
+					return this.instAntiAtionService.creAteInstAnce(SubmenuEntryActionViewItem, Action);
 				}
 
 				return undefined;
 			}
 		}));
 
-		this.updateScheduler = this._register(new RunOnceScheduler(() => {
-			const state = this.debugService.state;
-			const toolBarLocation = this.configurationService.getValue<IDebugConfiguration>('debug').toolBarLocation;
-			if (state === State.Inactive || toolBarLocation === 'docked' || toolBarLocation === 'hidden') {
+		this.updAteScheduler = this._register(new RunOnceScheduler(() => {
+			const stAte = this.debugService.stAte;
+			const toolBArLocAtion = this.configurAtionService.getVAlue<IDebugConfigurAtion>('debug').toolBArLocAtion;
+			if (stAte === StAte.InActive || toolBArLocAtion === 'docked' || toolBArLocAtion === 'hidden') {
 				return this.hide();
 			}
 
-			const { actions, disposable } = DebugToolBar.getActions(this.debugToolBarMenu, this.debugService, this.instantiationService);
-			if (!arrays.equals(actions, this.activeActions, (first, second) => first.id === second.id && first.enabled === second.enabled)) {
-				this.actionBar.clear();
-				this.actionBar.push(actions, { icon: true, label: false });
-				this.activeActions = actions;
+			const { Actions, disposAble } = DebugToolBAr.getActions(this.debugToolBArMenu, this.debugService, this.instAntiAtionService);
+			if (!ArrAys.equAls(Actions, this.ActiveActions, (first, second) => first.id === second.id && first.enAbled === second.enAbled)) {
+				this.ActionBAr.cleAr();
+				this.ActionBAr.push(Actions, { icon: true, lAbel: fAlse });
+				this.ActiveActions = Actions;
 			}
-			if (this.disposeOnUpdate) {
-				dispose(this.disposeOnUpdate);
+			if (this.disposeOnUpdAte) {
+				dispose(this.disposeOnUpdAte);
 			}
-			this.disposeOnUpdate = disposable;
+			this.disposeOnUpdAte = disposAble;
 
 			this.show();
 		}, 20));
 
-		this.updateStyles();
+		this.updAteStyles();
 		this.registerListeners();
 		this.hide();
 	}
 
-	private registerListeners(): void {
-		this._register(this.debugService.onDidChangeState(() => this.updateScheduler.schedule()));
-		this._register(this.debugService.getViewModel().onDidFocusSession(() => this.updateScheduler.schedule()));
-		this._register(this.debugService.onDidNewSession(() => this.updateScheduler.schedule()));
-		this._register(this.configurationService.onDidChangeConfiguration(e => this.onDidConfigurationChange(e)));
-		this._register(this.debugToolBarMenu.onDidChange(() => this.updateScheduler.schedule()));
-		this._register(this.actionBar.actionRunner.onDidRun((e: IRunEvent) => {
+	privAte registerListeners(): void {
+		this._register(this.debugService.onDidChAngeStAte(() => this.updAteScheduler.schedule()));
+		this._register(this.debugService.getViewModel().onDidFocusSession(() => this.updAteScheduler.schedule()));
+		this._register(this.debugService.onDidNewSession(() => this.updAteScheduler.schedule()));
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(e => this.onDidConfigurAtionChAnge(e)));
+		this._register(this.debugToolBArMenu.onDidChAnge(() => this.updAteScheduler.schedule()));
+		this._register(this.ActionBAr.ActionRunner.onDidRun((e: IRunEvent) => {
 			// check for error
-			if (e.error && !errors.isPromiseCanceledError(e.error)) {
-				this.notificationService.error(e.error);
+			if (e.error && !errors.isPromiseCAnceledError(e.error)) {
+				this.notificAtionService.error(e.error);
 			}
 
 			// log in telemetry
 			if (this.telemetryService) {
-				this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: e.action.id, from: 'debugActionsWidget' });
+				this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion>('workbenchActionExecuted', { id: e.Action.id, from: 'debugActionsWidget' });
 			}
 		}));
-		this._register(dom.addDisposableListener(window, dom.EventType.RESIZE, () => this.setCoordinates()));
+		this._register(dom.AddDisposAbleListener(window, dom.EventType.RESIZE, () => this.setCoordinAtes()));
 
-		this._register(dom.addDisposableGenericMouseUpListner(this.dragArea, (event: MouseEvent) => {
-			const mouseClickEvent = new StandardMouseEvent(event);
-			if (mouseClickEvent.detail === 2) {
-				// double click on debug bar centers it again #8250
+		this._register(dom.AddDisposAbleGenericMouseUpListner(this.drAgAreA, (event: MouseEvent) => {
+			const mouseClickEvent = new StAndArdMouseEvent(event);
+			if (mouseClickEvent.detAil === 2) {
+				// double click on debug bAr centers it AgAin #8250
 				const widgetWidth = this.$el.clientWidth;
-				this.setCoordinates(0.5 * window.innerWidth - 0.5 * widgetWidth, 0);
+				this.setCoordinAtes(0.5 * window.innerWidth - 0.5 * widgetWidth, 0);
 				this.storePosition();
 			}
 		}));
 
-		this._register(dom.addDisposableGenericMouseDownListner(this.dragArea, (event: MouseEvent) => {
-			this.dragArea.classList.add('dragged');
+		this._register(dom.AddDisposAbleGenericMouseDownListner(this.drAgAreA, (event: MouseEvent) => {
+			this.drAgAreA.clAssList.Add('drAgged');
 
-			const mouseMoveListener = dom.addDisposableGenericMouseMoveListner(window, (e: MouseEvent) => {
-				const mouseMoveEvent = new StandardMouseEvent(e);
-				// Prevent default to stop editor selecting text #8524
-				mouseMoveEvent.preventDefault();
-				// Reduce x by width of drag handle to reduce jarring #16604
-				this.setCoordinates(mouseMoveEvent.posx - 14, mouseMoveEvent.posy - (this.layoutService.offset?.top ?? 0));
+			const mouseMoveListener = dom.AddDisposAbleGenericMouseMoveListner(window, (e: MouseEvent) => {
+				const mouseMoveEvent = new StAndArdMouseEvent(e);
+				// Prevent defAult to stop editor selecting text #8524
+				mouseMoveEvent.preventDefAult();
+				// Reduce x by width of drAg hAndle to reduce jArring #16604
+				this.setCoordinAtes(mouseMoveEvent.posx - 14, mouseMoveEvent.posy - (this.lAyoutService.offset?.top ?? 0));
 			});
 
-			const mouseUpListener = dom.addDisposableGenericMouseUpListner(window, (e: MouseEvent) => {
+			const mouseUpListener = dom.AddDisposAbleGenericMouseUpListner(window, (e: MouseEvent) => {
 				this.storePosition();
-				this.dragArea.classList.remove('dragged');
+				this.drAgAreA.clAssList.remove('drAgged');
 
 				mouseMoveListener.dispose();
 				mouseUpListener.dispose();
 			});
 		}));
 
-		this._register(this.layoutService.onPartVisibilityChange(() => this.setYCoordinate()));
-		this._register(browser.onDidChangeZoomLevel(() => this.setYCoordinate()));
+		this._register(this.lAyoutService.onPArtVisibilityChAnge(() => this.setYCoordinAte()));
+		this._register(browser.onDidChAngeZoomLevel(() => this.setYCoordinAte()));
 	}
 
-	private storePosition(): void {
+	privAte storePosition(): void {
 		const left = dom.getComputedStyle(this.$el).left;
 		if (left) {
-			const position = parseFloat(left) / window.innerWidth;
-			this.storageService.store(DEBUG_TOOLBAR_POSITION_KEY, position, StorageScope.GLOBAL);
+			const position = pArseFloAt(left) / window.innerWidth;
+			this.storAgeService.store(DEBUG_TOOLBAR_POSITION_KEY, position, StorAgeScope.GLOBAL);
 		}
 	}
 
-	protected updateStyles(): void {
-		super.updateStyles();
+	protected updAteStyles(): void {
+		super.updAteStyles();
 
 		if (this.$el) {
-			this.$el.style.backgroundColor = this.getColor(debugToolBarBackground) || '';
+			this.$el.style.bAckgroundColor = this.getColor(debugToolBArBAckground) || '';
 
-			const widgetShadowColor = this.getColor(widgetShadow);
-			this.$el.style.boxShadow = widgetShadowColor ? `0 5px 8px ${widgetShadowColor}` : '';
+			const widgetShAdowColor = this.getColor(widgetShAdow);
+			this.$el.style.boxShAdow = widgetShAdowColor ? `0 5px 8px ${widgetShAdowColor}` : '';
 
-			const contrastBorderColor = this.getColor(contrastBorder);
-			const borderColor = this.getColor(debugToolBarBorder);
+			const contrAstBorderColor = this.getColor(contrAstBorder);
+			const borderColor = this.getColor(debugToolBArBorder);
 
-			if (contrastBorderColor) {
-				this.$el.style.border = `1px solid ${contrastBorderColor}`;
+			if (contrAstBorderColor) {
+				this.$el.style.border = `1px solid ${contrAstBorderColor}`;
 			} else {
 				this.$el.style.border = borderColor ? `solid ${borderColor}` : 'none';
 				this.$el.style.border = '1px 0';
@@ -194,72 +194,72 @@ export class DebugToolBar extends Themable implements IWorkbenchContribution {
 		}
 	}
 
-	private setYCoordinate(y = this.yCoordinate): void {
-		const titlebarOffset = this.layoutService.offset?.top ?? 0;
-		this.$el.style.top = `${titlebarOffset + y}px`;
-		this.yCoordinate = y;
+	privAte setYCoordinAte(y = this.yCoordinAte): void {
+		const titlebArOffset = this.lAyoutService.offset?.top ?? 0;
+		this.$el.style.top = `${titlebArOffset + y}px`;
+		this.yCoordinAte = y;
 	}
 
-	private setCoordinates(x?: number, y?: number): void {
+	privAte setCoordinAtes(x?: number, y?: number): void {
 		if (!this.isVisible) {
 			return;
 		}
 		const widgetWidth = this.$el.clientWidth;
 		if (x === undefined) {
-			const positionPercentage = this.storageService.get(DEBUG_TOOLBAR_POSITION_KEY, StorageScope.GLOBAL);
-			x = positionPercentage !== undefined ? parseFloat(positionPercentage) * window.innerWidth : (0.5 * window.innerWidth - 0.5 * widgetWidth);
+			const positionPercentAge = this.storAgeService.get(DEBUG_TOOLBAR_POSITION_KEY, StorAgeScope.GLOBAL);
+			x = positionPercentAge !== undefined ? pArseFloAt(positionPercentAge) * window.innerWidth : (0.5 * window.innerWidth - 0.5 * widgetWidth);
 		}
 
-		x = Math.max(0, Math.min(x, window.innerWidth - widgetWidth)); // do not allow the widget to overflow on the right
+		x = MAth.mAx(0, MAth.min(x, window.innerWidth - widgetWidth)); // do not Allow the widget to overflow on the right
 		this.$el.style.left = `${x}px`;
 
 		if (y === undefined) {
-			y = this.storageService.getNumber(DEBUG_TOOLBAR_Y_KEY, StorageScope.GLOBAL, 0);
+			y = this.storAgeService.getNumber(DEBUG_TOOLBAR_Y_KEY, StorAgeScope.GLOBAL, 0);
 		}
-		const titleAreaHeight = 35;
-		if ((y < titleAreaHeight / 2) || (y > titleAreaHeight + titleAreaHeight / 2)) {
-			const moveToTop = y < titleAreaHeight;
-			this.setYCoordinate(moveToTop ? 0 : titleAreaHeight);
-			this.storageService.store(DEBUG_TOOLBAR_Y_KEY, moveToTop ? 0 : 2 * titleAreaHeight, StorageScope.GLOBAL);
-		}
-	}
-
-	private onDidConfigurationChange(event: IConfigurationChangeEvent): void {
-		if (event.affectsConfiguration('debug.hideActionBar') || event.affectsConfiguration('debug.toolBarLocation')) {
-			this.updateScheduler.schedule();
+		const titleAreAHeight = 35;
+		if ((y < titleAreAHeight / 2) || (y > titleAreAHeight + titleAreAHeight / 2)) {
+			const moveToTop = y < titleAreAHeight;
+			this.setYCoordinAte(moveToTop ? 0 : titleAreAHeight);
+			this.storAgeService.store(DEBUG_TOOLBAR_Y_KEY, moveToTop ? 0 : 2 * titleAreAHeight, StorAgeScope.GLOBAL);
 		}
 	}
 
-	private show(): void {
+	privAte onDidConfigurAtionChAnge(event: IConfigurAtionChAngeEvent): void {
+		if (event.AffectsConfigurAtion('debug.hideActionBAr') || event.AffectsConfigurAtion('debug.toolBArLocAtion')) {
+			this.updAteScheduler.schedule();
+		}
+	}
+
+	privAte show(): void {
 		if (this.isVisible) {
-			this.setCoordinates();
+			this.setCoordinAtes();
 			return;
 		}
 		if (!this.isBuilt) {
 			this.isBuilt = true;
-			this.layoutService.container.appendChild(this.$el);
+			this.lAyoutService.contAiner.AppendChild(this.$el);
 		}
 
 		this.isVisible = true;
 		dom.show(this.$el);
-		this.setCoordinates();
+		this.setCoordinAtes();
 	}
 
-	private hide(): void {
-		this.isVisible = false;
+	privAte hide(): void {
+		this.isVisible = fAlse;
 		dom.hide(this.$el);
 	}
 
-	static getActions(menu: IMenu, debugService: IDebugService, instantiationService: IInstantiationService): { actions: IAction[], disposable: IDisposable } {
-		const actions: IAction[] = [];
-		const disposable = createAndFillInActionBarActions(menu, undefined, actions, () => false);
+	stAtic getActions(menu: IMenu, debugService: IDebugService, instAntiAtionService: IInstAntiAtionService): { Actions: IAction[], disposAble: IDisposAble } {
+		const Actions: IAction[] = [];
+		const disposAble = creAteAndFillInActionBArActions(menu, undefined, Actions, () => fAlse);
 		if (debugService.getViewModel().isMultiSessionView()) {
-			actions.push(instantiationService.createInstance(FocusSessionAction, FocusSessionAction.ID, FocusSessionAction.LABEL));
+			Actions.push(instAntiAtionService.creAteInstAnce(FocusSessionAction, FocusSessionAction.ID, FocusSessionAction.LABEL));
 		}
 
 		return {
-			actions: actions.filter(a => !(a instanceof Separator)), // do not render separators for now
-			disposable
+			Actions: Actions.filter(A => !(A instAnceof SepArAtor)), // do not render sepArAtors for now
+			disposAble
 		};
 	}
 
@@ -269,133 +269,133 @@ export class DebugToolBar extends Themable implements IWorkbenchContribution {
 		if (this.$el) {
 			this.$el.remove();
 		}
-		if (this.disposeOnUpdate) {
-			dispose(this.disposeOnUpdate);
+		if (this.disposeOnUpdAte) {
+			dispose(this.disposeOnUpdAte);
 		}
 	}
 }
 
-export const debugToolBarBackground = registerColor('debugToolBar.background', {
-	dark: '#333333',
+export const debugToolBArBAckground = registerColor('debugToolBAr.bAckground', {
+	dArk: '#333333',
 	light: '#F3F3F3',
 	hc: '#000000'
-}, localize('debugToolBarBackground', "Debug toolbar background color."));
+}, locAlize('debugToolBArBAckground', "Debug toolbAr bAckground color."));
 
-export const debugToolBarBorder = registerColor('debugToolBar.border', {
-	dark: null,
+export const debugToolBArBorder = registerColor('debugToolBAr.border', {
+	dArk: null,
 	light: null,
 	hc: null
-}, localize('debugToolBarBorder', "Debug toolbar border color."));
+}, locAlize('debugToolBArBorder', "Debug toolbAr border color."));
 
-export const debugIconStartForeground = registerColor('debugIcon.startForeground', {
-	dark: '#89D185',
+export const debugIconStArtForeground = registerColor('debugIcon.stArtForeground', {
+	dArk: '#89D185',
 	light: '#388A34',
 	hc: '#89D185'
-}, localize('debugIcon.startForeground', "Debug toolbar icon for start debugging."));
+}, locAlize('debugIcon.stArtForeground', "Debug toolbAr icon for stArt debugging."));
 
-export const debugIconPauseForeground = registerColor('debugIcon.pauseForeground', {
-	dark: '#75BEFF',
+export const debugIconPAuseForeground = registerColor('debugIcon.pAuseForeground', {
+	dArk: '#75BEFF',
 	light: '#007ACC',
 	hc: '#75BEFF'
-}, localize('debugIcon.pauseForeground', "Debug toolbar icon for pause."));
+}, locAlize('debugIcon.pAuseForeground', "Debug toolbAr icon for pAuse."));
 
 export const debugIconStopForeground = registerColor('debugIcon.stopForeground', {
-	dark: '#F48771',
+	dArk: '#F48771',
 	light: '#A1260D',
 	hc: '#F48771'
-}, localize('debugIcon.stopForeground', "Debug toolbar icon for stop."));
+}, locAlize('debugIcon.stopForeground', "Debug toolbAr icon for stop."));
 
 export const debugIconDisconnectForeground = registerColor('debugIcon.disconnectForeground', {
-	dark: '#F48771',
+	dArk: '#F48771',
 	light: '#A1260D',
 	hc: '#F48771'
-}, localize('debugIcon.disconnectForeground', "Debug toolbar icon for disconnect."));
+}, locAlize('debugIcon.disconnectForeground', "Debug toolbAr icon for disconnect."));
 
-export const debugIconRestartForeground = registerColor('debugIcon.restartForeground', {
-	dark: '#89D185',
+export const debugIconRestArtForeground = registerColor('debugIcon.restArtForeground', {
+	dArk: '#89D185',
 	light: '#388A34',
 	hc: '#89D185'
-}, localize('debugIcon.restartForeground', "Debug toolbar icon for restart."));
+}, locAlize('debugIcon.restArtForeground', "Debug toolbAr icon for restArt."));
 
 export const debugIconStepOverForeground = registerColor('debugIcon.stepOverForeground', {
-	dark: '#75BEFF',
+	dArk: '#75BEFF',
 	light: '#007ACC',
 	hc: '#75BEFF'
-}, localize('debugIcon.stepOverForeground', "Debug toolbar icon for step over."));
+}, locAlize('debugIcon.stepOverForeground', "Debug toolbAr icon for step over."));
 
 export const debugIconStepIntoForeground = registerColor('debugIcon.stepIntoForeground', {
-	dark: '#75BEFF',
+	dArk: '#75BEFF',
 	light: '#007ACC',
 	hc: '#75BEFF'
-}, localize('debugIcon.stepIntoForeground', "Debug toolbar icon for step into."));
+}, locAlize('debugIcon.stepIntoForeground', "Debug toolbAr icon for step into."));
 
 export const debugIconStepOutForeground = registerColor('debugIcon.stepOutForeground', {
-	dark: '#75BEFF',
+	dArk: '#75BEFF',
 	light: '#007ACC',
 	hc: '#75BEFF'
-}, localize('debugIcon.stepOutForeground', "Debug toolbar icon for step over."));
+}, locAlize('debugIcon.stepOutForeground', "Debug toolbAr icon for step over."));
 
 export const debugIconContinueForeground = registerColor('debugIcon.continueForeground', {
-	dark: '#75BEFF',
+	dArk: '#75BEFF',
 	light: '#007ACC',
 	hc: '#75BEFF'
-}, localize('debugIcon.continueForeground', "Debug toolbar icon for continue."));
+}, locAlize('debugIcon.continueForeground', "Debug toolbAr icon for continue."));
 
-export const debugIconStepBackForeground = registerColor('debugIcon.stepBackForeground', {
-	dark: '#75BEFF',
+export const debugIconStepBAckForeground = registerColor('debugIcon.stepBAckForeground', {
+	dArk: '#75BEFF',
 	light: '#007ACC',
 	hc: '#75BEFF'
-}, localize('debugIcon.stepBackForeground', "Debug toolbar icon for step back."));
+}, locAlize('debugIcon.stepBAckForeground', "Debug toolbAr icon for step bAck."));
 
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 
-	const debugIconStartColor = theme.getColor(debugIconStartForeground);
-	if (debugIconStartColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-start { color: ${debugIconStartColor} !important; }`);
+	const debugIconStArtColor = theme.getColor(debugIconStArtForeground);
+	if (debugIconStArtColor) {
+		collector.AddRule(`.monAco-workbench .codicon-debug-stArt { color: ${debugIconStArtColor} !importAnt; }`);
 	}
 
-	const debugIconPauseColor = theme.getColor(debugIconPauseForeground);
-	if (debugIconPauseColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-pause { color: ${debugIconPauseColor} !important; }`);
+	const debugIconPAuseColor = theme.getColor(debugIconPAuseForeground);
+	if (debugIconPAuseColor) {
+		collector.AddRule(`.monAco-workbench .codicon-debug-pAuse { color: ${debugIconPAuseColor} !importAnt; }`);
 	}
 
 	const debugIconStopColor = theme.getColor(debugIconStopForeground);
 	if (debugIconStopColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-stop, .monaco-workbench .debug-view-content .codicon-record { color: ${debugIconStopColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .codicon-debug-stop, .monAco-workbench .debug-view-content .codicon-record { color: ${debugIconStopColor} !importAnt; }`);
 	}
 
 	const debugIconDisconnectColor = theme.getColor(debugIconDisconnectForeground);
 	if (debugIconDisconnectColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-disconnect { color: ${debugIconDisconnectColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .codicon-debug-disconnect { color: ${debugIconDisconnectColor} !importAnt; }`);
 	}
 
-	const debugIconRestartColor = theme.getColor(debugIconRestartForeground);
-	if (debugIconRestartColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-restart, .monaco-workbench .codicon-debug-restart-frame { color: ${debugIconRestartColor} !important; }`);
+	const debugIconRestArtColor = theme.getColor(debugIconRestArtForeground);
+	if (debugIconRestArtColor) {
+		collector.AddRule(`.monAco-workbench .codicon-debug-restArt, .monAco-workbench .codicon-debug-restArt-frAme { color: ${debugIconRestArtColor} !importAnt; }`);
 	}
 
 	const debugIconStepOverColor = theme.getColor(debugIconStepOverForeground);
 	if (debugIconStepOverColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-step-over { color: ${debugIconStepOverColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .codicon-debug-step-over { color: ${debugIconStepOverColor} !importAnt; }`);
 	}
 
 	const debugIconStepIntoColor = theme.getColor(debugIconStepIntoForeground);
 	if (debugIconStepIntoColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-step-into { color: ${debugIconStepIntoColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .codicon-debug-step-into { color: ${debugIconStepIntoColor} !importAnt; }`);
 	}
 
 	const debugIconStepOutColor = theme.getColor(debugIconStepOutForeground);
 	if (debugIconStepOutColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-step-out { color: ${debugIconStepOutColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .codicon-debug-step-out { color: ${debugIconStepOutColor} !importAnt; }`);
 	}
 
 	const debugIconContinueColor = theme.getColor(debugIconContinueForeground);
 	if (debugIconContinueColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-continue,.monaco-workbench .codicon-debug-reverse-continue { color: ${debugIconContinueColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .codicon-debug-continue,.monAco-workbench .codicon-debug-reverse-continue { color: ${debugIconContinueColor} !importAnt; }`);
 	}
 
-	const debugIconStepBackColor = theme.getColor(debugIconStepBackForeground);
-	if (debugIconStepBackColor) {
-		collector.addRule(`.monaco-workbench .codicon-debug-step-back { color: ${debugIconStepBackColor} !important; }`);
+	const debugIconStepBAckColor = theme.getColor(debugIconStepBAckForeground);
+	if (debugIconStepBAckColor) {
+		collector.AddRule(`.monAco-workbench .codicon-debug-step-bAck { color: ${debugIconStepBAckColor} !importAnt; }`);
 	}
 });

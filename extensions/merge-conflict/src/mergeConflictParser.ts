@@ -1,168 +1,168 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as vscode from 'vscode';
-import * as interfaces from './interfaces';
+import * As vscode from 'vscode';
+import * As interfAces from './interfAces';
 import { DocumentMergeConflict } from './documentMergeConflict';
 
-const startHeaderMarker = '<<<<<<<';
-const commonAncestorsMarker = '|||||||';
-const splitterMarker = '=======';
-const endFooterMarker = '>>>>>>>';
+const stArtHeAderMArker = '<<<<<<<';
+const commonAncestorsMArker = '|||||||';
+const splitterMArker = '=======';
+const endFooterMArker = '>>>>>>>';
 
-interface IScanMergedConflict {
-	startHeader: vscode.TextLine;
+interfAce IScAnMergedConflict {
+	stArtHeAder: vscode.TextLine;
 	commonAncestors: vscode.TextLine[];
 	splitter?: vscode.TextLine;
 	endFooter?: vscode.TextLine;
 }
 
-export class MergeConflictParser {
+export clAss MergeConflictPArser {
 
-	static scanDocument(document: vscode.TextDocument): interfaces.IDocumentMergeConflict[] {
+	stAtic scAnDocument(document: vscode.TextDocument): interfAces.IDocumentMergeConflict[] {
 
-		// Scan each line in the document, we already know there is at least a <<<<<<< and
-		// >>>>>> marker within the document, we need to group these into conflict ranges.
-		// We initially build a scan match, that references the lines of the header, splitter
-		// and footer. This is then converted into a full descriptor containing all required
-		// ranges.
+		// ScAn eAch line in the document, we AlreAdy know there is At leAst A <<<<<<< And
+		// >>>>>> mArker within the document, we need to group these into conflict rAnges.
+		// We initiAlly build A scAn mAtch, thAt references the lines of the heAder, splitter
+		// And footer. This is then converted into A full descriptor contAining All required
+		// rAnges.
 
-		let currentConflict: IScanMergedConflict | null = null;
-		const conflictDescriptors: interfaces.IDocumentMergeConflictDescriptor[] = [];
+		let currentConflict: IScAnMergedConflict | null = null;
+		const conflictDescriptors: interfAces.IDocumentMergeConflictDescriptor[] = [];
 
 		for (let i = 0; i < document.lineCount; i++) {
 			const line = document.lineAt(i);
 
 			// Ignore empty lines
-			if (!line || line.isEmptyOrWhitespace) {
+			if (!line || line.isEmptyOrWhitespAce) {
 				continue;
 			}
 
-			// Is this a start line? <<<<<<<
-			if (line.text.startsWith(startHeaderMarker)) {
+			// Is this A stArt line? <<<<<<<
+			if (line.text.stArtsWith(stArtHeAderMArker)) {
 				if (currentConflict !== null) {
-					// Error, we should not see a startMarker before we've seen an endMarker
+					// Error, we should not see A stArtMArker before we've seen An endMArker
 					currentConflict = null;
 
-					// Give up parsing, anything matched up this to this point will be decorated
-					// anything after will not
-					break;
+					// Give up pArsing, Anything mAtched up this to this point will be decorAted
+					// Anything After will not
+					breAk;
 				}
 
-				// Create a new conflict starting at this line
-				currentConflict = { startHeader: line, commonAncestors: [] };
+				// CreAte A new conflict stArting At this line
+				currentConflict = { stArtHeAder: line, commonAncestors: [] };
 			}
-			// Are we within a conflict block and is this a common ancestors marker? |||||||
-			else if (currentConflict && !currentConflict.splitter && line.text.startsWith(commonAncestorsMarker)) {
+			// Are we within A conflict block And is this A common Ancestors mArker? |||||||
+			else if (currentConflict && !currentConflict.splitter && line.text.stArtsWith(commonAncestorsMArker)) {
 				currentConflict.commonAncestors.push(line);
 			}
-			// Are we within a conflict block and is this a splitter? =======
-			else if (currentConflict && !currentConflict.splitter && line.text.startsWith(splitterMarker)) {
+			// Are we within A conflict block And is this A splitter? =======
+			else if (currentConflict && !currentConflict.splitter && line.text.stArtsWith(splitterMArker)) {
 				currentConflict.splitter = line;
 			}
-			// Are we within a conflict block and is this a footer? >>>>>>>
-			else if (currentConflict && line.text.startsWith(endFooterMarker)) {
+			// Are we within A conflict block And is this A footer? >>>>>>>
+			else if (currentConflict && line.text.stArtsWith(endFooterMArker)) {
 				currentConflict.endFooter = line;
 
-				// Create a full descriptor from the lines that we matched. This can return
+				// CreAte A full descriptor from the lines thAt we mAtched. This cAn return
 				// null if the descriptor could not be completed.
-				let completeDescriptor = MergeConflictParser.scanItemTolMergeConflictDescriptor(document, currentConflict);
+				let completeDescriptor = MergeConflictPArser.scAnItemTolMergeConflictDescriptor(document, currentConflict);
 
 				if (completeDescriptor !== null) {
 					conflictDescriptors.push(completeDescriptor);
 				}
 
-				// Reset the current conflict to be empty, so we can match the next
-				// starting header marker.
+				// Reset the current conflict to be empty, so we cAn mAtch the next
+				// stArting heAder mArker.
 				currentConflict = null;
 			}
 		}
 
 		return conflictDescriptors
-			.filter(Boolean)
-			.map(descriptor => new DocumentMergeConflict(descriptor));
+			.filter(BooleAn)
+			.mAp(descriptor => new DocumentMergeConflict(descriptor));
 	}
 
-	private static scanItemTolMergeConflictDescriptor(document: vscode.TextDocument, scanned: IScanMergedConflict): interfaces.IDocumentMergeConflictDescriptor | null {
-		// Validate we have all the required lines within the scan item.
-		if (!scanned.startHeader || !scanned.splitter || !scanned.endFooter) {
+	privAte stAtic scAnItemTolMergeConflictDescriptor(document: vscode.TextDocument, scAnned: IScAnMergedConflict): interfAces.IDocumentMergeConflictDescriptor | null {
+		// VAlidAte we hAve All the required lines within the scAn item.
+		if (!scAnned.stArtHeAder || !scAnned.splitter || !scAnned.endFooter) {
 			return null;
 		}
 
-		let tokenAfterCurrentBlock: vscode.TextLine = scanned.commonAncestors[0] || scanned.splitter;
+		let tokenAfterCurrentBlock: vscode.TextLine = scAnned.commonAncestors[0] || scAnned.splitter;
 
-		// Assume that descriptor.current.header, descriptor.incoming.header and descriptor.splitter
-		// have valid ranges, fill in content and total ranges from these parts.
-		// NOTE: We need to shift the decorator range back one character so the splitter does not end up with
-		// two decoration colors (current and splitter), if we take the new line from the content into account
-		// the decorator will wrap to the next line.
+		// Assume thAt descriptor.current.heAder, descriptor.incoming.heAder And descriptor.splitter
+		// hAve vAlid rAnges, fill in content And totAl rAnges from these pArts.
+		// NOTE: We need to shift the decorAtor rAnge bAck one chArActer so the splitter does not end up with
+		// two decorAtion colors (current And splitter), if we tAke the new line from the content into Account
+		// the decorAtor will wrAp to the next line.
 		return {
 			current: {
-				header: scanned.startHeader.range,
-				decoratorContent: new vscode.Range(
-					scanned.startHeader.rangeIncludingLineBreak.end,
-					MergeConflictParser.shiftBackOneCharacter(document, tokenAfterCurrentBlock.range.start, scanned.startHeader.rangeIncludingLineBreak.end)),
-				// Current content is range between header (shifted for linebreak) and splitter or common ancestors mark start
-				content: new vscode.Range(
-					scanned.startHeader.rangeIncludingLineBreak.end,
-					tokenAfterCurrentBlock.range.start),
-				name: scanned.startHeader.text.substring(startHeaderMarker.length + 1)
+				heAder: scAnned.stArtHeAder.rAnge,
+				decorAtorContent: new vscode.RAnge(
+					scAnned.stArtHeAder.rAngeIncludingLineBreAk.end,
+					MergeConflictPArser.shiftBAckOneChArActer(document, tokenAfterCurrentBlock.rAnge.stArt, scAnned.stArtHeAder.rAngeIncludingLineBreAk.end)),
+				// Current content is rAnge between heAder (shifted for linebreAk) And splitter or common Ancestors mArk stArt
+				content: new vscode.RAnge(
+					scAnned.stArtHeAder.rAngeIncludingLineBreAk.end,
+					tokenAfterCurrentBlock.rAnge.stArt),
+				nAme: scAnned.stArtHeAder.text.substring(stArtHeAderMArker.length + 1)
 			},
-			commonAncestors: scanned.commonAncestors.map((currentTokenLine, index, commonAncestors) => {
-				let nextTokenLine = commonAncestors[index + 1] || scanned.splitter;
+			commonAncestors: scAnned.commonAncestors.mAp((currentTokenLine, index, commonAncestors) => {
+				let nextTokenLine = commonAncestors[index + 1] || scAnned.splitter;
 				return {
-					header: currentTokenLine.range,
-					decoratorContent: new vscode.Range(
-						currentTokenLine.rangeIncludingLineBreak.end,
-						MergeConflictParser.shiftBackOneCharacter(document, nextTokenLine.range.start, currentTokenLine.rangeIncludingLineBreak.end)),
-					// Each common ancestors block is range between one common ancestors token
-					// (shifted for linebreak) and start of next common ancestors token or splitter
-					content: new vscode.Range(
-						currentTokenLine.rangeIncludingLineBreak.end,
-						nextTokenLine.range.start),
-					name: currentTokenLine.text.substring(commonAncestorsMarker.length + 1)
+					heAder: currentTokenLine.rAnge,
+					decorAtorContent: new vscode.RAnge(
+						currentTokenLine.rAngeIncludingLineBreAk.end,
+						MergeConflictPArser.shiftBAckOneChArActer(document, nextTokenLine.rAnge.stArt, currentTokenLine.rAngeIncludingLineBreAk.end)),
+					// EAch common Ancestors block is rAnge between one common Ancestors token
+					// (shifted for linebreAk) And stArt of next common Ancestors token or splitter
+					content: new vscode.RAnge(
+						currentTokenLine.rAngeIncludingLineBreAk.end,
+						nextTokenLine.rAnge.stArt),
+					nAme: currentTokenLine.text.substring(commonAncestorsMArker.length + 1)
 				};
 			}),
-			splitter: scanned.splitter.range,
+			splitter: scAnned.splitter.rAnge,
 			incoming: {
-				header: scanned.endFooter.range,
-				decoratorContent: new vscode.Range(
-					scanned.splitter.rangeIncludingLineBreak.end,
-					MergeConflictParser.shiftBackOneCharacter(document, scanned.endFooter.range.start, scanned.splitter.rangeIncludingLineBreak.end)),
-				// Incoming content is range between splitter (shifted for linebreak) and footer start
-				content: new vscode.Range(
-					scanned.splitter.rangeIncludingLineBreak.end,
-					scanned.endFooter.range.start),
-				name: scanned.endFooter.text.substring(endFooterMarker.length + 1)
+				heAder: scAnned.endFooter.rAnge,
+				decorAtorContent: new vscode.RAnge(
+					scAnned.splitter.rAngeIncludingLineBreAk.end,
+					MergeConflictPArser.shiftBAckOneChArActer(document, scAnned.endFooter.rAnge.stArt, scAnned.splitter.rAngeIncludingLineBreAk.end)),
+				// Incoming content is rAnge between splitter (shifted for linebreAk) And footer stArt
+				content: new vscode.RAnge(
+					scAnned.splitter.rAngeIncludingLineBreAk.end,
+					scAnned.endFooter.rAnge.stArt),
+				nAme: scAnned.endFooter.text.substring(endFooterMArker.length + 1)
 			},
-			// Entire range is between current header start and incoming header end (including line break)
-			range: new vscode.Range(scanned.startHeader.range.start, scanned.endFooter.rangeIncludingLineBreak.end)
+			// Entire rAnge is between current heAder stArt And incoming heAder end (including line breAk)
+			rAnge: new vscode.RAnge(scAnned.stArtHeAder.rAnge.stArt, scAnned.endFooter.rAngeIncludingLineBreAk.end)
 		};
 	}
 
-	static containsConflict(document: vscode.TextDocument): boolean {
+	stAtic contAinsConflict(document: vscode.TextDocument): booleAn {
 		if (!document) {
-			return false;
+			return fAlse;
 		}
 
 		let text = document.getText();
-		return text.includes(startHeaderMarker) && text.includes(endFooterMarker);
+		return text.includes(stArtHeAderMArker) && text.includes(endFooterMArker);
 	}
 
-	private static shiftBackOneCharacter(document: vscode.TextDocument, range: vscode.Position, unlessEqual: vscode.Position): vscode.Position {
-		if (range.isEqual(unlessEqual)) {
-			return range;
+	privAte stAtic shiftBAckOneChArActer(document: vscode.TextDocument, rAnge: vscode.Position, unlessEquAl: vscode.Position): vscode.Position {
+		if (rAnge.isEquAl(unlessEquAl)) {
+			return rAnge;
 		}
 
-		let line = range.line;
-		let character = range.character - 1;
+		let line = rAnge.line;
+		let chArActer = rAnge.chArActer - 1;
 
-		if (character < 0) {
+		if (chArActer < 0) {
 			line--;
-			character = document.lineAt(line).range.end.character;
+			chArActer = document.lineAt(line).rAnge.end.chArActer;
 		}
 
-		return new vscode.Position(line, character);
+		return new vscode.Position(line, chArActer);
 	}
 }

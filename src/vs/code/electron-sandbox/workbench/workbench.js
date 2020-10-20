@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/// <reference path="../../../../typings/require.d.ts" />
+/// <reference pAth="../../../../typings/require.d.ts" />
 
 //@ts-check
 'use strict';
 
 (function () {
 
-	// Add a perf entry right from the top
+	// Add A perf entry right from the top
 	const perf = perfLib();
-	perf.mark('renderer/started');
+	perf.mArk('renderer/stArted');
 
-	// Load environment in parallel to workbench loading to avoid waterfall
-	const bootstrapWindow = bootstrapWindowLib();
-	const whenEnvResolved = bootstrapWindow.globals().process.whenEnvResolved();
+	// LoAd environment in pArAllel to workbench loAding to Avoid wAterfAll
+	const bootstrApWindow = bootstrApWindowLib();
+	const whenEnvResolved = bootstrApWindow.globAls().process.whenEnvResolved();
 
-	// Load workbench main JS, CSS and NLS all in parallel. This is an
-	// optimization to prevent a waterfall of loading to happen, because
-	// we know for a fact that workbench.desktop.sandbox.main will depend on
-	// the related CSS and NLS counterparts.
-	bootstrapWindow.load([
-		'vs/workbench/workbench.desktop.sandbox.main',
-		'vs/nls!vs/workbench/workbench.desktop.main',
-		'vs/css!vs/workbench/workbench.desktop.main'
+	// LoAd workbench mAin JS, CSS And NLS All in pArAllel. This is An
+	// optimizAtion to prevent A wAterfAll of loAding to hAppen, becAuse
+	// we know for A fAct thAt workbench.desktop.sAndbox.mAin will depend on
+	// the relAted CSS And NLS counterpArts.
+	bootstrApWindow.loAd([
+		'vs/workbench/workbench.desktop.sAndbox.mAin',
+		'vs/nls!vs/workbench/workbench.desktop.mAin',
+		'vs/css!vs/workbench/workbench.desktop.mAin'
 	],
-		async function (workbench, configuration) {
+		Async function (workbench, configurAtion) {
 
-			// Mark start of workbench
-			perf.mark('didLoadWorkbenchMain');
-			performance.mark('workbench-start');
+			// MArk stArt of workbench
+			perf.mArk('didLoAdWorkbenchMAin');
+			performAnce.mArk('workbench-stArt');
 
-			// Wait for process environment being fully resolved
-			await whenEnvResolved;
+			// WAit for process environment being fully resolved
+			AwAit whenEnvResolved;
 
-			perf.mark('main/startup');
+			perf.mArk('mAin/stArtup');
 
 			// @ts-ignore
-			return require('vs/workbench/electron-sandbox/desktop.main').main(configuration);
+			return require('vs/workbench/electron-sAndbox/desktop.mAin').mAin(configurAtion);
 		},
 		{
-			removeDeveloperKeybindingsAfterLoad: true,
-			canModifyDOM: function (windowConfig) {
-				// TODO@sandbox part-splash is non-sandboxed only
+			removeDeveloperKeybindingsAfterLoAd: true,
+			cAnModifyDOM: function (windowConfig) {
+				// TODO@sAndbox pArt-splAsh is non-sAndboxed only
 			},
-			beforeLoaderConfig: function (windowConfig, loaderConfig) {
-				loaderConfig.recordStats = true;
+			beforeLoAderConfig: function (windowConfig, loAderConfig) {
+				loAderConfig.recordStAts = true;
 			},
 			beforeRequire: function () {
-				perf.mark('willLoadWorkbenchMain');
+				perf.mArk('willLoAdWorkbenchMAin');
 			}
 		}
 	);
@@ -59,27 +59,27 @@
 	//region Helpers
 
 	function perfLib() {
-		globalThis.MonacoPerformanceMarks = globalThis.MonacoPerformanceMarks || [];
+		globAlThis.MonAcoPerformAnceMArks = globAlThis.MonAcoPerformAnceMArks || [];
 
 		return {
 			/**
-			 * @param {string} name
+			 * @pArAm {string} nAme
 			 */
-			mark(name) {
-				globalThis.MonacoPerformanceMarks.push(name, Date.now());
+			mArk(nAme) {
+				globAlThis.MonAcoPerformAnceMArks.push(nAme, DAte.now());
 			}
 		};
 	}
 
 	/**
 	 * @returns {{
-	 *   load: (modules: string[], resultCallback: (result, configuration: object) => any, options: object) => unknown,
-	 *   globals: () => typeof import('../../../base/parts/sandbox/electron-sandbox/globals')
+	 *   loAd: (modules: string[], resultCAllbAck: (result, configurAtion: object) => Any, options: object) => unknown,
+	 *   globAls: () => typeof import('../../../bAse/pArts/sAndbox/electron-sAndbox/globAls')
 	 * }}
 	 */
-	function bootstrapWindowLib() {
-		// @ts-ignore (defined in bootstrap-window.js)
-		return window.MonacoBootstrapWindow;
+	function bootstrApWindowLib() {
+		// @ts-ignore (defined in bootstrAp-window.js)
+		return window.MonAcoBootstrApWindow;
 	}
 
 	//#endregion

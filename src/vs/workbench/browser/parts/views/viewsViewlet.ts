@@ -1,144 +1,144 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction } from 'vs/base/common/actions';
+import { IAction } from 'vs/bAse/common/Actions';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
 import { IViewDescriptor, IViewDescriptorService, IAddedViewDescriptorRef } from 'vs/workbench/common/views';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { ViewPaneContainer, ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { Event } from 'vs/base/common/event';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { ViewPAneContAiner, ViewPAne, IViewPAneOptions } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { Event } from 'vs/bAse/common/event';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
 
-export interface IViewletViewOptions extends IViewPaneOptions {
+export interfAce IViewletViewOptions extends IViewPAneOptions {
 }
 
-export abstract class FilterViewPaneContainer extends ViewPaneContainer {
-	private constantViewDescriptors: Map<string, IViewDescriptor> = new Map();
-	private allViews: Map<string, Map<string, IViewDescriptor>> = new Map();
-	private filterValue: string[] | undefined;
+export AbstrAct clAss FilterViewPAneContAiner extends ViewPAneContAiner {
+	privAte constAntViewDescriptors: MAp<string, IViewDescriptor> = new MAp();
+	privAte AllViews: MAp<string, MAp<string, IViewDescriptor>> = new MAp();
+	privAte filterVAlue: string[] | undefined;
 
 	constructor(
 		viewletId: string,
-		onDidChangeFilterValue: Event<string[]>,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		onDidChAngeFilterVAlue: Event<string[]>,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IStorageService storageService: IStorageService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IThemeService themeService: IThemeService,
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IExtensionService extensionService: IExtensionService,
-		@IWorkspaceContextService contextService: IWorkspaceContextService,
+		@IWorkspAceContextService contextService: IWorkspAceContextService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService
 	) {
 
-		super(viewletId, { mergeViewWithContainerWhenSingleView: false }, instantiationService, configurationService, layoutService, contextMenuService, telemetryService, extensionService, themeService, storageService, contextService, viewDescriptorService);
-		this._register(onDidChangeFilterValue(newFilterValue => {
-			this.filterValue = newFilterValue;
-			this.onFilterChanged(newFilterValue);
+		super(viewletId, { mergeViewWithContAinerWhenSingleView: fAlse }, instAntiAtionService, configurAtionService, lAyoutService, contextMenuService, telemetryService, extensionService, themeService, storAgeService, contextService, viewDescriptorService);
+		this._register(onDidChAngeFilterVAlue(newFilterVAlue => {
+			this.filterVAlue = newFilterVAlue;
+			this.onFilterChAnged(newFilterVAlue);
 		}));
 
-		this._register(this.viewContainerModel.onDidChangeActiveViewDescriptors(() => {
-			this.updateAllViews(this.viewContainerModel.activeViewDescriptors);
+		this._register(this.viewContAinerModel.onDidChAngeActiveViewDescriptors(() => {
+			this.updAteAllViews(this.viewContAinerModel.ActiveViewDescriptors);
 		}));
 	}
 
-	private updateAllViews(viewDescriptors: ReadonlyArray<IViewDescriptor>) {
-		viewDescriptors.forEach(descriptor => {
-			let filterOnValue = this.getFilterOn(descriptor);
-			if (!filterOnValue) {
+	privAte updAteAllViews(viewDescriptors: ReAdonlyArrAy<IViewDescriptor>) {
+		viewDescriptors.forEAch(descriptor => {
+			let filterOnVAlue = this.getFilterOn(descriptor);
+			if (!filterOnVAlue) {
 				return;
 			}
-			if (!this.allViews.has(filterOnValue)) {
-				this.allViews.set(filterOnValue, new Map());
+			if (!this.AllViews.hAs(filterOnVAlue)) {
+				this.AllViews.set(filterOnVAlue, new MAp());
 			}
-			this.allViews.get(filterOnValue)!.set(descriptor.id, descriptor);
-			if (this.filterValue && !this.filterValue.includes(filterOnValue)) {
-				this.viewContainerModel.setVisible(descriptor.id, false);
+			this.AllViews.get(filterOnVAlue)!.set(descriptor.id, descriptor);
+			if (this.filterVAlue && !this.filterVAlue.includes(filterOnVAlue)) {
+				this.viewContAinerModel.setVisible(descriptor.id, fAlse);
 			}
 		});
 	}
 
-	protected addConstantViewDescriptors(constantViewDescriptors: IViewDescriptor[]) {
-		constantViewDescriptors.forEach(viewDescriptor => this.constantViewDescriptors.set(viewDescriptor.id, viewDescriptor));
+	protected AddConstAntViewDescriptors(constAntViewDescriptors: IViewDescriptor[]) {
+		constAntViewDescriptors.forEAch(viewDescriptor => this.constAntViewDescriptors.set(viewDescriptor.id, viewDescriptor));
 	}
 
-	protected abstract getFilterOn(viewDescriptor: IViewDescriptor): string | undefined;
+	protected AbstrAct getFilterOn(viewDescriptor: IViewDescriptor): string | undefined;
 
-	private onFilterChanged(newFilterValue: string[]) {
-		if (this.allViews.size === 0) {
-			this.updateAllViews(this.viewContainerModel.activeViewDescriptors);
+	privAte onFilterChAnged(newFilterVAlue: string[]) {
+		if (this.AllViews.size === 0) {
+			this.updAteAllViews(this.viewContAinerModel.ActiveViewDescriptors);
 		}
-		this.getViewsNotForTarget(newFilterValue).forEach(item => this.viewContainerModel.setVisible(item.id, false));
-		this.getViewsForTarget(newFilterValue).forEach(item => this.viewContainerModel.setVisible(item.id, true));
+		this.getViewsNotForTArget(newFilterVAlue).forEAch(item => this.viewContAinerModel.setVisible(item.id, fAlse));
+		this.getViewsForTArget(newFilterVAlue).forEAch(item => this.viewContAinerModel.setVisible(item.id, true));
 	}
 
 	getContextMenuActions(): IAction[] {
-		const result: IAction[] = Array.from(this.constantViewDescriptors.values()).map(viewDescriptor => (<IAction>{
+		const result: IAction[] = ArrAy.from(this.constAntViewDescriptors.vAlues()).mAp(viewDescriptor => (<IAction>{
 			id: `${viewDescriptor.id}.toggleVisibility`,
-			label: viewDescriptor.name,
-			checked: this.viewContainerModel.isVisible(viewDescriptor.id),
-			enabled: viewDescriptor.canToggleVisibility,
+			lAbel: viewDescriptor.nAme,
+			checked: this.viewContAinerModel.isVisible(viewDescriptor.id),
+			enAbled: viewDescriptor.cAnToggleVisibility,
 			run: () => this.toggleViewVisibility(viewDescriptor.id)
 		}));
 
 		return result;
 	}
 
-	private getViewsForTarget(target: string[]): IViewDescriptor[] {
+	privAte getViewsForTArget(tArget: string[]): IViewDescriptor[] {
 		const views: IViewDescriptor[] = [];
-		for (let i = 0; i < target.length; i++) {
-			if (this.allViews.has(target[i])) {
-				views.push(...Array.from(this.allViews.get(target[i])!.values()));
+		for (let i = 0; i < tArget.length; i++) {
+			if (this.AllViews.hAs(tArget[i])) {
+				views.push(...ArrAy.from(this.AllViews.get(tArget[i])!.vAlues()));
 			}
 		}
 
 		return views;
 	}
 
-	private getViewsNotForTarget(target: string[]): IViewDescriptor[] {
-		const iterable = this.allViews.keys();
-		let key = iterable.next();
+	privAte getViewsNotForTArget(tArget: string[]): IViewDescriptor[] {
+		const iterAble = this.AllViews.keys();
+		let key = iterAble.next();
 		let views: IViewDescriptor[] = [];
 		while (!key.done) {
-			let isForTarget: boolean = false;
-			target.forEach(value => {
-				if (key.value === value) {
-					isForTarget = true;
+			let isForTArget: booleAn = fAlse;
+			tArget.forEAch(vAlue => {
+				if (key.vAlue === vAlue) {
+					isForTArget = true;
 				}
 			});
-			if (!isForTarget) {
-				views = views.concat(this.getViewsForTarget([key.value]));
+			if (!isForTArget) {
+				views = views.concAt(this.getViewsForTArget([key.vAlue]));
 			}
 
-			key = iterable.next();
+			key = iterAble.next();
 		}
 		return views;
 	}
 
-	onDidAddViewDescriptors(added: IAddedViewDescriptorRef[]): ViewPane[] {
-		const panes: ViewPane[] = super.onDidAddViewDescriptors(added);
-		for (let i = 0; i < added.length; i++) {
-			if (this.constantViewDescriptors.has(added[i].viewDescriptor.id)) {
-				panes[i].setExpanded(false);
+	onDidAddViewDescriptors(Added: IAddedViewDescriptorRef[]): ViewPAne[] {
+		const pAnes: ViewPAne[] = super.onDidAddViewDescriptors(Added);
+		for (let i = 0; i < Added.length; i++) {
+			if (this.constAntViewDescriptors.hAs(Added[i].viewDescriptor.id)) {
+				pAnes[i].setExpAnded(fAlse);
 			}
 		}
-		// Check that allViews is ready
-		if (this.allViews.size === 0) {
-			this.updateAllViews(this.viewContainerModel.activeViewDescriptors);
+		// Check thAt AllViews is reAdy
+		if (this.AllViews.size === 0) {
+			this.updAteAllViews(this.viewContAinerModel.ActiveViewDescriptors);
 		}
-		return panes;
+		return pAnes;
 	}
 
-	abstract getTitle(): string;
+	AbstrAct getTitle(): string;
 
 	getViewsVisibilityActions(): IAction[] {
 		return [];

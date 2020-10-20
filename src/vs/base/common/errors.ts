@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ErrorListenerCallback {
-	(error: any): void;
+export interfAce ErrorListenerCAllbAck {
+	(error: Any): void;
 }
 
-export interface ErrorListenerUnbind {
+export interfAce ErrorListenerUnbind {
 	(): void;
 }
 
-// Avoid circular dependency on EventEmitter by implementing a subset of the interface.
-export class ErrorHandler {
-	private unexpectedErrorHandler: (e: any) => void;
-	private listeners: ErrorListenerCallback[];
+// Avoid circulAr dependency on EventEmitter by implementing A subset of the interfAce.
+export clAss ErrorHAndler {
+	privAte unexpectedErrorHAndler: (e: Any) => void;
+	privAte listeners: ErrorListenerCAllbAck[];
 
 	constructor() {
 
 		this.listeners = [];
 
-		this.unexpectedErrorHandler = function (e: any) {
+		this.unexpectedErrorHAndler = function (e: Any) {
 			setTimeout(() => {
-				if (e.stack) {
-					throw new Error(e.message + '\n\n' + e.stack);
+				if (e.stAck) {
+					throw new Error(e.messAge + '\n\n' + e.stAck);
 				}
 
 				throw e;
@@ -31,7 +31,7 @@ export class ErrorHandler {
 		};
 	}
 
-	addListener(listener: ErrorListenerCallback): ErrorListenerUnbind {
+	AddListener(listener: ErrorListenerCAllbAck): ErrorListenerUnbind {
 		this.listeners.push(listener);
 
 		return () => {
@@ -39,176 +39,176 @@ export class ErrorHandler {
 		};
 	}
 
-	private emit(e: any): void {
-		this.listeners.forEach((listener) => {
+	privAte emit(e: Any): void {
+		this.listeners.forEAch((listener) => {
 			listener(e);
 		});
 	}
 
-	private _removeListener(listener: ErrorListenerCallback): void {
+	privAte _removeListener(listener: ErrorListenerCAllbAck): void {
 		this.listeners.splice(this.listeners.indexOf(listener), 1);
 	}
 
-	setUnexpectedErrorHandler(newUnexpectedErrorHandler: (e: any) => void): void {
-		this.unexpectedErrorHandler = newUnexpectedErrorHandler;
+	setUnexpectedErrorHAndler(newUnexpectedErrorHAndler: (e: Any) => void): void {
+		this.unexpectedErrorHAndler = newUnexpectedErrorHAndler;
 	}
 
-	getUnexpectedErrorHandler(): (e: any) => void {
-		return this.unexpectedErrorHandler;
+	getUnexpectedErrorHAndler(): (e: Any) => void {
+		return this.unexpectedErrorHAndler;
 	}
 
-	onUnexpectedError(e: any): void {
-		this.unexpectedErrorHandler(e);
+	onUnexpectedError(e: Any): void {
+		this.unexpectedErrorHAndler(e);
 		this.emit(e);
 	}
 
-	// For external errors, we don't want the listeners to be called
-	onUnexpectedExternalError(e: any): void {
-		this.unexpectedErrorHandler(e);
+	// For externAl errors, we don't wAnt the listeners to be cAlled
+	onUnexpectedExternAlError(e: Any): void {
+		this.unexpectedErrorHAndler(e);
 	}
 }
 
-export const errorHandler = new ErrorHandler();
+export const errorHAndler = new ErrorHAndler();
 
-export function setUnexpectedErrorHandler(newUnexpectedErrorHandler: (e: any) => void): void {
-	errorHandler.setUnexpectedErrorHandler(newUnexpectedErrorHandler);
+export function setUnexpectedErrorHAndler(newUnexpectedErrorHAndler: (e: Any) => void): void {
+	errorHAndler.setUnexpectedErrorHAndler(newUnexpectedErrorHAndler);
 }
 
-export function onUnexpectedError(e: any): undefined {
-	// ignore errors from cancelled promises
-	if (!isPromiseCanceledError(e)) {
-		errorHandler.onUnexpectedError(e);
-	}
-	return undefined;
-}
-
-export function onUnexpectedExternalError(e: any): undefined {
-	// ignore errors from cancelled promises
-	if (!isPromiseCanceledError(e)) {
-		errorHandler.onUnexpectedExternalError(e);
+export function onUnexpectedError(e: Any): undefined {
+	// ignore errors from cAncelled promises
+	if (!isPromiseCAnceledError(e)) {
+		errorHAndler.onUnexpectedError(e);
 	}
 	return undefined;
 }
 
-export interface SerializedError {
-	readonly $isError: true;
-	readonly name: string;
-	readonly message: string;
-	readonly stack: string;
+export function onUnexpectedExternAlError(e: Any): undefined {
+	// ignore errors from cAncelled promises
+	if (!isPromiseCAnceledError(e)) {
+		errorHAndler.onUnexpectedExternAlError(e);
+	}
+	return undefined;
 }
 
-export function transformErrorForSerialization(error: Error): SerializedError;
-export function transformErrorForSerialization(error: any): any;
-export function transformErrorForSerialization(error: any): any {
-	if (error instanceof Error) {
-		let { name, message } = error;
-		const stack: string = (<any>error).stacktrace || (<any>error).stack;
+export interfAce SeriAlizedError {
+	reAdonly $isError: true;
+	reAdonly nAme: string;
+	reAdonly messAge: string;
+	reAdonly stAck: string;
+}
+
+export function trAnsformErrorForSeriAlizAtion(error: Error): SeriAlizedError;
+export function trAnsformErrorForSeriAlizAtion(error: Any): Any;
+export function trAnsformErrorForSeriAlizAtion(error: Any): Any {
+	if (error instAnceof Error) {
+		let { nAme, messAge } = error;
+		const stAck: string = (<Any>error).stAcktrAce || (<Any>error).stAck;
 		return {
 			$isError: true,
-			name,
-			message,
-			stack
+			nAme,
+			messAge,
+			stAck
 		};
 	}
 
-	// return as is
+	// return As is
 	return error;
 }
 
-// see https://github.com/v8/v8/wiki/Stack%20Trace%20API#basic-stack-traces
-export interface V8CallSite {
-	getThis(): any;
-	getTypeName(): string;
+// see https://github.com/v8/v8/wiki/StAck%20TrAce%20API#bAsic-stAck-trAces
+export interfAce V8CAllSite {
+	getThis(): Any;
+	getTypeNAme(): string;
 	getFunction(): string;
-	getFunctionName(): string;
-	getMethodName(): string;
-	getFileName(): string;
+	getFunctionNAme(): string;
+	getMethodNAme(): string;
+	getFileNAme(): string;
 	getLineNumber(): number;
 	getColumnNumber(): number;
-	getEvalOrigin(): string;
-	isToplevel(): boolean;
-	isEval(): boolean;
-	isNative(): boolean;
-	isConstructor(): boolean;
+	getEvAlOrigin(): string;
+	isToplevel(): booleAn;
+	isEvAl(): booleAn;
+	isNAtive(): booleAn;
+	isConstructor(): booleAn;
 	toString(): string;
 }
 
-const canceledName = 'Canceled';
+const cAnceledNAme = 'CAnceled';
 
 /**
- * Checks if the given error is a promise in canceled state
+ * Checks if the given error is A promise in cAnceled stAte
  */
-export function isPromiseCanceledError(error: any): boolean {
-	return error instanceof Error && error.name === canceledName && error.message === canceledName;
+export function isPromiseCAnceledError(error: Any): booleAn {
+	return error instAnceof Error && error.nAme === cAnceledNAme && error.messAge === cAnceledNAme;
 }
 
 /**
- * Returns an error that signals cancellation.
+ * Returns An error thAt signAls cAncellAtion.
  */
-export function canceled(): Error {
-	const error = new Error(canceledName);
-	error.name = error.message;
+export function cAnceled(): Error {
+	const error = new Error(cAnceledNAme);
+	error.nAme = error.messAge;
 	return error;
 }
 
-export function illegalArgument(name?: string): Error {
-	if (name) {
-		return new Error(`Illegal argument: ${name}`);
+export function illegAlArgument(nAme?: string): Error {
+	if (nAme) {
+		return new Error(`IllegAl Argument: ${nAme}`);
 	} else {
-		return new Error('Illegal argument');
+		return new Error('IllegAl Argument');
 	}
 }
 
-export function illegalState(name?: string): Error {
-	if (name) {
-		return new Error(`Illegal state: ${name}`);
+export function illegAlStAte(nAme?: string): Error {
+	if (nAme) {
+		return new Error(`IllegAl stAte: ${nAme}`);
 	} else {
-		return new Error('Illegal state');
+		return new Error('IllegAl stAte');
 	}
 }
 
-export function readonly(name?: string): Error {
-	return name
-		? new Error(`readonly property '${name} cannot be changed'`)
-		: new Error('readonly property cannot be changed');
+export function reAdonly(nAme?: string): Error {
+	return nAme
+		? new Error(`reAdonly property '${nAme} cAnnot be chAnged'`)
+		: new Error('reAdonly property cAnnot be chAnged');
 }
 
-export function disposed(what: string): Error {
-	const result = new Error(`${what} has been disposed`);
-	result.name = 'DISPOSED';
+export function disposed(whAt: string): Error {
+	const result = new Error(`${whAt} hAs been disposed`);
+	result.nAme = 'DISPOSED';
 	return result;
 }
 
-export function getErrorMessage(err: any): string {
+export function getErrorMessAge(err: Any): string {
 	if (!err) {
 		return 'Error';
 	}
 
-	if (err.message) {
-		return err.message;
+	if (err.messAge) {
+		return err.messAge;
 	}
 
-	if (err.stack) {
-		return err.stack.split('\n')[0];
+	if (err.stAck) {
+		return err.stAck.split('\n')[0];
 	}
 
 	return String(err);
 }
 
-export class NotImplementedError extends Error {
-	constructor(message?: string) {
+export clAss NotImplementedError extends Error {
+	constructor(messAge?: string) {
 		super('NotImplemented');
-		if (message) {
-			this.message = message;
+		if (messAge) {
+			this.messAge = messAge;
 		}
 	}
 }
 
-export class NotSupportedError extends Error {
-	constructor(message?: string) {
+export clAss NotSupportedError extends Error {
+	constructor(messAge?: string) {
 		super('NotSupported');
-		if (message) {
-			this.message = message;
+		if (messAge) {
+			this.messAge = messAge;
 		}
 	}
 }

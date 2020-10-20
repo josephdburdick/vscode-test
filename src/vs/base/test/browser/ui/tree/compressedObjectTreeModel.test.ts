@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { compress, ICompressedTreeElement, ICompressedTreeNode, decompress, CompressedObjectTreeModel } from 'vs/base/browser/ui/tree/compressedObjectTreeModel';
-import { Iterable } from 'vs/base/common/iterator';
-import { ITreeNode } from 'vs/base/browser/ui/tree/tree';
-import { IList } from 'vs/base/browser/ui/tree/indexTreeModel';
+import * As Assert from 'Assert';
+import { compress, ICompressedTreeElement, ICompressedTreeNode, decompress, CompressedObjectTreeModel } from 'vs/bAse/browser/ui/tree/compressedObjectTreeModel';
+import { IterAble } from 'vs/bAse/common/iterAtor';
+import { ITreeNode } from 'vs/bAse/browser/ui/tree/tree';
+import { IList } from 'vs/bAse/browser/ui/tree/indexTreeModel';
 
-interface IResolvedCompressedTreeElement<T> extends ICompressedTreeElement<T> {
-	readonly element: T;
-	readonly children?: ICompressedTreeElement<T>[];
+interfAce IResolvedCompressedTreeElement<T> extends ICompressedTreeElement<T> {
+	reAdonly element: T;
+	reAdonly children?: ICompressedTreeElement<T>[];
 }
 
 function resolve<T>(treeElement: ICompressedTreeElement<T>): IResolvedCompressedTreeElement<T> {
-	const result: any = { element: treeElement.element };
-	const children = [...Iterable.map(Iterable.from(treeElement.children), resolve)];
+	const result: Any = { element: treeElement.element };
+	const children = [...IterAble.mAp(IterAble.from(treeElement.children), resolve)];
 
 	if (treeElement.incompressible) {
 		result.incompressible = true;
@@ -33,13 +33,13 @@ suite('CompressedObjectTree', function () {
 
 	suite('compress & decompress', function () {
 
-		test('small', function () {
+		test('smAll', function () {
 			const decompressed: ICompressedTreeElement<number> = { element: 1 };
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> =
-				{ element: { elements: [1], incompressible: false } };
+				{ element: { elements: [1], incompressible: fAlse } };
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
 		test('no compression', function () {
@@ -52,19 +52,19 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1], incompressible: false },
+				element: { elements: [1], incompressible: fAlse },
 				children: [
-					{ element: { elements: [11], incompressible: false } },
-					{ element: { elements: [12], incompressible: false } },
-					{ element: { elements: [13], incompressible: false } }
+					{ element: { elements: [11], incompressible: fAlse } },
+					{ element: { elements: [12], incompressible: fAlse } },
+					{ element: { elements: [13], incompressible: fAlse } }
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
-		test('single hierarchy', function () {
+		test('single hierArchy', function () {
 			const decompressed: ICompressedTreeElement<number> = {
 				element: 1, children: [
 					{
@@ -80,11 +80,11 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1, 11, 111, 1111], incompressible: false }
+				element: { elements: [1, 11, 111, 1111], incompressible: fAlse }
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
 		test('deep compression', function () {
@@ -106,17 +106,17 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1, 11, 111], incompressible: false },
+				element: { elements: [1, 11, 111], incompressible: fAlse },
 				children: [
-					{ element: { elements: [1111], incompressible: false } },
-					{ element: { elements: [1112], incompressible: false } },
-					{ element: { elements: [1113], incompressible: false } },
-					{ element: { elements: [1114], incompressible: false } },
+					{ element: { elements: [1111], incompressible: fAlse } },
+					{ element: { elements: [1112], incompressible: fAlse } },
+					{ element: { elements: [1113], incompressible: fAlse } },
+					{ element: { elements: [1114], incompressible: fAlse } },
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
 		test('double deep compression', function () {
@@ -146,30 +146,30 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1], incompressible: false },
+				element: { elements: [1], incompressible: fAlse },
 				children: [
 					{
-						element: { elements: [11, 111], incompressible: false },
+						element: { elements: [11, 111], incompressible: fAlse },
 						children: [
-							{ element: { elements: [1112], incompressible: false } },
-							{ element: { elements: [1113], incompressible: false } },
+							{ element: { elements: [1112], incompressible: fAlse } },
+							{ element: { elements: [1113], incompressible: fAlse } },
 						]
 					},
 					{
-						element: { elements: [12, 121], incompressible: false },
+						element: { elements: [12, 121], incompressible: fAlse },
 						children: [
-							{ element: { elements: [1212], incompressible: false } },
-							{ element: { elements: [1213], incompressible: false } },
+							{ element: { elements: [1212], incompressible: fAlse } },
+							{ element: { elements: [1213], incompressible: fAlse } },
 						]
 					}
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
-		test('incompressible leaf', function () {
+		test('incompressible leAf', function () {
 			const decompressed: ICompressedTreeElement<number> = {
 				element: 1, children: [
 					{
@@ -185,17 +185,17 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1, 11, 111], incompressible: false },
+				element: { elements: [1, 11, 111], incompressible: fAlse },
 				children: [
 					{ element: { elements: [1111], incompressible: true } }
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
-		test('incompressible branch', function () {
+		test('incompressible brAnch', function () {
 			const decompressed: ICompressedTreeElement<number> = {
 				element: 1, children: [
 					{
@@ -211,17 +211,17 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1, 11], incompressible: false },
+				element: { elements: [1, 11], incompressible: fAlse },
 				children: [
 					{ element: { elements: [111, 1111], incompressible: true } }
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
-		test('incompressible chain', function () {
+		test('incompressible chAin', function () {
 			const decompressed: ICompressedTreeElement<number> = {
 				element: 1, children: [
 					{
@@ -237,7 +237,7 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1, 11], incompressible: false },
+				element: { elements: [1, 11], incompressible: fAlse },
 				children: [
 					{
 						element: { elements: [111], incompressible: true },
@@ -248,8 +248,8 @@ suite('CompressedObjectTree', function () {
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 
 		test('incompressible tree', function () {
@@ -268,7 +268,7 @@ suite('CompressedObjectTree', function () {
 			};
 
 			const compressed: IResolvedCompressedTreeElement<ICompressedTreeNode<number>> = {
-				element: { elements: [1], incompressible: false },
+				element: { elements: [1], incompressible: fAlse },
 				children: [
 					{
 						element: { elements: [11], incompressible: true },
@@ -284,22 +284,22 @@ suite('CompressedObjectTree', function () {
 				]
 			};
 
-			assert.deepEqual(resolve(compress(decompressed)), compressed);
-			assert.deepEqual(resolve(decompress(compressed)), decompressed);
+			Assert.deepEquAl(resolve(compress(decompressed)), compressed);
+			Assert.deepEquAl(resolve(decompress(compressed)), decompressed);
 		});
 	});
 
-	function toList<T>(arr: T[]): IList<T> {
+	function toList<T>(Arr: T[]): IList<T> {
 		return {
-			splice(start: number, deleteCount: number, elements: T[]): void {
-				arr.splice(start, deleteCount, ...elements);
+			splice(stArt: number, deleteCount: number, elements: T[]): void {
+				Arr.splice(stArt, deleteCount, ...elements);
 			},
-			updateElementHeight() { }
+			updAteElementHeight() { }
 		};
 	}
 
-	function toArray<T>(list: ITreeNode<ICompressedTreeNode<T>>[]): T[][] {
-		return list.map(i => i.element.elements);
+	function toArrAy<T>(list: ITreeNode<ICompressedTreeNode<T>>[]): T[][] {
+		return list.mAp(i => i.element.elements);
 	}
 
 	suite('CompressedObjectTreeModel', function () {
@@ -307,12 +307,12 @@ suite('CompressedObjectTree', function () {
 		test('ctor', () => {
 			const list: ITreeNode<ICompressedTreeNode<number>>[] = [];
 			const model = new CompressedObjectTreeModel<number>('test', toList(list));
-			assert(model);
-			assert.equal(list.length, 0);
-			assert.equal(model.size, 0);
+			Assert(model);
+			Assert.equAl(list.length, 0);
+			Assert.equAl(model.size, 0);
 		});
 
-		test('flat', () => {
+		test('flAt', () => {
 			const list: ITreeNode<ICompressedTreeNode<number>>[] = [];
 			const model = new CompressedObjectTreeModel<number>('test', toList(list));
 
@@ -322,8 +322,8 @@ suite('CompressedObjectTree', function () {
 				{ element: 2 }
 			]);
 
-			assert.deepEqual(toArray(list), [[0], [1], [2]]);
-			assert.equal(model.size, 3);
+			Assert.deepEquAl(toArrAy(list), [[0], [1], [2]]);
+			Assert.equAl(model.size, 3);
 
 			model.setChildren(null, [
 				{ element: 3 },
@@ -331,12 +331,12 @@ suite('CompressedObjectTree', function () {
 				{ element: 5 },
 			]);
 
-			assert.deepEqual(toArray(list), [[3], [4], [5]]);
-			assert.equal(model.size, 3);
+			Assert.deepEquAl(toArrAy(list), [[3], [4], [5]]);
+			Assert.equAl(model.size, 3);
 
 			model.setChildren(null);
-			assert.deepEqual(toArray(list), []);
-			assert.equal(model.size, 0);
+			Assert.deepEquAl(toArrAy(list), []);
+			Assert.equAl(model.size, 0);
 		});
 
 		test('nested', () => {
@@ -355,24 +355,24 @@ suite('CompressedObjectTree', function () {
 				{ element: 2 }
 			]);
 
-			assert.deepEqual(toArray(list), [[0], [10], [11], [12], [1], [2]]);
-			assert.equal(model.size, 6);
+			Assert.deepEquAl(toArrAy(list), [[0], [10], [11], [12], [1], [2]]);
+			Assert.equAl(model.size, 6);
 
 			model.setChildren(12, [
 				{ element: 120 },
 				{ element: 121 }
 			]);
 
-			assert.deepEqual(toArray(list), [[0], [10], [11], [12], [120], [121], [1], [2]]);
-			assert.equal(model.size, 8);
+			Assert.deepEquAl(toArrAy(list), [[0], [10], [11], [12], [120], [121], [1], [2]]);
+			Assert.equAl(model.size, 8);
 
 			model.setChildren(0);
-			assert.deepEqual(toArray(list), [[0], [1], [2]]);
-			assert.equal(model.size, 3);
+			Assert.deepEquAl(toArrAy(list), [[0], [1], [2]]);
+			Assert.equAl(model.size, 3);
 
 			model.setChildren(null);
-			assert.deepEqual(toArray(list), []);
-			assert.equal(model.size, 0);
+			Assert.deepEquAl(toArrAy(list), []);
+			Assert.equAl(model.size, 0);
 		});
 
 		test('compressed', () => {
@@ -393,8 +393,8 @@ suite('CompressedObjectTree', function () {
 				}
 			]);
 
-			assert.deepEqual(toArray(list), [[1, 11, 111], [1111], [1112], [1113]]);
-			assert.equal(model.size, 6);
+			Assert.deepEquAl(toArrAy(list), [[1, 11, 111], [1111], [1112], [1113]]);
+			Assert.equAl(model.size, 6);
 
 			model.setChildren(11, [
 				{ element: 111 },
@@ -402,30 +402,30 @@ suite('CompressedObjectTree', function () {
 				{ element: 113 },
 			]);
 
-			assert.deepEqual(toArray(list), [[1, 11], [111], [112], [113]]);
-			assert.equal(model.size, 5);
+			Assert.deepEquAl(toArrAy(list), [[1, 11], [111], [112], [113]]);
+			Assert.equAl(model.size, 5);
 
 			model.setChildren(113, [
 				{ element: 1131 }
 			]);
 
-			assert.deepEqual(toArray(list), [[1, 11], [111], [112], [113, 1131]]);
-			assert.equal(model.size, 6);
+			Assert.deepEquAl(toArrAy(list), [[1, 11], [111], [112], [113, 1131]]);
+			Assert.equAl(model.size, 6);
 
 			model.setChildren(1131, [
 				{ element: 1132 }
 			]);
 
-			assert.deepEqual(toArray(list), [[1, 11], [111], [112], [113, 1131, 1132]]);
-			assert.equal(model.size, 7);
+			Assert.deepEquAl(toArrAy(list), [[1, 11], [111], [112], [113, 1131, 1132]]);
+			Assert.equAl(model.size, 7);
 
 			model.setChildren(1131, [
 				{ element: 1132 },
 				{ element: 1133 },
 			]);
 
-			assert.deepEqual(toArray(list), [[1, 11], [111], [112], [113, 1131], [1132], [1133]]);
-			assert.equal(model.size, 8);
+			Assert.deepEquAl(toArrAy(list), [[1, 11], [111], [112], [113, 1131], [1132], [1133]]);
+			Assert.equAl(model.size, 8);
 		});
 	});
 });

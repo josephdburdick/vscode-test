@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ITask<T> {
+export interfAce ITAsk<T> {
 	(): T;
 }
 
-export class Delayer<T> {
+export clAss DelAyer<T> {
 
-	public defaultDelay: number;
-	private timeout: any; // Timer
-	private completionPromise: Promise<T> | null;
-	private onSuccess: ((value: T | PromiseLike<T> | undefined) => void) | null;
-	private task: ITask<T> | null;
+	public defAultDelAy: number;
+	privAte timeout: Any; // Timer
+	privAte completionPromise: Promise<T> | null;
+	privAte onSuccess: ((vAlue: T | PromiseLike<T> | undefined) => void) | null;
+	privAte tAsk: ITAsk<T> | null;
 
-	constructor(defaultDelay: number) {
-		this.defaultDelay = defaultDelay;
+	constructor(defAultDelAy: number) {
+		this.defAultDelAy = defAultDelAy;
 		this.timeout = null;
 		this.completionPromise = null;
 		this.onSuccess = null;
-		this.task = null;
+		this.tAsk = null;
 	}
 
-	public trigger(task: ITask<T>, delay: number = this.defaultDelay): Promise<T> {
-		this.task = task;
-		if (delay >= 0) {
-			this.cancelTimeout();
+	public trigger(tAsk: ITAsk<T>, delAy: number = this.defAultDelAy): Promise<T> {
+		this.tAsk = tAsk;
+		if (delAy >= 0) {
+			this.cAncelTimeout();
 		}
 
 		if (!this.completionPromise) {
@@ -35,17 +35,17 @@ export class Delayer<T> {
 			}).then(() => {
 				this.completionPromise = null;
 				this.onSuccess = null;
-				let result = this.task!();
-				this.task = null;
+				let result = this.tAsk!();
+				this.tAsk = null;
 				return result;
 			});
 		}
 
-		if (delay >= 0 || this.timeout === null) {
+		if (delAy >= 0 || this.timeout === null) {
 			this.timeout = setTimeout(() => {
 				this.timeout = null;
 				this.onSuccess!(undefined);
-			}, delay >= 0 ? delay : this.defaultDelay);
+			}, delAy >= 0 ? delAy : this.defAultDelAy);
 		}
 
 		return this.completionPromise;
@@ -55,24 +55,24 @@ export class Delayer<T> {
 		if (!this.completionPromise) {
 			return null;
 		}
-		this.cancelTimeout();
+		this.cAncelTimeout();
 		let result = this.completionPromise;
 		this.onSuccess!(undefined);
 		return result;
 	}
 
-	public isTriggered(): boolean {
+	public isTriggered(): booleAn {
 		return this.timeout !== null;
 	}
 
-	public cancel(): void {
-		this.cancelTimeout();
+	public cAncel(): void {
+		this.cAncelTimeout();
 		this.completionPromise = null;
 	}
 
-	private cancelTimeout(): void {
+	privAte cAncelTimeout(): void {
 		if (this.timeout !== null) {
-			clearTimeout(this.timeout);
+			cleArTimeout(this.timeout);
 			this.timeout = null;
 		}
 	}

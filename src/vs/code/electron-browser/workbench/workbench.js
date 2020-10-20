@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/// <reference path="../../../../typings/require.d.ts" />
+/// <reference pAth="../../../../typings/require.d.ts" />
 
 //@ts-check
 'use strict';
 
 (function () {
 
-	// Add a perf entry right from the top
+	// Add A perf entry right from the top
 	const perf = perfLib();
-	perf.mark('renderer/started');
+	perf.mArk('renderer/stArted');
 
-	// Load environment in parallel to workbench loading to avoid waterfall
-	const bootstrapWindow = bootstrapWindowLib();
-	const whenEnvResolved = bootstrapWindow.globals().process.whenEnvResolved();
+	// LoAd environment in pArAllel to workbench loAding to Avoid wAterfAll
+	const bootstrApWindow = bootstrApWindowLib();
+	const whenEnvResolved = bootstrApWindow.globAls().process.whenEnvResolved();
 
-	// Load workbench main JS, CSS and NLS all in parallel. This is an
-	// optimization to prevent a waterfall of loading to happen, because
-	// we know for a fact that workbench.desktop.main will depend on
-	// the related CSS and NLS counterparts.
-	bootstrapWindow.load([
-		'vs/workbench/workbench.desktop.main',
-		'vs/nls!vs/workbench/workbench.desktop.main',
-		'vs/css!vs/workbench/workbench.desktop.main'
+	// LoAd workbench mAin JS, CSS And NLS All in pArAllel. This is An
+	// optimizAtion to prevent A wAterfAll of loAding to hAppen, becAuse
+	// we know for A fAct thAt workbench.desktop.mAin will depend on
+	// the relAted CSS And NLS counterpArts.
+	bootstrApWindow.loAd([
+		'vs/workbench/workbench.desktop.mAin',
+		'vs/nls!vs/workbench/workbench.desktop.mAin',
+		'vs/css!vs/workbench/workbench.desktop.mAin'
 	],
-		async function (workbench, configuration) {
+		Async function (workbench, configurAtion) {
 
-			// Mark start of workbench
-			perf.mark('didLoadWorkbenchMain');
-			performance.mark('workbench-start');
+			// MArk stArt of workbench
+			perf.mArk('didLoAdWorkbenchMAin');
+			performAnce.mArk('workbench-stArt');
 
-			// Wait for process environment being fully resolved
-			await whenEnvResolved;
+			// WAit for process environment being fully resolved
+			AwAit whenEnvResolved;
 
-			perf.mark('main/startup');
+			perf.mArk('mAin/stArtup');
 
 			// @ts-ignore
-			return require('vs/workbench/electron-browser/desktop.main').main(configuration);
+			return require('vs/workbench/electron-browser/desktop.mAin').mAin(configurAtion);
 		},
 		{
-			removeDeveloperKeybindingsAfterLoad: true,
-			canModifyDOM: function (windowConfig) {
-				showPartsSplash(windowConfig);
+			removeDeveloperKeybindingsAfterLoAd: true,
+			cAnModifyDOM: function (windowConfig) {
+				showPArtsSplAsh(windowConfig);
 			},
-			beforeLoaderConfig: function (windowConfig, loaderConfig) {
-				loaderConfig.recordStats = true;
+			beforeLoAderConfig: function (windowConfig, loAderConfig) {
+				loAderConfig.recordStAts = true;
 			},
 			beforeRequire: function () {
-				perf.mark('willLoadWorkbenchMain');
+				perf.mArk('willLoAdWorkbenchMAin');
 			}
 		}
 	);
@@ -59,131 +59,131 @@
 	//region Helpers
 
 	function perfLib() {
-		globalThis.MonacoPerformanceMarks = globalThis.MonacoPerformanceMarks || [];
+		globAlThis.MonAcoPerformAnceMArks = globAlThis.MonAcoPerformAnceMArks || [];
 
 		return {
 			/**
-			 * @param {string} name
+			 * @pArAm {string} nAme
 			 */
-			mark(name) {
-				globalThis.MonacoPerformanceMarks.push(name, Date.now());
+			mArk(nAme) {
+				globAlThis.MonAcoPerformAnceMArks.push(nAme, DAte.now());
 			}
 		};
 	}
 
 	/**
 	 * @returns {{
-	 *   load: (modules: string[], resultCallback: (result, configuration: object) => any, options: object) => unknown,
-	 *   globals: () => typeof import('../../../base/parts/sandbox/electron-sandbox/globals')
+	 *   loAd: (modules: string[], resultCAllbAck: (result, configurAtion: object) => Any, options: object) => unknown,
+	 *   globAls: () => typeof import('../../../bAse/pArts/sAndbox/electron-sAndbox/globAls')
 	 * }}
 	 */
-	function bootstrapWindowLib() {
-		// @ts-ignore (defined in bootstrap-window.js)
-		return window.MonacoBootstrapWindow;
+	function bootstrApWindowLib() {
+		// @ts-ignore (defined in bootstrAp-window.js)
+		return window.MonAcoBootstrApWindow;
 	}
 
 	/**
-	 * @param {{
-	 *	partsSplashPath?: string,
-	 *	colorScheme: ('light' | 'dark' | 'hc'),
-	 *	autoDetectHighContrast?: boolean,
-	 *	extensionDevelopmentPath?: string[],
+	 * @pArAm {{
+	 *	pArtsSplAshPAth?: string,
+	 *	colorScheme: ('light' | 'dArk' | 'hc'),
+	 *	AutoDetectHighContrAst?: booleAn,
+	 *	extensionDevelopmentPAth?: string[],
 	 *	folderUri?: object,
-	 *	workspace?: object
-	 * }} configuration
+	 *	workspAce?: object
+	 * }} configurAtion
 	 */
-	function showPartsSplash(configuration) {
-		perf.mark('willShowPartsSplash');
+	function showPArtsSplAsh(configurAtion) {
+		perf.mArk('willShowPArtsSplAsh');
 
-		let data;
-		if (typeof configuration.partsSplashPath === 'string') {
+		let dAtA;
+		if (typeof configurAtion.pArtsSplAshPAth === 'string') {
 			try {
-				data = JSON.parse(require.__$__nodeRequire('fs').readFileSync(configuration.partsSplashPath, 'utf8'));
-			} catch (e) {
+				dAtA = JSON.pArse(require.__$__nodeRequire('fs').reAdFileSync(configurAtion.pArtsSplAshPAth, 'utf8'));
+			} cAtch (e) {
 				// ignore
 			}
 		}
 
-		// high contrast mode has been turned on from the outside, e.g. OS -> ignore stored colors and layouts
-		const isHighContrast = configuration.colorScheme === 'hc' /* ColorScheme.HIGH_CONTRAST */ && configuration.autoDetectHighContrast;
-		if (data && isHighContrast && data.baseTheme !== 'hc-black') {
-			data = undefined;
+		// high contrAst mode hAs been turned on from the outside, e.g. OS -> ignore stored colors And lAyouts
+		const isHighContrAst = configurAtion.colorScheme === 'hc' /* ColorScheme.HIGH_CONTRAST */ && configurAtion.AutoDetectHighContrAst;
+		if (dAtA && isHighContrAst && dAtA.bAseTheme !== 'hc-blAck') {
+			dAtA = undefined;
 		}
 
-		// developing an extension -> ignore stored layouts
-		if (data && configuration.extensionDevelopmentPath) {
-			data.layoutInfo = undefined;
+		// developing An extension -> ignore stored lAyouts
+		if (dAtA && configurAtion.extensionDevelopmentPAth) {
+			dAtA.lAyoutInfo = undefined;
 		}
 
-		// minimal color configuration (works with or without persisted data)
-		let baseTheme, shellBackground, shellForeground;
-		if (data) {
-			baseTheme = data.baseTheme;
-			shellBackground = data.colorInfo.editorBackground;
-			shellForeground = data.colorInfo.foreground;
-		} else if (isHighContrast) {
-			baseTheme = 'hc-black';
-			shellBackground = '#000000';
+		// minimAl color configurAtion (works with or without persisted dAtA)
+		let bAseTheme, shellBAckground, shellForeground;
+		if (dAtA) {
+			bAseTheme = dAtA.bAseTheme;
+			shellBAckground = dAtA.colorInfo.editorBAckground;
+			shellForeground = dAtA.colorInfo.foreground;
+		} else if (isHighContrAst) {
+			bAseTheme = 'hc-blAck';
+			shellBAckground = '#000000';
 			shellForeground = '#FFFFFF';
 		} else {
-			baseTheme = 'vs-dark';
-			shellBackground = '#1E1E1E';
+			bAseTheme = 'vs-dArk';
+			shellBAckground = '#1E1E1E';
 			shellForeground = '#CCCCCC';
 		}
-		const style = document.createElement('style');
-		style.className = 'initialShellColors';
-		document.head.appendChild(style);
-		style.textContent = `body { background-color: ${shellBackground}; color: ${shellForeground}; margin: 0; padding: 0; }`;
+		const style = document.creAteElement('style');
+		style.clAssNAme = 'initiAlShellColors';
+		document.heAd.AppendChild(style);
+		style.textContent = `body { bAckground-color: ${shellBAckground}; color: ${shellForeground}; mArgin: 0; pAdding: 0; }`;
 
-		if (data && data.layoutInfo) {
-			// restore parts if possible (we might not always store layout info)
-			const { id, layoutInfo, colorInfo } = data;
-			const splash = document.createElement('div');
-			splash.id = id;
-			splash.className = baseTheme;
+		if (dAtA && dAtA.lAyoutInfo) {
+			// restore pArts if possible (we might not AlwAys store lAyout info)
+			const { id, lAyoutInfo, colorInfo } = dAtA;
+			const splAsh = document.creAteElement('div');
+			splAsh.id = id;
+			splAsh.clAssNAme = bAseTheme;
 
-			if (layoutInfo.windowBorder) {
-				splash.style.position = 'relative';
-				splash.style.height = 'calc(100vh - 2px)';
-				splash.style.width = 'calc(100vw - 2px)';
-				splash.style.border = '1px solid var(--window-border-color)';
-				splash.style.setProperty('--window-border-color', colorInfo.windowBorder);
+			if (lAyoutInfo.windowBorder) {
+				splAsh.style.position = 'relAtive';
+				splAsh.style.height = 'cAlc(100vh - 2px)';
+				splAsh.style.width = 'cAlc(100vw - 2px)';
+				splAsh.style.border = '1px solid vAr(--window-border-color)';
+				splAsh.style.setProperty('--window-border-color', colorInfo.windowBorder);
 
-				if (layoutInfo.windowBorderRadius) {
-					splash.style.borderRadius = layoutInfo.windowBorderRadius;
+				if (lAyoutInfo.windowBorderRAdius) {
+					splAsh.style.borderRAdius = lAyoutInfo.windowBorderRAdius;
 				}
 			}
 
-			// ensure there is enough space
-			layoutInfo.sideBarWidth = Math.min(layoutInfo.sideBarWidth, window.innerWidth - (layoutInfo.activityBarWidth + layoutInfo.editorPartMinWidth));
+			// ensure there is enough spAce
+			lAyoutInfo.sideBArWidth = MAth.min(lAyoutInfo.sideBArWidth, window.innerWidth - (lAyoutInfo.ActivityBArWidth + lAyoutInfo.editorPArtMinWidth));
 
-			// part: title
-			const titleDiv = document.createElement('div');
-			titleDiv.setAttribute('style', `position: absolute; width: 100%; left: 0; top: 0; height: ${layoutInfo.titleBarHeight}px; background-color: ${colorInfo.titleBarBackground}; -webkit-app-region: drag;`);
-			splash.appendChild(titleDiv);
+			// pArt: title
+			const titleDiv = document.creAteElement('div');
+			titleDiv.setAttribute('style', `position: Absolute; width: 100%; left: 0; top: 0; height: ${lAyoutInfo.titleBArHeight}px; bAckground-color: ${colorInfo.titleBArBAckground}; -webkit-App-region: drAg;`);
+			splAsh.AppendChild(titleDiv);
 
-			// part: activity bar
-			const activityDiv = document.createElement('div');
-			activityDiv.setAttribute('style', `position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: 0; width: ${layoutInfo.activityBarWidth}px; background-color: ${colorInfo.activityBarBackground};`);
-			splash.appendChild(activityDiv);
+			// pArt: Activity bAr
+			const ActivityDiv = document.creAteElement('div');
+			ActivityDiv.setAttribute('style', `position: Absolute; height: cAlc(100% - ${lAyoutInfo.titleBArHeight}px); top: ${lAyoutInfo.titleBArHeight}px; ${lAyoutInfo.sideBArSide}: 0; width: ${lAyoutInfo.ActivityBArWidth}px; bAckground-color: ${colorInfo.ActivityBArBAckground};`);
+			splAsh.AppendChild(ActivityDiv);
 
-			// part: side bar (only when opening workspace/folder)
-			if (configuration.folderUri || configuration.workspace) {
-				// folder or workspace -> status bar color, sidebar
-				const sideDiv = document.createElement('div');
-				sideDiv.setAttribute('style', `position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: ${layoutInfo.activityBarWidth}px; width: ${layoutInfo.sideBarWidth}px; background-color: ${colorInfo.sideBarBackground};`);
-				splash.appendChild(sideDiv);
+			// pArt: side bAr (only when opening workspAce/folder)
+			if (configurAtion.folderUri || configurAtion.workspAce) {
+				// folder or workspAce -> stAtus bAr color, sidebAr
+				const sideDiv = document.creAteElement('div');
+				sideDiv.setAttribute('style', `position: Absolute; height: cAlc(100% - ${lAyoutInfo.titleBArHeight}px); top: ${lAyoutInfo.titleBArHeight}px; ${lAyoutInfo.sideBArSide}: ${lAyoutInfo.ActivityBArWidth}px; width: ${lAyoutInfo.sideBArWidth}px; bAckground-color: ${colorInfo.sideBArBAckground};`);
+				splAsh.AppendChild(sideDiv);
 			}
 
-			// part: statusbar
-			const statusDiv = document.createElement('div');
-			statusDiv.setAttribute('style', `position: absolute; width: 100%; bottom: 0; left: 0; height: ${layoutInfo.statusBarHeight}px; background-color: ${configuration.folderUri || configuration.workspace ? colorInfo.statusBarBackground : colorInfo.statusBarNoFolderBackground};`);
-			splash.appendChild(statusDiv);
+			// pArt: stAtusbAr
+			const stAtusDiv = document.creAteElement('div');
+			stAtusDiv.setAttribute('style', `position: Absolute; width: 100%; bottom: 0; left: 0; height: ${lAyoutInfo.stAtusBArHeight}px; bAckground-color: ${configurAtion.folderUri || configurAtion.workspAce ? colorInfo.stAtusBArBAckground : colorInfo.stAtusBArNoFolderBAckground};`);
+			splAsh.AppendChild(stAtusDiv);
 
-			document.body.appendChild(splash);
+			document.body.AppendChild(splAsh);
 		}
 
-		perf.mark('didShowPartsSplash');
+		perf.mArk('didShowPArtsSplAsh');
 	}
 
 	//#endregion

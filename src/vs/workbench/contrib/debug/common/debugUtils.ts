@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { equalsIgnoreCase } from 'vs/base/common/strings';
-import { IDebuggerContribution, IDebugSession, IConfigPresentation } from 'vs/workbench/contrib/debug/common/debug';
-import { URI as uri } from 'vs/base/common/uri';
-import { isAbsolute } from 'vs/base/common/path';
-import { deepClone } from 'vs/base/common/objects';
-import { Schemas } from 'vs/base/common/network';
+import { equAlsIgnoreCAse } from 'vs/bAse/common/strings';
+import { IDebuggerContribution, IDebugSession, IConfigPresentAtion } from 'vs/workbench/contrib/debug/common/debug';
+import { URI As uri } from 'vs/bAse/common/uri';
+import { isAbsolute } from 'vs/bAse/common/pAth';
+import { deepClone } from 'vs/bAse/common/objects';
+import { SchemAs } from 'vs/bAse/common/network';
 
-const _formatPIIRegexp = /{([^}]+)}/g;
+const _formAtPIIRegexp = /{([^}]+)}/g;
 
-export function formatPII(value: string, excludePII: boolean, args: { [key: string]: string } | undefined): string {
-	return value.replace(_formatPIIRegexp, function (match, group) {
+export function formAtPII(vAlue: string, excludePII: booleAn, Args: { [key: string]: string } | undefined): string {
+	return vAlue.replAce(_formAtPIIRegexp, function (mAtch, group) {
 		if (excludePII && group.length > 0 && group[0] !== '_') {
-			return match;
+			return mAtch;
 		}
 
-		return args && args.hasOwnProperty(group) ?
-			args[group] :
-			match;
+		return Args && Args.hAsOwnProperty(group) ?
+			Args[group] :
+			mAtch;
 	});
 }
 
 /**
- * Filters exceptions (keys marked with "!") from the given object. Used to
- * ensure exception data is not sent on web remotes, see #97628.
+ * Filters exceptions (keys mArked with "!") from the given object. Used to
+ * ensure exception dAtA is not sent on web remotes, see #97628.
  */
-export function filterExceptionsFromTelemetry<T extends { [key: string]: unknown }>(data: T): Partial<T> {
-	const output: Partial<T> = {};
-	for (const key of Object.keys(data) as (keyof T & string)[]) {
-		if (!key.startsWith('!')) {
-			output[key] = data[key];
+export function filterExceptionsFromTelemetry<T extends { [key: string]: unknown }>(dAtA: T): PArtiAl<T> {
+	const output: PArtiAl<T> = {};
+	for (const key of Object.keys(dAtA) As (keyof T & string)[]) {
+		if (!key.stArtsWith('!')) {
+			output[key] = dAtA[key];
 		}
 	}
 
@@ -40,256 +40,256 @@ export function filterExceptionsFromTelemetry<T extends { [key: string]: unknown
 }
 
 
-export function isSessionAttach(session: IDebugSession): boolean {
-	return session.configuration.request === 'attach' && !getExtensionHostDebugSession(session);
+export function isSessionAttAch(session: IDebugSession): booleAn {
+	return session.configurAtion.request === 'AttAch' && !getExtensionHostDebugSession(session);
 }
 
 /**
- * Returns the session or any parent which is an extension host debug session.
+ * Returns the session or Any pArent which is An extension host debug session.
  * Returns undefined if there's none.
  */
 export function getExtensionHostDebugSession(session: IDebugSession): IDebugSession | void {
-	let type = session.configuration.type;
+	let type = session.configurAtion.type;
 	if (!type) {
 		return;
 	}
 
-	if (type === 'vslsShare') {
-		type = (<any>session.configuration).adapterProxy.configuration.type;
+	if (type === 'vslsShAre') {
+		type = (<Any>session.configurAtion).AdApterProxy.configurAtion.type;
 	}
 
-	if (equalsIgnoreCase(type, 'extensionhost') || equalsIgnoreCase(type, 'pwa-extensionhost')) {
+	if (equAlsIgnoreCAse(type, 'extensionhost') || equAlsIgnoreCAse(type, 'pwA-extensionhost')) {
 		return session;
 	}
 
-	return session.parentSession ? getExtensionHostDebugSession(session.parentSession) : undefined;
+	return session.pArentSession ? getExtensionHostDebugSession(session.pArentSession) : undefined;
 }
 
-// only a debugger contributions with a label, program, or runtime attribute is considered a "defining" or "main" debugger contribution
-export function isDebuggerMainContribution(dbg: IDebuggerContribution) {
-	return dbg.type && (dbg.label || dbg.program || dbg.runtime);
+// only A debugger contributions with A lAbel, progrAm, or runtime Attribute is considered A "defining" or "mAin" debugger contribution
+export function isDebuggerMAinContribution(dbg: IDebuggerContribution) {
+	return dbg.type && (dbg.lAbel || dbg.progrAm || dbg.runtime);
 }
 
-export function getExactExpressionStartAndEnd(lineContent: string, looseStart: number, looseEnd: number): { start: number, end: number } {
-	let matchingExpression: string | undefined = undefined;
-	let startOffset = 0;
+export function getExActExpressionStArtAndEnd(lineContent: string, looseStArt: number, looseEnd: number): { stArt: number, end: number } {
+	let mAtchingExpression: string | undefined = undefined;
+	let stArtOffset = 0;
 
-	// Some example supported expressions: myVar.prop, a.b.c.d, myVar?.prop, myVar->prop, MyClass::StaticProp, *myVar
-	// Match any character except a set of characters which often break interesting sub-expressions
+	// Some exAmple supported expressions: myVAr.prop, A.b.c.d, myVAr?.prop, myVAr->prop, MyClAss::StAticProp, *myVAr
+	// MAtch Any chArActer except A set of chArActers which often breAk interesting sub-expressions
 	let expression: RegExp = /([^()\[\]{}<>\s+\-/%~#^;=|,`!]|\->)+/g;
-	let result: RegExpExecArray | null = null;
+	let result: RegExpExecArrAy | null = null;
 
 	// First find the full expression under the cursor
 	while (result = expression.exec(lineContent)) {
-		let start = result.index + 1;
-		let end = start + result[0].length;
+		let stArt = result.index + 1;
+		let end = stArt + result[0].length;
 
-		if (start <= looseStart && end >= looseEnd) {
-			matchingExpression = result[0];
-			startOffset = start;
-			break;
+		if (stArt <= looseStArt && end >= looseEnd) {
+			mAtchingExpression = result[0];
+			stArtOffset = stArt;
+			breAk;
 		}
 	}
 
-	// If there are non-word characters after the cursor, we want to truncate the expression then.
-	// For example in expression 'a.b.c.d', if the focus was under 'b', 'a.b' would be evaluated.
-	if (matchingExpression) {
+	// If there Are non-word chArActers After the cursor, we wAnt to truncAte the expression then.
+	// For exAmple in expression 'A.b.c.d', if the focus wAs under 'b', 'A.b' would be evAluAted.
+	if (mAtchingExpression) {
 		let subExpression: RegExp = /\w+/g;
-		let subExpressionResult: RegExpExecArray | null = null;
-		while (subExpressionResult = subExpression.exec(matchingExpression)) {
-			let subEnd = subExpressionResult.index + 1 + startOffset + subExpressionResult[0].length;
+		let subExpressionResult: RegExpExecArrAy | null = null;
+		while (subExpressionResult = subExpression.exec(mAtchingExpression)) {
+			let subEnd = subExpressionResult.index + 1 + stArtOffset + subExpressionResult[0].length;
 			if (subEnd >= looseEnd) {
-				break;
+				breAk;
 			}
 		}
 
 		if (subExpressionResult) {
-			matchingExpression = matchingExpression.substring(0, subExpression.lastIndex);
+			mAtchingExpression = mAtchingExpression.substring(0, subExpression.lAstIndex);
 		}
 	}
 
-	return matchingExpression ?
-		{ start: startOffset, end: startOffset + matchingExpression.length - 1 } :
-		{ start: 0, end: 0 };
+	return mAtchingExpression ?
+		{ stArt: stArtOffset, end: stArtOffset + mAtchingExpression.length - 1 } :
+		{ stArt: 0, end: 0 };
 }
 
 // RFC 2396, Appendix A: https://www.ietf.org/rfc/rfc2396.txt
-const _schemePattern = /^[a-zA-Z][a-zA-Z0-9\+\-\.]+:/;
+const _schemePAttern = /^[A-zA-Z][A-zA-Z0-9\+\-\.]+:/;
 
-export function isUri(s: string | undefined): boolean {
-	// heuristics: a valid uri starts with a scheme and
-	// the scheme has at least 2 characters so that it doesn't look like a drive letter.
-	return !!(s && s.match(_schemePattern));
+export function isUri(s: string | undefined): booleAn {
+	// heuristics: A vAlid uri stArts with A scheme And
+	// the scheme hAs At leAst 2 chArActers so thAt it doesn't look like A drive letter.
+	return !!(s && s.mAtch(_schemePAttern));
 }
 
-function stringToUri(source: PathContainer): string | undefined {
-	if (typeof source.path === 'string') {
+function stringToUri(source: PAthContAiner): string | undefined {
+	if (typeof source.pAth === 'string') {
 		if (typeof source.sourceReference === 'number' && source.sourceReference > 0) {
-			// if there is a source reference, don't touch path
+			// if there is A source reference, don't touch pAth
 		} else {
-			if (isUri(source.path)) {
-				return <string><unknown>uri.parse(source.path);
+			if (isUri(source.pAth)) {
+				return <string><unknown>uri.pArse(source.pAth);
 			} else {
-				// assume path
-				if (isAbsolute(source.path)) {
-					return <string><unknown>uri.file(source.path);
+				// Assume pAth
+				if (isAbsolute(source.pAth)) {
+					return <string><unknown>uri.file(source.pAth);
 				} else {
-					// leave relative path as is
+					// leAve relAtive pAth As is
 				}
 			}
 		}
 	}
-	return source.path;
+	return source.pAth;
 }
 
-function uriToString(source: PathContainer): string | undefined {
-	if (typeof source.path === 'object') {
-		const u = uri.revive(source.path);
+function uriToString(source: PAthContAiner): string | undefined {
+	if (typeof source.pAth === 'object') {
+		const u = uri.revive(source.pAth);
 		if (u) {
-			if (u.scheme === Schemas.file) {
-				return u.fsPath;
+			if (u.scheme === SchemAs.file) {
+				return u.fsPAth;
 			} else {
 				return u.toString();
 			}
 		}
 	}
-	return source.path;
+	return source.pAth;
 }
 
-// path hooks helpers
+// pAth hooks helpers
 
-interface PathContainer {
-	path?: string;
+interfAce PAthContAiner {
+	pAth?: string;
 	sourceReference?: number;
 }
 
-export function convertToDAPaths(message: DebugProtocol.ProtocolMessage, toUri: boolean): DebugProtocol.ProtocolMessage {
+export function convertToDAPAths(messAge: DebugProtocol.ProtocolMessAge, toUri: booleAn): DebugProtocol.ProtocolMessAge {
 
-	const fixPath = toUri ? stringToUri : uriToString;
+	const fixPAth = toUri ? stringToUri : uriToString;
 
-	// since we modify Source.paths in the message in place, we need to make a copy of it (see #61129)
-	const msg = deepClone(message);
+	// since we modify Source.pAths in the messAge in plAce, we need to mAke A copy of it (see #61129)
+	const msg = deepClone(messAge);
 
-	convertPaths(msg, (toDA: boolean, source: PathContainer | undefined) => {
+	convertPAths(msg, (toDA: booleAn, source: PAthContAiner | undefined) => {
 		if (toDA && source) {
-			source.path = fixPath(source);
+			source.pAth = fixPAth(source);
 		}
 	});
 	return msg;
 }
 
-export function convertToVSCPaths(message: DebugProtocol.ProtocolMessage, toUri: boolean): DebugProtocol.ProtocolMessage {
+export function convertToVSCPAths(messAge: DebugProtocol.ProtocolMessAge, toUri: booleAn): DebugProtocol.ProtocolMessAge {
 
-	const fixPath = toUri ? stringToUri : uriToString;
+	const fixPAth = toUri ? stringToUri : uriToString;
 
-	// since we modify Source.paths in the message in place, we need to make a copy of it (see #61129)
-	const msg = deepClone(message);
+	// since we modify Source.pAths in the messAge in plAce, we need to mAke A copy of it (see #61129)
+	const msg = deepClone(messAge);
 
-	convertPaths(msg, (toDA: boolean, source: PathContainer | undefined) => {
+	convertPAths(msg, (toDA: booleAn, source: PAthContAiner | undefined) => {
 		if (!toDA && source) {
-			source.path = fixPath(source);
+			source.pAth = fixPAth(source);
 		}
 	});
 	return msg;
 }
 
-function convertPaths(msg: DebugProtocol.ProtocolMessage, fixSourcePath: (toDA: boolean, source: PathContainer | undefined) => void): void {
+function convertPAths(msg: DebugProtocol.ProtocolMessAge, fixSourcePAth: (toDA: booleAn, source: PAthContAiner | undefined) => void): void {
 
 	switch (msg.type) {
-		case 'event':
+		cAse 'event':
 			const event = <DebugProtocol.Event>msg;
 			switch (event.event) {
-				case 'output':
-					fixSourcePath(false, (<DebugProtocol.OutputEvent>event).body.source);
-					break;
-				case 'loadedSource':
-					fixSourcePath(false, (<DebugProtocol.LoadedSourceEvent>event).body.source);
-					break;
-				case 'breakpoint':
-					fixSourcePath(false, (<DebugProtocol.BreakpointEvent>event).body.breakpoint.source);
-					break;
-				default:
-					break;
+				cAse 'output':
+					fixSourcePAth(fAlse, (<DebugProtocol.OutputEvent>event).body.source);
+					breAk;
+				cAse 'loAdedSource':
+					fixSourcePAth(fAlse, (<DebugProtocol.LoAdedSourceEvent>event).body.source);
+					breAk;
+				cAse 'breAkpoint':
+					fixSourcePAth(fAlse, (<DebugProtocol.BreAkpointEvent>event).body.breAkpoint.source);
+					breAk;
+				defAult:
+					breAk;
 			}
-			break;
-		case 'request':
+			breAk;
+		cAse 'request':
 			const request = <DebugProtocol.Request>msg;
-			switch (request.command) {
-				case 'setBreakpoints':
-					fixSourcePath(true, (<DebugProtocol.SetBreakpointsArguments>request.arguments).source);
-					break;
-				case 'breakpointLocations':
-					fixSourcePath(true, (<DebugProtocol.BreakpointLocationsArguments>request.arguments).source);
-					break;
-				case 'source':
-					fixSourcePath(true, (<DebugProtocol.SourceArguments>request.arguments).source);
-					break;
-				case 'gotoTargets':
-					fixSourcePath(true, (<DebugProtocol.GotoTargetsArguments>request.arguments).source);
-					break;
-				case 'launchVSCode':
-					request.arguments.args.forEach((arg: PathContainer | undefined) => fixSourcePath(false, arg));
-					break;
-				default:
-					break;
+			switch (request.commAnd) {
+				cAse 'setBreAkpoints':
+					fixSourcePAth(true, (<DebugProtocol.SetBreAkpointsArguments>request.Arguments).source);
+					breAk;
+				cAse 'breAkpointLocAtions':
+					fixSourcePAth(true, (<DebugProtocol.BreAkpointLocAtionsArguments>request.Arguments).source);
+					breAk;
+				cAse 'source':
+					fixSourcePAth(true, (<DebugProtocol.SourceArguments>request.Arguments).source);
+					breAk;
+				cAse 'gotoTArgets':
+					fixSourcePAth(true, (<DebugProtocol.GotoTArgetsArguments>request.Arguments).source);
+					breAk;
+				cAse 'lAunchVSCode':
+					request.Arguments.Args.forEAch((Arg: PAthContAiner | undefined) => fixSourcePAth(fAlse, Arg));
+					breAk;
+				defAult:
+					breAk;
 			}
-			break;
-		case 'response':
+			breAk;
+		cAse 'response':
 			const response = <DebugProtocol.Response>msg;
 			if (response.success && response.body) {
-				switch (response.command) {
-					case 'stackTrace':
-						(<DebugProtocol.StackTraceResponse>response).body.stackFrames.forEach(frame => fixSourcePath(false, frame.source));
-						break;
-					case 'loadedSources':
-						(<DebugProtocol.LoadedSourcesResponse>response).body.sources.forEach(source => fixSourcePath(false, source));
-						break;
-					case 'scopes':
-						(<DebugProtocol.ScopesResponse>response).body.scopes.forEach(scope => fixSourcePath(false, scope.source));
-						break;
-					case 'setFunctionBreakpoints':
-						(<DebugProtocol.SetFunctionBreakpointsResponse>response).body.breakpoints.forEach(bp => fixSourcePath(false, bp.source));
-						break;
-					case 'setBreakpoints':
-						(<DebugProtocol.SetBreakpointsResponse>response).body.breakpoints.forEach(bp => fixSourcePath(false, bp.source));
-						break;
-					default:
-						break;
+				switch (response.commAnd) {
+					cAse 'stAckTrAce':
+						(<DebugProtocol.StAckTrAceResponse>response).body.stAckFrAmes.forEAch(frAme => fixSourcePAth(fAlse, frAme.source));
+						breAk;
+					cAse 'loAdedSources':
+						(<DebugProtocol.LoAdedSourcesResponse>response).body.sources.forEAch(source => fixSourcePAth(fAlse, source));
+						breAk;
+					cAse 'scopes':
+						(<DebugProtocol.ScopesResponse>response).body.scopes.forEAch(scope => fixSourcePAth(fAlse, scope.source));
+						breAk;
+					cAse 'setFunctionBreAkpoints':
+						(<DebugProtocol.SetFunctionBreAkpointsResponse>response).body.breAkpoints.forEAch(bp => fixSourcePAth(fAlse, bp.source));
+						breAk;
+					cAse 'setBreAkpoints':
+						(<DebugProtocol.SetBreAkpointsResponse>response).body.breAkpoints.forEAch(bp => fixSourcePAth(fAlse, bp.source));
+						breAk;
+					defAult:
+						breAk;
 				}
 			}
-			break;
+			breAk;
 	}
 }
 
-export function getVisibleAndSorted<T extends { presentation?: IConfigPresentation }>(array: T[]): T[] {
-	return array.filter(config => !config.presentation?.hidden).sort((first, second) => {
-		if (!first.presentation) {
-			if (!second.presentation) {
+export function getVisibleAndSorted<T extends { presentAtion?: IConfigPresentAtion }>(ArrAy: T[]): T[] {
+	return ArrAy.filter(config => !config.presentAtion?.hidden).sort((first, second) => {
+		if (!first.presentAtion) {
+			if (!second.presentAtion) {
 				return 0;
 			}
 			return 1;
 		}
-		if (!second.presentation) {
+		if (!second.presentAtion) {
 			return -1;
 		}
-		if (!first.presentation.group) {
-			if (!second.presentation.group) {
-				return compareOrders(first.presentation.order, second.presentation.order);
+		if (!first.presentAtion.group) {
+			if (!second.presentAtion.group) {
+				return compAreOrders(first.presentAtion.order, second.presentAtion.order);
 			}
 			return 1;
 		}
-		if (!second.presentation.group) {
+		if (!second.presentAtion.group) {
 			return -1;
 		}
-		if (first.presentation.group !== second.presentation.group) {
-			return first.presentation.group.localeCompare(second.presentation.group);
+		if (first.presentAtion.group !== second.presentAtion.group) {
+			return first.presentAtion.group.locAleCompAre(second.presentAtion.group);
 		}
 
-		return compareOrders(first.presentation.order, second.presentation.order);
+		return compAreOrders(first.presentAtion.order, second.presentAtion.order);
 	});
 }
 
-function compareOrders(first: number | undefined, second: number | undefined): number {
+function compAreOrders(first: number | undefined, second: number | undefined): number {
 	if (typeof first !== 'number') {
 		if (typeof second !== 'number') {
 			return 0;

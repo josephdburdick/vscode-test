@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { buffer } from 'vs/base/node/zip';
-import { localize } from 'vs/nls';
-import { IExtensionManifest } from 'vs/platform/extensions/common/extensions';
+import { buffer } from 'vs/bAse/node/zip';
+import { locAlize } from 'vs/nls';
+import { IExtensionMAnifest } from 'vs/plAtform/extensions/common/extensions';
 
-export function getManifest(vsix: string): Promise<IExtensionManifest> {
-	return buffer(vsix, 'extension/package.json')
+export function getMAnifest(vsix: string): Promise<IExtensionMAnifest> {
+	return buffer(vsix, 'extension/pAckAge.json')
 		.then(buffer => {
 			try {
-				return JSON.parse(buffer.toString('utf8'));
-			} catch (err) {
-				throw new Error(localize('invalidManifest', "VSIX invalid: package.json is not a JSON file."));
+				return JSON.pArse(buffer.toString('utf8'));
+			} cAtch (err) {
+				throw new Error(locAlize('invAlidMAnifest', "VSIX invAlid: pAckAge.json is not A JSON file."));
 			}
 		});
 }

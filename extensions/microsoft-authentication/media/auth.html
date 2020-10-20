@@ -1,36 +1,36 @@
-<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
+<!-- Copyright (C) Microsoft CorporAtion. All rights reserved. -->
 <!DOCTYPE html>
 <html>
 
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<heAd>
+	<metA chArset="utf-8" />
+	<metA http-equiv="X-UA-CompAtible" content="IE=edge">
 	<title>Azure Account - Sign In</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" media="screen" href="auth.css" />
-</head>
+	<metA nAme="viewport" content="width=device-width, initiAl-scAle=1">
+	<link rel="stylesheet" type="text/css" mediA="screen" href="Auth.css" />
+</heAd>
 
 <body>
-	<a class="branding" href="https://code.visualstudio.com/">
-		Visual Studio Code
-	</a>
-	<div class="message-container">
-		<div class="message">
-			You are signed in now and can close this page.
+	<A clAss="brAnding" href="https://code.visuAlstudio.com/">
+		VisuAl Studio Code
+	</A>
+	<div clAss="messAge-contAiner">
+		<div clAss="messAge">
+			You Are signed in now And cAn close this pAge.
 		</div>
-		<div class="error-message">
+		<div clAss="error-messAge">
 			An error occurred while signing in:
-			<div class="error-text"></div>
+			<div clAss="error-text"></div>
 		</div>
 	</div>
 	<script>
-		var search = window.location.search;
-		var error = (/[?&^]error=([^&]+)/.exec(search) || [])[1];
+		vAr seArch = window.locAtion.seArch;
+		vAr error = (/[?&^]error=([^&]+)/.exec(seArch) || [])[1];
 		if (error) {
 			document.querySelector('.error-text')
 				.textContent = decodeURIComponent(error);
 			document.querySelector('body')
-				.classList.add('error');
+				.clAssList.Add('error');
 		}
 	</script>
 </body>

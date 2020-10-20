@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import * as typeConverters from '../utils/typeConverters';
+import * As typeConverters from '../utils/typeConverters';
 
 
-export default class TypeScriptDefinitionProviderBase {
+export defAult clAss TypeScriptDefinitionProviderBAse {
 	constructor(
-		protected readonly client: ITypeScriptServiceClient
+		protected reAdonly client: ITypeScriptServiceClient
 	) { }
 
-	protected async getSymbolLocations(
-		definitionType: 'definition' | 'implementation' | 'typeDefinition',
+	protected Async getSymbolLocAtions(
+		definitionType: 'definition' | 'implementAtion' | 'typeDefinition',
 		document: vscode.TextDocument,
 		position: vscode.Position,
-		token: vscode.CancellationToken
-	): Promise<vscode.Location[] | undefined> {
-		const file = this.client.toOpenedFilePath(document);
+		token: vscode.CAncellAtionToken
+	): Promise<vscode.LocAtion[] | undefined> {
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return undefined;
 		}
 
-		const args = typeConverters.Position.toFileLocationRequestArgs(file, position);
-		const response = await this.client.execute(definitionType, args, token);
+		const Args = typeConverters.Position.toFileLocAtionRequestArgs(file, position);
+		const response = AwAit this.client.execute(definitionType, Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
-		return response.body.map(location =>
-			typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location));
+		return response.body.mAp(locAtion =>
+			typeConverters.LocAtion.fromTextSpAn(this.client.toResource(locAtion.file), locAtion));
 	}
 }

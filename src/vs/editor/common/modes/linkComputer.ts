@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { CharacterClassifier } from 'vs/editor/common/core/characterClassifier';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { ChArActerClAssifier } from 'vs/editor/common/core/chArActerClAssifier';
 import { ILink } from 'vs/editor/common/modes';
 
-export interface ILinkComputerTarget {
+export interfAce ILinkComputerTArget {
 	getLineCount(): number;
 	getLineContent(lineNumber: number): string;
 }
 
-export const enum State {
-	Invalid = 0,
-	Start = 1,
+export const enum StAte {
+	InvAlid = 0,
+	StArt = 1,
 	H = 2,
 	HT = 3,
 	HTT = 4,
@@ -27,190 +27,190 @@ export const enum State {
 	AlmostThere = 11,
 	End = 12,
 	Accept = 13,
-	LastKnownState = 14 // marker, custom states may follow
+	LAstKnownStAte = 14 // mArker, custom stAtes mAy follow
 }
 
-export type Edge = [State, number, State];
+export type Edge = [StAte, number, StAte];
 
-export class Uint8Matrix {
+export clAss Uint8MAtrix {
 
-	private readonly _data: Uint8Array;
-	public readonly rows: number;
-	public readonly cols: number;
+	privAte reAdonly _dAtA: Uint8ArrAy;
+	public reAdonly rows: number;
+	public reAdonly cols: number;
 
-	constructor(rows: number, cols: number, defaultValue: number) {
-		const data = new Uint8Array(rows * cols);
+	constructor(rows: number, cols: number, defAultVAlue: number) {
+		const dAtA = new Uint8ArrAy(rows * cols);
 		for (let i = 0, len = rows * cols; i < len; i++) {
-			data[i] = defaultValue;
+			dAtA[i] = defAultVAlue;
 		}
 
-		this._data = data;
+		this._dAtA = dAtA;
 		this.rows = rows;
 		this.cols = cols;
 	}
 
 	public get(row: number, col: number): number {
-		return this._data[row * this.cols + col];
+		return this._dAtA[row * this.cols + col];
 	}
 
-	public set(row: number, col: number, value: number): void {
-		this._data[row * this.cols + col] = value;
+	public set(row: number, col: number, vAlue: number): void {
+		this._dAtA[row * this.cols + col] = vAlue;
 	}
 }
 
-export class StateMachine {
+export clAss StAteMAchine {
 
-	private readonly _states: Uint8Matrix;
-	private readonly _maxCharCode: number;
+	privAte reAdonly _stAtes: Uint8MAtrix;
+	privAte reAdonly _mAxChArCode: number;
 
 	constructor(edges: Edge[]) {
-		let maxCharCode = 0;
-		let maxState = State.Invalid;
+		let mAxChArCode = 0;
+		let mAxStAte = StAte.InvAlid;
 		for (let i = 0, len = edges.length; i < len; i++) {
 			let [from, chCode, to] = edges[i];
-			if (chCode > maxCharCode) {
-				maxCharCode = chCode;
+			if (chCode > mAxChArCode) {
+				mAxChArCode = chCode;
 			}
-			if (from > maxState) {
-				maxState = from;
+			if (from > mAxStAte) {
+				mAxStAte = from;
 			}
-			if (to > maxState) {
-				maxState = to;
+			if (to > mAxStAte) {
+				mAxStAte = to;
 			}
 		}
 
-		maxCharCode++;
-		maxState++;
+		mAxChArCode++;
+		mAxStAte++;
 
-		let states = new Uint8Matrix(maxState, maxCharCode, State.Invalid);
+		let stAtes = new Uint8MAtrix(mAxStAte, mAxChArCode, StAte.InvAlid);
 		for (let i = 0, len = edges.length; i < len; i++) {
 			let [from, chCode, to] = edges[i];
-			states.set(from, chCode, to);
+			stAtes.set(from, chCode, to);
 		}
 
-		this._states = states;
-		this._maxCharCode = maxCharCode;
+		this._stAtes = stAtes;
+		this._mAxChArCode = mAxChArCode;
 	}
 
-	public nextState(currentState: State, chCode: number): State {
-		if (chCode < 0 || chCode >= this._maxCharCode) {
-			return State.Invalid;
+	public nextStAte(currentStAte: StAte, chCode: number): StAte {
+		if (chCode < 0 || chCode >= this._mAxChArCode) {
+			return StAte.InvAlid;
 		}
-		return this._states.get(currentState, chCode);
+		return this._stAtes.get(currentStAte, chCode);
 	}
 }
 
-// State machine for http:// or https:// or file://
-let _stateMachine: StateMachine | null = null;
-function getStateMachine(): StateMachine {
-	if (_stateMachine === null) {
-		_stateMachine = new StateMachine([
-			[State.Start, CharCode.h, State.H],
-			[State.Start, CharCode.H, State.H],
-			[State.Start, CharCode.f, State.F],
-			[State.Start, CharCode.F, State.F],
+// StAte mAchine for http:// or https:// or file://
+let _stAteMAchine: StAteMAchine | null = null;
+function getStAteMAchine(): StAteMAchine {
+	if (_stAteMAchine === null) {
+		_stAteMAchine = new StAteMAchine([
+			[StAte.StArt, ChArCode.h, StAte.H],
+			[StAte.StArt, ChArCode.H, StAte.H],
+			[StAte.StArt, ChArCode.f, StAte.F],
+			[StAte.StArt, ChArCode.F, StAte.F],
 
-			[State.H, CharCode.t, State.HT],
-			[State.H, CharCode.T, State.HT],
+			[StAte.H, ChArCode.t, StAte.HT],
+			[StAte.H, ChArCode.T, StAte.HT],
 
-			[State.HT, CharCode.t, State.HTT],
-			[State.HT, CharCode.T, State.HTT],
+			[StAte.HT, ChArCode.t, StAte.HTT],
+			[StAte.HT, ChArCode.T, StAte.HTT],
 
-			[State.HTT, CharCode.p, State.HTTP],
-			[State.HTT, CharCode.P, State.HTTP],
+			[StAte.HTT, ChArCode.p, StAte.HTTP],
+			[StAte.HTT, ChArCode.P, StAte.HTTP],
 
-			[State.HTTP, CharCode.s, State.BeforeColon],
-			[State.HTTP, CharCode.S, State.BeforeColon],
-			[State.HTTP, CharCode.Colon, State.AfterColon],
+			[StAte.HTTP, ChArCode.s, StAte.BeforeColon],
+			[StAte.HTTP, ChArCode.S, StAte.BeforeColon],
+			[StAte.HTTP, ChArCode.Colon, StAte.AfterColon],
 
-			[State.F, CharCode.i, State.FI],
-			[State.F, CharCode.I, State.FI],
+			[StAte.F, ChArCode.i, StAte.FI],
+			[StAte.F, ChArCode.I, StAte.FI],
 
-			[State.FI, CharCode.l, State.FIL],
-			[State.FI, CharCode.L, State.FIL],
+			[StAte.FI, ChArCode.l, StAte.FIL],
+			[StAte.FI, ChArCode.L, StAte.FIL],
 
-			[State.FIL, CharCode.e, State.BeforeColon],
-			[State.FIL, CharCode.E, State.BeforeColon],
+			[StAte.FIL, ChArCode.e, StAte.BeforeColon],
+			[StAte.FIL, ChArCode.E, StAte.BeforeColon],
 
-			[State.BeforeColon, CharCode.Colon, State.AfterColon],
+			[StAte.BeforeColon, ChArCode.Colon, StAte.AfterColon],
 
-			[State.AfterColon, CharCode.Slash, State.AlmostThere],
+			[StAte.AfterColon, ChArCode.SlAsh, StAte.AlmostThere],
 
-			[State.AlmostThere, CharCode.Slash, State.End],
+			[StAte.AlmostThere, ChArCode.SlAsh, StAte.End],
 		]);
 	}
-	return _stateMachine;
+	return _stAteMAchine;
 }
 
 
-const enum CharacterClass {
+const enum ChArActerClAss {
 	None = 0,
-	ForceTermination = 1,
-	CannotEndIn = 2
+	ForceTerminAtion = 1,
+	CAnnotEndIn = 2
 }
 
-let _classifier: CharacterClassifier<CharacterClass> | null = null;
-function getClassifier(): CharacterClassifier<CharacterClass> {
-	if (_classifier === null) {
-		_classifier = new CharacterClassifier<CharacterClass>(CharacterClass.None);
+let _clAssifier: ChArActerClAssifier<ChArActerClAss> | null = null;
+function getClAssifier(): ChArActerClAssifier<ChArActerClAss> {
+	if (_clAssifier === null) {
+		_clAssifier = new ChArActerClAssifier<ChArActerClAss>(ChArActerClAss.None);
 
 		const FORCE_TERMINATION_CHARACTERS = ' \t<>\'\"、。｡､，．：；‘“〈《「『【〔（［｛｢｣｝］）〕】』」》〉”’｀～…';
 		for (let i = 0; i < FORCE_TERMINATION_CHARACTERS.length; i++) {
-			_classifier.set(FORCE_TERMINATION_CHARACTERS.charCodeAt(i), CharacterClass.ForceTermination);
+			_clAssifier.set(FORCE_TERMINATION_CHARACTERS.chArCodeAt(i), ChArActerClAss.ForceTerminAtion);
 		}
 
 		const CANNOT_END_WITH_CHARACTERS = '.,;';
 		for (let i = 0; i < CANNOT_END_WITH_CHARACTERS.length; i++) {
-			_classifier.set(CANNOT_END_WITH_CHARACTERS.charCodeAt(i), CharacterClass.CannotEndIn);
+			_clAssifier.set(CANNOT_END_WITH_CHARACTERS.chArCodeAt(i), ChArActerClAss.CAnnotEndIn);
 		}
 	}
-	return _classifier;
+	return _clAssifier;
 }
 
-export class LinkComputer {
+export clAss LinkComputer {
 
-	private static _createLink(classifier: CharacterClassifier<CharacterClass>, line: string, lineNumber: number, linkBeginIndex: number, linkEndIndex: number): ILink {
-		// Do not allow to end link in certain characters...
-		let lastIncludedCharIndex = linkEndIndex - 1;
+	privAte stAtic _creAteLink(clAssifier: ChArActerClAssifier<ChArActerClAss>, line: string, lineNumber: number, linkBeginIndex: number, linkEndIndex: number): ILink {
+		// Do not Allow to end link in certAin chArActers...
+		let lAstIncludedChArIndex = linkEndIndex - 1;
 		do {
-			const chCode = line.charCodeAt(lastIncludedCharIndex);
-			const chClass = classifier.get(chCode);
-			if (chClass !== CharacterClass.CannotEndIn) {
-				break;
+			const chCode = line.chArCodeAt(lAstIncludedChArIndex);
+			const chClAss = clAssifier.get(chCode);
+			if (chClAss !== ChArActerClAss.CAnnotEndIn) {
+				breAk;
 			}
-			lastIncludedCharIndex--;
-		} while (lastIncludedCharIndex > linkBeginIndex);
+			lAstIncludedChArIndex--;
+		} while (lAstIncludedChArIndex > linkBeginIndex);
 
-		// Handle links enclosed in parens, square brackets and curlys.
+		// HAndle links enclosed in pArens, squAre brAckets And curlys.
 		if (linkBeginIndex > 0) {
-			const charCodeBeforeLink = line.charCodeAt(linkBeginIndex - 1);
-			const lastCharCodeInLink = line.charCodeAt(lastIncludedCharIndex);
+			const chArCodeBeforeLink = line.chArCodeAt(linkBeginIndex - 1);
+			const lAstChArCodeInLink = line.chArCodeAt(lAstIncludedChArIndex);
 
 			if (
-				(charCodeBeforeLink === CharCode.OpenParen && lastCharCodeInLink === CharCode.CloseParen)
-				|| (charCodeBeforeLink === CharCode.OpenSquareBracket && lastCharCodeInLink === CharCode.CloseSquareBracket)
-				|| (charCodeBeforeLink === CharCode.OpenCurlyBrace && lastCharCodeInLink === CharCode.CloseCurlyBrace)
+				(chArCodeBeforeLink === ChArCode.OpenPAren && lAstChArCodeInLink === ChArCode.ClosePAren)
+				|| (chArCodeBeforeLink === ChArCode.OpenSquAreBrAcket && lAstChArCodeInLink === ChArCode.CloseSquAreBrAcket)
+				|| (chArCodeBeforeLink === ChArCode.OpenCurlyBrAce && lAstChArCodeInLink === ChArCode.CloseCurlyBrAce)
 			) {
-				// Do not end in ) if ( is before the link start
-				// Do not end in ] if [ is before the link start
-				// Do not end in } if { is before the link start
-				lastIncludedCharIndex--;
+				// Do not end in ) if ( is before the link stArt
+				// Do not end in ] if [ is before the link stArt
+				// Do not end in } if { is before the link stArt
+				lAstIncludedChArIndex--;
 			}
 		}
 
 		return {
-			range: {
-				startLineNumber: lineNumber,
-				startColumn: linkBeginIndex + 1,
+			rAnge: {
+				stArtLineNumber: lineNumber,
+				stArtColumn: linkBeginIndex + 1,
 				endLineNumber: lineNumber,
-				endColumn: lastIncludedCharIndex + 2
+				endColumn: lAstIncludedChArIndex + 2
 			},
-			url: line.substring(linkBeginIndex, lastIncludedCharIndex + 1)
+			url: line.substring(linkBeginIndex, lAstIncludedChArIndex + 1)
 		};
 	}
 
-	public static computeLinks(model: ILinkComputerTarget, stateMachine: StateMachine = getStateMachine()): ILink[] {
-		const classifier = getClassifier();
+	public stAtic computeLinks(model: ILinkComputerTArget, stAteMAchine: StAteMAchine = getStAteMAchine()): ILink[] {
+		const clAssifier = getClAssifier();
 
 		let result: ILink[] = [];
 		for (let i = 1, lineCount = model.getLineCount(); i <= lineCount; i++) {
@@ -220,105 +220,105 @@ export class LinkComputer {
 			let j = 0;
 			let linkBeginIndex = 0;
 			let linkBeginChCode = 0;
-			let state = State.Start;
-			let hasOpenParens = false;
-			let hasOpenSquareBracket = false;
-			let inSquareBrackets = false;
-			let hasOpenCurlyBracket = false;
+			let stAte = StAte.StArt;
+			let hAsOpenPArens = fAlse;
+			let hAsOpenSquAreBrAcket = fAlse;
+			let inSquAreBrAckets = fAlse;
+			let hAsOpenCurlyBrAcket = fAlse;
 
 			while (j < len) {
 
-				let resetStateMachine = false;
-				const chCode = line.charCodeAt(j);
+				let resetStAteMAchine = fAlse;
+				const chCode = line.chArCodeAt(j);
 
-				if (state === State.Accept) {
-					let chClass: CharacterClass;
+				if (stAte === StAte.Accept) {
+					let chClAss: ChArActerClAss;
 					switch (chCode) {
-						case CharCode.OpenParen:
-							hasOpenParens = true;
-							chClass = CharacterClass.None;
-							break;
-						case CharCode.CloseParen:
-							chClass = (hasOpenParens ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
-						case CharCode.OpenSquareBracket:
-							inSquareBrackets = true;
-							hasOpenSquareBracket = true;
-							chClass = CharacterClass.None;
-							break;
-						case CharCode.CloseSquareBracket:
-							inSquareBrackets = false;
-							chClass = (hasOpenSquareBracket ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
-						case CharCode.OpenCurlyBrace:
-							hasOpenCurlyBracket = true;
-							chClass = CharacterClass.None;
-							break;
-						case CharCode.CloseCurlyBrace:
-							chClass = (hasOpenCurlyBracket ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
-						/* The following three rules make it that ' or " or ` are allowed inside links if the link began with a different one */
-						case CharCode.SingleQuote:
-							chClass = (linkBeginChCode === CharCode.DoubleQuote || linkBeginChCode === CharCode.BackTick) ? CharacterClass.None : CharacterClass.ForceTermination;
-							break;
-						case CharCode.DoubleQuote:
-							chClass = (linkBeginChCode === CharCode.SingleQuote || linkBeginChCode === CharCode.BackTick) ? CharacterClass.None : CharacterClass.ForceTermination;
-							break;
-						case CharCode.BackTick:
-							chClass = (linkBeginChCode === CharCode.SingleQuote || linkBeginChCode === CharCode.DoubleQuote) ? CharacterClass.None : CharacterClass.ForceTermination;
-							break;
-						case CharCode.Asterisk:
-							// `*` terminates a link if the link began with `*`
-							chClass = (linkBeginChCode === CharCode.Asterisk) ? CharacterClass.ForceTermination : CharacterClass.None;
-							break;
-						case CharCode.Pipe:
-							// `|` terminates a link if the link began with `|`
-							chClass = (linkBeginChCode === CharCode.Pipe) ? CharacterClass.ForceTermination : CharacterClass.None;
-							break;
-						case CharCode.Space:
-							// ` ` allow space in between [ and ]
-							chClass = (inSquareBrackets ? CharacterClass.None : CharacterClass.ForceTermination);
-							break;
-						default:
-							chClass = classifier.get(chCode);
+						cAse ChArCode.OpenPAren:
+							hAsOpenPArens = true;
+							chClAss = ChArActerClAss.None;
+							breAk;
+						cAse ChArCode.ClosePAren:
+							chClAss = (hAsOpenPArens ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion);
+							breAk;
+						cAse ChArCode.OpenSquAreBrAcket:
+							inSquAreBrAckets = true;
+							hAsOpenSquAreBrAcket = true;
+							chClAss = ChArActerClAss.None;
+							breAk;
+						cAse ChArCode.CloseSquAreBrAcket:
+							inSquAreBrAckets = fAlse;
+							chClAss = (hAsOpenSquAreBrAcket ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion);
+							breAk;
+						cAse ChArCode.OpenCurlyBrAce:
+							hAsOpenCurlyBrAcket = true;
+							chClAss = ChArActerClAss.None;
+							breAk;
+						cAse ChArCode.CloseCurlyBrAce:
+							chClAss = (hAsOpenCurlyBrAcket ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion);
+							breAk;
+						/* The following three rules mAke it thAt ' or " or ` Are Allowed inside links if the link begAn with A different one */
+						cAse ChArCode.SingleQuote:
+							chClAss = (linkBeginChCode === ChArCode.DoubleQuote || linkBeginChCode === ChArCode.BAckTick) ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion;
+							breAk;
+						cAse ChArCode.DoubleQuote:
+							chClAss = (linkBeginChCode === ChArCode.SingleQuote || linkBeginChCode === ChArCode.BAckTick) ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion;
+							breAk;
+						cAse ChArCode.BAckTick:
+							chClAss = (linkBeginChCode === ChArCode.SingleQuote || linkBeginChCode === ChArCode.DoubleQuote) ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion;
+							breAk;
+						cAse ChArCode.Asterisk:
+							// `*` terminAtes A link if the link begAn with `*`
+							chClAss = (linkBeginChCode === ChArCode.Asterisk) ? ChArActerClAss.ForceTerminAtion : ChArActerClAss.None;
+							breAk;
+						cAse ChArCode.Pipe:
+							// `|` terminAtes A link if the link begAn with `|`
+							chClAss = (linkBeginChCode === ChArCode.Pipe) ? ChArActerClAss.ForceTerminAtion : ChArActerClAss.None;
+							breAk;
+						cAse ChArCode.SpAce:
+							// ` ` Allow spAce in between [ And ]
+							chClAss = (inSquAreBrAckets ? ChArActerClAss.None : ChArActerClAss.ForceTerminAtion);
+							breAk;
+						defAult:
+							chClAss = clAssifier.get(chCode);
 					}
 
-					// Check if character terminates link
-					if (chClass === CharacterClass.ForceTermination) {
-						result.push(LinkComputer._createLink(classifier, line, i, linkBeginIndex, j));
-						resetStateMachine = true;
+					// Check if chArActer terminAtes link
+					if (chClAss === ChArActerClAss.ForceTerminAtion) {
+						result.push(LinkComputer._creAteLink(clAssifier, line, i, linkBeginIndex, j));
+						resetStAteMAchine = true;
 					}
-				} else if (state === State.End) {
+				} else if (stAte === StAte.End) {
 
-					let chClass: CharacterClass;
-					if (chCode === CharCode.OpenSquareBracket) {
-						// Allow for the authority part to contain ipv6 addresses which contain [ and ]
-						hasOpenSquareBracket = true;
-						chClass = CharacterClass.None;
+					let chClAss: ChArActerClAss;
+					if (chCode === ChArCode.OpenSquAreBrAcket) {
+						// Allow for the Authority pArt to contAin ipv6 Addresses which contAin [ And ]
+						hAsOpenSquAreBrAcket = true;
+						chClAss = ChArActerClAss.None;
 					} else {
-						chClass = classifier.get(chCode);
+						chClAss = clAssifier.get(chCode);
 					}
 
-					// Check if character terminates link
-					if (chClass === CharacterClass.ForceTermination) {
-						resetStateMachine = true;
+					// Check if chArActer terminAtes link
+					if (chClAss === ChArActerClAss.ForceTerminAtion) {
+						resetStAteMAchine = true;
 					} else {
-						state = State.Accept;
+						stAte = StAte.Accept;
 					}
 				} else {
-					state = stateMachine.nextState(state, chCode);
-					if (state === State.Invalid) {
-						resetStateMachine = true;
+					stAte = stAteMAchine.nextStAte(stAte, chCode);
+					if (stAte === StAte.InvAlid) {
+						resetStAteMAchine = true;
 					}
 				}
 
-				if (resetStateMachine) {
-					state = State.Start;
-					hasOpenParens = false;
-					hasOpenSquareBracket = false;
-					hasOpenCurlyBracket = false;
+				if (resetStAteMAchine) {
+					stAte = StAte.StArt;
+					hAsOpenPArens = fAlse;
+					hAsOpenSquAreBrAcket = fAlse;
+					hAsOpenCurlyBrAcket = fAlse;
 
-					// Record where the link started
+					// Record where the link stArted
 					linkBeginIndex = j + 1;
 					linkBeginChCode = chCode;
 				}
@@ -326,8 +326,8 @@ export class LinkComputer {
 				j++;
 			}
 
-			if (state === State.Accept) {
-				result.push(LinkComputer._createLink(classifier, line, i, linkBeginIndex, len));
+			if (stAte === StAte.Accept) {
+				result.push(LinkComputer._creAteLink(clAssifier, line, i, linkBeginIndex, len));
 			}
 
 		}
@@ -337,13 +337,13 @@ export class LinkComputer {
 }
 
 /**
- * Returns an array of all links contains in the provided
- * document. *Note* that this operation is computational
- * expensive and should not run in the UI thread.
+ * Returns An ArrAy of All links contAins in the provided
+ * document. *Note* thAt this operAtion is computAtionAl
+ * expensive And should not run in the UI threAd.
  */
-export function computeLinks(model: ILinkComputerTarget | null): ILink[] {
+export function computeLinks(model: ILinkComputerTArget | null): ILink[] {
 	if (!model || typeof model.getLineCount !== 'function' || typeof model.getLineContent !== 'function') {
-		// Unknown caller!
+		// Unknown cAller!
 		return [];
 	}
 	return LinkComputer.computeLinks(model);

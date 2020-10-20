@@ -1,149 +1,149 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { promises as fs } from 'fs';
-import { createServer, Server } from 'net';
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
+import { promises As fs } from 'fs';
+import { creAteServer, Server } from 'net';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
 
-const localize = nls.loadMessageBundle();
-const TEXT_ALWAYS = localize('status.text.auto.attach.always', 'Auto Attach: Always');
-const TEXT_SMART = localize('status.text.auto.attach.smart', 'Auto Attach: Smart');
-const TEXT_WITH_FLAG = localize('status.text.auto.attach.withFlag', 'Auto Attach: With Flag');
+const locAlize = nls.loAdMessAgeBundle();
+const TEXT_ALWAYS = locAlize('stAtus.text.Auto.AttAch.AlwAys', 'Auto AttAch: AlwAys');
+const TEXT_SMART = locAlize('stAtus.text.Auto.AttAch.smArt', 'Auto AttAch: SmArt');
+const TEXT_WITH_FLAG = locAlize('stAtus.text.Auto.AttAch.withFlAg', 'Auto AttAch: With FlAg');
 const TEXT_STATE_LABEL = {
-	[State.Disabled]: localize('debug.javascript.autoAttach.disabled.label', 'Disabled'),
-	[State.Always]: localize('debug.javascript.autoAttach.always.label', 'Always'),
-	[State.Smart]: localize('debug.javascript.autoAttach.smart.label', 'Smart'),
-	[State.OnlyWithFlag]: localize(
-		'debug.javascript.autoAttach.onlyWithFlag.label',
-		'Only With Flag',
+	[StAte.DisAbled]: locAlize('debug.jAvAscript.AutoAttAch.disAbled.lAbel', 'DisAbled'),
+	[StAte.AlwAys]: locAlize('debug.jAvAscript.AutoAttAch.AlwAys.lAbel', 'AlwAys'),
+	[StAte.SmArt]: locAlize('debug.jAvAscript.AutoAttAch.smArt.lAbel', 'SmArt'),
+	[StAte.OnlyWithFlAg]: locAlize(
+		'debug.jAvAscript.AutoAttAch.onlyWithFlAg.lAbel',
+		'Only With FlAg',
 	),
 };
 const TEXT_STATE_DESCRIPTION = {
-	[State.Disabled]: localize(
-		'debug.javascript.autoAttach.disabled.description',
-		'Auto attach is disabled and not shown in status bar',
+	[StAte.DisAbled]: locAlize(
+		'debug.jAvAscript.AutoAttAch.disAbled.description',
+		'Auto AttAch is disAbled And not shown in stAtus bAr',
 	),
-	[State.Always]: localize(
-		'debug.javascript.autoAttach.always.description',
-		'Auto attach to every Node.js process launched in the terminal',
+	[StAte.AlwAys]: locAlize(
+		'debug.jAvAscript.AutoAttAch.AlwAys.description',
+		'Auto AttAch to every Node.js process lAunched in the terminAl',
 	),
-	[State.Smart]: localize(
-		'debug.javascript.autoAttach.smart.description',
-		"Auto attach when running scripts that aren't in a node_modules folder",
+	[StAte.SmArt]: locAlize(
+		'debug.jAvAscript.AutoAttAch.smArt.description',
+		"Auto AttAch when running scripts thAt Aren't in A node_modules folder",
 	),
-	[State.OnlyWithFlag]: localize(
-		'debug.javascript.autoAttach.onlyWithFlag.description',
-		'Only auto attach when the `--inspect` flag is given',
+	[StAte.OnlyWithFlAg]: locAlize(
+		'debug.jAvAscript.AutoAttAch.onlyWithFlAg.description',
+		'Only Auto AttAch when the `--inspect` flAg is given',
 	),
 };
-const TEXT_TOGGLE_WORKSPACE = localize('scope.workspace', 'Toggle auto attach in this workspace');
-const TEXT_TOGGLE_GLOBAL = localize('scope.global', 'Toggle auto attach on this machine');
+const TEXT_TOGGLE_WORKSPACE = locAlize('scope.workspAce', 'Toggle Auto AttAch in this workspAce');
+const TEXT_TOGGLE_GLOBAL = locAlize('scope.globAl', 'Toggle Auto AttAch on this mAchine');
 
-const TOGGLE_COMMAND = 'extension.node-debug.toggleAutoAttach';
-const STORAGE_IPC = 'jsDebugIpcState';
+const TOGGLE_COMMAND = 'extension.node-debug.toggleAutoAttAch';
+const STORAGE_IPC = 'jsDebugIpcStAte';
 
-const SETTING_SECTION = 'debug.javascript';
-const SETTING_STATE = 'autoAttachFilter';
+const SETTING_SECTION = 'debug.jAvAscript';
+const SETTING_STATE = 'AutoAttAchFilter';
 
 /**
- * settings that, when changed, should cause us to refresh the state vars
+ * settings thAt, when chAnged, should cAuse us to refresh the stAte vArs
  */
 const SETTINGS_CAUSE_REFRESH = new Set(
-	['autoAttachSmartPattern', SETTING_STATE].map(s => `${SETTING_SECTION}.${s}`),
+	['AutoAttAchSmArtPAttern', SETTING_STATE].mAp(s => `${SETTING_SECTION}.${s}`),
 );
 
-const enum State {
-	Disabled = 'disabled',
-	OnlyWithFlag = 'onlyWithFlag',
-	Smart = 'smart',
-	Always = 'always',
+const enum StAte {
+	DisAbled = 'disAbled',
+	OnlyWithFlAg = 'onlyWithFlAg',
+	SmArt = 'smArt',
+	AlwAys = 'AlwAys',
 }
 
-let currentState: Promise<{ context: vscode.ExtensionContext; state: State | null }>;
-let statusItem: vscode.StatusBarItem | undefined; // and there is no status bar item
-let server: Promise<Server | undefined> | undefined; // auto attach server
+let currentStAte: Promise<{ context: vscode.ExtensionContext; stAte: StAte | null }>;
+let stAtusItem: vscode.StAtusBArItem | undefined; // And there is no stAtus bAr item
+let server: Promise<Server | undefined> | undefined; // Auto AttAch server
 
-export function activate(context: vscode.ExtensionContext): void {
-	currentState = Promise.resolve({ context, state: null });
+export function ActivAte(context: vscode.ExtensionContext): void {
+	currentStAte = Promise.resolve({ context, stAte: null });
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand(TOGGLE_COMMAND, toggleAutoAttachSetting),
+		vscode.commAnds.registerCommAnd(TOGGLE_COMMAND, toggleAutoAttAchSetting),
 	);
 
 	context.subscriptions.push(
-		vscode.workspace.onDidChangeConfiguration(e => {
-			// Whenever a setting is changed, disable auto attach, and re-enable
-			// it (if necessary) to refresh variables.
+		vscode.workspAce.onDidChAngeConfigurAtion(e => {
+			// Whenever A setting is chAnged, disAble Auto AttAch, And re-enAble
+			// it (if necessAry) to refresh vAriAbles.
 			if (
-				e.affectsConfiguration(`${SETTING_SECTION}.${SETTING_STATE}`) ||
-				[...SETTINGS_CAUSE_REFRESH].some(setting => e.affectsConfiguration(setting))
+				e.AffectsConfigurAtion(`${SETTING_SECTION}.${SETTING_STATE}`) ||
+				[...SETTINGS_CAUSE_REFRESH].some(setting => e.AffectsConfigurAtion(setting))
 			) {
-				updateAutoAttach(State.Disabled);
-				updateAutoAttach(readCurrentState());
+				updAteAutoAttAch(StAte.DisAbled);
+				updAteAutoAttAch(reAdCurrentStAte());
 			}
 		}),
 	);
 
-	updateAutoAttach(readCurrentState());
+	updAteAutoAttAch(reAdCurrentStAte());
 }
 
-export async function deactivate(): Promise<void> {
-	await destroyAttachServer();
+export Async function deActivAte(): Promise<void> {
+	AwAit destroyAttAchServer();
 }
 
-function getDefaultScope(info: ReturnType<vscode.WorkspaceConfiguration['inspect']>) {
+function getDefAultScope(info: ReturnType<vscode.WorkspAceConfigurAtion['inspect']>) {
 	if (!info) {
-		return vscode.ConfigurationTarget.Global;
-	} else if (info.workspaceFolderValue) {
-		return vscode.ConfigurationTarget.WorkspaceFolder;
-	} else if (info.workspaceValue) {
-		return vscode.ConfigurationTarget.Workspace;
-	} else if (info.globalValue) {
-		return vscode.ConfigurationTarget.Global;
+		return vscode.ConfigurAtionTArget.GlobAl;
+	} else if (info.workspAceFolderVAlue) {
+		return vscode.ConfigurAtionTArget.WorkspAceFolder;
+	} else if (info.workspAceVAlue) {
+		return vscode.ConfigurAtionTArget.WorkspAce;
+	} else if (info.globAlVAlue) {
+		return vscode.ConfigurAtionTArget.GlobAl;
 	}
 
-	return vscode.ConfigurationTarget.Global;
+	return vscode.ConfigurAtionTArget.GlobAl;
 }
 
-type PickResult = { state: State } | { scope: vscode.ConfigurationTarget } | undefined;
+type PickResult = { stAte: StAte } | { scope: vscode.ConfigurAtionTArget } | undefined;
 
-async function toggleAutoAttachSetting(scope?: vscode.ConfigurationTarget): Promise<void> {
-	const section = vscode.workspace.getConfiguration(SETTING_SECTION);
-	scope = scope || getDefaultScope(section.inspect(SETTING_STATE));
+Async function toggleAutoAttAchSetting(scope?: vscode.ConfigurAtionTArget): Promise<void> {
+	const section = vscode.workspAce.getConfigurAtion(SETTING_SECTION);
+	scope = scope || getDefAultScope(section.inspect(SETTING_STATE));
 
-	const isGlobalScope = scope === vscode.ConfigurationTarget.Global;
-	const quickPick = vscode.window.createQuickPick<vscode.QuickPickItem & { state: State }>();
-	const current = readCurrentState();
+	const isGlobAlScope = scope === vscode.ConfigurAtionTArget.GlobAl;
+	const quickPick = vscode.window.creAteQuickPick<vscode.QuickPickItem & { stAte: StAte }>();
+	const current = reAdCurrentStAte();
 
-	quickPick.items = [State.Always, State.Smart, State.OnlyWithFlag, State.Disabled].map(state => ({
-		state,
-		label: TEXT_STATE_LABEL[state],
-		description: TEXT_STATE_DESCRIPTION[state],
-		alwaysShow: true,
+	quickPick.items = [StAte.AlwAys, StAte.SmArt, StAte.OnlyWithFlAg, StAte.DisAbled].mAp(stAte => ({
+		stAte,
+		lAbel: TEXT_STATE_LABEL[stAte],
+		description: TEXT_STATE_DESCRIPTION[stAte],
+		AlwAysShow: true,
 	}));
 
-	quickPick.activeItems = quickPick.items.filter(i => i.state === current);
-	quickPick.title = isGlobalScope ? TEXT_TOGGLE_GLOBAL : TEXT_TOGGLE_WORKSPACE;
+	quickPick.ActiveItems = quickPick.items.filter(i => i.stAte === current);
+	quickPick.title = isGlobAlScope ? TEXT_TOGGLE_GLOBAL : TEXT_TOGGLE_WORKSPACE;
 	quickPick.buttons = [
 		{
-			iconPath: new vscode.ThemeIcon(isGlobalScope ? 'folder' : 'globe'),
-			tooltip: isGlobalScope ? TEXT_TOGGLE_WORKSPACE : TEXT_TOGGLE_GLOBAL,
+			iconPAth: new vscode.ThemeIcon(isGlobAlScope ? 'folder' : 'globe'),
+			tooltip: isGlobAlScope ? TEXT_TOGGLE_WORKSPACE : TEXT_TOGGLE_GLOBAL,
 		},
 	];
 
 	quickPick.show();
 
-	const result = await new Promise<PickResult>(resolve => {
+	const result = AwAit new Promise<PickResult>(resolve => {
 		quickPick.onDidAccept(() => resolve(quickPick.selectedItems[0]));
 		quickPick.onDidHide(() => resolve(undefined));
 		quickPick.onDidTriggerButton(() => {
 			resolve({
-				scope: isGlobalScope
-					? vscode.ConfigurationTarget.Workspace
-					: vscode.ConfigurationTarget.Global,
+				scope: isGlobAlScope
+					? vscode.ConfigurAtionTArget.WorkspAce
+					: vscode.ConfigurAtionTArget.GlobAl,
 			});
 		});
 	});
@@ -155,94 +155,94 @@ async function toggleAutoAttachSetting(scope?: vscode.ConfigurationTarget): Prom
 	}
 
 	if ('scope' in result) {
-		return await toggleAutoAttachSetting(result.scope);
+		return AwAit toggleAutoAttAchSetting(result.scope);
 	}
 
-	if ('state' in result) {
-		section.update(SETTING_STATE, result.state, scope);
+	if ('stAte' in result) {
+		section.updAte(SETTING_STATE, result.stAte, scope);
 	}
 }
 
-function readCurrentState(): State {
-	const section = vscode.workspace.getConfiguration(SETTING_SECTION);
-	return section.get<State>(SETTING_STATE) ?? State.Disabled;
+function reAdCurrentStAte(): StAte {
+	const section = vscode.workspAce.getConfigurAtion(SETTING_SECTION);
+	return section.get<StAte>(SETTING_STATE) ?? StAte.DisAbled;
 }
 
 /**
- * Makes sure the status bar exists and is visible.
+ * MAkes sure the stAtus bAr exists And is visible.
  */
-function ensureStatusBarExists(context: vscode.ExtensionContext) {
-	if (!statusItem) {
-		statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-		statusItem.command = TOGGLE_COMMAND;
-		statusItem.tooltip = localize(
-			'status.tooltip.auto.attach',
-			'Automatically attach to node.js processes in debug mode',
+function ensureStAtusBArExists(context: vscode.ExtensionContext) {
+	if (!stAtusItem) {
+		stAtusItem = vscode.window.creAteStAtusBArItem(vscode.StAtusBArAlignment.Left);
+		stAtusItem.commAnd = TOGGLE_COMMAND;
+		stAtusItem.tooltip = locAlize(
+			'stAtus.tooltip.Auto.AttAch',
+			'AutomAticAlly AttAch to node.js processes in debug mode',
 		);
-		statusItem.show();
-		context.subscriptions.push(statusItem);
+		stAtusItem.show();
+		context.subscriptions.push(stAtusItem);
 	} else {
-		statusItem.show();
+		stAtusItem.show();
 	}
 
-	return statusItem;
+	return stAtusItem;
 }
 
-async function clearJsDebugAttachState(context: vscode.ExtensionContext) {
-	await context.workspaceState.update(STORAGE_IPC, undefined);
-	await vscode.commands.executeCommand('extension.js-debug.clearAutoAttachVariables');
-	await destroyAttachServer();
+Async function cleArJsDebugAttAchStAte(context: vscode.ExtensionContext) {
+	AwAit context.workspAceStAte.updAte(STORAGE_IPC, undefined);
+	AwAit vscode.commAnds.executeCommAnd('extension.js-debug.cleArAutoAttAchVAriAbles');
+	AwAit destroyAttAchServer();
 }
 
 /**
- * Turns auto attach on, and returns the server auto attach is listening on
+ * Turns Auto AttAch on, And returns the server Auto AttAch is listening on
  * if it's successful.
  */
-async function createAttachServer(context: vscode.ExtensionContext) {
-	const ipcAddress = await getIpcAddress(context);
+Async function creAteAttAchServer(context: vscode.ExtensionContext) {
+	const ipcAddress = AwAit getIpcAddress(context);
 	if (!ipcAddress) {
 		return undefined;
 	}
 
-	server = createServerInner(ipcAddress).catch(err => {
+	server = creAteServerInner(ipcAddress).cAtch(err => {
 		console.error(err);
 		return undefined;
 	});
 
-	return await server;
+	return AwAit server;
 }
 
-const createServerInner = async (ipcAddress: string) => {
+const creAteServerInner = Async (ipcAddress: string) => {
 	try {
-		return await createServerInstance(ipcAddress);
-	} catch (e) {
-		// On unix/linux, the file can 'leak' if the process exits unexpectedly.
-		// If we see this, try to delete the file and then listen again.
-		await fs.unlink(ipcAddress).catch(() => undefined);
-		return await createServerInstance(ipcAddress);
+		return AwAit creAteServerInstAnce(ipcAddress);
+	} cAtch (e) {
+		// On unix/linux, the file cAn 'leAk' if the process exits unexpectedly.
+		// If we see this, try to delete the file And then listen AgAin.
+		AwAit fs.unlink(ipcAddress).cAtch(() => undefined);
+		return AwAit creAteServerInstAnce(ipcAddress);
 	}
 };
 
-const createServerInstance = (ipcAddress: string) =>
+const creAteServerInstAnce = (ipcAddress: string) =>
 	new Promise<Server>((resolve, reject) => {
-		const s = createServer(socket => {
-			let data: Buffer[] = [];
-			socket.on('data', async chunk => {
+		const s = creAteServer(socket => {
+			let dAtA: Buffer[] = [];
+			socket.on('dAtA', Async chunk => {
 				if (chunk[chunk.length - 1] !== 0) {
-					// terminated with NUL byte
-					data.push(chunk);
+					// terminAted with NUL byte
+					dAtA.push(chunk);
 					return;
 				}
 
-				data.push(chunk.slice(0, -1));
+				dAtA.push(chunk.slice(0, -1));
 
 				try {
-					await vscode.commands.executeCommand(
-						'extension.js-debug.autoAttachToProcess',
-						JSON.parse(Buffer.concat(data).toString()),
+					AwAit vscode.commAnds.executeCommAnd(
+						'extension.js-debug.AutoAttAchToProcess',
+						JSON.pArse(Buffer.concAt(dAtA).toString()),
 					);
 					socket.write(Buffer.from([0]));
-				} catch (err) {
+				} cAtch (err) {
 					socket.write(Buffer.from([1]));
 					console.error(err);
 				}
@@ -253,108 +253,108 @@ const createServerInstance = (ipcAddress: string) =>
 	});
 
 /**
- * Destroys the auto-attach server, if it's running.
+ * Destroys the Auto-AttAch server, if it's running.
  */
-async function destroyAttachServer() {
-	const instance = await server;
-	if (instance) {
-		await new Promise(r => instance.close(r));
+Async function destroyAttAchServer() {
+	const instAnce = AwAit server;
+	if (instAnce) {
+		AwAit new Promise(r => instAnce.close(r));
 	}
 }
 
-interface CachedIpcState {
+interfAce CAchedIpcStAte {
 	ipcAddress: string;
-	jsDebugPath: string;
-	settingsValue: string;
+	jsDebugPAth: string;
+	settingsVAlue: string;
 }
 
 /**
- * Map of logic that happens when auto attach states are entered and exited.
- * All state transitions are queued and run in order; promises are awaited.
+ * MAp of logic thAt hAppens when Auto AttAch stAtes Are entered And exited.
+ * All stAte trAnsitions Are queued And run in order; promises Are AwAited.
  */
-const transitions: { [S in State]: (context: vscode.ExtensionContext) => Promise<void> } = {
-	async [State.Disabled](context) {
-		await clearJsDebugAttachState(context);
-		statusItem?.hide();
+const trAnsitions: { [S in StAte]: (context: vscode.ExtensionContext) => Promise<void> } = {
+	Async [StAte.DisAbled](context) {
+		AwAit cleArJsDebugAttAchStAte(context);
+		stAtusItem?.hide();
 	},
 
-	async [State.OnlyWithFlag](context) {
-		await createAttachServer(context);
-		const statusItem = ensureStatusBarExists(context);
-		statusItem.text = TEXT_WITH_FLAG;
+	Async [StAte.OnlyWithFlAg](context) {
+		AwAit creAteAttAchServer(context);
+		const stAtusItem = ensureStAtusBArExists(context);
+		stAtusItem.text = TEXT_WITH_FLAG;
 	},
 
-	async [State.Smart](context) {
-		await createAttachServer(context);
-		const statusItem = ensureStatusBarExists(context);
-		statusItem.text = TEXT_SMART;
+	Async [StAte.SmArt](context) {
+		AwAit creAteAttAchServer(context);
+		const stAtusItem = ensureStAtusBArExists(context);
+		stAtusItem.text = TEXT_SMART;
 	},
 
-	async [State.Always](context) {
-		await createAttachServer(context);
-		const statusItem = ensureStatusBarExists(context);
-		statusItem.text = TEXT_ALWAYS;
+	Async [StAte.AlwAys](context) {
+		AwAit creAteAttAchServer(context);
+		const stAtusItem = ensureStAtusBArExists(context);
+		stAtusItem.text = TEXT_ALWAYS;
 	},
 };
 
 /**
- * Updates the auto attach feature based on the user or workspace setting
+ * UpdAtes the Auto AttAch feAture bAsed on the user or workspAce setting
  */
-function updateAutoAttach(newState: State) {
-	currentState = currentState.then(async ({ context, state: oldState }) => {
-		if (newState === oldState) {
-			return { context, state: oldState };
+function updAteAutoAttAch(newStAte: StAte) {
+	currentStAte = currentStAte.then(Async ({ context, stAte: oldStAte }) => {
+		if (newStAte === oldStAte) {
+			return { context, stAte: oldStAte };
 		}
 
-		await transitions[newState](context);
-		return { context, state: newState };
+		AwAit trAnsitions[newStAte](context);
+		return { context, stAte: newStAte };
 	});
 }
 
 /**
- * Gets the IPC address for the server to listen on for js-debug sessions. This
- * is cached such that we can reuse the address of previous activations.
+ * Gets the IPC Address for the server to listen on for js-debug sessions. This
+ * is cAched such thAt we cAn reuse the Address of previous ActivAtions.
  */
-async function getIpcAddress(context: vscode.ExtensionContext) {
-	// Iff the `cachedData` is present, the js-debug registered environment
-	// variables for this workspace--cachedData is set after successfully
-	// invoking the attachment command.
-	const cachedIpc = context.workspaceState.get<CachedIpcState>(STORAGE_IPC);
+Async function getIpcAddress(context: vscode.ExtensionContext) {
+	// Iff the `cAchedDAtA` is present, the js-debug registered environment
+	// vAriAbles for this workspAce--cAchedDAtA is set After successfully
+	// invoking the AttAchment commAnd.
+	const cAchedIpc = context.workspAceStAte.get<CAchedIpcStAte>(STORAGE_IPC);
 
-	// We invalidate the IPC data if the js-debug path changes, since that
-	// indicates the extension was updated or reinstalled and the
-	// environment variables will have been lost.
-	// todo: make a way in the API to read environment data directly without activating js-debug?
-	const jsDebugPath =
-		vscode.extensions.getExtension('ms-vscode.js-debug-nightly')?.extensionPath ||
-		vscode.extensions.getExtension('ms-vscode.js-debug')?.extensionPath;
+	// We invAlidAte the IPC dAtA if the js-debug pAth chAnges, since thAt
+	// indicAtes the extension wAs updAted or reinstAlled And the
+	// environment vAriAbles will hAve been lost.
+	// todo: mAke A wAy in the API to reAd environment dAtA directly without ActivAting js-debug?
+	const jsDebugPAth =
+		vscode.extensions.getExtension('ms-vscode.js-debug-nightly')?.extensionPAth ||
+		vscode.extensions.getExtension('ms-vscode.js-debug')?.extensionPAth;
 
-	const settingsValue = getJsDebugSettingKey();
-	if (cachedIpc?.jsDebugPath === jsDebugPath && cachedIpc?.settingsValue === settingsValue) {
-		return cachedIpc.ipcAddress;
+	const settingsVAlue = getJsDebugSettingKey();
+	if (cAchedIpc?.jsDebugPAth === jsDebugPAth && cAchedIpc?.settingsVAlue === settingsVAlue) {
+		return cAchedIpc.ipcAddress;
 	}
 
-	const result = await vscode.commands.executeCommand<{ ipcAddress: string }>(
-		'extension.js-debug.setAutoAttachVariables',
-		cachedIpc?.ipcAddress,
+	const result = AwAit vscode.commAnds.executeCommAnd<{ ipcAddress: string }>(
+		'extension.js-debug.setAutoAttAchVAriAbles',
+		cAchedIpc?.ipcAddress,
 	);
 	if (!result) {
 		return;
 	}
 
 	const ipcAddress = result.ipcAddress;
-	await context.workspaceState.update(STORAGE_IPC, {
+	AwAit context.workspAceStAte.updAte(STORAGE_IPC, {
 		ipcAddress,
-		jsDebugPath,
-		settingsValue,
-	} as CachedIpcState);
+		jsDebugPAth,
+		settingsVAlue,
+	} As CAchedIpcStAte);
 
 	return ipcAddress;
 }
 
 function getJsDebugSettingKey() {
 	let o: { [key: string]: unknown } = {};
-	const config = vscode.workspace.getConfiguration(SETTING_SECTION);
+	const config = vscode.workspAce.getConfigurAtion(SETTING_SECTION);
 	for (const setting of SETTINGS_CAUSE_REFRESH) {
 		o[setting] = config.get(setting);
 	}

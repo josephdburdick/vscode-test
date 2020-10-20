@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-export const enum ActivityBarPosition {
+export const enum ActivityBArPosition {
 	LEFT = 0,
 	RIGHT = 1
 }
 
-export class ActivityBar {
+export clAss ActivityBAr {
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	async waitForActivityBar(position: ActivityBarPosition): Promise<void> {
-		let positionClass: string;
+	Async wAitForActivityBAr(position: ActivityBArPosition): Promise<void> {
+		let positionClAss: string;
 
-		if (position === ActivityBarPosition.LEFT) {
-			positionClass = 'left';
-		} else if (position === ActivityBarPosition.RIGHT) {
-			positionClass = 'right';
+		if (position === ActivityBArPosition.LEFT) {
+			positionClAss = 'left';
+		} else if (position === ActivityBArPosition.RIGHT) {
+			positionClAss = 'right';
 		} else {
-			throw new Error('No such position for activity bar defined.');
+			throw new Error('No such position for Activity bAr defined.');
 		}
 
-		await this.code.waitForElement(`.part.activitybar.${positionClass}`);
+		AwAit this.code.wAitForElement(`.pArt.ActivitybAr.${positionClAss}`);
 	}
 }

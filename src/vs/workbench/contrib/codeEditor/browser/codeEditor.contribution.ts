@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import './menuPreventer';
-import './accessibility/accessibility';
+import './Accessibility/Accessibility';
 import './diffEditorHelper';
 import './inspectKeybindings';
-import './largeFileOptimizations';
+import './lArgeFileOptimizAtions';
 import './inspectEditorTokens/inspectEditorTokens';
-import './quickaccess/gotoLineQuickAccess';
-import './quickaccess/gotoSymbolQuickAccess';
-import './saveParticipants';
+import './quickAccess/gotoLineQuickAccess';
+import './quickAccess/gotoSymbolQuickAccess';
+import './sAvePArticipAnts';
 import './toggleColumnSelection';
-import './toggleMinimap';
+import './toggleMinimAp';
 import './toggleMultiCursorModifier';
-import './toggleRenderControlCharacter';
-import './toggleRenderWhitespace';
-import './toggleWordWrap';
-import './workbenchReferenceSearch';
+import './toggleRenderControlChArActer';
+import './toggleRenderWhitespAce';
+import './toggleWordWrAp';
+import './workbenchReferenceSeArch';

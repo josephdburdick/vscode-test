@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface INavigator<T> {
+export interfAce INAvigAtor<T> {
 	current(): T | null;
 	previous(): T | null;
 	first(): T | null;
-	last(): T | null;
+	lAst(): T | null;
 	next(): T | null;
 }
 
-export class ArrayNavigator<T> implements INavigator<T> {
+export clAss ArrAyNAvigAtor<T> implements INAvigAtor<T> {
 
 	constructor(
-		private readonly items: readonly T[],
-		protected start: number = 0,
+		privAte reAdonly items: reAdonly T[],
+		protected stArt: number = 0,
 		protected end: number = items.length,
-		protected index = start - 1
+		protected index = stArt - 1
 	) { }
 
 	current(): T | null {
-		if (this.index === this.start - 1 || this.index === this.end) {
+		if (this.index === this.stArt - 1 || this.index === this.end) {
 			return null;
 		}
 
@@ -29,21 +29,21 @@ export class ArrayNavigator<T> implements INavigator<T> {
 	}
 
 	next(): T | null {
-		this.index = Math.min(this.index + 1, this.end);
+		this.index = MAth.min(this.index + 1, this.end);
 		return this.current();
 	}
 
 	previous(): T | null {
-		this.index = Math.max(this.index - 1, this.start - 1);
+		this.index = MAth.mAx(this.index - 1, this.stArt - 1);
 		return this.current();
 	}
 
 	first(): T | null {
-		this.index = this.start;
+		this.index = this.stArt;
 		return this.current();
 	}
 
-	last(): T | null {
+	lAst(): T | null {
 		this.index = this.end - 1;
 		return this.current();
 	}

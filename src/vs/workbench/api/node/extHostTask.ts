@@ -1,176 +1,176 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
+import * As pAth from 'vs/bAse/common/pAth';
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { win32 } from 'vs/base/node/processes';
-import * as types from 'vs/workbench/api/common/extHostTypes';
-import { IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
-import type * as vscode from 'vscode';
-import * as tasks from '../common/shared/tasks';
-import { ExtHostVariableResolverService } from 'vs/workbench/api/common/extHostDebugService';
-import { IExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { IExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
-import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { ExtHostTaskBase, TaskHandleDTO, TaskDTO, CustomExecutionDTO, HandlerData } from 'vs/workbench/api/common/extHostTask';
-import { Schemas } from 'vs/base/common/network';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { IExtHostApiDeprecationService } from 'vs/workbench/api/common/extHostApiDeprecationService';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { win32 } from 'vs/bAse/node/processes';
+import * As types from 'vs/workbench/Api/common/extHostTypes';
+import { IExtHostWorkspAce } from 'vs/workbench/Api/common/extHostWorkspAce';
+import type * As vscode from 'vscode';
+import * As tAsks from '../common/shAred/tAsks';
+import { ExtHostVAriAbleResolverService } from 'vs/workbench/Api/common/extHostDebugService';
+import { IExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { IExtHostConfigurAtion } from 'vs/workbench/Api/common/extHostConfigurAtion';
+import { IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { IExtHostTerminAlService } from 'vs/workbench/Api/common/extHostTerminAlService';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { ExtHostTAskBAse, TAskHAndleDTO, TAskDTO, CustomExecutionDTO, HAndlerDAtA } from 'vs/workbench/Api/common/extHostTAsk';
+import { SchemAs } from 'vs/bAse/common/network';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { IExtHostApiDeprecAtionService } from 'vs/workbench/Api/common/extHostApiDeprecAtionService';
 
-export class ExtHostTask extends ExtHostTaskBase {
-	private _variableResolver: ExtHostVariableResolverService | undefined;
+export clAss ExtHostTAsk extends ExtHostTAskBAse {
+	privAte _vAriAbleResolver: ExtHostVAriAbleResolverService | undefined;
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
-		@IExtHostInitDataService initData: IExtHostInitDataService,
-		@IExtHostWorkspace private readonly workspaceService: IExtHostWorkspace,
+		@IExtHostInitDAtAService initDAtA: IExtHostInitDAtAService,
+		@IExtHostWorkspAce privAte reAdonly workspAceService: IExtHostWorkspAce,
 		@IExtHostDocumentsAndEditors editorService: IExtHostDocumentsAndEditors,
-		@IExtHostConfiguration configurationService: IExtHostConfiguration,
-		@IExtHostTerminalService extHostTerminalService: IExtHostTerminalService,
+		@IExtHostConfigurAtion configurAtionService: IExtHostConfigurAtion,
+		@IExtHostTerminAlService extHostTerminAlService: IExtHostTerminAlService,
 		@ILogService logService: ILogService,
-		@IExtHostApiDeprecationService deprecationService: IExtHostApiDeprecationService
+		@IExtHostApiDeprecAtionService deprecAtionService: IExtHostApiDeprecAtionService
 	) {
-		super(extHostRpc, initData, workspaceService, editorService, configurationService, extHostTerminalService, logService, deprecationService);
-		if (initData.remote.isRemote && initData.remote.authority) {
-			this.registerTaskSystem(Schemas.vscodeRemote, {
-				scheme: Schemas.vscodeRemote,
-				authority: initData.remote.authority,
-				platform: process.platform
+		super(extHostRpc, initDAtA, workspAceService, editorService, configurAtionService, extHostTerminAlService, logService, deprecAtionService);
+		if (initDAtA.remote.isRemote && initDAtA.remote.Authority) {
+			this.registerTAskSystem(SchemAs.vscodeRemote, {
+				scheme: SchemAs.vscodeRemote,
+				Authority: initDAtA.remote.Authority,
+				plAtform: process.plAtform
 			});
 		}
 		this._proxy.$registerSupportedExecutions(true, true, true);
 	}
 
-	public async executeTask(extension: IExtensionDescription, task: vscode.Task): Promise<vscode.TaskExecution> {
-		const tTask = (task as types.Task);
-		// We have a preserved ID. So the task didn't change.
-		if (tTask._id !== undefined) {
-			// Always get the task execution first to prevent timing issues when retrieving it later
-			const handleDto = TaskHandleDTO.from(tTask, this.workspaceService);
-			const executionDTO = await this._proxy.$getTaskExecution(handleDto);
-			if (executionDTO.task === undefined) {
-				throw new Error('Task from execution DTO is undefined');
+	public Async executeTAsk(extension: IExtensionDescription, tAsk: vscode.TAsk): Promise<vscode.TAskExecution> {
+		const tTAsk = (tAsk As types.TAsk);
+		// We hAve A preserved ID. So the tAsk didn't chAnge.
+		if (tTAsk._id !== undefined) {
+			// AlwAys get the tAsk execution first to prevent timing issues when retrieving it lAter
+			const hAndleDto = TAskHAndleDTO.from(tTAsk, this.workspAceService);
+			const executionDTO = AwAit this._proxy.$getTAskExecution(hAndleDto);
+			if (executionDTO.tAsk === undefined) {
+				throw new Error('TAsk from execution DTO is undefined');
 			}
-			const execution = await this.getTaskExecution(executionDTO, task);
-			this._proxy.$executeTask(handleDto).catch(() => { /* The error here isn't actionable. */ });
+			const execution = AwAit this.getTAskExecution(executionDTO, tAsk);
+			this._proxy.$executeTAsk(hAndleDto).cAtch(() => { /* The error here isn't ActionAble. */ });
 			return execution;
 		} else {
-			const dto = TaskDTO.from(task, extension);
+			const dto = TAskDTO.from(tAsk, extension);
 			if (dto === undefined) {
-				return Promise.reject(new Error('Task is not valid'));
+				return Promise.reject(new Error('TAsk is not vAlid'));
 			}
 
-			// If this task is a custom execution, then we need to save it away
-			// in the provided custom execution map that is cleaned up after the
-			// task is executed.
+			// If this tAsk is A custom execution, then we need to sAve it AwAy
+			// in the provided custom execution mAp thAt is cleAned up After the
+			// tAsk is executed.
 			if (CustomExecutionDTO.is(dto.execution)) {
-				await this.addCustomExecution(dto, task, false);
+				AwAit this.AddCustomExecution(dto, tAsk, fAlse);
 			}
-			// Always get the task execution first to prevent timing issues when retrieving it later
-			const execution = await this.getTaskExecution(await this._proxy.$getTaskExecution(dto), task);
-			this._proxy.$executeTask(dto).catch(() => { /* The error here isn't actionable. */ });
+			// AlwAys get the tAsk execution first to prevent timing issues when retrieving it lAter
+			const execution = AwAit this.getTAskExecution(AwAit this._proxy.$getTAskExecution(dto), tAsk);
+			this._proxy.$executeTAsk(dto).cAtch(() => { /* The error here isn't ActionAble. */ });
 			return execution;
 		}
 	}
 
-	protected provideTasksInternal(validTypes: { [key: string]: boolean; }, taskIdPromises: Promise<void>[], handler: HandlerData, value: vscode.Task[] | null | undefined): { tasks: tasks.TaskDTO[], extension: IExtensionDescription } {
-		const taskDTOs: tasks.TaskDTO[] = [];
-		if (value) {
-			for (let task of value) {
-				this.checkDeprecation(task, handler);
+	protected provideTAsksInternAl(vAlidTypes: { [key: string]: booleAn; }, tAskIdPromises: Promise<void>[], hAndler: HAndlerDAtA, vAlue: vscode.TAsk[] | null | undefined): { tAsks: tAsks.TAskDTO[], extension: IExtensionDescription } {
+		const tAskDTOs: tAsks.TAskDTO[] = [];
+		if (vAlue) {
+			for (let tAsk of vAlue) {
+				this.checkDeprecAtion(tAsk, hAndler);
 
-				if (!task.definition || !validTypes[task.definition.type]) {
-					this._logService.warn(`The task [${task.source}, ${task.name}] uses an undefined task type. The task will be ignored in the future.`);
+				if (!tAsk.definition || !vAlidTypes[tAsk.definition.type]) {
+					this._logService.wArn(`The tAsk [${tAsk.source}, ${tAsk.nAme}] uses An undefined tAsk type. The tAsk will be ignored in the future.`);
 				}
 
-				const taskDTO: tasks.TaskDTO | undefined = TaskDTO.from(task, handler.extension);
-				if (taskDTO) {
-					taskDTOs.push(taskDTO);
+				const tAskDTO: tAsks.TAskDTO | undefined = TAskDTO.from(tAsk, hAndler.extension);
+				if (tAskDTO) {
+					tAskDTOs.push(tAskDTO);
 
-					if (CustomExecutionDTO.is(taskDTO.execution)) {
-						// The ID is calculated on the main thread task side, so, let's call into it here.
-						// We need the task id's pre-computed for custom task executions because when OnDidStartTask
-						// is invoked, we have to be able to map it back to our data.
-						taskIdPromises.push(this.addCustomExecution(taskDTO, task, true));
+					if (CustomExecutionDTO.is(tAskDTO.execution)) {
+						// The ID is cAlculAted on the mAin threAd tAsk side, so, let's cAll into it here.
+						// We need the tAsk id's pre-computed for custom tAsk executions becAuse when OnDidStArtTAsk
+						// is invoked, we hAve to be Able to mAp it bAck to our dAtA.
+						tAskIdPromises.push(this.AddCustomExecution(tAskDTO, tAsk, true));
 					}
 				}
 			}
 		}
 		return {
-			tasks: taskDTOs,
-			extension: handler.extension
+			tAsks: tAskDTOs,
+			extension: hAndler.extension
 		};
 	}
 
-	protected async resolveTaskInternal(resolvedTaskDTO: tasks.TaskDTO): Promise<tasks.TaskDTO | undefined> {
-		return resolvedTaskDTO;
+	protected Async resolveTAskInternAl(resolvedTAskDTO: tAsks.TAskDTO): Promise<tAsks.TAskDTO | undefined> {
+		return resolvedTAskDTO;
 	}
 
-	private async getVariableResolver(workspaceFolders: vscode.WorkspaceFolder[]): Promise<ExtHostVariableResolverService> {
-		if (this._variableResolver === undefined) {
-			const configProvider = await this._configurationService.getConfigProvider();
-			this._variableResolver = new ExtHostVariableResolverService(workspaceFolders, this._editorService, configProvider, process.env as IProcessEnvironment);
+	privAte Async getVAriAbleResolver(workspAceFolders: vscode.WorkspAceFolder[]): Promise<ExtHostVAriAbleResolverService> {
+		if (this._vAriAbleResolver === undefined) {
+			const configProvider = AwAit this._configurAtionService.getConfigProvider();
+			this._vAriAbleResolver = new ExtHostVAriAbleResolverService(workspAceFolders, this._editorService, configProvider, process.env As IProcessEnvironment);
 		}
-		return this._variableResolver;
+		return this._vAriAbleResolver;
 	}
 
-	public async $resolveVariables(uriComponents: UriComponents, toResolve: { process?: { name: string; cwd?: string; path?: string }, variables: string[] }): Promise<{ process?: string, variables: { [key: string]: string; } }> {
+	public Async $resolveVAriAbles(uriComponents: UriComponents, toResolve: { process?: { nAme: string; cwd?: string; pAth?: string }, vAriAbles: string[] }): Promise<{ process?: string, vAriAbles: { [key: string]: string; } }> {
 		const uri: URI = URI.revive(uriComponents);
 		const result = {
-			process: <unknown>undefined as string,
-			variables: Object.create(null)
+			process: <unknown>undefined As string,
+			vAriAbles: Object.creAte(null)
 		};
-		const workspaceFolder = await this._workspaceProvider.resolveWorkspaceFolder(uri);
-		const workspaceFolders = await this._workspaceProvider.getWorkspaceFolders2();
-		if (!workspaceFolders || !workspaceFolder) {
-			throw new Error('Unexpected: Tasks can only be run in a workspace folder');
+		const workspAceFolder = AwAit this._workspAceProvider.resolveWorkspAceFolder(uri);
+		const workspAceFolders = AwAit this._workspAceProvider.getWorkspAceFolders2();
+		if (!workspAceFolders || !workspAceFolder) {
+			throw new Error('Unexpected: TAsks cAn only be run in A workspAce folder');
 		}
-		const resolver = await this.getVariableResolver(workspaceFolders);
-		const ws: IWorkspaceFolder = {
-			uri: workspaceFolder.uri,
-			name: workspaceFolder.name,
-			index: workspaceFolder.index,
+		const resolver = AwAit this.getVAriAbleResolver(workspAceFolders);
+		const ws: IWorkspAceFolder = {
+			uri: workspAceFolder.uri,
+			nAme: workspAceFolder.nAme,
+			index: workspAceFolder.index,
 			toResource: () => {
 				throw new Error('Not implemented');
 			}
 		};
-		for (let variable of toResolve.variables) {
-			result.variables[variable] = resolver.resolve(ws, variable);
+		for (let vAriAble of toResolve.vAriAbles) {
+			result.vAriAbles[vAriAble] = resolver.resolve(ws, vAriAble);
 		}
 		if (toResolve.process !== undefined) {
-			let paths: string[] | undefined = undefined;
-			if (toResolve.process.path !== undefined) {
-				paths = toResolve.process.path.split(path.delimiter);
-				for (let i = 0; i < paths.length; i++) {
-					paths[i] = resolver.resolve(ws, paths[i]);
+			let pAths: string[] | undefined = undefined;
+			if (toResolve.process.pAth !== undefined) {
+				pAths = toResolve.process.pAth.split(pAth.delimiter);
+				for (let i = 0; i < pAths.length; i++) {
+					pAths[i] = resolver.resolve(ws, pAths[i]);
 				}
 			}
-			result.process = await win32.findExecutable(
-				resolver.resolve(ws, toResolve.process.name),
+			result.process = AwAit win32.findExecutAble(
+				resolver.resolve(ws, toResolve.process.nAme),
 				toResolve.process.cwd !== undefined ? resolver.resolve(ws, toResolve.process.cwd) : undefined,
-				paths
+				pAths
 			);
 		}
 		return result;
 	}
 
-	public $getDefaultShellAndArgs(): Promise<{ shell: string, args: string[] | string | undefined }> {
-		return this._terminalService.$getDefaultShellAndArgs(true);
+	public $getDefAultShellAndArgs(): Promise<{ shell: string, Args: string[] | string | undefined }> {
+		return this._terminAlService.$getDefAultShellAndArgs(true);
 	}
 
-	public async $jsonTasksSupported(): Promise<boolean> {
+	public Async $jsonTAsksSupported(): Promise<booleAn> {
 		return true;
 	}
 
-	public async $findExecutable(command: string, cwd?: string, paths?: string[]): Promise<string> {
-		return win32.findExecutable(command, cwd, paths);
+	public Async $findExecutAble(commAnd: string, cwd?: string, pAths?: string[]): Promise<string> {
+		return win32.findExecutAble(commAnd, cwd, pAths);
 	}
 }

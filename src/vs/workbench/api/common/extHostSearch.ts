@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import type * as vscode from 'vscode';
-import { ExtHostSearchShape, MainThreadSearchShape, MainContext } from '../common/extHost.protocol';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { FileSearchManager } from 'vs/workbench/services/search/common/fileSearchManager';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { IURITransformerService } from 'vs/workbench/api/common/extHostUriTransformerService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IRawFileQuery, ISearchCompleteStats, IFileQuery, IRawTextQuery, IRawQuery, ITextQuery, IFolderQuery } from 'vs/workbench/services/search/common/search';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { TextSearchManager } from 'vs/workbench/services/search/common/textSearchManager';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import type * As vscode from 'vscode';
+import { ExtHostSeArchShApe, MAinThreAdSeArchShApe, MAinContext } from '../common/extHost.protocol';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { FileSeArchMAnAger } from 'vs/workbench/services/seArch/common/fileSeArchMAnAger';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { IURITrAnsformerService } from 'vs/workbench/Api/common/extHostUriTrAnsformerService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IRAwFileQuery, ISeArchCompleteStAts, IFileQuery, IRAwTextQuery, IRAwQuery, ITextQuery, IFolderQuery } from 'vs/workbench/services/seArch/common/seArch';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { TextSeArchMAnAger } from 'vs/workbench/services/seArch/common/textSeArchMAnAger';
 
-export interface IExtHostSearch extends ExtHostSearchShape {
-	registerTextSearchProvider(scheme: string, provider: vscode.TextSearchProvider): IDisposable;
-	registerFileSearchProvider(scheme: string, provider: vscode.FileSearchProvider): IDisposable;
+export interfAce IExtHostSeArch extends ExtHostSeArchShApe {
+	registerTextSeArchProvider(scheme: string, provider: vscode.TextSeArchProvider): IDisposAble;
+	registerFileSeArchProvider(scheme: string, provider: vscode.FileSeArchProvider): IDisposAble;
 }
 
-export const IExtHostSearch = createDecorator<IExtHostSearch>('IExtHostSearch');
+export const IExtHostSeArch = creAteDecorAtor<IExtHostSeArch>('IExtHostSeArch');
 
-export class ExtHostSearch implements ExtHostSearchShape {
+export clAss ExtHostSeArch implements ExtHostSeArchShApe {
 
-	protected readonly _proxy: MainThreadSearchShape = this.extHostRpc.getProxy(MainContext.MainThreadSearch);
-	protected _handlePool: number = 0;
+	protected reAdonly _proxy: MAinThreAdSeArchShApe = this.extHostRpc.getProxy(MAinContext.MAinThreAdSeArch);
+	protected _hAndlePool: number = 0;
 
-	private readonly _textSearchProvider = new Map<number, vscode.TextSearchProvider>();
-	private readonly _textSearchUsedSchemes = new Set<string>();
-	private readonly _fileSearchProvider = new Map<number, vscode.FileSearchProvider>();
-	private readonly _fileSearchUsedSchemes = new Set<string>();
+	privAte reAdonly _textSeArchProvider = new MAp<number, vscode.TextSeArchProvider>();
+	privAte reAdonly _textSeArchUsedSchemes = new Set<string>();
+	privAte reAdonly _fileSeArchProvider = new MAp<number, vscode.FileSeArchProvider>();
+	privAte reAdonly _fileSeArchUsedSchemes = new Set<string>();
 
-	private readonly _fileSearchManager = new FileSearchManager();
+	privAte reAdonly _fileSeArchMAnAger = new FileSeArchMAnAger();
 
 	constructor(
-		@IExtHostRpcService private extHostRpc: IExtHostRpcService,
-		@IURITransformerService protected _uriTransformer: IURITransformerService,
+		@IExtHostRpcService privAte extHostRpc: IExtHostRpcService,
+		@IURITrAnsformerService protected _uriTrAnsformer: IURITrAnsformerService,
 		@ILogService protected _logService: ILogService
 	) { }
 
-	protected _transformScheme(scheme: string): string {
-		return this._uriTransformer.transformOutgoingScheme(scheme);
+	protected _trAnsformScheme(scheme: string): string {
+		return this._uriTrAnsformer.trAnsformOutgoingScheme(scheme);
 	}
 
-	registerTextSearchProvider(scheme: string, provider: vscode.TextSearchProvider): IDisposable {
-		if (this._textSearchUsedSchemes.has(scheme)) {
-			throw new Error(`a text search provider for the scheme '${scheme}' is already registered`);
+	registerTextSeArchProvider(scheme: string, provider: vscode.TextSeArchProvider): IDisposAble {
+		if (this._textSeArchUsedSchemes.hAs(scheme)) {
+			throw new Error(`A text seArch provider for the scheme '${scheme}' is AlreAdy registered`);
 		}
 
-		this._textSearchUsedSchemes.add(scheme);
-		const handle = this._handlePool++;
-		this._textSearchProvider.set(handle, provider);
-		this._proxy.$registerTextSearchProvider(handle, this._transformScheme(scheme));
-		return toDisposable(() => {
-			this._textSearchUsedSchemes.delete(scheme);
-			this._textSearchProvider.delete(handle);
-			this._proxy.$unregisterProvider(handle);
+		this._textSeArchUsedSchemes.Add(scheme);
+		const hAndle = this._hAndlePool++;
+		this._textSeArchProvider.set(hAndle, provider);
+		this._proxy.$registerTextSeArchProvider(hAndle, this._trAnsformScheme(scheme));
+		return toDisposAble(() => {
+			this._textSeArchUsedSchemes.delete(scheme);
+			this._textSeArchProvider.delete(hAndle);
+			this._proxy.$unregisterProvider(hAndle);
 		});
 	}
 
-	registerFileSearchProvider(scheme: string, provider: vscode.FileSearchProvider): IDisposable {
-		if (this._fileSearchUsedSchemes.has(scheme)) {
-			throw new Error(`a file search provider for the scheme '${scheme}' is already registered`);
+	registerFileSeArchProvider(scheme: string, provider: vscode.FileSeArchProvider): IDisposAble {
+		if (this._fileSeArchUsedSchemes.hAs(scheme)) {
+			throw new Error(`A file seArch provider for the scheme '${scheme}' is AlreAdy registered`);
 		}
 
-		this._fileSearchUsedSchemes.add(scheme);
-		const handle = this._handlePool++;
-		this._fileSearchProvider.set(handle, provider);
-		this._proxy.$registerFileSearchProvider(handle, this._transformScheme(scheme));
-		return toDisposable(() => {
-			this._fileSearchUsedSchemes.delete(scheme);
-			this._fileSearchProvider.delete(handle);
-			this._proxy.$unregisterProvider(handle);
+		this._fileSeArchUsedSchemes.Add(scheme);
+		const hAndle = this._hAndlePool++;
+		this._fileSeArchProvider.set(hAndle, provider);
+		this._proxy.$registerFileSeArchProvider(hAndle, this._trAnsformScheme(scheme));
+		return toDisposAble(() => {
+			this._fileSeArchUsedSchemes.delete(scheme);
+			this._fileSeArchProvider.delete(hAndle);
+			this._proxy.$unregisterProvider(hAndle);
 		});
 	}
 
-	$provideFileSearchResults(handle: number, session: number, rawQuery: IRawFileQuery, token: vscode.CancellationToken): Promise<ISearchCompleteStats> {
-		const query = reviveQuery(rawQuery);
-		const provider = this._fileSearchProvider.get(handle);
+	$provideFileSeArchResults(hAndle: number, session: number, rAwQuery: IRAwFileQuery, token: vscode.CAncellAtionToken): Promise<ISeArchCompleteStAts> {
+		const query = reviveQuery(rAwQuery);
+		const provider = this._fileSeArchProvider.get(hAndle);
 		if (provider) {
-			return this._fileSearchManager.fileSearch(query, provider, batch => {
-				this._proxy.$handleFileMatch(handle, session, batch.map(p => p.resource));
+			return this._fileSeArchMAnAger.fileSeArch(query, provider, bAtch => {
+				this._proxy.$hAndleFileMAtch(hAndle, session, bAtch.mAp(p => p.resource));
 			}, token);
 		} else {
-			throw new Error('unknown provider: ' + handle);
+			throw new Error('unknown provider: ' + hAndle);
 		}
 	}
 
-	$clearCache(cacheKey: string): Promise<void> {
-		this._fileSearchManager.clearCache(cacheKey);
+	$cleArCAche(cAcheKey: string): Promise<void> {
+		this._fileSeArchMAnAger.cleArCAche(cAcheKey);
 
 		return Promise.resolve(undefined);
 	}
 
-	$provideTextSearchResults(handle: number, session: number, rawQuery: IRawTextQuery, token: vscode.CancellationToken): Promise<ISearchCompleteStats> {
-		const provider = this._textSearchProvider.get(handle);
-		if (!provider || !provider.provideTextSearchResults) {
-			throw new Error(`Unknown provider ${handle}`);
+	$provideTextSeArchResults(hAndle: number, session: number, rAwQuery: IRAwTextQuery, token: vscode.CAncellAtionToken): Promise<ISeArchCompleteStAts> {
+		const provider = this._textSeArchProvider.get(hAndle);
+		if (!provider || !provider.provideTextSeArchResults) {
+			throw new Error(`Unknown provider ${hAndle}`);
 		}
 
-		const query = reviveQuery(rawQuery);
-		const engine = this.createTextSearchManager(query, provider);
-		return engine.search(progress => this._proxy.$handleTextMatch(handle, session, progress), token);
+		const query = reviveQuery(rAwQuery);
+		const engine = this.creAteTextSeArchMAnAger(query, provider);
+		return engine.seArch(progress => this._proxy.$hAndleTextMAtch(hAndle, session, progress), token);
 	}
 
-	protected createTextSearchManager(query: ITextQuery, provider: vscode.TextSearchProvider): TextSearchManager {
-		return new TextSearchManager(query, provider, {
-			readdir: resource => Promise.resolve([]), // TODO@rob implement
-			toCanonicalName: encoding => encoding
+	protected creAteTextSeArchMAnAger(query: ITextQuery, provider: vscode.TextSeArchProvider): TextSeArchMAnAger {
+		return new TextSeArchMAnAger(query, provider, {
+			reAddir: resource => Promise.resolve([]), // TODO@rob implement
+			toCAnonicAlNAme: encoding => encoding
 		});
 	}
 }
 
-export function reviveQuery<U extends IRawQuery>(rawQuery: U): U extends IRawTextQuery ? ITextQuery : IFileQuery {
+export function reviveQuery<U extends IRAwQuery>(rAwQuery: U): U extends IRAwTextQuery ? ITextQuery : IFileQuery {
 	return {
-		...<any>rawQuery, // TODO@rob ???
+		...<Any>rAwQuery, // TODO@rob ???
 		...{
-			folderQueries: rawQuery.folderQueries && rawQuery.folderQueries.map(reviveFolderQuery),
-			extraFileResources: rawQuery.extraFileResources && rawQuery.extraFileResources.map(components => URI.revive(components))
+			folderQueries: rAwQuery.folderQueries && rAwQuery.folderQueries.mAp(reviveFolderQuery),
+			extrAFileResources: rAwQuery.extrAFileResources && rAwQuery.extrAFileResources.mAp(components => URI.revive(components))
 		}
 	};
 }
 
-function reviveFolderQuery(rawFolderQuery: IFolderQuery<UriComponents>): IFolderQuery<URI> {
+function reviveFolderQuery(rAwFolderQuery: IFolderQuery<UriComponents>): IFolderQuery<URI> {
 	return {
-		...rawFolderQuery,
-		folder: URI.revive(rawFolderQuery.folder)
+		...rAwFolderQuery,
+		folder: URI.revive(rAwFolderQuery.folder)
 	};
 }

@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
 
-function collect(location) {
-	const element = { name: path.basename(location) };
-	const stat = fs.statSync(location);
+function collect(locAtion) {
+	const element = { nAme: pAth.bAsenAme(locAtion) };
+	const stAt = fs.stAtSync(locAtion);
 
-	if (!stat.isDirectory()) {
+	if (!stAt.isDirectory()) {
 		return { element, incompressible: true };
 	}
 
-	const children = fs.readdirSync(location)
-		.map(child => path.join(location, child))
-		.map(collect);
+	const children = fs.reAddirSync(locAtion)
+		.mAp(child => pAth.join(locAtion, child))
+		.mAp(collect);
 
 	return { element, children };
 }

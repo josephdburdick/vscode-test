@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore, IDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { isWeb } from 'vs/base/common/platform';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
+import * As DOM from 'vs/bAse/browser/dom';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAbleStore, IDisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { isWeb } from 'vs/bAse/common/plAtform';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { EditorPAne } from 'vs/workbench/browser/pArts/editor/editorPAne';
 import { IEditorDropService } from 'vs/workbench/services/editor/browser/editorDropService';
 import { EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
+import { WebviewOverlAy } from 'vs/workbench/contrib/webview/browser/webview';
 import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
-import { WebviewInput } from 'vs/workbench/contrib/webviewPanel/browser/webviewEditorInput';
+import { IWorkbenchLAyoutService, PArts } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { WebviewInput } from 'vs/workbench/contrib/webviewPAnel/browser/webviewEditorInput';
 
-export class WebviewEditor extends EditorPane {
+export clAss WebviewEditor extends EditorPAne {
 
-	public static readonly ID = 'WebviewEditor';
+	public stAtic reAdonly ID = 'WebviewEditor';
 
-	private _element?: HTMLElement;
-	private _dimension?: DOM.Dimension;
-	private _visible = false;
+	privAte _element?: HTMLElement;
+	privAte _dimension?: DOM.Dimension;
+	privAte _visible = fAlse;
 
-	private readonly _webviewVisibleDisposables = this._register(new DisposableStore());
-	private readonly _onFocusWindowHandler = this._register(new MutableDisposable());
+	privAte reAdonly _webviewVisibleDisposAbles = this._register(new DisposAbleStore());
+	privAte reAdonly _onFocusWindowHAndler = this._register(new MutAbleDisposAble());
 
-	private readonly _onDidFocusWebview = this._register(new Emitter<void>());
-	public get onDidFocus(): Event<any> { return this._onDidFocusWebview.event; }
+	privAte reAdonly _onDidFocusWebview = this._register(new Emitter<void>());
+	public get onDidFocus(): Event<Any> { return this._onDidFocusWebview.event; }
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
-		@IStorageService storageService: IStorageService,
-		@IEditorService private readonly _editorService: IEditorService,
-		@IWorkbenchLayoutService private readonly _workbenchLayoutService: IWorkbenchLayoutService,
-		@IEditorDropService private readonly _editorDropService: IEditorDropService,
-		@IHostService private readonly _hostService: IHostService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
+		@IWorkbenchLAyoutService privAte reAdonly _workbenchLAyoutService: IWorkbenchLAyoutService,
+		@IEditorDropService privAte reAdonly _editorDropService: IEditorDropService,
+		@IHostService privAte reAdonly _hostService: IHostService,
 	) {
-		super(WebviewEditor.ID, telemetryService, themeService, storageService);
+		super(WebviewEditor.ID, telemetryService, themeService, storAgeService);
 	}
 
-	private get webview(): WebviewOverlay | undefined {
-		return this.input instanceof WebviewInput ? this.input.webview : undefined;
+	privAte get webview(): WebviewOverlAy | undefined {
+		return this.input instAnceof WebviewInput ? this.input.webview : undefined;
 	}
 
-	protected createEditor(parent: HTMLElement): void {
-		const element = document.createElement('div');
+	protected creAteEditor(pArent: HTMLElement): void {
+		const element = document.creAteElement('div');
 		this._element = element;
-		parent.appendChild(element);
+		pArent.AppendChild(element);
 	}
 
 	public dispose(): void {
@@ -66,19 +66,19 @@ export class WebviewEditor extends EditorPane {
 		super.dispose();
 	}
 
-	public layout(dimension: DOM.Dimension): void {
+	public lAyout(dimension: DOM.Dimension): void {
 		this._dimension = dimension;
 		if (this.webview && this._visible) {
-			this.synchronizeWebviewContainerDimensions(this.webview, dimension);
+			this.synchronizeWebviewContAinerDimensions(this.webview, dimension);
 		}
 	}
 
 	public focus(): void {
 		super.focus();
-		if (!this._onFocusWindowHandler.value && !isWeb) {
-			// Make sure we restore focus when switching back to a VS Code window
-			this._onFocusWindowHandler.value = this._hostService.onDidChangeFocus(focused => {
-				if (focused && this._editorService.activeEditorPane === this && this._workbenchLayoutService.hasFocus(Parts.EDITOR_PART)) {
+		if (!this._onFocusWindowHAndler.vAlue && !isWeb) {
+			// MAke sure we restore focus when switching bAck to A VS Code window
+			this._onFocusWindowHAndler.vAlue = this._hostService.onDidChAngeFocus(focused => {
+				if (focused && this._editorService.ActiveEditorPAne === this && this._workbenchLAyoutService.hAsFocus(PArts.EDITOR_PART)) {
 					this.focus();
 				}
 			});
@@ -86,106 +86,106 @@ export class WebviewEditor extends EditorPane {
 		this.webview?.focus();
 	}
 
-	protected setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
+	protected setEditorVisible(visible: booleAn, group: IEditorGroup | undefined): void {
 		this._visible = visible;
-		if (this.input instanceof WebviewInput && this.webview) {
+		if (this.input instAnceof WebviewInput && this.webview) {
 			if (visible) {
-				this.claimWebview(this.input);
+				this.clAimWebview(this.input);
 			} else {
-				this.webview.release(this);
+				this.webview.releAse(this);
 			}
 		}
 		super.setEditorVisible(visible, group);
 	}
 
-	public clearInput() {
+	public cleArInput() {
 		if (this.webview) {
-			this.webview.release(this);
-			this._webviewVisibleDisposables.clear();
+			this.webview.releAse(this);
+			this._webviewVisibleDisposAbles.cleAr();
 		}
 
-		super.clearInput();
+		super.cleArInput();
 	}
 
-	public async setInput(input: EditorInput, options: EditorOptions, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
-		if (input.matches(this.input)) {
+	public Async setInput(input: EditorInput, options: EditorOptions, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
+		if (input.mAtches(this.input)) {
 			return;
 		}
 
-		const alreadyOwnsWebview = input instanceof WebviewInput && input.webview === this.webview;
-		if (this.webview && !alreadyOwnsWebview) {
-			this.webview.release(this);
+		const AlreAdyOwnsWebview = input instAnceof WebviewInput && input.webview === this.webview;
+		if (this.webview && !AlreAdyOwnsWebview) {
+			this.webview.releAse(this);
 		}
 
-		await super.setInput(input, options, context, token);
-		await input.resolve();
+		AwAit super.setInput(input, options, context, token);
+		AwAit input.resolve();
 
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return;
 		}
 
-		if (input instanceof WebviewInput) {
+		if (input instAnceof WebviewInput) {
 			if (this.group) {
-				input.updateGroup(this.group.id);
+				input.updAteGroup(this.group.id);
 			}
 
-			if (!alreadyOwnsWebview) {
-				this.claimWebview(input);
+			if (!AlreAdyOwnsWebview) {
+				this.clAimWebview(input);
 			}
 			if (this._dimension) {
-				this.layout(this._dimension);
+				this.lAyout(this._dimension);
 			}
 		}
 	}
 
-	private claimWebview(input: WebviewInput): void {
-		input.webview.claim(this);
+	privAte clAimWebview(input: WebviewInput): void {
+		input.webview.clAim(this);
 
 		if (this._element) {
-			this._element.setAttribute('aria-flowto', input.webview.container.id);
+			this._element.setAttribute('AriA-flowto', input.webview.contAiner.id);
 		}
 
-		this._webviewVisibleDisposables.clear();
+		this._webviewVisibleDisposAbles.cleAr();
 
-		// Webviews are not part of the normal editor dom, so we have to register our own drag and drop handler on them.
-		this._webviewVisibleDisposables.add(this._editorDropService.createEditorDropTarget(input.webview.container, {
-			containsGroup: (group) => this.group?.id === group.group.id
+		// Webviews Are not pArt of the normAl editor dom, so we hAve to register our own drAg And drop hAndler on them.
+		this._webviewVisibleDisposAbles.Add(this._editorDropService.creAteEditorDropTArget(input.webview.contAiner, {
+			contAinsGroup: (group) => this.group?.id === group.group.id
 		}));
 
-		this._webviewVisibleDisposables.add(DOM.addDisposableListener(window, DOM.EventType.DRAG_START, () => {
-			this.webview?.windowDidDragStart();
+		this._webviewVisibleDisposAbles.Add(DOM.AddDisposAbleListener(window, DOM.EventType.DRAG_START, () => {
+			this.webview?.windowDidDrAgStArt();
 		}));
 
-		const onDragEnd = () => {
-			this.webview?.windowDidDragEnd();
+		const onDrAgEnd = () => {
+			this.webview?.windowDidDrAgEnd();
 		};
-		this._webviewVisibleDisposables.add(DOM.addDisposableListener(window, DOM.EventType.DRAG_END, onDragEnd));
-		this._webviewVisibleDisposables.add(DOM.addDisposableListener(window, DOM.EventType.MOUSE_MOVE, currentEvent => {
+		this._webviewVisibleDisposAbles.Add(DOM.AddDisposAbleListener(window, DOM.EventType.DRAG_END, onDrAgEnd));
+		this._webviewVisibleDisposAbles.Add(DOM.AddDisposAbleListener(window, DOM.EventType.MOUSE_MOVE, currentEvent => {
 			if (currentEvent.buttons === 0) {
-				onDragEnd();
+				onDrAgEnd();
 			}
 		}));
 
-		this.synchronizeWebviewContainerDimensions(input.webview);
-		this._webviewVisibleDisposables.add(this.trackFocus(input.webview));
+		this.synchronizeWebviewContAinerDimensions(input.webview);
+		this._webviewVisibleDisposAbles.Add(this.trAckFocus(input.webview));
 	}
 
-	private synchronizeWebviewContainerDimensions(webview: WebviewOverlay, dimension?: DOM.Dimension) {
+	privAte synchronizeWebviewContAinerDimensions(webview: WebviewOverlAy, dimension?: DOM.Dimension) {
 		if (this._element) {
-			webview.layoutWebviewOverElement(this._element.parentElement!, dimension);
+			webview.lAyoutWebviewOverElement(this._element.pArentElement!, dimension);
 		}
 	}
 
-	private trackFocus(webview: WebviewOverlay): IDisposable {
-		const store = new DisposableStore();
+	privAte trAckFocus(webview: WebviewOverlAy): IDisposAble {
+		const store = new DisposAbleStore();
 
-		// Track focus in webview content
-		const webviewContentFocusTracker = DOM.trackFocus(webview.container);
-		store.add(webviewContentFocusTracker);
-		store.add(webviewContentFocusTracker.onDidFocus(() => this._onDidFocusWebview.fire()));
+		// TrAck focus in webview content
+		const webviewContentFocusTrAcker = DOM.trAckFocus(webview.contAiner);
+		store.Add(webviewContentFocusTrAcker);
+		store.Add(webviewContentFocusTrAcker.onDidFocus(() => this._onDidFocusWebview.fire()));
 
-		// Track focus in webview element
-		store.add(webview.onDidFocus(() => this._onDidFocusWebview.fire()));
+		// TrAck focus in webview element
+		store.Add(webview.onDidFocus(() => this._onDidFocusWebview.fire()));
 
 		return store;
 	}

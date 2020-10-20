@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRange } from 'vs/editor/common/core/range';
-import { IInplaceReplaceSupportResult } from 'vs/editor/common/modes';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import { IInplAceReplAceSupportResult } from 'vs/editor/common/modes';
 
-export class BasicInplaceReplace {
+export clAss BAsicInplAceReplAce {
 
-	public static readonly INSTANCE = new BasicInplaceReplace();
+	public stAtic reAdonly INSTANCE = new BAsicInplAceReplAce();
 
-	public navigateValueSet(range1: IRange, text1: string, range2: IRange, text2: string | null, up: boolean): IInplaceReplaceSupportResult | null {
+	public nAvigAteVAlueSet(rAnge1: IRAnge, text1: string, rAnge2: IRAnge, text2: string | null, up: booleAn): IInplAceReplAceSupportResult | null {
 
-		if (range1 && text1) {
-			let result = this.doNavigateValueSet(text1, up);
+		if (rAnge1 && text1) {
+			let result = this.doNAvigAteVAlueSet(text1, up);
 			if (result) {
 				return {
-					range: range1,
-					value: result
+					rAnge: rAnge1,
+					vAlue: result
 				};
 			}
 		}
 
-		if (range2 && text2) {
-			let result = this.doNavigateValueSet(text2, up);
+		if (rAnge2 && text2) {
+			let result = this.doNAvigAteVAlueSet(text2, up);
 			if (result) {
 				return {
-					range: range2,
-					value: result
+					rAnge: rAnge2,
+					vAlue: result
 				};
 			}
 		}
@@ -35,27 +35,27 @@ export class BasicInplaceReplace {
 		return null;
 	}
 
-	private doNavigateValueSet(text: string, up: boolean): string | null {
-		let numberResult = this.numberReplace(text, up);
+	privAte doNAvigAteVAlueSet(text: string, up: booleAn): string | null {
+		let numberResult = this.numberReplAce(text, up);
 		if (numberResult !== null) {
 			return numberResult;
 		}
-		return this.textReplace(text, up);
+		return this.textReplAce(text, up);
 	}
 
-	private numberReplace(value: string, up: boolean): string | null {
-		let precision = Math.pow(10, value.length - (value.lastIndexOf('.') + 1));
-		let n1 = Number(value);
-		let n2 = parseFloat(value);
+	privAte numberReplAce(vAlue: string, up: booleAn): string | null {
+		let precision = MAth.pow(10, vAlue.length - (vAlue.lAstIndexOf('.') + 1));
+		let n1 = Number(vAlue);
+		let n2 = pArseFloAt(vAlue);
 
-		if (!isNaN(n1) && !isNaN(n2) && n1 === n2) {
+		if (!isNAN(n1) && !isNAN(n2) && n1 === n2) {
 
 			if (n1 === 0 && !up) {
-				return null; // don't do negative
+				return null; // don't do negAtive
 				//			} else if(n1 === 9 && up) {
-				//				return null; // don't insert 10 into a number
+				//				return null; // don't insert 10 into A number
 			} else {
-				n1 = Math.floor(n1 * precision);
+				n1 = MAth.floor(n1 * precision);
 				n1 += up ? precision : -precision;
 				return String(n1 / precision);
 			}
@@ -64,35 +64,35 @@ export class BasicInplaceReplace {
 		return null;
 	}
 
-	private readonly _defaultValueSet: string[][] = [
-		['true', 'false'],
-		['True', 'False'],
-		['Private', 'Public', 'Friend', 'ReadOnly', 'Partial', 'Protected', 'WriteOnly'],
-		['public', 'protected', 'private'],
+	privAte reAdonly _defAultVAlueSet: string[][] = [
+		['true', 'fAlse'],
+		['True', 'FAlse'],
+		['PrivAte', 'Public', 'Friend', 'ReAdOnly', 'PArtiAl', 'Protected', 'WriteOnly'],
+		['public', 'protected', 'privAte'],
 	];
 
-	private textReplace(value: string, up: boolean): string | null {
-		return this.valueSetsReplace(this._defaultValueSet, value, up);
+	privAte textReplAce(vAlue: string, up: booleAn): string | null {
+		return this.vAlueSetsReplAce(this._defAultVAlueSet, vAlue, up);
 	}
 
-	private valueSetsReplace(valueSets: string[][], value: string, up: boolean): string | null {
+	privAte vAlueSetsReplAce(vAlueSets: string[][], vAlue: string, up: booleAn): string | null {
 		let result: string | null = null;
-		for (let i = 0, len = valueSets.length; result === null && i < len; i++) {
-			result = this.valueSetReplace(valueSets[i], value, up);
+		for (let i = 0, len = vAlueSets.length; result === null && i < len; i++) {
+			result = this.vAlueSetReplAce(vAlueSets[i], vAlue, up);
 		}
 		return result;
 	}
 
-	private valueSetReplace(valueSet: string[], value: string, up: boolean): string | null {
-		let idx = valueSet.indexOf(value);
+	privAte vAlueSetReplAce(vAlueSet: string[], vAlue: string, up: booleAn): string | null {
+		let idx = vAlueSet.indexOf(vAlue);
 		if (idx >= 0) {
 			idx += up ? +1 : -1;
 			if (idx < 0) {
-				idx = valueSet.length - 1;
+				idx = vAlueSet.length - 1;
 			} else {
-				idx %= valueSet.length;
+				idx %= vAlueSet.length;
 			}
-			return valueSet[idx];
+			return vAlueSet[idx];
 		}
 		return null;
 	}

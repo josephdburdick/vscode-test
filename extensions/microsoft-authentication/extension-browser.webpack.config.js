@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const path = require('path');
-const withBrowserDefaults = require('../shared.webpack.config').browser;
+const pAth = require('pAth');
+const withBrowserDefAults = require('../shAred.webpAck.config').browser;
 
-module.exports = withBrowserDefaults({
-	context: __dirname,
-	node: false,
+module.exports = withBrowserDefAults({
+	context: __dirnAme,
+	node: fAlse,
 	entry: {
 		extension: './src/extension.ts',
 	},
-	externals: {
-		'keytar': 'commonjs keytar'
+	externAls: {
+		'keytAr': 'commonjs keytAr'
 	},
 	resolve: {
-		alias: {
-			'./env/node': path.resolve(__dirname, 'src/env/browser'),
-			'./authServer': path.resolve(__dirname, 'src/env/browser/authServer'),
-			'buffer': path.resolve(__dirname, 'node_modules/buffer/index.js'),
-			'node-fetch': path.resolve(__dirname, 'node_modules/node-fetch/browser.js'),
-			'randombytes': path.resolve(__dirname, 'node_modules/randombytes/browser.js'),
-			'stream': path.resolve(__dirname, 'node_modules/stream/index.js'),
-			'uuid': path.resolve(__dirname, 'node_modules/uuid/dist/esm-browser/index.js')
+		AliAs: {
+			'./env/node': pAth.resolve(__dirnAme, 'src/env/browser'),
+			'./AuthServer': pAth.resolve(__dirnAme, 'src/env/browser/AuthServer'),
+			'buffer': pAth.resolve(__dirnAme, 'node_modules/buffer/index.js'),
+			'node-fetch': pAth.resolve(__dirnAme, 'node_modules/node-fetch/browser.js'),
+			'rAndombytes': pAth.resolve(__dirnAme, 'node_modules/rAndombytes/browser.js'),
+			'streAm': pAth.resolve(__dirnAme, 'node_modules/streAm/index.js'),
+			'uuid': pAth.resolve(__dirnAme, 'node_modules/uuid/dist/esm-browser/index.js')
 		}
 	}
 });

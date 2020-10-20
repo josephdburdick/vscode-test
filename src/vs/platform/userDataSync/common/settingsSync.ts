@@ -1,267 +1,267 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IFileService, FileOperationError, FileOperationResult } from 'vs/platform/files/common/files';
+import { IFileService, FileOperAtionError, FileOperAtionResult } from 'vs/plAtform/files/common/files';
 import {
-	UserDataSyncError, UserDataSyncErrorCode, IUserDataSyncStoreService, IUserDataSyncLogService, IUserDataSyncUtilService, CONFIGURATION_SYNC_STORE_KEY,
-	SyncResource, IUserDataSyncResourceEnablementService, IUserDataSyncBackupStoreService, USER_DATA_SYNC_SCHEME, ISyncResourceHandle, IUserDataSynchroniser,
-	IRemoteUserData, ISyncData, Change
-} from 'vs/platform/userDataSync/common/userDataSync';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { localize } from 'vs/nls';
-import { Event } from 'vs/base/common/event';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { updateIgnoredSettings, merge, getIgnoredSettings, isEmpty } from 'vs/platform/userDataSync/common/settingsMerge';
-import { edit } from 'vs/platform/userDataSync/common/content';
-import { AbstractInitializer, AbstractJsonFileSynchroniser, IAcceptResult, IFileResourcePreview, IMergeResult } from 'vs/platform/userDataSync/common/abstractSynchronizer';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { URI } from 'vs/base/common/uri';
-import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { Edit } from 'vs/base/common/jsonFormatter';
-import { setProperty, applyEdits } from 'vs/base/common/jsonEdit';
+	UserDAtASyncError, UserDAtASyncErrorCode, IUserDAtASyncStoreService, IUserDAtASyncLogService, IUserDAtASyncUtilService, CONFIGURATION_SYNC_STORE_KEY,
+	SyncResource, IUserDAtASyncResourceEnAblementService, IUserDAtASyncBAckupStoreService, USER_DATA_SYNC_SCHEME, ISyncResourceHAndle, IUserDAtASynchroniser,
+	IRemoteUserDAtA, ISyncDAtA, ChAnge
+} from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { locAlize } from 'vs/nls';
+import { Event } from 'vs/bAse/common/event';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { updAteIgnoredSettings, merge, getIgnoredSettings, isEmpty } from 'vs/plAtform/userDAtASync/common/settingsMerge';
+import { edit } from 'vs/plAtform/userDAtASync/common/content';
+import { AbstrActInitiAlizer, AbstrActJsonFileSynchroniser, IAcceptResult, IFileResourcePreview, IMergeResult } from 'vs/plAtform/userDAtASync/common/AbstrActSynchronizer';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { URI } from 'vs/bAse/common/uri';
+import { IExtensionMAnAgementService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { Edit } from 'vs/bAse/common/jsonFormAtter';
+import { setProperty, ApplyEdits } from 'vs/bAse/common/jsonEdit';
 
-interface ISettingsResourcePreview extends IFileResourcePreview {
+interfAce ISettingsResourcePreview extends IFileResourcePreview {
 	previewResult: IMergeResult;
 }
 
-export interface ISettingsSyncContent {
+export interfAce ISettingsSyncContent {
 	settings: string;
 }
 
-function isSettingsSyncContent(thing: any): thing is ISettingsSyncContent {
+function isSettingsSyncContent(thing: Any): thing is ISettingsSyncContent {
 	return thing
 		&& (thing.settings && typeof thing.settings === 'string')
 		&& Object.keys(thing).length === 1;
 }
 
-export function parseSettingsSyncContent(syncContent: string): ISettingsSyncContent {
-	const parsed = <ISettingsSyncContent>JSON.parse(syncContent);
-	return isSettingsSyncContent(parsed) ? parsed : /* migrate */ { settings: syncContent };
+export function pArseSettingsSyncContent(syncContent: string): ISettingsSyncContent {
+	const pArsed = <ISettingsSyncContent>JSON.pArse(syncContent);
+	return isSettingsSyncContent(pArsed) ? pArsed : /* migrAte */ { settings: syncContent };
 }
 
-export class SettingsSynchroniser extends AbstractJsonFileSynchroniser implements IUserDataSynchroniser {
+export clAss SettingsSynchroniser extends AbstrActJsonFileSynchroniser implements IUserDAtASynchroniser {
 
-	/* Version 2: Change settings from `sync.${setting}` to `settingsSync.{setting}` */
-	protected readonly version: number = 2;
-	readonly previewResource: URI = this.extUri.joinPath(this.syncPreviewFolder, 'settings.json');
-	readonly localResource: URI = this.previewResource.with({ scheme: USER_DATA_SYNC_SCHEME, authority: 'local' });
-	readonly remoteResource: URI = this.previewResource.with({ scheme: USER_DATA_SYNC_SCHEME, authority: 'remote' });
-	readonly acceptedResource: URI = this.previewResource.with({ scheme: USER_DATA_SYNC_SCHEME, authority: 'accepted' });
+	/* Version 2: ChAnge settings from `sync.${setting}` to `settingsSync.{setting}` */
+	protected reAdonly version: number = 2;
+	reAdonly previewResource: URI = this.extUri.joinPAth(this.syncPreviewFolder, 'settings.json');
+	reAdonly locAlResource: URI = this.previewResource.with({ scheme: USER_DATA_SYNC_SCHEME, Authority: 'locAl' });
+	reAdonly remoteResource: URI = this.previewResource.with({ scheme: USER_DATA_SYNC_SCHEME, Authority: 'remote' });
+	reAdonly AcceptedResource: URI = this.previewResource.with({ scheme: USER_DATA_SYNC_SCHEME, Authority: 'Accepted' });
 
 	constructor(
 		@IFileService fileService: IFileService,
 		@IEnvironmentService environmentService: IEnvironmentService,
-		@IStorageService storageService: IStorageService,
-		@IUserDataSyncStoreService userDataSyncStoreService: IUserDataSyncStoreService,
-		@IUserDataSyncBackupStoreService userDataSyncBackupStoreService: IUserDataSyncBackupStoreService,
-		@IUserDataSyncLogService logService: IUserDataSyncLogService,
-		@IUserDataSyncUtilService userDataSyncUtilService: IUserDataSyncUtilService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IUserDataSyncResourceEnablementService userDataSyncResourceEnablementService: IUserDataSyncResourceEnablementService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IUserDAtASyncStoreService userDAtASyncStoreService: IUserDAtASyncStoreService,
+		@IUserDAtASyncBAckupStoreService userDAtASyncBAckupStoreService: IUserDAtASyncBAckupStoreService,
+		@IUserDAtASyncLogService logService: IUserDAtASyncLogService,
+		@IUserDAtASyncUtilService userDAtASyncUtilService: IUserDAtASyncUtilService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IUserDAtASyncResourceEnAblementService userDAtASyncResourceEnAblementService: IUserDAtASyncResourceEnAblementService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
+		@IExtensionMAnAgementService privAte reAdonly extensionMAnAgementService: IExtensionMAnAgementService,
 	) {
-		super(environmentService.settingsResource, SyncResource.Settings, fileService, environmentService, storageService, userDataSyncStoreService, userDataSyncBackupStoreService, userDataSyncResourceEnablementService, telemetryService, logService, userDataSyncUtilService, configurationService);
+		super(environmentService.settingsResource, SyncResource.Settings, fileService, environmentService, storAgeService, userDAtASyncStoreService, userDAtASyncBAckupStoreService, userDAtASyncResourceEnAblementService, telemetryService, logService, userDAtASyncUtilService, configurAtionService);
 	}
 
-	protected async generateSyncPreview(remoteUserData: IRemoteUserData, lastSyncUserData: IRemoteUserData | null, token: CancellationToken): Promise<ISettingsResourcePreview[]> {
-		const fileContent = await this.getLocalFileContent();
-		const formattingOptions = await this.getFormattingOptions();
-		const remoteSettingsSyncContent = this.getSettingsSyncContent(remoteUserData);
-		const lastSettingsSyncContent: ISettingsSyncContent | null = lastSyncUserData ? this.getSettingsSyncContent(lastSyncUserData) : null;
-		const ignoredSettings = await this.getIgnoredSettings();
+	protected Async generAteSyncPreview(remoteUserDAtA: IRemoteUserDAtA, lAstSyncUserDAtA: IRemoteUserDAtA | null, token: CAncellAtionToken): Promise<ISettingsResourcePreview[]> {
+		const fileContent = AwAit this.getLocAlFileContent();
+		const formAttingOptions = AwAit this.getFormAttingOptions();
+		const remoteSettingsSyncContent = this.getSettingsSyncContent(remoteUserDAtA);
+		const lAstSettingsSyncContent: ISettingsSyncContent | null = lAstSyncUserDAtA ? this.getSettingsSyncContent(lAstSyncUserDAtA) : null;
+		const ignoredSettings = AwAit this.getIgnoredSettings();
 
 		let mergedContent: string | null = null;
-		let hasLocalChanged: boolean = false;
-		let hasRemoteChanged: boolean = false;
-		let hasConflicts: boolean = false;
+		let hAsLocAlChAnged: booleAn = fAlse;
+		let hAsRemoteChAnged: booleAn = fAlse;
+		let hAsConflicts: booleAn = fAlse;
 
 		if (remoteSettingsSyncContent) {
-			let localContent: string = fileContent ? fileContent.value.toString().trim() : '{}';
-			localContent = localContent || '{}';
-			this.validateContent(localContent);
-			this.logService.trace(`${this.syncResourceLogLabel}: Merging remote settings with local settings...`);
-			const result = merge(localContent, remoteSettingsSyncContent.settings, lastSettingsSyncContent ? lastSettingsSyncContent.settings : null, ignoredSettings, [], formattingOptions);
-			mergedContent = result.localContent || result.remoteContent;
-			hasLocalChanged = result.localContent !== null;
-			hasRemoteChanged = result.remoteContent !== null;
-			hasConflicts = result.hasConflicts;
+			let locAlContent: string = fileContent ? fileContent.vAlue.toString().trim() : '{}';
+			locAlContent = locAlContent || '{}';
+			this.vAlidAteContent(locAlContent);
+			this.logService.trAce(`${this.syncResourceLogLAbel}: Merging remote settings with locAl settings...`);
+			const result = merge(locAlContent, remoteSettingsSyncContent.settings, lAstSettingsSyncContent ? lAstSettingsSyncContent.settings : null, ignoredSettings, [], formAttingOptions);
+			mergedContent = result.locAlContent || result.remoteContent;
+			hAsLocAlChAnged = result.locAlContent !== null;
+			hAsRemoteChAnged = result.remoteContent !== null;
+			hAsConflicts = result.hAsConflicts;
 		}
 
 		// First time syncing to remote
 		else if (fileContent) {
-			this.logService.trace(`${this.syncResourceLogLabel}: Remote settings does not exist. Synchronizing settings for the first time.`);
-			mergedContent = fileContent.value.toString();
-			hasRemoteChanged = true;
+			this.logService.trAce(`${this.syncResourceLogLAbel}: Remote settings does not exist. Synchronizing settings for the first time.`);
+			mergedContent = fileContent.vAlue.toString();
+			hAsRemoteChAnged = true;
 		}
 
 		const previewResult = {
 			content: mergedContent,
-			localChange: hasLocalChanged ? Change.Modified : Change.None,
-			remoteChange: hasRemoteChanged ? Change.Modified : Change.None,
-			hasConflicts
+			locAlChAnge: hAsLocAlChAnged ? ChAnge.Modified : ChAnge.None,
+			remoteChAnge: hAsRemoteChAnged ? ChAnge.Modified : ChAnge.None,
+			hAsConflicts
 		};
 
 		return [{
 			fileContent,
-			localResource: this.localResource,
-			localContent: fileContent ? fileContent.value.toString() : null,
-			localChange: previewResult.localChange,
+			locAlResource: this.locAlResource,
+			locAlContent: fileContent ? fileContent.vAlue.toString() : null,
+			locAlChAnge: previewResult.locAlChAnge,
 
 			remoteResource: this.remoteResource,
 			remoteContent: remoteSettingsSyncContent ? remoteSettingsSyncContent.settings : null,
-			remoteChange: previewResult.remoteChange,
+			remoteChAnge: previewResult.remoteChAnge,
 
 			previewResource: this.previewResource,
 			previewResult,
-			acceptedResource: this.acceptedResource,
+			AcceptedResource: this.AcceptedResource,
 		}];
 	}
 
-	protected async getMergeResult(resourcePreview: ISettingsResourcePreview, token: CancellationToken): Promise<IMergeResult> {
-		const formatUtils = await this.getFormattingOptions();
-		const ignoredSettings = await this.getIgnoredSettings();
+	protected Async getMergeResult(resourcePreview: ISettingsResourcePreview, token: CAncellAtionToken): Promise<IMergeResult> {
+		const formAtUtils = AwAit this.getFormAttingOptions();
+		const ignoredSettings = AwAit this.getIgnoredSettings();
 		return {
 			...resourcePreview.previewResult,
 
 			// remove ignored settings from the preview content
-			content: resourcePreview.previewResult.content ? updateIgnoredSettings(resourcePreview.previewResult.content, '{}', ignoredSettings, formatUtils) : null
+			content: resourcePreview.previewResult.content ? updAteIgnoredSettings(resourcePreview.previewResult.content, '{}', ignoredSettings, formAtUtils) : null
 		};
 	}
 
-	protected async getAcceptResult(resourcePreview: ISettingsResourcePreview, resource: URI, content: string | null | undefined, token: CancellationToken): Promise<IAcceptResult> {
+	protected Async getAcceptResult(resourcePreview: ISettingsResourcePreview, resource: URI, content: string | null | undefined, token: CAncellAtionToken): Promise<IAcceptResult> {
 
-		const formattingOptions = await this.getFormattingOptions();
-		const ignoredSettings = await this.getIgnoredSettings();
+		const formAttingOptions = AwAit this.getFormAttingOptions();
+		const ignoredSettings = AwAit this.getIgnoredSettings();
 
-		/* Accept local resource */
-		if (this.extUri.isEqual(resource, this.localResource)) {
+		/* Accept locAl resource */
+		if (this.extUri.isEquAl(resource, this.locAlResource)) {
 			return {
 				/* Remove ignored settings */
-				content: resourcePreview.fileContent ? updateIgnoredSettings(resourcePreview.fileContent.value.toString(), '{}', ignoredSettings, formattingOptions) : null,
-				localChange: Change.None,
-				remoteChange: Change.Modified,
+				content: resourcePreview.fileContent ? updAteIgnoredSettings(resourcePreview.fileContent.vAlue.toString(), '{}', ignoredSettings, formAttingOptions) : null,
+				locAlChAnge: ChAnge.None,
+				remoteChAnge: ChAnge.Modified,
 			};
 		}
 
 		/* Accept remote resource */
-		if (this.extUri.isEqual(resource, this.remoteResource)) {
+		if (this.extUri.isEquAl(resource, this.remoteResource)) {
 			return {
-				/* Update ignored settings from local file content */
-				content: resourcePreview.remoteContent !== null ? updateIgnoredSettings(resourcePreview.remoteContent, resourcePreview.fileContent ? resourcePreview.fileContent.value.toString() : '{}', ignoredSettings, formattingOptions) : null,
-				localChange: Change.Modified,
-				remoteChange: Change.None,
+				/* UpdAte ignored settings from locAl file content */
+				content: resourcePreview.remoteContent !== null ? updAteIgnoredSettings(resourcePreview.remoteContent, resourcePreview.fileContent ? resourcePreview.fileContent.vAlue.toString() : '{}', ignoredSettings, formAttingOptions) : null,
+				locAlChAnge: ChAnge.Modified,
+				remoteChAnge: ChAnge.None,
 			};
 		}
 
 		/* Accept preview resource */
-		if (this.extUri.isEqual(resource, this.previewResource)) {
+		if (this.extUri.isEquAl(resource, this.previewResource)) {
 			if (content === undefined) {
 				return {
 					content: resourcePreview.previewResult.content,
-					localChange: resourcePreview.previewResult.localChange,
-					remoteChange: resourcePreview.previewResult.remoteChange,
+					locAlChAnge: resourcePreview.previewResult.locAlChAnge,
+					remoteChAnge: resourcePreview.previewResult.remoteChAnge,
 				};
 			} else {
 				return {
-					/* Add ignored settings from local file content */
-					content: content !== null ? updateIgnoredSettings(content, resourcePreview.fileContent ? resourcePreview.fileContent.value.toString() : '{}', ignoredSettings, formattingOptions) : null,
-					localChange: Change.Modified,
-					remoteChange: Change.Modified,
+					/* Add ignored settings from locAl file content */
+					content: content !== null ? updAteIgnoredSettings(content, resourcePreview.fileContent ? resourcePreview.fileContent.vAlue.toString() : '{}', ignoredSettings, formAttingOptions) : null,
+					locAlChAnge: ChAnge.Modified,
+					remoteChAnge: ChAnge.Modified,
 				};
 			}
 		}
 
-		throw new Error(`Invalid Resource: ${resource.toString()}`);
+		throw new Error(`InvAlid Resource: ${resource.toString()}`);
 	}
 
-	protected async applyResult(remoteUserData: IRemoteUserData, lastSyncUserData: IRemoteUserData | null, resourcePreviews: [ISettingsResourcePreview, IAcceptResult][], force: boolean): Promise<void> {
+	protected Async ApplyResult(remoteUserDAtA: IRemoteUserDAtA, lAstSyncUserDAtA: IRemoteUserDAtA | null, resourcePreviews: [ISettingsResourcePreview, IAcceptResult][], force: booleAn): Promise<void> {
 		const { fileContent } = resourcePreviews[0][0];
-		let { content, localChange, remoteChange } = resourcePreviews[0][1];
+		let { content, locAlChAnge, remoteChAnge } = resourcePreviews[0][1];
 
-		if (localChange === Change.None && remoteChange === Change.None) {
-			this.logService.info(`${this.syncResourceLogLabel}: No changes found during synchronizing settings.`);
+		if (locAlChAnge === ChAnge.None && remoteChAnge === ChAnge.None) {
+			this.logService.info(`${this.syncResourceLogLAbel}: No chAnges found during synchronizing settings.`);
 		}
 
 		content = content ? content.trim() : '{}';
 		content = content || '{}';
-		this.validateContent(content);
+		this.vAlidAteContent(content);
 
-		if (localChange !== Change.None) {
-			this.logService.trace(`${this.syncResourceLogLabel}: Updating local settings...`);
+		if (locAlChAnge !== ChAnge.None) {
+			this.logService.trAce(`${this.syncResourceLogLAbel}: UpdAting locAl settings...`);
 			if (fileContent) {
-				await this.backupLocal(JSON.stringify(this.toSettingsSyncContent(fileContent.value.toString())));
+				AwAit this.bAckupLocAl(JSON.stringify(this.toSettingsSyncContent(fileContent.vAlue.toString())));
 			}
-			await this.updateLocalFileContent(content, fileContent, force);
-			this.logService.info(`${this.syncResourceLogLabel}: Updated local settings`);
+			AwAit this.updAteLocAlFileContent(content, fileContent, force);
+			this.logService.info(`${this.syncResourceLogLAbel}: UpdAted locAl settings`);
 		}
 
-		if (remoteChange !== Change.None) {
-			const formatUtils = await this.getFormattingOptions();
-			// Update ignored settings from remote
-			const remoteSettingsSyncContent = this.getSettingsSyncContent(remoteUserData);
-			const ignoredSettings = await this.getIgnoredSettings(content);
-			content = updateIgnoredSettings(content, remoteSettingsSyncContent ? remoteSettingsSyncContent.settings : '{}', ignoredSettings, formatUtils);
-			this.logService.trace(`${this.syncResourceLogLabel}: Updating remote settings...`);
-			remoteUserData = await this.updateRemoteUserData(JSON.stringify(this.toSettingsSyncContent(content)), force ? null : remoteUserData.ref);
-			this.logService.info(`${this.syncResourceLogLabel}: Updated remote settings`);
+		if (remoteChAnge !== ChAnge.None) {
+			const formAtUtils = AwAit this.getFormAttingOptions();
+			// UpdAte ignored settings from remote
+			const remoteSettingsSyncContent = this.getSettingsSyncContent(remoteUserDAtA);
+			const ignoredSettings = AwAit this.getIgnoredSettings(content);
+			content = updAteIgnoredSettings(content, remoteSettingsSyncContent ? remoteSettingsSyncContent.settings : '{}', ignoredSettings, formAtUtils);
+			this.logService.trAce(`${this.syncResourceLogLAbel}: UpdAting remote settings...`);
+			remoteUserDAtA = AwAit this.updAteRemoteUserDAtA(JSON.stringify(this.toSettingsSyncContent(content)), force ? null : remoteUserDAtA.ref);
+			this.logService.info(`${this.syncResourceLogLAbel}: UpdAted remote settings`);
 		}
 
 		// Delete the preview
 		try {
-			await this.fileService.del(this.previewResource);
-		} catch (e) { /* ignore */ }
+			AwAit this.fileService.del(this.previewResource);
+		} cAtch (e) { /* ignore */ }
 
-		if (lastSyncUserData?.ref !== remoteUserData.ref) {
-			this.logService.trace(`${this.syncResourceLogLabel}: Updating last synchronized settings...`);
-			await this.updateLastSyncUserData(remoteUserData);
-			this.logService.info(`${this.syncResourceLogLabel}: Updated last synchronized settings`);
+		if (lAstSyncUserDAtA?.ref !== remoteUserDAtA.ref) {
+			this.logService.trAce(`${this.syncResourceLogLAbel}: UpdAting lAst synchronized settings...`);
+			AwAit this.updAteLAstSyncUserDAtA(remoteUserDAtA);
+			this.logService.info(`${this.syncResourceLogLAbel}: UpdAted lAst synchronized settings`);
 		}
 
 	}
 
-	async hasLocalData(): Promise<boolean> {
+	Async hAsLocAlDAtA(): Promise<booleAn> {
 		try {
-			const localFileContent = await this.getLocalFileContent();
-			if (localFileContent) {
-				const formatUtils = await this.getFormattingOptions();
-				const content = edit(localFileContent.value.toString(), [CONFIGURATION_SYNC_STORE_KEY], undefined, formatUtils);
+			const locAlFileContent = AwAit this.getLocAlFileContent();
+			if (locAlFileContent) {
+				const formAtUtils = AwAit this.getFormAttingOptions();
+				const content = edit(locAlFileContent.vAlue.toString(), [CONFIGURATION_SYNC_STORE_KEY], undefined, formAtUtils);
 				return !isEmpty(content);
 			}
-		} catch (error) {
-			if ((<FileOperationError>error).fileOperationResult !== FileOperationResult.FILE_NOT_FOUND) {
+		} cAtch (error) {
+			if ((<FileOperAtionError>error).fileOperAtionResult !== FileOperAtionResult.FILE_NOT_FOUND) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	async getAssociatedResources({ uri }: ISyncResourceHandle): Promise<{ resource: URI, comparableResource: URI }[]> {
-		const comparableResource = (await this.fileService.exists(this.file)) ? this.file : this.localResource;
-		return [{ resource: this.extUri.joinPath(uri, 'settings.json'), comparableResource }];
+	Async getAssociAtedResources({ uri }: ISyncResourceHAndle): Promise<{ resource: URI, compArAbleResource: URI }[]> {
+		const compArAbleResource = (AwAit this.fileService.exists(this.file)) ? this.file : this.locAlResource;
+		return [{ resource: this.extUri.joinPAth(uri, 'settings.json'), compArAbleResource }];
 	}
 
-	async resolveContent(uri: URI): Promise<string | null> {
-		if (this.extUri.isEqual(this.remoteResource, uri) || this.extUri.isEqual(this.localResource, uri) || this.extUri.isEqual(this.acceptedResource, uri)) {
+	Async resolveContent(uri: URI): Promise<string | null> {
+		if (this.extUri.isEquAl(this.remoteResource, uri) || this.extUri.isEquAl(this.locAlResource, uri) || this.extUri.isEquAl(this.AcceptedResource, uri)) {
 			return this.resolvePreviewContent(uri);
 		}
-		let content = await super.resolveContent(uri);
+		let content = AwAit super.resolveContent(uri);
 		if (content) {
 			return content;
 		}
-		content = await super.resolveContent(this.extUri.dirname(uri));
+		content = AwAit super.resolveContent(this.extUri.dirnAme(uri));
 		if (content) {
-			const syncData = this.parseSyncData(content);
-			if (syncData) {
-				const settingsSyncContent = this.parseSettingsSyncContent(syncData.content);
+			const syncDAtA = this.pArseSyncDAtA(content);
+			if (syncDAtA) {
+				const settingsSyncContent = this.pArseSettingsSyncContent(syncDAtA.content);
 				if (settingsSyncContent) {
-					switch (this.extUri.basename(uri)) {
-						case 'settings.json':
+					switch (this.extUri.bAsenAme(uri)) {
+						cAse 'settings.json':
 							return settingsSyncContent.settings;
 					}
 				}
@@ -270,130 +270,130 @@ export class SettingsSynchroniser extends AbstractJsonFileSynchroniser implement
 		return null;
 	}
 
-	protected async resolvePreviewContent(resource: URI): Promise<string | null> {
-		let content = await super.resolvePreviewContent(resource);
+	protected Async resolvePreviewContent(resource: URI): Promise<string | null> {
+		let content = AwAit super.resolvePreviewContent(resource);
 		if (content) {
-			const formatUtils = await this.getFormattingOptions();
+			const formAtUtils = AwAit this.getFormAttingOptions();
 			// remove ignored settings from the preview content
-			const ignoredSettings = await this.getIgnoredSettings();
-			content = updateIgnoredSettings(content, '{}', ignoredSettings, formatUtils);
+			const ignoredSettings = AwAit this.getIgnoredSettings();
+			content = updAteIgnoredSettings(content, '{}', ignoredSettings, formAtUtils);
 		}
 		return content;
 	}
 
-	private getSettingsSyncContent(remoteUserData: IRemoteUserData): ISettingsSyncContent | null {
-		return remoteUserData.syncData ? this.parseSettingsSyncContent(remoteUserData.syncData.content) : null;
+	privAte getSettingsSyncContent(remoteUserDAtA: IRemoteUserDAtA): ISettingsSyncContent | null {
+		return remoteUserDAtA.syncDAtA ? this.pArseSettingsSyncContent(remoteUserDAtA.syncDAtA.content) : null;
 	}
 
-	private parseSettingsSyncContent(syncContent: string): ISettingsSyncContent | null {
+	privAte pArseSettingsSyncContent(syncContent: string): ISettingsSyncContent | null {
 		try {
-			return parseSettingsSyncContent(syncContent);
-		} catch (e) {
+			return pArseSettingsSyncContent(syncContent);
+		} cAtch (e) {
 			this.logService.error(e);
 		}
 		return null;
 	}
 
-	private toSettingsSyncContent(settings: string): ISettingsSyncContent {
+	privAte toSettingsSyncContent(settings: string): ISettingsSyncContent {
 		return { settings };
 	}
 
-	private _defaultIgnoredSettings: Promise<string[]> | undefined = undefined;
-	private async getIgnoredSettings(content?: string): Promise<string[]> {
-		if (!this._defaultIgnoredSettings) {
-			this._defaultIgnoredSettings = this.userDataSyncUtilService.resolveDefaultIgnoredSettings();
-			const disposable = Event.any<any>(
-				Event.filter(this.extensionManagementService.onDidInstallExtension, (e => !!e.gallery)),
-				Event.filter(this.extensionManagementService.onDidUninstallExtension, (e => !e.error)))(() => {
-					disposable.dispose();
-					this._defaultIgnoredSettings = undefined;
+	privAte _defAultIgnoredSettings: Promise<string[]> | undefined = undefined;
+	privAte Async getIgnoredSettings(content?: string): Promise<string[]> {
+		if (!this._defAultIgnoredSettings) {
+			this._defAultIgnoredSettings = this.userDAtASyncUtilService.resolveDefAultIgnoredSettings();
+			const disposAble = Event.Any<Any>(
+				Event.filter(this.extensionMAnAgementService.onDidInstAllExtension, (e => !!e.gAllery)),
+				Event.filter(this.extensionMAnAgementService.onDidUninstAllExtension, (e => !e.error)))(() => {
+					disposAble.dispose();
+					this._defAultIgnoredSettings = undefined;
 				});
 		}
-		const defaultIgnoredSettings = await this._defaultIgnoredSettings;
-		return getIgnoredSettings(defaultIgnoredSettings, this.configurationService, content);
+		const defAultIgnoredSettings = AwAit this._defAultIgnoredSettings;
+		return getIgnoredSettings(defAultIgnoredSettings, this.configurAtionService, content);
 	}
 
-	private validateContent(content: string): void {
-		if (this.hasErrors(content)) {
-			throw new UserDataSyncError(localize('errorInvalidSettings', "Unable to sync settings as there are errors/warning in settings file."), UserDataSyncErrorCode.LocalInvalidContent, this.resource);
+	privAte vAlidAteContent(content: string): void {
+		if (this.hAsErrors(content)) {
+			throw new UserDAtASyncError(locAlize('errorInvAlidSettings', "UnAble to sync settings As there Are errors/wArning in settings file."), UserDAtASyncErrorCode.LocAlInvAlidContent, this.resource);
 		}
 	}
 
-	async recoverSettings(): Promise<void> {
+	Async recoverSettings(): Promise<void> {
 		try {
-			const fileContent = await this.getLocalFileContent();
+			const fileContent = AwAit this.getLocAlFileContent();
 			if (!fileContent) {
 				return;
 			}
 
-			const syncData: ISyncData = JSON.parse(fileContent.value.toString());
-			if (!isSyncData(syncData)) {
+			const syncDAtA: ISyncDAtA = JSON.pArse(fileContent.vAlue.toString());
+			if (!isSyncDAtA(syncDAtA)) {
 				return;
 			}
 
 			this.telemetryService.publicLog2('sync/settingsCorrupted');
-			const settingsSyncContent = this.parseSettingsSyncContent(syncData.content);
+			const settingsSyncContent = this.pArseSettingsSyncContent(syncDAtA.content);
 			if (!settingsSyncContent || !settingsSyncContent.settings) {
 				return;
 			}
 
 			let settings = settingsSyncContent.settings;
-			const formattingOptions = await this.getFormattingOptions();
-			for (const key in syncData) {
-				if (['version', 'content', 'machineId'].indexOf(key) === -1 && (syncData as any)[key] !== undefined) {
-					const edits: Edit[] = setProperty(settings, [key], (syncData as any)[key], formattingOptions);
+			const formAttingOptions = AwAit this.getFormAttingOptions();
+			for (const key in syncDAtA) {
+				if (['version', 'content', 'mAchineId'].indexOf(key) === -1 && (syncDAtA As Any)[key] !== undefined) {
+					const edits: Edit[] = setProperty(settings, [key], (syncDAtA As Any)[key], formAttingOptions);
 					if (edits.length) {
-						settings = applyEdits(settings, edits);
+						settings = ApplyEdits(settings, edits);
 					}
 				}
 			}
 
-			await this.fileService.writeFile(this.file, VSBuffer.fromString(settings));
-		} catch (e) {/* ignore */ }
+			AwAit this.fileService.writeFile(this.file, VSBuffer.fromString(settings));
+		} cAtch (e) {/* ignore */ }
 	}
 }
 
-export class SettingsInitializer extends AbstractInitializer {
+export clAss SettingsInitiAlizer extends AbstrActInitiAlizer {
 
 	constructor(
 		@IFileService fileService: IFileService,
 		@IEnvironmentService environmentService: IEnvironmentService,
-		@IUserDataSyncLogService logService: IUserDataSyncLogService,
+		@IUserDAtASyncLogService logService: IUserDAtASyncLogService,
 	) {
 		super(SyncResource.Settings, environmentService, logService, fileService);
 	}
 
-	async doInitialize(remoteUserData: IRemoteUserData): Promise<void> {
-		const settingsSyncContent = remoteUserData.syncData ? this.parseSettingsSyncContent(remoteUserData.syncData.content) : null;
+	Async doInitiAlize(remoteUserDAtA: IRemoteUserDAtA): Promise<void> {
+		const settingsSyncContent = remoteUserDAtA.syncDAtA ? this.pArseSettingsSyncContent(remoteUserDAtA.syncDAtA.content) : null;
 		if (!settingsSyncContent) {
-			this.logService.info('Skipping initializing settings because remote settings does not exist.');
+			this.logService.info('Skipping initiAlizing settings becAuse remote settings does not exist.');
 			return;
 		}
 
-		const isEmpty = await this.isEmpty();
+		const isEmpty = AwAit this.isEmpty();
 		if (!isEmpty) {
-			this.logService.info('Skipping initializing settings because local settings exist.');
+			this.logService.info('Skipping initiAlizing settings becAuse locAl settings exist.');
 			return;
 		}
 
-		await this.fileService.writeFile(this.environmentService.settingsResource, VSBuffer.fromString(settingsSyncContent.settings));
+		AwAit this.fileService.writeFile(this.environmentService.settingsResource, VSBuffer.fromString(settingsSyncContent.settings));
 
-		await this.updateLastSyncUserData(remoteUserData);
+		AwAit this.updAteLAstSyncUserDAtA(remoteUserDAtA);
 	}
 
-	private async isEmpty(): Promise<boolean> {
+	privAte Async isEmpty(): Promise<booleAn> {
 		try {
-			const fileContent = await this.fileService.readFile(this.environmentService.settingsResource);
-			return isEmpty(fileContent.value.toString().trim());
-		} catch (error) {
-			return (<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_NOT_FOUND;
+			const fileContent = AwAit this.fileService.reAdFile(this.environmentService.settingsResource);
+			return isEmpty(fileContent.vAlue.toString().trim());
+		} cAtch (error) {
+			return (<FileOperAtionError>error).fileOperAtionResult === FileOperAtionResult.FILE_NOT_FOUND;
 		}
 	}
 
-	private parseSettingsSyncContent(syncContent: string): ISettingsSyncContent | null {
+	privAte pArseSettingsSyncContent(syncContent: string): ISettingsSyncContent | null {
 		try {
-			return parseSettingsSyncContent(syncContent);
-		} catch (e) {
+			return pArseSettingsSyncContent(syncContent);
+		} cAtch (e) {
 			this.logService.error(e);
 		}
 		return null;
@@ -401,14 +401,14 @@ export class SettingsInitializer extends AbstractInitializer {
 
 }
 
-function isSyncData(thing: any): thing is ISyncData {
+function isSyncDAtA(thing: Any): thing is ISyncDAtA {
 	if (thing
 		&& (thing.version !== undefined && typeof thing.version === 'number')
 		&& (thing.content !== undefined && typeof thing.content === 'string')
-		&& (thing.machineId !== undefined && typeof thing.machineId === 'string')
+		&& (thing.mAchineId !== undefined && typeof thing.mAchineId === 'string')
 	) {
 		return true;
 	}
 
-	return false;
+	return fAlse;
 }

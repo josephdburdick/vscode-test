@@ -1,103 +1,103 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
 
-export const IEnvironmentVariableService = createDecorator<IEnvironmentVariableService>('environmentVariableService');
+export const IEnvironmentVAriAbleService = creAteDecorAtor<IEnvironmentVAriAbleService>('environmentVAriAbleService');
 
-export enum EnvironmentVariableMutatorType {
-	Replace = 1,
+export enum EnvironmentVAriAbleMutAtorType {
+	ReplAce = 1,
 	Append = 2,
 	Prepend = 3
 }
 
-export interface IEnvironmentVariableMutator {
-	readonly value: string;
-	readonly type: EnvironmentVariableMutatorType;
+export interfAce IEnvironmentVAriAbleMutAtor {
+	reAdonly vAlue: string;
+	reAdonly type: EnvironmentVAriAbleMutAtorType;
 }
 
-export interface IExtensionOwnedEnvironmentVariableMutator extends IEnvironmentVariableMutator {
-	readonly extensionIdentifier: string;
+export interfAce IExtensionOwnedEnvironmentVAriAbleMutAtor extends IEnvironmentVAriAbleMutAtor {
+	reAdonly extensionIdentifier: string;
 }
 
-export interface IEnvironmentVariableCollection {
-	readonly map: ReadonlyMap<string, IEnvironmentVariableMutator>;
+export interfAce IEnvironmentVAriAbleCollection {
+	reAdonly mAp: ReAdonlyMAp<string, IEnvironmentVAriAbleMutAtor>;
 }
 
-export interface IEnvironmentVariableCollectionWithPersistence extends IEnvironmentVariableCollection {
-	readonly persistent: boolean;
+export interfAce IEnvironmentVAriAbleCollectionWithPersistence extends IEnvironmentVAriAbleCollection {
+	reAdonly persistent: booleAn;
 }
 
-export interface IMergedEnvironmentVariableCollectionDiff {
-	added: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
-	changed: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
-	removed: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
+export interfAce IMergedEnvironmentVAriAbleCollectionDiff {
+	Added: ReAdonlyMAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]>;
+	chAnged: ReAdonlyMAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]>;
+	removed: ReAdonlyMAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]>;
 }
 
 /**
- * Represents an environment variable collection that results from merging several collections
+ * Represents An environment vAriAble collection thAt results from merging severAl collections
  * together.
  */
-export interface IMergedEnvironmentVariableCollection {
-	readonly map: ReadonlyMap<string, IExtensionOwnedEnvironmentVariableMutator[]>;
+export interfAce IMergedEnvironmentVAriAbleCollection {
+	reAdonly mAp: ReAdonlyMAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]>;
 
 	/**
-	 * Applies this collection to a process environment.
+	 * Applies this collection to A process environment.
 	 */
-	applyToProcessEnvironment(env: IProcessEnvironment): void;
+	ApplyToProcessEnvironment(env: IProcessEnvironment): void;
 
 	/**
-	 * Generates a diff of this connection against another. Returns undefined if the collections are
-	 * the same.
+	 * GenerAtes A diff of this connection AgAinst Another. Returns undefined if the collections Are
+	 * the sAme.
 	 */
-	diff(other: IMergedEnvironmentVariableCollection): IMergedEnvironmentVariableCollectionDiff | undefined;
+	diff(other: IMergedEnvironmentVAriAbleCollection): IMergedEnvironmentVAriAbleCollectionDiff | undefined;
 }
 
 /**
- * Tracks and persists environment variable collections as defined by extensions.
+ * TrAcks And persists environment vAriAble collections As defined by extensions.
  */
-export interface IEnvironmentVariableService {
-	readonly _serviceBrand: undefined;
+export interfAce IEnvironmentVAriAbleService {
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Gets a single collection constructed by merging all environment variable collections into
+	 * Gets A single collection constructed by merging All environment vAriAble collections into
 	 * one.
 	 */
-	readonly collections: ReadonlyMap<string, IEnvironmentVariableCollection>;
+	reAdonly collections: ReAdonlyMAp<string, IEnvironmentVAriAbleCollection>;
 
 	/**
-	 * Gets a single collection constructed by merging all environment variable collections into
+	 * Gets A single collection constructed by merging All environment vAriAble collections into
 	 * one.
 	 */
-	readonly mergedCollection: IMergedEnvironmentVariableCollection;
+	reAdonly mergedCollection: IMergedEnvironmentVAriAbleCollection;
 
 	/**
-	 * An event that is fired when an extension's environment variable collection changes, the event
+	 * An event thAt is fired when An extension's environment vAriAble collection chAnges, the event
 	 * provides the new merged collection.
 	 */
-	onDidChangeCollections: Event<IMergedEnvironmentVariableCollection>;
+	onDidChAngeCollections: Event<IMergedEnvironmentVAriAbleCollection>;
 
 	/**
-	 * Sets an extension's environment variable collection.
+	 * Sets An extension's environment vAriAble collection.
 	 */
-	set(extensionIdentifier: string, collection: IEnvironmentVariableCollection): void;
+	set(extensionIdentifier: string, collection: IEnvironmentVAriAbleCollection): void;
 
 	/**
-	 * Deletes an extension's environment variable collection.
+	 * Deletes An extension's environment vAriAble collection.
 	 */
 	delete(extensionIdentifier: string): void;
 }
 
-/** [variable, mutator] */
-export type ISerializableEnvironmentVariableCollection = [string, IEnvironmentVariableMutator][];
+/** [vAriAble, mutAtor] */
+export type ISeriAlizAbleEnvironmentVAriAbleCollection = [string, IEnvironmentVAriAbleMutAtor][];
 
-export interface IEnvironmentVariableInfo {
-	readonly requiresAction: boolean;
+export interfAce IEnvironmentVAriAbleInfo {
+	reAdonly requiresAction: booleAn;
 	getInfo(): string;
 	getIcon(): string;
-	getActions?(): { label: string, iconClass?: string, run: () => void, commandId: string }[];
+	getActions?(): { lAbel: string, iconClAss?: string, run: () => void, commAndId: string }[];
 }

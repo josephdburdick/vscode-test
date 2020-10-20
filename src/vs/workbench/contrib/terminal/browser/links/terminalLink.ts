@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type { IViewportRange, IBufferRange, ILink, ILinkDecorations, Terminal } from 'xterm';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import * as dom from 'vs/base/browser/dom';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { convertBufferRangeToViewport } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkHelpers';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { isMacintosh } from 'vs/base/common/platform';
-import { localize } from 'vs/nls';
-import { Emitter, Event } from 'vs/base/common/event';
+import type { IViewportRAnge, IBufferRAnge, ILink, ILinkDecorAtions, TerminAl } from 'xterm';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import * As dom from 'vs/bAse/browser/dom';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { convertBufferRAngeToViewport } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLinkHelpers';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { locAlize } from 'vs/nls';
+import { Emitter, Event } from 'vs/bAse/common/event';
 
-export const OPEN_FILE_LABEL = localize('openFile', 'Open file in editor');
-export const FOLDER_IN_WORKSPACE_LABEL = localize('focusFolder', 'Focus folder in explorer');
-export const FOLDER_NOT_IN_WORKSPACE_LABEL = localize('openFolder', 'Open folder in new window');
+export const OPEN_FILE_LABEL = locAlize('openFile', 'Open file in editor');
+export const FOLDER_IN_WORKSPACE_LABEL = locAlize('focusFolder', 'Focus folder in explorer');
+export const FOLDER_NOT_IN_WORKSPACE_LABEL = locAlize('openFolder', 'Open folder in new window');
 
-export class TerminalLink extends DisposableStore implements ILink {
-	decorations: ILinkDecorations;
+export clAss TerminAlLink extends DisposAbleStore implements ILink {
+	decorAtions: ILinkDecorAtions;
 
-	private _tooltipScheduler: RunOnceScheduler | undefined;
-	private _hoverListeners: DisposableStore | undefined;
+	privAte _tooltipScheduler: RunOnceScheduler | undefined;
+	privAte _hoverListeners: DisposAbleStore | undefined;
 
-	private readonly _onInvalidated = new Emitter<void>();
-	public get onInvalidated(): Event<void> { return this._onInvalidated.event; }
+	privAte reAdonly _onInvAlidAted = new Emitter<void>();
+	public get onInvAlidAted(): Event<void> { return this._onInvAlidAted.event; }
 
 	constructor(
-		private readonly _xterm: Terminal,
-		public readonly range: IBufferRange,
-		public readonly text: string,
-		private readonly _viewportY: number,
-		private readonly _activateCallback: (event: MouseEvent | undefined, uri: string) => void,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
-		private readonly _isHighConfidenceLink: boolean,
-		public readonly label: string | undefined,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		privAte reAdonly _xterm: TerminAl,
+		public reAdonly rAnge: IBufferRAnge,
+		public reAdonly text: string,
+		privAte reAdonly _viewportY: number,
+		privAte reAdonly _ActivAteCAllbAck: (event: MouseEvent | undefined, uri: string) => void,
+		privAte reAdonly _tooltipCAllbAck: (link: TerminAlLink, viewportRAnge: IViewportRAnge, modifierDownCAllbAck?: () => void, modifierUpCAllbAck?: () => void) => void,
+		privAte reAdonly _isHighConfidenceLink: booleAn,
+		public reAdonly lAbel: string | undefined,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
 		super();
-		this.decorations = {
-			pointerCursor: false,
+		this.decorAtions = {
+			pointerCursor: fAlse,
 			underline: this._isHighConfidenceLink
 		};
 	}
@@ -52,99 +52,99 @@ export class TerminalLink extends DisposableStore implements ILink {
 		this._tooltipScheduler = undefined;
 	}
 
-	activate(event: MouseEvent | undefined, text: string): void {
-		this._activateCallback(event, text);
+	ActivAte(event: MouseEvent | undefined, text: string): void {
+		this._ActivAteCAllbAck(event, text);
 	}
 
 	hover(event: MouseEvent, text: string): void {
-		// Listen for modifier before handing it off to the hover to handle so it gets disposed correctly
-		this._hoverListeners = new DisposableStore();
-		this._hoverListeners.add(dom.addDisposableListener(document, 'keydown', e => {
-			if (!e.repeat && this._isModifierDown(e)) {
-				this._enableDecorations();
+		// Listen for modifier before hAnding it off to the hover to hAndle so it gets disposed correctly
+		this._hoverListeners = new DisposAbleStore();
+		this._hoverListeners.Add(dom.AddDisposAbleListener(document, 'keydown', e => {
+			if (!e.repeAt && this._isModifierDown(e)) {
+				this._enAbleDecorAtions();
 			}
 		}));
-		this._hoverListeners.add(dom.addDisposableListener(document, 'keyup', e => {
-			if (!e.repeat && !this._isModifierDown(e)) {
-				this._disableDecorations();
-			}
-		}));
-
-		// Listen for when the terminal renders on the same line as the link
-		this._hoverListeners.add(this._xterm.onRender(e => {
-			const viewportRangeY = this.range.start.y - this._viewportY;
-			if (viewportRangeY >= e.start && viewportRangeY <= e.end) {
-				this._onInvalidated.fire();
+		this._hoverListeners.Add(dom.AddDisposAbleListener(document, 'keyup', e => {
+			if (!e.repeAt && !this._isModifierDown(e)) {
+				this._disAbleDecorAtions();
 			}
 		}));
 
-		// Only show the tooltip and highlight for high confidence links (not word/search workspace
-		// links). Feedback was that this makes using the terminal overly noisy.
+		// Listen for when the terminAl renders on the sAme line As the link
+		this._hoverListeners.Add(this._xterm.onRender(e => {
+			const viewportRAngeY = this.rAnge.stArt.y - this._viewportY;
+			if (viewportRAngeY >= e.stArt && viewportRAngeY <= e.end) {
+				this._onInvAlidAted.fire();
+			}
+		}));
+
+		// Only show the tooltip And highlight for high confidence links (not word/seArch workspAce
+		// links). FeedbAck wAs thAt this mAkes using the terminAl overly noisy.
 		if (this._isHighConfidenceLink) {
-			const timeout = this._configurationService.getValue<number>('editor.hover.delay');
+			const timeout = this._configurAtionService.getVAlue<number>('editor.hover.delAy');
 			this._tooltipScheduler = new RunOnceScheduler(() => {
-				this._tooltipCallback(
+				this._tooltipCAllbAck(
 					this,
-					convertBufferRangeToViewport(this.range, this._viewportY),
-					this._isHighConfidenceLink ? () => this._enableDecorations() : undefined,
-					this._isHighConfidenceLink ? () => this._disableDecorations() : undefined
+					convertBufferRAngeToViewport(this.rAnge, this._viewportY),
+					this._isHighConfidenceLink ? () => this._enAbleDecorAtions() : undefined,
+					this._isHighConfidenceLink ? () => this._disAbleDecorAtions() : undefined
 				);
-				// Clear out scheduler until next hover event
+				// CleAr out scheduler until next hover event
 				this._tooltipScheduler?.dispose();
 				this._tooltipScheduler = undefined;
 			}, timeout);
-			this.add(this._tooltipScheduler);
+			this.Add(this._tooltipScheduler);
 			this._tooltipScheduler.schedule();
 		}
 
-		const origin = { x: event.pageX, y: event.pageY };
-		this._hoverListeners.add(dom.addDisposableListener(document, dom.EventType.MOUSE_MOVE, e => {
-			// Update decorations
+		const origin = { x: event.pAgeX, y: event.pAgeY };
+		this._hoverListeners.Add(dom.AddDisposAbleListener(document, dom.EventType.MOUSE_MOVE, e => {
+			// UpdAte decorAtions
 			if (this._isModifierDown(e)) {
-				this._enableDecorations();
+				this._enAbleDecorAtions();
 			} else {
-				this._disableDecorations();
+				this._disAbleDecorAtions();
 			}
 
 			// Reset the scheduler if the mouse moves too much
-			if (Math.abs(e.pageX - origin.x) > window.devicePixelRatio * 2 || Math.abs(e.pageY - origin.y) > window.devicePixelRatio * 2) {
-				origin.x = e.pageX;
-				origin.y = e.pageY;
+			if (MAth.Abs(e.pAgeX - origin.x) > window.devicePixelRAtio * 2 || MAth.Abs(e.pAgeY - origin.y) > window.devicePixelRAtio * 2) {
+				origin.x = e.pAgeX;
+				origin.y = e.pAgeY;
 				this._tooltipScheduler?.schedule();
 			}
 		}));
 	}
 
-	leave(): void {
+	leAve(): void {
 		this._hoverListeners?.dispose();
 		this._hoverListeners = undefined;
 		this._tooltipScheduler?.dispose();
 		this._tooltipScheduler = undefined;
 	}
 
-	private _enableDecorations(): void {
-		if (!this.decorations.pointerCursor) {
-			this.decorations.pointerCursor = true;
+	privAte _enAbleDecorAtions(): void {
+		if (!this.decorAtions.pointerCursor) {
+			this.decorAtions.pointerCursor = true;
 		}
-		if (!this.decorations.underline) {
-			this.decorations.underline = true;
-		}
-	}
-
-	private _disableDecorations(): void {
-		if (this.decorations.pointerCursor) {
-			this.decorations.pointerCursor = false;
-		}
-		if (this.decorations.underline !== this._isHighConfidenceLink) {
-			this.decorations.underline = this._isHighConfidenceLink;
+		if (!this.decorAtions.underline) {
+			this.decorAtions.underline = true;
 		}
 	}
 
-	private _isModifierDown(event: MouseEvent | KeyboardEvent): boolean {
-		const multiCursorModifier = this._configurationService.getValue<'ctrlCmd' | 'alt'>('editor.multiCursorModifier');
+	privAte _disAbleDecorAtions(): void {
+		if (this.decorAtions.pointerCursor) {
+			this.decorAtions.pointerCursor = fAlse;
+		}
+		if (this.decorAtions.underline !== this._isHighConfidenceLink) {
+			this.decorAtions.underline = this._isHighConfidenceLink;
+		}
+	}
+
+	privAte _isModifierDown(event: MouseEvent | KeyboArdEvent): booleAn {
+		const multiCursorModifier = this._configurAtionService.getVAlue<'ctrlCmd' | 'Alt'>('editor.multiCursorModifier');
 		if (multiCursorModifier === 'ctrlCmd') {
-			return !!event.altKey;
+			return !!event.AltKey;
 		}
-		return isMacintosh ? event.metaKey : event.ctrlKey;
+		return isMAcintosh ? event.metAKey : event.ctrlKey;
 	}
 }

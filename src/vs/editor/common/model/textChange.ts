@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as buffer from 'vs/base/common/buffer';
+import * As buffer from 'vs/bAse/common/buffer';
 import { decodeUTF16LE } from 'vs/editor/common/core/stringBuilder';
 
-function escapeNewLine(str: string): string {
+function escApeNewLine(str: string): string {
 	return (
 		str
-			.replace(/\n/g, '\\n')
-			.replace(/\r/g, '\\r')
+			.replAce(/\n/g, '\\n')
+			.replAce(/\r/g, '\\r')
 	);
 }
 
-export class TextChange {
+export clAss TextChAnge {
 
 	public get oldLength(): number {
 		return this.oldText.length;
@@ -33,39 +33,39 @@ export class TextChange {
 	}
 
 	constructor(
-		public readonly oldPosition: number,
-		public readonly oldText: string,
-		public readonly newPosition: number,
-		public readonly newText: string
+		public reAdonly oldPosition: number,
+		public reAdonly oldText: string,
+		public reAdonly newPosition: number,
+		public reAdonly newText: string
 	) { }
 
 	public toString(): string {
 		if (this.oldText.length === 0) {
-			return `(insert@${this.oldPosition} "${escapeNewLine(this.newText)}")`;
+			return `(insert@${this.oldPosition} "${escApeNewLine(this.newText)}")`;
 		}
 		if (this.newText.length === 0) {
-			return `(delete@${this.oldPosition} "${escapeNewLine(this.oldText)}")`;
+			return `(delete@${this.oldPosition} "${escApeNewLine(this.oldText)}")`;
 		}
-		return `(replace@${this.oldPosition} "${escapeNewLine(this.oldText)}" with "${escapeNewLine(this.newText)}")`;
+		return `(replAce@${this.oldPosition} "${escApeNewLine(this.oldText)}" with "${escApeNewLine(this.newText)}")`;
 	}
 
-	private static _writeStringSize(str: string): number {
+	privAte stAtic _writeStringSize(str: string): number {
 		return (
 			4 + 2 * str.length
 		);
 	}
 
-	private static _writeString(b: Uint8Array, str: string, offset: number): number {
+	privAte stAtic _writeString(b: Uint8ArrAy, str: string, offset: number): number {
 		const len = str.length;
 		buffer.writeUInt32BE(b, len, offset); offset += 4;
 		for (let i = 0; i < len; i++) {
-			buffer.writeUInt16LE(b, str.charCodeAt(i), offset); offset += 2;
+			buffer.writeUInt16LE(b, str.chArCodeAt(i), offset); offset += 2;
 		}
 		return offset;
 	}
 
-	private static _readString(b: Uint8Array, offset: number): string {
-		const len = buffer.readUInt32BE(b, offset); offset += 4;
+	privAte stAtic _reAdString(b: Uint8ArrAy, offset: number): string {
+		const len = buffer.reAdUInt32BE(b, offset); offset += 4;
 		return decodeUTF16LE(b, offset, len);
 	}
 
@@ -73,52 +73,52 @@ export class TextChange {
 		return (
 			+ 4 // oldPosition
 			+ 4 // newPosition
-			+ TextChange._writeStringSize(this.oldText)
-			+ TextChange._writeStringSize(this.newText)
+			+ TextChAnge._writeStringSize(this.oldText)
+			+ TextChAnge._writeStringSize(this.newText)
 		);
 	}
 
-	public write(b: Uint8Array, offset: number): number {
+	public write(b: Uint8ArrAy, offset: number): number {
 		buffer.writeUInt32BE(b, this.oldPosition, offset); offset += 4;
 		buffer.writeUInt32BE(b, this.newPosition, offset); offset += 4;
-		offset = TextChange._writeString(b, this.oldText, offset);
-		offset = TextChange._writeString(b, this.newText, offset);
+		offset = TextChAnge._writeString(b, this.oldText, offset);
+		offset = TextChAnge._writeString(b, this.newText, offset);
 		return offset;
 	}
 
-	public static read(b: Uint8Array, offset: number, dest: TextChange[]): number {
-		const oldPosition = buffer.readUInt32BE(b, offset); offset += 4;
-		const newPosition = buffer.readUInt32BE(b, offset); offset += 4;
-		const oldText = TextChange._readString(b, offset); offset += TextChange._writeStringSize(oldText);
-		const newText = TextChange._readString(b, offset); offset += TextChange._writeStringSize(newText);
-		dest.push(new TextChange(oldPosition, oldText, newPosition, newText));
+	public stAtic reAd(b: Uint8ArrAy, offset: number, dest: TextChAnge[]): number {
+		const oldPosition = buffer.reAdUInt32BE(b, offset); offset += 4;
+		const newPosition = buffer.reAdUInt32BE(b, offset); offset += 4;
+		const oldText = TextChAnge._reAdString(b, offset); offset += TextChAnge._writeStringSize(oldText);
+		const newText = TextChAnge._reAdString(b, offset); offset += TextChAnge._writeStringSize(newText);
+		dest.push(new TextChAnge(oldPosition, oldText, newPosition, newText));
 		return offset;
 	}
 }
 
-export function compressConsecutiveTextChanges(prevEdits: TextChange[] | null, currEdits: TextChange[]): TextChange[] {
+export function compressConsecutiveTextChAnges(prevEdits: TextChAnge[] | null, currEdits: TextChAnge[]): TextChAnge[] {
 	if (prevEdits === null || prevEdits.length === 0) {
 		return currEdits;
 	}
-	const compressor = new TextChangeCompressor(prevEdits, currEdits);
+	const compressor = new TextChAngeCompressor(prevEdits, currEdits);
 	return compressor.compress();
 }
 
-class TextChangeCompressor {
+clAss TextChAngeCompressor {
 
-	private _prevEdits: TextChange[];
-	private _currEdits: TextChange[];
+	privAte _prevEdits: TextChAnge[];
+	privAte _currEdits: TextChAnge[];
 
-	private _result: TextChange[];
-	private _resultLen: number;
+	privAte _result: TextChAnge[];
+	privAte _resultLen: number;
 
-	private _prevLen: number;
-	private _prevDeltaOffset: number;
+	privAte _prevLen: number;
+	privAte _prevDeltAOffset: number;
 
-	private _currLen: number;
-	private _currDeltaOffset: number;
+	privAte _currLen: number;
+	privAte _currDeltAOffset: number;
 
-	constructor(prevEdits: TextChange[], currEdits: TextChange[]) {
+	constructor(prevEdits: TextChAnge[], currEdits: TextChAnge[]) {
 		this._prevEdits = prevEdits;
 		this._currEdits = currEdits;
 
@@ -126,13 +126,13 @@ class TextChangeCompressor {
 		this._resultLen = 0;
 
 		this._prevLen = this._prevEdits.length;
-		this._prevDeltaOffset = 0;
+		this._prevDeltAOffset = 0;
 
 		this._currLen = this._currEdits.length;
-		this._currDeltaOffset = 0;
+		this._currDeltAOffset = 0;
 	}
 
-	public compress(): TextChange[] {
+	public compress(): TextChAnge[] {
 		let prevIndex = 0;
 		let currIndex = 0;
 
@@ -142,47 +142,47 @@ class TextChangeCompressor {
 		while (prevIndex < this._prevLen || currIndex < this._currLen) {
 
 			if (prevEdit === null) {
-				this._acceptCurr(currEdit!);
+				this._AcceptCurr(currEdit!);
 				currEdit = this._getCurr(++currIndex);
 				continue;
 			}
 
 			if (currEdit === null) {
-				this._acceptPrev(prevEdit);
+				this._AcceptPrev(prevEdit);
 				prevEdit = this._getPrev(++prevIndex);
 				continue;
 			}
 
 			if (currEdit.oldEnd <= prevEdit.newPosition) {
-				this._acceptCurr(currEdit);
+				this._AcceptCurr(currEdit);
 				currEdit = this._getCurr(++currIndex);
 				continue;
 			}
 
 			if (prevEdit.newEnd <= currEdit.oldPosition) {
-				this._acceptPrev(prevEdit);
+				this._AcceptPrev(prevEdit);
 				prevEdit = this._getPrev(++prevIndex);
 				continue;
 			}
 
 			if (currEdit.oldPosition < prevEdit.newPosition) {
-				const [e1, e2] = TextChangeCompressor._splitCurr(currEdit, prevEdit.newPosition - currEdit.oldPosition);
-				this._acceptCurr(e1);
+				const [e1, e2] = TextChAngeCompressor._splitCurr(currEdit, prevEdit.newPosition - currEdit.oldPosition);
+				this._AcceptCurr(e1);
 				currEdit = e2;
 				continue;
 			}
 
 			if (prevEdit.newPosition < currEdit.oldPosition) {
-				const [e1, e2] = TextChangeCompressor._splitPrev(prevEdit, currEdit.oldPosition - prevEdit.newPosition);
-				this._acceptPrev(e1);
+				const [e1, e2] = TextChAngeCompressor._splitPrev(prevEdit, currEdit.oldPosition - prevEdit.newPosition);
+				this._AcceptPrev(e1);
 				prevEdit = e2;
 				continue;
 			}
 
 			// At this point, currEdit.oldPosition === prevEdit.newPosition
 
-			let mergePrev: TextChange;
-			let mergeCurr: TextChange;
+			let mergePrev: TextChAnge;
+			let mergeCurr: TextChAnge;
 
 			if (currEdit.oldEnd === prevEdit.newEnd) {
 				mergePrev = prevEdit;
@@ -190,82 +190,82 @@ class TextChangeCompressor {
 				prevEdit = this._getPrev(++prevIndex);
 				currEdit = this._getCurr(++currIndex);
 			} else if (currEdit.oldEnd < prevEdit.newEnd) {
-				const [e1, e2] = TextChangeCompressor._splitPrev(prevEdit, currEdit.oldLength);
+				const [e1, e2] = TextChAngeCompressor._splitPrev(prevEdit, currEdit.oldLength);
 				mergePrev = e1;
 				mergeCurr = currEdit;
 				prevEdit = e2;
 				currEdit = this._getCurr(++currIndex);
 			} else {
-				const [e1, e2] = TextChangeCompressor._splitCurr(currEdit, prevEdit.newLength);
+				const [e1, e2] = TextChAngeCompressor._splitCurr(currEdit, prevEdit.newLength);
 				mergePrev = prevEdit;
 				mergeCurr = e1;
 				prevEdit = this._getPrev(++prevIndex);
 				currEdit = e2;
 			}
 
-			this._result[this._resultLen++] = new TextChange(
+			this._result[this._resultLen++] = new TextChAnge(
 				mergePrev.oldPosition,
 				mergePrev.oldText,
 				mergeCurr.newPosition,
 				mergeCurr.newText
 			);
-			this._prevDeltaOffset += mergePrev.newLength - mergePrev.oldLength;
-			this._currDeltaOffset += mergeCurr.newLength - mergeCurr.oldLength;
+			this._prevDeltAOffset += mergePrev.newLength - mergePrev.oldLength;
+			this._currDeltAOffset += mergeCurr.newLength - mergeCurr.oldLength;
 		}
 
-		const merged = TextChangeCompressor._merge(this._result);
-		const cleaned = TextChangeCompressor._removeNoOps(merged);
-		return cleaned;
+		const merged = TextChAngeCompressor._merge(this._result);
+		const cleAned = TextChAngeCompressor._removeNoOps(merged);
+		return cleAned;
 	}
 
-	private _acceptCurr(currEdit: TextChange): void {
-		this._result[this._resultLen++] = TextChangeCompressor._rebaseCurr(this._prevDeltaOffset, currEdit);
-		this._currDeltaOffset += currEdit.newLength - currEdit.oldLength;
+	privAte _AcceptCurr(currEdit: TextChAnge): void {
+		this._result[this._resultLen++] = TextChAngeCompressor._rebAseCurr(this._prevDeltAOffset, currEdit);
+		this._currDeltAOffset += currEdit.newLength - currEdit.oldLength;
 	}
 
-	private _getCurr(currIndex: number): TextChange | null {
+	privAte _getCurr(currIndex: number): TextChAnge | null {
 		return (currIndex < this._currLen ? this._currEdits[currIndex] : null);
 	}
 
-	private _acceptPrev(prevEdit: TextChange): void {
-		this._result[this._resultLen++] = TextChangeCompressor._rebasePrev(this._currDeltaOffset, prevEdit);
-		this._prevDeltaOffset += prevEdit.newLength - prevEdit.oldLength;
+	privAte _AcceptPrev(prevEdit: TextChAnge): void {
+		this._result[this._resultLen++] = TextChAngeCompressor._rebAsePrev(this._currDeltAOffset, prevEdit);
+		this._prevDeltAOffset += prevEdit.newLength - prevEdit.oldLength;
 	}
 
-	private _getPrev(prevIndex: number): TextChange | null {
+	privAte _getPrev(prevIndex: number): TextChAnge | null {
 		return (prevIndex < this._prevLen ? this._prevEdits[prevIndex] : null);
 	}
 
-	private static _rebaseCurr(prevDeltaOffset: number, currEdit: TextChange): TextChange {
-		return new TextChange(
-			currEdit.oldPosition - prevDeltaOffset,
+	privAte stAtic _rebAseCurr(prevDeltAOffset: number, currEdit: TextChAnge): TextChAnge {
+		return new TextChAnge(
+			currEdit.oldPosition - prevDeltAOffset,
 			currEdit.oldText,
 			currEdit.newPosition,
 			currEdit.newText
 		);
 	}
 
-	private static _rebasePrev(currDeltaOffset: number, prevEdit: TextChange): TextChange {
-		return new TextChange(
+	privAte stAtic _rebAsePrev(currDeltAOffset: number, prevEdit: TextChAnge): TextChAnge {
+		return new TextChAnge(
 			prevEdit.oldPosition,
 			prevEdit.oldText,
-			prevEdit.newPosition + currDeltaOffset,
+			prevEdit.newPosition + currDeltAOffset,
 			prevEdit.newText
 		);
 	}
 
-	private static _splitPrev(edit: TextChange, offset: number): [TextChange, TextChange] {
+	privAte stAtic _splitPrev(edit: TextChAnge, offset: number): [TextChAnge, TextChAnge] {
 		const preText = edit.newText.substr(0, offset);
 		const postText = edit.newText.substr(offset);
 
 		return [
-			new TextChange(
+			new TextChAnge(
 				edit.oldPosition,
 				edit.oldText,
 				edit.newPosition,
 				preText
 			),
-			new TextChange(
+			new TextChAnge(
 				edit.oldEnd,
 				'',
 				edit.newPosition + offset,
@@ -274,18 +274,18 @@ class TextChangeCompressor {
 		];
 	}
 
-	private static _splitCurr(edit: TextChange, offset: number): [TextChange, TextChange] {
+	privAte stAtic _splitCurr(edit: TextChAnge, offset: number): [TextChAnge, TextChAnge] {
 		const preText = edit.oldText.substr(0, offset);
 		const postText = edit.oldText.substr(offset);
 
 		return [
-			new TextChange(
+			new TextChAnge(
 				edit.oldPosition,
 				preText,
 				edit.newPosition,
 				edit.newText
 			),
-			new TextChange(
+			new TextChAnge(
 				edit.oldPosition + offset,
 				postText,
 				edit.newEnd,
@@ -294,12 +294,12 @@ class TextChangeCompressor {
 		];
 	}
 
-	private static _merge(edits: TextChange[]): TextChange[] {
+	privAte stAtic _merge(edits: TextChAnge[]): TextChAnge[] {
 		if (edits.length === 0) {
 			return edits;
 		}
 
-		let result: TextChange[] = [], resultLen = 0;
+		let result: TextChAnge[] = [], resultLen = 0;
 
 		let prev = edits[0];
 		for (let i = 1; i < edits.length; i++) {
@@ -307,7 +307,7 @@ class TextChangeCompressor {
 
 			if (prev.oldEnd === curr.oldPosition) {
 				// Merge into `prev`
-				prev = new TextChange(
+				prev = new TextChAnge(
 					prev.oldPosition,
 					prev.oldText + curr.oldText,
 					prev.newPosition,
@@ -323,12 +323,12 @@ class TextChangeCompressor {
 		return result;
 	}
 
-	private static _removeNoOps(edits: TextChange[]): TextChange[] {
+	privAte stAtic _removeNoOps(edits: TextChAnge[]): TextChAnge[] {
 		if (edits.length === 0) {
 			return edits;
 		}
 
-		let result: TextChange[] = [], resultLen = 0;
+		let result: TextChAnge[] = [], resultLen = 0;
 
 		for (let i = 0; i < edits.length; i++) {
 			const edit = edits[i];

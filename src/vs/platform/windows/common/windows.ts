@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isMacintosh, isLinux, isWeb, IProcessEnvironment } from 'vs/base/common/platform';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkspaceIdentifier, ISingleFolderWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { LogLevel } from 'vs/platform/log/common/log';
-import { ExportData } from 'vs/base/common/performance';
+import { isMAcintosh, isLinux, isWeb, IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWorkspAceIdentifier, ISingleFolderWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { LogLevel } from 'vs/plAtform/log/common/log';
+import { ExportDAtA } from 'vs/bAse/common/performAnce';
 
 export const WindowMinimumSize = {
 	WIDTH: 400,
@@ -18,249 +18,249 @@ export const WindowMinimumSize = {
 	HEIGHT: 270
 };
 
-export interface IBaseOpenWindowsOptions {
-	forceReuseWindow?: boolean;
+export interfAce IBAseOpenWindowsOptions {
+	forceReuseWindow?: booleAn;
 }
 
-export interface IOpenWindowOptions extends IBaseOpenWindowsOptions {
-	forceNewWindow?: boolean;
-	preferNewWindow?: boolean;
+export interfAce IOpenWindowOptions extends IBAseOpenWindowsOptions {
+	forceNewWindow?: booleAn;
+	preferNewWindow?: booleAn;
 
-	noRecentEntry?: boolean;
+	noRecentEntry?: booleAn;
 
-	addMode?: boolean;
+	AddMode?: booleAn;
 
-	diffMode?: boolean;
-	gotoLineMode?: boolean;
+	diffMode?: booleAn;
+	gotoLineMode?: booleAn;
 
-	waitMarkerFileURI?: URI;
+	wAitMArkerFileURI?: URI;
 }
 
-export interface IAddFoldersRequest {
+export interfAce IAddFoldersRequest {
 	foldersToAdd: UriComponents[];
 }
 
-export interface IOpenedWindow {
+export interfAce IOpenedWindow {
 	id: number;
-	workspace?: IWorkspaceIdentifier;
-	folderUri?: ISingleFolderWorkspaceIdentifier;
+	workspAce?: IWorkspAceIdentifier;
+	folderUri?: ISingleFolderWorkspAceIdentifier;
 	title: string;
-	filename?: string;
-	dirty: boolean;
+	filenAme?: string;
+	dirty: booleAn;
 }
 
-export interface IOpenEmptyWindowOptions extends IBaseOpenWindowsOptions {
+export interfAce IOpenEmptyWindowOptions extends IBAseOpenWindowsOptions {
 	remoteAuthority?: string;
 }
 
-export type IWindowOpenable = IWorkspaceToOpen | IFolderToOpen | IFileToOpen;
+export type IWindowOpenAble = IWorkspAceToOpen | IFolderToOpen | IFileToOpen;
 
-export interface IBaseWindowOpenable {
-	label?: string;
+export interfAce IBAseWindowOpenAble {
+	lAbel?: string;
 }
 
-export interface IWorkspaceToOpen extends IBaseWindowOpenable {
-	workspaceUri: URI;
+export interfAce IWorkspAceToOpen extends IBAseWindowOpenAble {
+	workspAceUri: URI;
 }
 
-export interface IFolderToOpen extends IBaseWindowOpenable {
+export interfAce IFolderToOpen extends IBAseWindowOpenAble {
 	folderUri: URI;
 }
 
-export interface IFileToOpen extends IBaseWindowOpenable {
+export interfAce IFileToOpen extends IBAseWindowOpenAble {
 	fileUri: URI;
 }
 
-export function isWorkspaceToOpen(uriToOpen: IWindowOpenable): uriToOpen is IWorkspaceToOpen {
-	return !!(uriToOpen as IWorkspaceToOpen).workspaceUri;
+export function isWorkspAceToOpen(uriToOpen: IWindowOpenAble): uriToOpen is IWorkspAceToOpen {
+	return !!(uriToOpen As IWorkspAceToOpen).workspAceUri;
 }
 
-export function isFolderToOpen(uriToOpen: IWindowOpenable): uriToOpen is IFolderToOpen {
-	return !!(uriToOpen as IFolderToOpen).folderUri;
+export function isFolderToOpen(uriToOpen: IWindowOpenAble): uriToOpen is IFolderToOpen {
+	return !!(uriToOpen As IFolderToOpen).folderUri;
 }
 
-export function isFileToOpen(uriToOpen: IWindowOpenable): uriToOpen is IFileToOpen {
-	return !!(uriToOpen as IFileToOpen).fileUri;
+export function isFileToOpen(uriToOpen: IWindowOpenAble): uriToOpen is IFileToOpen {
+	return !!(uriToOpen As IFileToOpen).fileUri;
 }
 
-export type MenuBarVisibility = 'default' | 'visible' | 'toggle' | 'hidden' | 'compact';
+export type MenuBArVisibility = 'defAult' | 'visible' | 'toggle' | 'hidden' | 'compAct';
 
-export function getMenuBarVisibility(configurationService: IConfigurationService, environment: IEnvironmentService, isExtensionDevelopment = environment.isExtensionDevelopment): MenuBarVisibility {
-	const titleBarStyle = getTitleBarStyle(configurationService, environment, isExtensionDevelopment);
-	const menuBarVisibility = configurationService.getValue<MenuBarVisibility>('window.menuBarVisibility');
+export function getMenuBArVisibility(configurAtionService: IConfigurAtionService, environment: IEnvironmentService, isExtensionDevelopment = environment.isExtensionDevelopment): MenuBArVisibility {
+	const titleBArStyle = getTitleBArStyle(configurAtionService, environment, isExtensionDevelopment);
+	const menuBArVisibility = configurAtionService.getVAlue<MenuBArVisibility>('window.menuBArVisibility');
 
-	if (titleBarStyle === 'native' && menuBarVisibility === 'compact') {
-		return 'default';
+	if (titleBArStyle === 'nAtive' && menuBArVisibility === 'compAct') {
+		return 'defAult';
 	} else {
-		return menuBarVisibility;
+		return menuBArVisibility;
 	}
 }
 
-export interface IWindowsConfiguration {
+export interfAce IWindowsConfigurAtion {
 	window: IWindowSettings;
 }
 
-export interface IWindowSettings {
-	openFilesInNewWindow: 'on' | 'off' | 'default';
-	openFoldersInNewWindow: 'on' | 'off' | 'default';
+export interfAce IWindowSettings {
+	openFilesInNewWindow: 'on' | 'off' | 'defAult';
+	openFoldersInNewWindow: 'on' | 'off' | 'defAult';
 	openWithoutArgumentsInNewWindow: 'on' | 'off';
-	restoreWindows: 'all' | 'folders' | 'one' | 'none';
-	restoreFullscreen: boolean;
+	restoreWindows: 'All' | 'folders' | 'one' | 'none';
+	restoreFullscreen: booleAn;
 	zoomLevel: number;
-	titleBarStyle: 'native' | 'custom';
-	autoDetectHighContrast: boolean;
-	menuBarVisibility: MenuBarVisibility;
-	newWindowDimensions: 'default' | 'inherit' | 'offset' | 'maximized' | 'fullscreen';
-	nativeTabs: boolean;
-	nativeFullScreen: boolean;
-	enableMenuBarMnemonics: boolean;
-	closeWhenEmpty: boolean;
-	clickThroughInactive: boolean;
+	titleBArStyle: 'nAtive' | 'custom';
+	AutoDetectHighContrAst: booleAn;
+	menuBArVisibility: MenuBArVisibility;
+	newWindowDimensions: 'defAult' | 'inherit' | 'offset' | 'mAximized' | 'fullscreen';
+	nAtiveTAbs: booleAn;
+	nAtiveFullScreen: booleAn;
+	enAbleMenuBArMnemonics: booleAn;
+	closeWhenEmpty: booleAn;
+	clickThroughInActive: booleAn;
 }
 
-export function getTitleBarStyle(configurationService: IConfigurationService, environment: IEnvironmentService, isExtensionDevelopment = environment.isExtensionDevelopment): 'native' | 'custom' {
+export function getTitleBArStyle(configurAtionService: IConfigurAtionService, environment: IEnvironmentService, isExtensionDevelopment = environment.isExtensionDevelopment): 'nAtive' | 'custom' {
 	if (isWeb) {
 		return 'custom';
 	}
 
-	const configuration = configurationService.getValue<IWindowSettings>('window');
+	const configurAtion = configurAtionService.getVAlue<IWindowSettings>('window');
 
 	const isDev = !environment.isBuilt || isExtensionDevelopment;
-	if (isMacintosh && isDev) {
-		return 'native'; // not enabled when developing due to https://github.com/electron/electron/issues/3647
+	if (isMAcintosh && isDev) {
+		return 'nAtive'; // not enAbled when developing due to https://github.com/electron/electron/issues/3647
 	}
 
-	if (configuration) {
-		const useNativeTabs = isMacintosh && configuration.nativeTabs === true;
-		if (useNativeTabs) {
-			return 'native'; // native tabs on sierra do not work with custom title style
+	if (configurAtion) {
+		const useNAtiveTAbs = isMAcintosh && configurAtion.nAtiveTAbs === true;
+		if (useNAtiveTAbs) {
+			return 'nAtive'; // nAtive tAbs on sierrA do not work with custom title style
 		}
 
-		const useSimpleFullScreen = isMacintosh && configuration.nativeFullScreen === false;
+		const useSimpleFullScreen = isMAcintosh && configurAtion.nAtiveFullScreen === fAlse;
 		if (useSimpleFullScreen) {
-			return 'native'; // simple fullscreen does not work well with custom title style (https://github.com/microsoft/vscode/issues/63291)
+			return 'nAtive'; // simple fullscreen does not work well with custom title style (https://github.com/microsoft/vscode/issues/63291)
 		}
 
-		const style = configuration.titleBarStyle;
-		if (style === 'native' || style === 'custom') {
+		const style = configurAtion.titleBArStyle;
+		if (style === 'nAtive' || style === 'custom') {
 			return style;
 		}
 	}
 
-	return isLinux ? 'native' : 'custom'; // default to custom on all macOS and Windows
+	return isLinux ? 'nAtive' : 'custom'; // defAult to custom on All mAcOS And Windows
 }
 
-export interface IPath extends IPathData {
+export interfAce IPAth extends IPAthDAtA {
 
-	// the file path to open within the instance
+	// the file pAth to open within the instAnce
 	fileUri?: URI;
 }
 
-export interface IPathData {
+export interfAce IPAthDAtA {
 
-	// the file path to open within the instance
+	// the file pAth to open within the instAnce
 	fileUri?: UriComponents;
 
-	// the line number in the file path to open
+	// the line number in the file pAth to open
 	lineNumber?: number;
 
-	// the column number in the file path to open
+	// the column number in the file pAth to open
 	columnNumber?: number;
 
-	// a hint that the file exists. if true, the
-	// file exists, if false it does not. with
-	// undefined the state is unknown.
-	exists?: boolean;
+	// A hint thAt the file exists. if true, the
+	// file exists, if fAlse it does not. with
+	// undefined the stAte is unknown.
+	exists?: booleAn;
 
 	// Specifies if the file should be only be opened if it exists
-	openOnlyIfExists?: boolean;
+	openOnlyIfExists?: booleAn;
 
-	// Specifies an optional id to override the editor used to edit the resource, e.g. custom editor.
+	// Specifies An optionAl id to override the editor used to edit the resource, e.g. custom editor.
 	overrideId?: string;
 }
 
-export interface IPathsToWaitFor extends IPathsToWaitForData {
-	paths: IPath[];
-	waitMarkerFileUri: URI;
+export interfAce IPAthsToWAitFor extends IPAthsToWAitForDAtA {
+	pAths: IPAth[];
+	wAitMArkerFileUri: URI;
 }
 
-interface IPathsToWaitForData {
-	paths: IPathData[];
-	waitMarkerFileUri: UriComponents;
+interfAce IPAthsToWAitForDAtA {
+	pAths: IPAthDAtA[];
+	wAitMArkerFileUri: UriComponents;
 }
 
-export interface IOpenFileRequest {
-	filesToOpenOrCreate?: IPathData[];
-	filesToDiff?: IPathData[];
+export interfAce IOpenFileRequest {
+	filesToOpenOrCreAte?: IPAthDAtA[];
+	filesToDiff?: IPAthDAtA[];
 }
 
 /**
- * Additional context for the request on native only.
+ * AdditionAl context for the request on nAtive only.
  */
-export interface INativeOpenFileRequest extends IOpenFileRequest {
-	termProgram?: string;
-	filesToWait?: IPathsToWaitForData;
+export interfAce INAtiveOpenFileRequest extends IOpenFileRequest {
+	termProgrAm?: string;
+	filesToWAit?: IPAthsToWAitForDAtA;
 }
 
-export interface INativeRunActionInWindowRequest {
+export interfAce INAtiveRunActionInWindowRequest {
 	id: string;
-	from: 'menu' | 'touchbar' | 'mouse';
-	args?: any[];
+	from: 'menu' | 'touchbAr' | 'mouse';
+	Args?: Any[];
 }
 
-export interface INativeRunKeybindingInWindowRequest {
-	userSettingsLabel: string;
+export interfAce INAtiveRunKeybindingInWindowRequest {
+	userSettingsLAbel: string;
 }
 
-export interface IColorScheme {
-	dark: boolean;
-	highContrast: boolean;
+export interfAce IColorScheme {
+	dArk: booleAn;
+	highContrAst: booleAn;
 }
 
-export interface IWindowConfiguration {
+export interfAce IWindowConfigurAtion {
 	sessionId: string;
 
 	remoteAuthority?: string;
 
 	colorScheme: IColorScheme;
-	autoDetectHighContrast?: boolean;
+	AutoDetectHighContrAst?: booleAn;
 
-	filesToOpenOrCreate?: IPath[];
-	filesToDiff?: IPath[];
+	filesToOpenOrCreAte?: IPAth[];
+	filesToDiff?: IPAth[];
 }
 
-export interface INativeWindowConfiguration extends IWindowConfiguration, NativeParsedArgs {
-	mainPid: number;
+export interfAce INAtiveWindowConfigurAtion extends IWindowConfigurAtion, NAtivePArsedArgs {
+	mAinPid: number;
 
 	windowId: number;
-	machineId: string;
+	mAchineId: string;
 
-	appRoot: string;
-	execPath: string;
-	backupPath?: string;
+	AppRoot: string;
+	execPAth: string;
+	bAckupPAth?: string;
 
-	nodeCachedDataDir?: string;
-	partsSplashPath: string;
+	nodeCAchedDAtADir?: string;
+	pArtsSplAshPAth: string;
 
-	workspace?: IWorkspaceIdentifier;
-	folderUri?: ISingleFolderWorkspaceIdentifier;
+	workspAce?: IWorkspAceIdentifier;
+	folderUri?: ISingleFolderWorkspAceIdentifier;
 
-	isInitialStartup?: boolean;
+	isInitiAlStArtup?: booleAn;
 	logLevel: LogLevel;
 	zoomLevel?: number;
-	fullscreen?: boolean;
-	maximized?: boolean;
-	accessibilitySupport?: boolean;
-	perfEntries: ExportData;
+	fullscreen?: booleAn;
+	mAximized?: booleAn;
+	AccessibilitySupport?: booleAn;
+	perfEntries: ExportDAtA;
 
 	userEnv: IProcessEnvironment;
-	filesToWait?: IPathsToWaitFor;
+	filesToWAit?: IPAthsToWAitFor;
 }
 
 /**
- * According to Electron docs: `scale := 1.2 ^ level`.
- * https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentssetzoomlevellevel
+ * According to Electron docs: `scAle := 1.2 ^ level`.
+ * https://github.com/electron/electron/blob/mAster/docs/Api/web-contents.md#contentssetzoomlevellevel
  */
-export function zoomLevelToZoomFactor(zoomLevel = 0): number {
-	return Math.pow(1.2, zoomLevel);
+export function zoomLevelToZoomFActor(zoomLevel = 0): number {
+	return MAth.pow(1.2, zoomLevel);
 }

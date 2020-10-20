@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { GlobalMouseMoveMonitor, IStandardMouseMoveEventData, standardMouseMoveMerger } from 'vs/base/browser/globalMouseMoveMonitor';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { IntervalTimer, TimeoutTimer } from 'vs/base/common/async';
-import { Codicon } from 'vs/base/common/codicons';
+import { GlobAlMouseMoveMonitor, IStAndArdMouseMoveEventDAtA, stAndArdMouseMoveMerger } from 'vs/bAse/browser/globAlMouseMoveMonitor';
+import { IMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { IntervAlTimer, TimeoutTimer } from 'vs/bAse/common/Async';
+import { Codicon } from 'vs/bAse/common/codicons';
 
 /**
- * The arrow image size.
+ * The Arrow imAge size.
  */
 export const ARROW_IMG_SIZE = 11;
 
-export interface ScrollbarArrowOptions {
-	onActivate: () => void;
-	className: string;
+export interfAce ScrollbArArrowOptions {
+	onActivAte: () => void;
+	clAssNAme: string;
 	icon: Codicon;
 
 	bgWidth: number;
@@ -28,22 +28,22 @@ export interface ScrollbarArrowOptions {
 	right?: number;
 }
 
-export class ScrollbarArrow extends Widget {
+export clAss ScrollbArArrow extends Widget {
 
-	private _onActivate: () => void;
+	privAte _onActivAte: () => void;
 	public bgDomNode: HTMLElement;
 	public domNode: HTMLElement;
-	private _mousedownRepeatTimer: IntervalTimer;
-	private _mousedownScheduleRepeatTimer: TimeoutTimer;
-	private _mouseMoveMonitor: GlobalMouseMoveMonitor<IStandardMouseMoveEventData>;
+	privAte _mousedownRepeAtTimer: IntervAlTimer;
+	privAte _mousedownScheduleRepeAtTimer: TimeoutTimer;
+	privAte _mouseMoveMonitor: GlobAlMouseMoveMonitor<IStAndArdMouseMoveEventDAtA>;
 
-	constructor(opts: ScrollbarArrowOptions) {
+	constructor(opts: ScrollbArArrowOptions) {
 		super();
-		this._onActivate = opts.onActivate;
+		this._onActivAte = opts.onActivAte;
 
-		this.bgDomNode = document.createElement('div');
-		this.bgDomNode.className = 'arrow-background';
-		this.bgDomNode.style.position = 'absolute';
+		this.bgDomNode = document.creAteElement('div');
+		this.bgDomNode.clAssNAme = 'Arrow-bAckground';
+		this.bgDomNode.style.position = 'Absolute';
 		this.bgDomNode.style.width = opts.bgWidth + 'px';
 		this.bgDomNode.style.height = opts.bgHeight + 'px';
 		if (typeof opts.top !== 'undefined') {
@@ -59,11 +59,11 @@ export class ScrollbarArrow extends Widget {
 			this.bgDomNode.style.right = '0px';
 		}
 
-		this.domNode = document.createElement('div');
-		this.domNode.className = opts.className;
-		this.domNode.classList.add(...opts.icon.classNamesArray);
+		this.domNode = document.creAteElement('div');
+		this.domNode.clAssNAme = opts.clAssNAme;
+		this.domNode.clAssList.Add(...opts.icon.clAssNAmesArrAy);
 
-		this.domNode.style.position = 'absolute';
+		this.domNode.style.position = 'Absolute';
 		this.domNode.style.width = ARROW_IMG_SIZE + 'px';
 		this.domNode.style.height = ARROW_IMG_SIZE + 'px';
 		if (typeof opts.top !== 'undefined') {
@@ -79,36 +79,36 @@ export class ScrollbarArrow extends Widget {
 			this.domNode.style.right = opts.right + 'px';
 		}
 
-		this._mouseMoveMonitor = this._register(new GlobalMouseMoveMonitor<IStandardMouseMoveEventData>());
-		this.onmousedown(this.bgDomNode, (e) => this._arrowMouseDown(e));
-		this.onmousedown(this.domNode, (e) => this._arrowMouseDown(e));
+		this._mouseMoveMonitor = this._register(new GlobAlMouseMoveMonitor<IStAndArdMouseMoveEventDAtA>());
+		this.onmousedown(this.bgDomNode, (e) => this._ArrowMouseDown(e));
+		this.onmousedown(this.domNode, (e) => this._ArrowMouseDown(e));
 
-		this._mousedownRepeatTimer = this._register(new IntervalTimer());
-		this._mousedownScheduleRepeatTimer = this._register(new TimeoutTimer());
+		this._mousedownRepeAtTimer = this._register(new IntervAlTimer());
+		this._mousedownScheduleRepeAtTimer = this._register(new TimeoutTimer());
 	}
 
-	private _arrowMouseDown(e: IMouseEvent): void {
-		let scheduleRepeater = () => {
-			this._mousedownRepeatTimer.cancelAndSet(() => this._onActivate(), 1000 / 24);
+	privAte _ArrowMouseDown(e: IMouseEvent): void {
+		let scheduleRepeAter = () => {
+			this._mousedownRepeAtTimer.cAncelAndSet(() => this._onActivAte(), 1000 / 24);
 		};
 
-		this._onActivate();
-		this._mousedownRepeatTimer.cancel();
-		this._mousedownScheduleRepeatTimer.cancelAndSet(scheduleRepeater, 200);
+		this._onActivAte();
+		this._mousedownRepeAtTimer.cAncel();
+		this._mousedownScheduleRepeAtTimer.cAncelAndSet(scheduleRepeAter, 200);
 
-		this._mouseMoveMonitor.startMonitoring(
-			e.target,
+		this._mouseMoveMonitor.stArtMonitoring(
+			e.tArget,
 			e.buttons,
-			standardMouseMoveMerger,
-			(mouseMoveData: IStandardMouseMoveEventData) => {
-				/* Intentional empty */
+			stAndArdMouseMoveMerger,
+			(mouseMoveDAtA: IStAndArdMouseMoveEventDAtA) => {
+				/* IntentionAl empty */
 			},
 			() => {
-				this._mousedownRepeatTimer.cancel();
-				this._mousedownScheduleRepeatTimer.cancel();
+				this._mousedownRepeAtTimer.cAncel();
+				this._mousedownScheduleRepeAtTimer.cAncel();
 			}
 		);
 
-		e.preventDefault();
+		e.preventDefAult();
 	}
 }

@@ -1,98 +1,98 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { ColorId, ITokenizationRegistry, ITokenizationSupport, ITokenizationSupportChangedEvent } from 'vs/editor/common/modes';
+import { Color } from 'vs/bAse/common/color';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { ColorId, ITokenizAtionRegistry, ITokenizAtionSupport, ITokenizAtionSupportChAngedEvent } from 'vs/editor/common/modes';
 
-export class TokenizationRegistryImpl implements ITokenizationRegistry {
+export clAss TokenizAtionRegistryImpl implements ITokenizAtionRegistry {
 
-	private readonly _map = new Map<string, ITokenizationSupport>();
-	private readonly _promises = new Map<string, Thenable<void>>();
+	privAte reAdonly _mAp = new MAp<string, ITokenizAtionSupport>();
+	privAte reAdonly _promises = new MAp<string, ThenAble<void>>();
 
-	private readonly _onDidChange = new Emitter<ITokenizationSupportChangedEvent>();
-	public readonly onDidChange: Event<ITokenizationSupportChangedEvent> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<ITokenizAtionSupportChAngedEvent>();
+	public reAdonly onDidChAnge: Event<ITokenizAtionSupportChAngedEvent> = this._onDidChAnge.event;
 
-	private _colorMap: Color[] | null;
+	privAte _colorMAp: Color[] | null;
 
 	constructor() {
-		this._colorMap = null;
+		this._colorMAp = null;
 	}
 
-	public fire(languages: string[]): void {
-		this._onDidChange.fire({
-			changedLanguages: languages,
-			changedColorMap: false
+	public fire(lAnguAges: string[]): void {
+		this._onDidChAnge.fire({
+			chAngedLAnguAges: lAnguAges,
+			chAngedColorMAp: fAlse
 		});
 	}
 
-	public register(language: string, support: ITokenizationSupport) {
-		this._map.set(language, support);
-		this.fire([language]);
-		return toDisposable(() => {
-			if (this._map.get(language) !== support) {
+	public register(lAnguAge: string, support: ITokenizAtionSupport) {
+		this._mAp.set(lAnguAge, support);
+		this.fire([lAnguAge]);
+		return toDisposAble(() => {
+			if (this._mAp.get(lAnguAge) !== support) {
 				return;
 			}
-			this._map.delete(language);
-			this.fire([language]);
+			this._mAp.delete(lAnguAge);
+			this.fire([lAnguAge]);
 		});
 	}
 
-	public registerPromise(language: string, supportPromise: Thenable<ITokenizationSupport | null>): IDisposable {
+	public registerPromise(lAnguAge: string, supportPromise: ThenAble<ITokenizAtionSupport | null>): IDisposAble {
 
-		let registration: IDisposable | null = null;
-		let isDisposed: boolean = false;
+		let registrAtion: IDisposAble | null = null;
+		let isDisposed: booleAn = fAlse;
 
-		this._promises.set(language, supportPromise.then(support => {
-			this._promises.delete(language);
+		this._promises.set(lAnguAge, supportPromise.then(support => {
+			this._promises.delete(lAnguAge);
 			if (isDisposed || !support) {
 				return;
 			}
-			registration = this.register(language, support);
+			registrAtion = this.register(lAnguAge, support);
 		}));
 
-		return toDisposable(() => {
+		return toDisposAble(() => {
 			isDisposed = true;
-			if (registration) {
-				registration.dispose();
+			if (registrAtion) {
+				registrAtion.dispose();
 			}
 		});
 	}
 
-	public getPromise(language: string): Thenable<ITokenizationSupport> | null {
-		const support = this.get(language);
+	public getPromise(lAnguAge: string): ThenAble<ITokenizAtionSupport> | null {
+		const support = this.get(lAnguAge);
 		if (support) {
 			return Promise.resolve(support);
 		}
-		const promise = this._promises.get(language);
+		const promise = this._promises.get(lAnguAge);
 		if (promise) {
-			return promise.then(_ => this.get(language)!);
+			return promise.then(_ => this.get(lAnguAge)!);
 		}
 		return null;
 	}
 
-	public get(language: string): ITokenizationSupport | null {
-		return (this._map.get(language) || null);
+	public get(lAnguAge: string): ITokenizAtionSupport | null {
+		return (this._mAp.get(lAnguAge) || null);
 	}
 
-	public setColorMap(colorMap: Color[]): void {
-		this._colorMap = colorMap;
-		this._onDidChange.fire({
-			changedLanguages: Array.from(this._map.keys()),
-			changedColorMap: true
+	public setColorMAp(colorMAp: Color[]): void {
+		this._colorMAp = colorMAp;
+		this._onDidChAnge.fire({
+			chAngedLAnguAges: ArrAy.from(this._mAp.keys()),
+			chAngedColorMAp: true
 		});
 	}
 
-	public getColorMap(): Color[] | null {
-		return this._colorMap;
+	public getColorMAp(): Color[] | null {
+		return this._colorMAp;
 	}
 
-	public getDefaultBackground(): Color | null {
-		if (this._colorMap && this._colorMap.length > ColorId.DefaultBackground) {
-			return this._colorMap[ColorId.DefaultBackground];
+	public getDefAultBAckground(): Color | null {
+		if (this._colorMAp && this._colorMAp.length > ColorId.DefAultBAckground) {
+			return this._colorMAp[ColorId.DefAultBAckground];
 		}
 		return null;
 	}

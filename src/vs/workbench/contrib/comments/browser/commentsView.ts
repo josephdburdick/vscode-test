@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/panel';
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { basename, isEqual } from 'vs/base/common/resources';
-import { IAction, Action } from 'vs/base/common/actions';
-import { CollapseAllAction } from 'vs/base/browser/ui/tree/treeDefaults';
+import 'vs/css!./mediA/pAnel';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { bAsenAme, isEquAl } from 'vs/bAse/common/resources';
+import { IAction, Action } from 'vs/bAse/common/Actions';
+import { CollApseAllAction } from 'vs/bAse/browser/ui/tree/treeDefAults';
 import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { CommentNode, CommentsModel, ResourceWithCommentThreads, ICommentThreadChangedEvent } from 'vs/workbench/contrib/comments/common/commentModel';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { CommentNode, CommentsModel, ResourceWithCommentThreAds, ICommentThreAdChAngedEvent } from 'vs/workbench/contrib/comments/common/commentModel';
 import { CommentController } from 'vs/workbench/contrib/comments/browser/commentsEditorContribution';
-import { IWorkspaceCommentThreadsEvent, ICommentService } from 'vs/workbench/contrib/comments/browser/commentService';
+import { IWorkspAceCommentThreAdsEvent, ICommentService } from 'vs/workbench/contrib/comments/browser/commentService';
 import { IEditorService, ACTIVE_GROUP, SIDE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { textLinkForeground, textLinkActiveForeground, focusBorder, textPreformatForeground } from 'vs/platform/theme/common/colorRegistry';
-import { ResourceLabels } from 'vs/workbench/browser/labels';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { textLinkForeground, textLinkActiveForeground, focusBorder, textPreformAtForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { ResourceLAbels } from 'vs/workbench/browser/lAbels';
 import { CommentsList, COMMENTS_VIEW_ID, COMMENTS_VIEW_TITLE } from 'vs/workbench/contrib/comments/browser/commentsTreeViewer';
-import { ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
+import { ViewPAne, IViewPAneOptions } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
 import { IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 
-export class CommentsPanel extends ViewPane {
-	private treeLabels!: ResourceLabels;
-	private tree!: CommentsList;
-	private treeContainer!: HTMLElement;
-	private messageBoxContainer!: HTMLElement;
-	private messageBox!: HTMLElement;
-	private commentsModel!: CommentsModel;
-	private collapseAllAction?: IAction;
+export clAss CommentsPAnel extends ViewPAne {
+	privAte treeLAbels!: ResourceLAbels;
+	privAte tree!: CommentsList;
+	privAte treeContAiner!: HTMLElement;
+	privAte messAgeBoxContAiner!: HTMLElement;
+	privAte messAgeBox!: HTMLElement;
+	privAte commentsModel!: CommentsModel;
+	privAte collApseAllAction?: IAction;
 
-	readonly onDidChangeVisibility = this.onDidChangeBodyVisibility;
+	reAdonly onDidChAngeVisibility = this.onDidChAngeBodyVisibility;
 
 	constructor(
-		options: IViewPaneOptions,
-		@IInstantiationService readonly instantiationService: IInstantiationService,
+		options: IViewPAneOptions,
+		@IInstAntiAtionService reAdonly instAntiAtionService: IInstAntiAtionService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IOpenerService openerService: IOpenerService,
 		@IThemeService themeService: IThemeService,
-		@ICommentService private readonly commentService: ICommentService,
+		@ICommentService privAte reAdonly commentService: ICommentService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
 	}
 
-	public renderBody(container: HTMLElement): void {
-		super.renderBody(container);
+	public renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
 
-		container.classList.add('comments-panel');
+		contAiner.clAssList.Add('comments-pAnel');
 
-		let domContainer = dom.append(container, dom.$('.comments-panel-container'));
-		this.treeContainer = dom.append(domContainer, dom.$('.tree-container'));
+		let domContAiner = dom.Append(contAiner, dom.$('.comments-pAnel-contAiner'));
+		this.treeContAiner = dom.Append(domContAiner, dom.$('.tree-contAiner'));
 		this.commentsModel = new CommentsModel();
 
-		this.createTree();
-		this.createMessageBox(domContainer);
+		this.creAteTree();
+		this.creAteMessAgeBox(domContAiner);
 
-		this._register(this.commentService.onDidSetAllCommentThreads(this.onAllCommentsChanged, this));
-		this._register(this.commentService.onDidUpdateCommentThreads(this.onCommentsUpdated, this));
+		this._register(this.commentService.onDidSetAllCommentThreAds(this.onAllCommentsChAnged, this));
+		this._register(this.commentService.onDidUpdAteCommentThreAds(this.onCommentsUpdAted, this));
 
-		const styleElement = dom.createStyleSheet(container);
-		this.applyStyles(styleElement);
-		this._register(this.themeService.onDidColorThemeChange(_ => this.applyStyles(styleElement)));
+		const styleElement = dom.creAteStyleSheet(contAiner);
+		this.ApplyStyles(styleElement);
+		this._register(this.themeService.onDidColorThemeChAnge(_ => this.ApplyStyles(styleElement)));
 
-		this._register(this.onDidChangeBodyVisibility(visible => {
+		this._register(this.onDidChAngeBodyVisibility(visible => {
 			if (visible) {
 				this.refresh();
 			}
@@ -85,94 +85,94 @@ export class CommentsPanel extends ViewPane {
 		this.renderComments();
 	}
 
-	private applyStyles(styleElement: HTMLStyleElement) {
+	privAte ApplyStyles(styleElement: HTMLStyleElement) {
 		const content: string[] = [];
 
 		const theme = this.themeService.getColorTheme();
 		const linkColor = theme.getColor(textLinkForeground);
 		if (linkColor) {
-			content.push(`.comments-panel .comments-panel-container a { color: ${linkColor}; }`);
+			content.push(`.comments-pAnel .comments-pAnel-contAiner A { color: ${linkColor}; }`);
 		}
 
 		const linkActiveColor = theme.getColor(textLinkActiveForeground);
 		if (linkActiveColor) {
-			content.push(`.comments-panel .comments-panel-container a:hover, a:active { color: ${linkActiveColor}; }`);
+			content.push(`.comments-pAnel .comments-pAnel-contAiner A:hover, A:Active { color: ${linkActiveColor}; }`);
 		}
 
 		const focusColor = theme.getColor(focusBorder);
 		if (focusColor) {
-			content.push(`.comments-panel .commenst-panel-container a:focus { outline-color: ${focusColor}; }`);
+			content.push(`.comments-pAnel .commenst-pAnel-contAiner A:focus { outline-color: ${focusColor}; }`);
 		}
 
-		const codeTextForegroundColor = theme.getColor(textPreformatForeground);
+		const codeTextForegroundColor = theme.getColor(textPreformAtForeground);
 		if (codeTextForegroundColor) {
-			content.push(`.comments-panel .comments-panel-container .text code { color: ${codeTextForegroundColor}; }`);
+			content.push(`.comments-pAnel .comments-pAnel-contAiner .text code { color: ${codeTextForegroundColor}; }`);
 		}
 
 		styleElement.textContent = content.join('\n');
 	}
 
-	private async renderComments(): Promise<void> {
-		this.treeContainer.classList.toggle('hidden', !this.commentsModel.hasCommentThreads());
-		await this.tree.setInput(this.commentsModel);
-		this.renderMessage();
+	privAte Async renderComments(): Promise<void> {
+		this.treeContAiner.clAssList.toggle('hidden', !this.commentsModel.hAsCommentThreAds());
+		AwAit this.tree.setInput(this.commentsModel);
+		this.renderMessAge();
 	}
 
 	public getActions(): IAction[] {
-		if (!this.collapseAllAction) {
-			this.collapseAllAction = new Action('vs.tree.collapse', nls.localize('collapseAll', "Collapse All"), 'collapse-all', true, () => this.tree ? new CollapseAllAction<any, any>(this.tree, true).run() : Promise.resolve());
-			this._register(this.collapseAllAction);
+		if (!this.collApseAllAction) {
+			this.collApseAllAction = new Action('vs.tree.collApse', nls.locAlize('collApseAll', "CollApse All"), 'collApse-All', true, () => this.tree ? new CollApseAllAction<Any, Any>(this.tree, true).run() : Promise.resolve());
+			this._register(this.collApseAllAction);
 		}
 
-		return [this.collapseAllAction];
+		return [this.collApseAllAction];
 	}
 
-	public layoutBody(height: number, width: number): void {
-		super.layoutBody(height, width);
-		this.tree.layout(height, width);
+	public lAyoutBody(height: number, width: number): void {
+		super.lAyoutBody(height, width);
+		this.tree.lAyout(height, width);
 	}
 
 	public getTitle(): string {
 		return COMMENTS_VIEW_TITLE;
 	}
 
-	private createMessageBox(parent: HTMLElement): void {
-		this.messageBoxContainer = dom.append(parent, dom.$('.message-box-container'));
-		this.messageBox = dom.append(this.messageBoxContainer, dom.$('span'));
-		this.messageBox.setAttribute('tabindex', '0');
+	privAte creAteMessAgeBox(pArent: HTMLElement): void {
+		this.messAgeBoxContAiner = dom.Append(pArent, dom.$('.messAge-box-contAiner'));
+		this.messAgeBox = dom.Append(this.messAgeBoxContAiner, dom.$('spAn'));
+		this.messAgeBox.setAttribute('tAbindex', '0');
 	}
 
-	private renderMessage(): void {
-		this.messageBox.textContent = this.commentsModel.getMessage();
-		this.messageBoxContainer.classList.toggle('hidden', this.commentsModel.hasCommentThreads());
+	privAte renderMessAge(): void {
+		this.messAgeBox.textContent = this.commentsModel.getMessAge();
+		this.messAgeBoxContAiner.clAssList.toggle('hidden', this.commentsModel.hAsCommentThreAds());
 	}
 
-	private createTree(): void {
-		this.treeLabels = this._register(this.instantiationService.createInstance(ResourceLabels, this));
-		this.tree = this._register(this.instantiationService.createInstance(CommentsList, this.treeLabels, this.treeContainer, {
-			overrideStyles: { listBackground: this.getBackgroundColor() },
+	privAte creAteTree(): void {
+		this.treeLAbels = this._register(this.instAntiAtionService.creAteInstAnce(ResourceLAbels, this));
+		this.tree = this._register(this.instAntiAtionService.creAteInstAnce(CommentsList, this.treeLAbels, this.treeContAiner, {
+			overrideStyles: { listBAckground: this.getBAckgroundColor() },
 			openOnFocus: true,
-			accessibilityProvider: {
-				getAriaLabel(element: any): string {
-					if (element instanceof CommentsModel) {
-						return nls.localize('rootCommentsLabel', "Comments for current workspace");
+			AccessibilityProvider: {
+				getAriALAbel(element: Any): string {
+					if (element instAnceof CommentsModel) {
+						return nls.locAlize('rootCommentsLAbel', "Comments for current workspAce");
 					}
-					if (element instanceof ResourceWithCommentThreads) {
-						return nls.localize('resourceWithCommentThreadsLabel', "Comments in {0}, full path {1}", basename(element.resource), element.resource.fsPath);
+					if (element instAnceof ResourceWithCommentThreAds) {
+						return nls.locAlize('resourceWithCommentThreAdsLAbel', "Comments in {0}, full pAth {1}", bAsenAme(element.resource), element.resource.fsPAth);
 					}
-					if (element instanceof CommentNode) {
-						return nls.localize('resourceWithCommentLabel',
-							"Comment from ${0} at line {1} column {2} in {3}, source: {4}",
-							element.comment.userName,
-							element.range.startLineNumber,
-							element.range.startColumn,
-							basename(element.resource),
-							element.comment.body.value
+					if (element instAnceof CommentNode) {
+						return nls.locAlize('resourceWithCommentLAbel',
+							"Comment from ${0} At line {1} column {2} in {3}, source: {4}",
+							element.comment.userNAme,
+							element.rAnge.stArtLineNumber,
+							element.rAnge.stArtColumn,
+							bAsenAme(element.resource),
+							element.comment.body.vAlue
 						);
 					}
 					return '';
 				},
-				getWidgetAriaLabel(): string {
+				getWidgetAriALAbel(): string {
 					return COMMENTS_VIEW_TITLE;
 				}
 			}
@@ -183,47 +183,47 @@ export class CommentsPanel extends ViewPane {
 		}));
 	}
 
-	private openFile(element: any, pinned?: boolean, preserveFocus?: boolean, sideBySide?: boolean): boolean {
+	privAte openFile(element: Any, pinned?: booleAn, preserveFocus?: booleAn, sideBySide?: booleAn): booleAn {
 		if (!element) {
-			return false;
+			return fAlse;
 		}
 
-		if (!(element instanceof ResourceWithCommentThreads || element instanceof CommentNode)) {
-			return false;
+		if (!(element instAnceof ResourceWithCommentThreAds || element instAnceof CommentNode)) {
+			return fAlse;
 		}
 
-		const range = element instanceof ResourceWithCommentThreads ? element.commentThreads[0].range : element.range;
+		const rAnge = element instAnceof ResourceWithCommentThreAds ? element.commentThreAds[0].rAnge : element.rAnge;
 
-		const activeEditor = this.editorService.activeEditor;
-		let currentActiveResource = activeEditor ? activeEditor.resource : undefined;
-		if (currentActiveResource && isEqual(currentActiveResource, element.resource)) {
-			const threadToReveal = element instanceof ResourceWithCommentThreads ? element.commentThreads[0].threadId : element.threadId;
-			const commentToReveal = element instanceof ResourceWithCommentThreads ? element.commentThreads[0].comment.uniqueIdInThread : element.comment.uniqueIdInThread;
-			const control = this.editorService.activeTextEditorControl;
-			if (threadToReveal && isCodeEditor(control)) {
+		const ActiveEditor = this.editorService.ActiveEditor;
+		let currentActiveResource = ActiveEditor ? ActiveEditor.resource : undefined;
+		if (currentActiveResource && isEquAl(currentActiveResource, element.resource)) {
+			const threAdToReveAl = element instAnceof ResourceWithCommentThreAds ? element.commentThreAds[0].threAdId : element.threAdId;
+			const commentToReveAl = element instAnceof ResourceWithCommentThreAds ? element.commentThreAds[0].comment.uniqueIdInThreAd : element.comment.uniqueIdInThreAd;
+			const control = this.editorService.ActiveTextEditorControl;
+			if (threAdToReveAl && isCodeEditor(control)) {
 				const controller = CommentController.get(control);
-				controller.revealCommentThread(threadToReveal, commentToReveal, false);
+				controller.reveAlCommentThreAd(threAdToReveAl, commentToReveAl, fAlse);
 			}
 
 			return true;
 		}
 
-		const threadToReveal = element instanceof ResourceWithCommentThreads ? element.commentThreads[0].threadId : element.threadId;
-		const commentToReveal = element instanceof ResourceWithCommentThreads ? element.commentThreads[0].comment : element.comment;
+		const threAdToReveAl = element instAnceof ResourceWithCommentThreAds ? element.commentThreAds[0].threAdId : element.threAdId;
+		const commentToReveAl = element instAnceof ResourceWithCommentThreAds ? element.commentThreAds[0].comment : element.comment;
 
 		this.editorService.openEditor({
 			resource: element.resource,
 			options: {
 				pinned: pinned,
 				preserveFocus: preserveFocus,
-				selection: range
+				selection: rAnge
 			}
 		}, sideBySide ? SIDE_GROUP : ACTIVE_GROUP).then(editor => {
 			if (editor) {
 				const control = editor.getControl();
-				if (threadToReveal && isCodeEditor(control)) {
+				if (threAdToReveAl && isCodeEditor(control)) {
 					const controller = CommentController.get(control);
-					controller.revealCommentThread(threadToReveal, commentToReveal.uniqueIdInThread, true);
+					controller.reveAlCommentThreAd(threAdToReveAl, commentToReveAl.uniqueIdInThreAd, true);
 				}
 			}
 		});
@@ -231,38 +231,38 @@ export class CommentsPanel extends ViewPane {
 		return true;
 	}
 
-	private refresh(): void {
+	privAte refresh(): void {
 		if (this.isVisible()) {
-			if (this.collapseAllAction) {
-				this.collapseAllAction.enabled = this.commentsModel.hasCommentThreads();
+			if (this.collApseAllAction) {
+				this.collApseAllAction.enAbled = this.commentsModel.hAsCommentThreAds();
 			}
 
-			this.treeContainer.classList.toggle('hidden', !this.commentsModel.hasCommentThreads());
-			this.tree.updateChildren().then(() => {
-				this.renderMessage();
+			this.treeContAiner.clAssList.toggle('hidden', !this.commentsModel.hAsCommentThreAds());
+			this.tree.updAteChildren().then(() => {
+				this.renderMessAge();
 			}, (e) => {
 				console.log(e);
 			});
 		}
 	}
 
-	private onAllCommentsChanged(e: IWorkspaceCommentThreadsEvent): void {
-		this.commentsModel.setCommentThreads(e.ownerId, e.commentThreads);
+	privAte onAllCommentsChAnged(e: IWorkspAceCommentThreAdsEvent): void {
+		this.commentsModel.setCommentThreAds(e.ownerId, e.commentThreAds);
 		this.refresh();
 	}
 
-	private onCommentsUpdated(e: ICommentThreadChangedEvent): void {
-		const didUpdate = this.commentsModel.updateCommentThreads(e);
-		if (didUpdate) {
+	privAte onCommentsUpdAted(e: ICommentThreAdChAngedEvent): void {
+		const didUpdAte = this.commentsModel.updAteCommentThreAds(e);
+		if (didUpdAte) {
 			this.refresh();
 		}
 	}
 }
 
-CommandsRegistry.registerCommand({
-	id: 'workbench.action.focusCommentsPanel',
-	handler: async (accessor) => {
-		const viewsService = accessor.get(IViewsService);
+CommAndsRegistry.registerCommAnd({
+	id: 'workbench.Action.focusCommentsPAnel',
+	hAndler: Async (Accessor) => {
+		const viewsService = Accessor.get(IViewsService);
 		viewsService.openView(COMMENTS_VIEW_ID, true);
 	}
 });

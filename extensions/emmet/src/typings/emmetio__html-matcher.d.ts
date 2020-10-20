@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
-*  Copyright (c) Microsoft Corporation. All rights reserved.
-*  Licensed under the MIT License. See License.txt in the project root for license information.
+*  Copyright (c) Microsoft CorporAtion. All rights reserved.
+*  Licensed under the MIT License. See License.txt in the project root for license informAtion.
 *--------------------------------------------------------------------------------------------*/
 
-declare module '@emmetio/html-matcher' {
-	import { BufferStream, HtmlNode } from 'EmmetNode';
+declAre module '@emmetio/html-mAtcher' {
+	import { BufferStreAm, HtmlNode } from 'EmmetNode';
 
-	function parse(stream: BufferStream): HtmlNode;
+	function pArse(streAm: BufferStreAm): HtmlNode;
 
-	export default parse;
+	export defAult pArse;
 }
 

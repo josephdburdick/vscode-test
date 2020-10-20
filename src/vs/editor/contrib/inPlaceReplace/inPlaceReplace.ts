@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { Range } from 'vs/editor/common/core/range';
+import * As nls from 'vs/nls';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { registerEditorAction, ServicesAccessor, EditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { IInplaceReplaceSupportResult } from 'vs/editor/common/modes';
+import { IInplAceReplAceSupportResult } from 'vs/editor/common/modes';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { InPlaceReplaceCommand } from './inPlaceReplaceCommand';
-import { EditorState, CodeEditorStateFlag } from 'vs/editor/browser/core/editorState';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { editorBracketMatchBorder } from 'vs/editor/common/view/editorColorRegistry';
-import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
+import { InPlAceReplAceCommAnd } from './inPlAceReplAceCommAnd';
+import { EditorStAte, CodeEditorStAteFlAg } from 'vs/editor/browser/core/editorStAte';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { editorBrAcketMAtchBorder } from 'vs/editor/common/view/editorColorRegistry';
+import { ModelDecorAtionOptions } from 'vs/editor/common/model/textModel';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { CancelablePromise, createCancelablePromise, timeout } from 'vs/base/common/async';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { CAncelAblePromise, creAteCAncelAblePromise, timeout } from 'vs/bAse/common/Async';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 
-class InPlaceReplaceController implements IEditorContribution {
+clAss InPlAceReplAceController implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.inPlaceReplaceController';
+	public stAtic reAdonly ID = 'editor.contrib.inPlAceReplAceController';
 
-	static get(editor: ICodeEditor): InPlaceReplaceController {
-		return editor.getContribution<InPlaceReplaceController>(InPlaceReplaceController.ID);
+	stAtic get(editor: ICodeEditor): InPlAceReplAceController {
+		return editor.getContribution<InPlAceReplAceController>(InPlAceReplAceController.ID);
 	}
 
-	private static readonly DECORATION = ModelDecorationOptions.register({
-		className: 'valueSetReplacement'
+	privAte stAtic reAdonly DECORATION = ModelDecorAtionOptions.register({
+		clAssNAme: 'vAlueSetReplAcement'
 	});
 
-	private readonly editor: ICodeEditor;
-	private readonly editorWorkerService: IEditorWorkerService;
-	private decorationIds: string[] = [];
-	private currentRequest?: CancelablePromise<IInplaceReplaceSupportResult | null>;
-	private decorationRemover?: CancelablePromise<void>;
+	privAte reAdonly editor: ICodeEditor;
+	privAte reAdonly editorWorkerService: IEditorWorkerService;
+	privAte decorAtionIds: string[] = [];
+	privAte currentRequest?: CAncelAblePromise<IInplAceReplAceSupportResult | null>;
+	privAte decorAtionRemover?: CAncelAblePromise<void>;
 
 	constructor(
 		editor: ICodeEditor,
@@ -51,11 +51,11 @@ class InPlaceReplaceController implements IEditorContribution {
 	public dispose(): void {
 	}
 
-	public run(source: string, up: boolean): Promise<void> | undefined {
+	public run(source: string, up: booleAn): Promise<void> | undefined {
 
-		// cancel any pending request
+		// cAncel Any pending request
 		if (this.currentRequest) {
-			this.currentRequest.cancel();
+			this.currentRequest.cAncel();
 		}
 
 		const editorSelection = this.editor.getSelection();
@@ -64,89 +64,89 @@ class InPlaceReplaceController implements IEditorContribution {
 			return undefined;
 		}
 		let selection = editorSelection;
-		if (selection.startLineNumber !== selection.endLineNumber) {
-			// Can't accept multiline selection
+		if (selection.stArtLineNumber !== selection.endLineNumber) {
+			// CAn't Accept multiline selection
 			return undefined;
 		}
 
-		const state = new EditorState(this.editor, CodeEditorStateFlag.Value | CodeEditorStateFlag.Position);
+		const stAte = new EditorStAte(this.editor, CodeEditorStAteFlAg.VAlue | CodeEditorStAteFlAg.Position);
 		const modelURI = model.uri;
-		if (!this.editorWorkerService.canNavigateValueSet(modelURI)) {
+		if (!this.editorWorkerService.cAnNAvigAteVAlueSet(modelURI)) {
 			return Promise.resolve(undefined);
 		}
 
-		this.currentRequest = createCancelablePromise(token => this.editorWorkerService.navigateValueSet(modelURI, selection!, up));
+		this.currentRequest = creAteCAncelAblePromise(token => this.editorWorkerService.nAvigAteVAlueSet(modelURI, selection!, up));
 
 		return this.currentRequest.then(result => {
 
-			if (!result || !result.range || !result.value) {
+			if (!result || !result.rAnge || !result.vAlue) {
 				// No proper result
 				return;
 			}
 
-			if (!state.validate(this.editor)) {
-				// state has changed
+			if (!stAte.vAlidAte(this.editor)) {
+				// stAte hAs chAnged
 				return;
 			}
 
 			// Selection
-			let editRange = Range.lift(result.range);
-			let highlightRange = result.range;
-			let diff = result.value.length - (selection!.endColumn - selection!.startColumn);
+			let editRAnge = RAnge.lift(result.rAnge);
+			let highlightRAnge = result.rAnge;
+			let diff = result.vAlue.length - (selection!.endColumn - selection!.stArtColumn);
 
 			// highlight
-			highlightRange = {
-				startLineNumber: highlightRange.startLineNumber,
-				startColumn: highlightRange.startColumn,
-				endLineNumber: highlightRange.endLineNumber,
-				endColumn: highlightRange.startColumn + result.value.length
+			highlightRAnge = {
+				stArtLineNumber: highlightRAnge.stArtLineNumber,
+				stArtColumn: highlightRAnge.stArtColumn,
+				endLineNumber: highlightRAnge.endLineNumber,
+				endColumn: highlightRAnge.stArtColumn + result.vAlue.length
 			};
 			if (diff > 1) {
-				selection = new Selection(selection!.startLineNumber, selection!.startColumn, selection!.endLineNumber, selection!.endColumn + diff - 1);
+				selection = new Selection(selection!.stArtLineNumber, selection!.stArtColumn, selection!.endLineNumber, selection!.endColumn + diff - 1);
 			}
 
 			// Insert new text
-			const command = new InPlaceReplaceCommand(editRange, selection!, result.value);
+			const commAnd = new InPlAceReplAceCommAnd(editRAnge, selection!, result.vAlue);
 
 			this.editor.pushUndoStop();
-			this.editor.executeCommand(source, command);
+			this.editor.executeCommAnd(source, commAnd);
 			this.editor.pushUndoStop();
 
-			// add decoration
-			this.decorationIds = this.editor.deltaDecorations(this.decorationIds, [{
-				range: highlightRange,
-				options: InPlaceReplaceController.DECORATION
+			// Add decorAtion
+			this.decorAtionIds = this.editor.deltADecorAtions(this.decorAtionIds, [{
+				rAnge: highlightRAnge,
+				options: InPlAceReplAceController.DECORATION
 			}]);
 
-			// remove decoration after delay
-			if (this.decorationRemover) {
-				this.decorationRemover.cancel();
+			// remove decorAtion After delAy
+			if (this.decorAtionRemover) {
+				this.decorAtionRemover.cAncel();
 			}
-			this.decorationRemover = timeout(350);
-			this.decorationRemover.then(() => this.decorationIds = this.editor.deltaDecorations(this.decorationIds, [])).catch(onUnexpectedError);
+			this.decorAtionRemover = timeout(350);
+			this.decorAtionRemover.then(() => this.decorAtionIds = this.editor.deltADecorAtions(this.decorAtionIds, [])).cAtch(onUnexpectedError);
 
-		}).catch(onUnexpectedError);
+		}).cAtch(onUnexpectedError);
 	}
 }
 
-class InPlaceReplaceUp extends EditorAction {
+clAss InPlAceReplAceUp extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.inPlaceReplace.up',
-			label: nls.localize('InPlaceReplaceAction.previous.label', "Replace with Previous Value"),
-			alias: 'Replace with Previous Value',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.inPlAceReplAce.up',
+			lAbel: nls.locAlize('InPlAceReplAceAction.previous.lAbel', "ReplAce with Previous VAlue"),
+			AliAs: 'ReplAce with Previous VAlue',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_COMMA,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_COMMA,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
-		const controller = InPlaceReplaceController.get(editor);
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
+		const controller = InPlAceReplAceController.get(editor);
 		if (!controller) {
 			return Promise.resolve(undefined);
 		}
@@ -154,38 +154,38 @@ class InPlaceReplaceUp extends EditorAction {
 	}
 }
 
-class InPlaceReplaceDown extends EditorAction {
+clAss InPlAceReplAceDown extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.inPlaceReplace.down',
-			label: nls.localize('InPlaceReplaceAction.next.label', "Replace with Next Value"),
-			alias: 'Replace with Next Value',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.inPlAceReplAce.down',
+			lAbel: nls.locAlize('InPlAceReplAceAction.next.lAbel', "ReplAce with Next VAlue"),
+			AliAs: 'ReplAce with Next VAlue',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_DOT,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.US_DOT,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
-		const controller = InPlaceReplaceController.get(editor);
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> | undefined {
+		const controller = InPlAceReplAceController.get(editor);
 		if (!controller) {
 			return Promise.resolve(undefined);
 		}
-		return controller.run(this.id, false);
+		return controller.run(this.id, fAlse);
 	}
 }
 
-registerEditorContribution(InPlaceReplaceController.ID, InPlaceReplaceController);
-registerEditorAction(InPlaceReplaceUp);
-registerEditorAction(InPlaceReplaceDown);
+registerEditorContribution(InPlAceReplAceController.ID, InPlAceReplAceController);
+registerEditorAction(InPlAceReplAceUp);
+registerEditorAction(InPlAceReplAceDown);
 
-registerThemingParticipant((theme, collector) => {
-	const border = theme.getColor(editorBracketMatchBorder);
+registerThemingPArticipAnt((theme, collector) => {
+	const border = theme.getColor(editorBrAcketMAtchBorder);
 	if (border) {
-		collector.addRule(`.monaco-editor.vs .valueSetReplacement { outline: solid 2px ${border}; }`);
+		collector.AddRule(`.monAco-editor.vs .vAlueSetReplAcement { outline: solid 2px ${border}; }`);
 	}
 });

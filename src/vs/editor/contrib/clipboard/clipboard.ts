@@ -1,225 +1,225 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as browser from 'vs/base/browser/browser';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import * as platform from 'vs/base/common/platform';
-import { CopyOptions, InMemoryClipboardMetadataManager } from 'vs/editor/browser/controller/textAreaInput';
+import * As nls from 'vs/nls';
+import * As browser from 'vs/bAse/browser/browser';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { CopyOptions, InMemoryClipboArdMetAdAtAMAnAger } from 'vs/editor/browser/controller/textAreAInput';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorAction, registerEditorAction, Command, MultiCommand } from 'vs/editor/browser/editorExtensions';
+import { EditorAction, registerEditorAction, CommAnd, MultiCommAnd } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { MenuId } from 'vs/platform/actions/common/actions';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { Handler } from 'vs/editor/common/editorCommon';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { HAndler } from 'vs/editor/common/editorCommon';
 
-const CLIPBOARD_CONTEXT_MENU_GROUP = '9_cutcopypaste';
+const CLIPBOARD_CONTEXT_MENU_GROUP = '9_cutcopypAste';
 
-const supportsCut = (platform.isNative || document.queryCommandSupported('cut'));
-const supportsCopy = (platform.isNative || document.queryCommandSupported('copy'));
-// IE and Edge have trouble with setting html content in clipboard
-const supportsCopyWithSyntaxHighlighting = (supportsCopy && !browser.isEdge);
-// Firefox only supports navigator.clipboard.readText() in browser extensions.
-// See https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#Browser_compatibility
-const supportsPaste = (browser.isFirefox ? document.queryCommandSupported('paste') : true);
+const supportsCut = (plAtform.isNAtive || document.queryCommAndSupported('cut'));
+const supportsCopy = (plAtform.isNAtive || document.queryCommAndSupported('copy'));
+// IE And Edge hAve trouble with setting html content in clipboArd
+const supportsCopyWithSyntAxHighlighting = (supportsCopy && !browser.isEdge);
+// Firefox only supports nAvigAtor.clipboArd.reAdText() in browser extensions.
+// See https://developer.mozillA.org/en-US/docs/Web/API/ClipboArd/reAdText#Browser_compAtibility
+const supportsPAste = (browser.isFirefox ? document.queryCommAndSupported('pAste') : true);
 
-function registerCommand<T extends Command>(command: T): T {
-	command.register();
-	return command;
+function registerCommAnd<T extends CommAnd>(commAnd: T): T {
+	commAnd.register();
+	return commAnd;
 }
 
-export const CutAction = supportsCut ? registerCommand(new MultiCommand({
-	id: 'editor.action.clipboardCutAction',
+export const CutAction = supportsCut ? registerCommAnd(new MultiCommAnd({
+	id: 'editor.Action.clipboArdCutAction',
 	precondition: undefined,
 	kbOpts: (
 		// Do not bind cut keybindings in the browser,
-		// since browsers do that for us and it avoids security prompts
-		platform.isNative ? {
-			primary: KeyMod.CtrlCmd | KeyCode.KEY_X,
-			win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_X, secondary: [KeyMod.Shift | KeyCode.Delete] },
+		// since browsers do thAt for us And it Avoids security prompts
+		plAtform.isNAtive ? {
+			primAry: KeyMod.CtrlCmd | KeyCode.KEY_X,
+			win: { primAry: KeyMod.CtrlCmd | KeyCode.KEY_X, secondAry: [KeyMod.Shift | KeyCode.Delete] },
 			weight: KeybindingWeight.EditorContrib
 		} : undefined
 	),
 	menuOpts: [{
-		menuId: MenuId.MenubarEditMenu,
+		menuId: MenuId.MenubArEditMenu,
 		group: '2_ccp',
-		title: nls.localize({ key: 'miCut', comment: ['&& denotes a mnemonic'] }, "Cu&&t"),
+		title: nls.locAlize({ key: 'miCut', comment: ['&& denotes A mnemonic'] }, "Cu&&t"),
 		order: 1
 	}, {
 		menuId: MenuId.EditorContext,
 		group: CLIPBOARD_CONTEXT_MENU_GROUP,
-		title: nls.localize('actions.clipboard.cutLabel', "Cut"),
-		when: EditorContextKeys.writable,
+		title: nls.locAlize('Actions.clipboArd.cutLAbel', "Cut"),
+		when: EditorContextKeys.writAble,
 		order: 1,
 	}, {
-		menuId: MenuId.CommandPalette,
+		menuId: MenuId.CommAndPAlette,
 		group: '',
-		title: nls.localize('actions.clipboard.cutLabel', "Cut"),
+		title: nls.locAlize('Actions.clipboArd.cutLAbel', "Cut"),
 		order: 1
 	}]
 })) : undefined;
 
-export const CopyAction = supportsCopy ? registerCommand(new MultiCommand({
-	id: 'editor.action.clipboardCopyAction',
+export const CopyAction = supportsCopy ? registerCommAnd(new MultiCommAnd({
+	id: 'editor.Action.clipboArdCopyAction',
 	precondition: undefined,
 	kbOpts: (
 		// Do not bind copy keybindings in the browser,
-		// since browsers do that for us and it avoids security prompts
-		platform.isNative ? {
-			primary: KeyMod.CtrlCmd | KeyCode.KEY_C,
-			win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_C, secondary: [KeyMod.CtrlCmd | KeyCode.Insert] },
+		// since browsers do thAt for us And it Avoids security prompts
+		plAtform.isNAtive ? {
+			primAry: KeyMod.CtrlCmd | KeyCode.KEY_C,
+			win: { primAry: KeyMod.CtrlCmd | KeyCode.KEY_C, secondAry: [KeyMod.CtrlCmd | KeyCode.Insert] },
 			weight: KeybindingWeight.EditorContrib
 		} : undefined
 	),
 	menuOpts: [{
-		menuId: MenuId.MenubarEditMenu,
+		menuId: MenuId.MenubArEditMenu,
 		group: '2_ccp',
-		title: nls.localize({ key: 'miCopy', comment: ['&& denotes a mnemonic'] }, "&&Copy"),
+		title: nls.locAlize({ key: 'miCopy', comment: ['&& denotes A mnemonic'] }, "&&Copy"),
 		order: 2
 	}, {
 		menuId: MenuId.EditorContext,
 		group: CLIPBOARD_CONTEXT_MENU_GROUP,
-		title: nls.localize('actions.clipboard.copyLabel', "Copy"),
+		title: nls.locAlize('Actions.clipboArd.copyLAbel', "Copy"),
 		order: 2,
 	}, {
-		menuId: MenuId.CommandPalette,
+		menuId: MenuId.CommAndPAlette,
 		group: '',
-		title: nls.localize('actions.clipboard.copyLabel', "Copy"),
+		title: nls.locAlize('Actions.clipboArd.copyLAbel', "Copy"),
 		order: 1
 	}]
 })) : undefined;
 
-export const PasteAction = supportsPaste ? registerCommand(new MultiCommand({
-	id: 'editor.action.clipboardPasteAction',
+export const PAsteAction = supportsPAste ? registerCommAnd(new MultiCommAnd({
+	id: 'editor.Action.clipboArdPAsteAction',
 	precondition: undefined,
 	kbOpts: (
-		// Do not bind paste keybindings in the browser,
-		// since browsers do that for us and it avoids security prompts
-		platform.isNative ? {
-			primary: KeyMod.CtrlCmd | KeyCode.KEY_V,
-			win: { primary: KeyMod.CtrlCmd | KeyCode.KEY_V, secondary: [KeyMod.Shift | KeyCode.Insert] },
-			linux: { primary: KeyMod.CtrlCmd | KeyCode.KEY_V, secondary: [KeyMod.Shift | KeyCode.Insert] },
+		// Do not bind pAste keybindings in the browser,
+		// since browsers do thAt for us And it Avoids security prompts
+		plAtform.isNAtive ? {
+			primAry: KeyMod.CtrlCmd | KeyCode.KEY_V,
+			win: { primAry: KeyMod.CtrlCmd | KeyCode.KEY_V, secondAry: [KeyMod.Shift | KeyCode.Insert] },
+			linux: { primAry: KeyMod.CtrlCmd | KeyCode.KEY_V, secondAry: [KeyMod.Shift | KeyCode.Insert] },
 			weight: KeybindingWeight.EditorContrib
 		} : undefined
 	),
 	menuOpts: [{
-		menuId: MenuId.MenubarEditMenu,
+		menuId: MenuId.MenubArEditMenu,
 		group: '2_ccp',
-		title: nls.localize({ key: 'miPaste', comment: ['&& denotes a mnemonic'] }, "&&Paste"),
+		title: nls.locAlize({ key: 'miPAste', comment: ['&& denotes A mnemonic'] }, "&&PAste"),
 		order: 3
 	}, {
 		menuId: MenuId.EditorContext,
 		group: CLIPBOARD_CONTEXT_MENU_GROUP,
-		title: nls.localize('actions.clipboard.pasteLabel', "Paste"),
-		when: EditorContextKeys.writable,
+		title: nls.locAlize('Actions.clipboArd.pAsteLAbel', "PAste"),
+		when: EditorContextKeys.writAble,
 		order: 3,
 	}, {
-		menuId: MenuId.CommandPalette,
+		menuId: MenuId.CommAndPAlette,
 		group: '',
-		title: nls.localize('actions.clipboard.pasteLabel', "Paste"),
+		title: nls.locAlize('Actions.clipboArd.pAsteLAbel', "PAste"),
 		order: 1
 	}]
 })) : undefined;
 
-class ExecCommandCopyWithSyntaxHighlightingAction extends EditorAction {
+clAss ExecCommAndCopyWithSyntAxHighlightingAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.clipboardCopyWithSyntaxHighlightingAction',
-			label: nls.localize('actions.clipboard.copyWithSyntaxHighlightingLabel', "Copy With Syntax Highlighting"),
-			alias: 'Copy With Syntax Highlighting',
+			id: 'editor.Action.clipboArdCopyWithSyntAxHighlightingAction',
+			lAbel: nls.locAlize('Actions.clipboArd.copyWithSyntAxHighlightingLAbel', "Copy With SyntAx Highlighting"),
+			AliAs: 'Copy With SyntAx Highlighting',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: 0,
+				primAry: 0,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (!editor.hasModel()) {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
-		const emptySelectionClipboard = editor.getOption(EditorOption.emptySelectionClipboard);
+		const emptySelectionClipboArd = editor.getOption(EditorOption.emptySelectionClipboArd);
 
-		if (!emptySelectionClipboard && editor.getSelection().isEmpty()) {
+		if (!emptySelectionClipboArd && editor.getSelection().isEmpty()) {
 			return;
 		}
 
-		CopyOptions.forceCopyWithSyntaxHighlighting = true;
+		CopyOptions.forceCopyWithSyntAxHighlighting = true;
 		editor.focus();
-		document.execCommand('copy');
-		CopyOptions.forceCopyWithSyntaxHighlighting = false;
+		document.execCommAnd('copy');
+		CopyOptions.forceCopyWithSyntAxHighlighting = fAlse;
 	}
 }
 
-function registerExecCommandImpl(target: MultiCommand | undefined, browserCommand: 'cut' | 'copy'): void {
-	if (!target) {
+function registerExecCommAndImpl(tArget: MultiCommAnd | undefined, browserCommAnd: 'cut' | 'copy'): void {
+	if (!tArget) {
 		return;
 	}
 
-	// 1. handle case when focus is in editor.
-	target.addImplementation(10000, (accessor: ServicesAccessor, args: any) => {
-		// Only if editor text focus (i.e. not if editor has widget focus).
-		const focusedEditor = accessor.get(ICodeEditorService).getFocusedCodeEditor();
-		if (focusedEditor && focusedEditor.hasTextFocus()) {
-			// Do not execute if there is no selection and empty selection clipboard is off
-			const emptySelectionClipboard = focusedEditor.getOption(EditorOption.emptySelectionClipboard);
+	// 1. hAndle cAse when focus is in editor.
+	tArget.AddImplementAtion(10000, (Accessor: ServicesAccessor, Args: Any) => {
+		// Only if editor text focus (i.e. not if editor hAs widget focus).
+		const focusedEditor = Accessor.get(ICodeEditorService).getFocusedCodeEditor();
+		if (focusedEditor && focusedEditor.hAsTextFocus()) {
+			// Do not execute if there is no selection And empty selection clipboArd is off
+			const emptySelectionClipboArd = focusedEditor.getOption(EditorOption.emptySelectionClipboArd);
 			const selection = focusedEditor.getSelection();
-			if (selection && selection.isEmpty() && !emptySelectionClipboard) {
+			if (selection && selection.isEmpty() && !emptySelectionClipboArd) {
 				return true;
 			}
-			document.execCommand(browserCommand);
+			document.execCommAnd(browserCommAnd);
 			return true;
 		}
-		return false;
+		return fAlse;
 	});
 
-	// 2. (default) handle case when focus is somewhere else.
-	target.addImplementation(0, (accessor: ServicesAccessor, args: any) => {
-		document.execCommand(browserCommand);
+	// 2. (defAult) hAndle cAse when focus is somewhere else.
+	tArget.AddImplementAtion(0, (Accessor: ServicesAccessor, Args: Any) => {
+		document.execCommAnd(browserCommAnd);
 		return true;
 	});
 }
 
-registerExecCommandImpl(CutAction, 'cut');
-registerExecCommandImpl(CopyAction, 'copy');
+registerExecCommAndImpl(CutAction, 'cut');
+registerExecCommAndImpl(CopyAction, 'copy');
 
-if (PasteAction) {
-	// 1. Paste: handle case when focus is in editor.
-	PasteAction.addImplementation(10000, (accessor: ServicesAccessor, args: any) => {
-		const codeEditorService = accessor.get(ICodeEditorService);
-		const clipboardService = accessor.get(IClipboardService);
+if (PAsteAction) {
+	// 1. PAste: hAndle cAse when focus is in editor.
+	PAsteAction.AddImplementAtion(10000, (Accessor: ServicesAccessor, Args: Any) => {
+		const codeEditorService = Accessor.get(ICodeEditorService);
+		const clipboArdService = Accessor.get(IClipboArdService);
 
-		// Only if editor text focus (i.e. not if editor has widget focus).
+		// Only if editor text focus (i.e. not if editor hAs widget focus).
 		const focusedEditor = codeEditorService.getFocusedCodeEditor();
-		if (focusedEditor && focusedEditor.hasTextFocus()) {
-			const result = document.execCommand('paste');
-			// Use the clipboard service if document.execCommand('paste') was not successful
-			if (!result && platform.isWeb) {
-				(async () => {
-					const clipboardText = await clipboardService.readText();
-					if (clipboardText !== '') {
-						const metadata = InMemoryClipboardMetadataManager.INSTANCE.get(clipboardText);
-						let pasteOnNewLine = false;
+		if (focusedEditor && focusedEditor.hAsTextFocus()) {
+			const result = document.execCommAnd('pAste');
+			// Use the clipboArd service if document.execCommAnd('pAste') wAs not successful
+			if (!result && plAtform.isWeb) {
+				(Async () => {
+					const clipboArdText = AwAit clipboArdService.reAdText();
+					if (clipboArdText !== '') {
+						const metAdAtA = InMemoryClipboArdMetAdAtAMAnAger.INSTANCE.get(clipboArdText);
+						let pAsteOnNewLine = fAlse;
 						let multicursorText: string[] | null = null;
 						let mode: string | null = null;
-						if (metadata) {
-							pasteOnNewLine = (focusedEditor.getOption(EditorOption.emptySelectionClipboard) && !!metadata.isFromEmptySelection);
-							multicursorText = (typeof metadata.multicursorText !== 'undefined' ? metadata.multicursorText : null);
-							mode = metadata.mode;
+						if (metAdAtA) {
+							pAsteOnNewLine = (focusedEditor.getOption(EditorOption.emptySelectionClipboArd) && !!metAdAtA.isFromEmptySelection);
+							multicursorText = (typeof metAdAtA.multicursorText !== 'undefined' ? metAdAtA.multicursorText : null);
+							mode = metAdAtA.mode;
 						}
-						focusedEditor.trigger('keyboard', Handler.Paste, {
-							text: clipboardText,
-							pasteOnNewLine,
+						focusedEditor.trigger('keyboArd', HAndler.PAste, {
+							text: clipboArdText,
+							pAsteOnNewLine,
 							multicursorText,
 							mode
 						});
@@ -229,16 +229,16 @@ if (PasteAction) {
 			}
 			return true;
 		}
-		return false;
+		return fAlse;
 	});
 
-	// 2. Paste: (default) handle case when focus is somewhere else.
-	PasteAction.addImplementation(0, (accessor: ServicesAccessor, args: any) => {
-		document.execCommand('paste');
+	// 2. PAste: (defAult) hAndle cAse when focus is somewhere else.
+	PAsteAction.AddImplementAtion(0, (Accessor: ServicesAccessor, Args: Any) => {
+		document.execCommAnd('pAste');
 		return true;
 	});
 }
 
-if (supportsCopyWithSyntaxHighlighting) {
-	registerEditorAction(ExecCommandCopyWithSyntaxHighlightingAction);
+if (supportsCopyWithSyntAxHighlighting) {
+	registerEditorAction(ExecCommAndCopyWithSyntAxHighlightingAction);
 }

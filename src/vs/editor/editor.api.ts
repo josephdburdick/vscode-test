@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { EditorOptions, WrappingIndent, EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions';
-import { createMonacoBaseAPI } from 'vs/editor/common/standalone/standaloneBase';
-import { createMonacoEditorAPI } from 'vs/editor/standalone/browser/standaloneEditor';
-import { createMonacoLanguagesAPI } from 'vs/editor/standalone/browser/standaloneLanguages';
+import { EditorOptions, WrAppingIndent, EditorAutoIndentStrAtegy } from 'vs/editor/common/config/editorOptions';
+import { creAteMonAcoBAseAPI } from 'vs/editor/common/stAndAlone/stAndAloneBAse';
+import { creAteMonAcoEditorAPI } from 'vs/editor/stAndAlone/browser/stAndAloneEditor';
+import { creAteMonAcoLAnguAgesAPI } from 'vs/editor/stAndAlone/browser/stAndAloneLAnguAges';
 
-const global: any = self;
+const globAl: Any = self;
 
-// Set defaults for standalone editor
-EditorOptions.wrappingIndent.defaultValue = WrappingIndent.None;
-EditorOptions.glyphMargin.defaultValue = false;
-EditorOptions.autoIndent.defaultValue = EditorAutoIndentStrategy.Advanced;
-EditorOptions.overviewRulerLanes.defaultValue = 2;
+// Set defAults for stAndAlone editor
+EditorOptions.wrAppingIndent.defAultVAlue = WrAppingIndent.None;
+EditorOptions.glyphMArgin.defAultVAlue = fAlse;
+EditorOptions.AutoIndent.defAultVAlue = EditorAutoIndentStrAtegy.AdvAnced;
+EditorOptions.overviewRulerLAnes.defAultVAlue = 2;
 
-const api = createMonacoBaseAPI();
-api.editor = createMonacoEditorAPI();
-api.languages = createMonacoLanguagesAPI();
-export const CancellationTokenSource = api.CancellationTokenSource;
-export const Emitter = api.Emitter;
-export const KeyCode = api.KeyCode;
-export const KeyMod = api.KeyMod;
-export const Position = api.Position;
-export const Range = api.Range;
-export const Selection = api.Selection;
-export const SelectionDirection = api.SelectionDirection;
-export const MarkerSeverity = api.MarkerSeverity;
-export const MarkerTag = api.MarkerTag;
-export const Uri = api.Uri;
-export const Token = api.Token;
-export const editor = api.editor;
-export const languages = api.languages;
+const Api = creAteMonAcoBAseAPI();
+Api.editor = creAteMonAcoEditorAPI();
+Api.lAnguAges = creAteMonAcoLAnguAgesAPI();
+export const CAncellAtionTokenSource = Api.CAncellAtionTokenSource;
+export const Emitter = Api.Emitter;
+export const KeyCode = Api.KeyCode;
+export const KeyMod = Api.KeyMod;
+export const Position = Api.Position;
+export const RAnge = Api.RAnge;
+export const Selection = Api.Selection;
+export const SelectionDirection = Api.SelectionDirection;
+export const MArkerSeverity = Api.MArkerSeverity;
+export const MArkerTAg = Api.MArkerTAg;
+export const Uri = Api.Uri;
+export const Token = Api.Token;
+export const editor = Api.editor;
+export const lAnguAges = Api.lAnguAges;
 
-global.monaco = api;
+globAl.monAco = Api;
 
-if (typeof global.require !== 'undefined' && typeof global.require.config === 'function') {
-	global.require.config({
-		ignoreDuplicateModules: [
-			'vscode-languageserver-types',
-			'vscode-languageserver-types/main',
-			'vscode-languageserver-textdocument',
-			'vscode-languageserver-textdocument/main',
+if (typeof globAl.require !== 'undefined' && typeof globAl.require.config === 'function') {
+	globAl.require.config({
+		ignoreDuplicAteModules: [
+			'vscode-lAnguAgeserver-types',
+			'vscode-lAnguAgeserver-types/mAin',
+			'vscode-lAnguAgeserver-textdocument',
+			'vscode-lAnguAgeserver-textdocument/mAin',
 			'vscode-nls',
 			'vscode-nls/vscode-nls',
-			'jsonc-parser',
-			'jsonc-parser/main',
+			'jsonc-pArser',
+			'jsonc-pArser/mAin',
 			'vscode-uri',
 			'vscode-uri/index',
-			'vs/basic-languages/typescript/typescript'
+			'vs/bAsic-lAnguAges/typescript/typescript'
 		]
 	});
 }

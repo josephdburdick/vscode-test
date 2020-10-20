@@ -1,192 +1,192 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { INotificationService, INotification, INotificationHandle, Severity, NotificationMessage, INotificationActions, IPromptChoice, IPromptOptions, IStatusMessageOptions, NoOpNotification, NeverShowAgainScope, NotificationsFilter } from 'vs/platform/notification/common/notification';
-import { INotificationsModel, NotificationsModel, ChoiceAction } from 'vs/workbench/common/notifications';
-import { Disposable, DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IAction, Action } from 'vs/base/common/actions';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import * As nls from 'vs/nls';
+import { INotificAtionService, INotificAtion, INotificAtionHAndle, Severity, NotificAtionMessAge, INotificAtionActions, IPromptChoice, IPromptOptions, IStAtusMessAgeOptions, NoOpNotificAtion, NeverShowAgAinScope, NotificAtionsFilter } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { INotificAtionsModel, NotificAtionsModel, ChoiceAction } from 'vs/workbench/common/notificAtions';
+import { DisposAble, DisposAbleStore, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IAction, Action } from 'vs/bAse/common/Actions';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 
-export class NotificationService extends Disposable implements INotificationService {
+export clAss NotificAtionService extends DisposAble implements INotificAtionService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _model: INotificationsModel = this._register(new NotificationsModel());
-	get model(): INotificationsModel { return this._model; }
+	privAte _model: INotificAtionsModel = this._register(new NotificAtionsModel());
+	get model(): INotificAtionsModel { return this._model; }
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService
 	) {
 		super();
 	}
 
-	setFilter(filter: NotificationsFilter): void {
+	setFilter(filter: NotificAtionsFilter): void {
 		this._model.setFilter(filter);
 	}
 
-	info(message: NotificationMessage | NotificationMessage[]): void {
-		if (Array.isArray(message)) {
-			message.forEach(m => this.info(m));
+	info(messAge: NotificAtionMessAge | NotificAtionMessAge[]): void {
+		if (ArrAy.isArrAy(messAge)) {
+			messAge.forEAch(m => this.info(m));
 
 			return;
 		}
 
-		this.model.addNotification({ severity: Severity.Info, message });
+		this.model.AddNotificAtion({ severity: Severity.Info, messAge });
 	}
 
-	warn(message: NotificationMessage | NotificationMessage[]): void {
-		if (Array.isArray(message)) {
-			message.forEach(m => this.warn(m));
+	wArn(messAge: NotificAtionMessAge | NotificAtionMessAge[]): void {
+		if (ArrAy.isArrAy(messAge)) {
+			messAge.forEAch(m => this.wArn(m));
 
 			return;
 		}
 
-		this.model.addNotification({ severity: Severity.Warning, message });
+		this.model.AddNotificAtion({ severity: Severity.WArning, messAge });
 	}
 
-	error(message: NotificationMessage | NotificationMessage[]): void {
-		if (Array.isArray(message)) {
-			message.forEach(m => this.error(m));
+	error(messAge: NotificAtionMessAge | NotificAtionMessAge[]): void {
+		if (ArrAy.isArrAy(messAge)) {
+			messAge.forEAch(m => this.error(m));
 
 			return;
 		}
 
-		this.model.addNotification({ severity: Severity.Error, message });
+		this.model.AddNotificAtion({ severity: Severity.Error, messAge });
 	}
 
-	notify(notification: INotification): INotificationHandle {
-		const toDispose = new DisposableStore();
+	notify(notificAtion: INotificAtion): INotificAtionHAndle {
+		const toDispose = new DisposAbleStore();
 
-		// Handle neverShowAgain option accordingly
-		let handle: INotificationHandle;
-		if (notification.neverShowAgain) {
-			const scope = notification.neverShowAgain.scope === NeverShowAgainScope.WORKSPACE ? StorageScope.WORKSPACE : StorageScope.GLOBAL;
-			const id = notification.neverShowAgain.id;
+		// HAndle neverShowAgAin option Accordingly
+		let hAndle: INotificAtionHAndle;
+		if (notificAtion.neverShowAgAin) {
+			const scope = notificAtion.neverShowAgAin.scope === NeverShowAgAinScope.WORKSPACE ? StorAgeScope.WORKSPACE : StorAgeScope.GLOBAL;
+			const id = notificAtion.neverShowAgAin.id;
 
-			// If the user already picked to not show the notification
-			// again, we return with a no-op notification here
-			if (this.storageService.getBoolean(id, scope)) {
-				return new NoOpNotification();
+			// If the user AlreAdy picked to not show the notificAtion
+			// AgAin, we return with A no-op notificAtion here
+			if (this.storAgeService.getBooleAn(id, scope)) {
+				return new NoOpNotificAtion();
 			}
 
-			const neverShowAgainAction = toDispose.add(new Action(
-				'workbench.notification.neverShowAgain',
-				nls.localize('neverShowAgain', "Don't Show Again"),
+			const neverShowAgAinAction = toDispose.Add(new Action(
+				'workbench.notificAtion.neverShowAgAin',
+				nls.locAlize('neverShowAgAin', "Don't Show AgAin"),
 				undefined, true, () => {
 
-					// Close notification
-					handle.close();
+					// Close notificAtion
+					hAndle.close();
 
 					// Remember choice
-					this.storageService.store(id, true, scope);
+					this.storAgeService.store(id, true, scope);
 
 					return Promise.resolve();
 				}));
 
-			// Insert as primary or secondary action
-			const actions = {
-				primary: notification.actions?.primary || [],
-				secondary: notification.actions?.secondary || []
+			// Insert As primAry or secondAry Action
+			const Actions = {
+				primAry: notificAtion.Actions?.primAry || [],
+				secondAry: notificAtion.Actions?.secondAry || []
 			};
-			if (!notification.neverShowAgain.isSecondary) {
-				actions.primary = [neverShowAgainAction, ...actions.primary]; // action comes first
+			if (!notificAtion.neverShowAgAin.isSecondAry) {
+				Actions.primAry = [neverShowAgAinAction, ...Actions.primAry]; // Action comes first
 			} else {
-				actions.secondary = [...actions.secondary, neverShowAgainAction]; // actions comes last
+				Actions.secondAry = [...Actions.secondAry, neverShowAgAinAction]; // Actions comes lAst
 			}
 
-			notification.actions = actions;
+			notificAtion.Actions = Actions;
 		}
 
-		// Show notification
-		handle = this.model.addNotification(notification);
+		// Show notificAtion
+		hAndle = this.model.AddNotificAtion(notificAtion);
 
-		// Cleanup when notification gets disposed
-		Event.once(handle.onDidClose)(() => toDispose.dispose());
+		// CleAnup when notificAtion gets disposed
+		Event.once(hAndle.onDidClose)(() => toDispose.dispose());
 
-		return handle;
+		return hAndle;
 	}
 
-	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle {
-		const toDispose = new DisposableStore();
+	prompt(severity: Severity, messAge: string, choices: IPromptChoice[], options?: IPromptOptions): INotificAtionHAndle {
+		const toDispose = new DisposAbleStore();
 
-		// Handle neverShowAgain option accordingly
-		if (options?.neverShowAgain) {
-			const scope = options.neverShowAgain.scope === NeverShowAgainScope.WORKSPACE ? StorageScope.WORKSPACE : StorageScope.GLOBAL;
-			const id = options.neverShowAgain.id;
+		// HAndle neverShowAgAin option Accordingly
+		if (options?.neverShowAgAin) {
+			const scope = options.neverShowAgAin.scope === NeverShowAgAinScope.WORKSPACE ? StorAgeScope.WORKSPACE : StorAgeScope.GLOBAL;
+			const id = options.neverShowAgAin.id;
 
-			// If the user already picked to not show the notification
-			// again, we return with a no-op notification here
-			if (this.storageService.getBoolean(id, scope)) {
-				return new NoOpNotification();
+			// If the user AlreAdy picked to not show the notificAtion
+			// AgAin, we return with A no-op notificAtion here
+			if (this.storAgeService.getBooleAn(id, scope)) {
+				return new NoOpNotificAtion();
 			}
 
-			const neverShowAgainChoice = {
-				label: nls.localize('neverShowAgain', "Don't Show Again"),
-				run: () => this.storageService.store(id, true, scope),
-				isSecondary: options.neverShowAgain.isSecondary
+			const neverShowAgAinChoice = {
+				lAbel: nls.locAlize('neverShowAgAin', "Don't Show AgAin"),
+				run: () => this.storAgeService.store(id, true, scope),
+				isSecondAry: options.neverShowAgAin.isSecondAry
 			};
 
-			// Insert as primary or secondary action
-			if (!options.neverShowAgain.isSecondary) {
-				choices = [neverShowAgainChoice, ...choices]; // action comes first
+			// Insert As primAry or secondAry Action
+			if (!options.neverShowAgAin.isSecondAry) {
+				choices = [neverShowAgAinChoice, ...choices]; // Action comes first
 			} else {
-				choices = [...choices, neverShowAgainChoice]; // actions comes last
+				choices = [...choices, neverShowAgAinChoice]; // Actions comes lAst
 			}
 		}
 
-		let choiceClicked = false;
-		let handle: INotificationHandle;
+		let choiceClicked = fAlse;
+		let hAndle: INotificAtionHAndle;
 
-		// Convert choices into primary/secondary actions
-		const primaryActions: IAction[] = [];
-		const secondaryActions: IAction[] = [];
-		choices.forEach((choice, index) => {
-			const action = new ChoiceAction(`workbench.dialog.choice.${index}`, choice);
-			if (!choice.isSecondary) {
-				primaryActions.push(action);
+		// Convert choices into primAry/secondAry Actions
+		const primAryActions: IAction[] = [];
+		const secondAryActions: IAction[] = [];
+		choices.forEAch((choice, index) => {
+			const Action = new ChoiceAction(`workbench.diAlog.choice.${index}`, choice);
+			if (!choice.isSecondAry) {
+				primAryActions.push(Action);
 			} else {
-				secondaryActions.push(action);
+				secondAryActions.push(Action);
 			}
 
-			// React to action being clicked
-			toDispose.add(action.onDidRun(() => {
+			// ReAct to Action being clicked
+			toDispose.Add(Action.onDidRun(() => {
 				choiceClicked = true;
 
-				// Close notification unless we are told to keep open
+				// Close notificAtion unless we Are told to keep open
 				if (!choice.keepOpen) {
-					handle.close();
+					hAndle.close();
 				}
 			}));
 
-			toDispose.add(action);
+			toDispose.Add(Action);
 		});
 
-		// Show notification with actions
-		const actions: INotificationActions = { primary: primaryActions, secondary: secondaryActions };
-		handle = this.notify({ severity, message, actions, sticky: options?.sticky, silent: options?.silent });
+		// Show notificAtion with Actions
+		const Actions: INotificAtionActions = { primAry: primAryActions, secondAry: secondAryActions };
+		hAndle = this.notify({ severity, messAge, Actions, sticky: options?.sticky, silent: options?.silent });
 
-		Event.once(handle.onDidClose)(() => {
+		Event.once(hAndle.onDidClose)(() => {
 
-			// Cleanup when notification gets disposed
+			// CleAnup when notificAtion gets disposed
 			toDispose.dispose();
 
-			// Indicate cancellation to the outside if no action was executed
-			if (options && typeof options.onCancel === 'function' && !choiceClicked) {
-				options.onCancel();
+			// IndicAte cAncellAtion to the outside if no Action wAs executed
+			if (options && typeof options.onCAncel === 'function' && !choiceClicked) {
+				options.onCAncel();
 			}
 		});
 
-		return handle;
+		return hAndle;
 	}
 
-	status(message: NotificationMessage, options?: IStatusMessageOptions): IDisposable {
-		return this.model.showStatusMessage(message, options);
+	stAtus(messAge: NotificAtionMessAge, options?: IStAtusMessAgeOptions): IDisposAble {
+		return this.model.showStAtusMessAge(messAge, options);
 	}
 }
 
-registerSingleton(INotificationService, NotificationService, true);
+registerSingleton(INotificAtionService, NotificAtionService, true);

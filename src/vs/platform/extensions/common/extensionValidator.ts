@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 
-export interface IParsedVersion {
-	hasCaret: boolean;
-	hasGreaterEquals: boolean;
-	majorBase: number;
-	majorMustEqual: boolean;
-	minorBase: number;
-	minorMustEqual: boolean;
-	patchBase: number;
-	patchMustEqual: boolean;
-	preRelease: string | null;
+export interfAce IPArsedVersion {
+	hAsCAret: booleAn;
+	hAsGreAterEquAls: booleAn;
+	mAjorBAse: number;
+	mAjorMustEquAl: booleAn;
+	minorBAse: number;
+	minorMustEquAl: booleAn;
+	pAtchBAse: number;
+	pAtchMustEquAl: booleAn;
+	preReleAse: string | null;
 }
 
-export interface INormalizedVersion {
-	majorBase: number;
-	majorMustEqual: boolean;
-	minorBase: number;
-	minorMustEqual: boolean;
-	patchBase: number;
-	patchMustEqual: boolean;
-	isMinimum: boolean;
+export interfAce INormAlizedVersion {
+	mAjorBAse: number;
+	mAjorMustEquAl: booleAn;
+	minorBAse: number;
+	minorMustEquAl: booleAn;
+	pAtchBAse: number;
+	pAtchMustEquAl: booleAn;
+	isMinimum: booleAn;
 }
 
 const VERSION_REGEXP = /^(\^|>=)?((\d+)|x)\.((\d+)|x)\.((\d+)|x)(\-.*)?$/;
 
-export function isValidVersionStr(version: string): boolean {
+export function isVAlidVersionStr(version: string): booleAn {
 	version = version.trim();
 	return (version === '*' || VERSION_REGEXP.test(version));
 }
 
-export function parseVersion(version: string): IParsedVersion | null {
-	if (!isValidVersionStr(version)) {
+export function pArseVersion(version: string): IPArsedVersion | null {
+	if (!isVAlidVersionStr(version)) {
 		return null;
 	}
 
@@ -43,217 +43,217 @@ export function parseVersion(version: string): IParsedVersion | null {
 
 	if (version === '*') {
 		return {
-			hasCaret: false,
-			hasGreaterEquals: false,
-			majorBase: 0,
-			majorMustEqual: false,
-			minorBase: 0,
-			minorMustEqual: false,
-			patchBase: 0,
-			patchMustEqual: false,
-			preRelease: null
+			hAsCAret: fAlse,
+			hAsGreAterEquAls: fAlse,
+			mAjorBAse: 0,
+			mAjorMustEquAl: fAlse,
+			minorBAse: 0,
+			minorMustEquAl: fAlse,
+			pAtchBAse: 0,
+			pAtchMustEquAl: fAlse,
+			preReleAse: null
 		};
 	}
 
-	let m = version.match(VERSION_REGEXP);
+	let m = version.mAtch(VERSION_REGEXP);
 	if (!m) {
 		return null;
 	}
 	return {
-		hasCaret: m[1] === '^',
-		hasGreaterEquals: m[1] === '>=',
-		majorBase: m[2] === 'x' ? 0 : parseInt(m[2], 10),
-		majorMustEqual: (m[2] === 'x' ? false : true),
-		minorBase: m[4] === 'x' ? 0 : parseInt(m[4], 10),
-		minorMustEqual: (m[4] === 'x' ? false : true),
-		patchBase: m[6] === 'x' ? 0 : parseInt(m[6], 10),
-		patchMustEqual: (m[6] === 'x' ? false : true),
-		preRelease: m[8] || null
+		hAsCAret: m[1] === '^',
+		hAsGreAterEquAls: m[1] === '>=',
+		mAjorBAse: m[2] === 'x' ? 0 : pArseInt(m[2], 10),
+		mAjorMustEquAl: (m[2] === 'x' ? fAlse : true),
+		minorBAse: m[4] === 'x' ? 0 : pArseInt(m[4], 10),
+		minorMustEquAl: (m[4] === 'x' ? fAlse : true),
+		pAtchBAse: m[6] === 'x' ? 0 : pArseInt(m[6], 10),
+		pAtchMustEquAl: (m[6] === 'x' ? fAlse : true),
+		preReleAse: m[8] || null
 	};
 }
 
-export function normalizeVersion(version: IParsedVersion | null): INormalizedVersion | null {
+export function normAlizeVersion(version: IPArsedVersion | null): INormAlizedVersion | null {
 	if (!version) {
 		return null;
 	}
 
-	let majorBase = version.majorBase,
-		majorMustEqual = version.majorMustEqual,
-		minorBase = version.minorBase,
-		minorMustEqual = version.minorMustEqual,
-		patchBase = version.patchBase,
-		patchMustEqual = version.patchMustEqual;
+	let mAjorBAse = version.mAjorBAse,
+		mAjorMustEquAl = version.mAjorMustEquAl,
+		minorBAse = version.minorBAse,
+		minorMustEquAl = version.minorMustEquAl,
+		pAtchBAse = version.pAtchBAse,
+		pAtchMustEquAl = version.pAtchMustEquAl;
 
-	if (version.hasCaret) {
-		if (majorBase === 0) {
-			patchMustEqual = false;
+	if (version.hAsCAret) {
+		if (mAjorBAse === 0) {
+			pAtchMustEquAl = fAlse;
 		} else {
-			minorMustEqual = false;
-			patchMustEqual = false;
+			minorMustEquAl = fAlse;
+			pAtchMustEquAl = fAlse;
 		}
 	}
 
 	return {
-		majorBase: majorBase,
-		majorMustEqual: majorMustEqual,
-		minorBase: minorBase,
-		minorMustEqual: minorMustEqual,
-		patchBase: patchBase,
-		patchMustEqual: patchMustEqual,
-		isMinimum: version.hasGreaterEquals
+		mAjorBAse: mAjorBAse,
+		mAjorMustEquAl: mAjorMustEquAl,
+		minorBAse: minorBAse,
+		minorMustEquAl: minorMustEquAl,
+		pAtchBAse: pAtchBAse,
+		pAtchMustEquAl: pAtchMustEquAl,
+		isMinimum: version.hAsGreAterEquAls
 	};
 }
 
-export function isValidVersion(_version: string | INormalizedVersion, _desiredVersion: string | INormalizedVersion): boolean {
-	let version: INormalizedVersion | null;
+export function isVAlidVersion(_version: string | INormAlizedVersion, _desiredVersion: string | INormAlizedVersion): booleAn {
+	let version: INormAlizedVersion | null;
 	if (typeof _version === 'string') {
-		version = normalizeVersion(parseVersion(_version));
+		version = normAlizeVersion(pArseVersion(_version));
 	} else {
 		version = _version;
 	}
 
-	let desiredVersion: INormalizedVersion | null;
+	let desiredVersion: INormAlizedVersion | null;
 	if (typeof _desiredVersion === 'string') {
-		desiredVersion = normalizeVersion(parseVersion(_desiredVersion));
+		desiredVersion = normAlizeVersion(pArseVersion(_desiredVersion));
 	} else {
 		desiredVersion = _desiredVersion;
 	}
 
 	if (!version || !desiredVersion) {
-		return false;
+		return fAlse;
 	}
 
-	let majorBase = version.majorBase;
-	let minorBase = version.minorBase;
-	let patchBase = version.patchBase;
+	let mAjorBAse = version.mAjorBAse;
+	let minorBAse = version.minorBAse;
+	let pAtchBAse = version.pAtchBAse;
 
-	let desiredMajorBase = desiredVersion.majorBase;
-	let desiredMinorBase = desiredVersion.minorBase;
-	let desiredPatchBase = desiredVersion.patchBase;
+	let desiredMAjorBAse = desiredVersion.mAjorBAse;
+	let desiredMinorBAse = desiredVersion.minorBAse;
+	let desiredPAtchBAse = desiredVersion.pAtchBAse;
 
-	let majorMustEqual = desiredVersion.majorMustEqual;
-	let minorMustEqual = desiredVersion.minorMustEqual;
-	let patchMustEqual = desiredVersion.patchMustEqual;
+	let mAjorMustEquAl = desiredVersion.mAjorMustEquAl;
+	let minorMustEquAl = desiredVersion.minorMustEquAl;
+	let pAtchMustEquAl = desiredVersion.pAtchMustEquAl;
 
 	if (desiredVersion.isMinimum) {
-		if (majorBase > desiredMajorBase) {
+		if (mAjorBAse > desiredMAjorBAse) {
 			return true;
 		}
 
-		if (majorBase < desiredMajorBase) {
-			return false;
+		if (mAjorBAse < desiredMAjorBAse) {
+			return fAlse;
 		}
 
-		if (minorBase > desiredMinorBase) {
+		if (minorBAse > desiredMinorBAse) {
 			return true;
 		}
 
-		if (minorBase < desiredMinorBase) {
-			return false;
+		if (minorBAse < desiredMinorBAse) {
+			return fAlse;
 		}
 
-		return patchBase >= desiredPatchBase;
+		return pAtchBAse >= desiredPAtchBAse;
 	}
 
-	// Anything < 1.0.0 is compatible with >= 1.0.0, except exact matches
-	if (majorBase === 1 && desiredMajorBase === 0 && (!majorMustEqual || !minorMustEqual || !patchMustEqual)) {
-		desiredMajorBase = 1;
-		desiredMinorBase = 0;
-		desiredPatchBase = 0;
-		majorMustEqual = true;
-		minorMustEqual = false;
-		patchMustEqual = false;
+	// Anything < 1.0.0 is compAtible with >= 1.0.0, except exAct mAtches
+	if (mAjorBAse === 1 && desiredMAjorBAse === 0 && (!mAjorMustEquAl || !minorMustEquAl || !pAtchMustEquAl)) {
+		desiredMAjorBAse = 1;
+		desiredMinorBAse = 0;
+		desiredPAtchBAse = 0;
+		mAjorMustEquAl = true;
+		minorMustEquAl = fAlse;
+		pAtchMustEquAl = fAlse;
 	}
 
-	if (majorBase < desiredMajorBase) {
-		// smaller major version
-		return false;
+	if (mAjorBAse < desiredMAjorBAse) {
+		// smAller mAjor version
+		return fAlse;
 	}
 
-	if (majorBase > desiredMajorBase) {
-		// higher major version
-		return (!majorMustEqual);
+	if (mAjorBAse > desiredMAjorBAse) {
+		// higher mAjor version
+		return (!mAjorMustEquAl);
 	}
 
-	// at this point, majorBase are equal
+	// At this point, mAjorBAse Are equAl
 
-	if (minorBase < desiredMinorBase) {
-		// smaller minor version
-		return false;
+	if (minorBAse < desiredMinorBAse) {
+		// smAller minor version
+		return fAlse;
 	}
 
-	if (minorBase > desiredMinorBase) {
+	if (minorBAse > desiredMinorBAse) {
 		// higher minor version
-		return (!minorMustEqual);
+		return (!minorMustEquAl);
 	}
 
-	// at this point, minorBase are equal
+	// At this point, minorBAse Are equAl
 
-	if (patchBase < desiredPatchBase) {
-		// smaller patch version
-		return false;
+	if (pAtchBAse < desiredPAtchBAse) {
+		// smAller pAtch version
+		return fAlse;
 	}
 
-	if (patchBase > desiredPatchBase) {
-		// higher patch version
-		return (!patchMustEqual);
+	if (pAtchBAse > desiredPAtchBAse) {
+		// higher pAtch version
+		return (!pAtchMustEquAl);
 	}
 
-	// at this point, patchBase are equal
+	// At this point, pAtchBAse Are equAl
 	return true;
 }
 
-export interface IReducedExtensionDescription {
-	isBuiltin: boolean;
+export interfAce IReducedExtensionDescription {
+	isBuiltin: booleAn;
 	engines: {
 		vscode: string;
 	};
-	main?: string;
+	mAin?: string;
 }
 
-export function isValidExtensionVersion(version: string, extensionDesc: IReducedExtensionDescription, notices: string[]): boolean {
+export function isVAlidExtensionVersion(version: string, extensionDesc: IReducedExtensionDescription, notices: string[]): booleAn {
 
-	if (extensionDesc.isBuiltin || typeof extensionDesc.main === 'undefined') {
-		// No version check for builtin or declarative extensions
+	if (extensionDesc.isBuiltin || typeof extensionDesc.mAin === 'undefined') {
+		// No version check for builtin or declArAtive extensions
 		return true;
 	}
 
-	return isVersionValid(version, extensionDesc.engines.vscode, notices);
+	return isVersionVAlid(version, extensionDesc.engines.vscode, notices);
 }
 
-export function isEngineValid(engine: string, version: string): boolean {
-	// TODO@joao: discuss with alex '*' doesn't seem to be a valid engine version
-	return engine === '*' || isVersionValid(version, engine);
+export function isEngineVAlid(engine: string, version: string): booleAn {
+	// TODO@joAo: discuss with Alex '*' doesn't seem to be A vAlid engine version
+	return engine === '*' || isVersionVAlid(version, engine);
 }
 
-export function isVersionValid(currentVersion: string, requestedVersion: string, notices: string[] = []): boolean {
+export function isVersionVAlid(currentVersion: string, requestedVersion: string, notices: string[] = []): booleAn {
 
-	let desiredVersion = normalizeVersion(parseVersion(requestedVersion));
+	let desiredVersion = normAlizeVersion(pArseVersion(requestedVersion));
 	if (!desiredVersion) {
-		notices.push(nls.localize('versionSyntax', "Could not parse `engines.vscode` value {0}. Please use, for example: ^1.22.0, ^1.22.x, etc.", requestedVersion));
-		return false;
+		notices.push(nls.locAlize('versionSyntAx', "Could not pArse `engines.vscode` vAlue {0}. PleAse use, for exAmple: ^1.22.0, ^1.22.x, etc.", requestedVersion));
+		return fAlse;
 	}
 
-	// enforce that a breaking API version is specified.
-	// for 0.X.Y, that means up to 0.X must be specified
-	// otherwise for Z.X.Y, that means Z must be specified
-	if (desiredVersion.majorBase === 0) {
-		// force that major and minor must be specific
-		if (!desiredVersion.majorMustEqual || !desiredVersion.minorMustEqual) {
-			notices.push(nls.localize('versionSpecificity1', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions before 1.0.0, please define at a minimum the major and minor desired version. E.g. ^0.10.0, 0.10.x, 0.11.0, etc.", requestedVersion));
-			return false;
+	// enforce thAt A breAking API version is specified.
+	// for 0.X.Y, thAt meAns up to 0.X must be specified
+	// otherwise for Z.X.Y, thAt meAns Z must be specified
+	if (desiredVersion.mAjorBAse === 0) {
+		// force thAt mAjor And minor must be specific
+		if (!desiredVersion.mAjorMustEquAl || !desiredVersion.minorMustEquAl) {
+			notices.push(nls.locAlize('versionSpecificity1', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions before 1.0.0, pleAse define At A minimum the mAjor And minor desired version. E.g. ^0.10.0, 0.10.x, 0.11.0, etc.", requestedVersion));
+			return fAlse;
 		}
 	} else {
-		// force that major must be specific
-		if (!desiredVersion.majorMustEqual) {
-			notices.push(nls.localize('versionSpecificity2', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions after 1.0.0, please define at a minimum the major desired version. E.g. ^1.10.0, 1.10.x, 1.x.x, 2.x.x, etc.", requestedVersion));
-			return false;
+		// force thAt mAjor must be specific
+		if (!desiredVersion.mAjorMustEquAl) {
+			notices.push(nls.locAlize('versionSpecificity2', "Version specified in `engines.vscode` ({0}) is not specific enough. For vscode versions After 1.0.0, pleAse define At A minimum the mAjor desired version. E.g. ^1.10.0, 1.10.x, 1.x.x, 2.x.x, etc.", requestedVersion));
+			return fAlse;
 		}
 	}
 
-	if (!isValidVersion(currentVersion, desiredVersion)) {
-		notices.push(nls.localize('versionMismatch', "Extension is not compatible with Code {0}. Extension requires: {1}.", currentVersion, requestedVersion));
-		return false;
+	if (!isVAlidVersion(currentVersion, desiredVersion)) {
+		notices.push(nls.locAlize('versionMismAtch', "Extension is not compAtible with Code {0}. Extension requires: {1}.", currentVersion, requestedVersion));
+		return fAlse;
 	}
 
 	return true;

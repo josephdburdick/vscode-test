@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IWorkspaceContextService, WorkbenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { IWorkspaceTagsService } from 'vs/workbench/contrib/tags/common/workspaceTags';
-import { isNumber } from 'vs/base/common/types';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { localize } from 'vs/nls';
+import { IExtensionTipsService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IWorkspAceContextService, WorkbenchStAte, IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { IWorkspAceTAgsService } from 'vs/workbench/contrib/tAgs/common/workspAceTAgs';
+import { isNumber } from 'vs/bAse/common/types';
+import { ExtensionRecommendAtions, ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { locAlize } from 'vs/nls';
 
-type DynamicWorkspaceRecommendationsClassification = {
-	count: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
-	cache: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+type DynAmicWorkspAceRecommendAtionsClAssificAtion = {
+	count: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight', isMeAsurement: true };
+	cAche: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight', isMeAsurement: true };
 };
 
-type IStoredDynamicWorkspaceRecommendations = { recommendations: string[], timestamp: number };
-const dynamicWorkspaceRecommendationsStorageKey = 'extensionsAssistant/dynamicWorkspaceRecommendations';
-const milliSecondsInADay = 1000 * 60 * 60 * 24;
+type IStoredDynAmicWorkspAceRecommendAtions = { recommendAtions: string[], timestAmp: number };
+const dynAmicWorkspAceRecommendAtionsStorAgeKey = 'extensionsAssistAnt/dynAmicWorkspAceRecommendAtions';
+const milliSecondsInADAy = 1000 * 60 * 60 * 24;
 
-export class DynamicWorkspaceRecommendations extends ExtensionRecommendations {
+export clAss DynAmicWorkspAceRecommendAtions extends ExtensionRecommendAtions {
 
-	private _recommendations: ExtensionRecommendation[] = [];
-	get recommendations(): ReadonlyArray<ExtensionRecommendation> { return this._recommendations; }
+	privAte _recommendAtions: ExtensionRecommendAtion[] = [];
+	get recommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._recommendAtions; }
 
 	constructor(
-		@IExtensionTipsService private readonly extensionTipsService: IExtensionTipsService,
-		@IWorkspaceTagsService private readonly workspaceTagsService: IWorkspaceTagsService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IFileService private readonly fileService: IFileService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IStorageService private readonly storageService: IStorageService,
+		@IExtensionTipsService privAte reAdonly extensionTipsService: IExtensionTipsService,
+		@IWorkspAceTAgsService privAte reAdonly workspAceTAgsService: IWorkspAceTAgsService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
 	) {
 		super();
 	}
 
-	protected async doActivate(): Promise<void> {
-		await this.fetch();
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this._recommendations = []));
+	protected Async doActivAte(): Promise<void> {
+		AwAit this.fetch();
+		this._register(this.contextService.onDidChAngeWorkbenchStAte(() => this._recommendAtions = []));
 	}
 
 	/**
-	 * Fetch extensions used by others on the same workspace as recommendations
+	 * Fetch extensions used by others on the sAme workspAce As recommendAtions
 	 */
-	private async fetch(): Promise<void> {
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this._recommendations = []));
+	privAte Async fetch(): Promise<void> {
+		this._register(this.contextService.onDidChAngeWorkbenchStAte(() => this._recommendAtions = []));
 
-		if (this._recommendations.length
-			|| this.contextService.getWorkbenchState() !== WorkbenchState.FOLDER
-			|| !this.fileService.canHandleResource(this.contextService.getWorkspace().folders[0].uri)
+		if (this._recommendAtions.length
+			|| this.contextService.getWorkbenchStAte() !== WorkbenchStAte.FOLDER
+			|| !this.fileService.cAnHAndleResource(this.contextService.getWorkspAce().folders[0].uri)
 		) {
 			return;
 		}
 
-		const folder = this.contextService.getWorkspace().folders[0];
-		const cachedDynamicWorkspaceRecommendations = this.getCachedDynamicWorkspaceRecommendations();
-		if (cachedDynamicWorkspaceRecommendations) {
-			this._recommendations = cachedDynamicWorkspaceRecommendations.map(id => this.toExtensionRecommendation(id, folder));
-			this.telemetryService.publicLog2<{ count: number, cache: number }, DynamicWorkspaceRecommendationsClassification>('dynamicWorkspaceRecommendations', { count: this._recommendations.length, cache: 1 });
+		const folder = this.contextService.getWorkspAce().folders[0];
+		const cAchedDynAmicWorkspAceRecommendAtions = this.getCAchedDynAmicWorkspAceRecommendAtions();
+		if (cAchedDynAmicWorkspAceRecommendAtions) {
+			this._recommendAtions = cAchedDynAmicWorkspAceRecommendAtions.mAp(id => this.toExtensionRecommendAtion(id, folder));
+			this.telemetryService.publicLog2<{ count: number, cAche: number }, DynAmicWorkspAceRecommendAtionsClAssificAtion>('dynAmicWorkspAceRecommendAtions', { count: this._recommendAtions.length, cAche: 1 });
 			return;
 		}
 
-		const [hashedRemotes1, hashedRemotes2] = await Promise.all([this.workspaceTagsService.getHashedRemotesFromUri(folder.uri, false), this.workspaceTagsService.getHashedRemotesFromUri(folder.uri, true)]);
-		const hashedRemotes = (hashedRemotes1 || []).concat(hashedRemotes2 || []);
-		if (!hashedRemotes.length) {
+		const [hAshedRemotes1, hAshedRemotes2] = AwAit Promise.All([this.workspAceTAgsService.getHAshedRemotesFromUri(folder.uri, fAlse), this.workspAceTAgsService.getHAshedRemotesFromUri(folder.uri, true)]);
+		const hAshedRemotes = (hAshedRemotes1 || []).concAt(hAshedRemotes2 || []);
+		if (!hAshedRemotes.length) {
 			return;
 		}
 
-		const workspacesTips = await this.extensionTipsService.getAllWorkspacesTips();
-		if (!workspacesTips.length) {
+		const workspAcesTips = AwAit this.extensionTipsService.getAllWorkspAcesTips();
+		if (!workspAcesTips.length) {
 			return;
 		}
 
-		for (const hashedRemote of hashedRemotes) {
-			const workspaceTip = workspacesTips.filter(workspaceTip => isNonEmptyArray(workspaceTip.remoteSet) && workspaceTip.remoteSet.indexOf(hashedRemote) > -1)[0];
-			if (workspaceTip) {
-				this._recommendations = workspaceTip.recommendations.map(id => this.toExtensionRecommendation(id, folder));
-				this.storageService.store(dynamicWorkspaceRecommendationsStorageKey, JSON.stringify(<IStoredDynamicWorkspaceRecommendations>{ recommendations: workspaceTip.recommendations, timestamp: Date.now() }), StorageScope.WORKSPACE);
-				this.telemetryService.publicLog2<{ count: number, cache: number }, DynamicWorkspaceRecommendationsClassification>('dynamicWorkspaceRecommendations', { count: this._recommendations.length, cache: 0 });
+		for (const hAshedRemote of hAshedRemotes) {
+			const workspAceTip = workspAcesTips.filter(workspAceTip => isNonEmptyArrAy(workspAceTip.remoteSet) && workspAceTip.remoteSet.indexOf(hAshedRemote) > -1)[0];
+			if (workspAceTip) {
+				this._recommendAtions = workspAceTip.recommendAtions.mAp(id => this.toExtensionRecommendAtion(id, folder));
+				this.storAgeService.store(dynAmicWorkspAceRecommendAtionsStorAgeKey, JSON.stringify(<IStoredDynAmicWorkspAceRecommendAtions>{ recommendAtions: workspAceTip.recommendAtions, timestAmp: DAte.now() }), StorAgeScope.WORKSPACE);
+				this.telemetryService.publicLog2<{ count: number, cAche: number }, DynAmicWorkspAceRecommendAtionsClAssificAtion>('dynAmicWorkspAceRecommendAtions', { count: this._recommendAtions.length, cAche: 0 });
 				return;
 			}
 		}
 	}
 
-	private getCachedDynamicWorkspaceRecommendations(): string[] | undefined {
+	privAte getCAchedDynAmicWorkspAceRecommendAtions(): string[] | undefined {
 		try {
-			const storedDynamicWorkspaceRecommendations: IStoredDynamicWorkspaceRecommendations = JSON.parse(this.storageService.get(dynamicWorkspaceRecommendationsStorageKey, StorageScope.WORKSPACE, '{}'));
-			if (isNonEmptyArray(storedDynamicWorkspaceRecommendations.recommendations)
-				&& isNumber(storedDynamicWorkspaceRecommendations.timestamp)
-				&& storedDynamicWorkspaceRecommendations.timestamp > 0
-				&& (Date.now() - storedDynamicWorkspaceRecommendations.timestamp) / milliSecondsInADay < 14) {
-				return storedDynamicWorkspaceRecommendations.recommendations;
+			const storedDynAmicWorkspAceRecommendAtions: IStoredDynAmicWorkspAceRecommendAtions = JSON.pArse(this.storAgeService.get(dynAmicWorkspAceRecommendAtionsStorAgeKey, StorAgeScope.WORKSPACE, '{}'));
+			if (isNonEmptyArrAy(storedDynAmicWorkspAceRecommendAtions.recommendAtions)
+				&& isNumber(storedDynAmicWorkspAceRecommendAtions.timestAmp)
+				&& storedDynAmicWorkspAceRecommendAtions.timestAmp > 0
+				&& (DAte.now() - storedDynAmicWorkspAceRecommendAtions.timestAmp) / milliSecondsInADAy < 14) {
+				return storedDynAmicWorkspAceRecommendAtions.recommendAtions;
 			}
-		} catch (e) {
-			this.storageService.remove(dynamicWorkspaceRecommendationsStorageKey, StorageScope.WORKSPACE);
+		} cAtch (e) {
+			this.storAgeService.remove(dynAmicWorkspAceRecommendAtionsStorAgeKey, StorAgeScope.WORKSPACE);
 		}
 		return undefined;
 	}
 
-	private toExtensionRecommendation(extensionId: string, folder: IWorkspaceFolder): ExtensionRecommendation {
+	privAte toExtensionRecommendAtion(extensionId: string, folder: IWorkspAceFolder): ExtensionRecommendAtion {
 		return {
-			extensionId: extensionId.toLowerCase(),
-			reason: {
-				reasonId: ExtensionRecommendationReason.DynamicWorkspace,
-				reasonText: localize('dynamicWorkspaceRecommendation', "This extension may interest you because it's popular among users of the {0} repository.", folder.name)
+			extensionId: extensionId.toLowerCAse(),
+			reAson: {
+				reAsonId: ExtensionRecommendAtionReAson.DynAmicWorkspAce,
+				reAsonText: locAlize('dynAmicWorkspAceRecommendAtion', "This extension mAy interest you becAuse it's populAr Among users of the {0} repository.", folder.nAme)
 			}
 		};
 	}

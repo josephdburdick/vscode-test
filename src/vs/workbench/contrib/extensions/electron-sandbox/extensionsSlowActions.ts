@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IProductService } from 'vs/platform/product/common/productService';
-import { Action } from 'vs/base/common/actions';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { URI } from 'vs/base/common/uri';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { Action } from 'vs/bAse/common/Actions';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { URI } from 'vs/bAse/common/uri';
 import { IExtensionHostProfile } from 'vs/workbench/services/extensions/common/extensions';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { localize } from 'vs/nls';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IRequestService, asText } from 'vs/platform/request/common/request';
-import { joinPath } from 'vs/base/common/resources';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import Severity from 'vs/base/common/severity';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { locAlize } from 'vs/nls';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IRequestService, AsText } from 'vs/plAtform/request/common/request';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import Severity from 'vs/bAse/common/severity';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
 
-abstract class RepoInfo {
-	abstract get base(): string;
-	abstract get owner(): string;
-	abstract get repo(): string;
+AbstrAct clAss RepoInfo {
+	AbstrAct get bAse(): string;
+	AbstrAct get owner(): string;
+	AbstrAct get repo(): string;
 
-	static fromExtension(desc: IExtensionDescription): RepoInfo | undefined {
+	stAtic fromExtension(desc: IExtensionDescription): RepoInfo | undefined {
 
 		let result: RepoInfo | undefined;
 
-		// scheme:auth/OWNER/REPO/issues/
+		// scheme:Auth/OWNER/REPO/issues/
 		if (desc.bugs && typeof desc.bugs.url === 'string') {
-			const base = URI.parse(desc.bugs.url);
-			const match = /\/([^/]+)\/([^/]+)\/issues\/?$/.exec(desc.bugs.url);
-			if (match) {
+			const bAse = URI.pArse(desc.bugs.url);
+			const mAtch = /\/([^/]+)\/([^/]+)\/issues\/?$/.exec(desc.bugs.url);
+			if (mAtch) {
 				result = {
-					base: base.with({ path: null, fragment: null, query: null }).toString(true),
-					owner: match[1],
-					repo: match[2]
+					bAse: bAse.with({ pAth: null, frAgment: null, query: null }).toString(true),
+					owner: mAtch[1],
+					repo: mAtch[2]
 				};
 			}
 		}
-		// scheme:auth/OWNER/REPO.git
+		// scheme:Auth/OWNER/REPO.git
 		if (!result && desc.repository && typeof desc.repository.url === 'string') {
-			const base = URI.parse(desc.repository.url);
-			const match = /\/([^/]+)\/([^/]+)(\.git)?$/.exec(desc.repository.url);
-			if (match) {
+			const bAse = URI.pArse(desc.repository.url);
+			const mAtch = /\/([^/]+)\/([^/]+)(\.git)?$/.exec(desc.repository.url);
+			if (mAtch) {
 				result = {
-					base: base.with({ path: null, fragment: null, query: null }).toString(true),
-					owner: match[1],
-					repo: match[2]
+					bAse: bAse.with({ pAth: null, frAgment: null, query: null }).toString(true),
+					owner: mAtch[1],
+					repo: mAtch[2]
 				};
 			}
 		}
 
 		// for now only GH is supported
-		if (result && result.base.indexOf('github') === -1) {
+		if (result && result.bAse.indexOf('github') === -1) {
 			result = undefined;
 		}
 
@@ -63,27 +63,27 @@ abstract class RepoInfo {
 	}
 }
 
-export class SlowExtensionAction extends Action {
+export clAss SlowExtensionAction extends Action {
 
 	constructor(
-		readonly extension: IExtensionDescription,
-		readonly profile: IExtensionHostProfile,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		reAdonly extension: IExtensionDescription,
+		reAdonly profile: IExtensionHostProfile,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
 	) {
-		super('report.slow', localize('cmd.reportOrShow', "Performance Issue"), 'extension-action report-issue');
-		this.enabled = Boolean(RepoInfo.fromExtension(extension));
+		super('report.slow', locAlize('cmd.reportOrShow', "PerformAnce Issue"), 'extension-Action report-issue');
+		this.enAbled = BooleAn(RepoInfo.fromExtension(extension));
 	}
 
-	async run(): Promise<void> {
-		const action = await this._instantiationService.invokeFunction(createSlowExtensionAction, this.extension, this.profile);
-		if (action) {
-			await action.run();
+	Async run(): Promise<void> {
+		const Action = AwAit this._instAntiAtionService.invokeFunction(creAteSlowExtensionAction, this.extension, this.profile);
+		if (Action) {
+			AwAit Action.run();
 		}
 	}
 }
 
-export async function createSlowExtensionAction(
-	accessor: ServicesAccessor,
+export Async function creAteSlowExtensionAction(
+	Accessor: ServicesAccessor,
 	extension: IExtensionDescription,
 	profile: IExtensionHostProfile
 ): Promise<Action | undefined> {
@@ -93,101 +93,101 @@ export async function createSlowExtensionAction(
 		return undefined;
 	}
 
-	const requestService = accessor.get(IRequestService);
-	const instaService = accessor.get(IInstantiationService);
-	const url = `https://api.github.com/search/issues?q=is:issue+state:open+in:title+repo:${info.owner}/${info.repo}+%22Extension+causes+high+cpu+load%22`;
-	const res = await requestService.request({ url }, CancellationToken.None);
-	const rawText = await asText(res);
-	if (!rawText) {
+	const requestService = Accessor.get(IRequestService);
+	const instAService = Accessor.get(IInstAntiAtionService);
+	const url = `https://Api.github.com/seArch/issues?q=is:issue+stAte:open+in:title+repo:${info.owner}/${info.repo}+%22Extension+cAuses+high+cpu+loAd%22`;
+	const res = AwAit requestService.request({ url }, CAncellAtionToken.None);
+	const rAwText = AwAit AsText(res);
+	if (!rAwText) {
 		return undefined;
 	}
 
-	const data = <{ total_count: number; }>JSON.parse(rawText);
-	if (!data || typeof data.total_count !== 'number') {
+	const dAtA = <{ totAl_count: number; }>JSON.pArse(rAwText);
+	if (!dAtA || typeof dAtA.totAl_count !== 'number') {
 		return undefined;
-	} else if (data.total_count === 0) {
-		return instaService.createInstance(ReportExtensionSlowAction, extension, info, profile);
+	} else if (dAtA.totAl_count === 0) {
+		return instAService.creAteInstAnce(ReportExtensionSlowAction, extension, info, profile);
 	} else {
-		return instaService.createInstance(ShowExtensionSlowAction, extension, info, profile);
+		return instAService.creAteInstAnce(ShowExtensionSlowAction, extension, info, profile);
 	}
 }
 
-class ReportExtensionSlowAction extends Action {
+clAss ReportExtensionSlowAction extends Action {
 
 	constructor(
-		readonly extension: IExtensionDescription,
-		readonly repoInfo: RepoInfo,
-		readonly profile: IExtensionHostProfile,
-		@IDialogService private readonly _dialogService: IDialogService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IProductService private readonly _productService: IProductService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService
+		reAdonly extension: IExtensionDescription,
+		reAdonly repoInfo: RepoInfo,
+		reAdonly profile: IExtensionHostProfile,
+		@IDiAlogService privAte reAdonly _diAlogService: IDiAlogService,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IProductService privAte reAdonly _productService: IProductService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly _environmentService: INAtiveWorkbenchEnvironmentService
 	) {
-		super('report.slow', localize('cmd.report', "Report Issue"));
+		super('report.slow', locAlize('cmd.report', "Report Issue"));
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 
-		// rewrite pii (paths) and store on disk
-		const profiler = await import('v8-inspect-profiler');
-		const data = profiler.rewriteAbsolutePaths({ profile: <any>this.profile.data }, 'pii_removed');
-		const path = joinPath(this._environmentService.tmpDir, `${this.extension.identifier.value}-unresponsive.cpuprofile.txt`).fsPath;
-		await profiler.writeProfile(data, path).then(undefined, onUnexpectedError);
+		// rewrite pii (pAths) And store on disk
+		const profiler = AwAit import('v8-inspect-profiler');
+		const dAtA = profiler.rewriteAbsolutePAths({ profile: <Any>this.profile.dAtA }, 'pii_removed');
+		const pAth = joinPAth(this._environmentService.tmpDir, `${this.extension.identifier.vAlue}-unresponsive.cpuprofile.txt`).fsPAth;
+		AwAit profiler.writeProfile(dAtA, pAth).then(undefined, onUnexpectedError);
 
 		// build issue
-		const os = await this._nativeHostService.getOSProperties();
-		const title = encodeURIComponent('Extension causes high cpu load');
-		const osVersion = `${os.type} ${os.arch} ${os.release}`;
-		const message = `:warning: Make sure to **attach** this file from your *home*-directory:\n:warning:\`${path}\`\n\nFind more details here: https://github.com/microsoft/vscode/wiki/Explain-extension-causes-high-cpu-load`;
-		const body = encodeURIComponent(`- Issue Type: \`Performance\`
-- Extension Name: \`${this.extension.name}\`
+		const os = AwAit this._nAtiveHostService.getOSProperties();
+		const title = encodeURIComponent('Extension cAuses high cpu loAd');
+		const osVersion = `${os.type} ${os.Arch} ${os.releAse}`;
+		const messAge = `:wArning: MAke sure to **AttAch** this file from your *home*-directory:\n:wArning:\`${pAth}\`\n\nFind more detAils here: https://github.com/microsoft/vscode/wiki/ExplAin-extension-cAuses-high-cpu-loAd`;
+		const body = encodeURIComponent(`- Issue Type: \`PerformAnce\`
+- Extension NAme: \`${this.extension.nAme}\`
 - Extension Version: \`${this.extension.version}\`
 - OS Version: \`${osVersion}\`
-- VSCode version: \`${this._productService.version}\`\n\n${message}`);
+- VSCode version: \`${this._productService.version}\`\n\n${messAge}`);
 
-		const url = `${this.repoInfo.base}/${this.repoInfo.owner}/${this.repoInfo.repo}/issues/new/?body=${body}&title=${title}`;
-		this._openerService.open(URI.parse(url));
+		const url = `${this.repoInfo.bAse}/${this.repoInfo.owner}/${this.repoInfo.repo}/issues/new/?body=${body}&title=${title}`;
+		this._openerService.open(URI.pArse(url));
 
-		this._dialogService.show(
+		this._diAlogService.show(
 			Severity.Info,
-			localize('attach.title', "Did you attach the CPU-Profile?"),
-			[localize('ok', 'OK')],
-			{ detail: localize('attach.msg', "This is a reminder to make sure that you have not forgotten to attach '{0}' to the issue you have just created.", path) }
+			locAlize('AttAch.title', "Did you AttAch the CPU-Profile?"),
+			[locAlize('ok', 'OK')],
+			{ detAil: locAlize('AttAch.msg', "This is A reminder to mAke sure thAt you hAve not forgotten to AttAch '{0}' to the issue you hAve just creAted.", pAth) }
 		);
 	}
 }
 
-class ShowExtensionSlowAction extends Action {
+clAss ShowExtensionSlowAction extends Action {
 
 	constructor(
-		readonly extension: IExtensionDescription,
-		readonly repoInfo: RepoInfo,
-		readonly profile: IExtensionHostProfile,
-		@IDialogService private readonly _dialogService: IDialogService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService
+		reAdonly extension: IExtensionDescription,
+		reAdonly repoInfo: RepoInfo,
+		reAdonly profile: IExtensionHostProfile,
+		@IDiAlogService privAte reAdonly _diAlogService: IDiAlogService,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly _environmentService: INAtiveWorkbenchEnvironmentService
 	) {
-		super('show.slow', localize('cmd.show', "Show Issues"));
+		super('show.slow', locAlize('cmd.show', "Show Issues"));
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 
-		// rewrite pii (paths) and store on disk
-		const profiler = await import('v8-inspect-profiler');
-		const data = profiler.rewriteAbsolutePaths({ profile: <any>this.profile.data }, 'pii_removed');
-		const path = joinPath(this._environmentService.tmpDir, `${this.extension.identifier.value}-unresponsive.cpuprofile.txt`).fsPath;
-		await profiler.writeProfile(data, path).then(undefined, onUnexpectedError);
+		// rewrite pii (pAths) And store on disk
+		const profiler = AwAit import('v8-inspect-profiler');
+		const dAtA = profiler.rewriteAbsolutePAths({ profile: <Any>this.profile.dAtA }, 'pii_removed');
+		const pAth = joinPAth(this._environmentService.tmpDir, `${this.extension.identifier.vAlue}-unresponsive.cpuprofile.txt`).fsPAth;
+		AwAit profiler.writeProfile(dAtA, pAth).then(undefined, onUnexpectedError);
 
 		// show issues
-		const url = `${this.repoInfo.base}/${this.repoInfo.owner}/${this.repoInfo.repo}/issues?utf8=✓&q=is%3Aissue+state%3Aopen+%22Extension+causes+high+cpu+load%22`;
-		this._openerService.open(URI.parse(url));
+		const url = `${this.repoInfo.bAse}/${this.repoInfo.owner}/${this.repoInfo.repo}/issues?utf8=✓&q=is%3Aissue+stAte%3Aopen+%22Extension+cAuses+high+cpu+loAd%22`;
+		this._openerService.open(URI.pArse(url));
 
-		this._dialogService.show(
+		this._diAlogService.show(
 			Severity.Info,
-			localize('attach.title', "Did you attach the CPU-Profile?"),
-			[localize('ok', 'OK')],
-			{ detail: localize('attach.msg2', "This is a reminder to make sure that you have not forgotten to attach '{0}' to an existing performance issue.", path) }
+			locAlize('AttAch.title', "Did you AttAch the CPU-Profile?"),
+			[locAlize('ok', 'OK')],
+			{ detAil: locAlize('AttAch.msg2', "This is A reminder to mAke sure thAt you hAve not forgotten to AttAch '{0}' to An existing performAnce issue.", pAth) }
 		);
 	}
 }

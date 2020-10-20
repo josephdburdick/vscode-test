@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { registerAction2 } from 'vs/platform/actions/common/actions';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorDescriptor, Extensions as EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
-import { Extensions as EditorInputExtensions, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
-import { HideWebViewEditorFindCommand, ReloadWebviewAction, ShowWebViewEditorFindWidgetAction, WebViewEditorFindNextCommand, WebViewEditorFindPreviousCommand } from './webviewCommands';
+import { locAlize } from 'vs/nls';
+import { registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { EditorDescriptor, Extensions As EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
+import { Extensions As EditorInputExtensions, IEditorInputFActoryRegistry } from 'vs/workbench/common/editor';
+import { HideWebViewEditorFindCommAnd, ReloAdWebviewAction, ShowWebViewEditorFindWidgetAction, WebViewEditorFindNextCommAnd, WebViewEditorFindPreviousCommAnd } from './webviewCommAnds';
 import { WebviewEditor } from './webviewEditor';
 import { WebviewInput } from './webviewEditorInput';
-import { WebviewEditorInputFactory } from './webviewEditorInputFactory';
+import { WebviewEditorInputFActory } from './webviewEditorInputFActory';
 import { IWebviewWorkbenchService, WebviewEditorService } from './webviewWorkbenchService';
 
-(Registry.as<IEditorRegistry>(EditorExtensions.Editors)).registerEditor(EditorDescriptor.create(
+(Registry.As<IEditorRegistry>(EditorExtensions.Editors)).registerEditor(EditorDescriptor.creAte(
 	WebviewEditor,
 	WebviewEditor.ID,
-	localize('webview.editor.label', "webview editor")),
+	locAlize('webview.editor.lAbel', "webview editor")),
 	[new SyncDescriptor(WebviewInput)]);
 
-Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories).registerEditorInputFactory(
-	WebviewEditorInputFactory.ID,
-	WebviewEditorInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorInputExtensions.EditorInputFActories).registerEditorInputFActory(
+	WebviewEditorInputFActory.ID,
+	WebviewEditorInputFActory);
 
 registerSingleton(IWebviewWorkbenchService, WebviewEditorService, true);
 
 
 registerAction2(ShowWebViewEditorFindWidgetAction);
-registerAction2(HideWebViewEditorFindCommand);
-registerAction2(WebViewEditorFindNextCommand);
-registerAction2(WebViewEditorFindPreviousCommand);
-registerAction2(ReloadWebviewAction);
+registerAction2(HideWebViewEditorFindCommAnd);
+registerAction2(WebViewEditorFindNextCommAnd);
+registerAction2(WebViewEditorFindPreviousCommAnd);
+registerAction2(ReloAdWebviewAction);

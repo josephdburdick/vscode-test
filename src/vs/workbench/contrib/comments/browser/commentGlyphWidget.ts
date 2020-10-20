@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Color, RGBA } from 'vs/base/common/color';
+import * As nls from 'vs/nls';
+import { Color, RGBA } from 'vs/bAse/common/color';
 import { ContentWidgetPositionPreference, ICodeEditor, IContentWidgetPosition } from 'vs/editor/browser/editorBrowser';
-import { IModelDecorationOptions, OverviewRulerLane } from 'vs/editor/common/model';
-import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
-import { registerColor } from 'vs/platform/theme/common/colorRegistry';
-import { themeColorFromId } from 'vs/platform/theme/common/themeService';
+import { IModelDecorAtionOptions, OverviewRulerLAne } from 'vs/editor/common/model';
+import { ModelDecorAtionOptions } from 'vs/editor/common/model/textModel';
+import { registerColor } from 'vs/plAtform/theme/common/colorRegistry';
+import { themeColorFromId } from 'vs/plAtform/theme/common/themeService';
 
-const overviewRulerDefault = new Color(new RGBA(197, 197, 197, 1));
+const overviewRulerDefAult = new Color(new RGBA(197, 197, 197, 1));
 
-export const overviewRulerCommentingRangeForeground = registerColor('editorGutter.commentRangeForeground', { dark: overviewRulerDefault, light: overviewRulerDefault, hc: overviewRulerDefault }, nls.localize('editorGutterCommentRangeForeground', 'Editor gutter decoration color for commenting ranges.'));
+export const overviewRulerCommentingRAngeForeground = registerColor('editorGutter.commentRAngeForeground', { dArk: overviewRulerDefAult, light: overviewRulerDefAult, hc: overviewRulerDefAult }, nls.locAlize('editorGutterCommentRAngeForeground', 'Editor gutter decorAtion color for commenting rAnges.'));
 
-export class CommentGlyphWidget {
-	private _lineNumber!: number;
-	private _editor: ICodeEditor;
-	private commentsDecorations: string[] = [];
-	private _commentsOptions: ModelDecorationOptions;
+export clAss CommentGlyphWidget {
+	privAte _lineNumber!: number;
+	privAte _editor: ICodeEditor;
+	privAte commentsDecorAtions: string[] = [];
+	privAte _commentsOptions: ModelDecorAtionOptions;
 
 	constructor(editor: ICodeEditor, lineNumber: number) {
-		this._commentsOptions = this.createDecorationOptions();
+		this._commentsOptions = this.creAteDecorAtionOptions();
 		this._editor = editor;
 		this.setLineNumber(lineNumber);
 	}
 
-	private createDecorationOptions(): ModelDecorationOptions {
-		const decorationOptions: IModelDecorationOptions = {
+	privAte creAteDecorAtionOptions(): ModelDecorAtionOptions {
+		const decorAtionOptions: IModelDecorAtionOptions = {
 			isWholeLine: true,
 			overviewRuler: {
-				color: themeColorFromId(overviewRulerCommentingRangeForeground),
-				position: OverviewRulerLane.Center
+				color: themeColorFromId(overviewRulerCommentingRAngeForeground),
+				position: OverviewRulerLAne.Center
 			},
-			linesDecorationsClassName: `comment-range-glyph comment-thread`
+			linesDecorAtionsClAssNAme: `comment-rAnge-glyph comment-threAd`
 		};
 
-		return ModelDecorationOptions.createDynamic(decorationOptions);
+		return ModelDecorAtionOptions.creAteDynAmic(decorAtionOptions);
 	}
 
 	setLineNumber(lineNumber: number): void {
 		this._lineNumber = lineNumber;
-		let commentsDecorations = [{
-			range: {
-				startLineNumber: lineNumber, startColumn: 1,
+		let commentsDecorAtions = [{
+			rAnge: {
+				stArtLineNumber: lineNumber, stArtColumn: 1,
 				endLineNumber: lineNumber, endColumn: 1
 			},
 			options: this._commentsOptions
 		}];
 
-		this.commentsDecorations = this._editor.deltaDecorations(this.commentsDecorations, commentsDecorations);
+		this.commentsDecorAtions = this._editor.deltADecorAtions(this.commentsDecorAtions, commentsDecorAtions);
 	}
 
 	getPosition(): IContentWidgetPosition {
-		const range = this._editor.hasModel() && this.commentsDecorations && this.commentsDecorations.length
-			? this._editor.getModel().getDecorationRange(this.commentsDecorations[0])
+		const rAnge = this._editor.hAsModel() && this.commentsDecorAtions && this.commentsDecorAtions.length
+			? this._editor.getModel().getDecorAtionRAnge(this.commentsDecorAtions[0])
 			: null;
 
 		return {
 			position: {
-				lineNumber: range ? range.startLineNumber : this._lineNumber,
+				lineNumber: rAnge ? rAnge.stArtLineNumber : this._lineNumber,
 				column: 1
 			},
 			preference: [ContentWidgetPositionPreference.EXACT]
@@ -68,8 +68,8 @@ export class CommentGlyphWidget {
 	}
 
 	dispose() {
-		if (this.commentsDecorations) {
-			this._editor.deltaDecorations(this.commentsDecorations, []);
+		if (this.commentsDecorAtions) {
+			this._editor.deltADecorAtions(this.commentsDecorAtions, []);
 		}
 	}
 }

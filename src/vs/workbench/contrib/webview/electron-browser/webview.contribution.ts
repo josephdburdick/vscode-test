@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerAction2 } from 'vs/platform/actions/common/actions';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IWebviewService } from 'vs/workbench/contrib/webview/browser/webview';
-import * as webviewCommands from 'vs/workbench/contrib/webview/electron-browser/webviewCommands';
+import * As webviewCommAnds from 'vs/workbench/contrib/webview/electron-browser/webviewCommAnds';
 import { ElectronWebviewService } from 'vs/workbench/contrib/webview/electron-browser/webviewService';
 
 registerSingleton(IWebviewService, ElectronWebviewService, true);
 
-registerAction2(webviewCommands.OpenWebviewDeveloperToolsAction);
+registerAction2(webviewCommAnds.OpenWebviewDeveloperToolsAction);

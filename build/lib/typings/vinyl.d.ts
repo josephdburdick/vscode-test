@@ -1,111 +1,111 @@
 // Type definitions for vinyl 0.4.3
-// Project: https://github.com/wearefractal/vinyl
-// Definitions by: vvakame <https://github.com/vvakame/>, jedmao <https://github.com/jedmao>
+// Project: https://github.com/weArefrActAl/vinyl
+// Definitions by: vvAkAme <https://github.com/vvAkAme/>, jedmAo <https://github.com/jedmAo>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-declare module "vinyl" {
+declAre module "vinyl" {
 
 	import fs = require("fs");
 
 	/**
-	 * A virtual file format.
+	 * A virtuAl file formAt.
 	 */
-	class File {
+	clAss File {
 		constructor(options?: {
 			/**
-			* Default: process.cwd()
+			* DefAult: process.cwd()
 			*/
 			cwd?: string;
 			/**
-			 * Used for relative pathing. Typically where a glob starts.
+			 * Used for relAtive pAthing. TypicAlly where A glob stArts.
 			 */
-			base?: string;
+			bAse?: string;
 			/**
-			 * Full path to the file.
+			 * Full pAth to the file.
 			 */
-			path?: string;
+			pAth?: string;
 			/**
-			 * Path history. Has no effect if options.path is passed.
+			 * PAth history. HAs no effect if options.pAth is pAssed.
 			 */
 			history?: string[];
 			/**
-			 * The result of an fs.stat call. See fs.Stats for more information.
+			 * The result of An fs.stAt cAll. See fs.StAts for more informAtion.
 			 */
-			stat?: fs.Stats;
+			stAt?: fs.StAts;
 			/**
 			 * File contents.
-			 * Type: Buffer, Stream, or null
+			 * Type: Buffer, StreAm, or null
 			 */
-			contents?: Buffer | NodeJS.ReadWriteStream;
+			contents?: Buffer | NodeJS.ReAdWriteStreAm;
 		});
 
 		/**
-		 * Default: process.cwd()
+		 * DefAult: process.cwd()
 		 */
 		public cwd: string;
 		/**
-		 * Used for relative pathing. Typically where a glob starts.
+		 * Used for relAtive pAthing. TypicAlly where A glob stArts.
 		 */
-		public base: string;
+		public bAse: string;
 		/**
-		 * Full path to the file.
+		 * Full pAth to the file.
 		 */
-		public path: string;
-		public stat: fs.Stats;
+		public pAth: string;
+		public stAt: fs.StAts;
 		/**
-		 * Type: Buffer|Stream|null (Default: null)
+		 * Type: Buffer|StreAm|null (DefAult: null)
 		 */
-		public contents: Buffer | NodeJS.ReadableStream;
+		public contents: Buffer | NodeJS.ReAdAbleStreAm;
 		/**
-		 * Returns path.relative for the file base and file path.
-		 * Example:
-		 *  var file = new File({
+		 * Returns pAth.relAtive for the file bAse And file pAth.
+		 * ExAmple:
+		 *  vAr file = new File({
 		 *    cwd: "/",
-		 *    base: "/test/",
-		 *    path: "/test/file.js"
+		 *    bAse: "/test/",
+		 *    pAth: "/test/file.js"
 		 *  });
-		 *  console.log(file.relative); // file.js
+		 *  console.log(file.relAtive); // file.js
 		 */
-		public relative: string;
+		public relAtive: string;
 
-		public isBuffer(): boolean;
+		public isBuffer(): booleAn;
 
-		public isStream(): boolean;
+		public isStreAm(): booleAn;
 
-		public isNull(): boolean;
+		public isNull(): booleAn;
 
-		public isDirectory(): boolean;
+		public isDirectory(): booleAn;
 
 		/**
-		 * Returns a new File object with all attributes cloned. Custom attributes are deep-cloned.
+		 * Returns A new File object with All Attributes cloned. Custom Attributes Are deep-cloned.
 		 */
-		public clone(opts?: { contents?: boolean }): File;
+		public clone(opts?: { contents?: booleAn }): File;
 
 		/**
-		 * If file.contents is a Buffer, it will write it to the stream.
-		 * If file.contents is a Stream, it will pipe it to the stream.
+		 * If file.contents is A Buffer, it will write it to the streAm.
+		 * If file.contents is A StreAm, it will pipe it to the streAm.
 		 * If file.contents is null, it will do nothing.
 		 */
-		public pipe<T extends NodeJS.ReadWriteStream>(
-			stream: T,
+		public pipe<T extends NodeJS.ReAdWriteStreAm>(
+			streAm: T,
 			opts?: {
 				/**
-				 * If false, the destination stream will not be ended (same as node core).
+				 * If fAlse, the destinAtion streAm will not be ended (sAme As node core).
 				 */
-				end?: boolean;
+				end?: booleAn;
 			}): T;
 
 		/**
-		 * Returns a pretty String interpretation of the File. Useful for console.log.
+		 * Returns A pretty String interpretAtion of the File. Useful for console.log.
 		 */
 		public inspect(): string;
 	}
 
 	/**
-	 * This is required as per:
+	 * This is required As per:
 	 * https://github.com/microsoft/TypeScript/issues/5073
 	 */
-	namespace File {}
+	nAmespAce File {}
 
 	export = File;
 

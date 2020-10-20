@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { EditorAction, EditorExtensionsRegistry, IEditorContributionDescription } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { CodeEditorWidget, ICodeEditorWidgetOptions } from 'vs/editor/browser/widget/codeEditorWidget';
-import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ICommandService } from 'vs/platform/commands/common/commands';
+import { IContextKeyService, RAwContextKey, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
 
 // Allowed Editor Contributions:
 import { MenuPreventer } from 'vs/workbench/contrib/codeEditor/browser/menuPreventer';
 import { ContextMenuController } from 'vs/editor/contrib/contextmenu/contextmenu';
 import { SuggestController } from 'vs/editor/contrib/suggest/suggestController';
 import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { TabCompletionController } from 'vs/workbench/contrib/snippets/browser/tabCompletion';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
+import { TAbCompletionController } from 'vs/workbench/contrib/snippets/browser/tAbCompletion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IAccessibilityService } from 'vs/plAtform/Accessibility/common/Accessibility';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ICommentThreadWidget } from 'vs/workbench/contrib/comments/common/commentThreadWidget';
+import { ICommentThreAdWidget } from 'vs/workbench/contrib/comments/common/commentThreAdWidget';
 import { CommentContextKeys } from 'vs/workbench/contrib/comments/common/commentContextKeys';
 
-export const ctxCommentEditorFocused = new RawContextKey<boolean>('commentEditorFocused', false);
+export const ctxCommentEditorFocused = new RAwContextKey<booleAn>('commentEditorFocused', fAlse);
 
 
-export class SimpleCommentEditor extends CodeEditorWidget {
-	private _parentEditor: ICodeEditor;
-	private _parentThread: ICommentThreadWidget;
-	private _commentEditorFocused: IContextKey<boolean>;
-	private _commentEditorEmpty: IContextKey<boolean>;
+export clAss SimpleCommentEditor extends CodeEditorWidget {
+	privAte _pArentEditor: ICodeEditor;
+	privAte _pArentThreAd: ICommentThreAdWidget;
+	privAte _commentEditorFocused: IContextKey<booleAn>;
+	privAte _commentEditorEmpty: IContextKey<booleAn>;
 
 	constructor(
 		domElement: HTMLElement,
 		options: IEditorOptions,
-		parentEditor: ICodeEditor,
-		parentThread: ICommentThreadWidget,
-		@IInstantiationService instantiationService: IInstantiationService,
+		pArentEditor: ICodeEditor,
+		pArentThreAd: ICommentThreAdWidget,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@ICodeEditorService codeEditorService: ICodeEditorService,
-		@ICommandService commandService: ICommandService,
+		@ICommAndService commAndService: ICommAndService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@INotificationService notificationService: INotificationService,
-		@IAccessibilityService accessibilityService: IAccessibilityService
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@IAccessibilityService AccessibilityService: IAccessibilityService
 	) {
 		const codeEditorWidgetOptions: ICodeEditorWidgetOptions = {
 			isSimpleWidget: true,
@@ -53,59 +53,59 @@ export class SimpleCommentEditor extends CodeEditorWidget {
 				{ id: ContextMenuController.ID, ctor: ContextMenuController },
 				{ id: SuggestController.ID, ctor: SuggestController },
 				{ id: SnippetController2.ID, ctor: SnippetController2 },
-				{ id: TabCompletionController.ID, ctor: TabCompletionController },
+				{ id: TAbCompletionController.ID, ctor: TAbCompletionController },
 			]
 		};
 
-		super(domElement, options, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService);
+		super(domElement, options, codeEditorWidgetOptions, instAntiAtionService, codeEditorService, commAndService, contextKeyService, themeService, notificAtionService, AccessibilityService);
 
 		this._commentEditorFocused = ctxCommentEditorFocused.bindTo(contextKeyService);
 		this._commentEditorEmpty = CommentContextKeys.commentIsEmpty.bindTo(contextKeyService);
-		this._commentEditorEmpty.set(!this.getValue());
-		this._parentEditor = parentEditor;
-		this._parentThread = parentThread;
+		this._commentEditorEmpty.set(!this.getVAlue());
+		this._pArentEditor = pArentEditor;
+		this._pArentThreAd = pArentThreAd;
 
 		this._register(this.onDidFocusEditorWidget(_ => this._commentEditorFocused.set(true)));
 
-		this._register(this.onDidChangeModelContent(e => this._commentEditorEmpty.set(!this.getValue())));
+		this._register(this.onDidChAngeModelContent(e => this._commentEditorEmpty.set(!this.getVAlue())));
 		this._register(this.onDidBlurEditorWidget(_ => this._commentEditorFocused.reset()));
 	}
 
-	getParentEditor(): ICodeEditor {
-		return this._parentEditor;
+	getPArentEditor(): ICodeEditor {
+		return this._pArentEditor;
 	}
 
-	getParentThread(): ICommentThreadWidget {
-		return this._parentThread;
+	getPArentThreAd(): ICommentThreAdWidget {
+		return this._pArentThreAd;
 	}
 
 	protected _getActions(): EditorAction[] {
 		return EditorExtensionsRegistry.getEditorActions();
 	}
 
-	public static getEditorOptions(): IEditorOptions {
+	public stAtic getEditorOptions(): IEditorOptions {
 		return {
-			wordWrap: 'on',
-			glyphMargin: false,
+			wordWrAp: 'on',
+			glyphMArgin: fAlse,
 			lineNumbers: 'off',
-			folding: false,
-			selectOnLineNumbers: false,
-			scrollbar: {
-				vertical: 'visible',
-				verticalScrollbarSize: 14,
-				horizontal: 'auto',
-				useShadows: true,
-				verticalHasArrows: false,
-				horizontalHasArrows: false
+			folding: fAlse,
+			selectOnLineNumbers: fAlse,
+			scrollbAr: {
+				verticAl: 'visible',
+				verticAlScrollbArSize: 14,
+				horizontAl: 'Auto',
+				useShAdows: true,
+				verticAlHAsArrows: fAlse,
+				horizontAlHAsArrows: fAlse
 			},
-			overviewRulerLanes: 2,
-			lineDecorationsWidth: 0,
-			scrollBeyondLastLine: false,
+			overviewRulerLAnes: 2,
+			lineDecorAtionsWidth: 0,
+			scrollBeyondLAstLine: fAlse,
 			renderLineHighlight: 'none',
 			fixedOverflowWidgets: true,
-			acceptSuggestionOnEnter: 'smart',
-			minimap: {
-				enabled: false
+			AcceptSuggestionOnEnter: 'smArt',
+			minimAp: {
+				enAbled: fAlse
 			}
 		};
 	}

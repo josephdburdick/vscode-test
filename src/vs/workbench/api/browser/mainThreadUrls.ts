@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtHostContext, IExtHostContext, MainContext, MainThreadUrlsShape, ExtHostUrlsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from '../common/extHostCustomers';
-import { IURLService, IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IExtensionUrlHandler } from 'vs/workbench/services/extensions/browser/extensionUrlHandler';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ExtHostContext, IExtHostContext, MAinContext, MAinThreAdUrlsShApe, ExtHostUrlsShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { extHostNAmedCustomer } from '../common/extHostCustomers';
+import { IURLService, IURLHAndler, IOpenURLOptions } from 'vs/plAtform/url/common/url';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtensionUrlHAndler } from 'vs/workbench/services/extensions/browser/extensionUrlHAndler';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 
-class ExtensionUrlHandler implements IURLHandler {
+clAss ExtensionUrlHAndler implements IURLHAndler {
 
 	constructor(
-		private readonly proxy: ExtHostUrlsShape,
-		private readonly handle: number,
-		readonly extensionId: ExtensionIdentifier
+		privAte reAdonly proxy: ExtHostUrlsShApe,
+		privAte reAdonly hAndle: number,
+		reAdonly extensionId: ExtensionIdentifier
 	) { }
 
-	handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
-		if (!ExtensionIdentifier.equals(this.extensionId, uri.authority)) {
-			return Promise.resolve(false);
+	hAndleURL(uri: URI, options?: IOpenURLOptions): Promise<booleAn> {
+		if (!ExtensionIdentifier.equAls(this.extensionId, uri.Authority)) {
+			return Promise.resolve(fAlse);
 		}
 
-		return Promise.resolve(this.proxy.$handleExternalUri(this.handle, uri)).then(() => true);
+		return Promise.resolve(this.proxy.$hAndleExternAlUri(this.hAndle, uri)).then(() => true);
 	}
 }
 
-@extHostNamedCustomer(MainContext.MainThreadUrls)
-export class MainThreadUrls implements MainThreadUrlsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdUrls)
+export clAss MAinThreAdUrls implements MAinThreAdUrlsShApe {
 
-	private readonly proxy: ExtHostUrlsShape;
-	private handlers = new Map<number, { extensionId: ExtensionIdentifier, disposable: IDisposable }>();
+	privAte reAdonly proxy: ExtHostUrlsShApe;
+	privAte hAndlers = new MAp<number, { extensionId: ExtensionIdentifier, disposAble: IDisposAble }>();
 
 	constructor(
 		context: IExtHostContext,
-		@IURLService private readonly urlService: IURLService,
-		@IExtensionUrlHandler private readonly extensionUrlHandler: IExtensionUrlHandler
+		@IURLService privAte reAdonly urlService: IURLService,
+		@IExtensionUrlHAndler privAte reAdonly extensionUrlHAndler: IExtensionUrlHAndler
 	) {
 		this.proxy = context.getProxy(ExtHostContext.ExtHostUrls);
 	}
 
-	$registerUriHandler(handle: number, extensionId: ExtensionIdentifier): Promise<void> {
-		const handler = new ExtensionUrlHandler(this.proxy, handle, extensionId);
-		const disposable = this.urlService.registerHandler(handler);
+	$registerUriHAndler(hAndle: number, extensionId: ExtensionIdentifier): Promise<void> {
+		const hAndler = new ExtensionUrlHAndler(this.proxy, hAndle, extensionId);
+		const disposAble = this.urlService.registerHAndler(hAndler);
 
-		this.handlers.set(handle, { extensionId, disposable });
-		this.extensionUrlHandler.registerExtensionHandler(extensionId, handler);
+		this.hAndlers.set(hAndle, { extensionId, disposAble });
+		this.extensionUrlHAndler.registerExtensionHAndler(extensionId, hAndler);
 
 		return Promise.resolve(undefined);
 	}
 
-	$unregisterUriHandler(handle: number): Promise<void> {
-		const tuple = this.handlers.get(handle);
+	$unregisterUriHAndler(hAndle: number): Promise<void> {
+		const tuple = this.hAndlers.get(hAndle);
 
 		if (!tuple) {
 			return Promise.resolve(undefined);
 		}
 
-		const { extensionId, disposable } = tuple;
+		const { extensionId, disposAble } = tuple;
 
-		this.extensionUrlHandler.unregisterExtensionHandler(extensionId);
-		this.handlers.delete(handle);
-		disposable.dispose();
+		this.extensionUrlHAndler.unregisterExtensionHAndler(extensionId);
+		this.hAndlers.delete(hAndle);
+		disposAble.dispose();
 
 		return Promise.resolve(undefined);
 	}
 
-	async $createAppUri(uri: UriComponents): Promise<URI> {
-		return this.urlService.create(uri);
+	Async $creAteAppUri(uri: UriComponents): Promise<URI> {
+		return this.urlService.creAte(uri);
 	}
 
 	dispose(): void {
-		this.handlers.forEach(({ disposable }) => disposable.dispose());
-		this.handlers.clear();
+		this.hAndlers.forEAch(({ disposAble }) => disposAble.dispose());
+		this.hAndlers.cleAr();
 	}
 }

@@ -1,202 +1,202 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { locAlize } from 'vs/nls';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { URI } from 'vs/bAse/common/uri';
 import { TextFileEditorModel } from 'vs/workbench/services/textfile/common/textFileEditorModel';
-import { dispose, IDisposable, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ITextFileEditorModel, ITextFileEditorModelManager, ITextFileEditorModelLoadOrCreateOptions, ITextFileLoadEvent, ITextFileSaveEvent, ITextFileSaveParticipant } from 'vs/workbench/services/textfile/common/textfiles';
+import { dispose, IDisposAble, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { ITextFileEditorModel, ITextFileEditorModelMAnAger, ITextFileEditorModelLoAdOrCreAteOptions, ITextFileLoAdEvent, ITextFileSAveEvent, ITextFileSAvePArticipAnt } from 'vs/workbench/services/textfile/common/textfiles';
 import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ResourceMap } from 'vs/base/common/map';
-import { IFileService, FileChangesEvent, FileOperation, FileChangeType } from 'vs/platform/files/common/files';
-import { ResourceQueue } from 'vs/base/common/async';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { TextFileSaveParticipant } from 'vs/workbench/services/textfile/common/textFileSaveParticipant';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { IFileService, FileChAngesEvent, FileOperAtion, FileChAngeType } from 'vs/plAtform/files/common/files';
+import { ResourceQueue } from 'vs/bAse/common/Async';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { TextFileSAvePArticipAnt } from 'vs/workbench/services/textfile/common/textFileSAvePArticipAnt';
+import { SAveReAson } from 'vs/workbench/common/editor';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { IWorkingCopyFileService, WorkingCopyFileEvent } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { ITextSnapshot } from 'vs/editor/common/model';
-import { joinPath } from 'vs/base/common/resources';
-import { createTextBufferFactoryFromSnapshot } from 'vs/editor/common/model/textModel';
+import { ITextSnApshot } from 'vs/editor/common/model';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { creAteTextBufferFActoryFromSnApshot } from 'vs/editor/common/model/textModel';
 import { PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
-export class TextFileEditorModelManager extends Disposable implements ITextFileEditorModelManager {
+export clAss TextFileEditorModelMAnAger extends DisposAble implements ITextFileEditorModelMAnAger {
 
-	private readonly _onDidCreate = this._register(new Emitter<TextFileEditorModel>());
-	readonly onDidCreate = this._onDidCreate.event;
+	privAte reAdonly _onDidCreAte = this._register(new Emitter<TextFileEditorModel>());
+	reAdonly onDidCreAte = this._onDidCreAte.event;
 
-	private readonly _onDidLoad = this._register(new Emitter<ITextFileLoadEvent>());
-	readonly onDidLoad = this._onDidLoad.event;
+	privAte reAdonly _onDidLoAd = this._register(new Emitter<ITextFileLoAdEvent>());
+	reAdonly onDidLoAd = this._onDidLoAd.event;
 
-	private readonly _onDidChangeDirty = this._register(new Emitter<TextFileEditorModel>());
-	readonly onDidChangeDirty = this._onDidChangeDirty.event;
+	privAte reAdonly _onDidChAngeDirty = this._register(new Emitter<TextFileEditorModel>());
+	reAdonly onDidChAngeDirty = this._onDidChAngeDirty.event;
 
-	private readonly _onDidSaveError = this._register(new Emitter<TextFileEditorModel>());
-	readonly onDidSaveError = this._onDidSaveError.event;
+	privAte reAdonly _onDidSAveError = this._register(new Emitter<TextFileEditorModel>());
+	reAdonly onDidSAveError = this._onDidSAveError.event;
 
-	private readonly _onDidSave = this._register(new Emitter<ITextFileSaveEvent>());
-	readonly onDidSave = this._onDidSave.event;
+	privAte reAdonly _onDidSAve = this._register(new Emitter<ITextFileSAveEvent>());
+	reAdonly onDidSAve = this._onDidSAve.event;
 
-	private readonly _onDidRevert = this._register(new Emitter<TextFileEditorModel>());
-	readonly onDidRevert = this._onDidRevert.event;
+	privAte reAdonly _onDidRevert = this._register(new Emitter<TextFileEditorModel>());
+	reAdonly onDidRevert = this._onDidRevert.event;
 
-	private readonly _onDidChangeEncoding = this._register(new Emitter<TextFileEditorModel>());
-	readonly onDidChangeEncoding = this._onDidChangeEncoding.event;
+	privAte reAdonly _onDidChAngeEncoding = this._register(new Emitter<TextFileEditorModel>());
+	reAdonly onDidChAngeEncoding = this._onDidChAngeEncoding.event;
 
-	private readonly mapResourceToModel = new ResourceMap<TextFileEditorModel>();
-	private readonly mapResourceToModelListeners = new ResourceMap<IDisposable>();
-	private readonly mapResourceToDisposeListener = new ResourceMap<IDisposable>();
-	private readonly mapResourceToPendingModelLoaders = new ResourceMap<Promise<TextFileEditorModel>>();
+	privAte reAdonly mApResourceToModel = new ResourceMAp<TextFileEditorModel>();
+	privAte reAdonly mApResourceToModelListeners = new ResourceMAp<IDisposAble>();
+	privAte reAdonly mApResourceToDisposeListener = new ResourceMAp<IDisposAble>();
+	privAte reAdonly mApResourceToPendingModelLoAders = new ResourceMAp<Promise<TextFileEditorModel>>();
 
-	private readonly modelLoadQueue = this._register(new ResourceQueue());
+	privAte reAdonly modelLoAdQueue = this._register(new ResourceQueue());
 
-	saveErrorHandler = (() => {
-		const notificationService = this.notificationService;
+	sAveErrorHAndler = (() => {
+		const notificAtionService = this.notificAtionService;
 
 		return {
-			onSaveError(error: Error, model: ITextFileEditorModel): void {
-				notificationService.error(localize({ key: 'genericSaveError', comment: ['{0} is the resource that failed to save and {1} the error message'] }, "Failed to save '{0}': {1}", model.name, toErrorMessage(error, false)));
+			onSAveError(error: Error, model: ITextFileEditorModel): void {
+				notificAtionService.error(locAlize({ key: 'genericSAveError', comment: ['{0} is the resource thAt fAiled to sAve And {1} the error messAge'] }, "FAiled to sAve '{0}': {1}", model.nAme, toErrorMessAge(error, fAlse)));
 			}
 		};
 	})();
 
 	get models(): TextFileEditorModel[] {
-		return [...this.mapResourceToModel.values()];
+		return [...this.mApResourceToModel.vAlues()];
 	}
 
 	constructor(
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IFileService private readonly fileService: IFileService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IWorkingCopyFileService private readonly workingCopyFileService: IWorkingCopyFileService,
-		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IWorkingCopyFileService privAte reAdonly workingCopyFileService: IWorkingCopyFileService,
+		@IUriIdentityService privAte reAdonly uriIdentityService: IUriIdentityService
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Update models from file change events
-		this._register(this.fileService.onDidFilesChange(e => this.onDidFilesChange(e)));
+		// UpdAte models from file chAnge events
+		this._register(this.fileService.onDidFilesChAnge(e => this.onDidFilesChAnge(e)));
 
-		// Working copy operations
-		this._register(this.workingCopyFileService.onWillRunWorkingCopyFileOperation(e => this.onWillRunWorkingCopyFileOperation(e)));
-		this._register(this.workingCopyFileService.onDidFailWorkingCopyFileOperation(e => this.onDidFailWorkingCopyFileOperation(e)));
-		this._register(this.workingCopyFileService.onDidRunWorkingCopyFileOperation(e => this.onDidRunWorkingCopyFileOperation(e)));
+		// Working copy operAtions
+		this._register(this.workingCopyFileService.onWillRunWorkingCopyFileOperAtion(e => this.onWillRunWorkingCopyFileOperAtion(e)));
+		this._register(this.workingCopyFileService.onDidFAilWorkingCopyFileOperAtion(e => this.onDidFAilWorkingCopyFileOperAtion(e)));
+		this._register(this.workingCopyFileService.onDidRunWorkingCopyFileOperAtion(e => this.onDidRunWorkingCopyFileOperAtion(e)));
 
 		// Lifecycle
 		this.lifecycleService.onShutdown(this.dispose, this);
 	}
 
-	private onDidFilesChange(e: FileChangesEvent): void {
+	privAte onDidFilesChAnge(e: FileChAngesEvent): void {
 		for (const model of this.models) {
 			if (model.isDirty() || !model.isResolved()) {
-				continue; // require a resolved, saved model to continue
+				continue; // require A resolved, sAved model to continue
 			}
 
-			// Trigger a model load for any update or add event that impacts
-			// the model. We also consider the added event because it could
-			// be that a file was added and updated right after.
-			if (e.contains(model.resource, FileChangeType.UPDATED, FileChangeType.ADDED)) {
-				this.queueModelLoad(model);
+			// Trigger A model loAd for Any updAte or Add event thAt impActs
+			// the model. We Also consider the Added event becAuse it could
+			// be thAt A file wAs Added And updAted right After.
+			if (e.contAins(model.resource, FileChAngeType.UPDATED, FileChAngeType.ADDED)) {
+				this.queueModelLoAd(model);
 			}
 		}
 	}
 
-	private queueModelLoad(model: TextFileEditorModel): void {
+	privAte queueModelLoAd(model: TextFileEditorModel): void {
 
-		// Load model to update (use a queue to prevent accumulation of loads
-		// when the load actually takes long. At most we only want the queue
-		// to have a size of 2 (1 running load and 1 queued load).
-		const queue = this.modelLoadQueue.queueFor(model.resource);
+		// LoAd model to updAte (use A queue to prevent AccumulAtion of loAds
+		// when the loAd ActuAlly tAkes long. At most we only wAnt the queue
+		// to hAve A size of 2 (1 running loAd And 1 queued loAd).
+		const queue = this.modelLoAdQueue.queueFor(model.resource);
 		if (queue.size <= 1) {
-			queue.queue(async () => {
+			queue.queue(Async () => {
 				try {
-					await model.load();
-				} catch (error) {
+					AwAit model.loAd();
+				} cAtch (error) {
 					onUnexpectedError(error);
 				}
 			});
 		}
 	}
 
-	private readonly mapCorrelationIdToModelsToRestore = new Map<number, { source: URI, target: URI, snapshot?: ITextSnapshot; mode?: string; encoding?: string; }[]>();
+	privAte reAdonly mApCorrelAtionIdToModelsToRestore = new MAp<number, { source: URI, tArget: URI, snApshot?: ITextSnApshot; mode?: string; encoding?: string; }[]>();
 
-	private onWillRunWorkingCopyFileOperation(e: WorkingCopyFileEvent): void {
+	privAte onWillRunWorkingCopyFileOperAtion(e: WorkingCopyFileEvent): void {
 
-		// Move / Copy: remember models to restore after the operation
-		if (e.operation === FileOperation.MOVE || e.operation === FileOperation.COPY) {
-			const modelsToRestore: { source: URI, target: URI, snapshot?: ITextSnapshot; mode?: string; encoding?: string; }[] = [];
+		// Move / Copy: remember models to restore After the operAtion
+		if (e.operAtion === FileOperAtion.MOVE || e.operAtion === FileOperAtion.COPY) {
+			const modelsToRestore: { source: URI, tArget: URI, snApshot?: ITextSnApshot; mode?: string; encoding?: string; }[] = [];
 
-			for (const { source, target } of e.files) {
+			for (const { source, tArget } of e.files) {
 				if (source) {
-					if (this.uriIdentityService.extUri.isEqual(source, target)) {
-						continue; // ignore if resources are considered equal
+					if (this.uriIdentityService.extUri.isEquAl(source, tArget)) {
+						continue; // ignore if resources Are considered equAl
 					}
 
-					// find all models that related to source (can be many if resource is a folder)
+					// find All models thAt relAted to source (cAn be mAny if resource is A folder)
 					const sourceModels: TextFileEditorModel[] = [];
 					for (const model of this.models) {
-						if (this.uriIdentityService.extUri.isEqualOrParent(model.resource, source)) {
+						if (this.uriIdentityService.extUri.isEquAlOrPArent(model.resource, source)) {
 							sourceModels.push(model);
 						}
 					}
 
-					// remember each source model to load again after move is done
-					// with optional content to restore if it was dirty
+					// remember eAch source model to loAd AgAin After move is done
+					// with optionAl content to restore if it wAs dirty
 					for (const sourceModel of sourceModels) {
 						const sourceModelResource = sourceModel.resource;
 
-						// If the source is the actual model, just use target as new resource
-						let targetModelResource: URI;
-						if (this.uriIdentityService.extUri.isEqual(sourceModelResource, source)) {
-							targetModelResource = target;
+						// If the source is the ActuAl model, just use tArget As new resource
+						let tArgetModelResource: URI;
+						if (this.uriIdentityService.extUri.isEquAl(sourceModelResource, source)) {
+							tArgetModelResource = tArget;
 						}
 
-						// Otherwise a parent folder of the source is being moved, so we need
-						// to compute the target resource based on that
+						// Otherwise A pArent folder of the source is being moved, so we need
+						// to compute the tArget resource bAsed on thAt
 						else {
-							targetModelResource = joinPath(target, sourceModelResource.path.substr(source.path.length + 1));
+							tArgetModelResource = joinPAth(tArget, sourceModelResource.pAth.substr(source.pAth.length + 1));
 						}
 
 						modelsToRestore.push({
 							source: sourceModelResource,
-							target: targetModelResource,
+							tArget: tArgetModelResource,
 							mode: sourceModel.getMode(),
 							encoding: sourceModel.getEncoding(),
-							snapshot: sourceModel.isDirty() ? sourceModel.createSnapshot() : undefined
+							snApshot: sourceModel.isDirty() ? sourceModel.creAteSnApshot() : undefined
 						});
 					}
 				}
 			}
 
-			this.mapCorrelationIdToModelsToRestore.set(e.correlationId, modelsToRestore);
+			this.mApCorrelAtionIdToModelsToRestore.set(e.correlAtionId, modelsToRestore);
 		}
 	}
 
-	private onDidFailWorkingCopyFileOperation(e: WorkingCopyFileEvent): void {
+	privAte onDidFAilWorkingCopyFileOperAtion(e: WorkingCopyFileEvent): void {
 
-		// Move / Copy: restore dirty flag on models to restore that were dirty
-		if ((e.operation === FileOperation.MOVE || e.operation === FileOperation.COPY)) {
-			const modelsToRestore = this.mapCorrelationIdToModelsToRestore.get(e.correlationId);
+		// Move / Copy: restore dirty flAg on models to restore thAt were dirty
+		if ((e.operAtion === FileOperAtion.MOVE || e.operAtion === FileOperAtion.COPY)) {
+			const modelsToRestore = this.mApCorrelAtionIdToModelsToRestore.get(e.correlAtionId);
 			if (modelsToRestore) {
-				this.mapCorrelationIdToModelsToRestore.delete(e.correlationId);
+				this.mApCorrelAtionIdToModelsToRestore.delete(e.correlAtionId);
 
-				modelsToRestore.forEach(model => {
-					// snapshot presence means this model used to be dirty and so we restore that
-					// flag. we do NOT have to restore the content because the model was only soft
-					// reverted and did not loose its original dirty contents.
-					if (model.snapshot) {
+				modelsToRestore.forEAch(model => {
+					// snApshot presence meAns this model used to be dirty And so we restore thAt
+					// flAg. we do NOT hAve to restore the content becAuse the model wAs only soft
+					// reverted And did not loose its originAl dirty contents.
+					if (model.snApshot) {
 						this.get(model.source)?.setDirty(true);
 					}
 				});
@@ -204,95 +204,95 @@ export class TextFileEditorModelManager extends Disposable implements ITextFileE
 		}
 	}
 
-	private onDidRunWorkingCopyFileOperation(e: WorkingCopyFileEvent): void {
-		switch (e.operation) {
+	privAte onDidRunWorkingCopyFileOperAtion(e: WorkingCopyFileEvent): void {
+		switch (e.operAtion) {
 
-			// Create: Revert existing models
-			case FileOperation.CREATE:
-				e.waitUntil((async () => {
-					for (const { target } of e.files) {
-						const model = this.get(target);
+			// CreAte: Revert existing models
+			cAse FileOperAtion.CREATE:
+				e.wAitUntil((Async () => {
+					for (const { tArget } of e.files) {
+						const model = this.get(tArget);
 						if (model && !model.isDisposed()) {
-							await model.revert();
+							AwAit model.revert();
 						}
 					}
 				})());
-				break;
+				breAk;
 
-			// Move/Copy: restore models that were loaded before the operation took place
-			case FileOperation.MOVE:
-			case FileOperation.COPY:
-				e.waitUntil((async () => {
-					const modelsToRestore = this.mapCorrelationIdToModelsToRestore.get(e.correlationId);
+			// Move/Copy: restore models thAt were loAded before the operAtion took plAce
+			cAse FileOperAtion.MOVE:
+			cAse FileOperAtion.COPY:
+				e.wAitUntil((Async () => {
+					const modelsToRestore = this.mApCorrelAtionIdToModelsToRestore.get(e.correlAtionId);
 					if (modelsToRestore) {
-						this.mapCorrelationIdToModelsToRestore.delete(e.correlationId);
+						this.mApCorrelAtionIdToModelsToRestore.delete(e.correlAtionId);
 
-						await Promise.all(modelsToRestore.map(async modelToRestore => {
+						AwAit Promise.All(modelsToRestore.mAp(Async modelToRestore => {
 
-							// restore the model at the target. if we have previous dirty content, we pass it
-							// over to be used, otherwise we force a reload from disk. this is important
-							// because we know the file has changed on disk after the move and the model might
-							// have still existed with the previous state. this ensures that the model is not
-							// tracking a stale state.
-							const restoredModel = await this.resolve(modelToRestore.target, {
-								reload: { async: false }, // enforce a reload
-								contents: modelToRestore.snapshot ? createTextBufferFactoryFromSnapshot(modelToRestore.snapshot) : undefined,
+							// restore the model At the tArget. if we hAve previous dirty content, we pAss it
+							// over to be used, otherwise we force A reloAd from disk. this is importAnt
+							// becAuse we know the file hAs chAnged on disk After the move And the model might
+							// hAve still existed with the previous stAte. this ensures thAt the model is not
+							// trAcking A stAle stAte.
+							const restoredModel = AwAit this.resolve(modelToRestore.tArget, {
+								reloAd: { Async: fAlse }, // enforce A reloAd
+								contents: modelToRestore.snApshot ? creAteTextBufferFActoryFromSnApshot(modelToRestore.snApshot) : undefined,
 								encoding: modelToRestore.encoding
 							});
 
-							// restore previous mode only if the mode is now unspecified and it was specified
+							// restore previous mode only if the mode is now unspecified And it wAs specified
 							if (modelToRestore.mode && modelToRestore.mode !== PLAINTEXT_MODE_ID && restoredModel.getMode() === PLAINTEXT_MODE_ID) {
-								restoredModel.updateTextEditorModel(undefined, modelToRestore.mode);
+								restoredModel.updAteTextEditorModel(undefined, modelToRestore.mode);
 							}
 						}));
 					}
 				})());
-				break;
+				breAk;
 		}
 	}
 
 	get(resource: URI): TextFileEditorModel | undefined {
-		return this.mapResourceToModel.get(resource);
+		return this.mApResourceToModel.get(resource);
 	}
 
-	async resolve(resource: URI, options?: ITextFileEditorModelLoadOrCreateOptions): Promise<TextFileEditorModel> {
+	Async resolve(resource: URI, options?: ITextFileEditorModelLoAdOrCreAteOptions): Promise<TextFileEditorModel> {
 
-		// Await a pending model load first before proceeding
-		// to ensure that we never load a model more than once
-		// in parallel
+		// AwAit A pending model loAd first before proceeding
+		// to ensure thAt we never loAd A model more thAn once
+		// in pArAllel
 		const pendingResolve = this.joinPendingResolve(resource);
 		if (pendingResolve) {
-			await pendingResolve;
+			AwAit pendingResolve;
 		}
 
 		let modelPromise: Promise<TextFileEditorModel>;
 		let model = this.get(resource);
-		let didCreateModel = false;
+		let didCreAteModel = fAlse;
 
 		// Model exists
 		if (model) {
 
-			// Always reload if contents are provided
+			// AlwAys reloAd if contents Are provided
 			if (options?.contents) {
-				modelPromise = model.load(options);
+				modelPromise = model.loAd(options);
 			}
 
-			// Reload async or sync based on options
-			else if (options?.reload) {
+			// ReloAd Async or sync bAsed on options
+			else if (options?.reloAd) {
 
-				// async reload: trigger a reload but return immediately
-				if (options.reload.async) {
+				// Async reloAd: trigger A reloAd but return immediAtely
+				if (options.reloAd.Async) {
 					modelPromise = Promise.resolve(model);
-					model.load(options);
+					model.loAd(options);
 				}
 
-				// sync reload: do not return until model reloaded
+				// sync reloAd: do not return until model reloAded
 				else {
-					modelPromise = model.load(options);
+					modelPromise = model.loAd(options);
 				}
 			}
 
-			// Do not reload
+			// Do not reloAd
 			else {
 				modelPromise = Promise.resolve(model);
 			}
@@ -300,180 +300,180 @@ export class TextFileEditorModelManager extends Disposable implements ITextFileE
 
 		// Model does not exist
 		else {
-			didCreateModel = true;
+			didCreAteModel = true;
 
-			const newModel = model = this.instantiationService.createInstance(TextFileEditorModel, resource, options ? options.encoding : undefined, options ? options.mode : undefined);
-			modelPromise = model.load(options);
+			const newModel = model = this.instAntiAtionService.creAteInstAnce(TextFileEditorModel, resource, options ? options.encoding : undefined, options ? options.mode : undefined);
+			modelPromise = model.loAd(options);
 
 			this.registerModel(newModel);
 		}
 
-		// Store pending loads to avoid race conditions
-		this.mapResourceToPendingModelLoaders.set(resource, modelPromise);
+		// Store pending loAds to Avoid rAce conditions
+		this.mApResourceToPendingModelLoAders.set(resource, modelPromise);
 
-		// Make known to manager (if not already known)
-		this.add(resource, model);
+		// MAke known to mAnAger (if not AlreAdy known)
+		this.Add(resource, model);
 
-		// Emit some events if we created the model
-		if (didCreateModel) {
-			this._onDidCreate.fire(model);
+		// Emit some events if we creAted the model
+		if (didCreAteModel) {
+			this._onDidCreAte.fire(model);
 
 			// If the model is dirty right from the beginning,
-			// make sure to emit this as an event
+			// mAke sure to emit this As An event
 			if (model.isDirty()) {
-				this._onDidChangeDirty.fire(model);
+				this._onDidChAngeDirty.fire(model);
 			}
 		}
 
 		try {
-			const resolvedModel = await modelPromise;
+			const resolvedModel = AwAit modelPromise;
 
-			// Remove from pending loads
-			this.mapResourceToPendingModelLoaders.delete(resource);
+			// Remove from pending loAds
+			this.mApResourceToPendingModelLoAders.delete(resource);
 
 			// Apply mode if provided
 			if (options?.mode) {
 				resolvedModel.setMode(options.mode);
 			}
 
-			// Model can be dirty if a backup was restored, so we make sure to
-			// have this event delivered if we created the model here
-			if (didCreateModel && resolvedModel.isDirty()) {
-				this._onDidChangeDirty.fire(resolvedModel);
+			// Model cAn be dirty if A bAckup wAs restored, so we mAke sure to
+			// hAve this event delivered if we creAted the model here
+			if (didCreAteModel && resolvedModel.isDirty()) {
+				this._onDidChAngeDirty.fire(resolvedModel);
 			}
 
 			return resolvedModel;
-		} catch (error) {
+		} cAtch (error) {
 
-			// Free resources of this invalid model
+			// Free resources of this invAlid model
 			if (model) {
 				model.dispose();
 			}
 
-			// Remove from pending loads
-			this.mapResourceToPendingModelLoaders.delete(resource);
+			// Remove from pending loAds
+			this.mApResourceToPendingModelLoAders.delete(resource);
 
 			throw error;
 		}
 	}
 
-	private joinPendingResolve(resource: URI): Promise<void> | undefined {
-		const pendingModelLoad = this.mapResourceToPendingModelLoaders.get(resource);
-		if (pendingModelLoad) {
-			return pendingModelLoad.then(undefined, error => {/* ignore any error here, it will bubble to the original requestor*/ });
+	privAte joinPendingResolve(resource: URI): Promise<void> | undefined {
+		const pendingModelLoAd = this.mApResourceToPendingModelLoAders.get(resource);
+		if (pendingModelLoAd) {
+			return pendingModelLoAd.then(undefined, error => {/* ignore Any error here, it will bubble to the originAl requestor*/ });
 		}
 
 		return undefined;
 	}
 
-	private registerModel(model: TextFileEditorModel): void {
+	privAte registerModel(model: TextFileEditorModel): void {
 
-		// Install model listeners
-		const modelListeners = new DisposableStore();
-		modelListeners.add(model.onDidLoad(reason => this._onDidLoad.fire({ model, reason })));
-		modelListeners.add(model.onDidChangeDirty(() => this._onDidChangeDirty.fire(model)));
-		modelListeners.add(model.onDidSaveError(() => this._onDidSaveError.fire(model)));
-		modelListeners.add(model.onDidSave(reason => this._onDidSave.fire({ model: model, reason })));
-		modelListeners.add(model.onDidRevert(() => this._onDidRevert.fire(model)));
-		modelListeners.add(model.onDidChangeEncoding(() => this._onDidChangeEncoding.fire(model)));
+		// InstAll model listeners
+		const modelListeners = new DisposAbleStore();
+		modelListeners.Add(model.onDidLoAd(reAson => this._onDidLoAd.fire({ model, reAson })));
+		modelListeners.Add(model.onDidChAngeDirty(() => this._onDidChAngeDirty.fire(model)));
+		modelListeners.Add(model.onDidSAveError(() => this._onDidSAveError.fire(model)));
+		modelListeners.Add(model.onDidSAve(reAson => this._onDidSAve.fire({ model: model, reAson })));
+		modelListeners.Add(model.onDidRevert(() => this._onDidRevert.fire(model)));
+		modelListeners.Add(model.onDidChAngeEncoding(() => this._onDidChAngeEncoding.fire(model)));
 
-		// Keep for disposal
-		this.mapResourceToModelListeners.set(model.resource, modelListeners);
+		// Keep for disposAl
+		this.mApResourceToModelListeners.set(model.resource, modelListeners);
 	}
 
-	protected add(resource: URI, model: TextFileEditorModel): void {
-		const knownModel = this.mapResourceToModel.get(resource);
+	protected Add(resource: URI, model: TextFileEditorModel): void {
+		const knownModel = this.mApResourceToModel.get(resource);
 		if (knownModel === model) {
-			return; // already cached
+			return; // AlreAdy cAched
 		}
 
-		// dispose any previously stored dispose listener for this resource
-		const disposeListener = this.mapResourceToDisposeListener.get(resource);
+		// dispose Any previously stored dispose listener for this resource
+		const disposeListener = this.mApResourceToDisposeListener.get(resource);
 		if (disposeListener) {
 			disposeListener.dispose();
 		}
 
-		// store in cache but remove when model gets disposed
-		this.mapResourceToModel.set(resource, model);
-		this.mapResourceToDisposeListener.set(resource, model.onDispose(() => this.remove(resource)));
+		// store in cAche but remove when model gets disposed
+		this.mApResourceToModel.set(resource, model);
+		this.mApResourceToDisposeListener.set(resource, model.onDispose(() => this.remove(resource)));
 	}
 
 	protected remove(resource: URI): void {
-		this.mapResourceToModel.delete(resource);
+		this.mApResourceToModel.delete(resource);
 
-		const disposeListener = this.mapResourceToDisposeListener.get(resource);
+		const disposeListener = this.mApResourceToDisposeListener.get(resource);
 		if (disposeListener) {
 			dispose(disposeListener);
-			this.mapResourceToDisposeListener.delete(resource);
+			this.mApResourceToDisposeListener.delete(resource);
 		}
 
-		const modelListener = this.mapResourceToModelListeners.get(resource);
+		const modelListener = this.mApResourceToModelListeners.get(resource);
 		if (modelListener) {
 			dispose(modelListener);
-			this.mapResourceToModelListeners.delete(resource);
+			this.mApResourceToModelListeners.delete(resource);
 		}
 	}
 
-	//#region Save participants
+	//#region SAve pArticipAnts
 
-	private readonly saveParticipants = this._register(this.instantiationService.createInstance(TextFileSaveParticipant));
+	privAte reAdonly sAvePArticipAnts = this._register(this.instAntiAtionService.creAteInstAnce(TextFileSAvePArticipAnt));
 
-	addSaveParticipant(participant: ITextFileSaveParticipant): IDisposable {
-		return this.saveParticipants.addSaveParticipant(participant);
+	AddSAvePArticipAnt(pArticipAnt: ITextFileSAvePArticipAnt): IDisposAble {
+		return this.sAvePArticipAnts.AddSAvePArticipAnt(pArticipAnt);
 	}
 
-	runSaveParticipants(model: ITextFileEditorModel, context: { reason: SaveReason; }, token: CancellationToken): Promise<void> {
-		return this.saveParticipants.participate(model, context, token);
+	runSAvePArticipAnts(model: ITextFileEditorModel, context: { reAson: SAveReAson; }, token: CAncellAtionToken): Promise<void> {
+		return this.sAvePArticipAnts.pArticipAte(model, context, token);
 	}
 
 	//#endregion
 
-	clear(): void {
+	cleAr(): void {
 
-		// model caches
-		this.mapResourceToModel.clear();
-		this.mapResourceToPendingModelLoaders.clear();
+		// model cAches
+		this.mApResourceToModel.cleAr();
+		this.mApResourceToPendingModelLoAders.cleAr();
 
 		// dispose the dispose listeners
-		this.mapResourceToDisposeListener.forEach(listener => listener.dispose());
-		this.mapResourceToDisposeListener.clear();
+		this.mApResourceToDisposeListener.forEAch(listener => listener.dispose());
+		this.mApResourceToDisposeListener.cleAr();
 
-		// dispose the model change listeners
-		this.mapResourceToModelListeners.forEach(listener => listener.dispose());
-		this.mapResourceToModelListeners.clear();
+		// dispose the model chAnge listeners
+		this.mApResourceToModelListeners.forEAch(listener => listener.dispose());
+		this.mApResourceToModelListeners.cleAr();
 	}
 
-	canDispose(model: TextFileEditorModel): true | Promise<true> {
+	cAnDispose(model: TextFileEditorModel): true | Promise<true> {
 
-		// quick return if model already disposed or not dirty and not loading
+		// quick return if model AlreAdy disposed or not dirty And not loAding
 		if (
 			model.isDisposed() ||
-			(!this.mapResourceToPendingModelLoaders.has(model.resource) && !model.isDirty())
+			(!this.mApResourceToPendingModelLoAders.hAs(model.resource) && !model.isDirty())
 		) {
 			return true;
 		}
 
-		// promise based return in all other cases
-		return this.doCanDispose(model);
+		// promise bAsed return in All other cAses
+		return this.doCAnDispose(model);
 	}
 
-	private async doCanDispose(model: TextFileEditorModel): Promise<true> {
+	privAte Async doCAnDispose(model: TextFileEditorModel): Promise<true> {
 
-		// if we have a pending model load, await it first and then try again
+		// if we hAve A pending model loAd, AwAit it first And then try AgAin
 		const pendingResolve = this.joinPendingResolve(model.resource);
 		if (pendingResolve) {
-			await pendingResolve;
+			AwAit pendingResolve;
 
-			return this.canDispose(model);
+			return this.cAnDispose(model);
 		}
 
-		// dirty model: we do not allow to dispose dirty models to prevent
-		// data loss cases. dirty models can only be disposed when they are
-		// either saved or reverted
+		// dirty model: we do not Allow to dispose dirty models to prevent
+		// dAtA loss cAses. dirty models cAn only be disposed when they Are
+		// either sAved or reverted
 		if (model.isDirty()) {
-			await Event.toPromise(model.onDidChangeDirty);
+			AwAit Event.toPromise(model.onDidChAngeDirty);
 
-			return this.canDispose(model);
+			return this.cAnDispose(model);
 		}
 
 		return true;
@@ -482,6 +482,6 @@ export class TextFileEditorModelManager extends Disposable implements ITextFileE
 	dispose(): void {
 		super.dispose();
 
-		this.clear();
+		this.cleAr();
 	}
 }

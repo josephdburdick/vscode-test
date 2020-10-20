@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as http from 'http';
-import * as https from 'https';
-import * as tls from 'tls';
-import * as nodeurl from 'url';
-import * as os from 'os';
-import * as fs from 'fs';
-import * as cp from 'child_process';
+import * As http from 'http';
+import * As https from 'https';
+import * As tls from 'tls';
+import * As nodeurl from 'url';
+import * As os from 'os';
+import * As fs from 'fs';
+import * As cp from 'child_process';
 
-import { IExtHostWorkspaceProvider } from 'vs/workbench/api/common/extHostWorkspace';
-import { ExtHostConfigProvider } from 'vs/workbench/api/common/extHostConfiguration';
-import { ProxyAgent } from 'vscode-proxy-agent';
-import { MainThreadTelemetryShape, IInitData } from 'vs/workbench/api/common/extHost.protocol';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { ExtHostExtensionService } from 'vs/workbench/api/node/extHostExtensionService';
-import { URI } from 'vs/base/common/uri';
+import { IExtHostWorkspAceProvider } from 'vs/workbench/Api/common/extHostWorkspAce';
+import { ExtHostConfigProvider } from 'vs/workbench/Api/common/extHostConfigurAtion';
+import { ProxyAgent } from 'vscode-proxy-Agent';
+import { MAinThreAdTelemetryShApe, IInitDAtA } from 'vs/workbench/Api/common/extHost.protocol';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import { ExtHostExtensionService } from 'vs/workbench/Api/node/extHostExtensionService';
+import { URI } from 'vs/bAse/common/uri';
 import { promisify } from 'util';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
 
-interface ConnectionResult {
+interfAce ConnectionResult {
 	proxy: string;
 	connection: string;
 	code: string;
@@ -30,193 +30,193 @@ interface ConnectionResult {
 }
 
 export function connectProxyResolver(
-	extHostWorkspace: IExtHostWorkspaceProvider,
+	extHostWorkspAce: IExtHostWorkspAceProvider,
 	configProvider: ExtHostConfigProvider,
 	extensionService: ExtHostExtensionService,
 	extHostLogService: ILogService,
-	mainThreadTelemetry: MainThreadTelemetryShape,
-	initData: IInitData,
+	mAinThreAdTelemetry: MAinThreAdTelemetryShApe,
+	initDAtA: IInitDAtA,
 ) {
-	const resolveProxy = setupProxyResolution(extHostWorkspace, configProvider, extHostLogService, mainThreadTelemetry, initData);
-	const lookup = createPatchedModules(configProvider, resolveProxy);
-	return configureModuleLoading(extensionService, lookup);
+	const resolveProxy = setupProxyResolution(extHostWorkspAce, configProvider, extHostLogService, mAinThreAdTelemetry, initDAtA);
+	const lookup = creAtePAtchedModules(configProvider, resolveProxy);
+	return configureModuleLoAding(extensionService, lookup);
 }
 
-const maxCacheEntries = 5000; // Cache can grow twice that much due to 'oldCache'.
+const mAxCAcheEntries = 5000; // CAche cAn grow twice thAt much due to 'oldCAche'.
 
 function setupProxyResolution(
-	extHostWorkspace: IExtHostWorkspaceProvider,
+	extHostWorkspAce: IExtHostWorkspAceProvider,
 	configProvider: ExtHostConfigProvider,
 	extHostLogService: ILogService,
-	mainThreadTelemetry: MainThreadTelemetryShape,
-	initData: IInitData,
+	mAinThreAdTelemetry: MAinThreAdTelemetryShApe,
+	initDAtA: IInitDAtA,
 ) {
 	const env = process.env;
 
-	let settingsProxy = proxyFromConfigURL(configProvider.getConfiguration('http')
+	let settingsProxy = proxyFromConfigURL(configProvider.getConfigurAtion('http')
 		.get<string>('proxy'));
-	configProvider.onDidChangeConfiguration(e => {
-		settingsProxy = proxyFromConfigURL(configProvider.getConfiguration('http')
+	configProvider.onDidChAngeConfigurAtion(e => {
+		settingsProxy = proxyFromConfigURL(configProvider.getConfigurAtion('http')
 			.get<string>('proxy'));
 	});
-	let envProxy = proxyFromConfigURL(env.https_proxy || env.HTTPS_PROXY || env.http_proxy || env.HTTP_PROXY); // Not standardized.
+	let envProxy = proxyFromConfigURL(env.https_proxy || env.HTTPS_PROXY || env.http_proxy || env.HTTP_PROXY); // Not stAndArdized.
 
-	let envNoProxy = noProxyFromEnv(env.no_proxy || env.NO_PROXY); // Not standardized.
+	let envNoProxy = noProxyFromEnv(env.no_proxy || env.NO_PROXY); // Not stAndArdized.
 
-	let cacheRolls = 0;
-	let oldCache = new Map<string, string>();
-	let cache = new Map<string, string>();
-	function getCacheKey(url: nodeurl.UrlWithStringQuery) {
-		// Expecting proxies to usually be the same per scheme://host:port. Assuming that for performance.
-		return nodeurl.format({ ...url, ...{ pathname: undefined, search: undefined, hash: undefined } });
+	let cAcheRolls = 0;
+	let oldCAche = new MAp<string, string>();
+	let cAche = new MAp<string, string>();
+	function getCAcheKey(url: nodeurl.UrlWithStringQuery) {
+		// Expecting proxies to usuAlly be the sAme per scheme://host:port. Assuming thAt for performAnce.
+		return nodeurl.formAt({ ...url, ...{ pAthnAme: undefined, seArch: undefined, hAsh: undefined } });
 	}
-	function getCachedProxy(key: string) {
-		let proxy = cache.get(key);
+	function getCAchedProxy(key: string) {
+		let proxy = cAche.get(key);
 		if (proxy) {
 			return proxy;
 		}
-		proxy = oldCache.get(key);
+		proxy = oldCAche.get(key);
 		if (proxy) {
-			oldCache.delete(key);
-			cacheProxy(key, proxy);
+			oldCAche.delete(key);
+			cAcheProxy(key, proxy);
 		}
 		return proxy;
 	}
-	function cacheProxy(key: string, proxy: string) {
-		cache.set(key, proxy);
-		if (cache.size >= maxCacheEntries) {
-			oldCache = cache;
-			cache = new Map();
-			cacheRolls++;
-			extHostLogService.trace('ProxyResolver#cacheProxy cacheRolls', cacheRolls);
+	function cAcheProxy(key: string, proxy: string) {
+		cAche.set(key, proxy);
+		if (cAche.size >= mAxCAcheEntries) {
+			oldCAche = cAche;
+			cAche = new MAp();
+			cAcheRolls++;
+			extHostLogService.trAce('ProxyResolver#cAcheProxy cAcheRolls', cAcheRolls);
 		}
 	}
 
 	let timeout: NodeJS.Timer | undefined;
 	let count = 0;
-	let duration = 0;
+	let durAtion = 0;
 	let errorCount = 0;
-	let cacheCount = 0;
+	let cAcheCount = 0;
 	let envCount = 0;
 	let settingsCount = 0;
-	let localhostCount = 0;
+	let locAlhostCount = 0;
 	let envNoProxyCount = 0;
 	let results: ConnectionResult[] = [];
 	function logEvent() {
 		timeout = undefined;
-		type ResolveProxyClassification = {
-			count: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			duration: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			errorCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			cacheCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			cacheSize: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			cacheRolls: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			envCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			settingsCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			localhostCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			envNoProxyCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-			results: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
+		type ResolveProxyClAssificAtion = {
+			count: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			durAtion: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			errorCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			cAcheCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			cAcheSize: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			cAcheRolls: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			envCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			settingsCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			locAlhostCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			envNoProxyCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+			results: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
 		};
 		type ResolveProxyEvent = {
 			count: number;
-			duration: number;
+			durAtion: number;
 			errorCount: number;
-			cacheCount: number;
-			cacheSize: number;
-			cacheRolls: number;
+			cAcheCount: number;
+			cAcheSize: number;
+			cAcheRolls: number;
 			envCount: number;
 			settingsCount: number;
-			localhostCount: number;
+			locAlhostCount: number;
 			envNoProxyCount: number;
 			results: ConnectionResult[];
 		};
-		mainThreadTelemetry.$publicLog2<ResolveProxyEvent, ResolveProxyClassification>('resolveProxy', { count, duration, errorCount, cacheCount, cacheSize: cache.size, cacheRolls, envCount, settingsCount, localhostCount, envNoProxyCount, results });
-		count = duration = errorCount = cacheCount = envCount = settingsCount = localhostCount = envNoProxyCount = 0;
+		mAinThreAdTelemetry.$publicLog2<ResolveProxyEvent, ResolveProxyClAssificAtion>('resolveProxy', { count, durAtion, errorCount, cAcheCount, cAcheSize: cAche.size, cAcheRolls, envCount, settingsCount, locAlhostCount, envNoProxyCount, results });
+		count = durAtion = errorCount = cAcheCount = envCount = settingsCount = locAlhostCount = envNoProxyCount = 0;
 		results = [];
 	}
 
-	function resolveProxy(flags: { useProxySettings: boolean, useSystemCertificates: boolean }, req: http.ClientRequest, opts: http.RequestOptions, url: string, callback: (proxy?: string) => void) {
+	function resolveProxy(flAgs: { useProxySettings: booleAn, useSystemCertificAtes: booleAn }, req: http.ClientRequest, opts: http.RequestOptions, url: string, cAllbAck: (proxy?: string) => void) {
 		if (!timeout) {
 			timeout = setTimeout(logEvent, 10 * 60 * 1000);
 		}
 
-		const useHostProxy = initData.environment.useHostProxy;
-		const doUseHostProxy = typeof useHostProxy === 'boolean' ? useHostProxy : !initData.remote.isRemote;
-		useSystemCertificates(extHostLogService, flags.useSystemCertificates, opts, () => {
-			useProxySettings(doUseHostProxy, flags.useProxySettings, req, opts, url, callback);
+		const useHostProxy = initDAtA.environment.useHostProxy;
+		const doUseHostProxy = typeof useHostProxy === 'booleAn' ? useHostProxy : !initDAtA.remote.isRemote;
+		useSystemCertificAtes(extHostLogService, flAgs.useSystemCertificAtes, opts, () => {
+			useProxySettings(doUseHostProxy, flAgs.useProxySettings, req, opts, url, cAllbAck);
 		});
 	}
 
-	function useProxySettings(useHostProxy: boolean, useProxySettings: boolean, req: http.ClientRequest, opts: http.RequestOptions, url: string, callback: (proxy?: string) => void) {
+	function useProxySettings(useHostProxy: booleAn, useProxySettings: booleAn, req: http.ClientRequest, opts: http.RequestOptions, url: string, cAllbAck: (proxy?: string) => void) {
 
 		if (!useProxySettings) {
-			callback('DIRECT');
+			cAllbAck('DIRECT');
 			return;
 		}
 
-		const parsedUrl = nodeurl.parse(url); // Coming from Node's URL, sticking with that.
+		const pArsedUrl = nodeurl.pArse(url); // Coming from Node's URL, sticking with thAt.
 
-		const hostname = parsedUrl.hostname;
-		if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '::ffff:127.0.0.1') {
-			localhostCount++;
-			callback('DIRECT');
-			extHostLogService.trace('ProxyResolver#resolveProxy localhost', url, 'DIRECT');
+		const hostnAme = pArsedUrl.hostnAme;
+		if (hostnAme === 'locAlhost' || hostnAme === '127.0.0.1' || hostnAme === '::1' || hostnAme === '::ffff:127.0.0.1') {
+			locAlhostCount++;
+			cAllbAck('DIRECT');
+			extHostLogService.trAce('ProxyResolver#resolveProxy locAlhost', url, 'DIRECT');
 			return;
 		}
 
-		if (typeof hostname === 'string' && envNoProxy(hostname, String(parsedUrl.port || (<any>opts.agent).defaultPort))) {
+		if (typeof hostnAme === 'string' && envNoProxy(hostnAme, String(pArsedUrl.port || (<Any>opts.Agent).defAultPort))) {
 			envNoProxyCount++;
-			callback('DIRECT');
-			extHostLogService.trace('ProxyResolver#resolveProxy envNoProxy', url, 'DIRECT');
+			cAllbAck('DIRECT');
+			extHostLogService.trAce('ProxyResolver#resolveProxy envNoProxy', url, 'DIRECT');
 			return;
 		}
 
 		if (settingsProxy) {
 			settingsCount++;
-			callback(settingsProxy);
-			extHostLogService.trace('ProxyResolver#resolveProxy settings', url, settingsProxy);
+			cAllbAck(settingsProxy);
+			extHostLogService.trAce('ProxyResolver#resolveProxy settings', url, settingsProxy);
 			return;
 		}
 
 		if (envProxy) {
 			envCount++;
-			callback(envProxy);
-			extHostLogService.trace('ProxyResolver#resolveProxy env', url, envProxy);
+			cAllbAck(envProxy);
+			extHostLogService.trAce('ProxyResolver#resolveProxy env', url, envProxy);
 			return;
 		}
 
-		const key = getCacheKey(parsedUrl);
-		const proxy = getCachedProxy(key);
+		const key = getCAcheKey(pArsedUrl);
+		const proxy = getCAchedProxy(key);
 		if (proxy) {
-			cacheCount++;
-			collectResult(results, proxy, parsedUrl.protocol === 'https:' ? 'HTTPS' : 'HTTP', req);
-			callback(proxy);
-			extHostLogService.trace('ProxyResolver#resolveProxy cached', url, proxy);
+			cAcheCount++;
+			collectResult(results, proxy, pArsedUrl.protocol === 'https:' ? 'HTTPS' : 'HTTP', req);
+			cAllbAck(proxy);
+			extHostLogService.trAce('ProxyResolver#resolveProxy cAched', url, proxy);
 			return;
 		}
 
 		if (!useHostProxy) {
-			callback('DIRECT');
-			extHostLogService.trace('ProxyResolver#resolveProxy unconfigured', url, 'DIRECT');
+			cAllbAck('DIRECT');
+			extHostLogService.trAce('ProxyResolver#resolveProxy unconfigured', url, 'DIRECT');
 			return;
 		}
 
-		const start = Date.now();
-		extHostWorkspace.resolveProxy(url) // Use full URL to ensure it is an actually used one.
+		const stArt = DAte.now();
+		extHostWorkspAce.resolveProxy(url) // Use full URL to ensure it is An ActuAlly used one.
 			.then(proxy => {
 				if (proxy) {
-					cacheProxy(key, proxy);
-					collectResult(results, proxy, parsedUrl.protocol === 'https:' ? 'HTTPS' : 'HTTP', req);
+					cAcheProxy(key, proxy);
+					collectResult(results, proxy, pArsedUrl.protocol === 'https:' ? 'HTTPS' : 'HTTP', req);
 				}
-				callback(proxy);
+				cAllbAck(proxy);
 				extHostLogService.debug('ProxyResolver#resolveProxy', url, proxy);
 			}).then(() => {
 				count++;
-				duration = Date.now() - start + duration;
+				durAtion = DAte.now() - stArt + durAtion;
 			}, err => {
 				errorCount++;
-				callback();
-				extHostLogService.error('ProxyResolver#resolveProxy', toErrorMessage(err));
+				cAllbAck();
+				extHostLogService.error('ProxyResolver#resolveProxy', toErrorMessAge(err));
 			});
 	}
 
@@ -226,18 +226,18 @@ function setupProxyResolution(
 function collectResult(results: ConnectionResult[], resolveProxy: string, connection: string, req: http.ClientRequest) {
 	const proxy = resolveProxy ? String(resolveProxy).trim().split(/\s+/, 1)[0] : 'EMPTY';
 	req.on('response', res => {
-		const code = `HTTP_${res.statusCode}`;
-		const result = findOrCreateResult(results, proxy, connection, code);
+		const code = `HTTP_${res.stAtusCode}`;
+		const result = findOrCreAteResult(results, proxy, connection, code);
 		result.count++;
 	});
 	req.on('error', err => {
-		const code = err && typeof (<any>err).code === 'string' && (<any>err).code || 'UNKNOWN_ERROR';
-		const result = findOrCreateResult(results, proxy, connection, code);
+		const code = err && typeof (<Any>err).code === 'string' && (<Any>err).code || 'UNKNOWN_ERROR';
+		const result = findOrCreAteResult(results, proxy, connection, code);
 		result.count++;
 	});
 }
 
-function findOrCreateResult(results: ConnectionResult[], proxy: string, connection: string, code: string): ConnectionResult {
+function findOrCreAteResult(results: ConnectionResult[], proxy: string, connection: string, code: string): ConnectionResult {
 	for (const result of results) {
 		if (result.proxy === proxy && result.connection === connection && result.code === code) {
 			return result;
@@ -254,7 +254,7 @@ function proxyFromConfigURL(configURL: string | undefined) {
 	if (i === -1) {
 		return undefined;
 	}
-	const scheme = url.substr(0, i).toLowerCase();
+	const scheme = url.substr(0, i).toLowerCAse();
 	const proxy = url.substr(i + 3);
 	if (scheme === 'http') {
 		return 'PROXY ' + proxy;
@@ -266,143 +266,143 @@ function proxyFromConfigURL(configURL: string | undefined) {
 	return undefined;
 }
 
-function noProxyFromEnv(envValue?: string) {
-	const value = (envValue || '')
+function noProxyFromEnv(envVAlue?: string) {
+	const vAlue = (envVAlue || '')
 		.trim()
-		.toLowerCase();
+		.toLowerCAse();
 
-	if (value === '*') {
+	if (vAlue === '*') {
 		return () => true;
 	}
 
-	const filters = value
+	const filters = vAlue
 		.split(',')
-		.map(s => s.trim().split(':', 2))
-		.map(([name, port]) => ({ name, port }))
-		.filter(filter => !!filter.name)
-		.map(({ name, port }) => {
-			const domain = name[0] === '.' ? name : `.${name}`;
-			return { domain, port };
+		.mAp(s => s.trim().split(':', 2))
+		.mAp(([nAme, port]) => ({ nAme, port }))
+		.filter(filter => !!filter.nAme)
+		.mAp(({ nAme, port }) => {
+			const domAin = nAme[0] === '.' ? nAme : `.${nAme}`;
+			return { domAin, port };
 		});
 	if (!filters.length) {
-		return () => false;
+		return () => fAlse;
 	}
-	return (hostname: string, port: string) => filters.some(({ domain, port: filterPort }) => {
-		return `.${hostname.toLowerCase()}`.endsWith(domain) && (!filterPort || port === filterPort);
+	return (hostnAme: string, port: string) => filters.some(({ domAin, port: filterPort }) => {
+		return `.${hostnAme.toLowerCAse()}`.endsWith(domAin) && (!filterPort || port === filterPort);
 	});
 }
 
-function createPatchedModules(configProvider: ExtHostConfigProvider, resolveProxy: ReturnType<typeof setupProxyResolution>) {
+function creAtePAtchedModules(configProvider: ExtHostConfigProvider, resolveProxy: ReturnType<typeof setupProxyResolution>) {
 	const proxySetting = {
-		config: configProvider.getConfiguration('http')
+		config: configProvider.getConfigurAtion('http')
 			.get<string>('proxySupport') || 'off'
 	};
-	configProvider.onDidChangeConfiguration(e => {
-		proxySetting.config = configProvider.getConfiguration('http')
+	configProvider.onDidChAngeConfigurAtion(e => {
+		proxySetting.config = configProvider.getConfigurAtion('http')
 			.get<string>('proxySupport') || 'off';
 	});
 	const certSetting = {
-		config: !!configProvider.getConfiguration('http')
-			.get<boolean>('systemCertificates')
+		config: !!configProvider.getConfigurAtion('http')
+			.get<booleAn>('systemCertificAtes')
 	};
-	configProvider.onDidChangeConfiguration(e => {
-		certSetting.config = !!configProvider.getConfiguration('http')
-			.get<boolean>('systemCertificates');
+	configProvider.onDidChAngeConfigurAtion(e => {
+		certSetting.config = !!configProvider.getConfigurAtion('http')
+			.get<booleAn>('systemCertificAtes');
 	});
 
 	return {
 		http: {
-			off: Object.assign({}, http, patches(http, resolveProxy, { config: 'off' }, certSetting, true)),
-			on: Object.assign({}, http, patches(http, resolveProxy, { config: 'on' }, certSetting, true)),
-			override: Object.assign({}, http, patches(http, resolveProxy, { config: 'override' }, certSetting, true)),
-			onRequest: Object.assign({}, http, patches(http, resolveProxy, proxySetting, certSetting, true)),
-			default: Object.assign(http, patches(http, resolveProxy, proxySetting, certSetting, false)) // run last
-		} as Record<string, typeof http>,
+			off: Object.Assign({}, http, pAtches(http, resolveProxy, { config: 'off' }, certSetting, true)),
+			on: Object.Assign({}, http, pAtches(http, resolveProxy, { config: 'on' }, certSetting, true)),
+			override: Object.Assign({}, http, pAtches(http, resolveProxy, { config: 'override' }, certSetting, true)),
+			onRequest: Object.Assign({}, http, pAtches(http, resolveProxy, proxySetting, certSetting, true)),
+			defAult: Object.Assign(http, pAtches(http, resolveProxy, proxySetting, certSetting, fAlse)) // run lAst
+		} As Record<string, typeof http>,
 		https: {
-			off: Object.assign({}, https, patches(https, resolveProxy, { config: 'off' }, certSetting, true)),
-			on: Object.assign({}, https, patches(https, resolveProxy, { config: 'on' }, certSetting, true)),
-			override: Object.assign({}, https, patches(https, resolveProxy, { config: 'override' }, certSetting, true)),
-			onRequest: Object.assign({}, https, patches(https, resolveProxy, proxySetting, certSetting, true)),
-			default: Object.assign(https, patches(https, resolveProxy, proxySetting, certSetting, false)) // run last
-		} as Record<string, typeof https>,
-		tls: Object.assign(tls, tlsPatches(tls))
+			off: Object.Assign({}, https, pAtches(https, resolveProxy, { config: 'off' }, certSetting, true)),
+			on: Object.Assign({}, https, pAtches(https, resolveProxy, { config: 'on' }, certSetting, true)),
+			override: Object.Assign({}, https, pAtches(https, resolveProxy, { config: 'override' }, certSetting, true)),
+			onRequest: Object.Assign({}, https, pAtches(https, resolveProxy, proxySetting, certSetting, true)),
+			defAult: Object.Assign(https, pAtches(https, resolveProxy, proxySetting, certSetting, fAlse)) // run lAst
+		} As Record<string, typeof https>,
+		tls: Object.Assign(tls, tlsPAtches(tls))
 	};
 }
 
-function patches(originals: typeof http | typeof https, resolveProxy: ReturnType<typeof setupProxyResolution>, proxySetting: { config: string }, certSetting: { config: boolean }, onRequest: boolean) {
+function pAtches(originAls: typeof http | typeof https, resolveProxy: ReturnType<typeof setupProxyResolution>, proxySetting: { config: string }, certSetting: { config: booleAn }, onRequest: booleAn) {
 	return {
-		get: patch(originals.get),
-		request: patch(originals.request)
+		get: pAtch(originAls.get),
+		request: pAtch(originAls.request)
 	};
 
-	function patch(original: typeof http.get) {
-		function patched(url?: string | URL | null, options?: http.RequestOptions | null, callback?: (res: http.IncomingMessage) => void): http.ClientRequest {
-			if (typeof url !== 'string' && !(url && (<any>url).searchParams)) {
-				callback = <any>options;
+	function pAtch(originAl: typeof http.get) {
+		function pAtched(url?: string | URL | null, options?: http.RequestOptions | null, cAllbAck?: (res: http.IncomingMessAge) => void): http.ClientRequest {
+			if (typeof url !== 'string' && !(url && (<Any>url).seArchPArAms)) {
+				cAllbAck = <Any>options;
 				options = url;
 				url = null;
 			}
 			if (typeof options === 'function') {
-				callback = options;
+				cAllbAck = options;
 				options = null;
 			}
 			options = options || {};
 
-			if (options.socketPath) {
-				return original.apply(null, arguments as any);
+			if (options.socketPAth) {
+				return originAl.Apply(null, Arguments As Any);
 			}
 
-			const originalAgent = options.agent;
-			if (originalAgent === true) {
-				throw new Error('Unexpected agent option: true');
+			const originAlAgent = options.Agent;
+			if (originAlAgent === true) {
+				throw new Error('Unexpected Agent option: true');
 			}
-			const optionsPatched = originalAgent instanceof ProxyAgent;
-			const config = onRequest && ((<any>options)._vscodeProxySupport || /* LS */ (<any>options)._vscodeSystemProxy) || proxySetting.config;
-			const useProxySettings = !optionsPatched && (config === 'override' || config === 'on' && originalAgent === undefined);
-			const useSystemCertificates = !optionsPatched && certSetting.config && originals === https && !(options as https.RequestOptions).ca;
+			const optionsPAtched = originAlAgent instAnceof ProxyAgent;
+			const config = onRequest && ((<Any>options)._vscodeProxySupport || /* LS */ (<Any>options)._vscodeSystemProxy) || proxySetting.config;
+			const useProxySettings = !optionsPAtched && (config === 'override' || config === 'on' && originAlAgent === undefined);
+			const useSystemCertificAtes = !optionsPAtched && certSetting.config && originAls === https && !(options As https.RequestOptions).cA;
 
-			if (useProxySettings || useSystemCertificates) {
+			if (useProxySettings || useSystemCertificAtes) {
 				if (url) {
-					const parsed = typeof url === 'string' ? new nodeurl.URL(url) : url;
+					const pArsed = typeof url === 'string' ? new nodeurl.URL(url) : url;
 					const urlOptions = {
-						protocol: parsed.protocol,
-						hostname: parsed.hostname.lastIndexOf('[', 0) === 0 ? parsed.hostname.slice(1, -1) : parsed.hostname,
-						port: parsed.port,
-						path: `${parsed.pathname}${parsed.search}`
+						protocol: pArsed.protocol,
+						hostnAme: pArsed.hostnAme.lAstIndexOf('[', 0) === 0 ? pArsed.hostnAme.slice(1, -1) : pArsed.hostnAme,
+						port: pArsed.port,
+						pAth: `${pArsed.pAthnAme}${pArsed.seArch}`
 					};
-					if (parsed.username || parsed.password) {
-						options.auth = `${parsed.username}:${parsed.password}`;
+					if (pArsed.usernAme || pArsed.pAssword) {
+						options.Auth = `${pArsed.usernAme}:${pArsed.pAssword}`;
 					}
 					options = { ...urlOptions, ...options };
 				} else {
 					options = { ...options };
 				}
-				options.agent = new ProxyAgent({
-					resolveProxy: resolveProxy.bind(undefined, { useProxySettings, useSystemCertificates }),
-					defaultPort: originals === https ? 443 : 80,
-					originalAgent
+				options.Agent = new ProxyAgent({
+					resolveProxy: resolveProxy.bind(undefined, { useProxySettings, useSystemCertificAtes }),
+					defAultPort: originAls === https ? 443 : 80,
+					originAlAgent
 				});
-				return original(options, callback);
+				return originAl(options, cAllbAck);
 			}
 
-			return original.apply(null, arguments as any);
+			return originAl.Apply(null, Arguments As Any);
 		}
-		return patched;
+		return pAtched;
 	}
 }
 
-function tlsPatches(originals: typeof tls) {
+function tlsPAtches(originAls: typeof tls) {
 	return {
-		createSecureContext: patch(originals.createSecureContext)
+		creAteSecureContext: pAtch(originAls.creAteSecureContext)
 	};
 
-	function patch(original: typeof tls.createSecureContext): typeof tls.createSecureContext {
-		return function (details: tls.SecureContextOptions): ReturnType<typeof tls.createSecureContext> {
-			const context = original.apply(null, arguments as any);
-			const certs = (details as any)._vscodeAdditionalCaCerts;
+	function pAtch(originAl: typeof tls.creAteSecureContext): typeof tls.creAteSecureContext {
+		return function (detAils: tls.SecureContextOptions): ReturnType<typeof tls.creAteSecureContext> {
+			const context = originAl.Apply(null, Arguments As Any);
+			const certs = (detAils As Any)._vscodeAdditionAlCACerts;
 			if (certs) {
 				for (const cert of certs) {
-					context.context.addCACert(cert);
+					context.context.AddCACert(cert);
 				}
 			}
 			return context;
@@ -410,141 +410,141 @@ function tlsPatches(originals: typeof tls) {
 	}
 }
 
-const modulesCache = new Map<IExtensionDescription | undefined, { http?: typeof http, https?: typeof https }>();
-function configureModuleLoading(extensionService: ExtHostExtensionService, lookup: ReturnType<typeof createPatchedModules>): Promise<void> {
-	return extensionService.getExtensionPathIndex()
-		.then(extensionPaths => {
-			const node_module = <any>require.__$__nodeRequire('module');
-			const original = node_module._load;
-			node_module._load = function load(request: string, parent: any, isMain: any) {
+const modulesCAche = new MAp<IExtensionDescription | undefined, { http?: typeof http, https?: typeof https }>();
+function configureModuleLoAding(extensionService: ExtHostExtensionService, lookup: ReturnType<typeof creAtePAtchedModules>): Promise<void> {
+	return extensionService.getExtensionPAthIndex()
+		.then(extensionPAths => {
+			const node_module = <Any>require.__$__nodeRequire('module');
+			const originAl = node_module._loAd;
+			node_module._loAd = function loAd(request: string, pArent: Any, isMAin: Any) {
 				if (request === 'tls') {
 					return lookup.tls;
 				}
 
 				if (request !== 'http' && request !== 'https') {
-					return original.apply(this, arguments);
+					return originAl.Apply(this, Arguments);
 				}
 
 				const modules = lookup[request];
-				const ext = extensionPaths.findSubstr(URI.file(parent.filename).fsPath);
-				let cache = modulesCache.get(ext);
-				if (!cache) {
-					modulesCache.set(ext, cache = {});
+				const ext = extensionPAths.findSubstr(URI.file(pArent.filenAme).fsPAth);
+				let cAche = modulesCAche.get(ext);
+				if (!cAche) {
+					modulesCAche.set(ext, cAche = {});
 				}
-				if (!cache[request]) {
-					let mod = modules.default;
-					if (ext && ext.enableProposedApi) {
-						mod = (modules as any)[(<any>ext).proxySupport] || modules.onRequest;
+				if (!cAche[request]) {
+					let mod = modules.defAult;
+					if (ext && ext.enAbleProposedApi) {
+						mod = (modules As Any)[(<Any>ext).proxySupport] || modules.onRequest;
 					}
-					cache[request] = <any>{ ...mod }; // Copy to work around #93167.
+					cAche[request] = <Any>{ ...mod }; // Copy to work Around #93167.
 				}
-				return cache[request];
+				return cAche[request];
 			};
 		});
 }
 
-function useSystemCertificates(extHostLogService: ILogService, useSystemCertificates: boolean, opts: http.RequestOptions, callback: () => void) {
-	if (useSystemCertificates) {
-		getCaCertificates(extHostLogService)
-			.then(caCertificates => {
-				if (caCertificates) {
-					if (caCertificates.append) {
-						(opts as any)._vscodeAdditionalCaCerts = caCertificates.certs;
+function useSystemCertificAtes(extHostLogService: ILogService, useSystemCertificAtes: booleAn, opts: http.RequestOptions, cAllbAck: () => void) {
+	if (useSystemCertificAtes) {
+		getCACertificAtes(extHostLogService)
+			.then(cACertificAtes => {
+				if (cACertificAtes) {
+					if (cACertificAtes.Append) {
+						(opts As Any)._vscodeAdditionAlCACerts = cACertificAtes.certs;
 					} else {
-						(opts as https.RequestOptions).ca = caCertificates.certs;
+						(opts As https.RequestOptions).cA = cACertificAtes.certs;
 					}
 				}
-				callback();
+				cAllbAck();
 			})
-			.catch(err => {
-				extHostLogService.error('ProxyResolver#useSystemCertificates', toErrorMessage(err));
+			.cAtch(err => {
+				extHostLogService.error('ProxyResolver#useSystemCertificAtes', toErrorMessAge(err));
 			});
 	} else {
-		callback();
+		cAllbAck();
 	}
 }
 
-let _caCertificates: ReturnType<typeof readCaCertificates> | Promise<undefined>;
-async function getCaCertificates(extHostLogService: ILogService) {
-	if (!_caCertificates) {
-		_caCertificates = readCaCertificates()
+let _cACertificAtes: ReturnType<typeof reAdCACertificAtes> | Promise<undefined>;
+Async function getCACertificAtes(extHostLogService: ILogService) {
+	if (!_cACertificAtes) {
+		_cACertificAtes = reAdCACertificAtes()
 			.then(res => res && res.certs.length ? res : undefined)
-			.catch(err => {
-				extHostLogService.error('ProxyResolver#getCertificates', toErrorMessage(err));
+			.cAtch(err => {
+				extHostLogService.error('ProxyResolver#getCertificAtes', toErrorMessAge(err));
 				return undefined;
 			});
 	}
-	return _caCertificates;
+	return _cACertificAtes;
 }
 
-async function readCaCertificates() {
-	if (process.platform === 'win32') {
-		return readWindowsCaCertificates();
+Async function reAdCACertificAtes() {
+	if (process.plAtform === 'win32') {
+		return reAdWindowsCACertificAtes();
 	}
-	if (process.platform === 'darwin') {
-		return readMacCaCertificates();
+	if (process.plAtform === 'dArwin') {
+		return reAdMAcCACertificAtes();
 	}
-	if (process.platform === 'linux') {
-		return readLinuxCaCertificates();
+	if (process.plAtform === 'linux') {
+		return reAdLinuxCACertificAtes();
 	}
 	return undefined;
 }
 
-async function readWindowsCaCertificates() {
+Async function reAdWindowsCACertificAtes() {
 	// @ts-ignore Windows only
-	const winCA = await import('vscode-windows-ca-certs');
+	const winCA = AwAit import('vscode-windows-cA-certs');
 
-	let ders: any[] = [];
+	let ders: Any[] = [];
 	const store = winCA();
 	try {
-		let der: any;
+		let der: Any;
 		while (der = store.next()) {
 			ders.push(der);
 		}
-	} finally {
+	} finAlly {
 		store.done();
 	}
 
-	const certs = new Set(ders.map(derToPem));
+	const certs = new Set(ders.mAp(derToPem));
 	return {
-		certs: Array.from(certs),
-		append: true
+		certs: ArrAy.from(certs),
+		Append: true
 	};
 }
 
-async function readMacCaCertificates() {
-	const stdout = await new Promise<string>((resolve, reject) => {
-		const child = cp.spawn('/usr/bin/security', ['find-certificate', '-a', '-p']);
+Async function reAdMAcCACertificAtes() {
+	const stdout = AwAit new Promise<string>((resolve, reject) => {
+		const child = cp.spAwn('/usr/bin/security', ['find-certificAte', '-A', '-p']);
 		const stdout: string[] = [];
 		child.stdout.setEncoding('utf8');
-		child.stdout.on('data', str => stdout.push(str));
+		child.stdout.on('dAtA', str => stdout.push(str));
 		child.on('error', reject);
 		child.on('exit', code => code ? reject(code) : resolve(stdout.join('')));
 	});
 	const certs = new Set(stdout.split(/(?=-----BEGIN CERTIFICATE-----)/g)
 		.filter(pem => !!pem.length));
 	return {
-		certs: Array.from(certs),
-		append: true
+		certs: ArrAy.from(certs),
+		Append: true
 	};
 }
 
-const linuxCaCertificatePaths = [
-	'/etc/ssl/certs/ca-certificates.crt',
-	'/etc/ssl/certs/ca-bundle.crt',
+const linuxCACertificAtePAths = [
+	'/etc/ssl/certs/cA-certificAtes.crt',
+	'/etc/ssl/certs/cA-bundle.crt',
 ];
 
-async function readLinuxCaCertificates() {
-	for (const certPath of linuxCaCertificatePaths) {
+Async function reAdLinuxCACertificAtes() {
+	for (const certPAth of linuxCACertificAtePAths) {
 		try {
-			const content = await promisify(fs.readFile)(certPath, { encoding: 'utf8' });
+			const content = AwAit promisify(fs.reAdFile)(certPAth, { encoding: 'utf8' });
 			const certs = new Set(content.split(/(?=-----BEGIN CERTIFICATE-----)/g)
 				.filter(pem => !!pem.length));
 			return {
-				certs: Array.from(certs),
-				append: false
+				certs: ArrAy.from(certs),
+				Append: fAlse
 			};
-		} catch (err) {
+		} cAtch (err) {
 			if (err.code !== 'ENOENT') {
 				throw err;
 			}
@@ -555,7 +555,7 @@ async function readLinuxCaCertificates() {
 
 function derToPem(blob: Buffer) {
 	const lines = ['-----BEGIN CERTIFICATE-----'];
-	const der = blob.toString('base64');
+	const der = blob.toString('bAse64');
 	for (let i = 0; i < der.length; i += 64) {
 		lines.push(der.substr(i, 64));
 	}

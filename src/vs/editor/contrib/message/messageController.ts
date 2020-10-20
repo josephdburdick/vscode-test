@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./messageController';
-import * as nls from 'vs/nls';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IDisposable, Disposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { alert } from 'vs/base/browser/ui/aria/aria';
-import { Range } from 'vs/editor/common/core/range';
+import 'vs/css!./messAgeController';
+import * As nls from 'vs/nls';
+import { TimeoutTimer } from 'vs/bAse/common/Async';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IDisposAble, DisposAble, DisposAbleStore, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { Alert } from 'vs/bAse/browser/ui/AriA/AriA';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { IEditorContribution, ScrollType } from 'vs/editor/common/editorCommon';
-import { registerEditorContribution, EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
+import { registerEditorContribution, EditorCommAnd, registerEditorCommAnd } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditor, IContentWidget, IContentWidgetPosition, ContentWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
-import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { IContextKeyService, RAwContextKey, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { IPosition } from 'vs/editor/common/core/position';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { inputValidationInfoBorder, inputValidationInfoBackground, inputValidationInfoForeground } from 'vs/platform/theme/common/colorRegistry';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { inputVAlidAtionInfoBorder, inputVAlidAtionInfoBAckground, inputVAlidAtionInfoForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { ColorScheme } from 'vs/plAtform/theme/common/theme';
 
-export class MessageController extends Disposable implements IEditorContribution {
+export clAss MessAgeController extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.messageController';
+	public stAtic reAdonly ID = 'editor.contrib.messAgeController';
 
-	static readonly MESSAGE_VISIBLE = new RawContextKey<boolean>('messageVisible', false);
+	stAtic reAdonly MESSAGE_VISIBLE = new RAwContextKey<booleAn>('messAgeVisible', fAlse);
 
-	static get(editor: ICodeEditor): MessageController {
-		return editor.getContribution<MessageController>(MessageController.ID);
+	stAtic get(editor: ICodeEditor): MessAgeController {
+		return editor.getContribution<MessAgeController>(MessAgeController.ID);
 	}
 
-	private readonly _editor: ICodeEditor;
-	private readonly _visible: IContextKey<boolean>;
-	private readonly _messageWidget = this._register(new MutableDisposable<MessageWidget>());
-	private readonly _messageListeners = this._register(new DisposableStore());
+	privAte reAdonly _editor: ICodeEditor;
+	privAte reAdonly _visible: IContextKey<booleAn>;
+	privAte reAdonly _messAgeWidget = this._register(new MutAbleDisposAble<MessAgeWidget>());
+	privAte reAdonly _messAgeListeners = this._register(new DisposAbleStore());
 
 	constructor(
 		editor: ICodeEditor,
@@ -41,8 +41,8 @@ export class MessageController extends Disposable implements IEditorContribution
 	) {
 		super();
 		this._editor = editor;
-		this._visible = MessageController.MESSAGE_VISIBLE.bindTo(contextKeyService);
-		this._register(this._editor.onDidAttemptReadOnlyEdit(() => this._onDidAttemptReadOnlyEdit()));
+		this._visible = MessAgeController.MESSAGE_VISIBLE.bindTo(contextKeyService);
+		this._register(this._editor.onDidAttemptReAdOnlyEdit(() => this._onDidAttemptReAdOnlyEdit()));
 	}
 
 	dispose(): void {
@@ -54,113 +54,113 @@ export class MessageController extends Disposable implements IEditorContribution
 		return this._visible.get();
 	}
 
-	showMessage(message: string, position: IPosition): void {
+	showMessAge(messAge: string, position: IPosition): void {
 
-		alert(message);
+		Alert(messAge);
 
 		this._visible.set(true);
-		this._messageWidget.clear();
-		this._messageListeners.clear();
-		this._messageWidget.value = new MessageWidget(this._editor, position, message);
+		this._messAgeWidget.cleAr();
+		this._messAgeListeners.cleAr();
+		this._messAgeWidget.vAlue = new MessAgeWidget(this._editor, position, messAge);
 
-		// close on blur, cursor, model change, dispose
-		this._messageListeners.add(this._editor.onDidBlurEditorText(() => this.closeMessage()));
-		this._messageListeners.add(this._editor.onDidChangeCursorPosition(() => this.closeMessage()));
-		this._messageListeners.add(this._editor.onDidDispose(() => this.closeMessage()));
-		this._messageListeners.add(this._editor.onDidChangeModel(() => this.closeMessage()));
+		// close on blur, cursor, model chAnge, dispose
+		this._messAgeListeners.Add(this._editor.onDidBlurEditorText(() => this.closeMessAge()));
+		this._messAgeListeners.Add(this._editor.onDidChAngeCursorPosition(() => this.closeMessAge()));
+		this._messAgeListeners.Add(this._editor.onDidDispose(() => this.closeMessAge()));
+		this._messAgeListeners.Add(this._editor.onDidChAngeModel(() => this.closeMessAge()));
 
 		// 3sec
-		this._messageListeners.add(new TimeoutTimer(() => this.closeMessage(), 3000));
+		this._messAgeListeners.Add(new TimeoutTimer(() => this.closeMessAge(), 3000));
 
 		// close on mouse move
-		let bounds: Range;
-		this._messageListeners.add(this._editor.onMouseMove(e => {
-			// outside the text area
-			if (!e.target.position) {
+		let bounds: RAnge;
+		this._messAgeListeners.Add(this._editor.onMouseMove(e => {
+			// outside the text AreA
+			if (!e.tArget.position) {
 				return;
 			}
 
 			if (!bounds) {
-				// define bounding box around position and first mouse occurance
-				bounds = new Range(position.lineNumber - 3, 1, e.target.position.lineNumber + 3, 1);
-			} else if (!bounds.containsPosition(e.target.position)) {
+				// define bounding box Around position And first mouse occurAnce
+				bounds = new RAnge(position.lineNumber - 3, 1, e.tArget.position.lineNumber + 3, 1);
+			} else if (!bounds.contAinsPosition(e.tArget.position)) {
 				// check if position is still in bounds
-				this.closeMessage();
+				this.closeMessAge();
 			}
 		}));
 	}
 
-	closeMessage(): void {
+	closeMessAge(): void {
 		this._visible.reset();
-		this._messageListeners.clear();
-		if (this._messageWidget.value) {
-			this._messageListeners.add(MessageWidget.fadeOut(this._messageWidget.value));
+		this._messAgeListeners.cleAr();
+		if (this._messAgeWidget.vAlue) {
+			this._messAgeListeners.Add(MessAgeWidget.fAdeOut(this._messAgeWidget.vAlue));
 		}
 	}
 
-	private _onDidAttemptReadOnlyEdit(): void {
-		if (this._editor.hasModel()) {
-			this.showMessage(nls.localize('editor.readonly', "Cannot edit in read-only editor"), this._editor.getPosition());
+	privAte _onDidAttemptReAdOnlyEdit(): void {
+		if (this._editor.hAsModel()) {
+			this.showMessAge(nls.locAlize('editor.reAdonly', "CAnnot edit in reAd-only editor"), this._editor.getPosition());
 		}
 	}
 }
 
-const MessageCommand = EditorCommand.bindToContribution<MessageController>(MessageController.get);
+const MessAgeCommAnd = EditorCommAnd.bindToContribution<MessAgeController>(MessAgeController.get);
 
 
-registerEditorCommand(new MessageCommand({
-	id: 'leaveEditorMessage',
-	precondition: MessageController.MESSAGE_VISIBLE,
-	handler: c => c.closeMessage(),
+registerEditorCommAnd(new MessAgeCommAnd({
+	id: 'leAveEditorMessAge',
+	precondition: MessAgeController.MESSAGE_VISIBLE,
+	hAndler: c => c.closeMessAge(),
 	kbOpts: {
 		weight: KeybindingWeight.EditorContrib + 30,
-		primary: KeyCode.Escape
+		primAry: KeyCode.EscApe
 	}
 }));
 
-class MessageWidget implements IContentWidget {
+clAss MessAgeWidget implements IContentWidget {
 
-	// Editor.IContentWidget.allowEditorOverflow
-	readonly allowEditorOverflow = true;
-	readonly suppressMouseDown = false;
+	// Editor.IContentWidget.AllowEditorOverflow
+	reAdonly AllowEditorOverflow = true;
+	reAdonly suppressMouseDown = fAlse;
 
-	private readonly _editor: ICodeEditor;
-	private readonly _position: IPosition;
-	private readonly _domNode: HTMLDivElement;
+	privAte reAdonly _editor: ICodeEditor;
+	privAte reAdonly _position: IPosition;
+	privAte reAdonly _domNode: HTMLDivElement;
 
-	static fadeOut(messageWidget: MessageWidget): IDisposable {
-		let handle: any;
+	stAtic fAdeOut(messAgeWidget: MessAgeWidget): IDisposAble {
+		let hAndle: Any;
 		const dispose = () => {
-			messageWidget.dispose();
-			clearTimeout(handle);
-			messageWidget.getDomNode().removeEventListener('animationend', dispose);
+			messAgeWidget.dispose();
+			cleArTimeout(hAndle);
+			messAgeWidget.getDomNode().removeEventListener('AnimAtionend', dispose);
 		};
-		handle = setTimeout(dispose, 110);
-		messageWidget.getDomNode().addEventListener('animationend', dispose);
-		messageWidget.getDomNode().classList.add('fadeOut');
+		hAndle = setTimeout(dispose, 110);
+		messAgeWidget.getDomNode().AddEventListener('AnimAtionend', dispose);
+		messAgeWidget.getDomNode().clAssList.Add('fAdeOut');
 		return { dispose };
 	}
 
 	constructor(editor: ICodeEditor, { lineNumber, column }: IPosition, text: string) {
 
 		this._editor = editor;
-		this._editor.revealLinesInCenterIfOutsideViewport(lineNumber, lineNumber, ScrollType.Smooth);
+		this._editor.reveAlLinesInCenterIfOutsideViewport(lineNumber, lineNumber, ScrollType.Smooth);
 		this._position = { lineNumber, column: column - 1 };
 
-		this._domNode = document.createElement('div');
-		this._domNode.classList.add('monaco-editor-overlaymessage');
+		this._domNode = document.creAteElement('div');
+		this._domNode.clAssList.Add('monAco-editor-overlAymessAge');
 
-		const message = document.createElement('div');
-		message.classList.add('message');
-		message.textContent = text;
-		this._domNode.appendChild(message);
+		const messAge = document.creAteElement('div');
+		messAge.clAssList.Add('messAge');
+		messAge.textContent = text;
+		this._domNode.AppendChild(messAge);
 
-		const anchor = document.createElement('div');
-		anchor.classList.add('anchor');
-		this._domNode.appendChild(anchor);
+		const Anchor = document.creAteElement('div');
+		Anchor.clAssList.Add('Anchor');
+		this._domNode.AppendChild(Anchor);
 
-		this._editor.addContentWidget(this);
-		this._domNode.classList.add('fadeIn');
+		this._editor.AddContentWidget(this);
+		this._domNode.clAssList.Add('fAdeIn');
 	}
 
 	dispose() {
@@ -168,7 +168,7 @@ class MessageWidget implements IContentWidget {
 	}
 
 	getId(): string {
-		return 'messageoverlay';
+		return 'messAgeoverlAy';
 	}
 
 	getDomNode(): HTMLElement {
@@ -180,21 +180,21 @@ class MessageWidget implements IContentWidget {
 	}
 }
 
-registerEditorContribution(MessageController.ID, MessageController);
+registerEditorContribution(MessAgeController.ID, MessAgeController);
 
-registerThemingParticipant((theme, collector) => {
-	const border = theme.getColor(inputValidationInfoBorder);
+registerThemingPArticipAnt((theme, collector) => {
+	const border = theme.getColor(inputVAlidAtionInfoBorder);
 	if (border) {
 		let borderWidth = theme.type === ColorScheme.HIGH_CONTRAST ? 2 : 1;
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .anchor { border-top-color: ${border}; }`);
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { border: ${borderWidth}px solid ${border}; }`);
+		collector.AddRule(`.monAco-editor .monAco-editor-overlAymessAge .Anchor { border-top-color: ${border}; }`);
+		collector.AddRule(`.monAco-editor .monAco-editor-overlAymessAge .messAge { border: ${borderWidth}px solid ${border}; }`);
 	}
-	const background = theme.getColor(inputValidationInfoBackground);
-	if (background) {
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { background-color: ${background}; }`);
+	const bAckground = theme.getColor(inputVAlidAtionInfoBAckground);
+	if (bAckground) {
+		collector.AddRule(`.monAco-editor .monAco-editor-overlAymessAge .messAge { bAckground-color: ${bAckground}; }`);
 	}
-	const foreground = theme.getColor(inputValidationInfoForeground);
+	const foreground = theme.getColor(inputVAlidAtionInfoForeground);
 	if (foreground) {
-		collector.addRule(`.monaco-editor .monaco-editor-overlaymessage .message { color: ${foreground}; }`);
+		collector.AddRule(`.monAco-editor .monAco-editor-overlAymessAge .messAge { color: ${foreground}; }`);
 	}
 });

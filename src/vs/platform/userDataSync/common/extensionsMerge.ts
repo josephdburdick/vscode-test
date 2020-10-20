@@ -1,232 +1,232 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISyncExtension } from 'vs/platform/userDataSync/common/userDataSync';
-import { IExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { deepClone } from 'vs/base/common/objects';
-import { ILocalExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { distinct } from 'vs/base/common/arrays';
+import { ISyncExtension } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { IExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { deepClone } from 'vs/bAse/common/objects';
+import { ILocAlExtension } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { distinct } from 'vs/bAse/common/ArrAys';
 
-export interface IMergeResult {
-	added: ISyncExtension[];
+export interfAce IMergeResult {
+	Added: ISyncExtension[];
 	removed: IExtensionIdentifier[];
-	updated: ISyncExtension[];
+	updAted: ISyncExtension[];
 	remote: ISyncExtension[] | null;
 }
 
-export function merge(localExtensions: ISyncExtension[], remoteExtensions: ISyncExtension[] | null, lastSyncExtensions: ISyncExtension[] | null, skippedExtensions: ISyncExtension[], ignoredExtensions: string[]): IMergeResult {
-	const added: ISyncExtension[] = [];
+export function merge(locAlExtensions: ISyncExtension[], remoteExtensions: ISyncExtension[] | null, lAstSyncExtensions: ISyncExtension[] | null, skippedExtensions: ISyncExtension[], ignoredExtensions: string[]): IMergeResult {
+	const Added: ISyncExtension[] = [];
 	const removed: IExtensionIdentifier[] = [];
-	const updated: ISyncExtension[] = [];
+	const updAted: ISyncExtension[] = [];
 
 	if (!remoteExtensions) {
-		const remote = localExtensions.filter(({ identifier }) => ignoredExtensions.every(id => id.toLowerCase() !== identifier.id.toLowerCase()));
+		const remote = locAlExtensions.filter(({ identifier }) => ignoredExtensions.every(id => id.toLowerCAse() !== identifier.id.toLowerCAse()));
 		return {
-			added,
+			Added,
 			removed,
-			updated,
+			updAted,
 			remote: remote.length > 0 ? remote : null
 		};
 	}
 
-	localExtensions = localExtensions.map(massageIncomingExtension);
-	remoteExtensions = remoteExtensions.map(massageIncomingExtension);
-	lastSyncExtensions = lastSyncExtensions ? lastSyncExtensions.map(massageIncomingExtension) : null;
+	locAlExtensions = locAlExtensions.mAp(mAssAgeIncomingExtension);
+	remoteExtensions = remoteExtensions.mAp(mAssAgeIncomingExtension);
+	lAstSyncExtensions = lAstSyncExtensions ? lAstSyncExtensions.mAp(mAssAgeIncomingExtension) : null;
 
-	const uuids: Map<string, string> = new Map<string, string>();
-	const addUUID = (identifier: IExtensionIdentifier) => { if (identifier.uuid) { uuids.set(identifier.id.toLowerCase(), identifier.uuid); } };
-	localExtensions.forEach(({ identifier }) => addUUID(identifier));
-	remoteExtensions.forEach(({ identifier }) => addUUID(identifier));
-	if (lastSyncExtensions) {
-		lastSyncExtensions.forEach(({ identifier }) => addUUID(identifier));
+	const uuids: MAp<string, string> = new MAp<string, string>();
+	const AddUUID = (identifier: IExtensionIdentifier) => { if (identifier.uuid) { uuids.set(identifier.id.toLowerCAse(), identifier.uuid); } };
+	locAlExtensions.forEAch(({ identifier }) => AddUUID(identifier));
+	remoteExtensions.forEAch(({ identifier }) => AddUUID(identifier));
+	if (lAstSyncExtensions) {
+		lAstSyncExtensions.forEAch(({ identifier }) => AddUUID(identifier));
 	}
 
 	const getKey = (extension: ISyncExtension): string => {
-		const uuid = extension.identifier.uuid || uuids.get(extension.identifier.id.toLowerCase());
-		return uuid ? `uuid:${uuid}` : `id:${extension.identifier.id.toLowerCase()}`;
+		const uuid = extension.identifier.uuid || uuids.get(extension.identifier.id.toLowerCAse());
+		return uuid ? `uuid:${uuid}` : `id:${extension.identifier.id.toLowerCAse()}`;
 	};
-	const addExtensionToMap = (map: Map<string, ISyncExtension>, extension: ISyncExtension) => {
-		map.set(getKey(extension), extension);
-		return map;
+	const AddExtensionToMAp = (mAp: MAp<string, ISyncExtension>, extension: ISyncExtension) => {
+		mAp.set(getKey(extension), extension);
+		return mAp;
 	};
-	const localExtensionsMap = localExtensions.reduce(addExtensionToMap, new Map<string, ISyncExtension>());
-	const remoteExtensionsMap = remoteExtensions.reduce(addExtensionToMap, new Map<string, ISyncExtension>());
-	const newRemoteExtensionsMap = remoteExtensions.reduce((map: Map<string, ISyncExtension>, extension: ISyncExtension) => {
+	const locAlExtensionsMAp = locAlExtensions.reduce(AddExtensionToMAp, new MAp<string, ISyncExtension>());
+	const remoteExtensionsMAp = remoteExtensions.reduce(AddExtensionToMAp, new MAp<string, ISyncExtension>());
+	const newRemoteExtensionsMAp = remoteExtensions.reduce((mAp: MAp<string, ISyncExtension>, extension: ISyncExtension) => {
 		const key = getKey(extension);
 		extension = deepClone(extension);
-		if (localExtensionsMap.get(key)?.installed) {
-			extension.installed = true;
+		if (locAlExtensionsMAp.get(key)?.instAlled) {
+			extension.instAlled = true;
 		}
-		return addExtensionToMap(map, extension);
-	}, new Map<string, ISyncExtension>());
-	const lastSyncExtensionsMap = lastSyncExtensions ? lastSyncExtensions.reduce(addExtensionToMap, new Map<string, ISyncExtension>()) : null;
-	const skippedExtensionsMap = skippedExtensions.reduce(addExtensionToMap, new Map<string, ISyncExtension>());
+		return AddExtensionToMAp(mAp, extension);
+	}, new MAp<string, ISyncExtension>());
+	const lAstSyncExtensionsMAp = lAstSyncExtensions ? lAstSyncExtensions.reduce(AddExtensionToMAp, new MAp<string, ISyncExtension>()) : null;
+	const skippedExtensionsMAp = skippedExtensions.reduce(AddExtensionToMAp, new MAp<string, ISyncExtension>());
 	const ignoredExtensionsSet = ignoredExtensions.reduce((set, id) => {
-		const uuid = uuids.get(id.toLowerCase());
-		return set.add(uuid ? `uuid:${uuid}` : `id:${id.toLowerCase()}`);
+		const uuid = uuids.get(id.toLowerCAse());
+		return set.Add(uuid ? `uuid:${uuid}` : `id:${id.toLowerCAse()}`);
 	}, new Set<string>());
 
-	const localToRemote = compare(localExtensionsMap, remoteExtensionsMap, ignoredExtensionsSet);
-	if (localToRemote.added.size > 0 || localToRemote.removed.size > 0 || localToRemote.updated.size > 0) {
+	const locAlToRemote = compAre(locAlExtensionsMAp, remoteExtensionsMAp, ignoredExtensionsSet);
+	if (locAlToRemote.Added.size > 0 || locAlToRemote.removed.size > 0 || locAlToRemote.updAted.size > 0) {
 
-		const baseToLocal = compare(lastSyncExtensionsMap, localExtensionsMap, ignoredExtensionsSet);
-		const baseToRemote = compare(lastSyncExtensionsMap, remoteExtensionsMap, ignoredExtensionsSet);
+		const bAseToLocAl = compAre(lAstSyncExtensionsMAp, locAlExtensionsMAp, ignoredExtensionsSet);
+		const bAseToRemote = compAre(lAstSyncExtensionsMAp, remoteExtensionsMAp, ignoredExtensionsSet);
 
 		// Remotely removed extension.
-		for (const key of baseToRemote.removed.values()) {
-			const e = localExtensionsMap.get(key);
+		for (const key of bAseToRemote.removed.vAlues()) {
+			const e = locAlExtensionsMAp.get(key);
 			if (e) {
 				removed.push(e.identifier);
 			}
 		}
 
-		// Remotely added extension
-		for (const key of baseToRemote.added.values()) {
-			// Got added in local
-			if (baseToLocal.added.has(key)) {
-				// Is different from local to remote
-				if (localToRemote.updated.has(key)) {
-					updated.push(massageOutgoingExtension(remoteExtensionsMap.get(key)!, key));
+		// Remotely Added extension
+		for (const key of bAseToRemote.Added.vAlues()) {
+			// Got Added in locAl
+			if (bAseToLocAl.Added.hAs(key)) {
+				// Is different from locAl to remote
+				if (locAlToRemote.updAted.hAs(key)) {
+					updAted.push(mAssAgeOutgoingExtension(remoteExtensionsMAp.get(key)!, key));
 				}
 			} else {
-				// Add only installed extension to local
-				const remoteExtension = remoteExtensionsMap.get(key)!;
-				if (remoteExtension.installed) {
-					added.push(massageOutgoingExtension(remoteExtension, key));
+				// Add only instAlled extension to locAl
+				const remoteExtension = remoteExtensionsMAp.get(key)!;
+				if (remoteExtension.instAlled) {
+					Added.push(mAssAgeOutgoingExtension(remoteExtension, key));
 				}
 			}
 		}
 
-		// Remotely updated extensions
-		for (const key of baseToRemote.updated.values()) {
-			// Update in local always
-			updated.push(massageOutgoingExtension(remoteExtensionsMap.get(key)!, key));
+		// Remotely updAted extensions
+		for (const key of bAseToRemote.updAted.vAlues()) {
+			// UpdAte in locAl AlwAys
+			updAted.push(mAssAgeOutgoingExtension(remoteExtensionsMAp.get(key)!, key));
 		}
 
-		// Locally added extensions
-		for (const key of baseToLocal.added.values()) {
+		// LocAlly Added extensions
+		for (const key of bAseToLocAl.Added.vAlues()) {
 			// Not there in remote
-			if (!baseToRemote.added.has(key)) {
-				newRemoteExtensionsMap.set(key, localExtensionsMap.get(key)!);
+			if (!bAseToRemote.Added.hAs(key)) {
+				newRemoteExtensionsMAp.set(key, locAlExtensionsMAp.get(key)!);
 			}
 		}
 
-		// Locally updated extensions
-		for (const key of baseToLocal.updated.values()) {
+		// LocAlly updAted extensions
+		for (const key of bAseToLocAl.updAted.vAlues()) {
 			// If removed in remote
-			if (baseToRemote.removed.has(key)) {
+			if (bAseToRemote.removed.hAs(key)) {
 				continue;
 			}
 
-			// If not updated in remote
-			if (!baseToRemote.updated.has(key)) {
-				const extension = deepClone(localExtensionsMap.get(key)!);
-				// Retain installed property
-				if (newRemoteExtensionsMap.get(key)?.installed) {
-					extension.installed = true;
+			// If not updAted in remote
+			if (!bAseToRemote.updAted.hAs(key)) {
+				const extension = deepClone(locAlExtensionsMAp.get(key)!);
+				// RetAin instAlled property
+				if (newRemoteExtensionsMAp.get(key)?.instAlled) {
+					extension.instAlled = true;
 				}
-				newRemoteExtensionsMap.set(key, extension);
+				newRemoteExtensionsMAp.set(key, extension);
 			}
 		}
 
-		// Locally removed extensions
-		for (const key of baseToLocal.removed.values()) {
-			// If not skipped and not updated in remote
-			if (!skippedExtensionsMap.has(key) && !baseToRemote.updated.has(key)) {
-				// Remove only if it is an installed extension
-				if (lastSyncExtensionsMap?.get(key)?.installed) {
-					newRemoteExtensionsMap.delete(key);
+		// LocAlly removed extensions
+		for (const key of bAseToLocAl.removed.vAlues()) {
+			// If not skipped And not updAted in remote
+			if (!skippedExtensionsMAp.hAs(key) && !bAseToRemote.updAted.hAs(key)) {
+				// Remove only if it is An instAlled extension
+				if (lAstSyncExtensionsMAp?.get(key)?.instAlled) {
+					newRemoteExtensionsMAp.delete(key);
 				}
 			}
 		}
 	}
 
 	const remote: ISyncExtension[] = [];
-	const remoteChanges = compare(remoteExtensionsMap, newRemoteExtensionsMap, new Set<string>(), { checkInstalledProperty: true });
-	if (remoteChanges.added.size > 0 || remoteChanges.updated.size > 0 || remoteChanges.removed.size > 0) {
-		newRemoteExtensionsMap.forEach((value, key) => remote.push(massageOutgoingExtension(value, key)));
+	const remoteChAnges = compAre(remoteExtensionsMAp, newRemoteExtensionsMAp, new Set<string>(), { checkInstAlledProperty: true });
+	if (remoteChAnges.Added.size > 0 || remoteChAnges.updAted.size > 0 || remoteChAnges.removed.size > 0) {
+		newRemoteExtensionsMAp.forEAch((vAlue, key) => remote.push(mAssAgeOutgoingExtension(vAlue, key)));
 	}
 
-	return { added, removed, updated, remote: remote.length ? remote : null };
+	return { Added, removed, updAted, remote: remote.length ? remote : null };
 }
 
-function compare(from: Map<string, ISyncExtension> | null, to: Map<string, ISyncExtension>, ignoredExtensions: Set<string>, { checkInstalledProperty }: { checkInstalledProperty: boolean } = { checkInstalledProperty: false }): { added: Set<string>, removed: Set<string>, updated: Set<string> } {
-	const fromKeys = from ? [...from.keys()].filter(key => !ignoredExtensions.has(key)) : [];
-	const toKeys = [...to.keys()].filter(key => !ignoredExtensions.has(key));
-	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
-	const removed = fromKeys.filter(key => toKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
-	const updated: Set<string> = new Set<string>();
+function compAre(from: MAp<string, ISyncExtension> | null, to: MAp<string, ISyncExtension>, ignoredExtensions: Set<string>, { checkInstAlledProperty }: { checkInstAlledProperty: booleAn } = { checkInstAlledProperty: fAlse }): { Added: Set<string>, removed: Set<string>, updAted: Set<string> } {
+	const fromKeys = from ? [...from.keys()].filter(key => !ignoredExtensions.hAs(key)) : [];
+	const toKeys = [...to.keys()].filter(key => !ignoredExtensions.hAs(key));
+	const Added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.Add(key); return r; }, new Set<string>());
+	const removed = fromKeys.filter(key => toKeys.indexOf(key) === -1).reduce((r, key) => { r.Add(key); return r; }, new Set<string>());
+	const updAted: Set<string> = new Set<string>();
 
 	for (const key of fromKeys) {
-		if (removed.has(key)) {
+		if (removed.hAs(key)) {
 			continue;
 		}
 		const fromExtension = from!.get(key)!;
 		const toExtension = to.get(key);
 		if (!toExtension
-			|| fromExtension.disabled !== toExtension.disabled
+			|| fromExtension.disAbled !== toExtension.disAbled
 			|| fromExtension.version !== toExtension.version
-			|| (checkInstalledProperty && fromExtension.installed !== toExtension.installed)
+			|| (checkInstAlledProperty && fromExtension.instAlled !== toExtension.instAlled)
 		) {
-			updated.add(key);
+			updAted.Add(key);
 		}
 	}
 
-	return { added, removed, updated };
+	return { Added, removed, updAted };
 }
 
-// massage incoming extension - add optional properties
-function massageIncomingExtension(extension: ISyncExtension): ISyncExtension {
-	return { ...extension, ...{ disabled: !!extension.disabled, installed: !!extension.installed } };
+// mAssAge incoming extension - Add optionAl properties
+function mAssAgeIncomingExtension(extension: ISyncExtension): ISyncExtension {
+	return { ...extension, ...{ disAbled: !!extension.disAbled, instAlled: !!extension.instAlled } };
 }
 
-// massage outgoing extension - remove optional properties
-function massageOutgoingExtension(extension: ISyncExtension, key: string): ISyncExtension {
-	const massagedExtension: ISyncExtension = {
+// mAssAge outgoing extension - remove optionAl properties
+function mAssAgeOutgoingExtension(extension: ISyncExtension, key: string): ISyncExtension {
+	const mAssAgedExtension: ISyncExtension = {
 		identifier: {
 			id: extension.identifier.id,
-			uuid: key.startsWith('uuid:') ? key.substring('uuid:'.length) : undefined
+			uuid: key.stArtsWith('uuid:') ? key.substring('uuid:'.length) : undefined
 		},
 	};
-	if (extension.disabled) {
-		massagedExtension.disabled = true;
+	if (extension.disAbled) {
+		mAssAgedExtension.disAbled = true;
 	}
-	if (extension.installed) {
-		massagedExtension.installed = true;
+	if (extension.instAlled) {
+		mAssAgedExtension.instAlled = true;
 	}
 	if (extension.version) {
-		massagedExtension.version = extension.version;
+		mAssAgedExtension.version = extension.version;
 	}
-	return massagedExtension;
+	return mAssAgedExtension;
 }
 
-export function getIgnoredExtensions(installed: ILocalExtension[], configurationService: IConfigurationService): string[] {
-	const defaultIgnoredExtensions = installed.filter(i => i.isMachineScoped).map(i => i.identifier.id.toLowerCase());
-	const value = getConfiguredIgnoredExtensions(configurationService).map(id => id.toLowerCase());
-	const added: string[] = [], removed: string[] = [];
-	if (Array.isArray(value)) {
-		for (const key of value) {
-			if (key.startsWith('-')) {
+export function getIgnoredExtensions(instAlled: ILocAlExtension[], configurAtionService: IConfigurAtionService): string[] {
+	const defAultIgnoredExtensions = instAlled.filter(i => i.isMAchineScoped).mAp(i => i.identifier.id.toLowerCAse());
+	const vAlue = getConfiguredIgnoredExtensions(configurAtionService).mAp(id => id.toLowerCAse());
+	const Added: string[] = [], removed: string[] = [];
+	if (ArrAy.isArrAy(vAlue)) {
+		for (const key of vAlue) {
+			if (key.stArtsWith('-')) {
 				removed.push(key.substring(1));
 			} else {
-				added.push(key);
+				Added.push(key);
 			}
 		}
 	}
-	return distinct([...defaultIgnoredExtensions, ...added,].filter(setting => removed.indexOf(setting) === -1));
+	return distinct([...defAultIgnoredExtensions, ...Added,].filter(setting => removed.indexOf(setting) === -1));
 }
 
-function getConfiguredIgnoredExtensions(configurationService: IConfigurationService): string[] {
-	let userValue = configurationService.inspect<string[]>('settingsSync.ignoredExtensions').userValue;
-	if (userValue !== undefined) {
-		return userValue;
+function getConfiguredIgnoredExtensions(configurAtionService: IConfigurAtionService): string[] {
+	let userVAlue = configurAtionService.inspect<string[]>('settingsSync.ignoredExtensions').userVAlue;
+	if (userVAlue !== undefined) {
+		return userVAlue;
 	}
-	userValue = configurationService.inspect<string[]>('sync.ignoredExtensions').userValue;
-	if (userValue !== undefined) {
-		return userValue;
+	userVAlue = configurAtionService.inspect<string[]>('sync.ignoredExtensions').userVAlue;
+	if (userVAlue !== undefined) {
+		return userVAlue;
 	}
-	return configurationService.getValue<string[]>('settingsSync.ignoredExtensions') || [];
+	return configurAtionService.getVAlue<string[]>('settingsSync.ignoredExtensions') || [];
 }

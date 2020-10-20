@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextMateService } from 'vs/workbench/services/textMate/common/textMateService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractTextMateService } from 'vs/workbench/services/textMate/browser/abstractTextMateService';
+import { ITextMAteService } from 'vs/workbench/services/textMAte/common/textMAteService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { AbstrActTextMAteService } from 'vs/workbench/services/textMAte/browser/AbstrActTextMAteService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
-import { IProgressService } from 'vs/platform/progress/common/progress';
-import { FileAccess } from 'vs/base/common/network';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IExtensionResourceLoAderService } from 'vs/workbench/services/extensionResourceLoAder/common/extensionResourceLoAder';
+import { IProgressService } from 'vs/plAtform/progress/common/progress';
+import { FileAccess } from 'vs/bAse/common/network';
 
-export class TextMateService extends AbstractTextMateService {
+export clAss TextMAteService extends AbstrActTextMAteService {
 
 	constructor(
 		@IModeService modeService: IModeService,
 		@IWorkbenchThemeService themeService: IWorkbenchThemeService,
-		@IExtensionResourceLoaderService extensionResourceLoaderService: IExtensionResourceLoaderService,
-		@INotificationService notificationService: INotificationService,
+		@IExtensionResourceLoAderService extensionResourceLoAderService: IExtensionResourceLoAderService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@ILogService logService: ILogService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IStorageService storageService: IStorageService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
 		@IProgressService progressService: IProgressService
 	) {
-		super(modeService, themeService, extensionResourceLoaderService, notificationService, logService, configurationService, storageService, progressService);
+		super(modeService, themeService, extensionResourceLoAderService, notificAtionService, logService, configurAtionService, storAgeService, progressService);
 	}
 
-	protected async _loadVSCodeOnigurumWASM(): Promise<Response | ArrayBuffer> {
-		const response = await fetch(FileAccess.asBrowserUri('vscode-oniguruma/../onig.wasm', require).toString(true));
-		// Using the response directly only works if the server sets the MIME type 'application/wasm'.
-		// Otherwise, a TypeError is thrown when using the streaming compiler.
-		// We therefore use the non-streaming compiler :(.
-		return await response.arrayBuffer();
+	protected Async _loAdVSCodeOnigurumWASM(): Promise<Response | ArrAyBuffer> {
+		const response = AwAit fetch(FileAccess.AsBrowserUri('vscode-onigurumA/../onig.wAsm', require).toString(true));
+		// Using the response directly only works if the server sets the MIME type 'ApplicAtion/wAsm'.
+		// Otherwise, A TypeError is thrown when using the streAming compiler.
+		// We therefore use the non-streAming compiler :(.
+		return AwAit response.ArrAyBuffer();
 	}
 }
 
-registerSingleton(ITextMateService, TextMateService);
+registerSingleton(ITextMAteService, TextMAteService);

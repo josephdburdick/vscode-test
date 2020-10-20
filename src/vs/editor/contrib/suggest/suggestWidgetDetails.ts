@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IDisposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import * as dom from 'vs/base/browser/dom';
-import { DomScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
+import * As nls from 'vs/nls';
+import { IDisposAble, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import * As dom from 'vs/bAse/browser/dom';
+import { DomScrollAbleElement } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElement';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { CompletionItem } from './suggest';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { Codicon } from 'vs/base/common/codicons';
-import { Emitter, Event } from 'vs/base/common/event';
+import { MArkdownRenderer } from 'vs/editor/browser/core/mArkdownRenderer';
+import { MArkdownString } from 'vs/bAse/common/htmlContent';
+import { Codicon } from 'vs/bAse/common/codicons';
+import { Emitter, Event } from 'vs/bAse/common/event';
 
-export function canExpandCompletionItem(item: CompletionItem | undefined): boolean {
-	return !!item && Boolean(item.completion.documentation || item.completion.detail && item.completion.detail !== item.completion.label);
+export function cAnExpAndCompletionItem(item: CompletionItem | undefined): booleAn {
+	return !!item && BooleAn(item.completion.documentAtion || item.completion.detAil && item.completion.detAil !== item.completion.lAbel);
 }
 
-export class SuggestionDetails {
+export clAss SuggestionDetAils {
 
-	readonly element: HTMLElement;
+	reAdonly element: HTMLElement;
 
-	private readonly _onDidClose = new Emitter<void>();
-	readonly onDidClose: Event<void> = this._onDidClose.event;
+	privAte reAdonly _onDidClose = new Emitter<void>();
+	reAdonly onDidClose: Event<void> = this._onDidClose.event;
 
-	private readonly _close: HTMLElement;
-	private readonly _scrollbar: DomScrollableElement;
-	private readonly _body: HTMLElement;
-	private readonly _header: HTMLElement;
-	private readonly _type: HTMLElement;
-	private readonly _docs: HTMLElement;
-	private readonly _disposables = new DisposableStore();
+	privAte reAdonly _close: HTMLElement;
+	privAte reAdonly _scrollbAr: DomScrollAbleElement;
+	privAte reAdonly _body: HTMLElement;
+	privAte reAdonly _heAder: HTMLElement;
+	privAte reAdonly _type: HTMLElement;
+	privAte reAdonly _docs: HTMLElement;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
-	private _renderDisposeable?: IDisposable;
-	private _borderWidth: number = 1;
+	privAte _renderDisposeAble?: IDisposAble;
+	privAte _borderWidth: number = 1;
 
 	constructor(
-		container: HTMLElement,
-		private readonly _editor: ICodeEditor,
-		private readonly _markdownRenderer: MarkdownRenderer,
-		private readonly _kbToggleDetails: string
+		contAiner: HTMLElement,
+		privAte reAdonly _editor: ICodeEditor,
+		privAte reAdonly _mArkdownRenderer: MArkdownRenderer,
+		privAte reAdonly _kbToggleDetAils: string
 	) {
-		this.element = dom.append(container, dom.$('.details'));
-		this._disposables.add(toDisposable(() => this.element.remove()));
+		this.element = dom.Append(contAiner, dom.$('.detAils'));
+		this._disposAbles.Add(toDisposAble(() => this.element.remove()));
 
 		this._body = dom.$('.body');
 
-		this._scrollbar = new DomScrollableElement(this._body, {});
-		dom.append(this.element, this._scrollbar.getDomNode());
-		this._disposables.add(this._scrollbar);
+		this._scrollbAr = new DomScrollAbleElement(this._body, {});
+		dom.Append(this.element, this._scrollbAr.getDomNode());
+		this._disposAbles.Add(this._scrollbAr);
 
-		this._header = dom.append(this._body, dom.$('.header'));
-		this._close = dom.append(this._header, dom.$('span' + Codicon.close.cssSelector));
-		this._close.title = nls.localize('readLess', "Read Less ({0})", this._kbToggleDetails);
-		this._type = dom.append(this._header, dom.$('p.type'));
+		this._heAder = dom.Append(this._body, dom.$('.heAder'));
+		this._close = dom.Append(this._heAder, dom.$('spAn' + Codicon.close.cssSelector));
+		this._close.title = nls.locAlize('reAdLess', "ReAd Less ({0})", this._kbToggleDetAils);
+		this._type = dom.Append(this._heAder, dom.$('p.type'));
 
-		this._docs = dom.append(this._body, dom.$('p.docs'));
+		this._docs = dom.Append(this._body, dom.$('p.docs'));
 
 		this._configureFont();
 
-		this._disposables.add(this._editor.onDidChangeConfiguration(e => {
-			if (e.hasChanged(EditorOption.fontInfo)) {
+		this._disposAbles.Add(this._editor.onDidChAngeConfigurAtion(e => {
+			if (e.hAsChAnged(EditorOption.fontInfo)) {
 				this._configureFont();
 			}
 		}));
 
-		_markdownRenderer.onDidRenderCodeBlock(() => this._scrollbar.scanDomNode(), this, this._disposables);
+		_mArkdownRenderer.onDidRenderCodeBlock(() => this._scrollbAr.scAnDomNode(), this, this._disposAbles);
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
-		this._renderDisposeable?.dispose();
-		this._renderDisposeable = undefined;
+		this._disposAbles.dispose();
+		this._renderDisposeAble?.dispose();
+		this._renderDisposeAble = undefined;
 	}
 
-	private _configureFont() {
+	privAte _configureFont() {
 		const options = this._editor.getOptions();
 		const fontInfo = options.get(EditorOption.fontInfo);
-		const fontFamily = fontInfo.fontFamily;
+		const fontFAmily = fontInfo.fontFAmily;
 		const fontSize = options.get(EditorOption.suggestFontSize) || fontInfo.fontSize;
 		const lineHeight = options.get(EditorOption.suggestLineHeight) || fontInfo.lineHeight;
 		const fontWeight = fontInfo.fontWeight;
@@ -88,75 +88,75 @@ export class SuggestionDetails {
 
 		this.element.style.fontSize = fontSizePx;
 		this.element.style.fontWeight = fontWeight;
-		this.element.style.fontFeatureSettings = fontInfo.fontFeatureSettings;
-		this._type.style.fontFamily = fontFamily;
+		this.element.style.fontFeAtureSettings = fontInfo.fontFeAtureSettings;
+		this._type.style.fontFAmily = fontFAmily;
 		this._close.style.height = lineHeightPx;
 		this._close.style.width = lineHeightPx;
 	}
 
-	renderLoading(): void {
-		this._type.textContent = nls.localize('loading', "Loading...");
+	renderLoAding(): void {
+		this._type.textContent = nls.locAlize('loAding', "LoAding...");
 		this._docs.textContent = '';
 	}
 
-	renderItem(item: CompletionItem, explainMode: boolean): void {
-		this._renderDisposeable?.dispose();
-		this._renderDisposeable = undefined;
+	renderItem(item: CompletionItem, explAinMode: booleAn): void {
+		this._renderDisposeAble?.dispose();
+		this._renderDisposeAble = undefined;
 
-		let { documentation, detail } = item.completion;
-		// --- documentation
-		if (explainMode) {
+		let { documentAtion, detAil } = item.completion;
+		// --- documentAtion
+		if (explAinMode) {
 			let md = '';
-			md += `score: ${item.score[0]}${item.word ? `, compared '${item.completion.filterText && (item.completion.filterText + ' (filterText)') || item.completion.label}' with '${item.word}'` : ' (no prefix)'}\n`;
-			md += `distance: ${item.distance}, see localityBonus-setting\n`;
-			md += `index: ${item.idx}, based on ${item.completion.sortText && `sortText: "${item.completion.sortText}"` || 'label'}\n`;
-			documentation = new MarkdownString().appendCodeblock('empty', md);
-			detail = `Provider: ${item.provider._debugDisplayName}`;
+			md += `score: ${item.score[0]}${item.word ? `, compAred '${item.completion.filterText && (item.completion.filterText + ' (filterText)') || item.completion.lAbel}' with '${item.word}'` : ' (no prefix)'}\n`;
+			md += `distAnce: ${item.distAnce}, see locAlityBonus-setting\n`;
+			md += `index: ${item.idx}, bAsed on ${item.completion.sortText && `sortText: "${item.completion.sortText}"` || 'lAbel'}\n`;
+			documentAtion = new MArkdownString().AppendCodeblock('empty', md);
+			detAil = `Provider: ${item.provider._debugDisplAyNAme}`;
 		}
 
-		if (!explainMode && !canExpandCompletionItem(item)) {
+		if (!explAinMode && !cAnExpAndCompletionItem(item)) {
 			this._type.textContent = '';
 			this._docs.textContent = '';
-			this.element.classList.add('no-docs');
+			this.element.clAssList.Add('no-docs');
 			return;
 		}
-		this.element.classList.remove('no-docs');
-		if (typeof documentation === 'string') {
-			this._docs.classList.remove('markdown-docs');
-			this._docs.textContent = documentation;
+		this.element.clAssList.remove('no-docs');
+		if (typeof documentAtion === 'string') {
+			this._docs.clAssList.remove('mArkdown-docs');
+			this._docs.textContent = documentAtion;
 		} else {
-			this._docs.classList.add('markdown-docs');
+			this._docs.clAssList.Add('mArkdown-docs');
 			this._docs.innerText = '';
-			const renderedContents = this._markdownRenderer.render(documentation);
-			this._renderDisposeable = renderedContents;
-			this._docs.appendChild(renderedContents.element);
+			const renderedContents = this._mArkdownRenderer.render(documentAtion);
+			this._renderDisposeAble = renderedContents;
+			this._docs.AppendChild(renderedContents.element);
 		}
 
-		// --- details
-		if (detail) {
-			this._type.textContent = detail.length > 100000 ? `${detail.substr(0, 100000)}…` : detail;
+		// --- detAils
+		if (detAil) {
+			this._type.textContent = detAil.length > 100000 ? `${detAil.substr(0, 100000)}…` : detAil;
 			dom.show(this._type);
 		} else {
-			dom.clearNode(this._type);
+			dom.cleArNode(this._type);
 			dom.hide(this._type);
 		}
 
-		this.element.style.height = this._header.offsetHeight + this._docs.offsetHeight + (this._borderWidth * 2) + 'px';
+		this.element.style.height = this._heAder.offsetHeight + this._docs.offsetHeight + (this._borderWidth * 2) + 'px';
 		this.element.style.userSelect = 'text';
-		this.element.tabIndex = -1;
+		this.element.tAbIndex = -1;
 
 		this._close.onmousedown = e => {
-			e.preventDefault();
-			e.stopPropagation();
+			e.preventDefAult();
+			e.stopPropAgAtion();
 		};
 		this._close.onclick = e => {
-			e.preventDefault();
-			e.stopPropagation();
+			e.preventDefAult();
+			e.stopPropAgAtion();
 			this._onDidClose.fire();
 		};
 
 		this._body.scrollTop = 0;
-		this._scrollbar.scanDomNode();
+		this._scrollbAr.scAnDomNode();
 	}
 
 	scrollDown(much = 8): void {
@@ -175,11 +175,11 @@ export class SuggestionDetails {
 		this._body.scrollTop = this._body.scrollHeight;
 	}
 
-	pageDown(): void {
+	pAgeDown(): void {
 		this.scrollDown(80);
 	}
 
-	pageUp(): void {
+	pAgeUp(): void {
 		this.scrollUp(80);
 	}
 

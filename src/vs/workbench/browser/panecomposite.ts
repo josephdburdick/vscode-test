@@ -1,107 +1,107 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Dimension } from 'vs/base/browser/dom';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { Dimension } from 'vs/bAse/browser/dom';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { IView } from 'vs/workbench/common/views';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { Composite } from 'vs/workbench/browser/composite';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { ViewPaneContainer } from './parts/views/viewPaneContainer';
-import { IPaneComposite } from 'vs/workbench/common/panecomposite';
-import { IAction, IActionViewItem, Separator } from 'vs/base/common/actions';
-import { ViewContainerMenuActions } from 'vs/workbench/browser/parts/views/viewMenuActions';
-import { MenuId } from 'vs/platform/actions/common/actions';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { ViewPAneContAiner } from './pArts/views/viewPAneContAiner';
+import { IPAneComposite } from 'vs/workbench/common/pAnecomposite';
+import { IAction, IActionViewItem, SepArAtor } from 'vs/bAse/common/Actions';
+import { ViewContAinerMenuActions } from 'vs/workbench/browser/pArts/views/viewMenuActions';
+import { MenuId } from 'vs/plAtform/Actions/common/Actions';
 
-export class PaneComposite extends Composite implements IPaneComposite {
+export clAss PAneComposite extends Composite implements IPAneComposite {
 
-	private menuActions: ViewContainerMenuActions;
+	privAte menuActions: ViewContAinerMenuActions;
 
 	constructor(
 		id: string,
-		protected readonly viewPaneContainer: ViewPaneContainer,
+		protected reAdonly viewPAneContAiner: ViewPAneContAiner,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IStorageService protected storageService: IStorageService,
-		@IInstantiationService protected instantiationService: IInstantiationService,
+		@IStorAgeService protected storAgeService: IStorAgeService,
+		@IInstAntiAtionService protected instAntiAtionService: IInstAntiAtionService,
 		@IThemeService themeService: IThemeService,
 		@IContextMenuService protected contextMenuService: IContextMenuService,
 		@IExtensionService protected extensionService: IExtensionService,
-		@IWorkspaceContextService protected contextService: IWorkspaceContextService
+		@IWorkspAceContextService protected contextService: IWorkspAceContextService
 	) {
-		super(id, telemetryService, themeService, storageService);
+		super(id, telemetryService, themeService, storAgeService);
 
-		this.menuActions = this._register(this.instantiationService.createInstance(ViewContainerMenuActions, this.getId(), MenuId.ViewContainerTitleContext));
-		this._register(this.viewPaneContainer.onTitleAreaUpdate(() => this.updateTitleArea()));
+		this.menuActions = this._register(this.instAntiAtionService.creAteInstAnce(ViewContAinerMenuActions, this.getId(), MenuId.ViewContAinerTitleContext));
+		this._register(this.viewPAneContAiner.onTitleAreAUpdAte(() => this.updAteTitleAreA()));
 	}
 
-	create(parent: HTMLElement): void {
-		this.viewPaneContainer.create(parent);
+	creAte(pArent: HTMLElement): void {
+		this.viewPAneContAiner.creAte(pArent);
 	}
 
-	setVisible(visible: boolean): void {
+	setVisible(visible: booleAn): void {
 		super.setVisible(visible);
-		this.viewPaneContainer.setVisible(visible);
+		this.viewPAneContAiner.setVisible(visible);
 	}
 
-	layout(dimension: Dimension): void {
-		this.viewPaneContainer.layout(dimension);
+	lAyout(dimension: Dimension): void {
+		this.viewPAneContAiner.lAyout(dimension);
 	}
 
-	getOptimalWidth(): number {
-		return this.viewPaneContainer.getOptimalWidth();
+	getOptimAlWidth(): number {
+		return this.viewPAneContAiner.getOptimAlWidth();
 	}
 
-	openView<T extends IView>(id: string, focus?: boolean): T | undefined {
-		return this.viewPaneContainer.openView(id, focus) as T;
+	openView<T extends IView>(id: string, focus?: booleAn): T | undefined {
+		return this.viewPAneContAiner.openView(id, focus) As T;
 	}
 
-	getViewPaneContainer(): ViewPaneContainer {
-		return this.viewPaneContainer;
+	getViewPAneContAiner(): ViewPAneContAiner {
+		return this.viewPAneContAiner;
 	}
 
 	getActionsContext(): unknown {
-		return this.getViewPaneContainer().getActionsContext();
+		return this.getViewPAneContAiner().getActionsContext();
 	}
 
-	getContextMenuActions(): ReadonlyArray<IAction> {
+	getContextMenuActions(): ReAdonlyArrAy<IAction> {
 		const result = [];
 		result.push(...this.menuActions.getContextMenuActions());
 
 		if (result.length) {
-			result.push(new Separator());
+			result.push(new SepArAtor());
 		}
 
-		result.push(...this.viewPaneContainer.getContextMenuActions());
+		result.push(...this.viewPAneContAiner.getContextMenuActions());
 		return result;
 	}
 
-	getActions(): ReadonlyArray<IAction> {
-		return this.viewPaneContainer.getActions();
+	getActions(): ReAdonlyArrAy<IAction> {
+		return this.viewPAneContAiner.getActions();
 	}
 
-	getSecondaryActions(): ReadonlyArray<IAction> {
-		return this.viewPaneContainer.getSecondaryActions();
+	getSecondAryActions(): ReAdonlyArrAy<IAction> {
+		return this.viewPAneContAiner.getSecondAryActions();
 	}
 
-	getActionViewItem(action: IAction): IActionViewItem | undefined {
-		return this.viewPaneContainer.getActionViewItem(action);
+	getActionViewItem(Action: IAction): IActionViewItem | undefined {
+		return this.viewPAneContAiner.getActionViewItem(Action);
 	}
 
 	getTitle(): string {
-		return this.viewPaneContainer.getTitle();
+		return this.viewPAneContAiner.getTitle();
 	}
 
-	saveState(): void {
-		super.saveState();
+	sAveStAte(): void {
+		super.sAveStAte();
 	}
 
 	focus(): void {
-		this.viewPaneContainer.focus();
+		this.viewPAneContAiner.focus();
 	}
 }

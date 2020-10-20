@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import { ClientCApAbility, ITypeScriptServiceClient } from '../typescriptService';
+import API from '../utils/Api';
+import { conditionAlRegistrAtion, requireSomeCApAbility } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as typeConverters from '../utils/typeConverters';
-import DefinitionProviderBase from './definitionProviderBase';
+import * As typeConverters from '../utils/typeConverters';
+import DefinitionProviderBAse from './definitionProviderBAse';
 
-export default class TypeScriptDefinitionProvider extends DefinitionProviderBase implements vscode.DefinitionProvider {
+export defAult clAss TypeScriptDefinitionProvider extends DefinitionProviderBAse implements vscode.DefinitionProvider {
 	constructor(
 		client: ITypeScriptServiceClient
 	) {
 		super(client);
 	}
 
-	public async provideDefinition(
+	public Async provideDefinition(
 		document: vscode.TextDocument,
 		position: vscode.Position,
-		token: vscode.CancellationToken
+		token: vscode.CAncellAtionToken
 	): Promise<vscode.DefinitionLink[] | vscode.Definition | undefined> {
-		if (this.client.apiVersion.gte(API.v270)) {
-			const filepath = this.client.toOpenedFilePath(document);
-			if (!filepath) {
+		if (this.client.ApiVersion.gte(API.v270)) {
+			const filepAth = this.client.toOpenedFilePAth(document);
+			if (!filepAth) {
 				return undefined;
 			}
 
-			const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
-			const response = await this.client.execute('definitionAndBoundSpan', args, token);
+			const Args = typeConverters.Position.toFileLocAtionRequestArgs(filepAth, position);
+			const response = AwAit this.client.execute('definitionAndBoundSpAn', Args, token);
 			if (response.type !== 'response' || !response.body) {
 				return undefined;
 			}
 
-			const span = response.body.textSpan ? typeConverters.Range.fromTextSpan(response.body.textSpan) : undefined;
+			const spAn = response.body.textSpAn ? typeConverters.RAnge.fromTextSpAn(response.body.textSpAn) : undefined;
 			return response.body.definitions
-				.map((location): vscode.DefinitionLink => {
-					const target = typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location);
-					if (location.contextStart && location.contextEnd) {
+				.mAp((locAtion): vscode.DefinitionLink => {
+					const tArget = typeConverters.LocAtion.fromTextSpAn(this.client.toResource(locAtion.file), locAtion);
+					if (locAtion.contextStArt && locAtion.contextEnd) {
 						return {
-							originSelectionRange: span,
-							targetRange: typeConverters.Range.fromLocations(location.contextStart, location.contextEnd),
-							targetUri: target.uri,
-							targetSelectionRange: target.range,
+							originSelectionRAnge: spAn,
+							tArgetRAnge: typeConverters.RAnge.fromLocAtions(locAtion.contextStArt, locAtion.contextEnd),
+							tArgetUri: tArget.uri,
+							tArgetSelectionRAnge: tArget.rAnge,
 						};
 					}
 					return {
-						originSelectionRange: span,
-						targetRange: target.range,
-						targetUri: target.uri
+						originSelectionRAnge: spAn,
+						tArgetRAnge: tArget.rAnge,
+						tArgetUri: tArget.uri
 					};
 				});
 		}
 
-		return this.getSymbolLocations('definition', document, position, token);
+		return this.getSymbolLocAtions('definition', document, position, token);
 	}
 }
 
@@ -63,10 +63,10 @@ export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
 ) {
-	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+	return conditionAlRegistrAtion([
+		requireSomeCApAbility(client, ClientCApAbility.EnhAncedSyntAx, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerDefinitionProvider(selector.syntax,
+		return vscode.lAnguAges.registerDefinitionProvider(selector.syntAx,
 			new TypeScriptDefinitionProvider(client));
 	});
 }

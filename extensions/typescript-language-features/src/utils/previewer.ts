@@ -1,127 +1,127 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
 
-function replaceLinks(text: string): string {
+function replAceLinks(text: string): string {
 	return text
 		// Http(s) links
-		.replace(/\{@(link|linkplain|linkcode) (https?:\/\/[^ |}]+?)(?:[| ]([^{}\n]+?))?\}/gi, (_, tag: string, link: string, text?: string) => {
-			switch (tag) {
-				case 'linkcode':
+		.replAce(/\{@(link|linkplAin|linkcode) (https?:\/\/[^ |}]+?)(?:[| ]([^{}\n]+?))?\}/gi, (_, tAg: string, link: string, text?: string) => {
+			switch (tAg) {
+				cAse 'linkcode':
 					return `[\`${text ? text.trim() : link}\`](${link})`;
 
-				default:
+				defAult:
 					return `[${text ? text.trim() : link}](${link})`;
 			}
 		});
 }
 
-function processInlineTags(text: string): string {
-	return replaceLinks(text);
+function processInlineTAgs(text: string): string {
+	return replAceLinks(text);
 }
 
-function getTagBodyText(tag: Proto.JSDocTagInfo): string | undefined {
-	if (!tag.text) {
+function getTAgBodyText(tAg: Proto.JSDocTAgInfo): string | undefined {
+	if (!tAg.text) {
 		return undefined;
 	}
 
-	// Convert to markdown code block if it is not already one
-	function makeCodeblock(text: string): string {
-		if (text.match(/^\s*[~`]{3}/g)) {
+	// Convert to mArkdown code block if it is not AlreAdy one
+	function mAkeCodeblock(text: string): string {
+		if (text.mAtch(/^\s*[~`]{3}/g)) {
 			return text;
 		}
 		return '```\n' + text + '\n```';
 	}
 
-	switch (tag.name) {
-		case 'example':
-			// check for caption tags, fix for #79704
-			const captionTagMatches = tag.text.match(/<caption>(.*?)<\/caption>\s*(\r\n|\n)/);
-			if (captionTagMatches && captionTagMatches.index === 0) {
-				return captionTagMatches[1] + '\n\n' + makeCodeblock(tag.text.substr(captionTagMatches[0].length));
+	switch (tAg.nAme) {
+		cAse 'exAmple':
+			// check for cAption tAgs, fix for #79704
+			const cAptionTAgMAtches = tAg.text.mAtch(/<cAption>(.*?)<\/cAption>\s*(\r\n|\n)/);
+			if (cAptionTAgMAtches && cAptionTAgMAtches.index === 0) {
+				return cAptionTAgMAtches[1] + '\n\n' + mAkeCodeblock(tAg.text.substr(cAptionTAgMAtches[0].length));
 			} else {
-				return makeCodeblock(tag.text);
+				return mAkeCodeblock(tAg.text);
 			}
-		case 'author':
-			// fix obsucated email address, #80898
-			const emailMatch = tag.text.match(/(.+)\s<([-.\w]+@[-.\w]+)>/);
+		cAse 'Author':
+			// fix obsucAted emAil Address, #80898
+			const emAilMAtch = tAg.text.mAtch(/(.+)\s<([-.\w]+@[-.\w]+)>/);
 
-			if (emailMatch === null) {
-				return tag.text;
+			if (emAilMAtch === null) {
+				return tAg.text;
 			} else {
-				return `${emailMatch[1]} ${emailMatch[2]}`;
+				return `${emAilMAtch[1]} ${emAilMAtch[2]}`;
 			}
-		case 'default':
-			return makeCodeblock(tag.text);
+		cAse 'defAult':
+			return mAkeCodeblock(tAg.text);
 	}
 
-	return processInlineTags(tag.text);
+	return processInlineTAgs(tAg.text);
 }
 
-function getTagDocumentation(tag: Proto.JSDocTagInfo): string | undefined {
-	switch (tag.name) {
-		case 'augments':
-		case 'extends':
-		case 'param':
-		case 'template':
-			const body = (tag.text || '').split(/^(\S+)\s*-?\s*/);
+function getTAgDocumentAtion(tAg: Proto.JSDocTAgInfo): string | undefined {
+	switch (tAg.nAme) {
+		cAse 'Augments':
+		cAse 'extends':
+		cAse 'pArAm':
+		cAse 'templAte':
+			const body = (tAg.text || '').split(/^(\S+)\s*-?\s*/);
 			if (body?.length === 3) {
-				const param = body[1];
+				const pArAm = body[1];
 				const doc = body[2];
-				const label = `*@${tag.name}* \`${param}\``;
+				const lAbel = `*@${tAg.nAme}* \`${pArAm}\``;
 				if (!doc) {
-					return label;
+					return lAbel;
 				}
-				return label + (doc.match(/\r\n|\n/g) ? '  \n' + processInlineTags(doc) : ` — ${processInlineTags(doc)}`);
+				return lAbel + (doc.mAtch(/\r\n|\n/g) ? '  \n' + processInlineTAgs(doc) : ` — ${processInlineTAgs(doc)}`);
 			}
 	}
 
-	// Generic tag
-	const label = `*@${tag.name}*`;
-	const text = getTagBodyText(tag);
+	// Generic tAg
+	const lAbel = `*@${tAg.nAme}*`;
+	const text = getTAgBodyText(tAg);
 	if (!text) {
-		return label;
+		return lAbel;
 	}
-	return label + (text.match(/\r\n|\n/g) ? '  \n' + text : ` — ${text}`);
+	return lAbel + (text.mAtch(/\r\n|\n/g) ? '  \n' + text : ` — ${text}`);
 }
 
-export function plain(parts: Proto.SymbolDisplayPart[] | string): string {
-	return processInlineTags(
-		typeof parts === 'string'
-			? parts
-			: parts.map(part => part.text).join(''));
+export function plAin(pArts: Proto.SymbolDisplAyPArt[] | string): string {
+	return processInlineTAgs(
+		typeof pArts === 'string'
+			? pArts
+			: pArts.mAp(pArt => pArt.text).join(''));
 }
 
-export function tagsMarkdownPreview(tags: Proto.JSDocTagInfo[]): string {
-	return tags.map(getTagDocumentation).join('  \n\n');
+export function tAgsMArkdownPreview(tAgs: Proto.JSDocTAgInfo[]): string {
+	return tAgs.mAp(getTAgDocumentAtion).join('  \n\n');
 }
 
-export function markdownDocumentation(
-	documentation: Proto.SymbolDisplayPart[] | string,
-	tags: Proto.JSDocTagInfo[]
-): vscode.MarkdownString {
-	const out = new vscode.MarkdownString();
-	addMarkdownDocumentation(out, documentation, tags);
+export function mArkdownDocumentAtion(
+	documentAtion: Proto.SymbolDisplAyPArt[] | string,
+	tAgs: Proto.JSDocTAgInfo[]
+): vscode.MArkdownString {
+	const out = new vscode.MArkdownString();
+	AddMArkdownDocumentAtion(out, documentAtion, tAgs);
 	return out;
 }
 
-export function addMarkdownDocumentation(
-	out: vscode.MarkdownString,
-	documentation: Proto.SymbolDisplayPart[] | string | undefined,
-	tags: Proto.JSDocTagInfo[] | undefined
-): vscode.MarkdownString {
-	if (documentation) {
-		out.appendMarkdown(plain(documentation));
+export function AddMArkdownDocumentAtion(
+	out: vscode.MArkdownString,
+	documentAtion: Proto.SymbolDisplAyPArt[] | string | undefined,
+	tAgs: Proto.JSDocTAgInfo[] | undefined
+): vscode.MArkdownString {
+	if (documentAtion) {
+		out.AppendMArkdown(plAin(documentAtion));
 	}
 
-	if (tags) {
-		const tagsPreview = tagsMarkdownPreview(tags);
-		if (tagsPreview) {
-			out.appendMarkdown('\n\n' + tagsPreview);
+	if (tAgs) {
+		const tAgsPreview = tAgsMArkdownPreview(tAgs);
+		if (tAgsPreview) {
+			out.AppendMArkdown('\n\n' + tAgsPreview);
 		}
 	}
 	return out;

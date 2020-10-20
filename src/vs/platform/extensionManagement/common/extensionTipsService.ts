@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IProductService, IConfigBasedExtensionTip as IRawConfigBasedExtensionTip } from 'vs/platform/product/common/productService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { IExtensionTipsService, IExecutableBasedExtensionTip, IWorkspaceTips, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { forEach } from 'vs/base/common/collections';
-import { IRequestService, asJson } from 'vs/platform/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { ILogService } from 'vs/platform/log/common/log';
-import { joinPath } from 'vs/base/common/resources';
-import { getDomainsOfRemotes } from 'vs/platform/extensionManagement/common/configRemotes';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IProductService, IConfigBAsedExtensionTip As IRAwConfigBAsedExtensionTip } from 'vs/plAtform/product/common/productService';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { IExtensionTipsService, IExecutAbleBAsedExtensionTip, IWorkspAceTips, IConfigBAsedExtensionTip } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { forEAch } from 'vs/bAse/common/collections';
+import { IRequestService, AsJson } from 'vs/plAtform/request/common/request';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { getDomAinsOfRemotes } from 'vs/plAtform/extensionMAnAgement/common/configRemotes';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-export class ExtensionTipsService extends Disposable implements IExtensionTipsService {
+export clAss ExtensionTipsService extends DisposAble implements IExtensionTipsService {
 
-	_serviceBrand: any;
+	_serviceBrAnd: Any;
 
-	private readonly allConfigBasedTips: Map<string, IRawConfigBasedExtensionTip> = new Map<string, IRawConfigBasedExtensionTip>();
+	privAte reAdonly AllConfigBAsedTips: MAp<string, IRAwConfigBAsedExtensionTip> = new MAp<string, IRAwConfigBAsedExtensionTip>();
 
 	constructor(
-		@IFileService protected readonly fileService: IFileService,
-		@IProductService private readonly productService: IProductService,
-		@IRequestService private readonly requestService: IRequestService,
-		@ILogService private readonly logService: ILogService,
+		@IFileService protected reAdonly fileService: IFileService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IRequestService privAte reAdonly requestService: IRequestService,
+		@ILogService privAte reAdonly logService: ILogService,
 	) {
 		super();
-		if (this.productService.configBasedExtensionTips) {
-			forEach(this.productService.configBasedExtensionTips, ({ value }) => this.allConfigBasedTips.set(value.configPath, value));
+		if (this.productService.configBAsedExtensionTips) {
+			forEAch(this.productService.configBAsedExtensionTips, ({ vAlue }) => this.AllConfigBAsedTips.set(vAlue.configPAth, vAlue));
 		}
 	}
 
-	getConfigBasedTips(folder: URI): Promise<IConfigBasedExtensionTip[]> {
-		return this.getValidConfigBasedTips(folder);
+	getConfigBAsedTips(folder: URI): Promise<IConfigBAsedExtensionTip[]> {
+		return this.getVAlidConfigBAsedTips(folder);
 	}
 
-	getAllWorkspacesTips(): Promise<IWorkspaceTips[]> {
-		return this.fetchWorkspacesTips();
+	getAllWorkspAcesTips(): Promise<IWorkspAceTips[]> {
+		return this.fetchWorkspAcesTips();
 	}
 
-	async getImportantExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
+	Async getImportAntExecutAbleBAsedTips(): Promise<IExecutAbleBAsedExtensionTip[]> {
 		return [];
 	}
 
-	async getOtherExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
+	Async getOtherExecutAbleBAsedTips(): Promise<IExecutAbleBAsedExtensionTip[]> {
 		return [];
 	}
 
-	private async getValidConfigBasedTips(folder: URI): Promise<IConfigBasedExtensionTip[]> {
-		const result: IConfigBasedExtensionTip[] = [];
-		for (const [configPath, tip] of this.allConfigBasedTips) {
+	privAte Async getVAlidConfigBAsedTips(folder: URI): Promise<IConfigBAsedExtensionTip[]> {
+		const result: IConfigBAsedExtensionTip[] = [];
+		for (const [configPAth, tip] of this.AllConfigBAsedTips) {
 			try {
-				const content = await this.fileService.readFile(joinPath(folder, configPath));
-				const recommendationByRemote: Map<string, IConfigBasedExtensionTip> = new Map<string, IConfigBasedExtensionTip>();
-				forEach(tip.recommendations, ({ key, value }) => {
-					if (isNonEmptyArray(value.remotes)) {
-						for (const remote of value.remotes) {
-							recommendationByRemote.set(remote, {
+				const content = AwAit this.fileService.reAdFile(joinPAth(folder, configPAth));
+				const recommendAtionByRemote: MAp<string, IConfigBAsedExtensionTip> = new MAp<string, IConfigBAsedExtensionTip>();
+				forEAch(tip.recommendAtions, ({ key, vAlue }) => {
+					if (isNonEmptyArrAy(vAlue.remotes)) {
+						for (const remote of vAlue.remotes) {
+							recommendAtionByRemote.set(remote, {
 								extensionId: key,
-								extensionName: value.name,
-								configName: tip.configName,
-								important: !!value.important,
-								isExtensionPack: !!value.isExtensionPack
+								extensionNAme: vAlue.nAme,
+								configNAme: tip.configNAme,
+								importAnt: !!vAlue.importAnt,
+								isExtensionPAck: !!vAlue.isExtensionPAck
 							});
 						}
 					} else {
 						result.push({
 							extensionId: key,
-							extensionName: value.name,
-							configName: tip.configName,
-							important: !!value.important,
-							isExtensionPack: !!value.isExtensionPack
+							extensionNAme: vAlue.nAme,
+							configNAme: tip.configNAme,
+							importAnt: !!vAlue.importAnt,
+							isExtensionPAck: !!vAlue.isExtensionPAck
 						});
 					}
 				});
-				const domains = getDomainsOfRemotes(content.value.toString(), [...recommendationByRemote.keys()]);
-				for (const domain of domains) {
-					const remote = recommendationByRemote.get(domain);
+				const domAins = getDomAinsOfRemotes(content.vAlue.toString(), [...recommendAtionByRemote.keys()]);
+				for (const domAin of domAins) {
+					const remote = recommendAtionByRemote.get(domAin);
 					if (remote) {
 						result.push(remote);
 					}
 				}
-			} catch (error) { /* Ignore */ }
+			} cAtch (error) { /* Ignore */ }
 		}
 		return result;
 	}
 
 
-	private async fetchWorkspacesTips(): Promise<IWorkspaceTips[]> {
-		if (!this.productService.extensionsGallery?.recommendationsUrl) {
+	privAte Async fetchWorkspAcesTips(): Promise<IWorkspAceTips[]> {
+		if (!this.productService.extensionsGAllery?.recommendAtionsUrl) {
 			return [];
 		}
 		try {
-			const context = await this.requestService.request({ type: 'GET', url: this.productService.extensionsGallery?.recommendationsUrl }, CancellationToken.None);
-			if (context.res.statusCode !== 200) {
+			const context = AwAit this.requestService.request({ type: 'GET', url: this.productService.extensionsGAllery?.recommendAtionsUrl }, CAncellAtionToken.None);
+			if (context.res.stAtusCode !== 200) {
 				return [];
 			}
-			const result = await asJson<{ workspaceRecommendations?: IWorkspaceTips[] }>(context);
+			const result = AwAit AsJson<{ workspAceRecommendAtions?: IWorkspAceTips[] }>(context);
 			if (!result) {
 				return [];
 			}
-			return result.workspaceRecommendations || [];
-		} catch (error) {
+			return result.workspAceRecommendAtions || [];
+		} cAtch (error) {
 			this.logService.error(error);
 			return [];
 		}

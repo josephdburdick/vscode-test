@@ -1,351 +1,351 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { DisposableStore, IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { TerminalWidgetManager } from 'vs/workbench/contrib/terminal/browser/widgets/widgetManager';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ITerminalProcessManager, ITerminalConfiguration, TERMINAL_CONFIG_SECTION } from 'vs/workbench/contrib/terminal/common/terminal';
-import { ITextEditorSelection } from 'vs/platform/editor/common/editor';
+import * As nls from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAbleStore, IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { TerminAlWidgetMAnAger } from 'vs/workbench/contrib/terminAl/browser/widgets/widgetMAnAger';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ITerminAlProcessMAnAger, ITerminAlConfigurAtion, TERMINAL_CONFIG_SECTION } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { ITextEditorSelection } from 'vs/plAtform/editor/common/editor';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IFileService } from 'vs/platform/files/common/files';
-import type { Terminal, IViewportRange, ILinkProvider } from 'xterm';
-import { Schemas } from 'vs/base/common/network';
-import { posix, win32 } from 'vs/base/common/path';
-import { ITerminalExternalLinkProvider, ITerminalInstance } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { OperatingSystem, isMacintosh, OS } from 'vs/base/common/platform';
-import { IMarkdownString, MarkdownString } from 'vs/base/common/htmlContent';
-import { TerminalProtocolLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalProtocolLinkProvider';
-import { TerminalValidatedLocalLinkProvider, lineAndColumnClause, unixLocalLinkClause, winLocalLinkClause, winDrivePrefix, winLineAndColumnMatchIndex, unixLineAndColumnMatchIndex, lineAndColumnClauseGroupCount } from 'vs/workbench/contrib/terminal/browser/links/terminalValidatedLocalLinkProvider';
-import { TerminalWordLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalWordLinkProvider';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { XTermCore } from 'vs/workbench/contrib/terminal/browser/xterm-private';
-import { TerminalHover, ILinkHoverTargetOptions } from 'vs/workbench/contrib/terminal/browser/widgets/terminalHoverWidget';
-import { TerminalLink } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
-import { TerminalExternalLinkProviderAdapter } from 'vs/workbench/contrib/terminal/browser/links/terminalExternalLinkProviderAdapter';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import type { TerminAl, IViewportRAnge, ILinkProvider } from 'xterm';
+import { SchemAs } from 'vs/bAse/common/network';
+import { posix, win32 } from 'vs/bAse/common/pAth';
+import { ITerminAlExternAlLinkProvider, ITerminAlInstAnce } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { OperAtingSystem, isMAcintosh, OS } from 'vs/bAse/common/plAtform';
+import { IMArkdownString, MArkdownString } from 'vs/bAse/common/htmlContent';
+import { TerminAlProtocolLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlProtocolLinkProvider';
+import { TerminAlVAlidAtedLocAlLinkProvider, lineAndColumnClAuse, unixLocAlLinkClAuse, winLocAlLinkClAuse, winDrivePrefix, winLineAndColumnMAtchIndex, unixLineAndColumnMAtchIndex, lineAndColumnClAuseGroupCount } from 'vs/workbench/contrib/terminAl/browser/links/terminAlVAlidAtedLocAlLinkProvider';
+import { TerminAlWordLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlWordLinkProvider';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { XTermCore } from 'vs/workbench/contrib/terminAl/browser/xterm-privAte';
+import { TerminAlHover, ILinkHoverTArgetOptions } from 'vs/workbench/contrib/terminAl/browser/widgets/terminAlHoverWidget';
+import { TerminAlLink } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLink';
+import { TerminAlExternAlLinkProviderAdApter } from 'vs/workbench/contrib/terminAl/browser/links/terminAlExternAlLinkProviderAdApter';
 
-export type XtermLinkMatcherHandler = (event: MouseEvent | undefined, link: string) => Promise<void>;
-export type XtermLinkMatcherValidationCallback = (uri: string, callback: (isValid: boolean) => void) => void;
+export type XtermLinkMAtcherHAndler = (event: MouseEvent | undefined, link: string) => Promise<void>;
+export type XtermLinkMAtcherVAlidAtionCAllbAck = (uri: string, cAllbAck: (isVAlid: booleAn) => void) => void;
 
-interface IPath {
-	join(...paths: string[]): string;
-	normalize(path: string): string;
+interfAce IPAth {
+	join(...pAths: string[]): string;
+	normAlize(pAth: string): string;
 }
 
 /**
- * An object responsible for managing registration of link matchers and link providers.
+ * An object responsible for mAnAging registrAtion of link mAtchers And link providers.
  */
-export class TerminalLinkManager extends DisposableStore {
-	private _widgetManager: TerminalWidgetManager | undefined;
-	private _processCwd: string | undefined;
-	private _standardLinkProviders: ILinkProvider[] = [];
-	private _standardLinkProvidersDisposables: IDisposable[] = [];
+export clAss TerminAlLinkMAnAger extends DisposAbleStore {
+	privAte _widgetMAnAger: TerminAlWidgetMAnAger | undefined;
+	privAte _processCwd: string | undefined;
+	privAte _stAndArdLinkProviders: ILinkProvider[] = [];
+	privAte _stAndArdLinkProvidersDisposAbles: IDisposAble[] = [];
 
 	constructor(
-		private _xterm: Terminal,
-		private readonly _processManager: ITerminalProcessManager,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IEditorService private readonly _editorService: IEditorService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@IFileService private readonly _fileService: IFileService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService
+		privAte _xterm: TerminAl,
+		privAte reAdonly _processMAnAger: ITerminAlProcessMAnAger,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
+		@IFileService privAte reAdonly _fileService: IFileService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
 
 		// Protocol links
-		const wrappedActivateCallback = this._wrapLinkHandler((_, link) => this._handleProtocolLink(link));
-		const protocolProvider = this._instantiationService.createInstance(TerminalProtocolLinkProvider, this._xterm, wrappedActivateCallback, this._tooltipCallback.bind(this));
-		this._standardLinkProviders.push(protocolProvider);
+		const wrAppedActivAteCAllbAck = this._wrApLinkHAndler((_, link) => this._hAndleProtocolLink(link));
+		const protocolProvider = this._instAntiAtionService.creAteInstAnce(TerminAlProtocolLinkProvider, this._xterm, wrAppedActivAteCAllbAck, this._tooltipCAllbAck.bind(this));
+		this._stAndArdLinkProviders.push(protocolProvider);
 
-		// Validated local links
-		if (this._configurationService.getValue<ITerminalConfiguration>(TERMINAL_CONFIG_SECTION).enableFileLinks) {
-			const wrappedTextLinkActivateCallback = this._wrapLinkHandler((_, link) => this._handleLocalLink(link));
-			const validatedProvider = this._instantiationService.createInstance(TerminalValidatedLocalLinkProvider,
+		// VAlidAted locAl links
+		if (this._configurAtionService.getVAlue<ITerminAlConfigurAtion>(TERMINAL_CONFIG_SECTION).enAbleFileLinks) {
+			const wrAppedTextLinkActivAteCAllbAck = this._wrApLinkHAndler((_, link) => this._hAndleLocAlLink(link));
+			const vAlidAtedProvider = this._instAntiAtionService.creAteInstAnce(TerminAlVAlidAtedLocAlLinkProvider,
 				this._xterm,
-				this._processManager.os || OS,
-				wrappedTextLinkActivateCallback,
-				this._wrapLinkHandler.bind(this),
-				this._tooltipCallback.bind(this),
-				async (link, cb) => cb(await this._resolvePath(link)));
-			this._standardLinkProviders.push(validatedProvider);
+				this._processMAnAger.os || OS,
+				wrAppedTextLinkActivAteCAllbAck,
+				this._wrApLinkHAndler.bind(this),
+				this._tooltipCAllbAck.bind(this),
+				Async (link, cb) => cb(AwAit this._resolvePAth(link)));
+			this._stAndArdLinkProviders.push(vAlidAtedProvider);
 		}
 
 		// Word links
-		const wordProvider = this._instantiationService.createInstance(TerminalWordLinkProvider, this._xterm, this._wrapLinkHandler.bind(this), this._tooltipCallback.bind(this));
-		this._standardLinkProviders.push(wordProvider);
+		const wordProvider = this._instAntiAtionService.creAteInstAnce(TerminAlWordLinkProvider, this._xterm, this._wrApLinkHAndler.bind(this), this._tooltipCAllbAck.bind(this));
+		this._stAndArdLinkProviders.push(wordProvider);
 
-		this._registerStandardLinkProviders();
+		this._registerStAndArdLinkProviders();
 	}
 
-	private _tooltipCallback(link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) {
-		if (!this._widgetManager) {
+	privAte _tooltipCAllbAck(link: TerminAlLink, viewportRAnge: IViewportRAnge, modifierDownCAllbAck?: () => void, modifierUpCAllbAck?: () => void) {
+		if (!this._widgetMAnAger) {
 			return;
 		}
 
-		const core = (this._xterm as any)._core as XTermCore;
+		const core = (this._xterm As Any)._core As XTermCore;
 		const cellDimensions = {
-			width: core._renderService.dimensions.actualCellWidth,
-			height: core._renderService.dimensions.actualCellHeight
+			width: core._renderService.dimensions.ActuAlCellWidth,
+			height: core._renderService.dimensions.ActuAlCellHeight
 		};
-		const terminalDimensions = {
+		const terminAlDimensions = {
 			width: this._xterm.cols,
 			height: this._xterm.rows
 		};
 
-		// Don't pass the mouse event as this avoids the modifier check
+		// Don't pAss the mouse event As this Avoids the modifier check
 		this._showHover({
-			viewportRange,
+			viewportRAnge,
 			cellDimensions,
-			terminalDimensions,
-			modifierDownCallback,
-			modifierUpCallback
-		}, this._getLinkHoverString(link.text, link.label), (text) => link.activate(undefined, text), link);
+			terminAlDimensions,
+			modifierDownCAllbAck,
+			modifierUpCAllbAck
+		}, this._getLinkHoverString(link.text, link.lAbel), (text) => link.ActivAte(undefined, text), link);
 	}
 
-	private _showHover(
-		targetOptions: ILinkHoverTargetOptions,
-		text: IMarkdownString,
-		linkHandler: (url: string) => void,
-		link?: TerminalLink
+	privAte _showHover(
+		tArgetOptions: ILinkHoverTArgetOptions,
+		text: IMArkdownString,
+		linkHAndler: (url: string) => void,
+		link?: TerminAlLink
 	) {
-		if (this._widgetManager) {
-			const widget = this._instantiationService.createInstance(TerminalHover, targetOptions, text, linkHandler);
-			const attached = this._widgetManager.attachWidget(widget);
-			if (attached) {
-				link?.onInvalidated(() => attached.dispose());
+		if (this._widgetMAnAger) {
+			const widget = this._instAntiAtionService.creAteInstAnce(TerminAlHover, tArgetOptions, text, linkHAndler);
+			const AttAched = this._widgetMAnAger.AttAchWidget(widget);
+			if (AttAched) {
+				link?.onInvAlidAted(() => AttAched.dispose());
 			}
 		}
 	}
 
-	public setWidgetManager(widgetManager: TerminalWidgetManager): void {
-		this._widgetManager = widgetManager;
+	public setWidgetMAnAger(widgetMAnAger: TerminAlWidgetMAnAger): void {
+		this._widgetMAnAger = widgetMAnAger;
 	}
 
 	public set processCwd(processCwd: string) {
 		this._processCwd = processCwd;
 	}
 
-	private _registerStandardLinkProviders(): void {
-		dispose(this._standardLinkProvidersDisposables);
-		this._standardLinkProvidersDisposables = [];
-		for (const p of this._standardLinkProviders) {
-			this._standardLinkProvidersDisposables.push(this._xterm.registerLinkProvider(p));
+	privAte _registerStAndArdLinkProviders(): void {
+		dispose(this._stAndArdLinkProvidersDisposAbles);
+		this._stAndArdLinkProvidersDisposAbles = [];
+		for (const p of this._stAndArdLinkProviders) {
+			this._stAndArdLinkProvidersDisposAbles.push(this._xterm.registerLinkProvider(p));
 		}
 	}
 
-	public registerExternalLinkProvider(instance: ITerminalInstance, linkProvider: ITerminalExternalLinkProvider): IDisposable {
-		const wrappedLinkProvider = this._instantiationService.createInstance(TerminalExternalLinkProviderAdapter, this._xterm, instance, linkProvider, this._wrapLinkHandler.bind(this), this._tooltipCallback.bind(this));
-		const newLinkProvider = this._xterm.registerLinkProvider(wrappedLinkProvider);
-		// Re-register the standard link providers so they are a lower priority that the new one
-		this._registerStandardLinkProviders();
+	public registerExternAlLinkProvider(instAnce: ITerminAlInstAnce, linkProvider: ITerminAlExternAlLinkProvider): IDisposAble {
+		const wrAppedLinkProvider = this._instAntiAtionService.creAteInstAnce(TerminAlExternAlLinkProviderAdApter, this._xterm, instAnce, linkProvider, this._wrApLinkHAndler.bind(this), this._tooltipCAllbAck.bind(this));
+		const newLinkProvider = this._xterm.registerLinkProvider(wrAppedLinkProvider);
+		// Re-register the stAndArd link providers so they Are A lower priority thAt the new one
+		this._registerStAndArdLinkProviders();
 		return newLinkProvider;
 	}
 
-	protected _wrapLinkHandler(handler: (event: MouseEvent | undefined, link: string) => void): XtermLinkMatcherHandler {
-		return async (event: MouseEvent | undefined, link: string) => {
-			// Prevent default electron link handling so Alt+Click mode works normally
-			event?.preventDefault();
+	protected _wrApLinkHAndler(hAndler: (event: MouseEvent | undefined, link: string) => void): XtermLinkMAtcherHAndler {
+		return Async (event: MouseEvent | undefined, link: string) => {
+			// Prevent defAult electron link hAndling so Alt+Click mode works normAlly
+			event?.preventDefAult();
 
 			// Require correct modifier on click
-			if (event && !this._isLinkActivationModifierDown(event)) {
+			if (event && !this._isLinkActivAtionModifierDown(event)) {
 				return;
 			}
 
-			// Just call the handler if there is no before listener
-			handler(event, link);
+			// Just cAll the hAndler if there is no before listener
+			hAndler(event, link);
 		};
 	}
 
-	protected get _localLinkRegex(): RegExp {
-		if (!this._processManager) {
-			throw new Error('Process manager is required');
+	protected get _locAlLinkRegex(): RegExp {
+		if (!this._processMAnAger) {
+			throw new Error('Process mAnAger is required');
 		}
-		const baseLocalLinkClause = this._processManager.os === OperatingSystem.Windows ? winLocalLinkClause : unixLocalLinkClause;
-		// Append line and column number regex
-		return new RegExp(`${baseLocalLinkClause}(${lineAndColumnClause})`);
+		const bAseLocAlLinkClAuse = this._processMAnAger.os === OperAtingSystem.Windows ? winLocAlLinkClAuse : unixLocAlLinkClAuse;
+		// Append line And column number regex
+		return new RegExp(`${bAseLocAlLinkClAuse}(${lineAndColumnClAuse})`);
 	}
 
-	private async _handleLocalLink(link: string): Promise<void> {
-		// TODO: This gets resolved again but doesn't need to as it's already validated
-		const resolvedLink = await this._resolvePath(link);
+	privAte Async _hAndleLocAlLink(link: string): Promise<void> {
+		// TODO: This gets resolved AgAin but doesn't need to As it's AlreAdy vAlidAted
+		const resolvedLink = AwAit this._resolvePAth(link);
 		if (!resolvedLink) {
 			return;
 		}
-		const lineColumnInfo: LineColumnInfo = this.extractLineColumnInfo(link);
+		const lineColumnInfo: LineColumnInfo = this.extrActLineColumnInfo(link);
 		const selection: ITextEditorSelection = {
-			startLineNumber: lineColumnInfo.lineNumber,
-			startColumn: lineColumnInfo.columnNumber
+			stArtLineNumber: lineColumnInfo.lineNumber,
+			stArtColumn: lineColumnInfo.columnNumber
 		};
-		await this._editorService.openEditor({ resource: resolvedLink.uri, options: { pinned: true, selection } });
+		AwAit this._editorService.openEditor({ resource: resolvedLink.uri, options: { pinned: true, selection } });
 	}
 
-	private _handleHypertextLink(url: string): void {
-		this._openerService.open(url, { allowTunneling: !!(this._processManager && this._processManager.remoteAuthority) });
+	privAte _hAndleHypertextLink(url: string): void {
+		this._openerService.open(url, { AllowTunneling: !!(this._processMAnAger && this._processMAnAger.remoteAuthority) });
 	}
 
-	private async _handleProtocolLink(link: string): Promise<void> {
-		// Check if it's a file:/// link, hand off to local link handler so to open an editor and
-		// respect line/col attachment
-		const uri = URI.parse(link);
-		if (uri.scheme === Schemas.file) {
-			this._handleLocalLink(uri.fsPath);
+	privAte Async _hAndleProtocolLink(link: string): Promise<void> {
+		// Check if it's A file:/// link, hAnd off to locAl link hAndler so to open An editor And
+		// respect line/col AttAchment
+		const uri = URI.pArse(link);
+		if (uri.scheme === SchemAs.file) {
+			this._hAndleLocAlLink(uri.fsPAth);
 			return;
 		}
 
-		// Open as a web link if it's not a file
-		this._handleHypertextLink(link);
+		// Open As A web link if it's not A file
+		this._hAndleHypertextLink(link);
 	}
 
-	protected _isLinkActivationModifierDown(event: MouseEvent): boolean {
-		const editorConf = this._configurationService.getValue<{ multiCursorModifier: 'ctrlCmd' | 'alt' }>('editor');
+	protected _isLinkActivAtionModifierDown(event: MouseEvent): booleAn {
+		const editorConf = this._configurAtionService.getVAlue<{ multiCursorModifier: 'ctrlCmd' | 'Alt' }>('editor');
 		if (editorConf.multiCursorModifier === 'ctrlCmd') {
-			return !!event.altKey;
+			return !!event.AltKey;
 		}
-		return isMacintosh ? event.metaKey : event.ctrlKey;
+		return isMAcintosh ? event.metAKey : event.ctrlKey;
 	}
 
-	private _getLinkHoverString(uri: string, label: string | undefined): IMarkdownString {
-		const editorConf = this._configurationService.getValue<{ multiCursorModifier: 'ctrlCmd' | 'alt' }>('editor');
+	privAte _getLinkHoverString(uri: string, lAbel: string | undefined): IMArkdownString {
+		const editorConf = this._configurAtionService.getVAlue<{ multiCursorModifier: 'ctrlCmd' | 'Alt' }>('editor');
 
-		let clickLabel = '';
+		let clickLAbel = '';
 		if (editorConf.multiCursorModifier === 'ctrlCmd') {
-			if (isMacintosh) {
-				clickLabel = nls.localize('terminalLinkHandler.followLinkAlt.mac', "option + click");
+			if (isMAcintosh) {
+				clickLAbel = nls.locAlize('terminAlLinkHAndler.followLinkAlt.mAc', "option + click");
 			} else {
-				clickLabel = nls.localize('terminalLinkHandler.followLinkAlt', "alt + click");
+				clickLAbel = nls.locAlize('terminAlLinkHAndler.followLinkAlt', "Alt + click");
 			}
 		} else {
-			if (isMacintosh) {
-				clickLabel = nls.localize('terminalLinkHandler.followLinkCmd', "cmd + click");
+			if (isMAcintosh) {
+				clickLAbel = nls.locAlize('terminAlLinkHAndler.followLinkCmd', "cmd + click");
 			} else {
-				clickLabel = nls.localize('terminalLinkHandler.followLinkCtrl', "ctrl + click");
+				clickLAbel = nls.locAlize('terminAlLinkHAndler.followLinkCtrl', "ctrl + click");
 			}
 		}
 
-		// Use 'undefined' when uri is '' so the link displays correctly
-		return new MarkdownString(`[${label || nls.localize('followLink', "Follow Link")}](${uri || 'undefined'}) (${clickLabel})`, true);
+		// Use 'undefined' when uri is '' so the link displAys correctly
+		return new MArkdownString(`[${lAbel || nls.locAlize('followLink', "Follow Link")}](${uri || 'undefined'}) (${clickLAbel})`, true);
 	}
 
-	private get osPath(): IPath {
-		if (!this._processManager) {
-			throw new Error('Process manager is required');
+	privAte get osPAth(): IPAth {
+		if (!this._processMAnAger) {
+			throw new Error('Process mAnAger is required');
 		}
-		if (this._processManager.os === OperatingSystem.Windows) {
+		if (this._processMAnAger.os === OperAtingSystem.Windows) {
 			return win32;
 		}
 		return posix;
 	}
 
-	protected _preprocessPath(link: string): string | null {
-		if (!this._processManager) {
-			throw new Error('Process manager is required');
+	protected _preprocessPAth(link: string): string | null {
+		if (!this._processMAnAger) {
+			throw new Error('Process mAnAger is required');
 		}
-		if (link.charAt(0) === '~') {
+		if (link.chArAt(0) === '~') {
 			// Resolve ~ -> userHome
-			if (!this._processManager.userHome) {
+			if (!this._processMAnAger.userHome) {
 				return null;
 			}
-			link = this.osPath.join(this._processManager.userHome, link.substring(1));
-		} else if (link.charAt(0) !== '/' && link.charAt(0) !== '~') {
-			// Resolve workspace path . | .. | <relative_path> -> <path>/. | <path>/.. | <path>/<relative_path>
-			if (this._processManager.os === OperatingSystem.Windows) {
-				if (!link.match('^' + winDrivePrefix) && !link.startsWith('\\\\?\\')) {
+			link = this.osPAth.join(this._processMAnAger.userHome, link.substring(1));
+		} else if (link.chArAt(0) !== '/' && link.chArAt(0) !== '~') {
+			// Resolve workspAce pAth . | .. | <relAtive_pAth> -> <pAth>/. | <pAth>/.. | <pAth>/<relAtive_pAth>
+			if (this._processMAnAger.os === OperAtingSystem.Windows) {
+				if (!link.mAtch('^' + winDrivePrefix) && !link.stArtsWith('\\\\?\\')) {
 					if (!this._processCwd) {
-						// Abort if no workspace is open
+						// Abort if no workspAce is open
 						return null;
 					}
-					link = this.osPath.join(this._processCwd, link);
+					link = this.osPAth.join(this._processCwd, link);
 				} else {
-					// Remove \\?\ from paths so that they share the same underlying
-					// uri and don't open multiple tabs for the same file
-					link = link.replace(/^\\\\\?\\/, '');
+					// Remove \\?\ from pAths so thAt they shAre the sAme underlying
+					// uri And don't open multiple tAbs for the sAme file
+					link = link.replAce(/^\\\\\?\\/, '');
 				}
 			} else {
 				if (!this._processCwd) {
-					// Abort if no workspace is open
+					// Abort if no workspAce is open
 					return null;
 				}
-				link = this.osPath.join(this._processCwd, link);
+				link = this.osPAth.join(this._processCwd, link);
 			}
 		}
-		link = this.osPath.normalize(link);
+		link = this.osPAth.normAlize(link);
 
 		return link;
 	}
 
-	private async _resolvePath(link: string): Promise<{ uri: URI, isDirectory: boolean } | undefined> {
-		if (!this._processManager) {
-			throw new Error('Process manager is required');
+	privAte Async _resolvePAth(link: string): Promise<{ uri: URI, isDirectory: booleAn } | undefined> {
+		if (!this._processMAnAger) {
+			throw new Error('Process mAnAger is required');
 		}
 
-		const preprocessedLink = this._preprocessPath(link);
+		const preprocessedLink = this._preprocessPAth(link);
 		if (!preprocessedLink) {
 			return undefined;
 		}
 
-		const linkUrl = this.extractLinkUrl(preprocessedLink);
+		const linkUrl = this.extrActLinkUrl(preprocessedLink);
 		if (!linkUrl) {
 			return undefined;
 		}
 
 		try {
 			let uri: URI;
-			if (this._processManager.remoteAuthority) {
+			if (this._processMAnAger.remoteAuthority) {
 				uri = URI.from({
-					scheme: Schemas.vscodeRemote,
-					authority: this._processManager.remoteAuthority,
-					path: linkUrl
+					scheme: SchemAs.vscodeRemote,
+					Authority: this._processMAnAger.remoteAuthority,
+					pAth: linkUrl
 				});
 			} else {
 				uri = URI.file(linkUrl);
 			}
 
 			try {
-				const stat = await this._fileService.resolve(uri);
-				return { uri, isDirectory: stat.isDirectory };
+				const stAt = AwAit this._fileService.resolve(uri);
+				return { uri, isDirectory: stAt.isDirectory };
 			}
-			catch (e) {
+			cAtch (e) {
 				// Does not exist
 				return undefined;
 			}
-		} catch {
-			// Errors in parsing the path
+		} cAtch {
+			// Errors in pArsing the pAth
 			return undefined;
 		}
 	}
 
 	/**
-	 * Returns line and column number of URl if that is present.
+	 * Returns line And column number of URl if thAt is present.
 	 *
-	 * @param link Url link which may contain line and column number.
+	 * @pArAm link Url link which mAy contAin line And column number.
 	 */
-	public extractLineColumnInfo(link: string): LineColumnInfo {
-		const matches: string[] | null = this._localLinkRegex.exec(link);
+	public extrActLineColumnInfo(link: string): LineColumnInfo {
+		const mAtches: string[] | null = this._locAlLinkRegex.exec(link);
 		const lineColumnInfo: LineColumnInfo = {
 			lineNumber: 1,
 			columnNumber: 1
 		};
 
-		if (!matches || !this._processManager) {
+		if (!mAtches || !this._processMAnAger) {
 			return lineColumnInfo;
 		}
 
-		const lineAndColumnMatchIndex = this._processManager.os === OperatingSystem.Windows ? winLineAndColumnMatchIndex : unixLineAndColumnMatchIndex;
-		for (let i = 0; i < lineAndColumnClause.length; i++) {
-			const lineMatchIndex = lineAndColumnMatchIndex + (lineAndColumnClauseGroupCount * i);
-			const rowNumber = matches[lineMatchIndex];
+		const lineAndColumnMAtchIndex = this._processMAnAger.os === OperAtingSystem.Windows ? winLineAndColumnMAtchIndex : unixLineAndColumnMAtchIndex;
+		for (let i = 0; i < lineAndColumnClAuse.length; i++) {
+			const lineMAtchIndex = lineAndColumnMAtchIndex + (lineAndColumnClAuseGroupCount * i);
+			const rowNumber = mAtches[lineMAtchIndex];
 			if (rowNumber) {
-				lineColumnInfo['lineNumber'] = parseInt(rowNumber, 10);
+				lineColumnInfo['lineNumber'] = pArseInt(rowNumber, 10);
 				// Check if column number exists
-				const columnNumber = matches[lineMatchIndex + 2];
+				const columnNumber = mAtches[lineMAtchIndex + 2];
 				if (columnNumber) {
-					lineColumnInfo['columnNumber'] = parseInt(columnNumber, 10);
+					lineColumnInfo['columnNumber'] = pArseInt(columnNumber, 10);
 				}
-				break;
+				breAk;
 			}
 		}
 
@@ -353,20 +353,20 @@ export class TerminalLinkManager extends DisposableStore {
 	}
 
 	/**
-	 * Returns url from link as link may contain line and column information.
+	 * Returns url from link As link mAy contAin line And column informAtion.
 	 *
-	 * @param link url link which may contain line and column number.
+	 * @pArAm link url link which mAy contAin line And column number.
 	 */
-	public extractLinkUrl(link: string): string | null {
-		const matches: string[] | null = this._localLinkRegex.exec(link);
-		if (!matches) {
+	public extrActLinkUrl(link: string): string | null {
+		const mAtches: string[] | null = this._locAlLinkRegex.exec(link);
+		if (!mAtches) {
 			return null;
 		}
-		return matches[1];
+		return mAtches[1];
 	}
 }
 
-export interface LineColumnInfo {
+export interfAce LineColumnInfo {
 	lineNumber: number;
 	columnNumber: number;
 }

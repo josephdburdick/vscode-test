@@ -1,96 +1,96 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
 import { Logger } from '../logger';
-import { MarkdownEngine } from '../markdownEngine';
-import { MarkdownContributionProvider } from '../markdownExtensions';
-import { ContentSecurityPolicyArbiter, MarkdownPreviewSecurityLevel } from '../security';
+import { MArkdownEngine } from '../mArkdownEngine';
+import { MArkdownContributionProvider } from '../mArkdownExtensions';
+import { ContentSecurityPolicyArbiter, MArkdownPreviewSecurityLevel } from '../security';
 import { WebviewResourceProvider } from '../util/resources';
-import { MarkdownPreviewConfiguration, MarkdownPreviewConfigurationManager } from './previewConfig';
+import { MArkdownPreviewConfigurAtion, MArkdownPreviewConfigurAtionMAnAger } from './previewConfig';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
 /**
- * Strings used inside the markdown preview.
+ * Strings used inside the mArkdown preview.
  *
- * Stored here and then injected in the preview so that they
- * can be localized using our normal localization process.
+ * Stored here And then injected in the preview so thAt they
+ * cAn be locAlized using our normAl locAlizAtion process.
  */
 const previewStrings = {
-	cspAlertMessageText: localize(
-		'preview.securityMessage.text',
-		'Some content has been disabled in this document'),
+	cspAlertMessAgeText: locAlize(
+		'preview.securityMessAge.text',
+		'Some content hAs been disAbled in this document'),
 
-	cspAlertMessageTitle: localize(
-		'preview.securityMessage.title',
-		'Potentially unsafe or insecure content has been disabled in the markdown preview. Change the Markdown preview security setting to allow insecure content or enable scripts'),
+	cspAlertMessAgeTitle: locAlize(
+		'preview.securityMessAge.title',
+		'PotentiAlly unsAfe or insecure content hAs been disAbled in the mArkdown preview. ChAnge the MArkdown preview security setting to Allow insecure content or enAble scripts'),
 
-	cspAlertMessageLabel: localize(
-		'preview.securityMessage.label',
-		'Content Disabled Security Warning')
+	cspAlertMessAgeLAbel: locAlize(
+		'preview.securityMessAge.lAbel',
+		'Content DisAbled Security WArning')
 };
 
-function escapeAttribute(value: string | vscode.Uri): string {
-	return value.toString().replace(/"/g, '&quot;');
+function escApeAttribute(vAlue: string | vscode.Uri): string {
+	return vAlue.toString().replAce(/"/g, '&quot;');
 }
 
-export class MarkdownContentProvider {
+export clAss MArkdownContentProvider {
 	constructor(
-		private readonly engine: MarkdownEngine,
-		private readonly context: vscode.ExtensionContext,
-		private readonly cspArbiter: ContentSecurityPolicyArbiter,
-		private readonly contributionProvider: MarkdownContributionProvider,
-		private readonly logger: Logger
+		privAte reAdonly engine: MArkdownEngine,
+		privAte reAdonly context: vscode.ExtensionContext,
+		privAte reAdonly cspArbiter: ContentSecurityPolicyArbiter,
+		privAte reAdonly contributionProvider: MArkdownContributionProvider,
+		privAte reAdonly logger: Logger
 	) { }
 
-	public async provideTextDocumentContent(
-		markdownDocument: vscode.TextDocument,
+	public Async provideTextDocumentContent(
+		mArkdownDocument: vscode.TextDocument,
 		resourceProvider: WebviewResourceProvider,
-		previewConfigurations: MarkdownPreviewConfigurationManager,
-		initialLine: number | undefined = undefined,
-		state?: any
+		previewConfigurAtions: MArkdownPreviewConfigurAtionMAnAger,
+		initiAlLine: number | undefined = undefined,
+		stAte?: Any
 	): Promise<string> {
-		const sourceUri = markdownDocument.uri;
-		const config = previewConfigurations.loadAndCacheConfiguration(sourceUri);
-		const initialData = {
+		const sourceUri = mArkdownDocument.uri;
+		const config = previewConfigurAtions.loAdAndCAcheConfigurAtion(sourceUri);
+		const initiAlDAtA = {
 			source: sourceUri.toString(),
-			line: initialLine,
-			lineCount: markdownDocument.lineCount,
+			line: initiAlLine,
+			lineCount: mArkdownDocument.lineCount,
 			scrollPreviewWithEditor: config.scrollPreviewWithEditor,
 			scrollEditorWithPreview: config.scrollEditorWithPreview,
 			doubleClickToSwitchToEditor: config.doubleClickToSwitchToEditor,
-			disableSecurityWarnings: this.cspArbiter.shouldDisableSecurityWarnings(),
-			webviewResourceRoot: resourceProvider.asWebviewUri(markdownDocument.uri).toString(),
+			disAbleSecurityWArnings: this.cspArbiter.shouldDisAbleSecurityWArnings(),
+			webviewResourceRoot: resourceProvider.AsWebviewUri(mArkdownDocument.uri).toString(),
 		};
 
-		this.logger.log('provideTextDocumentContent', initialData);
+		this.logger.log('provideTextDocumentContent', initiAlDAtA);
 
 		// Content Security Policy
-		const nonce = new Date().getTime() + '' + new Date().getMilliseconds();
+		const nonce = new DAte().getTime() + '' + new DAte().getMilliseconds();
 		const csp = this.getCsp(resourceProvider, sourceUri, nonce);
 
-		const body = await this.engine.render(markdownDocument);
+		const body = AwAit this.engine.render(mArkdownDocument);
 		return `<!DOCTYPE html>
-			<html style="${escapeAttribute(this.getSettingsOverrideStyles(config))}">
-			<head>
-				<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+			<html style="${escApeAttribute(this.getSettingsOverrideStyles(config))}">
+			<heAd>
+				<metA http-equiv="Content-type" content="text/html;chArset=UTF-8">
 				${csp}
-				<meta id="vscode-markdown-preview-data"
-					data-settings="${escapeAttribute(JSON.stringify(initialData))}"
-					data-strings="${escapeAttribute(JSON.stringify(previewStrings))}"
-					data-state="${escapeAttribute(JSON.stringify(state || {}))}">
-				<script src="${this.extensionResourcePath(resourceProvider, 'pre.js')}" nonce="${nonce}"></script>
-				${this.getStyles(resourceProvider, sourceUri, config, state)}
-				<base href="${resourceProvider.asWebviewUri(markdownDocument.uri)}">
-			</head>
-			<body class="vscode-body ${config.scrollBeyondLastLine ? 'scrollBeyondLastLine' : ''} ${config.wordWrap ? 'wordWrap' : ''} ${config.markEditorSelection ? 'showEditorSelection' : ''}">
+				<metA id="vscode-mArkdown-preview-dAtA"
+					dAtA-settings="${escApeAttribute(JSON.stringify(initiAlDAtA))}"
+					dAtA-strings="${escApeAttribute(JSON.stringify(previewStrings))}"
+					dAtA-stAte="${escApeAttribute(JSON.stringify(stAte || {}))}">
+				<script src="${this.extensionResourcePAth(resourceProvider, 'pre.js')}" nonce="${nonce}"></script>
+				${this.getStyles(resourceProvider, sourceUri, config, stAte)}
+				<bAse href="${resourceProvider.AsWebviewUri(mArkdownDocument.uri)}">
+			</heAd>
+			<body clAss="vscode-body ${config.scrollBeyondLAstLine ? 'scrollBeyondLAstLine' : ''} ${config.wordWrAp ? 'wordWrAp' : ''} ${config.mArkEditorSelection ? 'showEditorSelection' : ''}">
 				${body}
-				<div class="code-line" data-line="${markdownDocument.lineCount}"></div>
+				<div clAss="code-line" dAtA-line="${mArkdownDocument.lineCount}"></div>
 				${this.getScripts(resourceProvider, nonce)}
 			</body>
 			</html>`;
@@ -99,70 +99,70 @@ export class MarkdownContentProvider {
 	public provideFileNotFoundContent(
 		resource: vscode.Uri,
 	): string {
-		const resourcePath = path.basename(resource.fsPath);
-		const body = localize('preview.notFound', '{0} cannot be found', resourcePath);
+		const resourcePAth = pAth.bAsenAme(resource.fsPAth);
+		const body = locAlize('preview.notFound', '{0} cAnnot be found', resourcePAth);
 		return `<!DOCTYPE html>
 			<html>
-			<body class="vscode-body">
+			<body clAss="vscode-body">
 				${body}
 			</body>
 			</html>`;
 	}
 
-	private extensionResourcePath(resourceProvider: WebviewResourceProvider, mediaFile: string): string {
-		const webviewResource = resourceProvider.asWebviewUri(
-			vscode.Uri.joinPath(this.context.extensionUri, 'media', mediaFile));
+	privAte extensionResourcePAth(resourceProvider: WebviewResourceProvider, mediAFile: string): string {
+		const webviewResource = resourceProvider.AsWebviewUri(
+			vscode.Uri.joinPAth(this.context.extensionUri, 'mediA', mediAFile));
 		return webviewResource.toString();
 	}
 
-	private fixHref(resourceProvider: WebviewResourceProvider, resource: vscode.Uri, href: string): string {
+	privAte fixHref(resourceProvider: WebviewResourceProvider, resource: vscode.Uri, href: string): string {
 		if (!href) {
 			return href;
 		}
 
-		if (href.startsWith('http:') || href.startsWith('https:') || href.startsWith('file:')) {
+		if (href.stArtsWith('http:') || href.stArtsWith('https:') || href.stArtsWith('file:')) {
 			return href;
 		}
 
-		// Assume it must be a local file
-		if (path.isAbsolute(href)) {
-			return resourceProvider.asWebviewUri(vscode.Uri.file(href)).toString();
+		// Assume it must be A locAl file
+		if (pAth.isAbsolute(href)) {
+			return resourceProvider.AsWebviewUri(vscode.Uri.file(href)).toString();
 		}
 
-		// Use a workspace relative path if there is a workspace
-		const root = vscode.workspace.getWorkspaceFolder(resource);
+		// Use A workspAce relAtive pAth if there is A workspAce
+		const root = vscode.workspAce.getWorkspAceFolder(resource);
 		if (root) {
-			return resourceProvider.asWebviewUri(vscode.Uri.joinPath(root.uri, href)).toString();
+			return resourceProvider.AsWebviewUri(vscode.Uri.joinPAth(root.uri, href)).toString();
 		}
 
-		// Otherwise look relative to the markdown file
-		return resourceProvider.asWebviewUri(vscode.Uri.file(path.join(path.dirname(resource.fsPath), href))).toString();
+		// Otherwise look relAtive to the mArkdown file
+		return resourceProvider.AsWebviewUri(vscode.Uri.file(pAth.join(pAth.dirnAme(resource.fsPAth), href))).toString();
 	}
 
-	private computeCustomStyleSheetIncludes(resourceProvider: WebviewResourceProvider, resource: vscode.Uri, config: MarkdownPreviewConfiguration): string {
-		if (!Array.isArray(config.styles)) {
+	privAte computeCustomStyleSheetIncludes(resourceProvider: WebviewResourceProvider, resource: vscode.Uri, config: MArkdownPreviewConfigurAtion): string {
+		if (!ArrAy.isArrAy(config.styles)) {
 			return '';
 		}
 		const out: string[] = [];
 		for (const style of config.styles) {
-			out.push(`<link rel="stylesheet" class="code-user-style" data-source="${escapeAttribute(style)}" href="${escapeAttribute(this.fixHref(resourceProvider, resource, style))}" type="text/css" media="screen">`);
+			out.push(`<link rel="stylesheet" clAss="code-user-style" dAtA-source="${escApeAttribute(style)}" href="${escApeAttribute(this.fixHref(resourceProvider, resource, style))}" type="text/css" mediA="screen">`);
 		}
 		return out.join('\n');
 	}
 
-	private getSettingsOverrideStyles(config: MarkdownPreviewConfiguration): string {
+	privAte getSettingsOverrideStyles(config: MArkdownPreviewConfigurAtion): string {
 		return [
-			config.fontFamily ? `--markdown-font-family: ${config.fontFamily};` : '',
-			isNaN(config.fontSize) ? '' : `--markdown-font-size: ${config.fontSize}px;`,
-			isNaN(config.lineHeight) ? '' : `--markdown-line-height: ${config.lineHeight};`,
+			config.fontFAmily ? `--mArkdown-font-fAmily: ${config.fontFAmily};` : '',
+			isNAN(config.fontSize) ? '' : `--mArkdown-font-size: ${config.fontSize}px;`,
+			isNAN(config.lineHeight) ? '' : `--mArkdown-line-height: ${config.lineHeight};`,
 		].join(' ');
 	}
 
-	private getImageStabilizerStyles(state?: any) {
+	privAte getImAgeStAbilizerStyles(stAte?: Any) {
 		let ret = '<style>\n';
-		if (state && state.imageInfo) {
-			state.imageInfo.forEach((imgInfo: any) => {
-				ret += `#${imgInfo.id}.loading {
+		if (stAte && stAte.imAgeInfo) {
+			stAte.imAgeInfo.forEAch((imgInfo: Any) => {
+				ret += `#${imgInfo.id}.loAding {
 					height: ${imgInfo.height}px;
 					width: ${imgInfo.width}px;
 				}\n`;
@@ -173,47 +173,47 @@ export class MarkdownContentProvider {
 		return ret;
 	}
 
-	private getStyles(resourceProvider: WebviewResourceProvider, resource: vscode.Uri, config: MarkdownPreviewConfiguration, state?: any): string {
-		const baseStyles: string[] = [];
+	privAte getStyles(resourceProvider: WebviewResourceProvider, resource: vscode.Uri, config: MArkdownPreviewConfigurAtion, stAte?: Any): string {
+		const bAseStyles: string[] = [];
 		for (const resource of this.contributionProvider.contributions.previewStyles) {
-			baseStyles.push(`<link rel="stylesheet" type="text/css" href="${escapeAttribute(resourceProvider.asWebviewUri(resource))}">`);
+			bAseStyles.push(`<link rel="stylesheet" type="text/css" href="${escApeAttribute(resourceProvider.AsWebviewUri(resource))}">`);
 		}
 
-		return `${baseStyles.join('\n')}
+		return `${bAseStyles.join('\n')}
 			${this.computeCustomStyleSheetIncludes(resourceProvider, resource, config)}
-			${this.getImageStabilizerStyles(state)}`;
+			${this.getImAgeStAbilizerStyles(stAte)}`;
 	}
 
-	private getScripts(resourceProvider: WebviewResourceProvider, nonce: string): string {
+	privAte getScripts(resourceProvider: WebviewResourceProvider, nonce: string): string {
 		const out: string[] = [];
 		for (const resource of this.contributionProvider.contributions.previewScripts) {
-			out.push(`<script async
-				src="${escapeAttribute(resourceProvider.asWebviewUri(resource))}"
+			out.push(`<script Async
+				src="${escApeAttribute(resourceProvider.AsWebviewUri(resource))}"
 				nonce="${nonce}"
-				charset="UTF-8"></script>`);
+				chArset="UTF-8"></script>`);
 		}
 		return out.join('\n');
 	}
 
-	private getCsp(
+	privAte getCsp(
 		provider: WebviewResourceProvider,
 		resource: vscode.Uri,
 		nonce: string
 	): string {
 		const rule = provider.cspSource;
 		switch (this.cspArbiter.getSecurityLevelForResource(resource)) {
-			case MarkdownPreviewSecurityLevel.AllowInsecureContent:
-				return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} http: https: data:; media-src 'self' ${rule} http: https: data:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' http: https: data:; font-src 'self' ${rule} http: https: data:;">`;
+			cAse MArkdownPreviewSecurityLevel.AllowInsecureContent:
+				return `<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; img-src 'self' ${rule} http: https: dAtA:; mediA-src 'self' ${rule} http: https: dAtA:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsAfe-inline' http: https: dAtA:; font-src 'self' ${rule} http: https: dAtA:;">`;
 
-			case MarkdownPreviewSecurityLevel.AllowInsecureLocalContent:
-				return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} https: data: http://localhost:* http://127.0.0.1:*; media-src 'self' ${rule} https: data: http://localhost:* http://127.0.0.1:*; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' https: data: http://localhost:* http://127.0.0.1:*; font-src 'self' ${rule} https: data: http://localhost:* http://127.0.0.1:*;">`;
+			cAse MArkdownPreviewSecurityLevel.AllowInsecureLocAlContent:
+				return `<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; img-src 'self' ${rule} https: dAtA: http://locAlhost:* http://127.0.0.1:*; mediA-src 'self' ${rule} https: dAtA: http://locAlhost:* http://127.0.0.1:*; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsAfe-inline' https: dAtA: http://locAlhost:* http://127.0.0.1:*; font-src 'self' ${rule} https: dAtA: http://locAlhost:* http://127.0.0.1:*;">`;
 
-			case MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent:
-				return '<meta http-equiv="Content-Security-Policy" content="">';
+			cAse MArkdownPreviewSecurityLevel.AllowScriptsAndAllContent:
+				return '<metA http-equiv="Content-Security-Policy" content="">';
 
-			case MarkdownPreviewSecurityLevel.Strict:
-			default:
-				return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} https: data:; media-src 'self' ${rule} https: data:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' https: data:; font-src 'self' ${rule} https: data:;">`;
+			cAse MArkdownPreviewSecurityLevel.Strict:
+			defAult:
+				return `<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; img-src 'self' ${rule} https: dAtA:; mediA-src 'self' ${rule} https: dAtA:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsAfe-inline' https: dAtA:; font-src 'self' ${rule} https: dAtA:;">`;
 		}
 	}
 }

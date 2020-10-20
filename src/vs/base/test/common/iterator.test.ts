@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Iterable } from 'vs/base/common/iterator';
+import * As Assert from 'Assert';
+import { IterAble } from 'vs/bAse/common/iterAtor';
 
-suite('Iterable', function () {
+suite('IterAble', function () {
 
-	const customIterable = new class {
+	const customIterAble = new clAss {
 
-		*[Symbol.iterator]() {
+		*[Symbol.iterAtor]() {
 			yield 'one';
 			yield 'two';
 			yield 'three';
@@ -19,10 +19,10 @@ suite('Iterable', function () {
 
 	test('first', function () {
 
-		assert.equal(Iterable.first([]), undefined);
-		assert.equal(Iterable.first([1]), 1);
-		assert.equal(Iterable.first(customIterable), 'one');
-		assert.equal(Iterable.first(customIterable), 'one'); // fresh
+		Assert.equAl(IterAble.first([]), undefined);
+		Assert.equAl(IterAble.first([1]), 1);
+		Assert.equAl(IterAble.first(customIterAble), 'one');
+		Assert.equAl(IterAble.first(customIterAble), 'one'); // fresh
 	});
 
 });

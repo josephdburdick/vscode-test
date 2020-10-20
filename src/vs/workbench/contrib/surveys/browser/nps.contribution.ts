@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { language } from 'vs/base/common/platform';
-import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { platform } from 'vs/base/common/process';
+import * As nls from 'vs/nls';
+import { lAnguAge } from 'vs/bAse/common/plAtform';
+import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Severity, INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import { plAtform } from 'vs/bAse/common/process';
 
 const PROBABILITY = 0.15;
 const SESSION_COUNT_KEY = 'nps/sessionCount';
-const LAST_SESSION_DATE_KEY = 'nps/lastSessionDate';
+const LAST_SESSION_DATE_KEY = 'nps/lAstSessionDAte';
 const SKIP_VERSION_KEY = 'nps/skipVersion';
-const IS_CANDIDATE_KEY = 'nps/isCandidate';
+const IS_CANDIDATE_KEY = 'nps/isCAndidAte';
 
-class NPSContribution implements IWorkbenchContribution {
+clAss NPSContribution implements IWorkbenchContribution {
 
 	constructor(
-		@IStorageService storageService: IStorageService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
-		@INotificationService notificationService: INotificationService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IOpenerService openerService: IOpenerService,
 		@IProductService productService: IProductService
@@ -38,61 +38,61 @@ class NPSContribution implements IWorkbenchContribution {
 		}
 
 		// opt-in to syncing
-		storageKeysSyncRegistryService.registerStorageKey({ key: SESSION_COUNT_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: LAST_SESSION_DATE_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: SKIP_VERSION_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: IS_CANDIDATE_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: SESSION_COUNT_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: LAST_SESSION_DATE_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: SKIP_VERSION_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: IS_CANDIDATE_KEY, version: 1 });
 
-		const skipVersion = storageService.get(SKIP_VERSION_KEY, StorageScope.GLOBAL, '');
+		const skipVersion = storAgeService.get(SKIP_VERSION_KEY, StorAgeScope.GLOBAL, '');
 		if (skipVersion) {
 			return;
 		}
 
-		const date = new Date().toDateString();
-		const lastSessionDate = storageService.get(LAST_SESSION_DATE_KEY, StorageScope.GLOBAL, new Date(0).toDateString());
+		const dAte = new DAte().toDAteString();
+		const lAstSessionDAte = storAgeService.get(LAST_SESSION_DATE_KEY, StorAgeScope.GLOBAL, new DAte(0).toDAteString());
 
-		if (date === lastSessionDate) {
+		if (dAte === lAstSessionDAte) {
 			return;
 		}
 
-		const sessionCount = (storageService.getNumber(SESSION_COUNT_KEY, StorageScope.GLOBAL, 0) || 0) + 1;
-		storageService.store(LAST_SESSION_DATE_KEY, date, StorageScope.GLOBAL);
-		storageService.store(SESSION_COUNT_KEY, sessionCount, StorageScope.GLOBAL);
+		const sessionCount = (storAgeService.getNumber(SESSION_COUNT_KEY, StorAgeScope.GLOBAL, 0) || 0) + 1;
+		storAgeService.store(LAST_SESSION_DATE_KEY, dAte, StorAgeScope.GLOBAL);
+		storAgeService.store(SESSION_COUNT_KEY, sessionCount, StorAgeScope.GLOBAL);
 
 		if (sessionCount < 9) {
 			return;
 		}
 
-		const isCandidate = storageService.getBoolean(IS_CANDIDATE_KEY, StorageScope.GLOBAL, false)
-			|| Math.random() < PROBABILITY;
+		const isCAndidAte = storAgeService.getBooleAn(IS_CANDIDATE_KEY, StorAgeScope.GLOBAL, fAlse)
+			|| MAth.rAndom() < PROBABILITY;
 
-		storageService.store(IS_CANDIDATE_KEY, isCandidate, StorageScope.GLOBAL);
+		storAgeService.store(IS_CANDIDATE_KEY, isCAndidAte, StorAgeScope.GLOBAL);
 
-		if (!isCandidate) {
-			storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
+		if (!isCAndidAte) {
+			storAgeService.store(SKIP_VERSION_KEY, productService.version, StorAgeScope.GLOBAL);
 			return;
 		}
 
-		notificationService.prompt(
+		notificAtionService.prompt(
 			Severity.Info,
-			nls.localize('surveyQuestion', "Do you mind taking a quick feedback survey?"),
+			nls.locAlize('surveyQuestion', "Do you mind tAking A quick feedbAck survey?"),
 			[{
-				label: nls.localize('takeSurvey', "Take Survey"),
+				lAbel: nls.locAlize('tAkeSurvey', "TAke Survey"),
 				run: () => {
 					telemetryService.getTelemetryInfo().then(info => {
-						openerService.open(URI.parse(`${productService.npsSurveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.machineId)}`));
-						storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
-						storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
+						openerService.open(URI.pArse(`${productService.npsSurveyUrl}?o=${encodeURIComponent(plAtform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.mAchineId)}`));
+						storAgeService.store(IS_CANDIDATE_KEY, fAlse, StorAgeScope.GLOBAL);
+						storAgeService.store(SKIP_VERSION_KEY, productService.version, StorAgeScope.GLOBAL);
 					});
 				}
 			}, {
-				label: nls.localize('remindLater', "Remind Me later"),
-				run: () => storageService.store(SESSION_COUNT_KEY, sessionCount - 3, StorageScope.GLOBAL)
+				lAbel: nls.locAlize('remindLAter', "Remind Me lAter"),
+				run: () => storAgeService.store(SESSION_COUNT_KEY, sessionCount - 3, StorAgeScope.GLOBAL)
 			}, {
-				label: nls.localize('neverAgain', "Don't Show Again"),
+				lAbel: nls.locAlize('neverAgAin', "Don't Show AgAin"),
 				run: () => {
-					storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
-					storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
+					storAgeService.store(IS_CANDIDATE_KEY, fAlse, StorAgeScope.GLOBAL);
+					storAgeService.store(SKIP_VERSION_KEY, productService.version, StorAgeScope.GLOBAL);
 				}
 			}],
 			{ sticky: true }
@@ -100,7 +100,7 @@ class NPSContribution implements IWorkbenchContribution {
 	}
 }
 
-if (language === 'en') {
-	const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-	workbenchRegistry.registerWorkbenchContribution(NPSContribution, LifecyclePhase.Restored);
+if (lAnguAge === 'en') {
+	const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+	workbenchRegistry.registerWorkbenchContribution(NPSContribution, LifecyclePhAse.Restored);
 }

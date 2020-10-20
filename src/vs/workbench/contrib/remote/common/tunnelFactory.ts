@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITunnelService, TunnelOptions, RemoteTunnel } from 'vs/platform/remote/common/tunnel';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { ITunnelService, TunnelOptions, RemoteTunnel } from 'vs/plAtform/remote/common/tunnel';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
-export class TunnelFactoryContribution extends Disposable implements IWorkbenchContribution {
+export clAss TunnelFActoryContribution extends DisposAble implements IWorkbenchContribution {
 	constructor(
 		@ITunnelService tunnelService: ITunnelService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 	) {
 		super();
-		const tunnelFactory = environmentService.options?.tunnelProvider?.tunnelFactory;
-		if (tunnelFactory) {
+		const tunnelFActory = environmentService.options?.tunnelProvider?.tunnelFActory;
+		if (tunnelFActory) {
 			this._register(tunnelService.setTunnelProvider({
-				forwardPort: (tunnelOptions: TunnelOptions): Promise<RemoteTunnel> | undefined => {
-					const tunnelPromise = tunnelFactory(tunnelOptions);
+				forwArdPort: (tunnelOptions: TunnelOptions): Promise<RemoteTunnel> | undefined => {
+					const tunnelPromise = tunnelFActory(tunnelOptions);
 					if (!tunnelPromise) {
 						return undefined;
 					}
@@ -27,7 +27,7 @@ export class TunnelFactoryContribution extends Disposable implements IWorkbenchC
 							const remoteTunnel: RemoteTunnel = {
 								tunnelRemotePort: tunnel.remoteAddress.port,
 								tunnelRemoteHost: tunnel.remoteAddress.host,
-								localAddress: tunnel.localAddress,
+								locAlAddress: tunnel.locAlAddress,
 								dispose: tunnel.dispose
 							};
 							resolve(remoteTunnel);

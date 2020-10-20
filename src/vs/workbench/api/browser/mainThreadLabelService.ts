@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainContext, MainThreadLabelServiceShape, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ResourceLabelFormatter, ILabelService } from 'vs/platform/label/common/label';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { MAinContext, MAinThreAdLAbelServiceShApe, IExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ResourceLAbelFormAtter, ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
 
-@extHostNamedCustomer(MainContext.MainThreadLabelService)
-export class MainThreadLabelService implements MainThreadLabelServiceShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdLAbelService)
+export clAss MAinThreAdLAbelService implements MAinThreAdLAbelServiceShApe {
 
-	private readonly _resourceLabelFormatters = new Map<number, IDisposable>();
+	privAte reAdonly _resourceLAbelFormAtters = new MAp<number, IDisposAble>();
 
 	constructor(
 		_: IExtHostContext,
-		@ILabelService private readonly _labelService: ILabelService
+		@ILAbelService privAte reAdonly _lAbelService: ILAbelService
 	) { }
 
-	$registerResourceLabelFormatter(handle: number, formatter: ResourceLabelFormatter): void {
-		// Dynamicily registered formatters should have priority over those contributed via package.json
-		formatter.priority = true;
-		const disposable = this._labelService.registerFormatter(formatter);
-		this._resourceLabelFormatters.set(handle, disposable);
+	$registerResourceLAbelFormAtter(hAndle: number, formAtter: ResourceLAbelFormAtter): void {
+		// DynAmicily registered formAtters should hAve priority over those contributed viA pAckAge.json
+		formAtter.priority = true;
+		const disposAble = this._lAbelService.registerFormAtter(formAtter);
+		this._resourceLAbelFormAtters.set(hAndle, disposAble);
 	}
 
-	$unregisterResourceLabelFormatter(handle: number): void {
-		dispose(this._resourceLabelFormatters.get(handle));
-		this._resourceLabelFormatters.delete(handle);
+	$unregisterResourceLAbelFormAtter(hAndle: number): void {
+		dispose(this._resourceLAbelFormAtters.get(hAndle));
+		this._resourceLAbelFormAtters.delete(hAndle);
 	}
 
 	dispose(): void {

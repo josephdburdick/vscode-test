@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainContext, MainThreadLanguagesShape, IMainContext } from './extHost.protocol';
-import type * as vscode from 'vscode';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import * as typeConvert from 'vs/workbench/api/common/extHostTypeConverters';
-import { StandardTokenType, Range, Position } from 'vs/workbench/api/common/extHostTypes';
+import { MAinContext, MAinThreAdLAnguAgesShApe, IMAinContext } from './extHost.protocol';
+import type * As vscode from 'vscode';
+import { ExtHostDocuments } from 'vs/workbench/Api/common/extHostDocuments';
+import * As typeConvert from 'vs/workbench/Api/common/extHostTypeConverters';
+import { StAndArdTokenType, RAnge, Position } from 'vs/workbench/Api/common/extHostTypes';
 
-export class ExtHostLanguages {
+export clAss ExtHostLAnguAges {
 
-	private readonly _proxy: MainThreadLanguagesShape;
-	private readonly _documents: ExtHostDocuments;
+	privAte reAdonly _proxy: MAinThreAdLAnguAgesShApe;
+	privAte reAdonly _documents: ExtHostDocuments;
 
 	constructor(
-		mainContext: IMainContext,
+		mAinContext: IMAinContext,
 		documents: ExtHostDocuments
 	) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadLanguages);
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdLAnguAges);
 		this._documents = documents;
 	}
 
-	getLanguages(): Promise<string[]> {
-		return this._proxy.$getLanguages();
+	getLAnguAges(): Promise<string[]> {
+		return this._proxy.$getLAnguAges();
 	}
 
-	async changeLanguage(uri: vscode.Uri, languageId: string): Promise<vscode.TextDocument> {
-		await this._proxy.$changeLanguage(uri, languageId);
-		const data = this._documents.getDocumentData(uri);
-		if (!data) {
+	Async chAngeLAnguAge(uri: vscode.Uri, lAnguAgeId: string): Promise<vscode.TextDocument> {
+		AwAit this._proxy.$chAngeLAnguAge(uri, lAnguAgeId);
+		const dAtA = this._documents.getDocumentDAtA(uri);
+		if (!dAtA) {
 			throw new Error(`document '${uri.toString}' NOT found`);
 		}
-		return data.document;
+		return dAtA.document;
 	}
 
-	async tokenAtPosition(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.TokenInformation> {
+	Async tokenAtPosition(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.TokenInformAtion> {
 		const versionNow = document.version;
 		const pos = typeConvert.Position.from(position);
-		const info = await this._proxy.$tokensAtPosition(document.uri, pos);
-		const defaultRange = {
-			type: StandardTokenType.Other,
-			range: document.getWordRangeAtPosition(position) ?? new Range(position.line, position.character, position.line, position.character)
+		const info = AwAit this._proxy.$tokensAtPosition(document.uri, pos);
+		const defAultRAnge = {
+			type: StAndArdTokenType.Other,
+			rAnge: document.getWordRAngeAtPosition(position) ?? new RAnge(position.line, position.chArActer, position.line, position.chArActer)
 		};
 		if (!info) {
 			// no result
-			return defaultRange;
+			return defAultRAnge;
 		}
 		const result = {
-			range: typeConvert.Range.to(info.range),
+			rAnge: typeConvert.RAnge.to(info.rAnge),
 			type: typeConvert.TokenType.to(info.type)
 		};
-		if (!result.range.contains(<Position>position)) {
+		if (!result.rAnge.contAins(<Position>position)) {
 			// bogous result
-			return defaultRange;
+			return defAultRAnge;
 		}
 		if (versionNow !== document.version) {
-			// concurrent change
-			return defaultRange;
+			// concurrent chAnge
+			return defAultRAnge;
 		}
 		return result;
 	}

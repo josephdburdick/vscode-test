@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 
-export interface IExtensionDevOptions {
-	readonly isExtensionDevHost: boolean;
-	readonly isExtensionDevDebug: boolean;
-	readonly isExtensionDevDebugBrk: boolean;
-	readonly isExtensionDevTestFromCli: boolean;
+export interfAce IExtensionDevOptions {
+	reAdonly isExtensionDevHost: booleAn;
+	reAdonly isExtensionDevDebug: booleAn;
+	reAdonly isExtensionDevDebugBrk: booleAn;
+	reAdonly isExtensionDevTestFromCli: booleAn;
 }
 
-export function parseExtensionDevOptions(environmentService: IEnvironmentService): IExtensionDevOptions {
-	// handle extension host lifecycle a bit special when we know we are developing an extension that runs inside
+export function pArseExtensionDevOptions(environmentService: IEnvironmentService): IExtensionDevOptions {
+	// hAndle extension host lifecycle A bit speciAl when we know we Are developing An extension thAt runs inside
 	let isExtensionDevHost = environmentService.isExtensionDevelopment;
 
 	let debugOk = true;
-	let extDevLocs = environmentService.extensionDevelopmentLocationURI;
+	let extDevLocs = environmentService.extensionDevelopmentLocAtionURI;
 	if (extDevLocs) {
 		for (let x of extDevLocs) {
-			if (x.scheme !== Schemas.file) {
-				debugOk = false;
+			if (x.scheme !== SchemAs.file) {
+				debugOk = fAlse;
 			}
 		}
 	}
 
 	let isExtensionDevDebug = debugOk && typeof environmentService.debugExtensionHost.port === 'number';
-	let isExtensionDevDebugBrk = debugOk && !!environmentService.debugExtensionHost.break;
-	let isExtensionDevTestFromCli = isExtensionDevHost && !!environmentService.extensionTestsLocationURI && !environmentService.debugExtensionHost.debugId;
+	let isExtensionDevDebugBrk = debugOk && !!environmentService.debugExtensionHost.breAk;
+	let isExtensionDevTestFromCli = isExtensionDevHost && !!environmentService.extensionTestsLocAtionURI && !environmentService.debugExtensionHost.debugId;
 	return {
 		isExtensionDevHost,
 		isExtensionDevDebug,

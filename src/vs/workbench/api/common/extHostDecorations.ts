@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { MainContext, ExtHostDecorationsShape, MainThreadDecorationsShape, DecorationData, DecorationRequest, DecorationReply } from 'vs/workbench/api/common/extHost.protocol';
-import { Disposable, FileDecoration } from 'vs/workbench/api/common/extHostTypes';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { asArray } from 'vs/base/common/arrays';
+import type * As vscode from 'vscode';
+import { URI } from 'vs/bAse/common/uri';
+import { MAinContext, ExtHostDecorAtionsShApe, MAinThreAdDecorAtionsShApe, DecorAtionDAtA, DecorAtionRequest, DecorAtionReply } from 'vs/workbench/Api/common/extHost.protocol';
+import { DisposAble, FileDecorAtion } from 'vs/workbench/Api/common/extHostTypes';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { AsArrAy } from 'vs/bAse/common/ArrAys';
 
-interface ProviderData {
-	provider: vscode.FileDecorationProvider;
+interfAce ProviderDAtA {
+	provider: vscode.FileDecorAtionProvider;
 	extensionId: ExtensionIdentifier;
 }
 
-export class ExtHostDecorations implements ExtHostDecorationsShape {
+export clAss ExtHostDecorAtions implements ExtHostDecorAtionsShApe {
 
-	private static _handlePool = 0;
+	privAte stAtic _hAndlePool = 0;
 
-	readonly _serviceBrand: undefined;
-	private readonly _provider = new Map<number, ProviderData>();
-	private readonly _proxy: MainThreadDecorationsShape;
+	reAdonly _serviceBrAnd: undefined;
+	privAte reAdonly _provider = new MAp<number, ProviderDAtA>();
+	privAte reAdonly _proxy: MAinThreAdDecorAtionsShApe;
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
-		@ILogService private readonly _logService: ILogService,
+		@ILogService privAte reAdonly _logService: ILogService,
 	) {
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadDecorations);
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdDecorAtions);
 	}
 
-	registerDecorationProvider(provider: vscode.FileDecorationProvider, extensionId: ExtensionIdentifier): vscode.Disposable {
-		const handle = ExtHostDecorations._handlePool++;
-		this._provider.set(handle, { provider, extensionId });
-		this._proxy.$registerDecorationProvider(handle, extensionId.value);
+	registerDecorAtionProvider(provider: vscode.FileDecorAtionProvider, extensionId: ExtensionIdentifier): vscode.DisposAble {
+		const hAndle = ExtHostDecorAtions._hAndlePool++;
+		this._provider.set(hAndle, { provider, extensionId });
+		this._proxy.$registerDecorAtionProvider(hAndle, extensionId.vAlue);
 
-		const listener = provider.onDidChange(e => {
-			this._proxy.$onDidChange(handle, !e || (Array.isArray(e) && e.length > 250)
+		const listener = provider.onDidChAnge(e => {
+			this._proxy.$onDidChAnge(hAndle, !e || (ArrAy.isArrAy(e) && e.length > 250)
 				? null
-				: asArray(e));
+				: AsArrAy(e));
 		});
 
-		return new Disposable(() => {
+		return new DisposAble(() => {
 			listener.dispose();
-			this._proxy.$unregisterDecorationProvider(handle);
-			this._provider.delete(handle);
+			this._proxy.$unregisterDecorAtionProvider(hAndle);
+			this._provider.delete(hAndle);
 		});
 	}
 
-	async $provideDecorations(handle: number, requests: DecorationRequest[], token: CancellationToken): Promise<DecorationReply> {
+	Async $provideDecorAtions(hAndle: number, requests: DecorAtionRequest[], token: CAncellAtionToken): Promise<DecorAtionReply> {
 
-		if (!this._provider.has(handle)) {
-			// might have been unregistered in the meantime
-			return Object.create(null);
+		if (!this._provider.hAs(hAndle)) {
+			// might hAve been unregistered in the meAntime
+			return Object.creAte(null);
 		}
 
-		const result: DecorationReply = Object.create(null);
-		const { provider, extensionId } = this._provider.get(handle)!;
+		const result: DecorAtionReply = Object.creAte(null);
+		const { provider, extensionId } = this._provider.get(hAndle)!;
 
-		await Promise.all(requests.map(async request => {
+		AwAit Promise.All(requests.mAp(Async request => {
 			try {
 				const { uri, id } = request;
-				const data = await Promise.resolve(provider.provideFileDecoration(URI.revive(uri), token));
-				if (!data) {
+				const dAtA = AwAit Promise.resolve(provider.provideFileDecorAtion(URI.revive(uri), token));
+				if (!dAtA) {
 					return;
 				}
 				try {
-					FileDecoration.validate(data);
-					result[id] = <DecorationData>[data.propagate, data.tooltip, data.badge, data.color];
-				} catch (e) {
-					this._logService.warn(`INVALID decoration from extension '${extensionId.value}': ${e}`);
+					FileDecorAtion.vAlidAte(dAtA);
+					result[id] = <DecorAtionDAtA>[dAtA.propAgAte, dAtA.tooltip, dAtA.bAdge, dAtA.color];
+				} cAtch (e) {
+					this._logService.wArn(`INVALID decorAtion from extension '${extensionId.vAlue}': ${e}`);
 				}
-			} catch (err) {
+			} cAtch (err) {
 				this._logService.error(err);
 			}
 		}));
@@ -84,5 +84,5 @@ export class ExtHostDecorations implements ExtHostDecorationsShape {
 	}
 }
 
-export const IExtHostDecorations = createDecorator<IExtHostDecorations>('IExtHostDecorations');
-export interface IExtHostDecorations extends ExtHostDecorations { }
+export const IExtHostDecorAtions = creAteDecorAtor<IExtHostDecorAtions>('IExtHostDecorAtions');
+export interfAce IExtHostDecorAtions extends ExtHostDecorAtions { }

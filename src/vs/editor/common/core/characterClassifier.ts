@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { toUint8 } from 'vs/base/common/uint';
+import { toUint8 } from 'vs/bAse/common/uint';
 
 /**
- * A fast character classifier that uses a compact array for ASCII values.
+ * A fAst chArActer clAssifier thAt uses A compAct ArrAy for ASCII vAlues.
  */
-export class CharacterClassifier<T extends number> {
+export clAss ChArActerClAssifier<T extends number> {
 	/**
-	 * Maintain a compact (fully initialized ASCII map for quickly classifying ASCII characters - used more often in code).
+	 * MAintAin A compAct (fully initiAlized ASCII mAp for quickly clAssifying ASCII chArActers - used more often in code).
 	 */
-	protected _asciiMap: Uint8Array;
+	protected _AsciiMAp: Uint8ArrAy;
 
 	/**
-	 * The entire map (sparse array).
+	 * The entire mAp (spArse ArrAy).
 	 */
-	protected _map: Map<number, number>;
+	protected _mAp: MAp<number, number>;
 
-	protected _defaultValue: number;
+	protected _defAultVAlue: number;
 
-	constructor(_defaultValue: T) {
-		let defaultValue = toUint8(_defaultValue);
+	constructor(_defAultVAlue: T) {
+		let defAultVAlue = toUint8(_defAultVAlue);
 
-		this._defaultValue = defaultValue;
-		this._asciiMap = CharacterClassifier._createAsciiMap(defaultValue);
-		this._map = new Map<number, number>();
+		this._defAultVAlue = defAultVAlue;
+		this._AsciiMAp = ChArActerClAssifier._creAteAsciiMAp(defAultVAlue);
+		this._mAp = new MAp<number, number>();
 	}
 
-	private static _createAsciiMap(defaultValue: number): Uint8Array {
-		let asciiMap: Uint8Array = new Uint8Array(256);
+	privAte stAtic _creAteAsciiMAp(defAultVAlue: number): Uint8ArrAy {
+		let AsciiMAp: Uint8ArrAy = new Uint8ArrAy(256);
 		for (let i = 0; i < 256; i++) {
-			asciiMap[i] = defaultValue;
+			AsciiMAp[i] = defAultVAlue;
 		}
-		return asciiMap;
+		return AsciiMAp;
 	}
 
-	public set(charCode: number, _value: T): void {
-		let value = toUint8(_value);
+	public set(chArCode: number, _vAlue: T): void {
+		let vAlue = toUint8(_vAlue);
 
-		if (charCode >= 0 && charCode < 256) {
-			this._asciiMap[charCode] = value;
+		if (chArCode >= 0 && chArCode < 256) {
+			this._AsciiMAp[chArCode] = vAlue;
 		} else {
-			this._map.set(charCode, value);
+			this._mAp.set(chArCode, vAlue);
 		}
 	}
 
-	public get(charCode: number): T {
-		if (charCode >= 0 && charCode < 256) {
-			return <T>this._asciiMap[charCode];
+	public get(chArCode: number): T {
+		if (chArCode >= 0 && chArCode < 256) {
+			return <T>this._AsciiMAp[chArCode];
 		} else {
-			return <T>(this._map.get(charCode) || this._defaultValue);
+			return <T>(this._mAp.get(chArCode) || this._defAultVAlue);
 		}
 	}
 }
 
-const enum Boolean {
-	False = 0,
+const enum BooleAn {
+	FAlse = 0,
 	True = 1
 }
 
-export class CharacterSet {
+export clAss ChArActerSet {
 
-	private readonly _actual: CharacterClassifier<Boolean>;
+	privAte reAdonly _ActuAl: ChArActerClAssifier<BooleAn>;
 
 	constructor() {
-		this._actual = new CharacterClassifier<Boolean>(Boolean.False);
+		this._ActuAl = new ChArActerClAssifier<BooleAn>(BooleAn.FAlse);
 	}
 
-	public add(charCode: number): void {
-		this._actual.set(charCode, Boolean.True);
+	public Add(chArCode: number): void {
+		this._ActuAl.set(chArCode, BooleAn.True);
 	}
 
-	public has(charCode: number): boolean {
-		return (this._actual.get(charCode) === Boolean.True);
+	public hAs(chArCode: number): booleAn {
+		return (this._ActuAl.get(chArCode) === BooleAn.True);
 	}
 }

@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { CharacterPair, IndentAction } from 'vs/editor/common/modes/languageConfiguration';
+import * As Assert from 'Assert';
+import { ChArActerPAir, IndentAction } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
 import { OnEnterSupport } from 'vs/editor/common/modes/supports/onEnter';
-import { javascriptOnEnterRules } from 'vs/editor/test/common/modes/supports/javascriptOnEnterRules';
-import { EditorAutoIndentStrategy } from 'vs/editor/common/config/editorOptions';
+import { jAvAscriptOnEnterRules } from 'vs/editor/test/common/modes/supports/jAvAscriptOnEnterRules';
+import { EditorAutoIndentStrAtegy } from 'vs/editor/common/config/editorOptions';
 
 suite('OnEnter', () => {
 
-	test('uses brackets', () => {
-		let brackets: CharacterPair[] = [
+	test('uses brAckets', () => {
+		let brAckets: ChArActerPAir[] = [
 			['(', ')'],
 			['begin', 'end']
 		];
 		let support = new OnEnterSupport({
-			brackets: brackets
+			brAckets: brAckets
 		});
-		let testIndentAction = (beforeText: string, afterText: string, expected: IndentAction) => {
-			let actual = support.onEnter(EditorAutoIndentStrategy.Advanced, '', beforeText, afterText);
+		let testIndentAction = (beforeText: string, AfterText: string, expected: IndentAction) => {
+			let ActuAl = support.onEnter(EditorAutoIndentStrAtegy.AdvAnced, '', beforeText, AfterText);
 			if (expected === IndentAction.None) {
-				assert.equal(actual, null);
+				Assert.equAl(ActuAl, null);
 			} else {
-				assert.equal(actual!.indentAction, expected);
+				Assert.equAl(ActuAl!.indentAction, expected);
 			}
 		};
 
-		testIndentAction('a', '', IndentAction.None);
+		testIndentAction('A', '', IndentAction.None);
 		testIndentAction('', 'b', IndentAction.None);
 		testIndentAction('(', 'b', IndentAction.Indent);
-		testIndentAction('a', ')', IndentAction.None);
+		testIndentAction('A', ')', IndentAction.None);
 		testIndentAction('begin', 'ending', IndentAction.Indent);
-		testIndentAction('abegin', 'end', IndentAction.None);
+		testIndentAction('Abegin', 'end', IndentAction.None);
 		testIndentAction('begin', ')', IndentAction.Indent);
 		testIndentAction('begin', 'end', IndentAction.IndentOutdent);
 		testIndentAction('begin ', ' end', IndentAction.IndentOutdent);
-		testIndentAction(' begin', 'end//as', IndentAction.IndentOutdent);
+		testIndentAction(' begin', 'end//As', IndentAction.IndentOutdent);
 		testIndentAction('(', ')', IndentAction.IndentOutdent);
 		testIndentAction('( ', ')', IndentAction.IndentOutdent);
-		testIndentAction('a(', ')b', IndentAction.IndentOutdent);
+		testIndentAction('A(', ')b', IndentAction.IndentOutdent);
 
 		testIndentAction('(', '', IndentAction.Indent);
 		testIndentAction('(', 'foo', IndentAction.Indent);
@@ -49,20 +49,20 @@ suite('OnEnter', () => {
 
 	test('uses regExpRules', () => {
 		let support = new OnEnterSupport({
-			onEnterRules: javascriptOnEnterRules
+			onEnterRules: jAvAscriptOnEnterRules
 		});
-		let testIndentAction = (oneLineAboveText: string, beforeText: string, afterText: string, expectedIndentAction: IndentAction | null, expectedAppendText: string | null, removeText: number = 0) => {
-			let actual = support.onEnter(EditorAutoIndentStrategy.Advanced, oneLineAboveText, beforeText, afterText);
+		let testIndentAction = (oneLineAboveText: string, beforeText: string, AfterText: string, expectedIndentAction: IndentAction | null, expectedAppendText: string | null, removeText: number = 0) => {
+			let ActuAl = support.onEnter(EditorAutoIndentStrAtegy.AdvAnced, oneLineAboveText, beforeText, AfterText);
 			if (expectedIndentAction === null) {
-				assert.equal(actual, null, 'isNull:' + beforeText);
+				Assert.equAl(ActuAl, null, 'isNull:' + beforeText);
 			} else {
-				assert.equal(actual !== null, true, 'isNotNull:' + beforeText);
-				assert.equal(actual!.indentAction, expectedIndentAction, 'indentAction:' + beforeText);
+				Assert.equAl(ActuAl !== null, true, 'isNotNull:' + beforeText);
+				Assert.equAl(ActuAl!.indentAction, expectedIndentAction, 'indentAction:' + beforeText);
 				if (expectedAppendText !== null) {
-					assert.equal(actual!.appendText, expectedAppendText, 'appendText:' + beforeText);
+					Assert.equAl(ActuAl!.AppendText, expectedAppendText, 'AppendText:' + beforeText);
 				}
 				if (removeText !== 0) {
-					assert.equal(actual!.removeText, removeText, 'removeText:' + beforeText);
+					Assert.equAl(ActuAl!.removeText, removeText, 'removeText:' + beforeText);
 				}
 			}
 		};
@@ -77,10 +77,10 @@ suite('OnEnter', () => {
 		testIndentAction('', '\t/*******/', '', null, null);
 		testIndentAction('', '\t/** * * * * */', '', null, null);
 		testIndentAction('', '\t/** */', '', null, null);
-		testIndentAction('', '\t/** asdfg */', '', null, null);
-		testIndentAction('', '\t/* asdfg */', '', null, null);
-		testIndentAction('', '\t/* asdfg */', '', null, null);
-		testIndentAction('', '\t/** asdfg */', '', null, null);
+		testIndentAction('', '\t/** Asdfg */', '', null, null);
+		testIndentAction('', '\t/* Asdfg */', '', null, null);
+		testIndentAction('', '\t/* Asdfg */', '', null, null);
+		testIndentAction('', '\t/** Asdfg */', '', null, null);
 		testIndentAction('', '*/', '', null, null);
 		testIndentAction('', '\t/*', '', null, null);
 		testIndentAction('', '\t*', '', null, null);
@@ -99,23 +99,23 @@ suite('OnEnter', () => {
 
 		testIndentAction('/**', ' * ', '', IndentAction.None, '* ');
 		testIndentAction(' * something', ' * ', '', IndentAction.None, '* ');
-		testIndentAction(' *', ' * asdfsfagadfg', '', IndentAction.None, '* ');
+		testIndentAction(' *', ' * AsdfsfAgAdfg', '', IndentAction.None, '* ');
 
-		testIndentAction('/**', ' * asdfsfagadfg * * * ', '', IndentAction.None, '* ');
-		testIndentAction(' * something', ' * asdfsfagadfg * * * ', '', IndentAction.None, '* ');
-		testIndentAction(' *', ' * asdfsfagadfg * * * ', '', IndentAction.None, '* ');
+		testIndentAction('/**', ' * AsdfsfAgAdfg * * * ', '', IndentAction.None, '* ');
+		testIndentAction(' * something', ' * AsdfsfAgAdfg * * * ', '', IndentAction.None, '* ');
+		testIndentAction(' *', ' * AsdfsfAgAdfg * * * ', '', IndentAction.None, '* ');
 
 		testIndentAction('/**', ' * /*', '', IndentAction.None, '* ');
 		testIndentAction(' * something', ' * /*', '', IndentAction.None, '* ');
 		testIndentAction(' *', ' * /*', '', IndentAction.None, '* ');
 
-		testIndentAction('/**', ' * asdfsfagadfg * / * / * /', '', IndentAction.None, '* ');
-		testIndentAction(' * something', ' * asdfsfagadfg * / * / * /', '', IndentAction.None, '* ');
-		testIndentAction(' *', ' * asdfsfagadfg * / * / * /', '', IndentAction.None, '* ');
+		testIndentAction('/**', ' * AsdfsfAgAdfg * / * / * /', '', IndentAction.None, '* ');
+		testIndentAction(' * something', ' * AsdfsfAgAdfg * / * / * /', '', IndentAction.None, '* ');
+		testIndentAction(' *', ' * AsdfsfAgAdfg * / * / * /', '', IndentAction.None, '* ');
 
-		testIndentAction('/**', ' * asdfsfagadfg * / * / * /*', '', IndentAction.None, '* ');
-		testIndentAction(' * something', ' * asdfsfagadfg * / * / * /*', '', IndentAction.None, '* ');
-		testIndentAction(' *', ' * asdfsfagadfg * / * / * /*', '', IndentAction.None, '* ');
+		testIndentAction('/**', ' * AsdfsfAgAdfg * / * / * /*', '', IndentAction.None, '* ');
+		testIndentAction(' * something', ' * AsdfsfAgAdfg * / * / * /*', '', IndentAction.None, '* ');
+		testIndentAction(' *', ' * AsdfsfAgAdfg * / * / * /*', '', IndentAction.None, '* ');
 
 		testIndentAction('', ' */', '', IndentAction.None, null, 1);
 		testIndentAction(' */', ' * test() {', '', IndentAction.Indent, null, 0);
@@ -127,10 +127,10 @@ suite('OnEnter', () => {
 		testIndentAction('', ' *--------------------------------------------------------------------------------------------*/', '', IndentAction.None, null, 1);
 
 		// issue #43469
-		testIndentAction('class A {', '    * test() {', '', IndentAction.Indent, null, 0);
+		testIndentAction('clAss A {', '    * test() {', '', IndentAction.Indent, null, 0);
 		testIndentAction('', '    * test() {', '', IndentAction.Indent, null, 0);
 		testIndentAction('    ', '    * test() {', '', IndentAction.Indent, null, 0);
-		testIndentAction('class A {', '  * test() {', '', IndentAction.Indent, null, 0);
+		testIndentAction('clAss A {', '  * test() {', '', IndentAction.Indent, null, 0);
 		testIndentAction('', '  * test() {', '', IndentAction.Indent, null, 0);
 		testIndentAction('  ', '  * test() {', '', IndentAction.Indent, null, 0);
 	});

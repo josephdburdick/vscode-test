@@ -1,146 +1,146 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomExecution, Pseudoterminal, TaskScope, commands, env, UIKind, ShellExecution, TaskExecution, Terminal, Event } from 'vscode';
+import * As Assert from 'Assert';
+import { window, tAsks, DisposAble, TAskDefinition, TAsk, EventEmitter, CustomExecution, PseudoterminAl, TAskScope, commAnds, env, UIKind, ShellExecution, TAskExecution, TerminAl, Event } from 'vscode';
 
-// Disable tasks tests:
+// DisAble tAsks tests:
 // - Web https://github.com/microsoft/vscode/issues/90528
-((env.uiKind === UIKind.Web) ? suite.skip : suite)('vscode API - tasks', () => {
+((env.uiKind === UIKind.Web) ? suite.skip : suite)('vscode API - tAsks', () => {
 
-	suite('Tasks', () => {
-		let disposables: Disposable[] = [];
+	suite('TAsks', () => {
+		let disposAbles: DisposAble[] = [];
 
-		teardown(() => {
-			disposables.forEach(d => d.dispose());
-			disposables.length = 0;
+		teArdown(() => {
+			disposAbles.forEAch(d => d.dispose());
+			disposAbles.length = 0;
 		});
 
-		test('CustomExecution task should start and shutdown successfully', (done) => {
-			interface CustomTestingTaskDefinition extends TaskDefinition {
+		test('CustomExecution tAsk should stArt And shutdown successfully', (done) => {
+			interfAce CustomTestingTAskDefinition extends TAskDefinition {
 				/**
-				 * One of the task properties. This can be used to customize the task in the tasks.json
+				 * One of the tAsk properties. This cAn be used to customize the tAsk in the tAsks.json
 				 */
 				customProp1: string;
 			}
-			const taskType: string = 'customTesting';
-			const taskName = 'First custom task';
-			let isPseudoterminalClosed = false;
-			let terminal: Terminal | undefined;
-			// There's a strict order that should be observed here:
-			// 1. The terminal opens
-			// 2. The terminal is written to.
-			// 3. The terminal is closed.
+			const tAskType: string = 'customTesting';
+			const tAskNAme = 'First custom tAsk';
+			let isPseudoterminAlClosed = fAlse;
+			let terminAl: TerminAl | undefined;
+			// There's A strict order thAt should be observed here:
+			// 1. The terminAl opens
+			// 2. The terminAl is written to.
+			// 3. The terminAl is closed.
 			enum TestOrder {
-				Start,
-				TerminalOpened,
-				TerminalWritten,
-				TerminalClosed
+				StArt,
+				TerminAlOpened,
+				TerminAlWritten,
+				TerminAlClosed
 			}
 
-			let testOrder = TestOrder.Start;
+			let testOrder = TestOrder.StArt;
 
-			disposables.push(window.onDidOpenTerminal(term => {
+			disposAbles.push(window.onDidOpenTerminAl(term => {
 				try {
-					assert.equal(testOrder, TestOrder.Start);
-				} catch (e) {
+					Assert.equAl(testOrder, TestOrder.StArt);
+				} cAtch (e) {
 					done(e);
 				}
-				testOrder = TestOrder.TerminalOpened;
-				terminal = term;
+				testOrder = TestOrder.TerminAlOpened;
+				terminAl = term;
 			}));
-			disposables.push(window.onDidWriteTerminalData(e => {
+			disposAbles.push(window.onDidWriteTerminAlDAtA(e => {
 				try {
-					assert.equal(testOrder, TestOrder.TerminalOpened);
-					testOrder = TestOrder.TerminalWritten;
-					assert.notEqual(terminal, undefined);
-					assert.equal(e.data, 'testing\r\n');
-				} catch (e) {
+					Assert.equAl(testOrder, TestOrder.TerminAlOpened);
+					testOrder = TestOrder.TerminAlWritten;
+					Assert.notEquAl(terminAl, undefined);
+					Assert.equAl(e.dAtA, 'testing\r\n');
+				} cAtch (e) {
 					done(e);
 				}
 
-				if (terminal) {
-					terminal.dispose();
+				if (terminAl) {
+					terminAl.dispose();
 				}
 			}));
-			disposables.push(window.onDidCloseTerminal(() => {
+			disposAbles.push(window.onDidCloseTerminAl(() => {
 				try {
-					assert.equal(testOrder, TestOrder.TerminalWritten);
-					testOrder = TestOrder.TerminalClosed;
-					// Pseudoterminal.close should have fired by now, additionally we want
-					// to make sure all events are flushed before continuing with more tests
-					assert.ok(isPseudoterminalClosed);
-				} catch (e) {
+					Assert.equAl(testOrder, TestOrder.TerminAlWritten);
+					testOrder = TestOrder.TerminAlClosed;
+					// PseudoterminAl.close should hAve fired by now, AdditionAlly we wAnt
+					// to mAke sure All events Are flushed before continuing with more tests
+					Assert.ok(isPseudoterminAlClosed);
+				} cAtch (e) {
 					done(e);
 					return;
 				}
 				done();
 			}));
-			disposables.push(tasks.registerTaskProvider(taskType, {
-				provideTasks: () => {
-					const result: Task[] = [];
-					const kind: CustomTestingTaskDefinition = {
-						type: taskType,
-						customProp1: 'testing task one'
+			disposAbles.push(tAsks.registerTAskProvider(tAskType, {
+				provideTAsks: () => {
+					const result: TAsk[] = [];
+					const kind: CustomTestingTAskDefinition = {
+						type: tAskType,
+						customProp1: 'testing tAsk one'
 					};
 					const writeEmitter = new EventEmitter<string>();
-					const execution = new CustomExecution((): Thenable<Pseudoterminal> => {
-						const pty: Pseudoterminal = {
+					const execution = new CustomExecution((): ThenAble<PseudoterminAl> => {
+						const pty: PseudoterminAl = {
 							onDidWrite: writeEmitter.event,
 							open: () => writeEmitter.fire('testing\r\n'),
-							close: () => isPseudoterminalClosed = true
+							close: () => isPseudoterminAlClosed = true
 						};
 						return Promise.resolve(pty);
 					});
-					const task = new Task(kind, TaskScope.Workspace, taskName, taskType, execution);
-					result.push(task);
+					const tAsk = new TAsk(kind, TAskScope.WorkspAce, tAskNAme, tAskType, execution);
+					result.push(tAsk);
 					return result;
 				},
-				resolveTask(_task: Task): Task | undefined {
+				resolveTAsk(_tAsk: TAsk): TAsk | undefined {
 					try {
-						assert.fail('resolveTask should not trigger during the test');
-					} catch (e) {
+						Assert.fAil('resolveTAsk should not trigger during the test');
+					} cAtch (e) {
 						done(e);
 					}
 					return undefined;
 				}
 			}));
-			commands.executeCommand('workbench.action.tasks.runTask', `${taskType}: ${taskName}`);
+			commAnds.executeCommAnd('workbench.Action.tAsks.runTAsk', `${tAskType}: ${tAskNAme}`);
 		});
 
-		test('sync CustomExecution task should flush all data on close', (done) => {
-			interface CustomTestingTaskDefinition extends TaskDefinition {
+		test('sync CustomExecution tAsk should flush All dAtA on close', (done) => {
+			interfAce CustomTestingTAskDefinition extends TAskDefinition {
 				/**
-				 * One of the task properties. This can be used to customize the task in the tasks.json
+				 * One of the tAsk properties. This cAn be used to customize the tAsk in the tAsks.json
 				 */
 				customProp1: string;
 			}
-			const taskType: string = 'customTesting';
-			const taskName = 'First custom task';
-			disposables.push(window.onDidOpenTerminal(term => {
-				disposables.push(window.onDidWriteTerminalData(e => {
+			const tAskType: string = 'customTesting';
+			const tAskNAme = 'First custom tAsk';
+			disposAbles.push(window.onDidOpenTerminAl(term => {
+				disposAbles.push(window.onDidWriteTerminAlDAtA(e => {
 					try {
-						assert.equal(e.data, 'exiting');
-					} catch (e) {
+						Assert.equAl(e.dAtA, 'exiting');
+					} cAtch (e) {
 						done(e);
 					}
-					disposables.push(window.onDidCloseTerminal(() => done()));
+					disposAbles.push(window.onDidCloseTerminAl(() => done()));
 					term.dispose();
 				}));
 			}));
-			disposables.push(tasks.registerTaskProvider(taskType, {
-				provideTasks: () => {
-					const result: Task[] = [];
-					const kind: CustomTestingTaskDefinition = {
-						type: taskType,
-						customProp1: 'testing task one'
+			disposAbles.push(tAsks.registerTAskProvider(tAskType, {
+				provideTAsks: () => {
+					const result: TAsk[] = [];
+					const kind: CustomTestingTAskDefinition = {
+						type: tAskType,
+						customProp1: 'testing tAsk one'
 					};
 					const writeEmitter = new EventEmitter<string>();
 					const closeEmitter = new EventEmitter<void>();
-					const execution = new CustomExecution((): Thenable<Pseudoterminal> => {
-						const pty: Pseudoterminal = {
+					const execution = new CustomExecution((): ThenAble<PseudoterminAl> => {
+						const pty: PseudoterminAl = {
 							onDidWrite: writeEmitter.event,
 							onDidClose: closeEmitter.event,
 							open: () => {
@@ -151,74 +151,74 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 						};
 						return Promise.resolve(pty);
 					});
-					const task = new Task(kind, TaskScope.Workspace, taskName, taskType, execution);
-					result.push(task);
+					const tAsk = new TAsk(kind, TAskScope.WorkspAce, tAskNAme, tAskType, execution);
+					result.push(tAsk);
 					return result;
 				},
-				resolveTask(_task: Task): Task | undefined {
+				resolveTAsk(_tAsk: TAsk): TAsk | undefined {
 					try {
-						assert.fail('resolveTask should not trigger during the test');
-					} catch (e) {
+						Assert.fAil('resolveTAsk should not trigger during the test');
+					} cAtch (e) {
 						done(e);
 					}
 					return undefined;
 				}
 			}));
-			commands.executeCommand('workbench.action.tasks.runTask', `${taskType}: ${taskName}`);
+			commAnds.executeCommAnd('workbench.Action.tAsks.runTAsk', `${tAskType}: ${tAskNAme}`);
 		});
 
-		test('Execution from onDidEndTaskProcess and onDidStartTaskProcess are equal to original', () => {
-			return new Promise<void>(async (resolve) => {
-				const task = new Task({ type: 'testTask' }, TaskScope.Workspace, 'echo', 'testTask', new ShellExecution('echo', ['hello test']));
-				let taskExecution: TaskExecution | undefined;
+		test('Execution from onDidEndTAskProcess And onDidStArtTAskProcess Are equAl to originAl', () => {
+			return new Promise<void>(Async (resolve) => {
+				const tAsk = new TAsk({ type: 'testTAsk' }, TAskScope.WorkspAce, 'echo', 'testTAsk', new ShellExecution('echo', ['hello test']));
+				let tAskExecution: TAskExecution | undefined;
 				const executeDoneEvent: EventEmitter<void> = new EventEmitter();
-				const taskExecutionShouldBeSet: Promise<void> = new Promise(resolve => {
-					const disposable = executeDoneEvent.event(() => {
+				const tAskExecutionShouldBeSet: Promise<void> = new Promise(resolve => {
+					const disposAble = executeDoneEvent.event(() => {
 						resolve();
-						disposable.dispose();
+						disposAble.dispose();
 					});
 				});
 				let count = 2;
-				const progressMade: EventEmitter<void> = new EventEmitter();
-				let startSucceeded = false;
-				let endSucceeded = false;
-				disposables.push(progressMade.event(() => {
+				const progressMAde: EventEmitter<void> = new EventEmitter();
+				let stArtSucceeded = fAlse;
+				let endSucceeded = fAlse;
+				disposAbles.push(progressMAde.event(() => {
 					count--;
-					if ((count === 0) && startSucceeded && endSucceeded) {
+					if ((count === 0) && stArtSucceeded && endSucceeded) {
 						resolve();
 					}
 				}));
 
 
-				disposables.push(tasks.onDidStartTaskProcess(async (e) => {
-					await taskExecutionShouldBeSet;
-					if (e.execution === taskExecution) {
-						startSucceeded = true;
-						progressMade.fire();
+				disposAbles.push(tAsks.onDidStArtTAskProcess(Async (e) => {
+					AwAit tAskExecutionShouldBeSet;
+					if (e.execution === tAskExecution) {
+						stArtSucceeded = true;
+						progressMAde.fire();
 					}
 				}));
 
-				disposables.push(tasks.onDidEndTaskProcess(async (e) => {
-					await taskExecutionShouldBeSet;
-					if (e.execution === taskExecution) {
+				disposAbles.push(tAsks.onDidEndTAskProcess(Async (e) => {
+					AwAit tAskExecutionShouldBeSet;
+					if (e.execution === tAskExecution) {
 						endSucceeded = true;
-						progressMade.fire();
+						progressMAde.fire();
 					}
 				}));
 
-				taskExecution = await tasks.executeTask(task);
+				tAskExecution = AwAit tAsks.executeTAsk(tAsk);
 				executeDoneEvent.fire();
 			});
 		});
 
 		// https://github.com/microsoft/vscode/issues/100577
-		test('A CustomExecution task can be fetched and executed', () => {
-			return new Promise<void>(async (resolve, reject) => {
-				class CustomTerminal implements Pseudoterminal {
-					private readonly writeEmitter = new EventEmitter<string>();
-					public readonly onDidWrite: Event<string> = this.writeEmitter.event;
-					public async close(): Promise<void> { }
-					private closeEmitter = new EventEmitter<void>();
+		test('A CustomExecution tAsk cAn be fetched And executed', () => {
+			return new Promise<void>(Async (resolve, reject) => {
+				clAss CustomTerminAl implements PseudoterminAl {
+					privAte reAdonly writeEmitter = new EventEmitter<string>();
+					public reAdonly onDidWrite: Event<string> = this.writeEmitter.event;
+					public Async close(): Promise<void> { }
+					privAte closeEmitter = new EventEmitter<void>();
 					onDidClose: Event<void> = this.closeEmitter.event;
 					public open(): void {
 						this.closeEmitter.fire();
@@ -226,38 +226,38 @@ import { window, tasks, Disposable, TaskDefinition, Task, EventEmitter, CustomEx
 					}
 				}
 
-				function buildTask(): Task {
-					const task = new Task(
+				function buildTAsk(): TAsk {
+					const tAsk = new TAsk(
 						{
 							type: 'customTesting',
 						},
-						TaskScope.Workspace,
-						'Test Task',
+						TAskScope.WorkspAce,
+						'Test TAsk',
 						'customTesting',
 						new CustomExecution(
-							async (): Promise<Pseudoterminal> => {
-								return new CustomTerminal();
+							Async (): Promise<PseudoterminAl> => {
+								return new CustomTerminAl();
 							}
 						)
 					);
-					return task;
+					return tAsk;
 				}
 
-				disposables.push(tasks.registerTaskProvider('customTesting', {
-					provideTasks: () => {
-						return [buildTask()];
+				disposAbles.push(tAsks.registerTAskProvider('customTesting', {
+					provideTAsks: () => {
+						return [buildTAsk()];
 					},
-					resolveTask(_task: Task): undefined {
+					resolveTAsk(_tAsk: TAsk): undefined {
 						return undefined;
 					}
 				}));
 
-				const task = await tasks.fetchTasks({ type: 'customTesting' });
+				const tAsk = AwAit tAsks.fetchTAsks({ type: 'customTesting' });
 
-				if (task && task.length > 0) {
-					await tasks.executeTask(task[0]);
+				if (tAsk && tAsk.length > 0) {
+					AwAit tAsks.executeTAsk(tAsk[0]);
 				} else {
-					reject('fetched task can\'t be undefined');
+					reject('fetched tAsk cAn\'t be undefined');
 				}
 			});
 		});

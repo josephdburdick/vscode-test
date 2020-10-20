@@ -1,111 +1,111 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Type definitions for Marked 0.4
-// Project: https://github.com/markedjs/marked
-// Definitions by: William Orr <https://github.com/worr>
+// Type definitions for MArked 0.4
+// Project: https://github.com/mArkedjs/mArked
+// Definitions by: WilliAm Orr <https://github.com/worr>
 //                 BendingBender <https://github.com/BendingBender>
 //                 CrossR <https://github.com/CrossR>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-export as namespace marked;
+export As nAmespAce mArked;
 
-export = marked;
+export = mArked;
 /**
- * Compiles markdown to HTML.
+ * Compiles mArkdown to HTML.
  *
- * @param src String of markdown source to be compiled
- * @param callback Function called when the markdownString has been fully parsed when using async highlighting
+ * @pArAm src String of mArkdown source to be compiled
+ * @pArAm cAllbAck Function cAlled when the mArkdownString hAs been fully pArsed when using Async highlighting
  * @return String of compiled HTML
  */
-declare function marked(src: string, callback: (error: any | undefined, parseResult: string) => void): string;
+declAre function mArked(src: string, cAllbAck: (error: Any | undefined, pArseResult: string) => void): string;
 
 /**
- * Compiles markdown to HTML.
+ * Compiles mArkdown to HTML.
  *
- * @param src String of markdown source to be compiled
- * @param options Hash of options
- * @param callback Function called when the markdownString has been fully parsed when using async highlighting
+ * @pArAm src String of mArkdown source to be compiled
+ * @pArAm options HAsh of options
+ * @pArAm cAllbAck Function cAlled when the mArkdownString hAs been fully pArsed when using Async highlighting
  * @return String of compiled HTML
  */
-declare function marked(src: string, options?: marked.MarkedOptions, callback?: (error: any | undefined, parseResult: string) => void): string;
+declAre function mArked(src: string, options?: mArked.MArkedOptions, cAllbAck?: (error: Any | undefined, pArseResult: string) => void): string;
 
-declare namespace marked {
+declAre nAmespAce mArked {
     /**
-     * @param src String of markdown source to be compiled
-     * @param options Hash of options
+     * @pArAm src String of mArkdown source to be compiled
+     * @pArAm options HAsh of options
      */
-	function lexer(src: string, options?: MarkedOptions): TokensList;
+	function lexer(src: string, options?: MArkedOptions): TokensList;
 
     /**
-     * Compiles markdown to HTML.
+     * Compiles mArkdown to HTML.
      *
-     * @param src String of markdown source to be compiled
-     * @param callback Function called when the markdownString has been fully parsed when using async highlighting
+     * @pArAm src String of mArkdown source to be compiled
+     * @pArAm cAllbAck Function cAlled when the mArkdownString hAs been fully pArsed when using Async highlighting
      * @return String of compiled HTML
      */
-	function parse(src: string, callback: (error: any | undefined, parseResult: string) => void): string;
+	function pArse(src: string, cAllbAck: (error: Any | undefined, pArseResult: string) => void): string;
 
     /**
-     * Compiles markdown to HTML.
+     * Compiles mArkdown to HTML.
      *
-     * @param src String of markdown source to be compiled
-     * @param options Hash of options
-     * @param callback Function called when the markdownString has been fully parsed when using async highlighting
+     * @pArAm src String of mArkdown source to be compiled
+     * @pArAm options HAsh of options
+     * @pArAm cAllbAck Function cAlled when the mArkdownString hAs been fully pArsed when using Async highlighting
      * @return String of compiled HTML
      */
-	function parse(src: string, options?: MarkedOptions, callback?: (error: any | undefined, parseResult: string) => void): string;
+	function pArse(src: string, options?: MArkedOptions, cAllbAck?: (error: Any | undefined, pArseResult: string) => void): string;
 
     /**
-     * @param src Tokenized source as array of tokens
-     * @param options Hash of options
+     * @pArAm src Tokenized source As ArrAy of tokens
+     * @pArAm options HAsh of options
      */
-	function parser(src: TokensList, options?: MarkedOptions): string;
+	function pArser(src: TokensList, options?: MArkedOptions): string;
 
     /**
-     * Sets the default options.
+     * Sets the defAult options.
      *
-     * @param options Hash of options
+     * @pArAm options HAsh of options
      */
-	function setOptions(options: MarkedOptions): typeof marked;
+	function setOptions(options: MArkedOptions): typeof mArked;
 
-	class Renderer {
-		constructor(options?: MarkedOptions);
-		code(code: string, language: string, isEscaped: boolean): string;
+	clAss Renderer {
+		constructor(options?: MArkedOptions);
+		code(code: string, lAnguAge: string, isEscAped: booleAn): string;
 		blockquote(quote: string): string;
 		html(html: string): string;
-		heading(text: string, level: number, raw: string): string;
+		heAding(text: string, level: number, rAw: string): string;
 		hr(): string;
-		list(body: string, ordered: boolean): string;
+		list(body: string, ordered: booleAn): string;
 		listitem(text: string): string;
-		paragraph(text: string): string;
-		table(header: string, body: string): string;
-		tablerow(content: string): string;
-		tablecell(content: string, flags: {
-			header: boolean;
-			align: 'center' | 'left' | 'right' | null;
+		pArAgrAph(text: string): string;
+		tAble(heAder: string, body: string): string;
+		tAblerow(content: string): string;
+		tAblecell(content: string, flAgs: {
+			heAder: booleAn;
+			Align: 'center' | 'left' | 'right' | null;
 		}): string;
 		strong(text: string): string;
 		em(text: string): string;
-		codespan(code: string): string;
+		codespAn(code: string): string;
 		br(): string;
 		del(text: string): string;
 		link(href: string, title: string, text: string): string;
-		image(href: string, title: string, text: string): string;
+		imAge(href: string, title: string, text: string): string;
 		text(text: string): string;
 	}
 
-	class Lexer {
+	clAss Lexer {
 		rules: Rules;
 		tokens: TokensList;
-		constructor(options?: MarkedOptions);
+		constructor(options?: MArkedOptions);
 		lex(src: string): TokensList;
 	}
 
-	interface Rules {
-		[ruleName: string]: RegExp | Rules;
+	interfAce Rules {
+		[ruleNAme: string]: RegExp | Rules;
 	}
 
 	type TokensList = Token[] & {
@@ -115,183 +115,183 @@ declare namespace marked {
 	};
 
 	type Token =
-		Tokens.Space
+		Tokens.SpAce
 		| Tokens.Code
-		| Tokens.Heading
-		| Tokens.Table
+		| Tokens.HeAding
+		| Tokens.TAble
 		| Tokens.Hr
-		| Tokens.BlockquoteStart
+		| Tokens.BlockquoteStArt
 		| Tokens.BlockquoteEnd
-		| Tokens.ListStart
-		| Tokens.LooseItemStart
-		| Tokens.ListItemStart
+		| Tokens.ListStArt
+		| Tokens.LooseItemStArt
+		| Tokens.ListItemStArt
 		| Tokens.ListItemEnd
 		| Tokens.ListEnd
-		| Tokens.Paragraph
+		| Tokens.PArAgrAph
 		| Tokens.HTML
 		| Tokens.Text;
 
-	namespace Tokens {
-		interface Space {
-			type: 'space';
+	nAmespAce Tokens {
+		interfAce SpAce {
+			type: 'spAce';
 		}
 
-		interface Code {
+		interfAce Code {
 			type: 'code';
-			lang?: string;
+			lAng?: string;
 			text: string;
 		}
 
-		interface Heading {
-			type: 'heading';
+		interfAce HeAding {
+			type: 'heAding';
 			depth: number;
 			text: string;
 		}
 
-		interface Table {
-			type: 'table';
-			header: string[];
-			align: Array<'center' | 'left' | 'right' | null>;
+		interfAce TAble {
+			type: 'tAble';
+			heAder: string[];
+			Align: ArrAy<'center' | 'left' | 'right' | null>;
 			cells: string[][];
 		}
 
-		interface Hr {
+		interfAce Hr {
 			type: 'hr';
 		}
 
-		interface BlockquoteStart {
-			type: 'blockquote_start';
+		interfAce BlockquoteStArt {
+			type: 'blockquote_stArt';
 		}
 
-		interface BlockquoteEnd {
+		interfAce BlockquoteEnd {
 			type: 'blockquote_end';
 		}
 
-		interface ListStart {
-			type: 'list_start';
-			ordered: boolean;
+		interfAce ListStArt {
+			type: 'list_stArt';
+			ordered: booleAn;
 		}
 
-		interface LooseItemStart {
-			type: 'loose_item_start';
+		interfAce LooseItemStArt {
+			type: 'loose_item_stArt';
 		}
 
-		interface ListItemStart {
-			type: 'list_item_start';
+		interfAce ListItemStArt {
+			type: 'list_item_stArt';
 		}
 
-		interface ListItemEnd {
+		interfAce ListItemEnd {
 			type: 'list_item_end';
 		}
 
-		interface ListEnd {
+		interfAce ListEnd {
 			type: 'list_end';
 		}
 
-		interface Paragraph {
-			type: 'paragraph';
-			pre?: boolean;
+		interfAce PArAgrAph {
+			type: 'pArAgrAph';
+			pre?: booleAn;
 			text: string;
 		}
 
-		interface HTML {
+		interfAce HTML {
 			type: 'html';
-			pre: boolean;
+			pre: booleAn;
 			text: string;
 		}
 
-		interface Text {
+		interfAce Text {
 			type: 'text';
 			text: string;
 		}
 	}
 
-	interface MarkedOptions {
+	interfAce MArkedOptions {
         /**
-         * A prefix URL for any relative link.
+         * A prefix URL for Any relAtive link.
          */
-		baseUrl?: string;
+		bAseUrl?: string;
 
         /**
-         * Enable GFM line breaks. This option requires the gfm option to be true.
+         * EnAble GFM line breAks. This option requires the gfm option to be true.
          */
-		breaks?: boolean;
+		breAks?: booleAn;
 
         /**
-         * Enable GitHub flavored markdown.
+         * EnAble GitHub flAvored mArkdown.
          */
-		gfm?: boolean;
+		gfm?: booleAn;
 
         /**
-         * Include an id attribute when emitting headings.
+         * Include An id Attribute when emitting heAdings.
          */
-		headerIds?: boolean;
+		heAderIds?: booleAn;
 
         /**
-         * Set the prefix for header tag ids.
+         * Set the prefix for heAder tAg ids.
          */
-		headerPrefix?: string;
+		heAderPrefix?: string;
 
         /**
-         * A function to highlight code blocks. The function takes three arguments: code, lang, and callback.
+         * A function to highlight code blocks. The function tAkes three Arguments: code, lAng, And cAllbAck.
          */
-		highlight?(code: string, lang: string, callback?: (error: any | undefined, code: string) => void): string;
+		highlight?(code: string, lAng: string, cAllbAck?: (error: Any | undefined, code: string) => void): string;
 
         /**
-         * Set the prefix for code block classes.
+         * Set the prefix for code block clAsses.
          */
-		langPrefix?: string;
+		lAngPrefix?: string;
 
         /**
-         * Mangle autolinks (<email@domain.com>).
+         * MAngle Autolinks (<emAil@domAin.com>).
          */
-		mangle?: boolean;
+		mAngle?: booleAn;
 
         /**
-         * Conform to obscure parts of markdown.pl as much as possible. Don't fix any of the original markdown bugs or poor behavior.
+         * Conform to obscure pArts of mArkdown.pl As much As possible. Don't fix Any of the originAl mArkdown bugs or poor behAvior.
          */
-		pedantic?: boolean;
+		pedAntic?: booleAn;
 
         /**
-         * Type: object Default: new Renderer()
+         * Type: object DefAult: new Renderer()
          *
-         * An object containing functions to render tokens to HTML.
+         * An object contAining functions to render tokens to HTML.
          */
 		renderer?: Renderer;
 
         /**
-         * Sanitize the output. Ignore any HTML that has been input.
+         * SAnitize the output. Ignore Any HTML thAt hAs been input.
          */
-		sanitize?: boolean;
+		sAnitize?: booleAn;
 
         /**
-         * Optionally sanitize found HTML with a sanitizer function.
+         * OptionAlly sAnitize found HTML with A sAnitizer function.
          */
-		sanitizer?(html: string): string;
+		sAnitizer?(html: string): string;
 
         /**
-         * Shows an HTML error message when rendering fails.
+         * Shows An HTML error messAge when rendering fAils.
          */
-		silent?: boolean;
+		silent?: booleAn;
 
         /**
-         * Use smarter list behavior than the original markdown. May eventually be default with the old behavior moved into pedantic.
+         * Use smArter list behAvior thAn the originAl mArkdown. MAy eventuAlly be defAult with the old behAvior moved into pedAntic.
          */
-		smartLists?: boolean;
+		smArtLists?: booleAn;
 
         /**
-         * Use "smart" typograhic punctuation for things like quotes and dashes.
+         * Use "smArt" typogrAhic punctuAtion for things like quotes And dAshes.
          */
-		smartypants?: boolean;
+		smArtypAnts?: booleAn;
 
         /**
-         * Enable GFM tables. This option requires the gfm option to be true.
+         * EnAble GFM tAbles. This option requires the gfm option to be true.
          */
-		tables?: boolean;
+		tAbles?: booleAn;
 
         /**
-         * Generate closing slash for self-closing tags (<br/> instead of <br>)
+         * GenerAte closing slAsh for self-closing tAgs (<br/> insteAd of <br>)
          */
-		xhtml?: boolean;
+		xhtml?: booleAn;
 	}
 }

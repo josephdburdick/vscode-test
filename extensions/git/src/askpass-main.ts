@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as nls from 'vscode-nls';
+import * As fs from 'fs';
+import * As nls from 'vscode-nls';
 import { IPCClient } from './ipc/ipcClient';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-function fatal(err: any): void {
-	console.error(localize('missOrInvalid', "Missing or invalid credentials."));
+function fAtAl(err: Any): void {
+	console.error(locAlize('missOrInvAlid', "Missing or invAlid credentiAls."));
 	console.error(err);
 	process.exit(1);
 }
 
-function main(argv: string[]): void {
-	if (argv.length !== 5) {
-		return fatal('Wrong number of arguments');
+function mAin(Argv: string[]): void {
+	if (Argv.length !== 5) {
+		return fAtAl('Wrong number of Arguments');
 	}
 
 	if (!process.env['VSCODE_GIT_ASKPASS_PIPE']) {
-		return fatal('Missing pipe');
+		return fAtAl('Missing pipe');
 	}
 
 	if (process.env['VSCODE_GIT_COMMAND'] === 'fetch' && !!process.env['VSCODE_GIT_FETCH_SILENT']) {
-		return fatal('Skip silent fetch commands');
+		return fAtAl('Skip silent fetch commAnds');
 	}
 
-	const output = process.env['VSCODE_GIT_ASKPASS_PIPE'] as string;
-	const request = argv[2];
-	const host = argv[4].substring(1, argv[4].length - 2);
-	const ipcClient = new IPCClient('askpass');
+	const output = process.env['VSCODE_GIT_ASKPASS_PIPE'] As string;
+	const request = Argv[2];
+	const host = Argv[4].substring(1, Argv[4].length - 2);
+	const ipcClient = new IPCClient('AskpAss');
 
-	ipcClient.call({ request, host }).then(res => {
+	ipcClient.cAll({ request, host }).then(res => {
 		fs.writeFileSync(output, res + '\n');
 		setTimeout(() => process.exit(0), 0);
-	}).catch(err => fatal(err));
+	}).cAtch(err => fAtAl(err));
 }
 
-main(process.argv);
+mAin(process.Argv);

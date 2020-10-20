@@ -1,449 +1,449 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IPosition, Position } from 'vs/editor/common/core/position';
 
 /**
- * A range in the editor. This interface is suitable for serialization.
+ * A rAnge in the editor. This interfAce is suitAble for seriAlizAtion.
  */
-export interface IRange {
+export interfAce IRAnge {
 	/**
-	 * Line number on which the range starts (starts at 1).
+	 * Line number on which the rAnge stArts (stArts At 1).
 	 */
-	readonly startLineNumber: number;
+	reAdonly stArtLineNumber: number;
 	/**
-	 * Column on which the range starts in line `startLineNumber` (starts at 1).
+	 * Column on which the rAnge stArts in line `stArtLineNumber` (stArts At 1).
 	 */
-	readonly startColumn: number;
+	reAdonly stArtColumn: number;
 	/**
-	 * Line number on which the range ends.
+	 * Line number on which the rAnge ends.
 	 */
-	readonly endLineNumber: number;
+	reAdonly endLineNumber: number;
 	/**
-	 * Column on which the range ends in line `endLineNumber`.
+	 * Column on which the rAnge ends in line `endLineNumber`.
 	 */
-	readonly endColumn: number;
+	reAdonly endColumn: number;
 }
 
 /**
- * A range in the editor. (startLineNumber,startColumn) is <= (endLineNumber,endColumn)
+ * A rAnge in the editor. (stArtLineNumber,stArtColumn) is <= (endLineNumber,endColumn)
  */
-export class Range {
+export clAss RAnge {
 
 	/**
-	 * Line number on which the range starts (starts at 1).
+	 * Line number on which the rAnge stArts (stArts At 1).
 	 */
-	public readonly startLineNumber: number;
+	public reAdonly stArtLineNumber: number;
 	/**
-	 * Column on which the range starts in line `startLineNumber` (starts at 1).
+	 * Column on which the rAnge stArts in line `stArtLineNumber` (stArts At 1).
 	 */
-	public readonly startColumn: number;
+	public reAdonly stArtColumn: number;
 	/**
-	 * Line number on which the range ends.
+	 * Line number on which the rAnge ends.
 	 */
-	public readonly endLineNumber: number;
+	public reAdonly endLineNumber: number;
 	/**
-	 * Column on which the range ends in line `endLineNumber`.
+	 * Column on which the rAnge ends in line `endLineNumber`.
 	 */
-	public readonly endColumn: number;
+	public reAdonly endColumn: number;
 
-	constructor(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) {
-		if ((startLineNumber > endLineNumber) || (startLineNumber === endLineNumber && startColumn > endColumn)) {
-			this.startLineNumber = endLineNumber;
-			this.startColumn = endColumn;
-			this.endLineNumber = startLineNumber;
-			this.endColumn = startColumn;
+	constructor(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number) {
+		if ((stArtLineNumber > endLineNumber) || (stArtLineNumber === endLineNumber && stArtColumn > endColumn)) {
+			this.stArtLineNumber = endLineNumber;
+			this.stArtColumn = endColumn;
+			this.endLineNumber = stArtLineNumber;
+			this.endColumn = stArtColumn;
 		} else {
-			this.startLineNumber = startLineNumber;
-			this.startColumn = startColumn;
+			this.stArtLineNumber = stArtLineNumber;
+			this.stArtColumn = stArtColumn;
 			this.endLineNumber = endLineNumber;
 			this.endColumn = endColumn;
 		}
 	}
 
 	/**
-	 * Test if this range is empty.
+	 * Test if this rAnge is empty.
 	 */
-	public isEmpty(): boolean {
-		return Range.isEmpty(this);
+	public isEmpty(): booleAn {
+		return RAnge.isEmpty(this);
 	}
 
 	/**
-	 * Test if `range` is empty.
+	 * Test if `rAnge` is empty.
 	 */
-	public static isEmpty(range: IRange): boolean {
-		return (range.startLineNumber === range.endLineNumber && range.startColumn === range.endColumn);
+	public stAtic isEmpty(rAnge: IRAnge): booleAn {
+		return (rAnge.stArtLineNumber === rAnge.endLineNumber && rAnge.stArtColumn === rAnge.endColumn);
 	}
 
 	/**
-	 * Test if position is in this range. If the position is at the edges, will return true.
+	 * Test if position is in this rAnge. If the position is At the edges, will return true.
 	 */
-	public containsPosition(position: IPosition): boolean {
-		return Range.containsPosition(this, position);
+	public contAinsPosition(position: IPosition): booleAn {
+		return RAnge.contAinsPosition(this, position);
 	}
 
 	/**
-	 * Test if `position` is in `range`. If the position is at the edges, will return true.
+	 * Test if `position` is in `rAnge`. If the position is At the edges, will return true.
 	 */
-	public static containsPosition(range: IRange, position: IPosition): boolean {
-		if (position.lineNumber < range.startLineNumber || position.lineNumber > range.endLineNumber) {
-			return false;
+	public stAtic contAinsPosition(rAnge: IRAnge, position: IPosition): booleAn {
+		if (position.lineNumber < rAnge.stArtLineNumber || position.lineNumber > rAnge.endLineNumber) {
+			return fAlse;
 		}
-		if (position.lineNumber === range.startLineNumber && position.column < range.startColumn) {
-			return false;
+		if (position.lineNumber === rAnge.stArtLineNumber && position.column < rAnge.stArtColumn) {
+			return fAlse;
 		}
-		if (position.lineNumber === range.endLineNumber && position.column > range.endColumn) {
-			return false;
+		if (position.lineNumber === rAnge.endLineNumber && position.column > rAnge.endColumn) {
+			return fAlse;
 		}
 		return true;
 	}
 
 	/**
-	 * Test if range is in this range. If the range is equal to this range, will return true.
+	 * Test if rAnge is in this rAnge. If the rAnge is equAl to this rAnge, will return true.
 	 */
-	public containsRange(range: IRange): boolean {
-		return Range.containsRange(this, range);
+	public contAinsRAnge(rAnge: IRAnge): booleAn {
+		return RAnge.contAinsRAnge(this, rAnge);
 	}
 
 	/**
-	 * Test if `otherRange` is in `range`. If the ranges are equal, will return true.
+	 * Test if `otherRAnge` is in `rAnge`. If the rAnges Are equAl, will return true.
 	 */
-	public static containsRange(range: IRange, otherRange: IRange): boolean {
-		if (otherRange.startLineNumber < range.startLineNumber || otherRange.endLineNumber < range.startLineNumber) {
-			return false;
+	public stAtic contAinsRAnge(rAnge: IRAnge, otherRAnge: IRAnge): booleAn {
+		if (otherRAnge.stArtLineNumber < rAnge.stArtLineNumber || otherRAnge.endLineNumber < rAnge.stArtLineNumber) {
+			return fAlse;
 		}
-		if (otherRange.startLineNumber > range.endLineNumber || otherRange.endLineNumber > range.endLineNumber) {
-			return false;
+		if (otherRAnge.stArtLineNumber > rAnge.endLineNumber || otherRAnge.endLineNumber > rAnge.endLineNumber) {
+			return fAlse;
 		}
-		if (otherRange.startLineNumber === range.startLineNumber && otherRange.startColumn < range.startColumn) {
-			return false;
+		if (otherRAnge.stArtLineNumber === rAnge.stArtLineNumber && otherRAnge.stArtColumn < rAnge.stArtColumn) {
+			return fAlse;
 		}
-		if (otherRange.endLineNumber === range.endLineNumber && otherRange.endColumn > range.endColumn) {
-			return false;
+		if (otherRAnge.endLineNumber === rAnge.endLineNumber && otherRAnge.endColumn > rAnge.endColumn) {
+			return fAlse;
 		}
 		return true;
 	}
 
 	/**
-	 * Test if `range` is strictly in this range. `range` must start after and end before this range for the result to be true.
+	 * Test if `rAnge` is strictly in this rAnge. `rAnge` must stArt After And end before this rAnge for the result to be true.
 	 */
-	public strictContainsRange(range: IRange): boolean {
-		return Range.strictContainsRange(this, range);
+	public strictContAinsRAnge(rAnge: IRAnge): booleAn {
+		return RAnge.strictContAinsRAnge(this, rAnge);
 	}
 
 	/**
-	 * Test if `otherRange` is strinctly in `range` (must start after, and end before). If the ranges are equal, will return false.
+	 * Test if `otherRAnge` is strinctly in `rAnge` (must stArt After, And end before). If the rAnges Are equAl, will return fAlse.
 	 */
-	public static strictContainsRange(range: IRange, otherRange: IRange): boolean {
-		if (otherRange.startLineNumber < range.startLineNumber || otherRange.endLineNumber < range.startLineNumber) {
-			return false;
+	public stAtic strictContAinsRAnge(rAnge: IRAnge, otherRAnge: IRAnge): booleAn {
+		if (otherRAnge.stArtLineNumber < rAnge.stArtLineNumber || otherRAnge.endLineNumber < rAnge.stArtLineNumber) {
+			return fAlse;
 		}
-		if (otherRange.startLineNumber > range.endLineNumber || otherRange.endLineNumber > range.endLineNumber) {
-			return false;
+		if (otherRAnge.stArtLineNumber > rAnge.endLineNumber || otherRAnge.endLineNumber > rAnge.endLineNumber) {
+			return fAlse;
 		}
-		if (otherRange.startLineNumber === range.startLineNumber && otherRange.startColumn <= range.startColumn) {
-			return false;
+		if (otherRAnge.stArtLineNumber === rAnge.stArtLineNumber && otherRAnge.stArtColumn <= rAnge.stArtColumn) {
+			return fAlse;
 		}
-		if (otherRange.endLineNumber === range.endLineNumber && otherRange.endColumn >= range.endColumn) {
-			return false;
+		if (otherRAnge.endLineNumber === rAnge.endLineNumber && otherRAnge.endColumn >= rAnge.endColumn) {
+			return fAlse;
 		}
 		return true;
 	}
 
 	/**
-	 * A reunion of the two ranges.
-	 * The smallest position will be used as the start point, and the largest one as the end point.
+	 * A reunion of the two rAnges.
+	 * The smAllest position will be used As the stArt point, And the lArgest one As the end point.
 	 */
-	public plusRange(range: IRange): Range {
-		return Range.plusRange(this, range);
+	public plusRAnge(rAnge: IRAnge): RAnge {
+		return RAnge.plusRAnge(this, rAnge);
 	}
 
 	/**
-	 * A reunion of the two ranges.
-	 * The smallest position will be used as the start point, and the largest one as the end point.
+	 * A reunion of the two rAnges.
+	 * The smAllest position will be used As the stArt point, And the lArgest one As the end point.
 	 */
-	public static plusRange(a: IRange, b: IRange): Range {
-		let startLineNumber: number;
-		let startColumn: number;
+	public stAtic plusRAnge(A: IRAnge, b: IRAnge): RAnge {
+		let stArtLineNumber: number;
+		let stArtColumn: number;
 		let endLineNumber: number;
 		let endColumn: number;
 
-		if (b.startLineNumber < a.startLineNumber) {
-			startLineNumber = b.startLineNumber;
-			startColumn = b.startColumn;
-		} else if (b.startLineNumber === a.startLineNumber) {
-			startLineNumber = b.startLineNumber;
-			startColumn = Math.min(b.startColumn, a.startColumn);
+		if (b.stArtLineNumber < A.stArtLineNumber) {
+			stArtLineNumber = b.stArtLineNumber;
+			stArtColumn = b.stArtColumn;
+		} else if (b.stArtLineNumber === A.stArtLineNumber) {
+			stArtLineNumber = b.stArtLineNumber;
+			stArtColumn = MAth.min(b.stArtColumn, A.stArtColumn);
 		} else {
-			startLineNumber = a.startLineNumber;
-			startColumn = a.startColumn;
+			stArtLineNumber = A.stArtLineNumber;
+			stArtColumn = A.stArtColumn;
 		}
 
-		if (b.endLineNumber > a.endLineNumber) {
+		if (b.endLineNumber > A.endLineNumber) {
 			endLineNumber = b.endLineNumber;
 			endColumn = b.endColumn;
-		} else if (b.endLineNumber === a.endLineNumber) {
+		} else if (b.endLineNumber === A.endLineNumber) {
 			endLineNumber = b.endLineNumber;
-			endColumn = Math.max(b.endColumn, a.endColumn);
+			endColumn = MAth.mAx(b.endColumn, A.endColumn);
 		} else {
-			endLineNumber = a.endLineNumber;
-			endColumn = a.endColumn;
+			endLineNumber = A.endLineNumber;
+			endColumn = A.endColumn;
 		}
 
-		return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
+		return new RAnge(stArtLineNumber, stArtColumn, endLineNumber, endColumn);
 	}
 
 	/**
-	 * A intersection of the two ranges.
+	 * A intersection of the two rAnges.
 	 */
-	public intersectRanges(range: IRange): Range | null {
-		return Range.intersectRanges(this, range);
+	public intersectRAnges(rAnge: IRAnge): RAnge | null {
+		return RAnge.intersectRAnges(this, rAnge);
 	}
 
 	/**
-	 * A intersection of the two ranges.
+	 * A intersection of the two rAnges.
 	 */
-	public static intersectRanges(a: IRange, b: IRange): Range | null {
-		let resultStartLineNumber = a.startLineNumber;
-		let resultStartColumn = a.startColumn;
-		let resultEndLineNumber = a.endLineNumber;
-		let resultEndColumn = a.endColumn;
-		let otherStartLineNumber = b.startLineNumber;
-		let otherStartColumn = b.startColumn;
+	public stAtic intersectRAnges(A: IRAnge, b: IRAnge): RAnge | null {
+		let resultStArtLineNumber = A.stArtLineNumber;
+		let resultStArtColumn = A.stArtColumn;
+		let resultEndLineNumber = A.endLineNumber;
+		let resultEndColumn = A.endColumn;
+		let otherStArtLineNumber = b.stArtLineNumber;
+		let otherStArtColumn = b.stArtColumn;
 		let otherEndLineNumber = b.endLineNumber;
 		let otherEndColumn = b.endColumn;
 
-		if (resultStartLineNumber < otherStartLineNumber) {
-			resultStartLineNumber = otherStartLineNumber;
-			resultStartColumn = otherStartColumn;
-		} else if (resultStartLineNumber === otherStartLineNumber) {
-			resultStartColumn = Math.max(resultStartColumn, otherStartColumn);
+		if (resultStArtLineNumber < otherStArtLineNumber) {
+			resultStArtLineNumber = otherStArtLineNumber;
+			resultStArtColumn = otherStArtColumn;
+		} else if (resultStArtLineNumber === otherStArtLineNumber) {
+			resultStArtColumn = MAth.mAx(resultStArtColumn, otherStArtColumn);
 		}
 
 		if (resultEndLineNumber > otherEndLineNumber) {
 			resultEndLineNumber = otherEndLineNumber;
 			resultEndColumn = otherEndColumn;
 		} else if (resultEndLineNumber === otherEndLineNumber) {
-			resultEndColumn = Math.min(resultEndColumn, otherEndColumn);
+			resultEndColumn = MAth.min(resultEndColumn, otherEndColumn);
 		}
 
 		// Check if selection is now empty
-		if (resultStartLineNumber > resultEndLineNumber) {
+		if (resultStArtLineNumber > resultEndLineNumber) {
 			return null;
 		}
-		if (resultStartLineNumber === resultEndLineNumber && resultStartColumn > resultEndColumn) {
+		if (resultStArtLineNumber === resultEndLineNumber && resultStArtColumn > resultEndColumn) {
 			return null;
 		}
-		return new Range(resultStartLineNumber, resultStartColumn, resultEndLineNumber, resultEndColumn);
+		return new RAnge(resultStArtLineNumber, resultStArtColumn, resultEndLineNumber, resultEndColumn);
 	}
 
 	/**
-	 * Test if this range equals other.
+	 * Test if this rAnge equAls other.
 	 */
-	public equalsRange(other: IRange | null): boolean {
-		return Range.equalsRange(this, other);
+	public equAlsRAnge(other: IRAnge | null): booleAn {
+		return RAnge.equAlsRAnge(this, other);
 	}
 
 	/**
-	 * Test if range `a` equals `b`.
+	 * Test if rAnge `A` equAls `b`.
 	 */
-	public static equalsRange(a: IRange | null, b: IRange | null): boolean {
+	public stAtic equAlsRAnge(A: IRAnge | null, b: IRAnge | null): booleAn {
 		return (
-			!!a &&
+			!!A &&
 			!!b &&
-			a.startLineNumber === b.startLineNumber &&
-			a.startColumn === b.startColumn &&
-			a.endLineNumber === b.endLineNumber &&
-			a.endColumn === b.endColumn
+			A.stArtLineNumber === b.stArtLineNumber &&
+			A.stArtColumn === b.stArtColumn &&
+			A.endLineNumber === b.endLineNumber &&
+			A.endColumn === b.endColumn
 		);
 	}
 
 	/**
-	 * Return the end position (which will be after or equal to the start position)
+	 * Return the end position (which will be After or equAl to the stArt position)
 	 */
 	public getEndPosition(): Position {
-		return Range.getEndPosition(this);
+		return RAnge.getEndPosition(this);
 	}
 
 	/**
-	 * Return the end position (which will be after or equal to the start position)
+	 * Return the end position (which will be After or equAl to the stArt position)
 	 */
-	public static getEndPosition(range: IRange): Position {
-		return new Position(range.endLineNumber, range.endColumn);
+	public stAtic getEndPosition(rAnge: IRAnge): Position {
+		return new Position(rAnge.endLineNumber, rAnge.endColumn);
 	}
 
 	/**
-	 * Return the start position (which will be before or equal to the end position)
+	 * Return the stArt position (which will be before or equAl to the end position)
 	 */
-	public getStartPosition(): Position {
-		return Range.getStartPosition(this);
+	public getStArtPosition(): Position {
+		return RAnge.getStArtPosition(this);
 	}
 
 	/**
-	 * Return the start position (which will be before or equal to the end position)
+	 * Return the stArt position (which will be before or equAl to the end position)
 	 */
-	public static getStartPosition(range: IRange): Position {
-		return new Position(range.startLineNumber, range.startColumn);
+	public stAtic getStArtPosition(rAnge: IRAnge): Position {
+		return new Position(rAnge.stArtLineNumber, rAnge.stArtColumn);
 	}
 
 	/**
-	 * Transform to a user presentable string representation.
+	 * TrAnsform to A user presentAble string representAtion.
 	 */
 	public toString(): string {
-		return '[' + this.startLineNumber + ',' + this.startColumn + ' -> ' + this.endLineNumber + ',' + this.endColumn + ']';
+		return '[' + this.stArtLineNumber + ',' + this.stArtColumn + ' -> ' + this.endLineNumber + ',' + this.endColumn + ']';
 	}
 
 	/**
-	 * Create a new range using this range's start position, and using endLineNumber and endColumn as the end position.
+	 * CreAte A new rAnge using this rAnge's stArt position, And using endLineNumber And endColumn As the end position.
 	 */
-	public setEndPosition(endLineNumber: number, endColumn: number): Range {
-		return new Range(this.startLineNumber, this.startColumn, endLineNumber, endColumn);
+	public setEndPosition(endLineNumber: number, endColumn: number): RAnge {
+		return new RAnge(this.stArtLineNumber, this.stArtColumn, endLineNumber, endColumn);
 	}
 
 	/**
-	 * Create a new range using this range's end position, and using startLineNumber and startColumn as the start position.
+	 * CreAte A new rAnge using this rAnge's end position, And using stArtLineNumber And stArtColumn As the stArt position.
 	 */
-	public setStartPosition(startLineNumber: number, startColumn: number): Range {
-		return new Range(startLineNumber, startColumn, this.endLineNumber, this.endColumn);
+	public setStArtPosition(stArtLineNumber: number, stArtColumn: number): RAnge {
+		return new RAnge(stArtLineNumber, stArtColumn, this.endLineNumber, this.endColumn);
 	}
 
 	/**
-	 * Create a new empty range using this range's start position.
+	 * CreAte A new empty rAnge using this rAnge's stArt position.
 	 */
-	public collapseToStart(): Range {
-		return Range.collapseToStart(this);
+	public collApseToStArt(): RAnge {
+		return RAnge.collApseToStArt(this);
 	}
 
 	/**
-	 * Create a new empty range using this range's start position.
+	 * CreAte A new empty rAnge using this rAnge's stArt position.
 	 */
-	public static collapseToStart(range: IRange): Range {
-		return new Range(range.startLineNumber, range.startColumn, range.startLineNumber, range.startColumn);
+	public stAtic collApseToStArt(rAnge: IRAnge): RAnge {
+		return new RAnge(rAnge.stArtLineNumber, rAnge.stArtColumn, rAnge.stArtLineNumber, rAnge.stArtColumn);
 	}
 
 	// ---
 
-	public static fromPositions(start: IPosition, end: IPosition = start): Range {
-		return new Range(start.lineNumber, start.column, end.lineNumber, end.column);
+	public stAtic fromPositions(stArt: IPosition, end: IPosition = stArt): RAnge {
+		return new RAnge(stArt.lineNumber, stArt.column, end.lineNumber, end.column);
 	}
 
 	/**
-	 * Create a `Range` from an `IRange`.
+	 * CreAte A `RAnge` from An `IRAnge`.
 	 */
-	public static lift(range: undefined | null): null;
-	public static lift(range: IRange): Range;
-	public static lift(range: IRange | undefined | null): Range | null {
-		if (!range) {
+	public stAtic lift(rAnge: undefined | null): null;
+	public stAtic lift(rAnge: IRAnge): RAnge;
+	public stAtic lift(rAnge: IRAnge | undefined | null): RAnge | null {
+		if (!rAnge) {
 			return null;
 		}
-		return new Range(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
+		return new RAnge(rAnge.stArtLineNumber, rAnge.stArtColumn, rAnge.endLineNumber, rAnge.endColumn);
 	}
 
 	/**
-	 * Test if `obj` is an `IRange`.
+	 * Test if `obj` is An `IRAnge`.
 	 */
-	public static isIRange(obj: any): obj is IRange {
+	public stAtic isIRAnge(obj: Any): obj is IRAnge {
 		return (
 			obj
-			&& (typeof obj.startLineNumber === 'number')
-			&& (typeof obj.startColumn === 'number')
+			&& (typeof obj.stArtLineNumber === 'number')
+			&& (typeof obj.stArtColumn === 'number')
 			&& (typeof obj.endLineNumber === 'number')
 			&& (typeof obj.endColumn === 'number')
 		);
 	}
 
 	/**
-	 * Test if the two ranges are touching in any way.
+	 * Test if the two rAnges Are touching in Any wAy.
 	 */
-	public static areIntersectingOrTouching(a: IRange, b: IRange): boolean {
-		// Check if `a` is before `b`
-		if (a.endLineNumber < b.startLineNumber || (a.endLineNumber === b.startLineNumber && a.endColumn < b.startColumn)) {
-			return false;
+	public stAtic AreIntersectingOrTouching(A: IRAnge, b: IRAnge): booleAn {
+		// Check if `A` is before `b`
+		if (A.endLineNumber < b.stArtLineNumber || (A.endLineNumber === b.stArtLineNumber && A.endColumn < b.stArtColumn)) {
+			return fAlse;
 		}
 
-		// Check if `b` is before `a`
-		if (b.endLineNumber < a.startLineNumber || (b.endLineNumber === a.startLineNumber && b.endColumn < a.startColumn)) {
-			return false;
+		// Check if `b` is before `A`
+		if (b.endLineNumber < A.stArtLineNumber || (b.endLineNumber === A.stArtLineNumber && b.endColumn < A.stArtColumn)) {
+			return fAlse;
 		}
 
-		// These ranges must intersect
+		// These rAnges must intersect
 		return true;
 	}
 
 	/**
-	 * Test if the two ranges are intersecting. If the ranges are touching it returns true.
+	 * Test if the two rAnges Are intersecting. If the rAnges Are touching it returns true.
 	 */
-	public static areIntersecting(a: IRange, b: IRange): boolean {
-		// Check if `a` is before `b`
-		if (a.endLineNumber < b.startLineNumber || (a.endLineNumber === b.startLineNumber && a.endColumn <= b.startColumn)) {
-			return false;
+	public stAtic AreIntersecting(A: IRAnge, b: IRAnge): booleAn {
+		// Check if `A` is before `b`
+		if (A.endLineNumber < b.stArtLineNumber || (A.endLineNumber === b.stArtLineNumber && A.endColumn <= b.stArtColumn)) {
+			return fAlse;
 		}
 
-		// Check if `b` is before `a`
-		if (b.endLineNumber < a.startLineNumber || (b.endLineNumber === a.startLineNumber && b.endColumn <= a.startColumn)) {
-			return false;
+		// Check if `b` is before `A`
+		if (b.endLineNumber < A.stArtLineNumber || (b.endLineNumber === A.stArtLineNumber && b.endColumn <= A.stArtColumn)) {
+			return fAlse;
 		}
 
-		// These ranges must intersect
+		// These rAnges must intersect
 		return true;
 	}
 
 	/**
-	 * A function that compares ranges, useful for sorting ranges
-	 * It will first compare ranges on the startPosition and then on the endPosition
+	 * A function thAt compAres rAnges, useful for sorting rAnges
+	 * It will first compAre rAnges on the stArtPosition And then on the endPosition
 	 */
-	public static compareRangesUsingStarts(a: IRange | null | undefined, b: IRange | null | undefined): number {
-		if (a && b) {
-			const aStartLineNumber = a.startLineNumber | 0;
-			const bStartLineNumber = b.startLineNumber | 0;
+	public stAtic compAreRAngesUsingStArts(A: IRAnge | null | undefined, b: IRAnge | null | undefined): number {
+		if (A && b) {
+			const AStArtLineNumber = A.stArtLineNumber | 0;
+			const bStArtLineNumber = b.stArtLineNumber | 0;
 
-			if (aStartLineNumber === bStartLineNumber) {
-				const aStartColumn = a.startColumn | 0;
-				const bStartColumn = b.startColumn | 0;
+			if (AStArtLineNumber === bStArtLineNumber) {
+				const AStArtColumn = A.stArtColumn | 0;
+				const bStArtColumn = b.stArtColumn | 0;
 
-				if (aStartColumn === bStartColumn) {
-					const aEndLineNumber = a.endLineNumber | 0;
+				if (AStArtColumn === bStArtColumn) {
+					const AEndLineNumber = A.endLineNumber | 0;
 					const bEndLineNumber = b.endLineNumber | 0;
 
-					if (aEndLineNumber === bEndLineNumber) {
-						const aEndColumn = a.endColumn | 0;
+					if (AEndLineNumber === bEndLineNumber) {
+						const AEndColumn = A.endColumn | 0;
 						const bEndColumn = b.endColumn | 0;
-						return aEndColumn - bEndColumn;
+						return AEndColumn - bEndColumn;
 					}
-					return aEndLineNumber - bEndLineNumber;
+					return AEndLineNumber - bEndLineNumber;
 				}
-				return aStartColumn - bStartColumn;
+				return AStArtColumn - bStArtColumn;
 			}
-			return aStartLineNumber - bStartLineNumber;
+			return AStArtLineNumber - bStArtLineNumber;
 		}
-		const aExists = (a ? 1 : 0);
+		const AExists = (A ? 1 : 0);
 		const bExists = (b ? 1 : 0);
-		return aExists - bExists;
+		return AExists - bExists;
 	}
 
 	/**
-	 * A function that compares ranges, useful for sorting ranges
-	 * It will first compare ranges on the endPosition and then on the startPosition
+	 * A function thAt compAres rAnges, useful for sorting rAnges
+	 * It will first compAre rAnges on the endPosition And then on the stArtPosition
 	 */
-	public static compareRangesUsingEnds(a: IRange, b: IRange): number {
-		if (a.endLineNumber === b.endLineNumber) {
-			if (a.endColumn === b.endColumn) {
-				if (a.startLineNumber === b.startLineNumber) {
-					return a.startColumn - b.startColumn;
+	public stAtic compAreRAngesUsingEnds(A: IRAnge, b: IRAnge): number {
+		if (A.endLineNumber === b.endLineNumber) {
+			if (A.endColumn === b.endColumn) {
+				if (A.stArtLineNumber === b.stArtLineNumber) {
+					return A.stArtColumn - b.stArtColumn;
 				}
-				return a.startLineNumber - b.startLineNumber;
+				return A.stArtLineNumber - b.stArtLineNumber;
 			}
-			return a.endColumn - b.endColumn;
+			return A.endColumn - b.endColumn;
 		}
-		return a.endLineNumber - b.endLineNumber;
+		return A.endLineNumber - b.endLineNumber;
 	}
 
 	/**
-	 * Test if the range spans multiple lines.
+	 * Test if the rAnge spAns multiple lines.
 	 */
-	public static spansMultipleLines(range: IRange): boolean {
-		return range.endLineNumber > range.startLineNumber;
+	public stAtic spAnsMultipleLines(rAnge: IRAnge): booleAn {
+		return rAnge.endLineNumber > rAnge.stArtLineNumber;
 	}
 }

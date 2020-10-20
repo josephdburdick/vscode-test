@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 'use strict';
 
 (function () {
-	const bootstrapWindow = bootstrapWindowLib();
+	const bootstrApWindow = bootstrApWindowLib();
 
-	// Load process explorer into window
-	bootstrapWindow.load(['vs/code/electron-sandbox/processExplorer/processExplorerMain'], function (processExplorer, configuration) {
-		processExplorer.startup(configuration.windowId, configuration.data);
-	}, { forceEnableDeveloperKeybindings: true });
+	// LoAd process explorer into window
+	bootstrApWindow.loAd(['vs/code/electron-sAndbox/processExplorer/processExplorerMAin'], function (processExplorer, configurAtion) {
+		processExplorer.stArtup(configurAtion.windowId, configurAtion.dAtA);
+	}, { forceEnAbleDeveloperKeybindings: true });
 
 
-	//#region Globals
+	//#region GlobAls
 
 	/**
-	 * @returns {{ load: (modules: string[], resultCallback: (result, configuration: object) => any, options?: object) => unknown }}
+	 * @returns {{ loAd: (modules: string[], resultCAllbAck: (result, configurAtion: object) => Any, options?: object) => unknown }}
 	 */
-	function bootstrapWindowLib() {
-		// @ts-ignore (defined in bootstrap-window.js)
-		return window.MonacoBootstrapWindow;
+	function bootstrApWindowLib() {
+		// @ts-ignore (defined in bootstrAp-window.js)
+		return window.MonAcoBootstrApWindow;
 	}
 
 	//#endregion

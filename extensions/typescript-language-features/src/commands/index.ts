@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import TypeScriptServiceClientHost from '../typeScriptServiceClientHost';
-import { Lazy } from '../utils/lazy';
-import { PluginManager } from '../utils/plugins';
-import { CommandManager } from './commandManager';
-import { ConfigurePluginCommand } from './configurePlugin';
-import { JavaScriptGoToProjectConfigCommand, TypeScriptGoToProjectConfigCommand } from './goToProjectConfiguration';
-import { LearnMoreAboutRefactoringsCommand } from './learnMoreAboutRefactorings';
-import { OpenTsServerLogCommand } from './openTsServerLog';
-import { ReloadJavaScriptProjectsCommand, ReloadTypeScriptProjectsCommand } from './reloadProject';
-import { RestartTsServerCommand } from './restartTsServer';
-import { SelectTypeScriptVersionCommand } from './selectTypeScriptVersion';
+import { LAzy } from '../utils/lAzy';
+import { PluginMAnAger } from '../utils/plugins';
+import { CommAndMAnAger } from './commAndMAnAger';
+import { ConfigurePluginCommAnd } from './configurePlugin';
+import { JAvAScriptGoToProjectConfigCommAnd, TypeScriptGoToProjectConfigCommAnd } from './goToProjectConfigurAtion';
+import { LeArnMoreAboutRefActoringsCommAnd } from './leArnMoreAboutRefActorings';
+import { OpenTsServerLogCommAnd } from './openTsServerLog';
+import { ReloAdJAvAScriptProjectsCommAnd, ReloAdTypeScriptProjectsCommAnd } from './reloAdProject';
+import { RestArtTsServerCommAnd } from './restArtTsServer';
+import { SelectTypeScriptVersionCommAnd } from './selectTypeScriptVersion';
 
-export function registerBaseCommands(
-	commandManager: CommandManager,
-	lazyClientHost: Lazy<TypeScriptServiceClientHost>,
-	pluginManager: PluginManager
+export function registerBAseCommAnds(
+	commAndMAnAger: CommAndMAnAger,
+	lAzyClientHost: LAzy<TypeScriptServiceClientHost>,
+	pluginMAnAger: PluginMAnAger
 ): void {
-	commandManager.register(new ReloadTypeScriptProjectsCommand(lazyClientHost));
-	commandManager.register(new ReloadJavaScriptProjectsCommand(lazyClientHost));
-	commandManager.register(new SelectTypeScriptVersionCommand(lazyClientHost));
-	commandManager.register(new OpenTsServerLogCommand(lazyClientHost));
-	commandManager.register(new RestartTsServerCommand(lazyClientHost));
-	commandManager.register(new TypeScriptGoToProjectConfigCommand(lazyClientHost));
-	commandManager.register(new JavaScriptGoToProjectConfigCommand(lazyClientHost));
-	commandManager.register(new ConfigurePluginCommand(pluginManager));
-	commandManager.register(new LearnMoreAboutRefactoringsCommand());
+	commAndMAnAger.register(new ReloAdTypeScriptProjectsCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new ReloAdJAvAScriptProjectsCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new SelectTypeScriptVersionCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new OpenTsServerLogCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new RestArtTsServerCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new TypeScriptGoToProjectConfigCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new JAvAScriptGoToProjectConfigCommAnd(lAzyClientHost));
+	commAndMAnAger.register(new ConfigurePluginCommAnd(pluginMAnAger));
+	commAndMAnAger.register(new LeArnMoreAboutRefActoringsCommAnd());
 }

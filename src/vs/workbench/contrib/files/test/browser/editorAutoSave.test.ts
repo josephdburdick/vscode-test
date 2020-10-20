@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Event } from 'vs/base/common/event';
-import { toResource } from 'vs/base/test/common/utils';
+import * As Assert from 'Assert';
+import { Event } from 'vs/bAse/common/event';
+import { toResource } from 'vs/bAse/test/common/utils';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { TestFilesConfigurationService, workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
+import { TestFilesConfigurAtionService, workbenchInstAntiAtionService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
 import { IResolvedTextFileEditorModel, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
-import { Registry } from 'vs/platform/registry/common/platform';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IEditorRegistry, EditorDescriptor, Extensions As EditorExtensions } from 'vs/workbench/browser/editor';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import { TextFileEditor } from 'vs/workbench/contrib/files/browser/editors/textFileEditor';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
 import { EditorInput } from 'vs/workbench/common/editor';
 import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
-import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
-import { EditorPart } from 'vs/workbench/browser/parts/editor/editorPart';
+import { TextFileEditorModelMAnAger } from 'vs/workbench/services/textfile/common/textFileEditorModelMAnAger';
+import { EditorPArt } from 'vs/workbench/browser/pArts/editor/editorPArt';
 import { EditorService } from 'vs/workbench/services/editor/browser/editorService';
-import { EditorAutoSave } from 'vs/workbench/browser/parts/editor/editorAutoSave';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
+import { EditorAutoSAve } from 'vs/workbench/browser/pArts/editor/editorAutoSAve';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { MockContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
 
-suite('EditorAutoSave', () => {
+suite('EditorAutoSAve', () => {
 
-	let disposables: IDisposable[] = [];
+	let disposAbles: IDisposAble[] = [];
 
 	setup(() => {
-		disposables.push(Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
-			EditorDescriptor.create(
+		disposAbles.push(Registry.As<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
+			EditorDescriptor.creAte(
 				TextFileEditor,
 				TextFileEditor.ID,
 				'Text File Editor'
@@ -42,85 +42,85 @@ suite('EditorAutoSave', () => {
 		));
 	});
 
-	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+	teArdown(() => {
+		dispose(disposAbles);
+		disposAbles = [];
 	});
 
-	async function createEditorAutoSave(autoSaveConfig: object): Promise<[TestServiceAccessor, EditorPart, EditorAutoSave]> {
-		const instantiationService = workbenchInstantiationService();
+	Async function creAteEditorAutoSAve(AutoSAveConfig: object): Promise<[TestServiceAccessor, EditorPArt, EditorAutoSAve]> {
+		const instAntiAtionService = workbenchInstAntiAtionService();
 
-		const configurationService = new TestConfigurationService();
-		configurationService.setUserConfiguration('files', autoSaveConfig);
-		instantiationService.stub(IConfigurationService, configurationService);
+		const configurAtionService = new TestConfigurAtionService();
+		configurAtionService.setUserConfigurAtion('files', AutoSAveConfig);
+		instAntiAtionService.stub(IConfigurAtionService, configurAtionService);
 
-		instantiationService.stub(IFilesConfigurationService, new TestFilesConfigurationService(
-			<IContextKeyService>instantiationService.createInstance(MockContextKeyService),
-			configurationService
+		instAntiAtionService.stub(IFilesConfigurAtionService, new TestFilesConfigurAtionService(
+			<IContextKeyService>instAntiAtionService.creAteInstAnce(MockContextKeyService),
+			configurAtionService
 		));
 
-		const part = instantiationService.createInstance(EditorPart);
-		part.create(document.createElement('div'));
-		part.layout(400, 300);
+		const pArt = instAntiAtionService.creAteInstAnce(EditorPArt);
+		pArt.creAte(document.creAteElement('div'));
+		pArt.lAyout(400, 300);
 
-		instantiationService.stub(IEditorGroupsService, part);
+		instAntiAtionService.stub(IEditorGroupsService, pArt);
 
-		const editorService: EditorService = instantiationService.createInstance(EditorService);
-		instantiationService.stub(IEditorService, editorService);
+		const editorService: EditorService = instAntiAtionService.creAteInstAnce(EditorService);
+		instAntiAtionService.stub(IEditorService, editorService);
 
-		const accessor = instantiationService.createInstance(TestServiceAccessor);
+		const Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 
-		const editorAutoSave = instantiationService.createInstance(EditorAutoSave);
+		const editorAutoSAve = instAntiAtionService.creAteInstAnce(EditorAutoSAve);
 
-		return [accessor, part, editorAutoSave];
+		return [Accessor, pArt, editorAutoSAve];
 	}
 
-	test('editor auto saves after short delay if configured', async function () {
-		const [accessor, part, editorAutoSave] = await createEditorAutoSave({ autoSave: 'afterDelay', autoSaveDelay: 1 });
+	test('editor Auto sAves After short delAy if configured', Async function () {
+		const [Accessor, pArt, editorAutoSAve] = AwAit creAteEditorAutoSAve({ AutoSAve: 'AfterDelAy', AutoSAveDelAy: 1 });
 
-		const resource = toResource.call(this, '/path/index.txt');
+		const resource = toResource.cAll(this, '/pAth/index.txt');
 
-		const model = await accessor.textFileService.files.resolve(resource) as IResolvedTextFileEditorModel;
-		model.textEditorModel.setValue('Super Good');
+		const model = AwAit Accessor.textFileService.files.resolve(resource) As IResolvedTextFileEditorModel;
+		model.textEditorModel.setVAlue('Super Good');
 
-		assert.ok(model.isDirty());
+		Assert.ok(model.isDirty());
 
-		await awaitModelSaved(model);
+		AwAit AwAitModelSAved(model);
 
-		assert.ok(!model.isDirty());
+		Assert.ok(!model.isDirty());
 
-		part.dispose();
-		editorAutoSave.dispose();
-		(<TextFileEditorModelManager>accessor.textFileService.files).dispose();
+		pArt.dispose();
+		editorAutoSAve.dispose();
+		(<TextFileEditorModelMAnAger>Accessor.textFileService.files).dispose();
 	});
 
-	test('editor auto saves on focus change if configured', async function () {
+	test('editor Auto sAves on focus chAnge if configured', Async function () {
 		this.retries(3); // https://github.com/microsoft/vscode/issues/108727
 
-		const [accessor, part, editorAutoSave] = await createEditorAutoSave({ autoSave: 'onFocusChange' });
+		const [Accessor, pArt, editorAutoSAve] = AwAit creAteEditorAutoSAve({ AutoSAve: 'onFocusChAnge' });
 
-		const resource = toResource.call(this, '/path/index.txt');
-		await accessor.editorService.openEditor({ resource, forceFile: true });
+		const resource = toResource.cAll(this, '/pAth/index.txt');
+		AwAit Accessor.editorService.openEditor({ resource, forceFile: true });
 
-		const model = await accessor.textFileService.files.resolve(resource) as IResolvedTextFileEditorModel;
-		model.textEditorModel.setValue('Super Good');
+		const model = AwAit Accessor.textFileService.files.resolve(resource) As IResolvedTextFileEditorModel;
+		model.textEditorModel.setVAlue('Super Good');
 
-		assert.ok(model.isDirty());
+		Assert.ok(model.isDirty());
 
-		await accessor.editorService.openEditor({ resource: toResource.call(this, '/path/index_other.txt') });
+		AwAit Accessor.editorService.openEditor({ resource: toResource.cAll(this, '/pAth/index_other.txt') });
 
-		await awaitModelSaved(model);
+		AwAit AwAitModelSAved(model);
 
-		assert.ok(!model.isDirty());
+		Assert.ok(!model.isDirty());
 
-		part.dispose();
-		editorAutoSave.dispose();
-		(<TextFileEditorModelManager>accessor.textFileService.files).dispose();
+		pArt.dispose();
+		editorAutoSAve.dispose();
+		(<TextFileEditorModelMAnAger>Accessor.textFileService.files).dispose();
 	});
 
-	function awaitModelSaved(model: ITextFileEditorModel): Promise<void> {
+	function AwAitModelSAved(model: ITextFileEditorModel): Promise<void> {
 		return new Promise(c => {
-			Event.once(model.onDidChangeDirty)(c);
+			Event.once(model.onDidChAngeDirty)(c);
 		});
 	}
 });

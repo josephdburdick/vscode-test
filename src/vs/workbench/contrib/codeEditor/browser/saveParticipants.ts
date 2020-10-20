@@ -1,176 +1,176 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import * as strings from 'vs/base/common/strings';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import * As strings from 'vs/bAse/common/strings';
 import { IActiveCodeEditor, isCodeEditor } from 'vs/editor/browser/editorBrowser';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { trimTrailingWhitespace } from 'vs/editor/common/commands/trimTrailingWhitespaceCommand';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
+import { trimTrAilingWhitespAce } from 'vs/editor/common/commAnds/trimTrAilingWhitespAceCommAnd';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
 import { CodeActionTriggerType, CodeActionProvider } from 'vs/editor/common/modes';
 import { getCodeActions } from 'vs/editor/contrib/codeAction/codeAction';
-import { applyCodeAction } from 'vs/editor/contrib/codeAction/codeActionCommands';
+import { ApplyCodeAction } from 'vs/editor/contrib/codeAction/codeActionCommAnds';
 import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
-import { formatDocumentRangesWithSelectedProvider, formatDocumentWithSelectedProvider, FormattingMode } from 'vs/editor/contrib/format/format';
+import { formAtDocumentRAngesWithSelectedProvider, formAtDocumentWithSelectedProvider, FormAttingMode } from 'vs/editor/contrib/formAt/formAt';
 import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { localize } from 'vs/nls';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IProgressStep, IProgress, Progress } from 'vs/platform/progress/common/progress';
-import { ITextFileService, ITextFileSaveParticipant, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IWorkbenchContribution, Extensions as WorkbenchContributionsExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { getModifiedRanges } from 'vs/workbench/contrib/format/browser/formatModified';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { locAlize } from 'vs/nls';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IProgressStep, IProgress, Progress } from 'vs/plAtform/progress/common/progress';
+import { ITextFileService, ITextFileSAvePArticipAnt, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
+import { SAveReAson } from 'vs/workbench/common/editor';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IWorkbenchContribution, Extensions As WorkbenchContributionsExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { getModifiedRAnges } from 'vs/workbench/contrib/formAt/browser/formAtModified';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 
-export class TrimWhitespaceParticipant implements ITextFileSaveParticipant {
+export clAss TrimWhitespAcePArticipAnt implements ITextFileSAvePArticipAnt {
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ICodeEditorService private readonly codeEditorService: ICodeEditorService
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ICodeEditorService privAte reAdonly codeEditorService: ICodeEditorService
 	) {
 		// Nothing
 	}
 
-	async participate(model: ITextFileEditorModel, env: { reason: SaveReason; }): Promise<void> {
+	Async pArticipAte(model: ITextFileEditorModel, env: { reAson: SAveReAson; }): Promise<void> {
 		if (!model.textEditorModel) {
 			return;
 		}
 
-		if (this.configurationService.getValue('files.trimTrailingWhitespace', { overrideIdentifier: model.textEditorModel.getLanguageIdentifier().language, resource: model.resource })) {
-			this.doTrimTrailingWhitespace(model.textEditorModel, env.reason === SaveReason.AUTO);
+		if (this.configurAtionService.getVAlue('files.trimTrAilingWhitespAce', { overrideIdentifier: model.textEditorModel.getLAnguAgeIdentifier().lAnguAge, resource: model.resource })) {
+			this.doTrimTrAilingWhitespAce(model.textEditorModel, env.reAson === SAveReAson.AUTO);
 		}
 	}
 
-	private doTrimTrailingWhitespace(model: ITextModel, isAutoSaved: boolean): void {
+	privAte doTrimTrAilingWhitespAce(model: ITextModel, isAutoSAved: booleAn): void {
 		let prevSelection: Selection[] = [];
 		let cursors: Position[] = [];
 
 		const editor = findEditor(model, this.codeEditorService);
 		if (editor) {
-			// Find `prevSelection` in any case do ensure a good undo stack when pushing the edit
-			// Collect active cursors in `cursors` only if `isAutoSaved` to avoid having the cursors jump
+			// Find `prevSelection` in Any cAse do ensure A good undo stAck when pushing the edit
+			// Collect Active cursors in `cursors` only if `isAutoSAved` to Avoid hAving the cursors jump
 			prevSelection = editor.getSelections();
-			if (isAutoSaved) {
-				cursors = prevSelection.map(s => s.getPosition());
-				const snippetsRange = SnippetController2.get(editor).getSessionEnclosingRange();
-				if (snippetsRange) {
-					for (let lineNumber = snippetsRange.startLineNumber; lineNumber <= snippetsRange.endLineNumber; lineNumber++) {
-						cursors.push(new Position(lineNumber, model.getLineMaxColumn(lineNumber)));
+			if (isAutoSAved) {
+				cursors = prevSelection.mAp(s => s.getPosition());
+				const snippetsRAnge = SnippetController2.get(editor).getSessionEnclosingRAnge();
+				if (snippetsRAnge) {
+					for (let lineNumber = snippetsRAnge.stArtLineNumber; lineNumber <= snippetsRAnge.endLineNumber; lineNumber++) {
+						cursors.push(new Position(lineNumber, model.getLineMAxColumn(lineNumber)));
 					}
 				}
 			}
 		}
 
-		const ops = trimTrailingWhitespace(model, cursors);
+		const ops = trimTrAilingWhitespAce(model, cursors);
 		if (!ops.length) {
 			return; // Nothing to do
 		}
 
-		model.pushEditOperations(prevSelection, ops, (_edits) => prevSelection);
+		model.pushEditOperAtions(prevSelection, ops, (_edits) => prevSelection);
 	}
 }
 
 function findEditor(model: ITextModel, codeEditorService: ICodeEditorService): IActiveCodeEditor | null {
-	let candidate: IActiveCodeEditor | null = null;
+	let cAndidAte: IActiveCodeEditor | null = null;
 
-	if (model.isAttachedToEditor()) {
+	if (model.isAttAchedToEditor()) {
 		for (const editor of codeEditorService.listCodeEditors()) {
-			if (editor.hasModel() && editor.getModel() === model) {
-				if (editor.hasTextFocus()) {
-					return editor; // favour focused editor if there are multiple
+			if (editor.hAsModel() && editor.getModel() === model) {
+				if (editor.hAsTextFocus()) {
+					return editor; // fAvour focused editor if there Are multiple
 				}
 
-				candidate = editor;
+				cAndidAte = editor;
 			}
 		}
 	}
 
-	return candidate;
+	return cAndidAte;
 }
 
-export class FinalNewLineParticipant implements ITextFileSaveParticipant {
+export clAss FinAlNewLinePArticipAnt implements ITextFileSAvePArticipAnt {
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ICodeEditorService private readonly codeEditorService: ICodeEditorService
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ICodeEditorService privAte reAdonly codeEditorService: ICodeEditorService
 	) {
 		// Nothing
 	}
 
-	async participate(model: ITextFileEditorModel, _env: { reason: SaveReason; }): Promise<void> {
+	Async pArticipAte(model: ITextFileEditorModel, _env: { reAson: SAveReAson; }): Promise<void> {
 		if (!model.textEditorModel) {
 			return;
 		}
 
-		if (this.configurationService.getValue('files.insertFinalNewline', { overrideIdentifier: model.textEditorModel.getLanguageIdentifier().language, resource: model.resource })) {
-			this.doInsertFinalNewLine(model.textEditorModel);
+		if (this.configurAtionService.getVAlue('files.insertFinAlNewline', { overrideIdentifier: model.textEditorModel.getLAnguAgeIdentifier().lAnguAge, resource: model.resource })) {
+			this.doInsertFinAlNewLine(model.textEditorModel);
 		}
 	}
 
-	private doInsertFinalNewLine(model: ITextModel): void {
+	privAte doInsertFinAlNewLine(model: ITextModel): void {
 		const lineCount = model.getLineCount();
-		const lastLine = model.getLineContent(lineCount);
-		const lastLineIsEmptyOrWhitespace = strings.lastNonWhitespaceIndex(lastLine) === -1;
+		const lAstLine = model.getLineContent(lineCount);
+		const lAstLineIsEmptyOrWhitespAce = strings.lAstNonWhitespAceIndex(lAstLine) === -1;
 
-		if (!lineCount || lastLineIsEmptyOrWhitespace) {
+		if (!lineCount || lAstLineIsEmptyOrWhitespAce) {
 			return;
 		}
 
-		const edits = [EditOperation.insert(new Position(lineCount, model.getLineMaxColumn(lineCount)), model.getEOL())];
+		const edits = [EditOperAtion.insert(new Position(lineCount, model.getLineMAxColumn(lineCount)), model.getEOL())];
 		const editor = findEditor(model, this.codeEditorService);
 		if (editor) {
-			editor.executeEdits('insertFinalNewLine', edits, editor.getSelections());
+			editor.executeEdits('insertFinAlNewLine', edits, editor.getSelections());
 		} else {
-			model.pushEditOperations([], edits, () => null);
+			model.pushEditOperAtions([], edits, () => null);
 		}
 	}
 }
 
-export class TrimFinalNewLinesParticipant implements ITextFileSaveParticipant {
+export clAss TrimFinAlNewLinesPArticipAnt implements ITextFileSAvePArticipAnt {
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ICodeEditorService private readonly codeEditorService: ICodeEditorService
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ICodeEditorService privAte reAdonly codeEditorService: ICodeEditorService
 	) {
 		// Nothing
 	}
 
-	async participate(model: ITextFileEditorModel, env: { reason: SaveReason; }): Promise<void> {
+	Async pArticipAte(model: ITextFileEditorModel, env: { reAson: SAveReAson; }): Promise<void> {
 		if (!model.textEditorModel) {
 			return;
 		}
 
-		if (this.configurationService.getValue('files.trimFinalNewlines', { overrideIdentifier: model.textEditorModel.getLanguageIdentifier().language, resource: model.resource })) {
-			this.doTrimFinalNewLines(model.textEditorModel, env.reason === SaveReason.AUTO);
+		if (this.configurAtionService.getVAlue('files.trimFinAlNewlines', { overrideIdentifier: model.textEditorModel.getLAnguAgeIdentifier().lAnguAge, resource: model.resource })) {
+			this.doTrimFinAlNewLines(model.textEditorModel, env.reAson === SAveReAson.AUTO);
 		}
 	}
 
 	/**
-	 * returns 0 if the entire file is empty or whitespace only
+	 * returns 0 if the entire file is empty or whitespAce only
 	 */
-	private findLastLineWithContent(model: ITextModel): number {
+	privAte findLAstLineWithContent(model: ITextModel): number {
 		for (let lineNumber = model.getLineCount(); lineNumber >= 1; lineNumber--) {
 			const lineContent = model.getLineContent(lineNumber);
-			if (strings.lastNonWhitespaceIndex(lineContent) !== -1) {
-				// this line has content
+			if (strings.lAstNonWhitespAceIndex(lineContent) !== -1) {
+				// this line hAs content
 				return lineNumber;
 			}
 		}
-		// no line has content
+		// no line hAs content
 		return 0;
 	}
 
-	private doTrimFinalNewLines(model: ITextModel, isAutoSaved: boolean): void {
+	privAte doTrimFinAlNewLines(model: ITextModel, isAutoSAved: booleAn): void {
 		const lineCount = model.getLineCount();
 
 		// Do not insert new line if file does not end with new line
@@ -179,29 +179,29 @@ export class TrimFinalNewLinesParticipant implements ITextFileSaveParticipant {
 		}
 
 		let prevSelection: Selection[] = [];
-		let cannotTouchLineNumber = 0;
+		let cAnnotTouchLineNumber = 0;
 		const editor = findEditor(model, this.codeEditorService);
 		if (editor) {
 			prevSelection = editor.getSelections();
-			if (isAutoSaved) {
+			if (isAutoSAved) {
 				for (let i = 0, len = prevSelection.length; i < len; i++) {
 					const positionLineNumber = prevSelection[i].positionLineNumber;
-					if (positionLineNumber > cannotTouchLineNumber) {
-						cannotTouchLineNumber = positionLineNumber;
+					if (positionLineNumber > cAnnotTouchLineNumber) {
+						cAnnotTouchLineNumber = positionLineNumber;
 					}
 				}
 			}
 		}
 
-		const lastLineNumberWithContent = this.findLastLineWithContent(model);
-		const deleteFromLineNumber = Math.max(lastLineNumberWithContent + 1, cannotTouchLineNumber + 1);
-		const deletionRange = model.validateRange(new Range(deleteFromLineNumber, 1, lineCount, model.getLineMaxColumn(lineCount)));
+		const lAstLineNumberWithContent = this.findLAstLineWithContent(model);
+		const deleteFromLineNumber = MAth.mAx(lAstLineNumberWithContent + 1, cAnnotTouchLineNumber + 1);
+		const deletionRAnge = model.vAlidAteRAnge(new RAnge(deleteFromLineNumber, 1, lineCount, model.getLineMAxColumn(lineCount)));
 
-		if (deletionRange.isEmpty()) {
+		if (deletionRAnge.isEmpty()) {
 			return;
 		}
 
-		model.pushEditOperations(prevSelection, [EditOperation.delete(deletionRange)], _edits => prevSelection);
+		model.pushEditOperAtions(prevSelection, [EditOperAtion.delete(deletionRAnge)], _edits => prevSelection);
 
 		if (editor) {
 			editor.setSelections(prevSelection);
@@ -209,179 +209,179 @@ export class TrimFinalNewLinesParticipant implements ITextFileSaveParticipant {
 	}
 }
 
-class FormatOnSaveParticipant implements ITextFileSaveParticipant {
+clAss FormAtOnSAvePArticipAnt implements ITextFileSAvePArticipAnt {
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ICodeEditorService private readonly codeEditorService: ICodeEditorService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ICodeEditorService privAte reAdonly codeEditorService: ICodeEditorService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
 	) {
 		// Nothing
 	}
 
-	async participate(model: ITextFileEditorModel, env: { reason: SaveReason; }, progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
+	Async pArticipAte(model: ITextFileEditorModel, env: { reAson: SAveReAson; }, progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
 		if (!model.textEditorModel) {
 			return;
 		}
-		if (env.reason === SaveReason.AUTO) {
+		if (env.reAson === SAveReAson.AUTO) {
 			return undefined;
 		}
 
 		const textEditorModel = model.textEditorModel;
-		const overrides = { overrideIdentifier: textEditorModel.getLanguageIdentifier().language, resource: textEditorModel.uri };
+		const overrides = { overrideIdentifier: textEditorModel.getLAnguAgeIdentifier().lAnguAge, resource: textEditorModel.uri };
 
-		const nestedProgress = new Progress<{ displayName?: string, extensionId?: ExtensionIdentifier }>(provider => {
+		const nestedProgress = new Progress<{ displAyNAme?: string, extensionId?: ExtensionIdentifier }>(provider => {
 			progress.report({
-				message: localize(
-					'formatting',
-					"Running '{0}' Formatter ([configure](command:workbench.action.openSettings?%5B%22editor.formatOnSave%22%5D)).",
-					provider.displayName || provider.extensionId && provider.extensionId.value || '???'
+				messAge: locAlize(
+					'formAtting',
+					"Running '{0}' FormAtter ([configure](commAnd:workbench.Action.openSettings?%5B%22editor.formAtOnSAve%22%5D)).",
+					provider.displAyNAme || provider.extensionId && provider.extensionId.vAlue || '???'
 				)
 			});
 		});
 
-		const enabled = this.configurationService.getValue<boolean>('editor.formatOnSave', overrides);
-		if (!enabled) {
+		const enAbled = this.configurAtionService.getVAlue<booleAn>('editor.formAtOnSAve', overrides);
+		if (!enAbled) {
 			return undefined;
 		}
 
 		const editorOrModel = findEditor(textEditorModel, this.codeEditorService) || textEditorModel;
-		const mode = this.configurationService.getValue<'file' | 'modifications'>('editor.formatOnSaveMode', overrides);
-		if (mode === 'modifications') {
-			// format modifications
-			const ranges = await this.instantiationService.invokeFunction(getModifiedRanges, isCodeEditor(editorOrModel) ? editorOrModel.getModel() : editorOrModel);
-			if (ranges) {
-				await this.instantiationService.invokeFunction(formatDocumentRangesWithSelectedProvider, editorOrModel, ranges, FormattingMode.Silent, nestedProgress, token);
+		const mode = this.configurAtionService.getVAlue<'file' | 'modificAtions'>('editor.formAtOnSAveMode', overrides);
+		if (mode === 'modificAtions') {
+			// formAt modificAtions
+			const rAnges = AwAit this.instAntiAtionService.invokeFunction(getModifiedRAnges, isCodeEditor(editorOrModel) ? editorOrModel.getModel() : editorOrModel);
+			if (rAnges) {
+				AwAit this.instAntiAtionService.invokeFunction(formAtDocumentRAngesWithSelectedProvider, editorOrModel, rAnges, FormAttingMode.Silent, nestedProgress, token);
 			}
 		} else {
-			// format the whole file
-			await this.instantiationService.invokeFunction(formatDocumentWithSelectedProvider, editorOrModel, FormattingMode.Silent, nestedProgress, token);
+			// formAt the whole file
+			AwAit this.instAntiAtionService.invokeFunction(formAtDocumentWithSelectedProvider, editorOrModel, FormAttingMode.Silent, nestedProgress, token);
 		}
 	}
 }
 
-class CodeActionOnSaveParticipant implements ITextFileSaveParticipant {
+clAss CodeActionOnSAvePArticipAnt implements ITextFileSAvePArticipAnt {
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
 	) { }
 
-	async participate(model: ITextFileEditorModel, env: { reason: SaveReason; }, progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
+	Async pArticipAte(model: ITextFileEditorModel, env: { reAson: SAveReAson; }, progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
 		if (!model.textEditorModel) {
 			return;
 		}
 
-		if (env.reason === SaveReason.AUTO) {
+		if (env.reAson === SAveReAson.AUTO) {
 			return undefined;
 		}
 		const textEditorModel = model.textEditorModel;
 
-		const settingsOverrides = { overrideIdentifier: textEditorModel.getLanguageIdentifier().language, resource: model.resource };
-		const setting = this.configurationService.getValue<{ [kind: string]: boolean } | string[]>('editor.codeActionsOnSave', settingsOverrides);
+		const settingsOverrides = { overrideIdentifier: textEditorModel.getLAnguAgeIdentifier().lAnguAge, resource: model.resource };
+		const setting = this.configurAtionService.getVAlue<{ [kind: string]: booleAn } | string[]>('editor.codeActionsOnSAve', settingsOverrides);
 		if (!setting) {
 			return undefined;
 		}
 
-		const settingItems: string[] = Array.isArray(setting)
+		const settingItems: string[] = ArrAy.isArrAy(setting)
 			? setting
 			: Object.keys(setting).filter(x => setting[x]);
 
-		const codeActionsOnSave = settingItems
-			.map(x => new CodeActionKind(x));
+		const codeActionsOnSAve = settingItems
+			.mAp(x => new CodeActionKind(x));
 
-		if (!Array.isArray(setting)) {
-			codeActionsOnSave.sort((a, b) => {
-				if (CodeActionKind.SourceFixAll.contains(a)) {
-					if (CodeActionKind.SourceFixAll.contains(b)) {
+		if (!ArrAy.isArrAy(setting)) {
+			codeActionsOnSAve.sort((A, b) => {
+				if (CodeActionKind.SourceFixAll.contAins(A)) {
+					if (CodeActionKind.SourceFixAll.contAins(b)) {
 						return 0;
 					}
 					return -1;
 				}
-				if (CodeActionKind.SourceFixAll.contains(b)) {
+				if (CodeActionKind.SourceFixAll.contAins(b)) {
 					return 1;
 				}
 				return 0;
 			});
 		}
 
-		if (!codeActionsOnSave.length) {
+		if (!codeActionsOnSAve.length) {
 			return undefined;
 		}
 
-		const excludedActions = Array.isArray(setting)
+		const excludedActions = ArrAy.isArrAy(setting)
 			? []
 			: Object.keys(setting)
-				.filter(x => setting[x] === false)
-				.map(x => new CodeActionKind(x));
+				.filter(x => setting[x] === fAlse)
+				.mAp(x => new CodeActionKind(x));
 
-		progress.report({ message: localize('codeaction', "Quick Fixes") });
-		await this.applyOnSaveActions(textEditorModel, codeActionsOnSave, excludedActions, progress, token);
+		progress.report({ messAge: locAlize('codeAction', "Quick Fixes") });
+		AwAit this.ApplyOnSAveActions(textEditorModel, codeActionsOnSAve, excludedActions, progress, token);
 	}
 
-	private async applyOnSaveActions(model: ITextModel, codeActionsOnSave: readonly CodeActionKind[], excludes: readonly CodeActionKind[], progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
+	privAte Async ApplyOnSAveActions(model: ITextModel, codeActionsOnSAve: reAdonly CodeActionKind[], excludes: reAdonly CodeActionKind[], progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
 
-		const getActionProgress = new class implements IProgress<CodeActionProvider> {
-			private _names = new Set<string>();
-			private _report(): void {
+		const getActionProgress = new clAss implements IProgress<CodeActionProvider> {
+			privAte _nAmes = new Set<string>();
+			privAte _report(): void {
 				progress.report({
-					message: localize(
-						'codeaction.get',
-						"Getting code actions from '{0}' ([configure](command:workbench.action.openSettings?%5B%22editor.codeActionsOnSave%22%5D)).",
-						[...this._names].map(name => `'${name}'`).join(', ')
+					messAge: locAlize(
+						'codeAction.get',
+						"Getting code Actions from '{0}' ([configure](commAnd:workbench.Action.openSettings?%5B%22editor.codeActionsOnSAve%22%5D)).",
+						[...this._nAmes].mAp(nAme => `'${nAme}'`).join(', ')
 					)
 				});
 			}
 			report(provider: CodeActionProvider) {
-				if (provider.displayName && !this._names.has(provider.displayName)) {
-					this._names.add(provider.displayName);
+				if (provider.displAyNAme && !this._nAmes.hAs(provider.displAyNAme)) {
+					this._nAmes.Add(provider.displAyNAme);
 					this._report();
 				}
 			}
 		};
 
-		for (const codeActionKind of codeActionsOnSave) {
-			const actionsToRun = await this.getActionsToRun(model, codeActionKind, excludes, getActionProgress, token);
+		for (const codeActionKind of codeActionsOnSAve) {
+			const ActionsToRun = AwAit this.getActionsToRun(model, codeActionKind, excludes, getActionProgress, token);
 			try {
-				for (const action of actionsToRun.validActions) {
-					progress.report({ message: localize('codeAction.apply', "Applying code action '{0}'.", action.action.title) });
-					await this.instantiationService.invokeFunction(applyCodeAction, action);
+				for (const Action of ActionsToRun.vAlidActions) {
+					progress.report({ messAge: locAlize('codeAction.Apply', "Applying code Action '{0}'.", Action.Action.title) });
+					AwAit this.instAntiAtionService.invokeFunction(ApplyCodeAction, Action);
 				}
-			} catch {
-				// Failure to apply a code action should not block other on save actions
-			} finally {
-				actionsToRun.dispose();
+			} cAtch {
+				// FAilure to Apply A code Action should not block other on sAve Actions
+			} finAlly {
+				ActionsToRun.dispose();
 			}
 		}
 	}
 
-	private getActionsToRun(model: ITextModel, codeActionKind: CodeActionKind, excludes: readonly CodeActionKind[], progress: IProgress<CodeActionProvider>, token: CancellationToken) {
-		return getCodeActions(model, model.getFullModelRange(), {
+	privAte getActionsToRun(model: ITextModel, codeActionKind: CodeActionKind, excludes: reAdonly CodeActionKind[], progress: IProgress<CodeActionProvider>, token: CAncellAtionToken) {
+		return getCodeActions(model, model.getFullModelRAnge(), {
 			type: CodeActionTriggerType.Auto,
 			filter: { include: codeActionKind, excludes: excludes, includeSourceActions: true },
 		}, progress, token);
 	}
 }
 
-export class SaveParticipantsContribution extends Disposable implements IWorkbenchContribution {
+export clAss SAvePArticipAntsContribution extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@ITextFileService private readonly textFileService: ITextFileService
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@ITextFileService privAte reAdonly textFileService: ITextFileService
 	) {
 		super();
 
-		this.registerSaveParticipants();
+		this.registerSAvePArticipAnts();
 	}
 
-	private registerSaveParticipants(): void {
-		this._register(this.textFileService.files.addSaveParticipant(this.instantiationService.createInstance(TrimWhitespaceParticipant)));
-		this._register(this.textFileService.files.addSaveParticipant(this.instantiationService.createInstance(CodeActionOnSaveParticipant)));
-		this._register(this.textFileService.files.addSaveParticipant(this.instantiationService.createInstance(FormatOnSaveParticipant)));
-		this._register(this.textFileService.files.addSaveParticipant(this.instantiationService.createInstance(FinalNewLineParticipant)));
-		this._register(this.textFileService.files.addSaveParticipant(this.instantiationService.createInstance(TrimFinalNewLinesParticipant)));
+	privAte registerSAvePArticipAnts(): void {
+		this._register(this.textFileService.files.AddSAvePArticipAnt(this.instAntiAtionService.creAteInstAnce(TrimWhitespAcePArticipAnt)));
+		this._register(this.textFileService.files.AddSAvePArticipAnt(this.instAntiAtionService.creAteInstAnce(CodeActionOnSAvePArticipAnt)));
+		this._register(this.textFileService.files.AddSAvePArticipAnt(this.instAntiAtionService.creAteInstAnce(FormAtOnSAvePArticipAnt)));
+		this._register(this.textFileService.files.AddSAvePArticipAnt(this.instAntiAtionService.creAteInstAnce(FinAlNewLinePArticipAnt)));
+		this._register(this.textFileService.files.AddSAvePArticipAnt(this.instAntiAtionService.creAteInstAnce(TrimFinAlNewLinesPArticipAnt)));
 	}
 }
 
-const workbenchContributionsRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchContributionsExtensions.Workbench);
-workbenchContributionsRegistry.registerWorkbenchContribution(SaveParticipantsContribution, LifecyclePhase.Restored);
+const workbenchContributionsRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchContributionsExtensions.Workbench);
+workbenchContributionsRegistry.registerWorkbenchContribution(SAvePArticipAntsContribution, LifecyclePhAse.Restored);

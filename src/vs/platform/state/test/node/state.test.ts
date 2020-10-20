@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { FileStorage } from 'vs/platform/state/node/stateService';
-import { mkdirp, rimraf, RimRafMode, writeFileSync } from 'vs/base/node/pfs';
+import * As Assert from 'Assert';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import { getRAndomTestPAth } from 'vs/bAse/test/node/testUtils';
+import { FileStorAge } from 'vs/plAtform/stAte/node/stAteService';
+import { mkdirp, rimrAf, RimRAfMode, writeFileSync } from 'vs/bAse/node/pfs';
 
-suite('StateService', () => {
-	const parentDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'stateservice');
-	const storageFile = path.join(parentDir, 'storage.json');
+suite('StAteService', () => {
+	const pArentDir = getRAndomTestPAth(os.tmpdir(), 'vsctests', 'stAteservice');
+	const storAgeFile = pAth.join(pArentDir, 'storAge.json');
 
-	teardown(async () => {
-		await rimraf(parentDir, RimRafMode.MOVE);
+	teArdown(Async () => {
+		AwAit rimrAf(pArentDir, RimRAfMode.MOVE);
 	});
 
-	test('Basics', async () => {
-		await mkdirp(parentDir);
-		writeFileSync(storageFile, '');
+	test('BAsics', Async () => {
+		AwAit mkdirp(pArentDir);
+		writeFileSync(storAgeFile, '');
 
-		let service = new FileStorage(storageFile, () => null);
+		let service = new FileStorAge(storAgeFile, () => null);
 
-		service.setItem('some.key', 'some.value');
-		assert.equal(service.getItem('some.key'), 'some.value');
+		service.setItem('some.key', 'some.vAlue');
+		Assert.equAl(service.getItem('some.key'), 'some.vAlue');
 
 		service.removeItem('some.key');
-		assert.equal(service.getItem('some.key', 'some.default'), 'some.default');
+		Assert.equAl(service.getItem('some.key', 'some.defAult'), 'some.defAult');
 
-		assert.ok(!service.getItem('some.unknonw.key'));
+		Assert.ok(!service.getItem('some.unknonw.key'));
 
-		service.setItem('some.other.key', 'some.other.value');
+		service.setItem('some.other.key', 'some.other.vAlue');
 
-		service = new FileStorage(storageFile, () => null);
+		service = new FileStorAge(storAgeFile, () => null);
 
-		assert.equal(service.getItem('some.other.key'), 'some.other.value');
+		Assert.equAl(service.getItem('some.other.key'), 'some.other.vAlue');
 
-		service.setItem('some.other.key', 'some.other.value');
-		assert.equal(service.getItem('some.other.key'), 'some.other.value');
+		service.setItem('some.other.key', 'some.other.vAlue');
+		Assert.equAl(service.getItem('some.other.key'), 'some.other.vAlue');
 
 		service.setItem('some.undefined.key', undefined);
-		assert.equal(service.getItem('some.undefined.key', 'some.default'), 'some.default');
+		Assert.equAl(service.getItem('some.undefined.key', 'some.defAult'), 'some.defAult');
 
 		service.setItem('some.null.key', null);
-		assert.equal(service.getItem('some.null.key', 'some.default'), 'some.default');
+		Assert.equAl(service.getItem('some.null.key', 'some.defAult'), 'some.defAult');
 	});
 });

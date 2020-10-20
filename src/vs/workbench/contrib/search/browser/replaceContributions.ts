@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IReplaceService } from 'vs/workbench/contrib/search/common/replace';
-import { ReplaceService, ReplacePreviewContentProvider } from 'vs/workbench/contrib/search/browser/replaceService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IReplAceService } from 'vs/workbench/contrib/seArch/common/replAce';
+import { ReplAceService, ReplAcePreviewContentProvider } from 'vs/workbench/contrib/seArch/browser/replAceService';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
 export function registerContributions(): void {
-	registerSingleton(IReplaceService, ReplaceService, true);
-	Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ReplacePreviewContentProvider, LifecyclePhase.Starting);
+	registerSingleton(IReplAceService, ReplAceService, true);
+	Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ReplAcePreviewContentProvider, LifecyclePhAse.StArting);
 }

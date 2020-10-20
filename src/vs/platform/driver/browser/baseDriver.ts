@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { getTopLeftOffset, getClientArea } from 'vs/base/browser/dom';
-import { coalesce } from 'vs/base/common/arrays';
-import { IElement, IWindowDriver } from 'vs/platform/driver/common/driver';
+import { getTopLeftOffset, getClientAreA } from 'vs/bAse/browser/dom';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { IElement, IWindowDriver } from 'vs/plAtform/driver/common/driver';
 
-function serializeElement(element: Element, recursive: boolean): IElement {
-	const attributes = Object.create(null);
+function seriAlizeElement(element: Element, recursive: booleAn): IElement {
+	const Attributes = Object.creAte(null);
 
-	for (let j = 0; j < element.attributes.length; j++) {
-		const attr = element.attributes.item(j);
-		if (attr) {
-			attributes[attr.name] = attr.value;
+	for (let j = 0; j < element.Attributes.length; j++) {
+		const Attr = element.Attributes.item(j);
+		if (Attr) {
+			Attributes[Attr.nAme] = Attr.vAlue;
 		}
 	}
 
@@ -23,114 +23,114 @@ function serializeElement(element: Element, recursive: boolean): IElement {
 		for (let i = 0; i < element.children.length; i++) {
 			const child = element.children.item(i);
 			if (child) {
-				children.push(serializeElement(child, true));
+				children.push(seriAlizeElement(child, true));
 			}
 		}
 	}
 
-	const { left, top } = getTopLeftOffset(element as HTMLElement);
+	const { left, top } = getTopLeftOffset(element As HTMLElement);
 
 	return {
-		tagName: element.tagName,
-		className: element.className,
+		tAgNAme: element.tAgNAme,
+		clAssNAme: element.clAssNAme,
 		textContent: element.textContent || '',
-		attributes,
+		Attributes,
 		children,
 		left,
 		top
 	};
 }
 
-export abstract class BaseWindowDriver implements IWindowDriver {
+export AbstrAct clAss BAseWindowDriver implements IWindowDriver {
 
-	abstract click(selector: string, xoffset?: number, yoffset?: number): Promise<void>;
-	abstract doubleClick(selector: string): Promise<void>;
+	AbstrAct click(selector: string, xoffset?: number, yoffset?: number): Promise<void>;
+	AbstrAct doubleClick(selector: string): Promise<void>;
 
-	async setValue(selector: string, text: string): Promise<void> {
+	Async setVAlue(selector: string, text: string): Promise<void> {
 		const element = document.querySelector(selector);
 
 		if (!element) {
 			return Promise.reject(new Error(`Element not found: ${selector}`));
 		}
 
-		const inputElement = element as HTMLInputElement;
-		inputElement.value = text;
+		const inputElement = element As HTMLInputElement;
+		inputElement.vAlue = text;
 
-		const event = new Event('input', { bubbles: true, cancelable: true });
-		inputElement.dispatchEvent(event);
+		const event = new Event('input', { bubbles: true, cAncelAble: true });
+		inputElement.dispAtchEvent(event);
 	}
 
-	async getTitle(): Promise<string> {
+	Async getTitle(): Promise<string> {
 		return document.title;
 	}
 
-	async isActiveElement(selector: string): Promise<boolean> {
+	Async isActiveElement(selector: string): Promise<booleAn> {
 		const element = document.querySelector(selector);
 
-		if (element !== document.activeElement) {
-			const chain: string[] = [];
-			let el = document.activeElement;
+		if (element !== document.ActiveElement) {
+			const chAin: string[] = [];
+			let el = document.ActiveElement;
 
 			while (el) {
-				const tagName = el.tagName;
+				const tAgNAme = el.tAgNAme;
 				const id = el.id ? `#${el.id}` : '';
-				const classes = coalesce(el.className.split(/\s+/g).map(c => c.trim())).map(c => `.${c}`).join('');
-				chain.unshift(`${tagName}${id}${classes}`);
+				const clAsses = coAlesce(el.clAssNAme.split(/\s+/g).mAp(c => c.trim())).mAp(c => `.${c}`).join('');
+				chAin.unshift(`${tAgNAme}${id}${clAsses}`);
 
-				el = el.parentElement;
+				el = el.pArentElement;
 			}
 
-			throw new Error(`Active element not found. Current active element is '${chain.join(' > ')}'. Looking for ${selector}`);
+			throw new Error(`Active element not found. Current Active element is '${chAin.join(' > ')}'. Looking for ${selector}`);
 		}
 
 		return true;
 	}
 
-	async getElements(selector: string, recursive: boolean): Promise<IElement[]> {
+	Async getElements(selector: string, recursive: booleAn): Promise<IElement[]> {
 		const query = document.querySelectorAll(selector);
 		const result: IElement[] = [];
 
 		for (let i = 0; i < query.length; i++) {
 			const element = query.item(i);
-			result.push(serializeElement(element, recursive));
+			result.push(seriAlizeElement(element, recursive));
 		}
 
 		return result;
 	}
 
-	async getElementXY(selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number; y: number; }> {
+	Async getElementXY(selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number; y: number; }> {
 		const offset = typeof xoffset === 'number' && typeof yoffset === 'number' ? { x: xoffset, y: yoffset } : undefined;
 		return this._getElementXY(selector, offset);
 	}
 
-	async typeInEditor(selector: string, text: string): Promise<void> {
+	Async typeInEditor(selector: string, text: string): Promise<void> {
 		const element = document.querySelector(selector);
 
 		if (!element) {
 			throw new Error(`Editor not found: ${selector}`);
 		}
 
-		const textarea = element as HTMLTextAreaElement;
-		const start = textarea.selectionStart;
-		const newStart = start + text.length;
-		const value = textarea.value;
-		const newValue = value.substr(0, start) + text + value.substr(start);
+		const textAreA = element As HTMLTextAreAElement;
+		const stArt = textAreA.selectionStArt;
+		const newStArt = stArt + text.length;
+		const vAlue = textAreA.vAlue;
+		const newVAlue = vAlue.substr(0, stArt) + text + vAlue.substr(stArt);
 
-		textarea.value = newValue;
-		textarea.setSelectionRange(newStart, newStart);
+		textAreA.vAlue = newVAlue;
+		textAreA.setSelectionRAnge(newStArt, newStArt);
 
-		const event = new Event('input', { 'bubbles': true, 'cancelable': true });
-		textarea.dispatchEvent(event);
+		const event = new Event('input', { 'bubbles': true, 'cAncelAble': true });
+		textAreA.dispAtchEvent(event);
 	}
 
-	async getTerminalBuffer(selector: string): Promise<string[]> {
+	Async getTerminAlBuffer(selector: string): Promise<string[]> {
 		const element = document.querySelector(selector);
 
 		if (!element) {
-			throw new Error(`Terminal not found: ${selector}`);
+			throw new Error(`TerminAl not found: ${selector}`);
 		}
 
-		const xterm = (element as any).xterm;
+		const xterm = (element As Any).xterm;
 
 		if (!xterm) {
 			throw new Error(`Xterm not found: ${selector}`);
@@ -139,37 +139,37 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 		const lines: string[] = [];
 
 		for (let i = 0; i < xterm.buffer.length; i++) {
-			lines.push(xterm.buffer.getLine(i)!.translateToString(true));
+			lines.push(xterm.buffer.getLine(i)!.trAnslAteToString(true));
 		}
 
 		return lines;
 	}
 
-	async writeInTerminal(selector: string, text: string): Promise<void> {
+	Async writeInTerminAl(selector: string, text: string): Promise<void> {
 		const element = document.querySelector(selector);
 
 		if (!element) {
 			throw new Error(`Element not found: ${selector}`);
 		}
 
-		const xterm = (element as any).xterm;
+		const xterm = (element As Any).xterm;
 
 		if (!xterm) {
 			throw new Error(`Xterm not found: ${selector}`);
 		}
 
-		xterm._core._coreService.triggerDataEvent(text);
+		xterm._core._coreService.triggerDAtAEvent(text);
 	}
 
-	protected async _getElementXY(selector: string, offset?: { x: number, y: number }): Promise<{ x: number; y: number; }> {
+	protected Async _getElementXY(selector: string, offset?: { x: number, y: number }): Promise<{ x: number; y: number; }> {
 		const element = document.querySelector(selector);
 
 		if (!element) {
 			return Promise.reject(new Error(`Element not found: ${selector}`));
 		}
 
-		const { left, top } = getTopLeftOffset(element as HTMLElement);
-		const { width, height } = getClientArea(element as HTMLElement);
+		const { left, top } = getTopLeftOffset(element As HTMLElement);
+		const { width, height } = getClientAreA(element As HTMLElement);
 		let x: number, y: number;
 
 		if (offset) {
@@ -180,11 +180,11 @@ export abstract class BaseWindowDriver implements IWindowDriver {
 			y = top + (height / 2);
 		}
 
-		x = Math.round(x);
-		y = Math.round(y);
+		x = MAth.round(x);
+		y = MAth.round(y);
 
 		return { x, y };
 	}
 
-	abstract openDevTools(): Promise<void>;
+	AbstrAct openDevTools(): Promise<void>;
 }

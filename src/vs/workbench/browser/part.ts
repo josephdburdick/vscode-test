@@ -1,181 +1,181 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/part';
+import 'vs/css!./mediA/pArt';
 import { Component } from 'vs/workbench/common/component';
-import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { Dimension, size, IDimension } from 'vs/base/browser/dom';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ISerializableView, IViewSize } from 'vs/base/browser/ui/grid/grid';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { assertIsDefined } from 'vs/base/common/types';
+import { IThemeService, IColorTheme } from 'vs/plAtform/theme/common/themeService';
+import { Dimension, size, IDimension } from 'vs/bAse/browser/dom';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ISeriAlizAbleView, IViewSize } from 'vs/bAse/browser/ui/grid/grid';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { AssertIsDefined } from 'vs/bAse/common/types';
 
-export interface IPartOptions {
-	hasTitle?: boolean;
+export interfAce IPArtOptions {
+	hAsTitle?: booleAn;
 	borderWidth?: () => number;
 }
 
-export interface ILayoutContentResult {
+export interfAce ILAyoutContentResult {
 	titleSize: IDimension;
 	contentSize: IDimension;
 }
 
 /**
- * Parts are layed out in the workbench and have their own layout that
- * arranges an optional title and mandatory content area to show content.
+ * PArts Are lAyed out in the workbench And hAve their own lAyout thAt
+ * ArrAnges An optionAl title And mAndAtory content AreA to show content.
  */
-export abstract class Part extends Component implements ISerializableView {
+export AbstrAct clAss PArt extends Component implements ISeriAlizAbleView {
 
-	private _dimension: Dimension | undefined;
+	privAte _dimension: Dimension | undefined;
 	get dimension(): Dimension | undefined { return this._dimension; }
 
-	protected _onDidVisibilityChange = this._register(new Emitter<boolean>());
-	readonly onDidVisibilityChange = this._onDidVisibilityChange.event;
+	protected _onDidVisibilityChAnge = this._register(new Emitter<booleAn>());
+	reAdonly onDidVisibilityChAnge = this._onDidVisibilityChAnge.event;
 
-	private parent: HTMLElement | undefined;
-	private titleArea: HTMLElement | undefined;
-	private contentArea: HTMLElement | undefined;
-	private partLayout: PartLayout | undefined;
+	privAte pArent: HTMLElement | undefined;
+	privAte titleAreA: HTMLElement | undefined;
+	privAte contentAreA: HTMLElement | undefined;
+	privAte pArtLAyout: PArtLAyout | undefined;
 
 	constructor(
 		id: string,
-		private options: IPartOptions,
+		privAte options: IPArtOptions,
 		themeService: IThemeService,
-		storageService: IStorageService,
-		protected readonly layoutService: IWorkbenchLayoutService
+		storAgeService: IStorAgeService,
+		protected reAdonly lAyoutService: IWorkbenchLAyoutService
 	) {
-		super(id, themeService, storageService);
+		super(id, themeService, storAgeService);
 
-		layoutService.registerPart(this);
+		lAyoutService.registerPArt(this);
 	}
 
-	protected onThemeChange(theme: IColorTheme): void {
+	protected onThemeChAnge(theme: IColorTheme): void {
 
-		// only call if our create() method has been called
-		if (this.parent) {
-			super.onThemeChange(theme);
+		// only cAll if our creAte() method hAs been cAlled
+		if (this.pArent) {
+			super.onThemeChAnge(theme);
 		}
 	}
 
-	updateStyles(): void {
-		super.updateStyles();
+	updAteStyles(): void {
+		super.updAteStyles();
 	}
 
 	/**
-	 * Note: Clients should not call this method, the workbench calls this
-	 * method. Calling it otherwise may result in unexpected behavior.
+	 * Note: Clients should not cAll this method, the workbench cAlls this
+	 * method. CAlling it otherwise mAy result in unexpected behAvior.
 	 *
-	 * Called to create title and content area of the part.
+	 * CAlled to creAte title And content AreA of the pArt.
 	 */
-	create(parent: HTMLElement, options?: object): void {
-		this.parent = parent;
-		this.titleArea = this.createTitleArea(parent, options);
-		this.contentArea = this.createContentArea(parent, options);
+	creAte(pArent: HTMLElement, options?: object): void {
+		this.pArent = pArent;
+		this.titleAreA = this.creAteTitleAreA(pArent, options);
+		this.contentAreA = this.creAteContentAreA(pArent, options);
 
-		this.partLayout = new PartLayout(this.options, this.contentArea);
+		this.pArtLAyout = new PArtLAyout(this.options, this.contentAreA);
 
-		this.updateStyles();
+		this.updAteStyles();
 	}
 
 	/**
-	 * Returns the overall part container.
+	 * Returns the overAll pArt contAiner.
 	 */
-	getContainer(): HTMLElement | undefined {
-		return this.parent;
+	getContAiner(): HTMLElement | undefined {
+		return this.pArent;
 	}
 
 	/**
-	 * Subclasses override to provide a title area implementation.
+	 * SubclAsses override to provide A title AreA implementAtion.
 	 */
-	protected createTitleArea(parent: HTMLElement, options?: object): HTMLElement | undefined {
+	protected creAteTitleAreA(pArent: HTMLElement, options?: object): HTMLElement | undefined {
 		return undefined;
 	}
 
 	/**
-	 * Returns the title area container.
+	 * Returns the title AreA contAiner.
 	 */
-	protected getTitleArea(): HTMLElement | undefined {
-		return this.titleArea;
+	protected getTitleAreA(): HTMLElement | undefined {
+		return this.titleAreA;
 	}
 
 	/**
-	 * Subclasses override to provide a content area implementation.
+	 * SubclAsses override to provide A content AreA implementAtion.
 	 */
-	protected createContentArea(parent: HTMLElement, options?: object): HTMLElement | undefined {
+	protected creAteContentAreA(pArent: HTMLElement, options?: object): HTMLElement | undefined {
 		return undefined;
 	}
 
 	/**
-	 * Returns the content area container.
+	 * Returns the content AreA contAiner.
 	 */
-	protected getContentArea(): HTMLElement | undefined {
-		return this.contentArea;
+	protected getContentAreA(): HTMLElement | undefined {
+		return this.contentAreA;
 	}
 
 	/**
-	 * Layout title and content area in the given dimension.
+	 * LAyout title And content AreA in the given dimension.
 	 */
-	protected layoutContents(width: number, height: number): ILayoutContentResult {
-		const partLayout = assertIsDefined(this.partLayout);
+	protected lAyoutContents(width: number, height: number): ILAyoutContentResult {
+		const pArtLAyout = AssertIsDefined(this.pArtLAyout);
 
-		return partLayout.layout(width, height);
+		return pArtLAyout.lAyout(width, height);
 	}
 
-	//#region ISerializableView
+	//#region ISeriAlizAbleView
 
-	private _onDidChange = this._register(new Emitter<IViewSize | undefined>());
-	get onDidChange(): Event<IViewSize | undefined> { return this._onDidChange.event; }
+	privAte _onDidChAnge = this._register(new Emitter<IViewSize | undefined>());
+	get onDidChAnge(): Event<IViewSize | undefined> { return this._onDidChAnge.event; }
 
 	element!: HTMLElement;
 
-	abstract minimumWidth: number;
-	abstract maximumWidth: number;
-	abstract minimumHeight: number;
-	abstract maximumHeight: number;
+	AbstrAct minimumWidth: number;
+	AbstrAct mAximumWidth: number;
+	AbstrAct minimumHeight: number;
+	AbstrAct mAximumHeight: number;
 
-	layout(width: number, height: number): void {
+	lAyout(width: number, height: number): void {
 		this._dimension = new Dimension(width, height);
 	}
 
-	setVisible(visible: boolean) {
-		this._onDidVisibilityChange.fire(visible);
+	setVisible(visible: booleAn) {
+		this._onDidVisibilityChAnge.fire(visible);
 	}
 
-	abstract toJSON(): object;
+	AbstrAct toJSON(): object;
 
 	//#endregion
 }
 
-class PartLayout {
+clAss PArtLAyout {
 
-	private static readonly TITLE_HEIGHT = 35;
+	privAte stAtic reAdonly TITLE_HEIGHT = 35;
 
-	constructor(private options: IPartOptions, private contentArea: HTMLElement | undefined) { }
+	constructor(privAte options: IPArtOptions, privAte contentAreA: HTMLElement | undefined) { }
 
-	layout(width: number, height: number): ILayoutContentResult {
+	lAyout(width: number, height: number): ILAyoutContentResult {
 
-		// Title Size: Width (Fill), Height (Variable)
+		// Title Size: Width (Fill), Height (VAriAble)
 		let titleSize: Dimension;
-		if (this.options && this.options.hasTitle) {
-			titleSize = new Dimension(width, Math.min(height, PartLayout.TITLE_HEIGHT));
+		if (this.options && this.options.hAsTitle) {
+			titleSize = new Dimension(width, MAth.min(height, PArtLAyout.TITLE_HEIGHT));
 		} else {
 			titleSize = new Dimension(0, 0);
 		}
 
 		let contentWidth = width;
 		if (this.options && typeof this.options.borderWidth === 'function') {
-			contentWidth -= this.options.borderWidth(); // adjust for border size
+			contentWidth -= this.options.borderWidth(); // Adjust for border size
 		}
 
-		// Content Size: Width (Fill), Height (Variable)
+		// Content Size: Width (Fill), Height (VAriAble)
 		const contentSize = new Dimension(contentWidth, height - titleSize.height);
 
 		// Content
-		if (this.contentArea) {
-			size(this.contentArea, contentSize.width, contentSize.height);
+		if (this.contentAreA) {
+			size(this.contentAreA, contentSize.width, contentSize.height);
 		}
 
 		return { titleSize, contentSize };

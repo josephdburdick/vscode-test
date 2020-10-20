@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { IPCServer, ClientConnectionEvent } from 'vs/base/parts/ipc/common/ipc';
-import { Protocol } from 'vs/base/parts/ipc/common/ipc.electron';
-import { ipcMain, WebContents } from 'electron';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IPCServer, ClientConnectionEvent } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Protocol } from 'vs/bAse/pArts/ipc/common/ipc.electron';
+import { ipcMAin, WebContents } from 'electron';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 
-interface IIPCEvent {
+interfAce IIPCEvent {
 	event: { sender: WebContents; };
-	message: Buffer | null;
+	messAge: Buffer | null;
 }
 
-function createScopedOnMessageEvent(senderId: number, eventName: string): Event<VSBuffer | null> {
-	const onMessage = Event.fromNodeEventEmitter<IIPCEvent>(ipcMain, eventName, (event, message) => ({ event, message }));
-	const onMessageFromSender = Event.filter(onMessage, ({ event }) => event.sender.id === senderId);
-	return Event.map(onMessageFromSender, ({ message }) => message ? VSBuffer.wrap(message) : message);
+function creAteScopedOnMessAgeEvent(senderId: number, eventNAme: string): Event<VSBuffer | null> {
+	const onMessAge = Event.fromNodeEventEmitter<IIPCEvent>(ipcMAin, eventNAme, (event, messAge) => ({ event, messAge }));
+	const onMessAgeFromSender = Event.filter(onMessAge, ({ event }) => event.sender.id === senderId);
+	return Event.mAp(onMessAgeFromSender, ({ messAge }) => messAge ? VSBuffer.wrAp(messAge) : messAge);
 }
 
-export class Server extends IPCServer {
+export clAss Server extends IPCServer {
 
-	private static readonly Clients = new Map<number, IDisposable>();
+	privAte stAtic reAdonly Clients = new MAp<number, IDisposAble>();
 
-	private static getOnDidClientConnect(): Event<ClientConnectionEvent> {
-		const onHello = Event.fromNodeEventEmitter<WebContents>(ipcMain, 'vscode:hello', ({ sender }) => sender);
+	privAte stAtic getOnDidClientConnect(): Event<ClientConnectionEvent> {
+		const onHello = Event.fromNodeEventEmitter<WebContents>(ipcMAin, 'vscode:hello', ({ sender }) => sender);
 
-		return Event.map(onHello, webContents => {
+		return Event.mAp(onHello, webContents => {
 			const id = webContents.id;
 			const client = Server.Clients.get(id);
 
@@ -37,11 +37,11 @@ export class Server extends IPCServer {
 			}
 
 			const onDidClientReconnect = new Emitter<void>();
-			Server.Clients.set(id, toDisposable(() => onDidClientReconnect.fire()));
+			Server.Clients.set(id, toDisposAble(() => onDidClientReconnect.fire()));
 
-			const onMessage = createScopedOnMessageEvent(id, 'vscode:message') as Event<VSBuffer>;
-			const onDidClientDisconnect = Event.any(Event.signal(createScopedOnMessageEvent(id, 'vscode:disconnect')), onDidClientReconnect.event);
-			const protocol = new Protocol(webContents, onMessage);
+			const onMessAge = creAteScopedOnMessAgeEvent(id, 'vscode:messAge') As Event<VSBuffer>;
+			const onDidClientDisconnect = Event.Any(Event.signAl(creAteScopedOnMessAgeEvent(id, 'vscode:disconnect')), onDidClientReconnect.event);
+			const protocol = new Protocol(webContents, onMessAge);
 
 			return { protocol, onDidClientDisconnect };
 		});

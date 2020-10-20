@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// NOTE: VSCode's copy of nodejs path library to be usable in common (non-node) namespace
-// Copied from: https://github.com/nodejs/node/tree/43dd49c9782848c25e5b03448c8a0f923f13c158
+// NOTE: VSCode's copy of nodejs pAth librAry to be usAble in common (non-node) nAmespAce
+// Copied from: https://github.com/nodejs/node/tree/43dd49c9782848c25e5b03448c8A0f923f13c158
 
-// Copyright Joyent, Inc. and other Node contributors.
+// Copyright Joyent, Inc. And other Node contributors.
 //
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
+// Permission is hereby grAnted, free of chArge, to Any person obtAining A
+// copy of this softwAre And AssociAted documentAtion files (the
+// "SoftwAre"), to deAl in the SoftwAre without restriction, including
+// without limitAtion the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, And/or sell copies of the SoftwAre, And to permit
+// persons to whom the SoftwAre is furnished to do so, subject to the
 // following conditions:
 //
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
+// The Above copyright notice And this permission notice shAll be included
+// in All copies or substAntiAl portions of the SoftwAre.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
@@ -27,29 +27,29 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import { isWindows } from 'vs/base/common/platform';
-import * as process from 'vs/base/common/process';
+import * As Assert from 'Assert';
+import * As pAth from 'vs/bAse/common/pAth';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import * As process from 'vs/bAse/common/process';
 
-suite('Paths (Node Implementation)', () => {
+suite('PAths (Node ImplementAtion)', () => {
 	test('join', () => {
-		const failures = [] as string[];
-		const backslashRE = /\\/g;
+		const fAilures = [] As string[];
+		const bAckslAshRE = /\\/g;
 
-		const joinTests: any = [
-			[[path.posix.join, path.win32.join],
-			// arguments                     result
+		const joinTests: Any = [
+			[[pAth.posix.join, pAth.win32.join],
+			// Arguments                     result
 			[[['.', 'x/b', '..', '/b/c.js'], 'x/b/c.js'],
 			[[], '.'],
 			[['/.', 'x/b', '..', '/b/c.js'], '/x/b/c.js'],
-			[['/foo', '../../../bar'], '/bar'],
-			[['foo', '../../../bar'], '../../bar'],
-			[['foo/', '../../../bar'], '../../bar'],
-			[['foo/x', '../../../bar'], '../bar'],
-			[['foo/x', './bar'], 'foo/x/bar'],
-			[['foo/x/', './bar'], 'foo/x/bar'],
-			[['foo/x/', '.', 'bar'], 'foo/x/bar'],
+			[['/foo', '../../../bAr'], '/bAr'],
+			[['foo', '../../../bAr'], '../../bAr'],
+			[['foo/', '../../../bAr'], '../../bAr'],
+			[['foo/x', '../../../bAr'], '../bAr'],
+			[['foo/x', './bAr'], 'foo/x/bAr'],
+			[['foo/x/', './bAr'], 'foo/x/bAr'],
+			[['foo/x/', '.', 'bAr'], 'foo/x/bAr'],
 			[['./'], './'],
 			[['.', './'], './'],
 			[['.', '.', '.'], '.'],
@@ -59,13 +59,13 @@ suite('Paths (Node Implementation)', () => {
 			[['.'], '.'],
 			[['', '.'], '.'],
 			[['', 'foo'], 'foo'],
-			[['foo', '/bar'], 'foo/bar'],
+			[['foo', '/bAr'], 'foo/bAr'],
 			[['', '/foo'], '/foo'],
 			[['', '', '/foo'], '/foo'],
 			[['', '', 'foo'], 'foo'],
 			[['foo', ''], 'foo'],
 			[['foo/', ''], 'foo/'],
-			[['foo', '', '/bar'], 'foo/bar'],
+			[['foo', '', '/bAr'], 'foo/bAr'],
 			[['./', '..', '/foo'], '../foo'],
 			[['./', '..', '..', '/foo'], '../../foo'],
 			[['.', '..', '..', '/foo'], '../../foo'],
@@ -93,46 +93,46 @@ suite('Paths (Node Implementation)', () => {
 
 		// Windows-specific join tests
 		joinTests.push([
-			path.win32.join,
-			joinTests[0][1].slice(0).concat(
-				[// arguments                     result
-					// UNC path expected
-					[['//foo/bar'], '\\\\foo\\bar\\'],
-					[['\\/foo/bar'], '\\\\foo\\bar\\'],
-					[['\\\\foo/bar'], '\\\\foo\\bar\\'],
-					// UNC path expected - server and share separate
-					[['//foo', 'bar'], '\\\\foo\\bar\\'],
-					[['//foo/', 'bar'], '\\\\foo\\bar\\'],
-					[['//foo', '/bar'], '\\\\foo\\bar\\'],
-					// UNC path expected - questionable
-					[['//foo', '', 'bar'], '\\\\foo\\bar\\'],
-					[['//foo/', '', 'bar'], '\\\\foo\\bar\\'],
-					[['//foo/', '', '/bar'], '\\\\foo\\bar\\'],
-					// UNC path expected - even more questionable
-					[['', '//foo', 'bar'], '\\\\foo\\bar\\'],
-					[['', '//foo/', 'bar'], '\\\\foo\\bar\\'],
-					[['', '//foo/', '/bar'], '\\\\foo\\bar\\'],
-					// No UNC path expected (no double slash in first component)
-					[['\\', 'foo/bar'], '\\foo\\bar'],
-					[['\\', '/foo/bar'], '\\foo\\bar'],
-					[['', '/', '/foo/bar'], '\\foo\\bar'],
-					// No UNC path expected (no non-slashes in first component -
-					// questionable)
-					[['//', 'foo/bar'], '\\foo\\bar'],
-					[['//', '/foo/bar'], '\\foo\\bar'],
-					[['\\\\', '/', '/foo/bar'], '\\foo\\bar'],
+			pAth.win32.join,
+			joinTests[0][1].slice(0).concAt(
+				[// Arguments                     result
+					// UNC pAth expected
+					[['//foo/bAr'], '\\\\foo\\bAr\\'],
+					[['\\/foo/bAr'], '\\\\foo\\bAr\\'],
+					[['\\\\foo/bAr'], '\\\\foo\\bAr\\'],
+					// UNC pAth expected - server And shAre sepArAte
+					[['//foo', 'bAr'], '\\\\foo\\bAr\\'],
+					[['//foo/', 'bAr'], '\\\\foo\\bAr\\'],
+					[['//foo', '/bAr'], '\\\\foo\\bAr\\'],
+					// UNC pAth expected - questionAble
+					[['//foo', '', 'bAr'], '\\\\foo\\bAr\\'],
+					[['//foo/', '', 'bAr'], '\\\\foo\\bAr\\'],
+					[['//foo/', '', '/bAr'], '\\\\foo\\bAr\\'],
+					// UNC pAth expected - even more questionAble
+					[['', '//foo', 'bAr'], '\\\\foo\\bAr\\'],
+					[['', '//foo/', 'bAr'], '\\\\foo\\bAr\\'],
+					[['', '//foo/', '/bAr'], '\\\\foo\\bAr\\'],
+					// No UNC pAth expected (no double slAsh in first component)
+					[['\\', 'foo/bAr'], '\\foo\\bAr'],
+					[['\\', '/foo/bAr'], '\\foo\\bAr'],
+					[['', '/', '/foo/bAr'], '\\foo\\bAr'],
+					// No UNC pAth expected (no non-slAshes in first component -
+					// questionAble)
+					[['//', 'foo/bAr'], '\\foo\\bAr'],
+					[['//', '/foo/bAr'], '\\foo\\bAr'],
+					[['\\\\', '/', '/foo/bAr'], '\\foo\\bAr'],
 					[['//'], '\\'],
-					// No UNC path expected (share name missing - questionable).
+					// No UNC pAth expected (shAre nAme missing - questionAble).
 					[['//foo'], '\\foo'],
 					[['//foo/'], '\\foo\\'],
 					[['//foo', '/'], '\\foo\\'],
 					[['//foo', '', '/'], '\\foo\\'],
-					// No UNC path expected (too many leading slashes - questionable)
-					[['///foo/bar'], '\\foo\\bar'],
-					[['////foo', 'bar'], '\\foo\\bar'],
-					[['\\\\\\/foo/bar'], '\\foo\\bar'],
-					// Drive-relative vs drive-absolute paths. This merely describes the
-					// status quo, rather than being obviously right
+					// No UNC pAth expected (too mAny leAding slAshes - questionAble)
+					[['///foo/bAr'], '\\foo\\bAr'],
+					[['////foo', 'bAr'], '\\foo\\bAr'],
+					[['\\\\\\/foo/bAr'], '\\foo\\bAr'],
+					// Drive-relAtive vs drive-Absolute pAths. This merely describes the
+					// stAtus quo, rAther thAn being obviously right
 					[['c:'], 'c:.'],
 					[['c:.'], 'c:.'],
 					[['c:', ''], 'c:.'],
@@ -144,136 +144,136 @@ suite('Paths (Node Implementation)', () => {
 				]
 			)
 		]);
-		joinTests.forEach((test: any[]) => {
-			if (!Array.isArray(test[0])) {
+		joinTests.forEAch((test: Any[]) => {
+			if (!ArrAy.isArrAy(test[0])) {
 				test[0] = [test[0]];
 			}
-			test[0].forEach((join: any) => {
-				test[1].forEach((test: any) => {
-					const actual = join.apply(null, test[0]);
+			test[0].forEAch((join: Any) => {
+				test[1].forEAch((test: Any) => {
+					const ActuAl = join.Apply(null, test[0]);
 					const expected = test[1];
 					// For non-Windows specific tests with the Windows join(), we need to try
-					// replacing the slashes since the non-Windows specific tests' `expected`
-					// use forward slashes
-					let actualAlt;
+					// replAcing the slAshes since the non-Windows specific tests' `expected`
+					// use forwArd slAshes
+					let ActuAlAlt;
 					let os;
-					if (join === path.win32.join) {
-						actualAlt = actual.replace(backslashRE, '/');
+					if (join === pAth.win32.join) {
+						ActuAlAlt = ActuAl.replAce(bAckslAshRE, '/');
 						os = 'win32';
 					} else {
 						os = 'posix';
 					}
-					const message =
-						`path.${os}.join(${test[0].map(JSON.stringify).join(',')})\n  expect=${JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
-					if (actual !== expected && actualAlt !== expected) {
-						failures.push(`\n${message}`);
+					const messAge =
+						`pAth.${os}.join(${test[0].mAp(JSON.stringify).join(',')})\n  expect=${JSON.stringify(expected)}\n  ActuAl=${JSON.stringify(ActuAl)}`;
+					if (ActuAl !== expected && ActuAlAlt !== expected) {
+						fAilures.push(`\n${messAge}`);
 					}
 				});
 			});
 		});
-		assert.strictEqual(failures.length, 0, failures.join(''));
+		Assert.strictEquAl(fAilures.length, 0, fAilures.join(''));
 	});
 
-	test('dirname', () => {
-		assert.strictEqual(path.dirname(path.normalize(__filename)).substr(-9),
+	test('dirnAme', () => {
+		Assert.strictEquAl(pAth.dirnAme(pAth.normAlize(__filenAme)).substr(-9),
 			isWindows ? 'test\\node' : 'test/node');
 
-		assert.strictEqual(path.posix.dirname('/a/b/'), '/a');
-		assert.strictEqual(path.posix.dirname('/a/b'), '/a');
-		assert.strictEqual(path.posix.dirname('/a'), '/');
-		assert.strictEqual(path.posix.dirname(''), '.');
-		assert.strictEqual(path.posix.dirname('/'), '/');
-		assert.strictEqual(path.posix.dirname('////'), '/');
-		assert.strictEqual(path.posix.dirname('//a'), '//');
-		assert.strictEqual(path.posix.dirname('foo'), '.');
+		Assert.strictEquAl(pAth.posix.dirnAme('/A/b/'), '/A');
+		Assert.strictEquAl(pAth.posix.dirnAme('/A/b'), '/A');
+		Assert.strictEquAl(pAth.posix.dirnAme('/A'), '/');
+		Assert.strictEquAl(pAth.posix.dirnAme(''), '.');
+		Assert.strictEquAl(pAth.posix.dirnAme('/'), '/');
+		Assert.strictEquAl(pAth.posix.dirnAme('////'), '/');
+		Assert.strictEquAl(pAth.posix.dirnAme('//A'), '//');
+		Assert.strictEquAl(pAth.posix.dirnAme('foo'), '.');
 
-		assert.strictEqual(path.win32.dirname('c:\\'), 'c:\\');
-		assert.strictEqual(path.win32.dirname('c:\\foo'), 'c:\\');
-		assert.strictEqual(path.win32.dirname('c:\\foo\\'), 'c:\\');
-		assert.strictEqual(path.win32.dirname('c:\\foo\\bar'), 'c:\\foo');
-		assert.strictEqual(path.win32.dirname('c:\\foo\\bar\\'), 'c:\\foo');
-		assert.strictEqual(path.win32.dirname('c:\\foo\\bar\\baz'), 'c:\\foo\\bar');
-		assert.strictEqual(path.win32.dirname('\\'), '\\');
-		assert.strictEqual(path.win32.dirname('\\foo'), '\\');
-		assert.strictEqual(path.win32.dirname('\\foo\\'), '\\');
-		assert.strictEqual(path.win32.dirname('\\foo\\bar'), '\\foo');
-		assert.strictEqual(path.win32.dirname('\\foo\\bar\\'), '\\foo');
-		assert.strictEqual(path.win32.dirname('\\foo\\bar\\baz'), '\\foo\\bar');
-		assert.strictEqual(path.win32.dirname('c:'), 'c:');
-		assert.strictEqual(path.win32.dirname('c:foo'), 'c:');
-		assert.strictEqual(path.win32.dirname('c:foo\\'), 'c:');
-		assert.strictEqual(path.win32.dirname('c:foo\\bar'), 'c:foo');
-		assert.strictEqual(path.win32.dirname('c:foo\\bar\\'), 'c:foo');
-		assert.strictEqual(path.win32.dirname('c:foo\\bar\\baz'), 'c:foo\\bar');
-		assert.strictEqual(path.win32.dirname('file:stream'), '.');
-		assert.strictEqual(path.win32.dirname('dir\\file:stream'), 'dir');
-		assert.strictEqual(path.win32.dirname('\\\\unc\\share'),
-			'\\\\unc\\share');
-		assert.strictEqual(path.win32.dirname('\\\\unc\\share\\foo'),
-			'\\\\unc\\share\\');
-		assert.strictEqual(path.win32.dirname('\\\\unc\\share\\foo\\'),
-			'\\\\unc\\share\\');
-		assert.strictEqual(path.win32.dirname('\\\\unc\\share\\foo\\bar'),
-			'\\\\unc\\share\\foo');
-		assert.strictEqual(path.win32.dirname('\\\\unc\\share\\foo\\bar\\'),
-			'\\\\unc\\share\\foo');
-		assert.strictEqual(path.win32.dirname('\\\\unc\\share\\foo\\bar\\baz'),
-			'\\\\unc\\share\\foo\\bar');
-		assert.strictEqual(path.win32.dirname('/a/b/'), '/a');
-		assert.strictEqual(path.win32.dirname('/a/b'), '/a');
-		assert.strictEqual(path.win32.dirname('/a'), '/');
-		assert.strictEqual(path.win32.dirname(''), '.');
-		assert.strictEqual(path.win32.dirname('/'), '/');
-		assert.strictEqual(path.win32.dirname('////'), '/');
-		assert.strictEqual(path.win32.dirname('foo'), '.');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:\\'), 'c:\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:\\foo'), 'c:\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:\\foo\\'), 'c:\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:\\foo\\bAr'), 'c:\\foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:\\foo\\bAr\\'), 'c:\\foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:\\foo\\bAr\\bAz'), 'c:\\foo\\bAr');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\'), '\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\foo'), '\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\foo\\'), '\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\foo\\bAr'), '\\foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\foo\\bAr\\'), '\\foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\foo\\bAr\\bAz'), '\\foo\\bAr');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:'), 'c:');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:foo'), 'c:');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:foo\\'), 'c:');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:foo\\bAr'), 'c:foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:foo\\bAr\\'), 'c:foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('c:foo\\bAr\\bAz'), 'c:foo\\bAr');
+		Assert.strictEquAl(pAth.win32.dirnAme('file:streAm'), '.');
+		Assert.strictEquAl(pAth.win32.dirnAme('dir\\file:streAm'), 'dir');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\\\unc\\shAre'),
+			'\\\\unc\\shAre');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\\\unc\\shAre\\foo'),
+			'\\\\unc\\shAre\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\\\unc\\shAre\\foo\\'),
+			'\\\\unc\\shAre\\');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\\\unc\\shAre\\foo\\bAr'),
+			'\\\\unc\\shAre\\foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\\\unc\\shAre\\foo\\bAr\\'),
+			'\\\\unc\\shAre\\foo');
+		Assert.strictEquAl(pAth.win32.dirnAme('\\\\unc\\shAre\\foo\\bAr\\bAz'),
+			'\\\\unc\\shAre\\foo\\bAr');
+		Assert.strictEquAl(pAth.win32.dirnAme('/A/b/'), '/A');
+		Assert.strictEquAl(pAth.win32.dirnAme('/A/b'), '/A');
+		Assert.strictEquAl(pAth.win32.dirnAme('/A'), '/');
+		Assert.strictEquAl(pAth.win32.dirnAme(''), '.');
+		Assert.strictEquAl(pAth.win32.dirnAme('/'), '/');
+		Assert.strictEquAl(pAth.win32.dirnAme('////'), '/');
+		Assert.strictEquAl(pAth.win32.dirnAme('foo'), '.');
 
 		// Tests from VSCode
 
-		function assertDirname(p: string, expected: string, win = false) {
-			const actual = win ? path.win32.dirname(p) : path.posix.dirname(p);
+		function AssertDirnAme(p: string, expected: string, win = fAlse) {
+			const ActuAl = win ? pAth.win32.dirnAme(p) : pAth.posix.dirnAme(p);
 
-			if (actual !== expected) {
-				assert.fail(`${p}: expected: ${expected}, ours: ${actual}`);
+			if (ActuAl !== expected) {
+				Assert.fAil(`${p}: expected: ${expected}, ours: ${ActuAl}`);
 			}
 		}
 
-		assertDirname('foo/bar', 'foo');
-		assertDirname('foo\\bar', 'foo', true);
-		assertDirname('/foo/bar', '/foo');
-		assertDirname('\\foo\\bar', '\\foo', true);
-		assertDirname('/foo', '/');
-		assertDirname('\\foo', '\\', true);
-		assertDirname('/', '/');
-		assertDirname('\\', '\\', true);
-		assertDirname('foo', '.');
-		assertDirname('f', '.');
-		assertDirname('f/', '.');
-		assertDirname('/folder/', '/');
-		assertDirname('c:\\some\\file.txt', 'c:\\some', true);
-		assertDirname('c:\\some', 'c:\\', true);
-		assertDirname('c:\\', 'c:\\', true);
-		assertDirname('c:', 'c:', true);
-		assertDirname('\\\\server\\share\\some\\path', '\\\\server\\share\\some', true);
-		assertDirname('\\\\server\\share\\some', '\\\\server\\share\\', true);
-		assertDirname('\\\\server\\share\\', '\\\\server\\share\\', true);
+		AssertDirnAme('foo/bAr', 'foo');
+		AssertDirnAme('foo\\bAr', 'foo', true);
+		AssertDirnAme('/foo/bAr', '/foo');
+		AssertDirnAme('\\foo\\bAr', '\\foo', true);
+		AssertDirnAme('/foo', '/');
+		AssertDirnAme('\\foo', '\\', true);
+		AssertDirnAme('/', '/');
+		AssertDirnAme('\\', '\\', true);
+		AssertDirnAme('foo', '.');
+		AssertDirnAme('f', '.');
+		AssertDirnAme('f/', '.');
+		AssertDirnAme('/folder/', '/');
+		AssertDirnAme('c:\\some\\file.txt', 'c:\\some', true);
+		AssertDirnAme('c:\\some', 'c:\\', true);
+		AssertDirnAme('c:\\', 'c:\\', true);
+		AssertDirnAme('c:', 'c:', true);
+		AssertDirnAme('\\\\server\\shAre\\some\\pAth', '\\\\server\\shAre\\some', true);
+		AssertDirnAme('\\\\server\\shAre\\some', '\\\\server\\shAre\\', true);
+		AssertDirnAme('\\\\server\\shAre\\', '\\\\server\\shAre\\', true);
 	});
 
-	test('extname', () => {
-		const failures = [] as string[];
-		const slashRE = /\//g;
+	test('extnAme', () => {
+		const fAilures = [] As string[];
+		const slAshRE = /\//g;
 
 		[
-			[__filename, '.js'],
+			[__filenAme, '.js'],
 			['', ''],
-			['/path/to/file', ''],
-			['/path/to/file.ext', '.ext'],
-			['/path.to/file.ext', '.ext'],
-			['/path.to/file', ''],
-			['/path.to/.file', ''],
-			['/path.to/.file.ext', '.ext'],
-			['/path/to/f.ext', '.ext'],
-			['/path/to/..ext', '.ext'],
-			['/path/to/..', ''],
+			['/pAth/to/file', ''],
+			['/pAth/to/file.ext', '.ext'],
+			['/pAth.to/file.ext', '.ext'],
+			['/pAth.to/file', ''],
+			['/pAth.to/.file', ''],
+			['/pAth.to/.file.ext', '.ext'],
+			['/pAth/to/f.ext', '.ext'],
+			['/pAth/to/..ext', '.ext'],
+			['/pAth/to/..', ''],
 			['file', ''],
 			['file.ext', '.ext'],
 			['.file', ''],
@@ -282,7 +282,7 @@ suite('Paths (Node Implementation)', () => {
 			['/file.ext', '.ext'],
 			['/.file', ''],
 			['/.file.ext', '.ext'],
-			['.path/file.ext', '.ext'],
+			['.pAth/file.ext', '.ext'],
 			['file.ext.ext', '.ext'],
 			['file.', '.'],
 			['.', ''],
@@ -306,514 +306,514 @@ suite('Paths (Node Implementation)', () => {
 			['file//', ''],
 			['file./', '.'],
 			['file.//', '.'],
-		].forEach((test) => {
+		].forEAch((test) => {
 			const expected = test[1];
-			[path.posix.extname, path.win32.extname].forEach((extname) => {
+			[pAth.posix.extnAme, pAth.win32.extnAme].forEAch((extnAme) => {
 				let input = test[0];
 				let os;
-				if (extname === path.win32.extname) {
-					input = input.replace(slashRE, '\\');
+				if (extnAme === pAth.win32.extnAme) {
+					input = input.replAce(slAshRE, '\\');
 					os = 'win32';
 				} else {
 					os = 'posix';
 				}
-				const actual = extname(input);
-				const message = `path.${os}.extname(${JSON.stringify(input)})\n  expect=${JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
-				if (actual !== expected) {
-					failures.push(`\n${message}`);
+				const ActuAl = extnAme(input);
+				const messAge = `pAth.${os}.extnAme(${JSON.stringify(input)})\n  expect=${JSON.stringify(expected)}\n  ActuAl=${JSON.stringify(ActuAl)}`;
+				if (ActuAl !== expected) {
+					fAilures.push(`\n${messAge}`);
 				}
 			});
 			{
-				const input = `C:${test[0].replace(slashRE, '\\')}`;
-				const actual = path.win32.extname(input);
-				const message = `path.win32.extname(${JSON.stringify(input)})\n  expect=${JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
-				if (actual !== expected) {
-					failures.push(`\n${message}`);
+				const input = `C:${test[0].replAce(slAshRE, '\\')}`;
+				const ActuAl = pAth.win32.extnAme(input);
+				const messAge = `pAth.win32.extnAme(${JSON.stringify(input)})\n  expect=${JSON.stringify(expected)}\n  ActuAl=${JSON.stringify(ActuAl)}`;
+				if (ActuAl !== expected) {
+					fAilures.push(`\n${messAge}`);
 				}
 			}
 		});
-		assert.strictEqual(failures.length, 0, failures.join(''));
+		Assert.strictEquAl(fAilures.length, 0, fAilures.join(''));
 
-		// On Windows, backslash is a path separator.
-		assert.strictEqual(path.win32.extname('.\\'), '');
-		assert.strictEqual(path.win32.extname('..\\'), '');
-		assert.strictEqual(path.win32.extname('file.ext\\'), '.ext');
-		assert.strictEqual(path.win32.extname('file.ext\\\\'), '.ext');
-		assert.strictEqual(path.win32.extname('file\\'), '');
-		assert.strictEqual(path.win32.extname('file\\\\'), '');
-		assert.strictEqual(path.win32.extname('file.\\'), '.');
-		assert.strictEqual(path.win32.extname('file.\\\\'), '.');
+		// On Windows, bAckslAsh is A pAth sepArAtor.
+		Assert.strictEquAl(pAth.win32.extnAme('.\\'), '');
+		Assert.strictEquAl(pAth.win32.extnAme('..\\'), '');
+		Assert.strictEquAl(pAth.win32.extnAme('file.ext\\'), '.ext');
+		Assert.strictEquAl(pAth.win32.extnAme('file.ext\\\\'), '.ext');
+		Assert.strictEquAl(pAth.win32.extnAme('file\\'), '');
+		Assert.strictEquAl(pAth.win32.extnAme('file\\\\'), '');
+		Assert.strictEquAl(pAth.win32.extnAme('file.\\'), '.');
+		Assert.strictEquAl(pAth.win32.extnAme('file.\\\\'), '.');
 
-		// On *nix, backslash is a valid name component like any other character.
-		assert.strictEqual(path.posix.extname('.\\'), '');
-		assert.strictEqual(path.posix.extname('..\\'), '.\\');
-		assert.strictEqual(path.posix.extname('file.ext\\'), '.ext\\');
-		assert.strictEqual(path.posix.extname('file.ext\\\\'), '.ext\\\\');
-		assert.strictEqual(path.posix.extname('file\\'), '');
-		assert.strictEqual(path.posix.extname('file\\\\'), '');
-		assert.strictEqual(path.posix.extname('file.\\'), '.\\');
-		assert.strictEqual(path.posix.extname('file.\\\\'), '.\\\\');
+		// On *nix, bAckslAsh is A vAlid nAme component like Any other chArActer.
+		Assert.strictEquAl(pAth.posix.extnAme('.\\'), '');
+		Assert.strictEquAl(pAth.posix.extnAme('..\\'), '.\\');
+		Assert.strictEquAl(pAth.posix.extnAme('file.ext\\'), '.ext\\');
+		Assert.strictEquAl(pAth.posix.extnAme('file.ext\\\\'), '.ext\\\\');
+		Assert.strictEquAl(pAth.posix.extnAme('file\\'), '');
+		Assert.strictEquAl(pAth.posix.extnAme('file\\\\'), '');
+		Assert.strictEquAl(pAth.posix.extnAme('file.\\'), '.\\');
+		Assert.strictEquAl(pAth.posix.extnAme('file.\\\\'), '.\\\\');
 
 		// Tests from VSCode
-		assert.equal(path.extname('far.boo'), '.boo');
-		assert.equal(path.extname('far.b'), '.b');
-		assert.equal(path.extname('far.'), '.');
-		assert.equal(path.extname('far.boo/boo.far'), '.far');
-		assert.equal(path.extname('far.boo/boo'), '');
+		Assert.equAl(pAth.extnAme('fAr.boo'), '.boo');
+		Assert.equAl(pAth.extnAme('fAr.b'), '.b');
+		Assert.equAl(pAth.extnAme('fAr.'), '.');
+		Assert.equAl(pAth.extnAme('fAr.boo/boo.fAr'), '.fAr');
+		Assert.equAl(pAth.extnAme('fAr.boo/boo'), '');
 	});
 
 	test('resolve', () => {
-		const failures = [] as string[];
-		const slashRE = /\//g;
-		const backslashRE = /\\/g;
+		const fAilures = [] As string[];
+		const slAshRE = /\//g;
+		const bAckslAshRE = /\\/g;
 
 		const resolveTests = [
-			[path.win32.resolve,
-			// arguments                               result
-			[[['c:/blah\\blah', 'd:/games', 'c:../a'], 'c:\\blah\\a'],
-			[['c:/ignore', 'd:\\a/b\\c/d', '\\e.exe'], 'd:\\e.exe'],
+			[pAth.win32.resolve,
+			// Arguments                               result
+			[[['c:/blAh\\blAh', 'd:/gAmes', 'c:../A'], 'c:\\blAh\\A'],
+			[['c:/ignore', 'd:\\A/b\\c/d', '\\e.exe'], 'd:\\e.exe'],
 			[['c:/ignore', 'c:/some/file'], 'c:\\some\\file'],
 			[['d:/ignore', 'd:some/dir//'], 'd:\\ignore\\some\\dir'],
 			[['.'], process.cwd()],
-			[['//server/share', '..', 'relative\\'], '\\\\server\\share\\relative'],
+			[['//server/shAre', '..', 'relAtive\\'], '\\\\server\\shAre\\relAtive'],
 			[['c:/', '//'], 'c:\\'],
 			[['c:/', '//dir'], 'c:\\dir'],
-			[['c:/', '//server/share'], '\\\\server\\share\\'],
-			[['c:/', '//server//share'], '\\\\server\\share\\'],
+			[['c:/', '//server/shAre'], '\\\\server\\shAre\\'],
+			[['c:/', '//server//shAre'], '\\\\server\\shAre\\'],
 			[['c:/', '///some//dir'], 'c:\\some\\dir'],
 			[['C:\\foo\\tmp.3\\', '..\\tmp.3\\cycles\\root.js'],
 				'C:\\foo\\tmp.3\\cycles\\root.js']
 			]
 			],
-			[path.posix.resolve,
-			// arguments                    result
-			[[['/var/lib', '../', 'file/'], '/var/file'],
-			[['/var/lib', '/../', 'file/'], '/file'],
-			[['a/b/c/', '../../..'], process.cwd()],
+			[pAth.posix.resolve,
+			// Arguments                    result
+			[[['/vAr/lib', '../', 'file/'], '/vAr/file'],
+			[['/vAr/lib', '/../', 'file/'], '/file'],
+			[['A/b/c/', '../../..'], process.cwd()],
 			[['.'], process.cwd()],
-			[['/some/dir', '.', '/absolute/'], '/absolute'],
+			[['/some/dir', '.', '/Absolute/'], '/Absolute'],
 			[['/foo/tmp.3/', '../tmp.3/cycles/root.js'], '/foo/tmp.3/cycles/root.js']
 			]
 			]
 		];
-		resolveTests.forEach((test) => {
+		resolveTests.forEAch((test) => {
 			const resolve = test[0];
 			//@ts-expect-error
-			test[1].forEach((test) => {
+			test[1].forEAch((test) => {
 				//@ts-expect-error
-				const actual = resolve.apply(null, test[0]);
-				let actualAlt;
-				const os = resolve === path.win32.resolve ? 'win32' : 'posix';
-				if (resolve === path.win32.resolve && !isWindows) {
-					actualAlt = actual.replace(backslashRE, '/');
+				const ActuAl = resolve.Apply(null, test[0]);
+				let ActuAlAlt;
+				const os = resolve === pAth.win32.resolve ? 'win32' : 'posix';
+				if (resolve === pAth.win32.resolve && !isWindows) {
+					ActuAlAlt = ActuAl.replAce(bAckslAshRE, '/');
 				}
-				else if (resolve !== path.win32.resolve && isWindows) {
-					actualAlt = actual.replace(slashRE, '\\');
+				else if (resolve !== pAth.win32.resolve && isWindows) {
+					ActuAlAlt = ActuAl.replAce(slAshRE, '\\');
 				}
 
 				const expected = test[1];
-				const message =
-					`path.${os}.resolve(${test[0].map(JSON.stringify).join(',')})\n  expect=${JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
-				if (actual !== expected && actualAlt !== expected) {
-					failures.push(`\n${message}`);
+				const messAge =
+					`pAth.${os}.resolve(${test[0].mAp(JSON.stringify).join(',')})\n  expect=${JSON.stringify(expected)}\n  ActuAl=${JSON.stringify(ActuAl)}`;
+				if (ActuAl !== expected && ActuAlAlt !== expected) {
+					fAilures.push(`\n${messAge}`);
 				}
 			});
 		});
-		assert.strictEqual(failures.length, 0, failures.join(''));
+		Assert.strictEquAl(fAilures.length, 0, fAilures.join(''));
 
 		// if (isWindows) {
-		// 	// Test resolving the current Windows drive letter from a spawned process.
+		// 	// Test resolving the current Windows drive letter from A spAwned process.
 		// 	// See https://github.com/nodejs/node/issues/7215
-		// 	const currentDriveLetter = path.parse(process.cwd()).root.substring(0, 2);
-		// 	const resolveFixture = fixtures.path('path-resolve.js');
-		// 	const spawnResult = child.spawnSync(
-		// 		process.argv[0], [resolveFixture, currentDriveLetter]);
-		// 	const resolvedPath = spawnResult.stdout.toString().trim();
-		// 	assert.strictEqual(resolvedPath.toLowerCase(), process.cwd().toLowerCase());
+		// 	const currentDriveLetter = pAth.pArse(process.cwd()).root.substring(0, 2);
+		// 	const resolveFixture = fixtures.pAth('pAth-resolve.js');
+		// 	const spAwnResult = child.spAwnSync(
+		// 		process.Argv[0], [resolveFixture, currentDriveLetter]);
+		// 	const resolvedPAth = spAwnResult.stdout.toString().trim();
+		// 	Assert.strictEquAl(resolvedPAth.toLowerCAse(), process.cwd().toLowerCAse());
 		// }
 	});
 
-	test('basename', () => {
-		assert.strictEqual(path.basename(__filename), 'path.test.js');
-		assert.strictEqual(path.basename(__filename, '.js'), 'path.test');
-		assert.strictEqual(path.basename('.js', '.js'), '');
-		assert.strictEqual(path.basename(''), '');
-		assert.strictEqual(path.basename('/dir/basename.ext'), 'basename.ext');
-		assert.strictEqual(path.basename('/basename.ext'), 'basename.ext');
-		assert.strictEqual(path.basename('basename.ext'), 'basename.ext');
-		assert.strictEqual(path.basename('basename.ext/'), 'basename.ext');
-		assert.strictEqual(path.basename('basename.ext//'), 'basename.ext');
-		assert.strictEqual(path.basename('aaa/bbb', '/bbb'), 'bbb');
-		assert.strictEqual(path.basename('aaa/bbb', 'a/bbb'), 'bbb');
-		assert.strictEqual(path.basename('aaa/bbb', 'bbb'), 'bbb');
-		assert.strictEqual(path.basename('aaa/bbb//', 'bbb'), 'bbb');
-		assert.strictEqual(path.basename('aaa/bbb', 'bb'), 'b');
-		assert.strictEqual(path.basename('aaa/bbb', 'b'), 'bb');
-		assert.strictEqual(path.basename('/aaa/bbb', '/bbb'), 'bbb');
-		assert.strictEqual(path.basename('/aaa/bbb', 'a/bbb'), 'bbb');
-		assert.strictEqual(path.basename('/aaa/bbb', 'bbb'), 'bbb');
-		assert.strictEqual(path.basename('/aaa/bbb//', 'bbb'), 'bbb');
-		assert.strictEqual(path.basename('/aaa/bbb', 'bb'), 'b');
-		assert.strictEqual(path.basename('/aaa/bbb', 'b'), 'bb');
-		assert.strictEqual(path.basename('/aaa/bbb'), 'bbb');
-		assert.strictEqual(path.basename('/aaa/'), 'aaa');
-		assert.strictEqual(path.basename('/aaa/b'), 'b');
-		assert.strictEqual(path.basename('/a/b'), 'b');
-		assert.strictEqual(path.basename('//a'), 'a');
-		assert.strictEqual(path.basename('a', 'a'), '');
+	test('bAsenAme', () => {
+		Assert.strictEquAl(pAth.bAsenAme(__filenAme), 'pAth.test.js');
+		Assert.strictEquAl(pAth.bAsenAme(__filenAme, '.js'), 'pAth.test');
+		Assert.strictEquAl(pAth.bAsenAme('.js', '.js'), '');
+		Assert.strictEquAl(pAth.bAsenAme(''), '');
+		Assert.strictEquAl(pAth.bAsenAme('/dir/bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.bAsenAme('/bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.bAsenAme('bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.bAsenAme('bAsenAme.ext/'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.bAsenAme('bAsenAme.ext//'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.bAsenAme('AAA/bbb', '/bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('AAA/bbb', 'A/bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('AAA/bbb', 'bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('AAA/bbb//', 'bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('AAA/bbb', 'bb'), 'b');
+		Assert.strictEquAl(pAth.bAsenAme('AAA/bbb', 'b'), 'bb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb', '/bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb', 'A/bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb', 'bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb//', 'bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb', 'bb'), 'b');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb', 'b'), 'bb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/bbb'), 'bbb');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/'), 'AAA');
+		Assert.strictEquAl(pAth.bAsenAme('/AAA/b'), 'b');
+		Assert.strictEquAl(pAth.bAsenAme('/A/b'), 'b');
+		Assert.strictEquAl(pAth.bAsenAme('//A'), 'A');
+		Assert.strictEquAl(pAth.bAsenAme('A', 'A'), '');
 
-		// On Windows a backslash acts as a path separator.
-		assert.strictEqual(path.win32.basename('\\dir\\basename.ext'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('\\basename.ext'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('basename.ext'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('basename.ext\\'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('basename.ext\\\\'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('foo'), 'foo');
-		assert.strictEqual(path.win32.basename('aaa\\bbb', '\\bbb'), 'bbb');
-		assert.strictEqual(path.win32.basename('aaa\\bbb', 'a\\bbb'), 'bbb');
-		assert.strictEqual(path.win32.basename('aaa\\bbb', 'bbb'), 'bbb');
-		assert.strictEqual(path.win32.basename('aaa\\bbb\\\\\\\\', 'bbb'), 'bbb');
-		assert.strictEqual(path.win32.basename('aaa\\bbb', 'bb'), 'b');
-		assert.strictEqual(path.win32.basename('aaa\\bbb', 'b'), 'bb');
-		assert.strictEqual(path.win32.basename('C:'), '');
-		assert.strictEqual(path.win32.basename('C:.'), '.');
-		assert.strictEqual(path.win32.basename('C:\\'), '');
-		assert.strictEqual(path.win32.basename('C:\\dir\\base.ext'), 'base.ext');
-		assert.strictEqual(path.win32.basename('C:\\basename.ext'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('C:basename.ext'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('C:basename.ext\\'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('C:basename.ext\\\\'), 'basename.ext');
-		assert.strictEqual(path.win32.basename('C:foo'), 'foo');
-		assert.strictEqual(path.win32.basename('file:stream'), 'file:stream');
-		assert.strictEqual(path.win32.basename('a', 'a'), '');
+		// On Windows A bAckslAsh Acts As A pAth sepArAtor.
+		Assert.strictEquAl(pAth.win32.bAsenAme('\\dir\\bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('\\bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('bAsenAme.ext\\'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('bAsenAme.ext\\\\'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('foo'), 'foo');
+		Assert.strictEquAl(pAth.win32.bAsenAme('AAA\\bbb', '\\bbb'), 'bbb');
+		Assert.strictEquAl(pAth.win32.bAsenAme('AAA\\bbb', 'A\\bbb'), 'bbb');
+		Assert.strictEquAl(pAth.win32.bAsenAme('AAA\\bbb', 'bbb'), 'bbb');
+		Assert.strictEquAl(pAth.win32.bAsenAme('AAA\\bbb\\\\\\\\', 'bbb'), 'bbb');
+		Assert.strictEquAl(pAth.win32.bAsenAme('AAA\\bbb', 'bb'), 'b');
+		Assert.strictEquAl(pAth.win32.bAsenAme('AAA\\bbb', 'b'), 'bb');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:'), '');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:.'), '.');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:\\'), '');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:\\dir\\bAse.ext'), 'bAse.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:\\bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:bAsenAme.ext\\'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:bAsenAme.ext\\\\'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.win32.bAsenAme('C:foo'), 'foo');
+		Assert.strictEquAl(pAth.win32.bAsenAme('file:streAm'), 'file:streAm');
+		Assert.strictEquAl(pAth.win32.bAsenAme('A', 'A'), '');
 
-		// On unix a backslash is just treated as any other character.
-		assert.strictEqual(path.posix.basename('\\dir\\basename.ext'),
-			'\\dir\\basename.ext');
-		assert.strictEqual(path.posix.basename('\\basename.ext'), '\\basename.ext');
-		assert.strictEqual(path.posix.basename('basename.ext'), 'basename.ext');
-		assert.strictEqual(path.posix.basename('basename.ext\\'), 'basename.ext\\');
-		assert.strictEqual(path.posix.basename('basename.ext\\\\'), 'basename.ext\\\\');
-		assert.strictEqual(path.posix.basename('foo'), 'foo');
+		// On unix A bAckslAsh is just treAted As Any other chArActer.
+		Assert.strictEquAl(pAth.posix.bAsenAme('\\dir\\bAsenAme.ext'),
+			'\\dir\\bAsenAme.ext');
+		Assert.strictEquAl(pAth.posix.bAsenAme('\\bAsenAme.ext'), '\\bAsenAme.ext');
+		Assert.strictEquAl(pAth.posix.bAsenAme('bAsenAme.ext'), 'bAsenAme.ext');
+		Assert.strictEquAl(pAth.posix.bAsenAme('bAsenAme.ext\\'), 'bAsenAme.ext\\');
+		Assert.strictEquAl(pAth.posix.bAsenAme('bAsenAme.ext\\\\'), 'bAsenAme.ext\\\\');
+		Assert.strictEquAl(pAth.posix.bAsenAme('foo'), 'foo');
 
-		// POSIX filenames may include control characters
-		// c.f. http://www.dwheeler.com/essays/fixing-unix-linux-filenames.html
-		const controlCharFilename = `Icon${String.fromCharCode(13)}`;
-		assert.strictEqual(path.posix.basename(`/a/b/${controlCharFilename}`),
-			controlCharFilename);
+		// POSIX filenAmes mAy include control chArActers
+		// c.f. http://www.dwheeler.com/essAys/fixing-unix-linux-filenAmes.html
+		const controlChArFilenAme = `Icon${String.fromChArCode(13)}`;
+		Assert.strictEquAl(pAth.posix.bAsenAme(`/A/b/${controlChArFilenAme}`),
+			controlChArFilenAme);
 
 		// Tests from VSCode
-		assert.equal(path.basename('foo/bar'), 'bar');
-		assert.equal(path.posix.basename('foo\\bar'), 'foo\\bar');
-		assert.equal(path.win32.basename('foo\\bar'), 'bar');
-		assert.equal(path.basename('/foo/bar'), 'bar');
-		assert.equal(path.posix.basename('\\foo\\bar'), '\\foo\\bar');
-		assert.equal(path.win32.basename('\\foo\\bar'), 'bar');
-		assert.equal(path.basename('./bar'), 'bar');
-		assert.equal(path.posix.basename('.\\bar'), '.\\bar');
-		assert.equal(path.win32.basename('.\\bar'), 'bar');
-		assert.equal(path.basename('/bar'), 'bar');
-		assert.equal(path.posix.basename('\\bar'), '\\bar');
-		assert.equal(path.win32.basename('\\bar'), 'bar');
-		assert.equal(path.basename('bar/'), 'bar');
-		assert.equal(path.posix.basename('bar\\'), 'bar\\');
-		assert.equal(path.win32.basename('bar\\'), 'bar');
-		assert.equal(path.basename('bar'), 'bar');
-		assert.equal(path.basename('////////'), '');
-		assert.equal(path.posix.basename('\\\\\\\\'), '\\\\\\\\');
-		assert.equal(path.win32.basename('\\\\\\\\'), '');
+		Assert.equAl(pAth.bAsenAme('foo/bAr'), 'bAr');
+		Assert.equAl(pAth.posix.bAsenAme('foo\\bAr'), 'foo\\bAr');
+		Assert.equAl(pAth.win32.bAsenAme('foo\\bAr'), 'bAr');
+		Assert.equAl(pAth.bAsenAme('/foo/bAr'), 'bAr');
+		Assert.equAl(pAth.posix.bAsenAme('\\foo\\bAr'), '\\foo\\bAr');
+		Assert.equAl(pAth.win32.bAsenAme('\\foo\\bAr'), 'bAr');
+		Assert.equAl(pAth.bAsenAme('./bAr'), 'bAr');
+		Assert.equAl(pAth.posix.bAsenAme('.\\bAr'), '.\\bAr');
+		Assert.equAl(pAth.win32.bAsenAme('.\\bAr'), 'bAr');
+		Assert.equAl(pAth.bAsenAme('/bAr'), 'bAr');
+		Assert.equAl(pAth.posix.bAsenAme('\\bAr'), '\\bAr');
+		Assert.equAl(pAth.win32.bAsenAme('\\bAr'), 'bAr');
+		Assert.equAl(pAth.bAsenAme('bAr/'), 'bAr');
+		Assert.equAl(pAth.posix.bAsenAme('bAr\\'), 'bAr\\');
+		Assert.equAl(pAth.win32.bAsenAme('bAr\\'), 'bAr');
+		Assert.equAl(pAth.bAsenAme('bAr'), 'bAr');
+		Assert.equAl(pAth.bAsenAme('////////'), '');
+		Assert.equAl(pAth.posix.bAsenAme('\\\\\\\\'), '\\\\\\\\');
+		Assert.equAl(pAth.win32.bAsenAme('\\\\\\\\'), '');
 	});
 
-	test('relative', () => {
-		const failures = [] as string[];
+	test('relAtive', () => {
+		const fAilures = [] As string[];
 
-		const relativeTests = [
-			[path.win32.relative,
-			// arguments                     result
-			[['c:/blah\\blah', 'd:/games', 'd:\\games'],
-			['c:/aaaa/bbbb', 'c:/aaaa', '..'],
-			['c:/aaaa/bbbb', 'c:/cccc', '..\\..\\cccc'],
-			['c:/aaaa/bbbb', 'c:/aaaa/bbbb', ''],
-			['c:/aaaa/bbbb', 'c:/aaaa/cccc', '..\\cccc'],
-			['c:/aaaa/', 'c:/aaaa/cccc', 'cccc'],
-			['c:/', 'c:\\aaaa\\bbbb', 'aaaa\\bbbb'],
-			['c:/aaaa/bbbb', 'd:\\', 'd:\\'],
-			['c:/AaAa/bbbb', 'c:/aaaa/bbbb', ''],
-			['c:/aaaaa/', 'c:/aaaa/cccc', '..\\aaaa\\cccc'],
-			['C:\\foo\\bar\\baz\\quux', 'C:\\', '..\\..\\..\\..'],
-			['C:\\foo\\test', 'C:\\foo\\test\\bar\\package.json', 'bar\\package.json'],
-			['C:\\foo\\bar\\baz-quux', 'C:\\foo\\bar\\baz', '..\\baz'],
-			['C:\\foo\\bar\\baz', 'C:\\foo\\bar\\baz-quux', '..\\baz-quux'],
-			['\\\\foo\\bar', '\\\\foo\\bar\\baz', 'baz'],
-			['\\\\foo\\bar\\baz', '\\\\foo\\bar', '..'],
-			['\\\\foo\\bar\\baz-quux', '\\\\foo\\bar\\baz', '..\\baz'],
-			['\\\\foo\\bar\\baz', '\\\\foo\\bar\\baz-quux', '..\\baz-quux'],
-			['C:\\baz-quux', 'C:\\baz', '..\\baz'],
-			['C:\\baz', 'C:\\baz-quux', '..\\baz-quux'],
-			['\\\\foo\\baz-quux', '\\\\foo\\baz', '..\\baz'],
-			['\\\\foo\\baz', '\\\\foo\\baz-quux', '..\\baz-quux'],
-			['C:\\baz', '\\\\foo\\bar\\baz', '\\\\foo\\bar\\baz'],
-			['\\\\foo\\bar\\baz', 'C:\\baz', 'C:\\baz']
+		const relAtiveTests = [
+			[pAth.win32.relAtive,
+			// Arguments                     result
+			[['c:/blAh\\blAh', 'd:/gAmes', 'd:\\gAmes'],
+			['c:/AAAA/bbbb', 'c:/AAAA', '..'],
+			['c:/AAAA/bbbb', 'c:/cccc', '..\\..\\cccc'],
+			['c:/AAAA/bbbb', 'c:/AAAA/bbbb', ''],
+			['c:/AAAA/bbbb', 'c:/AAAA/cccc', '..\\cccc'],
+			['c:/AAAA/', 'c:/AAAA/cccc', 'cccc'],
+			['c:/', 'c:\\AAAA\\bbbb', 'AAAA\\bbbb'],
+			['c:/AAAA/bbbb', 'd:\\', 'd:\\'],
+			['c:/AAAA/bbbb', 'c:/AAAA/bbbb', ''],
+			['c:/AAAAA/', 'c:/AAAA/cccc', '..\\AAAA\\cccc'],
+			['C:\\foo\\bAr\\bAz\\quux', 'C:\\', '..\\..\\..\\..'],
+			['C:\\foo\\test', 'C:\\foo\\test\\bAr\\pAckAge.json', 'bAr\\pAckAge.json'],
+			['C:\\foo\\bAr\\bAz-quux', 'C:\\foo\\bAr\\bAz', '..\\bAz'],
+			['C:\\foo\\bAr\\bAz', 'C:\\foo\\bAr\\bAz-quux', '..\\bAz-quux'],
+			['\\\\foo\\bAr', '\\\\foo\\bAr\\bAz', 'bAz'],
+			['\\\\foo\\bAr\\bAz', '\\\\foo\\bAr', '..'],
+			['\\\\foo\\bAr\\bAz-quux', '\\\\foo\\bAr\\bAz', '..\\bAz'],
+			['\\\\foo\\bAr\\bAz', '\\\\foo\\bAr\\bAz-quux', '..\\bAz-quux'],
+			['C:\\bAz-quux', 'C:\\bAz', '..\\bAz'],
+			['C:\\bAz', 'C:\\bAz-quux', '..\\bAz-quux'],
+			['\\\\foo\\bAz-quux', '\\\\foo\\bAz', '..\\bAz'],
+			['\\\\foo\\bAz', '\\\\foo\\bAz-quux', '..\\bAz-quux'],
+			['C:\\bAz', '\\\\foo\\bAr\\bAz', '\\\\foo\\bAr\\bAz'],
+			['\\\\foo\\bAr\\bAz', 'C:\\bAz', 'C:\\bAz']
 			]
 			],
-			[path.posix.relative,
-			// arguments          result
-			[['/var/lib', '/var', '..'],
-			['/var/lib', '/bin', '../../bin'],
-			['/var/lib', '/var/lib', ''],
-			['/var/lib', '/var/apache', '../apache'],
-			['/var/', '/var/lib', 'lib'],
-			['/', '/var/lib', 'var/lib'],
-			['/foo/test', '/foo/test/bar/package.json', 'bar/package.json'],
-			['/Users/a/web/b/test/mails', '/Users/a/web/b', '../..'],
-			['/foo/bar/baz-quux', '/foo/bar/baz', '../baz'],
-			['/foo/bar/baz', '/foo/bar/baz-quux', '../baz-quux'],
-			['/baz-quux', '/baz', '../baz'],
-			['/baz', '/baz-quux', '../baz-quux']
+			[pAth.posix.relAtive,
+			// Arguments          result
+			[['/vAr/lib', '/vAr', '..'],
+			['/vAr/lib', '/bin', '../../bin'],
+			['/vAr/lib', '/vAr/lib', ''],
+			['/vAr/lib', '/vAr/ApAche', '../ApAche'],
+			['/vAr/', '/vAr/lib', 'lib'],
+			['/', '/vAr/lib', 'vAr/lib'],
+			['/foo/test', '/foo/test/bAr/pAckAge.json', 'bAr/pAckAge.json'],
+			['/Users/A/web/b/test/mAils', '/Users/A/web/b', '../..'],
+			['/foo/bAr/bAz-quux', '/foo/bAr/bAz', '../bAz'],
+			['/foo/bAr/bAz', '/foo/bAr/bAz-quux', '../bAz-quux'],
+			['/bAz-quux', '/bAz', '../bAz'],
+			['/bAz', '/bAz-quux', '../bAz-quux']
 			]
 			]
 		];
-		relativeTests.forEach((test) => {
-			const relative = test[0];
+		relAtiveTests.forEAch((test) => {
+			const relAtive = test[0];
 			//@ts-expect-error
-			test[1].forEach((test) => {
+			test[1].forEAch((test) => {
 				//@ts-expect-error
-				const actual = relative(test[0], test[1]);
+				const ActuAl = relAtive(test[0], test[1]);
 				const expected = test[2];
-				const os = relative === path.win32.relative ? 'win32' : 'posix';
-				const message = `path.${os}.relative(${test.slice(0, 2).map(JSON.stringify).join(',')})\n  expect=${JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
-				if (actual !== expected) {
-					failures.push(`\n${message}`);
+				const os = relAtive === pAth.win32.relAtive ? 'win32' : 'posix';
+				const messAge = `pAth.${os}.relAtive(${test.slice(0, 2).mAp(JSON.stringify).join(',')})\n  expect=${JSON.stringify(expected)}\n  ActuAl=${JSON.stringify(ActuAl)}`;
+				if (ActuAl !== expected) {
+					fAilures.push(`\n${messAge}`);
 				}
 			});
 		});
-		assert.strictEqual(failures.length, 0, failures.join(''));
+		Assert.strictEquAl(fAilures.length, 0, fAilures.join(''));
 	});
 
-	test('normalize', () => {
-		assert.strictEqual(path.win32.normalize('./fixtures///b/../b/c.js'),
+	test('normAlize', () => {
+		Assert.strictEquAl(pAth.win32.normAlize('./fixtures///b/../b/c.js'),
 			'fixtures\\b\\c.js');
-		assert.strictEqual(path.win32.normalize('/foo/../../../bar'), '\\bar');
-		assert.strictEqual(path.win32.normalize('a//b//../b'), 'a\\b');
-		assert.strictEqual(path.win32.normalize('a//b//./c'), 'a\\b\\c');
-		assert.strictEqual(path.win32.normalize('a//b//.'), 'a\\b');
-		assert.strictEqual(path.win32.normalize('//server/share/dir/file.ext'),
-			'\\\\server\\share\\dir\\file.ext');
-		assert.strictEqual(path.win32.normalize('/a/b/c/../../../x/y/z'), '\\x\\y\\z');
-		assert.strictEqual(path.win32.normalize('C:'), 'C:.');
-		assert.strictEqual(path.win32.normalize('C:..\\abc'), 'C:..\\abc');
-		assert.strictEqual(path.win32.normalize('C:..\\..\\abc\\..\\def'),
+		Assert.strictEquAl(pAth.win32.normAlize('/foo/../../../bAr'), '\\bAr');
+		Assert.strictEquAl(pAth.win32.normAlize('A//b//../b'), 'A\\b');
+		Assert.strictEquAl(pAth.win32.normAlize('A//b//./c'), 'A\\b\\c');
+		Assert.strictEquAl(pAth.win32.normAlize('A//b//.'), 'A\\b');
+		Assert.strictEquAl(pAth.win32.normAlize('//server/shAre/dir/file.ext'),
+			'\\\\server\\shAre\\dir\\file.ext');
+		Assert.strictEquAl(pAth.win32.normAlize('/A/b/c/../../../x/y/z'), '\\x\\y\\z');
+		Assert.strictEquAl(pAth.win32.normAlize('C:'), 'C:.');
+		Assert.strictEquAl(pAth.win32.normAlize('C:..\\Abc'), 'C:..\\Abc');
+		Assert.strictEquAl(pAth.win32.normAlize('C:..\\..\\Abc\\..\\def'),
 			'C:..\\..\\def');
-		assert.strictEqual(path.win32.normalize('C:\\.'), 'C:\\');
-		assert.strictEqual(path.win32.normalize('file:stream'), 'file:stream');
-		assert.strictEqual(path.win32.normalize('bar\\foo..\\..\\'), 'bar\\');
-		assert.strictEqual(path.win32.normalize('bar\\foo..\\..'), 'bar');
-		assert.strictEqual(path.win32.normalize('bar\\foo..\\..\\baz'), 'bar\\baz');
-		assert.strictEqual(path.win32.normalize('bar\\foo..\\'), 'bar\\foo..\\');
-		assert.strictEqual(path.win32.normalize('bar\\foo..'), 'bar\\foo..');
-		assert.strictEqual(path.win32.normalize('..\\foo..\\..\\..\\bar'),
-			'..\\..\\bar');
-		assert.strictEqual(path.win32.normalize('..\\...\\..\\.\\...\\..\\..\\bar'),
-			'..\\..\\bar');
-		assert.strictEqual(path.win32.normalize('../../../foo/../../../bar'),
-			'..\\..\\..\\..\\..\\bar');
-		assert.strictEqual(path.win32.normalize('../../../foo/../../../bar/../../'),
+		Assert.strictEquAl(pAth.win32.normAlize('C:\\.'), 'C:\\');
+		Assert.strictEquAl(pAth.win32.normAlize('file:streAm'), 'file:streAm');
+		Assert.strictEquAl(pAth.win32.normAlize('bAr\\foo..\\..\\'), 'bAr\\');
+		Assert.strictEquAl(pAth.win32.normAlize('bAr\\foo..\\..'), 'bAr');
+		Assert.strictEquAl(pAth.win32.normAlize('bAr\\foo..\\..\\bAz'), 'bAr\\bAz');
+		Assert.strictEquAl(pAth.win32.normAlize('bAr\\foo..\\'), 'bAr\\foo..\\');
+		Assert.strictEquAl(pAth.win32.normAlize('bAr\\foo..'), 'bAr\\foo..');
+		Assert.strictEquAl(pAth.win32.normAlize('..\\foo..\\..\\..\\bAr'),
+			'..\\..\\bAr');
+		Assert.strictEquAl(pAth.win32.normAlize('..\\...\\..\\.\\...\\..\\..\\bAr'),
+			'..\\..\\bAr');
+		Assert.strictEquAl(pAth.win32.normAlize('../../../foo/../../../bAr'),
+			'..\\..\\..\\..\\..\\bAr');
+		Assert.strictEquAl(pAth.win32.normAlize('../../../foo/../../../bAr/../../'),
 			'..\\..\\..\\..\\..\\..\\');
-		assert.strictEqual(
-			path.win32.normalize('../foobar/barfoo/foo/../../../bar/../../'),
+		Assert.strictEquAl(
+			pAth.win32.normAlize('../foobAr/bArfoo/foo/../../../bAr/../../'),
 			'..\\..\\'
 		);
-		assert.strictEqual(
-			path.win32.normalize('../.../../foobar/../../../bar/../../baz'),
-			'..\\..\\..\\..\\baz'
+		Assert.strictEquAl(
+			pAth.win32.normAlize('../.../../foobAr/../../../bAr/../../bAz'),
+			'..\\..\\..\\..\\bAz'
 		);
-		assert.strictEqual(path.win32.normalize('foo/bar\\baz'), 'foo\\bar\\baz');
+		Assert.strictEquAl(pAth.win32.normAlize('foo/bAr\\bAz'), 'foo\\bAr\\bAz');
 
-		assert.strictEqual(path.posix.normalize('./fixtures///b/../b/c.js'),
+		Assert.strictEquAl(pAth.posix.normAlize('./fixtures///b/../b/c.js'),
 			'fixtures/b/c.js');
-		assert.strictEqual(path.posix.normalize('/foo/../../../bar'), '/bar');
-		assert.strictEqual(path.posix.normalize('a//b//../b'), 'a/b');
-		assert.strictEqual(path.posix.normalize('a//b//./c'), 'a/b/c');
-		assert.strictEqual(path.posix.normalize('a//b//.'), 'a/b');
-		assert.strictEqual(path.posix.normalize('/a/b/c/../../../x/y/z'), '/x/y/z');
-		assert.strictEqual(path.posix.normalize('///..//./foo/.//bar'), '/foo/bar');
-		assert.strictEqual(path.posix.normalize('bar/foo../../'), 'bar/');
-		assert.strictEqual(path.posix.normalize('bar/foo../..'), 'bar');
-		assert.strictEqual(path.posix.normalize('bar/foo../../baz'), 'bar/baz');
-		assert.strictEqual(path.posix.normalize('bar/foo../'), 'bar/foo../');
-		assert.strictEqual(path.posix.normalize('bar/foo..'), 'bar/foo..');
-		assert.strictEqual(path.posix.normalize('../foo../../../bar'), '../../bar');
-		assert.strictEqual(path.posix.normalize('../.../.././.../../../bar'),
-			'../../bar');
-		assert.strictEqual(path.posix.normalize('../../../foo/../../../bar'),
-			'../../../../../bar');
-		assert.strictEqual(path.posix.normalize('../../../foo/../../../bar/../../'),
+		Assert.strictEquAl(pAth.posix.normAlize('/foo/../../../bAr'), '/bAr');
+		Assert.strictEquAl(pAth.posix.normAlize('A//b//../b'), 'A/b');
+		Assert.strictEquAl(pAth.posix.normAlize('A//b//./c'), 'A/b/c');
+		Assert.strictEquAl(pAth.posix.normAlize('A//b//.'), 'A/b');
+		Assert.strictEquAl(pAth.posix.normAlize('/A/b/c/../../../x/y/z'), '/x/y/z');
+		Assert.strictEquAl(pAth.posix.normAlize('///..//./foo/.//bAr'), '/foo/bAr');
+		Assert.strictEquAl(pAth.posix.normAlize('bAr/foo../../'), 'bAr/');
+		Assert.strictEquAl(pAth.posix.normAlize('bAr/foo../..'), 'bAr');
+		Assert.strictEquAl(pAth.posix.normAlize('bAr/foo../../bAz'), 'bAr/bAz');
+		Assert.strictEquAl(pAth.posix.normAlize('bAr/foo../'), 'bAr/foo../');
+		Assert.strictEquAl(pAth.posix.normAlize('bAr/foo..'), 'bAr/foo..');
+		Assert.strictEquAl(pAth.posix.normAlize('../foo../../../bAr'), '../../bAr');
+		Assert.strictEquAl(pAth.posix.normAlize('../.../.././.../../../bAr'),
+			'../../bAr');
+		Assert.strictEquAl(pAth.posix.normAlize('../../../foo/../../../bAr'),
+			'../../../../../bAr');
+		Assert.strictEquAl(pAth.posix.normAlize('../../../foo/../../../bAr/../../'),
 			'../../../../../../');
-		assert.strictEqual(
-			path.posix.normalize('../foobar/barfoo/foo/../../../bar/../../'),
+		Assert.strictEquAl(
+			pAth.posix.normAlize('../foobAr/bArfoo/foo/../../../bAr/../../'),
 			'../../'
 		);
-		assert.strictEqual(
-			path.posix.normalize('../.../../foobar/../../../bar/../../baz'),
-			'../../../../baz'
+		Assert.strictEquAl(
+			pAth.posix.normAlize('../.../../foobAr/../../../bAr/../../bAz'),
+			'../../../../bAz'
 		);
-		assert.strictEqual(path.posix.normalize('foo/bar\\baz'), 'foo/bar\\baz');
+		Assert.strictEquAl(pAth.posix.normAlize('foo/bAr\\bAz'), 'foo/bAr\\bAz');
 	});
 
 	test('isAbsolute', () => {
-		assert.strictEqual(path.win32.isAbsolute('/'), true);
-		assert.strictEqual(path.win32.isAbsolute('//'), true);
-		assert.strictEqual(path.win32.isAbsolute('//server'), true);
-		assert.strictEqual(path.win32.isAbsolute('//server/file'), true);
-		assert.strictEqual(path.win32.isAbsolute('\\\\server\\file'), true);
-		assert.strictEqual(path.win32.isAbsolute('\\\\server'), true);
-		assert.strictEqual(path.win32.isAbsolute('\\\\'), true);
-		assert.strictEqual(path.win32.isAbsolute('c'), false);
-		assert.strictEqual(path.win32.isAbsolute('c:'), false);
-		assert.strictEqual(path.win32.isAbsolute('c:\\'), true);
-		assert.strictEqual(path.win32.isAbsolute('c:/'), true);
-		assert.strictEqual(path.win32.isAbsolute('c://'), true);
-		assert.strictEqual(path.win32.isAbsolute('C:/Users/'), true);
-		assert.strictEqual(path.win32.isAbsolute('C:\\Users\\'), true);
-		assert.strictEqual(path.win32.isAbsolute('C:cwd/another'), false);
-		assert.strictEqual(path.win32.isAbsolute('C:cwd\\another'), false);
-		assert.strictEqual(path.win32.isAbsolute('directory/directory'), false);
-		assert.strictEqual(path.win32.isAbsolute('directory\\directory'), false);
+		Assert.strictEquAl(pAth.win32.isAbsolute('/'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('//'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('//server'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('//server/file'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('\\\\server\\file'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('\\\\server'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('\\\\'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('c'), fAlse);
+		Assert.strictEquAl(pAth.win32.isAbsolute('c:'), fAlse);
+		Assert.strictEquAl(pAth.win32.isAbsolute('c:\\'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('c:/'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('c://'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('C:/Users/'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('C:\\Users\\'), true);
+		Assert.strictEquAl(pAth.win32.isAbsolute('C:cwd/Another'), fAlse);
+		Assert.strictEquAl(pAth.win32.isAbsolute('C:cwd\\Another'), fAlse);
+		Assert.strictEquAl(pAth.win32.isAbsolute('directory/directory'), fAlse);
+		Assert.strictEquAl(pAth.win32.isAbsolute('directory\\directory'), fAlse);
 
-		assert.strictEqual(path.posix.isAbsolute('/home/foo'), true);
-		assert.strictEqual(path.posix.isAbsolute('/home/foo/..'), true);
-		assert.strictEqual(path.posix.isAbsolute('bar/'), false);
-		assert.strictEqual(path.posix.isAbsolute('./baz'), false);
+		Assert.strictEquAl(pAth.posix.isAbsolute('/home/foo'), true);
+		Assert.strictEquAl(pAth.posix.isAbsolute('/home/foo/..'), true);
+		Assert.strictEquAl(pAth.posix.isAbsolute('bAr/'), fAlse);
+		Assert.strictEquAl(pAth.posix.isAbsolute('./bAz'), fAlse);
 
 		// Tests from VSCode:
 
-		// Absolute Paths
+		// Absolute PAths
 		[
 			'C:/',
 			'C:\\',
 			'C:/foo',
 			'C:\\foo',
-			'z:/foo/bar.txt',
-			'z:\\foo\\bar.txt',
+			'z:/foo/bAr.txt',
+			'z:\\foo\\bAr.txt',
 
-			'\\\\localhost\\c$\\foo',
+			'\\\\locAlhost\\c$\\foo',
 
 			'/',
 			'/foo'
-		].forEach(absolutePath => {
-			assert.ok(path.win32.isAbsolute(absolutePath), absolutePath);
+		].forEAch(AbsolutePAth => {
+			Assert.ok(pAth.win32.isAbsolute(AbsolutePAth), AbsolutePAth);
 		});
 
 		[
 			'/',
 			'/foo',
-			'/foo/bar.txt'
-		].forEach(absolutePath => {
-			assert.ok(path.posix.isAbsolute(absolutePath), absolutePath);
+			'/foo/bAr.txt'
+		].forEAch(AbsolutePAth => {
+			Assert.ok(pAth.posix.isAbsolute(AbsolutePAth), AbsolutePAth);
 		});
 
-		// Relative Paths
+		// RelAtive PAths
 		[
 			'',
 			'foo',
-			'foo/bar',
+			'foo/bAr',
 			'./foo',
-			'http://foo.com/bar'
-		].forEach(nonAbsolutePath => {
-			assert.ok(!path.win32.isAbsolute(nonAbsolutePath), nonAbsolutePath);
+			'http://foo.com/bAr'
+		].forEAch(nonAbsolutePAth => {
+			Assert.ok(!pAth.win32.isAbsolute(nonAbsolutePAth), nonAbsolutePAth);
 		});
 
 		[
 			'',
 			'foo',
-			'foo/bar',
+			'foo/bAr',
 			'./foo',
-			'http://foo.com/bar',
-			'z:/foo/bar.txt',
-		].forEach(nonAbsolutePath => {
-			assert.ok(!path.posix.isAbsolute(nonAbsolutePath), nonAbsolutePath);
+			'http://foo.com/bAr',
+			'z:/foo/bAr.txt',
+		].forEAch(nonAbsolutePAth => {
+			Assert.ok(!pAth.posix.isAbsolute(nonAbsolutePAth), nonAbsolutePAth);
 		});
 	});
 
-	test('path', () => {
-		// path.sep tests
+	test('pAth', () => {
+		// pAth.sep tests
 		// windows
-		assert.strictEqual(path.win32.sep, '\\');
+		Assert.strictEquAl(pAth.win32.sep, '\\');
 		// posix
-		assert.strictEqual(path.posix.sep, '/');
+		Assert.strictEquAl(pAth.posix.sep, '/');
 
-		// path.delimiter tests
+		// pAth.delimiter tests
 		// windows
-		assert.strictEqual(path.win32.delimiter, ';');
+		Assert.strictEquAl(pAth.win32.delimiter, ';');
 		// posix
-		assert.strictEqual(path.posix.delimiter, ':');
+		Assert.strictEquAl(pAth.posix.delimiter, ':');
 
 		// if (isWindows) {
-		// 	assert.strictEqual(path, path.win32);
+		// 	Assert.strictEquAl(pAth, pAth.win32);
 		// } else {
-		// 	assert.strictEqual(path, path.posix);
+		// 	Assert.strictEquAl(pAth, pAth.posix);
 		// }
 	});
 
 	// test('perf', () => {
-	// 	const folderNames = [
-	// 		'abc',
+	// 	const folderNAmes = [
+	// 		'Abc',
 	// 		'Users',
-	// 		'reallylongfoldername',
+	// 		'reAllylongfoldernAme',
 	// 		's',
-	// 		'reallyreallyreallylongfoldername',
+	// 		'reAllyreAllyreAllylongfoldernAme',
 	// 		'home'
 	// 	];
 
-	// 	const basePaths = [
+	// 	const bAsePAths = [
 	// 		'C:',
 	// 		'',
 	// 	];
 
-	// 	const separators = [
+	// 	const sepArAtors = [
 	// 		'\\',
 	// 		'/'
 	// 	];
 
-	// 	function randomInt(ciel: number): number {
-	// 		return Math.floor(Math.random() * ciel);
+	// 	function rAndomInt(ciel: number): number {
+	// 		return MAth.floor(MAth.rAndom() * ciel);
 	// 	}
 
-	// 	let pathsToNormalize = [];
-	// 	let pathsToJoin = [];
+	// 	let pAthsToNormAlize = [];
+	// 	let pAthsToJoin = [];
 	// 	let i;
 	// 	for (i = 0; i < 1000000; i++) {
-	// 		const basePath = basePaths[randomInt(basePaths.length)];
-	// 		let lengthOfPath = randomInt(10) + 2;
+	// 		const bAsePAth = bAsePAths[rAndomInt(bAsePAths.length)];
+	// 		let lengthOfPAth = rAndomInt(10) + 2;
 
-	// 		let pathToNormalize = basePath + separators[randomInt(separators.length)];
-	// 		while (lengthOfPath-- > 0) {
-	// 			pathToNormalize = pathToNormalize + folderNames[randomInt(folderNames.length)] + separators[randomInt(separators.length)];
+	// 		let pAthToNormAlize = bAsePAth + sepArAtors[rAndomInt(sepArAtors.length)];
+	// 		while (lengthOfPAth-- > 0) {
+	// 			pAthToNormAlize = pAthToNormAlize + folderNAmes[rAndomInt(folderNAmes.length)] + sepArAtors[rAndomInt(sepArAtors.length)];
 	// 		}
 
-	// 		pathsToNormalize.push(pathToNormalize);
+	// 		pAthsToNormAlize.push(pAthToNormAlize);
 
-	// 		let pathToJoin = '';
-	// 		lengthOfPath = randomInt(10) + 2;
-	// 		while (lengthOfPath-- > 0) {
-	// 			pathToJoin = pathToJoin + folderNames[randomInt(folderNames.length)] + separators[randomInt(separators.length)];
+	// 		let pAthToJoin = '';
+	// 		lengthOfPAth = rAndomInt(10) + 2;
+	// 		while (lengthOfPAth-- > 0) {
+	// 			pAthToJoin = pAthToJoin + folderNAmes[rAndomInt(folderNAmes.length)] + sepArAtors[rAndomInt(sepArAtors.length)];
 	// 		}
 
-	// 		pathsToJoin.push(pathToJoin + '.ts');
+	// 		pAthsToJoin.push(pAthToJoin + '.ts');
 	// 	}
 
 	// 	let newTime = 0;
 
 	// 	let j;
-	// 	for(j = 0; j < pathsToJoin.length; j++) {
-	// 		const path1 = pathsToNormalize[j];
-	// 		const path2 = pathsToNormalize[j];
+	// 	for(j = 0; j < pAthsToJoin.length; j++) {
+	// 		const pAth1 = pAthsToNormAlize[j];
+	// 		const pAth2 = pAthsToNormAlize[j];
 
-	// 		const newStart = performance.now();
-	// 		path.join(path1, path2);
-	// 		newTime += performance.now() - newStart;
+	// 		const newStArt = performAnce.now();
+	// 		pAth.join(pAth1, pAth2);
+	// 		newTime += performAnce.now() - newStArt;
 	// 	}
 
-	// 	assert.ok(false, `Time: ${newTime}ms.`);
+	// 	Assert.ok(fAlse, `Time: ${newTime}ms.`);
 	// });
 });

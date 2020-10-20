@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as vscode from 'vscode';
-import DocumentTracker from './documentTracker';
+import * As vscode from 'vscode';
+import DocumentTrAcker from './documentTrAcker';
 import CodeLensProvider from './codelensProvider';
-import CommandHandler from './commandHandler';
+import CommAndHAndler from './commAndHAndler';
 import ContentProvider from './contentProvider';
-import Decorator from './mergeDecorator';
-import * as interfaces from './interfaces';
+import DecorAtor from './mergeDecorAtor';
+import * As interfAces from './interfAces';
 
-const ConfigurationSectionName = 'merge-conflict';
+const ConfigurAtionSectionNAme = 'merge-conflict';
 
-export default class ServiceWrapper implements vscode.Disposable {
+export defAult clAss ServiceWrApper implements vscode.DisposAble {
 
-	private services: vscode.Disposable[] = [];
+	privAte services: vscode.DisposAble[] = [];
 
-	constructor(private context: vscode.ExtensionContext) {
+	constructor(privAte context: vscode.ExtensionContext) {
 	}
 
 	begin() {
 
-		let configuration = this.createExtensionConfiguration();
-		const documentTracker = new DocumentTracker();
+		let configurAtion = this.creAteExtensionConfigurAtion();
+		const documentTrAcker = new DocumentTrAcker();
 
 		this.services.push(
-			documentTracker,
-			new CommandHandler(documentTracker),
-			new CodeLensProvider(documentTracker),
+			documentTrAcker,
+			new CommAndHAndler(documentTrAcker),
+			new CodeLensProvider(documentTrAcker),
 			new ContentProvider(this.context),
-			new Decorator(this.context, documentTracker),
+			new DecorAtor(this.context, documentTrAcker),
 		);
 
-		this.services.forEach((service: any) => {
-			if (service.begin && service.begin instanceof Function) {
-				service.begin(configuration);
+		this.services.forEAch((service: Any) => {
+			if (service.begin && service.begin instAnceof Function) {
+				service.begin(configurAtion);
 			}
 		});
 
-		vscode.workspace.onDidChangeConfiguration(() => {
-			this.services.forEach((service: any) => {
-				if (service.configurationUpdated && service.configurationUpdated instanceof Function) {
-					service.configurationUpdated(this.createExtensionConfiguration());
+		vscode.workspAce.onDidChAngeConfigurAtion(() => {
+			this.services.forEAch((service: Any) => {
+				if (service.configurAtionUpdAted && service.configurAtionUpdAted instAnceof Function) {
+					service.configurAtionUpdAted(this.creAteExtensionConfigurAtion());
 				}
 			});
 		});
 	}
 
-	createExtensionConfiguration(): interfaces.IExtensionConfiguration {
-		const workspaceConfiguration = vscode.workspace.getConfiguration(ConfigurationSectionName);
-		const codeLensEnabled: boolean = workspaceConfiguration.get('codeLens.enabled', true);
-		const decoratorsEnabled: boolean = workspaceConfiguration.get('decorators.enabled', true);
+	creAteExtensionConfigurAtion(): interfAces.IExtensionConfigurAtion {
+		const workspAceConfigurAtion = vscode.workspAce.getConfigurAtion(ConfigurAtionSectionNAme);
+		const codeLensEnAbled: booleAn = workspAceConfigurAtion.get('codeLens.enAbled', true);
+		const decorAtorsEnAbled: booleAn = workspAceConfigurAtion.get('decorAtors.enAbled', true);
 
 		return {
-			enableCodeLens: codeLensEnabled,
-			enableDecorations: decoratorsEnabled,
-			enableEditorOverview: decoratorsEnabled
+			enAbleCodeLens: codeLensEnAbled,
+			enAbleDecorAtions: decorAtorsEnAbled,
+			enAbleEditorOverview: decorAtorsEnAbled
 		};
 	}
 
 	dispose() {
-		this.services.forEach(disposable => disposable.dispose());
+		this.services.forEAch(disposAble => disposAble.dispose());
 		this.services = [];
 	}
 }

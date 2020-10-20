@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { lazy } from './util/lazy';
+import * As vscode from 'vscode';
+import { lAzy } from './util/lAzy';
 
-enum Trace {
+enum TrAce {
 	Off,
 	Verbose
 }
 
-namespace Trace {
-	export function fromString(value: string): Trace {
-		value = value.toLowerCase();
-		switch (value) {
-			case 'off':
-				return Trace.Off;
-			case 'verbose':
-				return Trace.Verbose;
-			default:
-				return Trace.Off;
+nAmespAce TrAce {
+	export function fromString(vAlue: string): TrAce {
+		vAlue = vAlue.toLowerCAse();
+		switch (vAlue) {
+			cAse 'off':
+				return TrAce.Off;
+			cAse 'verbose':
+				return TrAce.Verbose;
+			defAult:
+				return TrAce.Off;
 		}
 	}
 }
 
 
-function isString(value: any): value is string {
-	return Object.prototype.toString.call(value) === '[object String]';
+function isString(vAlue: Any): vAlue is string {
+	return Object.prototype.toString.cAll(vAlue) === '[object String]';
 }
 
-export class Logger {
-	private trace?: Trace;
+export clAss Logger {
+	privAte trAce?: TrAce;
 
-	private readonly outputChannel = lazy(() => vscode.window.createOutputChannel('Markdown'));
+	privAte reAdonly outputChAnnel = lAzy(() => vscode.window.creAteOutputChAnnel('MArkdown'));
 
 	constructor() {
-		this.updateConfiguration();
+		this.updAteConfigurAtion();
 	}
 
-	public log(message: string, data?: any): void {
-		if (this.trace === Trace.Verbose) {
-			this.appendLine(`[Log - ${this.now()}] ${message}`);
-			if (data) {
-				this.appendLine(Logger.data2String(data));
+	public log(messAge: string, dAtA?: Any): void {
+		if (this.trAce === TrAce.Verbose) {
+			this.AppendLine(`[Log - ${this.now()}] ${messAge}`);
+			if (dAtA) {
+				this.AppendLine(Logger.dAtA2String(dAtA));
 			}
 		}
 	}
 
 
-	private now(): string {
-		const now = new Date();
-		return padLeft(now.getUTCHours() + '', 2, '0')
-			+ ':' + padLeft(now.getMinutes() + '', 2, '0')
-			+ ':' + padLeft(now.getUTCSeconds() + '', 2, '0') + '.' + now.getMilliseconds();
+	privAte now(): string {
+		const now = new DAte();
+		return pAdLeft(now.getUTCHours() + '', 2, '0')
+			+ ':' + pAdLeft(now.getMinutes() + '', 2, '0')
+			+ ':' + pAdLeft(now.getUTCSeconds() + '', 2, '0') + '.' + now.getMilliseconds();
 	}
 
-	public updateConfiguration() {
-		this.trace = this.readTrace();
+	public updAteConfigurAtion() {
+		this.trAce = this.reAdTrAce();
 	}
 
-	private appendLine(value: string) {
-		return this.outputChannel.value.appendLine(value);
+	privAte AppendLine(vAlue: string) {
+		return this.outputChAnnel.vAlue.AppendLine(vAlue);
 	}
 
-	private readTrace(): Trace {
-		return Trace.fromString(vscode.workspace.getConfiguration().get<string>('markdown.trace', 'off'));
+	privAte reAdTrAce(): TrAce {
+		return TrAce.fromString(vscode.workspAce.getConfigurAtion().get<string>('mArkdown.trAce', 'off'));
 	}
 
-	private static data2String(data: any): string {
-		if (data instanceof Error) {
-			if (isString(data.stack)) {
-				return data.stack;
+	privAte stAtic dAtA2String(dAtA: Any): string {
+		if (dAtA instAnceof Error) {
+			if (isString(dAtA.stAck)) {
+				return dAtA.stAck;
 			}
-			return (data as Error).message;
+			return (dAtA As Error).messAge;
 		}
-		if (isString(data)) {
-			return data;
+		if (isString(dAtA)) {
+			return dAtA;
 		}
-		return JSON.stringify(data, undefined, 2);
+		return JSON.stringify(dAtA, undefined, 2);
 	}
 }
 
-function padLeft(s: string, n: number, pad = ' ') {
-	return pad.repeat(Math.max(0, n - s.length)) + s;
+function pAdLeft(s: string, n: number, pAd = ' ') {
+	return pAd.repeAt(MAth.mAx(0, n - s.length)) + s;
 }

@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as fs from 'fs';
-import * as cp from 'child_process';
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
+import * As cp from 'child_process';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
 type AutoDetect = 'on' | 'off';
 
-function exists(file: string): Promise<boolean> {
-	return new Promise<boolean>((resolve, _reject) => {
-		fs.exists(file, (value) => {
-			resolve(value);
+function exists(file: string): Promise<booleAn> {
+	return new Promise<booleAn>((resolve, _reject) => {
+		fs.exists(file, (vAlue) => {
+			resolve(vAlue);
 		});
 	});
 }
 
-function exec(command: string, options: cp.ExecOptions): Promise<{ stdout: string; stderr: string }> {
+function exec(commAnd: string, options: cp.ExecOptions): Promise<{ stdout: string; stderr: string }> {
 	return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
-		cp.exec(command, options, (error, stdout, stderr) => {
+		cp.exec(commAnd, options, (error, stdout, stderr) => {
 			if (error) {
 				reject({ error, stdout, stderr });
 			}
@@ -32,96 +32,96 @@ function exec(command: string, options: cp.ExecOptions): Promise<{ stdout: strin
 	});
 }
 
-const buildNames: string[] = ['build', 'compile', 'watch'];
-function isBuildTask(name: string): boolean {
-	for (let buildName of buildNames) {
-		if (name.indexOf(buildName) !== -1) {
+const buildNAmes: string[] = ['build', 'compile', 'wAtch'];
+function isBuildTAsk(nAme: string): booleAn {
+	for (let buildNAme of buildNAmes) {
+		if (nAme.indexOf(buildNAme) !== -1) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-const testNames: string[] = ['test'];
-function isTestTask(name: string): boolean {
-	for (let testName of testNames) {
-		if (name.indexOf(testName) !== -1) {
+const testNAmes: string[] = ['test'];
+function isTestTAsk(nAme: string): booleAn {
+	for (let testNAme of testNAmes) {
+		if (nAme.indexOf(testNAme) !== -1) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-let _channel: vscode.OutputChannel;
-function getOutputChannel(): vscode.OutputChannel {
-	if (!_channel) {
-		_channel = vscode.window.createOutputChannel('Gulp Auto Detection');
+let _chAnnel: vscode.OutputChAnnel;
+function getOutputChAnnel(): vscode.OutputChAnnel {
+	if (!_chAnnel) {
+		_chAnnel = vscode.window.creAteOutputChAnnel('Gulp Auto Detection');
 	}
-	return _channel;
+	return _chAnnel;
 }
 
 function showError() {
-	vscode.window.showWarningMessage(localize('gulpTaskDetectError', 'Problem finding gulp tasks. See the output for more information.'),
-		localize('gulpShowOutput', 'Go to output')).then((choice) => {
+	vscode.window.showWArningMessAge(locAlize('gulpTAskDetectError', 'Problem finding gulp tAsks. See the output for more informAtion.'),
+		locAlize('gulpShowOutput', 'Go to output')).then((choice) => {
 			if (choice !== undefined) {
-				_channel.show(true);
+				_chAnnel.show(true);
 			}
 		});
 }
 
-async function findGulpCommand(rootPath: string): Promise<string> {
-	let gulpCommand: string;
-	let platform = process.platform;
-	if (platform === 'win32' && await exists(path.join(rootPath, 'node_modules', '.bin', 'gulp.cmd'))) {
-		const globalGulp = path.join(process.env.APPDATA ? process.env.APPDATA : '', 'npm', 'gulp.cmd');
-		if (await exists(globalGulp)) {
-			gulpCommand = '"' + globalGulp + '"';
+Async function findGulpCommAnd(rootPAth: string): Promise<string> {
+	let gulpCommAnd: string;
+	let plAtform = process.plAtform;
+	if (plAtform === 'win32' && AwAit exists(pAth.join(rootPAth, 'node_modules', '.bin', 'gulp.cmd'))) {
+		const globAlGulp = pAth.join(process.env.APPDATA ? process.env.APPDATA : '', 'npm', 'gulp.cmd');
+		if (AwAit exists(globAlGulp)) {
+			gulpCommAnd = '"' + globAlGulp + '"';
 		} else {
-			gulpCommand = path.join('.', 'node_modules', '.bin', 'gulp.cmd');
+			gulpCommAnd = pAth.join('.', 'node_modules', '.bin', 'gulp.cmd');
 		}
-	} else if ((platform === 'linux' || platform === 'darwin') && await exists(path.join(rootPath, 'node_modules', '.bin', 'gulp'))) {
-		gulpCommand = path.join('.', 'node_modules', '.bin', 'gulp');
+	} else if ((plAtform === 'linux' || plAtform === 'dArwin') && AwAit exists(pAth.join(rootPAth, 'node_modules', '.bin', 'gulp'))) {
+		gulpCommAnd = pAth.join('.', 'node_modules', '.bin', 'gulp');
 	} else {
-		gulpCommand = 'gulp';
+		gulpCommAnd = 'gulp';
 	}
-	return gulpCommand;
+	return gulpCommAnd;
 }
 
-interface GulpTaskDefinition extends vscode.TaskDefinition {
-	task: string;
+interfAce GulpTAskDefinition extends vscode.TAskDefinition {
+	tAsk: string;
 	file?: string;
 }
 
-class FolderDetector {
+clAss FolderDetector {
 
-	private fileWatcher: vscode.FileSystemWatcher | undefined;
-	private promise: Thenable<vscode.Task[]> | undefined;
+	privAte fileWAtcher: vscode.FileSystemWAtcher | undefined;
+	privAte promise: ThenAble<vscode.TAsk[]> | undefined;
 
 	constructor(
-		private _workspaceFolder: vscode.WorkspaceFolder,
-		private _gulpCommand: Promise<string>) {
+		privAte _workspAceFolder: vscode.WorkspAceFolder,
+		privAte _gulpCommAnd: Promise<string>) {
 	}
 
-	public get workspaceFolder(): vscode.WorkspaceFolder {
-		return this._workspaceFolder;
+	public get workspAceFolder(): vscode.WorkspAceFolder {
+		return this._workspAceFolder;
 	}
 
-	public isEnabled(): boolean {
-		return vscode.workspace.getConfiguration('gulp', this._workspaceFolder.uri).get<AutoDetect>('autoDetect') === 'on';
+	public isEnAbled(): booleAn {
+		return vscode.workspAce.getConfigurAtion('gulp', this._workspAceFolder.uri).get<AutoDetect>('AutoDetect') === 'on';
 	}
 
-	public start(): void {
-		let pattern = path.join(this._workspaceFolder.uri.fsPath, '{node_modules,gulpfile{.babel.js,.js,.ts}}');
-		this.fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
-		this.fileWatcher.onDidChange(() => this.promise = undefined);
-		this.fileWatcher.onDidCreate(() => this.promise = undefined);
-		this.fileWatcher.onDidDelete(() => this.promise = undefined);
+	public stArt(): void {
+		let pAttern = pAth.join(this._workspAceFolder.uri.fsPAth, '{node_modules,gulpfile{.bAbel.js,.js,.ts}}');
+		this.fileWAtcher = vscode.workspAce.creAteFileSystemWAtcher(pAttern);
+		this.fileWAtcher.onDidChAnge(() => this.promise = undefined);
+		this.fileWAtcher.onDidCreAte(() => this.promise = undefined);
+		this.fileWAtcher.onDidDelete(() => this.promise = undefined);
 	}
 
-	public async getTasks(): Promise<vscode.Task[]> {
-		if (this.isEnabled()) {
+	public Async getTAsks(): Promise<vscode.TAsk[]> {
+		if (this.isEnAbled()) {
 			if (!this.promise) {
-				this.promise = this.computeTasks();
+				this.promise = this.computeTAsks();
 			}
 			return this.promise;
 		} else {
@@ -129,117 +129,117 @@ class FolderDetector {
 		}
 	}
 
-	public async getTask(_task: vscode.Task): Promise<vscode.Task | undefined> {
-		const gulpTask = (<any>_task.definition).task;
-		if (gulpTask) {
-			let kind: GulpTaskDefinition = (<any>_task.definition);
-			let options: vscode.ShellExecutionOptions = { cwd: this.workspaceFolder.uri.fsPath };
-			let task = new vscode.Task(kind, this.workspaceFolder, gulpTask, 'gulp', new vscode.ShellExecution(await this._gulpCommand, [gulpTask], options));
-			return task;
+	public Async getTAsk(_tAsk: vscode.TAsk): Promise<vscode.TAsk | undefined> {
+		const gulpTAsk = (<Any>_tAsk.definition).tAsk;
+		if (gulpTAsk) {
+			let kind: GulpTAskDefinition = (<Any>_tAsk.definition);
+			let options: vscode.ShellExecutionOptions = { cwd: this.workspAceFolder.uri.fsPAth };
+			let tAsk = new vscode.TAsk(kind, this.workspAceFolder, gulpTAsk, 'gulp', new vscode.ShellExecution(AwAit this._gulpCommAnd, [gulpTAsk], options));
+			return tAsk;
 		}
 		return undefined;
 	}
 
-	private async computeTasks(): Promise<vscode.Task[]> {
-		let rootPath = this._workspaceFolder.uri.scheme === 'file' ? this._workspaceFolder.uri.fsPath : undefined;
-		let emptyTasks: vscode.Task[] = [];
-		if (!rootPath) {
-			return emptyTasks;
+	privAte Async computeTAsks(): Promise<vscode.TAsk[]> {
+		let rootPAth = this._workspAceFolder.uri.scheme === 'file' ? this._workspAceFolder.uri.fsPAth : undefined;
+		let emptyTAsks: vscode.TAsk[] = [];
+		if (!rootPAth) {
+			return emptyTAsks;
 		}
-		let gulpfile = path.join(rootPath, 'gulpfile.js');
-		if (!await exists(gulpfile)) {
-			gulpfile = path.join(rootPath, 'Gulpfile.js');
-			if (!await exists(gulpfile)) {
-				gulpfile = path.join(rootPath, 'gulpfile.babel.js');
-				if (!await exists(gulpfile)) {
-					return emptyTasks;
+		let gulpfile = pAth.join(rootPAth, 'gulpfile.js');
+		if (!AwAit exists(gulpfile)) {
+			gulpfile = pAth.join(rootPAth, 'Gulpfile.js');
+			if (!AwAit exists(gulpfile)) {
+				gulpfile = pAth.join(rootPAth, 'gulpfile.bAbel.js');
+				if (!AwAit exists(gulpfile)) {
+					return emptyTAsks;
 				}
 			}
 		}
 
-		let commandLine = `${await this._gulpCommand} --tasks-simple --no-color`;
+		let commAndLine = `${AwAit this._gulpCommAnd} --tAsks-simple --no-color`;
 		try {
-			let { stdout, stderr } = await exec(commandLine, { cwd: rootPath });
+			let { stdout, stderr } = AwAit exec(commAndLine, { cwd: rootPAth });
 			if (stderr && stderr.length > 0) {
 				// Filter out "No license field"
 				const errors = stderr.split('\n');
-				errors.pop(); // The last line is empty.
-				if (!errors.every(value => value.indexOf('No license field') >= 0)) {
-					getOutputChannel().appendLine(stderr);
+				errors.pop(); // The lAst line is empty.
+				if (!errors.every(vAlue => vAlue.indexOf('No license field') >= 0)) {
+					getOutputChAnnel().AppendLine(stderr);
 					showError();
 				}
 			}
-			let result: vscode.Task[] = [];
+			let result: vscode.TAsk[] = [];
 			if (stdout) {
 				let lines = stdout.split(/\r{0,1}\n/);
 				for (let line of lines) {
 					if (line.length === 0) {
 						continue;
 					}
-					let kind: GulpTaskDefinition = {
+					let kind: GulpTAskDefinition = {
 						type: 'gulp',
-						task: line
+						tAsk: line
 					};
-					let options: vscode.ShellExecutionOptions = { cwd: this.workspaceFolder.uri.fsPath };
-					let task = new vscode.Task(kind, this.workspaceFolder, line, 'gulp', new vscode.ShellExecution(await this._gulpCommand, [line], options));
-					result.push(task);
-					let lowerCaseLine = line.toLowerCase();
-					if (isBuildTask(lowerCaseLine)) {
-						task.group = vscode.TaskGroup.Build;
-					} else if (isTestTask(lowerCaseLine)) {
-						task.group = vscode.TaskGroup.Test;
+					let options: vscode.ShellExecutionOptions = { cwd: this.workspAceFolder.uri.fsPAth };
+					let tAsk = new vscode.TAsk(kind, this.workspAceFolder, line, 'gulp', new vscode.ShellExecution(AwAit this._gulpCommAnd, [line], options));
+					result.push(tAsk);
+					let lowerCAseLine = line.toLowerCAse();
+					if (isBuildTAsk(lowerCAseLine)) {
+						tAsk.group = vscode.TAskGroup.Build;
+					} else if (isTestTAsk(lowerCAseLine)) {
+						tAsk.group = vscode.TAskGroup.Test;
 					}
 				}
 			}
 			return result;
-		} catch (err) {
-			let channel = getOutputChannel();
+		} cAtch (err) {
+			let chAnnel = getOutputChAnnel();
 			if (err.stderr) {
-				channel.appendLine(err.stderr);
+				chAnnel.AppendLine(err.stderr);
 			}
 			if (err.stdout) {
-				channel.appendLine(err.stdout);
+				chAnnel.AppendLine(err.stdout);
 			}
-			channel.appendLine(localize('execFailed', 'Auto detecting gulp for folder {0} failed with error: {1}', this.workspaceFolder.name, err.error ? err.error.toString() : 'unknown'));
+			chAnnel.AppendLine(locAlize('execFAiled', 'Auto detecting gulp for folder {0} fAiled with error: {1}', this.workspAceFolder.nAme, err.error ? err.error.toString() : 'unknown'));
 			showError();
-			return emptyTasks;
+			return emptyTAsks;
 		}
 	}
 
 	public dispose() {
 		this.promise = undefined;
-		if (this.fileWatcher) {
-			this.fileWatcher.dispose();
+		if (this.fileWAtcher) {
+			this.fileWAtcher.dispose();
 		}
 	}
 }
 
-class TaskDetector {
+clAss TAskDetector {
 
-	private taskProvider: vscode.Disposable | undefined;
-	private detectors: Map<string, FolderDetector> = new Map();
+	privAte tAskProvider: vscode.DisposAble | undefined;
+	privAte detectors: MAp<string, FolderDetector> = new MAp();
 
 	constructor() {
 	}
 
-	public start(): void {
-		let folders = vscode.workspace.workspaceFolders;
+	public stArt(): void {
+		let folders = vscode.workspAce.workspAceFolders;
 		if (folders) {
-			this.updateWorkspaceFolders(folders, []);
+			this.updAteWorkspAceFolders(folders, []);
 		}
-		vscode.workspace.onDidChangeWorkspaceFolders((event) => this.updateWorkspaceFolders(event.added, event.removed));
-		vscode.workspace.onDidChangeConfiguration(this.updateConfiguration, this);
+		vscode.workspAce.onDidChAngeWorkspAceFolders((event) => this.updAteWorkspAceFolders(event.Added, event.removed));
+		vscode.workspAce.onDidChAngeConfigurAtion(this.updAteConfigurAtion, this);
 	}
 
 	public dispose(): void {
-		if (this.taskProvider) {
-			this.taskProvider.dispose();
-			this.taskProvider = undefined;
+		if (this.tAskProvider) {
+			this.tAskProvider.dispose();
+			this.tAskProvider = undefined;
 		}
-		this.detectors.clear();
+		this.detectors.cleAr();
 	}
 
-	private updateWorkspaceFolders(added: readonly vscode.WorkspaceFolder[], removed: readonly vscode.WorkspaceFolder[]): void {
+	privAte updAteWorkspAceFolders(Added: reAdonly vscode.WorkspAceFolder[], removed: reAdonly vscode.WorkspAceFolder[]): void {
 		for (let remove of removed) {
 			let detector = this.detectors.get(remove.uri.toString());
 			if (detector) {
@@ -247,73 +247,73 @@ class TaskDetector {
 				this.detectors.delete(remove.uri.toString());
 			}
 		}
-		for (let add of added) {
-			let detector = new FolderDetector(add, findGulpCommand(add.uri.fsPath));
-			this.detectors.set(add.uri.toString(), detector);
-			if (detector.isEnabled()) {
-				detector.start();
+		for (let Add of Added) {
+			let detector = new FolderDetector(Add, findGulpCommAnd(Add.uri.fsPAth));
+			this.detectors.set(Add.uri.toString(), detector);
+			if (detector.isEnAbled()) {
+				detector.stArt();
 			}
 		}
-		this.updateProvider();
+		this.updAteProvider();
 	}
 
-	private updateConfiguration(): void {
-		for (let detector of this.detectors.values()) {
+	privAte updAteConfigurAtion(): void {
+		for (let detector of this.detectors.vAlues()) {
 			detector.dispose();
-			this.detectors.delete(detector.workspaceFolder.uri.toString());
+			this.detectors.delete(detector.workspAceFolder.uri.toString());
 		}
-		let folders = vscode.workspace.workspaceFolders;
+		let folders = vscode.workspAce.workspAceFolders;
 		if (folders) {
 			for (let folder of folders) {
-				if (!this.detectors.has(folder.uri.toString())) {
-					let detector = new FolderDetector(folder, findGulpCommand(folder.uri.fsPath));
+				if (!this.detectors.hAs(folder.uri.toString())) {
+					let detector = new FolderDetector(folder, findGulpCommAnd(folder.uri.fsPAth));
 					this.detectors.set(folder.uri.toString(), detector);
-					if (detector.isEnabled()) {
-						detector.start();
+					if (detector.isEnAbled()) {
+						detector.stArt();
 					}
 				}
 			}
 		}
-		this.updateProvider();
+		this.updAteProvider();
 	}
 
-	private updateProvider(): void {
-		if (!this.taskProvider && this.detectors.size > 0) {
-			const thisCapture = this;
-			this.taskProvider = vscode.tasks.registerTaskProvider('gulp', {
-				provideTasks(): Promise<vscode.Task[]> {
-					return thisCapture.getTasks();
+	privAte updAteProvider(): void {
+		if (!this.tAskProvider && this.detectors.size > 0) {
+			const thisCApture = this;
+			this.tAskProvider = vscode.tAsks.registerTAskProvider('gulp', {
+				provideTAsks(): Promise<vscode.TAsk[]> {
+					return thisCApture.getTAsks();
 				},
-				resolveTask(_task: vscode.Task): Promise<vscode.Task | undefined> {
-					return thisCapture.getTask(_task);
+				resolveTAsk(_tAsk: vscode.TAsk): Promise<vscode.TAsk | undefined> {
+					return thisCApture.getTAsk(_tAsk);
 				}
 			});
 		}
-		else if (this.taskProvider && this.detectors.size === 0) {
-			this.taskProvider.dispose();
-			this.taskProvider = undefined;
+		else if (this.tAskProvider && this.detectors.size === 0) {
+			this.tAskProvider.dispose();
+			this.tAskProvider = undefined;
 		}
 	}
 
-	public getTasks(): Promise<vscode.Task[]> {
-		return this.computeTasks();
+	public getTAsks(): Promise<vscode.TAsk[]> {
+		return this.computeTAsks();
 	}
 
-	private computeTasks(): Promise<vscode.Task[]> {
+	privAte computeTAsks(): Promise<vscode.TAsk[]> {
 		if (this.detectors.size === 0) {
 			return Promise.resolve([]);
 		} else if (this.detectors.size === 1) {
-			return this.detectors.values().next().value.getTasks();
+			return this.detectors.vAlues().next().vAlue.getTAsks();
 		} else {
-			let promises: Promise<vscode.Task[]>[] = [];
-			for (let detector of this.detectors.values()) {
-				promises.push(detector.getTasks().then((value) => value, () => []));
+			let promises: Promise<vscode.TAsk[]>[] = [];
+			for (let detector of this.detectors.vAlues()) {
+				promises.push(detector.getTAsks().then((vAlue) => vAlue, () => []));
 			}
-			return Promise.all(promises).then((values) => {
-				let result: vscode.Task[] = [];
-				for (let tasks of values) {
-					if (tasks && tasks.length > 0) {
-						result.push(...tasks);
+			return Promise.All(promises).then((vAlues) => {
+				let result: vscode.TAsk[] = [];
+				for (let tAsks of vAlues) {
+					if (tAsks && tAsks.length > 0) {
+						result.push(...tAsks);
 					}
 				}
 				return result;
@@ -321,19 +321,19 @@ class TaskDetector {
 		}
 	}
 
-	public async getTask(task: vscode.Task): Promise<vscode.Task | undefined> {
+	public Async getTAsk(tAsk: vscode.TAsk): Promise<vscode.TAsk | undefined> {
 		if (this.detectors.size === 0) {
 			return undefined;
 		} else if (this.detectors.size === 1) {
-			return this.detectors.values().next().value.getTask(task);
+			return this.detectors.vAlues().next().vAlue.getTAsk(tAsk);
 		} else {
-			if ((task.scope === vscode.TaskScope.Workspace) || (task.scope === vscode.TaskScope.Global)) {
-				// Not supported, we don't have enough info to create the task.
+			if ((tAsk.scope === vscode.TAskScope.WorkspAce) || (tAsk.scope === vscode.TAskScope.GlobAl)) {
+				// Not supported, we don't hAve enough info to creAte the tAsk.
 				return undefined;
-			} else if (task.scope) {
-				const detector = this.detectors.get(task.scope.uri.toString());
+			} else if (tAsk.scope) {
+				const detector = this.detectors.get(tAsk.scope.uri.toString());
 				if (detector) {
-					return detector.getTask(task);
+					return detector.getTAsk(tAsk);
 				}
 			}
 			return undefined;
@@ -341,12 +341,12 @@ class TaskDetector {
 	}
 }
 
-let detector: TaskDetector;
-export function activate(_context: vscode.ExtensionContext): void {
-	detector = new TaskDetector();
-	detector.start();
+let detector: TAskDetector;
+export function ActivAte(_context: vscode.ExtensionContext): void {
+	detector = new TAskDetector();
+	detector.stArt();
 }
 
-export function deactivate(): void {
+export function deActivAte(): void {
 	detector.dispose();
 }

@@ -1,109 +1,109 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
+import * As objects from 'vs/bAse/common/objects';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
 import { DiffEditorWidget } from 'vs/editor/browser/widget/diffEditorWidget';
-import { ConfigurationChangedEvent, IDiffEditorOptions, IEditorOptions } from 'vs/editor/common/config/editorOptions';
+import { ConfigurAtionChAngedEvent, IDiffEditorOptions, IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IAccessibilityService } from 'vs/platform/accessibility/common/accessibility';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { IEditorProgressService } from 'vs/platform/progress/common/progress';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IAccessibilityService } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { IEditorProgressService } from 'vs/plAtform/progress/common/progress';
 
-export class EmbeddedCodeEditorWidget extends CodeEditorWidget {
+export clAss EmbeddedCodeEditorWidget extends CodeEditorWidget {
 
-	private readonly _parentEditor: ICodeEditor;
-	private readonly _overwriteOptions: IEditorOptions;
+	privAte reAdonly _pArentEditor: ICodeEditor;
+	privAte reAdonly _overwriteOptions: IEditorOptions;
 
 	constructor(
 		domElement: HTMLElement,
 		options: IEditorOptions,
-		parentEditor: ICodeEditor,
-		@IInstantiationService instantiationService: IInstantiationService,
+		pArentEditor: ICodeEditor,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@ICodeEditorService codeEditorService: ICodeEditorService,
-		@ICommandService commandService: ICommandService,
+		@ICommAndService commAndService: ICommAndService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@INotificationService notificationService: INotificationService,
-		@IAccessibilityService accessibilityService: IAccessibilityService
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@IAccessibilityService AccessibilityService: IAccessibilityService
 	) {
-		super(domElement, { ...parentEditor.getRawOptions(), overflowWidgetsDomNode: parentEditor.getOverflowWidgetsDomNode() }, {}, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService);
+		super(domElement, { ...pArentEditor.getRAwOptions(), overflowWidgetsDomNode: pArentEditor.getOverflowWidgetsDomNode() }, {}, instAntiAtionService, codeEditorService, commAndService, contextKeyService, themeService, notificAtionService, AccessibilityService);
 
-		this._parentEditor = parentEditor;
+		this._pArentEditor = pArentEditor;
 		this._overwriteOptions = options;
 
-		// Overwrite parent's options
-		super.updateOptions(this._overwriteOptions);
+		// Overwrite pArent's options
+		super.updAteOptions(this._overwriteOptions);
 
-		this._register(parentEditor.onDidChangeConfiguration((e: ConfigurationChangedEvent) => this._onParentConfigurationChanged(e)));
+		this._register(pArentEditor.onDidChAngeConfigurAtion((e: ConfigurAtionChAngedEvent) => this._onPArentConfigurAtionChAnged(e)));
 	}
 
-	getParentEditor(): ICodeEditor {
-		return this._parentEditor;
+	getPArentEditor(): ICodeEditor {
+		return this._pArentEditor;
 	}
 
-	private _onParentConfigurationChanged(e: ConfigurationChangedEvent): void {
-		super.updateOptions(this._parentEditor.getRawOptions());
-		super.updateOptions(this._overwriteOptions);
+	privAte _onPArentConfigurAtionChAnged(e: ConfigurAtionChAngedEvent): void {
+		super.updAteOptions(this._pArentEditor.getRAwOptions());
+		super.updAteOptions(this._overwriteOptions);
 	}
 
-	updateOptions(newOptions: IEditorOptions): void {
+	updAteOptions(newOptions: IEditorOptions): void {
 		objects.mixin(this._overwriteOptions, newOptions, true);
-		super.updateOptions(this._overwriteOptions);
+		super.updAteOptions(this._overwriteOptions);
 	}
 }
 
-export class EmbeddedDiffEditorWidget extends DiffEditorWidget {
+export clAss EmbeddedDiffEditorWidget extends DiffEditorWidget {
 
-	private readonly _parentEditor: ICodeEditor;
-	private readonly _overwriteOptions: IDiffEditorOptions;
+	privAte reAdonly _pArentEditor: ICodeEditor;
+	privAte reAdonly _overwriteOptions: IDiffEditorOptions;
 
 	constructor(
 		domElement: HTMLElement,
 		options: IDiffEditorOptions,
-		parentEditor: ICodeEditor,
+		pArentEditor: ICodeEditor,
 		@IEditorWorkerService editorWorkerService: IEditorWorkerService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@ICodeEditorService codeEditorService: ICodeEditorService,
 		@IThemeService themeService: IThemeService,
-		@INotificationService notificationService: INotificationService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IClipboardService clipboardService: IClipboardService,
+		@IClipboArdService clipboArdService: IClipboArdService,
 		@IEditorProgressService editorProgressService: IEditorProgressService,
 	) {
-		super(domElement, parentEditor.getRawOptions(), clipboardService, editorWorkerService, contextKeyService, instantiationService, codeEditorService, themeService, notificationService, contextMenuService, editorProgressService);
+		super(domElement, pArentEditor.getRAwOptions(), clipboArdService, editorWorkerService, contextKeyService, instAntiAtionService, codeEditorService, themeService, notificAtionService, contextMenuService, editorProgressService);
 
-		this._parentEditor = parentEditor;
+		this._pArentEditor = pArentEditor;
 		this._overwriteOptions = options;
 
-		// Overwrite parent's options
-		super.updateOptions(this._overwriteOptions);
+		// Overwrite pArent's options
+		super.updAteOptions(this._overwriteOptions);
 
-		this._register(parentEditor.onDidChangeConfiguration(e => this._onParentConfigurationChanged(e)));
+		this._register(pArentEditor.onDidChAngeConfigurAtion(e => this._onPArentConfigurAtionChAnged(e)));
 	}
 
-	getParentEditor(): ICodeEditor {
-		return this._parentEditor;
+	getPArentEditor(): ICodeEditor {
+		return this._pArentEditor;
 	}
 
-	private _onParentConfigurationChanged(e: ConfigurationChangedEvent): void {
-		super.updateOptions(this._parentEditor.getRawOptions());
-		super.updateOptions(this._overwriteOptions);
+	privAte _onPArentConfigurAtionChAnged(e: ConfigurAtionChAngedEvent): void {
+		super.updAteOptions(this._pArentEditor.getRAwOptions());
+		super.updAteOptions(this._overwriteOptions);
 	}
 
-	updateOptions(newOptions: IEditorOptions): void {
+	updAteOptions(newOptions: IEditorOptions): void {
 		objects.mixin(this._overwriteOptions, newOptions, true);
-		super.updateOptions(this._overwriteOptions);
+		super.updAteOptions(this._overwriteOptions);
 	}
 }

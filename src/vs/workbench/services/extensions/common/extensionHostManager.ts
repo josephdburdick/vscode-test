@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as errors from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
+import * As errors from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IMessAgePAssingProtocol } from 'vs/bAse/pArts/ipc/common/ipc';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostCustomersRegistry } from 'vs/workbench/api/common/extHostCustomers';
-import { ExtHostContext, ExtHostExtensionServiceShape, IExtHostContext, MainContext } from 'vs/workbench/api/common/extHost.protocol';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ExtHostCustomersRegistry } from 'vs/workbench/Api/common/extHostCustomers';
+import { ExtHostContext, ExtHostExtensionServiceShApe, IExtHostContext, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
 import { ProxyIdentifier } from 'vs/workbench/services/extensions/common/proxyIdentifier';
-import { IRPCProtocolLogger, RPCProtocol, RequestInitiator, ResponsiveState } from 'vs/workbench/services/extensions/common/rpcProtocol';
-import { RemoteAuthorityResolverError, ResolverResult } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import * as nls from 'vs/nls';
-import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
+import { IRPCProtocolLogger, RPCProtocol, RequestInitiAtor, ResponsiveStAte } from 'vs/workbench/services/extensions/common/rpcProtocol';
+import { RemoteAuthorityResolverError, ResolverResult } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import * As nls from 'vs/nls';
+import { registerAction2, Action2 } from 'vs/plAtform/Actions/common/Actions';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { StopWatch } from 'vs/base/common/stopwatch';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IExtensionHost, ExtensionHostKind, ActivationKind } from 'vs/workbench/services/extensions/common/extensions';
-import { ExtensionActivationReason } from 'vs/workbench/api/common/extHostExtensionActivator';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { StopWAtch } from 'vs/bAse/common/stopwAtch';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { IExtensionHost, ExtensionHostKind, ActivAtionKind } from 'vs/workbench/services/extensions/common/extensions';
+import { ExtensionActivAtionReAson } from 'vs/workbench/Api/common/extHostExtensionActivAtor';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 
-// Enable to see detailed message communication between window and extension host
-const LOG_EXTENSION_HOST_COMMUNICATION = false;
+// EnAble to see detAiled messAge communicAtion between window And extension host
+const LOG_EXTENSION_HOST_COMMUNICATION = fAlse;
 const LOG_USE_COLORS = true;
 
-export class ExtensionHostManager extends Disposable {
+export clAss ExtensionHostMAnAger extends DisposAble {
 
-	public readonly kind: ExtensionHostKind;
-	public readonly onDidExit: Event<[number, string | null]>;
+	public reAdonly kind: ExtensionHostKind;
+	public reAdonly onDidExit: Event<[number, string | null]>;
 
-	private readonly _onDidChangeResponsiveState: Emitter<ResponsiveState> = this._register(new Emitter<ResponsiveState>());
-	public readonly onDidChangeResponsiveState: Event<ResponsiveState> = this._onDidChangeResponsiveState.event;
+	privAte reAdonly _onDidChAngeResponsiveStAte: Emitter<ResponsiveStAte> = this._register(new Emitter<ResponsiveStAte>());
+	public reAdonly onDidChAngeResponsiveStAte: Event<ResponsiveStAte> = this._onDidChAngeResponsiveStAte.event;
 
 	/**
-	 * A map of already requested activation events to speed things up if the same activation event is triggered multiple times.
+	 * A mAp of AlreAdy requested ActivAtion events to speed things up if the sAme ActivAtion event is triggered multiple times.
 	 */
-	private readonly _cachedActivationEvents: Map<string, Promise<void>>;
-	private _rpcProtocol: RPCProtocol | null;
-	private readonly _customers: IDisposable[];
-	private readonly _extensionHost: IExtensionHost;
+	privAte reAdonly _cAchedActivAtionEvents: MAp<string, Promise<void>>;
+	privAte _rpcProtocol: RPCProtocol | null;
+	privAte reAdonly _customers: IDisposAble[];
+	privAte reAdonly _extensionHost: IExtensionHost;
 	/**
-	 * winjs believes a proxy is a promise because it has a `then` method, so wrap the result in an object.
+	 * winjs believes A proxy is A promise becAuse it hAs A `then` method, so wrAp the result in An object.
 	 */
-	private _proxy: Promise<{ value: ExtHostExtensionServiceShape; } | null> | null;
-	private _resolveAuthorityAttempt: number;
-	private _hasStarted = false;
+	privAte _proxy: Promise<{ vAlue: ExtHostExtensionServiceShApe; } | null> | null;
+	privAte _resolveAuthorityAttempt: number;
+	privAte _hAsStArted = fAlse;
 
 	constructor(
 		extensionHost: IExtensionHost,
-		initialActivationEvents: string[],
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
+		initiAlActivAtionEvents: string[],
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@IWorkbenchEnvironmentService privAte reAdonly _environmentService: IWorkbenchEnvironmentService,
 	) {
 		super();
-		this._cachedActivationEvents = new Map<string, Promise<void>>();
+		this._cAchedActivAtionEvents = new MAp<string, Promise<void>>();
 		this._rpcProtocol = null;
 		this._customers = [];
 
 		this._extensionHost = extensionHost;
 		this.kind = this._extensionHost.kind;
 		this.onDidExit = this._extensionHost.onExit;
-		this._proxy = this._extensionHost.start()!.then(
+		this._proxy = this._extensionHost.stArt()!.then(
 			(protocol) => {
-				this._hasStarted = true;
-				return { value: this._createExtensionHostCustomers(protocol) };
+				this._hAsStArted = true;
+				return { vAlue: this._creAteExtensionHostCustomers(protocol) };
 			},
 			(err) => {
-				console.error('Error received from starting extension host');
+				console.error('Error received from stArting extension host');
 				console.error(err);
 				return null;
 			}
 		);
 		this._proxy.then(() => {
-			initialActivationEvents.forEach((activationEvent) => this.activateByEvent(activationEvent, ActivationKind.Normal));
-			this._register(registerLatencyTestProvider({
-				measure: () => this.measure()
+			initiAlActivAtionEvents.forEAch((ActivAtionEvent) => this.ActivAteByEvent(ActivAtionEvent, ActivAtionKind.NormAl));
+			this._register(registerLAtencyTestProvider({
+				meAsure: () => this.meAsure()
 			}));
 		});
 		this._resolveAuthorityAttempt = 0;
@@ -95,7 +95,7 @@ export class ExtensionHostManager extends Disposable {
 			const customer = this._customers[i];
 			try {
 				customer.dispose();
-			} catch (err) {
+			} cAtch (err) {
 				errors.onUnexpectedError(err);
 			}
 		}
@@ -104,149 +104,149 @@ export class ExtensionHostManager extends Disposable {
 		super.dispose();
 	}
 
-	private async measure(): Promise<ExtHostLatencyResult | null> {
-		const proxy = await this._getProxy();
+	privAte Async meAsure(): Promise<ExtHostLAtencyResult | null> {
+		const proxy = AwAit this._getProxy();
 		if (!proxy) {
 			return null;
 		}
-		const latency = await this._measureLatency(proxy);
-		const down = await this._measureDown(proxy);
-		const up = await this._measureUp(proxy);
+		const lAtency = AwAit this._meAsureLAtency(proxy);
+		const down = AwAit this._meAsureDown(proxy);
+		const up = AwAit this._meAsureUp(proxy);
 		return {
 			remoteAuthority: this._extensionHost.remoteAuthority,
-			latency,
+			lAtency,
 			down,
 			up
 		};
 	}
 
-	private async _getProxy(): Promise<ExtHostExtensionServiceShape | null> {
+	privAte Async _getProxy(): Promise<ExtHostExtensionServiceShApe | null> {
 		if (!this._proxy) {
 			return null;
 		}
-		const p = await this._proxy;
+		const p = AwAit this._proxy;
 		if (!p) {
 			return null;
 		}
-		return p.value;
+		return p.vAlue;
 	}
 
-	private async _measureLatency(proxy: ExtHostExtensionServiceShape): Promise<number> {
+	privAte Async _meAsureLAtency(proxy: ExtHostExtensionServiceShApe): Promise<number> {
 		const COUNT = 10;
 
 		let sum = 0;
 		for (let i = 0; i < COUNT; i++) {
-			const sw = StopWatch.create(true);
-			await proxy.$test_latency(i);
+			const sw = StopWAtch.creAte(true);
+			AwAit proxy.$test_lAtency(i);
 			sw.stop();
-			sum += sw.elapsed();
+			sum += sw.elApsed();
 		}
 		return (sum / COUNT);
 	}
 
-	private static _convert(byteCount: number, elapsedMillis: number): number {
-		return (byteCount * 1000 * 8) / elapsedMillis;
+	privAte stAtic _convert(byteCount: number, elApsedMillis: number): number {
+		return (byteCount * 1000 * 8) / elApsedMillis;
 	}
 
-	private async _measureUp(proxy: ExtHostExtensionServiceShape): Promise<number> {
+	privAte Async _meAsureUp(proxy: ExtHostExtensionServiceShApe): Promise<number> {
 		const SIZE = 10 * 1024 * 1024; // 10MB
 
-		let buff = VSBuffer.alloc(SIZE);
-		let value = Math.ceil(Math.random() * 256);
+		let buff = VSBuffer.Alloc(SIZE);
+		let vAlue = MAth.ceil(MAth.rAndom() * 256);
 		for (let i = 0; i < buff.byteLength; i++) {
-			buff.writeUInt8(i, value);
+			buff.writeUInt8(i, vAlue);
 		}
-		const sw = StopWatch.create(true);
-		await proxy.$test_up(buff);
+		const sw = StopWAtch.creAte(true);
+		AwAit proxy.$test_up(buff);
 		sw.stop();
-		return ExtensionHostManager._convert(SIZE, sw.elapsed());
+		return ExtensionHostMAnAger._convert(SIZE, sw.elApsed());
 	}
 
-	private async _measureDown(proxy: ExtHostExtensionServiceShape): Promise<number> {
+	privAte Async _meAsureDown(proxy: ExtHostExtensionServiceShApe): Promise<number> {
 		const SIZE = 10 * 1024 * 1024; // 10MB
 
-		const sw = StopWatch.create(true);
-		await proxy.$test_down(SIZE);
+		const sw = StopWAtch.creAte(true);
+		AwAit proxy.$test_down(SIZE);
 		sw.stop();
-		return ExtensionHostManager._convert(SIZE, sw.elapsed());
+		return ExtensionHostMAnAger._convert(SIZE, sw.elApsed());
 	}
 
-	private _createExtensionHostCustomers(protocol: IMessagePassingProtocol): ExtHostExtensionServiceShape {
+	privAte _creAteExtensionHostCustomers(protocol: IMessAgePAssingProtocol): ExtHostExtensionServiceShApe {
 
 		let logger: IRPCProtocolLogger | null = null;
-		if (LOG_EXTENSION_HOST_COMMUNICATION || this._environmentService.logExtensionHostCommunication) {
+		if (LOG_EXTENSION_HOST_COMMUNICATION || this._environmentService.logExtensionHostCommunicAtion) {
 			logger = new RPCLogger();
 		}
 
 		this._rpcProtocol = new RPCProtocol(protocol, logger);
-		this._register(this._rpcProtocol.onDidChangeResponsiveState((responsiveState: ResponsiveState) => this._onDidChangeResponsiveState.fire(responsiveState)));
+		this._register(this._rpcProtocol.onDidChAngeResponsiveStAte((responsiveStAte: ResponsiveStAte) => this._onDidChAngeResponsiveStAte.fire(responsiveStAte)));
 		const extHostContext: IExtHostContext = {
 			remoteAuthority: this._extensionHost.remoteAuthority,
 			getProxy: <T>(identifier: ProxyIdentifier<T>): T => this._rpcProtocol!.getProxy(identifier),
-			set: <T, R extends T>(identifier: ProxyIdentifier<T>, instance: R): R => this._rpcProtocol!.set(identifier, instance),
-			assertRegistered: (identifiers: ProxyIdentifier<any>[]): void => this._rpcProtocol!.assertRegistered(identifiers),
-			drain: (): Promise<void> => this._rpcProtocol!.drain(),
+			set: <T, R extends T>(identifier: ProxyIdentifier<T>, instAnce: R): R => this._rpcProtocol!.set(identifier, instAnce),
+			AssertRegistered: (identifiers: ProxyIdentifier<Any>[]): void => this._rpcProtocol!.AssertRegistered(identifiers),
+			drAin: (): Promise<void> => this._rpcProtocol!.drAin(),
 		};
 
-		// Named customers
-		const namedCustomers = ExtHostCustomersRegistry.getNamedCustomers();
-		for (let i = 0, len = namedCustomers.length; i < len; i++) {
-			const [id, ctor] = namedCustomers[i];
-			const instance = this._instantiationService.createInstance(ctor, extHostContext);
-			this._customers.push(instance);
-			this._rpcProtocol.set(id, instance);
+		// NAmed customers
+		const nAmedCustomers = ExtHostCustomersRegistry.getNAmedCustomers();
+		for (let i = 0, len = nAmedCustomers.length; i < len; i++) {
+			const [id, ctor] = nAmedCustomers[i];
+			const instAnce = this._instAntiAtionService.creAteInstAnce(ctor, extHostContext);
+			this._customers.push(instAnce);
+			this._rpcProtocol.set(id, instAnce);
 		}
 
 		// Customers
 		const customers = ExtHostCustomersRegistry.getCustomers();
 		for (const ctor of customers) {
-			const instance = this._instantiationService.createInstance(ctor, extHostContext);
-			this._customers.push(instance);
+			const instAnce = this._instAntiAtionService.creAteInstAnce(ctor, extHostContext);
+			this._customers.push(instAnce);
 		}
 
-		// Check that no named customers are missing
-		const expected: ProxyIdentifier<any>[] = Object.keys(MainContext).map((key) => (<any>MainContext)[key]);
-		this._rpcProtocol.assertRegistered(expected);
+		// Check thAt no nAmed customers Are missing
+		const expected: ProxyIdentifier<Any>[] = Object.keys(MAinContext).mAp((key) => (<Any>MAinContext)[key]);
+		this._rpcProtocol.AssertRegistered(expected);
 
 		return this._rpcProtocol.getProxy(ExtHostContext.ExtHostExtensionService);
 	}
 
-	public async activate(extension: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<boolean> {
-		const proxy = await this._getProxy();
+	public Async ActivAte(extension: ExtensionIdentifier, reAson: ExtensionActivAtionReAson): Promise<booleAn> {
+		const proxy = AwAit this._getProxy();
 		if (!proxy) {
-			return false;
+			return fAlse;
 		}
-		return proxy.$activate(extension, reason);
+		return proxy.$ActivAte(extension, reAson);
 	}
 
-	public activateByEvent(activationEvent: string, activationKind: ActivationKind): Promise<void> {
-		if (activationKind === ActivationKind.Immediate && !this._hasStarted) {
+	public ActivAteByEvent(ActivAtionEvent: string, ActivAtionKind: ActivAtionKind): Promise<void> {
+		if (ActivAtionKind === ActivAtionKind.ImmediAte && !this._hAsStArted) {
 			return Promise.resolve();
 		}
 
-		if (!this._cachedActivationEvents.has(activationEvent)) {
-			this._cachedActivationEvents.set(activationEvent, this._activateByEvent(activationEvent, activationKind));
+		if (!this._cAchedActivAtionEvents.hAs(ActivAtionEvent)) {
+			this._cAchedActivAtionEvents.set(ActivAtionEvent, this._ActivAteByEvent(ActivAtionEvent, ActivAtionKind));
 		}
-		return this._cachedActivationEvents.get(activationEvent)!;
+		return this._cAchedActivAtionEvents.get(ActivAtionEvent)!;
 	}
 
-	private async _activateByEvent(activationEvent: string, activationKind: ActivationKind): Promise<void> {
+	privAte Async _ActivAteByEvent(ActivAtionEvent: string, ActivAtionKind: ActivAtionKind): Promise<void> {
 		if (!this._proxy) {
 			return;
 		}
-		const proxy = await this._proxy;
+		const proxy = AwAit this._proxy;
 		if (!proxy) {
-			// this case is already covered above and logged.
-			// i.e. the extension host could not be started
+			// this cAse is AlreAdy covered Above And logged.
+			// i.e. the extension host could not be stArted
 			return;
 		}
-		return proxy.value.$activateByEvent(activationEvent, activationKind);
+		return proxy.vAlue.$ActivAteByEvent(ActivAtionEvent, ActivAtionKind);
 	}
 
-	public async getInspectPort(tryEnableInspector: boolean): Promise<number> {
+	public Async getInspectPort(tryEnAbleInspector: booleAn): Promise<number> {
 		if (this._extensionHost) {
-			if (tryEnableInspector) {
-				await this._extensionHost.enableInspectPort();
+			if (tryEnAbleInspector) {
+				AwAit this._extensionHost.enAbleInspectPort();
 			}
 			let port = this._extensionHost.getInspectPort();
 			if (port) {
@@ -256,50 +256,50 @@ export class ExtensionHostManager extends Disposable {
 		return 0;
 	}
 
-	public async resolveAuthority(remoteAuthority: string): Promise<ResolverResult> {
-		const authorityPlusIndex = remoteAuthority.indexOf('+');
-		if (authorityPlusIndex === -1) {
-			// This authority does not need to be resolved, simply parse the port number
+	public Async resolveAuthority(remoteAuthority: string): Promise<ResolverResult> {
+		const AuthorityPlusIndex = remoteAuthority.indexOf('+');
+		if (AuthorityPlusIndex === -1) {
+			// This Authority does not need to be resolved, simply pArse the port number
 			const pieces = remoteAuthority.split(':');
 			return Promise.resolve({
-				authority: {
-					authority: remoteAuthority,
+				Authority: {
+					Authority: remoteAuthority,
 					host: pieces[0],
-					port: parseInt(pieces[1], 10)
+					port: pArseInt(pieces[1], 10)
 				}
 			});
 		}
-		const proxy = await this._getProxy();
+		const proxy = AwAit this._getProxy();
 		if (!proxy) {
-			throw new Error(`Cannot resolve authority`);
+			throw new Error(`CAnnot resolve Authority`);
 		}
 		this._resolveAuthorityAttempt++;
-		const result = await proxy.$resolveAuthority(remoteAuthority, this._resolveAuthorityAttempt);
+		const result = AwAit proxy.$resolveAuthority(remoteAuthority, this._resolveAuthorityAttempt);
 		if (result.type === 'ok') {
-			return result.value;
+			return result.vAlue;
 		} else {
-			throw new RemoteAuthorityResolverError(result.error.message, result.error.code, result.error.detail);
+			throw new RemoteAuthorityResolverError(result.error.messAge, result.error.code, result.error.detAil);
 		}
 	}
 
-	public async start(enabledExtensionIds: ExtensionIdentifier[]): Promise<void> {
-		const proxy = await this._getProxy();
+	public Async stArt(enAbledExtensionIds: ExtensionIdentifier[]): Promise<void> {
+		const proxy = AwAit this._getProxy();
 		if (!proxy) {
 			return;
 		}
-		return proxy.$startExtensionHost(enabledExtensionIds);
+		return proxy.$stArtExtensionHost(enAbledExtensionIds);
 	}
 
-	public async deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): Promise<void> {
-		const proxy = await this._getProxy();
+	public Async deltAExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): Promise<void> {
+		const proxy = AwAit this._getProxy();
 		if (!proxy) {
 			return;
 		}
-		return proxy.$deltaExtensions(toAdd, toRemove);
+		return proxy.$deltAExtensions(toAdd, toRemove);
 	}
 
-	public async setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void> {
-		const proxy = await this._getProxy();
+	public Async setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void> {
+		const proxy = AwAit this._getProxy();
 		if (!proxy) {
 			return;
 		}
@@ -308,75 +308,75 @@ export class ExtensionHostManager extends Disposable {
 	}
 }
 
-const colorTables = [
+const colorTAbles = [
 	['#2977B1', '#FC802D', '#34A13A', '#D3282F', '#9366BA'],
 	['#8B564C', '#E177C0', '#7F7F7F', '#BBBE3D', '#2EBECD']
 ];
 
-function prettyWithoutArrays(data: any): any {
-	if (Array.isArray(data)) {
-		return data;
+function prettyWithoutArrAys(dAtA: Any): Any {
+	if (ArrAy.isArrAy(dAtA)) {
+		return dAtA;
 	}
-	if (data && typeof data === 'object' && typeof data.toString === 'function') {
-		let result = data.toString();
+	if (dAtA && typeof dAtA === 'object' && typeof dAtA.toString === 'function') {
+		let result = dAtA.toString();
 		if (result !== '[object Object]') {
 			return result;
 		}
 	}
-	return data;
+	return dAtA;
 }
 
-function pretty(data: any): any {
-	if (Array.isArray(data)) {
-		return data.map(prettyWithoutArrays);
+function pretty(dAtA: Any): Any {
+	if (ArrAy.isArrAy(dAtA)) {
+		return dAtA.mAp(prettyWithoutArrAys);
 	}
-	return prettyWithoutArrays(data);
+	return prettyWithoutArrAys(dAtA);
 }
 
-class RPCLogger implements IRPCProtocolLogger {
+clAss RPCLogger implements IRPCProtocolLogger {
 
-	private _totalIncoming = 0;
-	private _totalOutgoing = 0;
+	privAte _totAlIncoming = 0;
+	privAte _totAlOutgoing = 0;
 
-	private _log(direction: string, totalLength: number, msgLength: number, req: number, initiator: RequestInitiator, str: string, data: any): void {
-		data = pretty(data);
+	privAte _log(direction: string, totAlLength: number, msgLength: number, req: number, initiAtor: RequestInitiAtor, str: string, dAtA: Any): void {
+		dAtA = pretty(dAtA);
 
-		const colorTable = colorTables[initiator];
-		const color = LOG_USE_COLORS ? colorTable[req % colorTable.length] : '#000000';
-		let args = [`%c[${direction}]%c[${String(totalLength).padStart(7)}]%c[len: ${String(msgLength).padStart(5)}]%c${String(req).padStart(5)} - ${str}`, 'color: darkgreen', 'color: grey', 'color: grey', `color: ${color}`];
+		const colorTAble = colorTAbles[initiAtor];
+		const color = LOG_USE_COLORS ? colorTAble[req % colorTAble.length] : '#000000';
+		let Args = [`%c[${direction}]%c[${String(totAlLength).pAdStArt(7)}]%c[len: ${String(msgLength).pAdStArt(5)}]%c${String(req).pAdStArt(5)} - ${str}`, 'color: dArkgreen', 'color: grey', 'color: grey', `color: ${color}`];
 		if (/\($/.test(str)) {
-			args = args.concat(data);
-			args.push(')');
+			Args = Args.concAt(dAtA);
+			Args.push(')');
 		} else {
-			args.push(data);
+			Args.push(dAtA);
 		}
-		console.log.apply(console, args as [string, ...string[]]);
+		console.log.Apply(console, Args As [string, ...string[]]);
 	}
 
-	logIncoming(msgLength: number, req: number, initiator: RequestInitiator, str: string, data?: any): void {
-		this._totalIncoming += msgLength;
-		this._log('Ext \u2192 Win', this._totalIncoming, msgLength, req, initiator, str, data);
+	logIncoming(msgLength: number, req: number, initiAtor: RequestInitiAtor, str: string, dAtA?: Any): void {
+		this._totAlIncoming += msgLength;
+		this._log('Ext \u2192 Win', this._totAlIncoming, msgLength, req, initiAtor, str, dAtA);
 	}
 
-	logOutgoing(msgLength: number, req: number, initiator: RequestInitiator, str: string, data?: any): void {
-		this._totalOutgoing += msgLength;
-		this._log('Win \u2192 Ext', this._totalOutgoing, msgLength, req, initiator, str, data);
+	logOutgoing(msgLength: number, req: number, initiAtor: RequestInitiAtor, str: string, dAtA?: Any): void {
+		this._totAlOutgoing += msgLength;
+		this._log('Win \u2192 Ext', this._totAlOutgoing, msgLength, req, initiAtor, str, dAtA);
 	}
 }
 
-interface ExtHostLatencyResult {
+interfAce ExtHostLAtencyResult {
 	remoteAuthority: string | null;
 	up: number;
 	down: number;
-	latency: number;
+	lAtency: number;
 }
 
-interface ExtHostLatencyProvider {
-	measure(): Promise<ExtHostLatencyResult | null>;
+interfAce ExtHostLAtencyProvider {
+	meAsure(): Promise<ExtHostLAtencyResult | null>;
 }
 
-let providers: ExtHostLatencyProvider[] = [];
-function registerLatencyTestProvider(provider: ExtHostLatencyProvider): IDisposable {
+let providers: ExtHostLAtencyProvider[] = [];
+function registerLAtencyTestProvider(provider: ExtHostLAtencyProvider): IDisposAble {
 	providers.push(provider);
 	return {
 		dispose: () => {
@@ -390,40 +390,40 @@ function registerLatencyTestProvider(provider: ExtHostLatencyProvider): IDisposa
 	};
 }
 
-function getLatencyTestProviders(): ExtHostLatencyProvider[] {
+function getLAtencyTestProviders(): ExtHostLAtencyProvider[] {
 	return providers.slice(0);
 }
 
-registerAction2(class MeasureExtHostLatencyAction extends Action2 {
+registerAction2(clAss MeAsureExtHostLAtencyAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'editor.action.measureExtHostLatency',
+			id: 'editor.Action.meAsureExtHostLAtency',
 			title: {
-				value: nls.localize('measureExtHostLatency', "Measure Extension Host Latency"),
-				original: 'Measure Extension Host Latency'
+				vAlue: nls.locAlize('meAsureExtHostLAtency', "MeAsure Extension Host LAtency"),
+				originAl: 'MeAsure Extension Host LAtency'
 			},
-			category: CATEGORIES.Developer,
+			cAtegory: CATEGORIES.Developer,
 			f1: true
 		});
 	}
 
-	async run(accessor: ServicesAccessor) {
+	Async run(Accessor: ServicesAccessor) {
 
-		const editorService = accessor.get(IEditorService);
+		const editorService = Accessor.get(IEditorService);
 
-		const measurements = await Promise.all(getLatencyTestProviders().map(provider => provider.measure()));
-		editorService.openEditor({ contents: measurements.map(MeasureExtHostLatencyAction._print).join('\n\n'), options: { pinned: true } });
+		const meAsurements = AwAit Promise.All(getLAtencyTestProviders().mAp(provider => provider.meAsure()));
+		editorService.openEditor({ contents: meAsurements.mAp(MeAsureExtHostLAtencyAction._print).join('\n\n'), options: { pinned: true } });
 	}
 
-	private static _print(m: ExtHostLatencyResult | null): string {
+	privAte stAtic _print(m: ExtHostLAtencyResult | null): string {
 		if (!m) {
 			return '';
 		}
-		return `${m.remoteAuthority ? `Authority: ${m.remoteAuthority}\n` : ``}Roundtrip latency: ${m.latency.toFixed(3)}ms\nUp: ${MeasureExtHostLatencyAction._printSpeed(m.up)}\nDown: ${MeasureExtHostLatencyAction._printSpeed(m.down)}\n`;
+		return `${m.remoteAuthority ? `Authority: ${m.remoteAuthority}\n` : ``}Roundtrip lAtency: ${m.lAtency.toFixed(3)}ms\nUp: ${MeAsureExtHostLAtencyAction._printSpeed(m.up)}\nDown: ${MeAsureExtHostLAtencyAction._printSpeed(m.down)}\n`;
 	}
 
-	private static _printSpeed(n: number): string {
+	privAte stAtic _printSpeed(n: number): string {
 		if (n <= 1024) {
 			return `${n} bps`;
 		}

@@ -1,169 +1,169 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorCommand, registerEditorCommand, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { Range } from 'vs/editor/common/core/range';
+import { EditorCommAnd, registerEditorCommAnd, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { CompletionItem, CompletionItemKind } from 'vs/editor/common/modes';
-import { Choice } from 'vs/editor/contrib/snippet/snippetParser';
+import { Choice } from 'vs/editor/contrib/snippet/snippetPArser';
 import { showSimpleSuggestions } from 'vs/editor/contrib/suggest/suggest';
-import { ContextKeyExpr, IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ILogService } from 'vs/platform/log/common/log';
+import { ContextKeyExpr, IContextKey, IContextKeyService, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { ILogService } from 'vs/plAtform/log/common/log';
 import { SnippetSession } from './snippetSession';
-import { OvertypingCapturer } from 'vs/editor/contrib/suggest/suggestOvertypingCapturer';
+import { OvertypingCApturer } from 'vs/editor/contrib/suggest/suggestOvertypingCApturer';
 
-export interface ISnippetInsertOptions {
+export interfAce ISnippetInsertOptions {
 	overwriteBefore: number;
 	overwriteAfter: number;
-	adjustWhitespace: boolean;
-	undoStopBefore: boolean;
-	undoStopAfter: boolean;
-	clipboardText: string | undefined;
-	overtypingCapturer: OvertypingCapturer | undefined;
+	AdjustWhitespAce: booleAn;
+	undoStopBefore: booleAn;
+	undoStopAfter: booleAn;
+	clipboArdText: string | undefined;
+	overtypingCApturer: OvertypingCApturer | undefined;
 }
 
-const _defaultOptions: ISnippetInsertOptions = {
+const _defAultOptions: ISnippetInsertOptions = {
 	overwriteBefore: 0,
 	overwriteAfter: 0,
 	undoStopBefore: true,
 	undoStopAfter: true,
-	adjustWhitespace: true,
-	clipboardText: undefined,
-	overtypingCapturer: undefined
+	AdjustWhitespAce: true,
+	clipboArdText: undefined,
+	overtypingCApturer: undefined
 };
 
-export class SnippetController2 implements IEditorContribution {
+export clAss SnippetController2 implements IEditorContribution {
 
-	public static ID = 'snippetController2';
+	public stAtic ID = 'snippetController2';
 
-	static get(editor: ICodeEditor): SnippetController2 {
+	stAtic get(editor: ICodeEditor): SnippetController2 {
 		return editor.getContribution<SnippetController2>(SnippetController2.ID);
 	}
 
-	static readonly InSnippetMode = new RawContextKey('inSnippetMode', false);
-	static readonly HasNextTabstop = new RawContextKey('hasNextTabstop', false);
-	static readonly HasPrevTabstop = new RawContextKey('hasPrevTabstop', false);
+	stAtic reAdonly InSnippetMode = new RAwContextKey('inSnippetMode', fAlse);
+	stAtic reAdonly HAsNextTAbstop = new RAwContextKey('hAsNextTAbstop', fAlse);
+	stAtic reAdonly HAsPrevTAbstop = new RAwContextKey('hAsPrevTAbstop', fAlse);
 
-	private readonly _inSnippet: IContextKey<boolean>;
-	private readonly _hasNextTabstop: IContextKey<boolean>;
-	private readonly _hasPrevTabstop: IContextKey<boolean>;
+	privAte reAdonly _inSnippet: IContextKey<booleAn>;
+	privAte reAdonly _hAsNextTAbstop: IContextKey<booleAn>;
+	privAte reAdonly _hAsPrevTAbstop: IContextKey<booleAn>;
 
-	private _session?: SnippetSession;
-	private _snippetListener = new DisposableStore();
-	private _modelVersionId: number = -1;
-	private _currentChoice?: Choice;
+	privAte _session?: SnippetSession;
+	privAte _snippetListener = new DisposAbleStore();
+	privAte _modelVersionId: number = -1;
+	privAte _currentChoice?: Choice;
 
 	constructor(
-		private readonly _editor: ICodeEditor,
-		@ILogService private readonly _logService: ILogService,
+		privAte reAdonly _editor: ICodeEditor,
+		@ILogService privAte reAdonly _logService: ILogService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		this._inSnippet = SnippetController2.InSnippetMode.bindTo(contextKeyService);
-		this._hasNextTabstop = SnippetController2.HasNextTabstop.bindTo(contextKeyService);
-		this._hasPrevTabstop = SnippetController2.HasPrevTabstop.bindTo(contextKeyService);
+		this._hAsNextTAbstop = SnippetController2.HAsNextTAbstop.bindTo(contextKeyService);
+		this._hAsPrevTAbstop = SnippetController2.HAsPrevTAbstop.bindTo(contextKeyService);
 	}
 
 	dispose(): void {
 		this._inSnippet.reset();
-		this._hasPrevTabstop.reset();
-		this._hasNextTabstop.reset();
+		this._hAsPrevTAbstop.reset();
+		this._hAsNextTAbstop.reset();
 		this._session?.dispose();
 		this._snippetListener.dispose();
 	}
 
 	insert(
-		template: string,
-		opts?: Partial<ISnippetInsertOptions>
+		templAte: string,
+		opts?: PArtiAl<ISnippetInsertOptions>
 	): void {
-		// this is here to find out more about the yet-not-understood
-		// error that sometimes happens when we fail to inserted a nested
+		// this is here to find out more About the yet-not-understood
+		// error thAt sometimes hAppens when we fAil to inserted A nested
 		// snippet
 		try {
-			this._doInsert(template, typeof opts === 'undefined' ? _defaultOptions : { ..._defaultOptions, ...opts });
+			this._doInsert(templAte, typeof opts === 'undefined' ? _defAultOptions : { ..._defAultOptions, ...opts });
 
-		} catch (e) {
-			this.cancel();
+		} cAtch (e) {
+			this.cAncel();
 			this._logService.error(e);
 			this._logService.error('snippet_error');
-			this._logService.error('insert_template=', template);
-			this._logService.error('existing_template=', this._session ? this._session._logInfo() : '<no_session>');
+			this._logService.error('insert_templAte=', templAte);
+			this._logService.error('existing_templAte=', this._session ? this._session._logInfo() : '<no_session>');
 		}
 	}
 
-	private _doInsert(
-		template: string,
+	privAte _doInsert(
+		templAte: string,
 		opts: ISnippetInsertOptions
 	): void {
-		if (!this._editor.hasModel()) {
+		if (!this._editor.hAsModel()) {
 			return;
 		}
 
 		// don't listen while inserting the snippet
-		// as that is the inflight state causing cancelation
-		this._snippetListener.clear();
+		// As thAt is the inflight stAte cAusing cAncelAtion
+		this._snippetListener.cleAr();
 
 		if (opts.undoStopBefore) {
-			this._editor.getModel().pushStackElement();
+			this._editor.getModel().pushStAckElement();
 		}
 
 		if (!this._session) {
-			this._modelVersionId = this._editor.getModel().getAlternativeVersionId();
-			this._session = new SnippetSession(this._editor, template, opts);
+			this._modelVersionId = this._editor.getModel().getAlternAtiveVersionId();
+			this._session = new SnippetSession(this._editor, templAte, opts);
 			this._session.insert();
 		} else {
-			this._session.merge(template, opts);
+			this._session.merge(templAte, opts);
 		}
 
 		if (opts.undoStopAfter) {
-			this._editor.getModel().pushStackElement();
+			this._editor.getModel().pushStAckElement();
 		}
 
-		this._updateState();
+		this._updAteStAte();
 
-		this._snippetListener.add(this._editor.onDidChangeModelContent(e => e.isFlush && this.cancel()));
-		this._snippetListener.add(this._editor.onDidChangeModel(() => this.cancel()));
-		this._snippetListener.add(this._editor.onDidChangeCursorSelection(() => this._updateState()));
+		this._snippetListener.Add(this._editor.onDidChAngeModelContent(e => e.isFlush && this.cAncel()));
+		this._snippetListener.Add(this._editor.onDidChAngeModel(() => this.cAncel()));
+		this._snippetListener.Add(this._editor.onDidChAngeCursorSelection(() => this._updAteStAte()));
 	}
 
-	private _updateState(): void {
-		if (!this._session || !this._editor.hasModel()) {
-			// canceled in the meanwhile
+	privAte _updAteStAte(): void {
+		if (!this._session || !this._editor.hAsModel()) {
+			// cAnceled in the meAnwhile
 			return;
 		}
 
-		if (this._modelVersionId === this._editor.getModel().getAlternativeVersionId()) {
-			// undo until the 'before' state happened
-			// and makes use cancel snippet mode
-			return this.cancel();
+		if (this._modelVersionId === this._editor.getModel().getAlternAtiveVersionId()) {
+			// undo until the 'before' stAte hAppened
+			// And mAkes use cAncel snippet mode
+			return this.cAncel();
 		}
 
-		if (!this._session.hasPlaceholder) {
-			// don't listen for selection changes and don't
-			// update context keys when the snippet is plain text
-			return this.cancel();
+		if (!this._session.hAsPlAceholder) {
+			// don't listen for selection chAnges And don't
+			// updAte context keys when the snippet is plAin text
+			return this.cAncel();
 		}
 
-		if (this._session.isAtLastPlaceholder || !this._session.isSelectionWithinPlaceholders()) {
-			return this.cancel();
+		if (this._session.isAtLAstPlAceholder || !this._session.isSelectionWithinPlAceholders()) {
+			return this.cAncel();
 		}
 
 		this._inSnippet.set(true);
-		this._hasPrevTabstop.set(!this._session.isAtFirstPlaceholder);
-		this._hasNextTabstop.set(!this._session.isAtLastPlaceholder);
+		this._hAsPrevTAbstop.set(!this._session.isAtFirstPlAceholder);
+		this._hAsNextTAbstop.set(!this._session.isAtLAstPlAceholder);
 
-		this._handleChoice();
+		this._hAndleChoice();
 	}
 
-	private _handleChoice(): void {
-		if (!this._session || !this._editor.hasModel()) {
+	privAte _hAndleChoice(): void {
+		if (!this._session || !this._editor.hAsModel()) {
 			this._currentChoice = undefined;
 			return;
 		}
@@ -177,24 +177,24 @@ export class SnippetController2 implements IEditorContribution {
 			this._currentChoice = choice;
 
 			this._editor.setSelections(this._editor.getSelections()
-				.map(s => Selection.fromPositions(s.getStartPosition()))
+				.mAp(s => Selection.fromPositions(s.getStArtPosition()))
 			);
 
 			const [first] = choice.options;
 
-			showSimpleSuggestions(this._editor, choice.options.map((option, i) => {
+			showSimpleSuggestions(this._editor, choice.options.mAp((option, i) => {
 
 				// let before = choice.options.slice(0, i);
-				// let after = choice.options.slice(i);
+				// let After = choice.options.slice(i);
 
 				return <CompletionItem>{
-					kind: CompletionItemKind.Value,
-					label: option.value,
-					insertText: option.value,
-					// insertText: `\${1|${after.concat(before).join(',')}|}$0`,
-					// snippetType: 'textmate',
-					sortText: 'a'.repeat(i + 1),
-					range: Range.fromPositions(this._editor.getPosition()!, this._editor.getPosition()!.delta(0, first.value.length))
+					kind: CompletionItemKind.VAlue,
+					lAbel: option.vAlue,
+					insertText: option.vAlue,
+					// insertText: `\${1|${After.concAt(before).join(',')}|}$0`,
+					// snippetType: 'textmAte',
+					sortText: 'A'.repeAt(i + 1),
+					rAnge: RAnge.fromPositions(this._editor.getPosition()!, this._editor.getPosition()!.deltA(0, first.vAlue.length))
 				};
 			}));
 		}
@@ -206,17 +206,17 @@ export class SnippetController2 implements IEditorContribution {
 		}
 	}
 
-	cancel(resetSelection: boolean = false): void {
+	cAncel(resetSelection: booleAn = fAlse): void {
 		this._inSnippet.reset();
-		this._hasPrevTabstop.reset();
-		this._hasNextTabstop.reset();
-		this._snippetListener.clear();
+		this._hAsPrevTAbstop.reset();
+		this._hAsNextTAbstop.reset();
+		this._snippetListener.cleAr();
 		this._session?.dispose();
 		this._session = undefined;
 		this._modelVersionId = -1;
 		if (resetSelection) {
-			// reset selection to the primary cursor when being asked
-			// for. this happens when explicitly cancelling snippet mode,
+			// reset selection to the primAry cursor when being Asked
+			// for. this hAppens when explicitly cAncelling snippet mode,
 			// e.g. when pressing ESC
 			this._editor.setSelections([this._editor.getSelection()!]);
 		}
@@ -226,23 +226,23 @@ export class SnippetController2 implements IEditorContribution {
 		if (this._session) {
 			this._session.prev();
 		}
-		this._updateState();
+		this._updAteStAte();
 	}
 
 	next(): void {
 		if (this._session) {
 			this._session.next();
 		}
-		this._updateState();
+		this._updAteStAte();
 	}
 
-	isInSnippet(): boolean {
-		return Boolean(this._inSnippet.get());
+	isInSnippet(): booleAn {
+		return BooleAn(this._inSnippet.get());
 	}
 
-	getSessionEnclosingRange(): Range | undefined {
+	getSessionEnclosingRAnge(): RAnge | undefined {
 		if (this._session) {
-			return this._session.getEnclosingRange();
+			return this._session.getEnclosingRAnge();
 		}
 		return undefined;
 	}
@@ -251,47 +251,47 @@ export class SnippetController2 implements IEditorContribution {
 
 registerEditorContribution(SnippetController2.ID, SnippetController2);
 
-const CommandCtor = EditorCommand.bindToContribution<SnippetController2>(SnippetController2.get);
+const CommAndCtor = EditorCommAnd.bindToContribution<SnippetController2>(SnippetController2.get);
 
-registerEditorCommand(new CommandCtor({
-	id: 'jumpToNextSnippetPlaceholder',
-	precondition: ContextKeyExpr.and(SnippetController2.InSnippetMode, SnippetController2.HasNextTabstop),
-	handler: ctrl => ctrl.next(),
+registerEditorCommAnd(new CommAndCtor({
+	id: 'jumpToNextSnippetPlAceholder',
+	precondition: ContextKeyExpr.And(SnippetController2.InSnippetMode, SnippetController2.HAsNextTAbstop),
+	hAndler: ctrl => ctrl.next(),
 	kbOpts: {
 		weight: KeybindingWeight.EditorContrib + 30,
 		kbExpr: EditorContextKeys.editorTextFocus,
-		primary: KeyCode.Tab
+		primAry: KeyCode.TAb
 	}
 }));
-registerEditorCommand(new CommandCtor({
-	id: 'jumpToPrevSnippetPlaceholder',
-	precondition: ContextKeyExpr.and(SnippetController2.InSnippetMode, SnippetController2.HasPrevTabstop),
-	handler: ctrl => ctrl.prev(),
+registerEditorCommAnd(new CommAndCtor({
+	id: 'jumpToPrevSnippetPlAceholder',
+	precondition: ContextKeyExpr.And(SnippetController2.InSnippetMode, SnippetController2.HAsPrevTAbstop),
+	hAndler: ctrl => ctrl.prev(),
 	kbOpts: {
 		weight: KeybindingWeight.EditorContrib + 30,
 		kbExpr: EditorContextKeys.editorTextFocus,
-		primary: KeyMod.Shift | KeyCode.Tab
+		primAry: KeyMod.Shift | KeyCode.TAb
 	}
 }));
-registerEditorCommand(new CommandCtor({
-	id: 'leaveSnippet',
+registerEditorCommAnd(new CommAndCtor({
+	id: 'leAveSnippet',
 	precondition: SnippetController2.InSnippetMode,
-	handler: ctrl => ctrl.cancel(true),
+	hAndler: ctrl => ctrl.cAncel(true),
 	kbOpts: {
 		weight: KeybindingWeight.EditorContrib + 30,
 		kbExpr: EditorContextKeys.editorTextFocus,
-		primary: KeyCode.Escape,
-		secondary: [KeyMod.Shift | KeyCode.Escape]
+		primAry: KeyCode.EscApe,
+		secondAry: [KeyMod.Shift | KeyCode.EscApe]
 	}
 }));
 
-registerEditorCommand(new CommandCtor({
-	id: 'acceptSnippet',
+registerEditorCommAnd(new CommAndCtor({
+	id: 'AcceptSnippet',
 	precondition: SnippetController2.InSnippetMode,
-	handler: ctrl => ctrl.finish(),
+	hAndler: ctrl => ctrl.finish(),
 	// kbOpts: {
 	// 	weight: KeybindingWeight.EditorContrib + 30,
 	// 	kbExpr: EditorContextKeys.textFocus,
-	// 	primary: KeyCode.Enter,
+	// 	primAry: KeyCode.Enter,
 	// }
 }));

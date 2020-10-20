@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withDefaults = require('../shared.webpack.config');
+const withDefAults = require('../shAred.webpAck.config');
 
-module.exports = withDefaults({
-	context: __dirname,
+module.exports = withDefAults({
+	context: __dirnAme,
 	entry: {
 		extension: './src/extension.ts',
 	},
 	resolve: {
-		mainFields: ['module', 'main']
+		mAinFields: ['module', 'mAin']
 	}
 });

@@ -1,314 +1,314 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { ThrottledDelayer } from 'vs/base/common/async';
-import { isUndefinedOrNull } from 'vs/base/common/types';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { ThrottledDelAyer } from 'vs/bAse/common/Async';
+import { isUndefinedOrNull } from 'vs/bAse/common/types';
 
-export enum StorageHint {
+export enum StorAgeHint {
 
-	// A hint to the storage that the storage
-	// does not exist on disk yet. This allows
-	// the storage library to improve startup
-	// time by not checking the storage for data.
+	// A hint to the storAge thAt the storAge
+	// does not exist on disk yet. This Allows
+	// the storAge librAry to improve stArtup
+	// time by not checking the storAge for dAtA.
 	STORAGE_DOES_NOT_EXIST
 }
 
-export interface IStorageOptions {
-	readonly hint?: StorageHint;
+export interfAce IStorAgeOptions {
+	reAdonly hint?: StorAgeHint;
 }
 
-export interface IUpdateRequest {
-	readonly insert?: Map<string, string>;
-	readonly delete?: Set<string>;
+export interfAce IUpdAteRequest {
+	reAdonly insert?: MAp<string, string>;
+	reAdonly delete?: Set<string>;
 }
 
-export interface IStorageItemsChangeEvent {
-	readonly changed?: Map<string, string>;
-	readonly deleted?: Set<string>;
+export interfAce IStorAgeItemsChAngeEvent {
+	reAdonly chAnged?: MAp<string, string>;
+	reAdonly deleted?: Set<string>;
 }
 
-export interface IStorageDatabase {
+export interfAce IStorAgeDAtAbAse {
 
-	readonly onDidChangeItemsExternal: Event<IStorageItemsChangeEvent>;
+	reAdonly onDidChAngeItemsExternAl: Event<IStorAgeItemsChAngeEvent>;
 
-	getItems(): Promise<Map<string, string>>;
-	updateItems(request: IUpdateRequest): Promise<void>;
+	getItems(): Promise<MAp<string, string>>;
+	updAteItems(request: IUpdAteRequest): Promise<void>;
 
-	close(recovery?: () => Map<string, string>): Promise<void>;
+	close(recovery?: () => MAp<string, string>): Promise<void>;
 }
 
-export interface IStorage extends IDisposable {
+export interfAce IStorAge extends IDisposAble {
 
-	readonly items: Map<string, string>;
-	readonly size: number;
-	readonly onDidChangeStorage: Event<string>;
+	reAdonly items: MAp<string, string>;
+	reAdonly size: number;
+	reAdonly onDidChAngeStorAge: Event<string>;
 
 	init(): Promise<void>;
 
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
+	get(key: string, fAllbAckVAlue: string): string;
+	get(key: string, fAllbAckVAlue?: string): string | undefined;
 
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
+	getBooleAn(key: string, fAllbAckVAlue: booleAn): booleAn;
+	getBooleAn(key: string, fAllbAckVAlue?: booleAn): booleAn | undefined;
 
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
+	getNumber(key: string, fAllbAckVAlue: number): number;
+	getNumber(key: string, fAllbAckVAlue?: number): number | undefined;
 
-	set(key: string, value: string | boolean | number | undefined | null): Promise<void>;
+	set(key: string, vAlue: string | booleAn | number | undefined | null): Promise<void>;
 	delete(key: string): Promise<void>;
 
 	close(): Promise<void>;
 }
 
-enum StorageState {
+enum StorAgeStAte {
 	None,
-	Initialized,
+	InitiAlized,
 	Closed
 }
 
-export class Storage extends Disposable implements IStorage {
+export clAss StorAge extends DisposAble implements IStorAge {
 
-	private static readonly DEFAULT_FLUSH_DELAY = 100;
+	privAte stAtic reAdonly DEFAULT_FLUSH_DELAY = 100;
 
-	private readonly _onDidChangeStorage = this._register(new Emitter<string>());
-	readonly onDidChangeStorage = this._onDidChangeStorage.event;
+	privAte reAdonly _onDidChAngeStorAge = this._register(new Emitter<string>());
+	reAdonly onDidChAngeStorAge = this._onDidChAngeStorAge.event;
 
-	private state = StorageState.None;
+	privAte stAte = StorAgeStAte.None;
 
-	private cache = new Map<string, string>();
+	privAte cAche = new MAp<string, string>();
 
-	private readonly flushDelayer = this._register(new ThrottledDelayer<void>(Storage.DEFAULT_FLUSH_DELAY));
+	privAte reAdonly flushDelAyer = this._register(new ThrottledDelAyer<void>(StorAge.DEFAULT_FLUSH_DELAY));
 
-	private pendingDeletes = new Set<string>();
-	private pendingInserts = new Map<string, string>();
+	privAte pendingDeletes = new Set<string>();
+	privAte pendingInserts = new MAp<string, string>();
 
 	constructor(
-		protected readonly database: IStorageDatabase,
-		private readonly options: IStorageOptions = Object.create(null)
+		protected reAdonly dAtAbAse: IStorAgeDAtAbAse,
+		privAte reAdonly options: IStorAgeOptions = Object.creAte(null)
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this._register(this.database.onDidChangeItemsExternal(e => this.onDidChangeItemsExternal(e)));
+	privAte registerListeners(): void {
+		this._register(this.dAtAbAse.onDidChAngeItemsExternAl(e => this.onDidChAngeItemsExternAl(e)));
 	}
 
-	private onDidChangeItemsExternal(e: IStorageItemsChangeEvent): void {
-		// items that change external require us to update our
-		// caches with the values. we just accept the value and
-		// emit an event if there is a change.
-		e.changed?.forEach((value, key) => this.accept(key, value));
-		e.deleted?.forEach(key => this.accept(key, undefined));
+	privAte onDidChAngeItemsExternAl(e: IStorAgeItemsChAngeEvent): void {
+		// items thAt chAnge externAl require us to updAte our
+		// cAches with the vAlues. we just Accept the vAlue And
+		// emit An event if there is A chAnge.
+		e.chAnged?.forEAch((vAlue, key) => this.Accept(key, vAlue));
+		e.deleted?.forEAch(key => this.Accept(key, undefined));
 	}
 
-	private accept(key: string, value: string | undefined): void {
-		if (this.state === StorageState.Closed) {
-			return; // Return early if we are already closed
+	privAte Accept(key: string, vAlue: string | undefined): void {
+		if (this.stAte === StorAgeStAte.Closed) {
+			return; // Return eArly if we Are AlreAdy closed
 		}
 
-		let changed = false;
+		let chAnged = fAlse;
 
 		// Item got removed, check for deletion
-		if (isUndefinedOrNull(value)) {
-			changed = this.cache.delete(key);
+		if (isUndefinedOrNull(vAlue)) {
+			chAnged = this.cAche.delete(key);
 		}
 
-		// Item got updated, check for change
+		// Item got updAted, check for chAnge
 		else {
-			const currentValue = this.cache.get(key);
-			if (currentValue !== value) {
-				this.cache.set(key, value);
-				changed = true;
+			const currentVAlue = this.cAche.get(key);
+			if (currentVAlue !== vAlue) {
+				this.cAche.set(key, vAlue);
+				chAnged = true;
 			}
 		}
 
-		// Signal to outside listeners
-		if (changed) {
-			this._onDidChangeStorage.fire(key);
+		// SignAl to outside listeners
+		if (chAnged) {
+			this._onDidChAngeStorAge.fire(key);
 		}
 	}
 
-	get items(): Map<string, string> {
-		return this.cache;
+	get items(): MAp<string, string> {
+		return this.cAche;
 	}
 
 	get size(): number {
-		return this.cache.size;
+		return this.cAche.size;
 	}
 
-	async init(): Promise<void> {
-		if (this.state !== StorageState.None) {
-			return; // either closed or already initialized
+	Async init(): Promise<void> {
+		if (this.stAte !== StorAgeStAte.None) {
+			return; // either closed or AlreAdy initiAlized
 		}
 
-		this.state = StorageState.Initialized;
+		this.stAte = StorAgeStAte.InitiAlized;
 
-		if (this.options.hint === StorageHint.STORAGE_DOES_NOT_EXIST) {
-			// return early if we know the storage file does not exist. this is a performance
-			// optimization to not load all items of the underlying storage if we know that
-			// there can be no items because the storage does not exist.
+		if (this.options.hint === StorAgeHint.STORAGE_DOES_NOT_EXIST) {
+			// return eArly if we know the storAge file does not exist. this is A performAnce
+			// optimizAtion to not loAd All items of the underlying storAge if we know thAt
+			// there cAn be no items becAuse the storAge does not exist.
 			return;
 		}
 
-		this.cache = await this.database.getItems();
+		this.cAche = AwAit this.dAtAbAse.getItems();
 	}
 
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
-	get(key: string, fallbackValue?: string): string | undefined {
-		const value = this.cache.get(key);
+	get(key: string, fAllbAckVAlue: string): string;
+	get(key: string, fAllbAckVAlue?: string): string | undefined;
+	get(key: string, fAllbAckVAlue?: string): string | undefined {
+		const vAlue = this.cAche.get(key);
 
-		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+		if (isUndefinedOrNull(vAlue)) {
+			return fAllbAckVAlue;
 		}
 
-		return value;
+		return vAlue;
 	}
 
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined {
-		const value = this.get(key);
+	getBooleAn(key: string, fAllbAckVAlue: booleAn): booleAn;
+	getBooleAn(key: string, fAllbAckVAlue?: booleAn): booleAn | undefined;
+	getBooleAn(key: string, fAllbAckVAlue?: booleAn): booleAn | undefined {
+		const vAlue = this.get(key);
 
-		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+		if (isUndefinedOrNull(vAlue)) {
+			return fAllbAckVAlue;
 		}
 
-		return value === 'true';
+		return vAlue === 'true';
 	}
 
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
-	getNumber(key: string, fallbackValue?: number): number | undefined {
-		const value = this.get(key);
+	getNumber(key: string, fAllbAckVAlue: number): number;
+	getNumber(key: string, fAllbAckVAlue?: number): number | undefined;
+	getNumber(key: string, fAllbAckVAlue?: number): number | undefined {
+		const vAlue = this.get(key);
 
-		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+		if (isUndefinedOrNull(vAlue)) {
+			return fAllbAckVAlue;
 		}
 
-		return parseInt(value, 10);
+		return pArseInt(vAlue, 10);
 	}
 
-	set(key: string, value: string | boolean | number | null | undefined): Promise<void> {
-		if (this.state === StorageState.Closed) {
-			return Promise.resolve(); // Return early if we are already closed
+	set(key: string, vAlue: string | booleAn | number | null | undefined): Promise<void> {
+		if (this.stAte === StorAgeStAte.Closed) {
+			return Promise.resolve(); // Return eArly if we Are AlreAdy closed
 		}
 
-		// We remove the key for undefined/null values
-		if (isUndefinedOrNull(value)) {
+		// We remove the key for undefined/null vAlues
+		if (isUndefinedOrNull(vAlue)) {
 			return this.delete(key);
 		}
 
-		// Otherwise, convert to String and store
-		const valueStr = String(value);
+		// Otherwise, convert to String And store
+		const vAlueStr = String(vAlue);
 
-		// Return early if value already set
-		const currentValue = this.cache.get(key);
-		if (currentValue === valueStr) {
+		// Return eArly if vAlue AlreAdy set
+		const currentVAlue = this.cAche.get(key);
+		if (currentVAlue === vAlueStr) {
 			return Promise.resolve();
 		}
 
-		// Update in cache and pending
-		this.cache.set(key, valueStr);
-		this.pendingInserts.set(key, valueStr);
+		// UpdAte in cAche And pending
+		this.cAche.set(key, vAlueStr);
+		this.pendingInserts.set(key, vAlueStr);
 		this.pendingDeletes.delete(key);
 
 		// Event
-		this._onDidChangeStorage.fire(key);
+		this._onDidChAngeStorAge.fire(key);
 
-		// Accumulate work by scheduling after timeout
-		return this.flushDelayer.trigger(() => this.flushPending());
+		// AccumulAte work by scheduling After timeout
+		return this.flushDelAyer.trigger(() => this.flushPending());
 	}
 
 	delete(key: string): Promise<void> {
-		if (this.state === StorageState.Closed) {
-			return Promise.resolve(); // Return early if we are already closed
+		if (this.stAte === StorAgeStAte.Closed) {
+			return Promise.resolve(); // Return eArly if we Are AlreAdy closed
 		}
 
-		// Remove from cache and add to pending
-		const wasDeleted = this.cache.delete(key);
-		if (!wasDeleted) {
-			return Promise.resolve(); // Return early if value already deleted
+		// Remove from cAche And Add to pending
+		const wAsDeleted = this.cAche.delete(key);
+		if (!wAsDeleted) {
+			return Promise.resolve(); // Return eArly if vAlue AlreAdy deleted
 		}
 
-		if (!this.pendingDeletes.has(key)) {
-			this.pendingDeletes.add(key);
+		if (!this.pendingDeletes.hAs(key)) {
+			this.pendingDeletes.Add(key);
 		}
 
 		this.pendingInserts.delete(key);
 
 		// Event
-		this._onDidChangeStorage.fire(key);
+		this._onDidChAngeStorAge.fire(key);
 
-		// Accumulate work by scheduling after timeout
-		return this.flushDelayer.trigger(() => this.flushPending());
+		// AccumulAte work by scheduling After timeout
+		return this.flushDelAyer.trigger(() => this.flushPending());
 	}
 
-	async close(): Promise<void> {
-		if (this.state === StorageState.Closed) {
-			return Promise.resolve(); // return if already closed
+	Async close(): Promise<void> {
+		if (this.stAte === StorAgeStAte.Closed) {
+			return Promise.resolve(); // return if AlreAdy closed
 		}
 
-		// Update state
-		this.state = StorageState.Closed;
+		// UpdAte stAte
+		this.stAte = StorAgeStAte.Closed;
 
-		// Trigger new flush to ensure data is persisted and then close
-		// even if there is an error flushing. We must always ensure
-		// the DB is closed to avoid corruption.
+		// Trigger new flush to ensure dAtA is persisted And then close
+		// even if there is An error flushing. We must AlwAys ensure
+		// the DB is closed to Avoid corruption.
 		//
-		// Recovery: we pass our cache over as recovery option in case
-		// the DB is not healthy.
+		// Recovery: we pAss our cAche over As recovery option in cAse
+		// the DB is not heAlthy.
 		try {
-			await this.flushDelayer.trigger(() => this.flushPending(), 0 /* as soon as possible */);
-		} catch (error) {
+			AwAit this.flushDelAyer.trigger(() => this.flushPending(), 0 /* As soon As possible */);
+		} cAtch (error) {
 			// Ignore
 		}
 
-		await this.database.close(() => this.cache);
+		AwAit this.dAtAbAse.close(() => this.cAche);
 	}
 
-	private flushPending(): Promise<void> {
+	privAte flushPending(): Promise<void> {
 		if (this.pendingInserts.size === 0 && this.pendingDeletes.size === 0) {
-			return Promise.resolve(); // return early if nothing to do
+			return Promise.resolve(); // return eArly if nothing to do
 		}
 
-		// Get pending data
-		const updateRequest: IUpdateRequest = { insert: this.pendingInserts, delete: this.pendingDeletes };
+		// Get pending dAtA
+		const updAteRequest: IUpdAteRequest = { insert: this.pendingInserts, delete: this.pendingDeletes };
 
-		// Reset pending data for next run
+		// Reset pending dAtA for next run
 		this.pendingDeletes = new Set<string>();
-		this.pendingInserts = new Map<string, string>();
+		this.pendingInserts = new MAp<string, string>();
 
-		// Update in storage
-		return this.database.updateItems(updateRequest);
+		// UpdAte in storAge
+		return this.dAtAbAse.updAteItems(updAteRequest);
 	}
 }
 
-export class InMemoryStorageDatabase implements IStorageDatabase {
+export clAss InMemoryStorAgeDAtAbAse implements IStorAgeDAtAbAse {
 
-	readonly onDidChangeItemsExternal = Event.None;
+	reAdonly onDidChAngeItemsExternAl = Event.None;
 
-	private readonly items = new Map<string, string>();
+	privAte reAdonly items = new MAp<string, string>();
 
-	async getItems(): Promise<Map<string, string>> {
+	Async getItems(): Promise<MAp<string, string>> {
 		return this.items;
 	}
 
-	async updateItems(request: IUpdateRequest): Promise<void> {
+	Async updAteItems(request: IUpdAteRequest): Promise<void> {
 		if (request.insert) {
-			request.insert.forEach((value, key) => this.items.set(key, value));
+			request.insert.forEAch((vAlue, key) => this.items.set(key, vAlue));
 		}
 
 		if (request.delete) {
-			request.delete.forEach(key => this.items.delete(key));
+			request.delete.forEAch(key => this.items.delete(key));
 		}
 	}
 
-	async close(): Promise<void> { }
+	Async close(): Promise<void> { }
 }

@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
 import { memoize } from './memoize';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-type LogLevel = 'Trace' | 'Info' | 'Error';
+type LogLevel = 'TrAce' | 'Info' | 'Error';
 
-export class Logger {
+export clAss Logger {
 
 	@memoize
-	private get output(): vscode.OutputChannel {
-		return vscode.window.createOutputChannel(localize('channelName', 'TypeScript'));
+	privAte get output(): vscode.OutputChAnnel {
+		return vscode.window.creAteOutputChAnnel(locAlize('chAnnelNAme', 'TypeScript'));
 	}
 
-	private data2String(data: any): string {
-		if (data instanceof Error) {
-			return data.stack || data.message;
+	privAte dAtA2String(dAtA: Any): string {
+		if (dAtA instAnceof Error) {
+			return dAtA.stAck || dAtA.messAge;
 		}
-		if (data.success === false && data.message) {
-			return data.message;
+		if (dAtA.success === fAlse && dAtA.messAge) {
+			return dAtA.messAge;
 		}
-		return data.toString();
+		return dAtA.toString();
 	}
 
-	public info(message: string, data?: any): void {
-		this.logLevel('Info', message, data);
+	public info(messAge: string, dAtA?: Any): void {
+		this.logLevel('Info', messAge, dAtA);
 	}
 
-	public error(message: string, data?: any): void {
+	public error(messAge: string, dAtA?: Any): void {
 		// See https://github.com/microsoft/TypeScript/issues/10496
-		if (data && data.message === 'No content available.') {
+		if (dAtA && dAtA.messAge === 'No content AvAilAble.') {
 			return;
 		}
-		this.logLevel('Error', message, data);
+		this.logLevel('Error', messAge, dAtA);
 	}
 
-	public logLevel(level: LogLevel, message: string, data?: any): void {
-		this.output.appendLine(`[${level}  - ${this.now()}] ${message}`);
-		if (data) {
-			this.output.appendLine(this.data2String(data));
+	public logLevel(level: LogLevel, messAge: string, dAtA?: Any): void {
+		this.output.AppendLine(`[${level}  - ${this.now()}] ${messAge}`);
+		if (dAtA) {
+			this.output.AppendLine(this.dAtA2String(dAtA));
 		}
 	}
 
-	private now(): string {
-		const now = new Date();
-		return padLeft(now.getUTCHours() + '', 2, '0')
-			+ ':' + padLeft(now.getMinutes() + '', 2, '0')
-			+ ':' + padLeft(now.getUTCSeconds() + '', 2, '0') + '.' + now.getMilliseconds();
+	privAte now(): string {
+		const now = new DAte();
+		return pAdLeft(now.getUTCHours() + '', 2, '0')
+			+ ':' + pAdLeft(now.getMinutes() + '', 2, '0')
+			+ ':' + pAdLeft(now.getUTCSeconds() + '', 2, '0') + '.' + now.getMilliseconds();
 	}
 }
 
-function padLeft(s: string, n: number, pad = ' ') {
-	return pad.repeat(Math.max(0, n - s.length)) + s;
+function pAdLeft(s: string, n: number, pAd = ' ') {
+	return pAd.repeAt(MAth.mAx(0, n - s.length)) + s;
 }

@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { LanguageIdentifier, StandardTokenType } from 'vs/editor/common/modes';
-import { BracketElectricCharacterSupport, IElectricAction } from 'vs/editor/common/modes/supports/electricCharacter';
-import { RichEditBrackets } from 'vs/editor/common/modes/supports/richEditBrackets';
-import { TokenText, createFakeScopedLineTokens } from 'vs/editor/test/common/modesTestUtils';
+import * As Assert from 'Assert';
+import { LAnguAgeIdentifier, StAndArdTokenType } from 'vs/editor/common/modes';
+import { BrAcketElectricChArActerSupport, IElectricAction } from 'vs/editor/common/modes/supports/electricChArActer';
+import { RichEditBrAckets } from 'vs/editor/common/modes/supports/richEditBrAckets';
+import { TokenText, creAteFAkeScopedLineTokens } from 'vs/editor/test/common/modesTestUtils';
 
-const fakeLanguageIdentifier = new LanguageIdentifier('test', 3);
+const fAkeLAnguAgeIdentifier = new LAnguAgeIdentifier('test', 3);
 
-suite('Editor Modes - Auto Indentation', () => {
-	function _testOnElectricCharacter(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: number): IElectricAction | null {
-		return electricCharacterSupport.onElectricCharacter(character, createFakeScopedLineTokens(line), offset);
+suite('Editor Modes - Auto IndentAtion', () => {
+	function _testOnElectricChArActer(electricChArActerSupport: BrAcketElectricChArActerSupport, line: TokenText[], chArActer: string, offset: number): IElectricAction | null {
+		return electricChArActerSupport.onElectricChArActer(chArActer, creAteFAkeScopedLineTokens(line), offset);
 	}
 
-	function testDoesNothing(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: number): void {
-		let actual = _testOnElectricCharacter(electricCharacterSupport, line, character, offset);
-		assert.deepEqual(actual, null);
+	function testDoesNothing(electricChArActerSupport: BrAcketElectricChArActerSupport, line: TokenText[], chArActer: string, offset: number): void {
+		let ActuAl = _testOnElectricChArActer(electricChArActerSupport, line, chArActer, offset);
+		Assert.deepEquAl(ActuAl, null);
 	}
 
-	function testMatchBracket(electricCharacterSupport: BracketElectricCharacterSupport, line: TokenText[], character: string, offset: number, matchOpenBracket: string): void {
-		let actual = _testOnElectricCharacter(electricCharacterSupport, line, character, offset);
-		assert.deepEqual(actual, { matchOpenBracket: matchOpenBracket });
+	function testMAtchBrAcket(electricChArActerSupport: BrAcketElectricChArActerSupport, line: TokenText[], chArActer: string, offset: number, mAtchOpenBrAcket: string): void {
+		let ActuAl = _testOnElectricChArActer(electricChArActerSupport, line, chArActer, offset);
+		Assert.deepEquAl(ActuAl, { mAtchOpenBrAcket: mAtchOpenBrAcket });
 	}
 
-	test('getElectricCharacters uses all sources and dedups', () => {
-		let sup = new BracketElectricCharacterSupport(
-			new RichEditBrackets(fakeLanguageIdentifier, [
+	test('getElectricChArActers uses All sources And dedups', () => {
+		let sup = new BrAcketElectricChArActerSupport(
+			new RichEditBrAckets(fAkeLAnguAgeIdentifier, [
 				['{', '}'],
 				['(', ')']
 			])
 		);
 
-		assert.deepEqual(sup.getElectricCharacters(), ['}', ')']);
+		Assert.deepEquAl(sup.getElectricChArActers(), ['}', ')']);
 	});
 
-	test('matchOpenBracket', () => {
-		let sup = new BracketElectricCharacterSupport(
-			new RichEditBrackets(fakeLanguageIdentifier, [
+	test('mAtchOpenBrAcket', () => {
+		let sup = new BrAcketElectricChArActerSupport(
+			new RichEditBrAckets(fAkeLAnguAgeIdentifier, [
 				['{', '}'],
 				['(', ')']
 			])
 		);
 
-		testDoesNothing(sup, [{ text: '\t{', type: StandardTokenType.Other }], '\t', 1);
-		testDoesNothing(sup, [{ text: '\t{', type: StandardTokenType.Other }], '\t', 2);
-		testDoesNothing(sup, [{ text: '\t\t', type: StandardTokenType.Other }], '{', 3);
+		testDoesNothing(sup, [{ text: '\t{', type: StAndArdTokenType.Other }], '\t', 1);
+		testDoesNothing(sup, [{ text: '\t{', type: StAndArdTokenType.Other }], '\t', 2);
+		testDoesNothing(sup, [{ text: '\t\t', type: StAndArdTokenType.Other }], '{', 3);
 
-		testDoesNothing(sup, [{ text: '\t}', type: StandardTokenType.Other }], '\t', 1);
-		testDoesNothing(sup, [{ text: '\t}', type: StandardTokenType.Other }], '\t', 2);
-		testMatchBracket(sup, [{ text: '\t\t', type: StandardTokenType.Other }], '}', 3, '}');
+		testDoesNothing(sup, [{ text: '\t}', type: StAndArdTokenType.Other }], '\t', 1);
+		testDoesNothing(sup, [{ text: '\t}', type: StAndArdTokenType.Other }], '\t', 2);
+		testMAtchBrAcket(sup, [{ text: '\t\t', type: StAndArdTokenType.Other }], '}', 3, '}');
 	});
 });

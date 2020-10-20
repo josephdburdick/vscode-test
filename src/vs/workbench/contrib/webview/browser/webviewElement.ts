@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { addDisposableListener } from 'vs/base/browser/dom';
-import { streamToBuffer } from 'vs/base/common/buffer';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ILogService } from 'vs/platform/log/common/log';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { ITunnelService } from 'vs/platform/remote/common/tunnel';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { loadLocalResource, WebviewResourceResponse } from 'vs/platform/webview/common/resourceLoader';
-import { WebviewPortMappingManager } from 'vs/platform/webview/common/webviewPortMapping';
-import { BaseWebview, WebviewMessageChannels } from 'vs/workbench/contrib/webview/browser/baseWebviewElement';
-import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/browser/themeing';
+import { AddDisposAbleListener } from 'vs/bAse/browser/dom';
+import { streAmToBuffer } from 'vs/bAse/common/buffer';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { ITunnelService } from 'vs/plAtform/remote/common/tunnel';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { loAdLocAlResource, WebviewResourceResponse } from 'vs/plAtform/webview/common/resourceLoAder';
+import { WebviewPortMAppingMAnAger } from 'vs/plAtform/webview/common/webviewPortMApping';
+import { BAseWebview, WebviewMessAgeChAnnels } from 'vs/workbench/contrib/webview/browser/bAseWebviewElement';
+import { WebviewThemeDAtAProvider } from 'vs/workbench/contrib/webview/browser/themeing';
 import { Webview, WebviewContentOptions, WebviewExtensionDescription, WebviewOptions } from 'vs/workbench/contrib/webview/browser/webview';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
-export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Webview {
-	private readonly _portMappingManager: WebviewPortMappingManager;
+export clAss IFrAmeWebview extends BAseWebview<HTMLIFrAmeElement> implements Webview {
+	privAte reAdonly _portMAppingMAnAger: WebviewPortMAppingMAnAger;
 
 	constructor(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
-		webviewThemeDataProvider: WebviewThemeDataProvider,
-		@INotificationService notificationService: INotificationService,
+		webviewThemeDAtAProvider: WebviewThemeDAtAProvider,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@ITunnelService tunnelService: ITunnelService,
-		@IFileService private readonly fileService: IFileService,
-		@IRequestService private readonly requestService: IRequestService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IRequestService privAte reAdonly requestService: IRequestService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
-		@IRemoteAuthorityResolverService private readonly _remoteAuthorityResolverService: IRemoteAuthorityResolverService,
+		@IRemoteAuthorityResolverService privAte reAdonly _remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 		@ILogService logService: ILogService,
 	) {
-		super(id, options, contentOptions, extension, webviewThemeDataProvider, notificationService, logService, telemetryService, environmentService);
+		super(id, options, contentOptions, extension, webviewThemeDAtAProvider, notificAtionService, logService, telemetryService, environmentService);
 
-		this._portMappingManager = this._register(new WebviewPortMappingManager(
-			() => this.extension?.location,
-			() => this.content.options.portMapping || [],
+		this._portMAppingMAnAger = this._register(new WebviewPortMAppingMAnAger(
+			() => this.extension?.locAtion,
+			() => this.content.options.portMApping || [],
 			tunnelService
 		));
 
-		this._register(this.on(WebviewMessageChannels.loadResource, (entry: any) => {
-			const rawPath = entry.path;
-			const normalizedPath = decodeURIComponent(rawPath);
-			const uri = URI.parse(normalizedPath.replace(/^\/([\w\-]+)\/(.+)$/, (_, scheme, path) => scheme + ':/' + path));
-			this.loadResource(rawPath, uri);
+		this._register(this.on(WebviewMessAgeChAnnels.loAdResource, (entry: Any) => {
+			const rAwPAth = entry.pAth;
+			const normAlizedPAth = decodeURIComponent(rAwPAth);
+			const uri = URI.pArse(normAlizedPAth.replAce(/^\/([\w\-]+)\/(.+)$/, (_, scheme, pAth) => scheme + ':/' + pAth));
+			this.loAdResource(rAwPAth, uri);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.loadLocalhost, (entry: any) => {
-			this.localLocalhost(entry.origin);
+		this._register(this.on(WebviewMessAgeChAnnels.loAdLocAlhost, (entry: Any) => {
+			this.locAlLocAlhost(entry.origin);
 		}));
 
 		this.initElement(extension, options);
 	}
 
-	protected createElement(options: WebviewOptions, _contentOptions: WebviewContentOptions) {
-		// Do not start loading the webview yet.
-		// Wait the end of the ctor when all listeners have been hooked up.
-		const element = document.createElement('iframe');
-		element.className = `webview ${options.customClasses || ''}`;
-		element.sandbox.add('allow-scripts', 'allow-same-origin', 'allow-forms', 'allow-pointer-lock', 'allow-downloads');
+	protected creAteElement(options: WebviewOptions, _contentOptions: WebviewContentOptions) {
+		// Do not stArt loAding the webview yet.
+		// WAit the end of the ctor when All listeners hAve been hooked up.
+		const element = document.creAteElement('ifrAme');
+		element.clAssNAme = `webview ${options.customClAsses || ''}`;
+		element.sAndbox.Add('Allow-scripts', 'Allow-sAme-origin', 'Allow-forms', 'Allow-pointer-lock', 'Allow-downloAds');
 		element.style.border = 'none';
 		element.style.width = '100%';
 		element.style.height = '100%';
@@ -75,47 +75,47 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 	}
 
 	protected initElement(extension: WebviewExtensionDescription | undefined, options: WebviewOptions) {
-		// The extensionId and purpose in the URL are used for filtering in js-debug:
-		this.element!.setAttribute('src', `${this.externalEndpoint}/index.html?id=${this.id}&extensionId=${extension?.id.value ?? ''}&purpose=${options.purpose}`);
+		// The extensionId And purpose in the URL Are used for filtering in js-debug:
+		this.element!.setAttribute('src', `${this.externAlEndpoint}/index.html?id=${this.id}&extensionId=${extension?.id.vAlue ?? ''}&purpose=${options.purpose}`);
 	}
 
-	private get externalEndpoint(): string {
-		const endpoint = this.environmentService.webviewExternalEndpoint!.replace('{{uuid}}', this.id);
+	privAte get externAlEndpoint(): string {
+		const endpoint = this.environmentService.webviewExternAlEndpoint!.replAce('{{uuid}}', this.id);
 		if (endpoint[endpoint.length - 1] === '/') {
 			return endpoint.slice(0, endpoint.length - 1);
 		}
 		return endpoint;
 	}
 
-	public mountTo(parent: HTMLElement) {
+	public mountTo(pArent: HTMLElement) {
 		if (this.element) {
-			parent.appendChild(this.element);
+			pArent.AppendChild(this.element);
 		}
 	}
 
-	public set html(value: string) {
-		super.html = this.preprocessHtml(value);
+	public set html(vAlue: string) {
+		super.html = this.preprocessHtml(vAlue);
 	}
 
-	protected preprocessHtml(value: string): string {
-		return value
-			.replace(/(["'])(?:vscode-resource):(\/\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (match, startQuote, _1, scheme, path, endQuote) => {
+	protected preprocessHtml(vAlue: string): string {
+		return vAlue
+			.replAce(/(["'])(?:vscode-resource):(\/\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (mAtch, stArtQuote, _1, scheme, pAth, endQuote) => {
 				if (scheme) {
-					return `${startQuote}${this.externalEndpoint}/vscode-resource/${scheme}${path}${endQuote}`;
+					return `${stArtQuote}${this.externAlEndpoint}/vscode-resource/${scheme}${pAth}${endQuote}`;
 				}
-				return `${startQuote}${this.externalEndpoint}/vscode-resource/file${path}${endQuote}`;
+				return `${stArtQuote}${this.externAlEndpoint}/vscode-resource/file${pAth}${endQuote}`;
 			})
-			.replace(/(["'])(?:vscode-webview-resource):(\/\/[^\s\/'"]+\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (match, startQuote, _1, scheme, path, endQuote) => {
+			.replAce(/(["'])(?:vscode-webview-resource):(\/\/[^\s\/'"]+\/([^\s\/'"]+?)(?=\/))?([^\s'"]+?)(["'])/gi, (mAtch, stArtQuote, _1, scheme, pAth, endQuote) => {
 				if (scheme) {
-					return `${startQuote}${this.externalEndpoint}/vscode-resource/${scheme}${path}${endQuote}`;
+					return `${stArtQuote}${this.externAlEndpoint}/vscode-resource/${scheme}${pAth}${endQuote}`;
 				}
-				return `${startQuote}${this.externalEndpoint}/vscode-resource/file${path}${endQuote}`;
+				return `${stArtQuote}${this.externAlEndpoint}/vscode-resource/file${pAth}${endQuote}`;
 			});
 	}
 
-	protected get extraContentOptions(): any {
+	protected get extrAContentOptions(): Any {
 		return {
-			endpoint: this.externalEndpoint,
+			endpoint: this.externAlEndpoint,
 		};
 	}
 
@@ -133,27 +133,27 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 		throw new Error('Method not implemented.');
 	}
 
-	runFindAction(previous: boolean): void {
+	runFindAction(previous: booleAn): void {
 		throw new Error('Method not implemented.');
 	}
 
-	private async loadResource(requestPath: string, uri: URI) {
+	privAte Async loAdResource(requestPAth: string, uri: URI) {
 		try {
 			const remoteAuthority = this.environmentService.remoteAuthority;
-			const remoteConnectionData = remoteAuthority ? this._remoteAuthorityResolverService.getConnectionData(remoteAuthority) : null;
-			const extensionLocation = this.extension?.location;
+			const remoteConnectionDAtA = remoteAuthority ? this._remoteAuthorityResolverService.getConnectionDAtA(remoteAuthority) : null;
+			const extensionLocAtion = this.extension?.locAtion;
 
-			// If we are loading a file resource from a remote extension, rewrite the uri to go remote
+			// If we Are loAding A file resource from A remote extension, rewrite the uri to go remote
 			let rewriteUri: undefined | ((uri: URI) => URI);
-			if (extensionLocation?.scheme === Schemas.vscodeRemote) {
+			if (extensionLocAtion?.scheme === SchemAs.vscodeRemote) {
 				rewriteUri = (uri) => {
-					if (uri.scheme === Schemas.file && extensionLocation?.scheme === Schemas.vscodeRemote) {
+					if (uri.scheme === SchemAs.file && extensionLocAtion?.scheme === SchemAs.vscodeRemote) {
 						return URI.from({
-							scheme: Schemas.vscodeRemote,
-							authority: extensionLocation.authority,
-							path: '/vscode-resource',
+							scheme: SchemAs.vscodeRemote,
+							Authority: extensionLocAtion.Authority,
+							pAth: '/vscode-resource',
 							query: JSON.stringify({
-								requestResourcePath: uri.path
+								requestResourcePAth: uri.pAth
 							})
 						});
 					}
@@ -161,57 +161,57 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 				};
 			}
 
-			const result = await loadLocalResource(uri, {
-				extensionLocation: extensionLocation,
-				roots: this.content.options.localResourceRoots || [],
-				remoteConnectionData,
+			const result = AwAit loAdLocAlResource(uri, {
+				extensionLocAtion: extensionLocAtion,
+				roots: this.content.options.locAlResourceRoots || [],
+				remoteConnectionDAtA,
 				rewriteUri,
 			}, {
-				readFileStream: (resource) => this.fileService.readFileStream(resource).then(x => x.value),
+				reAdFileStreAm: (resource) => this.fileService.reAdFileStreAm(resource).then(x => x.vAlue),
 			}, this.requestService);
 
 			if (result.type === WebviewResourceResponse.Type.Success) {
-				const { buffer } = await streamToBuffer(result.stream);
-				return this._send('did-load-resource', {
-					status: 200,
-					path: requestPath,
+				const { buffer } = AwAit streAmToBuffer(result.streAm);
+				return this._send('did-loAd-resource', {
+					stAtus: 200,
+					pAth: requestPAth,
 					mime: result.mimeType,
-					data: buffer,
+					dAtA: buffer,
 				});
 			}
-		} catch {
+		} cAtch {
 			// noop
 		}
 
-		return this._send('did-load-resource', {
-			status: 404,
-			path: requestPath
+		return this._send('did-loAd-resource', {
+			stAtus: 404,
+			pAth: requestPAth
 		});
 	}
 
-	private async localLocalhost(origin: string) {
-		const authority = this.environmentService.remoteAuthority;
-		const resolveAuthority = authority ? await this._remoteAuthorityResolverService.resolveAuthority(authority) : undefined;
-		const redirect = resolveAuthority ? await this._portMappingManager.getRedirect(resolveAuthority.authority, origin) : undefined;
-		return this._send('did-load-localhost', {
+	privAte Async locAlLocAlhost(origin: string) {
+		const Authority = this.environmentService.remoteAuthority;
+		const resolveAuthority = Authority ? AwAit this._remoteAuthorityResolverService.resolveAuthority(Authority) : undefined;
+		const redirect = resolveAuthority ? AwAit this._portMAppingMAnAger.getRedirect(resolveAuthority.Authority, origin) : undefined;
+		return this._send('did-loAd-locAlhost', {
 			origin,
-			location: redirect
+			locAtion: redirect
 		});
 	}
 
-	protected doPostMessage(channel: string, data?: any): void {
+	protected doPostMessAge(chAnnel: string, dAtA?: Any): void {
 		if (this.element) {
-			this.element.contentWindow!.postMessage({ channel, args: data }, '*');
+			this.element.contentWindow!.postMessAge({ chAnnel, Args: dAtA }, '*');
 		}
 	}
 
-	protected on<T = unknown>(channel: WebviewMessageChannels, handler: (data: T) => void): IDisposable {
-		return addDisposableListener(window, 'message', e => {
-			if (!e || !e.data || e.data.target !== this.id) {
+	protected on<T = unknown>(chAnnel: WebviewMessAgeChAnnels, hAndler: (dAtA: T) => void): IDisposAble {
+		return AddDisposAbleListener(window, 'messAge', e => {
+			if (!e || !e.dAtA || e.dAtA.tArget !== this.id) {
 				return;
 			}
-			if (e.data.channel === channel) {
-				handler(e.data.data);
+			if (e.dAtA.chAnnel === chAnnel) {
+				hAndler(e.dAtA.dAtA);
 			}
 		});
 	}

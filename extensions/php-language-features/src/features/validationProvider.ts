@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as cp from 'child_process';
+import * As cp from 'child_process';
 import { StringDecoder } from 'string_decoder';
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-import { ThrottledDelayer } from './utils/async';
+import { ThrottledDelAyer } from './utils/Async';
 
-import * as nls from 'vscode-nls';
-let localize = nls.loadMessageBundle();
+import * As nls from 'vscode-nls';
+let locAlize = nls.loAdMessAgeBundle();
 
 const enum Setting {
-	Run = 'php.validate.run',
-	CheckedExecutablePath = 'php.validate.checkedExecutablePath',
-	Enable = 'php.validate.enable',
-	ExecutablePath = 'php.validate.executablePath',
+	Run = 'php.vAlidAte.run',
+	CheckedExecutAblePAth = 'php.vAlidAte.checkedExecutAblePAth',
+	EnAble = 'php.vAlidAte.enAble',
+	ExecutAblePAth = 'php.vAlidAte.executAblePAth',
 }
 
-export class LineDecoder {
-	private stringDecoder: StringDecoder;
-	private remaining: string | null;
+export clAss LineDecoder {
+	privAte stringDecoder: StringDecoder;
+	privAte remAining: string | null;
 
 	constructor(encoding: string = 'utf8') {
 		this.stringDecoder = new StringDecoder(encoding);
-		this.remaining = null;
+		this.remAining = null;
 	}
 
 	public write(buffer: Buffer): string[] {
 		let result: string[] = [];
-		let value = this.remaining
-			? this.remaining + this.stringDecoder.write(buffer)
+		let vAlue = this.remAining
+			? this.remAining + this.stringDecoder.write(buffer)
 			: this.stringDecoder.write(buffer);
 
-		if (value.length < 1) {
+		if (vAlue.length < 1) {
 			return result;
 		}
-		let start = 0;
+		let stArt = 0;
 		let ch: number;
-		while (start < value.length && ((ch = value.charCodeAt(start)) === 13 || ch === 10)) {
-			start++;
+		while (stArt < vAlue.length && ((ch = vAlue.chArCodeAt(stArt)) === 13 || ch === 10)) {
+			stArt++;
 		}
-		let idx = start;
-		while (idx < value.length) {
-			ch = value.charCodeAt(idx);
+		let idx = stArt;
+		while (idx < vAlue.length) {
+			ch = vAlue.chArCodeAt(idx);
 			if (ch === 13 || ch === 10) {
-				result.push(value.substring(start, idx));
+				result.push(vAlue.substring(stArt, idx));
 				idx++;
-				while (idx < value.length && ((ch = value.charCodeAt(idx)) === 13 || ch === 10)) {
+				while (idx < vAlue.length && ((ch = vAlue.chArCodeAt(idx)) === 13 || ch === 10)) {
 					idx++;
 				}
-				start = idx;
+				stArt = idx;
 			} else {
 				idx++;
 			}
 		}
-		this.remaining = start < value.length ? value.substr(start) : null;
+		this.remAining = stArt < vAlue.length ? vAlue.substr(stArt) : null;
 		return result;
 	}
 
 	public end(): string | null {
-		return this.remaining;
+		return this.remAining;
 	}
 }
 
 enum RunTrigger {
-	onSave,
+	onSAve,
 	onType
 }
 
-namespace RunTrigger {
+nAmespAce RunTrigger {
 	export let strings = {
-		onSave: 'onSave',
+		onSAve: 'onSAve',
 		onType: 'onType'
 	};
-	export let from = function (value: string): RunTrigger {
-		if (value === 'onType') {
+	export let from = function (vAlue: string): RunTrigger {
+		if (vAlue === 'onType') {
 			return RunTrigger.onType;
 		} else {
-			return RunTrigger.onSave;
+			return RunTrigger.onSAve;
 		}
 	};
 }
 
-export default class PHPValidationProvider {
+export defAult clAss PHPVAlidAtionProvider {
 
-	private static MatchExpression: RegExp = /(?:(?:Parse|Fatal) error): (.*)(?: in )(.*?)(?: on line )(\d+)/;
-	private static BufferArgs: string[] = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off'];
-	private static FileArgs: string[] = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off', '-f'];
+	privAte stAtic MAtchExpression: RegExp = /(?:(?:PArse|FAtAl) error): (.*)(?: in )(.*?)(?: on line )(\d+)/;
+	privAte stAtic BufferArgs: string[] = ['-l', '-n', '-d', 'displAy_errors=On', '-d', 'log_errors=Off'];
+	privAte stAtic FileArgs: string[] = ['-l', '-n', '-d', 'displAy_errors=On', '-d', 'log_errors=Off', '-f'];
 
-	private validationEnabled: boolean;
-	private executableIsUserDefined: boolean | undefined;
-	private executable: string | undefined;
-	private trigger: RunTrigger;
-	private pauseValidation: boolean;
+	privAte vAlidAtionEnAbled: booleAn;
+	privAte executAbleIsUserDefined: booleAn | undefined;
+	privAte executAble: string | undefined;
+	privAte trigger: RunTrigger;
+	privAte pAuseVAlidAtion: booleAn;
 
-	private documentListener: vscode.Disposable | null = null;
-	private diagnosticCollection?: vscode.DiagnosticCollection;
-	private delayers?: { [key: string]: ThrottledDelayer<void> };
+	privAte documentListener: vscode.DisposAble | null = null;
+	privAte diAgnosticCollection?: vscode.DiAgnosticCollection;
+	privAte delAyers?: { [key: string]: ThrottledDelAyer<void> };
 
-	constructor(private workspaceStore: vscode.Memento) {
-		this.executable = undefined;
-		this.validationEnabled = true;
-		this.trigger = RunTrigger.onSave;
-		this.pauseValidation = false;
+	constructor(privAte workspAceStore: vscode.Memento) {
+		this.executAble = undefined;
+		this.vAlidAtionEnAbled = true;
+		this.trigger = RunTrigger.onSAve;
+		this.pAuseVAlidAtion = fAlse;
 	}
 
-	public activate(subscriptions: vscode.Disposable[]) {
-		this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
+	public ActivAte(subscriptions: vscode.DisposAble[]) {
+		this.diAgnosticCollection = vscode.lAnguAges.creAteDiAgnosticCollection();
 		subscriptions.push(this);
-		vscode.workspace.onDidChangeConfiguration(this.loadConfiguration, this, subscriptions);
-		this.loadConfiguration();
+		vscode.workspAce.onDidChAngeConfigurAtion(this.loAdConfigurAtion, this, subscriptions);
+		this.loAdConfigurAtion();
 
-		vscode.workspace.onDidOpenTextDocument(this.triggerValidate, this, subscriptions);
-		vscode.workspace.onDidCloseTextDocument((textDocument) => {
-			this.diagnosticCollection!.delete(textDocument.uri);
-			delete this.delayers![textDocument.uri.toString()];
+		vscode.workspAce.onDidOpenTextDocument(this.triggerVAlidAte, this, subscriptions);
+		vscode.workspAce.onDidCloseTextDocument((textDocument) => {
+			this.diAgnosticCollection!.delete(textDocument.uri);
+			delete this.delAyers![textDocument.uri.toString()];
 		}, null, subscriptions);
-		subscriptions.push(vscode.commands.registerCommand('php.untrustValidationExecutable', this.untrustValidationExecutable, this));
+		subscriptions.push(vscode.commAnds.registerCommAnd('php.untrustVAlidAtionExecutAble', this.untrustVAlidAtionExecutAble, this));
 	}
 
 	public dispose(): void {
-		if (this.diagnosticCollection) {
-			this.diagnosticCollection.clear();
-			this.diagnosticCollection.dispose();
+		if (this.diAgnosticCollection) {
+			this.diAgnosticCollection.cleAr();
+			this.diAgnosticCollection.dispose();
 		}
 		if (this.documentListener) {
 			this.documentListener.dispose();
@@ -133,93 +133,93 @@ export default class PHPValidationProvider {
 		}
 	}
 
-	private loadConfiguration(): void {
-		let section = vscode.workspace.getConfiguration();
-		let oldExecutable = this.executable;
+	privAte loAdConfigurAtion(): void {
+		let section = vscode.workspAce.getConfigurAtion();
+		let oldExecutAble = this.executAble;
 		if (section) {
-			this.validationEnabled = section.get<boolean>(Setting.Enable, true);
-			let inspect = section.inspect<string>(Setting.ExecutablePath);
-			if (inspect && inspect.workspaceValue) {
-				this.executable = inspect.workspaceValue;
-				this.executableIsUserDefined = false;
-			} else if (inspect && inspect.globalValue) {
-				this.executable = inspect.globalValue;
-				this.executableIsUserDefined = true;
+			this.vAlidAtionEnAbled = section.get<booleAn>(Setting.EnAble, true);
+			let inspect = section.inspect<string>(Setting.ExecutAblePAth);
+			if (inspect && inspect.workspAceVAlue) {
+				this.executAble = inspect.workspAceVAlue;
+				this.executAbleIsUserDefined = fAlse;
+			} else if (inspect && inspect.globAlVAlue) {
+				this.executAble = inspect.globAlVAlue;
+				this.executAbleIsUserDefined = true;
 			} else {
-				this.executable = undefined;
-				this.executableIsUserDefined = undefined;
+				this.executAble = undefined;
+				this.executAbleIsUserDefined = undefined;
 			}
-			this.trigger = RunTrigger.from(section.get<string>(Setting.Run, RunTrigger.strings.onSave));
+			this.trigger = RunTrigger.from(section.get<string>(Setting.Run, RunTrigger.strings.onSAve));
 		}
-		if (this.executableIsUserDefined !== true && this.workspaceStore.get<string | undefined>(Setting.CheckedExecutablePath, undefined) !== undefined) {
-			vscode.commands.executeCommand('setContext', 'php.untrustValidationExecutableContext', true);
+		if (this.executAbleIsUserDefined !== true && this.workspAceStore.get<string | undefined>(Setting.CheckedExecutAblePAth, undefined) !== undefined) {
+			vscode.commAnds.executeCommAnd('setContext', 'php.untrustVAlidAtionExecutAbleContext', true);
 		}
-		this.delayers = Object.create(null);
-		if (this.pauseValidation) {
-			this.pauseValidation = oldExecutable === this.executable;
+		this.delAyers = Object.creAte(null);
+		if (this.pAuseVAlidAtion) {
+			this.pAuseVAlidAtion = oldExecutAble === this.executAble;
 		}
 		if (this.documentListener) {
 			this.documentListener.dispose();
 			this.documentListener = null;
 		}
-		this.diagnosticCollection!.clear();
-		if (this.validationEnabled) {
+		this.diAgnosticCollection!.cleAr();
+		if (this.vAlidAtionEnAbled) {
 			if (this.trigger === RunTrigger.onType) {
-				this.documentListener = vscode.workspace.onDidChangeTextDocument((e) => {
-					this.triggerValidate(e.document);
+				this.documentListener = vscode.workspAce.onDidChAngeTextDocument((e) => {
+					this.triggerVAlidAte(e.document);
 				});
 			} else {
-				this.documentListener = vscode.workspace.onDidSaveTextDocument(this.triggerValidate, this);
+				this.documentListener = vscode.workspAce.onDidSAveTextDocument(this.triggerVAlidAte, this);
 			}
-			// Configuration has changed. Reevaluate all documents.
-			vscode.workspace.textDocuments.forEach(this.triggerValidate, this);
+			// ConfigurAtion hAs chAnged. ReevAluAte All documents.
+			vscode.workspAce.textDocuments.forEAch(this.triggerVAlidAte, this);
 		}
 	}
 
-	private untrustValidationExecutable() {
-		this.workspaceStore.update(Setting.CheckedExecutablePath, undefined);
-		vscode.commands.executeCommand('setContext', 'php.untrustValidationExecutableContext', false);
+	privAte untrustVAlidAtionExecutAble() {
+		this.workspAceStore.updAte(Setting.CheckedExecutAblePAth, undefined);
+		vscode.commAnds.executeCommAnd('setContext', 'php.untrustVAlidAtionExecutAbleContext', fAlse);
 	}
 
-	private triggerValidate(textDocument: vscode.TextDocument): void {
-		if (textDocument.languageId !== 'php' || this.pauseValidation || !this.validationEnabled) {
+	privAte triggerVAlidAte(textDocument: vscode.TextDocument): void {
+		if (textDocument.lAnguAgeId !== 'php' || this.pAuseVAlidAtion || !this.vAlidAtionEnAbled) {
 			return;
 		}
 
-		interface MessageItem extends vscode.MessageItem {
+		interfAce MessAgeItem extends vscode.MessAgeItem {
 			id: string;
 		}
 
 		let trigger = () => {
 			let key = textDocument.uri.toString();
-			let delayer = this.delayers![key];
-			if (!delayer) {
-				delayer = new ThrottledDelayer<void>(this.trigger === RunTrigger.onType ? 250 : 0);
-				this.delayers![key] = delayer;
+			let delAyer = this.delAyers![key];
+			if (!delAyer) {
+				delAyer = new ThrottledDelAyer<void>(this.trigger === RunTrigger.onType ? 250 : 0);
+				this.delAyers![key] = delAyer;
 			}
-			delayer.trigger(() => this.doValidate(textDocument));
+			delAyer.trigger(() => this.doVAlidAte(textDocument));
 		};
 
-		if (this.executableIsUserDefined !== undefined && !this.executableIsUserDefined) {
-			let checkedExecutablePath = this.workspaceStore.get<string | undefined>(Setting.CheckedExecutablePath, undefined);
-			if (!checkedExecutablePath || checkedExecutablePath !== this.executable) {
-				vscode.window.showInformationMessage<MessageItem>(
-					localize('php.useExecutablePath', 'Do you allow {0} (defined as a workspace setting) to be executed to lint PHP files?', this.executable),
+		if (this.executAbleIsUserDefined !== undefined && !this.executAbleIsUserDefined) {
+			let checkedExecutAblePAth = this.workspAceStore.get<string | undefined>(Setting.CheckedExecutAblePAth, undefined);
+			if (!checkedExecutAblePAth || checkedExecutAblePAth !== this.executAble) {
+				vscode.window.showInformAtionMessAge<MessAgeItem>(
+					locAlize('php.useExecutAblePAth', 'Do you Allow {0} (defined As A workspAce setting) to be executed to lint PHP files?', this.executAble),
 					{
-						title: localize('php.yes', 'Allow'),
+						title: locAlize('php.yes', 'Allow'),
 						id: 'yes'
 					},
 					{
-						title: localize('php.no', 'Disallow'),
-						isCloseAffordance: true,
+						title: locAlize('php.no', 'DisAllow'),
+						isCloseAffordAnce: true,
 						id: 'no'
 					}
 				).then(selected => {
 					if (!selected || selected.id === 'no') {
-						this.pauseValidation = true;
+						this.pAuseVAlidAtion = true;
 					} else if (selected.id === 'yes') {
-						this.workspaceStore.update(Setting.CheckedExecutablePath, this.executable);
-						vscode.commands.executeCommand('setContext', 'php.untrustValidationExecutableContext', true);
+						this.workspAceStore.updAte(Setting.CheckedExecutAblePAth, this.executAble);
+						vscode.commAnds.executeCommAnd('setContext', 'php.untrustVAlidAtionExecutAbleContext', true);
 						trigger();
 					}
 				});
@@ -229,41 +229,41 @@ export default class PHPValidationProvider {
 		trigger();
 	}
 
-	private doValidate(textDocument: vscode.TextDocument): Promise<void> {
+	privAte doVAlidAte(textDocument: vscode.TextDocument): Promise<void> {
 		return new Promise<void>((resolve) => {
-			let executable = this.executable || 'php';
+			let executAble = this.executAble || 'php';
 			let decoder = new LineDecoder();
-			let diagnostics: vscode.Diagnostic[] = [];
+			let diAgnostics: vscode.DiAgnostic[] = [];
 			let processLine = (line: string) => {
-				let matches = line.match(PHPValidationProvider.MatchExpression);
-				if (matches) {
-					let message = matches[1];
-					let line = parseInt(matches[3]) - 1;
-					let diagnostic: vscode.Diagnostic = new vscode.Diagnostic(
-						new vscode.Range(line, 0, line, Number.MAX_VALUE),
-						message
+				let mAtches = line.mAtch(PHPVAlidAtionProvider.MAtchExpression);
+				if (mAtches) {
+					let messAge = mAtches[1];
+					let line = pArseInt(mAtches[3]) - 1;
+					let diAgnostic: vscode.DiAgnostic = new vscode.DiAgnostic(
+						new vscode.RAnge(line, 0, line, Number.MAX_VALUE),
+						messAge
 					);
-					diagnostics.push(diagnostic);
+					diAgnostics.push(diAgnostic);
 				}
 			};
 
-			let options = (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders[0]) ? { cwd: vscode.workspace.workspaceFolders[0].uri.fsPath } : undefined;
-			let args: string[];
-			if (this.trigger === RunTrigger.onSave) {
-				args = PHPValidationProvider.FileArgs.slice(0);
-				args.push(textDocument.fileName);
+			let options = (vscode.workspAce.workspAceFolders && vscode.workspAce.workspAceFolders[0]) ? { cwd: vscode.workspAce.workspAceFolders[0].uri.fsPAth } : undefined;
+			let Args: string[];
+			if (this.trigger === RunTrigger.onSAve) {
+				Args = PHPVAlidAtionProvider.FileArgs.slice(0);
+				Args.push(textDocument.fileNAme);
 			} else {
-				args = PHPValidationProvider.BufferArgs;
+				Args = PHPVAlidAtionProvider.BufferArgs;
 			}
 			try {
-				let childProcess = cp.spawn(executable, args, options);
+				let childProcess = cp.spAwn(executAble, Args, options);
 				childProcess.on('error', (error: Error) => {
-					if (this.pauseValidation) {
+					if (this.pAuseVAlidAtion) {
 						resolve();
 						return;
 					}
-					this.showError(error, executable);
-					this.pauseValidation = true;
+					this.showError(error, executAble);
+					this.pAuseVAlidAtion = true;
 					resolve();
 				});
 				if (childProcess.pid) {
@@ -271,44 +271,44 @@ export default class PHPValidationProvider {
 						childProcess.stdin.write(textDocument.getText());
 						childProcess.stdin.end();
 					}
-					childProcess.stdout.on('data', (data: Buffer) => {
-						decoder.write(data).forEach(processLine);
+					childProcess.stdout.on('dAtA', (dAtA: Buffer) => {
+						decoder.write(dAtA).forEAch(processLine);
 					});
 					childProcess.stdout.on('end', () => {
 						let line = decoder.end();
 						if (line) {
 							processLine(line);
 						}
-						this.diagnosticCollection!.set(textDocument.uri, diagnostics);
+						this.diAgnosticCollection!.set(textDocument.uri, diAgnostics);
 						resolve();
 					});
 				} else {
 					resolve();
 				}
-			} catch (error) {
-				this.showError(error, executable);
+			} cAtch (error) {
+				this.showError(error, executAble);
 			}
 		});
 	}
 
-	private async showError(error: any, executable: string): Promise<void> {
-		let message: string | null = null;
+	privAte Async showError(error: Any, executAble: string): Promise<void> {
+		let messAge: string | null = null;
 		if (error.code === 'ENOENT') {
-			if (this.executable) {
-				message = localize('wrongExecutable', 'Cannot validate since {0} is not a valid php executable. Use the setting \'php.validate.executablePath\' to configure the PHP executable.', executable);
+			if (this.executAble) {
+				messAge = locAlize('wrongExecutAble', 'CAnnot vAlidAte since {0} is not A vAlid php executAble. Use the setting \'php.vAlidAte.executAblePAth\' to configure the PHP executAble.', executAble);
 			} else {
-				message = localize('noExecutable', 'Cannot validate since no PHP executable is set. Use the setting \'php.validate.executablePath\' to configure the PHP executable.');
+				messAge = locAlize('noExecutAble', 'CAnnot vAlidAte since no PHP executAble is set. Use the setting \'php.vAlidAte.executAblePAth\' to configure the PHP executAble.');
 			}
 		} else {
-			message = error.message ? error.message : localize('unknownReason', 'Failed to run php using path: {0}. Reason is unknown.', executable);
+			messAge = error.messAge ? error.messAge : locAlize('unknownReAson', 'FAiled to run php using pAth: {0}. ReAson is unknown.', executAble);
 		}
-		if (!message) {
+		if (!messAge) {
 			return;
 		}
 
-		const openSettings = localize('goToSetting', 'Open Settings');
-		if (await vscode.window.showInformationMessage(message, openSettings) === openSettings) {
-			vscode.commands.executeCommand('workbench.action.openSettings', Setting.ExecutablePath);
+		const openSettings = locAlize('goToSetting', 'Open Settings');
+		if (AwAit vscode.window.showInformAtionMessAge(messAge, openSettings) === openSettings) {
+			vscode.commAnds.executeCommAnd('workbench.Action.openSettings', Setting.ExecutAblePAth);
 		}
 	}
 }

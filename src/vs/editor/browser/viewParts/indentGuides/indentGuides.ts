@@ -1,150 +1,150 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./indentGuides';
-import { DynamicViewOverlay } from 'vs/editor/browser/view/dynamicViewOverlay';
+import { DynAmicViewOverlAy } from 'vs/editor/browser/view/dynAmicViewOverlAy';
 import { Position } from 'vs/editor/common/core/position';
 import { editorActiveIndentGuides, editorIndentGuides } from 'vs/editor/common/view/editorColorRegistry';
 import { RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 
-export class IndentGuidesOverlay extends DynamicViewOverlay {
+export clAss IndentGuidesOverlAy extends DynAmicViewOverlAy {
 
-	private readonly _context: ViewContext;
-	private _primaryLineNumber: number;
-	private _lineHeight: number;
-	private _spaceWidth: number;
-	private _renderResult: string[] | null;
-	private _enabled: boolean;
-	private _activeIndentEnabled: boolean;
-	private _maxIndentLeft: number;
+	privAte reAdonly _context: ViewContext;
+	privAte _primAryLineNumber: number;
+	privAte _lineHeight: number;
+	privAte _spAceWidth: number;
+	privAte _renderResult: string[] | null;
+	privAte _enAbled: booleAn;
+	privAte _ActiveIndentEnAbled: booleAn;
+	privAte _mAxIndentLeft: number;
 
 	constructor(context: ViewContext) {
 		super();
 		this._context = context;
-		this._primaryLineNumber = 0;
+		this._primAryLineNumber = 0;
 
-		const options = this._context.configuration.options;
-		const wrappingInfo = options.get(EditorOption.wrappingInfo);
+		const options = this._context.configurAtion.options;
+		const wrAppingInfo = options.get(EditorOption.wrAppingInfo);
 		const fontInfo = options.get(EditorOption.fontInfo);
 
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		this._spaceWidth = fontInfo.spaceWidth;
-		this._enabled = options.get(EditorOption.renderIndentGuides);
-		this._activeIndentEnabled = options.get(EditorOption.highlightActiveIndentGuide);
-		this._maxIndentLeft = wrappingInfo.wrappingColumn === -1 ? -1 : (wrappingInfo.wrappingColumn * fontInfo.typicalHalfwidthCharacterWidth);
+		this._spAceWidth = fontInfo.spAceWidth;
+		this._enAbled = options.get(EditorOption.renderIndentGuides);
+		this._ActiveIndentEnAbled = options.get(EditorOption.highlightActiveIndentGuide);
+		this._mAxIndentLeft = wrAppingInfo.wrAppingColumn === -1 ? -1 : (wrAppingInfo.wrAppingColumn * fontInfo.typicAlHAlfwidthChArActerWidth);
 
 		this._renderResult = null;
 
-		this._context.addEventHandler(this);
+		this._context.AddEventHAndler(this);
 	}
 
 	public dispose(): void {
-		this._context.removeEventHandler(this);
+		this._context.removeEventHAndler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const options = this._context.configuration.options;
-		const wrappingInfo = options.get(EditorOption.wrappingInfo);
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		const options = this._context.configurAtion.options;
+		const wrAppingInfo = options.get(EditorOption.wrAppingInfo);
 		const fontInfo = options.get(EditorOption.fontInfo);
 
 		this._lineHeight = options.get(EditorOption.lineHeight);
-		this._spaceWidth = fontInfo.spaceWidth;
-		this._enabled = options.get(EditorOption.renderIndentGuides);
-		this._activeIndentEnabled = options.get(EditorOption.highlightActiveIndentGuide);
-		this._maxIndentLeft = wrappingInfo.wrappingColumn === -1 ? -1 : (wrappingInfo.wrappingColumn * fontInfo.typicalHalfwidthCharacterWidth);
+		this._spAceWidth = fontInfo.spAceWidth;
+		this._enAbled = options.get(EditorOption.renderIndentGuides);
+		this._ActiveIndentEnAbled = options.get(EditorOption.highlightActiveIndentGuide);
+		this._mAxIndentLeft = wrAppingInfo.wrAppingColumn === -1 ? -1 : (wrAppingInfo.wrAppingColumn * fontInfo.typicAlHAlfwidthChArActerWidth);
 		return true;
 	}
-	public onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): boolean {
+	public onCursorStAteChAnged(e: viewEvents.ViewCursorStAteChAngedEvent): booleAn {
 		const selection = e.selections[0];
-		const newPrimaryLineNumber = selection.isEmpty() ? selection.positionLineNumber : 0;
+		const newPrimAryLineNumber = selection.isEmpty() ? selection.positionLineNumber : 0;
 
-		if (this._primaryLineNumber !== newPrimaryLineNumber) {
-			this._primaryLineNumber = newPrimaryLineNumber;
+		if (this._primAryLineNumber !== newPrimAryLineNumber) {
+			this._primAryLineNumber = newPrimAryLineNumber;
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
-		// true for inline decorations
+	public onDecorAtionsChAnged(e: viewEvents.ViewDecorAtionsChAngedEvent): booleAn {
+		// true for inline decorAtions
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	public onFlushed(e: viewEvents.ViewFlushedEvent): booleAn {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	public onLinesChAnged(e: viewEvents.ViewLinesChAngedEvent): booleAn {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): booleAn {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): booleAn {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return e.scrollTopChanged;// || e.scrollWidthChanged;
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		return e.scrollTopChAnged;// || e.scrollWidthChAnged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	public onZonesChAnged(e: viewEvents.ViewZonesChAngedEvent): booleAn {
 		return true;
 	}
-	public onLanguageConfigurationChanged(e: viewEvents.ViewLanguageConfigurationEvent): boolean {
+	public onLAnguAgeConfigurAtionChAnged(e: viewEvents.ViewLAnguAgeConfigurAtionEvent): booleAn {
 		return true;
 	}
 
-	// --- end event handlers
+	// --- end event hAndlers
 
-	public prepareRender(ctx: RenderingContext): void {
-		if (!this._enabled) {
+	public prepAreRender(ctx: RenderingContext): void {
+		if (!this._enAbled) {
 			this._renderResult = null;
 			return;
 		}
 
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
+		const visibleStArtLineNumber = ctx.visibleRAnge.stArtLineNumber;
+		const visibleEndLineNumber = ctx.visibleRAnge.endLineNumber;
 		const { indentSize } = this._context.model.getTextModelOptions();
-		const indentWidth = indentSize * this._spaceWidth;
+		const indentWidth = indentSize * this._spAceWidth;
 		const scrollWidth = ctx.scrollWidth;
 		const lineHeight = this._lineHeight;
 
-		const indents = this._context.model.getLinesIndentGuides(visibleStartLineNumber, visibleEndLineNumber);
+		const indents = this._context.model.getLinesIndentGuides(visibleStArtLineNumber, visibleEndLineNumber);
 
-		let activeIndentStartLineNumber = 0;
-		let activeIndentEndLineNumber = 0;
-		let activeIndentLevel = 0;
-		if (this._activeIndentEnabled && this._primaryLineNumber) {
-			const activeIndentInfo = this._context.model.getActiveIndentGuide(this._primaryLineNumber, visibleStartLineNumber, visibleEndLineNumber);
-			activeIndentStartLineNumber = activeIndentInfo.startLineNumber;
-			activeIndentEndLineNumber = activeIndentInfo.endLineNumber;
-			activeIndentLevel = activeIndentInfo.indent;
+		let ActiveIndentStArtLineNumber = 0;
+		let ActiveIndentEndLineNumber = 0;
+		let ActiveIndentLevel = 0;
+		if (this._ActiveIndentEnAbled && this._primAryLineNumber) {
+			const ActiveIndentInfo = this._context.model.getActiveIndentGuide(this._primAryLineNumber, visibleStArtLineNumber, visibleEndLineNumber);
+			ActiveIndentStArtLineNumber = ActiveIndentInfo.stArtLineNumber;
+			ActiveIndentEndLineNumber = ActiveIndentInfo.endLineNumber;
+			ActiveIndentLevel = ActiveIndentInfo.indent;
 		}
 
 		const output: string[] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const containsActiveIndentGuide = (activeIndentStartLineNumber <= lineNumber && lineNumber <= activeIndentEndLineNumber);
-			const lineIndex = lineNumber - visibleStartLineNumber;
+		for (let lineNumber = visibleStArtLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
+			const contAinsActiveIndentGuide = (ActiveIndentStArtLineNumber <= lineNumber && lineNumber <= ActiveIndentEndLineNumber);
+			const lineIndex = lineNumber - visibleStArtLineNumber;
 			const indent = indents[lineIndex];
 
 			let result = '';
 			if (indent >= 1) {
-				const leftMostVisiblePosition = ctx.visibleRangeForPosition(new Position(lineNumber, 1));
+				const leftMostVisiblePosition = ctx.visibleRAngeForPosition(new Position(lineNumber, 1));
 				let left = leftMostVisiblePosition ? leftMostVisiblePosition.left : 0;
 				for (let i = 1; i <= indent; i++) {
-					const className = (containsActiveIndentGuide && i === activeIndentLevel ? 'cigra' : 'cigr');
-					result += `<div class="${className}" style="left:${left}px;height:${lineHeight}px;width:${indentWidth}px"></div>`;
+					const clAssNAme = (contAinsActiveIndentGuide && i === ActiveIndentLevel ? 'cigrA' : 'cigr');
+					result += `<div clAss="${clAssNAme}" style="left:${left}px;height:${lineHeight}px;width:${indentWidth}px"></div>`;
 					left += indentWidth;
-					if (left > scrollWidth || (this._maxIndentLeft > 0 && left > this._maxIndentLeft)) {
-						break;
+					if (left > scrollWidth || (this._mAxIndentLeft > 0 && left > this._mAxIndentLeft)) {
+						breAk;
 					}
 				}
 			}
@@ -154,11 +154,11 @@ export class IndentGuidesOverlay extends DynamicViewOverlay {
 		this._renderResult = output;
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	public render(stArtLineNumber: number, lineNumber: number): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		const lineIndex = lineNumber - startLineNumber;
+		const lineIndex = lineNumber - stArtLineNumber;
 		if (lineIndex < 0 || lineIndex >= this._renderResult.length) {
 			return '';
 		}
@@ -166,13 +166,13 @@ export class IndentGuidesOverlay extends DynamicViewOverlay {
 	}
 }
 
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 	const editorIndentGuidesColor = theme.getColor(editorIndentGuides);
 	if (editorIndentGuidesColor) {
-		collector.addRule(`.monaco-editor .lines-content .cigr { box-shadow: 1px 0 0 0 ${editorIndentGuidesColor} inset; }`);
+		collector.AddRule(`.monAco-editor .lines-content .cigr { box-shAdow: 1px 0 0 0 ${editorIndentGuidesColor} inset; }`);
 	}
 	const editorActiveIndentGuidesColor = theme.getColor(editorActiveIndentGuides) || editorIndentGuidesColor;
 	if (editorActiveIndentGuidesColor) {
-		collector.addRule(`.monaco-editor .lines-content .cigra { box-shadow: 1px 0 0 0 ${editorActiveIndentGuidesColor} inset; }`);
+		collector.AddRule(`.monAco-editor .lines-content .cigrA { box-shAdow: 1px 0 0 0 ${editorActiveIndentGuidesColor} inset; }`);
 	}
 });

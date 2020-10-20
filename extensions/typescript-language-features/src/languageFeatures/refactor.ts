@@ -1,502 +1,502 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { Command, CommandManager } from '../commands/commandManager';
-import { LearnMoreAboutRefactoringsCommand } from '../commands/learnMoreAboutRefactorings';
-import type * as Proto from '../protocol';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
-import { nulToken } from '../utils/cancellation';
-import { conditionalRegistration, requireMinVersion, requireSomeCapability } from '../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { CommAnd, CommAndMAnAger } from '../commAnds/commAndMAnAger';
+import { LeArnMoreAboutRefActoringsCommAnd } from '../commAnds/leArnMoreAboutRefActorings';
+import type * As Proto from '../protocol';
+import { ClientCApAbility, ITypeScriptServiceClient } from '../typescriptService';
+import API from '../utils/Api';
+import { nulToken } from '../utils/cAncellAtion';
+import { conditionAlRegistrAtion, requireMinVersion, requireSomeCApAbility } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as fileSchemes from '../utils/fileSchemes';
+import * As fileSchemes from '../utils/fileSchemes';
 import { TelemetryReporter } from '../utils/telemetry';
-import * as typeConverters from '../utils/typeConverters';
-import FormattingOptionsManager from './fileConfigurationManager';
+import * As typeConverters from '../utils/typeConverters';
+import FormAttingOptionsMAnAger from './fileConfigurAtionMAnAger';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-namespace Experimental {
-	export interface RefactorActionInfo extends Proto.RefactorActionInfo {
-		readonly notApplicableReason?: string;
+nAmespAce ExperimentAl {
+	export interfAce RefActorActionInfo extends Proto.RefActorActionInfo {
+		reAdonly notApplicAbleReAson?: string;
 	}
 }
 
-interface DidApplyRefactoringCommand_Args {
-	readonly codeAction: InlinedCodeAction
+interfAce DidApplyRefActoringCommAnd_Args {
+	reAdonly codeAction: InlinedCodeAction
 }
 
-class DidApplyRefactoringCommand implements Command {
-	public static readonly ID = '_typescript.didApplyRefactoring';
-	public readonly id = DidApplyRefactoringCommand.ID;
+clAss DidApplyRefActoringCommAnd implements CommAnd {
+	public stAtic reAdonly ID = '_typescript.didApplyRefActoring';
+	public reAdonly id = DidApplyRefActoringCommAnd.ID;
 
 	constructor(
-		private readonly telemetryReporter: TelemetryReporter
+		privAte reAdonly telemetryReporter: TelemetryReporter
 	) { }
 
-	public async execute(args: DidApplyRefactoringCommand_Args): Promise<void> {
+	public Async execute(Args: DidApplyRefActoringCommAnd_Args): Promise<void> {
 		/* __GDPR__
-			"refactor.execute" : {
-				"action" : { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" },
+			"refActor.execute" : {
+				"Action" : { "clAssificAtion": "PublicNonPersonAlDAtA", "purpose": "FeAtureInsight" },
 				"${include}": [
 					"${TypeScriptCommonProperties}"
 				]
 			}
 		*/
-		this.telemetryReporter.logTelemetry('refactor.execute', {
-			action: args.codeAction.action,
+		this.telemetryReporter.logTelemetry('refActor.execute', {
+			Action: Args.codeAction.Action,
 		});
 
-		if (!args.codeAction.edit?.size) {
-			vscode.window.showErrorMessage(localize('refactoringFailed', "Could not apply refactoring"));
+		if (!Args.codeAction.edit?.size) {
+			vscode.window.showErrorMessAge(locAlize('refActoringFAiled', "Could not Apply refActoring"));
 			return;
 		}
 
-		const renameLocation = args.codeAction.renameLocation;
-		if (renameLocation) {
-			await vscode.commands.executeCommand('editor.action.rename', [
-				args.codeAction.document.uri,
-				typeConverters.Position.fromLocation(renameLocation)
+		const renAmeLocAtion = Args.codeAction.renAmeLocAtion;
+		if (renAmeLocAtion) {
+			AwAit vscode.commAnds.executeCommAnd('editor.Action.renAme', [
+				Args.codeAction.document.uri,
+				typeConverters.Position.fromLocAtion(renAmeLocAtion)
 			]);
 		}
 	}
 }
 
-interface SelectRefactorCommand_Args {
-	readonly action: vscode.CodeAction;
-	readonly document: vscode.TextDocument;
-	readonly info: Proto.ApplicableRefactorInfo;
-	readonly rangeOrSelection: vscode.Range | vscode.Selection;
+interfAce SelectRefActorCommAnd_Args {
+	reAdonly Action: vscode.CodeAction;
+	reAdonly document: vscode.TextDocument;
+	reAdonly info: Proto.ApplicAbleRefActorInfo;
+	reAdonly rAngeOrSelection: vscode.RAnge | vscode.Selection;
 }
 
-class SelectRefactorCommand implements Command {
-	public static readonly ID = '_typescript.selectRefactoring';
-	public readonly id = SelectRefactorCommand.ID;
+clAss SelectRefActorCommAnd implements CommAnd {
+	public stAtic reAdonly ID = '_typescript.selectRefActoring';
+	public reAdonly id = SelectRefActorCommAnd.ID;
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
-		private readonly didApplyCommand: DidApplyRefactoringCommand
+		privAte reAdonly client: ITypeScriptServiceClient,
+		privAte reAdonly didApplyCommAnd: DidApplyRefActoringCommAnd
 	) { }
 
-	public async execute(args: SelectRefactorCommand_Args): Promise<void> {
-		const file = this.client.toOpenedFilePath(args.document);
+	public Async execute(Args: SelectRefActorCommAnd_Args): Promise<void> {
+		const file = this.client.toOpenedFilePAth(Args.document);
 		if (!file) {
 			return;
 		}
 
-		const selected = await vscode.window.showQuickPick(args.info.actions.map((action): vscode.QuickPickItem => ({
-			label: action.name,
-			description: action.description,
+		const selected = AwAit vscode.window.showQuickPick(Args.info.Actions.mAp((Action): vscode.QuickPickItem => ({
+			lAbel: Action.nAme,
+			description: Action.description,
 		})));
 		if (!selected) {
 			return;
 		}
 
-		const tsAction = new InlinedCodeAction(this.client, args.action.title, args.action.kind, args.document, args.info.name, selected.label, args.rangeOrSelection);
-		await tsAction.resolve(nulToken);
+		const tsAction = new InlinedCodeAction(this.client, Args.Action.title, Args.Action.kind, Args.document, Args.info.nAme, selected.lAbel, Args.rAngeOrSelection);
+		AwAit tsAction.resolve(nulToken);
 
 		if (tsAction.edit) {
-			if (!(await vscode.workspace.applyEdit(tsAction.edit))) {
-				vscode.window.showErrorMessage(localize('refactoringFailed', "Could not apply refactoring"));
+			if (!(AwAit vscode.workspAce.ApplyEdit(tsAction.edit))) {
+				vscode.window.showErrorMessAge(locAlize('refActoringFAiled', "Could not Apply refActoring"));
 				return;
 			}
 		}
 
-		await this.didApplyCommand.execute({ codeAction: tsAction });
+		AwAit this.didApplyCommAnd.execute({ codeAction: tsAction });
 	}
 }
 
-interface CodeActionKind {
-	readonly kind: vscode.CodeActionKind;
-	matches(refactor: Proto.RefactorActionInfo): boolean;
+interfAce CodeActionKind {
+	reAdonly kind: vscode.CodeActionKind;
+	mAtches(refActor: Proto.RefActorActionInfo): booleAn;
 }
 
-const Extract_Function = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorExtract.append('function'),
-	matches: refactor => refactor.name.startsWith('function_')
+const ExtrAct_Function = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorExtrAct.Append('function'),
+	mAtches: refActor => refActor.nAme.stArtsWith('function_')
 });
 
-const Extract_Constant = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorExtract.append('constant'),
-	matches: refactor => refactor.name.startsWith('constant_')
+const ExtrAct_ConstAnt = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorExtrAct.Append('constAnt'),
+	mAtches: refActor => refActor.nAme.stArtsWith('constAnt_')
 });
 
-const Extract_Type = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorExtract.append('type'),
-	matches: refactor => refactor.name.startsWith('Extract to type alias')
+const ExtrAct_Type = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorExtrAct.Append('type'),
+	mAtches: refActor => refActor.nAme.stArtsWith('ExtrAct to type AliAs')
 });
 
-const Extract_Interface = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorExtract.append('interface'),
-	matches: refactor => refactor.name.startsWith('Extract to interface')
+const ExtrAct_InterfAce = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorExtrAct.Append('interfAce'),
+	mAtches: refActor => refActor.nAme.stArtsWith('ExtrAct to interfAce')
 });
 
 const Move_NewFile = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.Refactor.append('move').append('newFile'),
-	matches: refactor => refactor.name.startsWith('Move to a new file')
+	kind: vscode.CodeActionKind.RefActor.Append('move').Append('newFile'),
+	mAtches: refActor => refActor.nAme.stArtsWith('Move to A new file')
 });
 
 const Rewrite_Import = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorRewrite.append('import'),
-	matches: refactor => refactor.name.startsWith('Convert namespace import') || refactor.name.startsWith('Convert named imports')
+	kind: vscode.CodeActionKind.RefActorRewrite.Append('import'),
+	mAtches: refActor => refActor.nAme.stArtsWith('Convert nAmespAce import') || refActor.nAme.stArtsWith('Convert nAmed imports')
 });
 
 const Rewrite_Export = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorRewrite.append('export'),
-	matches: refactor => refactor.name.startsWith('Convert default export') || refactor.name.startsWith('Convert named export')
+	kind: vscode.CodeActionKind.RefActorRewrite.Append('export'),
+	mAtches: refActor => refActor.nAme.stArtsWith('Convert defAult export') || refActor.nAme.stArtsWith('Convert nAmed export')
 });
 
-const Rewrite_Arrow_Braces = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorRewrite.append('arrow').append('braces'),
-	matches: refactor => refactor.name.startsWith('Convert default export') || refactor.name.startsWith('Convert named export')
+const Rewrite_Arrow_BrAces = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorRewrite.Append('Arrow').Append('brAces'),
+	mAtches: refActor => refActor.nAme.stArtsWith('Convert defAult export') || refActor.nAme.stArtsWith('Convert nAmed export')
 });
 
-const Rewrite_Parameters_ToDestructured = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorRewrite.append('parameters').append('toDestructured'),
-	matches: refactor => refactor.name.startsWith('Convert parameters to destructured object')
+const Rewrite_PArAmeters_ToDestructured = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorRewrite.Append('pArAmeters').Append('toDestructured'),
+	mAtches: refActor => refActor.nAme.stArtsWith('Convert pArAmeters to destructured object')
 });
 
-const Rewrite_Property_GenerateAccessors = Object.freeze<CodeActionKind>({
-	kind: vscode.CodeActionKind.RefactorRewrite.append('property').append('generateAccessors'),
-	matches: refactor => refactor.name.startsWith('Generate \'get\' and \'set\' accessors')
+const Rewrite_Property_GenerAteAccessors = Object.freeze<CodeActionKind>({
+	kind: vscode.CodeActionKind.RefActorRewrite.Append('property').Append('generAteAccessors'),
+	mAtches: refActor => refActor.nAme.stArtsWith('GenerAte \'get\' And \'set\' Accessors')
 });
 
-const allKnownCodeActionKinds = [
-	Extract_Function,
-	Extract_Constant,
-	Extract_Type,
-	Extract_Interface,
+const AllKnownCodeActionKinds = [
+	ExtrAct_Function,
+	ExtrAct_ConstAnt,
+	ExtrAct_Type,
+	ExtrAct_InterfAce,
 	Move_NewFile,
 	Rewrite_Import,
 	Rewrite_Export,
-	Rewrite_Arrow_Braces,
-	Rewrite_Parameters_ToDestructured,
-	Rewrite_Property_GenerateAccessors
+	Rewrite_Arrow_BrAces,
+	Rewrite_PArAmeters_ToDestructured,
+	Rewrite_Property_GenerAteAccessors
 ];
 
-class InlinedCodeAction extends vscode.CodeAction {
+clAss InlinedCodeAction extends vscode.CodeAction {
 	constructor(
-		public readonly client: ITypeScriptServiceClient,
+		public reAdonly client: ITypeScriptServiceClient,
 		title: string,
 		kind: vscode.CodeActionKind | undefined,
-		public readonly document: vscode.TextDocument,
-		public readonly refactor: string,
-		public readonly action: string,
-		public readonly range: vscode.Range,
+		public reAdonly document: vscode.TextDocument,
+		public reAdonly refActor: string,
+		public reAdonly Action: string,
+		public reAdonly rAnge: vscode.RAnge,
 	) {
 		super(title, kind);
 	}
 
 	// Filled in during resolve
-	public renameLocation?: Proto.Location;
+	public renAmeLocAtion?: Proto.LocAtion;
 
-	public async resolve(token: vscode.CancellationToken): Promise<undefined> {
-		const file = this.client.toOpenedFilePath(this.document);
+	public Async resolve(token: vscode.CAncellAtionToken): Promise<undefined> {
+		const file = this.client.toOpenedFilePAth(this.document);
 		if (!file) {
 			return;
 		}
 
-		const args: Proto.GetEditsForRefactorRequestArgs = {
-			...typeConverters.Range.toFileRangeRequestArgs(file, this.range),
-			refactor: this.refactor,
-			action: this.action,
+		const Args: Proto.GetEditsForRefActorRequestArgs = {
+			...typeConverters.RAnge.toFileRAngeRequestArgs(file, this.rAnge),
+			refActor: this.refActor,
+			Action: this.Action,
 		};
 
-		const response = await this.client.execute('getEditsForRefactor', args, token);
+		const response = AwAit this.client.execute('getEditsForRefActor', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return;
 		}
 
 		// Resolve
-		this.edit = InlinedCodeAction.getWorkspaceEditForRefactoring(this.client, response.body);
-		this.renameLocation = response.body.renameLocation;
+		this.edit = InlinedCodeAction.getWorkspAceEditForRefActoring(this.client, response.body);
+		this.renAmeLocAtion = response.body.renAmeLocAtion;
 
 		return;
 	}
 
-	private static getWorkspaceEditForRefactoring(
+	privAte stAtic getWorkspAceEditForRefActoring(
 		client: ITypeScriptServiceClient,
-		body: Proto.RefactorEditInfo,
-	): vscode.WorkspaceEdit {
-		const workspaceEdit = new vscode.WorkspaceEdit();
+		body: Proto.RefActorEditInfo,
+	): vscode.WorkspAceEdit {
+		const workspAceEdit = new vscode.WorkspAceEdit();
 		for (const edit of body.edits) {
-			const resource = client.toResource(edit.fileName);
+			const resource = client.toResource(edit.fileNAme);
 			if (resource.scheme === fileSchemes.file) {
-				workspaceEdit.createFile(resource, { ignoreIfExists: true });
+				workspAceEdit.creAteFile(resource, { ignoreIfExists: true });
 			}
 		}
-		typeConverters.WorkspaceEdit.withFileCodeEdits(workspaceEdit, client, body.edits);
-		return workspaceEdit;
+		typeConverters.WorkspAceEdit.withFileCodeEdits(workspAceEdit, client, body.edits);
+		return workspAceEdit;
 	}
 }
 
-class SelectCodeAction extends vscode.CodeAction {
+clAss SelectCodeAction extends vscode.CodeAction {
 	constructor(
-		info: Proto.ApplicableRefactorInfo,
+		info: Proto.ApplicAbleRefActorInfo,
 		document: vscode.TextDocument,
-		rangeOrSelection: vscode.Range | vscode.Selection
+		rAngeOrSelection: vscode.RAnge | vscode.Selection
 	) {
-		super(info.description, vscode.CodeActionKind.Refactor);
-		this.command = {
+		super(info.description, vscode.CodeActionKind.RefActor);
+		this.commAnd = {
 			title: info.description,
-			command: SelectRefactorCommand.ID,
-			arguments: [<SelectRefactorCommand_Args>{ action: this, document, info, rangeOrSelection }]
+			commAnd: SelectRefActorCommAnd.ID,
+			Arguments: [<SelectRefActorCommAnd_Args>{ Action: this, document, info, rAngeOrSelection }]
 		};
 	}
 }
 
 type TsCodeAction = InlinedCodeAction | SelectCodeAction;
 
-class TypeScriptRefactorProvider implements vscode.CodeActionProvider<TsCodeAction> {
-	public static readonly minVersion = API.v240;
+clAss TypeScriptRefActorProvider implements vscode.CodeActionProvider<TsCodeAction> {
+	public stAtic reAdonly minVersion = API.v240;
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
-		private readonly formattingOptionsManager: FormattingOptionsManager,
-		commandManager: CommandManager,
+		privAte reAdonly client: ITypeScriptServiceClient,
+		privAte reAdonly formAttingOptionsMAnAger: FormAttingOptionsMAnAger,
+		commAndMAnAger: CommAndMAnAger,
 		telemetryReporter: TelemetryReporter
 	) {
-		const didApplyRefactoringCommand = commandManager.register(new DidApplyRefactoringCommand(telemetryReporter));
-		commandManager.register(new SelectRefactorCommand(this.client, didApplyRefactoringCommand));
+		const didApplyRefActoringCommAnd = commAndMAnAger.register(new DidApplyRefActoringCommAnd(telemetryReporter));
+		commAndMAnAger.register(new SelectRefActorCommAnd(this.client, didApplyRefActoringCommAnd));
 	}
 
-	public static readonly metadata: vscode.CodeActionProviderMetadata = {
+	public stAtic reAdonly metAdAtA: vscode.CodeActionProviderMetAdAtA = {
 		providedCodeActionKinds: [
-			vscode.CodeActionKind.Refactor,
-			...allKnownCodeActionKinds.map(x => x.kind),
+			vscode.CodeActionKind.RefActor,
+			...AllKnownCodeActionKinds.mAp(x => x.kind),
 		],
-		documentation: [
+		documentAtion: [
 			{
-				kind: vscode.CodeActionKind.Refactor,
-				command: {
-					command: LearnMoreAboutRefactoringsCommand.id,
-					title: localize('refactor.documentation.title', "Learn more about JS/TS refactorings")
+				kind: vscode.CodeActionKind.RefActor,
+				commAnd: {
+					commAnd: LeArnMoreAboutRefActoringsCommAnd.id,
+					title: locAlize('refActor.documentAtion.title', "LeArn more About JS/TS refActorings")
 				}
 			}
 		]
 	};
 
-	public async provideCodeActions(
+	public Async provideCodeActions(
 		document: vscode.TextDocument,
-		rangeOrSelection: vscode.Range | vscode.Selection,
+		rAngeOrSelection: vscode.RAnge | vscode.Selection,
 		context: vscode.CodeActionContext,
-		token: vscode.CancellationToken
+		token: vscode.CAncellAtionToken
 	): Promise<TsCodeAction[] | undefined> {
-		if (!this.shouldTrigger(rangeOrSelection, context)) {
+		if (!this.shouldTrigger(rAngeOrSelection, context)) {
 			return undefined;
 		}
-		if (!this.client.toOpenedFilePath(document)) {
+		if (!this.client.toOpenedFilePAth(document)) {
 			return undefined;
 		}
 
-		const response = await this.client.interruptGetErr(() => {
-			const file = this.client.toOpenedFilePath(document);
+		const response = AwAit this.client.interruptGetErr(() => {
+			const file = this.client.toOpenedFilePAth(document);
 			if (!file) {
 				return undefined;
 			}
-			this.formattingOptionsManager.ensureConfigurationForDocument(document, token);
+			this.formAttingOptionsMAnAger.ensureConfigurAtionForDocument(document, token);
 
-			const args: Proto.GetApplicableRefactorsRequestArgs = {
-				...typeConverters.Range.toFileRangeRequestArgs(file, rangeOrSelection),
-				triggerReason: this.toTsTriggerReason(context),
+			const Args: Proto.GetApplicAbleRefActorsRequestArgs = {
+				...typeConverters.RAnge.toFileRAngeRequestArgs(file, rAngeOrSelection),
+				triggerReAson: this.toTsTriggerReAson(context),
 			};
-			return this.client.execute('getApplicableRefactors', args, token);
+			return this.client.execute('getApplicAbleRefActors', Args, token);
 		});
 		if (response?.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
-		const actions = this.convertApplicableRefactors(response.body, document, rangeOrSelection);
+		const Actions = this.convertApplicAbleRefActors(response.body, document, rAngeOrSelection);
 		if (!context.only) {
-			return actions;
+			return Actions;
 		}
-		return this.pruneInvalidActions(this.appendInvalidActions(actions), context.only, /* numberOfInvalid = */ 5);
+		return this.pruneInvAlidActions(this.AppendInvAlidActions(Actions), context.only, /* numberOfInvAlid = */ 5);
 	}
 
-	public async resolveCodeAction(
+	public Async resolveCodeAction(
 		codeAction: TsCodeAction,
-		token: vscode.CancellationToken,
+		token: vscode.CAncellAtionToken,
 	): Promise<TsCodeAction> {
-		if (codeAction instanceof InlinedCodeAction) {
-			await codeAction.resolve(token);
+		if (codeAction instAnceof InlinedCodeAction) {
+			AwAit codeAction.resolve(token);
 		}
 		return codeAction;
 	}
 
-	private toTsTriggerReason(context: vscode.CodeActionContext): Proto.RefactorTriggerReason | undefined {
+	privAte toTsTriggerReAson(context: vscode.CodeActionContext): Proto.RefActorTriggerReAson | undefined {
 		if (!context.only) {
 			return;
 		}
 		return 'invoked';
 	}
 
-	private convertApplicableRefactors(
-		body: Proto.ApplicableRefactorInfo[],
+	privAte convertApplicAbleRefActors(
+		body: Proto.ApplicAbleRefActorInfo[],
 		document: vscode.TextDocument,
-		rangeOrSelection: vscode.Range | vscode.Selection
+		rAngeOrSelection: vscode.RAnge | vscode.Selection
 	): TsCodeAction[] {
-		const actions: TsCodeAction[] = [];
+		const Actions: TsCodeAction[] = [];
 		for (const info of body) {
-			if (info.inlineable === false) {
-				const codeAction = new SelectCodeAction(info, document, rangeOrSelection);
-				actions.push(codeAction);
+			if (info.inlineAble === fAlse) {
+				const codeAction = new SelectCodeAction(info, document, rAngeOrSelection);
+				Actions.push(codeAction);
 			} else {
-				for (const action of info.actions) {
-					actions.push(this.refactorActionToCodeAction(action, document, info, rangeOrSelection, info.actions));
+				for (const Action of info.Actions) {
+					Actions.push(this.refActorActionToCodeAction(Action, document, info, rAngeOrSelection, info.Actions));
 				}
 			}
 		}
-		return actions;
+		return Actions;
 	}
 
-	private refactorActionToCodeAction(
-		action: Experimental.RefactorActionInfo,
+	privAte refActorActionToCodeAction(
+		Action: ExperimentAl.RefActorActionInfo,
 		document: vscode.TextDocument,
-		info: Proto.ApplicableRefactorInfo,
-		rangeOrSelection: vscode.Range | vscode.Selection,
-		allActions: readonly Proto.RefactorActionInfo[],
+		info: Proto.ApplicAbleRefActorInfo,
+		rAngeOrSelection: vscode.RAnge | vscode.Selection,
+		AllActions: reAdonly Proto.RefActorActionInfo[],
 	): InlinedCodeAction {
-		const codeAction = new InlinedCodeAction(this.client, action.description, TypeScriptRefactorProvider.getKind(action), document, info.name, action.name, rangeOrSelection);
+		const codeAction = new InlinedCodeAction(this.client, Action.description, TypeScriptRefActorProvider.getKind(Action), document, info.nAme, Action.nAme, rAngeOrSelection);
 
 		// https://github.com/microsoft/TypeScript/pull/37871
-		if (action.notApplicableReason) {
-			codeAction.disabled = { reason: action.notApplicableReason };
+		if (Action.notApplicAbleReAson) {
+			codeAction.disAbled = { reAson: Action.notApplicAbleReAson };
 		} else {
-			codeAction.command = {
-				title: action.description,
-				command: DidApplyRefactoringCommand.ID,
-				arguments: [<DidApplyRefactoringCommand_Args>{ codeAction }],
+			codeAction.commAnd = {
+				title: Action.description,
+				commAnd: DidApplyRefActoringCommAnd.ID,
+				Arguments: [<DidApplyRefActoringCommAnd_Args>{ codeAction }],
 			};
 		}
 
-		codeAction.isPreferred = TypeScriptRefactorProvider.isPreferred(action, allActions);
+		codeAction.isPreferred = TypeScriptRefActorProvider.isPreferred(Action, AllActions);
 		return codeAction;
 	}
 
-	private shouldTrigger(rangeOrSelection: vscode.Range | vscode.Selection, context: vscode.CodeActionContext) {
-		if (context.only && !vscode.CodeActionKind.Refactor.contains(context.only)) {
-			return false;
+	privAte shouldTrigger(rAngeOrSelection: vscode.RAnge | vscode.Selection, context: vscode.CodeActionContext) {
+		if (context.only && !vscode.CodeActionKind.RefActor.contAins(context.only)) {
+			return fAlse;
 		}
 
-		return rangeOrSelection instanceof vscode.Selection;
+		return rAngeOrSelection instAnceof vscode.Selection;
 	}
 
-	private static getKind(refactor: Proto.RefactorActionInfo) {
-		const match = allKnownCodeActionKinds.find(kind => kind.matches(refactor));
-		return match ? match.kind : vscode.CodeActionKind.Refactor;
+	privAte stAtic getKind(refActor: Proto.RefActorActionInfo) {
+		const mAtch = AllKnownCodeActionKinds.find(kind => kind.mAtches(refActor));
+		return mAtch ? mAtch.kind : vscode.CodeActionKind.RefActor;
 	}
 
-	private static isPreferred(
-		action: Proto.RefactorActionInfo,
-		allActions: readonly Proto.RefactorActionInfo[],
-	): boolean {
-		if (Extract_Constant.matches(action)) {
-			// Only mark the action with the lowest scope as preferred
-			const getScope = (name: string) => {
-				const scope = name.match(/scope_(\d)/)?.[1];
+	privAte stAtic isPreferred(
+		Action: Proto.RefActorActionInfo,
+		AllActions: reAdonly Proto.RefActorActionInfo[],
+	): booleAn {
+		if (ExtrAct_ConstAnt.mAtches(Action)) {
+			// Only mArk the Action with the lowest scope As preferred
+			const getScope = (nAme: string) => {
+				const scope = nAme.mAtch(/scope_(\d)/)?.[1];
 				return scope ? +scope : undefined;
 			};
-			const scope = getScope(action.name);
+			const scope = getScope(Action.nAme);
 			if (typeof scope !== 'number') {
-				return false;
+				return fAlse;
 			}
 
-			return allActions
-				.filter(otherAtion => otherAtion !== action && Extract_Constant.matches(otherAtion))
+			return AllActions
+				.filter(otherAtion => otherAtion !== Action && ExtrAct_ConstAnt.mAtches(otherAtion))
 				.every(otherAction => {
-					const otherScope = getScope(otherAction.name);
+					const otherScope = getScope(otherAction.nAme);
 					return typeof otherScope === 'number' ? scope < otherScope : true;
 				});
 		}
-		if (Extract_Type.matches(action) || Extract_Interface.matches(action)) {
+		if (ExtrAct_Type.mAtches(Action) || ExtrAct_InterfAce.mAtches(Action)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private appendInvalidActions(actions: vscode.CodeAction[]): vscode.CodeAction[] {
-		if (this.client.apiVersion.gte(API.v400)) {
-			// Invalid actions come from TS server instead
-			return actions;
+	privAte AppendInvAlidActions(Actions: vscode.CodeAction[]): vscode.CodeAction[] {
+		if (this.client.ApiVersion.gte(API.v400)) {
+			// InvAlid Actions come from TS server insteAd
+			return Actions;
 		}
 
-		if (!actions.some(action => action.kind && Extract_Constant.kind.contains(action.kind))) {
-			const disabledAction = new vscode.CodeAction(
-				localize('extractConstant.disabled.title', "Extract to constant"),
-				Extract_Constant.kind);
+		if (!Actions.some(Action => Action.kind && ExtrAct_ConstAnt.kind.contAins(Action.kind))) {
+			const disAbledAction = new vscode.CodeAction(
+				locAlize('extrActConstAnt.disAbled.title', "ExtrAct to constAnt"),
+				ExtrAct_ConstAnt.kind);
 
-			disabledAction.disabled = {
-				reason: localize('extractConstant.disabled.reason', "The current selection cannot be extracted"),
+			disAbledAction.disAbled = {
+				reAson: locAlize('extrActConstAnt.disAbled.reAson', "The current selection cAnnot be extrActed"),
 			};
-			disabledAction.isPreferred = true;
+			disAbledAction.isPreferred = true;
 
-			actions.push(disabledAction);
+			Actions.push(disAbledAction);
 		}
 
-		if (!actions.some(action => action.kind && Extract_Function.kind.contains(action.kind))) {
-			const disabledAction = new vscode.CodeAction(
-				localize('extractFunction.disabled.title', "Extract to function"),
-				Extract_Function.kind);
+		if (!Actions.some(Action => Action.kind && ExtrAct_Function.kind.contAins(Action.kind))) {
+			const disAbledAction = new vscode.CodeAction(
+				locAlize('extrActFunction.disAbled.title', "ExtrAct to function"),
+				ExtrAct_Function.kind);
 
-			disabledAction.disabled = {
-				reason: localize('extractFunction.disabled.reason', "The current selection cannot be extracted"),
+			disAbledAction.disAbled = {
+				reAson: locAlize('extrActFunction.disAbled.reAson', "The current selection cAnnot be extrActed"),
 			};
-			actions.push(disabledAction);
+			Actions.push(disAbledAction);
 		}
-		return actions;
+		return Actions;
 	}
 
-	private pruneInvalidActions(actions: vscode.CodeAction[], only?: vscode.CodeActionKind, numberOfInvalid?: number): vscode.CodeAction[] {
-		if (this.client.apiVersion.lt(API.v400)) {
-			// Older TS version don't return extra actions
-			return actions;
+	privAte pruneInvAlidActions(Actions: vscode.CodeAction[], only?: vscode.CodeActionKind, numberOfInvAlid?: number): vscode.CodeAction[] {
+		if (this.client.ApiVersion.lt(API.v400)) {
+			// Older TS version don't return extrA Actions
+			return Actions;
 		}
 
-		const availableActions: vscode.CodeAction[] = [];
-		const invalidCommonActions: vscode.CodeAction[] = [];
-		const invalidUncommonActions: vscode.CodeAction[] = [];
-		for (const action of actions) {
-			if (!action.disabled) {
-				availableActions.push(action);
+		const AvAilAbleActions: vscode.CodeAction[] = [];
+		const invAlidCommonActions: vscode.CodeAction[] = [];
+		const invAlidUncommonActions: vscode.CodeAction[] = [];
+		for (const Action of Actions) {
+			if (!Action.disAbled) {
+				AvAilAbleActions.push(Action);
 				continue;
 			}
 
-			// These are the common refactors that we should always show if applicable.
-			if (action.kind && (Extract_Constant.kind.contains(action.kind) || Extract_Function.kind.contains(action.kind))) {
-				invalidCommonActions.push(action);
+			// These Are the common refActors thAt we should AlwAys show if ApplicAble.
+			if (Action.kind && (ExtrAct_ConstAnt.kind.contAins(Action.kind) || ExtrAct_Function.kind.contAins(Action.kind))) {
+				invAlidCommonActions.push(Action);
 				continue;
 			}
 
-			// These are the remaining refactors that we can show if we haven't reached the max limit with just common refactors.
-			invalidUncommonActions.push(action);
+			// These Are the remAining refActors thAt we cAn show if we hAven't reAched the mAx limit with just common refActors.
+			invAlidUncommonActions.push(Action);
 		}
 
 		const prioritizedActions: vscode.CodeAction[] = [];
-		prioritizedActions.push(...invalidCommonActions);
-		prioritizedActions.push(...invalidUncommonActions);
-		const topNInvalid = prioritizedActions.filter(action => !only || (action.kind && only.contains(action.kind))).slice(0, numberOfInvalid);
-		availableActions.push(...topNInvalid);
-		return availableActions;
+		prioritizedActions.push(...invAlidCommonActions);
+		prioritizedActions.push(...invAlidUncommonActions);
+		const topNInvAlid = prioritizedActions.filter(Action => !only || (Action.kind && only.contAins(Action.kind))).slice(0, numberOfInvAlid);
+		AvAilAbleActions.push(...topNInvAlid);
+		return AvAilAbleActions;
 	}
 }
 
 export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
-	formattingOptionsManager: FormattingOptionsManager,
-	commandManager: CommandManager,
+	formAttingOptionsMAnAger: FormAttingOptionsMAnAger,
+	commAndMAnAger: CommAndMAnAger,
 	telemetryReporter: TelemetryReporter,
 ) {
-	return conditionalRegistration([
-		requireMinVersion(client, TypeScriptRefactorProvider.minVersion),
-		requireSomeCapability(client, ClientCapability.Semantic),
+	return conditionAlRegistrAtion([
+		requireMinVersion(client, TypeScriptRefActorProvider.minVersion),
+		requireSomeCApAbility(client, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerCodeActionsProvider(selector.semantic,
-			new TypeScriptRefactorProvider(client, formattingOptionsManager, commandManager, telemetryReporter),
-			TypeScriptRefactorProvider.metadata);
+		return vscode.lAnguAges.registerCodeActionsProvider(selector.semAntic,
+			new TypeScriptRefActorProvider(client, formAttingOptionsMAnAger, commAndMAnAger, telemetryReporter),
+			TypeScriptRefActorProvider.metAdAtA);
 	});
 }

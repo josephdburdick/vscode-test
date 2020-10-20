@@ -1,170 +1,170 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
-/** Declaration module describing the VS Code debug protocol.
-	Auto-generated from json schema. Do not edit manually.
+/** DeclArAtion module describing the VS Code debug protocol.
+	Auto-generAted from json schemA. Do not edit mAnuAlly.
 */
-declare module DebugProtocol {
+declAre module DebugProtocol {
 
-	/** Base class of requests, responses, and events. */
-	export interface ProtocolMessage {
-		/** Sequence number (also known as message ID). For protocol messages of type 'request' this ID can be used to cancel the request. */
+	/** BAse clAss of requests, responses, And events. */
+	export interfAce ProtocolMessAge {
+		/** Sequence number (Also known As messAge ID). For protocol messAges of type 'request' this ID cAn be used to cAncel the request. */
 		seq: number;
-		/** Message type.
-			Values: 'request', 'response', 'event', etc.
+		/** MessAge type.
+			VAlues: 'request', 'response', 'event', etc.
 		*/
 		type: string;
 	}
 
-	/** A client or debug adapter initiated request. */
-	export interface Request extends ProtocolMessage {
+	/** A client or debug AdApter initiAted request. */
+	export interfAce Request extends ProtocolMessAge {
 		// type: 'request';
-		/** The command to execute. */
-		command: string;
-		/** Object containing arguments for the command. */
-		arguments?: any;
+		/** The commAnd to execute. */
+		commAnd: string;
+		/** Object contAining Arguments for the commAnd. */
+		Arguments?: Any;
 	}
 
-	/** A debug adapter initiated event. */
-	export interface Event extends ProtocolMessage {
+	/** A debug AdApter initiAted event. */
+	export interfAce Event extends ProtocolMessAge {
 		// type: 'event';
 		/** Type of event. */
 		event: string;
-		/** Event-specific information. */
-		body?: any;
+		/** Event-specific informAtion. */
+		body?: Any;
 	}
 
-	/** Response for a request. */
-	export interface Response extends ProtocolMessage {
+	/** Response for A request. */
+	export interfAce Response extends ProtocolMessAge {
 		// type: 'response';
 		/** Sequence number of the corresponding request. */
 		request_seq: number;
 		/** Outcome of the request.
-			If true, the request was successful and the 'body' attribute may contain the result of the request.
-			If the value is false, the attribute 'message' contains the error in short form and the 'body' may contain additional information (see 'ErrorResponse.body.error').
+			If true, the request wAs successful And the 'body' Attribute mAy contAin the result of the request.
+			If the vAlue is fAlse, the Attribute 'messAge' contAins the error in short form And the 'body' mAy contAin AdditionAl informAtion (see 'ErrorResponse.body.error').
 		*/
-		success: boolean;
-		/** The command requested. */
-		command: string;
-		/** Contains the raw error in short form if 'success' is false.
-			This raw error might be interpreted by the frontend and is not shown in the UI.
-			Some predefined values exist.
-			Values:
-			'cancelled': request was cancelled.
+		success: booleAn;
+		/** The commAnd requested. */
+		commAnd: string;
+		/** ContAins the rAw error in short form if 'success' is fAlse.
+			This rAw error might be interpreted by the frontend And is not shown in the UI.
+			Some predefined vAlues exist.
+			VAlues:
+			'cAncelled': request wAs cAncelled.
 			etc.
 		*/
-		message?: string;
-		/** Contains request result if success is true and optional error details if success is false. */
-		body?: any;
+		messAge?: string;
+		/** ContAins request result if success is true And optionAl error detAils if success is fAlse. */
+		body?: Any;
 	}
 
-	/** On error (whenever 'success' is false), the body can provide more details. */
-	export interface ErrorResponse extends Response {
+	/** On error (whenever 'success' is fAlse), the body cAn provide more detAils. */
+	export interfAce ErrorResponse extends Response {
 		body: {
-			/** An optional, structured error message. */
-			error?: Message;
+			/** An optionAl, structured error messAge. */
+			error?: MessAge;
 		};
 	}
 
-	/** Cancel request; value of command field is 'cancel'.
-		The 'cancel' request is used by the frontend in two situations:
-		- to indicate that it is no longer interested in the result produced by a specific request issued earlier
-		- to cancel a progress sequence. Clients should only call this request if the capability 'supportsCancelRequest' is true.
-		This request has a hint characteristic: a debug adapter can only be expected to make a 'best effort' in honouring this request but there are no guarantees.
-		The 'cancel' request may return an error if it could not cancel an operation but a frontend should refrain from presenting this error to end users.
-		A frontend client should only call this request if the capability 'supportsCancelRequest' is true.
-		The request that got canceled still needs to send a response back. This can either be a normal result ('success' attribute true)
-		or an error response ('success' attribute false and the 'message' set to 'cancelled').
-		Returning partial results from a cancelled request is possible but please note that a frontend client has no generic way for detecting that a response is partial or not.
-		 The progress that got cancelled still needs to send a 'progressEnd' event back.
-		 A client should not assume that progress just got cancelled after sending the 'cancel' request.
+	/** CAncel request; vAlue of commAnd field is 'cAncel'.
+		The 'cAncel' request is used by the frontend in two situAtions:
+		- to indicAte thAt it is no longer interested in the result produced by A specific request issued eArlier
+		- to cAncel A progress sequence. Clients should only cAll this request if the cApAbility 'supportsCAncelRequest' is true.
+		This request hAs A hint chArActeristic: A debug AdApter cAn only be expected to mAke A 'best effort' in honouring this request but there Are no guArAntees.
+		The 'cAncel' request mAy return An error if it could not cAncel An operAtion but A frontend should refrAin from presenting this error to end users.
+		A frontend client should only cAll this request if the cApAbility 'supportsCAncelRequest' is true.
+		The request thAt got cAnceled still needs to send A response bAck. This cAn either be A normAl result ('success' Attribute true)
+		or An error response ('success' Attribute fAlse And the 'messAge' set to 'cAncelled').
+		Returning pArtiAl results from A cAncelled request is possible but pleAse note thAt A frontend client hAs no generic wAy for detecting thAt A response is pArtiAl or not.
+		 The progress thAt got cAncelled still needs to send A 'progressEnd' event bAck.
+		 A client should not Assume thAt progress just got cAncelled After sending the 'cAncel' request.
 	*/
-	export interface CancelRequest extends Request {
-		// command: 'cancel';
-		arguments?: CancelArguments;
+	export interfAce CAncelRequest extends Request {
+		// commAnd: 'cAncel';
+		Arguments?: CAncelArguments;
 	}
 
-	/** Arguments for 'cancel' request. */
-	export interface CancelArguments {
-		/** The ID (attribute 'seq') of the request to cancel. If missing no request is cancelled.
-			Both a 'requestId' and a 'progressId' can be specified in one request.
+	/** Arguments for 'cAncel' request. */
+	export interfAce CAncelArguments {
+		/** The ID (Attribute 'seq') of the request to cAncel. If missing no request is cAncelled.
+			Both A 'requestId' And A 'progressId' cAn be specified in one request.
 		*/
 		requestId?: number;
-		/** The ID (attribute 'progressId') of the progress to cancel. If missing no progress is cancelled.
-			Both a 'requestId' and a 'progressId' can be specified in one request.
+		/** The ID (Attribute 'progressId') of the progress to cAncel. If missing no progress is cAncelled.
+			Both A 'requestId' And A 'progressId' cAn be specified in one request.
 		*/
 		progressId?: string;
 	}
 
-	/** Response to 'cancel' request. This is just an acknowledgement, so no body field is required. */
-	export interface CancelResponse extends Response {
+	/** Response to 'cAncel' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce CAncelResponse extends Response {
 	}
 
-	/** Event message for 'initialized' event type.
-		This event indicates that the debug adapter is ready to accept configuration requests (e.g. SetBreakpointsRequest, SetExceptionBreakpointsRequest).
-		A debug adapter is expected to send this event when it is ready to accept configuration requests (but not before the 'initialize' request has finished).
-		The sequence of events/requests is as follows:
-		- adapters sends 'initialized' event (after the 'initialize' request has returned)
-		- frontend sends zero or more 'setBreakpoints' requests
-		- frontend sends one 'setFunctionBreakpoints' request (if capability 'supportsFunctionBreakpoints' is true)
-		- frontend sends a 'setExceptionBreakpoints' request if one or more 'exceptionBreakpointFilters' have been defined (or if 'supportsConfigurationDoneRequest' is not defined or false)
-		- frontend sends other future configuration requests
-		- frontend sends one 'configurationDone' request to indicate the end of the configuration.
+	/** Event messAge for 'initiAlized' event type.
+		This event indicAtes thAt the debug AdApter is reAdy to Accept configurAtion requests (e.g. SetBreAkpointsRequest, SetExceptionBreAkpointsRequest).
+		A debug AdApter is expected to send this event when it is reAdy to Accept configurAtion requests (but not before the 'initiAlize' request hAs finished).
+		The sequence of events/requests is As follows:
+		- AdApters sends 'initiAlized' event (After the 'initiAlize' request hAs returned)
+		- frontend sends zero or more 'setBreAkpoints' requests
+		- frontend sends one 'setFunctionBreAkpoints' request (if cApAbility 'supportsFunctionBreAkpoints' is true)
+		- frontend sends A 'setExceptionBreAkpoints' request if one or more 'exceptionBreAkpointFilters' hAve been defined (or if 'supportsConfigurAtionDoneRequest' is not defined or fAlse)
+		- frontend sends other future configurAtion requests
+		- frontend sends one 'configurAtionDone' request to indicAte the end of the configurAtion.
 	*/
-	export interface InitializedEvent extends Event {
-		// event: 'initialized';
+	export interfAce InitiAlizedEvent extends Event {
+		// event: 'initiAlized';
 	}
 
-	/** Event message for 'stopped' event type.
-		The event indicates that the execution of the debuggee has stopped due to some condition.
-		This can be caused by a break point previously set, a stepping request has completed, by executing a debugger statement etc.
+	/** Event messAge for 'stopped' event type.
+		The event indicAtes thAt the execution of the debuggee hAs stopped due to some condition.
+		This cAn be cAused by A breAk point previously set, A stepping request hAs completed, by executing A debugger stAtement etc.
 	*/
-	export interface StoppedEvent extends Event {
+	export interfAce StoppedEvent extends Event {
 		// event: 'stopped';
 		body: {
-			/** The reason for the event.
-				For backward compatibility this string is shown in the UI if the 'description' attribute is missing (but it must not be translated).
-				Values: 'step', 'breakpoint', 'exception', 'pause', 'entry', 'goto', 'function breakpoint', 'data breakpoint', 'instruction breakpoint', etc.
+			/** The reAson for the event.
+				For bAckwArd compAtibility this string is shown in the UI if the 'description' Attribute is missing (but it must not be trAnslAted).
+				VAlues: 'step', 'breAkpoint', 'exception', 'pAuse', 'entry', 'goto', 'function breAkpoint', 'dAtA breAkpoint', 'instruction breAkpoint', etc.
 			*/
-			reason: string;
-			/** The full reason for the event, e.g. 'Paused on exception'. This string is shown in the UI as is and must be translated. */
+			reAson: string;
+			/** The full reAson for the event, e.g. 'PAused on exception'. This string is shown in the UI As is And must be trAnslAted. */
 			description?: string;
-			/** The thread which was stopped. */
-			threadId?: number;
-			/** A value of true hints to the frontend that this event should not change the focus. */
-			preserveFocusHint?: boolean;
-			/** Additional information. E.g. if reason is 'exception', text contains the exception name. This string is shown in the UI. */
+			/** The threAd which wAs stopped. */
+			threAdId?: number;
+			/** A vAlue of true hints to the frontend thAt this event should not chAnge the focus. */
+			preserveFocusHint?: booleAn;
+			/** AdditionAl informAtion. E.g. if reAson is 'exception', text contAins the exception nAme. This string is shown in the UI. */
 			text?: string;
-			/** If 'allThreadsStopped' is true, a debug adapter can announce that all threads have stopped.
-				- The client should use this information to enable that all threads can be expanded to access their stacktraces.
-				- If the attribute is missing or false, only the thread with the given threadId can be expanded.
+			/** If 'AllThreAdsStopped' is true, A debug AdApter cAn Announce thAt All threAds hAve stopped.
+				- The client should use this informAtion to enAble thAt All threAds cAn be expAnded to Access their stAcktrAces.
+				- If the Attribute is missing or fAlse, only the threAd with the given threAdId cAn be expAnded.
 			*/
-			allThreadsStopped?: boolean;
+			AllThreAdsStopped?: booleAn;
 		};
 	}
 
-	/** Event message for 'continued' event type.
-		The event indicates that the execution of the debuggee has continued.
-		Please note: a debug adapter is not expected to send this event in response to a request that implies that execution continues, e.g. 'launch' or 'continue'.
-		It is only necessary to send a 'continued' event if there was no previous request that implied this.
+	/** Event messAge for 'continued' event type.
+		The event indicAtes thAt the execution of the debuggee hAs continued.
+		PleAse note: A debug AdApter is not expected to send this event in response to A request thAt implies thAt execution continues, e.g. 'lAunch' or 'continue'.
+		It is only necessAry to send A 'continued' event if there wAs no previous request thAt implied this.
 	*/
-	export interface ContinuedEvent extends Event {
+	export interfAce ContinuedEvent extends Event {
 		// event: 'continued';
 		body: {
-			/** The thread which was continued. */
-			threadId: number;
-			/** If 'allThreadsContinued' is true, a debug adapter can announce that all threads have continued. */
-			allThreadsContinued?: boolean;
+			/** The threAd which wAs continued. */
+			threAdId: number;
+			/** If 'AllThreAdsContinued' is true, A debug AdApter cAn Announce thAt All threAds hAve continued. */
+			AllThreAdsContinued?: booleAn;
 		};
 	}
 
-	/** Event message for 'exited' event type.
-		The event indicates that the debuggee has exited and returns its exit code.
+	/** Event messAge for 'exited' event type.
+		The event indicAtes thAt the debuggee hAs exited And returns its exit code.
 	*/
-	export interface ExitedEvent extends Event {
+	export interfAce ExitedEvent extends Event {
 		// event: 'exited';
 		body: {
 			/** The exit code returned from the debuggee. */
@@ -172,2018 +172,2018 @@ declare module DebugProtocol {
 		};
 	}
 
-	/** Event message for 'terminated' event type.
-		The event indicates that debugging of the debuggee has terminated. This does **not** mean that the debuggee itself has exited.
+	/** Event messAge for 'terminAted' event type.
+		The event indicAtes thAt debugging of the debuggee hAs terminAted. This does **not** meAn thAt the debuggee itself hAs exited.
 	*/
-	export interface TerminatedEvent extends Event {
-		// event: 'terminated';
+	export interfAce TerminAtedEvent extends Event {
+		// event: 'terminAted';
 		body?: {
-			/** A debug adapter may set 'restart' to true (or to an arbitrary object) to request that the front end restarts the session.
-				The value is not interpreted by the client and passed unmodified as an attribute '__restart' to the 'launch' and 'attach' requests.
+			/** A debug AdApter mAy set 'restArt' to true (or to An ArbitrAry object) to request thAt the front end restArts the session.
+				The vAlue is not interpreted by the client And pAssed unmodified As An Attribute '__restArt' to the 'lAunch' And 'AttAch' requests.
 			*/
-			restart?: any;
+			restArt?: Any;
 		};
 	}
 
-	/** Event message for 'thread' event type.
-		The event indicates that a thread has started or exited.
+	/** Event messAge for 'threAd' event type.
+		The event indicAtes thAt A threAd hAs stArted or exited.
 	*/
-	export interface ThreadEvent extends Event {
-		// event: 'thread';
+	export interfAce ThreAdEvent extends Event {
+		// event: 'threAd';
 		body: {
-			/** The reason for the event.
-				Values: 'started', 'exited', etc.
+			/** The reAson for the event.
+				VAlues: 'stArted', 'exited', etc.
 			*/
-			reason: string;
-			/** The identifier of the thread. */
-			threadId: number;
+			reAson: string;
+			/** The identifier of the threAd. */
+			threAdId: number;
 		};
 	}
 
-	/** Event message for 'output' event type.
-		The event indicates that the target has produced some output.
+	/** Event messAge for 'output' event type.
+		The event indicAtes thAt the tArget hAs produced some output.
 	*/
-	export interface OutputEvent extends Event {
+	export interfAce OutputEvent extends Event {
 		// event: 'output';
 		body: {
-			/** The output category. If not specified, 'console' is assumed.
-				Values: 'console', 'stdout', 'stderr', 'telemetry', etc.
+			/** The output cAtegory. If not specified, 'console' is Assumed.
+				VAlues: 'console', 'stdout', 'stderr', 'telemetry', etc.
 			*/
-			category?: string;
+			cAtegory?: string;
 			/** The output to report. */
 			output: string;
-			/** Support for keeping an output log organized by grouping related messages.
-				'start': Start a new group in expanded mode. Subsequent output events are members of the group and should be shown indented.
-				The 'output' attribute becomes the name of the group and is not indented.
-				'startCollapsed': Start a new group in collapsed mode. Subsequent output events are members of the group and should be shown indented (as soon as the group is expanded).
-				The 'output' attribute becomes the name of the group and is not indented.
-				'end': End the current group and decreases the indentation of subsequent output events.
-				A non empty 'output' attribute is shown as the unindented end of the group.
+			/** Support for keeping An output log orgAnized by grouping relAted messAges.
+				'stArt': StArt A new group in expAnded mode. Subsequent output events Are members of the group And should be shown indented.
+				The 'output' Attribute becomes the nAme of the group And is not indented.
+				'stArtCollApsed': StArt A new group in collApsed mode. Subsequent output events Are members of the group And should be shown indented (As soon As the group is expAnded).
+				The 'output' Attribute becomes the nAme of the group And is not indented.
+				'end': End the current group And decreAses the indentAtion of subsequent output events.
+				A non empty 'output' Attribute is shown As the unindented end of the group.
 			*/
-			group?: 'start' | 'startCollapsed' | 'end';
-			/** If an attribute 'variablesReference' exists and its value is > 0, the output contains objects which can be retrieved by passing 'variablesReference' to the 'variables' request. The value should be less than or equal to 2147483647 (2^31 - 1). */
-			variablesReference?: number;
-			/** An optional source location where the output was produced. */
+			group?: 'stArt' | 'stArtCollApsed' | 'end';
+			/** If An Attribute 'vAriAblesReference' exists And its vAlue is > 0, the output contAins objects which cAn be retrieved by pAssing 'vAriAblesReference' to the 'vAriAbles' request. The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1). */
+			vAriAblesReference?: number;
+			/** An optionAl source locAtion where the output wAs produced. */
 			source?: Source;
-			/** An optional source location line where the output was produced. */
+			/** An optionAl source locAtion line where the output wAs produced. */
 			line?: number;
-			/** An optional source location column where the output was produced. */
+			/** An optionAl source locAtion column where the output wAs produced. */
 			column?: number;
-			/** Optional data to report. For the 'telemetry' category the data will be sent to telemetry, for the other categories the data is shown in JSON format. */
-			data?: any;
+			/** OptionAl dAtA to report. For the 'telemetry' cAtegory the dAtA will be sent to telemetry, for the other cAtegories the dAtA is shown in JSON formAt. */
+			dAtA?: Any;
 		};
 	}
 
-	/** Event message for 'breakpoint' event type.
-		The event indicates that some information about a breakpoint has changed.
+	/** Event messAge for 'breAkpoint' event type.
+		The event indicAtes thAt some informAtion About A breAkpoint hAs chAnged.
 	*/
-	export interface BreakpointEvent extends Event {
-		// event: 'breakpoint';
+	export interfAce BreAkpointEvent extends Event {
+		// event: 'breAkpoint';
 		body: {
-			/** The reason for the event.
-				Values: 'changed', 'new', 'removed', etc.
+			/** The reAson for the event.
+				VAlues: 'chAnged', 'new', 'removed', etc.
 			*/
-			reason: string;
-			/** The 'id' attribute is used to find the target breakpoint and the other attributes are used as the new values. */
-			breakpoint: Breakpoint;
+			reAson: string;
+			/** The 'id' Attribute is used to find the tArget breAkpoint And the other Attributes Are used As the new vAlues. */
+			breAkpoint: BreAkpoint;
 		};
 	}
 
-	/** Event message for 'module' event type.
-		The event indicates that some information about a module has changed.
+	/** Event messAge for 'module' event type.
+		The event indicAtes thAt some informAtion About A module hAs chAnged.
 	*/
-	export interface ModuleEvent extends Event {
+	export interfAce ModuleEvent extends Event {
 		// event: 'module';
 		body: {
-			/** The reason for the event. */
-			reason: 'new' | 'changed' | 'removed';
-			/** The new, changed, or removed module. In case of 'removed' only the module id is used. */
+			/** The reAson for the event. */
+			reAson: 'new' | 'chAnged' | 'removed';
+			/** The new, chAnged, or removed module. In cAse of 'removed' only the module id is used. */
 			module: Module;
 		};
 	}
 
-	/** Event message for 'loadedSource' event type.
-		The event indicates that some source has been added, changed, or removed from the set of all loaded sources.
+	/** Event messAge for 'loAdedSource' event type.
+		The event indicAtes thAt some source hAs been Added, chAnged, or removed from the set of All loAded sources.
 	*/
-	export interface LoadedSourceEvent extends Event {
-		// event: 'loadedSource';
+	export interfAce LoAdedSourceEvent extends Event {
+		// event: 'loAdedSource';
 		body: {
-			/** The reason for the event. */
-			reason: 'new' | 'changed' | 'removed';
-			/** The new, changed, or removed source. */
+			/** The reAson for the event. */
+			reAson: 'new' | 'chAnged' | 'removed';
+			/** The new, chAnged, or removed source. */
 			source: Source;
 		};
 	}
 
-	/** Event message for 'process' event type.
-		The event indicates that the debugger has begun debugging a new process. Either one that it has launched, or one that it has attached to.
+	/** Event messAge for 'process' event type.
+		The event indicAtes thAt the debugger hAs begun debugging A new process. Either one thAt it hAs lAunched, or one thAt it hAs AttAched to.
 	*/
-	export interface ProcessEvent extends Event {
+	export interfAce ProcessEvent extends Event {
 		// event: 'process';
 		body: {
-			/** The logical name of the process. This is usually the full path to process's executable file. Example: /home/example/myproj/program.js. */
-			name: string;
+			/** The logicAl nAme of the process. This is usuAlly the full pAth to process's executAble file. ExAmple: /home/exAmple/myproj/progrAm.js. */
+			nAme: string;
 			/** The system process id of the debugged process. This property will be missing for non-system processes. */
 			systemProcessId?: number;
-			/** If true, the process is running on the same computer as the debug adapter. */
-			isLocalProcess?: boolean;
-			/** Describes how the debug engine started debugging this process.
-				'launch': Process was launched under the debugger.
-				'attach': Debugger attached to an existing process.
-				'attachForSuspendedLaunch': A project launcher component has launched a new process in a suspended state and then asked the debugger to attach.
+			/** If true, the process is running on the sAme computer As the debug AdApter. */
+			isLocAlProcess?: booleAn;
+			/** Describes how the debug engine stArted debugging this process.
+				'lAunch': Process wAs lAunched under the debugger.
+				'AttAch': Debugger AttAched to An existing process.
+				'AttAchForSuspendedLAunch': A project lAuncher component hAs lAunched A new process in A suspended stAte And then Asked the debugger to AttAch.
 			*/
-			startMethod?: 'launch' | 'attach' | 'attachForSuspendedLaunch';
-			/** The size of a pointer or address for this process, in bits. This value may be used by clients when formatting addresses for display. */
+			stArtMethod?: 'lAunch' | 'AttAch' | 'AttAchForSuspendedLAunch';
+			/** The size of A pointer or Address for this process, in bits. This vAlue mAy be used by clients when formAtting Addresses for displAy. */
 			pointerSize?: number;
 		};
 	}
 
-	/** Event message for 'capabilities' event type.
-		The event indicates that one or more capabilities have changed.
-		Since the capabilities are dependent on the frontend and its UI, it might not be possible to change that at random times (or too late).
-		Consequently this event has a hint characteristic: a frontend can only be expected to make a 'best effort' in honouring individual capabilities but there are no guarantees.
-		Only changed capabilities need to be included, all other capabilities keep their values.
+	/** Event messAge for 'cApAbilities' event type.
+		The event indicAtes thAt one or more cApAbilities hAve chAnged.
+		Since the cApAbilities Are dependent on the frontend And its UI, it might not be possible to chAnge thAt At rAndom times (or too lAte).
+		Consequently this event hAs A hint chArActeristic: A frontend cAn only be expected to mAke A 'best effort' in honouring individuAl cApAbilities but there Are no guArAntees.
+		Only chAnged cApAbilities need to be included, All other cApAbilities keep their vAlues.
 	*/
-	export interface CapabilitiesEvent extends Event {
-		// event: 'capabilities';
+	export interfAce CApAbilitiesEvent extends Event {
+		// event: 'cApAbilities';
 		body: {
-			/** The set of updated capabilities. */
-			capabilities: Capabilities;
+			/** The set of updAted cApAbilities. */
+			cApAbilities: CApAbilities;
 		};
 	}
 
-	/** Event message for 'progressStart' event type.
-		The event signals that a long running operation is about to start and
-		provides additional information for the client to set up a corresponding progress and cancellation UI.
-		The client is free to delay the showing of the UI in order to reduce flicker.
-		This event should only be sent if the client has passed the value true for the 'supportsProgressReporting' capability of the 'initialize' request.
+	/** Event messAge for 'progressStArt' event type.
+		The event signAls thAt A long running operAtion is About to stArt And
+		provides AdditionAl informAtion for the client to set up A corresponding progress And cAncellAtion UI.
+		The client is free to delAy the showing of the UI in order to reduce flicker.
+		This event should only be sent if the client hAs pAssed the vAlue true for the 'supportsProgressReporting' cApAbility of the 'initiAlize' request.
 	*/
-	export interface ProgressStartEvent extends Event {
-		// event: 'progressStart';
+	export interfAce ProgressStArtEvent extends Event {
+		// event: 'progressStArt';
 		body: {
-			/** An ID that must be used in subsequent 'progressUpdate' and 'progressEnd' events to make them refer to the same progress reporting.
-				IDs must be unique within a debug session.
+			/** An ID thAt must be used in subsequent 'progressUpdAte' And 'progressEnd' events to mAke them refer to the sAme progress reporting.
+				IDs must be unique within A debug session.
 			*/
 			progressId: string;
-			/** Mandatory (short) title of the progress reporting. Shown in the UI to describe the long running operation. */
+			/** MAndAtory (short) title of the progress reporting. Shown in the UI to describe the long running operAtion. */
 			title: string;
-			/** The request ID that this progress report is related to. If specified a debug adapter is expected to emit
-				progress events for the long running request until the request has been either completed or cancelled.
-				If the request ID is omitted, the progress report is assumed to be related to some general activity of the debug adapter.
+			/** The request ID thAt this progress report is relAted to. If specified A debug AdApter is expected to emit
+				progress events for the long running request until the request hAs been either completed or cAncelled.
+				If the request ID is omitted, the progress report is Assumed to be relAted to some generAl Activity of the debug AdApter.
 			*/
 			requestId?: number;
-			/** If true, the request that reports progress may be canceled with a 'cancel' request.
-				So this property basically controls whether the client should use UX that supports cancellation.
-				Clients that don't support cancellation are allowed to ignore the setting.
+			/** If true, the request thAt reports progress mAy be cAnceled with A 'cAncel' request.
+				So this property bAsicAlly controls whether the client should use UX thAt supports cAncellAtion.
+				Clients thAt don't support cAncellAtion Are Allowed to ignore the setting.
 			*/
-			cancellable?: boolean;
-			/** Optional, more detailed progress message. */
-			message?: string;
-			/** Optional progress percentage to display (value range: 0 to 100). If omitted no percentage will be shown. */
-			percentage?: number;
+			cAncellAble?: booleAn;
+			/** OptionAl, more detAiled progress messAge. */
+			messAge?: string;
+			/** OptionAl progress percentAge to displAy (vAlue rAnge: 0 to 100). If omitted no percentAge will be shown. */
+			percentAge?: number;
 		};
 	}
 
-	/** Event message for 'progressUpdate' event type.
-		The event signals that the progress reporting needs to updated with a new message and/or percentage.
-		The client does not have to update the UI immediately, but the clients needs to keep track of the message and/or percentage values.
-		This event should only be sent if the client has passed the value true for the 'supportsProgressReporting' capability of the 'initialize' request.
+	/** Event messAge for 'progressUpdAte' event type.
+		The event signAls thAt the progress reporting needs to updAted with A new messAge And/or percentAge.
+		The client does not hAve to updAte the UI immediAtely, but the clients needs to keep trAck of the messAge And/or percentAge vAlues.
+		This event should only be sent if the client hAs pAssed the vAlue true for the 'supportsProgressReporting' cApAbility of the 'initiAlize' request.
 	*/
-	export interface ProgressUpdateEvent extends Event {
-		// event: 'progressUpdate';
+	export interfAce ProgressUpdAteEvent extends Event {
+		// event: 'progressUpdAte';
 		body: {
-			/** The ID that was introduced in the initial 'progressStart' event. */
+			/** The ID thAt wAs introduced in the initiAl 'progressStArt' event. */
 			progressId: string;
-			/** Optional, more detailed progress message. If omitted, the previous message (if any) is used. */
-			message?: string;
-			/** Optional progress percentage to display (value range: 0 to 100). If omitted no percentage will be shown. */
-			percentage?: number;
+			/** OptionAl, more detAiled progress messAge. If omitted, the previous messAge (if Any) is used. */
+			messAge?: string;
+			/** OptionAl progress percentAge to displAy (vAlue rAnge: 0 to 100). If omitted no percentAge will be shown. */
+			percentAge?: number;
 		};
 	}
 
-	/** Event message for 'progressEnd' event type.
-		The event signals the end of the progress reporting with an optional final message.
-		This event should only be sent if the client has passed the value true for the 'supportsProgressReporting' capability of the 'initialize' request.
+	/** Event messAge for 'progressEnd' event type.
+		The event signAls the end of the progress reporting with An optionAl finAl messAge.
+		This event should only be sent if the client hAs pAssed the vAlue true for the 'supportsProgressReporting' cApAbility of the 'initiAlize' request.
 	*/
-	export interface ProgressEndEvent extends Event {
+	export interfAce ProgressEndEvent extends Event {
 		// event: 'progressEnd';
 		body: {
-			/** The ID that was introduced in the initial 'ProgressStartEvent'. */
+			/** The ID thAt wAs introduced in the initiAl 'ProgressStArtEvent'. */
 			progressId: string;
-			/** Optional, more detailed progress message. If omitted, the previous message (if any) is used. */
-			message?: string;
+			/** OptionAl, more detAiled progress messAge. If omitted, the previous messAge (if Any) is used. */
+			messAge?: string;
 		};
 	}
 
-	/** Event message for 'invalidated' event type.
-		This event signals that some state in the debug adapter has changed and requires that the client needs to re-render the data snapshot previously requested.
-		Debug adapters do not have to emit this event for runtime changes like stopped or thread events because in that case the client refetches the new state anyway. But the event can be used for example to refresh the UI after rendering formatting has changed in the debug adapter.
-		This event should only be sent if the debug adapter has received a value true for the 'supportsInvalidatedEvent' capability of the 'initialize' request.
+	/** Event messAge for 'invAlidAted' event type.
+		This event signAls thAt some stAte in the debug AdApter hAs chAnged And requires thAt the client needs to re-render the dAtA snApshot previously requested.
+		Debug AdApters do not hAve to emit this event for runtime chAnges like stopped or threAd events becAuse in thAt cAse the client refetches the new stAte AnywAy. But the event cAn be used for exAmple to refresh the UI After rendering formAtting hAs chAnged in the debug AdApter.
+		This event should only be sent if the debug AdApter hAs received A vAlue true for the 'supportsInvAlidAtedEvent' cApAbility of the 'initiAlize' request.
 	*/
-	export interface InvalidatedEvent extends Event {
-		// event: 'invalidated';
+	export interfAce InvAlidAtedEvent extends Event {
+		// event: 'invAlidAted';
 		body: {
-			/** Optional set of logical areas that got invalidated. If this property is missing or empty, a single value 'all' is assumed. */
-			areas?: InvalidatedAreas[];
-			/** If specified, the client only needs to refetch data related to this thread. */
-			threadId?: number;
-			/** If specified, the client only needs to refetch data related to this stack frame (and the 'threadId' is ignored). */
-			stackFrameId?: number;
+			/** OptionAl set of logicAl AreAs thAt got invAlidAted. If this property is missing or empty, A single vAlue 'All' is Assumed. */
+			AreAs?: InvAlidAtedAreAs[];
+			/** If specified, the client only needs to refetch dAtA relAted to this threAd. */
+			threAdId?: number;
+			/** If specified, the client only needs to refetch dAtA relAted to this stAck frAme (And the 'threAdId' is ignored). */
+			stAckFrAmeId?: number;
 		};
 	}
 
-	/** RunInTerminal request; value of command field is 'runInTerminal'.
-		This optional request is sent from the debug adapter to the client to run a command in a terminal.
-		This is typically used to launch the debuggee in a terminal provided by the client.
-		This request should only be called if the client has passed the value true for the 'supportsRunInTerminalRequest' capability of the 'initialize' request.
+	/** RunInTerminAl request; vAlue of commAnd field is 'runInTerminAl'.
+		This optionAl request is sent from the debug AdApter to the client to run A commAnd in A terminAl.
+		This is typicAlly used to lAunch the debuggee in A terminAl provided by the client.
+		This request should only be cAlled if the client hAs pAssed the vAlue true for the 'supportsRunInTerminAlRequest' cApAbility of the 'initiAlize' request.
 	*/
-	export interface RunInTerminalRequest extends Request {
-		// command: 'runInTerminal';
-		arguments: RunInTerminalRequestArguments;
+	export interfAce RunInTerminAlRequest extends Request {
+		// commAnd: 'runInTerminAl';
+		Arguments: RunInTerminAlRequestArguments;
 	}
 
-	/** Arguments for 'runInTerminal' request. */
-	export interface RunInTerminalRequestArguments {
-		/** What kind of terminal to launch. */
-		kind?: 'integrated' | 'external';
-		/** Optional title of the terminal. */
+	/** Arguments for 'runInTerminAl' request. */
+	export interfAce RunInTerminAlRequestArguments {
+		/** WhAt kind of terminAl to lAunch. */
+		kind?: 'integrAted' | 'externAl';
+		/** OptionAl title of the terminAl. */
 		title?: string;
-		/** Working directory of the command. */
+		/** Working directory of the commAnd. */
 		cwd: string;
-		/** List of arguments. The first argument is the command to run. */
-		args: string[];
-		/** Environment key-value pairs that are added to or removed from the default environment. */
+		/** List of Arguments. The first Argument is the commAnd to run. */
+		Args: string[];
+		/** Environment key-vAlue pAirs thAt Are Added to or removed from the defAult environment. */
 		env?: { [key: string]: string | null; };
 	}
 
-	/** Response to 'runInTerminal' request. */
-	export interface RunInTerminalResponse extends Response {
+	/** Response to 'runInTerminAl' request. */
+	export interfAce RunInTerminAlResponse extends Response {
 		body: {
-			/** The process ID. The value should be less than or equal to 2147483647 (2^31 - 1). */
+			/** The process ID. The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1). */
 			processId?: number;
-			/** The process ID of the terminal shell. The value should be less than or equal to 2147483647 (2^31 - 1). */
+			/** The process ID of the terminAl shell. The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1). */
 			shellProcessId?: number;
 		};
 	}
 
-	/** Initialize request; value of command field is 'initialize'.
-		The 'initialize' request is sent as the first request from the client to the debug adapter
-		in order to configure it with client capabilities and to retrieve capabilities from the debug adapter.
-		Until the debug adapter has responded to with an 'initialize' response, the client must not send any additional requests or events to the debug adapter.
-		In addition the debug adapter is not allowed to send any requests or events to the client until it has responded with an 'initialize' response.
-		The 'initialize' request may only be sent once.
+	/** InitiAlize request; vAlue of commAnd field is 'initiAlize'.
+		The 'initiAlize' request is sent As the first request from the client to the debug AdApter
+		in order to configure it with client cApAbilities And to retrieve cApAbilities from the debug AdApter.
+		Until the debug AdApter hAs responded to with An 'initiAlize' response, the client must not send Any AdditionAl requests or events to the debug AdApter.
+		In Addition the debug AdApter is not Allowed to send Any requests or events to the client until it hAs responded with An 'initiAlize' response.
+		The 'initiAlize' request mAy only be sent once.
 	*/
-	export interface InitializeRequest extends Request {
-		// command: 'initialize';
-		arguments: InitializeRequestArguments;
+	export interfAce InitiAlizeRequest extends Request {
+		// commAnd: 'initiAlize';
+		Arguments: InitiAlizeRequestArguments;
 	}
 
-	/** Arguments for 'initialize' request. */
-	export interface InitializeRequestArguments {
-		/** The ID of the (frontend) client using this adapter. */
+	/** Arguments for 'initiAlize' request. */
+	export interfAce InitiAlizeRequestArguments {
+		/** The ID of the (frontend) client using this AdApter. */
 		clientID?: string;
-		/** The human readable name of the (frontend) client using this adapter. */
-		clientName?: string;
-		/** The ID of the debug adapter. */
-		adapterID: string;
-		/** The ISO-639 locale of the (frontend) client using this adapter, e.g. en-US or de-CH. */
-		locale?: string;
-		/** If true all line numbers are 1-based (default). */
-		linesStartAt1?: boolean;
-		/** If true all column numbers are 1-based (default). */
-		columnsStartAt1?: boolean;
-		/** Determines in what format paths are specified. The default is 'path', which is the native format.
-			Values: 'path', 'uri', etc.
+		/** The humAn reAdAble nAme of the (frontend) client using this AdApter. */
+		clientNAme?: string;
+		/** The ID of the debug AdApter. */
+		AdApterID: string;
+		/** The ISO-639 locAle of the (frontend) client using this AdApter, e.g. en-US or de-CH. */
+		locAle?: string;
+		/** If true All line numbers Are 1-bAsed (defAult). */
+		linesStArtAt1?: booleAn;
+		/** If true All column numbers Are 1-bAsed (defAult). */
+		columnsStArtAt1?: booleAn;
+		/** Determines in whAt formAt pAths Are specified. The defAult is 'pAth', which is the nAtive formAt.
+			VAlues: 'pAth', 'uri', etc.
 		*/
-		pathFormat?: string;
-		/** Client supports the optional type attribute for variables. */
-		supportsVariableType?: boolean;
-		/** Client supports the paging of variables. */
-		supportsVariablePaging?: boolean;
-		/** Client supports the runInTerminal request. */
-		supportsRunInTerminalRequest?: boolean;
+		pAthFormAt?: string;
+		/** Client supports the optionAl type Attribute for vAriAbles. */
+		supportsVAriAbleType?: booleAn;
+		/** Client supports the pAging of vAriAbles. */
+		supportsVAriAblePAging?: booleAn;
+		/** Client supports the runInTerminAl request. */
+		supportsRunInTerminAlRequest?: booleAn;
 		/** Client supports memory references. */
-		supportsMemoryReferences?: boolean;
+		supportsMemoryReferences?: booleAn;
 		/** Client supports progress reporting. */
-		supportsProgressReporting?: boolean;
-		/** Client supports the invalidated event. */
-		supportsInvalidatedEvent?: boolean;
+		supportsProgressReporting?: booleAn;
+		/** Client supports the invAlidAted event. */
+		supportsInvAlidAtedEvent?: booleAn;
 	}
 
-	/** Response to 'initialize' request. */
-	export interface InitializeResponse extends Response {
-		/** The capabilities of this debug adapter. */
-		body?: Capabilities;
+	/** Response to 'initiAlize' request. */
+	export interfAce InitiAlizeResponse extends Response {
+		/** The cApAbilities of this debug AdApter. */
+		body?: CApAbilities;
 	}
 
-	/** ConfigurationDone request; value of command field is 'configurationDone'.
-		This optional request indicates that the client has finished initialization of the debug adapter.
-		So it is the last request in the sequence of configuration requests (which was started by the 'initialized' event).
-		Clients should only call this request if the capability 'supportsConfigurationDoneRequest' is true.
+	/** ConfigurAtionDone request; vAlue of commAnd field is 'configurAtionDone'.
+		This optionAl request indicAtes thAt the client hAs finished initiAlizAtion of the debug AdApter.
+		So it is the lAst request in the sequence of configurAtion requests (which wAs stArted by the 'initiAlized' event).
+		Clients should only cAll this request if the cApAbility 'supportsConfigurAtionDoneRequest' is true.
 	*/
-	export interface ConfigurationDoneRequest extends Request {
-		// command: 'configurationDone';
-		arguments?: ConfigurationDoneArguments;
+	export interfAce ConfigurAtionDoneRequest extends Request {
+		// commAnd: 'configurAtionDone';
+		Arguments?: ConfigurAtionDoneArguments;
 	}
 
-	/** Arguments for 'configurationDone' request. */
-	export interface ConfigurationDoneArguments {
+	/** Arguments for 'configurAtionDone' request. */
+	export interfAce ConfigurAtionDoneArguments {
 	}
 
-	/** Response to 'configurationDone' request. This is just an acknowledgement, so no body field is required. */
-	export interface ConfigurationDoneResponse extends Response {
+	/** Response to 'configurAtionDone' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce ConfigurAtionDoneResponse extends Response {
 	}
 
-	/** Launch request; value of command field is 'launch'.
-		This launch request is sent from the client to the debug adapter to start the debuggee with or without debugging (if 'noDebug' is true).
-		Since launching is debugger/runtime specific, the arguments for this request are not part of this specification.
+	/** LAunch request; vAlue of commAnd field is 'lAunch'.
+		This lAunch request is sent from the client to the debug AdApter to stArt the debuggee with or without debugging (if 'noDebug' is true).
+		Since lAunching is debugger/runtime specific, the Arguments for this request Are not pArt of this specificAtion.
 	*/
-	export interface LaunchRequest extends Request {
-		// command: 'launch';
-		arguments: LaunchRequestArguments;
+	export interfAce LAunchRequest extends Request {
+		// commAnd: 'lAunch';
+		Arguments: LAunchRequestArguments;
 	}
 
-	/** Arguments for 'launch' request. Additional attributes are implementation specific. */
-	export interface LaunchRequestArguments {
-		/** If noDebug is true the launch request should launch the program without enabling debugging. */
-		noDebug?: boolean;
-		/** Optional data from the previous, restarted session.
-			The data is sent as the 'restart' attribute of the 'terminated' event.
-			The client should leave the data intact.
+	/** Arguments for 'lAunch' request. AdditionAl Attributes Are implementAtion specific. */
+	export interfAce LAunchRequestArguments {
+		/** If noDebug is true the lAunch request should lAunch the progrAm without enAbling debugging. */
+		noDebug?: booleAn;
+		/** OptionAl dAtA from the previous, restArted session.
+			The dAtA is sent As the 'restArt' Attribute of the 'terminAted' event.
+			The client should leAve the dAtA intAct.
 		*/
-		__restart?: any;
+		__restArt?: Any;
 	}
 
-	/** Response to 'launch' request. This is just an acknowledgement, so no body field is required. */
-	export interface LaunchResponse extends Response {
+	/** Response to 'lAunch' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce LAunchResponse extends Response {
 	}
 
-	/** Attach request; value of command field is 'attach'.
-		The attach request is sent from the client to the debug adapter to attach to a debuggee that is already running.
-		Since attaching is debugger/runtime specific, the arguments for this request are not part of this specification.
+	/** AttAch request; vAlue of commAnd field is 'AttAch'.
+		The AttAch request is sent from the client to the debug AdApter to AttAch to A debuggee thAt is AlreAdy running.
+		Since AttAching is debugger/runtime specific, the Arguments for this request Are not pArt of this specificAtion.
 	*/
-	export interface AttachRequest extends Request {
-		// command: 'attach';
-		arguments: AttachRequestArguments;
+	export interfAce AttAchRequest extends Request {
+		// commAnd: 'AttAch';
+		Arguments: AttAchRequestArguments;
 	}
 
-	/** Arguments for 'attach' request. Additional attributes are implementation specific. */
-	export interface AttachRequestArguments {
-		/** Optional data from the previous, restarted session.
-			The data is sent as the 'restart' attribute of the 'terminated' event.
-			The client should leave the data intact.
+	/** Arguments for 'AttAch' request. AdditionAl Attributes Are implementAtion specific. */
+	export interfAce AttAchRequestArguments {
+		/** OptionAl dAtA from the previous, restArted session.
+			The dAtA is sent As the 'restArt' Attribute of the 'terminAted' event.
+			The client should leAve the dAtA intAct.
 		*/
-		__restart?: any;
+		__restArt?: Any;
 	}
 
-	/** Response to 'attach' request. This is just an acknowledgement, so no body field is required. */
-	export interface AttachResponse extends Response {
+	/** Response to 'AttAch' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce AttAchResponse extends Response {
 	}
 
-	/** Restart request; value of command field is 'restart'.
-		Restarts a debug session. Clients should only call this request if the capability 'supportsRestartRequest' is true.
-		If the capability is missing or has the value false, a typical client will emulate 'restart' by terminating the debug adapter first and then launching it anew.
+	/** RestArt request; vAlue of commAnd field is 'restArt'.
+		RestArts A debug session. Clients should only cAll this request if the cApAbility 'supportsRestArtRequest' is true.
+		If the cApAbility is missing or hAs the vAlue fAlse, A typicAl client will emulAte 'restArt' by terminAting the debug AdApter first And then lAunching it Anew.
 	*/
-	export interface RestartRequest extends Request {
-		// command: 'restart';
-		arguments?: RestartArguments;
+	export interfAce RestArtRequest extends Request {
+		// commAnd: 'restArt';
+		Arguments?: RestArtArguments;
 	}
 
-	/** Arguments for 'restart' request. */
-	export interface RestartArguments {
+	/** Arguments for 'restArt' request. */
+	export interfAce RestArtArguments {
 	}
 
-	/** Response to 'restart' request. This is just an acknowledgement, so no body field is required. */
-	export interface RestartResponse extends Response {
+	/** Response to 'restArt' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce RestArtResponse extends Response {
 	}
 
-	/** Disconnect request; value of command field is 'disconnect'.
-		The 'disconnect' request is sent from the client to the debug adapter in order to stop debugging.
-		It asks the debug adapter to disconnect from the debuggee and to terminate the debug adapter.
-		If the debuggee has been started with the 'launch' request, the 'disconnect' request terminates the debuggee.
-		If the 'attach' request was used to connect to the debuggee, 'disconnect' does not terminate the debuggee.
-		This behavior can be controlled with the 'terminateDebuggee' argument (if supported by the debug adapter).
+	/** Disconnect request; vAlue of commAnd field is 'disconnect'.
+		The 'disconnect' request is sent from the client to the debug AdApter in order to stop debugging.
+		It Asks the debug AdApter to disconnect from the debuggee And to terminAte the debug AdApter.
+		If the debuggee hAs been stArted with the 'lAunch' request, the 'disconnect' request terminAtes the debuggee.
+		If the 'AttAch' request wAs used to connect to the debuggee, 'disconnect' does not terminAte the debuggee.
+		This behAvior cAn be controlled with the 'terminAteDebuggee' Argument (if supported by the debug AdApter).
 	*/
-	export interface DisconnectRequest extends Request {
-		// command: 'disconnect';
-		arguments?: DisconnectArguments;
+	export interfAce DisconnectRequest extends Request {
+		// commAnd: 'disconnect';
+		Arguments?: DisconnectArguments;
 	}
 
 	/** Arguments for 'disconnect' request. */
-	export interface DisconnectArguments {
-		/** A value of true indicates that this 'disconnect' request is part of a restart sequence. */
-		restart?: boolean;
-		/** Indicates whether the debuggee should be terminated when the debugger is disconnected.
-			If unspecified, the debug adapter is free to do whatever it thinks is best.
-			The attribute is only honored by a debug adapter if the capability 'supportTerminateDebuggee' is true.
+	export interfAce DisconnectArguments {
+		/** A vAlue of true indicAtes thAt this 'disconnect' request is pArt of A restArt sequence. */
+		restArt?: booleAn;
+		/** IndicAtes whether the debuggee should be terminAted when the debugger is disconnected.
+			If unspecified, the debug AdApter is free to do whAtever it thinks is best.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportTerminAteDebuggee' is true.
 		*/
-		terminateDebuggee?: boolean;
+		terminAteDebuggee?: booleAn;
 	}
 
-	/** Response to 'disconnect' request. This is just an acknowledgement, so no body field is required. */
-	export interface DisconnectResponse extends Response {
+	/** Response to 'disconnect' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce DisconnectResponse extends Response {
 	}
 
-	/** Terminate request; value of command field is 'terminate'.
-		The 'terminate' request is sent from the client to the debug adapter in order to give the debuggee a chance for terminating itself.
-		Clients should only call this request if the capability 'supportsTerminateRequest' is true.
+	/** TerminAte request; vAlue of commAnd field is 'terminAte'.
+		The 'terminAte' request is sent from the client to the debug AdApter in order to give the debuggee A chAnce for terminAting itself.
+		Clients should only cAll this request if the cApAbility 'supportsTerminAteRequest' is true.
 	*/
-	export interface TerminateRequest extends Request {
-		// command: 'terminate';
-		arguments?: TerminateArguments;
+	export interfAce TerminAteRequest extends Request {
+		// commAnd: 'terminAte';
+		Arguments?: TerminAteArguments;
 	}
 
-	/** Arguments for 'terminate' request. */
-	export interface TerminateArguments {
-		/** A value of true indicates that this 'terminate' request is part of a restart sequence. */
-		restart?: boolean;
+	/** Arguments for 'terminAte' request. */
+	export interfAce TerminAteArguments {
+		/** A vAlue of true indicAtes thAt this 'terminAte' request is pArt of A restArt sequence. */
+		restArt?: booleAn;
 	}
 
-	/** Response to 'terminate' request. This is just an acknowledgement, so no body field is required. */
-	export interface TerminateResponse extends Response {
+	/** Response to 'terminAte' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce TerminAteResponse extends Response {
 	}
 
-	/** BreakpointLocations request; value of command field is 'breakpointLocations'.
-		The 'breakpointLocations' request returns all possible locations for source breakpoints in a given range.
-		Clients should only call this request if the capability 'supportsBreakpointLocationsRequest' is true.
+	/** BreAkpointLocAtions request; vAlue of commAnd field is 'breAkpointLocAtions'.
+		The 'breAkpointLocAtions' request returns All possible locAtions for source breAkpoints in A given rAnge.
+		Clients should only cAll this request if the cApAbility 'supportsBreAkpointLocAtionsRequest' is true.
 	*/
-	export interface BreakpointLocationsRequest extends Request {
-		// command: 'breakpointLocations';
-		arguments?: BreakpointLocationsArguments;
+	export interfAce BreAkpointLocAtionsRequest extends Request {
+		// commAnd: 'breAkpointLocAtions';
+		Arguments?: BreAkpointLocAtionsArguments;
 	}
 
-	/** Arguments for 'breakpointLocations' request. */
-	export interface BreakpointLocationsArguments {
-		/** The source location of the breakpoints; either 'source.path' or 'source.reference' must be specified. */
+	/** Arguments for 'breAkpointLocAtions' request. */
+	export interfAce BreAkpointLocAtionsArguments {
+		/** The source locAtion of the breAkpoints; either 'source.pAth' or 'source.reference' must be specified. */
 		source: Source;
-		/** Start line of range to search possible breakpoint locations in. If only the line is specified, the request returns all possible locations in that line. */
+		/** StArt line of rAnge to seArch possible breAkpoint locAtions in. If only the line is specified, the request returns All possible locAtions in thAt line. */
 		line: number;
-		/** Optional start column of range to search possible breakpoint locations in. If no start column is given, the first column in the start line is assumed. */
+		/** OptionAl stArt column of rAnge to seArch possible breAkpoint locAtions in. If no stArt column is given, the first column in the stArt line is Assumed. */
 		column?: number;
-		/** Optional end line of range to search possible breakpoint locations in. If no end line is given, then the end line is assumed to be the start line. */
+		/** OptionAl end line of rAnge to seArch possible breAkpoint locAtions in. If no end line is given, then the end line is Assumed to be the stArt line. */
 		endLine?: number;
-		/** Optional end column of range to search possible breakpoint locations in. If no end column is given, then it is assumed to be in the last column of the end line. */
+		/** OptionAl end column of rAnge to seArch possible breAkpoint locAtions in. If no end column is given, then it is Assumed to be in the lAst column of the end line. */
 		endColumn?: number;
 	}
 
-	/** Response to 'breakpointLocations' request.
-		Contains possible locations for source breakpoints.
+	/** Response to 'breAkpointLocAtions' request.
+		ContAins possible locAtions for source breAkpoints.
 	*/
-	export interface BreakpointLocationsResponse extends Response {
+	export interfAce BreAkpointLocAtionsResponse extends Response {
 		body: {
-			/** Sorted set of possible breakpoint locations. */
-			breakpoints: BreakpointLocation[];
+			/** Sorted set of possible breAkpoint locAtions. */
+			breAkpoints: BreAkpointLocAtion[];
 		};
 	}
 
-	/** SetBreakpoints request; value of command field is 'setBreakpoints'.
-		Sets multiple breakpoints for a single source and clears all previous breakpoints in that source.
-		To clear all breakpoint for a source, specify an empty array.
-		When a breakpoint is hit, a 'stopped' event (with reason 'breakpoint') is generated.
+	/** SetBreAkpoints request; vAlue of commAnd field is 'setBreAkpoints'.
+		Sets multiple breAkpoints for A single source And cleArs All previous breAkpoints in thAt source.
+		To cleAr All breAkpoint for A source, specify An empty ArrAy.
+		When A breAkpoint is hit, A 'stopped' event (with reAson 'breAkpoint') is generAted.
 	*/
-	export interface SetBreakpointsRequest extends Request {
-		// command: 'setBreakpoints';
-		arguments: SetBreakpointsArguments;
+	export interfAce SetBreAkpointsRequest extends Request {
+		// commAnd: 'setBreAkpoints';
+		Arguments: SetBreAkpointsArguments;
 	}
 
-	/** Arguments for 'setBreakpoints' request. */
-	export interface SetBreakpointsArguments {
-		/** The source location of the breakpoints; either 'source.path' or 'source.reference' must be specified. */
+	/** Arguments for 'setBreAkpoints' request. */
+	export interfAce SetBreAkpointsArguments {
+		/** The source locAtion of the breAkpoints; either 'source.pAth' or 'source.reference' must be specified. */
 		source: Source;
-		/** The code locations of the breakpoints. */
-		breakpoints?: SourceBreakpoint[];
-		/** Deprecated: The code locations of the breakpoints. */
+		/** The code locAtions of the breAkpoints. */
+		breAkpoints?: SourceBreAkpoint[];
+		/** DeprecAted: The code locAtions of the breAkpoints. */
 		lines?: number[];
-		/** A value of true indicates that the underlying source has been modified which results in new breakpoint locations. */
-		sourceModified?: boolean;
+		/** A vAlue of true indicAtes thAt the underlying source hAs been modified which results in new breAkpoint locAtions. */
+		sourceModified?: booleAn;
 	}
 
-	/** Response to 'setBreakpoints' request.
-		Returned is information about each breakpoint created by this request.
-		This includes the actual code location and whether the breakpoint could be verified.
-		The breakpoints returned are in the same order as the elements of the 'breakpoints'
-		(or the deprecated 'lines') array in the arguments.
+	/** Response to 'setBreAkpoints' request.
+		Returned is informAtion About eAch breAkpoint creAted by this request.
+		This includes the ActuAl code locAtion And whether the breAkpoint could be verified.
+		The breAkpoints returned Are in the sAme order As the elements of the 'breAkpoints'
+		(or the deprecAted 'lines') ArrAy in the Arguments.
 	*/
-	export interface SetBreakpointsResponse extends Response {
+	export interfAce SetBreAkpointsResponse extends Response {
 		body: {
-			/** Information about the breakpoints.
-				The array elements are in the same order as the elements of the 'breakpoints' (or the deprecated 'lines') array in the arguments.
+			/** InformAtion About the breAkpoints.
+				The ArrAy elements Are in the sAme order As the elements of the 'breAkpoints' (or the deprecAted 'lines') ArrAy in the Arguments.
 			*/
-			breakpoints: Breakpoint[];
+			breAkpoints: BreAkpoint[];
 		};
 	}
 
-	/** SetFunctionBreakpoints request; value of command field is 'setFunctionBreakpoints'.
-		Replaces all existing function breakpoints with new function breakpoints.
-		To clear all function breakpoints, specify an empty array.
-		When a function breakpoint is hit, a 'stopped' event (with reason 'function breakpoint') is generated.
-		Clients should only call this request if the capability 'supportsFunctionBreakpoints' is true.
+	/** SetFunctionBreAkpoints request; vAlue of commAnd field is 'setFunctionBreAkpoints'.
+		ReplAces All existing function breAkpoints with new function breAkpoints.
+		To cleAr All function breAkpoints, specify An empty ArrAy.
+		When A function breAkpoint is hit, A 'stopped' event (with reAson 'function breAkpoint') is generAted.
+		Clients should only cAll this request if the cApAbility 'supportsFunctionBreAkpoints' is true.
 	*/
-	export interface SetFunctionBreakpointsRequest extends Request {
-		// command: 'setFunctionBreakpoints';
-		arguments: SetFunctionBreakpointsArguments;
+	export interfAce SetFunctionBreAkpointsRequest extends Request {
+		// commAnd: 'setFunctionBreAkpoints';
+		Arguments: SetFunctionBreAkpointsArguments;
 	}
 
-	/** Arguments for 'setFunctionBreakpoints' request. */
-	export interface SetFunctionBreakpointsArguments {
-		/** The function names of the breakpoints. */
-		breakpoints: FunctionBreakpoint[];
+	/** Arguments for 'setFunctionBreAkpoints' request. */
+	export interfAce SetFunctionBreAkpointsArguments {
+		/** The function nAmes of the breAkpoints. */
+		breAkpoints: FunctionBreAkpoint[];
 	}
 
-	/** Response to 'setFunctionBreakpoints' request.
-		Returned is information about each breakpoint created by this request.
+	/** Response to 'setFunctionBreAkpoints' request.
+		Returned is informAtion About eAch breAkpoint creAted by this request.
 	*/
-	export interface SetFunctionBreakpointsResponse extends Response {
+	export interfAce SetFunctionBreAkpointsResponse extends Response {
 		body: {
-			/** Information about the breakpoints. The array elements correspond to the elements of the 'breakpoints' array. */
-			breakpoints: Breakpoint[];
+			/** InformAtion About the breAkpoints. The ArrAy elements correspond to the elements of the 'breAkpoints' ArrAy. */
+			breAkpoints: BreAkpoint[];
 		};
 	}
 
-	/** SetExceptionBreakpoints request; value of command field is 'setExceptionBreakpoints'.
+	/** SetExceptionBreAkpoints request; vAlue of commAnd field is 'setExceptionBreAkpoints'.
 		The request configures the debuggers response to thrown exceptions.
-		If an exception is configured to break, a 'stopped' event is fired (with reason 'exception').
-		Clients should only call this request if the capability 'exceptionBreakpointFilters' returns one or more filters.
+		If An exception is configured to breAk, A 'stopped' event is fired (with reAson 'exception').
+		Clients should only cAll this request if the cApAbility 'exceptionBreAkpointFilters' returns one or more filters.
 	*/
-	export interface SetExceptionBreakpointsRequest extends Request {
-		// command: 'setExceptionBreakpoints';
-		arguments: SetExceptionBreakpointsArguments;
+	export interfAce SetExceptionBreAkpointsRequest extends Request {
+		// commAnd: 'setExceptionBreAkpoints';
+		Arguments: SetExceptionBreAkpointsArguments;
 	}
 
-	/** Arguments for 'setExceptionBreakpoints' request. */
-	export interface SetExceptionBreakpointsArguments {
-		/** IDs of checked exception options. The set of IDs is returned via the 'exceptionBreakpointFilters' capability. */
+	/** Arguments for 'setExceptionBreAkpoints' request. */
+	export interfAce SetExceptionBreAkpointsArguments {
+		/** IDs of checked exception options. The set of IDs is returned viA the 'exceptionBreAkpointFilters' cApAbility. */
 		filters: string[];
-		/** Configuration options for selected exceptions.
-			The attribute is only honored by a debug adapter if the capability 'supportsExceptionOptions' is true.
+		/** ConfigurAtion options for selected exceptions.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsExceptionOptions' is true.
 		*/
 		exceptionOptions?: ExceptionOptions[];
 	}
 
-	/** Response to 'setExceptionBreakpoints' request. This is just an acknowledgement, so no body field is required. */
-	export interface SetExceptionBreakpointsResponse extends Response {
+	/** Response to 'setExceptionBreAkpoints' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce SetExceptionBreAkpointsResponse extends Response {
 	}
 
-	/** DataBreakpointInfo request; value of command field is 'dataBreakpointInfo'.
-		Obtains information on a possible data breakpoint that could be set on an expression or variable.
-		Clients should only call this request if the capability 'supportsDataBreakpoints' is true.
+	/** DAtABreAkpointInfo request; vAlue of commAnd field is 'dAtABreAkpointInfo'.
+		ObtAins informAtion on A possible dAtA breAkpoint thAt could be set on An expression or vAriAble.
+		Clients should only cAll this request if the cApAbility 'supportsDAtABreAkpoints' is true.
 	*/
-	export interface DataBreakpointInfoRequest extends Request {
-		// command: 'dataBreakpointInfo';
-		arguments: DataBreakpointInfoArguments;
+	export interfAce DAtABreAkpointInfoRequest extends Request {
+		// commAnd: 'dAtABreAkpointInfo';
+		Arguments: DAtABreAkpointInfoArguments;
 	}
 
-	/** Arguments for 'dataBreakpointInfo' request. */
-	export interface DataBreakpointInfoArguments {
-		/** Reference to the Variable container if the data breakpoint is requested for a child of the container. */
-		variablesReference?: number;
-		/** The name of the Variable's child to obtain data breakpoint information for.
-			If variableReference isn’t provided, this can be an expression.
+	/** Arguments for 'dAtABreAkpointInfo' request. */
+	export interfAce DAtABreAkpointInfoArguments {
+		/** Reference to the VAriAble contAiner if the dAtA breAkpoint is requested for A child of the contAiner. */
+		vAriAblesReference?: number;
+		/** The nAme of the VAriAble's child to obtAin dAtA breAkpoint informAtion for.
+			If vAriAbleReference isn’t provided, this cAn be An expression.
 		*/
-		name: string;
+		nAme: string;
 	}
 
-	/** Response to 'dataBreakpointInfo' request. */
-	export interface DataBreakpointInfoResponse extends Response {
+	/** Response to 'dAtABreAkpointInfo' request. */
+	export interfAce DAtABreAkpointInfoResponse extends Response {
 		body: {
-			/** An identifier for the data on which a data breakpoint can be registered with the setDataBreakpoints request or null if no data breakpoint is available. */
-			dataId: string | null;
-			/** UI string that describes on what data the breakpoint is set on or why a data breakpoint is not available. */
+			/** An identifier for the dAtA on which A dAtA breAkpoint cAn be registered with the setDAtABreAkpoints request or null if no dAtA breAkpoint is AvAilAble. */
+			dAtAId: string | null;
+			/** UI string thAt describes on whAt dAtA the breAkpoint is set on or why A dAtA breAkpoint is not AvAilAble. */
 			description: string;
-			/** Optional attribute listing the available access types for a potential data breakpoint. A UI frontend could surface this information. */
-			accessTypes?: DataBreakpointAccessType[];
-			/** Optional attribute indicating that a potential data breakpoint could be persisted across sessions. */
-			canPersist?: boolean;
+			/** OptionAl Attribute listing the AvAilAble Access types for A potentiAl dAtA breAkpoint. A UI frontend could surfAce this informAtion. */
+			AccessTypes?: DAtABreAkpointAccessType[];
+			/** OptionAl Attribute indicAting thAt A potentiAl dAtA breAkpoint could be persisted Across sessions. */
+			cAnPersist?: booleAn;
 		};
 	}
 
-	/** SetDataBreakpoints request; value of command field is 'setDataBreakpoints'.
-		Replaces all existing data breakpoints with new data breakpoints.
-		To clear all data breakpoints, specify an empty array.
-		When a data breakpoint is hit, a 'stopped' event (with reason 'data breakpoint') is generated.
-		Clients should only call this request if the capability 'supportsDataBreakpoints' is true.
+	/** SetDAtABreAkpoints request; vAlue of commAnd field is 'setDAtABreAkpoints'.
+		ReplAces All existing dAtA breAkpoints with new dAtA breAkpoints.
+		To cleAr All dAtA breAkpoints, specify An empty ArrAy.
+		When A dAtA breAkpoint is hit, A 'stopped' event (with reAson 'dAtA breAkpoint') is generAted.
+		Clients should only cAll this request if the cApAbility 'supportsDAtABreAkpoints' is true.
 	*/
-	export interface SetDataBreakpointsRequest extends Request {
-		// command: 'setDataBreakpoints';
-		arguments: SetDataBreakpointsArguments;
+	export interfAce SetDAtABreAkpointsRequest extends Request {
+		// commAnd: 'setDAtABreAkpoints';
+		Arguments: SetDAtABreAkpointsArguments;
 	}
 
-	/** Arguments for 'setDataBreakpoints' request. */
-	export interface SetDataBreakpointsArguments {
-		/** The contents of this array replaces all existing data breakpoints. An empty array clears all data breakpoints. */
-		breakpoints: DataBreakpoint[];
+	/** Arguments for 'setDAtABreAkpoints' request. */
+	export interfAce SetDAtABreAkpointsArguments {
+		/** The contents of this ArrAy replAces All existing dAtA breAkpoints. An empty ArrAy cleArs All dAtA breAkpoints. */
+		breAkpoints: DAtABreAkpoint[];
 	}
 
-	/** Response to 'setDataBreakpoints' request.
-		Returned is information about each breakpoint created by this request.
+	/** Response to 'setDAtABreAkpoints' request.
+		Returned is informAtion About eAch breAkpoint creAted by this request.
 	*/
-	export interface SetDataBreakpointsResponse extends Response {
+	export interfAce SetDAtABreAkpointsResponse extends Response {
 		body: {
-			/** Information about the data breakpoints. The array elements correspond to the elements of the input argument 'breakpoints' array. */
-			breakpoints: Breakpoint[];
+			/** InformAtion About the dAtA breAkpoints. The ArrAy elements correspond to the elements of the input Argument 'breAkpoints' ArrAy. */
+			breAkpoints: BreAkpoint[];
 		};
 	}
 
-	/** SetInstructionBreakpoints request; value of command field is 'setInstructionBreakpoints'.
-		Replaces all existing instruction breakpoints. Typically, instruction breakpoints would be set from a diassembly window.
-		To clear all instruction breakpoints, specify an empty array.
-		When an instruction breakpoint is hit, a 'stopped' event (with reason 'instruction breakpoint') is generated.
-		Clients should only call this request if the capability 'supportsInstructionBreakpoints' is true.
+	/** SetInstructionBreAkpoints request; vAlue of commAnd field is 'setInstructionBreAkpoints'.
+		ReplAces All existing instruction breAkpoints. TypicAlly, instruction breAkpoints would be set from A diAssembly window.
+		To cleAr All instruction breAkpoints, specify An empty ArrAy.
+		When An instruction breAkpoint is hit, A 'stopped' event (with reAson 'instruction breAkpoint') is generAted.
+		Clients should only cAll this request if the cApAbility 'supportsInstructionBreAkpoints' is true.
 	*/
-	export interface SetInstructionBreakpointsRequest extends Request {
-		// command: 'setInstructionBreakpoints';
-		arguments: SetInstructionBreakpointsArguments;
+	export interfAce SetInstructionBreAkpointsRequest extends Request {
+		// commAnd: 'setInstructionBreAkpoints';
+		Arguments: SetInstructionBreAkpointsArguments;
 	}
 
-	/** Arguments for 'setInstructionBreakpoints' request */
-	export interface SetInstructionBreakpointsArguments {
-		/** The instruction references of the breakpoints */
-		breakpoints: InstructionBreakpoint[];
+	/** Arguments for 'setInstructionBreAkpoints' request */
+	export interfAce SetInstructionBreAkpointsArguments {
+		/** The instruction references of the breAkpoints */
+		breAkpoints: InstructionBreAkpoint[];
 	}
 
-	/** Response to 'setInstructionBreakpoints' request */
-	export interface SetInstructionBreakpointsResponse extends Response {
+	/** Response to 'setInstructionBreAkpoints' request */
+	export interfAce SetInstructionBreAkpointsResponse extends Response {
 		body: {
-			/** Information about the breakpoints. The array elements correspond to the elements of the 'breakpoints' array. */
-			breakpoints: Breakpoint[];
+			/** InformAtion About the breAkpoints. The ArrAy elements correspond to the elements of the 'breAkpoints' ArrAy. */
+			breAkpoints: BreAkpoint[];
 		};
 	}
 
-	/** Continue request; value of command field is 'continue'.
-		The request starts the debuggee to run again.
+	/** Continue request; vAlue of commAnd field is 'continue'.
+		The request stArts the debuggee to run AgAin.
 	*/
-	export interface ContinueRequest extends Request {
-		// command: 'continue';
-		arguments: ContinueArguments;
+	export interfAce ContinueRequest extends Request {
+		// commAnd: 'continue';
+		Arguments: ContinueArguments;
 	}
 
 	/** Arguments for 'continue' request. */
-	export interface ContinueArguments {
-		/** Continue execution for the specified thread (if possible).
-			If the backend cannot continue on a single thread but will continue on all threads, it should set the 'allThreadsContinued' attribute in the response to true.
+	export interfAce ContinueArguments {
+		/** Continue execution for the specified threAd (if possible).
+			If the bAckend cAnnot continue on A single threAd but will continue on All threAds, it should set the 'AllThreAdsContinued' Attribute in the response to true.
 		*/
-		threadId: number;
+		threAdId: number;
 	}
 
 	/** Response to 'continue' request. */
-	export interface ContinueResponse extends Response {
+	export interfAce ContinueResponse extends Response {
 		body: {
-			/** If true, the 'continue' request has ignored the specified thread and continued all threads instead.
-				If this attribute is missing a value of 'true' is assumed for backward compatibility.
+			/** If true, the 'continue' request hAs ignored the specified threAd And continued All threAds insteAd.
+				If this Attribute is missing A vAlue of 'true' is Assumed for bAckwArd compAtibility.
 			*/
-			allThreadsContinued?: boolean;
+			AllThreAdsContinued?: booleAn;
 		};
 	}
 
-	/** Next request; value of command field is 'next'.
-		The request starts the debuggee to run again for one step.
-		The debug adapter first sends the response and then a 'stopped' event (with reason 'step') after the step has completed.
+	/** Next request; vAlue of commAnd field is 'next'.
+		The request stArts the debuggee to run AgAin for one step.
+		The debug AdApter first sends the response And then A 'stopped' event (with reAson 'step') After the step hAs completed.
 	*/
-	export interface NextRequest extends Request {
-		// command: 'next';
-		arguments: NextArguments;
+	export interfAce NextRequest extends Request {
+		// commAnd: 'next';
+		Arguments: NextArguments;
 	}
 
 	/** Arguments for 'next' request. */
-	export interface NextArguments {
-		/** Execute 'next' for this thread. */
-		threadId: number;
-		/** Optional granularity to step. If no granularity is specified, a granularity of 'statement' is assumed. */
-		granularity?: SteppingGranularity;
+	export interfAce NextArguments {
+		/** Execute 'next' for this threAd. */
+		threAdId: number;
+		/** OptionAl grAnulArity to step. If no grAnulArity is specified, A grAnulArity of 'stAtement' is Assumed. */
+		grAnulArity?: SteppingGrAnulArity;
 	}
 
-	/** Response to 'next' request. This is just an acknowledgement, so no body field is required. */
-	export interface NextResponse extends Response {
+	/** Response to 'next' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce NextResponse extends Response {
 	}
 
-	/** StepIn request; value of command field is 'stepIn'.
-		The request starts the debuggee to step into a function/method if possible.
-		If it cannot step into a target, 'stepIn' behaves like 'next'.
-		The debug adapter first sends the response and then a 'stopped' event (with reason 'step') after the step has completed.
-		If there are multiple function/method calls (or other targets) on the source line,
-		the optional argument 'targetId' can be used to control into which target the 'stepIn' should occur.
-		The list of possible targets for a given source line can be retrieved via the 'stepInTargets' request.
+	/** StepIn request; vAlue of commAnd field is 'stepIn'.
+		The request stArts the debuggee to step into A function/method if possible.
+		If it cAnnot step into A tArget, 'stepIn' behAves like 'next'.
+		The debug AdApter first sends the response And then A 'stopped' event (with reAson 'step') After the step hAs completed.
+		If there Are multiple function/method cAlls (or other tArgets) on the source line,
+		the optionAl Argument 'tArgetId' cAn be used to control into which tArget the 'stepIn' should occur.
+		The list of possible tArgets for A given source line cAn be retrieved viA the 'stepInTArgets' request.
 	*/
-	export interface StepInRequest extends Request {
-		// command: 'stepIn';
-		arguments: StepInArguments;
+	export interfAce StepInRequest extends Request {
+		// commAnd: 'stepIn';
+		Arguments: StepInArguments;
 	}
 
 	/** Arguments for 'stepIn' request. */
-	export interface StepInArguments {
-		/** Execute 'stepIn' for this thread. */
-		threadId: number;
-		/** Optional id of the target to step into. */
-		targetId?: number;
-		/** Optional granularity to step. If no granularity is specified, a granularity of 'statement' is assumed. */
-		granularity?: SteppingGranularity;
+	export interfAce StepInArguments {
+		/** Execute 'stepIn' for this threAd. */
+		threAdId: number;
+		/** OptionAl id of the tArget to step into. */
+		tArgetId?: number;
+		/** OptionAl grAnulArity to step. If no grAnulArity is specified, A grAnulArity of 'stAtement' is Assumed. */
+		grAnulArity?: SteppingGrAnulArity;
 	}
 
-	/** Response to 'stepIn' request. This is just an acknowledgement, so no body field is required. */
-	export interface StepInResponse extends Response {
+	/** Response to 'stepIn' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce StepInResponse extends Response {
 	}
 
-	/** StepOut request; value of command field is 'stepOut'.
-		The request starts the debuggee to run again for one step.
-		The debug adapter first sends the response and then a 'stopped' event (with reason 'step') after the step has completed.
+	/** StepOut request; vAlue of commAnd field is 'stepOut'.
+		The request stArts the debuggee to run AgAin for one step.
+		The debug AdApter first sends the response And then A 'stopped' event (with reAson 'step') After the step hAs completed.
 	*/
-	export interface StepOutRequest extends Request {
-		// command: 'stepOut';
-		arguments: StepOutArguments;
+	export interfAce StepOutRequest extends Request {
+		// commAnd: 'stepOut';
+		Arguments: StepOutArguments;
 	}
 
 	/** Arguments for 'stepOut' request. */
-	export interface StepOutArguments {
-		/** Execute 'stepOut' for this thread. */
-		threadId: number;
-		/** Optional granularity to step. If no granularity is specified, a granularity of 'statement' is assumed. */
-		granularity?: SteppingGranularity;
+	export interfAce StepOutArguments {
+		/** Execute 'stepOut' for this threAd. */
+		threAdId: number;
+		/** OptionAl grAnulArity to step. If no grAnulArity is specified, A grAnulArity of 'stAtement' is Assumed. */
+		grAnulArity?: SteppingGrAnulArity;
 	}
 
-	/** Response to 'stepOut' request. This is just an acknowledgement, so no body field is required. */
-	export interface StepOutResponse extends Response {
+	/** Response to 'stepOut' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce StepOutResponse extends Response {
 	}
 
-	/** StepBack request; value of command field is 'stepBack'.
-		The request starts the debuggee to run one step backwards.
-		The debug adapter first sends the response and then a 'stopped' event (with reason 'step') after the step has completed.
-		Clients should only call this request if the capability 'supportsStepBack' is true.
+	/** StepBAck request; vAlue of commAnd field is 'stepBAck'.
+		The request stArts the debuggee to run one step bAckwArds.
+		The debug AdApter first sends the response And then A 'stopped' event (with reAson 'step') After the step hAs completed.
+		Clients should only cAll this request if the cApAbility 'supportsStepBAck' is true.
 	*/
-	export interface StepBackRequest extends Request {
-		// command: 'stepBack';
-		arguments: StepBackArguments;
+	export interfAce StepBAckRequest extends Request {
+		// commAnd: 'stepBAck';
+		Arguments: StepBAckArguments;
 	}
 
-	/** Arguments for 'stepBack' request. */
-	export interface StepBackArguments {
-		/** Execute 'stepBack' for this thread. */
-		threadId: number;
-		/** Optional granularity to step. If no granularity is specified, a granularity of 'statement' is assumed. */
-		granularity?: SteppingGranularity;
+	/** Arguments for 'stepBAck' request. */
+	export interfAce StepBAckArguments {
+		/** Execute 'stepBAck' for this threAd. */
+		threAdId: number;
+		/** OptionAl grAnulArity to step. If no grAnulArity is specified, A grAnulArity of 'stAtement' is Assumed. */
+		grAnulArity?: SteppingGrAnulArity;
 	}
 
-	/** Response to 'stepBack' request. This is just an acknowledgement, so no body field is required. */
-	export interface StepBackResponse extends Response {
+	/** Response to 'stepBAck' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce StepBAckResponse extends Response {
 	}
 
-	/** ReverseContinue request; value of command field is 'reverseContinue'.
-		The request starts the debuggee to run backward.
-		Clients should only call this request if the capability 'supportsStepBack' is true.
+	/** ReverseContinue request; vAlue of commAnd field is 'reverseContinue'.
+		The request stArts the debuggee to run bAckwArd.
+		Clients should only cAll this request if the cApAbility 'supportsStepBAck' is true.
 	*/
-	export interface ReverseContinueRequest extends Request {
-		// command: 'reverseContinue';
-		arguments: ReverseContinueArguments;
+	export interfAce ReverseContinueRequest extends Request {
+		// commAnd: 'reverseContinue';
+		Arguments: ReverseContinueArguments;
 	}
 
 	/** Arguments for 'reverseContinue' request. */
-	export interface ReverseContinueArguments {
-		/** Execute 'reverseContinue' for this thread. */
-		threadId: number;
+	export interfAce ReverseContinueArguments {
+		/** Execute 'reverseContinue' for this threAd. */
+		threAdId: number;
 	}
 
-	/** Response to 'reverseContinue' request. This is just an acknowledgement, so no body field is required. */
-	export interface ReverseContinueResponse extends Response {
+	/** Response to 'reverseContinue' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce ReverseContinueResponse extends Response {
 	}
 
-	/** RestartFrame request; value of command field is 'restartFrame'.
-		The request restarts execution of the specified stackframe.
-		The debug adapter first sends the response and then a 'stopped' event (with reason 'restart') after the restart has completed.
-		Clients should only call this request if the capability 'supportsRestartFrame' is true.
+	/** RestArtFrAme request; vAlue of commAnd field is 'restArtFrAme'.
+		The request restArts execution of the specified stAckfrAme.
+		The debug AdApter first sends the response And then A 'stopped' event (with reAson 'restArt') After the restArt hAs completed.
+		Clients should only cAll this request if the cApAbility 'supportsRestArtFrAme' is true.
 	*/
-	export interface RestartFrameRequest extends Request {
-		// command: 'restartFrame';
-		arguments: RestartFrameArguments;
+	export interfAce RestArtFrAmeRequest extends Request {
+		// commAnd: 'restArtFrAme';
+		Arguments: RestArtFrAmeArguments;
 	}
 
-	/** Arguments for 'restartFrame' request. */
-	export interface RestartFrameArguments {
-		/** Restart this stackframe. */
-		frameId: number;
+	/** Arguments for 'restArtFrAme' request. */
+	export interfAce RestArtFrAmeArguments {
+		/** RestArt this stAckfrAme. */
+		frAmeId: number;
 	}
 
-	/** Response to 'restartFrame' request. This is just an acknowledgement, so no body field is required. */
-	export interface RestartFrameResponse extends Response {
+	/** Response to 'restArtFrAme' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce RestArtFrAmeResponse extends Response {
 	}
 
-	/** Goto request; value of command field is 'goto'.
-		The request sets the location where the debuggee will continue to run.
-		This makes it possible to skip the execution of code or to executed code again.
-		The code between the current location and the goto target is not executed but skipped.
-		The debug adapter first sends the response and then a 'stopped' event with reason 'goto'.
-		Clients should only call this request if the capability 'supportsGotoTargetsRequest' is true (because only then goto targets exist that can be passed as arguments).
+	/** Goto request; vAlue of commAnd field is 'goto'.
+		The request sets the locAtion where the debuggee will continue to run.
+		This mAkes it possible to skip the execution of code or to executed code AgAin.
+		The code between the current locAtion And the goto tArget is not executed but skipped.
+		The debug AdApter first sends the response And then A 'stopped' event with reAson 'goto'.
+		Clients should only cAll this request if the cApAbility 'supportsGotoTArgetsRequest' is true (becAuse only then goto tArgets exist thAt cAn be pAssed As Arguments).
 	*/
-	export interface GotoRequest extends Request {
-		// command: 'goto';
-		arguments: GotoArguments;
+	export interfAce GotoRequest extends Request {
+		// commAnd: 'goto';
+		Arguments: GotoArguments;
 	}
 
 	/** Arguments for 'goto' request. */
-	export interface GotoArguments {
-		/** Set the goto target for this thread. */
-		threadId: number;
-		/** The location where the debuggee will continue to run. */
-		targetId: number;
+	export interfAce GotoArguments {
+		/** Set the goto tArget for this threAd. */
+		threAdId: number;
+		/** The locAtion where the debuggee will continue to run. */
+		tArgetId: number;
 	}
 
-	/** Response to 'goto' request. This is just an acknowledgement, so no body field is required. */
-	export interface GotoResponse extends Response {
+	/** Response to 'goto' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce GotoResponse extends Response {
 	}
 
-	/** Pause request; value of command field is 'pause'.
+	/** PAuse request; vAlue of commAnd field is 'pAuse'.
 		The request suspends the debuggee.
-		The debug adapter first sends the response and then a 'stopped' event (with reason 'pause') after the thread has been paused successfully.
+		The debug AdApter first sends the response And then A 'stopped' event (with reAson 'pAuse') After the threAd hAs been pAused successfully.
 	*/
-	export interface PauseRequest extends Request {
-		// command: 'pause';
-		arguments: PauseArguments;
+	export interfAce PAuseRequest extends Request {
+		// commAnd: 'pAuse';
+		Arguments: PAuseArguments;
 	}
 
-	/** Arguments for 'pause' request. */
-	export interface PauseArguments {
-		/** Pause execution for this thread. */
-		threadId: number;
+	/** Arguments for 'pAuse' request. */
+	export interfAce PAuseArguments {
+		/** PAuse execution for this threAd. */
+		threAdId: number;
 	}
 
-	/** Response to 'pause' request. This is just an acknowledgement, so no body field is required. */
-	export interface PauseResponse extends Response {
+	/** Response to 'pAuse' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce PAuseResponse extends Response {
 	}
 
-	/** StackTrace request; value of command field is 'stackTrace'.
-		The request returns a stacktrace from the current execution state.
+	/** StAckTrAce request; vAlue of commAnd field is 'stAckTrAce'.
+		The request returns A stAcktrAce from the current execution stAte.
 	*/
-	export interface StackTraceRequest extends Request {
-		// command: 'stackTrace';
-		arguments: StackTraceArguments;
+	export interfAce StAckTrAceRequest extends Request {
+		// commAnd: 'stAckTrAce';
+		Arguments: StAckTrAceArguments;
 	}
 
-	/** Arguments for 'stackTrace' request. */
-	export interface StackTraceArguments {
-		/** Retrieve the stacktrace for this thread. */
-		threadId: number;
-		/** The index of the first frame to return; if omitted frames start at 0. */
-		startFrame?: number;
-		/** The maximum number of frames to return. If levels is not specified or 0, all frames are returned. */
+	/** Arguments for 'stAckTrAce' request. */
+	export interfAce StAckTrAceArguments {
+		/** Retrieve the stAcktrAce for this threAd. */
+		threAdId: number;
+		/** The index of the first frAme to return; if omitted frAmes stArt At 0. */
+		stArtFrAme?: number;
+		/** The mAximum number of frAmes to return. If levels is not specified or 0, All frAmes Are returned. */
 		levels?: number;
-		/** Specifies details on how to format the stack frames.
-			The attribute is only honored by a debug adapter if the capability 'supportsValueFormattingOptions' is true.
+		/** Specifies detAils on how to formAt the stAck frAmes.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsVAlueFormAttingOptions' is true.
 		*/
-		format?: StackFrameFormat;
+		formAt?: StAckFrAmeFormAt;
 	}
 
-	/** Response to 'stackTrace' request. */
-	export interface StackTraceResponse extends Response {
+	/** Response to 'stAckTrAce' request. */
+	export interfAce StAckTrAceResponse extends Response {
 		body: {
-			/** The frames of the stackframe. If the array has length zero, there are no stackframes available.
-				This means that there is no location information available.
+			/** The frAmes of the stAckfrAme. If the ArrAy hAs length zero, there Are no stAckfrAmes AvAilAble.
+				This meAns thAt there is no locAtion informAtion AvAilAble.
 			*/
-			stackFrames: StackFrame[];
-			/** The total number of frames available. */
-			totalFrames?: number;
+			stAckFrAmes: StAckFrAme[];
+			/** The totAl number of frAmes AvAilAble. */
+			totAlFrAmes?: number;
 		};
 	}
 
-	/** Scopes request; value of command field is 'scopes'.
-		The request returns the variable scopes for a given stackframe ID.
+	/** Scopes request; vAlue of commAnd field is 'scopes'.
+		The request returns the vAriAble scopes for A given stAckfrAme ID.
 	*/
-	export interface ScopesRequest extends Request {
-		// command: 'scopes';
-		arguments: ScopesArguments;
+	export interfAce ScopesRequest extends Request {
+		// commAnd: 'scopes';
+		Arguments: ScopesArguments;
 	}
 
 	/** Arguments for 'scopes' request. */
-	export interface ScopesArguments {
-		/** Retrieve the scopes for this stackframe. */
-		frameId: number;
+	export interfAce ScopesArguments {
+		/** Retrieve the scopes for this stAckfrAme. */
+		frAmeId: number;
 	}
 
 	/** Response to 'scopes' request. */
-	export interface ScopesResponse extends Response {
+	export interfAce ScopesResponse extends Response {
 		body: {
-			/** The scopes of the stackframe. If the array has length zero, there are no scopes available. */
+			/** The scopes of the stAckfrAme. If the ArrAy hAs length zero, there Are no scopes AvAilAble. */
 			scopes: Scope[];
 		};
 	}
 
-	/** Variables request; value of command field is 'variables'.
-		Retrieves all child variables for the given variable reference.
-		An optional filter can be used to limit the fetched children to either named or indexed children.
+	/** VAriAbles request; vAlue of commAnd field is 'vAriAbles'.
+		Retrieves All child vAriAbles for the given vAriAble reference.
+		An optionAl filter cAn be used to limit the fetched children to either nAmed or indexed children.
 	*/
-	export interface VariablesRequest extends Request {
-		// command: 'variables';
-		arguments: VariablesArguments;
+	export interfAce VAriAblesRequest extends Request {
+		// commAnd: 'vAriAbles';
+		Arguments: VAriAblesArguments;
 	}
 
-	/** Arguments for 'variables' request. */
-	export interface VariablesArguments {
-		/** The Variable reference. */
-		variablesReference: number;
-		/** Optional filter to limit the child variables to either named or indexed. If omitted, both types are fetched. */
-		filter?: 'indexed' | 'named';
-		/** The index of the first variable to return; if omitted children start at 0. */
-		start?: number;
-		/** The number of variables to return. If count is missing or 0, all variables are returned. */
+	/** Arguments for 'vAriAbles' request. */
+	export interfAce VAriAblesArguments {
+		/** The VAriAble reference. */
+		vAriAblesReference: number;
+		/** OptionAl filter to limit the child vAriAbles to either nAmed or indexed. If omitted, both types Are fetched. */
+		filter?: 'indexed' | 'nAmed';
+		/** The index of the first vAriAble to return; if omitted children stArt At 0. */
+		stArt?: number;
+		/** The number of vAriAbles to return. If count is missing or 0, All vAriAbles Are returned. */
 		count?: number;
-		/** Specifies details on how to format the Variable values.
-			The attribute is only honored by a debug adapter if the capability 'supportsValueFormattingOptions' is true.
+		/** Specifies detAils on how to formAt the VAriAble vAlues.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsVAlueFormAttingOptions' is true.
 		*/
-		format?: ValueFormat;
+		formAt?: VAlueFormAt;
 	}
 
-	/** Response to 'variables' request. */
-	export interface VariablesResponse extends Response {
+	/** Response to 'vAriAbles' request. */
+	export interfAce VAriAblesResponse extends Response {
 		body: {
-			/** All (or a range) of variables for the given variable reference. */
-			variables: Variable[];
+			/** All (or A rAnge) of vAriAbles for the given vAriAble reference. */
+			vAriAbles: VAriAble[];
 		};
 	}
 
-	/** SetVariable request; value of command field is 'setVariable'.
-		Set the variable with the given name in the variable container to a new value. Clients should only call this request if the capability 'supportsSetVariable' is true.
+	/** SetVAriAble request; vAlue of commAnd field is 'setVAriAble'.
+		Set the vAriAble with the given nAme in the vAriAble contAiner to A new vAlue. Clients should only cAll this request if the cApAbility 'supportsSetVAriAble' is true.
 	*/
-	export interface SetVariableRequest extends Request {
-		// command: 'setVariable';
-		arguments: SetVariableArguments;
+	export interfAce SetVAriAbleRequest extends Request {
+		// commAnd: 'setVAriAble';
+		Arguments: SetVAriAbleArguments;
 	}
 
-	/** Arguments for 'setVariable' request. */
-	export interface SetVariableArguments {
-		/** The reference of the variable container. */
-		variablesReference: number;
-		/** The name of the variable in the container. */
-		name: string;
-		/** The value of the variable. */
-		value: string;
-		/** Specifies details on how to format the response value. */
-		format?: ValueFormat;
+	/** Arguments for 'setVAriAble' request. */
+	export interfAce SetVAriAbleArguments {
+		/** The reference of the vAriAble contAiner. */
+		vAriAblesReference: number;
+		/** The nAme of the vAriAble in the contAiner. */
+		nAme: string;
+		/** The vAlue of the vAriAble. */
+		vAlue: string;
+		/** Specifies detAils on how to formAt the response vAlue. */
+		formAt?: VAlueFormAt;
 	}
 
-	/** Response to 'setVariable' request. */
-	export interface SetVariableResponse extends Response {
+	/** Response to 'setVAriAble' request. */
+	export interfAce SetVAriAbleResponse extends Response {
 		body: {
-			/** The new value of the variable. */
-			value: string;
-			/** The type of the new value. Typically shown in the UI when hovering over the value. */
+			/** The new vAlue of the vAriAble. */
+			vAlue: string;
+			/** The type of the new vAlue. TypicAlly shown in the UI when hovering over the vAlue. */
 			type?: string;
-			/** If variablesReference is > 0, the new value is structured and its children can be retrieved by passing variablesReference to the VariablesRequest.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			/** If vAriAblesReference is > 0, the new vAlue is structured And its children cAn be retrieved by pAssing vAriAblesReference to the VAriAblesRequest.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			variablesReference?: number;
-			/** The number of named child variables.
-				The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			vAriAblesReference?: number;
+			/** The number of nAmed child vAriAbles.
+				The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			namedVariables?: number;
-			/** The number of indexed child variables.
-				The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			nAmedVAriAbles?: number;
+			/** The number of indexed child vAriAbles.
+				The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			indexedVariables?: number;
+			indexedVAriAbles?: number;
 		};
 	}
 
-	/** Source request; value of command field is 'source'.
-		The request retrieves the source code for a given source reference.
+	/** Source request; vAlue of commAnd field is 'source'.
+		The request retrieves the source code for A given source reference.
 	*/
-	export interface SourceRequest extends Request {
-		// command: 'source';
-		arguments: SourceArguments;
+	export interfAce SourceRequest extends Request {
+		// commAnd: 'source';
+		Arguments: SourceArguments;
 	}
 
 	/** Arguments for 'source' request. */
-	export interface SourceArguments {
-		/** Specifies the source content to load. Either source.path or source.sourceReference must be specified. */
+	export interfAce SourceArguments {
+		/** Specifies the source content to loAd. Either source.pAth or source.sourceReference must be specified. */
 		source?: Source;
-		/** The reference to the source. This is the same as source.sourceReference.
-			This is provided for backward compatibility since old backends do not understand the 'source' attribute.
+		/** The reference to the source. This is the sAme As source.sourceReference.
+			This is provided for bAckwArd compAtibility since old bAckends do not understAnd the 'source' Attribute.
 		*/
 		sourceReference: number;
 	}
 
 	/** Response to 'source' request. */
-	export interface SourceResponse extends Response {
+	export interfAce SourceResponse extends Response {
 		body: {
 			/** Content of the source reference. */
 			content: string;
-			/** Optional content type (mime type) of the source. */
+			/** OptionAl content type (mime type) of the source. */
 			mimeType?: string;
 		};
 	}
 
-	/** Threads request; value of command field is 'threads'.
-		The request retrieves a list of all threads.
+	/** ThreAds request; vAlue of commAnd field is 'threAds'.
+		The request retrieves A list of All threAds.
 	*/
-	export interface ThreadsRequest extends Request {
-		// command: 'threads';
+	export interfAce ThreAdsRequest extends Request {
+		// commAnd: 'threAds';
 	}
 
-	/** Response to 'threads' request. */
-	export interface ThreadsResponse extends Response {
+	/** Response to 'threAds' request. */
+	export interfAce ThreAdsResponse extends Response {
 		body: {
-			/** All threads. */
-			threads: Thread[];
+			/** All threAds. */
+			threAds: ThreAd[];
 		};
 	}
 
-	/** TerminateThreads request; value of command field is 'terminateThreads'.
-		The request terminates the threads with the given ids.
-		Clients should only call this request if the capability 'supportsTerminateThreadsRequest' is true.
+	/** TerminAteThreAds request; vAlue of commAnd field is 'terminAteThreAds'.
+		The request terminAtes the threAds with the given ids.
+		Clients should only cAll this request if the cApAbility 'supportsTerminAteThreAdsRequest' is true.
 	*/
-	export interface TerminateThreadsRequest extends Request {
-		// command: 'terminateThreads';
-		arguments: TerminateThreadsArguments;
+	export interfAce TerminAteThreAdsRequest extends Request {
+		// commAnd: 'terminAteThreAds';
+		Arguments: TerminAteThreAdsArguments;
 	}
 
-	/** Arguments for 'terminateThreads' request. */
-	export interface TerminateThreadsArguments {
-		/** Ids of threads to be terminated. */
-		threadIds?: number[];
+	/** Arguments for 'terminAteThreAds' request. */
+	export interfAce TerminAteThreAdsArguments {
+		/** Ids of threAds to be terminAted. */
+		threAdIds?: number[];
 	}
 
-	/** Response to 'terminateThreads' request. This is just an acknowledgement, so no body field is required. */
-	export interface TerminateThreadsResponse extends Response {
+	/** Response to 'terminAteThreAds' request. This is just An Acknowledgement, so no body field is required. */
+	export interfAce TerminAteThreAdsResponse extends Response {
 	}
 
-	/** Modules request; value of command field is 'modules'.
-		Modules can be retrieved from the debug adapter with this request which can either return all modules or a range of modules to support paging.
-		Clients should only call this request if the capability 'supportsModulesRequest' is true.
+	/** Modules request; vAlue of commAnd field is 'modules'.
+		Modules cAn be retrieved from the debug AdApter with this request which cAn either return All modules or A rAnge of modules to support pAging.
+		Clients should only cAll this request if the cApAbility 'supportsModulesRequest' is true.
 	*/
-	export interface ModulesRequest extends Request {
-		// command: 'modules';
-		arguments: ModulesArguments;
+	export interfAce ModulesRequest extends Request {
+		// commAnd: 'modules';
+		Arguments: ModulesArguments;
 	}
 
 	/** Arguments for 'modules' request. */
-	export interface ModulesArguments {
-		/** The index of the first module to return; if omitted modules start at 0. */
-		startModule?: number;
-		/** The number of modules to return. If moduleCount is not specified or 0, all modules are returned. */
+	export interfAce ModulesArguments {
+		/** The index of the first module to return; if omitted modules stArt At 0. */
+		stArtModule?: number;
+		/** The number of modules to return. If moduleCount is not specified or 0, All modules Are returned. */
 		moduleCount?: number;
 	}
 
 	/** Response to 'modules' request. */
-	export interface ModulesResponse extends Response {
+	export interfAce ModulesResponse extends Response {
 		body: {
-			/** All modules or range of modules. */
+			/** All modules or rAnge of modules. */
 			modules: Module[];
-			/** The total number of modules available. */
-			totalModules?: number;
+			/** The totAl number of modules AvAilAble. */
+			totAlModules?: number;
 		};
 	}
 
-	/** LoadedSources request; value of command field is 'loadedSources'.
-		Retrieves the set of all sources currently loaded by the debugged process.
-		Clients should only call this request if the capability 'supportsLoadedSourcesRequest' is true.
+	/** LoAdedSources request; vAlue of commAnd field is 'loAdedSources'.
+		Retrieves the set of All sources currently loAded by the debugged process.
+		Clients should only cAll this request if the cApAbility 'supportsLoAdedSourcesRequest' is true.
 	*/
-	export interface LoadedSourcesRequest extends Request {
-		// command: 'loadedSources';
-		arguments?: LoadedSourcesArguments;
+	export interfAce LoAdedSourcesRequest extends Request {
+		// commAnd: 'loAdedSources';
+		Arguments?: LoAdedSourcesArguments;
 	}
 
-	/** Arguments for 'loadedSources' request. */
-	export interface LoadedSourcesArguments {
+	/** Arguments for 'loAdedSources' request. */
+	export interfAce LoAdedSourcesArguments {
 	}
 
-	/** Response to 'loadedSources' request. */
-	export interface LoadedSourcesResponse extends Response {
+	/** Response to 'loAdedSources' request. */
+	export interfAce LoAdedSourcesResponse extends Response {
 		body: {
-			/** Set of loaded sources. */
+			/** Set of loAded sources. */
 			sources: Source[];
 		};
 	}
 
-	/** Evaluate request; value of command field is 'evaluate'.
-		Evaluates the given expression in the context of the top most stack frame.
-		The expression has access to any variables and arguments that are in scope.
+	/** EvAluAte request; vAlue of commAnd field is 'evAluAte'.
+		EvAluAtes the given expression in the context of the top most stAck frAme.
+		The expression hAs Access to Any vAriAbles And Arguments thAt Are in scope.
 	*/
-	export interface EvaluateRequest extends Request {
-		// command: 'evaluate';
-		arguments: EvaluateArguments;
+	export interfAce EvAluAteRequest extends Request {
+		// commAnd: 'evAluAte';
+		Arguments: EvAluAteArguments;
 	}
 
-	/** Arguments for 'evaluate' request. */
-	export interface EvaluateArguments {
-		/** The expression to evaluate. */
+	/** Arguments for 'evAluAte' request. */
+	export interfAce EvAluAteArguments {
+		/** The expression to evAluAte. */
 		expression: string;
-		/** Evaluate the expression in the scope of this stack frame. If not specified, the expression is evaluated in the global scope. */
-		frameId?: number;
-		/** The context in which the evaluate request is run.
-			Values:
-			'watch': evaluate is run in a watch.
-			'repl': evaluate is run from REPL console.
-			'hover': evaluate is run from a data hover.
-			'clipboard': evaluate is run to generate the value that will be stored in the clipboard.
-			The attribute is only honored by a debug adapter if the capability 'supportsClipboardContext' is true.
+		/** EvAluAte the expression in the scope of this stAck frAme. If not specified, the expression is evAluAted in the globAl scope. */
+		frAmeId?: number;
+		/** The context in which the evAluAte request is run.
+			VAlues:
+			'wAtch': evAluAte is run in A wAtch.
+			'repl': evAluAte is run from REPL console.
+			'hover': evAluAte is run from A dAtA hover.
+			'clipboArd': evAluAte is run to generAte the vAlue thAt will be stored in the clipboArd.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsClipboArdContext' is true.
 			etc.
 		*/
 		context?: string;
-		/** Specifies details on how to format the Evaluate result.
-			The attribute is only honored by a debug adapter if the capability 'supportsValueFormattingOptions' is true.
+		/** Specifies detAils on how to formAt the EvAluAte result.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsVAlueFormAttingOptions' is true.
 		*/
-		format?: ValueFormat;
+		formAt?: VAlueFormAt;
 	}
 
-	/** Response to 'evaluate' request. */
-	export interface EvaluateResponse extends Response {
+	/** Response to 'evAluAte' request. */
+	export interfAce EvAluAteResponse extends Response {
 		body: {
-			/** The result of the evaluate request. */
+			/** The result of the evAluAte request. */
 			result: string;
-			/** The optional type of the evaluate result.
-				This attribute should only be returned by a debug adapter if the client has passed the value true for the 'supportsVariableType' capability of the 'initialize' request.
+			/** The optionAl type of the evAluAte result.
+				This Attribute should only be returned by A debug AdApter if the client hAs pAssed the vAlue true for the 'supportsVAriAbleType' cApAbility of the 'initiAlize' request.
 			*/
 			type?: string;
-			/** Properties of a evaluate result that can be used to determine how to render the result in the UI. */
-			presentationHint?: VariablePresentationHint;
-			/** If variablesReference is > 0, the evaluate result is structured and its children can be retrieved by passing variablesReference to the VariablesRequest.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			/** Properties of A evAluAte result thAt cAn be used to determine how to render the result in the UI. */
+			presentAtionHint?: VAriAblePresentAtionHint;
+			/** If vAriAblesReference is > 0, the evAluAte result is structured And its children cAn be retrieved by pAssing vAriAblesReference to the VAriAblesRequest.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			variablesReference: number;
-			/** The number of named child variables.
-				The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			vAriAblesReference: number;
+			/** The number of nAmed child vAriAbles.
+				The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			namedVariables?: number;
-			/** The number of indexed child variables.
-				The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			nAmedVAriAbles?: number;
+			/** The number of indexed child vAriAbles.
+				The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			indexedVariables?: number;
-			/** Optional memory reference to a location appropriate for this result.
-				For pointer type eval results, this is generally a reference to the memory address contained in the pointer.
-				This attribute should be returned by a debug adapter if the client has passed the value true for the 'supportsMemoryReferences' capability of the 'initialize' request.
+			indexedVAriAbles?: number;
+			/** OptionAl memory reference to A locAtion AppropriAte for this result.
+				For pointer type evAl results, this is generAlly A reference to the memory Address contAined in the pointer.
+				This Attribute should be returned by A debug AdApter if the client hAs pAssed the vAlue true for the 'supportsMemoryReferences' cApAbility of the 'initiAlize' request.
 			*/
 			memoryReference?: string;
 		};
 	}
 
-	/** SetExpression request; value of command field is 'setExpression'.
-		Evaluates the given 'value' expression and assigns it to the 'expression' which must be a modifiable l-value.
-		The expressions have access to any variables and arguments that are in scope of the specified frame.
-		Clients should only call this request if the capability 'supportsSetExpression' is true.
+	/** SetExpression request; vAlue of commAnd field is 'setExpression'.
+		EvAluAtes the given 'vAlue' expression And Assigns it to the 'expression' which must be A modifiAble l-vAlue.
+		The expressions hAve Access to Any vAriAbles And Arguments thAt Are in scope of the specified frAme.
+		Clients should only cAll this request if the cApAbility 'supportsSetExpression' is true.
 	*/
-	export interface SetExpressionRequest extends Request {
-		// command: 'setExpression';
-		arguments: SetExpressionArguments;
+	export interfAce SetExpressionRequest extends Request {
+		// commAnd: 'setExpression';
+		Arguments: SetExpressionArguments;
 	}
 
 	/** Arguments for 'setExpression' request. */
-	export interface SetExpressionArguments {
-		/** The l-value expression to assign to. */
+	export interfAce SetExpressionArguments {
+		/** The l-vAlue expression to Assign to. */
 		expression: string;
-		/** The value expression to assign to the l-value expression. */
-		value: string;
-		/** Evaluate the expressions in the scope of this stack frame. If not specified, the expressions are evaluated in the global scope. */
-		frameId?: number;
-		/** Specifies how the resulting value should be formatted. */
-		format?: ValueFormat;
+		/** The vAlue expression to Assign to the l-vAlue expression. */
+		vAlue: string;
+		/** EvAluAte the expressions in the scope of this stAck frAme. If not specified, the expressions Are evAluAted in the globAl scope. */
+		frAmeId?: number;
+		/** Specifies how the resulting vAlue should be formAtted. */
+		formAt?: VAlueFormAt;
 	}
 
 	/** Response to 'setExpression' request. */
-	export interface SetExpressionResponse extends Response {
+	export interfAce SetExpressionResponse extends Response {
 		body: {
-			/** The new value of the expression. */
-			value: string;
-			/** The optional type of the value.
-				This attribute should only be returned by a debug adapter if the client has passed the value true for the 'supportsVariableType' capability of the 'initialize' request.
+			/** The new vAlue of the expression. */
+			vAlue: string;
+			/** The optionAl type of the vAlue.
+				This Attribute should only be returned by A debug AdApter if the client hAs pAssed the vAlue true for the 'supportsVAriAbleType' cApAbility of the 'initiAlize' request.
 			*/
 			type?: string;
-			/** Properties of a value that can be used to determine how to render the result in the UI. */
-			presentationHint?: VariablePresentationHint;
-			/** If variablesReference is > 0, the value is structured and its children can be retrieved by passing variablesReference to the VariablesRequest.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			/** Properties of A vAlue thAt cAn be used to determine how to render the result in the UI. */
+			presentAtionHint?: VAriAblePresentAtionHint;
+			/** If vAriAblesReference is > 0, the vAlue is structured And its children cAn be retrieved by pAssing vAriAblesReference to the VAriAblesRequest.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			variablesReference?: number;
-			/** The number of named child variables.
-				The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			vAriAblesReference?: number;
+			/** The number of nAmed child vAriAbles.
+				The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			namedVariables?: number;
-			/** The number of indexed child variables.
-				The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
-				The value should be less than or equal to 2147483647 (2^31 - 1).
+			nAmedVAriAbles?: number;
+			/** The number of indexed child vAriAbles.
+				The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
+				The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 			*/
-			indexedVariables?: number;
+			indexedVAriAbles?: number;
 		};
 	}
 
-	/** StepInTargets request; value of command field is 'stepInTargets'.
-		This request retrieves the possible stepIn targets for the specified stack frame.
-		These targets can be used in the 'stepIn' request.
-		The StepInTargets may only be called if the 'supportsStepInTargetsRequest' capability exists and is true.
-		Clients should only call this request if the capability 'supportsStepInTargetsRequest' is true.
+	/** StepInTArgets request; vAlue of commAnd field is 'stepInTArgets'.
+		This request retrieves the possible stepIn tArgets for the specified stAck frAme.
+		These tArgets cAn be used in the 'stepIn' request.
+		The StepInTArgets mAy only be cAlled if the 'supportsStepInTArgetsRequest' cApAbility exists And is true.
+		Clients should only cAll this request if the cApAbility 'supportsStepInTArgetsRequest' is true.
 	*/
-	export interface StepInTargetsRequest extends Request {
-		// command: 'stepInTargets';
-		arguments: StepInTargetsArguments;
+	export interfAce StepInTArgetsRequest extends Request {
+		// commAnd: 'stepInTArgets';
+		Arguments: StepInTArgetsArguments;
 	}
 
-	/** Arguments for 'stepInTargets' request. */
-	export interface StepInTargetsArguments {
-		/** The stack frame for which to retrieve the possible stepIn targets. */
-		frameId: number;
+	/** Arguments for 'stepInTArgets' request. */
+	export interfAce StepInTArgetsArguments {
+		/** The stAck frAme for which to retrieve the possible stepIn tArgets. */
+		frAmeId: number;
 	}
 
-	/** Response to 'stepInTargets' request. */
-	export interface StepInTargetsResponse extends Response {
+	/** Response to 'stepInTArgets' request. */
+	export interfAce StepInTArgetsResponse extends Response {
 		body: {
-			/** The possible stepIn targets of the specified source location. */
-			targets: StepInTarget[];
+			/** The possible stepIn tArgets of the specified source locAtion. */
+			tArgets: StepInTArget[];
 		};
 	}
 
-	/** GotoTargets request; value of command field is 'gotoTargets'.
-		This request retrieves the possible goto targets for the specified source location.
-		These targets can be used in the 'goto' request.
-		Clients should only call this request if the capability 'supportsGotoTargetsRequest' is true.
+	/** GotoTArgets request; vAlue of commAnd field is 'gotoTArgets'.
+		This request retrieves the possible goto tArgets for the specified source locAtion.
+		These tArgets cAn be used in the 'goto' request.
+		Clients should only cAll this request if the cApAbility 'supportsGotoTArgetsRequest' is true.
 	*/
-	export interface GotoTargetsRequest extends Request {
-		// command: 'gotoTargets';
-		arguments: GotoTargetsArguments;
+	export interfAce GotoTArgetsRequest extends Request {
+		// commAnd: 'gotoTArgets';
+		Arguments: GotoTArgetsArguments;
 	}
 
-	/** Arguments for 'gotoTargets' request. */
-	export interface GotoTargetsArguments {
-		/** The source location for which the goto targets are determined. */
+	/** Arguments for 'gotoTArgets' request. */
+	export interfAce GotoTArgetsArguments {
+		/** The source locAtion for which the goto tArgets Are determined. */
 		source: Source;
-		/** The line location for which the goto targets are determined. */
+		/** The line locAtion for which the goto tArgets Are determined. */
 		line: number;
-		/** An optional column location for which the goto targets are determined. */
+		/** An optionAl column locAtion for which the goto tArgets Are determined. */
 		column?: number;
 	}
 
-	/** Response to 'gotoTargets' request. */
-	export interface GotoTargetsResponse extends Response {
+	/** Response to 'gotoTArgets' request. */
+	export interfAce GotoTArgetsResponse extends Response {
 		body: {
-			/** The possible goto targets of the specified location. */
-			targets: GotoTarget[];
+			/** The possible goto tArgets of the specified locAtion. */
+			tArgets: GotoTArget[];
 		};
 	}
 
-	/** Completions request; value of command field is 'completions'.
-		Returns a list of possible completions for a given caret position and text.
-		Clients should only call this request if the capability 'supportsCompletionsRequest' is true.
+	/** Completions request; vAlue of commAnd field is 'completions'.
+		Returns A list of possible completions for A given cAret position And text.
+		Clients should only cAll this request if the cApAbility 'supportsCompletionsRequest' is true.
 	*/
-	export interface CompletionsRequest extends Request {
-		// command: 'completions';
-		arguments: CompletionsArguments;
+	export interfAce CompletionsRequest extends Request {
+		// commAnd: 'completions';
+		Arguments: CompletionsArguments;
 	}
 
 	/** Arguments for 'completions' request. */
-	export interface CompletionsArguments {
-		/** Returns completions in the scope of this stack frame. If not specified, the completions are returned for the global scope. */
-		frameId?: number;
-		/** One or more source lines. Typically this is the text a user has typed into the debug console before he asked for completion. */
+	export interfAce CompletionsArguments {
+		/** Returns completions in the scope of this stAck frAme. If not specified, the completions Are returned for the globAl scope. */
+		frAmeId?: number;
+		/** One or more source lines. TypicAlly this is the text A user hAs typed into the debug console before he Asked for completion. */
 		text: string;
-		/** The character position for which to determine the completion proposals. */
+		/** The chArActer position for which to determine the completion proposAls. */
 		column: number;
-		/** An optional line for which to determine the completion proposals. If missing the first line of the text is assumed. */
+		/** An optionAl line for which to determine the completion proposAls. If missing the first line of the text is Assumed. */
 		line?: number;
 	}
 
 	/** Response to 'completions' request. */
-	export interface CompletionsResponse extends Response {
+	export interfAce CompletionsResponse extends Response {
 		body: {
 			/** The possible completions for . */
-			targets: CompletionItem[];
+			tArgets: CompletionItem[];
 		};
 	}
 
-	/** ExceptionInfo request; value of command field is 'exceptionInfo'.
-		Retrieves the details of the exception that caused this event to be raised.
-		Clients should only call this request if the capability 'supportsExceptionInfoRequest' is true.
+	/** ExceptionInfo request; vAlue of commAnd field is 'exceptionInfo'.
+		Retrieves the detAils of the exception thAt cAused this event to be rAised.
+		Clients should only cAll this request if the cApAbility 'supportsExceptionInfoRequest' is true.
 	*/
-	export interface ExceptionInfoRequest extends Request {
-		// command: 'exceptionInfo';
-		arguments: ExceptionInfoArguments;
+	export interfAce ExceptionInfoRequest extends Request {
+		// commAnd: 'exceptionInfo';
+		Arguments: ExceptionInfoArguments;
 	}
 
 	/** Arguments for 'exceptionInfo' request. */
-	export interface ExceptionInfoArguments {
-		/** Thread for which exception information should be retrieved. */
-		threadId: number;
+	export interfAce ExceptionInfoArguments {
+		/** ThreAd for which exception informAtion should be retrieved. */
+		threAdId: number;
 	}
 
 	/** Response to 'exceptionInfo' request. */
-	export interface ExceptionInfoResponse extends Response {
+	export interfAce ExceptionInfoResponse extends Response {
 		body: {
-			/** ID of the exception that was thrown. */
+			/** ID of the exception thAt wAs thrown. */
 			exceptionId: string;
-			/** Descriptive text for the exception provided by the debug adapter. */
+			/** Descriptive text for the exception provided by the debug AdApter. */
 			description?: string;
-			/** Mode that caused the exception notification to be raised. */
-			breakMode: ExceptionBreakMode;
-			/** Detailed information about the exception. */
-			details?: ExceptionDetails;
+			/** Mode thAt cAused the exception notificAtion to be rAised. */
+			breAkMode: ExceptionBreAkMode;
+			/** DetAiled informAtion About the exception. */
+			detAils?: ExceptionDetAils;
 		};
 	}
 
-	/** ReadMemory request; value of command field is 'readMemory'.
-		Reads bytes from memory at the provided location.
-		Clients should only call this request if the capability 'supportsReadMemoryRequest' is true.
+	/** ReAdMemory request; vAlue of commAnd field is 'reAdMemory'.
+		ReAds bytes from memory At the provided locAtion.
+		Clients should only cAll this request if the cApAbility 'supportsReAdMemoryRequest' is true.
 	*/
-	export interface ReadMemoryRequest extends Request {
-		// command: 'readMemory';
-		arguments: ReadMemoryArguments;
+	export interfAce ReAdMemoryRequest extends Request {
+		// commAnd: 'reAdMemory';
+		Arguments: ReAdMemoryArguments;
 	}
 
-	/** Arguments for 'readMemory' request. */
-	export interface ReadMemoryArguments {
-		/** Memory reference to the base location from which data should be read. */
+	/** Arguments for 'reAdMemory' request. */
+	export interfAce ReAdMemoryArguments {
+		/** Memory reference to the bAse locAtion from which dAtA should be reAd. */
 		memoryReference: string;
-		/** Optional offset (in bytes) to be applied to the reference location before reading data. Can be negative. */
+		/** OptionAl offset (in bytes) to be Applied to the reference locAtion before reAding dAtA. CAn be negAtive. */
 		offset?: number;
-		/** Number of bytes to read at the specified location and offset. */
+		/** Number of bytes to reAd At the specified locAtion And offset. */
 		count: number;
 	}
 
-	/** Response to 'readMemory' request. */
-	export interface ReadMemoryResponse extends Response {
+	/** Response to 'reAdMemory' request. */
+	export interfAce ReAdMemoryResponse extends Response {
 		body?: {
-			/** The address of the first byte of data returned.
-				Treated as a hex value if prefixed with '0x', or as a decimal value otherwise.
+			/** The Address of the first byte of dAtA returned.
+				TreAted As A hex vAlue if prefixed with '0x', or As A decimAl vAlue otherwise.
 			*/
-			address: string;
-			/** The number of unreadable bytes encountered after the last successfully read byte.
-				This can be used to determine the number of bytes that must be skipped before a subsequent 'readMemory' request will succeed.
+			Address: string;
+			/** The number of unreAdAble bytes encountered After the lAst successfully reAd byte.
+				This cAn be used to determine the number of bytes thAt must be skipped before A subsequent 'reAdMemory' request will succeed.
 			*/
-			unreadableBytes?: number;
-			/** The bytes read from memory, encoded using base64. */
-			data?: string;
+			unreAdAbleBytes?: number;
+			/** The bytes reAd from memory, encoded using bAse64. */
+			dAtA?: string;
 		};
 	}
 
-	/** Disassemble request; value of command field is 'disassemble'.
-		Disassembles code stored at the provided location.
-		Clients should only call this request if the capability 'supportsDisassembleRequest' is true.
+	/** DisAssemble request; vAlue of commAnd field is 'disAssemble'.
+		DisAssembles code stored At the provided locAtion.
+		Clients should only cAll this request if the cApAbility 'supportsDisAssembleRequest' is true.
 	*/
-	export interface DisassembleRequest extends Request {
-		// command: 'disassemble';
-		arguments: DisassembleArguments;
+	export interfAce DisAssembleRequest extends Request {
+		// commAnd: 'disAssemble';
+		Arguments: DisAssembleArguments;
 	}
 
-	/** Arguments for 'disassemble' request. */
-	export interface DisassembleArguments {
-		/** Memory reference to the base location containing the instructions to disassemble. */
+	/** Arguments for 'disAssemble' request. */
+	export interfAce DisAssembleArguments {
+		/** Memory reference to the bAse locAtion contAining the instructions to disAssemble. */
 		memoryReference: string;
-		/** Optional offset (in bytes) to be applied to the reference location before disassembling. Can be negative. */
+		/** OptionAl offset (in bytes) to be Applied to the reference locAtion before disAssembling. CAn be negAtive. */
 		offset?: number;
-		/** Optional offset (in instructions) to be applied after the byte offset (if any) before disassembling. Can be negative. */
+		/** OptionAl offset (in instructions) to be Applied After the byte offset (if Any) before disAssembling. CAn be negAtive. */
 		instructionOffset?: number;
-		/** Number of instructions to disassemble starting at the specified location and offset.
-			An adapter must return exactly this number of instructions - any unavailable instructions should be replaced with an implementation-defined 'invalid instruction' value.
+		/** Number of instructions to disAssemble stArting At the specified locAtion And offset.
+			An AdApter must return exActly this number of instructions - Any unAvAilAble instructions should be replAced with An implementAtion-defined 'invAlid instruction' vAlue.
 		*/
 		instructionCount: number;
-		/** If true, the adapter should attempt to resolve memory addresses and other values to symbolic names. */
-		resolveSymbols?: boolean;
+		/** If true, the AdApter should Attempt to resolve memory Addresses And other vAlues to symbolic nAmes. */
+		resolveSymbols?: booleAn;
 	}
 
-	/** Response to 'disassemble' request. */
-	export interface DisassembleResponse extends Response {
+	/** Response to 'disAssemble' request. */
+	export interfAce DisAssembleResponse extends Response {
 		body?: {
-			/** The list of disassembled instructions. */
-			instructions: DisassembledInstruction[];
+			/** The list of disAssembled instructions. */
+			instructions: DisAssembledInstruction[];
 		};
 	}
 
-	/** Information about the capabilities of a debug adapter. */
-	export interface Capabilities {
-		/** The debug adapter supports the 'configurationDone' request. */
-		supportsConfigurationDoneRequest?: boolean;
-		/** The debug adapter supports function breakpoints. */
-		supportsFunctionBreakpoints?: boolean;
-		/** The debug adapter supports conditional breakpoints. */
-		supportsConditionalBreakpoints?: boolean;
-		/** The debug adapter supports breakpoints that break execution after a specified number of hits. */
-		supportsHitConditionalBreakpoints?: boolean;
-		/** The debug adapter supports a (side effect free) evaluate request for data hovers. */
-		supportsEvaluateForHovers?: boolean;
-		/** Available filters or options for the setExceptionBreakpoints request. */
-		exceptionBreakpointFilters?: ExceptionBreakpointsFilter[];
-		/** The debug adapter supports stepping back via the 'stepBack' and 'reverseContinue' requests. */
-		supportsStepBack?: boolean;
-		/** The debug adapter supports setting a variable to a value. */
-		supportsSetVariable?: boolean;
-		/** The debug adapter supports restarting a frame. */
-		supportsRestartFrame?: boolean;
-		/** The debug adapter supports the 'gotoTargets' request. */
-		supportsGotoTargetsRequest?: boolean;
-		/** The debug adapter supports the 'stepInTargets' request. */
-		supportsStepInTargetsRequest?: boolean;
-		/** The debug adapter supports the 'completions' request. */
-		supportsCompletionsRequest?: boolean;
-		/** The set of characters that should trigger completion in a REPL. If not specified, the UI should assume the '.' character. */
-		completionTriggerCharacters?: string[];
-		/** The debug adapter supports the 'modules' request. */
-		supportsModulesRequest?: boolean;
-		/** The set of additional module information exposed by the debug adapter. */
-		additionalModuleColumns?: ColumnDescriptor[];
-		/** Checksum algorithms supported by the debug adapter. */
+	/** InformAtion About the cApAbilities of A debug AdApter. */
+	export interfAce CApAbilities {
+		/** The debug AdApter supports the 'configurAtionDone' request. */
+		supportsConfigurAtionDoneRequest?: booleAn;
+		/** The debug AdApter supports function breAkpoints. */
+		supportsFunctionBreAkpoints?: booleAn;
+		/** The debug AdApter supports conditionAl breAkpoints. */
+		supportsConditionAlBreAkpoints?: booleAn;
+		/** The debug AdApter supports breAkpoints thAt breAk execution After A specified number of hits. */
+		supportsHitConditionAlBreAkpoints?: booleAn;
+		/** The debug AdApter supports A (side effect free) evAluAte request for dAtA hovers. */
+		supportsEvAluAteForHovers?: booleAn;
+		/** AvAilAble filters or options for the setExceptionBreAkpoints request. */
+		exceptionBreAkpointFilters?: ExceptionBreAkpointsFilter[];
+		/** The debug AdApter supports stepping bAck viA the 'stepBAck' And 'reverseContinue' requests. */
+		supportsStepBAck?: booleAn;
+		/** The debug AdApter supports setting A vAriAble to A vAlue. */
+		supportsSetVAriAble?: booleAn;
+		/** The debug AdApter supports restArting A frAme. */
+		supportsRestArtFrAme?: booleAn;
+		/** The debug AdApter supports the 'gotoTArgets' request. */
+		supportsGotoTArgetsRequest?: booleAn;
+		/** The debug AdApter supports the 'stepInTArgets' request. */
+		supportsStepInTArgetsRequest?: booleAn;
+		/** The debug AdApter supports the 'completions' request. */
+		supportsCompletionsRequest?: booleAn;
+		/** The set of chArActers thAt should trigger completion in A REPL. If not specified, the UI should Assume the '.' chArActer. */
+		completionTriggerChArActers?: string[];
+		/** The debug AdApter supports the 'modules' request. */
+		supportsModulesRequest?: booleAn;
+		/** The set of AdditionAl module informAtion exposed by the debug AdApter. */
+		AdditionAlModuleColumns?: ColumnDescriptor[];
+		/** Checksum Algorithms supported by the debug AdApter. */
 		supportedChecksumAlgorithms?: ChecksumAlgorithm[];
-		/** The debug adapter supports the 'restart' request. In this case a client should not implement 'restart' by terminating and relaunching the adapter but by calling the RestartRequest. */
-		supportsRestartRequest?: boolean;
-		/** The debug adapter supports 'exceptionOptions' on the setExceptionBreakpoints request. */
-		supportsExceptionOptions?: boolean;
-		/** The debug adapter supports a 'format' attribute on the stackTraceRequest, variablesRequest, and evaluateRequest. */
-		supportsValueFormattingOptions?: boolean;
-		/** The debug adapter supports the 'exceptionInfo' request. */
-		supportsExceptionInfoRequest?: boolean;
-		/** The debug adapter supports the 'terminateDebuggee' attribute on the 'disconnect' request. */
-		supportTerminateDebuggee?: boolean;
-		/** The debug adapter supports the delayed loading of parts of the stack, which requires that both the 'startFrame' and 'levels' arguments and the 'totalFrames' result of the 'StackTrace' request are supported. */
-		supportsDelayedStackTraceLoading?: boolean;
-		/** The debug adapter supports the 'loadedSources' request. */
-		supportsLoadedSourcesRequest?: boolean;
-		/** The debug adapter supports logpoints by interpreting the 'logMessage' attribute of the SourceBreakpoint. */
-		supportsLogPoints?: boolean;
-		/** The debug adapter supports the 'terminateThreads' request. */
-		supportsTerminateThreadsRequest?: boolean;
-		/** The debug adapter supports the 'setExpression' request. */
-		supportsSetExpression?: boolean;
-		/** The debug adapter supports the 'terminate' request. */
-		supportsTerminateRequest?: boolean;
-		/** The debug adapter supports data breakpoints. */
-		supportsDataBreakpoints?: boolean;
-		/** The debug adapter supports the 'readMemory' request. */
-		supportsReadMemoryRequest?: boolean;
-		/** The debug adapter supports the 'disassemble' request. */
-		supportsDisassembleRequest?: boolean;
-		/** The debug adapter supports the 'cancel' request. */
-		supportsCancelRequest?: boolean;
-		/** The debug adapter supports the 'breakpointLocations' request. */
-		supportsBreakpointLocationsRequest?: boolean;
-		/** The debug adapter supports the 'clipboard' context value in the 'evaluate' request. */
-		supportsClipboardContext?: boolean;
-		/** The debug adapter supports stepping granularities (argument 'granularity') for the stepping requests. */
-		supportsSteppingGranularity?: boolean;
-		/** The debug adapter supports adding breakpoints based on instruction references. */
-		supportsInstructionBreakpoints?: boolean;
+		/** The debug AdApter supports the 'restArt' request. In this cAse A client should not implement 'restArt' by terminAting And relAunching the AdApter but by cAlling the RestArtRequest. */
+		supportsRestArtRequest?: booleAn;
+		/** The debug AdApter supports 'exceptionOptions' on the setExceptionBreAkpoints request. */
+		supportsExceptionOptions?: booleAn;
+		/** The debug AdApter supports A 'formAt' Attribute on the stAckTrAceRequest, vAriAblesRequest, And evAluAteRequest. */
+		supportsVAlueFormAttingOptions?: booleAn;
+		/** The debug AdApter supports the 'exceptionInfo' request. */
+		supportsExceptionInfoRequest?: booleAn;
+		/** The debug AdApter supports the 'terminAteDebuggee' Attribute on the 'disconnect' request. */
+		supportTerminAteDebuggee?: booleAn;
+		/** The debug AdApter supports the delAyed loAding of pArts of the stAck, which requires thAt both the 'stArtFrAme' And 'levels' Arguments And the 'totAlFrAmes' result of the 'StAckTrAce' request Are supported. */
+		supportsDelAyedStAckTrAceLoAding?: booleAn;
+		/** The debug AdApter supports the 'loAdedSources' request. */
+		supportsLoAdedSourcesRequest?: booleAn;
+		/** The debug AdApter supports logpoints by interpreting the 'logMessAge' Attribute of the SourceBreAkpoint. */
+		supportsLogPoints?: booleAn;
+		/** The debug AdApter supports the 'terminAteThreAds' request. */
+		supportsTerminAteThreAdsRequest?: booleAn;
+		/** The debug AdApter supports the 'setExpression' request. */
+		supportsSetExpression?: booleAn;
+		/** The debug AdApter supports the 'terminAte' request. */
+		supportsTerminAteRequest?: booleAn;
+		/** The debug AdApter supports dAtA breAkpoints. */
+		supportsDAtABreAkpoints?: booleAn;
+		/** The debug AdApter supports the 'reAdMemory' request. */
+		supportsReAdMemoryRequest?: booleAn;
+		/** The debug AdApter supports the 'disAssemble' request. */
+		supportsDisAssembleRequest?: booleAn;
+		/** The debug AdApter supports the 'cAncel' request. */
+		supportsCAncelRequest?: booleAn;
+		/** The debug AdApter supports the 'breAkpointLocAtions' request. */
+		supportsBreAkpointLocAtionsRequest?: booleAn;
+		/** The debug AdApter supports the 'clipboArd' context vAlue in the 'evAluAte' request. */
+		supportsClipboArdContext?: booleAn;
+		/** The debug AdApter supports stepping grAnulArities (Argument 'grAnulArity') for the stepping requests. */
+		supportsSteppingGrAnulArity?: booleAn;
+		/** The debug AdApter supports Adding breAkpoints bAsed on instruction references. */
+		supportsInstructionBreAkpoints?: booleAn;
 	}
 
-	/** An ExceptionBreakpointsFilter is shown in the UI as an option for configuring how exceptions are dealt with. */
-	export interface ExceptionBreakpointsFilter {
-		/** The internal ID of the filter. This value is passed to the setExceptionBreakpoints request. */
+	/** An ExceptionBreAkpointsFilter is shown in the UI As An option for configuring how exceptions Are deAlt with. */
+	export interfAce ExceptionBreAkpointsFilter {
+		/** The internAl ID of the filter. This vAlue is pAssed to the setExceptionBreAkpoints request. */
 		filter: string;
-		/** The name of the filter. This will be shown in the UI. */
-		label: string;
-		/** Initial value of the filter. If not specified a value 'false' is assumed. */
-		default?: boolean;
+		/** The nAme of the filter. This will be shown in the UI. */
+		lAbel: string;
+		/** InitiAl vAlue of the filter. If not specified A vAlue 'fAlse' is Assumed. */
+		defAult?: booleAn;
 	}
 
-	/** A structured message object. Used to return errors from requests. */
-	export interface Message {
-		/** Unique identifier for the message. */
+	/** A structured messAge object. Used to return errors from requests. */
+	export interfAce MessAge {
+		/** Unique identifier for the messAge. */
 		id: number;
-		/** A format string for the message. Embedded variables have the form '{name}'.
-			If variable name starts with an underscore character, the variable does not contain user data (PII) and can be safely used for telemetry purposes.
+		/** A formAt string for the messAge. Embedded vAriAbles hAve the form '{nAme}'.
+			If vAriAble nAme stArts with An underscore chArActer, the vAriAble does not contAin user dAtA (PII) And cAn be sAfely used for telemetry purposes.
 		*/
-		format: string;
-		/** An object used as a dictionary for looking up the variables in the format string. */
-		variables?: { [key: string]: string; };
+		formAt: string;
+		/** An object used As A dictionAry for looking up the vAriAbles in the formAt string. */
+		vAriAbles?: { [key: string]: string; };
 		/** If true send to telemetry. */
-		sendTelemetry?: boolean;
+		sendTelemetry?: booleAn;
 		/** If true show user. */
-		showUser?: boolean;
-		/** An optional url where additional information about this message can be found. */
+		showUser?: booleAn;
+		/** An optionAl url where AdditionAl informAtion About this messAge cAn be found. */
 		url?: string;
-		/** An optional label that is presented to the user as the UI for opening the url. */
-		urlLabel?: string;
+		/** An optionAl lAbel thAt is presented to the user As the UI for opening the url. */
+		urlLAbel?: string;
 	}
 
-	/** A Module object represents a row in the modules view.
-		Two attributes are mandatory: an id identifies a module in the modules view and is used in a ModuleEvent for identifying a module for adding, updating or deleting.
-		The name is used to minimally render the module in the UI.
+	/** A Module object represents A row in the modules view.
+		Two Attributes Are mAndAtory: An id identifies A module in the modules view And is used in A ModuleEvent for identifying A module for Adding, updAting or deleting.
+		The nAme is used to minimAlly render the module in the UI.
 
-		Additional attributes can be added to the module. They will show up in the module View if they have a corresponding ColumnDescriptor.
+		AdditionAl Attributes cAn be Added to the module. They will show up in the module View if they hAve A corresponding ColumnDescriptor.
 
-		To avoid an unnecessary proliferation of additional attributes with similar semantics but different names
-		we recommend to re-use attributes from the 'recommended' list below first, and only introduce new attributes if nothing appropriate could be found.
+		To Avoid An unnecessAry proliferAtion of AdditionAl Attributes with similAr semAntics but different nAmes
+		we recommend to re-use Attributes from the 'recommended' list below first, And only introduce new Attributes if nothing AppropriAte could be found.
 	*/
-	export interface Module {
+	export interfAce Module {
 		/** Unique identifier for the module. */
 		id: number | string;
-		/** A name of the module. */
-		name: string;
-		/** optional but recommended attributes.
-			always try to use these first before introducing additional attributes.
+		/** A nAme of the module. */
+		nAme: string;
+		/** optionAl but recommended Attributes.
+			AlwAys try to use these first before introducing AdditionAl Attributes.
 
-			Logical full path to the module. The exact definition is implementation defined, but usually this would be a full path to the on-disk file for the module.
+			LogicAl full pAth to the module. The exAct definition is implementAtion defined, but usuAlly this would be A full pAth to the on-disk file for the module.
 		*/
-		path?: string;
+		pAth?: string;
 		/** True if the module is optimized. */
-		isOptimized?: boolean;
-		/** True if the module is considered 'user code' by a debugger that supports 'Just My Code'. */
-		isUserCode?: boolean;
+		isOptimized?: booleAn;
+		/** True if the module is considered 'user code' by A debugger thAt supports 'Just My Code'. */
+		isUserCode?: booleAn;
 		/** Version of Module. */
 		version?: string;
-		/** User understandable description of if symbols were found for the module (ex: 'Symbols Loaded', 'Symbols not found', etc. */
-		symbolStatus?: string;
-		/** Logical full path to the symbol file. The exact definition is implementation defined. */
-		symbolFilePath?: string;
-		/** Module created or modified. */
-		dateTimeStamp?: string;
-		/** Address range covered by this module. */
-		addressRange?: string;
+		/** User understAndAble description of if symbols were found for the module (ex: 'Symbols LoAded', 'Symbols not found', etc. */
+		symbolStAtus?: string;
+		/** LogicAl full pAth to the symbol file. The exAct definition is implementAtion defined. */
+		symbolFilePAth?: string;
+		/** Module creAted or modified. */
+		dAteTimeStAmp?: string;
+		/** Address rAnge covered by this module. */
+		AddressRAnge?: string;
 	}
 
-	/** A ColumnDescriptor specifies what module attribute to show in a column of the ModulesView, how to format it,
-		and what the column's label should be.
-		It is only used if the underlying UI actually supports this level of customization.
+	/** A ColumnDescriptor specifies whAt module Attribute to show in A column of the ModulesView, how to formAt it,
+		And whAt the column's lAbel should be.
+		It is only used if the underlying UI ActuAlly supports this level of customizAtion.
 	*/
-	export interface ColumnDescriptor {
-		/** Name of the attribute rendered in this column. */
-		attributeName: string;
-		/** Header UI label of column. */
-		label: string;
-		/** Format to use for the rendered values in this column. TBD how the format strings looks like. */
-		format?: string;
-		/** Datatype of values in this column.  Defaults to 'string' if not specified. */
-		type?: 'string' | 'number' | 'boolean' | 'unixTimestampUTC';
-		/** Width of this column in characters (hint only). */
+	export interfAce ColumnDescriptor {
+		/** NAme of the Attribute rendered in this column. */
+		AttributeNAme: string;
+		/** HeAder UI lAbel of column. */
+		lAbel: string;
+		/** FormAt to use for the rendered vAlues in this column. TBD how the formAt strings looks like. */
+		formAt?: string;
+		/** DAtAtype of vAlues in this column.  DefAults to 'string' if not specified. */
+		type?: 'string' | 'number' | 'booleAn' | 'unixTimestAmpUTC';
+		/** Width of this column in chArActers (hint only). */
 		width?: number;
 	}
 
-	/** The ModulesViewDescriptor is the container for all declarative configuration options of a ModuleView.
+	/** The ModulesViewDescriptor is the contAiner for All declArAtive configurAtion options of A ModuleView.
 		For now it only specifies the columns to be shown in the modules view.
 	*/
-	export interface ModulesViewDescriptor {
+	export interfAce ModulesViewDescriptor {
 		columns: ColumnDescriptor[];
 	}
 
-	/** A Thread */
-	export interface Thread {
-		/** Unique identifier for the thread. */
+	/** A ThreAd */
+	export interfAce ThreAd {
+		/** Unique identifier for the threAd. */
 		id: number;
-		/** A name of the thread. */
-		name: string;
+		/** A nAme of the threAd. */
+		nAme: string;
 	}
 
-	/** A Source is a descriptor for source code.
-		It is returned from the debug adapter as part of a StackFrame and it is used by clients when specifying breakpoints.
+	/** A Source is A descriptor for source code.
+		It is returned from the debug AdApter As pArt of A StAckFrAme And it is used by clients when specifying breAkpoints.
 	*/
-	export interface Source {
-		/** The short name of the source. Every source returned from the debug adapter has a name.
-			When sending a source to the debug adapter this name is optional.
+	export interfAce Source {
+		/** The short nAme of the source. Every source returned from the debug AdApter hAs A nAme.
+			When sending A source to the debug AdApter this nAme is optionAl.
 		*/
-		name?: string;
-		/** The path of the source to be shown in the UI.
-			It is only used to locate and load the content of the source if no sourceReference is specified (or its value is 0).
+		nAme?: string;
+		/** The pAth of the source to be shown in the UI.
+			It is only used to locAte And loAd the content of the source if no sourceReference is specified (or its vAlue is 0).
 		*/
-		path?: string;
-		/** If sourceReference > 0 the contents of the source must be retrieved through the SourceRequest (even if a path is specified).
-			A sourceReference is only valid for a session, so it must not be used to persist a source.
-			The value should be less than or equal to 2147483647 (2^31 - 1).
+		pAth?: string;
+		/** If sourceReference > 0 the contents of the source must be retrieved through the SourceRequest (even if A pAth is specified).
+			A sourceReference is only vAlid for A session, so it must not be used to persist A source.
+			The vAlue should be less thAn or equAl to 2147483647 (2^31 - 1).
 		*/
 		sourceReference?: number;
-		/** An optional hint for how to present the source in the UI.
-			A value of 'deemphasize' can be used to indicate that the source is not available or that it is skipped on stepping.
+		/** An optionAl hint for how to present the source in the UI.
+			A vAlue of 'deemphAsize' cAn be used to indicAte thAt the source is not AvAilAble or thAt it is skipped on stepping.
 		*/
-		presentationHint?: 'normal' | 'emphasize' | 'deemphasize';
-		/** The (optional) origin of this source: possible values 'internal module', 'inlined content from source map', etc. */
+		presentAtionHint?: 'normAl' | 'emphAsize' | 'deemphAsize';
+		/** The (optionAl) origin of this source: possible vAlues 'internAl module', 'inlined content from source mAp', etc. */
 		origin?: string;
-		/** An optional list of sources that are related to this source. These may be the source that generated this source. */
+		/** An optionAl list of sources thAt Are relAted to this source. These mAy be the source thAt generAted this source. */
 		sources?: Source[];
-		/** Optional data that a debug adapter might want to loop through the client.
-			The client should leave the data intact and persist it across sessions. The client should not interpret the data.
+		/** OptionAl dAtA thAt A debug AdApter might wAnt to loop through the client.
+			The client should leAve the dAtA intAct And persist it Across sessions. The client should not interpret the dAtA.
 		*/
-		adapterData?: any;
-		/** The checksums associated with this file. */
+		AdApterDAtA?: Any;
+		/** The checksums AssociAted with this file. */
 		checksums?: Checksum[];
 	}
 
-	/** A Stackframe contains the source location. */
-	export interface StackFrame {
-		/** An identifier for the stack frame. It must be unique across all threads.
-			This id can be used to retrieve the scopes of the frame with the 'scopesRequest' or to restart the execution of a stackframe.
+	/** A StAckfrAme contAins the source locAtion. */
+	export interfAce StAckFrAme {
+		/** An identifier for the stAck frAme. It must be unique Across All threAds.
+			This id cAn be used to retrieve the scopes of the frAme with the 'scopesRequest' or to restArt the execution of A stAckfrAme.
 		*/
 		id: number;
-		/** The name of the stack frame, typically a method name. */
-		name: string;
-		/** The optional source of the frame. */
+		/** The nAme of the stAck frAme, typicAlly A method nAme. */
+		nAme: string;
+		/** The optionAl source of the frAme. */
 		source?: Source;
-		/** The line within the file of the frame. If source is null or doesn't exist, line is 0 and must be ignored. */
+		/** The line within the file of the frAme. If source is null or doesn't exist, line is 0 And must be ignored. */
 		line: number;
-		/** The column within the line. If source is null or doesn't exist, column is 0 and must be ignored. */
+		/** The column within the line. If source is null or doesn't exist, column is 0 And must be ignored. */
 		column: number;
-		/** An optional end line of the range covered by the stack frame. */
+		/** An optionAl end line of the rAnge covered by the stAck frAme. */
 		endLine?: number;
-		/** An optional end column of the range covered by the stack frame. */
+		/** An optionAl end column of the rAnge covered by the stAck frAme. */
 		endColumn?: number;
-		/** Optional memory reference for the current instruction pointer in this frame. */
+		/** OptionAl memory reference for the current instruction pointer in this frAme. */
 		instructionPointerReference?: string;
-		/** The module associated with this frame, if any. */
+		/** The module AssociAted with this frAme, if Any. */
 		moduleId?: number | string;
-		/** An optional hint for how to present this frame in the UI.
-			A value of 'label' can be used to indicate that the frame is an artificial frame that is used as a visual label or separator. A value of 'subtle' can be used to change the appearance of a frame in a 'subtle' way.
+		/** An optionAl hint for how to present this frAme in the UI.
+			A vAlue of 'lAbel' cAn be used to indicAte thAt the frAme is An ArtificiAl frAme thAt is used As A visuAl lAbel or sepArAtor. A vAlue of 'subtle' cAn be used to chAnge the AppeArAnce of A frAme in A 'subtle' wAy.
 		*/
-		presentationHint?: 'normal' | 'label' | 'subtle';
+		presentAtionHint?: 'normAl' | 'lAbel' | 'subtle';
 	}
 
-	/** A Scope is a named container for variables. Optionally a scope can map to a source or a range within a source. */
-	export interface Scope {
-		/** Name of the scope such as 'Arguments', 'Locals', or 'Registers'. This string is shown in the UI as is and can be translated. */
-		name: string;
-		/** An optional hint for how to present this scope in the UI. If this attribute is missing, the scope is shown with a generic UI.
-			Values:
-			'arguments': Scope contains method arguments.
-			'locals': Scope contains local variables.
-			'registers': Scope contains registers. Only a single 'registers' scope should be returned from a 'scopes' request.
+	/** A Scope is A nAmed contAiner for vAriAbles. OptionAlly A scope cAn mAp to A source or A rAnge within A source. */
+	export interfAce Scope {
+		/** NAme of the scope such As 'Arguments', 'LocAls', or 'Registers'. This string is shown in the UI As is And cAn be trAnslAted. */
+		nAme: string;
+		/** An optionAl hint for how to present this scope in the UI. If this Attribute is missing, the scope is shown with A generic UI.
+			VAlues:
+			'Arguments': Scope contAins method Arguments.
+			'locAls': Scope contAins locAl vAriAbles.
+			'registers': Scope contAins registers. Only A single 'registers' scope should be returned from A 'scopes' request.
 			etc.
 		*/
-		presentationHint?: string;
-		/** The variables of this scope can be retrieved by passing the value of variablesReference to the VariablesRequest. */
-		variablesReference: number;
-		/** The number of named variables in this scope.
-			The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
+		presentAtionHint?: string;
+		/** The vAriAbles of this scope cAn be retrieved by pAssing the vAlue of vAriAblesReference to the VAriAblesRequest. */
+		vAriAblesReference: number;
+		/** The number of nAmed vAriAbles in this scope.
+			The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
 		*/
-		namedVariables?: number;
-		/** The number of indexed variables in this scope.
-			The client can use this optional information to present the variables in a paged UI and fetch them in chunks.
+		nAmedVAriAbles?: number;
+		/** The number of indexed vAriAbles in this scope.
+			The client cAn use this optionAl informAtion to present the vAriAbles in A pAged UI And fetch them in chunks.
 		*/
-		indexedVariables?: number;
-		/** If true, the number of variables in this scope is large or expensive to retrieve. */
-		expensive: boolean;
-		/** Optional source for this scope. */
+		indexedVAriAbles?: number;
+		/** If true, the number of vAriAbles in this scope is lArge or expensive to retrieve. */
+		expensive: booleAn;
+		/** OptionAl source for this scope. */
 		source?: Source;
-		/** Optional start line of the range covered by this scope. */
+		/** OptionAl stArt line of the rAnge covered by this scope. */
 		line?: number;
-		/** Optional start column of the range covered by this scope. */
+		/** OptionAl stArt column of the rAnge covered by this scope. */
 		column?: number;
-		/** Optional end line of the range covered by this scope. */
+		/** OptionAl end line of the rAnge covered by this scope. */
 		endLine?: number;
-		/** Optional end column of the range covered by this scope. */
+		/** OptionAl end column of the rAnge covered by this scope. */
 		endColumn?: number;
 	}
 
-	/** A Variable is a name/value pair.
-		Optionally a variable can have a 'type' that is shown if space permits or when hovering over the variable's name.
-		An optional 'kind' is used to render additional properties of the variable, e.g. different icons can be used to indicate that a variable is public or private.
-		If the value is structured (has children), a handle is provided to retrieve the children with the VariablesRequest.
-		If the number of named or indexed children is large, the numbers should be returned via the optional 'namedVariables' and 'indexedVariables' attributes.
-		The client can use this optional information to present the children in a paged UI and fetch them in chunks.
+	/** A VAriAble is A nAme/vAlue pAir.
+		OptionAlly A vAriAble cAn hAve A 'type' thAt is shown if spAce permits or when hovering over the vAriAble's nAme.
+		An optionAl 'kind' is used to render AdditionAl properties of the vAriAble, e.g. different icons cAn be used to indicAte thAt A vAriAble is public or privAte.
+		If the vAlue is structured (hAs children), A hAndle is provided to retrieve the children with the VAriAblesRequest.
+		If the number of nAmed or indexed children is lArge, the numbers should be returned viA the optionAl 'nAmedVAriAbles' And 'indexedVAriAbles' Attributes.
+		The client cAn use this optionAl informAtion to present the children in A pAged UI And fetch them in chunks.
 	*/
-	export interface Variable {
-		/** The variable's name. */
-		name: string;
-		/** The variable's value. This can be a multi-line text, e.g. for a function the body of a function. */
-		value: string;
-		/** The type of the variable's value. Typically shown in the UI when hovering over the value.
-			This attribute should only be returned by a debug adapter if the client has passed the value true for the 'supportsVariableType' capability of the 'initialize' request.
+	export interfAce VAriAble {
+		/** The vAriAble's nAme. */
+		nAme: string;
+		/** The vAriAble's vAlue. This cAn be A multi-line text, e.g. for A function the body of A function. */
+		vAlue: string;
+		/** The type of the vAriAble's vAlue. TypicAlly shown in the UI when hovering over the vAlue.
+			This Attribute should only be returned by A debug AdApter if the client hAs pAssed the vAlue true for the 'supportsVAriAbleType' cApAbility of the 'initiAlize' request.
 		*/
 		type?: string;
-		/** Properties of a variable that can be used to determine how to render the variable in the UI. */
-		presentationHint?: VariablePresentationHint;
-		/** Optional evaluatable name of this variable which can be passed to the 'EvaluateRequest' to fetch the variable's value. */
-		evaluateName?: string;
-		/** If variablesReference is > 0, the variable is structured and its children can be retrieved by passing variablesReference to the VariablesRequest. */
-		variablesReference: number;
-		/** The number of named child variables.
-			The client can use this optional information to present the children in a paged UI and fetch them in chunks.
+		/** Properties of A vAriAble thAt cAn be used to determine how to render the vAriAble in the UI. */
+		presentAtionHint?: VAriAblePresentAtionHint;
+		/** OptionAl evAluAtAble nAme of this vAriAble which cAn be pAssed to the 'EvAluAteRequest' to fetch the vAriAble's vAlue. */
+		evAluAteNAme?: string;
+		/** If vAriAblesReference is > 0, the vAriAble is structured And its children cAn be retrieved by pAssing vAriAblesReference to the VAriAblesRequest. */
+		vAriAblesReference: number;
+		/** The number of nAmed child vAriAbles.
+			The client cAn use this optionAl informAtion to present the children in A pAged UI And fetch them in chunks.
 		*/
-		namedVariables?: number;
-		/** The number of indexed child variables.
-			The client can use this optional information to present the children in a paged UI and fetch them in chunks.
+		nAmedVAriAbles?: number;
+		/** The number of indexed child vAriAbles.
+			The client cAn use this optionAl informAtion to present the children in A pAged UI And fetch them in chunks.
 		*/
-		indexedVariables?: number;
-		/** Optional memory reference for the variable if the variable represents executable code, such as a function pointer.
-			This attribute is only required if the client has passed the value true for the 'supportsMemoryReferences' capability of the 'initialize' request.
+		indexedVAriAbles?: number;
+		/** OptionAl memory reference for the vAriAble if the vAriAble represents executAble code, such As A function pointer.
+			This Attribute is only required if the client hAs pAssed the vAlue true for the 'supportsMemoryReferences' cApAbility of the 'initiAlize' request.
 		*/
 		memoryReference?: string;
 	}
 
-	/** Optional properties of a variable that can be used to determine how to render the variable in the UI. */
-	export interface VariablePresentationHint {
-		/** The kind of variable. Before introducing additional values, try to use the listed values.
-			Values:
-			'property': Indicates that the object is a property.
-			'method': Indicates that the object is a method.
-			'class': Indicates that the object is a class.
-			'data': Indicates that the object is data.
-			'event': Indicates that the object is an event.
-			'baseClass': Indicates that the object is a base class.
-			'innerClass': Indicates that the object is an inner class.
-			'interface': Indicates that the object is an interface.
-			'mostDerivedClass': Indicates that the object is the most derived class.
-			'virtual': Indicates that the object is virtual, that means it is a synthetic object introducedby the
-			adapter for rendering purposes, e.g. an index range for large arrays.
-			'dataBreakpoint': Indicates that a data breakpoint is registered for the object.
+	/** OptionAl properties of A vAriAble thAt cAn be used to determine how to render the vAriAble in the UI. */
+	export interfAce VAriAblePresentAtionHint {
+		/** The kind of vAriAble. Before introducing AdditionAl vAlues, try to use the listed vAlues.
+			VAlues:
+			'property': IndicAtes thAt the object is A property.
+			'method': IndicAtes thAt the object is A method.
+			'clAss': IndicAtes thAt the object is A clAss.
+			'dAtA': IndicAtes thAt the object is dAtA.
+			'event': IndicAtes thAt the object is An event.
+			'bAseClAss': IndicAtes thAt the object is A bAse clAss.
+			'innerClAss': IndicAtes thAt the object is An inner clAss.
+			'interfAce': IndicAtes thAt the object is An interfAce.
+			'mostDerivedClAss': IndicAtes thAt the object is the most derived clAss.
+			'virtuAl': IndicAtes thAt the object is virtuAl, thAt meAns it is A synthetic object introducedby the
+			AdApter for rendering purposes, e.g. An index rAnge for lArge ArrAys.
+			'dAtABreAkpoint': IndicAtes thAt A dAtA breAkpoint is registered for the object.
 			etc.
 		*/
 		kind?: string;
-		/** Set of attributes represented as an array of strings. Before introducing additional values, try to use the listed values.
-			Values:
-			'static': Indicates that the object is static.
-			'constant': Indicates that the object is a constant.
-			'readOnly': Indicates that the object is read only.
-			'rawString': Indicates that the object is a raw string.
-			'hasObjectId': Indicates that the object can have an Object ID created for it.
-			'canHaveObjectId': Indicates that the object has an Object ID associated with it.
-			'hasSideEffects': Indicates that the evaluation had side effects.
+		/** Set of Attributes represented As An ArrAy of strings. Before introducing AdditionAl vAlues, try to use the listed vAlues.
+			VAlues:
+			'stAtic': IndicAtes thAt the object is stAtic.
+			'constAnt': IndicAtes thAt the object is A constAnt.
+			'reAdOnly': IndicAtes thAt the object is reAd only.
+			'rAwString': IndicAtes thAt the object is A rAw string.
+			'hAsObjectId': IndicAtes thAt the object cAn hAve An Object ID creAted for it.
+			'cAnHAveObjectId': IndicAtes thAt the object hAs An Object ID AssociAted with it.
+			'hAsSideEffects': IndicAtes thAt the evAluAtion hAd side effects.
 			etc.
 		*/
-		attributes?: string[];
-		/** Visibility of variable. Before introducing additional values, try to use the listed values.
-			Values: 'public', 'private', 'protected', 'internal', 'final', etc.
+		Attributes?: string[];
+		/** Visibility of vAriAble. Before introducing AdditionAl vAlues, try to use the listed vAlues.
+			VAlues: 'public', 'privAte', 'protected', 'internAl', 'finAl', etc.
 		*/
 		visibility?: string;
 	}
 
-	/** Properties of a breakpoint location returned from the 'breakpointLocations' request. */
-	export interface BreakpointLocation {
-		/** Start line of breakpoint location. */
+	/** Properties of A breAkpoint locAtion returned from the 'breAkpointLocAtions' request. */
+	export interfAce BreAkpointLocAtion {
+		/** StArt line of breAkpoint locAtion. */
 		line: number;
-		/** Optional start column of breakpoint location. */
+		/** OptionAl stArt column of breAkpoint locAtion. */
 		column?: number;
-		/** Optional end line of breakpoint location if the location covers a range. */
+		/** OptionAl end line of breAkpoint locAtion if the locAtion covers A rAnge. */
 		endLine?: number;
-		/** Optional end column of breakpoint location if the location covers a range. */
+		/** OptionAl end column of breAkpoint locAtion if the locAtion covers A rAnge. */
 		endColumn?: number;
 	}
 
-	/** Properties of a breakpoint or logpoint passed to the setBreakpoints request. */
-	export interface SourceBreakpoint {
-		/** The source line of the breakpoint or logpoint. */
+	/** Properties of A breAkpoint or logpoint pAssed to the setBreAkpoints request. */
+	export interfAce SourceBreAkpoint {
+		/** The source line of the breAkpoint or logpoint. */
 		line: number;
-		/** An optional source column of the breakpoint. */
+		/** An optionAl source column of the breAkpoint. */
 		column?: number;
-		/** An optional expression for conditional breakpoints.
-			It is only honored by a debug adapter if the capability 'supportsConditionalBreakpoints' is true.
+		/** An optionAl expression for conditionAl breAkpoints.
+			It is only honored by A debug AdApter if the cApAbility 'supportsConditionAlBreAkpoints' is true.
 		*/
 		condition?: string;
-		/** An optional expression that controls how many hits of the breakpoint are ignored.
-			The backend is expected to interpret the expression as needed.
-			The attribute is only honored by a debug adapter if the capability 'supportsHitConditionalBreakpoints' is true.
+		/** An optionAl expression thAt controls how mAny hits of the breAkpoint Are ignored.
+			The bAckend is expected to interpret the expression As needed.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsHitConditionAlBreAkpoints' is true.
 		*/
 		hitCondition?: string;
-		/** If this attribute exists and is non-empty, the backend must not 'break' (stop)
-			but log the message instead. Expressions within {} are interpolated.
-			The attribute is only honored by a debug adapter if the capability 'supportsLogPoints' is true.
+		/** If this Attribute exists And is non-empty, the bAckend must not 'breAk' (stop)
+			but log the messAge insteAd. Expressions within {} Are interpolAted.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsLogPoints' is true.
 		*/
-		logMessage?: string;
+		logMessAge?: string;
 	}
 
-	/** Properties of a breakpoint passed to the setFunctionBreakpoints request. */
-	export interface FunctionBreakpoint {
-		/** The name of the function. */
-		name: string;
-		/** An optional expression for conditional breakpoints.
-			It is only honored by a debug adapter if the capability 'supportsConditionalBreakpoints' is true.
+	/** Properties of A breAkpoint pAssed to the setFunctionBreAkpoints request. */
+	export interfAce FunctionBreAkpoint {
+		/** The nAme of the function. */
+		nAme: string;
+		/** An optionAl expression for conditionAl breAkpoints.
+			It is only honored by A debug AdApter if the cApAbility 'supportsConditionAlBreAkpoints' is true.
 		*/
 		condition?: string;
-		/** An optional expression that controls how many hits of the breakpoint are ignored.
-			The backend is expected to interpret the expression as needed.
-			The attribute is only honored by a debug adapter if the capability 'supportsHitConditionalBreakpoints' is true.
-		*/
-		hitCondition?: string;
-	}
-
-	/** This enumeration defines all possible access types for data breakpoints. */
-	export type DataBreakpointAccessType = 'read' | 'write' | 'readWrite';
-
-	/** Properties of a data breakpoint passed to the setDataBreakpoints request. */
-	export interface DataBreakpoint {
-		/** An id representing the data. This id is returned from the dataBreakpointInfo request. */
-		dataId: string;
-		/** The access type of the data. */
-		accessType?: DataBreakpointAccessType;
-		/** An optional expression for conditional breakpoints. */
-		condition?: string;
-		/** An optional expression that controls how many hits of the breakpoint are ignored.
-			The backend is expected to interpret the expression as needed.
+		/** An optionAl expression thAt controls how mAny hits of the breAkpoint Are ignored.
+			The bAckend is expected to interpret the expression As needed.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsHitConditionAlBreAkpoints' is true.
 		*/
 		hitCondition?: string;
 	}
 
-	/** Properties of a breakpoint passed to the setInstructionBreakpoints request */
-	export interface InstructionBreakpoint {
-		/** The instruction reference of the breakpoint.
-			This should be a memory or instruction pointer reference from an EvaluateResponse, Variable, StackFrame, GotoTarget, or Breakpoint.
+	/** This enumerAtion defines All possible Access types for dAtA breAkpoints. */
+	export type DAtABreAkpointAccessType = 'reAd' | 'write' | 'reAdWrite';
+
+	/** Properties of A dAtA breAkpoint pAssed to the setDAtABreAkpoints request. */
+	export interfAce DAtABreAkpoint {
+		/** An id representing the dAtA. This id is returned from the dAtABreAkpointInfo request. */
+		dAtAId: string;
+		/** The Access type of the dAtA. */
+		AccessType?: DAtABreAkpointAccessType;
+		/** An optionAl expression for conditionAl breAkpoints. */
+		condition?: string;
+		/** An optionAl expression thAt controls how mAny hits of the breAkpoint Are ignored.
+			The bAckend is expected to interpret the expression As needed.
+		*/
+		hitCondition?: string;
+	}
+
+	/** Properties of A breAkpoint pAssed to the setInstructionBreAkpoints request */
+	export interfAce InstructionBreAkpoint {
+		/** The instruction reference of the breAkpoint.
+			This should be A memory or instruction pointer reference from An EvAluAteResponse, VAriAble, StAckFrAme, GotoTArget, or BreAkpoint.
 		*/
 		instructionReference: string;
-		/** An optional offset from the instruction reference.
-			This can be negative.
+		/** An optionAl offset from the instruction reference.
+			This cAn be negAtive.
 		*/
 		offset?: number;
-		/** An optional expression for conditional breakpoints.
-			It is only honored by a debug adapter if the capability 'supportsConditionalBreakpoints' is true.
+		/** An optionAl expression for conditionAl breAkpoints.
+			It is only honored by A debug AdApter if the cApAbility 'supportsConditionAlBreAkpoints' is true.
 		*/
 		condition?: string;
-		/** An optional expression that controls how many hits of the breakpoint are ignored.
-			The backend is expected to interpret the expression as needed.
-			The attribute is only honored by a debug adapter if the capability 'supportsHitConditionalBreakpoints' is true.
+		/** An optionAl expression thAt controls how mAny hits of the breAkpoint Are ignored.
+			The bAckend is expected to interpret the expression As needed.
+			The Attribute is only honored by A debug AdApter if the cApAbility 'supportsHitConditionAlBreAkpoints' is true.
 		*/
 		hitCondition?: string;
 	}
 
-	/** Information about a Breakpoint created in setBreakpoints, setFunctionBreakpoints, setInstructionBreakpoints, or setDataBreakpoints. */
-	export interface Breakpoint {
-		/** An optional identifier for the breakpoint. It is needed if breakpoint events are used to update or remove breakpoints. */
+	/** InformAtion About A BreAkpoint creAted in setBreAkpoints, setFunctionBreAkpoints, setInstructionBreAkpoints, or setDAtABreAkpoints. */
+	export interfAce BreAkpoint {
+		/** An optionAl identifier for the breAkpoint. It is needed if breAkpoint events Are used to updAte or remove breAkpoints. */
 		id?: number;
-		/** If true breakpoint could be set (but not necessarily at the desired location). */
-		verified: boolean;
-		/** An optional message about the state of the breakpoint.
-			This is shown to the user and can be used to explain why a breakpoint could not be verified.
+		/** If true breAkpoint could be set (but not necessArily At the desired locAtion). */
+		verified: booleAn;
+		/** An optionAl messAge About the stAte of the breAkpoint.
+			This is shown to the user And cAn be used to explAin why A breAkpoint could not be verified.
 		*/
-		message?: string;
-		/** The source where the breakpoint is located. */
+		messAge?: string;
+		/** The source where the breAkpoint is locAted. */
 		source?: Source;
-		/** The start line of the actual range covered by the breakpoint. */
+		/** The stArt line of the ActuAl rAnge covered by the breAkpoint. */
 		line?: number;
-		/** An optional start column of the actual range covered by the breakpoint. */
+		/** An optionAl stArt column of the ActuAl rAnge covered by the breAkpoint. */
 		column?: number;
-		/** An optional end line of the actual range covered by the breakpoint. */
+		/** An optionAl end line of the ActuAl rAnge covered by the breAkpoint. */
 		endLine?: number;
-		/** An optional end column of the actual range covered by the breakpoint.
-			If no end line is given, then the end column is assumed to be in the start line.
+		/** An optionAl end column of the ActuAl rAnge covered by the breAkpoint.
+			If no end line is given, then the end column is Assumed to be in the stArt line.
 		*/
 		endColumn?: number;
-		/** An optional memory reference to where the breakpoint is set. */
+		/** An optionAl memory reference to where the breAkpoint is set. */
 		instructionReference?: string;
-		/** An optional offset from the instruction reference.
-			This can be negative.
+		/** An optionAl offset from the instruction reference.
+			This cAn be negAtive.
 		*/
 		offset?: number;
 	}
 
-	/** The granularity of one 'step' in the stepping requests 'next', 'stepIn', 'stepOut', and 'stepBack'.
-		'statement': The step should allow the program to run until the current statement has finished executing.
-		The meaning of a statement is determined by the adapter and it may be considered equivalent to a line.
-		For example 'for(int i = 0; i < 10; i++) could be considered to have 3 statements 'int i = 0', 'i < 10', and 'i++'.
-		'line': The step should allow the program to run until the current source line has executed.
-		'instruction': The step should allow one instruction to execute (e.g. one x86 instruction).
+	/** The grAnulArity of one 'step' in the stepping requests 'next', 'stepIn', 'stepOut', And 'stepBAck'.
+		'stAtement': The step should Allow the progrAm to run until the current stAtement hAs finished executing.
+		The meAning of A stAtement is determined by the AdApter And it mAy be considered equivAlent to A line.
+		For exAmple 'for(int i = 0; i < 10; i++) could be considered to hAve 3 stAtements 'int i = 0', 'i < 10', And 'i++'.
+		'line': The step should Allow the progrAm to run until the current source line hAs executed.
+		'instruction': The step should Allow one instruction to execute (e.g. one x86 instruction).
 	*/
-	export type SteppingGranularity = 'statement' | 'line' | 'instruction';
+	export type SteppingGrAnulArity = 'stAtement' | 'line' | 'instruction';
 
-	/** A StepInTarget can be used in the 'stepIn' request and determines into which single target the stepIn request should step. */
-	export interface StepInTarget {
-		/** Unique identifier for a stepIn target. */
+	/** A StepInTArget cAn be used in the 'stepIn' request And determines into which single tArget the stepIn request should step. */
+	export interfAce StepInTArget {
+		/** Unique identifier for A stepIn tArget. */
 		id: number;
-		/** The name of the stepIn target (shown in the UI). */
-		label: string;
+		/** The nAme of the stepIn tArget (shown in the UI). */
+		lAbel: string;
 	}
 
-	/** A GotoTarget describes a code location that can be used as a target in the 'goto' request.
-		The possible goto targets can be determined via the 'gotoTargets' request.
+	/** A GotoTArget describes A code locAtion thAt cAn be used As A tArget in the 'goto' request.
+		The possible goto tArgets cAn be determined viA the 'gotoTArgets' request.
 	*/
-	export interface GotoTarget {
-		/** Unique identifier for a goto target. This is used in the goto request. */
+	export interfAce GotoTArget {
+		/** Unique identifier for A goto tArget. This is used in the goto request. */
 		id: number;
-		/** The name of the goto target (shown in the UI). */
-		label: string;
-		/** The line of the goto target. */
+		/** The nAme of the goto tArget (shown in the UI). */
+		lAbel: string;
+		/** The line of the goto tArget. */
 		line: number;
-		/** An optional column of the goto target. */
+		/** An optionAl column of the goto tArget. */
 		column?: number;
-		/** An optional end line of the range covered by the goto target. */
+		/** An optionAl end line of the rAnge covered by the goto tArget. */
 		endLine?: number;
-		/** An optional end column of the range covered by the goto target. */
+		/** An optionAl end column of the rAnge covered by the goto tArget. */
 		endColumn?: number;
-		/** Optional memory reference for the instruction pointer value represented by this target. */
+		/** OptionAl memory reference for the instruction pointer vAlue represented by this tArget. */
 		instructionPointerReference?: string;
 	}
 
-	/** CompletionItems are the suggestions returned from the CompletionsRequest. */
-	export interface CompletionItem {
-		/** The label of this completion item. By default this is also the text that is inserted when selecting this completion. */
-		label: string;
-		/** If text is not falsy then it is inserted instead of the label. */
+	/** CompletionItems Are the suggestions returned from the CompletionsRequest. */
+	export interfAce CompletionItem {
+		/** The lAbel of this completion item. By defAult this is Also the text thAt is inserted when selecting this completion. */
+		lAbel: string;
+		/** If text is not fAlsy then it is inserted insteAd of the lAbel. */
 		text?: string;
-		/** A string that should be used when comparing this item with other items. When `falsy` the label is used. */
+		/** A string thAt should be used when compAring this item with other items. When `fAlsy` the lAbel is used. */
 		sortText?: string;
-		/** The item's type. Typically the client uses this information to render the item in the UI with an icon. */
+		/** The item's type. TypicAlly the client uses this informAtion to render the item in the UI with An icon. */
 		type?: CompletionItemType;
-		/** This value determines the location (in the CompletionsRequest's 'text' attribute) where the completion text is added.
-			If missing the text is added at the location specified by the CompletionsRequest's 'column' attribute.
+		/** This vAlue determines the locAtion (in the CompletionsRequest's 'text' Attribute) where the completion text is Added.
+			If missing the text is Added At the locAtion specified by the CompletionsRequest's 'column' Attribute.
 		*/
-		start?: number;
-		/** This value determines how many characters are overwritten by the completion text.
-			If missing the value 0 is assumed which results in the completion text being inserted.
+		stArt?: number;
+		/** This vAlue determines how mAny chArActers Are overwritten by the completion text.
+			If missing the vAlue 0 is Assumed which results in the completion text being inserted.
 		*/
 		length?: number;
-		/** Determines the start of the new selection after the text has been inserted (or replaced).
-			The start position must in the range 0 and length of the completion text.
-			If omitted the selection starts at the end of the completion text.
+		/** Determines the stArt of the new selection After the text hAs been inserted (or replAced).
+			The stArt position must in the rAnge 0 And length of the completion text.
+			If omitted the selection stArts At the end of the completion text.
 		*/
-		selectionStart?: number;
-		/** Determines the length of the new selection after the text has been inserted (or replaced).
-			The selection can not extend beyond the bounds of the completion text.
-			If omitted the length is assumed to be 0.
+		selectionStArt?: number;
+		/** Determines the length of the new selection After the text hAs been inserted (or replAced).
+			The selection cAn not extend beyond the bounds of the completion text.
+			If omitted the length is Assumed to be 0.
 		*/
 		selectionLength?: number;
 	}
 
-	/** Some predefined types for the CompletionItem. Please note that not all clients have specific icons for all of them. */
-	export type CompletionItemType = 'method' | 'function' | 'constructor' | 'field' | 'variable' | 'class' | 'interface' | 'module' | 'property' | 'unit' | 'value' | 'enum' | 'keyword' | 'snippet' | 'text' | 'color' | 'file' | 'reference' | 'customcolor';
+	/** Some predefined types for the CompletionItem. PleAse note thAt not All clients hAve specific icons for All of them. */
+	export type CompletionItemType = 'method' | 'function' | 'constructor' | 'field' | 'vAriAble' | 'clAss' | 'interfAce' | 'module' | 'property' | 'unit' | 'vAlue' | 'enum' | 'keyword' | 'snippet' | 'text' | 'color' | 'file' | 'reference' | 'customcolor';
 
-	/** Names of checksum algorithms that may be supported by a debug adapter. */
-	export type ChecksumAlgorithm = 'MD5' | 'SHA1' | 'SHA256' | 'timestamp';
+	/** NAmes of checksum Algorithms thAt mAy be supported by A debug AdApter. */
+	export type ChecksumAlgorithm = 'MD5' | 'SHA1' | 'SHA256' | 'timestAmp';
 
-	/** The checksum of an item calculated by the specified algorithm. */
-	export interface Checksum {
-		/** The algorithm used to calculate this checksum. */
-		algorithm: ChecksumAlgorithm;
-		/** Value of the checksum. */
+	/** The checksum of An item cAlculAted by the specified Algorithm. */
+	export interfAce Checksum {
+		/** The Algorithm used to cAlculAte this checksum. */
+		Algorithm: ChecksumAlgorithm;
+		/** VAlue of the checksum. */
 		checksum: string;
 	}
 
-	/** Provides formatting information for a value. */
-	export interface ValueFormat {
-		/** Display the value in hex. */
-		hex?: boolean;
+	/** Provides formAtting informAtion for A vAlue. */
+	export interfAce VAlueFormAt {
+		/** DisplAy the vAlue in hex. */
+		hex?: booleAn;
 	}
 
-	/** Provides formatting information for a stack frame. */
-	export interface StackFrameFormat extends ValueFormat {
-		/** Displays parameters for the stack frame. */
-		parameters?: boolean;
-		/** Displays the types of parameters for the stack frame. */
-		parameterTypes?: boolean;
-		/** Displays the names of parameters for the stack frame. */
-		parameterNames?: boolean;
-		/** Displays the values of parameters for the stack frame. */
-		parameterValues?: boolean;
-		/** Displays the line number of the stack frame. */
-		line?: boolean;
-		/** Displays the module of the stack frame. */
-		module?: boolean;
-		/** Includes all stack frames, including those the debug adapter might otherwise hide. */
-		includeAll?: boolean;
+	/** Provides formAtting informAtion for A stAck frAme. */
+	export interfAce StAckFrAmeFormAt extends VAlueFormAt {
+		/** DisplAys pArAmeters for the stAck frAme. */
+		pArAmeters?: booleAn;
+		/** DisplAys the types of pArAmeters for the stAck frAme. */
+		pArAmeterTypes?: booleAn;
+		/** DisplAys the nAmes of pArAmeters for the stAck frAme. */
+		pArAmeterNAmes?: booleAn;
+		/** DisplAys the vAlues of pArAmeters for the stAck frAme. */
+		pArAmeterVAlues?: booleAn;
+		/** DisplAys the line number of the stAck frAme. */
+		line?: booleAn;
+		/** DisplAys the module of the stAck frAme. */
+		module?: booleAn;
+		/** Includes All stAck frAmes, including those the debug AdApter might otherwise hide. */
+		includeAll?: booleAn;
 	}
 
-	/** An ExceptionOptions assigns configuration options to a set of exceptions. */
-	export interface ExceptionOptions {
-		/** A path that selects a single or multiple exceptions in a tree. If 'path' is missing, the whole tree is selected.
-			By convention the first segment of the path is a category that is used to group exceptions in the UI.
+	/** An ExceptionOptions Assigns configurAtion options to A set of exceptions. */
+	export interfAce ExceptionOptions {
+		/** A pAth thAt selects A single or multiple exceptions in A tree. If 'pAth' is missing, the whole tree is selected.
+			By convention the first segment of the pAth is A cAtegory thAt is used to group exceptions in the UI.
 		*/
-		path?: ExceptionPathSegment[];
-		/** Condition when a thrown exception should result in a break. */
-		breakMode: ExceptionBreakMode;
+		pAth?: ExceptionPAthSegment[];
+		/** Condition when A thrown exception should result in A breAk. */
+		breAkMode: ExceptionBreAkMode;
 	}
 
-	/** This enumeration defines all possible conditions when a thrown exception should result in a break.
-		never: never breaks,
-		always: always breaks,
-		unhandled: breaks when exception unhandled,
-		userUnhandled: breaks if the exception is not handled by user code.
+	/** This enumerAtion defines All possible conditions when A thrown exception should result in A breAk.
+		never: never breAks,
+		AlwAys: AlwAys breAks,
+		unhAndled: breAks when exception unhAndled,
+		userUnhAndled: breAks if the exception is not hAndled by user code.
 	*/
-	export type ExceptionBreakMode = 'never' | 'always' | 'unhandled' | 'userUnhandled';
+	export type ExceptionBreAkMode = 'never' | 'AlwAys' | 'unhAndled' | 'userUnhAndled';
 
-	/** An ExceptionPathSegment represents a segment in a path that is used to match leafs or nodes in a tree of exceptions.
-		If a segment consists of more than one name, it matches the names provided if 'negate' is false or missing or
-		it matches anything except the names provided if 'negate' is true.
+	/** An ExceptionPAthSegment represents A segment in A pAth thAt is used to mAtch leAfs or nodes in A tree of exceptions.
+		If A segment consists of more thAn one nAme, it mAtches the nAmes provided if 'negAte' is fAlse or missing or
+		it mAtches Anything except the nAmes provided if 'negAte' is true.
 	*/
-	export interface ExceptionPathSegment {
-		/** If false or missing this segment matches the names provided, otherwise it matches anything except the names provided. */
-		negate?: boolean;
-		/** Depending on the value of 'negate' the names that should match or not match. */
-		names: string[];
+	export interfAce ExceptionPAthSegment {
+		/** If fAlse or missing this segment mAtches the nAmes provided, otherwise it mAtches Anything except the nAmes provided. */
+		negAte?: booleAn;
+		/** Depending on the vAlue of 'negAte' the nAmes thAt should mAtch or not mAtch. */
+		nAmes: string[];
 	}
 
-	/** Detailed information about an exception that has occurred. */
-	export interface ExceptionDetails {
-		/** Message contained in the exception. */
-		message?: string;
-		/** Short type name of the exception object. */
-		typeName?: string;
-		/** Fully-qualified type name of the exception object. */
-		fullTypeName?: string;
-		/** Optional expression that can be evaluated in the current scope to obtain the exception object. */
-		evaluateName?: string;
-		/** Stack trace at the time the exception was thrown. */
-		stackTrace?: string;
-		/** Details of the exception contained by this exception, if any. */
-		innerException?: ExceptionDetails[];
+	/** DetAiled informAtion About An exception thAt hAs occurred. */
+	export interfAce ExceptionDetAils {
+		/** MessAge contAined in the exception. */
+		messAge?: string;
+		/** Short type nAme of the exception object. */
+		typeNAme?: string;
+		/** Fully-quAlified type nAme of the exception object. */
+		fullTypeNAme?: string;
+		/** OptionAl expression thAt cAn be evAluAted in the current scope to obtAin the exception object. */
+		evAluAteNAme?: string;
+		/** StAck trAce At the time the exception wAs thrown. */
+		stAckTrAce?: string;
+		/** DetAils of the exception contAined by this exception, if Any. */
+		innerException?: ExceptionDetAils[];
 	}
 
-	/** Represents a single disassembled instruction. */
-	export interface DisassembledInstruction {
-		/** The address of the instruction. Treated as a hex value if prefixed with '0x', or as a decimal value otherwise. */
-		address: string;
-		/** Optional raw bytes representing the instruction and its operands, in an implementation-defined format. */
+	/** Represents A single disAssembled instruction. */
+	export interfAce DisAssembledInstruction {
+		/** The Address of the instruction. TreAted As A hex vAlue if prefixed with '0x', or As A decimAl vAlue otherwise. */
+		Address: string;
+		/** OptionAl rAw bytes representing the instruction And its operAnds, in An implementAtion-defined formAt. */
 		instructionBytes?: string;
-		/** Text representing the instruction and its operands, in an implementation-defined format. */
+		/** Text representing the instruction And its operAnds, in An implementAtion-defined formAt. */
 		instruction: string;
-		/** Name of the symbol that corresponds with the location of this instruction, if any. */
+		/** NAme of the symbol thAt corresponds with the locAtion of this instruction, if Any. */
 		symbol?: string;
-		/** Source location that corresponds to this instruction, if any.
-			Should always be set (if available) on the first instruction returned,
-			but can be omitted afterwards if this instruction maps to the same source file as the previous instruction.
+		/** Source locAtion thAt corresponds to this instruction, if Any.
+			Should AlwAys be set (if AvAilAble) on the first instruction returned,
+			but cAn be omitted AfterwArds if this instruction mAps to the sAme source file As the previous instruction.
 		*/
-		location?: Source;
-		/** The line within the source location that corresponds to this instruction, if any. */
+		locAtion?: Source;
+		/** The line within the source locAtion thAt corresponds to this instruction, if Any. */
 		line?: number;
-		/** The column within the line that corresponds to this instruction, if any. */
+		/** The column within the line thAt corresponds to this instruction, if Any. */
 		column?: number;
-		/** The end line of the range that corresponds to this instruction, if any. */
+		/** The end line of the rAnge thAt corresponds to this instruction, if Any. */
 		endLine?: number;
-		/** The end column of the range that corresponds to this instruction, if any. */
+		/** The end column of the rAnge thAt corresponds to this instruction, if Any. */
 		endColumn?: number;
 	}
 
-	/** Logical areas that can be invalidated by the 'invalidated' event.
-		'all': All previously fetched data has become invalid and needs to be refetched.
-		'stacks': Previously fetched stack related data has become invalid and needs to be refetched.
-		'threads': Previously fetched thread related data has become invalid and needs to be refetched.
-		'variables': Previously fetched variable data has become invalid and needs to be refetched.
+	/** LogicAl AreAs thAt cAn be invAlidAted by the 'invAlidAted' event.
+		'All': All previously fetched dAtA hAs become invAlid And needs to be refetched.
+		'stAcks': Previously fetched stAck relAted dAtA hAs become invAlid And needs to be refetched.
+		'threAds': Previously fetched threAd relAted dAtA hAs become invAlid And needs to be refetched.
+		'vAriAbles': Previously fetched vAriAble dAtA hAs become invAlid And needs to be refetched.
 	*/
-	export type InvalidatedAreas = 'all' | 'stacks' | 'threads' | 'variables';
+	export type InvAlidAtedAreAs = 'All' | 'stAcks' | 'threAds' | 'vAriAbles';
 }
 

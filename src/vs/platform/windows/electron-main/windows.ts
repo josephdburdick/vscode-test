@@ -1,141 +1,141 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWindowOpenable, IOpenEmptyWindowOptions, INativeWindowConfiguration } from 'vs/platform/windows/common/windows';
-import { OpenContext } from 'vs/platform/windows/node/window';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { ISerializableCommandAction } from 'vs/platform/actions/common/actions';
-import { URI } from 'vs/base/common/uri';
-import { Rectangle, BrowserWindow } from 'electron';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IWindowOpenAble, IOpenEmptyWindowOptions, INAtiveWindowConfigurAtion } from 'vs/plAtform/windows/common/windows';
+import { OpenContext } from 'vs/plAtform/windows/node/window';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { IWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { ISeriAlizAbleCommAndAction } from 'vs/plAtform/Actions/common/Actions';
+import { URI } from 'vs/bAse/common/uri';
+import { RectAngle, BrowserWindow } from 'electron';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface IWindowState {
+export interfAce IWindowStAte {
 	width?: number;
 	height?: number;
 	x?: number;
 	y?: number;
 	mode?: WindowMode;
-	display?: number;
+	displAy?: number;
 }
 
 export const enum WindowMode {
-	Maximized,
-	Normal,
-	Minimized, // not used anymore, but also cannot remove due to existing stored UI state (needs migration)
+	MAximized,
+	NormAl,
+	Minimized, // not used Anymore, but Also cAnnot remove due to existing stored UI stAte (needs migrAtion)
 	Fullscreen
 }
 
-export interface ICodeWindow extends IDisposable {
+export interfAce ICodeWindow extends IDisposAble {
 
-	readonly whenClosedOrLoaded: Promise<void>;
+	reAdonly whenClosedOrLoAded: Promise<void>;
 
-	readonly id: number;
-	readonly win: BrowserWindow;
-	readonly config: INativeWindowConfiguration | undefined;
+	reAdonly id: number;
+	reAdonly win: BrowserWindow;
+	reAdonly config: INAtiveWindowConfigurAtion | undefined;
 
-	readonly openedFolderUri?: URI;
-	readonly openedWorkspace?: IWorkspaceIdentifier;
-	readonly backupPath?: string;
+	reAdonly openedFolderUri?: URI;
+	reAdonly openedWorkspAce?: IWorkspAceIdentifier;
+	reAdonly bAckupPAth?: string;
 
-	readonly remoteAuthority?: string;
+	reAdonly remoteAuthority?: string;
 
-	readonly isExtensionDevelopmentHost: boolean;
-	readonly isExtensionTestHost: boolean;
+	reAdonly isExtensionDevelopmentHost: booleAn;
+	reAdonly isExtensionTestHost: booleAn;
 
-	readonly lastFocusTime: number;
+	reAdonly lAstFocusTime: number;
 
-	readonly isReady: boolean;
-	ready(): Promise<ICodeWindow>;
-	setReady(): void;
+	reAdonly isReAdy: booleAn;
+	reAdy(): Promise<ICodeWindow>;
+	setReAdy(): void;
 
-	readonly hasHiddenTitleBarStyle: boolean;
+	reAdonly hAsHiddenTitleBArStyle: booleAn;
 
-	addTabbedWindow(window: ICodeWindow): void;
+	AddTAbbedWindow(window: ICodeWindow): void;
 
-	load(config: INativeWindowConfiguration, isReload?: boolean): void;
-	reload(configuration?: INativeWindowConfiguration, cli?: NativeParsedArgs): void;
+	loAd(config: INAtiveWindowConfigurAtion, isReloAd?: booleAn): void;
+	reloAd(configurAtion?: INAtiveWindowConfigurAtion, cli?: NAtivePArsedArgs): void;
 
-	focus(options?: { force: boolean }): void;
+	focus(options?: { force: booleAn }): void;
 	close(): void;
 
-	getBounds(): Rectangle;
+	getBounds(): RectAngle;
 
-	send(channel: string, ...args: any[]): void;
-	sendWhenReady(channel: string, ...args: any[]): void;
+	send(chAnnel: string, ...Args: Any[]): void;
+	sendWhenReAdy(chAnnel: string, ...Args: Any[]): void;
 
-	readonly isFullScreen: boolean;
+	reAdonly isFullScreen: booleAn;
 	toggleFullScreen(): void;
 
-	isMinimized(): boolean;
+	isMinimized(): booleAn;
 
-	setRepresentedFilename(name: string): void;
-	getRepresentedFilename(): string | undefined;
+	setRepresentedFilenAme(nAme: string): void;
+	getRepresentedFilenAme(): string | undefined;
 
-	setDocumentEdited(edited: boolean): void;
-	isDocumentEdited(): boolean;
+	setDocumentEdited(edited: booleAn): void;
+	isDocumentEdited(): booleAn;
 
-	handleTitleDoubleClick(): void;
+	hAndleTitleDoubleClick(): void;
 
-	updateTouchBar(items: ISerializableCommandAction[][]): void;
+	updAteTouchBAr(items: ISeriAlizAbleCommAndAction[][]): void;
 
-	serializeWindowState(): IWindowState;
+	seriAlizeWindowStAte(): IWindowStAte;
 }
 
-export const IWindowsMainService = createDecorator<IWindowsMainService>('windowsMainService');
+export const IWindowsMAinService = creAteDecorAtor<IWindowsMAinService>('windowsMAinService');
 
-export interface IWindowsCountChangedEvent {
-	readonly oldCount: number;
-	readonly newCount: number;
+export interfAce IWindowsCountChAngedEvent {
+	reAdonly oldCount: number;
+	reAdonly newCount: number;
 }
 
-export interface IWindowsMainService {
+export interfAce IWindowsMAinService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onWindowOpened: Event<ICodeWindow>;
-	readonly onWindowReady: Event<ICodeWindow>;
-	readonly onWindowsCountChanged: Event<IWindowsCountChangedEvent>;
+	reAdonly onWindowOpened: Event<ICodeWindow>;
+	reAdonly onWindowReAdy: Event<ICodeWindow>;
+	reAdonly onWindowsCountChAnged: Event<IWindowsCountChAngedEvent>;
 
-	open(openConfig: IOpenConfiguration): ICodeWindow[];
-	openEmptyWindow(openConfig: IOpenEmptyConfiguration, options?: IOpenEmptyWindowOptions): ICodeWindow[];
-	openExtensionDevelopmentHostWindow(extensionDevelopmentPath: string[], openConfig: IOpenConfiguration): ICodeWindow[];
+	open(openConfig: IOpenConfigurAtion): ICodeWindow[];
+	openEmptyWindow(openConfig: IOpenEmptyConfigurAtion, options?: IOpenEmptyWindowOptions): ICodeWindow[];
+	openExtensionDevelopmentHostWindow(extensionDevelopmentPAth: string[], openConfig: IOpenConfigurAtion): ICodeWindow[];
 
-	sendToFocused(channel: string, ...args: any[]): void;
-	sendToAll(channel: string, payload?: any, windowIdsToIgnore?: number[]): void;
+	sendToFocused(chAnnel: string, ...Args: Any[]): void;
+	sendToAll(chAnnel: string, pAyloAd?: Any, windowIdsToIgnore?: number[]): void;
 
-	getLastActiveWindow(): ICodeWindow | undefined;
+	getLAstActiveWindow(): ICodeWindow | undefined;
 
 	getWindowById(windowId: number): ICodeWindow | undefined;
 	getWindows(): ICodeWindow[];
 	getWindowCount(): number;
 }
 
-export interface IBaseOpenConfiguration {
-	readonly context: OpenContext;
-	readonly contextWindowId?: number;
+export interfAce IBAseOpenConfigurAtion {
+	reAdonly context: OpenContext;
+	reAdonly contextWindowId?: number;
 }
 
-export interface IOpenConfiguration extends IBaseOpenConfiguration {
-	readonly cli: NativeParsedArgs;
-	readonly userEnv?: IProcessEnvironment;
-	readonly urisToOpen?: IWindowOpenable[];
-	readonly waitMarkerFileURI?: URI;
-	readonly preferNewWindow?: boolean;
-	readonly forceNewWindow?: boolean;
-	readonly forceNewTabbedWindow?: boolean;
-	readonly forceReuseWindow?: boolean;
-	readonly forceEmpty?: boolean;
-	readonly diffMode?: boolean;
-	addMode?: boolean;
-	readonly gotoLineMode?: boolean;
-	readonly initialStartup?: boolean;
-	readonly noRecentEntry?: boolean;
+export interfAce IOpenConfigurAtion extends IBAseOpenConfigurAtion {
+	reAdonly cli: NAtivePArsedArgs;
+	reAdonly userEnv?: IProcessEnvironment;
+	reAdonly urisToOpen?: IWindowOpenAble[];
+	reAdonly wAitMArkerFileURI?: URI;
+	reAdonly preferNewWindow?: booleAn;
+	reAdonly forceNewWindow?: booleAn;
+	reAdonly forceNewTAbbedWindow?: booleAn;
+	reAdonly forceReuseWindow?: booleAn;
+	reAdonly forceEmpty?: booleAn;
+	reAdonly diffMode?: booleAn;
+	AddMode?: booleAn;
+	reAdonly gotoLineMode?: booleAn;
+	reAdonly initiAlStArtup?: booleAn;
+	reAdonly noRecentEntry?: booleAn;
 }
 
-export interface IOpenEmptyConfiguration extends IBaseOpenConfiguration { }
+export interfAce IOpenEmptyConfigurAtion extends IBAseOpenConfigurAtion { }

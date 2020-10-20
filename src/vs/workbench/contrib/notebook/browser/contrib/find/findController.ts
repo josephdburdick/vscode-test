@@ -1,284 +1,284 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/notebookFind';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IContextKeyService, IContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KEYBINDING_CONTEXT_NOTEBOOK_FIND_WIDGET_FOCUSED, INotebookEditor, CellFindMatch, CellEditState, INotebookEditorContribution, NOTEBOOK_EDITOR_FOCUSED } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
-import { FindDecorations } from 'vs/editor/contrib/find/findDecorations';
-import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
-import { IModelDeltaDecoration } from 'vs/editor/common/model';
-import { ICellModelDeltaDecorations, ICellModelDecorations } from 'vs/workbench/contrib/notebook/browser/viewModel/notebookViewModel';
+import 'vs/css!./mediA/notebookFind';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IContextKeyService, IContextKey, ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { KEYBINDING_CONTEXT_NOTEBOOK_FIND_WIDGET_FOCUSED, INotebookEditor, CellFindMAtch, CellEditStAte, INotebookEditorContribution, NOTEBOOK_EDITOR_FOCUSED } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { FindDecorAtions } from 'vs/editor/contrib/find/findDecorAtions';
+import { ModelDecorAtionOptions } from 'vs/editor/common/model/textModel';
+import { IModelDeltADecorAtion } from 'vs/editor/common/model';
+import { ICellModelDeltADecorAtions, ICellModelDecorAtions } from 'vs/workbench/contrib/notebook/browser/viewModel/notebookViewModel';
 import { PrefixSumComputer } from 'vs/editor/common/viewModel/prefixSumComputer';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { SimpleFindReplaceWidget } from 'vs/workbench/contrib/codeEditor/browser/find/simpleFindReplaceWidget';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import * as DOM from 'vs/base/browser/dom';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { SimpleFindReplAceWidget } from 'vs/workbench/contrib/codeEditor/browser/find/simpleFindReplAceWidget';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import * As DOM from 'vs/bAse/browser/dom';
 import { registerNotebookContribution } from 'vs/workbench/contrib/notebook/browser/notebookEditorExtensions';
-import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
-import { localize } from 'vs/nls';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
+import { registerAction2, Action2 } from 'vs/plAtform/Actions/common/Actions';
+import { locAlize } from 'vs/nls';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { getActiveNotebookEditor } from 'vs/workbench/contrib/notebook/browser/contrib/coreActions';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
-import { INotebookSearchOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { EditorStartFindAction, EditorStartFindReplaceAction } from 'vs/editor/contrib/find/findController';
+import { FindReplAceStAte } from 'vs/editor/contrib/find/findStAte';
+import { INotebookSeArchOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { EditorStArtFindAction, EditorStArtFindReplAceAction } from 'vs/editor/contrib/find/findController';
 
-const FIND_HIDE_TRANSITION = 'find-hide-transition';
-const FIND_SHOW_TRANSITION = 'find-show-transition';
+const FIND_HIDE_TRANSITION = 'find-hide-trAnsition';
+const FIND_SHOW_TRANSITION = 'find-show-trAnsition';
 
 
-export class NotebookFindWidget extends SimpleFindReplaceWidget implements INotebookEditorContribution {
-	static id: string = 'workbench.notebook.find';
-	protected _findWidgetFocused: IContextKey<boolean>;
-	private _findMatches: CellFindMatch[] = [];
-	protected _findMatchesStarts: PrefixSumComputer | null = null;
-	private _currentMatch: number = -1;
-	private _allMatchesDecorations: ICellModelDecorations[] = [];
-	private _currentMatchDecorations: ICellModelDecorations[] = [];
-	private _showTimeout: number | null = null;
-	private _hideTimeout: number | null = null;
+export clAss NotebookFindWidget extends SimpleFindReplAceWidget implements INotebookEditorContribution {
+	stAtic id: string = 'workbench.notebook.find';
+	protected _findWidgetFocused: IContextKey<booleAn>;
+	privAte _findMAtches: CellFindMAtch[] = [];
+	protected _findMAtchesStArts: PrefixSumComputer | null = null;
+	privAte _currentMAtch: number = -1;
+	privAte _AllMAtchesDecorAtions: ICellModelDecorAtions[] = [];
+	privAte _currentMAtchDecorAtions: ICellModelDecorAtions[] = [];
+	privAte _showTimeout: number | null = null;
+	privAte _hideTimeout: number | null = null;
 
 	constructor(
-		private readonly _notebookEditor: INotebookEditor,
+		privAte reAdonly _notebookEditor: INotebookEditor,
 		@IContextViewService contextViewService: IContextViewService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 
 	) {
-		super(contextViewService, contextKeyService, themeService, new FindReplaceState(), true);
-		DOM.append(this._notebookEditor.getDomNode(), this.getDomNode());
+		super(contextViewService, contextKeyService, themeService, new FindReplAceStAte(), true);
+		DOM.Append(this._notebookEditor.getDomNode(), this.getDomNode());
 
 		this._findWidgetFocused = KEYBINDING_CONTEXT_NOTEBOOK_FIND_WIDGET_FOCUSED.bindTo(contextKeyService);
 		this._register(this._findInput.onKeyDown((e) => this._onFindInputKeyDown(e)));
-		this.updateTheme(themeService.getColorTheme());
-		this._register(themeService.onDidColorThemeChange(() => {
-			this.updateTheme(themeService.getColorTheme());
+		this.updAteTheme(themeService.getColorTheme());
+		this._register(themeService.onDidColorThemeChAnge(() => {
+			this.updAteTheme(themeService.getColorTheme());
 		}));
 
-		this._register(this._state.onFindReplaceStateChange(() => {
-			this.onInputChanged();
+		this._register(this._stAte.onFindReplAceStAteChAnge(() => {
+			this.onInputChAnged();
 		}));
 	}
 
-	private _onFindInputKeyDown(e: IKeyboardEvent): void {
-		if (e.equals(KeyCode.Enter)) {
-			if (this._findMatches.length) {
-				this.find(false);
+	privAte _onFindInputKeyDown(e: IKeyboArdEvent): void {
+		if (e.equAls(KeyCode.Enter)) {
+			if (this._findMAtches.length) {
+				this.find(fAlse);
 			} else {
 				this.set(null, true);
 			}
-			e.preventDefault();
+			e.preventDefAult();
 			return;
-		} else if (e.equals(KeyMod.Shift | KeyCode.Enter)) {
-			if (this._findMatches.length) {
+		} else if (e.equAls(KeyMod.Shift | KeyCode.Enter)) {
+			if (this._findMAtches.length) {
 				this.find(true);
 			} else {
 				this.set(null, true);
 			}
-			e.preventDefault();
+			e.preventDefAult();
 			return;
 		}
 	}
 
-	protected onInputChanged(): boolean {
-		const val = this.inputValue;
-		const wordSeparators = this._configurationService.inspect<string>('editor.wordSeparators').value;
-		const options: INotebookSearchOptions = { regex: this._getRegexValue(), wholeWord: this._getWholeWordValue(), caseSensitive: this._getCaseSensitiveValue(), wordSeparators: wordSeparators };
-		if (val) {
-			this._findMatches = this._notebookEditor.viewModel!.find(val, options).filter(match => match.matches.length > 0);
-			this.set(this._findMatches, false);
-			if (this._findMatches.length) {
+	protected onInputChAnged(): booleAn {
+		const vAl = this.inputVAlue;
+		const wordSepArAtors = this._configurAtionService.inspect<string>('editor.wordSepArAtors').vAlue;
+		const options: INotebookSeArchOptions = { regex: this._getRegexVAlue(), wholeWord: this._getWholeWordVAlue(), cAseSensitive: this._getCAseSensitiveVAlue(), wordSepArAtors: wordSepArAtors };
+		if (vAl) {
+			this._findMAtches = this._notebookEditor.viewModel!.find(vAl, options).filter(mAtch => mAtch.mAtches.length > 0);
+			this.set(this._findMAtches, fAlse);
+			if (this._findMAtches.length) {
 				return true;
 			} else {
-				return false;
+				return fAlse;
 			}
 		} else {
-			this.set([], false);
+			this.set([], fAlse);
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	protected find(previous: boolean): void {
-		if (!this._findMatches.length) {
+	protected find(previous: booleAn): void {
+		if (!this._findMAtches.length) {
 			return;
 		}
 
-		if (!this._findMatchesStarts) {
-			this.set(this._findMatches, true);
+		if (!this._findMAtchesStArts) {
+			this.set(this._findMAtches, true);
 		} else {
-			const totalVal = this._findMatchesStarts!.getTotalValue();
-			const nextVal = (this._currentMatch + (previous ? -1 : 1) + totalVal) % totalVal;
-			this._currentMatch = nextVal;
+			const totAlVAl = this._findMAtchesStArts!.getTotAlVAlue();
+			const nextVAl = (this._currentMAtch + (previous ? -1 : 1) + totAlVAl) % totAlVAl;
+			this._currentMAtch = nextVAl;
 		}
 
 
-		const nextIndex = this._findMatchesStarts!.getIndexOf(this._currentMatch);
-		this.setCurrentFindMatchDecoration(nextIndex.index, nextIndex.remainder);
-		this.revealCellRange(nextIndex.index, nextIndex.remainder);
+		const nextIndex = this._findMAtchesStArts!.getIndexOf(this._currentMAtch);
+		this.setCurrentFindMAtchDecorAtion(nextIndex.index, nextIndex.remAinder);
+		this.reveAlCellRAnge(nextIndex.index, nextIndex.remAinder);
 	}
 
-	protected replaceOne() {
-		if (!this._findMatches.length) {
+	protected replAceOne() {
+		if (!this._findMAtches.length) {
 			return;
 		}
 
-		if (!this._findMatchesStarts) {
-			this.set(this._findMatches, true);
+		if (!this._findMAtchesStArts) {
+			this.set(this._findMAtches, true);
 		}
 
-		const nextIndex = this._findMatchesStarts!.getIndexOf(this._currentMatch);
-		const cell = this._findMatches[nextIndex.index].cell;
-		const match = this._findMatches[nextIndex.index].matches[nextIndex.remainder];
+		const nextIndex = this._findMAtchesStArts!.getIndexOf(this._currentMAtch);
+		const cell = this._findMAtches[nextIndex.index].cell;
+		const mAtch = this._findMAtches[nextIndex.index].mAtches[nextIndex.remAinder];
 
-		this._progressBar.infinite().show();
+		this._progressBAr.infinite().show();
 
-		this._notebookEditor.viewModel!.replaceOne(cell, match.range, this.replaceValue).then(() => {
-			this._progressBar.stop();
+		this._notebookEditor.viewModel!.replAceOne(cell, mAtch.rAnge, this.replAceVAlue).then(() => {
+			this._progressBAr.stop();
 		});
 	}
 
-	protected replaceAll() {
-		this._progressBar.infinite().show();
+	protected replAceAll() {
+		this._progressBAr.infinite().show();
 
-		this._notebookEditor.viewModel!.replaceAll(this._findMatches, this.replaceValue).then(() => {
-			this._progressBar.stop();
+		this._notebookEditor.viewModel!.replAceAll(this._findMAtches, this.replAceVAlue).then(() => {
+			this._progressBAr.stop();
 		});
 	}
 
-	private revealCellRange(cellIndex: number, matchIndex: number) {
-		this._findMatches[cellIndex].cell.editState = CellEditState.Editing;
-		this._notebookEditor.selectElement(this._findMatches[cellIndex].cell);
-		this._notebookEditor.setCellSelection(this._findMatches[cellIndex].cell, this._findMatches[cellIndex].matches[matchIndex].range);
-		this._notebookEditor.revealRangeInCenterIfOutsideViewportAsync(this._findMatches[cellIndex].cell, this._findMatches[cellIndex].matches[matchIndex].range);
+	privAte reveAlCellRAnge(cellIndex: number, mAtchIndex: number) {
+		this._findMAtches[cellIndex].cell.editStAte = CellEditStAte.Editing;
+		this._notebookEditor.selectElement(this._findMAtches[cellIndex].cell);
+		this._notebookEditor.setCellSelection(this._findMAtches[cellIndex].cell, this._findMAtches[cellIndex].mAtches[mAtchIndex].rAnge);
+		this._notebookEditor.reveAlRAngeInCenterIfOutsideViewportAsync(this._findMAtches[cellIndex].cell, this._findMAtches[cellIndex].mAtches[mAtchIndex].rAnge);
 	}
 
 	protected findFirst(): void { }
 
-	protected onFocusTrackerFocus() {
+	protected onFocusTrAckerFocus() {
 		this._findWidgetFocused.set(true);
 	}
 
-	protected onFocusTrackerBlur() {
+	protected onFocusTrAckerBlur() {
 		this._findWidgetFocused.reset();
 	}
 
-	protected onReplaceInputFocusTrackerFocus(): void {
+	protected onReplAceInputFocusTrAckerFocus(): void {
 		// throw new Error('Method not implemented.');
 	}
-	protected onReplaceInputFocusTrackerBlur(): void {
+	protected onReplAceInputFocusTrAckerBlur(): void {
 		// throw new Error('Method not implemented.');
 	}
 
-	protected onFindInputFocusTrackerFocus(): void { }
-	protected onFindInputFocusTrackerBlur(): void { }
+	protected onFindInputFocusTrAckerFocus(): void { }
+	protected onFindInputFocusTrAckerBlur(): void { }
 
-	private constructFindMatchesStarts() {
-		if (this._findMatches && this._findMatches.length) {
-			const values = new Uint32Array(this._findMatches.length);
-			for (let i = 0; i < this._findMatches.length; i++) {
-				values[i] = this._findMatches[i].matches.length;
+	privAte constructFindMAtchesStArts() {
+		if (this._findMAtches && this._findMAtches.length) {
+			const vAlues = new Uint32ArrAy(this._findMAtches.length);
+			for (let i = 0; i < this._findMAtches.length; i++) {
+				vAlues[i] = this._findMAtches[i].mAtches.length;
 			}
 
-			this._findMatchesStarts = new PrefixSumComputer(values);
+			this._findMAtchesStArts = new PrefixSumComputer(vAlues);
 		} else {
-			this._findMatchesStarts = null;
+			this._findMAtchesStArts = null;
 		}
 	}
 
-	private set(cellFindMatches: CellFindMatch[] | null, autoStart: boolean): void {
-		if (!cellFindMatches || !cellFindMatches.length) {
-			this._findMatches = [];
-			this.setAllFindMatchesDecorations([]);
+	privAte set(cellFindMAtches: CellFindMAtch[] | null, AutoStArt: booleAn): void {
+		if (!cellFindMAtches || !cellFindMAtches.length) {
+			this._findMAtches = [];
+			this.setAllFindMAtchesDecorAtions([]);
 
-			this.constructFindMatchesStarts();
-			this._currentMatch = -1;
-			this.clearCurrentFindMatchDecoration();
+			this.constructFindMAtchesStArts();
+			this._currentMAtch = -1;
+			this.cleArCurrentFindMAtchDecorAtion();
 			return;
 		}
 
-		// all matches
-		this._findMatches = cellFindMatches;
-		this.setAllFindMatchesDecorations(cellFindMatches || []);
+		// All mAtches
+		this._findMAtches = cellFindMAtches;
+		this.setAllFindMAtchesDecorAtions(cellFindMAtches || []);
 
-		// current match
-		this.constructFindMatchesStarts();
+		// current mAtch
+		this.constructFindMAtchesStArts();
 
-		if (autoStart) {
-			this._currentMatch = 0;
-			this.setCurrentFindMatchDecoration(0, 0);
+		if (AutoStArt) {
+			this._currentMAtch = 0;
+			this.setCurrentFindMAtchDecorAtion(0, 0);
 		}
 	}
 
-	private setCurrentFindMatchDecoration(cellIndex: number, matchIndex: number) {
-		this._notebookEditor.changeModelDecorations(accessor => {
-			const findMatchesOptions: ModelDecorationOptions = FindDecorations._CURRENT_FIND_MATCH_DECORATION;
+	privAte setCurrentFindMAtchDecorAtion(cellIndex: number, mAtchIndex: number) {
+		this._notebookEditor.chAngeModelDecorAtions(Accessor => {
+			const findMAtchesOptions: ModelDecorAtionOptions = FindDecorAtions._CURRENT_FIND_MATCH_DECORATION;
 
-			const cell = this._findMatches[cellIndex].cell;
-			const match = this._findMatches[cellIndex].matches[matchIndex];
-			const decorations: IModelDeltaDecoration[] = [
-				{ range: match.range, options: findMatchesOptions }
+			const cell = this._findMAtches[cellIndex].cell;
+			const mAtch = this._findMAtches[cellIndex].mAtches[mAtchIndex];
+			const decorAtions: IModelDeltADecorAtion[] = [
+				{ rAnge: mAtch.rAnge, options: findMAtchesOptions }
 			];
-			const deltaDecoration: ICellModelDeltaDecorations = {
-				ownerId: cell.handle,
-				decorations: decorations
+			const deltADecorAtion: ICellModelDeltADecorAtions = {
+				ownerId: cell.hAndle,
+				decorAtions: decorAtions
 			};
 
-			this._currentMatchDecorations = accessor.deltaDecorations(this._currentMatchDecorations, [deltaDecoration]);
+			this._currentMAtchDecorAtions = Accessor.deltADecorAtions(this._currentMAtchDecorAtions, [deltADecorAtion]);
 		});
 	}
 
-	private clearCurrentFindMatchDecoration() {
-		this._notebookEditor.changeModelDecorations(accessor => {
-			this._currentMatchDecorations = accessor.deltaDecorations(this._currentMatchDecorations, []);
+	privAte cleArCurrentFindMAtchDecorAtion() {
+		this._notebookEditor.chAngeModelDecorAtions(Accessor => {
+			this._currentMAtchDecorAtions = Accessor.deltADecorAtions(this._currentMAtchDecorAtions, []);
 		});
 	}
 
-	private setAllFindMatchesDecorations(cellFindMatches: CellFindMatch[]) {
-		this._notebookEditor.changeModelDecorations((accessor) => {
+	privAte setAllFindMAtchesDecorAtions(cellFindMAtches: CellFindMAtch[]) {
+		this._notebookEditor.chAngeModelDecorAtions((Accessor) => {
 
-			const findMatchesOptions: ModelDecorationOptions = FindDecorations._FIND_MATCH_DECORATION;
+			const findMAtchesOptions: ModelDecorAtionOptions = FindDecorAtions._FIND_MATCH_DECORATION;
 
-			const deltaDecorations: ICellModelDeltaDecorations[] = cellFindMatches.map(cellFindMatch => {
-				const findMatches = cellFindMatch.matches;
+			const deltADecorAtions: ICellModelDeltADecorAtions[] = cellFindMAtches.mAp(cellFindMAtch => {
+				const findMAtches = cellFindMAtch.mAtches;
 
-				// Find matches
-				const newFindMatchesDecorations: IModelDeltaDecoration[] = new Array<IModelDeltaDecoration>(findMatches.length);
-				for (let i = 0, len = findMatches.length; i < len; i++) {
-					newFindMatchesDecorations[i] = {
-						range: findMatches[i].range,
-						options: findMatchesOptions
+				// Find mAtches
+				const newFindMAtchesDecorAtions: IModelDeltADecorAtion[] = new ArrAy<IModelDeltADecorAtion>(findMAtches.length);
+				for (let i = 0, len = findMAtches.length; i < len; i++) {
+					newFindMAtchesDecorAtions[i] = {
+						rAnge: findMAtches[i].rAnge,
+						options: findMAtchesOptions
 					};
 				}
 
-				return { ownerId: cellFindMatch.cell.handle, decorations: newFindMatchesDecorations };
+				return { ownerId: cellFindMAtch.cell.hAndle, decorAtions: newFindMAtchesDecorAtions };
 			});
 
-			this._allMatchesDecorations = accessor.deltaDecorations(this._allMatchesDecorations, deltaDecorations);
+			this._AllMAtchesDecorAtions = Accessor.deltADecorAtions(this._AllMAtchesDecorAtions, deltADecorAtions);
 		});
 	}
 
-	show(initialInput?: string): void {
-		super.show(initialInput);
+	show(initiAlInput?: string): void {
+		super.show(initiAlInput);
 		this._findInput.select();
 
 		if (this._showTimeout === null) {
 			if (this._hideTimeout !== null) {
-				window.clearTimeout(this._hideTimeout);
+				window.cleArTimeout(this._hideTimeout);
 				this._hideTimeout = null;
-				this._notebookEditor.removeClassName(FIND_HIDE_TRANSITION);
+				this._notebookEditor.removeClAssNAme(FIND_HIDE_TRANSITION);
 			}
 
-			this._notebookEditor.addClassName(FIND_SHOW_TRANSITION);
+			this._notebookEditor.AddClAssNAme(FIND_SHOW_TRANSITION);
 			this._showTimeout = window.setTimeout(() => {
-				this._notebookEditor.removeClassName(FIND_SHOW_TRANSITION);
+				this._notebookEditor.removeClAssNAme(FIND_SHOW_TRANSITION);
 				this._showTimeout = null;
 			}, 200);
 		} else {
@@ -286,20 +286,20 @@ export class NotebookFindWidget extends SimpleFindReplaceWidget implements INote
 		}
 	}
 
-	replace(initialFindInput?: string, initialReplaceInput?: string) {
-		super.showWithReplace(initialFindInput, initialReplaceInput);
-		this._replaceInput.select();
+	replAce(initiAlFindInput?: string, initiAlReplAceInput?: string) {
+		super.showWithReplAce(initiAlFindInput, initiAlReplAceInput);
+		this._replAceInput.select();
 
 		if (this._showTimeout === null) {
 			if (this._hideTimeout !== null) {
-				window.clearTimeout(this._hideTimeout);
+				window.cleArTimeout(this._hideTimeout);
 				this._hideTimeout = null;
-				this._notebookEditor.removeClassName(FIND_HIDE_TRANSITION);
+				this._notebookEditor.removeClAssNAme(FIND_HIDE_TRANSITION);
 			}
 
-			this._notebookEditor.addClassName(FIND_SHOW_TRANSITION);
+			this._notebookEditor.AddClAssNAme(FIND_SHOW_TRANSITION);
 			this._showTimeout = window.setTimeout(() => {
-				this._notebookEditor.removeClassName(FIND_SHOW_TRANSITION);
+				this._notebookEditor.removeClAssNAme(FIND_SHOW_TRANSITION);
 				this._showTimeout = null;
 			}, 200);
 		} else {
@@ -309,31 +309,31 @@ export class NotebookFindWidget extends SimpleFindReplaceWidget implements INote
 
 	hide() {
 		super.hide();
-		this.set([], false);
+		this.set([], fAlse);
 
 		if (this._hideTimeout === null) {
 			if (this._showTimeout !== null) {
-				window.clearTimeout(this._showTimeout);
+				window.cleArTimeout(this._showTimeout);
 				this._showTimeout = null;
-				this._notebookEditor.removeClassName(FIND_SHOW_TRANSITION);
+				this._notebookEditor.removeClAssNAme(FIND_SHOW_TRANSITION);
 			}
-			this._notebookEditor.addClassName(FIND_HIDE_TRANSITION);
+			this._notebookEditor.AddClAssNAme(FIND_HIDE_TRANSITION);
 			this._hideTimeout = window.setTimeout(() => {
-				this._notebookEditor.removeClassName(FIND_HIDE_TRANSITION);
+				this._notebookEditor.removeClAssNAme(FIND_HIDE_TRANSITION);
 			}, 200);
 		} else {
 			// no op
 		}
 	}
 
-	clear() {
-		this._currentMatch = -1;
-		this._findMatches = [];
+	cleAr() {
+		this._currentMAtch = -1;
+		this._findMAtches = [];
 	}
 
 	dispose() {
-		this._notebookEditor?.removeClassName(FIND_SHOW_TRANSITION);
-		this._notebookEditor?.removeClassName(FIND_HIDE_TRANSITION);
+		this._notebookEditor?.removeClAssNAme(FIND_SHOW_TRANSITION);
+		this._notebookEditor?.removeClAssNAme(FIND_HIDE_TRANSITION);
 		super.dispose();
 	}
 
@@ -341,21 +341,21 @@ export class NotebookFindWidget extends SimpleFindReplaceWidget implements INote
 
 registerNotebookContribution(NotebookFindWidget.id, NotebookFindWidget);
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
 			id: 'notebook.hideFind',
-			title: { value: localize('notebookActions.hideFind', "Hide Find in Notebook"), original: 'Hide Find in Notebook' },
+			title: { vAlue: locAlize('notebookActions.hideFind', "Hide Find in Notebook"), originAl: 'Hide Find in Notebook' },
 			keybinding: {
-				when: ContextKeyExpr.and(NOTEBOOK_EDITOR_FOCUSED, KEYBINDING_CONTEXT_NOTEBOOK_FIND_WIDGET_FOCUSED),
-				primary: KeyCode.Escape,
+				when: ContextKeyExpr.And(NOTEBOOK_EDITOR_FOCUSED, KEYBINDING_CONTEXT_NOTEBOOK_FIND_WIDGET_FOCUSED),
+				primAry: KeyCode.EscApe,
 				weight: KeybindingWeight.WorkbenchContrib
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const editorService = accessor.get(IEditorService);
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const editorService = Accessor.get(IEditorService);
 		const editor = getActiveNotebookEditor(editorService);
 
 		if (!editor) {
@@ -368,21 +368,21 @@ registerAction2(class extends Action2 {
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
 			id: 'notebook.find',
-			title: { value: localize('notebookActions.findInNotebook', "Find in Notebook"), original: 'Find in Notebook' },
+			title: { vAlue: locAlize('notebookActions.findInNotebook', "Find in Notebook"), originAl: 'Find in Notebook' },
 			keybinding: {
 				when: NOTEBOOK_EDITOR_FOCUSED,
-				primary: KeyCode.KEY_F | KeyMod.CtrlCmd,
+				primAry: KeyCode.KEY_F | KeyMod.CtrlCmd,
 				weight: KeybindingWeight.WorkbenchContrib
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const editorService = accessor.get(IEditorService);
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const editorService = Accessor.get(IEditorService);
 		const editor = getActiveNotebookEditor(editorService);
 
 		if (!editor) {
@@ -394,12 +394,12 @@ registerAction2(class extends Action2 {
 	}
 });
 
-EditorStartFindAction.addImplementation(100, (accessor: ServicesAccessor, args: any) => {
-	const editorService = accessor.get(IEditorService);
+EditorStArtFindAction.AddImplementAtion(100, (Accessor: ServicesAccessor, Args: Any) => {
+	const editorService = Accessor.get(IEditorService);
 	const editor = getActiveNotebookEditor(editorService);
 
 	if (!editor) {
-		return false;
+		return fAlse;
 	}
 
 	const controller = editor.getContribution<NotebookFindWidget>(NotebookFindWidget.id);
@@ -407,15 +407,15 @@ EditorStartFindAction.addImplementation(100, (accessor: ServicesAccessor, args: 
 	return true;
 });
 
-EditorStartFindReplaceAction.addImplementation(100, (accessor: ServicesAccessor, args: any) => {
-	const editorService = accessor.get(IEditorService);
+EditorStArtFindReplAceAction.AddImplementAtion(100, (Accessor: ServicesAccessor, Args: Any) => {
+	const editorService = Accessor.get(IEditorService);
 	const editor = getActiveNotebookEditor(editorService);
 
 	if (!editor) {
-		return false;
+		return fAlse;
 	}
 
 	const controller = editor.getContribution<NotebookFindWidget>(NotebookFindWidget.id);
-	controller.replace();
+	controller.replAce();
 	return true;
 });

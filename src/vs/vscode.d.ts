@@ -1,9 +1,9 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-declare module 'vscode' {
+declAre module 'vscode' {
 
 	/**
 	 * The version of the editor.
@@ -11,578 +11,578 @@ declare module 'vscode' {
 	export const version: string;
 
 	/**
-	 * Represents a reference to a command. Provides a title which
-	 * will be used to represent a command in the UI and, optionally,
-	 * an array of arguments which will be passed to the command handler
+	 * Represents A reference to A commAnd. Provides A title which
+	 * will be used to represent A commAnd in the UI And, optionAlly,
+	 * An ArrAy of Arguments which will be pAssed to the commAnd hAndler
 	 * function when invoked.
 	 */
-	export interface Command {
+	export interfAce CommAnd {
 		/**
-		 * Title of the command, like `save`.
+		 * Title of the commAnd, like `sAve`.
 		 */
 		title: string;
 
 		/**
-		 * The identifier of the actual command handler.
-		 * @see [commands.registerCommand](#commands.registerCommand).
+		 * The identifier of the ActuAl commAnd hAndler.
+		 * @see [commAnds.registerCommAnd](#commAnds.registerCommAnd).
 		 */
-		command: string;
+		commAnd: string;
 
 		/**
-		 * A tooltip for the command, when represented in the UI.
+		 * A tooltip for the commAnd, when represented in the UI.
 		 */
 		tooltip?: string;
 
 		/**
-		 * Arguments that the command handler should be
+		 * Arguments thAt the commAnd hAndler should be
 		 * invoked with.
 		 */
-		arguments?: any[];
+		Arguments?: Any[];
 	}
 
 	/**
-	 * Represents a line of text, such as a line of source code.
+	 * Represents A line of text, such As A line of source code.
 	 *
-	 * TextLine objects are __immutable__. When a [document](#TextDocument) changes,
-	 * previously retrieved lines will not represent the latest state.
+	 * TextLine objects Are __immutAble__. When A [document](#TextDocument) chAnges,
+	 * previously retrieved lines will not represent the lAtest stAte.
 	 */
-	export interface TextLine {
+	export interfAce TextLine {
 
 		/**
-		 * The zero-based line number.
+		 * The zero-bAsed line number.
 		 */
-		readonly lineNumber: number;
+		reAdonly lineNumber: number;
 
 		/**
-		 * The text of this line without the line separator characters.
+		 * The text of this line without the line sepArAtor chArActers.
 		 */
-		readonly text: string;
+		reAdonly text: string;
 
 		/**
-		 * The range this line covers without the line separator characters.
+		 * The rAnge this line covers without the line sepArAtor chArActers.
 		 */
-		readonly range: Range;
+		reAdonly rAnge: RAnge;
 
 		/**
-		 * The range this line covers with the line separator characters.
+		 * The rAnge this line covers with the line sepArAtor chArActers.
 		 */
-		readonly rangeIncludingLineBreak: Range;
+		reAdonly rAngeIncludingLineBreAk: RAnge;
 
 		/**
-		 * The offset of the first character which is not a whitespace character as defined
-		 * by `/\s/`. **Note** that if a line is all whitespace the length of the line is returned.
+		 * The offset of the first chArActer which is not A whitespAce chArActer As defined
+		 * by `/\s/`. **Note** thAt if A line is All whitespAce the length of the line is returned.
 		 */
-		readonly firstNonWhitespaceCharacterIndex: number;
+		reAdonly firstNonWhitespAceChArActerIndex: number;
 
 		/**
-		 * Whether this line is whitespace only, shorthand
-		 * for [TextLine.firstNonWhitespaceCharacterIndex](#TextLine.firstNonWhitespaceCharacterIndex) === [TextLine.text.length](#TextLine.text).
+		 * Whether this line is whitespAce only, shorthAnd
+		 * for [TextLine.firstNonWhitespAceChArActerIndex](#TextLine.firstNonWhitespAceChArActerIndex) === [TextLine.text.length](#TextLine.text).
 		 */
-		readonly isEmptyOrWhitespace: boolean;
+		reAdonly isEmptyOrWhitespAce: booleAn;
 	}
 
 	/**
-	 * Represents a text document, such as a source file. Text documents have
-	 * [lines](#TextLine) and knowledge about an underlying resource like a file.
+	 * Represents A text document, such As A source file. Text documents hAve
+	 * [lines](#TextLine) And knowledge About An underlying resource like A file.
 	 */
-	export interface TextDocument {
+	export interfAce TextDocument {
 
 		/**
-		 * The associated uri for this document.
+		 * The AssociAted uri for this document.
 		 *
-		 * *Note* that most documents use the `file`-scheme, which means they are files on disk. However, **not** all documents are
-		 * saved on disk and therefore the `scheme` must be checked before trying to access the underlying file or siblings on disk.
+		 * *Note* thAt most documents use the `file`-scheme, which meAns they Are files on disk. However, **not** All documents Are
+		 * sAved on disk And therefore the `scheme` must be checked before trying to Access the underlying file or siblings on disk.
 		 *
 		 * @see [FileSystemProvider](#FileSystemProvider)
 		 * @see [TextDocumentContentProvider](#TextDocumentContentProvider)
 		 */
-		readonly uri: Uri;
+		reAdonly uri: Uri;
 
 		/**
-		 * The file system path of the associated resource. Shorthand
-		 * notation for [TextDocument.uri.fsPath](#TextDocument.uri). Independent of the uri scheme.
+		 * The file system pAth of the AssociAted resource. ShorthAnd
+		 * notAtion for [TextDocument.uri.fsPAth](#TextDocument.uri). Independent of the uri scheme.
 		 */
-		readonly fileName: string;
+		reAdonly fileNAme: string;
 
 		/**
-		 * Is this document representing an untitled file which has never been saved yet. *Note* that
-		 * this does not mean the document will be saved to disk, use [`uri.scheme`](#Uri.scheme)
-		 * to figure out where a document will be [saved](#FileSystemProvider), e.g. `file`, `ftp` etc.
+		 * Is this document representing An untitled file which hAs never been sAved yet. *Note* thAt
+		 * this does not meAn the document will be sAved to disk, use [`uri.scheme`](#Uri.scheme)
+		 * to figure out where A document will be [sAved](#FileSystemProvider), e.g. `file`, `ftp` etc.
 		 */
-		readonly isUntitled: boolean;
+		reAdonly isUntitled: booleAn;
 
 		/**
-		 * The identifier of the language associated with this document.
+		 * The identifier of the lAnguAge AssociAted with this document.
 		 */
-		readonly languageId: string;
+		reAdonly lAnguAgeId: string;
 
 		/**
-		 * The version number of this document (it will strictly increase after each
-		 * change, including undo/redo).
+		 * The version number of this document (it will strictly increAse After eAch
+		 * chAnge, including undo/redo).
 		 */
-		readonly version: number;
+		reAdonly version: number;
 
 		/**
-		 * `true` if there are unpersisted changes.
+		 * `true` if there Are unpersisted chAnges.
 		 */
-		readonly isDirty: boolean;
+		reAdonly isDirty: booleAn;
 
 		/**
-		 * `true` if the document has been closed. A closed document isn't synchronized anymore
-		 * and won't be re-used when the same resource is opened again.
+		 * `true` if the document hAs been closed. A closed document isn't synchronized Anymore
+		 * And won't be re-used when the sAme resource is opened AgAin.
 		 */
-		readonly isClosed: boolean;
+		reAdonly isClosed: booleAn;
 
 		/**
-		 * Save the underlying file.
+		 * SAve the underlying file.
 		 *
-		 * @return A promise that will resolve to true when the file
-		 * has been saved. If the file was not dirty or the save failed,
-		 * will return false.
+		 * @return A promise thAt will resolve to true when the file
+		 * hAs been sAved. If the file wAs not dirty or the sAve fAiled,
+		 * will return fAlse.
 		 */
-		save(): Thenable<boolean>;
+		sAve(): ThenAble<booleAn>;
 
 		/**
-		 * The [end of line](#EndOfLine) sequence that is predominately
+		 * The [end of line](#EndOfLine) sequence thAt is predominAtely
 		 * used in this document.
 		 */
-		readonly eol: EndOfLine;
+		reAdonly eol: EndOfLine;
 
 		/**
 		 * The number of lines in this document.
 		 */
-		readonly lineCount: number;
+		reAdonly lineCount: number;
 
 		/**
-		 * Returns a text line denoted by the line number. Note
-		 * that the returned object is *not* live and changes to the
-		 * document are not reflected.
+		 * Returns A text line denoted by the line number. Note
+		 * thAt the returned object is *not* live And chAnges to the
+		 * document Are not reflected.
 		 *
-		 * @param line A line number in [0, lineCount).
+		 * @pArAm line A line number in [0, lineCount).
 		 * @return A [line](#TextLine).
 		 */
 		lineAt(line: number): TextLine;
 
 		/**
-		 * Returns a text line denoted by the position. Note
-		 * that the returned object is *not* live and changes to the
-		 * document are not reflected.
+		 * Returns A text line denoted by the position. Note
+		 * thAt the returned object is *not* live And chAnges to the
+		 * document Are not reflected.
 		 *
-		 * The position will be [adjusted](#TextDocument.validatePosition).
+		 * The position will be [Adjusted](#TextDocument.vAlidAtePosition).
 		 *
 		 * @see [TextDocument.lineAt](#TextDocument.lineAt)
-		 * @param position A position.
+		 * @pArAm position A position.
 		 * @return A [line](#TextLine).
 		 */
 		lineAt(position: Position): TextLine;
 
 		/**
-		 * Converts the position to a zero-based offset.
+		 * Converts the position to A zero-bAsed offset.
 		 *
-		 * The position will be [adjusted](#TextDocument.validatePosition).
+		 * The position will be [Adjusted](#TextDocument.vAlidAtePosition).
 		 *
-		 * @param position A position.
-		 * @return A valid zero-based offset.
+		 * @pArAm position A position.
+		 * @return A vAlid zero-bAsed offset.
 		 */
 		offsetAt(position: Position): number;
 
 		/**
-		 * Converts a zero-based offset to a position.
+		 * Converts A zero-bAsed offset to A position.
 		 *
-		 * @param offset A zero-based offset.
-		 * @return A valid [position](#Position).
+		 * @pArAm offset A zero-bAsed offset.
+		 * @return A vAlid [position](#Position).
 		 */
 		positionAt(offset: number): Position;
 
 		/**
-		 * Get the text of this document. A substring can be retrieved by providing
-		 * a range. The range will be [adjusted](#TextDocument.validateRange).
+		 * Get the text of this document. A substring cAn be retrieved by providing
+		 * A rAnge. The rAnge will be [Adjusted](#TextDocument.vAlidAteRAnge).
 		 *
-		 * @param range Include only the text included by the range.
-		 * @return The text inside the provided range or the entire text.
+		 * @pArAm rAnge Include only the text included by the rAnge.
+		 * @return The text inside the provided rAnge or the entire text.
 		 */
-		getText(range?: Range): string;
+		getText(rAnge?: RAnge): string;
 
 		/**
-		 * Get a word-range at the given position. By default words are defined by
-		 * common separators, like space, -, _, etc. In addition, per language custom
-		 * [word definitions](#LanguageConfiguration.wordPattern) can be defined. It
-		 * is also possible to provide a custom regular expression.
+		 * Get A word-rAnge At the given position. By defAult words Are defined by
+		 * common sepArAtors, like spAce, -, _, etc. In Addition, per lAnguAge custom
+		 * [word definitions](#LAnguAgeConfigurAtion.wordPAttern) cAn be defined. It
+		 * is Also possible to provide A custom regulAr expression.
 		 *
-		 * * *Note 1:* A custom regular expression must not match the empty string and
+		 * * *Note 1:* A custom regulAr expression must not mAtch the empty string And
 		 * if it does, it will be ignored.
-		 * * *Note 2:* A custom regular expression will fail to match multiline strings
-		 * and in the name of speed regular expressions should not match words with
-		 * spaces. Use [`TextLine.text`](#TextLine.text) for more complex, non-wordy, scenarios.
+		 * * *Note 2:* A custom regulAr expression will fAil to mAtch multiline strings
+		 * And in the nAme of speed regulAr expressions should not mAtch words with
+		 * spAces. Use [`TextLine.text`](#TextLine.text) for more complex, non-wordy, scenArios.
 		 *
-		 * The position will be [adjusted](#TextDocument.validatePosition).
+		 * The position will be [Adjusted](#TextDocument.vAlidAtePosition).
 		 *
-		 * @param position A position.
-		 * @param regex Optional regular expression that describes what a word is.
-		 * @return A range spanning a word, or `undefined`.
+		 * @pArAm position A position.
+		 * @pArAm regex OptionAl regulAr expression thAt describes whAt A word is.
+		 * @return A rAnge spAnning A word, or `undefined`.
 		 */
-		getWordRangeAtPosition(position: Position, regex?: RegExp): Range | undefined;
+		getWordRAngeAtPosition(position: Position, regex?: RegExp): RAnge | undefined;
 
 		/**
-		 * Ensure a range is completely contained in this document.
+		 * Ensure A rAnge is completely contAined in this document.
 		 *
-		 * @param range A range.
-		 * @return The given range or a new, adjusted range.
+		 * @pArAm rAnge A rAnge.
+		 * @return The given rAnge or A new, Adjusted rAnge.
 		 */
-		validateRange(range: Range): Range;
+		vAlidAteRAnge(rAnge: RAnge): RAnge;
 
 		/**
-		 * Ensure a position is contained in the range of this document.
+		 * Ensure A position is contAined in the rAnge of this document.
 		 *
-		 * @param position A position.
-		 * @return The given position or a new, adjusted position.
+		 * @pArAm position A position.
+		 * @return The given position or A new, Adjusted position.
 		 */
-		validatePosition(position: Position): Position;
+		vAlidAtePosition(position: Position): Position;
 	}
 
 	/**
-	 * Represents a line and character position, such as
+	 * Represents A line And chArActer position, such As
 	 * the position of the cursor.
 	 *
-	 * Position objects are __immutable__. Use the [with](#Position.with) or
-	 * [translate](#Position.translate) methods to derive new positions
-	 * from an existing position.
+	 * Position objects Are __immutAble__. Use the [with](#Position.with) or
+	 * [trAnslAte](#Position.trAnslAte) methods to derive new positions
+	 * from An existing position.
 	 */
-	export class Position {
+	export clAss Position {
 
 		/**
-		 * The zero-based line value.
+		 * The zero-bAsed line vAlue.
 		 */
-		readonly line: number;
+		reAdonly line: number;
 
 		/**
-		 * The zero-based character value.
+		 * The zero-bAsed chArActer vAlue.
 		 */
-		readonly character: number;
+		reAdonly chArActer: number;
 
 		/**
-		 * @param line A zero-based line value.
-		 * @param character A zero-based character value.
+		 * @pArAm line A zero-bAsed line vAlue.
+		 * @pArAm chArActer A zero-bAsed chArActer vAlue.
 		 */
-		constructor(line: number, character: number);
+		constructor(line: number, chArActer: number);
 
 		/**
 		 * Check if this position is before `other`.
 		 *
-		 * @param other A position.
-		 * @return `true` if position is on a smaller line
-		 * or on the same line on a smaller character.
+		 * @pArAm other A position.
+		 * @return `true` if position is on A smAller line
+		 * or on the sAme line on A smAller chArActer.
 		 */
-		isBefore(other: Position): boolean;
+		isBefore(other: Position): booleAn;
 
 		/**
-		 * Check if this position is before or equal to `other`.
+		 * Check if this position is before or equAl to `other`.
 		 *
-		 * @param other A position.
-		 * @return `true` if position is on a smaller line
-		 * or on the same line on a smaller or equal character.
+		 * @pArAm other A position.
+		 * @return `true` if position is on A smAller line
+		 * or on the sAme line on A smAller or equAl chArActer.
 		 */
-		isBeforeOrEqual(other: Position): boolean;
+		isBeforeOrEquAl(other: Position): booleAn;
 
 		/**
-		 * Check if this position is after `other`.
+		 * Check if this position is After `other`.
 		 *
-		 * @param other A position.
-		 * @return `true` if position is on a greater line
-		 * or on the same line on a greater character.
+		 * @pArAm other A position.
+		 * @return `true` if position is on A greAter line
+		 * or on the sAme line on A greAter chArActer.
 		 */
-		isAfter(other: Position): boolean;
+		isAfter(other: Position): booleAn;
 
 		/**
-		 * Check if this position is after or equal to `other`.
+		 * Check if this position is After or equAl to `other`.
 		 *
-		 * @param other A position.
-		 * @return `true` if position is on a greater line
-		 * or on the same line on a greater or equal character.
+		 * @pArAm other A position.
+		 * @return `true` if position is on A greAter line
+		 * or on the sAme line on A greAter or equAl chArActer.
 		 */
-		isAfterOrEqual(other: Position): boolean;
+		isAfterOrEquAl(other: Position): booleAn;
 
 		/**
-		 * Check if this position is equal to `other`.
+		 * Check if this position is equAl to `other`.
 		 *
-		 * @param other A position.
-		 * @return `true` if the line and character of the given position are equal to
-		 * the line and character of this position.
+		 * @pArAm other A position.
+		 * @return `true` if the line And chArActer of the given position Are equAl to
+		 * the line And chArActer of this position.
 		 */
-		isEqual(other: Position): boolean;
+		isEquAl(other: Position): booleAn;
 
 		/**
-		 * Compare this to `other`.
+		 * CompAre this to `other`.
 		 *
-		 * @param other A position.
-		 * @return A number smaller than zero if this position is before the given position,
-		 * a number greater than zero if this position is after the given position, or zero when
-		 * this and the given position are equal.
+		 * @pArAm other A position.
+		 * @return A number smAller thAn zero if this position is before the given position,
+		 * A number greAter thAn zero if this position is After the given position, or zero when
+		 * this And the given position Are equAl.
 		 */
-		compareTo(other: Position): number;
+		compAreTo(other: Position): number;
 
 		/**
-		 * Create a new position relative to this position.
+		 * CreAte A new position relAtive to this position.
 		 *
-		 * @param lineDelta Delta value for the line value, default is `0`.
-		 * @param characterDelta Delta value for the character value, default is `0`.
-		 * @return A position which line and character is the sum of the current line and
-		 * character and the corresponding deltas.
+		 * @pArAm lineDeltA DeltA vAlue for the line vAlue, defAult is `0`.
+		 * @pArAm chArActerDeltA DeltA vAlue for the chArActer vAlue, defAult is `0`.
+		 * @return A position which line And chArActer is the sum of the current line And
+		 * chArActer And the corresponding deltAs.
 		 */
-		translate(lineDelta?: number, characterDelta?: number): Position;
+		trAnslAte(lineDeltA?: number, chArActerDeltA?: number): Position;
 
 		/**
-		 * Derived a new position relative to this position.
+		 * Derived A new position relAtive to this position.
 		 *
-		 * @param change An object that describes a delta to this position.
-		 * @return A position that reflects the given delta. Will return `this` position if the change
-		 * is not changing anything.
+		 * @pArAm chAnge An object thAt describes A deltA to this position.
+		 * @return A position thAt reflects the given deltA. Will return `this` position if the chAnge
+		 * is not chAnging Anything.
 		 */
-		translate(change: { lineDelta?: number; characterDelta?: number; }): Position;
+		trAnslAte(chAnge: { lineDeltA?: number; chArActerDeltA?: number; }): Position;
 
 		/**
-		 * Create a new position derived from this position.
+		 * CreAte A new position derived from this position.
 		 *
-		 * @param line Value that should be used as line value, default is the [existing value](#Position.line)
-		 * @param character Value that should be used as character value, default is the [existing value](#Position.character)
-		 * @return A position where line and character are replaced by the given values.
+		 * @pArAm line VAlue thAt should be used As line vAlue, defAult is the [existing vAlue](#Position.line)
+		 * @pArAm chArActer VAlue thAt should be used As chArActer vAlue, defAult is the [existing vAlue](#Position.chArActer)
+		 * @return A position where line And chArActer Are replAced by the given vAlues.
 		 */
-		with(line?: number, character?: number): Position;
+		with(line?: number, chArActer?: number): Position;
 
 		/**
-		 * Derived a new position from this position.
+		 * Derived A new position from this position.
 		 *
-		 * @param change An object that describes a change to this position.
-		 * @return A position that reflects the given change. Will return `this` position if the change
-		 * is not changing anything.
+		 * @pArAm chAnge An object thAt describes A chAnge to this position.
+		 * @return A position thAt reflects the given chAnge. Will return `this` position if the chAnge
+		 * is not chAnging Anything.
 		 */
-		with(change: { line?: number; character?: number; }): Position;
+		with(chAnge: { line?: number; chArActer?: number; }): Position;
 	}
 
 	/**
-	 * A range represents an ordered pair of two positions.
-	 * It is guaranteed that [start](#Range.start).isBeforeOrEqual([end](#Range.end))
+	 * A rAnge represents An ordered pAir of two positions.
+	 * It is guArAnteed thAt [stArt](#RAnge.stArt).isBeforeOrEquAl([end](#RAnge.end))
 	 *
-	 * Range objects are __immutable__. Use the [with](#Range.with),
-	 * [intersection](#Range.intersection), or [union](#Range.union) methods
-	 * to derive new ranges from an existing range.
+	 * RAnge objects Are __immutAble__. Use the [with](#RAnge.with),
+	 * [intersection](#RAnge.intersection), or [union](#RAnge.union) methods
+	 * to derive new rAnges from An existing rAnge.
 	 */
-	export class Range {
+	export clAss RAnge {
 
 		/**
-		 * The start position. It is before or equal to [end](#Range.end).
+		 * The stArt position. It is before or equAl to [end](#RAnge.end).
 		 */
-		readonly start: Position;
+		reAdonly stArt: Position;
 
 		/**
-		 * The end position. It is after or equal to [start](#Range.start).
+		 * The end position. It is After or equAl to [stArt](#RAnge.stArt).
 		 */
-		readonly end: Position;
+		reAdonly end: Position;
 
 		/**
-		 * Create a new range from two positions. If `start` is not
-		 * before or equal to `end`, the values will be swapped.
+		 * CreAte A new rAnge from two positions. If `stArt` is not
+		 * before or equAl to `end`, the vAlues will be swApped.
 		 *
-		 * @param start A position.
-		 * @param end A position.
+		 * @pArAm stArt A position.
+		 * @pArAm end A position.
 		 */
-		constructor(start: Position, end: Position);
+		constructor(stArt: Position, end: Position);
 
 		/**
-		 * Create a new range from number coordinates. It is a shorter equivalent of
-		 * using `new Range(new Position(startLine, startCharacter), new Position(endLine, endCharacter))`
+		 * CreAte A new rAnge from number coordinAtes. It is A shorter equivAlent of
+		 * using `new RAnge(new Position(stArtLine, stArtChArActer), new Position(endLine, endChArActer))`
 		 *
-		 * @param startLine A zero-based line value.
-		 * @param startCharacter A zero-based character value.
-		 * @param endLine A zero-based line value.
-		 * @param endCharacter A zero-based character value.
+		 * @pArAm stArtLine A zero-bAsed line vAlue.
+		 * @pArAm stArtChArActer A zero-bAsed chArActer vAlue.
+		 * @pArAm endLine A zero-bAsed line vAlue.
+		 * @pArAm endChArActer A zero-bAsed chArActer vAlue.
 		 */
-		constructor(startLine: number, startCharacter: number, endLine: number, endCharacter: number);
+		constructor(stArtLine: number, stArtChArActer: number, endLine: number, endChArActer: number);
 
 		/**
-		 * `true` if `start` and `end` are equal.
+		 * `true` if `stArt` And `end` Are equAl.
 		 */
-		isEmpty: boolean;
+		isEmpty: booleAn;
 
 		/**
-		 * `true` if `start.line` and `end.line` are equal.
+		 * `true` if `stArt.line` And `end.line` Are equAl.
 		 */
-		isSingleLine: boolean;
+		isSingleLine: booleAn;
 
 		/**
-		 * Check if a position or a range is contained in this range.
+		 * Check if A position or A rAnge is contAined in this rAnge.
 		 *
-		 * @param positionOrRange A position or a range.
-		 * @return `true` if the position or range is inside or equal
-		 * to this range.
+		 * @pArAm positionOrRAnge A position or A rAnge.
+		 * @return `true` if the position or rAnge is inside or equAl
+		 * to this rAnge.
 		 */
-		contains(positionOrRange: Position | Range): boolean;
+		contAins(positionOrRAnge: Position | RAnge): booleAn;
 
 		/**
-		 * Check if `other` equals this range.
+		 * Check if `other` equAls this rAnge.
 		 *
-		 * @param other A range.
-		 * @return `true` when start and end are [equal](#Position.isEqual) to
-		 * start and end of this range.
+		 * @pArAm other A rAnge.
+		 * @return `true` when stArt And end Are [equAl](#Position.isEquAl) to
+		 * stArt And end of this rAnge.
 		 */
-		isEqual(other: Range): boolean;
+		isEquAl(other: RAnge): booleAn;
 
 		/**
-		 * Intersect `range` with this range and returns a new range or `undefined`
-		 * if the ranges have no overlap.
+		 * Intersect `rAnge` with this rAnge And returns A new rAnge or `undefined`
+		 * if the rAnges hAve no overlAp.
 		 *
-		 * @param range A range.
-		 * @return A range of the greater start and smaller end positions. Will
-		 * return undefined when there is no overlap.
+		 * @pArAm rAnge A rAnge.
+		 * @return A rAnge of the greAter stArt And smAller end positions. Will
+		 * return undefined when there is no overlAp.
 		 */
-		intersection(range: Range): Range | undefined;
+		intersection(rAnge: RAnge): RAnge | undefined;
 
 		/**
-		 * Compute the union of `other` with this range.
+		 * Compute the union of `other` with this rAnge.
 		 *
-		 * @param other A range.
-		 * @return A range of smaller start position and the greater end position.
+		 * @pArAm other A rAnge.
+		 * @return A rAnge of smAller stArt position And the greAter end position.
 		 */
-		union(other: Range): Range;
+		union(other: RAnge): RAnge;
 
 		/**
-		 * Derived a new range from this range.
+		 * Derived A new rAnge from this rAnge.
 		 *
-		 * @param start A position that should be used as start. The default value is the [current start](#Range.start).
-		 * @param end A position that should be used as end. The default value is the [current end](#Range.end).
-		 * @return A range derived from this range with the given start and end position.
-		 * If start and end are not different `this` range will be returned.
+		 * @pArAm stArt A position thAt should be used As stArt. The defAult vAlue is the [current stArt](#RAnge.stArt).
+		 * @pArAm end A position thAt should be used As end. The defAult vAlue is the [current end](#RAnge.end).
+		 * @return A rAnge derived from this rAnge with the given stArt And end position.
+		 * If stArt And end Are not different `this` rAnge will be returned.
 		 */
-		with(start?: Position, end?: Position): Range;
+		with(stArt?: Position, end?: Position): RAnge;
 
 		/**
-		 * Derived a new range from this range.
+		 * Derived A new rAnge from this rAnge.
 		 *
-		 * @param change An object that describes a change to this range.
-		 * @return A range that reflects the given change. Will return `this` range if the change
-		 * is not changing anything.
+		 * @pArAm chAnge An object thAt describes A chAnge to this rAnge.
+		 * @return A rAnge thAt reflects the given chAnge. Will return `this` rAnge if the chAnge
+		 * is not chAnging Anything.
 		 */
-		with(change: { start?: Position, end?: Position }): Range;
+		with(chAnge: { stArt?: Position, end?: Position }): RAnge;
 	}
 
 	/**
-	 * Represents a text selection in an editor.
+	 * Represents A text selection in An editor.
 	 */
-	export class Selection extends Range {
+	export clAss Selection extends RAnge {
 
 		/**
-		 * The position at which the selection starts.
-		 * This position might be before or after [active](#Selection.active).
+		 * The position At which the selection stArts.
+		 * This position might be before or After [Active](#Selection.Active).
 		 */
-		anchor: Position;
+		Anchor: Position;
 
 		/**
 		 * The position of the cursor.
-		 * This position might be before or after [anchor](#Selection.anchor).
+		 * This position might be before or After [Anchor](#Selection.Anchor).
 		 */
-		active: Position;
+		Active: Position;
 
 		/**
-		 * Create a selection from two positions.
+		 * CreAte A selection from two positions.
 		 *
-		 * @param anchor A position.
-		 * @param active A position.
+		 * @pArAm Anchor A position.
+		 * @pArAm Active A position.
 		 */
-		constructor(anchor: Position, active: Position);
+		constructor(Anchor: Position, Active: Position);
 
 		/**
-		 * Create a selection from four coordinates.
+		 * CreAte A selection from four coordinAtes.
 		 *
-		 * @param anchorLine A zero-based line value.
-		 * @param anchorCharacter A zero-based character value.
-		 * @param activeLine A zero-based line value.
-		 * @param activeCharacter A zero-based character value.
+		 * @pArAm AnchorLine A zero-bAsed line vAlue.
+		 * @pArAm AnchorChArActer A zero-bAsed chArActer vAlue.
+		 * @pArAm ActiveLine A zero-bAsed line vAlue.
+		 * @pArAm ActiveChArActer A zero-bAsed chArActer vAlue.
 		 */
-		constructor(anchorLine: number, anchorCharacter: number, activeLine: number, activeCharacter: number);
+		constructor(AnchorLine: number, AnchorChArActer: number, ActiveLine: number, ActiveChArActer: number);
 
 		/**
-		 * A selection is reversed if [active](#Selection.active).isBefore([anchor](#Selection.anchor)).
+		 * A selection is reversed if [Active](#Selection.Active).isBefore([Anchor](#Selection.Anchor)).
 		 */
-		isReversed: boolean;
+		isReversed: booleAn;
 	}
 
 	/**
-	 * Represents sources that can cause [selection change events](#window.onDidChangeTextEditorSelection).
+	 * Represents sources thAt cAn cAuse [selection chAnge events](#window.onDidChAngeTextEditorSelection).
 	*/
-	export enum TextEditorSelectionChangeKind {
+	export enum TextEditorSelectionChAngeKind {
 		/**
-		 * Selection changed due to typing in the editor.
+		 * Selection chAnged due to typing in the editor.
 		 */
-		Keyboard = 1,
+		KeyboArd = 1,
 		/**
-		 * Selection change due to clicking in the editor.
+		 * Selection chAnge due to clicking in the editor.
 		 */
 		Mouse = 2,
 		/**
-		 * Selection changed because a command ran.
+		 * Selection chAnged becAuse A commAnd rAn.
 		 */
-		Command = 3
+		CommAnd = 3
 	}
 
 	/**
-	 * Represents an event describing the change in a [text editor's selections](#TextEditor.selections).
+	 * Represents An event describing the chAnge in A [text editor's selections](#TextEditor.selections).
 	 */
-	export interface TextEditorSelectionChangeEvent {
+	export interfAce TextEditorSelectionChAngeEvent {
 		/**
-		 * The [text editor](#TextEditor) for which the selections have changed.
+		 * The [text editor](#TextEditor) for which the selections hAve chAnged.
 		 */
-		readonly textEditor: TextEditor;
+		reAdonly textEditor: TextEditor;
 		/**
-		 * The new value for the [text editor's selections](#TextEditor.selections).
+		 * The new vAlue for the [text editor's selections](#TextEditor.selections).
 		 */
-		readonly selections: ReadonlyArray<Selection>;
+		reAdonly selections: ReAdonlyArrAy<Selection>;
 		/**
-		 * The [change kind](#TextEditorSelectionChangeKind) which has triggered this
-		 * event. Can be `undefined`.
+		 * The [chAnge kind](#TextEditorSelectionChAngeKind) which hAs triggered this
+		 * event. CAn be `undefined`.
 		 */
-		readonly kind?: TextEditorSelectionChangeKind;
+		reAdonly kind?: TextEditorSelectionChAngeKind;
 	}
 
 	/**
-	 * Represents an event describing the change in a [text editor's visible ranges](#TextEditor.visibleRanges).
+	 * Represents An event describing the chAnge in A [text editor's visible rAnges](#TextEditor.visibleRAnges).
 	 */
-	export interface TextEditorVisibleRangesChangeEvent {
+	export interfAce TextEditorVisibleRAngesChAngeEvent {
 		/**
-		 * The [text editor](#TextEditor) for which the visible ranges have changed.
+		 * The [text editor](#TextEditor) for which the visible rAnges hAve chAnged.
 		 */
-		readonly textEditor: TextEditor;
+		reAdonly textEditor: TextEditor;
 		/**
-		 * The new value for the [text editor's visible ranges](#TextEditor.visibleRanges).
+		 * The new vAlue for the [text editor's visible rAnges](#TextEditor.visibleRAnges).
 		 */
-		readonly visibleRanges: ReadonlyArray<Range>;
+		reAdonly visibleRAnges: ReAdonlyArrAy<RAnge>;
 	}
 
 	/**
-	 * Represents an event describing the change in a [text editor's options](#TextEditor.options).
+	 * Represents An event describing the chAnge in A [text editor's options](#TextEditor.options).
 	 */
-	export interface TextEditorOptionsChangeEvent {
+	export interfAce TextEditorOptionsChAngeEvent {
 		/**
-		 * The [text editor](#TextEditor) for which the options have changed.
+		 * The [text editor](#TextEditor) for which the options hAve chAnged.
 		 */
-		readonly textEditor: TextEditor;
+		reAdonly textEditor: TextEditor;
 		/**
-		 * The new value for the [text editor's options](#TextEditor.options).
+		 * The new vAlue for the [text editor's options](#TextEditor.options).
 		 */
-		readonly options: TextEditorOptions;
+		reAdonly options: TextEditorOptions;
 	}
 
 	/**
-	 * Represents an event describing the change of a [text editor's view column](#TextEditor.viewColumn).
+	 * Represents An event describing the chAnge of A [text editor's view column](#TextEditor.viewColumn).
 	 */
-	export interface TextEditorViewColumnChangeEvent {
+	export interfAce TextEditorViewColumnChAngeEvent {
 		/**
-		 * The [text editor](#TextEditor) for which the view column has changed.
+		 * The [text editor](#TextEditor) for which the view column hAs chAnged.
 		 */
-		readonly textEditor: TextEditor;
+		reAdonly textEditor: TextEditor;
 		/**
-		 * The new value for the [text editor's view column](#TextEditor.viewColumn).
+		 * The new vAlue for the [text editor's view column](#TextEditor.viewColumn).
 		 */
-		readonly viewColumn: ViewColumn;
+		reAdonly viewColumn: ViewColumn;
 	}
 
 	/**
@@ -590,27 +590,27 @@ declare module 'vscode' {
 	 */
 	export enum TextEditorCursorStyle {
 		/**
-		 * Render the cursor as a vertical thick line.
+		 * Render the cursor As A verticAl thick line.
 		 */
 		Line = 1,
 		/**
-		 * Render the cursor as a block filled.
+		 * Render the cursor As A block filled.
 		 */
 		Block = 2,
 		/**
-		 * Render the cursor as a thick horizontal line.
+		 * Render the cursor As A thick horizontAl line.
 		 */
 		Underline = 3,
 		/**
-		 * Render the cursor as a vertical thin line.
+		 * Render the cursor As A verticAl thin line.
 		 */
 		LineThin = 4,
 		/**
-		 * Render the cursor as a block outlined.
+		 * Render the cursor As A block outlined.
 		 */
 		BlockOutline = 5,
 		/**
-		 * Render the cursor as a thin horizontal line.
+		 * Render the cursor As A thin horizontAl line.
 		 */
 		UnderlineThin = 6
 	}
@@ -628,96 +628,96 @@ declare module 'vscode' {
 		 */
 		On = 1,
 		/**
-		 * Render the line numbers with values relative to the primary cursor location.
+		 * Render the line numbers with vAlues relAtive to the primAry cursor locAtion.
 		 */
-		Relative = 2
+		RelAtive = 2
 	}
 
 	/**
-	 * Represents a [text editor](#TextEditor)'s [options](#TextEditor.options).
+	 * Represents A [text editor](#TextEditor)'s [options](#TextEditor.options).
 	 */
-	export interface TextEditorOptions {
+	export interfAce TextEditorOptions {
 
 		/**
-		 * The size in spaces a tab takes. This is used for two purposes:
-		 *  - the rendering width of a tab character;
-		 *  - the number of spaces to insert when [insertSpaces](#TextEditorOptions.insertSpaces) is true.
+		 * The size in spAces A tAb tAkes. This is used for two purposes:
+		 *  - the rendering width of A tAb chArActer;
+		 *  - the number of spAces to insert when [insertSpAces](#TextEditorOptions.insertSpAces) is true.
 		 *
-		 * When getting a text editor's options, this property will always be a number (resolved).
-		 * When setting a text editor's options, this property is optional and it can be a number or `"auto"`.
+		 * When getting A text editor's options, this property will AlwAys be A number (resolved).
+		 * When setting A text editor's options, this property is optionAl And it cAn be A number or `"Auto"`.
 		 */
-		tabSize?: number | string;
+		tAbSize?: number | string;
 
 		/**
-		 * When pressing Tab insert [n](#TextEditorOptions.tabSize) spaces.
-		 * When getting a text editor's options, this property will always be a boolean (resolved).
-		 * When setting a text editor's options, this property is optional and it can be a boolean or `"auto"`.
+		 * When pressing TAb insert [n](#TextEditorOptions.tAbSize) spAces.
+		 * When getting A text editor's options, this property will AlwAys be A booleAn (resolved).
+		 * When setting A text editor's options, this property is optionAl And it cAn be A booleAn or `"Auto"`.
 		 */
-		insertSpaces?: boolean | string;
+		insertSpAces?: booleAn | string;
 
 		/**
 		 * The rendering style of the cursor in this editor.
-		 * When getting a text editor's options, this property will always be present.
-		 * When setting a text editor's options, this property is optional.
+		 * When getting A text editor's options, this property will AlwAys be present.
+		 * When setting A text editor's options, this property is optionAl.
 		 */
 		cursorStyle?: TextEditorCursorStyle;
 
 		/**
-		 * Render relative line numbers w.r.t. the current line number.
-		 * When getting a text editor's options, this property will always be present.
-		 * When setting a text editor's options, this property is optional.
+		 * Render relAtive line numbers w.r.t. the current line number.
+		 * When getting A text editor's options, this property will AlwAys be present.
+		 * When setting A text editor's options, this property is optionAl.
 		 */
 		lineNumbers?: TextEditorLineNumbersStyle;
 	}
 
 	/**
-	 * Represents a handle to a set of decorations
-	 * sharing the same [styling options](#DecorationRenderOptions) in a [text editor](#TextEditor).
+	 * Represents A hAndle to A set of decorAtions
+	 * shAring the sAme [styling options](#DecorAtionRenderOptions) in A [text editor](#TextEditor).
 	 *
-	 * To get an instance of a `TextEditorDecorationType` use
-	 * [createTextEditorDecorationType](#window.createTextEditorDecorationType).
+	 * To get An instAnce of A `TextEditorDecorAtionType` use
+	 * [creAteTextEditorDecorAtionType](#window.creAteTextEditorDecorAtionType).
 	 */
-	export interface TextEditorDecorationType {
+	export interfAce TextEditorDecorAtionType {
 
 		/**
-		 * Internal representation of the handle.
+		 * InternAl representAtion of the hAndle.
 		 */
-		readonly key: string;
+		reAdonly key: string;
 
 		/**
-		 * Remove this decoration type and all decorations on all text editors using it.
+		 * Remove this decorAtion type And All decorAtions on All text editors using it.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Represents different [reveal](#TextEditor.revealRange) strategies in a text editor.
+	 * Represents different [reveAl](#TextEditor.reveAlRAnge) strAtegies in A text editor.
 	 */
-	export enum TextEditorRevealType {
+	export enum TextEditorReveAlType {
 		/**
-		 * The range will be revealed with as little scrolling as possible.
+		 * The rAnge will be reveAled with As little scrolling As possible.
 		 */
-		Default = 0,
+		DefAult = 0,
 		/**
-		 * The range will always be revealed in the center of the viewport.
+		 * The rAnge will AlwAys be reveAled in the center of the viewport.
 		 */
 		InCenter = 1,
 		/**
-		 * If the range is outside the viewport, it will be revealed in the center of the viewport.
-		 * Otherwise, it will be revealed with as little scrolling as possible.
+		 * If the rAnge is outside the viewport, it will be reveAled in the center of the viewport.
+		 * Otherwise, it will be reveAled with As little scrolling As possible.
 		 */
 		InCenterIfOutsideViewport = 2,
 		/**
-		 * The range will always be revealed at the top of the viewport.
+		 * The rAnge will AlwAys be reveAled At the top of the viewport.
 		 */
 		AtTop = 3
 	}
 
 	/**
-	 * Represents different positions for rendering a decoration in an [overview ruler](#DecorationRenderOptions.overviewRulerLane).
-	 * The overview ruler supports three lanes.
+	 * Represents different positions for rendering A decorAtion in An [overview ruler](#DecorAtionRenderOptions.overviewRulerLAne).
+	 * The overview ruler supports three lAnes.
 	 */
-	export enum OverviewRulerLane {
+	export enum OverviewRulerLAne {
 		Left = 1,
 		Center = 2,
 		Right = 4,
@@ -725,393 +725,393 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * Describes the behavior of decorations when typing/editing at their edges.
+	 * Describes the behAvior of decorAtions when typing/editing At their edges.
 	 */
-	export enum DecorationRangeBehavior {
+	export enum DecorAtionRAngeBehAvior {
 		/**
-		 * The decoration's range will widen when edits occur at the start or end.
+		 * The decorAtion's rAnge will widen when edits occur At the stArt or end.
 		 */
 		OpenOpen = 0,
 		/**
-		 * The decoration's range will not widen when edits occur at the start of end.
+		 * The decorAtion's rAnge will not widen when edits occur At the stArt of end.
 		 */
 		ClosedClosed = 1,
 		/**
-		 * The decoration's range will widen when edits occur at the start, but not at the end.
+		 * The decorAtion's rAnge will widen when edits occur At the stArt, but not At the end.
 		 */
 		OpenClosed = 2,
 		/**
-		 * The decoration's range will widen when edits occur at the end, but not at the start.
+		 * The decorAtion's rAnge will widen when edits occur At the end, but not At the stArt.
 		 */
 		ClosedOpen = 3
 	}
 
 	/**
-	 * Represents options to configure the behavior of showing a [document](#TextDocument) in an [editor](#TextEditor).
+	 * Represents options to configure the behAvior of showing A [document](#TextDocument) in An [editor](#TextEditor).
 	 */
-	export interface TextDocumentShowOptions {
+	export interfAce TextDocumentShowOptions {
 		/**
-		 * An optional view column in which the [editor](#TextEditor) should be shown.
-		 * The default is the [active](#ViewColumn.Active), other values are adjusted to
-		 * be `Min(column, columnCount + 1)`, the [active](#ViewColumn.Active)-column is
-		 * not adjusted. Use [`ViewColumn.Beside`](#ViewColumn.Beside) to open the
-		 * editor to the side of the currently active one.
+		 * An optionAl view column in which the [editor](#TextEditor) should be shown.
+		 * The defAult is the [Active](#ViewColumn.Active), other vAlues Are Adjusted to
+		 * be `Min(column, columnCount + 1)`, the [Active](#ViewColumn.Active)-column is
+		 * not Adjusted. Use [`ViewColumn.Beside`](#ViewColumn.Beside) to open the
+		 * editor to the side of the currently Active one.
 		 */
 		viewColumn?: ViewColumn;
 
 		/**
-		 * An optional flag that when `true` will stop the [editor](#TextEditor) from taking focus.
+		 * An optionAl flAg thAt when `true` will stop the [editor](#TextEditor) from tAking focus.
 		 */
-		preserveFocus?: boolean;
+		preserveFocus?: booleAn;
 
 		/**
-		 * An optional flag that controls if an [editor](#TextEditor)-tab will be replaced
+		 * An optionAl flAg thAt controls if An [editor](#TextEditor)-tAb will be replAced
 		 * with the next editor or if it will be kept.
 		 */
-		preview?: boolean;
+		preview?: booleAn;
 
 		/**
-		 * An optional selection to apply for the document in the [editor](#TextEditor).
+		 * An optionAl selection to Apply for the document in the [editor](#TextEditor).
 		 */
-		selection?: Range;
+		selection?: RAnge;
 	}
 
 	/**
-	 * A reference to one of the workbench colors as defined in https://code.visualstudio.com/docs/getstarted/theme-color-reference.
-	 * Using a theme color is preferred over a custom color as it gives theme authors and users the possibility to change the color.
+	 * A reference to one of the workbench colors As defined in https://code.visuAlstudio.com/docs/getstArted/theme-color-reference.
+	 * Using A theme color is preferred over A custom color As it gives theme Authors And users the possibility to chAnge the color.
 	 */
-	export class ThemeColor {
+	export clAss ThemeColor {
 
 		/**
-		 * Creates a reference to a theme color.
-		 * @param id of the color. The available colors are listed in https://code.visualstudio.com/docs/getstarted/theme-color-reference.
+		 * CreAtes A reference to A theme color.
+		 * @pArAm id of the color. The AvAilAble colors Are listed in https://code.visuAlstudio.com/docs/getstArted/theme-color-reference.
 		 */
 		constructor(id: string);
 	}
 
 	/**
-	 * A reference to a named icon. Currently, [File](#ThemeIcon.File), [Folder](#ThemeIcon.Folder),
-	 * and [codicons](https://microsoft.github.io/vscode-codicons/dist/codicon.html) are supported.
-	 * Using a theme icon is preferred over a custom icon as it gives theme authors the possibility to change the icons.
+	 * A reference to A nAmed icon. Currently, [File](#ThemeIcon.File), [Folder](#ThemeIcon.Folder),
+	 * And [codicons](https://microsoft.github.io/vscode-codicons/dist/codicon.html) Are supported.
+	 * Using A theme icon is preferred over A custom icon As it gives theme Authors the possibility to chAnge the icons.
 	 *
-	 * *Note* that theme icons can also be rendered inside labels and descriptions. Places that support theme icons spell this out
-	 * and they use the `$(<name>)`-syntax, for instance `quickPick.label = "Hello World $(globe)"`.
+	 * *Note* thAt theme icons cAn Also be rendered inside lAbels And descriptions. PlAces thAt support theme icons spell this out
+	 * And they use the `$(<nAme>)`-syntAx, for instAnce `quickPick.lAbel = "Hello World $(globe)"`.
 	 */
-	export class ThemeIcon {
+	export clAss ThemeIcon {
 		/**
-		 * Reference to an icon representing a file. The icon is taken from the current file icon theme or a placeholder icon is used.
+		 * Reference to An icon representing A file. The icon is tAken from the current file icon theme or A plAceholder icon is used.
 		 */
-		static readonly File: ThemeIcon;
+		stAtic reAdonly File: ThemeIcon;
 
 		/**
-		 * Reference to an icon representing a folder. The icon is taken from the current file icon theme or a placeholder icon is used.
+		 * Reference to An icon representing A folder. The icon is tAken from the current file icon theme or A plAceholder icon is used.
 		 */
-		static readonly Folder: ThemeIcon;
+		stAtic reAdonly Folder: ThemeIcon;
 
 		/**
-		 * The id of the icon. The available icons are listed in https://microsoft.github.io/vscode-codicons/dist/codicon.html.
+		 * The id of the icon. The AvAilAble icons Are listed in https://microsoft.github.io/vscode-codicons/dist/codicon.html.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The optional ThemeColor of the icon. The color is currently only used in [TreeItem](#TreeItem).
+		 * The optionAl ThemeColor of the icon. The color is currently only used in [TreeItem](#TreeItem).
 		 */
-		readonly themeColor?: ThemeColor;
+		reAdonly themeColor?: ThemeColor;
 
 		/**
-		 * Creates a reference to a theme icon.
-		 * @param id id of the icon. The available icons are listed in https://microsoft.github.io/vscode-codicons/dist/codicon.html.
-		 * @param color optional `ThemeColor` for the icon. The color is currently only used in [TreeItem](#TreeItem).
+		 * CreAtes A reference to A theme icon.
+		 * @pArAm id id of the icon. The AvAilAble icons Are listed in https://microsoft.github.io/vscode-codicons/dist/codicon.html.
+		 * @pArAm color optionAl `ThemeColor` for the icon. The color is currently only used in [TreeItem](#TreeItem).
 		 */
 		constructor(id: string, color?: ThemeColor);
 	}
 
 	/**
-	 * Represents theme specific rendering styles for a [text editor decoration](#TextEditorDecorationType).
+	 * Represents theme specific rendering styles for A [text editor decorAtion](#TextEditorDecorAtionType).
 	 */
-	export interface ThemableDecorationRenderOptions {
+	export interfAce ThemAbleDecorAtionRenderOptions {
 		/**
-		 * Background color of the decoration. Use rgba() and define transparent background colors to play well with other decorations.
-		 * Alternatively a color from the color registry can be [referenced](#ThemeColor).
+		 * BAckground color of the decorAtion. Use rgbA() And define trAnspArent bAckground colors to plAy well with other decorAtions.
+		 * AlternAtively A color from the color registry cAn be [referenced](#ThemeColor).
 		 */
-		backgroundColor?: string | ThemeColor;
+		bAckgroundColor?: string | ThemeColor;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		outline?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'outline' for setting one or more of the individual outline properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'outline' for setting one or more of the individuAl outline properties.
 		 */
 		outlineColor?: string | ThemeColor;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'outline' for setting one or more of the individual outline properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'outline' for setting one or more of the individuAl outline properties.
 		 */
 		outlineStyle?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'outline' for setting one or more of the individual outline properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'outline' for setting one or more of the individuAl outline properties.
 		 */
 		outlineWidth?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		border?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'border' for setting one or more of the individual border properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'border' for setting one or more of the individuAl border properties.
 		 */
 		borderColor?: string | ThemeColor;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'border' for setting one or more of the individual border properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'border' for setting one or more of the individuAl border properties.
 		 */
-		borderRadius?: string;
+		borderRAdius?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'border' for setting one or more of the individual border properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'border' for setting one or more of the individuAl border properties.
 		 */
-		borderSpacing?: string;
+		borderSpAcing?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'border' for setting one or more of the individual border properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'border' for setting one or more of the individuAl border properties.
 		 */
 		borderStyle?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
-		 * Better use 'border' for setting one or more of the individual border properties.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
+		 * Better use 'border' for setting one or more of the individuAl border properties.
 		 */
 		borderWidth?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		fontStyle?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		fontWeight?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
-		textDecoration?: string;
+		textDecorAtion?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		cursor?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		color?: string | ThemeColor;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
-		opacity?: string;
+		opAcity?: string;
 
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
-		letterSpacing?: string;
+		letterSpAcing?: string;
 
 		/**
-		 * An **absolute path** or an URI to an image to be rendered in the gutter.
+		 * An **Absolute pAth** or An URI to An imAge to be rendered in the gutter.
 		 */
-		gutterIconPath?: string | Uri;
+		gutterIconPAth?: string | Uri;
 
 		/**
 		 * Specifies the size of the gutter icon.
-		 * Available values are 'auto', 'contain', 'cover' and any percentage value.
-		 * For further information: https://msdn.microsoft.com/en-us/library/jj127316(v=vs.85).aspx
+		 * AvAilAble vAlues Are 'Auto', 'contAin', 'cover' And Any percentAge vAlue.
+		 * For further informAtion: https://msdn.microsoft.com/en-us/librAry/jj127316(v=vs.85).Aspx
 		 */
 		gutterIconSize?: string;
 
 		/**
-		 * The color of the decoration in the overview ruler. Use rgba() and define transparent colors to play well with other decorations.
+		 * The color of the decorAtion in the overview ruler. Use rgbA() And define trAnspArent colors to plAy well with other decorAtions.
 		 */
 		overviewRulerColor?: string | ThemeColor;
 
 		/**
-		 * Defines the rendering options of the attachment that is inserted before the decorated text.
+		 * Defines the rendering options of the AttAchment thAt is inserted before the decorAted text.
 		 */
-		before?: ThemableDecorationAttachmentRenderOptions;
+		before?: ThemAbleDecorAtionAttAchmentRenderOptions;
 
 		/**
-		 * Defines the rendering options of the attachment that is inserted after the decorated text.
+		 * Defines the rendering options of the AttAchment thAt is inserted After the decorAted text.
 		 */
-		after?: ThemableDecorationAttachmentRenderOptions;
+		After?: ThemAbleDecorAtionAttAchmentRenderOptions;
 	}
 
-	export interface ThemableDecorationAttachmentRenderOptions {
+	export interfAce ThemAbleDecorAtionAttAchmentRenderOptions {
 		/**
-		 * Defines a text content that is shown in the attachment. Either an icon or a text can be shown, but not both.
+		 * Defines A text content thAt is shown in the AttAchment. Either An icon or A text cAn be shown, but not both.
 		 */
 		contentText?: string;
 		/**
-		 * An **absolute path** or an URI to an image to be rendered in the attachment. Either an icon
-		 * or a text can be shown, but not both.
+		 * An **Absolute pAth** or An URI to An imAge to be rendered in the AttAchment. Either An icon
+		 * or A text cAn be shown, but not both.
 		 */
-		contentIconPath?: string | Uri;
+		contentIconPAth?: string | Uri;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
 		border?: string;
 		/**
-		 * CSS styling property that will be applied to text enclosed by a decoration.
+		 * CSS styling property thAt will be Applied to text enclosed by A decorAtion.
 		 */
 		borderColor?: string | ThemeColor;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
 		fontStyle?: string;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
 		fontWeight?: string;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
-		textDecoration?: string;
+		textDecorAtion?: string;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
 		color?: string | ThemeColor;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
-		backgroundColor?: string | ThemeColor;
+		bAckgroundColor?: string | ThemeColor;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
-		margin?: string;
+		mArgin?: string;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
 		width?: string;
 		/**
-		 * CSS styling property that will be applied to the decoration attachment.
+		 * CSS styling property thAt will be Applied to the decorAtion AttAchment.
 		 */
 		height?: string;
 	}
 
 	/**
-	 * Represents rendering styles for a [text editor decoration](#TextEditorDecorationType).
+	 * Represents rendering styles for A [text editor decorAtion](#TextEditorDecorAtionType).
 	 */
-	export interface DecorationRenderOptions extends ThemableDecorationRenderOptions {
+	export interfAce DecorAtionRenderOptions extends ThemAbleDecorAtionRenderOptions {
 		/**
-		 * Should the decoration be rendered also on the whitespace after the line text.
-		 * Defaults to `false`.
+		 * Should the decorAtion be rendered Also on the whitespAce After the line text.
+		 * DefAults to `fAlse`.
 		 */
-		isWholeLine?: boolean;
+		isWholeLine?: booleAn;
 
 		/**
-		 * Customize the growing behavior of the decoration when edits occur at the edges of the decoration's range.
-		 * Defaults to `DecorationRangeBehavior.OpenOpen`.
+		 * Customize the growing behAvior of the decorAtion when edits occur At the edges of the decorAtion's rAnge.
+		 * DefAults to `DecorAtionRAngeBehAvior.OpenOpen`.
 		 */
-		rangeBehavior?: DecorationRangeBehavior;
+		rAngeBehAvior?: DecorAtionRAngeBehAvior;
 
 		/**
-		 * The position in the overview ruler where the decoration should be rendered.
+		 * The position in the overview ruler where the decorAtion should be rendered.
 		 */
-		overviewRulerLane?: OverviewRulerLane;
+		overviewRulerLAne?: OverviewRulerLAne;
 
 		/**
 		 * Overwrite options for light themes.
 		 */
-		light?: ThemableDecorationRenderOptions;
+		light?: ThemAbleDecorAtionRenderOptions;
 
 		/**
-		 * Overwrite options for dark themes.
+		 * Overwrite options for dArk themes.
 		 */
-		dark?: ThemableDecorationRenderOptions;
+		dArk?: ThemAbleDecorAtionRenderOptions;
 	}
 
 	/**
-	 * Represents options for a specific decoration in a [decoration set](#TextEditorDecorationType).
+	 * Represents options for A specific decorAtion in A [decorAtion set](#TextEditorDecorAtionType).
 	 */
-	export interface DecorationOptions {
+	export interfAce DecorAtionOptions {
 
 		/**
-		 * Range to which this decoration is applied. The range must not be empty.
+		 * RAnge to which this decorAtion is Applied. The rAnge must not be empty.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * A message that should be rendered when hovering over the decoration.
+		 * A messAge thAt should be rendered when hovering over the decorAtion.
 		 */
-		hoverMessage?: MarkedString | MarkedString[];
+		hoverMessAge?: MArkedString | MArkedString[];
 
 		/**
-		 * Render options applied to the current decoration. For performance reasons, keep the
-		 * number of decoration specific options small, and use decoration types wherever possible.
+		 * Render options Applied to the current decorAtion. For performAnce reAsons, keep the
+		 * number of decorAtion specific options smAll, And use decorAtion types wherever possible.
 		 */
-		renderOptions?: DecorationInstanceRenderOptions;
+		renderOptions?: DecorAtionInstAnceRenderOptions;
 	}
 
-	export interface ThemableDecorationInstanceRenderOptions {
+	export interfAce ThemAbleDecorAtionInstAnceRenderOptions {
 		/**
-		 * Defines the rendering options of the attachment that is inserted before the decorated text.
+		 * Defines the rendering options of the AttAchment thAt is inserted before the decorAted text.
 		 */
-		before?: ThemableDecorationAttachmentRenderOptions;
+		before?: ThemAbleDecorAtionAttAchmentRenderOptions;
 
 		/**
-		 * Defines the rendering options of the attachment that is inserted after the decorated text.
+		 * Defines the rendering options of the AttAchment thAt is inserted After the decorAted text.
 		 */
-		after?: ThemableDecorationAttachmentRenderOptions;
+		After?: ThemAbleDecorAtionAttAchmentRenderOptions;
 	}
 
-	export interface DecorationInstanceRenderOptions extends ThemableDecorationInstanceRenderOptions {
+	export interfAce DecorAtionInstAnceRenderOptions extends ThemAbleDecorAtionInstAnceRenderOptions {
 		/**
 		 * Overwrite options for light themes.
 		 */
-		light?: ThemableDecorationInstanceRenderOptions;
+		light?: ThemAbleDecorAtionInstAnceRenderOptions;
 
 		/**
-		 * Overwrite options for dark themes.
+		 * Overwrite options for dArk themes.
 		 */
-		dark?: ThemableDecorationInstanceRenderOptions;
+		dArk?: ThemAbleDecorAtionInstAnceRenderOptions;
 	}
 
 	/**
-	 * Represents an editor that is attached to a [document](#TextDocument).
+	 * Represents An editor thAt is AttAched to A [document](#TextDocument).
 	 */
-	export interface TextEditor {
+	export interfAce TextEditor {
 
 		/**
-		 * The document associated with this text editor. The document will be the same for the entire lifetime of this text editor.
+		 * The document AssociAted with this text editor. The document will be the sAme for the entire lifetime of this text editor.
 		 */
-		readonly document: TextDocument;
+		reAdonly document: TextDocument;
 
 		/**
-		 * The primary selection on this text editor. Shorthand for `TextEditor.selections[0]`.
+		 * The primAry selection on this text editor. ShorthAnd for `TextEditor.selections[0]`.
 		 */
 		selection: Selection;
 
 		/**
-		 * The selections in this text editor. The primary selection is always at index 0.
+		 * The selections in this text editor. The primAry selection is AlwAys At index 0.
 		 */
 		selections: Selection[];
 
 		/**
-		 * The current visible ranges in the editor (vertically).
-		 * This accounts only for vertical scrolling, and not for horizontal scrolling.
+		 * The current visible rAnges in the editor (verticAlly).
+		 * This Accounts only for verticAl scrolling, And not for horizontAl scrolling.
 		 */
-		readonly visibleRanges: Range[];
+		reAdonly visibleRAnges: RAnge[];
 
 		/**
 		 * Text editor options.
@@ -1119,455 +1119,455 @@ declare module 'vscode' {
 		options: TextEditorOptions;
 
 		/**
-		 * The column in which this editor shows. Will be `undefined` in case this
-		 * isn't one of the main editors, e.g. an embedded editor, or when the editor
-		 * column is larger than three.
+		 * The column in which this editor shows. Will be `undefined` in cAse this
+		 * isn't one of the mAin editors, e.g. An embedded editor, or when the editor
+		 * column is lArger thAn three.
 		 */
-		readonly viewColumn?: ViewColumn;
+		reAdonly viewColumn?: ViewColumn;
 
 		/**
-		 * Perform an edit on the document associated with this text editor.
+		 * Perform An edit on the document AssociAted with this text editor.
 		 *
-		 * The given callback-function is invoked with an [edit-builder](#TextEditorEdit) which must
-		 * be used to make edits. Note that the edit-builder is only valid while the
-		 * callback executes.
+		 * The given cAllbAck-function is invoked with An [edit-builder](#TextEditorEdit) which must
+		 * be used to mAke edits. Note thAt the edit-builder is only vAlid while the
+		 * cAllbAck executes.
 		 *
-		 * @param callback A function which can create edits using an [edit-builder](#TextEditorEdit).
-		 * @param options The undo/redo behavior around this edit. By default, undo stops will be created before and after this edit.
-		 * @return A promise that resolves with a value indicating if the edits could be applied.
+		 * @pArAm cAllbAck A function which cAn creAte edits using An [edit-builder](#TextEditorEdit).
+		 * @pArAm options The undo/redo behAvior Around this edit. By defAult, undo stops will be creAted before And After this edit.
+		 * @return A promise thAt resolves with A vAlue indicAting if the edits could be Applied.
 		 */
-		edit(callback: (editBuilder: TextEditorEdit) => void, options?: { undoStopBefore: boolean; undoStopAfter: boolean; }): Thenable<boolean>;
+		edit(cAllbAck: (editBuilder: TextEditorEdit) => void, options?: { undoStopBefore: booleAn; undoStopAfter: booleAn; }): ThenAble<booleAn>;
 
 		/**
-		 * Insert a [snippet](#SnippetString) and put the editor into snippet mode. "Snippet mode"
-		 * means the editor adds placeholders and additional cursors so that the user can complete
-		 * or accept the snippet.
+		 * Insert A [snippet](#SnippetString) And put the editor into snippet mode. "Snippet mode"
+		 * meAns the editor Adds plAceholders And AdditionAl cursors so thAt the user cAn complete
+		 * or Accept the snippet.
 		 *
-		 * @param snippet The snippet to insert in this edit.
-		 * @param location Position or range at which to insert the snippet, defaults to the current editor selection or selections.
-		 * @param options The undo/redo behavior around this edit. By default, undo stops will be created before and after this edit.
-		 * @return A promise that resolves with a value indicating if the snippet could be inserted. Note that the promise does not signal
-		 * that the snippet is completely filled-in or accepted.
+		 * @pArAm snippet The snippet to insert in this edit.
+		 * @pArAm locAtion Position or rAnge At which to insert the snippet, defAults to the current editor selection or selections.
+		 * @pArAm options The undo/redo behAvior Around this edit. By defAult, undo stops will be creAted before And After this edit.
+		 * @return A promise thAt resolves with A vAlue indicAting if the snippet could be inserted. Note thAt the promise does not signAl
+		 * thAt the snippet is completely filled-in or Accepted.
 		 */
-		insertSnippet(snippet: SnippetString, location?: Position | Range | ReadonlyArray<Position> | ReadonlyArray<Range>, options?: { undoStopBefore: boolean; undoStopAfter: boolean; }): Thenable<boolean>;
+		insertSnippet(snippet: SnippetString, locAtion?: Position | RAnge | ReAdonlyArrAy<Position> | ReAdonlyArrAy<RAnge>, options?: { undoStopBefore: booleAn; undoStopAfter: booleAn; }): ThenAble<booleAn>;
 
 		/**
-		 * Adds a set of decorations to the text editor. If a set of decorations already exists with
-		 * the given [decoration type](#TextEditorDecorationType), they will be replaced.
+		 * Adds A set of decorAtions to the text editor. If A set of decorAtions AlreAdy exists with
+		 * the given [decorAtion type](#TextEditorDecorAtionType), they will be replAced.
 		 *
-		 * @see [createTextEditorDecorationType](#window.createTextEditorDecorationType).
+		 * @see [creAteTextEditorDecorAtionType](#window.creAteTextEditorDecorAtionType).
 		 *
-		 * @param decorationType A decoration type.
-		 * @param rangesOrOptions Either [ranges](#Range) or more detailed [options](#DecorationOptions).
+		 * @pArAm decorAtionType A decorAtion type.
+		 * @pArAm rAngesOrOptions Either [rAnges](#RAnge) or more detAiled [options](#DecorAtionOptions).
 		 */
-		setDecorations(decorationType: TextEditorDecorationType, rangesOrOptions: Range[] | DecorationOptions[]): void;
+		setDecorAtions(decorAtionType: TextEditorDecorAtionType, rAngesOrOptions: RAnge[] | DecorAtionOptions[]): void;
 
 		/**
-		 * Scroll as indicated by `revealType` in order to reveal the given range.
+		 * Scroll As indicAted by `reveAlType` in order to reveAl the given rAnge.
 		 *
-		 * @param range A range.
-		 * @param revealType The scrolling strategy for revealing `range`.
+		 * @pArAm rAnge A rAnge.
+		 * @pArAm reveAlType The scrolling strAtegy for reveAling `rAnge`.
 		 */
-		revealRange(range: Range, revealType?: TextEditorRevealType): void;
+		reveAlRAnge(rAnge: RAnge, reveAlType?: TextEditorReveAlType): void;
 
 		/**
 		 * Show the text editor.
 		 *
-		 * @deprecated Use [window.showTextDocument](#window.showTextDocument) instead.
+		 * @deprecAted Use [window.showTextDocument](#window.showTextDocument) insteAd.
 		 *
-		 * @param column The [column](#ViewColumn) in which to show this editor.
-		 * This method shows unexpected behavior and will be removed in the next major update.
+		 * @pArAm column The [column](#ViewColumn) in which to show this editor.
+		 * This method shows unexpected behAvior And will be removed in the next mAjor updAte.
 		 */
 		show(column?: ViewColumn): void;
 
 		/**
 		 * Hide the text editor.
 		 *
-		 * @deprecated Use the command `workbench.action.closeActiveEditor` instead.
-		 * This method shows unexpected behavior and will be removed in the next major update.
+		 * @deprecAted Use the commAnd `workbench.Action.closeActiveEditor` insteAd.
+		 * This method shows unexpected behAvior And will be removed in the next mAjor updAte.
 		 */
 		hide(): void;
 	}
 
 	/**
-	 * Represents an end of line character sequence in a [document](#TextDocument).
+	 * Represents An end of line chArActer sequence in A [document](#TextDocument).
 	 */
 	export enum EndOfLine {
 		/**
-		 * The line feed `\n` character.
+		 * The line feed `\n` chArActer.
 		 */
 		LF = 1,
 		/**
-		 * The carriage return line feed `\r\n` sequence.
+		 * The cArriAge return line feed `\r\n` sequence.
 		 */
 		CRLF = 2
 	}
 
 	/**
-	 * A complex edit that will be applied in one transaction on a TextEditor.
-	 * This holds a description of the edits and if the edits are valid (i.e. no overlapping regions, document was not changed in the meantime, etc.)
-	 * they can be applied on a [document](#TextDocument) associated with a [text editor](#TextEditor).
+	 * A complex edit thAt will be Applied in one trAnsAction on A TextEditor.
+	 * This holds A description of the edits And if the edits Are vAlid (i.e. no overlApping regions, document wAs not chAnged in the meAntime, etc.)
+	 * they cAn be Applied on A [document](#TextDocument) AssociAted with A [text editor](#TextEditor).
 	 */
-	export interface TextEditorEdit {
+	export interfAce TextEditorEdit {
 		/**
-		 * Replace a certain text region with a new value.
-		 * You can use \r\n or \n in `value` and they will be normalized to the current [document](#TextDocument).
+		 * ReplAce A certAin text region with A new vAlue.
+		 * You cAn use \r\n or \n in `vAlue` And they will be normAlized to the current [document](#TextDocument).
 		 *
-		 * @param location The range this operation should remove.
-		 * @param value The new text this operation should insert after removing `location`.
+		 * @pArAm locAtion The rAnge this operAtion should remove.
+		 * @pArAm vAlue The new text this operAtion should insert After removing `locAtion`.
 		 */
-		replace(location: Position | Range | Selection, value: string): void;
+		replAce(locAtion: Position | RAnge | Selection, vAlue: string): void;
 
 		/**
-		 * Insert text at a location.
-		 * You can use \r\n or \n in `value` and they will be normalized to the current [document](#TextDocument).
-		 * Although the equivalent text edit can be made with [replace](#TextEditorEdit.replace), `insert` will produce a different resulting selection (it will get moved).
+		 * Insert text At A locAtion.
+		 * You cAn use \r\n or \n in `vAlue` And they will be normAlized to the current [document](#TextDocument).
+		 * Although the equivAlent text edit cAn be mAde with [replAce](#TextEditorEdit.replAce), `insert` will produce A different resulting selection (it will get moved).
 		 *
-		 * @param location The position where the new text should be inserted.
-		 * @param value The new text this operation should insert.
+		 * @pArAm locAtion The position where the new text should be inserted.
+		 * @pArAm vAlue The new text this operAtion should insert.
 		 */
-		insert(location: Position, value: string): void;
+		insert(locAtion: Position, vAlue: string): void;
 
 		/**
-		 * Delete a certain text region.
+		 * Delete A certAin text region.
 		 *
-		 * @param location The range this operation should remove.
+		 * @pArAm locAtion The rAnge this operAtion should remove.
 		 */
-		delete(location: Range | Selection): void;
+		delete(locAtion: RAnge | Selection): void;
 
 		/**
 		 * Set the end of line sequence.
 		 *
-		 * @param endOfLine The new end of line for the [document](#TextDocument).
+		 * @pArAm endOfLine The new end of line for the [document](#TextDocument).
 		 */
 		setEndOfLine(endOfLine: EndOfLine): void;
 	}
 
 	/**
-	 * A universal resource identifier representing either a file on disk
-	 * or another resource, like untitled resources.
+	 * A universAl resource identifier representing either A file on disk
+	 * or Another resource, like untitled resources.
 	 */
-	export class Uri {
+	export clAss Uri {
 
 		/**
-		 * Create an URI from a string, e.g. `http://www.msft.com/some/path`,
-		 * `file:///usr/home`, or `scheme:with/path`.
+		 * CreAte An URI from A string, e.g. `http://www.msft.com/some/pAth`,
+		 * `file:///usr/home`, or `scheme:with/pAth`.
 		 *
-		 * *Note* that for a while uris without a `scheme` were accepted. That is not correct
-		 * as all uris should have a scheme. To avoid breakage of existing code the optional
-		 * `strict`-argument has been added. We *strongly* advise to use it, e.g. `Uri.parse('my:uri', true)`
+		 * *Note* thAt for A while uris without A `scheme` were Accepted. ThAt is not correct
+		 * As All uris should hAve A scheme. To Avoid breAkAge of existing code the optionAl
+		 * `strict`-Argument hAs been Added. We *strongly* Advise to use it, e.g. `Uri.pArse('my:uri', true)`
 		 *
 		 * @see [Uri.toString](#Uri.toString)
-		 * @param value The string value of an Uri.
-		 * @param strict Throw an error when `value` is empty or when no `scheme` can be parsed.
-		 * @return A new Uri instance.
+		 * @pArAm vAlue The string vAlue of An Uri.
+		 * @pArAm strict Throw An error when `vAlue` is empty or when no `scheme` cAn be pArsed.
+		 * @return A new Uri instAnce.
 		 */
-		static parse(value: string, strict?: boolean): Uri;
+		stAtic pArse(vAlue: string, strict?: booleAn): Uri;
 
 		/**
-		 * Create an URI from a file system path. The [scheme](#Uri.scheme)
+		 * CreAte An URI from A file system pAth. The [scheme](#Uri.scheme)
 		 * will be `file`.
 		 *
-		 * The *difference* between `Uri#parse` and `Uri#file` is that the latter treats the argument
-		 * as path, not as stringified-uri. E.g. `Uri.file(path)` is *not* the same as
-		 * `Uri.parse('file://' + path)` because the path might contain characters that are
-		 * interpreted (# and ?). See the following sample:
+		 * The *difference* between `Uri#pArse` And `Uri#file` is thAt the lAtter treAts the Argument
+		 * As pAth, not As stringified-uri. E.g. `Uri.file(pAth)` is *not* the sAme As
+		 * `Uri.pArse('file://' + pAth)` becAuse the pAth might contAin chArActers thAt Are
+		 * interpreted (# And ?). See the following sAmple:
 		 * ```ts
 		const good = URI.file('/coding/c#/project1');
 		good.scheme === 'file';
-		good.path === '/coding/c#/project1';
-		good.fragment === '';
+		good.pAth === '/coding/c#/project1';
+		good.frAgment === '';
 
-		const bad = URI.parse('file://' + '/coding/c#/project1');
-		bad.scheme === 'file';
-		bad.path === '/coding/c'; // path is now broken
-		bad.fragment === '/project1';
+		const bAd = URI.pArse('file://' + '/coding/c#/project1');
+		bAd.scheme === 'file';
+		bAd.pAth === '/coding/c'; // pAth is now broken
+		bAd.frAgment === '/project1';
 		```
 		 *
-		 * @param path A file system or UNC path.
-		 * @return A new Uri instance.
+		 * @pArAm pAth A file system or UNC pAth.
+		 * @return A new Uri instAnce.
 		 */
-		static file(path: string): Uri;
+		stAtic file(pAth: string): Uri;
 
 		/**
-		 * Create a new uri which path is the result of joining
-		 * the path of the base uri with the provided path segments.
+		 * CreAte A new uri which pAth is the result of joining
+		 * the pAth of the bAse uri with the provided pAth segments.
 		 *
-		 * - Note 1: `joinPath` only affects the path component
-		 * and all other components (scheme, authority, query, and fragment) are
-		 * left as they are.
-		 * - Note 2: The base uri must have a path; an error is thrown otherwise.
+		 * - Note 1: `joinPAth` only Affects the pAth component
+		 * And All other components (scheme, Authority, query, And frAgment) Are
+		 * left As they Are.
+		 * - Note 2: The bAse uri must hAve A pAth; An error is thrown otherwise.
 		 *
-		 * The path segments are normalized in the following ways:
-		 * - sequences of path separators (`/` or `\`) are replaced with a single separator
-		 * - for `file`-uris on windows, the backslash-character (`\`) is considered a path-separator
-		 * - the `..`-segment denotes the parent segment, the `.` denotes the current segment
-		 * - paths have a root which always remains, for instance on windows drive-letters are roots
-		 * so that is true: `joinPath(Uri.file('file:///c:/root'), '../../other').fsPath === 'c:/other'`
+		 * The pAth segments Are normAlized in the following wAys:
+		 * - sequences of pAth sepArAtors (`/` or `\`) Are replAced with A single sepArAtor
+		 * - for `file`-uris on windows, the bAckslAsh-chArActer (`\`) is considered A pAth-sepArAtor
+		 * - the `..`-segment denotes the pArent segment, the `.` denotes the current segment
+		 * - pAths hAve A root which AlwAys remAins, for instAnce on windows drive-letters Are roots
+		 * so thAt is true: `joinPAth(Uri.file('file:///c:/root'), '../../other').fsPAth === 'c:/other'`
 		 *
-		 * @param base An uri. Must have a path.
-		 * @param pathSegments One more more path fragments
-		 * @returns A new uri which path is joined with the given fragments
+		 * @pArAm bAse An uri. Must hAve A pAth.
+		 * @pArAm pAthSegments One more more pAth frAgments
+		 * @returns A new uri which pAth is joined with the given frAgments
 		 */
-		static joinPath(base: Uri, ...pathSegments: string[]): Uri;
+		stAtic joinPAth(bAse: Uri, ...pAthSegments: string[]): Uri;
 
 		/**
-		 * Use the `file` and `parse` factory functions to create new `Uri` objects.
+		 * Use the `file` And `pArse` fActory functions to creAte new `Uri` objects.
 		 */
-		private constructor(scheme: string, authority: string, path: string, query: string, fragment: string);
+		privAte constructor(scheme: string, Authority: string, pAth: string, query: string, frAgment: string);
 
 		/**
-		 * Scheme is the `http` part of `http://www.msft.com/some/path?query#fragment`.
-		 * The part before the first colon.
+		 * Scheme is the `http` pArt of `http://www.msft.com/some/pAth?query#frAgment`.
+		 * The pArt before the first colon.
 		 */
-		readonly scheme: string;
+		reAdonly scheme: string;
 
 		/**
-		 * Authority is the `www.msft.com` part of `http://www.msft.com/some/path?query#fragment`.
-		 * The part between the first double slashes and the next slash.
+		 * Authority is the `www.msft.com` pArt of `http://www.msft.com/some/pAth?query#frAgment`.
+		 * The pArt between the first double slAshes And the next slAsh.
 		 */
-		readonly authority: string;
+		reAdonly Authority: string;
 
 		/**
-		 * Path is the `/some/path` part of `http://www.msft.com/some/path?query#fragment`.
+		 * PAth is the `/some/pAth` pArt of `http://www.msft.com/some/pAth?query#frAgment`.
 		 */
-		readonly path: string;
+		reAdonly pAth: string;
 
 		/**
-		 * Query is the `query` part of `http://www.msft.com/some/path?query#fragment`.
+		 * Query is the `query` pArt of `http://www.msft.com/some/pAth?query#frAgment`.
 		 */
-		readonly query: string;
+		reAdonly query: string;
 
 		/**
-		 * Fragment is the `fragment` part of `http://www.msft.com/some/path?query#fragment`.
+		 * FrAgment is the `frAgment` pArt of `http://www.msft.com/some/pAth?query#frAgment`.
 		 */
-		readonly fragment: string;
+		reAdonly frAgment: string;
 
 		/**
-		 * The string representing the corresponding file system path of this Uri.
+		 * The string representing the corresponding file system pAth of this Uri.
 		 *
-		 * Will handle UNC paths and normalize windows drive letters to lower-case. Also
-		 * uses the platform specific path separator.
+		 * Will hAndle UNC pAths And normAlize windows drive letters to lower-cAse. Also
+		 * uses the plAtform specific pAth sepArAtor.
 		 *
-		 * * Will *not* validate the path for invalid characters and semantics.
-		 * * Will *not* look at the scheme of this Uri.
-		 * * The resulting string shall *not* be used for display purposes but
-		 * for disk operations, like `readFile` et al.
+		 * * Will *not* vAlidAte the pAth for invAlid chArActers And semAntics.
+		 * * Will *not* look At the scheme of this Uri.
+		 * * The resulting string shAll *not* be used for displAy purposes but
+		 * for disk operAtions, like `reAdFile` et Al.
 		 *
-		 * The *difference* to the [`path`](#Uri.path)-property is the use of the platform specific
-		 * path separator and the handling of UNC paths. The sample below outlines the difference:
+		 * The *difference* to the [`pAth`](#Uri.pAth)-property is the use of the plAtform specific
+		 * pAth sepArAtor And the hAndling of UNC pAths. The sAmple below outlines the difference:
 		 * ```ts
-		const u = URI.parse('file://server/c$/folder/file.txt')
-		u.authority === 'server'
-		u.path === '/shares/c$/file.txt'
-		u.fsPath === '\\server\c$\folder\file.txt'
+		const u = URI.pArse('file://server/c$/folder/file.txt')
+		u.Authority === 'server'
+		u.pAth === '/shAres/c$/file.txt'
+		u.fsPAth === '\\server\c$\folder\file.txt'
 		```
 		 */
-		readonly fsPath: string;
+		reAdonly fsPAth: string;
 
 		/**
-		 * Derive a new Uri from this Uri.
+		 * Derive A new Uri from this Uri.
 		 *
 		 * ```ts
-		 * let file = Uri.parse('before:some/file/path');
-		 * let other = file.with({ scheme: 'after' });
-		 * assert.ok(other.toString() === 'after:some/file/path');
+		 * let file = Uri.pArse('before:some/file/pAth');
+		 * let other = file.with({ scheme: 'After' });
+		 * Assert.ok(other.toString() === 'After:some/file/pAth');
 		 * ```
 		 *
-		 * @param change An object that describes a change to this Uri. To unset components use `null` or
+		 * @pArAm chAnge An object thAt describes A chAnge to this Uri. To unset components use `null` or
 		 *  the empty string.
-		 * @return A new Uri that reflects the given change. Will return `this` Uri if the change
-		 *  is not changing anything.
+		 * @return A new Uri thAt reflects the given chAnge. Will return `this` Uri if the chAnge
+		 *  is not chAnging Anything.
 		 */
-		with(change: { scheme?: string; authority?: string; path?: string; query?: string; fragment?: string }): Uri;
+		with(chAnge: { scheme?: string; Authority?: string; pAth?: string; query?: string; frAgment?: string }): Uri;
 
 		/**
-		 * Returns a string representation of this Uri. The representation and normalization
-		 * of a URI depends on the scheme.
+		 * Returns A string representAtion of this Uri. The representAtion And normAlizAtion
+		 * of A URI depends on the scheme.
 		 *
-		 * * The resulting string can be safely used with [Uri.parse](#Uri.parse).
-		 * * The resulting string shall *not* be used for display purposes.
+		 * * The resulting string cAn be sAfely used with [Uri.pArse](#Uri.pArse).
+		 * * The resulting string shAll *not* be used for displAy purposes.
 		 *
-		 * *Note* that the implementation will encode _aggressive_ which often leads to unexpected,
-		 * but not incorrect, results. For instance, colons are encoded to `%3A` which might be unexpected
-		 * in file-uri. Also `&` and `=` will be encoded which might be unexpected for http-uris. For stability
-		 * reasons this cannot be changed anymore. If you suffer from too aggressive encoding you should use
-		 * the `skipEncoding`-argument: `uri.toString(true)`.
+		 * *Note* thAt the implementAtion will encode _Aggressive_ which often leAds to unexpected,
+		 * but not incorrect, results. For instAnce, colons Are encoded to `%3A` which might be unexpected
+		 * in file-uri. Also `&` And `=` will be encoded which might be unexpected for http-uris. For stAbility
+		 * reAsons this cAnnot be chAnged Anymore. If you suffer from too Aggressive encoding you should use
+		 * the `skipEncoding`-Argument: `uri.toString(true)`.
 		 *
-		 * @param skipEncoding Do not percentage-encode the result, defaults to `false`. Note that
-		 *	the `#` and `?` characters occurring in the path will always be encoded.
-		 * @returns A string representation of this Uri.
+		 * @pArAm skipEncoding Do not percentAge-encode the result, defAults to `fAlse`. Note thAt
+		 *	the `#` And `?` chArActers occurring in the pAth will AlwAys be encoded.
+		 * @returns A string representAtion of this Uri.
 		 */
-		toString(skipEncoding?: boolean): string;
+		toString(skipEncoding?: booleAn): string;
 
 		/**
-		 * Returns a JSON representation of this Uri.
+		 * Returns A JSON representAtion of this Uri.
 		 *
 		 * @return An object.
 		 */
-		toJSON(): any;
+		toJSON(): Any;
 	}
 
 	/**
-	 * A cancellation token is passed to an asynchronous or long running
-	 * operation to request cancellation, like cancelling a request
-	 * for completion items because the user continued to type.
+	 * A cAncellAtion token is pAssed to An Asynchronous or long running
+	 * operAtion to request cAncellAtion, like cAncelling A request
+	 * for completion items becAuse the user continued to type.
 	 *
-	 * To get an instance of a `CancellationToken` use a
-	 * [CancellationTokenSource](#CancellationTokenSource).
+	 * To get An instAnce of A `CAncellAtionToken` use A
+	 * [CAncellAtionTokenSource](#CAncellAtionTokenSource).
 	 */
-	export interface CancellationToken {
+	export interfAce CAncellAtionToken {
 
 		/**
-		 * Is `true` when the token has been cancelled, `false` otherwise.
+		 * Is `true` when the token hAs been cAncelled, `fAlse` otherwise.
 		 */
-		isCancellationRequested: boolean;
+		isCAncellAtionRequested: booleAn;
 
 		/**
-		 * An [event](#Event) which fires upon cancellation.
+		 * An [event](#Event) which fires upon cAncellAtion.
 		 */
-		onCancellationRequested: Event<any>;
+		onCAncellAtionRequested: Event<Any>;
 	}
 
 	/**
-	 * A cancellation source creates and controls a [cancellation token](#CancellationToken).
+	 * A cAncellAtion source creAtes And controls A [cAncellAtion token](#CAncellAtionToken).
 	 */
-	export class CancellationTokenSource {
+	export clAss CAncellAtionTokenSource {
 
 		/**
-		 * The cancellation token of this source.
+		 * The cAncellAtion token of this source.
 		 */
-		token: CancellationToken;
+		token: CAncellAtionToken;
 
 		/**
-		 * Signal cancellation on the token.
+		 * SignAl cAncellAtion on the token.
 		 */
-		cancel(): void;
+		cAncel(): void;
 
 		/**
-		 * Dispose object and free resources.
+		 * Dispose object And free resources.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Represents a type which can release resources, such
-	 * as event listening or a timer.
+	 * Represents A type which cAn releAse resources, such
+	 * As event listening or A timer.
 	 */
-	export class Disposable {
+	export clAss DisposAble {
 
 		/**
-		 * Combine many disposable-likes into one. Use this method
-		 * when having objects with a dispose function which are not
-		 * instances of Disposable.
+		 * Combine mAny disposAble-likes into one. Use this method
+		 * when hAving objects with A dispose function which Are not
+		 * instAnces of DisposAble.
 		 *
-		 * @param disposableLikes Objects that have at least a `dispose`-function member.
-		 * @return Returns a new disposable which, upon dispose, will
-		 * dispose all provided disposables.
+		 * @pArAm disposAbleLikes Objects thAt hAve At leAst A `dispose`-function member.
+		 * @return Returns A new disposAble which, upon dispose, will
+		 * dispose All provided disposAbles.
 		 */
-		static from(...disposableLikes: { dispose: () => any }[]): Disposable;
+		stAtic from(...disposAbleLikes: { dispose: () => Any }[]): DisposAble;
 
 		/**
-		 * Creates a new Disposable calling the provided function
+		 * CreAtes A new DisposAble cAlling the provided function
 		 * on dispose.
-		 * @param callOnDispose Function that disposes something.
+		 * @pArAm cAllOnDispose Function thAt disposes something.
 		 */
-		constructor(callOnDispose: Function);
+		constructor(cAllOnDispose: Function);
 
 		/**
 		 * Dispose this object.
 		 */
-		dispose(): any;
+		dispose(): Any;
 	}
 
 	/**
-	 * Represents a typed event.
+	 * Represents A typed event.
 	 *
-	 * A function that represents an event to which you subscribe by calling it with
-	 * a listener function as argument.
+	 * A function thAt represents An event to which you subscribe by cAlling it with
+	 * A listener function As Argument.
 	 *
-	 * @example
-	 * item.onDidChange(function(event) { console.log("Event happened: " + event); });
+	 * @exAmple
+	 * item.onDidChAnge(function(event) { console.log("Event hAppened: " + event); });
 	 */
-	export interface Event<T> {
+	export interfAce Event<T> {
 
 		/**
-		 * A function that represents an event to which you subscribe by calling it with
-		 * a listener function as argument.
+		 * A function thAt represents An event to which you subscribe by cAlling it with
+		 * A listener function As Argument.
 		 *
-		 * @param listener The listener function will be called when the event happens.
-		 * @param thisArgs The `this`-argument which will be used when calling the event listener.
-		 * @param disposables An array to which a [disposable](#Disposable) will be added.
-		 * @return A disposable which unsubscribes the event listener.
+		 * @pArAm listener The listener function will be cAlled when the event hAppens.
+		 * @pArAm thisArgs The `this`-Argument which will be used when cAlling the event listener.
+		 * @pArAm disposAbles An ArrAy to which A [disposAble](#DisposAble) will be Added.
+		 * @return A disposAble which unsubscribes the event listener.
 		 */
-		(listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]): Disposable;
+		(listener: (e: T) => Any, thisArgs?: Any, disposAbles?: DisposAble[]): DisposAble;
 	}
 
 	/**
-	 * An event emitter can be used to create and manage an [event](#Event) for others
-	 * to subscribe to. One emitter always owns one event.
+	 * An event emitter cAn be used to creAte And mAnAge An [event](#Event) for others
+	 * to subscribe to. One emitter AlwAys owns one event.
 	 *
-	 * Use this class if you want to provide event from within your extension, for instance
-	 * inside a [TextDocumentContentProvider](#TextDocumentContentProvider) or when providing
+	 * Use this clAss if you wAnt to provide event from within your extension, for instAnce
+	 * inside A [TextDocumentContentProvider](#TextDocumentContentProvider) or when providing
 	 * API to other extensions.
 	 */
-	export class EventEmitter<T> {
+	export clAss EventEmitter<T> {
 
 		/**
-		 * The event listeners can subscribe to.
+		 * The event listeners cAn subscribe to.
 		 */
 		event: Event<T>;
 
 		/**
-		 * Notify all subscribers of the [event](#EventEmitter.event). Failure
-		 * of one or more listener will not fail this function call.
+		 * Notify All subscribers of the [event](#EventEmitter.event). FAilure
+		 * of one or more listener will not fAil this function cAll.
 		 *
-		 * @param data The event object.
+		 * @pArAm dAtA The event object.
 		 */
-		fire(data: T): void;
+		fire(dAtA: T): void;
 
 		/**
-		 * Dispose this object and free resources.
+		 * Dispose this object And free resources.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * A file system watcher notifies about changes to files and folders
+	 * A file system wAtcher notifies About chAnges to files And folders
 	 * on disk or from other [FileSystemProviders](#FileSystemProvider).
 	 *
-	 * To get an instance of a `FileSystemWatcher` use
-	 * [createFileSystemWatcher](#workspace.createFileSystemWatcher).
+	 * To get An instAnce of A `FileSystemWAtcher` use
+	 * [creAteFileSystemWAtcher](#workspAce.creAteFileSystemWAtcher).
 	 */
-	export interface FileSystemWatcher extends Disposable {
+	export interfAce FileSystemWAtcher extends DisposAble {
 
 		/**
-		 * true if this file system watcher has been created such that
-		 * it ignores creation file system events.
+		 * true if this file system wAtcher hAs been creAted such thAt
+		 * it ignores creAtion file system events.
 		 */
-		ignoreCreateEvents: boolean;
+		ignoreCreAteEvents: booleAn;
 
 		/**
-		 * true if this file system watcher has been created such that
-		 * it ignores change file system events.
+		 * true if this file system wAtcher hAs been creAted such thAt
+		 * it ignores chAnge file system events.
 		 */
-		ignoreChangeEvents: boolean;
+		ignoreChAngeEvents: booleAn;
 
 		/**
-		 * true if this file system watcher has been created such that
+		 * true if this file system wAtcher hAs been creAted such thAt
 		 * it ignores delete file system events.
 		 */
-		ignoreDeleteEvents: boolean;
+		ignoreDeleteEvents: booleAn;
 
 		/**
-		 * An event which fires on file/folder creation.
+		 * An event which fires on file/folder creAtion.
 		 */
-		onDidCreate: Event<Uri>;
+		onDidCreAte: Event<Uri>;
 
 		/**
-		 * An event which fires on file/folder change.
+		 * An event which fires on file/folder chAnge.
 		 */
-		onDidChange: Event<Uri>;
+		onDidChAnge: Event<Uri>;
 
 		/**
 		 * An event which fires on file/folder deletion.
@@ -1576,226 +1576,226 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * A text document content provider allows to add readonly documents
-	 * to the editor, such as source from a dll or generated html from md.
+	 * A text document content provider Allows to Add reAdonly documents
+	 * to the editor, such As source from A dll or generAted html from md.
 	 *
-	 * Content providers are [registered](#workspace.registerTextDocumentContentProvider)
-	 * for a [uri-scheme](#Uri.scheme). When a uri with that scheme is to
-	 * be [loaded](#workspace.openTextDocument) the content provider is
-	 * asked.
+	 * Content providers Are [registered](#workspAce.registerTextDocumentContentProvider)
+	 * for A [uri-scheme](#Uri.scheme). When A uri with thAt scheme is to
+	 * be [loAded](#workspAce.openTextDocument) the content provider is
+	 * Asked.
 	 */
-	export interface TextDocumentContentProvider {
+	export interfAce TextDocumentContentProvider {
 
 		/**
-		 * An event to signal a resource has changed.
+		 * An event to signAl A resource hAs chAnged.
 		 */
-		onDidChange?: Event<Uri>;
+		onDidChAnge?: Event<Uri>;
 
 		/**
-		 * Provide textual content for a given uri.
+		 * Provide textuAl content for A given uri.
 		 *
-		 * The editor will use the returned string-content to create a readonly
-		 * [document](#TextDocument). Resources allocated should be released when
-		 * the corresponding document has been [closed](#workspace.onDidCloseTextDocument).
+		 * The editor will use the returned string-content to creAte A reAdonly
+		 * [document](#TextDocument). Resources AllocAted should be releAsed when
+		 * the corresponding document hAs been [closed](#workspAce.onDidCloseTextDocument).
 		 *
-		 * **Note**: The contents of the created [document](#TextDocument) might not be
-		 * identical to the provided text due to end-of-line-sequence normalization.
+		 * **Note**: The contents of the creAted [document](#TextDocument) might not be
+		 * identicAl to the provided text due to end-of-line-sequence normAlizAtion.
 		 *
-		 * @param uri An uri which scheme matches the scheme this provider was [registered](#workspace.registerTextDocumentContentProvider) for.
-		 * @param token A cancellation token.
-		 * @return A string or a thenable that resolves to such.
+		 * @pArAm uri An uri which scheme mAtches the scheme this provider wAs [registered](#workspAce.registerTextDocumentContentProvider) for.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A string or A thenAble thAt resolves to such.
 		 */
-		provideTextDocumentContent(uri: Uri, token: CancellationToken): ProviderResult<string>;
+		provideTextDocumentContent(uri: Uri, token: CAncellAtionToken): ProviderResult<string>;
 	}
 
 	/**
-	 * Represents an item that can be selected from
-	 * a list of items.
+	 * Represents An item thAt cAn be selected from
+	 * A list of items.
 	 */
-	export interface QuickPickItem {
+	export interfAce QuickPickItem {
 
 		/**
-		 * A human-readable string which is rendered prominent. Supports rendering of [theme icons](#ThemeIcon) via
-		 * the `$(<name>)`-syntax.
+		 * A humAn-reAdAble string which is rendered prominent. Supports rendering of [theme icons](#ThemeIcon) viA
+		 * the `$(<nAme>)`-syntAx.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * A human-readable string which is rendered less prominent in the same line. Supports rendering of
-		 * [theme icons](#ThemeIcon) via the `$(<name>)`-syntax.
+		 * A humAn-reAdAble string which is rendered less prominent in the sAme line. Supports rendering of
+		 * [theme icons](#ThemeIcon) viA the `$(<nAme>)`-syntAx.
 		 */
 		description?: string;
 
 		/**
-		 * A human-readable string which is rendered less prominent in a separate line. Supports rendering of
-		 * [theme icons](#ThemeIcon) via the `$(<name>)`-syntax.
+		 * A humAn-reAdAble string which is rendered less prominent in A sepArAte line. Supports rendering of
+		 * [theme icons](#ThemeIcon) viA the `$(<nAme>)`-syntAx.
 		 */
-		detail?: string;
+		detAil?: string;
 
 		/**
-		 * Optional flag indicating if this item is picked initially.
-		 * (Only honored when the picker allows multiple selections.)
+		 * OptionAl flAg indicAting if this item is picked initiAlly.
+		 * (Only honored when the picker Allows multiple selections.)
 		 *
-		 * @see [QuickPickOptions.canPickMany](#QuickPickOptions.canPickMany)
+		 * @see [QuickPickOptions.cAnPickMAny](#QuickPickOptions.cAnPickMAny)
 		 */
-		picked?: boolean;
+		picked?: booleAn;
 
 		/**
-		 * Always show this item.
+		 * AlwAys show this item.
 		 */
-		alwaysShow?: boolean;
+		AlwAysShow?: booleAn;
 	}
 
 	/**
-	 * Options to configure the behavior of the quick pick UI.
+	 * Options to configure the behAvior of the quick pick UI.
 	 */
-	export interface QuickPickOptions {
+	export interfAce QuickPickOptions {
 		/**
-		 * An optional flag to include the description when filtering the picks.
+		 * An optionAl flAg to include the description when filtering the picks.
 		 */
-		matchOnDescription?: boolean;
+		mAtchOnDescription?: booleAn;
 
 		/**
-		 * An optional flag to include the detail when filtering the picks.
+		 * An optionAl flAg to include the detAil when filtering the picks.
 		 */
-		matchOnDetail?: boolean;
+		mAtchOnDetAil?: booleAn;
 
 		/**
-		 * An optional string to show as placeholder in the input box to guide the user what to pick on.
+		 * An optionAl string to show As plAceholder in the input box to guide the user whAt to pick on.
 		 */
-		placeHolder?: string;
+		plAceHolder?: string;
 
 		/**
-		 * Set to `true` to keep the picker open when focus moves to another part of the editor or to another window.
+		 * Set to `true` to keep the picker open when focus moves to Another pArt of the editor or to Another window.
 		 */
-		ignoreFocusOut?: boolean;
+		ignoreFocusOut?: booleAn;
 
 		/**
-		 * An optional flag to make the picker accept multiple selections, if true the result is an array of picks.
+		 * An optionAl flAg to mAke the picker Accept multiple selections, if true the result is An ArrAy of picks.
 		 */
-		canPickMany?: boolean;
+		cAnPickMAny?: booleAn;
 
 		/**
-		 * An optional function that is invoked whenever an item is selected.
+		 * An optionAl function thAt is invoked whenever An item is selected.
 		 */
-		onDidSelectItem?(item: QuickPickItem | string): any;
+		onDidSelectItem?(item: QuickPickItem | string): Any;
 	}
 
 	/**
-	 * Options to configure the behaviour of the [workspace folder](#WorkspaceFolder) pick UI.
+	 * Options to configure the behAviour of the [workspAce folder](#WorkspAceFolder) pick UI.
 	 */
-	export interface WorkspaceFolderPickOptions {
+	export interfAce WorkspAceFolderPickOptions {
 
 		/**
-		 * An optional string to show as placeholder in the input box to guide the user what to pick on.
+		 * An optionAl string to show As plAceholder in the input box to guide the user whAt to pick on.
 		 */
-		placeHolder?: string;
+		plAceHolder?: string;
 
 		/**
-		 * Set to `true` to keep the picker open when focus moves to another part of the editor or to another window.
+		 * Set to `true` to keep the picker open when focus moves to Another pArt of the editor or to Another window.
 		 */
-		ignoreFocusOut?: boolean;
+		ignoreFocusOut?: booleAn;
 	}
 
 	/**
-	 * Options to configure the behaviour of a file open dialog.
+	 * Options to configure the behAviour of A file open diAlog.
 	 *
-	 * * Note 1: A dialog can select files, folders, or both. This is not true for Windows
+	 * * Note 1: A diAlog cAn select files, folders, or both. This is not true for Windows
 	 * which enforces to open either files or folder, but *not both*.
-	 * * Note 2: Explicitly setting `canSelectFiles` and `canSelectFolders` to `false` is futile
-	 * and the editor then silently adjusts the options to select files.
+	 * * Note 2: Explicitly setting `cAnSelectFiles` And `cAnSelectFolders` to `fAlse` is futile
+	 * And the editor then silently Adjusts the options to select files.
 	 */
-	export interface OpenDialogOptions {
+	export interfAce OpenDiAlogOptions {
 		/**
-		 * The resource the dialog shows when opened.
+		 * The resource the diAlog shows when opened.
 		 */
-		defaultUri?: Uri;
+		defAultUri?: Uri;
 
 		/**
-		 * A human-readable string for the open button.
+		 * A humAn-reAdAble string for the open button.
 		 */
-		openLabel?: string;
+		openLAbel?: string;
 
 		/**
-		 * Allow to select files, defaults to `true`.
+		 * Allow to select files, defAults to `true`.
 		 */
-		canSelectFiles?: boolean;
+		cAnSelectFiles?: booleAn;
 
 		/**
-		 * Allow to select folders, defaults to `false`.
+		 * Allow to select folders, defAults to `fAlse`.
 		 */
-		canSelectFolders?: boolean;
+		cAnSelectFolders?: booleAn;
 
 		/**
-		 * Allow to select many files or folders.
+		 * Allow to select mAny files or folders.
 		 */
-		canSelectMany?: boolean;
+		cAnSelectMAny?: booleAn;
 
 		/**
-		 * A set of file filters that are used by the dialog. Each entry is a human-readable label,
-		 * like "TypeScript", and an array of extensions, e.g.
+		 * A set of file filters thAt Are used by the diAlog. EAch entry is A humAn-reAdAble lAbel,
+		 * like "TypeScript", And An ArrAy of extensions, e.g.
 		 * ```ts
 		 * {
-		 * 	'Images': ['png', 'jpg']
+		 * 	'ImAges': ['png', 'jpg']
 		 * 	'TypeScript': ['ts', 'tsx']
 		 * }
 		 * ```
 		 */
-		filters?: { [name: string]: string[] };
+		filters?: { [nAme: string]: string[] };
 
 		/**
-		 * Dialog title.
+		 * DiAlog title.
 		 *
-		 * This parameter might be ignored, as not all operating systems display a title on open dialogs
-		 * (for example, macOS).
+		 * This pArAmeter might be ignored, As not All operAting systems displAy A title on open diAlogs
+		 * (for exAmple, mAcOS).
 		 */
 		title?: string;
 	}
 
 	/**
-	 * Options to configure the behaviour of a file save dialog.
+	 * Options to configure the behAviour of A file sAve diAlog.
 	 */
-	export interface SaveDialogOptions {
+	export interfAce SAveDiAlogOptions {
 		/**
-		 * The resource the dialog shows when opened.
+		 * The resource the diAlog shows when opened.
 		 */
-		defaultUri?: Uri;
+		defAultUri?: Uri;
 
 		/**
-		 * A human-readable string for the save button.
+		 * A humAn-reAdAble string for the sAve button.
 		 */
-		saveLabel?: string;
+		sAveLAbel?: string;
 
 		/**
-		 * A set of file filters that are used by the dialog. Each entry is a human-readable label,
-		 * like "TypeScript", and an array of extensions, e.g.
+		 * A set of file filters thAt Are used by the diAlog. EAch entry is A humAn-reAdAble lAbel,
+		 * like "TypeScript", And An ArrAy of extensions, e.g.
 		 * ```ts
 		 * {
-		 * 	'Images': ['png', 'jpg']
+		 * 	'ImAges': ['png', 'jpg']
 		 * 	'TypeScript': ['ts', 'tsx']
 		 * }
 		 * ```
 		 */
-		filters?: { [name: string]: string[] };
+		filters?: { [nAme: string]: string[] };
 
 		/**
-		 * Dialog title.
+		 * DiAlog title.
 		 *
-		 * This parameter might be ignored, as not all operating systems display a title on save dialogs
-		 * (for example, macOS).
+		 * This pArAmeter might be ignored, As not All operAting systems displAy A title on sAve diAlogs
+		 * (for exAmple, mAcOS).
 		 */
 		title?: string;
 	}
 
 	/**
-	 * Represents an action that is shown with an information, warning, or
-	 * error message.
+	 * Represents An Action thAt is shown with An informAtion, wArning, or
+	 * error messAge.
 	 *
-	 * @see [showInformationMessage](#window.showInformationMessage)
-	 * @see [showWarningMessage](#window.showWarningMessage)
-	 * @see [showErrorMessage](#window.showErrorMessage)
+	 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
+	 * @see [showWArningMessAge](#window.showWArningMessAge)
+	 * @see [showErrorMessAge](#window.showErrorMessAge)
 	 */
-	export interface MessageItem {
+	export interfAce MessAgeItem {
 
 		/**
 		 * A short title like 'Retry', 'Open Log' etc.
@@ -1803,147 +1803,147 @@ declare module 'vscode' {
 		title: string;
 
 		/**
-		 * A hint for modal dialogs that the item should be triggered
-		 * when the user cancels the dialog (e.g. by pressing the ESC
+		 * A hint for modAl diAlogs thAt the item should be triggered
+		 * when the user cAncels the diAlog (e.g. by pressing the ESC
 		 * key).
 		 *
-		 * Note: this option is ignored for non-modal messages.
+		 * Note: this option is ignored for non-modAl messAges.
 		 */
-		isCloseAffordance?: boolean;
+		isCloseAffordAnce?: booleAn;
 	}
 
 	/**
-	 * Options to configure the behavior of the message.
+	 * Options to configure the behAvior of the messAge.
 	 *
-	 * @see [showInformationMessage](#window.showInformationMessage)
-	 * @see [showWarningMessage](#window.showWarningMessage)
-	 * @see [showErrorMessage](#window.showErrorMessage)
+	 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
+	 * @see [showWArningMessAge](#window.showWArningMessAge)
+	 * @see [showErrorMessAge](#window.showErrorMessAge)
 	 */
-	export interface MessageOptions {
+	export interfAce MessAgeOptions {
 
 		/**
-		 * Indicates that this message should be modal.
+		 * IndicAtes thAt this messAge should be modAl.
 		 */
-		modal?: boolean;
+		modAl?: booleAn;
 	}
 
 	/**
-	 * Options to configure the behavior of the input box UI.
+	 * Options to configure the behAvior of the input box UI.
 	 */
-	export interface InputBoxOptions {
+	export interfAce InputBoxOptions {
 
 		/**
-		 * The value to prefill in the input box.
+		 * The vAlue to prefill in the input box.
 		 */
-		value?: string;
+		vAlue?: string;
 
 		/**
-		 * Selection of the prefilled [`value`](#InputBoxOptions.value). Defined as tuple of two number where the
-		 * first is the inclusive start index and the second the exclusive end index. When `undefined` the whole
-		 * word will be selected, when empty (start equals end) only the cursor will be set,
-		 * otherwise the defined range will be selected.
+		 * Selection of the prefilled [`vAlue`](#InputBoxOptions.vAlue). Defined As tuple of two number where the
+		 * first is the inclusive stArt index And the second the exclusive end index. When `undefined` the whole
+		 * word will be selected, when empty (stArt equAls end) only the cursor will be set,
+		 * otherwise the defined rAnge will be selected.
 		 */
-		valueSelection?: [number, number];
+		vAlueSelection?: [number, number];
 
 		/**
-		 * The text to display underneath the input box.
+		 * The text to displAy underneAth the input box.
 		 */
 		prompt?: string;
 
 		/**
-		 * An optional string to show as placeholder in the input box to guide the user what to type.
+		 * An optionAl string to show As plAceholder in the input box to guide the user whAt to type.
 		 */
-		placeHolder?: string;
+		plAceHolder?: string;
 
 		/**
-		 * Controls if a password input is shown. Password input hides the typed text.
+		 * Controls if A pAssword input is shown. PAssword input hides the typed text.
 		 */
-		password?: boolean;
+		pAssword?: booleAn;
 
 		/**
-		 * Set to `true` to keep the input box open when focus moves to another part of the editor or to another window.
+		 * Set to `true` to keep the input box open when focus moves to Another pArt of the editor or to Another window.
 		 */
-		ignoreFocusOut?: boolean;
+		ignoreFocusOut?: booleAn;
 
 		/**
-		 * An optional function that will be called to validate input and to give a hint
+		 * An optionAl function thAt will be cAlled to vAlidAte input And to give A hint
 		 * to the user.
 		 *
-		 * @param value The current value of the input box.
-		 * @return A human-readable string which is presented as diagnostic message.
-		 * Return `undefined`, `null`, or the empty string when 'value' is valid.
+		 * @pArAm vAlue The current vAlue of the input box.
+		 * @return A humAn-reAdAble string which is presented As diAgnostic messAge.
+		 * Return `undefined`, `null`, or the empty string when 'vAlue' is vAlid.
 		 */
-		validateInput?(value: string): string | undefined | null | Thenable<string | undefined | null>;
+		vAlidAteInput?(vAlue: string): string | undefined | null | ThenAble<string | undefined | null>;
 	}
 
 	/**
-	 * A relative pattern is a helper to construct glob patterns that are matched
-	 * relatively to a base path. The base path can either be an absolute file path
-	 * or a [workspace folder](#WorkspaceFolder).
+	 * A relAtive pAttern is A helper to construct glob pAtterns thAt Are mAtched
+	 * relAtively to A bAse pAth. The bAse pAth cAn either be An Absolute file pAth
+	 * or A [workspAce folder](#WorkspAceFolder).
 	 */
-	export class RelativePattern {
+	export clAss RelAtivePAttern {
 
 		/**
-		 * A base file path to which this pattern will be matched against relatively.
+		 * A bAse file pAth to which this pAttern will be mAtched AgAinst relAtively.
 		 */
-		base: string;
+		bAse: string;
 
 		/**
-		 * A file glob pattern like `*.{ts,js}` that will be matched on file paths
-		 * relative to the base path.
+		 * A file glob pAttern like `*.{ts,js}` thAt will be mAtched on file pAths
+		 * relAtive to the bAse pAth.
 		 *
-		 * Example: Given a base of `/home/work/folder` and a file path of `/home/work/folder/index.js`,
-		 * the file glob pattern will match on `index.js`.
+		 * ExAmple: Given A bAse of `/home/work/folder` And A file pAth of `/home/work/folder/index.js`,
+		 * the file glob pAttern will mAtch on `index.js`.
 		 */
-		pattern: string;
+		pAttern: string;
 
 		/**
-		 * Creates a new relative pattern object with a base path and pattern to match. This pattern
-		 * will be matched on file paths relative to the base path.
+		 * CreAtes A new relAtive pAttern object with A bAse pAth And pAttern to mAtch. This pAttern
+		 * will be mAtched on file pAths relAtive to the bAse pAth.
 		 *
-		 * @param base A base file path to which this pattern will be matched against relatively.
-		 * @param pattern A file glob pattern like `*.{ts,js}` that will be matched on file paths
-		 * relative to the base path.
+		 * @pArAm bAse A bAse file pAth to which this pAttern will be mAtched AgAinst relAtively.
+		 * @pArAm pAttern A file glob pAttern like `*.{ts,js}` thAt will be mAtched on file pAths
+		 * relAtive to the bAse pAth.
 		 */
-		constructor(base: WorkspaceFolder | string, pattern: string)
+		constructor(bAse: WorkspAceFolder | string, pAttern: string)
 	}
 
 	/**
-	 * A file glob pattern to match file paths against. This can either be a glob pattern string
-	 * (like `**​/*.{ts,js}` or `*.{ts,js}`) or a [relative pattern](#RelativePattern).
+	 * A file glob pAttern to mAtch file pAths AgAinst. This cAn either be A glob pAttern string
+	 * (like `**​/*.{ts,js}` or `*.{ts,js}`) or A [relAtive pAttern](#RelAtivePAttern).
 	 *
-	 * Glob patterns can have the following syntax:
-	 * * `*` to match one or more characters in a path segment
-	 * * `?` to match on one character in a path segment
-	 * * `**` to match any number of path segments, including none
-	 * * `{}` to group conditions (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript files)
-	 * * `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`, `example.1`, …)
-	 * * `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on `example.a`, `example.b`, but not `example.0`)
+	 * Glob pAtterns cAn hAve the following syntAx:
+	 * * `*` to mAtch one or more chArActers in A pAth segment
+	 * * `?` to mAtch on one chArActer in A pAth segment
+	 * * `**` to mAtch Any number of pAth segments, including none
+	 * * `{}` to group conditions (e.g. `**​/*.{ts,js}` mAtches All TypeScript And JAvAScript files)
+	 * * `[]` to declAre A rAnge of chArActers to mAtch in A pAth segment (e.g., `exAmple.[0-9]` to mAtch on `exAmple.0`, `exAmple.1`, …)
+	 * * `[!...]` to negAte A rAnge of chArActers to mAtch in A pAth segment (e.g., `exAmple.[!0-9]` to mAtch on `exAmple.A`, `exAmple.b`, but not `exAmple.0`)
 	 *
-	 * Note: a backslash (`\`) is not valid within a glob pattern. If you have an existing file
-	 * path to match against, consider to use the [relative pattern](#RelativePattern) support
-	 * that takes care of converting any backslash into slash. Otherwise, make sure to convert
-	 * any backslash to slash when creating the glob pattern.
+	 * Note: A bAckslAsh (`\`) is not vAlid within A glob pAttern. If you hAve An existing file
+	 * pAth to mAtch AgAinst, consider to use the [relAtive pAttern](#RelAtivePAttern) support
+	 * thAt tAkes cAre of converting Any bAckslAsh into slAsh. Otherwise, mAke sure to convert
+	 * Any bAckslAsh to slAsh when creAting the glob pAttern.
 	 */
-	export type GlobPattern = string | RelativePattern;
+	export type GlobPAttern = string | RelAtivePAttern;
 
 	/**
-	 * A document filter denotes a document by different properties like
-	 * the [language](#TextDocument.languageId), the [scheme](#Uri.scheme) of
-	 * its resource, or a glob-pattern that is applied to the [path](#TextDocument.fileName).
+	 * A document filter denotes A document by different properties like
+	 * the [lAnguAge](#TextDocument.lAnguAgeId), the [scheme](#Uri.scheme) of
+	 * its resource, or A glob-pAttern thAt is Applied to the [pAth](#TextDocument.fileNAme).
 	 *
-	 * @example <caption>A language filter that applies to typescript files on disk</caption>
-	 * { language: 'typescript', scheme: 'file' }
+	 * @exAmple <cAption>A lAnguAge filter thAt Applies to typescript files on disk</cAption>
+	 * { lAnguAge: 'typescript', scheme: 'file' }
 	 *
-	 * @example <caption>A language filter that applies to all package.json paths</caption>
-	 * { language: 'json', scheme: 'untitled', pattern: '**​/package.json' }
+	 * @exAmple <cAption>A lAnguAge filter thAt Applies to All pAckAge.json pAths</cAption>
+	 * { lAnguAge: 'json', scheme: 'untitled', pAttern: '**​/pAckAge.json' }
 	 */
-	export interface DocumentFilter {
+	export interfAce DocumentFilter {
 
 		/**
-		 * A language id, like `typescript`.
+		 * A lAnguAge id, like `typescript`.
 		 */
-		language?: string;
+		lAnguAge?: string;
 
 		/**
 		 * A Uri [scheme](#Uri.scheme), like `file` or `untitled`.
@@ -1951,36 +1951,36 @@ declare module 'vscode' {
 		scheme?: string;
 
 		/**
-		 * A [glob pattern](#GlobPattern) that is matched on the absolute path of the document. Use a [relative pattern](#RelativePattern)
-		 * to filter documents to a [workspace folder](#WorkspaceFolder).
+		 * A [glob pAttern](#GlobPAttern) thAt is mAtched on the Absolute pAth of the document. Use A [relAtive pAttern](#RelAtivePAttern)
+		 * to filter documents to A [workspAce folder](#WorkspAceFolder).
 		 */
-		pattern?: GlobPattern;
+		pAttern?: GlobPAttern;
 	}
 
 	/**
-	 * A language selector is the combination of one or many language identifiers
-	 * and [language filters](#DocumentFilter).
+	 * A lAnguAge selector is the combinAtion of one or mAny lAnguAge identifiers
+	 * And [lAnguAge filters](#DocumentFilter).
 	 *
-	 * *Note* that a document selector that is just a language identifier selects *all*
-	 * documents, even those that are not saved on disk. Only use such selectors when
-	 * a feature works without further context, e.g. without the need to resolve related
+	 * *Note* thAt A document selector thAt is just A lAnguAge identifier selects *All*
+	 * documents, even those thAt Are not sAved on disk. Only use such selectors when
+	 * A feAture works without further context, e.g. without the need to resolve relAted
 	 * 'files'.
 	 *
-	 * @example
-	 * let sel:DocumentSelector = { scheme: 'file', language: 'typescript' };
+	 * @exAmple
+	 * let sel:DocumentSelector = { scheme: 'file', lAnguAge: 'typescript' };
 	 */
-	export type DocumentSelector = DocumentFilter | string | Array<DocumentFilter | string>;
+	export type DocumentSelector = DocumentFilter | string | ArrAy<DocumentFilter | string>;
 
 	/**
-	 * A provider result represents the values a provider, like the [`HoverProvider`](#HoverProvider),
-	 * may return. For once this is the actual result type `T`, like `Hover`, or a thenable that resolves
-	 * to that type `T`. In addition, `null` and `undefined` can be returned - either directly or from a
-	 * thenable.
+	 * A provider result represents the vAlues A provider, like the [`HoverProvider`](#HoverProvider),
+	 * mAy return. For once this is the ActuAl result type `T`, like `Hover`, or A thenAble thAt resolves
+	 * to thAt type `T`. In Addition, `null` And `undefined` cAn be returned - either directly or from A
+	 * thenAble.
 	 *
-	 * The snippets below are all valid implementations of the [`HoverProvider`](#HoverProvider):
+	 * The snippets below Are All vAlid implementAtions of the [`HoverProvider`](#HoverProvider):
 	 *
 	 * ```ts
-	 * let a: HoverProvider = {
+	 * let A: HoverProvider = {
 	 * 	provideHover(doc, pos, token): ProviderResult<Hover> {
 	 * 		return new Hover('Hello World');
 	 * 	}
@@ -2001,637 +2001,637 @@ declare module 'vscode' {
 	 * }
 	 * ```
 	 */
-	export type ProviderResult<T> = T | undefined | null | Thenable<T | undefined | null>;
+	export type ProviderResult<T> = T | undefined | null | ThenAble<T | undefined | null>;
 
 	/**
-	 * Kind of a code action.
+	 * Kind of A code Action.
 	 *
-	 * Kinds are a hierarchical list of identifiers separated by `.`, e.g. `"refactor.extract.function"`.
+	 * Kinds Are A hierArchicAl list of identifiers sepArAted by `.`, e.g. `"refActor.extrAct.function"`.
 	 *
-	 * Code action kinds are used by VS Code for UI elements such as the refactoring context menu. Users
-	 * can also trigger code actions with a specific kind with the `editor.action.codeAction` command.
+	 * Code Action kinds Are used by VS Code for UI elements such As the refActoring context menu. Users
+	 * cAn Also trigger code Actions with A specific kind with the `editor.Action.codeAction` commAnd.
 	 */
-	export class CodeActionKind {
+	export clAss CodeActionKind {
 		/**
 		 * Empty kind.
 		 */
-		static readonly Empty: CodeActionKind;
+		stAtic reAdonly Empty: CodeActionKind;
 
 		/**
-		 * Base kind for quickfix actions: `quickfix`.
+		 * BAse kind for quickfix Actions: `quickfix`.
 		 *
-		 * Quick fix actions address a problem in the code and are shown in the normal code action context menu.
+		 * Quick fix Actions Address A problem in the code And Are shown in the normAl code Action context menu.
 		 */
-		static readonly QuickFix: CodeActionKind;
+		stAtic reAdonly QuickFix: CodeActionKind;
 
 		/**
-		 * Base kind for refactoring actions: `refactor`
+		 * BAse kind for refActoring Actions: `refActor`
 		 *
-		 * Refactoring actions are shown in the refactoring context menu.
+		 * RefActoring Actions Are shown in the refActoring context menu.
 		 */
-		static readonly Refactor: CodeActionKind;
+		stAtic reAdonly RefActor: CodeActionKind;
 
 		/**
-		 * Base kind for refactoring extraction actions: `refactor.extract`
+		 * BAse kind for refActoring extrAction Actions: `refActor.extrAct`
 		 *
-		 * Example extract actions:
+		 * ExAmple extrAct Actions:
 		 *
-		 * - Extract method
-		 * - Extract function
-		 * - Extract variable
-		 * - Extract interface from class
+		 * - ExtrAct method
+		 * - ExtrAct function
+		 * - ExtrAct vAriAble
+		 * - ExtrAct interfAce from clAss
 		 * - ...
 		 */
-		static readonly RefactorExtract: CodeActionKind;
+		stAtic reAdonly RefActorExtrAct: CodeActionKind;
 
 		/**
-		 * Base kind for refactoring inline actions: `refactor.inline`
+		 * BAse kind for refActoring inline Actions: `refActor.inline`
 		 *
-		 * Example inline actions:
+		 * ExAmple inline Actions:
 		 *
 		 * - Inline function
-		 * - Inline variable
-		 * - Inline constant
+		 * - Inline vAriAble
+		 * - Inline constAnt
 		 * - ...
 		 */
-		static readonly RefactorInline: CodeActionKind;
+		stAtic reAdonly RefActorInline: CodeActionKind;
 
 		/**
-		 * Base kind for refactoring rewrite actions: `refactor.rewrite`
+		 * BAse kind for refActoring rewrite Actions: `refActor.rewrite`
 		 *
-		 * Example rewrite actions:
+		 * ExAmple rewrite Actions:
 		 *
-		 * - Convert JavaScript function to class
-		 * - Add or remove parameter
-		 * - Encapsulate field
-		 * - Make method static
-		 * - Move method to base class
+		 * - Convert JAvAScript function to clAss
+		 * - Add or remove pArAmeter
+		 * - EncApsulAte field
+		 * - MAke method stAtic
+		 * - Move method to bAse clAss
 		 * - ...
 		 */
-		static readonly RefactorRewrite: CodeActionKind;
+		stAtic reAdonly RefActorRewrite: CodeActionKind;
 
 		/**
-		 * Base kind for source actions: `source`
+		 * BAse kind for source Actions: `source`
 		 *
-		 * Source code actions apply to the entire file. They must be explicitly requested and will not show in the
-		 * normal [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) menu. Source actions
-		 * can be run on save using `editor.codeActionsOnSave` and are also shown in the `source` context menu.
+		 * Source code Actions Apply to the entire file. They must be explicitly requested And will not show in the
+		 * normAl [lightbulb](https://code.visuAlstudio.com/docs/editor/editingevolved#_code-Action) menu. Source Actions
+		 * cAn be run on sAve using `editor.codeActionsOnSAve` And Are Also shown in the `source` context menu.
 		 */
-		static readonly Source: CodeActionKind;
+		stAtic reAdonly Source: CodeActionKind;
 
 		/**
-		 * Base kind for an organize imports source action: `source.organizeImports`.
+		 * BAse kind for An orgAnize imports source Action: `source.orgAnizeImports`.
 		 */
-		static readonly SourceOrganizeImports: CodeActionKind;
+		stAtic reAdonly SourceOrgAnizeImports: CodeActionKind;
 
 		/**
-		 * Base kind for auto-fix source actions: `source.fixAll`.
+		 * BAse kind for Auto-fix source Actions: `source.fixAll`.
 		 *
-		 * Fix all actions automatically fix errors that have a clear fix that do not require user input.
-		 * They should not suppress errors or perform unsafe fixes such as generating new types or classes.
+		 * Fix All Actions AutomAticAlly fix errors thAt hAve A cleAr fix thAt do not require user input.
+		 * They should not suppress errors or perform unsAfe fixes such As generAting new types or clAsses.
 		 */
-		static readonly SourceFixAll: CodeActionKind;
+		stAtic reAdonly SourceFixAll: CodeActionKind;
 
-		private constructor(value: string);
+		privAte constructor(vAlue: string);
 
 		/**
-		 * String value of the kind, e.g. `"refactor.extract.function"`.
+		 * String vAlue of the kind, e.g. `"refActor.extrAct.function"`.
 		 */
-		readonly value: string;
+		reAdonly vAlue: string;
 
 		/**
-		 * Create a new kind by appending a more specific selector to the current kind.
+		 * CreAte A new kind by Appending A more specific selector to the current kind.
 		 *
 		 * Does not modify the current kind.
 		 */
-		append(parts: string): CodeActionKind;
+		Append(pArts: string): CodeActionKind;
 
 		/**
-		 * Checks if this code action kind intersects `other`.
+		 * Checks if this code Action kind intersects `other`.
 		 *
-		 * The kind `"refactor.extract"` for example intersects `refactor`, `"refactor.extract"` and ``"refactor.extract.function"`,
-		 * but not `"unicorn.refactor.extract"`, or `"refactor.extractAll"`.
+		 * The kind `"refActor.extrAct"` for exAmple intersects `refActor`, `"refActor.extrAct"` And ``"refActor.extrAct.function"`,
+		 * but not `"unicorn.refActor.extrAct"`, or `"refActor.extrActAll"`.
 		 *
-		 * @param other Kind to check.
+		 * @pArAm other Kind to check.
 		 */
-		intersects(other: CodeActionKind): boolean;
+		intersects(other: CodeActionKind): booleAn;
 
 		/**
-		 * Checks if `other` is a sub-kind of this `CodeActionKind`.
+		 * Checks if `other` is A sub-kind of this `CodeActionKind`.
 		 *
-		 * The kind `"refactor.extract"` for example contains `"refactor.extract"` and ``"refactor.extract.function"`,
-		 * but not `"unicorn.refactor.extract"`, or `"refactor.extractAll"` or `refactor`.
+		 * The kind `"refActor.extrAct"` for exAmple contAins `"refActor.extrAct"` And ``"refActor.extrAct.function"`,
+		 * but not `"unicorn.refActor.extrAct"`, or `"refActor.extrActAll"` or `refActor`.
 		 *
-		 * @param other Kind to check.
+		 * @pArAm other Kind to check.
 		 */
-		contains(other: CodeActionKind): boolean;
+		contAins(other: CodeActionKind): booleAn;
 	}
 
 	/**
-	 * Contains additional diagnostic information about the context in which
-	 * a [code action](#CodeActionProvider.provideCodeActions) is run.
+	 * ContAins AdditionAl diAgnostic informAtion About the context in which
+	 * A [code Action](#CodeActionProvider.provideCodeActions) is run.
 	 */
-	export interface CodeActionContext {
+	export interfAce CodeActionContext {
 		/**
-		 * An array of diagnostics.
+		 * An ArrAy of diAgnostics.
 		 */
-		readonly diagnostics: ReadonlyArray<Diagnostic>;
+		reAdonly diAgnostics: ReAdonlyArrAy<DiAgnostic>;
 
 		/**
-		 * Requested kind of actions to return.
+		 * Requested kind of Actions to return.
 		 *
-		 * Actions not of this kind are filtered out before being shown by the [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action).
+		 * Actions not of this kind Are filtered out before being shown by the [lightbulb](https://code.visuAlstudio.com/docs/editor/editingevolved#_code-Action).
 		 */
-		readonly only?: CodeActionKind;
+		reAdonly only?: CodeActionKind;
 	}
 
 	/**
-	 * A code action represents a change that can be performed in code, e.g. to fix a problem or
-	 * to refactor code.
+	 * A code Action represents A chAnge thAt cAn be performed in code, e.g. to fix A problem or
+	 * to refActor code.
 	 *
-	 * A CodeAction must set either [`edit`](#CodeAction.edit) and/or a [`command`](#CodeAction.command). If both are supplied, the `edit` is applied first, then the command is executed.
+	 * A CodeAction must set either [`edit`](#CodeAction.edit) And/or A [`commAnd`](#CodeAction.commAnd). If both Are supplied, the `edit` is Applied first, then the commAnd is executed.
 	 */
-	export class CodeAction {
+	export clAss CodeAction {
 
 		/**
-		 * A short, human-readable, title for this code action.
+		 * A short, humAn-reAdAble, title for this code Action.
 		 */
 		title: string;
 
 		/**
-		 * A [workspace edit](#WorkspaceEdit) this code action performs.
+		 * A [workspAce edit](#WorkspAceEdit) this code Action performs.
 		 */
-		edit?: WorkspaceEdit;
+		edit?: WorkspAceEdit;
 
 		/**
-		 * [Diagnostics](#Diagnostic) that this code action resolves.
+		 * [DiAgnostics](#DiAgnostic) thAt this code Action resolves.
 		 */
-		diagnostics?: Diagnostic[];
+		diAgnostics?: DiAgnostic[];
 
 		/**
-		 * A [command](#Command) this code action executes.
+		 * A [commAnd](#CommAnd) this code Action executes.
 		 *
-		 * If this command throws an exception, VS Code displays the exception message to users in the editor at the
+		 * If this commAnd throws An exception, VS Code displAys the exception messAge to users in the editor At the
 		 * current cursor position.
 		 */
-		command?: Command;
+		commAnd?: CommAnd;
 
 		/**
-		 * [Kind](#CodeActionKind) of the code action.
+		 * [Kind](#CodeActionKind) of the code Action.
 		 *
-		 * Used to filter code actions.
+		 * Used to filter code Actions.
 		 */
 		kind?: CodeActionKind;
 
 		/**
-		 * Marks this as a preferred action. Preferred actions are used by the `auto fix` command and can be targeted
+		 * MArks this As A preferred Action. Preferred Actions Are used by the `Auto fix` commAnd And cAn be tArgeted
 		 * by keybindings.
 		 *
-		 * A quick fix should be marked preferred if it properly addresses the underlying error.
-		 * A refactoring should be marked preferred if it is the most reasonable choice of actions to take.
+		 * A quick fix should be mArked preferred if it properly Addresses the underlying error.
+		 * A refActoring should be mArked preferred if it is the most reAsonAble choice of Actions to tAke.
 		 */
-		isPreferred?: boolean;
+		isPreferred?: booleAn;
 
 		/**
-		 * Marks that the code action cannot currently be applied.
+		 * MArks thAt the code Action cAnnot currently be Applied.
 		 *
-		 * - Disabled code actions are not shown in automatic [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action)
-		 * code action menu.
+		 * - DisAbled code Actions Are not shown in AutomAtic [lightbulb](https://code.visuAlstudio.com/docs/editor/editingevolved#_code-Action)
+		 * code Action menu.
 		 *
-		 * - Disabled actions are shown as faded out in the code action menu when the user request a more specific type
-		 * of code action, such as refactorings.
+		 * - DisAbled Actions Are shown As fAded out in the code Action menu when the user request A more specific type
+		 * of code Action, such As refActorings.
 		 *
-		 * - If the user has a [keybinding](https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions)
-		 * that auto applies a code action and only a disabled code actions are returned, VS Code will show the user an
-		 * error message with `reason` in the editor.
+		 * - If the user hAs A [keybinding](https://code.visuAlstudio.com/docs/editor/refActoring#_keybindings-for-code-Actions)
+		 * thAt Auto Applies A code Action And only A disAbled code Actions Are returned, VS Code will show the user An
+		 * error messAge with `reAson` in the editor.
 		 */
-		disabled?: {
+		disAbled?: {
 			/**
-			 * Human readable description of why the code action is currently disabled.
+			 * HumAn reAdAble description of why the code Action is currently disAbled.
 			 *
-			 * This is displayed in the code actions UI.
+			 * This is displAyed in the code Actions UI.
 			 */
-			readonly reason: string;
+			reAdonly reAson: string;
 		};
 
 		/**
-		 * Creates a new code action.
+		 * CreAtes A new code Action.
 		 *
-		 * A code action must have at least a [title](#CodeAction.title) and [edits](#CodeAction.edit)
-		 * and/or a [command](#CodeAction.command).
+		 * A code Action must hAve At leAst A [title](#CodeAction.title) And [edits](#CodeAction.edit)
+		 * And/or A [commAnd](#CodeAction.commAnd).
 		 *
-		 * @param title The title of the code action.
-		 * @param kind The kind of the code action.
+		 * @pArAm title The title of the code Action.
+		 * @pArAm kind The kind of the code Action.
 		 */
 		constructor(title: string, kind?: CodeActionKind);
 	}
 
 	/**
-	 * The code action interface defines the contract between extensions and
-	 * the [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) feature.
+	 * The code Action interfAce defines the contrAct between extensions And
+	 * the [lightbulb](https://code.visuAlstudio.com/docs/editor/editingevolved#_code-Action) feAture.
 	 *
-	 * A code action can be any command that is [known](#commands.getCommands) to the system.
+	 * A code Action cAn be Any commAnd thAt is [known](#commAnds.getCommAnds) to the system.
 	 */
-	export interface CodeActionProvider<T extends CodeAction = CodeAction> {
+	export interfAce CodeActionProvider<T extends CodeAction = CodeAction> {
 		/**
-		 * Provide commands for the given document and range.
+		 * Provide commAnds for the given document And rAnge.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param range The selector or range for which the command was invoked. This will always be a selection if
-		 * there is a currently active editor.
-		 * @param context Context carrying additional information.
-		 * @param token A cancellation token.
-		 * @return An array of commands, quick fixes, or refactorings or a thenable of such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm rAnge The selector or rAnge for which the commAnd wAs invoked. This will AlwAys be A selection if
+		 * there is A currently Active editor.
+		 * @pArAm context Context cArrying AdditionAl informAtion.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of commAnds, quick fixes, or refActorings or A thenAble of such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideCodeActions(document: TextDocument, range: Range | Selection, context: CodeActionContext, token: CancellationToken): ProviderResult<(Command | CodeAction)[]>;
+		provideCodeActions(document: TextDocument, rAnge: RAnge | Selection, context: CodeActionContext, token: CAncellAtionToken): ProviderResult<(CommAnd | CodeAction)[]>;
 
 		/**
-		 * Given a code action fill in its [`edit`](#CodeAction.edit)-property. Changes to
-		 * all other properties, like title, are ignored. A code action that has an edit
+		 * Given A code Action fill in its [`edit`](#CodeAction.edit)-property. ChAnges to
+		 * All other properties, like title, Are ignored. A code Action thAt hAs An edit
 		 * will not be resolved.
 		 *
-		 * *Note* that a code action provider that returns commands, not code actions, cannot successfully
-		 * implement this function. Returning commands is deprecated and instead code actions should be
+		 * *Note* thAt A code Action provider thAt returns commAnds, not code Actions, cAnnot successfully
+		 * implement this function. Returning commAnds is deprecAted And insteAd code Actions should be
 		 * returned.
 		 *
-		 * @param codeAction A code action.
-		 * @param token A cancellation token.
-		 * @return The resolved code action or a thenable that resolves to such. It is OK to return the given
+		 * @pArAm codeAction A code Action.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The resolved code Action or A thenAble thAt resolves to such. It is OK to return the given
 		 * `item`. When no result is returned, the given `item` will be used.
 		 */
-		resolveCodeAction?(codeAction: T, token: CancellationToken): ProviderResult<T>;
+		resolveCodeAction?(codeAction: T, token: CAncellAtionToken): ProviderResult<T>;
 	}
 
 	/**
-	 * Metadata about the type of code actions that a [CodeActionProvider](#CodeActionProvider) provides.
+	 * MetAdAtA About the type of code Actions thAt A [CodeActionProvider](#CodeActionProvider) provides.
 	 */
-	export interface CodeActionProviderMetadata {
+	export interfAce CodeActionProviderMetAdAtA {
 		/**
-		 * List of [CodeActionKinds](#CodeActionKind) that a [CodeActionProvider](#CodeActionProvider) may return.
+		 * List of [CodeActionKinds](#CodeActionKind) thAt A [CodeActionProvider](#CodeActionProvider) mAy return.
 		 *
-		 * This list is used to determine if a given `CodeActionProvider` should be invoked or not.
-		 * To avoid unnecessary computation, every `CodeActionProvider` should list use `providedCodeActionKinds`. The
-		 * list of kinds may either be generic, such as `[CodeActionKind.Refactor]`, or list out every kind provided,
-		 * such as `[CodeActionKind.Refactor.Extract.append('function'), CodeActionKind.Refactor.Extract.append('constant'), ...]`.
+		 * This list is used to determine if A given `CodeActionProvider` should be invoked or not.
+		 * To Avoid unnecessAry computAtion, every `CodeActionProvider` should list use `providedCodeActionKinds`. The
+		 * list of kinds mAy either be generic, such As `[CodeActionKind.RefActor]`, or list out every kind provided,
+		 * such As `[CodeActionKind.RefActor.ExtrAct.Append('function'), CodeActionKind.RefActor.ExtrAct.Append('constAnt'), ...]`.
 		 */
-		readonly providedCodeActionKinds?: ReadonlyArray<CodeActionKind>;
+		reAdonly providedCodeActionKinds?: ReAdonlyArrAy<CodeActionKind>;
 
 		/**
-		 * Static documentation for a class of code actions.
+		 * StAtic documentAtion for A clAss of code Actions.
 		 *
-		 * Documentation from the provider is shown in the code actions menu if either:
+		 * DocumentAtion from the provider is shown in the code Actions menu if either:
 		 *
-		 * - Code actions of `kind` are requested by VS Code. In this case, VS Code will show the documentation that
-		 *   most closely matches the requested code action kind. For example, if a provider has documentation for
-		 *   both `Refactor` and `RefactorExtract`, when the user requests code actions for `RefactorExtract`,
-		 *   VS Code will use the documentation for `RefactorExtract` instead of the documentation for `Refactor`.
+		 * - Code Actions of `kind` Are requested by VS Code. In this cAse, VS Code will show the documentAtion thAt
+		 *   most closely mAtches the requested code Action kind. For exAmple, if A provider hAs documentAtion for
+		 *   both `RefActor` And `RefActorExtrAct`, when the user requests code Actions for `RefActorExtrAct`,
+		 *   VS Code will use the documentAtion for `RefActorExtrAct` insteAd of the documentAtion for `RefActor`.
 		 *
-		 * - Any code actions of `kind` are returned by the provider.
+		 * - Any code Actions of `kind` Are returned by the provider.
 		 *
-		 * At most one documentation entry will be shown per provider.
+		 * At most one documentAtion entry will be shown per provider.
 		 */
-		readonly documentation?: ReadonlyArray<{
+		reAdonly documentAtion?: ReAdonlyArrAy<{
 			/**
-			 * The kind of the code action being documented.
+			 * The kind of the code Action being documented.
 			 *
-			 * If the kind is generic, such as `CodeActionKind.Refactor`, the documentation will be shown whenever any
-			 * refactorings are returned. If the kind if more specific, such as `CodeActionKind.RefactorExtract`, the
-			 * documentation will only be shown when extract refactoring code actions are returned.
+			 * If the kind is generic, such As `CodeActionKind.RefActor`, the documentAtion will be shown whenever Any
+			 * refActorings Are returned. If the kind if more specific, such As `CodeActionKind.RefActorExtrAct`, the
+			 * documentAtion will only be shown when extrAct refActoring code Actions Are returned.
 			 */
-			readonly kind: CodeActionKind;
+			reAdonly kind: CodeActionKind;
 
 			/**
-			 * Command that displays the documentation to the user.
+			 * CommAnd thAt displAys the documentAtion to the user.
 			 *
-			 * This can display the documentation directly in VS Code or open a website using [`env.openExternal`](#env.openExternal);
+			 * This cAn displAy the documentAtion directly in VS Code or open A website using [`env.openExternAl`](#env.openExternAl);
 			 *
-			 * The title of this documentation code action is taken from [`Command.title`](#Command.title)
+			 * The title of this documentAtion code Action is tAken from [`CommAnd.title`](#CommAnd.title)
 			 */
-			readonly command: Command;
+			reAdonly commAnd: CommAnd;
 		}>;
 	}
 
 	/**
-	 * A code lens represents a [command](#Command) that should be shown along with
-	 * source text, like the number of references, a way to run tests, etc.
+	 * A code lens represents A [commAnd](#CommAnd) thAt should be shown Along with
+	 * source text, like the number of references, A wAy to run tests, etc.
 	 *
-	 * A code lens is _unresolved_ when no command is associated to it. For performance
-	 * reasons the creation of a code lens and resolving should be done to two stages.
+	 * A code lens is _unresolved_ when no commAnd is AssociAted to it. For performAnce
+	 * reAsons the creAtion of A code lens And resolving should be done to two stAges.
 	 *
 	 * @see [CodeLensProvider.provideCodeLenses](#CodeLensProvider.provideCodeLenses)
 	 * @see [CodeLensProvider.resolveCodeLens](#CodeLensProvider.resolveCodeLens)
 	 */
-	export class CodeLens {
+	export clAss CodeLens {
 
 		/**
-		 * The range in which this code lens is valid. Should only span a single line.
+		 * The rAnge in which this code lens is vAlid. Should only spAn A single line.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The command this code lens represents.
+		 * The commAnd this code lens represents.
 		 */
-		command?: Command;
+		commAnd?: CommAnd;
 
 		/**
-		 * `true` when there is a command associated.
+		 * `true` when there is A commAnd AssociAted.
 		 */
-		readonly isResolved: boolean;
+		reAdonly isResolved: booleAn;
 
 		/**
-		 * Creates a new code lens object.
+		 * CreAtes A new code lens object.
 		 *
-		 * @param range The range to which this code lens applies.
-		 * @param command The command associated to this code lens.
+		 * @pArAm rAnge The rAnge to which this code lens Applies.
+		 * @pArAm commAnd The commAnd AssociAted to this code lens.
 		 */
-		constructor(range: Range, command?: Command);
+		constructor(rAnge: RAnge, commAnd?: CommAnd);
 	}
 
 	/**
-	 * A code lens provider adds [commands](#Command) to source text. The commands will be shown
-	 * as dedicated horizontal lines in between the source text.
+	 * A code lens provider Adds [commAnds](#CommAnd) to source text. The commAnds will be shown
+	 * As dedicAted horizontAl lines in between the source text.
 	 */
-	export interface CodeLensProvider<T extends CodeLens = CodeLens> {
+	export interfAce CodeLensProvider<T extends CodeLens = CodeLens> {
 
 		/**
-		 * An optional event to signal that the code lenses from this provider have changed.
+		 * An optionAl event to signAl thAt the code lenses from this provider hAve chAnged.
 		 */
-		onDidChangeCodeLenses?: Event<void>;
+		onDidChAngeCodeLenses?: Event<void>;
 
 		/**
-		 * Compute a list of [lenses](#CodeLens). This call should return as fast as possible and if
-		 * computing the commands is expensive implementors should only return code lens objects with the
-		 * range set and implement [resolve](#CodeLensProvider.resolveCodeLens).
+		 * Compute A list of [lenses](#CodeLens). This cAll should return As fAst As possible And if
+		 * computing the commAnds is expensive implementors should only return code lens objects with the
+		 * rAnge set And implement [resolve](#CodeLensProvider.resolveCodeLens).
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return An array of code lenses or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of code lenses or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideCodeLenses(document: TextDocument, token: CancellationToken): ProviderResult<T[]>;
+		provideCodeLenses(document: TextDocument, token: CAncellAtionToken): ProviderResult<T[]>;
 
 		/**
-		 * This function will be called for each visible code lens, usually when scrolling and after
-		 * calls to [compute](#CodeLensProvider.provideCodeLenses)-lenses.
+		 * This function will be cAlled for eAch visible code lens, usuAlly when scrolling And After
+		 * cAlls to [compute](#CodeLensProvider.provideCodeLenses)-lenses.
 		 *
-		 * @param codeLens Code lens that must be resolved.
-		 * @param token A cancellation token.
-		 * @return The given, resolved code lens or thenable that resolves to such.
+		 * @pArAm codeLens Code lens thAt must be resolved.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The given, resolved code lens or thenAble thAt resolves to such.
 		 */
-		resolveCodeLens?(codeLens: T, token: CancellationToken): ProviderResult<T>;
+		resolveCodeLens?(codeLens: T, token: CAncellAtionToken): ProviderResult<T>;
 	}
 
 	/**
-	 * Information about where a symbol is defined.
+	 * InformAtion About where A symbol is defined.
 	 *
-	 * Provides additional metadata over normal [location](#Location) definitions, including the range of
+	 * Provides AdditionAl metAdAtA over normAl [locAtion](#LocAtion) definitions, including the rAnge of
 	 * the defining symbol
 	 */
-	export type DefinitionLink = LocationLink;
+	export type DefinitionLink = LocAtionLink;
 
 	/**
-	 * The definition of a symbol represented as one or many [locations](#Location).
-	 * For most programming languages there is only one location at which a symbol is
+	 * The definition of A symbol represented As one or mAny [locAtions](#LocAtion).
+	 * For most progrAmming lAnguAges there is only one locAtion At which A symbol is
 	 * defined.
 	 */
-	export type Definition = Location | Location[];
+	export type Definition = LocAtion | LocAtion[];
 
 	/**
-	 * The definition provider interface defines the contract between extensions and
-	 * the [go to definition](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition)
-	 * and peek definition features.
+	 * The definition provider interfAce defines the contrAct between extensions And
+	 * the [go to definition](https://code.visuAlstudio.com/docs/editor/editingevolved#_go-to-definition)
+	 * And peek definition feAtures.
 	 */
-	export interface DefinitionProvider {
+	export interfAce DefinitionProvider {
 
 		/**
-		 * Provide the definition of the symbol at the given position and document.
+		 * Provide the definition of the symbol At the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return A definition or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A definition or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition | DefinitionLink[]>;
+		provideDefinition(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<Definition | DefinitionLink[]>;
 	}
 
 	/**
-	 * The implementation provider interface defines the contract between extensions and
-	 * the go to implementation feature.
+	 * The implementAtion provider interfAce defines the contrAct between extensions And
+	 * the go to implementAtion feAture.
 	 */
-	export interface ImplementationProvider {
+	export interfAce ImplementAtionProvider {
 
 		/**
-		 * Provide the implementations of the symbol at the given position and document.
+		 * Provide the implementAtions of the symbol At the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return A definition or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A definition or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideImplementation(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition | DefinitionLink[]>;
+		provideImplementAtion(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<Definition | DefinitionLink[]>;
 	}
 
 	/**
-	 * The type definition provider defines the contract between extensions and
-	 * the go to type definition feature.
+	 * The type definition provider defines the contrAct between extensions And
+	 * the go to type definition feAture.
 	 */
-	export interface TypeDefinitionProvider {
+	export interfAce TypeDefinitionProvider {
 
 		/**
-		 * Provide the type definition of the symbol at the given position and document.
+		 * Provide the type definition of the symbol At the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return A definition or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A definition or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideTypeDefinition(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Definition | DefinitionLink[]>;
+		provideTypeDefinition(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<Definition | DefinitionLink[]>;
 	}
 
 	/**
-	 * The declaration of a symbol representation as one or many [locations](#Location)
-	 * or [location links](#LocationLink).
+	 * The declArAtion of A symbol representAtion As one or mAny [locAtions](#LocAtion)
+	 * or [locAtion links](#LocAtionLink).
 	 */
-	export type Declaration = Location | Location[] | LocationLink[];
+	export type DeclArAtion = LocAtion | LocAtion[] | LocAtionLink[];
 
 	/**
-	 * The declaration provider interface defines the contract between extensions and
-	 * the go to declaration feature.
+	 * The declArAtion provider interfAce defines the contrAct between extensions And
+	 * the go to declArAtion feAture.
 	 */
-	export interface DeclarationProvider {
+	export interfAce DeclArAtionProvider {
 
 		/**
-		 * Provide the declaration of the symbol at the given position and document.
+		 * Provide the declArAtion of the symbol At the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return A declaration or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A declArAtion or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideDeclaration(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Declaration>;
+		provideDeclArAtion(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<DeclArAtion>;
 	}
 
 	/**
-	 * The MarkdownString represents human-readable text that supports formatting via the
-	 * markdown syntax. Standard markdown is supported, also tables, but no embedded html.
+	 * The MArkdownString represents humAn-reAdAble text thAt supports formAtting viA the
+	 * mArkdown syntAx. StAndArd mArkdown is supported, Also tAbles, but no embedded html.
 	 *
-	 * When created with `supportThemeIcons` then rendering of [theme icons](#ThemeIcon) via
-	 * the `$(<name>)`-syntax is supported.
+	 * When creAted with `supportThemeIcons` then rendering of [theme icons](#ThemeIcon) viA
+	 * the `$(<nAme>)`-syntAx is supported.
 	 */
-	export class MarkdownString {
+	export clAss MArkdownString {
 
 		/**
-		 * The markdown string.
+		 * The mArkdown string.
 		 */
-		value: string;
+		vAlue: string;
 
 		/**
-		 * Indicates that this markdown string is from a trusted source. Only *trusted*
-		 * markdown supports links that execute commands, e.g. `[Run it](command:myCommandId)`.
+		 * IndicAtes thAt this mArkdown string is from A trusted source. Only *trusted*
+		 * mArkdown supports links thAt execute commAnds, e.g. `[Run it](commAnd:myCommAndId)`.
 		 */
-		isTrusted?: boolean;
+		isTrusted?: booleAn;
 
 		/**
-		 * Indicates that this markdown string can contain [ThemeIcons](#ThemeIcon), e.g. `$(zap)`.
+		 * IndicAtes thAt this mArkdown string cAn contAin [ThemeIcons](#ThemeIcon), e.g. `$(zAp)`.
 		 */
-		readonly supportThemeIcons?: boolean;
+		reAdonly supportThemeIcons?: booleAn;
 
 		/**
-		 * Creates a new markdown string with the given value.
+		 * CreAtes A new mArkdown string with the given vAlue.
 		 *
-		 * @param value Optional, initial value.
-		 * @param supportThemeIcons Optional, Specifies whether [ThemeIcons](#ThemeIcon) are supported within the [`MarkdownString`](#MarkdownString).
+		 * @pArAm vAlue OptionAl, initiAl vAlue.
+		 * @pArAm supportThemeIcons OptionAl, Specifies whether [ThemeIcons](#ThemeIcon) Are supported within the [`MArkdownString`](#MArkdownString).
 		 */
-		constructor(value?: string, supportThemeIcons?: boolean);
+		constructor(vAlue?: string, supportThemeIcons?: booleAn);
 
 		/**
-		 * Appends and escapes the given string to this markdown string.
-		 * @param value Plain text.
+		 * Appends And escApes the given string to this mArkdown string.
+		 * @pArAm vAlue PlAin text.
 		 */
-		appendText(value: string): MarkdownString;
+		AppendText(vAlue: string): MArkdownString;
 
 		/**
-		 * Appends the given string 'as is' to this markdown string. When [`supportThemeIcons`](#MarkdownString.supportThemeIcons) is `true`, [ThemeIcons](#ThemeIcon) in the `value` will be iconified.
-		 * @param value Markdown string.
+		 * Appends the given string 'As is' to this mArkdown string. When [`supportThemeIcons`](#MArkdownString.supportThemeIcons) is `true`, [ThemeIcons](#ThemeIcon) in the `vAlue` will be iconified.
+		 * @pArAm vAlue MArkdown string.
 		 */
-		appendMarkdown(value: string): MarkdownString;
+		AppendMArkdown(vAlue: string): MArkdownString;
 
 		/**
-		 * Appends the given string as codeblock using the provided language.
-		 * @param value A code snippet.
-		 * @param language An optional [language identifier](#languages.getLanguages).
+		 * Appends the given string As codeblock using the provided lAnguAge.
+		 * @pArAm vAlue A code snippet.
+		 * @pArAm lAnguAge An optionAl [lAnguAge identifier](#lAnguAges.getLAnguAges).
 		 */
-		appendCodeblock(value: string, language?: string): MarkdownString;
+		AppendCodeblock(vAlue: string, lAnguAge?: string): MArkdownString;
 	}
 
 	/**
-	 * MarkedString can be used to render human-readable text. It is either a markdown string
-	 * or a code-block that provides a language and a code snippet. Note that
-	 * markdown strings will be sanitized - that means html will be escaped.
+	 * MArkedString cAn be used to render humAn-reAdAble text. It is either A mArkdown string
+	 * or A code-block thAt provides A lAnguAge And A code snippet. Note thAt
+	 * mArkdown strings will be sAnitized - thAt meAns html will be escAped.
 	 *
-	 * @deprecated This type is deprecated, please use [`MarkdownString`](#MarkdownString) instead.
+	 * @deprecAted This type is deprecAted, pleAse use [`MArkdownString`](#MArkdownString) insteAd.
 	 */
-	export type MarkedString = MarkdownString | string | { language: string; value: string };
+	export type MArkedString = MArkdownString | string | { lAnguAge: string; vAlue: string };
 
 	/**
-	 * A hover represents additional information for a symbol or word. Hovers are
-	 * rendered in a tooltip-like widget.
+	 * A hover represents AdditionAl informAtion for A symbol or word. Hovers Are
+	 * rendered in A tooltip-like widget.
 	 */
-	export class Hover {
+	export clAss Hover {
 
 		/**
 		 * The contents of this hover.
 		 */
-		contents: MarkedString[];
+		contents: MArkedString[];
 
 		/**
-		 * The range to which this hover applies. When missing, the
-		 * editor will use the range at the current position or the
+		 * The rAnge to which this hover Applies. When missing, the
+		 * editor will use the rAnge At the current position or the
 		 * current position itself.
 		 */
-		range?: Range;
+		rAnge?: RAnge;
 
 		/**
-		 * Creates a new hover object.
+		 * CreAtes A new hover object.
 		 *
-		 * @param contents The contents of the hover.
-		 * @param range The range to which the hover applies.
+		 * @pArAm contents The contents of the hover.
+		 * @pArAm rAnge The rAnge to which the hover Applies.
 		 */
-		constructor(contents: MarkedString | MarkedString[], range?: Range);
+		constructor(contents: MArkedString | MArkedString[], rAnge?: RAnge);
 	}
 
 	/**
-	 * The hover provider interface defines the contract between extensions and
-	 * the [hover](https://code.visualstudio.com/docs/editor/intellisense)-feature.
+	 * The hover provider interfAce defines the contrAct between extensions And
+	 * the [hover](https://code.visuAlstudio.com/docs/editor/intellisense)-feAture.
 	 */
-	export interface HoverProvider {
+	export interfAce HoverProvider {
 
 		/**
-		 * Provide a hover for the given position and document. Multiple hovers at the same
-		 * position will be merged by the editor. A hover can have a range which defaults
-		 * to the word range at the position when omitted.
+		 * Provide A hover for the given position And document. Multiple hovers At the sAme
+		 * position will be merged by the editor. A hover cAn hAve A rAnge which defAults
+		 * to the word rAnge At the position when omitted.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return A hover or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A hover or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideHover(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Hover>;
+		provideHover(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<Hover>;
 	}
 
 	/**
-	 * An EvaluatableExpression represents an expression in a document that can be evaluated by an active debugger or runtime.
-	 * The result of this evaluation is shown in a tooltip-like widget.
-	 * If only a range is specified, the expression will be extracted from the underlying document.
-	 * An optional expression can be used to override the extracted expression.
-	 * In this case the range is still used to highlight the range in the document.
+	 * An EvAluAtAbleExpression represents An expression in A document thAt cAn be evAluAted by An Active debugger or runtime.
+	 * The result of this evAluAtion is shown in A tooltip-like widget.
+	 * If only A rAnge is specified, the expression will be extrActed from the underlying document.
+	 * An optionAl expression cAn be used to override the extrActed expression.
+	 * In this cAse the rAnge is still used to highlight the rAnge in the document.
 	 */
-	export class EvaluatableExpression {
+	export clAss EvAluAtAbleExpression {
 
 		/*
-		 * The range is used to extract the evaluatable expression from the underlying document and to highlight it.
+		 * The rAnge is used to extrAct the evAluAtAble expression from the underlying document And to highlight it.
 		 */
-		readonly range: Range;
+		reAdonly rAnge: RAnge;
 
 		/*
-		 * If specified the expression overrides the extracted expression.
+		 * If specified the expression overrides the extrActed expression.
 		 */
-		readonly expression?: string;
+		reAdonly expression?: string;
 
 		/**
-		 * Creates a new evaluatable expression object.
+		 * CreAtes A new evAluAtAble expression object.
 		 *
-		 * @param range The range in the underlying document from which the evaluatable expression is extracted.
-		 * @param expression If specified overrides the extracted expression.
+		 * @pArAm rAnge The rAnge in the underlying document from which the evAluAtAble expression is extrActed.
+		 * @pArAm expression If specified overrides the extrActed expression.
 		 */
-		constructor(range: Range, expression?: string);
+		constructor(rAnge: RAnge, expression?: string);
 	}
 
 	/**
-	 * The evaluatable expression provider interface defines the contract between extensions and
-	 * the debug hover. In this contract the provider returns an evaluatable expression for a given position
-	 * in a document and VS Code evaluates this expression in the active debug session and shows the result in a debug hover.
+	 * The evAluAtAble expression provider interfAce defines the contrAct between extensions And
+	 * the debug hover. In this contrAct the provider returns An evAluAtAble expression for A given position
+	 * in A document And VS Code evAluAtes this expression in the Active debug session And shows the result in A debug hover.
 	 */
-	export interface EvaluatableExpressionProvider {
+	export interfAce EvAluAtAbleExpressionProvider {
 
 		/**
-		 * Provide an evaluatable expression for the given document and position.
-		 * VS Code will evaluate this expression in the active debug session and will show the result in the debug hover.
-		 * The expression can be implicitly specified by the range in the underlying document or by explicitly returning an expression.
+		 * Provide An evAluAtAble expression for the given document And position.
+		 * VS Code will evAluAte this expression in the Active debug session And will show the result in the debug hover.
+		 * The expression cAn be implicitly specified by the rAnge in the underlying document or by explicitly returning An expression.
 		 *
-		 * @param document The document for which the debug hover is about to appear.
-		 * @param position The line and character position in the document where the debug hover is about to appear.
-		 * @param token A cancellation token.
-		 * @return An EvaluatableExpression or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document for which the debug hover is About to AppeAr.
+		 * @pArAm position The line And chArActer position in the document where the debug hover is About to AppeAr.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An EvAluAtAbleExpression or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideEvaluatableExpression(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<EvaluatableExpression>;
+		provideEvAluAtAbleExpression(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<EvAluAtAbleExpression>;
 	}
 
 	/**
@@ -2640,64 +2640,64 @@ declare module 'vscode' {
 	export enum DocumentHighlightKind {
 
 		/**
-		 * A textual occurrence.
+		 * A textuAl occurrence.
 		 */
 		Text = 0,
 
 		/**
-		 * Read-access of a symbol, like reading a variable.
+		 * ReAd-Access of A symbol, like reAding A vAriAble.
 		 */
-		Read = 1,
+		ReAd = 1,
 
 		/**
-		 * Write-access of a symbol, like writing to a variable.
+		 * Write-Access of A symbol, like writing to A vAriAble.
 		 */
 		Write = 2
 	}
 
 	/**
-	 * A document highlight is a range inside a text document which deserves
-	 * special attention. Usually a document highlight is visualized by changing
-	 * the background color of its range.
+	 * A document highlight is A rAnge inside A text document which deserves
+	 * speciAl Attention. UsuAlly A document highlight is visuAlized by chAnging
+	 * the bAckground color of its rAnge.
 	 */
-	export class DocumentHighlight {
+	export clAss DocumentHighlight {
 
 		/**
-		 * The range this highlight applies to.
+		 * The rAnge this highlight Applies to.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The highlight kind, default is [text](#DocumentHighlightKind.Text).
+		 * The highlight kind, defAult is [text](#DocumentHighlightKind.Text).
 		 */
 		kind?: DocumentHighlightKind;
 
 		/**
-		 * Creates a new document highlight object.
+		 * CreAtes A new document highlight object.
 		 *
-		 * @param range The range the highlight applies to.
-		 * @param kind The highlight kind, default is [text](#DocumentHighlightKind.Text).
+		 * @pArAm rAnge The rAnge the highlight Applies to.
+		 * @pArAm kind The highlight kind, defAult is [text](#DocumentHighlightKind.Text).
 		 */
-		constructor(range: Range, kind?: DocumentHighlightKind);
+		constructor(rAnge: RAnge, kind?: DocumentHighlightKind);
 	}
 
 	/**
-	 * The document highlight provider interface defines the contract between extensions and
-	 * the word-highlight-feature.
+	 * The document highlight provider interfAce defines the contrAct between extensions And
+	 * the word-highlight-feAture.
 	 */
-	export interface DocumentHighlightProvider {
+	export interfAce DocumentHighlightProvider {
 
 		/**
-		 * Provide a set of document highlights, like all occurrences of a variable or
-		 * all exit-points of a function.
+		 * Provide A set of document highlights, like All occurrences of A vAriAble or
+		 * All exit-points of A function.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return An array of document highlights or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of document highlights or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideDocumentHighlights(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<DocumentHighlight[]>;
+		provideDocumentHighlights(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<DocumentHighlight[]>;
 	}
 
 	/**
@@ -2706,58 +2706,58 @@ declare module 'vscode' {
 	export enum SymbolKind {
 		File = 0,
 		Module = 1,
-		Namespace = 2,
-		Package = 3,
-		Class = 4,
+		NAmespAce = 2,
+		PAckAge = 3,
+		ClAss = 4,
 		Method = 5,
 		Property = 6,
 		Field = 7,
 		Constructor = 8,
 		Enum = 9,
-		Interface = 10,
+		InterfAce = 10,
 		Function = 11,
-		Variable = 12,
-		Constant = 13,
+		VAriAble = 12,
+		ConstAnt = 13,
 		String = 14,
 		Number = 15,
-		Boolean = 16,
-		Array = 17,
+		BooleAn = 16,
+		ArrAy = 17,
 		Object = 18,
 		Key = 19,
 		Null = 20,
 		EnumMember = 21,
 		Struct = 22,
 		Event = 23,
-		Operator = 24,
-		TypeParameter = 25
+		OperAtor = 24,
+		TypePArAmeter = 25
 	}
 
 	/**
-	 * Symbol tags are extra annotations that tweak the rendering of a symbol.
+	 * Symbol tAgs Are extrA AnnotAtions thAt tweAk the rendering of A symbol.
 	 */
-	export enum SymbolTag {
+	export enum SymbolTAg {
 
 		/**
-		 * Render a symbol as obsolete, usually using a strike-out.
+		 * Render A symbol As obsolete, usuAlly using A strike-out.
 		 */
-		Deprecated = 1
+		DeprecAted = 1
 	}
 
 	/**
-	 * Represents information about programming constructs like variables, classes,
-	 * interfaces etc.
+	 * Represents informAtion About progrAmming constructs like vAriAbles, clAsses,
+	 * interfAces etc.
 	 */
-	export class SymbolInformation {
+	export clAss SymbolInformAtion {
 
 		/**
-		 * The name of this symbol.
+		 * The nAme of this symbol.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * The name of the symbol containing this symbol.
+		 * The nAme of the symbol contAining this symbol.
 		 */
-		containerName: string;
+		contAinerNAme: string;
 
 		/**
 		 * The kind of this symbol.
@@ -2765,55 +2765,55 @@ declare module 'vscode' {
 		kind: SymbolKind;
 
 		/**
-		 * Tags for this symbol.
+		 * TAgs for this symbol.
 		 */
-		tags?: ReadonlyArray<SymbolTag>;
+		tAgs?: ReAdonlyArrAy<SymbolTAg>;
 
 		/**
-		 * The location of this symbol.
+		 * The locAtion of this symbol.
 		 */
-		location: Location;
+		locAtion: LocAtion;
 
 		/**
-		 * Creates a new symbol information object.
+		 * CreAtes A new symbol informAtion object.
 		 *
-		 * @param name The name of the symbol.
-		 * @param kind The kind of the symbol.
-		 * @param containerName The name of the symbol containing the symbol.
-		 * @param location The location of the symbol.
+		 * @pArAm nAme The nAme of the symbol.
+		 * @pArAm kind The kind of the symbol.
+		 * @pArAm contAinerNAme The nAme of the symbol contAining the symbol.
+		 * @pArAm locAtion The locAtion of the symbol.
 		 */
-		constructor(name: string, kind: SymbolKind, containerName: string, location: Location);
+		constructor(nAme: string, kind: SymbolKind, contAinerNAme: string, locAtion: LocAtion);
 
 		/**
-		 * Creates a new symbol information object.
+		 * CreAtes A new symbol informAtion object.
 		 *
-		 * @deprecated Please use the constructor taking a [location](#Location) object.
+		 * @deprecAted PleAse use the constructor tAking A [locAtion](#LocAtion) object.
 		 *
-		 * @param name The name of the symbol.
-		 * @param kind The kind of the symbol.
-		 * @param range The range of the location of the symbol.
-		 * @param uri The resource of the location of symbol, defaults to the current document.
-		 * @param containerName The name of the symbol containing the symbol.
+		 * @pArAm nAme The nAme of the symbol.
+		 * @pArAm kind The kind of the symbol.
+		 * @pArAm rAnge The rAnge of the locAtion of the symbol.
+		 * @pArAm uri The resource of the locAtion of symbol, defAults to the current document.
+		 * @pArAm contAinerNAme The nAme of the symbol contAining the symbol.
 		 */
-		constructor(name: string, kind: SymbolKind, range: Range, uri?: Uri, containerName?: string);
+		constructor(nAme: string, kind: SymbolKind, rAnge: RAnge, uri?: Uri, contAinerNAme?: string);
 	}
 
 	/**
-	 * Represents programming constructs like variables, classes, interfaces etc. that appear in a document. Document
-	 * symbols can be hierarchical and they have two ranges: one that encloses its definition and one that points to
-	 * its most interesting range, e.g. the range of an identifier.
+	 * Represents progrAmming constructs like vAriAbles, clAsses, interfAces etc. thAt AppeAr in A document. Document
+	 * symbols cAn be hierArchicAl And they hAve two rAnges: one thAt encloses its definition And one thAt points to
+	 * its most interesting rAnge, e.g. the rAnge of An identifier.
 	 */
-	export class DocumentSymbol {
+	export clAss DocumentSymbol {
 
 		/**
-		 * The name of this symbol.
+		 * The nAme of this symbol.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * More detail for this symbol, e.g. the signature of a function.
+		 * More detAil for this symbol, e.g. the signAture of A function.
 		 */
-		detail: string;
+		detAil: string;
 
 		/**
 		 * The kind of this symbol.
@@ -2821,180 +2821,180 @@ declare module 'vscode' {
 		kind: SymbolKind;
 
 		/**
-		 * Tags for this symbol.
+		 * TAgs for this symbol.
 		 */
-		tags?: ReadonlyArray<SymbolTag>;
+		tAgs?: ReAdonlyArrAy<SymbolTAg>;
 
 		/**
-		 * The range enclosing this symbol not including leading/trailing whitespace but everything else, e.g. comments and code.
+		 * The rAnge enclosing this symbol not including leAding/trAiling whitespAce but everything else, e.g. comments And code.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The range that should be selected and reveal when this symbol is being picked, e.g. the name of a function.
-		 * Must be contained by the [`range`](#DocumentSymbol.range).
+		 * The rAnge thAt should be selected And reveAl when this symbol is being picked, e.g. the nAme of A function.
+		 * Must be contAined by the [`rAnge`](#DocumentSymbol.rAnge).
 		 */
-		selectionRange: Range;
+		selectionRAnge: RAnge;
 
 		/**
-		 * Children of this symbol, e.g. properties of a class.
+		 * Children of this symbol, e.g. properties of A clAss.
 		 */
 		children: DocumentSymbol[];
 
 		/**
-		 * Creates a new document symbol.
+		 * CreAtes A new document symbol.
 		 *
-		 * @param name The name of the symbol.
-		 * @param detail Details for the symbol.
-		 * @param kind The kind of the symbol.
-		 * @param range The full range of the symbol.
-		 * @param selectionRange The range that should be reveal.
+		 * @pArAm nAme The nAme of the symbol.
+		 * @pArAm detAil DetAils for the symbol.
+		 * @pArAm kind The kind of the symbol.
+		 * @pArAm rAnge The full rAnge of the symbol.
+		 * @pArAm selectionRAnge The rAnge thAt should be reveAl.
 		 */
-		constructor(name: string, detail: string, kind: SymbolKind, range: Range, selectionRange: Range);
+		constructor(nAme: string, detAil: string, kind: SymbolKind, rAnge: RAnge, selectionRAnge: RAnge);
 	}
 
 	/**
-	 * The document symbol provider interface defines the contract between extensions and
-	 * the [go to symbol](https://code.visualstudio.com/docs/editor/editingevolved#_go-to-symbol)-feature.
+	 * The document symbol provider interfAce defines the contrAct between extensions And
+	 * the [go to symbol](https://code.visuAlstudio.com/docs/editor/editingevolved#_go-to-symbol)-feAture.
 	 */
-	export interface DocumentSymbolProvider {
+	export interfAce DocumentSymbolProvider {
 
 		/**
-		 * Provide symbol information for the given document.
+		 * Provide symbol informAtion for the given document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return An array of document highlights or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of document highlights or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideDocumentSymbols(document: TextDocument, token: CancellationToken): ProviderResult<SymbolInformation[] | DocumentSymbol[]>;
+		provideDocumentSymbols(document: TextDocument, token: CAncellAtionToken): ProviderResult<SymbolInformAtion[] | DocumentSymbol[]>;
 	}
 
 	/**
-	 * Metadata about a document symbol provider.
+	 * MetAdAtA About A document symbol provider.
 	 */
-	export interface DocumentSymbolProviderMetadata {
+	export interfAce DocumentSymbolProviderMetAdAtA {
 		/**
-		 * A human-readable string that is shown when multiple outlines trees show for one document.
+		 * A humAn-reAdAble string thAt is shown when multiple outlines trees show for one document.
 		 */
-		label?: string;
+		lAbel?: string;
 	}
 
 	/**
-	 * The workspace symbol provider interface defines the contract between extensions and
-	 * the [symbol search](https://code.visualstudio.com/docs/editor/editingevolved#_open-symbol-by-name)-feature.
+	 * The workspAce symbol provider interfAce defines the contrAct between extensions And
+	 * the [symbol seArch](https://code.visuAlstudio.com/docs/editor/editingevolved#_open-symbol-by-nAme)-feAture.
 	 */
-	export interface WorkspaceSymbolProvider<T extends SymbolInformation = SymbolInformation> {
+	export interfAce WorkspAceSymbolProvider<T extends SymbolInformAtion = SymbolInformAtion> {
 
 		/**
-		 * Project-wide search for a symbol matching the given query string.
+		 * Project-wide seArch for A symbol mAtching the given query string.
 		 *
-		 * The `query`-parameter should be interpreted in a *relaxed way* as the editor will apply its own highlighting
-		 * and scoring on the results. A good rule of thumb is to match case-insensitive and to simply check that the
-		 * characters of *query* appear in their order in a candidate symbol. Don't use prefix, substring, or similar
-		 * strict matching.
+		 * The `query`-pArAmeter should be interpreted in A *relAxed wAy* As the editor will Apply its own highlighting
+		 * And scoring on the results. A good rule of thumb is to mAtch cAse-insensitive And to simply check thAt the
+		 * chArActers of *query* AppeAr in their order in A cAndidAte symbol. Don't use prefix, substring, or similAr
+		 * strict mAtching.
 		 *
-		 * To improve performance implementors can implement `resolveWorkspaceSymbol` and then provide symbols with partial
-		 * [location](#SymbolInformation.location)-objects, without a `range` defined. The editor will then call
-		 * `resolveWorkspaceSymbol` for selected symbols only, e.g. when opening a workspace symbol.
+		 * To improve performAnce implementors cAn implement `resolveWorkspAceSymbol` And then provide symbols with pArtiAl
+		 * [locAtion](#SymbolInformAtion.locAtion)-objects, without A `rAnge` defined. The editor will then cAll
+		 * `resolveWorkspAceSymbol` for selected symbols only, e.g. when opening A workspAce symbol.
 		 *
-		 * @param query A query string, can be the empty string in which case all symbols should be returned.
-		 * @param token A cancellation token.
-		 * @return An array of document highlights or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm query A query string, cAn be the empty string in which cAse All symbols should be returned.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of document highlights or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideWorkspaceSymbols(query: string, token: CancellationToken): ProviderResult<T[]>;
+		provideWorkspAceSymbols(query: string, token: CAncellAtionToken): ProviderResult<T[]>;
 
 		/**
-		 * Given a symbol fill in its [location](#SymbolInformation.location). This method is called whenever a symbol
-		 * is selected in the UI. Providers can implement this method and return incomplete symbols from
-		 * [`provideWorkspaceSymbols`](#WorkspaceSymbolProvider.provideWorkspaceSymbols) which often helps to improve
-		 * performance.
+		 * Given A symbol fill in its [locAtion](#SymbolInformAtion.locAtion). This method is cAlled whenever A symbol
+		 * is selected in the UI. Providers cAn implement this method And return incomplete symbols from
+		 * [`provideWorkspAceSymbols`](#WorkspAceSymbolProvider.provideWorkspAceSymbols) which often helps to improve
+		 * performAnce.
 		 *
-		 * @param symbol The symbol that is to be resolved. Guaranteed to be an instance of an object returned from an
-		 * earlier call to `provideWorkspaceSymbols`.
-		 * @param token A cancellation token.
-		 * @return The resolved symbol or a thenable that resolves to that. When no result is returned,
+		 * @pArAm symbol The symbol thAt is to be resolved. GuArAnteed to be An instAnce of An object returned from An
+		 * eArlier cAll to `provideWorkspAceSymbols`.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The resolved symbol or A thenAble thAt resolves to thAt. When no result is returned,
 		 * the given `symbol` is used.
 		 */
-		resolveWorkspaceSymbol?(symbol: T, token: CancellationToken): ProviderResult<T>;
+		resolveWorkspAceSymbol?(symbol: T, token: CAncellAtionToken): ProviderResult<T>;
 	}
 
 	/**
-	 * Value-object that contains additional information when
+	 * VAlue-object thAt contAins AdditionAl informAtion when
 	 * requesting references.
 	 */
-	export interface ReferenceContext {
+	export interfAce ReferenceContext {
 
 		/**
-		 * Include the declaration of the current symbol.
+		 * Include the declArAtion of the current symbol.
 		 */
-		includeDeclaration: boolean;
+		includeDeclArAtion: booleAn;
 	}
 
 	/**
-	 * The reference provider interface defines the contract between extensions and
-	 * the [find references](https://code.visualstudio.com/docs/editor/editingevolved#_peek)-feature.
+	 * The reference provider interfAce defines the contrAct between extensions And
+	 * the [find references](https://code.visuAlstudio.com/docs/editor/editingevolved#_peek)-feAture.
 	 */
-	export interface ReferenceProvider {
+	export interfAce ReferenceProvider {
 
 		/**
-		 * Provide a set of project-wide references for the given position and document.
+		 * Provide A set of project-wide references for the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
 		 *
-		 * @return An array of locations or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @return An ArrAy of locAtions or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideReferences(document: TextDocument, position: Position, context: ReferenceContext, token: CancellationToken): ProviderResult<Location[]>;
+		provideReferences(document: TextDocument, position: Position, context: ReferenceContext, token: CAncellAtionToken): ProviderResult<LocAtion[]>;
 	}
 
 	/**
-	 * A text edit represents edits that should be applied
-	 * to a document.
+	 * A text edit represents edits thAt should be Applied
+	 * to A document.
 	 */
-	export class TextEdit {
+	export clAss TextEdit {
 
 		/**
-		 * Utility to create a replace edit.
+		 * Utility to creAte A replAce edit.
 		 *
-		 * @param range A range.
-		 * @param newText A string.
+		 * @pArAm rAnge A rAnge.
+		 * @pArAm newText A string.
 		 * @return A new text edit object.
 		 */
-		static replace(range: Range, newText: string): TextEdit;
+		stAtic replAce(rAnge: RAnge, newText: string): TextEdit;
 
 		/**
-		 * Utility to create an insert edit.
+		 * Utility to creAte An insert edit.
 		 *
-		 * @param position A position, will become an empty range.
-		 * @param newText A string.
+		 * @pArAm position A position, will become An empty rAnge.
+		 * @pArAm newText A string.
 		 * @return A new text edit object.
 		 */
-		static insert(position: Position, newText: string): TextEdit;
+		stAtic insert(position: Position, newText: string): TextEdit;
 
 		/**
-		 * Utility to create a delete edit.
+		 * Utility to creAte A delete edit.
 		 *
-		 * @param range A range.
+		 * @pArAm rAnge A rAnge.
 		 * @return A new text edit object.
 		 */
-		static delete(range: Range): TextEdit;
+		stAtic delete(rAnge: RAnge): TextEdit;
 
 		/**
-		 * Utility to create an eol-edit.
+		 * Utility to creAte An eol-edit.
 		 *
-		 * @param eol An eol-sequence
+		 * @pArAm eol An eol-sequence
 		 * @return A new text edit object.
 		 */
-		static setEndOfLine(eol: EndOfLine): TextEdit;
+		stAtic setEndOfLine(eol: EndOfLine): TextEdit;
 
 		/**
-		 * The range this edit applies to.
+		 * The rAnge this edit Applies to.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
 		 * The string this edit will insert.
@@ -3004,758 +3004,758 @@ declare module 'vscode' {
 		/**
 		 * The eol-sequence used in the document.
 		 *
-		 * *Note* that the eol-sequence will be applied to the
+		 * *Note* thAt the eol-sequence will be Applied to the
 		 * whole document.
 		 */
 		newEol?: EndOfLine;
 
 		/**
-		 * Create a new TextEdit.
+		 * CreAte A new TextEdit.
 		 *
-		 * @param range A range.
-		 * @param newText A string.
+		 * @pArAm rAnge A rAnge.
+		 * @pArAm newText A string.
 		 */
-		constructor(range: Range, newText: string);
+		constructor(rAnge: RAnge, newText: string);
 	}
 
 	/**
-	 * Additional data for entries of a workspace edit. Supports to label entries and marks entries
-	 * as needing confirmation by the user. The editor groups edits with equal labels into tree nodes,
-	 * for instance all edits labelled with "Changes in Strings" would be a tree node.
+	 * AdditionAl dAtA for entries of A workspAce edit. Supports to lAbel entries And mArks entries
+	 * As needing confirmAtion by the user. The editor groups edits with equAl lAbels into tree nodes,
+	 * for instAnce All edits lAbelled with "ChAnges in Strings" would be A tree node.
 	 */
-	export interface WorkspaceEditEntryMetadata {
+	export interfAce WorkspAceEditEntryMetAdAtA {
 
 		/**
-		 * A flag which indicates that user confirmation is needed.
+		 * A flAg which indicAtes thAt user confirmAtion is needed.
 		 */
-		needsConfirmation: boolean;
+		needsConfirmAtion: booleAn;
 
 		/**
-		 * A human-readable string which is rendered prominent.
+		 * A humAn-reAdAble string which is rendered prominent.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * A human-readable string which is rendered less prominent on the same line.
+		 * A humAn-reAdAble string which is rendered less prominent on the sAme line.
 		 */
 		description?: string;
 
 		/**
-		 * The icon path or [ThemeIcon](#ThemeIcon) for the edit.
+		 * The icon pAth or [ThemeIcon](#ThemeIcon) for the edit.
 		 */
-		iconPath?: Uri | { light: Uri; dark: Uri } | ThemeIcon;
+		iconPAth?: Uri | { light: Uri; dArk: Uri } | ThemeIcon;
 	}
 
 	/**
-	 * A workspace edit is a collection of textual and files changes for
-	 * multiple resources and documents.
+	 * A workspAce edit is A collection of textuAl And files chAnges for
+	 * multiple resources And documents.
 	 *
-	 * Use the [applyEdit](#workspace.applyEdit)-function to apply a workspace edit.
+	 * Use the [ApplyEdit](#workspAce.ApplyEdit)-function to Apply A workspAce edit.
 	 */
-	export class WorkspaceEdit {
+	export clAss WorkspAceEdit {
 
 		/**
-		 * The number of affected resources of textual or resource changes.
+		 * The number of Affected resources of textuAl or resource chAnges.
 		 */
-		readonly size: number;
+		reAdonly size: number;
 
 		/**
-		 * Replace the given range with given text for the given resource.
+		 * ReplAce the given rAnge with given text for the given resource.
 		 *
-		 * @param uri A resource identifier.
-		 * @param range A range.
-		 * @param newText A string.
-		 * @param metadata Optional metadata for the entry.
+		 * @pArAm uri A resource identifier.
+		 * @pArAm rAnge A rAnge.
+		 * @pArAm newText A string.
+		 * @pArAm metAdAtA OptionAl metAdAtA for the entry.
 		 */
-		replace(uri: Uri, range: Range, newText: string, metadata?: WorkspaceEditEntryMetadata): void;
+		replAce(uri: Uri, rAnge: RAnge, newText: string, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 
 		/**
-		 * Insert the given text at the given position.
+		 * Insert the given text At the given position.
 		 *
-		 * @param uri A resource identifier.
-		 * @param position A position.
-		 * @param newText A string.
-		 * @param metadata Optional metadata for the entry.
+		 * @pArAm uri A resource identifier.
+		 * @pArAm position A position.
+		 * @pArAm newText A string.
+		 * @pArAm metAdAtA OptionAl metAdAtA for the entry.
 		 */
-		insert(uri: Uri, position: Position, newText: string, metadata?: WorkspaceEditEntryMetadata): void;
+		insert(uri: Uri, position: Position, newText: string, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 
 		/**
-		 * Delete the text at the given range.
+		 * Delete the text At the given rAnge.
 		 *
-		 * @param uri A resource identifier.
-		 * @param range A range.
-		 * @param metadata Optional metadata for the entry.
+		 * @pArAm uri A resource identifier.
+		 * @pArAm rAnge A rAnge.
+		 * @pArAm metAdAtA OptionAl metAdAtA for the entry.
 		 */
-		delete(uri: Uri, range: Range, metadata?: WorkspaceEditEntryMetadata): void;
+		delete(uri: Uri, rAnge: RAnge, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 
 		/**
-		 * Check if a text edit for a resource exists.
+		 * Check if A text edit for A resource exists.
 		 *
-		 * @param uri A resource identifier.
+		 * @pArAm uri A resource identifier.
 		 * @return `true` if the given resource will be touched by this edit.
 		 */
-		has(uri: Uri): boolean;
+		hAs(uri: Uri): booleAn;
 
 		/**
-		 * Set (and replace) text edits for a resource.
+		 * Set (And replAce) text edits for A resource.
 		 *
-		 * @param uri A resource identifier.
-		 * @param edits An array of text edits.
+		 * @pArAm uri A resource identifier.
+		 * @pArAm edits An ArrAy of text edits.
 		 */
 		set(uri: Uri, edits: TextEdit[]): void;
 
 		/**
-		 * Get the text edits for a resource.
+		 * Get the text edits for A resource.
 		 *
-		 * @param uri A resource identifier.
-		 * @return An array of text edits.
+		 * @pArAm uri A resource identifier.
+		 * @return An ArrAy of text edits.
 		 */
 		get(uri: Uri): TextEdit[];
 
 		/**
-		 * Create a regular file.
+		 * CreAte A regulAr file.
 		 *
-		 * @param uri Uri of the new file..
-		 * @param options Defines if an existing file should be overwritten or be
-		 * ignored. When overwrite and ignoreIfExists are both set overwrite wins.
-		 * When both are unset and when the file already exists then the edit cannot
-		 * be applied successfully.
-		 * @param metadata Optional metadata for the entry.
+		 * @pArAm uri Uri of the new file..
+		 * @pArAm options Defines if An existing file should be overwritten or be
+		 * ignored. When overwrite And ignoreIfExists Are both set overwrite wins.
+		 * When both Are unset And when the file AlreAdy exists then the edit cAnnot
+		 * be Applied successfully.
+		 * @pArAm metAdAtA OptionAl metAdAtA for the entry.
 		 */
-		createFile(uri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
+		creAteFile(uri: Uri, options?: { overwrite?: booleAn, ignoreIfExists?: booleAn }, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 
 		/**
-		 * Delete a file or folder.
+		 * Delete A file or folder.
 		 *
-		 * @param uri The uri of the file that is to be deleted.
-		 * @param metadata Optional metadata for the entry.
+		 * @pArAm uri The uri of the file thAt is to be deleted.
+		 * @pArAm metAdAtA OptionAl metAdAtA for the entry.
 		 */
-		deleteFile(uri: Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
+		deleteFile(uri: Uri, options?: { recursive?: booleAn, ignoreIfNotExists?: booleAn }, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 
 		/**
-		 * Rename a file or folder.
+		 * RenAme A file or folder.
 		 *
-		 * @param oldUri The existing file.
-		 * @param newUri The new location.
-		 * @param options Defines if existing files should be overwritten or be
-		 * ignored. When overwrite and ignoreIfExists are both set overwrite wins.
-		 * @param metadata Optional metadata for the entry.
+		 * @pArAm oldUri The existing file.
+		 * @pArAm newUri The new locAtion.
+		 * @pArAm options Defines if existing files should be overwritten or be
+		 * ignored. When overwrite And ignoreIfExists Are both set overwrite wins.
+		 * @pArAm metAdAtA OptionAl metAdAtA for the entry.
 		 */
-		renameFile(oldUri: Uri, newUri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
+		renAmeFile(oldUri: Uri, newUri: Uri, options?: { overwrite?: booleAn, ignoreIfExists?: booleAn }, metAdAtA?: WorkspAceEditEntryMetAdAtA): void;
 
 		/**
-		 * Get all text edits grouped by resource.
+		 * Get All text edits grouped by resource.
 		 *
-		 * @return A shallow copy of `[Uri, TextEdit[]]`-tuples.
+		 * @return A shAllow copy of `[Uri, TextEdit[]]`-tuples.
 		 */
 		entries(): [Uri, TextEdit[]][];
 	}
 
 	/**
-	 * A snippet string is a template which allows to insert text
-	 * and to control the editor cursor when insertion happens.
+	 * A snippet string is A templAte which Allows to insert text
+	 * And to control the editor cursor when insertion hAppens.
 	 *
-	 * A snippet can define tab stops and placeholders with `$1`, `$2`
-	 * and `${3:foo}`. `$0` defines the final tab stop, it defaults to
-	 * the end of the snippet. Variables are defined with `$name` and
-	 * `${name:default value}`. The full snippet syntax is documented
-	 * [here](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_creating-your-own-snippets).
+	 * A snippet cAn define tAb stops And plAceholders with `$1`, `$2`
+	 * And `${3:foo}`. `$0` defines the finAl tAb stop, it defAults to
+	 * the end of the snippet. VAriAbles Are defined with `$nAme` And
+	 * `${nAme:defAult vAlue}`. The full snippet syntAx is documented
+	 * [here](https://code.visuAlstudio.com/docs/editor/userdefinedsnippets#_creAting-your-own-snippets).
 	 */
-	export class SnippetString {
+	export clAss SnippetString {
 
 		/**
 		 * The snippet string.
 		 */
-		value: string;
+		vAlue: string;
 
-		constructor(value?: string);
-
-		/**
-		 * Builder-function that appends the given string to
-		 * the [`value`](#SnippetString.value) of this snippet string.
-		 *
-		 * @param string A value to append 'as given'. The string will be escaped.
-		 * @return This snippet string.
-		 */
-		appendText(string: string): SnippetString;
+		constructor(vAlue?: string);
 
 		/**
-		 * Builder-function that appends a tabstop (`$1`, `$2` etc) to
-		 * the [`value`](#SnippetString.value) of this snippet string.
+		 * Builder-function thAt Appends the given string to
+		 * the [`vAlue`](#SnippetString.vAlue) of this snippet string.
 		 *
-		 * @param number The number of this tabstop, defaults to an auto-increment
-		 * value starting at 1.
+		 * @pArAm string A vAlue to Append 'As given'. The string will be escAped.
 		 * @return This snippet string.
 		 */
-		appendTabstop(number?: number): SnippetString;
+		AppendText(string: string): SnippetString;
 
 		/**
-		 * Builder-function that appends a placeholder (`${1:value}`) to
-		 * the [`value`](#SnippetString.value) of this snippet string.
+		 * Builder-function thAt Appends A tAbstop (`$1`, `$2` etc) to
+		 * the [`vAlue`](#SnippetString.vAlue) of this snippet string.
 		 *
-		 * @param value The value of this placeholder - either a string or a function
-		 * with which a nested snippet can be created.
-		 * @param number The number of this tabstop, defaults to an auto-increment
-		 * value starting at 1.
+		 * @pArAm number The number of this tAbstop, defAults to An Auto-increment
+		 * vAlue stArting At 1.
 		 * @return This snippet string.
 		 */
-		appendPlaceholder(value: string | ((snippet: SnippetString) => any), number?: number): SnippetString;
+		AppendTAbstop(number?: number): SnippetString;
 
 		/**
-		 * Builder-function that appends a choice (`${1|a,b,c}`) to
-		 * the [`value`](#SnippetString.value) of this snippet string.
+		 * Builder-function thAt Appends A plAceholder (`${1:vAlue}`) to
+		 * the [`vAlue`](#SnippetString.vAlue) of this snippet string.
 		 *
-		 * @param values The values for choices - the array of strings
-		 * @param number The number of this tabstop, defaults to an auto-increment
-		 * value starting at 1.
+		 * @pArAm vAlue The vAlue of this plAceholder - either A string or A function
+		 * with which A nested snippet cAn be creAted.
+		 * @pArAm number The number of this tAbstop, defAults to An Auto-increment
+		 * vAlue stArting At 1.
 		 * @return This snippet string.
 		 */
-		appendChoice(values: string[], number?: number): SnippetString;
+		AppendPlAceholder(vAlue: string | ((snippet: SnippetString) => Any), number?: number): SnippetString;
 
 		/**
-		 * Builder-function that appends a variable (`${VAR}`) to
-		 * the [`value`](#SnippetString.value) of this snippet string.
+		 * Builder-function thAt Appends A choice (`${1|A,b,c}`) to
+		 * the [`vAlue`](#SnippetString.vAlue) of this snippet string.
 		 *
-		 * @param name The name of the variable - excluding the `$`.
-		 * @param defaultValue The default value which is used when the variable name cannot
-		 * be resolved - either a string or a function with which a nested snippet can be created.
+		 * @pArAm vAlues The vAlues for choices - the ArrAy of strings
+		 * @pArAm number The number of this tAbstop, defAults to An Auto-increment
+		 * vAlue stArting At 1.
 		 * @return This snippet string.
 		 */
-		appendVariable(name: string, defaultValue: string | ((snippet: SnippetString) => any)): SnippetString;
+		AppendChoice(vAlues: string[], number?: number): SnippetString;
+
+		/**
+		 * Builder-function thAt Appends A vAriAble (`${VAR}`) to
+		 * the [`vAlue`](#SnippetString.vAlue) of this snippet string.
+		 *
+		 * @pArAm nAme The nAme of the vAriAble - excluding the `$`.
+		 * @pArAm defAultVAlue The defAult vAlue which is used when the vAriAble nAme cAnnot
+		 * be resolved - either A string or A function with which A nested snippet cAn be creAted.
+		 * @return This snippet string.
+		 */
+		AppendVAriAble(nAme: string, defAultVAlue: string | ((snippet: SnippetString) => Any)): SnippetString;
 	}
 
 	/**
-	 * The rename provider interface defines the contract between extensions and
-	 * the [rename](https://code.visualstudio.com/docs/editor/editingevolved#_rename-symbol)-feature.
+	 * The renAme provider interfAce defines the contrAct between extensions And
+	 * the [renAme](https://code.visuAlstudio.com/docs/editor/editingevolved#_renAme-symbol)-feAture.
 	 */
-	export interface RenameProvider {
+	export interfAce RenAmeProvider {
 
 		/**
-		 * Provide an edit that describes changes that have to be made to one
-		 * or many resources to rename a symbol to a different name.
+		 * Provide An edit thAt describes chAnges thAt hAve to be mAde to one
+		 * or mAny resources to renAme A symbol to A different nAme.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param newName The new name of the symbol. If the given name is not valid, the provider must return a rejected promise.
-		 * @param token A cancellation token.
-		 * @return A workspace edit or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm newNAme The new nAme of the symbol. If the given nAme is not vAlid, the provider must return A rejected promise.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A workspAce edit or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideRenameEdits(document: TextDocument, position: Position, newName: string, token: CancellationToken): ProviderResult<WorkspaceEdit>;
+		provideRenAmeEdits(document: TextDocument, position: Position, newNAme: string, token: CAncellAtionToken): ProviderResult<WorkspAceEdit>;
 
 		/**
-		 * Optional function for resolving and validating a position *before* running rename. The result can
-		 * be a range or a range and a placeholder text. The placeholder text should be the identifier of the symbol
-		 * which is being renamed - when omitted the text in the returned range is used.
+		 * OptionAl function for resolving And vAlidAting A position *before* running renAme. The result cAn
+		 * be A rAnge or A rAnge And A plAceholder text. The plAceholder text should be the identifier of the symbol
+		 * which is being renAmed - when omitted the text in the returned rAnge is used.
 		 *
-		 * *Note: * This function should throw an error or return a rejected thenable when the provided location
-		 * doesn't allow for a rename.
+		 * *Note: * This function should throw An error or return A rejected thenAble when the provided locAtion
+		 * doesn't Allow for A renAme.
 		 *
-		 * @param document The document in which rename will be invoked.
-		 * @param position The position at which rename will be invoked.
-		 * @param token A cancellation token.
-		 * @return The range or range and placeholder text of the identifier that is to be renamed. The lack of a result can signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which renAme will be invoked.
+		 * @pArAm position The position At which renAme will be invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The rAnge or rAnge And plAceholder text of the identifier thAt is to be renAmed. The lAck of A result cAn signAled by returning `undefined` or `null`.
 		 */
-		prepareRename?(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range | { range: Range, placeholder: string }>;
+		prepAreRenAme?(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<RAnge | { rAnge: RAnge, plAceholder: string }>;
 	}
 
 	/**
-	 * A semantic tokens legend contains the needed information to decipher
-	 * the integer encoded representation of semantic tokens.
+	 * A semAntic tokens legend contAins the needed informAtion to decipher
+	 * the integer encoded representAtion of semAntic tokens.
 	 */
-	export class SemanticTokensLegend {
+	export clAss SemAnticTokensLegend {
 		/**
 		 * The possible token types.
 		 */
-		readonly tokenTypes: string[];
+		reAdonly tokenTypes: string[];
 		/**
 		 * The possible token modifiers.
 		 */
-		readonly tokenModifiers: string[];
+		reAdonly tokenModifiers: string[];
 
 		constructor(tokenTypes: string[], tokenModifiers?: string[]);
 	}
 
 	/**
-	 * A semantic tokens builder can help with creating a `SemanticTokens` instance
-	 * which contains delta encoded semantic tokens.
+	 * A semAntic tokens builder cAn help with creAting A `SemAnticTokens` instAnce
+	 * which contAins deltA encoded semAntic tokens.
 	 */
-	export class SemanticTokensBuilder {
+	export clAss SemAnticTokensBuilder {
 
-		constructor(legend?: SemanticTokensLegend);
+		constructor(legend?: SemAnticTokensLegend);
 
 		/**
-		 * Add another token.
+		 * Add Another token.
 		 *
-		 * @param line The token start line number (absolute value).
-		 * @param char The token start character (absolute value).
-		 * @param length The token length in characters.
-		 * @param tokenType The encoded token type.
-		 * @param tokenModifiers The encoded token modifiers.
+		 * @pArAm line The token stArt line number (Absolute vAlue).
+		 * @pArAm chAr The token stArt chArActer (Absolute vAlue).
+		 * @pArAm length The token length in chArActers.
+		 * @pArAm tokenType The encoded token type.
+		 * @pArAm tokenModifiers The encoded token modifiers.
 		 */
-		push(line: number, char: number, length: number, tokenType: number, tokenModifiers?: number): void;
+		push(line: number, chAr: number, length: number, tokenType: number, tokenModifiers?: number): void;
 
 		/**
-		 * Add another token. Use only when providing a legend.
+		 * Add Another token. Use only when providing A legend.
 		 *
-		 * @param range The range of the token. Must be single-line.
-		 * @param tokenType The token type.
-		 * @param tokenModifiers The token modifiers.
+		 * @pArAm rAnge The rAnge of the token. Must be single-line.
+		 * @pArAm tokenType The token type.
+		 * @pArAm tokenModifiers The token modifiers.
 		 */
-		push(range: Range, tokenType: string, tokenModifiers?: string[]): void;
+		push(rAnge: RAnge, tokenType: string, tokenModifiers?: string[]): void;
 
 		/**
-		 * Finish and create a `SemanticTokens` instance.
+		 * Finish And creAte A `SemAnticTokens` instAnce.
 		 */
-		build(resultId?: string): SemanticTokens;
+		build(resultId?: string): SemAnticTokens;
 	}
 
 	/**
-	 * Represents semantic tokens, either in a range or in an entire document.
-	 * @see [provideDocumentSemanticTokens](#DocumentSemanticTokensProvider.provideDocumentSemanticTokens) for an explanation of the format.
-	 * @see [SemanticTokensBuilder](#SemanticTokensBuilder) for a helper to create an instance.
+	 * Represents semAntic tokens, either in A rAnge or in An entire document.
+	 * @see [provideDocumentSemAnticTokens](#DocumentSemAnticTokensProvider.provideDocumentSemAnticTokens) for An explAnAtion of the formAt.
+	 * @see [SemAnticTokensBuilder](#SemAnticTokensBuilder) for A helper to creAte An instAnce.
 	 */
-	export class SemanticTokens {
+	export clAss SemAnticTokens {
 		/**
 		 * The result id of the tokens.
 		 *
-		 * This is the id that will be passed to `DocumentSemanticTokensProvider.provideDocumentSemanticTokensEdits` (if implemented).
+		 * This is the id thAt will be pAssed to `DocumentSemAnticTokensProvider.provideDocumentSemAnticTokensEdits` (if implemented).
 		 */
-		readonly resultId?: string;
+		reAdonly resultId?: string;
 		/**
-		 * The actual tokens data.
-		 * @see [provideDocumentSemanticTokens](#DocumentSemanticTokensProvider.provideDocumentSemanticTokens) for an explanation of the format.
+		 * The ActuAl tokens dAtA.
+		 * @see [provideDocumentSemAnticTokens](#DocumentSemAnticTokensProvider.provideDocumentSemAnticTokens) for An explAnAtion of the formAt.
 		 */
-		readonly data: Uint32Array;
+		reAdonly dAtA: Uint32ArrAy;
 
-		constructor(data: Uint32Array, resultId?: string);
+		constructor(dAtA: Uint32ArrAy, resultId?: string);
 	}
 
 	/**
-	 * Represents edits to semantic tokens.
-	 * @see [provideDocumentSemanticTokensEdits](#DocumentSemanticTokensProvider.provideDocumentSemanticTokensEdits) for an explanation of the format.
+	 * Represents edits to semAntic tokens.
+	 * @see [provideDocumentSemAnticTokensEdits](#DocumentSemAnticTokensProvider.provideDocumentSemAnticTokensEdits) for An explAnAtion of the formAt.
 	 */
-	export class SemanticTokensEdits {
+	export clAss SemAnticTokensEdits {
 		/**
 		 * The result id of the tokens.
 		 *
-		 * This is the id that will be passed to `DocumentSemanticTokensProvider.provideDocumentSemanticTokensEdits` (if implemented).
+		 * This is the id thAt will be pAssed to `DocumentSemAnticTokensProvider.provideDocumentSemAnticTokensEdits` (if implemented).
 		 */
-		readonly resultId?: string;
+		reAdonly resultId?: string;
 		/**
-		 * The edits to the tokens data.
-		 * All edits refer to the initial data state.
+		 * The edits to the tokens dAtA.
+		 * All edits refer to the initiAl dAtA stAte.
 		 */
-		readonly edits: SemanticTokensEdit[];
+		reAdonly edits: SemAnticTokensEdit[];
 
-		constructor(edits: SemanticTokensEdit[], resultId?: string);
+		constructor(edits: SemAnticTokensEdit[], resultId?: string);
 	}
 
 	/**
-	 * Represents an edit to semantic tokens.
-	 * @see [provideDocumentSemanticTokensEdits](#DocumentSemanticTokensProvider.provideDocumentSemanticTokensEdits) for an explanation of the format.
+	 * Represents An edit to semAntic tokens.
+	 * @see [provideDocumentSemAnticTokensEdits](#DocumentSemAnticTokensProvider.provideDocumentSemAnticTokensEdits) for An explAnAtion of the formAt.
 	 */
-	export class SemanticTokensEdit {
+	export clAss SemAnticTokensEdit {
 		/**
-		 * The start offset of the edit.
+		 * The stArt offset of the edit.
 		 */
-		readonly start: number;
+		reAdonly stArt: number;
 		/**
 		 * The count of elements to remove.
 		 */
-		readonly deleteCount: number;
+		reAdonly deleteCount: number;
 		/**
 		 * The elements to insert.
 		 */
-		readonly data?: Uint32Array;
+		reAdonly dAtA?: Uint32ArrAy;
 
-		constructor(start: number, deleteCount: number, data?: Uint32Array);
+		constructor(stArt: number, deleteCount: number, dAtA?: Uint32ArrAy);
 	}
 
 	/**
-	 * The document semantic tokens provider interface defines the contract between extensions and
-	 * semantic tokens.
+	 * The document semAntic tokens provider interfAce defines the contrAct between extensions And
+	 * semAntic tokens.
 	 */
-	export interface DocumentSemanticTokensProvider {
+	export interfAce DocumentSemAnticTokensProvider {
 		/**
-		 * An optional event to signal that the semantic tokens from this provider have changed.
+		 * An optionAl event to signAl thAt the semAntic tokens from this provider hAve chAnged.
 		 */
-		onDidChangeSemanticTokens?: Event<void>;
+		onDidChAngeSemAnticTokens?: Event<void>;
 
 		/**
-		 * Tokens in a file are represented as an array of integers. The position of each token is expressed relative to
-		 * the token before it, because most tokens remain stable relative to each other when edits are made in a file.
+		 * Tokens in A file Are represented As An ArrAy of integers. The position of eAch token is expressed relAtive to
+		 * the token before it, becAuse most tokens remAin stAble relAtive to eAch other when edits Are mAde in A file.
 		 *
 		 * ---
-		 * In short, each token takes 5 integers to represent, so a specific token `i` in the file consists of the following array indices:
-		 *  - at index `5*i`   - `deltaLine`: token line number, relative to the previous token
-		 *  - at index `5*i+1` - `deltaStart`: token start character, relative to the previous token (relative to 0 or the previous token's start if they are on the same line)
-		 *  - at index `5*i+2` - `length`: the length of the token. A token cannot be multiline.
-		 *  - at index `5*i+3` - `tokenType`: will be looked up in `SemanticTokensLegend.tokenTypes`. We currently ask that `tokenType` < 65536.
-		 *  - at index `5*i+4` - `tokenModifiers`: each set bit will be looked up in `SemanticTokensLegend.tokenModifiers`
+		 * In short, eAch token tAkes 5 integers to represent, so A specific token `i` in the file consists of the following ArrAy indices:
+		 *  - At index `5*i`   - `deltALine`: token line number, relAtive to the previous token
+		 *  - At index `5*i+1` - `deltAStArt`: token stArt chArActer, relAtive to the previous token (relAtive to 0 or the previous token's stArt if they Are on the sAme line)
+		 *  - At index `5*i+2` - `length`: the length of the token. A token cAnnot be multiline.
+		 *  - At index `5*i+3` - `tokenType`: will be looked up in `SemAnticTokensLegend.tokenTypes`. We currently Ask thAt `tokenType` < 65536.
+		 *  - At index `5*i+4` - `tokenModifiers`: eAch set bit will be looked up in `SemAnticTokensLegend.tokenModifiers`
 		 *
 		 * ---
 		 * ### How to encode tokens
 		 *
-		 * Here is an example for encoding a file with 3 tokens in a uint32 array:
+		 * Here is An exAmple for encoding A file with 3 tokens in A uint32 ArrAy:
 		 * ```
-		 *    { line: 2, startChar:  5, length: 3, tokenType: "property",  tokenModifiers: ["private", "static"] },
-		 *    { line: 2, startChar: 10, length: 4, tokenType: "type",      tokenModifiers: [] },
-		 *    { line: 5, startChar:  2, length: 7, tokenType: "class",     tokenModifiers: [] }
-		 * ```
-		 *
-		 * 1. First of all, a legend must be devised. This legend must be provided up-front and capture all possible token types.
-		 * For this example, we will choose the following legend which must be passed in when registering the provider:
-		 * ```
-		 *    tokenTypes: ['property', 'type', 'class'],
-		 *    tokenModifiers: ['private', 'static']
+		 *    { line: 2, stArtChAr:  5, length: 3, tokenType: "property",  tokenModifiers: ["privAte", "stAtic"] },
+		 *    { line: 2, stArtChAr: 10, length: 4, tokenType: "type",      tokenModifiers: [] },
+		 *    { line: 5, stArtChAr:  2, length: 7, tokenType: "clAss",     tokenModifiers: [] }
 		 * ```
 		 *
-		 * 2. The first transformation step is to encode `tokenType` and `tokenModifiers` as integers using the legend. Token types are looked
-		 * up by index, so a `tokenType` value of `1` means `tokenTypes[1]`. Multiple token modifiers can be set by using bit flags,
-		 * so a `tokenModifier` value of `3` is first viewed as binary `0b00000011`, which means `[tokenModifiers[0], tokenModifiers[1]]` because
-		 * bits 0 and 1 are set. Using this legend, the tokens now are:
+		 * 1. First of All, A legend must be devised. This legend must be provided up-front And cApture All possible token types.
+		 * For this exAmple, we will choose the following legend which must be pAssed in when registering the provider:
 		 * ```
-		 *    { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-		 *    { line: 2, startChar: 10, length: 4, tokenType: 1, tokenModifiers: 0 },
-		 *    { line: 5, startChar:  2, length: 7, tokenType: 2, tokenModifiers: 0 }
+		 *    tokenTypes: ['property', 'type', 'clAss'],
+		 *    tokenModifiers: ['privAte', 'stAtic']
 		 * ```
 		 *
-		 * 3. The next step is to represent each token relative to the previous token in the file. In this case, the second token
-		 * is on the same line as the first token, so the `startChar` of the second token is made relative to the `startChar`
-		 * of the first token, so it will be `10 - 5`. The third token is on a different line than the second token, so the
-		 * `startChar` of the third token will not be altered:
+		 * 2. The first trAnsformAtion step is to encode `tokenType` And `tokenModifiers` As integers using the legend. Token types Are looked
+		 * up by index, so A `tokenType` vAlue of `1` meAns `tokenTypes[1]`. Multiple token modifiers cAn be set by using bit flAgs,
+		 * so A `tokenModifier` vAlue of `3` is first viewed As binAry `0b00000011`, which meAns `[tokenModifiers[0], tokenModifiers[1]]` becAuse
+		 * bits 0 And 1 Are set. Using this legend, the tokens now Are:
 		 * ```
-		 *    { deltaLine: 2, deltaStartChar: 5, length: 3, tokenType: 0, tokenModifiers: 3 },
-		 *    { deltaLine: 0, deltaStartChar: 5, length: 4, tokenType: 1, tokenModifiers: 0 },
-		 *    { deltaLine: 3, deltaStartChar: 2, length: 7, tokenType: 2, tokenModifiers: 0 }
+		 *    { line: 2, stArtChAr:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+		 *    { line: 2, stArtChAr: 10, length: 4, tokenType: 1, tokenModifiers: 0 },
+		 *    { line: 5, stArtChAr:  2, length: 7, tokenType: 2, tokenModifiers: 0 }
 		 * ```
 		 *
-		 * 4. Finally, the last step is to inline each of the 5 fields for a token in a single array, which is a memory friendly representation:
+		 * 3. The next step is to represent eAch token relAtive to the previous token in the file. In this cAse, the second token
+		 * is on the sAme line As the first token, so the `stArtChAr` of the second token is mAde relAtive to the `stArtChAr`
+		 * of the first token, so it will be `10 - 5`. The third token is on A different line thAn the second token, so the
+		 * `stArtChAr` of the third token will not be Altered:
+		 * ```
+		 *    { deltALine: 2, deltAStArtChAr: 5, length: 3, tokenType: 0, tokenModifiers: 3 },
+		 *    { deltALine: 0, deltAStArtChAr: 5, length: 4, tokenType: 1, tokenModifiers: 0 },
+		 *    { deltALine: 3, deltAStArtChAr: 2, length: 7, tokenType: 2, tokenModifiers: 0 }
+		 * ```
+		 *
+		 * 4. FinAlly, the lAst step is to inline eAch of the 5 fields for A token in A single ArrAy, which is A memory friendly representAtion:
 		 * ```
 		 *    // 1st token,  2nd token,  3rd token
 		 *    [  2,5,3,0,3,  0,5,4,1,0,  3,2,7,2,0 ]
 		 * ```
 		 *
-		 * @see [SemanticTokensBuilder](#SemanticTokensBuilder) for a helper to encode tokens as integers.
-		 * *NOTE*: When doing edits, it is possible that multiple edits occur until VS Code decides to invoke the semantic tokens provider.
-		 * *NOTE*: If the provider cannot temporarily compute semantic tokens, it can indicate this by throwing an error with the message 'Busy'.
+		 * @see [SemAnticTokensBuilder](#SemAnticTokensBuilder) for A helper to encode tokens As integers.
+		 * *NOTE*: When doing edits, it is possible thAt multiple edits occur until VS Code decides to invoke the semAntic tokens provider.
+		 * *NOTE*: If the provider cAnnot temporArily compute semAntic tokens, it cAn indicAte this by throwing An error with the messAge 'Busy'.
 		 */
-		provideDocumentSemanticTokens(document: TextDocument, token: CancellationToken): ProviderResult<SemanticTokens>;
+		provideDocumentSemAnticTokens(document: TextDocument, token: CAncellAtionToken): ProviderResult<SemAnticTokens>;
 
 		/**
-		 * Instead of always returning all the tokens in a file, it is possible for a `DocumentSemanticTokensProvider` to implement
-		 * this method (`provideDocumentSemanticTokensEdits`) and then return incremental updates to the previously provided semantic tokens.
+		 * InsteAd of AlwAys returning All the tokens in A file, it is possible for A `DocumentSemAnticTokensProvider` to implement
+		 * this method (`provideDocumentSemAnticTokensEdits`) And then return incrementAl updAtes to the previously provided semAntic tokens.
 		 *
 		 * ---
-		 * ### How tokens change when the document changes
+		 * ### How tokens chAnge when the document chAnges
 		 *
-		 * Suppose that `provideDocumentSemanticTokens` has previously returned the following semantic tokens:
+		 * Suppose thAt `provideDocumentSemAnticTokens` hAs previously returned the following semAntic tokens:
 		 * ```
 		 *    // 1st token,  2nd token,  3rd token
 		 *    [  2,5,3,0,3,  0,5,4,1,0,  3,2,7,2,0 ]
 		 * ```
 		 *
-		 * Also suppose that after some edits, the new semantic tokens in a file are:
+		 * Also suppose thAt After some edits, the new semAntic tokens in A file Are:
 		 * ```
 		 *    // 1st token,  2nd token,  3rd token
 		 *    [  3,5,3,0,3,  0,5,4,1,0,  3,2,7,2,0 ]
 		 * ```
-		 * It is possible to express these new tokens in terms of an edit applied to the previous tokens:
+		 * It is possible to express these new tokens in terms of An edit Applied to the previous tokens:
 		 * ```
 		 *    [  2,5,3,0,3,  0,5,4,1,0,  3,2,7,2,0 ] // old tokens
 		 *    [  3,5,3,0,3,  0,5,4,1,0,  3,2,7,2,0 ] // new tokens
 		 *
-		 *    edit: { start:  0, deleteCount: 1, data: [3] } // replace integer at offset 0 with 3
+		 *    edit: { stArt:  0, deleteCount: 1, dAtA: [3] } // replAce integer At offset 0 with 3
 		 * ```
 		 *
-		 * *NOTE*: If the provider cannot compute `SemanticTokensEdits`, it can "give up" and return all the tokens in the document again.
-		 * *NOTE*: All edits in `SemanticTokensEdits` contain indices in the old integers array, so they all refer to the previous result state.
+		 * *NOTE*: If the provider cAnnot compute `SemAnticTokensEdits`, it cAn "give up" And return All the tokens in the document AgAin.
+		 * *NOTE*: All edits in `SemAnticTokensEdits` contAin indices in the old integers ArrAy, so they All refer to the previous result stAte.
 		 */
-		provideDocumentSemanticTokensEdits?(document: TextDocument, previousResultId: string, token: CancellationToken): ProviderResult<SemanticTokens | SemanticTokensEdits>;
+		provideDocumentSemAnticTokensEdits?(document: TextDocument, previousResultId: string, token: CAncellAtionToken): ProviderResult<SemAnticTokens | SemAnticTokensEdits>;
 	}
 
 	/**
-	 * The document range semantic tokens provider interface defines the contract between extensions and
-	 * semantic tokens.
+	 * The document rAnge semAntic tokens provider interfAce defines the contrAct between extensions And
+	 * semAntic tokens.
 	 */
-	export interface DocumentRangeSemanticTokensProvider {
+	export interfAce DocumentRAngeSemAnticTokensProvider {
 		/**
-		 * @see [provideDocumentSemanticTokens](#DocumentSemanticTokensProvider.provideDocumentSemanticTokens).
+		 * @see [provideDocumentSemAnticTokens](#DocumentSemAnticTokensProvider.provideDocumentSemAnticTokens).
 		 */
-		provideDocumentRangeSemanticTokens(document: TextDocument, range: Range, token: CancellationToken): ProviderResult<SemanticTokens>;
+		provideDocumentRAngeSemAnticTokens(document: TextDocument, rAnge: RAnge, token: CAncellAtionToken): ProviderResult<SemAnticTokens>;
 	}
 
 	/**
-	 * Value-object describing what options formatting should use.
+	 * VAlue-object describing whAt options formAtting should use.
 	 */
-	export interface FormattingOptions {
+	export interfAce FormAttingOptions {
 
 		/**
-		 * Size of a tab in spaces.
+		 * Size of A tAb in spAces.
 		 */
-		tabSize: number;
+		tAbSize: number;
 
 		/**
-		 * Prefer spaces over tabs.
+		 * Prefer spAces over tAbs.
 		 */
-		insertSpaces: boolean;
+		insertSpAces: booleAn;
 
 		/**
-		 * Signature for further properties.
+		 * SignAture for further properties.
 		 */
-		[key: string]: boolean | number | string;
+		[key: string]: booleAn | number | string;
 	}
 
 	/**
-	 * The document formatting provider interface defines the contract between extensions and
-	 * the formatting-feature.
+	 * The document formAtting provider interfAce defines the contrAct between extensions And
+	 * the formAtting-feAture.
 	 */
-	export interface DocumentFormattingEditProvider {
+	export interfAce DocumentFormAttingEditProvider {
 
 		/**
-		 * Provide formatting edits for a whole document.
+		 * Provide formAtting edits for A whole document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param options Options controlling formatting.
-		 * @param token A cancellation token.
-		 * @return A set of text edits or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm options Options controlling formAtting.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A set of text edits or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideDocumentFormattingEdits(document: TextDocument, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]>;
+		provideDocumentFormAttingEdits(document: TextDocument, options: FormAttingOptions, token: CAncellAtionToken): ProviderResult<TextEdit[]>;
 	}
 
 	/**
-	 * The document formatting provider interface defines the contract between extensions and
-	 * the formatting-feature.
+	 * The document formAtting provider interfAce defines the contrAct between extensions And
+	 * the formAtting-feAture.
 	 */
-	export interface DocumentRangeFormattingEditProvider {
+	export interfAce DocumentRAngeFormAttingEditProvider {
 
 		/**
-		 * Provide formatting edits for a range in a document.
+		 * Provide formAtting edits for A rAnge in A document.
 		 *
-		 * The given range is a hint and providers can decide to format a smaller
-		 * or larger range. Often this is done by adjusting the start and end
-		 * of the range to full syntax nodes.
+		 * The given rAnge is A hint And providers cAn decide to formAt A smAller
+		 * or lArger rAnge. Often this is done by Adjusting the stArt And end
+		 * of the rAnge to full syntAx nodes.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param range The range which should be formatted.
-		 * @param options Options controlling formatting.
-		 * @param token A cancellation token.
-		 * @return A set of text edits or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm rAnge The rAnge which should be formAtted.
+		 * @pArAm options Options controlling formAtting.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A set of text edits or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideDocumentRangeFormattingEdits(document: TextDocument, range: Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]>;
+		provideDocumentRAngeFormAttingEdits(document: TextDocument, rAnge: RAnge, options: FormAttingOptions, token: CAncellAtionToken): ProviderResult<TextEdit[]>;
 	}
 
 	/**
-	 * The document formatting provider interface defines the contract between extensions and
-	 * the formatting-feature.
+	 * The document formAtting provider interfAce defines the contrAct between extensions And
+	 * the formAtting-feAture.
 	 */
-	export interface OnTypeFormattingEditProvider {
+	export interfAce OnTypeFormAttingEditProvider {
 
 		/**
-		 * Provide formatting edits after a character has been typed.
+		 * Provide formAtting edits After A chArActer hAs been typed.
 		 *
-		 * The given position and character should hint to the provider
-		 * what range the position to expand to, like find the matching `{`
-		 * when `}` has been entered.
+		 * The given position And chArActer should hint to the provider
+		 * whAt rAnge the position to expAnd to, like find the mAtching `{`
+		 * when `}` hAs been entered.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param ch The character that has been typed.
-		 * @param options Options controlling formatting.
-		 * @param token A cancellation token.
-		 * @return A set of text edits or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm ch The chArActer thAt hAs been typed.
+		 * @pArAm options Options controlling formAtting.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A set of text edits or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideOnTypeFormattingEdits(document: TextDocument, position: Position, ch: string, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]>;
+		provideOnTypeFormAttingEdits(document: TextDocument, position: Position, ch: string, options: FormAttingOptions, token: CAncellAtionToken): ProviderResult<TextEdit[]>;
 	}
 
 	/**
-	 * Represents a parameter of a callable-signature. A parameter can
-	 * have a label and a doc-comment.
+	 * Represents A pArAmeter of A cAllAble-signAture. A pArAmeter cAn
+	 * hAve A lAbel And A doc-comment.
 	 */
-	export class ParameterInformation {
+	export clAss PArAmeterInformAtion {
 
 		/**
-		 * The label of this signature.
+		 * The lAbel of this signAture.
 		 *
-		 * Either a string or inclusive start and exclusive end offsets within its containing
-		 * [signature label](#SignatureInformation.label). *Note*: A label of type string must be
-		 * a substring of its containing signature information's [label](#SignatureInformation.label).
+		 * Either A string or inclusive stArt And exclusive end offsets within its contAining
+		 * [signAture lAbel](#SignAtureInformAtion.lAbel). *Note*: A lAbel of type string must be
+		 * A substring of its contAining signAture informAtion's [lAbel](#SignAtureInformAtion.lAbel).
 		 */
-		label: string | [number, number];
+		lAbel: string | [number, number];
 
 		/**
-		 * The human-readable doc-comment of this signature. Will be shown
-		 * in the UI but can be omitted.
+		 * The humAn-reAdAble doc-comment of this signAture. Will be shown
+		 * in the UI but cAn be omitted.
 		 */
-		documentation?: string | MarkdownString;
+		documentAtion?: string | MArkdownString;
 
 		/**
-		 * Creates a new parameter information object.
+		 * CreAtes A new pArAmeter informAtion object.
 		 *
-		 * @param label A label string or inclusive start and exclusive end offsets within its containing signature label.
-		 * @param documentation A doc string.
+		 * @pArAm lAbel A lAbel string or inclusive stArt And exclusive end offsets within its contAining signAture lAbel.
+		 * @pArAm documentAtion A doc string.
 		 */
-		constructor(label: string | [number, number], documentation?: string | MarkdownString);
+		constructor(lAbel: string | [number, number], documentAtion?: string | MArkdownString);
 	}
 
 	/**
-	 * Represents the signature of something callable. A signature
-	 * can have a label, like a function-name, a doc-comment, and
-	 * a set of parameters.
+	 * Represents the signAture of something cAllAble. A signAture
+	 * cAn hAve A lAbel, like A function-nAme, A doc-comment, And
+	 * A set of pArAmeters.
 	 */
-	export class SignatureInformation {
+	export clAss SignAtureInformAtion {
 
 		/**
-		 * The label of this signature. Will be shown in
+		 * The lAbel of this signAture. Will be shown in
 		 * the UI.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * The human-readable doc-comment of this signature. Will be shown
-		 * in the UI but can be omitted.
+		 * The humAn-reAdAble doc-comment of this signAture. Will be shown
+		 * in the UI but cAn be omitted.
 		 */
-		documentation?: string | MarkdownString;
+		documentAtion?: string | MArkdownString;
 
 		/**
-		 * The parameters of this signature.
+		 * The pArAmeters of this signAture.
 		 */
-		parameters: ParameterInformation[];
+		pArAmeters: PArAmeterInformAtion[];
 
 		/**
-		 * The index of the active parameter.
+		 * The index of the Active pArAmeter.
 		 *
-		 * If provided, this is used in place of [`SignatureHelp.activeSignature`](#SignatureHelp.activeSignature).
+		 * If provided, this is used in plAce of [`SignAtureHelp.ActiveSignAture`](#SignAtureHelp.ActiveSignAture).
 		 */
-		activeParameter?: number;
+		ActivePArAmeter?: number;
 
 		/**
-		 * Creates a new signature information object.
+		 * CreAtes A new signAture informAtion object.
 		 *
-		 * @param label A label string.
-		 * @param documentation A doc string.
+		 * @pArAm lAbel A lAbel string.
+		 * @pArAm documentAtion A doc string.
 		 */
-		constructor(label: string, documentation?: string | MarkdownString);
+		constructor(lAbel: string, documentAtion?: string | MArkdownString);
 	}
 
 	/**
-	 * Signature help represents the signature of something
-	 * callable. There can be multiple signatures but only one
-	 * active and only one active parameter.
+	 * SignAture help represents the signAture of something
+	 * cAllAble. There cAn be multiple signAtures but only one
+	 * Active And only one Active pArAmeter.
 	 */
-	export class SignatureHelp {
+	export clAss SignAtureHelp {
 
 		/**
-		 * One or more signatures.
+		 * One or more signAtures.
 		 */
-		signatures: SignatureInformation[];
+		signAtures: SignAtureInformAtion[];
 
 		/**
-		 * The active signature.
+		 * The Active signAture.
 		 */
-		activeSignature: number;
+		ActiveSignAture: number;
 
 		/**
-		 * The active parameter of the active signature.
+		 * The Active pArAmeter of the Active signAture.
 		 */
-		activeParameter: number;
+		ActivePArAmeter: number;
 	}
 
 	/**
-	 * How a [`SignatureHelpProvider`](#SignatureHelpProvider) was triggered.
+	 * How A [`SignAtureHelpProvider`](#SignAtureHelpProvider) wAs triggered.
 	 */
-	export enum SignatureHelpTriggerKind {
+	export enum SignAtureHelpTriggerKind {
 		/**
-		 * Signature help was invoked manually by the user or by a command.
+		 * SignAture help wAs invoked mAnuAlly by the user or by A commAnd.
 		 */
 		Invoke = 1,
 
 		/**
-		 * Signature help was triggered by a trigger character.
+		 * SignAture help wAs triggered by A trigger chArActer.
 		 */
-		TriggerCharacter = 2,
+		TriggerChArActer = 2,
 
 		/**
-		 * Signature help was triggered by the cursor moving or by the document content changing.
+		 * SignAture help wAs triggered by the cursor moving or by the document content chAnging.
 		 */
-		ContentChange = 3,
+		ContentChAnge = 3,
 	}
 
 	/**
-	 * Additional information about the context in which a
-	 * [`SignatureHelpProvider`](#SignatureHelpProvider.provideSignatureHelp) was triggered.
+	 * AdditionAl informAtion About the context in which A
+	 * [`SignAtureHelpProvider`](#SignAtureHelpProvider.provideSignAtureHelp) wAs triggered.
 	 */
-	export interface SignatureHelpContext {
+	export interfAce SignAtureHelpContext {
 		/**
-		 * Action that caused signature help to be triggered.
+		 * Action thAt cAused signAture help to be triggered.
 		 */
-		readonly triggerKind: SignatureHelpTriggerKind;
+		reAdonly triggerKind: SignAtureHelpTriggerKind;
 
 		/**
-		 * Character that caused signature help to be triggered.
+		 * ChArActer thAt cAused signAture help to be triggered.
 		 *
-		 * This is `undefined` when signature help is not triggered by typing, such as when manually invoking
-		 * signature help or when moving the cursor.
+		 * This is `undefined` when signAture help is not triggered by typing, such As when mAnuAlly invoking
+		 * signAture help or when moving the cursor.
 		 */
-		readonly triggerCharacter?: string;
+		reAdonly triggerChArActer?: string;
 
 		/**
-		 * `true` if signature help was already showing when it was triggered.
+		 * `true` if signAture help wAs AlreAdy showing when it wAs triggered.
 		 *
-		 * Retriggers occur when the signature help is already active and can be caused by actions such as
-		 * typing a trigger character, a cursor move, or document content changes.
+		 * Retriggers occur when the signAture help is AlreAdy Active And cAn be cAused by Actions such As
+		 * typing A trigger chArActer, A cursor move, or document content chAnges.
 		 */
-		readonly isRetrigger: boolean;
+		reAdonly isRetrigger: booleAn;
 
 		/**
-		 * The currently active [`SignatureHelp`](#SignatureHelp).
+		 * The currently Active [`SignAtureHelp`](#SignAtureHelp).
 		 *
-		 * The `activeSignatureHelp` has its [`SignatureHelp.activeSignature`] field updated based on
-		 * the user arrowing through available signatures.
+		 * The `ActiveSignAtureHelp` hAs its [`SignAtureHelp.ActiveSignAture`] field updAted bAsed on
+		 * the user Arrowing through AvAilAble signAtures.
 		 */
-		readonly activeSignatureHelp?: SignatureHelp;
+		reAdonly ActiveSignAtureHelp?: SignAtureHelp;
 	}
 
 	/**
-	 * The signature help provider interface defines the contract between extensions and
-	 * the [parameter hints](https://code.visualstudio.com/docs/editor/intellisense)-feature.
+	 * The signAture help provider interfAce defines the contrAct between extensions And
+	 * the [pArAmeter hints](https://code.visuAlstudio.com/docs/editor/intellisense)-feAture.
 	 */
-	export interface SignatureHelpProvider {
+	export interfAce SignAtureHelpProvider {
 
 		/**
-		 * Provide help for the signature at the given position and document.
+		 * Provide help for the signAture At the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @param context Information about how signature help was triggered.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @pArAm context InformAtion About how signAture help wAs triggered.
 		 *
-		 * @return Signature help or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @return SignAture help or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken, context: SignatureHelpContext): ProviderResult<SignatureHelp>;
+		provideSignAtureHelp(document: TextDocument, position: Position, token: CAncellAtionToken, context: SignAtureHelpContext): ProviderResult<SignAtureHelp>;
 	}
 
 	/**
-	 * Metadata about a registered [`SignatureHelpProvider`](#SignatureHelpProvider).
+	 * MetAdAtA About A registered [`SignAtureHelpProvider`](#SignAtureHelpProvider).
 	 */
-	export interface SignatureHelpProviderMetadata {
+	export interfAce SignAtureHelpProviderMetAdAtA {
 		/**
-		 * List of characters that trigger signature help.
+		 * List of chArActers thAt trigger signAture help.
 		 */
-		readonly triggerCharacters: ReadonlyArray<string>;
+		reAdonly triggerChArActers: ReAdonlyArrAy<string>;
 
 		/**
-		 * List of characters that re-trigger signature help.
+		 * List of chArActers thAt re-trigger signAture help.
 		 *
-		 * These trigger characters are only active when signature help is already showing. All trigger characters
-		 * are also counted as re-trigger characters.
+		 * These trigger chArActers Are only Active when signAture help is AlreAdy showing. All trigger chArActers
+		 * Are Also counted As re-trigger chArActers.
 		 */
-		readonly retriggerCharacters: ReadonlyArray<string>;
+		reAdonly retriggerChArActers: ReAdonlyArrAy<string>;
 	}
 
 	/**
@@ -3767,13 +3767,13 @@ declare module 'vscode' {
 		Function = 2,
 		Constructor = 3,
 		Field = 4,
-		Variable = 5,
-		Class = 6,
-		Interface = 7,
+		VAriAble = 5,
+		ClAss = 6,
+		InterfAce = 7,
 		Module = 8,
 		Property = 9,
 		Unit = 10,
-		Value = 11,
+		VAlue = 11,
 		Enum = 12,
 		Keyword = 13,
 		Snippet = 14,
@@ -3782,187 +3782,187 @@ declare module 'vscode' {
 		File = 16,
 		Folder = 18,
 		EnumMember = 19,
-		Constant = 20,
+		ConstAnt = 20,
 		Struct = 21,
 		Event = 22,
-		Operator = 23,
-		TypeParameter = 24,
+		OperAtor = 23,
+		TypePArAmeter = 24,
 		User = 25,
 		Issue = 26,
 	}
 
 	/**
-	 * Completion item tags are extra annotations that tweak the rendering of a completion
+	 * Completion item tAgs Are extrA AnnotAtions thAt tweAk the rendering of A completion
 	 * item.
 	 */
-	export enum CompletionItemTag {
+	export enum CompletionItemTAg {
 		/**
-		 * Render a completion as obsolete, usually using a strike-out.
+		 * Render A completion As obsolete, usuAlly using A strike-out.
 		 */
-		Deprecated = 1
+		DeprecAted = 1
 	}
 
 	/**
-	 * A completion item represents a text snippet that is proposed to complete text that is being typed.
+	 * A completion item represents A text snippet thAt is proposed to complete text thAt is being typed.
 	 *
-	 * It is sufficient to create a completion item from just a [label](#CompletionItem.label). In that
-	 * case the completion item will replace the [word](#TextDocument.getWordRangeAtPosition)
-	 * until the cursor with the given label or [insertText](#CompletionItem.insertText). Otherwise the
+	 * It is sufficient to creAte A completion item from just A [lAbel](#CompletionItem.lAbel). In thAt
+	 * cAse the completion item will replAce the [word](#TextDocument.getWordRAngeAtPosition)
+	 * until the cursor with the given lAbel or [insertText](#CompletionItem.insertText). Otherwise the
 	 * given [edit](#CompletionItem.textEdit) is used.
 	 *
-	 * When selecting a completion item in the editor its defined or synthesized text edit will be applied
-	 * to *all* cursors/selections whereas [additionalTextEdits](#CompletionItem.additionalTextEdits) will be
-	 * applied as provided.
+	 * When selecting A completion item in the editor its defined or synthesized text edit will be Applied
+	 * to *All* cursors/selections whereAs [AdditionAlTextEdits](#CompletionItem.AdditionAlTextEdits) will be
+	 * Applied As provided.
 	 *
 	 * @see [CompletionItemProvider.provideCompletionItems](#CompletionItemProvider.provideCompletionItems)
 	 * @see [CompletionItemProvider.resolveCompletionItem](#CompletionItemProvider.resolveCompletionItem)
 	 */
-	export class CompletionItem {
+	export clAss CompletionItem {
 
 		/**
-		 * The label of this completion item. By default
-		 * this is also the text that is inserted when selecting
+		 * The lAbel of this completion item. By defAult
+		 * this is Also the text thAt is inserted when selecting
 		 * this completion.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * The kind of this completion item. Based on the kind
-		 * an icon is chosen by the editor.
+		 * The kind of this completion item. BAsed on the kind
+		 * An icon is chosen by the editor.
 		 */
 		kind?: CompletionItemKind;
 
 		/**
-		 * Tags for this completion item.
+		 * TAgs for this completion item.
 		 */
-		tags?: ReadonlyArray<CompletionItemTag>;
+		tAgs?: ReAdonlyArrAy<CompletionItemTAg>;
 
 		/**
-		 * A human-readable string with additional information
-		 * about this item, like type or symbol information.
+		 * A humAn-reAdAble string with AdditionAl informAtion
+		 * About this item, like type or symbol informAtion.
 		 */
-		detail?: string;
+		detAil?: string;
 
 		/**
-		 * A human-readable string that represents a doc-comment.
+		 * A humAn-reAdAble string thAt represents A doc-comment.
 		 */
-		documentation?: string | MarkdownString;
+		documentAtion?: string | MArkdownString;
 
 		/**
-		 * A string that should be used when comparing this item
-		 * with other items. When `falsy` the [label](#CompletionItem.label)
+		 * A string thAt should be used when compAring this item
+		 * with other items. When `fAlsy` the [lAbel](#CompletionItem.lAbel)
 		 * is used.
 		 *
-		 * Note that `sortText` is only used for the initial ordering of completion
-		 * items. When having a leading word (prefix) ordering is based on how
-		 * well completion match that prefix and the initial ordering is only used
-		 * when completions match equal. The prefix is defined by the
-		 * [`range`](#CompletionItem.range)-property and can therefore be different
-		 * for each completion.
+		 * Note thAt `sortText` is only used for the initiAl ordering of completion
+		 * items. When hAving A leAding word (prefix) ordering is bAsed on how
+		 * well completion mAtch thAt prefix And the initiAl ordering is only used
+		 * when completions mAtch equAl. The prefix is defined by the
+		 * [`rAnge`](#CompletionItem.rAnge)-property And cAn therefore be different
+		 * for eAch completion.
 		 */
 		sortText?: string;
 
 		/**
-		 * A string that should be used when filtering a set of
-		 * completion items. When `falsy` the [label](#CompletionItem.label)
+		 * A string thAt should be used when filtering A set of
+		 * completion items. When `fAlsy` the [lAbel](#CompletionItem.lAbel)
 		 * is used.
 		 *
-		 * Note that the filter text is matched against the leading word (prefix) which is defined
-		 * by the [`range`](#CompletionItem.range)-property.
+		 * Note thAt the filter text is mAtched AgAinst the leAding word (prefix) which is defined
+		 * by the [`rAnge`](#CompletionItem.rAnge)-property.
 		 * prefix.
 		 */
 		filterText?: string;
 
 		/**
-		 * Select this item when showing. *Note* that only one completion item can be selected and
-		 * that the editor decides which item that is. The rule is that the *first* item of those
-		 * that match best is selected.
+		 * Select this item when showing. *Note* thAt only one completion item cAn be selected And
+		 * thAt the editor decides which item thAt is. The rule is thAt the *first* item of those
+		 * thAt mAtch best is selected.
 		 */
-		preselect?: boolean;
+		preselect?: booleAn;
 
 		/**
-		 * A string or snippet that should be inserted in a document when selecting
-		 * this completion. When `falsy` the [label](#CompletionItem.label)
+		 * A string or snippet thAt should be inserted in A document when selecting
+		 * this completion. When `fAlsy` the [lAbel](#CompletionItem.lAbel)
 		 * is used.
 		 */
 		insertText?: string | SnippetString;
 
 		/**
-		 * A range or a insert and replace range selecting the text that should be replaced by this completion item.
+		 * A rAnge or A insert And replAce rAnge selecting the text thAt should be replAced by this completion item.
 		 *
-		 * When omitted, the range of the [current word](#TextDocument.getWordRangeAtPosition) is used as replace-range
-		 * and as insert-range the start of the [current word](#TextDocument.getWordRangeAtPosition) to the
+		 * When omitted, the rAnge of the [current word](#TextDocument.getWordRAngeAtPosition) is used As replAce-rAnge
+		 * And As insert-rAnge the stArt of the [current word](#TextDocument.getWordRAngeAtPosition) to the
 		 * current position is used.
 		 *
-		 * *Note 1:* A range must be a [single line](#Range.isSingleLine) and it must
-		 * [contain](#Range.contains) the position at which completion has been [requested](#CompletionItemProvider.provideCompletionItems).
-		 * *Note 2:* A insert range must be a prefix of a replace range, that means it must be contained and starting at the same position.
+		 * *Note 1:* A rAnge must be A [single line](#RAnge.isSingleLine) And it must
+		 * [contAin](#RAnge.contAins) the position At which completion hAs been [requested](#CompletionItemProvider.provideCompletionItems).
+		 * *Note 2:* A insert rAnge must be A prefix of A replAce rAnge, thAt meAns it must be contAined And stArting At the sAme position.
 		 */
-		range?: Range | { inserting: Range; replacing: Range; };
+		rAnge?: RAnge | { inserting: RAnge; replAcing: RAnge; };
 
 		/**
-		 * An optional set of characters that when pressed while this completion is active will accept it first and
-		 * then type that character. *Note* that all commit characters should have `length=1` and that superfluous
-		 * characters will be ignored.
+		 * An optionAl set of chArActers thAt when pressed while this completion is Active will Accept it first And
+		 * then type thAt chArActer. *Note* thAt All commit chArActers should hAve `length=1` And thAt superfluous
+		 * chArActers will be ignored.
 		 */
-		commitCharacters?: string[];
+		commitChArActers?: string[];
 
 		/**
-		 * Keep whitespace of the [insertText](#CompletionItem.insertText) as is. By default, the editor adjusts leading
-		 * whitespace of new lines so that they match the indentation of the line for which the item is accepted - setting
-		 * this to `true` will prevent that.
+		 * Keep whitespAce of the [insertText](#CompletionItem.insertText) As is. By defAult, the editor Adjusts leAding
+		 * whitespAce of new lines so thAt they mAtch the indentAtion of the line for which the item is Accepted - setting
+		 * this to `true` will prevent thAt.
 		 */
-		keepWhitespace?: boolean;
+		keepWhitespAce?: booleAn;
 
 		/**
-		 * @deprecated Use `CompletionItem.insertText` and `CompletionItem.range` instead.
+		 * @deprecAted Use `CompletionItem.insertText` And `CompletionItem.rAnge` insteAd.
 		 *
-		 * An [edit](#TextEdit) which is applied to a document when selecting
-		 * this completion. When an edit is provided the value of
+		 * An [edit](#TextEdit) which is Applied to A document when selecting
+		 * this completion. When An edit is provided the vAlue of
 		 * [insertText](#CompletionItem.insertText) is ignored.
 		 *
-		 * The [range](#Range) of the edit must be single-line and on the same
-		 * line completions were [requested](#CompletionItemProvider.provideCompletionItems) at.
+		 * The [rAnge](#RAnge) of the edit must be single-line And on the sAme
+		 * line completions were [requested](#CompletionItemProvider.provideCompletionItems) At.
 		 */
 		textEdit?: TextEdit;
 
 		/**
-		 * An optional array of additional [text edits](#TextEdit) that are applied when
-		 * selecting this completion. Edits must not overlap with the main [edit](#CompletionItem.textEdit)
+		 * An optionAl ArrAy of AdditionAl [text edits](#TextEdit) thAt Are Applied when
+		 * selecting this completion. Edits must not overlAp with the mAin [edit](#CompletionItem.textEdit)
 		 * nor with themselves.
 		 */
-		additionalTextEdits?: TextEdit[];
+		AdditionAlTextEdits?: TextEdit[];
 
 		/**
-		 * An optional [command](#Command) that is executed *after* inserting this completion. *Note* that
-		 * additional modifications to the current document should be described with the
-		 * [additionalTextEdits](#CompletionItem.additionalTextEdits)-property.
+		 * An optionAl [commAnd](#CommAnd) thAt is executed *After* inserting this completion. *Note* thAt
+		 * AdditionAl modificAtions to the current document should be described with the
+		 * [AdditionAlTextEdits](#CompletionItem.AdditionAlTextEdits)-property.
 		 */
-		command?: Command;
+		commAnd?: CommAnd;
 
 		/**
-		 * Creates a new completion item.
+		 * CreAtes A new completion item.
 		 *
-		 * Completion items must have at least a [label](#CompletionItem.label) which then
-		 * will be used as insert text as well as for sorting and filtering.
+		 * Completion items must hAve At leAst A [lAbel](#CompletionItem.lAbel) which then
+		 * will be used As insert text As well As for sorting And filtering.
 		 *
-		 * @param label The label of the completion.
-		 * @param kind The [kind](#CompletionItemKind) of the completion.
+		 * @pArAm lAbel The lAbel of the completion.
+		 * @pArAm kind The [kind](#CompletionItemKind) of the completion.
 		 */
-		constructor(label: string, kind?: CompletionItemKind);
+		constructor(lAbel: string, kind?: CompletionItemKind);
 	}
 
 	/**
-	 * Represents a collection of [completion items](#CompletionItem) to be presented
+	 * Represents A collection of [completion items](#CompletionItem) to be presented
 	 * in the editor.
 	 */
-	export class CompletionList<T extends CompletionItem = CompletionItem> {
+	export clAss CompletionList<T extends CompletionItem = CompletionItem> {
 
 		/**
 		 * This list is not complete. Further typing should result in recomputing
 		 * this list.
 		 */
-		isIncomplete?: boolean;
+		isIncomplete?: booleAn;
 
 		/**
 		 * The completion items.
@@ -3970,346 +3970,346 @@ declare module 'vscode' {
 		items: T[];
 
 		/**
-		 * Creates a new completion list.
+		 * CreAtes A new completion list.
 		 *
-		 * @param items The completion items.
-		 * @param isIncomplete The list is not complete.
+		 * @pArAm items The completion items.
+		 * @pArAm isIncomplete The list is not complete.
 		 */
-		constructor(items?: T[], isIncomplete?: boolean);
+		constructor(items?: T[], isIncomplete?: booleAn);
 	}
 
 	/**
-	 * How a [completion provider](#CompletionItemProvider) was triggered
+	 * How A [completion provider](#CompletionItemProvider) wAs triggered
 	 */
 	export enum CompletionTriggerKind {
 		/**
-		 * Completion was triggered normally.
+		 * Completion wAs triggered normAlly.
 		 */
 		Invoke = 0,
 		/**
-		 * Completion was triggered by a trigger character.
+		 * Completion wAs triggered by A trigger chArActer.
 		 */
-		TriggerCharacter = 1,
+		TriggerChArActer = 1,
 		/**
-		 * Completion was re-triggered as current completion list is incomplete
+		 * Completion wAs re-triggered As current completion list is incomplete
 		 */
 		TriggerForIncompleteCompletions = 2
 	}
 
 	/**
-	 * Contains additional information about the context in which
+	 * ContAins AdditionAl informAtion About the context in which
 	 * [completion provider](#CompletionItemProvider.provideCompletionItems) is triggered.
 	 */
-	export interface CompletionContext {
+	export interfAce CompletionContext {
 		/**
-		 * How the completion was triggered.
+		 * How the completion wAs triggered.
 		 */
-		readonly triggerKind: CompletionTriggerKind;
+		reAdonly triggerKind: CompletionTriggerKind;
 
 		/**
-		 * Character that triggered the completion item provider.
+		 * ChArActer thAt triggered the completion item provider.
 		 *
-		 * `undefined` if provider was not triggered by a character.
+		 * `undefined` if provider wAs not triggered by A chArActer.
 		 *
-		 * The trigger character is already in the document when the completion provider is triggered.
+		 * The trigger chArActer is AlreAdy in the document when the completion provider is triggered.
 		 */
-		readonly triggerCharacter?: string;
+		reAdonly triggerChArActer?: string;
 	}
 
 	/**
-	 * The completion item provider interface defines the contract between extensions and
-	 * [IntelliSense](https://code.visualstudio.com/docs/editor/intellisense).
+	 * The completion item provider interfAce defines the contrAct between extensions And
+	 * [IntelliSense](https://code.visuAlstudio.com/docs/editor/intellisense).
 	 *
-	 * Providers can delay the computation of the [`detail`](#CompletionItem.detail)
-	 * and [`documentation`](#CompletionItem.documentation) properties by implementing the
-	 * [`resolveCompletionItem`](#CompletionItemProvider.resolveCompletionItem)-function. However, properties that
-	 * are needed for the initial sorting and filtering, like `sortText`, `filterText`, `insertText`, and `range`, must
-	 * not be changed during resolve.
+	 * Providers cAn delAy the computAtion of the [`detAil`](#CompletionItem.detAil)
+	 * And [`documentAtion`](#CompletionItem.documentAtion) properties by implementing the
+	 * [`resolveCompletionItem`](#CompletionItemProvider.resolveCompletionItem)-function. However, properties thAt
+	 * Are needed for the initiAl sorting And filtering, like `sortText`, `filterText`, `insertText`, And `rAnge`, must
+	 * not be chAnged during resolve.
 	 *
-	 * Providers are asked for completions either explicitly by a user gesture or -depending on the configuration-
-	 * implicitly when typing words or trigger characters.
+	 * Providers Are Asked for completions either explicitly by A user gesture or -depending on the configurAtion-
+	 * implicitly when typing words or trigger chArActers.
 	 */
-	export interface CompletionItemProvider<T extends CompletionItem = CompletionItem> {
+	export interfAce CompletionItemProvider<T extends CompletionItem = CompletionItem> {
 
 		/**
-		 * Provide completion items for the given position and document.
+		 * Provide completion items for the given position And document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @param context How the completion was triggered.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @pArAm context How the completion wAs triggered.
 		 *
-		 * @return An array of completions, a [completion list](#CompletionList), or a thenable that resolves to either.
-		 * The lack of a result can be signaled by returning `undefined`, `null`, or an empty array.
+		 * @return An ArrAy of completions, A [completion list](#CompletionList), or A thenAble thAt resolves to either.
+		 * The lAck of A result cAn be signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<T[] | CompletionList<T>>;
+		provideCompletionItems(document: TextDocument, position: Position, token: CAncellAtionToken, context: CompletionContext): ProviderResult<T[] | CompletionList<T>>;
 
 		/**
-		 * Given a completion item fill in more data, like [doc-comment](#CompletionItem.documentation)
-		 * or [details](#CompletionItem.detail).
+		 * Given A completion item fill in more dAtA, like [doc-comment](#CompletionItem.documentAtion)
+		 * or [detAils](#CompletionItem.detAil).
 		 *
-		 * The editor will only resolve a completion item once.
+		 * The editor will only resolve A completion item once.
 		 *
-		 * *Note* that this function is called when completion items are already showing in the UI or when an item has been
-		 * selected for insertion. Because of that, no property that changes the presentation (label, sorting, filtering etc)
-		 * or the (primary) insert behaviour ([insertText](#CompletionItem.insertText)) can be changed.
+		 * *Note* thAt this function is cAlled when completion items Are AlreAdy showing in the UI or when An item hAs been
+		 * selected for insertion. BecAuse of thAt, no property thAt chAnges the presentAtion (lAbel, sorting, filtering etc)
+		 * or the (primAry) insert behAviour ([insertText](#CompletionItem.insertText)) cAn be chAnged.
 		 *
-		 * This function may fill in [additionalTextEdits](#CompletionItem.additionalTextEdits). However, that means an item might be
-		 * inserted *before* resolving is done and in that case the editor will do a best effort to still apply those additional
+		 * This function mAy fill in [AdditionAlTextEdits](#CompletionItem.AdditionAlTextEdits). However, thAt meAns An item might be
+		 * inserted *before* resolving is done And in thAt cAse the editor will do A best effort to still Apply those AdditionAl
 		 * text edits.
 		 *
-		 * @param item A completion item currently active in the UI.
-		 * @param token A cancellation token.
-		 * @return The resolved completion item or a thenable that resolves to of such. It is OK to return the given
+		 * @pArAm item A completion item currently Active in the UI.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The resolved completion item or A thenAble thAt resolves to of such. It is OK to return the given
 		 * `item`. When no result is returned, the given `item` will be used.
 		 */
-		resolveCompletionItem?(item: T, token: CancellationToken): ProviderResult<T>;
+		resolveCompletionItem?(item: T, token: CAncellAtionToken): ProviderResult<T>;
 	}
 
 	/**
-	 * A document link is a range in a text document that links to an internal or external resource, like another
-	 * text document or a web site.
+	 * A document link is A rAnge in A text document thAt links to An internAl or externAl resource, like Another
+	 * text document or A web site.
 	 */
-	export class DocumentLink {
+	export clAss DocumentLink {
 
 		/**
-		 * The range this link applies to.
+		 * The rAnge this link Applies to.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
 		 * The uri this link points to.
 		 */
-		target?: Uri;
+		tArget?: Uri;
 
 		/**
 		 * The tooltip text when you hover over this link.
 		 *
-		 * If a tooltip is provided, is will be displayed in a string that includes instructions on how to
-		 * trigger the link, such as `{0} (ctrl + click)`. The specific instructions vary depending on OS,
-		 * user settings, and localization.
+		 * If A tooltip is provided, is will be displAyed in A string thAt includes instructions on how to
+		 * trigger the link, such As `{0} (ctrl + click)`. The specific instructions vAry depending on OS,
+		 * user settings, And locAlizAtion.
 		 */
 		tooltip?: string;
 
 		/**
-		 * Creates a new document link.
+		 * CreAtes A new document link.
 		 *
-		 * @param range The range the document link applies to. Must not be empty.
-		 * @param target The uri the document link points to.
+		 * @pArAm rAnge The rAnge the document link Applies to. Must not be empty.
+		 * @pArAm tArget The uri the document link points to.
 		 */
-		constructor(range: Range, target?: Uri);
+		constructor(rAnge: RAnge, tArget?: Uri);
 	}
 
 	/**
-	 * The document link provider defines the contract between extensions and feature of showing
+	 * The document link provider defines the contrAct between extensions And feAture of showing
 	 * links in the editor.
 	 */
-	export interface DocumentLinkProvider<T extends DocumentLink = DocumentLink> {
+	export interfAce DocumentLinkProvider<T extends DocumentLink = DocumentLink> {
 
 		/**
-		 * Provide links for the given document. Note that the editor ships with a default provider that detects
-		 * `http(s)` and `file` links.
+		 * Provide links for the given document. Note thAt the editor ships with A defAult provider thAt detects
+		 * `http(s)` And `file` links.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return An array of [document links](#DocumentLink) or a thenable that resolves to such. The lack of a result
-		 * can be signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of [document links](#DocumentLink) or A thenAble thAt resolves to such. The lAck of A result
+		 * cAn be signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideDocumentLinks(document: TextDocument, token: CancellationToken): ProviderResult<T[]>;
+		provideDocumentLinks(document: TextDocument, token: CAncellAtionToken): ProviderResult<T[]>;
 
 		/**
-		 * Given a link fill in its [target](#DocumentLink.target). This method is called when an incomplete
-		 * link is selected in the UI. Providers can implement this method and return incomplete links
-		 * (without target) from the [`provideDocumentLinks`](#DocumentLinkProvider.provideDocumentLinks) method which
-		 * often helps to improve performance.
+		 * Given A link fill in its [tArget](#DocumentLink.tArget). This method is cAlled when An incomplete
+		 * link is selected in the UI. Providers cAn implement this method And return incomplete links
+		 * (without tArget) from the [`provideDocumentLinks`](#DocumentLinkProvider.provideDocumentLinks) method which
+		 * often helps to improve performAnce.
 		 *
-		 * @param link The link that is to be resolved.
-		 * @param token A cancellation token.
+		 * @pArAm link The link thAt is to be resolved.
+		 * @pArAm token A cAncellAtion token.
 		 */
-		resolveDocumentLink?(link: T, token: CancellationToken): ProviderResult<T>;
+		resolveDocumentLink?(link: T, token: CAncellAtionToken): ProviderResult<T>;
 	}
 
 	/**
-	 * Represents a color in RGBA space.
+	 * Represents A color in RGBA spAce.
 	 */
-	export class Color {
+	export clAss Color {
 
 		/**
-		 * The red component of this color in the range [0-1].
+		 * The red component of this color in the rAnge [0-1].
 		 */
-		readonly red: number;
+		reAdonly red: number;
 
 		/**
-		 * The green component of this color in the range [0-1].
+		 * The green component of this color in the rAnge [0-1].
 		 */
-		readonly green: number;
+		reAdonly green: number;
 
 		/**
-		 * The blue component of this color in the range [0-1].
+		 * The blue component of this color in the rAnge [0-1].
 		 */
-		readonly blue: number;
+		reAdonly blue: number;
 
 		/**
-		 * The alpha component of this color in the range [0-1].
+		 * The AlphA component of this color in the rAnge [0-1].
 		 */
-		readonly alpha: number;
+		reAdonly AlphA: number;
 
 		/**
-		 * Creates a new color instance.
+		 * CreAtes A new color instAnce.
 		 *
-		 * @param red The red component.
-		 * @param green The green component.
-		 * @param blue The blue component.
-		 * @param alpha The alpha component.
+		 * @pArAm red The red component.
+		 * @pArAm green The green component.
+		 * @pArAm blue The blue component.
+		 * @pArAm AlphA The AlphA component.
 		 */
-		constructor(red: number, green: number, blue: number, alpha: number);
+		constructor(red: number, green: number, blue: number, AlphA: number);
 	}
 
 	/**
-	 * Represents a color range from a document.
+	 * Represents A color rAnge from A document.
 	 */
-	export class ColorInformation {
+	export clAss ColorInformAtion {
 
 		/**
-		 * The range in the document where this color appears.
+		 * The rAnge in the document where this color AppeArs.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The actual color value for this color range.
+		 * The ActuAl color vAlue for this color rAnge.
 		 */
 		color: Color;
 
 		/**
-		 * Creates a new color range.
+		 * CreAtes A new color rAnge.
 		 *
-		 * @param range The range the color appears in. Must not be empty.
-		 * @param color The value of the color.
-		 * @param format The format in which this color is currently formatted.
+		 * @pArAm rAnge The rAnge the color AppeArs in. Must not be empty.
+		 * @pArAm color The vAlue of the color.
+		 * @pArAm formAt The formAt in which this color is currently formAtted.
 		 */
-		constructor(range: Range, color: Color);
+		constructor(rAnge: RAnge, color: Color);
 	}
 
 	/**
-	 * A color presentation object describes how a [`color`](#Color) should be represented as text and what
-	 * edits are required to refer to it from source code.
+	 * A color presentAtion object describes how A [`color`](#Color) should be represented As text And whAt
+	 * edits Are required to refer to it from source code.
 	 *
-	 * For some languages one color can have multiple presentations, e.g. css can represent the color red with
-	 * the constant `Red`, the hex-value `#ff0000`, or in rgba and hsla forms. In csharp other representations
-	 * apply, e.g. `System.Drawing.Color.Red`.
+	 * For some lAnguAges one color cAn hAve multiple presentAtions, e.g. css cAn represent the color red with
+	 * the constAnt `Red`, the hex-vAlue `#ff0000`, or in rgbA And hslA forms. In cshArp other representAtions
+	 * Apply, e.g. `System.DrAwing.Color.Red`.
 	 */
-	export class ColorPresentation {
+	export clAss ColorPresentAtion {
 
 		/**
-		 * The label of this color presentation. It will be shown on the color
-		 * picker header. By default this is also the text that is inserted when selecting
-		 * this color presentation.
+		 * The lAbel of this color presentAtion. It will be shown on the color
+		 * picker heAder. By defAult this is Also the text thAt is inserted when selecting
+		 * this color presentAtion.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * An [edit](#TextEdit) which is applied to a document when selecting
-		 * this presentation for the color.  When `falsy` the [label](#ColorPresentation.label)
+		 * An [edit](#TextEdit) which is Applied to A document when selecting
+		 * this presentAtion for the color.  When `fAlsy` the [lAbel](#ColorPresentAtion.lAbel)
 		 * is used.
 		 */
 		textEdit?: TextEdit;
 
 		/**
-		 * An optional array of additional [text edits](#TextEdit) that are applied when
-		 * selecting this color presentation. Edits must not overlap with the main [edit](#ColorPresentation.textEdit) nor with themselves.
+		 * An optionAl ArrAy of AdditionAl [text edits](#TextEdit) thAt Are Applied when
+		 * selecting this color presentAtion. Edits must not overlAp with the mAin [edit](#ColorPresentAtion.textEdit) nor with themselves.
 		 */
-		additionalTextEdits?: TextEdit[];
+		AdditionAlTextEdits?: TextEdit[];
 
 		/**
-		 * Creates a new color presentation.
+		 * CreAtes A new color presentAtion.
 		 *
-		 * @param label The label of this color presentation.
+		 * @pArAm lAbel The lAbel of this color presentAtion.
 		 */
-		constructor(label: string);
+		constructor(lAbel: string);
 	}
 
 	/**
-	 * The document color provider defines the contract between extensions and feature of
-	 * picking and modifying colors in the editor.
+	 * The document color provider defines the contrAct between extensions And feAture of
+	 * picking And modifying colors in the editor.
 	 */
-	export interface DocumentColorProvider {
+	export interfAce DocumentColorProvider {
 
 		/**
 		 * Provide colors for the given document.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return An array of [color information](#ColorInformation) or a thenable that resolves to such. The lack of a result
-		 * can be signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of [color informAtion](#ColorInformAtion) or A thenAble thAt resolves to such. The lAck of A result
+		 * cAn be signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideDocumentColors(document: TextDocument, token: CancellationToken): ProviderResult<ColorInformation[]>;
+		provideDocumentColors(document: TextDocument, token: CAncellAtionToken): ProviderResult<ColorInformAtion[]>;
 
 		/**
-		 * Provide [representations](#ColorPresentation) for a color.
+		 * Provide [representAtions](#ColorPresentAtion) for A color.
 		 *
-		 * @param color The color to show and insert.
-		 * @param context A context object with additional information
-		 * @param token A cancellation token.
-		 * @return An array of color presentations or a thenable that resolves to such. The lack of a result
-		 * can be signaled by returning `undefined`, `null`, or an empty array.
+		 * @pArAm color The color to show And insert.
+		 * @pArAm context A context object with AdditionAl informAtion
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of color presentAtions or A thenAble thAt resolves to such. The lAck of A result
+		 * cAn be signAled by returning `undefined`, `null`, or An empty ArrAy.
 		 */
-		provideColorPresentations(color: Color, context: { document: TextDocument, range: Range }, token: CancellationToken): ProviderResult<ColorPresentation[]>;
+		provideColorPresentAtions(color: Color, context: { document: TextDocument, rAnge: RAnge }, token: CAncellAtionToken): ProviderResult<ColorPresentAtion[]>;
 	}
 
 	/**
-	 * A line based folding range. To be valid, start and end line must be bigger than zero and smaller than the number of lines in the document.
-	 * Invalid ranges will be ignored.
+	 * A line bAsed folding rAnge. To be vAlid, stArt And end line must be bigger thAn zero And smAller thAn the number of lines in the document.
+	 * InvAlid rAnges will be ignored.
 	 */
-	export class FoldingRange {
+	export clAss FoldingRAnge {
 
 		/**
-		 * The zero-based start line of the range to fold. The folded area starts after the line's last character.
-		 * To be valid, the end must be zero or larger and smaller than the number of lines in the document.
+		 * The zero-bAsed stArt line of the rAnge to fold. The folded AreA stArts After the line's lAst chArActer.
+		 * To be vAlid, the end must be zero or lArger And smAller thAn the number of lines in the document.
 		 */
-		start: number;
+		stArt: number;
 
 		/**
-		 * The zero-based end line of the range to fold. The folded area ends with the line's last character.
-		 * To be valid, the end must be zero or larger and smaller than the number of lines in the document.
+		 * The zero-bAsed end line of the rAnge to fold. The folded AreA ends with the line's lAst chArActer.
+		 * To be vAlid, the end must be zero or lArger And smAller thAn the number of lines in the document.
 		 */
 		end: number;
 
 		/**
-		 * Describes the [Kind](#FoldingRangeKind) of the folding range such as [Comment](#FoldingRangeKind.Comment) or
-		 * [Region](#FoldingRangeKind.Region). The kind is used to categorize folding ranges and used by commands
-		 * like 'Fold all comments'. See
-		 * [FoldingRangeKind](#FoldingRangeKind) for an enumeration of all kinds.
-		 * If not set, the range is originated from a syntax element.
+		 * Describes the [Kind](#FoldingRAngeKind) of the folding rAnge such As [Comment](#FoldingRAngeKind.Comment) or
+		 * [Region](#FoldingRAngeKind.Region). The kind is used to cAtegorize folding rAnges And used by commAnds
+		 * like 'Fold All comments'. See
+		 * [FoldingRAngeKind](#FoldingRAngeKind) for An enumerAtion of All kinds.
+		 * If not set, the rAnge is originAted from A syntAx element.
 		 */
-		kind?: FoldingRangeKind;
+		kind?: FoldingRAngeKind;
 
 		/**
-		 * Creates a new folding range.
+		 * CreAtes A new folding rAnge.
 		 *
-		 * @param start The start line of the folded range.
-		 * @param end The end line of the folded range.
-		 * @param kind The kind of the folding range.
+		 * @pArAm stArt The stArt line of the folded rAnge.
+		 * @pArAm end The end line of the folded rAnge.
+		 * @pArAm kind The kind of the folding rAnge.
 		 */
-		constructor(start: number, end: number, kind?: FoldingRangeKind);
+		constructor(stArt: number, end: number, kind?: FoldingRAngeKind);
 	}
 
 	/**
-	 * An enumeration of specific folding range kinds. The kind is an optional field of a [FoldingRange](#FoldingRange)
-	 * and is used to distinguish specific folding ranges such as ranges originated from comments. The kind is used by commands like
-	 * `Fold all comments` or `Fold all regions`.
-	 * If the kind is not set on the range, the range originated from a syntax element other than comments, imports or region markers.
+	 * An enumerAtion of specific folding rAnge kinds. The kind is An optionAl field of A [FoldingRAnge](#FoldingRAnge)
+	 * And is used to distinguish specific folding rAnges such As rAnges originAted from comments. The kind is used by commAnds like
+	 * `Fold All comments` or `Fold All regions`.
+	 * If the kind is not set on the rAnge, the rAnge originAted from A syntAx element other thAn comments, imports or region mArkers.
 	 */
-	export enum FoldingRangeKind {
+	export enum FoldingRAngeKind {
 		/**
-		 * Kind for folding range representing a comment.
+		 * Kind for folding rAnge representing A comment.
 		 */
 		Comment = 1,
 		/**
-		 * Kind for folding range representing a import.
+		 * Kind for folding rAnge representing A import.
 		 */
 		Imports = 2,
 		/**
-		 * Kind for folding range representing regions originating from folding markers like `#region` and `#endregion`.
+		 * Kind for folding rAnge representing regions originAting from folding mArkers like `#region` And `#endregion`.
 		 */
 		Region = 3
 	}
@@ -4317,75 +4317,75 @@ declare module 'vscode' {
 	/**
 	 * Folding context (for future use)
 	 */
-	export interface FoldingContext {
+	export interfAce FoldingContext {
 	}
 
 	/**
-	 * The folding range provider interface defines the contract between extensions and
-	 * [Folding](https://code.visualstudio.com/docs/editor/codebasics#_folding) in the editor.
+	 * The folding rAnge provider interfAce defines the contrAct between extensions And
+	 * [Folding](https://code.visuAlstudio.com/docs/editor/codebAsics#_folding) in the editor.
 	 */
-	export interface FoldingRangeProvider {
+	export interfAce FoldingRAngeProvider {
 		/**
-		 * Returns a list of folding ranges or null and undefined if the provider
-		 * does not want to participate or was cancelled.
-		 * @param document The document in which the command was invoked.
-		 * @param context Additional context information (for future use)
-		 * @param token A cancellation token.
+		 * Returns A list of folding rAnges or null And undefined if the provider
+		 * does not wAnt to pArticipAte or wAs cAncelled.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm context AdditionAl context informAtion (for future use)
+		 * @pArAm token A cAncellAtion token.
 		 */
-		provideFoldingRanges(document: TextDocument, context: FoldingContext, token: CancellationToken): ProviderResult<FoldingRange[]>;
+		provideFoldingRAnges(document: TextDocument, context: FoldingContext, token: CAncellAtionToken): ProviderResult<FoldingRAnge[]>;
 	}
 
 	/**
-	 * A selection range represents a part of a selection hierarchy. A selection range
-	 * may have a parent selection range that contains it.
+	 * A selection rAnge represents A pArt of A selection hierArchy. A selection rAnge
+	 * mAy hAve A pArent selection rAnge thAt contAins it.
 	 */
-	export class SelectionRange {
+	export clAss SelectionRAnge {
 
 		/**
-		 * The [range](#Range) of this selection range.
+		 * The [rAnge](#RAnge) of this selection rAnge.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The parent selection range containing this range.
+		 * The pArent selection rAnge contAining this rAnge.
 		 */
-		parent?: SelectionRange;
+		pArent?: SelectionRAnge;
 
 		/**
-		 * Creates a new selection range.
+		 * CreAtes A new selection rAnge.
 		 *
-		 * @param range The range of the selection range.
-		 * @param parent The parent of the selection range.
+		 * @pArAm rAnge The rAnge of the selection rAnge.
+		 * @pArAm pArent The pArent of the selection rAnge.
 		 */
-		constructor(range: Range, parent?: SelectionRange);
+		constructor(rAnge: RAnge, pArent?: SelectionRAnge);
 	}
 
-	export interface SelectionRangeProvider {
+	export interfAce SelectionRAngeProvider {
 		/**
-		 * Provide selection ranges for the given positions.
+		 * Provide selection rAnges for the given positions.
 		 *
-		 * Selection ranges should be computed individually and independent for each position. The editor will merge
-		 * and deduplicate ranges but providers must return hierarchies of selection ranges so that a range
-		 * is [contained](#Range.contains) by its parent.
+		 * Selection rAnges should be computed individuAlly And independent for eAch position. The editor will merge
+		 * And deduplicAte rAnges but providers must return hierArchies of selection rAnges so thAt A rAnge
+		 * is [contAined](#RAnge.contAins) by its pArent.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param positions The positions at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @return Selection ranges or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm positions The positions At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @return Selection rAnges or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideSelectionRanges(document: TextDocument, positions: Position[], token: CancellationToken): ProviderResult<SelectionRange[]>;
+		provideSelectionRAnges(document: TextDocument, positions: Position[], token: CAncellAtionToken): ProviderResult<SelectionRAnge[]>;
 	}
 
 	/**
-	 * Represents programming constructs like functions or constructors in the context
-	 * of call hierarchy.
+	 * Represents progrAmming constructs like functions or constructors in the context
+	 * of cAll hierArchy.
 	 */
-	export class CallHierarchyItem {
+	export clAss CAllHierArchyItem {
 		/**
-		 * The name of this item.
+		 * The nAme of this item.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
 		 * The kind of this item.
@@ -4393,14 +4393,14 @@ declare module 'vscode' {
 		kind: SymbolKind;
 
 		/**
-		 * Tags for this item.
+		 * TAgs for this item.
 		 */
-		tags?: ReadonlyArray<SymbolTag>;
+		tAgs?: ReAdonlyArrAy<SymbolTAg>;
 
 		/**
-		 * More detail for this item, e.g. the signature of a function.
+		 * More detAil for this item, e.g. the signAture of A function.
 		 */
-		detail?: string;
+		detAil?: string;
 
 		/**
 		 * The resource identifier of this item.
@@ -4408,286 +4408,286 @@ declare module 'vscode' {
 		uri: Uri;
 
 		/**
-		 * The range enclosing this symbol not including leading/trailing whitespace but everything else, e.g. comments and code.
+		 * The rAnge enclosing this symbol not including leAding/trAiling whitespAce but everything else, e.g. comments And code.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The range that should be selected and revealed when this symbol is being picked, e.g. the name of a function.
-		 * Must be contained by the [`range`](#CallHierarchyItem.range).
+		 * The rAnge thAt should be selected And reveAled when this symbol is being picked, e.g. the nAme of A function.
+		 * Must be contAined by the [`rAnge`](#CAllHierArchyItem.rAnge).
 		 */
-		selectionRange: Range;
+		selectionRAnge: RAnge;
 
 		/**
-		 * Creates a new call hierarchy item.
+		 * CreAtes A new cAll hierArchy item.
 		 */
-		constructor(kind: SymbolKind, name: string, detail: string, uri: Uri, range: Range, selectionRange: Range);
+		constructor(kind: SymbolKind, nAme: string, detAil: string, uri: Uri, rAnge: RAnge, selectionRAnge: RAnge);
 	}
 
 	/**
-	 * Represents an incoming call, e.g. a caller of a method or constructor.
+	 * Represents An incoming cAll, e.g. A cAller of A method or constructor.
 	 */
-	export class CallHierarchyIncomingCall {
+	export clAss CAllHierArchyIncomingCAll {
 
 		/**
-		 * The item that makes the call.
+		 * The item thAt mAkes the cAll.
 		 */
-		from: CallHierarchyItem;
+		from: CAllHierArchyItem;
 
 		/**
-		 * The range at which at which the calls appears. This is relative to the caller
-		 * denoted by [`this.from`](#CallHierarchyIncomingCall.from).
+		 * The rAnge At which At which the cAlls AppeArs. This is relAtive to the cAller
+		 * denoted by [`this.from`](#CAllHierArchyIncomingCAll.from).
 		 */
-		fromRanges: Range[];
+		fromRAnges: RAnge[];
 
 		/**
-		 * Create a new call object.
+		 * CreAte A new cAll object.
 		 *
-		 * @param item The item making the call.
-		 * @param fromRanges The ranges at which the calls appear.
+		 * @pArAm item The item mAking the cAll.
+		 * @pArAm fromRAnges The rAnges At which the cAlls AppeAr.
 		 */
-		constructor(item: CallHierarchyItem, fromRanges: Range[]);
+		constructor(item: CAllHierArchyItem, fromRAnges: RAnge[]);
 	}
 
 	/**
-	 * Represents an outgoing call, e.g. calling a getter from a method or a method from a constructor etc.
+	 * Represents An outgoing cAll, e.g. cAlling A getter from A method or A method from A constructor etc.
 	 */
-	export class CallHierarchyOutgoingCall {
+	export clAss CAllHierArchyOutgoingCAll {
 
 		/**
-		 * The item that is called.
+		 * The item thAt is cAlled.
 		 */
-		to: CallHierarchyItem;
+		to: CAllHierArchyItem;
 
 		/**
-		 * The range at which this item is called. This is the range relative to the caller, e.g the item
-		 * passed to [`provideCallHierarchyOutgoingCalls`](#CallHierarchyProvider.provideCallHierarchyOutgoingCalls)
-		 * and not [`this.to`](#CallHierarchyOutgoingCall.to).
+		 * The rAnge At which this item is cAlled. This is the rAnge relAtive to the cAller, e.g the item
+		 * pAssed to [`provideCAllHierArchyOutgoingCAlls`](#CAllHierArchyProvider.provideCAllHierArchyOutgoingCAlls)
+		 * And not [`this.to`](#CAllHierArchyOutgoingCAll.to).
 		 */
-		fromRanges: Range[];
+		fromRAnges: RAnge[];
 
 		/**
-		 * Create a new call object.
+		 * CreAte A new cAll object.
 		 *
-		 * @param item The item being called
-		 * @param fromRanges The ranges at which the calls appear.
+		 * @pArAm item The item being cAlled
+		 * @pArAm fromRAnges The rAnges At which the cAlls AppeAr.
 		 */
-		constructor(item: CallHierarchyItem, fromRanges: Range[]);
+		constructor(item: CAllHierArchyItem, fromRAnges: RAnge[]);
 	}
 
 	/**
-	 * The call hierarchy provider interface describes the contract between extensions
-	 * and the call hierarchy feature which allows to browse calls and caller of function,
+	 * The cAll hierArchy provider interfAce describes the contrAct between extensions
+	 * And the cAll hierArchy feAture which Allows to browse cAlls And cAller of function,
 	 * methods, constructor etc.
 	 */
-	export interface CallHierarchyProvider {
+	export interfAce CAllHierArchyProvider {
 
 		/**
-		 * Bootstraps call hierarchy by returning the item that is denoted by the given document
-		 * and position. This item will be used as entry into the call graph. Providers should
-		 * return `undefined` or `null` when there is no item at the given location.
+		 * BootstrAps cAll hierArchy by returning the item thAt is denoted by the given document
+		 * And position. This item will be used As entry into the cAll grAph. Providers should
+		 * return `undefined` or `null` when there is no item At the given locAtion.
 		 *
-		 * @param document The document in which the command was invoked.
-		 * @param position The position at which the command was invoked.
-		 * @param token A cancellation token.
-		 * @returns A call hierarchy item or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm document The document in which the commAnd wAs invoked.
+		 * @pArAm position The position At which the commAnd wAs invoked.
+		 * @pArAm token A cAncellAtion token.
+		 * @returns A cAll hierArchy item or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		prepareCallHierarchy(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<CallHierarchyItem | CallHierarchyItem[]>;
+		prepAreCAllHierArchy(document: TextDocument, position: Position, token: CAncellAtionToken): ProviderResult<CAllHierArchyItem | CAllHierArchyItem[]>;
 
 		/**
-		 * Provide all incoming calls for an item, e.g all callers for a method. In graph terms this describes directed
-		 * and annotated edges inside the call graph, e.g the given item is the starting node and the result is the nodes
-		 * that can be reached.
+		 * Provide All incoming cAlls for An item, e.g All cAllers for A method. In grAph terms this describes directed
+		 * And AnnotAted edges inside the cAll grAph, e.g the given item is the stArting node And the result is the nodes
+		 * thAt cAn be reAched.
 		 *
-		 * @param item The hierarchy item for which incoming calls should be computed.
-		 * @param token A cancellation token.
-		 * @returns A set of incoming calls or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm item The hierArchy item for which incoming cAlls should be computed.
+		 * @pArAm token A cAncellAtion token.
+		 * @returns A set of incoming cAlls or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideCallHierarchyIncomingCalls(item: CallHierarchyItem, token: CancellationToken): ProviderResult<CallHierarchyIncomingCall[]>;
+		provideCAllHierArchyIncomingCAlls(item: CAllHierArchyItem, token: CAncellAtionToken): ProviderResult<CAllHierArchyIncomingCAll[]>;
 
 		/**
-		 * Provide all outgoing calls for an item, e.g call calls to functions, methods, or constructors from the given item. In
-		 * graph terms this describes directed and annotated edges inside the call graph, e.g the given item is the starting
-		 * node and the result is the nodes that can be reached.
+		 * Provide All outgoing cAlls for An item, e.g cAll cAlls to functions, methods, or constructors from the given item. In
+		 * grAph terms this describes directed And AnnotAted edges inside the cAll grAph, e.g the given item is the stArting
+		 * node And the result is the nodes thAt cAn be reAched.
 		 *
-		 * @param item The hierarchy item for which outgoing calls should be computed.
-		 * @param token A cancellation token.
-		 * @returns A set of outgoing calls or a thenable that resolves to such. The lack of a result can be
-		 * signaled by returning `undefined` or `null`.
+		 * @pArAm item The hierArchy item for which outgoing cAlls should be computed.
+		 * @pArAm token A cAncellAtion token.
+		 * @returns A set of outgoing cAlls or A thenAble thAt resolves to such. The lAck of A result cAn be
+		 * signAled by returning `undefined` or `null`.
 		 */
-		provideCallHierarchyOutgoingCalls(item: CallHierarchyItem, token: CancellationToken): ProviderResult<CallHierarchyOutgoingCall[]>;
+		provideCAllHierArchyOutgoingCAlls(item: CAllHierArchyItem, token: CAncellAtionToken): ProviderResult<CAllHierArchyOutgoingCAll[]>;
 	}
 
 	/**
-	 * A tuple of two characters, like a pair of
-	 * opening and closing brackets.
+	 * A tuple of two chArActers, like A pAir of
+	 * opening And closing brAckets.
 	 */
-	export type CharacterPair = [string, string];
+	export type ChArActerPAir = [string, string];
 
 	/**
-	 * Describes how comments for a language work.
+	 * Describes how comments for A lAnguAge work.
 	 */
-	export interface CommentRule {
+	export interfAce CommentRule {
 
 		/**
-		 * The line comment token, like `// this is a comment`
+		 * The line comment token, like `// this is A comment`
 		 */
 		lineComment?: string;
 
 		/**
-		 * The block comment character pair, like `/* block comment *&#47;`
+		 * The block comment chArActer pAir, like `/* block comment *&#47;`
 		 */
-		blockComment?: CharacterPair;
+		blockComment?: ChArActerPAir;
 	}
 
 	/**
-	 * Describes indentation rules for a language.
+	 * Describes indentAtion rules for A lAnguAge.
 	 */
-	export interface IndentationRule {
+	export interfAce IndentAtionRule {
 		/**
-		 * If a line matches this pattern, then all the lines after it should be unindented once (until another rule matches).
+		 * If A line mAtches this pAttern, then All the lines After it should be unindented once (until Another rule mAtches).
 		 */
-		decreaseIndentPattern: RegExp;
+		decreAseIndentPAttern: RegExp;
 		/**
-		 * If a line matches this pattern, then all the lines after it should be indented once (until another rule matches).
+		 * If A line mAtches this pAttern, then All the lines After it should be indented once (until Another rule mAtches).
 		 */
-		increaseIndentPattern: RegExp;
+		increAseIndentPAttern: RegExp;
 		/**
-		 * If a line matches this pattern, then **only the next line** after it should be indented once.
+		 * If A line mAtches this pAttern, then **only the next line** After it should be indented once.
 		 */
-		indentNextLinePattern?: RegExp;
+		indentNextLinePAttern?: RegExp;
 		/**
-		 * If a line matches this pattern, then its indentation should not be changed and it should not be evaluated against the other rules.
+		 * If A line mAtches this pAttern, then its indentAtion should not be chAnged And it should not be evAluAted AgAinst the other rules.
 		 */
-		unIndentedLinePattern?: RegExp;
+		unIndentedLinePAttern?: RegExp;
 	}
 
 	/**
-	 * Describes what to do with the indentation when pressing Enter.
+	 * Describes whAt to do with the indentAtion when pressing Enter.
 	 */
 	export enum IndentAction {
 		/**
-		 * Insert new line and copy the previous line's indentation.
+		 * Insert new line And copy the previous line's indentAtion.
 		 */
 		None = 0,
 		/**
-		 * Insert new line and indent once (relative to the previous line's indentation).
+		 * Insert new line And indent once (relAtive to the previous line's indentAtion).
 		 */
 		Indent = 1,
 		/**
 		 * Insert two new lines:
 		 *  - the first one indented which will hold the cursor
-		 *  - the second one at the same indentation level
+		 *  - the second one At the sAme indentAtion level
 		 */
 		IndentOutdent = 2,
 		/**
-		 * Insert new line and outdent once (relative to the previous line's indentation).
+		 * Insert new line And outdent once (relAtive to the previous line's indentAtion).
 		 */
 		Outdent = 3
 	}
 
 	/**
-	 * Describes what to do when pressing Enter.
+	 * Describes whAt to do when pressing Enter.
 	 */
-	export interface EnterAction {
+	export interfAce EnterAction {
 		/**
-		 * Describe what to do with the indentation.
+		 * Describe whAt to do with the indentAtion.
 		 */
 		indentAction: IndentAction;
 		/**
-		 * Describes text to be appended after the new line and after the indentation.
+		 * Describes text to be Appended After the new line And After the indentAtion.
 		 */
-		appendText?: string;
+		AppendText?: string;
 		/**
-		 * Describes the number of characters to remove from the new line's indentation.
+		 * Describes the number of chArActers to remove from the new line's indentAtion.
 		 */
 		removeText?: number;
 	}
 
 	/**
-	 * Describes a rule to be evaluated when pressing Enter.
+	 * Describes A rule to be evAluAted when pressing Enter.
 	 */
-	export interface OnEnterRule {
+	export interfAce OnEnterRule {
 		/**
-		 * This rule will only execute if the text before the cursor matches this regular expression.
+		 * This rule will only execute if the text before the cursor mAtches this regulAr expression.
 		 */
 		beforeText: RegExp;
 		/**
-		 * This rule will only execute if the text after the cursor matches this regular expression.
+		 * This rule will only execute if the text After the cursor mAtches this regulAr expression.
 		 */
-		afterText?: RegExp;
+		AfterText?: RegExp;
 		/**
-		 * The action to execute.
+		 * The Action to execute.
 		 */
-		action: EnterAction;
+		Action: EnterAction;
 	}
 
 	/**
-	 * The language configuration interfaces defines the contract between extensions
-	 * and various editor features, like automatic bracket insertion, automatic indentation etc.
+	 * The lAnguAge configurAtion interfAces defines the contrAct between extensions
+	 * And vArious editor feAtures, like AutomAtic brAcket insertion, AutomAtic indentAtion etc.
 	 */
-	export interface LanguageConfiguration {
+	export interfAce LAnguAgeConfigurAtion {
 		/**
-		 * The language's comment settings.
+		 * The lAnguAge's comment settings.
 		 */
 		comments?: CommentRule;
 		/**
-		 * The language's brackets.
-		 * This configuration implicitly affects pressing Enter around these brackets.
+		 * The lAnguAge's brAckets.
+		 * This configurAtion implicitly Affects pressing Enter Around these brAckets.
 		 */
-		brackets?: CharacterPair[];
+		brAckets?: ChArActerPAir[];
 		/**
-		 * The language's word definition.
-		 * If the language supports Unicode identifiers (e.g. JavaScript), it is preferable
-		 * to provide a word definition that uses exclusion of known separators.
-		 * e.g.: A regex that matches anything except known separators (and dot is allowed to occur in a floating point number):
+		 * The lAnguAge's word definition.
+		 * If the lAnguAge supports Unicode identifiers (e.g. JAvAScript), it is preferAble
+		 * to provide A word definition thAt uses exclusion of known sepArAtors.
+		 * e.g.: A regex thAt mAtches Anything except known sepArAtors (And dot is Allowed to occur in A floAting point number):
 		 *   /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g
 		 */
-		wordPattern?: RegExp;
+		wordPAttern?: RegExp;
 		/**
-		 * The language's indentation settings.
+		 * The lAnguAge's indentAtion settings.
 		 */
-		indentationRules?: IndentationRule;
+		indentAtionRules?: IndentAtionRule;
 		/**
-		 * The language's rules to be evaluated when pressing Enter.
+		 * The lAnguAge's rules to be evAluAted when pressing Enter.
 		 */
 		onEnterRules?: OnEnterRule[];
 
 		/**
-		 * **Deprecated** Do not use.
+		 * **DeprecAted** Do not use.
 		 *
-		 * @deprecated Will be replaced by a better API soon.
+		 * @deprecAted Will be replAced by A better API soon.
 		 */
-		__electricCharacterSupport?: {
+		__electricChArActerSupport?: {
 			/**
-			 * This property is deprecated and will be **ignored** from
+			 * This property is deprecAted And will be **ignored** from
 			 * the editor.
-			 * @deprecated
+			 * @deprecAted
 			 */
-			brackets?: any;
+			brAckets?: Any;
 			/**
-			 * This property is deprecated and not fully supported anymore by
-			 * the editor (scope and lineStart are ignored).
-			 * Use the autoClosingPairs property in the language configuration file instead.
-			 * @deprecated
+			 * This property is deprecAted And not fully supported Anymore by
+			 * the editor (scope And lineStArt Are ignored).
+			 * Use the AutoClosingPAirs property in the lAnguAge configurAtion file insteAd.
+			 * @deprecAted
 			 */
 			docComment?: {
 				scope: string;
 				open: string;
-				lineStart: string;
+				lineStArt: string;
 				close?: string;
 			};
 		};
 
 		/**
-		 * **Deprecated** Do not use.
+		 * **DeprecAted** Do not use.
 		 *
-		 * @deprecated * Use the autoClosingPairs property in the language configuration file instead.
+		 * @deprecAted * Use the AutoClosingPAirs property in the lAnguAge configurAtion file insteAd.
 		 */
-		__characterPairSupport?: {
-			autoClosingPairs: {
+		__chArActerPAirSupport?: {
+			AutoClosingPAirs: {
 				open: string;
 				close: string;
 				notIn?: string[];
@@ -4696,492 +4696,492 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * The configuration target
+	 * The configurAtion tArget
 	 */
-	export enum ConfigurationTarget {
+	export enum ConfigurAtionTArget {
 		/**
-		 * Global configuration
+		 * GlobAl configurAtion
 		*/
-		Global = 1,
+		GlobAl = 1,
 
 		/**
-		 * Workspace configuration
+		 * WorkspAce configurAtion
 		 */
-		Workspace = 2,
+		WorkspAce = 2,
 
 		/**
-		 * Workspace folder configuration
+		 * WorkspAce folder configurAtion
 		 */
-		WorkspaceFolder = 3
+		WorkspAceFolder = 3
 	}
 
 	/**
-	 * Represents the configuration. It is a merged view of
+	 * Represents the configurAtion. It is A merged view of
 	 *
-	 * - *Default Settings*
-	 * - *Global (User) Settings*
-	 * - *Workspace settings*
-	 * - *Workspace Folder settings* - From one of the [Workspace Folders](#workspace.workspaceFolders) under which requested resource belongs to.
-	 * - *Language settings* - Settings defined under requested language.
+	 * - *DefAult Settings*
+	 * - *GlobAl (User) Settings*
+	 * - *WorkspAce settings*
+	 * - *WorkspAce Folder settings* - From one of the [WorkspAce Folders](#workspAce.workspAceFolders) under which requested resource belongs to.
+	 * - *LAnguAge settings* - Settings defined under requested lAnguAge.
 	 *
-	 * The *effective* value (returned by [`get`](#WorkspaceConfiguration.get)) is computed by overriding or merging the values in the following order.
+	 * The *effective* vAlue (returned by [`get`](#WorkspAceConfigurAtion.get)) is computed by overriding or merging the vAlues in the following order.
 	 *
 	 * ```
-	 * `defaultValue` (if defined in `package.json` otherwise derived from the value's type)
-	 * `globalValue` (if defined)
-	 * `workspaceValue` (if defined)
-	 * `workspaceFolderValue` (if defined)
-	 * `defaultLanguageValue` (if defined)
-	 * `globalLanguageValue` (if defined)
-	 * `workspaceLanguageValue` (if defined)
-	 * `workspaceFolderLanguageValue` (if defined)
+	 * `defAultVAlue` (if defined in `pAckAge.json` otherwise derived from the vAlue's type)
+	 * `globAlVAlue` (if defined)
+	 * `workspAceVAlue` (if defined)
+	 * `workspAceFolderVAlue` (if defined)
+	 * `defAultLAnguAgeVAlue` (if defined)
+	 * `globAlLAnguAgeVAlue` (if defined)
+	 * `workspAceLAnguAgeVAlue` (if defined)
+	 * `workspAceFolderLAnguAgeVAlue` (if defined)
 	 * ```
-	 * **Note:** Only `object` value types are merged and all other value types are overridden.
+	 * **Note:** Only `object` vAlue types Are merged And All other vAlue types Are overridden.
 	 *
-	 * Example 1: Overriding
+	 * ExAmple 1: Overriding
 	 *
 	 * ```ts
-	 * defaultValue = 'on';
-	 * globalValue = 'relative'
-	 * workspaceFolderValue = 'off'
-	 * value = 'off'
+	 * defAultVAlue = 'on';
+	 * globAlVAlue = 'relAtive'
+	 * workspAceFolderVAlue = 'off'
+	 * vAlue = 'off'
 	 * ```
 	 *
-	 * Example 2: Language Values
+	 * ExAmple 2: LAnguAge VAlues
 	 *
 	 * ```ts
-	 * defaultValue = 'on';
-	 * globalValue = 'relative'
-	 * workspaceFolderValue = 'off'
-	 * globalLanguageValue = 'on'
-	 * value = 'on'
+	 * defAultVAlue = 'on';
+	 * globAlVAlue = 'relAtive'
+	 * workspAceFolderVAlue = 'off'
+	 * globAlLAnguAgeVAlue = 'on'
+	 * vAlue = 'on'
 	 * ```
 	 *
-	 * Example 3: Object Values
+	 * ExAmple 3: Object VAlues
 	 *
 	 * ```ts
-	 * defaultValue = { "a": 1, "b": 2 };
-	 * globalValue = { "b": 3, "c": 4 };
-	 * value = { "a": 1, "b": 3, "c": 4 };
+	 * defAultVAlue = { "A": 1, "b": 2 };
+	 * globAlVAlue = { "b": 3, "c": 4 };
+	 * vAlue = { "A": 1, "b": 3, "c": 4 };
 	 * ```
 	 *
-	 * *Note:* Workspace and Workspace Folder configurations contains `launch` and `tasks` settings. Their basename will be
-	 * part of the section identifier. The following snippets shows how to retrieve all configurations
-	 * from `launch.json`:
+	 * *Note:* WorkspAce And WorkspAce Folder configurAtions contAins `lAunch` And `tAsks` settings. Their bAsenAme will be
+	 * pArt of the section identifier. The following snippets shows how to retrieve All configurAtions
+	 * from `lAunch.json`:
 	 *
 	 * ```ts
-	 * // launch.json configuration
-	 * const config = workspace.getConfiguration('launch', vscode.workspace.workspaceFolders[0].uri);
+	 * // lAunch.json configurAtion
+	 * const config = workspAce.getConfigurAtion('lAunch', vscode.workspAce.workspAceFolders[0].uri);
 	 *
-	 * // retrieve values
-	 * const values = config.get('configurations');
+	 * // retrieve vAlues
+	 * const vAlues = config.get('configurAtions');
 	 * ```
 	 *
-	 * Refer to [Settings](https://code.visualstudio.com/docs/getstarted/settings) for more information.
+	 * Refer to [Settings](https://code.visuAlstudio.com/docs/getstArted/settings) for more informAtion.
 	 */
-	export interface WorkspaceConfiguration {
+	export interfAce WorkspAceConfigurAtion {
 
 		/**
-		 * Return a value from this configuration.
+		 * Return A vAlue from this configurAtion.
 		 *
-		 * @param section Configuration name, supports _dotted_ names.
-		 * @return The value `section` denotes or `undefined`.
+		 * @pArAm section ConfigurAtion nAme, supports _dotted_ nAmes.
+		 * @return The vAlue `section` denotes or `undefined`.
 		 */
 		get<T>(section: string): T | undefined;
 
 		/**
-		 * Return a value from this configuration.
+		 * Return A vAlue from this configurAtion.
 		 *
-		 * @param section Configuration name, supports _dotted_ names.
-		 * @param defaultValue A value should be returned when no value could be found, is `undefined`.
-		 * @return The value `section` denotes or the default.
+		 * @pArAm section ConfigurAtion nAme, supports _dotted_ nAmes.
+		 * @pArAm defAultVAlue A vAlue should be returned when no vAlue could be found, is `undefined`.
+		 * @return The vAlue `section` denotes or the defAult.
 		 */
-		get<T>(section: string, defaultValue: T): T;
+		get<T>(section: string, defAultVAlue: T): T;
 
 		/**
-		 * Check if this configuration has a certain value.
+		 * Check if this configurAtion hAs A certAin vAlue.
 		 *
-		 * @param section Configuration name, supports _dotted_ names.
+		 * @pArAm section ConfigurAtion nAme, supports _dotted_ nAmes.
 		 * @return `true` if the section doesn't resolve to `undefined`.
 		 */
-		has(section: string): boolean;
+		hAs(section: string): booleAn;
 
 		/**
-		 * Retrieve all information about a configuration setting. A configuration value
-		 * often consists of a *default* value, a global or installation-wide value,
-		 * a workspace-specific value, folder-specific value
-		 * and language-specific values (if [WorkspaceConfiguration](#WorkspaceConfiguration) is scoped to a language).
+		 * Retrieve All informAtion About A configurAtion setting. A configurAtion vAlue
+		 * often consists of A *defAult* vAlue, A globAl or instAllAtion-wide vAlue,
+		 * A workspAce-specific vAlue, folder-specific vAlue
+		 * And lAnguAge-specific vAlues (if [WorkspAceConfigurAtion](#WorkspAceConfigurAtion) is scoped to A lAnguAge).
 		 *
-		 * Also provides all language ids under which the given configuration setting is defined.
+		 * Also provides All lAnguAge ids under which the given configurAtion setting is defined.
 		 *
-		 * *Note:* The configuration name must denote a leaf in the configuration tree
+		 * *Note:* The configurAtion nAme must denote A leAf in the configurAtion tree
 		 * (`editor.fontSize` vs `editor`) otherwise no result is returned.
 		 *
-		 * @param section Configuration name, supports _dotted_ names.
-		 * @return Information about a configuration setting or `undefined`.
+		 * @pArAm section ConfigurAtion nAme, supports _dotted_ nAmes.
+		 * @return InformAtion About A configurAtion setting or `undefined`.
 		 */
 		inspect<T>(section: string): {
 			key: string;
 
-			defaultValue?: T;
-			globalValue?: T;
-			workspaceValue?: T,
-			workspaceFolderValue?: T,
+			defAultVAlue?: T;
+			globAlVAlue?: T;
+			workspAceVAlue?: T,
+			workspAceFolderVAlue?: T,
 
-			defaultLanguageValue?: T;
-			globalLanguageValue?: T;
-			workspaceLanguageValue?: T;
-			workspaceFolderLanguageValue?: T;
+			defAultLAnguAgeVAlue?: T;
+			globAlLAnguAgeVAlue?: T;
+			workspAceLAnguAgeVAlue?: T;
+			workspAceFolderLAnguAgeVAlue?: T;
 
-			languageIds?: string[];
+			lAnguAgeIds?: string[];
 
 		} | undefined;
 
 		/**
-		 * Update a configuration value. The updated configuration values are persisted.
+		 * UpdAte A configurAtion vAlue. The updAted configurAtion vAlues Are persisted.
 		 *
-		 * A value can be changed in
+		 * A vAlue cAn be chAnged in
 		 *
-		 * - [Global settings](#ConfigurationTarget.Global): Changes the value for all instances of the editor.
-		 * - [Workspace settings](#ConfigurationTarget.Workspace): Changes the value for current workspace, if available.
-		 * - [Workspace folder settings](#ConfigurationTarget.WorkspaceFolder): Changes the value for settings from one of the [Workspace Folders](#workspace.workspaceFolders) under which the requested resource belongs to.
-		 * - Language settings: Changes the value for the requested languageId.
+		 * - [GlobAl settings](#ConfigurAtionTArget.GlobAl): ChAnges the vAlue for All instAnces of the editor.
+		 * - [WorkspAce settings](#ConfigurAtionTArget.WorkspAce): ChAnges the vAlue for current workspAce, if AvAilAble.
+		 * - [WorkspAce folder settings](#ConfigurAtionTArget.WorkspAceFolder): ChAnges the vAlue for settings from one of the [WorkspAce Folders](#workspAce.workspAceFolders) under which the requested resource belongs to.
+		 * - LAnguAge settings: ChAnges the vAlue for the requested lAnguAgeId.
 		 *
-		 * *Note:* To remove a configuration value use `undefined`, like so: `config.update('somekey', undefined)`
+		 * *Note:* To remove A configurAtion vAlue use `undefined`, like so: `config.updAte('somekey', undefined)`
 		 *
-		 * @param section Configuration name, supports _dotted_ names.
-		 * @param value The new value.
-		 * @param configurationTarget The [configuration target](#ConfigurationTarget) or a boolean value.
-		 *	- If `true` updates [Global settings](#ConfigurationTarget.Global).
-		 *	- If `false` updates [Workspace settings](#ConfigurationTarget.Workspace).
-		 *	- If `undefined` or `null` updates to [Workspace folder settings](#ConfigurationTarget.WorkspaceFolder) if configuration is resource specific,
-		 * 	otherwise to [Workspace settings](#ConfigurationTarget.Workspace).
-		 * @param overrideInLanguage Whether to update the value in the scope of requested languageId or not.
-		 *	- If `true` updates the value under the requested languageId.
-		 *	- If `undefined` updates the value under the requested languageId only if the configuration is defined for the language.
-		 * @throws error while updating
-		 *	- configuration which is not registered.
-		 *	- window configuration to workspace folder
-		 *	- configuration to workspace or workspace folder when no workspace is opened.
-		 *	- configuration to workspace folder when there is no workspace folder settings.
-		 *	- configuration to workspace folder when [WorkspaceConfiguration](#WorkspaceConfiguration) is not scoped to a resource.
+		 * @pArAm section ConfigurAtion nAme, supports _dotted_ nAmes.
+		 * @pArAm vAlue The new vAlue.
+		 * @pArAm configurAtionTArget The [configurAtion tArget](#ConfigurAtionTArget) or A booleAn vAlue.
+		 *	- If `true` updAtes [GlobAl settings](#ConfigurAtionTArget.GlobAl).
+		 *	- If `fAlse` updAtes [WorkspAce settings](#ConfigurAtionTArget.WorkspAce).
+		 *	- If `undefined` or `null` updAtes to [WorkspAce folder settings](#ConfigurAtionTArget.WorkspAceFolder) if configurAtion is resource specific,
+		 * 	otherwise to [WorkspAce settings](#ConfigurAtionTArget.WorkspAce).
+		 * @pArAm overrideInLAnguAge Whether to updAte the vAlue in the scope of requested lAnguAgeId or not.
+		 *	- If `true` updAtes the vAlue under the requested lAnguAgeId.
+		 *	- If `undefined` updAtes the vAlue under the requested lAnguAgeId only if the configurAtion is defined for the lAnguAge.
+		 * @throws error while updAting
+		 *	- configurAtion which is not registered.
+		 *	- window configurAtion to workspAce folder
+		 *	- configurAtion to workspAce or workspAce folder when no workspAce is opened.
+		 *	- configurAtion to workspAce folder when there is no workspAce folder settings.
+		 *	- configurAtion to workspAce folder when [WorkspAceConfigurAtion](#WorkspAceConfigurAtion) is not scoped to A resource.
 		 */
-		update(section: string, value: any, configurationTarget?: ConfigurationTarget | boolean, overrideInLanguage?: boolean): Thenable<void>;
+		updAte(section: string, vAlue: Any, configurAtionTArget?: ConfigurAtionTArget | booleAn, overrideInLAnguAge?: booleAn): ThenAble<void>;
 
 		/**
-		 * Readable dictionary that backs this configuration.
+		 * ReAdAble dictionAry thAt bAcks this configurAtion.
 		 */
-		readonly [key: string]: any;
+		reAdonly [key: string]: Any;
 	}
 
 	/**
-	 * Represents a location inside a resource, such as a line
-	 * inside a text file.
+	 * Represents A locAtion inside A resource, such As A line
+	 * inside A text file.
 	 */
-	export class Location {
+	export clAss LocAtion {
 
 		/**
-		 * The resource identifier of this location.
+		 * The resource identifier of this locAtion.
 		 */
 		uri: Uri;
 
 		/**
-		 * The document range of this location.
+		 * The document rAnge of this locAtion.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * Creates a new location object.
+		 * CreAtes A new locAtion object.
 		 *
-		 * @param uri The resource identifier.
-		 * @param rangeOrPosition The range or position. Positions will be converted to an empty range.
+		 * @pArAm uri The resource identifier.
+		 * @pArAm rAngeOrPosition The rAnge or position. Positions will be converted to An empty rAnge.
 		 */
-		constructor(uri: Uri, rangeOrPosition: Range | Position);
+		constructor(uri: Uri, rAngeOrPosition: RAnge | Position);
 	}
 
 	/**
-	 * Represents the connection of two locations. Provides additional metadata over normal [locations](#Location),
-	 * including an origin range.
+	 * Represents the connection of two locAtions. Provides AdditionAl metAdAtA over normAl [locAtions](#LocAtion),
+	 * including An origin rAnge.
 	 */
-	export interface LocationLink {
+	export interfAce LocAtionLink {
 		/**
-		 * Span of the origin of this link.
+		 * SpAn of the origin of this link.
 		 *
-		 * Used as the underlined span for mouse definition hover. Defaults to the word range at
+		 * Used As the underlined spAn for mouse definition hover. DefAults to the word rAnge At
 		 * the definition position.
 		 */
-		originSelectionRange?: Range;
+		originSelectionRAnge?: RAnge;
 
 		/**
-		 * The target resource identifier of this link.
+		 * The tArget resource identifier of this link.
 		 */
-		targetUri: Uri;
+		tArgetUri: Uri;
 
 		/**
-		 * The full target range of this link.
+		 * The full tArget rAnge of this link.
 		 */
-		targetRange: Range;
+		tArgetRAnge: RAnge;
 
 		/**
-		 * The span of this link.
+		 * The spAn of this link.
 		 */
-		targetSelectionRange?: Range;
+		tArgetSelectionRAnge?: RAnge;
 	}
 
 	/**
-	 * The event that is fired when diagnostics change.
+	 * The event thAt is fired when diAgnostics chAnge.
 	 */
-	export interface DiagnosticChangeEvent {
+	export interfAce DiAgnosticChAngeEvent {
 
 		/**
-		 * An array of resources for which diagnostics have changed.
+		 * An ArrAy of resources for which diAgnostics hAve chAnged.
 		 */
-		readonly uris: ReadonlyArray<Uri>;
+		reAdonly uris: ReAdonlyArrAy<Uri>;
 	}
 
 	/**
-	 * Represents the severity of diagnostics.
+	 * Represents the severity of diAgnostics.
 	 */
-	export enum DiagnosticSeverity {
+	export enum DiAgnosticSeverity {
 
 		/**
-		 * Something not allowed by the rules of a language or other means.
+		 * Something not Allowed by the rules of A lAnguAge or other meAns.
 		 */
 		Error = 0,
 
 		/**
-		 * Something suspicious but allowed.
+		 * Something suspicious but Allowed.
 		 */
-		Warning = 1,
+		WArning = 1,
 
 		/**
-		 * Something to inform about but not a problem.
+		 * Something to inform About but not A problem.
 		 */
-		Information = 2,
+		InformAtion = 2,
 
 		/**
-		 * Something to hint to a better way of doing it, like proposing
-		 * a refactoring.
+		 * Something to hint to A better wAy of doing it, like proposing
+		 * A refActoring.
 		 */
 		Hint = 3
 	}
 
 	/**
-	 * Represents a related message and source code location for a diagnostic. This should be
-	 * used to point to code locations that cause or related to a diagnostics, e.g. when duplicating
-	 * a symbol in a scope.
+	 * Represents A relAted messAge And source code locAtion for A diAgnostic. This should be
+	 * used to point to code locAtions thAt cAuse or relAted to A diAgnostics, e.g. when duplicAting
+	 * A symbol in A scope.
 	 */
-	export class DiagnosticRelatedInformation {
+	export clAss DiAgnosticRelAtedInformAtion {
 
 		/**
-		 * The location of this related diagnostic information.
+		 * The locAtion of this relAted diAgnostic informAtion.
 		 */
-		location: Location;
+		locAtion: LocAtion;
 
 		/**
-		 * The message of this related diagnostic information.
+		 * The messAge of this relAted diAgnostic informAtion.
 		 */
-		message: string;
+		messAge: string;
 
 		/**
-		 * Creates a new related diagnostic information object.
+		 * CreAtes A new relAted diAgnostic informAtion object.
 		 *
-		 * @param location The location.
-		 * @param message The message.
+		 * @pArAm locAtion The locAtion.
+		 * @pArAm messAge The messAge.
 		 */
-		constructor(location: Location, message: string);
+		constructor(locAtion: LocAtion, messAge: string);
 	}
 
 	/**
-	 * Additional metadata about the type of a diagnostic.
+	 * AdditionAl metAdAtA About the type of A diAgnostic.
 	 */
-	export enum DiagnosticTag {
+	export enum DiAgnosticTAg {
 		/**
-		 * Unused or unnecessary code.
+		 * Unused or unnecessAry code.
 		 *
-		 * Diagnostics with this tag are rendered faded out. The amount of fading
-		 * is controlled by the `"editorUnnecessaryCode.opacity"` theme color. For
-		 * example, `"editorUnnecessaryCode.opacity": "#000000c0"` will render the
-		 * code with 75% opacity. For high contrast themes, use the
-		 * `"editorUnnecessaryCode.border"` theme color to underline unnecessary code
-		 * instead of fading it out.
+		 * DiAgnostics with this tAg Are rendered fAded out. The Amount of fAding
+		 * is controlled by the `"editorUnnecessAryCode.opAcity"` theme color. For
+		 * exAmple, `"editorUnnecessAryCode.opAcity": "#000000c0"` will render the
+		 * code with 75% opAcity. For high contrAst themes, use the
+		 * `"editorUnnecessAryCode.border"` theme color to underline unnecessAry code
+		 * insteAd of fAding it out.
 		 */
-		Unnecessary = 1,
+		UnnecessAry = 1,
 
 		/**
-		 * Deprecated or obsolete code.
+		 * DeprecAted or obsolete code.
 		 *
-		 * Diagnostics with this tag are rendered with a strike through.
+		 * DiAgnostics with this tAg Are rendered with A strike through.
 		 */
-		Deprecated = 2,
+		DeprecAted = 2,
 	}
 
 	/**
-	 * Represents a diagnostic, such as a compiler error or warning. Diagnostic objects
-	 * are only valid in the scope of a file.
+	 * Represents A diAgnostic, such As A compiler error or wArning. DiAgnostic objects
+	 * Are only vAlid in the scope of A file.
 	 */
-	export class Diagnostic {
+	export clAss DiAgnostic {
 
 		/**
-		 * The range to which this diagnostic applies.
+		 * The rAnge to which this diAgnostic Applies.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The human-readable message.
+		 * The humAn-reAdAble messAge.
 		 */
-		message: string;
+		messAge: string;
 
 		/**
-		 * The severity, default is [error](#DiagnosticSeverity.Error).
+		 * The severity, defAult is [error](#DiAgnosticSeverity.Error).
 		 */
-		severity: DiagnosticSeverity;
+		severity: DiAgnosticSeverity;
 
 		/**
-		 * A human-readable string describing the source of this
-		 * diagnostic, e.g. 'typescript' or 'super lint'.
+		 * A humAn-reAdAble string describing the source of this
+		 * diAgnostic, e.g. 'typescript' or 'super lint'.
 		 */
 		source?: string;
 
 		/**
-		 * A code or identifier for this diagnostic.
-		 * Should be used for later processing, e.g. when providing [code actions](#CodeActionContext).
+		 * A code or identifier for this diAgnostic.
+		 * Should be used for lAter processing, e.g. when providing [code Actions](#CodeActionContext).
 		 */
 		code?: string | number | {
 			/**
-			 * A code or identifier for this diagnostic.
-			 * Should be used for later processing, e.g. when providing [code actions](#CodeActionContext).
+			 * A code or identifier for this diAgnostic.
+			 * Should be used for lAter processing, e.g. when providing [code Actions](#CodeActionContext).
 			 */
-			value: string | number;
+			vAlue: string | number;
 
 			/**
-			 * A target URI to open with more information about the diagnostic error.
+			 * A tArget URI to open with more informAtion About the diAgnostic error.
 			 */
-			target: Uri;
+			tArget: Uri;
 		};
 
 		/**
-		 * An array of related diagnostic information, e.g. when symbol-names within
-		 * a scope collide all definitions can be marked via this property.
+		 * An ArrAy of relAted diAgnostic informAtion, e.g. when symbol-nAmes within
+		 * A scope collide All definitions cAn be mArked viA this property.
 		 */
-		relatedInformation?: DiagnosticRelatedInformation[];
+		relAtedInformAtion?: DiAgnosticRelAtedInformAtion[];
 
 		/**
-		 * Additional metadata about the diagnostic.
+		 * AdditionAl metAdAtA About the diAgnostic.
 		 */
-		tags?: DiagnosticTag[];
+		tAgs?: DiAgnosticTAg[];
 
 		/**
-		 * Creates a new diagnostic object.
+		 * CreAtes A new diAgnostic object.
 		 *
-		 * @param range The range to which this diagnostic applies.
-		 * @param message The human-readable message.
-		 * @param severity The severity, default is [error](#DiagnosticSeverity.Error).
+		 * @pArAm rAnge The rAnge to which this diAgnostic Applies.
+		 * @pArAm messAge The humAn-reAdAble messAge.
+		 * @pArAm severity The severity, defAult is [error](#DiAgnosticSeverity.Error).
 		 */
-		constructor(range: Range, message: string, severity?: DiagnosticSeverity);
+		constructor(rAnge: RAnge, messAge: string, severity?: DiAgnosticSeverity);
 	}
 
 	/**
-	 * A diagnostics collection is a container that manages a set of
-	 * [diagnostics](#Diagnostic). Diagnostics are always scopes to a
-	 * diagnostics collection and a resource.
+	 * A diAgnostics collection is A contAiner thAt mAnAges A set of
+	 * [diAgnostics](#DiAgnostic). DiAgnostics Are AlwAys scopes to A
+	 * diAgnostics collection And A resource.
 	 *
-	 * To get an instance of a `DiagnosticCollection` use
-	 * [createDiagnosticCollection](#languages.createDiagnosticCollection).
+	 * To get An instAnce of A `DiAgnosticCollection` use
+	 * [creAteDiAgnosticCollection](#lAnguAges.creAteDiAgnosticCollection).
 	 */
-	export interface DiagnosticCollection {
+	export interfAce DiAgnosticCollection {
 
 		/**
-		 * The name of this diagnostic collection, for instance `typescript`. Every diagnostic
-		 * from this collection will be associated with this name. Also, the task framework uses this
-		 * name when defining [problem matchers](https://code.visualstudio.com/docs/editor/tasks#_defining-a-problem-matcher).
+		 * The nAme of this diAgnostic collection, for instAnce `typescript`. Every diAgnostic
+		 * from this collection will be AssociAted with this nAme. Also, the tAsk frAmework uses this
+		 * nAme when defining [problem mAtchers](https://code.visuAlstudio.com/docs/editor/tAsks#_defining-A-problem-mAtcher).
 		 */
-		readonly name: string;
+		reAdonly nAme: string;
 
 		/**
-		 * Assign diagnostics for given resource. Will replace
-		 * existing diagnostics for that resource.
+		 * Assign diAgnostics for given resource. Will replAce
+		 * existing diAgnostics for thAt resource.
 		 *
-		 * @param uri A resource identifier.
-		 * @param diagnostics Array of diagnostics or `undefined`
+		 * @pArAm uri A resource identifier.
+		 * @pArAm diAgnostics ArrAy of diAgnostics or `undefined`
 		 */
-		set(uri: Uri, diagnostics: ReadonlyArray<Diagnostic> | undefined): void;
+		set(uri: Uri, diAgnostics: ReAdonlyArrAy<DiAgnostic> | undefined): void;
 
 		/**
-		 * Replace all entries in this collection.
+		 * ReplAce All entries in this collection.
 		 *
-		 * Diagnostics of multiple tuples of the same uri will be merged, e.g
-		 * `[[file1, [d1]], [file1, [d2]]]` is equivalent to `[[file1, [d1, d2]]]`.
-		 * If a diagnostics item is `undefined` as in `[file1, undefined]`
-		 * all previous but not subsequent diagnostics are removed.
+		 * DiAgnostics of multiple tuples of the sAme uri will be merged, e.g
+		 * `[[file1, [d1]], [file1, [d2]]]` is equivAlent to `[[file1, [d1, d2]]]`.
+		 * If A diAgnostics item is `undefined` As in `[file1, undefined]`
+		 * All previous but not subsequent diAgnostics Are removed.
 		 *
-		 * @param entries An array of tuples, like `[[file1, [d1, d2]], [file2, [d3, d4, d5]]]`, or `undefined`.
+		 * @pArAm entries An ArrAy of tuples, like `[[file1, [d1, d2]], [file2, [d3, d4, d5]]]`, or `undefined`.
 		 */
-		set(entries: ReadonlyArray<[Uri, ReadonlyArray<Diagnostic> | undefined]>): void;
+		set(entries: ReAdonlyArrAy<[Uri, ReAdonlyArrAy<DiAgnostic> | undefined]>): void;
 
 		/**
-		 * Remove all diagnostics from this collection that belong
-		 * to the provided `uri`. The same as `#set(uri, undefined)`.
+		 * Remove All diAgnostics from this collection thAt belong
+		 * to the provided `uri`. The sAme As `#set(uri, undefined)`.
 		 *
-		 * @param uri A resource identifier.
+		 * @pArAm uri A resource identifier.
 		 */
 		delete(uri: Uri): void;
 
 		/**
-		 * Remove all diagnostics from this collection. The same
-		 * as calling `#set(undefined)`;
+		 * Remove All diAgnostics from this collection. The sAme
+		 * As cAlling `#set(undefined)`;
 		 */
-		clear(): void;
+		cleAr(): void;
 
 		/**
-		 * Iterate over each entry in this collection.
+		 * IterAte over eAch entry in this collection.
 		 *
-		 * @param callback Function to execute for each entry.
-		 * @param thisArg The `this` context used when invoking the handler function.
+		 * @pArAm cAllbAck Function to execute for eAch entry.
+		 * @pArAm thisArg The `this` context used when invoking the hAndler function.
 		 */
-		forEach(callback: (uri: Uri, diagnostics: ReadonlyArray<Diagnostic>, collection: DiagnosticCollection) => any, thisArg?: any): void;
+		forEAch(cAllbAck: (uri: Uri, diAgnostics: ReAdonlyArrAy<DiAgnostic>, collection: DiAgnosticCollection) => Any, thisArg?: Any): void;
 
 		/**
-		 * Get the diagnostics for a given resource. *Note* that you cannot
-		 * modify the diagnostics-array returned from this call.
+		 * Get the diAgnostics for A given resource. *Note* thAt you cAnnot
+		 * modify the diAgnostics-ArrAy returned from this cAll.
 		 *
-		 * @param uri A resource identifier.
-		 * @returns An immutable array of [diagnostics](#Diagnostic) or `undefined`.
+		 * @pArAm uri A resource identifier.
+		 * @returns An immutAble ArrAy of [diAgnostics](#DiAgnostic) or `undefined`.
 		 */
-		get(uri: Uri): ReadonlyArray<Diagnostic> | undefined;
+		get(uri: Uri): ReAdonlyArrAy<DiAgnostic> | undefined;
 
 		/**
-		 * Check if this collection contains diagnostics for a
+		 * Check if this collection contAins diAgnostics for A
 		 * given resource.
 		 *
-		 * @param uri A resource identifier.
-		 * @returns `true` if this collection has diagnostic for the given resource.
+		 * @pArAm uri A resource identifier.
+		 * @returns `true` if this collection hAs diAgnostic for the given resource.
 		 */
-		has(uri: Uri): boolean;
+		hAs(uri: Uri): booleAn;
 
 		/**
-		 * Dispose and free associated resources. Calls
-		 * [clear](#DiagnosticCollection.clear).
+		 * Dispose And free AssociAted resources. CAlls
+		 * [cleAr](#DiAgnosticCollection.cleAr).
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Denotes a location of an editor in the window. Editors can be arranged in a grid
-	 * and each column represents one editor location in that grid by counting the editors
-	 * in order of their appearance.
+	 * Denotes A locAtion of An editor in the window. Editors cAn be ArrAnged in A grid
+	 * And eAch column represents one editor locAtion in thAt grid by counting the editors
+	 * in order of their AppeArAnce.
 	 */
 	export enum ViewColumn {
 		/**
-		 * A *symbolic* editor column representing the currently active column. This value
-		 * can be used when opening editors, but the *resolved* [viewColumn](#TextEditor.viewColumn)-value
-		 * of editors will always be `One`, `Two`, `Three`,... or `undefined` but never `Active`.
+		 * A *symbolic* editor column representing the currently Active column. This vAlue
+		 * cAn be used when opening editors, but the *resolved* [viewColumn](#TextEditor.viewColumn)-vAlue
+		 * of editors will AlwAys be `One`, `Two`, `Three`,... or `undefined` but never `Active`.
 		 */
 		Active = -1,
 		/**
-		 * A *symbolic* editor column representing the column to the side of the active one. This value
-		 * can be used when opening editors, but the *resolved* [viewColumn](#TextEditor.viewColumn)-value
-		 * of editors will always be `One`, `Two`, `Three`,... or `undefined` but never `Beside`.
+		 * A *symbolic* editor column representing the column to the side of the Active one. This vAlue
+		 * cAn be used when opening editors, but the *resolved* [viewColumn](#TextEditor.viewColumn)-vAlue
+		 * of editors will AlwAys be `One`, `Two`, `Three`,... or `undefined` but never `Beside`.
 		 */
 		Beside = -2,
 		/**
@@ -5223,88 +5223,88 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * An output channel is a container for readonly textual information.
+	 * An output chAnnel is A contAiner for reAdonly textuAl informAtion.
 	 *
-	 * To get an instance of an `OutputChannel` use
-	 * [createOutputChannel](#window.createOutputChannel).
+	 * To get An instAnce of An `OutputChAnnel` use
+	 * [creAteOutputChAnnel](#window.creAteOutputChAnnel).
 	 */
-	export interface OutputChannel {
+	export interfAce OutputChAnnel {
 
 		/**
-		 * The human-readable name of this output channel.
+		 * The humAn-reAdAble nAme of this output chAnnel.
 		 */
-		readonly name: string;
+		reAdonly nAme: string;
 
 		/**
-		 * Append the given value to the channel.
+		 * Append the given vAlue to the chAnnel.
 		 *
-		 * @param value A string, falsy values will not be printed.
+		 * @pArAm vAlue A string, fAlsy vAlues will not be printed.
 		 */
-		append(value: string): void;
+		Append(vAlue: string): void;
 
 		/**
-		 * Append the given value and a line feed character
-		 * to the channel.
+		 * Append the given vAlue And A line feed chArActer
+		 * to the chAnnel.
 		 *
-		 * @param value A string, falsy values will be printed.
+		 * @pArAm vAlue A string, fAlsy vAlues will be printed.
 		 */
-		appendLine(value: string): void;
+		AppendLine(vAlue: string): void;
 
 		/**
-		 * Removes all output from the channel.
+		 * Removes All output from the chAnnel.
 		 */
-		clear(): void;
+		cleAr(): void;
 
 		/**
-		 * Reveal this channel in the UI.
+		 * ReveAl this chAnnel in the UI.
 		 *
-		 * @param preserveFocus When `true` the channel will not take focus.
+		 * @pArAm preserveFocus When `true` the chAnnel will not tAke focus.
 		 */
-		show(preserveFocus?: boolean): void;
+		show(preserveFocus?: booleAn): void;
 
 		/**
-		 * Reveal this channel in the UI.
+		 * ReveAl this chAnnel in the UI.
 		 *
-		 * @deprecated Use the overload with just one parameter (`show(preserveFocus?: boolean): void`).
+		 * @deprecAted Use the overloAd with just one pArAmeter (`show(preserveFocus?: booleAn): void`).
 		 *
-		 * @param column This argument is **deprecated** and will be ignored.
-		 * @param preserveFocus When `true` the channel will not take focus.
+		 * @pArAm column This Argument is **deprecAted** And will be ignored.
+		 * @pArAm preserveFocus When `true` the chAnnel will not tAke focus.
 		 */
-		show(column?: ViewColumn, preserveFocus?: boolean): void;
+		show(column?: ViewColumn, preserveFocus?: booleAn): void;
 
 		/**
-		 * Hide this channel from the UI.
+		 * Hide this chAnnel from the UI.
 		 */
 		hide(): void;
 
 		/**
-		 * Dispose and free associated resources.
+		 * Dispose And free AssociAted resources.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Accessibility information which controls screen reader behavior.
+	 * Accessibility informAtion which controls screen reAder behAvior.
 	 */
-	export interface AccessibilityInformation {
+	export interfAce AccessibilityInformAtion {
 		/**
-		 * Label to be read out by a screen reader once the item has focus.
+		 * LAbel to be reAd out by A screen reAder once the item hAs focus.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * Role of the widget which defines how a screen reader interacts with it.
-		 * The role should be set in special cases when for example a tree-like element behaves like a checkbox.
-		 * If role is not specified VS Code will pick the appropriate role automatically.
-		 * More about aria roles can be found here https://w3c.github.io/aria/#widget_roles
+		 * Role of the widget which defines how A screen reAder interActs with it.
+		 * The role should be set in speciAl cAses when for exAmple A tree-like element behAves like A checkbox.
+		 * If role is not specified VS Code will pick the AppropriAte role AutomAticAlly.
+		 * More About AriA roles cAn be found here https://w3c.github.io/AriA/#widget_roles
 		 */
 		role?: string;
 	}
 
 	/**
-	 * Represents the alignment of status bar items.
+	 * Represents the Alignment of stAtus bAr items.
 	 */
-	export enum StatusBarAlignment {
+	export enum StAtusBArAlignment {
 
 		/**
 		 * Aligned to the left side.
@@ -5318,29 +5318,29 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * A status bar item is a status bar contribution that can
-	 * show text and icons and run a command on click.
+	 * A stAtus bAr item is A stAtus bAr contribution thAt cAn
+	 * show text And icons And run A commAnd on click.
 	 */
-	export interface StatusBarItem {
+	export interfAce StAtusBArItem {
 
 		/**
-		 * The alignment of this item.
+		 * The Alignment of this item.
 		 */
-		readonly alignment: StatusBarAlignment;
+		reAdonly Alignment: StAtusBArAlignment;
 
 		/**
-		 * The priority of this item. Higher value means the item should
+		 * The priority of this item. Higher vAlue meAns the item should
 		 * be shown more to the left.
 		 */
-		readonly priority?: number;
+		reAdonly priority?: number;
 
 		/**
-		 * The text to show for the entry. You can embed icons in the text by leveraging the syntax:
+		 * The text to show for the entry. You cAn embed icons in the text by leverAging the syntAx:
 		 *
-		 * `My text $(icon-name) contains icons like $(icon-name) this one.`
+		 * `My text $(icon-nAme) contAins icons like $(icon-nAme) this one.`
 		 *
-		 * Where the icon-name is taken from the [codicon](https://microsoft.github.io/vscode-codicons/dist/codicon.html) icon set, e.g.
-		 * `light-bulb`, `thumbsup`, `zap` etc.
+		 * Where the icon-nAme is tAken from the [codicon](https://microsoft.github.io/vscode-codicons/dist/codicon.html) icon set, e.g.
+		 * `light-bulb`, `thumbsup`, `zAp` etc.
 		 */
 		text: string;
 
@@ -5355,179 +5355,179 @@ declare module 'vscode' {
 		color: string | ThemeColor | undefined;
 
 		/**
-		 * [`Command`](#Command) or identifier of a command to run on click.
+		 * [`CommAnd`](#CommAnd) or identifier of A commAnd to run on click.
 		 *
-		 * The command must be [known](#commands.getCommands).
+		 * The commAnd must be [known](#commAnds.getCommAnds).
 		 *
-		 * Note that if this is a [`Command`](#Command) object, only the [`command`](#Command.command) and [`arguments`](#Command.arguments)
-		 * are used by VS Code.
+		 * Note thAt if this is A [`CommAnd`](#CommAnd) object, only the [`commAnd`](#CommAnd.commAnd) And [`Arguments`](#CommAnd.Arguments)
+		 * Are used by VS Code.
 		 */
-		command: string | Command | undefined;
+		commAnd: string | CommAnd | undefined;
 
 		/**
-		 * Accessibility information used when screen reader interacts with this StatusBar item
+		 * Accessibility informAtion used when screen reAder interActs with this StAtusBAr item
 		 */
-		accessibilityInformation?: AccessibilityInformation;
+		AccessibilityInformAtion?: AccessibilityInformAtion;
 
 		/**
-		 * Shows the entry in the status bar.
+		 * Shows the entry in the stAtus bAr.
 		 */
 		show(): void;
 
 		/**
-		 * Hide the entry in the status bar.
+		 * Hide the entry in the stAtus bAr.
 		 */
 		hide(): void;
 
 		/**
-		 * Dispose and free associated resources. Call
-		 * [hide](#StatusBarItem.hide).
+		 * Dispose And free AssociAted resources. CAll
+		 * [hide](#StAtusBArItem.hide).
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Defines a generalized way of reporting progress updates.
+	 * Defines A generAlized wAy of reporting progress updAtes.
 	 */
-	export interface Progress<T> {
+	export interfAce Progress<T> {
 
 		/**
-		 * Report a progress update.
-		 * @param value A progress item, like a message and/or an
+		 * Report A progress updAte.
+		 * @pArAm vAlue A progress item, like A messAge And/or An
 		 * report on how much work finished
 		 */
-		report(value: T): void;
+		report(vAlue: T): void;
 	}
 
 	/**
-	 * An individual terminal instance within the integrated terminal.
+	 * An individuAl terminAl instAnce within the integrAted terminAl.
 	 */
-	export interface Terminal {
+	export interfAce TerminAl {
 
 		/**
-		 * The name of the terminal.
+		 * The nAme of the terminAl.
 		 */
-		readonly name: string;
+		reAdonly nAme: string;
 
 		/**
 		 * The process ID of the shell process.
 		 */
-		readonly processId: Thenable<number | undefined>;
+		reAdonly processId: ThenAble<number | undefined>;
 
 		/**
-		 * The object used to initialize the terminal, this is useful for example to detecting the
-		 * shell type of when the terminal was not launched by this extension or for detecting what
-		 * folder the shell was launched in.
+		 * The object used to initiAlize the terminAl, this is useful for exAmple to detecting the
+		 * shell type of when the terminAl wAs not lAunched by this extension or for detecting whAt
+		 * folder the shell wAs lAunched in.
 		 */
-		readonly creationOptions: Readonly<TerminalOptions | ExtensionTerminalOptions>;
+		reAdonly creAtionOptions: ReAdonly<TerminAlOptions | ExtensionTerminAlOptions>;
 
 		/**
-		 * The exit status of the terminal, this will be undefined while the terminal is active.
+		 * The exit stAtus of the terminAl, this will be undefined while the terminAl is Active.
 		 *
-		 * **Example:** Show a notification with the exit code when the terminal exits with a
+		 * **ExAmple:** Show A notificAtion with the exit code when the terminAl exits with A
 		 * non-zero exit code.
 		 * ```typescript
-		 * window.onDidCloseTerminal(t => {
-		 *   if (t.exitStatus && t.exitStatus.code) {
-		 *   	vscode.window.showInformationMessage(`Exit code: ${t.exitStatus.code}`);
+		 * window.onDidCloseTerminAl(t => {
+		 *   if (t.exitStAtus && t.exitStAtus.code) {
+		 *   	vscode.window.showInformAtionMessAge(`Exit code: ${t.exitStAtus.code}`);
 		 *   }
 		 * });
 		 * ```
 		 */
-		readonly exitStatus: TerminalExitStatus | undefined;
+		reAdonly exitStAtus: TerminAlExitStAtus | undefined;
 
 		/**
-		 * Send text to the terminal. The text is written to the stdin of the underlying pty process
-		 * (shell) of the terminal.
+		 * Send text to the terminAl. The text is written to the stdin of the underlying pty process
+		 * (shell) of the terminAl.
 		 *
-		 * @param text The text to send.
-		 * @param addNewLine Whether to add a new line to the text being sent, this is normally
-		 * required to run a command in the terminal. The character(s) added are \n or \r\n
-		 * depending on the platform. This defaults to `true`.
+		 * @pArAm text The text to send.
+		 * @pArAm AddNewLine Whether to Add A new line to the text being sent, this is normAlly
+		 * required to run A commAnd in the terminAl. The chArActer(s) Added Are \n or \r\n
+		 * depending on the plAtform. This defAults to `true`.
 		 */
-		sendText(text: string, addNewLine?: boolean): void;
+		sendText(text: string, AddNewLine?: booleAn): void;
 
 		/**
-		 * Show the terminal panel and reveal this terminal in the UI.
+		 * Show the terminAl pAnel And reveAl this terminAl in the UI.
 		 *
-		 * @param preserveFocus When `true` the terminal will not take focus.
+		 * @pArAm preserveFocus When `true` the terminAl will not tAke focus.
 		 */
-		show(preserveFocus?: boolean): void;
+		show(preserveFocus?: booleAn): void;
 
 		/**
-		 * Hide the terminal panel if this terminal is currently showing.
+		 * Hide the terminAl pAnel if this terminAl is currently showing.
 		 */
 		hide(): void;
 
 		/**
-		 * Dispose and free associated resources.
+		 * Dispose And free AssociAted resources.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Provides information on a line in a terminal in order to provide links for it.
+	 * Provides informAtion on A line in A terminAl in order to provide links for it.
 	 */
-	export interface TerminalLinkContext {
+	export interfAce TerminAlLinkContext {
 		/**
-		 * This is the text from the unwrapped line in the terminal.
+		 * This is the text from the unwrApped line in the terminAl.
 		 */
 		line: string;
 
 		/**
-		 * The terminal the link belongs to.
+		 * The terminAl the link belongs to.
 		 */
-		terminal: Terminal;
+		terminAl: TerminAl;
 	}
 
 	/**
-	 * A provider that enables detection and handling of links within terminals.
+	 * A provider thAt enAbles detection And hAndling of links within terminAls.
 	 */
-	export interface TerminalLinkProvider<T extends TerminalLink = TerminalLink> {
+	export interfAce TerminAlLinkProvider<T extends TerminAlLink = TerminAlLink> {
 		/**
-		 * Provide terminal links for the given context. Note that this can be called multiple times
-		 * even before previous calls resolve, make sure to not share global objects (eg. `RegExp`)
-		 * that could have problems when asynchronous usage may overlap.
-		 * @param context Information about what links are being provided for.
-		 * @param token A cancellation token.
-		 * @return A list of terminal links for the given line.
+		 * Provide terminAl links for the given context. Note thAt this cAn be cAlled multiple times
+		 * even before previous cAlls resolve, mAke sure to not shAre globAl objects (eg. `RegExp`)
+		 * thAt could hAve problems when Asynchronous usAge mAy overlAp.
+		 * @pArAm context InformAtion About whAt links Are being provided for.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A list of terminAl links for the given line.
 		 */
-		provideTerminalLinks(context: TerminalLinkContext, token: CancellationToken): ProviderResult<T[]>
+		provideTerminAlLinks(context: TerminAlLinkContext, token: CAncellAtionToken): ProviderResult<T[]>
 
 		/**
-		 * Handle an activated terminal link.
-		 * @param link The link to handle.
+		 * HAndle An ActivAted terminAl link.
+		 * @pArAm link The link to hAndle.
 		 */
-		handleTerminalLink(link: T): ProviderResult<void>;
+		hAndleTerminAlLink(link: T): ProviderResult<void>;
 	}
 
 	/**
-	 * A link on a terminal line.
+	 * A link on A terminAl line.
 	 */
-	export interface TerminalLink {
+	export interfAce TerminAlLink {
 		/**
-		 * The start index of the link on [TerminalLinkContext.line](#TerminalLinkContext.line].
+		 * The stArt index of the link on [TerminAlLinkContext.line](#TerminAlLinkContext.line].
 		 */
-		startIndex: number;
+		stArtIndex: number;
 
 		/**
-		 * The length of the link on [TerminalLinkContext.line](#TerminalLinkContext.line]
+		 * The length of the link on [TerminAlLinkContext.line](#TerminAlLinkContext.line]
 		 */
 		length: number;
 
 		/**
 		 * The tooltip text when you hover over this link.
 		 *
-		 * If a tooltip is provided, is will be displayed in a string that includes instructions on
-		 * how to trigger the link, such as `{0} (ctrl + click)`. The specific instructions vary
-		 * depending on OS, user settings, and localization.
+		 * If A tooltip is provided, is will be displAyed in A string thAt includes instructions on
+		 * how to trigger the link, such As `{0} (ctrl + click)`. The specific instructions vAry
+		 * depending on OS, user settings, And locAlizAtion.
 		 */
 		tooltip?: string;
 	}
 
 	/**
-	 * In a remote window the extension kind describes if an extension
-	 * runs where the UI (window) runs or if an extension runs remotely.
+	 * In A remote window the extension kind describes if An extension
+	 * runs where the UI (window) runs or if An extension runs remotely.
 	 */
 	export enum ExtensionKind {
 
@@ -5539,452 +5539,452 @@ declare module 'vscode' {
 		/**
 		 * Extension runs where the remote extension host runs.
 		 */
-		Workspace = 2
+		WorkspAce = 2
 	}
 
 	/**
-	 * Represents an extension.
+	 * Represents An extension.
 	 *
-	 * To get an instance of an `Extension` use [getExtension](#extensions.getExtension).
+	 * To get An instAnce of An `Extension` use [getExtension](#extensions.getExtension).
 	 */
-	export interface Extension<T> {
+	export interfAce Extension<T> {
 
 		/**
-		 * The canonical extension identifier in the form of: `publisher.name`.
+		 * The cAnonicAl extension identifier in the form of: `publisher.nAme`.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The uri of the directory containing the extension.
+		 * The uri of the directory contAining the extension.
 		 */
-		readonly extensionUri: Uri;
+		reAdonly extensionUri: Uri;
 
 		/**
-		 * The absolute file path of the directory containing this extension. Shorthand
-		 * notation for [Extension.extensionUri.fsPath](#Extension.extensionUri) (independent of the uri scheme).
+		 * The Absolute file pAth of the directory contAining this extension. ShorthAnd
+		 * notAtion for [Extension.extensionUri.fsPAth](#Extension.extensionUri) (independent of the uri scheme).
 		 */
-		readonly extensionPath: string;
+		reAdonly extensionPAth: string;
 
 		/**
-		 * `true` if the extension has been activated.
+		 * `true` if the extension hAs been ActivAted.
 		 */
-		readonly isActive: boolean;
+		reAdonly isActive: booleAn;
 
 		/**
-		 * The parsed contents of the extension's package.json.
+		 * The pArsed contents of the extension's pAckAge.json.
 		 */
-		readonly packageJSON: any;
+		reAdonly pAckAgeJSON: Any;
 
 		/**
-		 * The extension kind describes if an extension runs where the UI runs
-		 * or if an extension runs where the remote extension host runs. The extension kind
-		 * is defined in the `package.json`-file of extensions but can also be refined
-		 * via the `remote.extensionKind`-setting. When no remote extension host exists,
-		 * the value is [`ExtensionKind.UI`](#ExtensionKind.UI).
+		 * The extension kind describes if An extension runs where the UI runs
+		 * or if An extension runs where the remote extension host runs. The extension kind
+		 * is defined in the `pAckAge.json`-file of extensions but cAn Also be refined
+		 * viA the `remote.extensionKind`-setting. When no remote extension host exists,
+		 * the vAlue is [`ExtensionKind.UI`](#ExtensionKind.UI).
 		 */
 		extensionKind: ExtensionKind;
 
 		/**
-		 * The public API exported by this extension. It is an invalid action
-		 * to access this field before this extension has been activated.
+		 * The public API exported by this extension. It is An invAlid Action
+		 * to Access this field before this extension hAs been ActivAted.
 		 */
-		readonly exports: T;
+		reAdonly exports: T;
 
 		/**
-		 * Activates this extension and returns its public API.
+		 * ActivAtes this extension And returns its public API.
 		 *
-		 * @return A promise that will resolve when this extension has been activated.
+		 * @return A promise thAt will resolve when this extension hAs been ActivAted.
 		 */
-		activate(): Thenable<T>;
+		ActivAte(): ThenAble<T>;
 	}
 
 	/**
-	 * The ExtensionMode is provided on the `ExtensionContext` and indicates the
+	 * The ExtensionMode is provided on the `ExtensionContext` And indicAtes the
 	 * mode the specific extension is running in.
 	 */
 	export enum ExtensionMode {
 		/**
-		 * The extension is installed normally (for example, from the marketplace
+		 * The extension is instAlled normAlly (for exAmple, from the mArketplAce
 		 * or VSIX) in VS Code.
 		 */
 		Production = 1,
 
 		/**
-		 * The extension is running from an `--extensionDevelopmentPath` provided
-		 * when launching VS Code.
+		 * The extension is running from An `--extensionDevelopmentPAth` provided
+		 * when lAunching VS Code.
 		 */
 		Development = 2,
 
 		/**
-		 * The extension is running from an `--extensionTestsPath` and
+		 * The extension is running from An `--extensionTestsPAth` And
 		 * the extension host is running unit tests.
 		 */
 		Test = 3,
 	}
 
 	/**
-	 * An extension context is a collection of utilities private to an
+	 * An extension context is A collection of utilities privAte to An
 	 * extension.
 	 *
-	 * An instance of an `ExtensionContext` is provided as the first
-	 * parameter to the `activate`-call of an extension.
+	 * An instAnce of An `ExtensionContext` is provided As the first
+	 * pArAmeter to the `ActivAte`-cAll of An extension.
 	 */
-	export interface ExtensionContext {
+	export interfAce ExtensionContext {
 
 		/**
-		 * An array to which disposables can be added. When this
-		 * extension is deactivated the disposables will be disposed.
+		 * An ArrAy to which disposAbles cAn be Added. When this
+		 * extension is deActivAted the disposAbles will be disposed.
 		 */
-		readonly subscriptions: { dispose(): any }[];
+		reAdonly subscriptions: { dispose(): Any }[];
 
 		/**
-		 * A memento object that stores state in the context
-		 * of the currently opened [workspace](#workspace.workspaceFolders).
+		 * A memento object thAt stores stAte in the context
+		 * of the currently opened [workspAce](#workspAce.workspAceFolders).
 		 */
-		readonly workspaceState: Memento;
+		reAdonly workspAceStAte: Memento;
 
 		/**
-		 * A memento object that stores state independent
-		 * of the current opened [workspace](#workspace.workspaceFolders).
+		 * A memento object thAt stores stAte independent
+		 * of the current opened [workspAce](#workspAce.workspAceFolders).
 		 */
-		readonly globalState: Memento;
+		reAdonly globAlStAte: Memento;
 
 		/**
-		 * The uri of the directory containing the extension.
+		 * The uri of the directory contAining the extension.
 		 */
-		readonly extensionUri: Uri;
+		reAdonly extensionUri: Uri;
 
 		/**
-		 * The absolute file path of the directory containing the extension. Shorthand
-		 * notation for [ExtensionContext.extensionUri.fsPath](#TextDocument.uri) (independent of the uri scheme).
+		 * The Absolute file pAth of the directory contAining the extension. ShorthAnd
+		 * notAtion for [ExtensionContext.extensionUri.fsPAth](#TextDocument.uri) (independent of the uri scheme).
 		 */
-		readonly extensionPath: string;
+		reAdonly extensionPAth: string;
 
 		/**
-		 * Gets the extension's environment variable collection for this workspace, enabling changes
-		 * to be applied to terminal environment variables.
+		 * Gets the extension's environment vAriAble collection for this workspAce, enAbling chAnges
+		 * to be Applied to terminAl environment vAriAbles.
 		 */
-		readonly environmentVariableCollection: EnvironmentVariableCollection;
+		reAdonly environmentVAriAbleCollection: EnvironmentVAriAbleCollection;
 
 		/**
-		 * Get the absolute path of a resource contained in the extension.
+		 * Get the Absolute pAth of A resource contAined in the extension.
 		 *
-		 * *Note* that an absolute uri can be constructed via [`Uri.joinPath`](#Uri.joinPath) and
-		 * [`extensionUri`](#ExtensionContext.extensionUri), e.g. `vscode.Uri.joinPath(context.extensionUri, relativePath);`
+		 * *Note* thAt An Absolute uri cAn be constructed viA [`Uri.joinPAth`](#Uri.joinPAth) And
+		 * [`extensionUri`](#ExtensionContext.extensionUri), e.g. `vscode.Uri.joinPAth(context.extensionUri, relAtivePAth);`
 		 *
-		 * @param relativePath A relative path to a resource contained in the extension.
-		 * @return The absolute path of the resource.
+		 * @pArAm relAtivePAth A relAtive pAth to A resource contAined in the extension.
+		 * @return The Absolute pAth of the resource.
 		 */
-		asAbsolutePath(relativePath: string): string;
+		AsAbsolutePAth(relAtivePAth: string): string;
 
 		/**
-		 * The uri of a workspace specific directory in which the extension
-		 * can store private state. The directory might not exist and creation is
-		 * up to the extension. However, the parent directory is guaranteed to be existent.
-		 * The value is `undefined` when no workspace nor folder has been opened.
+		 * The uri of A workspAce specific directory in which the extension
+		 * cAn store privAte stAte. The directory might not exist And creAtion is
+		 * up to the extension. However, the pArent directory is guArAnteed to be existent.
+		 * The vAlue is `undefined` when no workspAce nor folder hAs been opened.
 		 *
-		 * Use [`workspaceState`](#ExtensionContext.workspaceState) or
-		 * [`globalState`](#ExtensionContext.globalState) to store key value data.
+		 * Use [`workspAceStAte`](#ExtensionContext.workspAceStAte) or
+		 * [`globAlStAte`](#ExtensionContext.globAlStAte) to store key vAlue dAtA.
 		 *
-		 * @see [`workspace.fs`](#FileSystem) for how to read and write files and folders from
-		 *  an uri.
+		 * @see [`workspAce.fs`](#FileSystem) for how to reAd And write files And folders from
+		 *  An uri.
 		 */
-		readonly storageUri: Uri | undefined;
+		reAdonly storAgeUri: Uri | undefined;
 
 		/**
-		 * An absolute file path of a workspace specific directory in which the extension
-		 * can store private state. The directory might not exist on disk and creation is
-		 * up to the extension. However, the parent directory is guaranteed to be existent.
+		 * An Absolute file pAth of A workspAce specific directory in which the extension
+		 * cAn store privAte stAte. The directory might not exist on disk And creAtion is
+		 * up to the extension. However, the pArent directory is guArAnteed to be existent.
 		 *
-		 * Use [`workspaceState`](#ExtensionContext.workspaceState) or
-		 * [`globalState`](#ExtensionContext.globalState) to store key value data.
+		 * Use [`workspAceStAte`](#ExtensionContext.workspAceStAte) or
+		 * [`globAlStAte`](#ExtensionContext.globAlStAte) to store key vAlue dAtA.
 		 *
-		 * @deprecated Use [storageUri](#ExtensionContext.storageUri) instead.
+		 * @deprecAted Use [storAgeUri](#ExtensionContext.storAgeUri) insteAd.
 		 */
-		readonly storagePath: string | undefined;
+		reAdonly storAgePAth: string | undefined;
 
 		/**
-		 * The uri of a directory in which the extension can store global state.
-		 * The directory might not exist on disk and creation is
-		 * up to the extension. However, the parent directory is guaranteed to be existent.
+		 * The uri of A directory in which the extension cAn store globAl stAte.
+		 * The directory might not exist on disk And creAtion is
+		 * up to the extension. However, the pArent directory is guArAnteed to be existent.
 		 *
-		 * Use [`globalState`](#ExtensionContext.globalState) to store key value data.
+		 * Use [`globAlStAte`](#ExtensionContext.globAlStAte) to store key vAlue dAtA.
 		 *
-		 * @see [`workspace.fs`](#FileSystem) for how to read and write files and folders from
-		 *  an uri.
+		 * @see [`workspAce.fs`](#FileSystem) for how to reAd And write files And folders from
+		 *  An uri.
 		 */
-		readonly globalStorageUri: Uri;
+		reAdonly globAlStorAgeUri: Uri;
 
 		/**
-		 * An absolute file path in which the extension can store global state.
-		 * The directory might not exist on disk and creation is
-		 * up to the extension. However, the parent directory is guaranteed to be existent.
+		 * An Absolute file pAth in which the extension cAn store globAl stAte.
+		 * The directory might not exist on disk And creAtion is
+		 * up to the extension. However, the pArent directory is guArAnteed to be existent.
 		 *
-		 * Use [`globalState`](#ExtensionContext.globalState) to store key value data.
+		 * Use [`globAlStAte`](#ExtensionContext.globAlStAte) to store key vAlue dAtA.
 		 *
-		 * @deprecated Use [globalStorageUri](#ExtensionContext.globalStorageUri) instead.
+		 * @deprecAted Use [globAlStorAgeUri](#ExtensionContext.globAlStorAgeUri) insteAd.
 		 */
-		readonly globalStoragePath: string;
+		reAdonly globAlStorAgePAth: string;
 
 		/**
-		 * The uri of a directory in which the extension can create log files.
-		 * The directory might not exist on disk and creation is up to the extension. However,
-		 * the parent directory is guaranteed to be existent.
+		 * The uri of A directory in which the extension cAn creAte log files.
+		 * The directory might not exist on disk And creAtion is up to the extension. However,
+		 * the pArent directory is guArAnteed to be existent.
 		 *
-		 * @see [`workspace.fs`](#FileSystem) for how to read and write files and folders from
-		 *  an uri.
+		 * @see [`workspAce.fs`](#FileSystem) for how to reAd And write files And folders from
+		 *  An uri.
 		 */
-		readonly logUri: Uri;
+		reAdonly logUri: Uri;
 
 		/**
-		 * An absolute file path of a directory in which the extension can create log files.
-		 * The directory might not exist on disk and creation is up to the extension. However,
-		 * the parent directory is guaranteed to be existent.
+		 * An Absolute file pAth of A directory in which the extension cAn creAte log files.
+		 * The directory might not exist on disk And creAtion is up to the extension. However,
+		 * the pArent directory is guArAnteed to be existent.
 		 *
-		 * @deprecated Use [logUri](#ExtensionContext.logUri) instead.
+		 * @deprecAted Use [logUri](#ExtensionContext.logUri) insteAd.
 		 */
-		readonly logPath: string;
+		reAdonly logPAth: string;
 
 		/**
 		 * The mode the extension is running in. This is specific to the current
-		 * extension. One extension may be in `ExtensionMode.Development` while
-		 * other extensions in the host run in `ExtensionMode.Release`.
+		 * extension. One extension mAy be in `ExtensionMode.Development` while
+		 * other extensions in the host run in `ExtensionMode.ReleAse`.
 		 */
-		readonly extensionMode: ExtensionMode;
+		reAdonly extensionMode: ExtensionMode;
 	}
 
 	/**
-	 * A memento represents a storage utility. It can store and retrieve
-	 * values.
+	 * A memento represents A storAge utility. It cAn store And retrieve
+	 * vAlues.
 	 */
-	export interface Memento {
+	export interfAce Memento {
 
 		/**
-		 * Return a value.
+		 * Return A vAlue.
 		 *
-		 * @param key A string.
-		 * @return The stored value or `undefined`.
+		 * @pArAm key A string.
+		 * @return The stored vAlue or `undefined`.
 		 */
 		get<T>(key: string): T | undefined;
 
 		/**
-		 * Return a value.
+		 * Return A vAlue.
 		 *
-		 * @param key A string.
-		 * @param defaultValue A value that should be returned when there is no
-		 * value (`undefined`) with the given key.
-		 * @return The stored value or the defaultValue.
+		 * @pArAm key A string.
+		 * @pArAm defAultVAlue A vAlue thAt should be returned when there is no
+		 * vAlue (`undefined`) with the given key.
+		 * @return The stored vAlue or the defAultVAlue.
 		 */
-		get<T>(key: string, defaultValue: T): T;
+		get<T>(key: string, defAultVAlue: T): T;
 
 		/**
-		 * Store a value. The value must be JSON-stringifyable.
+		 * Store A vAlue. The vAlue must be JSON-stringifyAble.
 		 *
-		 * @param key A string.
-		 * @param value A value. MUST not contain cyclic references.
+		 * @pArAm key A string.
+		 * @pArAm vAlue A vAlue. MUST not contAin cyclic references.
 		 */
-		update(key: string, value: any): Thenable<void>;
+		updAte(key: string, vAlue: Any): ThenAble<void>;
 	}
 
 	/**
-	 * Represents a color theme kind.
+	 * Represents A color theme kind.
 	 */
 	export enum ColorThemeKind {
 		Light = 1,
-		Dark = 2,
-		HighContrast = 3
+		DArk = 2,
+		HighContrAst = 3
 	}
 
 	/**
-	 * Represents a color theme.
+	 * Represents A color theme.
 	 */
-	export interface ColorTheme {
+	export interfAce ColorTheme {
 
 		/**
-		 * The kind of this color theme: light, dark or high contrast.
+		 * The kind of this color theme: light, dArk or high contrAst.
 		 */
-		readonly kind: ColorThemeKind;
+		reAdonly kind: ColorThemeKind;
 	}
 
 	/**
-	 * Controls the behaviour of the terminal's visibility.
+	 * Controls the behAviour of the terminAl's visibility.
 	 */
-	export enum TaskRevealKind {
+	export enum TAskReveAlKind {
 		/**
-		 * Always brings the terminal to front if the task is executed.
+		 * AlwAys brings the terminAl to front if the tAsk is executed.
 		 */
-		Always = 1,
+		AlwAys = 1,
 
 		/**
-		 * Only brings the terminal to front if a problem is detected executing the task
-		 * (e.g. the task couldn't be started because).
+		 * Only brings the terminAl to front if A problem is detected executing the tAsk
+		 * (e.g. the tAsk couldn't be stArted becAuse).
 		 */
 		Silent = 2,
 
 		/**
-		 * The terminal never comes to front when the task is executed.
+		 * The terminAl never comes to front when the tAsk is executed.
 		 */
 		Never = 3
 	}
 
 	/**
-	 * Controls how the task channel is used between tasks
+	 * Controls how the tAsk chAnnel is used between tAsks
 	 */
-	export enum TaskPanelKind {
+	export enum TAskPAnelKind {
 
 		/**
-		 * Shares a panel with other tasks. This is the default.
+		 * ShAres A pAnel with other tAsks. This is the defAult.
 		 */
-		Shared = 1,
+		ShAred = 1,
 
 		/**
-		 * Uses a dedicated panel for this tasks. The panel is not
-		 * shared with other tasks.
+		 * Uses A dedicAted pAnel for this tAsks. The pAnel is not
+		 * shAred with other tAsks.
 		 */
-		Dedicated = 2,
+		DedicAted = 2,
 
 		/**
-		 * Creates a new panel whenever this task is executed.
+		 * CreAtes A new pAnel whenever this tAsk is executed.
 		 */
 		New = 3
 	}
 
 	/**
-	 * Controls how the task is presented in the UI.
+	 * Controls how the tAsk is presented in the UI.
 	 */
-	export interface TaskPresentationOptions {
+	export interfAce TAskPresentAtionOptions {
 		/**
-		 * Controls whether the task output is reveal in the user interface.
-		 * Defaults to `RevealKind.Always`.
+		 * Controls whether the tAsk output is reveAl in the user interfAce.
+		 * DefAults to `ReveAlKind.AlwAys`.
 		 */
-		reveal?: TaskRevealKind;
+		reveAl?: TAskReveAlKind;
 
 		/**
-		 * Controls whether the command associated with the task is echoed
-		 * in the user interface.
+		 * Controls whether the commAnd AssociAted with the tAsk is echoed
+		 * in the user interfAce.
 		 */
-		echo?: boolean;
+		echo?: booleAn;
 
 		/**
-		 * Controls whether the panel showing the task output is taking focus.
+		 * Controls whether the pAnel showing the tAsk output is tAking focus.
 		 */
-		focus?: boolean;
+		focus?: booleAn;
 
 		/**
-		 * Controls if the task panel is used for this task only (dedicated),
-		 * shared between tasks (shared) or if a new panel is created on
-		 * every task execution (new). Defaults to `TaskInstanceKind.Shared`
+		 * Controls if the tAsk pAnel is used for this tAsk only (dedicAted),
+		 * shAred between tAsks (shAred) or if A new pAnel is creAted on
+		 * every tAsk execution (new). DefAults to `TAskInstAnceKind.ShAred`
 		 */
-		panel?: TaskPanelKind;
+		pAnel?: TAskPAnelKind;
 
 		/**
-		 * Controls whether to show the "Terminal will be reused by tasks, press any key to close it" message.
+		 * Controls whether to show the "TerminAl will be reused by tAsks, press Any key to close it" messAge.
 		 */
-		showReuseMessage?: boolean;
+		showReuseMessAge?: booleAn;
 
 		/**
-		 * Controls whether the terminal is cleared before executing the task.
+		 * Controls whether the terminAl is cleAred before executing the tAsk.
 		 */
-		clear?: boolean;
+		cleAr?: booleAn;
 	}
 
 	/**
-	 * A grouping for tasks. The editor by default supports the
-	 * 'Clean', 'Build', 'RebuildAll' and 'Test' group.
+	 * A grouping for tAsks. The editor by defAult supports the
+	 * 'CleAn', 'Build', 'RebuildAll' And 'Test' group.
 	 */
-	export class TaskGroup {
+	export clAss TAskGroup {
 
 		/**
-		 * The clean task group;
+		 * The cleAn tAsk group;
 		 */
-		static Clean: TaskGroup;
+		stAtic CleAn: TAskGroup;
 
 		/**
-		 * The build task group;
+		 * The build tAsk group;
 		 */
-		static Build: TaskGroup;
+		stAtic Build: TAskGroup;
 
 		/**
-		 * The rebuild all task group;
+		 * The rebuild All tAsk group;
 		 */
-		static Rebuild: TaskGroup;
+		stAtic Rebuild: TAskGroup;
 
 		/**
-		 * The test all task group;
+		 * The test All tAsk group;
 		 */
-		static Test: TaskGroup;
+		stAtic Test: TAskGroup;
 
-		private constructor(id: string, label: string);
+		privAte constructor(id: string, lAbel: string);
 	}
 
 	/**
-	 * A structure that defines a task kind in the system.
-	 * The value must be JSON-stringifyable.
+	 * A structure thAt defines A tAsk kind in the system.
+	 * The vAlue must be JSON-stringifyAble.
 	 */
-	export interface TaskDefinition {
+	export interfAce TAskDefinition {
 		/**
-		 * The task definition describing the task provided by an extension.
-		 * Usually a task provider defines more properties to identify
-		 * a task. They need to be defined in the package.json of the
-		 * extension under the 'taskDefinitions' extension point. The npm
-		 * task definition for example looks like this
+		 * The tAsk definition describing the tAsk provided by An extension.
+		 * UsuAlly A tAsk provider defines more properties to identify
+		 * A tAsk. They need to be defined in the pAckAge.json of the
+		 * extension under the 'tAskDefinitions' extension point. The npm
+		 * tAsk definition for exAmple looks like this
 		 * ```typescript
-		 * interface NpmTaskDefinition extends TaskDefinition {
+		 * interfAce NpmTAskDefinition extends TAskDefinition {
 		 *     script: string;
 		 * }
 		 * ```
 		 *
-		 * Note that type identifier starting with a '$' are reserved for internal
-		 * usages and shouldn't be used by extensions.
+		 * Note thAt type identifier stArting with A '$' Are reserved for internAl
+		 * usAges And shouldn't be used by extensions.
 		 */
-		readonly type: string;
+		reAdonly type: string;
 
 		/**
-		 * Additional attributes of a concrete task definition.
+		 * AdditionAl Attributes of A concrete tAsk definition.
 		 */
-		[name: string]: any;
+		[nAme: string]: Any;
 	}
 
 	/**
-	 * Options for a process execution
+	 * Options for A process execution
 	 */
-	export interface ProcessExecutionOptions {
+	export interfAce ProcessExecutionOptions {
 		/**
-		 * The current working directory of the executed program or shell.
-		 * If omitted the tools current workspace root is used.
+		 * The current working directory of the executed progrAm or shell.
+		 * If omitted the tools current workspAce root is used.
 		 */
 		cwd?: string;
 
 		/**
-		 * The additional environment of the executed program or shell. If omitted
-		 * the parent process' environment is used. If provided it is merged with
-		 * the parent process' environment.
+		 * The AdditionAl environment of the executed progrAm or shell. If omitted
+		 * the pArent process' environment is used. If provided it is merged with
+		 * the pArent process' environment.
 		 */
 		env?: { [key: string]: string };
 	}
 
 	/**
-	 * The execution of a task happens as an external process
-	 * without shell interaction.
+	 * The execution of A tAsk hAppens As An externAl process
+	 * without shell interAction.
 	 */
-	export class ProcessExecution {
+	export clAss ProcessExecution {
 
 		/**
-		 * Creates a process execution.
+		 * CreAtes A process execution.
 		 *
-		 * @param process The process to start.
-		 * @param options Optional options for the started process.
+		 * @pArAm process The process to stArt.
+		 * @pArAm options OptionAl options for the stArted process.
 		 */
 		constructor(process: string, options?: ProcessExecutionOptions);
 
 		/**
-		 * Creates a process execution.
+		 * CreAtes A process execution.
 		 *
-		 * @param process The process to start.
-		 * @param args Arguments to be passed to the process.
-		 * @param options Optional options for the started process.
+		 * @pArAm process The process to stArt.
+		 * @pArAm Args Arguments to be pAssed to the process.
+		 * @pArAm options OptionAl options for the stArted process.
 		 */
-		constructor(process: string, args: string[], options?: ProcessExecutionOptions);
+		constructor(process: string, Args: string[], options?: ProcessExecutionOptions);
 
 		/**
 		 * The process to be executed.
@@ -5992,13 +5992,13 @@ declare module 'vscode' {
 		process: string;
 
 		/**
-		 * The arguments passed to the process. Defaults to an empty array.
+		 * The Arguments pAssed to the process. DefAults to An empty ArrAy.
 		 */
-		args: string[];
+		Args: string[];
 
 		/**
 		 * The process options used when the process is executed.
-		 * Defaults to undefined.
+		 * DefAults to undefined.
 		 */
 		options?: ProcessExecutionOptions;
 	}
@@ -6006,49 +6006,49 @@ declare module 'vscode' {
 	/**
 	 * The shell quoting options.
 	 */
-	export interface ShellQuotingOptions {
+	export interfAce ShellQuotingOptions {
 
 		/**
-		 * The character used to do character escaping. If a string is provided only spaces
-		 * are escaped. If a `{ escapeChar, charsToEscape }` literal is provide all characters
-		 * in `charsToEscape` are escaped using the `escapeChar`.
+		 * The chArActer used to do chArActer escAping. If A string is provided only spAces
+		 * Are escAped. If A `{ escApeChAr, chArsToEscApe }` literAl is provide All chArActers
+		 * in `chArsToEscApe` Are escAped using the `escApeChAr`.
 		 */
-		escape?: string | {
+		escApe?: string | {
 			/**
-			 * The escape character.
+			 * The escApe chArActer.
 			 */
-			escapeChar: string;
+			escApeChAr: string;
 			/**
-			 * The characters to escape.
+			 * The chArActers to escApe.
 			 */
-			charsToEscape: string;
+			chArsToEscApe: string;
 		};
 
 		/**
-		 * The character used for strong quoting. The string's length must be 1.
+		 * The chArActer used for strong quoting. The string's length must be 1.
 		 */
 		strong?: string;
 
 		/**
-		 * The character used for weak quoting. The string's length must be 1.
+		 * The chArActer used for weAk quoting. The string's length must be 1.
 		 */
-		weak?: string;
+		weAk?: string;
 	}
 
 	/**
-	 * Options for a shell execution
+	 * Options for A shell execution
 	 */
-	export interface ShellExecutionOptions {
+	export interfAce ShellExecutionOptions {
 		/**
-		 * The shell executable.
+		 * The shell executAble.
 		 */
-		executable?: string;
+		executAble?: string;
 
 		/**
-		 * The arguments to be passed to the shell executable used to run the task. Most shells
-		 * require special arguments to execute a command. For  example `bash` requires the `-c`
-		 * argument to execute a command, `PowerShell` requires `-Command` and `cmd` requires both
-		 * `/d` and `/c`.
+		 * The Arguments to be pAssed to the shell executAble used to run the tAsk. Most shells
+		 * require speciAl Arguments to execute A commAnd. For  exAmple `bAsh` requires the `-c`
+		 * Argument to execute A commAnd, `PowerShell` requires `-CommAnd` And `cmd` requires both
+		 * `/d` And `/c`.
 		 */
 		shellArgs?: string[];
 
@@ -6059,57 +6059,57 @@ declare module 'vscode' {
 
 		/**
 		 * The current working directory of the executed shell.
-		 * If omitted the tools current workspace root is used.
+		 * If omitted the tools current workspAce root is used.
 		 */
 		cwd?: string;
 
 		/**
-		 * The additional environment of the executed shell. If omitted
-		 * the parent process' environment is used. If provided it is merged with
-		 * the parent process' environment.
+		 * The AdditionAl environment of the executed shell. If omitted
+		 * the pArent process' environment is used. If provided it is merged with
+		 * the pArent process' environment.
 		 */
 		env?: { [key: string]: string };
 	}
 
 	/**
-	 * Defines how an argument should be quoted if it contains
-	 * spaces or unsupported characters.
+	 * Defines how An Argument should be quoted if it contAins
+	 * spAces or unsupported chArActers.
 	 */
 	export enum ShellQuoting {
 
 		/**
-		 * Character escaping should be used. This for example
-		 * uses \ on bash and ` on PowerShell.
+		 * ChArActer escAping should be used. This for exAmple
+		 * uses \ on bAsh And ` on PowerShell.
 		 */
-		Escape = 1,
+		EscApe = 1,
 
 		/**
-		 * Strong string quoting should be used. This for example
-		 * uses " for Windows cmd and ' for bash and PowerShell.
-		 * Strong quoting treats arguments as literal strings.
-		 * Under PowerShell echo 'The value is $(2 * 3)' will
-		 * print `The value is $(2 * 3)`
+		 * Strong string quoting should be used. This for exAmple
+		 * uses " for Windows cmd And ' for bAsh And PowerShell.
+		 * Strong quoting treAts Arguments As literAl strings.
+		 * Under PowerShell echo 'The vAlue is $(2 * 3)' will
+		 * print `The vAlue is $(2 * 3)`
 		 */
 		Strong = 2,
 
 		/**
-		 * Weak string quoting should be used. This for example
-		 * uses " for Windows cmd, bash and PowerShell. Weak quoting
-		 * still performs some kind of evaluation inside the quoted
-		 * string.  Under PowerShell echo "The value is $(2 * 3)"
-		 * will print `The value is 6`
+		 * WeAk string quoting should be used. This for exAmple
+		 * uses " for Windows cmd, bAsh And PowerShell. WeAk quoting
+		 * still performs some kind of evAluAtion inside the quoted
+		 * string.  Under PowerShell echo "The vAlue is $(2 * 3)"
+		 * will print `The vAlue is 6`
 		 */
-		Weak = 3
+		WeAk = 3
 	}
 
 	/**
-	 * A string that will be quoted depending on the used shell.
+	 * A string thAt will be quoted depending on the used shell.
 	 */
-	export interface ShellQuotedString {
+	export interfAce ShellQuotedString {
 		/**
-		 * The actual string value.
+		 * The ActuAl string vAlue.
 		 */
-		value: string;
+		vAlue: string;
 
 		/**
 		 * The quoting style to use.
@@ -6117,373 +6117,373 @@ declare module 'vscode' {
 		quoting: ShellQuoting;
 	}
 
-	export class ShellExecution {
+	export clAss ShellExecution {
 		/**
-		 * Creates a shell execution with a full command line.
+		 * CreAtes A shell execution with A full commAnd line.
 		 *
-		 * @param commandLine The command line to execute.
-		 * @param options Optional options for the started the shell.
+		 * @pArAm commAndLine The commAnd line to execute.
+		 * @pArAm options OptionAl options for the stArted the shell.
 		 */
-		constructor(commandLine: string, options?: ShellExecutionOptions);
+		constructor(commAndLine: string, options?: ShellExecutionOptions);
 
 		/**
-		 * Creates a shell execution with a command and arguments. For the real execution VS Code will
-		 * construct a command line from the command and the arguments. This is subject to interpretation
-		 * especially when it comes to quoting. If full control over the command line is needed please
-		 * use the constructor that creates a `ShellExecution` with the full command line.
+		 * CreAtes A shell execution with A commAnd And Arguments. For the reAl execution VS Code will
+		 * construct A commAnd line from the commAnd And the Arguments. This is subject to interpretAtion
+		 * especiAlly when it comes to quoting. If full control over the commAnd line is needed pleAse
+		 * use the constructor thAt creAtes A `ShellExecution` with the full commAnd line.
 		 *
-		 * @param command The command to execute.
-		 * @param args The command arguments.
-		 * @param options Optional options for the started the shell.
+		 * @pArAm commAnd The commAnd to execute.
+		 * @pArAm Args The commAnd Arguments.
+		 * @pArAm options OptionAl options for the stArted the shell.
 		 */
-		constructor(command: string | ShellQuotedString, args: (string | ShellQuotedString)[], options?: ShellExecutionOptions);
+		constructor(commAnd: string | ShellQuotedString, Args: (string | ShellQuotedString)[], options?: ShellExecutionOptions);
 
 		/**
-		 * The shell command line. Is `undefined` if created with a command and arguments.
+		 * The shell commAnd line. Is `undefined` if creAted with A commAnd And Arguments.
 		 */
-		commandLine: string | undefined;
+		commAndLine: string | undefined;
 
 		/**
-		 * The shell command. Is `undefined` if created with a full command line.
+		 * The shell commAnd. Is `undefined` if creAted with A full commAnd line.
 		 */
-		command: string | ShellQuotedString;
+		commAnd: string | ShellQuotedString;
 
 		/**
-		 * The shell args. Is `undefined` if created with a full command line.
+		 * The shell Args. Is `undefined` if creAted with A full commAnd line.
 		 */
-		args: (string | ShellQuotedString)[];
+		Args: (string | ShellQuotedString)[];
 
 		/**
-		 * The shell options used when the command line is executed in a shell.
-		 * Defaults to undefined.
+		 * The shell options used when the commAnd line is executed in A shell.
+		 * DefAults to undefined.
 		 */
 		options?: ShellExecutionOptions;
 	}
 
 	/**
-	 * Class used to execute an extension callback as a task.
+	 * ClAss used to execute An extension cAllbAck As A tAsk.
 	 */
-	export class CustomExecution {
+	export clAss CustomExecution {
 		/**
-		 * Constructs a CustomExecution task object. The callback will be executed the task is run, at which point the
-		 * extension should return the Pseudoterminal it will "run in". The task should wait to do further execution until
-		 * [Pseudoterminal.open](#Pseudoterminal.open) is called. Task cancellation should be handled using
-		 * [Pseudoterminal.close](#Pseudoterminal.close). When the task is complete fire
-		 * [Pseudoterminal.onDidClose](#Pseudoterminal.onDidClose).
-		 * @param process The [Pseudoterminal](#Pseudoterminal) to be used by the task to display output.
-		 * @param callback The callback that will be called when the task is started by a user. Any ${} style variables that
-		 * were in the task definition will be resolved and passed into the callback.
+		 * Constructs A CustomExecution tAsk object. The cAllbAck will be executed the tAsk is run, At which point the
+		 * extension should return the PseudoterminAl it will "run in". The tAsk should wAit to do further execution until
+		 * [PseudoterminAl.open](#PseudoterminAl.open) is cAlled. TAsk cAncellAtion should be hAndled using
+		 * [PseudoterminAl.close](#PseudoterminAl.close). When the tAsk is complete fire
+		 * [PseudoterminAl.onDidClose](#PseudoterminAl.onDidClose).
+		 * @pArAm process The [PseudoterminAl](#PseudoterminAl) to be used by the tAsk to displAy output.
+		 * @pArAm cAllbAck The cAllbAck thAt will be cAlled when the tAsk is stArted by A user. Any ${} style vAriAbles thAt
+		 * were in the tAsk definition will be resolved And pAssed into the cAllbAck.
 		 */
-		constructor(callback: (resolvedDefinition: TaskDefinition) => Thenable<Pseudoterminal>);
+		constructor(cAllbAck: (resolvedDefinition: TAskDefinition) => ThenAble<PseudoterminAl>);
 	}
 
 	/**
-	 * The scope of a task.
+	 * The scope of A tAsk.
 	 */
-	export enum TaskScope {
+	export enum TAskScope {
 		/**
-		 * The task is a global task. Global tasks are currently not supported.
+		 * The tAsk is A globAl tAsk. GlobAl tAsks Are currently not supported.
 		 */
-		Global = 1,
+		GlobAl = 1,
 
 		/**
-		 * The task is a workspace task
+		 * The tAsk is A workspAce tAsk
 		 */
-		Workspace = 2
+		WorkspAce = 2
 	}
 
 	/**
-	 * Run options for a task.
+	 * Run options for A tAsk.
 	 */
-	export interface RunOptions {
+	export interfAce RunOptions {
 		/**
-		 * Controls whether task variables are re-evaluated on rerun.
+		 * Controls whether tAsk vAriAbles Are re-evAluAted on rerun.
 		 */
-		reevaluateOnRerun?: boolean;
+		reevAluAteOnRerun?: booleAn;
 	}
 
 	/**
-	 * A task to execute
+	 * A tAsk to execute
 	 */
-	export class Task {
+	export clAss TAsk {
 
 		/**
-		 * Creates a new task.
+		 * CreAtes A new tAsk.
 		 *
-		 * @param definition The task definition as defined in the taskDefinitions extension point.
-		 * @param scope Specifies the task's scope. It is either a global or a workspace task or a task for a specific workspace folder. Global tasks are currently not supported.
-		 * @param name The task's name. Is presented in the user interface.
-		 * @param source The task's source (e.g. 'gulp', 'npm', ...). Is presented in the user interface.
-		 * @param execution The process or shell execution.
-		 * @param problemMatchers the names of problem matchers to use, like '$tsc'
-		 *  or '$eslint'. Problem matchers can be contributed by an extension using
-		 *  the `problemMatchers` extension point.
+		 * @pArAm definition The tAsk definition As defined in the tAskDefinitions extension point.
+		 * @pArAm scope Specifies the tAsk's scope. It is either A globAl or A workspAce tAsk or A tAsk for A specific workspAce folder. GlobAl tAsks Are currently not supported.
+		 * @pArAm nAme The tAsk's nAme. Is presented in the user interfAce.
+		 * @pArAm source The tAsk's source (e.g. 'gulp', 'npm', ...). Is presented in the user interfAce.
+		 * @pArAm execution The process or shell execution.
+		 * @pArAm problemMAtchers the nAmes of problem mAtchers to use, like '$tsc'
+		 *  or '$eslint'. Problem mAtchers cAn be contributed by An extension using
+		 *  the `problemMAtchers` extension point.
 		 */
-		constructor(taskDefinition: TaskDefinition, scope: WorkspaceFolder | TaskScope.Global | TaskScope.Workspace, name: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMatchers?: string | string[]);
+		constructor(tAskDefinition: TAskDefinition, scope: WorkspAceFolder | TAskScope.GlobAl | TAskScope.WorkspAce, nAme: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMAtchers?: string | string[]);
 
 		/**
-		 * Creates a new task.
+		 * CreAtes A new tAsk.
 		 *
-		 * @deprecated Use the new constructors that allow specifying a scope for the task.
+		 * @deprecAted Use the new constructors thAt Allow specifying A scope for the tAsk.
 		 *
-		 * @param definition The task definition as defined in the taskDefinitions extension point.
-		 * @param name The task's name. Is presented in the user interface.
-		 * @param source The task's source (e.g. 'gulp', 'npm', ...). Is presented in the user interface.
-		 * @param execution The process or shell execution.
-		 * @param problemMatchers the names of problem matchers to use, like '$tsc'
-		 *  or '$eslint'. Problem matchers can be contributed by an extension using
-		 *  the `problemMatchers` extension point.
+		 * @pArAm definition The tAsk definition As defined in the tAskDefinitions extension point.
+		 * @pArAm nAme The tAsk's nAme. Is presented in the user interfAce.
+		 * @pArAm source The tAsk's source (e.g. 'gulp', 'npm', ...). Is presented in the user interfAce.
+		 * @pArAm execution The process or shell execution.
+		 * @pArAm problemMAtchers the nAmes of problem mAtchers to use, like '$tsc'
+		 *  or '$eslint'. Problem mAtchers cAn be contributed by An extension using
+		 *  the `problemMAtchers` extension point.
 		 */
-		constructor(taskDefinition: TaskDefinition, name: string, source: string, execution?: ProcessExecution | ShellExecution, problemMatchers?: string | string[]);
+		constructor(tAskDefinition: TAskDefinition, nAme: string, source: string, execution?: ProcessExecution | ShellExecution, problemMAtchers?: string | string[]);
 
 		/**
-		 * The task's definition.
+		 * The tAsk's definition.
 		 */
-		definition: TaskDefinition;
+		definition: TAskDefinition;
 
 		/**
-		 * The task's scope.
+		 * The tAsk's scope.
 		 */
-		readonly scope?: TaskScope.Global | TaskScope.Workspace | WorkspaceFolder;
+		reAdonly scope?: TAskScope.GlobAl | TAskScope.WorkspAce | WorkspAceFolder;
 
 		/**
-		 * The task's name
+		 * The tAsk's nAme
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * A human-readable string which is rendered less prominently on a separate line in places
-		 * where the task's name is displayed. Supports rendering of [theme icons](#ThemeIcon)
-		 * via the `$(<name>)`-syntax.
+		 * A humAn-reAdAble string which is rendered less prominently on A sepArAte line in plAces
+		 * where the tAsk's nAme is displAyed. Supports rendering of [theme icons](#ThemeIcon)
+		 * viA the `$(<nAme>)`-syntAx.
 		 */
-		detail?: string;
+		detAil?: string;
 
 		/**
-		 * The task's execution engine
+		 * The tAsk's execution engine
 		 */
 		execution?: ProcessExecution | ShellExecution | CustomExecution;
 
 		/**
-		 * Whether the task is a background task or not.
+		 * Whether the tAsk is A bAckground tAsk or not.
 		 */
-		isBackground: boolean;
+		isBAckground: booleAn;
 
 		/**
-		 * A human-readable string describing the source of this shell task, e.g. 'gulp'
-		 * or 'npm'. Supports rendering of [theme icons](#ThemeIcon) via the `$(<name>)`-syntax.
+		 * A humAn-reAdAble string describing the source of this shell tAsk, e.g. 'gulp'
+		 * or 'npm'. Supports rendering of [theme icons](#ThemeIcon) viA the `$(<nAme>)`-syntAx.
 		 */
 		source: string;
 
 		/**
-		 * The task group this tasks belongs to. See TaskGroup
-		 * for a predefined set of available groups.
-		 * Defaults to undefined meaning that the task doesn't
-		 * belong to any special group.
+		 * The tAsk group this tAsks belongs to. See TAskGroup
+		 * for A predefined set of AvAilAble groups.
+		 * DefAults to undefined meAning thAt the tAsk doesn't
+		 * belong to Any speciAl group.
 		 */
-		group?: TaskGroup;
+		group?: TAskGroup;
 
 		/**
-		 * The presentation options. Defaults to an empty literal.
+		 * The presentAtion options. DefAults to An empty literAl.
 		 */
-		presentationOptions: TaskPresentationOptions;
+		presentAtionOptions: TAskPresentAtionOptions;
 
 		/**
-		 * The problem matchers attached to the task. Defaults to an empty
-		 * array.
+		 * The problem mAtchers AttAched to the tAsk. DefAults to An empty
+		 * ArrAy.
 		 */
-		problemMatchers: string[];
+		problemMAtchers: string[];
 
 		/**
-		 * Run options for the task
+		 * Run options for the tAsk
 		 */
 		runOptions: RunOptions;
 	}
 
 	/**
-	 * A task provider allows to add tasks to the task service.
-	 * A task provider is registered via #tasks.registerTaskProvider.
+	 * A tAsk provider Allows to Add tAsks to the tAsk service.
+	 * A tAsk provider is registered viA #tAsks.registerTAskProvider.
 	 */
-	export interface TaskProvider<T extends Task = Task> {
+	export interfAce TAskProvider<T extends TAsk = TAsk> {
 		/**
-		 * Provides tasks.
-		 * @param token A cancellation token.
-		 * @return an array of tasks
+		 * Provides tAsks.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of tAsks
 		 */
-		provideTasks(token: CancellationToken): ProviderResult<T[]>;
+		provideTAsks(token: CAncellAtionToken): ProviderResult<T[]>;
 
 		/**
-		 * Resolves a task that has no [`execution`](#Task.execution) set. Tasks are
-		 * often created from information found in the `tasks.json`-file. Such tasks miss
-		 * the information on how to execute them and a task provider must fill in
-		 * the missing information in the `resolveTask`-method. This method will not be
-		 * called for tasks returned from the above `provideTasks` method since those
-		 * tasks are always fully resolved. A valid default implementation for the
-		 * `resolveTask` method is to return `undefined`.
+		 * Resolves A tAsk thAt hAs no [`execution`](#TAsk.execution) set. TAsks Are
+		 * often creAted from informAtion found in the `tAsks.json`-file. Such tAsks miss
+		 * the informAtion on how to execute them And A tAsk provider must fill in
+		 * the missing informAtion in the `resolveTAsk`-method. This method will not be
+		 * cAlled for tAsks returned from the Above `provideTAsks` method since those
+		 * tAsks Are AlwAys fully resolved. A vAlid defAult implementAtion for the
+		 * `resolveTAsk` method is to return `undefined`.
 		 *
-		 * @param task The task to resolve.
-		 * @param token A cancellation token.
-		 * @return The resolved task
+		 * @pArAm tAsk The tAsk to resolve.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The resolved tAsk
 		 */
-		resolveTask(task: T, token: CancellationToken): ProviderResult<T>;
+		resolveTAsk(tAsk: T, token: CAncellAtionToken): ProviderResult<T>;
 	}
 
 	/**
-	 * An object representing an executed Task. It can be used
-	 * to terminate a task.
+	 * An object representing An executed TAsk. It cAn be used
+	 * to terminAte A tAsk.
 	 *
-	 * This interface is not intended to be implemented.
+	 * This interfAce is not intended to be implemented.
 	 */
-	export interface TaskExecution {
+	export interfAce TAskExecution {
 		/**
-		 * The task that got started.
+		 * The tAsk thAt got stArted.
 		 */
-		task: Task;
+		tAsk: TAsk;
 
 		/**
-		 * Terminates the task execution.
+		 * TerminAtes the tAsk execution.
 		 */
-		terminate(): void;
+		terminAte(): void;
 	}
 
 	/**
-	 * An event signaling the start of a task execution.
+	 * An event signAling the stArt of A tAsk execution.
 	 *
-	 * This interface is not intended to be implemented.
+	 * This interfAce is not intended to be implemented.
 	 */
-	interface TaskStartEvent {
+	interfAce TAskStArtEvent {
 		/**
-		 * The task item representing the task that got started.
+		 * The tAsk item representing the tAsk thAt got stArted.
 		 */
-		readonly execution: TaskExecution;
+		reAdonly execution: TAskExecution;
 	}
 
 	/**
-	 * An event signaling the end of an executed task.
+	 * An event signAling the end of An executed tAsk.
 	 *
-	 * This interface is not intended to be implemented.
+	 * This interfAce is not intended to be implemented.
 	 */
-	interface TaskEndEvent {
+	interfAce TAskEndEvent {
 		/**
-		 * The task item representing the task that finished.
+		 * The tAsk item representing the tAsk thAt finished.
 		 */
-		readonly execution: TaskExecution;
+		reAdonly execution: TAskExecution;
 	}
 
 	/**
-	 * An event signaling the start of a process execution
-	 * triggered through a task
+	 * An event signAling the stArt of A process execution
+	 * triggered through A tAsk
 	 */
-	export interface TaskProcessStartEvent {
+	export interfAce TAskProcessStArtEvent {
 
 		/**
-		 * The task execution for which the process got started.
+		 * The tAsk execution for which the process got stArted.
 		 */
-		readonly execution: TaskExecution;
+		reAdonly execution: TAskExecution;
 
 		/**
 		 * The underlying process id.
 		 */
-		readonly processId: number;
+		reAdonly processId: number;
 	}
 
 	/**
-	 * An event signaling the end of a process execution
-	 * triggered through a task
+	 * An event signAling the end of A process execution
+	 * triggered through A tAsk
 	 */
-	export interface TaskProcessEndEvent {
+	export interfAce TAskProcessEndEvent {
 
 		/**
-		 * The task execution for which the process got started.
+		 * The tAsk execution for which the process got stArted.
 		 */
-		readonly execution: TaskExecution;
+		reAdonly execution: TAskExecution;
 
 		/**
 		 * The process's exit code.
 		 */
-		readonly exitCode: number;
+		reAdonly exitCode: number;
 	}
 
-	export interface TaskFilter {
+	export interfAce TAskFilter {
 		/**
-		 * The task version as used in the tasks.json file.
-		 * The string support the package.json semver notation.
+		 * The tAsk version As used in the tAsks.json file.
+		 * The string support the pAckAge.json semver notAtion.
 		 */
 		version?: string;
 
 		/**
-		 * The task type to return;
+		 * The tAsk type to return;
 		 */
 		type?: string;
 	}
 
 	/**
-	 * Namespace for tasks functionality.
+	 * NAmespAce for tAsks functionAlity.
 	 */
-	export namespace tasks {
+	export nAmespAce tAsks {
 
 		/**
-		 * Register a task provider.
+		 * Register A tAsk provider.
 		 *
-		 * @param type The task kind type this provider is registered for.
-		 * @param provider A task provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm type The tAsk kind type this provider is registered for.
+		 * @pArAm provider A tAsk provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerTaskProvider(type: string, provider: TaskProvider): Disposable;
+		export function registerTAskProvider(type: string, provider: TAskProvider): DisposAble;
 
 		/**
-		 * Fetches all tasks available in the systems. This includes tasks
-		 * from `tasks.json` files as well as tasks from task providers
+		 * Fetches All tAsks AvAilAble in the systems. This includes tAsks
+		 * from `tAsks.json` files As well As tAsks from tAsk providers
 		 * contributed through extensions.
 		 *
-		 * @param filter Optional filter to select tasks of a certain type or version.
+		 * @pArAm filter OptionAl filter to select tAsks of A certAin type or version.
 		 */
-		export function fetchTasks(filter?: TaskFilter): Thenable<Task[]>;
+		export function fetchTAsks(filter?: TAskFilter): ThenAble<TAsk[]>;
 
 		/**
-		 * Executes a task that is managed by VS Code. The returned
-		 * task execution can be used to terminate the task.
+		 * Executes A tAsk thAt is mAnAged by VS Code. The returned
+		 * tAsk execution cAn be used to terminAte the tAsk.
 		 *
-		 * @throws When running a ShellExecution or a ProcessExecution
-		 * task in an environment where a new process cannot be started.
-		 * In such an environment, only CustomExecution tasks can be run.
+		 * @throws When running A ShellExecution or A ProcessExecution
+		 * tAsk in An environment where A new process cAnnot be stArted.
+		 * In such An environment, only CustomExecution tAsks cAn be run.
 		 *
-		 * @param task the task to execute
+		 * @pArAm tAsk the tAsk to execute
 		 */
-		export function executeTask(task: Task): Thenable<TaskExecution>;
+		export function executeTAsk(tAsk: TAsk): ThenAble<TAskExecution>;
 
 		/**
-		 * The currently active task executions or an empty array.
+		 * The currently Active tAsk executions or An empty ArrAy.
 		 */
-		export const taskExecutions: ReadonlyArray<TaskExecution>;
+		export const tAskExecutions: ReAdonlyArrAy<TAskExecution>;
 
 		/**
-		 * Fires when a task starts.
+		 * Fires when A tAsk stArts.
 		 */
-		export const onDidStartTask: Event<TaskStartEvent>;
+		export const onDidStArtTAsk: Event<TAskStArtEvent>;
 
 		/**
-		 * Fires when a task ends.
+		 * Fires when A tAsk ends.
 		 */
-		export const onDidEndTask: Event<TaskEndEvent>;
+		export const onDidEndTAsk: Event<TAskEndEvent>;
 
 		/**
-		 * Fires when the underlying process has been started.
-		 * This event will not fire for tasks that don't
-		 * execute an underlying process.
+		 * Fires when the underlying process hAs been stArted.
+		 * This event will not fire for tAsks thAt don't
+		 * execute An underlying process.
 		 */
-		export const onDidStartTaskProcess: Event<TaskProcessStartEvent>;
+		export const onDidStArtTAskProcess: Event<TAskProcessStArtEvent>;
 
 		/**
-		 * Fires when the underlying process has ended.
-		 * This event will not fire for tasks that don't
-		 * execute an underlying process.
+		 * Fires when the underlying process hAs ended.
+		 * This event will not fire for tAsks thAt don't
+		 * execute An underlying process.
 		 */
-		export const onDidEndTaskProcess: Event<TaskProcessEndEvent>;
+		export const onDidEndTAskProcess: Event<TAskProcessEndEvent>;
 	}
 
 	/**
-	 * Enumeration of file types. The types `File` and `Directory` can also be
-	 * a symbolic links, in that case use `FileType.File | FileType.SymbolicLink` and
+	 * EnumerAtion of file types. The types `File` And `Directory` cAn Also be
+	 * A symbolic links, in thAt cAse use `FileType.File | FileType.SymbolicLink` And
 	 * `FileType.Directory | FileType.SymbolicLink`.
 	 */
 	export enum FileType {
@@ -6492,7 +6492,7 @@ declare module 'vscode' {
 		 */
 		Unknown = 0,
 		/**
-		 * A regular file.
+		 * A regulAr file.
 		 */
 		File = 1,
 		/**
@@ -6500,415 +6500,415 @@ declare module 'vscode' {
 		 */
 		Directory = 2,
 		/**
-		 * A symbolic link to a file.
+		 * A symbolic link to A file.
 		 */
 		SymbolicLink = 64
 	}
 
 	/**
-	 * The `FileStat`-type represents metadata about a file
+	 * The `FileStAt`-type represents metAdAtA About A file
 	 */
-	export interface FileStat {
+	export interfAce FileStAt {
 		/**
-		 * The type of the file, e.g. is a regular file, a directory, or symbolic link
-		 * to a file.
+		 * The type of the file, e.g. is A regulAr file, A directory, or symbolic link
+		 * to A file.
 		 *
-		 * *Note:* This value might be a bitmask, e.g. `FileType.File | FileType.SymbolicLink`.
+		 * *Note:* This vAlue might be A bitmAsk, e.g. `FileType.File | FileType.SymbolicLink`.
 		 */
 		type: FileType;
 		/**
-		 * The creation timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+		 * The creAtion timestAmp in milliseconds elApsed since JAnuAry 1, 1970 00:00:00 UTC.
 		 */
 		ctime: number;
 		/**
-		 * The modification timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+		 * The modificAtion timestAmp in milliseconds elApsed since JAnuAry 1, 1970 00:00:00 UTC.
 		 *
-		 * *Note:* If the file changed, it is important to provide an updated `mtime` that advanced
-		 * from the previous value. Otherwise there may be optimizations in place that will not show
-		 * the updated file contents in an editor for example.
+		 * *Note:* If the file chAnged, it is importAnt to provide An updAted `mtime` thAt AdvAnced
+		 * from the previous vAlue. Otherwise there mAy be optimizAtions in plAce thAt will not show
+		 * the updAted file contents in An editor for exAmple.
 		 */
 		mtime: number;
 		/**
 		 * The size in bytes.
 		 *
-		 * *Note:* If the file changed, it is important to provide an updated `size`. Otherwise there
-		 * may be optimizations in place that will not show the updated file contents in an editor for
-		 * example.
+		 * *Note:* If the file chAnged, it is importAnt to provide An updAted `size`. Otherwise there
+		 * mAy be optimizAtions in plAce thAt will not show the updAted file contents in An editor for
+		 * exAmple.
 		 */
 		size: number;
 	}
 
 	/**
-	 * A type that filesystem providers should use to signal errors.
+	 * A type thAt filesystem providers should use to signAl errors.
 	 *
-	 * This class has factory methods for common error-cases, like `FileNotFound` when
-	 * a file or folder doesn't exist, use them like so: `throw vscode.FileSystemError.FileNotFound(someUri);`
+	 * This clAss hAs fActory methods for common error-cAses, like `FileNotFound` when
+	 * A file or folder doesn't exist, use them like so: `throw vscode.FileSystemError.FileNotFound(someUri);`
 	 */
-	export class FileSystemError extends Error {
+	export clAss FileSystemError extends Error {
 
 		/**
-		 * Create an error to signal that a file or folder wasn't found.
-		 * @param messageOrUri Message or uri.
+		 * CreAte An error to signAl thAt A file or folder wAsn't found.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		static FileNotFound(messageOrUri?: string | Uri): FileSystemError;
+		stAtic FileNotFound(messAgeOrUri?: string | Uri): FileSystemError;
 
 		/**
-		 * Create an error to signal that a file or folder already exists, e.g. when
-		 * creating but not overwriting a file.
-		 * @param messageOrUri Message or uri.
+		 * CreAte An error to signAl thAt A file or folder AlreAdy exists, e.g. when
+		 * creAting but not overwriting A file.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		static FileExists(messageOrUri?: string | Uri): FileSystemError;
+		stAtic FileExists(messAgeOrUri?: string | Uri): FileSystemError;
 
 		/**
-		 * Create an error to signal that a file is not a folder.
-		 * @param messageOrUri Message or uri.
+		 * CreAte An error to signAl thAt A file is not A folder.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		static FileNotADirectory(messageOrUri?: string | Uri): FileSystemError;
+		stAtic FileNotADirectory(messAgeOrUri?: string | Uri): FileSystemError;
 
 		/**
-		 * Create an error to signal that a file is a folder.
-		 * @param messageOrUri Message or uri.
+		 * CreAte An error to signAl thAt A file is A folder.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		static FileIsADirectory(messageOrUri?: string | Uri): FileSystemError;
+		stAtic FileIsADirectory(messAgeOrUri?: string | Uri): FileSystemError;
 
 		/**
-		 * Create an error to signal that an operation lacks required permissions.
-		 * @param messageOrUri Message or uri.
+		 * CreAte An error to signAl thAt An operAtion lAcks required permissions.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		static NoPermissions(messageOrUri?: string | Uri): FileSystemError;
+		stAtic NoPermissions(messAgeOrUri?: string | Uri): FileSystemError;
 
 		/**
-		 * Create an error to signal that the file system is unavailable or too busy to
-		 * complete a request.
-		 * @param messageOrUri Message or uri.
+		 * CreAte An error to signAl thAt the file system is unAvAilAble or too busy to
+		 * complete A request.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		static Unavailable(messageOrUri?: string | Uri): FileSystemError;
+		stAtic UnAvAilAble(messAgeOrUri?: string | Uri): FileSystemError;
 
 		/**
-		 * Creates a new filesystem error.
+		 * CreAtes A new filesystem error.
 		 *
-		 * @param messageOrUri Message or uri.
+		 * @pArAm messAgeOrUri MessAge or uri.
 		 */
-		constructor(messageOrUri?: string | Uri);
+		constructor(messAgeOrUri?: string | Uri);
 
 		/**
-		 * A code that identifies this error.
+		 * A code thAt identifies this error.
 		 *
-		 * Possible values are names of errors, like [`FileNotFound`](#FileSystemError.FileNotFound),
+		 * Possible vAlues Are nAmes of errors, like [`FileNotFound`](#FileSystemError.FileNotFound),
 		 * or `Unknown` for unspecified errors.
 		 */
-		readonly code: string;
+		reAdonly code: string;
 	}
 
 	/**
-	 * Enumeration of file change types.
+	 * EnumerAtion of file chAnge types.
 	 */
-	export enum FileChangeType {
+	export enum FileChAngeType {
 
 		/**
-		 * The contents or metadata of a file have changed.
+		 * The contents or metAdAtA of A file hAve chAnged.
 		 */
-		Changed = 1,
+		ChAnged = 1,
 
 		/**
-		 * A file has been created.
+		 * A file hAs been creAted.
 		 */
-		Created = 2,
+		CreAted = 2,
 
 		/**
-		 * A file has been deleted.
+		 * A file hAs been deleted.
 		 */
 		Deleted = 3,
 	}
 
 	/**
-	 * The event filesystem providers must use to signal a file change.
+	 * The event filesystem providers must use to signAl A file chAnge.
 	 */
-	export interface FileChangeEvent {
+	export interfAce FileChAngeEvent {
 
 		/**
-		 * The type of change.
+		 * The type of chAnge.
 		 */
-		readonly type: FileChangeType;
+		reAdonly type: FileChAngeType;
 
 		/**
-		 * The uri of the file that has changed.
+		 * The uri of the file thAt hAs chAnged.
 		 */
-		readonly uri: Uri;
+		reAdonly uri: Uri;
 	}
 
 	/**
-	 * The filesystem provider defines what the editor needs to read, write, discover,
-	 * and to manage files and folders. It allows extensions to serve files from remote places,
-	 * like ftp-servers, and to seamlessly integrate those into the editor.
+	 * The filesystem provider defines whAt the editor needs to reAd, write, discover,
+	 * And to mAnAge files And folders. It Allows extensions to serve files from remote plAces,
+	 * like ftp-servers, And to seAmlessly integrAte those into the editor.
 	 *
-	 * * *Note 1:* The filesystem provider API works with [uris](#Uri) and assumes hierarchical
-	 * paths, e.g. `foo:/my/path` is a child of `foo:/my/` and a parent of `foo:/my/path/deeper`.
-	 * * *Note 2:* There is an activation event `onFileSystem:<scheme>` that fires when a file
-	 * or folder is being accessed.
-	 * * *Note 3:* The word 'file' is often used to denote all [kinds](#FileType) of files, e.g.
-	 * folders, symbolic links, and regular files.
+	 * * *Note 1:* The filesystem provider API works with [uris](#Uri) And Assumes hierArchicAl
+	 * pAths, e.g. `foo:/my/pAth` is A child of `foo:/my/` And A pArent of `foo:/my/pAth/deeper`.
+	 * * *Note 2:* There is An ActivAtion event `onFileSystem:<scheme>` thAt fires when A file
+	 * or folder is being Accessed.
+	 * * *Note 3:* The word 'file' is often used to denote All [kinds](#FileType) of files, e.g.
+	 * folders, symbolic links, And regulAr files.
 	 */
-	export interface FileSystemProvider {
+	export interfAce FileSystemProvider {
 
 		/**
-		 * An event to signal that a resource has been created, changed, or deleted. This
-		 * event should fire for resources that are being [watched](#FileSystemProvider.watch)
+		 * An event to signAl thAt A resource hAs been creAted, chAnged, or deleted. This
+		 * event should fire for resources thAt Are being [wAtched](#FileSystemProvider.wAtch)
 		 * by clients of this provider.
 		 *
-		 * *Note:* It is important that the metadata of the file that changed provides an
-		 * updated `mtime` that advanced from the previous value in the [stat](#FileStat) and a
-		 * correct `size` value. Otherwise there may be optimizations in place that will not show
-		 * the change in an editor for example.
+		 * *Note:* It is importAnt thAt the metAdAtA of the file thAt chAnged provides An
+		 * updAted `mtime` thAt AdvAnced from the previous vAlue in the [stAt](#FileStAt) And A
+		 * correct `size` vAlue. Otherwise there mAy be optimizAtions in plAce thAt will not show
+		 * the chAnge in An editor for exAmple.
 		 */
-		readonly onDidChangeFile: Event<FileChangeEvent[]>;
+		reAdonly onDidChAngeFile: Event<FileChAngeEvent[]>;
 
 		/**
 		 * Subscribe to events in the file or folder denoted by `uri`.
 		 *
-		 * The editor will call this function for files and folders. In the latter case, the
-		 * options differ from defaults, e.g. what files/folders to exclude from watching
-		 * and if subfolders, sub-subfolder, etc. should be watched (`recursive`).
+		 * The editor will cAll this function for files And folders. In the lAtter cAse, the
+		 * options differ from defAults, e.g. whAt files/folders to exclude from wAtching
+		 * And if subfolders, sub-subfolder, etc. should be wAtched (`recursive`).
 		 *
-		 * @param uri The uri of the file to be watched.
-		 * @param options Configures the watch.
-		 * @returns A disposable that tells the provider to stop watching the `uri`.
+		 * @pArAm uri The uri of the file to be wAtched.
+		 * @pArAm options Configures the wAtch.
+		 * @returns A disposAble thAt tells the provider to stop wAtching the `uri`.
 		 */
-		watch(uri: Uri, options: { recursive: boolean; excludes: string[] }): Disposable;
+		wAtch(uri: Uri, options: { recursive: booleAn; excludes: string[] }): DisposAble;
 
 		/**
-		 * Retrieve metadata about a file.
+		 * Retrieve metAdAtA About A file.
 		 *
-		 * Note that the metadata for symbolic links should be the metadata of the file they refer to.
-		 * Still, the [SymbolicLink](#FileType.SymbolicLink)-type must be used in addition to the actual type, e.g.
+		 * Note thAt the metAdAtA for symbolic links should be the metAdAtA of the file they refer to.
+		 * Still, the [SymbolicLink](#FileType.SymbolicLink)-type must be used in Addition to the ActuAl type, e.g.
 		 * `FileType.SymbolicLink | FileType.Directory`.
 		 *
-		 * @param uri The uri of the file to retrieve metadata about.
-		 * @return The file metadata about the file.
+		 * @pArAm uri The uri of the file to retrieve metAdAtA About.
+		 * @return The file metAdAtA About the file.
 		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist.
 		 */
-		stat(uri: Uri): FileStat | Thenable<FileStat>;
+		stAt(uri: Uri): FileStAt | ThenAble<FileStAt>;
 
 		/**
-		 * Retrieve all entries of a [directory](#FileType.Directory).
+		 * Retrieve All entries of A [directory](#FileType.Directory).
 		 *
-		 * @param uri The uri of the folder.
-		 * @return An array of name/type-tuples or a thenable that resolves to such.
+		 * @pArAm uri The uri of the folder.
+		 * @return An ArrAy of nAme/type-tuples or A thenAble thAt resolves to such.
 		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist.
 		 */
-		readDirectory(uri: Uri): [string, FileType][] | Thenable<[string, FileType][]>;
+		reAdDirectory(uri: Uri): [string, FileType][] | ThenAble<[string, FileType][]>;
 
 		/**
-		 * Create a new directory (Note, that new files are created via `write`-calls).
+		 * CreAte A new directory (Note, thAt new files Are creAted viA `write`-cAlls).
 		 *
-		 * @param uri The uri of the new folder.
-		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when the parent of `uri` doesn't exist, e.g. no mkdirp-logic required.
-		 * @throws [`FileExists`](#FileSystemError.FileExists) when `uri` already exists.
-		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions aren't sufficient.
+		 * @pArAm uri The uri of the new folder.
+		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when the pArent of `uri` doesn't exist, e.g. no mkdirp-logic required.
+		 * @throws [`FileExists`](#FileSystemError.FileExists) when `uri` AlreAdy exists.
+		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions Aren't sufficient.
 		 */
-		createDirectory(uri: Uri): void | Thenable<void>;
+		creAteDirectory(uri: Uri): void | ThenAble<void>;
 
 		/**
-		 * Read the entire contents of a file.
+		 * ReAd the entire contents of A file.
 		 *
-		 * @param uri The uri of the file.
-		 * @return An array of bytes or a thenable that resolves to such.
+		 * @pArAm uri The uri of the file.
+		 * @return An ArrAy of bytes or A thenAble thAt resolves to such.
 		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist.
 		 */
-		readFile(uri: Uri): Uint8Array | Thenable<Uint8Array>;
+		reAdFile(uri: Uri): Uint8ArrAy | ThenAble<Uint8ArrAy>;
 
 		/**
-		 * Write data to a file, replacing its entire contents.
+		 * Write dAtA to A file, replAcing its entire contents.
 		 *
-		 * @param uri The uri of the file.
-		 * @param content The new content of the file.
-		 * @param options Defines if missing files should or must be created.
-		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist and `create` is not set.
-		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when the parent of `uri` doesn't exist and `create` is set, e.g. no mkdirp-logic required.
-		 * @throws [`FileExists`](#FileSystemError.FileExists) when `uri` already exists, `create` is set but `overwrite` is not set.
-		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions aren't sufficient.
+		 * @pArAm uri The uri of the file.
+		 * @pArAm content The new content of the file.
+		 * @pArAm options Defines if missing files should or must be creAted.
+		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist And `creAte` is not set.
+		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when the pArent of `uri` doesn't exist And `creAte` is set, e.g. no mkdirp-logic required.
+		 * @throws [`FileExists`](#FileSystemError.FileExists) when `uri` AlreAdy exists, `creAte` is set but `overwrite` is not set.
+		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions Aren't sufficient.
 		 */
-		writeFile(uri: Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean }): void | Thenable<void>;
+		writeFile(uri: Uri, content: Uint8ArrAy, options: { creAte: booleAn, overwrite: booleAn }): void | ThenAble<void>;
 
 		/**
-		 * Delete a file.
+		 * Delete A file.
 		 *
-		 * @param uri The resource that is to be deleted.
-		 * @param options Defines if deletion of folders is recursive.
+		 * @pArAm uri The resource thAt is to be deleted.
+		 * @pArAm options Defines if deletion of folders is recursive.
 		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist.
-		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions aren't sufficient.
+		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions Aren't sufficient.
 		 */
-		delete(uri: Uri, options: { recursive: boolean }): void | Thenable<void>;
+		delete(uri: Uri, options: { recursive: booleAn }): void | ThenAble<void>;
 
 		/**
-		 * Rename a file or folder.
+		 * RenAme A file or folder.
 		 *
-		 * @param oldUri The existing file.
-		 * @param newUri The new location.
-		 * @param options Defines if existing files should be overwritten.
+		 * @pArAm oldUri The existing file.
+		 * @pArAm newUri The new locAtion.
+		 * @pArAm options Defines if existing files should be overwritten.
 		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `oldUri` doesn't exist.
-		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when parent of `newUri` doesn't exist, e.g. no mkdirp-logic required.
-		 * @throws [`FileExists`](#FileSystemError.FileExists) when `newUri` exists and when the `overwrite` option is not `true`.
-		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions aren't sufficient.
+		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when pArent of `newUri` doesn't exist, e.g. no mkdirp-logic required.
+		 * @throws [`FileExists`](#FileSystemError.FileExists) when `newUri` exists And when the `overwrite` option is not `true`.
+		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions Aren't sufficient.
 		 */
-		rename(oldUri: Uri, newUri: Uri, options: { overwrite: boolean }): void | Thenable<void>;
+		renAme(oldUri: Uri, newUri: Uri, options: { overwrite: booleAn }): void | ThenAble<void>;
 
 		/**
-		 * Copy files or folders. Implementing this function is optional but it will speedup
-		 * the copy operation.
+		 * Copy files or folders. Implementing this function is optionAl but it will speedup
+		 * the copy operAtion.
 		 *
-		 * @param source The existing file.
-		 * @param destination The destination location.
-		 * @param options Defines if existing files should be overwritten.
+		 * @pArAm source The existing file.
+		 * @pArAm destinAtion The destinAtion locAtion.
+		 * @pArAm options Defines if existing files should be overwritten.
 		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `source` doesn't exist.
-		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when parent of `destination` doesn't exist, e.g. no mkdirp-logic required.
-		 * @throws [`FileExists`](#FileSystemError.FileExists) when `destination` exists and when the `overwrite` option is not `true`.
-		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions aren't sufficient.
+		 * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when pArent of `destinAtion` doesn't exist, e.g. no mkdirp-logic required.
+		 * @throws [`FileExists`](#FileSystemError.FileExists) when `destinAtion` exists And when the `overwrite` option is not `true`.
+		 * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions Aren't sufficient.
 		 */
-		copy?(source: Uri, destination: Uri, options: { overwrite: boolean }): void | Thenable<void>;
+		copy?(source: Uri, destinAtion: Uri, options: { overwrite: booleAn }): void | ThenAble<void>;
 	}
 
 	/**
-	 * The file system interface exposes the editor's built-in and contributed
-	 * [file system providers](#FileSystemProvider). It allows extensions to work
-	 * with files from the local disk as well as files from remote places, like the
+	 * The file system interfAce exposes the editor's built-in And contributed
+	 * [file system providers](#FileSystemProvider). It Allows extensions to work
+	 * with files from the locAl disk As well As files from remote plAces, like the
 	 * remote extension host or ftp-servers.
 	 *
-	 * *Note* that an instance of this interface is available as [`workspace.fs`](#workspace.fs).
+	 * *Note* thAt An instAnce of this interfAce is AvAilAble As [`workspAce.fs`](#workspAce.fs).
 	 */
-	export interface FileSystem {
+	export interfAce FileSystem {
 
 		/**
-		 * Retrieve metadata about a file.
+		 * Retrieve metAdAtA About A file.
 		 *
-		 * @param uri The uri of the file to retrieve metadata about.
-		 * @return The file metadata about the file.
+		 * @pArAm uri The uri of the file to retrieve metAdAtA About.
+		 * @return The file metAdAtA About the file.
 		 */
-		stat(uri: Uri): Thenable<FileStat>;
+		stAt(uri: Uri): ThenAble<FileStAt>;
 
 		/**
-		 * Retrieve all entries of a [directory](#FileType.Directory).
+		 * Retrieve All entries of A [directory](#FileType.Directory).
 		 *
-		 * @param uri The uri of the folder.
-		 * @return An array of name/type-tuples or a thenable that resolves to such.
+		 * @pArAm uri The uri of the folder.
+		 * @return An ArrAy of nAme/type-tuples or A thenAble thAt resolves to such.
 		 */
-		readDirectory(uri: Uri): Thenable<[string, FileType][]>;
+		reAdDirectory(uri: Uri): ThenAble<[string, FileType][]>;
 
 		/**
-		 * Create a new directory (Note, that new files are created via `write`-calls).
+		 * CreAte A new directory (Note, thAt new files Are creAted viA `write`-cAlls).
 		 *
-		 * *Note* that missing directories are created automatically, e.g this call has
-		 * `mkdirp` semantics.
+		 * *Note* thAt missing directories Are creAted AutomAticAlly, e.g this cAll hAs
+		 * `mkdirp` semAntics.
 		 *
-		 * @param uri The uri of the new folder.
+		 * @pArAm uri The uri of the new folder.
 		 */
-		createDirectory(uri: Uri): Thenable<void>;
+		creAteDirectory(uri: Uri): ThenAble<void>;
 
 		/**
-		 * Read the entire contents of a file.
+		 * ReAd the entire contents of A file.
 		 *
-		 * @param uri The uri of the file.
-		 * @return An array of bytes or a thenable that resolves to such.
+		 * @pArAm uri The uri of the file.
+		 * @return An ArrAy of bytes or A thenAble thAt resolves to such.
 		 */
-		readFile(uri: Uri): Thenable<Uint8Array>;
+		reAdFile(uri: Uri): ThenAble<Uint8ArrAy>;
 
 		/**
-		 * Write data to a file, replacing its entire contents.
+		 * Write dAtA to A file, replAcing its entire contents.
 		 *
-		 * @param uri The uri of the file.
-		 * @param content The new content of the file.
+		 * @pArAm uri The uri of the file.
+		 * @pArAm content The new content of the file.
 		 */
-		writeFile(uri: Uri, content: Uint8Array): Thenable<void>;
+		writeFile(uri: Uri, content: Uint8ArrAy): ThenAble<void>;
 
 		/**
-		 * Delete a file.
+		 * Delete A file.
 		 *
-		 * @param uri The resource that is to be deleted.
-		 * @param options Defines if trash can should be used and if deletion of folders is recursive
+		 * @pArAm uri The resource thAt is to be deleted.
+		 * @pArAm options Defines if trAsh cAn should be used And if deletion of folders is recursive
 		 */
-		delete(uri: Uri, options?: { recursive?: boolean, useTrash?: boolean }): Thenable<void>;
+		delete(uri: Uri, options?: { recursive?: booleAn, useTrAsh?: booleAn }): ThenAble<void>;
 
 		/**
-		 * Rename a file or folder.
+		 * RenAme A file or folder.
 		 *
-		 * @param oldUri The existing file.
-		 * @param newUri The new location.
-		 * @param options Defines if existing files should be overwritten.
+		 * @pArAm oldUri The existing file.
+		 * @pArAm newUri The new locAtion.
+		 * @pArAm options Defines if existing files should be overwritten.
 		 */
-		rename(source: Uri, target: Uri, options?: { overwrite?: boolean }): Thenable<void>;
+		renAme(source: Uri, tArget: Uri, options?: { overwrite?: booleAn }): ThenAble<void>;
 
 		/**
 		 * Copy files or folders.
 		 *
-		 * @param source The existing file.
-		 * @param destination The destination location.
-		 * @param options Defines if existing files should be overwritten.
+		 * @pArAm source The existing file.
+		 * @pArAm destinAtion The destinAtion locAtion.
+		 * @pArAm options Defines if existing files should be overwritten.
 		 */
-		copy(source: Uri, target: Uri, options?: { overwrite?: boolean }): Thenable<void>;
+		copy(source: Uri, tArget: Uri, options?: { overwrite?: booleAn }): ThenAble<void>;
 	}
 
 	/**
-	 * Defines a port mapping used for localhost inside the webview.
+	 * Defines A port mApping used for locAlhost inside the webview.
 	 */
-	export interface WebviewPortMapping {
+	export interfAce WebviewPortMApping {
 		/**
-		 * Localhost port to remap inside the webview.
+		 * LocAlhost port to remAp inside the webview.
 		 */
-		readonly webviewPort: number;
+		reAdonly webviewPort: number;
 
 		/**
-		 * Destination port. The `webviewPort` is resolved to this port.
+		 * DestinAtion port. The `webviewPort` is resolved to this port.
 		 */
-		readonly extensionHostPort: number;
+		reAdonly extensionHostPort: number;
 	}
 
 	/**
-	 * Content settings for a webview.
+	 * Content settings for A webview.
 	 */
-	export interface WebviewOptions {
+	export interfAce WebviewOptions {
 		/**
-		 * Controls whether scripts are enabled in the webview content or not.
+		 * Controls whether scripts Are enAbled in the webview content or not.
 		 *
-		 * Defaults to false (scripts-disabled).
+		 * DefAults to fAlse (scripts-disAbled).
 		 */
-		readonly enableScripts?: boolean;
+		reAdonly enAbleScripts?: booleAn;
 
 		/**
-		 * Controls whether command uris are enabled in webview content or not.
+		 * Controls whether commAnd uris Are enAbled in webview content or not.
 		 *
-		 * Defaults to false.
+		 * DefAults to fAlse.
 		 */
-		readonly enableCommandUris?: boolean;
+		reAdonly enAbleCommAndUris?: booleAn;
 
 		/**
-		 * Root paths from which the webview can load local (filesystem) resources using uris from `asWebviewUri`
+		 * Root pAths from which the webview cAn loAd locAl (filesystem) resources using uris from `AsWebviewUri`
 		 *
-		 * Default to the root folders of the current workspace plus the extension's install directory.
+		 * DefAult to the root folders of the current workspAce plus the extension's instAll directory.
 		 *
-		 * Pass in an empty array to disallow access to any local resources.
+		 * PAss in An empty ArrAy to disAllow Access to Any locAl resources.
 		 */
-		readonly localResourceRoots?: ReadonlyArray<Uri>;
+		reAdonly locAlResourceRoots?: ReAdonlyArrAy<Uri>;
 
 		/**
-		 * Mappings of localhost ports used inside the webview.
+		 * MAppings of locAlhost ports used inside the webview.
 		 *
-		 * Port mapping allow webviews to transparently define how localhost ports are resolved. This can be used
-		 * to allow using a static localhost port inside the webview that is resolved to random port that a service is
+		 * Port mApping Allow webviews to trAnspArently define how locAlhost ports Are resolved. This cAn be used
+		 * to Allow using A stAtic locAlhost port inside the webview thAt is resolved to rAndom port thAt A service is
 		 * running on.
 		 *
-		 * If a webview accesses localhost content, we recommend that you specify port mappings even if
-		 * the `webviewPort` and `extensionHostPort` ports are the same.
+		 * If A webview Accesses locAlhost content, we recommend thAt you specify port mAppings even if
+		 * the `webviewPort` And `extensionHostPort` ports Are the sAme.
 		 *
-		 * *Note* that port mappings only work for `http` or `https` urls. Websocket urls (e.g. `ws://localhost:3000`)
-		 * cannot be mapped to another port.
+		 * *Note* thAt port mAppings only work for `http` or `https` urls. Websocket urls (e.g. `ws://locAlhost:3000`)
+		 * cAnnot be mApped to Another port.
 		 */
-		readonly portMapping?: ReadonlyArray<WebviewPortMapping>;
+		reAdonly portMApping?: ReAdonlyArrAy<WebviewPortMApping>;
 	}
 
 	/**
-	 * Displays html content, similarly to an iframe.
+	 * DisplAys html content, similArly to An ifrAme.
 	 */
-	export interface Webview {
+	export interfAce Webview {
 		/**
 		 * Content settings for the webview.
 		 */
@@ -6917,1807 +6917,1807 @@ declare module 'vscode' {
 		/**
 		 * HTML contents of the webview.
 		 *
-		 * This should be a complete, valid html document. Changing this property causes the webview to be reloaded.
+		 * This should be A complete, vAlid html document. ChAnging this property cAuses the webview to be reloAded.
 		 *
-		 * Webviews are sandboxed from normal extension process, so all communication with the webview must use
-		 * message passing. To send a message from the extension to the webview, use [`postMessage`](#Webview.postMessage).
-		 * To send message from the webview back to an extension, use the `acquireVsCodeApi` function inside the webview
-		 * to get a handle to VS Code's api and then call `.postMessage()`:
+		 * Webviews Are sAndboxed from normAl extension process, so All communicAtion with the webview must use
+		 * messAge pAssing. To send A messAge from the extension to the webview, use [`postMessAge`](#Webview.postMessAge).
+		 * To send messAge from the webview bAck to An extension, use the `AcquireVsCodeApi` function inside the webview
+		 * to get A hAndle to VS Code's Api And then cAll `.postMessAge()`:
 		 *
 		 * ```html
 		 * <script>
-		 *     const vscode = acquireVsCodeApi(); // acquireVsCodeApi can only be invoked once
-		 *     vscode.postMessage({ message: 'hello!' });
+		 *     const vscode = AcquireVsCodeApi(); // AcquireVsCodeApi cAn only be invoked once
+		 *     vscode.postMessAge({ messAge: 'hello!' });
 		 * </script>
 		 * ```
 		 *
-		 * To load a resources from the workspace inside a webview, use the `[asWebviewUri](#Webview.asWebviewUri)` method
-		 * and ensure the resource's directory is listed in [`WebviewOptions.localResourceRoots`](#WebviewOptions.localResourceRoots).
+		 * To loAd A resources from the workspAce inside A webview, use the `[AsWebviewUri](#Webview.AsWebviewUri)` method
+		 * And ensure the resource's directory is listed in [`WebviewOptions.locAlResourceRoots`](#WebviewOptions.locAlResourceRoots).
 		 *
-		 * Keep in mind that even though webviews are sandboxed, they still allow running scripts and loading arbitrary content,
-		 * so extensions must follow all standard web security best practices when working with webviews. This includes
-		 * properly sanitizing all untrusted input (including content from the workspace) and
-		 * setting a [content security policy](https://aka.ms/vscode-api-webview-csp).
+		 * Keep in mind thAt even though webviews Are sAndboxed, they still Allow running scripts And loAding ArbitrAry content,
+		 * so extensions must follow All stAndArd web security best prActices when working with webviews. This includes
+		 * properly sAnitizing All untrusted input (including content from the workspAce) And
+		 * setting A [content security policy](https://AkA.ms/vscode-Api-webview-csp).
 		 */
 		html: string;
 
 		/**
-		 * Fired when the webview content posts a message.
+		 * Fired when the webview content posts A messAge.
 		 *
-		 * Webview content can post strings or json serializable objects back to a VS Code extension. They cannot
-		 * post `Blob`, `File`, `ImageData` and other DOM specific objects since the extension that receives the
-		 * message does not run in a browser environment.
+		 * Webview content cAn post strings or json seriAlizAble objects bAck to A VS Code extension. They cAnnot
+		 * post `Blob`, `File`, `ImAgeDAtA` And other DOM specific objects since the extension thAt receives the
+		 * messAge does not run in A browser environment.
 		 */
-		readonly onDidReceiveMessage: Event<any>;
+		reAdonly onDidReceiveMessAge: Event<Any>;
 
 		/**
-		 * Post a message to the webview content.
+		 * Post A messAge to the webview content.
 		 *
-		 * Messages are only delivered if the webview is live (either visible or in the
-		 * background with `retainContextWhenHidden`).
+		 * MessAges Are only delivered if the webview is live (either visible or in the
+		 * bAckground with `retAinContextWhenHidden`).
 		 *
-		 * @param message Body of the message. This must be a string or other json serializable object.
+		 * @pArAm messAge Body of the messAge. This must be A string or other json seriAlizAble object.
 		 */
-		postMessage(message: any): Thenable<boolean>;
+		postMessAge(messAge: Any): ThenAble<booleAn>;
 
 		/**
-		 * Convert a uri for the local file system to one that can be used inside webviews.
+		 * Convert A uri for the locAl file system to one thAt cAn be used inside webviews.
 		 *
-		 * Webviews cannot directly load resources from the workspace or local file system using `file:` uris. The
-		 * `asWebviewUri` function takes a local `file:` uri and converts it into a uri that can be used inside of
-		 * a webview to load the same resource:
+		 * Webviews cAnnot directly loAd resources from the workspAce or locAl file system using `file:` uris. The
+		 * `AsWebviewUri` function tAkes A locAl `file:` uri And converts it into A uri thAt cAn be used inside of
+		 * A webview to loAd the sAme resource:
 		 *
 		 * ```ts
-		 * webview.html = `<img src="${webview.asWebviewUri(vscode.Uri.file('/Users/codey/workspace/cat.gif'))}">`
+		 * webview.html = `<img src="${webview.AsWebviewUri(vscode.Uri.file('/Users/codey/workspAce/cAt.gif'))}">`
 		 * ```
 		 */
-		asWebviewUri(localResource: Uri): Uri;
+		AsWebviewUri(locAlResource: Uri): Uri;
 
 		/**
 		 * Content security policy source for webview resources.
 		 *
-		 * This is the origin that should be used in a content security policy rule:
+		 * This is the origin thAt should be used in A content security policy rule:
 		 *
 		 * ```
 		 * img-src https: ${webview.cspSource} ...;
 		 * ```
 		 */
-		readonly cspSource: string;
+		reAdonly cspSource: string;
 	}
 
 	/**
-	 * Content settings for a webview panel.
+	 * Content settings for A webview pAnel.
 	 */
-	export interface WebviewPanelOptions {
+	export interfAce WebviewPAnelOptions {
 		/**
-		 * Controls if the find widget is enabled in the panel.
+		 * Controls if the find widget is enAbled in the pAnel.
 		 *
-		 * Defaults to false.
+		 * DefAults to fAlse.
 		 */
-		readonly enableFindWidget?: boolean;
+		reAdonly enAbleFindWidget?: booleAn;
 
 		/**
-		 * Controls if the webview panel's content (iframe) is kept around even when the panel
+		 * Controls if the webview pAnel's content (ifrAme) is kept Around even when the pAnel
 		 * is no longer visible.
 		 *
-		 * Normally the webview panel's html context is created when the panel becomes visible
-		 * and destroyed when it is hidden. Extensions that have complex state
-		 * or UI can set the `retainContextWhenHidden` to make VS Code keep the webview
-		 * context around, even when the webview moves to a background tab. When a webview using
-		 * `retainContextWhenHidden` becomes hidden, its scripts and other dynamic content are suspended.
-		 * When the panel becomes visible again, the context is automatically restored
-		 * in the exact same state it was in originally. You cannot send messages to a
-		 * hidden webview, even with `retainContextWhenHidden` enabled.
+		 * NormAlly the webview pAnel's html context is creAted when the pAnel becomes visible
+		 * And destroyed when it is hidden. Extensions thAt hAve complex stAte
+		 * or UI cAn set the `retAinContextWhenHidden` to mAke VS Code keep the webview
+		 * context Around, even when the webview moves to A bAckground tAb. When A webview using
+		 * `retAinContextWhenHidden` becomes hidden, its scripts And other dynAmic content Are suspended.
+		 * When the pAnel becomes visible AgAin, the context is AutomAticAlly restored
+		 * in the exAct sAme stAte it wAs in originAlly. You cAnnot send messAges to A
+		 * hidden webview, even with `retAinContextWhenHidden` enAbled.
 		 *
-		 * `retainContextWhenHidden` has a high memory overhead and should only be used if
-		 * your panel's context cannot be quickly saved and restored.
+		 * `retAinContextWhenHidden` hAs A high memory overheAd And should only be used if
+		 * your pAnel's context cAnnot be quickly sAved And restored.
 		 */
-		readonly retainContextWhenHidden?: boolean;
+		reAdonly retAinContextWhenHidden?: booleAn;
 	}
 
 	/**
-	 * A panel that contains a webview.
+	 * A pAnel thAt contAins A webview.
 	 */
-	interface WebviewPanel {
+	interfAce WebviewPAnel {
 		/**
-		 * Identifies the type of the webview panel, such as `'markdown.preview'`.
+		 * Identifies the type of the webview pAnel, such As `'mArkdown.preview'`.
 		 */
-		readonly viewType: string;
+		reAdonly viewType: string;
 
 		/**
-		 * Title of the panel shown in UI.
+		 * Title of the pAnel shown in UI.
 		 */
 		title: string;
 
 		/**
-		 * Icon for the panel shown in UI.
+		 * Icon for the pAnel shown in UI.
 		 */
-		iconPath?: Uri | { light: Uri; dark: Uri };
+		iconPAth?: Uri | { light: Uri; dArk: Uri };
 
 		/**
-		 * [`Webview`](#Webview) belonging to the panel.
+		 * [`Webview`](#Webview) belonging to the pAnel.
 		 */
-		readonly webview: Webview;
+		reAdonly webview: Webview;
 
 		/**
-		 * Content settings for the webview panel.
+		 * Content settings for the webview pAnel.
 		 */
-		readonly options: WebviewPanelOptions;
+		reAdonly options: WebviewPAnelOptions;
 
 		/**
-		 * Editor position of the panel. This property is only set if the webview is in
+		 * Editor position of the pAnel. This property is only set if the webview is in
 		 * one of the editor view columns.
 		 */
-		readonly viewColumn?: ViewColumn;
+		reAdonly viewColumn?: ViewColumn;
 
 		/**
-		 * Whether the panel is active (focused by the user).
+		 * Whether the pAnel is Active (focused by the user).
 		 */
-		readonly active: boolean;
+		reAdonly Active: booleAn;
 
 		/**
-		 * Whether the panel is visible.
+		 * Whether the pAnel is visible.
 		 */
-		readonly visible: boolean;
+		reAdonly visible: booleAn;
 
 		/**
-		 * Fired when the panel's view state changes.
+		 * Fired when the pAnel's view stAte chAnges.
 		 */
-		readonly onDidChangeViewState: Event<WebviewPanelOnDidChangeViewStateEvent>;
+		reAdonly onDidChAngeViewStAte: Event<WebviewPAnelOnDidChAngeViewStAteEvent>;
 
 		/**
-		 * Fired when the panel is disposed.
+		 * Fired when the pAnel is disposed.
 		 *
-		 * This may be because the user closed the panel or because `.dispose()` was
-		 * called on it.
+		 * This mAy be becAuse the user closed the pAnel or becAuse `.dispose()` wAs
+		 * cAlled on it.
 		 *
-		 * Trying to use the panel after it has been disposed throws an exception.
+		 * Trying to use the pAnel After it hAs been disposed throws An exception.
 		 */
-		readonly onDidDispose: Event<void>;
+		reAdonly onDidDispose: Event<void>;
 
 		/**
-		 * Show the webview panel in a given column.
+		 * Show the webview pAnel in A given column.
 		 *
-		 * A webview panel may only show in a single column at a time. If it is already showing, this
-		 * method moves it to a new column.
+		 * A webview pAnel mAy only show in A single column At A time. If it is AlreAdy showing, this
+		 * method moves it to A new column.
 		 *
-		 * @param viewColumn View column to show the panel in. Shows in the current `viewColumn` if undefined.
-		 * @param preserveFocus When `true`, the webview will not take focus.
+		 * @pArAm viewColumn View column to show the pAnel in. Shows in the current `viewColumn` if undefined.
+		 * @pArAm preserveFocus When `true`, the webview will not tAke focus.
 		 */
-		reveal(viewColumn?: ViewColumn, preserveFocus?: boolean): void;
+		reveAl(viewColumn?: ViewColumn, preserveFocus?: booleAn): void;
 
 		/**
-		 * Dispose of the webview panel.
+		 * Dispose of the webview pAnel.
 		 *
-		 * This closes the panel if it showing and disposes of the resources owned by the webview.
-		 * Webview panels are also disposed when the user closes the webview panel. Both cases
+		 * This closes the pAnel if it showing And disposes of the resources owned by the webview.
+		 * Webview pAnels Are Also disposed when the user closes the webview pAnel. Both cAses
 		 * fire the `onDispose` event.
 		 */
-		dispose(): any;
+		dispose(): Any;
 	}
 
 	/**
-	 * Event fired when a webview panel's view state changes.
+	 * Event fired when A webview pAnel's view stAte chAnges.
 	 */
-	export interface WebviewPanelOnDidChangeViewStateEvent {
+	export interfAce WebviewPAnelOnDidChAngeViewStAteEvent {
 		/**
-		 * Webview panel whose view state changed.
+		 * Webview pAnel whose view stAte chAnged.
 		 */
-		readonly webviewPanel: WebviewPanel;
+		reAdonly webviewPAnel: WebviewPAnel;
 	}
 
 	/**
-	 * Restore webview panels that have been persisted when vscode shuts down.
+	 * Restore webview pAnels thAt hAve been persisted when vscode shuts down.
 	 *
-	 * There are two types of webview persistence:
+	 * There Are two types of webview persistence:
 	 *
-	 * - Persistence within a session.
-	 * - Persistence across sessions (across restarts of VS Code).
+	 * - Persistence within A session.
+	 * - Persistence Across sessions (Across restArts of VS Code).
 	 *
-	 * A `WebviewPanelSerializer` is only required for the second case: persisting a webview across sessions.
+	 * A `WebviewPAnelSeriAlizer` is only required for the second cAse: persisting A webview Across sessions.
 	 *
-	 * Persistence within a session allows a webview to save its state when it becomes hidden
-	 * and restore its content from this state when it becomes visible again. It is powered entirely
-	 * by the webview content itself. To save off a persisted state, call `acquireVsCodeApi().setState()` with
-	 * any json serializable object. To restore the state again, call `getState()`
+	 * Persistence within A session Allows A webview to sAve its stAte when it becomes hidden
+	 * And restore its content from this stAte when it becomes visible AgAin. It is powered entirely
+	 * by the webview content itself. To sAve off A persisted stAte, cAll `AcquireVsCodeApi().setStAte()` with
+	 * Any json seriAlizAble object. To restore the stAte AgAin, cAll `getStAte()`
 	 *
 	 * ```js
 	 * // Within the webview
-	 * const vscode = acquireVsCodeApi();
+	 * const vscode = AcquireVsCodeApi();
 	 *
-	 * // Get existing state
-	 * const oldState = vscode.getState() || { value: 0 };
+	 * // Get existing stAte
+	 * const oldStAte = vscode.getStAte() || { vAlue: 0 };
 	 *
-	 * // Update state
-	 * setState({ value: oldState.value + 1 })
+	 * // UpdAte stAte
+	 * setStAte({ vAlue: oldStAte.vAlue + 1 })
 	 * ```
 	 *
-	 * A `WebviewPanelSerializer` extends this persistence across restarts of VS Code. When the editor is shutdown,
-	 * VS Code will save off the state from `setState` of all webviews that have a serializer. When the
-	 * webview first becomes visible after the restart, this state is passed to `deserializeWebviewPanel`.
-	 * The extension can then restore the old `WebviewPanel` from this state.
+	 * A `WebviewPAnelSeriAlizer` extends this persistence Across restArts of VS Code. When the editor is shutdown,
+	 * VS Code will sAve off the stAte from `setStAte` of All webviews thAt hAve A seriAlizer. When the
+	 * webview first becomes visible After the restArt, this stAte is pAssed to `deseriAlizeWebviewPAnel`.
+	 * The extension cAn then restore the old `WebviewPAnel` from this stAte.
 	 *
-	 * @param T Type of the webview's state.
+	 * @pArAm T Type of the webview's stAte.
 	 */
-	interface WebviewPanelSerializer<T = unknown> {
+	interfAce WebviewPAnelSeriAlizer<T = unknown> {
 		/**
-		 * Restore a webview panel from its serialized `state`.
+		 * Restore A webview pAnel from its seriAlized `stAte`.
 		 *
-		 * Called when a serialized webview first becomes visible.
+		 * CAlled when A seriAlized webview first becomes visible.
 		 *
-		 * @param webviewPanel Webview panel to restore. The serializer should take ownership of this panel. The
-		 * serializer must restore the webview's `.html` and hook up all webview events.
-		 * @param state Persisted state from the webview content.
+		 * @pArAm webviewPAnel Webview pAnel to restore. The seriAlizer should tAke ownership of this pAnel. The
+		 * seriAlizer must restore the webview's `.html` And hook up All webview events.
+		 * @pArAm stAte Persisted stAte from the webview content.
 		 *
-		 * @return Thenable indicating that the webview has been fully restored.
+		 * @return ThenAble indicAting thAt the webview hAs been fully restored.
 		 */
-		deserializeWebviewPanel(webviewPanel: WebviewPanel, state: T): Thenable<void>;
+		deseriAlizeWebviewPAnel(webviewPAnel: WebviewPAnel, stAte: T): ThenAble<void>;
 	}
 
 	/**
- * A webview based view.
+ * A webview bAsed view.
  */
-	export interface WebviewView {
+	export interfAce WebviewView {
 		/**
-		 * Identifies the type of the webview view, such as `'hexEditor.dataView'`.
+		 * Identifies the type of the webview view, such As `'hexEditor.dAtAView'`.
 		 */
-		readonly viewType: string;
+		reAdonly viewType: string;
 
 		/**
 		 * The underlying webview for the view.
 		 */
-		readonly webview: Webview;
+		reAdonly webview: Webview;
 
 		/**
-		 * View title displayed in the UI.
+		 * View title displAyed in the UI.
 		 *
-		 * The view title is initially taken from the extension `package.json` contribution.
+		 * The view title is initiAlly tAken from the extension `pAckAge.json` contribution.
 		 */
 		title?: string;
 
 		/**
-		 * Human-readable string which is rendered less prominently in the title.
+		 * HumAn-reAdAble string which is rendered less prominently in the title.
 		 */
 		description?: string;
 
 		/**
 		 * Event fired when the view is disposed.
 		 *
-		 * Views are disposed when they are explicitly hidden by a user (this happens when a user
-		 * right clicks in a view and unchecks the webview view).
+		 * Views Are disposed when they Are explicitly hidden by A user (this hAppens when A user
+		 * right clicks in A view And unchecks the webview view).
 		 *
-		 * Trying to use the view after it has been disposed throws an exception.
+		 * Trying to use the view After it hAs been disposed throws An exception.
 		 */
-		readonly onDidDispose: Event<void>;
+		reAdonly onDidDispose: Event<void>;
 
 		/**
-		 * Tracks if the webview is currently visible.
+		 * TrAcks if the webview is currently visible.
 		 *
-		 * Views are visible when they are on the screen and expanded.
+		 * Views Are visible when they Are on the screen And expAnded.
 		 */
-		readonly visible: boolean;
+		reAdonly visible: booleAn;
 
 		/**
-		 * Event fired when the visibility of the view changes.
+		 * Event fired when the visibility of the view chAnges.
 		 *
-		 * Actions that trigger a visibility change:
+		 * Actions thAt trigger A visibility chAnge:
 		 *
-		 * - The view is collapsed or expanded.
-		 * - The user switches to a different view group in the sidebar or panel.
+		 * - The view is collApsed or expAnded.
+		 * - The user switches to A different view group in the sidebAr or pAnel.
 		 *
-		 * Note that hiding a view using the context menu instead disposes of the view and fires `onDidDispose`.
+		 * Note thAt hiding A view using the context menu insteAd disposes of the view And fires `onDidDispose`.
 		 */
-		readonly onDidChangeVisibility: Event<void>;
+		reAdonly onDidChAngeVisibility: Event<void>;
 
 		/**
-		 * Reveal the view in the UI.
+		 * ReveAl the view in the UI.
 		 *
-		 * If the view is collapsed, this will expand it.
+		 * If the view is collApsed, this will expAnd it.
 		 *
-		 * @param preserveFocus When `true` the view will not take focus.
+		 * @pArAm preserveFocus When `true` the view will not tAke focus.
 		 */
-		show(preserveFocus?: boolean): void;
+		show(preserveFocus?: booleAn): void;
 	}
 
 	/**
-	 * Additional information the webview view being resolved.
+	 * AdditionAl informAtion the webview view being resolved.
 	 *
-	 * @param T Type of the webview's state.
+	 * @pArAm T Type of the webview's stAte.
 	 */
-	interface WebviewViewResolveContext<T = unknown> {
+	interfAce WebviewViewResolveContext<T = unknown> {
 		/**
-		 * Persisted state from the webview content.
+		 * Persisted stAte from the webview content.
 		 *
-		 * To save resources, VS Code normally deallocates webview documents (the iframe content) that are not visible.
-		 * For example, when the user collapse a view or switches to another top level activity in the sidebar, the
-		 * `WebviewView` itself is kept alive but the webview's underlying document is deallocated. It is recreated when
-		 * the view becomes visible again.
+		 * To sAve resources, VS Code normAlly deAllocAtes webview documents (the ifrAme content) thAt Are not visible.
+		 * For exAmple, when the user collApse A view or switches to Another top level Activity in the sidebAr, the
+		 * `WebviewView` itself is kept Alive but the webview's underlying document is deAllocAted. It is recreAted when
+		 * the view becomes visible AgAin.
 		 *
-		 * You can prevent this behavior by setting `retainContextWhenHidden` in the `WebviewOptions`. However this
-		 * increases resource usage and should be avoided wherever possible. Instead, you can use persisted state to
-		 * save off a webview's state so that it can be quickly recreated as needed.
+		 * You cAn prevent this behAvior by setting `retAinContextWhenHidden` in the `WebviewOptions`. However this
+		 * increAses resource usAge And should be Avoided wherever possible. InsteAd, you cAn use persisted stAte to
+		 * sAve off A webview's stAte so thAt it cAn be quickly recreAted As needed.
 		 *
-		 * To save off a persisted state, inside the webview call `acquireVsCodeApi().setState()` with
-		 * any json serializable object. To restore the state again, call `getState()`. For example:
+		 * To sAve off A persisted stAte, inside the webview cAll `AcquireVsCodeApi().setStAte()` with
+		 * Any json seriAlizAble object. To restore the stAte AgAin, cAll `getStAte()`. For exAmple:
 		 *
 		 * ```js
 		 * // Within the webview
-		 * const vscode = acquireVsCodeApi();
+		 * const vscode = AcquireVsCodeApi();
 		 *
-		 * // Get existing state
-		 * const oldState = vscode.getState() || { value: 0 };
+		 * // Get existing stAte
+		 * const oldStAte = vscode.getStAte() || { vAlue: 0 };
 		 *
-		 * // Update state
-		 * setState({ value: oldState.value + 1 })
+		 * // UpdAte stAte
+		 * setStAte({ vAlue: oldStAte.vAlue + 1 })
 		 * ```
 		 *
-		 * VS Code ensures that the persisted state is saved correctly when a webview is hidden and across
-		 * editor restarts.
+		 * VS Code ensures thAt the persisted stAte is sAved correctly when A webview is hidden And Across
+		 * editor restArts.
 		 */
-		readonly state: T | undefined;
+		reAdonly stAte: T | undefined;
 	}
 
 	/**
-	 * Provider for creating `WebviewView` elements.
+	 * Provider for creAting `WebviewView` elements.
 	 */
-	export interface WebviewViewProvider {
+	export interfAce WebviewViewProvider {
 		/**
-		 * Revolves a webview view.
+		 * Revolves A webview view.
 		 *
-		 * `resolveWebviewView` is called when a view first becomes visible. This may happen when the view is
-		 * first loaded or when the user hides and then shows a view again.
+		 * `resolveWebviewView` is cAlled when A view first becomes visible. This mAy hAppen when the view is
+		 * first loAded or when the user hides And then shows A view AgAin.
 		 *
-		 * @param webviewView Webview view to restore. The provider should take ownership of this view. The
-		 *    provider must set the webview's `.html` and hook up all webview events it is interested in.
-		 * @param context Additional metadata about the view being resolved.
-		 * @param token Cancellation token indicating that the view being provided is no longer needed.
+		 * @pArAm webviewView Webview view to restore. The provider should tAke ownership of this view. The
+		 *    provider must set the webview's `.html` And hook up All webview events it is interested in.
+		 * @pArAm context AdditionAl metAdAtA About the view being resolved.
+		 * @pArAm token CAncellAtion token indicAting thAt the view being provided is no longer needed.
 		 *
-		 * @return Optional thenable indicating that the view has been fully resolved.
+		 * @return OptionAl thenAble indicAting thAt the view hAs been fully resolved.
 		 */
-		resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CancellationToken): Thenable<void> | void;
+		resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CAncellAtionToken): ThenAble<void> | void;
 	}
 
 	/**
-	 * Provider for text based custom editors.
+	 * Provider for text bAsed custom editors.
 	 *
-	 * Text based custom editors use a [`TextDocument`](#TextDocument) as their data model. This considerably simplifies
-	 * implementing a custom editor as it allows VS Code to handle many common operations such as
-	 * undo and backup. The provider is responsible for synchronizing text changes between the webview and the `TextDocument`.
+	 * Text bAsed custom editors use A [`TextDocument`](#TextDocument) As their dAtA model. This considerAbly simplifies
+	 * implementing A custom editor As it Allows VS Code to hAndle mAny common operAtions such As
+	 * undo And bAckup. The provider is responsible for synchronizing text chAnges between the webview And the `TextDocument`.
 	 */
-	export interface CustomTextEditorProvider {
+	export interfAce CustomTextEditorProvider {
 
 		/**
-		 * Resolve a custom editor for a given text resource.
+		 * Resolve A custom editor for A given text resource.
 		 *
-		 * This is called when a user first opens a resource for a `CustomTextEditorProvider`, or if they reopen an
+		 * This is cAlled when A user first opens A resource for A `CustomTextEditorProvider`, or if they reopen An
 		 * existing editor using this `CustomTextEditorProvider`.
 		 *
 		 *
-		 * @param document Document for the resource to resolve.
+		 * @pArAm document Document for the resource to resolve.
 		 *
-		 * @param webviewPanel The webview panel used to display the editor UI for this resource.
+		 * @pArAm webviewPAnel The webview pAnel used to displAy the editor UI for this resource.
 		 *
-		 * During resolve, the provider must fill in the initial html for the content webview panel and hook up all
-		 * the event listeners on it that it is interested in. The provider can also hold onto the `WebviewPanel` to
-		 * use later for example in a command. See [`WebviewPanel`](#WebviewPanel) for additional details.
+		 * During resolve, the provider must fill in the initiAl html for the content webview pAnel And hook up All
+		 * the event listeners on it thAt it is interested in. The provider cAn Also hold onto the `WebviewPAnel` to
+		 * use lAter for exAmple in A commAnd. See [`WebviewPAnel`](#WebviewPAnel) for AdditionAl detAils.
 		 *
-		 * @param token A cancellation token that indicates the result is no longer needed.
+		 * @pArAm token A cAncellAtion token thAt indicAtes the result is no longer needed.
 		 *
-		 * @return Thenable indicating that the custom editor has been resolved.
+		 * @return ThenAble indicAting thAt the custom editor hAs been resolved.
 		 */
-		resolveCustomTextEditor(document: TextDocument, webviewPanel: WebviewPanel, token: CancellationToken): Thenable<void> | void;
+		resolveCustomTextEditor(document: TextDocument, webviewPAnel: WebviewPAnel, token: CAncellAtionToken): ThenAble<void> | void;
 	}
 
 	/**
-	 * Represents a custom document used by a [`CustomEditorProvider`](#CustomEditorProvider).
+	 * Represents A custom document used by A [`CustomEditorProvider`](#CustomEditorProvider).
 	 *
-	 * Custom documents are only used within a given `CustomEditorProvider`. The lifecycle of a `CustomDocument` is
-	 * managed by VS Code. When no more references remain to a `CustomDocument`, it is disposed of.
+	 * Custom documents Are only used within A given `CustomEditorProvider`. The lifecycle of A `CustomDocument` is
+	 * mAnAged by VS Code. When no more references remAin to A `CustomDocument`, it is disposed of.
 	 */
-	interface CustomDocument {
+	interfAce CustomDocument {
 		/**
-		 * The associated uri for this document.
+		 * The AssociAted uri for this document.
 		 */
-		readonly uri: Uri;
+		reAdonly uri: Uri;
 
 		/**
 		 * Dispose of the custom document.
 		 *
-		 * This is invoked by VS Code when there are no more references to a given `CustomDocument` (for example when
-		 * all editors associated with the document have been closed.)
+		 * This is invoked by VS Code when there Are no more references to A given `CustomDocument` (for exAmple when
+		 * All editors AssociAted with the document hAve been closed.)
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Event triggered by extensions to signal to VS Code that an edit has occurred on an [`CustomDocument`](#CustomDocument).
+	 * Event triggered by extensions to signAl to VS Code thAt An edit hAs occurred on An [`CustomDocument`](#CustomDocument).
 	 *
-	 * @see [`CustomDocumentProvider.onDidChangeCustomDocument`](#CustomDocumentProvider.onDidChangeCustomDocument).
+	 * @see [`CustomDocumentProvider.onDidChAngeCustomDocument`](#CustomDocumentProvider.onDidChAngeCustomDocument).
 	 */
-	interface CustomDocumentEditEvent<T extends CustomDocument = CustomDocument> {
+	interfAce CustomDocumentEditEvent<T extends CustomDocument = CustomDocument> {
 
 		/**
-		 * The document that the edit is for.
+		 * The document thAt the edit is for.
 		 */
-		readonly document: T;
+		reAdonly document: T;
 
 		/**
-		 * Undo the edit operation.
+		 * Undo the edit operAtion.
 		 *
 		 * This is invoked by VS Code when the user undoes this edit. To implement `undo`, your
-		 * extension should restore the document and editor to the state they were in just before this
-		 * edit was added to VS Code's internal edit stack by `onDidChangeCustomDocument`.
+		 * extension should restore the document And editor to the stAte they were in just before this
+		 * edit wAs Added to VS Code's internAl edit stAck by `onDidChAngeCustomDocument`.
 		 */
-		undo(): Thenable<void> | void;
+		undo(): ThenAble<void> | void;
 
 		/**
-		 * Redo the edit operation.
+		 * Redo the edit operAtion.
 		 *
 		 * This is invoked by VS Code when the user redoes this edit. To implement `redo`, your
-		 * extension should restore the document and editor to the state they were in just after this
-		 * edit was added to VS Code's internal edit stack by `onDidChangeCustomDocument`.
+		 * extension should restore the document And editor to the stAte they were in just After this
+		 * edit wAs Added to VS Code's internAl edit stAck by `onDidChAngeCustomDocument`.
 		 */
-		redo(): Thenable<void> | void;
+		redo(): ThenAble<void> | void;
 
 		/**
-		 * Display name describing the edit.
+		 * DisplAy nAme describing the edit.
 		 *
-		 * This will be shown to users in the UI for undo/redo operations.
+		 * This will be shown to users in the UI for undo/redo operAtions.
 		 */
-		readonly label?: string;
+		reAdonly lAbel?: string;
 	}
 
 	/**
-	 * Event triggered by extensions to signal to VS Code that the content of a [`CustomDocument`](#CustomDocument)
-	 * has changed.
+	 * Event triggered by extensions to signAl to VS Code thAt the content of A [`CustomDocument`](#CustomDocument)
+	 * hAs chAnged.
 	 *
-	 * @see [`CustomDocumentProvider.onDidChangeCustomDocument`](#CustomDocumentProvider.onDidChangeCustomDocument).
+	 * @see [`CustomDocumentProvider.onDidChAngeCustomDocument`](#CustomDocumentProvider.onDidChAngeCustomDocument).
 	 */
-	interface CustomDocumentContentChangeEvent<T extends CustomDocument = CustomDocument> {
+	interfAce CustomDocumentContentChAngeEvent<T extends CustomDocument = CustomDocument> {
 		/**
-		 * The document that the change is for.
+		 * The document thAt the chAnge is for.
 		 */
-		readonly document: T;
+		reAdonly document: T;
 	}
 
 	/**
-	 * A backup for an [`CustomDocument`](#CustomDocument).
+	 * A bAckup for An [`CustomDocument`](#CustomDocument).
 	 */
-	interface CustomDocumentBackup {
+	interfAce CustomDocumentBAckup {
 		/**
-		 * Unique identifier for the backup.
+		 * Unique identifier for the bAckup.
 		 *
-		 * This id is passed back to your extension in `openCustomDocument` when opening a custom editor from a backup.
+		 * This id is pAssed bAck to your extension in `openCustomDocument` when opening A custom editor from A bAckup.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * Delete the current backup.
+		 * Delete the current bAckup.
 		 *
-		 * This is called by VS Code when it is clear the current backup is no longer needed, such as when a new backup
-		 * is made or when the file is saved.
+		 * This is cAlled by VS Code when it is cleAr the current bAckup is no longer needed, such As when A new bAckup
+		 * is mAde or when the file is sAved.
 		 */
 		delete(): void;
 	}
 
 	/**
-	 * Additional information used to implement [`CustomEditableDocument.backup`](#CustomEditableDocument.backup).
+	 * AdditionAl informAtion used to implement [`CustomEditAbleDocument.bAckup`](#CustomEditAbleDocument.bAckup).
 	 */
-	interface CustomDocumentBackupContext {
+	interfAce CustomDocumentBAckupContext {
 		/**
-		 * Suggested file location to write the new backup.
+		 * Suggested file locAtion to write the new bAckup.
 		 *
-		 * Note that your extension is free to ignore this and use its own strategy for backup.
+		 * Note thAt your extension is free to ignore this And use its own strAtegy for bAckup.
 		 *
-		 * If the editor is for a resource from the current workspace, `destination` will point to a file inside
-		 * `ExtensionContext.storagePath`. The parent folder of `destination` may not exist, so make sure to created it
-		 * before writing the backup to this location.
+		 * If the editor is for A resource from the current workspAce, `destinAtion` will point to A file inside
+		 * `ExtensionContext.storAgePAth`. The pArent folder of `destinAtion` mAy not exist, so mAke sure to creAted it
+		 * before writing the bAckup to this locAtion.
 		 */
-		readonly destination: Uri;
+		reAdonly destinAtion: Uri;
 	}
 
 	/**
-	 * Additional information about the opening custom document.
+	 * AdditionAl informAtion About the opening custom document.
 	 */
-	interface CustomDocumentOpenContext {
+	interfAce CustomDocumentOpenContext {
 		/**
-		 * The id of the backup to restore the document from or `undefined` if there is no backup.
+		 * The id of the bAckup to restore the document from or `undefined` if there is no bAckup.
 		 *
-		 * If this is provided, your extension should restore the editor from the backup instead of reading the file
-		 * from the user's workspace.
+		 * If this is provided, your extension should restore the editor from the bAckup insteAd of reAding the file
+		 * from the user's workspAce.
 		 */
-		readonly backupId?: string;
+		reAdonly bAckupId?: string;
 	}
 
 	/**
-	 * Provider for readonly custom editors that use a custom document model.
+	 * Provider for reAdonly custom editors thAt use A custom document model.
 	 *
-	 * Custom editors use [`CustomDocument`](#CustomDocument) as their document model instead of a [`TextDocument`](#TextDocument).
+	 * Custom editors use [`CustomDocument`](#CustomDocument) As their document model insteAd of A [`TextDocument`](#TextDocument).
 	 *
-	 * You should use this type of custom editor when dealing with binary files or more complex scenarios. For simple
-	 * text based documents, use [`CustomTextEditorProvider`](#CustomTextEditorProvider) instead.
+	 * You should use this type of custom editor when deAling with binAry files or more complex scenArios. For simple
+	 * text bAsed documents, use [`CustomTextEditorProvider`](#CustomTextEditorProvider) insteAd.
 	 *
-	 * @param T Type of the custom document returned by this provider.
+	 * @pArAm T Type of the custom document returned by this provider.
 	 */
-	export interface CustomReadonlyEditorProvider<T extends CustomDocument = CustomDocument> {
+	export interfAce CustomReAdonlyEditorProvider<T extends CustomDocument = CustomDocument> {
 
 		/**
-		 * Create a new document for a given resource.
+		 * CreAte A new document for A given resource.
 		 *
-		 * `openCustomDocument` is called when the first time an editor for a given resource is opened. The opened
-		 * document is then passed to `resolveCustomEditor` so that the editor can be shown to the user.
+		 * `openCustomDocument` is cAlled when the first time An editor for A given resource is opened. The opened
+		 * document is then pAssed to `resolveCustomEditor` so thAt the editor cAn be shown to the user.
 		 *
-		 * Already opened `CustomDocument` are re-used if the user opened additional editors. When all editors for a
-		 * given resource are closed, the `CustomDocument` is disposed of. Opening an editor at this point will
-		 * trigger another call to `openCustomDocument`.
+		 * AlreAdy opened `CustomDocument` Are re-used if the user opened AdditionAl editors. When All editors for A
+		 * given resource Are closed, the `CustomDocument` is disposed of. Opening An editor At this point will
+		 * trigger Another cAll to `openCustomDocument`.
 		 *
-		 * @param uri Uri of the document to open.
-		 * @param openContext Additional information about the opening custom document.
-		 * @param token A cancellation token that indicates the result is no longer needed.
+		 * @pArAm uri Uri of the document to open.
+		 * @pArAm openContext AdditionAl informAtion About the opening custom document.
+		 * @pArAm token A cAncellAtion token thAt indicAtes the result is no longer needed.
 		 *
 		 * @return The custom document.
 		 */
-		openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, token: CancellationToken): Thenable<T> | T;
+		openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, token: CAncellAtionToken): ThenAble<T> | T;
 
 		/**
-		 * Resolve a custom editor for a given resource.
+		 * Resolve A custom editor for A given resource.
 		 *
-		 * This is called whenever the user opens a new editor for this `CustomEditorProvider`.
+		 * This is cAlled whenever the user opens A new editor for this `CustomEditorProvider`.
 		 *
-		 * @param document Document for the resource being resolved.
+		 * @pArAm document Document for the resource being resolved.
 		 *
-		 * @param webviewPanel The webview panel used to display the editor UI for this resource.
+		 * @pArAm webviewPAnel The webview pAnel used to displAy the editor UI for this resource.
 		 *
-		 * During resolve, the provider must fill in the initial html for the content webview panel and hook up all
-		 * the event listeners on it that it is interested in. The provider can also hold onto the `WebviewPanel` to
-		 * use later for example in a command. See [`WebviewPanel`](#WebviewPanel) for additional details.
+		 * During resolve, the provider must fill in the initiAl html for the content webview pAnel And hook up All
+		 * the event listeners on it thAt it is interested in. The provider cAn Also hold onto the `WebviewPAnel` to
+		 * use lAter for exAmple in A commAnd. See [`WebviewPAnel`](#WebviewPAnel) for AdditionAl detAils.
 		 *
-		 * @param token A cancellation token that indicates the result is no longer needed.
+		 * @pArAm token A cAncellAtion token thAt indicAtes the result is no longer needed.
 		 *
-		 * @return Optional thenable indicating that the custom editor has been resolved.
+		 * @return OptionAl thenAble indicAting thAt the custom editor hAs been resolved.
 		 */
-		resolveCustomEditor(document: T, webviewPanel: WebviewPanel, token: CancellationToken): Thenable<void> | void;
+		resolveCustomEditor(document: T, webviewPAnel: WebviewPAnel, token: CAncellAtionToken): ThenAble<void> | void;
 	}
 
 	/**
-	 * Provider for editable custom editors that use a custom document model.
+	 * Provider for editAble custom editors thAt use A custom document model.
 	 *
-	 * Custom editors use [`CustomDocument`](#CustomDocument) as their document model instead of a [`TextDocument`](#TextDocument).
-	 * This gives extensions full control over actions such as edit, save, and backup.
+	 * Custom editors use [`CustomDocument`](#CustomDocument) As their document model insteAd of A [`TextDocument`](#TextDocument).
+	 * This gives extensions full control over Actions such As edit, sAve, And bAckup.
 	 *
-	 * You should use this type of custom editor when dealing with binary files or more complex scenarios. For simple
-	 * text based documents, use [`CustomTextEditorProvider`](#CustomTextEditorProvider) instead.
+	 * You should use this type of custom editor when deAling with binAry files or more complex scenArios. For simple
+	 * text bAsed documents, use [`CustomTextEditorProvider`](#CustomTextEditorProvider) insteAd.
 	 *
-	 * @param T Type of the custom document returned by this provider.
+	 * @pArAm T Type of the custom document returned by this provider.
 	 */
-	export interface CustomEditorProvider<T extends CustomDocument = CustomDocument> extends CustomReadonlyEditorProvider<T> {
+	export interfAce CustomEditorProvider<T extends CustomDocument = CustomDocument> extends CustomReAdonlyEditorProvider<T> {
 		/**
-		 * Signal that an edit has occurred inside a custom editor.
+		 * SignAl thAt An edit hAs occurred inside A custom editor.
 		 *
-		 * This event must be fired by your extension whenever an edit happens in a custom editor. An edit can be
-		 * anything from changing some text, to cropping an image, to reordering a list. Your extension is free to
-		 * define what an edit is and what data is stored on each edit.
+		 * This event must be fired by your extension whenever An edit hAppens in A custom editor. An edit cAn be
+		 * Anything from chAnging some text, to cropping An imAge, to reordering A list. Your extension is free to
+		 * define whAt An edit is And whAt dAtA is stored on eAch edit.
 		 *
-		 * Firing `onDidChange` causes VS Code to mark the editors as being dirty. This is cleared when the user either
-		 * saves or reverts the file.
+		 * Firing `onDidChAnge` cAuses VS Code to mArk the editors As being dirty. This is cleAred when the user either
+		 * sAves or reverts the file.
 		 *
-		 * Editors that support undo/redo must fire a `CustomDocumentEditEvent` whenever an edit happens. This allows
-		 * users to undo and redo the edit using VS Code's standard VS Code keyboard shortcuts. VS Code will also mark
-		 * the editor as no longer being dirty if the user undoes all edits to the last saved state.
+		 * Editors thAt support undo/redo must fire A `CustomDocumentEditEvent` whenever An edit hAppens. This Allows
+		 * users to undo And redo the edit using VS Code's stAndArd VS Code keyboArd shortcuts. VS Code will Also mArk
+		 * the editor As no longer being dirty if the user undoes All edits to the lAst sAved stAte.
 		 *
-		 * Editors that support editing but cannot use VS Code's standard undo/redo mechanism must fire a `CustomDocumentContentChangeEvent`.
-		 * The only way for a user to clear the dirty state of an editor that does not support undo/redo is to either
-		 * `save` or `revert` the file.
+		 * Editors thAt support editing but cAnnot use VS Code's stAndArd undo/redo mechAnism must fire A `CustomDocumentContentChAngeEvent`.
+		 * The only wAy for A user to cleAr the dirty stAte of An editor thAt does not support undo/redo is to either
+		 * `sAve` or `revert` the file.
 		 *
-		 * An editor should only ever fire `CustomDocumentEditEvent` events, or only ever fire `CustomDocumentContentChangeEvent` events.
+		 * An editor should only ever fire `CustomDocumentEditEvent` events, or only ever fire `CustomDocumentContentChAngeEvent` events.
 		 */
-		readonly onDidChangeCustomDocument: Event<CustomDocumentEditEvent<T>> | Event<CustomDocumentContentChangeEvent<T>>;
+		reAdonly onDidChAngeCustomDocument: Event<CustomDocumentEditEvent<T>> | Event<CustomDocumentContentChAngeEvent<T>>;
 
 		/**
-		 * Save a custom document.
+		 * SAve A custom document.
 		 *
-		 * This method is invoked by VS Code when the user saves a custom editor. This can happen when the user
-		 * triggers save while the custom editor is active, by commands such as `save all`, or by auto save if enabled.
+		 * This method is invoked by VS Code when the user sAves A custom editor. This cAn hAppen when the user
+		 * triggers sAve while the custom editor is Active, by commAnds such As `sAve All`, or by Auto sAve if enAbled.
 		 *
-		 * To implement `save`, the implementer must persist the custom editor. This usually means writing the
-		 * file data for the custom document to disk. After `save` completes, any associated editor instances will
-		 * no longer be marked as dirty.
+		 * To implement `sAve`, the implementer must persist the custom editor. This usuAlly meAns writing the
+		 * file dAtA for the custom document to disk. After `sAve` completes, Any AssociAted editor instAnces will
+		 * no longer be mArked As dirty.
 		 *
-		 * @param document Document to save.
-		 * @param cancellation Token that signals the save is no longer required (for example, if another save was triggered).
+		 * @pArAm document Document to sAve.
+		 * @pArAm cAncellAtion Token thAt signAls the sAve is no longer required (for exAmple, if Another sAve wAs triggered).
 		 *
-		 * @return Thenable signaling that saving has completed.
+		 * @return ThenAble signAling thAt sAving hAs completed.
 		 */
-		saveCustomDocument(document: T, cancellation: CancellationToken): Thenable<void>;
+		sAveCustomDocument(document: T, cAncellAtion: CAncellAtionToken): ThenAble<void>;
 
 		/**
-		 * Save a custom document to a different location.
+		 * SAve A custom document to A different locAtion.
 		 *
-		 * This method is invoked by VS Code when the user triggers 'save as' on a custom editor. The implementer must
-		 * persist the custom editor to `destination`.
+		 * This method is invoked by VS Code when the user triggers 'sAve As' on A custom editor. The implementer must
+		 * persist the custom editor to `destinAtion`.
 		 *
-		 * When the user accepts save as, the current editor is be replaced by an non-dirty editor for the newly saved file.
+		 * When the user Accepts sAve As, the current editor is be replAced by An non-dirty editor for the newly sAved file.
 		 *
-		 * @param document Document to save.
-		 * @param destination Location to save to.
-		 * @param cancellation Token that signals the save is no longer required.
+		 * @pArAm document Document to sAve.
+		 * @pArAm destinAtion LocAtion to sAve to.
+		 * @pArAm cAncellAtion Token thAt signAls the sAve is no longer required.
 		 *
-		 * @return Thenable signaling that saving has completed.
+		 * @return ThenAble signAling thAt sAving hAs completed.
 		 */
-		saveCustomDocumentAs(document: T, destination: Uri, cancellation: CancellationToken): Thenable<void>;
+		sAveCustomDocumentAs(document: T, destinAtion: Uri, cAncellAtion: CAncellAtionToken): ThenAble<void>;
 
 		/**
-		 * Revert a custom document to its last saved state.
+		 * Revert A custom document to its lAst sAved stAte.
 		 *
-		 * This method is invoked by VS Code when the user triggers `File: Revert File` in a custom editor. (Note that
-		 * this is only used using VS Code's `File: Revert File` command and not on a `git revert` of the file).
+		 * This method is invoked by VS Code when the user triggers `File: Revert File` in A custom editor. (Note thAt
+		 * this is only used using VS Code's `File: Revert File` commAnd And not on A `git revert` of the file).
 		 *
-		 * To implement `revert`, the implementer must make sure all editor instances (webviews) for `document`
-		 * are displaying the document in the same state is saved in. This usually means reloading the file from the
-		 * workspace.
+		 * To implement `revert`, the implementer must mAke sure All editor instAnces (webviews) for `document`
+		 * Are displAying the document in the sAme stAte is sAved in. This usuAlly meAns reloAding the file from the
+		 * workspAce.
 		 *
-		 * @param document Document to revert.
-		 * @param cancellation Token that signals the revert is no longer required.
+		 * @pArAm document Document to revert.
+		 * @pArAm cAncellAtion Token thAt signAls the revert is no longer required.
 		 *
-		 * @return Thenable signaling that the change has completed.
+		 * @return ThenAble signAling thAt the chAnge hAs completed.
 		 */
-		revertCustomDocument(document: T, cancellation: CancellationToken): Thenable<void>;
+		revertCustomDocument(document: T, cAncellAtion: CAncellAtionToken): ThenAble<void>;
 
 		/**
-		 * Back up a dirty custom document.
+		 * BAck up A dirty custom document.
 		 *
-		 * Backups are used for hot exit and to prevent data loss. Your `backup` method should persist the resource in
-		 * its current state, i.e. with the edits applied. Most commonly this means saving the resource to disk in
-		 * the `ExtensionContext.storagePath`. When VS Code reloads and your custom editor is opened for a resource,
-		 * your extension should first check to see if any backups exist for the resource. If there is a backup, your
-		 * extension should load the file contents from there instead of from the resource in the workspace.
+		 * BAckups Are used for hot exit And to prevent dAtA loss. Your `bAckup` method should persist the resource in
+		 * its current stAte, i.e. with the edits Applied. Most commonly this meAns sAving the resource to disk in
+		 * the `ExtensionContext.storAgePAth`. When VS Code reloAds And your custom editor is opened for A resource,
+		 * your extension should first check to see if Any bAckups exist for the resource. If there is A bAckup, your
+		 * extension should loAd the file contents from there insteAd of from the resource in the workspAce.
 		 *
-		 * `backup` is triggered approximately one second after the the user stops editing the document. If the user
-		 * rapidly edits the document, `backup` will not be invoked until the editing stops.
+		 * `bAckup` is triggered ApproximAtely one second After the the user stops editing the document. If the user
+		 * rApidly edits the document, `bAckup` will not be invoked until the editing stops.
 		 *
-		 * `backup` is not invoked when `auto save` is enabled (since auto save already persists the resource).
+		 * `bAckup` is not invoked when `Auto sAve` is enAbled (since Auto sAve AlreAdy persists the resource).
 		 *
-		 * @param document Document to backup.
-		 * @param context Information that can be used to backup the document.
-		 * @param cancellation Token that signals the current backup since a new backup is coming in. It is up to your
-		 * extension to decided how to respond to cancellation. If for example your extension is backing up a large file
-		 * in an operation that takes time to complete, your extension may decide to finish the ongoing backup rather
-		 * than cancelling it to ensure that VS Code has some valid backup.
+		 * @pArAm document Document to bAckup.
+		 * @pArAm context InformAtion thAt cAn be used to bAckup the document.
+		 * @pArAm cAncellAtion Token thAt signAls the current bAckup since A new bAckup is coming in. It is up to your
+		 * extension to decided how to respond to cAncellAtion. If for exAmple your extension is bAcking up A lArge file
+		 * in An operAtion thAt tAkes time to complete, your extension mAy decide to finish the ongoing bAckup rAther
+		 * thAn cAncelling it to ensure thAt VS Code hAs some vAlid bAckup.
 		 */
-		backupCustomDocument(document: T, context: CustomDocumentBackupContext, cancellation: CancellationToken): Thenable<CustomDocumentBackup>;
+		bAckupCustomDocument(document: T, context: CustomDocumentBAckupContext, cAncellAtion: CAncellAtionToken): ThenAble<CustomDocumentBAckup>;
 	}
 
 	/**
-	 * The clipboard provides read and write access to the system's clipboard.
+	 * The clipboArd provides reAd And write Access to the system's clipboArd.
 	 */
-	export interface Clipboard {
+	export interfAce ClipboArd {
 
 		/**
-		 * Read the current clipboard contents as text.
-		 * @returns A thenable that resolves to a string.
+		 * ReAd the current clipboArd contents As text.
+		 * @returns A thenAble thAt resolves to A string.
 		 */
-		readText(): Thenable<string>;
+		reAdText(): ThenAble<string>;
 
 		/**
-		 * Writes text into the clipboard.
-		 * @returns A thenable that resolves when writing happened.
+		 * Writes text into the clipboArd.
+		 * @returns A thenAble thAt resolves when writing hAppened.
 		 */
-		writeText(value: string): Thenable<void>;
+		writeText(vAlue: string): ThenAble<void>;
 	}
 
 	/**
-	 * Possible kinds of UI that can use extensions.
+	 * Possible kinds of UI thAt cAn use extensions.
 	 */
 	export enum UIKind {
 
 		/**
-		 * Extensions are accessed from a desktop application.
+		 * Extensions Are Accessed from A desktop ApplicAtion.
 		 */
 		Desktop = 1,
 
 		/**
-		 * Extensions are accessed from a web browser.
+		 * Extensions Are Accessed from A web browser.
 		 */
 		Web = 2
 	}
 
 	/**
-	 * Namespace describing the environment the editor runs in.
+	 * NAmespAce describing the environment the editor runs in.
 	 */
-	export namespace env {
+	export nAmespAce env {
 
 		/**
-		 * The application name of the editor, like 'VS Code'.
+		 * The ApplicAtion nAme of the editor, like 'VS Code'.
 		 */
-		export const appName: string;
+		export const AppNAme: string;
 
 		/**
-		 * The application root folder from which the editor is running.
+		 * The ApplicAtion root folder from which the editor is running.
 		 *
-		 * *Note* that the value is the empty string when running in an
-		 * environment that has no representation of an application root folder.
+		 * *Note* thAt the vAlue is the empty string when running in An
+		 * environment thAt hAs no representAtion of An ApplicAtion root folder.
 		 */
-		export const appRoot: string;
+		export const AppRoot: string;
 
 		/**
-		 * The custom uri scheme the editor registers to in the operating system.
+		 * The custom uri scheme the editor registers to in the operAting system.
 		 */
 		export const uriScheme: string;
 
 		/**
-		 * Represents the preferred user-language, like `de-CH`, `fr`, or `en-US`.
+		 * Represents the preferred user-lAnguAge, like `de-CH`, `fr`, or `en-US`.
 		 */
-		export const language: string;
+		export const lAnguAge: string;
 
 		/**
-		 * The system clipboard.
+		 * The system clipboArd.
 		 */
-		export const clipboard: Clipboard;
+		export const clipboArd: ClipboArd;
 
 		/**
 		 * A unique identifier for the computer.
 		 */
-		export const machineId: string;
+		export const mAchineId: string;
 
 		/**
 		 * A unique identifier for the current session.
-		 * Changes each time the editor is started.
+		 * ChAnges eAch time the editor is stArted.
 		 */
 		export const sessionId: string;
 
 		/**
-		 * The name of a remote. Defined by extensions, popular samples are `wsl` for the Windows
-		 * Subsystem for Linux or `ssh-remote` for remotes using a secure shell.
+		 * The nAme of A remote. Defined by extensions, populAr sAmples Are `wsl` for the Windows
+		 * Subsystem for Linux or `ssh-remote` for remotes using A secure shell.
 		 *
-		 * *Note* that the value is `undefined` when there is no remote extension host but that the
-		 * value is defined in all extension hosts (local and remote) in case a remote extension host
+		 * *Note* thAt the vAlue is `undefined` when there is no remote extension host but thAt the
+		 * vAlue is defined in All extension hosts (locAl And remote) in cAse A remote extension host
 		 * exists. Use [`Extension#extensionKind`](#Extension.extensionKind) to know if
-		 * a specific extension runs remote or not.
+		 * A specific extension runs remote or not.
 		 */
-		export const remoteName: string | undefined;
+		export const remoteNAme: string | undefined;
 
 		/**
-		 * The detected default shell for the extension host, this is overridden by the
-		 * `terminal.integrated.shell` setting for the extension host's platform. Note that in
-		 * environments that do not support a shell the value is the empty string.
+		 * The detected defAult shell for the extension host, this is overridden by the
+		 * `terminAl.integrAted.shell` setting for the extension host's plAtform. Note thAt in
+		 * environments thAt do not support A shell the vAlue is the empty string.
 		 */
 		export const shell: string;
 
 		/**
-		 * The UI kind property indicates from which UI extensions
-		 * are accessed from. For example, extensions could be accessed
-		 * from a desktop application or a web browser.
+		 * The UI kind property indicAtes from which UI extensions
+		 * Are Accessed from. For exAmple, extensions could be Accessed
+		 * from A desktop ApplicAtion or A web browser.
 		 */
 		export const uiKind: UIKind;
 
 		/**
-		 * Opens a link externally using the default application. Depending on the
-		 * used scheme this can be:
-		 * * a browser (`http:`, `https:`)
-		 * * a mail client (`mailto:`)
+		 * Opens A link externAlly using the defAult ApplicAtion. Depending on the
+		 * used scheme this cAn be:
+		 * * A browser (`http:`, `https:`)
+		 * * A mAil client (`mAilto:`)
 		 * * VSCode itself (`vscode:` from `vscode.env.uriScheme`)
 		 *
-		 * *Note* that [`showTextDocument`](#window.showTextDocument) is the right
-		 * way to open a text document inside the editor, not this function.
+		 * *Note* thAt [`showTextDocument`](#window.showTextDocument) is the right
+		 * wAy to open A text document inside the editor, not this function.
 		 *
-		 * @param target The uri that should be opened.
-		 * @returns A promise indicating if open was successful.
+		 * @pArAm tArget The uri thAt should be opened.
+		 * @returns A promise indicAting if open wAs successful.
 		 */
-		export function openExternal(target: Uri): Thenable<boolean>;
+		export function openExternAl(tArget: Uri): ThenAble<booleAn>;
 
 		/**
-		 * Resolves a uri to form that is accessible externally. Currently only supports `https:`, `http:` and
+		 * Resolves A uri to form thAt is Accessible externAlly. Currently only supports `https:`, `http:` And
 		 * `vscode.env.uriScheme` uris.
 		 *
 		 * #### `http:` or `https:` scheme
 		 *
-		 * Resolves an *external* uri, such as a `http:` or `https:` link, from where the extension is running to a
-		 * uri to the same resource on the client machine.
+		 * Resolves An *externAl* uri, such As A `http:` or `https:` link, from where the extension is running to A
+		 * uri to the sAme resource on the client mAchine.
 		 *
-		 * This is a no-op if the extension is running on the client machine.
+		 * This is A no-op if the extension is running on the client mAchine.
 		 *
-		 * If the extension is running remotely, this function automatically establishes a port forwarding tunnel
-		 * from the local machine to `target` on the remote and returns a local uri to the tunnel. The lifetime of
-		 * the port forwarding tunnel is managed by VS Code and the tunnel can be closed by the user.
+		 * If the extension is running remotely, this function AutomAticAlly estAblishes A port forwArding tunnel
+		 * from the locAl mAchine to `tArget` on the remote And returns A locAl uri to the tunnel. The lifetime of
+		 * the port forwArding tunnel is mAnAged by VS Code And the tunnel cAn be closed by the user.
 		 *
-		 * *Note* that uris passed through `openExternal` are automatically resolved and you should not call `asExternalUri` on them.
+		 * *Note* thAt uris pAssed through `openExternAl` Are AutomAticAlly resolved And you should not cAll `AsExternAlUri` on them.
 		 *
 		 * #### `vscode.env.uriScheme`
 		 *
-		 * Creates a uri that - if opened in a browser (e.g. via `openExternal`) - will result in a registered [UriHandler](#UriHandler)
+		 * CreAtes A uri thAt - if opened in A browser (e.g. viA `openExternAl`) - will result in A registered [UriHAndler](#UriHAndler)
 		 * to trigger.
 		 *
-		 * Extensions should not make any assumptions about the resulting uri and should not alter it in anyway.
-		 * Rather, extensions can e.g. use this uri in an authentication flow, by adding the uri as callback query
-		 * argument to the server to authenticate to.
+		 * Extensions should not mAke Any Assumptions About the resulting uri And should not Alter it in AnywAy.
+		 * RAther, extensions cAn e.g. use this uri in An AuthenticAtion flow, by Adding the uri As cAllbAck query
+		 * Argument to the server to AuthenticAte to.
 		 *
-		 * *Note* that if the server decides to add additional query parameters to the uri (e.g. a token or secret), it
-		 * will appear in the uri that is passed to the [UriHandler](#UriHandler).
+		 * *Note* thAt if the server decides to Add AdditionAl query pArAmeters to the uri (e.g. A token or secret), it
+		 * will AppeAr in the uri thAt is pAssed to the [UriHAndler](#UriHAndler).
 		 *
-		 * **Example** of an authentication flow:
+		 * **ExAmple** of An AuthenticAtion flow:
 		 * ```typescript
-		 * vscode.window.registerUriHandler({
-		 *   handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
-		 *     if (uri.path === '/did-authenticate') {
+		 * vscode.window.registerUriHAndler({
+		 *   hAndleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
+		 *     if (uri.pAth === '/did-AuthenticAte') {
 		 *       console.log(uri.toString());
 		 *     }
 		 *   }
 		 * });
 		 *
-		 * const callableUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://my.extension/did-authenticate`));
-		 * await vscode.env.openExternal(callableUri);
+		 * const cAllAbleUri = AwAit vscode.env.AsExternAlUri(vscode.Uri.pArse(`${vscode.env.uriScheme}://my.extension/did-AuthenticAte`));
+		 * AwAit vscode.env.openExternAl(cAllAbleUri);
 		 * ```
 		 *
-		 * *Note* that extensions should not cache the result of `asExternalUri` as the resolved uri may become invalid due to
-		 * a system or user action — for example, in remote cases, a user may close a port forwarding tunnel that was opened by
-		 * `asExternalUri`.
+		 * *Note* thAt extensions should not cAche the result of `AsExternAlUri` As the resolved uri mAy become invAlid due to
+		 * A system or user Action — for exAmple, in remote cAses, A user mAy close A port forwArding tunnel thAt wAs opened by
+		 * `AsExternAlUri`.
 		 *
-		 * @return A uri that can be used on the client machine.
+		 * @return A uri thAt cAn be used on the client mAchine.
 		 */
-		export function asExternalUri(target: Uri): Thenable<Uri>;
+		export function AsExternAlUri(tArget: Uri): ThenAble<Uri>;
 	}
 
 	/**
-	 * Namespace for dealing with commands. In short, a command is a function with a
-	 * unique identifier. The function is sometimes also called _command handler_.
+	 * NAmespAce for deAling with commAnds. In short, A commAnd is A function with A
+	 * unique identifier. The function is sometimes Also cAlled _commAnd hAndler_.
 	 *
-	 * Commands can be added to the editor using the [registerCommand](#commands.registerCommand)
-	 * and [registerTextEditorCommand](#commands.registerTextEditorCommand) functions. Commands
-	 * can be executed [manually](#commands.executeCommand) or from a UI gesture. Those are:
+	 * CommAnds cAn be Added to the editor using the [registerCommAnd](#commAnds.registerCommAnd)
+	 * And [registerTextEditorCommAnd](#commAnds.registerTextEditorCommAnd) functions. CommAnds
+	 * cAn be executed [mAnuAlly](#commAnds.executeCommAnd) or from A UI gesture. Those Are:
 	 *
-	 * * palette - Use the `commands`-section in `package.json` to make a command show in
-	 * the [command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
-	 * * keybinding - Use the `keybindings`-section in `package.json` to enable
-	 * [keybindings](https://code.visualstudio.com/docs/getstarted/keybindings#_customizing-shortcuts)
+	 * * pAlette - Use the `commAnds`-section in `pAckAge.json` to mAke A commAnd show in
+	 * the [commAnd pAlette](https://code.visuAlstudio.com/docs/getstArted/userinterfAce#_commAnd-pAlette).
+	 * * keybinding - Use the `keybindings`-section in `pAckAge.json` to enAble
+	 * [keybindings](https://code.visuAlstudio.com/docs/getstArted/keybindings#_customizing-shortcuts)
 	 * for your extension.
 	 *
-	 * Commands from other extensions and from the editor itself are accessible to an extension. However,
-	 * when invoking an editor command not all argument types are supported.
+	 * CommAnds from other extensions And from the editor itself Are Accessible to An extension. However,
+	 * when invoking An editor commAnd not All Argument types Are supported.
 	 *
-	 * This is a sample that registers a command handler and adds an entry for that command to the palette. First
-	 * register a command handler with the identifier `extension.sayHello`.
-	 * ```javascript
-	 * commands.registerCommand('extension.sayHello', () => {
-	 * 	window.showInformationMessage('Hello World!');
+	 * This is A sAmple thAt registers A commAnd hAndler And Adds An entry for thAt commAnd to the pAlette. First
+	 * register A commAnd hAndler with the identifier `extension.sAyHello`.
+	 * ```jAvAscript
+	 * commAnds.registerCommAnd('extension.sAyHello', () => {
+	 * 	window.showInformAtionMessAge('Hello World!');
 	 * });
 	 * ```
-	 * Second, bind the command identifier to a title under which it will show in the palette (`package.json`).
+	 * Second, bind the commAnd identifier to A title under which it will show in the pAlette (`pAckAge.json`).
 	 * ```json
 	 * {
 	 * 	"contributes": {
-	 * 		"commands": [{
-	 * 			"command": "extension.sayHello",
+	 * 		"commAnds": [{
+	 * 			"commAnd": "extension.sAyHello",
 	 * 			"title": "Hello World"
 	 * 		}]
 	 * 	}
 	 * }
 	 * ```
 	 */
-	export namespace commands {
+	export nAmespAce commAnds {
 
 		/**
-		 * Registers a command that can be invoked via a keyboard shortcut,
-		 * a menu item, an action, or directly.
+		 * Registers A commAnd thAt cAn be invoked viA A keyboArd shortcut,
+		 * A menu item, An Action, or directly.
 		 *
-		 * Registering a command with an existing command identifier twice
-		 * will cause an error.
+		 * Registering A commAnd with An existing commAnd identifier twice
+		 * will cAuse An error.
 		 *
-		 * @param command A unique identifier for the command.
-		 * @param callback A command handler function.
-		 * @param thisArg The `this` context used when invoking the handler function.
-		 * @return Disposable which unregisters this command on disposal.
+		 * @pArAm commAnd A unique identifier for the commAnd.
+		 * @pArAm cAllbAck A commAnd hAndler function.
+		 * @pArAm thisArg The `this` context used when invoking the hAndler function.
+		 * @return DisposAble which unregisters this commAnd on disposAl.
 		 */
-		export function registerCommand(command: string, callback: (...args: any[]) => any, thisArg?: any): Disposable;
+		export function registerCommAnd(commAnd: string, cAllbAck: (...Args: Any[]) => Any, thisArg?: Any): DisposAble;
 
 		/**
-		 * Registers a text editor command that can be invoked via a keyboard shortcut,
-		 * a menu item, an action, or directly.
+		 * Registers A text editor commAnd thAt cAn be invoked viA A keyboArd shortcut,
+		 * A menu item, An Action, or directly.
 		 *
-		 * Text editor commands are different from ordinary [commands](#commands.registerCommand) as
-		 * they only execute when there is an active editor when the command is called. Also, the
-		 * command handler of an editor command has access to the active editor and to an
-		 * [edit](#TextEditorEdit)-builder. Note that the edit-builder is only valid while the
-		 * callback executes.
+		 * Text editor commAnds Are different from ordinAry [commAnds](#commAnds.registerCommAnd) As
+		 * they only execute when there is An Active editor when the commAnd is cAlled. Also, the
+		 * commAnd hAndler of An editor commAnd hAs Access to the Active editor And to An
+		 * [edit](#TextEditorEdit)-builder. Note thAt the edit-builder is only vAlid while the
+		 * cAllbAck executes.
 		 *
-		 * @param command A unique identifier for the command.
-		 * @param callback A command handler function with access to an [editor](#TextEditor) and an [edit](#TextEditorEdit).
-		 * @param thisArg The `this` context used when invoking the handler function.
-		 * @return Disposable which unregisters this command on disposal.
+		 * @pArAm commAnd A unique identifier for the commAnd.
+		 * @pArAm cAllbAck A commAnd hAndler function with Access to An [editor](#TextEditor) And An [edit](#TextEditorEdit).
+		 * @pArAm thisArg The `this` context used when invoking the hAndler function.
+		 * @return DisposAble which unregisters this commAnd on disposAl.
 		 */
-		export function registerTextEditorCommand(command: string, callback: (textEditor: TextEditor, edit: TextEditorEdit, ...args: any[]) => void, thisArg?: any): Disposable;
+		export function registerTextEditorCommAnd(commAnd: string, cAllbAck: (textEditor: TextEditor, edit: TextEditorEdit, ...Args: Any[]) => void, thisArg?: Any): DisposAble;
 
 		/**
-		 * Executes the command denoted by the given command identifier.
+		 * Executes the commAnd denoted by the given commAnd identifier.
 		 *
-		 * * *Note 1:* When executing an editor command not all types are allowed to
-		 * be passed as arguments. Allowed are the primitive types `string`, `boolean`,
-		 * `number`, `undefined`, and `null`, as well as [`Position`](#Position), [`Range`](#Range), [`Uri`](#Uri) and [`Location`](#Location).
-		 * * *Note 2:* There are no restrictions when executing commands that have been contributed
+		 * * *Note 1:* When executing An editor commAnd not All types Are Allowed to
+		 * be pAssed As Arguments. Allowed Are the primitive types `string`, `booleAn`,
+		 * `number`, `undefined`, And `null`, As well As [`Position`](#Position), [`RAnge`](#RAnge), [`Uri`](#Uri) And [`LocAtion`](#LocAtion).
+		 * * *Note 2:* There Are no restrictions when executing commAnds thAt hAve been contributed
 		 * by extensions.
 		 *
-		 * @param command Identifier of the command to execute.
-		 * @param rest Parameters passed to the command function.
-		 * @return A thenable that resolves to the returned value of the given command. `undefined` when
-		 * the command handler function doesn't return anything.
+		 * @pArAm commAnd Identifier of the commAnd to execute.
+		 * @pArAm rest PArAmeters pAssed to the commAnd function.
+		 * @return A thenAble thAt resolves to the returned vAlue of the given commAnd. `undefined` when
+		 * the commAnd hAndler function doesn't return Anything.
 		 */
-		export function executeCommand<T>(command: string, ...rest: any[]): Thenable<T | undefined>;
+		export function executeCommAnd<T>(commAnd: string, ...rest: Any[]): ThenAble<T | undefined>;
 
 		/**
-		 * Retrieve the list of all available commands. Commands starting with an underscore are
-		 * treated as internal commands.
+		 * Retrieve the list of All AvAilAble commAnds. CommAnds stArting with An underscore Are
+		 * treAted As internAl commAnds.
 		 *
-		 * @param filterInternal Set `true` to not see internal commands (starting with an underscore)
-		 * @return Thenable that resolves to a list of command ids.
+		 * @pArAm filterInternAl Set `true` to not see internAl commAnds (stArting with An underscore)
+		 * @return ThenAble thAt resolves to A list of commAnd ids.
 		 */
-		export function getCommands(filterInternal?: boolean): Thenable<string[]>;
+		export function getCommAnds(filterInternAl?: booleAn): ThenAble<string[]>;
 	}
 
 	/**
-	 * Represents the state of a window.
+	 * Represents the stAte of A window.
 	 */
-	export interface WindowState {
+	export interfAce WindowStAte {
 
 		/**
 		 * Whether the current window is focused.
 		 */
-		readonly focused: boolean;
+		reAdonly focused: booleAn;
 	}
 
 	/**
-	 * A uri handler is responsible for handling system-wide [uris](#Uri).
+	 * A uri hAndler is responsible for hAndling system-wide [uris](#Uri).
 	 *
-	 * @see [window.registerUriHandler](#window.registerUriHandler).
+	 * @see [window.registerUriHAndler](#window.registerUriHAndler).
 	 */
-	export interface UriHandler {
+	export interfAce UriHAndler {
 
 		/**
-		 * Handle the provided system-wide [uri](#Uri).
+		 * HAndle the provided system-wide [uri](#Uri).
 		 *
-		 * @see [window.registerUriHandler](#window.registerUriHandler).
+		 * @see [window.registerUriHAndler](#window.registerUriHAndler).
 		 */
-		handleUri(uri: Uri): ProviderResult<void>;
+		hAndleUri(uri: Uri): ProviderResult<void>;
 	}
 
 	/**
-	 * Namespace for dealing with the current window of the editor. That is visible
-	 * and active editors, as well as, UI elements to show messages, selections, and
-	 * asking for user input.
+	 * NAmespAce for deAling with the current window of the editor. ThAt is visible
+	 * And Active editors, As well As, UI elements to show messAges, selections, And
+	 * Asking for user input.
 	 */
-	export namespace window {
+	export nAmespAce window {
 
 		/**
-		 * The currently active editor or `undefined`. The active editor is the one
-		 * that currently has focus or, when none has focus, the one that has changed
+		 * The currently Active editor or `undefined`. The Active editor is the one
+		 * thAt currently hAs focus or, when none hAs focus, the one thAt hAs chAnged
 		 * input most recently.
 		 */
-		export let activeTextEditor: TextEditor | undefined;
+		export let ActiveTextEditor: TextEditor | undefined;
 
 		/**
-		 * The currently visible editors or an empty array.
+		 * The currently visible editors or An empty ArrAy.
 		 */
 		export let visibleTextEditors: TextEditor[];
 
 		/**
-		 * An [event](#Event) which fires when the [active editor](#window.activeTextEditor)
-		 * has changed. *Note* that the event also fires when the active editor changes
+		 * An [event](#Event) which fires when the [Active editor](#window.ActiveTextEditor)
+		 * hAs chAnged. *Note* thAt the event Also fires when the Active editor chAnges
 		 * to `undefined`.
 		 */
-		export const onDidChangeActiveTextEditor: Event<TextEditor | undefined>;
+		export const onDidChAngeActiveTextEditor: Event<TextEditor | undefined>;
 
 		/**
-		 * An [event](#Event) which fires when the array of [visible editors](#window.visibleTextEditors)
-		 * has changed.
+		 * An [event](#Event) which fires when the ArrAy of [visible editors](#window.visibleTextEditors)
+		 * hAs chAnged.
 		 */
-		export const onDidChangeVisibleTextEditors: Event<TextEditor[]>;
+		export const onDidChAngeVisibleTextEditors: Event<TextEditor[]>;
 
 		/**
-		 * An [event](#Event) which fires when the selection in an editor has changed.
+		 * An [event](#Event) which fires when the selection in An editor hAs chAnged.
 		 */
-		export const onDidChangeTextEditorSelection: Event<TextEditorSelectionChangeEvent>;
+		export const onDidChAngeTextEditorSelection: Event<TextEditorSelectionChAngeEvent>;
 
 		/**
-		 * An [event](#Event) which fires when the visible ranges of an editor has changed.
+		 * An [event](#Event) which fires when the visible rAnges of An editor hAs chAnged.
 		 */
-		export const onDidChangeTextEditorVisibleRanges: Event<TextEditorVisibleRangesChangeEvent>;
+		export const onDidChAngeTextEditorVisibleRAnges: Event<TextEditorVisibleRAngesChAngeEvent>;
 
 		/**
-		 * An [event](#Event) which fires when the options of an editor have changed.
+		 * An [event](#Event) which fires when the options of An editor hAve chAnged.
 		 */
-		export const onDidChangeTextEditorOptions: Event<TextEditorOptionsChangeEvent>;
+		export const onDidChAngeTextEditorOptions: Event<TextEditorOptionsChAngeEvent>;
 
 		/**
-		 * An [event](#Event) which fires when the view column of an editor has changed.
+		 * An [event](#Event) which fires when the view column of An editor hAs chAnged.
 		 */
-		export const onDidChangeTextEditorViewColumn: Event<TextEditorViewColumnChangeEvent>;
+		export const onDidChAngeTextEditorViewColumn: Event<TextEditorViewColumnChAngeEvent>;
 
 		/**
-		 * The currently opened terminals or an empty array.
+		 * The currently opened terminAls or An empty ArrAy.
 		 */
-		export const terminals: ReadonlyArray<Terminal>;
+		export const terminAls: ReAdonlyArrAy<TerminAl>;
 
 		/**
-		 * The currently active terminal or `undefined`. The active terminal is the one that
-		 * currently has focus or most recently had focus.
+		 * The currently Active terminAl or `undefined`. The Active terminAl is the one thAt
+		 * currently hAs focus or most recently hAd focus.
 		 */
-		export const activeTerminal: Terminal | undefined;
+		export const ActiveTerminAl: TerminAl | undefined;
 
 		/**
-		 * An [event](#Event) which fires when the [active terminal](#window.activeTerminal)
-		 * has changed. *Note* that the event also fires when the active terminal changes
+		 * An [event](#Event) which fires when the [Active terminAl](#window.ActiveTerminAl)
+		 * hAs chAnged. *Note* thAt the event Also fires when the Active terminAl chAnges
 		 * to `undefined`.
 		 */
-		export const onDidChangeActiveTerminal: Event<Terminal | undefined>;
+		export const onDidChAngeActiveTerminAl: Event<TerminAl | undefined>;
 
 		/**
-		 * An [event](#Event) which fires when a terminal has been created, either through the
-		 * [createTerminal](#window.createTerminal) API or commands.
+		 * An [event](#Event) which fires when A terminAl hAs been creAted, either through the
+		 * [creAteTerminAl](#window.creAteTerminAl) API or commAnds.
 		 */
-		export const onDidOpenTerminal: Event<Terminal>;
+		export const onDidOpenTerminAl: Event<TerminAl>;
 
 		/**
-		 * An [event](#Event) which fires when a terminal is disposed.
+		 * An [event](#Event) which fires when A terminAl is disposed.
 		 */
-		export const onDidCloseTerminal: Event<Terminal>;
+		export const onDidCloseTerminAl: Event<TerminAl>;
 
 		/**
-		 * Represents the current window's state.
+		 * Represents the current window's stAte.
 		 */
-		export const state: WindowState;
+		export const stAte: WindowStAte;
 
 		/**
-		 * An [event](#Event) which fires when the focus state of the current window
-		 * changes. The value of the event represents whether the window is focused.
+		 * An [event](#Event) which fires when the focus stAte of the current window
+		 * chAnges. The vAlue of the event represents whether the window is focused.
 		 */
-		export const onDidChangeWindowState: Event<WindowState>;
+		export const onDidChAngeWindowStAte: Event<WindowStAte>;
 
 		/**
-		 * Show the given document in a text editor. A [column](#ViewColumn) can be provided
-		 * to control where the editor is being shown. Might change the [active editor](#window.activeTextEditor).
+		 * Show the given document in A text editor. A [column](#ViewColumn) cAn be provided
+		 * to control where the editor is being shown. Might chAnge the [Active editor](#window.ActiveTextEditor).
 		 *
-		 * @param document A text document to be shown.
-		 * @param column A view column in which the [editor](#TextEditor) should be shown. The default is the [active](#ViewColumn.Active), other values
-		 * are adjusted to be `Min(column, columnCount + 1)`, the [active](#ViewColumn.Active)-column is not adjusted. Use [`ViewColumn.Beside`](#ViewColumn.Beside)
-		 * to open the editor to the side of the currently active one.
-		 * @param preserveFocus When `true` the editor will not take focus.
-		 * @return A promise that resolves to an [editor](#TextEditor).
+		 * @pArAm document A text document to be shown.
+		 * @pArAm column A view column in which the [editor](#TextEditor) should be shown. The defAult is the [Active](#ViewColumn.Active), other vAlues
+		 * Are Adjusted to be `Min(column, columnCount + 1)`, the [Active](#ViewColumn.Active)-column is not Adjusted. Use [`ViewColumn.Beside`](#ViewColumn.Beside)
+		 * to open the editor to the side of the currently Active one.
+		 * @pArAm preserveFocus When `true` the editor will not tAke focus.
+		 * @return A promise thAt resolves to An [editor](#TextEditor).
 		 */
-		export function showTextDocument(document: TextDocument, column?: ViewColumn, preserveFocus?: boolean): Thenable<TextEditor>;
+		export function showTextDocument(document: TextDocument, column?: ViewColumn, preserveFocus?: booleAn): ThenAble<TextEditor>;
 
 		/**
-		 * Show the given document in a text editor. [Options](#TextDocumentShowOptions) can be provided
-		 * to control options of the editor is being shown. Might change the [active editor](#window.activeTextEditor).
+		 * Show the given document in A text editor. [Options](#TextDocumentShowOptions) cAn be provided
+		 * to control options of the editor is being shown. Might chAnge the [Active editor](#window.ActiveTextEditor).
 		 *
-		 * @param document A text document to be shown.
-		 * @param options [Editor options](#TextDocumentShowOptions) to configure the behavior of showing the [editor](#TextEditor).
-		 * @return A promise that resolves to an [editor](#TextEditor).
+		 * @pArAm document A text document to be shown.
+		 * @pArAm options [Editor options](#TextDocumentShowOptions) to configure the behAvior of showing the [editor](#TextEditor).
+		 * @return A promise thAt resolves to An [editor](#TextEditor).
 		 */
-		export function showTextDocument(document: TextDocument, options?: TextDocumentShowOptions): Thenable<TextEditor>;
+		export function showTextDocument(document: TextDocument, options?: TextDocumentShowOptions): ThenAble<TextEditor>;
 
 		/**
-		 * A short-hand for `openTextDocument(uri).then(document => showTextDocument(document, options))`.
+		 * A short-hAnd for `openTextDocument(uri).then(document => showTextDocument(document, options))`.
 		 *
 		 * @see [openTextDocument](#openTextDocument)
 		 *
-		 * @param uri A resource identifier.
-		 * @param options [Editor options](#TextDocumentShowOptions) to configure the behavior of showing the [editor](#TextEditor).
-		 * @return A promise that resolves to an [editor](#TextEditor).
+		 * @pArAm uri A resource identifier.
+		 * @pArAm options [Editor options](#TextDocumentShowOptions) to configure the behAvior of showing the [editor](#TextEditor).
+		 * @return A promise thAt resolves to An [editor](#TextEditor).
 		 */
-		export function showTextDocument(uri: Uri, options?: TextDocumentShowOptions): Thenable<TextEditor>;
+		export function showTextDocument(uri: Uri, options?: TextDocumentShowOptions): ThenAble<TextEditor>;
 
 		/**
-		 * Create a TextEditorDecorationType that can be used to add decorations to text editors.
+		 * CreAte A TextEditorDecorAtionType thAt cAn be used to Add decorAtions to text editors.
 		 *
-		 * @param options Rendering options for the decoration type.
-		 * @return A new decoration type instance.
+		 * @pArAm options Rendering options for the decorAtion type.
+		 * @return A new decorAtion type instAnce.
 		 */
-		export function createTextEditorDecorationType(options: DecorationRenderOptions): TextEditorDecorationType;
+		export function creAteTextEditorDecorAtionType(options: DecorAtionRenderOptions): TextEditorDecorAtionType;
 
 		/**
-		 * Show an information message to users. Optionally provide an array of items which will be presented as
-		 * clickable buttons.
+		 * Show An informAtion messAge to users. OptionAlly provide An ArrAy of items which will be presented As
+		 * clickAble buttons.
 		 *
-		 * @param message The message to show.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showInformationMessage(message: string, ...items: string[]): Thenable<string | undefined>;
+		export function showInformAtionMessAge(messAge: string, ...items: string[]): ThenAble<string | undefined>;
 
 		/**
-		 * Show an information message to users. Optionally provide an array of items which will be presented as
-		 * clickable buttons.
+		 * Show An informAtion messAge to users. OptionAlly provide An ArrAy of items which will be presented As
+		 * clickAble buttons.
 		 *
-		 * @param message The message to show.
-		 * @param options Configures the behaviour of the message.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm options Configures the behAviour of the messAge.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showInformationMessage(message: string, options: MessageOptions, ...items: string[]): Thenable<string | undefined>;
+		export function showInformAtionMessAge(messAge: string, options: MessAgeOptions, ...items: string[]): ThenAble<string | undefined>;
 
 		/**
-		 * Show an information message.
+		 * Show An informAtion messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showInformationMessage<T extends MessageItem>(message: string, ...items: T[]): Thenable<T | undefined>;
+		export function showInformAtionMessAge<T extends MessAgeItem>(messAge: string, ...items: T[]): ThenAble<T | undefined>;
 
 		/**
-		 * Show an information message.
+		 * Show An informAtion messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param options Configures the behaviour of the message.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm options Configures the behAviour of the messAge.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showInformationMessage<T extends MessageItem>(message: string, options: MessageOptions, ...items: T[]): Thenable<T | undefined>;
+		export function showInformAtionMessAge<T extends MessAgeItem>(messAge: string, options: MessAgeOptions, ...items: T[]): ThenAble<T | undefined>;
 
 		/**
-		 * Show a warning message.
+		 * Show A wArning messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showWarningMessage(message: string, ...items: string[]): Thenable<string | undefined>;
+		export function showWArningMessAge(messAge: string, ...items: string[]): ThenAble<string | undefined>;
 
 		/**
-		 * Show a warning message.
+		 * Show A wArning messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param options Configures the behaviour of the message.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm options Configures the behAviour of the messAge.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showWarningMessage(message: string, options: MessageOptions, ...items: string[]): Thenable<string | undefined>;
+		export function showWArningMessAge(messAge: string, options: MessAgeOptions, ...items: string[]): ThenAble<string | undefined>;
 
 		/**
-		 * Show a warning message.
+		 * Show A wArning messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showWarningMessage<T extends MessageItem>(message: string, ...items: T[]): Thenable<T | undefined>;
+		export function showWArningMessAge<T extends MessAgeItem>(messAge: string, ...items: T[]): ThenAble<T | undefined>;
 
 		/**
-		 * Show a warning message.
+		 * Show A wArning messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param options Configures the behaviour of the message.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm options Configures the behAviour of the messAge.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showWarningMessage<T extends MessageItem>(message: string, options: MessageOptions, ...items: T[]): Thenable<T | undefined>;
+		export function showWArningMessAge<T extends MessAgeItem>(messAge: string, options: MessAgeOptions, ...items: T[]): ThenAble<T | undefined>;
 
 		/**
-		 * Show an error message.
+		 * Show An error messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showErrorMessage(message: string, ...items: string[]): Thenable<string | undefined>;
+		export function showErrorMessAge(messAge: string, ...items: string[]): ThenAble<string | undefined>;
 
 		/**
-		 * Show an error message.
+		 * Show An error messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param options Configures the behaviour of the message.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm options Configures the behAviour of the messAge.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showErrorMessage(message: string, options: MessageOptions, ...items: string[]): Thenable<string | undefined>;
+		export function showErrorMessAge(messAge: string, options: MessAgeOptions, ...items: string[]): ThenAble<string | undefined>;
 
 		/**
-		 * Show an error message.
+		 * Show An error messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showErrorMessage<T extends MessageItem>(message: string, ...items: T[]): Thenable<T | undefined>;
+		export function showErrorMessAge<T extends MessAgeItem>(messAge: string, ...items: T[]): ThenAble<T | undefined>;
 
 		/**
-		 * Show an error message.
+		 * Show An error messAge.
 		 *
-		 * @see [showInformationMessage](#window.showInformationMessage)
+		 * @see [showInformAtionMessAge](#window.showInformAtionMessAge)
 		 *
-		 * @param message The message to show.
-		 * @param options Configures the behaviour of the message.
-		 * @param items A set of items that will be rendered as actions in the message.
-		 * @return A thenable that resolves to the selected item or `undefined` when being dismissed.
+		 * @pArAm messAge The messAge to show.
+		 * @pArAm options Configures the behAviour of the messAge.
+		 * @pArAm items A set of items thAt will be rendered As Actions in the messAge.
+		 * @return A thenAble thAt resolves to the selected item or `undefined` when being dismissed.
 		 */
-		export function showErrorMessage<T extends MessageItem>(message: string, options: MessageOptions, ...items: T[]): Thenable<T | undefined>;
+		export function showErrorMessAge<T extends MessAgeItem>(messAge: string, options: MessAgeOptions, ...items: T[]): ThenAble<T | undefined>;
 
 		/**
-		 * Shows a selection list allowing multiple selections.
+		 * Shows A selection list Allowing multiple selections.
 		 *
-		 * @param items An array of strings, or a promise that resolves to an array of strings.
-		 * @param options Configures the behavior of the selection list.
-		 * @param token A token that can be used to signal cancellation.
-		 * @return A promise that resolves to the selected items or `undefined`.
+		 * @pArAm items An ArrAy of strings, or A promise thAt resolves to An ArrAy of strings.
+		 * @pArAm options Configures the behAvior of the selection list.
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion.
+		 * @return A promise thAt resolves to the selected items or `undefined`.
 		 */
-		export function showQuickPick(items: string[] | Thenable<string[]>, options: QuickPickOptions & { canPickMany: true; }, token?: CancellationToken): Thenable<string[] | undefined>;
+		export function showQuickPick(items: string[] | ThenAble<string[]>, options: QuickPickOptions & { cAnPickMAny: true; }, token?: CAncellAtionToken): ThenAble<string[] | undefined>;
 
 		/**
-		 * Shows a selection list.
+		 * Shows A selection list.
 		 *
-		 * @param items An array of strings, or a promise that resolves to an array of strings.
-		 * @param options Configures the behavior of the selection list.
-		 * @param token A token that can be used to signal cancellation.
-		 * @return A promise that resolves to the selection or `undefined`.
+		 * @pArAm items An ArrAy of strings, or A promise thAt resolves to An ArrAy of strings.
+		 * @pArAm options Configures the behAvior of the selection list.
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion.
+		 * @return A promise thAt resolves to the selection or `undefined`.
 		 */
-		export function showQuickPick(items: string[] | Thenable<string[]>, options?: QuickPickOptions, token?: CancellationToken): Thenable<string | undefined>;
+		export function showQuickPick(items: string[] | ThenAble<string[]>, options?: QuickPickOptions, token?: CAncellAtionToken): ThenAble<string | undefined>;
 
 		/**
-		 * Shows a selection list allowing multiple selections.
+		 * Shows A selection list Allowing multiple selections.
 		 *
-		 * @param items An array of items, or a promise that resolves to an array of items.
-		 * @param options Configures the behavior of the selection list.
-		 * @param token A token that can be used to signal cancellation.
-		 * @return A promise that resolves to the selected items or `undefined`.
+		 * @pArAm items An ArrAy of items, or A promise thAt resolves to An ArrAy of items.
+		 * @pArAm options Configures the behAvior of the selection list.
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion.
+		 * @return A promise thAt resolves to the selected items or `undefined`.
 		 */
-		export function showQuickPick<T extends QuickPickItem>(items: T[] | Thenable<T[]>, options: QuickPickOptions & { canPickMany: true; }, token?: CancellationToken): Thenable<T[] | undefined>;
+		export function showQuickPick<T extends QuickPickItem>(items: T[] | ThenAble<T[]>, options: QuickPickOptions & { cAnPickMAny: true; }, token?: CAncellAtionToken): ThenAble<T[] | undefined>;
 
 		/**
-		 * Shows a selection list.
+		 * Shows A selection list.
 		 *
-		 * @param items An array of items, or a promise that resolves to an array of items.
-		 * @param options Configures the behavior of the selection list.
-		 * @param token A token that can be used to signal cancellation.
-		 * @return A promise that resolves to the selected item or `undefined`.
+		 * @pArAm items An ArrAy of items, or A promise thAt resolves to An ArrAy of items.
+		 * @pArAm options Configures the behAvior of the selection list.
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion.
+		 * @return A promise thAt resolves to the selected item or `undefined`.
 		 */
-		export function showQuickPick<T extends QuickPickItem>(items: T[] | Thenable<T[]>, options?: QuickPickOptions, token?: CancellationToken): Thenable<T | undefined>;
+		export function showQuickPick<T extends QuickPickItem>(items: T[] | ThenAble<T[]>, options?: QuickPickOptions, token?: CAncellAtionToken): ThenAble<T | undefined>;
 
 		/**
-		 * Shows a selection list of [workspace folders](#workspace.workspaceFolders) to pick from.
+		 * Shows A selection list of [workspAce folders](#workspAce.workspAceFolders) to pick from.
 		 * Returns `undefined` if no folder is open.
 		 *
-		 * @param options Configures the behavior of the workspace folder list.
-		 * @return A promise that resolves to the workspace folder or `undefined`.
+		 * @pArAm options Configures the behAvior of the workspAce folder list.
+		 * @return A promise thAt resolves to the workspAce folder or `undefined`.
 		 */
-		export function showWorkspaceFolderPick(options?: WorkspaceFolderPickOptions): Thenable<WorkspaceFolder | undefined>;
+		export function showWorkspAceFolderPick(options?: WorkspAceFolderPickOptions): ThenAble<WorkspAceFolder | undefined>;
 
 		/**
-		 * Shows a file open dialog to the user which allows to select a file
+		 * Shows A file open diAlog to the user which Allows to select A file
 		 * for opening-purposes.
 		 *
-		 * @param options Options that control the dialog.
-		 * @returns A promise that resolves to the selected resources or `undefined`.
+		 * @pArAm options Options thAt control the diAlog.
+		 * @returns A promise thAt resolves to the selected resources or `undefined`.
 		 */
-		export function showOpenDialog(options?: OpenDialogOptions): Thenable<Uri[] | undefined>;
+		export function showOpenDiAlog(options?: OpenDiAlogOptions): ThenAble<Uri[] | undefined>;
 
 		/**
-		 * Shows a file save dialog to the user which allows to select a file
-		 * for saving-purposes.
+		 * Shows A file sAve diAlog to the user which Allows to select A file
+		 * for sAving-purposes.
 		 *
-		 * @param options Options that control the dialog.
-		 * @returns A promise that resolves to the selected resource or `undefined`.
+		 * @pArAm options Options thAt control the diAlog.
+		 * @returns A promise thAt resolves to the selected resource or `undefined`.
 		 */
-		export function showSaveDialog(options?: SaveDialogOptions): Thenable<Uri | undefined>;
+		export function showSAveDiAlog(options?: SAveDiAlogOptions): ThenAble<Uri | undefined>;
 
 		/**
-		 * Opens an input box to ask the user for input.
+		 * Opens An input box to Ask the user for input.
 		 *
-		 * The returned value will be `undefined` if the input box was canceled (e.g. pressing ESC). Otherwise the
-		 * returned value will be the string typed by the user or an empty string if the user did not type
-		 * anything but dismissed the input box with OK.
+		 * The returned vAlue will be `undefined` if the input box wAs cAnceled (e.g. pressing ESC). Otherwise the
+		 * returned vAlue will be the string typed by the user or An empty string if the user did not type
+		 * Anything but dismissed the input box with OK.
 		 *
-		 * @param options Configures the behavior of the input box.
-		 * @param token A token that can be used to signal cancellation.
-		 * @return A promise that resolves to a string the user provided or to `undefined` in case of dismissal.
+		 * @pArAm options Configures the behAvior of the input box.
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion.
+		 * @return A promise thAt resolves to A string the user provided or to `undefined` in cAse of dismissAl.
 		 */
-		export function showInputBox(options?: InputBoxOptions, token?: CancellationToken): Thenable<string | undefined>;
+		export function showInputBox(options?: InputBoxOptions, token?: CAncellAtionToken): ThenAble<string | undefined>;
 
 		/**
-		 * Creates a [QuickPick](#QuickPick) to let the user pick an item from a list
+		 * CreAtes A [QuickPick](#QuickPick) to let the user pick An item from A list
 		 * of items of type T.
 		 *
-		 * Note that in many cases the more convenient [window.showQuickPick](#window.showQuickPick)
-		 * is easier to use. [window.createQuickPick](#window.createQuickPick) should be used
+		 * Note thAt in mAny cAses the more convenient [window.showQuickPick](#window.showQuickPick)
+		 * is eAsier to use. [window.creAteQuickPick](#window.creAteQuickPick) should be used
 		 * when [window.showQuickPick](#window.showQuickPick) does not offer the required flexibility.
 		 *
 		 * @return A new [QuickPick](#QuickPick).
 		 */
-		export function createQuickPick<T extends QuickPickItem>(): QuickPick<T>;
+		export function creAteQuickPick<T extends QuickPickItem>(): QuickPick<T>;
 
 		/**
-		 * Creates a [InputBox](#InputBox) to let the user enter some text input.
+		 * CreAtes A [InputBox](#InputBox) to let the user enter some text input.
 		 *
-		 * Note that in many cases the more convenient [window.showInputBox](#window.showInputBox)
-		 * is easier to use. [window.createInputBox](#window.createInputBox) should be used
+		 * Note thAt in mAny cAses the more convenient [window.showInputBox](#window.showInputBox)
+		 * is eAsier to use. [window.creAteInputBox](#window.creAteInputBox) should be used
 		 * when [window.showInputBox](#window.showInputBox) does not offer the required flexibility.
 		 *
 		 * @return A new [InputBox](#InputBox).
 		 */
-		export function createInputBox(): InputBox;
+		export function creAteInputBox(): InputBox;
 
 		/**
-		 * Creates a new [output channel](#OutputChannel) with the given name.
+		 * CreAtes A new [output chAnnel](#OutputChAnnel) with the given nAme.
 		 *
-		 * @param name Human-readable string which will be used to represent the channel in the UI.
+		 * @pArAm nAme HumAn-reAdAble string which will be used to represent the chAnnel in the UI.
 		 */
-		export function createOutputChannel(name: string): OutputChannel;
+		export function creAteOutputChAnnel(nAme: string): OutputChAnnel;
 
 		/**
-		 * Create and show a new webview panel.
+		 * CreAte And show A new webview pAnel.
 		 *
-		 * @param viewType Identifies the type of the webview panel.
-		 * @param title Title of the panel.
-		 * @param showOptions Where to show the webview in the editor. If preserveFocus is set, the new webview will not take focus.
-		 * @param options Settings for the new panel.
+		 * @pArAm viewType Identifies the type of the webview pAnel.
+		 * @pArAm title Title of the pAnel.
+		 * @pArAm showOptions Where to show the webview in the editor. If preserveFocus is set, the new webview will not tAke focus.
+		 * @pArAm options Settings for the new pAnel.
 		 *
-		 * @return New webview panel.
+		 * @return New webview pAnel.
 		 */
-		export function createWebviewPanel(viewType: string, title: string, showOptions: ViewColumn | { viewColumn: ViewColumn, preserveFocus?: boolean }, options?: WebviewPanelOptions & WebviewOptions): WebviewPanel;
+		export function creAteWebviewPAnel(viewType: string, title: string, showOptions: ViewColumn | { viewColumn: ViewColumn, preserveFocus?: booleAn }, options?: WebviewPAnelOptions & WebviewOptions): WebviewPAnel;
 
 		/**
-		 * Set a message to the status bar. This is a short hand for the more powerful
-		 * status bar [items](#window.createStatusBarItem).
+		 * Set A messAge to the stAtus bAr. This is A short hAnd for the more powerful
+		 * stAtus bAr [items](#window.creAteStAtusBArItem).
 		 *
-		 * @param text The message to show, supports icon substitution as in status bar [items](#StatusBarItem.text).
-		 * @param hideAfterTimeout Timeout in milliseconds after which the message will be disposed.
-		 * @return A disposable which hides the status bar message.
+		 * @pArAm text The messAge to show, supports icon substitution As in stAtus bAr [items](#StAtusBArItem.text).
+		 * @pArAm hideAfterTimeout Timeout in milliseconds After which the messAge will be disposed.
+		 * @return A disposAble which hides the stAtus bAr messAge.
 		 */
-		export function setStatusBarMessage(text: string, hideAfterTimeout: number): Disposable;
+		export function setStAtusBArMessAge(text: string, hideAfterTimeout: number): DisposAble;
 
 		/**
-		 * Set a message to the status bar. This is a short hand for the more powerful
-		 * status bar [items](#window.createStatusBarItem).
+		 * Set A messAge to the stAtus bAr. This is A short hAnd for the more powerful
+		 * stAtus bAr [items](#window.creAteStAtusBArItem).
 		 *
-		 * @param text The message to show, supports icon substitution as in status bar [items](#StatusBarItem.text).
-		 * @param hideWhenDone Thenable on which completion (resolve or reject) the message will be disposed.
-		 * @return A disposable which hides the status bar message.
+		 * @pArAm text The messAge to show, supports icon substitution As in stAtus bAr [items](#StAtusBArItem.text).
+		 * @pArAm hideWhenDone ThenAble on which completion (resolve or reject) the messAge will be disposed.
+		 * @return A disposAble which hides the stAtus bAr messAge.
 		 */
-		export function setStatusBarMessage(text: string, hideWhenDone: Thenable<any>): Disposable;
+		export function setStAtusBArMessAge(text: string, hideWhenDone: ThenAble<Any>): DisposAble;
 
 		/**
-		 * Set a message to the status bar. This is a short hand for the more powerful
-		 * status bar [items](#window.createStatusBarItem).
+		 * Set A messAge to the stAtus bAr. This is A short hAnd for the more powerful
+		 * stAtus bAr [items](#window.creAteStAtusBArItem).
 		 *
-		 * *Note* that status bar messages stack and that they must be disposed when no
+		 * *Note* thAt stAtus bAr messAges stAck And thAt they must be disposed when no
 		 * longer used.
 		 *
-		 * @param text The message to show, supports icon substitution as in status bar [items](#StatusBarItem.text).
-		 * @return A disposable which hides the status bar message.
+		 * @pArAm text The messAge to show, supports icon substitution As in stAtus bAr [items](#StAtusBArItem.text).
+		 * @return A disposAble which hides the stAtus bAr messAge.
 		 */
-		export function setStatusBarMessage(text: string): Disposable;
+		export function setStAtusBArMessAge(text: string): DisposAble;
 
 		/**
-		 * Show progress in the Source Control viewlet while running the given callback and while
+		 * Show progress in the Source Control viewlet while running the given cAllbAck And while
 		 * its returned promise isn't resolve or rejected.
 		 *
-		 * @deprecated Use `withProgress` instead.
+		 * @deprecAted Use `withProgress` insteAd.
 		 *
-		 * @param task A callback returning a promise. Progress increments can be reported with
+		 * @pArAm tAsk A cAllbAck returning A promise. Progress increments cAn be reported with
 		 * the provided [progress](#Progress)-object.
-		 * @return The thenable the task did return.
+		 * @return The thenAble the tAsk did return.
 		 */
-		export function withScmProgress<R>(task: (progress: Progress<number>) => Thenable<R>): Thenable<R>;
+		export function withScmProgress<R>(tAsk: (progress: Progress<number>) => ThenAble<R>): ThenAble<R>;
 
 		/**
-		 * Show progress in the editor. Progress is shown while running the given callback
-		 * and while the promise it returned isn't resolved nor rejected. The location at which
-		 * progress should show (and other details) is defined via the passed [`ProgressOptions`](#ProgressOptions).
+		 * Show progress in the editor. Progress is shown while running the given cAllbAck
+		 * And while the promise it returned isn't resolved nor rejected. The locAtion At which
+		 * progress should show (And other detAils) is defined viA the pAssed [`ProgressOptions`](#ProgressOptions).
 		 *
-		 * @param task A callback returning a promise. Progress state can be reported with
+		 * @pArAm tAsk A cAllbAck returning A promise. Progress stAte cAn be reported with
 		 * the provided [progress](#Progress)-object.
 		 *
-		 * To report discrete progress, use `increment` to indicate how much work has been completed. Each call with
-		 * a `increment` value will be summed up and reflected as overall progress until 100% is reached (a value of
-		 * e.g. `10` accounts for `10%` of work done).
-		 * Note that currently only `ProgressLocation.Notification` is capable of showing discrete progress.
+		 * To report discrete progress, use `increment` to indicAte how much work hAs been completed. EAch cAll with
+		 * A `increment` vAlue will be summed up And reflected As overAll progress until 100% is reAched (A vAlue of
+		 * e.g. `10` Accounts for `10%` of work done).
+		 * Note thAt currently only `ProgressLocAtion.NotificAtion` is cApAble of showing discrete progress.
 		 *
-		 * To monitor if the operation has been cancelled by the user, use the provided [`CancellationToken`](#CancellationToken).
-		 * Note that currently only `ProgressLocation.Notification` is supporting to show a cancel button to cancel the
-		 * long running operation.
+		 * To monitor if the operAtion hAs been cAncelled by the user, use the provided [`CAncellAtionToken`](#CAncellAtionToken).
+		 * Note thAt currently only `ProgressLocAtion.NotificAtion` is supporting to show A cAncel button to cAncel the
+		 * long running operAtion.
 		 *
-		 * @return The thenable the task-callback returned.
+		 * @return The thenAble the tAsk-cAllbAck returned.
 		 */
-		export function withProgress<R>(options: ProgressOptions, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<R>): Thenable<R>;
+		export function withProgress<R>(options: ProgressOptions, tAsk: (progress: Progress<{ messAge?: string; increment?: number }>, token: CAncellAtionToken) => ThenAble<R>): ThenAble<R>;
 
 		/**
-		 * Creates a status bar [item](#StatusBarItem).
+		 * CreAtes A stAtus bAr [item](#StAtusBArItem).
 		 *
-		 * @param alignment The alignment of the item.
-		 * @param priority The priority of the item. Higher values mean the item should be shown more to the left.
-		 * @return A new status bar item.
+		 * @pArAm Alignment The Alignment of the item.
+		 * @pArAm priority The priority of the item. Higher vAlues meAn the item should be shown more to the left.
+		 * @return A new stAtus bAr item.
 		 */
-		export function createStatusBarItem(alignment?: StatusBarAlignment, priority?: number): StatusBarItem;
+		export function creAteStAtusBArItem(Alignment?: StAtusBArAlignment, priority?: number): StAtusBArItem;
 
 		/**
-		 * Creates a [Terminal](#Terminal) with a backing shell process. The cwd of the terminal will be the workspace
+		 * CreAtes A [TerminAl](#TerminAl) with A bAcking shell process. The cwd of the terminAl will be the workspAce
 		 * directory if it exists.
 		 *
-		 * @param name Optional human-readable string which will be used to represent the terminal in the UI.
-		 * @param shellPath Optional path to a custom shell executable to be used in the terminal.
-		 * @param shellArgs Optional args for the custom shell executable. A string can be used on Windows only which
-		 * allows specifying shell args in
-		 * [command-line format](https://msdn.microsoft.com/en-au/08dfcab2-eb6e-49a4-80eb-87d4076c98c6).
-		 * @return A new Terminal.
-		 * @throws When running in an environment where a new process cannot be started.
+		 * @pArAm nAme OptionAl humAn-reAdAble string which will be used to represent the terminAl in the UI.
+		 * @pArAm shellPAth OptionAl pAth to A custom shell executAble to be used in the terminAl.
+		 * @pArAm shellArgs OptionAl Args for the custom shell executAble. A string cAn be used on Windows only which
+		 * Allows specifying shell Args in
+		 * [commAnd-line formAt](https://msdn.microsoft.com/en-Au/08dfcAb2-eb6e-49A4-80eb-87d4076c98c6).
+		 * @return A new TerminAl.
+		 * @throws When running in An environment where A new process cAnnot be stArted.
 		 */
-		export function createTerminal(name?: string, shellPath?: string, shellArgs?: string[] | string): Terminal;
+		export function creAteTerminAl(nAme?: string, shellPAth?: string, shellArgs?: string[] | string): TerminAl;
 
 		/**
-		 * Creates a [Terminal](#Terminal) with a backing shell process.
+		 * CreAtes A [TerminAl](#TerminAl) with A bAcking shell process.
 		 *
-		 * @param options A TerminalOptions object describing the characteristics of the new terminal.
-		 * @return A new Terminal.
-		 * @throws When running in an environment where a new process cannot be started.
+		 * @pArAm options A TerminAlOptions object describing the chArActeristics of the new terminAl.
+		 * @return A new TerminAl.
+		 * @throws When running in An environment where A new process cAnnot be stArted.
 		 */
-		export function createTerminal(options: TerminalOptions): Terminal;
+		export function creAteTerminAl(options: TerminAlOptions): TerminAl;
 
 		/**
-		 * Creates a [Terminal](#Terminal) where an extension controls its input and output.
+		 * CreAtes A [TerminAl](#TerminAl) where An extension controls its input And output.
 		 *
-		 * @param options An [ExtensionTerminalOptions](#ExtensionTerminalOptions) object describing
-		 * the characteristics of the new terminal.
-		 * @return A new Terminal.
+		 * @pArAm options An [ExtensionTerminAlOptions](#ExtensionTerminAlOptions) object describing
+		 * the chArActeristics of the new terminAl.
+		 * @return A new TerminAl.
 		 */
-		export function createTerminal(options: ExtensionTerminalOptions): Terminal;
+		export function creAteTerminAl(options: ExtensionTerminAlOptions): TerminAl;
 
 		/**
-		 * Register a [TreeDataProvider](#TreeDataProvider) for the view contributed using the extension point `views`.
-		 * This will allow you to contribute data to the [TreeView](#TreeView) and update if the data changes.
+		 * Register A [TreeDAtAProvider](#TreeDAtAProvider) for the view contributed using the extension point `views`.
+		 * This will Allow you to contribute dAtA to the [TreeView](#TreeView) And updAte if the dAtA chAnges.
 		 *
-		 * **Note:** To get access to the [TreeView](#TreeView) and perform operations on it, use [createTreeView](#window.createTreeView).
+		 * **Note:** To get Access to the [TreeView](#TreeView) And perform operAtions on it, use [creAteTreeView](#window.creAteTreeView).
 		 *
-		 * @param viewId Id of the view contributed using the extension point `views`.
-		 * @param treeDataProvider A [TreeDataProvider](#TreeDataProvider) that provides tree data for the view
+		 * @pArAm viewId Id of the view contributed using the extension point `views`.
+		 * @pArAm treeDAtAProvider A [TreeDAtAProvider](#TreeDAtAProvider) thAt provides tree dAtA for the view
 		 */
-		export function registerTreeDataProvider<T>(viewId: string, treeDataProvider: TreeDataProvider<T>): Disposable;
+		export function registerTreeDAtAProvider<T>(viewId: string, treeDAtAProvider: TreeDAtAProvider<T>): DisposAble;
 
 		/**
-		 * Create a [TreeView](#TreeView) for the view contributed using the extension point `views`.
-		 * @param viewId Id of the view contributed using the extension point `views`.
-		 * @param options Options for creating the [TreeView](#TreeView)
-		 * @returns a [TreeView](#TreeView).
+		 * CreAte A [TreeView](#TreeView) for the view contributed using the extension point `views`.
+		 * @pArAm viewId Id of the view contributed using the extension point `views`.
+		 * @pArAm options Options for creAting the [TreeView](#TreeView)
+		 * @returns A [TreeView](#TreeView).
 		 */
-		export function createTreeView<T>(viewId: string, options: TreeViewOptions<T>): TreeView<T>;
+		export function creAteTreeView<T>(viewId: string, options: TreeViewOptions<T>): TreeView<T>;
 
 		/**
-		 * Registers a [uri handler](#UriHandler) capable of handling system-wide [uris](#Uri).
-		 * In case there are multiple windows open, the topmost window will handle the uri.
-		 * A uri handler is scoped to the extension it is contributed from; it will only
-		 * be able to handle uris which are directed to the extension itself. A uri must respect
+		 * Registers A [uri hAndler](#UriHAndler) cApAble of hAndling system-wide [uris](#Uri).
+		 * In cAse there Are multiple windows open, the topmost window will hAndle the uri.
+		 * A uri hAndler is scoped to the extension it is contributed from; it will only
+		 * be Able to hAndle uris which Are directed to the extension itself. A uri must respect
 		 * the following rules:
 		 *
 		 * - The uri-scheme must be `vscode.env.uriScheme`;
-		 * - The uri-authority must be the extension id (e.g. `my.extension`);
-		 * - The uri-path, -query and -fragment parts are arbitrary.
+		 * - The uri-Authority must be the extension id (e.g. `my.extension`);
+		 * - The uri-pAth, -query And -frAgment pArts Are ArbitrAry.
 		 *
-		 * For example, if the `my.extension` extension registers a uri handler, it will only
-		 * be allowed to handle uris with the prefix `product-name://my.extension`.
+		 * For exAmple, if the `my.extension` extension registers A uri hAndler, it will only
+		 * be Allowed to hAndle uris with the prefix `product-nAme://my.extension`.
 		 *
-		 * An extension can only register a single uri handler in its entire activation lifetime.
+		 * An extension cAn only register A single uri hAndler in its entire ActivAtion lifetime.
 		 *
-		 * * *Note:* There is an activation event `onUri` that fires when a uri directed for
-		 * the current extension is about to be handled.
+		 * * *Note:* There is An ActivAtion event `onUri` thAt fires when A uri directed for
+		 * the current extension is About to be hAndled.
 		 *
-		 * @param handler The uri handler to register for this extension.
+		 * @pArAm hAndler The uri hAndler to register for this extension.
 		 */
-		export function registerUriHandler(handler: UriHandler): Disposable;
+		export function registerUriHAndler(hAndler: UriHAndler): DisposAble;
 
 		/**
-		 * Registers a webview panel serializer.
+		 * Registers A webview pAnel seriAlizer.
 		 *
-		 * Extensions that support reviving should have an `"onWebviewPanel:viewType"` activation event and
-		 * make sure that [registerWebviewPanelSerializer](#registerWebviewPanelSerializer) is called during activation.
+		 * Extensions thAt support reviving should hAve An `"onWebviewPAnel:viewType"` ActivAtion event And
+		 * mAke sure thAt [registerWebviewPAnelSeriAlizer](#registerWebviewPAnelSeriAlizer) is cAlled during ActivAtion.
 		 *
-		 * Only a single serializer may be registered at a time for a given `viewType`.
+		 * Only A single seriAlizer mAy be registered At A time for A given `viewType`.
 		 *
-		 * @param viewType Type of the webview panel that can be serialized.
-		 * @param serializer Webview serializer.
+		 * @pArAm viewType Type of the webview pAnel thAt cAn be seriAlized.
+		 * @pArAm seriAlizer Webview seriAlizer.
 		 */
-		export function registerWebviewPanelSerializer(viewType: string, serializer: WebviewPanelSerializer): Disposable;
+		export function registerWebviewPAnelSeriAlizer(viewType: string, seriAlizer: WebviewPAnelSeriAlizer): DisposAble;
 
 		/**
-		 * Register a new provider for webview views.
+		 * Register A new provider for webview views.
 		 *
-		 * @param viewId Unique id of the view. This should match the `id` from the
-		 *   `views` contribution in the package.json.
-		 * @param provider Provider for the webview views.
+		 * @pArAm viewId Unique id of the view. This should mAtch the `id` from the
+		 *   `views` contribution in the pAckAge.json.
+		 * @pArAm provider Provider for the webview views.
 		 *
-		 * @return Disposable that unregisters the provider.
+		 * @return DisposAble thAt unregisters the provider.
 		 */
 		export function registerWebviewViewProvider(viewId: string, provider: WebviewViewProvider, options?: {
 			/**
-			 * Content settings for the webview created for this view.
+			 * Content settings for the webview creAted for this view.
 			 */
-			readonly webviewOptions?: {
+			reAdonly webviewOptions?: {
 				/**
-				 * Controls if the webview element itself (iframe) is kept around even when the view
+				 * Controls if the webview element itself (ifrAme) is kept Around even when the view
 				 * is no longer visible.
 				 *
-				 * Normally the webview's html context is created when the view becomes visible
-				 * and destroyed when it is hidden. Extensions that have complex state
-				 * or UI can set the `retainContextWhenHidden` to make VS Code keep the webview
-				 * context around, even when the webview moves to a background tab. When a webview using
-				 * `retainContextWhenHidden` becomes hidden, its scripts and other dynamic content are suspended.
-				 * When the view becomes visible again, the context is automatically restored
-				 * in the exact same state it was in originally. You cannot send messages to a
-				 * hidden webview, even with `retainContextWhenHidden` enabled.
+				 * NormAlly the webview's html context is creAted when the view becomes visible
+				 * And destroyed when it is hidden. Extensions thAt hAve complex stAte
+				 * or UI cAn set the `retAinContextWhenHidden` to mAke VS Code keep the webview
+				 * context Around, even when the webview moves to A bAckground tAb. When A webview using
+				 * `retAinContextWhenHidden` becomes hidden, its scripts And other dynAmic content Are suspended.
+				 * When the view becomes visible AgAin, the context is AutomAticAlly restored
+				 * in the exAct sAme stAte it wAs in originAlly. You cAnnot send messAges to A
+				 * hidden webview, even with `retAinContextWhenHidden` enAbled.
 				 *
-				 * `retainContextWhenHidden` has a high memory overhead and should only be used if
-				 * your view's context cannot be quickly saved and restored.
+				 * `retAinContextWhenHidden` hAs A high memory overheAd And should only be used if
+				 * your view's context cAnnot be quickly sAved And restored.
 				 */
-				readonly retainContextWhenHidden?: boolean;
+				reAdonly retAinContextWhenHidden?: booleAn;
 			};
-		}): Disposable;
+		}): DisposAble;
 
 		/**
-		 * Register a provider for custom editors for the `viewType` contributed by the `customEditors` extension point.
+		 * Register A provider for custom editors for the `viewType` contributed by the `customEditors` extension point.
 		 *
-		 * When a custom editor is opened, VS Code fires an `onCustomEditor:viewType` activation event. Your extension
-		 * must register a [`CustomTextEditorProvider`](#CustomTextEditorProvider), [`CustomReadonlyEditorProvider`](#CustomReadonlyEditorProvider),
-		 * [`CustomEditorProvider`](#CustomEditorProvider)for `viewType` as part of activation.
+		 * When A custom editor is opened, VS Code fires An `onCustomEditor:viewType` ActivAtion event. Your extension
+		 * must register A [`CustomTextEditorProvider`](#CustomTextEditorProvider), [`CustomReAdonlyEditorProvider`](#CustomReAdonlyEditorProvider),
+		 * [`CustomEditorProvider`](#CustomEditorProvider)for `viewType` As pArt of ActivAtion.
 		 *
-		 * @param viewType Unique identifier for the custom editor provider. This should match the `viewType` from the
+		 * @pArAm viewType Unique identifier for the custom editor provider. This should mAtch the `viewType` from the
 		 *   `customEditors` contribution point.
-		 * @param provider Provider that resolves custom editors.
-		 * @param options Options for the provider.
+		 * @pArAm provider Provider thAt resolves custom editors.
+		 * @pArAm options Options for the provider.
 		 *
-		 * @return Disposable that unregisters the provider.
+		 * @return DisposAble thAt unregisters the provider.
 		 */
-		export function registerCustomEditorProvider(viewType: string, provider: CustomTextEditorProvider | CustomReadonlyEditorProvider | CustomEditorProvider, options?: {
+		export function registerCustomEditorProvider(viewType: string, provider: CustomTextEditorProvider | CustomReAdonlyEditorProvider | CustomEditorProvider, options?: {
 			/**
-			 * Content settings for the webview panels created for this custom editor.
+			 * Content settings for the webview pAnels creAted for this custom editor.
 			 */
-			readonly webviewOptions?: WebviewPanelOptions;
+			reAdonly webviewOptions?: WebviewPAnelOptions;
 
 			/**
-			 * Only applies to `CustomReadonlyEditorProvider | CustomEditorProvider`.
+			 * Only Applies to `CustomReAdonlyEditorProvider | CustomEditorProvider`.
 			 *
-			 * Indicates that the provider allows multiple editor instances to be open at the same time for
-			 * the same resource.
+			 * IndicAtes thAt the provider Allows multiple editor instAnces to be open At the sAme time for
+			 * the sAme resource.
 			 *
-			 * By default, VS Code only allows one editor instance to be open at a time for each resource. If the
-			 * user tries to open a second editor instance for the resource, the first one is instead moved to where
-			 * the second one was to be opened.
+			 * By defAult, VS Code only Allows one editor instAnce to be open At A time for eAch resource. If the
+			 * user tries to open A second editor instAnce for the resource, the first one is insteAd moved to where
+			 * the second one wAs to be opened.
 			 *
-			 * When `supportsMultipleEditorsPerDocument` is enabled, users can split and create copies of the custom
-			 * editor. In this case, the custom editor must make sure it can properly synchronize the states of all
-			 * editor instances for a resource so that they are consistent.
+			 * When `supportsMultipleEditorsPerDocument` is enAbled, users cAn split And creAte copies of the custom
+			 * editor. In this cAse, the custom editor must mAke sure it cAn properly synchronize the stAtes of All
+			 * editor instAnces for A resource so thAt they Are consistent.
 			 */
-			readonly supportsMultipleEditorsPerDocument?: boolean;
-		}): Disposable;
+			reAdonly supportsMultipleEditorsPerDocument?: booleAn;
+		}): DisposAble;
 
 		/**
-		 * Register provider that enables the detection and handling of links within the terminal.
-		 * @param provider The provider that provides the terminal links.
-		 * @return Disposable that unregisters the provider.
+		 * Register provider thAt enAbles the detection And hAndling of links within the terminAl.
+		 * @pArAm provider The provider thAt provides the terminAl links.
+		 * @return DisposAble thAt unregisters the provider.
 		 */
-		export function registerTerminalLinkProvider(provider: TerminalLinkProvider): Disposable;
+		export function registerTerminAlLinkProvider(provider: TerminAlLinkProvider): DisposAble;
 
 		/**
-		 * The currently active color theme as configured in the settings. The active
-		 * theme can be changed via the `workbench.colorTheme` setting.
+		 * The currently Active color theme As configured in the settings. The Active
+		 * theme cAn be chAnged viA the `workbench.colorTheme` setting.
 		 */
-		export let activeColorTheme: ColorTheme;
+		export let ActiveColorTheme: ColorTheme;
 
 		/**
-		 * An [event](#Event) which fires when the active color theme is changed or has changes.
+		 * An [event](#Event) which fires when the Active color theme is chAnged or hAs chAnges.
 		 */
-		export const onDidChangeActiveColorTheme: Event<ColorTheme>;
+		export const onDidChAngeActiveColorTheme: Event<ColorTheme>;
 	}
 
 	/**
-	 * Options for creating a [TreeView](#TreeView)
+	 * Options for creAting A [TreeView](#TreeView)
 	 */
-	export interface TreeViewOptions<T> {
+	export interfAce TreeViewOptions<T> {
 
 		/**
-		 * A data provider that provides tree data.
+		 * A dAtA provider thAt provides tree dAtA.
 		 */
-		treeDataProvider: TreeDataProvider<T>;
+		treeDAtAProvider: TreeDAtAProvider<T>;
 
 		/**
-		 * Whether to show collapse all action or not.
+		 * Whether to show collApse All Action or not.
 		 */
-		showCollapseAll?: boolean;
+		showCollApseAll?: booleAn;
 
 		/**
-		 * Whether the tree supports multi-select. When the tree supports multi-select and a command is executed from the tree,
-		 * the first argument to the command is the tree item that the command was executed on and the second argument is an
-		 * array containing all selected tree items.
+		 * Whether the tree supports multi-select. When the tree supports multi-select And A commAnd is executed from the tree,
+		 * the first Argument to the commAnd is the tree item thAt the commAnd wAs executed on And the second Argument is An
+		 * ArrAy contAining All selected tree items.
 		 */
-		canSelectMany?: boolean;
+		cAnSelectMAny?: booleAn;
 	}
 
 	/**
-	 * The event that is fired when an element in the [TreeView](#TreeView) is expanded or collapsed
+	 * The event thAt is fired when An element in the [TreeView](#TreeView) is expAnded or collApsed
 	 */
-	export interface TreeViewExpansionEvent<T> {
+	export interfAce TreeViewExpAnsionEvent<T> {
 
 		/**
-		 * Element that is expanded or collapsed.
+		 * Element thAt is expAnded or collApsed.
 		 */
-		readonly element: T;
+		reAdonly element: T;
 
 	}
 
 	/**
-	 * The event that is fired when there is a change in [tree view's selection](#TreeView.selection)
+	 * The event thAt is fired when there is A chAnge in [tree view's selection](#TreeView.selection)
 	 */
-	export interface TreeViewSelectionChangeEvent<T> {
+	export interfAce TreeViewSelectionChAngeEvent<T> {
 
 		/**
 		 * Selected elements.
 		 */
-		readonly selection: T[];
+		reAdonly selection: T[];
 
 	}
 
 	/**
-	 * The event that is fired when there is a change in [tree view's visibility](#TreeView.visible)
+	 * The event thAt is fired when there is A chAnge in [tree view's visibility](#TreeView.visible)
 	 */
-	export interface TreeViewVisibilityChangeEvent {
+	export interfAce TreeViewVisibilityChAngeEvent {
 
 		/**
-		 * `true` if the [tree view](#TreeView) is visible otherwise `false`.
+		 * `true` if the [tree view](#TreeView) is visible otherwise `fAlse`.
 		 */
-		readonly visible: boolean;
+		reAdonly visible: booleAn;
 
 	}
 
 	/**
-	 * Represents a Tree view
+	 * Represents A Tree view
 	 */
-	export interface TreeView<T> extends Disposable {
+	export interfAce TreeView<T> extends DisposAble {
 
 		/**
-		 * Event that is fired when an element is expanded
+		 * Event thAt is fired when An element is expAnded
 		 */
-		readonly onDidExpandElement: Event<TreeViewExpansionEvent<T>>;
+		reAdonly onDidExpAndElement: Event<TreeViewExpAnsionEvent<T>>;
 
 		/**
-		 * Event that is fired when an element is collapsed
+		 * Event thAt is fired when An element is collApsed
 		 */
-		readonly onDidCollapseElement: Event<TreeViewExpansionEvent<T>>;
+		reAdonly onDidCollApseElement: Event<TreeViewExpAnsionEvent<T>>;
 
 		/**
 		 * Currently selected elements.
 		 */
-		readonly selection: T[];
+		reAdonly selection: T[];
 
 		/**
-		 * Event that is fired when the [selection](#TreeView.selection) has changed
+		 * Event thAt is fired when the [selection](#TreeView.selection) hAs chAnged
 		 */
-		readonly onDidChangeSelection: Event<TreeViewSelectionChangeEvent<T>>;
+		reAdonly onDidChAngeSelection: Event<TreeViewSelectionChAngeEvent<T>>;
 
 		/**
-		 * `true` if the [tree view](#TreeView) is visible otherwise `false`.
+		 * `true` if the [tree view](#TreeView) is visible otherwise `fAlse`.
 		 */
-		readonly visible: boolean;
+		reAdonly visible: booleAn;
 
 		/**
-		 * Event that is fired when [visibility](#TreeView.visible) has changed
+		 * Event thAt is fired when [visibility](#TreeView.visible) hAs chAnged
 		 */
-		readonly onDidChangeVisibility: Event<TreeViewVisibilityChangeEvent>;
+		reAdonly onDidChAngeVisibility: Event<TreeViewVisibilityChAngeEvent>;
 
 		/**
-		 * An optional human-readable message that will be rendered in the view.
-		 * Setting the message to null, undefined, or empty string will remove the message from the view.
+		 * An optionAl humAn-reAdAble messAge thAt will be rendered in the view.
+		 * Setting the messAge to null, undefined, or empty string will remove the messAge from the view.
 		 */
-		message?: string;
+		messAge?: string;
 
 		/**
-		 * The tree view title is initially taken from the extension package.json
-		 * Changes to the title property will be properly reflected in the UI in the title of the view.
+		 * The tree view title is initiAlly tAken from the extension pAckAge.json
+		 * ChAnges to the title property will be properly reflected in the UI in the title of the view.
 		 */
 		title?: string;
 
 		/**
-		 * An optional human-readable description which is rendered less prominently in the title of the view.
+		 * An optionAl humAn-reAdAble description which is rendered less prominently in the title of the view.
 		 * Setting the title description to null, undefined, or empty string will remove the description from the view.
 		 */
 		description?: string;
 
 		/**
-		 * Reveals the given element in the tree view.
-		 * If the tree view is not visible then the tree view is shown and element is revealed.
+		 * ReveAls the given element in the tree view.
+		 * If the tree view is not visible then the tree view is shown And element is reveAled.
 		 *
-		 * By default revealed element is selected.
-		 * In order to not to select, set the option `select` to `false`.
+		 * By defAult reveAled element is selected.
+		 * In order to not to select, set the option `select` to `fAlse`.
 		 * In order to focus, set the option `focus` to `true`.
-		 * In order to expand the revealed element, set the option `expand` to `true`. To expand recursively set `expand` to the number of levels to expand.
-		 * **NOTE:** You can expand only to 3 levels maximum.
+		 * In order to expAnd the reveAled element, set the option `expAnd` to `true`. To expAnd recursively set `expAnd` to the number of levels to expAnd.
+		 * **NOTE:** You cAn expAnd only to 3 levels mAximum.
 		 *
-		 * **NOTE:** The [TreeDataProvider](#TreeDataProvider) that the `TreeView` [is registered with](#window.createTreeView) with must implement [getParent](#TreeDataProvider.getParent) method to access this API.
+		 * **NOTE:** The [TreeDAtAProvider](#TreeDAtAProvider) thAt the `TreeView` [is registered with](#window.creAteTreeView) with must implement [getPArent](#TreeDAtAProvider.getPArent) method to Access this API.
 		 */
-		reveal(element: T, options?: { select?: boolean, focus?: boolean, expand?: boolean | number }): Thenable<void>;
+		reveAl(element: T, options?: { select?: booleAn, focus?: booleAn, expAnd?: booleAn | number }): ThenAble<void>;
 	}
 
 	/**
-	 * A data provider that provides tree data
+	 * A dAtA provider thAt provides tree dAtA
 	 */
-	export interface TreeDataProvider<T> {
+	export interfAce TreeDAtAProvider<T> {
 		/**
-		 * An optional event to signal that an element or root has changed.
-		 * This will trigger the view to update the changed element/root and its children recursively (if shown).
-		 * To signal that root has changed, do not pass any argument or pass `undefined` or `null`.
+		 * An optionAl event to signAl thAt An element or root hAs chAnged.
+		 * This will trigger the view to updAte the chAnged element/root And its children recursively (if shown).
+		 * To signAl thAt root hAs chAnged, do not pAss Any Argument or pAss `undefined` or `null`.
 		 */
-		onDidChangeTreeData?: Event<T | undefined | null | void>;
+		onDidChAngeTreeDAtA?: Event<T | undefined | null | void>;
 
 		/**
-		 * Get [TreeItem](#TreeItem) representation of the `element`
+		 * Get [TreeItem](#TreeItem) representAtion of the `element`
 		 *
-		 * @param element The element for which [TreeItem](#TreeItem) representation is asked for.
-		 * @return [TreeItem](#TreeItem) representation of the element
+		 * @pArAm element The element for which [TreeItem](#TreeItem) representAtion is Asked for.
+		 * @return [TreeItem](#TreeItem) representAtion of the element
 		 */
-		getTreeItem(element: T): TreeItem | Thenable<TreeItem>;
+		getTreeItem(element: T): TreeItem | ThenAble<TreeItem>;
 
 		/**
-		 * Get the children of `element` or root if no element is passed.
+		 * Get the children of `element` or root if no element is pAssed.
 		 *
-		 * @param element The element from which the provider gets children. Can be `undefined`.
-		 * @return Children of `element` or root if no element is passed.
+		 * @pArAm element The element from which the provider gets children. CAn be `undefined`.
+		 * @return Children of `element` or root if no element is pAssed.
 		 */
 		getChildren(element?: T): ProviderResult<T[]>;
 
 		/**
-		 * Optional method to return the parent of `element`.
-		 * Return `null` or `undefined` if `element` is a child of root.
+		 * OptionAl method to return the pArent of `element`.
+		 * Return `null` or `undefined` if `element` is A child of root.
 		 *
-		 * **NOTE:** This method should be implemented in order to access [reveal](#TreeView.reveal) API.
+		 * **NOTE:** This method should be implemented in order to Access [reveAl](#TreeView.reveAl) API.
 		 *
-		 * @param element The element for which the parent has to be returned.
-		 * @return Parent of `element`.
+		 * @pArAm element The element for which the pArent hAs to be returned.
+		 * @return PArent of `element`.
 		 */
-		getParent?(element: T): ProviderResult<T>;
+		getPArent?(element: T): ProviderResult<T>;
 	}
 
-	export class TreeItem {
+	export clAss TreeItem {
 		/**
-		 * A human-readable string describing this item. When `falsy`, it is derived from [resourceUri](#TreeItem.resourceUri).
+		 * A humAn-reAdAble string describing this item. When `fAlsy`, it is derived from [resourceUri](#TreeItem.resourceUri).
 		 */
-		label?: string;
+		lAbel?: string;
 
 		/**
-		 * Optional id for the tree item that has to be unique across tree. The id is used to preserve the selection and expansion state of the tree item.
+		 * OptionAl id for the tree item thAt hAs to be unique Across tree. The id is used to preserve the selection And expAnsion stAte of the tree item.
 		 *
-		 * If not provided, an id is generated using the tree item's label. **Note** that when labels change, ids will change and that selection and expansion state cannot be kept stable anymore.
+		 * If not provided, An id is generAted using the tree item's lAbel. **Note** thAt when lAbels chAnge, ids will chAnge And thAt selection And expAnsion stAte cAnnot be kept stAble Anymore.
 		 */
 		id?: string;
 
 		/**
-		 * The icon path or [ThemeIcon](#ThemeIcon) for the tree item.
-		 * When `falsy`, [Folder Theme Icon](#ThemeIcon.Folder) is assigned, if item is collapsible otherwise [File Theme Icon](#ThemeIcon.File).
-		 * When a file or folder [ThemeIcon](#ThemeIcon) is specified, icon is derived from the current file icon theme for the specified theme icon using [resourceUri](#TreeItem.resourceUri) (if provided).
+		 * The icon pAth or [ThemeIcon](#ThemeIcon) for the tree item.
+		 * When `fAlsy`, [Folder Theme Icon](#ThemeIcon.Folder) is Assigned, if item is collApsible otherwise [File Theme Icon](#ThemeIcon.File).
+		 * When A file or folder [ThemeIcon](#ThemeIcon) is specified, icon is derived from the current file icon theme for the specified theme icon using [resourceUri](#TreeItem.resourceUri) (if provided).
 		 */
-		iconPath?: string | Uri | { light: string | Uri; dark: string | Uri } | ThemeIcon;
+		iconPAth?: string | Uri | { light: string | Uri; dArk: string | Uri } | ThemeIcon;
 
 		/**
-		 * A human-readable string which is rendered less prominent.
-		 * When `true`, it is derived from [resourceUri](#TreeItem.resourceUri) and when `falsy`, it is not shown.
+		 * A humAn-reAdAble string which is rendered less prominent.
+		 * When `true`, it is derived from [resourceUri](#TreeItem.resourceUri) And when `fAlsy`, it is not shown.
 		 */
-		description?: string | boolean;
+		description?: string | booleAn;
 
 		/**
 		 * The [uri](#Uri) of the resource representing this item.
 		 *
-		 * Will be used to derive the [label](#TreeItem.label), when it is not provided.
-		 * Will be used to derive the icon from current file icon theme, when [iconPath](#TreeItem.iconPath) has [ThemeIcon](#ThemeIcon) value.
+		 * Will be used to derive the [lAbel](#TreeItem.lAbel), when it is not provided.
+		 * Will be used to derive the icon from current file icon theme, when [iconPAth](#TreeItem.iconPAth) hAs [ThemeIcon](#ThemeIcon) vAlue.
 		 */
 		resourceUri?: Uri;
 
@@ -8727,163 +8727,163 @@ declare module 'vscode' {
 		tooltip?: string | undefined;
 
 		/**
-		 * The [command](#Command) that should be executed when the tree item is selected.
+		 * The [commAnd](#CommAnd) thAt should be executed when the tree item is selected.
 		 */
-		command?: Command;
+		commAnd?: CommAnd;
 
 		/**
-		 * [TreeItemCollapsibleState](#TreeItemCollapsibleState) of the tree item.
+		 * [TreeItemCollApsibleStAte](#TreeItemCollApsibleStAte) of the tree item.
 		 */
-		collapsibleState?: TreeItemCollapsibleState;
+		collApsibleStAte?: TreeItemCollApsibleStAte;
 
 		/**
-		 * Context value of the tree item. This can be used to contribute item specific actions in the tree.
-		 * For example, a tree item is given a context value as `folder`. When contributing actions to `view/item/context`
-		 * using `menus` extension point, you can specify context value for key `viewItem` in `when` expression like `viewItem == folder`.
+		 * Context vAlue of the tree item. This cAn be used to contribute item specific Actions in the tree.
+		 * For exAmple, A tree item is given A context vAlue As `folder`. When contributing Actions to `view/item/context`
+		 * using `menus` extension point, you cAn specify context vAlue for key `viewItem` in `when` expression like `viewItem == folder`.
 		 * ```
 		 *	"contributes": {
 		 *		"menus": {
 		 *			"view/item/context": [
 		 *				{
-		 *					"command": "extension.deleteFolder",
+		 *					"commAnd": "extension.deleteFolder",
 		 *					"when": "viewItem == folder"
 		 *				}
 		 *			]
 		 *		}
 		 *	}
 		 * ```
-		 * This will show action `extension.deleteFolder` only for items with `contextValue` is `folder`.
+		 * This will show Action `extension.deleteFolder` only for items with `contextVAlue` is `folder`.
 		 */
-		contextValue?: string;
+		contextVAlue?: string;
 
 		/**
-		 * Accessibility information used when screen reader interacts with this tree item.
-		 * Generally, a TreeItem has no need to set the `role` of the accessibilityInformation;
-		 * however, there are cases where a TreeItem is not displayed in a tree-like way where setting the `role` may make sense.
+		 * Accessibility informAtion used when screen reAder interActs with this tree item.
+		 * GenerAlly, A TreeItem hAs no need to set the `role` of the AccessibilityInformAtion;
+		 * however, there Are cAses where A TreeItem is not displAyed in A tree-like wAy where setting the `role` mAy mAke sense.
 		 */
-		accessibilityInformation?: AccessibilityInformation;
+		AccessibilityInformAtion?: AccessibilityInformAtion;
 
 		/**
-		 * @param label A human-readable string describing this item
-		 * @param collapsibleState [TreeItemCollapsibleState](#TreeItemCollapsibleState) of the tree item. Default is [TreeItemCollapsibleState.None](#TreeItemCollapsibleState.None)
+		 * @pArAm lAbel A humAn-reAdAble string describing this item
+		 * @pArAm collApsibleStAte [TreeItemCollApsibleStAte](#TreeItemCollApsibleStAte) of the tree item. DefAult is [TreeItemCollApsibleStAte.None](#TreeItemCollApsibleStAte.None)
 		 */
-		constructor(label: string, collapsibleState?: TreeItemCollapsibleState);
+		constructor(lAbel: string, collApsibleStAte?: TreeItemCollApsibleStAte);
 
 		/**
-		 * @param resourceUri The [uri](#Uri) of the resource representing this item.
-		 * @param collapsibleState [TreeItemCollapsibleState](#TreeItemCollapsibleState) of the tree item. Default is [TreeItemCollapsibleState.None](#TreeItemCollapsibleState.None)
+		 * @pArAm resourceUri The [uri](#Uri) of the resource representing this item.
+		 * @pArAm collApsibleStAte [TreeItemCollApsibleStAte](#TreeItemCollApsibleStAte) of the tree item. DefAult is [TreeItemCollApsibleStAte.None](#TreeItemCollApsibleStAte.None)
 		 */
-		constructor(resourceUri: Uri, collapsibleState?: TreeItemCollapsibleState);
+		constructor(resourceUri: Uri, collApsibleStAte?: TreeItemCollApsibleStAte);
 	}
 
 	/**
-	 * Collapsible state of the tree item
+	 * CollApsible stAte of the tree item
 	 */
-	export enum TreeItemCollapsibleState {
+	export enum TreeItemCollApsibleStAte {
 		/**
-		 * Determines an item can be neither collapsed nor expanded. Implies it has no children.
+		 * Determines An item cAn be neither collApsed nor expAnded. Implies it hAs no children.
 		 */
 		None = 0,
 		/**
-		 * Determines an item is collapsed
+		 * Determines An item is collApsed
 		 */
-		Collapsed = 1,
+		CollApsed = 1,
 		/**
-		 * Determines an item is expanded
+		 * Determines An item is expAnded
 		 */
-		Expanded = 2
+		ExpAnded = 2
 	}
 
 	/**
-	 * Value-object describing what options a terminal should use.
+	 * VAlue-object describing whAt options A terminAl should use.
 	 */
-	export interface TerminalOptions {
+	export interfAce TerminAlOptions {
 		/**
-		 * A human-readable string which will be used to represent the terminal in the UI.
+		 * A humAn-reAdAble string which will be used to represent the terminAl in the UI.
 		 */
-		name?: string;
+		nAme?: string;
 
 		/**
-		 * A path to a custom shell executable to be used in the terminal.
+		 * A pAth to A custom shell executAble to be used in the terminAl.
 		 */
-		shellPath?: string;
+		shellPAth?: string;
 
 		/**
-		 * Args for the custom shell executable. A string can be used on Windows only which allows
-		 * specifying shell args in [command-line format](https://msdn.microsoft.com/en-au/08dfcab2-eb6e-49a4-80eb-87d4076c98c6).
+		 * Args for the custom shell executAble. A string cAn be used on Windows only which Allows
+		 * specifying shell Args in [commAnd-line formAt](https://msdn.microsoft.com/en-Au/08dfcAb2-eb6e-49A4-80eb-87d4076c98c6).
 		 */
 		shellArgs?: string[] | string;
 
 		/**
-		 * A path or Uri for the current working directory to be used for the terminal.
+		 * A pAth or Uri for the current working directory to be used for the terminAl.
 		 */
 		cwd?: string | Uri;
 
 		/**
-		 * Object with environment variables that will be added to the VS Code process.
+		 * Object with environment vAriAbles thAt will be Added to the VS Code process.
 		 */
 		env?: { [key: string]: string | null };
 
 		/**
-		 * Whether the terminal process environment should be exactly as provided in
-		 * `TerminalOptions.env`. When this is false (default), the environment will be based on the
-		 * window's environment and also apply configured platform settings like
-		 * `terminal.integrated.windows.env` on top. When this is true, the complete environment
-		 * must be provided as nothing will be inherited from the process or any configuration.
+		 * Whether the terminAl process environment should be exActly As provided in
+		 * `TerminAlOptions.env`. When this is fAlse (defAult), the environment will be bAsed on the
+		 * window's environment And Also Apply configured plAtform settings like
+		 * `terminAl.integrAted.windows.env` on top. When this is true, the complete environment
+		 * must be provided As nothing will be inherited from the process or Any configurAtion.
 		 */
-		strictEnv?: boolean;
+		strictEnv?: booleAn;
 
 		/**
-		 * When enabled the terminal will run the process as normal but not be surfaced to the user
-		 * until `Terminal.show` is called. The typical usage for this is when you need to run
-		 * something that may need interactivity but only want to tell the user about it when
-		 * interaction is needed. Note that the terminals will still be exposed to all extensions
-		 * as normal.
+		 * When enAbled the terminAl will run the process As normAl but not be surfAced to the user
+		 * until `TerminAl.show` is cAlled. The typicAl usAge for this is when you need to run
+		 * something thAt mAy need interActivity but only wAnt to tell the user About it when
+		 * interAction is needed. Note thAt the terminAls will still be exposed to All extensions
+		 * As normAl.
 		 */
-		hideFromUser?: boolean;
+		hideFromUser?: booleAn;
 	}
 
 	/**
-	 * Value-object describing what options a virtual process terminal should use.
+	 * VAlue-object describing whAt options A virtuAl process terminAl should use.
 	 */
-	export interface ExtensionTerminalOptions {
+	export interfAce ExtensionTerminAlOptions {
 		/**
-		 * A human-readable string which will be used to represent the terminal in the UI.
+		 * A humAn-reAdAble string which will be used to represent the terminAl in the UI.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * An implementation of [Pseudoterminal](#Pseudoterminal) that allows an extension to
-		 * control a terminal.
+		 * An implementAtion of [PseudoterminAl](#PseudoterminAl) thAt Allows An extension to
+		 * control A terminAl.
 		 */
-		pty: Pseudoterminal;
+		pty: PseudoterminAl;
 	}
 
 	/**
-	 * Defines the interface of a terminal pty, enabling extensions to control a terminal.
+	 * Defines the interfAce of A terminAl pty, enAbling extensions to control A terminAl.
 	 */
-	interface Pseudoterminal {
+	interfAce PseudoterminAl {
 		/**
-		 * An event that when fired will write data to the terminal. Unlike
-		 * [Terminal.sendText](#Terminal.sendText) which sends text to the underlying child
-		 * pseudo-device (the child), this will write the text to parent pseudo-device (the
-		 * _terminal_ itself).
+		 * An event thAt when fired will write dAtA to the terminAl. Unlike
+		 * [TerminAl.sendText](#TerminAl.sendText) which sends text to the underlying child
+		 * pseudo-device (the child), this will write the text to pArent pseudo-device (the
+		 * _terminAl_ itself).
 		 *
-		 * Note writing `\n` will just move the cursor down 1 row, you need to write `\r` as well
+		 * Note writing `\n` will just move the cursor down 1 row, you need to write `\r` As well
 		 * to move the cursor to the left-most cell.
 		 *
-		 * **Example:** Write red text to the terminal
+		 * **ExAmple:** Write red text to the terminAl
 		 * ```typescript
 		 * const writeEmitter = new vscode.EventEmitter<string>();
-		 * const pty: vscode.Pseudoterminal = {
+		 * const pty: vscode.PseudoterminAl = {
 		 *   onDidWrite: writeEmitter.event,
 		 *   open: () => writeEmitter.fire('\x1b[31mHello world\x1b[0m'),
 		 *   close: () => {}
 		 * };
-		 * vscode.window.createTerminal({ name: 'My terminal', pty });
+		 * vscode.window.creAteTerminAl({ nAme: 'My terminAl', pty });
 		 * ```
 		 *
-		 * **Example:** Move the cursor to the 10th row and 20th column and write an asterisk
+		 * **ExAmple:** Move the cursor to the 10th row And 20th column And write An Asterisk
 		 * ```typescript
 		 * writeEmitter.fire('\x1b[10;20H*');
 		 * ```
@@ -8891,16 +8891,16 @@ declare module 'vscode' {
 		onDidWrite: Event<string>;
 
 		/**
-		 * An event that when fired allows overriding the [dimensions](#Pseudoterminal.setDimensions) of the
-		 * terminal. Note that when set, the overridden dimensions will only take effect when they
-		 * are lower than the actual dimensions of the terminal (ie. there will never be a scroll
-		 * bar). Set to `undefined` for the terminal to go back to the regular dimensions (fit to
-		 * the size of the panel).
+		 * An event thAt when fired Allows overriding the [dimensions](#PseudoterminAl.setDimensions) of the
+		 * terminAl. Note thAt when set, the overridden dimensions will only tAke effect when they
+		 * Are lower thAn the ActuAl dimensions of the terminAl (ie. there will never be A scroll
+		 * bAr). Set to `undefined` for the terminAl to go bAck to the regulAr dimensions (fit to
+		 * the size of the pAnel).
 		 *
-		 * **Example:** Override the dimensions of a terminal to 20 columns and 10 rows
+		 * **ExAmple:** Override the dimensions of A terminAl to 20 columns And 10 rows
 		 * ```typescript
-		 * const dimensionsEmitter = new vscode.EventEmitter<vscode.TerminalDimensions>();
-		 * const pty: vscode.Pseudoterminal = {
+		 * const dimensionsEmitter = new vscode.EventEmitter<vscode.TerminAlDimensions>();
+		 * const pty: vscode.PseudoterminAl = {
 		 *   onDidWrite: writeEmitter.event,
 		 *   onDidOverrideDimensions: dimensionsEmitter.event,
 		 *   open: () => {
@@ -8911,591 +8911,591 @@ declare module 'vscode' {
 		 *   },
 		 *   close: () => {}
 		 * };
-		 * vscode.window.createTerminal({ name: 'My terminal', pty });
+		 * vscode.window.creAteTerminAl({ nAme: 'My terminAl', pty });
 		 * ```
 		 */
-		onDidOverrideDimensions?: Event<TerminalDimensions | undefined>;
+		onDidOverrideDimensions?: Event<TerminAlDimensions | undefined>;
 
 		/**
-		 * An event that when fired will signal that the pty is closed and dispose of the terminal.
+		 * An event thAt when fired will signAl thAt the pty is closed And dispose of the terminAl.
 		 *
-		 * A number can be used to provide an exit code for the terminal. Exit codes must be
-		 * positive and a non-zero exit codes signals failure which shows a notification for a
-		 * regular terminal and allows dependent tasks to proceed when used with the
+		 * A number cAn be used to provide An exit code for the terminAl. Exit codes must be
+		 * positive And A non-zero exit codes signAls fAilure which shows A notificAtion for A
+		 * regulAr terminAl And Allows dependent tAsks to proceed when used with the
 		 * `CustomExecution` API.
 		 *
-		 * **Example:** Exit the terminal when "y" is pressed, otherwise show a notification.
+		 * **ExAmple:** Exit the terminAl when "y" is pressed, otherwise show A notificAtion.
 		 * ```typescript
 		 * const writeEmitter = new vscode.EventEmitter<string>();
-		 * const closeEmitter = new vscode.EventEmitter<vscode.TerminalDimensions>();
-		 * const pty: vscode.Pseudoterminal = {
+		 * const closeEmitter = new vscode.EventEmitter<vscode.TerminAlDimensions>();
+		 * const pty: vscode.PseudoterminAl = {
 		 *   onDidWrite: writeEmitter.event,
 		 *   onDidClose: closeEmitter.event,
 		 *   open: () => writeEmitter.fire('Press y to exit successfully'),
 		 *   close: () => {},
-		 *   handleInput: data => {
-		 *     if (data !== 'y') {
-		 *       vscode.window.showInformationMessage('Something went wrong');
+		 *   hAndleInput: dAtA => {
+		 *     if (dAtA !== 'y') {
+		 *       vscode.window.showInformAtionMessAge('Something went wrong');
 		 *     }
 		 *     closeEmitter.fire();
 		 *   }
 		 * };
-		 * vscode.window.createTerminal({ name: 'Exit example', pty });
+		 * vscode.window.creAteTerminAl({ nAme: 'Exit exAmple', pty });
 		 * ```
 		 */
 		onDidClose?: Event<void | number>;
 
 		/**
-		 * Implement to handle when the pty is open and ready to start firing events.
+		 * Implement to hAndle when the pty is open And reAdy to stArt firing events.
 		 *
-		 * @param initialDimensions The dimensions of the terminal, this will be undefined if the
-		 * terminal panel has not been opened before this is called.
+		 * @pArAm initiAlDimensions The dimensions of the terminAl, this will be undefined if the
+		 * terminAl pAnel hAs not been opened before this is cAlled.
 		 */
-		open(initialDimensions: TerminalDimensions | undefined): void;
+		open(initiAlDimensions: TerminAlDimensions | undefined): void;
 
 		/**
-		 * Implement to handle when the terminal is closed by an act of the user.
+		 * Implement to hAndle when the terminAl is closed by An Act of the user.
 		 */
 		close(): void;
 
 		/**
-		 * Implement to handle incoming keystrokes in the terminal or when an extension calls
-		 * [Terminal.sendText](#Terminal.sendText). `data` contains the keystrokes/text serialized into
-		 * their corresponding VT sequence representation.
+		 * Implement to hAndle incoming keystrokes in the terminAl or when An extension cAlls
+		 * [TerminAl.sendText](#TerminAl.sendText). `dAtA` contAins the keystrokes/text seriAlized into
+		 * their corresponding VT sequence representAtion.
 		 *
-		 * @param data The incoming data.
+		 * @pArAm dAtA The incoming dAtA.
 		 *
-		 * **Example:** Echo input in the terminal. The sequence for enter (`\r`) is translated to
-		 * CRLF to go to a new line and move the cursor to the start of the line.
+		 * **ExAmple:** Echo input in the terminAl. The sequence for enter (`\r`) is trAnslAted to
+		 * CRLF to go to A new line And move the cursor to the stArt of the line.
 		 * ```typescript
 		 * const writeEmitter = new vscode.EventEmitter<string>();
-		 * const pty: vscode.Pseudoterminal = {
+		 * const pty: vscode.PseudoterminAl = {
 		 *   onDidWrite: writeEmitter.event,
 		 *   open: () => {},
 		 *   close: () => {},
-		 *   handleInput: data => writeEmitter.fire(data === '\r' ? '\r\n' : data)
+		 *   hAndleInput: dAtA => writeEmitter.fire(dAtA === '\r' ? '\r\n' : dAtA)
 		 * };
-		 * vscode.window.createTerminal({ name: 'Local echo', pty });
+		 * vscode.window.creAteTerminAl({ nAme: 'LocAl echo', pty });
 		 * ```
 		 */
-		handleInput?(data: string): void;
+		hAndleInput?(dAtA: string): void;
 
 		/**
-		 * Implement to handle when the number of rows and columns that fit into the terminal panel
-		 * changes, for example when font size changes or when the panel is resized. The initial
-		 * state of a terminal's dimensions should be treated as `undefined` until this is triggered
-		 * as the size of a terminal isn't know until it shows up in the user interface.
+		 * Implement to hAndle when the number of rows And columns thAt fit into the terminAl pAnel
+		 * chAnges, for exAmple when font size chAnges or when the pAnel is resized. The initiAl
+		 * stAte of A terminAl's dimensions should be treAted As `undefined` until this is triggered
+		 * As the size of A terminAl isn't know until it shows up in the user interfAce.
 		 *
-		 * When dimensions are overridden by
-		 * [onDidOverrideDimensions](#Pseudoterminal.onDidOverrideDimensions), `setDimensions` will
-		 * continue to be called with the regular panel dimensions, allowing the extension continue
-		 * to react dimension changes.
+		 * When dimensions Are overridden by
+		 * [onDidOverrideDimensions](#PseudoterminAl.onDidOverrideDimensions), `setDimensions` will
+		 * continue to be cAlled with the regulAr pAnel dimensions, Allowing the extension continue
+		 * to reAct dimension chAnges.
 		 *
-		 * @param dimensions The new dimensions.
+		 * @pArAm dimensions The new dimensions.
 		 */
-		setDimensions?(dimensions: TerminalDimensions): void;
+		setDimensions?(dimensions: TerminAlDimensions): void;
 	}
 
 	/**
-	 * Represents the dimensions of a terminal.
+	 * Represents the dimensions of A terminAl.
 	 */
-	export interface TerminalDimensions {
+	export interfAce TerminAlDimensions {
 		/**
-		 * The number of columns in the terminal.
+		 * The number of columns in the terminAl.
 		 */
-		readonly columns: number;
+		reAdonly columns: number;
 
 		/**
-		 * The number of rows in the terminal.
+		 * The number of rows in the terminAl.
 		 */
-		readonly rows: number;
+		reAdonly rows: number;
 	}
 
 	/**
-	 * Represents how a terminal exited.
+	 * Represents how A terminAl exited.
 	 */
-	export interface TerminalExitStatus {
+	export interfAce TerminAlExitStAtus {
 		/**
-		 * The exit code that a terminal exited with, it can have the following values:
-		 * - Zero: the terminal process or custom execution succeeded.
-		 * - Non-zero: the terminal process or custom execution failed.
-		 * - `undefined`: the user forcibly closed the terminal or a custom execution exited
-		 *   without providing an exit code.
+		 * The exit code thAt A terminAl exited with, it cAn hAve the following vAlues:
+		 * - Zero: the terminAl process or custom execution succeeded.
+		 * - Non-zero: the terminAl process or custom execution fAiled.
+		 * - `undefined`: the user forcibly closed the terminAl or A custom execution exited
+		 *   without providing An exit code.
 		 */
-		readonly code: number | undefined;
+		reAdonly code: number | undefined;
 	}
 
 	/**
-	 * A type of mutation that can be applied to an environment variable.
+	 * A type of mutAtion thAt cAn be Applied to An environment vAriAble.
 	 */
-	export enum EnvironmentVariableMutatorType {
+	export enum EnvironmentVAriAbleMutAtorType {
 		/**
-		 * Replace the variable's existing value.
+		 * ReplAce the vAriAble's existing vAlue.
 		 */
-		Replace = 1,
+		ReplAce = 1,
 		/**
-		 * Append to the end of the variable's existing value.
+		 * Append to the end of the vAriAble's existing vAlue.
 		 */
 		Append = 2,
 		/**
-		 * Prepend to the start of the variable's existing value.
+		 * Prepend to the stArt of the vAriAble's existing vAlue.
 		 */
 		Prepend = 3
 	}
 
 	/**
-	 * A type of mutation and its value to be applied to an environment variable.
+	 * A type of mutAtion And its vAlue to be Applied to An environment vAriAble.
 	 */
-	export interface EnvironmentVariableMutator {
+	export interfAce EnvironmentVAriAbleMutAtor {
 		/**
-		 * The type of mutation that will occur to the variable.
+		 * The type of mutAtion thAt will occur to the vAriAble.
 		 */
-		readonly type: EnvironmentVariableMutatorType;
+		reAdonly type: EnvironmentVAriAbleMutAtorType;
 
 		/**
-		 * The value to use for the variable.
+		 * The vAlue to use for the vAriAble.
 		 */
-		readonly value: string;
+		reAdonly vAlue: string;
 	}
 
 	/**
-	 * A collection of mutations that an extension can apply to a process environment.
+	 * A collection of mutAtions thAt An extension cAn Apply to A process environment.
 	 */
-	export interface EnvironmentVariableCollection {
+	export interfAce EnvironmentVAriAbleCollection {
 		/**
-		 * Whether the collection should be cached for the workspace and applied to the terminal
-		 * across window reloads. When true the collection will be active immediately such when the
-		 * window reloads. Additionally, this API will return the cached version if it exists. The
-		 * collection will be invalidated when the extension is uninstalled or when the collection
-		 * is cleared. Defaults to true.
+		 * Whether the collection should be cAched for the workspAce And Applied to the terminAl
+		 * Across window reloAds. When true the collection will be Active immediAtely such when the
+		 * window reloAds. AdditionAlly, this API will return the cAched version if it exists. The
+		 * collection will be invAlidAted when the extension is uninstAlled or when the collection
+		 * is cleAred. DefAults to true.
 		 */
-		persistent: boolean;
+		persistent: booleAn;
 
 		/**
-		 * Replace an environment variable with a value.
+		 * ReplAce An environment vAriAble with A vAlue.
 		 *
-		 * Note that an extension can only make a single change to any one variable, so this will
-		 * overwrite any previous calls to replace, append or prepend.
+		 * Note thAt An extension cAn only mAke A single chAnge to Any one vAriAble, so this will
+		 * overwrite Any previous cAlls to replAce, Append or prepend.
 		 *
-		 * @param variable The variable to replace.
-		 * @param value The value to replace the variable with.
+		 * @pArAm vAriAble The vAriAble to replAce.
+		 * @pArAm vAlue The vAlue to replAce the vAriAble with.
 		 */
-		replace(variable: string, value: string): void;
+		replAce(vAriAble: string, vAlue: string): void;
 
 		/**
-		 * Append a value to an environment variable.
+		 * Append A vAlue to An environment vAriAble.
 		 *
-		 * Note that an extension can only make a single change to any one variable, so this will
-		 * overwrite any previous calls to replace, append or prepend.
+		 * Note thAt An extension cAn only mAke A single chAnge to Any one vAriAble, so this will
+		 * overwrite Any previous cAlls to replAce, Append or prepend.
 		 *
-		 * @param variable The variable to append to.
-		 * @param value The value to append to the variable.
+		 * @pArAm vAriAble The vAriAble to Append to.
+		 * @pArAm vAlue The vAlue to Append to the vAriAble.
 		 */
-		append(variable: string, value: string): void;
+		Append(vAriAble: string, vAlue: string): void;
 
 		/**
-		 * Prepend a value to an environment variable.
+		 * Prepend A vAlue to An environment vAriAble.
 		 *
-		 * Note that an extension can only make a single change to any one variable, so this will
-		 * overwrite any previous calls to replace, append or prepend.
+		 * Note thAt An extension cAn only mAke A single chAnge to Any one vAriAble, so this will
+		 * overwrite Any previous cAlls to replAce, Append or prepend.
 		 *
-		 * @param variable The variable to prepend.
-		 * @param value The value to prepend to the variable.
+		 * @pArAm vAriAble The vAriAble to prepend.
+		 * @pArAm vAlue The vAlue to prepend to the vAriAble.
 		 */
-		prepend(variable: string, value: string): void;
+		prepend(vAriAble: string, vAlue: string): void;
 
 		/**
-		 * Gets the mutator that this collection applies to a variable, if any.
+		 * Gets the mutAtor thAt this collection Applies to A vAriAble, if Any.
 		 *
-		 * @param variable The variable to get the mutator for.
+		 * @pArAm vAriAble The vAriAble to get the mutAtor for.
 		 */
-		get(variable: string): EnvironmentVariableMutator | undefined;
+		get(vAriAble: string): EnvironmentVAriAbleMutAtor | undefined;
 
 		/**
-		 * Iterate over each mutator in this collection.
+		 * IterAte over eAch mutAtor in this collection.
 		 *
-		 * @param callback Function to execute for each entry.
-		 * @param thisArg The `this` context used when invoking the handler function.
+		 * @pArAm cAllbAck Function to execute for eAch entry.
+		 * @pArAm thisArg The `this` context used when invoking the hAndler function.
 		 */
-		forEach(callback: (variable: string, mutator: EnvironmentVariableMutator, collection: EnvironmentVariableCollection) => any, thisArg?: any): void;
+		forEAch(cAllbAck: (vAriAble: string, mutAtor: EnvironmentVAriAbleMutAtor, collection: EnvironmentVAriAbleCollection) => Any, thisArg?: Any): void;
 
 		/**
-		 * Deletes this collection's mutator for a variable.
+		 * Deletes this collection's mutAtor for A vAriAble.
 		 *
-		 * @param variable The variable to delete the mutator for.
+		 * @pArAm vAriAble The vAriAble to delete the mutAtor for.
 		 */
-		delete(variable: string): void;
+		delete(vAriAble: string): void;
 
 		/**
-		 * Clears all mutators from this collection.
+		 * CleArs All mutAtors from this collection.
 		 */
-		clear(): void;
+		cleAr(): void;
 	}
 
 	/**
-	 * A location in the editor at which progress information can be shown. It depends on the
-	 * location how progress is visually represented.
+	 * A locAtion in the editor At which progress informAtion cAn be shown. It depends on the
+	 * locAtion how progress is visuAlly represented.
 	 */
-	export enum ProgressLocation {
+	export enum ProgressLocAtion {
 
 		/**
-		 * Show progress for the source control viewlet, as overlay for the icon and as progress bar
-		 * inside the viewlet (when visible). Neither supports cancellation nor discrete progress.
+		 * Show progress for the source control viewlet, As overlAy for the icon And As progress bAr
+		 * inside the viewlet (when visible). Neither supports cAncellAtion nor discrete progress.
 		 */
 		SourceControl = 1,
 
 		/**
-		 * Show progress in the status bar of the editor. Neither supports cancellation nor discrete progress.
+		 * Show progress in the stAtus bAr of the editor. Neither supports cAncellAtion nor discrete progress.
 		 */
 		Window = 10,
 
 		/**
-		 * Show progress as notification with an optional cancel button. Supports to show infinite and discrete progress.
+		 * Show progress As notificAtion with An optionAl cAncel button. Supports to show infinite And discrete progress.
 		 */
-		Notification = 15
+		NotificAtion = 15
 	}
 
 	/**
-	 * Value-object describing where and how progress should show.
+	 * VAlue-object describing where And how progress should show.
 	 */
-	export interface ProgressOptions {
+	export interfAce ProgressOptions {
 
 		/**
-		 * The location at which progress should show.
+		 * The locAtion At which progress should show.
 		 */
-		location: ProgressLocation | { viewId: string };
+		locAtion: ProgressLocAtion | { viewId: string };
 
 		/**
-		 * A human-readable string which will be used to describe the
-		 * operation.
+		 * A humAn-reAdAble string which will be used to describe the
+		 * operAtion.
 		 */
 		title?: string;
 
 		/**
-		 * Controls if a cancel button should show to allow the user to
-		 * cancel the long running operation.  Note that currently only
-		 * `ProgressLocation.Notification` is supporting to show a cancel
+		 * Controls if A cAncel button should show to Allow the user to
+		 * cAncel the long running operAtion.  Note thAt currently only
+		 * `ProgressLocAtion.NotificAtion` is supporting to show A cAncel
 		 * button.
 		 */
-		cancellable?: boolean;
+		cAncellAble?: booleAn;
 	}
 
 	/**
-	 * A light-weight user input UI that is initially not visible. After
-	 * configuring it through its properties the extension can make it
-	 * visible by calling [QuickInput.show](#QuickInput.show).
+	 * A light-weight user input UI thAt is initiAlly not visible. After
+	 * configuring it through its properties the extension cAn mAke it
+	 * visible by cAlling [QuickInput.show](#QuickInput.show).
 	 *
-	 * There are several reasons why this UI might have to be hidden and
+	 * There Are severAl reAsons why this UI might hAve to be hidden And
 	 * the extension will be notified through [QuickInput.onDidHide](#QuickInput.onDidHide).
-	 * (Examples include: an explicit call to [QuickInput.hide](#QuickInput.hide),
+	 * (ExAmples include: An explicit cAll to [QuickInput.hide](#QuickInput.hide),
 	 * the user pressing Esc, some other input UI opening, etc.)
 	 *
-	 * A user pressing Enter or some other gesture implying acceptance
-	 * of the current state does not automatically hide this UI component.
-	 * It is up to the extension to decide whether to accept the user's input
-	 * and if the UI should indeed be hidden through a call to [QuickInput.hide](#QuickInput.hide).
+	 * A user pressing Enter or some other gesture implying AcceptAnce
+	 * of the current stAte does not AutomAticAlly hide this UI component.
+	 * It is up to the extension to decide whether to Accept the user's input
+	 * And if the UI should indeed be hidden through A cAll to [QuickInput.hide](#QuickInput.hide).
 	 *
 	 * When the extension no longer needs this input UI, it should
-	 * [QuickInput.dispose](#QuickInput.dispose) it to allow for freeing up
-	 * any resources associated with it.
+	 * [QuickInput.dispose](#QuickInput.dispose) it to Allow for freeing up
+	 * Any resources AssociAted with it.
 	 *
-	 * See [QuickPick](#QuickPick) and [InputBox](#InputBox) for concrete UIs.
+	 * See [QuickPick](#QuickPick) And [InputBox](#InputBox) for concrete UIs.
 	 */
-	export interface QuickInput {
+	export interfAce QuickInput {
 
 		/**
-		 * An optional title.
+		 * An optionAl title.
 		 */
 		title: string | undefined;
 
 		/**
-		 * An optional current step count.
+		 * An optionAl current step count.
 		 */
 		step: number | undefined;
 
 		/**
-		 * An optional total step count.
+		 * An optionAl totAl step count.
 		 */
-		totalSteps: number | undefined;
+		totAlSteps: number | undefined;
 
 		/**
-		 * If the UI should allow for user input. Defaults to true.
+		 * If the UI should Allow for user input. DefAults to true.
 		 *
-		 * Change this to false, e.g., while validating user input or
-		 * loading data for the next step in user input.
+		 * ChAnge this to fAlse, e.g., while vAlidAting user input or
+		 * loAding dAtA for the next step in user input.
 		 */
-		enabled: boolean;
+		enAbled: booleAn;
 
 		/**
-		 * If the UI should show a progress indicator. Defaults to false.
+		 * If the UI should show A progress indicAtor. DefAults to fAlse.
 		 *
-		 * Change this to true, e.g., while loading more data or validating
+		 * ChAnge this to true, e.g., while loAding more dAtA or vAlidAting
 		 * user input.
 		 */
-		busy: boolean;
+		busy: booleAn;
 
 		/**
-		 * If the UI should stay open even when loosing UI focus. Defaults to false.
+		 * If the UI should stAy open even when loosing UI focus. DefAults to fAlse.
 		 */
-		ignoreFocusOut: boolean;
+		ignoreFocusOut: booleAn;
 
 		/**
-		 * Makes the input UI visible in its current configuration. Any other input
-		 * UI will first fire an [QuickInput.onDidHide](#QuickInput.onDidHide) event.
+		 * MAkes the input UI visible in its current configurAtion. Any other input
+		 * UI will first fire An [QuickInput.onDidHide](#QuickInput.onDidHide) event.
 		 */
 		show(): void;
 
 		/**
-		 * Hides this input UI. This will also fire an [QuickInput.onDidHide](#QuickInput.onDidHide)
+		 * Hides this input UI. This will Also fire An [QuickInput.onDidHide](#QuickInput.onDidHide)
 		 * event.
 		 */
 		hide(): void;
 
 		/**
-		 * An event signaling when this input UI is hidden.
+		 * An event signAling when this input UI is hidden.
 		 *
-		 * There are several reasons why this UI might have to be hidden and
+		 * There Are severAl reAsons why this UI might hAve to be hidden And
 		 * the extension will be notified through [QuickInput.onDidHide](#QuickInput.onDidHide).
-		 * (Examples include: an explicit call to [QuickInput.hide](#QuickInput.hide),
+		 * (ExAmples include: An explicit cAll to [QuickInput.hide](#QuickInput.hide),
 		 * the user pressing Esc, some other input UI opening, etc.)
 		 */
 		onDidHide: Event<void>;
 
 		/**
-		 * Dispose of this input UI and any associated resources. If it is still
-		 * visible, it is first hidden. After this call the input UI is no longer
-		 * functional and no additional methods or properties on it should be
-		 * accessed. Instead a new input UI should be created.
+		 * Dispose of this input UI And Any AssociAted resources. If it is still
+		 * visible, it is first hidden. After this cAll the input UI is no longer
+		 * functionAl And no AdditionAl methods or properties on it should be
+		 * Accessed. InsteAd A new input UI should be creAted.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * A concrete [QuickInput](#QuickInput) to let the user pick an item from a
-	 * list of items of type T. The items can be filtered through a filter text field and
-	 * there is an option [canSelectMany](#QuickPick.canSelectMany) to allow for
+	 * A concrete [QuickInput](#QuickInput) to let the user pick An item from A
+	 * list of items of type T. The items cAn be filtered through A filter text field And
+	 * there is An option [cAnSelectMAny](#QuickPick.cAnSelectMAny) to Allow for
 	 * selecting multiple items.
 	 *
-	 * Note that in many cases the more convenient [window.showQuickPick](#window.showQuickPick)
-	 * is easier to use. [window.createQuickPick](#window.createQuickPick) should be used
+	 * Note thAt in mAny cAses the more convenient [window.showQuickPick](#window.showQuickPick)
+	 * is eAsier to use. [window.creAteQuickPick](#window.creAteQuickPick) should be used
 	 * when [window.showQuickPick](#window.showQuickPick) does not offer the required flexibility.
 	 */
-	export interface QuickPick<T extends QuickPickItem> extends QuickInput {
+	export interfAce QuickPick<T extends QuickPickItem> extends QuickInput {
 
 		/**
-		 * Current value of the filter text.
+		 * Current vAlue of the filter text.
 		 */
-		value: string;
+		vAlue: string;
 
 		/**
-		 * Optional placeholder in the filter text.
+		 * OptionAl plAceholder in the filter text.
 		 */
-		placeholder: string | undefined;
+		plAceholder: string | undefined;
 
 		/**
-		 * An event signaling when the value of the filter text has changed.
+		 * An event signAling when the vAlue of the filter text hAs chAnged.
 		 */
-		readonly onDidChangeValue: Event<string>;
+		reAdonly onDidChAngeVAlue: Event<string>;
 
 		/**
-		 * An event signaling when the user indicated acceptance of the selected item(s).
+		 * An event signAling when the user indicAted AcceptAnce of the selected item(s).
 		 */
-		readonly onDidAccept: Event<void>;
+		reAdonly onDidAccept: Event<void>;
 
 		/**
-		 * Buttons for actions in the UI.
+		 * Buttons for Actions in the UI.
 		 */
-		buttons: ReadonlyArray<QuickInputButton>;
+		buttons: ReAdonlyArrAy<QuickInputButton>;
 
 		/**
-		 * An event signaling when a button was triggered.
+		 * An event signAling when A button wAs triggered.
 		 */
-		readonly onDidTriggerButton: Event<QuickInputButton>;
+		reAdonly onDidTriggerButton: Event<QuickInputButton>;
 
 		/**
 		 * Items to pick from.
 		 */
-		items: ReadonlyArray<T>;
+		items: ReAdonlyArrAy<T>;
 
 		/**
-		 * If multiple items can be selected at the same time. Defaults to false.
+		 * If multiple items cAn be selected At the sAme time. DefAults to fAlse.
 		 */
-		canSelectMany: boolean;
+		cAnSelectMAny: booleAn;
 
 		/**
-		 * If the filter text should also be matched against the description of the items. Defaults to false.
+		 * If the filter text should Also be mAtched AgAinst the description of the items. DefAults to fAlse.
 		 */
-		matchOnDescription: boolean;
+		mAtchOnDescription: booleAn;
 
 		/**
-		 * If the filter text should also be matched against the detail of the items. Defaults to false.
+		 * If the filter text should Also be mAtched AgAinst the detAil of the items. DefAults to fAlse.
 		 */
-		matchOnDetail: boolean;
+		mAtchOnDetAil: booleAn;
 
 		/**
-		 * Active items. This can be read and updated by the extension.
+		 * Active items. This cAn be reAd And updAted by the extension.
 		 */
-		activeItems: ReadonlyArray<T>;
+		ActiveItems: ReAdonlyArrAy<T>;
 
 		/**
-		 * An event signaling when the active items have changed.
+		 * An event signAling when the Active items hAve chAnged.
 		 */
-		readonly onDidChangeActive: Event<T[]>;
+		reAdonly onDidChAngeActive: Event<T[]>;
 
 		/**
-		 * Selected items. This can be read and updated by the extension.
+		 * Selected items. This cAn be reAd And updAted by the extension.
 		 */
-		selectedItems: ReadonlyArray<T>;
+		selectedItems: ReAdonlyArrAy<T>;
 
 		/**
-		 * An event signaling when the selected items have changed.
+		 * An event signAling when the selected items hAve chAnged.
 		 */
-		readonly onDidChangeSelection: Event<T[]>;
+		reAdonly onDidChAngeSelection: Event<T[]>;
 	}
 
 	/**
-	 * A concrete [QuickInput](#QuickInput) to let the user input a text value.
+	 * A concrete [QuickInput](#QuickInput) to let the user input A text vAlue.
 	 *
-	 * Note that in many cases the more convenient [window.showInputBox](#window.showInputBox)
-	 * is easier to use. [window.createInputBox](#window.createInputBox) should be used
+	 * Note thAt in mAny cAses the more convenient [window.showInputBox](#window.showInputBox)
+	 * is eAsier to use. [window.creAteInputBox](#window.creAteInputBox) should be used
 	 * when [window.showInputBox](#window.showInputBox) does not offer the required flexibility.
 	 */
-	export interface InputBox extends QuickInput {
+	export interfAce InputBox extends QuickInput {
 
 		/**
-		 * Current input value.
+		 * Current input vAlue.
 		 */
-		value: string;
+		vAlue: string;
 
 		/**
-		 * Optional placeholder in the filter text.
+		 * OptionAl plAceholder in the filter text.
 		 */
-		placeholder: string | undefined;
+		plAceholder: string | undefined;
 
 		/**
-		 * If the input value should be hidden. Defaults to false.
+		 * If the input vAlue should be hidden. DefAults to fAlse.
 		 */
-		password: boolean;
+		pAssword: booleAn;
 
 		/**
-		 * An event signaling when the value has changed.
+		 * An event signAling when the vAlue hAs chAnged.
 		 */
-		readonly onDidChangeValue: Event<string>;
+		reAdonly onDidChAngeVAlue: Event<string>;
 
 		/**
-		 * An event signaling when the user indicated acceptance of the input value.
+		 * An event signAling when the user indicAted AcceptAnce of the input vAlue.
 		 */
-		readonly onDidAccept: Event<void>;
+		reAdonly onDidAccept: Event<void>;
 
 		/**
-		 * Buttons for actions in the UI.
+		 * Buttons for Actions in the UI.
 		 */
-		buttons: ReadonlyArray<QuickInputButton>;
+		buttons: ReAdonlyArrAy<QuickInputButton>;
 
 		/**
-		 * An event signaling when a button was triggered.
+		 * An event signAling when A button wAs triggered.
 		 */
-		readonly onDidTriggerButton: Event<QuickInputButton>;
+		reAdonly onDidTriggerButton: Event<QuickInputButton>;
 
 		/**
-		 * An optional prompt text providing some ask or explanation to the user.
+		 * An optionAl prompt text providing some Ask or explAnAtion to the user.
 		 */
 		prompt: string | undefined;
 
 		/**
-		 * An optional validation message indicating a problem with the current input value.
+		 * An optionAl vAlidAtion messAge indicAting A problem with the current input vAlue.
 		 */
-		validationMessage: string | undefined;
+		vAlidAtionMessAge: string | undefined;
 	}
 
 	/**
-	 * Button for an action in a [QuickPick](#QuickPick) or [InputBox](#InputBox).
+	 * Button for An Action in A [QuickPick](#QuickPick) or [InputBox](#InputBox).
 	 */
-	export interface QuickInputButton {
+	export interfAce QuickInputButton {
 
 		/**
 		 * Icon for the button.
 		 */
-		readonly iconPath: Uri | { light: Uri; dark: Uri } | ThemeIcon;
+		reAdonly iconPAth: Uri | { light: Uri; dArk: Uri } | ThemeIcon;
 
 		/**
-		 * An optional tooltip.
+		 * An optionAl tooltip.
 		 */
-		readonly tooltip?: string | undefined;
+		reAdonly tooltip?: string | undefined;
 	}
 
 	/**
-	 * Predefined buttons for [QuickPick](#QuickPick) and [InputBox](#InputBox).
+	 * Predefined buttons for [QuickPick](#QuickPick) And [InputBox](#InputBox).
 	 */
-	export class QuickInputButtons {
+	export clAss QuickInputButtons {
 
 		/**
-		 * A back button for [QuickPick](#QuickPick) and [InputBox](#InputBox).
+		 * A bAck button for [QuickPick](#QuickPick) And [InputBox](#InputBox).
 		 *
-		 * When a navigation 'back' button is needed this one should be used for consistency.
-		 * It comes with a predefined icon, tooltip and location.
+		 * When A nAvigAtion 'bAck' button is needed this one should be used for consistency.
+		 * It comes with A predefined icon, tooltip And locAtion.
 		 */
-		static readonly Back: QuickInputButton;
+		stAtic reAdonly BAck: QuickInputButton;
 
 		/**
 		 * @hidden
 		 */
-		private constructor();
+		privAte constructor();
 	}
 
 	/**
-	 * An event describing an individual change in the text of a [document](#TextDocument).
+	 * An event describing An individuAl chAnge in the text of A [document](#TextDocument).
 	 */
-	export interface TextDocumentContentChangeEvent {
+	export interfAce TextDocumentContentChAngeEvent {
 		/**
-		 * The range that got replaced.
+		 * The rAnge thAt got replAced.
 		 */
-		readonly range: Range;
+		reAdonly rAnge: RAnge;
 		/**
-		 * The offset of the range that got replaced.
+		 * The offset of the rAnge thAt got replAced.
 		 */
-		readonly rangeOffset: number;
+		reAdonly rAngeOffset: number;
 		/**
-		 * The length of the range that got replaced.
+		 * The length of the rAnge thAt got replAced.
 		 */
-		readonly rangeLength: number;
+		reAdonly rAngeLength: number;
 		/**
-		 * The new text for the range.
+		 * The new text for the rAnge.
 		 */
-		readonly text: string;
+		reAdonly text: string;
 	}
 
 	/**
-	 * An event describing a transactional [document](#TextDocument) change.
+	 * An event describing A trAnsActionAl [document](#TextDocument) chAnge.
 	 */
-	export interface TextDocumentChangeEvent {
+	export interfAce TextDocumentChAngeEvent {
 
 		/**
-		 * The affected document.
+		 * The Affected document.
 		 */
-		readonly document: TextDocument;
+		reAdonly document: TextDocument;
 
 		/**
-		 * An array of content changes.
+		 * An ArrAy of content chAnges.
 		 */
-		readonly contentChanges: ReadonlyArray<TextDocumentContentChangeEvent>;
+		reAdonly contentChAnges: ReAdonlyArrAy<TextDocumentContentChAngeEvent>;
 	}
 
 	/**
-	 * Represents reasons why a text document is saved.
+	 * Represents reAsons why A text document is sAved.
 	 */
-	export enum TextDocumentSaveReason {
+	export enum TextDocumentSAveReAson {
 
 		/**
-		 * Manually triggered, e.g. by the user pressing save, by starting debugging,
-		 * or by an API call.
+		 * MAnuAlly triggered, e.g. by the user pressing sAve, by stArting debugging,
+		 * or by An API cAll.
 		 */
-		Manual = 1,
+		MAnuAl = 1,
 
 		/**
-		 * Automatic after a delay.
+		 * AutomAtic After A delAy.
 		 */
-		AfterDelay = 2,
+		AfterDelAy = 2,
 
 		/**
 		 * When the editor lost focus.
@@ -9504,1340 +9504,1340 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * An event that is fired when a [document](#TextDocument) will be saved.
+	 * An event thAt is fired when A [document](#TextDocument) will be sAved.
 	 *
-	 * To make modifications to the document before it is being saved, call the
-	 * [`waitUntil`](#TextDocumentWillSaveEvent.waitUntil)-function with a thenable
-	 * that resolves to an array of [text edits](#TextEdit).
+	 * To mAke modificAtions to the document before it is being sAved, cAll the
+	 * [`wAitUntil`](#TextDocumentWillSAveEvent.wAitUntil)-function with A thenAble
+	 * thAt resolves to An ArrAy of [text edits](#TextEdit).
 	 */
-	export interface TextDocumentWillSaveEvent {
+	export interfAce TextDocumentWillSAveEvent {
 
 		/**
-		 * The document that will be saved.
+		 * The document thAt will be sAved.
 		 */
-		readonly document: TextDocument;
+		reAdonly document: TextDocument;
 
 		/**
-		 * The reason why save was triggered.
+		 * The reAson why sAve wAs triggered.
 		 */
-		readonly reason: TextDocumentSaveReason;
+		reAdonly reAson: TextDocumentSAveReAson;
 
 		/**
-		 * Allows to pause the event loop and to apply [pre-save-edits](#TextEdit).
-		 * Edits of subsequent calls to this function will be applied in order. The
-		 * edits will be *ignored* if concurrent modifications of the document happened.
+		 * Allows to pAuse the event loop And to Apply [pre-sAve-edits](#TextEdit).
+		 * Edits of subsequent cAlls to this function will be Applied in order. The
+		 * edits will be *ignored* if concurrent modificAtions of the document hAppened.
 		 *
-		 * *Note:* This function can only be called during event dispatch and not
-		 * in an asynchronous manner:
+		 * *Note:* This function cAn only be cAlled during event dispAtch And not
+		 * in An Asynchronous mAnner:
 		 *
 		 * ```ts
-		 * workspace.onWillSaveTextDocument(event => {
-		 * 	// async, will *throw* an error
-		 * 	setTimeout(() => event.waitUntil(promise));
+		 * workspAce.onWillSAveTextDocument(event => {
+		 * 	// Async, will *throw* An error
+		 * 	setTimeout(() => event.wAitUntil(promise));
 		 *
 		 * 	// sync, OK
-		 * 	event.waitUntil(promise);
+		 * 	event.wAitUntil(promise);
 		 * })
 		 * ```
 		 *
-		 * @param thenable A thenable that resolves to [pre-save-edits](#TextEdit).
+		 * @pArAm thenAble A thenAble thAt resolves to [pre-sAve-edits](#TextEdit).
 		 */
-		waitUntil(thenable: Thenable<TextEdit[]>): void;
+		wAitUntil(thenAble: ThenAble<TextEdit[]>): void;
 
 		/**
-		 * Allows to pause the event loop until the provided thenable resolved.
+		 * Allows to pAuse the event loop until the provided thenAble resolved.
 		 *
-		 * *Note:* This function can only be called during event dispatch.
+		 * *Note:* This function cAn only be cAlled during event dispAtch.
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<any>): void;
+		wAitUntil(thenAble: ThenAble<Any>): void;
 	}
 
 	/**
-	 * An event that is fired when files are going to be created.
+	 * An event thAt is fired when files Are going to be creAted.
 	 *
-	 * To make modifications to the workspace before the files are created,
-	 * call the [`waitUntil](#FileWillCreateEvent.waitUntil)-function with a
-	 * thenable that resolves to a [workspace edit](#WorkspaceEdit).
+	 * To mAke modificAtions to the workspAce before the files Are creAted,
+	 * cAll the [`wAitUntil](#FileWillCreAteEvent.wAitUntil)-function with A
+	 * thenAble thAt resolves to A [workspAce edit](#WorkspAceEdit).
 	 */
-	export interface FileWillCreateEvent {
+	export interfAce FileWillCreAteEvent {
 
 		/**
-		 * The files that are going to be created.
+		 * The files thAt Are going to be creAted.
 		 */
-		readonly files: ReadonlyArray<Uri>;
+		reAdonly files: ReAdonlyArrAy<Uri>;
 
 		/**
-		 * Allows to pause the event and to apply a [workspace edit](#WorkspaceEdit).
+		 * Allows to pAuse the event And to Apply A [workspAce edit](#WorkspAceEdit).
 		 *
-		 * *Note:* This function can only be called during event dispatch and not
-		 * in an asynchronous manner:
+		 * *Note:* This function cAn only be cAlled during event dispAtch And not
+		 * in An Asynchronous mAnner:
 		 *
 		 * ```ts
-		 * workspace.onWillCreateFiles(event => {
-		 * 	// async, will *throw* an error
-		 * 	setTimeout(() => event.waitUntil(promise));
+		 * workspAce.onWillCreAteFiles(event => {
+		 * 	// Async, will *throw* An error
+		 * 	setTimeout(() => event.wAitUntil(promise));
 		 *
 		 * 	// sync, OK
-		 * 	event.waitUntil(promise);
+		 * 	event.wAitUntil(promise);
 		 * })
 		 * ```
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<WorkspaceEdit>): void;
+		wAitUntil(thenAble: ThenAble<WorkspAceEdit>): void;
 
 		/**
-		 * Allows to pause the event until the provided thenable resolves.
+		 * Allows to pAuse the event until the provided thenAble resolves.
 		 *
-		 * *Note:* This function can only be called during event dispatch.
+		 * *Note:* This function cAn only be cAlled during event dispAtch.
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<any>): void;
+		wAitUntil(thenAble: ThenAble<Any>): void;
 	}
 
 	/**
-	 * An event that is fired after files are created.
+	 * An event thAt is fired After files Are creAted.
 	 */
-	export interface FileCreateEvent {
+	export interfAce FileCreAteEvent {
 
 		/**
-		 * The files that got created.
+		 * The files thAt got creAted.
 		 */
-		readonly files: ReadonlyArray<Uri>;
+		reAdonly files: ReAdonlyArrAy<Uri>;
 	}
 
 	/**
-	 * An event that is fired when files are going to be deleted.
+	 * An event thAt is fired when files Are going to be deleted.
 	 *
-	 * To make modifications to the workspace before the files are deleted,
-	 * call the [`waitUntil](#FileWillCreateEvent.waitUntil)-function with a
-	 * thenable that resolves to a [workspace edit](#WorkspaceEdit).
+	 * To mAke modificAtions to the workspAce before the files Are deleted,
+	 * cAll the [`wAitUntil](#FileWillCreAteEvent.wAitUntil)-function with A
+	 * thenAble thAt resolves to A [workspAce edit](#WorkspAceEdit).
 	 */
-	export interface FileWillDeleteEvent {
+	export interfAce FileWillDeleteEvent {
 
 		/**
-		 * The files that are going to be deleted.
+		 * The files thAt Are going to be deleted.
 		 */
-		readonly files: ReadonlyArray<Uri>;
+		reAdonly files: ReAdonlyArrAy<Uri>;
 
 		/**
-		 * Allows to pause the event and to apply a [workspace edit](#WorkspaceEdit).
+		 * Allows to pAuse the event And to Apply A [workspAce edit](#WorkspAceEdit).
 		 *
-		 * *Note:* This function can only be called during event dispatch and not
-		 * in an asynchronous manner:
+		 * *Note:* This function cAn only be cAlled during event dispAtch And not
+		 * in An Asynchronous mAnner:
 		 *
 		 * ```ts
-		 * workspace.onWillCreateFiles(event => {
-		 * 	// async, will *throw* an error
-		 * 	setTimeout(() => event.waitUntil(promise));
+		 * workspAce.onWillCreAteFiles(event => {
+		 * 	// Async, will *throw* An error
+		 * 	setTimeout(() => event.wAitUntil(promise));
 		 *
 		 * 	// sync, OK
-		 * 	event.waitUntil(promise);
+		 * 	event.wAitUntil(promise);
 		 * })
 		 * ```
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<WorkspaceEdit>): void;
+		wAitUntil(thenAble: ThenAble<WorkspAceEdit>): void;
 
 		/**
-		 * Allows to pause the event until the provided thenable resolves.
+		 * Allows to pAuse the event until the provided thenAble resolves.
 		 *
-		 * *Note:* This function can only be called during event dispatch.
+		 * *Note:* This function cAn only be cAlled during event dispAtch.
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<any>): void;
+		wAitUntil(thenAble: ThenAble<Any>): void;
 	}
 
 	/**
-	 * An event that is fired after files are deleted.
+	 * An event thAt is fired After files Are deleted.
 	 */
-	export interface FileDeleteEvent {
+	export interfAce FileDeleteEvent {
 
 		/**
-		 * The files that got deleted.
+		 * The files thAt got deleted.
 		 */
-		readonly files: ReadonlyArray<Uri>;
+		reAdonly files: ReAdonlyArrAy<Uri>;
 	}
 
 	/**
-	 * An event that is fired when files are going to be renamed.
+	 * An event thAt is fired when files Are going to be renAmed.
 	 *
-	 * To make modifications to the workspace before the files are renamed,
-	 * call the [`waitUntil](#FileWillCreateEvent.waitUntil)-function with a
-	 * thenable that resolves to a [workspace edit](#WorkspaceEdit).
+	 * To mAke modificAtions to the workspAce before the files Are renAmed,
+	 * cAll the [`wAitUntil](#FileWillCreAteEvent.wAitUntil)-function with A
+	 * thenAble thAt resolves to A [workspAce edit](#WorkspAceEdit).
 	 */
-	export interface FileWillRenameEvent {
+	export interfAce FileWillRenAmeEvent {
 
 		/**
-		 * The files that are going to be renamed.
+		 * The files thAt Are going to be renAmed.
 		 */
-		readonly files: ReadonlyArray<{ oldUri: Uri, newUri: Uri }>;
+		reAdonly files: ReAdonlyArrAy<{ oldUri: Uri, newUri: Uri }>;
 
 		/**
-		 * Allows to pause the event and to apply a [workspace edit](#WorkspaceEdit).
+		 * Allows to pAuse the event And to Apply A [workspAce edit](#WorkspAceEdit).
 		 *
-		 * *Note:* This function can only be called during event dispatch and not
-		 * in an asynchronous manner:
+		 * *Note:* This function cAn only be cAlled during event dispAtch And not
+		 * in An Asynchronous mAnner:
 		 *
 		 * ```ts
-		 * workspace.onWillCreateFiles(event => {
-		 * 	// async, will *throw* an error
-		 * 	setTimeout(() => event.waitUntil(promise));
+		 * workspAce.onWillCreAteFiles(event => {
+		 * 	// Async, will *throw* An error
+		 * 	setTimeout(() => event.wAitUntil(promise));
 		 *
 		 * 	// sync, OK
-		 * 	event.waitUntil(promise);
+		 * 	event.wAitUntil(promise);
 		 * })
 		 * ```
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<WorkspaceEdit>): void;
+		wAitUntil(thenAble: ThenAble<WorkspAceEdit>): void;
 
 		/**
-		 * Allows to pause the event until the provided thenable resolves.
+		 * Allows to pAuse the event until the provided thenAble resolves.
 		 *
-		 * *Note:* This function can only be called during event dispatch.
+		 * *Note:* This function cAn only be cAlled during event dispAtch.
 		 *
-		 * @param thenable A thenable that delays saving.
+		 * @pArAm thenAble A thenAble thAt delAys sAving.
 		 */
-		waitUntil(thenable: Thenable<any>): void;
+		wAitUntil(thenAble: ThenAble<Any>): void;
 	}
 
 	/**
-	 * An event that is fired after files are renamed.
+	 * An event thAt is fired After files Are renAmed.
 	 */
-	export interface FileRenameEvent {
+	export interfAce FileRenAmeEvent {
 
 		/**
-		 * The files that got renamed.
+		 * The files thAt got renAmed.
 		 */
-		readonly files: ReadonlyArray<{ oldUri: Uri, newUri: Uri }>;
+		reAdonly files: ReAdonlyArrAy<{ oldUri: Uri, newUri: Uri }>;
 	}
 
 	/**
-	 * An event describing a change to the set of [workspace folders](#workspace.workspaceFolders).
+	 * An event describing A chAnge to the set of [workspAce folders](#workspAce.workspAceFolders).
 	 */
-	export interface WorkspaceFoldersChangeEvent {
+	export interfAce WorkspAceFoldersChAngeEvent {
 		/**
-		 * Added workspace folders.
+		 * Added workspAce folders.
 		 */
-		readonly added: ReadonlyArray<WorkspaceFolder>;
+		reAdonly Added: ReAdonlyArrAy<WorkspAceFolder>;
 
 		/**
-		 * Removed workspace folders.
+		 * Removed workspAce folders.
 		 */
-		readonly removed: ReadonlyArray<WorkspaceFolder>;
+		reAdonly removed: ReAdonlyArrAy<WorkspAceFolder>;
 	}
 
 	/**
-	 * A workspace folder is one of potentially many roots opened by the editor. All workspace folders
-	 * are equal which means there is no notion of an active or primary workspace folder.
+	 * A workspAce folder is one of potentiAlly mAny roots opened by the editor. All workspAce folders
+	 * Are equAl which meAns there is no notion of An Active or primAry workspAce folder.
 	 */
-	export interface WorkspaceFolder {
+	export interfAce WorkspAceFolder {
 
 		/**
-		 * The associated uri for this workspace folder.
+		 * The AssociAted uri for this workspAce folder.
 		 *
-		 * *Note:* The [Uri](#Uri)-type was intentionally chosen such that future releases of the editor can support
-		 * workspace folders that are not stored on the local disk, e.g. `ftp://server/workspaces/foo`.
+		 * *Note:* The [Uri](#Uri)-type wAs intentionAlly chosen such thAt future releAses of the editor cAn support
+		 * workspAce folders thAt Are not stored on the locAl disk, e.g. `ftp://server/workspAces/foo`.
 		 */
-		readonly uri: Uri;
+		reAdonly uri: Uri;
 
 		/**
-		 * The name of this workspace folder. Defaults to
-		 * the basename of its [uri-path](#Uri.path)
+		 * The nAme of this workspAce folder. DefAults to
+		 * the bAsenAme of its [uri-pAth](#Uri.pAth)
 		 */
-		readonly name: string;
+		reAdonly nAme: string;
 
 		/**
-		 * The ordinal number of this workspace folder.
+		 * The ordinAl number of this workspAce folder.
 		 */
-		readonly index: number;
+		reAdonly index: number;
 	}
 
 	/**
-	 * Namespace for dealing with the current workspace. A workspace is the representation
-	 * of the folder that has been opened. There is no workspace when just a file but not a
-	 * folder has been opened.
+	 * NAmespAce for deAling with the current workspAce. A workspAce is the representAtion
+	 * of the folder thAt hAs been opened. There is no workspAce when just A file but not A
+	 * folder hAs been opened.
 	 *
-	 * The workspace offers support for [listening](#workspace.createFileSystemWatcher) to fs
-	 * events and for [finding](#workspace.findFiles) files. Both perform well and run _outside_
-	 * the editor-process so that they should be always used instead of nodejs-equivalents.
+	 * The workspAce offers support for [listening](#workspAce.creAteFileSystemWAtcher) to fs
+	 * events And for [finding](#workspAce.findFiles) files. Both perform well And run _outside_
+	 * the editor-process so thAt they should be AlwAys used insteAd of nodejs-equivAlents.
 	 */
-	export namespace workspace {
+	export nAmespAce workspAce {
 
 		/**
-		 * A [file system](#FileSystem) instance that allows to interact with local and remote
-		 * files, e.g. `vscode.workspace.fs.readDirectory(someUri)` allows to retrieve all entries
-		 * of a directory or `vscode.workspace.fs.stat(anotherUri)` returns the meta data for a
+		 * A [file system](#FileSystem) instAnce thAt Allows to interAct with locAl And remote
+		 * files, e.g. `vscode.workspAce.fs.reAdDirectory(someUri)` Allows to retrieve All entries
+		 * of A directory or `vscode.workspAce.fs.stAt(AnotherUri)` returns the metA dAtA for A
 		 * file.
 		 */
 		export const fs: FileSystem;
 
 		/**
-		 * The folder that is open in the editor. `undefined` when no folder
-		 * has been opened.
+		 * The folder thAt is open in the editor. `undefined` when no folder
+		 * hAs been opened.
 		 *
-		 * @deprecated Use [`workspaceFolders`](#workspace.workspaceFolders) instead.
+		 * @deprecAted Use [`workspAceFolders`](#workspAce.workspAceFolders) insteAd.
 		 */
-		export const rootPath: string | undefined;
+		export const rootPAth: string | undefined;
 
 		/**
-		 * List of workspace folders or `undefined` when no folder is open.
-		 * *Note* that the first entry corresponds to the value of `rootPath`.
+		 * List of workspAce folders or `undefined` when no folder is open.
+		 * *Note* thAt the first entry corresponds to the vAlue of `rootPAth`.
 		 */
-		export const workspaceFolders: ReadonlyArray<WorkspaceFolder> | undefined;
+		export const workspAceFolders: ReAdonlyArrAy<WorkspAceFolder> | undefined;
 
 		/**
-		 * The name of the workspace. `undefined` when no folder
-		 * has been opened.
+		 * The nAme of the workspAce. `undefined` when no folder
+		 * hAs been opened.
 		 */
-		export const name: string | undefined;
+		export const nAme: string | undefined;
 
 		/**
-		 * The location of the workspace file, for example:
+		 * The locAtion of the workspAce file, for exAmple:
 		 *
-		 * `file:///Users/name/Development/myProject.code-workspace`
+		 * `file:///Users/nAme/Development/myProject.code-workspAce`
 		 *
 		 * or
 		 *
 		 * `untitled:1555503116870`
 		 *
-		 * for a workspace that is untitled and not yet saved.
+		 * for A workspAce thAt is untitled And not yet sAved.
 		 *
-		 * Depending on the workspace that is opened, the value will be:
-		 *  * `undefined` when no workspace or  a single folder is opened
-		 *  * the path of the workspace file as `Uri` otherwise. if the workspace
+		 * Depending on the workspAce thAt is opened, the vAlue will be:
+		 *  * `undefined` when no workspAce or  A single folder is opened
+		 *  * the pAth of the workspAce file As `Uri` otherwise. if the workspAce
 		 * is untitled, the returned URI will use the `untitled:` scheme
 		 *
-		 * The location can e.g. be used with the `vscode.openFolder` command to
-		 * open the workspace again after it has been closed.
+		 * The locAtion cAn e.g. be used with the `vscode.openFolder` commAnd to
+		 * open the workspAce AgAin After it hAs been closed.
 		 *
-		 * **Example:**
+		 * **ExAmple:**
 		 * ```typescript
-		 * vscode.commands.executeCommand('vscode.openFolder', uriOfWorkspace);
+		 * vscode.commAnds.executeCommAnd('vscode.openFolder', uriOfWorkspAce);
 		 * ```
 		 *
-		 * **Note:** it is not advised to use `workspace.workspaceFile` to write
-		 * configuration data into the file. You can use `workspace.getConfiguration().update()`
-		 * for that purpose which will work both when a single folder is opened as
-		 * well as an untitled or saved workspace.
+		 * **Note:** it is not Advised to use `workspAce.workspAceFile` to write
+		 * configurAtion dAtA into the file. You cAn use `workspAce.getConfigurAtion().updAte()`
+		 * for thAt purpose which will work both when A single folder is opened As
+		 * well As An untitled or sAved workspAce.
 		 */
-		export const workspaceFile: Uri | undefined;
+		export const workspAceFile: Uri | undefined;
 
 		/**
-		 * An event that is emitted when a workspace folder is added or removed.
+		 * An event thAt is emitted when A workspAce folder is Added or removed.
 		 */
-		export const onDidChangeWorkspaceFolders: Event<WorkspaceFoldersChangeEvent>;
+		export const onDidChAngeWorkspAceFolders: Event<WorkspAceFoldersChAngeEvent>;
 
 		/**
-		 * Returns the [workspace folder](#WorkspaceFolder) that contains a given uri.
-		 * * returns `undefined` when the given uri doesn't match any workspace folder
-		 * * returns the *input* when the given uri is a workspace folder itself
+		 * Returns the [workspAce folder](#WorkspAceFolder) thAt contAins A given uri.
+		 * * returns `undefined` when the given uri doesn't mAtch Any workspAce folder
+		 * * returns the *input* when the given uri is A workspAce folder itself
 		 *
-		 * @param uri An uri.
-		 * @return A workspace folder or `undefined`
+		 * @pArAm uri An uri.
+		 * @return A workspAce folder or `undefined`
 		 */
-		export function getWorkspaceFolder(uri: Uri): WorkspaceFolder | undefined;
+		export function getWorkspAceFolder(uri: Uri): WorkspAceFolder | undefined;
 
 		/**
-		 * Returns a path that is relative to the workspace folder or folders.
+		 * Returns A pAth thAt is relAtive to the workspAce folder or folders.
 		 *
-		 * When there are no [workspace folders](#workspace.workspaceFolders) or when the path
-		 * is not contained in them, the input is returned.
+		 * When there Are no [workspAce folders](#workspAce.workspAceFolders) or when the pAth
+		 * is not contAined in them, the input is returned.
 		 *
-		 * @param pathOrUri A path or uri. When a uri is given its [fsPath](#Uri.fsPath) is used.
-		 * @param includeWorkspaceFolder When `true` and when the given path is contained inside a
-		 * workspace folder the name of the workspace is prepended. Defaults to `true` when there are
-		 * multiple workspace folders and `false` otherwise.
-		 * @return A path relative to the root or the input.
+		 * @pArAm pAthOrUri A pAth or uri. When A uri is given its [fsPAth](#Uri.fsPAth) is used.
+		 * @pArAm includeWorkspAceFolder When `true` And when the given pAth is contAined inside A
+		 * workspAce folder the nAme of the workspAce is prepended. DefAults to `true` when there Are
+		 * multiple workspAce folders And `fAlse` otherwise.
+		 * @return A pAth relAtive to the root or the input.
 		 */
-		export function asRelativePath(pathOrUri: string | Uri, includeWorkspaceFolder?: boolean): string;
+		export function AsRelAtivePAth(pAthOrUri: string | Uri, includeWorkspAceFolder?: booleAn): string;
 
 		/**
-		 * This method replaces `deleteCount` [workspace folders](#workspace.workspaceFolders) starting at index `start`
-		 * by an optional set of `workspaceFoldersToAdd` on the `vscode.workspace.workspaceFolders` array. This "splice"
-		 * behavior can be used to add, remove and change workspace folders in a single operation.
+		 * This method replAces `deleteCount` [workspAce folders](#workspAce.workspAceFolders) stArting At index `stArt`
+		 * by An optionAl set of `workspAceFoldersToAdd` on the `vscode.workspAce.workspAceFolders` ArrAy. This "splice"
+		 * behAvior cAn be used to Add, remove And chAnge workspAce folders in A single operAtion.
 		 *
-		 * If the first workspace folder is added, removed or changed, the currently executing extensions (including the
-		 * one that called this method) will be terminated and restarted so that the (deprecated) `rootPath` property is
-		 * updated to point to the first workspace folder.
+		 * If the first workspAce folder is Added, removed or chAnged, the currently executing extensions (including the
+		 * one thAt cAlled this method) will be terminAted And restArted so thAt the (deprecAted) `rootPAth` property is
+		 * updAted to point to the first workspAce folder.
 		 *
-		 * Use the [`onDidChangeWorkspaceFolders()`](#onDidChangeWorkspaceFolders) event to get notified when the
-		 * workspace folders have been updated.
+		 * Use the [`onDidChAngeWorkspAceFolders()`](#onDidChAngeWorkspAceFolders) event to get notified when the
+		 * workspAce folders hAve been updAted.
 		 *
-		 * **Example:** adding a new workspace folder at the end of workspace folders
+		 * **ExAmple:** Adding A new workspAce folder At the end of workspAce folders
 		 * ```typescript
-		 * workspace.updateWorkspaceFolders(workspace.workspaceFolders ? workspace.workspaceFolders.length : 0, null, { uri: ...});
+		 * workspAce.updAteWorkspAceFolders(workspAce.workspAceFolders ? workspAce.workspAceFolders.length : 0, null, { uri: ...});
 		 * ```
 		 *
-		 * **Example:** removing the first workspace folder
+		 * **ExAmple:** removing the first workspAce folder
 		 * ```typescript
-		 * workspace.updateWorkspaceFolders(0, 1);
+		 * workspAce.updAteWorkspAceFolders(0, 1);
 		 * ```
 		 *
-		 * **Example:** replacing an existing workspace folder with a new one
+		 * **ExAmple:** replAcing An existing workspAce folder with A new one
 		 * ```typescript
-		 * workspace.updateWorkspaceFolders(0, 1, { uri: ...});
+		 * workspAce.updAteWorkspAceFolders(0, 1, { uri: ...});
 		 * ```
 		 *
-		 * It is valid to remove an existing workspace folder and add it again with a different name
-		 * to rename that folder.
+		 * It is vAlid to remove An existing workspAce folder And Add it AgAin with A different nAme
+		 * to renAme thAt folder.
 		 *
-		 * **Note:** it is not valid to call [updateWorkspaceFolders()](#updateWorkspaceFolders) multiple times
-		 * without waiting for the [`onDidChangeWorkspaceFolders()`](#onDidChangeWorkspaceFolders) to fire.
+		 * **Note:** it is not vAlid to cAll [updAteWorkspAceFolders()](#updAteWorkspAceFolders) multiple times
+		 * without wAiting for the [`onDidChAngeWorkspAceFolders()`](#onDidChAngeWorkspAceFolders) to fire.
 		 *
-		 * @param start the zero-based location in the list of currently opened [workspace folders](#WorkspaceFolder)
-		 * from which to start deleting workspace folders.
-		 * @param deleteCount the optional number of workspace folders to remove.
-		 * @param workspaceFoldersToAdd the optional variable set of workspace folders to add in place of the deleted ones.
-		 * Each workspace is identified with a mandatory URI and an optional name.
-		 * @return true if the operation was successfully started and false otherwise if arguments were used that would result
-		 * in invalid workspace folder state (e.g. 2 folders with the same URI).
+		 * @pArAm stArt the zero-bAsed locAtion in the list of currently opened [workspAce folders](#WorkspAceFolder)
+		 * from which to stArt deleting workspAce folders.
+		 * @pArAm deleteCount the optionAl number of workspAce folders to remove.
+		 * @pArAm workspAceFoldersToAdd the optionAl vAriAble set of workspAce folders to Add in plAce of the deleted ones.
+		 * EAch workspAce is identified with A mAndAtory URI And An optionAl nAme.
+		 * @return true if the operAtion wAs successfully stArted And fAlse otherwise if Arguments were used thAt would result
+		 * in invAlid workspAce folder stAte (e.g. 2 folders with the sAme URI).
 		 */
-		export function updateWorkspaceFolders(start: number, deleteCount: number | undefined | null, ...workspaceFoldersToAdd: { uri: Uri, name?: string }[]): boolean;
+		export function updAteWorkspAceFolders(stArt: number, deleteCount: number | undefined | null, ...workspAceFoldersToAdd: { uri: Uri, nAme?: string }[]): booleAn;
 
 		/**
-		 * Creates a file system watcher.
+		 * CreAtes A file system wAtcher.
 		 *
-		 * A glob pattern that filters the file events on their absolute path must be provided. Optionally,
-		 * flags to ignore certain kinds of events can be provided. To stop listening to events the watcher must be disposed.
+		 * A glob pAttern thAt filters the file events on their Absolute pAth must be provided. OptionAlly,
+		 * flAgs to ignore certAin kinds of events cAn be provided. To stop listening to events the wAtcher must be disposed.
 		 *
-		 * *Note* that only files within the current [workspace folders](#workspace.workspaceFolders) can be watched.
+		 * *Note* thAt only files within the current [workspAce folders](#workspAce.workspAceFolders) cAn be wAtched.
 		 *
-		 * @param globPattern A [glob pattern](#GlobPattern) that is applied to the absolute paths of created, changed,
-		 * and deleted files. Use a [relative pattern](#RelativePattern) to limit events to a certain [workspace folder](#WorkspaceFolder).
-		 * @param ignoreCreateEvents Ignore when files have been created.
-		 * @param ignoreChangeEvents Ignore when files have been changed.
-		 * @param ignoreDeleteEvents Ignore when files have been deleted.
-		 * @return A new file system watcher instance.
+		 * @pArAm globPAttern A [glob pAttern](#GlobPAttern) thAt is Applied to the Absolute pAths of creAted, chAnged,
+		 * And deleted files. Use A [relAtive pAttern](#RelAtivePAttern) to limit events to A certAin [workspAce folder](#WorkspAceFolder).
+		 * @pArAm ignoreCreAteEvents Ignore when files hAve been creAted.
+		 * @pArAm ignoreChAngeEvents Ignore when files hAve been chAnged.
+		 * @pArAm ignoreDeleteEvents Ignore when files hAve been deleted.
+		 * @return A new file system wAtcher instAnce.
 		 */
-		export function createFileSystemWatcher(globPattern: GlobPattern, ignoreCreateEvents?: boolean, ignoreChangeEvents?: boolean, ignoreDeleteEvents?: boolean): FileSystemWatcher;
+		export function creAteFileSystemWAtcher(globPAttern: GlobPAttern, ignoreCreAteEvents?: booleAn, ignoreChAngeEvents?: booleAn, ignoreDeleteEvents?: booleAn): FileSystemWAtcher;
 
 		/**
-		 * Find files across all [workspace folders](#workspace.workspaceFolders) in the workspace.
+		 * Find files Across All [workspAce folders](#workspAce.workspAceFolders) in the workspAce.
 		 *
-		 * @example
+		 * @exAmple
 		 * findFiles('**​/*.js', '**​/node_modules/**', 10)
 		 *
-		 * @param include A [glob pattern](#GlobPattern) that defines the files to search for. The glob pattern
-		 * will be matched against the file paths of resulting matches relative to their workspace. Use a [relative pattern](#RelativePattern)
-		 * to restrict the search results to a [workspace folder](#WorkspaceFolder).
-		 * @param exclude  A [glob pattern](#GlobPattern) that defines files and folders to exclude. The glob pattern
-		 * will be matched against the file paths of resulting matches relative to their workspace. When `undefined` only default excludes will
-		 * apply, when `null` no excludes will apply.
-		 * @param maxResults An upper-bound for the result.
-		 * @param token A token that can be used to signal cancellation to the underlying search engine.
-		 * @return A thenable that resolves to an array of resource identifiers. Will return no results if no
-		 * [workspace folders](#workspace.workspaceFolders) are opened.
+		 * @pArAm include A [glob pAttern](#GlobPAttern) thAt defines the files to seArch for. The glob pAttern
+		 * will be mAtched AgAinst the file pAths of resulting mAtches relAtive to their workspAce. Use A [relAtive pAttern](#RelAtivePAttern)
+		 * to restrict the seArch results to A [workspAce folder](#WorkspAceFolder).
+		 * @pArAm exclude  A [glob pAttern](#GlobPAttern) thAt defines files And folders to exclude. The glob pAttern
+		 * will be mAtched AgAinst the file pAths of resulting mAtches relAtive to their workspAce. When `undefined` only defAult excludes will
+		 * Apply, when `null` no excludes will Apply.
+		 * @pArAm mAxResults An upper-bound for the result.
+		 * @pArAm token A token thAt cAn be used to signAl cAncellAtion to the underlying seArch engine.
+		 * @return A thenAble thAt resolves to An ArrAy of resource identifiers. Will return no results if no
+		 * [workspAce folders](#workspAce.workspAceFolders) Are opened.
 		 */
-		export function findFiles(include: GlobPattern, exclude?: GlobPattern | null, maxResults?: number, token?: CancellationToken): Thenable<Uri[]>;
+		export function findFiles(include: GlobPAttern, exclude?: GlobPAttern | null, mAxResults?: number, token?: CAncellAtionToken): ThenAble<Uri[]>;
 
 		/**
-		 * Save all dirty files.
+		 * SAve All dirty files.
 		 *
-		 * @param includeUntitled Also save files that have been created during this session.
-		 * @return A thenable that resolves when the files have been saved.
+		 * @pArAm includeUntitled Also sAve files thAt hAve been creAted during this session.
+		 * @return A thenAble thAt resolves when the files hAve been sAved.
 		 */
-		export function saveAll(includeUntitled?: boolean): Thenable<boolean>;
+		export function sAveAll(includeUntitled?: booleAn): ThenAble<booleAn>;
 
 		/**
-		 * Make changes to one or many resources or create, delete, and rename resources as defined by the given
-		 * [workspace edit](#WorkspaceEdit).
+		 * MAke chAnges to one or mAny resources or creAte, delete, And renAme resources As defined by the given
+		 * [workspAce edit](#WorkspAceEdit).
 		 *
-		 * All changes of a workspace edit are applied in the same order in which they have been added. If
-		 * multiple textual inserts are made at the same position, these strings appear in the resulting text
-		 * in the order the 'inserts' were made, unless that are interleaved with resource edits. Invalid sequences
-		 * like 'delete file a' -> 'insert text in file a' cause failure of the operation.
+		 * All chAnges of A workspAce edit Are Applied in the sAme order in which they hAve been Added. If
+		 * multiple textuAl inserts Are mAde At the sAme position, these strings AppeAr in the resulting text
+		 * in the order the 'inserts' were mAde, unless thAt Are interleAved with resource edits. InvAlid sequences
+		 * like 'delete file A' -> 'insert text in file A' cAuse fAilure of the operAtion.
 		 *
-		 * When applying a workspace edit that consists only of text edits an 'all-or-nothing'-strategy is used.
-		 * A workspace edit with resource creations or deletions aborts the operation, e.g. consecutive edits will
-		 * not be attempted, when a single edit fails.
+		 * When Applying A workspAce edit thAt consists only of text edits An 'All-or-nothing'-strAtegy is used.
+		 * A workspAce edit with resource creAtions or deletions Aborts the operAtion, e.g. consecutive edits will
+		 * not be Attempted, when A single edit fAils.
 		 *
-		 * @param edit A workspace edit.
-		 * @return A thenable that resolves when the edit could be applied.
+		 * @pArAm edit A workspAce edit.
+		 * @return A thenAble thAt resolves when the edit could be Applied.
 		 */
-		export function applyEdit(edit: WorkspaceEdit): Thenable<boolean>;
+		export function ApplyEdit(edit: WorkspAceEdit): ThenAble<booleAn>;
 
 		/**
 		 * All text documents currently known to the system.
 		 */
-		export const textDocuments: ReadonlyArray<TextDocument>;
+		export const textDocuments: ReAdonlyArrAy<TextDocument>;
 
 		/**
-		 * Opens a document. Will return early if this document is already open. Otherwise
-		 * the document is loaded and the [didOpen](#workspace.onDidOpenTextDocument)-event fires.
+		 * Opens A document. Will return eArly if this document is AlreAdy open. Otherwise
+		 * the document is loAded And the [didOpen](#workspAce.onDidOpenTextDocument)-event fires.
 		 *
-		 * The document is denoted by an [uri](#Uri). Depending on the [scheme](#Uri.scheme) the
-		 * following rules apply:
-		 * * `file`-scheme: Open a file on disk, will be rejected if the file does not exist or cannot be loaded.
-		 * * `untitled`-scheme: A new file that should be saved on disk, e.g. `untitled:c:\frodo\new.js`. The language
-		 * will be derived from the file name.
-		 * * For all other schemes contributed [text document content providers](#TextDocumentContentProvider) and
-		 * [file system providers](#FileSystemProvider) are consulted.
+		 * The document is denoted by An [uri](#Uri). Depending on the [scheme](#Uri.scheme) the
+		 * following rules Apply:
+		 * * `file`-scheme: Open A file on disk, will be rejected if the file does not exist or cAnnot be loAded.
+		 * * `untitled`-scheme: A new file thAt should be sAved on disk, e.g. `untitled:c:\frodo\new.js`. The lAnguAge
+		 * will be derived from the file nAme.
+		 * * For All other schemes contributed [text document content providers](#TextDocumentContentProvider) And
+		 * [file system providers](#FileSystemProvider) Are consulted.
 		 *
-		 * *Note* that the lifecycle of the returned document is owned by the editor and not by the extension. That means an
-		 * [`onDidClose`](#workspace.onDidCloseTextDocument)-event can occur at any time after opening it.
+		 * *Note* thAt the lifecycle of the returned document is owned by the editor And not by the extension. ThAt meAns An
+		 * [`onDidClose`](#workspAce.onDidCloseTextDocument)-event cAn occur At Any time After opening it.
 		 *
-		 * @param uri Identifies the resource to open.
-		 * @return A promise that resolves to a [document](#TextDocument).
+		 * @pArAm uri Identifies the resource to open.
+		 * @return A promise thAt resolves to A [document](#TextDocument).
 		 */
-		export function openTextDocument(uri: Uri): Thenable<TextDocument>;
+		export function openTextDocument(uri: Uri): ThenAble<TextDocument>;
 
 		/**
-		 * A short-hand for `openTextDocument(Uri.file(fileName))`.
+		 * A short-hAnd for `openTextDocument(Uri.file(fileNAme))`.
 		 *
 		 * @see [openTextDocument](#openTextDocument)
-		 * @param fileName A name of a file on disk.
-		 * @return A promise that resolves to a [document](#TextDocument).
+		 * @pArAm fileNAme A nAme of A file on disk.
+		 * @return A promise thAt resolves to A [document](#TextDocument).
 		 */
-		export function openTextDocument(fileName: string): Thenable<TextDocument>;
+		export function openTextDocument(fileNAme: string): ThenAble<TextDocument>;
 
 		/**
-		 * Opens an untitled text document. The editor will prompt the user for a file
-		 * path when the document is to be saved. The `options` parameter allows to
-		 * specify the *language* and/or the *content* of the document.
+		 * Opens An untitled text document. The editor will prompt the user for A file
+		 * pAth when the document is to be sAved. The `options` pArAmeter Allows to
+		 * specify the *lAnguAge* And/or the *content* of the document.
 		 *
-		 * @param options Options to control how the document will be created.
-		 * @return A promise that resolves to a [document](#TextDocument).
+		 * @pArAm options Options to control how the document will be creAted.
+		 * @return A promise thAt resolves to A [document](#TextDocument).
 		 */
-		export function openTextDocument(options?: { language?: string; content?: string; }): Thenable<TextDocument>;
+		export function openTextDocument(options?: { lAnguAge?: string; content?: string; }): ThenAble<TextDocument>;
 
 		/**
-		 * Register a text document content provider.
+		 * Register A text document content provider.
 		 *
-		 * Only one provider can be registered per scheme.
+		 * Only one provider cAn be registered per scheme.
 		 *
-		 * @param scheme The uri-scheme to register for.
-		 * @param provider A content provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm scheme The uri-scheme to register for.
+		 * @pArAm provider A content provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerTextDocumentContentProvider(scheme: string, provider: TextDocumentContentProvider): Disposable;
+		export function registerTextDocumentContentProvider(scheme: string, provider: TextDocumentContentProvider): DisposAble;
 
 		/**
-		 * An event that is emitted when a [text document](#TextDocument) is opened or when the language id
-		 * of a text document [has been changed](#languages.setTextDocumentLanguage).
+		 * An event thAt is emitted when A [text document](#TextDocument) is opened or when the lAnguAge id
+		 * of A text document [hAs been chAnged](#lAnguAges.setTextDocumentLAnguAge).
 		 *
-		 * To add an event listener when a visible text document is opened, use the [TextEditor](#TextEditor) events in the
-		 * [window](#window) namespace. Note that:
+		 * To Add An event listener when A visible text document is opened, use the [TextEditor](#TextEditor) events in the
+		 * [window](#window) nAmespAce. Note thAt:
 		 *
-		 * - The event is emitted before the [document](#TextDocument) is updated in the
-		 * [active text editor](#window.activeTextEditor)
-		 * - When a [text document](#TextDocument) is already open (e.g.: open in another [visible text editor](#window.visibleTextEditors)) this event is not emitted
+		 * - The event is emitted before the [document](#TextDocument) is updAted in the
+		 * [Active text editor](#window.ActiveTextEditor)
+		 * - When A [text document](#TextDocument) is AlreAdy open (e.g.: open in Another [visible text editor](#window.visibleTextEditors)) this event is not emitted
 		 *
 		 */
 		export const onDidOpenTextDocument: Event<TextDocument>;
 
 		/**
-		 * An event that is emitted when a [text document](#TextDocument) is disposed or when the language id
-		 * of a text document [has been changed](#languages.setTextDocumentLanguage).
+		 * An event thAt is emitted when A [text document](#TextDocument) is disposed or when the lAnguAge id
+		 * of A text document [hAs been chAnged](#lAnguAges.setTextDocumentLAnguAge).
 		 *
-		 * *Note 1:* There is no guarantee that this event fires when an editor tab is closed, use the
-		 * [`onDidChangeVisibleTextEditors`](#window.onDidChangeVisibleTextEditors)-event to know when editors change.
+		 * *Note 1:* There is no guArAntee thAt this event fires when An editor tAb is closed, use the
+		 * [`onDidChAngeVisibleTextEditors`](#window.onDidChAngeVisibleTextEditors)-event to know when editors chAnge.
 		 *
-		 * *Note 2:* A document can be open but not shown in an editor which means this event can fire
-		 * for a document that has not been shown in an editor.
+		 * *Note 2:* A document cAn be open but not shown in An editor which meAns this event cAn fire
+		 * for A document thAt hAs not been shown in An editor.
 		 */
 		export const onDidCloseTextDocument: Event<TextDocument>;
 
 		/**
-		 * An event that is emitted when a [text document](#TextDocument) is changed. This usually happens
-		 * when the [contents](#TextDocument.getText) changes but also when other things like the
-		 * [dirty](#TextDocument.isDirty)-state changes.
+		 * An event thAt is emitted when A [text document](#TextDocument) is chAnged. This usuAlly hAppens
+		 * when the [contents](#TextDocument.getText) chAnges but Also when other things like the
+		 * [dirty](#TextDocument.isDirty)-stAte chAnges.
 		 */
-		export const onDidChangeTextDocument: Event<TextDocumentChangeEvent>;
+		export const onDidChAngeTextDocument: Event<TextDocumentChAngeEvent>;
 
 		/**
-		 * An event that is emitted when a [text document](#TextDocument) will be saved to disk.
+		 * An event thAt is emitted when A [text document](#TextDocument) will be sAved to disk.
 		 *
-		 * *Note 1:* Subscribers can delay saving by registering asynchronous work. For the sake of data integrity the editor
-		 * might save without firing this event. For instance when shutting down with dirty files.
+		 * *Note 1:* Subscribers cAn delAy sAving by registering Asynchronous work. For the sAke of dAtA integrity the editor
+		 * might sAve without firing this event. For instAnce when shutting down with dirty files.
 		 *
-		 * *Note 2:* Subscribers are called sequentially and they can [delay](#TextDocumentWillSaveEvent.waitUntil) saving
-		 * by registering asynchronous work. Protection against misbehaving listeners is implemented as such:
-		 *  * there is an overall time budget that all listeners share and if that is exhausted no further listener is called
-		 *  * listeners that take a long time or produce errors frequently will not be called anymore
+		 * *Note 2:* Subscribers Are cAlled sequentiAlly And they cAn [delAy](#TextDocumentWillSAveEvent.wAitUntil) sAving
+		 * by registering Asynchronous work. Protection AgAinst misbehAving listeners is implemented As such:
+		 *  * there is An overAll time budget thAt All listeners shAre And if thAt is exhAusted no further listener is cAlled
+		 *  * listeners thAt tAke A long time or produce errors frequently will not be cAlled Anymore
 		 *
-		 * The current thresholds are 1.5 seconds as overall time budget and a listener can misbehave 3 times before being ignored.
+		 * The current thresholds Are 1.5 seconds As overAll time budget And A listener cAn misbehAve 3 times before being ignored.
 		 */
-		export const onWillSaveTextDocument: Event<TextDocumentWillSaveEvent>;
+		export const onWillSAveTextDocument: Event<TextDocumentWillSAveEvent>;
 
 		/**
-		 * An event that is emitted when a [text document](#TextDocument) is saved to disk.
+		 * An event thAt is emitted when A [text document](#TextDocument) is sAved to disk.
 		 */
-		export const onDidSaveTextDocument: Event<TextDocument>;
+		export const onDidSAveTextDocument: Event<TextDocument>;
 
 		/**
-		 * An event that is emitted when files are being created.
+		 * An event thAt is emitted when files Are being creAted.
 		 *
-		 * *Note 1:* This event is triggered by user gestures, like creating a file from the
-		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api. This event is *not* fired when
-		 * files change on disk, e.g triggered by another application, or when using the
-		 * [`workspace.fs`](#FileSystem)-api.
+		 * *Note 1:* This event is triggered by user gestures, like creAting A file from the
+		 * explorer, or from the [`workspAce.ApplyEdit`](#workspAce.ApplyEdit)-Api. This event is *not* fired when
+		 * files chAnge on disk, e.g triggered by Another ApplicAtion, or when using the
+		 * [`workspAce.fs`](#FileSystem)-Api.
 		 *
-		 * *Note 2:* When this event is fired, edits to files that are are being created cannot be applied.
+		 * *Note 2:* When this event is fired, edits to files thAt Are Are being creAted cAnnot be Applied.
 		 */
-		export const onWillCreateFiles: Event<FileWillCreateEvent>;
+		export const onWillCreAteFiles: Event<FileWillCreAteEvent>;
 
 		/**
-		 * An event that is emitted when files have been created.
+		 * An event thAt is emitted when files hAve been creAted.
 		 *
-		 * *Note:* This event is triggered by user gestures, like creating a file from the
-		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
-		 * files change on disk, e.g triggered by another application, or when using the
-		 * [`workspace.fs`](#FileSystem)-api.
+		 * *Note:* This event is triggered by user gestures, like creAting A file from the
+		 * explorer, or from the [`workspAce.ApplyEdit`](#workspAce.ApplyEdit)-Api, but this event is *not* fired when
+		 * files chAnge on disk, e.g triggered by Another ApplicAtion, or when using the
+		 * [`workspAce.fs`](#FileSystem)-Api.
 		 */
-		export const onDidCreateFiles: Event<FileCreateEvent>;
+		export const onDidCreAteFiles: Event<FileCreAteEvent>;
 
 		/**
-		 * An event that is emitted when files are being deleted.
+		 * An event thAt is emitted when files Are being deleted.
 		 *
-		 * *Note 1:* This event is triggered by user gestures, like deleting a file from the
-		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
-		 * files change on disk, e.g triggered by another application, or when using the
-		 * [`workspace.fs`](#FileSystem)-api.
+		 * *Note 1:* This event is triggered by user gestures, like deleting A file from the
+		 * explorer, or from the [`workspAce.ApplyEdit`](#workspAce.ApplyEdit)-Api, but this event is *not* fired when
+		 * files chAnge on disk, e.g triggered by Another ApplicAtion, or when using the
+		 * [`workspAce.fs`](#FileSystem)-Api.
 		 *
-		 * *Note 2:* When deleting a folder with children only one event is fired.
+		 * *Note 2:* When deleting A folder with children only one event is fired.
 		 */
 		export const onWillDeleteFiles: Event<FileWillDeleteEvent>;
 
 		/**
-		 * An event that is emitted when files have been deleted.
+		 * An event thAt is emitted when files hAve been deleted.
 		 *
-		 * *Note 1:* This event is triggered by user gestures, like deleting a file from the
-		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
-		 * files change on disk, e.g triggered by another application, or when using the
-		 * [`workspace.fs`](#FileSystem)-api.
+		 * *Note 1:* This event is triggered by user gestures, like deleting A file from the
+		 * explorer, or from the [`workspAce.ApplyEdit`](#workspAce.ApplyEdit)-Api, but this event is *not* fired when
+		 * files chAnge on disk, e.g triggered by Another ApplicAtion, or when using the
+		 * [`workspAce.fs`](#FileSystem)-Api.
 		 *
-		 * *Note 2:* When deleting a folder with children only one event is fired.
+		 * *Note 2:* When deleting A folder with children only one event is fired.
 		 */
 		export const onDidDeleteFiles: Event<FileDeleteEvent>;
 
 		/**
-		 * An event that is emitted when files are being renamed.
+		 * An event thAt is emitted when files Are being renAmed.
 		 *
-		 * *Note 1:* This event is triggered by user gestures, like renaming a file from the
-		 * explorer, and from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
-		 * files change on disk, e.g triggered by another application, or when using the
-		 * [`workspace.fs`](#FileSystem)-api.
+		 * *Note 1:* This event is triggered by user gestures, like renAming A file from the
+		 * explorer, And from the [`workspAce.ApplyEdit`](#workspAce.ApplyEdit)-Api, but this event is *not* fired when
+		 * files chAnge on disk, e.g triggered by Another ApplicAtion, or when using the
+		 * [`workspAce.fs`](#FileSystem)-Api.
 		 *
-		 * *Note 2:* When renaming a folder with children only one event is fired.
+		 * *Note 2:* When renAming A folder with children only one event is fired.
 		 */
-		export const onWillRenameFiles: Event<FileWillRenameEvent>;
+		export const onWillRenAmeFiles: Event<FileWillRenAmeEvent>;
 
 		/**
-		 * An event that is emitted when files have been renamed.
+		 * An event thAt is emitted when files hAve been renAmed.
 		 *
-		 * *Note 1:* This event is triggered by user gestures, like renaming a file from the
-		 * explorer, and from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
-		 * files change on disk, e.g triggered by another application, or when using the
-		 * [`workspace.fs`](#FileSystem)-api.
+		 * *Note 1:* This event is triggered by user gestures, like renAming A file from the
+		 * explorer, And from the [`workspAce.ApplyEdit`](#workspAce.ApplyEdit)-Api, but this event is *not* fired when
+		 * files chAnge on disk, e.g triggered by Another ApplicAtion, or when using the
+		 * [`workspAce.fs`](#FileSystem)-Api.
 		 *
-		 * *Note 2:* When renaming a folder with children only one event is fired.
+		 * *Note 2:* When renAming A folder with children only one event is fired.
 		 */
-		export const onDidRenameFiles: Event<FileRenameEvent>;
+		export const onDidRenAmeFiles: Event<FileRenAmeEvent>;
 
 		/**
-		 * Get a workspace configuration object.
+		 * Get A workspAce configurAtion object.
 		 *
-		 * When a section-identifier is provided only that part of the configuration
-		 * is returned. Dots in the section-identifier are interpreted as child-access,
-		 * like `{ myExt: { setting: { doIt: true }}}` and `getConfiguration('myExt.setting').get('doIt') === true`.
+		 * When A section-identifier is provided only thAt pArt of the configurAtion
+		 * is returned. Dots in the section-identifier Are interpreted As child-Access,
+		 * like `{ myExt: { setting: { doIt: true }}}` And `getConfigurAtion('myExt.setting').get('doIt') === true`.
 		 *
-		 * When a scope is provided configuration confined to that scope is returned. Scope can be a resource or a language identifier or both.
+		 * When A scope is provided configurAtion confined to thAt scope is returned. Scope cAn be A resource or A lAnguAge identifier or both.
 		 *
-		 * @param section A dot-separated identifier.
-		 * @param scope A scope for which the configuration is asked for.
-		 * @return The full configuration or a subset.
+		 * @pArAm section A dot-sepArAted identifier.
+		 * @pArAm scope A scope for which the configurAtion is Asked for.
+		 * @return The full configurAtion or A subset.
 		 */
-		export function getConfiguration(section?: string | undefined, scope?: ConfigurationScope | null): WorkspaceConfiguration;
+		export function getConfigurAtion(section?: string | undefined, scope?: ConfigurAtionScope | null): WorkspAceConfigurAtion;
 
 		/**
-		 * An event that is emitted when the [configuration](#WorkspaceConfiguration) changed.
+		 * An event thAt is emitted when the [configurAtion](#WorkspAceConfigurAtion) chAnged.
 		 */
-		export const onDidChangeConfiguration: Event<ConfigurationChangeEvent>;
+		export const onDidChAngeConfigurAtion: Event<ConfigurAtionChAngeEvent>;
 
 		/**
-		 * Register a task provider.
+		 * Register A tAsk provider.
 		 *
-		 * @deprecated Use the corresponding function on the `tasks` namespace instead
+		 * @deprecAted Use the corresponding function on the `tAsks` nAmespAce insteAd
 		 *
-		 * @param type The task kind type this provider is registered for.
-		 * @param provider A task provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm type The tAsk kind type this provider is registered for.
+		 * @pArAm provider A tAsk provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerTaskProvider(type: string, provider: TaskProvider): Disposable;
+		export function registerTAskProvider(type: string, provider: TAskProvider): DisposAble;
 
 		/**
-		 * Register a filesystem provider for a given scheme, e.g. `ftp`.
+		 * Register A filesystem provider for A given scheme, e.g. `ftp`.
 		 *
-		 * There can only be one provider per scheme and an error is being thrown when a scheme
-		 * has been claimed by another provider or when it is reserved.
+		 * There cAn only be one provider per scheme And An error is being thrown when A scheme
+		 * hAs been clAimed by Another provider or when it is reserved.
 		 *
-		 * @param scheme The uri-[scheme](#Uri.scheme) the provider registers for.
-		 * @param provider The filesystem provider.
-		 * @param options Immutable metadata about the provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm scheme The uri-[scheme](#Uri.scheme) the provider registers for.
+		 * @pArAm provider The filesystem provider.
+		 * @pArAm options ImmutAble metAdAtA About the provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerFileSystemProvider(scheme: string, provider: FileSystemProvider, options?: { readonly isCaseSensitive?: boolean, readonly isReadonly?: boolean }): Disposable;
+		export function registerFileSystemProvider(scheme: string, provider: FileSystemProvider, options?: { reAdonly isCAseSensitive?: booleAn, reAdonly isReAdonly?: booleAn }): DisposAble;
 	}
 
 	/**
-	 * The configuration scope which can be a
-	 * a 'resource' or a languageId or both or
-	 * a '[TextDocument](#TextDocument)' or
-	 * a '[WorkspaceFolder](#WorkspaceFolder)'
+	 * The configurAtion scope which cAn be A
+	 * A 'resource' or A lAnguAgeId or both or
+	 * A '[TextDocument](#TextDocument)' or
+	 * A '[WorkspAceFolder](#WorkspAceFolder)'
 	 */
-	export type ConfigurationScope = Uri | TextDocument | WorkspaceFolder | { uri?: Uri, languageId: string };
+	export type ConfigurAtionScope = Uri | TextDocument | WorkspAceFolder | { uri?: Uri, lAnguAgeId: string };
 
 	/**
-	 * An event describing the change in Configuration
+	 * An event describing the chAnge in ConfigurAtion
 	 */
-	export interface ConfigurationChangeEvent {
+	export interfAce ConfigurAtionChAngeEvent {
 
 		/**
-		 * Checks if the given section has changed.
-		 * If scope is provided, checks if the section has changed for resources under the given scope.
+		 * Checks if the given section hAs chAnged.
+		 * If scope is provided, checks if the section hAs chAnged for resources under the given scope.
 		 *
-		 * @param section Configuration name, supports _dotted_ names.
-		 * @param scope A scope in which to check.
-		 * @return `true` if the given section has changed.
+		 * @pArAm section ConfigurAtion nAme, supports _dotted_ nAmes.
+		 * @pArAm scope A scope in which to check.
+		 * @return `true` if the given section hAs chAnged.
 		 */
-		affectsConfiguration(section: string, scope?: ConfigurationScope): boolean;
+		AffectsConfigurAtion(section: string, scope?: ConfigurAtionScope): booleAn;
 	}
 
 	/**
-	 * Namespace for participating in language-specific editor [features](https://code.visualstudio.com/docs/editor/editingevolved),
-	 * like IntelliSense, code actions, diagnostics etc.
+	 * NAmespAce for pArticipAting in lAnguAge-specific editor [feAtures](https://code.visuAlstudio.com/docs/editor/editingevolved),
+	 * like IntelliSense, code Actions, diAgnostics etc.
 	 *
-	 * Many programming languages exist and there is huge variety in syntaxes, semantics, and paradigms. Despite that, features
-	 * like automatic word-completion, code navigation, or code checking have become popular across different tools for different
-	 * programming languages.
+	 * MAny progrAmming lAnguAges exist And there is huge vAriety in syntAxes, semAntics, And pArAdigms. Despite thAt, feAtures
+	 * like AutomAtic word-completion, code nAvigAtion, or code checking hAve become populAr Across different tools for different
+	 * progrAmming lAnguAges.
 	 *
-	 * The editor provides an API that makes it simple to provide such common features by having all UI and actions already in place and
-	 * by allowing you to participate by providing data only. For instance, to contribute a hover all you have to do is provide a function
-	 * that can be called with a [TextDocument](#TextDocument) and a [Position](#Position) returning hover info. The rest, like tracking the
-	 * mouse, positioning the hover, keeping the hover stable etc. is taken care of by the editor.
+	 * The editor provides An API thAt mAkes it simple to provide such common feAtures by hAving All UI And Actions AlreAdy in plAce And
+	 * by Allowing you to pArticipAte by providing dAtA only. For instAnce, to contribute A hover All you hAve to do is provide A function
+	 * thAt cAn be cAlled with A [TextDocument](#TextDocument) And A [Position](#Position) returning hover info. The rest, like trAcking the
+	 * mouse, positioning the hover, keeping the hover stAble etc. is tAken cAre of by the editor.
 	 *
-	 * ```javascript
-	 * languages.registerHoverProvider('javascript', {
+	 * ```jAvAscript
+	 * lAnguAges.registerHoverProvider('jAvAscript', {
 	 * 	provideHover(document, position, token) {
-	 * 		return new Hover('I am a hover!');
+	 * 		return new Hover('I Am A hover!');
 	 * 	}
 	 * });
 	 * ```
 	 *
-	 * Registration is done using a [document selector](#DocumentSelector) which is either a language id, like `javascript` or
-	 * a more complex [filter](#DocumentFilter) like `{ language: 'typescript', scheme: 'file' }`. Matching a document against such
-	 * a selector will result in a [score](#languages.match) that is used to determine if and how a provider shall be used. When
-	 * scores are equal the provider that came last wins. For features that allow full arity, like [hover](#languages.registerHoverProvider),
-	 * the score is only checked to be `>0`, for other features, like [IntelliSense](#languages.registerCompletionItemProvider) the
-	 * score is used for determining the order in which providers are asked to participate.
+	 * RegistrAtion is done using A [document selector](#DocumentSelector) which is either A lAnguAge id, like `jAvAscript` or
+	 * A more complex [filter](#DocumentFilter) like `{ lAnguAge: 'typescript', scheme: 'file' }`. MAtching A document AgAinst such
+	 * A selector will result in A [score](#lAnguAges.mAtch) thAt is used to determine if And how A provider shAll be used. When
+	 * scores Are equAl the provider thAt cAme lAst wins. For feAtures thAt Allow full Arity, like [hover](#lAnguAges.registerHoverProvider),
+	 * the score is only checked to be `>0`, for other feAtures, like [IntelliSense](#lAnguAges.registerCompletionItemProvider) the
+	 * score is used for determining the order in which providers Are Asked to pArticipAte.
 	 */
-	export namespace languages {
+	export nAmespAce lAnguAges {
 
 		/**
-		 * Return the identifiers of all known languages.
-		 * @return Promise resolving to an array of identifier strings.
+		 * Return the identifiers of All known lAnguAges.
+		 * @return Promise resolving to An ArrAy of identifier strings.
 		 */
-		export function getLanguages(): Thenable<string[]>;
+		export function getLAnguAges(): ThenAble<string[]>;
 
 		/**
-		 * Set (and change) the [language](#TextDocument.languageId) that is associated
+		 * Set (And chAnge) the [lAnguAge](#TextDocument.lAnguAgeId) thAt is AssociAted
 		 * with the given document.
 		 *
-		 * *Note* that calling this function will trigger the [`onDidCloseTextDocument`](#workspace.onDidCloseTextDocument) event
-		 * followed by the [`onDidOpenTextDocument`](#workspace.onDidOpenTextDocument) event.
+		 * *Note* thAt cAlling this function will trigger the [`onDidCloseTextDocument`](#workspAce.onDidCloseTextDocument) event
+		 * followed by the [`onDidOpenTextDocument`](#workspAce.onDidOpenTextDocument) event.
 		 *
-		 * @param document The document which language is to be changed
-		 * @param languageId The new language identifier.
-		 * @returns A thenable that resolves with the updated document.
+		 * @pArAm document The document which lAnguAge is to be chAnged
+		 * @pArAm lAnguAgeId The new lAnguAge identifier.
+		 * @returns A thenAble thAt resolves with the updAted document.
 		 */
-		export function setTextDocumentLanguage(document: TextDocument, languageId: string): Thenable<TextDocument>;
+		export function setTextDocumentLAnguAge(document: TextDocument, lAnguAgeId: string): ThenAble<TextDocument>;
 
 		/**
-		 * Compute the match between a document [selector](#DocumentSelector) and a document. Values
-		 * greater than zero mean the selector matches the document.
+		 * Compute the mAtch between A document [selector](#DocumentSelector) And A document. VAlues
+		 * greAter thAn zero meAn the selector mAtches the document.
 		 *
-		 * A match is computed according to these rules:
-		 * 1. When [`DocumentSelector`](#DocumentSelector) is an array, compute the match for each contained `DocumentFilter` or language identifier and take the maximum value.
-		 * 2. A string will be desugared to become the `language`-part of a [`DocumentFilter`](#DocumentFilter), so `"fooLang"` is like `{ language: "fooLang" }`.
-		 * 3. A [`DocumentFilter`](#DocumentFilter) will be matched against the document by comparing its parts with the document. The following rules apply:
+		 * A mAtch is computed According to these rules:
+		 * 1. When [`DocumentSelector`](#DocumentSelector) is An ArrAy, compute the mAtch for eAch contAined `DocumentFilter` or lAnguAge identifier And tAke the mAximum vAlue.
+		 * 2. A string will be desugAred to become the `lAnguAge`-pArt of A [`DocumentFilter`](#DocumentFilter), so `"fooLAng"` is like `{ lAnguAge: "fooLAng" }`.
+		 * 3. A [`DocumentFilter`](#DocumentFilter) will be mAtched AgAinst the document by compAring its pArts with the document. The following rules Apply:
 		 *  1. When the `DocumentFilter` is empty (`{}`) the result is `0`
-		 *  2. When `scheme`, `language`, or `pattern` are defined but one doesn’t match, the result is `0`
-		 *  3. Matching against `*` gives a score of `5`, matching via equality or via a glob-pattern gives a score of `10`
-		 *  4. The result is the maximum value of each match
+		 *  2. When `scheme`, `lAnguAge`, or `pAttern` Are defined but one doesn’t mAtch, the result is `0`
+		 *  3. MAtching AgAinst `*` gives A score of `5`, mAtching viA equAlity or viA A glob-pAttern gives A score of `10`
+		 *  4. The result is the mAximum vAlue of eAch mAtch
 		 *
-		 * Samples:
+		 * SAmples:
 		 * ```js
-		 * // default document from disk (file-scheme)
+		 * // defAult document from disk (file-scheme)
 		 * doc.uri; //'file:///my/file.js'
-		 * doc.languageId; // 'javascript'
-		 * match('javascript', doc); // 10;
-		 * match({language: 'javascript'}, doc); // 10;
-		 * match({language: 'javascript', scheme: 'file'}, doc); // 10;
-		 * match('*', doc); // 5
-		 * match('fooLang', doc); // 0
-		 * match(['fooLang', '*'], doc); // 5
+		 * doc.lAnguAgeId; // 'jAvAscript'
+		 * mAtch('jAvAscript', doc); // 10;
+		 * mAtch({lAnguAge: 'jAvAscript'}, doc); // 10;
+		 * mAtch({lAnguAge: 'jAvAscript', scheme: 'file'}, doc); // 10;
+		 * mAtch('*', doc); // 5
+		 * mAtch('fooLAng', doc); // 0
+		 * mAtch(['fooLAng', '*'], doc); // 5
 		 *
-		 * // virtual document, e.g. from git-index
+		 * // virtuAl document, e.g. from git-index
 		 * doc.uri; // 'git:/my/file.js'
-		 * doc.languageId; // 'javascript'
-		 * match('javascript', doc); // 10;
-		 * match({language: 'javascript', scheme: 'git'}, doc); // 10;
-		 * match('*', doc); // 5
+		 * doc.lAnguAgeId; // 'jAvAscript'
+		 * mAtch('jAvAscript', doc); // 10;
+		 * mAtch({lAnguAge: 'jAvAscript', scheme: 'git'}, doc); // 10;
+		 * mAtch('*', doc); // 5
 		 * ```
 		 *
-		 * @param selector A document selector.
-		 * @param document A text document.
-		 * @return A number `>0` when the selector matches and `0` when the selector does not match.
+		 * @pArAm selector A document selector.
+		 * @pArAm document A text document.
+		 * @return A number `>0` when the selector mAtches And `0` when the selector does not mAtch.
 		 */
-		export function match(selector: DocumentSelector, document: TextDocument): number;
+		export function mAtch(selector: DocumentSelector, document: TextDocument): number;
 
 		/**
-		 * An [event](#Event) which fires when the global set of diagnostics changes. This is
-		 * newly added and removed diagnostics.
+		 * An [event](#Event) which fires when the globAl set of diAgnostics chAnges. This is
+		 * newly Added And removed diAgnostics.
 		 */
-		export const onDidChangeDiagnostics: Event<DiagnosticChangeEvent>;
+		export const onDidChAngeDiAgnostics: Event<DiAgnosticChAngeEvent>;
 
 		/**
-		 * Get all diagnostics for a given resource.
+		 * Get All diAgnostics for A given resource.
 		 *
-		 * @param resource A resource
-		 * @returns An array of [diagnostics](#Diagnostic) objects or an empty array.
+		 * @pArAm resource A resource
+		 * @returns An ArrAy of [diAgnostics](#DiAgnostic) objects or An empty ArrAy.
 		 */
-		export function getDiagnostics(resource: Uri): Diagnostic[];
+		export function getDiAgnostics(resource: Uri): DiAgnostic[];
 
 		/**
-		 * Get all diagnostics.
+		 * Get All diAgnostics.
 		 *
-		 * @returns An array of uri-diagnostics tuples or an empty array.
+		 * @returns An ArrAy of uri-diAgnostics tuples or An empty ArrAy.
 		 */
-		export function getDiagnostics(): [Uri, Diagnostic[]][];
+		export function getDiAgnostics(): [Uri, DiAgnostic[]][];
 
 		/**
-		 * Create a diagnostics collection.
+		 * CreAte A diAgnostics collection.
 		 *
-		 * @param name The [name](#DiagnosticCollection.name) of the collection.
-		 * @return A new diagnostic collection.
+		 * @pArAm nAme The [nAme](#DiAgnosticCollection.nAme) of the collection.
+		 * @return A new diAgnostic collection.
 		 */
-		export function createDiagnosticCollection(name?: string): DiagnosticCollection;
+		export function creAteDiAgnosticCollection(nAme?: string): DiAgnosticCollection;
 
 		/**
-		 * Register a completion provider.
+		 * Register A completion provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and groups of equal score are sequentially asked for
-		 * completion items. The process stops when one or many providers of a group return a
-		 * result. A failing provider (rejected promise or exception) will not fail the whole
-		 * operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And groups of equAl score Are sequentiAlly Asked for
+		 * completion items. The process stops when one or mAny providers of A group return A
+		 * result. A fAiling provider (rejected promise or exception) will not fAil the whole
+		 * operAtion.
 		 *
-		 * A completion item provider can be associated with a set of `triggerCharacters`. When trigger
-		 * characters are being typed, completions are requested but only from providers that registered
-		 * the typed character. Because of that trigger characters should be different than [word characters](#LanguageConfiguration.wordPattern),
-		 * a common trigger character is `.` to trigger member completions.
+		 * A completion item provider cAn be AssociAted with A set of `triggerChArActers`. When trigger
+		 * chArActers Are being typed, completions Are requested but only from providers thAt registered
+		 * the typed chArActer. BecAuse of thAt trigger chArActers should be different thAn [word chArActers](#LAnguAgeConfigurAtion.wordPAttern),
+		 * A common trigger chArActer is `.` to trigger member completions.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A completion provider.
-		 * @param triggerCharacters Trigger completion when the user types one of the characters.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A completion provider.
+		 * @pArAm triggerChArActers Trigger completion when the user types one of the chArActers.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerCompletionItemProvider(selector: DocumentSelector, provider: CompletionItemProvider, ...triggerCharacters: string[]): Disposable;
+		export function registerCompletionItemProvider(selector: DocumentSelector, provider: CompletionItemProvider, ...triggerChArActers: string[]): DisposAble;
 
 		/**
-		 * Register a code action provider.
+		 * Register A code Action provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A code action provider.
-		 * @param metadata Metadata about the kind of code actions the provider provides.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A code Action provider.
+		 * @pArAm metAdAtA MetAdAtA About the kind of code Actions the provider provides.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerCodeActionsProvider(selector: DocumentSelector, provider: CodeActionProvider, metadata?: CodeActionProviderMetadata): Disposable;
+		export function registerCodeActionsProvider(selector: DocumentSelector, provider: CodeActionProvider, metAdAtA?: CodeActionProviderMetAdAtA): DisposAble;
 
 		/**
-		 * Register a code lens provider.
+		 * Register A code lens provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A code lens provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A code lens provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerCodeLensProvider(selector: DocumentSelector, provider: CodeLensProvider): Disposable;
+		export function registerCodeLensProvider(selector: DocumentSelector, provider: CodeLensProvider): DisposAble;
 
 		/**
-		 * Register a definition provider.
+		 * Register A definition provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A definition provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A definition provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDefinitionProvider(selector: DocumentSelector, provider: DefinitionProvider): Disposable;
+		export function registerDefinitionProvider(selector: DocumentSelector, provider: DefinitionProvider): DisposAble;
 
 		/**
-		 * Register an implementation provider.
+		 * Register An implementAtion provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An implementation provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider An implementAtion provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerImplementationProvider(selector: DocumentSelector, provider: ImplementationProvider): Disposable;
+		export function registerImplementAtionProvider(selector: DocumentSelector, provider: ImplementAtionProvider): DisposAble;
 
 		/**
-		 * Register a type definition provider.
+		 * Register A type definition provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A type definition provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A type definition provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerTypeDefinitionProvider(selector: DocumentSelector, provider: TypeDefinitionProvider): Disposable;
+		export function registerTypeDefinitionProvider(selector: DocumentSelector, provider: TypeDefinitionProvider): DisposAble;
 
 		/**
-		 * Register a declaration provider.
+		 * Register A declArAtion provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A declaration provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A declArAtion provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDeclarationProvider(selector: DocumentSelector, provider: DeclarationProvider): Disposable;
+		export function registerDeclArAtionProvider(selector: DocumentSelector, provider: DeclArAtionProvider): DisposAble;
 
 		/**
-		 * Register a hover provider.
+		 * Register A hover provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A hover provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A hover provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerHoverProvider(selector: DocumentSelector, provider: HoverProvider): Disposable;
+		export function registerHoverProvider(selector: DocumentSelector, provider: HoverProvider): DisposAble;
 
 		/**
-		 * Register a provider that locates evaluatable expressions in text documents.
-		 * VS Code will evaluate the expression in the active debug session and will show the result in the debug hover.
+		 * Register A provider thAt locAtes evAluAtAble expressions in text documents.
+		 * VS Code will evAluAte the expression in the Active debug session And will show the result in the debug hover.
 		 *
-		 * If multiple providers are registered for a language an arbitrary provider will be used.
+		 * If multiple providers Are registered for A lAnguAge An ArbitrAry provider will be used.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An evaluatable expression provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider An evAluAtAble expression provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerEvaluatableExpressionProvider(selector: DocumentSelector, provider: EvaluatableExpressionProvider): Disposable;
+		export function registerEvAluAtAbleExpressionProvider(selector: DocumentSelector, provider: EvAluAtAbleExpressionProvider): DisposAble;
 
 		/**
-		 * Register a document highlight provider.
+		 * Register A document highlight provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and groups sequentially asked for document highlights.
-		 * The process stops when a provider returns a `non-falsy` or `non-failure` result.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And groups sequentiAlly Asked for document highlights.
+		 * The process stops when A provider returns A `non-fAlsy` or `non-fAilure` result.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document highlight provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document highlight provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentHighlightProvider(selector: DocumentSelector, provider: DocumentHighlightProvider): Disposable;
+		export function registerDocumentHighlightProvider(selector: DocumentSelector, provider: DocumentHighlightProvider): DisposAble;
 
 		/**
-		 * Register a document symbol provider.
+		 * Register A document symbol provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document symbol provider.
-		 * @param metaData metadata about the provider
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document symbol provider.
+		 * @pArAm metADAtA metAdAtA About the provider
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentSymbolProvider(selector: DocumentSelector, provider: DocumentSymbolProvider, metaData?: DocumentSymbolProviderMetadata): Disposable;
+		export function registerDocumentSymbolProvider(selector: DocumentSelector, provider: DocumentSymbolProvider, metADAtA?: DocumentSymbolProviderMetAdAtA): DisposAble;
 
 		/**
-		 * Register a workspace symbol provider.
+		 * Register A workspAce symbol provider.
 		 *
-		 * Multiple providers can be registered. In that case providers are asked in parallel and
-		 * the results are merged. A failing provider (rejected promise or exception) will not cause
-		 * a failure of the whole operation.
+		 * Multiple providers cAn be registered. In thAt cAse providers Are Asked in pArAllel And
+		 * the results Are merged. A fAiling provider (rejected promise or exception) will not cAuse
+		 * A fAilure of the whole operAtion.
 		 *
-		 * @param provider A workspace symbol provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm provider A workspAce symbol provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerWorkspaceSymbolProvider(provider: WorkspaceSymbolProvider): Disposable;
+		export function registerWorkspAceSymbolProvider(provider: WorkspAceSymbolProvider): DisposAble;
 
 		/**
-		 * Register a reference provider.
+		 * Register A reference provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A reference provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A reference provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerReferenceProvider(selector: DocumentSelector, provider: ReferenceProvider): Disposable;
+		export function registerReferenceProvider(selector: DocumentSelector, provider: ReferenceProvider): DisposAble;
 
 		/**
-		 * Register a rename provider.
+		 * Register A renAme provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and asked in sequence. The first provider producing a result
-		 * defines the result of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And Asked in sequence. The first provider producing A result
+		 * defines the result of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A rename provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A renAme provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerRenameProvider(selector: DocumentSelector, provider: RenameProvider): Disposable;
+		export function registerRenAmeProvider(selector: DocumentSelector, provider: RenAmeProvider): DisposAble;
 
 		/**
-		 * Register a semantic tokens provider for a whole document.
+		 * Register A semAntic tokens provider for A whole document.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And the best-mAtching provider is used. FAilure
+		 * of the selected provider will cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document semantic tokens provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document semAntic tokens provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentSemanticTokensProvider(selector: DocumentSelector, provider: DocumentSemanticTokensProvider, legend: SemanticTokensLegend): Disposable;
+		export function registerDocumentSemAnticTokensProvider(selector: DocumentSelector, provider: DocumentSemAnticTokensProvider, legend: SemAnticTokensLegend): DisposAble;
 
 		/**
-		 * Register a semantic tokens provider for a document range.
+		 * Register A semAntic tokens provider for A document rAnge.
 		 *
-		 * *Note:* If a document has both a `DocumentSemanticTokensProvider` and a `DocumentRangeSemanticTokensProvider`,
-		 * the range provider will be invoked only initially, for the time in which the full document provider takes
-		 * to resolve the first request. Once the full document provider resolves the first request, the semantic tokens
-		 * provided via the range provider will be discarded and from that point forward, only the document provider
+		 * *Note:* If A document hAs both A `DocumentSemAnticTokensProvider` And A `DocumentRAngeSemAnticTokensProvider`,
+		 * the rAnge provider will be invoked only initiAlly, for the time in which the full document provider tAkes
+		 * to resolve the first request. Once the full document provider resolves the first request, the semAntic tokens
+		 * provided viA the rAnge provider will be discArded And from thAt point forwArd, only the document provider
 		 * will be used.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And the best-mAtching provider is used. FAilure
+		 * of the selected provider will cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document range semantic tokens provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document rAnge semAntic tokens provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentRangeSemanticTokensProvider(selector: DocumentSelector, provider: DocumentRangeSemanticTokensProvider, legend: SemanticTokensLegend): Disposable;
+		export function registerDocumentRAngeSemAnticTokensProvider(selector: DocumentSelector, provider: DocumentRAngeSemAnticTokensProvider, legend: SemAnticTokensLegend): DisposAble;
 
 		/**
-		 * Register a formatting provider for a document.
+		 * Register A formAtting provider for A document.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And the best-mAtching provider is used. FAilure
+		 * of the selected provider will cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document formatting edit provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document formAtting edit provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentFormattingEditProvider(selector: DocumentSelector, provider: DocumentFormattingEditProvider): Disposable;
+		export function registerDocumentFormAttingEditProvider(selector: DocumentSelector, provider: DocumentFormAttingEditProvider): DisposAble;
 
 		/**
-		 * Register a formatting provider for a document range.
+		 * Register A formAtting provider for A document rAnge.
 		 *
-		 * *Note:* A document range provider is also a [document formatter](#DocumentFormattingEditProvider)
-		 * which means there is no need to [register](#languages.registerDocumentFormattingEditProvider) a document
-		 * formatter when also registering a range provider.
+		 * *Note:* A document rAnge provider is Also A [document formAtter](#DocumentFormAttingEditProvider)
+		 * which meAns there is no need to [register](#lAnguAges.registerDocumentFormAttingEditProvider) A document
+		 * formAtter when Also registering A rAnge provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And the best-mAtching provider is used. FAilure
+		 * of the selected provider will cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document range formatting edit provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document rAnge formAtting edit provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentRangeFormattingEditProvider(selector: DocumentSelector, provider: DocumentRangeFormattingEditProvider): Disposable;
+		export function registerDocumentRAngeFormAttingEditProvider(selector: DocumentSelector, provider: DocumentRAngeFormAttingEditProvider): DisposAble;
 
 		/**
-		 * Register a formatting provider that works on type. The provider is active when the user enables the setting `editor.formatOnType`.
+		 * Register A formAtting provider thAt works on type. The provider is Active when the user enAbles the setting `editor.formAtOnType`.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And the best-mAtching provider is used. FAilure
+		 * of the selected provider will cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An on type formatting edit provider.
-		 * @param firstTriggerCharacter A character on which formatting should be triggered, like `}`.
-		 * @param moreTriggerCharacter More trigger characters.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider An on type formAtting edit provider.
+		 * @pArAm firstTriggerChArActer A chArActer on which formAtting should be triggered, like `}`.
+		 * @pArAm moreTriggerChArActer More trigger chArActers.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerOnTypeFormattingEditProvider(selector: DocumentSelector, provider: OnTypeFormattingEditProvider, firstTriggerCharacter: string, ...moreTriggerCharacter: string[]): Disposable;
+		export function registerOnTypeFormAttingEditProvider(selector: DocumentSelector, provider: OnTypeFormAttingEditProvider, firstTriggerChArActer: string, ...moreTriggerChArActer: string[]): DisposAble;
 
 		/**
-		 * Register a signature help provider.
+		 * Register A signAture help provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and called sequentially until a provider returns a
-		 * valid result.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are sorted
+		 * by their [score](#lAnguAges.mAtch) And cAlled sequentiAlly until A provider returns A
+		 * vAlid result.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A signature help provider.
-		 * @param triggerCharacters Trigger signature help when the user types one of the characters, like `,` or `(`.
-		 * @param metadata Information about the provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A signAture help provider.
+		 * @pArAm triggerChArActers Trigger signAture help when the user types one of the chArActers, like `,` or `(`.
+		 * @pArAm metAdAtA InformAtion About the provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, ...triggerCharacters: string[]): Disposable;
-		export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, metadata: SignatureHelpProviderMetadata): Disposable;
+		export function registerSignAtureHelpProvider(selector: DocumentSelector, provider: SignAtureHelpProvider, ...triggerChArActers: string[]): DisposAble;
+		export function registerSignAtureHelpProvider(selector: DocumentSelector, provider: SignAtureHelpProvider, metAdAtA: SignAtureHelpProviderMetAdAtA): DisposAble;
 
 		/**
-		 * Register a document link provider.
+		 * Register A document link provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document link provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A document link provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDocumentLinkProvider(selector: DocumentSelector, provider: DocumentLinkProvider): Disposable;
+		export function registerDocumentLinkProvider(selector: DocumentSelector, provider: DocumentLinkProvider): DisposAble;
 
 		/**
-		 * Register a color provider.
+		 * Register A color provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A color provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A color provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerColorProvider(selector: DocumentSelector, provider: DocumentColorProvider): Disposable;
+		export function registerColorProvider(selector: DocumentSelector, provider: DocumentColorProvider): DisposAble;
 
 		/**
-		 * Register a folding range provider.
+		 * Register A folding rAnge provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged.
-		 * If multiple folding ranges start at the same position, only the range of the first registered provider is used.
-		 * If a folding range overlaps with an other range that has a smaller position, it is also ignored.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged.
+		 * If multiple folding rAnges stArt At the sAme position, only the rAnge of the first registered provider is used.
+		 * If A folding rAnge overlAps with An other rAnge thAt hAs A smAller position, it is Also ignored.
 		 *
-		 * A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A folding range provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A folding rAnge provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerFoldingRangeProvider(selector: DocumentSelector, provider: FoldingRangeProvider): Disposable;
+		export function registerFoldingRAngeProvider(selector: DocumentSelector, provider: FoldingRAngeProvider): DisposAble;
 
 		/**
-		 * Register a selection range provider.
+		 * Register A selection rAnge provider.
 		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
+		 * Multiple providers cAn be registered for A lAnguAge. In thAt cAse providers Are Asked in
+		 * pArAllel And the results Are merged. A fAiling provider (rejected promise or exception) will
+		 * not cAuse A fAilure of the whole operAtion.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A selection range provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A selection rAnge provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerSelectionRangeProvider(selector: DocumentSelector, provider: SelectionRangeProvider): Disposable;
+		export function registerSelectionRAngeProvider(selector: DocumentSelector, provider: SelectionRAngeProvider): DisposAble;
 
 		/**
-		 * Register a call hierarchy provider.
+		 * Register A cAll hierArchy provider.
 		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A call hierarchy provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm selector A selector thAt defines the documents this provider is ApplicAble to.
+		 * @pArAm provider A cAll hierArchy provider.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerCallHierarchyProvider(selector: DocumentSelector, provider: CallHierarchyProvider): Disposable;
+		export function registerCAllHierArchyProvider(selector: DocumentSelector, provider: CAllHierArchyProvider): DisposAble;
 
 		/**
-		 * Set a [language configuration](#LanguageConfiguration) for a language.
+		 * Set A [lAnguAge configurAtion](#LAnguAgeConfigurAtion) for A lAnguAge.
 		 *
-		 * @param language A language identifier like `typescript`.
-		 * @param configuration Language configuration.
-		 * @return A [disposable](#Disposable) that unsets this configuration.
+		 * @pArAm lAnguAge A lAnguAge identifier like `typescript`.
+		 * @pArAm configurAtion LAnguAge configurAtion.
+		 * @return A [disposAble](#DisposAble) thAt unsets this configurAtion.
 		 */
-		export function setLanguageConfiguration(language: string, configuration: LanguageConfiguration): Disposable;
+		export function setLAnguAgeConfigurAtion(lAnguAge: string, configurAtion: LAnguAgeConfigurAtion): DisposAble;
 	}
 
 	/**
 	 * Represents the input box in the Source Control viewlet.
 	 */
-	export interface SourceControlInputBox {
+	export interfAce SourceControlInputBox {
 
 		/**
-		 * Setter and getter for the contents of the input box.
+		 * Setter And getter for the contents of the input box.
 		 */
-		value: string;
+		vAlue: string;
 
 		/**
-		 * A string to show as placeholder in the input box to guide the user.
+		 * A string to show As plAceholder in the input box to guide the user.
 		 */
-		placeholder: string;
+		plAceholder: string;
 
 		/**
-		 * Controls whether the input box is visible (default is `true`).
+		 * Controls whether the input box is visible (defAult is `true`).
 		 */
-		visible: boolean;
+		visible: booleAn;
 	}
 
-	interface QuickDiffProvider {
+	interfAce QuickDiffProvider {
 
 		/**
-		 * Provide a [uri](#Uri) to the original resource of any given resource uri.
+		 * Provide A [uri](#Uri) to the originAl resource of Any given resource uri.
 		 *
-		 * @param uri The uri of the resource open in a text editor.
-		 * @param token A cancellation token.
-		 * @return A thenable that resolves to uri of the matching original resource.
+		 * @pArAm uri The uri of the resource open in A text editor.
+		 * @pArAm token A cAncellAtion token.
+		 * @return A thenAble thAt resolves to uri of the mAtching originAl resource.
 		 */
-		provideOriginalResource?(uri: Uri, token: CancellationToken): ProviderResult<Uri>;
+		provideOriginAlResource?(uri: Uri, token: CAncellAtionToken): ProviderResult<Uri>;
 	}
 
 	/**
-	 * The theme-aware decorations for a
-	 * [source control resource state](#SourceControlResourceState).
+	 * The theme-AwAre decorAtions for A
+	 * [source control resource stAte](#SourceControlResourceStAte).
 	 */
-	export interface SourceControlResourceThemableDecorations {
+	export interfAce SourceControlResourceThemAbleDecorAtions {
 
 		/**
-		 * The icon path for a specific
-		 * [source control resource state](#SourceControlResourceState).
+		 * The icon pAth for A specific
+		 * [source control resource stAte](#SourceControlResourceStAte).
 		 */
-		readonly iconPath?: string | Uri;
+		reAdonly iconPAth?: string | Uri;
 	}
 
 	/**
-	 * The decorations for a [source control resource state](#SourceControlResourceState).
-	 * Can be independently specified for light and dark themes.
+	 * The decorAtions for A [source control resource stAte](#SourceControlResourceStAte).
+	 * CAn be independently specified for light And dArk themes.
 	 */
-	export interface SourceControlResourceDecorations extends SourceControlResourceThemableDecorations {
+	export interfAce SourceControlResourceDecorAtions extends SourceControlResourceThemAbleDecorAtions {
 
 		/**
-		 * Whether the [source control resource state](#SourceControlResourceState) should
+		 * Whether the [source control resource stAte](#SourceControlResourceStAte) should
 		 * be striked-through in the UI.
 		 */
-		readonly strikeThrough?: boolean;
+		reAdonly strikeThrough?: booleAn;
 
 		/**
-		 * Whether the [source control resource state](#SourceControlResourceState) should
-		 * be faded in the UI.
+		 * Whether the [source control resource stAte](#SourceControlResourceStAte) should
+		 * be fAded in the UI.
 		 */
-		readonly faded?: boolean;
+		reAdonly fAded?: booleAn;
 
 		/**
-		 * The title for a specific
-		 * [source control resource state](#SourceControlResourceState).
+		 * The title for A specific
+		 * [source control resource stAte](#SourceControlResourceStAte).
 		 */
-		readonly tooltip?: string;
+		reAdonly tooltip?: string;
 
 		/**
-		 * The light theme decorations.
+		 * The light theme decorAtions.
 		 */
-		readonly light?: SourceControlResourceThemableDecorations;
+		reAdonly light?: SourceControlResourceThemAbleDecorAtions;
 
 		/**
-		 * The dark theme decorations.
+		 * The dArk theme decorAtions.
 		 */
-		readonly dark?: SourceControlResourceThemableDecorations;
+		reAdonly dArk?: SourceControlResourceThemAbleDecorAtions;
 	}
 
 	/**
-	 * An source control resource state represents the state of an underlying workspace
-	 * resource within a certain [source control group](#SourceControlResourceGroup).
+	 * An source control resource stAte represents the stAte of An underlying workspAce
+	 * resource within A certAin [source control group](#SourceControlResourceGroup).
 	 */
-	export interface SourceControlResourceState {
+	export interfAce SourceControlResourceStAte {
 
 		/**
-		 * The [uri](#Uri) of the underlying resource inside the workspace.
+		 * The [uri](#Uri) of the underlying resource inside the workspAce.
 		 */
-		readonly resourceUri: Uri;
+		reAdonly resourceUri: Uri;
 
 		/**
-		 * The [command](#Command) which should be run when the resource
-		 * state is open in the Source Control viewlet.
+		 * The [commAnd](#CommAnd) which should be run when the resource
+		 * stAte is open in the Source Control viewlet.
 		 */
-		readonly command?: Command;
+		reAdonly commAnd?: CommAnd;
 
 		/**
-		 * The [decorations](#SourceControlResourceDecorations) for this source control
-		 * resource state.
+		 * The [decorAtions](#SourceControlResourceDecorAtions) for this source control
+		 * resource stAte.
 		 */
-		readonly decorations?: SourceControlResourceDecorations;
+		reAdonly decorAtions?: SourceControlResourceDecorAtions;
 
 		/**
-		 * Context value of the resource state. This can be used to contribute resource specific actions.
-		 * For example, if a resource is given a context value as `diffable`. When contributing actions to `scm/resourceState/context`
-		 * using `menus` extension point, you can specify context value for key `scmResourceState` in `when` expressions, like `scmResourceState == diffable`.
+		 * Context vAlue of the resource stAte. This cAn be used to contribute resource specific Actions.
+		 * For exAmple, if A resource is given A context vAlue As `diffAble`. When contributing Actions to `scm/resourceStAte/context`
+		 * using `menus` extension point, you cAn specify context vAlue for key `scmResourceStAte` in `when` expressions, like `scmResourceStAte == diffAble`.
 		 * ```
 		 *	"contributes": {
 		 *		"menus": {
-		 *			"scm/resourceState/context": [
+		 *			"scm/resourceStAte/context": [
 		 *				{
-		 *					"command": "extension.diff",
-		 *					"when": "scmResourceState == diffable"
+		 *					"commAnd": "extension.diff",
+		 *					"when": "scmResourceStAte == diffAble"
 		 *				}
 		 *			]
 		 *		}
 		 *	}
 		 * ```
-		 * This will show action `extension.diff` only for resources with `contextValue` is `diffable`.
+		 * This will show Action `extension.diff` only for resources with `contextVAlue` is `diffAble`.
 		 */
-		readonly contextValue?: string;
+		reAdonly contextVAlue?: string;
 	}
 
 	/**
-	 * A source control resource group is a collection of
-	 * [source control resource states](#SourceControlResourceState).
+	 * A source control resource group is A collection of
+	 * [source control resource stAtes](#SourceControlResourceStAte).
 	 */
-	export interface SourceControlResourceGroup {
+	export interfAce SourceControlResourceGroup {
 
 		/**
 		 * The id of this source control resource group.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The label of this source control resource group.
+		 * The lAbel of this source control resource group.
 		 */
-		label: string;
+		lAbel: string;
 
 		/**
-		 * Whether this source control resource group is hidden when it contains
-		 * no [source control resource states](#SourceControlResourceState).
+		 * Whether this source control resource group is hidden when it contAins
+		 * no [source control resource stAtes](#SourceControlResourceStAte).
 		 */
-		hideWhenEmpty?: boolean;
+		hideWhenEmpty?: booleAn;
 
 		/**
 		 * This group's collection of
-		 * [source control resource states](#SourceControlResourceState).
+		 * [source control resource stAtes](#SourceControlResourceStAte).
 		 */
-		resourceStates: SourceControlResourceState[];
+		resourceStAtes: SourceControlResourceStAte[];
 
 		/**
 		 * Dispose this source control resource group.
@@ -10846,72 +10846,72 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * An source control is able to provide [resource states](#SourceControlResourceState)
-	 * to the editor and interact with the editor in several source control related ways.
+	 * An source control is Able to provide [resource stAtes](#SourceControlResourceStAte)
+	 * to the editor And interAct with the editor in severAl source control relAted wAys.
 	 */
-	export interface SourceControl {
+	export interfAce SourceControl {
 
 		/**
 		 * The id of this source control.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The human-readable label of this source control.
+		 * The humAn-reAdAble lAbel of this source control.
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 
 		/**
-		 * The (optional) Uri of the root of this source control.
+		 * The (optionAl) Uri of the root of this source control.
 		 */
-		readonly rootUri: Uri | undefined;
+		reAdonly rootUri: Uri | undefined;
 
 		/**
 		 * The [input box](#SourceControlInputBox) for this source control.
 		 */
-		readonly inputBox: SourceControlInputBox;
+		reAdonly inputBox: SourceControlInputBox;
 
 		/**
-		 * The UI-visible count of [resource states](#SourceControlResourceState) of
+		 * The UI-visible count of [resource stAtes](#SourceControlResourceStAte) of
 		 * this source control.
 		 *
-		 * Equals to the total number of [resource state](#SourceControlResourceState)
+		 * EquAls to the totAl number of [resource stAte](#SourceControlResourceStAte)
 		 * of this source control, if undefined.
 		 */
 		count?: number;
 
 		/**
-		 * An optional [quick diff provider](#QuickDiffProvider).
+		 * An optionAl [quick diff provider](#QuickDiffProvider).
 		 */
 		quickDiffProvider?: QuickDiffProvider;
 
 		/**
-		 * Optional commit template string.
+		 * OptionAl commit templAte string.
 		 *
-		 * The Source Control viewlet will populate the Source Control
-		 * input with this value when appropriate.
+		 * The Source Control viewlet will populAte the Source Control
+		 * input with this vAlue when AppropriAte.
 		 */
-		commitTemplate?: string;
+		commitTemplAte?: string;
 
 		/**
-		 * Optional accept input command.
+		 * OptionAl Accept input commAnd.
 		 *
-		 * This command will be invoked when the user accepts the value
+		 * This commAnd will be invoked when the user Accepts the vAlue
 		 * in the Source Control input.
 		 */
-		acceptInputCommand?: Command;
+		AcceptInputCommAnd?: CommAnd;
 
 		/**
-		 * Optional status bar commands.
+		 * OptionAl stAtus bAr commAnds.
 		 *
-		 * These commands will be displayed in the editor's status bar.
+		 * These commAnds will be displAyed in the editor's stAtus bAr.
 		 */
-		statusBarCommands?: Command[];
+		stAtusBArCommAnds?: CommAnd[];
 
 		/**
-		 * Create a new [resource group](#SourceControlResourceGroup).
+		 * CreAte A new [resource group](#SourceControlResourceGroup).
 		 */
-		createResourceGroup(id: string, label: string): SourceControlResourceGroup;
+		creAteResourceGroup(id: string, lAbel: string): SourceControlResourceGroup;
 
 		/**
 		 * Dispose this source control.
@@ -10919,61 +10919,61 @@ declare module 'vscode' {
 		dispose(): void;
 	}
 
-	export namespace scm {
+	export nAmespAce scm {
 
 		/**
-		 * The [input box](#SourceControlInputBox) for the last source control
-		 * created by the extension.
+		 * The [input box](#SourceControlInputBox) for the lAst source control
+		 * creAted by the extension.
 		 *
-		 * @deprecated Use SourceControl.inputBox instead
+		 * @deprecAted Use SourceControl.inputBox insteAd
 		 */
 		export const inputBox: SourceControlInputBox;
 
 		/**
-		 * Creates a new [source control](#SourceControl) instance.
+		 * CreAtes A new [source control](#SourceControl) instAnce.
 		 *
-		 * @param id An `id` for the source control. Something short, e.g.: `git`.
-		 * @param label A human-readable string for the source control. E.g.: `Git`.
-		 * @param rootUri An optional Uri of the root of the source control. E.g.: `Uri.parse(workspaceRoot)`.
-		 * @return An instance of [source control](#SourceControl).
+		 * @pArAm id An `id` for the source control. Something short, e.g.: `git`.
+		 * @pArAm lAbel A humAn-reAdAble string for the source control. E.g.: `Git`.
+		 * @pArAm rootUri An optionAl Uri of the root of the source control. E.g.: `Uri.pArse(workspAceRoot)`.
+		 * @return An instAnce of [source control](#SourceControl).
 		 */
-		export function createSourceControl(id: string, label: string, rootUri?: Uri): SourceControl;
+		export function creAteSourceControl(id: string, lAbel: string, rootUri?: Uri): SourceControl;
 	}
 
 	/**
-	 * A DebugProtocolMessage is an opaque stand-in type for the [ProtocolMessage](https://microsoft.github.io/debug-adapter-protocol/specification#Base_Protocol_ProtocolMessage) type defined in the Debug Adapter Protocol.
+	 * A DebugProtocolMessAge is An opAque stAnd-in type for the [ProtocolMessAge](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#BAse_Protocol_ProtocolMessAge) type defined in the Debug AdApter Protocol.
 	 */
-	export interface DebugProtocolMessage {
-		// Properties: see details [here](https://microsoft.github.io/debug-adapter-protocol/specification#Base_Protocol_ProtocolMessage).
+	export interfAce DebugProtocolMessAge {
+		// Properties: see detAils [here](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#BAse_Protocol_ProtocolMessAge).
 	}
 
 	/**
-	 * A DebugProtocolSource is an opaque stand-in type for the [Source](https://microsoft.github.io/debug-adapter-protocol/specification#Types_Source) type defined in the Debug Adapter Protocol.
+	 * A DebugProtocolSource is An opAque stAnd-in type for the [Source](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_Source) type defined in the Debug AdApter Protocol.
 	 */
-	export interface DebugProtocolSource {
-		// Properties: see details [here](https://microsoft.github.io/debug-adapter-protocol/specification#Types_Source).
+	export interfAce DebugProtocolSource {
+		// Properties: see detAils [here](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_Source).
 	}
 
 	/**
-	 * A DebugProtocolBreakpoint is an opaque stand-in type for the [Breakpoint](https://microsoft.github.io/debug-adapter-protocol/specification#Types_Breakpoint) type defined in the Debug Adapter Protocol.
+	 * A DebugProtocolBreAkpoint is An opAque stAnd-in type for the [BreAkpoint](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_BreAkpoint) type defined in the Debug AdApter Protocol.
 	 */
-	export interface DebugProtocolBreakpoint {
-		// Properties: see details [here](https://microsoft.github.io/debug-adapter-protocol/specification#Types_Breakpoint).
+	export interfAce DebugProtocolBreAkpoint {
+		// Properties: see detAils [here](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_BreAkpoint).
 	}
 
 	/**
-	 * Configuration for a debug session.
+	 * ConfigurAtion for A debug session.
 	 */
-	export interface DebugConfiguration {
+	export interfAce DebugConfigurAtion {
 		/**
 		 * The type of the debug session.
 		 */
 		type: string;
 
 		/**
-		 * The name of the debug session.
+		 * The nAme of the debug session.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
 		 * The request type of the debug session.
@@ -10981,404 +10981,404 @@ declare module 'vscode' {
 		request: string;
 
 		/**
-		 * Additional debug type specific properties.
+		 * AdditionAl debug type specific properties.
 		 */
-		[key: string]: any;
+		[key: string]: Any;
 	}
 
 	/**
 	 * A debug session.
 	 */
-	export interface DebugSession {
+	export interfAce DebugSession {
 
 		/**
 		 * The unique ID of this debug session.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The debug session's type from the [debug configuration](#DebugConfiguration).
+		 * The debug session's type from the [debug configurAtion](#DebugConfigurAtion).
 		 */
-		readonly type: string;
+		reAdonly type: string;
 
 		/**
-		 * The debug session's name is initially taken from the [debug configuration](#DebugConfiguration).
-		 * Any changes will be properly reflected in the UI.
+		 * The debug session's nAme is initiAlly tAken from the [debug configurAtion](#DebugConfigurAtion).
+		 * Any chAnges will be properly reflected in the UI.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * The workspace folder of this session or `undefined` for a folderless setup.
+		 * The workspAce folder of this session or `undefined` for A folderless setup.
 		 */
-		readonly workspaceFolder: WorkspaceFolder | undefined;
+		reAdonly workspAceFolder: WorkspAceFolder | undefined;
 
 		/**
-		 * The "resolved" [debug configuration](#DebugConfiguration) of this session.
-		 * "Resolved" means that
-		 * - all variables have been substituted and
-		 * - platform specific attribute sections have been "flattened" for the matching platform and removed for non-matching platforms.
+		 * The "resolved" [debug configurAtion](#DebugConfigurAtion) of this session.
+		 * "Resolved" meAns thAt
+		 * - All vAriAbles hAve been substituted And
+		 * - plAtform specific Attribute sections hAve been "flAttened" for the mAtching plAtform And removed for non-mAtching plAtforms.
 		 */
-		readonly configuration: DebugConfiguration;
+		reAdonly configurAtion: DebugConfigurAtion;
 
 		/**
-		 * Send a custom request to the debug adapter.
+		 * Send A custom request to the debug AdApter.
 		 */
-		customRequest(command: string, args?: any): Thenable<any>;
+		customRequest(commAnd: string, Args?: Any): ThenAble<Any>;
 
 		/**
-		 * Maps a VS Code breakpoint to the corresponding Debug Adapter Protocol (DAP) breakpoint that is managed by the debug adapter of the debug session.
-		 * If no DAP breakpoint exists (either because the VS Code breakpoint was not yet registered or because the debug adapter is not interested in the breakpoint), the value `undefined` is returned.
+		 * MAps A VS Code breAkpoint to the corresponding Debug AdApter Protocol (DAP) breAkpoint thAt is mAnAged by the debug AdApter of the debug session.
+		 * If no DAP breAkpoint exists (either becAuse the VS Code breAkpoint wAs not yet registered or becAuse the debug AdApter is not interested in the breAkpoint), the vAlue `undefined` is returned.
 		 *
-		 * @param breakpoint A VS Code [breakpoint](#Breakpoint).
-		 * @return A promise that resolves to the Debug Adapter Protocol breakpoint or `undefined`.
+		 * @pArAm breAkpoint A VS Code [breAkpoint](#BreAkpoint).
+		 * @return A promise thAt resolves to the Debug AdApter Protocol breAkpoint or `undefined`.
 		 */
-		getDebugProtocolBreakpoint(breakpoint: Breakpoint): Thenable<DebugProtocolBreakpoint | undefined>;
+		getDebugProtocolBreAkpoint(breAkpoint: BreAkpoint): ThenAble<DebugProtocolBreAkpoint | undefined>;
 	}
 
 	/**
-	 * A custom Debug Adapter Protocol event received from a [debug session](#DebugSession).
+	 * A custom Debug AdApter Protocol event received from A [debug session](#DebugSession).
 	 */
-	export interface DebugSessionCustomEvent {
+	export interfAce DebugSessionCustomEvent {
 		/**
-		 * The [debug session](#DebugSession) for which the custom event was received.
+		 * The [debug session](#DebugSession) for which the custom event wAs received.
 		 */
-		readonly session: DebugSession;
+		reAdonly session: DebugSession;
 
 		/**
 		 * Type of event.
 		 */
-		readonly event: string;
+		reAdonly event: string;
 
 		/**
-		 * Event specific information.
+		 * Event specific informAtion.
 		 */
-		readonly body?: any;
+		reAdonly body?: Any;
 	}
 
 	/**
-	 * A debug configuration provider allows to add debug configurations to the debug service
-	 * and to resolve launch configurations before they are used to start a debug session.
-	 * A debug configuration provider is registered via #debug.registerDebugConfigurationProvider.
+	 * A debug configurAtion provider Allows to Add debug configurAtions to the debug service
+	 * And to resolve lAunch configurAtions before they Are used to stArt A debug session.
+	 * A debug configurAtion provider is registered viA #debug.registerDebugConfigurAtionProvider.
 	 */
-	export interface DebugConfigurationProvider {
+	export interfAce DebugConfigurAtionProvider {
 		/**
-		 * Provides [debug configuration](#DebugConfiguration) to the debug service. If more than one debug configuration provider is
-		 * registered for the same type, debug configurations are concatenated in arbitrary order.
+		 * Provides [debug configurAtion](#DebugConfigurAtion) to the debug service. If more thAn one debug configurAtion provider is
+		 * registered for the sAme type, debug configurAtions Are concAtenAted in ArbitrAry order.
 		 *
-		 * @param folder The workspace folder for which the configurations are used or `undefined` for a folderless setup.
-		 * @param token A cancellation token.
-		 * @return An array of [debug configurations](#DebugConfiguration).
+		 * @pArAm folder The workspAce folder for which the configurAtions Are used or `undefined` for A folderless setup.
+		 * @pArAm token A cAncellAtion token.
+		 * @return An ArrAy of [debug configurAtions](#DebugConfigurAtion).
 		 */
-		provideDebugConfigurations?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugConfiguration[]>;
+		provideDebugConfigurAtions?(folder: WorkspAceFolder | undefined, token?: CAncellAtionToken): ProviderResult<DebugConfigurAtion[]>;
 
 		/**
-		 * Resolves a [debug configuration](#DebugConfiguration) by filling in missing values or by adding/changing/removing attributes.
-		 * If more than one debug configuration provider is registered for the same type, the resolveDebugConfiguration calls are chained
-		 * in arbitrary order and the initial debug configuration is piped through the chain.
-		 * Returning the value 'undefined' prevents the debug session from starting.
-		 * Returning the value 'null' prevents the debug session from starting and opens the underlying debug configuration instead.
+		 * Resolves A [debug configurAtion](#DebugConfigurAtion) by filling in missing vAlues or by Adding/chAnging/removing Attributes.
+		 * If more thAn one debug configurAtion provider is registered for the sAme type, the resolveDebugConfigurAtion cAlls Are chAined
+		 * in ArbitrAry order And the initiAl debug configurAtion is piped through the chAin.
+		 * Returning the vAlue 'undefined' prevents the debug session from stArting.
+		 * Returning the vAlue 'null' prevents the debug session from stArting And opens the underlying debug configurAtion insteAd.
 		 *
-		 * @param folder The workspace folder from which the configuration originates from or `undefined` for a folderless setup.
-		 * @param debugConfiguration The [debug configuration](#DebugConfiguration) to resolve.
-		 * @param token A cancellation token.
-		 * @return The resolved debug configuration or undefined or null.
+		 * @pArAm folder The workspAce folder from which the configurAtion originAtes from or `undefined` for A folderless setup.
+		 * @pArAm debugConfigurAtion The [debug configurAtion](#DebugConfigurAtion) to resolve.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The resolved debug configurAtion or undefined or null.
 		 */
-		resolveDebugConfiguration?(folder: WorkspaceFolder | undefined, debugConfiguration: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration>;
+		resolveDebugConfigurAtion?(folder: WorkspAceFolder | undefined, debugConfigurAtion: DebugConfigurAtion, token?: CAncellAtionToken): ProviderResult<DebugConfigurAtion>;
 
 		/**
-		 * This hook is directly called after 'resolveDebugConfiguration' but with all variables substituted.
-		 * It can be used to resolve or verify a [debug configuration](#DebugConfiguration) by filling in missing values or by adding/changing/removing attributes.
-		 * If more than one debug configuration provider is registered for the same type, the 'resolveDebugConfigurationWithSubstitutedVariables' calls are chained
-		 * in arbitrary order and the initial debug configuration is piped through the chain.
-		 * Returning the value 'undefined' prevents the debug session from starting.
-		 * Returning the value 'null' prevents the debug session from starting and opens the underlying debug configuration instead.
+		 * This hook is directly cAlled After 'resolveDebugConfigurAtion' but with All vAriAbles substituted.
+		 * It cAn be used to resolve or verify A [debug configurAtion](#DebugConfigurAtion) by filling in missing vAlues or by Adding/chAnging/removing Attributes.
+		 * If more thAn one debug configurAtion provider is registered for the sAme type, the 'resolveDebugConfigurAtionWithSubstitutedVAriAbles' cAlls Are chAined
+		 * in ArbitrAry order And the initiAl debug configurAtion is piped through the chAin.
+		 * Returning the vAlue 'undefined' prevents the debug session from stArting.
+		 * Returning the vAlue 'null' prevents the debug session from stArting And opens the underlying debug configurAtion insteAd.
 		 *
-		 * @param folder The workspace folder from which the configuration originates from or `undefined` for a folderless setup.
-		 * @param debugConfiguration The [debug configuration](#DebugConfiguration) to resolve.
-		 * @param token A cancellation token.
-		 * @return The resolved debug configuration or undefined or null.
+		 * @pArAm folder The workspAce folder from which the configurAtion originAtes from or `undefined` for A folderless setup.
+		 * @pArAm debugConfigurAtion The [debug configurAtion](#DebugConfigurAtion) to resolve.
+		 * @pArAm token A cAncellAtion token.
+		 * @return The resolved debug configurAtion or undefined or null.
 		 */
-		resolveDebugConfigurationWithSubstitutedVariables?(folder: WorkspaceFolder | undefined, debugConfiguration: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration>;
+		resolveDebugConfigurAtionWithSubstitutedVAriAbles?(folder: WorkspAceFolder | undefined, debugConfigurAtion: DebugConfigurAtion, token?: CAncellAtionToken): ProviderResult<DebugConfigurAtion>;
 	}
 
 	/**
-	 * Represents a debug adapter executable and optional arguments and runtime options passed to it.
+	 * Represents A debug AdApter executAble And optionAl Arguments And runtime options pAssed to it.
 	 */
-	export class DebugAdapterExecutable {
+	export clAss DebugAdApterExecutAble {
 
 		/**
-		 * Creates a description for a debug adapter based on an executable program.
+		 * CreAtes A description for A debug AdApter bAsed on An executAble progrAm.
 		 *
-		 * @param command The command or executable path that implements the debug adapter.
-		 * @param args Optional arguments to be passed to the command or executable.
-		 * @param options Optional options to be used when starting the command or executable.
+		 * @pArAm commAnd The commAnd or executAble pAth thAt implements the debug AdApter.
+		 * @pArAm Args OptionAl Arguments to be pAssed to the commAnd or executAble.
+		 * @pArAm options OptionAl options to be used when stArting the commAnd or executAble.
 		 */
-		constructor(command: string, args?: string[], options?: DebugAdapterExecutableOptions);
+		constructor(commAnd: string, Args?: string[], options?: DebugAdApterExecutAbleOptions);
 
 		/**
-		 * The command or path of the debug adapter executable.
-		 * A command must be either an absolute path of an executable or the name of an command to be looked up via the PATH environment variable.
-		 * The special value 'node' will be mapped to VS Code's built-in Node.js runtime.
+		 * The commAnd or pAth of the debug AdApter executAble.
+		 * A commAnd must be either An Absolute pAth of An executAble or the nAme of An commAnd to be looked up viA the PATH environment vAriAble.
+		 * The speciAl vAlue 'node' will be mApped to VS Code's built-in Node.js runtime.
 		 */
-		readonly command: string;
+		reAdonly commAnd: string;
 
 		/**
-		 * The arguments passed to the debug adapter executable. Defaults to an empty array.
+		 * The Arguments pAssed to the debug AdApter executAble. DefAults to An empty ArrAy.
 		 */
-		readonly args: string[];
+		reAdonly Args: string[];
 
 		/**
-		 * Optional options to be used when the debug adapter is started.
-		 * Defaults to undefined.
+		 * OptionAl options to be used when the debug AdApter is stArted.
+		 * DefAults to undefined.
 		 */
-		readonly options?: DebugAdapterExecutableOptions;
+		reAdonly options?: DebugAdApterExecutAbleOptions;
 	}
 
 	/**
-	 * Options for a debug adapter executable.
+	 * Options for A debug AdApter executAble.
 	 */
-	export interface DebugAdapterExecutableOptions {
+	export interfAce DebugAdApterExecutAbleOptions {
 
 		/**
-		 * The additional environment of the executed program or shell. If omitted
-		 * the parent process' environment is used. If provided it is merged with
-		 * the parent process' environment.
+		 * The AdditionAl environment of the executed progrAm or shell. If omitted
+		 * the pArent process' environment is used. If provided it is merged with
+		 * the pArent process' environment.
 		 */
 		env?: { [key: string]: string };
 
 		/**
-		 * The current working directory for the executed debug adapter.
+		 * The current working directory for the executed debug AdApter.
 		 */
 		cwd?: string;
 	}
 
 	/**
-	 * Represents a debug adapter running as a socket based server.
+	 * Represents A debug AdApter running As A socket bAsed server.
 	 */
-	export class DebugAdapterServer {
+	export clAss DebugAdApterServer {
 
 		/**
 		 * The port.
 		 */
-		readonly port: number;
+		reAdonly port: number;
 
 		/**
 		 * The host.
 		 */
-		readonly host?: string;
+		reAdonly host?: string;
 
 		/**
-		 * Create a description for a debug adapter running as a socket based server.
+		 * CreAte A description for A debug AdApter running As A socket bAsed server.
 		 */
 		constructor(port: number, host?: string);
 	}
 
 	/**
-	 * Represents a debug adapter running as a Named Pipe (on Windows)/UNIX Domain Socket (on non-Windows) based server.
+	 * Represents A debug AdApter running As A NAmed Pipe (on Windows)/UNIX DomAin Socket (on non-Windows) bAsed server.
 	 */
-	export class DebugAdapterNamedPipeServer {
+	export clAss DebugAdApterNAmedPipeServer {
 		/**
-		 * The path to the NamedPipe/UNIX Domain Socket.
+		 * The pAth to the NAmedPipe/UNIX DomAin Socket.
 		 */
-		readonly path: string;
+		reAdonly pAth: string;
 
 		/**
-		 * Create a description for a debug adapter running as a socket based server.
+		 * CreAte A description for A debug AdApter running As A socket bAsed server.
 		 */
-		constructor(path: string);
+		constructor(pAth: string);
 	}
 
 	/**
-	 * A debug adapter that implements the Debug Adapter Protocol can be registered with VS Code if it implements the DebugAdapter interface.
+	 * A debug AdApter thAt implements the Debug AdApter Protocol cAn be registered with VS Code if it implements the DebugAdApter interfAce.
 	 */
-	export interface DebugAdapter extends Disposable {
+	export interfAce DebugAdApter extends DisposAble {
 
 		/**
-		 * An event which fires after the debug adapter has sent a Debug Adapter Protocol message to VS Code.
-		 * Messages can be requests, responses, or events.
+		 * An event which fires After the debug AdApter hAs sent A Debug AdApter Protocol messAge to VS Code.
+		 * MessAges cAn be requests, responses, or events.
 		 */
-		readonly onDidSendMessage: Event<DebugProtocolMessage>;
+		reAdonly onDidSendMessAge: Event<DebugProtocolMessAge>;
 
 		/**
-		 * Handle a Debug Adapter Protocol message.
-		 * Messages can be requests, responses, or events.
-		 * Results or errors are returned via onSendMessage events.
-		 * @param message A Debug Adapter Protocol message
+		 * HAndle A Debug AdApter Protocol messAge.
+		 * MessAges cAn be requests, responses, or events.
+		 * Results or errors Are returned viA onSendMessAge events.
+		 * @pArAm messAge A Debug AdApter Protocol messAge
 		 */
-		handleMessage(message: DebugProtocolMessage): void;
+		hAndleMessAge(messAge: DebugProtocolMessAge): void;
 	}
 
 	/**
-	 * A debug adapter descriptor for an inline implementation.
+	 * A debug AdApter descriptor for An inline implementAtion.
 	 */
-	export class DebugAdapterInlineImplementation {
+	export clAss DebugAdApterInlineImplementAtion {
 
 		/**
-		 * Create a descriptor for an inline implementation of a debug adapter.
+		 * CreAte A descriptor for An inline implementAtion of A debug AdApter.
 		 */
-		constructor(implementation: DebugAdapter);
+		constructor(implementAtion: DebugAdApter);
 	}
 
-	export type DebugAdapterDescriptor = DebugAdapterExecutable | DebugAdapterServer | DebugAdapterNamedPipeServer | DebugAdapterInlineImplementation;
+	export type DebugAdApterDescriptor = DebugAdApterExecutAble | DebugAdApterServer | DebugAdApterNAmedPipeServer | DebugAdApterInlineImplementAtion;
 
-	export interface DebugAdapterDescriptorFactory {
+	export interfAce DebugAdApterDescriptorFActory {
 		/**
-		 * 'createDebugAdapterDescriptor' is called at the start of a debug session to provide details about the debug adapter to use.
-		 * These details must be returned as objects of type [DebugAdapterDescriptor](#DebugAdapterDescriptor).
-		 * Currently two types of debug adapters are supported:
-		 * - a debug adapter executable is specified as a command path and arguments (see [DebugAdapterExecutable](#DebugAdapterExecutable)),
-		 * - a debug adapter server reachable via a communication port (see [DebugAdapterServer](#DebugAdapterServer)).
-		 * If the method is not implemented the default behavior is this:
-		 *   createDebugAdapter(session: DebugSession, executable: DebugAdapterExecutable) {
-		 *      if (typeof session.configuration.debugServer === 'number') {
-		 *         return new DebugAdapterServer(session.configuration.debugServer);
+		 * 'creAteDebugAdApterDescriptor' is cAlled At the stArt of A debug session to provide detAils About the debug AdApter to use.
+		 * These detAils must be returned As objects of type [DebugAdApterDescriptor](#DebugAdApterDescriptor).
+		 * Currently two types of debug AdApters Are supported:
+		 * - A debug AdApter executAble is specified As A commAnd pAth And Arguments (see [DebugAdApterExecutAble](#DebugAdApterExecutAble)),
+		 * - A debug AdApter server reAchAble viA A communicAtion port (see [DebugAdApterServer](#DebugAdApterServer)).
+		 * If the method is not implemented the defAult behAvior is this:
+		 *   creAteDebugAdApter(session: DebugSession, executAble: DebugAdApterExecutAble) {
+		 *      if (typeof session.configurAtion.debugServer === 'number') {
+		 *         return new DebugAdApterServer(session.configurAtion.debugServer);
 		 *      }
-		 *      return executable;
+		 *      return executAble;
 		 *   }
-		 * @param session The [debug session](#DebugSession) for which the debug adapter will be used.
-		 * @param executable The debug adapter's executable information as specified in the package.json (or undefined if no such information exists).
-		 * @return a [debug adapter descriptor](#DebugAdapterDescriptor) or undefined.
+		 * @pArAm session The [debug session](#DebugSession) for which the debug AdApter will be used.
+		 * @pArAm executAble The debug AdApter's executAble informAtion As specified in the pAckAge.json (or undefined if no such informAtion exists).
+		 * @return A [debug AdApter descriptor](#DebugAdApterDescriptor) or undefined.
 		 */
-		createDebugAdapterDescriptor(session: DebugSession, executable: DebugAdapterExecutable | undefined): ProviderResult<DebugAdapterDescriptor>;
+		creAteDebugAdApterDescriptor(session: DebugSession, executAble: DebugAdApterExecutAble | undefined): ProviderResult<DebugAdApterDescriptor>;
 	}
 
 	/**
-	 * A Debug Adapter Tracker is a means to track the communication between VS Code and a Debug Adapter.
+	 * A Debug AdApter TrAcker is A meAns to trAck the communicAtion between VS Code And A Debug AdApter.
 	 */
-	export interface DebugAdapterTracker {
+	export interfAce DebugAdApterTrAcker {
 		/**
-		 * A session with the debug adapter is about to be started.
+		 * A session with the debug AdApter is About to be stArted.
 		 */
-		onWillStartSession?(): void;
+		onWillStArtSession?(): void;
 		/**
-		 * The debug adapter is about to receive a Debug Adapter Protocol message from VS Code.
+		 * The debug AdApter is About to receive A Debug AdApter Protocol messAge from VS Code.
 		 */
-		onWillReceiveMessage?(message: any): void;
+		onWillReceiveMessAge?(messAge: Any): void;
 		/**
-		 * The debug adapter has sent a Debug Adapter Protocol message to VS Code.
+		 * The debug AdApter hAs sent A Debug AdApter Protocol messAge to VS Code.
 		 */
-		onDidSendMessage?(message: any): void;
+		onDidSendMessAge?(messAge: Any): void;
 		/**
-		 * The debug adapter session is about to be stopped.
+		 * The debug AdApter session is About to be stopped.
 		 */
 		onWillStopSession?(): void;
 		/**
-		 * An error with the debug adapter has occurred.
+		 * An error with the debug AdApter hAs occurred.
 		 */
 		onError?(error: Error): void;
 		/**
-		 * The debug adapter has exited with the given exit code or signal.
+		 * The debug AdApter hAs exited with the given exit code or signAl.
 		 */
-		onExit?(code: number | undefined, signal: string | undefined): void;
+		onExit?(code: number | undefined, signAl: string | undefined): void;
 	}
 
-	export interface DebugAdapterTrackerFactory {
+	export interfAce DebugAdApterTrAckerFActory {
 		/**
-		 * The method 'createDebugAdapterTracker' is called at the start of a debug session in order
-		 * to return a "tracker" object that provides read-access to the communication between VS Code and a debug adapter.
+		 * The method 'creAteDebugAdApterTrAcker' is cAlled At the stArt of A debug session in order
+		 * to return A "trAcker" object thAt provides reAd-Access to the communicAtion between VS Code And A debug AdApter.
 		 *
-		 * @param session The [debug session](#DebugSession) for which the debug adapter tracker will be used.
-		 * @return A [debug adapter tracker](#DebugAdapterTracker) or undefined.
+		 * @pArAm session The [debug session](#DebugSession) for which the debug AdApter trAcker will be used.
+		 * @return A [debug AdApter trAcker](#DebugAdApterTrAcker) or undefined.
 		 */
-		createDebugAdapterTracker(session: DebugSession): ProviderResult<DebugAdapterTracker>;
+		creAteDebugAdApterTrAcker(session: DebugSession): ProviderResult<DebugAdApterTrAcker>;
 	}
 
 	/**
 	 * Represents the debug console.
 	 */
-	export interface DebugConsole {
+	export interfAce DebugConsole {
 		/**
-		 * Append the given value to the debug console.
+		 * Append the given vAlue to the debug console.
 		 *
-		 * @param value A string, falsy values will not be printed.
+		 * @pArAm vAlue A string, fAlsy vAlues will not be printed.
 		 */
-		append(value: string): void;
+		Append(vAlue: string): void;
 
 		/**
-		 * Append the given value and a line feed character
+		 * Append the given vAlue And A line feed chArActer
 		 * to the debug console.
 		 *
-		 * @param value A string, falsy values will be printed.
+		 * @pArAm vAlue A string, fAlsy vAlues will be printed.
 		 */
-		appendLine(value: string): void;
+		AppendLine(vAlue: string): void;
 	}
 
 	/**
-	 * An event describing the changes to the set of [breakpoints](#Breakpoint).
+	 * An event describing the chAnges to the set of [breAkpoints](#BreAkpoint).
 	 */
-	export interface BreakpointsChangeEvent {
+	export interfAce BreAkpointsChAngeEvent {
 		/**
-		 * Added breakpoints.
+		 * Added breAkpoints.
 		 */
-		readonly added: ReadonlyArray<Breakpoint>;
+		reAdonly Added: ReAdonlyArrAy<BreAkpoint>;
 
 		/**
-		 * Removed breakpoints.
+		 * Removed breAkpoints.
 		 */
-		readonly removed: ReadonlyArray<Breakpoint>;
+		reAdonly removed: ReAdonlyArrAy<BreAkpoint>;
 
 		/**
-		 * Changed breakpoints.
+		 * ChAnged breAkpoints.
 		 */
-		readonly changed: ReadonlyArray<Breakpoint>;
+		reAdonly chAnged: ReAdonlyArrAy<BreAkpoint>;
 	}
 
 	/**
-	 * The base class of all breakpoint types.
+	 * The bAse clAss of All breAkpoint types.
 	 */
-	export class Breakpoint {
+	export clAss BreAkpoint {
 		/**
-		 * The unique ID of the breakpoint.
+		 * The unique ID of the breAkpoint.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 		/**
-		 * Is breakpoint enabled.
+		 * Is breAkpoint enAbled.
 		 */
-		readonly enabled: boolean;
+		reAdonly enAbled: booleAn;
 		/**
-		 * An optional expression for conditional breakpoints.
+		 * An optionAl expression for conditionAl breAkpoints.
 		 */
-		readonly condition?: string;
+		reAdonly condition?: string;
 		/**
-		 * An optional expression that controls how many hits of the breakpoint are ignored.
+		 * An optionAl expression thAt controls how mAny hits of the breAkpoint Are ignored.
 		 */
-		readonly hitCondition?: string;
+		reAdonly hitCondition?: string;
 		/**
-		 * An optional message that gets logged when this breakpoint is hit. Embedded expressions within {} are interpolated by the debug adapter.
+		 * An optionAl messAge thAt gets logged when this breAkpoint is hit. Embedded expressions within {} Are interpolAted by the debug AdApter.
 		 */
-		readonly logMessage?: string;
+		reAdonly logMessAge?: string;
 
-		protected constructor(enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string);
+		protected constructor(enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string);
 	}
 
 	/**
-	 * A breakpoint specified by a source location.
+	 * A breAkpoint specified by A source locAtion.
 	 */
-	export class SourceBreakpoint extends Breakpoint {
+	export clAss SourceBreAkpoint extends BreAkpoint {
 		/**
-		 * The source and line position of this breakpoint.
+		 * The source And line position of this breAkpoint.
 		 */
-		readonly location: Location;
+		reAdonly locAtion: LocAtion;
 
 		/**
-		 * Create a new breakpoint for a source location.
+		 * CreAte A new breAkpoint for A source locAtion.
 		 */
-		constructor(location: Location, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string);
+		constructor(locAtion: LocAtion, enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string);
 	}
 
 	/**
-	 * A breakpoint specified by a function name.
+	 * A breAkpoint specified by A function nAme.
 	 */
-	export class FunctionBreakpoint extends Breakpoint {
+	export clAss FunctionBreAkpoint extends BreAkpoint {
 		/**
-		 * The name of the function to which this breakpoint is attached.
+		 * The nAme of the function to which this breAkpoint is AttAched.
 		 */
-		readonly functionName: string;
+		reAdonly functionNAme: string;
 
 		/**
-		 * Create a new function breakpoint.
+		 * CreAte A new function breAkpoint.
 		 */
-		constructor(functionName: string, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string);
+		constructor(functionNAme: string, enAbled?: booleAn, condition?: string, hitCondition?: string, logMessAge?: string);
 	}
 
 	/**
@@ -11386,243 +11386,243 @@ declare module 'vscode' {
 	 */
 	export enum DebugConsoleMode {
 		/**
-		 * Debug session should have a separate debug console.
+		 * Debug session should hAve A sepArAte debug console.
 		 */
-		Separate = 0,
+		SepArAte = 0,
 
 		/**
-		 * Debug session should share debug console with its parent session.
-		 * This value has no effect for sessions which do not have a parent session.
+		 * Debug session should shAre debug console with its pArent session.
+		 * This vAlue hAs no effect for sessions which do not hAve A pArent session.
 		 */
-		MergeWithParent = 1
+		MergeWithPArent = 1
 	}
 
 	/**
-	 * Options for [starting a debug session](#debug.startDebugging).
+	 * Options for [stArting A debug session](#debug.stArtDebugging).
 	 */
-	export interface DebugSessionOptions {
+	export interfAce DebugSessionOptions {
 
 		/**
-		 * When specified the newly created debug session is registered as a "child" session of this
-		 * "parent" debug session.
+		 * When specified the newly creAted debug session is registered As A "child" session of this
+		 * "pArent" debug session.
 		 */
-		parentSession?: DebugSession;
+		pArentSession?: DebugSession;
 
 		/**
-		 * Controls whether this session should have a separate debug console or share it
-		 * with the parent session. Has no effect for sessions which do not have a parent session.
-		 * Defaults to Separate.
+		 * Controls whether this session should hAve A sepArAte debug console or shAre it
+		 * with the pArent session. HAs no effect for sessions which do not hAve A pArent session.
+		 * DefAults to SepArAte.
 		 */
 		consoleMode?: DebugConsoleMode;
 
 		/**
-		 * Controls whether this session should run without debugging, thus ignoring breakpoints.
-		 * When this property is not specified, the value from the parent session (if there is one) is used.
+		 * Controls whether this session should run without debugging, thus ignoring breAkpoints.
+		 * When this property is not specified, the vAlue from the pArent session (if there is one) is used.
 		 */
-		noDebug?: boolean;
+		noDebug?: booleAn;
 
 		/**
-		 * Controls if the debug session's parent session is shown in the CALL STACK view even if it has only a single child.
-		 * By default, the debug session will never hide its parent.
-		 * If compact is true, debug sessions with a single child are hidden in the CALL STACK view to make the tree more compact.
+		 * Controls if the debug session's pArent session is shown in the CALL STACK view even if it hAs only A single child.
+		 * By defAult, the debug session will never hide its pArent.
+		 * If compAct is true, debug sessions with A single child Are hidden in the CALL STACK view to mAke the tree more compAct.
 		 */
-		compact?: boolean;
+		compAct?: booleAn;
 	}
 
 	/**
-	 * A DebugConfigurationProviderTriggerKind specifies when the `provideDebugConfigurations` method of a `DebugConfigurationProvider` is triggered.
-	 * Currently there are two situations: to provide the initial debug configurations for a newly created launch.json or
-	 * to provide dynamically generated debug configurations when the user asks for them through the UI (e.g. via the "Select and Start Debugging" command).
-	 * A trigger kind is used when registering a `DebugConfigurationProvider` with #debug.registerDebugConfigurationProvider.
+	 * A DebugConfigurAtionProviderTriggerKind specifies when the `provideDebugConfigurAtions` method of A `DebugConfigurAtionProvider` is triggered.
+	 * Currently there Are two situAtions: to provide the initiAl debug configurAtions for A newly creAted lAunch.json or
+	 * to provide dynAmicAlly generAted debug configurAtions when the user Asks for them through the UI (e.g. viA the "Select And StArt Debugging" commAnd).
+	 * A trigger kind is used when registering A `DebugConfigurAtionProvider` with #debug.registerDebugConfigurAtionProvider.
 	 */
-	export enum DebugConfigurationProviderTriggerKind {
+	export enum DebugConfigurAtionProviderTriggerKind {
 		/**
-		 *	`DebugConfigurationProvider.provideDebugConfigurations` is called to provide the initial debug configurations for a newly created launch.json.
+		 *	`DebugConfigurAtionProvider.provideDebugConfigurAtions` is cAlled to provide the initiAl debug configurAtions for A newly creAted lAunch.json.
 		 */
-		Initial = 1,
+		InitiAl = 1,
 		/**
-		 * `DebugConfigurationProvider.provideDebugConfigurations` is called to provide dynamically generated debug configurations when the user asks for them through the UI (e.g. via the "Select and Start Debugging" command).
+		 * `DebugConfigurAtionProvider.provideDebugConfigurAtions` is cAlled to provide dynAmicAlly generAted debug configurAtions when the user Asks for them through the UI (e.g. viA the "Select And StArt Debugging" commAnd).
 		 */
-		Dynamic = 2
+		DynAmic = 2
 	}
 
 	/**
-	 * Namespace for debug functionality.
+	 * NAmespAce for debug functionAlity.
 	 */
-	export namespace debug {
+	export nAmespAce debug {
 
 		/**
-		 * The currently active [debug session](#DebugSession) or `undefined`. The active debug session is the one
-		 * represented by the debug action floating window or the one currently shown in the drop down menu of the debug action floating window.
-		 * If no debug session is active, the value is `undefined`.
+		 * The currently Active [debug session](#DebugSession) or `undefined`. The Active debug session is the one
+		 * represented by the debug Action floAting window or the one currently shown in the drop down menu of the debug Action floAting window.
+		 * If no debug session is Active, the vAlue is `undefined`.
 		 */
-		export let activeDebugSession: DebugSession | undefined;
+		export let ActiveDebugSession: DebugSession | undefined;
 
 		/**
-		 * The currently active [debug console](#DebugConsole).
-		 * If no debug session is active, output sent to the debug console is not shown.
+		 * The currently Active [debug console](#DebugConsole).
+		 * If no debug session is Active, output sent to the debug console is not shown.
 		 */
-		export let activeDebugConsole: DebugConsole;
+		export let ActiveDebugConsole: DebugConsole;
 
 		/**
-		 * List of breakpoints.
+		 * List of breAkpoints.
 		 */
-		export let breakpoints: Breakpoint[];
+		export let breAkpoints: BreAkpoint[];
 
 		/**
-		 * An [event](#Event) which fires when the [active debug session](#debug.activeDebugSession)
-		 * has changed. *Note* that the event also fires when the active debug session changes
+		 * An [event](#Event) which fires when the [Active debug session](#debug.ActiveDebugSession)
+		 * hAs chAnged. *Note* thAt the event Also fires when the Active debug session chAnges
 		 * to `undefined`.
 		 */
-		export const onDidChangeActiveDebugSession: Event<DebugSession | undefined>;
+		export const onDidChAngeActiveDebugSession: Event<DebugSession | undefined>;
 
 		/**
-		 * An [event](#Event) which fires when a new [debug session](#DebugSession) has been started.
+		 * An [event](#Event) which fires when A new [debug session](#DebugSession) hAs been stArted.
 		 */
-		export const onDidStartDebugSession: Event<DebugSession>;
+		export const onDidStArtDebugSession: Event<DebugSession>;
 
 		/**
-		 * An [event](#Event) which fires when a custom DAP event is received from the [debug session](#DebugSession).
+		 * An [event](#Event) which fires when A custom DAP event is received from the [debug session](#DebugSession).
 		 */
 		export const onDidReceiveDebugSessionCustomEvent: Event<DebugSessionCustomEvent>;
 
 		/**
-		 * An [event](#Event) which fires when a [debug session](#DebugSession) has terminated.
+		 * An [event](#Event) which fires when A [debug session](#DebugSession) hAs terminAted.
 		 */
-		export const onDidTerminateDebugSession: Event<DebugSession>;
+		export const onDidTerminAteDebugSession: Event<DebugSession>;
 
 		/**
-		 * An [event](#Event) that is emitted when the set of breakpoints is added, removed, or changed.
+		 * An [event](#Event) thAt is emitted when the set of breAkpoints is Added, removed, or chAnged.
 		 */
-		export const onDidChangeBreakpoints: Event<BreakpointsChangeEvent>;
+		export const onDidChAngeBreAkpoints: Event<BreAkpointsChAngeEvent>;
 
 		/**
-		 * Register a [debug configuration provider](#DebugConfigurationProvider) for a specific debug type.
-		 * The optional [triggerKind](#DebugConfigurationProviderTriggerKind) can be used to specify when the `provideDebugConfigurations` method of the provider is triggered.
-		 * Currently two trigger kinds are possible: with the value `Initial` (or if no trigger kind argument is given) the `provideDebugConfigurations` method is used to provide the initial debug configurations to be copied into a newly created launch.json.
-		 * With the trigger kind `Dynamic` the `provideDebugConfigurations` method is used to dynamically determine debug configurations to be presented to the user (in addition to the static configurations from the launch.json).
-		 * Please note that the `triggerKind` argument only applies to the `provideDebugConfigurations` method: so the `resolveDebugConfiguration` methods are not affected at all.
-		 * Registering a single provider with resolve methods for different trigger kinds, results in the same resolve methods called multiple times.
-		 * More than one provider can be registered for the same type.
+		 * Register A [debug configurAtion provider](#DebugConfigurAtionProvider) for A specific debug type.
+		 * The optionAl [triggerKind](#DebugConfigurAtionProviderTriggerKind) cAn be used to specify when the `provideDebugConfigurAtions` method of the provider is triggered.
+		 * Currently two trigger kinds Are possible: with the vAlue `InitiAl` (or if no trigger kind Argument is given) the `provideDebugConfigurAtions` method is used to provide the initiAl debug configurAtions to be copied into A newly creAted lAunch.json.
+		 * With the trigger kind `DynAmic` the `provideDebugConfigurAtions` method is used to dynAmicAlly determine debug configurAtions to be presented to the user (in Addition to the stAtic configurAtions from the lAunch.json).
+		 * PleAse note thAt the `triggerKind` Argument only Applies to the `provideDebugConfigurAtions` method: so the `resolveDebugConfigurAtion` methods Are not Affected At All.
+		 * Registering A single provider with resolve methods for different trigger kinds, results in the sAme resolve methods cAlled multiple times.
+		 * More thAn one provider cAn be registered for the sAme type.
 		 *
-		 * @param type The debug type for which the provider is registered.
-		 * @param provider The [debug configuration provider](#DebugConfigurationProvider) to register.
-		 * @param triggerKind The [trigger](#DebugConfigurationProviderTrigger) for which the 'provideDebugConfiguration' method of the provider is registered. If `triggerKind` is missing, the value `DebugConfigurationProviderTriggerKind.Initial` is assumed.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+		 * @pArAm type The debug type for which the provider is registered.
+		 * @pArAm provider The [debug configurAtion provider](#DebugConfigurAtionProvider) to register.
+		 * @pArAm triggerKind The [trigger](#DebugConfigurAtionProviderTrigger) for which the 'provideDebugConfigurAtion' method of the provider is registered. If `triggerKind` is missing, the vAlue `DebugConfigurAtionProviderTriggerKind.InitiAl` is Assumed.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this provider when being disposed.
 		 */
-		export function registerDebugConfigurationProvider(debugType: string, provider: DebugConfigurationProvider, triggerKind?: DebugConfigurationProviderTriggerKind): Disposable;
+		export function registerDebugConfigurAtionProvider(debugType: string, provider: DebugConfigurAtionProvider, triggerKind?: DebugConfigurAtionProviderTriggerKind): DisposAble;
 
 		/**
-		 * Register a [debug adapter descriptor factory](#DebugAdapterDescriptorFactory) for a specific debug type.
-		 * An extension is only allowed to register a DebugAdapterDescriptorFactory for the debug type(s) defined by the extension. Otherwise an error is thrown.
-		 * Registering more than one DebugAdapterDescriptorFactory for a debug type results in an error.
+		 * Register A [debug AdApter descriptor fActory](#DebugAdApterDescriptorFActory) for A specific debug type.
+		 * An extension is only Allowed to register A DebugAdApterDescriptorFActory for the debug type(s) defined by the extension. Otherwise An error is thrown.
+		 * Registering more thAn one DebugAdApterDescriptorFActory for A debug type results in An error.
 		 *
-		 * @param debugType The debug type for which the factory is registered.
-		 * @param factory The [debug adapter descriptor factory](#DebugAdapterDescriptorFactory) to register.
-		 * @return A [disposable](#Disposable) that unregisters this factory when being disposed.
+		 * @pArAm debugType The debug type for which the fActory is registered.
+		 * @pArAm fActory The [debug AdApter descriptor fActory](#DebugAdApterDescriptorFActory) to register.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this fActory when being disposed.
 		 */
-		export function registerDebugAdapterDescriptorFactory(debugType: string, factory: DebugAdapterDescriptorFactory): Disposable;
+		export function registerDebugAdApterDescriptorFActory(debugType: string, fActory: DebugAdApterDescriptorFActory): DisposAble;
 
 		/**
-		 * Register a debug adapter tracker factory for the given debug type.
+		 * Register A debug AdApter trAcker fActory for the given debug type.
 		 *
-		 * @param debugType The debug type for which the factory is registered or '*' for matching all debug types.
-		 * @param factory The [debug adapter tracker factory](#DebugAdapterTrackerFactory) to register.
-		 * @return A [disposable](#Disposable) that unregisters this factory when being disposed.
+		 * @pArAm debugType The debug type for which the fActory is registered or '*' for mAtching All debug types.
+		 * @pArAm fActory The [debug AdApter trAcker fActory](#DebugAdApterTrAckerFActory) to register.
+		 * @return A [disposAble](#DisposAble) thAt unregisters this fActory when being disposed.
 		 */
-		export function registerDebugAdapterTrackerFactory(debugType: string, factory: DebugAdapterTrackerFactory): Disposable;
+		export function registerDebugAdApterTrAckerFActory(debugType: string, fActory: DebugAdApterTrAckerFActory): DisposAble;
 
 		/**
-		 * Start debugging by using either a named launch or named compound configuration,
-		 * or by directly passing a [DebugConfiguration](#DebugConfiguration).
-		 * The named configurations are looked up in '.vscode/launch.json' found in the given folder.
-		 * Before debugging starts, all unsaved files are saved and the launch configurations are brought up-to-date.
-		 * Folder specific variables used in the configuration (e.g. '${workspaceFolder}') are resolved against the given folder.
-		 * @param folder The [workspace folder](#WorkspaceFolder) for looking up named configurations and resolving variables or `undefined` for a non-folder setup.
-		 * @param nameOrConfiguration Either the name of a debug or compound configuration or a [DebugConfiguration](#DebugConfiguration) object.
-		 * @param parentSessionOrOptions Debug session options. When passed a parent [debug session](#DebugSession), assumes options with just this parent session.
-		 * @return A thenable that resolves when debugging could be successfully started.
+		 * StArt debugging by using either A nAmed lAunch or nAmed compound configurAtion,
+		 * or by directly pAssing A [DebugConfigurAtion](#DebugConfigurAtion).
+		 * The nAmed configurAtions Are looked up in '.vscode/lAunch.json' found in the given folder.
+		 * Before debugging stArts, All unsAved files Are sAved And the lAunch configurAtions Are brought up-to-dAte.
+		 * Folder specific vAriAbles used in the configurAtion (e.g. '${workspAceFolder}') Are resolved AgAinst the given folder.
+		 * @pArAm folder The [workspAce folder](#WorkspAceFolder) for looking up nAmed configurAtions And resolving vAriAbles or `undefined` for A non-folder setup.
+		 * @pArAm nAmeOrConfigurAtion Either the nAme of A debug or compound configurAtion or A [DebugConfigurAtion](#DebugConfigurAtion) object.
+		 * @pArAm pArentSessionOrOptions Debug session options. When pAssed A pArent [debug session](#DebugSession), Assumes options with just this pArent session.
+		 * @return A thenAble thAt resolves when debugging could be successfully stArted.
 		 */
-		export function startDebugging(folder: WorkspaceFolder | undefined, nameOrConfiguration: string | DebugConfiguration, parentSessionOrOptions?: DebugSession | DebugSessionOptions): Thenable<boolean>;
+		export function stArtDebugging(folder: WorkspAceFolder | undefined, nAmeOrConfigurAtion: string | DebugConfigurAtion, pArentSessionOrOptions?: DebugSession | DebugSessionOptions): ThenAble<booleAn>;
 
 		/**
-		 * Stop the given debug session or stop all debug sessions if session is omitted.
-		 * @param session The [debug session](#DebugSession) to stop; if omitted all sessions are stopped.
+		 * Stop the given debug session or stop All debug sessions if session is omitted.
+		 * @pArAm session The [debug session](#DebugSession) to stop; if omitted All sessions Are stopped.
 		 */
-		export function stopDebugging(session?: DebugSession): Thenable<void>;
+		export function stopDebugging(session?: DebugSession): ThenAble<void>;
 
 		/**
-		 * Add breakpoints.
-		 * @param breakpoints The breakpoints to add.
+		 * Add breAkpoints.
+		 * @pArAm breAkpoints The breAkpoints to Add.
 		*/
-		export function addBreakpoints(breakpoints: Breakpoint[]): void;
+		export function AddBreAkpoints(breAkpoints: BreAkpoint[]): void;
 
 		/**
-		 * Remove breakpoints.
-		 * @param breakpoints The breakpoints to remove.
+		 * Remove breAkpoints.
+		 * @pArAm breAkpoints The breAkpoints to remove.
 		 */
-		export function removeBreakpoints(breakpoints: Breakpoint[]): void;
+		export function removeBreAkpoints(breAkpoints: BreAkpoint[]): void;
 
 		/**
-		 * Converts a "Source" descriptor object received via the Debug Adapter Protocol into a Uri that can be used to load its contents.
-		 * If the source descriptor is based on a path, a file Uri is returned.
-		 * If the source descriptor uses a reference number, a specific debug Uri (scheme 'debug') is constructed that requires a corresponding VS Code ContentProvider and a running debug session
+		 * Converts A "Source" descriptor object received viA the Debug AdApter Protocol into A Uri thAt cAn be used to loAd its contents.
+		 * If the source descriptor is bAsed on A pAth, A file Uri is returned.
+		 * If the source descriptor uses A reference number, A specific debug Uri (scheme 'debug') is constructed thAt requires A corresponding VS Code ContentProvider And A running debug session
 		 *
-		 * If the "Source" descriptor has insufficient information for creating the Uri, an error is thrown.
+		 * If the "Source" descriptor hAs insufficient informAtion for creAting the Uri, An error is thrown.
 		 *
-		 * @param source An object conforming to the [Source](https://microsoft.github.io/debug-adapter-protocol/specification#Types_Source) type defined in the Debug Adapter Protocol.
-		 * @param session An optional debug session that will be used when the source descriptor uses a reference number to load the contents from an active debug session.
-		 * @return A uri that can be used to load the contents of the source.
+		 * @pArAm source An object conforming to the [Source](https://microsoft.github.io/debug-AdApter-protocol/specificAtion#Types_Source) type defined in the Debug AdApter Protocol.
+		 * @pArAm session An optionAl debug session thAt will be used when the source descriptor uses A reference number to loAd the contents from An Active debug session.
+		 * @return A uri thAt cAn be used to loAd the contents of the source.
 		 */
-		export function asDebugSourceUri(source: DebugProtocolSource, session?: DebugSession): Uri;
+		export function AsDebugSourceUri(source: DebugProtocolSource, session?: DebugSession): Uri;
 	}
 
 	/**
-	 * Namespace for dealing with installed extensions. Extensions are represented
-	 * by an [extension](#Extension)-interface which enables reflection on them.
+	 * NAmespAce for deAling with instAlled extensions. Extensions Are represented
+	 * by An [extension](#Extension)-interfAce which enAbles reflection on them.
 	 *
-	 * Extension writers can provide APIs to other extensions by returning their API public
-	 * surface from the `activate`-call.
+	 * Extension writers cAn provide APIs to other extensions by returning their API public
+	 * surfAce from the `ActivAte`-cAll.
 	 *
-	 * ```javascript
-	 * export function activate(context: vscode.ExtensionContext) {
-	 * 	let api = {
-	 * 		sum(a, b) {
-	 * 			return a + b;
+	 * ```jAvAscript
+	 * export function ActivAte(context: vscode.ExtensionContext) {
+	 * 	let Api = {
+	 * 		sum(A, b) {
+	 * 			return A + b;
 	 * 		},
-	 * 		mul(a, b) {
-	 * 			return a * b;
+	 * 		mul(A, b) {
+	 * 			return A * b;
 	 * 		}
 	 * 	};
-	 * 	// 'export' public api-surface
-	 * 	return api;
+	 * 	// 'export' public Api-surfAce
+	 * 	return Api;
 	 * }
 	 * ```
-	 * When depending on the API of another extension add an `extensionDependencies`-entry
-	 * to `package.json`, and use the [getExtension](#extensions.getExtension)-function
-	 * and the [exports](#Extension.exports)-property, like below:
+	 * When depending on the API of Another extension Add An `extensionDependencies`-entry
+	 * to `pAckAge.json`, And use the [getExtension](#extensions.getExtension)-function
+	 * And the [exports](#Extension.exports)-property, like below:
 	 *
-	 * ```javascript
-	 * let mathExt = extensions.getExtension('genius.math');
-	 * let importedApi = mathExt.exports;
+	 * ```jAvAscript
+	 * let mAthExt = extensions.getExtension('genius.mAth');
+	 * let importedApi = mAthExt.exports;
 	 *
 	 * console.log(importedApi.mul(42, 1));
 	 * ```
 	 */
-	export namespace extensions {
+	export nAmespAce extensions {
 
 		/**
-		 * Get an extension by its full identifier in the form of: `publisher.name`.
+		 * Get An extension by its full identifier in the form of: `publisher.nAme`.
 		 *
-		 * @param extensionId An extension identifier.
+		 * @pArAm extensionId An extension identifier.
 		 * @return An extension or `undefined`.
 		 */
-		export function getExtension(extensionId: string): Extension<any> | undefined;
+		export function getExtension(extensionId: string): Extension<Any> | undefined;
 
 		/**
-		 * Get an extension by its full identifier in the form of: `publisher.name`.
+		 * Get An extension by its full identifier in the form of: `publisher.nAme`.
 		 *
-		 * @param extensionId An extension identifier.
+		 * @pArAm extensionId An extension identifier.
 		 * @return An extension or `undefined`.
 		 */
 		export function getExtension<T>(extensionId: string): Extension<T> | undefined;
@@ -11630,154 +11630,154 @@ declare module 'vscode' {
 		/**
 		 * All extensions currently known to the system.
 		 */
-		export const all: ReadonlyArray<Extension<any>>;
+		export const All: ReAdonlyArrAy<Extension<Any>>;
 
 		/**
-		 * An event which fires when `extensions.all` changes. This can happen when extensions are
-		 * installed, uninstalled, enabled or disabled.
+		 * An event which fires when `extensions.All` chAnges. This cAn hAppen when extensions Are
+		 * instAlled, uninstAlled, enAbled or disAbled.
 		 */
-		export const onDidChange: Event<void>;
+		export const onDidChAnge: Event<void>;
 	}
 
 	//#region Comments
 
 	/**
-	 * Collapsible state of a [comment thread](#CommentThread)
+	 * CollApsible stAte of A [comment threAd](#CommentThreAd)
 	 */
-	export enum CommentThreadCollapsibleState {
+	export enum CommentThreAdCollApsibleStAte {
 		/**
-		 * Determines an item is collapsed
+		 * Determines An item is collApsed
 		 */
-		Collapsed = 0,
+		CollApsed = 0,
 
 		/**
-		 * Determines an item is expanded
+		 * Determines An item is expAnded
 		 */
-		Expanded = 1
+		ExpAnded = 1
 	}
 
 	/**
-	 * Comment mode of a [comment](#Comment)
+	 * Comment mode of A [comment](#Comment)
 	 */
 	export enum CommentMode {
 		/**
-		 * Displays the comment editor
+		 * DisplAys the comment editor
 		 */
 		Editing = 0,
 
 		/**
-		 * Displays the preview of the comment
+		 * DisplAys the preview of the comment
 		 */
 		Preview = 1
 	}
 
 	/**
-	 * A collection of [comments](#Comment) representing a conversation at a particular range in a document.
+	 * A collection of [comments](#Comment) representing A conversAtion At A pArticulAr rAnge in A document.
 	 */
-	export interface CommentThread {
+	export interfAce CommentThreAd {
 		/**
-		 * The uri of the document the thread has been created on.
+		 * The uri of the document the threAd hAs been creAted on.
 		 */
-		readonly uri: Uri;
+		reAdonly uri: Uri;
 
 		/**
-		 * The range the comment thread is located within the document. The thread icon will be shown
-		 * at the first line of the range.
+		 * The rAnge the comment threAd is locAted within the document. The threAd icon will be shown
+		 * At the first line of the rAnge.
 		 */
-		range: Range;
+		rAnge: RAnge;
 
 		/**
-		 * The ordered comments of the thread.
+		 * The ordered comments of the threAd.
 		 */
-		comments: ReadonlyArray<Comment>;
+		comments: ReAdonlyArrAy<Comment>;
 
 		/**
-		 * Whether the thread should be collapsed or expanded when opening the document.
-		 * Defaults to Collapsed.
+		 * Whether the threAd should be collApsed or expAnded when opening the document.
+		 * DefAults to CollApsed.
 		 */
-		collapsibleState: CommentThreadCollapsibleState;
+		collApsibleStAte: CommentThreAdCollApsibleStAte;
 
 		/**
-		 * Context value of the comment thread. This can be used to contribute thread specific actions.
-		 * For example, a comment thread is given a context value as `editable`. When contributing actions to `comments/commentThread/title`
-		 * using `menus` extension point, you can specify context value for key `commentThread` in `when` expression like `commentThread == editable`.
+		 * Context vAlue of the comment threAd. This cAn be used to contribute threAd specific Actions.
+		 * For exAmple, A comment threAd is given A context vAlue As `editAble`. When contributing Actions to `comments/commentThreAd/title`
+		 * using `menus` extension point, you cAn specify context vAlue for key `commentThreAd` in `when` expression like `commentThreAd == editAble`.
 		 * ```
 		 *	"contributes": {
 		 *		"menus": {
-		 *			"comments/commentThread/title": [
+		 *			"comments/commentThreAd/title": [
 		 *				{
-		 *					"command": "extension.deleteCommentThread",
-		 *					"when": "commentThread == editable"
+		 *					"commAnd": "extension.deleteCommentThreAd",
+		 *					"when": "commentThreAd == editAble"
 		 *				}
 		 *			]
 		 *		}
 		 *	}
 		 * ```
-		 * This will show action `extension.deleteCommentThread` only for comment threads with `contextValue` is `editable`.
+		 * This will show Action `extension.deleteCommentThreAd` only for comment threAds with `contextVAlue` is `editAble`.
 		 */
-		contextValue?: string;
+		contextVAlue?: string;
 
 		/**
-		 * The optional human-readable label describing the [Comment Thread](#CommentThread)
+		 * The optionAl humAn-reAdAble lAbel describing the [Comment ThreAd](#CommentThreAd)
 		 */
-		label?: string;
+		lAbel?: string;
 
 		/**
-		 * Dispose this comment thread.
+		 * Dispose this comment threAd.
 		 *
-		 * Once disposed, this comment thread will be removed from visible editors and Comment Panel when appropriate.
+		 * Once disposed, this comment threAd will be removed from visible editors And Comment PAnel when AppropriAte.
 		 */
 		dispose(): void;
 	}
 
 	/**
-	 * Author information of a [comment](#Comment)
+	 * Author informAtion of A [comment](#Comment)
 	 */
-	export interface CommentAuthorInformation {
+	export interfAce CommentAuthorInformAtion {
 		/**
-		 * The display name of the author of the comment
+		 * The displAy nAme of the Author of the comment
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * The optional icon path for the author
+		 * The optionAl icon pAth for the Author
 		 */
-		iconPath?: Uri;
+		iconPAth?: Uri;
 	}
 
 	/**
-	 * Reactions of a [comment](#Comment)
+	 * ReActions of A [comment](#Comment)
 	 */
-	export interface CommentReaction {
+	export interfAce CommentReAction {
 		/**
-		 * The human-readable label for the reaction
+		 * The humAn-reAdAble lAbel for the reAction
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 
 		/**
-		 * Icon for the reaction shown in UI.
+		 * Icon for the reAction shown in UI.
 		 */
-		readonly iconPath: string | Uri;
+		reAdonly iconPAth: string | Uri;
 
 		/**
-		 * The number of users who have reacted to this reaction
+		 * The number of users who hAve reActed to this reAction
 		 */
-		readonly count: number;
+		reAdonly count: number;
 
 		/**
-		 * Whether the [author](CommentAuthorInformation) of the comment has reacted to this reaction
+		 * Whether the [Author](CommentAuthorInformAtion) of the comment hAs reActed to this reAction
 		 */
-		readonly authorHasReacted: boolean;
+		reAdonly AuthorHAsReActed: booleAn;
 	}
 
 	/**
-	 * A comment is displayed within the editor or the Comments Panel, depending on how it is provided.
+	 * A comment is displAyed within the editor or the Comments PAnel, depending on how it is provided.
 	 */
-	export interface Comment {
+	export interfAce Comment {
 		/**
-		 * The human-readable comment body
+		 * The humAn-reAdAble comment body
 		 */
-		body: string | MarkdownString;
+		body: string | MArkdownString;
 
 		/**
 		 * [Comment mode](#CommentMode) of the comment
@@ -11785,96 +11785,96 @@ declare module 'vscode' {
 		mode: CommentMode;
 
 		/**
-		 * The [author information](#CommentAuthorInformation) of the comment
+		 * The [Author informAtion](#CommentAuthorInformAtion) of the comment
 		 */
-		author: CommentAuthorInformation;
+		Author: CommentAuthorInformAtion;
 
 		/**
-		 * Context value of the comment. This can be used to contribute comment specific actions.
-		 * For example, a comment is given a context value as `editable`. When contributing actions to `comments/comment/title`
-		 * using `menus` extension point, you can specify context value for key `comment` in `when` expression like `comment == editable`.
+		 * Context vAlue of the comment. This cAn be used to contribute comment specific Actions.
+		 * For exAmple, A comment is given A context vAlue As `editAble`. When contributing Actions to `comments/comment/title`
+		 * using `menus` extension point, you cAn specify context vAlue for key `comment` in `when` expression like `comment == editAble`.
 		 * ```json
 		 *	"contributes": {
 		 *		"menus": {
 		 *			"comments/comment/title": [
 		 *				{
-		 *					"command": "extension.deleteComment",
-		 *					"when": "comment == editable"
+		 *					"commAnd": "extension.deleteComment",
+		 *					"when": "comment == editAble"
 		 *				}
 		 *			]
 		 *		}
 		 *	}
 		 * ```
-		 * This will show action `extension.deleteComment` only for comments with `contextValue` is `editable`.
+		 * This will show Action `extension.deleteComment` only for comments with `contextVAlue` is `editAble`.
 		 */
-		contextValue?: string;
+		contextVAlue?: string;
 
 		/**
-		 * Optional reactions of the [comment](#Comment)
+		 * OptionAl reActions of the [comment](#Comment)
 		 */
-		reactions?: CommentReaction[];
+		reActions?: CommentReAction[];
 
 		/**
-		 * Optional label describing the [Comment](#Comment)
-		 * Label will be rendered next to authorName if exists.
+		 * OptionAl lAbel describing the [Comment](#Comment)
+		 * LAbel will be rendered next to AuthorNAme if exists.
 		 */
-		label?: string;
+		lAbel?: string;
 	}
 
 	/**
-	 * Command argument for actions registered in `comments/commentThread/context`.
+	 * CommAnd Argument for Actions registered in `comments/commentThreAd/context`.
 	 */
-	export interface CommentReply {
+	export interfAce CommentReply {
 		/**
-		 * The active [comment thread](#CommentThread)
+		 * The Active [comment threAd](#CommentThreAd)
 		 */
-		thread: CommentThread;
+		threAd: CommentThreAd;
 
 		/**
-		 * The value in the comment editor
+		 * The vAlue in the comment editor
 		 */
 		text: string;
 	}
 
 	/**
-	 * Commenting range provider for a [comment controller](#CommentController).
+	 * Commenting rAnge provider for A [comment controller](#CommentController).
 	 */
-	export interface CommentingRangeProvider {
+	export interfAce CommentingRAngeProvider {
 		/**
-		 * Provide a list of ranges which allow new comment threads creation or null for a given document
+		 * Provide A list of rAnges which Allow new comment threAds creAtion or null for A given document
 		 */
-		provideCommentingRanges(document: TextDocument, token: CancellationToken): ProviderResult<Range[]>;
+		provideCommentingRAnges(document: TextDocument, token: CAncellAtionToken): ProviderResult<RAnge[]>;
 	}
 
 	/**
-	 * Represents a [comment controller](#CommentController)'s [options](#CommentController.options).
+	 * Represents A [comment controller](#CommentController)'s [options](#CommentController.options).
 	 */
-	export interface CommentOptions {
+	export interfAce CommentOptions {
 		/**
-		 * An optional string to show on the comment input box when it's collapsed.
+		 * An optionAl string to show on the comment input box when it's collApsed.
 		 */
 		prompt?: string;
 
 		/**
-		 * An optional string to show as placeholder in the comment input box when it's focused.
+		 * An optionAl string to show As plAceholder in the comment input box when it's focused.
 		 */
-		placeHolder?: string;
+		plAceHolder?: string;
 	}
 
 	/**
-	 * A comment controller is able to provide [comments](#CommentThread) support to the editor and
-	 * provide users various ways to interact with comments.
+	 * A comment controller is Able to provide [comments](#CommentThreAd) support to the editor And
+	 * provide users vArious wAys to interAct with comments.
 	 */
-	export interface CommentController {
+	export interfAce CommentController {
 		/**
 		 * The id of this comment controller.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The human-readable label of this comment controller.
+		 * The humAn-reAdAble lAbel of this comment controller.
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 
 		/**
 		 * Comment controller options
@@ -11882,198 +11882,198 @@ declare module 'vscode' {
 		options?: CommentOptions;
 
 		/**
-		 * Optional commenting range provider. Provide a list [ranges](#Range) which support commenting to any given resource uri.
+		 * OptionAl commenting rAnge provider. Provide A list [rAnges](#RAnge) which support commenting to Any given resource uri.
 		 *
-		 * If not provided, users can leave comments in any document opened in the editor.
+		 * If not provided, users cAn leAve comments in Any document opened in the editor.
 		 */
-		commentingRangeProvider?: CommentingRangeProvider;
+		commentingRAngeProvider?: CommentingRAngeProvider;
 
 		/**
-		 * Create a [comment thread](#CommentThread). The comment thread will be displayed in visible text editors (if the resource matches)
-		 * and Comments Panel once created.
+		 * CreAte A [comment threAd](#CommentThreAd). The comment threAd will be displAyed in visible text editors (if the resource mAtches)
+		 * And Comments PAnel once creAted.
 		 *
-		 * @param uri The uri of the document the thread has been created on.
-		 * @param range The range the comment thread is located within the document.
-		 * @param comments The ordered comments of the thread.
+		 * @pArAm uri The uri of the document the threAd hAs been creAted on.
+		 * @pArAm rAnge The rAnge the comment threAd is locAted within the document.
+		 * @pArAm comments The ordered comments of the threAd.
 		 */
-		createCommentThread(uri: Uri, range: Range, comments: Comment[]): CommentThread;
+		creAteCommentThreAd(uri: Uri, rAnge: RAnge, comments: Comment[]): CommentThreAd;
 
 		/**
-		 * Optional reaction handler for creating and deleting reactions on a [comment](#Comment).
+		 * OptionAl reAction hAndler for creAting And deleting reActions on A [comment](#Comment).
 		 */
-		reactionHandler?: (comment: Comment, reaction: CommentReaction) => Promise<void>;
+		reActionHAndler?: (comment: Comment, reAction: CommentReAction) => Promise<void>;
 
 		/**
 		 * Dispose this comment controller.
 		 *
-		 * Once disposed, all [comment threads](#CommentThread) created by this comment controller will also be removed from the editor
-		 * and Comments Panel.
+		 * Once disposed, All [comment threAds](#CommentThreAd) creAted by this comment controller will Also be removed from the editor
+		 * And Comments PAnel.
 		 */
 		dispose(): void;
 	}
 
-	namespace comments {
+	nAmespAce comments {
 		/**
-		 * Creates a new [comment controller](#CommentController) instance.
+		 * CreAtes A new [comment controller](#CommentController) instAnce.
 		 *
-		 * @param id An `id` for the comment controller.
-		 * @param label A human-readable string for the comment controller.
-		 * @return An instance of [comment controller](#CommentController).
+		 * @pArAm id An `id` for the comment controller.
+		 * @pArAm lAbel A humAn-reAdAble string for the comment controller.
+		 * @return An instAnce of [comment controller](#CommentController).
 		 */
-		export function createCommentController(id: string, label: string): CommentController;
+		export function creAteCommentController(id: string, lAbel: string): CommentController;
 	}
 
 	//#endregion
 
 	/**
-	 * Represents a session of a currently logged in user.
+	 * Represents A session of A currently logged in user.
 	 */
-	export interface AuthenticationSession {
+	export interfAce AuthenticAtionSession {
 		/**
-		 * The identifier of the authentication session.
+		 * The identifier of the AuthenticAtion session.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The access token.
+		 * The Access token.
 		 */
-		readonly accessToken: string;
+		reAdonly AccessToken: string;
 
 		/**
-		 * The account associated with the session.
+		 * The Account AssociAted with the session.
 		 */
-		readonly account: AuthenticationSessionAccountInformation;
+		reAdonly Account: AuthenticAtionSessionAccountInformAtion;
 
 		/**
-		 * The permissions granted by the session's access token. Available scopes
-		 * are defined by the [AuthenticationProvider](#AuthenticationProvider).
+		 * The permissions grAnted by the session's Access token. AvAilAble scopes
+		 * Are defined by the [AuthenticAtionProvider](#AuthenticAtionProvider).
 		 */
-		readonly scopes: ReadonlyArray<string>;
+		reAdonly scopes: ReAdonlyArrAy<string>;
 	}
 
 	/**
-	 * The information of an account associated with an [AuthenticationSession](#AuthenticationSession).
+	 * The informAtion of An Account AssociAted with An [AuthenticAtionSession](#AuthenticAtionSession).
 	 */
-	export interface AuthenticationSessionAccountInformation {
+	export interfAce AuthenticAtionSessionAccountInformAtion {
 		/**
-		 * The unique identifier of the account.
+		 * The unique identifier of the Account.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The human-readable name of the account.
+		 * The humAn-reAdAble nAme of the Account.
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 	}
 
 
 	/**
-	 * Options to be used when getting an [AuthenticationSession](#AuthenticationSession) from an [AuthenticationProvider](#AuthenticationProvider).
+	 * Options to be used when getting An [AuthenticAtionSession](#AuthenticAtionSession) from An [AuthenticAtionProvider](#AuthenticAtionProvider).
 	 */
-	export interface AuthenticationGetSessionOptions {
+	export interfAce AuthenticAtionGetSessionOptions {
 		/**
-		 * Whether login should be performed if there is no matching session.
+		 * Whether login should be performed if there is no mAtching session.
 		 *
-		 * If true, a modal dialog will be shown asking the user to sign in. If false, a numbered badge will be shown
-		 * on the accounts activity bar icon. An entry for the extension will be added under the menu to sign in. This
-		 * allows quietly prompting the user to sign in.
+		 * If true, A modAl diAlog will be shown Asking the user to sign in. If fAlse, A numbered bAdge will be shown
+		 * on the Accounts Activity bAr icon. An entry for the extension will be Added under the menu to sign in. This
+		 * Allows quietly prompting the user to sign in.
 		 *
-		 * Defaults to false.
+		 * DefAults to fAlse.
 		 */
-		createIfNone?: boolean;
+		creAteIfNone?: booleAn;
 
 		/**
-		 * Whether the existing user session preference should be cleared.
+		 * Whether the existing user session preference should be cleAred.
 		 *
-		 * For authentication providers that support being signed into multiple accounts at once, the user will be
-		 * prompted to select an account to use when [getSession](#authentication.getSession) is called. This preference
-		 * is remembered until [getSession](#authentication.getSession) is called with this flag.
+		 * For AuthenticAtion providers thAt support being signed into multiple Accounts At once, the user will be
+		 * prompted to select An Account to use when [getSession](#AuthenticAtion.getSession) is cAlled. This preference
+		 * is remembered until [getSession](#AuthenticAtion.getSession) is cAlled with this flAg.
 		 *
-		 * Defaults to false.
+		 * DefAults to fAlse.
 		 */
-		clearSessionPreference?: boolean;
+		cleArSessionPreference?: booleAn;
 	}
 
 	/**
-	 * Basic information about an [authenticationProvider](#AuthenticationProvider)
+	 * BAsic informAtion About An [AuthenticAtionProvider](#AuthenticAtionProvider)
 	 */
-	export interface AuthenticationProviderInformation {
+	export interfAce AuthenticAtionProviderInformAtion {
 		/**
-		 * The unique identifier of the authentication provider.
+		 * The unique identifier of the AuthenticAtion provider.
 		 */
-		readonly id: string;
+		reAdonly id: string;
 
 		/**
-		 * The human-readable name of the authentication provider.
+		 * The humAn-reAdAble nAme of the AuthenticAtion provider.
 		 */
-		readonly label: string;
+		reAdonly lAbel: string;
 	}
 
 	/**
-	 * An [event](#Event) which fires when an [AuthenticationSession](#AuthenticationSession) is added, removed, or changed.
+	 * An [event](#Event) which fires when An [AuthenticAtionSession](#AuthenticAtionSession) is Added, removed, or chAnged.
 	 */
-	export interface AuthenticationSessionsChangeEvent {
+	export interfAce AuthenticAtionSessionsChAngeEvent {
 		/**
-		 * The [authenticationProvider](#AuthenticationProvider) that has had its sessions change.
+		 * The [AuthenticAtionProvider](#AuthenticAtionProvider) thAt hAs hAd its sessions chAnge.
 		 */
-		readonly provider: AuthenticationProviderInformation;
+		reAdonly provider: AuthenticAtionProviderInformAtion;
 	}
 
 	/**
-	 * Namespace for authentication.
+	 * NAmespAce for AuthenticAtion.
 	 */
-	export namespace authentication {
+	export nAmespAce AuthenticAtion {
 		/**
-		 * Get an authentication session matching the desired scopes. Rejects if a provider with providerId is not
-		 * registered, or if the user does not consent to sharing authentication information with
-		 * the extension. If there are multiple sessions with the same scopes, the user will be shown a
-		 * quickpick to select which account they would like to use.
+		 * Get An AuthenticAtion session mAtching the desired scopes. Rejects if A provider with providerId is not
+		 * registered, or if the user does not consent to shAring AuthenticAtion informAtion with
+		 * the extension. If there Are multiple sessions with the sAme scopes, the user will be shown A
+		 * quickpick to select which Account they would like to use.
 		 *
-		 * Currently, there are only two authentication providers that are contributed from built in extensions
-		 * to VS Code that implement GitHub and Microsoft authentication: their providerId's are 'github' and 'microsoft'.
-		 * @param providerId The id of the provider to use
-		 * @param scopes A list of scopes representing the permissions requested. These are dependent on the authentication provider
-		 * @param options The [getSessionOptions](#GetSessionOptions) to use
-		 * @returns A thenable that resolves to an authentication session
+		 * Currently, there Are only two AuthenticAtion providers thAt Are contributed from built in extensions
+		 * to VS Code thAt implement GitHub And Microsoft AuthenticAtion: their providerId's Are 'github' And 'microsoft'.
+		 * @pArAm providerId The id of the provider to use
+		 * @pArAm scopes A list of scopes representing the permissions requested. These Are dependent on the AuthenticAtion provider
+		 * @pArAm options The [getSessionOptions](#GetSessionOptions) to use
+		 * @returns A thenAble thAt resolves to An AuthenticAtion session
 		 */
-		export function getSession(providerId: string, scopes: string[], options: AuthenticationGetSessionOptions & { createIfNone: true }): Thenable<AuthenticationSession>;
+		export function getSession(providerId: string, scopes: string[], options: AuthenticAtionGetSessionOptions & { creAteIfNone: true }): ThenAble<AuthenticAtionSession>;
 
 		/**
-		 * Get an authentication session matching the desired scopes. Rejects if a provider with providerId is not
-		 * registered, or if the user does not consent to sharing authentication information with
-		 * the extension. If there are multiple sessions with the same scopes, the user will be shown a
-		 * quickpick to select which account they would like to use.
+		 * Get An AuthenticAtion session mAtching the desired scopes. Rejects if A provider with providerId is not
+		 * registered, or if the user does not consent to shAring AuthenticAtion informAtion with
+		 * the extension. If there Are multiple sessions with the sAme scopes, the user will be shown A
+		 * quickpick to select which Account they would like to use.
 		 *
-		 * Currently, there are only two authentication providers that are contributed from built in extensions
-		 * to VS Code that implement GitHub and Microsoft authentication: their providerId's are 'github' and 'microsoft'.
-		 * @param providerId The id of the provider to use
-		 * @param scopes A list of scopes representing the permissions requested. These are dependent on the authentication provider
-		 * @param options The [getSessionOptions](#GetSessionOptions) to use
-		 * @returns A thenable that resolves to an authentication session if available, or undefined if there are no sessions
+		 * Currently, there Are only two AuthenticAtion providers thAt Are contributed from built in extensions
+		 * to VS Code thAt implement GitHub And Microsoft AuthenticAtion: their providerId's Are 'github' And 'microsoft'.
+		 * @pArAm providerId The id of the provider to use
+		 * @pArAm scopes A list of scopes representing the permissions requested. These Are dependent on the AuthenticAtion provider
+		 * @pArAm options The [getSessionOptions](#GetSessionOptions) to use
+		 * @returns A thenAble thAt resolves to An AuthenticAtion session if AvAilAble, or undefined if there Are no sessions
 		 */
-		export function getSession(providerId: string, scopes: string[], options?: AuthenticationGetSessionOptions): Thenable<AuthenticationSession | undefined>;
+		export function getSession(providerId: string, scopes: string[], options?: AuthenticAtionGetSessionOptions): ThenAble<AuthenticAtionSession | undefined>;
 
 		/**
-		 * An [event](#Event) which fires when the authentication sessions of an authentication provider have
-		 * been added, removed, or changed.
+		 * An [event](#Event) which fires when the AuthenticAtion sessions of An AuthenticAtion provider hAve
+		 * been Added, removed, or chAnged.
 		 */
-		export const onDidChangeSessions: Event<AuthenticationSessionsChangeEvent>;
+		export const onDidChAngeSessions: Event<AuthenticAtionSessionsChAngeEvent>;
 	}
 }
 
 /**
- * Thenable is a common denominator between ES6 promises, Q, jquery.Deferred, WinJS.Promise,
- * and others. This API makes no assumption about what promise library is being used which
- * enables reusing existing code without migrating to a specific promise implementation. Still,
- * we recommend the use of native promises which are available in this editor.
+ * ThenAble is A common denominAtor between ES6 promises, Q, jquery.Deferred, WinJS.Promise,
+ * And others. This API mAkes no Assumption About whAt promise librAry is being used which
+ * enAbles reusing existing code without migrAting to A specific promise implementAtion. Still,
+ * we recommend the use of nAtive promises which Are AvAilAble in this editor.
  */
-interface Thenable<T> {
+interfAce ThenAble<T> {
 	/**
-	* Attaches callbacks for the resolution and/or rejection of the Promise.
-	* @param onfulfilled The callback to execute when the Promise is resolved.
-	* @param onrejected The callback to execute when the Promise is rejected.
-	* @returns A Promise for the completion of which ever callback is executed.
+	* AttAches cAllbAcks for the resolution And/or rejection of the Promise.
+	* @pArAm onfulfilled The cAllbAck to execute when the Promise is resolved.
+	* @pArAm onrejected The cAllbAck to execute when the Promise is rejected.
+	* @returns A Promise for the completion of which ever cAllbAck is executed.
 	*/
-	then<TResult>(onfulfilled?: (value: T) => TResult | Thenable<TResult>, onrejected?: (reason: any) => TResult | Thenable<TResult>): Thenable<TResult>;
-	then<TResult>(onfulfilled?: (value: T) => TResult | Thenable<TResult>, onrejected?: (reason: any) => void): Thenable<TResult>;
+	then<TResult>(onfulfilled?: (vAlue: T) => TResult | ThenAble<TResult>, onrejected?: (reAson: Any) => TResult | ThenAble<TResult>): ThenAble<TResult>;
+	then<TResult>(onfulfilled?: (vAlue: T) => TResult | ThenAble<TResult>, onrejected?: (reAson: Any) => void): ThenAble<TResult>;
 }

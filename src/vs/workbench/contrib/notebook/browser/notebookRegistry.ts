@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { CellOutputKind } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { BrandedService, IConstructorSignature1 } from 'vs/platform/instantiation/common/instantiation';
-import { INotebookEditor, IOutputTransformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { BrAndedService, IConstructorSignAture1 } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INotebookEditor, IOutputTrAnsformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 
-export type IOutputTransformCtor = IConstructorSignature1<INotebookEditor, IOutputTransformContribution>;
+export type IOutputTrAnsformCtor = IConstructorSignAture1<INotebookEditor, IOutputTrAnsformContribution>;
 
-export interface IOutputTransformDescription {
+export interfAce IOutputTrAnsformDescription {
 	id: string;
 	kind: CellOutputKind;
-	ctor: IOutputTransformCtor;
+	ctor: IOutputTrAnsformCtor;
 }
 
 
-export const NotebookRegistry = new class NotebookRegistryImpl {
+export const NotebookRegistry = new clAss NotebookRegistryImpl {
 
-	readonly outputTransforms: IOutputTransformDescription[] = [];
+	reAdonly outputTrAnsforms: IOutputTrAnsformDescription[] = [];
 
-	registerOutputTransform<Services extends BrandedService[]>(id: string, kind: CellOutputKind, ctor: { new(editor: INotebookEditor, ...services: Services): IOutputTransformContribution }): void {
-		this.outputTransforms.push({ id: id, kind: kind, ctor: ctor as IOutputTransformCtor });
+	registerOutputTrAnsform<Services extends BrAndedService[]>(id: string, kind: CellOutputKind, ctor: { new(editor: INotebookEditor, ...services: Services): IOutputTrAnsformContribution }): void {
+		this.outputTrAnsforms.push({ id: id, kind: kind, ctor: ctor As IOutputTrAnsformCtor });
 	}
 
-	getOutputTransformContributions(): IOutputTransformDescription[] {
-		return this.outputTransforms.slice(0);
+	getOutputTrAnsformContributions(): IOutputTrAnsformDescription[] {
+		return this.outputTrAnsforms.slice(0);
 	}
 };

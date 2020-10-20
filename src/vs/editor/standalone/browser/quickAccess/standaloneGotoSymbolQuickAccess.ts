@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { AbstractGotoSymbolQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoSymbolQuickAccess';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
+import { AbstrActGotoSymbolQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoSymbolQuickAccess';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IQuickAccessRegistry, Extensions } from 'vs/plAtform/quickinput/common/quickAccess';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { QuickOutlineNLS } from 'vs/editor/common/standaloneStrings';
-import { Event } from 'vs/base/common/event';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { QuickOutlineNLS } from 'vs/editor/common/stAndAloneStrings';
+import { Event } from 'vs/bAse/common/event';
 import { EditorAction, registerEditorAction } from 'vs/editor/browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
 
-export class StandaloneGotoSymbolQuickAccessProvider extends AbstractGotoSymbolQuickAccessProvider {
+export clAss StAndAloneGotoSymbolQuickAccessProvider extends AbstrActGotoSymbolQuickAccessProvider {
 
-	protected readonly onDidActiveTextEditorControlChange = Event.None;
+	protected reAdonly onDidActiveTextEditorControlChAnge = Event.None;
 
-	constructor(@ICodeEditorService private readonly editorService: ICodeEditorService) {
+	constructor(@ICodeEditorService privAte reAdonly editorService: ICodeEditorService) {
 		super();
 	}
 
-	protected get activeTextEditorControl() {
+	protected get ActiveTextEditorControl() {
 		return withNullAsUndefined(this.editorService.getFocusedCodeEditor());
 	}
 }
 
-Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess).registerQuickAccessProvider({
-	ctor: StandaloneGotoSymbolQuickAccessProvider,
-	prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX,
+Registry.As<IQuickAccessRegistry>(Extensions.QuickAccess).registerQuickAccessProvider({
+	ctor: StAndAloneGotoSymbolQuickAccessProvider,
+	prefix: AbstrActGotoSymbolQuickAccessProvider.PREFIX,
 	helpEntries: [
-		{ description: QuickOutlineNLS.quickOutlineActionLabel, prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX, needsEditor: true },
-		{ description: QuickOutlineNLS.quickOutlineByCategoryActionLabel, prefix: AbstractGotoSymbolQuickAccessProvider.PREFIX_BY_CATEGORY, needsEditor: true }
+		{ description: QuickOutlineNLS.quickOutlineActionLAbel, prefix: AbstrActGotoSymbolQuickAccessProvider.PREFIX, needsEditor: true },
+		{ description: QuickOutlineNLS.quickOutlineByCAtegoryActionLAbel, prefix: AbstrActGotoSymbolQuickAccessProvider.PREFIX_BY_CATEGORY, needsEditor: true }
 	]
 });
 
-export class GotoLineAction extends EditorAction {
+export clAss GotoLineAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.quickOutline',
-			label: QuickOutlineNLS.quickOutlineActionLabel,
-			alias: 'Go to Symbol...',
-			precondition: EditorContextKeys.hasDocumentSymbolProvider,
+			id: 'editor.Action.quickOutline',
+			lAbel: QuickOutlineNLS.quickOutlineActionLAbel,
+			AliAs: 'Go to Symbol...',
+			precondition: EditorContextKeys.hAsDocumentSymbolProvider,
 			kbOpts: {
 				kbExpr: EditorContextKeys.focus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_O,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_O,
 				weight: KeybindingWeight.EditorContrib
 			},
 			contextMenuOpts: {
-				group: 'navigation',
+				group: 'nAvigAtion',
 				order: 3
 			}
 		});
 	}
 
-	run(accessor: ServicesAccessor): void {
-		accessor.get(IQuickInputService).quickAccess.show(AbstractGotoSymbolQuickAccessProvider.PREFIX);
+	run(Accessor: ServicesAccessor): void {
+		Accessor.get(IQuickInputService).quickAccess.show(AbstrActGotoSymbolQuickAccessProvider.PREFIX);
 	}
 }
 

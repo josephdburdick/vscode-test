@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { registerModelAndPositionCommand } from 'vs/editor/browser/editorExtensions';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { onUnexpectedExternAlError } from 'vs/bAse/common/errors';
+import { registerModelAndPositionCommAnd } from 'vs/editor/browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { ITextModel } from 'vs/editor/common/model';
-import { LocationLink, DefinitionProviderRegistry, ImplementationProviderRegistry, TypeDefinitionProviderRegistry, DeclarationProviderRegistry, ProviderResult, ReferenceProviderRegistry } from 'vs/editor/common/modes';
-import { LanguageFeatureRegistry } from 'vs/editor/common/modes/languageFeatureRegistry';
+import { LocAtionLink, DefinitionProviderRegistry, ImplementAtionProviderRegistry, TypeDefinitionProviderRegistry, DeclArAtionProviderRegistry, ProviderResult, ReferenceProviderRegistry } from 'vs/editor/common/modes';
+import { LAnguAgeFeAtureRegistry } from 'vs/editor/common/modes/lAnguAgeFeAtureRegistry';
 
 
-function getLocationLinks<T>(
+function getLocAtionLinks<T>(
 	model: ITextModel,
 	position: Position,
-	registry: LanguageFeatureRegistry<T>,
-	provide: (provider: T, model: ITextModel, position: Position) => ProviderResult<LocationLink | LocationLink[]>
-): Promise<LocationLink[]> {
+	registry: LAnguAgeFeAtureRegistry<T>,
+	provide: (provider: T, model: ITextModel, position: Position) => ProviderResult<LocAtionLink | LocAtionLink[]>
+): Promise<LocAtionLink[]> {
 	const provider = registry.ordered(model);
 
 	// get results
-	const promises = provider.map((provider): Promise<LocationLink | LocationLink[] | undefined> => {
+	const promises = provider.mAp((provider): Promise<LocAtionLink | LocAtionLink[] | undefined> => {
 		return Promise.resolve(provide(provider, model, position)).then(undefined, err => {
-			onUnexpectedExternalError(err);
+			onUnexpectedExternAlError(err);
 			return undefined;
 		});
 	});
 
-	return Promise.all(promises).then(values => {
-		const result: LocationLink[] = [];
-		for (let value of values) {
-			if (Array.isArray(value)) {
-				result.push(...value);
-			} else if (value) {
-				result.push(value);
+	return Promise.All(promises).then(vAlues => {
+		const result: LocAtionLink[] = [];
+		for (let vAlue of vAlues) {
+			if (ArrAy.isArrAy(vAlue)) {
+				result.push(...vAlue);
+			} else if (vAlue) {
+				result.push(vAlue);
 			}
 		}
 		return result;
@@ -42,46 +42,46 @@ function getLocationLinks<T>(
 }
 
 
-export function getDefinitionsAtPosition(model: ITextModel, position: Position, token: CancellationToken): Promise<LocationLink[]> {
-	return getLocationLinks(model, position, DefinitionProviderRegistry, (provider, model, position) => {
+export function getDefinitionsAtPosition(model: ITextModel, position: Position, token: CAncellAtionToken): Promise<LocAtionLink[]> {
+	return getLocAtionLinks(model, position, DefinitionProviderRegistry, (provider, model, position) => {
 		return provider.provideDefinition(model, position, token);
 	});
 }
 
-export function getDeclarationsAtPosition(model: ITextModel, position: Position, token: CancellationToken): Promise<LocationLink[]> {
-	return getLocationLinks(model, position, DeclarationProviderRegistry, (provider, model, position) => {
-		return provider.provideDeclaration(model, position, token);
+export function getDeclArAtionsAtPosition(model: ITextModel, position: Position, token: CAncellAtionToken): Promise<LocAtionLink[]> {
+	return getLocAtionLinks(model, position, DeclArAtionProviderRegistry, (provider, model, position) => {
+		return provider.provideDeclArAtion(model, position, token);
 	});
 }
 
-export function getImplementationsAtPosition(model: ITextModel, position: Position, token: CancellationToken): Promise<LocationLink[]> {
-	return getLocationLinks(model, position, ImplementationProviderRegistry, (provider, model, position) => {
-		return provider.provideImplementation(model, position, token);
+export function getImplementAtionsAtPosition(model: ITextModel, position: Position, token: CAncellAtionToken): Promise<LocAtionLink[]> {
+	return getLocAtionLinks(model, position, ImplementAtionProviderRegistry, (provider, model, position) => {
+		return provider.provideImplementAtion(model, position, token);
 	});
 }
 
-export function getTypeDefinitionsAtPosition(model: ITextModel, position: Position, token: CancellationToken): Promise<LocationLink[]> {
-	return getLocationLinks(model, position, TypeDefinitionProviderRegistry, (provider, model, position) => {
+export function getTypeDefinitionsAtPosition(model: ITextModel, position: Position, token: CAncellAtionToken): Promise<LocAtionLink[]> {
+	return getLocAtionLinks(model, position, TypeDefinitionProviderRegistry, (provider, model, position) => {
 		return provider.provideTypeDefinition(model, position, token);
 	});
 }
 
-export function getReferencesAtPosition(model: ITextModel, position: Position, compact: boolean, token: CancellationToken): Promise<LocationLink[]> {
-	return getLocationLinks(model, position, ReferenceProviderRegistry, async (provider, model, position) => {
-		const result = await provider.provideReferences(model, position, { includeDeclaration: true }, token);
-		if (!compact || !result || result.length !== 2) {
+export function getReferencesAtPosition(model: ITextModel, position: Position, compAct: booleAn, token: CAncellAtionToken): Promise<LocAtionLink[]> {
+	return getLocAtionLinks(model, position, ReferenceProviderRegistry, Async (provider, model, position) => {
+		const result = AwAit provider.provideReferences(model, position, { includeDeclArAtion: true }, token);
+		if (!compAct || !result || result.length !== 2) {
 			return result;
 		}
-		const resultWithoutDeclaration = await provider.provideReferences(model, position, { includeDeclaration: false }, token);
-		if (resultWithoutDeclaration && resultWithoutDeclaration.length === 1) {
-			return resultWithoutDeclaration;
+		const resultWithoutDeclArAtion = AwAit provider.provideReferences(model, position, { includeDeclArAtion: fAlse }, token);
+		if (resultWithoutDeclArAtion && resultWithoutDeclArAtion.length === 1) {
+			return resultWithoutDeclArAtion;
 		}
 		return result;
 	});
 }
 
-registerModelAndPositionCommand('_executeDefinitionProvider', (model, position) => getDefinitionsAtPosition(model, position, CancellationToken.None));
-registerModelAndPositionCommand('_executeDeclarationProvider', (model, position) => getDeclarationsAtPosition(model, position, CancellationToken.None));
-registerModelAndPositionCommand('_executeImplementationProvider', (model, position) => getImplementationsAtPosition(model, position, CancellationToken.None));
-registerModelAndPositionCommand('_executeTypeDefinitionProvider', (model, position) => getTypeDefinitionsAtPosition(model, position, CancellationToken.None));
-registerModelAndPositionCommand('_executeReferenceProvider', (model, position) => getReferencesAtPosition(model, position, false, CancellationToken.None));
+registerModelAndPositionCommAnd('_executeDefinitionProvider', (model, position) => getDefinitionsAtPosition(model, position, CAncellAtionToken.None));
+registerModelAndPositionCommAnd('_executeDeclArAtionProvider', (model, position) => getDeclArAtionsAtPosition(model, position, CAncellAtionToken.None));
+registerModelAndPositionCommAnd('_executeImplementAtionProvider', (model, position) => getImplementAtionsAtPosition(model, position, CAncellAtionToken.None));
+registerModelAndPositionCommAnd('_executeTypeDefinitionProvider', (model, position) => getTypeDefinitionsAtPosition(model, position, CAncellAtionToken.None));
+registerModelAndPositionCommAnd('_executeReferenceProvider', (model, position) => getReferencesAtPosition(model, position, fAlse, CAncellAtionToken.None));

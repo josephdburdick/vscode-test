@@ -1,251 +1,251 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { ResourceMap } from '../utils/resourceMap';
-import { DiagnosticLanguage } from '../utils/languageDescription';
-import * as arrays from '../utils/arrays';
-import { Disposable } from '../utils/dispose';
+import * As vscode from 'vscode';
+import { ResourceMAp } from '../utils/resourceMAp';
+import { DiAgnosticLAnguAge } from '../utils/lAnguAgeDescription';
+import * As ArrAys from '../utils/ArrAys';
+import { DisposAble } from '../utils/dispose';
 
-function diagnosticsEquals(a: vscode.Diagnostic, b: vscode.Diagnostic): boolean {
-	if (a === b) {
+function diAgnosticsEquAls(A: vscode.DiAgnostic, b: vscode.DiAgnostic): booleAn {
+	if (A === b) {
 		return true;
 	}
 
-	return a.code === b.code
-		&& a.message === b.message
-		&& a.severity === b.severity
-		&& a.source === b.source
-		&& a.range.isEqual(b.range)
-		&& arrays.equals(a.relatedInformation || arrays.empty, b.relatedInformation || arrays.empty, (a, b) => {
-			return a.message === b.message
-				&& a.location.range.isEqual(b.location.range)
-				&& a.location.uri.fsPath === b.location.uri.fsPath;
+	return A.code === b.code
+		&& A.messAge === b.messAge
+		&& A.severity === b.severity
+		&& A.source === b.source
+		&& A.rAnge.isEquAl(b.rAnge)
+		&& ArrAys.equAls(A.relAtedInformAtion || ArrAys.empty, b.relAtedInformAtion || ArrAys.empty, (A, b) => {
+			return A.messAge === b.messAge
+				&& A.locAtion.rAnge.isEquAl(b.locAtion.rAnge)
+				&& A.locAtion.uri.fsPAth === b.locAtion.uri.fsPAth;
 		})
-		&& arrays.equals(a.tags || arrays.empty, b.tags || arrays.empty);
+		&& ArrAys.equAls(A.tAgs || ArrAys.empty, b.tAgs || ArrAys.empty);
 }
 
-export const enum DiagnosticKind {
-	Syntax,
-	Semantic,
+export const enum DiAgnosticKind {
+	SyntAx,
+	SemAntic,
 	Suggestion,
 }
 
-class FileDiagnostics {
-	private readonly _diagnostics = new Map<DiagnosticKind, ReadonlyArray<vscode.Diagnostic>>();
+clAss FileDiAgnostics {
+	privAte reAdonly _diAgnostics = new MAp<DiAgnosticKind, ReAdonlyArrAy<vscode.DiAgnostic>>();
 
 	constructor(
-		public readonly file: vscode.Uri,
-		public language: DiagnosticLanguage
+		public reAdonly file: vscode.Uri,
+		public lAnguAge: DiAgnosticLAnguAge
 	) { }
 
-	public updateDiagnostics(
-		language: DiagnosticLanguage,
-		kind: DiagnosticKind,
-		diagnostics: ReadonlyArray<vscode.Diagnostic>
-	): boolean {
-		if (language !== this.language) {
-			this._diagnostics.clear();
-			this.language = language;
+	public updAteDiAgnostics(
+		lAnguAge: DiAgnosticLAnguAge,
+		kind: DiAgnosticKind,
+		diAgnostics: ReAdonlyArrAy<vscode.DiAgnostic>
+	): booleAn {
+		if (lAnguAge !== this.lAnguAge) {
+			this._diAgnostics.cleAr();
+			this.lAnguAge = lAnguAge;
 		}
 
-		const existing = this._diagnostics.get(kind);
-		if (arrays.equals(existing || arrays.empty, diagnostics, diagnosticsEquals)) {
-			// No need to update
-			return false;
+		const existing = this._diAgnostics.get(kind);
+		if (ArrAys.equAls(existing || ArrAys.empty, diAgnostics, diAgnosticsEquAls)) {
+			// No need to updAte
+			return fAlse;
 		}
 
-		this._diagnostics.set(kind, diagnostics);
+		this._diAgnostics.set(kind, diAgnostics);
 		return true;
 	}
 
-	public getDiagnostics(settings: DiagnosticSettings): vscode.Diagnostic[] {
-		if (!settings.getValidate(this.language)) {
+	public getDiAgnostics(settings: DiAgnosticSettings): vscode.DiAgnostic[] {
+		if (!settings.getVAlidAte(this.lAnguAge)) {
 			return [];
 		}
 
 		return [
-			...this.get(DiagnosticKind.Syntax),
-			...this.get(DiagnosticKind.Semantic),
-			...this.getSuggestionDiagnostics(settings),
+			...this.get(DiAgnosticKind.SyntAx),
+			...this.get(DiAgnosticKind.SemAntic),
+			...this.getSuggestionDiAgnostics(settings),
 		];
 	}
 
-	private getSuggestionDiagnostics(settings: DiagnosticSettings) {
-		const enableSuggestions = settings.getEnableSuggestions(this.language);
-		return this.get(DiagnosticKind.Suggestion).filter(x => {
-			if (!enableSuggestions) {
+	privAte getSuggestionDiAgnostics(settings: DiAgnosticSettings) {
+		const enAbleSuggestions = settings.getEnAbleSuggestions(this.lAnguAge);
+		return this.get(DiAgnosticKind.Suggestion).filter(x => {
+			if (!enAbleSuggestions) {
 				// Still show unused
-				return x.tags && (x.tags.includes(vscode.DiagnosticTag.Unnecessary) || x.tags.includes(vscode.DiagnosticTag.Deprecated));
+				return x.tAgs && (x.tAgs.includes(vscode.DiAgnosticTAg.UnnecessAry) || x.tAgs.includes(vscode.DiAgnosticTAg.DeprecAted));
 			}
 			return true;
 		});
 	}
 
-	private get(kind: DiagnosticKind): ReadonlyArray<vscode.Diagnostic> {
-		return this._diagnostics.get(kind) || [];
+	privAte get(kind: DiAgnosticKind): ReAdonlyArrAy<vscode.DiAgnostic> {
+		return this._diAgnostics.get(kind) || [];
 	}
 }
 
-interface LanguageDiagnosticSettings {
-	readonly validate: boolean;
-	readonly enableSuggestions: boolean;
+interfAce LAnguAgeDiAgnosticSettings {
+	reAdonly vAlidAte: booleAn;
+	reAdonly enAbleSuggestions: booleAn;
 }
 
-function areLanguageDiagnosticSettingsEqual(currentSettings: LanguageDiagnosticSettings, newSettings: LanguageDiagnosticSettings): boolean {
-	return currentSettings.validate === newSettings.validate
-		&& currentSettings.enableSuggestions && currentSettings.enableSuggestions;
+function AreLAnguAgeDiAgnosticSettingsEquAl(currentSettings: LAnguAgeDiAgnosticSettings, newSettings: LAnguAgeDiAgnosticSettings): booleAn {
+	return currentSettings.vAlidAte === newSettings.vAlidAte
+		&& currentSettings.enAbleSuggestions && currentSettings.enAbleSuggestions;
 }
 
-class DiagnosticSettings {
-	private static readonly defaultSettings: LanguageDiagnosticSettings = {
-		validate: true,
-		enableSuggestions: true
+clAss DiAgnosticSettings {
+	privAte stAtic reAdonly defAultSettings: LAnguAgeDiAgnosticSettings = {
+		vAlidAte: true,
+		enAbleSuggestions: true
 	};
 
-	private readonly _languageSettings = new Map<DiagnosticLanguage, LanguageDiagnosticSettings>();
+	privAte reAdonly _lAnguAgeSettings = new MAp<DiAgnosticLAnguAge, LAnguAgeDiAgnosticSettings>();
 
-	public getValidate(language: DiagnosticLanguage): boolean {
-		return this.get(language).validate;
+	public getVAlidAte(lAnguAge: DiAgnosticLAnguAge): booleAn {
+		return this.get(lAnguAge).vAlidAte;
 	}
 
-	public setValidate(language: DiagnosticLanguage, value: boolean): boolean {
-		return this.update(language, settings => ({
-			validate: value,
-			enableSuggestions: settings.enableSuggestions,
+	public setVAlidAte(lAnguAge: DiAgnosticLAnguAge, vAlue: booleAn): booleAn {
+		return this.updAte(lAnguAge, settings => ({
+			vAlidAte: vAlue,
+			enAbleSuggestions: settings.enAbleSuggestions,
 		}));
 	}
 
-	public getEnableSuggestions(language: DiagnosticLanguage): boolean {
-		return this.get(language).enableSuggestions;
+	public getEnAbleSuggestions(lAnguAge: DiAgnosticLAnguAge): booleAn {
+		return this.get(lAnguAge).enAbleSuggestions;
 	}
 
-	public setEnableSuggestions(language: DiagnosticLanguage, value: boolean): boolean {
-		return this.update(language, settings => ({
-			validate: settings.validate,
-			enableSuggestions: value
+	public setEnAbleSuggestions(lAnguAge: DiAgnosticLAnguAge, vAlue: booleAn): booleAn {
+		return this.updAte(lAnguAge, settings => ({
+			vAlidAte: settings.vAlidAte,
+			enAbleSuggestions: vAlue
 		}));
 	}
 
-	private get(language: DiagnosticLanguage): LanguageDiagnosticSettings {
-		return this._languageSettings.get(language) || DiagnosticSettings.defaultSettings;
+	privAte get(lAnguAge: DiAgnosticLAnguAge): LAnguAgeDiAgnosticSettings {
+		return this._lAnguAgeSettings.get(lAnguAge) || DiAgnosticSettings.defAultSettings;
 	}
 
-	private update(language: DiagnosticLanguage, f: (x: LanguageDiagnosticSettings) => LanguageDiagnosticSettings): boolean {
-		const currentSettings = this.get(language);
+	privAte updAte(lAnguAge: DiAgnosticLAnguAge, f: (x: LAnguAgeDiAgnosticSettings) => LAnguAgeDiAgnosticSettings): booleAn {
+		const currentSettings = this.get(lAnguAge);
 		const newSettings = f(currentSettings);
-		this._languageSettings.set(language, newSettings);
-		return areLanguageDiagnosticSettingsEqual(currentSettings, newSettings);
+		this._lAnguAgeSettings.set(lAnguAge, newSettings);
+		return AreLAnguAgeDiAgnosticSettingsEquAl(currentSettings, newSettings);
 	}
 }
 
-export class DiagnosticsManager extends Disposable {
-	private readonly _diagnostics: ResourceMap<FileDiagnostics>;
-	private readonly _settings = new DiagnosticSettings();
-	private readonly _currentDiagnostics: vscode.DiagnosticCollection;
-	private readonly _pendingUpdates: ResourceMap<any>;
+export clAss DiAgnosticsMAnAger extends DisposAble {
+	privAte reAdonly _diAgnostics: ResourceMAp<FileDiAgnostics>;
+	privAte reAdonly _settings = new DiAgnosticSettings();
+	privAte reAdonly _currentDiAgnostics: vscode.DiAgnosticCollection;
+	privAte reAdonly _pendingUpdAtes: ResourceMAp<Any>;
 
-	private readonly _updateDelay = 50;
+	privAte reAdonly _updAteDelAy = 50;
 
 	constructor(
 		owner: string,
-		onCaseInsenitiveFileSystem: boolean
+		onCAseInsenitiveFileSystem: booleAn
 	) {
 		super();
-		this._diagnostics = new ResourceMap<FileDiagnostics>(undefined, { onCaseInsenitiveFileSystem });
-		this._pendingUpdates = new ResourceMap<any>(undefined, { onCaseInsenitiveFileSystem });
+		this._diAgnostics = new ResourceMAp<FileDiAgnostics>(undefined, { onCAseInsenitiveFileSystem });
+		this._pendingUpdAtes = new ResourceMAp<Any>(undefined, { onCAseInsenitiveFileSystem });
 
-		this._currentDiagnostics = this._register(vscode.languages.createDiagnosticCollection(owner));
+		this._currentDiAgnostics = this._register(vscode.lAnguAges.creAteDiAgnosticCollection(owner));
 	}
 
 	public dispose() {
 		super.dispose();
 
-		for (const value of this._pendingUpdates.values) {
-			clearTimeout(value);
+		for (const vAlue of this._pendingUpdAtes.vAlues) {
+			cleArTimeout(vAlue);
 		}
-		this._pendingUpdates.clear();
+		this._pendingUpdAtes.cleAr();
 	}
 
-	public reInitialize(): void {
-		this._currentDiagnostics.clear();
-		this._diagnostics.clear();
+	public reInitiAlize(): void {
+		this._currentDiAgnostics.cleAr();
+		this._diAgnostics.cleAr();
 	}
 
-	public setValidate(language: DiagnosticLanguage, value: boolean) {
-		const didUpdate = this._settings.setValidate(language, value);
-		if (didUpdate) {
+	public setVAlidAte(lAnguAge: DiAgnosticLAnguAge, vAlue: booleAn) {
+		const didUpdAte = this._settings.setVAlidAte(lAnguAge, vAlue);
+		if (didUpdAte) {
 			this.rebuild();
 		}
 	}
 
-	public setEnableSuggestions(language: DiagnosticLanguage, value: boolean) {
-		const didUpdate = this._settings.setEnableSuggestions(language, value);
-		if (didUpdate) {
+	public setEnAbleSuggestions(lAnguAge: DiAgnosticLAnguAge, vAlue: booleAn) {
+		const didUpdAte = this._settings.setEnAbleSuggestions(lAnguAge, vAlue);
+		if (didUpdAte) {
 			this.rebuild();
 		}
 	}
 
-	public updateDiagnostics(
+	public updAteDiAgnostics(
 		file: vscode.Uri,
-		language: DiagnosticLanguage,
-		kind: DiagnosticKind,
-		diagnostics: ReadonlyArray<vscode.Diagnostic>
+		lAnguAge: DiAgnosticLAnguAge,
+		kind: DiAgnosticKind,
+		diAgnostics: ReAdonlyArrAy<vscode.DiAgnostic>
 	): void {
-		let didUpdate = false;
-		const entry = this._diagnostics.get(file);
+		let didUpdAte = fAlse;
+		const entry = this._diAgnostics.get(file);
 		if (entry) {
-			didUpdate = entry.updateDiagnostics(language, kind, diagnostics);
-		} else if (diagnostics.length) {
-			const fileDiagnostics = new FileDiagnostics(file, language);
-			fileDiagnostics.updateDiagnostics(language, kind, diagnostics);
-			this._diagnostics.set(file, fileDiagnostics);
-			didUpdate = true;
+			didUpdAte = entry.updAteDiAgnostics(lAnguAge, kind, diAgnostics);
+		} else if (diAgnostics.length) {
+			const fileDiAgnostics = new FileDiAgnostics(file, lAnguAge);
+			fileDiAgnostics.updAteDiAgnostics(lAnguAge, kind, diAgnostics);
+			this._diAgnostics.set(file, fileDiAgnostics);
+			didUpdAte = true;
 		}
 
-		if (didUpdate) {
-			this.scheduleDiagnosticsUpdate(file);
+		if (didUpdAte) {
+			this.scheduleDiAgnosticsUpdAte(file);
 		}
 	}
 
-	public configFileDiagnosticsReceived(
+	public configFileDiAgnosticsReceived(
 		file: vscode.Uri,
-		diagnostics: ReadonlyArray<vscode.Diagnostic>
+		diAgnostics: ReAdonlyArrAy<vscode.DiAgnostic>
 	): void {
-		this._currentDiagnostics.set(file, diagnostics);
+		this._currentDiAgnostics.set(file, diAgnostics);
 	}
 
 	public delete(resource: vscode.Uri): void {
-		this._currentDiagnostics.delete(resource);
-		this._diagnostics.delete(resource);
+		this._currentDiAgnostics.delete(resource);
+		this._diAgnostics.delete(resource);
 	}
 
-	public getDiagnostics(file: vscode.Uri): ReadonlyArray<vscode.Diagnostic> {
-		return this._currentDiagnostics.get(file) || [];
+	public getDiAgnostics(file: vscode.Uri): ReAdonlyArrAy<vscode.DiAgnostic> {
+		return this._currentDiAgnostics.get(file) || [];
 	}
 
-	private scheduleDiagnosticsUpdate(file: vscode.Uri) {
-		if (!this._pendingUpdates.has(file)) {
-			this._pendingUpdates.set(file, setTimeout(() => this.updateCurrentDiagnostics(file), this._updateDelay));
+	privAte scheduleDiAgnosticsUpdAte(file: vscode.Uri) {
+		if (!this._pendingUpdAtes.hAs(file)) {
+			this._pendingUpdAtes.set(file, setTimeout(() => this.updAteCurrentDiAgnostics(file), this._updAteDelAy));
 		}
 	}
 
-	private updateCurrentDiagnostics(file: vscode.Uri): void {
-		if (this._pendingUpdates.has(file)) {
-			clearTimeout(this._pendingUpdates.get(file));
-			this._pendingUpdates.delete(file);
+	privAte updAteCurrentDiAgnostics(file: vscode.Uri): void {
+		if (this._pendingUpdAtes.hAs(file)) {
+			cleArTimeout(this._pendingUpdAtes.get(file));
+			this._pendingUpdAtes.delete(file);
 		}
 
-		const fileDiagnostics = this._diagnostics.get(file);
-		this._currentDiagnostics.set(file, fileDiagnostics ? fileDiagnostics.getDiagnostics(this._settings) : []);
+		const fileDiAgnostics = this._diAgnostics.get(file);
+		this._currentDiAgnostics.set(file, fileDiAgnostics ? fileDiAgnostics.getDiAgnostics(this._settings) : []);
 	}
 
-	private rebuild(): void {
-		this._currentDiagnostics.clear();
-		for (const fileDiagnostic of this._diagnostics.values) {
-			this._currentDiagnostics.set(fileDiagnostic.file, fileDiagnostic.getDiagnostics(this._settings));
+	privAte rebuild(): void {
+		this._currentDiAgnostics.cleAr();
+		for (const fileDiAgnostic of this._diAgnostics.vAlues) {
+			this._currentDiAgnostics.set(fileDiAgnostic.file, fileDiAgnostic.getDiAgnostics(this._settings));
 		}
 	}
 }

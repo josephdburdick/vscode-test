@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { dirname, join, basename } from 'vs/base/common/path';
-import { exists, readdir, readFile, rimraf } from 'vs/base/node/pfs';
+import { dirnAme, join, bAsenAme } from 'vs/bAse/common/pAth';
+import { exists, reAddir, reAdFile, rimrAf } from 'vs/bAse/node/pfs';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { localize } from 'vs/nls';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { locAlize } from 'vs/nls';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { ILifecycleService, LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { PerfviewInput } from 'vs/workbench/contrib/performance/browser/perfviewEditor';
+import { PerfviewInput } from 'vs/workbench/contrib/performAnce/browser/perfviewEditor';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { URI } from 'vs/base/common/uri';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { URI } from 'vs/bAse/common/uri';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 
-export class StartupProfiler implements IWorkbenchContribution {
+export clAss StArtupProfiler implements IWorkbenchContribution {
 
 	constructor(
-		@IDialogService private readonly _dialogService: IDialogService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService,
-		@ITextModelService private readonly _textModelResolverService: ITextModelService,
-		@IClipboardService private readonly _clipboardService: IClipboardService,
+		@IDiAlogService privAte reAdonly _diAlogService: IDiAlogService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly _environmentService: INAtiveWorkbenchEnvironmentService,
+		@ITextModelService privAte reAdonly _textModelResolverService: ITextModelService,
+		@IClipboArdService privAte reAdonly _clipboArdService: IClipboArdService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IExtensionService extensionService: IExtensionService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService,
-		@IProductService private readonly _productService: IProductService
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService,
+		@IProductService privAte reAdonly _productService: IProductService
 	) {
-		// wait for everything to be ready
-		Promise.all([
-			lifecycleService.when(LifecyclePhase.Eventually),
-			extensionService.whenInstalledExtensionsRegistered()
+		// wAit for everything to be reAdy
+		Promise.All([
+			lifecycleService.when(LifecyclePhAse.EventuAlly),
+			extensionService.whenInstAlledExtensionsRegistered()
 		]).then(() => {
 			this._stopProfiling();
 		});
 	}
 
-	private _stopProfiling(): void {
+	privAte _stopProfiling(): void {
 
-		const profileFilenamePrefix = this._environmentService.args['prof-startup-prefix'];
-		if (!profileFilenamePrefix) {
+		const profileFilenAmePrefix = this._environmentService.Args['prof-stArtup-prefix'];
+		if (!profileFilenAmePrefix) {
 			return;
 		}
 
-		const dir = dirname(profileFilenamePrefix);
-		const prefix = basename(profileFilenamePrefix);
+		const dir = dirnAme(profileFilenAmePrefix);
+		const prefix = bAsenAme(profileFilenAmePrefix);
 
-		const removeArgs: string[] = ['--prof-startup'];
-		const markerFile = readFile(profileFilenamePrefix).then(value => removeArgs.push(...value.toString().split('|')))
-			.then(() => rimraf(profileFilenamePrefix)) // (1) delete the file to tell the main process to stop profiling
-			.then(() => new Promise<void>(resolve => { // (2) wait for main that recreates the fail to signal profiling has stopped
+		const removeArgs: string[] = ['--prof-stArtup'];
+		const mArkerFile = reAdFile(profileFilenAmePrefix).then(vAlue => removeArgs.push(...vAlue.toString().split('|')))
+			.then(() => rimrAf(profileFilenAmePrefix)) // (1) delete the file to tell the mAin process to stop profiling
+			.then(() => new Promise<void>(resolve => { // (2) wAit for mAin thAt recreAtes the fAil to signAl profiling hAs stopped
 				const check = () => {
-					exists(profileFilenamePrefix).then(exists => {
+					exists(profileFilenAmePrefix).then(exists => {
 						if (exists) {
 							resolve();
 						} else {
@@ -66,67 +66,67 @@ export class StartupProfiler implements IWorkbenchContribution {
 				};
 				check();
 			}))
-			.then(() => rimraf(profileFilenamePrefix)); // (3) finally delete the file again
+			.then(() => rimrAf(profileFilenAmePrefix)); // (3) finAlly delete the file AgAin
 
-		markerFile.then(() => {
-			return readdir(dir).then(files => files.filter(value => value.indexOf(prefix) === 0));
+		mArkerFile.then(() => {
+			return reAddir(dir).then(files => files.filter(vAlue => vAlue.indexOf(prefix) === 0));
 		}).then(files => {
 			const profileFiles = files.reduce((prev, cur) => `${prev}${join(dir, cur)}\n`, '\n');
 
-			return this._dialogService.confirm({
+			return this._diAlogService.confirm({
 				type: 'info',
-				message: localize('prof.message', "Successfully created profiles."),
-				detail: localize('prof.detail', "Please create an issue and manually attach the following files:\n{0}", profileFiles),
-				primaryButton: localize('prof.restartAndFileIssue', "&&Create Issue and Restart"),
-				secondaryButton: localize('prof.restart', "&&Restart")
+				messAge: locAlize('prof.messAge', "Successfully creAted profiles."),
+				detAil: locAlize('prof.detAil', "PleAse creAte An issue And mAnuAlly AttAch the following files:\n{0}", profileFiles),
+				primAryButton: locAlize('prof.restArtAndFileIssue', "&&CreAte Issue And RestArt"),
+				secondAryButton: locAlize('prof.restArt', "&&RestArt")
 			}).then(res => {
 				if (res.confirmed) {
-					Promise.all<any>([
-						this._nativeHostService.showItemInFolder(URI.file(join(dir, files[0])).fsPath),
-						this._createPerfIssue(files)
+					Promise.All<Any>([
+						this._nAtiveHostService.showItemInFolder(URI.file(join(dir, files[0])).fsPAth),
+						this._creAtePerfIssue(files)
 					]).then(() => {
-						// keep window stable until restart is selected
-						return this._dialogService.confirm({
+						// keep window stAble until restArt is selected
+						return this._diAlogService.confirm({
 							type: 'info',
-							message: localize('prof.thanks', "Thanks for helping us."),
-							detail: localize('prof.detail.restart', "A final restart is required to continue to use '{0}'. Again, thank you for your contribution.", this._productService.nameLong),
-							primaryButton: localize('prof.restart.button', "&&Restart"),
-							secondaryButton: undefined
+							messAge: locAlize('prof.thAnks', "ThAnks for helping us."),
+							detAil: locAlize('prof.detAil.restArt', "A finAl restArt is required to continue to use '{0}'. AgAin, thAnk you for your contribution.", this._productService.nAmeLong),
+							primAryButton: locAlize('prof.restArt.button', "&&RestArt"),
+							secondAryButton: undefined
 						}).then(() => {
-							// now we are ready to restart
-							this._nativeHostService.relaunch({ removeArgs });
+							// now we Are reAdy to restArt
+							this._nAtiveHostService.relAunch({ removeArgs });
 						});
 					});
 
 				} else {
-					// simply restart
-					this._nativeHostService.relaunch({ removeArgs });
+					// simply restArt
+					this._nAtiveHostService.relAunch({ removeArgs });
 				}
 			});
 		});
 	}
 
-	private async _createPerfIssue(files: string[]): Promise<void> {
+	privAte Async _creAtePerfIssue(files: string[]): Promise<void> {
 		const reportIssueUrl = this._productService.reportIssueUrl;
 		if (!reportIssueUrl) {
 			return;
 		}
 
-		const ref = await this._textModelResolverService.createModelReference(PerfviewInput.Uri);
+		const ref = AwAit this._textModelResolverService.creAteModelReference(PerfviewInput.Uri);
 		try {
-			await this._clipboardService.writeText(ref.object.textEditorModel.getValue());
-		} finally {
+			AwAit this._clipboArdService.writeText(ref.object.textEditorModel.getVAlue());
+		} finAlly {
 			ref.dispose();
 		}
 
 		const body = `
-1. :warning: We have copied additional data to your clipboard. Make sure to **paste** here. :warning:
-1. :warning: Make sure to **attach** these files from your *home*-directory: :warning:\n${files.map(file => `-\`${file}\``).join('\n')}
+1. :wArning: We hAve copied AdditionAl dAtA to your clipboArd. MAke sure to **pAste** here. :wArning:
+1. :wArning: MAke sure to **AttAch** these files from your *home*-directory: :wArning:\n${files.mAp(file => `-\`${file}\``).join('\n')}
 `;
 
-		const baseUrl = reportIssueUrl;
-		const queryStringPrefix = baseUrl.indexOf('?') === -1 ? '?' : '&';
+		const bAseUrl = reportIssueUrl;
+		const queryStringPrefix = bAseUrl.indexOf('?') === -1 ? '?' : '&';
 
-		this._openerService.open(URI.parse(`${baseUrl}${queryStringPrefix}body=${encodeURIComponent(body)}`));
+		this._openerService.open(URI.pArse(`${bAseUrl}${queryStringPrefix}body=${encodeURIComponent(body)}`));
 	}
 }

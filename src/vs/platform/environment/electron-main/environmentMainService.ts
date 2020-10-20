@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/path';
-import { memoize } from 'vs/base/common/decorators';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { NativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
-import { createStaticIPCHandle } from 'vs/base/parts/ipc/node/ipc.net';
-import product from 'vs/platform/product/common/product';
+import { join } from 'vs/bAse/common/pAth';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { NAtiveEnvironmentService } from 'vs/plAtform/environment/node/environmentService';
+import { creAteStAticIPCHAndle } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import product from 'vs/plAtform/product/common/product';
 
-export const IEnvironmentMainService = createDecorator<IEnvironmentMainService>('nativeEnvironmentService');
+export const IEnvironmentMAinService = creAteDecorAtor<IEnvironmentMAinService>('nAtiveEnvironmentService');
 
 /**
- * A subclass of the `INativeEnvironmentService` to be used only in electron-main
+ * A subclAss of the `INAtiveEnvironmentService` to be used only in electron-mAin
  * environments.
  */
-export interface IEnvironmentMainService extends INativeEnvironmentService {
+export interfAce IEnvironmentMAinService extends INAtiveEnvironmentService {
 
-	// --- backup paths
-	backupHome: string;
-	backupWorkspacesPath: string;
+	// --- bAckup pAths
+	bAckupHome: string;
+	bAckupWorkspAcesPAth: string;
 
-	// --- V8 script cache path
-	nodeCachedDataDir?: string;
+	// --- V8 script cAche pAth
+	nodeCAchedDAtADir?: string;
 
 	// --- IPC
-	mainIPCHandle: string;
+	mAinIPCHAndle: string;
 
 	// --- config
-	sandbox: boolean;
-	driverVerbose: boolean;
-	disableUpdates: boolean;
+	sAndbox: booleAn;
+	driverVerbose: booleAn;
+	disAbleUpdAtes: booleAn;
 }
 
-export class EnvironmentMainService extends NativeEnvironmentService {
+export clAss EnvironmentMAinService extends NAtiveEnvironmentService {
 
 	@memoize
-	get backupHome(): string { return join(this.userDataPath, 'Backups'); }
+	get bAckupHome(): string { return join(this.userDAtAPAth, 'BAckups'); }
 
 	@memoize
-	get backupWorkspacesPath(): string { return join(this.backupHome, 'workspaces.json'); }
+	get bAckupWorkspAcesPAth(): string { return join(this.bAckupHome, 'workspAces.json'); }
 
 	@memoize
-	get mainIPCHandle(): string { return createStaticIPCHandle(this.userDataPath, 'main', product.version); }
+	get mAinIPCHAndle(): string { return creAteStAticIPCHAndle(this.userDAtAPAth, 'mAin', product.version); }
 
 	@memoize
-	get sandbox(): boolean { return !!this._args['__sandbox']; }
+	get sAndbox(): booleAn { return !!this._Args['__sAndbox']; }
 
 	@memoize
-	get driverVerbose(): boolean { return !!this._args['driver-verbose']; }
+	get driverVerbose(): booleAn { return !!this._Args['driver-verbose']; }
 
 	@memoize
-	get disableUpdates(): boolean { return !!this._args['disable-updates']; }
+	get disAbleUpdAtes(): booleAn { return !!this._Args['disAble-updAtes']; }
 
 	@memoize
-	get nodeCachedDataDir(): string | undefined { return process.env['VSCODE_NODE_CACHED_DATA_DIR'] || undefined; }
+	get nodeCAchedDAtADir(): string | undefined { return process.env['VSCODE_NODE_CACHED_DATA_DIR'] || undefined; }
 }

@@ -1,111 +1,111 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 
-const SshProtocolMatcher = /^([^@:]+@)?([^:]+):/;
-const SshUrlMatcher = /^([^@:]+@)?([^:]+):(.+)$/;
-const AuthorityMatcher = /^([^@]+@)?([^:]+)(:\d+)?$/;
-const SecondLevelDomainMatcher = /([^@:.]+\.[^@:.]+)(:\d+)?$/;
-const RemoteMatcher = /^\s*url\s*=\s*(.+\S)\s*$/mg;
+const SshProtocolMAtcher = /^([^@:]+@)?([^:]+):/;
+const SshUrlMAtcher = /^([^@:]+@)?([^:]+):(.+)$/;
+const AuthorityMAtcher = /^([^@]+@)?([^:]+)(:\d+)?$/;
+const SecondLevelDomAinMAtcher = /([^@:.]+\.[^@:.]+)(:\d+)?$/;
+const RemoteMAtcher = /^\s*url\s*=\s*(.+\S)\s*$/mg;
 const AnyButDot = /[^.]/g;
 
-export const AllowedSecondLevelDomains = [
+export const AllowedSecondLevelDomAins = [
 	'github.com',
 	'bitbucket.org',
-	'visualstudio.com',
-	'gitlab.com',
+	'visuAlstudio.com',
+	'gitlAb.com',
 	'heroku.com',
-	'azurewebsites.net',
+	'Azurewebsites.net',
 	'ibm.com',
-	'amazon.com',
-	'amazonaws.com',
-	'cloudapp.net',
+	'AmAzon.com',
+	'AmAzonAws.com',
+	'cloudApp.net',
 	'rhcloud.com',
 	'google.com',
-	'azure.com'
+	'Azure.com'
 ];
 
-function stripLowLevelDomains(domain: string): string | null {
-	const match = domain.match(SecondLevelDomainMatcher);
-	return match ? match[1] : null;
+function stripLowLevelDomAins(domAin: string): string | null {
+	const mAtch = domAin.mAtch(SecondLevelDomAinMAtcher);
+	return mAtch ? mAtch[1] : null;
 }
 
-function extractDomain(url: string): string | null {
+function extrActDomAin(url: string): string | null {
 	if (url.indexOf('://') === -1) {
-		const match = url.match(SshProtocolMatcher);
-		if (match) {
-			return stripLowLevelDomains(match[2]);
+		const mAtch = url.mAtch(SshProtocolMAtcher);
+		if (mAtch) {
+			return stripLowLevelDomAins(mAtch[2]);
 		} else {
 			return null;
 		}
 	}
 	try {
-		const uri = URI.parse(url);
-		if (uri.authority) {
-			return stripLowLevelDomains(uri.authority);
+		const uri = URI.pArse(url);
+		if (uri.Authority) {
+			return stripLowLevelDomAins(uri.Authority);
 		}
-	} catch (e) {
-		// ignore invalid URIs
+	} cAtch (e) {
+		// ignore invAlid URIs
 	}
 	return null;
 }
 
-export function getDomainsOfRemotes(text: string, allowedDomains: readonly string[]): string[] {
-	const domains = new Set<string>();
-	let match: RegExpExecArray | null;
-	while (match = RemoteMatcher.exec(text)) {
-		const domain = extractDomain(match[1]);
-		if (domain) {
-			domains.add(domain);
+export function getDomAinsOfRemotes(text: string, AllowedDomAins: reAdonly string[]): string[] {
+	const domAins = new Set<string>();
+	let mAtch: RegExpExecArrAy | null;
+	while (mAtch = RemoteMAtcher.exec(text)) {
+		const domAin = extrActDomAin(mAtch[1]);
+		if (domAin) {
+			domAins.Add(domAin);
 		}
 	}
 
-	const allowedDomainsSet = new Set(allowedDomains);
-	return Array.from(domains)
-		.map(key => allowedDomainsSet.has(key) ? key : key.replace(AnyButDot, 'a'));
+	const AllowedDomAinsSet = new Set(AllowedDomAins);
+	return ArrAy.from(domAins)
+		.mAp(key => AllowedDomAinsSet.hAs(key) ? key : key.replAce(AnyButDot, 'A'));
 }
 
-function stripPort(authority: string): string | null {
-	const match = authority.match(AuthorityMatcher);
-	return match ? match[2] : null;
+function stripPort(Authority: string): string | null {
+	const mAtch = Authority.mAtch(AuthorityMAtcher);
+	return mAtch ? mAtch[2] : null;
 }
 
-function normalizeRemote(host: string | null, path: string, stripEndingDotGit: boolean): string | null {
-	if (host && path) {
-		if (stripEndingDotGit && path.endsWith('.git')) {
-			path = path.substr(0, path.length - 4);
+function normAlizeRemote(host: string | null, pAth: string, stripEndingDotGit: booleAn): string | null {
+	if (host && pAth) {
+		if (stripEndingDotGit && pAth.endsWith('.git')) {
+			pAth = pAth.substr(0, pAth.length - 4);
 		}
-		return (path.indexOf('/') === 0) ? `${host}${path}` : `${host}/${path}`;
+		return (pAth.indexOf('/') === 0) ? `${host}${pAth}` : `${host}/${pAth}`;
 	}
 	return null;
 }
 
-function extractRemote(url: string, stripEndingDotGit: boolean): string | null {
+function extrActRemote(url: string, stripEndingDotGit: booleAn): string | null {
 	if (url.indexOf('://') === -1) {
-		const match = url.match(SshUrlMatcher);
-		if (match) {
-			return normalizeRemote(match[2], match[3], stripEndingDotGit);
+		const mAtch = url.mAtch(SshUrlMAtcher);
+		if (mAtch) {
+			return normAlizeRemote(mAtch[2], mAtch[3], stripEndingDotGit);
 		}
 	}
 	try {
-		const uri = URI.parse(url);
-		if (uri.authority) {
-			return normalizeRemote(stripPort(uri.authority), uri.path, stripEndingDotGit);
+		const uri = URI.pArse(url);
+		if (uri.Authority) {
+			return normAlizeRemote(stripPort(uri.Authority), uri.pAth, stripEndingDotGit);
 		}
-	} catch (e) {
-		// ignore invalid URIs
+	} cAtch (e) {
+		// ignore invAlid URIs
 	}
 	return null;
 }
 
-export function getRemotes(text: string, stripEndingDotGit: boolean = false): string[] {
+export function getRemotes(text: string, stripEndingDotGit: booleAn = fAlse): string[] {
 	const remotes: string[] = [];
-	let match: RegExpExecArray | null;
-	while (match = RemoteMatcher.exec(text)) {
-		const remote = extractRemote(match[1], stripEndingDotGit);
+	let mAtch: RegExpExecArrAy | null;
+	while (mAtch = RemoteMAtcher.exec(text)) {
+		const remote = extrActRemote(mAtch[1], stripEndingDotGit);
 		if (remote) {
 			remotes.push(remote);
 		}

@@ -1,208 +1,208 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createScanner, SyntaxKind, ScanError } from './json';
+import { creAteScAnner, SyntAxKind, ScAnError } from './json';
 
-export interface FormattingOptions {
+export interfAce FormAttingOptions {
 	/**
-	 * If indentation is based on spaces (`insertSpaces` = true), then what is the number of spaces that make an indent?
+	 * If indentAtion is bAsed on spAces (`insertSpAces` = true), then whAt is the number of spAces thAt mAke An indent?
 	 */
-	tabSize?: number;
+	tAbSize?: number;
 	/**
-	 * Is indentation based on spaces?
+	 * Is indentAtion bAsed on spAces?
 	 */
-	insertSpaces?: boolean;
+	insertSpAces?: booleAn;
 	/**
-	 * The default 'end of line' character. If not set, '\n' is used as default.
+	 * The defAult 'end of line' chArActer. If not set, '\n' is used As defAult.
 	 */
 	eol?: string;
 }
 
 /**
- * Represents a text modification
+ * Represents A text modificAtion
  */
-export interface Edit {
+export interfAce Edit {
 	/**
-	 * The start offset of the modification.
+	 * The stArt offset of the modificAtion.
 	 */
 	offset: number;
 	/**
-	 * The length of the modification. Must not be negative. Empty length represents an *insert*.
+	 * The length of the modificAtion. Must not be negAtive. Empty length represents An *insert*.
 	 */
 	length: number;
 	/**
-	 * The new content. Empty content represents a *remove*.
+	 * The new content. Empty content represents A *remove*.
 	 */
 	content: string;
 }
 
 /**
- * A text range in the document
+ * A text rAnge in the document
 */
-export interface Range {
+export interfAce RAnge {
 	/**
-	 * The start offset of the range.
+	 * The stArt offset of the rAnge.
 	 */
 	offset: number;
 	/**
-	 * The length of the range. Must not be negative.
+	 * The length of the rAnge. Must not be negAtive.
 	 */
 	length: number;
 }
 
 
-export function format(documentText: string, range: Range | undefined, options: FormattingOptions): Edit[] {
-	let initialIndentLevel: number;
-	let formatText: string;
-	let formatTextStart: number;
-	let rangeStart: number;
-	let rangeEnd: number;
-	if (range) {
-		rangeStart = range.offset;
-		rangeEnd = rangeStart + range.length;
+export function formAt(documentText: string, rAnge: RAnge | undefined, options: FormAttingOptions): Edit[] {
+	let initiAlIndentLevel: number;
+	let formAtText: string;
+	let formAtTextStArt: number;
+	let rAngeStArt: number;
+	let rAngeEnd: number;
+	if (rAnge) {
+		rAngeStArt = rAnge.offset;
+		rAngeEnd = rAngeStArt + rAnge.length;
 
-		formatTextStart = rangeStart;
-		while (formatTextStart > 0 && !isEOL(documentText, formatTextStart - 1)) {
-			formatTextStart--;
+		formAtTextStArt = rAngeStArt;
+		while (formAtTextStArt > 0 && !isEOL(documentText, formAtTextStArt - 1)) {
+			formAtTextStArt--;
 		}
-		let endOffset = rangeEnd;
+		let endOffset = rAngeEnd;
 		while (endOffset < documentText.length && !isEOL(documentText, endOffset)) {
 			endOffset++;
 		}
-		formatText = documentText.substring(formatTextStart, endOffset);
-		initialIndentLevel = computeIndentLevel(formatText, options);
+		formAtText = documentText.substring(formAtTextStArt, endOffset);
+		initiAlIndentLevel = computeIndentLevel(formAtText, options);
 	} else {
-		formatText = documentText;
-		initialIndentLevel = 0;
-		formatTextStart = 0;
-		rangeStart = 0;
-		rangeEnd = documentText.length;
+		formAtText = documentText;
+		initiAlIndentLevel = 0;
+		formAtTextStArt = 0;
+		rAngeStArt = 0;
+		rAngeEnd = documentText.length;
 	}
 	const eol = getEOL(options, documentText);
 
-	let lineBreak = false;
+	let lineBreAk = fAlse;
 	let indentLevel = 0;
-	let indentValue: string;
-	if (options.insertSpaces) {
-		indentValue = repeat(' ', options.tabSize || 4);
+	let indentVAlue: string;
+	if (options.insertSpAces) {
+		indentVAlue = repeAt(' ', options.tAbSize || 4);
 	} else {
-		indentValue = '\t';
+		indentVAlue = '\t';
 	}
 
-	const scanner = createScanner(formatText, false);
-	let hasError = false;
+	const scAnner = creAteScAnner(formAtText, fAlse);
+	let hAsError = fAlse;
 
 	function newLineAndIndent(): string {
-		return eol + repeat(indentValue, initialIndentLevel + indentLevel);
+		return eol + repeAt(indentVAlue, initiAlIndentLevel + indentLevel);
 	}
-	function scanNext(): SyntaxKind {
-		let token = scanner.scan();
-		lineBreak = false;
-		while (token === SyntaxKind.Trivia || token === SyntaxKind.LineBreakTrivia) {
-			lineBreak = lineBreak || (token === SyntaxKind.LineBreakTrivia);
-			token = scanner.scan();
+	function scAnNext(): SyntAxKind {
+		let token = scAnner.scAn();
+		lineBreAk = fAlse;
+		while (token === SyntAxKind.TriviA || token === SyntAxKind.LineBreAkTriviA) {
+			lineBreAk = lineBreAk || (token === SyntAxKind.LineBreAkTriviA);
+			token = scAnner.scAn();
 		}
-		hasError = token === SyntaxKind.Unknown || scanner.getTokenError() !== ScanError.None;
+		hAsError = token === SyntAxKind.Unknown || scAnner.getTokenError() !== ScAnError.None;
 		return token;
 	}
-	const editOperations: Edit[] = [];
-	function addEdit(text: string, startOffset: number, endOffset: number) {
-		if (!hasError && startOffset < rangeEnd && endOffset > rangeStart && documentText.substring(startOffset, endOffset) !== text) {
-			editOperations.push({ offset: startOffset, length: endOffset - startOffset, content: text });
+	const editOperAtions: Edit[] = [];
+	function AddEdit(text: string, stArtOffset: number, endOffset: number) {
+		if (!hAsError && stArtOffset < rAngeEnd && endOffset > rAngeStArt && documentText.substring(stArtOffset, endOffset) !== text) {
+			editOperAtions.push({ offset: stArtOffset, length: endOffset - stArtOffset, content: text });
 		}
 	}
 
-	let firstToken = scanNext();
+	let firstToken = scAnNext();
 
-	if (firstToken !== SyntaxKind.EOF) {
-		const firstTokenStart = scanner.getTokenOffset() + formatTextStart;
-		const initialIndent = repeat(indentValue, initialIndentLevel);
-		addEdit(initialIndent, formatTextStart, firstTokenStart);
+	if (firstToken !== SyntAxKind.EOF) {
+		const firstTokenStArt = scAnner.getTokenOffset() + formAtTextStArt;
+		const initiAlIndent = repeAt(indentVAlue, initiAlIndentLevel);
+		AddEdit(initiAlIndent, formAtTextStArt, firstTokenStArt);
 	}
 
-	while (firstToken !== SyntaxKind.EOF) {
-		let firstTokenEnd = scanner.getTokenOffset() + scanner.getTokenLength() + formatTextStart;
-		let secondToken = scanNext();
+	while (firstToken !== SyntAxKind.EOF) {
+		let firstTokenEnd = scAnner.getTokenOffset() + scAnner.getTokenLength() + formAtTextStArt;
+		let secondToken = scAnNext();
 
-		let replaceContent = '';
-		while (!lineBreak && (secondToken === SyntaxKind.LineCommentTrivia || secondToken === SyntaxKind.BlockCommentTrivia)) {
-			// comments on the same line: keep them on the same line, but ignore them otherwise
-			const commentTokenStart = scanner.getTokenOffset() + formatTextStart;
-			addEdit(' ', firstTokenEnd, commentTokenStart);
-			firstTokenEnd = scanner.getTokenOffset() + scanner.getTokenLength() + formatTextStart;
-			replaceContent = secondToken === SyntaxKind.LineCommentTrivia ? newLineAndIndent() : '';
-			secondToken = scanNext();
+		let replAceContent = '';
+		while (!lineBreAk && (secondToken === SyntAxKind.LineCommentTriviA || secondToken === SyntAxKind.BlockCommentTriviA)) {
+			// comments on the sAme line: keep them on the sAme line, but ignore them otherwise
+			const commentTokenStArt = scAnner.getTokenOffset() + formAtTextStArt;
+			AddEdit(' ', firstTokenEnd, commentTokenStArt);
+			firstTokenEnd = scAnner.getTokenOffset() + scAnner.getTokenLength() + formAtTextStArt;
+			replAceContent = secondToken === SyntAxKind.LineCommentTriviA ? newLineAndIndent() : '';
+			secondToken = scAnNext();
 		}
 
-		if (secondToken === SyntaxKind.CloseBraceToken) {
-			if (firstToken !== SyntaxKind.OpenBraceToken) {
+		if (secondToken === SyntAxKind.CloseBrAceToken) {
+			if (firstToken !== SyntAxKind.OpenBrAceToken) {
 				indentLevel--;
-				replaceContent = newLineAndIndent();
+				replAceContent = newLineAndIndent();
 			}
-		} else if (secondToken === SyntaxKind.CloseBracketToken) {
-			if (firstToken !== SyntaxKind.OpenBracketToken) {
+		} else if (secondToken === SyntAxKind.CloseBrAcketToken) {
+			if (firstToken !== SyntAxKind.OpenBrAcketToken) {
 				indentLevel--;
-				replaceContent = newLineAndIndent();
+				replAceContent = newLineAndIndent();
 			}
 		} else {
 			switch (firstToken) {
-				case SyntaxKind.OpenBracketToken:
-				case SyntaxKind.OpenBraceToken:
+				cAse SyntAxKind.OpenBrAcketToken:
+				cAse SyntAxKind.OpenBrAceToken:
 					indentLevel++;
-					replaceContent = newLineAndIndent();
-					break;
-				case SyntaxKind.CommaToken:
-				case SyntaxKind.LineCommentTrivia:
-					replaceContent = newLineAndIndent();
-					break;
-				case SyntaxKind.BlockCommentTrivia:
-					if (lineBreak) {
-						replaceContent = newLineAndIndent();
+					replAceContent = newLineAndIndent();
+					breAk;
+				cAse SyntAxKind.CommAToken:
+				cAse SyntAxKind.LineCommentTriviA:
+					replAceContent = newLineAndIndent();
+					breAk;
+				cAse SyntAxKind.BlockCommentTriviA:
+					if (lineBreAk) {
+						replAceContent = newLineAndIndent();
 					} else {
-						// symbol following comment on the same line: keep on same line, separate with ' '
-						replaceContent = ' ';
+						// symbol following comment on the sAme line: keep on sAme line, sepArAte with ' '
+						replAceContent = ' ';
 					}
-					break;
-				case SyntaxKind.ColonToken:
-					replaceContent = ' ';
-					break;
-				case SyntaxKind.StringLiteral:
-					if (secondToken === SyntaxKind.ColonToken) {
-						replaceContent = '';
-						break;
+					breAk;
+				cAse SyntAxKind.ColonToken:
+					replAceContent = ' ';
+					breAk;
+				cAse SyntAxKind.StringLiterAl:
+					if (secondToken === SyntAxKind.ColonToken) {
+						replAceContent = '';
+						breAk;
 					}
-				// fall through
-				case SyntaxKind.NullKeyword:
-				case SyntaxKind.TrueKeyword:
-				case SyntaxKind.FalseKeyword:
-				case SyntaxKind.NumericLiteral:
-				case SyntaxKind.CloseBraceToken:
-				case SyntaxKind.CloseBracketToken:
-					if (secondToken === SyntaxKind.LineCommentTrivia || secondToken === SyntaxKind.BlockCommentTrivia) {
-						replaceContent = ' ';
-					} else if (secondToken !== SyntaxKind.CommaToken && secondToken !== SyntaxKind.EOF) {
-						hasError = true;
+				// fAll through
+				cAse SyntAxKind.NullKeyword:
+				cAse SyntAxKind.TrueKeyword:
+				cAse SyntAxKind.FAlseKeyword:
+				cAse SyntAxKind.NumericLiterAl:
+				cAse SyntAxKind.CloseBrAceToken:
+				cAse SyntAxKind.CloseBrAcketToken:
+					if (secondToken === SyntAxKind.LineCommentTriviA || secondToken === SyntAxKind.BlockCommentTriviA) {
+						replAceContent = ' ';
+					} else if (secondToken !== SyntAxKind.CommAToken && secondToken !== SyntAxKind.EOF) {
+						hAsError = true;
 					}
-					break;
-				case SyntaxKind.Unknown:
-					hasError = true;
-					break;
+					breAk;
+				cAse SyntAxKind.Unknown:
+					hAsError = true;
+					breAk;
 			}
-			if (lineBreak && (secondToken === SyntaxKind.LineCommentTrivia || secondToken === SyntaxKind.BlockCommentTrivia)) {
-				replaceContent = newLineAndIndent();
+			if (lineBreAk && (secondToken === SyntAxKind.LineCommentTriviA || secondToken === SyntAxKind.BlockCommentTriviA)) {
+				replAceContent = newLineAndIndent();
 			}
 
 		}
-		const secondTokenStart = scanner.getTokenOffset() + formatTextStart;
-		addEdit(replaceContent, firstTokenEnd, secondTokenStart);
+		const secondTokenStArt = scAnner.getTokenOffset() + formAtTextStArt;
+		AddEdit(replAceContent, firstTokenEnd, secondTokenStArt);
 		firstToken = secondToken;
 	}
-	return editOperations;
+	return editOperAtions;
 }
 
-function repeat(s: string, count: number): string {
+function repeAt(s: string, count: number): string {
 	let result = '';
 	for (let i = 0; i < count; i++) {
 		result += s;
@@ -210,29 +210,29 @@ function repeat(s: string, count: number): string {
 	return result;
 }
 
-function computeIndentLevel(content: string, options: FormattingOptions): number {
+function computeIndentLevel(content: string, options: FormAttingOptions): number {
 	let i = 0;
-	let nChars = 0;
-	const tabSize = options.tabSize || 4;
+	let nChArs = 0;
+	const tAbSize = options.tAbSize || 4;
 	while (i < content.length) {
-		const ch = content.charAt(i);
+		const ch = content.chArAt(i);
 		if (ch === ' ') {
-			nChars++;
+			nChArs++;
 		} else if (ch === '\t') {
-			nChars += tabSize;
+			nChArs += tAbSize;
 		} else {
-			break;
+			breAk;
 		}
 		i++;
 	}
-	return Math.floor(nChars / tabSize);
+	return MAth.floor(nChArs / tAbSize);
 }
 
-export function getEOL(options: FormattingOptions, text: string): string {
+export function getEOL(options: FormAttingOptions, text: string): string {
 	for (let i = 0; i < text.length; i++) {
-		const ch = text.charAt(i);
+		const ch = text.chArAt(i);
 		if (ch === '\r') {
-			if (i + 1 < text.length && text.charAt(i + 1) === '\n') {
+			if (i + 1 < text.length && text.chArAt(i + 1) === '\n') {
 				return '\r\n';
 			}
 			return '\r';
@@ -244,5 +244,5 @@ export function getEOL(options: FormattingOptions, text: string): string {
 }
 
 export function isEOL(text: string, offset: number) {
-	return '\r\n'.indexOf(text.charAt(offset)) !== -1;
+	return '\r\n'.indexOf(text.chArAt(offset)) !== -1;
 }

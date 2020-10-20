@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { StatusbarAlignment as MainThreadStatusBarAlignment } from 'vs/workbench/services/statusbar/common/statusbar';
-import { StatusBarAlignment as ExtHostStatusBarAlignment, Disposable, ThemeColor } from './extHostTypes';
-import type * as vscode from 'vscode';
-import { MainContext, MainThreadStatusBarShape, IMainContext, ICommandDto } from './extHost.protocol';
-import { localize } from 'vs/nls';
-import { CommandsConverter } from 'vs/workbench/api/common/extHostCommands';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { StAtusbArAlignment As MAinThreAdStAtusBArAlignment } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
+import { StAtusBArAlignment As ExtHostStAtusBArAlignment, DisposAble, ThemeColor } from './extHostTypes';
+import type * As vscode from 'vscode';
+import { MAinContext, MAinThreAdStAtusBArShApe, IMAinContext, ICommAndDto } from './extHost.protocol';
+import { locAlize } from 'vs/nls';
+import { CommAndsConverter } from 'vs/workbench/Api/common/extHostCommAnds';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 
-export class ExtHostStatusBarEntry implements vscode.StatusBarItem {
-	private static ID_GEN = 0;
+export clAss ExtHostStAtusBArEntry implements vscode.StAtusBArItem {
+	privAte stAtic ID_GEN = 0;
 
-	private _id: number;
-	private _alignment: number;
-	private _priority?: number;
-	private _disposed: boolean = false;
-	private _visible: boolean = false;
+	privAte _id: number;
+	privAte _Alignment: number;
+	privAte _priority?: number;
+	privAte _disposed: booleAn = fAlse;
+	privAte _visible: booleAn = fAlse;
 
-	private _statusId: string;
-	private _statusName: string;
+	privAte _stAtusId: string;
+	privAte _stAtusNAme: string;
 
-	private _text: string = '';
-	private _tooltip?: string;
-	private _color?: string | ThemeColor;
-	private readonly _internalCommandRegistration = new DisposableStore();
-	private _command?: {
-		readonly fromApi: string | vscode.Command,
-		readonly internal: ICommandDto,
+	privAte _text: string = '';
+	privAte _tooltip?: string;
+	privAte _color?: string | ThemeColor;
+	privAte reAdonly _internAlCommAndRegistrAtion = new DisposAbleStore();
+	privAte _commAnd?: {
+		reAdonly fromApi: string | vscode.CommAnd,
+		reAdonly internAl: ICommAndDto,
 	};
 
-	private _timeoutHandle: any;
-	private _proxy: MainThreadStatusBarShape;
-	private _commands: CommandsConverter;
-	private _accessibilityInformation?: vscode.AccessibilityInformation;
+	privAte _timeoutHAndle: Any;
+	privAte _proxy: MAinThreAdStAtusBArShApe;
+	privAte _commAnds: CommAndsConverter;
+	privAte _AccessibilityInformAtion?: vscode.AccessibilityInformAtion;
 
-	constructor(proxy: MainThreadStatusBarShape, commands: CommandsConverter, id: string, name: string, alignment: ExtHostStatusBarAlignment = ExtHostStatusBarAlignment.Left, priority?: number, accessibilityInformation?: vscode.AccessibilityInformation) {
-		this._id = ExtHostStatusBarEntry.ID_GEN++;
+	constructor(proxy: MAinThreAdStAtusBArShApe, commAnds: CommAndsConverter, id: string, nAme: string, Alignment: ExtHostStAtusBArAlignment = ExtHostStAtusBArAlignment.Left, priority?: number, AccessibilityInformAtion?: vscode.AccessibilityInformAtion) {
+		this._id = ExtHostStAtusBArEntry.ID_GEN++;
 		this._proxy = proxy;
-		this._commands = commands;
-		this._statusId = id;
-		this._statusName = name;
-		this._alignment = alignment;
+		this._commAnds = commAnds;
+		this._stAtusId = id;
+		this._stAtusNAme = nAme;
+		this._Alignment = Alignment;
 		this._priority = priority;
-		this._accessibilityInformation = accessibilityInformation;
+		this._AccessibilityInformAtion = AccessibilityInformAtion;
 	}
 
 	public get id(): number {
 		return this._id;
 	}
 
-	public get alignment(): vscode.StatusBarAlignment {
-		return this._alignment;
+	public get Alignment(): vscode.StAtusBArAlignment {
+		return this._Alignment;
 	}
 
 	public get priority(): number | undefined {
@@ -72,82 +72,82 @@ export class ExtHostStatusBarEntry implements vscode.StatusBarItem {
 		return this._color;
 	}
 
-	public get command(): string | vscode.Command | undefined {
-		return this._command?.fromApi;
+	public get commAnd(): string | vscode.CommAnd | undefined {
+		return this._commAnd?.fromApi;
 	}
 
-	public get accessibilityInformation(): vscode.AccessibilityInformation | undefined {
-		return this._accessibilityInformation;
+	public get AccessibilityInformAtion(): vscode.AccessibilityInformAtion | undefined {
+		return this._AccessibilityInformAtion;
 	}
 
 	public set text(text: string) {
 		this._text = text;
-		this.update();
+		this.updAte();
 	}
 
 	public set tooltip(tooltip: string | undefined) {
 		this._tooltip = tooltip;
-		this.update();
+		this.updAte();
 	}
 
 	public set color(color: string | ThemeColor | undefined) {
 		this._color = color;
-		this.update();
+		this.updAte();
 	}
 
-	public set command(command: string | vscode.Command | undefined) {
-		if (this._command?.fromApi === command) {
+	public set commAnd(commAnd: string | vscode.CommAnd | undefined) {
+		if (this._commAnd?.fromApi === commAnd) {
 			return;
 		}
 
-		this._internalCommandRegistration.clear();
-		if (typeof command === 'string') {
-			this._command = {
-				fromApi: command,
-				internal: this._commands.toInternal({ title: '', command }, this._internalCommandRegistration),
+		this._internAlCommAndRegistrAtion.cleAr();
+		if (typeof commAnd === 'string') {
+			this._commAnd = {
+				fromApi: commAnd,
+				internAl: this._commAnds.toInternAl({ title: '', commAnd }, this._internAlCommAndRegistrAtion),
 			};
-		} else if (command) {
-			this._command = {
-				fromApi: command,
-				internal: this._commands.toInternal(command, this._internalCommandRegistration),
+		} else if (commAnd) {
+			this._commAnd = {
+				fromApi: commAnd,
+				internAl: this._commAnds.toInternAl(commAnd, this._internAlCommAndRegistrAtion),
 			};
 		} else {
-			this._command = undefined;
+			this._commAnd = undefined;
 		}
-		this.update();
+		this.updAte();
 	}
 
-	public set accessibilityInformation(accessibilityInformation: vscode.AccessibilityInformation | undefined) {
-		this._accessibilityInformation = accessibilityInformation;
-		this.update();
+	public set AccessibilityInformAtion(AccessibilityInformAtion: vscode.AccessibilityInformAtion | undefined) {
+		this._AccessibilityInformAtion = AccessibilityInformAtion;
+		this.updAte();
 	}
 
 	public show(): void {
 		this._visible = true;
-		this.update();
+		this.updAte();
 	}
 
 	public hide(): void {
-		clearTimeout(this._timeoutHandle);
-		this._visible = false;
+		cleArTimeout(this._timeoutHAndle);
+		this._visible = fAlse;
 		this._proxy.$dispose(this.id);
 	}
 
-	private update(): void {
+	privAte updAte(): void {
 		if (this._disposed || !this._visible) {
 			return;
 		}
 
-		clearTimeout(this._timeoutHandle);
+		cleArTimeout(this._timeoutHAndle);
 
-		// Defer the update so that multiple changes to setters dont cause a redraw each
-		this._timeoutHandle = setTimeout(() => {
-			this._timeoutHandle = undefined;
+		// Defer the updAte so thAt multiple chAnges to setters dont cAuse A redrAw eAch
+		this._timeoutHAndle = setTimeout(() => {
+			this._timeoutHAndle = undefined;
 
-			// Set to status bar
-			this._proxy.$setEntry(this.id, this._statusId, this._statusName, this.text, this.tooltip, this._command?.internal, this.color,
-				this._alignment === ExtHostStatusBarAlignment.Left ? MainThreadStatusBarAlignment.LEFT : MainThreadStatusBarAlignment.RIGHT,
-				this._priority, this._accessibilityInformation);
+			// Set to stAtus bAr
+			this._proxy.$setEntry(this.id, this._stAtusId, this._stAtusNAme, this.text, this.tooltip, this._commAnd?.internAl, this.color,
+				this._Alignment === ExtHostStAtusBArAlignment.Left ? MAinThreAdStAtusBArAlignment.LEFT : MAinThreAdStAtusBArAlignment.RIGHT,
+				this._priority, this._AccessibilityInformAtion);
 		}, 0);
 	}
 
@@ -157,37 +157,37 @@ export class ExtHostStatusBarEntry implements vscode.StatusBarItem {
 	}
 }
 
-class StatusBarMessage {
+clAss StAtusBArMessAge {
 
-	private _item: vscode.StatusBarItem;
-	private _messages: { message: string }[] = [];
+	privAte _item: vscode.StAtusBArItem;
+	privAte _messAges: { messAge: string }[] = [];
 
-	constructor(statusBar: ExtHostStatusBar) {
-		this._item = statusBar.createStatusBarEntry('status.extensionMessage', localize('status.extensionMessage', "Extension Status"), ExtHostStatusBarAlignment.Left, Number.MIN_VALUE);
+	constructor(stAtusBAr: ExtHostStAtusBAr) {
+		this._item = stAtusBAr.creAteStAtusBArEntry('stAtus.extensionMessAge', locAlize('stAtus.extensionMessAge', "Extension StAtus"), ExtHostStAtusBArAlignment.Left, Number.MIN_VALUE);
 	}
 
 	dispose() {
-		this._messages.length = 0;
+		this._messAges.length = 0;
 		this._item.dispose();
 	}
 
-	setMessage(message: string): Disposable {
-		const data: { message: string } = { message }; // use object to not confuse equal strings
-		this._messages.unshift(data);
-		this._update();
+	setMessAge(messAge: string): DisposAble {
+		const dAtA: { messAge: string } = { messAge }; // use object to not confuse equAl strings
+		this._messAges.unshift(dAtA);
+		this._updAte();
 
-		return new Disposable(() => {
-			const idx = this._messages.indexOf(data);
+		return new DisposAble(() => {
+			const idx = this._messAges.indexOf(dAtA);
 			if (idx >= 0) {
-				this._messages.splice(idx, 1);
-				this._update();
+				this._messAges.splice(idx, 1);
+				this._updAte();
 			}
 		});
 	}
 
-	private _update() {
-		if (this._messages.length > 0) {
-			this._item.text = this._messages[0].message;
+	privAte _updAte() {
+		if (this._messAges.length > 0) {
+			this._item.text = this._messAges[0].messAge;
 			this._item.show();
 		} else {
 			this._item.hide();
@@ -195,36 +195,36 @@ class StatusBarMessage {
 	}
 }
 
-export class ExtHostStatusBar {
+export clAss ExtHostStAtusBAr {
 
-	private readonly _proxy: MainThreadStatusBarShape;
-	private readonly _commands: CommandsConverter;
-	private _statusMessage: StatusBarMessage;
+	privAte reAdonly _proxy: MAinThreAdStAtusBArShApe;
+	privAte reAdonly _commAnds: CommAndsConverter;
+	privAte _stAtusMessAge: StAtusBArMessAge;
 
-	constructor(mainContext: IMainContext, commands: CommandsConverter) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadStatusBar);
-		this._commands = commands;
-		this._statusMessage = new StatusBarMessage(this);
+	constructor(mAinContext: IMAinContext, commAnds: CommAndsConverter) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdStAtusBAr);
+		this._commAnds = commAnds;
+		this._stAtusMessAge = new StAtusBArMessAge(this);
 	}
 
-	createStatusBarEntry(id: string, name: string, alignment?: ExtHostStatusBarAlignment, priority?: number, accessibilityInformation?: vscode.AccessibilityInformation): vscode.StatusBarItem {
-		return new ExtHostStatusBarEntry(this._proxy, this._commands, id, name, alignment, priority, accessibilityInformation);
+	creAteStAtusBArEntry(id: string, nAme: string, Alignment?: ExtHostStAtusBArAlignment, priority?: number, AccessibilityInformAtion?: vscode.AccessibilityInformAtion): vscode.StAtusBArItem {
+		return new ExtHostStAtusBArEntry(this._proxy, this._commAnds, id, nAme, Alignment, priority, AccessibilityInformAtion);
 	}
 
-	setStatusBarMessage(text: string, timeoutOrThenable?: number | Thenable<any>): Disposable {
+	setStAtusBArMessAge(text: string, timeoutOrThenAble?: number | ThenAble<Any>): DisposAble {
 
-		const d = this._statusMessage.setMessage(text);
-		let handle: any;
+		const d = this._stAtusMessAge.setMessAge(text);
+		let hAndle: Any;
 
-		if (typeof timeoutOrThenable === 'number') {
-			handle = setTimeout(() => d.dispose(), timeoutOrThenable);
-		} else if (typeof timeoutOrThenable !== 'undefined') {
-			timeoutOrThenable.then(() => d.dispose(), () => d.dispose());
+		if (typeof timeoutOrThenAble === 'number') {
+			hAndle = setTimeout(() => d.dispose(), timeoutOrThenAble);
+		} else if (typeof timeoutOrThenAble !== 'undefined') {
+			timeoutOrThenAble.then(() => d.dispose(), () => d.dispose());
 		}
 
-		return new Disposable(() => {
+		return new DisposAble(() => {
 			d.dispose();
-			clearTimeout(handle);
+			cleArTimeout(hAndle);
 		});
 	}
 }

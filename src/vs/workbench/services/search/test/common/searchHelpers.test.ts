@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ITextModel, FindMatch } from 'vs/editor/common/model';
-import { editorMatchesToTextSearchResults, addContextToEditorMatches } from 'vs/workbench/services/search/common/searchHelpers';
-import { Range } from 'vs/editor/common/core/range';
-import { ITextQuery, QueryType, ITextSearchContext } from 'vs/workbench/services/search/common/search';
+import * As Assert from 'Assert';
+import { ITextModel, FindMAtch } from 'vs/editor/common/model';
+import { editorMAtchesToTextSeArchResults, AddContextToEditorMAtches } from 'vs/workbench/services/seArch/common/seArchHelpers';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ITextQuery, QueryType, ITextSeArchContext } from 'vs/workbench/services/seArch/common/seArch';
 
-suite('SearchHelpers', () => {
-	suite('editorMatchesToTextSearchResults', () => {
+suite('SeArchHelpers', () => {
+	suite('editorMAtchesToTextSeArchResults', () => {
 		const mockTextModel: ITextModel = <ITextModel>{
 			getLineContent(lineNumber: number): string {
 				return '' + lineNumber;
@@ -18,49 +18,49 @@ suite('SearchHelpers', () => {
 		};
 
 		test('simple', () => {
-			const results = editorMatchesToTextSearchResults([new FindMatch(new Range(6, 1, 6, 2), null)], mockTextModel);
-			assert.equal(results.length, 1);
-			assert.equal(results[0].preview.text, '6\n');
-			assert.deepEqual(results[0].preview.matches, [new Range(0, 0, 0, 1)]);
-			assert.deepEqual(results[0].ranges, [new Range(5, 0, 5, 1)]);
+			const results = editorMAtchesToTextSeArchResults([new FindMAtch(new RAnge(6, 1, 6, 2), null)], mockTextModel);
+			Assert.equAl(results.length, 1);
+			Assert.equAl(results[0].preview.text, '6\n');
+			Assert.deepEquAl(results[0].preview.mAtches, [new RAnge(0, 0, 0, 1)]);
+			Assert.deepEquAl(results[0].rAnges, [new RAnge(5, 0, 5, 1)]);
 		});
 
 		test('multiple', () => {
-			const results = editorMatchesToTextSearchResults(
+			const results = editorMAtchesToTextSeArchResults(
 				[
-					new FindMatch(new Range(6, 1, 6, 2), null),
-					new FindMatch(new Range(6, 4, 8, 2), null),
-					new FindMatch(new Range(9, 1, 10, 3), null),
+					new FindMAtch(new RAnge(6, 1, 6, 2), null),
+					new FindMAtch(new RAnge(6, 4, 8, 2), null),
+					new FindMAtch(new RAnge(9, 1, 10, 3), null),
 				],
 				mockTextModel);
-			assert.equal(results.length, 2);
-			assert.deepEqual(results[0].preview.matches, [
-				new Range(0, 0, 0, 1),
-				new Range(0, 3, 2, 1),
+			Assert.equAl(results.length, 2);
+			Assert.deepEquAl(results[0].preview.mAtches, [
+				new RAnge(0, 0, 0, 1),
+				new RAnge(0, 3, 2, 1),
 			]);
-			assert.deepEqual(results[0].ranges, [
-				new Range(5, 0, 5, 1),
-				new Range(5, 3, 7, 1),
+			Assert.deepEquAl(results[0].rAnges, [
+				new RAnge(5, 0, 5, 1),
+				new RAnge(5, 3, 7, 1),
 			]);
-			assert.equal(results[0].preview.text, '6\n7\n8\n');
+			Assert.equAl(results[0].preview.text, '6\n7\n8\n');
 
-			assert.deepEqual(results[1].preview.matches, [
-				new Range(0, 0, 1, 2),
+			Assert.deepEquAl(results[1].preview.mAtches, [
+				new RAnge(0, 0, 1, 2),
 			]);
-			assert.deepEqual(results[1].ranges, [
-				new Range(8, 0, 9, 2),
+			Assert.deepEquAl(results[1].rAnges, [
+				new RAnge(8, 0, 9, 2),
 			]);
-			assert.equal(results[1].preview.text, '9\n10\n');
+			Assert.equAl(results[1].preview.text, '9\n10\n');
 		});
 	});
 
-	suite('addContextToEditorMatches', () => {
+	suite('AddContextToEditorMAtches', () => {
 		const MOCK_LINE_COUNT = 100;
 
 		const mockTextModel: ITextModel = <ITextModel>{
 			getLineContent(lineNumber: number): string {
 				if (lineNumber < 1 || lineNumber > MOCK_LINE_COUNT) {
-					throw new Error(`invalid line count: ${lineNumber}`);
+					throw new Error(`invAlid line count: ${lineNumber}`);
 				}
 
 				return '' + lineNumber;
@@ -71,120 +71,120 @@ suite('SearchHelpers', () => {
 			}
 		};
 
-		function getQuery(beforeContext?: number, afterContext?: number): ITextQuery {
+		function getQuery(beforeContext?: number, AfterContext?: number): ITextQuery {
 			return {
 				folderQueries: [],
 				type: QueryType.Text,
-				contentPattern: { pattern: 'test' },
+				contentPAttern: { pAttern: 'test' },
 				beforeContext,
-				afterContext
+				AfterContext
 			};
 		}
 
 		test('no context', () => {
-			const matches = [{
+			const mAtches = [{
 				preview: {
 					text: 'foo',
-					matches: new Range(0, 0, 0, 10)
+					mAtches: new RAnge(0, 0, 0, 10)
 				},
-				ranges: new Range(0, 0, 0, 10)
+				rAnges: new RAnge(0, 0, 0, 10)
 			}];
 
-			assert.deepEqual(addContextToEditorMatches(matches, mockTextModel, getQuery()), matches);
+			Assert.deepEquAl(AddContextToEditorMAtches(mAtches, mockTextModel, getQuery()), mAtches);
 		});
 
 		test('simple', () => {
-			const matches = [{
+			const mAtches = [{
 				preview: {
 					text: 'foo',
-					matches: new Range(0, 0, 0, 10)
+					mAtches: new RAnge(0, 0, 0, 10)
 				},
-				ranges: new Range(1, 0, 1, 10)
+				rAnges: new RAnge(1, 0, 1, 10)
 			}];
 
-			assert.deepEqual(addContextToEditorMatches(matches, mockTextModel, getQuery(1, 2)), [
-				<ITextSearchContext>{
+			Assert.deepEquAl(AddContextToEditorMAtches(mAtches, mockTextModel, getQuery(1, 2)), [
+				<ITextSeArchContext>{
 					text: '1',
 					lineNumber: 0
 				},
-				...matches,
-				<ITextSearchContext>{
+				...mAtches,
+				<ITextSeArchContext>{
 					text: '3',
 					lineNumber: 2
 				},
-				<ITextSearchContext>{
+				<ITextSeArchContext>{
 					text: '4',
 					lineNumber: 3
 				},
 			]);
 		});
 
-		test('multiple matches next to each other', () => {
-			const matches = [
+		test('multiple mAtches next to eAch other', () => {
+			const mAtches = [
 				{
 					preview: {
 						text: 'foo',
-						matches: new Range(0, 0, 0, 10)
+						mAtches: new RAnge(0, 0, 0, 10)
 					},
-					ranges: new Range(1, 0, 1, 10)
+					rAnges: new RAnge(1, 0, 1, 10)
 				},
 				{
 					preview: {
-						text: 'bar',
-						matches: new Range(0, 0, 0, 10)
+						text: 'bAr',
+						mAtches: new RAnge(0, 0, 0, 10)
 					},
-					ranges: new Range(2, 0, 2, 10)
+					rAnges: new RAnge(2, 0, 2, 10)
 				}];
 
-			assert.deepEqual(addContextToEditorMatches(matches, mockTextModel, getQuery(1, 2)), [
-				<ITextSearchContext>{
+			Assert.deepEquAl(AddContextToEditorMAtches(mAtches, mockTextModel, getQuery(1, 2)), [
+				<ITextSeArchContext>{
 					text: '1',
 					lineNumber: 0
 				},
-				...matches,
-				<ITextSearchContext>{
+				...mAtches,
+				<ITextSeArchContext>{
 					text: '4',
 					lineNumber: 3
 				},
-				<ITextSearchContext>{
+				<ITextSeArchContext>{
 					text: '5',
 					lineNumber: 4
 				},
 			]);
 		});
 
-		test('boundaries', () => {
-			const matches = [
+		test('boundAries', () => {
+			const mAtches = [
 				{
 					preview: {
 						text: 'foo',
-						matches: new Range(0, 0, 0, 10)
+						mAtches: new RAnge(0, 0, 0, 10)
 					},
-					ranges: new Range(0, 0, 0, 10)
+					rAnges: new RAnge(0, 0, 0, 10)
 				},
 				{
 					preview: {
-						text: 'bar',
-						matches: new Range(0, 0, 0, 10)
+						text: 'bAr',
+						mAtches: new RAnge(0, 0, 0, 10)
 					},
-					ranges: new Range(MOCK_LINE_COUNT - 1, 0, MOCK_LINE_COUNT - 1, 10)
+					rAnges: new RAnge(MOCK_LINE_COUNT - 1, 0, MOCK_LINE_COUNT - 1, 10)
 				}];
 
-			assert.deepEqual(addContextToEditorMatches(matches, mockTextModel, getQuery(1, 2)), [
-				matches[0],
-				<ITextSearchContext>{
+			Assert.deepEquAl(AddContextToEditorMAtches(mAtches, mockTextModel, getQuery(1, 2)), [
+				mAtches[0],
+				<ITextSeArchContext>{
 					text: '2',
 					lineNumber: 1
 				},
-				<ITextSearchContext>{
+				<ITextSeArchContext>{
 					text: '3',
 					lineNumber: 2
 				},
-				<ITextSearchContext>{
+				<ITextSeArchContext>{
 					text: '' + (MOCK_LINE_COUNT - 1),
 					lineNumber: MOCK_LINE_COUNT - 2
 				},
-				matches[1]
+				mAtches[1]
 			]);
 		});
 	});

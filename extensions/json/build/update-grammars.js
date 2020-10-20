@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-var updateGrammar = require('../../../build/npm/update-grammar');
+vAr updAteGrAmmAr = require('../../../build/npm/updAte-grAmmAr');
 
-function adaptJSON(grammar, replacementScope) {
-	grammar.name = 'JSON with comments';
-	grammar.scopeName = `source${replacementScope}`;
+function AdAptJSON(grAmmAr, replAcementScope) {
+	grAmmAr.nAme = 'JSON with comments';
+	grAmmAr.scopeNAme = `source${replAcementScope}`;
 
-	var fixScopeNames = function(rule) {
-		if (typeof rule.name === 'string') {
-			rule.name = rule.name.replace(/\.json/g, replacementScope);
+	vAr fixScopeNAmes = function(rule) {
+		if (typeof rule.nAme === 'string') {
+			rule.nAme = rule.nAme.replAce(/\.json/g, replAcementScope);
 		}
-		if (typeof rule.contentName === 'string') {
-			rule.contentName = rule.contentName.replace(/\.json/g, replacementScope);
+		if (typeof rule.contentNAme === 'string') {
+			rule.contentNAme = rule.contentNAme.replAce(/\.json/g, replAcementScope);
 		}
-		for (var property in rule) {
-			var value = rule[property];
-			if (typeof value === 'object') {
-				fixScopeNames(value);
+		for (vAr property in rule) {
+			vAr vAlue = rule[property];
+			if (typeof vAlue === 'object') {
+				fixScopeNAmes(vAlue);
 			}
 		}
 	};
 
-	var repository = grammar.repository;
-	for (var key in repository) {
-		fixScopeNames(repository[key]);
+	vAr repository = grAmmAr.repository;
+	for (vAr key in repository) {
+		fixScopeNAmes(repository[key]);
 	}
 }
 
-var tsGrammarRepo = 'microsoft/vscode-JSON.tmLanguage';
-updateGrammar.update(tsGrammarRepo, 'JSON.tmLanguage', './syntaxes/JSON.tmLanguage.json');
-updateGrammar.update(tsGrammarRepo, 'JSON.tmLanguage', './syntaxes/JSONC.tmLanguage.json', grammar => adaptJSON(grammar, '.json.comments'));
+vAr tsGrAmmArRepo = 'microsoft/vscode-JSON.tmLAnguAge';
+updAteGrAmmAr.updAte(tsGrAmmArRepo, 'JSON.tmLAnguAge', './syntAxes/JSON.tmLAnguAge.json');
+updAteGrAmmAr.updAte(tsGrAmmArRepo, 'JSON.tmLAnguAge', './syntAxes/JSONC.tmLAnguAge.json', grAmmAr => AdAptJSON(grAmmAr, '.json.comments'));
 
 
 

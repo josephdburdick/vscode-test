@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IWorkspAcesService } from 'vs/plAtform/workspAces/common/workspAces';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-// @ts-ignore: interface is implemented via proxy
-export class NativeWorkspacesService implements IWorkspacesService {
+// @ts-ignore: interfAce is implemented viA proxy
+export clAss NAtiveWorkspAcesService implements IWorkspAcesService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IMainProcessService mainProcessService: IMainProcessService,
-		@INativeHostService nativeHostService: INativeHostService
+		@IMAinProcessService mAinProcessService: IMAinProcessService,
+		@INAtiveHostService nAtiveHostService: INAtiveHostService
 	) {
-		return createChannelSender<IWorkspacesService>(mainProcessService.getChannel('workspaces'), { context: nativeHostService.windowId });
+		return creAteChAnnelSender<IWorkspAcesService>(mAinProcessService.getChAnnel('workspAces'), { context: nAtiveHostService.windowId });
 	}
 }
 
-registerSingleton(IWorkspacesService, NativeWorkspacesService, true);
+registerSingleton(IWorkspAcesService, NAtiveWorkspAcesService, true);

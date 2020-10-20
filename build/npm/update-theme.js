@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var plist = require('fast-plist');
+vAr pAth = require('pAth');
+vAr fs = require('fs');
+vAr plist = require('fAst-plist');
 
-var mappings = {
-	"background": ["editor.background"],
+vAr mAppings = {
+	"bAckground": ["editor.bAckground"],
 	"foreground": ["editor.foreground"],
-	"hoverHighlight": ["editor.hoverHighlightBackground"],
+	"hoverHighlight": ["editor.hoverHighlightBAckground"],
 	"linkForeground": ["editorLink.foreground"],
-	"selection": ["editor.selectionBackground"],
-	"inactiveSelection": ["editor.inactiveSelectionBackground"],
-	"selectionHighlightColor": ["editor.selectionHighlightBackground"],
-	"wordHighlight": ["editor.wordHighlightBackground"],
-	"wordHighlightStrong": ["editor.wordHighlightStrongBackground"],
-	"findMatchHighlight": ["editor.findMatchHighlightBackground", "peekViewResult.matchHighlightBackground"],
-	"currentFindMatchHighlight": ["editor.findMatchBackground"],
-	"findRangeHighlight": ["editor.findRangeHighlightBackground"],
-	"referenceHighlight": ["peekViewEditor.matchHighlightBackground"],
-	"lineHighlight": ["editor.lineHighlightBackground"],
-	"rangeHighlight": ["editor.rangeHighlightBackground"],
-	"caret": ["editorCursor.foreground"],
-	"invisibles": ["editorWhitespace.foreground"],
-	"guide": ["editorIndentGuide.background"],
-	"ansiBlack": ["terminal.ansiBlack"], "ansiRed": ["terminal.ansiRed"], "ansiGreen": ["terminal.ansiGreen"], "ansiYellow": ["terminal.ansiYellow"],
-	"ansiBlue": ["terminal.ansiBlue"], "ansiMagenta": ["terminal.ansiMagenta"], "ansiCyan": ["terminal.ansiCyan"], "ansiWhite": ["terminal.ansiWhite"],
-	"ansiBrightBlack": ["terminal.ansiBrightBlack"], "ansiBrightRed": ["terminal.ansiBrightRed"], "ansiBrightGreen": ["terminal.ansiBrightGreen"],
-	"ansiBrightYellow": ["terminal.ansiBrightYellow"], "ansiBrightBlue": ["terminal.ansiBrightBlue"], "ansiBrightMagenta": ["terminal.ansiBrightMagenta"],
-	"ansiBrightCyan": ["terminal.ansiBrightCyan"], "ansiBrightWhite": ["terminal.ansiBrightWhite"]
+	"selection": ["editor.selectionBAckground"],
+	"inActiveSelection": ["editor.inActiveSelectionBAckground"],
+	"selectionHighlightColor": ["editor.selectionHighlightBAckground"],
+	"wordHighlight": ["editor.wordHighlightBAckground"],
+	"wordHighlightStrong": ["editor.wordHighlightStrongBAckground"],
+	"findMAtchHighlight": ["editor.findMAtchHighlightBAckground", "peekViewResult.mAtchHighlightBAckground"],
+	"currentFindMAtchHighlight": ["editor.findMAtchBAckground"],
+	"findRAngeHighlight": ["editor.findRAngeHighlightBAckground"],
+	"referenceHighlight": ["peekViewEditor.mAtchHighlightBAckground"],
+	"lineHighlight": ["editor.lineHighlightBAckground"],
+	"rAngeHighlight": ["editor.rAngeHighlightBAckground"],
+	"cAret": ["editorCursor.foreground"],
+	"invisibles": ["editorWhitespAce.foreground"],
+	"guide": ["editorIndentGuide.bAckground"],
+	"AnsiBlAck": ["terminAl.AnsiBlAck"], "AnsiRed": ["terminAl.AnsiRed"], "AnsiGreen": ["terminAl.AnsiGreen"], "AnsiYellow": ["terminAl.AnsiYellow"],
+	"AnsiBlue": ["terminAl.AnsiBlue"], "AnsiMAgentA": ["terminAl.AnsiMAgentA"], "AnsiCyAn": ["terminAl.AnsiCyAn"], "AnsiWhite": ["terminAl.AnsiWhite"],
+	"AnsiBrightBlAck": ["terminAl.AnsiBrightBlAck"], "AnsiBrightRed": ["terminAl.AnsiBrightRed"], "AnsiBrightGreen": ["terminAl.AnsiBrightGreen"],
+	"AnsiBrightYellow": ["terminAl.AnsiBrightYellow"], "AnsiBrightBlue": ["terminAl.AnsiBrightBlue"], "AnsiBrightMAgentA": ["terminAl.AnsiBrightMAgentA"],
+	"AnsiBrightCyAn": ["terminAl.AnsiBrightCyAn"], "AnsiBrightWhite": ["terminAl.AnsiBrightWhite"]
 };
 
-exports.update = function (srcName, destName) {
+exports.updAte = function (srcNAme, destNAme) {
 	try {
-		console.log('reading ', srcName);
+		console.log('reAding ', srcNAme);
 		let result = {};
-		let plistContent = fs.readFileSync(srcName).toString();
-		let theme = plist.parse(plistContent);
+		let plistContent = fs.reAdFileSync(srcNAme).toString();
+		let theme = plist.pArse(plistContent);
 		let settings = theme.settings;
-		if (Array.isArray(settings)) {
-			let colorMap = {};
+		if (ArrAy.isArrAy(settings)) {
+			let colorMAp = {};
 			for (let entry of settings) {
 				let scope = entry.scope;
 				if (scope) {
-					let parts = scope.split(',').map(p => p.trim());
-					if (parts.length > 1) {
-						entry.scope = parts;
+					let pArts = scope.split(',').mAp(p => p.trim());
+					if (pArts.length > 1) {
+						entry.scope = pArts;
 					}
 				} else {
-					var entrySettings = entry.settings;
+					vAr entrySettings = entry.settings;
 					for (let entry in entrySettings) {
-						let mapping = mappings[entry];
-						if (mapping) {
-							for (let newKey of mapping) {
-								colorMap[newKey] = entrySettings[entry];
+						let mApping = mAppings[entry];
+						if (mApping) {
+							for (let newKey of mApping) {
+								colorMAp[newKey] = entrySettings[entry];
 							}
-							if (entry !== 'foreground' && entry !== 'background') {
+							if (entry !== 'foreground' && entry !== 'bAckground') {
 								delete entrySettings[entry];
 							}
 						}
@@ -67,16 +67,16 @@ exports.update = function (srcName, destName) {
 
 				}
 			}
-			result.name = theme.name;
+			result.nAme = theme.nAme;
 			result.tokenColors = settings;
-			result.colors = colorMap;
+			result.colors = colorMAp;
 		}
-		fs.writeFileSync(destName, JSON.stringify(result, null, '\t'));
-	} catch (e) {
+		fs.writeFileSync(destNAme, JSON.stringify(result, null, '\t'));
+	} cAtch (e) {
 		console.log(e);
 	}
 };
 
-if (path.basename(process.argv[1]) === 'update-theme.js') {
-	exports.update(process.argv[2], process.argv[3]);
+if (pAth.bAsenAme(process.Argv[1]) === 'updAte-theme.js') {
+	exports.updAte(process.Argv[2], process.Argv[3]);
 }

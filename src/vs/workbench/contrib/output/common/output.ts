@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IOutputChannelDescriptor } from 'vs/workbench/services/output/common/output';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IOutputChAnnelDescriptor } from 'vs/workbench/services/output/common/output';
+import { URI } from 'vs/bAse/common/uri';
 
 /**
  * Mime type used by the output editor.
@@ -42,93 +42,93 @@ export const LOG_MODE_ID = 'log';
 /**
  * Output view id
  */
-export const OUTPUT_VIEW_ID = 'workbench.panel.output';
+export const OUTPUT_VIEW_ID = 'workbench.pAnel.output';
 
 export const OUTPUT_SERVICE_ID = 'outputService';
 
-export const MAX_OUTPUT_LENGTH = 10000 /* Max. number of output lines to show in output */ * 100 /* Guestimated chars per line */;
+export const MAX_OUTPUT_LENGTH = 10000 /* MAx. number of output lines to show in output */ * 100 /* GuestimAted chArs per line */;
 
-export const CONTEXT_IN_OUTPUT = new RawContextKey<boolean>('inOutput', false);
+export const CONTEXT_IN_OUTPUT = new RAwContextKey<booleAn>('inOutput', fAlse);
 
-export const CONTEXT_ACTIVE_LOG_OUTPUT = new RawContextKey<boolean>('activeLogOutput', false);
+export const CONTEXT_ACTIVE_LOG_OUTPUT = new RAwContextKey<booleAn>('ActiveLogOutput', fAlse);
 
-export const CONTEXT_OUTPUT_SCROLL_LOCK = new RawContextKey<boolean>(`outputView.scrollLock`, false);
+export const CONTEXT_OUTPUT_SCROLL_LOCK = new RAwContextKey<booleAn>(`outputView.scrollLock`, fAlse);
 
-export const IOutputService = createDecorator<IOutputService>(OUTPUT_SERVICE_ID);
+export const IOutputService = creAteDecorAtor<IOutputService>(OUTPUT_SERVICE_ID);
 
 /**
- * The output service to manage output from the various processes running.
+ * The output service to mAnAge output from the vArious processes running.
  */
-export interface IOutputService {
-	readonly _serviceBrand: undefined;
+export interfAce IOutputService {
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Given the channel id returns the output channel instance.
-	 * Channel should be first registered via OutputChannelRegistry.
+	 * Given the chAnnel id returns the output chAnnel instAnce.
+	 * ChAnnel should be first registered viA OutputChAnnelRegistry.
 	 */
-	getChannel(id: string): IOutputChannel | undefined;
+	getChAnnel(id: string): IOutputChAnnel | undefined;
 
 	/**
-	 * Given the channel id returns the registered output channel descriptor.
+	 * Given the chAnnel id returns the registered output chAnnel descriptor.
 	 */
-	getChannelDescriptor(id: string): IOutputChannelDescriptor | undefined;
+	getChAnnelDescriptor(id: string): IOutputChAnnelDescriptor | undefined;
 
 	/**
-	 * Returns an array of all known output channels descriptors.
+	 * Returns An ArrAy of All known output chAnnels descriptors.
 	 */
-	getChannelDescriptors(): IOutputChannelDescriptor[];
+	getChAnnelDescriptors(): IOutputChAnnelDescriptor[];
 
 	/**
-	 * Returns the currently active channel.
-	 * Only one channel can be active at a given moment.
+	 * Returns the currently Active chAnnel.
+	 * Only one chAnnel cAn be Active At A given moment.
 	 */
-	getActiveChannel(): IOutputChannel | undefined;
+	getActiveChAnnel(): IOutputChAnnel | undefined;
 
 	/**
-	 * Show the channel with the passed id.
+	 * Show the chAnnel with the pAssed id.
 	 */
-	showChannel(id: string, preserveFocus?: boolean): Promise<void>;
+	showChAnnel(id: string, preserveFocus?: booleAn): Promise<void>;
 
 	/**
-	 * Allows to register on active output channel change.
+	 * Allows to register on Active output chAnnel chAnge.
 	 */
-	onActiveOutputChannel: Event<string>;
+	onActiveOutputChAnnel: Event<string>;
 }
 
-export interface IOutputChannel {
+export interfAce IOutputChAnnel {
 
 	/**
-	 * Identifier of the output channel.
+	 * Identifier of the output chAnnel.
 	 */
 	id: string;
 
 	/**
-	 * Label of the output channel to be displayed to the user.
+	 * LAbel of the output chAnnel to be displAyed to the user.
 	 */
-	label: string;
+	lAbel: string;
 
 	/**
-	 * URI of the output channel.
+	 * URI of the output chAnnel.
 	 */
 	uri: URI;
 
 	/**
-	 * Appends output to the channel.
+	 * Appends output to the chAnnel.
 	 */
-	append(output: string): void;
+	Append(output: string): void;
 
 	/**
-	 * Update the channel.
+	 * UpdAte the chAnnel.
 	 */
-	update(): void;
+	updAte(): void;
 
 	/**
-	 * Clears all received output for this channel.
+	 * CleArs All received output for this chAnnel.
 	 */
-	clear(till?: number): void;
+	cleAr(till?: number): void;
 
 	/**
-	 * Disposes the output channel.
+	 * Disposes the output chAnnel.
 	 */
 	dispose(): void;
 }

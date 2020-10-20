@@ -1,392 +1,392 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Event, AsyncEmitter, IWaitUntil } from 'vs/base/common/event';
-import { insert } from 'vs/base/common/arrays';
-import { URI } from 'vs/base/common/uri';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IFileService, FileOperation, IFileStatWithMetadata } from 'vs/platform/files/common/files';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { creAteDecorAtor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Event, AsyncEmitter, IWAitUntil } from 'vs/bAse/common/event';
+import { insert } from 'vs/bAse/common/ArrAys';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAble, IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IFileService, FileOperAtion, IFileStAtWithMetAdAtA } from 'vs/plAtform/files/common/files';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { IWorkingCopyService, IWorkingCopy } from 'vs/workbench/services/workingCopy/common/workingCopyService';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
-import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
-import { WorkingCopyFileOperationParticipant } from 'vs/workbench/services/workingCopy/common/workingCopyFileOperationParticipant';
-import { VSBuffer, VSBufferReadable, VSBufferReadableStream } from 'vs/base/common/buffer';
+import { IProgress, IProgressStep } from 'vs/plAtform/progress/common/progress';
+import { WorkingCopyFileOperAtionPArticipAnt } from 'vs/workbench/services/workingCopy/common/workingCopyFileOperAtionPArticipAnt';
+import { VSBuffer, VSBufferReAdAble, VSBufferReAdAbleStreAm } from 'vs/bAse/common/buffer';
 
-export const IWorkingCopyFileService = createDecorator<IWorkingCopyFileService>('workingCopyFileService');
+export const IWorkingCopyFileService = creAteDecorAtor<IWorkingCopyFileService>('workingCopyFileService');
 
-interface SourceTargetPair {
-
-	/**
-	 * The source resource that is defined for move operations.
-	 */
-	readonly source?: URI;
+interfAce SourceTArgetPAir {
 
 	/**
-	 * The target resource the event is about.
+	 * The source resource thAt is defined for move operAtions.
 	 */
-	readonly target: URI
+	reAdonly source?: URI;
+
+	/**
+	 * The tArget resource the event is About.
+	 */
+	reAdonly tArget: URI
 }
 
-export interface WorkingCopyFileEvent extends IWaitUntil {
+export interfAce WorkingCopyFileEvent extends IWAitUntil {
 
 	/**
-	 * An identifier to correlate the operation through the
-	 * different event types (before, after, error).
+	 * An identifier to correlAte the operAtion through the
+	 * different event types (before, After, error).
 	 */
-	readonly correlationId: number;
+	reAdonly correlAtionId: number;
 
 	/**
-	 * The file operation that is taking place.
+	 * The file operAtion thAt is tAking plAce.
 	 */
-	readonly operation: FileOperation;
+	reAdonly operAtion: FileOperAtion;
 
 	/**
-	 * The array of source/target pair of files involved in given operation.
+	 * The ArrAy of source/tArget pAir of files involved in given operAtion.
 	 */
-	readonly files: SourceTargetPair[]
+	reAdonly files: SourceTArgetPAir[]
 }
 
-export interface IWorkingCopyFileOperationParticipant {
+export interfAce IWorkingCopyFileOperAtionPArticipAnt {
 
 	/**
-	 * Participate in a file operation of working copies. Allows to
-	 * change the working copies before they are being saved to disk.
+	 * PArticipAte in A file operAtion of working copies. Allows to
+	 * chAnge the working copies before they Are being sAved to disk.
 	 */
-	participate(
-		files: SourceTargetPair[],
-		operation: FileOperation,
+	pArticipAte(
+		files: SourceTArgetPAir[],
+		operAtion: FileOperAtion,
 		progress: IProgress<IProgressStep>,
 		timeout: number,
-		token: CancellationToken
+		token: CAncellAtionToken
 	): Promise<void>;
 }
 
 /**
- * Returns the working copies for a given resource.
+ * Returns the working copies for A given resource.
  */
 type WorkingCopyProvider = (resourceOrFolder: URI) => IWorkingCopy[];
 
 /**
- * A service that allows to perform file operations with working copy support.
- * Any operation that would leave a stale dirty working copy behind will make
+ * A service thAt Allows to perform file operAtions with working copy support.
+ * Any operAtion thAt would leAve A stAle dirty working copy behind will mAke
  * sure to revert the working copy first.
  *
- * On top of that events are provided to participate in each state of the
- * operation to perform additional work.
+ * On top of thAt events Are provided to pArticipAte in eAch stAte of the
+ * operAtion to perform AdditionAl work.
  */
-export interface IWorkingCopyFileService {
+export interfAce IWorkingCopyFileService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	//#region Events
 
 	/**
-	 * An event that is fired when a certain working copy IO operation is about to run.
+	 * An event thAt is fired when A certAin working copy IO operAtion is About to run.
 	 *
-	 * Participants can join this event with a long running operation to keep some state
-	 * before the operation is started, but working copies should not be changed at this
-	 * point in time. For that purpose, use the `IWorkingCopyFileOperationParticipant` API.
+	 * PArticipAnts cAn join this event with A long running operAtion to keep some stAte
+	 * before the operAtion is stArted, but working copies should not be chAnged At this
+	 * point in time. For thAt purpose, use the `IWorkingCopyFileOperAtionPArticipAnt` API.
 	 */
-	readonly onWillRunWorkingCopyFileOperation: Event<WorkingCopyFileEvent>;
+	reAdonly onWillRunWorkingCopyFileOperAtion: Event<WorkingCopyFileEvent>;
 
 	/**
-	 * An event that is fired after a working copy IO operation has failed.
+	 * An event thAt is fired After A working copy IO operAtion hAs fAiled.
 	 *
-	 * Participants can join this event with a long running operation to clean up as needed.
+	 * PArticipAnts cAn join this event with A long running operAtion to cleAn up As needed.
 	 */
-	readonly onDidFailWorkingCopyFileOperation: Event<WorkingCopyFileEvent>;
+	reAdonly onDidFAilWorkingCopyFileOperAtion: Event<WorkingCopyFileEvent>;
 
 	/**
-	 * An event that is fired after a working copy IO operation has been performed.
+	 * An event thAt is fired After A working copy IO operAtion hAs been performed.
 	 *
-	 * Participants can join this event with a long running operation to make changes
-	 * after the operation has finished.
+	 * PArticipAnts cAn join this event with A long running operAtion to mAke chAnges
+	 * After the operAtion hAs finished.
 	 */
-	readonly onDidRunWorkingCopyFileOperation: Event<WorkingCopyFileEvent>;
+	reAdonly onDidRunWorkingCopyFileOperAtion: Event<WorkingCopyFileEvent>;
 
 	//#endregion
 
 
-	//#region File operation participants
+	//#region File operAtion pArticipAnts
 
 	/**
-	 * Adds a participant for file operations on working copies.
+	 * Adds A pArticipAnt for file operAtions on working copies.
 	 */
-	addFileOperationParticipant(participant: IWorkingCopyFileOperationParticipant): IDisposable;
+	AddFileOperAtionPArticipAnt(pArticipAnt: IWorkingCopyFileOperAtionPArticipAnt): IDisposAble;
 
 	//#endregion
 
 
-	//#region File operations
+	//#region File operAtions
 
 	/**
-	 * Will create a resource with the provided optional contents, optionally overwriting any target.
+	 * Will creAte A resource with the provided optionAl contents, optionAlly overwriting Any tArget.
 	 *
-	 * Working copy owners can listen to the `onWillRunWorkingCopyFileOperation` and
-	 * `onDidRunWorkingCopyFileOperation` events to participate.
+	 * Working copy owners cAn listen to the `onWillRunWorkingCopyFileOperAtion` And
+	 * `onDidRunWorkingCopyFileOperAtion` events to pArticipAte.
 	 */
-	create(resource: URI, contents?: VSBuffer | VSBufferReadable | VSBufferReadableStream, options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata>;
+	creAte(resource: URI, contents?: VSBuffer | VSBufferReAdAble | VSBufferReAdAbleStreAm, options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA>;
 
 	/**
-	 * Will move working copies matching the provided resources and corresponding children
-	 * to the target resources using the associated file service for those resources.
+	 * Will move working copies mAtching the provided resources And corresponding children
+	 * to the tArget resources using the AssociAted file service for those resources.
 	 *
-	 * Working copy owners can listen to the `onWillRunWorkingCopyFileOperation` and
-	 * `onDidRunWorkingCopyFileOperation` events to participate.
+	 * Working copy owners cAn listen to the `onWillRunWorkingCopyFileOperAtion` And
+	 * `onDidRunWorkingCopyFileOperAtion` events to pArticipAte.
 	 */
-	move(files: Required<SourceTargetPair>[], options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata[]>;
+	move(files: Required<SourceTArgetPAir>[], options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA[]>;
 
 	/**
-	 * Will copy working copies matching the provided resources and corresponding children
-	 * to the target resources using the associated file service for those resources.
+	 * Will copy working copies mAtching the provided resources And corresponding children
+	 * to the tArget resources using the AssociAted file service for those resources.
 	 *
-	 * Working copy owners can listen to the `onWillRunWorkingCopyFileOperation` and
-	 * `onDidRunWorkingCopyFileOperation` events to participate.
+	 * Working copy owners cAn listen to the `onWillRunWorkingCopyFileOperAtion` And
+	 * `onDidRunWorkingCopyFileOperAtion` events to pArticipAte.
 	 */
-	copy(files: Required<SourceTargetPair>[], options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata[]>;
+	copy(files: Required<SourceTArgetPAir>[], options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA[]>;
 
 	/**
-	 * Will delete working copies matching the provided resources and children
-	 * using the associated file service for those resources.
+	 * Will delete working copies mAtching the provided resources And children
+	 * using the AssociAted file service for those resources.
 	 *
-	 * Working copy owners can listen to the `onWillRunWorkingCopyFileOperation` and
-	 * `onDidRunWorkingCopyFileOperation` events to participate.
+	 * Working copy owners cAn listen to the `onWillRunWorkingCopyFileOperAtion` And
+	 * `onDidRunWorkingCopyFileOperAtion` events to pArticipAte.
 	 */
-	delete(resources: URI[], options?: { useTrash?: boolean, recursive?: boolean }): Promise<void>;
+	delete(resources: URI[], options?: { useTrAsh?: booleAn, recursive?: booleAn }): Promise<void>;
 
 	//#endregion
 
 
-	//#region Path related
+	//#region PAth relAted
 
 	/**
-	 * Register a new provider for working copies based on a resource.
+	 * Register A new provider for working copies bAsed on A resource.
 	 *
-	 * @return a disposable that unregisters the provider.
+	 * @return A disposAble thAt unregisters the provider.
 	 */
-	registerWorkingCopyProvider(provider: WorkingCopyProvider): IDisposable;
+	registerWorkingCopyProvider(provider: WorkingCopyProvider): IDisposAble;
 
 	/**
-	 * Will return all working copies that are dirty matching the provided resource.
-	 * If the resource is a folder and the scheme supports file operations, a working
-	 * copy that is dirty and is a child of that folder will also be returned.
+	 * Will return All working copies thAt Are dirty mAtching the provided resource.
+	 * If the resource is A folder And the scheme supports file operAtions, A working
+	 * copy thAt is dirty And is A child of thAt folder will Also be returned.
 	 */
 	getDirty(resource: URI): IWorkingCopy[];
 
 	//#endregion
 }
 
-export class WorkingCopyFileService extends Disposable implements IWorkingCopyFileService {
+export clAss WorkingCopyFileService extends DisposAble implements IWorkingCopyFileService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	//#region Events
 
-	private readonly _onWillRunWorkingCopyFileOperation = this._register(new AsyncEmitter<WorkingCopyFileEvent>());
-	readonly onWillRunWorkingCopyFileOperation = this._onWillRunWorkingCopyFileOperation.event;
+	privAte reAdonly _onWillRunWorkingCopyFileOperAtion = this._register(new AsyncEmitter<WorkingCopyFileEvent>());
+	reAdonly onWillRunWorkingCopyFileOperAtion = this._onWillRunWorkingCopyFileOperAtion.event;
 
-	private readonly _onDidFailWorkingCopyFileOperation = this._register(new AsyncEmitter<WorkingCopyFileEvent>());
-	readonly onDidFailWorkingCopyFileOperation = this._onDidFailWorkingCopyFileOperation.event;
+	privAte reAdonly _onDidFAilWorkingCopyFileOperAtion = this._register(new AsyncEmitter<WorkingCopyFileEvent>());
+	reAdonly onDidFAilWorkingCopyFileOperAtion = this._onDidFAilWorkingCopyFileOperAtion.event;
 
-	private readonly _onDidRunWorkingCopyFileOperation = this._register(new AsyncEmitter<WorkingCopyFileEvent>());
-	readonly onDidRunWorkingCopyFileOperation = this._onDidRunWorkingCopyFileOperation.event;
+	privAte reAdonly _onDidRunWorkingCopyFileOperAtion = this._register(new AsyncEmitter<WorkingCopyFileEvent>());
+	reAdonly onDidRunWorkingCopyFileOperAtion = this._onDidRunWorkingCopyFileOperAtion.event;
 
 	//#endregion
 
-	private correlationIds = 0;
+	privAte correlAtionIds = 0;
 
 	constructor(
-		@IFileService private readonly fileService: IFileService,
-		@IWorkingCopyService private readonly workingCopyService: IWorkingCopyService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IWorkingCopyService privAte reAdonly workingCopyService: IWorkingCopyService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IUriIdentityService privAte reAdonly uriIdentityService: IUriIdentityService
 	) {
 		super();
 
-		// register a default working copy provider that uses the working copy service
+		// register A defAult working copy provider thAt uses the working copy service
 		this.registerWorkingCopyProvider(resource => {
 			return this.workingCopyService.workingCopies.filter(workingCopy => {
-				if (this.fileService.canHandleResource(resource)) {
-					// only check for parents if the resource can be handled
-					// by the file system where we then assume a folder like
-					// path structure
-					return this.uriIdentityService.extUri.isEqualOrParent(workingCopy.resource, resource);
+				if (this.fileService.cAnHAndleResource(resource)) {
+					// only check for pArents if the resource cAn be hAndled
+					// by the file system where we then Assume A folder like
+					// pAth structure
+					return this.uriIdentityService.extUri.isEquAlOrPArent(workingCopy.resource, resource);
 				}
 
-				return this.uriIdentityService.extUri.isEqual(workingCopy.resource, resource);
+				return this.uriIdentityService.extUri.isEquAl(workingCopy.resource, resource);
 			});
 		});
 	}
 
 
-	//#region File operations
+	//#region File operAtions
 
-	async create(resource: URI, contents?: VSBuffer | VSBufferReadable | VSBufferReadableStream, options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata> {
+	Async creAte(resource: URI, contents?: VSBuffer | VSBufferReAdAble | VSBufferReAdAbleStreAm, options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA> {
 
-		// validate create operation before starting
-		const validateCreate = await this.fileService.canCreateFile(resource, options);
-		if (validateCreate instanceof Error) {
-			throw validateCreate;
+		// vAlidAte creAte operAtion before stArting
+		const vAlidAteCreAte = AwAit this.fileService.cAnCreAteFile(resource, options);
+		if (vAlidAteCreAte instAnceof Error) {
+			throw vAlidAteCreAte;
 		}
 
-		// file operation participant
-		await this.runFileOperationParticipants([{ target: resource }], FileOperation.CREATE);
+		// file operAtion pArticipAnt
+		AwAit this.runFileOperAtionPArticipAnts([{ tArget: resource }], FileOperAtion.CREATE);
 
 		// before events
-		const event = { correlationId: this.correlationIds++, operation: FileOperation.CREATE, files: [{ target: resource }] };
-		await this._onWillRunWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+		const event = { correlAtionId: this.correlAtionIds++, operAtion: FileOperAtion.CREATE, files: [{ tArget: resource }] };
+		AwAit this._onWillRunWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
-		// now actually create on disk
-		let stat: IFileStatWithMetadata;
+		// now ActuAlly creAte on disk
+		let stAt: IFileStAtWithMetAdAtA;
 		try {
-			stat = await this.fileService.createFile(resource, contents, { overwrite: options?.overwrite });
-		} catch (error) {
+			stAt = AwAit this.fileService.creAteFile(resource, contents, { overwrite: options?.overwrite });
+		} cAtch (error) {
 
 			// error event
-			await this._onDidFailWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+			AwAit this._onDidFAilWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
 			throw error;
 		}
 
-		// after event
-		await this._onDidRunWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+		// After event
+		AwAit this._onDidRunWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
-		return stat;
+		return stAt;
 	}
 
-	async move(files: Required<SourceTargetPair>[], options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata[]> {
+	Async move(files: Required<SourceTArgetPAir>[], options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA[]> {
 		return this.doMoveOrCopy(files, true, options);
 	}
 
-	async copy(files: Required<SourceTargetPair>[], options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata[]> {
-		return this.doMoveOrCopy(files, false, options);
+	Async copy(files: Required<SourceTArgetPAir>[], options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA[]> {
+		return this.doMoveOrCopy(files, fAlse, options);
 	}
 
-	private async doMoveOrCopy(files: Required<SourceTargetPair>[], move: boolean, options?: { overwrite?: boolean }): Promise<IFileStatWithMetadata[]> {
+	privAte Async doMoveOrCopy(files: Required<SourceTArgetPAir>[], move: booleAn, options?: { overwrite?: booleAn }): Promise<IFileStAtWithMetAdAtA[]> {
 		const overwrite = options?.overwrite;
-		const stats: IFileStatWithMetadata[] = [];
+		const stAts: IFileStAtWithMetAdAtA[] = [];
 
-		// validate move/copy operation before starting
-		for (const { source, target } of files) {
-			const validateMoveOrCopy = await (move ? this.fileService.canMove(source, target, overwrite) : this.fileService.canCopy(source, target, overwrite));
-			if (validateMoveOrCopy instanceof Error) {
-				throw validateMoveOrCopy;
+		// vAlidAte move/copy operAtion before stArting
+		for (const { source, tArget } of files) {
+			const vAlidAteMoveOrCopy = AwAit (move ? this.fileService.cAnMove(source, tArget, overwrite) : this.fileService.cAnCopy(source, tArget, overwrite));
+			if (vAlidAteMoveOrCopy instAnceof Error) {
+				throw vAlidAteMoveOrCopy;
 			}
 		}
 
-		// file operation participant
-		await this.runFileOperationParticipants(files, move ? FileOperation.MOVE : FileOperation.COPY);
+		// file operAtion pArticipAnt
+		AwAit this.runFileOperAtionPArticipAnts(files, move ? FileOperAtion.MOVE : FileOperAtion.COPY);
 
 		// before event
-		const event = { correlationId: this.correlationIds++, operation: move ? FileOperation.MOVE : FileOperation.COPY, files };
-		await this._onWillRunWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+		const event = { correlAtionId: this.correlAtionIds++, operAtion: move ? FileOperAtion.MOVE : FileOperAtion.COPY, files };
+		AwAit this._onWillRunWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
 		try {
-			for (const { source, target } of files) {
+			for (const { source, tArget } of files) {
 
-				// if source and target are not equal, handle dirty working copies
-				// depending on the operation:
-				// - move: revert both source and target (if any)
-				// - copy: revert target (if any)
-				if (!this.uriIdentityService.extUri.isEqual(source, target)) {
-					const dirtyWorkingCopies = (move ? [...this.getDirty(source), ...this.getDirty(target)] : this.getDirty(target));
-					await Promise.all(dirtyWorkingCopies.map(dirtyWorkingCopy => dirtyWorkingCopy.revert({ soft: true })));
+				// if source And tArget Are not equAl, hAndle dirty working copies
+				// depending on the operAtion:
+				// - move: revert both source And tArget (if Any)
+				// - copy: revert tArget (if Any)
+				if (!this.uriIdentityService.extUri.isEquAl(source, tArget)) {
+					const dirtyWorkingCopies = (move ? [...this.getDirty(source), ...this.getDirty(tArget)] : this.getDirty(tArget));
+					AwAit Promise.All(dirtyWorkingCopies.mAp(dirtyWorkingCopy => dirtyWorkingCopy.revert({ soft: true })));
 				}
 
-				// now we can rename the source to target via file operation
+				// now we cAn renAme the source to tArget viA file operAtion
 				if (move) {
-					stats.push(await this.fileService.move(source, target, overwrite));
+					stAts.push(AwAit this.fileService.move(source, tArget, overwrite));
 				} else {
-					stats.push(await this.fileService.copy(source, target, overwrite));
+					stAts.push(AwAit this.fileService.copy(source, tArget, overwrite));
 				}
 			}
-		} catch (error) {
+		} cAtch (error) {
 
 			// error event
-			await this._onDidFailWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+			AwAit this._onDidFAilWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
 			throw error;
 		}
 
-		// after event
-		await this._onDidRunWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+		// After event
+		AwAit this._onDidRunWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
-		return stats;
+		return stAts;
 	}
 
-	async delete(resources: URI[], options?: { useTrash?: boolean, recursive?: boolean }): Promise<void> {
+	Async delete(resources: URI[], options?: { useTrAsh?: booleAn, recursive?: booleAn }): Promise<void> {
 
-		// validate delete operation before starting
+		// vAlidAte delete operAtion before stArting
 		for (const resource of resources) {
-			const validateDelete = await this.fileService.canDelete(resource, options);
-			if (validateDelete instanceof Error) {
-				throw validateDelete;
+			const vAlidAteDelete = AwAit this.fileService.cAnDelete(resource, options);
+			if (vAlidAteDelete instAnceof Error) {
+				throw vAlidAteDelete;
 			}
 		}
 
-		// file operation participant
-		const files = resources.map(target => ({ target }));
-		await this.runFileOperationParticipants(files, FileOperation.DELETE);
+		// file operAtion pArticipAnt
+		const files = resources.mAp(tArget => ({ tArget }));
+		AwAit this.runFileOperAtionPArticipAnts(files, FileOperAtion.DELETE);
 
 		// before events
-		const event = { correlationId: this.correlationIds++, operation: FileOperation.DELETE, files };
-		await this._onWillRunWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+		const event = { correlAtionId: this.correlAtionIds++, operAtion: FileOperAtion.DELETE, files };
+		AwAit this._onWillRunWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
-		// check for any existing dirty working copies for the resource
-		// and do a soft revert before deleting to be able to close
-		// any opened editor with these working copies
+		// check for Any existing dirty working copies for the resource
+		// And do A soft revert before deleting to be Able to close
+		// Any opened editor with these working copies
 		for (const resource of resources) {
 			const dirtyWorkingCopies = this.getDirty(resource);
-			await Promise.all(dirtyWorkingCopies.map(dirtyWorkingCopy => dirtyWorkingCopy.revert({ soft: true })));
+			AwAit Promise.All(dirtyWorkingCopies.mAp(dirtyWorkingCopy => dirtyWorkingCopy.revert({ soft: true })));
 		}
 
-		// now actually delete from disk
+		// now ActuAlly delete from disk
 		try {
 			for (const resource of resources) {
-				await this.fileService.del(resource, options);
+				AwAit this.fileService.del(resource, options);
 			}
-		} catch (error) {
+		} cAtch (error) {
 
 			// error event
-			await this._onDidFailWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+			AwAit this._onDidFAilWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 
 			throw error;
 		}
 
-		// after event
-		await this._onDidRunWorkingCopyFileOperation.fireAsync(event, CancellationToken.None);
+		// After event
+		AwAit this._onDidRunWorkingCopyFileOperAtion.fireAsync(event, CAncellAtionToken.None);
 	}
 
 	//#endregion
 
 
-	//#region File operation participants
+	//#region File operAtion pArticipAnts
 
-	private readonly fileOperationParticipants = this._register(this.instantiationService.createInstance(WorkingCopyFileOperationParticipant));
+	privAte reAdonly fileOperAtionPArticipAnts = this._register(this.instAntiAtionService.creAteInstAnce(WorkingCopyFileOperAtionPArticipAnt));
 
-	addFileOperationParticipant(participant: IWorkingCopyFileOperationParticipant): IDisposable {
-		return this.fileOperationParticipants.addFileOperationParticipant(participant);
+	AddFileOperAtionPArticipAnt(pArticipAnt: IWorkingCopyFileOperAtionPArticipAnt): IDisposAble {
+		return this.fileOperAtionPArticipAnts.AddFileOperAtionPArticipAnt(pArticipAnt);
 	}
 
-	private runFileOperationParticipants(files: SourceTargetPair[], operation: FileOperation): Promise<void> {
-		return this.fileOperationParticipants.participate(files, operation);
+	privAte runFileOperAtionPArticipAnts(files: SourceTArgetPAir[], operAtion: FileOperAtion): Promise<void> {
+		return this.fileOperAtionPArticipAnts.pArticipAte(files, operAtion);
 	}
 
 	//#endregion
 
 
-	//#region Path related
+	//#region PAth relAted
 
-	private readonly workingCopyProviders: WorkingCopyProvider[] = [];
+	privAte reAdonly workingCopyProviders: WorkingCopyProvider[] = [];
 
-	registerWorkingCopyProvider(provider: WorkingCopyProvider): IDisposable {
+	registerWorkingCopyProvider(provider: WorkingCopyProvider): IDisposAble {
 		const remove = insert(this.workingCopyProviders, provider);
-		return toDisposable(remove);
+		return toDisposAble(remove);
 	}
 
 	getDirty(resource: URI): IWorkingCopy[] {
@@ -394,11 +394,11 @@ export class WorkingCopyFileService extends Disposable implements IWorkingCopyFi
 		for (const provider of this.workingCopyProviders) {
 			for (const workingCopy of provider(resource)) {
 				if (workingCopy.isDirty()) {
-					dirtyWorkingCopies.add(workingCopy);
+					dirtyWorkingCopies.Add(workingCopy);
 				}
 			}
 		}
-		return Array.from(dirtyWorkingCopies);
+		return ArrAy.from(dirtyWorkingCopies);
 	}
 
 	//#endregion

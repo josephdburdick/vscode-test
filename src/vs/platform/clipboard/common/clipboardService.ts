@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
 
-export const IClipboardService = createDecorator<IClipboardService>('clipboardService');
+export const IClipboArdService = creAteDecorAtor<IClipboArdService>('clipboArdService');
 
-export interface IClipboardService {
+export interfAce IClipboArdService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Writes text to the system clipboard.
+	 * Writes text to the system clipboArd.
 	 */
 	writeText(text: string, type?: string): Promise<void>;
 
 	/**
-	 * Reads the content of the clipboard in plain text
+	 * ReAds the content of the clipboArd in plAin text
 	 */
-	readText(type?: string): Promise<string>;
+	reAdText(type?: string): Promise<string>;
 
 	/**
-	 * Reads text from the system find pasteboard.
+	 * ReAds text from the system find pAsteboArd.
 	 */
-	readFindText(): Promise<string>;
+	reAdFindText(): Promise<string>;
 
 	/**
-	 * Writes text to the system find pasteboard.
+	 * Writes text to the system find pAsteboArd.
 	 */
 	writeFindText(text: string): Promise<void>;
 
 	/**
-	 * Writes resources to the system clipboard.
+	 * Writes resources to the system clipboArd.
 	 */
 	writeResources(resources: URI[]): Promise<void>;
 
 	/**
-	 * Reads resources from the system clipboard.
+	 * ReAds resources from the system clipboArd.
 	 */
-	readResources(): Promise<URI[]>;
+	reAdResources(): Promise<URI[]>;
 
 	/**
-	 * Find out if resources are copied to the clipboard.
+	 * Find out if resources Are copied to the clipboArd.
 	 */
-	hasResources(): Promise<boolean>;
+	hAsResources(): Promise<booleAn>;
 }

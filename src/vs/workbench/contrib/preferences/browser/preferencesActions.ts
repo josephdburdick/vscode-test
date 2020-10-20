@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { URI } from 'vs/base/common/uri';
-import { getIconClasses } from 'vs/editor/common/services/getIconClasses';
+import { Action } from 'vs/bAse/common/Actions';
+import { URI } from 'vs/bAse/common/uri';
+import { getIconClAsses } from 'vs/editor/common/services/getIconClAsses';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import * as nls from 'vs/nls';
-import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
+import * As nls from 'vs/nls';
+import { IQuickInputService, IQuickPickItem } from 'vs/plAtform/quickinput/common/quickInput';
 import { IPreferencesService } from 'vs/workbench/services/preferences/common/preferences';
 
-export class ConfigureLanguageBasedSettingsAction extends Action {
+export clAss ConfigureLAnguAgeBAsedSettingsAction extends Action {
 
-	static readonly ID = 'workbench.action.configureLanguageBasedSettings';
-	static readonly LABEL = { value: nls.localize('configureLanguageBasedSettings', "Configure Language Specific Settings..."), original: 'Configure Language Specific Settings...' };
+	stAtic reAdonly ID = 'workbench.Action.configureLAnguAgeBAsedSettings';
+	stAtic reAdonly LABEL = { vAlue: nls.locAlize('configureLAnguAgeBAsedSettings', "Configure LAnguAge Specific Settings..."), originAl: 'Configure LAnguAge Specific Settings...' };
 
 	constructor(
 		id: string,
-		label: string,
-		@IModelService private readonly modelService: IModelService,
-		@IModeService private readonly modeService: IModeService,
-		@IQuickInputService private readonly quickInputService: IQuickInputService,
-		@IPreferencesService private readonly preferencesService: IPreferencesService
+		lAbel: string,
+		@IModelService privAte reAdonly modelService: IModelService,
+		@IModeService privAte reAdonly modeService: IModeService,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService,
+		@IPreferencesService privAte reAdonly preferencesService: IPreferencesService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	run(): Promise<any> {
-		const languages = this.modeService.getRegisteredLanguageNames();
-		const picks: IQuickPickItem[] = languages.sort().map((lang, index) => {
-			const description: string = nls.localize('languageDescriptionConfigured', "({0})", this.modeService.getModeIdForLanguageName(lang.toLowerCase()));
-			// construct a fake resource to be able to show nice icons if any
-			let fakeResource: URI | undefined;
-			const extensions = this.modeService.getExtensions(lang);
+	run(): Promise<Any> {
+		const lAnguAges = this.modeService.getRegisteredLAnguAgeNAmes();
+		const picks: IQuickPickItem[] = lAnguAges.sort().mAp((lAng, index) => {
+			const description: string = nls.locAlize('lAnguAgeDescriptionConfigured', "({0})", this.modeService.getModeIdForLAnguAgeNAme(lAng.toLowerCAse()));
+			// construct A fAke resource to be Able to show nice icons if Any
+			let fAkeResource: URI | undefined;
+			const extensions = this.modeService.getExtensions(lAng);
 			if (extensions && extensions.length) {
-				fakeResource = URI.file(extensions[0]);
+				fAkeResource = URI.file(extensions[0]);
 			} else {
-				const filenames = this.modeService.getFilenames(lang);
-				if (filenames && filenames.length) {
-					fakeResource = URI.file(filenames[0]);
+				const filenAmes = this.modeService.getFilenAmes(lAng);
+				if (filenAmes && filenAmes.length) {
+					fAkeResource = URI.file(filenAmes[0]);
 				}
 			}
 			return {
-				label: lang,
-				iconClasses: getIconClasses(this.modelService, this.modeService, fakeResource),
+				lAbel: lAng,
+				iconClAsses: getIconClAsses(this.modelService, this.modeService, fAkeResource),
 				description
-			} as IQuickPickItem;
+			} As IQuickPickItem;
 		});
 
-		return this.quickInputService.pick(picks, { placeHolder: nls.localize('pickLanguage', "Select Language") })
+		return this.quickInputService.pick(picks, { plAceHolder: nls.locAlize('pickLAnguAge', "Select LAnguAge") })
 			.then(pick => {
 				if (pick) {
-					const modeId = this.modeService.getModeIdForLanguageName(pick.label.toLowerCase());
+					const modeId = this.modeService.getModeIdForLAnguAgeNAme(pick.lAbel.toLowerCAse());
 					if (typeof modeId === 'string') {
-						return this.preferencesService.openGlobalSettings(true, { editSetting: `[${modeId}]` });
+						return this.preferencesService.openGlobAlSettings(true, { editSetting: `[${modeId}]` });
 					}
 				}
 				return undefined;

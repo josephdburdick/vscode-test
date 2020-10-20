@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as filters from 'vs/base/common/filters';
-import { data } from './filters.perf.data';
+import * As filters from 'vs/bAse/common/filters';
+import { dAtA } from './filters.perf.dAtA';
 
-const patterns = ['cci', 'ida', 'pos', 'CCI', 'enbled', 'callback', 'gGame', 'cons', 'zyx', 'aBc'];
+const pAtterns = ['cci', 'idA', 'pos', 'CCI', 'enbled', 'cAllbAck', 'gGAme', 'cons', 'zyx', 'ABc'];
 
-const _enablePerf = false;
+const _enAblePerf = fAlse;
 
-function perfSuite(name: string, callback: (this: Mocha.ISuiteCallbackContext) => void) {
-	if (_enablePerf) {
-		suite(name, callback);
+function perfSuite(nAme: string, cAllbAck: (this: MochA.ISuiteCAllbAckContext) => void) {
+	if (_enAblePerf) {
+		suite(nAme, cAllbAck);
 	}
 }
 
-perfSuite('Performance - fuzzyMatch', function () {
+perfSuite('PerformAnce - fuzzyMAtch', function () {
 
-	console.log(`Matching ${data.length} items against ${patterns.length} patterns (${data.length * patterns.length} operations) `);
+	console.log(`MAtching ${dAtA.length} items AgAinst ${pAtterns.length} pAtterns (${dAtA.length * pAtterns.length} operAtions) `);
 
-	function perfTest(name: string, match: filters.FuzzyScorer) {
-		test(name, () => {
+	function perfTest(nAme: string, mAtch: filters.FuzzyScorer) {
+		test(nAme, () => {
 
-			const t1 = Date.now();
+			const t1 = DAte.now();
 			let count = 0;
 			for (let i = 0; i < 2; i++) {
-				for (const pattern of patterns) {
-					const patternLow = pattern.toLowerCase();
-					for (const item of data) {
+				for (const pAttern of pAtterns) {
+					const pAtternLow = pAttern.toLowerCAse();
+					for (const item of dAtA) {
 						count += 1;
-						match(pattern, patternLow, 0, item, item.toLowerCase(), 0, false);
+						mAtch(pAttern, pAtternLow, 0, item, item.toLowerCAse(), 0, fAlse);
 					}
 				}
 			}
-			const d = Date.now() - t1;
-			console.log(name, `${d}ms, ${Math.round(count / d) * 15}/15ms, ${Math.round(count / d)}/1ms`);
+			const d = DAte.now() - t1;
+			console.log(nAme, `${d}ms, ${MAth.round(count / d) * 15}/15ms, ${MAth.round(count / d)}/1ms`);
 		});
 	}
 
 	perfTest('fuzzyScore', filters.fuzzyScore);
-	perfTest('fuzzyScoreGraceful', filters.fuzzyScoreGraceful);
-	perfTest('fuzzyScoreGracefulAggressive', filters.fuzzyScoreGracefulAggressive);
+	perfTest('fuzzyScoreGrAceful', filters.fuzzyScoreGrAceful);
+	perfTest('fuzzyScoreGrAcefulAggressive', filters.fuzzyScoreGrAcefulAggressive);
 });
 
 
-perfSuite('Performance - IFilter', function () {
+perfSuite('PerformAnce - IFilter', function () {
 
-	function perfTest(name: string, match: filters.IFilter) {
-		test(name, () => {
+	function perfTest(nAme: string, mAtch: filters.IFilter) {
+		test(nAme, () => {
 
-			const t1 = Date.now();
+			const t1 = DAte.now();
 			let count = 0;
 			for (let i = 0; i < 2; i++) {
-				for (const pattern of patterns) {
-					for (const item of data) {
+				for (const pAttern of pAtterns) {
+					for (const item of dAtA) {
 						count += 1;
-						match(pattern, item);
+						mAtch(pAttern, item);
 					}
 				}
 			}
-			const d = Date.now() - t1;
-			console.log(name, `${d}ms, ${Math.round(count / d) * 15}/15ms, ${Math.round(count / d)}/1ms`);
+			const d = DAte.now() - t1;
+			console.log(nAme, `${d}ms, ${MAth.round(count / d) * 15}/15ms, ${MAth.round(count / d)}/1ms`);
 		});
 	}
 
-	perfTest('matchesFuzzy', filters.matchesFuzzy);
-	perfTest('matchesFuzzy2', filters.matchesFuzzy2);
-	perfTest('matchesPrefix', filters.matchesPrefix);
-	perfTest('matchesContiguousSubString', filters.matchesContiguousSubString);
-	perfTest('matchesCamelCase', filters.matchesCamelCase);
+	perfTest('mAtchesFuzzy', filters.mAtchesFuzzy);
+	perfTest('mAtchesFuzzy2', filters.mAtchesFuzzy2);
+	perfTest('mAtchesPrefix', filters.mAtchesPrefix);
+	perfTest('mAtchesContiguousSubString', filters.mAtchesContiguousSubString);
+	perfTest('mAtchesCAmelCAse', filters.mAtchesCAmelCAse);
 });

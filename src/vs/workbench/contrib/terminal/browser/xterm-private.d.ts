@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface XTermCore {
+export interfAce XTermCore {
 	_onScroll: IEventEmitter<number>;
 	_onKey: IEventEmitter<{ key: string }>;
 
-	_charSizeService: {
+	_chArSizeService: {
 		width: number;
 		height: number;
 	};
 
 	_coreService: {
-		triggerDataEvent(data: string, wasUserInput?: boolean): void;
+		triggerDAtAEvent(dAtA: string, wAsUserInput?: booleAn): void;
 	};
 
 	_renderService: {
 		dimensions: {
-			actualCellWidth: number;
-			actualCellHeight: number;
+			ActuAlCellWidth: number;
+			ActuAlCellHeight: number;
 		},
 		_renderer: {
-			_renderLayers: any[];
+			_renderLAyers: Any[];
 		};
-		_onIntersectionChange: any;
+		_onIntersectionChAnge: Any;
 	};
 }
 
-export interface IEventEmitter<T> {
+export interfAce IEventEmitter<T> {
 	fire(e: T): void;
 }

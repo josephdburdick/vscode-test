@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as marked from 'vs/base/common/marked/marked';
+import * As mArked from 'vs/bAse/common/mArked/mArked';
 import { tokenizeToString } from 'vs/editor/common/modes/textToHtmlTokenizer';
-import { ITokenizationSupport, TokenizationRegistry } from 'vs/editor/common/modes';
+import { ITokenizAtionSupport, TokenizAtionRegistry } from 'vs/editor/common/modes';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { IModeService } from 'vs/editor/common/services/modeService';
 
 /**
- * Renders a string of markdown as a document.
+ * Renders A string of mArkdown As A document.
  *
- * Uses VS Code's syntax highlighting code blocks.
+ * Uses VS Code's syntAx highlighting code blocks.
  */
-export async function renderMarkdownDocument(
+export Async function renderMArkdownDocument(
 	text: string,
 	extensionService: IExtensionService,
 	modeService: IModeService,
 ): Promise<string> {
 
-	const highlight = (code: string, lang: string, callback: ((error: any, code: string) => void) | undefined): any => {
-		if (!callback) {
+	const highlight = (code: string, lAng: string, cAllbAck: ((error: Any, code: string) => void) | undefined): Any => {
+		if (!cAllbAck) {
 			return code;
 		}
-		extensionService.whenInstalledExtensionsRegistered().then(async () => {
-			let support: ITokenizationSupport | undefined;
-			const modeId = modeService.getModeIdForLanguageName(lang);
+		extensionService.whenInstAlledExtensionsRegistered().then(Async () => {
+			let support: ITokenizAtionSupport | undefined;
+			const modeId = modeService.getModeIdForLAnguAgeNAme(lAng);
 			if (modeId) {
 				modeService.triggerMode(modeId);
-				support = await TokenizationRegistry.getPromise(modeId) ?? undefined;
+				support = AwAit TokenizAtionRegistry.getPromise(modeId) ?? undefined;
 			}
-			callback(null, `<code>${tokenizeToString(code, support)}</code>`);
+			cAllbAck(null, `<code>${tokenizeToString(code, support)}</code>`);
 		});
 		return '';
 	};
 
 	return new Promise<string>((resolve, reject) => {
-		marked(text, { highlight }, (err, value) => err ? reject(err) : resolve(value));
+		mArked(text, { highlight }, (err, vAlue) => err ? reject(err) : resolve(vAlue));
 	});
 }

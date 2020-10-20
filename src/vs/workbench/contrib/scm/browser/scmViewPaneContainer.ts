@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/scm';
-import { localize } from 'vs/nls';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import 'vs/css!./mediA/scm';
+import { locAlize } from 'vs/nls';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 import { VIEWLET_ID } from 'vs/workbench/contrib/scm/common/scm';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { SCMViewPane } from 'vs/workbench/contrib/scm/browser/scmViewPane';
+import { ViewPAneContAiner } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { SCMViewPAne } from 'vs/workbench/contrib/scm/browser/scmViewPAne';
 
-export class SCMViewPaneContainer extends ViewPaneContainer {
+export clAss SCMViewPAneContAiner extends ViewPAneContAiner {
 
 	constructor(
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IThemeService themeService: IThemeService,
-		@IStorageService storageService: IStorageService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IExtensionService extensionService: IExtensionService,
-		@IWorkspaceContextService contextService: IWorkspaceContextService,
+		@IWorkspAceContextService contextService: IWorkspAceContextService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService
 	) {
-		super(VIEWLET_ID, { mergeViewWithContainerWhenSingleView: true }, instantiationService, configurationService, layoutService, contextMenuService, telemetryService, extensionService, themeService, storageService, contextService, viewDescriptorService);
+		super(VIEWLET_ID, { mergeViewWithContAinerWhenSingleView: true }, instAntiAtionService, configurAtionService, lAyoutService, contextMenuService, telemetryService, extensionService, themeService, storAgeService, contextService, viewDescriptorService);
 	}
 
-	create(parent: HTMLElement): void {
-		super.create(parent);
-		parent.classList.add('scm-viewlet');
+	creAte(pArent: HTMLElement): void {
+		super.creAte(pArent);
+		pArent.clAssList.Add('scm-viewlet');
 	}
 
 	getActionsContext(): unknown {
 		if (this.views.length === 1) {
 			const view = this.views[0];
 
-			if (view instanceof SCMViewPane) {
+			if (view instAnceof SCMViewPAne) {
 				return view.getActionsContext();
 			}
 		}
@@ -53,11 +53,11 @@ export class SCMViewPaneContainer extends ViewPaneContainer {
 		return undefined;
 	}
 
-	getOptimalWidth(): number {
+	getOptimAlWidth(): number {
 		return 400;
 	}
 
 	getTitle(): string {
-		return localize('source control', "Source Control");
+		return locAlize('source control', "Source Control");
 	}
 }

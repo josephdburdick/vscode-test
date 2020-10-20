@@ -1,1188 +1,1188 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
 define({
 	KeyA: {
-		value: 'ㄇ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄇ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'A',
-		withShiftIsDeadKey: false,
-		withAltGr: 'a',
-		withAltGrIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
+		withAltGr: 'A',
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'A',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyB: {
-		value: 'ㄖ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄖ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'B',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'b',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'B',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyC: {
-		value: 'ㄏ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄏ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'C',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'c',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'C',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyD: {
-		value: 'ㄎ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄎ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'D',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'd',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'D',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyE: {
-		value: 'ㄍ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄍ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'E',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'e',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'E',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyF: {
-		value: 'ㄑ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄑ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'F',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'f',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'F',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyG: {
-		value: 'ㄕ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄕ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'G',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'g',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'G',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyH: {
-		value: 'ㄘ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄘ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'H',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'h',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'H',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyI: {
-		value: 'ㄛ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄛ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'I',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'i',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'I',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyJ: {
-		value: 'ㄨ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄨ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'J',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'j',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'J',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyK: {
-		value: 'ㄜ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄜ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'K',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'k',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'K',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyL: {
-		value: 'ㄠ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄠ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'L',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'l',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'L',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyM: {
-		value: 'ㄩ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄩ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'M',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'm',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'M',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyN: {
-		value: 'ㄙ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄙ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'N',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'n',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'N',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyO: {
-		value: 'ㄟ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄟ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'O',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'o',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'O',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyP: {
-		value: 'ㄣ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄣ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'P',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'p',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'P',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyQ: {
-		value: 'ㄆ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄆ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'Q',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'q',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'Q',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyR: {
-		value: 'ㄐ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄐ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'R',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'r',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'R',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyS: {
-		value: 'ㄋ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄋ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'S',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 's',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'S',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyT: {
-		value: 'ㄔ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄔ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'T',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 't',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'T',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyU: {
-		value: 'ㄧ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄧ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'U',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'u',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'U',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyV: {
-		value: 'ㄒ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄒ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'V',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'v',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'V',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyW: {
-		value: 'ㄊ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄊ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'W',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'w',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'W',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyX: {
-		value: 'ㄌ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄌ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'X',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'x',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'X',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyY: {
-		value: 'ㄗ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄗ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'Y',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'y',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'Y',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	KeyZ: {
-		value: 'ㄈ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄈ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: 'Z',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: 'z',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: 'Z',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit1: {
-		value: 'ㄅ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄅ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '!',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '1',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '!',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit2: {
-		value: 'ㄉ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄉ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '@',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '2',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '@',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit3: {
-		value: 'ˇ',
-		valueIsDeadKey: false,
+		vAlue: 'ˇ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '#',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '3',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '#',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit4: {
-		value: 'ˋ',
-		valueIsDeadKey: false,
+		vAlue: 'ˋ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '$',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '4',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '$',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit5: {
-		value: 'ㄓ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄓ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '%',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '5',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '%',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit6: {
-		value: 'ˊ',
-		valueIsDeadKey: false,
+		vAlue: 'ˊ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '^',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '6',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '^',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit7: {
-		value: '˙',
-		valueIsDeadKey: false,
+		vAlue: '˙',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '&',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '7',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '&',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit8: {
-		value: 'ㄚ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄚ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '*',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '8',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '*',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit9: {
-		value: 'ㄞ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄞ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '(',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '9',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '(',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Digit0: {
-		value: 'ㄢ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄢ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: ')',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '0',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: ')',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Enter: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Escape: {
-		value: '',
-		valueIsDeadKey: false,
+	EscApe: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '‍',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '‌',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Backspace: {
-		value: '',
-		valueIsDeadKey: false,
+	BAckspAce: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Tab: {
-		value: '',
-		valueIsDeadKey: false,
+	TAb: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Space: {
-		value: ' ',
-		valueIsDeadKey: false,
+	SpAce: {
+		vAlue: ' ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: ' ',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: ' ',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: ' ',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Minus: {
-		value: 'ㄦ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄦ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '_',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '—',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '_',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Equal: {
-		value: '=',
-		valueIsDeadKey: false,
+	EquAl: {
+		vAlue: '=',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '+',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '=',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '+',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	BracketLeft: {
-		value: '「',
-		valueIsDeadKey: false,
+	BrAcketLeft: {
+		vAlue: '「',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '『',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '[',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '{',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	BracketRight: {
-		value: '」',
-		valueIsDeadKey: false,
+	BrAcketRight: {
+		vAlue: '」',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '』',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: ']',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '}',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Backslash: {
-		value: '、',
-		valueIsDeadKey: false,
+	BAckslAsh: {
+		vAlue: '、',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '|',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '\\',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '|',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Semicolon: {
-		value: 'ㄤ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄤ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: ':',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: ';',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: ':',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Quote: {
-		value: '\'',
-		valueIsDeadKey: false,
+		vAlue: '\'',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '"',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '\'',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '"',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Backquote: {
-		value: '·',
-		valueIsDeadKey: false,
+	BAckquote: {
+		vAlue: '·',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '~',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '`',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '~',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Comma: {
-		value: 'ㄝ',
-		valueIsDeadKey: false,
+	CommA: {
+		vAlue: 'ㄝ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '，',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: ',',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '<',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Period: {
-		value: 'ㄡ',
-		valueIsDeadKey: false,
+		vAlue: 'ㄡ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '。',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '.',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '>',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Slash: {
-		value: 'ㄥ',
-		valueIsDeadKey: false,
+	SlAsh: {
+		vAlue: 'ㄥ',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '?',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '/',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '?',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	CapsLock: {
-		value: '',
-		valueIsDeadKey: false,
+	CApsLock: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F1: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F2: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F3: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F4: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F5: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F6: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F7: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F8: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F9: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F10: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F11: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F12: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Insert: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Home: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	PageUp: {
-		value: '',
-		valueIsDeadKey: false,
+	PAgeUp: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	Delete: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	End: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	PageDown: {
-		value: '',
-		valueIsDeadKey: false,
+	PAgeDown: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ArrowRight: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ArrowLeft: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ArrowDown: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ArrowUp: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	NumLock: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadDivide: {
-		value: '/',
-		valueIsDeadKey: false,
+	NumpAdDivide: {
+		vAlue: '/',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '/',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '/',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '/',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadMultiply: {
-		value: '*',
-		valueIsDeadKey: false,
+	NumpAdMultiply: {
+		vAlue: '*',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '*',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '*',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '*',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadSubtract: {
-		value: '-',
-		valueIsDeadKey: false,
+	NumpAdSubtrAct: {
+		vAlue: '-',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '-',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '-',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '-',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadAdd: {
-		value: '+',
-		valueIsDeadKey: false,
+	NumpAdAdd: {
+		vAlue: '+',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '+',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '+',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '+',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadEnter: {
-		value: '',
-		valueIsDeadKey: false,
+	NumpAdEnter: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad1: {
-		value: '1',
-		valueIsDeadKey: false,
+	NumpAd1: {
+		vAlue: '1',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '1',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '1',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '1',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad2: {
-		value: '2',
-		valueIsDeadKey: false,
+	NumpAd2: {
+		vAlue: '2',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '2',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '2',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '2',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad3: {
-		value: '3',
-		valueIsDeadKey: false,
+	NumpAd3: {
+		vAlue: '3',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '3',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '3',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '3',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad4: {
-		value: '4',
-		valueIsDeadKey: false,
+	NumpAd4: {
+		vAlue: '4',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '4',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '4',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '4',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad5: {
-		value: '5',
-		valueIsDeadKey: false,
+	NumpAd5: {
+		vAlue: '5',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '5',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '5',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '5',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad6: {
-		value: '6',
-		valueIsDeadKey: false,
+	NumpAd6: {
+		vAlue: '6',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '6',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '6',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '6',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad7: {
-		value: '7',
-		valueIsDeadKey: false,
+	NumpAd7: {
+		vAlue: '7',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '7',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '7',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '7',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad8: {
-		value: '8',
-		valueIsDeadKey: false,
+	NumpAd8: {
+		vAlue: '8',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '8',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '8',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '8',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad9: {
-		value: '9',
-		valueIsDeadKey: false,
+	NumpAd9: {
+		vAlue: '9',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '9',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '9',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '9',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	Numpad0: {
-		value: '0',
-		valueIsDeadKey: false,
+	NumpAd0: {
+		vAlue: '0',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '0',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '0',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '0',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadDecimal: {
-		value: '.',
-		valueIsDeadKey: false,
+	NumpAdDecimAl: {
+		vAlue: '.',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '.',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '.',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '.',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	IntlBackslash: {
-		value: '§',
-		valueIsDeadKey: false,
+	IntlBAckslAsh: {
+		vAlue: '§',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '±',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ContextMenu: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadEqual: {
-		value: '=',
-		valueIsDeadKey: false,
+	NumpAdEquAl: {
+		vAlue: '=',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '=',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '=',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '=',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F13: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F14: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F15: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F16: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F17: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F18: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F19: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	F20: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	AudioVolumeMute: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	AudioVolumeUp: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '=',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '=',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	AudioVolumeDown: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	NumpadComma: {
-		value: '',
-		valueIsDeadKey: false,
+	NumpAdCommA: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	IntlRo: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	KanaMode: {
-		value: '',
-		valueIsDeadKey: false,
+	KAnAMode: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	IntlYen: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ControlLeft: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ShiftLeft: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	AltLeft: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	MetaLeft: {
-		value: '',
-		valueIsDeadKey: false,
+	MetALeft: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ControlRight: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	ShiftRight: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
 	AltRight: {
-		value: '',
-		valueIsDeadKey: false,
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	},
-	MetaRight: {
-		value: '',
-		valueIsDeadKey: false,
+	MetARight: {
+		vAlue: '',
+		vAlueIsDeAdKey: fAlse,
 		withShift: '',
-		withShiftIsDeadKey: false,
+		withShiftIsDeAdKey: fAlse,
 		withAltGr: '',
-		withAltGrIsDeadKey: false,
+		withAltGrIsDeAdKey: fAlse,
 		withShiftAltGr: '',
-		withShiftAltGrIsDeadKey: false
+		withShiftAltGrIsDeAdKey: fAlse
 	}
 });

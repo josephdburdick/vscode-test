@@ -1,420 +1,420 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IConfigurationNode } from 'vs/platform/configuration/common/configurationRegistry';
-import { localize } from 'vs/nls';
+import { IConfigurAtionNode } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { locAlize } from 'vs/nls';
 import { EDITOR_FONT_DEFAULTS } from 'vs/editor/common/config/editorOptions';
-import { DEFAULT_LETTER_SPACING, DEFAULT_LINE_HEIGHT, TerminalCursorStyle, DEFAULT_COMMANDS_TO_SKIP_SHELL, SUGGESTIONS_FONT_WEIGHT, MINIMUM_FONT_WEIGHT, MAXIMUM_FONT_WEIGHT } from 'vs/workbench/contrib/terminal/common/terminal';
-import { isMacintosh, isWindows, Platform } from 'vs/base/common/platform';
+import { DEFAULT_LETTER_SPACING, DEFAULT_LINE_HEIGHT, TerminAlCursorStyle, DEFAULT_COMMANDS_TO_SKIP_SHELL, SUGGESTIONS_FONT_WEIGHT, MINIMUM_FONT_WEIGHT, MAXIMUM_FONT_WEIGHT } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { isMAcintosh, isWindows, PlAtform } from 'vs/bAse/common/plAtform';
 
-export const terminalConfiguration: IConfigurationNode = {
-	id: 'terminal',
+export const terminAlConfigurAtion: IConfigurAtionNode = {
+	id: 'terminAl',
 	order: 100,
-	title: localize('terminalIntegratedConfigurationTitle', "Integrated Terminal"),
+	title: locAlize('terminAlIntegrAtedConfigurAtionTitle', "IntegrAted TerminAl"),
 	type: 'object',
 	properties: {
-		'terminal.integrated.automationShell.linux': {
-			markdownDescription: localize({
-				key: 'terminal.integrated.automationShell.linux',
-				comment: ['{0} and {1} are the `shell` and `shellArgs` settings keys']
-			}, "A path that when set will override {0} and ignore {1} values for automation-related terminal usage like tasks and debug.", '`terminal.integrated.shell.linux`', '`shellArgs`'),
+		'terminAl.integrAted.AutomAtionShell.linux': {
+			mArkdownDescription: locAlize({
+				key: 'terminAl.integrAted.AutomAtionShell.linux',
+				comment: ['{0} And {1} Are the `shell` And `shellArgs` settings keys']
+			}, "A pAth thAt when set will override {0} And ignore {1} vAlues for AutomAtion-relAted terminAl usAge like tAsks And debug.", '`terminAl.integrAted.shell.linux`', '`shellArgs`'),
 			type: ['string', 'null'],
-			default: null
+			defAult: null
 		},
-		'terminal.integrated.automationShell.osx': {
-			markdownDescription: localize({
-				key: 'terminal.integrated.automationShell.osx',
-				comment: ['{0} and {1} are the `shell` and `shellArgs` settings keys']
-			}, "A path that when set will override {0} and ignore {1} values for automation-related terminal usage like tasks and debug.", '`terminal.integrated.shell.osx`', '`shellArgs`'),
+		'terminAl.integrAted.AutomAtionShell.osx': {
+			mArkdownDescription: locAlize({
+				key: 'terminAl.integrAted.AutomAtionShell.osx',
+				comment: ['{0} And {1} Are the `shell` And `shellArgs` settings keys']
+			}, "A pAth thAt when set will override {0} And ignore {1} vAlues for AutomAtion-relAted terminAl usAge like tAsks And debug.", '`terminAl.integrAted.shell.osx`', '`shellArgs`'),
 			type: ['string', 'null'],
-			default: null
+			defAult: null
 		},
-		'terminal.integrated.automationShell.windows': {
-			markdownDescription: localize({
-				key: 'terminal.integrated.automationShell.windows',
-				comment: ['{0} and {1} are the `shell` and `shellArgs` settings keys']
-			}, "A path that when set will override {0} and ignore {1} values for automation-related terminal usage like tasks and debug.", '`terminal.integrated.shell.windows`', '`shellArgs`'),
+		'terminAl.integrAted.AutomAtionShell.windows': {
+			mArkdownDescription: locAlize({
+				key: 'terminAl.integrAted.AutomAtionShell.windows',
+				comment: ['{0} And {1} Are the `shell` And `shellArgs` settings keys']
+			}, "A pAth thAt when set will override {0} And ignore {1} vAlues for AutomAtion-relAted terminAl usAge like tAsks And debug.", '`terminAl.integrAted.shell.windows`', '`shellArgs`'),
 			type: ['string', 'null'],
-			default: null
+			defAult: null
 		},
-		'terminal.integrated.shellArgs.linux': {
-			markdownDescription: localize('terminal.integrated.shellArgs.linux', "The command line arguments to use when on the Linux terminal. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration)."),
-			type: 'array',
+		'terminAl.integrAted.shellArgs.linux': {
+			mArkdownDescription: locAlize('terminAl.integrAted.shellArgs.linux', "The commAnd line Arguments to use when on the Linux terminAl. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion)."),
+			type: 'ArrAy',
 			items: {
 				type: 'string'
 			},
-			default: []
+			defAult: []
 		},
-		'terminal.integrated.shellArgs.osx': {
-			markdownDescription: localize('terminal.integrated.shellArgs.osx', "The command line arguments to use when on the macOS terminal. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration)."),
-			type: 'array',
+		'terminAl.integrAted.shellArgs.osx': {
+			mArkdownDescription: locAlize('terminAl.integrAted.shellArgs.osx', "The commAnd line Arguments to use when on the mAcOS terminAl. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion)."),
+			type: 'ArrAy',
 			items: {
 				type: 'string'
 			},
-			// Unlike on Linux, ~/.profile is not sourced when logging into a macOS session. This
-			// is the reason terminals on macOS typically run login shells by default which set up
-			// the environment. See http://unix.stackexchange.com/a/119675/115410
-			default: ['-l']
+			// Unlike on Linux, ~/.profile is not sourced when logging into A mAcOS session. This
+			// is the reAson terminAls on mAcOS typicAlly run login shells by defAult which set up
+			// the environment. See http://unix.stAckexchAnge.com/A/119675/115410
+			defAult: ['-l']
 		},
-		'terminal.integrated.shellArgs.windows': {
-			markdownDescription: localize('terminal.integrated.shellArgs.windows', "The command line arguments to use when on the Windows terminal. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration)."),
-			'anyOf': [
+		'terminAl.integrAted.shellArgs.windows': {
+			mArkdownDescription: locAlize('terminAl.integrAted.shellArgs.windows', "The commAnd line Arguments to use when on the Windows terminAl. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion)."),
+			'AnyOf': [
 				{
-					type: 'array',
+					type: 'ArrAy',
 					items: {
 						type: 'string',
-						markdownDescription: localize('terminal.integrated.shellArgs.windows', "The command line arguments to use when on the Windows terminal. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration).")
+						mArkdownDescription: locAlize('terminAl.integrAted.shellArgs.windows', "The commAnd line Arguments to use when on the Windows terminAl. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion).")
 					},
 				},
 				{
 					type: 'string',
-					markdownDescription: localize('terminal.integrated.shellArgs.windows.string', "The command line arguments in [command-line format](https://msdn.microsoft.com/en-au/08dfcab2-eb6e-49a4-80eb-87d4076c98c6) to use when on the Windows terminal. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration).")
+					mArkdownDescription: locAlize('terminAl.integrAted.shellArgs.windows.string', "The commAnd line Arguments in [commAnd-line formAt](https://msdn.microsoft.com/en-Au/08dfcAb2-eb6e-49A4-80eb-87d4076c98c6) to use when on the Windows terminAl. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion).")
 				}
 			],
-			default: []
+			defAult: []
 		},
-		'terminal.integrated.macOptionIsMeta': {
-			description: localize('terminal.integrated.macOptionIsMeta', "Controls whether to treat the option key as the meta key in the terminal on macOS."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.mAcOptionIsMetA': {
+			description: locAlize('terminAl.integrAted.mAcOptionIsMetA', "Controls whether to treAt the option key As the metA key in the terminAl on mAcOS."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.macOptionClickForcesSelection': {
-			description: localize('terminal.integrated.macOptionClickForcesSelection', "Controls whether to force selection when using Option+click on macOS. This will force a regular (line) selection and disallow the use of column selection mode. This enables copying and pasting using the regular terminal selection, for example, when mouse mode is enabled in tmux."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.mAcOptionClickForcesSelection': {
+			description: locAlize('terminAl.integrAted.mAcOptionClickForcesSelection', "Controls whether to force selection when using Option+click on mAcOS. This will force A regulAr (line) selection And disAllow the use of column selection mode. This enAbles copying And pAsting using the regulAr terminAl selection, for exAmple, when mouse mode is enAbled in tmux."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.copyOnSelection': {
-			description: localize('terminal.integrated.copyOnSelection', "Controls whether text selected in the terminal will be copied to the clipboard."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.copyOnSelection': {
+			description: locAlize('terminAl.integrAted.copyOnSelection', "Controls whether text selected in the terminAl will be copied to the clipboArd."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.drawBoldTextInBrightColors': {
-			description: localize('terminal.integrated.drawBoldTextInBrightColors', "Controls whether bold text in the terminal will always use the \"bright\" ANSI color variant."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.drAwBoldTextInBrightColors': {
+			description: locAlize('terminAl.integrAted.drAwBoldTextInBrightColors', "Controls whether bold text in the terminAl will AlwAys use the \"bright\" ANSI color vAriAnt."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.fontFamily': {
-			markdownDescription: localize('terminal.integrated.fontFamily', "Controls the font family of the terminal, this defaults to `#editor.fontFamily#`'s value."),
+		'terminAl.integrAted.fontFAmily': {
+			mArkdownDescription: locAlize('terminAl.integrAted.fontFAmily', "Controls the font fAmily of the terminAl, this defAults to `#editor.fontFAmily#`'s vAlue."),
 			type: 'string'
 		},
-		// TODO: Support font ligatures
-		// 'terminal.integrated.fontLigatures': {
-		// 	'description': localize('terminal.integrated.fontLigatures', "Controls whether font ligatures are enabled in the terminal."),
-		// 	'type': 'boolean',
-		// 	'default': false
+		// TODO: Support font ligAtures
+		// 'terminAl.integrAted.fontLigAtures': {
+		// 	'description': locAlize('terminAl.integrAted.fontLigAtures', "Controls whether font ligAtures Are enAbled in the terminAl."),
+		// 	'type': 'booleAn',
+		// 	'defAult': fAlse
 		// },
-		'terminal.integrated.fontSize': {
-			description: localize('terminal.integrated.fontSize', "Controls the font size in pixels of the terminal."),
+		'terminAl.integrAted.fontSize': {
+			description: locAlize('terminAl.integrAted.fontSize', "Controls the font size in pixels of the terminAl."),
 			type: 'number',
-			default: EDITOR_FONT_DEFAULTS.fontSize
+			defAult: EDITOR_FONT_DEFAULTS.fontSize
 		},
-		'terminal.integrated.letterSpacing': {
-			description: localize('terminal.integrated.letterSpacing', "Controls the letter spacing of the terminal, this is an integer value which represents the amount of additional pixels to add between characters."),
+		'terminAl.integrAted.letterSpAcing': {
+			description: locAlize('terminAl.integrAted.letterSpAcing', "Controls the letter spAcing of the terminAl, this is An integer vAlue which represents the Amount of AdditionAl pixels to Add between chArActers."),
 			type: 'number',
-			default: DEFAULT_LETTER_SPACING
+			defAult: DEFAULT_LETTER_SPACING
 		},
-		'terminal.integrated.lineHeight': {
-			description: localize('terminal.integrated.lineHeight', "Controls the line height of the terminal, this number is multiplied by the terminal font size to get the actual line-height in pixels."),
+		'terminAl.integrAted.lineHeight': {
+			description: locAlize('terminAl.integrAted.lineHeight', "Controls the line height of the terminAl, this number is multiplied by the terminAl font size to get the ActuAl line-height in pixels."),
 			type: 'number',
-			default: DEFAULT_LINE_HEIGHT
+			defAult: DEFAULT_LINE_HEIGHT
 		},
-		'terminal.integrated.minimumContrastRatio': {
-			markdownDescription: localize('terminal.integrated.minimumContrastRatio', "When set the foreground color of each cell will change to try meet the contrast ratio specified. Example values:\n\n- 1: The default, do nothing.\n- 4.5: [WCAG AA compliance (minimum)](https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html).\n- 7: [WCAG AAA compliance (enhanced)](https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast7.html).\n- 21: White on black or black on white."),
+		'terminAl.integrAted.minimumContrAstRAtio': {
+			mArkdownDescription: locAlize('terminAl.integrAted.minimumContrAstRAtio', "When set the foreground color of eAch cell will chAnge to try meet the contrAst rAtio specified. ExAmple vAlues:\n\n- 1: The defAult, do nothing.\n- 4.5: [WCAG AA compliAnce (minimum)](https://www.w3.org/TR/UNDERSTANDING-WCAG20/visuAl-Audio-contrAst-contrAst.html).\n- 7: [WCAG AAA compliAnce (enhAnced)](https://www.w3.org/TR/UNDERSTANDING-WCAG20/visuAl-Audio-contrAst7.html).\n- 21: White on blAck or blAck on white."),
 			type: 'number',
-			default: 1
+			defAult: 1
 		},
-		'terminal.integrated.fastScrollSensitivity': {
-			markdownDescription: localize('terminal.integrated.fastScrollSensitivity', "Scrolling speed multiplier when pressing `Alt`."),
+		'terminAl.integrAted.fAstScrollSensitivity': {
+			mArkdownDescription: locAlize('terminAl.integrAted.fAstScrollSensitivity', "Scrolling speed multiplier when pressing `Alt`."),
 			type: 'number',
-			default: 5
+			defAult: 5
 		},
-		'terminal.integrated.mouseWheelScrollSensitivity': {
-			markdownDescription: localize('terminal.integrated.mouseWheelScrollSensitivity', "A multiplier to be used on the `deltaY` of mouse wheel scroll events."),
+		'terminAl.integrAted.mouseWheelScrollSensitivity': {
+			mArkdownDescription: locAlize('terminAl.integrAted.mouseWheelScrollSensitivity', "A multiplier to be used on the `deltAY` of mouse wheel scroll events."),
 			type: 'number',
-			default: 1
+			defAult: 1
 		},
-		'terminal.integrated.fontWeight': {
-			'anyOf': [
+		'terminAl.integrAted.fontWeight': {
+			'AnyOf': [
 				{
 					type: 'number',
 					minimum: MINIMUM_FONT_WEIGHT,
-					maximum: MAXIMUM_FONT_WEIGHT,
-					errorMessage: localize('terminal.integrated.fontWeightError', "Only \"normal\" and \"bold\" keywords or numbers between 1 and 1000 are allowed.")
+					mAximum: MAXIMUM_FONT_WEIGHT,
+					errorMessAge: locAlize('terminAl.integrAted.fontWeightError', "Only \"normAl\" And \"bold\" keywords or numbers between 1 And 1000 Are Allowed.")
 				},
 				{
 					type: 'string',
-					pattern: '^(normal|bold|1000|[1-9][0-9]{0,2})$'
+					pAttern: '^(normAl|bold|1000|[1-9][0-9]{0,2})$'
 				},
 				{
 					enum: SUGGESTIONS_FONT_WEIGHT,
 				}
 			],
-			description: localize('terminal.integrated.fontWeight', "The font weight to use within the terminal for non-bold text. Accepts \"normal\" and \"bold\" keywords or numbers between 1 and 1000."),
-			default: 'normal'
+			description: locAlize('terminAl.integrAted.fontWeight', "The font weight to use within the terminAl for non-bold text. Accepts \"normAl\" And \"bold\" keywords or numbers between 1 And 1000."),
+			defAult: 'normAl'
 		},
-		'terminal.integrated.fontWeightBold': {
-			'anyOf': [
+		'terminAl.integrAted.fontWeightBold': {
+			'AnyOf': [
 				{
 					type: 'number',
 					minimum: MINIMUM_FONT_WEIGHT,
-					maximum: MAXIMUM_FONT_WEIGHT,
-					errorMessage: localize('terminal.integrated.fontWeightError', "Only \"normal\" and \"bold\" keywords or numbers between 1 and 1000 are allowed.")
+					mAximum: MAXIMUM_FONT_WEIGHT,
+					errorMessAge: locAlize('terminAl.integrAted.fontWeightError', "Only \"normAl\" And \"bold\" keywords or numbers between 1 And 1000 Are Allowed.")
 				},
 				{
 					type: 'string',
-					pattern: '^(normal|bold|1000|[1-9][0-9]{0,2})$'
+					pAttern: '^(normAl|bold|1000|[1-9][0-9]{0,2})$'
 				},
 				{
 					enum: SUGGESTIONS_FONT_WEIGHT,
 				}
 			],
-			description: localize('terminal.integrated.fontWeightBold', "The font weight to use within the terminal for bold text. Accepts \"normal\" and \"bold\" keywords or numbers between 1 and 1000."),
-			default: 'bold'
+			description: locAlize('terminAl.integrAted.fontWeightBold', "The font weight to use within the terminAl for bold text. Accepts \"normAl\" And \"bold\" keywords or numbers between 1 And 1000."),
+			defAult: 'bold'
 		},
-		'terminal.integrated.cursorBlinking': {
-			description: localize('terminal.integrated.cursorBlinking', "Controls whether the terminal cursor blinks."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.cursorBlinking': {
+			description: locAlize('terminAl.integrAted.cursorBlinking', "Controls whether the terminAl cursor blinks."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.cursorStyle': {
-			description: localize('terminal.integrated.cursorStyle', "Controls the style of terminal cursor."),
-			enum: [TerminalCursorStyle.BLOCK, TerminalCursorStyle.LINE, TerminalCursorStyle.UNDERLINE],
-			default: TerminalCursorStyle.BLOCK
+		'terminAl.integrAted.cursorStyle': {
+			description: locAlize('terminAl.integrAted.cursorStyle', "Controls the style of terminAl cursor."),
+			enum: [TerminAlCursorStyle.BLOCK, TerminAlCursorStyle.LINE, TerminAlCursorStyle.UNDERLINE],
+			defAult: TerminAlCursorStyle.BLOCK
 		},
-		'terminal.integrated.cursorWidth': {
-			markdownDescription: localize('terminal.integrated.cursorWidth', "Controls the width of the cursor when `#terminal.integrated.cursorStyle#` is set to `line`."),
+		'terminAl.integrAted.cursorWidth': {
+			mArkdownDescription: locAlize('terminAl.integrAted.cursorWidth', "Controls the width of the cursor when `#terminAl.integrAted.cursorStyle#` is set to `line`."),
 			type: 'number',
-			default: 1
+			defAult: 1
 		},
-		'terminal.integrated.scrollback': {
-			description: localize('terminal.integrated.scrollback', "Controls the maximum amount of lines the terminal keeps in its buffer."),
+		'terminAl.integrAted.scrollbAck': {
+			description: locAlize('terminAl.integrAted.scrollbAck', "Controls the mAximum Amount of lines the terminAl keeps in its buffer."),
 			type: 'number',
-			default: 1000
+			defAult: 1000
 		},
-		'terminal.integrated.detectLocale': {
-			markdownDescription: localize('terminal.integrated.detectLocale', "Controls whether to detect and set the `$LANG` environment variable to a UTF-8 compliant option since VS Code's terminal only supports UTF-8 encoded data coming from the shell."),
+		'terminAl.integrAted.detectLocAle': {
+			mArkdownDescription: locAlize('terminAl.integrAted.detectLocAle', "Controls whether to detect And set the `$LANG` environment vAriAble to A UTF-8 compliAnt option since VS Code's terminAl only supports UTF-8 encoded dAtA coming from the shell."),
 			type: 'string',
-			enum: ['auto', 'off', 'on'],
-			markdownEnumDescriptions: [
-				localize('terminal.integrated.detectLocale.auto', "Set the `$LANG` environment variable if the existing variable does not exist or it does not end in `'.UTF-8'`."),
-				localize('terminal.integrated.detectLocale.off', "Do not set the `$LANG` environment variable."),
-				localize('terminal.integrated.detectLocale.on', "Always set the `$LANG` environment variable.")
+			enum: ['Auto', 'off', 'on'],
+			mArkdownEnumDescriptions: [
+				locAlize('terminAl.integrAted.detectLocAle.Auto', "Set the `$LANG` environment vAriAble if the existing vAriAble does not exist or it does not end in `'.UTF-8'`."),
+				locAlize('terminAl.integrAted.detectLocAle.off', "Do not set the `$LANG` environment vAriAble."),
+				locAlize('terminAl.integrAted.detectLocAle.on', "AlwAys set the `$LANG` environment vAriAble.")
 			],
-			default: 'auto'
+			defAult: 'Auto'
 		},
-		'terminal.integrated.rendererType': {
+		'terminAl.integrAted.rendererType': {
 			type: 'string',
-			enum: ['auto', 'canvas', 'dom', 'experimentalWebgl'],
-			markdownEnumDescriptions: [
-				localize('terminal.integrated.rendererType.auto', "Let VS Code guess which renderer to use."),
-				localize('terminal.integrated.rendererType.canvas', "Use the standard GPU/canvas-based renderer."),
-				localize('terminal.integrated.rendererType.dom', "Use the fallback DOM-based renderer."),
-				localize('terminal.integrated.rendererType.experimentalWebgl', "Use the experimental webgl-based renderer. Note that this has some [known issues](https://github.com/xtermjs/xterm.js/issues?q=is%3Aopen+is%3Aissue+label%3Aarea%2Faddon%2Fwebgl) and this will only be enabled for new terminals (not hot swappable like the other renderers).")
+			enum: ['Auto', 'cAnvAs', 'dom', 'experimentAlWebgl'],
+			mArkdownEnumDescriptions: [
+				locAlize('terminAl.integrAted.rendererType.Auto', "Let VS Code guess which renderer to use."),
+				locAlize('terminAl.integrAted.rendererType.cAnvAs', "Use the stAndArd GPU/cAnvAs-bAsed renderer."),
+				locAlize('terminAl.integrAted.rendererType.dom', "Use the fAllbAck DOM-bAsed renderer."),
+				locAlize('terminAl.integrAted.rendererType.experimentAlWebgl', "Use the experimentAl webgl-bAsed renderer. Note thAt this hAs some [known issues](https://github.com/xtermjs/xterm.js/issues?q=is%3Aopen+is%3Aissue+lAbel%3AAreA%2FAddon%2Fwebgl) And this will only be enAbled for new terminAls (not hot swAppAble like the other renderers).")
 			],
-			default: 'auto',
-			description: localize('terminal.integrated.rendererType', "Controls how the terminal is rendered.")
+			defAult: 'Auto',
+			description: locAlize('terminAl.integrAted.rendererType', "Controls how the terminAl is rendered.")
 		},
-		'terminal.integrated.rightClickBehavior': {
+		'terminAl.integrAted.rightClickBehAvior': {
 			type: 'string',
-			enum: ['default', 'copyPaste', 'paste', 'selectWord'],
+			enum: ['defAult', 'copyPAste', 'pAste', 'selectWord'],
 			enumDescriptions: [
-				localize('terminal.integrated.rightClickBehavior.default', "Show the context menu."),
-				localize('terminal.integrated.rightClickBehavior.copyPaste', "Copy when there is a selection, otherwise paste."),
-				localize('terminal.integrated.rightClickBehavior.paste', "Paste on right click."),
-				localize('terminal.integrated.rightClickBehavior.selectWord', "Select the word under the cursor and show the context menu.")
+				locAlize('terminAl.integrAted.rightClickBehAvior.defAult', "Show the context menu."),
+				locAlize('terminAl.integrAted.rightClickBehAvior.copyPAste', "Copy when there is A selection, otherwise pAste."),
+				locAlize('terminAl.integrAted.rightClickBehAvior.pAste', "PAste on right click."),
+				locAlize('terminAl.integrAted.rightClickBehAvior.selectWord', "Select the word under the cursor And show the context menu.")
 			],
-			default: isMacintosh ? 'selectWord' : isWindows ? 'copyPaste' : 'default',
-			description: localize('terminal.integrated.rightClickBehavior', "Controls how terminal reacts to right click.")
+			defAult: isMAcintosh ? 'selectWord' : isWindows ? 'copyPAste' : 'defAult',
+			description: locAlize('terminAl.integrAted.rightClickBehAvior', "Controls how terminAl reActs to right click.")
 		},
-		'terminal.integrated.cwd': {
-			description: localize('terminal.integrated.cwd', "An explicit start path where the terminal will be launched, this is used as the current working directory (cwd) for the shell process. This may be particularly useful in workspace settings if the root directory is not a convenient cwd."),
+		'terminAl.integrAted.cwd': {
+			description: locAlize('terminAl.integrAted.cwd', "An explicit stArt pAth where the terminAl will be lAunched, this is used As the current working directory (cwd) for the shell process. This mAy be pArticulArly useful in workspAce settings if the root directory is not A convenient cwd."),
 			type: 'string',
-			default: undefined
+			defAult: undefined
 		},
-		'terminal.integrated.confirmOnExit': {
-			description: localize('terminal.integrated.confirmOnExit', "Controls whether to confirm on exit if there are active terminal sessions."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.confirmOnExit': {
+			description: locAlize('terminAl.integrAted.confirmOnExit', "Controls whether to confirm on exit if there Are Active terminAl sessions."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.enableBell': {
-			description: localize('terminal.integrated.enableBell', "Controls whether the terminal bell is enabled."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.enAbleBell': {
+			description: locAlize('terminAl.integrAted.enAbleBell', "Controls whether the terminAl bell is enAbled."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.commandsToSkipShell': {
-			markdownDescription: localize('terminal.integrated.commandsToSkipShell', "A set of command IDs whose keybindings will not be sent to the shell but instead always be handled by VS Code. This allows keybindings that would normally be consumed by the shell to act instead the same as when the terminal is not focused, for example `Ctrl+P` to launch Quick Open.\n\n&nbsp;\n\nMany commands are skipped by default. To override a default and pass that command's keybinding to the shell instead, add the command prefixed with the `-` character. For example add `-workbench.action.quickOpen` to allow `Ctrl+P` to reach the shell.\n\n&nbsp;\n\nThe following list of default skipped commands is truncated when viewed in Settings Editor. To see the full list, [open the default settings JSON](command:workbench.action.openRawDefaultSettings 'Open Default Settings (JSON)') and search for the first command from the list below.\n\n&nbsp;\n\nDefault Skipped Commands:\n\n{0}", DEFAULT_COMMANDS_TO_SKIP_SHELL.sort().map(command => `- ${command}`).join('\n')),
-			type: 'array',
+		'terminAl.integrAted.commAndsToSkipShell': {
+			mArkdownDescription: locAlize('terminAl.integrAted.commAndsToSkipShell', "A set of commAnd IDs whose keybindings will not be sent to the shell but insteAd AlwAys be hAndled by VS Code. This Allows keybindings thAt would normAlly be consumed by the shell to Act insteAd the sAme As when the terminAl is not focused, for exAmple `Ctrl+P` to lAunch Quick Open.\n\n&nbsp;\n\nMAny commAnds Are skipped by defAult. To override A defAult And pAss thAt commAnd's keybinding to the shell insteAd, Add the commAnd prefixed with the `-` chArActer. For exAmple Add `-workbench.Action.quickOpen` to Allow `Ctrl+P` to reAch the shell.\n\n&nbsp;\n\nThe following list of defAult skipped commAnds is truncAted when viewed in Settings Editor. To see the full list, [open the defAult settings JSON](commAnd:workbench.Action.openRAwDefAultSettings 'Open DefAult Settings (JSON)') And seArch for the first commAnd from the list below.\n\n&nbsp;\n\nDefAult Skipped CommAnds:\n\n{0}", DEFAULT_COMMANDS_TO_SKIP_SHELL.sort().mAp(commAnd => `- ${commAnd}`).join('\n')),
+			type: 'ArrAy',
 			items: {
 				type: 'string'
 			},
-			default: []
+			defAult: []
 		},
-		'terminal.integrated.allowChords': {
-			markdownDescription: localize('terminal.integrated.allowChords', "Whether or not to allow chord keybindings in the terminal. Note that when this is true and the keystroke results in a chord it will bypass `#terminal.integrated.commandsToSkipShell#`, setting this to false is particularly useful when you want ctrl+k to go to your shell (not VS Code)."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.AllowChords': {
+			mArkdownDescription: locAlize('terminAl.integrAted.AllowChords', "Whether or not to Allow chord keybindings in the terminAl. Note thAt when this is true And the keystroke results in A chord it will bypAss `#terminAl.integrAted.commAndsToSkipShell#`, setting this to fAlse is pArticulArly useful when you wAnt ctrl+k to go to your shell (not VS Code)."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.allowMnemonics': {
-			markdownDescription: localize('terminal.integrated.allowMnemonics', "Whether to allow menubar mnemonics (eg. alt+f) to trigger the open the menubar. Note that this will cause all alt keystrokes will skip the shell when true. This does nothing on macOS."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.AllowMnemonics': {
+			mArkdownDescription: locAlize('terminAl.integrAted.AllowMnemonics', "Whether to Allow menubAr mnemonics (eg. Alt+f) to trigger the open the menubAr. Note thAt this will cAuse All Alt keystrokes will skip the shell when true. This does nothing on mAcOS."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.inheritEnv': {
-			markdownDescription: localize('terminal.integrated.inheritEnv', "Whether new shells should inherit their environment from VS Code. This is not supported on Windows."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.inheritEnv': {
+			mArkdownDescription: locAlize('terminAl.integrAted.inheritEnv', "Whether new shells should inherit their environment from VS Code. This is not supported on Windows."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.env.osx': {
-			markdownDescription: localize('terminal.integrated.env.osx', "Object with environment variables that will be added to the VS Code process to be used by the terminal on macOS. Set to `null` to delete the environment variable."),
+		'terminAl.integrAted.env.osx': {
+			mArkdownDescription: locAlize('terminAl.integrAted.env.osx', "Object with environment vAriAbles thAt will be Added to the VS Code process to be used by the terminAl on mAcOS. Set to `null` to delete the environment vAriAble."),
 			type: 'object',
-			additionalProperties: {
+			AdditionAlProperties: {
 				type: ['string', 'null']
 			},
-			default: {}
+			defAult: {}
 		},
-		'terminal.integrated.env.linux': {
-			markdownDescription: localize('terminal.integrated.env.linux', "Object with environment variables that will be added to the VS Code process to be used by the terminal on Linux. Set to `null` to delete the environment variable."),
+		'terminAl.integrAted.env.linux': {
+			mArkdownDescription: locAlize('terminAl.integrAted.env.linux', "Object with environment vAriAbles thAt will be Added to the VS Code process to be used by the terminAl on Linux. Set to `null` to delete the environment vAriAble."),
 			type: 'object',
-			additionalProperties: {
+			AdditionAlProperties: {
 				type: ['string', 'null']
 			},
-			default: {}
+			defAult: {}
 		},
-		'terminal.integrated.env.windows': {
-			markdownDescription: localize('terminal.integrated.env.windows', "Object with environment variables that will be added to the VS Code process to be used by the terminal on Windows. Set to `null` to delete the environment variable."),
+		'terminAl.integrAted.env.windows': {
+			mArkdownDescription: locAlize('terminAl.integrAted.env.windows', "Object with environment vAriAbles thAt will be Added to the VS Code process to be used by the terminAl on Windows. Set to `null` to delete the environment vAriAble."),
 			type: 'object',
-			additionalProperties: {
+			AdditionAlProperties: {
 				type: ['string', 'null']
 			},
-			default: {}
+			defAult: {}
 		},
-		'terminal.integrated.environmentChangesIndicator': {
-			markdownDescription: localize('terminal.integrated.environmentChangesIndicator', "Whether to display the environment changes indicator on each terminal which explains whether extensions have made, or want to make changes to the terminal's environment."),
+		'terminAl.integrAted.environmentChAngesIndicAtor': {
+			mArkdownDescription: locAlize('terminAl.integrAted.environmentChAngesIndicAtor', "Whether to displAy the environment chAnges indicAtor on eAch terminAl which explAins whether extensions hAve mAde, or wAnt to mAke chAnges to the terminAl's environment."),
 			type: 'string',
-			enum: ['off', 'on', 'warnonly'],
+			enum: ['off', 'on', 'wArnonly'],
 			enumDescriptions: [
-				localize('terminal.integrated.environmentChangesIndicator.off', "Disable the indicator."),
-				localize('terminal.integrated.environmentChangesIndicator.on', "Enable the indicator."),
-				localize('terminal.integrated.environmentChangesIndicator.warnonly', "Only show the warning indicator when a terminal's environment is 'stale', not the information indicator that shows a terminal has had its environment modified by an extension."),
+				locAlize('terminAl.integrAted.environmentChAngesIndicAtor.off', "DisAble the indicAtor."),
+				locAlize('terminAl.integrAted.environmentChAngesIndicAtor.on', "EnAble the indicAtor."),
+				locAlize('terminAl.integrAted.environmentChAngesIndicAtor.wArnonly', "Only show the wArning indicAtor when A terminAl's environment is 'stAle', not the informAtion indicAtor thAt shows A terminAl hAs hAd its environment modified by An extension."),
 			],
-			default: 'warnonly'
+			defAult: 'wArnonly'
 		},
-		'terminal.integrated.showExitAlert': {
-			description: localize('terminal.integrated.showExitAlert', "Controls whether to show the alert \"The terminal process terminated with exit code\" when exit code is non-zero."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.showExitAlert': {
+			description: locAlize('terminAl.integrAted.showExitAlert', "Controls whether to show the Alert \"The terminAl process terminAted with exit code\" when exit code is non-zero."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.splitCwd': {
-			description: localize('terminal.integrated.splitCwd', "Controls the working directory a split terminal starts with."),
+		'terminAl.integrAted.splitCwd': {
+			description: locAlize('terminAl.integrAted.splitCwd', "Controls the working directory A split terminAl stArts with."),
 			type: 'string',
-			enum: ['workspaceRoot', 'initial', 'inherited'],
+			enum: ['workspAceRoot', 'initiAl', 'inherited'],
 			enumDescriptions: [
-				localize('terminal.integrated.splitCwd.workspaceRoot', "A new split terminal will use the workspace root as the working directory. In a multi-root workspace a choice for which root folder to use is offered."),
-				localize('terminal.integrated.splitCwd.initial', "A new split terminal will use the working directory that the parent terminal started with."),
-				localize('terminal.integrated.splitCwd.inherited', "On macOS and Linux, a new split terminal will use the working directory of the parent terminal. On Windows, this behaves the same as initial."),
+				locAlize('terminAl.integrAted.splitCwd.workspAceRoot', "A new split terminAl will use the workspAce root As the working directory. In A multi-root workspAce A choice for which root folder to use is offered."),
+				locAlize('terminAl.integrAted.splitCwd.initiAl', "A new split terminAl will use the working directory thAt the pArent terminAl stArted with."),
+				locAlize('terminAl.integrAted.splitCwd.inherited', "On mAcOS And Linux, A new split terminAl will use the working directory of the pArent terminAl. On Windows, this behAves the sAme As initiAl."),
 			],
-			default: 'inherited'
+			defAult: 'inherited'
 		},
-		'terminal.integrated.windowsEnableConpty': {
-			description: localize('terminal.integrated.windowsEnableConpty', "Whether to use ConPTY for Windows terminal process communication (requires Windows 10 build number 18309+). Winpty will be used if this is false."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.windowsEnAbleConpty': {
+			description: locAlize('terminAl.integrAted.windowsEnAbleConpty', "Whether to use ConPTY for Windows terminAl process communicAtion (requires Windows 10 build number 18309+). Winpty will be used if this is fAlse."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.wordSeparators': {
-			description: localize('terminal.integrated.wordSeparators', "A string containing all characters to be considered word separators by the double click to select word feature."),
+		'terminAl.integrAted.wordSepArAtors': {
+			description: locAlize('terminAl.integrAted.wordSepArAtors', "A string contAining All chArActers to be considered word sepArAtors by the double click to select word feAture."),
 			type: 'string',
-			default: ' ()[]{}\',"`─'
+			defAult: ' ()[]{}\',"`─'
 		},
-		'terminal.integrated.experimentalUseTitleEvent': {
-			description: localize('terminal.integrated.experimentalUseTitleEvent', "An experimental setting that will use the terminal title event for the dropdown title. This setting will only apply to new terminals."),
-			type: 'boolean',
-			default: false
+		'terminAl.integrAted.experimentAlUseTitleEvent': {
+			description: locAlize('terminAl.integrAted.experimentAlUseTitleEvent', "An experimentAl setting thAt will use the terminAl title event for the dropdown title. This setting will only Apply to new terminAls."),
+			type: 'booleAn',
+			defAult: fAlse
 		},
-		'terminal.integrated.enableFileLinks': {
-			description: localize('terminal.integrated.enableFileLinks', "Whether to enable file links in the terminal. Links can be slow when working on a network drive in particular because each file link is verified against the file system. Changing this will take effect only in new terminals."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.enAbleFileLinks': {
+			description: locAlize('terminAl.integrAted.enAbleFileLinks', "Whether to enAble file links in the terminAl. Links cAn be slow when working on A network drive in pArticulAr becAuse eAch file link is verified AgAinst the file system. ChAnging this will tAke effect only in new terminAls."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.unicodeVersion': {
+		'terminAl.integrAted.unicodeVersion': {
 			type: 'string',
 			enum: ['6', '11'],
 			enumDescriptions: [
-				localize('terminal.integrated.unicodeVersion.six', "Version 6 of unicode, this is an older version which should work better on older systems."),
-				localize('terminal.integrated.unicodeVersion.eleven', "Version 11 of unicode, this version provides better support on modern systems that use modern versions of unicode.")
+				locAlize('terminAl.integrAted.unicodeVersion.six', "Version 6 of unicode, this is An older version which should work better on older systems."),
+				locAlize('terminAl.integrAted.unicodeVersion.eleven', "Version 11 of unicode, this version provides better support on modern systems thAt use modern versions of unicode.")
 			],
-			default: '11',
-			description: localize('terminal.integrated.unicodeVersion', "Controls what version of unicode to use when evaluating the width of characters in the terminal. If you experience emoji or other wide characters not taking up the right amount of space or backspace either deleting too much or too little then you may want to try tweaking this setting.")
+			defAult: '11',
+			description: locAlize('terminAl.integrAted.unicodeVersion', "Controls whAt version of unicode to use when evAluAting the width of chArActers in the terminAl. If you experience emoji or other wide chArActers not tAking up the right Amount of spAce or bAckspAce either deleting too much or too little then you mAy wAnt to try tweAking this setting.")
 		},
-		'terminal.integrated.experimentalLinkProvider': {
-			description: localize('terminal.integrated.experimentalLinkProvider', "An experimental setting that aims to improve link detection in the terminal by improving when links are detected and by enabling shared link detection with the editor. Currently this only supports web links."),
-			type: 'boolean',
-			default: true
+		'terminAl.integrAted.experimentAlLinkProvider': {
+			description: locAlize('terminAl.integrAted.experimentAlLinkProvider', "An experimentAl setting thAt Aims to improve link detection in the terminAl by improving when links Are detected And by enAbling shAred link detection with the editor. Currently this only supports web links."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'terminal.integrated.typeaheadThreshold': {
-			description: localize('terminal.integrated.typeaheadThreshold', "Experimental: length of time, in milliseconds, where typeahead will active. If '0', typeahead will always be on, and if '-1' it will be disabled. Note: currently only -1 and 0 supported."),
+		'terminAl.integrAted.typeAheAdThreshold': {
+			description: locAlize('terminAl.integrAted.typeAheAdThreshold', "ExperimentAl: length of time, in milliseconds, where typeAheAd will Active. If '0', typeAheAd will AlwAys be on, And if '-1' it will be disAbled. Note: currently only -1 And 0 supported."),
 			type: 'integer',
 			minimum: -1,
-			default: -1,
+			defAult: -1,
 		},
-		'terminal.integrated.typeaheadStyle': {
-			description: localize('terminal.integrated.typeaheadStyle', "Experimental: terminal style of typeahead text, either a font style or an RGB color."),
-			default: 2,
+		'terminAl.integrAted.typeAheAdStyle': {
+			description: locAlize('terminAl.integrAted.typeAheAdStyle', "ExperimentAl: terminAl style of typeAheAd text, either A font style or An RGB color."),
+			defAult: 2,
 			oneOf: [
 				{
 					type: 'integer',
-					default: 2,
+					defAult: 2,
 					enum: [0, 1, 2, 3, 4, 7],
 					enumDescriptions: [
-						localize('terminal.integrated.typeaheadStyle.0', 'Normal'),
-						localize('terminal.integrated.typeaheadStyle.1', 'Bold'),
-						localize('terminal.integrated.typeaheadStyle.2', 'Dim'),
-						localize('terminal.integrated.typeaheadStyle.3', 'Italic'),
-						localize('terminal.integrated.typeaheadStyle.4', 'Underlined'),
-						localize('terminal.integrated.typeaheadStyle.7', 'Inverted'),
+						locAlize('terminAl.integrAted.typeAheAdStyle.0', 'NormAl'),
+						locAlize('terminAl.integrAted.typeAheAdStyle.1', 'Bold'),
+						locAlize('terminAl.integrAted.typeAheAdStyle.2', 'Dim'),
+						locAlize('terminAl.integrAted.typeAheAdStyle.3', 'ItAlic'),
+						locAlize('terminAl.integrAted.typeAheAdStyle.4', 'Underlined'),
+						locAlize('terminAl.integrAted.typeAheAdStyle.7', 'Inverted'),
 					]
 				},
 				{
 					type: 'string',
-					format: 'color-hex',
-					default: '#ff0000',
+					formAt: 'color-hex',
+					defAult: '#ff0000',
 				}
 			]
 		}
 	}
 };
 
-export function getTerminalShellConfiguration(getSystemShell?: (p: Platform) => string): IConfigurationNode {
+export function getTerminAlShellConfigurAtion(getSystemShell?: (p: PlAtform) => string): IConfigurAtionNode {
 	return {
-		id: 'terminal',
+		id: 'terminAl',
 		order: 100,
-		title: localize('terminalIntegratedConfigurationTitle', "Integrated Terminal"),
+		title: locAlize('terminAlIntegrAtedConfigurAtionTitle', "IntegrAted TerminAl"),
 		type: 'object',
 		properties: {
-			'terminal.integrated.shell.linux': {
-				markdownDescription:
+			'terminAl.integrAted.shell.linux': {
+				mArkdownDescription:
 					getSystemShell
-						? localize('terminal.integrated.shell.linux', "The path of the shell that the terminal uses on Linux (default: {0}). [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration).", getSystemShell(Platform.Linux))
-						: localize('terminal.integrated.shell.linux.noDefault', "The path of the shell that the terminal uses on Linux. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration)."),
+						? locAlize('terminAl.integrAted.shell.linux', "The pAth of the shell thAt the terminAl uses on Linux (defAult: {0}). [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion).", getSystemShell(PlAtform.Linux))
+						: locAlize('terminAl.integrAted.shell.linux.noDefAult', "The pAth of the shell thAt the terminAl uses on Linux. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion)."),
 				type: ['string', 'null'],
-				default: null
+				defAult: null
 			},
-			'terminal.integrated.shell.osx': {
-				markdownDescription:
+			'terminAl.integrAted.shell.osx': {
+				mArkdownDescription:
 					getSystemShell
-						? localize('terminal.integrated.shell.osx', "The path of the shell that the terminal uses on macOS (default: {0}). [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration).", getSystemShell(Platform.Mac))
-						: localize('terminal.integrated.shell.osx.noDefault', "The path of the shell that the terminal uses on macOS. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration)."),
+						? locAlize('terminAl.integrAted.shell.osx', "The pAth of the shell thAt the terminAl uses on mAcOS (defAult: {0}). [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion).", getSystemShell(PlAtform.MAc))
+						: locAlize('terminAl.integrAted.shell.osx.noDefAult', "The pAth of the shell thAt the terminAl uses on mAcOS. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion)."),
 				type: ['string', 'null'],
-				default: null
+				defAult: null
 			},
-			'terminal.integrated.shell.windows': {
-				markdownDescription:
+			'terminAl.integrAted.shell.windows': {
+				mArkdownDescription:
 					getSystemShell
-						? localize('terminal.integrated.shell.windows', "The path of the shell that the terminal uses on Windows (default: {0}). [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration).", getSystemShell(Platform.Windows))
-						: localize('terminal.integrated.shell.windows.noDefault', "The path of the shell that the terminal uses on Windows. [Read more about configuring the shell](https://code.visualstudio.com/docs/editor/integrated-terminal#_configuration)."),
+						? locAlize('terminAl.integrAted.shell.windows', "The pAth of the shell thAt the terminAl uses on Windows (defAult: {0}). [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion).", getSystemShell(PlAtform.Windows))
+						: locAlize('terminAl.integrAted.shell.windows.noDefAult', "The pAth of the shell thAt the terminAl uses on Windows. [ReAd more About configuring the shell](https://code.visuAlstudio.com/docs/editor/integrAted-terminAl#_configurAtion)."),
 				type: ['string', 'null'],
-				default: null
+				defAult: null
 			}
 		}
 	};

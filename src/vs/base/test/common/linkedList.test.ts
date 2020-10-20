@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { LinkedList } from 'vs/base/common/linkedList';
+import * As Assert from 'Assert';
+import { LinkedList } from 'vs/bAse/common/linkedList';
 
 suite('LinkedList', function () {
 
-	function assertElements<E>(list: LinkedList<E>, ...elements: E[]) {
+	function AssertElements<E>(list: LinkedList<E>, ...elements: E[]) {
 
 		// check size
-		assert.equal(list.size, elements.length);
+		Assert.equAl(list.size, elements.length);
 
-		// assert toArray
-		assert.deepEqual(list.toArray(), elements);
+		// Assert toArrAy
+		Assert.deepEquAl(list.toArrAy(), elements);
 
-		// assert Symbol.iterator (1)
-		assert.deepEqual([...list], elements);
+		// Assert Symbol.iterAtor (1)
+		Assert.deepEquAl([...list], elements);
 
-		// assert Symbol.iterator (2)
+		// Assert Symbol.iterAtor (2)
 		for (const item of list) {
-			assert.equal(item, elements.shift());
+			Assert.equAl(item, elements.shift());
 		}
-		assert.equal(elements.length, 0);
+		Assert.equAl(elements.length, 0);
 	}
 
 	test('Push/Iter', () => {
@@ -31,7 +31,7 @@ suite('LinkedList', function () {
 		list.push(0);
 		list.push(1);
 		list.push(2);
-		assertElements(list, 0, 1, 2);
+		AssertElements(list, 0, 1, 2);
 	});
 
 	test('Push/Remove', () => {
@@ -40,21 +40,21 @@ suite('LinkedList', function () {
 		list.push(1);
 		list.push(2);
 		disp();
-		assertElements(list, 1, 2);
+		AssertElements(list, 1, 2);
 
 		list = new LinkedList<number>();
 		list.push(0);
 		disp = list.push(1);
 		list.push(2);
 		disp();
-		assertElements(list, 0, 2);
+		AssertElements(list, 0, 2);
 
 		list = new LinkedList<number>();
 		list.push(0);
 		list.push(1);
 		disp = list.push(2);
 		disp();
-		assertElements(list, 0, 1);
+		AssertElements(list, 0, 1);
 
 		list = new LinkedList<number>();
 		list.push(0);
@@ -62,17 +62,17 @@ suite('LinkedList', function () {
 		disp = list.push(2);
 		disp();
 		disp();
-		assertElements(list, 0, 1);
+		AssertElements(list, 0, 1);
 	});
 
-	test('Push/toArray', () => {
+	test('Push/toArrAy', () => {
 		let list = new LinkedList<string>();
 		list.push('foo');
-		list.push('bar');
-		list.push('far');
+		list.push('bAr');
+		list.push('fAr');
 		list.push('boo');
 
-		assertElements(list, 'foo', 'bar', 'far', 'boo');
+		AssertElements(list, 'foo', 'bAr', 'fAr', 'boo');
 	});
 
 	test('unshift/Iter', () => {
@@ -80,7 +80,7 @@ suite('LinkedList', function () {
 		list.unshift(0);
 		list.unshift(1);
 		list.unshift(2);
-		assertElements(list, 2, 1, 0);
+		AssertElements(list, 2, 1, 0);
 	});
 
 	test('unshift/Remove', () => {
@@ -89,49 +89,49 @@ suite('LinkedList', function () {
 		list.unshift(1);
 		list.unshift(2);
 		disp();
-		assertElements(list, 2, 1);
+		AssertElements(list, 2, 1);
 
 		list = new LinkedList<number>();
 		list.unshift(0);
 		disp = list.unshift(1);
 		list.unshift(2);
 		disp();
-		assertElements(list, 2, 0);
+		AssertElements(list, 2, 0);
 
 		list = new LinkedList<number>();
 		list.unshift(0);
 		list.unshift(1);
 		disp = list.unshift(2);
 		disp();
-		assertElements(list, 1, 0);
+		AssertElements(list, 1, 0);
 	});
 
-	test('unshift/toArray', () => {
+	test('unshift/toArrAy', () => {
 		let list = new LinkedList<string>();
 		list.unshift('foo');
-		list.unshift('bar');
-		list.unshift('far');
+		list.unshift('bAr');
+		list.unshift('fAr');
 		list.unshift('boo');
-		assertElements(list, 'boo', 'far', 'bar', 'foo');
+		AssertElements(list, 'boo', 'fAr', 'bAr', 'foo');
 	});
 
 	test('pop/unshift', function () {
 		let list = new LinkedList<string>();
-		list.push('a');
+		list.push('A');
 		list.push('b');
 
-		assertElements(list, 'a', 'b');
+		AssertElements(list, 'A', 'b');
 
-		let a = list.shift();
-		assert.equal(a, 'a');
-		assertElements(list, 'b');
+		let A = list.shift();
+		Assert.equAl(A, 'A');
+		AssertElements(list, 'b');
 
-		list.unshift('a');
-		assertElements(list, 'a', 'b');
+		list.unshift('A');
+		AssertElements(list, 'A', 'b');
 
 		let b = list.pop();
-		assert.equal(b, 'b');
-		assertElements(list, 'a');
+		Assert.equAl(b, 'b');
+		AssertElements(list, 'A');
 
 	});
 });

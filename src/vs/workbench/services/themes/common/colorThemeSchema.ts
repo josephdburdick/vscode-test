@@ -1,94 +1,94 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as JSONExtensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As JSONExtensions, IJSONContributionRegistry } from 'vs/plAtform/jsonschemAs/common/jsonContributionRegistry';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 
-import { workbenchColorsSchemaId } from 'vs/platform/theme/common/colorRegistry';
-import { tokenStylingSchemaId } from 'vs/platform/theme/common/tokenClassificationRegistry';
+import { workbenchColorsSchemAId } from 'vs/plAtform/theme/common/colorRegistry';
+import { tokenStylingSchemAId } from 'vs/plAtform/theme/common/tokenClAssificAtionRegistry';
 
-let textMateScopes = [
+let textMAteScopes = [
 	'comment',
 	'comment.block',
-	'comment.block.documentation',
+	'comment.block.documentAtion',
 	'comment.line',
-	'constant',
-	'constant.character',
-	'constant.character.escape',
-	'constant.numeric',
-	'constant.numeric.integer',
-	'constant.numeric.float',
-	'constant.numeric.hex',
-	'constant.numeric.octal',
-	'constant.other',
-	'constant.regexp',
-	'constant.rgb-value',
-	'emphasis',
+	'constAnt',
+	'constAnt.chArActer',
+	'constAnt.chArActer.escApe',
+	'constAnt.numeric',
+	'constAnt.numeric.integer',
+	'constAnt.numeric.floAt',
+	'constAnt.numeric.hex',
+	'constAnt.numeric.octAl',
+	'constAnt.other',
+	'constAnt.regexp',
+	'constAnt.rgb-vAlue',
+	'emphAsis',
 	'entity',
-	'entity.name',
-	'entity.name.class',
-	'entity.name.function',
-	'entity.name.method',
-	'entity.name.section',
-	'entity.name.selector',
-	'entity.name.tag',
-	'entity.name.type',
+	'entity.nAme',
+	'entity.nAme.clAss',
+	'entity.nAme.function',
+	'entity.nAme.method',
+	'entity.nAme.section',
+	'entity.nAme.selector',
+	'entity.nAme.tAg',
+	'entity.nAme.type',
 	'entity.other',
-	'entity.other.attribute-name',
-	'entity.other.inherited-class',
-	'invalid',
-	'invalid.deprecated',
-	'invalid.illegal',
+	'entity.other.Attribute-nAme',
+	'entity.other.inherited-clAss',
+	'invAlid',
+	'invAlid.deprecAted',
+	'invAlid.illegAl',
 	'keyword',
 	'keyword.control',
-	'keyword.operator',
-	'keyword.operator.new',
-	'keyword.operator.assignment',
-	'keyword.operator.arithmetic',
-	'keyword.operator.logical',
+	'keyword.operAtor',
+	'keyword.operAtor.new',
+	'keyword.operAtor.Assignment',
+	'keyword.operAtor.Arithmetic',
+	'keyword.operAtor.logicAl',
 	'keyword.other',
-	'markup',
-	'markup.bold',
-	'markup.changed',
-	'markup.deleted',
-	'markup.heading',
-	'markup.inline.raw',
-	'markup.inserted',
-	'markup.italic',
-	'markup.list',
-	'markup.list.numbered',
-	'markup.list.unnumbered',
-	'markup.other',
-	'markup.quote',
-	'markup.raw',
-	'markup.underline',
-	'markup.underline.link',
-	'meta',
-	'meta.block',
-	'meta.cast',
-	'meta.class',
-	'meta.function',
-	'meta.function-call',
-	'meta.preprocessor',
-	'meta.return-type',
-	'meta.selector',
-	'meta.tag',
-	'meta.type.annotation',
-	'meta.type',
-	'punctuation.definition.string.begin',
-	'punctuation.definition.string.end',
-	'punctuation.separator',
-	'punctuation.separator.continuation',
-	'punctuation.terminator',
-	'storage',
-	'storage.modifier',
-	'storage.type',
+	'mArkup',
+	'mArkup.bold',
+	'mArkup.chAnged',
+	'mArkup.deleted',
+	'mArkup.heAding',
+	'mArkup.inline.rAw',
+	'mArkup.inserted',
+	'mArkup.itAlic',
+	'mArkup.list',
+	'mArkup.list.numbered',
+	'mArkup.list.unnumbered',
+	'mArkup.other',
+	'mArkup.quote',
+	'mArkup.rAw',
+	'mArkup.underline',
+	'mArkup.underline.link',
+	'metA',
+	'metA.block',
+	'metA.cAst',
+	'metA.clAss',
+	'metA.function',
+	'metA.function-cAll',
+	'metA.preprocessor',
+	'metA.return-type',
+	'metA.selector',
+	'metA.tAg',
+	'metA.type.AnnotAtion',
+	'metA.type',
+	'punctuAtion.definition.string.begin',
+	'punctuAtion.definition.string.end',
+	'punctuAtion.sepArAtor',
+	'punctuAtion.sepArAtor.continuAtion',
+	'punctuAtion.terminAtor',
+	'storAge',
+	'storAge.modifier',
+	'storAge.type',
 	'string',
-	'string.interpolated',
+	'string.interpolAted',
 	'string.other',
 	'string.quoted',
 	'string.quoted.double',
@@ -99,34 +99,34 @@ let textMateScopes = [
 	'string.unquoted',
 	'strong',
 	'support',
-	'support.class',
-	'support.constant',
+	'support.clAss',
+	'support.constAnt',
 	'support.function',
 	'support.other',
 	'support.type',
-	'support.type.property-name',
-	'support.variable',
-	'variable',
-	'variable.language',
-	'variable.name',
-	'variable.other',
-	'variable.other.readwrite',
-	'variable.parameter'
+	'support.type.property-nAme',
+	'support.vAriAble',
+	'vAriAble',
+	'vAriAble.lAnguAge',
+	'vAriAble.nAme',
+	'vAriAble.other',
+	'vAriAble.other.reAdwrite',
+	'vAriAble.pArAmeter'
 ];
 
-export const textmateColorsSchemaId = 'vscode://schemas/textmate-colors';
-export const textmateColorSettingsSchemaId = `${textmateColorsSchemaId}#definitions/settings`;
-export const textmateColorGroupSchemaId = `${textmateColorsSchemaId}#definitions/colorGroup`;
+export const textmAteColorsSchemAId = 'vscode://schemAs/textmAte-colors';
+export const textmAteColorSettingsSchemAId = `${textmAteColorsSchemAId}#definitions/settings`;
+export const textmAteColorGroupSchemAId = `${textmAteColorsSchemAId}#definitions/colorGroup`;
 
-const textmateColorSchema: IJSONSchema = {
-	type: 'array',
+const textmAteColorSchemA: IJSONSchemA = {
+	type: 'ArrAy',
 	definitions: {
 		colorGroup: {
-			default: '#FF0000',
-			anyOf: [
+			defAult: '#FF0000',
+			AnyOf: [
 				{
 					type: 'string',
-					format: 'color-hex'
+					formAt: 'color-hex'
 				},
 				{
 					$ref: '#definitions/settings'
@@ -135,55 +135,55 @@ const textmateColorSchema: IJSONSchema = {
 		},
 		settings: {
 			type: 'object',
-			description: nls.localize('schema.token.settings', 'Colors and styles for the token.'),
+			description: nls.locAlize('schemA.token.settings', 'Colors And styles for the token.'),
 			properties: {
 				foreground: {
 					type: 'string',
-					description: nls.localize('schema.token.foreground', 'Foreground color for the token.'),
-					format: 'color-hex',
-					default: '#ff0000'
+					description: nls.locAlize('schemA.token.foreground', 'Foreground color for the token.'),
+					formAt: 'color-hex',
+					defAult: '#ff0000'
 				},
-				background: {
+				bAckground: {
 					type: 'string',
-					deprecationMessage: nls.localize('schema.token.background.warning', 'Token background colors are currently not supported.')
+					deprecAtionMessAge: nls.locAlize('schemA.token.bAckground.wArning', 'Token bAckground colors Are currently not supported.')
 				},
 				fontStyle: {
 					type: 'string',
-					description: nls.localize('schema.token.fontStyle', 'Font style of the rule: \'italic\', \'bold\' or \'underline\' or a combination. The empty string unsets inherited settings.'),
-					pattern: '^(\\s*\\b(italic|bold|underline))*\\s*$',
-					patternErrorMessage: nls.localize('schema.fontStyle.error', 'Font style must be \'italic\', \'bold\' or \'underline\' or a combination or the empty string.'),
-					defaultSnippets: [{ label: nls.localize('schema.token.fontStyle.none', 'None (clear inherited style)'), bodyText: '""' }, { body: 'italic' }, { body: 'bold' }, { body: 'underline' }, { body: 'italic bold' }, { body: 'italic underline' }, { body: 'bold underline' }, { body: 'italic bold underline' }]
+					description: nls.locAlize('schemA.token.fontStyle', 'Font style of the rule: \'itAlic\', \'bold\' or \'underline\' or A combinAtion. The empty string unsets inherited settings.'),
+					pAttern: '^(\\s*\\b(itAlic|bold|underline))*\\s*$',
+					pAtternErrorMessAge: nls.locAlize('schemA.fontStyle.error', 'Font style must be \'itAlic\', \'bold\' or \'underline\' or A combinAtion or the empty string.'),
+					defAultSnippets: [{ lAbel: nls.locAlize('schemA.token.fontStyle.none', 'None (cleAr inherited style)'), bodyText: '""' }, { body: 'itAlic' }, { body: 'bold' }, { body: 'underline' }, { body: 'itAlic bold' }, { body: 'itAlic underline' }, { body: 'bold underline' }, { body: 'itAlic bold underline' }]
 				}
 			},
-			additionalProperties: false,
-			defaultSnippets: [{ body: { foreground: '${1:#FF0000}', fontStyle: '${2:bold}' } }]
+			AdditionAlProperties: fAlse,
+			defAultSnippets: [{ body: { foreground: '${1:#FF0000}', fontStyle: '${2:bold}' } }]
 		}
 	},
 	items: {
 		type: 'object',
-		defaultSnippets: [{ body: { scope: '${1:keyword.operator}', settings: { foreground: '${2:#FF0000}' } } }],
+		defAultSnippets: [{ body: { scope: '${1:keyword.operAtor}', settings: { foreground: '${2:#FF0000}' } } }],
 		properties: {
-			name: {
+			nAme: {
 				type: 'string',
-				description: nls.localize('schema.properties.name', 'Description of the rule.')
+				description: nls.locAlize('schemA.properties.nAme', 'Description of the rule.')
 			},
 			scope: {
-				description: nls.localize('schema.properties.scope', 'Scope selector against which this rule matches.'),
-				anyOf: [
+				description: nls.locAlize('schemA.properties.scope', 'Scope selector AgAinst which this rule mAtches.'),
+				AnyOf: [
 					{
-						enum: textMateScopes
+						enum: textMAteScopes
 					},
 					{
 						type: 'string'
 					},
 					{
-						type: 'array',
+						type: 'ArrAy',
 						items: {
-							enum: textMateScopes
+							enum: textMAteScopes
 						}
 					},
 					{
-						type: 'array',
+						type: 'ArrAy',
 						items: {
 							type: 'string'
 						}
@@ -197,50 +197,50 @@ const textmateColorSchema: IJSONSchema = {
 		required: [
 			'settings', 'scope'
 		],
-		additionalProperties: false
+		AdditionAlProperties: fAlse
 	}
 };
 
-export const colorThemeSchemaId = 'vscode://schemas/color-theme';
+export const colorThemeSchemAId = 'vscode://schemAs/color-theme';
 
-const colorThemeSchema: IJSONSchema = {
+const colorThemeSchemA: IJSONSchemA = {
 	type: 'object',
-	allowComments: true,
-	allowTrailingCommas: true,
+	AllowComments: true,
+	AllowTrAilingCommAs: true,
 	properties: {
 		colors: {
-			description: nls.localize('schema.workbenchColors', 'Colors in the workbench'),
-			$ref: workbenchColorsSchemaId,
-			additionalProperties: false
+			description: nls.locAlize('schemA.workbenchColors', 'Colors in the workbench'),
+			$ref: workbenchColorsSchemAId,
+			AdditionAlProperties: fAlse
 		},
 		tokenColors: {
-			anyOf: [{
+			AnyOf: [{
 				type: 'string',
-				description: nls.localize('schema.tokenColors.path', 'Path to a tmTheme file (relative to the current file).')
+				description: nls.locAlize('schemA.tokenColors.pAth', 'PAth to A tmTheme file (relAtive to the current file).')
 			},
 			{
-				description: nls.localize('schema.colors', 'Colors for syntax highlighting'),
-				$ref: textmateColorsSchemaId
+				description: nls.locAlize('schemA.colors', 'Colors for syntAx highlighting'),
+				$ref: textmAteColorsSchemAId
 			}
 			]
 		},
-		semanticHighlighting: {
-			type: 'boolean',
-			description: nls.localize('schema.supportsSemanticHighlighting', 'Whether semantic highlighting should be enabled for this theme.')
+		semAnticHighlighting: {
+			type: 'booleAn',
+			description: nls.locAlize('schemA.supportsSemAnticHighlighting', 'Whether semAntic highlighting should be enAbled for this theme.')
 		},
-		semanticTokenColors: {
+		semAnticTokenColors: {
 			type: 'object',
-			description: nls.localize('schema.semanticTokenColors', 'Colors for semantic tokens'),
-			$ref: tokenStylingSchemaId
+			description: nls.locAlize('schemA.semAnticTokenColors', 'Colors for semAntic tokens'),
+			$ref: tokenStylingSchemAId
 		}
 	}
 };
 
 
 
-export function registerColorThemeSchemas() {
-	let schemaRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
-	schemaRegistry.registerSchema(colorThemeSchemaId, colorThemeSchema);
-	schemaRegistry.registerSchema(textmateColorsSchemaId, textmateColorSchema);
+export function registerColorThemeSchemAs() {
+	let schemARegistry = Registry.As<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+	schemARegistry.registerSchemA(colorThemeSchemAId, colorThemeSchemA);
+	schemARegistry.registerSchemA(textmAteColorsSchemAId, textmAteColorSchemA);
 }
 

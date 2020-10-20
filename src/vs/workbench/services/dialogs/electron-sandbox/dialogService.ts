@@ -1,238 +1,238 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import Severity from 'vs/base/common/severity';
-import { isLinux, isWindows } from 'vs/base/common/platform';
-import { mnemonicButtonLabel } from 'vs/base/common/labels';
-import { IDialogService, IConfirmation, IConfirmationResult, IDialogOptions, IShowResult } from 'vs/platform/dialogs/common/dialogs';
-import { DialogService as HTMLDialogService } from 'vs/workbench/services/dialogs/browser/dialogService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { MessageBoxOptions } from 'vs/base/parts/sandbox/common/electronTypes';
-import { fromNow } from 'vs/base/common/date';
-import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
+import * As nls from 'vs/nls';
+import Severity from 'vs/bAse/common/severity';
+import { isLinux, isWindows } from 'vs/bAse/common/plAtform';
+import { mnemonicButtonLAbel } from 'vs/bAse/common/lAbels';
+import { IDiAlogService, IConfirmAtion, IConfirmAtionResult, IDiAlogOptions, IShowResult } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { DiAlogService As HTMLDiAlogService } from 'vs/workbench/services/diAlogs/browser/diAlogService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILAyoutService } from 'vs/plAtform/lAyout/browser/lAyoutService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { MessAgeBoxOptions } from 'vs/bAse/pArts/sAndbox/common/electronTypes';
+import { fromNow } from 'vs/bAse/common/dAte';
+import { process } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
 
-interface IMassagedMessageBoxOptions {
-
-	/**
-	 * OS massaged message box options.
-	 */
-	options: MessageBoxOptions;
+interfAce IMAssAgedMessAgeBoxOptions {
 
 	/**
-	 * Since the massaged result of the message box options potentially
-	 * changes the order of buttons, we have to keep a map of these
-	 * changes so that we can still return the correct index to the caller.
+	 * OS mAssAged messAge box options.
 	 */
-	buttonIndexMap: number[];
+	options: MessAgeBoxOptions;
+
+	/**
+	 * Since the mAssAged result of the messAge box options potentiAlly
+	 * chAnges the order of buttons, we hAve to keep A mAp of these
+	 * chAnges so thAt we cAn still return the correct index to the cAller.
+	 */
+	buttonIndexMAp: number[];
 }
 
-export class DialogService implements IDialogService {
+export clAss DiAlogService implements IDiAlogService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private nativeImpl: IDialogService;
-	private customImpl: IDialogService;
+	privAte nAtiveImpl: IDiAlogService;
+	privAte customImpl: IDiAlogService;
 
 	constructor(
-		@IConfigurationService private configurationService: IConfigurationService,
+		@IConfigurAtionService privAte configurAtionService: IConfigurAtionService,
 		@ILogService logService: ILogService,
-		@ILayoutService layoutService: ILayoutService,
+		@ILAyoutService lAyoutService: ILAyoutService,
 		@IThemeService themeService: IThemeService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IProductService productService: IProductService,
-		@IClipboardService clipboardService: IClipboardService,
-		@INativeHostService nativeHostService: INativeHostService
+		@IClipboArdService clipboArdService: IClipboArdService,
+		@INAtiveHostService nAtiveHostService: INAtiveHostService
 	) {
-		this.customImpl = new HTMLDialogService(logService, layoutService, themeService, keybindingService, productService, clipboardService);
-		this.nativeImpl = new NativeDialogService(logService, nativeHostService, productService, clipboardService);
+		this.customImpl = new HTMLDiAlogService(logService, lAyoutService, themeService, keybindingService, productService, clipboArdService);
+		this.nAtiveImpl = new NAtiveDiAlogService(logService, nAtiveHostService, productService, clipboArdService);
 	}
 
-	private get useCustomDialog(): boolean {
-		return this.configurationService.getValue('window.dialogStyle') === 'custom';
+	privAte get useCustomDiAlog(): booleAn {
+		return this.configurAtionService.getVAlue('window.diAlogStyle') === 'custom';
 	}
 
-	confirm(confirmation: IConfirmation): Promise<IConfirmationResult> {
-		if (this.useCustomDialog) {
-			return this.customImpl.confirm(confirmation);
+	confirm(confirmAtion: IConfirmAtion): Promise<IConfirmAtionResult> {
+		if (this.useCustomDiAlog) {
+			return this.customImpl.confirm(confirmAtion);
 		}
 
-		return this.nativeImpl.confirm(confirmation);
+		return this.nAtiveImpl.confirm(confirmAtion);
 	}
 
-	show(severity: Severity, message: string, buttons: string[], options?: IDialogOptions | undefined): Promise<IShowResult> {
-		if (this.useCustomDialog) {
-			return this.customImpl.show(severity, message, buttons, options);
+	show(severity: Severity, messAge: string, buttons: string[], options?: IDiAlogOptions | undefined): Promise<IShowResult> {
+		if (this.useCustomDiAlog) {
+			return this.customImpl.show(severity, messAge, buttons, options);
 		}
 
-		return this.nativeImpl.show(severity, message, buttons, options);
+		return this.nAtiveImpl.show(severity, messAge, buttons, options);
 	}
 
-	about(): Promise<void> {
-		return this.nativeImpl.about();
+	About(): Promise<void> {
+		return this.nAtiveImpl.About();
 	}
 }
 
-class NativeDialogService implements IDialogService {
+clAss NAtiveDiAlogService implements IDiAlogService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@ILogService private readonly logService: ILogService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IProductService private readonly productService: IProductService,
-		@IClipboardService private readonly clipboardService: IClipboardService
+		@ILogService privAte reAdonly logService: ILogService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IClipboArdService privAte reAdonly clipboArdService: IClipboArdService
 	) {
 	}
 
-	async confirm(confirmation: IConfirmation): Promise<IConfirmationResult> {
-		this.logService.trace('DialogService#confirm', confirmation.message);
+	Async confirm(confirmAtion: IConfirmAtion): Promise<IConfirmAtionResult> {
+		this.logService.trAce('DiAlogService#confirm', confirmAtion.messAge);
 
-		const { options, buttonIndexMap } = this.massageMessageBoxOptions(this.getConfirmOptions(confirmation));
+		const { options, buttonIndexMAp } = this.mAssAgeMessAgeBoxOptions(this.getConfirmOptions(confirmAtion));
 
-		const result = await this.nativeHostService.showMessageBox(options);
+		const result = AwAit this.nAtiveHostService.showMessAgeBox(options);
 		return {
-			confirmed: buttonIndexMap[result.response] === 0 ? true : false,
+			confirmed: buttonIndexMAp[result.response] === 0 ? true : fAlse,
 			checkboxChecked: result.checkboxChecked
 		};
 	}
 
-	private getConfirmOptions(confirmation: IConfirmation): MessageBoxOptions {
+	privAte getConfirmOptions(confirmAtion: IConfirmAtion): MessAgeBoxOptions {
 		const buttons: string[] = [];
-		if (confirmation.primaryButton) {
-			buttons.push(confirmation.primaryButton);
+		if (confirmAtion.primAryButton) {
+			buttons.push(confirmAtion.primAryButton);
 		} else {
-			buttons.push(nls.localize({ key: 'yesButton', comment: ['&& denotes a mnemonic'] }, "&&Yes"));
+			buttons.push(nls.locAlize({ key: 'yesButton', comment: ['&& denotes A mnemonic'] }, "&&Yes"));
 		}
 
-		if (confirmation.secondaryButton) {
-			buttons.push(confirmation.secondaryButton);
-		} else if (typeof confirmation.secondaryButton === 'undefined') {
-			buttons.push(nls.localize('cancelButton', "Cancel"));
+		if (confirmAtion.secondAryButton) {
+			buttons.push(confirmAtion.secondAryButton);
+		} else if (typeof confirmAtion.secondAryButton === 'undefined') {
+			buttons.push(nls.locAlize('cAncelButton', "CAncel"));
 		}
 
-		const opts: MessageBoxOptions = {
-			title: confirmation.title,
-			message: confirmation.message,
+		const opts: MessAgeBoxOptions = {
+			title: confirmAtion.title,
+			messAge: confirmAtion.messAge,
 			buttons,
-			cancelId: 1
+			cAncelId: 1
 		};
 
-		if (confirmation.detail) {
-			opts.detail = confirmation.detail;
+		if (confirmAtion.detAil) {
+			opts.detAil = confirmAtion.detAil;
 		}
 
-		if (confirmation.type) {
-			opts.type = confirmation.type;
+		if (confirmAtion.type) {
+			opts.type = confirmAtion.type;
 		}
 
-		if (confirmation.checkbox) {
-			opts.checkboxLabel = confirmation.checkbox.label;
-			opts.checkboxChecked = confirmation.checkbox.checked;
+		if (confirmAtion.checkbox) {
+			opts.checkboxLAbel = confirmAtion.checkbox.lAbel;
+			opts.checkboxChecked = confirmAtion.checkbox.checked;
 		}
 
 		return opts;
 	}
 
-	async show(severity: Severity, message: string, buttons: string[], dialogOptions?: IDialogOptions): Promise<IShowResult> {
-		this.logService.trace('DialogService#show', message);
+	Async show(severity: Severity, messAge: string, buttons: string[], diAlogOptions?: IDiAlogOptions): Promise<IShowResult> {
+		this.logService.trAce('DiAlogService#show', messAge);
 
-		const { options, buttonIndexMap } = this.massageMessageBoxOptions({
-			message,
+		const { options, buttonIndexMAp } = this.mAssAgeMessAgeBoxOptions({
+			messAge,
 			buttons,
-			type: (severity === Severity.Info) ? 'question' : (severity === Severity.Error) ? 'error' : (severity === Severity.Warning) ? 'warning' : 'none',
-			cancelId: dialogOptions ? dialogOptions.cancelId : undefined,
-			detail: dialogOptions ? dialogOptions.detail : undefined,
-			checkboxLabel: dialogOptions && dialogOptions.checkbox ? dialogOptions.checkbox.label : undefined,
-			checkboxChecked: dialogOptions && dialogOptions.checkbox ? dialogOptions.checkbox.checked : undefined
+			type: (severity === Severity.Info) ? 'question' : (severity === Severity.Error) ? 'error' : (severity === Severity.WArning) ? 'wArning' : 'none',
+			cAncelId: diAlogOptions ? diAlogOptions.cAncelId : undefined,
+			detAil: diAlogOptions ? diAlogOptions.detAil : undefined,
+			checkboxLAbel: diAlogOptions && diAlogOptions.checkbox ? diAlogOptions.checkbox.lAbel : undefined,
+			checkboxChecked: diAlogOptions && diAlogOptions.checkbox ? diAlogOptions.checkbox.checked : undefined
 		});
 
-		const result = await this.nativeHostService.showMessageBox(options);
-		return { choice: buttonIndexMap[result.response], checkboxChecked: result.checkboxChecked };
+		const result = AwAit this.nAtiveHostService.showMessAgeBox(options);
+		return { choice: buttonIndexMAp[result.response], checkboxChecked: result.checkboxChecked };
 	}
 
-	private massageMessageBoxOptions(options: MessageBoxOptions): IMassagedMessageBoxOptions {
-		let buttonIndexMap = (options.buttons || []).map((button, index) => index);
-		let buttons = (options.buttons || []).map(button => mnemonicButtonLabel(button));
-		let cancelId = options.cancelId;
+	privAte mAssAgeMessAgeBoxOptions(options: MessAgeBoxOptions): IMAssAgedMessAgeBoxOptions {
+		let buttonIndexMAp = (options.buttons || []).mAp((button, index) => index);
+		let buttons = (options.buttons || []).mAp(button => mnemonicButtonLAbel(button));
+		let cAncelId = options.cAncelId;
 
 		// Linux: order of buttons is reverse
-		// macOS: also reverse, but the OS handles this for us!
+		// mAcOS: Also reverse, but the OS hAndles this for us!
 		if (isLinux) {
 			buttons = buttons.reverse();
-			buttonIndexMap = buttonIndexMap.reverse();
+			buttonIndexMAp = buttonIndexMAp.reverse();
 		}
 
-		// Default Button (always first one)
-		options.defaultId = buttonIndexMap[0];
+		// DefAult Button (AlwAys first one)
+		options.defAultId = buttonIndexMAp[0];
 
-		// Cancel Button
-		if (typeof cancelId === 'number') {
+		// CAncel Button
+		if (typeof cAncelId === 'number') {
 
-			// Ensure the cancelId is the correct one from our mapping
-			cancelId = buttonIndexMap[cancelId];
+			// Ensure the cAncelId is the correct one from our mApping
+			cAncelId = buttonIndexMAp[cAncelId];
 
-			// macOS/Linux: the cancel button should always be to the left of the primary action
-			// if we see more than 2 buttons, move the cancel one to the left of the primary
-			if (!isWindows && buttons.length > 2 && cancelId !== 1) {
-				const cancelButton = buttons[cancelId];
-				buttons.splice(cancelId, 1);
-				buttons.splice(1, 0, cancelButton);
+			// mAcOS/Linux: the cAncel button should AlwAys be to the left of the primAry Action
+			// if we see more thAn 2 buttons, move the cAncel one to the left of the primAry
+			if (!isWindows && buttons.length > 2 && cAncelId !== 1) {
+				const cAncelButton = buttons[cAncelId];
+				buttons.splice(cAncelId, 1);
+				buttons.splice(1, 0, cAncelButton);
 
-				const cancelButtonIndex = buttonIndexMap[cancelId];
-				buttonIndexMap.splice(cancelId, 1);
-				buttonIndexMap.splice(1, 0, cancelButtonIndex);
+				const cAncelButtonIndex = buttonIndexMAp[cAncelId];
+				buttonIndexMAp.splice(cAncelId, 1);
+				buttonIndexMAp.splice(1, 0, cAncelButtonIndex);
 
-				cancelId = 1;
+				cAncelId = 1;
 			}
 		}
 
 		options.buttons = buttons;
-		options.cancelId = cancelId;
+		options.cAncelId = cAncelId;
 		options.noLink = true;
-		options.title = options.title || this.productService.nameLong;
+		options.title = options.title || this.productService.nAmeLong;
 
-		return { options, buttonIndexMap };
+		return { options, buttonIndexMAp };
 	}
 
-	async about(): Promise<void> {
+	Async About(): Promise<void> {
 		let version = this.productService.version;
-		if (this.productService.target) {
-			version = `${version} (${this.productService.target} setup)`;
+		if (this.productService.tArget) {
+			version = `${version} (${this.productService.tArget} setup)`;
 		}
 
-		const isSnap = process.platform === 'linux' && process.env.SNAP && process.env.SNAP_REVISION;
-		const osProps = await this.nativeHostService.getOSProperties();
+		const isSnAp = process.plAtform === 'linux' && process.env.SNAP && process.env.SNAP_REVISION;
+		const osProps = AwAit this.nAtiveHostService.getOSProperties();
 
-		const detailString = (useAgo: boolean): string => {
-			return nls.localize('aboutDetail',
-				"Version: {0}\nCommit: {1}\nDate: {2}\nElectron: {3}\nChrome: {4}\nNode.js: {5}\nV8: {6}\nOS: {7}",
+		const detAilString = (useAgo: booleAn): string => {
+			return nls.locAlize('AboutDetAil',
+				"Version: {0}\nCommit: {1}\nDAte: {2}\nElectron: {3}\nChrome: {4}\nNode.js: {5}\nV8: {6}\nOS: {7}",
 				version,
 				this.productService.commit || 'Unknown',
-				this.productService.date ? `${this.productService.date}${useAgo ? ' (' + fromNow(new Date(this.productService.date), true) + ')' : ''}` : 'Unknown',
+				this.productService.dAte ? `${this.productService.dAte}${useAgo ? ' (' + fromNow(new DAte(this.productService.dAte), true) + ')' : ''}` : 'Unknown',
 				process.versions['electron'],
 				process.versions['chrome'],
 				process.versions['node'],
 				process.versions['v8'],
-				`${osProps.type} ${osProps.arch} ${osProps.release}${isSnap ? ' snap' : ''}`
+				`${osProps.type} ${osProps.Arch} ${osProps.releAse}${isSnAp ? ' snAp' : ''}`
 			);
 		};
 
-		const detail = detailString(true);
-		const detailToCopy = detailString(false);
+		const detAil = detAilString(true);
+		const detAilToCopy = detAilString(fAlse);
 
-		const ok = nls.localize('okButton', "OK");
-		const copy = mnemonicButtonLabel(nls.localize({ key: 'copy', comment: ['&& denotes a mnemonic'] }, "&&Copy"));
+		const ok = nls.locAlize('okButton', "OK");
+		const copy = mnemonicButtonLAbel(nls.locAlize({ key: 'copy', comment: ['&& denotes A mnemonic'] }, "&&Copy"));
 		let buttons: string[];
 		if (isLinux) {
 			buttons = [copy, ok];
@@ -240,21 +240,21 @@ class NativeDialogService implements IDialogService {
 			buttons = [ok, copy];
 		}
 
-		const result = await this.nativeHostService.showMessageBox({
-			title: this.productService.nameLong,
+		const result = AwAit this.nAtiveHostService.showMessAgeBox({
+			title: this.productService.nAmeLong,
 			type: 'info',
-			message: this.productService.nameLong,
-			detail: `\n${detail}`,
+			messAge: this.productService.nAmeLong,
+			detAil: `\n${detAil}`,
 			buttons,
 			noLink: true,
-			defaultId: buttons.indexOf(ok),
-			cancelId: buttons.indexOf(ok)
+			defAultId: buttons.indexOf(ok),
+			cAncelId: buttons.indexOf(ok)
 		});
 
 		if (buttons[result.response] === copy) {
-			this.clipboardService.writeText(detailToCopy);
+			this.clipboArdService.writeText(detAilToCopy);
 		}
 	}
 }
 
-registerSingleton(IDialogService, DialogService, true);
+registerSingleton(IDiAlogService, DiAlogService, true);

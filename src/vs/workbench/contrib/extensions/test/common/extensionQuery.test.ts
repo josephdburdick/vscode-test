@@ -1,149 +1,149 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { Query } from 'vs/workbench/contrib/extensions/common/extensionQuery';
 
 suite('Extension query', () => {
-	test('parse', () => {
-		let query = Query.parse('');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, '');
+	test('pArse', () => {
+		let query = Query.pArse('');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, '');
 
-		query = Query.parse('hello');
-		assert.equal(query.value, 'hello');
-		assert.equal(query.sortBy, '');
+		query = Query.pArse('hello');
+		Assert.equAl(query.vAlue, 'hello');
+		Assert.equAl(query.sortBy, '');
 
-		query = Query.parse('   hello world ');
-		assert.equal(query.value, 'hello world');
-		assert.equal(query.sortBy, '');
+		query = Query.pArse('   hello world ');
+		Assert.equAl(query.vAlue, 'hello world');
+		Assert.equAl(query.sortBy, '');
 
-		query = Query.parse('@sort');
-		assert.equal(query.value, '@sort');
-		assert.equal(query.sortBy, '');
+		query = Query.pArse('@sort');
+		Assert.equAl(query.vAlue, '@sort');
+		Assert.equAl(query.sortBy, '');
 
-		query = Query.parse('@sort:');
-		assert.equal(query.value, '@sort:');
-		assert.equal(query.sortBy, '');
+		query = Query.pArse('@sort:');
+		Assert.equAl(query.vAlue, '@sort:');
+		Assert.equAl(query.sortBy, '');
 
-		query = Query.parse('  @sort:  ');
-		assert.equal(query.value, '@sort:');
-		assert.equal(query.sortBy, '');
+		query = Query.pArse('  @sort:  ');
+		Assert.equAl(query.vAlue, '@sort:');
+		Assert.equAl(query.sortBy, '');
 
-		query = Query.parse('@sort:installs');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('@sort:instAlls');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('   @sort:installs   ');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('   @sort:instAlls   ');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('@sort:installs-');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('@sort:instAlls-');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('@sort:installs-foo');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('@sort:instAlls-foo');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('@sort:installs');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('@sort:instAlls');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('@sort:installs');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('@sort:instAlls');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('vs @sort:installs');
-		assert.equal(query.value, 'vs');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('vs @sort:instAlls');
+		Assert.equAl(query.vAlue, 'vs');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('vs @sort:installs code');
-		assert.equal(query.value, 'vs  code');
-		assert.equal(query.sortBy, 'installs');
+		query = Query.pArse('vs @sort:instAlls code');
+		Assert.equAl(query.vAlue, 'vs  code');
+		Assert.equAl(query.sortBy, 'instAlls');
 
-		query = Query.parse('@sort:installs @sort:ratings');
-		assert.equal(query.value, '');
-		assert.equal(query.sortBy, 'ratings');
+		query = Query.pArse('@sort:instAlls @sort:rAtings');
+		Assert.equAl(query.vAlue, '');
+		Assert.equAl(query.sortBy, 'rAtings');
 	});
 
 	test('toString', () => {
 		let query = new Query('hello', '', '');
-		assert.equal(query.toString(), 'hello');
+		Assert.equAl(query.toString(), 'hello');
 
 		query = new Query('hello world', '', '');
-		assert.equal(query.toString(), 'hello world');
+		Assert.equAl(query.toString(), 'hello world');
 
 		query = new Query('  hello    ', '', '');
-		assert.equal(query.toString(), 'hello');
+		Assert.equAl(query.toString(), 'hello');
 
-		query = new Query('', 'installs', '');
-		assert.equal(query.toString(), '@sort:installs');
+		query = new Query('', 'instAlls', '');
+		Assert.equAl(query.toString(), '@sort:instAlls');
 
-		query = new Query('', 'installs', '');
-		assert.equal(query.toString(), '@sort:installs');
+		query = new Query('', 'instAlls', '');
+		Assert.equAl(query.toString(), '@sort:instAlls');
 
-		query = new Query('', 'installs', '');
-		assert.equal(query.toString(), '@sort:installs');
+		query = new Query('', 'instAlls', '');
+		Assert.equAl(query.toString(), '@sort:instAlls');
 
-		query = new Query('hello', 'installs', '');
-		assert.equal(query.toString(), 'hello @sort:installs');
+		query = new Query('hello', 'instAlls', '');
+		Assert.equAl(query.toString(), 'hello @sort:instAlls');
 
-		query = new Query('  hello      ', 'installs', '');
-		assert.equal(query.toString(), 'hello @sort:installs');
+		query = new Query('  hello      ', 'instAlls', '');
+		Assert.equAl(query.toString(), 'hello @sort:instAlls');
 	});
 
-	test('isValid', () => {
+	test('isVAlid', () => {
 		let query = new Query('hello', '', '');
-		assert(query.isValid());
+		Assert(query.isVAlid());
 
 		query = new Query('hello world', '', '');
-		assert(query.isValid());
+		Assert(query.isVAlid());
 
 		query = new Query('  hello    ', '', '');
-		assert(query.isValid());
+		Assert(query.isVAlid());
 
-		query = new Query('', 'installs', '');
-		assert(query.isValid());
+		query = new Query('', 'instAlls', '');
+		Assert(query.isVAlid());
 
-		query = new Query('', 'installs', '');
-		assert(query.isValid());
+		query = new Query('', 'instAlls', '');
+		Assert(query.isVAlid());
 
-		query = new Query('', 'installs', '');
-		assert(query.isValid());
+		query = new Query('', 'instAlls', '');
+		Assert(query.isVAlid());
 
-		query = new Query('', 'installs', '');
-		assert(query.isValid());
+		query = new Query('', 'instAlls', '');
+		Assert(query.isVAlid());
 
-		query = new Query('hello', 'installs', '');
-		assert(query.isValid());
+		query = new Query('hello', 'instAlls', '');
+		Assert(query.isVAlid());
 
-		query = new Query('  hello      ', 'installs', '');
-		assert(query.isValid());
+		query = new Query('  hello      ', 'instAlls', '');
+		Assert(query.isVAlid());
 	});
 
-	test('equals', () => {
+	test('equAls', () => {
 		let query1 = new Query('hello', '', '');
 		let query2 = new Query('hello', '', '');
-		assert(query1.equals(query2));
+		Assert(query1.equAls(query2));
 
 		query2 = new Query('hello world', '', '');
-		assert(!query1.equals(query2));
+		Assert(!query1.equAls(query2));
 
-		query2 = new Query('hello', 'installs', '');
-		assert(!query1.equals(query2));
+		query2 = new Query('hello', 'instAlls', '');
+		Assert(!query1.equAls(query2));
 
-		query2 = new Query('hello', 'installs', '');
-		assert(!query1.equals(query2));
+		query2 = new Query('hello', 'instAlls', '');
+		Assert(!query1.equAls(query2));
 	});
 
-	test('autocomplete', () => {
-		Query.suggestions('@sort:in').some(x => x === '@sort:installs ');
-		Query.suggestions('@sort:installs').every(x => x !== '@sort:rating ');
+	test('Autocomplete', () => {
+		Query.suggestions('@sort:in').some(x => x === '@sort:instAlls ');
+		Query.suggestions('@sort:instAlls').every(x => x !== '@sort:rAting ');
 
-		Query.suggestions('@category:blah').some(x => x === '@category:"extension packs" ');
-		Query.suggestions('@category:"extension packs"').every(x => x !== '@category:formatters ');
+		Query.suggestions('@cAtegory:blAh').some(x => x === '@cAtegory:"extension pAcks" ');
+		Query.suggestions('@cAtegory:"extension pAcks"').every(x => x !== '@cAtegory:formAtters ');
 	});
 });

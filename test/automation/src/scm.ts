@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Viewlet } from './viewlet';
@@ -8,72 +8,72 @@ import { IElement } from '../src/driver';
 import { findElement, findElements, Code } from './code';
 
 const VIEWLET = 'div[id="workbench.view.scm"]';
-const SCM_INPUT = `${VIEWLET} .scm-editor textarea`;
-const SCM_RESOURCE = `${VIEWLET} .monaco-list-row .resource`;
-const REFRESH_COMMAND = `div[id="workbench.parts.sidebar"] .actions-container a.action-label[title="Refresh"]`;
-const COMMIT_COMMAND = `div[id="workbench.parts.sidebar"] .actions-container a.action-label[title="Commit"]`;
-const SCM_RESOURCE_CLICK = (name: string) => `${SCM_RESOURCE} .monaco-icon-label[title*="${name}"] .label-name`;
-const SCM_RESOURCE_ACTION_CLICK = (name: string, actionName: string) => `${SCM_RESOURCE} .monaco-icon-label[title*="${name}"] .actions .action-label[title="${actionName}"]`;
+const SCM_INPUT = `${VIEWLET} .scm-editor textAreA`;
+const SCM_RESOURCE = `${VIEWLET} .monAco-list-row .resource`;
+const REFRESH_COMMAND = `div[id="workbench.pArts.sidebAr"] .Actions-contAiner A.Action-lAbel[title="Refresh"]`;
+const COMMIT_COMMAND = `div[id="workbench.pArts.sidebAr"] .Actions-contAiner A.Action-lAbel[title="Commit"]`;
+const SCM_RESOURCE_CLICK = (nAme: string) => `${SCM_RESOURCE} .monAco-icon-lAbel[title*="${nAme}"] .lAbel-nAme`;
+const SCM_RESOURCE_ACTION_CLICK = (nAme: string, ActionNAme: string) => `${SCM_RESOURCE} .monAco-icon-lAbel[title*="${nAme}"] .Actions .Action-lAbel[title="${ActionNAme}"]`;
 
-interface Change {
-	name: string;
+interfAce ChAnge {
+	nAme: string;
 	type: string;
-	actions: string[];
+	Actions: string[];
 }
 
-function toChange(element: IElement): Change {
-	const name = findElement(element, e => /\blabel-name\b/.test(e.className))!;
-	const type = element.attributes['data-tooltip'] || '';
+function toChAnge(element: IElement): ChAnge {
+	const nAme = findElement(element, e => /\blAbel-nAme\b/.test(e.clAssNAme))!;
+	const type = element.Attributes['dAtA-tooltip'] || '';
 
-	const actionElementList = findElements(element, e => /\baction-label\b/.test(e.className));
-	const actions = actionElementList.map(e => e.attributes['title']);
+	const ActionElementList = findElements(element, e => /\bAction-lAbel\b/.test(e.clAssNAme));
+	const Actions = ActionElementList.mAp(e => e.Attributes['title']);
 
 	return {
-		name: name.textContent || '',
+		nAme: nAme.textContent || '',
 		type,
-		actions
+		Actions
 	};
 }
 
 
-export class SCM extends Viewlet {
+export clAss SCM extends Viewlet {
 
 	constructor(code: Code) {
 		super(code);
 	}
 
-	async openSCMViewlet(): Promise<any> {
-		await this.code.dispatchKeybinding('ctrl+shift+g');
-		await this.code.waitForElement(SCM_INPUT);
+	Async openSCMViewlet(): Promise<Any> {
+		AwAit this.code.dispAtchKeybinding('ctrl+shift+g');
+		AwAit this.code.wAitForElement(SCM_INPUT);
 	}
 
-	async waitForChange(name: string, type?: string): Promise<void> {
-		const func = (change: Change) => change.name === name && (!type || change.type === type);
-		await this.code.waitForElements(SCM_RESOURCE, true, elements => elements.some(e => func(toChange(e))));
+	Async wAitForChAnge(nAme: string, type?: string): Promise<void> {
+		const func = (chAnge: ChAnge) => chAnge.nAme === nAme && (!type || chAnge.type === type);
+		AwAit this.code.wAitForElements(SCM_RESOURCE, true, elements => elements.some(e => func(toChAnge(e))));
 	}
 
-	async refreshSCMViewlet(): Promise<any> {
-		await this.code.waitAndClick(REFRESH_COMMAND);
+	Async refreshSCMViewlet(): Promise<Any> {
+		AwAit this.code.wAitAndClick(REFRESH_COMMAND);
 	}
 
-	async openChange(name: string): Promise<void> {
-		await this.code.waitAndClick(SCM_RESOURCE_CLICK(name));
+	Async openChAnge(nAme: string): Promise<void> {
+		AwAit this.code.wAitAndClick(SCM_RESOURCE_CLICK(nAme));
 	}
 
-	async stage(name: string): Promise<void> {
-		await this.code.waitAndClick(SCM_RESOURCE_ACTION_CLICK(name, 'Stage Changes'));
-		await this.waitForChange(name, 'Index Modified');
+	Async stAge(nAme: string): Promise<void> {
+		AwAit this.code.wAitAndClick(SCM_RESOURCE_ACTION_CLICK(nAme, 'StAge ChAnges'));
+		AwAit this.wAitForChAnge(nAme, 'Index Modified');
 	}
 
-	async unstage(name: string): Promise<void> {
-		await this.code.waitAndClick(SCM_RESOURCE_ACTION_CLICK(name, 'Unstage Changes'));
-		await this.waitForChange(name, 'Modified');
+	Async unstAge(nAme: string): Promise<void> {
+		AwAit this.code.wAitAndClick(SCM_RESOURCE_ACTION_CLICK(nAme, 'UnstAge ChAnges'));
+		AwAit this.wAitForChAnge(nAme, 'Modified');
 	}
 
-	async commit(message: string): Promise<void> {
-		await this.code.waitAndClick(SCM_INPUT);
-		await this.code.waitForActiveElement(SCM_INPUT);
-		await this.code.waitForSetValue(SCM_INPUT, message);
-		await this.code.waitAndClick(COMMIT_COMMAND);
+	Async commit(messAge: string): Promise<void> {
+		AwAit this.code.wAitAndClick(SCM_INPUT);
+		AwAit this.code.wAitForActiveElement(SCM_INPUT);
+		AwAit this.code.wAitForSetVAlue(SCM_INPUT, messAge);
+		AwAit this.code.wAitAndClick(COMMIT_COMMAND);
 	}
 }

@@ -1,105 +1,105 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as paths from 'vs/base/common/path';
-import { IExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/common/externalTerminal';
-import { MenuId, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED } from 'vs/workbench/contrib/terminal/common/terminal';
+import * As nls from 'vs/nls';
+import * As pAths from 'vs/bAse/common/pAth';
+import { IExternAlTerminAlService } from 'vs/workbench/contrib/externAlTerminAl/common/externAlTerminAl';
+import { MenuId, MenuRegistry } from 'vs/plAtform/Actions/common/Actions';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import { KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED } from 'vs/workbench/contrib/terminAl/common/terminAl';
 import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { Schemas } from 'vs/base/common/network';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
-import { WindowsExternalTerminalService, MacExternalTerminalService, LinuxExternalTerminalService } from 'vs/workbench/contrib/externalTerminal/node/externalTerminalService';
-import { IConfigurationRegistry, Extensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { isWindows, isMacintosh, isLinux } from 'vs/base/common/platform';
-import { DEFAULT_TERMINAL_OSX } from 'vs/workbench/contrib/externalTerminal/node/externalTerminal';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
+import { WindowsExternAlTerminAlService, MAcExternAlTerminAlService, LinuxExternAlTerminAlService } from 'vs/workbench/contrib/externAlTerminAl/node/externAlTerminAlService';
+import { IConfigurAtionRegistry, Extensions, ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { isWindows, isMAcintosh, isLinux } from 'vs/bAse/common/plAtform';
+import { DEFAULT_TERMINAL_OSX } from 'vs/workbench/contrib/externAlTerminAl/node/externAlTerminAl';
 
-const OPEN_NATIVE_CONSOLE_COMMAND_ID = 'workbench.action.terminal.openNativeConsole';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+const OPEN_NATIVE_CONSOLE_COMMAND_ID = 'workbench.Action.terminAl.openNAtiveConsole';
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: OPEN_NATIVE_CONSOLE_COMMAND_ID,
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_C,
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_C,
 	when: KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED,
 	weight: KeybindingWeight.WorkbenchContrib,
-	handler: async (accessor) => {
-		const historyService = accessor.get(IHistoryService);
-		// Open external terminal in local workspaces
-		const terminalService = accessor.get(IExternalTerminalService);
-		const root = historyService.getLastActiveWorkspaceRoot(Schemas.file);
+	hAndler: Async (Accessor) => {
+		const historyService = Accessor.get(IHistoryService);
+		// Open externAl terminAl in locAl workspAces
+		const terminAlService = Accessor.get(IExternAlTerminAlService);
+		const root = historyService.getLAstActiveWorkspAceRoot(SchemAs.file);
 		if (root) {
-			terminalService.openTerminal(root.fsPath);
+			terminAlService.openTerminAl(root.fsPAth);
 		} else {
 			// Opens current file's folder, if no folder is open in editor
-			const activeFile = historyService.getLastActiveFile(Schemas.file);
-			if (activeFile) {
-				terminalService.openTerminal(paths.dirname(activeFile.fsPath));
+			const ActiveFile = historyService.getLAstActiveFile(SchemAs.file);
+			if (ActiveFile) {
+				terminAlService.openTerminAl(pAths.dirnAme(ActiveFile.fsPAth));
 			} else {
-				const pathService = accessor.get(IPathService);
-				const userHome = await pathService.userHome();
-				terminalService.openTerminal(userHome.fsPath);
+				const pAthService = Accessor.get(IPAthService);
+				const userHome = AwAit pAthService.userHome();
+				terminAlService.openTerminAl(userHome.fsPAth);
 			}
 		}
 	}
 });
 
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-	command: {
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+	commAnd: {
 		id: OPEN_NATIVE_CONSOLE_COMMAND_ID,
-		title: { value: nls.localize('globalConsoleAction', "Open New External Terminal"), original: 'Open New External Terminal' }
+		title: { vAlue: nls.locAlize('globAlConsoleAction', "Open New ExternAl TerminAl"), originAl: 'Open New ExternAl TerminAl' }
 	}
 });
 
 if (isWindows) {
-	registerSingleton(IExternalTerminalService, WindowsExternalTerminalService, true);
-} else if (isMacintosh) {
-	registerSingleton(IExternalTerminalService, MacExternalTerminalService, true);
+	registerSingleton(IExternAlTerminAlService, WindowsExternAlTerminAlService, true);
+} else if (isMAcintosh) {
+	registerSingleton(IExternAlTerminAlService, MAcExternAlTerminAlService, true);
 } else if (isLinux) {
-	registerSingleton(IExternalTerminalService, LinuxExternalTerminalService, true);
+	registerSingleton(IExternAlTerminAlService, LinuxExternAlTerminAlService, true);
 }
 
-LinuxExternalTerminalService.getDefaultTerminalLinuxReady().then(defaultTerminalLinux => {
-	let configurationRegistry = Registry.as<IConfigurationRegistry>(Extensions.Configuration);
-	configurationRegistry.registerConfiguration({
-		id: 'externalTerminal',
+LinuxExternAlTerminAlService.getDefAultTerminAlLinuxReAdy().then(defAultTerminAlLinux => {
+	let configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion);
+	configurAtionRegistry.registerConfigurAtion({
+		id: 'externAlTerminAl',
 		order: 100,
-		title: nls.localize('terminalConfigurationTitle', "External Terminal"),
+		title: nls.locAlize('terminAlConfigurAtionTitle', "ExternAl TerminAl"),
 		type: 'object',
 		properties: {
-			'terminal.explorerKind': {
+			'terminAl.explorerKind': {
 				type: 'string',
 				enum: [
-					'integrated',
-					'external'
+					'integrAted',
+					'externAl'
 				],
 				enumDescriptions: [
-					nls.localize('terminal.explorerKind.integrated', "Use VS Code's integrated terminal."),
-					nls.localize('terminal.explorerKind.external', "Use the configured external terminal.")
+					nls.locAlize('terminAl.explorerKind.integrAted', "Use VS Code's integrAted terminAl."),
+					nls.locAlize('terminAl.explorerKind.externAl', "Use the configured externAl terminAl.")
 				],
-				description: nls.localize('explorer.openInTerminalKind', "Customizes what kind of terminal to launch."),
-				default: 'integrated'
+				description: nls.locAlize('explorer.openInTerminAlKind', "Customizes whAt kind of terminAl to lAunch."),
+				defAult: 'integrAted'
 			},
-			'terminal.external.windowsExec': {
+			'terminAl.externAl.windowsExec': {
 				type: 'string',
-				description: nls.localize('terminal.external.windowsExec', "Customizes which terminal to run on Windows."),
-				default: WindowsExternalTerminalService.getDefaultTerminalWindows(),
-				scope: ConfigurationScope.APPLICATION
+				description: nls.locAlize('terminAl.externAl.windowsExec', "Customizes which terminAl to run on Windows."),
+				defAult: WindowsExternAlTerminAlService.getDefAultTerminAlWindows(),
+				scope: ConfigurAtionScope.APPLICATION
 			},
-			'terminal.external.osxExec': {
+			'terminAl.externAl.osxExec': {
 				type: 'string',
-				description: nls.localize('terminal.external.osxExec', "Customizes which terminal application to run on macOS."),
-				default: DEFAULT_TERMINAL_OSX,
-				scope: ConfigurationScope.APPLICATION
+				description: nls.locAlize('terminAl.externAl.osxExec', "Customizes which terminAl ApplicAtion to run on mAcOS."),
+				defAult: DEFAULT_TERMINAL_OSX,
+				scope: ConfigurAtionScope.APPLICATION
 			},
-			'terminal.external.linuxExec': {
+			'terminAl.externAl.linuxExec': {
 				type: 'string',
-				description: nls.localize('terminal.external.linuxExec', "Customizes which terminal to run on Linux."),
-				default: defaultTerminalLinux,
-				scope: ConfigurationScope.APPLICATION
+				description: nls.locAlize('terminAl.externAl.linuxExec', "Customizes which terminAl to run on Linux."),
+				defAult: defAultTerminAlLinux,
+				scope: ConfigurAtionScope.APPLICATION
 			}
 		}
 	});

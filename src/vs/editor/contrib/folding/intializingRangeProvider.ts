@@ -1,64 +1,64 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITextModel, IModelDeltaDecoration, TrackedRangeStickiness } from 'vs/editor/common/model';
-import { FoldingRegions, ILineRange } from 'vs/editor/contrib/folding/foldingRanges';
-import { RangeProvider } from './folding';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IFoldingRangeData, sanitizeRanges } from 'vs/editor/contrib/folding/syntaxRangeProvider';
+import { ITextModel, IModelDeltADecorAtion, TrAckedRAngeStickiness } from 'vs/editor/common/model';
+import { FoldingRegions, ILineRAnge } from 'vs/editor/contrib/folding/foldingRAnges';
+import { RAngeProvider } from './folding';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IFoldingRAngeDAtA, sAnitizeRAnges } from 'vs/editor/contrib/folding/syntAxRAngeProvider';
 
 export const ID_INIT_PROVIDER = 'init';
 
-export class InitializingRangeProvider implements RangeProvider {
-	readonly id = ID_INIT_PROVIDER;
+export clAss InitiAlizingRAngeProvider implements RAngeProvider {
+	reAdonly id = ID_INIT_PROVIDER;
 
-	private decorationIds: string[] | undefined;
-	private timeout: any;
+	privAte decorAtionIds: string[] | undefined;
+	privAte timeout: Any;
 
-	constructor(private readonly editorModel: ITextModel, initialRanges: ILineRange[], onTimeout: () => void, timeoutTime: number) {
-		if (initialRanges.length) {
-			let toDecorationRange = (range: ILineRange): IModelDeltaDecoration => {
+	constructor(privAte reAdonly editorModel: ITextModel, initiAlRAnges: ILineRAnge[], onTimeout: () => void, timeoutTime: number) {
+		if (initiAlRAnges.length) {
+			let toDecorAtionRAnge = (rAnge: ILineRAnge): IModelDeltADecorAtion => {
 				return {
-					range: {
-						startLineNumber: range.startLineNumber,
-						startColumn: 0,
-						endLineNumber: range.endLineNumber,
-						endColumn: editorModel.getLineLength(range.endLineNumber)
+					rAnge: {
+						stArtLineNumber: rAnge.stArtLineNumber,
+						stArtColumn: 0,
+						endLineNumber: rAnge.endLineNumber,
+						endColumn: editorModel.getLineLength(rAnge.endLineNumber)
 					},
 					options: {
-						stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
+						stickiness: TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges
 					}
 				};
 			};
-			this.decorationIds = editorModel.deltaDecorations([], initialRanges.map(toDecorationRange));
+			this.decorAtionIds = editorModel.deltADecorAtions([], initiAlRAnges.mAp(toDecorAtionRAnge));
 			this.timeout = setTimeout(onTimeout, timeoutTime);
 		}
 	}
 
 	dispose(): void {
-		if (this.decorationIds) {
-			this.editorModel.deltaDecorations(this.decorationIds, []);
-			this.decorationIds = undefined;
+		if (this.decorAtionIds) {
+			this.editorModel.deltADecorAtions(this.decorAtionIds, []);
+			this.decorAtionIds = undefined;
 		}
 		if (typeof this.timeout === 'number') {
-			clearTimeout(this.timeout);
+			cleArTimeout(this.timeout);
 			this.timeout = undefined;
 		}
 	}
 
-	compute(cancelationToken: CancellationToken): Promise<FoldingRegions> {
-		let foldingRangeData: IFoldingRangeData[] = [];
-		if (this.decorationIds) {
-			for (let id of this.decorationIds) {
-				let range = this.editorModel.getDecorationRange(id);
-				if (range) {
-					foldingRangeData.push({ start: range.startLineNumber, end: range.endLineNumber, rank: 1 });
+	compute(cAncelAtionToken: CAncellAtionToken): Promise<FoldingRegions> {
+		let foldingRAngeDAtA: IFoldingRAngeDAtA[] = [];
+		if (this.decorAtionIds) {
+			for (let id of this.decorAtionIds) {
+				let rAnge = this.editorModel.getDecorAtionRAnge(id);
+				if (rAnge) {
+					foldingRAngeDAtA.push({ stArt: rAnge.stArtLineNumber, end: rAnge.endLineNumber, rAnk: 1 });
 				}
 			}
 		}
-		return Promise.resolve(sanitizeRanges(foldingRangeData, Number.MAX_VALUE));
+		return Promise.resolve(sAnitizeRAnges(foldingRAngeDAtA, Number.MAX_VALUE));
 	}
 }
 

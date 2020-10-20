@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { WindowDriverChannel, WindowDriverRegistryChannelClient } from 'vs/platform/driver/node/driver';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { timeout } from 'vs/base/common/async';
-import { BaseWindowDriver } from 'vs/platform/driver/browser/baseDriver';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { WindowDriverChAnnel, WindowDriverRegistryChAnnelClient } from 'vs/plAtform/driver/node/driver';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { timeout } from 'vs/bAse/common/Async';
+import { BAseWindowDriver } from 'vs/plAtform/driver/browser/bAseDriver';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-class WindowDriver extends BaseWindowDriver {
+clAss WindowDriver extends BAseWindowDriver {
 
 	constructor(
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
 		super();
 	}
@@ -28,38 +28,38 @@ class WindowDriver extends BaseWindowDriver {
 		return this._click(selector, 2);
 	}
 
-	private async _click(selector: string, clickCount: number, offset?: { x: number, y: number }): Promise<void> {
-		const { x, y } = await this._getElementXY(selector, offset);
+	privAte Async _click(selector: string, clickCount: number, offset?: { x: number, y: number }): Promise<void> {
+		const { x, y } = AwAit this._getElementXY(selector, offset);
 
-		await this.nativeHostService.sendInputEvent({ type: 'mouseDown', x, y, button: 'left', clickCount } as any);
-		await timeout(10);
+		AwAit this.nAtiveHostService.sendInputEvent({ type: 'mouseDown', x, y, button: 'left', clickCount } As Any);
+		AwAit timeout(10);
 
-		await this.nativeHostService.sendInputEvent({ type: 'mouseUp', x, y, button: 'left', clickCount } as any);
-		await timeout(100);
+		AwAit this.nAtiveHostService.sendInputEvent({ type: 'mouseUp', x, y, button: 'left', clickCount } As Any);
+		AwAit timeout(100);
 	}
 
-	async openDevTools(): Promise<void> {
-		await this.nativeHostService.openDevTools({ mode: 'detach' });
+	Async openDevTools(): Promise<void> {
+		AwAit this.nAtiveHostService.openDevTools({ mode: 'detAch' });
 	}
 }
 
-export async function registerWindowDriver(accessor: ServicesAccessor, windowId: number): Promise<IDisposable> {
-	const instantiationService = accessor.get(IInstantiationService);
-	const mainProcessService = accessor.get(IMainProcessService);
+export Async function registerWindowDriver(Accessor: ServicesAccessor, windowId: number): Promise<IDisposAble> {
+	const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+	const mAinProcessService = Accessor.get(IMAinProcessService);
 
-	const windowDriver = instantiationService.createInstance(WindowDriver);
-	const windowDriverChannel = new WindowDriverChannel(windowDriver);
-	mainProcessService.registerChannel('windowDriver', windowDriverChannel);
+	const windowDriver = instAntiAtionService.creAteInstAnce(WindowDriver);
+	const windowDriverChAnnel = new WindowDriverChAnnel(windowDriver);
+	mAinProcessService.registerChAnnel('windowDriver', windowDriverChAnnel);
 
-	const windowDriverRegistryChannel = mainProcessService.getChannel('windowDriverRegistry');
-	const windowDriverRegistry = new WindowDriverRegistryChannelClient(windowDriverRegistryChannel);
+	const windowDriverRegistryChAnnel = mAinProcessService.getChAnnel('windowDriverRegistry');
+	const windowDriverRegistry = new WindowDriverRegistryChAnnelClient(windowDriverRegistryChAnnel);
 
-	await windowDriverRegistry.registerWindowDriver(windowId);
-	// const options = await windowDriverRegistry.registerWindowDriver(windowId);
+	AwAit windowDriverRegistry.registerWindowDriver(windowId);
+	// const options = AwAit windowDriverRegistry.registerWindowDriver(windowId);
 
 	// if (options.verbose) {
 	// 	windowDriver.openDevTools();
 	// }
 
-	return toDisposable(() => windowDriverRegistry.reloadWindowDriver(windowId));
+	return toDisposAble(() => windowDriverRegistry.reloAdWindowDriver(windowId));
 }

@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 
-export interface IRemoteConsoleLog {
+export interfAce IRemoteConsoleLog {
 	type: string;
 	severity: string;
-	arguments: string;
+	Arguments: string;
 }
 
-interface IStackArgument {
-	__$stack: string;
+interfAce IStAckArgument {
+	__$stAck: string;
 }
 
-export interface IStackFrame {
+export interfAce IStAckFrAme {
 	uri: URI;
 	line: number;
 	column: number;
 }
 
-export function isRemoteConsoleLog(obj: any): obj is IRemoteConsoleLog {
-	const entry = obj as IRemoteConsoleLog;
+export function isRemoteConsoleLog(obj: Any): obj is IRemoteConsoleLog {
+	const entry = obj As IRemoteConsoleLog;
 
 	return entry && typeof entry.type === 'string' && typeof entry.severity === 'string';
 }
 
-export function parse(entry: IRemoteConsoleLog): { args: any[], stack?: string } {
-	const args: any[] = [];
-	let stack: string | undefined;
+export function pArse(entry: IRemoteConsoleLog): { Args: Any[], stAck?: string } {
+	const Args: Any[] = [];
+	let stAck: string | undefined;
 
-	// Parse Entry
+	// PArse Entry
 	try {
-		const parsedArguments: any[] = JSON.parse(entry.arguments);
+		const pArsedArguments: Any[] = JSON.pArse(entry.Arguments);
 
-		// Check for special stack entry as last entry
-		const stackArgument = parsedArguments[parsedArguments.length - 1] as IStackArgument;
-		if (stackArgument && stackArgument.__$stack) {
-			parsedArguments.pop(); // stack is handled specially
-			stack = stackArgument.__$stack;
+		// Check for speciAl stAck entry As lAst entry
+		const stAckArgument = pArsedArguments[pArsedArguments.length - 1] As IStAckArgument;
+		if (stAckArgument && stAckArgument.__$stAck) {
+			pArsedArguments.pop(); // stAck is hAndled speciAlly
+			stAck = stAckArgument.__$stAck;
 		}
 
-		args.push(...parsedArguments);
-	} catch (error) {
-		args.push('Unable to log remote console arguments', entry.arguments);
+		Args.push(...pArsedArguments);
+	} cAtch (error) {
+		Args.push('UnAble to log remote console Arguments', entry.Arguments);
 	}
 
-	return { args, stack };
+	return { Args, stAck };
 }
 
-export function getFirstFrame(entry: IRemoteConsoleLog): IStackFrame | undefined;
-export function getFirstFrame(stack: string | undefined): IStackFrame | undefined;
-export function getFirstFrame(arg0: IRemoteConsoleLog | string | undefined): IStackFrame | undefined {
-	if (typeof arg0 !== 'string') {
-		return getFirstFrame(parse(arg0!).stack);
+export function getFirstFrAme(entry: IRemoteConsoleLog): IStAckFrAme | undefined;
+export function getFirstFrAme(stAck: string | undefined): IStAckFrAme | undefined;
+export function getFirstFrAme(Arg0: IRemoteConsoleLog | string | undefined): IStAckFrAme | undefined {
+	if (typeof Arg0 !== 'string') {
+		return getFirstFrAme(pArse(Arg0!).stAck);
 	}
 
-	// Parse a source information out of the stack if we have one. Format can be:
-	// at vscode.commands.registerCommand (/Users/someone/Desktop/test-ts/out/src/extension.js:18:17)
+	// PArse A source informAtion out of the stAck if we hAve one. FormAt cAn be:
+	// At vscode.commAnds.registerCommAnd (/Users/someone/Desktop/test-ts/out/src/extension.js:18:17)
 	// or
-	// at /Users/someone/Desktop/test-ts/out/src/extension.js:18:17
+	// At /Users/someone/Desktop/test-ts/out/src/extension.js:18:17
 	// or
-	// at c:\Users\someone\Desktop\end-js\extension.js:19:17
+	// At c:\Users\someone\Desktop\end-js\extension.js:19:17
 	// or
-	// at e.$executeContributedCommand(c:\Users\someone\Desktop\end-js\extension.js:19:17)
-	const stack = arg0;
-	if (stack) {
-		const topFrame = findFirstFrame(stack);
+	// At e.$executeContributedCommAnd(c:\Users\someone\Desktop\end-js\extension.js:19:17)
+	const stAck = Arg0;
+	if (stAck) {
+		const topFrAme = findFirstFrAme(stAck);
 
-		// at [^\/]* => line starts with "at" followed by any character except '/' (to not capture unix paths too late)
-		// (?:(?:[a-zA-Z]+:)|(?:[\/])|(?:\\\\) => windows drive letter OR unix root OR unc root
-		// (?:.+) => simple pattern for the path, only works because of the line/col pattern after
-		// :(?:\d+):(?:\d+) => :line:column data
-		const matches = /at [^\/]*((?:(?:[a-zA-Z]+:)|(?:[\/])|(?:\\\\))(?:.+)):(\d+):(\d+)/.exec(topFrame || '');
-		if (matches && matches.length === 4) {
+		// At [^\/]* => line stArts with "At" followed by Any chArActer except '/' (to not cApture unix pAths too lAte)
+		// (?:(?:[A-zA-Z]+:)|(?:[\/])|(?:\\\\) => windows drive letter OR unix root OR unc root
+		// (?:.+) => simple pAttern for the pAth, only works becAuse of the line/col pAttern After
+		// :(?:\d+):(?:\d+) => :line:column dAtA
+		const mAtches = /At [^\/]*((?:(?:[A-zA-Z]+:)|(?:[\/])|(?:\\\\))(?:.+)):(\d+):(\d+)/.exec(topFrAme || '');
+		if (mAtches && mAtches.length === 4) {
 			return {
-				uri: URI.file(matches[1]),
-				line: Number(matches[2]),
-				column: Number(matches[3])
+				uri: URI.file(mAtches[1]),
+				line: Number(mAtches[2]),
+				column: Number(mAtches[3])
 			};
 		}
 	}
@@ -86,55 +86,55 @@ export function getFirstFrame(arg0: IRemoteConsoleLog | string | undefined): ISt
 	return undefined;
 }
 
-function findFirstFrame(stack: string | undefined): string | undefined {
-	if (!stack) {
-		return stack;
+function findFirstFrAme(stAck: string | undefined): string | undefined {
+	if (!stAck) {
+		return stAck;
 	}
 
-	const newlineIndex = stack.indexOf('\n');
+	const newlineIndex = stAck.indexOf('\n');
 	if (newlineIndex === -1) {
-		return stack;
+		return stAck;
 	}
 
-	return stack.substring(0, newlineIndex);
+	return stAck.substring(0, newlineIndex);
 }
 
-export function log(entry: IRemoteConsoleLog, label: string): void {
-	const { args, stack } = parse(entry);
+export function log(entry: IRemoteConsoleLog, lAbel: string): void {
+	const { Args, stAck } = pArse(entry);
 
-	const isOneStringArg = typeof args[0] === 'string' && args.length === 1;
+	const isOneStringArg = typeof Args[0] === 'string' && Args.length === 1;
 
-	let topFrame = findFirstFrame(stack);
-	if (topFrame) {
-		topFrame = `(${topFrame.trim()})`;
+	let topFrAme = findFirstFrAme(stAck);
+	if (topFrAme) {
+		topFrAme = `(${topFrAme.trim()})`;
 	}
 
 	let consoleArgs: string[] = [];
 
-	// First arg is a string
-	if (typeof args[0] === 'string') {
-		if (topFrame && isOneStringArg) {
-			consoleArgs = [`%c[${label}] %c${args[0]} %c${topFrame}`, color('blue'), color(''), color('grey')];
+	// First Arg is A string
+	if (typeof Args[0] === 'string') {
+		if (topFrAme && isOneStringArg) {
+			consoleArgs = [`%c[${lAbel}] %c${Args[0]} %c${topFrAme}`, color('blue'), color(''), color('grey')];
 		} else {
-			consoleArgs = [`%c[${label}] %c${args[0]}`, color('blue'), color(''), ...args.slice(1)];
+			consoleArgs = [`%c[${lAbel}] %c${Args[0]}`, color('blue'), color(''), ...Args.slice(1)];
 		}
 	}
 
-	// First arg is something else, just apply all
+	// First Arg is something else, just Apply All
 	else {
-		consoleArgs = [`%c[${label}]%`, color('blue'), ...args];
+		consoleArgs = [`%c[${lAbel}]%`, color('blue'), ...Args];
 	}
 
-	// Stack: add to args unless already aded
-	if (topFrame && !isOneStringArg) {
-		consoleArgs.push(topFrame);
+	// StAck: Add to Args unless AlreAdy Aded
+	if (topFrAme && !isOneStringArg) {
+		consoleArgs.push(topFrAme);
 	}
 
 	// Log it
-	if (typeof (console as any)[entry.severity] !== 'function') {
+	if (typeof (console As Any)[entry.severity] !== 'function') {
 		throw new Error('Unknown console method');
 	}
-	(console as any)[entry.severity].apply(console, consoleArgs);
+	(console As Any)[entry.severity].Apply(console, consoleArgs);
 }
 
 function color(color: string): string {

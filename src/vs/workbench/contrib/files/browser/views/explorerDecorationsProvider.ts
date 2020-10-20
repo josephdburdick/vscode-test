@@ -1,77 +1,77 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { localize } from 'vs/nls';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IDecorationsProvider, IDecorationData } from 'vs/workbench/services/decorations/browser/decorations';
-import { listInvalidItemForeground, listDeemphasizedForeground } from 'vs/platform/theme/common/colorRegistry';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { locAlize } from 'vs/nls';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IDecorAtionsProvider, IDecorAtionDAtA } from 'vs/workbench/services/decorAtions/browser/decorAtions';
+import { listInvAlidItemForeground, listDeemphAsizedForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { IExplorerService } from 'vs/workbench/contrib/files/common/files';
 import { explorerRootErrorEmitter } from 'vs/workbench/contrib/files/browser/views/explorerViewer';
 import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
 
-export function provideDecorations(fileStat: ExplorerItem): IDecorationData | undefined {
-	if (fileStat.isRoot && fileStat.isError) {
+export function provideDecorAtions(fileStAt: ExplorerItem): IDecorAtionDAtA | undefined {
+	if (fileStAt.isRoot && fileStAt.isError) {
 		return {
-			tooltip: localize('canNotResolve', "Unable to resolve workspace folder"),
+			tooltip: locAlize('cAnNotResolve', "UnAble to resolve workspAce folder"),
 			letter: '!',
-			color: listInvalidItemForeground,
+			color: listInvAlidItemForeground,
 		};
 	}
-	if (fileStat.isSymbolicLink) {
+	if (fileStAt.isSymbolicLink) {
 		return {
-			tooltip: localize('symbolicLlink', "Symbolic Link"),
+			tooltip: locAlize('symbolicLlink', "Symbolic Link"),
 			letter: '\u2937'
 		};
 	}
-	if (fileStat.isUnknown) {
+	if (fileStAt.isUnknown) {
 		return {
-			tooltip: localize('unknown', "Unknown File Type"),
+			tooltip: locAlize('unknown', "Unknown File Type"),
 			letter: '?'
 		};
 	}
-	if (fileStat.isExcluded) {
+	if (fileStAt.isExcluded) {
 		return {
-			color: listDeemphasizedForeground,
+			color: listDeemphAsizedForeground,
 		};
 	}
 
 	return undefined;
 }
 
-export class ExplorerDecorationsProvider implements IDecorationsProvider {
-	readonly label: string = localize('label', "Explorer");
-	private readonly _onDidChange = new Emitter<URI[]>();
-	private readonly toDispose = new DisposableStore();
+export clAss ExplorerDecorAtionsProvider implements IDecorAtionsProvider {
+	reAdonly lAbel: string = locAlize('lAbel', "Explorer");
+	privAte reAdonly _onDidChAnge = new Emitter<URI[]>();
+	privAte reAdonly toDispose = new DisposAbleStore();
 
 	constructor(
-		@IExplorerService private explorerService: IExplorerService,
-		@IWorkspaceContextService contextService: IWorkspaceContextService
+		@IExplorerService privAte explorerService: IExplorerService,
+		@IWorkspAceContextService contextService: IWorkspAceContextService
 	) {
-		this.toDispose.add(this._onDidChange);
-		this.toDispose.add(contextService.onDidChangeWorkspaceFolders(e => {
-			this._onDidChange.fire(e.changed.concat(e.added).map(wf => wf.uri));
+		this.toDispose.Add(this._onDidChAnge);
+		this.toDispose.Add(contextService.onDidChAngeWorkspAceFolders(e => {
+			this._onDidChAnge.fire(e.chAnged.concAt(e.Added).mAp(wf => wf.uri));
 		}));
-		this.toDispose.add(explorerRootErrorEmitter.event((resource => {
-			this._onDidChange.fire([resource]);
+		this.toDispose.Add(explorerRootErrorEmitter.event((resource => {
+			this._onDidChAnge.fire([resource]);
 		})));
 	}
 
-	get onDidChange(): Event<URI[]> {
-		return this._onDidChange.event;
+	get onDidChAnge(): Event<URI[]> {
+		return this._onDidChAnge.event;
 	}
 
-	provideDecorations(resource: URI): IDecorationData | undefined {
-		const fileStat = this.explorerService.findClosest(resource);
-		if (!fileStat) {
+	provideDecorAtions(resource: URI): IDecorAtionDAtA | undefined {
+		const fileStAt = this.explorerService.findClosest(resource);
+		if (!fileStAt) {
 			return undefined;
 		}
 
-		return provideDecorations(fileStat);
+		return provideDecorAtions(fileStAt);
 	}
 
 	dispose(): void {

@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { language } from 'vs/base/common/platform';
+import * As nls from 'vs/nls';
+import { lAnguAge } from 'vs/bAse/common/plAtform';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { ISurveyData, IProductService } from 'vs/platform/product/common/productService';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
+import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { ISurveyDAtA, IProductService } from 'vs/plAtform/product/common/productService';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Severity, INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { ITextFileService, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { platform } from 'vs/base/common/process';
-import { RunOnceWorker } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import { plAtform } from 'vs/bAse/common/process';
+import { RunOnceWorker } from 'vs/bAse/common/Async';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-class LanguageSurvey extends Disposable {
+clAss LAnguAgeSurvey extends DisposAble {
 
 	constructor(
-		data: ISurveyData,
-		storageService: IStorageService,
-		storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
-		notificationService: INotificationService,
+		dAtA: ISurveyDAtA,
+		storAgeService: IStorAgeService,
+		storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
+		notificAtionService: INotificAtionService,
 		telemetryService: ITelemetryService,
 		modelService: IModelService,
 		textFileService: ITextFileService,
@@ -36,100 +36,100 @@ class LanguageSurvey extends Disposable {
 	) {
 		super();
 
-		const SESSION_COUNT_KEY = `${data.surveyId}.sessionCount`;
-		const LAST_SESSION_DATE_KEY = `${data.surveyId}.lastSessionDate`;
-		const SKIP_VERSION_KEY = `${data.surveyId}.skipVersion`;
-		const IS_CANDIDATE_KEY = `${data.surveyId}.isCandidate`;
-		const EDITED_LANGUAGE_COUNT_KEY = `${data.surveyId}.editedCount`;
-		const EDITED_LANGUAGE_DATE_KEY = `${data.surveyId}.editedDate`;
+		const SESSION_COUNT_KEY = `${dAtA.surveyId}.sessionCount`;
+		const LAST_SESSION_DATE_KEY = `${dAtA.surveyId}.lAstSessionDAte`;
+		const SKIP_VERSION_KEY = `${dAtA.surveyId}.skipVersion`;
+		const IS_CANDIDATE_KEY = `${dAtA.surveyId}.isCAndidAte`;
+		const EDITED_LANGUAGE_COUNT_KEY = `${dAtA.surveyId}.editedCount`;
+		const EDITED_LANGUAGE_DATE_KEY = `${dAtA.surveyId}.editedDAte`;
 
 		// opt-in to syncing
-		storageKeysSyncRegistryService.registerStorageKey({ key: SESSION_COUNT_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: LAST_SESSION_DATE_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: SKIP_VERSION_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: IS_CANDIDATE_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: EDITED_LANGUAGE_COUNT_KEY, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: EDITED_LANGUAGE_DATE_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: SESSION_COUNT_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: LAST_SESSION_DATE_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: SKIP_VERSION_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: IS_CANDIDATE_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: EDITED_LANGUAGE_COUNT_KEY, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: EDITED_LANGUAGE_DATE_KEY, version: 1 });
 
-		const skipVersion = storageService.get(SKIP_VERSION_KEY, StorageScope.GLOBAL, '');
+		const skipVersion = storAgeService.get(SKIP_VERSION_KEY, StorAgeScope.GLOBAL, '');
 		if (skipVersion) {
 			return;
 		}
 
-		const date = new Date().toDateString();
+		const dAte = new DAte().toDAteString();
 
-		if (storageService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) < data.editCount) {
+		if (storAgeService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorAgeScope.GLOBAL, 0) < dAtA.editCount) {
 
-			// Process model-save event every 250ms to reduce load
-			const onModelsSavedWorker = this._register(new RunOnceWorker<ITextFileEditorModel>(models => {
-				models.forEach(m => {
-					if (m.getMode() === data.languageId && date !== storageService.get(EDITED_LANGUAGE_DATE_KEY, StorageScope.GLOBAL)) {
-						const editedCount = storageService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) + 1;
-						storageService.store(EDITED_LANGUAGE_COUNT_KEY, editedCount, StorageScope.GLOBAL);
-						storageService.store(EDITED_LANGUAGE_DATE_KEY, date, StorageScope.GLOBAL);
+			// Process model-sAve event every 250ms to reduce loAd
+			const onModelsSAvedWorker = this._register(new RunOnceWorker<ITextFileEditorModel>(models => {
+				models.forEAch(m => {
+					if (m.getMode() === dAtA.lAnguAgeId && dAte !== storAgeService.get(EDITED_LANGUAGE_DATE_KEY, StorAgeScope.GLOBAL)) {
+						const editedCount = storAgeService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorAgeScope.GLOBAL, 0) + 1;
+						storAgeService.store(EDITED_LANGUAGE_COUNT_KEY, editedCount, StorAgeScope.GLOBAL);
+						storAgeService.store(EDITED_LANGUAGE_DATE_KEY, dAte, StorAgeScope.GLOBAL);
 					}
 				});
 			}, 250));
 
-			this._register(textFileService.files.onDidSave(e => onModelsSavedWorker.work(e.model)));
+			this._register(textFileService.files.onDidSAve(e => onModelsSAvedWorker.work(e.model)));
 		}
 
-		const lastSessionDate = storageService.get(LAST_SESSION_DATE_KEY, StorageScope.GLOBAL, new Date(0).toDateString());
-		if (date === lastSessionDate) {
+		const lAstSessionDAte = storAgeService.get(LAST_SESSION_DATE_KEY, StorAgeScope.GLOBAL, new DAte(0).toDAteString());
+		if (dAte === lAstSessionDAte) {
 			return;
 		}
 
-		const sessionCount = storageService.getNumber(SESSION_COUNT_KEY, StorageScope.GLOBAL, 0) + 1;
-		storageService.store(LAST_SESSION_DATE_KEY, date, StorageScope.GLOBAL);
-		storageService.store(SESSION_COUNT_KEY, sessionCount, StorageScope.GLOBAL);
+		const sessionCount = storAgeService.getNumber(SESSION_COUNT_KEY, StorAgeScope.GLOBAL, 0) + 1;
+		storAgeService.store(LAST_SESSION_DATE_KEY, dAte, StorAgeScope.GLOBAL);
+		storAgeService.store(SESSION_COUNT_KEY, sessionCount, StorAgeScope.GLOBAL);
 
 		if (sessionCount < 9) {
 			return;
 		}
 
-		if (storageService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorageScope.GLOBAL, 0) < data.editCount) {
+		if (storAgeService.getNumber(EDITED_LANGUAGE_COUNT_KEY, StorAgeScope.GLOBAL, 0) < dAtA.editCount) {
 			return;
 		}
 
-		const isCandidate = storageService.getBoolean(IS_CANDIDATE_KEY, StorageScope.GLOBAL, false)
-			|| Math.random() < data.userProbability;
+		const isCAndidAte = storAgeService.getBooleAn(IS_CANDIDATE_KEY, StorAgeScope.GLOBAL, fAlse)
+			|| MAth.rAndom() < dAtA.userProbAbility;
 
-		storageService.store(IS_CANDIDATE_KEY, isCandidate, StorageScope.GLOBAL);
+		storAgeService.store(IS_CANDIDATE_KEY, isCAndidAte, StorAgeScope.GLOBAL);
 
-		if (!isCandidate) {
-			storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
+		if (!isCAndidAte) {
+			storAgeService.store(SKIP_VERSION_KEY, productService.version, StorAgeScope.GLOBAL);
 			return;
 		}
 
-		// __GDPR__TODO__ Need to move away from dynamic event names as those cannot be registered statically
-		telemetryService.publicLog(`${data.surveyId}.survey/userAsked`);
+		// __GDPR__TODO__ Need to move AwAy from dynAmic event nAmes As those cAnnot be registered stAticAlly
+		telemetryService.publicLog(`${dAtA.surveyId}.survey/userAsked`);
 
-		notificationService.prompt(
+		notificAtionService.prompt(
 			Severity.Info,
-			nls.localize('helpUs', "Help us improve our support for {0}", data.languageId),
+			nls.locAlize('helpUs', "Help us improve our support for {0}", dAtA.lAnguAgeId),
 			[{
-				label: nls.localize('takeShortSurvey', "Take Short Survey"),
+				lAbel: nls.locAlize('tAkeShortSurvey', "TAke Short Survey"),
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/takeShortSurvey`);
+					telemetryService.publicLog(`${dAtA.surveyId}.survey/tAkeShortSurvey`);
 					telemetryService.getTelemetryInfo().then(info => {
-						openerService.open(URI.parse(`${data.surveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.machineId)}`));
-						storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
-						storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
+						openerService.open(URI.pArse(`${dAtA.surveyUrl}?o=${encodeURIComponent(plAtform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.mAchineId)}`));
+						storAgeService.store(IS_CANDIDATE_KEY, fAlse, StorAgeScope.GLOBAL);
+						storAgeService.store(SKIP_VERSION_KEY, productService.version, StorAgeScope.GLOBAL);
 					});
 				}
 			}, {
-				label: nls.localize('remindLater', "Remind Me later"),
+				lAbel: nls.locAlize('remindLAter', "Remind Me lAter"),
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/remindMeLater`);
-					storageService.store(SESSION_COUNT_KEY, sessionCount - 3, StorageScope.GLOBAL);
+					telemetryService.publicLog(`${dAtA.surveyId}.survey/remindMeLAter`);
+					storAgeService.store(SESSION_COUNT_KEY, sessionCount - 3, StorAgeScope.GLOBAL);
 				}
 			}, {
-				label: nls.localize('neverAgain', "Don't Show Again"),
-				isSecondary: true,
+				lAbel: nls.locAlize('neverAgAin', "Don't Show AgAin"),
+				isSecondAry: true,
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/dontShowAgain`);
-					storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
-					storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
+					telemetryService.publicLog(`${dAtA.surveyId}.survey/dontShowAgAin`);
+					storAgeService.store(IS_CANDIDATE_KEY, fAlse, StorAgeScope.GLOBAL);
+					storAgeService.store(SKIP_VERSION_KEY, productService.version, StorAgeScope.GLOBAL);
 				}
 			}],
 			{ sticky: true }
@@ -137,12 +137,12 @@ class LanguageSurvey extends Disposable {
 	}
 }
 
-class LanguageSurveysContribution implements IWorkbenchContribution {
+clAss LAnguAgeSurveysContribution implements IWorkbenchContribution {
 
 	constructor(
-		@IStorageService storageService: IStorageService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
-		@INotificationService notificationService: INotificationService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IModelService modelService: IModelService,
 		@ITextFileService textFileService: ITextFileService,
@@ -154,12 +154,12 @@ class LanguageSurveysContribution implements IWorkbenchContribution {
 		}
 
 		productService.surveys
-			.filter(surveyData => surveyData.surveyId && surveyData.editCount && surveyData.languageId && surveyData.surveyUrl && surveyData.userProbability)
-			.map(surveyData => new LanguageSurvey(surveyData, storageService, storageKeysSyncRegistryService, notificationService, telemetryService, modelService, textFileService, openerService, productService));
+			.filter(surveyDAtA => surveyDAtA.surveyId && surveyDAtA.editCount && surveyDAtA.lAnguAgeId && surveyDAtA.surveyUrl && surveyDAtA.userProbAbility)
+			.mAp(surveyDAtA => new LAnguAgeSurvey(surveyDAtA, storAgeService, storAgeKeysSyncRegistryService, notificAtionService, telemetryService, modelService, textFileService, openerService, productService));
 	}
 }
 
-if (language === 'en') {
-	const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-	workbenchRegistry.registerWorkbenchContribution(LanguageSurveysContribution, LifecyclePhase.Restored);
+if (lAnguAge === 'en') {
+	const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+	workbenchRegistry.registerWorkbenchContribution(LAnguAgeSurveysContribution, LifecyclePhAse.Restored);
 }

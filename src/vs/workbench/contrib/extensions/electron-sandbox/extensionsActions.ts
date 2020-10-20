@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import { IFileService } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { Schemas } from 'vs/base/common/network';
+import { locAlize } from 'vs/nls';
+import { Action } from 'vs/bAse/common/Actions';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { URI } from 'vs/bAse/common/uri';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class OpenExtensionsFolderAction extends Action {
+export clAss OpenExtensionsFolderAction extends Action {
 
-	static readonly ID = 'workbench.extensions.action.openExtensionsFolder';
-	static readonly LABEL = localize('openExtensionsFolder', "Open Extensions Folder");
+	stAtic reAdonly ID = 'workbench.extensions.Action.openExtensionsFolder';
+	stAtic reAdonly LABEL = locAlize('openExtensionsFolder', "Open Extensions Folder");
 
 	constructor(
 		id: string,
-		label: string,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IFileService private readonly fileService: IFileService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService
+		lAbel: string,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly environmentService: INAtiveWorkbenchEnvironmentService
 	) {
-		super(id, label, undefined, true);
+		super(id, lAbel, undefined, true);
 	}
 
-	async run(): Promise<void> {
-		if (this.environmentService.extensionsPath) {
-			const extensionsHome = URI.file(this.environmentService.extensionsPath);
-			const file = await this.fileService.resolve(extensionsHome);
+	Async run(): Promise<void> {
+		if (this.environmentService.extensionsPAth) {
+			const extensionsHome = URI.file(this.environmentService.extensionsPAth);
+			const file = AwAit this.fileService.resolve(extensionsHome);
 
 			let itemToShow: URI;
 			if (file.children && file.children.length > 0) {
@@ -38,8 +38,8 @@ export class OpenExtensionsFolderAction extends Action {
 				itemToShow = extensionsHome;
 			}
 
-			if (itemToShow.scheme === Schemas.file) {
-				return this.nativeHostService.showItemInFolder(itemToShow.fsPath);
+			if (itemToShow.scheme === SchemAs.file) {
+				return this.nAtiveHostService.showItemInFolder(itemToShow.fsPAth);
 			}
 		}
 	}

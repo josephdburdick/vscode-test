@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/bAse/common/event';
 import { ICodeEditor, IDiffEditor } from 'vs/editor/browser/editorBrowser';
-import { IDecorationRenderOptions } from 'vs/editor/common/editorCommon';
-import { IModelDecorationOptions, ITextModel } from 'vs/editor/common/model';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { IDecorAtionRenderOptions } from 'vs/editor/common/editorCommon';
+import { IModelDecorAtionOptions, ITextModel } from 'vs/editor/common/model';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
 
-export const ICodeEditorService = createDecorator<ICodeEditorService>('codeEditorService');
+export const ICodeEditorService = creAteDecorAtor<ICodeEditorService>('codeEditorService');
 
-export interface ICodeEditorService {
-	readonly _serviceBrand: undefined;
+export interfAce ICodeEditorService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onCodeEditorAdd: Event<ICodeEditor>;
-	readonly onCodeEditorRemove: Event<ICodeEditor>;
+	reAdonly onCodeEditorAdd: Event<ICodeEditor>;
+	reAdonly onCodeEditorRemove: Event<ICodeEditor>;
 
-	readonly onDiffEditorAdd: Event<IDiffEditor>;
-	readonly onDiffEditorRemove: Event<IDiffEditor>;
+	reAdonly onDiffEditorAdd: Event<IDiffEditor>;
+	reAdonly onDiffEditorRemove: Event<IDiffEditor>;
 
-	readonly onDidChangeTransientModelProperty: Event<ITextModel>;
+	reAdonly onDidChAngeTrAnsientModelProperty: Event<ITextModel>;
 
 
-	addCodeEditor(editor: ICodeEditor): void;
+	AddCodeEditor(editor: ICodeEditor): void;
 	removeCodeEditor(editor: ICodeEditor): void;
-	listCodeEditors(): readonly ICodeEditor[];
+	listCodeEditors(): reAdonly ICodeEditor[];
 
-	addDiffEditor(editor: IDiffEditor): void;
+	AddDiffEditor(editor: IDiffEditor): void;
 	removeDiffEditor(editor: IDiffEditor): void;
-	listDiffEditors(): readonly IDiffEditor[];
+	listDiffEditors(): reAdonly IDiffEditor[];
 
 	/**
-	 * Returns the current focused code editor (if the focus is in the editor or in an editor widget) or null.
+	 * Returns the current focused code editor (if the focus is in the editor or in An editor widget) or null.
 	 */
 	getFocusedCodeEditor(): ICodeEditor | null;
 
-	registerDecorationType(key: string, options: IDecorationRenderOptions, parentTypeKey?: string, editor?: ICodeEditor): void;
-	removeDecorationType(key: string): void;
-	resolveDecorationOptions(typeKey: string, writable: boolean): IModelDecorationOptions;
+	registerDecorAtionType(key: string, options: IDecorAtionRenderOptions, pArentTypeKey?: string, editor?: ICodeEditor): void;
+	removeDecorAtionType(key: string): void;
+	resolveDecorAtionOptions(typeKey: string, writAble: booleAn): IModelDecorAtionOptions;
 
-	setModelProperty(resource: URI, key: string, value: any): void;
-	getModelProperty(resource: URI, key: string): any;
+	setModelProperty(resource: URI, key: string, vAlue: Any): void;
+	getModelProperty(resource: URI, key: string): Any;
 
-	setTransientModelProperty(model: ITextModel, key: string, value: any): void;
-	getTransientModelProperty(model: ITextModel, key: string): any;
-	getTransientModelProperties(model: ITextModel): [string, any][] | undefined;
+	setTrAnsientModelProperty(model: ITextModel, key: string, vAlue: Any): void;
+	getTrAnsientModelProperty(model: ITextModel, key: string): Any;
+	getTrAnsientModelProperties(model: ITextModel): [string, Any][] | undefined;
 
 	getActiveCodeEditor(): ICodeEditor | null;
-	openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null>;
+	openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: booleAn): Promise<ICodeEditor | null>;
 }

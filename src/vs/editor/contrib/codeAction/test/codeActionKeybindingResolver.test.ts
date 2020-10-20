@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ChordKeybinding, KeyCode, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { refactorCommandId, organizeImportsCommandId } from 'vs/editor/contrib/codeAction/codeAction';
+import * As Assert from 'Assert';
+import { ChordKeybinding, KeyCode, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { refActorCommAndId, orgAnizeImportsCommAndId } from 'vs/editor/contrib/codeAction/codeAction';
 import { CodeActionKind } from 'vs/editor/contrib/codeAction/types';
 import { CodeActionKeybindingResolver } from 'vs/editor/contrib/codeAction/codeActionMenu';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
+import { ResolvedKeybindingItem } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
+import { USLAyoutResolvedKeybinding } from 'vs/plAtform/keybinding/common/usLAyoutResolvedKeybinding';
 
 suite('CodeActionKeybindingResolver', () => {
-	const refactorKeybinding = createCodeActionKeybinding(
+	const refActorKeybinding = creAteCodeActionKeybinding(
 		KeyCode.KEY_A,
-		refactorCommandId,
-		{ kind: CodeActionKind.Refactor.value });
+		refActorCommAndId,
+		{ kind: CodeActionKind.RefActor.vAlue });
 
-	const refactorExtractKeybinding = createCodeActionKeybinding(
+	const refActorExtrActKeybinding = creAteCodeActionKeybinding(
 		KeyCode.KEY_B,
-		refactorCommandId,
-		{ kind: CodeActionKind.Refactor.append('extract').value });
+		refActorCommAndId,
+		{ kind: CodeActionKind.RefActor.Append('extrAct').vAlue });
 
-	const organizeImportsKeybinding = createCodeActionKeybinding(
+	const orgAnizeImportsKeybinding = creAteCodeActionKeybinding(
 		KeyCode.KEY_C,
-		organizeImportsCommandId,
+		orgAnizeImportsCommAndId,
 		undefined);
 
-	test('Should match refactor keybindings', async function () {
+	test('Should mAtch refActor keybindings', Async function () {
 		const resolver = new CodeActionKeybindingResolver({
-			getKeybindings: (): readonly ResolvedKeybindingItem[] => {
-				return [refactorKeybinding];
+			getKeybindings: (): reAdonly ResolvedKeybindingItem[] => {
+				return [refActorKeybinding];
 			},
 		}).getResolver();
 
-		assert.equal(
+		Assert.equAl(
 			resolver({ title: '' }),
 			undefined);
 
-		assert.equal(
-			resolver({ title: '', kind: CodeActionKind.Refactor.value }),
-			refactorKeybinding.resolvedKeybinding);
+		Assert.equAl(
+			resolver({ title: '', kind: CodeActionKind.RefActor.vAlue }),
+			refActorKeybinding.resolvedKeybinding);
 
-		assert.equal(
-			resolver({ title: '', kind: CodeActionKind.Refactor.append('extract').value }),
-			refactorKeybinding.resolvedKeybinding);
+		Assert.equAl(
+			resolver({ title: '', kind: CodeActionKind.RefActor.Append('extrAct').vAlue }),
+			refActorKeybinding.resolvedKeybinding);
 
-		assert.equal(
-			resolver({ title: '', kind: CodeActionKind.QuickFix.value }),
+		Assert.equAl(
+			resolver({ title: '', kind: CodeActionKind.QuickFix.vAlue }),
 			undefined);
 	});
 
-	test('Should prefer most specific keybinding', async function () {
+	test('Should prefer most specific keybinding', Async function () {
 		const resolver = new CodeActionKeybindingResolver({
-			getKeybindings: (): readonly ResolvedKeybindingItem[] => {
-				return [refactorKeybinding, refactorExtractKeybinding, organizeImportsKeybinding];
+			getKeybindings: (): reAdonly ResolvedKeybindingItem[] => {
+				return [refActorKeybinding, refActorExtrActKeybinding, orgAnizeImportsKeybinding];
 			},
 		}).getResolver();
 
-		assert.equal(
-			resolver({ title: '', kind: CodeActionKind.Refactor.value }),
-			refactorKeybinding.resolvedKeybinding);
+		Assert.equAl(
+			resolver({ title: '', kind: CodeActionKind.RefActor.vAlue }),
+			refActorKeybinding.resolvedKeybinding);
 
-		assert.equal(
-			resolver({ title: '', kind: CodeActionKind.Refactor.append('extract').value }),
-			refactorExtractKeybinding.resolvedKeybinding);
+		Assert.equAl(
+			resolver({ title: '', kind: CodeActionKind.RefActor.Append('extrAct').vAlue }),
+			refActorExtrActKeybinding.resolvedKeybinding);
 	});
 
-	test('Organize imports should still return a keybinding even though it does not have args', async function () {
+	test('OrgAnize imports should still return A keybinding even though it does not hAve Args', Async function () {
 		const resolver = new CodeActionKeybindingResolver({
-			getKeybindings: (): readonly ResolvedKeybindingItem[] => {
-				return [refactorKeybinding, refactorExtractKeybinding, organizeImportsKeybinding];
+			getKeybindings: (): reAdonly ResolvedKeybindingItem[] => {
+				return [refActorKeybinding, refActorExtrActKeybinding, orgAnizeImportsKeybinding];
 			},
 		}).getResolver();
 
-		assert.equal(
-			resolver({ title: '', kind: CodeActionKind.SourceOrganizeImports.value }),
-			organizeImportsKeybinding.resolvedKeybinding);
+		Assert.equAl(
+			resolver({ title: '', kind: CodeActionKind.SourceOrgAnizeImports.vAlue }),
+			orgAnizeImportsKeybinding.resolvedKeybinding);
 	});
 });
 
-function createCodeActionKeybinding(keycode: KeyCode, command: string, commandArgs: any) {
+function creAteCodeActionKeybinding(keycode: KeyCode, commAnd: string, commAndArgs: Any) {
 	return new ResolvedKeybindingItem(
-		new USLayoutResolvedKeybinding(
-			new ChordKeybinding([new SimpleKeybinding(false, true, false, false, keycode)]),
-			OperatingSystem.Linux),
-		command,
-		commandArgs,
+		new USLAyoutResolvedKeybinding(
+			new ChordKeybinding([new SimpleKeybinding(fAlse, true, fAlse, fAlse, keycode)]),
+			OperAtingSystem.Linux),
+		commAnd,
+		commAndArgs,
 		undefined,
-		false,
+		fAlse,
 		null);
 }
 

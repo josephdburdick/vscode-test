@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
+import * As strings from 'vs/bAse/common/strings';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { ICommand, ICursorStateComputerData, IEditOperationBuilder } from 'vs/editor/common/editorCommon';
-import { IIdentifiedSingleEditOperation, ITextModel } from 'vs/editor/common/model';
+import { ICommAnd, ICursorStAteComputerDAtA, IEditOperAtionBuilder } from 'vs/editor/common/editorCommon';
+import { IIdentifiedSingleEditOperAtion, ITextModel } from 'vs/editor/common/model';
 
-export class TrimTrailingWhitespaceCommand implements ICommand {
+export clAss TrimTrAilingWhitespAceCommAnd implements ICommAnd {
 
-	private readonly _selection: Selection;
-	private _selectionId: string | null;
-	private readonly _cursors: Position[];
+	privAte reAdonly _selection: Selection;
+	privAte _selectionId: string | null;
+	privAte reAdonly _cursors: Position[];
 
 	constructor(selection: Selection, cursors: Position[]) {
 		this._selection = selection;
@@ -23,57 +23,57 @@ export class TrimTrailingWhitespaceCommand implements ICommand {
 		this._selectionId = null;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		let ops = trimTrailingWhitespace(model, this._cursors);
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
+		let ops = trimTrAilingWhitespAce(model, this._cursors);
 		for (let i = 0, len = ops.length; i < len; i++) {
 			let op = ops[i];
 
-			builder.addEditOperation(op.range, op.text);
+			builder.AddEditOperAtion(op.rAnge, op.text);
 		}
 
-		this._selectionId = builder.trackSelection(this._selection);
+		this._selectionId = builder.trAckSelection(this._selection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
-		return helper.getTrackedSelection(this._selectionId!);
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
+		return helper.getTrAckedSelection(this._selectionId!);
 	}
 }
 
 /**
- * Generate commands for trimming trailing whitespace on a model and ignore lines on which cursors are sitting.
+ * GenerAte commAnds for trimming trAiling whitespAce on A model And ignore lines on which cursors Are sitting.
  */
-export function trimTrailingWhitespace(model: ITextModel, cursors: Position[]): IIdentifiedSingleEditOperation[] {
-	// Sort cursors ascending
-	cursors.sort((a, b) => {
-		if (a.lineNumber === b.lineNumber) {
-			return a.column - b.column;
+export function trimTrAilingWhitespAce(model: ITextModel, cursors: Position[]): IIdentifiedSingleEditOperAtion[] {
+	// Sort cursors Ascending
+	cursors.sort((A, b) => {
+		if (A.lineNumber === b.lineNumber) {
+			return A.column - b.column;
 		}
-		return a.lineNumber - b.lineNumber;
+		return A.lineNumber - b.lineNumber;
 	});
 
-	// Reduce multiple cursors on the same line and only keep the last one on the line
+	// Reduce multiple cursors on the sAme line And only keep the lAst one on the line
 	for (let i = cursors.length - 2; i >= 0; i--) {
 		if (cursors[i].lineNumber === cursors[i + 1].lineNumber) {
-			// Remove cursor at `i`
+			// Remove cursor At `i`
 			cursors.splice(i, 1);
 		}
 	}
 
-	let r: IIdentifiedSingleEditOperation[] = [];
+	let r: IIdentifiedSingleEditOperAtion[] = [];
 	let rLen = 0;
 	let cursorIndex = 0;
 	let cursorLen = cursors.length;
 
 	for (let lineNumber = 1, lineCount = model.getLineCount(); lineNumber <= lineCount; lineNumber++) {
 		let lineContent = model.getLineContent(lineNumber);
-		let maxLineColumn = lineContent.length + 1;
+		let mAxLineColumn = lineContent.length + 1;
 		let minEditColumn = 0;
 
 		if (cursorIndex < cursorLen && cursors[cursorIndex].lineNumber === lineNumber) {
 			minEditColumn = cursors[cursorIndex].column;
 			cursorIndex++;
-			if (minEditColumn === maxLineColumn) {
-				// The cursor is at the end of the line => no edits for sure on this line
+			if (minEditColumn === mAxLineColumn) {
+				// The cursor is At the end of the line => no edits for sure on this line
 				continue;
 			}
 		}
@@ -82,24 +82,24 @@ export function trimTrailingWhitespace(model: ITextModel, cursors: Position[]): 
 			continue;
 		}
 
-		let lastNonWhitespaceIndex = strings.lastNonWhitespaceIndex(lineContent);
+		let lAstNonWhitespAceIndex = strings.lAstNonWhitespAceIndex(lineContent);
 
 		let fromColumn = 0;
-		if (lastNonWhitespaceIndex === -1) {
-			// Entire line is whitespace
+		if (lAstNonWhitespAceIndex === -1) {
+			// Entire line is whitespAce
 			fromColumn = 1;
-		} else if (lastNonWhitespaceIndex !== lineContent.length - 1) {
-			// There is trailing whitespace
-			fromColumn = lastNonWhitespaceIndex + 2;
+		} else if (lAstNonWhitespAceIndex !== lineContent.length - 1) {
+			// There is trAiling whitespAce
+			fromColumn = lAstNonWhitespAceIndex + 2;
 		} else {
-			// There is no trailing whitespace
+			// There is no trAiling whitespAce
 			continue;
 		}
 
-		fromColumn = Math.max(minEditColumn, fromColumn);
-		r[rLen++] = EditOperation.delete(new Range(
+		fromColumn = MAth.mAx(minEditColumn, fromColumn);
+		r[rLen++] = EditOperAtion.delete(new RAnge(
 			lineNumber, fromColumn,
-			lineNumber, maxLineColumn
+			lineNumber, mAxLineColumn
 		));
 	}
 

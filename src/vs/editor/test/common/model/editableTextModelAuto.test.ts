@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
+import { ChArCode } from 'vs/bAse/common/chArCode';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
-import { testApplyEditsWithSyncedModels } from 'vs/editor/test/common/model/editableTextModelTestUtils';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { IIdentifiedSingleEditOperAtion } from 'vs/editor/common/model';
+import { testApplyEditsWithSyncedModels } from 'vs/editor/test/common/model/editAbleTextModelTestUtils';
 
-const GENERATE_TESTS = false;
+const GENERATE_TESTS = fAlse;
 
 suite('EditorModel Auto Tests', () => {
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[]): IIdentifiedSingleEditOperation {
+	function editOp(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number, text: string[]): IIdentifiedSingleEditOperAtion {
 		return {
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
+			rAnge: new RAnge(stArtLineNumber, stArtColumn, endLineNumber, endColumn),
 			text: text.join('\n'),
-			forceMoveMarkers: false
+			forceMoveMArkers: fAlse
 		};
 	}
 
-	test('auto1', () => {
+	test('Auto1', () => {
 		testApplyEditsWithSyncedModels(
 			[
 				'ioe',
@@ -46,7 +46,7 @@ suite('EditorModel Auto Tests', () => {
 		);
 	});
 
-	test('auto2', () => {
+	test('Auto2', () => {
 		testApplyEditsWithSyncedModels(
 			[
 				'f',
@@ -58,21 +58,21 @@ suite('EditorModel Auto Tests', () => {
 			],
 			[
 				editOp(1, 2, 1, 2, ['', 'o']),
-				editOp(2, 4, 2, 4, ['zaq', 'avb']),
+				editOp(2, 4, 2, 4, ['zAq', 'Avb']),
 				editOp(2, 5, 6, 2, ['jlr', 'zl', 'j']),
 			],
 			[
 				'f',
 				'o',
-				'litzaq',
-				'avbtjlr',
+				'litzAq',
+				'Avbtjlr',
 				'zl',
 				'jmm',
 			]
 		);
 	});
 
-	test('auto3', () => {
+	test('Auto3', () => {
 		testApplyEditsWithSyncedModels(
 			[
 				'ofw',
@@ -83,7 +83,7 @@ suite('EditorModel Auto Tests', () => {
 				'wmgzbwudxz',
 				'iwsdkndh',
 				'bujlbwb',
-				'asuouxfv',
+				'Asuouxfv',
 				'xuccnb',
 			],
 			[
@@ -98,25 +98,25 @@ suite('EditorModel Auto Tests', () => {
 				'wmgzbwudxz',
 				'iwsdkndh',
 				'bujlbwb',
-				'asuouxfv',
+				'Asuouxfv',
 				'xuccnb',
 			]
 		);
 	});
 
-	test('auto4', () => {
+	test('Auto4', () => {
 		testApplyEditsWithSyncedModels(
 			[
 				'fefymj',
 				'qum',
-				'vmiwxxaiqq',
+				'vmiwxxAiqq',
 				'dz',
 				'lnqdgorosf',
 			],
 			[
 				editOp(1, 3, 1, 5, ['hp']),
 				editOp(1, 7, 2, 1, ['kcg', '', 'mpx']),
-				editOp(2, 2, 2, 2, ['', 'aw', '']),
+				editOp(2, 2, 2, 2, ['', 'Aw', '']),
 				editOp(2, 2, 2, 2, ['vqr', 'mo']),
 				editOp(4, 2, 5, 3, ['xyc']),
 			],
@@ -124,50 +124,50 @@ suite('EditorModel Auto Tests', () => {
 				'fehpmjkcg',
 				'',
 				'mpxq',
-				'aw',
+				'Aw',
 				'vqr',
 				'moum',
-				'vmiwxxaiqq',
+				'vmiwxxAiqq',
 				'dxycqdgorosf',
 			]
 		);
 	});
 });
 
-function getRandomInt(min: number, max: number): number {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRAndomInt(min: number, mAx: number): number {
+	return MAth.floor(MAth.rAndom() * (mAx - min + 1)) + min;
 }
 
-function getRandomString(minLength: number, maxLength: number): string {
-	let length = getRandomInt(minLength, maxLength);
+function getRAndomString(minLength: number, mAxLength: number): string {
+	let length = getRAndomInt(minLength, mAxLength);
 	let r = '';
 	for (let i = 0; i < length; i++) {
-		r += String.fromCharCode(getRandomInt(CharCode.a, CharCode.z));
+		r += String.fromChArCode(getRAndomInt(ChArCode.A, ChArCode.z));
 	}
 	return r;
 }
 
-function generateFile(small: boolean): string {
-	let lineCount = getRandomInt(1, small ? 3 : 10);
+function generAteFile(smAll: booleAn): string {
+	let lineCount = getRAndomInt(1, smAll ? 3 : 10);
 	let lines: string[] = [];
 	for (let i = 0; i < lineCount; i++) {
-		lines.push(getRandomString(0, small ? 3 : 10));
+		lines.push(getRAndomString(0, smAll ? 3 : 10));
 	}
 	return lines.join('\n');
 }
 
-function generateEdits(content: string): ITestModelEdit[] {
+function generAteEdits(content: string): ITestModelEdit[] {
 
 	let result: ITestModelEdit[] = [];
-	let cnt = getRandomInt(1, 5);
+	let cnt = getRAndomInt(1, 5);
 
-	let maxOffset = content.length;
+	let mAxOffset = content.length;
 
-	while (cnt > 0 && maxOffset > 0) {
+	while (cnt > 0 && mAxOffset > 0) {
 
-		let offset = getRandomInt(0, maxOffset);
-		let length = getRandomInt(0, maxOffset - offset);
-		let text = generateFile(true);
+		let offset = getRAndomInt(0, mAxOffset);
+		let length = getRAndomInt(0, mAxOffset - offset);
+		let text = generAteFile(true);
 
 		result.push({
 			offset: offset,
@@ -175,7 +175,7 @@ function generateEdits(content: string): ITestModelEdit[] {
 			text: text
 		});
 
-		maxOffset = offset;
+		mAxOffset = offset;
 		cnt--;
 	}
 
@@ -184,25 +184,25 @@ function generateEdits(content: string): ITestModelEdit[] {
 	return result;
 }
 
-interface ITestModelEdit {
+interfAce ITestModelEdit {
 	offset: number;
 	length: number;
 	text: string;
 }
 
-class TestModel {
+clAss TestModel {
 
-	public initialContent: string;
+	public initiAlContent: string;
 	public resultingContent: string;
-	public edits: IIdentifiedSingleEditOperation[];
+	public edits: IIdentifiedSingleEditOperAtion[];
 
-	private static _generateOffsetToPosition(content: string): Position[] {
+	privAte stAtic _generAteOffsetToPosition(content: string): Position[] {
 		let result: Position[] = [];
 		let lineNumber = 1;
 		let column = 1;
 
 		for (let offset = 0, len = content.length; offset <= len; offset++) {
-			let ch = content.charAt(offset);
+			let ch = content.chArAt(offset);
 
 			result[offset] = new Position(lineNumber, column);
 
@@ -218,22 +218,22 @@ class TestModel {
 	}
 
 	constructor() {
-		this.initialContent = generateFile(false);
+		this.initiAlContent = generAteFile(fAlse);
 
-		let edits = generateEdits(this.initialContent);
+		let edits = generAteEdits(this.initiAlContent);
 
-		let offsetToPosition = TestModel._generateOffsetToPosition(this.initialContent);
+		let offsetToPosition = TestModel._generAteOffsetToPosition(this.initiAlContent);
 		this.edits = [];
 		for (const edit of edits) {
-			let startPosition = offsetToPosition[edit.offset];
+			let stArtPosition = offsetToPosition[edit.offset];
 			let endPosition = offsetToPosition[edit.offset + edit.length];
 			this.edits.push({
-				range: new Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column),
+				rAnge: new RAnge(stArtPosition.lineNumber, stArtPosition.column, endPosition.lineNumber, endPosition.column),
 				text: edit.text
 			});
 		}
 
-		this.resultingContent = this.initialContent;
+		this.resultingContent = this.initiAlContent;
 		for (let i = edits.length - 1; i >= 0; i--) {
 			this.resultingContent = (
 				this.resultingContent.substring(0, edits[i].offset) +
@@ -247,18 +247,18 @@ class TestModel {
 		let r: string[] = [];
 		r.push('testApplyEditsWithSyncedModels(');
 		r.push('\t[');
-		let initialLines = this.initialContent.split('\n');
-		r = r.concat(initialLines.map((i) => `\t\t'${i}',`));
+		let initiAlLines = this.initiAlContent.split('\n');
+		r = r.concAt(initiAlLines.mAp((i) => `\t\t'${i}',`));
 		r.push('\t],');
 		r.push('\t[');
-		r = r.concat(this.edits.map((i) => {
+		r = r.concAt(this.edits.mAp((i) => {
 			let text = `['` + i.text!.split('\n').join(`', '`) + `']`;
-			return `\t\teditOp(${i.range.startLineNumber}, ${i.range.startColumn}, ${i.range.endLineNumber}, ${i.range.endColumn}, ${text}),`;
+			return `\t\teditOp(${i.rAnge.stArtLineNumber}, ${i.rAnge.stArtColumn}, ${i.rAnge.endLineNumber}, ${i.rAnge.endColumn}, ${text}),`;
 		}));
 		r.push('\t],');
 		r.push('\t[');
 		let resultLines = this.resultingContent.split('\n');
-		r = r.concat(resultLines.map((i) => `\t\t'${i}',`));
+		r = r.concAt(resultLines.mAp((i) => `\t\t'${i}',`));
 		r.push('\t]');
 		r.push(');');
 
@@ -280,18 +280,18 @@ if (GENERATE_TESTS) {
 
 		try {
 			testApplyEditsWithSyncedModels(
-				testModel.initialContent.split('\n'),
+				testModel.initiAlContent.split('\n'),
 				testModel.edits,
 				testModel.resultingContent.split('\n')
 			);
-			// throw new Error('a');
-		} catch (err) {
+			// throw new Error('A');
+		} cAtch (err) {
 			console.log(err);
 			console.log(testModel.print());
-			break;
+			breAk;
 		}
 
-		// break;
+		// breAk;
 	}
 
 }

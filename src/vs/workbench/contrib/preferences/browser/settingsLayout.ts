@@ -1,224 +1,224 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
+import { locAlize } from 'vs/nls';
 import { ISetting } from 'vs/workbench/services/preferences/common/preferences';
 
-export interface ITOCEntry {
+export interfAce ITOCEntry {
 	id: string;
-	label: string;
+	lAbel: string;
 
 	children?: ITOCEntry[];
-	settings?: Array<string | ISetting>;
+	settings?: ArrAy<string | ISetting>;
 }
 
-export const commonlyUsedData: ITOCEntry = {
+export const commonlyUsedDAtA: ITOCEntry = {
 	id: 'commonlyUsed',
-	label: localize('commonlyUsed', "Commonly Used"),
-	settings: ['files.autoSave', 'editor.fontSize', 'editor.fontFamily', 'editor.tabSize', 'editor.renderWhitespace', 'editor.cursorStyle', 'editor.multiCursorModifier', 'editor.insertSpaces', 'editor.wordWrap', 'files.exclude', 'files.associations']
+	lAbel: locAlize('commonlyUsed', "Commonly Used"),
+	settings: ['files.AutoSAve', 'editor.fontSize', 'editor.fontFAmily', 'editor.tAbSize', 'editor.renderWhitespAce', 'editor.cursorStyle', 'editor.multiCursorModifier', 'editor.insertSpAces', 'editor.wordWrAp', 'files.exclude', 'files.AssociAtions']
 };
 
-export const tocData: ITOCEntry = {
+export const tocDAtA: ITOCEntry = {
 	id: 'root',
-	label: 'root',
+	lAbel: 'root',
 	children: [
 		{
 			id: 'editor',
-			label: localize('textEditor', "Text Editor"),
+			lAbel: locAlize('textEditor', "Text Editor"),
 			settings: ['editor.*'],
 			children: [
 				{
 					id: 'editor/cursor',
-					label: localize('cursor', "Cursor"),
+					lAbel: locAlize('cursor', "Cursor"),
 					settings: ['editor.cursor*']
 				},
 				{
 					id: 'editor/find',
-					label: localize('find', "Find"),
+					lAbel: locAlize('find', "Find"),
 					settings: ['editor.find.*']
 				},
 				{
 					id: 'editor/font',
-					label: localize('font', "Font"),
+					lAbel: locAlize('font', "Font"),
 					settings: ['editor.font*']
 				},
 				{
-					id: 'editor/format',
-					label: localize('formatting', "Formatting"),
-					settings: ['editor.format*']
+					id: 'editor/formAt',
+					lAbel: locAlize('formAtting', "FormAtting"),
+					settings: ['editor.formAt*']
 				},
 				{
 					id: 'editor/diffEditor',
-					label: localize('diffEditor', "Diff Editor"),
+					lAbel: locAlize('diffEditor', "Diff Editor"),
 					settings: ['diffEditor.*']
 				},
 				{
-					id: 'editor/minimap',
-					label: localize('minimap', "Minimap"),
-					settings: ['editor.minimap.*']
+					id: 'editor/minimAp',
+					lAbel: locAlize('minimAp', "MinimAp"),
+					settings: ['editor.minimAp.*']
 				},
 				{
 					id: 'editor/suggestions',
-					label: localize('suggestions', "Suggestions"),
+					lAbel: locAlize('suggestions', "Suggestions"),
 					settings: ['editor.*suggest*']
 				},
 				{
 					id: 'editor/files',
-					label: localize('files', "Files"),
+					lAbel: locAlize('files', "Files"),
 					settings: ['files.*']
 				}
 			]
 		},
 		{
 			id: 'workbench',
-			label: localize('workbench', "Workbench"),
+			lAbel: locAlize('workbench', "Workbench"),
 			settings: ['workbench.*'],
 			children: [
 				{
-					id: 'workbench/appearance',
-					label: localize('appearance', "Appearance"),
-					settings: ['workbench.activityBar.*', 'workbench.*color*', 'workbench.fontAliasing', 'workbench.iconTheme', 'workbench.sidebar.location', 'workbench.*.visible', 'workbench.tips.enabled', 'workbench.tree.*', 'workbench.view.*']
+					id: 'workbench/AppeArAnce',
+					lAbel: locAlize('AppeArAnce', "AppeArAnce"),
+					settings: ['workbench.ActivityBAr.*', 'workbench.*color*', 'workbench.fontAliAsing', 'workbench.iconTheme', 'workbench.sidebAr.locAtion', 'workbench.*.visible', 'workbench.tips.enAbled', 'workbench.tree.*', 'workbench.view.*']
 				},
 				{
-					id: 'workbench/breadcrumbs',
-					label: localize('breadcrumbs', "Breadcrumbs"),
-					settings: ['breadcrumbs.*']
+					id: 'workbench/breAdcrumbs',
+					lAbel: locAlize('breAdcrumbs', "BreAdcrumbs"),
+					settings: ['breAdcrumbs.*']
 				},
 				{
 					id: 'workbench/editor',
-					label: localize('editorManagement', "Editor Management"),
+					lAbel: locAlize('editorMAnAgement', "Editor MAnAgement"),
 					settings: ['workbench.editor.*']
 				},
 				{
 					id: 'workbench/settings',
-					label: localize('settings', "Settings Editor"),
+					lAbel: locAlize('settings', "Settings Editor"),
 					settings: ['workbench.settings.*']
 				},
 				{
 					id: 'workbench/zenmode',
-					label: localize('zenMode', "Zen Mode"),
+					lAbel: locAlize('zenMode', "Zen Mode"),
 					settings: ['zenmode.*']
 				},
 				{
-					id: 'workbench/screencastmode',
-					label: localize('screencastMode', "Screencast Mode"),
-					settings: ['screencastMode.*']
+					id: 'workbench/screencAstmode',
+					lAbel: locAlize('screencAstMode', "ScreencAst Mode"),
+					settings: ['screencAstMode.*']
 				}
 			]
 		},
 		{
 			id: 'window',
-			label: localize('window', "Window"),
+			lAbel: locAlize('window', "Window"),
 			settings: ['window.*'],
 			children: [
 				{
 					id: 'window/newWindow',
-					label: localize('newWindow', "New Window"),
+					lAbel: locAlize('newWindow', "New Window"),
 					settings: ['window.*newwindow*']
 				}
 			]
 		},
 		{
-			id: 'features',
-			label: localize('features', "Features"),
+			id: 'feAtures',
+			lAbel: locAlize('feAtures', "FeAtures"),
 			children: [
 				{
-					id: 'features/explorer',
-					label: localize('fileExplorer', "Explorer"),
+					id: 'feAtures/explorer',
+					lAbel: locAlize('fileExplorer', "Explorer"),
 					settings: ['explorer.*', 'outline.*']
 				},
 				{
-					id: 'features/search',
-					label: localize('search', "Search"),
-					settings: ['search.*']
+					id: 'feAtures/seArch',
+					lAbel: locAlize('seArch', "SeArch"),
+					settings: ['seArch.*']
 				}
 				,
 				{
-					id: 'features/debug',
-					label: localize('debug', "Debug"),
-					settings: ['debug.*', 'launch']
+					id: 'feAtures/debug',
+					lAbel: locAlize('debug', "Debug"),
+					settings: ['debug.*', 'lAunch']
 				},
 				{
-					id: 'features/scm',
-					label: localize('scm', "SCM"),
+					id: 'feAtures/scm',
+					lAbel: locAlize('scm', "SCM"),
 					settings: ['scm.*']
 				},
 				{
-					id: 'features/extensions',
-					label: localize('extensions', "Extensions"),
+					id: 'feAtures/extensions',
+					lAbel: locAlize('extensions', "Extensions"),
 					settings: ['extensions.*']
 				},
 				{
-					id: 'features/terminal',
-					label: localize('terminal', "Terminal"),
-					settings: ['terminal.*']
+					id: 'feAtures/terminAl',
+					lAbel: locAlize('terminAl', "TerminAl"),
+					settings: ['terminAl.*']
 				},
 				{
-					id: 'features/task',
-					label: localize('task', "Task"),
-					settings: ['task.*']
+					id: 'feAtures/tAsk',
+					lAbel: locAlize('tAsk', "TAsk"),
+					settings: ['tAsk.*']
 				},
 				{
-					id: 'features/problems',
-					label: localize('problems', "Problems"),
+					id: 'feAtures/problems',
+					lAbel: locAlize('problems', "Problems"),
 					settings: ['problems.*']
 				},
 				{
-					id: 'features/output',
-					label: localize('output', "Output"),
+					id: 'feAtures/output',
+					lAbel: locAlize('output', "Output"),
 					settings: ['output.*']
 				},
 				{
-					id: 'features/comments',
-					label: localize('comments', "Comments"),
+					id: 'feAtures/comments',
+					lAbel: locAlize('comments', "Comments"),
 					settings: ['comments.*']
 				},
 				{
-					id: 'features/remote',
-					label: localize('remote', "Remote"),
+					id: 'feAtures/remote',
+					lAbel: locAlize('remote', "Remote"),
 					settings: ['remote.*']
 				},
 				{
-					id: 'features/timeline',
-					label: localize('timeline', "Timeline"),
+					id: 'feAtures/timeline',
+					lAbel: locAlize('timeline', "Timeline"),
 					settings: ['timeline.*']
 				},
 				{
-					id: 'features/notebook',
-					label: localize('notebook', 'Notebook'),
+					id: 'feAtures/notebook',
+					lAbel: locAlize('notebook', 'Notebook'),
 					settings: ['notebook.*']
 				}
 			]
 		},
 		{
-			id: 'application',
-			label: localize('application', "Application"),
+			id: 'ApplicAtion',
+			lAbel: locAlize('ApplicAtion', "ApplicAtion"),
 			children: [
 				{
-					id: 'application/http',
-					label: localize('proxy', "Proxy"),
+					id: 'ApplicAtion/http',
+					lAbel: locAlize('proxy', "Proxy"),
 					settings: ['http.*']
 				},
 				{
-					id: 'application/keyboard',
-					label: localize('keyboard', "Keyboard"),
-					settings: ['keyboard.*']
+					id: 'ApplicAtion/keyboArd',
+					lAbel: locAlize('keyboArd', "KeyboArd"),
+					settings: ['keyboArd.*']
 				},
 				{
-					id: 'application/update',
-					label: localize('update', "Update"),
-					settings: ['update.*']
+					id: 'ApplicAtion/updAte',
+					lAbel: locAlize('updAte', "UpdAte"),
+					settings: ['updAte.*']
 				},
 				{
-					id: 'application/telemetry',
-					label: localize('telemetry', "Telemetry"),
+					id: 'ApplicAtion/telemetry',
+					lAbel: locAlize('telemetry', "Telemetry"),
 					settings: ['telemetry.*']
 				},
 				{
-					id: 'application/settingsSync',
-					label: localize('settingsSync', "Settings Sync"),
+					id: 'ApplicAtion/settingsSync',
+					lAbel: locAlize('settingsSync', "Settings Sync"),
 					settings: ['settingsSync.*', 'sync.*']
 				}
 			]
@@ -239,10 +239,10 @@ export const knownAcronyms = new Set<string>();
 	'id',
 	'php',
 	'scm',
-].forEach(str => knownAcronyms.add(str));
+].forEAch(str => knownAcronyms.Add(str));
 
-export const knownTermMappings = new Map<string, string>();
-knownTermMappings.set('power shell', 'PowerShell');
-knownTermMappings.set('powershell', 'PowerShell');
-knownTermMappings.set('javascript', 'JavaScript');
-knownTermMappings.set('typescript', 'TypeScript');
+export const knownTermMAppings = new MAp<string, string>();
+knownTermMAppings.set('power shell', 'PowerShell');
+knownTermMAppings.set('powershell', 'PowerShell');
+knownTermMAppings.set('jAvAscript', 'JAvAScript');
+knownTermMAppings.set('typescript', 'TypeScript');

@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IExtensionRecommendationReson } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtensionRecommendAtionReson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
 
-export type ExtensionRecommendation = {
-	readonly extensionId: string,
-	readonly reason: IExtensionRecommendationReson;
+export type ExtensionRecommendAtion = {
+	reAdonly extensionId: string,
+	reAdonly reAson: IExtensionRecommendAtionReson;
 };
 
-export abstract class ExtensionRecommendations extends Disposable {
+export AbstrAct clAss ExtensionRecommendAtions extends DisposAble {
 
-	readonly abstract recommendations: ReadonlyArray<ExtensionRecommendation>;
-	protected abstract doActivate(): Promise<void>;
+	reAdonly AbstrAct recommendAtions: ReAdonlyArrAy<ExtensionRecommendAtion>;
+	protected AbstrAct doActivAte(): Promise<void>;
 
-	private _activationPromise: Promise<void> | null = null;
-	get activated(): boolean { return this._activationPromise !== null; }
-	activate(): Promise<void> {
-		if (!this._activationPromise) {
-			this._activationPromise = this.doActivate();
+	privAte _ActivAtionPromise: Promise<void> | null = null;
+	get ActivAted(): booleAn { return this._ActivAtionPromise !== null; }
+	ActivAte(): Promise<void> {
+		if (!this._ActivAtionPromise) {
+			this._ActivAtionPromise = this.doActivAte();
 		}
-		return this._activationPromise;
+		return this._ActivAtionPromise;
 	}
 
 }

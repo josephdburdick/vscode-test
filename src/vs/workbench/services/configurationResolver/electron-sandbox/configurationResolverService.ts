@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { BaseConfigurationResolverService } from 'vs/workbench/services/configurationResolver/browser/configurationResolverService';
-import { process } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { IConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolver';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { BAseConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/browser/configurAtionResolverService';
+import { process } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
 
-export class ConfigurationResolverService extends BaseConfigurationResolverService {
+export clAss ConfigurAtionResolverService extends BAseConfigurAtionResolverService {
 
 	constructor(
 		@IEditorService editorService: IEditorService,
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@ICommandService commandService: ICommandService,
-		@IWorkspaceContextService workspaceContextService: IWorkspaceContextService,
+		@INAtiveWorkbenchEnvironmentService environmentService: INAtiveWorkbenchEnvironmentService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@ICommAndService commAndService: ICommAndService,
+		@IWorkspAceContextService workspAceContextService: IWorkspAceContextService,
 		@IQuickInputService quickInputService: IQuickInputService,
-		@ILabelService labelService: ILabelService
+		@ILAbelService lAbelService: ILAbelService
 	) {
 		super({
-			getExecPath: (): string | undefined => {
-				return environmentService.execPath;
+			getExecPAth: (): string | undefined => {
+				return environmentService.execPAth;
 			}
-		}, process.env as IProcessEnvironment, editorService, configurationService, commandService, workspaceContextService, quickInputService, labelService);
+		}, process.env As IProcessEnvironment, editorService, configurAtionService, commAndService, workspAceContextService, quickInputService, lAbelService);
 	}
 }
 
-registerSingleton(IConfigurationResolverService, ConfigurationResolverService, true);
+registerSingleton(IConfigurAtionResolverService, ConfigurAtionResolverService, true);

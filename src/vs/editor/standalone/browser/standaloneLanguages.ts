@@ -1,600 +1,600 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { Token, TokenizationResult, TokenizationResult2 } from 'vs/editor/common/core/token';
-import * as model from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
-import { LanguageConfiguration } from 'vs/editor/common/modes/languageConfiguration';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { Token, TokenizAtionResult, TokenizAtionResult2 } from 'vs/editor/common/core/token';
+import * As model from 'vs/editor/common/model';
+import * As modes from 'vs/editor/common/modes';
+import { LAnguAgeConfigurAtion } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
 import { ModesRegistry } from 'vs/editor/common/modes/modesRegistry';
-import { ILanguageExtensionPoint } from 'vs/editor/common/services/modeService';
-import * as standaloneEnums from 'vs/editor/common/standalone/standaloneEnums';
-import { StaticServices } from 'vs/editor/standalone/browser/standaloneServices';
-import { compile } from 'vs/editor/standalone/common/monarch/monarchCompile';
-import { createTokenizationSupport } from 'vs/editor/standalone/common/monarch/monarchLexer';
-import { IMonarchLanguage } from 'vs/editor/standalone/common/monarch/monarchTypes';
-import { IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
-import { IMarkerData } from 'vs/platform/markers/common/markers';
+import { ILAnguAgeExtensionPoint } from 'vs/editor/common/services/modeService';
+import * As stAndAloneEnums from 'vs/editor/common/stAndAlone/stAndAloneEnums';
+import { StAticServices } from 'vs/editor/stAndAlone/browser/stAndAloneServices';
+import { compile } from 'vs/editor/stAndAlone/common/monArch/monArchCompile';
+import { creAteTokenizAtionSupport } from 'vs/editor/stAndAlone/common/monArch/monArchLexer';
+import { IMonArchLAnguAge } from 'vs/editor/stAndAlone/common/monArch/monArchTypes';
+import { IStAndAloneThemeService } from 'vs/editor/stAndAlone/common/stAndAloneThemeService';
+import { IMArkerDAtA } from 'vs/plAtform/mArkers/common/mArkers';
 
 /**
- * Register information about a new language.
+ * Register informAtion About A new lAnguAge.
  */
-export function register(language: ILanguageExtensionPoint): void {
-	ModesRegistry.registerLanguage(language);
+export function register(lAnguAge: ILAnguAgeExtensionPoint): void {
+	ModesRegistry.registerLAnguAge(lAnguAge);
 }
 
 /**
- * Get the information of all the registered languages.
+ * Get the informAtion of All the registered lAnguAges.
  */
-export function getLanguages(): ILanguageExtensionPoint[] {
-	let result: ILanguageExtensionPoint[] = [];
-	result = result.concat(ModesRegistry.getLanguages());
+export function getLAnguAges(): ILAnguAgeExtensionPoint[] {
+	let result: ILAnguAgeExtensionPoint[] = [];
+	result = result.concAt(ModesRegistry.getLAnguAges());
 	return result;
 }
 
-export function getEncodedLanguageId(languageId: string): number {
-	let lid = StaticServices.modeService.get().getLanguageIdentifier(languageId);
+export function getEncodedLAnguAgeId(lAnguAgeId: string): number {
+	let lid = StAticServices.modeService.get().getLAnguAgeIdentifier(lAnguAgeId);
 	return lid ? lid.id : 0;
 }
 
 /**
- * An event emitted when a language is first time needed (e.g. a model has it set).
+ * An event emitted when A lAnguAge is first time needed (e.g. A model hAs it set).
  * @event
  */
-export function onLanguage(languageId: string, callback: () => void): IDisposable {
-	let disposable = StaticServices.modeService.get().onDidCreateMode((mode) => {
-		if (mode.getId() === languageId) {
+export function onLAnguAge(lAnguAgeId: string, cAllbAck: () => void): IDisposAble {
+	let disposAble = StAticServices.modeService.get().onDidCreAteMode((mode) => {
+		if (mode.getId() === lAnguAgeId) {
 			// stop listening
-			disposable.dispose();
-			// invoke actual listener
-			callback();
+			disposAble.dispose();
+			// invoke ActuAl listener
+			cAllbAck();
 		}
 	});
-	return disposable;
+	return disposAble;
 }
 
 /**
- * Set the editing configuration for a language.
+ * Set the editing configurAtion for A lAnguAge.
  */
-export function setLanguageConfiguration(languageId: string, configuration: LanguageConfiguration): IDisposable {
-	let languageIdentifier = StaticServices.modeService.get().getLanguageIdentifier(languageId);
-	if (!languageIdentifier) {
-		throw new Error(`Cannot set configuration for unknown language ${languageId}`);
+export function setLAnguAgeConfigurAtion(lAnguAgeId: string, configurAtion: LAnguAgeConfigurAtion): IDisposAble {
+	let lAnguAgeIdentifier = StAticServices.modeService.get().getLAnguAgeIdentifier(lAnguAgeId);
+	if (!lAnguAgeIdentifier) {
+		throw new Error(`CAnnot set configurAtion for unknown lAnguAge ${lAnguAgeId}`);
 	}
-	return LanguageConfigurationRegistry.register(languageIdentifier, configuration);
+	return LAnguAgeConfigurAtionRegistry.register(lAnguAgeIdentifier, configurAtion);
 }
 
 /**
- * @internal
+ * @internAl
  */
-export class EncodedTokenizationSupport2Adapter implements modes.ITokenizationSupport {
+export clAss EncodedTokenizAtionSupport2AdApter implements modes.ITokenizAtionSupport {
 
-	private readonly _actual: EncodedTokensProvider;
+	privAte reAdonly _ActuAl: EncodedTokensProvider;
 
-	constructor(actual: EncodedTokensProvider) {
-		this._actual = actual;
+	constructor(ActuAl: EncodedTokensProvider) {
+		this._ActuAl = ActuAl;
 	}
 
-	public getInitialState(): modes.IState {
-		return this._actual.getInitialState();
+	public getInitiAlStAte(): modes.IStAte {
+		return this._ActuAl.getInitiAlStAte();
 	}
 
-	public tokenize(line: string, state: modes.IState, offsetDelta: number): TokenizationResult {
+	public tokenize(line: string, stAte: modes.IStAte, offsetDeltA: number): TokenizAtionResult {
 		throw new Error('Not supported!');
 	}
 
-	public tokenize2(line: string, state: modes.IState): TokenizationResult2 {
-		let result = this._actual.tokenizeEncoded(line, state);
-		return new TokenizationResult2(result.tokens, result.endState);
+	public tokenize2(line: string, stAte: modes.IStAte): TokenizAtionResult2 {
+		let result = this._ActuAl.tokenizeEncoded(line, stAte);
+		return new TokenizAtionResult2(result.tokens, result.endStAte);
 	}
 }
 
 /**
- * @internal
+ * @internAl
  */
-export class TokenizationSupport2Adapter implements modes.ITokenizationSupport {
+export clAss TokenizAtionSupport2AdApter implements modes.ITokenizAtionSupport {
 
-	private readonly _standaloneThemeService: IStandaloneThemeService;
-	private readonly _languageIdentifier: modes.LanguageIdentifier;
-	private readonly _actual: TokensProvider;
+	privAte reAdonly _stAndAloneThemeService: IStAndAloneThemeService;
+	privAte reAdonly _lAnguAgeIdentifier: modes.LAnguAgeIdentifier;
+	privAte reAdonly _ActuAl: TokensProvider;
 
-	constructor(standaloneThemeService: IStandaloneThemeService, languageIdentifier: modes.LanguageIdentifier, actual: TokensProvider) {
-		this._standaloneThemeService = standaloneThemeService;
-		this._languageIdentifier = languageIdentifier;
-		this._actual = actual;
+	constructor(stAndAloneThemeService: IStAndAloneThemeService, lAnguAgeIdentifier: modes.LAnguAgeIdentifier, ActuAl: TokensProvider) {
+		this._stAndAloneThemeService = stAndAloneThemeService;
+		this._lAnguAgeIdentifier = lAnguAgeIdentifier;
+		this._ActuAl = ActuAl;
 	}
 
-	public getInitialState(): modes.IState {
-		return this._actual.getInitialState();
+	public getInitiAlStAte(): modes.IStAte {
+		return this._ActuAl.getInitiAlStAte();
 	}
 
-	private _toClassicTokens(tokens: IToken[], language: string, offsetDelta: number): Token[] {
+	privAte _toClAssicTokens(tokens: IToken[], lAnguAge: string, offsetDeltA: number): Token[] {
 		let result: Token[] = [];
-		let previousStartIndex: number = 0;
+		let previousStArtIndex: number = 0;
 		for (let i = 0, len = tokens.length; i < len; i++) {
 			const t = tokens[i];
-			let startIndex = t.startIndex;
+			let stArtIndex = t.stArtIndex;
 
-			// Prevent issues stemming from a buggy external tokenizer.
+			// Prevent issues stemming from A buggy externAl tokenizer.
 			if (i === 0) {
-				// Force first token to start at first index!
-				startIndex = 0;
-			} else if (startIndex < previousStartIndex) {
-				// Force tokens to be after one another!
-				startIndex = previousStartIndex;
+				// Force first token to stArt At first index!
+				stArtIndex = 0;
+			} else if (stArtIndex < previousStArtIndex) {
+				// Force tokens to be After one Another!
+				stArtIndex = previousStArtIndex;
 			}
 
-			result[i] = new Token(startIndex + offsetDelta, t.scopes, language);
+			result[i] = new Token(stArtIndex + offsetDeltA, t.scopes, lAnguAge);
 
-			previousStartIndex = startIndex;
+			previousStArtIndex = stArtIndex;
 		}
 		return result;
 	}
 
-	public tokenize(line: string, state: modes.IState, offsetDelta: number): TokenizationResult {
-		let actualResult = this._actual.tokenize(line, state);
-		let tokens = this._toClassicTokens(actualResult.tokens, this._languageIdentifier.language, offsetDelta);
+	public tokenize(line: string, stAte: modes.IStAte, offsetDeltA: number): TokenizAtionResult {
+		let ActuAlResult = this._ActuAl.tokenize(line, stAte);
+		let tokens = this._toClAssicTokens(ActuAlResult.tokens, this._lAnguAgeIdentifier.lAnguAge, offsetDeltA);
 
-		let endState: modes.IState;
-		// try to save an object if possible
-		if (actualResult.endState.equals(state)) {
-			endState = state;
+		let endStAte: modes.IStAte;
+		// try to sAve An object if possible
+		if (ActuAlResult.endStAte.equAls(stAte)) {
+			endStAte = stAte;
 		} else {
-			endState = actualResult.endState;
+			endStAte = ActuAlResult.endStAte;
 		}
 
-		return new TokenizationResult(tokens, endState);
+		return new TokenizAtionResult(tokens, endStAte);
 	}
 
-	private _toBinaryTokens(tokens: IToken[], offsetDelta: number): Uint32Array {
-		const languageId = this._languageIdentifier.id;
-		const tokenTheme = this._standaloneThemeService.getColorTheme().tokenTheme;
+	privAte _toBinAryTokens(tokens: IToken[], offsetDeltA: number): Uint32ArrAy {
+		const lAnguAgeId = this._lAnguAgeIdentifier.id;
+		const tokenTheme = this._stAndAloneThemeService.getColorTheme().tokenTheme;
 
 		let result: number[] = [], resultLen = 0;
-		let previousStartIndex: number = 0;
+		let previousStArtIndex: number = 0;
 		for (let i = 0, len = tokens.length; i < len; i++) {
 			const t = tokens[i];
-			const metadata = tokenTheme.match(languageId, t.scopes);
-			if (resultLen > 0 && result[resultLen - 1] === metadata) {
-				// same metadata
+			const metAdAtA = tokenTheme.mAtch(lAnguAgeId, t.scopes);
+			if (resultLen > 0 && result[resultLen - 1] === metAdAtA) {
+				// sAme metAdAtA
 				continue;
 			}
 
-			let startIndex = t.startIndex;
+			let stArtIndex = t.stArtIndex;
 
-			// Prevent issues stemming from a buggy external tokenizer.
+			// Prevent issues stemming from A buggy externAl tokenizer.
 			if (i === 0) {
-				// Force first token to start at first index!
-				startIndex = 0;
-			} else if (startIndex < previousStartIndex) {
-				// Force tokens to be after one another!
-				startIndex = previousStartIndex;
+				// Force first token to stArt At first index!
+				stArtIndex = 0;
+			} else if (stArtIndex < previousStArtIndex) {
+				// Force tokens to be After one Another!
+				stArtIndex = previousStArtIndex;
 			}
 
-			result[resultLen++] = startIndex + offsetDelta;
-			result[resultLen++] = metadata;
+			result[resultLen++] = stArtIndex + offsetDeltA;
+			result[resultLen++] = metAdAtA;
 
-			previousStartIndex = startIndex;
+			previousStArtIndex = stArtIndex;
 		}
 
-		let actualResult = new Uint32Array(resultLen);
+		let ActuAlResult = new Uint32ArrAy(resultLen);
 		for (let i = 0; i < resultLen; i++) {
-			actualResult[i] = result[i];
+			ActuAlResult[i] = result[i];
 		}
-		return actualResult;
+		return ActuAlResult;
 	}
 
-	public tokenize2(line: string, state: modes.IState, offsetDelta: number): TokenizationResult2 {
-		let actualResult = this._actual.tokenize(line, state);
-		let tokens = this._toBinaryTokens(actualResult.tokens, offsetDelta);
+	public tokenize2(line: string, stAte: modes.IStAte, offsetDeltA: number): TokenizAtionResult2 {
+		let ActuAlResult = this._ActuAl.tokenize(line, stAte);
+		let tokens = this._toBinAryTokens(ActuAlResult.tokens, offsetDeltA);
 
-		let endState: modes.IState;
-		// try to save an object if possible
-		if (actualResult.endState.equals(state)) {
-			endState = state;
+		let endStAte: modes.IStAte;
+		// try to sAve An object if possible
+		if (ActuAlResult.endStAte.equAls(stAte)) {
+			endStAte = stAte;
 		} else {
-			endState = actualResult.endState;
+			endStAte = ActuAlResult.endStAte;
 		}
 
-		return new TokenizationResult2(tokens, endState);
+		return new TokenizAtionResult2(tokens, endStAte);
 	}
 }
 
 /**
  * A token.
  */
-export interface IToken {
-	startIndex: number;
+export interfAce IToken {
+	stArtIndex: number;
 	scopes: string;
 }
 
 /**
- * The result of a line tokenization.
+ * The result of A line tokenizAtion.
  */
-export interface ILineTokens {
+export interfAce ILineTokens {
 	/**
 	 * The list of tokens on the line.
 	 */
 	tokens: IToken[];
 	/**
-	 * The tokenization end state.
-	 * A pointer will be held to this and the object should not be modified by the tokenizer after the pointer is returned.
+	 * The tokenizAtion end stAte.
+	 * A pointer will be held to this And the object should not be modified by the tokenizer After the pointer is returned.
 	 */
-	endState: modes.IState;
+	endStAte: modes.IStAte;
 }
 
 /**
- * The result of a line tokenization.
+ * The result of A line tokenizAtion.
  */
-export interface IEncodedLineTokens {
+export interfAce IEncodedLineTokens {
 	/**
-	 * The tokens on the line in a binary, encoded format. Each token occupies two array indices. For token i:
-	 *  - at offset 2*i => startIndex
-	 *  - at offset 2*i + 1 => metadata
-	 * Meta data is in binary format:
+	 * The tokens on the line in A binAry, encoded formAt. EAch token occupies two ArrAy indices. For token i:
+	 *  - At offset 2*i => stArtIndex
+	 *  - At offset 2*i + 1 => metAdAtA
+	 * MetA dAtA is in binAry formAt:
 	 * - -------------------------------------------
 	 *     3322 2222 2222 1111 1111 1100 0000 0000
 	 *     1098 7654 3210 9876 5432 1098 7654 3210
 	 * - -------------------------------------------
 	 *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
 	 * - -------------------------------------------
-	 *  - L = EncodedLanguageId (8 bits): Use `getEncodedLanguageId` to get the encoded ID of a language.
-	 *  - T = StandardTokenType (3 bits): Other = 0, Comment = 1, String = 2, RegEx = 4.
-	 *  - F = FontStyle (3 bits): None = 0, Italic = 1, Bold = 2, Underline = 4.
+	 *  - L = EncodedLAnguAgeId (8 bits): Use `getEncodedLAnguAgeId` to get the encoded ID of A lAnguAge.
+	 *  - T = StAndArdTokenType (3 bits): Other = 0, Comment = 1, String = 2, RegEx = 4.
+	 *  - F = FontStyle (3 bits): None = 0, ItAlic = 1, Bold = 2, Underline = 4.
 	 *  - f = foreground ColorId (9 bits)
-	 *  - b = background ColorId (9 bits)
-	 *  - The color value for each colorId is defined in IStandaloneThemeData.customTokenColors:
-	 * e.g. colorId = 1 is stored in IStandaloneThemeData.customTokenColors[1]. Color id = 0 means no color,
-	 * id = 1 is for the default foreground color, id = 2 for the default background.
+	 *  - b = bAckground ColorId (9 bits)
+	 *  - The color vAlue for eAch colorId is defined in IStAndAloneThemeDAtA.customTokenColors:
+	 * e.g. colorId = 1 is stored in IStAndAloneThemeDAtA.customTokenColors[1]. Color id = 0 meAns no color,
+	 * id = 1 is for the defAult foreground color, id = 2 for the defAult bAckground.
 	 */
-	tokens: Uint32Array;
+	tokens: Uint32ArrAy;
 	/**
-	 * The tokenization end state.
-	 * A pointer will be held to this and the object should not be modified by the tokenizer after the pointer is returned.
+	 * The tokenizAtion end stAte.
+	 * A pointer will be held to this And the object should not be modified by the tokenizer After the pointer is returned.
 	 */
-	endState: modes.IState;
+	endStAte: modes.IStAte;
 }
 
 /**
- * A "manual" provider of tokens.
+ * A "mAnuAl" provider of tokens.
  */
-export interface TokensProvider {
+export interfAce TokensProvider {
 	/**
-	 * The initial state of a language. Will be the state passed in to tokenize the first line.
+	 * The initiAl stAte of A lAnguAge. Will be the stAte pAssed in to tokenize the first line.
 	 */
-	getInitialState(): modes.IState;
+	getInitiAlStAte(): modes.IStAte;
 	/**
-	 * Tokenize a line given the state at the beginning of the line.
+	 * Tokenize A line given the stAte At the beginning of the line.
 	 */
-	tokenize(line: string, state: modes.IState): ILineTokens;
+	tokenize(line: string, stAte: modes.IStAte): ILineTokens;
 }
 
 /**
- * A "manual" provider of tokens, returning tokens in a binary form.
+ * A "mAnuAl" provider of tokens, returning tokens in A binAry form.
  */
-export interface EncodedTokensProvider {
+export interfAce EncodedTokensProvider {
 	/**
-	 * The initial state of a language. Will be the state passed in to tokenize the first line.
+	 * The initiAl stAte of A lAnguAge. Will be the stAte pAssed in to tokenize the first line.
 	 */
-	getInitialState(): modes.IState;
+	getInitiAlStAte(): modes.IStAte;
 	/**
-	 * Tokenize a line given the state at the beginning of the line.
+	 * Tokenize A line given the stAte At the beginning of the line.
 	 */
-	tokenizeEncoded(line: string, state: modes.IState): IEncodedLineTokens;
+	tokenizeEncoded(line: string, stAte: modes.IStAte): IEncodedLineTokens;
 }
 
 function isEncodedTokensProvider(provider: TokensProvider | EncodedTokensProvider): provider is EncodedTokensProvider {
 	return 'tokenizeEncoded' in provider;
 }
 
-function isThenable<T>(obj: any): obj is Thenable<T> {
+function isThenAble<T>(obj: Any): obj is ThenAble<T> {
 	return obj && typeof obj.then === 'function';
 }
 
 /**
- * Set the tokens provider for a language (manual implementation).
+ * Set the tokens provider for A lAnguAge (mAnuAl implementAtion).
  */
-export function setTokensProvider(languageId: string, provider: TokensProvider | EncodedTokensProvider | Thenable<TokensProvider | EncodedTokensProvider>): IDisposable {
-	let languageIdentifier = StaticServices.modeService.get().getLanguageIdentifier(languageId);
-	if (!languageIdentifier) {
-		throw new Error(`Cannot set tokens provider for unknown language ${languageId}`);
+export function setTokensProvider(lAnguAgeId: string, provider: TokensProvider | EncodedTokensProvider | ThenAble<TokensProvider | EncodedTokensProvider>): IDisposAble {
+	let lAnguAgeIdentifier = StAticServices.modeService.get().getLAnguAgeIdentifier(lAnguAgeId);
+	if (!lAnguAgeIdentifier) {
+		throw new Error(`CAnnot set tokens provider for unknown lAnguAge ${lAnguAgeId}`);
 	}
-	const create = (provider: TokensProvider | EncodedTokensProvider) => {
+	const creAte = (provider: TokensProvider | EncodedTokensProvider) => {
 		if (isEncodedTokensProvider(provider)) {
-			return new EncodedTokenizationSupport2Adapter(provider);
+			return new EncodedTokenizAtionSupport2AdApter(provider);
 		} else {
-			return new TokenizationSupport2Adapter(StaticServices.standaloneThemeService.get(), languageIdentifier!, provider);
+			return new TokenizAtionSupport2AdApter(StAticServices.stAndAloneThemeService.get(), lAnguAgeIdentifier!, provider);
 		}
 	};
-	if (isThenable<TokensProvider | EncodedTokensProvider>(provider)) {
-		return modes.TokenizationRegistry.registerPromise(languageId, provider.then(provider => create(provider)));
+	if (isThenAble<TokensProvider | EncodedTokensProvider>(provider)) {
+		return modes.TokenizAtionRegistry.registerPromise(lAnguAgeId, provider.then(provider => creAte(provider)));
 	}
-	return modes.TokenizationRegistry.register(languageId, create(provider));
+	return modes.TokenizAtionRegistry.register(lAnguAgeId, creAte(provider));
 }
 
 
 /**
- * Set the tokens provider for a language (monarch implementation).
+ * Set the tokens provider for A lAnguAge (monArch implementAtion).
  */
-export function setMonarchTokensProvider(languageId: string, languageDef: IMonarchLanguage | Thenable<IMonarchLanguage>): IDisposable {
-	const create = (languageDef: IMonarchLanguage) => {
-		return createTokenizationSupport(StaticServices.modeService.get(), StaticServices.standaloneThemeService.get(), languageId, compile(languageId, languageDef));
+export function setMonArchTokensProvider(lAnguAgeId: string, lAnguAgeDef: IMonArchLAnguAge | ThenAble<IMonArchLAnguAge>): IDisposAble {
+	const creAte = (lAnguAgeDef: IMonArchLAnguAge) => {
+		return creAteTokenizAtionSupport(StAticServices.modeService.get(), StAticServices.stAndAloneThemeService.get(), lAnguAgeId, compile(lAnguAgeId, lAnguAgeDef));
 	};
-	if (isThenable<IMonarchLanguage>(languageDef)) {
-		return modes.TokenizationRegistry.registerPromise(languageId, languageDef.then(languageDef => create(languageDef)));
+	if (isThenAble<IMonArchLAnguAge>(lAnguAgeDef)) {
+		return modes.TokenizAtionRegistry.registerPromise(lAnguAgeId, lAnguAgeDef.then(lAnguAgeDef => creAte(lAnguAgeDef)));
 	}
-	return modes.TokenizationRegistry.register(languageId, create(languageDef));
+	return modes.TokenizAtionRegistry.register(lAnguAgeId, creAte(lAnguAgeDef));
 }
 
 /**
- * Register a reference provider (used by e.g. reference search).
+ * Register A reference provider (used by e.g. reference seArch).
  */
-export function registerReferenceProvider(languageId: string, provider: modes.ReferenceProvider): IDisposable {
-	return modes.ReferenceProviderRegistry.register(languageId, provider);
+export function registerReferenceProvider(lAnguAgeId: string, provider: modes.ReferenceProvider): IDisposAble {
+	return modes.ReferenceProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a rename provider (used by e.g. rename symbol).
+ * Register A renAme provider (used by e.g. renAme symbol).
  */
-export function registerRenameProvider(languageId: string, provider: modes.RenameProvider): IDisposable {
-	return modes.RenameProviderRegistry.register(languageId, provider);
+export function registerRenAmeProvider(lAnguAgeId: string, provider: modes.RenAmeProvider): IDisposAble {
+	return modes.RenAmeProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a signature help provider (used by e.g. parameter hints).
+ * Register A signAture help provider (used by e.g. pArAmeter hints).
  */
-export function registerSignatureHelpProvider(languageId: string, provider: modes.SignatureHelpProvider): IDisposable {
-	return modes.SignatureHelpProviderRegistry.register(languageId, provider);
+export function registerSignAtureHelpProvider(lAnguAgeId: string, provider: modes.SignAtureHelpProvider): IDisposAble {
+	return modes.SignAtureHelpProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a hover provider (used by e.g. editor hover).
+ * Register A hover provider (used by e.g. editor hover).
  */
-export function registerHoverProvider(languageId: string, provider: modes.HoverProvider): IDisposable {
-	return modes.HoverProviderRegistry.register(languageId, {
-		provideHover: (model: model.ITextModel, position: Position, token: CancellationToken): Promise<modes.Hover | undefined> => {
+export function registerHoverProvider(lAnguAgeId: string, provider: modes.HoverProvider): IDisposAble {
+	return modes.HoverProviderRegistry.register(lAnguAgeId, {
+		provideHover: (model: model.ITextModel, position: Position, token: CAncellAtionToken): Promise<modes.Hover | undefined> => {
 			let word = model.getWordAtPosition(position);
 
-			return Promise.resolve<modes.Hover | null | undefined>(provider.provideHover(model, position, token)).then((value): modes.Hover | undefined => {
-				if (!value) {
+			return Promise.resolve<modes.Hover | null | undefined>(provider.provideHover(model, position, token)).then((vAlue): modes.Hover | undefined => {
+				if (!vAlue) {
 					return undefined;
 				}
-				if (!value.range && word) {
-					value.range = new Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn);
+				if (!vAlue.rAnge && word) {
+					vAlue.rAnge = new RAnge(position.lineNumber, word.stArtColumn, position.lineNumber, word.endColumn);
 				}
-				if (!value.range) {
-					value.range = new Range(position.lineNumber, position.column, position.lineNumber, position.column);
+				if (!vAlue.rAnge) {
+					vAlue.rAnge = new RAnge(position.lineNumber, position.column, position.lineNumber, position.column);
 				}
-				return value;
+				return vAlue;
 			});
 		}
 	});
 }
 
 /**
- * Register a document symbol provider (used by e.g. outline).
+ * Register A document symbol provider (used by e.g. outline).
  */
-export function registerDocumentSymbolProvider(languageId: string, provider: modes.DocumentSymbolProvider): IDisposable {
-	return modes.DocumentSymbolProviderRegistry.register(languageId, provider);
+export function registerDocumentSymbolProvider(lAnguAgeId: string, provider: modes.DocumentSymbolProvider): IDisposAble {
+	return modes.DocumentSymbolProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a document highlight provider (used by e.g. highlight occurrences).
+ * Register A document highlight provider (used by e.g. highlight occurrences).
  */
-export function registerDocumentHighlightProvider(languageId: string, provider: modes.DocumentHighlightProvider): IDisposable {
-	return modes.DocumentHighlightProviderRegistry.register(languageId, provider);
+export function registerDocumentHighlightProvider(lAnguAgeId: string, provider: modes.DocumentHighlightProvider): IDisposAble {
+	return modes.DocumentHighlightProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register an on type rename provider.
+ * Register An on type renAme provider.
  */
-export function registerOnTypeRenameProvider(languageId: string, provider: modes.OnTypeRenameProvider): IDisposable {
-	return modes.OnTypeRenameProviderRegistry.register(languageId, provider);
+export function registerOnTypeRenAmeProvider(lAnguAgeId: string, provider: modes.OnTypeRenAmeProvider): IDisposAble {
+	return modes.OnTypeRenAmeProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a definition provider (used by e.g. go to definition).
+ * Register A definition provider (used by e.g. go to definition).
  */
-export function registerDefinitionProvider(languageId: string, provider: modes.DefinitionProvider): IDisposable {
-	return modes.DefinitionProviderRegistry.register(languageId, provider);
+export function registerDefinitionProvider(lAnguAgeId: string, provider: modes.DefinitionProvider): IDisposAble {
+	return modes.DefinitionProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a implementation provider (used by e.g. go to implementation).
+ * Register A implementAtion provider (used by e.g. go to implementAtion).
  */
-export function registerImplementationProvider(languageId: string, provider: modes.ImplementationProvider): IDisposable {
-	return modes.ImplementationProviderRegistry.register(languageId, provider);
+export function registerImplementAtionProvider(lAnguAgeId: string, provider: modes.ImplementAtionProvider): IDisposAble {
+	return modes.ImplementAtionProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a type definition provider (used by e.g. go to type definition).
+ * Register A type definition provider (used by e.g. go to type definition).
  */
-export function registerTypeDefinitionProvider(languageId: string, provider: modes.TypeDefinitionProvider): IDisposable {
-	return modes.TypeDefinitionProviderRegistry.register(languageId, provider);
+export function registerTypeDefinitionProvider(lAnguAgeId: string, provider: modes.TypeDefinitionProvider): IDisposAble {
+	return modes.TypeDefinitionProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a code lens provider (used by e.g. inline code lenses).
+ * Register A code lens provider (used by e.g. inline code lenses).
  */
-export function registerCodeLensProvider(languageId: string, provider: modes.CodeLensProvider): IDisposable {
-	return modes.CodeLensProviderRegistry.register(languageId, provider);
+export function registerCodeLensProvider(lAnguAgeId: string, provider: modes.CodeLensProvider): IDisposAble {
+	return modes.CodeLensProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a code action provider (used by e.g. quick fix).
+ * Register A code Action provider (used by e.g. quick fix).
  */
-export function registerCodeActionProvider(languageId: string, provider: CodeActionProvider): IDisposable {
-	return modes.CodeActionProviderRegistry.register(languageId, {
-		provideCodeActions: (model: model.ITextModel, range: Range, context: modes.CodeActionContext, token: CancellationToken): modes.ProviderResult<modes.CodeActionList> => {
-			let markers = StaticServices.markerService.get().read({ resource: model.uri }).filter(m => {
-				return Range.areIntersectingOrTouching(m, range);
+export function registerCodeActionProvider(lAnguAgeId: string, provider: CodeActionProvider): IDisposAble {
+	return modes.CodeActionProviderRegistry.register(lAnguAgeId, {
+		provideCodeActions: (model: model.ITextModel, rAnge: RAnge, context: modes.CodeActionContext, token: CAncellAtionToken): modes.ProviderResult<modes.CodeActionList> => {
+			let mArkers = StAticServices.mArkerService.get().reAd({ resource: model.uri }).filter(m => {
+				return RAnge.AreIntersectingOrTouching(m, rAnge);
 			});
-			return provider.provideCodeActions(model, range, { markers, only: context.only }, token);
+			return provider.provideCodeActions(model, rAnge, { mArkers, only: context.only }, token);
 		}
 	});
 }
 
 /**
- * Register a formatter that can handle only entire models.
+ * Register A formAtter thAt cAn hAndle only entire models.
  */
-export function registerDocumentFormattingEditProvider(languageId: string, provider: modes.DocumentFormattingEditProvider): IDisposable {
-	return modes.DocumentFormattingEditProviderRegistry.register(languageId, provider);
+export function registerDocumentFormAttingEditProvider(lAnguAgeId: string, provider: modes.DocumentFormAttingEditProvider): IDisposAble {
+	return modes.DocumentFormAttingEditProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a formatter that can handle a range inside a model.
+ * Register A formAtter thAt cAn hAndle A rAnge inside A model.
  */
-export function registerDocumentRangeFormattingEditProvider(languageId: string, provider: modes.DocumentRangeFormattingEditProvider): IDisposable {
-	return modes.DocumentRangeFormattingEditProviderRegistry.register(languageId, provider);
+export function registerDocumentRAngeFormAttingEditProvider(lAnguAgeId: string, provider: modes.DocumentRAngeFormAttingEditProvider): IDisposAble {
+	return modes.DocumentRAngeFormAttingEditProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a formatter than can do formatting as the user types.
+ * Register A formAtter thAn cAn do formAtting As the user types.
  */
-export function registerOnTypeFormattingEditProvider(languageId: string, provider: modes.OnTypeFormattingEditProvider): IDisposable {
-	return modes.OnTypeFormattingEditProviderRegistry.register(languageId, provider);
+export function registerOnTypeFormAttingEditProvider(lAnguAgeId: string, provider: modes.OnTypeFormAttingEditProvider): IDisposAble {
+	return modes.OnTypeFormAttingEditProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a link provider that can find links in text.
+ * Register A link provider thAt cAn find links in text.
  */
-export function registerLinkProvider(languageId: string, provider: modes.LinkProvider): IDisposable {
-	return modes.LinkProviderRegistry.register(languageId, provider);
+export function registerLinkProvider(lAnguAgeId: string, provider: modes.LinkProvider): IDisposAble {
+	return modes.LinkProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a completion item provider (use by e.g. suggestions).
+ * Register A completion item provider (use by e.g. suggestions).
  */
-export function registerCompletionItemProvider(languageId: string, provider: modes.CompletionItemProvider): IDisposable {
-	return modes.CompletionProviderRegistry.register(languageId, provider);
+export function registerCompletionItemProvider(lAnguAgeId: string, provider: modes.CompletionItemProvider): IDisposAble {
+	return modes.CompletionProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a document color provider (used by Color Picker, Color Decorator).
+ * Register A document color provider (used by Color Picker, Color DecorAtor).
  */
-export function registerColorProvider(languageId: string, provider: modes.DocumentColorProvider): IDisposable {
-	return modes.ColorProviderRegistry.register(languageId, provider);
+export function registerColorProvider(lAnguAgeId: string, provider: modes.DocumentColorProvider): IDisposAble {
+	return modes.ColorProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a folding range provider
+ * Register A folding rAnge provider
  */
-export function registerFoldingRangeProvider(languageId: string, provider: modes.FoldingRangeProvider): IDisposable {
-	return modes.FoldingRangeProviderRegistry.register(languageId, provider);
+export function registerFoldingRAngeProvider(lAnguAgeId: string, provider: modes.FoldingRAngeProvider): IDisposAble {
+	return modes.FoldingRAngeProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a declaration provider
+ * Register A declArAtion provider
  */
-export function registerDeclarationProvider(languageId: string, provider: modes.DeclarationProvider): IDisposable {
-	return modes.DeclarationProviderRegistry.register(languageId, provider);
+export function registerDeclArAtionProvider(lAnguAgeId: string, provider: modes.DeclArAtionProvider): IDisposAble {
+	return modes.DeclArAtionProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a selection range provider
+ * Register A selection rAnge provider
  */
-export function registerSelectionRangeProvider(languageId: string, provider: modes.SelectionRangeProvider): IDisposable {
-	return modes.SelectionRangeRegistry.register(languageId, provider);
+export function registerSelectionRAngeProvider(lAnguAgeId: string, provider: modes.SelectionRAngeProvider): IDisposAble {
+	return modes.SelectionRAngeRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a document semantic tokens provider
+ * Register A document semAntic tokens provider
  */
-export function registerDocumentSemanticTokensProvider(languageId: string, provider: modes.DocumentSemanticTokensProvider): IDisposable {
-	return modes.DocumentSemanticTokensProviderRegistry.register(languageId, provider);
+export function registerDocumentSemAnticTokensProvider(lAnguAgeId: string, provider: modes.DocumentSemAnticTokensProvider): IDisposAble {
+	return modes.DocumentSemAnticTokensProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Register a document range semantic tokens provider
+ * Register A document rAnge semAntic tokens provider
  */
-export function registerDocumentRangeSemanticTokensProvider(languageId: string, provider: modes.DocumentRangeSemanticTokensProvider): IDisposable {
-	return modes.DocumentRangeSemanticTokensProviderRegistry.register(languageId, provider);
+export function registerDocumentRAngeSemAnticTokensProvider(lAnguAgeId: string, provider: modes.DocumentRAngeSemAnticTokensProvider): IDisposAble {
+	return modes.DocumentRAngeSemAnticTokensProviderRegistry.register(lAnguAgeId, provider);
 }
 
 /**
- * Contains additional diagnostic information about the context in which
- * a [code action](#CodeActionProvider.provideCodeActions) is run.
+ * ContAins AdditionAl diAgnostic informAtion About the context in which
+ * A [code Action](#CodeActionProvider.provideCodeActions) is run.
  */
-export interface CodeActionContext {
+export interfAce CodeActionContext {
 
 	/**
-	 * An array of diagnostics.
+	 * An ArrAy of diAgnostics.
 	 */
-	readonly markers: IMarkerData[];
+	reAdonly mArkers: IMArkerDAtA[];
 
 	/**
-	 * Requested kind of actions to return.
+	 * Requested kind of Actions to return.
 	 */
-	readonly only?: string;
+	reAdonly only?: string;
 }
 
 /**
- * The code action interface defines the contract between extensions and
- * the [light bulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) feature.
+ * The code Action interfAce defines the contrAct between extensions And
+ * the [light bulb](https://code.visuAlstudio.com/docs/editor/editingevolved#_code-Action) feAture.
  */
-export interface CodeActionProvider {
+export interfAce CodeActionProvider {
 	/**
-	 * Provide commands for the given document and range.
+	 * Provide commAnds for the given document And rAnge.
 	 */
-	provideCodeActions(model: model.ITextModel, range: Range, context: CodeActionContext, token: CancellationToken): modes.ProviderResult<modes.CodeActionList>;
+	provideCodeActions(model: model.ITextModel, rAnge: RAnge, context: CodeActionContext, token: CAncellAtionToken): modes.ProviderResult<modes.CodeActionList>;
 }
 
 /**
- * @internal
+ * @internAl
  */
-export function createMonacoLanguagesAPI(): typeof monaco.languages {
+export function creAteMonAcoLAnguAgesAPI(): typeof monAco.lAnguAges {
 	return {
-		register: <any>register,
-		getLanguages: <any>getLanguages,
-		onLanguage: <any>onLanguage,
-		getEncodedLanguageId: <any>getEncodedLanguageId,
+		register: <Any>register,
+		getLAnguAges: <Any>getLAnguAges,
+		onLAnguAge: <Any>onLAnguAge,
+		getEncodedLAnguAgeId: <Any>getEncodedLAnguAgeId,
 
 		// provider methods
-		setLanguageConfiguration: <any>setLanguageConfiguration,
-		setTokensProvider: <any>setTokensProvider,
-		setMonarchTokensProvider: <any>setMonarchTokensProvider,
-		registerReferenceProvider: <any>registerReferenceProvider,
-		registerRenameProvider: <any>registerRenameProvider,
-		registerCompletionItemProvider: <any>registerCompletionItemProvider,
-		registerSignatureHelpProvider: <any>registerSignatureHelpProvider,
-		registerHoverProvider: <any>registerHoverProvider,
-		registerDocumentSymbolProvider: <any>registerDocumentSymbolProvider,
-		registerDocumentHighlightProvider: <any>registerDocumentHighlightProvider,
-		registerOnTypeRenameProvider: <any>registerOnTypeRenameProvider,
-		registerDefinitionProvider: <any>registerDefinitionProvider,
-		registerImplementationProvider: <any>registerImplementationProvider,
-		registerTypeDefinitionProvider: <any>registerTypeDefinitionProvider,
-		registerCodeLensProvider: <any>registerCodeLensProvider,
-		registerCodeActionProvider: <any>registerCodeActionProvider,
-		registerDocumentFormattingEditProvider: <any>registerDocumentFormattingEditProvider,
-		registerDocumentRangeFormattingEditProvider: <any>registerDocumentRangeFormattingEditProvider,
-		registerOnTypeFormattingEditProvider: <any>registerOnTypeFormattingEditProvider,
-		registerLinkProvider: <any>registerLinkProvider,
-		registerColorProvider: <any>registerColorProvider,
-		registerFoldingRangeProvider: <any>registerFoldingRangeProvider,
-		registerDeclarationProvider: <any>registerDeclarationProvider,
-		registerSelectionRangeProvider: <any>registerSelectionRangeProvider,
-		registerDocumentSemanticTokensProvider: <any>registerDocumentSemanticTokensProvider,
-		registerDocumentRangeSemanticTokensProvider: <any>registerDocumentRangeSemanticTokensProvider,
+		setLAnguAgeConfigurAtion: <Any>setLAnguAgeConfigurAtion,
+		setTokensProvider: <Any>setTokensProvider,
+		setMonArchTokensProvider: <Any>setMonArchTokensProvider,
+		registerReferenceProvider: <Any>registerReferenceProvider,
+		registerRenAmeProvider: <Any>registerRenAmeProvider,
+		registerCompletionItemProvider: <Any>registerCompletionItemProvider,
+		registerSignAtureHelpProvider: <Any>registerSignAtureHelpProvider,
+		registerHoverProvider: <Any>registerHoverProvider,
+		registerDocumentSymbolProvider: <Any>registerDocumentSymbolProvider,
+		registerDocumentHighlightProvider: <Any>registerDocumentHighlightProvider,
+		registerOnTypeRenAmeProvider: <Any>registerOnTypeRenAmeProvider,
+		registerDefinitionProvider: <Any>registerDefinitionProvider,
+		registerImplementAtionProvider: <Any>registerImplementAtionProvider,
+		registerTypeDefinitionProvider: <Any>registerTypeDefinitionProvider,
+		registerCodeLensProvider: <Any>registerCodeLensProvider,
+		registerCodeActionProvider: <Any>registerCodeActionProvider,
+		registerDocumentFormAttingEditProvider: <Any>registerDocumentFormAttingEditProvider,
+		registerDocumentRAngeFormAttingEditProvider: <Any>registerDocumentRAngeFormAttingEditProvider,
+		registerOnTypeFormAttingEditProvider: <Any>registerOnTypeFormAttingEditProvider,
+		registerLinkProvider: <Any>registerLinkProvider,
+		registerColorProvider: <Any>registerColorProvider,
+		registerFoldingRAngeProvider: <Any>registerFoldingRAngeProvider,
+		registerDeclArAtionProvider: <Any>registerDeclArAtionProvider,
+		registerSelectionRAngeProvider: <Any>registerSelectionRAngeProvider,
+		registerDocumentSemAnticTokensProvider: <Any>registerDocumentSemAnticTokensProvider,
+		registerDocumentRAngeSemAnticTokensProvider: <Any>registerDocumentRAngeSemAnticTokensProvider,
 
 		// enums
-		DocumentHighlightKind: standaloneEnums.DocumentHighlightKind,
-		CompletionItemKind: standaloneEnums.CompletionItemKind,
-		CompletionItemTag: standaloneEnums.CompletionItemTag,
-		CompletionItemInsertTextRule: standaloneEnums.CompletionItemInsertTextRule,
-		SymbolKind: standaloneEnums.SymbolKind,
-		SymbolTag: standaloneEnums.SymbolTag,
-		IndentAction: standaloneEnums.IndentAction,
-		CompletionTriggerKind: standaloneEnums.CompletionTriggerKind,
-		SignatureHelpTriggerKind: standaloneEnums.SignatureHelpTriggerKind,
+		DocumentHighlightKind: stAndAloneEnums.DocumentHighlightKind,
+		CompletionItemKind: stAndAloneEnums.CompletionItemKind,
+		CompletionItemTAg: stAndAloneEnums.CompletionItemTAg,
+		CompletionItemInsertTextRule: stAndAloneEnums.CompletionItemInsertTextRule,
+		SymbolKind: stAndAloneEnums.SymbolKind,
+		SymbolTAg: stAndAloneEnums.SymbolTAg,
+		IndentAction: stAndAloneEnums.IndentAction,
+		CompletionTriggerKind: stAndAloneEnums.CompletionTriggerKind,
+		SignAtureHelpTriggerKind: stAndAloneEnums.SignAtureHelpTriggerKind,
 
-		// classes
-		FoldingRangeKind: modes.FoldingRangeKind,
+		// clAsses
+		FoldingRAngeKind: modes.FoldingRAngeKind,
 	};
 }

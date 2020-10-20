@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { MarkdownEngine } from '../markdownEngine';
-import { MarkdownContributionProvider, MarkdownContributions } from '../markdownExtensions';
+import * As vscode from 'vscode';
+import { MArkdownEngine } from '../mArkdownEngine';
+import { MArkdownContributionProvider, MArkdownContributions } from '../mArkdownExtensions';
 import { githubSlugifier } from '../slugify';
-import { Disposable } from '../util/dispose';
+import { DisposAble } from '../util/dispose';
 
-const emptyContributions = new class extends Disposable implements MarkdownContributionProvider {
-	readonly extensionUri = vscode.Uri.file('/');
-	readonly contributions = MarkdownContributions.Empty;
-	readonly onContributionsChanged = this._register(new vscode.EventEmitter<this>()).event;
+const emptyContributions = new clAss extends DisposAble implements MArkdownContributionProvider {
+	reAdonly extensionUri = vscode.Uri.file('/');
+	reAdonly contributions = MArkdownContributions.Empty;
+	reAdonly onContributionsChAnged = this._register(new vscode.EventEmitter<this>()).event;
 };
 
-export function createNewMarkdownEngine(): MarkdownEngine {
-	return new MarkdownEngine(emptyContributions, githubSlugifier);
+export function creAteNewMArkdownEngine(): MArkdownEngine {
+	return new MArkdownEngine(emptyContributions, githubSlugifier);
 }

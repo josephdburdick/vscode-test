@@ -1,155 +1,155 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import severity from 'vs/base/common/severity';
-import { Action } from 'vs/base/common/actions';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IActivityService, NumberBadge, IBadge, ProgressBadge } from 'vs/workbench/services/activity/common/activity';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
+import * As nls from 'vs/nls';
+import severity from 'vs/bAse/common/severity';
+import { Action } from 'vs/bAse/common/Actions';
+import { DisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IActivityService, NumberBAdge, IBAdge, ProgressBAdge } from 'vs/workbench/services/Activity/common/Activity';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IUpdateService, State as UpdateState, StateType, IUpdate } from 'vs/platform/update/common/update';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IUpdAteService, StAte As UpdAteStAte, StAteType, IUpdAte } from 'vs/plAtform/updAte/common/updAte';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { ReleaseNotesManager } from './releaseNotesEditor';
-import { isWindows } from 'vs/base/common/platform';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { RawContextKey, IContextKey, IContextKeyService, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { ShowCurrentReleaseNotesActionId, CheckForVSCodeUpdateActionId } from 'vs/workbench/contrib/update/common/update';
+import { ReleAseNotesMAnAger } from './releAseNotesEditor';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { RAwContextKey, IContextKey, IContextKeyService, ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { ShowCurrentReleAseNotesActionId, CheckForVSCodeUpdAteActionId } from 'vs/workbench/contrib/updAte/common/updAte';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IProductService } from 'vs/platform/product/common/productService';
-import product from 'vs/platform/product/common/product';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import product from 'vs/plAtform/product/common/product';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
 
-export const CONTEXT_UPDATE_STATE = new RawContextKey<string>('updateState', StateType.Idle);
+export const CONTEXT_UPDATE_STATE = new RAwContextKey<string>('updAteStAte', StAteType.Idle);
 
-let releaseNotesManager: ReleaseNotesManager | undefined = undefined;
+let releAseNotesMAnAger: ReleAseNotesMAnAger | undefined = undefined;
 
-function showReleaseNotes(instantiationService: IInstantiationService, version: string) {
-	if (!releaseNotesManager) {
-		releaseNotesManager = instantiationService.createInstance(ReleaseNotesManager);
+function showReleAseNotes(instAntiAtionService: IInstAntiAtionService, version: string) {
+	if (!releAseNotesMAnAger) {
+		releAseNotesMAnAger = instAntiAtionService.creAteInstAnce(ReleAseNotesMAnAger);
 	}
 
-	return instantiationService.invokeFunction(accessor => releaseNotesManager!.show(accessor, version));
+	return instAntiAtionService.invokeFunction(Accessor => releAseNotesMAnAger!.show(Accessor, version));
 }
 
-export class OpenLatestReleaseNotesInBrowserAction extends Action {
+export clAss OpenLAtestReleAseNotesInBrowserAction extends Action {
 
 	constructor(
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IProductService private readonly productService: IProductService
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IProductService privAte reAdonly productService: IProductService
 	) {
-		super('update.openLatestReleaseNotes', nls.localize('releaseNotes', "Release Notes"), undefined, true);
+		super('updAte.openLAtestReleAseNotes', nls.locAlize('releAseNotes', "ReleAse Notes"), undefined, true);
 	}
 
-	async run(): Promise<void> {
-		if (this.productService.releaseNotesUrl) {
-			const uri = URI.parse(this.productService.releaseNotesUrl);
-			await this.openerService.open(uri);
+	Async run(): Promise<void> {
+		if (this.productService.releAseNotesUrl) {
+			const uri = URI.pArse(this.productService.releAseNotesUrl);
+			AwAit this.openerService.open(uri);
 		} else {
-			throw new Error(nls.localize('update.noReleaseNotesOnline', "This version of {0} does not have release notes online", this.productService.nameLong));
+			throw new Error(nls.locAlize('updAte.noReleAseNotesOnline', "This version of {0} does not hAve releAse notes online", this.productService.nAmeLong));
 		}
 	}
 }
 
-export abstract class AbstractShowReleaseNotesAction extends Action {
+export AbstrAct clAss AbstrActShowReleAseNotesAction extends Action {
 
 	constructor(
 		id: string,
-		label: string,
-		private version: string,
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		lAbel: string,
+		privAte version: string,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
-		super(id, label, undefined, true);
+		super(id, lAbel, undefined, true);
 	}
 
-	async run(): Promise<void> {
-		if (!this.enabled) {
+	Async run(): Promise<void> {
+		if (!this.enAbled) {
 			return;
 		}
-		this.enabled = false;
+		this.enAbled = fAlse;
 
 		try {
-			await showReleaseNotes(this.instantiationService, this.version);
-		} catch (err) {
-			const action = this.instantiationService.createInstance(OpenLatestReleaseNotesInBrowserAction);
+			AwAit showReleAseNotes(this.instAntiAtionService, this.version);
+		} cAtch (err) {
+			const Action = this.instAntiAtionService.creAteInstAnce(OpenLAtestReleAseNotesInBrowserAction);
 			try {
-				await action.run();
-			} catch (err2) {
-				throw new Error(`${err.message} and ${err2.message}`);
+				AwAit Action.run();
+			} cAtch (err2) {
+				throw new Error(`${err.messAge} And ${err2.messAge}`);
 			}
 		}
 	}
 }
 
-export class ShowReleaseNotesAction extends AbstractShowReleaseNotesAction {
+export clAss ShowReleAseNotesAction extends AbstrActShowReleAseNotesAction {
 
 	constructor(
 		version: string,
-		@IInstantiationService instantiationService: IInstantiationService
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService
 	) {
-		super('update.showReleaseNotes', nls.localize('releaseNotes', "Release Notes"), version, instantiationService);
+		super('updAte.showReleAseNotes', nls.locAlize('releAseNotes', "ReleAse Notes"), version, instAntiAtionService);
 	}
 }
 
-export class ShowCurrentReleaseNotesAction extends AbstractShowReleaseNotesAction {
+export clAss ShowCurrentReleAseNotesAction extends AbstrActShowReleAseNotesAction {
 
-	static readonly ID = ShowCurrentReleaseNotesActionId;
-	static readonly LABEL = nls.localize('showReleaseNotes', "Show Release Notes");
-	static readonly AVAILABE = !!product.releaseNotesUrl;
+	stAtic reAdonly ID = ShowCurrentReleAseNotesActionId;
+	stAtic reAdonly LABEL = nls.locAlize('showReleAseNotes', "Show ReleAse Notes");
+	stAtic reAdonly AVAILABE = !!product.releAseNotesUrl;
 
 	constructor(
-		id = ShowCurrentReleaseNotesAction.ID,
-		label = ShowCurrentReleaseNotesAction.LABEL,
-		@IInstantiationService instantiationService: IInstantiationService,
+		id = ShowCurrentReleAseNotesAction.ID,
+		lAbel = ShowCurrentReleAseNotesAction.LABEL,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IProductService productService: IProductService
 	) {
-		super(id, label, productService.version, instantiationService);
+		super(id, lAbel, productService.version, instAntiAtionService);
 	}
 }
 
-export class ProductContribution implements IWorkbenchContribution {
+export clAss ProductContribution implements IWorkbenchContribution {
 
-	private static readonly KEY = 'releaseNotes/lastVersion';
+	privAte stAtic reAdonly KEY = 'releAseNotes/lAstVersion';
 
 	constructor(
-		@IStorageService storageService: IStorageService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@INotificationService notificationService: INotificationService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IOpenerService openerService: IOpenerService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IHostService hostService: IHostService,
 		@IProductService productService: IProductService
 	) {
-		hostService.hadLastFocus().then(async hadLastFocus => {
-			if (!hadLastFocus) {
+		hostService.hAdLAstFocus().then(Async hAdLAstFocus => {
+			if (!hAdLAstFocus) {
 				return;
 			}
 
-			const lastVersion = storageService.get(ProductContribution.KEY, StorageScope.GLOBAL, '');
-			const shouldShowReleaseNotes = configurationService.getValue<boolean>('update.showReleaseNotes');
+			const lAstVersion = storAgeService.get(ProductContribution.KEY, StorAgeScope.GLOBAL, '');
+			const shouldShowReleAseNotes = configurAtionService.getVAlue<booleAn>('updAte.showReleAseNotes');
 
-			// was there an update? if so, open release notes
-			const releaseNotesUrl = productService.releaseNotesUrl;
-			if (shouldShowReleaseNotes && !environmentService.skipReleaseNotes && releaseNotesUrl && lastVersion && productService.version !== lastVersion) {
-				showReleaseNotes(instantiationService, productService.version)
+			// wAs there An updAte? if so, open releAse notes
+			const releAseNotesUrl = productService.releAseNotesUrl;
+			if (shouldShowReleAseNotes && !environmentService.skipReleAseNotes && releAseNotesUrl && lAstVersion && productService.version !== lAstVersion) {
+				showReleAseNotes(instAntiAtionService, productService.version)
 					.then(undefined, () => {
-						notificationService.prompt(
+						notificAtionService.prompt(
 							severity.Info,
-							nls.localize('read the release notes', "Welcome to {0} v{1}! Would you like to read the Release Notes?", productService.nameLong, productService.version),
+							nls.locAlize('reAd the releAse notes', "Welcome to {0} v{1}! Would you like to reAd the ReleAse Notes?", productService.nAmeLong, productService.version),
 							[{
-								label: nls.localize('releaseNotes', "Release Notes"),
+								lAbel: nls.locAlize('releAseNotes', "ReleAse Notes"),
 								run: () => {
-									const uri = URI.parse(releaseNotesUrl);
+									const uri = URI.pArse(releAseNotesUrl);
 									openerService.open(uri);
 								}
 							}],
@@ -159,391 +159,391 @@ export class ProductContribution implements IWorkbenchContribution {
 			}
 
 			// should we show the new license?
-			const semver = await import('semver-umd');
-			if (productService.licenseUrl && lastVersion && semver.satisfies(lastVersion, '<1.0.0') && semver.satisfies(productService.version, '>=1.0.0')) {
-				notificationService.info(nls.localize('licenseChanged', "Our license terms have changed, please click [here]({0}) to go through them.", productService.licenseUrl));
+			const semver = AwAit import('semver-umd');
+			if (productService.licenseUrl && lAstVersion && semver.sAtisfies(lAstVersion, '<1.0.0') && semver.sAtisfies(productService.version, '>=1.0.0')) {
+				notificAtionService.info(nls.locAlize('licenseChAnged', "Our license terms hAve chAnged, pleAse click [here]({0}) to go through them.", productService.licenseUrl));
 			}
 
-			storageService.store(ProductContribution.KEY, productService.version, StorageScope.GLOBAL);
+			storAgeService.store(ProductContribution.KEY, productService.version, StorAgeScope.GLOBAL);
 		});
 	}
 }
 
-export class UpdateContribution extends Disposable implements IWorkbenchContribution {
+export clAss UpdAteContribution extends DisposAble implements IWorkbenchContribution {
 
-	private state: UpdateState;
-	private readonly badgeDisposable = this._register(new MutableDisposable());
-	private updateStateContextKey: IContextKey<string>;
+	privAte stAte: UpdAteStAte;
+	privAte reAdonly bAdgeDisposAble = this._register(new MutAbleDisposAble());
+	privAte updAteStAteContextKey: IContextKey<string>;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IDialogService private readonly dialogService: IDialogService,
-		@IUpdateService private readonly updateService: IUpdateService,
-		@IActivityService private readonly activityService: IActivityService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IProductService private readonly productService: IProductService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService,
+		@IUpdAteService privAte reAdonly updAteService: IUpdAteService,
+		@IActivityService privAte reAdonly ActivityService: IActivityService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService
 	) {
 		super();
-		this.state = updateService.state;
-		this.updateStateContextKey = CONTEXT_UPDATE_STATE.bindTo(this.contextKeyService);
+		this.stAte = updAteService.stAte;
+		this.updAteStAteContextKey = CONTEXT_UPDATE_STATE.bindTo(this.contextKeyService);
 
 		// opt-in to syncing
-		storageKeysSyncRegistryService.registerStorageKey({ key: 'neverShowAgain:update/win32-fast-updates', version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: 'neverShowAgAin:updAte/win32-fAst-updAtes', version: 1 });
 
-		this._register(updateService.onStateChange(this.onUpdateStateChange, this));
-		this.onUpdateStateChange(this.updateService.state);
+		this._register(updAteService.onStAteChAnge(this.onUpdAteStAteChAnge, this));
+		this.onUpdAteStAteChAnge(this.updAteService.stAte);
 
 		/*
-		The `update/lastKnownVersion` and `update/updateNotificationTime` storage keys are used in
-		combination to figure out when to show a message to the user that he should update.
+		The `updAte/lAstKnownVersion` And `updAte/updAteNotificAtionTime` storAge keys Are used in
+		combinAtion to figure out when to show A messAge to the user thAt he should updAte.
 
-		This message should appear if the user has received an update notification but hasn't
-		updated since 5 days.
+		This messAge should AppeAr if the user hAs received An updAte notificAtion but hAsn't
+		updAted since 5 dAys.
 		*/
 
 		const currentVersion = this.productService.commit;
-		const lastKnownVersion = this.storageService.get('update/lastKnownVersion', StorageScope.GLOBAL);
+		const lAstKnownVersion = this.storAgeService.get('updAte/lAstKnownVersion', StorAgeScope.GLOBAL);
 
-		// if current version != stored version, clear both fields
-		if (currentVersion !== lastKnownVersion) {
-			this.storageService.remove('update/lastKnownVersion', StorageScope.GLOBAL);
-			this.storageService.remove('update/updateNotificationTime', StorageScope.GLOBAL);
+		// if current version != stored version, cleAr both fields
+		if (currentVersion !== lAstKnownVersion) {
+			this.storAgeService.remove('updAte/lAstKnownVersion', StorAgeScope.GLOBAL);
+			this.storAgeService.remove('updAte/updAteNotificAtionTime', StorAgeScope.GLOBAL);
 		}
 
-		this.registerGlobalActivityActions();
+		this.registerGlobAlActivityActions();
 	}
 
-	private onUpdateStateChange(state: UpdateState): void {
-		this.updateStateContextKey.set(state.type);
+	privAte onUpdAteStAteChAnge(stAte: UpdAteStAte): void {
+		this.updAteStAteContextKey.set(stAte.type);
 
-		switch (state.type) {
-			case StateType.Idle:
-				if (state.error) {
-					this.onError(state.error);
-				} else if (this.state.type === StateType.CheckingForUpdates && this.state.context === this.environmentService.sessionId) {
-					this.onUpdateNotAvailable();
+		switch (stAte.type) {
+			cAse StAteType.Idle:
+				if (stAte.error) {
+					this.onError(stAte.error);
+				} else if (this.stAte.type === StAteType.CheckingForUpdAtes && this.stAte.context === this.environmentService.sessionId) {
+					this.onUpdAteNotAvAilAble();
 				}
-				break;
+				breAk;
 
-			case StateType.AvailableForDownload:
-				this.onUpdateAvailable(state.update);
-				break;
+			cAse StAteType.AvAilAbleForDownloAd:
+				this.onUpdAteAvAilAble(stAte.updAte);
+				breAk;
 
-			case StateType.Downloaded:
-				this.onUpdateDownloaded(state.update);
-				break;
+			cAse StAteType.DownloAded:
+				this.onUpdAteDownloAded(stAte.updAte);
+				breAk;
 
-			case StateType.Updating:
-				this.onUpdateUpdating(state.update);
-				break;
+			cAse StAteType.UpdAting:
+				this.onUpdAteUpdAting(stAte.updAte);
+				breAk;
 
-			case StateType.Ready:
-				this.onUpdateReady(state.update);
-				break;
+			cAse StAteType.ReAdy:
+				this.onUpdAteReAdy(stAte.updAte);
+				breAk;
 		}
 
-		let badge: IBadge | undefined = undefined;
-		let clazz: string | undefined;
+		let bAdge: IBAdge | undefined = undefined;
+		let clAzz: string | undefined;
 		let priority: number | undefined = undefined;
 
-		if (state.type === StateType.AvailableForDownload || state.type === StateType.Downloaded || state.type === StateType.Ready) {
-			badge = new NumberBadge(1, () => nls.localize('updateIsReady', "New {0} update available.", this.productService.nameShort));
-		} else if (state.type === StateType.CheckingForUpdates || state.type === StateType.Downloading || state.type === StateType.Updating) {
-			badge = new ProgressBadge(() => nls.localize('checkingForUpdates', "Checking for Updates..."));
-			clazz = 'progress-badge';
+		if (stAte.type === StAteType.AvAilAbleForDownloAd || stAte.type === StAteType.DownloAded || stAte.type === StAteType.ReAdy) {
+			bAdge = new NumberBAdge(1, () => nls.locAlize('updAteIsReAdy', "New {0} updAte AvAilAble.", this.productService.nAmeShort));
+		} else if (stAte.type === StAteType.CheckingForUpdAtes || stAte.type === StAteType.DownloAding || stAte.type === StAteType.UpdAting) {
+			bAdge = new ProgressBAdge(() => nls.locAlize('checkingForUpdAtes', "Checking for UpdAtes..."));
+			clAzz = 'progress-bAdge';
 			priority = 1;
 		}
 
-		this.badgeDisposable.clear();
+		this.bAdgeDisposAble.cleAr();
 
-		if (badge) {
-			this.badgeDisposable.value = this.activityService.showGlobalActivity({ badge, clazz, priority });
+		if (bAdge) {
+			this.bAdgeDisposAble.vAlue = this.ActivityService.showGlobAlActivity({ bAdge, clAzz, priority });
 		}
 
-		this.state = state;
+		this.stAte = stAte;
 	}
 
-	private onError(error: string): void {
-		error = error.replace(/See https:\/\/github\.com\/Squirrel\/Squirrel\.Mac\/issues\/182 for more information/, 'See [this link](https://github.com/microsoft/vscode/issues/7426#issuecomment-425093469) for more information');
+	privAte onError(error: string): void {
+		error = error.replAce(/See https:\/\/github\.com\/Squirrel\/Squirrel\.MAc\/issues\/182 for more informAtion/, 'See [this link](https://github.com/microsoft/vscode/issues/7426#issuecomment-425093469) for more informAtion');
 
-		this.notificationService.notify({
+		this.notificAtionService.notify({
 			severity: Severity.Error,
-			message: error,
-			source: nls.localize('update service', "Update Service"),
+			messAge: error,
+			source: nls.locAlize('updAte service', "UpdAte Service"),
 		});
 	}
 
-	private onUpdateNotAvailable(): void {
-		this.dialogService.show(
+	privAte onUpdAteNotAvAilAble(): void {
+		this.diAlogService.show(
 			severity.Info,
-			nls.localize('noUpdatesAvailable', "There are currently no updates available."),
-			[nls.localize('ok', "OK")]
+			nls.locAlize('noUpdAtesAvAilAble', "There Are currently no updAtes AvAilAble."),
+			[nls.locAlize('ok', "OK")]
 		);
 	}
 
 	// linux
-	private onUpdateAvailable(update: IUpdate): void {
-		if (!this.shouldShowNotification()) {
+	privAte onUpdAteAvAilAble(updAte: IUpdAte): void {
+		if (!this.shouldShowNotificAtion()) {
 			return;
 		}
 
-		this.notificationService.prompt(
+		this.notificAtionService.prompt(
 			severity.Info,
-			nls.localize('thereIsUpdateAvailable', "There is an available update."),
+			nls.locAlize('thereIsUpdAteAvAilAble', "There is An AvAilAble updAte."),
 			[{
-				label: nls.localize('download update', "Download Update"),
-				run: () => this.updateService.downloadUpdate()
+				lAbel: nls.locAlize('downloAd updAte', "DownloAd UpdAte"),
+				run: () => this.updAteService.downloAdUpdAte()
 			}, {
-				label: nls.localize('later', "Later"),
+				lAbel: nls.locAlize('lAter', "LAter"),
 				run: () => { }
 			}, {
-				label: nls.localize('releaseNotes', "Release Notes"),
+				lAbel: nls.locAlize('releAseNotes', "ReleAse Notes"),
 				run: () => {
-					const action = this.instantiationService.createInstance(ShowReleaseNotesAction, update.productVersion);
-					action.run();
-					action.dispose();
+					const Action = this.instAntiAtionService.creAteInstAnce(ShowReleAseNotesAction, updAte.productVersion);
+					Action.run();
+					Action.dispose();
 				}
 			}],
 			{ sticky: true }
 		);
 	}
 
-	// windows fast updates (target === system)
-	private onUpdateDownloaded(update: IUpdate): void {
-		if (!this.shouldShowNotification()) {
+	// windows fAst updAtes (tArget === system)
+	privAte onUpdAteDownloAded(updAte: IUpdAte): void {
+		if (!this.shouldShowNotificAtion()) {
 			return;
 		}
 
-		this.notificationService.prompt(
+		this.notificAtionService.prompt(
 			severity.Info,
-			nls.localize('updateAvailable', "There's an update available: {0} {1}", this.productService.nameLong, update.productVersion),
+			nls.locAlize('updAteAvAilAble', "There's An updAte AvAilAble: {0} {1}", this.productService.nAmeLong, updAte.productVersion),
 			[{
-				label: nls.localize('installUpdate', "Install Update"),
-				run: () => this.updateService.applyUpdate()
+				lAbel: nls.locAlize('instAllUpdAte', "InstAll UpdAte"),
+				run: () => this.updAteService.ApplyUpdAte()
 			}, {
-				label: nls.localize('later', "Later"),
+				lAbel: nls.locAlize('lAter', "LAter"),
 				run: () => { }
 			}, {
-				label: nls.localize('releaseNotes', "Release Notes"),
+				lAbel: nls.locAlize('releAseNotes', "ReleAse Notes"),
 				run: () => {
-					const action = this.instantiationService.createInstance(ShowReleaseNotesAction, update.productVersion);
-					action.run();
-					action.dispose();
+					const Action = this.instAntiAtionService.creAteInstAnce(ShowReleAseNotesAction, updAte.productVersion);
+					Action.run();
+					Action.dispose();
 				}
 			}],
 			{ sticky: true }
 		);
 	}
 
-	// windows fast updates
-	private onUpdateUpdating(update: IUpdate): void {
-		if (isWindows && this.productService.target === 'user') {
+	// windows fAst updAtes
+	privAte onUpdAteUpdAting(updAte: IUpdAte): void {
+		if (isWindows && this.productService.tArget === 'user') {
 			return;
 		}
 
-		// windows fast updates (target === system)
-		this.notificationService.prompt(
+		// windows fAst updAtes (tArget === system)
+		this.notificAtionService.prompt(
 			severity.Info,
-			nls.localize('updateInstalling', "{0} {1} is being installed in the background; we'll let you know when it's done.", this.productService.nameLong, update.productVersion),
+			nls.locAlize('updAteInstAlling', "{0} {1} is being instAlled in the bAckground; we'll let you know when it's done.", this.productService.nAmeLong, updAte.productVersion),
 			[],
 			{
-				neverShowAgain: { id: 'neverShowAgain:update/win32-fast-updates', isSecondary: true }
+				neverShowAgAin: { id: 'neverShowAgAin:updAte/win32-fAst-updAtes', isSecondAry: true }
 			}
 		);
 	}
 
-	// windows and mac
-	private onUpdateReady(update: IUpdate): void {
-		if (!(isWindows && this.productService.target !== 'user') && !this.shouldShowNotification()) {
+	// windows And mAc
+	privAte onUpdAteReAdy(updAte: IUpdAte): void {
+		if (!(isWindows && this.productService.tArget !== 'user') && !this.shouldShowNotificAtion()) {
 			return;
 		}
 
-		const actions = [{
-			label: nls.localize('updateNow', "Update Now"),
-			run: () => this.updateService.quitAndInstall()
+		const Actions = [{
+			lAbel: nls.locAlize('updAteNow', "UpdAte Now"),
+			run: () => this.updAteService.quitAndInstAll()
 		}, {
-			label: nls.localize('later', "Later"),
+			lAbel: nls.locAlize('lAter', "LAter"),
 			run: () => { }
 		}];
 
-		// TODO@joao check why snap updates send `update` as falsy
-		if (update.productVersion) {
-			actions.push({
-				label: nls.localize('releaseNotes', "Release Notes"),
+		// TODO@joAo check why snAp updAtes send `updAte` As fAlsy
+		if (updAte.productVersion) {
+			Actions.push({
+				lAbel: nls.locAlize('releAseNotes', "ReleAse Notes"),
 				run: () => {
-					const action = this.instantiationService.createInstance(ShowReleaseNotesAction, update.productVersion);
-					action.run();
-					action.dispose();
+					const Action = this.instAntiAtionService.creAteInstAnce(ShowReleAseNotesAction, updAte.productVersion);
+					Action.run();
+					Action.dispose();
 				}
 			});
 		}
 
-		// windows user fast updates and mac
-		this.notificationService.prompt(
+		// windows user fAst updAtes And mAc
+		this.notificAtionService.prompt(
 			severity.Info,
-			nls.localize('updateAvailableAfterRestart', "Restart {0} to apply the latest update.", this.productService.nameLong),
-			actions,
+			nls.locAlize('updAteAvAilAbleAfterRestArt', "RestArt {0} to Apply the lAtest updAte.", this.productService.nAmeLong),
+			Actions,
 			{ sticky: true }
 		);
 	}
 
-	private shouldShowNotification(): boolean {
+	privAte shouldShowNotificAtion(): booleAn {
 		const currentVersion = this.productService.commit;
-		const currentMillis = new Date().getTime();
-		const lastKnownVersion = this.storageService.get('update/lastKnownVersion', StorageScope.GLOBAL);
+		const currentMillis = new DAte().getTime();
+		const lAstKnownVersion = this.storAgeService.get('updAte/lAstKnownVersion', StorAgeScope.GLOBAL);
 
-		// if version != stored version, save version and date
-		if (currentVersion !== lastKnownVersion) {
-			this.storageService.store('update/lastKnownVersion', currentVersion!, StorageScope.GLOBAL);
-			this.storageService.store('update/updateNotificationTime', currentMillis, StorageScope.GLOBAL);
+		// if version != stored version, sAve version And dAte
+		if (currentVersion !== lAstKnownVersion) {
+			this.storAgeService.store('updAte/lAstKnownVersion', currentVersion!, StorAgeScope.GLOBAL);
+			this.storAgeService.store('updAte/updAteNotificAtionTime', currentMillis, StorAgeScope.GLOBAL);
 		}
 
-		const updateNotificationMillis = this.storageService.getNumber('update/updateNotificationTime', StorageScope.GLOBAL, currentMillis);
-		const diffDays = (currentMillis - updateNotificationMillis) / (1000 * 60 * 60 * 24);
+		const updAteNotificAtionMillis = this.storAgeService.getNumber('updAte/updAteNotificAtionTime', StorAgeScope.GLOBAL, currentMillis);
+		const diffDAys = (currentMillis - updAteNotificAtionMillis) / (1000 * 60 * 60 * 24);
 
-		return diffDays > 5;
+		return diffDAys > 5;
 	}
 
-	private registerGlobalActivityActions(): void {
-		CommandsRegistry.registerCommand('update.check', () => this.updateService.checkForUpdates(this.environmentService.sessionId));
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.check',
-				title: nls.localize('checkForUpdates', "Check for Updates...")
+	privAte registerGlobAlActivityActions(): void {
+		CommAndsRegistry.registerCommAnd('updAte.check', () => this.updAteService.checkForUpdAtes(this.environmentService.sessionId));
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.check',
+				title: nls.locAlize('checkForUpdAtes', "Check for UpdAtes...")
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.Idle)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.Idle)
 		});
 
-		CommandsRegistry.registerCommand('update.checking', () => { });
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.checking',
-				title: nls.localize('checkingForUpdates', "Checking for Updates..."),
-				precondition: ContextKeyExpr.false()
+		CommAndsRegistry.registerCommAnd('updAte.checking', () => { });
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.checking',
+				title: nls.locAlize('checkingForUpdAtes', "Checking for UpdAtes..."),
+				precondition: ContextKeyExpr.fAlse()
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.CheckingForUpdates)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.CheckingForUpdAtes)
 		});
 
-		CommandsRegistry.registerCommand('update.downloadNow', () => this.updateService.downloadUpdate());
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.downloadNow',
-				title: nls.localize('download update_1', "Download Update (1)")
+		CommAndsRegistry.registerCommAnd('updAte.downloAdNow', () => this.updAteService.downloAdUpdAte());
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.downloAdNow',
+				title: nls.locAlize('downloAd updAte_1', "DownloAd UpdAte (1)")
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.AvailableForDownload)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.AvAilAbleForDownloAd)
 		});
 
-		CommandsRegistry.registerCommand('update.downloading', () => { });
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.downloading',
-				title: nls.localize('DownloadingUpdate', "Downloading Update..."),
-				precondition: ContextKeyExpr.false()
+		CommAndsRegistry.registerCommAnd('updAte.downloAding', () => { });
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.downloAding',
+				title: nls.locAlize('DownloAdingUpdAte', "DownloAding UpdAte..."),
+				precondition: ContextKeyExpr.fAlse()
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.Downloading)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.DownloAding)
 		});
 
-		CommandsRegistry.registerCommand('update.install', () => this.updateService.applyUpdate());
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.install',
-				title: nls.localize('installUpdate...', "Install Update... (1)")
+		CommAndsRegistry.registerCommAnd('updAte.instAll', () => this.updAteService.ApplyUpdAte());
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.instAll',
+				title: nls.locAlize('instAllUpdAte...', "InstAll UpdAte... (1)")
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.Downloaded)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.DownloAded)
 		});
 
-		CommandsRegistry.registerCommand('update.updating', () => { });
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.updating',
-				title: nls.localize('installingUpdate', "Installing Update..."),
-				precondition: ContextKeyExpr.false()
+		CommAndsRegistry.registerCommAnd('updAte.updAting', () => { });
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.updAting',
+				title: nls.locAlize('instAllingUpdAte', "InstAlling UpdAte..."),
+				precondition: ContextKeyExpr.fAlse()
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.Updating)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.UpdAting)
 		});
 
-		CommandsRegistry.registerCommand('update.restart', () => this.updateService.quitAndInstall());
-		MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-			group: '6_update',
-			command: {
-				id: 'update.restart',
-				title: nls.localize('restartToUpdate', "Restart to Update (1)")
+		CommAndsRegistry.registerCommAnd('updAte.restArt', () => this.updAteService.quitAndInstAll());
+		MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+			group: '6_updAte',
+			commAnd: {
+				id: 'updAte.restArt',
+				title: nls.locAlize('restArtToUpdAte', "RestArt to UpdAte (1)")
 			},
-			when: CONTEXT_UPDATE_STATE.isEqualTo(StateType.Ready)
+			when: CONTEXT_UPDATE_STATE.isEquAlTo(StAteType.ReAdy)
 		});
 	}
 }
 
-export class SwitchProductQualityContribution extends Disposable implements IWorkbenchContribution {
+export clAss SwitchProductQuAlityContribution extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IProductService private readonly productService: IProductService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
+		@IProductService privAte reAdonly productService: IProductService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 
-		this.registerGlobalActivityActions();
+		this.registerGlobAlActivityActions();
 	}
 
-	private registerGlobalActivityActions(): void {
-		const quality = this.productService.quality;
-		const productQualityChangeHandler = this.environmentService.options?.productQualityChangeHandler;
-		if (productQualityChangeHandler && (quality === 'stable' || quality === 'insider')) {
-			const newQuality = quality === 'stable' ? 'insider' : 'stable';
-			const commandId = `update.switchQuality.${newQuality}`;
-			CommandsRegistry.registerCommand(commandId, async accessor => {
-				const dialogService = accessor.get(IDialogService);
+	privAte registerGlobAlActivityActions(): void {
+		const quAlity = this.productService.quAlity;
+		const productQuAlityChAngeHAndler = this.environmentService.options?.productQuAlityChAngeHAndler;
+		if (productQuAlityChAngeHAndler && (quAlity === 'stAble' || quAlity === 'insider')) {
+			const newQuAlity = quAlity === 'stAble' ? 'insider' : 'stAble';
+			const commAndId = `updAte.switchQuAlity.${newQuAlity}`;
+			CommAndsRegistry.registerCommAnd(commAndId, Async Accessor => {
+				const diAlogService = Accessor.get(IDiAlogService);
 
-				const res = await dialogService.confirm({
+				const res = AwAit diAlogService.confirm({
 					type: 'info',
-					message: nls.localize('relaunchMessage', "Changing the version requires a reload to take effect"),
-					detail: newQuality === 'insider' ?
-						nls.localize('relaunchDetailInsiders', "Press the reload button to switch to the nightly pre-production version of VSCode.") :
-						nls.localize('relaunchDetailStable', "Press the reload button to switch to the monthly released stable version of VSCode."),
-					primaryButton: nls.localize('reload', "&&Reload")
+					messAge: nls.locAlize('relAunchMessAge', "ChAnging the version requires A reloAd to tAke effect"),
+					detAil: newQuAlity === 'insider' ?
+						nls.locAlize('relAunchDetAilInsiders', "Press the reloAd button to switch to the nightly pre-production version of VSCode.") :
+						nls.locAlize('relAunchDetAilStAble', "Press the reloAd button to switch to the monthly releAsed stAble version of VSCode."),
+					primAryButton: nls.locAlize('reloAd', "&&ReloAd")
 				});
 
 				if (res.confirmed) {
-					productQualityChangeHandler(newQuality);
+					productQuAlityChAngeHAndler(newQuAlity);
 				}
 			});
-			MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-				group: '6_update',
-				command: {
-					id: commandId,
-					title: newQuality === 'insider' ? nls.localize('switchToInsiders', "Switch to Insiders Version...") : nls.localize('switchToStable', "Switch to Stable Version...")
+			MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+				group: '6_updAte',
+				commAnd: {
+					id: commAndId,
+					title: newQuAlity === 'insider' ? nls.locAlize('switchToInsiders', "Switch to Insiders Version...") : nls.locAlize('switchToStAble', "Switch to StAble Version...")
 				}
 			});
 		}
 	}
 }
 
-export class CheckForVSCodeUpdateAction extends Action {
+export clAss CheckForVSCodeUpdAteAction extends Action {
 
-	static readonly ID = CheckForVSCodeUpdateActionId;
-	static LABEL = nls.localize('checkForUpdates', "Check for Updates...");
+	stAtic reAdonly ID = CheckForVSCodeUpdAteActionId;
+	stAtic LABEL = nls.locAlize('checkForUpdAtes', "Check for UpdAtes...");
 
 	constructor(
 		id: string,
-		label: string,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IUpdateService private readonly updateService: IUpdateService,
+		lAbel: string,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IUpdAteService privAte reAdonly updAteService: IUpdAteService,
 	) {
-		super(id, label, undefined, true);
+		super(id, lAbel, undefined, true);
 	}
 
 	run(): Promise<void> {
-		return this.updateService.checkForUpdates(this.environmentService.sessionId);
+		return this.updAteService.checkForUpdAtes(this.environmentService.sessionId);
 	}
 }
 

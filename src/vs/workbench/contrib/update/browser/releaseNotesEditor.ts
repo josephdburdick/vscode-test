@@ -1,237 +1,237 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/releasenoteseditor';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { OS } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { TokenizationRegistry } from 'vs/editor/common/modes';
-import { generateTokensCSSForColorMap } from 'vs/editor/common/modes/supports/tokenization';
+import 'vs/css!./mediA/releAsenoteseditor';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { OS } from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
+import { TokenizAtionRegistry } from 'vs/editor/common/modes';
+import { generAteTokensCSSForColorMAp } from 'vs/editor/common/modes/supports/tokenizAtion';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import * as nls from 'vs/nls';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IRequestService, asText } from 'vs/platform/request/common/request';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IWebviewWorkbenchService } from 'vs/workbench/contrib/webviewPanel/browser/webviewWorkbenchService';
+import * As nls from 'vs/nls';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IRequestService, AsText } from 'vs/plAtform/request/common/request';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IWebviewWorkbenchService } from 'vs/workbench/contrib/webviewPAnel/browser/webviewWorkbenchService';
 import { IEditorService, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { WebviewInput } from 'vs/workbench/contrib/webviewPanel/browser/webviewEditorInput';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { WebviewInput } from 'vs/workbench/contrib/webviewPAnel/browser/webviewEditorInput';
+import { KeybindingPArser } from 'vs/bAse/common/keybindingPArser';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { generateUuid } from 'vs/base/common/uuid';
-import { renderMarkdownDocument } from 'vs/workbench/contrib/markdown/common/markdownDocumentRenderer';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { renderMArkdownDocument } from 'vs/workbench/contrib/mArkdown/common/mArkdownDocumentRenderer';
 
-export class ReleaseNotesManager {
+export clAss ReleAseNotesMAnAger {
 
-	private readonly _releaseNotesCache = new Map<string, Promise<string>>();
+	privAte reAdonly _releAseNotesCAche = new MAp<string, Promise<string>>();
 
-	private _currentReleaseNotes: WebviewInput | undefined = undefined;
-	private _lastText: string | undefined;
+	privAte _currentReleAseNotes: WebviewInput | undefined = undefined;
+	privAte _lAstText: string | undefined;
 
 	public constructor(
-		@IEnvironmentService private readonly _environmentService: IEnvironmentService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
-		@IModeService private readonly _modeService: IModeService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IRequestService private readonly _requestService: IRequestService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
-		@IEditorService private readonly _editorService: IEditorService,
-		@IEditorGroupsService private readonly _editorGroupService: IEditorGroupsService,
-		@IWebviewWorkbenchService private readonly _webviewWorkbenchService: IWebviewWorkbenchService,
-		@IExtensionService private readonly _extensionService: IExtensionService,
-		@IProductService private readonly _productService: IProductService
+		@IEnvironmentService privAte reAdonly _environmentService: IEnvironmentService,
+		@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IRequestService privAte reAdonly _requestService: IRequestService,
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService,
+		@IEditorService privAte reAdonly _editorService: IEditorService,
+		@IEditorGroupsService privAte reAdonly _editorGroupService: IEditorGroupsService,
+		@IWebviewWorkbenchService privAte reAdonly _webviewWorkbenchService: IWebviewWorkbenchService,
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
+		@IProductService privAte reAdonly _productService: IProductService
 	) {
-		TokenizationRegistry.onDidChange(async () => {
-			if (!this._currentReleaseNotes || !this._lastText) {
+		TokenizAtionRegistry.onDidChAnge(Async () => {
+			if (!this._currentReleAseNotes || !this._lAstText) {
 				return;
 			}
-			const html = await this.renderBody(this._lastText);
-			if (this._currentReleaseNotes) {
-				this._currentReleaseNotes.webview.html = html;
+			const html = AwAit this.renderBody(this._lAstText);
+			if (this._currentReleAseNotes) {
+				this._currentReleAseNotes.webview.html = html;
 			}
 		});
 	}
 
-	public async show(
-		accessor: ServicesAccessor,
+	public Async show(
+		Accessor: ServicesAccessor,
 		version: string
-	): Promise<boolean> {
-		const releaseNoteText = await this.loadReleaseNotes(version);
-		this._lastText = releaseNoteText;
-		const html = await this.renderBody(releaseNoteText);
-		const title = nls.localize('releaseNotesInputName', "Release Notes: {0}", version);
+	): Promise<booleAn> {
+		const releAseNoteText = AwAit this.loAdReleAseNotes(version);
+		this._lAstText = releAseNoteText;
+		const html = AwAit this.renderBody(releAseNoteText);
+		const title = nls.locAlize('releAseNotesInputNAme', "ReleAse Notes: {0}", version);
 
-		const activeEditorPane = this._editorService.activeEditorPane;
-		if (this._currentReleaseNotes) {
-			this._currentReleaseNotes.setName(title);
-			this._currentReleaseNotes.webview.html = html;
-			this._webviewWorkbenchService.revealWebview(this._currentReleaseNotes, activeEditorPane ? activeEditorPane.group : this._editorGroupService.activeGroup, false);
+		const ActiveEditorPAne = this._editorService.ActiveEditorPAne;
+		if (this._currentReleAseNotes) {
+			this._currentReleAseNotes.setNAme(title);
+			this._currentReleAseNotes.webview.html = html;
+			this._webviewWorkbenchService.reveAlWebview(this._currentReleAseNotes, ActiveEditorPAne ? ActiveEditorPAne.group : this._editorGroupService.ActiveGroup, fAlse);
 		} else {
-			this._currentReleaseNotes = this._webviewWorkbenchService.createWebview(
-				'vs_code_release_notes',
-				'releaseNotes',
+			this._currentReleAseNotes = this._webviewWorkbenchService.creAteWebview(
+				'vs_code_releAse_notes',
+				'releAseNotes',
 				title,
-				{ group: ACTIVE_GROUP, preserveFocus: false },
+				{ group: ACTIVE_GROUP, preserveFocus: fAlse },
 				{
 					tryRestoreScrollPosition: true,
-					enableFindWidget: true,
-					localResourceRoots: []
+					enAbleFindWidget: true,
+					locAlResourceRoots: []
 				},
 				undefined);
 
-			this._currentReleaseNotes.webview.onDidClickLink(uri => this.onDidClickLink(URI.parse(uri)));
-			this._currentReleaseNotes.onDispose(() => { this._currentReleaseNotes = undefined; });
+			this._currentReleAseNotes.webview.onDidClickLink(uri => this.onDidClickLink(URI.pArse(uri)));
+			this._currentReleAseNotes.onDispose(() => { this._currentReleAseNotes = undefined; });
 
-			this._currentReleaseNotes.webview.html = html;
+			this._currentReleAseNotes.webview.html = html;
 		}
 
 		return true;
 	}
 
-	private async loadReleaseNotes(version: string): Promise<string> {
-		const match = /^(\d+\.\d+)\./.exec(version);
-		if (!match) {
+	privAte Async loAdReleAseNotes(version: string): Promise<string> {
+		const mAtch = /^(\d+\.\d+)\./.exec(version);
+		if (!mAtch) {
 			throw new Error('not found');
 		}
 
-		const versionLabel = match[1].replace(/\./g, '_');
-		const baseUrl = 'https://code.visualstudio.com/raw';
-		const url = `${baseUrl}/v${versionLabel}.md`;
-		const unassigned = nls.localize('unassigned', "unassigned");
+		const versionLAbel = mAtch[1].replAce(/\./g, '_');
+		const bAseUrl = 'https://code.visuAlstudio.com/rAw';
+		const url = `${bAseUrl}/v${versionLAbel}.md`;
+		const unAssigned = nls.locAlize('unAssigned', "unAssigned");
 
-		const patchKeybindings = (text: string): string => {
-			const kb = (match: string, kb: string) => {
+		const pAtchKeybindings = (text: string): string => {
+			const kb = (mAtch: string, kb: string) => {
 				const keybinding = this._keybindingService.lookupKeybinding(kb);
 
 				if (!keybinding) {
-					return unassigned;
+					return unAssigned;
 				}
 
-				return keybinding.getLabel() || unassigned;
+				return keybinding.getLAbel() || unAssigned;
 			};
 
-			const kbstyle = (match: string, kb: string) => {
-				const keybinding = KeybindingParser.parseKeybinding(kb, OS);
+			const kbstyle = (mAtch: string, kb: string) => {
+				const keybinding = KeybindingPArser.pArseKeybinding(kb, OS);
 
 				if (!keybinding) {
-					return unassigned;
+					return unAssigned;
 				}
 
 				const resolvedKeybindings = this._keybindingService.resolveKeybinding(keybinding);
 
 				if (resolvedKeybindings.length === 0) {
-					return unassigned;
+					return unAssigned;
 				}
 
-				return resolvedKeybindings[0].getLabel() || unassigned;
+				return resolvedKeybindings[0].getLAbel() || unAssigned;
 			};
 
-			const kbCode = (match: string, binding: string) => {
-				const resolved = kb(match, binding);
+			const kbCode = (mAtch: string, binding: string) => {
+				const resolved = kb(mAtch, binding);
 				return resolved ? `<code title="${binding}">${resolved}</code>` : resolved;
 			};
 
-			const kbstyleCode = (match: string, binding: string) => {
-				const resolved = kbstyle(match, binding);
+			const kbstyleCode = (mAtch: string, binding: string) => {
+				const resolved = kbstyle(mAtch, binding);
 				return resolved ? `<code title="${binding}">${resolved}</code>` : resolved;
 			};
 
 			return text
-				.replace(/`kb\(([a-z.\d\-]+)\)`/gi, kbCode)
-				.replace(/`kbstyle\(([^\)]+)\)`/gi, kbstyleCode)
-				.replace(/kb\(([a-z.\d\-]+)\)/gi, kb)
-				.replace(/kbstyle\(([^\)]+)\)/gi, kbstyle);
+				.replAce(/`kb\(([A-z.\d\-]+)\)`/gi, kbCode)
+				.replAce(/`kbstyle\(([^\)]+)\)`/gi, kbstyleCode)
+				.replAce(/kb\(([A-z.\d\-]+)\)/gi, kb)
+				.replAce(/kbstyle\(([^\)]+)\)/gi, kbstyle);
 		};
 
-		const fetchReleaseNotes = async () => {
+		const fetchReleAseNotes = Async () => {
 			let text;
 			try {
-				text = await asText(await this._requestService.request({ url }, CancellationToken.None));
-			} catch {
-				throw new Error('Failed to fetch release notes');
+				text = AwAit AsText(AwAit this._requestService.request({ url }, CAncellAtionToken.None));
+			} cAtch {
+				throw new Error('FAiled to fetch releAse notes');
 			}
 
-			if (!text || !/^#\s/.test(text)) { // release notes always starts with `#` followed by whitespace
-				throw new Error('Invalid release notes');
+			if (!text || !/^#\s/.test(text)) { // releAse notes AlwAys stArts with `#` followed by whitespAce
+				throw new Error('InvAlid releAse notes');
 			}
 
-			return patchKeybindings(text);
+			return pAtchKeybindings(text);
 		};
 
-		if (!this._releaseNotesCache.has(version)) {
-			this._releaseNotesCache.set(version, (async () => {
+		if (!this._releAseNotesCAche.hAs(version)) {
+			this._releAseNotesCAche.set(version, (Async () => {
 				try {
-					return await fetchReleaseNotes();
-				} catch (err) {
-					this._releaseNotesCache.delete(version);
+					return AwAit fetchReleAseNotes();
+				} cAtch (err) {
+					this._releAseNotesCAche.delete(version);
 					throw err;
 				}
 			})());
 		}
 
-		return this._releaseNotesCache.get(version)!;
+		return this._releAseNotesCAche.get(version)!;
 	}
 
-	private onDidClickLink(uri: URI) {
-		this.addGAParameters(uri, 'ReleaseNotes')
-			.then(updated => this._openerService.open(updated))
+	privAte onDidClickLink(uri: URI) {
+		this.AddGAPArAmeters(uri, 'ReleAseNotes')
+			.then(updAted => this._openerService.open(updAted))
 			.then(undefined, onUnexpectedError);
 	}
 
-	private async addGAParameters(uri: URI, origin: string, experiment = '1'): Promise<URI> {
-		if (this._environmentService.isBuilt && !this._environmentService.isExtensionDevelopment && !this._environmentService.disableTelemetry && !!this._productService.enableTelemetry) {
-			if (uri.scheme === 'https' && uri.authority === 'code.visualstudio.com') {
-				const info = await this._telemetryService.getTelemetryInfo();
+	privAte Async AddGAPArAmeters(uri: URI, origin: string, experiment = '1'): Promise<URI> {
+		if (this._environmentService.isBuilt && !this._environmentService.isExtensionDevelopment && !this._environmentService.disAbleTelemetry && !!this._productService.enAbleTelemetry) {
+			if (uri.scheme === 'https' && uri.Authority === 'code.visuAlstudio.com') {
+				const info = AwAit this._telemetryService.getTelemetryInfo();
 
-				return uri.with({ query: `${uri.query ? uri.query + '&' : ''}utm_source=VsCode&utm_medium=${encodeURIComponent(origin)}&utm_campaign=${encodeURIComponent(info.instanceId)}&utm_content=${encodeURIComponent(experiment)}` });
+				return uri.with({ query: `${uri.query ? uri.query + '&' : ''}utm_source=VsCode&utm_medium=${encodeURIComponent(origin)}&utm_cAmpAign=${encodeURIComponent(info.instAnceId)}&utm_content=${encodeURIComponent(experiment)}` });
 			}
 		}
 		return uri;
 	}
 
-	private async renderBody(text: string) {
-		const nonce = generateUuid();
-		const content = await renderMarkdownDocument(text, this._extensionService, this._modeService);
-		const colorMap = TokenizationRegistry.getColorMap();
-		const css = colorMap ? generateTokensCSSForColorMap(colorMap) : '';
+	privAte Async renderBody(text: string) {
+		const nonce = generAteUuid();
+		const content = AwAit renderMArkdownDocument(text, this._extensionService, this._modeService);
+		const colorMAp = TokenizAtionRegistry.getColorMAp();
+		const css = colorMAp ? generAteTokensCSSForColorMAp(colorMAp) : '';
 		return `<!DOCTYPE html>
 		<html>
-			<head>
-				<base href="https://code.visualstudio.com/raw/">
-				<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; media-src https:; style-src 'nonce-${nonce}' https://code.visualstudio.com;">
+			<heAd>
+				<bAse href="https://code.visuAlstudio.com/rAw/">
+				<metA http-equiv="Content-type" content="text/html;chArset=UTF-8">
+				<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; img-src https: dAtA:; mediA-src https:; style-src 'nonce-${nonce}' https://code.visuAlstudio.com;">
 				<style nonce="${nonce}">
 					body {
-						padding: 10px 20px;
+						pAdding: 10px 20px;
 						line-height: 22px;
-						max-width: 882px;
-						margin: 0 auto;
+						mAx-width: 882px;
+						mArgin: 0 Auto;
 					}
 
 					img {
-						max-width: 100%;
-						max-height: 100%;
+						mAx-width: 100%;
+						mAx-height: 100%;
 					}
 
-					a {
-						text-decoration: none;
+					A {
+						text-decorAtion: none;
 					}
 
-					a:hover {
-						text-decoration: underline;
+					A:hover {
+						text-decorAtion: underline;
 					}
 
-					a:focus,
+					A:focus,
 					input:focus,
 					select:focus,
-					textarea:focus {
+					textAreA:focus {
 						outline: 1px solid -webkit-focus-ring-color;
 						outline-offset: -1px;
 					}
@@ -243,102 +243,102 @@ export class ReleaseNotesManager {
 					}
 
 					h1 {
-						padding-bottom: 0.3em;
+						pAdding-bottom: 0.3em;
 						line-height: 1.2;
 						border-bottom-width: 1px;
 						border-bottom-style: solid;
 					}
 
 					h1, h2, h3 {
-						font-weight: normal;
+						font-weight: normAl;
 					}
 
-					table {
-						border-collapse: collapse;
+					tAble {
+						border-collApse: collApse;
 					}
 
-					table > thead > tr > th {
-						text-align: left;
+					tAble > theAd > tr > th {
+						text-Align: left;
 						border-bottom: 1px solid;
 					}
 
-					table > thead > tr > th,
-					table > thead > tr > td,
-					table > tbody > tr > th,
-					table > tbody > tr > td {
-						padding: 5px 10px;
+					tAble > theAd > tr > th,
+					tAble > theAd > tr > td,
+					tAble > tbody > tr > th,
+					tAble > tbody > tr > td {
+						pAdding: 5px 10px;
 					}
 
-					table > tbody > tr + tr > td {
+					tAble > tbody > tr + tr > td {
 						border-top-width: 1px;
 						border-top-style: solid;
 					}
 
 					blockquote {
-						margin: 0 7px 0 5px;
-						padding: 0 16px 0 10px;
+						mArgin: 0 7px 0 5px;
+						pAdding: 0 16px 0 10px;
 						border-left-width: 5px;
 						border-left-style: solid;
 					}
 
 					code {
-						font-family: var(--vscode-editor-font-family);
-						font-weight: var(--vscode-editor-font-weight);
-						font-size: var(--vscode-editor-font-size);
+						font-fAmily: vAr(--vscode-editor-font-fAmily);
+						font-weight: vAr(--vscode-editor-font-weight);
+						font-size: vAr(--vscode-editor-font-size);
 						line-height: 19px;
 					}
 
 					code > div {
-						padding: 16px;
-						border-radius: 3px;
-						overflow: auto;
+						pAdding: 16px;
+						border-rAdius: 3px;
+						overflow: Auto;
 					}
 
-					.monaco-tokenized-source {
-						white-space: pre;
+					.monAco-tokenized-source {
+						white-spAce: pre;
 					}
 
 					/** Theming */
 
 					.vscode-light code > div {
-						background-color: rgba(220, 220, 220, 0.4);
+						bAckground-color: rgbA(220, 220, 220, 0.4);
 					}
 
-					.vscode-dark code > div {
-						background-color: rgba(10, 10, 10, 0.4);
+					.vscode-dArk code > div {
+						bAckground-color: rgbA(10, 10, 10, 0.4);
 					}
 
-					.vscode-high-contrast code > div {
-						background-color: rgb(0, 0, 0);
+					.vscode-high-contrAst code > div {
+						bAckground-color: rgb(0, 0, 0);
 					}
 
-					.vscode-high-contrast h1 {
+					.vscode-high-contrAst h1 {
 						border-color: rgb(0, 0, 0);
 					}
 
-					.vscode-light table > thead > tr > th {
-						border-color: rgba(0, 0, 0, 0.69);
+					.vscode-light tAble > theAd > tr > th {
+						border-color: rgbA(0, 0, 0, 0.69);
 					}
 
-					.vscode-dark table > thead > tr > th {
-						border-color: rgba(255, 255, 255, 0.69);
+					.vscode-dArk tAble > theAd > tr > th {
+						border-color: rgbA(255, 255, 255, 0.69);
 					}
 
 					.vscode-light h1,
 					.vscode-light hr,
-					.vscode-light table > tbody > tr + tr > td {
-						border-color: rgba(0, 0, 0, 0.18);
+					.vscode-light tAble > tbody > tr + tr > td {
+						border-color: rgbA(0, 0, 0, 0.18);
 					}
 
-					.vscode-dark h1,
-					.vscode-dark hr,
-					.vscode-dark table > tbody > tr + tr > td {
-						border-color: rgba(255, 255, 255, 0.18);
+					.vscode-dArk h1,
+					.vscode-dArk hr,
+					.vscode-dArk tAble > tbody > tr + tr > td {
+						border-color: rgbA(255, 255, 255, 0.18);
 					}
 
 					${css}
 				</style>
-			</head>
+			</heAd>
 			<body>${content}</body>
 		</html>`;
 	}

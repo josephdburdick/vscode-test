@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
-// --- other interested parties
-import { JSONValidationExtensionPoint } from 'vs/workbench/api/common/jsonValidationExtensionPoint';
+// --- other interested pArties
+import { JSONVAlidAtionExtensionPoint } from 'vs/workbench/Api/common/jsonVAlidAtionExtensionPoint';
 import { ColorExtensionPoint } from 'vs/workbench/services/themes/common/colorExtensionPoint';
-import { TokenClassificationExtensionPoints } from 'vs/workbench/services/themes/common/tokenClassificationExtensionPoint';
-import { LanguageConfigurationFileHandler } from 'vs/workbench/contrib/codeEditor/browser/languageConfigurationExtensionPoint';
+import { TokenClAssificAtionExtensionPoints } from 'vs/workbench/services/themes/common/tokenClAssificAtionExtensionPoint';
+import { LAnguAgeConfigurAtionFileHAndler } from 'vs/workbench/contrib/codeEditor/browser/lAnguAgeConfigurAtionExtensionPoint';
 
-// --- mainThread participants
-import './mainThreadBulkEdits';
-import './mainThreadCodeInsets';
-import './mainThreadClipboard';
-import './mainThreadCommands';
-import './mainThreadConfiguration';
-import './mainThreadConsole';
-import './mainThreadDebugService';
-import './mainThreadDecorations';
-import './mainThreadDiagnostics';
-import './mainThreadDialogs';
-import './mainThreadDocumentContentProviders';
-import './mainThreadDocuments';
-import './mainThreadDocumentsAndEditors';
-import './mainThreadEditor';
-import './mainThreadEditors';
-import './mainThreadErrors';
-import './mainThreadExtensionService';
-import './mainThreadFileSystem';
-import './mainThreadFileSystemEventService';
-import './mainThreadKeytar';
-import './mainThreadLanguageFeatures';
-import './mainThreadLanguages';
-import './mainThreadLogService';
-import './mainThreadMessageService';
-import './mainThreadOutputService';
-import './mainThreadProgress';
-import './mainThreadQuickOpen';
-import './mainThreadRemoteConnectionData';
-import './mainThreadSaveParticipant';
-import './mainThreadSCM';
-import './mainThreadSearch';
-import './mainThreadStatusBar';
-import './mainThreadStorage';
-import './mainThreadTelemetry';
-import './mainThreadTerminalService';
-import './mainThreadTheming';
-import './mainThreadTreeViews';
-import './mainThreadDownloadService';
-import './mainThreadUrls';
-import './mainThreadWindow';
-import './mainThreadWebviewManager';
-import './mainThreadWorkspace';
-import './mainThreadComments';
-import './mainThreadNotebook';
-import './mainThreadTask';
-import './mainThreadLabelService';
-import './mainThreadTunnelService';
-import './mainThreadAuthentication';
-import './mainThreadTimeline';
-import 'vs/workbench/api/common/apiCommands';
+// --- mAinThreAd pArticipAnts
+import './mAinThreAdBulkEdits';
+import './mAinThreAdCodeInsets';
+import './mAinThreAdClipboArd';
+import './mAinThreAdCommAnds';
+import './mAinThreAdConfigurAtion';
+import './mAinThreAdConsole';
+import './mAinThreAdDebugService';
+import './mAinThreAdDecorAtions';
+import './mAinThreAdDiAgnostics';
+import './mAinThreAdDiAlogs';
+import './mAinThreAdDocumentContentProviders';
+import './mAinThreAdDocuments';
+import './mAinThreAdDocumentsAndEditors';
+import './mAinThreAdEditor';
+import './mAinThreAdEditors';
+import './mAinThreAdErrors';
+import './mAinThreAdExtensionService';
+import './mAinThreAdFileSystem';
+import './mAinThreAdFileSystemEventService';
+import './mAinThreAdKeytAr';
+import './mAinThreAdLAnguAgeFeAtures';
+import './mAinThreAdLAnguAges';
+import './mAinThreAdLogService';
+import './mAinThreAdMessAgeService';
+import './mAinThreAdOutputService';
+import './mAinThreAdProgress';
+import './mAinThreAdQuickOpen';
+import './mAinThreAdRemoteConnectionDAtA';
+import './mAinThreAdSAvePArticipAnt';
+import './mAinThreAdSCM';
+import './mAinThreAdSeArch';
+import './mAinThreAdStAtusBAr';
+import './mAinThreAdStorAge';
+import './mAinThreAdTelemetry';
+import './mAinThreAdTerminAlService';
+import './mAinThreAdTheming';
+import './mAinThreAdTreeViews';
+import './mAinThreAdDownloAdService';
+import './mAinThreAdUrls';
+import './mAinThreAdWindow';
+import './mAinThreAdWebviewMAnAger';
+import './mAinThreAdWorkspAce';
+import './mAinThreAdComments';
+import './mAinThreAdNotebook';
+import './mAinThreAdTAsk';
+import './mAinThreAdLAbelService';
+import './mAinThreAdTunnelService';
+import './mAinThreAdAuthenticAtion';
+import './mAinThreAdTimeline';
+import 'vs/workbench/Api/common/ApiCommAnds';
 
-export class ExtensionPoints implements IWorkbenchContribution {
+export clAss ExtensionPoints implements IWorkbenchContribution {
 
 	constructor(
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
-		// Classes that handle extension points...
-		this.instantiationService.createInstance(JSONValidationExtensionPoint);
-		this.instantiationService.createInstance(ColorExtensionPoint);
-		this.instantiationService.createInstance(TokenClassificationExtensionPoints);
-		this.instantiationService.createInstance(LanguageConfigurationFileHandler);
+		// ClAsses thAt hAndle extension points...
+		this.instAntiAtionService.creAteInstAnce(JSONVAlidAtionExtensionPoint);
+		this.instAntiAtionService.creAteInstAnce(ColorExtensionPoint);
+		this.instAntiAtionService.creAteInstAnce(TokenClAssificAtionExtensionPoints);
+		this.instAntiAtionService.creAteInstAnce(LAnguAgeConfigurAtionFileHAndler);
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ExtensionPoints, LifecyclePhase.Starting);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ExtensionPoints, LifecyclePhAse.StArting);

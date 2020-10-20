@@ -1,363 +1,363 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import * as DomUtils from 'vs/base/browser/dom';
-import { memoize } from 'vs/base/common/decorators';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import * As DomUtils from 'vs/bAse/browser/dom';
+import { memoize } from 'vs/bAse/common/decorAtors';
 
-export namespace EventType {
-	export const Tap = '-monaco-gesturetap';
-	export const Change = '-monaco-gesturechange';
-	export const Start = '-monaco-gesturestart';
-	export const End = '-monaco-gesturesend';
-	export const Contextmenu = '-monaco-gesturecontextmenu';
+export nAmespAce EventType {
+	export const TAp = '-monAco-gesturetAp';
+	export const ChAnge = '-monAco-gesturechAnge';
+	export const StArt = '-monAco-gesturestArt';
+	export const End = '-monAco-gesturesend';
+	export const Contextmenu = '-monAco-gesturecontextmenu';
 }
 
-interface TouchData {
+interfAce TouchDAtA {
 	id: number;
-	initialTarget: EventTarget;
-	initialTimeStamp: number;
-	initialPageX: number;
-	initialPageY: number;
-	rollingTimestamps: number[];
-	rollingPageX: number[];
-	rollingPageY: number[];
+	initiAlTArget: EventTArget;
+	initiAlTimeStAmp: number;
+	initiAlPAgeX: number;
+	initiAlPAgeY: number;
+	rollingTimestAmps: number[];
+	rollingPAgeX: number[];
+	rollingPAgeY: number[];
 }
 
-export interface GestureEvent extends MouseEvent {
-	initialTarget: EventTarget | undefined;
-	translationX: number;
-	translationY: number;
-	pageX: number;
-	pageY: number;
-	tapCount: number;
+export interfAce GestureEvent extends MouseEvent {
+	initiAlTArget: EventTArget | undefined;
+	trAnslAtionX: number;
+	trAnslAtionY: number;
+	pAgeX: number;
+	pAgeY: number;
+	tApCount: number;
 }
 
-interface Touch {
+interfAce Touch {
 	identifier: number;
 	screenX: number;
 	screenY: number;
 	clientX: number;
 	clientY: number;
-	pageX: number;
-	pageY: number;
-	radiusX: number;
-	radiusY: number;
-	rotationAngle: number;
+	pAgeX: number;
+	pAgeY: number;
+	rAdiusX: number;
+	rAdiusY: number;
+	rotAtionAngle: number;
 	force: number;
-	target: Element;
+	tArget: Element;
 }
 
-interface TouchList {
+interfAce TouchList {
 	[i: number]: Touch;
 	length: number;
 	item(index: number): Touch;
 	identifiedTouch(id: number): Touch;
 }
 
-interface TouchEvent extends Event {
+interfAce TouchEvent extends Event {
 	touches: TouchList;
-	targetTouches: TouchList;
-	changedTouches: TouchList;
+	tArgetTouches: TouchList;
+	chAngedTouches: TouchList;
 }
 
-export class Gesture extends Disposable {
+export clAss Gesture extends DisposAble {
 
-	private static readonly SCROLL_FRICTION = -0.005;
-	private static INSTANCE: Gesture;
-	private static readonly HOLD_DELAY = 700;
+	privAte stAtic reAdonly SCROLL_FRICTION = -0.005;
+	privAte stAtic INSTANCE: Gesture;
+	privAte stAtic reAdonly HOLD_DELAY = 700;
 
-	private dispatched = false;
-	private targets: HTMLElement[];
-	private ignoreTargets: HTMLElement[];
-	private handle: IDisposable | null;
+	privAte dispAtched = fAlse;
+	privAte tArgets: HTMLElement[];
+	privAte ignoreTArgets: HTMLElement[];
+	privAte hAndle: IDisposAble | null;
 
-	private activeTouches: { [id: number]: TouchData; };
+	privAte ActiveTouches: { [id: number]: TouchDAtA; };
 
-	private _lastSetTapCountTime: number;
+	privAte _lAstSetTApCountTime: number;
 
-	private static readonly CLEAR_TAP_COUNT_TIME = 400; // ms
+	privAte stAtic reAdonly CLEAR_TAP_COUNT_TIME = 400; // ms
 
 
-	private constructor() {
+	privAte constructor() {
 		super();
 
-		this.activeTouches = {};
-		this.handle = null;
-		this.targets = [];
-		this.ignoreTargets = [];
-		this._lastSetTapCountTime = 0;
-		this._register(DomUtils.addDisposableListener(document, 'touchstart', (e: TouchEvent) => this.onTouchStart(e), { passive: false }));
-		this._register(DomUtils.addDisposableListener(document, 'touchend', (e: TouchEvent) => this.onTouchEnd(e)));
-		this._register(DomUtils.addDisposableListener(document, 'touchmove', (e: TouchEvent) => this.onTouchMove(e), { passive: false }));
+		this.ActiveTouches = {};
+		this.hAndle = null;
+		this.tArgets = [];
+		this.ignoreTArgets = [];
+		this._lAstSetTApCountTime = 0;
+		this._register(DomUtils.AddDisposAbleListener(document, 'touchstArt', (e: TouchEvent) => this.onTouchStArt(e), { pAssive: fAlse }));
+		this._register(DomUtils.AddDisposAbleListener(document, 'touchend', (e: TouchEvent) => this.onTouchEnd(e)));
+		this._register(DomUtils.AddDisposAbleListener(document, 'touchmove', (e: TouchEvent) => this.onTouchMove(e), { pAssive: fAlse }));
 	}
 
-	public static addTarget(element: HTMLElement): IDisposable {
+	public stAtic AddTArget(element: HTMLElement): IDisposAble {
 		if (!Gesture.isTouchDevice()) {
-			return Disposable.None;
+			return DisposAble.None;
 		}
 		if (!Gesture.INSTANCE) {
 			Gesture.INSTANCE = new Gesture();
 		}
 
-		Gesture.INSTANCE.targets.push(element);
+		Gesture.INSTANCE.tArgets.push(element);
 
 		return {
 			dispose: () => {
-				Gesture.INSTANCE.targets = Gesture.INSTANCE.targets.filter(t => t !== element);
+				Gesture.INSTANCE.tArgets = Gesture.INSTANCE.tArgets.filter(t => t !== element);
 			}
 		};
 	}
 
-	public static ignoreTarget(element: HTMLElement): IDisposable {
+	public stAtic ignoreTArget(element: HTMLElement): IDisposAble {
 		if (!Gesture.isTouchDevice()) {
-			return Disposable.None;
+			return DisposAble.None;
 		}
 		if (!Gesture.INSTANCE) {
 			Gesture.INSTANCE = new Gesture();
 		}
 
-		Gesture.INSTANCE.ignoreTargets.push(element);
+		Gesture.INSTANCE.ignoreTArgets.push(element);
 
 		return {
 			dispose: () => {
-				Gesture.INSTANCE.ignoreTargets = Gesture.INSTANCE.ignoreTargets.filter(t => t !== element);
+				Gesture.INSTANCE.ignoreTArgets = Gesture.INSTANCE.ignoreTArgets.filter(t => t !== element);
 			}
 		};
 	}
 
 	@memoize
-	private static isTouchDevice(): boolean {
-		// `'ontouchstart' in window` always evaluates to true with typescript's modern typings. This causes `window` to be
-		// `never` later in `window.navigator`. That's why we need the explicit `window as Window` cast
-		return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || (window as Window).navigator.msMaxTouchPoints > 0;
+	privAte stAtic isTouchDevice(): booleAn {
+		// `'ontouchstArt' in window` AlwAys evAluAtes to true with typescript's modern typings. This cAuses `window` to be
+		// `never` lAter in `window.nAvigAtor`. ThAt's why we need the explicit `window As Window` cAst
+		return 'ontouchstArt' in window || nAvigAtor.mAxTouchPoints > 0 || (window As Window).nAvigAtor.msMAxTouchPoints > 0;
 	}
 
 	public dispose(): void {
-		if (this.handle) {
-			this.handle.dispose();
-			this.handle = null;
+		if (this.hAndle) {
+			this.hAndle.dispose();
+			this.hAndle = null;
 		}
 
 		super.dispose();
 	}
 
-	private onTouchStart(e: TouchEvent): void {
-		let timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
+	privAte onTouchStArt(e: TouchEvent): void {
+		let timestAmp = DAte.now(); // use DAte.now() becAuse on FF e.timeStAmp is not epoch bAsed.
 
-		if (this.handle) {
-			this.handle.dispose();
-			this.handle = null;
+		if (this.hAndle) {
+			this.hAndle.dispose();
+			this.hAndle = null;
 		}
 
-		for (let i = 0, len = e.targetTouches.length; i < len; i++) {
-			let touch = e.targetTouches.item(i);
+		for (let i = 0, len = e.tArgetTouches.length; i < len; i++) {
+			let touch = e.tArgetTouches.item(i);
 
-			this.activeTouches[touch.identifier] = {
+			this.ActiveTouches[touch.identifier] = {
 				id: touch.identifier,
-				initialTarget: touch.target,
-				initialTimeStamp: timestamp,
-				initialPageX: touch.pageX,
-				initialPageY: touch.pageY,
-				rollingTimestamps: [timestamp],
-				rollingPageX: [touch.pageX],
-				rollingPageY: [touch.pageY]
+				initiAlTArget: touch.tArget,
+				initiAlTimeStAmp: timestAmp,
+				initiAlPAgeX: touch.pAgeX,
+				initiAlPAgeY: touch.pAgeY,
+				rollingTimestAmps: [timestAmp],
+				rollingPAgeX: [touch.pAgeX],
+				rollingPAgeY: [touch.pAgeY]
 			};
 
-			let evt = this.newGestureEvent(EventType.Start, touch.target);
-			evt.pageX = touch.pageX;
-			evt.pageY = touch.pageY;
-			this.dispatchEvent(evt);
+			let evt = this.newGestureEvent(EventType.StArt, touch.tArget);
+			evt.pAgeX = touch.pAgeX;
+			evt.pAgeY = touch.pAgeY;
+			this.dispAtchEvent(evt);
 		}
 
-		if (this.dispatched) {
-			e.preventDefault();
-			e.stopPropagation();
-			this.dispatched = false;
+		if (this.dispAtched) {
+			e.preventDefAult();
+			e.stopPropAgAtion();
+			this.dispAtched = fAlse;
 		}
 	}
 
-	private onTouchEnd(e: TouchEvent): void {
-		let timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
+	privAte onTouchEnd(e: TouchEvent): void {
+		let timestAmp = DAte.now(); // use DAte.now() becAuse on FF e.timeStAmp is not epoch bAsed.
 
-		let activeTouchCount = Object.keys(this.activeTouches).length;
+		let ActiveTouchCount = Object.keys(this.ActiveTouches).length;
 
-		for (let i = 0, len = e.changedTouches.length; i < len; i++) {
+		for (let i = 0, len = e.chAngedTouches.length; i < len; i++) {
 
-			let touch = e.changedTouches.item(i);
+			let touch = e.chAngedTouches.item(i);
 
-			if (!this.activeTouches.hasOwnProperty(String(touch.identifier))) {
-				console.warn('move of an UNKNOWN touch', touch);
+			if (!this.ActiveTouches.hAsOwnProperty(String(touch.identifier))) {
+				console.wArn('move of An UNKNOWN touch', touch);
 				continue;
 			}
 
-			let data = this.activeTouches[touch.identifier],
-				holdTime = Date.now() - data.initialTimeStamp;
+			let dAtA = this.ActiveTouches[touch.identifier],
+				holdTime = DAte.now() - dAtA.initiAlTimeStAmp;
 
 			if (holdTime < Gesture.HOLD_DELAY
-				&& Math.abs(data.initialPageX - arrays.tail(data.rollingPageX)) < 30
-				&& Math.abs(data.initialPageY - arrays.tail(data.rollingPageY)) < 30) {
+				&& MAth.Abs(dAtA.initiAlPAgeX - ArrAys.tAil(dAtA.rollingPAgeX)) < 30
+				&& MAth.Abs(dAtA.initiAlPAgeY - ArrAys.tAil(dAtA.rollingPAgeY)) < 30) {
 
-				let evt = this.newGestureEvent(EventType.Tap, data.initialTarget);
-				evt.pageX = arrays.tail(data.rollingPageX);
-				evt.pageY = arrays.tail(data.rollingPageY);
-				this.dispatchEvent(evt);
+				let evt = this.newGestureEvent(EventType.TAp, dAtA.initiAlTArget);
+				evt.pAgeX = ArrAys.tAil(dAtA.rollingPAgeX);
+				evt.pAgeY = ArrAys.tAil(dAtA.rollingPAgeY);
+				this.dispAtchEvent(evt);
 
 			} else if (holdTime >= Gesture.HOLD_DELAY
-				&& Math.abs(data.initialPageX - arrays.tail(data.rollingPageX)) < 30
-				&& Math.abs(data.initialPageY - arrays.tail(data.rollingPageY)) < 30) {
+				&& MAth.Abs(dAtA.initiAlPAgeX - ArrAys.tAil(dAtA.rollingPAgeX)) < 30
+				&& MAth.Abs(dAtA.initiAlPAgeY - ArrAys.tAil(dAtA.rollingPAgeY)) < 30) {
 
-				let evt = this.newGestureEvent(EventType.Contextmenu, data.initialTarget);
-				evt.pageX = arrays.tail(data.rollingPageX);
-				evt.pageY = arrays.tail(data.rollingPageY);
-				this.dispatchEvent(evt);
+				let evt = this.newGestureEvent(EventType.Contextmenu, dAtA.initiAlTArget);
+				evt.pAgeX = ArrAys.tAil(dAtA.rollingPAgeX);
+				evt.pAgeY = ArrAys.tAil(dAtA.rollingPAgeY);
+				this.dispAtchEvent(evt);
 
-			} else if (activeTouchCount === 1) {
-				let finalX = arrays.tail(data.rollingPageX);
-				let finalY = arrays.tail(data.rollingPageY);
+			} else if (ActiveTouchCount === 1) {
+				let finAlX = ArrAys.tAil(dAtA.rollingPAgeX);
+				let finAlY = ArrAys.tAil(dAtA.rollingPAgeY);
 
-				let deltaT = arrays.tail(data.rollingTimestamps) - data.rollingTimestamps[0];
-				let deltaX = finalX - data.rollingPageX[0];
-				let deltaY = finalY - data.rollingPageY[0];
+				let deltAT = ArrAys.tAil(dAtA.rollingTimestAmps) - dAtA.rollingTimestAmps[0];
+				let deltAX = finAlX - dAtA.rollingPAgeX[0];
+				let deltAY = finAlY - dAtA.rollingPAgeY[0];
 
-				// We need to get all the dispatch targets on the start of the inertia event
-				const dispatchTo = this.targets.filter(t => data.initialTarget instanceof Node && t.contains(data.initialTarget));
-				this.inertia(dispatchTo, timestamp,		// time now
-					Math.abs(deltaX) / deltaT,	// speed
-					deltaX > 0 ? 1 : -1,		// x direction
-					finalX,						// x now
-					Math.abs(deltaY) / deltaT,  // y speed
-					deltaY > 0 ? 1 : -1,		// y direction
-					finalY						// y now
+				// We need to get All the dispAtch tArgets on the stArt of the inertiA event
+				const dispAtchTo = this.tArgets.filter(t => dAtA.initiAlTArget instAnceof Node && t.contAins(dAtA.initiAlTArget));
+				this.inertiA(dispAtchTo, timestAmp,		// time now
+					MAth.Abs(deltAX) / deltAT,	// speed
+					deltAX > 0 ? 1 : -1,		// x direction
+					finAlX,						// x now
+					MAth.Abs(deltAY) / deltAT,  // y speed
+					deltAY > 0 ? 1 : -1,		// y direction
+					finAlY						// y now
 				);
 			}
 
 
-			this.dispatchEvent(this.newGestureEvent(EventType.End, data.initialTarget));
-			// forget about this touch
-			delete this.activeTouches[touch.identifier];
+			this.dispAtchEvent(this.newGestureEvent(EventType.End, dAtA.initiAlTArget));
+			// forget About this touch
+			delete this.ActiveTouches[touch.identifier];
 		}
 
-		if (this.dispatched) {
-			e.preventDefault();
-			e.stopPropagation();
-			this.dispatched = false;
+		if (this.dispAtched) {
+			e.preventDefAult();
+			e.stopPropAgAtion();
+			this.dispAtched = fAlse;
 		}
 	}
 
-	private newGestureEvent(type: string, initialTarget?: EventTarget): GestureEvent {
-		let event = document.createEvent('CustomEvent') as unknown as GestureEvent;
-		event.initEvent(type, false, true);
-		event.initialTarget = initialTarget;
-		event.tapCount = 0;
+	privAte newGestureEvent(type: string, initiAlTArget?: EventTArget): GestureEvent {
+		let event = document.creAteEvent('CustomEvent') As unknown As GestureEvent;
+		event.initEvent(type, fAlse, true);
+		event.initiAlTArget = initiAlTArget;
+		event.tApCount = 0;
 		return event;
 	}
 
-	private dispatchEvent(event: GestureEvent): void {
-		if (event.type === EventType.Tap) {
-			const currentTime = (new Date()).getTime();
-			let setTapCount = 0;
-			if (currentTime - this._lastSetTapCountTime > Gesture.CLEAR_TAP_COUNT_TIME) {
-				setTapCount = 1;
+	privAte dispAtchEvent(event: GestureEvent): void {
+		if (event.type === EventType.TAp) {
+			const currentTime = (new DAte()).getTime();
+			let setTApCount = 0;
+			if (currentTime - this._lAstSetTApCountTime > Gesture.CLEAR_TAP_COUNT_TIME) {
+				setTApCount = 1;
 			} else {
-				setTapCount = 2;
+				setTApCount = 2;
 			}
 
-			this._lastSetTapCountTime = currentTime;
-			event.tapCount = setTapCount;
-		} else if (event.type === EventType.Change || event.type === EventType.Contextmenu) {
-			// tap is canceled by scrolling or context menu
-			this._lastSetTapCountTime = 0;
+			this._lAstSetTApCountTime = currentTime;
+			event.tApCount = setTApCount;
+		} else if (event.type === EventType.ChAnge || event.type === EventType.Contextmenu) {
+			// tAp is cAnceled by scrolling or context menu
+			this._lAstSetTApCountTime = 0;
 		}
 
-		for (let i = 0; i < this.ignoreTargets.length; i++) {
-			if (event.initialTarget instanceof Node && this.ignoreTargets[i].contains(event.initialTarget)) {
+		for (let i = 0; i < this.ignoreTArgets.length; i++) {
+			if (event.initiAlTArget instAnceof Node && this.ignoreTArgets[i].contAins(event.initiAlTArget)) {
 				return;
 			}
 		}
 
-		this.targets.forEach(target => {
-			if (event.initialTarget instanceof Node && target.contains(event.initialTarget)) {
-				target.dispatchEvent(event);
-				this.dispatched = true;
+		this.tArgets.forEAch(tArget => {
+			if (event.initiAlTArget instAnceof Node && tArget.contAins(event.initiAlTArget)) {
+				tArget.dispAtchEvent(event);
+				this.dispAtched = true;
 			}
 		});
 	}
 
-	private inertia(dispatchTo: EventTarget[], t1: number, vX: number, dirX: number, x: number, vY: number, dirY: number, y: number): void {
-		this.handle = DomUtils.scheduleAtNextAnimationFrame(() => {
-			let now = Date.now();
+	privAte inertiA(dispAtchTo: EventTArget[], t1: number, vX: number, dirX: number, x: number, vY: number, dirY: number, y: number): void {
+		this.hAndle = DomUtils.scheduleAtNextAnimAtionFrAme(() => {
+			let now = DAte.now();
 
-			// velocity: old speed + accel_over_time
-			let deltaT = now - t1,
-				delta_pos_x = 0, delta_pos_y = 0,
+			// velocity: old speed + Accel_over_time
+			let deltAT = now - t1,
+				deltA_pos_x = 0, deltA_pos_y = 0,
 				stopped = true;
 
-			vX += Gesture.SCROLL_FRICTION * deltaT;
-			vY += Gesture.SCROLL_FRICTION * deltaT;
+			vX += Gesture.SCROLL_FRICTION * deltAT;
+			vY += Gesture.SCROLL_FRICTION * deltAT;
 
 			if (vX > 0) {
-				stopped = false;
-				delta_pos_x = dirX * vX * deltaT;
+				stopped = fAlse;
+				deltA_pos_x = dirX * vX * deltAT;
 			}
 
 			if (vY > 0) {
-				stopped = false;
-				delta_pos_y = dirY * vY * deltaT;
+				stopped = fAlse;
+				deltA_pos_y = dirY * vY * deltAT;
 			}
 
-			// dispatch translation event
-			let evt = this.newGestureEvent(EventType.Change);
-			evt.translationX = delta_pos_x;
-			evt.translationY = delta_pos_y;
-			dispatchTo.forEach(d => d.dispatchEvent(evt));
+			// dispAtch trAnslAtion event
+			let evt = this.newGestureEvent(EventType.ChAnge);
+			evt.trAnslAtionX = deltA_pos_x;
+			evt.trAnslAtionY = deltA_pos_y;
+			dispAtchTo.forEAch(d => d.dispAtchEvent(evt));
 
 			if (!stopped) {
-				this.inertia(dispatchTo, now, vX, dirX, x + delta_pos_x, vY, dirY, y + delta_pos_y);
+				this.inertiA(dispAtchTo, now, vX, dirX, x + deltA_pos_x, vY, dirY, y + deltA_pos_y);
 			}
 		});
 	}
 
-	private onTouchMove(e: TouchEvent): void {
-		let timestamp = Date.now(); // use Date.now() because on FF e.timeStamp is not epoch based.
+	privAte onTouchMove(e: TouchEvent): void {
+		let timestAmp = DAte.now(); // use DAte.now() becAuse on FF e.timeStAmp is not epoch bAsed.
 
-		for (let i = 0, len = e.changedTouches.length; i < len; i++) {
+		for (let i = 0, len = e.chAngedTouches.length; i < len; i++) {
 
-			let touch = e.changedTouches.item(i);
+			let touch = e.chAngedTouches.item(i);
 
-			if (!this.activeTouches.hasOwnProperty(String(touch.identifier))) {
-				console.warn('end of an UNKNOWN touch', touch);
+			if (!this.ActiveTouches.hAsOwnProperty(String(touch.identifier))) {
+				console.wArn('end of An UNKNOWN touch', touch);
 				continue;
 			}
 
-			let data = this.activeTouches[touch.identifier];
+			let dAtA = this.ActiveTouches[touch.identifier];
 
-			let evt = this.newGestureEvent(EventType.Change, data.initialTarget);
-			evt.translationX = touch.pageX - arrays.tail(data.rollingPageX);
-			evt.translationY = touch.pageY - arrays.tail(data.rollingPageY);
-			evt.pageX = touch.pageX;
-			evt.pageY = touch.pageY;
-			this.dispatchEvent(evt);
+			let evt = this.newGestureEvent(EventType.ChAnge, dAtA.initiAlTArget);
+			evt.trAnslAtionX = touch.pAgeX - ArrAys.tAil(dAtA.rollingPAgeX);
+			evt.trAnslAtionY = touch.pAgeY - ArrAys.tAil(dAtA.rollingPAgeY);
+			evt.pAgeX = touch.pAgeX;
+			evt.pAgeY = touch.pAgeY;
+			this.dispAtchEvent(evt);
 
-			// only keep a few data points, to average the final speed
-			if (data.rollingPageX.length > 3) {
-				data.rollingPageX.shift();
-				data.rollingPageY.shift();
-				data.rollingTimestamps.shift();
+			// only keep A few dAtA points, to AverAge the finAl speed
+			if (dAtA.rollingPAgeX.length > 3) {
+				dAtA.rollingPAgeX.shift();
+				dAtA.rollingPAgeY.shift();
+				dAtA.rollingTimestAmps.shift();
 			}
 
-			data.rollingPageX.push(touch.pageX);
-			data.rollingPageY.push(touch.pageY);
-			data.rollingTimestamps.push(timestamp);
+			dAtA.rollingPAgeX.push(touch.pAgeX);
+			dAtA.rollingPAgeY.push(touch.pAgeY);
+			dAtA.rollingTimestAmps.push(timestAmp);
 		}
 
-		if (this.dispatched) {
-			e.preventDefault();
-			e.stopPropagation();
-			this.dispatched = false;
+		if (this.dispAtched) {
+			e.preventDefAult();
+			e.stopPropAgAtion();
+			this.dispAtched = fAlse;
 		}
 	}
 }

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, Disposable, dispose } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IConfigurationService, IConfigurationChangeEvent } from 'vs/platform/configuration/common/configuration';
-import { IFilesConfiguration, IFileService } from 'vs/platform/files/common/files';
-import { IWorkspaceContextService, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
-import { ResourceMap } from 'vs/base/common/map';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { INotificationService, Severity, NeverShowAgainScope } from 'vs/platform/notification/common/notification';
-import { localize } from 'vs/nls';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
+import { IDisposAble, DisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IConfigurAtionService, IConfigurAtionChAngeEvent } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFilesConfigurAtion, IFileService } from 'vs/plAtform/files/common/files';
+import { IWorkspAceContextService, IWorkspAceFoldersChAngeEvent } from 'vs/plAtform/workspAce/common/workspAce';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { INotificAtionService, Severity, NeverShowAgAinScope } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { locAlize } from 'vs/nls';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
 
-export class WorkspaceWatcher extends Disposable {
+export clAss WorkspAceWAtcher extends DisposAble {
 
-	private readonly watches = new ResourceMap<IDisposable>();
+	privAte reAdonly wAtches = new ResourceMAp<IDisposAble>();
 
 	constructor(
-		@IFileService private readonly fileService: FileService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IOpenerService private readonly openerService: IOpenerService
+		@IFileService privAte reAdonly fileService: FileService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService
 	) {
 		super();
 
@@ -33,119 +33,119 @@ export class WorkspaceWatcher extends Disposable {
 		this.refresh();
 	}
 
-	private registerListeners(): void {
-		this._register(this.contextService.onDidChangeWorkspaceFolders(e => this.onDidChangeWorkspaceFolders(e)));
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this.onDidChangeWorkbenchState()));
-		this._register(this.configurationService.onDidChangeConfiguration(e => this.onDidChangeConfiguration(e)));
+	privAte registerListeners(): void {
+		this._register(this.contextService.onDidChAngeWorkspAceFolders(e => this.onDidChAngeWorkspAceFolders(e)));
+		this._register(this.contextService.onDidChAngeWorkbenchStAte(() => this.onDidChAngeWorkbenchStAte()));
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(e => this.onDidChAngeConfigurAtion(e)));
 		this._register(this.fileService.onError(error => this.onError(error)));
 	}
 
-	private onDidChangeWorkspaceFolders(e: IWorkspaceFoldersChangeEvent): void {
+	privAte onDidChAngeWorkspAceFolders(e: IWorkspAceFoldersChAngeEvent): void {
 
-		// Removed workspace: Unwatch
+		// Removed workspAce: UnwAtch
 		for (const removed of e.removed) {
-			this.unwatchWorkspace(removed.uri);
+			this.unwAtchWorkspAce(removed.uri);
 		}
 
-		// Added workspace: Watch
-		for (const added of e.added) {
-			this.watchWorkspace(added.uri);
+		// Added workspAce: WAtch
+		for (const Added of e.Added) {
+			this.wAtchWorkspAce(Added.uri);
 		}
 	}
 
-	private onDidChangeWorkbenchState(): void {
+	privAte onDidChAngeWorkbenchStAte(): void {
 		this.refresh();
 	}
 
-	private onDidChangeConfiguration(e: IConfigurationChangeEvent): void {
-		if (e.affectsConfiguration('files.watcherExclude')) {
+	privAte onDidChAngeConfigurAtion(e: IConfigurAtionChAngeEvent): void {
+		if (e.AffectsConfigurAtion('files.wAtcherExclude')) {
 			this.refresh();
 		}
 	}
 
-	private onError(error: Error): void {
+	privAte onError(error: Error): void {
 		const msg = error.toString();
 
-		// Forward to unexpected error handler
+		// ForwArd to unexpected error hAndler
 		onUnexpectedError(msg);
 
-		// Detect if we run < .NET Framework 4.5
+		// Detect if we run < .NET FrAmework 4.5
 		if (msg.indexOf('System.MissingMethodException') >= 0) {
-			this.notificationService.prompt(
-				Severity.Warning,
-				localize('netVersionError', "The Microsoft .NET Framework 4.5 is required. Please follow the link to install it."),
+			this.notificAtionService.prompt(
+				Severity.WArning,
+				locAlize('netVersionError', "The Microsoft .NET FrAmework 4.5 is required. PleAse follow the link to instAll it."),
 				[{
-					label: localize('installNet', "Download .NET Framework 4.5"),
-					run: () => this.openerService.open(URI.parse('https://go.microsoft.com/fwlink/?LinkId=786533'))
+					lAbel: locAlize('instAllNet', "DownloAd .NET FrAmework 4.5"),
+					run: () => this.openerService.open(URI.pArse('https://go.microsoft.com/fwlink/?LinkId=786533'))
 				}],
 				{
 					sticky: true,
-					neverShowAgain: { id: 'ignoreNetVersionError', isSecondary: true, scope: NeverShowAgainScope.WORKSPACE }
+					neverShowAgAin: { id: 'ignoreNetVersionError', isSecondAry: true, scope: NeverShowAgAinScope.WORKSPACE }
 				}
 			);
 		}
 
 		// Detect if we run into ENOSPC issues
 		if (msg.indexOf('ENOSPC') >= 0) {
-			this.notificationService.prompt(
-				Severity.Warning,
-				localize('enospcError', "Unable to watch for file changes in this large workspace. Please follow the instructions link to resolve this issue."),
+			this.notificAtionService.prompt(
+				Severity.WArning,
+				locAlize('enospcError', "UnAble to wAtch for file chAnges in this lArge workspAce. PleAse follow the instructions link to resolve this issue."),
 				[{
-					label: localize('learnMore', "Instructions"),
-					run: () => this.openerService.open(URI.parse('https://go.microsoft.com/fwlink/?linkid=867693'))
+					lAbel: locAlize('leArnMore', "Instructions"),
+					run: () => this.openerService.open(URI.pArse('https://go.microsoft.com/fwlink/?linkid=867693'))
 				}],
 				{
 					sticky: true,
-					neverShowAgain: { id: 'ignoreEnospcError', isSecondary: true, scope: NeverShowAgainScope.WORKSPACE }
+					neverShowAgAin: { id: 'ignoreEnospcError', isSecondAry: true, scope: NeverShowAgAinScope.WORKSPACE }
 				}
 			);
 		}
 	}
 
-	private watchWorkspace(resource: URI) {
+	privAte wAtchWorkspAce(resource: URI) {
 
-		// Compute the watcher exclude rules from configuration
+		// Compute the wAtcher exclude rules from configurAtion
 		const excludes: string[] = [];
-		const config = this.configurationService.getValue<IFilesConfiguration>({ resource });
-		if (config.files?.watcherExclude) {
-			for (const key in config.files.watcherExclude) {
-				if (config.files.watcherExclude[key] === true) {
+		const config = this.configurAtionService.getVAlue<IFilesConfigurAtion>({ resource });
+		if (config.files?.wAtcherExclude) {
+			for (const key in config.files.wAtcherExclude) {
+				if (config.files.wAtcherExclude[key] === true) {
 					excludes.push(key);
 				}
 			}
 		}
 
-		// Watch workspace
-		const disposable = this.fileService.watch(resource, { recursive: true, excludes });
-		this.watches.set(resource, disposable);
+		// WAtch workspAce
+		const disposAble = this.fileService.wAtch(resource, { recursive: true, excludes });
+		this.wAtches.set(resource, disposAble);
 	}
 
-	private unwatchWorkspace(resource: URI) {
-		if (this.watches.has(resource)) {
-			dispose(this.watches.get(resource));
-			this.watches.delete(resource);
+	privAte unwAtchWorkspAce(resource: URI) {
+		if (this.wAtches.hAs(resource)) {
+			dispose(this.wAtches.get(resource));
+			this.wAtches.delete(resource);
 		}
 	}
 
-	private refresh(): void {
+	privAte refresh(): void {
 
-		// Unwatch all first
-		this.unwatchWorkspaces();
+		// UnwAtch All first
+		this.unwAtchWorkspAces();
 
-		// Watch each workspace folder
-		for (const folder of this.contextService.getWorkspace().folders) {
-			this.watchWorkspace(folder.uri);
+		// WAtch eAch workspAce folder
+		for (const folder of this.contextService.getWorkspAce().folders) {
+			this.wAtchWorkspAce(folder.uri);
 		}
 	}
 
-	private unwatchWorkspaces() {
-		this.watches.forEach(disposable => dispose(disposable));
-		this.watches.clear();
+	privAte unwAtchWorkspAces() {
+		this.wAtches.forEAch(disposAble => dispose(disposAble));
+		this.wAtches.cleAr();
 	}
 
 	dispose(): void {
 		super.dispose();
 
-		this.unwatchWorkspaces();
+		this.unwAtchWorkspAces();
 	}
 }

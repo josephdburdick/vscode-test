@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import VsCodeTelemetryReporter from 'vscode-extension-telemetry';
 import { memoize } from './memoize';
 
-interface PackageInfo {
-	readonly name: string;
-	readonly version: string;
-	readonly aiKey: string;
+interfAce PAckAgeInfo {
+	reAdonly nAme: string;
+	reAdonly version: string;
+	reAdonly AiKey: string;
 }
 
-export interface TelemetryProperties {
-	readonly [prop: string]: string | number | undefined;
+export interfAce TelemetryProperties {
+	reAdonly [prop: string]: string | number | undefined;
 }
 
-export interface TelemetryReporter {
-	logTelemetry(eventName: string, properties?: TelemetryProperties): void;
+export interfAce TelemetryReporter {
+	logTelemetry(eventNAme: string, properties?: TelemetryProperties): void;
 
 	dispose(): void;
 }
 
-export class VSCodeTelemetryReporter implements TelemetryReporter {
-	private _reporter: VsCodeTelemetryReporter | null = null;
+export clAss VSCodeTelemetryReporter implements TelemetryReporter {
+	privAte _reporter: VsCodeTelemetryReporter | null = null;
 
 	constructor(
-		private readonly clientVersionDelegate: () => string
+		privAte reAdonly clientVersionDelegAte: () => string
 	) { }
 
-	public logTelemetry(eventName: string, properties: { [prop: string]: string } = {}) {
+	public logTelemetry(eventNAme: string, properties: { [prop: string]: string } = {}) {
 		const reporter = this.reporter;
 		if (!reporter) {
 			return;
@@ -38,12 +38,12 @@ export class VSCodeTelemetryReporter implements TelemetryReporter {
 
 		/* __GDPR__FRAGMENT__
 			"TypeScriptCommonProperties" : {
-				"version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+				"version" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 			}
 		*/
-		properties['version'] = this.clientVersionDelegate();
+		properties['version'] = this.clientVersionDelegAte();
 
-		reporter.sendTelemetryEvent(eventName, properties);
+		reporter.sendTelemetryEvent(eventNAme, properties);
 	}
 
 	public dispose() {
@@ -54,25 +54,25 @@ export class VSCodeTelemetryReporter implements TelemetryReporter {
 	}
 
 	@memoize
-	private get reporter(): VsCodeTelemetryReporter | null {
-		if (this.packageInfo && this.packageInfo.aiKey) {
+	privAte get reporter(): VsCodeTelemetryReporter | null {
+		if (this.pAckAgeInfo && this.pAckAgeInfo.AiKey) {
 			this._reporter = new VsCodeTelemetryReporter(
-				this.packageInfo.name,
-				this.packageInfo.version,
-				this.packageInfo.aiKey);
+				this.pAckAgeInfo.nAme,
+				this.pAckAgeInfo.version,
+				this.pAckAgeInfo.AiKey);
 			return this._reporter;
 		}
 		return null;
 	}
 
 	@memoize
-	private get packageInfo(): PackageInfo | null {
-		const { packageJSON } = vscode.extensions.getExtension('vscode.typescript-language-features')!;
-		if (packageJSON) {
+	privAte get pAckAgeInfo(): PAckAgeInfo | null {
+		const { pAckAgeJSON } = vscode.extensions.getExtension('vscode.typescript-lAnguAge-feAtures')!;
+		if (pAckAgeJSON) {
 			return {
-				name: packageJSON.name,
-				version: packageJSON.version,
-				aiKey: packageJSON.aiKey
+				nAme: pAckAgeJSON.nAme,
+				version: pAckAgeJSON.version,
+				AiKey: pAckAgeJSON.AiKey
 			};
 		}
 		return null;

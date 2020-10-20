@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, DisposableStore, dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IRange } from 'vs/editor/common/core/range';
-import * as modes from 'vs/editor/common/modes';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble, DisposAbleStore, dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import * As modes from 'vs/editor/common/modes';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
 import { ICommentInfo, ICommentService } from 'vs/workbench/contrib/comments/browser/commentService';
-import { CommentsPanel } from 'vs/workbench/contrib/comments/browser/commentsView';
-import { CommentProviderFeatures, ExtHostCommentsShape, ExtHostContext, IExtHostContext, MainContext, MainThreadCommentsShape, CommentThreadChanges } from '../common/extHost.protocol';
+import { CommentsPAnel } from 'vs/workbench/contrib/comments/browser/commentsView';
+import { CommentProviderFeAtures, ExtHostCommentsShApe, ExtHostContext, IExtHostContext, MAinContext, MAinThreAdCommentsShApe, CommentThreAdChAnges } from '../common/extHost.protocol';
 import { COMMENTS_VIEW_ID, COMMENTS_VIEW_TITLE } from 'vs/workbench/contrib/comments/browser/commentsTreeViewer';
-import { ViewContainer, IViewContainersRegistry, Extensions as ViewExtensions, ViewContainerLocation, IViewsRegistry, IViewsService, IViewDescriptorService } from 'vs/workbench/common/views';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { Codicon } from 'vs/base/common/codicons';
+import { ViewContAiner, IViewContAinersRegistry, Extensions As ViewExtensions, ViewContAinerLocAtion, IViewsRegistry, IViewsService, IViewDescriptorService } from 'vs/workbench/common/views';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { ViewPAneContAiner } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { Codicon } from 'vs/bAse/common/codicons';
 
 
-export class MainThreadCommentThread implements modes.CommentThread {
-	private _input?: modes.CommentInput;
+export clAss MAinThreAdCommentThreAd implements modes.CommentThreAd {
+	privAte _input?: modes.CommentInput;
 	get input(): modes.CommentInput | undefined {
 		return this._input;
 	}
 
-	set input(value: modes.CommentInput | undefined) {
-		this._input = value;
-		this._onDidChangeInput.fire(value);
+	set input(vAlue: modes.CommentInput | undefined) {
+		this._input = vAlue;
+		this._onDidChAngeInput.fire(vAlue);
 	}
 
-	private readonly _onDidChangeInput = new Emitter<modes.CommentInput | undefined>();
-	get onDidChangeInput(): Event<modes.CommentInput | undefined> { return this._onDidChangeInput.event; }
+	privAte reAdonly _onDidChAngeInput = new Emitter<modes.CommentInput | undefined>();
+	get onDidChAngeInput(): Event<modes.CommentInput | undefined> { return this._onDidChAngeInput.event; }
 
-	private _label: string | undefined;
+	privAte _lAbel: string | undefined;
 
-	get label(): string | undefined {
-		return this._label;
+	get lAbel(): string | undefined {
+		return this._lAbel;
 	}
 
-	set label(label: string | undefined) {
-		this._label = label;
-		this._onDidChangeLabel.fire(this._label);
+	set lAbel(lAbel: string | undefined) {
+		this._lAbel = lAbel;
+		this._onDidChAngeLAbel.fire(this._lAbel);
 	}
 
-	private _contextValue: string | undefined;
+	privAte _contextVAlue: string | undefined;
 
-	get contextValue(): string | undefined {
-		return this._contextValue;
+	get contextVAlue(): string | undefined {
+		return this._contextVAlue;
 	}
 
-	set contextValue(context: string | undefined) {
-		this._contextValue = context;
+	set contextVAlue(context: string | undefined) {
+		this._contextVAlue = context;
 	}
 
-	private readonly _onDidChangeLabel = new Emitter<string | undefined>();
-	readonly onDidChangeLabel: Event<string | undefined> = this._onDidChangeLabel.event;
+	privAte reAdonly _onDidChAngeLAbel = new Emitter<string | undefined>();
+	reAdonly onDidChAngeLAbel: Event<string | undefined> = this._onDidChAngeLAbel.event;
 
-	private _comments: modes.Comment[] | undefined;
+	privAte _comments: modes.Comment[] | undefined;
 
 	public get comments(): modes.Comment[] | undefined {
 		return this._comments;
@@ -69,442 +69,442 @@ export class MainThreadCommentThread implements modes.CommentThread {
 
 	public set comments(newComments: modes.Comment[] | undefined) {
 		this._comments = newComments;
-		this._onDidChangeComments.fire(this._comments);
+		this._onDidChAngeComments.fire(this._comments);
 	}
 
-	private readonly _onDidChangeComments = new Emitter<modes.Comment[] | undefined>();
-	get onDidChangeComments(): Event<modes.Comment[] | undefined> { return this._onDidChangeComments.event; }
+	privAte reAdonly _onDidChAngeComments = new Emitter<modes.Comment[] | undefined>();
+	get onDidChAngeComments(): Event<modes.Comment[] | undefined> { return this._onDidChAngeComments.event; }
 
-	set range(range: IRange) {
-		this._range = range;
-		this._onDidChangeRange.fire(this._range);
+	set rAnge(rAnge: IRAnge) {
+		this._rAnge = rAnge;
+		this._onDidChAngeRAnge.fire(this._rAnge);
 	}
 
-	get range(): IRange {
-		return this._range;
+	get rAnge(): IRAnge {
+		return this._rAnge;
 	}
 
-	private readonly _onDidChangeCanReply = new Emitter<boolean>();
-	get onDidChangeCanReply(): Event<boolean> { return this._onDidChangeCanReply.event; }
-	set canReply(state: boolean) {
-		this._canReply = state;
-		this._onDidChangeCanReply.fire(this._canReply);
+	privAte reAdonly _onDidChAngeCAnReply = new Emitter<booleAn>();
+	get onDidChAngeCAnReply(): Event<booleAn> { return this._onDidChAngeCAnReply.event; }
+	set cAnReply(stAte: booleAn) {
+		this._cAnReply = stAte;
+		this._onDidChAngeCAnReply.fire(this._cAnReply);
 	}
 
-	get canReply() {
-		return this._canReply;
+	get cAnReply() {
+		return this._cAnReply;
 	}
 
-	private readonly _onDidChangeRange = new Emitter<IRange>();
-	public onDidChangeRange = this._onDidChangeRange.event;
+	privAte reAdonly _onDidChAngeRAnge = new Emitter<IRAnge>();
+	public onDidChAngeRAnge = this._onDidChAngeRAnge.event;
 
-	private _collapsibleState: modes.CommentThreadCollapsibleState | undefined;
-	get collapsibleState() {
-		return this._collapsibleState;
+	privAte _collApsibleStAte: modes.CommentThreAdCollApsibleStAte | undefined;
+	get collApsibleStAte() {
+		return this._collApsibleStAte;
 	}
 
-	set collapsibleState(newState: modes.CommentThreadCollapsibleState | undefined) {
-		this._collapsibleState = newState;
-		this._onDidChangeCollasibleState.fire(this._collapsibleState);
+	set collApsibleStAte(newStAte: modes.CommentThreAdCollApsibleStAte | undefined) {
+		this._collApsibleStAte = newStAte;
+		this._onDidChAngeCollAsibleStAte.fire(this._collApsibleStAte);
 	}
 
-	private readonly _onDidChangeCollasibleState = new Emitter<modes.CommentThreadCollapsibleState | undefined>();
-	public onDidChangeCollasibleState = this._onDidChangeCollasibleState.event;
+	privAte reAdonly _onDidChAngeCollAsibleStAte = new Emitter<modes.CommentThreAdCollApsibleStAte | undefined>();
+	public onDidChAngeCollAsibleStAte = this._onDidChAngeCollAsibleStAte.event;
 
-	private _isDisposed: boolean;
+	privAte _isDisposed: booleAn;
 
-	get isDisposed(): boolean {
+	get isDisposed(): booleAn {
 		return this._isDisposed;
 	}
 
 	constructor(
-		public commentThreadHandle: number,
-		public controllerHandle: number,
+		public commentThreAdHAndle: number,
+		public controllerHAndle: number,
 		public extensionId: string,
-		public threadId: string,
+		public threAdId: string,
 		public resource: string,
-		private _range: IRange,
-		private _canReply: boolean
+		privAte _rAnge: IRAnge,
+		privAte _cAnReply: booleAn
 	) {
-		this._isDisposed = false;
+		this._isDisposed = fAlse;
 	}
 
-	batchUpdate(changes: CommentThreadChanges) {
-		const modified = (value: keyof CommentThreadChanges): boolean =>
-			Object.prototype.hasOwnProperty.call(changes, value);
+	bAtchUpdAte(chAnges: CommentThreAdChAnges) {
+		const modified = (vAlue: keyof CommentThreAdChAnges): booleAn =>
+			Object.prototype.hAsOwnProperty.cAll(chAnges, vAlue);
 
-		if (modified('range')) { this._range = changes.range!; }
-		if (modified('label')) { this._label = changes.label; }
-		if (modified('contextValue')) { this._contextValue = changes.contextValue; }
-		if (modified('comments')) { this._comments = changes.comments; }
-		if (modified('collapseState')) { this._collapsibleState = changes.collapseState; }
-		if (modified('canReply')) { this.canReply = changes.canReply!; }
+		if (modified('rAnge')) { this._rAnge = chAnges.rAnge!; }
+		if (modified('lAbel')) { this._lAbel = chAnges.lAbel; }
+		if (modified('contextVAlue')) { this._contextVAlue = chAnges.contextVAlue; }
+		if (modified('comments')) { this._comments = chAnges.comments; }
+		if (modified('collApseStAte')) { this._collApsibleStAte = chAnges.collApseStAte; }
+		if (modified('cAnReply')) { this.cAnReply = chAnges.cAnReply!; }
 	}
 
 	dispose() {
 		this._isDisposed = true;
-		this._onDidChangeCollasibleState.dispose();
-		this._onDidChangeComments.dispose();
-		this._onDidChangeInput.dispose();
-		this._onDidChangeLabel.dispose();
-		this._onDidChangeRange.dispose();
+		this._onDidChAngeCollAsibleStAte.dispose();
+		this._onDidChAngeComments.dispose();
+		this._onDidChAngeInput.dispose();
+		this._onDidChAngeLAbel.dispose();
+		this._onDidChAngeRAnge.dispose();
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
 			$mid: 7,
-			commentControlHandle: this.controllerHandle,
-			commentThreadHandle: this.commentThreadHandle,
+			commentControlHAndle: this.controllerHAndle,
+			commentThreAdHAndle: this.commentThreAdHAndle,
 		};
 	}
 }
 
-export class MainThreadCommentController {
-	get handle(): number {
-		return this._handle;
+export clAss MAinThreAdCommentController {
+	get hAndle(): number {
+		return this._hAndle;
 	}
 
 	get id(): string {
 		return this._id;
 	}
 
-	get contextValue(): string {
+	get contextVAlue(): string {
 		return this._id;
 	}
 
-	get proxy(): ExtHostCommentsShape {
+	get proxy(): ExtHostCommentsShApe {
 		return this._proxy;
 	}
 
-	get label(): string {
-		return this._label;
+	get lAbel(): string {
+		return this._lAbel;
 	}
 
-	private _reactions: modes.CommentReaction[] | undefined;
+	privAte _reActions: modes.CommentReAction[] | undefined;
 
-	get reactions() {
-		return this._reactions;
+	get reActions() {
+		return this._reActions;
 	}
 
-	set reactions(reactions: modes.CommentReaction[] | undefined) {
-		this._reactions = reactions;
+	set reActions(reActions: modes.CommentReAction[] | undefined) {
+		this._reActions = reActions;
 	}
 
 	get options() {
-		return this._features.options;
+		return this._feAtures.options;
 	}
 
-	private readonly _threads: Map<number, MainThreadCommentThread> = new Map<number, MainThreadCommentThread>();
-	public activeCommentThread?: MainThreadCommentThread;
+	privAte reAdonly _threAds: MAp<number, MAinThreAdCommentThreAd> = new MAp<number, MAinThreAdCommentThreAd>();
+	public ActiveCommentThreAd?: MAinThreAdCommentThreAd;
 
-	get features(): CommentProviderFeatures {
-		return this._features;
+	get feAtures(): CommentProviderFeAtures {
+		return this._feAtures;
 	}
 
 	constructor(
-		private readonly _proxy: ExtHostCommentsShape,
-		private readonly _commentService: ICommentService,
-		private readonly _handle: number,
-		private readonly _uniqueId: string,
-		private readonly _id: string,
-		private readonly _label: string,
-		private _features: CommentProviderFeatures
+		privAte reAdonly _proxy: ExtHostCommentsShApe,
+		privAte reAdonly _commentService: ICommentService,
+		privAte reAdonly _hAndle: number,
+		privAte reAdonly _uniqueId: string,
+		privAte reAdonly _id: string,
+		privAte reAdonly _lAbel: string,
+		privAte _feAtures: CommentProviderFeAtures
 	) { }
 
-	updateFeatures(features: CommentProviderFeatures) {
-		this._features = features;
+	updAteFeAtures(feAtures: CommentProviderFeAtures) {
+		this._feAtures = feAtures;
 	}
 
-	createCommentThread(extensionId: string,
-		commentThreadHandle: number,
-		threadId: string,
+	creAteCommentThreAd(extensionId: string,
+		commentThreAdHAndle: number,
+		threAdId: string,
 		resource: UriComponents,
-		range: IRange,
-	): modes.CommentThread {
-		let thread = new MainThreadCommentThread(
-			commentThreadHandle,
-			this.handle,
+		rAnge: IRAnge,
+	): modes.CommentThreAd {
+		let threAd = new MAinThreAdCommentThreAd(
+			commentThreAdHAndle,
+			this.hAndle,
 			extensionId,
-			threadId,
+			threAdId,
 			URI.revive(resource).toString(),
-			range,
+			rAnge,
 			true
 		);
 
-		this._threads.set(commentThreadHandle, thread);
+		this._threAds.set(commentThreAdHAndle, threAd);
 
-		this._commentService.updateComments(this._uniqueId, {
-			added: [thread],
+		this._commentService.updAteComments(this._uniqueId, {
+			Added: [threAd],
 			removed: [],
-			changed: []
+			chAnged: []
 		});
 
-		return thread;
+		return threAd;
 	}
 
-	updateCommentThread(commentThreadHandle: number,
-		threadId: string,
+	updAteCommentThreAd(commentThreAdHAndle: number,
+		threAdId: string,
 		resource: UriComponents,
-		changes: CommentThreadChanges): void {
-		let thread = this.getKnownThread(commentThreadHandle);
-		thread.batchUpdate(changes);
+		chAnges: CommentThreAdChAnges): void {
+		let threAd = this.getKnownThreAd(commentThreAdHAndle);
+		threAd.bAtchUpdAte(chAnges);
 
-		this._commentService.updateComments(this._uniqueId, {
-			added: [],
+		this._commentService.updAteComments(this._uniqueId, {
+			Added: [],
 			removed: [],
-			changed: [thread]
+			chAnged: [threAd]
 		});
 	}
 
-	deleteCommentThread(commentThreadHandle: number) {
-		let thread = this.getKnownThread(commentThreadHandle);
-		this._threads.delete(commentThreadHandle);
+	deleteCommentThreAd(commentThreAdHAndle: number) {
+		let threAd = this.getKnownThreAd(commentThreAdHAndle);
+		this._threAds.delete(commentThreAdHAndle);
 
-		this._commentService.updateComments(this._uniqueId, {
-			added: [],
-			removed: [thread],
-			changed: []
+		this._commentService.updAteComments(this._uniqueId, {
+			Added: [],
+			removed: [threAd],
+			chAnged: []
 		});
 
-		thread.dispose();
+		threAd.dispose();
 	}
 
-	deleteCommentThreadMain(commentThreadId: string) {
-		this._threads.forEach(thread => {
-			if (thread.threadId === commentThreadId) {
-				this._proxy.$deleteCommentThread(this._handle, thread.commentThreadHandle);
+	deleteCommentThreAdMAin(commentThreAdId: string) {
+		this._threAds.forEAch(threAd => {
+			if (threAd.threAdId === commentThreAdId) {
+				this._proxy.$deleteCommentThreAd(this._hAndle, threAd.commentThreAdHAndle);
 			}
 		});
 	}
 
-	updateInput(input: string) {
-		let thread = this.activeCommentThread;
+	updAteInput(input: string) {
+		let threAd = this.ActiveCommentThreAd;
 
-		if (thread && thread.input) {
-			let commentInput = thread.input;
-			commentInput.value = input;
-			thread.input = commentInput;
+		if (threAd && threAd.input) {
+			let commentInput = threAd.input;
+			commentInput.vAlue = input;
+			threAd.input = commentInput;
 		}
 	}
 
-	private getKnownThread(commentThreadHandle: number): MainThreadCommentThread {
-		const thread = this._threads.get(commentThreadHandle);
-		if (!thread) {
-			throw new Error('unknown thread');
+	privAte getKnownThreAd(commentThreAdHAndle: number): MAinThreAdCommentThreAd {
+		const threAd = this._threAds.get(commentThreAdHAndle);
+		if (!threAd) {
+			throw new Error('unknown threAd');
 		}
-		return thread;
+		return threAd;
 	}
 
-	async getDocumentComments(resource: URI, token: CancellationToken) {
-		let ret: modes.CommentThread[] = [];
-		for (let thread of [...this._threads.keys()]) {
-			const commentThread = this._threads.get(thread)!;
-			if (commentThread.resource === resource.toString()) {
-				ret.push(commentThread);
+	Async getDocumentComments(resource: URI, token: CAncellAtionToken) {
+		let ret: modes.CommentThreAd[] = [];
+		for (let threAd of [...this._threAds.keys()]) {
+			const commentThreAd = this._threAds.get(threAd)!;
+			if (commentThreAd.resource === resource.toString()) {
+				ret.push(commentThreAd);
 			}
 		}
 
-		let commentingRanges = await this._proxy.$provideCommentingRanges(this.handle, resource, token);
+		let commentingRAnges = AwAit this._proxy.$provideCommentingRAnges(this.hAndle, resource, token);
 
 		return <ICommentInfo>{
 			owner: this._uniqueId,
-			label: this.label,
-			threads: ret,
-			commentingRanges: {
+			lAbel: this.lAbel,
+			threAds: ret,
+			commentingRAnges: {
 				resource: resource,
-				ranges: commentingRanges || []
+				rAnges: commentingRAnges || []
 			}
 		};
 	}
 
-	async getCommentingRanges(resource: URI, token: CancellationToken): Promise<IRange[]> {
-		let commentingRanges = await this._proxy.$provideCommentingRanges(this.handle, resource, token);
-		return commentingRanges || [];
+	Async getCommentingRAnges(resource: URI, token: CAncellAtionToken): Promise<IRAnge[]> {
+		let commentingRAnges = AwAit this._proxy.$provideCommentingRAnges(this.hAndle, resource, token);
+		return commentingRAnges || [];
 	}
 
-	async toggleReaction(uri: URI, thread: modes.CommentThread, comment: modes.Comment, reaction: modes.CommentReaction, token: CancellationToken): Promise<void> {
-		return this._proxy.$toggleReaction(this._handle, thread.commentThreadHandle, uri, comment, reaction);
+	Async toggleReAction(uri: URI, threAd: modes.CommentThreAd, comment: modes.Comment, reAction: modes.CommentReAction, token: CAncellAtionToken): Promise<void> {
+		return this._proxy.$toggleReAction(this._hAndle, threAd.commentThreAdHAndle, uri, comment, reAction);
 	}
 
-	getAllComments(): MainThreadCommentThread[] {
-		let ret: MainThreadCommentThread[] = [];
-		for (let thread of [...this._threads.keys()]) {
-			ret.push(this._threads.get(thread)!);
+	getAllComments(): MAinThreAdCommentThreAd[] {
+		let ret: MAinThreAdCommentThreAd[] = [];
+		for (let threAd of [...this._threAds.keys()]) {
+			ret.push(this._threAds.get(threAd)!);
 		}
 
 		return ret;
 	}
 
-	createCommentThreadTemplate(resource: UriComponents, range: IRange): void {
-		this._proxy.$createCommentThreadTemplate(this.handle, resource, range);
+	creAteCommentThreAdTemplAte(resource: UriComponents, rAnge: IRAnge): void {
+		this._proxy.$creAteCommentThreAdTemplAte(this.hAndle, resource, rAnge);
 	}
 
-	async updateCommentThreadTemplate(threadHandle: number, range: IRange) {
-		await this._proxy.$updateCommentThreadTemplate(this.handle, threadHandle, range);
+	Async updAteCommentThreAdTemplAte(threAdHAndle: number, rAnge: IRAnge) {
+		AwAit this._proxy.$updAteCommentThreAdTemplAte(this.hAndle, threAdHAndle, rAnge);
 	}
 
-	toJSON(): any {
+	toJSON(): Any {
 		return {
 			$mid: 6,
-			handle: this.handle
+			hAndle: this.hAndle
 		};
 	}
 }
 
-@extHostNamedCustomer(MainContext.MainThreadComments)
-export class MainThreadComments extends Disposable implements MainThreadCommentsShape {
-	private readonly _proxy: ExtHostCommentsShape;
-	private _documentProviders = new Map<number, IDisposable>();
-	private _workspaceProviders = new Map<number, IDisposable>();
-	private _handlers = new Map<number, string>();
-	private _commentControllers = new Map<number, MainThreadCommentController>();
+@extHostNAmedCustomer(MAinContext.MAinThreAdComments)
+export clAss MAinThreAdComments extends DisposAble implements MAinThreAdCommentsShApe {
+	privAte reAdonly _proxy: ExtHostCommentsShApe;
+	privAte _documentProviders = new MAp<number, IDisposAble>();
+	privAte _workspAceProviders = new MAp<number, IDisposAble>();
+	privAte _hAndlers = new MAp<number, string>();
+	privAte _commentControllers = new MAp<number, MAinThreAdCommentController>();
 
-	private _activeCommentThread?: MainThreadCommentThread;
-	private readonly _activeCommentThreadDisposables = this._register(new DisposableStore());
+	privAte _ActiveCommentThreAd?: MAinThreAdCommentThreAd;
+	privAte reAdonly _ActiveCommentThreAdDisposAbles = this._register(new DisposAbleStore());
 
-	private _openViewListener: IDisposable | null = null;
+	privAte _openViewListener: IDisposAble | null = null;
 
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@ICommentService private readonly _commentService: ICommentService,
-		@IViewsService private readonly _viewsService: IViewsService,
-		@IViewDescriptorService private readonly _viewDescriptorService: IViewDescriptorService
+		@ICommentService privAte reAdonly _commentService: ICommentService,
+		@IViewsService privAte reAdonly _viewsService: IViewsService,
+		@IViewDescriptorService privAte reAdonly _viewDescriptorService: IViewDescriptorService
 	) {
 		super();
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostComments);
 
-		this._register(this._commentService.onDidChangeActiveCommentThread(async thread => {
-			let handle = (thread as MainThreadCommentThread).controllerHandle;
-			let controller = this._commentControllers.get(handle);
+		this._register(this._commentService.onDidChAngeActiveCommentThreAd(Async threAd => {
+			let hAndle = (threAd As MAinThreAdCommentThreAd).controllerHAndle;
+			let controller = this._commentControllers.get(hAndle);
 
 			if (!controller) {
 				return;
 			}
 
-			this._activeCommentThreadDisposables.clear();
-			this._activeCommentThread = thread as MainThreadCommentThread;
-			controller.activeCommentThread = this._activeCommentThread;
+			this._ActiveCommentThreAdDisposAbles.cleAr();
+			this._ActiveCommentThreAd = threAd As MAinThreAdCommentThreAd;
+			controller.ActiveCommentThreAd = this._ActiveCommentThreAd;
 		}));
 	}
 
-	$registerCommentController(handle: number, id: string, label: string): void {
-		const providerId = generateUuid();
-		this._handlers.set(handle, providerId);
+	$registerCommentController(hAndle: number, id: string, lAbel: string): void {
+		const providerId = generAteUuid();
+		this._hAndlers.set(hAndle, providerId);
 
-		const provider = new MainThreadCommentController(this._proxy, this._commentService, handle, providerId, id, label, {});
+		const provider = new MAinThreAdCommentController(this._proxy, this._commentService, hAndle, providerId, id, lAbel, {});
 		this._commentService.registerCommentController(providerId, provider);
-		this._commentControllers.set(handle, provider);
+		this._commentControllers.set(hAndle, provider);
 
-		const commentsPanelAlreadyConstructed = !!this._viewDescriptorService.getViewDescriptorById(COMMENTS_VIEW_ID);
-		if (!commentsPanelAlreadyConstructed) {
-			this.registerView(commentsPanelAlreadyConstructed);
-			this.registerViewOpenedListener(commentsPanelAlreadyConstructed);
+		const commentsPAnelAlreAdyConstructed = !!this._viewDescriptorService.getViewDescriptorById(COMMENTS_VIEW_ID);
+		if (!commentsPAnelAlreAdyConstructed) {
+			this.registerView(commentsPAnelAlreAdyConstructed);
+			this.registerViewOpenedListener(commentsPAnelAlreAdyConstructed);
 		}
-		this._commentService.setWorkspaceComments(String(handle), []);
+		this._commentService.setWorkspAceComments(String(hAndle), []);
 	}
 
-	$unregisterCommentController(handle: number): void {
-		const providerId = this._handlers.get(handle);
+	$unregisterCommentController(hAndle: number): void {
+		const providerId = this._hAndlers.get(hAndle);
 		if (typeof providerId !== 'string') {
-			throw new Error('unknown handler');
+			throw new Error('unknown hAndler');
 		}
 		this._commentService.unregisterCommentController(providerId);
-		this._handlers.delete(handle);
-		this._commentControllers.delete(handle);
+		this._hAndlers.delete(hAndle);
+		this._commentControllers.delete(hAndle);
 	}
 
-	$updateCommentControllerFeatures(handle: number, features: CommentProviderFeatures): void {
-		let provider = this._commentControllers.get(handle);
+	$updAteCommentControllerFeAtures(hAndle: number, feAtures: CommentProviderFeAtures): void {
+		let provider = this._commentControllers.get(hAndle);
 
 		if (!provider) {
 			return undefined;
 		}
 
-		provider.updateFeatures(features);
+		provider.updAteFeAtures(feAtures);
 	}
 
-	$createCommentThread(handle: number,
-		commentThreadHandle: number,
-		threadId: string,
+	$creAteCommentThreAd(hAndle: number,
+		commentThreAdHAndle: number,
+		threAdId: string,
 		resource: UriComponents,
-		range: IRange,
+		rAnge: IRAnge,
 		extensionId: ExtensionIdentifier
-	): modes.CommentThread | undefined {
-		let provider = this._commentControllers.get(handle);
+	): modes.CommentThreAd | undefined {
+		let provider = this._commentControllers.get(hAndle);
 
 		if (!provider) {
 			return undefined;
 		}
 
-		return provider.createCommentThread(extensionId.value, commentThreadHandle, threadId, resource, range);
+		return provider.creAteCommentThreAd(extensionId.vAlue, commentThreAdHAndle, threAdId, resource, rAnge);
 	}
 
-	$updateCommentThread(handle: number,
-		commentThreadHandle: number,
-		threadId: string,
+	$updAteCommentThreAd(hAndle: number,
+		commentThreAdHAndle: number,
+		threAdId: string,
 		resource: UriComponents,
-		changes: CommentThreadChanges): void {
-		let provider = this._commentControllers.get(handle);
+		chAnges: CommentThreAdChAnges): void {
+		let provider = this._commentControllers.get(hAndle);
 
 		if (!provider) {
 			return undefined;
 		}
 
-		return provider.updateCommentThread(commentThreadHandle, threadId, resource, changes);
+		return provider.updAteCommentThreAd(commentThreAdHAndle, threAdId, resource, chAnges);
 	}
 
-	$deleteCommentThread(handle: number, commentThreadHandle: number) {
-		let provider = this._commentControllers.get(handle);
+	$deleteCommentThreAd(hAndle: number, commentThreAdHAndle: number) {
+		let provider = this._commentControllers.get(hAndle);
 
 		if (!provider) {
 			return;
 		}
 
-		return provider.deleteCommentThread(commentThreadHandle);
+		return provider.deleteCommentThreAd(commentThreAdHAndle);
 	}
 
-	private registerView(commentsViewAlreadyRegistered: boolean) {
-		if (!commentsViewAlreadyRegistered) {
-			const VIEW_CONTAINER: ViewContainer = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewContainersRegistry).registerViewContainer({
+	privAte registerView(commentsViewAlreAdyRegistered: booleAn) {
+		if (!commentsViewAlreAdyRegistered) {
+			const VIEW_CONTAINER: ViewContAiner = Registry.As<IViewContAinersRegistry>(ViewExtensions.ViewContAinersRegistry).registerViewContAiner({
 				id: COMMENTS_VIEW_ID,
-				name: COMMENTS_VIEW_TITLE,
-				ctorDescriptor: new SyncDescriptor(ViewPaneContainer, [COMMENTS_VIEW_ID, { mergeViewWithContainerWhenSingleView: true, donotShowContainerTitleWhenMergedWithContainer: true }]),
-				storageId: COMMENTS_VIEW_TITLE,
+				nAme: COMMENTS_VIEW_TITLE,
+				ctorDescriptor: new SyncDescriptor(ViewPAneContAiner, [COMMENTS_VIEW_ID, { mergeViewWithContAinerWhenSingleView: true, donotShowContAinerTitleWhenMergedWithContAiner: true }]),
+				storAgeId: COMMENTS_VIEW_TITLE,
 				hideIfEmpty: true,
-				icon: Codicon.commentDiscussion.classNames,
+				icon: Codicon.commentDiscussion.clAssNAmes,
 				order: 10,
-			}, ViewContainerLocation.Panel);
+			}, ViewContAinerLocAtion.PAnel);
 
-			Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([{
+			Registry.As<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([{
 				id: COMMENTS_VIEW_ID,
-				name: COMMENTS_VIEW_TITLE,
-				canToggleVisibility: false,
-				ctorDescriptor: new SyncDescriptor(CommentsPanel),
-				canMoveView: true,
-				containerIcon: Codicon.commentDiscussion.classNames,
-				focusCommand: {
-					id: 'workbench.action.focusCommentsPanel'
+				nAme: COMMENTS_VIEW_TITLE,
+				cAnToggleVisibility: fAlse,
+				ctorDescriptor: new SyncDescriptor(CommentsPAnel),
+				cAnMoveView: true,
+				contAinerIcon: Codicon.commentDiscussion.clAssNAmes,
+				focusCommAnd: {
+					id: 'workbench.Action.focusCommentsPAnel'
 				}
 			}], VIEW_CONTAINER);
 		}
 	}
 
 	/**
-	 * If the comments view has never been opened, the constructor for it has not yet run so it has
-	 * no listeners for comment threads being set or updated. Listen for the view opening for the
-	 * first time and send it comments then.
+	 * If the comments view hAs never been opened, the constructor for it hAs not yet run so it hAs
+	 * no listeners for comment threAds being set or updAted. Listen for the view opening for the
+	 * first time And send it comments then.
 	 */
-	private registerViewOpenedListener(commentsPanelAlreadyConstructed: boolean) {
-		if (!commentsPanelAlreadyConstructed && !this._openViewListener) {
-			this._openViewListener = this._viewsService.onDidChangeViewVisibility(e => {
+	privAte registerViewOpenedListener(commentsPAnelAlreAdyConstructed: booleAn) {
+		if (!commentsPAnelAlreAdyConstructed && !this._openViewListener) {
+			this._openViewListener = this._viewsService.onDidChAngeViewVisibility(e => {
 				if (e.id === COMMENTS_VIEW_ID && e.visible) {
-					[...this._commentControllers.keys()].forEach(handle => {
-						let threads = this._commentControllers.get(handle)!.getAllComments();
+					[...this._commentControllers.keys()].forEAch(hAndle => {
+						let threAds = this._commentControllers.get(hAndle)!.getAllComments();
 
-						if (threads.length) {
-							const providerId = this.getHandler(handle);
-							this._commentService.setWorkspaceComments(providerId, threads);
+						if (threAds.length) {
+							const providerId = this.getHAndler(hAndle);
+							this._commentService.setWorkspAceComments(providerId, threAds);
 						}
 					});
 
@@ -517,24 +517,24 @@ export class MainThreadComments extends Disposable implements MainThreadComments
 		}
 	}
 
-	private getHandler(handle: number) {
-		if (!this._handlers.has(handle)) {
-			throw new Error('Unknown handler');
+	privAte getHAndler(hAndle: number) {
+		if (!this._hAndlers.hAs(hAndle)) {
+			throw new Error('Unknown hAndler');
 		}
-		return this._handlers.get(handle)!;
+		return this._hAndlers.get(hAndle)!;
 	}
 
-	$onDidCommentThreadsChange(handle: number, event: modes.CommentThreadChangedEvent) {
+	$onDidCommentThreAdsChAnge(hAndle: number, event: modes.CommentThreAdChAngedEvent) {
 		// notify comment service
-		const providerId = this.getHandler(handle);
-		this._commentService.updateComments(providerId, event);
+		const providerId = this.getHAndler(hAndle);
+		this._commentService.updAteComments(providerId, event);
 	}
 
 	dispose(): void {
 		super.dispose();
-		this._workspaceProviders.forEach(value => dispose(value));
-		this._workspaceProviders.clear();
-		this._documentProviders.forEach(value => dispose(value));
-		this._documentProviders.clear();
+		this._workspAceProviders.forEAch(vAlue => dispose(vAlue));
+		this._workspAceProviders.cleAr();
+		this._documentProviders.forEAch(vAlue => dispose(vAlue));
+		this._documentProviders.cleAr();
 	}
 }

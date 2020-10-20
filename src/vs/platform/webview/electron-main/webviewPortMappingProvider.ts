@@ -1,88 +1,88 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { OnBeforeRequestListenerDetails, session } from 'electron';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IAddress } from 'vs/platform/remote/common/remoteAgentConnection';
-import { ITunnelService } from 'vs/platform/remote/common/tunnel';
-import { webviewPartitionId } from 'vs/platform/webview/common/resourceLoader';
-import { IWebviewPortMapping, WebviewPortMappingManager } from 'vs/platform/webview/common/webviewPortMapping';
+import { OnBeforeRequestListenerDetAils, session } from 'electron';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IAddress } from 'vs/plAtform/remote/common/remoteAgentConnection';
+import { ITunnelService } from 'vs/plAtform/remote/common/tunnel';
+import { webviewPArtitionId } from 'vs/plAtform/webview/common/resourceLoAder';
+import { IWebviewPortMApping, WebviewPortMAppingMAnAger } from 'vs/plAtform/webview/common/webviewPortMApping';
 
-interface OnBeforeRequestListenerDetails_Extended extends OnBeforeRequestListenerDetails {
-	readonly lastCommittedOrigin?: string;
+interfAce OnBeforeRequestListenerDetAils_Extended extends OnBeforeRequestListenerDetAils {
+	reAdonly lAstCommittedOrigin?: string;
 }
 
-interface PortMappingData {
-	readonly extensionLocation: URI | undefined;
-	readonly mappings: readonly IWebviewPortMapping[];
-	readonly resolvedAuthority: IAddress | null | undefined;
+interfAce PortMAppingDAtA {
+	reAdonly extensionLocAtion: URI | undefined;
+	reAdonly mAppings: reAdonly IWebviewPortMApping[];
+	reAdonly resolvedAuthority: IAddress | null | undefined;
 }
 
-export class WebviewPortMappingProvider extends Disposable {
+export clAss WebviewPortMAppingProvider extends DisposAble {
 
-	private readonly _webviewData = new Map<string, {
-		readonly manager: WebviewPortMappingManager;
-		metadata: PortMappingData;
+	privAte reAdonly _webviewDAtA = new MAp<string, {
+		reAdonly mAnAger: WebviewPortMAppingMAnAger;
+		metAdAtA: PortMAppingDAtA;
 	}>();
 
 	constructor(
-		@ITunnelService private readonly _tunnelService: ITunnelService,
+		@ITunnelService privAte reAdonly _tunnelService: ITunnelService,
 	) {
 		super();
 
-		const sess = session.fromPartition(webviewPartitionId);
+		const sess = session.fromPArtition(webviewPArtitionId);
 
 		sess.webRequest.onBeforeRequest({
 			urls: [
-				'*://localhost:*/*',
+				'*://locAlhost:*/*',
 				'*://127.0.0.1:*/*',
 				'*://0.0.0.0:*/*',
 			]
-		}, async (details: OnBeforeRequestListenerDetails_Extended, callback) => {
+		}, Async (detAils: OnBeforeRequestListenerDetAils_Extended, cAllbAck) => {
 			let origin: URI;
 			try {
-				origin = URI.parse(details.lastCommittedOrigin!);
-			} catch {
-				return callback({});
+				origin = URI.pArse(detAils.lAstCommittedOrigin!);
+			} cAtch {
+				return cAllbAck({});
 			}
 
-			const webviewId = origin.authority;
-			const entry = this._webviewData.get(webviewId);
+			const webviewId = origin.Authority;
+			const entry = this._webviewDAtA.get(webviewId);
 			if (!entry) {
-				return callback({});
+				return cAllbAck({});
 			}
 
-			const redirect = await entry.manager.getRedirect(entry.metadata.resolvedAuthority, details.url);
-			return callback(redirect ? { redirectURL: redirect } : {});
+			const redirect = AwAit entry.mAnAger.getRedirect(entry.metAdAtA.resolvedAuthority, detAils.url);
+			return cAllbAck(redirect ? { redirectURL: redirect } : {});
 		});
 	}
 
-	public async registerWebview(id: string, metadata: PortMappingData): Promise<void> {
-		const manager = new WebviewPortMappingManager(
-			() => this._webviewData.get(id)?.metadata.extensionLocation,
-			() => this._webviewData.get(id)?.metadata.mappings || [],
+	public Async registerWebview(id: string, metAdAtA: PortMAppingDAtA): Promise<void> {
+		const mAnAger = new WebviewPortMAppingMAnAger(
+			() => this._webviewDAtA.get(id)?.metAdAtA.extensionLocAtion,
+			() => this._webviewDAtA.get(id)?.metAdAtA.mAppings || [],
 			this._tunnelService);
 
-		this._webviewData.set(id, { metadata, manager });
+		this._webviewDAtA.set(id, { metAdAtA, mAnAger });
 	}
 
 	public unregisterWebview(id: string): void {
-		const existing = this._webviewData.get(id);
+		const existing = this._webviewDAtA.get(id);
 		if (existing) {
-			existing.manager.dispose();
-			this._webviewData.delete(id);
+			existing.mAnAger.dispose();
+			this._webviewDAtA.delete(id);
 		}
 	}
 
-	public async updateWebviewMetadata(id: string, metadataDelta: Partial<PortMappingData>): Promise<void> {
-		const entry = this._webviewData.get(id);
+	public Async updAteWebviewMetAdAtA(id: string, metAdAtADeltA: PArtiAl<PortMAppingDAtA>): Promise<void> {
+		const entry = this._webviewDAtA.get(id);
 		if (entry) {
-			this._webviewData.set(id, {
+			this._webviewDAtA.set(id, {
 				...entry,
-				...metadataDelta,
+				...metAdAtADeltA,
 			});
 		}
 	}

@@ -1,64 +1,64 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Emitter, Event } from 'vs/base/common/event';
-import { GridNode, isGridBranchNode } from 'vs/base/browser/ui/grid/gridview';
-import { IView } from 'vs/base/browser/ui/grid/grid';
+import * As Assert from 'Assert';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { GridNode, isGridBrAnchNode } from 'vs/bAse/browser/ui/grid/gridview';
+import { IView } from 'vs/bAse/browser/ui/grid/grid';
 
-export class TestView implements IView {
+export clAss TestView implements IView {
 
-	private readonly _onDidChange = new Emitter<{ width: number; height: number; } | undefined>();
-	readonly onDidChange = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<{ width: number; height: number; } | undefined>();
+	reAdonly onDidChAnge = this._onDidChAnge.event;
 
 	get minimumWidth(): number { return this._minimumWidth; }
-	set minimumWidth(size: number) { this._minimumWidth = size; this._onDidChange.fire(undefined); }
+	set minimumWidth(size: number) { this._minimumWidth = size; this._onDidChAnge.fire(undefined); }
 
-	get maximumWidth(): number { return this._maximumWidth; }
-	set maximumWidth(size: number) { this._maximumWidth = size; this._onDidChange.fire(undefined); }
+	get mAximumWidth(): number { return this._mAximumWidth; }
+	set mAximumWidth(size: number) { this._mAximumWidth = size; this._onDidChAnge.fire(undefined); }
 
 	get minimumHeight(): number { return this._minimumHeight; }
-	set minimumHeight(size: number) { this._minimumHeight = size; this._onDidChange.fire(undefined); }
+	set minimumHeight(size: number) { this._minimumHeight = size; this._onDidChAnge.fire(undefined); }
 
-	get maximumHeight(): number { return this._maximumHeight; }
-	set maximumHeight(size: number) { this._maximumHeight = size; this._onDidChange.fire(undefined); }
+	get mAximumHeight(): number { return this._mAximumHeight; }
+	set mAximumHeight(size: number) { this._mAximumHeight = size; this._onDidChAnge.fire(undefined); }
 
-	private _element: HTMLElement = document.createElement('div');
+	privAte _element: HTMLElement = document.creAteElement('div');
 	get element(): HTMLElement { this._onDidGetElement.fire(); return this._element; }
 
-	private readonly _onDidGetElement = new Emitter<void>();
-	readonly onDidGetElement = this._onDidGetElement.event;
+	privAte reAdonly _onDidGetElement = new Emitter<void>();
+	reAdonly onDidGetElement = this._onDidGetElement.event;
 
-	private _width = 0;
+	privAte _width = 0;
 	get width(): number { return this._width; }
 
-	private _height = 0;
+	privAte _height = 0;
 	get height(): number { return this._height; }
 
 	get size(): [number, number] { return [this.width, this.height]; }
 
-	private readonly _onDidLayout = new Emitter<{ width: number; height: number; }>();
-	readonly onDidLayout: Event<{ width: number; height: number; }> = this._onDidLayout.event;
+	privAte reAdonly _onDidLAyout = new Emitter<{ width: number; height: number; }>();
+	reAdonly onDidLAyout: Event<{ width: number; height: number; }> = this._onDidLAyout.event;
 
-	private readonly _onDidFocus = new Emitter<void>();
-	readonly onDidFocus: Event<void> = this._onDidFocus.event;
+	privAte reAdonly _onDidFocus = new Emitter<void>();
+	reAdonly onDidFocus: Event<void> = this._onDidFocus.event;
 
 	constructor(
-		private _minimumWidth: number,
-		private _maximumWidth: number,
-		private _minimumHeight: number,
-		private _maximumHeight: number
+		privAte _minimumWidth: number,
+		privAte _mAximumWidth: number,
+		privAte _minimumHeight: number,
+		privAte _mAximumHeight: number
 	) {
-		assert(_minimumWidth <= _maximumWidth, 'gridview view minimum width must be <= maximum width');
-		assert(_minimumHeight <= _maximumHeight, 'gridview view minimum height must be <= maximum height');
+		Assert(_minimumWidth <= _mAximumWidth, 'gridview view minimum width must be <= mAximum width');
+		Assert(_minimumHeight <= _mAximumHeight, 'gridview view minimum height must be <= mAximum height');
 	}
 
-	layout(width: number, height: number): void {
+	lAyout(width: number, height: number): void {
 		this._width = width;
 		this._height = height;
-		this._onDidLayout.fire({ width, height });
+		this._onDidLAyout.fire({ width, height });
 	}
 
 	focus(): void {
@@ -66,16 +66,16 @@ export class TestView implements IView {
 	}
 
 	dispose(): void {
-		this._onDidChange.dispose();
+		this._onDidChAnge.dispose();
 		this._onDidGetElement.dispose();
-		this._onDidLayout.dispose();
+		this._onDidLAyout.dispose();
 		this._onDidFocus.dispose();
 	}
 }
 
-export function nodesToArrays(node: GridNode): any {
-	if (isGridBranchNode(node)) {
-		return node.children.map(nodesToArrays);
+export function nodesToArrAys(node: GridNode): Any {
+	if (isGridBrAnchNode(node)) {
+		return node.children.mAp(nodesToArrAys);
 	} else {
 		return node.view;
 	}

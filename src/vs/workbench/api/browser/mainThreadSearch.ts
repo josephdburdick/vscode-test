@@ -1,170 +1,170 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { dispose, IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IFileMatch, IFileQuery, IRawFileMatch2, ISearchComplete, ISearchCompleteStats, ISearchProgressItem, ISearchResultProvider, ISearchService, ITextQuery, QueryType, SearchProviderType } from 'vs/workbench/services/search/common/search';
-import { ExtHostContext, ExtHostSearchShape, IExtHostContext, MainContext, MainThreadSearchShape } from '../common/extHost.protocol';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { dispose, IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { IFileMAtch, IFileQuery, IRAwFileMAtch2, ISeArchComplete, ISeArchCompleteStAts, ISeArchProgressItem, ISeArchResultProvider, ISeArchService, ITextQuery, QueryType, SeArchProviderType } from 'vs/workbench/services/seArch/common/seArch';
+import { ExtHostContext, ExtHostSeArchShApe, IExtHostContext, MAinContext, MAinThreAdSeArchShApe } from '../common/extHost.protocol';
 
-@extHostNamedCustomer(MainContext.MainThreadSearch)
-export class MainThreadSearch implements MainThreadSearchShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdSeArch)
+export clAss MAinThreAdSeArch implements MAinThreAdSeArchShApe {
 
-	private readonly _proxy: ExtHostSearchShape;
-	private readonly _searchProvider = new Map<number, RemoteSearchProvider>();
+	privAte reAdonly _proxy: ExtHostSeArchShApe;
+	privAte reAdonly _seArchProvider = new MAp<number, RemoteSeArchProvider>();
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@ISearchService private readonly _searchService: ISearchService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService
+		@ISeArchService privAte reAdonly _seArchService: ISeArchService,
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService
 	) {
-		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostSearch);
+		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostSeArch);
 	}
 
 	dispose(): void {
-		this._searchProvider.forEach(value => value.dispose());
-		this._searchProvider.clear();
+		this._seArchProvider.forEAch(vAlue => vAlue.dispose());
+		this._seArchProvider.cleAr();
 	}
 
-	$registerTextSearchProvider(handle: number, scheme: string): void {
-		this._searchProvider.set(handle, new RemoteSearchProvider(this._searchService, SearchProviderType.text, scheme, handle, this._proxy));
+	$registerTextSeArchProvider(hAndle: number, scheme: string): void {
+		this._seArchProvider.set(hAndle, new RemoteSeArchProvider(this._seArchService, SeArchProviderType.text, scheme, hAndle, this._proxy));
 	}
 
-	$registerFileSearchProvider(handle: number, scheme: string): void {
-		this._searchProvider.set(handle, new RemoteSearchProvider(this._searchService, SearchProviderType.file, scheme, handle, this._proxy));
+	$registerFileSeArchProvider(hAndle: number, scheme: string): void {
+		this._seArchProvider.set(hAndle, new RemoteSeArchProvider(this._seArchService, SeArchProviderType.file, scheme, hAndle, this._proxy));
 	}
 
-	$unregisterProvider(handle: number): void {
-		dispose(this._searchProvider.get(handle));
-		this._searchProvider.delete(handle);
+	$unregisterProvider(hAndle: number): void {
+		dispose(this._seArchProvider.get(hAndle));
+		this._seArchProvider.delete(hAndle);
 	}
 
-	$handleFileMatch(handle: number, session: number, data: UriComponents[]): void {
-		const provider = this._searchProvider.get(handle);
+	$hAndleFileMAtch(hAndle: number, session: number, dAtA: UriComponents[]): void {
+		const provider = this._seArchProvider.get(hAndle);
 		if (!provider) {
 			throw new Error('Got result for unknown provider');
 		}
 
-		provider.handleFindMatch(session, data);
+		provider.hAndleFindMAtch(session, dAtA);
 	}
 
-	$handleTextMatch(handle: number, session: number, data: IRawFileMatch2[]): void {
-		const provider = this._searchProvider.get(handle);
+	$hAndleTextMAtch(hAndle: number, session: number, dAtA: IRAwFileMAtch2[]): void {
+		const provider = this._seArchProvider.get(hAndle);
 		if (!provider) {
 			throw new Error('Got result for unknown provider');
 		}
 
-		provider.handleFindMatch(session, data);
+		provider.hAndleFindMAtch(session, dAtA);
 	}
 
-	$handleTelemetry(eventName: string, data: any): void {
-		this._telemetryService.publicLog(eventName, data);
+	$hAndleTelemetry(eventNAme: string, dAtA: Any): void {
+		this._telemetryService.publicLog(eventNAme, dAtA);
 	}
 }
 
-class SearchOperation {
+clAss SeArchOperAtion {
 
-	private static _idPool = 0;
+	privAte stAtic _idPool = 0;
 
 	constructor(
-		readonly progress?: (match: IFileMatch) => any,
-		readonly id: number = ++SearchOperation._idPool,
-		readonly matches = new Map<string, IFileMatch>()
+		reAdonly progress?: (mAtch: IFileMAtch) => Any,
+		reAdonly id: number = ++SeArchOperAtion._idPool,
+		reAdonly mAtches = new MAp<string, IFileMAtch>()
 	) {
 		//
 	}
 
-	addMatch(match: IFileMatch): void {
-		const existingMatch = this.matches.get(match.resource.toString());
-		if (existingMatch) {
-			// TODO@rob clean up text/file result types
-			// If a file search returns the same file twice, we would enter this branch.
-			// It's possible that could happen, #90813
-			if (existingMatch.results && match.results) {
-				existingMatch.results.push(...match.results);
+	AddMAtch(mAtch: IFileMAtch): void {
+		const existingMAtch = this.mAtches.get(mAtch.resource.toString());
+		if (existingMAtch) {
+			// TODO@rob cleAn up text/file result types
+			// If A file seArch returns the sAme file twice, we would enter this brAnch.
+			// It's possible thAt could hAppen, #90813
+			if (existingMAtch.results && mAtch.results) {
+				existingMAtch.results.push(...mAtch.results);
 			}
 		} else {
-			this.matches.set(match.resource.toString(), match);
+			this.mAtches.set(mAtch.resource.toString(), mAtch);
 		}
 
 		if (this.progress) {
-			this.progress(match);
+			this.progress(mAtch);
 		}
 	}
 }
 
-class RemoteSearchProvider implements ISearchResultProvider, IDisposable {
+clAss RemoteSeArchProvider implements ISeArchResultProvider, IDisposAble {
 
-	private readonly _registrations = new DisposableStore();
-	private readonly _searches = new Map<number, SearchOperation>();
+	privAte reAdonly _registrAtions = new DisposAbleStore();
+	privAte reAdonly _seArches = new MAp<number, SeArchOperAtion>();
 
 	constructor(
-		searchService: ISearchService,
-		type: SearchProviderType,
-		private readonly _scheme: string,
-		private readonly _handle: number,
-		private readonly _proxy: ExtHostSearchShape
+		seArchService: ISeArchService,
+		type: SeArchProviderType,
+		privAte reAdonly _scheme: string,
+		privAte reAdonly _hAndle: number,
+		privAte reAdonly _proxy: ExtHostSeArchShApe
 	) {
-		this._registrations.add(searchService.registerSearchResultProvider(this._scheme, type, this));
+		this._registrAtions.Add(seArchService.registerSeArchResultProvider(this._scheme, type, this));
 	}
 
 	dispose(): void {
-		this._registrations.dispose();
+		this._registrAtions.dispose();
 	}
 
-	fileSearch(query: IFileQuery, token: CancellationToken = CancellationToken.None): Promise<ISearchComplete> {
-		return this.doSearch(query, undefined, token);
+	fileSeArch(query: IFileQuery, token: CAncellAtionToken = CAncellAtionToken.None): Promise<ISeArchComplete> {
+		return this.doSeArch(query, undefined, token);
 	}
 
-	textSearch(query: ITextQuery, onProgress?: (p: ISearchProgressItem) => void, token: CancellationToken = CancellationToken.None): Promise<ISearchComplete> {
-		return this.doSearch(query, onProgress, token);
+	textSeArch(query: ITextQuery, onProgress?: (p: ISeArchProgressItem) => void, token: CAncellAtionToken = CAncellAtionToken.None): Promise<ISeArchComplete> {
+		return this.doSeArch(query, onProgress, token);
 	}
 
-	doSearch(query: ITextQuery | IFileQuery, onProgress?: (p: ISearchProgressItem) => void, token: CancellationToken = CancellationToken.None): Promise<ISearchComplete> {
+	doSeArch(query: ITextQuery | IFileQuery, onProgress?: (p: ISeArchProgressItem) => void, token: CAncellAtionToken = CAncellAtionToken.None): Promise<ISeArchComplete> {
 		if (!query.folderQueries.length) {
 			throw new Error('Empty folderQueries');
 		}
 
-		const search = new SearchOperation(onProgress);
-		this._searches.set(search.id, search);
+		const seArch = new SeArchOperAtion(onProgress);
+		this._seArches.set(seArch.id, seArch);
 
-		const searchP = query.type === QueryType.File
-			? this._proxy.$provideFileSearchResults(this._handle, search.id, query, token)
-			: this._proxy.$provideTextSearchResults(this._handle, search.id, query, token);
+		const seArchP = query.type === QueryType.File
+			? this._proxy.$provideFileSeArchResults(this._hAndle, seArch.id, query, token)
+			: this._proxy.$provideTextSeArchResults(this._hAndle, seArch.id, query, token);
 
-		return Promise.resolve(searchP).then((result: ISearchCompleteStats) => {
-			this._searches.delete(search.id);
-			return { results: Array.from(search.matches.values()), stats: result.stats, limitHit: result.limitHit };
+		return Promise.resolve(seArchP).then((result: ISeArchCompleteStAts) => {
+			this._seArches.delete(seArch.id);
+			return { results: ArrAy.from(seArch.mAtches.vAlues()), stAts: result.stAts, limitHit: result.limitHit };
 		}, err => {
-			this._searches.delete(search.id);
+			this._seArches.delete(seArch.id);
 			return Promise.reject(err);
 		});
 	}
 
-	clearCache(cacheKey: string): Promise<void> {
-		return Promise.resolve(this._proxy.$clearCache(cacheKey));
+	cleArCAche(cAcheKey: string): Promise<void> {
+		return Promise.resolve(this._proxy.$cleArCAche(cAcheKey));
 	}
 
-	handleFindMatch(session: number, dataOrUri: Array<UriComponents | IRawFileMatch2>): void {
-		const searchOp = this._searches.get(session);
+	hAndleFindMAtch(session: number, dAtAOrUri: ArrAy<UriComponents | IRAwFileMAtch2>): void {
+		const seArchOp = this._seArches.get(session);
 
-		if (!searchOp) {
+		if (!seArchOp) {
 			// ignore...
 			return;
 		}
 
-		dataOrUri.forEach(result => {
-			if ((<IRawFileMatch2>result).results) {
-				searchOp.addMatch({
-					resource: URI.revive((<IRawFileMatch2>result).resource),
-					results: (<IRawFileMatch2>result).results
+		dAtAOrUri.forEAch(result => {
+			if ((<IRAwFileMAtch2>result).results) {
+				seArchOp.AddMAtch({
+					resource: URI.revive((<IRAwFileMAtch2>result).resource),
+					results: (<IRAwFileMAtch2>result).results
 				});
 			} else {
-				searchOp.addMatch({
+				seArchOp.AddMAtch({
 					resource: URI.revive(<UriComponents>result)
 				});
 			}

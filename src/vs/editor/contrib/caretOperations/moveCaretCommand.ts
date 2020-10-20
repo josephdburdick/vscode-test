@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { ICommand, ICursorStateComputerData, IEditOperationBuilder } from 'vs/editor/common/editorCommon';
+import { ICommAnd, ICursorStAteComputerDAtA, IEditOperAtionBuilder } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 
-export class MoveCaretCommand implements ICommand {
+export clAss MoveCAretCommAnd implements ICommAnd {
 
-	private readonly _selection: Selection;
-	private readonly _isMovingLeft: boolean;
+	privAte reAdonly _selection: Selection;
+	privAte reAdonly _isMovingLeft: booleAn;
 
-	constructor(selection: Selection, isMovingLeft: boolean) {
+	constructor(selection: Selection, isMovingLeft: booleAn) {
 		this._selection = selection;
 		this._isMovingLeft = isMovingLeft;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		if (this._selection.startLineNumber !== this._selection.endLineNumber || this._selection.isEmpty()) {
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
+		if (this._selection.stArtLineNumber !== this._selection.endLineNumber || this._selection.isEmpty()) {
 			return;
 		}
-		const lineNumber = this._selection.startLineNumber;
-		const startColumn = this._selection.startColumn;
+		const lineNumber = this._selection.stArtLineNumber;
+		const stArtColumn = this._selection.stArtColumn;
 		const endColumn = this._selection.endColumn;
-		if (this._isMovingLeft && startColumn === 1) {
+		if (this._isMovingLeft && stArtColumn === 1) {
 			return;
 		}
-		if (!this._isMovingLeft && endColumn === model.getLineMaxColumn(lineNumber)) {
+		if (!this._isMovingLeft && endColumn === model.getLineMAxColumn(lineNumber)) {
 			return;
 		}
 
 		if (this._isMovingLeft) {
-			const rangeBefore = new Range(lineNumber, startColumn - 1, lineNumber, startColumn);
-			const charBefore = model.getValueInRange(rangeBefore);
-			builder.addEditOperation(rangeBefore, null);
-			builder.addEditOperation(new Range(lineNumber, endColumn, lineNumber, endColumn), charBefore);
+			const rAngeBefore = new RAnge(lineNumber, stArtColumn - 1, lineNumber, stArtColumn);
+			const chArBefore = model.getVAlueInRAnge(rAngeBefore);
+			builder.AddEditOperAtion(rAngeBefore, null);
+			builder.AddEditOperAtion(new RAnge(lineNumber, endColumn, lineNumber, endColumn), chArBefore);
 		} else {
-			const rangeAfter = new Range(lineNumber, endColumn, lineNumber, endColumn + 1);
-			const charAfter = model.getValueInRange(rangeAfter);
-			builder.addEditOperation(rangeAfter, null);
-			builder.addEditOperation(new Range(lineNumber, startColumn, lineNumber, startColumn), charAfter);
+			const rAngeAfter = new RAnge(lineNumber, endColumn, lineNumber, endColumn + 1);
+			const chArAfter = model.getVAlueInRAnge(rAngeAfter);
+			builder.AddEditOperAtion(rAngeAfter, null);
+			builder.AddEditOperAtion(new RAnge(lineNumber, stArtColumn, lineNumber, stArtColumn), chArAfter);
 		}
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
 		if (this._isMovingLeft) {
-			return new Selection(this._selection.startLineNumber, this._selection.startColumn - 1, this._selection.endLineNumber, this._selection.endColumn - 1);
+			return new Selection(this._selection.stArtLineNumber, this._selection.stArtColumn - 1, this._selection.endLineNumber, this._selection.endColumn - 1);
 		} else {
-			return new Selection(this._selection.startLineNumber, this._selection.startColumn + 1, this._selection.endLineNumber, this._selection.endColumn + 1);
+			return new Selection(this._selection.stArtLineNumber, this._selection.stArtColumn + 1, this._selection.endLineNumber, this._selection.endColumn + 1);
 		}
 	}
 }

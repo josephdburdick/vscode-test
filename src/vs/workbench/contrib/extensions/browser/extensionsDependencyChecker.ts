@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IExtensionsWorkbenchService } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { localize } from 'vs/nls';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { Action } from 'vs/base/common/actions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { locAlize } from 'vs/nls';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { Action } from 'vs/bAse/common/Actions';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export class ExtensionDependencyChecker extends Disposable implements IWorkbenchContribution {
+export clAss ExtensionDependencyChecker extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@IExtensionsWorkbenchService private readonly extensionsWorkbenchService: IExtensionsWorkbenchService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IHostService private readonly hostService: IHostService
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@IExtensionsWorkbenchService privAte reAdonly extensionsWorkbenchService: IExtensionsWorkbenchService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IHostService privAte reAdonly hostService: IHostService
 	) {
 		super();
-		CommandsRegistry.registerCommand('workbench.extensions.installMissingDependencies', () => this.installMissingDependencies());
-		MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-			command: {
-				id: 'workbench.extensions.installMissingDependencies',
-				category: localize('extensions', "Extensions"),
-				title: localize('auto install missing deps', "Install Missing Dependencies")
+		CommAndsRegistry.registerCommAnd('workbench.extensions.instAllMissingDependencies', () => this.instAllMissingDependencies());
+		MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+			commAnd: {
+				id: 'workbench.extensions.instAllMissingDependencies',
+				cAtegory: locAlize('extensions', "Extensions"),
+				title: locAlize('Auto instAll missing deps', "InstAll Missing Dependencies")
 			}
 		});
 	}
 
-	private async getUninstalledMissingDependencies(): Promise<string[]> {
-		const allMissingDependencies = await this.getAllMissingDependencies();
-		const localExtensions = await this.extensionsWorkbenchService.queryLocal();
-		return allMissingDependencies.filter(id => localExtensions.every(l => !areSameExtensions(l.identifier, { id })));
+	privAte Async getUninstAlledMissingDependencies(): Promise<string[]> {
+		const AllMissingDependencies = AwAit this.getAllMissingDependencies();
+		const locAlExtensions = AwAit this.extensionsWorkbenchService.queryLocAl();
+		return AllMissingDependencies.filter(id => locAlExtensions.every(l => !AreSAmeExtensions(l.identifier, { id })));
 	}
 
-	private async getAllMissingDependencies(): Promise<string[]> {
-		const runningExtensions = await this.extensionService.getExtensions();
-		const runningExtensionsIds: Set<string> = runningExtensions.reduce((result, r) => { result.add(r.identifier.value.toLowerCase()); return result; }, new Set<string>());
+	privAte Async getAllMissingDependencies(): Promise<string[]> {
+		const runningExtensions = AwAit this.extensionService.getExtensions();
+		const runningExtensionsIds: Set<string> = runningExtensions.reduce((result, r) => { result.Add(r.identifier.vAlue.toLowerCAse()); return result; }, new Set<string>());
 		const missingDependencies: Set<string> = new Set<string>();
 		for (const extension of runningExtensions) {
 			if (extension.extensionDependencies) {
-				extension.extensionDependencies.forEach(dep => {
-					if (!runningExtensionsIds.has(dep.toLowerCase())) {
-						missingDependencies.add(dep);
+				extension.extensionDependencies.forEAch(dep => {
+					if (!runningExtensionsIds.hAs(dep.toLowerCAse())) {
+						missingDependencies.Add(dep);
 					}
 				});
 			}
 		}
-		return [...missingDependencies.values()];
+		return [...missingDependencies.vAlues()];
 	}
 
-	private async installMissingDependencies(): Promise<void> {
-		const missingDependencies = await this.getUninstalledMissingDependencies();
+	privAte Async instAllMissingDependencies(): Promise<void> {
+		const missingDependencies = AwAit this.getUninstAlledMissingDependencies();
 		if (missingDependencies.length) {
-			const extensions = (await this.extensionsWorkbenchService.queryGallery({ names: missingDependencies, pageSize: missingDependencies.length }, CancellationToken.None)).firstPage;
+			const extensions = (AwAit this.extensionsWorkbenchService.queryGAllery({ nAmes: missingDependencies, pAgeSize: missingDependencies.length }, CAncellAtionToken.None)).firstPAge;
 			if (extensions.length) {
-				await Promise.all(extensions.map(extension => this.extensionsWorkbenchService.install(extension)));
-				this.notificationService.notify({
+				AwAit Promise.All(extensions.mAp(extension => this.extensionsWorkbenchService.instAll(extension)));
+				this.notificAtionService.notify({
 					severity: Severity.Info,
-					message: localize('finished installing missing deps', "Finished installing missing dependencies. Please reload the window now."),
-					actions: {
-						primary: [new Action('realod', localize('reload', "Reload Window"), '', true,
-							() => this.hostService.reload())]
+					messAge: locAlize('finished instAlling missing deps', "Finished instAlling missing dependencies. PleAse reloAd the window now."),
+					Actions: {
+						primAry: [new Action('reAlod', locAlize('reloAd', "ReloAd Window"), '', true,
+							() => this.hostService.reloAd())]
 					}
 				});
 			}
 		} else {
-			this.notificationService.info(localize('no missing deps', "There are no missing dependencies to install."));
+			this.notificAtionService.info(locAlize('no missing deps', "There Are no missing dependencies to instAll."));
 		}
 	}
 }

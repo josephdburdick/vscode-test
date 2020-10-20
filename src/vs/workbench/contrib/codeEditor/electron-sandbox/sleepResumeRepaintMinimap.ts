@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-class SleepResumeRepaintMinimap extends Disposable implements IWorkbenchContribution {
+clAss SleepResumeRepAintMinimAp extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
 		@ICodeEditorService codeEditorService: ICodeEditorService,
-		@INativeHostService nativeHostService: INativeHostService
+		@INAtiveHostService nAtiveHostService: INAtiveHostService
 	) {
 		super();
 
-		this._register(nativeHostService.onDidResumeOS(() => {
-			codeEditorService.listCodeEditors().forEach(editor => editor.render(true));
+		this._register(nAtiveHostService.onDidResumeOS(() => {
+			codeEditorService.listCodeEditors().forEAch(editor => editor.render(true));
 		}));
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(SleepResumeRepaintMinimap, LifecyclePhase.Eventually);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(SleepResumeRepAintMinimAp, LifecyclePhAse.EventuAlly);

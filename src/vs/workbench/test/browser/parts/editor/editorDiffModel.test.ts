@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { TextDiffEditorModel } from 'vs/workbench/common/editor/textDiffEditorModel';
 import { DiffEditorInput } from 'vs/workbench/common/editor/diffEditorInput';
 import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { URI } from 'vs/base/common/uri';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
+import { URI } from 'vs/bAse/common/uri';
+import { workbenchInstAntiAtionService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
 import { ITextModel } from 'vs/editor/common/model';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
 suite('Workbench editor model', () => {
 
-	let instantiationService: IInstantiationService;
-	let accessor: TestServiceAccessor;
+	let instAntiAtionService: IInstAntiAtionService;
+	let Accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
-		accessor = instantiationService.createInstance(TestServiceAccessor);
+		instAntiAtionService = workbenchInstAntiAtionService();
+		Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 	});
 
-	test('TextDiffEditorModel', async () => {
-		const dispose = accessor.textModelResolverService.registerTextModelContentProvider('test', {
+	test('TextDiffEditorModel', Async () => {
+		const dispose = Accessor.textModelResolverService.registerTextModelContentProvider('test', {
 			provideTextContent: function (resource: URI): Promise<ITextModel> {
 				if (resource.scheme === 'test') {
 					let modelContent = 'Hello Test';
-					let languageSelection = accessor.modeService.create('json');
-					return Promise.resolve(accessor.modelService.createModel(modelContent, languageSelection, resource));
+					let lAnguAgeSelection = Accessor.modeService.creAte('json');
+					return Promise.resolve(Accessor.modelService.creAteModel(modelContent, lAnguAgeSelection, resource));
 				}
 
 				return Promise.resolve(null!);
 			}
 		});
 
-		let input = instantiationService.createInstance(ResourceEditorInput, URI.from({ scheme: 'test', authority: null!, path: 'thePath' }), 'name', 'description', undefined);
-		let otherInput = instantiationService.createInstance(ResourceEditorInput, URI.from({ scheme: 'test', authority: null!, path: 'thePath' }), 'name2', 'description', undefined);
-		let diffInput = new DiffEditorInput('name', 'description', input, otherInput);
+		let input = instAntiAtionService.creAteInstAnce(ResourceEditorInput, URI.from({ scheme: 'test', Authority: null!, pAth: 'thePAth' }), 'nAme', 'description', undefined);
+		let otherInput = instAntiAtionService.creAteInstAnce(ResourceEditorInput, URI.from({ scheme: 'test', Authority: null!, pAth: 'thePAth' }), 'nAme2', 'description', undefined);
+		let diffInput = new DiffEditorInput('nAme', 'description', input, otherInput);
 
-		let model = await diffInput.resolve() as TextDiffEditorModel;
+		let model = AwAit diffInput.resolve() As TextDiffEditorModel;
 
-		assert(model);
-		assert(model instanceof TextDiffEditorModel);
+		Assert(model);
+		Assert(model instAnceof TextDiffEditorModel);
 
 		let diffEditorModel = model.textDiffEditorModel!;
-		assert(diffEditorModel.original);
-		assert(diffEditorModel.modified);
+		Assert(diffEditorModel.originAl);
+		Assert(diffEditorModel.modified);
 
-		model = await diffInput.resolve() as TextDiffEditorModel;
-		assert(model.isResolved());
+		model = AwAit diffInput.resolve() As TextDiffEditorModel;
+		Assert(model.isResolved());
 
-		assert(diffEditorModel !== model.textDiffEditorModel);
+		Assert(diffEditorModel !== model.textDiffEditorModel);
 		diffInput.dispose();
-		assert(!model.textDiffEditorModel);
+		Assert(!model.textDiffEditorModel);
 
 		dispose.dispose();
 	});

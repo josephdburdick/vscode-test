@@ -1,180 +1,180 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import * as DOM from 'vs/base/browser/dom';
-import * as glob from 'vs/base/common/glob';
-import { IListVirtualDelegate, ListDragOverEffect } from 'vs/base/browser/ui/list/list';
-import { IProgressService, ProgressLocation, IProgressStep, IProgress } from 'vs/platform/progress/common/progress';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IFileService, FileKind, FileOperationError, FileOperationResult, FileSystemProviderCapabilities, BinarySize } from 'vs/platform/files/common/files';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IDisposable, Disposable, dispose, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IFileLabelOptions, IResourceLabel, ResourceLabels } from 'vs/workbench/browser/labels';
-import { ITreeNode, ITreeFilter, TreeVisibility, TreeFilterResult, IAsyncDataSource, ITreeSorter, ITreeDragAndDrop, ITreeDragOverReaction, TreeDragOverBubble } from 'vs/base/browser/ui/tree/tree';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { IFilesConfiguration, IExplorerService, VIEW_ID } from 'vs/workbench/contrib/files/common/files';
-import { dirname, joinPath, basename, distinctParents } from 'vs/base/common/resources';
-import { InputBox, MessageType } from 'vs/base/browser/ui/inputbox/inputBox';
-import { localize } from 'vs/nls';
-import { attachInputBoxStyler } from 'vs/platform/theme/common/styler';
-import { once } from 'vs/base/common/functional';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { equals, deepClone } from 'vs/base/common/objects';
-import * as path from 'vs/base/common/path';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
+import * As DOM from 'vs/bAse/browser/dom';
+import * As glob from 'vs/bAse/common/glob';
+import { IListVirtuAlDelegAte, ListDrAgOverEffect } from 'vs/bAse/browser/ui/list/list';
+import { IProgressService, ProgressLocAtion, IProgressStep, IProgress } from 'vs/plAtform/progress/common/progress';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IFileService, FileKind, FileOperAtionError, FileOperAtionResult, FileSystemProviderCApAbilities, BinArySize } from 'vs/plAtform/files/common/files';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { IDisposAble, DisposAble, dispose, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IFileLAbelOptions, IResourceLAbel, ResourceLAbels } from 'vs/workbench/browser/lAbels';
+import { ITreeNode, ITreeFilter, TreeVisibility, TreeFilterResult, IAsyncDAtASource, ITreeSorter, ITreeDrAgAndDrop, ITreeDrAgOverReAction, TreeDrAgOverBubble } from 'vs/bAse/browser/ui/tree/tree';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFilesConfigurAtion, IExplorerService, VIEW_ID } from 'vs/workbench/contrib/files/common/files';
+import { dirnAme, joinPAth, bAsenAme, distinctPArents } from 'vs/bAse/common/resources';
+import { InputBox, MessAgeType } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { locAlize } from 'vs/nls';
+import { AttAchInputBoxStyler } from 'vs/plAtform/theme/common/styler';
+import { once } from 'vs/bAse/common/functionAl';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { equAls, deepClone } from 'vs/bAse/common/objects';
+import * As pAth from 'vs/bAse/common/pAth';
 import { ExplorerItem, NewExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
-import { compareFileNamesDefault, compareFileExtensionsDefault } from 'vs/base/common/comparers';
-import { fillResourceDataTransfers, CodeDataTransfers, extractResources, containsDragType } from 'vs/workbench/browser/dnd';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IDragAndDropData, DataTransfers } from 'vs/base/browser/dnd';
-import { Schemas } from 'vs/base/common/network';
-import { NativeDragAndDropData, ExternalElementsDragAndDropData, ElementsDragAndDropData } from 'vs/base/browser/ui/list/listView';
-import { isMacintosh, isWeb } from 'vs/base/common/platform';
-import { IDialogService, IConfirmation, getFileNamesMessage } from 'vs/platform/dialogs/common/dialogs';
+import { compAreFileNAmesDefAult, compAreFileExtensionsDefAult } from 'vs/bAse/common/compArers';
+import { fillResourceDAtATrAnsfers, CodeDAtATrAnsfers, extrActResources, contAinsDrAgType } from 'vs/workbench/browser/dnd';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDrAgAndDropDAtA, DAtATrAnsfers } from 'vs/bAse/browser/dnd';
+import { SchemAs } from 'vs/bAse/common/network';
+import { NAtiveDrAgAndDropDAtA, ExternAlElementsDrAgAndDropDAtA, ElementsDrAgAndDropDAtA } from 'vs/bAse/browser/ui/list/listView';
+import { isMAcintosh, isWeb } from 'vs/bAse/common/plAtform';
+import { IDiAlogService, IConfirmAtion, getFileNAmesMessAge } from 'vs/plAtform/diAlogs/common/diAlogs';
 import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
-import { URI } from 'vs/base/common/uri';
-import { ITask, sequence } from 'vs/base/common/async';
+import { IWorkspAceEditingService } from 'vs/workbench/services/workspAces/common/workspAceEditing';
+import { URI } from 'vs/bAse/common/uri';
+import { ITAsk, sequence } from 'vs/bAse/common/Async';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IWorkspaceFolderCreationData } from 'vs/platform/workspaces/common/workspaces';
-import { findValidPasteFileTarget } from 'vs/workbench/contrib/files/browser/fileActions';
-import { FuzzyScore, createMatches } from 'vs/base/common/filters';
-import { Emitter, Event, EventMultiplexer } from 'vs/base/common/event';
-import { ITreeCompressionDelegate } from 'vs/base/browser/ui/tree/asyncDataTree';
-import { ICompressibleTreeRenderer } from 'vs/base/browser/ui/tree/objectTree';
-import { ICompressedTreeNode } from 'vs/base/browser/ui/tree/compressedObjectTreeModel';
-import { VSBuffer, newWriteableBufferStream } from 'vs/base/common/buffer';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { isNumber } from 'vs/base/common/types';
-import { domEvent } from 'vs/base/browser/event';
-import { IEditableData } from 'vs/workbench/common/views';
+import { IWorkspAceFolderCreAtionDAtA } from 'vs/plAtform/workspAces/common/workspAces';
+import { findVAlidPAsteFileTArget } from 'vs/workbench/contrib/files/browser/fileActions';
+import { FuzzyScore, creAteMAtches } from 'vs/bAse/common/filters';
+import { Emitter, Event, EventMultiplexer } from 'vs/bAse/common/event';
+import { ITreeCompressionDelegAte } from 'vs/bAse/browser/ui/tree/AsyncDAtATree';
+import { ICompressibleTreeRenderer } from 'vs/bAse/browser/ui/tree/objectTree';
+import { ICompressedTreeNode } from 'vs/bAse/browser/ui/tree/compressedObjectTreeModel';
+import { VSBuffer, newWriteAbleBufferStreAm } from 'vs/bAse/common/buffer';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { isNumber } from 'vs/bAse/common/types';
+import { domEvent } from 'vs/bAse/browser/event';
+import { IEditAbleDAtA } from 'vs/workbench/common/views';
 import { IEditorInput } from 'vs/workbench/common/editor';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionTokenSource, CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
-export class ExplorerDelegate implements IListVirtualDelegate<ExplorerItem> {
+export clAss ExplorerDelegAte implements IListVirtuAlDelegAte<ExplorerItem> {
 
-	static readonly ITEM_HEIGHT = 22;
+	stAtic reAdonly ITEM_HEIGHT = 22;
 
 	getHeight(element: ExplorerItem): number {
-		return ExplorerDelegate.ITEM_HEIGHT;
+		return ExplorerDelegAte.ITEM_HEIGHT;
 	}
 
-	getTemplateId(element: ExplorerItem): string {
+	getTemplAteId(element: ExplorerItem): string {
 		return FilesRenderer.ID;
 	}
 }
 
 export const explorerRootErrorEmitter = new Emitter<URI>();
-export class ExplorerDataSource implements IAsyncDataSource<ExplorerItem | ExplorerItem[], ExplorerItem> {
+export clAss ExplorerDAtASource implements IAsyncDAtASource<ExplorerItem | ExplorerItem[], ExplorerItem> {
 
 	constructor(
-		@IProgressService private readonly progressService: IProgressService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IFileService private readonly fileService: IFileService,
-		@IExplorerService private readonly explorerService: IExplorerService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
+		@IProgressService privAte reAdonly progressService: IProgressService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IExplorerService privAte reAdonly explorerService: IExplorerService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService
 	) { }
 
-	hasChildren(element: ExplorerItem | ExplorerItem[]): boolean {
-		return Array.isArray(element) || element.isDirectory;
+	hAsChildren(element: ExplorerItem | ExplorerItem[]): booleAn {
+		return ArrAy.isArrAy(element) || element.isDirectory;
 	}
 
 	getChildren(element: ExplorerItem | ExplorerItem[]): Promise<ExplorerItem[]> {
-		if (Array.isArray(element)) {
+		if (ArrAy.isArrAy(element)) {
 			return Promise.resolve(element);
 		}
 
 		const sortOrder = this.explorerService.sortOrder;
 		const promise = element.fetchChildren(sortOrder).then(undefined, e => {
 
-			if (element instanceof ExplorerItem && element.isRoot) {
-				if (this.contextService.getWorkbenchState() === WorkbenchState.FOLDER) {
-					// Single folder create a dummy explorer item to show error
-					const placeholder = new ExplorerItem(element.resource, this.fileService, undefined, false);
-					placeholder.isError = true;
-					return [placeholder];
+			if (element instAnceof ExplorerItem && element.isRoot) {
+				if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.FOLDER) {
+					// Single folder creAte A dummy explorer item to show error
+					const plAceholder = new ExplorerItem(element.resource, this.fileService, undefined, fAlse);
+					plAceholder.isError = true;
+					return [plAceholder];
 				} else {
 					explorerRootErrorEmitter.fire(element.resource);
 				}
 			} else {
-				// Do not show error for roots since we already use an explorer decoration to notify user
-				this.notificationService.error(e);
+				// Do not show error for roots since we AlreAdy use An explorer decorAtion to notify user
+				this.notificAtionService.error(e);
 			}
 
-			return []; // we could not resolve any children because of an error
+			return []; // we could not resolve Any children becAuse of An error
 		});
 
 		this.progressService.withProgress({
-			location: ProgressLocation.Explorer,
-			delay: this.layoutService.isRestored() ? 800 : 1200 // less ugly initial startup
+			locAtion: ProgressLocAtion.Explorer,
+			delAy: this.lAyoutService.isRestored() ? 800 : 1200 // less ugly initiAl stArtup
 		}, _progress => promise);
 
 		return promise;
 	}
 }
 
-export interface ICompressedNavigationController {
-	readonly current: ExplorerItem;
-	readonly currentId: string;
-	readonly items: ExplorerItem[];
-	readonly labels: HTMLElement[];
-	readonly index: number;
-	readonly count: number;
-	readonly onDidChange: Event<void>;
+export interfAce ICompressedNAvigAtionController {
+	reAdonly current: ExplorerItem;
+	reAdonly currentId: string;
+	reAdonly items: ExplorerItem[];
+	reAdonly lAbels: HTMLElement[];
+	reAdonly index: number;
+	reAdonly count: number;
+	reAdonly onDidChAnge: Event<void>;
 	previous(): void;
 	next(): void;
 	first(): void;
-	last(): void;
+	lAst(): void;
 	setIndex(index: number): void;
-	updateCollapsed(collapsed: boolean): void;
+	updAteCollApsed(collApsed: booleAn): void;
 }
 
-export class CompressedNavigationController implements ICompressedNavigationController, IDisposable {
+export clAss CompressedNAvigAtionController implements ICompressedNAvigAtionController, IDisposAble {
 
-	static ID = 0;
+	stAtic ID = 0;
 
-	private _index: number;
-	private _labels!: HTMLElement[];
-	private _updateLabelDisposable: IDisposable;
+	privAte _index: number;
+	privAte _lAbels!: HTMLElement[];
+	privAte _updAteLAbelDisposAble: IDisposAble;
 
 	get index(): number { return this._index; }
 	get count(): number { return this.items.length; }
 	get current(): ExplorerItem { return this.items[this._index]!; }
 	get currentId(): string { return `${this.id}_${this.index}`; }
-	get labels(): HTMLElement[] { return this._labels; }
+	get lAbels(): HTMLElement[] { return this._lAbels; }
 
-	private _onDidChange = new Emitter<void>();
-	readonly onDidChange = this._onDidChange.event;
+	privAte _onDidChAnge = new Emitter<void>();
+	reAdonly onDidChAnge = this._onDidChAnge.event;
 
-	constructor(private id: string, readonly items: ExplorerItem[], templateData: IFileTemplateData, private depth: number, private collapsed: boolean) {
+	constructor(privAte id: string, reAdonly items: ExplorerItem[], templAteDAtA: IFileTemplAteDAtA, privAte depth: number, privAte collApsed: booleAn) {
 		this._index = items.length - 1;
 
-		this.updateLabels(templateData);
-		this._updateLabelDisposable = templateData.label.onDidRender(() => this.updateLabels(templateData));
+		this.updAteLAbels(templAteDAtA);
+		this._updAteLAbelDisposAble = templAteDAtA.lAbel.onDidRender(() => this.updAteLAbels(templAteDAtA));
 	}
 
-	private updateLabels(templateData: IFileTemplateData): void {
-		this._labels = Array.from(templateData.container.querySelectorAll('.label-name')) as HTMLElement[];
-		let parents = '';
-		for (let i = 0; i < this.labels.length; i++) {
-			const ariaLabel = parents.length ? `${this.items[i].name}, compact, ${parents}` : this.items[i].name;
-			this.labels[i].setAttribute('aria-label', ariaLabel);
-			this.labels[i].setAttribute('aria-level', `${this.depth + i}`);
-			parents = parents.length ? `${this.items[i].name} ${parents}` : this.items[i].name;
+	privAte updAteLAbels(templAteDAtA: IFileTemplAteDAtA): void {
+		this._lAbels = ArrAy.from(templAteDAtA.contAiner.querySelectorAll('.lAbel-nAme')) As HTMLElement[];
+		let pArents = '';
+		for (let i = 0; i < this.lAbels.length; i++) {
+			const AriALAbel = pArents.length ? `${this.items[i].nAme}, compAct, ${pArents}` : this.items[i].nAme;
+			this.lAbels[i].setAttribute('AriA-lAbel', AriALAbel);
+			this.lAbels[i].setAttribute('AriA-level', `${this.depth + i}`);
+			pArents = pArents.length ? `${this.items[i].nAme} ${pArents}` : this.items[i].nAme;
 		}
-		this.updateCollapsed(this.collapsed);
+		this.updAteCollApsed(this.collApsed);
 
-		if (this._index < this.labels.length) {
-			this.labels[this._index].classList.add('active');
+		if (this._index < this.lAbels.length) {
+			this.lAbels[this._index].clAssList.Add('Active');
 		}
 	}
 
@@ -202,7 +202,7 @@ export class CompressedNavigationController implements ICompressedNavigationCont
 		this.setIndex(0);
 	}
 
-	last(): void {
+	lAst(): void {
 		if (this._index === this.items.length - 1) {
 			return;
 		}
@@ -215,305 +215,305 @@ export class CompressedNavigationController implements ICompressedNavigationCont
 			return;
 		}
 
-		this.labels[this._index].classList.remove('active');
+		this.lAbels[this._index].clAssList.remove('Active');
 		this._index = index;
-		this.labels[this._index].classList.add('active');
+		this.lAbels[this._index].clAssList.Add('Active');
 
-		this._onDidChange.fire();
+		this._onDidChAnge.fire();
 	}
 
-	updateCollapsed(collapsed: boolean): void {
-		this.collapsed = collapsed;
-		for (let i = 0; i < this.labels.length; i++) {
-			this.labels[i].setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+	updAteCollApsed(collApsed: booleAn): void {
+		this.collApsed = collApsed;
+		for (let i = 0; i < this.lAbels.length; i++) {
+			this.lAbels[i].setAttribute('AriA-expAnded', collApsed ? 'fAlse' : 'true');
 		}
 	}
 
 	dispose(): void {
-		this._onDidChange.dispose();
-		this._updateLabelDisposable.dispose();
+		this._onDidChAnge.dispose();
+		this._updAteLAbelDisposAble.dispose();
 	}
 }
 
-export interface IFileTemplateData {
-	elementDisposable: IDisposable;
-	label: IResourceLabel;
-	container: HTMLElement;
+export interfAce IFileTemplAteDAtA {
+	elementDisposAble: IDisposAble;
+	lAbel: IResourceLAbel;
+	contAiner: HTMLElement;
 }
 
-export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, FuzzyScore, IFileTemplateData>, IListAccessibilityProvider<ExplorerItem>, IDisposable {
-	static readonly ID = 'file';
+export clAss FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, FuzzyScore, IFileTemplAteDAtA>, IListAccessibilityProvider<ExplorerItem>, IDisposAble {
+	stAtic reAdonly ID = 'file';
 
-	private config: IFilesConfiguration;
-	private configListener: IDisposable;
-	private compressedNavigationControllers = new Map<ExplorerItem, CompressedNavigationController>();
+	privAte config: IFilesConfigurAtion;
+	privAte configListener: IDisposAble;
+	privAte compressedNAvigAtionControllers = new MAp<ExplorerItem, CompressedNAvigAtionController>();
 
-	private _onDidChangeActiveDescendant = new EventMultiplexer<void>();
-	readonly onDidChangeActiveDescendant = this._onDidChangeActiveDescendant.event;
+	privAte _onDidChAngeActiveDescendAnt = new EventMultiplexer<void>();
+	reAdonly onDidChAngeActiveDescendAnt = this._onDidChAngeActiveDescendAnt.event;
 
 	constructor(
-		private labels: ResourceLabels,
-		private updateWidth: (stat: ExplorerItem) => void,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IThemeService private readonly themeService: IThemeService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IExplorerService private readonly explorerService: IExplorerService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
+		privAte lAbels: ResourceLAbels,
+		privAte updAteWidth: (stAt: ExplorerItem) => void,
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IExplorerService privAte reAdonly explorerService: IExplorerService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService
 	) {
-		this.config = this.configurationService.getValue<IFilesConfiguration>();
-		this.configListener = this.configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('explorer')) {
-				this.config = this.configurationService.getValue();
+		this.config = this.configurAtionService.getVAlue<IFilesConfigurAtion>();
+		this.configListener = this.configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('explorer')) {
+				this.config = this.configurAtionService.getVAlue();
 			}
 		});
 	}
 
-	getWidgetAriaLabel(): string {
-		return localize('treeAriaLabel', "Files Explorer");
+	getWidgetAriALAbel(): string {
+		return locAlize('treeAriALAbel', "Files Explorer");
 	}
 
-	get templateId(): string {
+	get templAteId(): string {
 		return FilesRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IFileTemplateData {
-		const elementDisposable = Disposable.None;
-		const label = this.labels.create(container, { supportHighlights: true });
+	renderTemplAte(contAiner: HTMLElement): IFileTemplAteDAtA {
+		const elementDisposAble = DisposAble.None;
+		const lAbel = this.lAbels.creAte(contAiner, { supportHighlights: true });
 
-		return { elementDisposable, label, container };
+		return { elementDisposAble, lAbel, contAiner };
 	}
 
-	renderElement(node: ITreeNode<ExplorerItem, FuzzyScore>, index: number, templateData: IFileTemplateData): void {
-		templateData.elementDisposable.dispose();
-		const stat = node.element;
-		const editableData = this.explorerService.getEditableData(stat);
+	renderElement(node: ITreeNode<ExplorerItem, FuzzyScore>, index: number, templAteDAtA: IFileTemplAteDAtA): void {
+		templAteDAtA.elementDisposAble.dispose();
+		const stAt = node.element;
+		const editAbleDAtA = this.explorerService.getEditAbleDAtA(stAt);
 
-		templateData.label.element.classList.remove('compressed');
+		templAteDAtA.lAbel.element.clAssList.remove('compressed');
 
-		// File Label
-		if (!editableData) {
-			templateData.label.element.style.display = 'flex';
-			templateData.elementDisposable = this.renderStat(stat, stat.name, undefined, node.filterData, templateData);
+		// File LAbel
+		if (!editAbleDAtA) {
+			templAteDAtA.lAbel.element.style.displAy = 'flex';
+			templAteDAtA.elementDisposAble = this.renderStAt(stAt, stAt.nAme, undefined, node.filterDAtA, templAteDAtA);
 		}
 
 		// Input Box
 		else {
-			templateData.label.element.style.display = 'none';
-			templateData.elementDisposable = this.renderInputBox(templateData.container, stat, editableData);
+			templAteDAtA.lAbel.element.style.displAy = 'none';
+			templAteDAtA.elementDisposAble = this.renderInputBox(templAteDAtA.contAiner, stAt, editAbleDAtA);
 		}
 	}
 
-	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<ExplorerItem>, FuzzyScore>, index: number, templateData: IFileTemplateData, height: number | undefined): void {
-		templateData.elementDisposable.dispose();
+	renderCompressedElements(node: ITreeNode<ICompressedTreeNode<ExplorerItem>, FuzzyScore>, index: number, templAteDAtA: IFileTemplAteDAtA, height: number | undefined): void {
+		templAteDAtA.elementDisposAble.dispose();
 
-		const stat = node.element.elements[node.element.elements.length - 1];
-		const editable = node.element.elements.filter(e => this.explorerService.isEditable(e));
-		const editableData = editable.length === 0 ? undefined : this.explorerService.getEditableData(editable[0]);
+		const stAt = node.element.elements[node.element.elements.length - 1];
+		const editAble = node.element.elements.filter(e => this.explorerService.isEditAble(e));
+		const editAbleDAtA = editAble.length === 0 ? undefined : this.explorerService.getEditAbleDAtA(editAble[0]);
 
-		// File Label
-		if (!editableData) {
-			templateData.label.element.classList.add('compressed');
-			templateData.label.element.style.display = 'flex';
+		// File LAbel
+		if (!editAbleDAtA) {
+			templAteDAtA.lAbel.element.clAssList.Add('compressed');
+			templAteDAtA.lAbel.element.style.displAy = 'flex';
 
-			const disposables = new DisposableStore();
-			const id = `compressed-explorer_${CompressedNavigationController.ID++}`;
+			const disposAbles = new DisposAbleStore();
+			const id = `compressed-explorer_${CompressedNAvigAtionController.ID++}`;
 
-			const label = node.element.elements.map(e => e.name);
-			disposables.add(this.renderStat(stat, label, id, node.filterData, templateData));
+			const lAbel = node.element.elements.mAp(e => e.nAme);
+			disposAbles.Add(this.renderStAt(stAt, lAbel, id, node.filterDAtA, templAteDAtA));
 
-			const compressedNavigationController = new CompressedNavigationController(id, node.element.elements, templateData, node.depth, node.collapsed);
-			disposables.add(compressedNavigationController);
-			this.compressedNavigationControllers.set(stat, compressedNavigationController);
+			const compressedNAvigAtionController = new CompressedNAvigAtionController(id, node.element.elements, templAteDAtA, node.depth, node.collApsed);
+			disposAbles.Add(compressedNAvigAtionController);
+			this.compressedNAvigAtionControllers.set(stAt, compressedNAvigAtionController);
 
-			// accessibility
-			disposables.add(this._onDidChangeActiveDescendant.add(compressedNavigationController.onDidChange));
+			// Accessibility
+			disposAbles.Add(this._onDidChAngeActiveDescendAnt.Add(compressedNAvigAtionController.onDidChAnge));
 
-			domEvent(templateData.container, 'mousedown')(e => {
-				const result = getIconLabelNameFromHTMLElement(e.target);
+			domEvent(templAteDAtA.contAiner, 'mousedown')(e => {
+				const result = getIconLAbelNAmeFromHTMLElement(e.tArget);
 
 				if (result) {
-					compressedNavigationController.setIndex(result.index);
+					compressedNAvigAtionController.setIndex(result.index);
 				}
-			}, undefined, disposables);
+			}, undefined, disposAbles);
 
-			disposables.add(toDisposable(() => this.compressedNavigationControllers.delete(stat)));
+			disposAbles.Add(toDisposAble(() => this.compressedNAvigAtionControllers.delete(stAt)));
 
-			templateData.elementDisposable = disposables;
+			templAteDAtA.elementDisposAble = disposAbles;
 		}
 
 		// Input Box
 		else {
-			templateData.label.element.classList.remove('compressed');
-			templateData.label.element.style.display = 'none';
-			templateData.elementDisposable = this.renderInputBox(templateData.container, editable[0], editableData);
+			templAteDAtA.lAbel.element.clAssList.remove('compressed');
+			templAteDAtA.lAbel.element.style.displAy = 'none';
+			templAteDAtA.elementDisposAble = this.renderInputBox(templAteDAtA.contAiner, editAble[0], editAbleDAtA);
 		}
 	}
 
-	private renderStat(stat: ExplorerItem, label: string | string[], domId: string | undefined, filterData: FuzzyScore | undefined, templateData: IFileTemplateData): IDisposable {
-		templateData.label.element.style.display = 'flex';
-		const extraClasses = ['explorer-item'];
-		if (this.explorerService.isCut(stat)) {
-			extraClasses.push('cut');
+	privAte renderStAt(stAt: ExplorerItem, lAbel: string | string[], domId: string | undefined, filterDAtA: FuzzyScore | undefined, templAteDAtA: IFileTemplAteDAtA): IDisposAble {
+		templAteDAtA.lAbel.element.style.displAy = 'flex';
+		const extrAClAsses = ['explorer-item'];
+		if (this.explorerService.isCut(stAt)) {
+			extrAClAsses.push('cut');
 		}
 
-		templateData.label.setResource({ resource: stat.resource, name: label }, {
-			fileKind: stat.isRoot ? FileKind.ROOT_FOLDER : stat.isDirectory ? FileKind.FOLDER : FileKind.FILE,
-			extraClasses,
-			fileDecorations: this.config.explorer.decorations,
-			matches: createMatches(filterData),
-			separator: this.labelService.getSeparator(stat.resource.scheme, stat.resource.authority),
+		templAteDAtA.lAbel.setResource({ resource: stAt.resource, nAme: lAbel }, {
+			fileKind: stAt.isRoot ? FileKind.ROOT_FOLDER : stAt.isDirectory ? FileKind.FOLDER : FileKind.FILE,
+			extrAClAsses,
+			fileDecorAtions: this.config.explorer.decorAtions,
+			mAtches: creAteMAtches(filterDAtA),
+			sepArAtor: this.lAbelService.getSepArAtor(stAt.resource.scheme, stAt.resource.Authority),
 			domId
 		});
 
-		return templateData.label.onDidRender(() => {
+		return templAteDAtA.lAbel.onDidRender(() => {
 			try {
-				this.updateWidth(stat);
-			} catch (e) {
-				// noop since the element might no longer be in the tree, no update of width necessery
+				this.updAteWidth(stAt);
+			} cAtch (e) {
+				// noop since the element might no longer be in the tree, no updAte of width necessery
 			}
 		});
 	}
 
-	private renderInputBox(container: HTMLElement, stat: ExplorerItem, editableData: IEditableData): IDisposable {
+	privAte renderInputBox(contAiner: HTMLElement, stAt: ExplorerItem, editAbleDAtA: IEditAbleDAtA): IDisposAble {
 
-		// Use a file label only for the icon next to the input box
-		const label = this.labels.create(container);
-		const extraClasses = ['explorer-item', 'explorer-item-edited'];
-		const fileKind = stat.isRoot ? FileKind.ROOT_FOLDER : stat.isDirectory ? FileKind.FOLDER : FileKind.FILE;
-		const labelOptions: IFileLabelOptions = { hidePath: true, hideLabel: true, fileKind, extraClasses };
+		// Use A file lAbel only for the icon next to the input box
+		const lAbel = this.lAbels.creAte(contAiner);
+		const extrAClAsses = ['explorer-item', 'explorer-item-edited'];
+		const fileKind = stAt.isRoot ? FileKind.ROOT_FOLDER : stAt.isDirectory ? FileKind.FOLDER : FileKind.FILE;
+		const lAbelOptions: IFileLAbelOptions = { hidePAth: true, hideLAbel: true, fileKind, extrAClAsses };
 
-		const parent = stat.name ? dirname(stat.resource) : stat.resource;
-		const value = stat.name || '';
+		const pArent = stAt.nAme ? dirnAme(stAt.resource) : stAt.resource;
+		const vAlue = stAt.nAme || '';
 
-		label.setFile(joinPath(parent, value || ' '), labelOptions); // Use icon for ' ' if name is empty.
+		lAbel.setFile(joinPAth(pArent, vAlue || ' '), lAbelOptions); // Use icon for ' ' if nAme is empty.
 
-		// hack: hide label
-		(label.element.firstElementChild as HTMLElement).style.display = 'none';
+		// hAck: hide lAbel
+		(lAbel.element.firstElementChild As HTMLElement).style.displAy = 'none';
 
-		// Input field for name
-		const inputBox = new InputBox(label.element, this.contextViewService, {
-			validationOptions: {
-				validation: (value) => {
-					const message = editableData.validationMessage(value);
-					if (!message || message.severity !== Severity.Error) {
+		// Input field for nAme
+		const inputBox = new InputBox(lAbel.element, this.contextViewService, {
+			vAlidAtionOptions: {
+				vAlidAtion: (vAlue) => {
+					const messAge = editAbleDAtA.vAlidAtionMessAge(vAlue);
+					if (!messAge || messAge.severity !== Severity.Error) {
 						return null;
 					}
 
 					return {
-						content: message.content,
-						formatContent: true,
-						type: MessageType.ERROR
+						content: messAge.content,
+						formAtContent: true,
+						type: MessAgeType.ERROR
 					};
 				}
 			},
-			ariaLabel: localize('fileInputAriaLabel', "Type file name. Press Enter to confirm or Escape to cancel.")
+			AriALAbel: locAlize('fileInputAriALAbel', "Type file nAme. Press Enter to confirm or EscApe to cAncel.")
 		});
-		const styler = attachInputBoxStyler(inputBox, this.themeService);
+		const styler = AttAchInputBoxStyler(inputBox, this.themeService);
 
-		const lastDot = value.lastIndexOf('.');
+		const lAstDot = vAlue.lAstIndexOf('.');
 
-		inputBox.value = value;
+		inputBox.vAlue = vAlue;
 		inputBox.focus();
-		inputBox.select({ start: 0, end: lastDot > 0 && !stat.isDirectory ? lastDot : value.length });
+		inputBox.select({ stArt: 0, end: lAstDot > 0 && !stAt.isDirectory ? lAstDot : vAlue.length });
 
-		const done = once((success: boolean, finishEditing: boolean) => {
-			label.element.style.display = 'none';
-			const value = inputBox.value;
+		const done = once((success: booleAn, finishEditing: booleAn) => {
+			lAbel.element.style.displAy = 'none';
+			const vAlue = inputBox.vAlue;
 			dispose(toDispose);
-			label.element.remove();
+			lAbel.element.remove();
 			if (finishEditing) {
-				editableData.onFinish(value, success);
+				editAbleDAtA.onFinish(vAlue, success);
 			}
 		});
 
-		const showInputBoxNotification = () => {
-			if (inputBox.isInputValid()) {
-				const message = editableData.validationMessage(inputBox.value);
-				if (message) {
-					inputBox.showMessage({
-						content: message.content,
-						formatContent: true,
-						type: message.severity === Severity.Info ? MessageType.INFO : message.severity === Severity.Warning ? MessageType.WARNING : MessageType.ERROR
+		const showInputBoxNotificAtion = () => {
+			if (inputBox.isInputVAlid()) {
+				const messAge = editAbleDAtA.vAlidAtionMessAge(inputBox.vAlue);
+				if (messAge) {
+					inputBox.showMessAge({
+						content: messAge.content,
+						formAtContent: true,
+						type: messAge.severity === Severity.Info ? MessAgeType.INFO : messAge.severity === Severity.WArning ? MessAgeType.WARNING : MessAgeType.ERROR
 					});
 				} else {
-					inputBox.hideMessage();
+					inputBox.hideMessAge();
 				}
 			}
 		};
-		showInputBoxNotification();
+		showInputBoxNotificAtion();
 
 		const toDispose = [
 			inputBox,
-			inputBox.onDidChange(value => {
-				label.setFile(joinPath(parent, value || ' '), labelOptions); // update label icon while typing!
+			inputBox.onDidChAnge(vAlue => {
+				lAbel.setFile(joinPAth(pArent, vAlue || ' '), lAbelOptions); // updAte lAbel icon while typing!
 			}),
-			DOM.addStandardDisposableListener(inputBox.inputElement, DOM.EventType.KEY_DOWN, (e: IKeyboardEvent) => {
-				if (e.equals(KeyCode.Enter)) {
-					if (inputBox.validate()) {
+			DOM.AddStAndArdDisposAbleListener(inputBox.inputElement, DOM.EventType.KEY_DOWN, (e: IKeyboArdEvent) => {
+				if (e.equAls(KeyCode.Enter)) {
+					if (inputBox.vAlidAte()) {
 						done(true, true);
 					}
-				} else if (e.equals(KeyCode.Escape)) {
-					done(false, true);
+				} else if (e.equAls(KeyCode.EscApe)) {
+					done(fAlse, true);
 				}
 			}),
-			DOM.addStandardDisposableListener(inputBox.inputElement, DOM.EventType.KEY_UP, (e: IKeyboardEvent) => {
-				showInputBoxNotification();
+			DOM.AddStAndArdDisposAbleListener(inputBox.inputElement, DOM.EventType.KEY_UP, (e: IKeyboArdEvent) => {
+				showInputBoxNotificAtion();
 			}),
-			DOM.addDisposableListener(inputBox.inputElement, DOM.EventType.BLUR, () => {
-				done(inputBox.isInputValid(), true);
+			DOM.AddDisposAbleListener(inputBox.inputElement, DOM.EventType.BLUR, () => {
+				done(inputBox.isInputVAlid(), true);
 			}),
-			label,
+			lAbel,
 			styler
 		];
 
-		return toDisposable(() => {
-			done(false, false);
+		return toDisposAble(() => {
+			done(fAlse, fAlse);
 		});
 	}
 
-	disposeElement(element: ITreeNode<ExplorerItem, FuzzyScore>, index: number, templateData: IFileTemplateData): void {
-		templateData.elementDisposable.dispose();
+	disposeElement(element: ITreeNode<ExplorerItem, FuzzyScore>, index: number, templAteDAtA: IFileTemplAteDAtA): void {
+		templAteDAtA.elementDisposAble.dispose();
 	}
 
-	disposeCompressedElements(node: ITreeNode<ICompressedTreeNode<ExplorerItem>, FuzzyScore>, index: number, templateData: IFileTemplateData): void {
-		templateData.elementDisposable.dispose();
+	disposeCompressedElements(node: ITreeNode<ICompressedTreeNode<ExplorerItem>, FuzzyScore>, index: number, templAteDAtA: IFileTemplAteDAtA): void {
+		templAteDAtA.elementDisposAble.dispose();
 	}
 
-	disposeTemplate(templateData: IFileTemplateData): void {
-		templateData.elementDisposable.dispose();
-		templateData.label.dispose();
+	disposeTemplAte(templAteDAtA: IFileTemplAteDAtA): void {
+		templAteDAtA.elementDisposAble.dispose();
+		templAteDAtA.lAbel.dispose();
 	}
 
-	getCompressedNavigationController(stat: ExplorerItem): ICompressedNavigationController | undefined {
-		return this.compressedNavigationControllers.get(stat);
+	getCompressedNAvigAtionController(stAt: ExplorerItem): ICompressedNAvigAtionController | undefined {
+		return this.compressedNAvigAtionControllers.get(stAt);
 	}
 
 	// IAccessibilityProvider
 
-	getAriaLabel(element: ExplorerItem): string {
-		return element.name;
+	getAriALAbel(element: ExplorerItem): string {
+		return element.nAme;
 	}
 
-	getAriaLevel(element: ExplorerItem): number {
-		// We need to comput aria level on our own since children of compact folders will otherwise have an incorrect level	#107235
+	getAriALevel(element: ExplorerItem): number {
+		// We need to comput AriA level on our own since children of compAct folders will otherwise hAve An incorrect level	#107235
 		let depth = 0;
-		let parent = element.parent;
-		while (parent) {
-			parent = parent.parent;
+		let pArent = element.pArent;
+		while (pArent) {
+			pArent = pArent.pArent;
 			depth++;
 		}
 
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
 			depth = depth + 1;
 		}
 
 		return depth;
 	}
 
-	getActiveDescendantId(stat: ExplorerItem): string | undefined {
-		const compressedNavigationController = this.compressedNavigationControllers.get(stat);
-		return compressedNavigationController?.currentId;
+	getActiveDescendAntId(stAt: ExplorerItem): string | undefined {
+		const compressedNAvigAtionController = this.compressedNAvigAtionControllers.get(stAt);
+		return compressedNAvigAtionController?.currentId;
 	}
 
 	dispose(): void {
@@ -521,123 +521,123 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
 	}
 }
 
-interface CachedParsedExpression {
-	original: glob.IExpression;
-	parsed: glob.ParsedExpression;
+interfAce CAchedPArsedExpression {
+	originAl: glob.IExpression;
+	pArsed: glob.PArsedExpression;
 }
 
 /**
  * Respectes files.exclude setting in filtering out content from the explorer.
- * Makes sure that visible editors are always shown in the explorer even if they are filtered out by settings.
+ * MAkes sure thAt visible editors Are AlwAys shown in the explorer even if they Are filtered out by settings.
  */
-export class FilesFilter implements ITreeFilter<ExplorerItem, FuzzyScore> {
-	private hiddenExpressionPerRoot: Map<string, CachedParsedExpression>;
-	private hiddenUris = new Set<URI>();
-	private editorsAffectingFilter = new Set<IEditorInput>();
-	private _onDidChange = new Emitter<void>();
-	private toDispose: IDisposable[] = [];
+export clAss FilesFilter implements ITreeFilter<ExplorerItem, FuzzyScore> {
+	privAte hiddenExpressionPerRoot: MAp<string, CAchedPArsedExpression>;
+	privAte hiddenUris = new Set<URI>();
+	privAte editorsAffectingFilter = new Set<IEditorInput>();
+	privAte _onDidChAnge = new Emitter<void>();
+	privAte toDispose: IDisposAble[] = [];
 
 	constructor(
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IExplorerService private readonly explorerService: IExplorerService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IExplorerService privAte reAdonly explorerService: IExplorerService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IUriIdentityService privAte reAdonly uriIdentityService: IUriIdentityService
 	) {
-		this.hiddenExpressionPerRoot = new Map<string, CachedParsedExpression>();
-		this.toDispose.push(this.contextService.onDidChangeWorkspaceFolders(() => this.updateConfiguration()));
-		this.toDispose.push(this.configurationService.onDidChangeConfiguration((e) => {
-			if (e.affectsConfiguration('files.exclude')) {
-				this.updateConfiguration();
+		this.hiddenExpressionPerRoot = new MAp<string, CAchedPArsedExpression>();
+		this.toDispose.push(this.contextService.onDidChAngeWorkspAceFolders(() => this.updAteConfigurAtion()));
+		this.toDispose.push(this.configurAtionService.onDidChAngeConfigurAtion((e) => {
+			if (e.AffectsConfigurAtion('files.exclude')) {
+				this.updAteConfigurAtion();
 			}
 		}));
-		this.toDispose.push(this.editorService.onDidVisibleEditorsChange(() => {
+		this.toDispose.push(this.editorService.onDidVisibleEditorsChAnge(() => {
 			const editors = this.editorService.visibleEditors;
-			let shouldFire = false;
-			this.hiddenUris.forEach(u => {
-				editors.forEach(e => {
-					if (e.resource && this.uriIdentityService.extUri.isEqualOrParent(e.resource, u)) {
-						// A filtered resource suddenly became visible since user opened an editor
+			let shouldFire = fAlse;
+			this.hiddenUris.forEAch(u => {
+				editors.forEAch(e => {
+					if (e.resource && this.uriIdentityService.extUri.isEquAlOrPArent(e.resource, u)) {
+						// A filtered resource suddenly becAme visible since user opened An editor
 						shouldFire = true;
 					}
 				});
 			});
 
-			this.editorsAffectingFilter.forEach(e => {
+			this.editorsAffectingFilter.forEAch(e => {
 				if (!editors.includes(e)) {
-					// Editor that was affecting filtering is no longer visible
+					// Editor thAt wAs Affecting filtering is no longer visible
 					shouldFire = true;
 				}
 			});
 			if (shouldFire) {
-				this.editorsAffectingFilter.clear();
-				this.hiddenUris.clear();
-				this._onDidChange.fire();
+				this.editorsAffectingFilter.cleAr();
+				this.hiddenUris.cleAr();
+				this._onDidChAnge.fire();
 			}
 		}));
-		this.updateConfiguration();
+		this.updAteConfigurAtion();
 	}
 
-	get onDidChange(): Event<void> {
-		return this._onDidChange.event;
+	get onDidChAnge(): Event<void> {
+		return this._onDidChAnge.event;
 	}
 
-	private updateConfiguration(): void {
-		let shouldFire = false;
-		this.contextService.getWorkspace().folders.forEach(folder => {
-			const configuration = this.configurationService.getValue<IFilesConfiguration>({ resource: folder.uri });
-			const excludesConfig: glob.IExpression = configuration?.files?.exclude || Object.create(null);
+	privAte updAteConfigurAtion(): void {
+		let shouldFire = fAlse;
+		this.contextService.getWorkspAce().folders.forEAch(folder => {
+			const configurAtion = this.configurAtionService.getVAlue<IFilesConfigurAtion>({ resource: folder.uri });
+			const excludesConfig: glob.IExpression = configurAtion?.files?.exclude || Object.creAte(null);
 
 			if (!shouldFire) {
-				const cached = this.hiddenExpressionPerRoot.get(folder.uri.toString());
-				shouldFire = !cached || !equals(cached.original, excludesConfig);
+				const cAched = this.hiddenExpressionPerRoot.get(folder.uri.toString());
+				shouldFire = !cAched || !equAls(cAched.originAl, excludesConfig);
 			}
 
-			const excludesConfigCopy = deepClone(excludesConfig); // do not keep the config, as it gets mutated under our hoods
+			const excludesConfigCopy = deepClone(excludesConfig); // do not keep the config, As it gets mutAted under our hoods
 
-			this.hiddenExpressionPerRoot.set(folder.uri.toString(), { original: excludesConfigCopy, parsed: glob.parse(excludesConfigCopy) });
+			this.hiddenExpressionPerRoot.set(folder.uri.toString(), { originAl: excludesConfigCopy, pArsed: glob.pArse(excludesConfigCopy) });
 		});
 
 		if (shouldFire) {
-			this.editorsAffectingFilter.clear();
-			this.hiddenUris.clear();
-			this._onDidChange.fire();
+			this.editorsAffectingFilter.cleAr();
+			this.hiddenUris.cleAr();
+			this._onDidChAnge.fire();
 		}
 	}
 
-	filter(stat: ExplorerItem, parentVisibility: TreeVisibility): TreeFilterResult<FuzzyScore> {
-		const isVisible = this.isVisible(stat, parentVisibility);
+	filter(stAt: ExplorerItem, pArentVisibility: TreeVisibility): TreeFilterResult<FuzzyScore> {
+		const isVisible = this.isVisible(stAt, pArentVisibility);
 		if (isVisible) {
-			this.hiddenUris.delete(stat.resource);
+			this.hiddenUris.delete(stAt.resource);
 		} else {
-			this.hiddenUris.add(stat.resource);
+			this.hiddenUris.Add(stAt.resource);
 		}
 
 		return isVisible;
 	}
 
-	private isVisible(stat: ExplorerItem, parentVisibility: TreeVisibility): boolean {
-		stat.isExcluded = false;
-		if (parentVisibility === TreeVisibility.Hidden) {
-			stat.isExcluded = true;
-			return false;
+	privAte isVisible(stAt: ExplorerItem, pArentVisibility: TreeVisibility): booleAn {
+		stAt.isExcluded = fAlse;
+		if (pArentVisibility === TreeVisibility.Hidden) {
+			stAt.isExcluded = true;
+			return fAlse;
 		}
-		if (this.explorerService.getEditableData(stat) || stat.isRoot) {
-			return true; // always visible
+		if (this.explorerService.getEditAbleDAtA(stAt) || stAt.isRoot) {
+			return true; // AlwAys visible
 		}
 
-		// Hide those that match Hidden Patterns
-		const cached = this.hiddenExpressionPerRoot.get(stat.root.resource.toString());
-		if ((cached && cached.parsed(path.relative(stat.root.resource.path, stat.resource.path), stat.name, name => !!(stat.parent && stat.parent.getChild(name)))) || stat.parent?.isExcluded) {
-			stat.isExcluded = true;
+		// Hide those thAt mAtch Hidden PAtterns
+		const cAched = this.hiddenExpressionPerRoot.get(stAt.root.resource.toString());
+		if ((cAched && cAched.pArsed(pAth.relAtive(stAt.root.resource.pAth, stAt.resource.pAth), stAt.nAme, nAme => !!(stAt.pArent && stAt.pArent.getChild(nAme)))) || stAt.pArent?.isExcluded) {
+			stAt.isExcluded = true;
 			const editors = this.editorService.visibleEditors;
-			const editor = editors.find(e => e.resource && this.uriIdentityService.extUri.isEqualOrParent(e.resource, stat.resource));
+			const editor = editors.find(e => e.resource && this.uriIdentityService.extUri.isEquAlOrPArent(e.resource, stAt.resource));
 			if (editor) {
-				this.editorsAffectingFilter.add(editor);
-				return true; // Show all opened files and their parents
+				this.editorsAffectingFilter.Add(editor);
+				return true; // Show All opened files And their pArents
 			}
 
-			return false; // hidden through pattern
+			return fAlse; // hidden through pAttern
 		}
 
 		return true;
@@ -649,26 +649,26 @@ export class FilesFilter implements ITreeFilter<ExplorerItem, FuzzyScore> {
 }
 
 // Explorer Sorter
-export class FileSorter implements ITreeSorter<ExplorerItem> {
+export clAss FileSorter implements ITreeSorter<ExplorerItem> {
 
 	constructor(
-		@IExplorerService private readonly explorerService: IExplorerService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
+		@IExplorerService privAte reAdonly explorerService: IExplorerService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService
 	) { }
 
-	compare(statA: ExplorerItem, statB: ExplorerItem): number {
+	compAre(stAtA: ExplorerItem, stAtB: ExplorerItem): number {
 		// Do not sort roots
-		if (statA.isRoot) {
-			if (statB.isRoot) {
-				const workspaceA = this.contextService.getWorkspaceFolder(statA.resource);
-				const workspaceB = this.contextService.getWorkspaceFolder(statB.resource);
-				return workspaceA && workspaceB ? (workspaceA.index - workspaceB.index) : -1;
+		if (stAtA.isRoot) {
+			if (stAtB.isRoot) {
+				const workspAceA = this.contextService.getWorkspAceFolder(stAtA.resource);
+				const workspAceB = this.contextService.getWorkspAceFolder(stAtB.resource);
+				return workspAceA && workspAceB ? (workspAceA.index - workspAceB.index) : -1;
 			}
 
 			return -1;
 		}
 
-		if (statB.isRoot) {
+		if (stAtB.isRoot) {
 			return 1;
 		}
 
@@ -676,864 +676,864 @@ export class FileSorter implements ITreeSorter<ExplorerItem> {
 
 		// Sort Directories
 		switch (sortOrder) {
-			case 'type':
-				if (statA.isDirectory && !statB.isDirectory) {
+			cAse 'type':
+				if (stAtA.isDirectory && !stAtB.isDirectory) {
 					return -1;
 				}
 
-				if (statB.isDirectory && !statA.isDirectory) {
+				if (stAtB.isDirectory && !stAtA.isDirectory) {
 					return 1;
 				}
 
-				if (statA.isDirectory && statB.isDirectory) {
-					return compareFileNamesDefault(statA.name, statB.name);
+				if (stAtA.isDirectory && stAtB.isDirectory) {
+					return compAreFileNAmesDefAult(stAtA.nAme, stAtB.nAme);
 				}
 
-				break;
+				breAk;
 
-			case 'filesFirst':
-				if (statA.isDirectory && !statB.isDirectory) {
+			cAse 'filesFirst':
+				if (stAtA.isDirectory && !stAtB.isDirectory) {
 					return 1;
 				}
 
-				if (statB.isDirectory && !statA.isDirectory) {
+				if (stAtB.isDirectory && !stAtA.isDirectory) {
 					return -1;
 				}
 
-				break;
+				breAk;
 
-			case 'mixed':
-				break; // not sorting when "mixed" is on
+			cAse 'mixed':
+				breAk; // not sorting when "mixed" is on
 
-			default: /* 'default', 'modified' */
-				if (statA.isDirectory && !statB.isDirectory) {
+			defAult: /* 'defAult', 'modified' */
+				if (stAtA.isDirectory && !stAtB.isDirectory) {
 					return -1;
 				}
 
-				if (statB.isDirectory && !statA.isDirectory) {
+				if (stAtB.isDirectory && !stAtA.isDirectory) {
 					return 1;
 				}
 
-				break;
+				breAk;
 		}
 
 		// Sort Files
 		switch (sortOrder) {
-			case 'type':
-				return compareFileExtensionsDefault(statA.name, statB.name);
+			cAse 'type':
+				return compAreFileExtensionsDefAult(stAtA.nAme, stAtB.nAme);
 
-			case 'modified':
-				if (statA.mtime !== statB.mtime) {
-					return (statA.mtime && statB.mtime && statA.mtime < statB.mtime) ? 1 : -1;
+			cAse 'modified':
+				if (stAtA.mtime !== stAtB.mtime) {
+					return (stAtA.mtime && stAtB.mtime && stAtA.mtime < stAtB.mtime) ? 1 : -1;
 				}
 
-				return compareFileNamesDefault(statA.name, statB.name);
+				return compAreFileNAmesDefAult(stAtA.nAme, stAtB.nAme);
 
-			default: /* 'default', 'mixed', 'filesFirst' */
-				return compareFileNamesDefault(statA.name, statB.name);
+			defAult: /* 'defAult', 'mixed', 'filesFirst' */
+				return compAreFileNAmesDefAult(stAtA.nAme, stAtB.nAme);
 		}
 	}
 }
 
-function getFileOverwriteConfirm(name: string): IConfirmation {
+function getFileOverwriteConfirm(nAme: string): IConfirmAtion {
 	return {
-		message: localize('confirmOverwrite', "A file or folder with the name '{0}' already exists in the destination folder. Do you want to replace it?", name),
-		detail: localize('irreversible', "This action is irreversible!"),
-		primaryButton: localize({ key: 'replaceButtonLabel', comment: ['&& denotes a mnemonic'] }, "&&Replace"),
-		type: 'warning'
+		messAge: locAlize('confirmOverwrite', "A file or folder with the nAme '{0}' AlreAdy exists in the destinAtion folder. Do you wAnt to replAce it?", nAme),
+		detAil: locAlize('irreversible', "This Action is irreversible!"),
+		primAryButton: locAlize({ key: 'replAceButtonLAbel', comment: ['&& denotes A mnemonic'] }, "&&ReplAce"),
+		type: 'wArning'
 	};
 }
 
-function getMultipleFilesOverwriteConfirm(files: URI[]): IConfirmation {
+function getMultipleFilesOverwriteConfirm(files: URI[]): IConfirmAtion {
 	if (files.length > 1) {
 		return {
-			message: localize('confirmManyOverwrites', "The following {0} files and/or folders already exist in the destination folder. Do you want to replace them?", files.length),
-			detail: getFileNamesMessage(files) + '\n' + localize('irreversible', "This action is irreversible!"),
-			primaryButton: localize({ key: 'replaceButtonLabel', comment: ['&& denotes a mnemonic'] }, "&&Replace"),
-			type: 'warning'
+			messAge: locAlize('confirmMAnyOverwrites', "The following {0} files And/or folders AlreAdy exist in the destinAtion folder. Do you wAnt to replAce them?", files.length),
+			detAil: getFileNAmesMessAge(files) + '\n' + locAlize('irreversible', "This Action is irreversible!"),
+			primAryButton: locAlize({ key: 'replAceButtonLAbel', comment: ['&& denotes A mnemonic'] }, "&&ReplAce"),
+			type: 'wArning'
 		};
 	}
 
-	return getFileOverwriteConfirm(basename(files[0]));
+	return getFileOverwriteConfirm(bAsenAme(files[0]));
 }
 
-interface IWebkitDataTransfer {
-	items: IWebkitDataTransferItem[];
+interfAce IWebkitDAtATrAnsfer {
+	items: IWebkitDAtATrAnsferItem[];
 }
 
-interface IWebkitDataTransferItem {
-	webkitGetAsEntry(): IWebkitDataTransferItemEntry;
+interfAce IWebkitDAtATrAnsferItem {
+	webkitGetAsEntry(): IWebkitDAtATrAnsferItemEntry;
 }
 
-interface IWebkitDataTransferItemEntry {
-	name: string | undefined;
-	isFile: boolean;
-	isDirectory: boolean;
+interfAce IWebkitDAtATrAnsferItemEntry {
+	nAme: string | undefined;
+	isFile: booleAn;
+	isDirectory: booleAn;
 
 	file(resolve: (file: File) => void, reject: () => void): void;
-	createReader(): IWebkitDataTransferItemEntryReader;
+	creAteReAder(): IWebkitDAtATrAnsferItemEntryReAder;
 }
 
-interface IWebkitDataTransferItemEntryReader {
-	readEntries(resolve: (file: IWebkitDataTransferItemEntry[]) => void, reject: () => void): void
+interfAce IWebkitDAtATrAnsferItemEntryReAder {
+	reAdEntries(resolve: (file: IWebkitDAtATrAnsferItemEntry[]) => void, reject: () => void): void
 }
 
-interface IUploadOperation {
-	filesTotal: number;
-	filesUploaded: number;
+interfAce IUploAdOperAtion {
+	filesTotAl: number;
+	filesUploAded: number;
 
-	startTime: number;
-	bytesUploaded: number;
+	stArtTime: number;
+	bytesUploAded: number;
 }
 
-export class FileDragAndDrop implements ITreeDragAndDrop<ExplorerItem> {
-	private static readonly CONFIRM_DND_SETTING_KEY = 'explorer.confirmDragAndDrop';
+export clAss FileDrAgAndDrop implements ITreeDrAgAndDrop<ExplorerItem> {
+	privAte stAtic reAdonly CONFIRM_DND_SETTING_KEY = 'explorer.confirmDrAgAndDrop';
 
-	private compressedDragOverElement: HTMLElement | undefined;
-	private compressedDropTargetDisposable: IDisposable = Disposable.None;
+	privAte compressedDrAgOverElement: HTMLElement | undefined;
+	privAte compressedDropTArgetDisposAble: IDisposAble = DisposAble.None;
 
-	private toDispose: IDisposable[];
-	private dropEnabled = false;
+	privAte toDispose: IDisposAble[];
+	privAte dropEnAbled = fAlse;
 
 	constructor(
-		@INotificationService private notificationService: INotificationService,
-		@IExplorerService private explorerService: IExplorerService,
-		@IEditorService private editorService: IEditorService,
-		@IDialogService private dialogService: IDialogService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@IFileService private fileService: IFileService,
-		@IConfigurationService private configurationService: IConfigurationService,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@IWorkingCopyFileService private workingCopyFileService: IWorkingCopyFileService,
-		@IHostService private hostService: IHostService,
-		@IWorkspaceEditingService private workspaceEditingService: IWorkspaceEditingService,
-		@IProgressService private readonly progressService: IProgressService,
-		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
+		@INotificAtionService privAte notificAtionService: INotificAtionService,
+		@IExplorerService privAte explorerService: IExplorerService,
+		@IEditorService privAte editorService: IEditorService,
+		@IDiAlogService privAte diAlogService: IDiAlogService,
+		@IWorkspAceContextService privAte contextService: IWorkspAceContextService,
+		@IFileService privAte fileService: IFileService,
+		@IConfigurAtionService privAte configurAtionService: IConfigurAtionService,
+		@IInstAntiAtionService privAte instAntiAtionService: IInstAntiAtionService,
+		@IWorkingCopyFileService privAte workingCopyFileService: IWorkingCopyFileService,
+		@IHostService privAte hostService: IHostService,
+		@IWorkspAceEditingService privAte workspAceEditingService: IWorkspAceEditingService,
+		@IProgressService privAte reAdonly progressService: IProgressService,
+		@IUriIdentityService privAte reAdonly uriIdentityService: IUriIdentityService
 	) {
 		this.toDispose = [];
 
-		const updateDropEnablement = () => {
-			this.dropEnabled = this.configurationService.getValue('explorer.enableDragAndDrop');
+		const updAteDropEnAblement = () => {
+			this.dropEnAbled = this.configurAtionService.getVAlue('explorer.enAbleDrAgAndDrop');
 		};
-		updateDropEnablement();
-		this.toDispose.push(this.configurationService.onDidChangeConfiguration((e) => updateDropEnablement()));
+		updAteDropEnAblement();
+		this.toDispose.push(this.configurAtionService.onDidChAngeConfigurAtion((e) => updAteDropEnAblement()));
 	}
 
-	onDragOver(data: IDragAndDropData, target: ExplorerItem | undefined, targetIndex: number | undefined, originalEvent: DragEvent): boolean | ITreeDragOverReaction {
-		if (!this.dropEnabled) {
-			return false;
+	onDrAgOver(dAtA: IDrAgAndDropDAtA, tArget: ExplorerItem | undefined, tArgetIndex: number | undefined, originAlEvent: DrAgEvent): booleAn | ITreeDrAgOverReAction {
+		if (!this.dropEnAbled) {
+			return fAlse;
 		}
 
 		// Compressed folders
-		if (target) {
-			const compressedTarget = FileDragAndDrop.getCompressedStatFromDragEvent(target, originalEvent);
+		if (tArget) {
+			const compressedTArget = FileDrAgAndDrop.getCompressedStAtFromDrAgEvent(tArget, originAlEvent);
 
-			if (compressedTarget) {
-				const iconLabelName = getIconLabelNameFromHTMLElement(originalEvent.target);
+			if (compressedTArget) {
+				const iconLAbelNAme = getIconLAbelNAmeFromHTMLElement(originAlEvent.tArget);
 
-				if (iconLabelName && iconLabelName.index < iconLabelName.count - 1) {
-					const result = this.handleDragOver(data, compressedTarget, targetIndex, originalEvent);
+				if (iconLAbelNAme && iconLAbelNAme.index < iconLAbelNAme.count - 1) {
+					const result = this.hAndleDrAgOver(dAtA, compressedTArget, tArgetIndex, originAlEvent);
 
 					if (result) {
-						if (iconLabelName.element !== this.compressedDragOverElement) {
-							this.compressedDragOverElement = iconLabelName.element;
-							this.compressedDropTargetDisposable.dispose();
-							this.compressedDropTargetDisposable = toDisposable(() => {
-								iconLabelName.element.classList.remove('drop-target');
-								this.compressedDragOverElement = undefined;
+						if (iconLAbelNAme.element !== this.compressedDrAgOverElement) {
+							this.compressedDrAgOverElement = iconLAbelNAme.element;
+							this.compressedDropTArgetDisposAble.dispose();
+							this.compressedDropTArgetDisposAble = toDisposAble(() => {
+								iconLAbelNAme.element.clAssList.remove('drop-tArget');
+								this.compressedDrAgOverElement = undefined;
 							});
 
-							iconLabelName.element.classList.add('drop-target');
+							iconLAbelNAme.element.clAssList.Add('drop-tArget');
 						}
 
-						return typeof result === 'boolean' ? result : { ...result, feedback: [] };
+						return typeof result === 'booleAn' ? result : { ...result, feedbAck: [] };
 					}
 
-					this.compressedDropTargetDisposable.dispose();
-					return false;
+					this.compressedDropTArgetDisposAble.dispose();
+					return fAlse;
 				}
 			}
 		}
 
-		this.compressedDropTargetDisposable.dispose();
-		return this.handleDragOver(data, target, targetIndex, originalEvent);
+		this.compressedDropTArgetDisposAble.dispose();
+		return this.hAndleDrAgOver(dAtA, tArget, tArgetIndex, originAlEvent);
 	}
 
-	private handleDragOver(data: IDragAndDropData, target: ExplorerItem | undefined, targetIndex: number | undefined, originalEvent: DragEvent): boolean | ITreeDragOverReaction {
-		const isCopy = originalEvent && ((originalEvent.ctrlKey && !isMacintosh) || (originalEvent.altKey && isMacintosh));
-		const isNative = data instanceof NativeDragAndDropData;
-		const effect = (isNative || isCopy) ? ListDragOverEffect.Copy : ListDragOverEffect.Move;
+	privAte hAndleDrAgOver(dAtA: IDrAgAndDropDAtA, tArget: ExplorerItem | undefined, tArgetIndex: number | undefined, originAlEvent: DrAgEvent): booleAn | ITreeDrAgOverReAction {
+		const isCopy = originAlEvent && ((originAlEvent.ctrlKey && !isMAcintosh) || (originAlEvent.AltKey && isMAcintosh));
+		const isNAtive = dAtA instAnceof NAtiveDrAgAndDropDAtA;
+		const effect = (isNAtive || isCopy) ? ListDrAgOverEffect.Copy : ListDrAgOverEffect.Move;
 
-		// Native DND
-		if (isNative) {
-			if (!containsDragType(originalEvent, DataTransfers.FILES, CodeDataTransfers.FILES)) {
-				return false;
+		// NAtive DND
+		if (isNAtive) {
+			if (!contAinsDrAgType(originAlEvent, DAtATrAnsfers.FILES, CodeDAtATrAnsfers.FILES)) {
+				return fAlse;
 			}
 		}
 
 		// Other-Tree DND
-		else if (data instanceof ExternalElementsDragAndDropData) {
-			return false;
+		else if (dAtA instAnceof ExternAlElementsDrAgAndDropDAtA) {
+			return fAlse;
 		}
 
 		// In-Explorer DND
 		else {
-			const items = FileDragAndDrop.getStatsFromDragAndDropData(data as ElementsDragAndDropData<ExplorerItem, ExplorerItem[]>);
+			const items = FileDrAgAndDrop.getStAtsFromDrAgAndDropDAtA(dAtA As ElementsDrAgAndDropDAtA<ExplorerItem, ExplorerItem[]>);
 
-			if (!target) {
-				// Dropping onto the empty area. Do not accept if items dragged are already
-				// children of the root unless we are copying the file
-				if (!isCopy && items.every(i => !!i.parent && i.parent.isRoot)) {
-					return false;
+			if (!tArget) {
+				// Dropping onto the empty AreA. Do not Accept if items drAgged Are AlreAdy
+				// children of the root unless we Are copying the file
+				if (!isCopy && items.every(i => !!i.pArent && i.pArent.isRoot)) {
+					return fAlse;
 				}
 
-				return { accept: true, bubble: TreeDragOverBubble.Down, effect, autoExpand: false };
+				return { Accept: true, bubble: TreeDrAgOverBubble.Down, effect, AutoExpAnd: fAlse };
 			}
 
-			if (!Array.isArray(items)) {
-				return false;
+			if (!ArrAy.isArrAy(items)) {
+				return fAlse;
 			}
 
 			if (items.some((source) => {
-				if (source.isRoot && target instanceof ExplorerItem && !target.isRoot) {
-					return true; // Root folder can not be moved to a non root file stat.
+				if (source.isRoot && tArget instAnceof ExplorerItem && !tArget.isRoot) {
+					return true; // Root folder cAn not be moved to A non root file stAt.
 				}
 
-				if (source.resource.toString() === target.resource.toString()) {
-					return true; // Can not move anything onto itself
+				if (source.resource.toString() === tArget.resource.toString()) {
+					return true; // CAn not move Anything onto itself
 				}
 
-				if (source.isRoot && target instanceof ExplorerItem && target.isRoot) {
-					// Disable moving workspace roots in one another
-					return false;
+				if (source.isRoot && tArget instAnceof ExplorerItem && tArget.isRoot) {
+					// DisAble moving workspAce roots in one Another
+					return fAlse;
 				}
 
-				if (!isCopy && dirname(source.resource).toString() === target.resource.toString()) {
-					return true; // Can not move a file to the same parent unless we copy
+				if (!isCopy && dirnAme(source.resource).toString() === tArget.resource.toString()) {
+					return true; // CAn not move A file to the sAme pArent unless we copy
 				}
 
-				if (this.uriIdentityService.extUri.isEqualOrParent(target.resource, source.resource)) {
-					return true; // Can not move a parent folder into one of its children
+				if (this.uriIdentityService.extUri.isEquAlOrPArent(tArget.resource, source.resource)) {
+					return true; // CAn not move A pArent folder into one of its children
 				}
 
-				return false;
+				return fAlse;
 			})) {
-				return false;
+				return fAlse;
 			}
 		}
 
-		// All (target = model)
-		if (!target) {
-			return { accept: true, bubble: TreeDragOverBubble.Down, effect };
+		// All (tArget = model)
+		if (!tArget) {
+			return { Accept: true, bubble: TreeDrAgOverBubble.Down, effect };
 		}
 
-		// All (target = file/folder)
+		// All (tArget = file/folder)
 		else {
-			if (target.isDirectory) {
-				if (target.isReadonly) {
-					return false;
+			if (tArget.isDirectory) {
+				if (tArget.isReAdonly) {
+					return fAlse;
 				}
 
-				return { accept: true, bubble: TreeDragOverBubble.Down, effect, autoExpand: true };
+				return { Accept: true, bubble: TreeDrAgOverBubble.Down, effect, AutoExpAnd: true };
 			}
 
-			if (this.contextService.getWorkspace().folders.every(folder => folder.uri.toString() !== target.resource.toString())) {
-				return { accept: true, bubble: TreeDragOverBubble.Up, effect };
+			if (this.contextService.getWorkspAce().folders.every(folder => folder.uri.toString() !== tArget.resource.toString())) {
+				return { Accept: true, bubble: TreeDrAgOverBubble.Up, effect };
 			}
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	getDragURI(element: ExplorerItem): string | null {
-		if (this.explorerService.isEditable(element)) {
+	getDrAgURI(element: ExplorerItem): string | null {
+		if (this.explorerService.isEditAble(element)) {
 			return null;
 		}
 
 		return element.resource.toString();
 	}
 
-	getDragLabel(elements: ExplorerItem[], originalEvent: DragEvent): string | undefined {
+	getDrAgLAbel(elements: ExplorerItem[], originAlEvent: DrAgEvent): string | undefined {
 		if (elements.length === 1) {
-			const stat = FileDragAndDrop.getCompressedStatFromDragEvent(elements[0], originalEvent);
-			return stat.name;
+			const stAt = FileDrAgAndDrop.getCompressedStAtFromDrAgEvent(elements[0], originAlEvent);
+			return stAt.nAme;
 		}
 
 		return String(elements.length);
 	}
 
-	onDragStart(data: IDragAndDropData, originalEvent: DragEvent): void {
-		const items = FileDragAndDrop.getStatsFromDragAndDropData(data as ElementsDragAndDropData<ExplorerItem, ExplorerItem[]>, originalEvent);
-		if (items && items.length && originalEvent.dataTransfer) {
-			// Apply some datatransfer types to allow for dragging the element outside of the application
-			this.instantiationService.invokeFunction(fillResourceDataTransfers, items, undefined, originalEvent);
+	onDrAgStArt(dAtA: IDrAgAndDropDAtA, originAlEvent: DrAgEvent): void {
+		const items = FileDrAgAndDrop.getStAtsFromDrAgAndDropDAtA(dAtA As ElementsDrAgAndDropDAtA<ExplorerItem, ExplorerItem[]>, originAlEvent);
+		if (items && items.length && originAlEvent.dAtATrAnsfer) {
+			// Apply some dAtAtrAnsfer types to Allow for drAgging the element outside of the ApplicAtion
+			this.instAntiAtionService.invokeFunction(fillResourceDAtATrAnsfers, items, undefined, originAlEvent);
 
-			// The only custom data transfer we set from the explorer is a file transfer
-			// to be able to DND between multiple code file explorers across windows
-			const fileResources = items.filter(s => !s.isDirectory && s.resource.scheme === Schemas.file).map(r => r.resource.fsPath);
+			// The only custom dAtA trAnsfer we set from the explorer is A file trAnsfer
+			// to be Able to DND between multiple code file explorers Across windows
+			const fileResources = items.filter(s => !s.isDirectory && s.resource.scheme === SchemAs.file).mAp(r => r.resource.fsPAth);
 			if (fileResources.length) {
-				originalEvent.dataTransfer.setData(CodeDataTransfers.FILES, JSON.stringify(fileResources));
+				originAlEvent.dAtATrAnsfer.setDAtA(CodeDAtATrAnsfers.FILES, JSON.stringify(fileResources));
 			}
 		}
 	}
 
-	drop(data: IDragAndDropData, target: ExplorerItem | undefined, targetIndex: number | undefined, originalEvent: DragEvent): void {
-		this.compressedDropTargetDisposable.dispose();
+	drop(dAtA: IDrAgAndDropDAtA, tArget: ExplorerItem | undefined, tArgetIndex: number | undefined, originAlEvent: DrAgEvent): void {
+		this.compressedDropTArgetDisposAble.dispose();
 
-		// Find compressed target
-		if (target) {
-			const compressedTarget = FileDragAndDrop.getCompressedStatFromDragEvent(target, originalEvent);
+		// Find compressed tArget
+		if (tArget) {
+			const compressedTArget = FileDrAgAndDrop.getCompressedStAtFromDrAgEvent(tArget, originAlEvent);
 
-			if (compressedTarget) {
-				target = compressedTarget;
+			if (compressedTArget) {
+				tArget = compressedTArget;
 			}
 		}
 
-		// Find parent to add to
-		if (!target) {
-			target = this.explorerService.roots[this.explorerService.roots.length - 1];
+		// Find pArent to Add to
+		if (!tArget) {
+			tArget = this.explorerService.roots[this.explorerService.roots.length - 1];
 		}
-		if (!target.isDirectory && target.parent) {
-			target = target.parent;
+		if (!tArget.isDirectory && tArget.pArent) {
+			tArget = tArget.pArent;
 		}
-		if (target.isReadonly) {
+		if (tArget.isReAdonly) {
 			return;
 		}
-		const resolvedTarget = target;
-		if (!resolvedTarget) {
+		const resolvedTArget = tArget;
+		if (!resolvedTArget) {
 			return;
 		}
 
 		// Desktop DND (Import file)
-		if (data instanceof NativeDragAndDropData) {
-			const cts = new CancellationTokenSource();
+		if (dAtA instAnceof NAtiveDrAgAndDropDAtA) {
+			const cts = new CAncellAtionTokenSource();
 
-			// Indicate progress globally
+			// IndicAte progress globAlly
 			const dropPromise = this.progressService.withProgress({
-				location: ProgressLocation.Window,
-				delay: 800,
-				cancellable: true,
-				title: isWeb ? localize('uploadingFiles', "Uploading") : localize('copyingFiles', "Copying")
-			}, async progress => {
+				locAtion: ProgressLocAtion.Window,
+				delAy: 800,
+				cAncellAble: true,
+				title: isWeb ? locAlize('uploAdingFiles', "UploAding") : locAlize('copyingFiles', "Copying")
+			}, Async progress => {
 				try {
 					if (isWeb) {
-						await this.handleWebExternalDrop(data, resolvedTarget, originalEvent, progress, cts.token);
+						AwAit this.hAndleWebExternAlDrop(dAtA, resolvedTArget, originAlEvent, progress, cts.token);
 					} else {
-						await this.handleExternalDrop(data, resolvedTarget, originalEvent, progress, cts.token);
+						AwAit this.hAndleExternAlDrop(dAtA, resolvedTArget, originAlEvent, progress, cts.token);
 					}
-				} catch (error) {
-					this.notificationService.warn(error);
+				} cAtch (error) {
+					this.notificAtionService.wArn(error);
 				}
 			}, () => cts.dispose(true));
 
-			// Also indicate progress in the files view
-			this.progressService.withProgress({ location: VIEW_ID, delay: 800 }, () => dropPromise);
+			// Also indicAte progress in the files view
+			this.progressService.withProgress({ locAtion: VIEW_ID, delAy: 800 }, () => dropPromise);
 		}
 		// In-Explorer DND (Move/Copy file)
 		else {
-			this.handleExplorerDrop(data as ElementsDragAndDropData<ExplorerItem, ExplorerItem[]>, resolvedTarget, originalEvent).then(undefined, e => this.notificationService.warn(e));
+			this.hAndleExplorerDrop(dAtA As ElementsDrAgAndDropDAtA<ExplorerItem, ExplorerItem[]>, resolvedTArget, originAlEvent).then(undefined, e => this.notificAtionService.wArn(e));
 		}
 	}
 
-	private async handleWebExternalDrop(data: NativeDragAndDropData, target: ExplorerItem, originalEvent: DragEvent, progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
-		const items = (originalEvent.dataTransfer as unknown as IWebkitDataTransfer).items;
+	privAte Async hAndleWebExternAlDrop(dAtA: NAtiveDrAgAndDropDAtA, tArget: ExplorerItem, originAlEvent: DrAgEvent, progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
+		const items = (originAlEvent.dAtATrAnsfer As unknown As IWebkitDAtATrAnsfer).items;
 
-		// Somehow the items thing is being modified at random, maybe as a security
-		// measure since this is a DND operation. As such, we copy the items into
-		// an array we own as early as possible before using it.
-		const entries: IWebkitDataTransferItemEntry[] = [];
+		// Somehow the items thing is being modified At rAndom, mAybe As A security
+		// meAsure since this is A DND operAtion. As such, we copy the items into
+		// An ArrAy we own As eArly As possible before using it.
+		const entries: IWebkitDAtATrAnsferItemEntry[] = [];
 		for (const item of items) {
 			entries.push(item.webkitGetAsEntry());
 		}
 
-		const results: { isFile: boolean, resource: URI }[] = [];
-		const operation: IUploadOperation = { filesTotal: entries.length, filesUploaded: 0, startTime: Date.now(), bytesUploaded: 0 };
+		const results: { isFile: booleAn, resource: URI }[] = [];
+		const operAtion: IUploAdOperAtion = { filesTotAl: entries.length, filesUploAded: 0, stArtTime: DAte.now(), bytesUploAded: 0 };
 
 		for (let entry of entries) {
-			if (token.isCancellationRequested) {
-				break;
+			if (token.isCAncellAtionRequested) {
+				breAk;
 			}
 
-			// Confirm overwrite as needed
-			if (target && entry.name && target.getChild(entry.name)) {
-				const { confirmed } = await this.dialogService.confirm(getFileOverwriteConfirm(entry.name));
+			// Confirm overwrite As needed
+			if (tArget && entry.nAme && tArget.getChild(entry.nAme)) {
+				const { confirmed } = AwAit this.diAlogService.confirm(getFileOverwriteConfirm(entry.nAme));
 				if (!confirmed) {
 					continue;
 				}
 
-				await this.workingCopyFileService.delete([joinPath(target.resource, entry.name)], { recursive: true });
+				AwAit this.workingCopyFileService.delete([joinPAth(tArget.resource, entry.nAme)], { recursive: true });
 
-				if (token.isCancellationRequested) {
-					break;
+				if (token.isCAncellAtionRequested) {
+					breAk;
 				}
 			}
 
-			// Upload entry
-			const result = await this.doUploadWebFileEntry(entry, target.resource, target, progress, operation, token);
+			// UploAd entry
+			const result = AwAit this.doUploAdWebFileEntry(entry, tArget.resource, tArget, progress, operAtion, token);
 			if (result) {
 				results.push(result);
 			}
 		}
 
-		// Open uploaded file in editor only if we upload just one
-		const firstUploadedFile = results[0];
-		if (!token.isCancellationRequested && firstUploadedFile?.isFile) {
-			await this.editorService.openEditor({ resource: firstUploadedFile.resource, options: { pinned: true } });
+		// Open uploAded file in editor only if we uploAd just one
+		const firstUploAdedFile = results[0];
+		if (!token.isCAncellAtionRequested && firstUploAdedFile?.isFile) {
+			AwAit this.editorService.openEditor({ resource: firstUploAdedFile.resource, options: { pinned: true } });
 		}
 	}
 
-	private async doUploadWebFileEntry(entry: IWebkitDataTransferItemEntry, parentResource: URI, target: ExplorerItem | undefined, progress: IProgress<IProgressStep>, operation: IUploadOperation, token: CancellationToken): Promise<{ isFile: boolean, resource: URI } | undefined> {
-		if (token.isCancellationRequested || !entry.name || (!entry.isFile && !entry.isDirectory)) {
+	privAte Async doUploAdWebFileEntry(entry: IWebkitDAtATrAnsferItemEntry, pArentResource: URI, tArget: ExplorerItem | undefined, progress: IProgress<IProgressStep>, operAtion: IUploAdOperAtion, token: CAncellAtionToken): Promise<{ isFile: booleAn, resource: URI } | undefined> {
+		if (token.isCAncellAtionRequested || !entry.nAme || (!entry.isFile && !entry.isDirectory)) {
 			return undefined;
 		}
 
 		// Report progress
-		let fileBytesUploaded = 0;
-		const reportProgress = (fileSize: number, bytesUploaded: number): void => {
-			fileBytesUploaded += bytesUploaded;
-			operation.bytesUploaded += bytesUploaded;
+		let fileBytesUploAded = 0;
+		const reportProgress = (fileSize: number, bytesUploAded: number): void => {
+			fileBytesUploAded += bytesUploAded;
+			operAtion.bytesUploAded += bytesUploAded;
 
-			const bytesUploadedPerSecond = operation.bytesUploaded / ((Date.now() - operation.startTime) / 1000);
+			const bytesUploAdedPerSecond = operAtion.bytesUploAded / ((DAte.now() - operAtion.stArtTime) / 1000);
 
-			// Small file
-			let message: string;
-			if (fileSize < BinarySize.MB) {
-				if (operation.filesTotal === 1) {
-					message = `${entry.name}`;
+			// SmAll file
+			let messAge: string;
+			if (fileSize < BinArySize.MB) {
+				if (operAtion.filesTotAl === 1) {
+					messAge = `${entry.nAme}`;
 				} else {
-					message = localize('uploadProgressSmallMany', "{0} of {1} files ({2}/s)", operation.filesUploaded, operation.filesTotal, BinarySize.formatSize(bytesUploadedPerSecond));
+					messAge = locAlize('uploAdProgressSmAllMAny', "{0} of {1} files ({2}/s)", operAtion.filesUploAded, operAtion.filesTotAl, BinArySize.formAtSize(bytesUploAdedPerSecond));
 				}
 			}
 
-			// Large file
+			// LArge file
 			else {
-				message = localize('uploadProgressLarge', "{0} ({1} of {2}, {3}/s)", entry.name, BinarySize.formatSize(fileBytesUploaded), BinarySize.formatSize(fileSize), BinarySize.formatSize(bytesUploadedPerSecond));
+				messAge = locAlize('uploAdProgressLArge', "{0} ({1} of {2}, {3}/s)", entry.nAme, BinArySize.formAtSize(fileBytesUploAded), BinArySize.formAtSize(fileSize), BinArySize.formAtSize(bytesUploAdedPerSecond));
 			}
 
-			progress.report({ message });
+			progress.report({ messAge });
 		};
-		operation.filesUploaded++;
+		operAtion.filesUploAded++;
 		reportProgress(0, 0);
 
-		// Handle file upload
-		const resource = joinPath(parentResource, entry.name);
+		// HAndle file uploAd
+		const resource = joinPAth(pArentResource, entry.nAme);
 		if (entry.isFile) {
-			const file = await new Promise<File>((resolve, reject) => entry.file(resolve, reject));
+			const file = AwAit new Promise<File>((resolve, reject) => entry.file(resolve, reject));
 
-			if (token.isCancellationRequested) {
+			if (token.isCAncellAtionRequested) {
 				return undefined;
 			}
 
-			// Chrome/Edge/Firefox support stream method
-			if (typeof file.stream === 'function') {
-				await this.doUploadWebFileEntryBuffered(resource, file, reportProgress, token);
+			// Chrome/Edge/Firefox support streAm method
+			if (typeof file.streAm === 'function') {
+				AwAit this.doUploAdWebFileEntryBuffered(resource, file, reportProgress, token);
 			}
 
-			// Fallback to unbuffered upload for other browsers
+			// FAllbAck to unbuffered uploAd for other browsers
 			else {
-				await this.doUploadWebFileEntryUnbuffered(resource, file, reportProgress);
+				AwAit this.doUploAdWebFileEntryUnbuffered(resource, file, reportProgress);
 			}
 
 			return { isFile: true, resource };
 		}
 
-		// Handle folder upload
+		// HAndle folder uploAd
 		else {
 
-			// Create target folder
-			await this.fileService.createFolder(resource);
+			// CreAte tArget folder
+			AwAit this.fileService.creAteFolder(resource);
 
-			if (token.isCancellationRequested) {
+			if (token.isCAncellAtionRequested) {
 				return undefined;
 			}
 
-			// Recursive upload files in this directory
-			const dirReader = entry.createReader();
-			const childEntries: IWebkitDataTransferItemEntry[] = [];
-			let done = false;
+			// Recursive uploAd files in this directory
+			const dirReAder = entry.creAteReAder();
+			const childEntries: IWebkitDAtATrAnsferItemEntry[] = [];
+			let done = fAlse;
 			do {
-				const childEntriesChunk = await new Promise<IWebkitDataTransferItemEntry[]>((resolve, reject) => dirReader.readEntries(resolve, reject));
+				const childEntriesChunk = AwAit new Promise<IWebkitDAtATrAnsferItemEntry[]>((resolve, reject) => dirReAder.reAdEntries(resolve, reject));
 				if (childEntriesChunk.length > 0) {
 					childEntries.push(...childEntriesChunk);
 				} else {
-					done = true; // an empty array is a signal that all entries have been read
+					done = true; // An empty ArrAy is A signAl thAt All entries hAve been reAd
 				}
-			} while (!done && !token.isCancellationRequested);
+			} while (!done && !token.isCAncellAtionRequested);
 
-			// Update operation total based on new counts
-			operation.filesTotal += childEntries.length;
+			// UpdAte operAtion totAl bAsed on new counts
+			operAtion.filesTotAl += childEntries.length;
 
-			// Upload all entries as files to target
-			const folderTarget = target && target.getChild(entry.name) || undefined;
+			// UploAd All entries As files to tArget
+			const folderTArget = tArget && tArget.getChild(entry.nAme) || undefined;
 			for (let childEntry of childEntries) {
-				await this.doUploadWebFileEntry(childEntry, resource, folderTarget, progress, operation, token);
+				AwAit this.doUploAdWebFileEntry(childEntry, resource, folderTArget, progress, operAtion, token);
 			}
 
-			return { isFile: false, resource };
+			return { isFile: fAlse, resource };
 		}
 	}
 
-	private async doUploadWebFileEntryBuffered(resource: URI, file: File, progressReporter: (fileSize: number, bytesUploaded: number) => void, token: CancellationToken): Promise<void> {
-		const writeableStream = newWriteableBufferStream({
-			// Set a highWaterMark to prevent the stream
-			// for file upload to produce large buffers
+	privAte Async doUploAdWebFileEntryBuffered(resource: URI, file: File, progressReporter: (fileSize: number, bytesUploAded: number) => void, token: CAncellAtionToken): Promise<void> {
+		const writeAbleStreAm = newWriteAbleBufferStreAm({
+			// Set A highWAterMArk to prevent the streAm
+			// for file uploAd to produce lArge buffers
 			// in-memory
-			highWaterMark: 10
+			highWAterMArk: 10
 		});
-		const writeFilePromise = this.fileService.writeFile(resource, writeableStream);
+		const writeFilePromise = this.fileService.writeFile(resource, writeAbleStreAm);
 
-		// Read the file in chunks using File.stream() web APIs
+		// ReAd the file in chunks using File.streAm() web APIs
 		try {
-			const reader: ReadableStreamDefaultReader<Uint8Array> = file.stream().getReader();
+			const reAder: ReAdAbleStreAmDefAultReAder<Uint8ArrAy> = file.streAm().getReAder();
 
-			let res = await reader.read();
+			let res = AwAit reAder.reAd();
 			while (!res.done) {
-				if (token.isCancellationRequested) {
+				if (token.isCAncellAtionRequested) {
 					return undefined;
 				}
 
-				// Write buffer into stream but make sure to wait
-				// in case the highWaterMark is reached
-				const buffer = VSBuffer.wrap(res.value);
-				await writeableStream.write(buffer);
+				// Write buffer into streAm but mAke sure to wAit
+				// in cAse the highWAterMArk is reAched
+				const buffer = VSBuffer.wrAp(res.vAlue);
+				AwAit writeAbleStreAm.write(buffer);
 
-				if (token.isCancellationRequested) {
+				if (token.isCAncellAtionRequested) {
 					return undefined;
 				}
 
 				// Report progress
 				progressReporter(file.size, buffer.byteLength);
 
-				res = await reader.read();
+				res = AwAit reAder.reAd();
 			}
-			writeableStream.end(res.value instanceof Uint8Array ? VSBuffer.wrap(res.value) : undefined);
-		} catch (error) {
-			writeableStream.end(error);
+			writeAbleStreAm.end(res.vAlue instAnceof Uint8ArrAy ? VSBuffer.wrAp(res.vAlue) : undefined);
+		} cAtch (error) {
+			writeAbleStreAm.end(error);
 		}
 
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return undefined;
 		}
 
-		// Wait for file being written to target
-		await writeFilePromise;
+		// WAit for file being written to tArget
+		AwAit writeFilePromise;
 	}
 
-	private doUploadWebFileEntryUnbuffered(resource: URI, file: File, progressReporter: (fileSize: number, bytesUploaded: number) => void): Promise<void> {
+	privAte doUploAdWebFileEntryUnbuffered(resource: URI, file: File, progressReporter: (fileSize: number, bytesUploAded: number) => void): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = async event => {
+			const reAder = new FileReAder();
+			reAder.onloAd = Async event => {
 				try {
-					if (event.target?.result instanceof ArrayBuffer) {
-						const buffer = VSBuffer.wrap(new Uint8Array(event.target.result));
-						await this.fileService.writeFile(resource, buffer);
+					if (event.tArget?.result instAnceof ArrAyBuffer) {
+						const buffer = VSBuffer.wrAp(new Uint8ArrAy(event.tArget.result));
+						AwAit this.fileService.writeFile(resource, buffer);
 
 						// Report progress
 						progressReporter(file.size, buffer.byteLength);
 					} else {
-						throw new Error('Could not read from dropped file.');
+						throw new Error('Could not reAd from dropped file.');
 					}
 
 					resolve();
-				} catch (error) {
+				} cAtch (error) {
 					reject(error);
 				}
 			};
 
-			// Start reading the file to trigger `onload`
-			reader.readAsArrayBuffer(file);
+			// StArt reAding the file to trigger `onloAd`
+			reAder.reAdAsArrAyBuffer(file);
 		});
 	}
 
-	private async handleExternalDrop(data: NativeDragAndDropData, target: ExplorerItem, originalEvent: DragEvent, progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
+	privAte Async hAndleExternAlDrop(dAtA: NAtiveDrAgAndDropDAtA, tArget: ExplorerItem, originAlEvent: DrAgEvent, progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
 
-		// Check for dropped external files to be folders
-		const droppedResources = extractResources(originalEvent, true);
-		const result = await this.fileService.resolveAll(droppedResources.map(droppedResource => ({ resource: droppedResource.resource })));
+		// Check for dropped externAl files to be folders
+		const droppedResources = extrActResources(originAlEvent, true);
+		const result = AwAit this.fileService.resolveAll(droppedResources.mAp(droppedResource => ({ resource: droppedResource.resource })));
 
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return;
 		}
 
-		// Pass focus to window
+		// PAss focus to window
 		this.hostService.focus();
 
-		// Handle folders by adding to workspace if we are in workspace context
-		const folders = result.filter(r => r.success && r.stat && r.stat.isDirectory).map(result => ({ uri: result.stat!.resource }));
+		// HAndle folders by Adding to workspAce if we Are in workspAce context
+		const folders = result.filter(r => r.success && r.stAt && r.stAt.isDirectory).mAp(result => ({ uri: result.stAt!.resource }));
 		if (folders.length > 0) {
 			const buttons = [
-				folders.length > 1 ? localize('copyFolders', "&&Copy Folders") : localize('copyFolder', "&&Copy Folder"),
-				localize('cancel', "Cancel")
+				folders.length > 1 ? locAlize('copyFolders', "&&Copy Folders") : locAlize('copyFolder', "&&Copy Folder"),
+				locAlize('cAncel', "CAncel")
 			];
-			const workspaceFolderSchemas = this.contextService.getWorkspace().folders.map(f => f.uri.scheme);
-			let message = folders.length > 1 ? localize('copyfolders', "Are you sure to want to copy folders?") : localize('copyfolder', "Are you sure to want to copy '{0}'?", basename(folders[0].uri));
-			if (folders.some(f => workspaceFolderSchemas.indexOf(f.uri.scheme) >= 0)) {
-				// We only allow to add a folder to the workspace if there is already a workspace folder with that scheme
-				buttons.unshift(folders.length > 1 ? localize('addFolders', "&&Add Folders to Workspace") : localize('addFolder', "&&Add Folder to Workspace"));
-				message = folders.length > 1 ? localize('dropFolders', "Do you want to copy the folders or add the folders to the workspace?")
-					: localize('dropFolder', "Do you want to copy '{0}' or add '{0}' as a folder to the workspace?", basename(folders[0].uri));
+			const workspAceFolderSchemAs = this.contextService.getWorkspAce().folders.mAp(f => f.uri.scheme);
+			let messAge = folders.length > 1 ? locAlize('copyfolders', "Are you sure to wAnt to copy folders?") : locAlize('copyfolder', "Are you sure to wAnt to copy '{0}'?", bAsenAme(folders[0].uri));
+			if (folders.some(f => workspAceFolderSchemAs.indexOf(f.uri.scheme) >= 0)) {
+				// We only Allow to Add A folder to the workspAce if there is AlreAdy A workspAce folder with thAt scheme
+				buttons.unshift(folders.length > 1 ? locAlize('AddFolders', "&&Add Folders to WorkspAce") : locAlize('AddFolder', "&&Add Folder to WorkspAce"));
+				messAge = folders.length > 1 ? locAlize('dropFolders', "Do you wAnt to copy the folders or Add the folders to the workspAce?")
+					: locAlize('dropFolder', "Do you wAnt to copy '{0}' or Add '{0}' As A folder to the workspAce?", bAsenAme(folders[0].uri));
 			}
 
-			const { choice } = await this.dialogService.show(Severity.Info, message, buttons);
+			const { choice } = AwAit this.diAlogService.show(Severity.Info, messAge, buttons);
 			if (choice === buttons.length - 3) {
-				return this.workspaceEditingService.addFolders(folders);
+				return this.workspAceEditingService.AddFolders(folders);
 			}
 			if (choice === buttons.length - 2) {
-				return this.addResources(target, droppedResources.map(res => res.resource), progress, token);
+				return this.AddResources(tArget, droppedResources.mAp(res => res.resource), progress, token);
 			}
 
 			return undefined;
 		}
 
-		// Handle dropped files (only support FileStat as target)
-		else if (target instanceof ExplorerItem) {
-			return this.addResources(target, droppedResources.map(res => res.resource), progress, token);
+		// HAndle dropped files (only support FileStAt As tArget)
+		else if (tArget instAnceof ExplorerItem) {
+			return this.AddResources(tArget, droppedResources.mAp(res => res.resource), progress, token);
 		}
 	}
 
-	private async addResources(target: ExplorerItem, resources: URI[], progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
+	privAte Async AddResources(tArget: ExplorerItem, resources: URI[], progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
 		if (resources && resources.length > 0) {
 
-			// Resolve target to check for name collisions and ask user
-			const targetStat = await this.fileService.resolve(target.resource);
+			// Resolve tArget to check for nAme collisions And Ask user
+			const tArgetStAt = AwAit this.fileService.resolve(tArget.resource);
 
-			if (token.isCancellationRequested) {
+			if (token.isCAncellAtionRequested) {
 				return;
 			}
 
-			// Check for name collisions
-			const targetNames = new Set<string>();
-			const caseSensitive = this.fileService.hasCapability(target.resource, FileSystemProviderCapabilities.PathCaseSensitive);
-			if (targetStat.children) {
-				targetStat.children.forEach(child => {
-					targetNames.add(caseSensitive ? child.name : child.name.toLowerCase());
+			// Check for nAme collisions
+			const tArgetNAmes = new Set<string>();
+			const cAseSensitive = this.fileService.hAsCApAbility(tArget.resource, FileSystemProviderCApAbilities.PAthCAseSensitive);
+			if (tArgetStAt.children) {
+				tArgetStAt.children.forEAch(child => {
+					tArgetNAmes.Add(cAseSensitive ? child.nAme : child.nAme.toLowerCAse());
 				});
 			}
 
-			// Run add in sequence
-			const addPromisesFactory: ITask<Promise<void>>[] = [];
-			await Promise.all(resources.map(async resource => {
-				if (targetNames.has(caseSensitive ? basename(resource) : basename(resource).toLowerCase())) {
-					const confirmationResult = await this.dialogService.confirm(getFileOverwriteConfirm(basename(resource)));
-					if (!confirmationResult.confirmed) {
+			// Run Add in sequence
+			const AddPromisesFActory: ITAsk<Promise<void>>[] = [];
+			AwAit Promise.All(resources.mAp(Async resource => {
+				if (tArgetNAmes.hAs(cAseSensitive ? bAsenAme(resource) : bAsenAme(resource).toLowerCAse())) {
+					const confirmAtionResult = AwAit this.diAlogService.confirm(getFileOverwriteConfirm(bAsenAme(resource)));
+					if (!confirmAtionResult.confirmed) {
 						return;
 					}
 				}
 
-				addPromisesFactory.push(async () => {
-					if (token.isCancellationRequested) {
+				AddPromisesFActory.push(Async () => {
+					if (token.isCAncellAtionRequested) {
 						return;
 					}
 
 					const sourceFile = resource;
-					const sourceFileName = basename(sourceFile);
-					const targetFile = joinPath(target.resource, sourceFileName);
+					const sourceFileNAme = bAsenAme(sourceFile);
+					const tArgetFile = joinPAth(tArget.resource, sourceFileNAme);
 
-					progress.report({ message: sourceFileName });
+					progress.report({ messAge: sourceFileNAme });
 
-					const stat = (await this.workingCopyFileService.copy([{ source: sourceFile, target: targetFile }], { overwrite: true }))[0];
-					// if we only add one file, just open it directly
-					if (resources.length === 1 && !stat.isDirectory) {
-						this.editorService.openEditor({ resource: stat.resource, options: { pinned: true } });
+					const stAt = (AwAit this.workingCopyFileService.copy([{ source: sourceFile, tArget: tArgetFile }], { overwrite: true }))[0];
+					// if we only Add one file, just open it directly
+					if (resources.length === 1 && !stAt.isDirectory) {
+						this.editorService.openEditor({ resource: stAt.resource, options: { pinned: true } });
 					}
 				});
 			}));
 
-			await sequence(addPromisesFactory);
+			AwAit sequence(AddPromisesFActory);
 		}
 	}
 
-	private async handleExplorerDrop(data: ElementsDragAndDropData<ExplorerItem, ExplorerItem[]>, target: ExplorerItem, originalEvent: DragEvent): Promise<void> {
-		const elementsData = FileDragAndDrop.getStatsFromDragAndDropData(data);
-		const items = distinctParents(elementsData, s => s.resource);
-		const isCopy = (originalEvent.ctrlKey && !isMacintosh) || (originalEvent.altKey && isMacintosh);
+	privAte Async hAndleExplorerDrop(dAtA: ElementsDrAgAndDropDAtA<ExplorerItem, ExplorerItem[]>, tArget: ExplorerItem, originAlEvent: DrAgEvent): Promise<void> {
+		const elementsDAtA = FileDrAgAndDrop.getStAtsFromDrAgAndDropDAtA(dAtA);
+		const items = distinctPArents(elementsDAtA, s => s.resource);
+		const isCopy = (originAlEvent.ctrlKey && !isMAcintosh) || (originAlEvent.AltKey && isMAcintosh);
 
-		// Handle confirm setting
-		const confirmDragAndDrop = !isCopy && this.configurationService.getValue<boolean>(FileDragAndDrop.CONFIRM_DND_SETTING_KEY);
-		if (confirmDragAndDrop) {
-			const message = items.length > 1 && items.every(s => s.isRoot) ? localize('confirmRootsMove', "Are you sure you want to change the order of multiple root folders in your workspace?")
-				: items.length > 1 ? localize('confirmMultiMove', "Are you sure you want to move the following {0} files into '{1}'?", items.length, target.name)
-					: items[0].isRoot ? localize('confirmRootMove', "Are you sure you want to change the order of root folder '{0}' in your workspace?", items[0].name)
-						: localize('confirmMove', "Are you sure you want to move '{0}' into '{1}'?", items[0].name, target.name);
-			const detail = items.length > 1 && !items.every(s => s.isRoot) ? getFileNamesMessage(items.map(i => i.resource)) : undefined;
+		// HAndle confirm setting
+		const confirmDrAgAndDrop = !isCopy && this.configurAtionService.getVAlue<booleAn>(FileDrAgAndDrop.CONFIRM_DND_SETTING_KEY);
+		if (confirmDrAgAndDrop) {
+			const messAge = items.length > 1 && items.every(s => s.isRoot) ? locAlize('confirmRootsMove', "Are you sure you wAnt to chAnge the order of multiple root folders in your workspAce?")
+				: items.length > 1 ? locAlize('confirmMultiMove', "Are you sure you wAnt to move the following {0} files into '{1}'?", items.length, tArget.nAme)
+					: items[0].isRoot ? locAlize('confirmRootMove', "Are you sure you wAnt to chAnge the order of root folder '{0}' in your workspAce?", items[0].nAme)
+						: locAlize('confirmMove', "Are you sure you wAnt to move '{0}' into '{1}'?", items[0].nAme, tArget.nAme);
+			const detAil = items.length > 1 && !items.every(s => s.isRoot) ? getFileNAmesMessAge(items.mAp(i => i.resource)) : undefined;
 
-			const confirmation = await this.dialogService.confirm({
-				message,
-				detail,
+			const confirmAtion = AwAit this.diAlogService.confirm({
+				messAge,
+				detAil,
 				checkbox: {
-					label: localize('doNotAskAgain', "Do not ask me again")
+					lAbel: locAlize('doNotAskAgAin', "Do not Ask me AgAin")
 				},
 				type: 'question',
-				primaryButton: localize({ key: 'moveButtonLabel', comment: ['&& denotes a mnemonic'] }, "&&Move")
+				primAryButton: locAlize({ key: 'moveButtonLAbel', comment: ['&& denotes A mnemonic'] }, "&&Move")
 			});
 
-			if (!confirmation.confirmed) {
+			if (!confirmAtion.confirmed) {
 				return;
 			}
 
-			// Check for confirmation checkbox
-			if (confirmation.checkboxChecked === true) {
-				await this.configurationService.updateValue(FileDragAndDrop.CONFIRM_DND_SETTING_KEY, false, ConfigurationTarget.USER);
+			// Check for confirmAtion checkbox
+			if (confirmAtion.checkboxChecked === true) {
+				AwAit this.configurAtionService.updAteVAlue(FileDrAgAndDrop.CONFIRM_DND_SETTING_KEY, fAlse, ConfigurAtionTArget.USER);
 			}
 		}
 
-		await this.doHandleRootDrop(items.filter(s => s.isRoot), target);
+		AwAit this.doHAndleRootDrop(items.filter(s => s.isRoot), tArget);
 
 		const sources = items.filter(s => !s.isRoot);
 		if (isCopy) {
-			await this.doHandleExplorerDropOnCopy(sources, target);
+			AwAit this.doHAndleExplorerDropOnCopy(sources, tArget);
 		} else {
-			return this.doHandleExplorerDropOnMove(sources, target);
+			return this.doHAndleExplorerDropOnMove(sources, tArget);
 		}
 	}
 
-	private doHandleRootDrop(roots: ExplorerItem[], target: ExplorerItem): Promise<void> {
+	privAte doHAndleRootDrop(roots: ExplorerItem[], tArget: ExplorerItem): Promise<void> {
 		if (roots.length === 0) {
 			return Promise.resolve(undefined);
 		}
 
-		const folders = this.contextService.getWorkspace().folders;
-		let targetIndex: number | undefined;
-		const workspaceCreationData: IWorkspaceFolderCreationData[] = [];
-		const rootsToMove: IWorkspaceFolderCreationData[] = [];
+		const folders = this.contextService.getWorkspAce().folders;
+		let tArgetIndex: number | undefined;
+		const workspAceCreAtionDAtA: IWorkspAceFolderCreAtionDAtA[] = [];
+		const rootsToMove: IWorkspAceFolderCreAtionDAtA[] = [];
 
 		for (let index = 0; index < folders.length; index++) {
-			const data = {
+			const dAtA = {
 				uri: folders[index].uri,
-				name: folders[index].name
+				nAme: folders[index].nAme
 			};
-			if (target instanceof ExplorerItem && folders[index].uri.toString() === target.resource.toString()) {
-				targetIndex = index;
+			if (tArget instAnceof ExplorerItem && folders[index].uri.toString() === tArget.resource.toString()) {
+				tArgetIndex = index;
 			}
 
 			if (roots.every(r => r.resource.toString() !== folders[index].uri.toString())) {
-				workspaceCreationData.push(data);
+				workspAceCreAtionDAtA.push(dAtA);
 			} else {
-				rootsToMove.push(data);
+				rootsToMove.push(dAtA);
 			}
 		}
-		if (targetIndex === undefined) {
-			targetIndex = workspaceCreationData.length;
+		if (tArgetIndex === undefined) {
+			tArgetIndex = workspAceCreAtionDAtA.length;
 		}
 
-		workspaceCreationData.splice(targetIndex, 0, ...rootsToMove);
-		return this.workspaceEditingService.updateFolders(0, workspaceCreationData.length, workspaceCreationData);
+		workspAceCreAtionDAtA.splice(tArgetIndex, 0, ...rootsToMove);
+		return this.workspAceEditingService.updAteFolders(0, workspAceCreAtionDAtA.length, workspAceCreAtionDAtA);
 	}
 
-	private async doHandleExplorerDropOnCopy(sources: ExplorerItem[], target: ExplorerItem): Promise<void> {
-		// Reuse duplicate action when user copies
-		const incrementalNaming = this.configurationService.getValue<IFilesConfiguration>().explorer.incrementalNaming;
-		const sourceTargetPairs = sources.map(({ resource, isDirectory }) => ({ source: resource, target: findValidPasteFileTarget(this.explorerService, target, { resource, isDirectory, allowOverwrite: false }, incrementalNaming) }));
-		const stats = await this.workingCopyFileService.copy(sourceTargetPairs);
-		const editors = stats.filter(stat => !stat.isDirectory).map(({ resource }) => ({ resource, options: { pinned: true } }));
+	privAte Async doHAndleExplorerDropOnCopy(sources: ExplorerItem[], tArget: ExplorerItem): Promise<void> {
+		// Reuse duplicAte Action when user copies
+		const incrementAlNAming = this.configurAtionService.getVAlue<IFilesConfigurAtion>().explorer.incrementAlNAming;
+		const sourceTArgetPAirs = sources.mAp(({ resource, isDirectory }) => ({ source: resource, tArget: findVAlidPAsteFileTArget(this.explorerService, tArget, { resource, isDirectory, AllowOverwrite: fAlse }, incrementAlNAming) }));
+		const stAts = AwAit this.workingCopyFileService.copy(sourceTArgetPAirs);
+		const editors = stAts.filter(stAt => !stAt.isDirectory).mAp(({ resource }) => ({ resource, options: { pinned: true } }));
 
-		await this.editorService.openEditors(editors);
+		AwAit this.editorService.openEditors(editors);
 	}
 
-	private async doHandleExplorerDropOnMove(sources: ExplorerItem[], target: ExplorerItem): Promise<void> {
+	privAte Async doHAndleExplorerDropOnMove(sources: ExplorerItem[], tArget: ExplorerItem): Promise<void> {
 
-		// Do not allow moving readonly items
-		const sourceTargetPairs = sources.filter(source => !source.isReadonly).map(source => ({ source: source.resource, target: joinPath(target.resource, source.name) }));
+		// Do not Allow moving reAdonly items
+		const sourceTArgetPAirs = sources.filter(source => !source.isReAdonly).mAp(source => ({ source: source.resource, tArget: joinPAth(tArget.resource, source.nAme) }));
 
 		try {
-			await this.workingCopyFileService.move(sourceTargetPairs);
-		} catch (error) {
+			AwAit this.workingCopyFileService.move(sourceTArgetPAirs);
+		} cAtch (error) {
 			// Conflict
-			if ((<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_MOVE_CONFLICT) {
+			if ((<FileOperAtionError>error).fileOperAtionResult === FileOperAtionResult.FILE_MOVE_CONFLICT) {
 
 				const overwrites: URI[] = [];
-				for (const { target } of sourceTargetPairs) {
-					if (await this.fileService.exists(target)) {
-						overwrites.push(target);
+				for (const { tArget } of sourceTArgetPAirs) {
+					if (AwAit this.fileService.exists(tArget)) {
+						overwrites.push(tArget);
 					}
 				}
 
 				const confirm = getMultipleFilesOverwriteConfirm(overwrites);
 				// Move with overwrite if the user confirms
-				const { confirmed } = await this.dialogService.confirm(confirm);
+				const { confirmed } = AwAit this.diAlogService.confirm(confirm);
 				if (confirmed) {
 					try {
-						await this.workingCopyFileService.move(sourceTargetPairs, { overwrite: true });
-					} catch (error) {
-						this.notificationService.error(error);
+						AwAit this.workingCopyFileService.move(sourceTArgetPAirs, { overwrite: true });
+					} cAtch (error) {
+						this.notificAtionService.error(error);
 					}
 				}
 			}
 			// Any other error
 			else {
-				this.notificationService.error(error);
+				this.notificAtionService.error(error);
 			}
 		}
 	}
 
-	private static getStatsFromDragAndDropData(data: ElementsDragAndDropData<ExplorerItem, ExplorerItem[]>, dragStartEvent?: DragEvent): ExplorerItem[] {
-		if (data.context) {
-			return data.context;
+	privAte stAtic getStAtsFromDrAgAndDropDAtA(dAtA: ElementsDrAgAndDropDAtA<ExplorerItem, ExplorerItem[]>, drAgStArtEvent?: DrAgEvent): ExplorerItem[] {
+		if (dAtA.context) {
+			return dAtA.context;
 		}
 
-		// Detect compressed folder dragging
-		if (dragStartEvent && data.elements.length === 1) {
-			data.context = [FileDragAndDrop.getCompressedStatFromDragEvent(data.elements[0], dragStartEvent)];
-			return data.context;
+		// Detect compressed folder drAgging
+		if (drAgStArtEvent && dAtA.elements.length === 1) {
+			dAtA.context = [FileDrAgAndDrop.getCompressedStAtFromDrAgEvent(dAtA.elements[0], drAgStArtEvent)];
+			return dAtA.context;
 		}
 
-		return data.elements;
+		return dAtA.elements;
 	}
 
-	private static getCompressedStatFromDragEvent(stat: ExplorerItem, dragEvent: DragEvent): ExplorerItem {
-		const target = document.elementFromPoint(dragEvent.clientX, dragEvent.clientY);
-		const iconLabelName = getIconLabelNameFromHTMLElement(target);
+	privAte stAtic getCompressedStAtFromDrAgEvent(stAt: ExplorerItem, drAgEvent: DrAgEvent): ExplorerItem {
+		const tArget = document.elementFromPoint(drAgEvent.clientX, drAgEvent.clientY);
+		const iconLAbelNAme = getIconLAbelNAmeFromHTMLElement(tArget);
 
-		if (iconLabelName) {
-			const { count, index } = iconLabelName;
+		if (iconLAbelNAme) {
+			const { count, index } = iconLAbelNAme;
 
 			let i = count - 1;
-			while (i > index && stat.parent) {
-				stat = stat.parent;
+			while (i > index && stAt.pArent) {
+				stAt = stAt.pArent;
 				i--;
 			}
 
-			return stat;
+			return stAt;
 		}
 
-		return stat;
+		return stAt;
 	}
 
-	onDragEnd(): void {
-		this.compressedDropTargetDisposable.dispose();
+	onDrAgEnd(): void {
+		this.compressedDropTArgetDisposAble.dispose();
 	}
 }
 
-function getIconLabelNameFromHTMLElement(target: HTMLElement | EventTarget | Element | null): { element: HTMLElement, count: number, index: number } | null {
-	if (!(target instanceof HTMLElement)) {
+function getIconLAbelNAmeFromHTMLElement(tArget: HTMLElement | EventTArget | Element | null): { element: HTMLElement, count: number, index: number } | null {
+	if (!(tArget instAnceof HTMLElement)) {
 		return null;
 	}
 
-	let element: HTMLElement | null = target;
+	let element: HTMLElement | null = tArget;
 
-	while (element && !element.classList.contains('monaco-list-row')) {
-		if (element.classList.contains('label-name') && element.hasAttribute('data-icon-label-count')) {
-			const count = Number(element.getAttribute('data-icon-label-count'));
-			const index = Number(element.getAttribute('data-icon-label-index'));
+	while (element && !element.clAssList.contAins('monAco-list-row')) {
+		if (element.clAssList.contAins('lAbel-nAme') && element.hAsAttribute('dAtA-icon-lAbel-count')) {
+			const count = Number(element.getAttribute('dAtA-icon-lAbel-count'));
+			const index = Number(element.getAttribute('dAtA-icon-lAbel-index'));
 
 			if (isNumber(count) && isNumber(index)) {
 				return { element: element, count, index };
 			}
 		}
 
-		element = element.parentElement;
+		element = element.pArentElement;
 	}
 
 	return null;
 }
 
-export function isCompressedFolderName(target: HTMLElement | EventTarget | Element | null): boolean {
-	return !!getIconLabelNameFromHTMLElement(target);
+export function isCompressedFolderNAme(tArget: HTMLElement | EventTArget | Element | null): booleAn {
+	return !!getIconLAbelNAmeFromHTMLElement(tArget);
 }
 
-export class ExplorerCompressionDelegate implements ITreeCompressionDelegate<ExplorerItem> {
+export clAss ExplorerCompressionDelegAte implements ITreeCompressionDelegAte<ExplorerItem> {
 
-	isIncompressible(stat: ExplorerItem): boolean {
-		return stat.isRoot || !stat.isDirectory || stat instanceof NewExplorerItem || (!stat.parent || stat.parent.isRoot);
+	isIncompressible(stAt: ExplorerItem): booleAn {
+		return stAt.isRoot || !stAt.isDirectory || stAt instAnceof NewExplorerItem || (!stAt.pArent || stAt.pArent.isRoot);
 	}
 }

@@ -1,141 +1,141 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { ParseError, parse, getNodeType } from 'vs/base/common/json';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import * as types from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { LanguageIdentifier } from 'vs/editor/common/modes';
-import { CharacterPair, CommentRule, FoldingRules, IAutoClosingPair, IAutoClosingPairConditional, IndentationRule, LanguageConfiguration } from 'vs/editor/common/modes/languageConfiguration';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
+import * As nls from 'vs/nls';
+import { PArseError, pArse, getNodeType } from 'vs/bAse/common/json';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import * As types from 'vs/bAse/common/types';
+import { URI } from 'vs/bAse/common/uri';
+import { LAnguAgeIdentifier } from 'vs/editor/common/modes';
+import { ChArActerPAir, CommentRule, FoldingRules, IAutoClosingPAir, IAutoClosingPAirConditionAl, IndentAtionRule, LAnguAgeConfigurAtion } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { Extensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { Registry } from 'vs/platform/registry/common/platform';
+import { Extensions, IJSONContributionRegistry } from 'vs/plAtform/jsonschemAs/common/jsonContributionRegistry';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ITextMateService } from 'vs/workbench/services/textMate/common/textMateService';
-import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { ITextMAteService } from 'vs/workbench/services/textMAte/common/textMAteService';
+import { getPArseErrorMessAge } from 'vs/bAse/common/jsonErrorMessAges';
+import { IExtensionResourceLoAderService } from 'vs/workbench/services/extensionResourceLoAder/common/extensionResourceLoAder';
 
-interface IRegExp {
-	pattern: string;
-	flags?: string;
+interfAce IRegExp {
+	pAttern: string;
+	flAgs?: string;
 }
 
-interface IIndentationRules {
-	decreaseIndentPattern: string | IRegExp;
-	increaseIndentPattern: string | IRegExp;
-	indentNextLinePattern?: string | IRegExp;
-	unIndentedLinePattern?: string | IRegExp;
+interfAce IIndentAtionRules {
+	decreAseIndentPAttern: string | IRegExp;
+	increAseIndentPAttern: string | IRegExp;
+	indentNextLinePAttern?: string | IRegExp;
+	unIndentedLinePAttern?: string | IRegExp;
 }
 
-interface ILanguageConfiguration {
+interfAce ILAnguAgeConfigurAtion {
 	comments?: CommentRule;
-	brackets?: CharacterPair[];
-	autoClosingPairs?: Array<CharacterPair | IAutoClosingPairConditional>;
-	surroundingPairs?: Array<CharacterPair | IAutoClosingPair>;
-	wordPattern?: string | IRegExp;
-	indentationRules?: IIndentationRules;
+	brAckets?: ChArActerPAir[];
+	AutoClosingPAirs?: ArrAy<ChArActerPAir | IAutoClosingPAirConditionAl>;
+	surroundingPAirs?: ArrAy<ChArActerPAir | IAutoClosingPAir>;
+	wordPAttern?: string | IRegExp;
+	indentAtionRules?: IIndentAtionRules;
 	folding?: FoldingRules;
-	autoCloseBefore?: string;
+	AutoCloseBefore?: string;
 }
 
 function isStringArr(something: string[] | null): something is string[] {
-	if (!Array.isArray(something)) {
-		return false;
+	if (!ArrAy.isArrAy(something)) {
+		return fAlse;
 	}
 	for (let i = 0, len = something.length; i < len; i++) {
 		if (typeof something[i] !== 'string') {
-			return false;
+			return fAlse;
 		}
 	}
 	return true;
 
 }
 
-function isCharacterPair(something: CharacterPair | null): boolean {
+function isChArActerPAir(something: ChArActerPAir | null): booleAn {
 	return (
 		isStringArr(something)
 		&& something.length === 2
 	);
 }
 
-export class LanguageConfigurationFileHandler {
+export clAss LAnguAgeConfigurAtionFileHAndler {
 
-	private _done: boolean[];
+	privAte _done: booleAn[];
 
 	constructor(
-		@ITextMateService textMateService: ITextMateService,
-		@IModeService private readonly _modeService: IModeService,
-		@IExtensionResourceLoaderService private readonly _extensionResourceLoaderService: IExtensionResourceLoaderService,
-		@IExtensionService private readonly _extensionService: IExtensionService
+		@ITextMAteService textMAteService: ITextMAteService,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@IExtensionResourceLoAderService privAte reAdonly _extensionResourceLoAderService: IExtensionResourceLoAderService,
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService
 	) {
 		this._done = [];
 
-		// Listen for hints that a language configuration is needed/usefull and then load it once
-		this._modeService.onDidCreateMode((mode) => {
-			const languageIdentifier = mode.getLanguageIdentifier();
-			// Modes can be instantiated before the extension points have finished registering
-			this._extensionService.whenInstalledExtensionsRegistered().then(() => {
-				this._loadConfigurationsForMode(languageIdentifier);
+		// Listen for hints thAt A lAnguAge configurAtion is needed/usefull And then loAd it once
+		this._modeService.onDidCreAteMode((mode) => {
+			const lAnguAgeIdentifier = mode.getLAnguAgeIdentifier();
+			// Modes cAn be instAntiAted before the extension points hAve finished registering
+			this._extensionService.whenInstAlledExtensionsRegistered().then(() => {
+				this._loAdConfigurAtionsForMode(lAnguAgeIdentifier);
 			});
 		});
-		textMateService.onDidEncounterLanguage((languageId) => {
-			this._loadConfigurationsForMode(this._modeService.getLanguageIdentifier(languageId)!);
+		textMAteService.onDidEncounterLAnguAge((lAnguAgeId) => {
+			this._loAdConfigurAtionsForMode(this._modeService.getLAnguAgeIdentifier(lAnguAgeId)!);
 		});
 	}
 
-	private _loadConfigurationsForMode(languageIdentifier: LanguageIdentifier): void {
-		if (this._done[languageIdentifier.id]) {
+	privAte _loAdConfigurAtionsForMode(lAnguAgeIdentifier: LAnguAgeIdentifier): void {
+		if (this._done[lAnguAgeIdentifier.id]) {
 			return;
 		}
-		this._done[languageIdentifier.id] = true;
+		this._done[lAnguAgeIdentifier.id] = true;
 
-		let configurationFiles = this._modeService.getConfigurationFiles(languageIdentifier.language);
-		configurationFiles.forEach((configFileLocation) => this._handleConfigFile(languageIdentifier, configFileLocation));
+		let configurAtionFiles = this._modeService.getConfigurAtionFiles(lAnguAgeIdentifier.lAnguAge);
+		configurAtionFiles.forEAch((configFileLocAtion) => this._hAndleConfigFile(lAnguAgeIdentifier, configFileLocAtion));
 	}
 
-	private _handleConfigFile(languageIdentifier: LanguageIdentifier, configFileLocation: URI): void {
-		this._extensionResourceLoaderService.readExtensionResource(configFileLocation).then((contents) => {
-			const errors: ParseError[] = [];
-			let configuration = <ILanguageConfiguration>parse(contents, errors);
+	privAte _hAndleConfigFile(lAnguAgeIdentifier: LAnguAgeIdentifier, configFileLocAtion: URI): void {
+		this._extensionResourceLoAderService.reAdExtensionResource(configFileLocAtion).then((contents) => {
+			const errors: PArseError[] = [];
+			let configurAtion = <ILAnguAgeConfigurAtion>pArse(contents, errors);
 			if (errors.length) {
-				console.error(nls.localize('parseErrors', "Errors parsing {0}: {1}", configFileLocation.toString(), errors.map(e => (`[${e.offset}, ${e.length}] ${getParseErrorMessage(e.error)}`)).join('\n')));
+				console.error(nls.locAlize('pArseErrors', "Errors pArsing {0}: {1}", configFileLocAtion.toString(), errors.mAp(e => (`[${e.offset}, ${e.length}] ${getPArseErrorMessAge(e.error)}`)).join('\n')));
 			}
-			if (getNodeType(configuration) !== 'object') {
-				console.error(nls.localize('formatError', "{0}: Invalid format, JSON object expected.", configFileLocation.toString()));
-				configuration = {};
+			if (getNodeType(configurAtion) !== 'object') {
+				console.error(nls.locAlize('formAtError', "{0}: InvAlid formAt, JSON object expected.", configFileLocAtion.toString()));
+				configurAtion = {};
 			}
-			this._handleConfig(languageIdentifier, configuration);
+			this._hAndleConfig(lAnguAgeIdentifier, configurAtion);
 		}, (err) => {
 			console.error(err);
 		});
 	}
 
-	private _extractValidCommentRule(languageIdentifier: LanguageIdentifier, configuration: ILanguageConfiguration): CommentRule | null {
-		const source = configuration.comments;
+	privAte _extrActVAlidCommentRule(lAnguAgeIdentifier: LAnguAgeIdentifier, configurAtion: ILAnguAgeConfigurAtion): CommentRule | null {
+		const source = configurAtion.comments;
 		if (typeof source === 'undefined') {
 			return null;
 		}
 		if (!types.isObject(source)) {
-			console.warn(`[${languageIdentifier.language}]: language configuration: expected \`comments\` to be an object.`);
+			console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`comments\` to be An object.`);
 			return null;
 		}
 
 		let result: CommentRule | null = null;
 		if (typeof source.lineComment !== 'undefined') {
 			if (typeof source.lineComment !== 'string') {
-				console.warn(`[${languageIdentifier.language}]: language configuration: expected \`comments.lineComment\` to be a string.`);
+				console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`comments.lineComment\` to be A string.`);
 			} else {
 				result = result || {};
 				result.lineComment = source.lineComment;
 			}
 		}
 		if (typeof source.blockComment !== 'undefined') {
-			if (!isCharacterPair(source.blockComment)) {
-				console.warn(`[${languageIdentifier.language}]: language configuration: expected \`comments.blockComment\` to be an array of two strings.`);
+			if (!isChArActerPAir(source.blockComment)) {
+				console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`comments.blockComment\` to be An ArrAy of two strings.`);
 			} else {
 				result = result || {};
 				result.blockComment = source.blockComment;
@@ -144,306 +144,306 @@ export class LanguageConfigurationFileHandler {
 		return result;
 	}
 
-	private _extractValidBrackets(languageIdentifier: LanguageIdentifier, configuration: ILanguageConfiguration): CharacterPair[] | null {
-		const source = configuration.brackets;
+	privAte _extrActVAlidBrAckets(lAnguAgeIdentifier: LAnguAgeIdentifier, configurAtion: ILAnguAgeConfigurAtion): ChArActerPAir[] | null {
+		const source = configurAtion.brAckets;
 		if (typeof source === 'undefined') {
 			return null;
 		}
-		if (!Array.isArray(source)) {
-			console.warn(`[${languageIdentifier.language}]: language configuration: expected \`brackets\` to be an array.`);
+		if (!ArrAy.isArrAy(source)) {
+			console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`brAckets\` to be An ArrAy.`);
 			return null;
 		}
 
-		let result: CharacterPair[] | null = null;
+		let result: ChArActerPAir[] | null = null;
 		for (let i = 0, len = source.length; i < len; i++) {
-			const pair = source[i];
-			if (!isCharacterPair(pair)) {
-				console.warn(`[${languageIdentifier.language}]: language configuration: expected \`brackets[${i}]\` to be an array of two strings.`);
+			const pAir = source[i];
+			if (!isChArActerPAir(pAir)) {
+				console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`brAckets[${i}]\` to be An ArrAy of two strings.`);
 				continue;
 			}
 
 			result = result || [];
-			result.push(pair);
+			result.push(pAir);
 		}
 		return result;
 	}
 
-	private _extractValidAutoClosingPairs(languageIdentifier: LanguageIdentifier, configuration: ILanguageConfiguration): IAutoClosingPairConditional[] | null {
-		const source = configuration.autoClosingPairs;
+	privAte _extrActVAlidAutoClosingPAirs(lAnguAgeIdentifier: LAnguAgeIdentifier, configurAtion: ILAnguAgeConfigurAtion): IAutoClosingPAirConditionAl[] | null {
+		const source = configurAtion.AutoClosingPAirs;
 		if (typeof source === 'undefined') {
 			return null;
 		}
-		if (!Array.isArray(source)) {
-			console.warn(`[${languageIdentifier.language}]: language configuration: expected \`autoClosingPairs\` to be an array.`);
+		if (!ArrAy.isArrAy(source)) {
+			console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`AutoClosingPAirs\` to be An ArrAy.`);
 			return null;
 		}
 
-		let result: IAutoClosingPairConditional[] | null = null;
+		let result: IAutoClosingPAirConditionAl[] | null = null;
 		for (let i = 0, len = source.length; i < len; i++) {
-			const pair = source[i];
-			if (Array.isArray(pair)) {
-				if (!isCharacterPair(pair)) {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`autoClosingPairs[${i}]\` to be an array of two strings or an object.`);
+			const pAir = source[i];
+			if (ArrAy.isArrAy(pAir)) {
+				if (!isChArActerPAir(pAir)) {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`AutoClosingPAirs[${i}]\` to be An ArrAy of two strings or An object.`);
 					continue;
 				}
 				result = result || [];
-				result.push({ open: pair[0], close: pair[1] });
+				result.push({ open: pAir[0], close: pAir[1] });
 			} else {
-				if (!types.isObject(pair)) {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`autoClosingPairs[${i}]\` to be an array of two strings or an object.`);
+				if (!types.isObject(pAir)) {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`AutoClosingPAirs[${i}]\` to be An ArrAy of two strings or An object.`);
 					continue;
 				}
-				if (typeof pair.open !== 'string') {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`autoClosingPairs[${i}].open\` to be a string.`);
+				if (typeof pAir.open !== 'string') {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`AutoClosingPAirs[${i}].open\` to be A string.`);
 					continue;
 				}
-				if (typeof pair.close !== 'string') {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`autoClosingPairs[${i}].close\` to be a string.`);
+				if (typeof pAir.close !== 'string') {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`AutoClosingPAirs[${i}].close\` to be A string.`);
 					continue;
 				}
-				if (typeof pair.notIn !== 'undefined') {
-					if (!isStringArr(pair.notIn)) {
-						console.warn(`[${languageIdentifier.language}]: language configuration: expected \`autoClosingPairs[${i}].notIn\` to be a string array.`);
+				if (typeof pAir.notIn !== 'undefined') {
+					if (!isStringArr(pAir.notIn)) {
+						console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`AutoClosingPAirs[${i}].notIn\` to be A string ArrAy.`);
 						continue;
 					}
 				}
 				result = result || [];
-				result.push({ open: pair.open, close: pair.close, notIn: pair.notIn });
+				result.push({ open: pAir.open, close: pAir.close, notIn: pAir.notIn });
 			}
 		}
 		return result;
 	}
 
-	private _extractValidSurroundingPairs(languageIdentifier: LanguageIdentifier, configuration: ILanguageConfiguration): IAutoClosingPair[] | null {
-		const source = configuration.surroundingPairs;
+	privAte _extrActVAlidSurroundingPAirs(lAnguAgeIdentifier: LAnguAgeIdentifier, configurAtion: ILAnguAgeConfigurAtion): IAutoClosingPAir[] | null {
+		const source = configurAtion.surroundingPAirs;
 		if (typeof source === 'undefined') {
 			return null;
 		}
-		if (!Array.isArray(source)) {
-			console.warn(`[${languageIdentifier.language}]: language configuration: expected \`surroundingPairs\` to be an array.`);
+		if (!ArrAy.isArrAy(source)) {
+			console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`surroundingPAirs\` to be An ArrAy.`);
 			return null;
 		}
 
-		let result: IAutoClosingPair[] | null = null;
+		let result: IAutoClosingPAir[] | null = null;
 		for (let i = 0, len = source.length; i < len; i++) {
-			const pair = source[i];
-			if (Array.isArray(pair)) {
-				if (!isCharacterPair(pair)) {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`surroundingPairs[${i}]\` to be an array of two strings or an object.`);
+			const pAir = source[i];
+			if (ArrAy.isArrAy(pAir)) {
+				if (!isChArActerPAir(pAir)) {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`surroundingPAirs[${i}]\` to be An ArrAy of two strings or An object.`);
 					continue;
 				}
 				result = result || [];
-				result.push({ open: pair[0], close: pair[1] });
+				result.push({ open: pAir[0], close: pAir[1] });
 			} else {
-				if (!types.isObject(pair)) {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`surroundingPairs[${i}]\` to be an array of two strings or an object.`);
+				if (!types.isObject(pAir)) {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`surroundingPAirs[${i}]\` to be An ArrAy of two strings or An object.`);
 					continue;
 				}
-				if (typeof pair.open !== 'string') {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`surroundingPairs[${i}].open\` to be a string.`);
+				if (typeof pAir.open !== 'string') {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`surroundingPAirs[${i}].open\` to be A string.`);
 					continue;
 				}
-				if (typeof pair.close !== 'string') {
-					console.warn(`[${languageIdentifier.language}]: language configuration: expected \`surroundingPairs[${i}].close\` to be a string.`);
+				if (typeof pAir.close !== 'string') {
+					console.wArn(`[${lAnguAgeIdentifier.lAnguAge}]: lAnguAge configurAtion: expected \`surroundingPAirs[${i}].close\` to be A string.`);
 					continue;
 				}
 				result = result || [];
-				result.push({ open: pair.open, close: pair.close });
+				result.push({ open: pAir.open, close: pAir.close });
 			}
 		}
 		return result;
 	}
 
-	// private _mapCharacterPairs(pairs: Array<CharacterPair | IAutoClosingPairConditional>): IAutoClosingPairConditional[] {
-	// 	return pairs.map(pair => {
-	// 		if (Array.isArray(pair)) {
-	// 			return { open: pair[0], close: pair[1] };
+	// privAte _mApChArActerPAirs(pAirs: ArrAy<ChArActerPAir | IAutoClosingPAirConditionAl>): IAutoClosingPAirConditionAl[] {
+	// 	return pAirs.mAp(pAir => {
+	// 		if (ArrAy.isArrAy(pAir)) {
+	// 			return { open: pAir[0], close: pAir[1] };
 	// 		}
-	// 		return <IAutoClosingPairConditional>pair;
+	// 		return <IAutoClosingPAirConditionAl>pAir;
 	// 	});
 	// }
 
-	private _handleConfig(languageIdentifier: LanguageIdentifier, configuration: ILanguageConfiguration): void {
+	privAte _hAndleConfig(lAnguAgeIdentifier: LAnguAgeIdentifier, configurAtion: ILAnguAgeConfigurAtion): void {
 
-		let richEditConfig: LanguageConfiguration = {};
+		let richEditConfig: LAnguAgeConfigurAtion = {};
 
-		const comments = this._extractValidCommentRule(languageIdentifier, configuration);
+		const comments = this._extrActVAlidCommentRule(lAnguAgeIdentifier, configurAtion);
 		if (comments) {
 			richEditConfig.comments = comments;
 		}
 
-		const brackets = this._extractValidBrackets(languageIdentifier, configuration);
-		if (brackets) {
-			richEditConfig.brackets = brackets;
+		const brAckets = this._extrActVAlidBrAckets(lAnguAgeIdentifier, configurAtion);
+		if (brAckets) {
+			richEditConfig.brAckets = brAckets;
 		}
 
-		const autoClosingPairs = this._extractValidAutoClosingPairs(languageIdentifier, configuration);
-		if (autoClosingPairs) {
-			richEditConfig.autoClosingPairs = autoClosingPairs;
+		const AutoClosingPAirs = this._extrActVAlidAutoClosingPAirs(lAnguAgeIdentifier, configurAtion);
+		if (AutoClosingPAirs) {
+			richEditConfig.AutoClosingPAirs = AutoClosingPAirs;
 		}
 
-		const surroundingPairs = this._extractValidSurroundingPairs(languageIdentifier, configuration);
-		if (surroundingPairs) {
-			richEditConfig.surroundingPairs = surroundingPairs;
+		const surroundingPAirs = this._extrActVAlidSurroundingPAirs(lAnguAgeIdentifier, configurAtion);
+		if (surroundingPAirs) {
+			richEditConfig.surroundingPAirs = surroundingPAirs;
 		}
 
-		const autoCloseBefore = configuration.autoCloseBefore;
-		if (typeof autoCloseBefore === 'string') {
-			richEditConfig.autoCloseBefore = autoCloseBefore;
+		const AutoCloseBefore = configurAtion.AutoCloseBefore;
+		if (typeof AutoCloseBefore === 'string') {
+			richEditConfig.AutoCloseBefore = AutoCloseBefore;
 		}
 
-		if (configuration.wordPattern) {
+		if (configurAtion.wordPAttern) {
 			try {
-				let wordPattern = this._parseRegex(configuration.wordPattern);
-				if (wordPattern) {
-					richEditConfig.wordPattern = wordPattern;
+				let wordPAttern = this._pArseRegex(configurAtion.wordPAttern);
+				if (wordPAttern) {
+					richEditConfig.wordPAttern = wordPAttern;
 				}
-			} catch (error) {
-				// Malformed regexes are ignored
+			} cAtch (error) {
+				// MAlformed regexes Are ignored
 			}
 		}
 
-		if (configuration.indentationRules) {
-			let indentationRules = this._mapIndentationRules(configuration.indentationRules);
-			if (indentationRules) {
-				richEditConfig.indentationRules = indentationRules;
+		if (configurAtion.indentAtionRules) {
+			let indentAtionRules = this._mApIndentAtionRules(configurAtion.indentAtionRules);
+			if (indentAtionRules) {
+				richEditConfig.indentAtionRules = indentAtionRules;
 			}
 		}
 
-		if (configuration.folding) {
-			let markers = configuration.folding.markers;
+		if (configurAtion.folding) {
+			let mArkers = configurAtion.folding.mArkers;
 
 			richEditConfig.folding = {
-				offSide: configuration.folding.offSide,
-				markers: markers ? { start: new RegExp(markers.start), end: new RegExp(markers.end) } : undefined
+				offSide: configurAtion.folding.offSide,
+				mArkers: mArkers ? { stArt: new RegExp(mArkers.stArt), end: new RegExp(mArkers.end) } : undefined
 			};
 		}
 
-		LanguageConfigurationRegistry.register(languageIdentifier, richEditConfig);
+		LAnguAgeConfigurAtionRegistry.register(lAnguAgeIdentifier, richEditConfig);
 	}
 
-	private _parseRegex(value: string | IRegExp) {
-		if (typeof value === 'string') {
-			return new RegExp(value, '');
-		} else if (typeof value === 'object') {
-			return new RegExp(value.pattern, value.flags);
+	privAte _pArseRegex(vAlue: string | IRegExp) {
+		if (typeof vAlue === 'string') {
+			return new RegExp(vAlue, '');
+		} else if (typeof vAlue === 'object') {
+			return new RegExp(vAlue.pAttern, vAlue.flAgs);
 		}
 
 		return null;
 	}
 
-	private _mapIndentationRules(indentationRules: IIndentationRules): IndentationRule | null {
+	privAte _mApIndentAtionRules(indentAtionRules: IIndentAtionRules): IndentAtionRule | null {
 		try {
-			let increaseIndentPattern = this._parseRegex(indentationRules.increaseIndentPattern);
-			let decreaseIndentPattern = this._parseRegex(indentationRules.decreaseIndentPattern);
+			let increAseIndentPAttern = this._pArseRegex(indentAtionRules.increAseIndentPAttern);
+			let decreAseIndentPAttern = this._pArseRegex(indentAtionRules.decreAseIndentPAttern);
 
-			if (increaseIndentPattern && decreaseIndentPattern) {
-				let result: IndentationRule = {
-					increaseIndentPattern: increaseIndentPattern,
-					decreaseIndentPattern: decreaseIndentPattern
+			if (increAseIndentPAttern && decreAseIndentPAttern) {
+				let result: IndentAtionRule = {
+					increAseIndentPAttern: increAseIndentPAttern,
+					decreAseIndentPAttern: decreAseIndentPAttern
 				};
 
-				if (indentationRules.indentNextLinePattern) {
-					result.indentNextLinePattern = this._parseRegex(indentationRules.indentNextLinePattern);
+				if (indentAtionRules.indentNextLinePAttern) {
+					result.indentNextLinePAttern = this._pArseRegex(indentAtionRules.indentNextLinePAttern);
 				}
-				if (indentationRules.unIndentedLinePattern) {
-					result.unIndentedLinePattern = this._parseRegex(indentationRules.unIndentedLinePattern);
+				if (indentAtionRules.unIndentedLinePAttern) {
+					result.unIndentedLinePAttern = this._pArseRegex(indentAtionRules.unIndentedLinePAttern);
 				}
 
 				return result;
 			}
-		} catch (error) {
-			// Malformed regexes are ignored
+		} cAtch (error) {
+			// MAlformed regexes Are ignored
 		}
 
 		return null;
 	}
 }
 
-const schemaId = 'vscode://schemas/language-configuration';
-const schema: IJSONSchema = {
-	allowComments: true,
-	allowTrailingCommas: true,
-	default: {
+const schemAId = 'vscode://schemAs/lAnguAge-configurAtion';
+const schemA: IJSONSchemA = {
+	AllowComments: true,
+	AllowTrAilingCommAs: true,
+	defAult: {
 		comments: {
 			blockComment: ['/*', '*/'],
 			lineComment: '//'
 		},
-		brackets: [['(', ')'], ['[', ']'], ['{', '}']],
-		autoClosingPairs: [['(', ')'], ['[', ']'], ['{', '}']],
-		surroundingPairs: [['(', ')'], ['[', ']'], ['{', '}']]
+		brAckets: [['(', ')'], ['[', ']'], ['{', '}']],
+		AutoClosingPAirs: [['(', ')'], ['[', ']'], ['{', '}']],
+		surroundingPAirs: [['(', ')'], ['[', ']'], ['{', '}']]
 	},
 	definitions: {
-		openBracket: {
+		openBrAcket: {
 			type: 'string',
-			description: nls.localize('schema.openBracket', 'The opening bracket character or string sequence.')
+			description: nls.locAlize('schemA.openBrAcket', 'The opening brAcket chArActer or string sequence.')
 		},
-		closeBracket: {
+		closeBrAcket: {
 			type: 'string',
-			description: nls.localize('schema.closeBracket', 'The closing bracket character or string sequence.')
+			description: nls.locAlize('schemA.closeBrAcket', 'The closing brAcket chArActer or string sequence.')
 		},
-		bracketPair: {
-			type: 'array',
+		brAcketPAir: {
+			type: 'ArrAy',
 			items: [{
-				$ref: '#definitions/openBracket'
+				$ref: '#definitions/openBrAcket'
 			}, {
-				$ref: '#definitions/closeBracket'
+				$ref: '#definitions/closeBrAcket'
 			}]
 		}
 	},
 	properties: {
 		comments: {
-			default: {
+			defAult: {
 				blockComment: ['/*', '*/'],
 				lineComment: '//'
 			},
-			description: nls.localize('schema.comments', 'Defines the comment symbols'),
+			description: nls.locAlize('schemA.comments', 'Defines the comment symbols'),
 			type: 'object',
 			properties: {
 				blockComment: {
-					type: 'array',
-					description: nls.localize('schema.blockComments', 'Defines how block comments are marked.'),
+					type: 'ArrAy',
+					description: nls.locAlize('schemA.blockComments', 'Defines how block comments Are mArked.'),
 					items: [{
 						type: 'string',
-						description: nls.localize('schema.blockComment.begin', 'The character sequence that starts a block comment.')
+						description: nls.locAlize('schemA.blockComment.begin', 'The chArActer sequence thAt stArts A block comment.')
 					}, {
 						type: 'string',
-						description: nls.localize('schema.blockComment.end', 'The character sequence that ends a block comment.')
+						description: nls.locAlize('schemA.blockComment.end', 'The chArActer sequence thAt ends A block comment.')
 					}]
 				},
 				lineComment: {
 					type: 'string',
-					description: nls.localize('schema.lineComment', 'The character sequence that starts a line comment.')
+					description: nls.locAlize('schemA.lineComment', 'The chArActer sequence thAt stArts A line comment.')
 				}
 			}
 		},
-		brackets: {
-			default: [['(', ')'], ['[', ']'], ['{', '}']],
-			description: nls.localize('schema.brackets', 'Defines the bracket symbols that increase or decrease the indentation.'),
-			type: 'array',
+		brAckets: {
+			defAult: [['(', ')'], ['[', ']'], ['{', '}']],
+			description: nls.locAlize('schemA.brAckets', 'Defines the brAcket symbols thAt increAse or decreAse the indentAtion.'),
+			type: 'ArrAy',
 			items: {
-				$ref: '#definitions/bracketPair'
+				$ref: '#definitions/brAcketPAir'
 			}
 		},
-		autoClosingPairs: {
-			default: [['(', ')'], ['[', ']'], ['{', '}']],
-			description: nls.localize('schema.autoClosingPairs', 'Defines the bracket pairs. When a opening bracket is entered, the closing bracket is inserted automatically.'),
-			type: 'array',
+		AutoClosingPAirs: {
+			defAult: [['(', ')'], ['[', ']'], ['{', '}']],
+			description: nls.locAlize('schemA.AutoClosingPAirs', 'Defines the brAcket pAirs. When A opening brAcket is entered, the closing brAcket is inserted AutomAticAlly.'),
+			type: 'ArrAy',
 			items: {
 				oneOf: [{
-					$ref: '#definitions/bracketPair'
+					$ref: '#definitions/brAcketPAir'
 				}, {
 					type: 'object',
 					properties: {
 						open: {
-							$ref: '#definitions/openBracket'
+							$ref: '#definitions/openBrAcket'
 						},
 						close: {
-							$ref: '#definitions/closeBracket'
+							$ref: '#definitions/closeBrAcket'
 						},
 						notIn: {
-							type: 'array',
-							description: nls.localize('schema.autoClosingPairs.notIn', 'Defines a list of scopes where the auto pairs are disabled.'),
+							type: 'ArrAy',
+							description: nls.locAlize('schemA.AutoClosingPAirs.notIn', 'Defines A list of scopes where the Auto pAirs Are disAbled.'),
 							items: {
 								enum: ['string', 'comment']
 							}
@@ -452,127 +452,127 @@ const schema: IJSONSchema = {
 				}]
 			}
 		},
-		autoCloseBefore: {
-			default: ';:.,=}])> \n\t',
-			description: nls.localize('schema.autoCloseBefore', 'Defines what characters must be after the cursor in order for bracket or quote autoclosing to occur when using the \'languageDefined\' autoclosing setting. This is typically the set of characters which can not start an expression.'),
+		AutoCloseBefore: {
+			defAult: ';:.,=}])> \n\t',
+			description: nls.locAlize('schemA.AutoCloseBefore', 'Defines whAt chArActers must be After the cursor in order for brAcket or quote Autoclosing to occur when using the \'lAnguAgeDefined\' Autoclosing setting. This is typicAlly the set of chArActers which cAn not stArt An expression.'),
 			type: 'string',
 		},
-		surroundingPairs: {
-			default: [['(', ')'], ['[', ']'], ['{', '}']],
-			description: nls.localize('schema.surroundingPairs', 'Defines the bracket pairs that can be used to surround a selected string.'),
-			type: 'array',
+		surroundingPAirs: {
+			defAult: [['(', ')'], ['[', ']'], ['{', '}']],
+			description: nls.locAlize('schemA.surroundingPAirs', 'Defines the brAcket pAirs thAt cAn be used to surround A selected string.'),
+			type: 'ArrAy',
 			items: {
 				oneOf: [{
-					$ref: '#definitions/bracketPair'
+					$ref: '#definitions/brAcketPAir'
 				}, {
 					type: 'object',
 					properties: {
 						open: {
-							$ref: '#definitions/openBracket'
+							$ref: '#definitions/openBrAcket'
 						},
 						close: {
-							$ref: '#definitions/closeBracket'
+							$ref: '#definitions/closeBrAcket'
 						}
 					}
 				}]
 			}
 		},
-		wordPattern: {
-			default: '',
-			description: nls.localize('schema.wordPattern', 'Defines what is considered to be a word in the programming language.'),
+		wordPAttern: {
+			defAult: '',
+			description: nls.locAlize('schemA.wordPAttern', 'Defines whAt is considered to be A word in the progrAmming lAnguAge.'),
 			type: ['string', 'object'],
 			properties: {
-				pattern: {
+				pAttern: {
 					type: 'string',
-					description: nls.localize('schema.wordPattern.pattern', 'The RegExp pattern used to match words.'),
-					default: '',
+					description: nls.locAlize('schemA.wordPAttern.pAttern', 'The RegExp pAttern used to mAtch words.'),
+					defAult: '',
 				},
-				flags: {
+				flAgs: {
 					type: 'string',
-					description: nls.localize('schema.wordPattern.flags', 'The RegExp flags used to match words.'),
-					default: 'g',
-					pattern: '^([gimuy]+)$',
-					patternErrorMessage: nls.localize('schema.wordPattern.flags.errorMessage', 'Must match the pattern `/^([gimuy]+)$/`.')
+					description: nls.locAlize('schemA.wordPAttern.flAgs', 'The RegExp flAgs used to mAtch words.'),
+					defAult: 'g',
+					pAttern: '^([gimuy]+)$',
+					pAtternErrorMessAge: nls.locAlize('schemA.wordPAttern.flAgs.errorMessAge', 'Must mAtch the pAttern `/^([gimuy]+)$/`.')
 				}
 			}
 		},
-		indentationRules: {
-			default: {
-				increaseIndentPattern: '',
-				decreaseIndentPattern: ''
+		indentAtionRules: {
+			defAult: {
+				increAseIndentPAttern: '',
+				decreAseIndentPAttern: ''
 			},
-			description: nls.localize('schema.indentationRules', 'The language\'s indentation settings.'),
+			description: nls.locAlize('schemA.indentAtionRules', 'The lAnguAge\'s indentAtion settings.'),
 			type: 'object',
 			properties: {
-				increaseIndentPattern: {
+				increAseIndentPAttern: {
 					type: ['string', 'object'],
-					description: nls.localize('schema.indentationRules.increaseIndentPattern', 'If a line matches this pattern, then all the lines after it should be indented once (until another rule matches).'),
+					description: nls.locAlize('schemA.indentAtionRules.increAseIndentPAttern', 'If A line mAtches this pAttern, then All the lines After it should be indented once (until Another rule mAtches).'),
 					properties: {
-						pattern: {
+						pAttern: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.increaseIndentPattern.pattern', 'The RegExp pattern for increaseIndentPattern.'),
-							default: '',
+							description: nls.locAlize('schemA.indentAtionRules.increAseIndentPAttern.pAttern', 'The RegExp pAttern for increAseIndentPAttern.'),
+							defAult: '',
 						},
-						flags: {
+						flAgs: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.increaseIndentPattern.flags', 'The RegExp flags for increaseIndentPattern.'),
-							default: '',
-							pattern: '^([gimuy]+)$',
-							patternErrorMessage: nls.localize('schema.indentationRules.increaseIndentPattern.errorMessage', 'Must match the pattern `/^([gimuy]+)$/`.')
+							description: nls.locAlize('schemA.indentAtionRules.increAseIndentPAttern.flAgs', 'The RegExp flAgs for increAseIndentPAttern.'),
+							defAult: '',
+							pAttern: '^([gimuy]+)$',
+							pAtternErrorMessAge: nls.locAlize('schemA.indentAtionRules.increAseIndentPAttern.errorMessAge', 'Must mAtch the pAttern `/^([gimuy]+)$/`.')
 						}
 					}
 				},
-				decreaseIndentPattern: {
+				decreAseIndentPAttern: {
 					type: ['string', 'object'],
-					description: nls.localize('schema.indentationRules.decreaseIndentPattern', 'If a line matches this pattern, then all the lines after it should be unindented once (until another rule matches).'),
+					description: nls.locAlize('schemA.indentAtionRules.decreAseIndentPAttern', 'If A line mAtches this pAttern, then All the lines After it should be unindented once (until Another rule mAtches).'),
 					properties: {
-						pattern: {
+						pAttern: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.decreaseIndentPattern.pattern', 'The RegExp pattern for decreaseIndentPattern.'),
-							default: '',
+							description: nls.locAlize('schemA.indentAtionRules.decreAseIndentPAttern.pAttern', 'The RegExp pAttern for decreAseIndentPAttern.'),
+							defAult: '',
 						},
-						flags: {
+						flAgs: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.decreaseIndentPattern.flags', 'The RegExp flags for decreaseIndentPattern.'),
-							default: '',
-							pattern: '^([gimuy]+)$',
-							patternErrorMessage: nls.localize('schema.indentationRules.decreaseIndentPattern.errorMessage', 'Must match the pattern `/^([gimuy]+)$/`.')
+							description: nls.locAlize('schemA.indentAtionRules.decreAseIndentPAttern.flAgs', 'The RegExp flAgs for decreAseIndentPAttern.'),
+							defAult: '',
+							pAttern: '^([gimuy]+)$',
+							pAtternErrorMessAge: nls.locAlize('schemA.indentAtionRules.decreAseIndentPAttern.errorMessAge', 'Must mAtch the pAttern `/^([gimuy]+)$/`.')
 						}
 					}
 				},
-				indentNextLinePattern: {
+				indentNextLinePAttern: {
 					type: ['string', 'object'],
-					description: nls.localize('schema.indentationRules.indentNextLinePattern', 'If a line matches this pattern, then **only the next line** after it should be indented once.'),
+					description: nls.locAlize('schemA.indentAtionRules.indentNextLinePAttern', 'If A line mAtches this pAttern, then **only the next line** After it should be indented once.'),
 					properties: {
-						pattern: {
+						pAttern: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.indentNextLinePattern.pattern', 'The RegExp pattern for indentNextLinePattern.'),
-							default: '',
+							description: nls.locAlize('schemA.indentAtionRules.indentNextLinePAttern.pAttern', 'The RegExp pAttern for indentNextLinePAttern.'),
+							defAult: '',
 						},
-						flags: {
+						flAgs: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.indentNextLinePattern.flags', 'The RegExp flags for indentNextLinePattern.'),
-							default: '',
-							pattern: '^([gimuy]+)$',
-							patternErrorMessage: nls.localize('schema.indentationRules.indentNextLinePattern.errorMessage', 'Must match the pattern `/^([gimuy]+)$/`.')
+							description: nls.locAlize('schemA.indentAtionRules.indentNextLinePAttern.flAgs', 'The RegExp flAgs for indentNextLinePAttern.'),
+							defAult: '',
+							pAttern: '^([gimuy]+)$',
+							pAtternErrorMessAge: nls.locAlize('schemA.indentAtionRules.indentNextLinePAttern.errorMessAge', 'Must mAtch the pAttern `/^([gimuy]+)$/`.')
 						}
 					}
 				},
-				unIndentedLinePattern: {
+				unIndentedLinePAttern: {
 					type: ['string', 'object'],
-					description: nls.localize('schema.indentationRules.unIndentedLinePattern', 'If a line matches this pattern, then its indentation should not be changed and it should not be evaluated against the other rules.'),
+					description: nls.locAlize('schemA.indentAtionRules.unIndentedLinePAttern', 'If A line mAtches this pAttern, then its indentAtion should not be chAnged And it should not be evAluAted AgAinst the other rules.'),
 					properties: {
-						pattern: {
+						pAttern: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.unIndentedLinePattern.pattern', 'The RegExp pattern for unIndentedLinePattern.'),
-							default: '',
+							description: nls.locAlize('schemA.indentAtionRules.unIndentedLinePAttern.pAttern', 'The RegExp pAttern for unIndentedLinePAttern.'),
+							defAult: '',
 						},
-						flags: {
+						flAgs: {
 							type: 'string',
-							description: nls.localize('schema.indentationRules.unIndentedLinePattern.flags', 'The RegExp flags for unIndentedLinePattern.'),
-							default: '',
-							pattern: '^([gimuy]+)$',
-							patternErrorMessage: nls.localize('schema.indentationRules.unIndentedLinePattern.errorMessage', 'Must match the pattern `/^([gimuy]+)$/`.')
+							description: nls.locAlize('schemA.indentAtionRules.unIndentedLinePAttern.flAgs', 'The RegExp flAgs for unIndentedLinePAttern.'),
+							defAult: '',
+							pAttern: '^([gimuy]+)$',
+							pAtternErrorMessAge: nls.locAlize('schemA.indentAtionRules.unIndentedLinePAttern.errorMessAge', 'Must mAtch the pAttern `/^([gimuy]+)$/`.')
 						}
 					}
 				}
@@ -580,23 +580,23 @@ const schema: IJSONSchema = {
 		},
 		folding: {
 			type: 'object',
-			description: nls.localize('schema.folding', 'The language\'s folding settings.'),
+			description: nls.locAlize('schemA.folding', 'The lAnguAge\'s folding settings.'),
 			properties: {
 				offSide: {
-					type: 'boolean',
-					description: nls.localize('schema.folding.offSide', 'A language adheres to the off-side rule if blocks in that language are expressed by their indentation. If set, empty lines belong to the subsequent block.'),
+					type: 'booleAn',
+					description: nls.locAlize('schemA.folding.offSide', 'A lAnguAge Adheres to the off-side rule if blocks in thAt lAnguAge Are expressed by their indentAtion. If set, empty lines belong to the subsequent block.'),
 				},
-				markers: {
+				mArkers: {
 					type: 'object',
-					description: nls.localize('schema.folding.markers', 'Language specific folding markers such as \'#region\' and \'#endregion\'. The start and end regexes will be tested against the contents of all lines and must be designed efficiently'),
+					description: nls.locAlize('schemA.folding.mArkers', 'LAnguAge specific folding mArkers such As \'#region\' And \'#endregion\'. The stArt And end regexes will be tested AgAinst the contents of All lines And must be designed efficiently'),
 					properties: {
-						start: {
+						stArt: {
 							type: 'string',
-							description: nls.localize('schema.folding.markers.start', 'The RegExp pattern for the start marker. The regexp must start with \'^\'.')
+							description: nls.locAlize('schemA.folding.mArkers.stArt', 'The RegExp pAttern for the stArt mArker. The regexp must stArt with \'^\'.')
 						},
 						end: {
 							type: 'string',
-							description: nls.localize('schema.folding.markers.end', 'The RegExp pattern for the end marker. The regexp must start with \'^\'.')
+							description: nls.locAlize('schemA.folding.mArkers.end', 'The RegExp pAttern for the end mArker. The regexp must stArt with \'^\'.')
 						},
 					}
 				}
@@ -605,5 +605,5 @@ const schema: IJSONSchema = {
 
 	}
 };
-let schemaRegistry = Registry.as<IJSONContributionRegistry>(Extensions.JSONContribution);
-schemaRegistry.registerSchema(schemaId, schema);
+let schemARegistry = Registry.As<IJSONContributionRegistry>(Extensions.JSONContribution);
+schemARegistry.registerSchemA(schemAId, schemA);

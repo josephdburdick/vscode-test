@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
+import * As strings from 'vs/bAse/common/strings';
 import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
-import { Range, IRange } from 'vs/editor/common/core/range';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { RAnge, IRAnge } from 'vs/editor/common/core/rAnge';
+import { CAncellAtionTokenSource, CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ITextModel } from 'vs/editor/common/model';
-import { EditorKeybindingCancellationTokenSource } from 'vs/editor/browser/core/keybindingCancellation';
+import { EditorKeybindingCAncellAtionTokenSource } from 'vs/editor/browser/core/keybindingCAncellAtion';
 
-export const enum CodeEditorStateFlag {
-	Value = 1,
+export const enum CodeEditorStAteFlAg {
+	VAlue = 1,
 	Selection = 2,
 	Position = 4,
 	Scroll = 8
 }
 
-export class EditorState {
+export clAss EditorStAte {
 
-	private readonly flags: number;
+	privAte reAdonly flAgs: number;
 
-	private readonly position: Position | null;
-	private readonly selection: Range | null;
-	private readonly modelVersionId: string | null;
-	private readonly scrollLeft: number;
-	private readonly scrollTop: number;
+	privAte reAdonly position: Position | null;
+	privAte reAdonly selection: RAnge | null;
+	privAte reAdonly modelVersionId: string | null;
+	privAte reAdonly scrollLeft: number;
+	privAte reAdonly scrollTop: number;
 
-	constructor(editor: ICodeEditor, flags: number) {
-		this.flags = flags;
+	constructor(editor: ICodeEditor, flAgs: number) {
+		this.flAgs = flAgs;
 
-		if ((this.flags & CodeEditorStateFlag.Value) !== 0) {
+		if ((this.flAgs & CodeEditorStAteFlAg.VAlue) !== 0) {
 			const model = editor.getModel();
-			this.modelVersionId = model ? strings.format('{0}#{1}', model.uri.toString(), model.getVersionId()) : null;
+			this.modelVersionId = model ? strings.formAt('{0}#{1}', model.uri.toString(), model.getVersionId()) : null;
 		} else {
 			this.modelVersionId = null;
 		}
-		if ((this.flags & CodeEditorStateFlag.Position) !== 0) {
+		if ((this.flAgs & CodeEditorStAteFlAg.Position) !== 0) {
 			this.position = editor.getPosition();
 		} else {
 			this.position = null;
 		}
-		if ((this.flags & CodeEditorStateFlag.Selection) !== 0) {
+		if ((this.flAgs & CodeEditorStAteFlAg.Selection) !== 0) {
 			this.selection = editor.getSelection();
 		} else {
 			this.selection = null;
 		}
-		if ((this.flags & CodeEditorStateFlag.Scroll) !== 0) {
+		if ((this.flAgs & CodeEditorStAteFlAg.Scroll) !== 0) {
 			this.scrollLeft = editor.getScrollLeft();
 			this.scrollTop = editor.getScrollTop();
 		} else {
@@ -57,65 +57,65 @@ export class EditorState {
 		}
 	}
 
-	private _equals(other: any): boolean {
+	privAte _equAls(other: Any): booleAn {
 
-		if (!(other instanceof EditorState)) {
-			return false;
+		if (!(other instAnceof EditorStAte)) {
+			return fAlse;
 		}
-		const state = <EditorState>other;
+		const stAte = <EditorStAte>other;
 
-		if (this.modelVersionId !== state.modelVersionId) {
-			return false;
+		if (this.modelVersionId !== stAte.modelVersionId) {
+			return fAlse;
 		}
-		if (this.scrollLeft !== state.scrollLeft || this.scrollTop !== state.scrollTop) {
-			return false;
+		if (this.scrollLeft !== stAte.scrollLeft || this.scrollTop !== stAte.scrollTop) {
+			return fAlse;
 		}
-		if (!this.position && state.position || this.position && !state.position || this.position && state.position && !this.position.equals(state.position)) {
-			return false;
+		if (!this.position && stAte.position || this.position && !stAte.position || this.position && stAte.position && !this.position.equAls(stAte.position)) {
+			return fAlse;
 		}
-		if (!this.selection && state.selection || this.selection && !state.selection || this.selection && state.selection && !this.selection.equalsRange(state.selection)) {
-			return false;
+		if (!this.selection && stAte.selection || this.selection && !stAte.selection || this.selection && stAte.selection && !this.selection.equAlsRAnge(stAte.selection)) {
+			return fAlse;
 		}
 		return true;
 	}
 
-	public validate(editor: ICodeEditor): boolean {
-		return this._equals(new EditorState(editor, this.flags));
+	public vAlidAte(editor: ICodeEditor): booleAn {
+		return this._equAls(new EditorStAte(editor, this.flAgs));
 	}
 }
 
 /**
- * A cancellation token source that cancels when the editor changes as expressed
- * by the provided flags
- * @param range If provided, changes in position and selection within this range will not trigger cancellation
+ * A cAncellAtion token source thAt cAncels when the editor chAnges As expressed
+ * by the provided flAgs
+ * @pArAm rAnge If provided, chAnges in position And selection within this rAnge will not trigger cAncellAtion
  */
-export class EditorStateCancellationTokenSource extends EditorKeybindingCancellationTokenSource implements IDisposable {
+export clAss EditorStAteCAncellAtionTokenSource extends EditorKeybindingCAncellAtionTokenSource implements IDisposAble {
 
-	private readonly _listener = new DisposableStore();
+	privAte reAdonly _listener = new DisposAbleStore();
 
-	constructor(readonly editor: IActiveCodeEditor, flags: CodeEditorStateFlag, range?: IRange, parent?: CancellationToken) {
-		super(editor, parent);
+	constructor(reAdonly editor: IActiveCodeEditor, flAgs: CodeEditorStAteFlAg, rAnge?: IRAnge, pArent?: CAncellAtionToken) {
+		super(editor, pArent);
 
-		if (flags & CodeEditorStateFlag.Position) {
-			this._listener.add(editor.onDidChangeCursorPosition(e => {
-				if (!range || !Range.containsPosition(range, e.position)) {
-					this.cancel();
+		if (flAgs & CodeEditorStAteFlAg.Position) {
+			this._listener.Add(editor.onDidChAngeCursorPosition(e => {
+				if (!rAnge || !RAnge.contAinsPosition(rAnge, e.position)) {
+					this.cAncel();
 				}
 			}));
 		}
-		if (flags & CodeEditorStateFlag.Selection) {
-			this._listener.add(editor.onDidChangeCursorSelection(e => {
-				if (!range || !Range.containsRange(range, e.selection)) {
-					this.cancel();
+		if (flAgs & CodeEditorStAteFlAg.Selection) {
+			this._listener.Add(editor.onDidChAngeCursorSelection(e => {
+				if (!rAnge || !RAnge.contAinsRAnge(rAnge, e.selection)) {
+					this.cAncel();
 				}
 			}));
 		}
-		if (flags & CodeEditorStateFlag.Scroll) {
-			this._listener.add(editor.onDidScrollChange(_ => this.cancel()));
+		if (flAgs & CodeEditorStAteFlAg.Scroll) {
+			this._listener.Add(editor.onDidScrollChAnge(_ => this.cAncel()));
 		}
-		if (flags & CodeEditorStateFlag.Value) {
-			this._listener.add(editor.onDidChangeModel(_ => this.cancel()));
-			this._listener.add(editor.onDidChangeModelContent(_ => this.cancel()));
+		if (flAgs & CodeEditorStAteFlAg.VAlue) {
+			this._listener.Add(editor.onDidChAngeModel(_ => this.cAncel()));
+			this._listener.Add(editor.onDidChAngeModelContent(_ => this.cAncel()));
 		}
 	}
 
@@ -126,15 +126,15 @@ export class EditorStateCancellationTokenSource extends EditorKeybindingCancella
 }
 
 /**
- * A cancellation token source that cancels when the provided model changes
+ * A cAncellAtion token source thAt cAncels when the provided model chAnges
  */
-export class TextModelCancellationTokenSource extends CancellationTokenSource implements IDisposable {
+export clAss TextModelCAncellAtionTokenSource extends CAncellAtionTokenSource implements IDisposAble {
 
-	private _listener: IDisposable;
+	privAte _listener: IDisposAble;
 
-	constructor(model: ITextModel, parent?: CancellationToken) {
-		super(parent);
-		this._listener = model.onDidChangeContent(() => this.cancel());
+	constructor(model: ITextModel, pArent?: CAncellAtionToken) {
+		super(pArent);
+		this._listener = model.onDidChAngeContent(() => this.cAncel());
 	}
 
 	dispose() {
@@ -143,37 +143,37 @@ export class TextModelCancellationTokenSource extends CancellationTokenSource im
 	}
 }
 
-export class StableEditorScrollState {
+export clAss StAbleEditorScrollStAte {
 
-	public static capture(editor: ICodeEditor): StableEditorScrollState {
+	public stAtic cApture(editor: ICodeEditor): StAbleEditorScrollStAte {
 		let visiblePosition: Position | null = null;
-		let visiblePositionScrollDelta = 0;
+		let visiblePositionScrollDeltA = 0;
 		if (editor.getScrollTop() !== 0) {
-			const visibleRanges = editor.getVisibleRanges();
-			if (visibleRanges.length > 0) {
-				visiblePosition = visibleRanges[0].getStartPosition();
+			const visibleRAnges = editor.getVisibleRAnges();
+			if (visibleRAnges.length > 0) {
+				visiblePosition = visibleRAnges[0].getStArtPosition();
 				const visiblePositionScrollTop = editor.getTopForPosition(visiblePosition.lineNumber, visiblePosition.column);
-				visiblePositionScrollDelta = editor.getScrollTop() - visiblePositionScrollTop;
+				visiblePositionScrollDeltA = editor.getScrollTop() - visiblePositionScrollTop;
 			}
 		}
-		return new StableEditorScrollState(visiblePosition, visiblePositionScrollDelta, editor.getPosition());
+		return new StAbleEditorScrollStAte(visiblePosition, visiblePositionScrollDeltA, editor.getPosition());
 	}
 
 	constructor(
-		private readonly _visiblePosition: Position | null,
-		private readonly _visiblePositionScrollDelta: number,
-		private readonly _cursorPosition: Position | null
+		privAte reAdonly _visiblePosition: Position | null,
+		privAte reAdonly _visiblePositionScrollDeltA: number,
+		privAte reAdonly _cursorPosition: Position | null
 	) {
 	}
 
 	public restore(editor: ICodeEditor): void {
 		if (this._visiblePosition) {
 			const visiblePositionScrollTop = editor.getTopForPosition(this._visiblePosition.lineNumber, this._visiblePosition.column);
-			editor.setScrollTop(visiblePositionScrollTop + this._visiblePositionScrollDelta);
+			editor.setScrollTop(visiblePositionScrollTop + this._visiblePositionScrollDeltA);
 		}
 	}
 
-	public restoreRelativeVerticalPositionOfCursor(editor: ICodeEditor): void {
+	public restoreRelAtiveVerticAlPositionOfCursor(editor: ICodeEditor): void {
 		const currentCursorPosition = editor.getPosition();
 
 		if (!this._cursorPosition || !currentCursorPosition) {

@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Severity } from 'vs/platform/notification/common/notification';
+import { Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
 
-export interface Translations {
+export interfAce TrAnslAtions {
 	[id: string]: string;
 }
 
-export namespace Translations {
-	export function equals(a: Translations, b: Translations): boolean {
-		if (a === b) {
+export nAmespAce TrAnslAtions {
+	export function equAls(A: TrAnslAtions, b: TrAnslAtions): booleAn {
+		if (A === b) {
 			return true;
 		}
-		let aKeys = Object.keys(a);
+		let AKeys = Object.keys(A);
 		let bKeys: Set<string> = new Set<string>();
 		for (let key of Object.keys(b)) {
-			bKeys.add(key);
+			bKeys.Add(key);
 		}
-		if (aKeys.length !== bKeys.size) {
-			return false;
+		if (AKeys.length !== bKeys.size) {
+			return fAlse;
 		}
 
-		for (let key of aKeys) {
-			if (a[key] !== b[key]) {
-				return false;
+		for (let key of AKeys) {
+			if (A[key] !== b[key]) {
+				return fAlse;
 			}
 			bKeys.delete(key);
 		}
@@ -33,31 +33,31 @@ export namespace Translations {
 	}
 }
 
-export interface ILog {
-	error(source: string, message: string): void;
-	warn(source: string, message: string): void;
-	info(source: string, message: string): void;
+export interfAce ILog {
+	error(source: string, messAge: string): void;
+	wArn(source: string, messAge: string): void;
+	info(source: string, messAge: string): void;
 }
 
-export class Logger implements ILog {
+export clAss Logger implements ILog {
 
-	private readonly _messageHandler: (severity: Severity, source: string, message: string) => void;
+	privAte reAdonly _messAgeHAndler: (severity: Severity, source: string, messAge: string) => void;
 
 	constructor(
-		messageHandler: (severity: Severity, source: string, message: string) => void
+		messAgeHAndler: (severity: Severity, source: string, messAge: string) => void
 	) {
-		this._messageHandler = messageHandler;
+		this._messAgeHAndler = messAgeHAndler;
 	}
 
-	public error(source: string, message: string): void {
-		this._messageHandler(Severity.Error, source, message);
+	public error(source: string, messAge: string): void {
+		this._messAgeHAndler(Severity.Error, source, messAge);
 	}
 
-	public warn(source: string, message: string): void {
-		this._messageHandler(Severity.Warning, source, message);
+	public wArn(source: string, messAge: string): void {
+		this._messAgeHAndler(Severity.WArning, source, messAge);
 	}
 
-	public info(source: string, message: string): void {
-		this._messageHandler(Severity.Info, source, message);
+	public info(source: string, messAge: string): void {
+		this._messAgeHAndler(Severity.Info, source, messAge);
 	}
 }

@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { IExperimentService, ExperimentActionType, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { ExtensionRecommendAtions, ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { IExperimentService, ExperimentActionType, ExperimentStAte } from 'vs/workbench/contrib/experiments/common/experimentService';
 
-export class ExperimentalRecommendations extends ExtensionRecommendations {
+export clAss ExperimentAlRecommendAtions extends ExtensionRecommendAtions {
 
-	private _recommendations: ExtensionRecommendation[] = [];
-	get recommendations(): ReadonlyArray<ExtensionRecommendation> { return this._recommendations; }
+	privAte _recommendAtions: ExtensionRecommendAtion[] = [];
+	get recommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._recommendAtions; }
 
 	constructor(
-		@IExperimentService private readonly experimentService: IExperimentService,
+		@IExperimentService privAte reAdonly experimentService: IExperimentService,
 	) {
 		super();
 	}
 
 	/**
-	 * Fetch extensions used by others on the same workspace as recommendations
+	 * Fetch extensions used by others on the sAme workspAce As recommendAtions
 	 */
-	protected async doActivate(): Promise<void> {
-		const experiments = await this.experimentService.getExperimentsByType(ExperimentActionType.AddToRecommendations);
-		for (const { action, state } of experiments) {
-			if (state === ExperimentState.Run && isNonEmptyArray(action?.properties?.recommendations) && action?.properties?.recommendationReason) {
-				action.properties.recommendations.forEach((extensionId: string) => this._recommendations.push({
-					extensionId: extensionId.toLowerCase(),
-					reason: {
-						reasonId: ExtensionRecommendationReason.Experimental,
-						reasonText: action.properties.recommendationReason
+	protected Async doActivAte(): Promise<void> {
+		const experiments = AwAit this.experimentService.getExperimentsByType(ExperimentActionType.AddToRecommendAtions);
+		for (const { Action, stAte } of experiments) {
+			if (stAte === ExperimentStAte.Run && isNonEmptyArrAy(Action?.properties?.recommendAtions) && Action?.properties?.recommendAtionReAson) {
+				Action.properties.recommendAtions.forEAch((extensionId: string) => this._recommendAtions.push({
+					extensionId: extensionId.toLowerCAse(),
+					reAson: {
+						reAsonId: ExtensionRecommendAtionReAson.ExperimentAl,
+						reAsonText: Action.properties.recommendAtionReAson
 					}
 				}));
 			}

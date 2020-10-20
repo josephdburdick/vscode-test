@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { MainContext, MainThreadDiaglogsShape, IMainContext } from 'vs/workbench/api/common/extHost.protocol';
+import type * As vscode from 'vscode';
+import { URI } from 'vs/bAse/common/uri';
+import { MAinContext, MAinThreAdDiAglogsShApe, IMAinContext } from 'vs/workbench/Api/common/extHost.protocol';
 
-export class ExtHostDialogs {
+export clAss ExtHostDiAlogs {
 
-	private readonly _proxy: MainThreadDiaglogsShape;
+	privAte reAdonly _proxy: MAinThreAdDiAglogsShApe;
 
-	constructor(mainContext: IMainContext) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadDialogs);
+	constructor(mAinContext: IMAinContext) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdDiAlogs);
 	}
 
-	showOpenDialog(options?: vscode.OpenDialogOptions): Promise<URI[] | undefined> {
-		return this._proxy.$showOpenDialog(options).then(filepaths => {
-			return filepaths ? filepaths.map(p => URI.revive(p)) : undefined;
+	showOpenDiAlog(options?: vscode.OpenDiAlogOptions): Promise<URI[] | undefined> {
+		return this._proxy.$showOpenDiAlog(options).then(filepAths => {
+			return filepAths ? filepAths.mAp(p => URI.revive(p)) : undefined;
 		});
 	}
 
-	showSaveDialog(options?: vscode.SaveDialogOptions): Promise<URI | undefined> {
-		return this._proxy.$showSaveDialog(options).then(filepath => {
-			return filepath ? URI.revive(filepath) : undefined;
+	showSAveDiAlog(options?: vscode.SAveDiAlogOptions): Promise<URI | undefined> {
+		return this._proxy.$showSAveDiAlog(options).then(filepAth => {
+			return filepAth ? URI.revive(filepAth) : undefined;
 		});
 	}
 }

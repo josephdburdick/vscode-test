@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { WebviewTag } from 'electron';
-import { Action2 } from 'vs/platform/actions/common/actions';
-import * as nls from 'vs/nls';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { WebviewTAg } from 'electron';
+import { Action2 } from 'vs/plAtform/Actions/common/Actions';
+import * As nls from 'vs/nls';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 
-export class OpenWebviewDeveloperToolsAction extends Action2 {
+export clAss OpenWebviewDeveloperToolsAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.webview.openDeveloperTools',
-			title: { value: nls.localize('openToolsLabel', "Open Webview Developer Tools"), original: 'Open Webview Developer Tools' },
-			category: CATEGORIES.Developer,
+			id: 'workbench.Action.webview.openDeveloperTools',
+			title: { vAlue: nls.locAlize('openToolsLAbel', "Open Webview Developer Tools"), originAl: 'Open Webview Developer Tools' },
+			cAtegory: CATEGORIES.Developer,
 			f1: true
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const elements = document.querySelectorAll('webview.ready');
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const elements = document.querySelectorAll('webview.reAdy');
 		for (let i = 0; i < elements.length; i++) {
 			try {
-				(elements.item(i) as WebviewTag).openDevTools();
-			} catch (e) {
+				(elements.item(i) As WebviewTAg).openDevTools();
+			} cAtch (e) {
 				console.error(e);
 			}
 		}

@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./inspectTokens';
-import { $, append, reset } from 'vs/base/browser/dom';
-import { CharCode } from 'vs/base/common/charCode';
-import { Color } from 'vs/base/common/color';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { $, Append, reset } from 'vs/bAse/browser/dom';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { Color } from 'vs/bAse/common/color';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { ContentWidgetPositionPreference, IActiveCodeEditor, ICodeEditor, IContentWidget, IContentWidgetPosition } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { Token } from 'vs/editor/common/core/token';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
-import { FontStyle, IState, ITokenizationSupport, LanguageIdentifier, StandardTokenType, TokenMetadata, TokenizationRegistry } from 'vs/editor/common/modes';
+import { FontStyle, IStAte, ITokenizAtionSupport, LAnguAgeIdentifier, StAndArdTokenType, TokenMetAdAtA, TokenizAtionRegistry } from 'vs/editor/common/modes';
 import { NULL_STATE, nullTokenize, nullTokenize2 } from 'vs/editor/common/modes/nullMode';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
-import { editorHoverBackground, editorHoverBorder, editorHoverForeground } from 'vs/platform/theme/common/colorRegistry';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { InspectTokensNLS } from 'vs/editor/common/standaloneStrings';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
+import { IStAndAloneThemeService } from 'vs/editor/stAndAlone/common/stAndAloneThemeService';
+import { editorHoverBAckground, editorHoverBorder, editorHoverForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { InspectTokensNLS } from 'vs/editor/common/stAndAloneStrings';
+import { ColorScheme } from 'vs/plAtform/theme/common/theme';
 
 
-class InspectTokensController extends Disposable implements IEditorContribution {
+clAss InspectTokensController extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.inspectTokens';
+	public stAtic reAdonly ID = 'editor.contrib.inspectTokens';
 
-	public static get(editor: ICodeEditor): InspectTokensController {
+	public stAtic get(editor: ICodeEditor): InspectTokensController {
 		return editor.getContribution<InspectTokensController>(InspectTokensController.ID);
 	}
 
-	private readonly _editor: ICodeEditor;
-	private readonly _modeService: IModeService;
-	private _widget: InspectTokensWidget | null;
+	privAte reAdonly _editor: ICodeEditor;
+	privAte reAdonly _modeService: IModeService;
+	privAte _widget: InspectTokensWidget | null;
 
 	constructor(
 		editor: ICodeEditor,
-		@IStandaloneThemeService standaloneColorService: IStandaloneThemeService,
+		@IStAndAloneThemeService stAndAloneColorService: IStAndAloneThemeService,
 		@IModeService modeService: IModeService
 	) {
 		super();
@@ -47,10 +47,10 @@ class InspectTokensController extends Disposable implements IEditorContribution 
 		this._modeService = modeService;
 		this._widget = null;
 
-		this._register(this._editor.onDidChangeModel((e) => this.stop()));
-		this._register(this._editor.onDidChangeModelLanguage((e) => this.stop()));
-		this._register(TokenizationRegistry.onDidChange((e) => this.stop()));
-		this._register(this._editor.onKeyUp((e) => e.keyCode === KeyCode.Escape && this.stop()));
+		this._register(this._editor.onDidChAngeModel((e) => this.stop()));
+		this._register(this._editor.onDidChAngeModelLAnguAge((e) => this.stop()));
+		this._register(TokenizAtionRegistry.onDidChAnge((e) => this.stop()));
+		this._register(this._editor.onKeyUp((e) => e.keyCode === KeyCode.EscApe && this.stop()));
 	}
 
 	public dispose(): void {
@@ -58,11 +58,11 @@ class InspectTokensController extends Disposable implements IEditorContribution 
 		super.dispose();
 	}
 
-	public launch(): void {
+	public lAunch(): void {
 		if (this._widget) {
 			return;
 		}
-		if (!this._editor.hasModel()) {
+		if (!this._editor.hAsModel()) {
 			return;
 		}
 		this._widget = new InspectTokensWidget(this._editor, this._modeService);
@@ -76,84 +76,84 @@ class InspectTokensController extends Disposable implements IEditorContribution 
 	}
 }
 
-class InspectTokens extends EditorAction {
+clAss InspectTokens extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.inspectTokens',
-			label: InspectTokensNLS.inspectTokensAction,
-			alias: 'Developer: Inspect Tokens',
+			id: 'editor.Action.inspectTokens',
+			lAbel: InspectTokensNLS.inspectTokensAction,
+			AliAs: 'Developer: Inspect Tokens',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
 		let controller = InspectTokensController.get(editor);
 		if (controller) {
-			controller.launch();
+			controller.lAunch();
 		}
 	}
 }
 
-interface ICompleteLineTokenization {
-	startState: IState;
+interfAce ICompleteLineTokenizAtion {
+	stArtStAte: IStAte;
 	tokens1: Token[];
-	tokens2: Uint32Array;
-	endState: IState;
+	tokens2: Uint32ArrAy;
+	endStAte: IStAte;
 }
 
-interface IDecodedMetadata {
-	languageIdentifier: LanguageIdentifier;
-	tokenType: StandardTokenType;
+interfAce IDecodedMetAdAtA {
+	lAnguAgeIdentifier: LAnguAgeIdentifier;
+	tokenType: StAndArdTokenType;
 	fontStyle: FontStyle;
 	foreground: Color;
-	background: Color;
+	bAckground: Color;
 }
 
 function renderTokenText(tokenText: string): string {
 	let result: string = '';
-	for (let charIndex = 0, len = tokenText.length; charIndex < len; charIndex++) {
-		let charCode = tokenText.charCodeAt(charIndex);
-		switch (charCode) {
-			case CharCode.Tab:
-				result += '\u2192'; // &rarr;
-				break;
+	for (let chArIndex = 0, len = tokenText.length; chArIndex < len; chArIndex++) {
+		let chArCode = tokenText.chArCodeAt(chArIndex);
+		switch (chArCode) {
+			cAse ChArCode.TAb:
+				result += '\u2192'; // &rArr;
+				breAk;
 
-			case CharCode.Space:
+			cAse ChArCode.SpAce:
 				result += '\u00B7'; // &middot;
-				break;
+				breAk;
 
-			default:
-				result += String.fromCharCode(charCode);
+			defAult:
+				result += String.fromChArCode(chArCode);
 		}
 	}
 	return result;
 }
 
-function getSafeTokenizationSupport(languageIdentifier: LanguageIdentifier): ITokenizationSupport {
-	let tokenizationSupport = TokenizationRegistry.get(languageIdentifier.language);
-	if (tokenizationSupport) {
-		return tokenizationSupport;
+function getSAfeTokenizAtionSupport(lAnguAgeIdentifier: LAnguAgeIdentifier): ITokenizAtionSupport {
+	let tokenizAtionSupport = TokenizAtionRegistry.get(lAnguAgeIdentifier.lAnguAge);
+	if (tokenizAtionSupport) {
+		return tokenizAtionSupport;
 	}
 	return {
-		getInitialState: () => NULL_STATE,
-		tokenize: (line: string, state: IState, deltaOffset: number) => nullTokenize(languageIdentifier.language, line, state, deltaOffset),
-		tokenize2: (line: string, state: IState, deltaOffset: number) => nullTokenize2(languageIdentifier.id, line, state, deltaOffset)
+		getInitiAlStAte: () => NULL_STATE,
+		tokenize: (line: string, stAte: IStAte, deltAOffset: number) => nullTokenize(lAnguAgeIdentifier.lAnguAge, line, stAte, deltAOffset),
+		tokenize2: (line: string, stAte: IStAte, deltAOffset: number) => nullTokenize2(lAnguAgeIdentifier.id, line, stAte, deltAOffset)
 	};
 }
 
-class InspectTokensWidget extends Disposable implements IContentWidget {
+clAss InspectTokensWidget extends DisposAble implements IContentWidget {
 
-	private static readonly _ID = 'editor.contrib.inspectTokensWidget';
+	privAte stAtic reAdonly _ID = 'editor.contrib.inspectTokensWidget';
 
-	// Editor.IContentWidget.allowEditorOverflow
-	public allowEditorOverflow = true;
+	// Editor.IContentWidget.AllowEditorOverflow
+	public AllowEditorOverflow = true;
 
-	private readonly _editor: IActiveCodeEditor;
-	private readonly _modeService: IModeService;
-	private readonly _tokenizationSupport: ITokenizationSupport;
-	private readonly _model: ITextModel;
-	private readonly _domNode: HTMLElement;
+	privAte reAdonly _editor: IActiveCodeEditor;
+	privAte reAdonly _modeService: IModeService;
+	privAte reAdonly _tokenizAtionSupport: ITokenizAtionSupport;
+	privAte reAdonly _model: ITextModel;
+	privAte reAdonly _domNode: HTMLElement;
 
 	constructor(
 		editor: IActiveCodeEditor,
@@ -163,12 +163,12 @@ class InspectTokensWidget extends Disposable implements IContentWidget {
 		this._editor = editor;
 		this._modeService = modeService;
 		this._model = this._editor.getModel();
-		this._domNode = document.createElement('div');
-		this._domNode.className = 'tokens-inspect-widget';
-		this._tokenizationSupport = getSafeTokenizationSupport(this._model.getLanguageIdentifier());
+		this._domNode = document.creAteElement('div');
+		this._domNode.clAssNAme = 'tokens-inspect-widget';
+		this._tokenizAtionSupport = getSAfeTokenizAtionSupport(this._model.getLAnguAgeIdentifier());
 		this._compute(this._editor.getPosition());
-		this._register(this._editor.onDidChangeCursorPosition((e) => this._compute(this._editor.getPosition())));
-		this._editor.addContentWidget(this);
+		this._register(this._editor.onDidChAngeCursorPosition((e) => this._compute(this._editor.getPosition())));
+		this._editor.AddContentWidget(this);
 	}
 
 	public dispose(): void {
@@ -180,103 +180,103 @@ class InspectTokensWidget extends Disposable implements IContentWidget {
 		return InspectTokensWidget._ID;
 	}
 
-	private _compute(position: Position): void {
-		let data = this._getTokensAtLine(position.lineNumber);
+	privAte _compute(position: Position): void {
+		let dAtA = this._getTokensAtLine(position.lineNumber);
 
 		let token1Index = 0;
-		for (let i = data.tokens1.length - 1; i >= 0; i--) {
-			let t = data.tokens1[i];
+		for (let i = dAtA.tokens1.length - 1; i >= 0; i--) {
+			let t = dAtA.tokens1[i];
 			if (position.column - 1 >= t.offset) {
 				token1Index = i;
-				break;
+				breAk;
 			}
 		}
 
 		let token2Index = 0;
-		for (let i = (data.tokens2.length >>> 1); i >= 0; i--) {
-			if (position.column - 1 >= data.tokens2[(i << 1)]) {
+		for (let i = (dAtA.tokens2.length >>> 1); i >= 0; i--) {
+			if (position.column - 1 >= dAtA.tokens2[(i << 1)]) {
 				token2Index = i;
-				break;
+				breAk;
 			}
 		}
 
 		let lineContent = this._model.getLineContent(position.lineNumber);
 		let tokenText = '';
-		if (token1Index < data.tokens1.length) {
-			let tokenStartIndex = data.tokens1[token1Index].offset;
-			let tokenEndIndex = token1Index + 1 < data.tokens1.length ? data.tokens1[token1Index + 1].offset : lineContent.length;
-			tokenText = lineContent.substring(tokenStartIndex, tokenEndIndex);
+		if (token1Index < dAtA.tokens1.length) {
+			let tokenStArtIndex = dAtA.tokens1[token1Index].offset;
+			let tokenEndIndex = token1Index + 1 < dAtA.tokens1.length ? dAtA.tokens1[token1Index + 1].offset : lineContent.length;
+			tokenText = lineContent.substring(tokenStArtIndex, tokenEndIndex);
 		}
 		reset(this._domNode,
 			$('h2.tm-token', undefined, renderTokenText(tokenText),
-				$('span.tm-token-length', undefined, `${tokenText.length} ${tokenText.length === 1 ? 'char' : 'chars'}`)));
+				$('spAn.tm-token-length', undefined, `${tokenText.length} ${tokenText.length === 1 ? 'chAr' : 'chArs'}`)));
 
-		append(this._domNode, $('hr.tokens-inspect-separator', { 'style': 'clear:both' }));
+		Append(this._domNode, $('hr.tokens-inspect-sepArAtor', { 'style': 'cleAr:both' }));
 
-		const metadata = (token2Index << 1) + 1 < data.tokens2.length ? this._decodeMetadata(data.tokens2[(token2Index << 1) + 1]) : null;
-		append(this._domNode, $('table.tm-metadata-table', undefined,
+		const metAdAtA = (token2Index << 1) + 1 < dAtA.tokens2.length ? this._decodeMetAdAtA(dAtA.tokens2[(token2Index << 1) + 1]) : null;
+		Append(this._domNode, $('tAble.tm-metAdAtA-tAble', undefined,
 			$('tbody', undefined,
 				$('tr', undefined,
-					$('td.tm-metadata-key', undefined, 'language'),
-					$('td.tm-metadata-value', undefined, `${metadata ? metadata.languageIdentifier.language : '-?-'}`)
+					$('td.tm-metAdAtA-key', undefined, 'lAnguAge'),
+					$('td.tm-metAdAtA-vAlue', undefined, `${metAdAtA ? metAdAtA.lAnguAgeIdentifier.lAnguAge : '-?-'}`)
 				),
 				$('tr', undefined,
-					$('td.tm-metadata-key', undefined, 'token type' as string),
-					$('td.tm-metadata-value', undefined, `${metadata ? this._tokenTypeToString(metadata.tokenType) : '-?-'}`)
+					$('td.tm-metAdAtA-key', undefined, 'token type' As string),
+					$('td.tm-metAdAtA-vAlue', undefined, `${metAdAtA ? this._tokenTypeToString(metAdAtA.tokenType) : '-?-'}`)
 				),
 				$('tr', undefined,
-					$('td.tm-metadata-key', undefined, 'font style' as string),
-					$('td.tm-metadata-value', undefined, `${metadata ? this._fontStyleToString(metadata.fontStyle) : '-?-'}`)
+					$('td.tm-metAdAtA-key', undefined, 'font style' As string),
+					$('td.tm-metAdAtA-vAlue', undefined, `${metAdAtA ? this._fontStyleToString(metAdAtA.fontStyle) : '-?-'}`)
 				),
 				$('tr', undefined,
-					$('td.tm-metadata-key', undefined, 'foreground'),
-					$('td.tm-metadata-value', undefined, `${metadata ? Color.Format.CSS.formatHex(metadata.foreground) : '-?-'}`)
+					$('td.tm-metAdAtA-key', undefined, 'foreground'),
+					$('td.tm-metAdAtA-vAlue', undefined, `${metAdAtA ? Color.FormAt.CSS.formAtHex(metAdAtA.foreground) : '-?-'}`)
 				),
 				$('tr', undefined,
-					$('td.tm-metadata-key', undefined, 'background'),
-					$('td.tm-metadata-value', undefined, `${metadata ? Color.Format.CSS.formatHex(metadata.background) : '-?-'}`)
+					$('td.tm-metAdAtA-key', undefined, 'bAckground'),
+					$('td.tm-metAdAtA-vAlue', undefined, `${metAdAtA ? Color.FormAt.CSS.formAtHex(metAdAtA.bAckground) : '-?-'}`)
 				)
 			)
 		));
-		append(this._domNode, $('hr.tokens-inspect-separator'));
+		Append(this._domNode, $('hr.tokens-inspect-sepArAtor'));
 
-		if (token1Index < data.tokens1.length) {
-			append(this._domNode, $('span.tm-token-type', undefined, data.tokens1[token1Index].type));
+		if (token1Index < dAtA.tokens1.length) {
+			Append(this._domNode, $('spAn.tm-token-type', undefined, dAtA.tokens1[token1Index].type));
 		}
 
-		this._editor.layoutContentWidget(this);
+		this._editor.lAyoutContentWidget(this);
 	}
 
-	private _decodeMetadata(metadata: number): IDecodedMetadata {
-		let colorMap = TokenizationRegistry.getColorMap()!;
-		let languageId = TokenMetadata.getLanguageId(metadata);
-		let tokenType = TokenMetadata.getTokenType(metadata);
-		let fontStyle = TokenMetadata.getFontStyle(metadata);
-		let foreground = TokenMetadata.getForeground(metadata);
-		let background = TokenMetadata.getBackground(metadata);
+	privAte _decodeMetAdAtA(metAdAtA: number): IDecodedMetAdAtA {
+		let colorMAp = TokenizAtionRegistry.getColorMAp()!;
+		let lAnguAgeId = TokenMetAdAtA.getLAnguAgeId(metAdAtA);
+		let tokenType = TokenMetAdAtA.getTokenType(metAdAtA);
+		let fontStyle = TokenMetAdAtA.getFontStyle(metAdAtA);
+		let foreground = TokenMetAdAtA.getForeground(metAdAtA);
+		let bAckground = TokenMetAdAtA.getBAckground(metAdAtA);
 		return {
-			languageIdentifier: this._modeService.getLanguageIdentifier(languageId)!,
+			lAnguAgeIdentifier: this._modeService.getLAnguAgeIdentifier(lAnguAgeId)!,
 			tokenType: tokenType,
 			fontStyle: fontStyle,
-			foreground: colorMap[foreground],
-			background: colorMap[background]
+			foreground: colorMAp[foreground],
+			bAckground: colorMAp[bAckground]
 		};
 	}
 
-	private _tokenTypeToString(tokenType: StandardTokenType): string {
+	privAte _tokenTypeToString(tokenType: StAndArdTokenType): string {
 		switch (tokenType) {
-			case StandardTokenType.Other: return 'Other';
-			case StandardTokenType.Comment: return 'Comment';
-			case StandardTokenType.String: return 'String';
-			case StandardTokenType.RegEx: return 'RegEx';
-			default: return '??';
+			cAse StAndArdTokenType.Other: return 'Other';
+			cAse StAndArdTokenType.Comment: return 'Comment';
+			cAse StAndArdTokenType.String: return 'String';
+			cAse StAndArdTokenType.RegEx: return 'RegEx';
+			defAult: return '??';
 		}
 	}
 
-	private _fontStyleToString(fontStyle: FontStyle): string {
+	privAte _fontStyleToString(fontStyle: FontStyle): string {
 		let r = '';
-		if (fontStyle & FontStyle.Italic) {
-			r += 'italic ';
+		if (fontStyle & FontStyle.ItAlic) {
+			r += 'itAlic ';
 		}
 		if (fontStyle & FontStyle.Bold) {
 			r += 'bold ';
@@ -290,29 +290,29 @@ class InspectTokensWidget extends Disposable implements IContentWidget {
 		return r;
 	}
 
-	private _getTokensAtLine(lineNumber: number): ICompleteLineTokenization {
-		let stateBeforeLine = this._getStateBeforeLine(lineNumber);
+	privAte _getTokensAtLine(lineNumber: number): ICompleteLineTokenizAtion {
+		let stAteBeforeLine = this._getStAteBeforeLine(lineNumber);
 
-		let tokenizationResult1 = this._tokenizationSupport.tokenize(this._model.getLineContent(lineNumber), stateBeforeLine, 0);
-		let tokenizationResult2 = this._tokenizationSupport.tokenize2(this._model.getLineContent(lineNumber), stateBeforeLine, 0);
+		let tokenizAtionResult1 = this._tokenizAtionSupport.tokenize(this._model.getLineContent(lineNumber), stAteBeforeLine, 0);
+		let tokenizAtionResult2 = this._tokenizAtionSupport.tokenize2(this._model.getLineContent(lineNumber), stAteBeforeLine, 0);
 
 		return {
-			startState: stateBeforeLine,
-			tokens1: tokenizationResult1.tokens,
-			tokens2: tokenizationResult2.tokens,
-			endState: tokenizationResult1.endState
+			stArtStAte: stAteBeforeLine,
+			tokens1: tokenizAtionResult1.tokens,
+			tokens2: tokenizAtionResult2.tokens,
+			endStAte: tokenizAtionResult1.endStAte
 		};
 	}
 
-	private _getStateBeforeLine(lineNumber: number): IState {
-		let state: IState = this._tokenizationSupport.getInitialState();
+	privAte _getStAteBeforeLine(lineNumber: number): IStAte {
+		let stAte: IStAte = this._tokenizAtionSupport.getInitiAlStAte();
 
 		for (let i = 1; i < lineNumber; i++) {
-			let tokenizationResult = this._tokenizationSupport.tokenize(this._model.getLineContent(i), state, 0);
-			state = tokenizationResult.endState;
+			let tokenizAtionResult = this._tokenizAtionSupport.tokenize(this._model.getLineContent(i), stAte, 0);
+			stAte = tokenizAtionResult.endStAte;
 		}
 
-		return state;
+		return stAte;
 	}
 
 	public getDomNode(): HTMLElement {
@@ -330,19 +330,19 @@ class InspectTokensWidget extends Disposable implements IContentWidget {
 registerEditorContribution(InspectTokensController.ID, InspectTokensController);
 registerEditorAction(InspectTokens);
 
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 	const border = theme.getColor(editorHoverBorder);
 	if (border) {
 		let borderWidth = theme.type === ColorScheme.HIGH_CONTRAST ? 2 : 1;
-		collector.addRule(`.monaco-editor .tokens-inspect-widget { border: ${borderWidth}px solid ${border}; }`);
-		collector.addRule(`.monaco-editor .tokens-inspect-widget .tokens-inspect-separator { background-color: ${border}; }`);
+		collector.AddRule(`.monAco-editor .tokens-inspect-widget { border: ${borderWidth}px solid ${border}; }`);
+		collector.AddRule(`.monAco-editor .tokens-inspect-widget .tokens-inspect-sepArAtor { bAckground-color: ${border}; }`);
 	}
-	const background = theme.getColor(editorHoverBackground);
-	if (background) {
-		collector.addRule(`.monaco-editor .tokens-inspect-widget { background-color: ${background}; }`);
+	const bAckground = theme.getColor(editorHoverBAckground);
+	if (bAckground) {
+		collector.AddRule(`.monAco-editor .tokens-inspect-widget { bAckground-color: ${bAckground}; }`);
 	}
 	const foreground = theme.getColor(editorHoverForeground);
 	if (foreground) {
-		collector.addRule(`.monaco-editor .tokens-inspect-widget { color: ${foreground}; }`);
+		collector.AddRule(`.monAco-editor .tokens-inspect-widget { color: ${foreground}; }`);
 	}
 });

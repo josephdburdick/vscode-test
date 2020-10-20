@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
-const Mocha = require('mocha');
+const pAth = require('pAth');
+const MochA = require('mochA');
 const minimist = require('minimist');
 
-const [, , ...args] = process.argv;
-const opts = minimist(args, {
-	boolean: 'web',
+const [, , ...Args] = process.Argv;
+const opts = minimist(Args, {
+	booleAn: 'web',
 	string: ['f', 'g']
 });
 
@@ -23,16 +23,16 @@ const options = {
 };
 
 if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
-	options.reporter = 'mocha-multi-reporters';
+	options.reporter = 'mochA-multi-reporters';
 	options.reporterOptions = {
-		reporterEnabled: 'spec, mocha-junit-reporter',
-		mochaJunitReporterReporterOptions: {
-			testsuitesTitle: `${suite} ${process.platform}`,
-			mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${process.arch}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)
+		reporterEnAbled: 'spec, mochA-junit-reporter',
+		mochAJunitReporterReporterOptions: {
+			testsuitesTitle: `${suite} ${process.plAtform}`,
+			mochAFile: pAth.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.plAtform}-${process.Arch}-${suite.toLowerCAse().replAce(/[^\w]/g, '-')}-results.xml`)
 		}
 	};
 }
 
-const mocha = new Mocha(options);
-mocha.addFile('out/main.js');
-mocha.run(failures => process.exit(failures ? -1 : 0));
+const mochA = new MochA(options);
+mochA.AddFile('out/mAin.js');
+mochA.run(fAilures => process.exit(fAilures ? -1 : 0));

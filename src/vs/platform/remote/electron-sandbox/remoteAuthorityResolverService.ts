@@ -1,107 +1,107 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 //
-import { ResolvedAuthority, IRemoteAuthorityResolverService, ResolverResult, ResolvedOptions, IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import * as errors from 'vs/base/common/errors';
-import { RemoteAuthorities } from 'vs/base/common/network';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter } from 'vs/base/common/event';
+import { ResolvedAuthority, IRemoteAuthorityResolverService, ResolverResult, ResolvedOptions, IRemoteConnectionDAtA } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import * As errors from 'vs/bAse/common/errors';
+import { RemoteAuthorities } from 'vs/bAse/common/network';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter } from 'vs/bAse/common/event';
 
-class PendingResolveAuthorityRequest {
+clAss PendingResolveAuthorityRequest {
 
-	public value: ResolverResult | null;
+	public vAlue: ResolverResult | null;
 
 	constructor(
-		private readonly _resolve: (value: ResolverResult) => void,
-		private readonly _reject: (err: any) => void,
-		public readonly promise: Promise<ResolverResult>,
+		privAte reAdonly _resolve: (vAlue: ResolverResult) => void,
+		privAte reAdonly _reject: (err: Any) => void,
+		public reAdonly promise: Promise<ResolverResult>,
 	) {
-		this.value = null;
+		this.vAlue = null;
 	}
 
-	resolve(value: ResolverResult): void {
-		this.value = value;
-		this._resolve(this.value);
+	resolve(vAlue: ResolverResult): void {
+		this.vAlue = vAlue;
+		this._resolve(this.vAlue);
 	}
 
-	reject(err: any): void {
+	reject(err: Any): void {
 		this._reject(err);
 	}
 }
 
-export class RemoteAuthorityResolverService extends Disposable implements IRemoteAuthorityResolverService {
+export clAss RemoteAuthorityResolverService extends DisposAble implements IRemoteAuthorityResolverService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidChangeConnectionData = this._register(new Emitter<void>());
-	public readonly onDidChangeConnectionData = this._onDidChangeConnectionData.event;
+	privAte reAdonly _onDidChAngeConnectionDAtA = this._register(new Emitter<void>());
+	public reAdonly onDidChAngeConnectionDAtA = this._onDidChAngeConnectionDAtA.event;
 
-	private readonly _resolveAuthorityRequests: Map<string, PendingResolveAuthorityRequest>;
-	private readonly _connectionTokens: Map<string, string>;
+	privAte reAdonly _resolveAuthorityRequests: MAp<string, PendingResolveAuthorityRequest>;
+	privAte reAdonly _connectionTokens: MAp<string, string>;
 
 	constructor() {
 		super();
-		this._resolveAuthorityRequests = new Map<string, PendingResolveAuthorityRequest>();
-		this._connectionTokens = new Map<string, string>();
+		this._resolveAuthorityRequests = new MAp<string, PendingResolveAuthorityRequest>();
+		this._connectionTokens = new MAp<string, string>();
 	}
 
-	resolveAuthority(authority: string): Promise<ResolverResult> {
-		if (!this._resolveAuthorityRequests.has(authority)) {
-			let resolve: (value: ResolverResult) => void;
-			let reject: (err: any) => void;
+	resolveAuthority(Authority: string): Promise<ResolverResult> {
+		if (!this._resolveAuthorityRequests.hAs(Authority)) {
+			let resolve: (vAlue: ResolverResult) => void;
+			let reject: (err: Any) => void;
 			const promise = new Promise<ResolverResult>((_resolve, _reject) => {
 				resolve = _resolve;
 				reject = _reject;
 			});
-			this._resolveAuthorityRequests.set(authority, new PendingResolveAuthorityRequest(resolve!, reject!, promise));
+			this._resolveAuthorityRequests.set(Authority, new PendingResolveAuthorityRequest(resolve!, reject!, promise));
 		}
-		return this._resolveAuthorityRequests.get(authority)!.promise;
+		return this._resolveAuthorityRequests.get(Authority)!.promise;
 	}
 
-	getConnectionData(authority: string): IRemoteConnectionData | null {
-		if (!this._resolveAuthorityRequests.has(authority)) {
+	getConnectionDAtA(Authority: string): IRemoteConnectionDAtA | null {
+		if (!this._resolveAuthorityRequests.hAs(Authority)) {
 			return null;
 		}
-		const request = this._resolveAuthorityRequests.get(authority)!;
-		if (!request.value) {
+		const request = this._resolveAuthorityRequests.get(Authority)!;
+		if (!request.vAlue) {
 			return null;
 		}
-		const connectionToken = this._connectionTokens.get(authority);
+		const connectionToken = this._connectionTokens.get(Authority);
 		return {
-			host: request.value.authority.host,
-			port: request.value.authority.port,
+			host: request.vAlue.Authority.host,
+			port: request.vAlue.Authority.port,
 			connectionToken: connectionToken
 		};
 	}
 
-	_clearResolvedAuthority(authority: string): void {
-		if (this._resolveAuthorityRequests.has(authority)) {
-			this._resolveAuthorityRequests.get(authority)!.reject(errors.canceled());
-			this._resolveAuthorityRequests.delete(authority);
+	_cleArResolvedAuthority(Authority: string): void {
+		if (this._resolveAuthorityRequests.hAs(Authority)) {
+			this._resolveAuthorityRequests.get(Authority)!.reject(errors.cAnceled());
+			this._resolveAuthorityRequests.delete(Authority);
 		}
 	}
 
 	_setResolvedAuthority(resolvedAuthority: ResolvedAuthority, options?: ResolvedOptions): void {
-		if (this._resolveAuthorityRequests.has(resolvedAuthority.authority)) {
-			const request = this._resolveAuthorityRequests.get(resolvedAuthority.authority)!;
-			RemoteAuthorities.set(resolvedAuthority.authority, resolvedAuthority.host, resolvedAuthority.port);
-			request.resolve({ authority: resolvedAuthority, options });
-			this._onDidChangeConnectionData.fire();
+		if (this._resolveAuthorityRequests.hAs(resolvedAuthority.Authority)) {
+			const request = this._resolveAuthorityRequests.get(resolvedAuthority.Authority)!;
+			RemoteAuthorities.set(resolvedAuthority.Authority, resolvedAuthority.host, resolvedAuthority.port);
+			request.resolve({ Authority: resolvedAuthority, options });
+			this._onDidChAngeConnectionDAtA.fire();
 		}
 	}
 
-	_setResolvedAuthorityError(authority: string, err: any): void {
-		if (this._resolveAuthorityRequests.has(authority)) {
-			const request = this._resolveAuthorityRequests.get(authority)!;
+	_setResolvedAuthorityError(Authority: string, err: Any): void {
+		if (this._resolveAuthorityRequests.hAs(Authority)) {
+			const request = this._resolveAuthorityRequests.get(Authority)!;
 			request.reject(err);
 		}
 	}
 
-	_setAuthorityConnectionToken(authority: string, connectionToken: string): void {
-		this._connectionTokens.set(authority, connectionToken);
-		RemoteAuthorities.setConnectionToken(authority, connectionToken);
-		this._onDidChangeConnectionData.fire();
+	_setAuthorityConnectionToken(Authority: string, connectionToken: string): void {
+		this._connectionTokens.set(Authority, connectionToken);
+		RemoteAuthorities.setConnectionToken(Authority, connectionToken);
+		this._onDidChAngeConnectionDAtA.fire();
 	}
 }

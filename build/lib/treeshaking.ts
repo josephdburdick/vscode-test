@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as ts from 'typescript';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
+import * As ts from 'typescript';
 
-const TYPESCRIPT_LIB_FOLDER = path.dirname(require.resolve('typescript/lib/lib.d.ts'));
+const TYPESCRIPT_LIB_FOLDER = pAth.dirnAme(require.resolve('typescript/lib/lib.d.ts'));
 
-export const enum ShakeLevel {
+export const enum ShAkeLevel {
 	Files = 0,
 	InnerFile = 1,
-	ClassMembers = 2
+	ClAssMembers = 2
 }
 
-export function toStringShakeLevel(shakeLevel: ShakeLevel): string {
-	switch (shakeLevel) {
-		case ShakeLevel.Files:
+export function toStringShAkeLevel(shAkeLevel: ShAkeLevel): string {
+	switch (shAkeLevel) {
+		cAse ShAkeLevel.Files:
 			return 'Files (0)';
-		case ShakeLevel.InnerFile:
+		cAse ShAkeLevel.InnerFile:
 			return 'InnerFile (1)';
-		case ShakeLevel.ClassMembers:
-			return 'ClassMembers (2)';
+		cAse ShAkeLevel.ClAssMembers:
+			return 'ClAssMembers (2)';
 	}
 }
 
-export interface ITreeShakingOptions {
+export interfAce ITreeShAkingOptions {
 	/**
-	 * The full path to the root where sources are.
+	 * The full pAth to the root where sources Are.
 	 */
 	sourcesRoot: string;
 	/**
 	 * Module ids.
-	 * e.g. `vs/editor/editor.main` or `index`
+	 * e.g. `vs/editor/editor.mAin` or `index`
 	 */
 	entryPoints: string[];
 	/**
-	 * Inline usages.
+	 * Inline usAges.
 	 */
 	inlineEntryPoints: string[];
 	/**
@@ -49,79 +49,79 @@ export interface ITreeShakingOptions {
 	/**
 	 * TypeScript compiler options.
 	 */
-	compilerOptions?: any;
+	compilerOptions?: Any;
 	/**
-	 * The shake level to perform.
+	 * The shAke level to perform.
 	 */
-	shakeLevel: ShakeLevel;
+	shAkeLevel: ShAkeLevel;
 	/**
-	 * regex pattern to ignore certain imports e.g. `vs/css!` imports
+	 * regex pAttern to ignore certAin imports e.g. `vs/css!` imports
 	 */
-	importIgnorePattern: RegExp;
+	importIgnorePAttern: RegExp;
 
 	redirects: { [module: string]: string; };
 }
 
-export interface ITreeShakingResult {
+export interfAce ITreeShAkingResult {
 	[file: string]: string;
 }
 
-function printDiagnostics(options: ITreeShakingOptions, diagnostics: ReadonlyArray<ts.Diagnostic>): void {
-	for (const diag of diagnostics) {
+function printDiAgnostics(options: ITreeShAkingOptions, diAgnostics: ReAdonlyArrAy<ts.DiAgnostic>): void {
+	for (const diAg of diAgnostics) {
 		let result = '';
-		if (diag.file) {
-			result += `${path.join(options.sourcesRoot, diag.file.fileName)}`;
+		if (diAg.file) {
+			result += `${pAth.join(options.sourcesRoot, diAg.file.fileNAme)}`;
 		}
-		if (diag.file && diag.start) {
-			let location = diag.file.getLineAndCharacterOfPosition(diag.start);
-			result += `:${location.line + 1}:${location.character}`;
+		if (diAg.file && diAg.stArt) {
+			let locAtion = diAg.file.getLineAndChArActerOfPosition(diAg.stArt);
+			result += `:${locAtion.line + 1}:${locAtion.chArActer}`;
 		}
-		result += ` - ` + JSON.stringify(diag.messageText);
+		result += ` - ` + JSON.stringify(diAg.messAgeText);
 		console.log(result);
 	}
 }
 
-export function shake(options: ITreeShakingOptions): ITreeShakingResult {
-	const languageService = createTypeScriptLanguageService(options);
-	const program = languageService.getProgram()!;
+export function shAke(options: ITreeShAkingOptions): ITreeShAkingResult {
+	const lAnguAgeService = creAteTypeScriptLAnguAgeService(options);
+	const progrAm = lAnguAgeService.getProgrAm()!;
 
-	const globalDiagnostics = program.getGlobalDiagnostics();
-	if (globalDiagnostics.length > 0) {
-		printDiagnostics(options, globalDiagnostics);
-		throw new Error(`Compilation Errors encountered.`);
+	const globAlDiAgnostics = progrAm.getGlobAlDiAgnostics();
+	if (globAlDiAgnostics.length > 0) {
+		printDiAgnostics(options, globAlDiAgnostics);
+		throw new Error(`CompilAtion Errors encountered.`);
 	}
 
-	const syntacticDiagnostics = program.getSyntacticDiagnostics();
-	if (syntacticDiagnostics.length > 0) {
-		printDiagnostics(options, syntacticDiagnostics);
-		throw new Error(`Compilation Errors encountered.`);
+	const syntActicDiAgnostics = progrAm.getSyntActicDiAgnostics();
+	if (syntActicDiAgnostics.length > 0) {
+		printDiAgnostics(options, syntActicDiAgnostics);
+		throw new Error(`CompilAtion Errors encountered.`);
 	}
 
-	const semanticDiagnostics = program.getSemanticDiagnostics();
-	if (semanticDiagnostics.length > 0) {
-		printDiagnostics(options, semanticDiagnostics);
-		throw new Error(`Compilation Errors encountered.`);
+	const semAnticDiAgnostics = progrAm.getSemAnticDiAgnostics();
+	if (semAnticDiAgnostics.length > 0) {
+		printDiAgnostics(options, semAnticDiAgnostics);
+		throw new Error(`CompilAtion Errors encountered.`);
 	}
 
-	markNodes(languageService, options);
+	mArkNodes(lAnguAgeService, options);
 
-	return generateResult(languageService, options.shakeLevel);
+	return generAteResult(lAnguAgeService, options.shAkeLevel);
 }
 
-//#region Discovery, LanguageService & Setup
-function createTypeScriptLanguageService(options: ITreeShakingOptions): ts.LanguageService {
+//#region Discovery, LAnguAgeService & Setup
+function creAteTypeScriptLAnguAgeService(options: ITreeShAkingOptions): ts.LAnguAgeService {
 	// Discover referenced files
-	const FILES = discoverAndReadFiles(options);
+	const FILES = discoverAndReAdFiles(options);
 
-	// Add fake usage files
-	options.inlineEntryPoints.forEach((inlineEntryPoint, index) => {
+	// Add fAke usAge files
+	options.inlineEntryPoints.forEAch((inlineEntryPoint, index) => {
 		FILES[`inlineEntryPoint.${index}.ts`] = inlineEntryPoint;
 	});
 
-	// Add additional typings
-	options.typings.forEach((typing) => {
-		const filePath = path.join(options.sourcesRoot, typing);
-		FILES[typing] = fs.readFileSync(filePath).toString();
+	// Add AdditionAl typings
+	options.typings.forEAch((typing) => {
+		const filePAth = pAth.join(options.sourcesRoot, typing);
+		FILES[typing] = fs.reAdFileSync(filePAth).toString();
 	});
 
 	// Resolve libs
@@ -129,17 +129,17 @@ function createTypeScriptLanguageService(options: ITreeShakingOptions): ts.Langu
 
 	const compilerOptions = ts.convertCompilerOptionsFromJson(options.compilerOptions, options.sourcesRoot).options;
 
-	const host = new TypeScriptLanguageServiceHost(RESOLVED_LIBS, FILES, compilerOptions);
-	return ts.createLanguageService(host);
+	const host = new TypeScriptLAnguAgeServiceHost(RESOLVED_LIBS, FILES, compilerOptions);
+	return ts.creAteLAnguAgeService(host);
 }
 
 /**
- * Read imports and follow them until all files have been handled
+ * ReAd imports And follow them until All files hAve been hAndled
  */
-function discoverAndReadFiles(options: ITreeShakingOptions): IFileMap {
-	const FILES: IFileMap = {};
+function discoverAndReAdFiles(options: ITreeShAkingOptions): IFileMAp {
+	const FILES: IFileMAp = {};
 
-	const in_queue: { [module: string]: boolean; } = Object.create(null);
+	const in_queue: { [module: string]: booleAn; } = Object.creAte(null);
 	const queue: string[] = [];
 
 	const enqueue = (moduleId: string) => {
@@ -150,42 +150,42 @@ function discoverAndReadFiles(options: ITreeShakingOptions): IFileMap {
 		queue.push(moduleId);
 	};
 
-	options.entryPoints.forEach((entryPoint) => enqueue(entryPoint));
+	options.entryPoints.forEAch((entryPoint) => enqueue(entryPoint));
 
 	while (queue.length > 0) {
 		const moduleId = queue.shift()!;
-		const dts_filename = path.join(options.sourcesRoot, moduleId + '.d.ts');
-		if (fs.existsSync(dts_filename)) {
-			const dts_filecontents = fs.readFileSync(dts_filename).toString();
+		const dts_filenAme = pAth.join(options.sourcesRoot, moduleId + '.d.ts');
+		if (fs.existsSync(dts_filenAme)) {
+			const dts_filecontents = fs.reAdFileSync(dts_filenAme).toString();
 			FILES[`${moduleId}.d.ts`] = dts_filecontents;
 			continue;
 		}
 
-		const js_filename = path.join(options.sourcesRoot, moduleId + '.js');
-		if (fs.existsSync(js_filename)) {
-			// This is an import for a .js file, so ignore it...
+		const js_filenAme = pAth.join(options.sourcesRoot, moduleId + '.js');
+		if (fs.existsSync(js_filenAme)) {
+			// This is An import for A .js file, so ignore it...
 			continue;
 		}
 
-		let ts_filename: string;
+		let ts_filenAme: string;
 		if (options.redirects[moduleId]) {
-			ts_filename = path.join(options.sourcesRoot, options.redirects[moduleId] + '.ts');
+			ts_filenAme = pAth.join(options.sourcesRoot, options.redirects[moduleId] + '.ts');
 		} else {
-			ts_filename = path.join(options.sourcesRoot, moduleId + '.ts');
+			ts_filenAme = pAth.join(options.sourcesRoot, moduleId + '.ts');
 		}
-		const ts_filecontents = fs.readFileSync(ts_filename).toString();
+		const ts_filecontents = fs.reAdFileSync(ts_filenAme).toString();
 		const info = ts.preProcessFile(ts_filecontents);
 		for (let i = info.importedFiles.length - 1; i >= 0; i--) {
-			const importedFileName = info.importedFiles[i].fileName;
+			const importedFileNAme = info.importedFiles[i].fileNAme;
 
-			if (options.importIgnorePattern.test(importedFileName)) {
+			if (options.importIgnorePAttern.test(importedFileNAme)) {
 				// Ignore vs/css! imports
 				continue;
 			}
 
-			let importedModuleId = importedFileName;
+			let importedModuleId = importedFileNAme;
 			if (/(^\.\/)|(^\.\.\/)/.test(importedModuleId)) {
-				importedModuleId = path.join(path.dirname(moduleId), importedModuleId);
+				importedModuleId = pAth.join(pAth.dirnAme(moduleId), importedModuleId);
 			}
 			enqueue(importedModuleId);
 		}
@@ -197,26 +197,26 @@ function discoverAndReadFiles(options: ITreeShakingOptions): IFileMap {
 }
 
 /**
- * Read lib files and follow lib references
+ * ReAd lib files And follow lib references
  */
-function processLibFiles(options: ITreeShakingOptions): ILibMap {
+function processLibFiles(options: ITreeShAkingOptions): ILibMAp {
 
-	const stack: string[] = [...options.compilerOptions.lib];
-	const result: ILibMap = {};
+	const stAck: string[] = [...options.compilerOptions.lib];
+	const result: ILibMAp = {};
 
-	while (stack.length > 0) {
-		const filename = `lib.${stack.shift()!.toLowerCase()}.d.ts`;
-		const key = `defaultLib:${filename}`;
+	while (stAck.length > 0) {
+		const filenAme = `lib.${stAck.shift()!.toLowerCAse()}.d.ts`;
+		const key = `defAultLib:${filenAme}`;
 		if (!result[key]) {
-			// add this file
-			const filepath = path.join(TYPESCRIPT_LIB_FOLDER, filename);
-			const sourceText = fs.readFileSync(filepath).toString();
+			// Add this file
+			const filepAth = pAth.join(TYPESCRIPT_LIB_FOLDER, filenAme);
+			const sourceText = fs.reAdFileSync(filepAth).toString();
 			result[key] = sourceText;
 
-			// precess dependencies and "recurse"
+			// precess dependencies And "recurse"
 			const info = ts.preProcessFile(sourceText);
 			for (let ref of info.libReferenceDirectives) {
-				stack.push(ref.fileName);
+				stAck.push(ref.fileNAme);
 			}
 		}
 	}
@@ -224,141 +224,141 @@ function processLibFiles(options: ITreeShakingOptions): ILibMap {
 	return result;
 }
 
-interface ILibMap { [libName: string]: string; }
-interface IFileMap { [fileName: string]: string; }
+interfAce ILibMAp { [libNAme: string]: string; }
+interfAce IFileMAp { [fileNAme: string]: string; }
 
 /**
- * A TypeScript language service host
+ * A TypeScript lAnguAge service host
  */
-class TypeScriptLanguageServiceHost implements ts.LanguageServiceHost {
+clAss TypeScriptLAnguAgeServiceHost implements ts.LAnguAgeServiceHost {
 
-	private readonly _libs: ILibMap;
-	private readonly _files: IFileMap;
-	private readonly _compilerOptions: ts.CompilerOptions;
+	privAte reAdonly _libs: ILibMAp;
+	privAte reAdonly _files: IFileMAp;
+	privAte reAdonly _compilerOptions: ts.CompilerOptions;
 
-	constructor(libs: ILibMap, files: IFileMap, compilerOptions: ts.CompilerOptions) {
+	constructor(libs: ILibMAp, files: IFileMAp, compilerOptions: ts.CompilerOptions) {
 		this._libs = libs;
 		this._files = files;
 		this._compilerOptions = compilerOptions;
 	}
 
-	// --- language service host ---------------
+	// --- lAnguAge service host ---------------
 
-	getCompilationSettings(): ts.CompilerOptions {
+	getCompilAtionSettings(): ts.CompilerOptions {
 		return this._compilerOptions;
 	}
-	getScriptFileNames(): string[] {
+	getScriptFileNAmes(): string[] {
 		return (
-			([] as string[])
-				.concat(Object.keys(this._libs))
-				.concat(Object.keys(this._files))
+			([] As string[])
+				.concAt(Object.keys(this._libs))
+				.concAt(Object.keys(this._files))
 		);
 	}
-	getScriptVersion(_fileName: string): string {
+	getScriptVersion(_fileNAme: string): string {
 		return '1';
 	}
 	getProjectVersion(): string {
 		return '1';
 	}
-	getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
-		if (this._files.hasOwnProperty(fileName)) {
-			return ts.ScriptSnapshot.fromString(this._files[fileName]);
-		} else if (this._libs.hasOwnProperty(fileName)) {
-			return ts.ScriptSnapshot.fromString(this._libs[fileName]);
+	getScriptSnApshot(fileNAme: string): ts.IScriptSnApshot {
+		if (this._files.hAsOwnProperty(fileNAme)) {
+			return ts.ScriptSnApshot.fromString(this._files[fileNAme]);
+		} else if (this._libs.hAsOwnProperty(fileNAme)) {
+			return ts.ScriptSnApshot.fromString(this._libs[fileNAme]);
 		} else {
-			return ts.ScriptSnapshot.fromString('');
+			return ts.ScriptSnApshot.fromString('');
 		}
 	}
-	getScriptKind(_fileName: string): ts.ScriptKind {
+	getScriptKind(_fileNAme: string): ts.ScriptKind {
 		return ts.ScriptKind.TS;
 	}
 	getCurrentDirectory(): string {
 		return '';
 	}
-	getDefaultLibFileName(_options: ts.CompilerOptions): string {
-		return 'defaultLib:lib.d.ts';
+	getDefAultLibFileNAme(_options: ts.CompilerOptions): string {
+		return 'defAultLib:lib.d.ts';
 	}
-	isDefaultLibFileName(fileName: string): boolean {
-		return fileName === this.getDefaultLibFileName(this._compilerOptions);
+	isDefAultLibFileNAme(fileNAme: string): booleAn {
+		return fileNAme === this.getDefAultLibFileNAme(this._compilerOptions);
 	}
 }
 //#endregion
 
-//#region Tree Shaking
+//#region Tree ShAking
 
 const enum NodeColor {
 	White = 0,
-	Gray = 1,
-	Black = 2
+	GrAy = 1,
+	BlAck = 2
 }
 
 function getColor(node: ts.Node): NodeColor {
-	return (<any>node).$$$color || NodeColor.White;
+	return (<Any>node).$$$color || NodeColor.White;
 }
 function setColor(node: ts.Node, color: NodeColor): void {
-	(<any>node).$$$color = color;
+	(<Any>node).$$$color = color;
 }
-function nodeOrParentIsBlack(node: ts.Node): boolean {
+function nodeOrPArentIsBlAck(node: ts.Node): booleAn {
 	while (node) {
 		const color = getColor(node);
-		if (color === NodeColor.Black) {
+		if (color === NodeColor.BlAck) {
 			return true;
 		}
-		node = node.parent;
+		node = node.pArent;
 	}
-	return false;
+	return fAlse;
 }
-function nodeOrChildIsBlack(node: ts.Node): boolean {
-	if (getColor(node) === NodeColor.Black) {
+function nodeOrChildIsBlAck(node: ts.Node): booleAn {
+	if (getColor(node) === NodeColor.BlAck) {
 		return true;
 	}
 	for (const child of node.getChildren()) {
-		if (nodeOrChildIsBlack(child)) {
+		if (nodeOrChildIsBlAck(child)) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-function markNodes(languageService: ts.LanguageService, options: ITreeShakingOptions) {
-	const program = languageService.getProgram();
-	if (!program) {
-		throw new Error('Could not get program from language service');
+function mArkNodes(lAnguAgeService: ts.LAnguAgeService, options: ITreeShAkingOptions) {
+	const progrAm = lAnguAgeService.getProgrAm();
+	if (!progrAm) {
+		throw new Error('Could not get progrAm from lAnguAge service');
 	}
 
-	if (options.shakeLevel === ShakeLevel.Files) {
-		// Mark all source files Black
-		program.getSourceFiles().forEach((sourceFile) => {
-			setColor(sourceFile, NodeColor.Black);
+	if (options.shAkeLevel === ShAkeLevel.Files) {
+		// MArk All source files BlAck
+		progrAm.getSourceFiles().forEAch((sourceFile) => {
+			setColor(sourceFile, NodeColor.BlAck);
 		});
 		return;
 	}
 
-	const black_queue: ts.Node[] = [];
-	const gray_queue: ts.Node[] = [];
+	const blAck_queue: ts.Node[] = [];
+	const grAy_queue: ts.Node[] = [];
 	const export_import_queue: ts.Node[] = [];
-	const sourceFilesLoaded: { [fileName: string]: boolean } = {};
+	const sourceFilesLoAded: { [fileNAme: string]: booleAn } = {};
 
-	function enqueueTopLevelModuleStatements(sourceFile: ts.SourceFile): void {
+	function enqueueTopLevelModuleStAtements(sourceFile: ts.SourceFile): void {
 
-		sourceFile.forEachChild((node: ts.Node) => {
+		sourceFile.forEAchChild((node: ts.Node) => {
 
-			if (ts.isImportDeclaration(node)) {
-				if (!node.importClause && ts.isStringLiteral(node.moduleSpecifier)) {
-					setColor(node, NodeColor.Black);
+			if (ts.isImportDeclArAtion(node)) {
+				if (!node.importClAuse && ts.isStringLiterAl(node.moduleSpecifier)) {
+					setColor(node, NodeColor.BlAck);
 					enqueueImport(node, node.moduleSpecifier.text);
 				}
 				return;
 			}
 
-			if (ts.isExportDeclaration(node)) {
-				if (!node.exportClause && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
+			if (ts.isExportDeclArAtion(node)) {
+				if (!node.exportClAuse && node.moduleSpecifier && ts.isStringLiterAl(node.moduleSpecifier)) {
 					// export * from "foo";
-					setColor(node, NodeColor.Black);
+					setColor(node, NodeColor.BlAck);
 					enqueueImport(node, node.moduleSpecifier.text);
 				}
-				if (node.exportClause && ts.isNamedExports(node.exportClause)) {
-					for (const exportSpecifier of node.exportClause.elements) {
+				if (node.exportClAuse && ts.isNAmedExports(node.exportClAuse)) {
+					for (const exportSpecifier of node.exportClAuse.elements) {
 						export_import_queue.push(exportSpecifier);
 					}
 				}
@@ -366,267 +366,267 @@ function markNodes(languageService: ts.LanguageService, options: ITreeShakingOpt
 			}
 
 			if (
-				ts.isExpressionStatement(node)
-				|| ts.isIfStatement(node)
-				|| ts.isIterationStatement(node, true)
+				ts.isExpressionStAtement(node)
+				|| ts.isIfStAtement(node)
+				|| ts.isIterAtionStAtement(node, true)
 				|| ts.isExportAssignment(node)
 			) {
-				enqueue_black(node);
+				enqueue_blAck(node);
 			}
 
-			if (ts.isImportEqualsDeclaration(node)) {
+			if (ts.isImportEquAlsDeclArAtion(node)) {
 				if (/export/.test(node.getFullText(sourceFile))) {
-					// e.g. "export import Severity = BaseSeverity;"
-					enqueue_black(node);
+					// e.g. "export import Severity = BAseSeverity;"
+					enqueue_blAck(node);
 				}
 			}
 
 		});
 	}
 
-	function enqueue_gray(node: ts.Node): void {
-		if (nodeOrParentIsBlack(node) || getColor(node) === NodeColor.Gray) {
+	function enqueue_grAy(node: ts.Node): void {
+		if (nodeOrPArentIsBlAck(node) || getColor(node) === NodeColor.GrAy) {
 			return;
 		}
-		setColor(node, NodeColor.Gray);
-		gray_queue.push(node);
+		setColor(node, NodeColor.GrAy);
+		grAy_queue.push(node);
 	}
 
-	function enqueue_black(node: ts.Node): void {
+	function enqueue_blAck(node: ts.Node): void {
 		const previousColor = getColor(node);
 
-		if (previousColor === NodeColor.Black) {
+		if (previousColor === NodeColor.BlAck) {
 			return;
 		}
 
-		if (previousColor === NodeColor.Gray) {
-			// remove from gray queue
-			gray_queue.splice(gray_queue.indexOf(node), 1);
+		if (previousColor === NodeColor.GrAy) {
+			// remove from grAy queue
+			grAy_queue.splice(grAy_queue.indexOf(node), 1);
 			setColor(node, NodeColor.White);
 
-			// add to black queue
-			enqueue_black(node);
+			// Add to blAck queue
+			enqueue_blAck(node);
 
 			// // move from one queue to the other
-			// black_queue.push(node);
-			// setColor(node, NodeColor.Black);
+			// blAck_queue.push(node);
+			// setColor(node, NodeColor.BlAck);
 			return;
 		}
 
-		if (nodeOrParentIsBlack(node)) {
+		if (nodeOrPArentIsBlAck(node)) {
 			return;
 		}
 
-		const fileName = node.getSourceFile().fileName;
-		if (/^defaultLib:/.test(fileName) || /\.d\.ts$/.test(fileName)) {
-			setColor(node, NodeColor.Black);
+		const fileNAme = node.getSourceFile().fileNAme;
+		if (/^defAultLib:/.test(fileNAme) || /\.d\.ts$/.test(fileNAme)) {
+			setColor(node, NodeColor.BlAck);
 			return;
 		}
 
 		const sourceFile = node.getSourceFile();
-		if (!sourceFilesLoaded[sourceFile.fileName]) {
-			sourceFilesLoaded[sourceFile.fileName] = true;
-			enqueueTopLevelModuleStatements(sourceFile);
+		if (!sourceFilesLoAded[sourceFile.fileNAme]) {
+			sourceFilesLoAded[sourceFile.fileNAme] = true;
+			enqueueTopLevelModuleStAtements(sourceFile);
 		}
 
 		if (ts.isSourceFile(node)) {
 			return;
 		}
 
-		setColor(node, NodeColor.Black);
-		black_queue.push(node);
+		setColor(node, NodeColor.BlAck);
+		blAck_queue.push(node);
 
-		if (options.shakeLevel === ShakeLevel.ClassMembers && (ts.isMethodDeclaration(node) || ts.isMethodSignature(node) || ts.isPropertySignature(node) || ts.isPropertyDeclaration(node) || ts.isGetAccessor(node) || ts.isSetAccessor(node))) {
-			const references = languageService.getReferencesAtPosition(node.getSourceFile().fileName, node.name.pos + node.name.getLeadingTriviaWidth());
+		if (options.shAkeLevel === ShAkeLevel.ClAssMembers && (ts.isMethodDeclArAtion(node) || ts.isMethodSignAture(node) || ts.isPropertySignAture(node) || ts.isPropertyDeclArAtion(node) || ts.isGetAccessor(node) || ts.isSetAccessor(node))) {
+			const references = lAnguAgeService.getReferencesAtPosition(node.getSourceFile().fileNAme, node.nAme.pos + node.nAme.getLeAdingTriviAWidth());
 			if (references) {
 				for (let i = 0, len = references.length; i < len; i++) {
 					const reference = references[i];
-					const referenceSourceFile = program!.getSourceFile(reference.fileName);
+					const referenceSourceFile = progrAm!.getSourceFile(reference.fileNAme);
 					if (!referenceSourceFile) {
 						continue;
 					}
 
-					const referenceNode = getTokenAtPosition(referenceSourceFile, reference.textSpan.start, false, false);
+					const referenceNode = getTokenAtPosition(referenceSourceFile, reference.textSpAn.stArt, fAlse, fAlse);
 					if (
-						ts.isMethodDeclaration(referenceNode.parent)
-						|| ts.isPropertyDeclaration(referenceNode.parent)
-						|| ts.isGetAccessor(referenceNode.parent)
-						|| ts.isSetAccessor(referenceNode.parent)
+						ts.isMethodDeclArAtion(referenceNode.pArent)
+						|| ts.isPropertyDeclArAtion(referenceNode.pArent)
+						|| ts.isGetAccessor(referenceNode.pArent)
+						|| ts.isSetAccessor(referenceNode.pArent)
 					) {
-						enqueue_gray(referenceNode.parent);
+						enqueue_grAy(referenceNode.pArent);
 					}
 				}
 			}
 		}
 	}
 
-	function enqueueFile(filename: string): void {
-		const sourceFile = program!.getSourceFile(filename);
+	function enqueueFile(filenAme: string): void {
+		const sourceFile = progrAm!.getSourceFile(filenAme);
 		if (!sourceFile) {
-			console.warn(`Cannot find source file ${filename}`);
+			console.wArn(`CAnnot find source file ${filenAme}`);
 			return;
 		}
-		enqueue_black(sourceFile);
+		enqueue_blAck(sourceFile);
 	}
 
 	function enqueueImport(node: ts.Node, importText: string): void {
-		if (options.importIgnorePattern.test(importText)) {
+		if (options.importIgnorePAttern.test(importText)) {
 			// this import should be ignored
 			return;
 		}
 
 		const nodeSourceFile = node.getSourceFile();
-		let fullPath: string;
+		let fullPAth: string;
 		if (/(^\.\/)|(^\.\.\/)/.test(importText)) {
-			fullPath = path.join(path.dirname(nodeSourceFile.fileName), importText) + '.ts';
+			fullPAth = pAth.join(pAth.dirnAme(nodeSourceFile.fileNAme), importText) + '.ts';
 		} else {
-			fullPath = importText + '.ts';
+			fullPAth = importText + '.ts';
 		}
-		enqueueFile(fullPath);
+		enqueueFile(fullPAth);
 	}
 
-	options.entryPoints.forEach(moduleId => enqueueFile(moduleId + '.ts'));
-	// Add fake usage files
-	options.inlineEntryPoints.forEach((_, index) => enqueueFile(`inlineEntryPoint.${index}.ts`));
+	options.entryPoints.forEAch(moduleId => enqueueFile(moduleId + '.ts'));
+	// Add fAke usAge files
+	options.inlineEntryPoints.forEAch((_, index) => enqueueFile(`inlineEntryPoint.${index}.ts`));
 
 	let step = 0;
 
-	const checker = program.getTypeChecker();
-	while (black_queue.length > 0 || gray_queue.length > 0) {
+	const checker = progrAm.getTypeChecker();
+	while (blAck_queue.length > 0 || grAy_queue.length > 0) {
 		++step;
 		let node: ts.Node;
 
 		if (step % 100 === 0) {
-			console.log(`Treeshaking - ${Math.floor(100 * step / (step + black_queue.length + gray_queue.length))}% - ${step}/${step + black_queue.length + gray_queue.length} (${black_queue.length}, ${gray_queue.length})`);
+			console.log(`TreeshAking - ${MAth.floor(100 * step / (step + blAck_queue.length + grAy_queue.length))}% - ${step}/${step + blAck_queue.length + grAy_queue.length} (${blAck_queue.length}, ${grAy_queue.length})`);
 		}
 
-		if (black_queue.length === 0) {
-			for (let i = 0; i < gray_queue.length; i++) {
-				const node = gray_queue[i];
-				const nodeParent = node.parent;
-				if ((ts.isClassDeclaration(nodeParent) || ts.isInterfaceDeclaration(nodeParent)) && nodeOrChildIsBlack(nodeParent)) {
-					gray_queue.splice(i, 1);
-					black_queue.push(node);
-					setColor(node, NodeColor.Black);
+		if (blAck_queue.length === 0) {
+			for (let i = 0; i < grAy_queue.length; i++) {
+				const node = grAy_queue[i];
+				const nodePArent = node.pArent;
+				if ((ts.isClAssDeclArAtion(nodePArent) || ts.isInterfAceDeclArAtion(nodePArent)) && nodeOrChildIsBlAck(nodePArent)) {
+					grAy_queue.splice(i, 1);
+					blAck_queue.push(node);
+					setColor(node, NodeColor.BlAck);
 					i--;
 				}
 			}
 		}
 
-		if (black_queue.length > 0) {
-			node = black_queue.shift()!;
+		if (blAck_queue.length > 0) {
+			node = blAck_queue.shift()!;
 		} else {
-			// only gray nodes remaining...
-			break;
+			// only grAy nodes remAining...
+			breAk;
 		}
 		const nodeSourceFile = node.getSourceFile();
 
 		const loop = (node: ts.Node) => {
-			const [symbol, symbolImportNode] = getRealNodeSymbol(checker, node);
+			const [symbol, symbolImportNode] = getReAlNodeSymbol(checker, node);
 			if (symbolImportNode) {
-				setColor(symbolImportNode, NodeColor.Black);
+				setColor(symbolImportNode, NodeColor.BlAck);
 			}
 
-			if (symbol && !nodeIsInItsOwnDeclaration(nodeSourceFile, node, symbol)) {
-				for (let i = 0, len = symbol.declarations.length; i < len; i++) {
-					const declaration = symbol.declarations[i];
-					if (ts.isSourceFile(declaration)) {
+			if (symbol && !nodeIsInItsOwnDeclArAtion(nodeSourceFile, node, symbol)) {
+				for (let i = 0, len = symbol.declArAtions.length; i < len; i++) {
+					const declArAtion = symbol.declArAtions[i];
+					if (ts.isSourceFile(declArAtion)) {
 						// Do not enqueue full source files
-						// (they can be the declaration of a module import)
+						// (they cAn be the declArAtion of A module import)
 						continue;
 					}
 
-					if (options.shakeLevel === ShakeLevel.ClassMembers && (ts.isClassDeclaration(declaration) || ts.isInterfaceDeclaration(declaration)) && !isLocalCodeExtendingOrInheritingFromDefaultLibSymbol(program, checker, declaration)) {
-						enqueue_black(declaration.name!);
+					if (options.shAkeLevel === ShAkeLevel.ClAssMembers && (ts.isClAssDeclArAtion(declArAtion) || ts.isInterfAceDeclArAtion(declArAtion)) && !isLocAlCodeExtendingOrInheritingFromDefAultLibSymbol(progrAm, checker, declArAtion)) {
+						enqueue_blAck(declArAtion.nAme!);
 
-						for (let j = 0; j < declaration.members.length; j++) {
-							const member = declaration.members[j];
-							const memberName = member.name ? member.name.getText() : null;
+						for (let j = 0; j < declArAtion.members.length; j++) {
+							const member = declArAtion.members[j];
+							const memberNAme = member.nAme ? member.nAme.getText() : null;
 							if (
-								ts.isConstructorDeclaration(member)
-								|| ts.isConstructSignatureDeclaration(member)
-								|| ts.isIndexSignatureDeclaration(member)
-								|| ts.isCallSignatureDeclaration(member)
-								|| memberName === '[Symbol.iterator]'
-								|| memberName === '[Symbol.toStringTag]'
-								|| memberName === 'toJSON'
-								|| memberName === 'toString'
-								|| memberName === 'dispose'// TODO: keeping all `dispose` methods
-								|| /^_(.*)Brand$/.test(memberName || '') // TODO: keeping all members ending with `Brand`...
+								ts.isConstructorDeclArAtion(member)
+								|| ts.isConstructSignAtureDeclArAtion(member)
+								|| ts.isIndexSignAtureDeclArAtion(member)
+								|| ts.isCAllSignAtureDeclArAtion(member)
+								|| memberNAme === '[Symbol.iterAtor]'
+								|| memberNAme === '[Symbol.toStringTAg]'
+								|| memberNAme === 'toJSON'
+								|| memberNAme === 'toString'
+								|| memberNAme === 'dispose'// TODO: keeping All `dispose` methods
+								|| /^_(.*)BrAnd$/.test(memberNAme || '') // TODO: keeping All members ending with `BrAnd`...
 							) {
-								enqueue_black(member);
+								enqueue_blAck(member);
 							}
 						}
 
-						// queue the heritage clauses
-						if (declaration.heritageClauses) {
-							for (let heritageClause of declaration.heritageClauses) {
-								enqueue_black(heritageClause);
+						// queue the heritAge clAuses
+						if (declArAtion.heritAgeClAuses) {
+							for (let heritAgeClAuse of declArAtion.heritAgeClAuses) {
+								enqueue_blAck(heritAgeClAuse);
 							}
 						}
 					} else {
-						enqueue_black(declaration);
+						enqueue_blAck(declArAtion);
 					}
 				}
 			}
-			node.forEachChild(loop);
+			node.forEAchChild(loop);
 		};
-		node.forEachChild(loop);
+		node.forEAchChild(loop);
 	}
 
 	while (export_import_queue.length > 0) {
 		const node = export_import_queue.shift()!;
-		if (nodeOrParentIsBlack(node)) {
+		if (nodeOrPArentIsBlAck(node)) {
 			continue;
 		}
-		const symbol: ts.Symbol | undefined = (<any>node).symbol;
+		const symbol: ts.Symbol | undefined = (<Any>node).symbol;
 		if (!symbol) {
 			continue;
 		}
-		const aliased = checker.getAliasedSymbol(symbol);
-		if (aliased.declarations && aliased.declarations.length > 0) {
-			if (nodeOrParentIsBlack(aliased.declarations[0]) || nodeOrChildIsBlack(aliased.declarations[0])) {
-				setColor(node, NodeColor.Black);
+		const AliAsed = checker.getAliAsedSymbol(symbol);
+		if (AliAsed.declArAtions && AliAsed.declArAtions.length > 0) {
+			if (nodeOrPArentIsBlAck(AliAsed.declArAtions[0]) || nodeOrChildIsBlAck(AliAsed.declArAtions[0])) {
+				setColor(node, NodeColor.BlAck);
 			}
 		}
 	}
 }
 
-function nodeIsInItsOwnDeclaration(nodeSourceFile: ts.SourceFile, node: ts.Node, symbol: ts.Symbol): boolean {
-	for (let i = 0, len = symbol.declarations.length; i < len; i++) {
-		const declaration = symbol.declarations[i];
-		const declarationSourceFile = declaration.getSourceFile();
+function nodeIsInItsOwnDeclArAtion(nodeSourceFile: ts.SourceFile, node: ts.Node, symbol: ts.Symbol): booleAn {
+	for (let i = 0, len = symbol.declArAtions.length; i < len; i++) {
+		const declArAtion = symbol.declArAtions[i];
+		const declArAtionSourceFile = declArAtion.getSourceFile();
 
-		if (nodeSourceFile === declarationSourceFile) {
-			if (declaration.pos <= node.pos && node.end <= declaration.end) {
+		if (nodeSourceFile === declArAtionSourceFile) {
+			if (declArAtion.pos <= node.pos && node.end <= declArAtion.end) {
 				return true;
 			}
 		}
 	}
 
-	return false;
+	return fAlse;
 }
 
-function generateResult(languageService: ts.LanguageService, shakeLevel: ShakeLevel): ITreeShakingResult {
-	const program = languageService.getProgram();
-	if (!program) {
-		throw new Error('Could not get program from language service');
+function generAteResult(lAnguAgeService: ts.LAnguAgeService, shAkeLevel: ShAkeLevel): ITreeShAkingResult {
+	const progrAm = lAnguAgeService.getProgrAm();
+	if (!progrAm) {
+		throw new Error('Could not get progrAm from lAnguAge service');
 	}
 
-	let result: ITreeShakingResult = {};
-	const writeFile = (filePath: string, contents: string): void => {
-		result[filePath] = contents;
+	let result: ITreeShAkingResult = {};
+	const writeFile = (filePAth: string, contents: string): void => {
+		result[filePAth] = contents;
 	};
 
-	program.getSourceFiles().forEach((sourceFile) => {
-		const fileName = sourceFile.fileName;
-		if (/^defaultLib:/.test(fileName)) {
+	progrAm.getSourceFiles().forEAch((sourceFile) => {
+		const fileNAme = sourceFile.fileNAme;
+		if (/^defAultLib:/.test(fileNAme)) {
 			return;
 		}
-		const destination = fileName;
-		if (/\.d\.ts$/.test(fileName)) {
-			if (nodeOrChildIsBlack(sourceFile)) {
-				writeFile(destination, sourceFile.text);
+		const destinAtion = fileNAme;
+		if (/\.d\.ts$/.test(fileNAme)) {
+			if (nodeOrChildIsBlAck(sourceFile)) {
+				writeFile(destinAtion, sourceFile.text);
 			}
 			return;
 		}
@@ -637,81 +637,81 @@ function generateResult(languageService: ts.LanguageService, shakeLevel: ShakeLe
 		function keep(node: ts.Node): void {
 			result += text.substring(node.pos, node.end);
 		}
-		function write(data: string): void {
-			result += data;
+		function write(dAtA: string): void {
+			result += dAtA;
 		}
 
-		function writeMarkedNodes(node: ts.Node): void {
-			if (getColor(node) === NodeColor.Black) {
+		function writeMArkedNodes(node: ts.Node): void {
+			if (getColor(node) === NodeColor.BlAck) {
 				return keep(node);
 			}
 
-			// Always keep certain top-level statements
-			if (ts.isSourceFile(node.parent)) {
-				if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
+			// AlwAys keep certAin top-level stAtements
+			if (ts.isSourceFile(node.pArent)) {
+				if (ts.isExpressionStAtement(node) && ts.isStringLiterAl(node.expression) && node.expression.text === 'use strict') {
 					return keep(node);
 				}
 
-				if (ts.isVariableStatement(node) && nodeOrChildIsBlack(node)) {
+				if (ts.isVAriAbleStAtement(node) && nodeOrChildIsBlAck(node)) {
 					return keep(node);
 				}
 			}
 
-			// Keep the entire import in import * as X cases
-			if (ts.isImportDeclaration(node)) {
-				if (node.importClause && node.importClause.namedBindings) {
-					if (ts.isNamespaceImport(node.importClause.namedBindings)) {
-						if (getColor(node.importClause.namedBindings) === NodeColor.Black) {
+			// Keep the entire import in import * As X cAses
+			if (ts.isImportDeclArAtion(node)) {
+				if (node.importClAuse && node.importClAuse.nAmedBindings) {
+					if (ts.isNAmespAceImport(node.importClAuse.nAmedBindings)) {
+						if (getColor(node.importClAuse.nAmedBindings) === NodeColor.BlAck) {
 							return keep(node);
 						}
 					} else {
 						let survivingImports: string[] = [];
-						for (const importNode of node.importClause.namedBindings.elements) {
-							if (getColor(importNode) === NodeColor.Black) {
+						for (const importNode of node.importClAuse.nAmedBindings.elements) {
+							if (getColor(importNode) === NodeColor.BlAck) {
 								survivingImports.push(importNode.getFullText(sourceFile));
 							}
 						}
-						const leadingTriviaWidth = node.getLeadingTriviaWidth();
-						const leadingTrivia = sourceFile.text.substr(node.pos, leadingTriviaWidth);
+						const leAdingTriviAWidth = node.getLeAdingTriviAWidth();
+						const leAdingTriviA = sourceFile.text.substr(node.pos, leAdingTriviAWidth);
 						if (survivingImports.length > 0) {
-							if (node.importClause && node.importClause.name && getColor(node.importClause) === NodeColor.Black) {
-								return write(`${leadingTrivia}import ${node.importClause.name.text}, {${survivingImports.join(',')} } from${node.moduleSpecifier.getFullText(sourceFile)};`);
+							if (node.importClAuse && node.importClAuse.nAme && getColor(node.importClAuse) === NodeColor.BlAck) {
+								return write(`${leAdingTriviA}import ${node.importClAuse.nAme.text}, {${survivingImports.join(',')} } from${node.moduleSpecifier.getFullText(sourceFile)};`);
 							}
-							return write(`${leadingTrivia}import {${survivingImports.join(',')} } from${node.moduleSpecifier.getFullText(sourceFile)};`);
+							return write(`${leAdingTriviA}import {${survivingImports.join(',')} } from${node.moduleSpecifier.getFullText(sourceFile)};`);
 						} else {
-							if (node.importClause && node.importClause.name && getColor(node.importClause) === NodeColor.Black) {
-								return write(`${leadingTrivia}import ${node.importClause.name.text} from${node.moduleSpecifier.getFullText(sourceFile)};`);
+							if (node.importClAuse && node.importClAuse.nAme && getColor(node.importClAuse) === NodeColor.BlAck) {
+								return write(`${leAdingTriviA}import ${node.importClAuse.nAme.text} from${node.moduleSpecifier.getFullText(sourceFile)};`);
 							}
 						}
 					}
 				} else {
-					if (node.importClause && getColor(node.importClause) === NodeColor.Black) {
+					if (node.importClAuse && getColor(node.importClAuse) === NodeColor.BlAck) {
 						return keep(node);
 					}
 				}
 			}
 
-			if (ts.isExportDeclaration(node)) {
-				if (node.exportClause && node.moduleSpecifier && ts.isNamedExports(node.exportClause)) {
+			if (ts.isExportDeclArAtion(node)) {
+				if (node.exportClAuse && node.moduleSpecifier && ts.isNAmedExports(node.exportClAuse)) {
 					let survivingExports: string[] = [];
-					for (const exportSpecifier of node.exportClause.elements) {
-						if (getColor(exportSpecifier) === NodeColor.Black) {
+					for (const exportSpecifier of node.exportClAuse.elements) {
+						if (getColor(exportSpecifier) === NodeColor.BlAck) {
 							survivingExports.push(exportSpecifier.getFullText(sourceFile));
 						}
 					}
-					const leadingTriviaWidth = node.getLeadingTriviaWidth();
-					const leadingTrivia = sourceFile.text.substr(node.pos, leadingTriviaWidth);
+					const leAdingTriviAWidth = node.getLeAdingTriviAWidth();
+					const leAdingTriviA = sourceFile.text.substr(node.pos, leAdingTriviAWidth);
 					if (survivingExports.length > 0) {
-						return write(`${leadingTrivia}export {${survivingExports.join(',')} } from${node.moduleSpecifier.getFullText(sourceFile)};`);
+						return write(`${leAdingTriviA}export {${survivingExports.join(',')} } from${node.moduleSpecifier.getFullText(sourceFile)};`);
 					}
 				}
 			}
 
-			if (shakeLevel === ShakeLevel.ClassMembers && (ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node)) && nodeOrChildIsBlack(node)) {
+			if (shAkeLevel === ShAkeLevel.ClAssMembers && (ts.isClAssDeclArAtion(node) || ts.isInterfAceDeclArAtion(node)) && nodeOrChildIsBlAck(node)) {
 				let toWrite = node.getFullText();
 				for (let i = node.members.length - 1; i >= 0; i--) {
 					const member = node.members[i];
-					if (getColor(member) === NodeColor.Black || !member.name) {
+					if (getColor(member) === NodeColor.BlAck || !member.nAme) {
 						// keep method
 						continue;
 					}
@@ -723,26 +723,26 @@ function generateResult(languageService: ts.LanguageService, shakeLevel: ShakeLe
 				return write(toWrite);
 			}
 
-			if (ts.isFunctionDeclaration(node)) {
-				// Do not go inside functions if they haven't been marked
+			if (ts.isFunctionDeclArAtion(node)) {
+				// Do not go inside functions if they hAven't been mArked
 				return;
 			}
 
-			node.forEachChild(writeMarkedNodes);
+			node.forEAchChild(writeMArkedNodes);
 		}
 
-		if (getColor(sourceFile) !== NodeColor.Black) {
-			if (!nodeOrChildIsBlack(sourceFile)) {
-				// none of the elements are reachable => don't write this file at all!
+		if (getColor(sourceFile) !== NodeColor.BlAck) {
+			if (!nodeOrChildIsBlAck(sourceFile)) {
+				// none of the elements Are reAchAble => don't write this file At All!
 				return;
 			}
-			sourceFile.forEachChild(writeMarkedNodes);
+			sourceFile.forEAchChild(writeMArkedNodes);
 			result += sourceFile.endOfFileToken.getFullText(sourceFile);
 		} else {
 			result = text;
 		}
 
-		writeFile(destination, result);
+		writeFile(destinAtion, result);
 	});
 
 	return result;
@@ -752,131 +752,131 @@ function generateResult(languageService: ts.LanguageService, shakeLevel: ShakeLe
 
 //#region Utils
 
-function isLocalCodeExtendingOrInheritingFromDefaultLibSymbol(program: ts.Program, checker: ts.TypeChecker, declaration: ts.ClassDeclaration | ts.InterfaceDeclaration): boolean {
-	if (!program.isSourceFileDefaultLibrary(declaration.getSourceFile()) && declaration.heritageClauses) {
-		for (const heritageClause of declaration.heritageClauses) {
-			for (const type of heritageClause.types) {
-				const symbol = findSymbolFromHeritageType(checker, type);
+function isLocAlCodeExtendingOrInheritingFromDefAultLibSymbol(progrAm: ts.ProgrAm, checker: ts.TypeChecker, declArAtion: ts.ClAssDeclArAtion | ts.InterfAceDeclArAtion): booleAn {
+	if (!progrAm.isSourceFileDefAultLibrAry(declArAtion.getSourceFile()) && declArAtion.heritAgeClAuses) {
+		for (const heritAgeClAuse of declArAtion.heritAgeClAuses) {
+			for (const type of heritAgeClAuse.types) {
+				const symbol = findSymbolFromHeritAgeType(checker, type);
 				if (symbol) {
-					const decl = symbol.valueDeclaration || (symbol.declarations && symbol.declarations[0]);
-					if (decl && program.isSourceFileDefaultLibrary(decl.getSourceFile())) {
+					const decl = symbol.vAlueDeclArAtion || (symbol.declArAtions && symbol.declArAtions[0]);
+					if (decl && progrAm.isSourceFileDefAultLibrAry(decl.getSourceFile())) {
 						return true;
 					}
 				}
 			}
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-function findSymbolFromHeritageType(checker: ts.TypeChecker, type: ts.ExpressionWithTypeArguments | ts.Expression | ts.PrivateIdentifier): ts.Symbol | null {
+function findSymbolFromHeritAgeType(checker: ts.TypeChecker, type: ts.ExpressionWithTypeArguments | ts.Expression | ts.PrivAteIdentifier): ts.Symbol | null {
 	if (ts.isExpressionWithTypeArguments(type)) {
-		return findSymbolFromHeritageType(checker, type.expression);
+		return findSymbolFromHeritAgeType(checker, type.expression);
 	}
 	if (ts.isIdentifier(type)) {
-		return getRealNodeSymbol(checker, type)[0];
+		return getReAlNodeSymbol(checker, type)[0];
 	}
 	if (ts.isPropertyAccessExpression(type)) {
-		return findSymbolFromHeritageType(checker, type.name);
+		return findSymbolFromHeritAgeType(checker, type.nAme);
 	}
 	return null;
 }
 
 /**
- * Returns the node's symbol and the `import` node (if the symbol resolved from a different module)
+ * Returns the node's symbol And the `import` node (if the symbol resolved from A different module)
  */
-function getRealNodeSymbol(checker: ts.TypeChecker, node: ts.Node): [ts.Symbol | null, ts.Declaration | null] {
+function getReAlNodeSymbol(checker: ts.TypeChecker, node: ts.Node): [ts.Symbol | null, ts.DeclArAtion | null] {
 
-	// Use some TypeScript internals to avoid code duplication
-	type ObjectLiteralElementWithName = ts.ObjectLiteralElement & { name: ts.PropertyName; parent: ts.ObjectLiteralExpression | ts.JsxAttributes };
-	const getPropertySymbolsFromContextualType: (node: ObjectLiteralElementWithName, checker: ts.TypeChecker, contextualType: ts.Type, unionSymbolOk: boolean) => ReadonlyArray<ts.Symbol> = (<any>ts).getPropertySymbolsFromContextualType;
-	const getContainingObjectLiteralElement: (node: ts.Node) => ObjectLiteralElementWithName | undefined = (<any>ts).getContainingObjectLiteralElement;
-	const getNameFromPropertyName: (name: ts.PropertyName) => string | undefined = (<any>ts).getNameFromPropertyName;
+	// Use some TypeScript internAls to Avoid code duplicAtion
+	type ObjectLiterAlElementWithNAme = ts.ObjectLiterAlElement & { nAme: ts.PropertyNAme; pArent: ts.ObjectLiterAlExpression | ts.JsxAttributes };
+	const getPropertySymbolsFromContextuAlType: (node: ObjectLiterAlElementWithNAme, checker: ts.TypeChecker, contextuAlType: ts.Type, unionSymbolOk: booleAn) => ReAdonlyArrAy<ts.Symbol> = (<Any>ts).getPropertySymbolsFromContextuAlType;
+	const getContAiningObjectLiterAlElement: (node: ts.Node) => ObjectLiterAlElementWithNAme | undefined = (<Any>ts).getContAiningObjectLiterAlElement;
+	const getNAmeFromPropertyNAme: (nAme: ts.PropertyNAme) => string | undefined = (<Any>ts).getNAmeFromPropertyNAme;
 
-	// Go to the original declaration for cases:
+	// Go to the originAl declArAtion for cAses:
 	//
-	//   (1) when the aliased symbol was declared in the location(parent).
-	//   (2) when the aliased symbol is originating from an import.
+	//   (1) when the AliAsed symbol wAs declAred in the locAtion(pArent).
+	//   (2) when the AliAsed symbol is originAting from An import.
 	//
-	function shouldSkipAlias(node: ts.Node, declaration: ts.Node): boolean {
-		if (!ts.isShorthandPropertyAssignment(node) && node.kind !== ts.SyntaxKind.Identifier) {
-			return false;
+	function shouldSkipAliAs(node: ts.Node, declArAtion: ts.Node): booleAn {
+		if (!ts.isShorthAndPropertyAssignment(node) && node.kind !== ts.SyntAxKind.Identifier) {
+			return fAlse;
 		}
-		if (node.parent === declaration) {
+		if (node.pArent === declArAtion) {
 			return true;
 		}
-		switch (declaration.kind) {
-			case ts.SyntaxKind.ImportClause:
-			case ts.SyntaxKind.ImportEqualsDeclaration:
+		switch (declArAtion.kind) {
+			cAse ts.SyntAxKind.ImportClAuse:
+			cAse ts.SyntAxKind.ImportEquAlsDeclArAtion:
 				return true;
-			case ts.SyntaxKind.ImportSpecifier:
-				return declaration.parent.kind === ts.SyntaxKind.NamedImports;
-			default:
-				return false;
+			cAse ts.SyntAxKind.ImportSpecifier:
+				return declArAtion.pArent.kind === ts.SyntAxKind.NAmedImports;
+			defAult:
+				return fAlse;
 		}
 	}
 
-	if (!ts.isShorthandPropertyAssignment(node)) {
+	if (!ts.isShorthAndPropertyAssignment(node)) {
 		if (node.getChildCount() !== 0) {
 			return [null, null];
 		}
 	}
 
-	const { parent } = node;
+	const { pArent } = node;
 
 	let symbol = (
-		ts.isShorthandPropertyAssignment(node)
-			? checker.getShorthandAssignmentValueSymbol(node)
-			: checker.getSymbolAtLocation(node)
+		ts.isShorthAndPropertyAssignment(node)
+			? checker.getShorthAndAssignmentVAlueSymbol(node)
+			: checker.getSymbolAtLocAtion(node)
 	);
 
-	let importNode: ts.Declaration | null = null;
-	// If this is an alias, and the request came at the declaration location
-	// get the aliased symbol instead. This allows for goto def on an import e.g.
+	let importNode: ts.DeclArAtion | null = null;
+	// If this is An AliAs, And the request cAme At the declArAtion locAtion
+	// get the AliAsed symbol insteAd. This Allows for goto def on An import e.g.
 	//   import {A, B} from "mod";
-	// to jump to the implementation directly.
-	if (symbol && symbol.flags & ts.SymbolFlags.Alias && shouldSkipAlias(node, symbol.declarations[0])) {
-		const aliased = checker.getAliasedSymbol(symbol);
-		if (aliased.declarations) {
-			// We should mark the import as visited
-			importNode = symbol.declarations[0];
-			symbol = aliased;
+	// to jump to the implementAtion directly.
+	if (symbol && symbol.flAgs & ts.SymbolFlAgs.AliAs && shouldSkipAliAs(node, symbol.declArAtions[0])) {
+		const AliAsed = checker.getAliAsedSymbol(symbol);
+		if (AliAsed.declArAtions) {
+			// We should mArk the import As visited
+			importNode = symbol.declArAtions[0];
+			symbol = AliAsed;
 		}
 	}
 
 	if (symbol) {
-		// Because name in short-hand property assignment has two different meanings: property name and property value,
-		// using go-to-definition at such position should go to the variable declaration of the property value rather than
-		// go to the declaration of the property name (in this case stay at the same position). However, if go-to-definition
-		// is performed at the location of property access, we would like to go to definition of the property in the short-hand
-		// assignment. This case and others are handled by the following code.
-		if (node.parent.kind === ts.SyntaxKind.ShorthandPropertyAssignment) {
-			symbol = checker.getShorthandAssignmentValueSymbol(symbol.valueDeclaration);
+		// BecAuse nAme in short-hAnd property Assignment hAs two different meAnings: property nAme And property vAlue,
+		// using go-to-definition At such position should go to the vAriAble declArAtion of the property vAlue rAther thAn
+		// go to the declArAtion of the property nAme (in this cAse stAy At the sAme position). However, if go-to-definition
+		// is performed At the locAtion of property Access, we would like to go to definition of the property in the short-hAnd
+		// Assignment. This cAse And others Are hAndled by the following code.
+		if (node.pArent.kind === ts.SyntAxKind.ShorthAndPropertyAssignment) {
+			symbol = checker.getShorthAndAssignmentVAlueSymbol(symbol.vAlueDeclArAtion);
 		}
 
-		// If the node is the name of a BindingElement within an ObjectBindingPattern instead of just returning the
-		// declaration the symbol (which is itself), we should try to get to the original type of the ObjectBindingPattern
-		// and return the property declaration for the referenced property.
-		// For example:
-		//      import('./foo').then(({ b/*goto*/ar }) => undefined); => should get use to the declaration in file "./foo"
+		// If the node is the nAme of A BindingElement within An ObjectBindingPAttern insteAd of just returning the
+		// declArAtion the symbol (which is itself), we should try to get to the originAl type of the ObjectBindingPAttern
+		// And return the property declArAtion for the referenced property.
+		// For exAmple:
+		//      import('./foo').then(({ b/*goto*/Ar }) => undefined); => should get use to the declArAtion in file "./foo"
 		//
-		//      function bar<T>(onfulfilled: (value: T) => void) { //....}
-		//      interface Test {
-		//          pr/*destination*/op1: number
+		//      function bAr<T>(onfulfilled: (vAlue: T) => void) { //....}
+		//      interfAce Test {
+		//          pr/*destinAtion*/op1: number
 		//      }
-		//      bar<Test>(({pr/*goto*/op1})=>{});
-		if (ts.isPropertyName(node) && ts.isBindingElement(parent) && ts.isObjectBindingPattern(parent.parent) &&
-			(node === (parent.propertyName || parent.name))) {
-			const name = getNameFromPropertyName(node);
-			const type = checker.getTypeAtLocation(parent.parent);
-			if (name && type) {
+		//      bAr<Test>(({pr/*goto*/op1})=>{});
+		if (ts.isPropertyNAme(node) && ts.isBindingElement(pArent) && ts.isObjectBindingPAttern(pArent.pArent) &&
+			(node === (pArent.propertyNAme || pArent.nAme))) {
+			const nAme = getNAmeFromPropertyNAme(node);
+			const type = checker.getTypeAtLocAtion(pArent.pArent);
+			if (nAme && type) {
 				if (type.isUnion()) {
-					const prop = type.types[0].getProperty(name);
+					const prop = type.types[0].getProperty(nAme);
 					if (prop) {
 						symbol = prop;
 					}
 				} else {
-					const prop = type.getProperty(name);
+					const prop = type.getProperty(nAme);
 					if (prop) {
 						symbol = prop;
 					}
@@ -884,20 +884,20 @@ function getRealNodeSymbol(checker: ts.TypeChecker, node: ts.Node): [ts.Symbol |
 			}
 		}
 
-		// If the current location we want to find its definition is in an object literal, try to get the contextual type for the
-		// object literal, lookup the property symbol in the contextual type, and use this for goto-definition.
-		// For example
-		//      interface Props{
+		// If the current locAtion we wAnt to find its definition is in An object literAl, try to get the contextuAl type for the
+		// object literAl, lookup the property symbol in the contextuAl type, And use this for goto-definition.
+		// For exAmple
+		//      interfAce Props{
 		//          /*first*/prop1: number
-		//          prop2: boolean
+		//          prop2: booleAn
 		//      }
-		//      function Foo(arg: Props) {}
-		//      Foo( { pr/*1*/op1: 10, prop2: false })
-		const element = getContainingObjectLiteralElement(node);
+		//      function Foo(Arg: Props) {}
+		//      Foo( { pr/*1*/op1: 10, prop2: fAlse })
+		const element = getContAiningObjectLiterAlElement(node);
 		if (element) {
-			const contextualType = element && checker.getContextualType(element.parent);
-			if (contextualType) {
-				const propertySymbols = getPropertySymbolsFromContextualType(element, checker, contextualType, /*unionSymbolOk*/ false);
+			const contextuAlType = element && checker.getContextuAlType(element.pArent);
+			if (contextuAlType) {
+				const propertySymbols = getPropertySymbolsFromContextuAlType(element, checker, contextuAlType, /*unionSymbolOk*/ fAlse);
 				if (propertySymbols) {
 					symbol = propertySymbols[0];
 				}
@@ -905,27 +905,27 @@ function getRealNodeSymbol(checker: ts.TypeChecker, node: ts.Node): [ts.Symbol |
 		}
 	}
 
-	if (symbol && symbol.declarations) {
+	if (symbol && symbol.declArAtions) {
 		return [symbol, importNode];
 	}
 
 	return [null, null];
 }
 
-/** Get the token whose text contains the position */
-function getTokenAtPosition(sourceFile: ts.SourceFile, position: number, allowPositionInLeadingTrivia: boolean, includeEndPosition: boolean): ts.Node {
+/** Get the token whose text contAins the position */
+function getTokenAtPosition(sourceFile: ts.SourceFile, position: number, AllowPositionInLeAdingTriviA: booleAn, includeEndPosition: booleAn): ts.Node {
 	let current: ts.Node = sourceFile;
 	outer: while (true) {
-		// find the child that contains 'position'
+		// find the child thAt contAins 'position'
 		for (const child of current.getChildren()) {
-			const start = allowPositionInLeadingTrivia ? child.getFullStart() : child.getStart(sourceFile, /*includeJsDoc*/ true);
-			if (start > position) {
-				// If this child begins after position, then all subsequent children will as well.
-				break;
+			const stArt = AllowPositionInLeAdingTriviA ? child.getFullStArt() : child.getStArt(sourceFile, /*includeJsDoc*/ true);
+			if (stArt > position) {
+				// If this child begins After position, then All subsequent children will As well.
+				breAk;
 			}
 
 			const end = child.getEnd();
-			if (position < end || (position === end && (child.kind === ts.SyntaxKind.EndOfFileToken || includeEndPosition))) {
+			if (position < end || (position === end && (child.kind === ts.SyntAxKind.EndOfFileToken || includeEndPosition))) {
 				current = child;
 				continue outer;
 			}

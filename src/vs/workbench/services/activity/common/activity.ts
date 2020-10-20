@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export interface IActivity {
-	readonly badge: IBadge;
-	readonly clazz?: string;
-	readonly priority?: number;
+export interfAce IActivity {
+	reAdonly bAdge: IBAdge;
+	reAdonly clAzz?: string;
+	reAdonly priority?: number;
 }
 
-export const IActivityService = createDecorator<IActivityService>('activityService');
+export const IActivityService = creAteDecorAtor<IActivityService>('ActivityService');
 
-export interface IActivityService {
+export interfAce IActivityService {
 
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Show activity for the given view container
-	 */
-	showViewContainerActivity(viewContainerId: string, badge: IActivity): IDisposable;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Show activity for the given view
+	 * Show Activity for the given view contAiner
 	 */
-	showViewActivity(viewId: string, badge: IActivity): IDisposable;
+	showViewContAinerActivity(viewContAinerId: string, bAdge: IActivity): IDisposAble;
 
 	/**
-	 * Show accounts activity
+	 * Show Activity for the given view
 	 */
-	showAccountsActivity(activity: IActivity): IDisposable;
+	showViewActivity(viewId: string, bAdge: IActivity): IDisposAble;
 
 	/**
-	 * Show global activity
+	 * Show Accounts Activity
 	 */
-	showGlobalActivity(activity: IActivity): IDisposable;
+	showAccountsActivity(Activity: IActivity): IDisposAble;
+
+	/**
+	 * Show globAl Activity
+	 */
+	showGlobAlActivity(Activity: IActivity): IDisposAble;
 }
 
-export interface IBadge {
+export interfAce IBAdge {
 	getDescription(): string;
 }
 
-class BaseBadge implements IBadge {
+clAss BAseBAdge implements IBAdge {
 
-	constructor(public readonly descriptorFn: (arg: any) => string) {
+	constructor(public reAdonly descriptorFn: (Arg: Any) => string) {
 		this.descriptorFn = descriptorFn;
 	}
 
@@ -54,9 +54,9 @@ class BaseBadge implements IBadge {
 	}
 }
 
-export class NumberBadge extends BaseBadge {
+export clAss NumberBAdge extends BAseBAdge {
 
-	constructor(public readonly number: number, descriptorFn: (num: number) => string) {
+	constructor(public reAdonly number: number, descriptorFn: (num: number) => string) {
 		super(descriptorFn);
 
 		this.number = number;
@@ -67,18 +67,18 @@ export class NumberBadge extends BaseBadge {
 	}
 }
 
-export class TextBadge extends BaseBadge {
+export clAss TextBAdge extends BAseBAdge {
 
-	constructor(public readonly text: string, descriptorFn: () => string) {
+	constructor(public reAdonly text: string, descriptorFn: () => string) {
 		super(descriptorFn);
 	}
 }
 
-export class IconBadge extends BaseBadge {
+export clAss IconBAdge extends BAseBAdge {
 
 	constructor(descriptorFn: () => string) {
 		super(descriptorFn);
 	}
 }
 
-export class ProgressBadge extends BaseBadge { }
+export clAss ProgressBAdge extends BAseBAdge { }

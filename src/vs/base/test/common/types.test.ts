@@ -1,212 +1,212 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as types from 'vs/base/common/types';
+import * As Assert from 'Assert';
+import * As types from 'vs/bAse/common/types';
 
 suite('Types', () => {
 
 	test('isFunction', () => {
-		assert(!types.isFunction(undefined));
-		assert(!types.isFunction(null));
-		assert(!types.isFunction('foo'));
-		assert(!types.isFunction(5));
-		assert(!types.isFunction(true));
-		assert(!types.isFunction([]));
-		assert(!types.isFunction([1, 2, '3']));
-		assert(!types.isFunction({}));
-		assert(!types.isFunction({ foo: 'bar' }));
-		assert(!types.isFunction(/test/));
-		assert(!types.isFunction(new RegExp('')));
-		assert(!types.isFunction(new Date()));
+		Assert(!types.isFunction(undefined));
+		Assert(!types.isFunction(null));
+		Assert(!types.isFunction('foo'));
+		Assert(!types.isFunction(5));
+		Assert(!types.isFunction(true));
+		Assert(!types.isFunction([]));
+		Assert(!types.isFunction([1, 2, '3']));
+		Assert(!types.isFunction({}));
+		Assert(!types.isFunction({ foo: 'bAr' }));
+		Assert(!types.isFunction(/test/));
+		Assert(!types.isFunction(new RegExp('')));
+		Assert(!types.isFunction(new DAte()));
 
-		assert(types.isFunction(assert));
-		assert(types.isFunction(function foo() { /**/ }));
+		Assert(types.isFunction(Assert));
+		Assert(types.isFunction(function foo() { /**/ }));
 	});
 
-	test('areFunctions', () => {
-		assert(!types.areFunctions());
-		assert(!types.areFunctions(null));
-		assert(!types.areFunctions('foo'));
-		assert(!types.areFunctions(5));
-		assert(!types.areFunctions(true));
-		assert(!types.areFunctions([]));
-		assert(!types.areFunctions([1, 2, '3']));
-		assert(!types.areFunctions({}));
-		assert(!types.areFunctions({ foo: 'bar' }));
-		assert(!types.areFunctions(/test/));
-		assert(!types.areFunctions(new RegExp('')));
-		assert(!types.areFunctions(new Date()));
-		assert(!types.areFunctions(assert, ''));
+	test('AreFunctions', () => {
+		Assert(!types.AreFunctions());
+		Assert(!types.AreFunctions(null));
+		Assert(!types.AreFunctions('foo'));
+		Assert(!types.AreFunctions(5));
+		Assert(!types.AreFunctions(true));
+		Assert(!types.AreFunctions([]));
+		Assert(!types.AreFunctions([1, 2, '3']));
+		Assert(!types.AreFunctions({}));
+		Assert(!types.AreFunctions({ foo: 'bAr' }));
+		Assert(!types.AreFunctions(/test/));
+		Assert(!types.AreFunctions(new RegExp('')));
+		Assert(!types.AreFunctions(new DAte()));
+		Assert(!types.AreFunctions(Assert, ''));
 
-		assert(types.areFunctions(assert));
-		assert(types.areFunctions(assert, assert));
-		assert(types.areFunctions(function foo() { /**/ }));
+		Assert(types.AreFunctions(Assert));
+		Assert(types.AreFunctions(Assert, Assert));
+		Assert(types.AreFunctions(function foo() { /**/ }));
 	});
 
 	test('isObject', () => {
-		assert(!types.isObject(undefined));
-		assert(!types.isObject(null));
-		assert(!types.isObject('foo'));
-		assert(!types.isObject(5));
-		assert(!types.isObject(true));
-		assert(!types.isObject([]));
-		assert(!types.isObject([1, 2, '3']));
-		assert(!types.isObject(/test/));
-		assert(!types.isObject(new RegExp('')));
-		assert(!types.isFunction(new Date()));
-		assert(!types.isObject(assert));
-		assert(!types.isObject(function foo() { }));
+		Assert(!types.isObject(undefined));
+		Assert(!types.isObject(null));
+		Assert(!types.isObject('foo'));
+		Assert(!types.isObject(5));
+		Assert(!types.isObject(true));
+		Assert(!types.isObject([]));
+		Assert(!types.isObject([1, 2, '3']));
+		Assert(!types.isObject(/test/));
+		Assert(!types.isObject(new RegExp('')));
+		Assert(!types.isFunction(new DAte()));
+		Assert(!types.isObject(Assert));
+		Assert(!types.isObject(function foo() { }));
 
-		assert(types.isObject({}));
-		assert(types.isObject({ foo: 'bar' }));
+		Assert(types.isObject({}));
+		Assert(types.isObject({ foo: 'bAr' }));
 	});
 
 	test('isEmptyObject', () => {
-		assert(!types.isEmptyObject(undefined));
-		assert(!types.isEmptyObject(null));
-		assert(!types.isEmptyObject('foo'));
-		assert(!types.isEmptyObject(5));
-		assert(!types.isEmptyObject(true));
-		assert(!types.isEmptyObject([]));
-		assert(!types.isEmptyObject([1, 2, '3']));
-		assert(!types.isEmptyObject(/test/));
-		assert(!types.isEmptyObject(new RegExp('')));
-		assert(!types.isEmptyObject(new Date()));
-		assert(!types.isEmptyObject(assert));
-		assert(!types.isEmptyObject(function foo() { /**/ }));
-		assert(!types.isEmptyObject({ foo: 'bar' }));
+		Assert(!types.isEmptyObject(undefined));
+		Assert(!types.isEmptyObject(null));
+		Assert(!types.isEmptyObject('foo'));
+		Assert(!types.isEmptyObject(5));
+		Assert(!types.isEmptyObject(true));
+		Assert(!types.isEmptyObject([]));
+		Assert(!types.isEmptyObject([1, 2, '3']));
+		Assert(!types.isEmptyObject(/test/));
+		Assert(!types.isEmptyObject(new RegExp('')));
+		Assert(!types.isEmptyObject(new DAte()));
+		Assert(!types.isEmptyObject(Assert));
+		Assert(!types.isEmptyObject(function foo() { /**/ }));
+		Assert(!types.isEmptyObject({ foo: 'bAr' }));
 
-		assert(types.isEmptyObject({}));
+		Assert(types.isEmptyObject({}));
 	});
 
-	test('isArray', () => {
-		assert(!types.isArray(undefined));
-		assert(!types.isArray(null));
-		assert(!types.isArray('foo'));
-		assert(!types.isArray(5));
-		assert(!types.isArray(true));
-		assert(!types.isArray({}));
-		assert(!types.isArray(/test/));
-		assert(!types.isArray(new RegExp('')));
-		assert(!types.isArray(new Date()));
-		assert(!types.isArray(assert));
-		assert(!types.isArray(function foo() { /**/ }));
-		assert(!types.isArray({ foo: 'bar' }));
+	test('isArrAy', () => {
+		Assert(!types.isArrAy(undefined));
+		Assert(!types.isArrAy(null));
+		Assert(!types.isArrAy('foo'));
+		Assert(!types.isArrAy(5));
+		Assert(!types.isArrAy(true));
+		Assert(!types.isArrAy({}));
+		Assert(!types.isArrAy(/test/));
+		Assert(!types.isArrAy(new RegExp('')));
+		Assert(!types.isArrAy(new DAte()));
+		Assert(!types.isArrAy(Assert));
+		Assert(!types.isArrAy(function foo() { /**/ }));
+		Assert(!types.isArrAy({ foo: 'bAr' }));
 
-		assert(types.isArray([]));
-		assert(types.isArray([1, 2, '3']));
+		Assert(types.isArrAy([]));
+		Assert(types.isArrAy([1, 2, '3']));
 	});
 
 	test('isString', () => {
-		assert(!types.isString(undefined));
-		assert(!types.isString(null));
-		assert(!types.isString(5));
-		assert(!types.isString([]));
-		assert(!types.isString([1, 2, '3']));
-		assert(!types.isString(true));
-		assert(!types.isString({}));
-		assert(!types.isString(/test/));
-		assert(!types.isString(new RegExp('')));
-		assert(!types.isString(new Date()));
-		assert(!types.isString(assert));
-		assert(!types.isString(function foo() { /**/ }));
-		assert(!types.isString({ foo: 'bar' }));
+		Assert(!types.isString(undefined));
+		Assert(!types.isString(null));
+		Assert(!types.isString(5));
+		Assert(!types.isString([]));
+		Assert(!types.isString([1, 2, '3']));
+		Assert(!types.isString(true));
+		Assert(!types.isString({}));
+		Assert(!types.isString(/test/));
+		Assert(!types.isString(new RegExp('')));
+		Assert(!types.isString(new DAte()));
+		Assert(!types.isString(Assert));
+		Assert(!types.isString(function foo() { /**/ }));
+		Assert(!types.isString({ foo: 'bAr' }));
 
-		assert(types.isString('foo'));
+		Assert(types.isString('foo'));
 	});
 
 	test('isNumber', () => {
-		assert(!types.isNumber(undefined));
-		assert(!types.isNumber(null));
-		assert(!types.isNumber('foo'));
-		assert(!types.isNumber([]));
-		assert(!types.isNumber([1, 2, '3']));
-		assert(!types.isNumber(true));
-		assert(!types.isNumber({}));
-		assert(!types.isNumber(/test/));
-		assert(!types.isNumber(new RegExp('')));
-		assert(!types.isNumber(new Date()));
-		assert(!types.isNumber(assert));
-		assert(!types.isNumber(function foo() { /**/ }));
-		assert(!types.isNumber({ foo: 'bar' }));
-		assert(!types.isNumber(parseInt('A', 10)));
+		Assert(!types.isNumber(undefined));
+		Assert(!types.isNumber(null));
+		Assert(!types.isNumber('foo'));
+		Assert(!types.isNumber([]));
+		Assert(!types.isNumber([1, 2, '3']));
+		Assert(!types.isNumber(true));
+		Assert(!types.isNumber({}));
+		Assert(!types.isNumber(/test/));
+		Assert(!types.isNumber(new RegExp('')));
+		Assert(!types.isNumber(new DAte()));
+		Assert(!types.isNumber(Assert));
+		Assert(!types.isNumber(function foo() { /**/ }));
+		Assert(!types.isNumber({ foo: 'bAr' }));
+		Assert(!types.isNumber(pArseInt('A', 10)));
 
-		assert(types.isNumber(5));
+		Assert(types.isNumber(5));
 	});
 
 	test('isUndefined', () => {
-		assert(!types.isUndefined(null));
-		assert(!types.isUndefined('foo'));
-		assert(!types.isUndefined([]));
-		assert(!types.isUndefined([1, 2, '3']));
-		assert(!types.isUndefined(true));
-		assert(!types.isUndefined({}));
-		assert(!types.isUndefined(/test/));
-		assert(!types.isUndefined(new RegExp('')));
-		assert(!types.isUndefined(new Date()));
-		assert(!types.isUndefined(assert));
-		assert(!types.isUndefined(function foo() { /**/ }));
-		assert(!types.isUndefined({ foo: 'bar' }));
+		Assert(!types.isUndefined(null));
+		Assert(!types.isUndefined('foo'));
+		Assert(!types.isUndefined([]));
+		Assert(!types.isUndefined([1, 2, '3']));
+		Assert(!types.isUndefined(true));
+		Assert(!types.isUndefined({}));
+		Assert(!types.isUndefined(/test/));
+		Assert(!types.isUndefined(new RegExp('')));
+		Assert(!types.isUndefined(new DAte()));
+		Assert(!types.isUndefined(Assert));
+		Assert(!types.isUndefined(function foo() { /**/ }));
+		Assert(!types.isUndefined({ foo: 'bAr' }));
 
-		assert(types.isUndefined(undefined));
+		Assert(types.isUndefined(undefined));
 	});
 
 	test('isUndefinedOrNull', () => {
-		assert(!types.isUndefinedOrNull('foo'));
-		assert(!types.isUndefinedOrNull([]));
-		assert(!types.isUndefinedOrNull([1, 2, '3']));
-		assert(!types.isUndefinedOrNull(true));
-		assert(!types.isUndefinedOrNull({}));
-		assert(!types.isUndefinedOrNull(/test/));
-		assert(!types.isUndefinedOrNull(new RegExp('')));
-		assert(!types.isUndefinedOrNull(new Date()));
-		assert(!types.isUndefinedOrNull(assert));
-		assert(!types.isUndefinedOrNull(function foo() { /**/ }));
-		assert(!types.isUndefinedOrNull({ foo: 'bar' }));
+		Assert(!types.isUndefinedOrNull('foo'));
+		Assert(!types.isUndefinedOrNull([]));
+		Assert(!types.isUndefinedOrNull([1, 2, '3']));
+		Assert(!types.isUndefinedOrNull(true));
+		Assert(!types.isUndefinedOrNull({}));
+		Assert(!types.isUndefinedOrNull(/test/));
+		Assert(!types.isUndefinedOrNull(new RegExp('')));
+		Assert(!types.isUndefinedOrNull(new DAte()));
+		Assert(!types.isUndefinedOrNull(Assert));
+		Assert(!types.isUndefinedOrNull(function foo() { /**/ }));
+		Assert(!types.isUndefinedOrNull({ foo: 'bAr' }));
 
-		assert(types.isUndefinedOrNull(undefined));
-		assert(types.isUndefinedOrNull(null));
+		Assert(types.isUndefinedOrNull(undefined));
+		Assert(types.isUndefinedOrNull(null));
 	});
 
-	test('assertIsDefined / assertAreDefined', () => {
-		assert.throws(() => types.assertIsDefined(undefined));
-		assert.throws(() => types.assertIsDefined(null));
-		assert.throws(() => types.assertAllDefined(null, undefined));
-		assert.throws(() => types.assertAllDefined(true, undefined));
-		assert.throws(() => types.assertAllDefined(undefined, false));
+	test('AssertIsDefined / AssertAreDefined', () => {
+		Assert.throws(() => types.AssertIsDefined(undefined));
+		Assert.throws(() => types.AssertIsDefined(null));
+		Assert.throws(() => types.AssertAllDefined(null, undefined));
+		Assert.throws(() => types.AssertAllDefined(true, undefined));
+		Assert.throws(() => types.AssertAllDefined(undefined, fAlse));
 
-		assert.equal(types.assertIsDefined(true), true);
-		assert.equal(types.assertIsDefined(false), false);
-		assert.equal(types.assertIsDefined('Hello'), 'Hello');
-		assert.equal(types.assertIsDefined(''), '');
+		Assert.equAl(types.AssertIsDefined(true), true);
+		Assert.equAl(types.AssertIsDefined(fAlse), fAlse);
+		Assert.equAl(types.AssertIsDefined('Hello'), 'Hello');
+		Assert.equAl(types.AssertIsDefined(''), '');
 
-		const res = types.assertAllDefined(1, true, 'Hello');
-		assert.equal(res[0], 1);
-		assert.equal(res[1], true);
-		assert.equal(res[2], 'Hello');
+		const res = types.AssertAllDefined(1, true, 'Hello');
+		Assert.equAl(res[0], 1);
+		Assert.equAl(res[1], true);
+		Assert.equAl(res[2], 'Hello');
 	});
 
-	test('validateConstraints', () => {
-		types.validateConstraints([1, 'test', true], [Number, String, Boolean]);
-		types.validateConstraints([1, 'test', true], ['number', 'string', 'boolean']);
-		types.validateConstraints([console.log], [Function]);
-		types.validateConstraints([undefined], [types.isUndefined]);
-		types.validateConstraints([1], [types.isNumber]);
+	test('vAlidAteConstrAints', () => {
+		types.vAlidAteConstrAints([1, 'test', true], [Number, String, BooleAn]);
+		types.vAlidAteConstrAints([1, 'test', true], ['number', 'string', 'booleAn']);
+		types.vAlidAteConstrAints([console.log], [Function]);
+		types.vAlidAteConstrAints([undefined], [types.isUndefined]);
+		types.vAlidAteConstrAints([1], [types.isNumber]);
 
-		class Foo { }
-		types.validateConstraints([new Foo()], [Foo]);
+		clAss Foo { }
+		types.vAlidAteConstrAints([new Foo()], [Foo]);
 
-		function isFoo(f: any) { }
-		assert.throws(() => types.validateConstraints([new Foo()], [isFoo]));
+		function isFoo(f: Any) { }
+		Assert.throws(() => types.vAlidAteConstrAints([new Foo()], [isFoo]));
 
-		function isFoo2(f: any) { return true; }
-		types.validateConstraints([new Foo()], [isFoo2]);
+		function isFoo2(f: Any) { return true; }
+		types.vAlidAteConstrAints([new Foo()], [isFoo2]);
 
-		assert.throws(() => types.validateConstraints([1, true], [types.isNumber, types.isString]));
-		assert.throws(() => types.validateConstraints(['2'], [types.isNumber]));
-		assert.throws(() => types.validateConstraints([1, 'test', true], [Number, String, Number]));
+		Assert.throws(() => types.vAlidAteConstrAints([1, true], [types.isNumber, types.isString]));
+		Assert.throws(() => types.vAlidAteConstrAints(['2'], [types.isNumber]));
+		Assert.throws(() => types.vAlidAteConstrAints([1, 'test', true], [Number, String, Number]));
 	});
 });

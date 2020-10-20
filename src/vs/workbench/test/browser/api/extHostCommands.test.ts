@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { MainThreadCommandsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
+import * As Assert from 'Assert';
+import { ExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { MAinThreAdCommAndsShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 import { SingleProxyRPCProtocol } from './testRPCProtocol';
-import { mock } from 'vs/base/test/common/mock';
-import { NullLogService } from 'vs/platform/log/common/log';
+import { mock } from 'vs/bAse/test/common/mock';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 
-suite('ExtHostCommands', function () {
+suite('ExtHostCommAnds', function () {
 
-	test('dispose calls unregister', function () {
+	test('dispose cAlls unregister', function () {
 
-		let lastUnregister: string;
+		let lAstUnregister: string;
 
-		const shape = new class extends mock<MainThreadCommandsShape>() {
-			$registerCommand(id: string): void {
+		const shApe = new clAss extends mock<MAinThreAdCommAndsShApe>() {
+			$registerCommAnd(id: string): void {
 				//
 			}
-			$unregisterCommand(id: string): void {
-				lastUnregister = id;
+			$unregisterCommAnd(id: string): void {
+				lAstUnregister = id;
 			}
 		};
 
-		const commands = new ExtHostCommands(
-			SingleProxyRPCProtocol(shape),
+		const commAnds = new ExtHostCommAnds(
+			SingleProxyRPCProtocol(shApe),
 			new NullLogService()
 		);
-		commands.registerCommand(true, 'foo', (): any => { }).dispose();
-		assert.equal(lastUnregister!, 'foo');
-		assert.equal(CommandsRegistry.getCommand('foo'), undefined);
+		commAnds.registerCommAnd(true, 'foo', (): Any => { }).dispose();
+		Assert.equAl(lAstUnregister!, 'foo');
+		Assert.equAl(CommAndsRegistry.getCommAnd('foo'), undefined);
 
 	});
 
@@ -40,54 +40,54 @@ suite('ExtHostCommands', function () {
 
 		let unregisterCounter = 0;
 
-		const shape = new class extends mock<MainThreadCommandsShape>() {
-			$registerCommand(id: string): void {
+		const shApe = new clAss extends mock<MAinThreAdCommAndsShApe>() {
+			$registerCommAnd(id: string): void {
 				//
 			}
-			$unregisterCommand(id: string): void {
+			$unregisterCommAnd(id: string): void {
 				unregisterCounter += 1;
 			}
 		};
 
-		const commands = new ExtHostCommands(
-			SingleProxyRPCProtocol(shape),
+		const commAnds = new ExtHostCommAnds(
+			SingleProxyRPCProtocol(shApe),
 			new NullLogService()
 		);
-		const reg = commands.registerCommand(true, 'foo', (): any => { });
+		const reg = commAnds.registerCommAnd(true, 'foo', (): Any => { });
 		reg.dispose();
 		reg.dispose();
 		reg.dispose();
-		assert.equal(unregisterCounter, 1);
+		Assert.equAl(unregisterCounter, 1);
 	});
 
-	test('execute with retry', async function () {
+	test('execute with retry', Async function () {
 
 		let count = 0;
 
-		const shape = new class extends mock<MainThreadCommandsShape>() {
-			$registerCommand(id: string): void {
+		const shApe = new clAss extends mock<MAinThreAdCommAndsShApe>() {
+			$registerCommAnd(id: string): void {
 				//
 			}
-			async $executeCommand<T>(id: string, args: any[], retry: boolean): Promise<T | undefined> {
+			Async $executeCommAnd<T>(id: string, Args: Any[], retry: booleAn): Promise<T | undefined> {
 				count++;
-				assert.equal(retry, count === 1);
+				Assert.equAl(retry, count === 1);
 				if (count === 1) {
-					assert.equal(retry, true);
-					throw new Error('$executeCommand:retry');
+					Assert.equAl(retry, true);
+					throw new Error('$executeCommAnd:retry');
 				} else {
-					assert.equal(retry, false);
-					return <any>17;
+					Assert.equAl(retry, fAlse);
+					return <Any>17;
 				}
 			}
 		};
 
-		const commands = new ExtHostCommands(
-			SingleProxyRPCProtocol(shape),
+		const commAnds = new ExtHostCommAnds(
+			SingleProxyRPCProtocol(shApe),
 			new NullLogService()
 		);
 
-		const result = await commands.executeCommand('fooo', [this, true]);
-		assert.equal(result, 17);
-		assert.equal(count, 2);
+		const result = AwAit commAnds.executeCommAnd('fooo', [this, true]);
+		Assert.equAl(result, 17);
+		Assert.equAl(count, 2);
 	});
 });

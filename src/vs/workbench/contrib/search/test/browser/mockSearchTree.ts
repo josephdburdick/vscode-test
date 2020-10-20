@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITreeNavigator } from 'vs/base/browser/ui/tree/tree';
-import { Emitter } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { ITreeNAvigAtor } from 'vs/bAse/browser/ui/tree/tree';
+import { Emitter } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
 const someEvent = new Emitter().event;
 
 /**
- * Add stub methods as needed
+ * Add stub methods As needed
  */
-export class MockObjectTree<T, TRef> implements IDisposable {
+export clAss MockObjectTree<T, TRef> implements IDisposAble {
 
-	get onDidChangeFocus() { return someEvent; }
-	get onDidChangeSelection() { return someEvent; }
+	get onDidChAngeFocus() { return someEvent; }
+	get onDidChAngeSelection() { return someEvent; }
 	get onDidOpen() { return someEvent; }
 
 	get onMouseClick() { return someEvent; }
@@ -29,36 +29,36 @@ export class MockObjectTree<T, TRef> implements IDisposable {
 	get onDidFocus() { return someEvent; }
 	get onDidBlur() { return someEvent; }
 
-	get onDidChangeCollapseState() { return someEvent; }
-	get onDidChangeRenderNodeCount() { return someEvent; }
+	get onDidChAngeCollApseStAte() { return someEvent; }
+	get onDidChAngeRenderNodeCount() { return someEvent; }
 
 	get onDidDispose() { return someEvent; }
 
-	constructor(private elements: any[]) { }
+	constructor(privAte elements: Any[]) { }
 
 	domFocus(): void { }
 
-	collapse(location: TRef, recursive: boolean = false): boolean {
+	collApse(locAtion: TRef, recursive: booleAn = fAlse): booleAn {
 		return true;
 	}
 
-	expand(location: TRef, recursive: boolean = false): boolean {
+	expAnd(locAtion: TRef, recursive: booleAn = fAlse): booleAn {
 		return true;
 	}
 
-	navigate(start?: TRef): ITreeNavigator<T> {
-		const startIdx = start ? this.elements.indexOf(start) :
+	nAvigAte(stArt?: TRef): ITreeNAvigAtor<T> {
+		const stArtIdx = stArt ? this.elements.indexOf(stArt) :
 			undefined;
 
-		return new ArrayNavigator(this.elements, startIdx);
+		return new ArrAyNAvigAtor(this.elements, stArtIdx);
 	}
 
 	dispose(): void {
 	}
 }
 
-class ArrayNavigator<T> implements ITreeNavigator<T> {
-	constructor(private elements: T[], private index = 0) { }
+clAss ArrAyNAvigAtor<T> implements ITreeNAvigAtor<T> {
+	constructor(privAte elements: T[], privAte index = 0) { }
 
 	current(): T | null {
 		return this.elements[this.index];
@@ -73,7 +73,7 @@ class ArrayNavigator<T> implements ITreeNavigator<T> {
 		return this.elements[this.index];
 	}
 
-	last(): T | null {
+	lAst(): T | null {
 		this.index = this.elements.length - 1;
 		return this.elements[this.index];
 	}

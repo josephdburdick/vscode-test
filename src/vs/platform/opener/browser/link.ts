@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { $, EventHelper, EventLike } from 'vs/base/browser/dom';
-import { domEvent } from 'vs/base/browser/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Color } from 'vs/base/common/color';
+import { Event } from 'vs/bAse/common/event';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { $, EventHelper, EventLike } from 'vs/bAse/browser/dom';
+import { domEvent } from 'vs/bAse/browser/event';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Color } from 'vs/bAse/common/color';
 
-export interface ILinkDescriptor {
-	readonly label: string;
-	readonly href: string;
-	readonly title?: string;
+export interfAce ILinkDescriptor {
+	reAdonly lAbel: string;
+	reAdonly href: string;
+	reAdonly title?: string;
 }
 
-export interface ILinkStyles {
-	readonly textLinkForeground?: Color;
+export interfAce ILinkStyles {
+	reAdonly textLinkForeground?: Color;
 }
 
-export class Link extends Disposable {
+export clAss Link extends DisposAble {
 
-	readonly el: HTMLAnchorElement;
-	private styles: ILinkStyles = {
+	reAdonly el: HTMLAnchorElement;
+	privAte styles: ILinkStyles = {
 		textLinkForeground: Color.fromHex('#006AB1')
 	};
 
@@ -35,33 +35,33 @@ export class Link extends Disposable {
 	) {
 		super();
 
-		this.el = $<HTMLAnchorElement>('a', {
-			tabIndex: 0,
+		this.el = $<HTMLAnchorElement>('A', {
+			tAbIndex: 0,
 			href: link.href,
 			title: link.title
-		}, link.label);
+		}, link.lAbel);
 
 		const onClick = domEvent(this.el, 'click');
-		const onEnterPress = Event.chain(domEvent(this.el, 'keypress'))
-			.map(e => new StandardKeyboardEvent(e))
+		const onEnterPress = Event.chAin(domEvent(this.el, 'keypress'))
+			.mAp(e => new StAndArdKeyboArdEvent(e))
 			.filter(e => e.keyCode === KeyCode.Enter)
 			.event;
-		const onOpen = Event.any<EventLike>(onClick, onEnterPress);
+		const onOpen = Event.Any<EventLike>(onClick, onEnterPress);
 
 		this._register(onOpen(e => {
 			EventHelper.stop(e, true);
 			openerService.open(link.href);
 		}));
 
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
 	style(styles: ILinkStyles): void {
 		this.styles = styles;
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
-	private applyStyles(): void {
+	privAte ApplyStyles(): void {
 		this.el.style.color = this.styles.textLinkForeground?.toString() || '';
 	}
 }

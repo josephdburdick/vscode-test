@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IPickOptions, IInputOptions, IQuickInputService, IQuickInput } from 'vs/platform/quickinput/common/quickInput';
-import { ExtHostContext, MainThreadQuickOpenShape, ExtHostQuickOpenShape, TransferQuickPickItems, MainContext, IExtHostContext, TransferQuickInput, TransferQuickInputButton, IInputBoxOptions } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { URI } from 'vs/base/common/uri';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { ThemeIcon } from 'vs/platform/theme/common/themeService';
+import { IPickOptions, IInputOptions, IQuickInputService, IQuickInput } from 'vs/plAtform/quickinput/common/quickInput';
+import { ExtHostContext, MAinThreAdQuickOpenShApe, ExtHostQuickOpenShApe, TrAnsferQuickPickItems, MAinContext, IExtHostContext, TrAnsferQuickInput, TrAnsferQuickInputButton, IInputBoxOptions } from 'vs/workbench/Api/common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { URI } from 'vs/bAse/common/uri';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { ThemeIcon } from 'vs/plAtform/theme/common/themeService';
 
-interface QuickInputSession {
+interfAce QuickInputSession {
 	input: IQuickInput;
-	handlesToItems: Map<number, TransferQuickPickItems>;
+	hAndlesToItems: MAp<number, TrAnsferQuickPickItems>;
 }
 
-@extHostNamedCustomer(MainContext.MainThreadQuickOpen)
-export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdQuickOpen)
+export clAss MAinThreAdQuickOpen implements MAinThreAdQuickOpenShApe {
 
-	private readonly _proxy: ExtHostQuickOpenShape;
-	private readonly _quickInputService: IQuickInputService;
-	private readonly _items: Record<number, {
-		resolve(items: TransferQuickPickItems[]): void;
+	privAte reAdonly _proxy: ExtHostQuickOpenShApe;
+	privAte reAdonly _quickInputService: IQuickInputService;
+	privAte reAdonly _items: Record<number, {
+		resolve(items: TrAnsferQuickPickItems[]): void;
 		reject(error: Error): void;
 	}> = {};
 
@@ -36,70 +36,70 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 	public dispose(): void {
 	}
 
-	$show(instance: number, options: IPickOptions<TransferQuickPickItems>, token: CancellationToken): Promise<number | number[] | undefined> {
-		const contents = new Promise<TransferQuickPickItems[]>((resolve, reject) => {
-			this._items[instance] = { resolve, reject };
+	$show(instAnce: number, options: IPickOptions<TrAnsferQuickPickItems>, token: CAncellAtionToken): Promise<number | number[] | undefined> {
+		const contents = new Promise<TrAnsferQuickPickItems[]>((resolve, reject) => {
+			this._items[instAnce] = { resolve, reject };
 		});
 
 		options = {
 			...options,
 			onDidFocus: el => {
 				if (el) {
-					this._proxy.$onItemSelected((<TransferQuickPickItems>el).handle);
+					this._proxy.$onItemSelected((<TrAnsferQuickPickItems>el).hAndle);
 				}
 			}
 		};
 
-		if (options.canPickMany) {
-			return this._quickInputService.pick(contents, options as { canPickMany: true }, token).then(items => {
+		if (options.cAnPickMAny) {
+			return this._quickInputService.pick(contents, options As { cAnPickMAny: true }, token).then(items => {
 				if (items) {
-					return items.map(item => item.handle);
+					return items.mAp(item => item.hAndle);
 				}
 				return undefined;
 			});
 		} else {
 			return this._quickInputService.pick(contents, options, token).then(item => {
 				if (item) {
-					return item.handle;
+					return item.hAndle;
 				}
 				return undefined;
 			});
 		}
 	}
 
-	$setItems(instance: number, items: TransferQuickPickItems[]): Promise<void> {
-		if (this._items[instance]) {
-			this._items[instance].resolve(items);
-			delete this._items[instance];
+	$setItems(instAnce: number, items: TrAnsferQuickPickItems[]): Promise<void> {
+		if (this._items[instAnce]) {
+			this._items[instAnce].resolve(items);
+			delete this._items[instAnce];
 		}
 		return Promise.resolve();
 	}
 
-	$setError(instance: number, error: Error): Promise<void> {
-		if (this._items[instance]) {
-			this._items[instance].reject(error);
-			delete this._items[instance];
+	$setError(instAnce: number, error: Error): Promise<void> {
+		if (this._items[instAnce]) {
+			this._items[instAnce].reject(error);
+			delete this._items[instAnce];
 		}
 		return Promise.resolve();
 	}
 
 	// ---- input
 
-	$input(options: IInputBoxOptions | undefined, validateInput: boolean, token: CancellationToken): Promise<string | undefined> {
-		const inputOptions: IInputOptions = Object.create(null);
+	$input(options: IInputBoxOptions | undefined, vAlidAteInput: booleAn, token: CAncellAtionToken): Promise<string | undefined> {
+		const inputOptions: IInputOptions = Object.creAte(null);
 
 		if (options) {
-			inputOptions.password = options.password;
-			inputOptions.placeHolder = options.placeHolder;
-			inputOptions.valueSelection = options.valueSelection;
+			inputOptions.pAssword = options.pAssword;
+			inputOptions.plAceHolder = options.plAceHolder;
+			inputOptions.vAlueSelection = options.vAlueSelection;
 			inputOptions.prompt = options.prompt;
-			inputOptions.value = options.value;
+			inputOptions.vAlue = options.vAlue;
 			inputOptions.ignoreFocusLost = options.ignoreFocusOut;
 		}
 
-		if (validateInput) {
-			inputOptions.validateInput = (value) => {
-				return this._proxy.$validateInput(value);
+		if (vAlidAteInput) {
+			inputOptions.vAlidAteInput = (vAlue) => {
+				return this._proxy.$vAlidAteInput(vAlue);
 			};
 		}
 
@@ -108,103 +108,103 @@ export class MainThreadQuickOpen implements MainThreadQuickOpenShape {
 
 	// ---- QuickInput
 
-	private sessions = new Map<number, QuickInputSession>();
+	privAte sessions = new MAp<number, QuickInputSession>();
 
-	$createOrUpdate(params: TransferQuickInput): Promise<void> {
-		const sessionId = params.id;
+	$creAteOrUpdAte(pArAms: TrAnsferQuickInput): Promise<void> {
+		const sessionId = pArAms.id;
 		let session = this.sessions.get(sessionId);
 		if (!session) {
-			if (params.type === 'quickPick') {
-				const input = this._quickInputService.createQuickPick();
+			if (pArAms.type === 'quickPick') {
+				const input = this._quickInputService.creAteQuickPick();
 				input.onDidAccept(() => {
 					this._proxy.$onDidAccept(sessionId);
 				});
-				input.onDidChangeActive(items => {
-					this._proxy.$onDidChangeActive(sessionId, items.map(item => (item as TransferQuickPickItems).handle));
+				input.onDidChAngeActive(items => {
+					this._proxy.$onDidChAngeActive(sessionId, items.mAp(item => (item As TrAnsferQuickPickItems).hAndle));
 				});
-				input.onDidChangeSelection(items => {
-					this._proxy.$onDidChangeSelection(sessionId, items.map(item => (item as TransferQuickPickItems).handle));
+				input.onDidChAngeSelection(items => {
+					this._proxy.$onDidChAngeSelection(sessionId, items.mAp(item => (item As TrAnsferQuickPickItems).hAndle));
 				});
 				input.onDidTriggerButton(button => {
-					this._proxy.$onDidTriggerButton(sessionId, (button as TransferQuickInputButton).handle);
+					this._proxy.$onDidTriggerButton(sessionId, (button As TrAnsferQuickInputButton).hAndle);
 				});
-				input.onDidChangeValue(value => {
-					this._proxy.$onDidChangeValue(sessionId, value);
+				input.onDidChAngeVAlue(vAlue => {
+					this._proxy.$onDidChAngeVAlue(sessionId, vAlue);
 				});
 				input.onDidHide(() => {
 					this._proxy.$onDidHide(sessionId);
 				});
 				session = {
 					input,
-					handlesToItems: new Map()
+					hAndlesToItems: new MAp()
 				};
 			} else {
-				const input = this._quickInputService.createInputBox();
+				const input = this._quickInputService.creAteInputBox();
 				input.onDidAccept(() => {
 					this._proxy.$onDidAccept(sessionId);
 				});
 				input.onDidTriggerButton(button => {
-					this._proxy.$onDidTriggerButton(sessionId, (button as TransferQuickInputButton).handle);
+					this._proxy.$onDidTriggerButton(sessionId, (button As TrAnsferQuickInputButton).hAndle);
 				});
-				input.onDidChangeValue(value => {
-					this._proxy.$onDidChangeValue(sessionId, value);
+				input.onDidChAngeVAlue(vAlue => {
+					this._proxy.$onDidChAngeVAlue(sessionId, vAlue);
 				});
 				input.onDidHide(() => {
 					this._proxy.$onDidHide(sessionId);
 				});
 				session = {
 					input,
-					handlesToItems: new Map()
+					hAndlesToItems: new MAp()
 				};
 			}
 			this.sessions.set(sessionId, session);
 		}
-		const { input, handlesToItems } = session;
-		for (const param in params) {
-			if (param === 'id' || param === 'type') {
+		const { input, hAndlesToItems } = session;
+		for (const pArAm in pArAms) {
+			if (pArAm === 'id' || pArAm === 'type') {
 				continue;
 			}
-			if (param === 'visible') {
-				if (params.visible) {
+			if (pArAm === 'visible') {
+				if (pArAms.visible) {
 					input.show();
 				} else {
 					input.hide();
 				}
-			} else if (param === 'items') {
-				handlesToItems.clear();
-				params[param].forEach((item: TransferQuickPickItems) => {
-					handlesToItems.set(item.handle, item);
+			} else if (pArAm === 'items') {
+				hAndlesToItems.cleAr();
+				pArAms[pArAm].forEAch((item: TrAnsferQuickPickItems) => {
+					hAndlesToItems.set(item.hAndle, item);
 				});
-				(input as any)[param] = params[param];
-			} else if (param === 'activeItems' || param === 'selectedItems') {
-				(input as any)[param] = params[param]
-					.filter((handle: number) => handlesToItems.has(handle))
-					.map((handle: number) => handlesToItems.get(handle));
-			} else if (param === 'buttons') {
-				(input as any)[param] = params.buttons!.map(button => {
-					if (button.handle === -1) {
-						return this._quickInputService.backButton;
+				(input As Any)[pArAm] = pArAms[pArAm];
+			} else if (pArAm === 'ActiveItems' || pArAm === 'selectedItems') {
+				(input As Any)[pArAm] = pArAms[pArAm]
+					.filter((hAndle: number) => hAndlesToItems.hAs(hAndle))
+					.mAp((hAndle: number) => hAndlesToItems.get(hAndle));
+			} else if (pArAm === 'buttons') {
+				(input As Any)[pArAm] = pArAms.buttons!.mAp(button => {
+					if (button.hAndle === -1) {
+						return this._quickInputService.bAckButton;
 					}
-					const { iconPath, tooltip, handle } = button;
-					if ('id' in iconPath) {
+					const { iconPAth, tooltip, hAndle } = button;
+					if ('id' in iconPAth) {
 						return {
-							iconClass: ThemeIcon.asClassName(iconPath),
+							iconClAss: ThemeIcon.AsClAssNAme(iconPAth),
 							tooltip,
-							handle
+							hAndle
 						};
 					} else {
 						return {
-							iconPath: {
-								dark: URI.revive(iconPath.dark),
-								light: iconPath.light && URI.revive(iconPath.light)
+							iconPAth: {
+								dArk: URI.revive(iconPAth.dArk),
+								light: iconPAth.light && URI.revive(iconPAth.light)
 							},
 							tooltip,
-							handle
+							hAndle
 						};
 					}
 				});
 			} else {
-				(input as any)[param] = params[param];
+				(input As Any)[pArAm] = pArAms[pArAm];
 			}
 		}
 		return Promise.resolve(undefined);

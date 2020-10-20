@@ -1,134 +1,134 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import { IWorkspaceIdentifier, IRecentlyOpened, isRecentFolder, IRecentFolder, IRecentWorkspace, toStoreData, restoreRecentlyOpened } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
-import { NullLogService } from 'vs/platform/log/common/log';
+import * As Assert from 'Assert';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import { IWorkspAceIdentifier, IRecentlyOpened, isRecentFolder, IRecentFolder, IRecentWorkspAce, toStoreDAtA, restoreRecentlyOpened } from 'vs/plAtform/workspAces/common/workspAces';
+import { URI } from 'vs/bAse/common/uri';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 
-function toWorkspace(uri: URI): IWorkspaceIdentifier {
+function toWorkspAce(uri: URI): IWorkspAceIdentifier {
 	return {
 		id: '1234',
-		configPath: uri
+		configPAth: uri
 	};
 }
-function assertEqualURI(u1: URI | undefined, u2: URI | undefined, message?: string): void {
-	assert.equal(u1 && u1.toString(), u2 && u2.toString(), message);
+function AssertEquAlURI(u1: URI | undefined, u2: URI | undefined, messAge?: string): void {
+	Assert.equAl(u1 && u1.toString(), u2 && u2.toString(), messAge);
 }
 
-function assertEqualWorkspace(w1: IWorkspaceIdentifier | undefined, w2: IWorkspaceIdentifier | undefined, message?: string): void {
+function AssertEquAlWorkspAce(w1: IWorkspAceIdentifier | undefined, w2: IWorkspAceIdentifier | undefined, messAge?: string): void {
 	if (!w1 || !w2) {
-		assert.equal(w1, w2, message);
+		Assert.equAl(w1, w2, messAge);
 		return;
 	}
-	assert.equal(w1.id, w2.id, message);
-	assertEqualURI(w1.configPath, w2.configPath, message);
+	Assert.equAl(w1.id, w2.id, messAge);
+	AssertEquAlURI(w1.configPAth, w2.configPAth, messAge);
 }
 
-function assertEqualRecentlyOpened(actual: IRecentlyOpened, expected: IRecentlyOpened, message?: string) {
-	assert.equal(actual.files.length, expected.files.length, message);
-	for (let i = 0; i < actual.files.length; i++) {
-		assertEqualURI(actual.files[i].fileUri, expected.files[i].fileUri, message);
-		assert.equal(actual.files[i].label, expected.files[i].label);
+function AssertEquAlRecentlyOpened(ActuAl: IRecentlyOpened, expected: IRecentlyOpened, messAge?: string) {
+	Assert.equAl(ActuAl.files.length, expected.files.length, messAge);
+	for (let i = 0; i < ActuAl.files.length; i++) {
+		AssertEquAlURI(ActuAl.files[i].fileUri, expected.files[i].fileUri, messAge);
+		Assert.equAl(ActuAl.files[i].lAbel, expected.files[i].lAbel);
 	}
-	assert.equal(actual.workspaces.length, expected.workspaces.length, message);
-	for (let i = 0; i < actual.workspaces.length; i++) {
-		let expectedRecent = expected.workspaces[i];
-		let actualRecent = actual.workspaces[i];
-		if (isRecentFolder(actualRecent)) {
-			assertEqualURI(actualRecent.folderUri, (<IRecentFolder>expectedRecent).folderUri, message);
+	Assert.equAl(ActuAl.workspAces.length, expected.workspAces.length, messAge);
+	for (let i = 0; i < ActuAl.workspAces.length; i++) {
+		let expectedRecent = expected.workspAces[i];
+		let ActuAlRecent = ActuAl.workspAces[i];
+		if (isRecentFolder(ActuAlRecent)) {
+			AssertEquAlURI(ActuAlRecent.folderUri, (<IRecentFolder>expectedRecent).folderUri, messAge);
 		} else {
-			assertEqualWorkspace(actualRecent.workspace, (<IRecentWorkspace>expectedRecent).workspace, message);
+			AssertEquAlWorkspAce(ActuAlRecent.workspAce, (<IRecentWorkspAce>expectedRecent).workspAce, messAge);
 		}
-		assert.equal(actualRecent.label, expectedRecent.label);
+		Assert.equAl(ActuAlRecent.lAbel, expectedRecent.lAbel);
 	}
 }
 
-function assertRestoring(state: IRecentlyOpened, message?: string) {
-	const stored = toStoreData(state);
+function AssertRestoring(stAte: IRecentlyOpened, messAge?: string) {
+	const stored = toStoreDAtA(stAte);
 	const restored = restoreRecentlyOpened(stored, new NullLogService());
-	assertEqualRecentlyOpened(state, restored, message);
+	AssertEquAlRecentlyOpened(stAte, restored, messAge);
 }
 
-const testWSPath = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'test.code-workspace'));
-const testFileURI = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'testFile.txt'));
-const testFolderURI = URI.file(path.join(os.tmpdir(), 'windowStateTest', 'testFolder'));
+const testWSPAth = URI.file(pAth.join(os.tmpdir(), 'windowStAteTest', 'test.code-workspAce'));
+const testFileURI = URI.file(pAth.join(os.tmpdir(), 'windowStAteTest', 'testFile.txt'));
+const testFolderURI = URI.file(pAth.join(os.tmpdir(), 'windowStAteTest', 'testFolder'));
 
-const testRemoteFolderURI = URI.parse('foo://bar/c/e');
-const testRemoteFileURI = URI.parse('foo://bar/c/d.txt');
-const testRemoteWSURI = URI.parse('foo://bar/c/test.code-workspace');
+const testRemoteFolderURI = URI.pArse('foo://bAr/c/e');
+const testRemoteFileURI = URI.pArse('foo://bAr/c/d.txt');
+const testRemoteWSURI = URI.pArse('foo://bAr/c/test.code-workspAce');
 
-suite('History Storage', () => {
-	test('storing and restoring', () => {
+suite('History StorAge', () => {
+	test('storing And restoring', () => {
 		let ro: IRecentlyOpened;
 		ro = {
 			files: [],
-			workspaces: []
+			workspAces: []
 		};
-		assertRestoring(ro, 'empty');
+		AssertRestoring(ro, 'empty');
 		ro = {
 			files: [{ fileUri: testFileURI }],
-			workspaces: []
+			workspAces: []
 		};
-		assertRestoring(ro, 'file');
+		AssertRestoring(ro, 'file');
 		ro = {
 			files: [],
-			workspaces: [{ folderUri: testFolderURI }]
+			workspAces: [{ folderUri: testFolderURI }]
 		};
-		assertRestoring(ro, 'folder');
+		AssertRestoring(ro, 'folder');
 		ro = {
 			files: [],
-			workspaces: [{ workspace: toWorkspace(testWSPath) }, { folderUri: testFolderURI }]
+			workspAces: [{ workspAce: toWorkspAce(testWSPAth) }, { folderUri: testFolderURI }]
 		};
-		assertRestoring(ro, 'workspaces and folders');
+		AssertRestoring(ro, 'workspAces And folders');
 
 		ro = {
 			files: [{ fileUri: testRemoteFileURI }],
-			workspaces: [{ workspace: toWorkspace(testRemoteWSURI) }, { folderUri: testRemoteFolderURI }]
+			workspAces: [{ workspAce: toWorkspAce(testRemoteWSURI) }, { folderUri: testRemoteFolderURI }]
 		};
-		assertRestoring(ro, 'remote workspaces and folders');
+		AssertRestoring(ro, 'remote workspAces And folders');
 		ro = {
-			files: [{ label: 'abc', fileUri: testFileURI }],
-			workspaces: [{ label: 'def', workspace: toWorkspace(testWSPath) }, { folderUri: testRemoteFolderURI }]
+			files: [{ lAbel: 'Abc', fileUri: testFileURI }],
+			workspAces: [{ lAbel: 'def', workspAce: toWorkspAce(testWSPAth) }, { folderUri: testRemoteFolderURI }]
 		};
-		assertRestoring(ro, 'labels');
+		AssertRestoring(ro, 'lAbels');
 	});
 
 	test('open 1_33', () => {
 		const v1_33 = `{
-			"workspaces3": [
+			"workspAces3": [
 				{
-					"id": "53b714b46ef1a2d4346568b4f591028c",
-					"configURIPath": "file:///home/user/workspaces/testing/custom.code-workspace"
+					"id": "53b714b46ef1A2d4346568b4f591028c",
+					"configURIPAth": "file:///home/user/workspAces/testing/custom.code-workspAce"
 				},
-				"file:///home/user/workspaces/testing/folding"
+				"file:///home/user/workspAces/testing/folding"
 			],
 			"files2": [
-				"file:///home/user/.config/code-oss-dev/storage.json"
+				"file:///home/user/.config/code-oss-dev/storAge.json"
 			],
-			"workspaceLabels": [
+			"workspAceLAbels": [
 				null,
-				"abc"
+				"Abc"
 			],
-			"fileLabels": [
+			"fileLAbels": [
 				"def"
 			]
 		}`;
 
-		let windowsState = restoreRecentlyOpened(JSON.parse(v1_33), new NullLogService());
+		let windowsStAte = restoreRecentlyOpened(JSON.pArse(v1_33), new NullLogService());
 		let expected: IRecentlyOpened = {
-			files: [{ label: 'def', fileUri: URI.parse('file:///home/user/.config/code-oss-dev/storage.json') }],
-			workspaces: [
-				{ workspace: { id: '53b714b46ef1a2d4346568b4f591028c', configPath: URI.parse('file:///home/user/workspaces/testing/custom.code-workspace') } },
-				{ label: 'abc', folderUri: URI.parse('file:///home/user/workspaces/testing/folding') }
+			files: [{ lAbel: 'def', fileUri: URI.pArse('file:///home/user/.config/code-oss-dev/storAge.json') }],
+			workspAces: [
+				{ workspAce: { id: '53b714b46ef1A2d4346568b4f591028c', configPAth: URI.pArse('file:///home/user/workspAces/testing/custom.code-workspAce') } },
+				{ lAbel: 'Abc', folderUri: URI.pArse('file:///home/user/workspAces/testing/folding') }
 			]
 		};
 
-		assertEqualRecentlyOpened(windowsState, expected, 'v1_33');
+		AssertEquAlRecentlyOpened(windowsStAte, expected, 'v1_33');
 
 	});
 

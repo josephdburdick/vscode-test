@@ -1,70 +1,70 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { URI } from 'vs/base/common/uri';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { IEnvironmentVariableInfo } from 'vs/workbench/contrib/terminal/common/environmentVariable';
+import * As nls from 'vs/nls';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { URI } from 'vs/bAse/common/uri';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { IEnvironmentVAriAbleInfo } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
 import { IExtensionPointDescriptor } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 
-export const TERMINAL_VIEW_ID = 'terminal';
+export const TERMINAL_VIEW_ID = 'terminAl';
 
-/** A context key that is set when there is at least one opened integrated terminal. */
-export const KEYBINDING_CONTEXT_TERMINAL_IS_OPEN = new RawContextKey<boolean>('terminalIsOpen', false);
+/** A context key thAt is set when there is At leAst one opened integrAted terminAl. */
+export const KEYBINDING_CONTEXT_TERMINAL_IS_OPEN = new RAwContextKey<booleAn>('terminAlIsOpen', fAlse);
 
-/** A context key that is set when the integrated terminal has focus. */
-export const KEYBINDING_CONTEXT_TERMINAL_FOCUS = new RawContextKey<boolean>('terminalFocus', false);
+/** A context key thAt is set when the integrAted terminAl hAs focus. */
+export const KEYBINDING_CONTEXT_TERMINAL_FOCUS = new RAwContextKey<booleAn>('terminAlFocus', fAlse);
 
-export const KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY = 'terminalShellType';
-/** A context key that is set to the detected shell for the most recently active terminal, this is set to the last known value when no terminals exist. */
-export const KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE = new RawContextKey<string>(KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, undefined);
+export const KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY = 'terminAlShellType';
+/** A context key thAt is set to the detected shell for the most recently Active terminAl, this is set to the lAst known vAlue when no terminAls exist. */
+export const KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE = new RAwContextKey<string>(KEYBINDING_CONTEXT_TERMINAL_SHELL_TYPE_KEY, undefined);
 
-/** A context key that is set when the integrated terminal does not have focus. */
-export const KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED = KEYBINDING_CONTEXT_TERMINAL_FOCUS.toNegated();
+/** A context key thAt is set when the integrAted terminAl does not hAve focus. */
+export const KEYBINDING_CONTEXT_TERMINAL_NOT_FOCUSED = KEYBINDING_CONTEXT_TERMINAL_FOCUS.toNegAted();
 
-/** A context key that is set when the user is navigating the accessibility tree */
-export const KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS = new RawContextKey<boolean>('terminalA11yTreeFocus', false);
+/** A context key thAt is set when the user is nAvigAting the Accessibility tree */
+export const KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS = new RAwContextKey<booleAn>('terminAlA11yTreeFocus', fAlse);
 
-/** A keybinding context key that is set when the integrated terminal has text selected. */
-export const KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED = new RawContextKey<boolean>('terminalTextSelected', false);
-/** A keybinding context key that is set when the integrated terminal does not have text selected. */
-export const KEYBINDING_CONTEXT_TERMINAL_TEXT_NOT_SELECTED = KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED.toNegated();
+/** A keybinding context key thAt is set when the integrAted terminAl hAs text selected. */
+export const KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED = new RAwContextKey<booleAn>('terminAlTextSelected', fAlse);
+/** A keybinding context key thAt is set when the integrAted terminAl does not hAve text selected. */
+export const KEYBINDING_CONTEXT_TERMINAL_TEXT_NOT_SELECTED = KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED.toNegAted();
 
-/**  A context key that is set when the find widget in integrated terminal is visible. */
-export const KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE = new RawContextKey<boolean>('terminalFindVisible', false);
-/**  A context key that is set when the find widget in integrated terminal is not visible. */
-export const KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE = KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE.toNegated();
-/**  A context key that is set when the find widget find input in integrated terminal is focused. */
-export const KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED = new RawContextKey<boolean>('terminalFindInputFocused', false);
-/**  A context key that is set when the find widget in integrated terminal is focused. */
-export const KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED = new RawContextKey<boolean>('terminalFindFocused', false);
-/**  A context key that is set when the find widget find input in integrated terminal is not focused. */
-export const KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_NOT_FOCUSED = KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED.toNegated();
+/**  A context key thAt is set when the find widget in integrAted terminAl is visible. */
+export const KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE = new RAwContextKey<booleAn>('terminAlFindVisible', fAlse);
+/**  A context key thAt is set when the find widget in integrAted terminAl is not visible. */
+export const KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE = KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE.toNegAted();
+/**  A context key thAt is set when the find widget find input in integrAted terminAl is focused. */
+export const KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED = new RAwContextKey<booleAn>('terminAlFindInputFocused', fAlse);
+/**  A context key thAt is set when the find widget in integrAted terminAl is focused. */
+export const KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED = new RAwContextKey<booleAn>('terminAlFindFocused', fAlse);
+/**  A context key thAt is set when the find widget find input in integrAted terminAl is not focused. */
+export const KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_NOT_FOCUSED = KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED.toNegAted();
 
-export const KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED = new RawContextKey<boolean>('terminalProcessSupported', false);
+export const KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED = new RAwContextKey<booleAn>('terminAlProcessSupported', fAlse);
 
-export const IS_WORKSPACE_SHELL_ALLOWED_STORAGE_KEY = 'terminal.integrated.isWorkspaceShellAllowed';
-export const NEVER_MEASURE_RENDER_TIME_STORAGE_KEY = 'terminal.integrated.neverMeasureRenderTime';
+export const IS_WORKSPACE_SHELL_ALLOWED_STORAGE_KEY = 'terminAl.integrAted.isWorkspAceShellAllowed';
+export const NEVER_MEASURE_RENDER_TIME_STORAGE_KEY = 'terminAl.integrAted.neverMeAsureRenderTime';
 
-// The creation of extension host terminals is delayed by this value (milliseconds). The purpose of
-// this delay is to allow the terminal instance to initialize correctly and have its ID set before
-// trying to create the corressponding object on the ext host.
+// The creAtion of extension host terminAls is delAyed by this vAlue (milliseconds). The purpose of
+// this delAy is to Allow the terminAl instAnce to initiAlize correctly And hAve its ID set before
+// trying to creAte the corressponding object on the ext host.
 export const EXT_HOST_CREATION_DELAY = 100;
 
-export const TerminalCursorStyle = {
+export const TerminAlCursorStyle = {
 	BLOCK: 'block',
 	LINE: 'line',
 	UNDERLINE: 'underline'
 };
 
-export const TERMINAL_CONFIG_SECTION = 'terminal.integrated';
+export const TERMINAL_CONFIG_SECTION = 'terminAl.integrAted';
 
-export const TERMINAL_ACTION_CATEGORY = nls.localize('terminalCategory', "Terminal");
+export const TERMINAL_ACTION_CATEGORY = nls.locAlize('terminAlCAtegory', "TerminAl");
 
 export const DEFAULT_LETTER_SPACING = 0;
 export const MINIMUM_LETTER_SPACING = -5;
@@ -72,19 +72,19 @@ export const DEFAULT_LINE_HEIGHT = 1;
 
 export const MINIMUM_FONT_WEIGHT = 1;
 export const MAXIMUM_FONT_WEIGHT = 1000;
-export const DEFAULT_FONT_WEIGHT = 'normal';
+export const DEFAULT_FONT_WEIGHT = 'normAl';
 export const DEFAULT_BOLD_FONT_WEIGHT = 'bold';
-export const SUGGESTIONS_FONT_WEIGHT = ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'];
+export const SUGGESTIONS_FONT_WEIGHT = ['normAl', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'];
 
-export type FontWeight = 'normal' | 'bold' | number;
+export type FontWeight = 'normAl' | 'bold' | number;
 
-export interface ITerminalConfiguration {
+export interfAce ITerminAlConfigurAtion {
 	shell: {
 		linux: string | null;
 		osx: string | null;
 		windows: string | null;
 	};
-	automationShell: {
+	AutomAtionShell: {
 		linux: string | null;
 		osx: string | null;
 		windows: string | null;
@@ -94,422 +94,422 @@ export interface ITerminalConfiguration {
 		osx: string[];
 		windows: string[];
 	};
-	macOptionIsMeta: boolean;
-	macOptionClickForcesSelection: boolean;
-	rendererType: 'auto' | 'canvas' | 'dom' | 'experimentalWebgl';
-	rightClickBehavior: 'default' | 'copyPaste' | 'paste' | 'selectWord';
-	cursorBlinking: boolean;
+	mAcOptionIsMetA: booleAn;
+	mAcOptionClickForcesSelection: booleAn;
+	rendererType: 'Auto' | 'cAnvAs' | 'dom' | 'experimentAlWebgl';
+	rightClickBehAvior: 'defAult' | 'copyPAste' | 'pAste' | 'selectWord';
+	cursorBlinking: booleAn;
 	cursorStyle: string;
 	cursorWidth: number;
-	drawBoldTextInBrightColors: boolean;
-	fastScrollSensitivity: number;
-	fontFamily: string;
+	drAwBoldTextInBrightColors: booleAn;
+	fAstScrollSensitivity: number;
+	fontFAmily: string;
 	fontWeight: FontWeight;
 	fontWeightBold: FontWeight;
-	minimumContrastRatio: number;
+	minimumContrAstRAtio: number;
 	mouseWheelScrollSensitivity: number;
-	// fontLigatures: boolean;
+	// fontLigAtures: booleAn;
 	fontSize: number;
-	letterSpacing: number;
+	letterSpAcing: number;
 	lineHeight: number;
-	detectLocale: 'auto' | 'off' | 'on';
-	scrollback: number;
-	commandsToSkipShell: string[];
-	allowChords: boolean;
-	allowMnemonics: boolean;
+	detectLocAle: 'Auto' | 'off' | 'on';
+	scrollbAck: number;
+	commAndsToSkipShell: string[];
+	AllowChords: booleAn;
+	AllowMnemonics: booleAn;
 	cwd: string;
-	confirmOnExit: boolean;
-	enableBell: boolean;
-	inheritEnv: boolean;
+	confirmOnExit: booleAn;
+	enAbleBell: booleAn;
+	inheritEnv: booleAn;
 	env: {
 		linux: { [key: string]: string };
 		osx: { [key: string]: string };
 		windows: { [key: string]: string };
 	};
-	environmentChangesIndicator: 'off' | 'on' | 'warnonly';
-	showExitAlert: boolean;
-	splitCwd: 'workspaceRoot' | 'initial' | 'inherited';
-	windowsEnableConpty: boolean;
-	wordSeparators: string;
-	experimentalUseTitleEvent: boolean;
-	enableFileLinks: boolean;
+	environmentChAngesIndicAtor: 'off' | 'on' | 'wArnonly';
+	showExitAlert: booleAn;
+	splitCwd: 'workspAceRoot' | 'initiAl' | 'inherited';
+	windowsEnAbleConpty: booleAn;
+	wordSepArAtors: string;
+	experimentAlUseTitleEvent: booleAn;
+	enAbleFileLinks: booleAn;
 	unicodeVersion: '6' | '11';
-	experimentalLinkProvider: boolean;
-	typeaheadThreshold: number;
-	typeaheadStyle: number | string;
+	experimentAlLinkProvider: booleAn;
+	typeAheAdThreshold: number;
+	typeAheAdStyle: number | string;
 }
 
-export interface ITerminalConfigHelper {
-	config: ITerminalConfiguration;
+export interfAce ITerminAlConfigHelper {
+	config: ITerminAlConfigurAtion;
 
-	onWorkspacePermissionsChanged: Event<boolean>;
+	onWorkspAcePermissionsChAnged: Event<booleAn>;
 
-	configFontIsMonospace(): boolean;
-	getFont(): ITerminalFont;
-	/** Sets whether a workspace shell configuration is allowed or not */
-	setWorkspaceShellAllowed(isAllowed: boolean): void;
-	checkWorkspaceShellPermissions(osOverride?: OperatingSystem): boolean;
-	showRecommendations(shellLaunchConfig: IShellLaunchConfig): void;
+	configFontIsMonospAce(): booleAn;
+	getFont(): ITerminAlFont;
+	/** Sets whether A workspAce shell configurAtion is Allowed or not */
+	setWorkspAceShellAllowed(isAllowed: booleAn): void;
+	checkWorkspAceShellPermissions(osOverride?: OperAtingSystem): booleAn;
+	showRecommendAtions(shellLAunchConfig: IShellLAunchConfig): void;
 }
 
-export interface ITerminalFont {
-	fontFamily: string;
+export interfAce ITerminAlFont {
+	fontFAmily: string;
 	fontSize: number;
-	letterSpacing: number;
+	letterSpAcing: number;
 	lineHeight: number;
-	charWidth?: number;
-	charHeight?: number;
+	chArWidth?: number;
+	chArHeight?: number;
 }
 
-export interface ITerminalEnvironment {
+export interfAce ITerminAlEnvironment {
 	[key: string]: string | null;
 }
 
-export interface IShellLaunchConfig {
+export interfAce IShellLAunchConfig {
 	/**
-	 * The name of the terminal, if this is not set the name of the process will be used.
+	 * The nAme of the terminAl, if this is not set the nAme of the process will be used.
 	 */
-	name?: string;
+	nAme?: string;
 
 	/**
-	 * The shell executable (bash, cmd, etc.).
+	 * The shell executAble (bAsh, cmd, etc.).
 	 */
-	executable?: string;
+	executAble?: string;
 
 	/**
-	 * The CLI arguments to use with executable, a string[] is in argv format and will be escaped,
-	 * a string is in "CommandLine" pre-escaped format and will be used as is. The string option is
-	 * only supported on Windows and will throw an exception if used on macOS or Linux.
+	 * The CLI Arguments to use with executAble, A string[] is in Argv formAt And will be escAped,
+	 * A string is in "CommAndLine" pre-escAped formAt And will be used As is. The string option is
+	 * only supported on Windows And will throw An exception if used on mAcOS or Linux.
 	 */
-	args?: string[] | string;
+	Args?: string[] | string;
 
 	/**
-	 * The current working directory of the terminal, this overrides the `terminal.integrated.cwd`
+	 * The current working directory of the terminAl, this overrides the `terminAl.integrAted.cwd`
 	 * settings key.
 	 */
 	cwd?: string | URI;
 
 	/**
-	 * A custom environment for the terminal, if this is not set the environment will be inherited
+	 * A custom environment for the terminAl, if this is not set the environment will be inherited
 	 * from the VS Code process.
 	 */
-	env?: ITerminalEnvironment;
+	env?: ITerminAlEnvironment;
 
 	/**
-	 * Whether to ignore a custom cwd from the `terminal.integrated.cwd` settings key (e.g. if the
-	 * shell is being launched by an extension).
+	 * Whether to ignore A custom cwd from the `terminAl.integrAted.cwd` settings key (e.g. if the
+	 * shell is being lAunched by An extension).
 	 */
-	ignoreConfigurationCwd?: boolean;
+	ignoreConfigurAtionCwd?: booleAn;
 
-	/** Whether to wait for a key press before closing the terminal. */
-	waitOnExit?: boolean | string;
-
-	/**
-	 * A string including ANSI escape sequences that will be written to the terminal emulator
-	 * _before_ the terminal process has launched, a trailing \n is added at the end of the string.
-	 * This allows for example the terminal instance to display a styled message as the first line
-	 * of the terminal. Use \x1b over \033 or \e for the escape control character.
-	 */
-	initialText?: string;
+	/** Whether to wAit for A key press before closing the terminAl. */
+	wAitOnExit?: booleAn | string;
 
 	/**
-	 * Whether an extension is controlling the terminal via a `vscode.Pseudoterminal`.
+	 * A string including ANSI escApe sequences thAt will be written to the terminAl emulAtor
+	 * _before_ the terminAl process hAs lAunched, A trAiling \n is Added At the end of the string.
+	 * This Allows for exAmple the terminAl instAnce to displAy A styled messAge As the first line
+	 * of the terminAl. Use \x1b over \033 or \e for the escApe control chArActer.
 	 */
-	isExtensionTerminal?: boolean;
+	initiAlText?: string;
 
 	/**
-	 * Whether the terminal process environment should be exactly as provided in
-	 * `TerminalOptions.env`. When this is false (default), the environment will be based on the
-	 * window's environment and also apply configured platform settings like
-	 * `terminal.integrated.windows.env` on top. When this is true, the complete environment must be
-	 * provided as nothing will be inherited from the process or any configuration.
+	 * Whether An extension is controlling the terminAl viA A `vscode.PseudoterminAl`.
 	 */
-	strictEnv?: boolean;
+	isExtensionTerminAl?: booleAn;
 
 	/**
-	 * When enabled the terminal will run the process as normal but not be surfaced to the user
-	 * until `Terminal.show` is called. The typical usage for this is when you need to run
-	 * something that may need interactivity but only want to tell the user about it when
-	 * interaction is needed. Note that the terminals will still be exposed to all extensions
-	 * as normal.
+	 * Whether the terminAl process environment should be exActly As provided in
+	 * `TerminAlOptions.env`. When this is fAlse (defAult), the environment will be bAsed on the
+	 * window's environment And Also Apply configured plAtform settings like
+	 * `terminAl.integrAted.windows.env` on top. When this is true, the complete environment must be
+	 * provided As nothing will be inherited from the process or Any configurAtion.
 	 */
-	hideFromUser?: boolean;
+	strictEnv?: booleAn;
+
+	/**
+	 * When enAbled the terminAl will run the process As normAl but not be surfAced to the user
+	 * until `TerminAl.show` is cAlled. The typicAl usAge for this is when you need to run
+	 * something thAt mAy need interActivity but only wAnt to tell the user About it when
+	 * interAction is needed. Note thAt the terminAls will still be exposed to All extensions
+	 * As normAl.
+	 */
+	hideFromUser?: booleAn;
 }
 
 /**
- * Provides access to native Windows calls that can be injected into non-native layers.
+ * Provides Access to nAtive Windows cAlls thAt cAn be injected into non-nAtive lAyers.
  */
-export interface ITerminalNativeWindowsDelegate {
+export interfAce ITerminAlNAtiveWindowsDelegAte {
 	/**
 	 * Gets the Windows build number, eg. this would be `19041` for Windows 10 version 2004
 	 */
 	getWindowsBuildNumber(): number;
 	/**
-	 * Converts a regular Windows path into the WSL path equivalent, eg. `C:\` -> `/mnt/c`
-	 * @param path The Windows path.
+	 * Converts A regulAr Windows pAth into the WSL pAth equivAlent, eg. `C:\` -> `/mnt/c`
+	 * @pArAm pAth The Windows pAth.
 	 */
-	getWslPath(path: string): Promise<string>;
+	getWslPAth(pAth: string): Promise<string>;
 }
 
-export interface IShellDefinition {
-	label: string;
-	path: string;
+export interfAce IShellDefinition {
+	lAbel: string;
+	pAth: string;
 }
 
-export interface ITerminalDimensions {
+export interfAce ITerminAlDimensions {
 	/**
-	 * The columns of the terminal.
+	 * The columns of the terminAl.
 	 */
-	readonly cols: number;
+	reAdonly cols: number;
 
 	/**
-	 * The rows of the terminal.
+	 * The rows of the terminAl.
 	 */
-	readonly rows: number;
+	reAdonly rows: number;
 }
 
-export interface ICommandTracker {
-	scrollToPreviousCommand(): void;
-	scrollToNextCommand(): void;
-	selectToPreviousCommand(): void;
-	selectToNextCommand(): void;
+export interfAce ICommAndTrAcker {
+	scrollToPreviousCommAnd(): void;
+	scrollToNextCommAnd(): void;
+	selectToPreviousCommAnd(): void;
+	selectToNextCommAnd(): void;
 	selectToPreviousLine(): void;
 	selectToNextLine(): void;
 }
 
-export interface INavigationMode {
-	exitNavigationMode(): void;
+export interfAce INAvigAtionMode {
+	exitNAvigAtionMode(): void;
 	focusPreviousLine(): void;
 	focusNextLine(): void;
 }
 
-export interface IBeforeProcessDataEvent {
+export interfAce IBeforeProcessDAtAEvent {
 	/**
-	 * The data of the event, this can be modified by the event listener to change what gets sent
-	 * to the terminal.
+	 * The dAtA of the event, this cAn be modified by the event listener to chAnge whAt gets sent
+	 * to the terminAl.
 	 */
-	data: string;
+	dAtA: string;
 }
 
-export interface ITerminalProcessManager extends IDisposable {
-	readonly processState: ProcessState;
-	readonly ptyProcessReady: Promise<void>;
-	readonly shellProcessId: number | undefined;
-	readonly remoteAuthority: string | undefined;
-	readonly os: OperatingSystem | undefined;
-	readonly userHome: string | undefined;
-	readonly environmentVariableInfo: IEnvironmentVariableInfo | undefined;
+export interfAce ITerminAlProcessMAnAger extends IDisposAble {
+	reAdonly processStAte: ProcessStAte;
+	reAdonly ptyProcessReAdy: Promise<void>;
+	reAdonly shellProcessId: number | undefined;
+	reAdonly remoteAuthority: string | undefined;
+	reAdonly os: OperAtingSystem | undefined;
+	reAdonly userHome: string | undefined;
+	reAdonly environmentVAriAbleInfo: IEnvironmentVAriAbleInfo | undefined;
 
-	readonly onProcessReady: Event<void>;
-	readonly onBeforeProcessData: Event<IBeforeProcessDataEvent>;
-	readonly onProcessData: Event<string>;
-	readonly onProcessTitle: Event<string>;
-	readonly onProcessExit: Event<number | undefined>;
-	readonly onProcessOverrideDimensions: Event<ITerminalDimensions | undefined>;
-	readonly onProcessResolvedShellLaunchConfig: Event<IShellLaunchConfig>;
-	readonly onEnvironmentVariableInfoChanged: Event<IEnvironmentVariableInfo>;
+	reAdonly onProcessReAdy: Event<void>;
+	reAdonly onBeforeProcessDAtA: Event<IBeforeProcessDAtAEvent>;
+	reAdonly onProcessDAtA: Event<string>;
+	reAdonly onProcessTitle: Event<string>;
+	reAdonly onProcessExit: Event<number | undefined>;
+	reAdonly onProcessOverrideDimensions: Event<ITerminAlDimensions | undefined>;
+	reAdonly onProcessResolvedShellLAunchConfig: Event<IShellLAunchConfig>;
+	reAdonly onEnvironmentVAriAbleInfoChAnged: Event<IEnvironmentVAriAbleInfo>;
 
-	dispose(immediate?: boolean): void;
-	createProcess(shellLaunchConfig: IShellLaunchConfig, cols: number, rows: number, isScreenReaderModeEnabled: boolean): Promise<ITerminalLaunchError | undefined>;
-	write(data: string): void;
+	dispose(immediAte?: booleAn): void;
+	creAteProcess(shellLAunchConfig: IShellLAunchConfig, cols: number, rows: number, isScreenReAderModeEnAbled: booleAn): Promise<ITerminAlLAunchError | undefined>;
+	write(dAtA: string): void;
 	setDimensions(cols: number, rows: number): void;
 
-	getInitialCwd(): Promise<string>;
+	getInitiAlCwd(): Promise<string>;
 	getCwd(): Promise<string>;
-	getLatency(): Promise<number>;
+	getLAtency(): Promise<number>;
 }
 
-export const enum ProcessState {
-	// The process has not been initialized yet.
+export const enum ProcessStAte {
+	// The process hAs not been initiAlized yet.
 	UNINITIALIZED,
-	// The process is currently launching, the process is marked as launching
-	// for a short duration after being created and is helpful to indicate
-	// whether the process died as a result of bad shell and args.
+	// The process is currently lAunching, the process is mArked As lAunching
+	// for A short durAtion After being creAted And is helpful to indicAte
+	// whether the process died As A result of bAd shell And Args.
 	LAUNCHING,
-	// The process is running normally.
+	// The process is running normAlly.
 	RUNNING,
-	// The process was killed during launch, likely as a result of bad shell and
-	// args.
+	// The process wAs killed during lAunch, likely As A result of bAd shell And
+	// Args.
 	KILLED_DURING_LAUNCH,
-	// The process was killed by the user (the event originated from VS Code).
+	// The process wAs killed by the user (the event originAted from VS Code).
 	KILLED_BY_USER,
-	// The process was killed by itself, for example the shell crashed or `exit`
-	// was run.
+	// The process wAs killed by itself, for exAmple the shell crAshed or `exit`
+	// wAs run.
 	KILLED_BY_PROCESS
 }
 
-export interface ITerminalProcessExtHostProxy extends IDisposable {
-	readonly terminalId: number;
+export interfAce ITerminAlProcessExtHostProxy extends IDisposAble {
+	reAdonly terminAlId: number;
 
-	emitData(data: string): void;
+	emitDAtA(dAtA: string): void;
 	emitTitle(title: string): void;
-	emitReady(pid: number, cwd: string): void;
+	emitReAdy(pid: number, cwd: string): void;
 	emitExit(exitCode: number | undefined): void;
-	emitOverrideDimensions(dimensions: ITerminalDimensions | undefined): void;
-	emitResolvedShellLaunchConfig(shellLaunchConfig: IShellLaunchConfig): void;
-	emitInitialCwd(initialCwd: string): void;
+	emitOverrideDimensions(dimensions: ITerminAlDimensions | undefined): void;
+	emitResolvedShellLAunchConfig(shellLAunchConfig: IShellLAunchConfig): void;
+	emitInitiAlCwd(initiAlCwd: string): void;
 	emitCwd(cwd: string): void;
-	emitLatency(latency: number): void;
+	emitLAtency(lAtency: number): void;
 
 	onInput: Event<string>;
 	onResize: Event<{ cols: number, rows: number }>;
-	onShutdown: Event<boolean>;
-	onRequestInitialCwd: Event<void>;
+	onShutdown: Event<booleAn>;
+	onRequestInitiAlCwd: Event<void>;
 	onRequestCwd: Event<void>;
-	onRequestLatency: Event<void>;
+	onRequestLAtency: Event<void>;
 }
 
-export interface ISpawnExtHostProcessRequest {
-	proxy: ITerminalProcessExtHostProxy;
-	shellLaunchConfig: IShellLaunchConfig;
-	activeWorkspaceRootUri: URI | undefined;
+export interfAce ISpAwnExtHostProcessRequest {
+	proxy: ITerminAlProcessExtHostProxy;
+	shellLAunchConfig: IShellLAunchConfig;
+	ActiveWorkspAceRootUri: URI | undefined;
 	cols: number;
 	rows: number;
-	isWorkspaceShellAllowed: boolean;
-	callback: (error: ITerminalLaunchError | undefined) => void;
+	isWorkspAceShellAllowed: booleAn;
+	cAllbAck: (error: ITerminAlLAunchError | undefined) => void;
 }
 
-export interface IStartExtensionTerminalRequest {
-	proxy: ITerminalProcessExtHostProxy;
+export interfAce IStArtExtensionTerminAlRequest {
+	proxy: ITerminAlProcessExtHostProxy;
 	cols: number;
 	rows: number;
-	callback: (error: ITerminalLaunchError | undefined) => void;
+	cAllbAck: (error: ITerminAlLAunchError | undefined) => void;
 }
 
-export interface IAvailableShellsRequest {
-	callback: (shells: IShellDefinition[]) => void;
+export interfAce IAvAilAbleShellsRequest {
+	cAllbAck: (shells: IShellDefinition[]) => void;
 }
 
-export interface IDefaultShellAndArgsRequest {
-	useAutomationShell: boolean;
-	callback: (shell: string, args: string[] | string | undefined) => void;
+export interfAce IDefAultShellAndArgsRequest {
+	useAutomAtionShell: booleAn;
+	cAllbAck: (shell: string, Args: string[] | string | undefined) => void;
 }
 
 export enum LinuxDistro {
-	Fedora,
+	FedorA,
 	Ubuntu,
 	Unknown
 }
 
 export enum TitleEventSource {
-	/** From the API or the rename command that overrides any other type */
+	/** From the API or the renAme commAnd thAt overrides Any other type */
 	Api,
-	/** From the process name property*/
+	/** From the process nAme property*/
 	Process,
 	/** From the VT sequence */
 	Sequence
 }
 
-export interface IWindowsShellHelper extends IDisposable {
-	readonly onShellNameChange: Event<string>;
+export interfAce IWindowsShellHelper extends IDisposAble {
+	reAdonly onShellNAmeChAnge: Event<string>;
 
-	getShellName(): Promise<string>;
+	getShellNAme(): Promise<string>;
 }
 
-export interface ITerminalLaunchError {
-	message: string;
+export interfAce ITerminAlLAunchError {
+	messAge: string;
 	code?: number;
 }
 
 /**
- * An interface representing a raw terminal child process, this contains a subset of the
- * child_process.ChildProcess node.js interface.
+ * An interfAce representing A rAw terminAl child process, this contAins A subset of the
+ * child_process.ChildProcess node.js interfAce.
  */
-export interface ITerminalChildProcess {
-	onProcessData: Event<string>;
+export interfAce ITerminAlChildProcess {
+	onProcessDAtA: Event<string>;
 	onProcessExit: Event<number | undefined>;
-	onProcessReady: Event<{ pid: number, cwd: string }>;
-	onProcessTitleChanged: Event<string>;
-	onProcessOverrideDimensions?: Event<ITerminalDimensions | undefined>;
-	onProcessResolvedShellLaunchConfig?: Event<IShellLaunchConfig>;
+	onProcessReAdy: Event<{ pid: number, cwd: string }>;
+	onProcessTitleChAnged: Event<string>;
+	onProcessOverrideDimensions?: Event<ITerminAlDimensions | undefined>;
+	onProcessResolvedShellLAunchConfig?: Event<IShellLAunchConfig>;
 
 	/**
-	 * Starts the process.
+	 * StArts the process.
 	 *
-	 * @returns undefined when the process was successfully started, otherwise an object containing
-	 * information on what went wrong.
+	 * @returns undefined when the process wAs successfully stArted, otherwise An object contAining
+	 * informAtion on whAt went wrong.
 	 */
-	start(): Promise<ITerminalLaunchError | undefined>;
+	stArt(): Promise<ITerminAlLAunchError | undefined>;
 
 	/**
-	 * Shutdown the terminal process.
+	 * Shutdown the terminAl process.
 	 *
-	 * @param immediate When true the process will be killed immediately, otherwise the process will
-	 * be given some time to make sure no additional data comes through.
+	 * @pArAm immediAte When true the process will be killed immediAtely, otherwise the process will
+	 * be given some time to mAke sure no AdditionAl dAtA comes through.
 	 */
-	shutdown(immediate: boolean): void;
-	input(data: string): void;
+	shutdown(immediAte: booleAn): void;
+	input(dAtA: string): void;
 	resize(cols: number, rows: number): void;
 
-	getInitialCwd(): Promise<string>;
+	getInitiAlCwd(): Promise<string>;
 	getCwd(): Promise<string>;
-	getLatency(): Promise<number>;
+	getLAtency(): Promise<number>;
 }
 
 export const enum TERMINAL_COMMAND_ID {
-	FIND_NEXT = 'workbench.action.terminal.findNext',
-	FIND_PREVIOUS = 'workbench.action.terminal.findPrevious',
-	TOGGLE = 'workbench.action.terminal.toggleTerminal',
-	KILL = 'workbench.action.terminal.kill',
-	QUICK_KILL = 'workbench.action.terminal.quickKill',
-	COPY_SELECTION = 'workbench.action.terminal.copySelection',
-	SELECT_ALL = 'workbench.action.terminal.selectAll',
-	DELETE_WORD_LEFT = 'workbench.action.terminal.deleteWordLeft',
-	DELETE_WORD_RIGHT = 'workbench.action.terminal.deleteWordRight',
-	DELETE_TO_LINE_START = 'workbench.action.terminal.deleteToLineStart',
-	MOVE_TO_LINE_START = 'workbench.action.terminal.moveToLineStart',
-	MOVE_TO_LINE_END = 'workbench.action.terminal.moveToLineEnd',
-	NEW = 'workbench.action.terminal.new',
-	NEW_WITH_CWD = 'workbench.action.terminal.newWithCwd',
-	NEW_LOCAL = 'workbench.action.terminal.newLocal',
-	NEW_IN_ACTIVE_WORKSPACE = 'workbench.action.terminal.newInActiveWorkspace',
-	SPLIT = 'workbench.action.terminal.split',
-	SPLIT_IN_ACTIVE_WORKSPACE = 'workbench.action.terminal.splitInActiveWorkspace',
-	RELAUNCH = 'workbench.action.terminal.relaunch',
-	FOCUS_PREVIOUS_PANE = 'workbench.action.terminal.focusPreviousPane',
-	FOCUS_NEXT_PANE = 'workbench.action.terminal.focusNextPane',
-	RESIZE_PANE_LEFT = 'workbench.action.terminal.resizePaneLeft',
-	RESIZE_PANE_RIGHT = 'workbench.action.terminal.resizePaneRight',
-	RESIZE_PANE_UP = 'workbench.action.terminal.resizePaneUp',
-	RESIZE_PANE_DOWN = 'workbench.action.terminal.resizePaneDown',
-	FOCUS = 'workbench.action.terminal.focus',
-	FOCUS_NEXT = 'workbench.action.terminal.focusNext',
-	FOCUS_PREVIOUS = 'workbench.action.terminal.focusPrevious',
-	PASTE = 'workbench.action.terminal.paste',
-	SELECT_DEFAULT_SHELL = 'workbench.action.terminal.selectDefaultShell',
-	RUN_SELECTED_TEXT = 'workbench.action.terminal.runSelectedText',
-	RUN_ACTIVE_FILE = 'workbench.action.terminal.runActiveFile',
-	SWITCH_TERMINAL = 'workbench.action.terminal.switchTerminal',
-	SCROLL_DOWN_LINE = 'workbench.action.terminal.scrollDown',
-	SCROLL_DOWN_PAGE = 'workbench.action.terminal.scrollDownPage',
-	SCROLL_TO_BOTTOM = 'workbench.action.terminal.scrollToBottom',
-	SCROLL_UP_LINE = 'workbench.action.terminal.scrollUp',
-	SCROLL_UP_PAGE = 'workbench.action.terminal.scrollUpPage',
-	SCROLL_TO_TOP = 'workbench.action.terminal.scrollToTop',
-	CLEAR = 'workbench.action.terminal.clear',
-	CLEAR_SELECTION = 'workbench.action.terminal.clearSelection',
-	MANAGE_WORKSPACE_SHELL_PERMISSIONS = 'workbench.action.terminal.manageWorkspaceShellPermissions',
-	RENAME = 'workbench.action.terminal.rename',
-	RENAME_WITH_ARG = 'workbench.action.terminal.renameWithArg',
-	FIND_FOCUS = 'workbench.action.terminal.focusFind',
-	FIND_HIDE = 'workbench.action.terminal.hideFind',
-	QUICK_OPEN_TERM = 'workbench.action.quickOpenTerm',
-	SCROLL_TO_PREVIOUS_COMMAND = 'workbench.action.terminal.scrollToPreviousCommand',
-	SCROLL_TO_NEXT_COMMAND = 'workbench.action.terminal.scrollToNextCommand',
-	SELECT_TO_PREVIOUS_COMMAND = 'workbench.action.terminal.selectToPreviousCommand',
-	SELECT_TO_NEXT_COMMAND = 'workbench.action.terminal.selectToNextCommand',
-	SELECT_TO_PREVIOUS_LINE = 'workbench.action.terminal.selectToPreviousLine',
-	SELECT_TO_NEXT_LINE = 'workbench.action.terminal.selectToNextLine',
-	TOGGLE_ESCAPE_SEQUENCE_LOGGING = 'toggleEscapeSequenceLogging',
-	SEND_SEQUENCE = 'workbench.action.terminal.sendSequence',
-	TOGGLE_FIND_REGEX = 'workbench.action.terminal.toggleFindRegex',
-	TOGGLE_FIND_WHOLE_WORD = 'workbench.action.terminal.toggleFindWholeWord',
-	TOGGLE_FIND_CASE_SENSITIVE = 'workbench.action.terminal.toggleFindCaseSensitive',
-	NAVIGATION_MODE_EXIT = 'workbench.action.terminal.navigationModeExit',
-	NAVIGATION_MODE_FOCUS_NEXT = 'workbench.action.terminal.navigationModeFocusNext',
-	NAVIGATION_MODE_FOCUS_PREVIOUS = 'workbench.action.terminal.navigationModeFocusPrevious',
-	SHOW_ENVIRONMENT_INFORMATION = 'workbench.action.terminal.showEnvironmentInformation',
-	SEARCH_WORKSPACE = 'workbench.action.terminal.searchWorkspace'
+	FIND_NEXT = 'workbench.Action.terminAl.findNext',
+	FIND_PREVIOUS = 'workbench.Action.terminAl.findPrevious',
+	TOGGLE = 'workbench.Action.terminAl.toggleTerminAl',
+	KILL = 'workbench.Action.terminAl.kill',
+	QUICK_KILL = 'workbench.Action.terminAl.quickKill',
+	COPY_SELECTION = 'workbench.Action.terminAl.copySelection',
+	SELECT_ALL = 'workbench.Action.terminAl.selectAll',
+	DELETE_WORD_LEFT = 'workbench.Action.terminAl.deleteWordLeft',
+	DELETE_WORD_RIGHT = 'workbench.Action.terminAl.deleteWordRight',
+	DELETE_TO_LINE_START = 'workbench.Action.terminAl.deleteToLineStArt',
+	MOVE_TO_LINE_START = 'workbench.Action.terminAl.moveToLineStArt',
+	MOVE_TO_LINE_END = 'workbench.Action.terminAl.moveToLineEnd',
+	NEW = 'workbench.Action.terminAl.new',
+	NEW_WITH_CWD = 'workbench.Action.terminAl.newWithCwd',
+	NEW_LOCAL = 'workbench.Action.terminAl.newLocAl',
+	NEW_IN_ACTIVE_WORKSPACE = 'workbench.Action.terminAl.newInActiveWorkspAce',
+	SPLIT = 'workbench.Action.terminAl.split',
+	SPLIT_IN_ACTIVE_WORKSPACE = 'workbench.Action.terminAl.splitInActiveWorkspAce',
+	RELAUNCH = 'workbench.Action.terminAl.relAunch',
+	FOCUS_PREVIOUS_PANE = 'workbench.Action.terminAl.focusPreviousPAne',
+	FOCUS_NEXT_PANE = 'workbench.Action.terminAl.focusNextPAne',
+	RESIZE_PANE_LEFT = 'workbench.Action.terminAl.resizePAneLeft',
+	RESIZE_PANE_RIGHT = 'workbench.Action.terminAl.resizePAneRight',
+	RESIZE_PANE_UP = 'workbench.Action.terminAl.resizePAneUp',
+	RESIZE_PANE_DOWN = 'workbench.Action.terminAl.resizePAneDown',
+	FOCUS = 'workbench.Action.terminAl.focus',
+	FOCUS_NEXT = 'workbench.Action.terminAl.focusNext',
+	FOCUS_PREVIOUS = 'workbench.Action.terminAl.focusPrevious',
+	PASTE = 'workbench.Action.terminAl.pAste',
+	SELECT_DEFAULT_SHELL = 'workbench.Action.terminAl.selectDefAultShell',
+	RUN_SELECTED_TEXT = 'workbench.Action.terminAl.runSelectedText',
+	RUN_ACTIVE_FILE = 'workbench.Action.terminAl.runActiveFile',
+	SWITCH_TERMINAL = 'workbench.Action.terminAl.switchTerminAl',
+	SCROLL_DOWN_LINE = 'workbench.Action.terminAl.scrollDown',
+	SCROLL_DOWN_PAGE = 'workbench.Action.terminAl.scrollDownPAge',
+	SCROLL_TO_BOTTOM = 'workbench.Action.terminAl.scrollToBottom',
+	SCROLL_UP_LINE = 'workbench.Action.terminAl.scrollUp',
+	SCROLL_UP_PAGE = 'workbench.Action.terminAl.scrollUpPAge',
+	SCROLL_TO_TOP = 'workbench.Action.terminAl.scrollToTop',
+	CLEAR = 'workbench.Action.terminAl.cleAr',
+	CLEAR_SELECTION = 'workbench.Action.terminAl.cleArSelection',
+	MANAGE_WORKSPACE_SHELL_PERMISSIONS = 'workbench.Action.terminAl.mAnAgeWorkspAceShellPermissions',
+	RENAME = 'workbench.Action.terminAl.renAme',
+	RENAME_WITH_ARG = 'workbench.Action.terminAl.renAmeWithArg',
+	FIND_FOCUS = 'workbench.Action.terminAl.focusFind',
+	FIND_HIDE = 'workbench.Action.terminAl.hideFind',
+	QUICK_OPEN_TERM = 'workbench.Action.quickOpenTerm',
+	SCROLL_TO_PREVIOUS_COMMAND = 'workbench.Action.terminAl.scrollToPreviousCommAnd',
+	SCROLL_TO_NEXT_COMMAND = 'workbench.Action.terminAl.scrollToNextCommAnd',
+	SELECT_TO_PREVIOUS_COMMAND = 'workbench.Action.terminAl.selectToPreviousCommAnd',
+	SELECT_TO_NEXT_COMMAND = 'workbench.Action.terminAl.selectToNextCommAnd',
+	SELECT_TO_PREVIOUS_LINE = 'workbench.Action.terminAl.selectToPreviousLine',
+	SELECT_TO_NEXT_LINE = 'workbench.Action.terminAl.selectToNextLine',
+	TOGGLE_ESCAPE_SEQUENCE_LOGGING = 'toggleEscApeSequenceLogging',
+	SEND_SEQUENCE = 'workbench.Action.terminAl.sendSequence',
+	TOGGLE_FIND_REGEX = 'workbench.Action.terminAl.toggleFindRegex',
+	TOGGLE_FIND_WHOLE_WORD = 'workbench.Action.terminAl.toggleFindWholeWord',
+	TOGGLE_FIND_CASE_SENSITIVE = 'workbench.Action.terminAl.toggleFindCAseSensitive',
+	NAVIGATION_MODE_EXIT = 'workbench.Action.terminAl.nAvigAtionModeExit',
+	NAVIGATION_MODE_FOCUS_NEXT = 'workbench.Action.terminAl.nAvigAtionModeFocusNext',
+	NAVIGATION_MODE_FOCUS_PREVIOUS = 'workbench.Action.terminAl.nAvigAtionModeFocusPrevious',
+	SHOW_ENVIRONMENT_INFORMATION = 'workbench.Action.terminAl.showEnvironmentInformAtion',
+	SEARCH_WORKSPACE = 'workbench.Action.terminAl.seArchWorkspAce'
 }
 
 export const DEFAULT_COMMANDS_TO_SKIP_SHELL: string[] = [
@@ -563,105 +563,105 @@ export const DEFAULT_COMMANDS_TO_SKIP_SHELL: string[] = [
 	TERMINAL_COMMAND_ID.NAVIGATION_MODE_EXIT,
 	TERMINAL_COMMAND_ID.NAVIGATION_MODE_FOCUS_NEXT,
 	TERMINAL_COMMAND_ID.NAVIGATION_MODE_FOCUS_PREVIOUS,
-	'editor.action.toggleTabFocusMode',
-	'workbench.action.quickOpen',
-	'workbench.action.quickOpenPreviousEditor',
-	'workbench.action.showCommands',
-	'workbench.action.tasks.build',
-	'workbench.action.tasks.restartTask',
-	'workbench.action.tasks.runTask',
-	'workbench.action.tasks.reRunTask',
-	'workbench.action.tasks.showLog',
-	'workbench.action.tasks.showTasks',
-	'workbench.action.tasks.terminate',
-	'workbench.action.tasks.test',
-	'workbench.action.toggleFullScreen',
-	'workbench.action.terminal.focusAtIndex1',
-	'workbench.action.terminal.focusAtIndex2',
-	'workbench.action.terminal.focusAtIndex3',
-	'workbench.action.terminal.focusAtIndex4',
-	'workbench.action.terminal.focusAtIndex5',
-	'workbench.action.terminal.focusAtIndex6',
-	'workbench.action.terminal.focusAtIndex7',
-	'workbench.action.terminal.focusAtIndex8',
-	'workbench.action.terminal.focusAtIndex9',
-	'workbench.action.focusSecondEditorGroup',
-	'workbench.action.focusThirdEditorGroup',
-	'workbench.action.focusFourthEditorGroup',
-	'workbench.action.focusFifthEditorGroup',
-	'workbench.action.focusSixthEditorGroup',
-	'workbench.action.focusSeventhEditorGroup',
-	'workbench.action.focusEighthEditorGroup',
-	'workbench.action.focusNextPart',
-	'workbench.action.focusPreviousPart',
-	'workbench.action.nextPanelView',
-	'workbench.action.previousPanelView',
-	'workbench.action.nextSideBarView',
-	'workbench.action.previousSideBarView',
-	'workbench.action.debug.start',
-	'workbench.action.debug.stop',
-	'workbench.action.debug.run',
-	'workbench.action.debug.restart',
-	'workbench.action.debug.continue',
-	'workbench.action.debug.pause',
-	'workbench.action.debug.stepInto',
-	'workbench.action.debug.stepOut',
-	'workbench.action.debug.stepOver',
-	'workbench.action.nextEditor',
-	'workbench.action.previousEditor',
-	'workbench.action.nextEditorInGroup',
-	'workbench.action.previousEditorInGroup',
-	'workbench.action.openNextRecentlyUsedEditor',
-	'workbench.action.openPreviousRecentlyUsedEditor',
-	'workbench.action.openNextRecentlyUsedEditorInGroup',
-	'workbench.action.openPreviousRecentlyUsedEditorInGroup',
-	'workbench.action.quickOpenPreviousRecentlyUsedEditor',
-	'workbench.action.quickOpenLeastRecentlyUsedEditor',
-	'workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup',
-	'workbench.action.quickOpenLeastRecentlyUsedEditorInGroup',
-	'workbench.action.focusActiveEditorGroup',
-	'workbench.action.focusFirstEditorGroup',
-	'workbench.action.focusLastEditorGroup',
-	'workbench.action.firstEditorInGroup',
-	'workbench.action.lastEditorInGroup',
-	'workbench.action.navigateUp',
-	'workbench.action.navigateDown',
-	'workbench.action.navigateRight',
-	'workbench.action.navigateLeft',
-	'workbench.action.togglePanel',
-	'workbench.action.quickOpenView',
-	'workbench.action.toggleMaximizedPanel'
+	'editor.Action.toggleTAbFocusMode',
+	'workbench.Action.quickOpen',
+	'workbench.Action.quickOpenPreviousEditor',
+	'workbench.Action.showCommAnds',
+	'workbench.Action.tAsks.build',
+	'workbench.Action.tAsks.restArtTAsk',
+	'workbench.Action.tAsks.runTAsk',
+	'workbench.Action.tAsks.reRunTAsk',
+	'workbench.Action.tAsks.showLog',
+	'workbench.Action.tAsks.showTAsks',
+	'workbench.Action.tAsks.terminAte',
+	'workbench.Action.tAsks.test',
+	'workbench.Action.toggleFullScreen',
+	'workbench.Action.terminAl.focusAtIndex1',
+	'workbench.Action.terminAl.focusAtIndex2',
+	'workbench.Action.terminAl.focusAtIndex3',
+	'workbench.Action.terminAl.focusAtIndex4',
+	'workbench.Action.terminAl.focusAtIndex5',
+	'workbench.Action.terminAl.focusAtIndex6',
+	'workbench.Action.terminAl.focusAtIndex7',
+	'workbench.Action.terminAl.focusAtIndex8',
+	'workbench.Action.terminAl.focusAtIndex9',
+	'workbench.Action.focusSecondEditorGroup',
+	'workbench.Action.focusThirdEditorGroup',
+	'workbench.Action.focusFourthEditorGroup',
+	'workbench.Action.focusFifthEditorGroup',
+	'workbench.Action.focusSixthEditorGroup',
+	'workbench.Action.focusSeventhEditorGroup',
+	'workbench.Action.focusEighthEditorGroup',
+	'workbench.Action.focusNextPArt',
+	'workbench.Action.focusPreviousPArt',
+	'workbench.Action.nextPAnelView',
+	'workbench.Action.previousPAnelView',
+	'workbench.Action.nextSideBArView',
+	'workbench.Action.previousSideBArView',
+	'workbench.Action.debug.stArt',
+	'workbench.Action.debug.stop',
+	'workbench.Action.debug.run',
+	'workbench.Action.debug.restArt',
+	'workbench.Action.debug.continue',
+	'workbench.Action.debug.pAuse',
+	'workbench.Action.debug.stepInto',
+	'workbench.Action.debug.stepOut',
+	'workbench.Action.debug.stepOver',
+	'workbench.Action.nextEditor',
+	'workbench.Action.previousEditor',
+	'workbench.Action.nextEditorInGroup',
+	'workbench.Action.previousEditorInGroup',
+	'workbench.Action.openNextRecentlyUsedEditor',
+	'workbench.Action.openPreviousRecentlyUsedEditor',
+	'workbench.Action.openNextRecentlyUsedEditorInGroup',
+	'workbench.Action.openPreviousRecentlyUsedEditorInGroup',
+	'workbench.Action.quickOpenPreviousRecentlyUsedEditor',
+	'workbench.Action.quickOpenLeAstRecentlyUsedEditor',
+	'workbench.Action.quickOpenPreviousRecentlyUsedEditorInGroup',
+	'workbench.Action.quickOpenLeAstRecentlyUsedEditorInGroup',
+	'workbench.Action.focusActiveEditorGroup',
+	'workbench.Action.focusFirstEditorGroup',
+	'workbench.Action.focusLAstEditorGroup',
+	'workbench.Action.firstEditorInGroup',
+	'workbench.Action.lAstEditorInGroup',
+	'workbench.Action.nAvigAteUp',
+	'workbench.Action.nAvigAteDown',
+	'workbench.Action.nAvigAteRight',
+	'workbench.Action.nAvigAteLeft',
+	'workbench.Action.togglePAnel',
+	'workbench.Action.quickOpenView',
+	'workbench.Action.toggleMAximizedPAnel'
 ];
 
-export interface ITerminalContributions {
-	types?: ITerminalTypeContribution[];
+export interfAce ITerminAlContributions {
+	types?: ITerminAlTypeContribution[];
 }
 
-export interface ITerminalTypeContribution {
+export interfAce ITerminAlTypeContribution {
 	title: string;
-	command: string;
+	commAnd: string;
 }
 
-export const terminalContributionsDescriptor: IExtensionPointDescriptor = {
-	extensionPoint: 'terminal',
-	defaultExtensionKind: 'workspace',
-	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.terminal', 'Contributes terminal functionality.'),
+export const terminAlContributionsDescriptor: IExtensionPointDescriptor = {
+	extensionPoint: 'terminAl',
+	defAultExtensionKind: 'workspAce',
+	jsonSchemA: {
+		description: nls.locAlize('vscode.extension.contributes.terminAl', 'Contributes terminAl functionAlity.'),
 		type: 'object',
 		properties: {
 			types: {
-				type: 'array',
-				description: nls.localize('vscode.extension.contributes.terminal.types', "Defines additional terminal types that the user can create."),
+				type: 'ArrAy',
+				description: nls.locAlize('vscode.extension.contributes.terminAl.types', "Defines AdditionAl terminAl types thAt the user cAn creAte."),
 				items: {
 					type: 'object',
-					required: ['command', 'title'],
+					required: ['commAnd', 'title'],
 					properties: {
-						command: {
-							description: nls.localize('vscode.extension.contributes.terminal.types.command', "Command to execute when the user creates this type of terminal."),
+						commAnd: {
+							description: nls.locAlize('vscode.extension.contributes.terminAl.types.commAnd', "CommAnd to execute when the user creAtes this type of terminAl."),
 							type: 'string',
 						},
 						title: {
-							description: nls.localize('vscode.extension.contributes.terminal.types.title', "Title for this type of terminal."),
+							description: nls.locAlize('vscode.extension.contributes.terminAl.types.title', "Title for this type of terminAl."),
 							type: 'string',
 						},
 					},

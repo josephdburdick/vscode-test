@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export const mainLogChannelId = 'mainLog';
-export const sharedLogChannelId = 'sharedLog';
-export const rendererLogChannelId = 'rendererLog';
-export const extHostLogChannelId = 'extHostLog';
-export const telemetryLogChannelId = 'telemetryLog';
-export const userDataSyncLogChannelId = 'userDataSyncLog';
+export const mAinLogChAnnelId = 'mAinLog';
+export const shAredLogChAnnelId = 'shAredLog';
+export const rendererLogChAnnelId = 'rendererLog';
+export const extHostLogChAnnelId = 'extHostLog';
+export const telemetryLogChAnnelId = 'telemetryLog';
+export const userDAtASyncLogChAnnelId = 'userDAtASyncLog';

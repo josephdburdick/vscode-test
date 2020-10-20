@@ -1,125 +1,125 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { URI } from 'vs/base/common/uri';
-import { IFileSystemProviderRegistrationEvent, FileSystemProviderCapabilities, IFileSystemProviderCapabilitiesChangeEvent } from 'vs/platform/files/common/files';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { timeout } from 'vs/base/common/async';
-import { NullFileSystemProvider } from 'vs/platform/files/test/common/nullFileSystemProvider';
+import * As Assert from 'Assert';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileSystemProviderRegistrAtionEvent, FileSystemProviderCApAbilities, IFileSystemProviderCApAbilitiesChAngeEvent } from 'vs/plAtform/files/common/files';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { timeout } from 'vs/bAse/common/Async';
+import { NullFileSystemProvider } from 'vs/plAtform/files/test/common/nullFileSystemProvider';
 
 suite('File Service', () => {
 
-	test('provider registration', async () => {
+	test('provider registrAtion', Async () => {
 		const service = new FileService(new NullLogService());
-		const resource = URI.parse('test://foo/bar');
+		const resource = URI.pArse('test://foo/bAr');
 		const provider = new NullFileSystemProvider();
 
-		assert.equal(service.canHandleResource(resource), false);
+		Assert.equAl(service.cAnHAndleResource(resource), fAlse);
 
-		const registrations: IFileSystemProviderRegistrationEvent[] = [];
-		service.onDidChangeFileSystemProviderRegistrations(e => {
-			registrations.push(e);
+		const registrAtions: IFileSystemProviderRegistrAtionEvent[] = [];
+		service.onDidChAngeFileSystemProviderRegistrAtions(e => {
+			registrAtions.push(e);
 		});
 
-		const capabilityChanges: IFileSystemProviderCapabilitiesChangeEvent[] = [];
-		service.onDidChangeFileSystemProviderCapabilities(e => {
-			capabilityChanges.push(e);
+		const cApAbilityChAnges: IFileSystemProviderCApAbilitiesChAngeEvent[] = [];
+		service.onDidChAngeFileSystemProviderCApAbilities(e => {
+			cApAbilityChAnges.push(e);
 		});
 
-		let registrationDisposable: IDisposable | undefined = undefined;
-		let callCount = 0;
-		service.onWillActivateFileSystemProvider(e => {
-			callCount++;
+		let registrAtionDisposAble: IDisposAble | undefined = undefined;
+		let cAllCount = 0;
+		service.onWillActivAteFileSystemProvider(e => {
+			cAllCount++;
 
-			if (e.scheme === 'test' && callCount === 1) {
+			if (e.scheme === 'test' && cAllCount === 1) {
 				e.join(new Promise(resolve => {
-					registrationDisposable = service.registerProvider('test', provider);
+					registrAtionDisposAble = service.registerProvider('test', provider);
 
 					resolve();
 				}));
 			}
 		});
 
-		await service.activateProvider('test');
+		AwAit service.ActivAteProvider('test');
 
-		assert.equal(service.canHandleResource(resource), true);
+		Assert.equAl(service.cAnHAndleResource(resource), true);
 
-		assert.equal(registrations.length, 1);
-		assert.equal(registrations[0].scheme, 'test');
-		assert.equal(registrations[0].added, true);
-		assert.ok(registrationDisposable);
+		Assert.equAl(registrAtions.length, 1);
+		Assert.equAl(registrAtions[0].scheme, 'test');
+		Assert.equAl(registrAtions[0].Added, true);
+		Assert.ok(registrAtionDisposAble);
 
-		assert.equal(capabilityChanges.length, 0);
+		Assert.equAl(cApAbilityChAnges.length, 0);
 
-		provider.setCapabilities(FileSystemProviderCapabilities.FileFolderCopy);
-		assert.equal(capabilityChanges.length, 1);
-		provider.setCapabilities(FileSystemProviderCapabilities.Readonly);
-		assert.equal(capabilityChanges.length, 2);
+		provider.setCApAbilities(FileSystemProviderCApAbilities.FileFolderCopy);
+		Assert.equAl(cApAbilityChAnges.length, 1);
+		provider.setCApAbilities(FileSystemProviderCApAbilities.ReAdonly);
+		Assert.equAl(cApAbilityChAnges.length, 2);
 
-		await service.activateProvider('test');
-		assert.equal(callCount, 2); // activation is called again
+		AwAit service.ActivAteProvider('test');
+		Assert.equAl(cAllCount, 2); // ActivAtion is cAlled AgAin
 
-		assert.equal(service.hasCapability(resource, FileSystemProviderCapabilities.Readonly), true);
-		assert.equal(service.hasCapability(resource, FileSystemProviderCapabilities.FileOpenReadWriteClose), false);
+		Assert.equAl(service.hAsCApAbility(resource, FileSystemProviderCApAbilities.ReAdonly), true);
+		Assert.equAl(service.hAsCApAbility(resource, FileSystemProviderCApAbilities.FileOpenReAdWriteClose), fAlse);
 
-		registrationDisposable!.dispose();
+		registrAtionDisposAble!.dispose();
 
-		assert.equal(service.canHandleResource(resource), false);
+		Assert.equAl(service.cAnHAndleResource(resource), fAlse);
 
-		assert.equal(registrations.length, 2);
-		assert.equal(registrations[1].scheme, 'test');
-		assert.equal(registrations[1].added, false);
+		Assert.equAl(registrAtions.length, 2);
+		Assert.equAl(registrAtions[1].scheme, 'test');
+		Assert.equAl(registrAtions[1].Added, fAlse);
 	});
 
-	test('watch', async () => {
+	test('wAtch', Async () => {
 		const service = new FileService(new NullLogService());
 
 		let disposeCounter = 0;
 		service.registerProvider('test', new NullFileSystemProvider(() => {
-			return toDisposable(() => {
+			return toDisposAble(() => {
 				disposeCounter++;
 			});
 		}));
-		await service.activateProvider('test');
+		AwAit service.ActivAteProvider('test');
 
-		const resource1 = URI.parse('test://foo/bar1');
-		const watcher1Disposable = service.watch(resource1);
+		const resource1 = URI.pArse('test://foo/bAr1');
+		const wAtcher1DisposAble = service.wAtch(resource1);
 
-		await timeout(0); // service.watch() is async
-		assert.equal(disposeCounter, 0);
-		watcher1Disposable.dispose();
-		assert.equal(disposeCounter, 1);
-
-		disposeCounter = 0;
-		const resource2 = URI.parse('test://foo/bar2');
-		const watcher2Disposable1 = service.watch(resource2);
-		const watcher2Disposable2 = service.watch(resource2);
-		const watcher2Disposable3 = service.watch(resource2);
-
-		await timeout(0); // service.watch() is async
-		assert.equal(disposeCounter, 0);
-		watcher2Disposable1.dispose();
-		assert.equal(disposeCounter, 0);
-		watcher2Disposable2.dispose();
-		assert.equal(disposeCounter, 0);
-		watcher2Disposable3.dispose();
-		assert.equal(disposeCounter, 1);
+		AwAit timeout(0); // service.wAtch() is Async
+		Assert.equAl(disposeCounter, 0);
+		wAtcher1DisposAble.dispose();
+		Assert.equAl(disposeCounter, 1);
 
 		disposeCounter = 0;
-		const resource3 = URI.parse('test://foo/bar3');
-		const watcher3Disposable1 = service.watch(resource3);
-		const watcher3Disposable2 = service.watch(resource3, { recursive: true, excludes: [] });
+		const resource2 = URI.pArse('test://foo/bAr2');
+		const wAtcher2DisposAble1 = service.wAtch(resource2);
+		const wAtcher2DisposAble2 = service.wAtch(resource2);
+		const wAtcher2DisposAble3 = service.wAtch(resource2);
 
-		await timeout(0); // service.watch() is async
-		assert.equal(disposeCounter, 0);
-		watcher3Disposable1.dispose();
-		assert.equal(disposeCounter, 1);
-		watcher3Disposable2.dispose();
-		assert.equal(disposeCounter, 2);
+		AwAit timeout(0); // service.wAtch() is Async
+		Assert.equAl(disposeCounter, 0);
+		wAtcher2DisposAble1.dispose();
+		Assert.equAl(disposeCounter, 0);
+		wAtcher2DisposAble2.dispose();
+		Assert.equAl(disposeCounter, 0);
+		wAtcher2DisposAble3.dispose();
+		Assert.equAl(disposeCounter, 1);
+
+		disposeCounter = 0;
+		const resource3 = URI.pArse('test://foo/bAr3');
+		const wAtcher3DisposAble1 = service.wAtch(resource3);
+		const wAtcher3DisposAble2 = service.wAtch(resource3, { recursive: true, excludes: [] });
+
+		AwAit timeout(0); // service.wAtch() is Async
+		Assert.equAl(disposeCounter, 0);
+		wAtcher3DisposAble1.dispose();
+		Assert.equAl(disposeCounter, 1);
+		wAtcher3DisposAble2.dispose();
+		Assert.equAl(disposeCounter, 2);
 	});
 });

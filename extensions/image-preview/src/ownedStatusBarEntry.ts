@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { Disposable } from './dispose';
+import * As vscode from 'vscode';
+import { DisposAble } from './dispose';
 
-export abstract class PreviewStatusBarEntry extends Disposable {
-	private _showOwner: string | undefined;
+export AbstrAct clAss PreviewStAtusBArEntry extends DisposAble {
+	privAte _showOwner: string | undefined;
 
-	protected readonly entry: vscode.StatusBarItem;
+	protected reAdonly entry: vscode.StAtusBArItem;
 
-	constructor(options: vscode.window.StatusBarItemOptions) {
+	constructor(options: vscode.window.StAtusBArItemOptions) {
 		super();
-		this.entry = this._register(vscode.window.createStatusBarItem(options));
+		this.entry = this._register(vscode.window.creAteStAtusBArItem(options));
 	}
 
 	protected showItem(owner: string, text: string) {

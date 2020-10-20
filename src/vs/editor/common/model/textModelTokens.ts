@@ -1,186 +1,186 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 import { LineTokens } from 'vs/editor/common/core/lineTokens';
 import { Position } from 'vs/editor/common/core/position';
-import { IRange } from 'vs/editor/common/core/range';
-import { TokenizationResult2 } from 'vs/editor/common/core/token';
-import { RawContentChangedType } from 'vs/editor/common/model/textModelEvents';
-import { IState, ITokenizationSupport, LanguageIdentifier, TokenizationRegistry } from 'vs/editor/common/modes';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import { TokenizAtionResult2 } from 'vs/editor/common/core/token';
+import { RAwContentChAngedType } from 'vs/editor/common/model/textModelEvents';
+import { IStAte, ITokenizAtionSupport, LAnguAgeIdentifier, TokenizAtionRegistry } from 'vs/editor/common/modes';
 import { nullTokenize2 } from 'vs/editor/common/modes/nullMode';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { StopWatch } from 'vs/base/common/stopwatch';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { StopWAtch } from 'vs/bAse/common/stopwAtch';
 import { MultilineTokensBuilder, countEOL } from 'vs/editor/common/model/tokensStore';
-import * as platform from 'vs/base/common/platform';
+import * As plAtform from 'vs/bAse/common/plAtform';
 
-const enum Constants {
+const enum ConstAnts {
 	CHEAP_TOKENIZATION_LENGTH_LIMIT = 2048
 }
 
-export class TokenizationStateStore {
-	private _beginState: (IState | null)[];
-	private _valid: boolean[];
-	private _len: number;
-	private _invalidLineStartIndex: number;
+export clAss TokenizAtionStAteStore {
+	privAte _beginStAte: (IStAte | null)[];
+	privAte _vAlid: booleAn[];
+	privAte _len: number;
+	privAte _invAlidLineStArtIndex: number;
 
 	constructor() {
-		this._beginState = [];
-		this._valid = [];
+		this._beginStAte = [];
+		this._vAlid = [];
 		this._len = 0;
-		this._invalidLineStartIndex = 0;
+		this._invAlidLineStArtIndex = 0;
 	}
 
-	private _reset(initialState: IState | null): void {
-		this._beginState = [];
-		this._valid = [];
+	privAte _reset(initiAlStAte: IStAte | null): void {
+		this._beginStAte = [];
+		this._vAlid = [];
 		this._len = 0;
-		this._invalidLineStartIndex = 0;
+		this._invAlidLineStArtIndex = 0;
 
-		if (initialState) {
-			this._setBeginState(0, initialState);
+		if (initiAlStAte) {
+			this._setBeginStAte(0, initiAlStAte);
 		}
 	}
 
-	public flush(initialState: IState | null): void {
-		this._reset(initialState);
+	public flush(initiAlStAte: IStAte | null): void {
+		this._reset(initiAlStAte);
 	}
 
-	public get invalidLineStartIndex() {
-		return this._invalidLineStartIndex;
+	public get invAlidLineStArtIndex() {
+		return this._invAlidLineStArtIndex;
 	}
 
-	private _invalidateLine(lineIndex: number): void {
+	privAte _invAlidAteLine(lineIndex: number): void {
 		if (lineIndex < this._len) {
-			this._valid[lineIndex] = false;
+			this._vAlid[lineIndex] = fAlse;
 		}
 
-		if (lineIndex < this._invalidLineStartIndex) {
-			this._invalidLineStartIndex = lineIndex;
+		if (lineIndex < this._invAlidLineStArtIndex) {
+			this._invAlidLineStArtIndex = lineIndex;
 		}
 	}
 
-	private _isValid(lineIndex: number): boolean {
+	privAte _isVAlid(lineIndex: number): booleAn {
 		if (lineIndex < this._len) {
-			return this._valid[lineIndex];
+			return this._vAlid[lineIndex];
 		}
-		return false;
+		return fAlse;
 	}
 
-	public getBeginState(lineIndex: number): IState | null {
+	public getBeginStAte(lineIndex: number): IStAte | null {
 		if (lineIndex < this._len) {
-			return this._beginState[lineIndex];
+			return this._beginStAte[lineIndex];
 		}
 		return null;
 	}
 
-	private _ensureLine(lineIndex: number): void {
+	privAte _ensureLine(lineIndex: number): void {
 		while (lineIndex >= this._len) {
-			this._beginState[this._len] = null;
-			this._valid[this._len] = false;
+			this._beginStAte[this._len] = null;
+			this._vAlid[this._len] = fAlse;
 			this._len++;
 		}
 	}
 
-	private _deleteLines(start: number, deleteCount: number): void {
+	privAte _deleteLines(stArt: number, deleteCount: number): void {
 		if (deleteCount === 0) {
 			return;
 		}
-		if (start + deleteCount > this._len) {
-			deleteCount = this._len - start;
+		if (stArt + deleteCount > this._len) {
+			deleteCount = this._len - stArt;
 		}
-		this._beginState.splice(start, deleteCount);
-		this._valid.splice(start, deleteCount);
+		this._beginStAte.splice(stArt, deleteCount);
+		this._vAlid.splice(stArt, deleteCount);
 		this._len -= deleteCount;
 	}
 
-	private _insertLines(insertIndex: number, insertCount: number): void {
+	privAte _insertLines(insertIndex: number, insertCount: number): void {
 		if (insertCount === 0) {
 			return;
 		}
-		let beginState: (IState | null)[] = [];
-		let valid: boolean[] = [];
+		let beginStAte: (IStAte | null)[] = [];
+		let vAlid: booleAn[] = [];
 		for (let i = 0; i < insertCount; i++) {
-			beginState[i] = null;
-			valid[i] = false;
+			beginStAte[i] = null;
+			vAlid[i] = fAlse;
 		}
-		this._beginState = arrays.arrayInsert(this._beginState, insertIndex, beginState);
-		this._valid = arrays.arrayInsert(this._valid, insertIndex, valid);
+		this._beginStAte = ArrAys.ArrAyInsert(this._beginStAte, insertIndex, beginStAte);
+		this._vAlid = ArrAys.ArrAyInsert(this._vAlid, insertIndex, vAlid);
 		this._len += insertCount;
 	}
 
-	private _setValid(lineIndex: number, valid: boolean): void {
+	privAte _setVAlid(lineIndex: number, vAlid: booleAn): void {
 		this._ensureLine(lineIndex);
-		this._valid[lineIndex] = valid;
+		this._vAlid[lineIndex] = vAlid;
 	}
 
-	private _setBeginState(lineIndex: number, beginState: IState | null): void {
+	privAte _setBeginStAte(lineIndex: number, beginStAte: IStAte | null): void {
 		this._ensureLine(lineIndex);
-		this._beginState[lineIndex] = beginState;
+		this._beginStAte[lineIndex] = beginStAte;
 	}
 
-	public setEndState(linesLength: number, lineIndex: number, endState: IState): void {
-		this._setValid(lineIndex, true);
-		this._invalidLineStartIndex = lineIndex + 1;
+	public setEndStAte(linesLength: number, lineIndex: number, endStAte: IStAte): void {
+		this._setVAlid(lineIndex, true);
+		this._invAlidLineStArtIndex = lineIndex + 1;
 
-		// Check if this was the last line
+		// Check if this wAs the lAst line
 		if (lineIndex === linesLength - 1) {
 			return;
 		}
 
-		// Check if the end state has changed
-		const previousEndState = this.getBeginState(lineIndex + 1);
-		if (previousEndState === null || !endState.equals(previousEndState)) {
-			this._setBeginState(lineIndex + 1, endState);
-			this._invalidateLine(lineIndex + 1);
+		// Check if the end stAte hAs chAnged
+		const previousEndStAte = this.getBeginStAte(lineIndex + 1);
+		if (previousEndStAte === null || !endStAte.equAls(previousEndStAte)) {
+			this._setBeginStAte(lineIndex + 1, endStAte);
+			this._invAlidAteLine(lineIndex + 1);
 			return;
 		}
 
-		// Perhaps we can skip tokenizing some lines...
+		// PerhAps we cAn skip tokenizing some lines...
 		let i = lineIndex + 1;
 		while (i < linesLength) {
-			if (!this._isValid(i)) {
-				break;
+			if (!this._isVAlid(i)) {
+				breAk;
 			}
 			i++;
 		}
-		this._invalidLineStartIndex = i;
+		this._invAlidLineStArtIndex = i;
 	}
 
-	public setFakeTokens(lineIndex: number): void {
-		this._setValid(lineIndex, false);
+	public setFAkeTokens(lineIndex: number): void {
+		this._setVAlid(lineIndex, fAlse);
 	}
 
 	//#region Editing
 
-	public applyEdits(range: IRange, eolCount: number): void {
-		const deletingLinesCnt = range.endLineNumber - range.startLineNumber;
+	public ApplyEdits(rAnge: IRAnge, eolCount: number): void {
+		const deletingLinesCnt = rAnge.endLineNumber - rAnge.stArtLineNumber;
 		const insertingLinesCnt = eolCount;
-		const editingLinesCnt = Math.min(deletingLinesCnt, insertingLinesCnt);
+		const editingLinesCnt = MAth.min(deletingLinesCnt, insertingLinesCnt);
 
 		for (let j = editingLinesCnt; j >= 0; j--) {
-			this._invalidateLine(range.startLineNumber + j - 1);
+			this._invAlidAteLine(rAnge.stArtLineNumber + j - 1);
 		}
 
-		this._acceptDeleteRange(range);
-		this._acceptInsertText(new Position(range.startLineNumber, range.startColumn), eolCount);
+		this._AcceptDeleteRAnge(rAnge);
+		this._AcceptInsertText(new Position(rAnge.stArtLineNumber, rAnge.stArtColumn), eolCount);
 	}
 
-	private _acceptDeleteRange(range: IRange): void {
+	privAte _AcceptDeleteRAnge(rAnge: IRAnge): void {
 
-		const firstLineIndex = range.startLineNumber - 1;
+		const firstLineIndex = rAnge.stArtLineNumber - 1;
 		if (firstLineIndex >= this._len) {
 			return;
 		}
 
-		this._deleteLines(range.startLineNumber, range.endLineNumber - range.startLineNumber);
+		this._deleteLines(rAnge.stArtLineNumber, rAnge.endLineNumber - rAnge.stArtLineNumber);
 	}
 
-	private _acceptInsertText(position: Position, eolCount: number): void {
+	privAte _AcceptInsertText(position: Position, eolCount: number): void {
 
 		const lineIndex = position.lineNumber - 1;
 		if (lineIndex >= this._len) {
@@ -193,57 +193,57 @@ export class TokenizationStateStore {
 	//#endregion
 }
 
-export class TextModelTokenization extends Disposable {
+export clAss TextModelTokenizAtion extends DisposAble {
 
-	private readonly _textModel: TextModel;
-	private readonly _tokenizationStateStore: TokenizationStateStore;
-	private _isDisposed: boolean;
-	private _tokenizationSupport: ITokenizationSupport | null;
+	privAte reAdonly _textModel: TextModel;
+	privAte reAdonly _tokenizAtionStAteStore: TokenizAtionStAteStore;
+	privAte _isDisposed: booleAn;
+	privAte _tokenizAtionSupport: ITokenizAtionSupport | null;
 
 	constructor(textModel: TextModel) {
 		super();
-		this._isDisposed = false;
+		this._isDisposed = fAlse;
 		this._textModel = textModel;
-		this._tokenizationStateStore = new TokenizationStateStore();
-		this._tokenizationSupport = null;
+		this._tokenizAtionStAteStore = new TokenizAtionStAteStore();
+		this._tokenizAtionSupport = null;
 
-		this._register(TokenizationRegistry.onDidChange((e) => {
-			const languageIdentifier = this._textModel.getLanguageIdentifier();
-			if (e.changedLanguages.indexOf(languageIdentifier.language) === -1) {
+		this._register(TokenizAtionRegistry.onDidChAnge((e) => {
+			const lAnguAgeIdentifier = this._textModel.getLAnguAgeIdentifier();
+			if (e.chAngedLAnguAges.indexOf(lAnguAgeIdentifier.lAnguAge) === -1) {
 				return;
 			}
 
-			this._resetTokenizationState();
-			this._textModel.clearTokens();
+			this._resetTokenizAtionStAte();
+			this._textModel.cleArTokens();
 		}));
 
-		this._register(this._textModel.onDidChangeRawContentFast((e) => {
-			if (e.containsEvent(RawContentChangedType.Flush)) {
-				this._resetTokenizationState();
+		this._register(this._textModel.onDidChAngeRAwContentFAst((e) => {
+			if (e.contAinsEvent(RAwContentChAngedType.Flush)) {
+				this._resetTokenizAtionStAte();
 				return;
 			}
 		}));
 
-		this._register(this._textModel.onDidChangeContentFast((e) => {
-			for (let i = 0, len = e.changes.length; i < len; i++) {
-				const change = e.changes[i];
-				const [eolCount] = countEOL(change.text);
-				this._tokenizationStateStore.applyEdits(change.range, eolCount);
+		this._register(this._textModel.onDidChAngeContentFAst((e) => {
+			for (let i = 0, len = e.chAnges.length; i < len; i++) {
+				const chAnge = e.chAnges[i];
+				const [eolCount] = countEOL(chAnge.text);
+				this._tokenizAtionStAteStore.ApplyEdits(chAnge.rAnge, eolCount);
 			}
 
-			this._beginBackgroundTokenization();
+			this._beginBAckgroundTokenizAtion();
 		}));
 
-		this._register(this._textModel.onDidChangeAttached(() => {
-			this._beginBackgroundTokenization();
+		this._register(this._textModel.onDidChAngeAttAched(() => {
+			this._beginBAckgroundTokenizAtion();
 		}));
 
-		this._register(this._textModel.onDidChangeLanguage(() => {
-			this._resetTokenizationState();
-			this._textModel.clearTokens();
+		this._register(this._textModel.onDidChAngeLAnguAge(() => {
+			this._resetTokenizAtionStAte();
+			this._textModel.cleArTokens();
 		}));
 
-		this._resetTokenizationState();
+		this._resetTokenizAtionStAte();
 	}
 
 	public dispose(): void {
@@ -251,211 +251,211 @@ export class TextModelTokenization extends Disposable {
 		super.dispose();
 	}
 
-	private _resetTokenizationState(): void {
-		const [tokenizationSupport, initialState] = initializeTokenization(this._textModel);
-		this._tokenizationSupport = tokenizationSupport;
-		this._tokenizationStateStore.flush(initialState);
-		this._beginBackgroundTokenization();
+	privAte _resetTokenizAtionStAte(): void {
+		const [tokenizAtionSupport, initiAlStAte] = initiAlizeTokenizAtion(this._textModel);
+		this._tokenizAtionSupport = tokenizAtionSupport;
+		this._tokenizAtionStAteStore.flush(initiAlStAte);
+		this._beginBAckgroundTokenizAtion();
 	}
 
-	private _beginBackgroundTokenization(): void {
-		if (this._textModel.isAttachedToEditor() && this._hasLinesToTokenize()) {
-			platform.setImmediate(() => {
+	privAte _beginBAckgroundTokenizAtion(): void {
+		if (this._textModel.isAttAchedToEditor() && this._hAsLinesToTokenize()) {
+			plAtform.setImmediAte(() => {
 				if (this._isDisposed) {
-					// disposed in the meantime
+					// disposed in the meAntime
 					return;
 				}
-				this._revalidateTokensNow();
+				this._revAlidAteTokensNow();
 			});
 		}
 	}
 
-	private _revalidateTokensNow(toLineNumber: number = this._textModel.getLineCount()): void {
+	privAte _revAlidAteTokensNow(toLineNumber: number = this._textModel.getLineCount()): void {
 		const MAX_ALLOWED_TIME = 1;
 		const builder = new MultilineTokensBuilder();
-		const sw = StopWatch.create(false);
+		const sw = StopWAtch.creAte(fAlse);
 
-		while (this._hasLinesToTokenize()) {
-			if (sw.elapsed() > MAX_ALLOWED_TIME) {
-				// Stop if MAX_ALLOWED_TIME is reached
-				break;
+		while (this._hAsLinesToTokenize()) {
+			if (sw.elApsed() > MAX_ALLOWED_TIME) {
+				// Stop if MAX_ALLOWED_TIME is reAched
+				breAk;
 			}
 
-			const tokenizedLineNumber = this._tokenizeOneInvalidLine(builder);
+			const tokenizedLineNumber = this._tokenizeOneInvAlidLine(builder);
 
 			if (tokenizedLineNumber >= toLineNumber) {
-				break;
+				breAk;
 			}
 		}
 
-		this._beginBackgroundTokenization();
+		this._beginBAckgroundTokenizAtion();
 		this._textModel.setTokens(builder.tokens);
 	}
 
-	public tokenizeViewport(startLineNumber: number, endLineNumber: number): void {
+	public tokenizeViewport(stArtLineNumber: number, endLineNumber: number): void {
 		const builder = new MultilineTokensBuilder();
-		this._tokenizeViewport(builder, startLineNumber, endLineNumber);
+		this._tokenizeViewport(builder, stArtLineNumber, endLineNumber);
 		this._textModel.setTokens(builder.tokens);
 	}
 
 	public reset(): void {
-		this._resetTokenizationState();
-		this._textModel.clearTokens();
+		this._resetTokenizAtionStAte();
+		this._textModel.cleArTokens();
 	}
 
-	public forceTokenization(lineNumber: number): void {
+	public forceTokenizAtion(lineNumber: number): void {
 		const builder = new MultilineTokensBuilder();
-		this._updateTokensUntilLine(builder, lineNumber);
+		this._updAteTokensUntilLine(builder, lineNumber);
 		this._textModel.setTokens(builder.tokens);
 	}
 
-	public isCheapToTokenize(lineNumber: number): boolean {
-		if (!this._tokenizationSupport) {
+	public isCheApToTokenize(lineNumber: number): booleAn {
+		if (!this._tokenizAtionSupport) {
 			return true;
 		}
 
-		const firstInvalidLineNumber = this._tokenizationStateStore.invalidLineStartIndex + 1;
-		if (lineNumber > firstInvalidLineNumber) {
-			return false;
+		const firstInvAlidLineNumber = this._tokenizAtionStAteStore.invAlidLineStArtIndex + 1;
+		if (lineNumber > firstInvAlidLineNumber) {
+			return fAlse;
 		}
 
-		if (lineNumber < firstInvalidLineNumber) {
+		if (lineNumber < firstInvAlidLineNumber) {
 			return true;
 		}
 
-		if (this._textModel.getLineLength(lineNumber) < Constants.CHEAP_TOKENIZATION_LENGTH_LIMIT) {
+		if (this._textModel.getLineLength(lineNumber) < ConstAnts.CHEAP_TOKENIZATION_LENGTH_LIMIT) {
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	private _hasLinesToTokenize(): boolean {
-		if (!this._tokenizationSupport) {
-			return false;
+	privAte _hAsLinesToTokenize(): booleAn {
+		if (!this._tokenizAtionSupport) {
+			return fAlse;
 		}
-		return (this._tokenizationStateStore.invalidLineStartIndex < this._textModel.getLineCount());
+		return (this._tokenizAtionStAteStore.invAlidLineStArtIndex < this._textModel.getLineCount());
 	}
 
-	private _tokenizeOneInvalidLine(builder: MultilineTokensBuilder): number {
-		if (!this._hasLinesToTokenize()) {
+	privAte _tokenizeOneInvAlidLine(builder: MultilineTokensBuilder): number {
+		if (!this._hAsLinesToTokenize()) {
 			return this._textModel.getLineCount() + 1;
 		}
-		const lineNumber = this._tokenizationStateStore.invalidLineStartIndex + 1;
-		this._updateTokensUntilLine(builder, lineNumber);
+		const lineNumber = this._tokenizAtionStAteStore.invAlidLineStArtIndex + 1;
+		this._updAteTokensUntilLine(builder, lineNumber);
 		return lineNumber;
 	}
 
-	private _updateTokensUntilLine(builder: MultilineTokensBuilder, lineNumber: number): void {
-		if (!this._tokenizationSupport) {
+	privAte _updAteTokensUntilLine(builder: MultilineTokensBuilder, lineNumber: number): void {
+		if (!this._tokenizAtionSupport) {
 			return;
 		}
-		const languageIdentifier = this._textModel.getLanguageIdentifier();
+		const lAnguAgeIdentifier = this._textModel.getLAnguAgeIdentifier();
 		const linesLength = this._textModel.getLineCount();
 		const endLineIndex = lineNumber - 1;
 
-		// Validate all states up to and including endLineIndex
-		for (let lineIndex = this._tokenizationStateStore.invalidLineStartIndex; lineIndex <= endLineIndex; lineIndex++) {
+		// VAlidAte All stAtes up to And including endLineIndex
+		for (let lineIndex = this._tokenizAtionStAteStore.invAlidLineStArtIndex; lineIndex <= endLineIndex; lineIndex++) {
 			const text = this._textModel.getLineContent(lineIndex + 1);
-			const lineStartState = this._tokenizationStateStore.getBeginState(lineIndex);
+			const lineStArtStAte = this._tokenizAtionStAteStore.getBeginStAte(lineIndex);
 
-			const r = safeTokenize(languageIdentifier, this._tokenizationSupport, text, lineStartState!);
-			builder.add(lineIndex + 1, r.tokens);
-			this._tokenizationStateStore.setEndState(linesLength, lineIndex, r.endState);
-			lineIndex = this._tokenizationStateStore.invalidLineStartIndex - 1; // -1 because the outer loop increments it
+			const r = sAfeTokenize(lAnguAgeIdentifier, this._tokenizAtionSupport, text, lineStArtStAte!);
+			builder.Add(lineIndex + 1, r.tokens);
+			this._tokenizAtionStAteStore.setEndStAte(linesLength, lineIndex, r.endStAte);
+			lineIndex = this._tokenizAtionStAteStore.invAlidLineStArtIndex - 1; // -1 becAuse the outer loop increments it
 		}
 	}
 
-	private _tokenizeViewport(builder: MultilineTokensBuilder, startLineNumber: number, endLineNumber: number): void {
-		if (!this._tokenizationSupport) {
+	privAte _tokenizeViewport(builder: MultilineTokensBuilder, stArtLineNumber: number, endLineNumber: number): void {
+		if (!this._tokenizAtionSupport) {
 			// nothing to do
 			return;
 		}
 
-		if (endLineNumber <= this._tokenizationStateStore.invalidLineStartIndex) {
+		if (endLineNumber <= this._tokenizAtionStAteStore.invAlidLineStArtIndex) {
 			// nothing to do
 			return;
 		}
 
-		if (startLineNumber <= this._tokenizationStateStore.invalidLineStartIndex) {
-			// tokenization has reached the viewport start...
-			this._updateTokensUntilLine(builder, endLineNumber);
+		if (stArtLineNumber <= this._tokenizAtionStAteStore.invAlidLineStArtIndex) {
+			// tokenizAtion hAs reAched the viewport stArt...
+			this._updAteTokensUntilLine(builder, endLineNumber);
 			return;
 		}
 
-		let nonWhitespaceColumn = this._textModel.getLineFirstNonWhitespaceColumn(startLineNumber);
-		let fakeLines: string[] = [];
-		let initialState: IState | null = null;
-		for (let i = startLineNumber - 1; nonWhitespaceColumn > 0 && i >= 1; i--) {
-			let newNonWhitespaceIndex = this._textModel.getLineFirstNonWhitespaceColumn(i);
+		let nonWhitespAceColumn = this._textModel.getLineFirstNonWhitespAceColumn(stArtLineNumber);
+		let fAkeLines: string[] = [];
+		let initiAlStAte: IStAte | null = null;
+		for (let i = stArtLineNumber - 1; nonWhitespAceColumn > 0 && i >= 1; i--) {
+			let newNonWhitespAceIndex = this._textModel.getLineFirstNonWhitespAceColumn(i);
 
-			if (newNonWhitespaceIndex === 0) {
+			if (newNonWhitespAceIndex === 0) {
 				continue;
 			}
 
-			if (newNonWhitespaceIndex < nonWhitespaceColumn) {
-				initialState = this._tokenizationStateStore.getBeginState(i - 1);
-				if (initialState) {
-					break;
+			if (newNonWhitespAceIndex < nonWhitespAceColumn) {
+				initiAlStAte = this._tokenizAtionStAteStore.getBeginStAte(i - 1);
+				if (initiAlStAte) {
+					breAk;
 				}
-				fakeLines.push(this._textModel.getLineContent(i));
-				nonWhitespaceColumn = newNonWhitespaceIndex;
+				fAkeLines.push(this._textModel.getLineContent(i));
+				nonWhitespAceColumn = newNonWhitespAceIndex;
 			}
 		}
 
-		if (!initialState) {
-			initialState = this._tokenizationSupport.getInitialState();
+		if (!initiAlStAte) {
+			initiAlStAte = this._tokenizAtionSupport.getInitiAlStAte();
 		}
 
-		const languageIdentifier = this._textModel.getLanguageIdentifier();
-		let state = initialState;
-		for (let i = fakeLines.length - 1; i >= 0; i--) {
-			let r = safeTokenize(languageIdentifier, this._tokenizationSupport, fakeLines[i], state);
-			state = r.endState;
+		const lAnguAgeIdentifier = this._textModel.getLAnguAgeIdentifier();
+		let stAte = initiAlStAte;
+		for (let i = fAkeLines.length - 1; i >= 0; i--) {
+			let r = sAfeTokenize(lAnguAgeIdentifier, this._tokenizAtionSupport, fAkeLines[i], stAte);
+			stAte = r.endStAte;
 		}
 
-		for (let lineNumber = startLineNumber; lineNumber <= endLineNumber; lineNumber++) {
+		for (let lineNumber = stArtLineNumber; lineNumber <= endLineNumber; lineNumber++) {
 			let text = this._textModel.getLineContent(lineNumber);
-			let r = safeTokenize(languageIdentifier, this._tokenizationSupport, text, state);
-			builder.add(lineNumber, r.tokens);
-			this._tokenizationStateStore.setFakeTokens(lineNumber - 1);
-			state = r.endState;
+			let r = sAfeTokenize(lAnguAgeIdentifier, this._tokenizAtionSupport, text, stAte);
+			builder.Add(lineNumber, r.tokens);
+			this._tokenizAtionStAteStore.setFAkeTokens(lineNumber - 1);
+			stAte = r.endStAte;
 		}
 	}
 }
 
-function initializeTokenization(textModel: TextModel): [ITokenizationSupport | null, IState | null] {
-	const languageIdentifier = textModel.getLanguageIdentifier();
-	let tokenizationSupport = (
-		textModel.isTooLargeForTokenization()
+function initiAlizeTokenizAtion(textModel: TextModel): [ITokenizAtionSupport | null, IStAte | null] {
+	const lAnguAgeIdentifier = textModel.getLAnguAgeIdentifier();
+	let tokenizAtionSupport = (
+		textModel.isTooLArgeForTokenizAtion()
 			? null
-			: TokenizationRegistry.get(languageIdentifier.language)
+			: TokenizAtionRegistry.get(lAnguAgeIdentifier.lAnguAge)
 	);
-	let initialState: IState | null = null;
-	if (tokenizationSupport) {
+	let initiAlStAte: IStAte | null = null;
+	if (tokenizAtionSupport) {
 		try {
-			initialState = tokenizationSupport.getInitialState();
-		} catch (e) {
+			initiAlStAte = tokenizAtionSupport.getInitiAlStAte();
+		} cAtch (e) {
 			onUnexpectedError(e);
-			tokenizationSupport = null;
+			tokenizAtionSupport = null;
 		}
 	}
-	return [tokenizationSupport, initialState];
+	return [tokenizAtionSupport, initiAlStAte];
 }
 
-function safeTokenize(languageIdentifier: LanguageIdentifier, tokenizationSupport: ITokenizationSupport | null, text: string, state: IState): TokenizationResult2 {
-	let r: TokenizationResult2 | null = null;
+function sAfeTokenize(lAnguAgeIdentifier: LAnguAgeIdentifier, tokenizAtionSupport: ITokenizAtionSupport | null, text: string, stAte: IStAte): TokenizAtionResult2 {
+	let r: TokenizAtionResult2 | null = null;
 
-	if (tokenizationSupport) {
+	if (tokenizAtionSupport) {
 		try {
-			r = tokenizationSupport.tokenize2(text, state.clone(), 0);
-		} catch (e) {
+			r = tokenizAtionSupport.tokenize2(text, stAte.clone(), 0);
+		} cAtch (e) {
 			onUnexpectedError(e);
 		}
 	}
 
 	if (!r) {
-		r = nullTokenize2(languageIdentifier.id, text, state, 0);
+		r = nullTokenize2(lAnguAgeIdentifier.id, text, stAte, 0);
 	}
 
 	LineTokens.convertToEndOffset(r.tokens, text.length);

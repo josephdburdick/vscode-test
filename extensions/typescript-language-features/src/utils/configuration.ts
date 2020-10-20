@@ -1,201 +1,201 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as os from 'os';
-import * as path from 'path';
-import * as vscode from 'vscode';
-import * as objects from '../utils/objects';
-import * as arrays from './arrays';
+import * As os from 'os';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
+import * As objects from '../utils/objects';
+import * As ArrAys from './ArrAys';
 
 export enum TsServerLogLevel {
 	Off,
-	Normal,
+	NormAl,
 	Terse,
 	Verbose,
 }
 
-export namespace TsServerLogLevel {
-	export function fromString(value: string): TsServerLogLevel {
-		switch (value && value.toLowerCase()) {
-			case 'normal':
-				return TsServerLogLevel.Normal;
-			case 'terse':
+export nAmespAce TsServerLogLevel {
+	export function fromString(vAlue: string): TsServerLogLevel {
+		switch (vAlue && vAlue.toLowerCAse()) {
+			cAse 'normAl':
+				return TsServerLogLevel.NormAl;
+			cAse 'terse':
 				return TsServerLogLevel.Terse;
-			case 'verbose':
+			cAse 'verbose':
 				return TsServerLogLevel.Verbose;
-			case 'off':
-			default:
+			cAse 'off':
+			defAult:
 				return TsServerLogLevel.Off;
 		}
 	}
 
-	export function toString(value: TsServerLogLevel): string {
-		switch (value) {
-			case TsServerLogLevel.Normal:
-				return 'normal';
-			case TsServerLogLevel.Terse:
+	export function toString(vAlue: TsServerLogLevel): string {
+		switch (vAlue) {
+			cAse TsServerLogLevel.NormAl:
+				return 'normAl';
+			cAse TsServerLogLevel.Terse:
 				return 'terse';
-			case TsServerLogLevel.Verbose:
+			cAse TsServerLogLevel.Verbose:
 				return 'verbose';
-			case TsServerLogLevel.Off:
-			default:
+			cAse TsServerLogLevel.Off:
+			defAult:
 				return 'off';
 		}
 	}
 }
 
-export const enum SeparateSyntaxServerConfiguration {
-	Disabled,
-	Enabled,
+export const enum SepArAteSyntAxServerConfigurAtion {
+	DisAbled,
+	EnAbled,
 }
 
-export class TypeScriptServiceConfiguration {
-	public readonly locale: string | null;
-	public readonly globalTsdk: string | null;
-	public readonly localTsdk: string | null;
-	public readonly npmLocation: string | null;
-	public readonly tsServerLogLevel: TsServerLogLevel = TsServerLogLevel.Off;
-	public readonly tsServerPluginPaths: readonly string[];
-	public readonly checkJs: boolean;
-	public readonly experimentalDecorators: boolean;
-	public readonly disableAutomaticTypeAcquisition: boolean;
-	public readonly separateSyntaxServer: SeparateSyntaxServerConfiguration;
-	public readonly enableProjectDiagnostics: boolean;
-	public readonly maxTsServerMemory: number;
-	public readonly enablePromptUseWorkspaceTsdk: boolean;
-	public readonly watchOptions: protocol.WatchOptions | undefined;
-	public readonly includePackageJsonAutoImports: 'auto' | 'on' | 'off' | undefined;
+export clAss TypeScriptServiceConfigurAtion {
+	public reAdonly locAle: string | null;
+	public reAdonly globAlTsdk: string | null;
+	public reAdonly locAlTsdk: string | null;
+	public reAdonly npmLocAtion: string | null;
+	public reAdonly tsServerLogLevel: TsServerLogLevel = TsServerLogLevel.Off;
+	public reAdonly tsServerPluginPAths: reAdonly string[];
+	public reAdonly checkJs: booleAn;
+	public reAdonly experimentAlDecorAtors: booleAn;
+	public reAdonly disAbleAutomAticTypeAcquisition: booleAn;
+	public reAdonly sepArAteSyntAxServer: SepArAteSyntAxServerConfigurAtion;
+	public reAdonly enAbleProjectDiAgnostics: booleAn;
+	public reAdonly mAxTsServerMemory: number;
+	public reAdonly enAblePromptUseWorkspAceTsdk: booleAn;
+	public reAdonly wAtchOptions: protocol.WAtchOptions | undefined;
+	public reAdonly includePAckAgeJsonAutoImports: 'Auto' | 'on' | 'off' | undefined;
 
-	public static loadFromWorkspace(): TypeScriptServiceConfiguration {
-		return new TypeScriptServiceConfiguration();
+	public stAtic loAdFromWorkspAce(): TypeScriptServiceConfigurAtion {
+		return new TypeScriptServiceConfigurAtion();
 	}
 
-	private constructor() {
-		const configuration = vscode.workspace.getConfiguration();
+	privAte constructor() {
+		const configurAtion = vscode.workspAce.getConfigurAtion();
 
-		this.locale = TypeScriptServiceConfiguration.extractLocale(configuration);
-		this.globalTsdk = TypeScriptServiceConfiguration.extractGlobalTsdk(configuration);
-		this.localTsdk = TypeScriptServiceConfiguration.extractLocalTsdk(configuration);
-		this.npmLocation = TypeScriptServiceConfiguration.readNpmLocation(configuration);
-		this.tsServerLogLevel = TypeScriptServiceConfiguration.readTsServerLogLevel(configuration);
-		this.tsServerPluginPaths = TypeScriptServiceConfiguration.readTsServerPluginPaths(configuration);
-		this.checkJs = TypeScriptServiceConfiguration.readCheckJs(configuration);
-		this.experimentalDecorators = TypeScriptServiceConfiguration.readExperimentalDecorators(configuration);
-		this.disableAutomaticTypeAcquisition = TypeScriptServiceConfiguration.readDisableAutomaticTypeAcquisition(configuration);
-		this.separateSyntaxServer = TypeScriptServiceConfiguration.readUseSeparateSyntaxServer(configuration);
-		this.enableProjectDiagnostics = TypeScriptServiceConfiguration.readEnableProjectDiagnostics(configuration);
-		this.maxTsServerMemory = TypeScriptServiceConfiguration.readMaxTsServerMemory(configuration);
-		this.enablePromptUseWorkspaceTsdk = TypeScriptServiceConfiguration.readEnablePromptUseWorkspaceTsdk(configuration);
-		this.watchOptions = TypeScriptServiceConfiguration.readWatchOptions(configuration);
-		this.includePackageJsonAutoImports = TypeScriptServiceConfiguration.readIncludePackageJsonAutoImports(configuration);
+		this.locAle = TypeScriptServiceConfigurAtion.extrActLocAle(configurAtion);
+		this.globAlTsdk = TypeScriptServiceConfigurAtion.extrActGlobAlTsdk(configurAtion);
+		this.locAlTsdk = TypeScriptServiceConfigurAtion.extrActLocAlTsdk(configurAtion);
+		this.npmLocAtion = TypeScriptServiceConfigurAtion.reAdNpmLocAtion(configurAtion);
+		this.tsServerLogLevel = TypeScriptServiceConfigurAtion.reAdTsServerLogLevel(configurAtion);
+		this.tsServerPluginPAths = TypeScriptServiceConfigurAtion.reAdTsServerPluginPAths(configurAtion);
+		this.checkJs = TypeScriptServiceConfigurAtion.reAdCheckJs(configurAtion);
+		this.experimentAlDecorAtors = TypeScriptServiceConfigurAtion.reAdExperimentAlDecorAtors(configurAtion);
+		this.disAbleAutomAticTypeAcquisition = TypeScriptServiceConfigurAtion.reAdDisAbleAutomAticTypeAcquisition(configurAtion);
+		this.sepArAteSyntAxServer = TypeScriptServiceConfigurAtion.reAdUseSepArAteSyntAxServer(configurAtion);
+		this.enAbleProjectDiAgnostics = TypeScriptServiceConfigurAtion.reAdEnAbleProjectDiAgnostics(configurAtion);
+		this.mAxTsServerMemory = TypeScriptServiceConfigurAtion.reAdMAxTsServerMemory(configurAtion);
+		this.enAblePromptUseWorkspAceTsdk = TypeScriptServiceConfigurAtion.reAdEnAblePromptUseWorkspAceTsdk(configurAtion);
+		this.wAtchOptions = TypeScriptServiceConfigurAtion.reAdWAtchOptions(configurAtion);
+		this.includePAckAgeJsonAutoImports = TypeScriptServiceConfigurAtion.reAdIncludePAckAgeJsonAutoImports(configurAtion);
 	}
 
-	public isEqualTo(other: TypeScriptServiceConfiguration): boolean {
-		return this.locale === other.locale
-			&& this.globalTsdk === other.globalTsdk
-			&& this.localTsdk === other.localTsdk
-			&& this.npmLocation === other.npmLocation
+	public isEquAlTo(other: TypeScriptServiceConfigurAtion): booleAn {
+		return this.locAle === other.locAle
+			&& this.globAlTsdk === other.globAlTsdk
+			&& this.locAlTsdk === other.locAlTsdk
+			&& this.npmLocAtion === other.npmLocAtion
 			&& this.tsServerLogLevel === other.tsServerLogLevel
 			&& this.checkJs === other.checkJs
-			&& this.experimentalDecorators === other.experimentalDecorators
-			&& this.disableAutomaticTypeAcquisition === other.disableAutomaticTypeAcquisition
-			&& arrays.equals(this.tsServerPluginPaths, other.tsServerPluginPaths)
-			&& this.separateSyntaxServer === other.separateSyntaxServer
-			&& this.enableProjectDiagnostics === other.enableProjectDiagnostics
-			&& this.maxTsServerMemory === other.maxTsServerMemory
-			&& objects.equals(this.watchOptions, other.watchOptions)
-			&& this.enablePromptUseWorkspaceTsdk === other.enablePromptUseWorkspaceTsdk
-			&& this.includePackageJsonAutoImports === other.includePackageJsonAutoImports;
+			&& this.experimentAlDecorAtors === other.experimentAlDecorAtors
+			&& this.disAbleAutomAticTypeAcquisition === other.disAbleAutomAticTypeAcquisition
+			&& ArrAys.equAls(this.tsServerPluginPAths, other.tsServerPluginPAths)
+			&& this.sepArAteSyntAxServer === other.sepArAteSyntAxServer
+			&& this.enAbleProjectDiAgnostics === other.enAbleProjectDiAgnostics
+			&& this.mAxTsServerMemory === other.mAxTsServerMemory
+			&& objects.equAls(this.wAtchOptions, other.wAtchOptions)
+			&& this.enAblePromptUseWorkspAceTsdk === other.enAblePromptUseWorkspAceTsdk
+			&& this.includePAckAgeJsonAutoImports === other.includePAckAgeJsonAutoImports;
 	}
 
-	private static fixPathPrefixes(inspectValue: string): string {
-		const pathPrefixes = ['~' + path.sep];
-		for (const pathPrefix of pathPrefixes) {
-			if (inspectValue.startsWith(pathPrefix)) {
-				return path.join(os.homedir(), inspectValue.slice(pathPrefix.length));
+	privAte stAtic fixPAthPrefixes(inspectVAlue: string): string {
+		const pAthPrefixes = ['~' + pAth.sep];
+		for (const pAthPrefix of pAthPrefixes) {
+			if (inspectVAlue.stArtsWith(pAthPrefix)) {
+				return pAth.join(os.homedir(), inspectVAlue.slice(pAthPrefix.length));
 			}
 		}
-		return inspectValue;
+		return inspectVAlue;
 	}
 
-	private static extractGlobalTsdk(configuration: vscode.WorkspaceConfiguration): string | null {
-		const inspect = configuration.inspect('typescript.tsdk');
-		if (inspect && typeof inspect.globalValue === 'string') {
-			return this.fixPathPrefixes(inspect.globalValue);
+	privAte stAtic extrActGlobAlTsdk(configurAtion: vscode.WorkspAceConfigurAtion): string | null {
+		const inspect = configurAtion.inspect('typescript.tsdk');
+		if (inspect && typeof inspect.globAlVAlue === 'string') {
+			return this.fixPAthPrefixes(inspect.globAlVAlue);
 		}
 		return null;
 	}
 
-	private static extractLocalTsdk(configuration: vscode.WorkspaceConfiguration): string | null {
-		const inspect = configuration.inspect('typescript.tsdk');
-		if (inspect && typeof inspect.workspaceValue === 'string') {
-			return this.fixPathPrefixes(inspect.workspaceValue);
+	privAte stAtic extrActLocAlTsdk(configurAtion: vscode.WorkspAceConfigurAtion): string | null {
+		const inspect = configurAtion.inspect('typescript.tsdk');
+		if (inspect && typeof inspect.workspAceVAlue === 'string') {
+			return this.fixPAthPrefixes(inspect.workspAceVAlue);
 		}
 		return null;
 	}
 
-	private static readTsServerLogLevel(configuration: vscode.WorkspaceConfiguration): TsServerLogLevel {
-		const setting = configuration.get<string>('typescript.tsserver.log', 'off');
+	privAte stAtic reAdTsServerLogLevel(configurAtion: vscode.WorkspAceConfigurAtion): TsServerLogLevel {
+		const setting = configurAtion.get<string>('typescript.tsserver.log', 'off');
 		return TsServerLogLevel.fromString(setting);
 	}
 
-	private static readTsServerPluginPaths(configuration: vscode.WorkspaceConfiguration): string[] {
-		return configuration.get<string[]>('typescript.tsserver.pluginPaths', []);
+	privAte stAtic reAdTsServerPluginPAths(configurAtion: vscode.WorkspAceConfigurAtion): string[] {
+		return configurAtion.get<string[]>('typescript.tsserver.pluginPAths', []);
 	}
 
-	private static readCheckJs(configuration: vscode.WorkspaceConfiguration): boolean {
-		return configuration.get<boolean>('javascript.implicitProjectConfig.checkJs', false);
+	privAte stAtic reAdCheckJs(configurAtion: vscode.WorkspAceConfigurAtion): booleAn {
+		return configurAtion.get<booleAn>('jAvAscript.implicitProjectConfig.checkJs', fAlse);
 	}
 
-	private static readExperimentalDecorators(configuration: vscode.WorkspaceConfiguration): boolean {
-		return configuration.get<boolean>('javascript.implicitProjectConfig.experimentalDecorators', false);
+	privAte stAtic reAdExperimentAlDecorAtors(configurAtion: vscode.WorkspAceConfigurAtion): booleAn {
+		return configurAtion.get<booleAn>('jAvAscript.implicitProjectConfig.experimentAlDecorAtors', fAlse);
 	}
 
-	private static readNpmLocation(configuration: vscode.WorkspaceConfiguration): string | null {
-		return configuration.get<string | null>('typescript.npm', null);
+	privAte stAtic reAdNpmLocAtion(configurAtion: vscode.WorkspAceConfigurAtion): string | null {
+		return configurAtion.get<string | null>('typescript.npm', null);
 	}
 
-	private static readDisableAutomaticTypeAcquisition(configuration: vscode.WorkspaceConfiguration): boolean {
-		return configuration.get<boolean>('typescript.disableAutomaticTypeAcquisition', false);
+	privAte stAtic reAdDisAbleAutomAticTypeAcquisition(configurAtion: vscode.WorkspAceConfigurAtion): booleAn {
+		return configurAtion.get<booleAn>('typescript.disAbleAutomAticTypeAcquisition', fAlse);
 	}
 
-	private static extractLocale(configuration: vscode.WorkspaceConfiguration): string | null {
-		return configuration.get<string | null>('typescript.locale', null);
+	privAte stAtic extrActLocAle(configurAtion: vscode.WorkspAceConfigurAtion): string | null {
+		return configurAtion.get<string | null>('typescript.locAle', null);
 	}
 
-	private static readUseSeparateSyntaxServer(configuration: vscode.WorkspaceConfiguration): SeparateSyntaxServerConfiguration {
-		const value = configuration.get('typescript.tsserver.useSeparateSyntaxServer', true);
-		if (value === true) {
-			return SeparateSyntaxServerConfiguration.Enabled;
+	privAte stAtic reAdUseSepArAteSyntAxServer(configurAtion: vscode.WorkspAceConfigurAtion): SepArAteSyntAxServerConfigurAtion {
+		const vAlue = configurAtion.get('typescript.tsserver.useSepArAteSyntAxServer', true);
+		if (vAlue === true) {
+			return SepArAteSyntAxServerConfigurAtion.EnAbled;
 		}
-		return SeparateSyntaxServerConfiguration.Disabled;
+		return SepArAteSyntAxServerConfigurAtion.DisAbled;
 	}
 
-	private static readEnableProjectDiagnostics(configuration: vscode.WorkspaceConfiguration): boolean {
-		return configuration.get<boolean>('typescript.tsserver.experimental.enableProjectDiagnostics', false);
+	privAte stAtic reAdEnAbleProjectDiAgnostics(configurAtion: vscode.WorkspAceConfigurAtion): booleAn {
+		return configurAtion.get<booleAn>('typescript.tsserver.experimentAl.enAbleProjectDiAgnostics', fAlse);
 	}
 
-	private static readWatchOptions(configuration: vscode.WorkspaceConfiguration): protocol.WatchOptions | undefined {
-		return configuration.get<protocol.WatchOptions>('typescript.tsserver.watchOptions');
+	privAte stAtic reAdWAtchOptions(configurAtion: vscode.WorkspAceConfigurAtion): protocol.WAtchOptions | undefined {
+		return configurAtion.get<protocol.WAtchOptions>('typescript.tsserver.wAtchOptions');
 	}
 
-	private static readIncludePackageJsonAutoImports(configuration: vscode.WorkspaceConfiguration): 'auto' | 'on' | 'off' | undefined {
-		return configuration.get<'auto' | 'on' | 'off'>('typescript.preferences.includePackageJsonAutoImports');
+	privAte stAtic reAdIncludePAckAgeJsonAutoImports(configurAtion: vscode.WorkspAceConfigurAtion): 'Auto' | 'on' | 'off' | undefined {
+		return configurAtion.get<'Auto' | 'on' | 'off'>('typescript.preferences.includePAckAgeJsonAutoImports');
 	}
 
-	private static readMaxTsServerMemory(configuration: vscode.WorkspaceConfiguration): number {
-		const defaultMaxMemory = 3072;
-		const minimumMaxMemory = 128;
-		const memoryInMB = configuration.get<number>('typescript.tsserver.maxTsServerMemory', defaultMaxMemory);
-		if (!Number.isSafeInteger(memoryInMB)) {
-			return defaultMaxMemory;
+	privAte stAtic reAdMAxTsServerMemory(configurAtion: vscode.WorkspAceConfigurAtion): number {
+		const defAultMAxMemory = 3072;
+		const minimumMAxMemory = 128;
+		const memoryInMB = configurAtion.get<number>('typescript.tsserver.mAxTsServerMemory', defAultMAxMemory);
+		if (!Number.isSAfeInteger(memoryInMB)) {
+			return defAultMAxMemory;
 		}
-		return Math.max(memoryInMB, minimumMaxMemory);
+		return MAth.mAx(memoryInMB, minimumMAxMemory);
 	}
 
-	private static readEnablePromptUseWorkspaceTsdk(configuration: vscode.WorkspaceConfiguration): boolean {
-		return configuration.get<boolean>('typescript.enablePromptUseWorkspaceTsdk', false);
+	privAte stAtic reAdEnAblePromptUseWorkspAceTsdk(configurAtion: vscode.WorkspAceConfigurAtion): booleAn {
+		return configurAtion.get<booleAn>('typescript.enAblePromptUseWorkspAceTsdk', fAlse);
 	}
 }

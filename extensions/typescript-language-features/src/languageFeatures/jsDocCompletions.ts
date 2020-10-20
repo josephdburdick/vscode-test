@@ -1,105 +1,105 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import { conditionalRegistration, requireConfiguration } from '../utils/dependentRegistration';
+import { conditionAlRegistrAtion, requireConfigurAtion } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as typeConverters from '../utils/typeConverters';
+import * As typeConverters from '../utils/typeConverters';
 
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-const defaultJsDoc = new vscode.SnippetString(`/**\n * $0\n */`);
+const defAultJsDoc = new vscode.SnippetString(`/**\n * $0\n */`);
 
-class JsDocCompletionItem extends vscode.CompletionItem {
+clAss JsDocCompletionItem extends vscode.CompletionItem {
 	constructor(
-		public readonly document: vscode.TextDocument,
-		public readonly position: vscode.Position
+		public reAdonly document: vscode.TextDocument,
+		public reAdonly position: vscode.Position
 	) {
 		super('/** */', vscode.CompletionItemKind.Snippet);
-		this.detail = localize('typescript.jsDocCompletionItem.documentation', 'JSDoc comment');
+		this.detAil = locAlize('typescript.jsDocCompletionItem.documentAtion', 'JSDoc comment');
 		this.sortText = '\0';
 
 		const line = document.lineAt(position.line).text;
-		const prefix = line.slice(0, position.character).match(/\/\**\s*$/);
-		const suffix = line.slice(position.character).match(/^\s*\**\//);
-		const start = position.translate(0, prefix ? -prefix[0].length : 0);
-		const range = new vscode.Range(start, position.translate(0, suffix ? suffix[0].length : 0));
-		this.range = { inserting: range, replacing: range };
+		const prefix = line.slice(0, position.chArActer).mAtch(/\/\**\s*$/);
+		const suffix = line.slice(position.chArActer).mAtch(/^\s*\**\//);
+		const stArt = position.trAnslAte(0, prefix ? -prefix[0].length : 0);
+		const rAnge = new vscode.RAnge(stArt, position.trAnslAte(0, suffix ? suffix[0].length : 0));
+		this.rAnge = { inserting: rAnge, replAcing: rAnge };
 	}
 }
 
-class JsDocCompletionProvider implements vscode.CompletionItemProvider {
+clAss JsDocCompletionProvider implements vscode.CompletionItemProvider {
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
+		privAte reAdonly client: ITypeScriptServiceClient,
 	) { }
 
-	public async provideCompletionItems(
+	public Async provideCompletionItems(
 		document: vscode.TextDocument,
 		position: vscode.Position,
-		token: vscode.CancellationToken
+		token: vscode.CAncellAtionToken
 	): Promise<vscode.CompletionItem[] | undefined> {
-		const file = this.client.toOpenedFilePath(document);
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return undefined;
 		}
 
-		if (!this.isPotentiallyValidDocCompletionPosition(document, position)) {
+		if (!this.isPotentiAllyVAlidDocCompletionPosition(document, position)) {
 			return undefined;
 		}
 
-		const args = typeConverters.Position.toFileLocationRequestArgs(file, position);
-		const response = await this.client.execute('docCommentTemplate', args, token);
+		const Args = typeConverters.Position.toFileLocAtionRequestArgs(file, position);
+		const response = AwAit this.client.execute('docCommentTemplAte', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
 		const item = new JsDocCompletionItem(document, position);
 
-		// Workaround for #43619
-		// docCommentTemplate previously returned undefined for empty jsdoc templates.
-		// TS 2.7 now returns a single line doc comment, which breaks indentation.
+		// WorkAround for #43619
+		// docCommentTemplAte previously returned undefined for empty jsdoc templAtes.
+		// TS 2.7 now returns A single line doc comment, which breAks indentAtion.
 		if (response.body.newText === '/** */') {
-			item.insertText = defaultJsDoc;
+			item.insertText = defAultJsDoc;
 		} else {
-			item.insertText = templateToSnippet(response.body.newText);
+			item.insertText = templAteToSnippet(response.body.newText);
 		}
 
 		return [item];
 	}
 
-	private isPotentiallyValidDocCompletionPosition(
+	privAte isPotentiAllyVAlidDocCompletionPosition(
 		document: vscode.TextDocument,
 		position: vscode.Position
-	): boolean {
-		// Only show the JSdoc completion when the everything before the cursor is whitespace
-		// or could be the opening of a comment
+	): booleAn {
+		// Only show the JSdoc completion when the everything before the cursor is whitespAce
+		// or could be the opening of A comment
 		const line = document.lineAt(position.line).text;
-		const prefix = line.slice(0, position.character);
+		const prefix = line.slice(0, position.chArActer);
 		if (!/^\s*$|\/\*\*\s*$|^\s*\/\*\*+\s*$/.test(prefix)) {
-			return false;
+			return fAlse;
 		}
 
-		// And everything after is possibly a closing comment or more whitespace
-		const suffix = line.slice(position.character);
+		// And everything After is possibly A closing comment or more whitespAce
+		const suffix = line.slice(position.chArActer);
 		return /^\s*(\*+\/)?\s*$/.test(suffix);
 	}
 }
 
-export function templateToSnippet(template: string): vscode.SnippetString {
-	// TODO: use append placeholder
+export function templAteToSnippet(templAte: string): vscode.SnippetString {
+	// TODO: use Append plAceholder
 	let snippetIndex = 1;
-	template = template.replace(/\$/g, '\\$');
-	template = template.replace(/^\s*(?=(\/|[ ]\*))/gm, '');
-	template = template.replace(/^(\/\*\*\s*\*[ ]*)$/m, (x) => x + `\$0`);
-	template = template.replace(/\* @param([ ]\{\S+\})?\s+(\S+)\s*$/gm, (_param, type, post) => {
-		let out = '* @param ';
-		if (type === ' {any}' || type === ' {*}') {
+	templAte = templAte.replAce(/\$/g, '\\$');
+	templAte = templAte.replAce(/^\s*(?=(\/|[ ]\*))/gm, '');
+	templAte = templAte.replAce(/^(\/\*\*\s*\*[ ]*)$/m, (x) => x + `\$0`);
+	templAte = templAte.replAce(/\* @pArAm([ ]\{\S+\})?\s+(\S+)\s*$/gm, (_pArAm, type, post) => {
+		let out = '* @pArAm ';
+		if (type === ' {Any}' || type === ' {*}') {
 			out += `{\$\{${snippetIndex++}:*\}} `;
 		} else if (type) {
 			out += type + ' ';
@@ -107,18 +107,18 @@ export function templateToSnippet(template: string): vscode.SnippetString {
 		out += post + ` \${${snippetIndex++}}`;
 		return out;
 	});
-	return new vscode.SnippetString(template);
+	return new vscode.SnippetString(templAte);
 }
 
 export function register(
 	selector: DocumentSelector,
 	modeId: string,
 	client: ITypeScriptServiceClient,
-): vscode.Disposable {
-	return conditionalRegistration([
-		requireConfiguration(modeId, 'suggest.completeJSDocs')
+): vscode.DisposAble {
+	return conditionAlRegistrAtion([
+		requireConfigurAtion(modeId, 'suggest.completeJSDocs')
 	], () => {
-		return vscode.languages.registerCompletionItemProvider(selector.syntax,
+		return vscode.lAnguAges.registerCompletionItemProvider(selector.syntAx,
 			new JsDocCompletionProvider(client),
 			'*');
 	});

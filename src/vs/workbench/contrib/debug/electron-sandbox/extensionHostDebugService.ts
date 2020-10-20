@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IExtensionHostDebugService } from 'vs/platform/debug/common/extensionHostDebug';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { ExtensionHostDebugChannelClient, ExtensionHostDebugBroadcastChannel } from 'vs/platform/debug/common/extensionHostDebugIpc';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IExtensionHostDebugService } from 'vs/plAtform/debug/common/extensionHostDebug';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { ExtensionHostDebugChAnnelClient, ExtensionHostDebugBroAdcAstChAnnel } from 'vs/plAtform/debug/common/extensionHostDebugIpc';
 
-export class ExtensionHostDebugService extends ExtensionHostDebugChannelClient {
+export clAss ExtensionHostDebugService extends ExtensionHostDebugChAnnelClient {
 
 	constructor(
-		@IMainProcessService readonly mainProcessService: IMainProcessService
+		@IMAinProcessService reAdonly mAinProcessService: IMAinProcessService
 	) {
-		super(mainProcessService.getChannel(ExtensionHostDebugBroadcastChannel.ChannelName));
+		super(mAinProcessService.getChAnnel(ExtensionHostDebugBroAdcAstChAnnel.ChAnnelNAme));
 	}
 }
 

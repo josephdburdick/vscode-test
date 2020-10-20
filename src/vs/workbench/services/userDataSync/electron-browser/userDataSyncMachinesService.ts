@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IUserDataSyncMachinesService, IUserDataSyncMachine } from 'vs/platform/userDataSync/common/userDataSyncMachines';
-import { Event } from 'vs/base/common/event';
+import { IShAredProcessService } from 'vs/plAtform/ipc/electron-browser/shAredProcessService';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IUserDAtASyncMAchinesService, IUserDAtASyncMAchine } from 'vs/plAtform/userDAtASync/common/userDAtASyncMAchines';
+import { Event } from 'vs/bAse/common/event';
 
-class UserDataSyncMachinesService extends Disposable implements IUserDataSyncMachinesService {
+clAss UserDAtASyncMAchinesService extends DisposAble implements IUserDAtASyncMAchinesService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly channel: IChannel;
+	privAte reAdonly chAnnel: IChAnnel;
 
-	get onDidChange(): Event<void> { return this.channel.listen<void>('onDidChange'); }
+	get onDidChAnge(): Event<void> { return this.chAnnel.listen<void>('onDidChAnge'); }
 
 	constructor(
-		@ISharedProcessService sharedProcessService: ISharedProcessService
+		@IShAredProcessService shAredProcessService: IShAredProcessService
 	) {
 		super();
-		this.channel = sharedProcessService.getChannel('userDataSyncMachines');
+		this.chAnnel = shAredProcessService.getChAnnel('userDAtASyncMAchines');
 	}
 
-	getMachines(): Promise<IUserDataSyncMachine[]> {
-		return this.channel.call<IUserDataSyncMachine[]>('getMachines');
+	getMAchines(): Promise<IUserDAtASyncMAchine[]> {
+		return this.chAnnel.cAll<IUserDAtASyncMAchine[]>('getMAchines');
 	}
 
-	addCurrentMachine(): Promise<void> {
-		return this.channel.call('addCurrentMachine');
+	AddCurrentMAchine(): Promise<void> {
+		return this.chAnnel.cAll('AddCurrentMAchine');
 	}
 
-	removeCurrentMachine(): Promise<void> {
-		return this.channel.call('removeCurrentMachine');
+	removeCurrentMAchine(): Promise<void> {
+		return this.chAnnel.cAll('removeCurrentMAchine');
 	}
 
-	renameMachine(machineId: string, name: string): Promise<void> {
-		return this.channel.call('renameMachine', [machineId, name]);
+	renAmeMAchine(mAchineId: string, nAme: string): Promise<void> {
+		return this.chAnnel.cAll('renAmeMAchine', [mAchineId, nAme]);
 	}
 
-	setEnablement(machineId: string, enabled: boolean): Promise<void> {
-		return this.channel.call('setEnablement', [machineId, enabled]);
+	setEnAblement(mAchineId: string, enAbled: booleAn): Promise<void> {
+		return this.chAnnel.cAll('setEnAblement', [mAchineId, enAbled]);
 	}
 
 }
 
-registerSingleton(IUserDataSyncMachinesService, UserDataSyncMachinesService);
+registerSingleton(IUserDAtASyncMAchinesService, UserDAtASyncMAchinesService);

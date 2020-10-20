@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { RGBA8 } from 'vs/editor/common/core/rgba';
-import { Constants } from 'vs/editor/browser/viewParts/minimap/minimapCharSheet';
-import { MinimapCharRendererFactory } from 'vs/editor/browser/viewParts/minimap/minimapCharRendererFactory';
+import * As Assert from 'Assert';
+import { RGBA8 } from 'vs/editor/common/core/rgbA';
+import { ConstAnts } from 'vs/editor/browser/viewPArts/minimAp/minimApChArSheet';
+import { MinimApChArRendererFActory } from 'vs/editor/browser/viewPArts/minimAp/minimApChArRendererFActory';
 
-suite('MinimapCharRenderer', () => {
+suite('MinimApChArRenderer', () => {
 
-	const sampleD = [
+	const sAmpleD = [
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xD0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x78, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xD0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x78, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xD0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x78, 0x00, 0x00, 0x00, 0x00,
@@ -29,63 +29,63 @@ suite('MinimapCharRenderer', () => {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	];
 
-	function getSampleData() {
-		const charCode = 'd'.charCodeAt(0);
-		const result = new Uint8ClampedArray(Constants.SAMPLED_CHAR_HEIGHT * Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT * Constants.CHAR_COUNT);
+	function getSAmpleDAtA() {
+		const chArCode = 'd'.chArCodeAt(0);
+		const result = new Uint8ClAmpedArrAy(ConstAnts.SAMPLED_CHAR_HEIGHT * ConstAnts.SAMPLED_CHAR_WIDTH * ConstAnts.RGBA_CHANNELS_CNT * ConstAnts.CHAR_COUNT);
 		for (let i = 0; i < result.length; i++) {
 			result[i] = 0;
 		}
 
-		const rowWidth = Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT * Constants.CHAR_COUNT;
-		let chIndex = charCode - Constants.START_CH_CODE;
+		const rowWidth = ConstAnts.SAMPLED_CHAR_WIDTH * ConstAnts.RGBA_CHANNELS_CNT * ConstAnts.CHAR_COUNT;
+		let chIndex = chArCode - ConstAnts.START_CH_CODE;
 
-		let globalOutputOffset = chIndex * Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT;
+		let globAlOutputOffset = chIndex * ConstAnts.SAMPLED_CHAR_WIDTH * ConstAnts.RGBA_CHANNELS_CNT;
 		let inputOffset = 0;
-		for (let i = 0; i < Constants.SAMPLED_CHAR_HEIGHT; i++) {
-			let outputOffset = globalOutputOffset;
-			for (let j = 0; j < Constants.SAMPLED_CHAR_WIDTH; j++) {
-				for (let channel = 0; channel < Constants.RGBA_CHANNELS_CNT; channel++) {
-					result[outputOffset] = sampleD[inputOffset];
+		for (let i = 0; i < ConstAnts.SAMPLED_CHAR_HEIGHT; i++) {
+			let outputOffset = globAlOutputOffset;
+			for (let j = 0; j < ConstAnts.SAMPLED_CHAR_WIDTH; j++) {
+				for (let chAnnel = 0; chAnnel < ConstAnts.RGBA_CHANNELS_CNT; chAnnel++) {
+					result[outputOffset] = sAmpleD[inputOffset];
 					inputOffset++;
 					outputOffset++;
 				}
 			}
-			globalOutputOffset += rowWidth;
+			globAlOutputOffset += rowWidth;
 		}
 
 		return result;
 	}
 
-	function createFakeImageData(width: number, height: number): ImageData {
+	function creAteFAkeImAgeDAtA(width: number, height: number): ImAgeDAtA {
 		return {
 			width: width,
 			height: height,
-			data: new Uint8ClampedArray(width * height * Constants.RGBA_CHANNELS_CNT)
+			dAtA: new Uint8ClAmpedArrAy(width * height * ConstAnts.RGBA_CHANNELS_CNT)
 		};
 	}
 
 	test('letter d @ 2x', () => {
-		const sampleData = getSampleData();
-		let renderer = MinimapCharRendererFactory.createFromSampleData(sampleData, 2);
+		const sAmpleDAtA = getSAmpleDAtA();
+		let renderer = MinimApChArRendererFActory.creAteFromSAmpleDAtA(sAmpleDAtA, 2);
 
-		let background = new RGBA8(0, 0, 0, 255);
+		let bAckground = new RGBA8(0, 0, 0, 255);
 		let color = new RGBA8(255, 255, 255, 255);
-		let imageData = createFakeImageData(Constants.BASE_CHAR_WIDTH * 2, Constants.BASE_CHAR_HEIGHT * 2);
-		// set the background color
-		for (let i = 0, len = imageData.data.length / 4; i < len; i++) {
-			imageData.data[4 * i + 0] = background.r;
-			imageData.data[4 * i + 1] = background.g;
-			imageData.data[4 * i + 2] = background.b;
-			imageData.data[4 * i + 3] = 255;
+		let imAgeDAtA = creAteFAkeImAgeDAtA(ConstAnts.BASE_CHAR_WIDTH * 2, ConstAnts.BASE_CHAR_HEIGHT * 2);
+		// set the bAckground color
+		for (let i = 0, len = imAgeDAtA.dAtA.length / 4; i < len; i++) {
+			imAgeDAtA.dAtA[4 * i + 0] = bAckground.r;
+			imAgeDAtA.dAtA[4 * i + 1] = bAckground.g;
+			imAgeDAtA.dAtA[4 * i + 2] = bAckground.b;
+			imAgeDAtA.dAtA[4 * i + 3] = 255;
 		}
-		renderer.renderChar(imageData, 0, 0, 'd'.charCodeAt(0), color, background, 2, false, false);
+		renderer.renderChAr(imAgeDAtA, 0, 0, 'd'.chArCodeAt(0), color, bAckground, 2, fAlse, fAlse);
 
-		let actual: number[] = [];
-		for (let i = 0; i < imageData.data.length; i++) {
-			actual[i] = imageData.data[i];
+		let ActuAl: number[] = [];
+		for (let i = 0; i < imAgeDAtA.dAtA.length; i++) {
+			ActuAl[i] = imAgeDAtA.dAtA[i];
 		}
 
-		assert.deepEqual(actual, [
+		Assert.deepEquAl(ActuAl, [
 			0x2D, 0x2D, 0x2D, 0xFF, 0xAC, 0xAC, 0xAC, 0xFF,
 			0xC6, 0xC6, 0xC6, 0xFF, 0xC8, 0xC8, 0xC8, 0xFF,
 			0xC0, 0xC0, 0xC0, 0xFF, 0xCB, 0xCB, 0xCB, 0xFF,
@@ -94,28 +94,28 @@ suite('MinimapCharRenderer', () => {
 	});
 
 	test('letter d @ 1x', () => {
-		const sampleData = getSampleData();
-		let renderer = MinimapCharRendererFactory.createFromSampleData(sampleData, 1);
+		const sAmpleDAtA = getSAmpleDAtA();
+		let renderer = MinimApChArRendererFActory.creAteFromSAmpleDAtA(sAmpleDAtA, 1);
 
-		let background = new RGBA8(0, 0, 0, 255);
+		let bAckground = new RGBA8(0, 0, 0, 255);
 		let color = new RGBA8(255, 255, 255, 255);
-		let imageData = createFakeImageData(Constants.BASE_CHAR_WIDTH, Constants.BASE_CHAR_HEIGHT);
-		// set the background color
-		for (let i = 0, len = imageData.data.length / 4; i < len; i++) {
-			imageData.data[4 * i + 0] = background.r;
-			imageData.data[4 * i + 1] = background.g;
-			imageData.data[4 * i + 2] = background.b;
-			imageData.data[4 * i + 3] = 255;
+		let imAgeDAtA = creAteFAkeImAgeDAtA(ConstAnts.BASE_CHAR_WIDTH, ConstAnts.BASE_CHAR_HEIGHT);
+		// set the bAckground color
+		for (let i = 0, len = imAgeDAtA.dAtA.length / 4; i < len; i++) {
+			imAgeDAtA.dAtA[4 * i + 0] = bAckground.r;
+			imAgeDAtA.dAtA[4 * i + 1] = bAckground.g;
+			imAgeDAtA.dAtA[4 * i + 2] = bAckground.b;
+			imAgeDAtA.dAtA[4 * i + 3] = 255;
 		}
 
-		renderer.renderChar(imageData, 0, 0, 'd'.charCodeAt(0), color, background, 1, false, false);
+		renderer.renderChAr(imAgeDAtA, 0, 0, 'd'.chArCodeAt(0), color, bAckground, 1, fAlse, fAlse);
 
-		let actual: number[] = [];
-		for (let i = 0; i < imageData.data.length; i++) {
-			actual[i] = imageData.data[i];
+		let ActuAl: number[] = [];
+		for (let i = 0; i < imAgeDAtA.dAtA.length; i++) {
+			ActuAl[i] = imAgeDAtA.dAtA[i];
 		}
 
-		assert.deepEqual(actual, [
+		Assert.deepEquAl(ActuAl, [
 			0xCB, 0xCB, 0xCB, 0xFF,
 			0x81, 0x81, 0x81, 0xFF,
 		]);

@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as appInsights from 'applicationinsights';
-import { mixin } from 'vs/base/common/objects';
-import { ITelemetryAppender, validateTelemetryData } from 'vs/platform/telemetry/common/telemetryUtils';
+import * As AppInsights from 'ApplicAtioninsights';
+import { mixin } from 'vs/bAse/common/objects';
+import { ITelemetryAppender, vAlidAteTelemetryDAtA } from 'vs/plAtform/telemetry/common/telemetryUtils';
 
-function getClient(aiKey: string): appInsights.TelemetryClient {
+function getClient(AiKey: string): AppInsights.TelemetryClient {
 
-	let client: appInsights.TelemetryClient;
-	if (appInsights.defaultClient) {
-		client = new appInsights.TelemetryClient(aiKey);
-		client.channel.setUseDiskRetryCaching(true);
+	let client: AppInsights.TelemetryClient;
+	if (AppInsights.defAultClient) {
+		client = new AppInsights.TelemetryClient(AiKey);
+		client.chAnnel.setUseDiskRetryCAching(true);
 	} else {
-		appInsights.setup(aiKey)
-			.setAutoCollectRequests(false)
-			.setAutoCollectPerformance(false)
-			.setAutoCollectExceptions(false)
-			.setAutoCollectDependencies(false)
-			.setAutoDependencyCorrelation(false)
-			.setAutoCollectConsole(false)
-			.setInternalLogging(false, false)
-			.setUseDiskRetryCaching(true)
-			.start();
-		client = appInsights.defaultClient;
+		AppInsights.setup(AiKey)
+			.setAutoCollectRequests(fAlse)
+			.setAutoCollectPerformAnce(fAlse)
+			.setAutoCollectExceptions(fAlse)
+			.setAutoCollectDependencies(fAlse)
+			.setAutoDependencyCorrelAtion(fAlse)
+			.setAutoCollectConsole(fAlse)
+			.setInternAlLogging(fAlse, fAlse)
+			.setUseDiskRetryCAching(true)
+			.stArt();
+		client = AppInsights.defAultClient;
 	}
 
-	if (aiKey.indexOf('AIF-') === 0) {
-		client.config.endpointUrl = 'https://vortex.data.microsoft.com/collect/v1';
+	if (AiKey.indexOf('AIF-') === 0) {
+		client.config.endpointUrl = 'https://vortex.dAtA.microsoft.com/collect/v1';
 	}
 	return client;
 }
 
 
-export class AppInsightsAppender implements ITelemetryAppender {
+export clAss AppInsightsAppender implements ITelemetryAppender {
 
-	private _aiClient?: appInsights.TelemetryClient;
+	privAte _AiClient?: AppInsights.TelemetryClient;
 
 	constructor(
-		private _eventPrefix: string,
-		private _defaultData: { [key: string]: any } | null,
-		aiKeyOrClientFactory: string | (() => appInsights.TelemetryClient), // allow factory function for testing
+		privAte _eventPrefix: string,
+		privAte _defAultDAtA: { [key: string]: Any } | null,
+		AiKeyOrClientFActory: string | (() => AppInsights.TelemetryClient), // Allow fActory function for testing
 	) {
-		if (!this._defaultData) {
-			this._defaultData = Object.create(null);
+		if (!this._defAultDAtA) {
+			this._defAultDAtA = Object.creAte(null);
 		}
 
-		if (typeof aiKeyOrClientFactory === 'string') {
-			this._aiClient = getClient(aiKeyOrClientFactory);
-		} else if (typeof aiKeyOrClientFactory === 'function') {
-			this._aiClient = aiKeyOrClientFactory();
+		if (typeof AiKeyOrClientFActory === 'string') {
+			this._AiClient = getClient(AiKeyOrClientFActory);
+		} else if (typeof AiKeyOrClientFActory === 'function') {
+			this._AiClient = AiKeyOrClientFActory();
 		}
 	}
 
-	log(eventName: string, data?: any): void {
-		if (!this._aiClient) {
+	log(eventNAme: string, dAtA?: Any): void {
+		if (!this._AiClient) {
 			return;
 		}
-		data = mixin(data, this._defaultData);
-		data = validateTelemetryData(data);
+		dAtA = mixin(dAtA, this._defAultDAtA);
+		dAtA = vAlidAteTelemetryDAtA(dAtA);
 
-		this._aiClient.trackEvent({
-			name: this._eventPrefix + '/' + eventName,
-			properties: data.properties,
-			measurements: data.measurements
+		this._AiClient.trAckEvent({
+			nAme: this._eventPrefix + '/' + eventNAme,
+			properties: dAtA.properties,
+			meAsurements: dAtA.meAsurements
 		});
 	}
 
-	flush(): Promise<any> {
-		if (this._aiClient) {
+	flush(): Promise<Any> {
+		if (this._AiClient) {
 			return new Promise(resolve => {
-				this._aiClient!.flush({
-					callback: () => {
-						// all data flushed
-						this._aiClient = undefined;
+				this._AiClient!.flush({
+					cAllbAck: () => {
+						// All dAtA flushed
+						this._AiClient = undefined;
 						resolve(undefined);
 					}
 				});

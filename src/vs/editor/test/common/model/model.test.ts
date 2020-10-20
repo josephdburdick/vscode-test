@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Disposable, dispose } from 'vs/base/common/lifecycle';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
+import * As Assert from 'Assert';
+import { DisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { TokenizationResult2 } from 'vs/editor/common/core/token';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { TokenizAtionResult2 } from 'vs/editor/common/core/token';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { ModelRawContentChangedEvent, ModelRawFlush, ModelRawLineChanged, ModelRawLinesDeleted, ModelRawLinesInserted } from 'vs/editor/common/model/textModelEvents';
-import { IState, LanguageIdentifier, MetadataConsts, TokenizationRegistry } from 'vs/editor/common/modes';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
+import { ModelRAwContentChAngedEvent, ModelRAwFlush, ModelRAwLineChAnged, ModelRAwLinesDeleted, ModelRAwLinesInserted } from 'vs/editor/common/model/textModelEvents';
+import { IStAte, LAnguAgeIdentifier, MetAdAtAConsts, TokenizAtionRegistry } from 'vs/editor/common/modes';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
 import { NULL_STATE } from 'vs/editor/common/modes/nullMode';
 import { MockMode } from 'vs/editor/test/common/mocks/mockMode';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 
 // --------- utils
 
@@ -36,108 +36,108 @@ suite('Editor Model - Model', () => {
 			LINE3 + '\n' +
 			LINE4 + '\r\n' +
 			LINE5;
-		thisModel = createTextModel(text);
+		thisModel = creAteTextModel(text);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		thisModel.dispose();
 	});
 
 	// --------- insert text
 
-	test('model getValue', () => {
-		assert.equal(thisModel.getValue(), 'My First Line\n\t\tMy Second Line\n    Third Line\n\n1');
+	test('model getVAlue', () => {
+		Assert.equAl(thisModel.getVAlue(), 'My First Line\n\t\tMy Second Line\n    Third Line\n\n1');
 	});
 
 	test('model insert empty text', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), '')]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), 'My First Line');
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 1), '')]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), 'My First Line');
 	});
 
 	test('model insert text without newline 1', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), 'foo ')]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), 'foo My First Line');
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 1), 'foo ')]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), 'foo My First Line');
 	});
 
 	test('model insert text without newline 2', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 3), ' foo')]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), 'My foo First Line');
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 3), ' foo')]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), 'My foo First Line');
 	});
 
 	test('model insert text with one newline', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 3), ' new line\nNo longer')]);
-		assert.equal(thisModel.getLineCount(), 6);
-		assert.equal(thisModel.getLineContent(1), 'My new line');
-		assert.equal(thisModel.getLineContent(2), 'No longer First Line');
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 3), ' new line\nNo longer')]);
+		Assert.equAl(thisModel.getLineCount(), 6);
+		Assert.equAl(thisModel.getLineContent(1), 'My new line');
+		Assert.equAl(thisModel.getLineContent(2), 'No longer First Line');
 	});
 
 	test('model insert text with two newlines', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 3), ' new line\nOne more line in the middle\nNo longer')]);
-		assert.equal(thisModel.getLineCount(), 7);
-		assert.equal(thisModel.getLineContent(1), 'My new line');
-		assert.equal(thisModel.getLineContent(2), 'One more line in the middle');
-		assert.equal(thisModel.getLineContent(3), 'No longer First Line');
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 3), ' new line\nOne more line in the middle\nNo longer')]);
+		Assert.equAl(thisModel.getLineCount(), 7);
+		Assert.equAl(thisModel.getLineContent(1), 'My new line');
+		Assert.equAl(thisModel.getLineContent(2), 'One more line in the middle');
+		Assert.equAl(thisModel.getLineContent(3), 'No longer First Line');
 	});
 
-	test('model insert text with many newlines', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 3), '\n\n\n\n')]);
-		assert.equal(thisModel.getLineCount(), 9);
-		assert.equal(thisModel.getLineContent(1), 'My');
-		assert.equal(thisModel.getLineContent(2), '');
-		assert.equal(thisModel.getLineContent(3), '');
-		assert.equal(thisModel.getLineContent(4), '');
-		assert.equal(thisModel.getLineContent(5), ' First Line');
+	test('model insert text with mAny newlines', () => {
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 3), '\n\n\n\n')]);
+		Assert.equAl(thisModel.getLineCount(), 9);
+		Assert.equAl(thisModel.getLineContent(1), 'My');
+		Assert.equAl(thisModel.getLineContent(2), '');
+		Assert.equAl(thisModel.getLineContent(3), '');
+		Assert.equAl(thisModel.getLineContent(4), '');
+		Assert.equAl(thisModel.getLineContent(5), ' First Line');
 	});
 
 
 	// --------- insert text eventing
 
 	test('model insert empty text does not trigger eventing', () => {
-		thisModel.onDidChangeRawContent((e) => {
-			assert.ok(false, 'was not expecting event');
+		thisModel.onDidChAngeRAwContent((e) => {
+			Assert.ok(fAlse, 'wAs not expecting event');
 		});
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), '')]);
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 1), '')]);
 	});
 
 	test('model insert text without newline eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), 'foo ')]);
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 1), 'foo ')]);
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawLineChanged(1, 'foo My First Line')
+				new ModelRAwLineChAnged(1, 'foo My First Line')
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
 	test('model insert text with one newline eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 3), ' new line\nNo longer')]);
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 3), ' new line\nNo longer')]);
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawLineChanged(1, 'My new line'),
-				new ModelRawLinesInserted(2, 2, ['No longer First Line']),
+				new ModelRAwLineChAnged(1, 'My new line'),
+				new ModelRAwLinesInserted(2, 2, ['No longer First Line']),
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
@@ -145,201 +145,201 @@ suite('Editor Model - Model', () => {
 	// --------- delete text
 
 	test('model delete empty text', () => {
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 1))]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), 'My First Line');
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 1, 1))]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), 'My First Line');
 	});
 
 	test('model delete text from one line', () => {
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 2))]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), 'y First Line');
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 1, 2))]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), 'y First Line');
 	});
 
 	test('model delete text from one line 2', () => {
-		thisModel.applyEdits([EditOperation.insert(new Position(1, 1), 'a')]);
-		assert.equal(thisModel.getLineContent(1), 'aMy First Line');
+		thisModel.ApplyEdits([EditOperAtion.insert(new Position(1, 1), 'A')]);
+		Assert.equAl(thisModel.getLineContent(1), 'AMy First Line');
 
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 2, 1, 4))]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), 'a First Line');
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 2, 1, 4))]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), 'A First Line');
 	});
 
-	test('model delete all text from a line', () => {
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 14))]);
-		assert.equal(thisModel.getLineCount(), 5);
-		assert.equal(thisModel.getLineContent(1), '');
+	test('model delete All text from A line', () => {
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 1, 14))]);
+		Assert.equAl(thisModel.getLineCount(), 5);
+		Assert.equAl(thisModel.getLineContent(1), '');
 	});
 
 	test('model delete text from two lines', () => {
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 4, 2, 6))]);
-		assert.equal(thisModel.getLineCount(), 4);
-		assert.equal(thisModel.getLineContent(1), 'My Second Line');
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 4, 2, 6))]);
+		Assert.equAl(thisModel.getLineCount(), 4);
+		Assert.equAl(thisModel.getLineContent(1), 'My Second Line');
 	});
 
-	test('model delete text from many lines', () => {
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 4, 3, 5))]);
-		assert.equal(thisModel.getLineCount(), 3);
-		assert.equal(thisModel.getLineContent(1), 'My Third Line');
+	test('model delete text from mAny lines', () => {
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 4, 3, 5))]);
+		Assert.equAl(thisModel.getLineCount(), 3);
+		Assert.equAl(thisModel.getLineContent(1), 'My Third Line');
 	});
 
 	test('model delete everything', () => {
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 5, 2))]);
-		assert.equal(thisModel.getLineCount(), 1);
-		assert.equal(thisModel.getLineContent(1), '');
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 5, 2))]);
+		Assert.equAl(thisModel.getLineCount(), 1);
+		Assert.equAl(thisModel.getLineContent(1), '');
 	});
 
 	// --------- delete text eventing
 
 	test('model delete empty text does not trigger eventing', () => {
-		thisModel.onDidChangeRawContent((e) => {
-			assert.ok(false, 'was not expecting event');
+		thisModel.onDidChAngeRAwContent((e) => {
+			Assert.ok(fAlse, 'wAs not expecting event');
 		});
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 1))]);
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 1, 1))]);
 	});
 
 	test('model delete text from one line eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 2))]);
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 1, 2))]);
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawLineChanged(1, 'y First Line'),
+				new ModelRAwLineChAnged(1, 'y First Line'),
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
-	test('model delete all text from a line eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+	test('model delete All text from A line eventing', () => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 1, 1, 14))]);
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 1, 1, 14))]);
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawLineChanged(1, ''),
+				new ModelRAwLineChAnged(1, ''),
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
 	test('model delete text from two lines eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 4, 2, 6))]);
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 4, 2, 6))]);
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawLineChanged(1, 'My Second Line'),
-				new ModelRawLinesDeleted(2, 2),
+				new ModelRAwLineChAnged(1, 'My Second Line'),
+				new ModelRAwLinesDeleted(2, 2),
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
-	test('model delete text from many lines eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+	test('model delete text from mAny lines eventing', () => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.applyEdits([EditOperation.delete(new Range(1, 4, 3, 5))]);
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.ApplyEdits([EditOperAtion.delete(new RAnge(1, 4, 3, 5))]);
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawLineChanged(1, 'My Third Line'),
-				new ModelRawLinesDeleted(2, 3),
+				new ModelRAwLineChAnged(1, 'My Third Line'),
+				new ModelRAwLinesDeleted(2, 3),
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
-	// --------- getValueInRange
+	// --------- getVAlueInRAnge
 
-	test('getValueInRange', () => {
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 1, 1)), '');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 1, 2)), 'M');
-		assert.equal(thisModel.getValueInRange(new Range(1, 2, 1, 3)), 'y');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 1, 14)), 'My First Line');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 2, 1)), 'My First Line\n');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 2, 2)), 'My First Line\n\t');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 2, 3)), 'My First Line\n\t\t');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 2, 17)), 'My First Line\n\t\tMy Second Line');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 3, 1)), 'My First Line\n\t\tMy Second Line\n');
-		assert.equal(thisModel.getValueInRange(new Range(1, 1, 4, 1)), 'My First Line\n\t\tMy Second Line\n    Third Line\n');
+	test('getVAlueInRAnge', () => {
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 1, 1)), '');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 1, 2)), 'M');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 2, 1, 3)), 'y');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 1, 14)), 'My First Line');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 2, 1)), 'My First Line\n');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 2, 2)), 'My First Line\n\t');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 2, 3)), 'My First Line\n\t\t');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 2, 17)), 'My First Line\n\t\tMy Second Line');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 3, 1)), 'My First Line\n\t\tMy Second Line\n');
+		Assert.equAl(thisModel.getVAlueInRAnge(new RAnge(1, 1, 4, 1)), 'My First Line\n\t\tMy Second Line\n    Third Line\n');
 	});
 
-	// --------- getValueLengthInRange
+	// --------- getVAlueLengthInRAnge
 
-	test('getValueLengthInRange', () => {
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 1, 1)), ''.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 1, 2)), 'M'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 2, 1, 3)), 'y'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 1, 14)), 'My First Line'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 2, 1)), 'My First Line\n'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 2, 2)), 'My First Line\n\t'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 2, 3)), 'My First Line\n\t\t'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 2, 17)), 'My First Line\n\t\tMy Second Line'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 3, 1)), 'My First Line\n\t\tMy Second Line\n'.length);
-		assert.equal(thisModel.getValueLengthInRange(new Range(1, 1, 4, 1)), 'My First Line\n\t\tMy Second Line\n    Third Line\n'.length);
+	test('getVAlueLengthInRAnge', () => {
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 1, 1)), ''.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 1, 2)), 'M'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 2, 1, 3)), 'y'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 1, 14)), 'My First Line'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 2, 1)), 'My First Line\n'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 2, 2)), 'My First Line\n\t'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 2, 3)), 'My First Line\n\t\t'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 2, 17)), 'My First Line\n\t\tMy Second Line'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 3, 1)), 'My First Line\n\t\tMy Second Line\n'.length);
+		Assert.equAl(thisModel.getVAlueLengthInRAnge(new RAnge(1, 1, 4, 1)), 'My First Line\n\t\tMy Second Line\n    Third Line\n'.length);
 	});
 
-	// --------- setValue
-	test('setValue eventing', () => {
-		let e: ModelRawContentChangedEvent | null = null;
-		thisModel.onDidChangeRawContent((_e) => {
+	// --------- setVAlue
+	test('setVAlue eventing', () => {
+		let e: ModelRAwContentChAngedEvent | null = null;
+		thisModel.onDidChAngeRAwContent((_e) => {
 			if (e !== null) {
-				assert.fail('Unexpected assertion error');
+				Assert.fAil('Unexpected Assertion error');
 			}
 			e = _e;
 		});
-		thisModel.setValue('new value');
-		assert.deepEqual(e, new ModelRawContentChangedEvent(
+		thisModel.setVAlue('new vAlue');
+		Assert.deepEquAl(e, new ModelRAwContentChAngedEvent(
 			[
-				new ModelRawFlush()
+				new ModelRAwFlush()
 			],
 			2,
-			false,
-			false
+			fAlse,
+			fAlse
 		));
 	});
 
-	test('issue #46342: Maintain edit operation order in applyEdits', () => {
-		let res = thisModel.applyEdits([
-			{ range: new Range(2, 1, 2, 1), text: 'a' },
-			{ range: new Range(1, 1, 1, 1), text: 'b' },
+	test('issue #46342: MAintAin edit operAtion order in ApplyEdits', () => {
+		let res = thisModel.ApplyEdits([
+			{ rAnge: new RAnge(2, 1, 2, 1), text: 'A' },
+			{ rAnge: new RAnge(1, 1, 1, 1), text: 'b' },
 		], true);
 
-		assert.deepEqual(res[0].range, new Range(2, 1, 2, 2));
-		assert.deepEqual(res[1].range, new Range(1, 1, 1, 2));
+		Assert.deepEquAl(res[0].rAnge, new RAnge(2, 1, 2, 2));
+		Assert.deepEquAl(res[1].rAnge, new RAnge(1, 1, 1, 2));
 	});
 });
 
 
-// --------- Special Unicode LINE SEPARATOR character
-suite('Editor Model - Model Line Separators', () => {
+// --------- SpeciAl Unicode LINE SEPARATOR chArActer
+suite('Editor Model - Model Line SepArAtors', () => {
 
 	let thisModel: TextModel;
 
@@ -350,25 +350,25 @@ suite('Editor Model - Model Line Separators', () => {
 			LINE3 + '\u2028' +
 			LINE4 + '\r\n' +
 			LINE5;
-		thisModel = createTextModel(text);
+		thisModel = creAteTextModel(text);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		thisModel.dispose();
 	});
 
-	test('model getValue', () => {
-		assert.equal(thisModel.getValue(), 'My First Line\u2028\t\tMy Second Line\n    Third Line\u2028\n1');
+	test('model getVAlue', () => {
+		Assert.equAl(thisModel.getVAlue(), 'My First Line\u2028\t\tMy Second Line\n    Third Line\u2028\n1');
 	});
 
 	test('model lines', () => {
-		assert.equal(thisModel.getLineCount(), 3);
+		Assert.equAl(thisModel.getLineCount(), 3);
 	});
 
-	test('Bug 13333:Model should line break on lonely CR too', () => {
-		let model = createTextModel('Hello\rWorld!\r\nAnother line');
-		assert.equal(model.getLineCount(), 3);
-		assert.equal(model.getValue(), 'Hello\r\nWorld!\r\nAnother line');
+	test('Bug 13333:Model should line breAk on lonely CR too', () => {
+		let model = creAteTextModel('Hello\rWorld!\r\nAnother line');
+		Assert.equAl(model.getLineCount(), 3);
+		Assert.equAl(model.getVAlue(), 'Hello\r\nWorld!\r\nAnother line');
 		model.dispose();
 	});
 });
@@ -378,115 +378,115 @@ suite('Editor Model - Model Line Separators', () => {
 
 suite('Editor Model - Words', () => {
 
-	const OUTER_LANGUAGE_ID = new LanguageIdentifier('outerMode', 3);
-	const INNER_LANGUAGE_ID = new LanguageIdentifier('innerMode', 4);
+	const OUTER_LANGUAGE_ID = new LAnguAgeIdentifier('outerMode', 3);
+	const INNER_LANGUAGE_ID = new LAnguAgeIdentifier('innerMode', 4);
 
-	class OuterMode extends MockMode {
+	clAss OuterMode extends MockMode {
 		constructor() {
 			super(OUTER_LANGUAGE_ID);
-			this._register(LanguageConfigurationRegistry.register(this.getLanguageIdentifier(), {}));
+			this._register(LAnguAgeConfigurAtionRegistry.register(this.getLAnguAgeIdentifier(), {}));
 
-			this._register(TokenizationRegistry.register(this.getLanguageIdentifier().language, {
-				getInitialState: (): IState => NULL_STATE,
+			this._register(TokenizAtionRegistry.register(this.getLAnguAgeIdentifier().lAnguAge, {
+				getInitiAlStAte: (): IStAte => NULL_STATE,
 				tokenize: undefined!,
-				tokenize2: (line: string, state: IState): TokenizationResult2 => {
+				tokenize2: (line: string, stAte: IStAte): TokenizAtionResult2 => {
 					const tokensArr: number[] = [];
-					let prevLanguageId: LanguageIdentifier | undefined = undefined;
+					let prevLAnguAgeId: LAnguAgeIdentifier | undefined = undefined;
 					for (let i = 0; i < line.length; i++) {
-						const languageId = (line.charAt(i) === 'x' ? INNER_LANGUAGE_ID : OUTER_LANGUAGE_ID);
-						if (prevLanguageId !== languageId) {
+						const lAnguAgeId = (line.chArAt(i) === 'x' ? INNER_LANGUAGE_ID : OUTER_LANGUAGE_ID);
+						if (prevLAnguAgeId !== lAnguAgeId) {
 							tokensArr.push(i);
-							tokensArr.push((languageId.id << MetadataConsts.LANGUAGEID_OFFSET));
+							tokensArr.push((lAnguAgeId.id << MetAdAtAConsts.LANGUAGEID_OFFSET));
 						}
-						prevLanguageId = languageId;
+						prevLAnguAgeId = lAnguAgeId;
 					}
 
-					const tokens = new Uint32Array(tokensArr.length);
+					const tokens = new Uint32ArrAy(tokensArr.length);
 					for (let i = 0; i < tokens.length; i++) {
 						tokens[i] = tokensArr[i];
 					}
-					return new TokenizationResult2(tokens, state);
+					return new TokenizAtionResult2(tokens, stAte);
 				}
 			}));
 		}
 	}
 
-	class InnerMode extends MockMode {
+	clAss InnerMode extends MockMode {
 		constructor() {
 			super(INNER_LANGUAGE_ID);
-			this._register(LanguageConfigurationRegistry.register(this.getLanguageIdentifier(), {}));
+			this._register(LAnguAgeConfigurAtionRegistry.register(this.getLAnguAgeIdentifier(), {}));
 		}
 	}
 
-	let disposables: Disposable[] = [];
+	let disposAbles: DisposAble[] = [];
 
 	setup(() => {
-		disposables = [];
+		disposAbles = [];
 	});
 
-	teardown(() => {
-		dispose(disposables);
-		disposables = [];
+	teArdown(() => {
+		dispose(disposAbles);
+		disposAbles = [];
 	});
 
-	test('Get word at position', () => {
-		const text = ['This text has some  words. '];
-		const thisModel = createTextModel(text.join('\n'));
-		disposables.push(thisModel);
+	test('Get word At position', () => {
+		const text = ['This text hAs some  words. '];
+		const thisModel = creAteTextModel(text.join('\n'));
+		disposAbles.push(thisModel);
 
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 1)), { word: 'This', startColumn: 1, endColumn: 5 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 2)), { word: 'This', startColumn: 1, endColumn: 5 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 4)), { word: 'This', startColumn: 1, endColumn: 5 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 5)), { word: 'This', startColumn: 1, endColumn: 5 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 6)), { word: 'text', startColumn: 6, endColumn: 10 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 19)), { word: 'some', startColumn: 15, endColumn: 19 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 20)), null);
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 21)), { word: 'words', startColumn: 21, endColumn: 26 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 26)), { word: 'words', startColumn: 21, endColumn: 26 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 27)), null);
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 28)), null);
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 1)), { word: 'This', stArtColumn: 1, endColumn: 5 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 2)), { word: 'This', stArtColumn: 1, endColumn: 5 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 4)), { word: 'This', stArtColumn: 1, endColumn: 5 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 5)), { word: 'This', stArtColumn: 1, endColumn: 5 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 6)), { word: 'text', stArtColumn: 6, endColumn: 10 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 19)), { word: 'some', stArtColumn: 15, endColumn: 19 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 20)), null);
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 21)), { word: 'words', stArtColumn: 21, endColumn: 26 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 26)), { word: 'words', stArtColumn: 21, endColumn: 26 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 27)), null);
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 28)), null);
 	});
 
-	test('getWordAtPosition at embedded language boundaries', () => {
+	test('getWordAtPosition At embedded lAnguAge boundAries', () => {
 		const outerMode = new OuterMode();
 		const innerMode = new InnerMode();
-		disposables.push(outerMode, innerMode);
+		disposAbles.push(outerMode, innerMode);
 
-		const model = createTextModel('ab<xx>ab<x>', undefined, outerMode.getLanguageIdentifier());
-		disposables.push(model);
+		const model = creAteTextModel('Ab<xx>Ab<x>', undefined, outerMode.getLAnguAgeIdentifier());
+		disposAbles.push(model);
 
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 1)), { word: 'ab', startColumn: 1, endColumn: 3 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 2)), { word: 'ab', startColumn: 1, endColumn: 3 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 3)), { word: 'ab', startColumn: 1, endColumn: 3 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 4)), { word: 'xx', startColumn: 4, endColumn: 6 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 5)), { word: 'xx', startColumn: 4, endColumn: 6 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 6)), { word: 'xx', startColumn: 4, endColumn: 6 });
-		assert.deepEqual(model.getWordAtPosition(new Position(1, 7)), { word: 'ab', startColumn: 7, endColumn: 9 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 1)), { word: 'Ab', stArtColumn: 1, endColumn: 3 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 2)), { word: 'Ab', stArtColumn: 1, endColumn: 3 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 3)), { word: 'Ab', stArtColumn: 1, endColumn: 3 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 4)), { word: 'xx', stArtColumn: 4, endColumn: 6 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 5)), { word: 'xx', stArtColumn: 4, endColumn: 6 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 6)), { word: 'xx', stArtColumn: 4, endColumn: 6 });
+		Assert.deepEquAl(model.getWordAtPosition(new Position(1, 7)), { word: 'Ab', stArtColumn: 7, endColumn: 9 });
 	});
 
 	test('issue #61296: VS code freezes when editing CSS file with emoji', () => {
-		const MODE_ID = new LanguageIdentifier('testMode', 4);
+		const MODE_ID = new LAnguAgeIdentifier('testMode', 4);
 
-		const mode = new class extends MockMode {
+		const mode = new clAss extends MockMode {
 			constructor() {
 				super(MODE_ID);
-				this._register(LanguageConfigurationRegistry.register(this.getLanguageIdentifier(), {
-					wordPattern: /(#?-?\d*\.\d\w*%?)|(::?[\w-]*(?=[^,{;]*[,{]))|(([@#.!])?[\w-?]+%?|[@#!.])/g
+				this._register(LAnguAgeConfigurAtionRegistry.register(this.getLAnguAgeIdentifier(), {
+					wordPAttern: /(#?-?\d*\.\d\w*%?)|(::?[\w-]*(?=[^,{;]*[,{]))|(([@#.!])?[\w-?]+%?|[@#!.])/g
 				}));
 			}
 		};
-		disposables.push(mode);
+		disposAbles.push(mode);
 
-		const thisModel = createTextModel('.🐷-a-b', undefined, MODE_ID);
-		disposables.push(thisModel);
+		const thisModel = creAteTextModel('.🐷-A-b', undefined, MODE_ID);
+		disposAbles.push(thisModel);
 
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 1)), { word: '.', startColumn: 1, endColumn: 2 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 2)), { word: '.', startColumn: 1, endColumn: 2 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 3)), null);
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 4)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 5)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 6)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 7)), { word: '-a-b', startColumn: 4, endColumn: 8 });
-		assert.deepEqual(thisModel.getWordAtPosition(new Position(1, 8)), { word: '-a-b', startColumn: 4, endColumn: 8 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 1)), { word: '.', stArtColumn: 1, endColumn: 2 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 2)), { word: '.', stArtColumn: 1, endColumn: 2 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 3)), null);
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 4)), { word: '-A-b', stArtColumn: 4, endColumn: 8 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 5)), { word: '-A-b', stArtColumn: 4, endColumn: 8 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 6)), { word: '-A-b', stArtColumn: 4, endColumn: 8 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 7)), { word: '-A-b', stArtColumn: 4, endColumn: 8 });
+		Assert.deepEquAl(thisModel.getWordAtPosition(new Position(1, 8)), { word: '-A-b', stArtColumn: 4, endColumn: 8 });
 	});
 });

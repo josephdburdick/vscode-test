@@ -1,453 +1,453 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import * as os from 'os';
-import * as vscode from 'vscode';
-import { closeAllEditors, delay, disposeAll } from '../utils';
+import * As Assert from 'Assert';
+import 'mochA';
+import * As os from 'os';
+import * As vscode from 'vscode';
+import { closeAllEditors, delAy, disposeAll } from '../utils';
 
 const webviewId = 'myWebview';
 
-function workspaceFile(...segments: string[]) {
-	return vscode.Uri.joinPath(vscode.workspace.workspaceFolders![0].uri, ...segments);
+function workspAceFile(...segments: string[]) {
+	return vscode.Uri.joinPAth(vscode.workspAce.workspAceFolders![0].uri, ...segments);
 }
 
-const testDocument = workspaceFile('bower.json');
+const testDocument = workspAceFile('bower.json');
 
 suite.skip('vscode API - webview', () => {
-	const disposables: vscode.Disposable[] = [];
+	const disposAbles: vscode.DisposAble[] = [];
 
-	function _register<T extends vscode.Disposable>(disposable: T) {
-		disposables.push(disposable);
-		return disposable;
+	function _register<T extends vscode.DisposAble>(disposAble: T) {
+		disposAbles.push(disposAble);
+		return disposAble;
 	}
 
-	teardown(async () => {
-		await closeAllEditors();
+	teArdown(Async () => {
+		AwAit closeAllEditors();
 
-		disposeAll(disposables);
+		disposeAll(disposAbles);
 	});
 
-	test('webviews should be able to send and receive messages', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true }));
-		const firstResponse = getMesssage(webview);
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+	test('webviews should be Able to send And receive messAges', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true }));
+		const firstResponse = getMesssAge(webview);
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<script>
-				const vscode = acquireVsCodeApi();
-				window.addEventListener('message', (message) => {
-					vscode.postMessage({ value: message.data.value + 1 });
+				const vscode = AcquireVsCodeApi();
+				window.AddEventListener('messAge', (messAge) => {
+					vscode.postMessAge({ vAlue: messAge.dAtA.vAlue + 1 });
 				});
 			</script>`);
 
-		webview.webview.postMessage({ value: 1 });
-		assert.strictEqual((await firstResponse).value, 2);
+		webview.webview.postMessAge({ vAlue: 1 });
+		Assert.strictEquAl((AwAit firstResponse).vAlue, 2);
 	});
 
-	test('webviews should not have scripts enabled by default', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, {}));
-		const response = Promise.race<any>([
-			getMesssage(webview),
-			new Promise<{}>(resolve => setTimeout(() => resolve({ value: '🎉' }), 1000))
+	test('webviews should not hAve scripts enAbled by defAult', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, {}));
+		const response = Promise.rAce<Any>([
+			getMesssAge(webview),
+			new Promise<{}>(resolve => setTimeout(() => resolve({ vAlue: '🎉' }), 1000))
 		]);
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<script>
-				const vscode = acquireVsCodeApi();
-				vscode.postMessage({ value: '💉' });
+				const vscode = AcquireVsCodeApi();
+				vscode.postMessAge({ vAlue: '💉' });
 			</script>`);
 
-		assert.strictEqual((await response).value, '🎉');
+		Assert.strictEquAl((AwAit response).vAlue, '🎉');
 	});
 
-	test('webviews should update html', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true }));
+	test('webviews should updAte html', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true }));
 
 		{
-			const response = getMesssage(webview);
-			webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+			const response = getMesssAge(webview);
+			webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 				<script>
-					const vscode = acquireVsCodeApi();
-					vscode.postMessage({ value: 'first' });
+					const vscode = AcquireVsCodeApi();
+					vscode.postMessAge({ vAlue: 'first' });
 				</script>`);
 
-			assert.strictEqual((await response).value, 'first');
+			Assert.strictEquAl((AwAit response).vAlue, 'first');
 		}
 		{
-			const response = getMesssage(webview);
-			webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+			const response = getMesssAge(webview);
+			webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 				<script>
-					const vscode = acquireVsCodeApi();
-					vscode.postMessage({ value: 'second' });
+					const vscode = AcquireVsCodeApi();
+					vscode.postMessAge({ vAlue: 'second' });
 				</script>`);
 
-			assert.strictEqual((await response).value, 'second');
+			Assert.strictEquAl((AwAit response).vAlue, 'second');
 		}
 	});
 
-	test.skip('webviews should preserve vscode API state when they are hidden', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true }));
-		const ready = getMesssage(webview);
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+	test.skip('webviews should preserve vscode API stAte when they Are hidden', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true }));
+		const reAdy = getMesssAge(webview);
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<script>
-				const vscode = acquireVsCodeApi();
-				let value = (vscode.getState() || {}).value || 0;
+				const vscode = AcquireVsCodeApi();
+				let vAlue = (vscode.getStAte() || {}).vAlue || 0;
 
-				window.addEventListener('message', (message) => {
-					switch (message.data.type) {
-					case 'get':
-						vscode.postMessage({ value });
-						break;
+				window.AddEventListener('messAge', (messAge) => {
+					switch (messAge.dAtA.type) {
+					cAse 'get':
+						vscode.postMessAge({ vAlue });
+						breAk;
 
-					case 'add':
-						++value;;
-						vscode.setState({ value });
-						vscode.postMessage({ value });
-						break;
+					cAse 'Add':
+						++vAlue;;
+						vscode.setStAte({ vAlue });
+						vscode.postMessAge({ vAlue });
+						breAk;
 					}
 				});
 
-				vscode.postMessage({ type: 'ready' });
+				vscode.postMessAge({ type: 'reAdy' });
 			</script>`);
-		await ready;
+		AwAit reAdy;
 
-		const firstResponse = await sendRecieveMessage(webview, { type: 'add' });
-		assert.strictEqual(firstResponse.value, 1);
+		const firstResponse = AwAit sendRecieveMessAge(webview, { type: 'Add' });
+		Assert.strictEquAl(firstResponse.vAlue, 1);
 
-		// Swap away from the webview
-		const doc = await vscode.workspace.openTextDocument(testDocument);
-		await vscode.window.showTextDocument(doc);
+		// SwAp AwAy from the webview
+		const doc = AwAit vscode.workspAce.openTextDocument(testDocument);
+		AwAit vscode.window.showTextDocument(doc);
 
-		// And then back
-		const ready2 = getMesssage(webview);
-		webview.reveal(vscode.ViewColumn.One);
-		await ready2;
+		// And then bAck
+		const reAdy2 = getMesssAge(webview);
+		webview.reveAl(vscode.ViewColumn.One);
+		AwAit reAdy2;
 
-		// We should still have old state
-		const secondResponse = await sendRecieveMessage(webview, { type: 'get' });
-		assert.strictEqual(secondResponse.value, 1);
+		// We should still hAve old stAte
+		const secondResponse = AwAit sendRecieveMessAge(webview, { type: 'get' });
+		Assert.strictEquAl(secondResponse.vAlue, 1);
 	});
 
-	test('webviews should preserve their context when they are moved between view columns', async () => {
-		const doc = await vscode.workspace.openTextDocument(testDocument);
-		await vscode.window.showTextDocument(doc, vscode.ViewColumn.One);
+	test('webviews should preserve their context when they Are moved between view columns', Async () => {
+		const doc = AwAit vscode.workspAce.openTextDocument(testDocument);
+		AwAit vscode.window.showTextDocument(doc, vscode.ViewColumn.One);
 
-		// Open webview in same column
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true }));
-		const ready = getMesssage(webview);
-		webview.webview.html = statefulWebviewHtml;
-		await ready;
+		// Open webview in sAme column
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true }));
+		const reAdy = getMesssAge(webview);
+		webview.webview.html = stAtefulWebviewHtml;
+		AwAit reAdy;
 
-		const firstResponse = await sendRecieveMessage(webview, { type: 'add' });
-		assert.strictEqual(firstResponse.value, 1);
+		const firstResponse = AwAit sendRecieveMessAge(webview, { type: 'Add' });
+		Assert.strictEquAl(firstResponse.vAlue, 1);
 
 		// Now move webview to new view column
-		webview.reveal(vscode.ViewColumn.Two);
+		webview.reveAl(vscode.ViewColumn.Two);
 
-		// We should still have old state
-		const secondResponse = await sendRecieveMessage(webview, { type: 'get' });
-		assert.strictEqual(secondResponse.value, 1);
+		// We should still hAve old stAte
+		const secondResponse = AwAit sendRecieveMessAge(webview, { type: 'get' });
+		Assert.strictEquAl(secondResponse.vAlue, 1);
 	});
 
-	test('webviews with retainContextWhenHidden should preserve their context when they are hidden', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true, retainContextWhenHidden: true }));
-		const ready = getMesssage(webview);
+	test('webviews with retAinContextWhenHidden should preserve their context when they Are hidden', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true, retAinContextWhenHidden: true }));
+		const reAdy = getMesssAge(webview);
 
-		webview.webview.html = statefulWebviewHtml;
-		await ready;
+		webview.webview.html = stAtefulWebviewHtml;
+		AwAit reAdy;
 
-		const firstResponse = await sendRecieveMessage(webview, { type: 'add' });
-		assert.strictEqual((await firstResponse).value, 1);
+		const firstResponse = AwAit sendRecieveMessAge(webview, { type: 'Add' });
+		Assert.strictEquAl((AwAit firstResponse).vAlue, 1);
 
-		// Swap away from the webview
-		const doc = await vscode.workspace.openTextDocument(testDocument);
-		await vscode.window.showTextDocument(doc);
+		// SwAp AwAy from the webview
+		const doc = AwAit vscode.workspAce.openTextDocument(testDocument);
+		AwAit vscode.window.showTextDocument(doc);
 
-		// And then back
-		webview.reveal(vscode.ViewColumn.One);
+		// And then bAck
+		webview.reveAl(vscode.ViewColumn.One);
 
-		// We should still have old state
-		const secondResponse = await sendRecieveMessage(webview, { type: 'get' });
-		assert.strictEqual(secondResponse.value, 1);
+		// We should still hAve old stAte
+		const secondResponse = AwAit sendRecieveMessAge(webview, { type: 'get' });
+		Assert.strictEquAl(secondResponse.vAlue, 1);
 	});
 
-	test('webviews with retainContextWhenHidden should preserve their page position when hidden', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true, retainContextWhenHidden: true }));
-		const ready = getMesssage(webview);
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
-			${'<h1>Header</h1>'.repeat(200)}
+	test('webviews with retAinContextWhenHidden should preserve their pAge position when hidden', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true, retAinContextWhenHidden: true }));
+		const reAdy = getMesssAge(webview);
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
+			${'<h1>HeAder</h1>'.repeAt(200)}
 			<script>
-				const vscode = acquireVsCodeApi();
+				const vscode = AcquireVsCodeApi();
 
 				setTimeout(() => {
 					window.scroll(0, 100);
-					vscode.postMessage({ value: window.scrollY });
+					vscode.postMessAge({ vAlue: window.scrollY });
 				}, 500);
 
-				window.addEventListener('message', (message) => {
-					switch (message.data.type) {
-						case 'get':
-							vscode.postMessage({ value: window.scrollY });
-							break;
+				window.AddEventListener('messAge', (messAge) => {
+					switch (messAge.dAtA.type) {
+						cAse 'get':
+							vscode.postMessAge({ vAlue: window.scrollY });
+							breAk;
 					}
 				});
-				vscode.postMessage({ type: 'ready' });
+				vscode.postMessAge({ type: 'reAdy' });
 			</script>`);
-		await ready;
+		AwAit reAdy;
 
-		const firstResponse = getMesssage(webview);
+		const firstResponse = getMesssAge(webview);
 
-		assert.strictEqual(Math.round((await firstResponse).value), 100);
+		Assert.strictEquAl(MAth.round((AwAit firstResponse).vAlue), 100);
 
-		// Swap away from the webview
-		const doc = await vscode.workspace.openTextDocument(testDocument);
-		await vscode.window.showTextDocument(doc);
+		// SwAp AwAy from the webview
+		const doc = AwAit vscode.workspAce.openTextDocument(testDocument);
+		AwAit vscode.window.showTextDocument(doc);
 
-		// And then back
-		webview.reveal(vscode.ViewColumn.One);
+		// And then bAck
+		webview.reveAl(vscode.ViewColumn.One);
 
-		// We should still have old scroll pos
-		const secondResponse = await sendRecieveMessage(webview, { type: 'get' });
-		assert.strictEqual(Math.round(secondResponse.value), 100);
+		// We should still hAve old scroll pos
+		const secondResponse = AwAit sendRecieveMessAge(webview, { type: 'get' });
+		Assert.strictEquAl(MAth.round(secondResponse.vAlue), 100);
 	});
 
-	test('webviews with retainContextWhenHidden should be able to recive messages while hidden', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true, retainContextWhenHidden: true }));
-		const ready = getMesssage(webview);
+	test('webviews with retAinContextWhenHidden should be Able to recive messAges while hidden', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true, retAinContextWhenHidden: true }));
+		const reAdy = getMesssAge(webview);
 
-		webview.webview.html = statefulWebviewHtml;
-		await ready;
+		webview.webview.html = stAtefulWebviewHtml;
+		AwAit reAdy;
 
-		const firstResponse = await sendRecieveMessage(webview, { type: 'add' });
-		assert.strictEqual((await firstResponse).value, 1);
+		const firstResponse = AwAit sendRecieveMessAge(webview, { type: 'Add' });
+		Assert.strictEquAl((AwAit firstResponse).vAlue, 1);
 
-		// Swap away from the webview
-		const doc = await vscode.workspace.openTextDocument(testDocument);
-		await vscode.window.showTextDocument(doc);
+		// SwAp AwAy from the webview
+		const doc = AwAit vscode.workspAce.openTextDocument(testDocument);
+		AwAit vscode.window.showTextDocument(doc);
 
-		// Try posting a message to our hidden webview
-		const secondResponse = await sendRecieveMessage(webview, { type: 'add' });
-		assert.strictEqual((await secondResponse).value, 2);
+		// Try posting A messAge to our hidden webview
+		const secondResponse = AwAit sendRecieveMessAge(webview, { type: 'Add' });
+		Assert.strictEquAl((AwAit secondResponse).vAlue, 2);
 
-		// Now show webview again
-		webview.reveal(vscode.ViewColumn.One);
+		// Now show webview AgAin
+		webview.reveAl(vscode.ViewColumn.One);
 
-		// We should still have old state
-		const thirdResponse = await sendRecieveMessage(webview, { type: 'get' });
-		assert.strictEqual(thirdResponse.value, 2);
+		// We should still hAve old stAte
+		const thirdResponse = AwAit sendRecieveMessAge(webview, { type: 'get' });
+		Assert.strictEquAl(thirdResponse.vAlue, 2);
 	});
 
 
-	test.skip('webviews should only be able to load resources from workspace by default', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', {
+	test.skip('webviews should only be Able to loAd resources from workspAce by defAult', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', {
 			viewColumn: vscode.ViewColumn.One
 		}, {
-			enableScripts: true
+			enAbleScripts: true
 		}));
 
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<script>
-				const vscode = acquireVsCodeApi();
-				window.addEventListener('message', (message) => {
-					const img = document.createElement('img');
-					img.addEventListener('load', () => {
-						vscode.postMessage({ value: true });
+				const vscode = AcquireVsCodeApi();
+				window.AddEventListener('messAge', (messAge) => {
+					const img = document.creAteElement('img');
+					img.AddEventListener('loAd', () => {
+						vscode.postMessAge({ vAlue: true });
 					});
-					img.addEventListener('error', () => {
-						vscode.postMessage({ value: false });
+					img.AddEventListener('error', () => {
+						vscode.postMessAge({ vAlue: fAlse });
 					});
-					img.src = message.data.src;
-					document.body.appendChild(img);
+					img.src = messAge.dAtA.src;
+					document.body.AppendChild(img);
 				});
 
-				vscode.postMessage({ type: 'ready' });
+				vscode.postMessAge({ type: 'reAdy' });
 			</script>`);
 
-		const ready = getMesssage(webview);
-		await ready;
+		const reAdy = getMesssAge(webview);
+		AwAit reAdy;
 
 		{
-			const imagePath = webview.webview.asWebviewUri(workspaceFile('image.png'));
-			const response = await sendRecieveMessage(webview, { src: imagePath.toString() });
-			assert.strictEqual(response.value, true);
+			const imAgePAth = webview.webview.AsWebviewUri(workspAceFile('imAge.png'));
+			const response = AwAit sendRecieveMessAge(webview, { src: imAgePAth.toString() });
+			Assert.strictEquAl(response.vAlue, true);
 		}
 		// {
-		// 	// #102188. Resource filename containing special characters like '%', '#', '?'.
-		// 	const imagePath = webview.webview.asWebviewUri(workspaceFile('image%02.png'));
-		// 	const response = await sendRecieveMessage(webview, { src: imagePath.toString() });
-		// 	assert.strictEqual(response.value, true);
+		// 	// #102188. Resource filenAme contAining speciAl chArActers like '%', '#', '?'.
+		// 	const imAgePAth = webview.webview.AsWebviewUri(workspAceFile('imAge%02.png'));
+		// 	const response = AwAit sendRecieveMessAge(webview, { src: imAgePAth.toString() });
+		// 	Assert.strictEquAl(response.vAlue, true);
 		// }
 		// {
-		// 	// #102188. Resource filename containing special characters like '%', '#', '?'.
-		// 	const imagePath = webview.webview.asWebviewUri(workspaceFile('image%.png'));
-		// 	const response = await sendRecieveMessage(webview, { src: imagePath.toString() });
-		// 	assert.strictEqual(response.value, true);
+		// 	// #102188. Resource filenAme contAining speciAl chArActers like '%', '#', '?'.
+		// 	const imAgePAth = webview.webview.AsWebviewUri(workspAceFile('imAge%.png'));
+		// 	const response = AwAit sendRecieveMessAge(webview, { src: imAgePAth.toString() });
+		// 	Assert.strictEquAl(response.vAlue, true);
 		// }
 		{
-			const imagePath = webview.webview.asWebviewUri(workspaceFile('no-such-image.png'));
-			const response = await sendRecieveMessage(webview, { src: imagePath.toString() });
-			assert.strictEqual(response.value, false);
+			const imAgePAth = webview.webview.AsWebviewUri(workspAceFile('no-such-imAge.png'));
+			const response = AwAit sendRecieveMessAge(webview, { src: imAgePAth.toString() });
+			Assert.strictEquAl(response.vAlue, fAlse);
 		}
 		{
-			const imagePath = webview.webview.asWebviewUri(workspaceFile('..', '..', '..', 'resources', 'linux', 'code.png'));
-			const response = await sendRecieveMessage(webview, { src: imagePath.toString() });
-			assert.strictEqual(response.value, false);
+			const imAgePAth = webview.webview.AsWebviewUri(workspAceFile('..', '..', '..', 'resources', 'linux', 'code.png'));
+			const response = AwAit sendRecieveMessAge(webview, { src: imAgePAth.toString() });
+			Assert.strictEquAl(response.vAlue, fAlse);
 		}
 	});
 
-	test.skip('webviews should allow overriding allowed resource paths using localResourceRoots', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, {
-			enableScripts: true,
-			localResourceRoots: [workspaceFile('sub')]
+	test.skip('webviews should Allow overriding Allowed resource pAths using locAlResourceRoots', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, {
+			enAbleScripts: true,
+			locAlResourceRoots: [workspAceFile('sub')]
 		}));
 
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<script>
-				const vscode = acquireVsCodeApi();
-				window.addEventListener('message', (message) => {
-					const img = document.createElement('img');
-					img.addEventListener('load', () => { vscode.postMessage({ value: true }); });
-					img.addEventListener('error', () => { vscode.postMessage({ value: false }); });
-					img.src = message.data.src;
-					document.body.appendChild(img);
+				const vscode = AcquireVsCodeApi();
+				window.AddEventListener('messAge', (messAge) => {
+					const img = document.creAteElement('img');
+					img.AddEventListener('loAd', () => { vscode.postMessAge({ vAlue: true }); });
+					img.AddEventListener('error', () => { vscode.postMessAge({ vAlue: fAlse }); });
+					img.src = messAge.dAtA.src;
+					document.body.AppendChild(img);
 				});
 			</script>`);
 
 		{
-			const response = sendRecieveMessage(webview, { src: webview.webview.asWebviewUri(workspaceFile('sub', 'image.png')).toString() });
-			assert.strictEqual((await response).value, true);
+			const response = sendRecieveMessAge(webview, { src: webview.webview.AsWebviewUri(workspAceFile('sub', 'imAge.png')).toString() });
+			Assert.strictEquAl((AwAit response).vAlue, true);
 		}
 		{
-			const response = sendRecieveMessage(webview, { src: webview.webview.asWebviewUri(workspaceFile('image.png')).toString() });
-			assert.strictEqual((await response).value, false);
+			const response = sendRecieveMessAge(webview, { src: webview.webview.AsWebviewUri(workspAceFile('imAge.png')).toString() });
+			Assert.strictEquAl((AwAit response).vAlue, fAlse);
 		}
 	});
 
-	test.skip('webviews using hard-coded old style vscode-resource uri should work', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, {
-			enableScripts: true,
-			localResourceRoots: [workspaceFile('sub')]
+	test.skip('webviews using hArd-coded old style vscode-resource uri should work', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, {
+			enAbleScripts: true,
+			locAlResourceRoots: [workspAceFile('sub')]
 		}));
 
-		const imagePath = workspaceFile('sub', 'image.png').with({ scheme: 'vscode-resource' }).toString();
+		const imAgePAth = workspAceFile('sub', 'imAge.png').with({ scheme: 'vscode-resource' }).toString();
 
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
-			<img src="${imagePath}">
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
+			<img src="${imAgePAth}">
 			<script>
-				const vscode = acquireVsCodeApi();
-				const img = document.getElementsByTagName('img')[0];
-				img.addEventListener('load', () => { vscode.postMessage({ value: true }); });
-				img.addEventListener('error', () => { vscode.postMessage({ value: false }); });
+				const vscode = AcquireVsCodeApi();
+				const img = document.getElementsByTAgNAme('img')[0];
+				img.AddEventListener('loAd', () => { vscode.postMessAge({ vAlue: true }); });
+				img.AddEventListener('error', () => { vscode.postMessAge({ vAlue: fAlse }); });
 			</script>`);
 
-		const firstResponse = getMesssage(webview);
+		const firstResponse = getMesssAge(webview);
 
-		assert.strictEqual((await firstResponse).value, true);
+		Assert.strictEquAl((AwAit firstResponse).vAlue, true);
 	});
 
-	test('webviews should have real view column after they are created, #56097', async () => {
-		const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.Active }, { enableScripts: true }));
+	test('webviews should hAve reAl view column After they Are creAted, #56097', Async () => {
+		const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.Active }, { enAbleScripts: true }));
 
-		// Since we used a symbolic column, we don't know what view column the webview will actually show in at first
-		assert.strictEqual(webview.viewColumn, undefined);
+		// Since we used A symbolic column, we don't know whAt view column the webview will ActuAlly show in At first
+		Assert.strictEquAl(webview.viewColumn, undefined);
 
-		let changed = false;
-		const viewStateChanged = new Promise<vscode.WebviewPanelOnDidChangeViewStateEvent>((resolve) => {
-			webview.onDidChangeViewState(e => {
-				if (changed) {
-					throw new Error('Only expected a single view state change');
+		let chAnged = fAlse;
+		const viewStAteChAnged = new Promise<vscode.WebviewPAnelOnDidChAngeViewStAteEvent>((resolve) => {
+			webview.onDidChAngeViewStAte(e => {
+				if (chAnged) {
+					throw new Error('Only expected A single view stAte chAnge');
 				}
-				changed = true;
+				chAnged = true;
 				resolve(e);
-			}, undefined, disposables);
+			}, undefined, disposAbles);
 		});
 
-		assert.strictEqual((await viewStateChanged).webviewPanel.viewColumn, vscode.ViewColumn.One);
+		Assert.strictEquAl((AwAit viewStAteChAnged).webviewPAnel.viewColumn, vscode.ViewColumn.One);
 
-		const firstResponse = getMesssage(webview);
-		webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+		const firstResponse = getMesssAge(webview);
+		webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<script>
-				const vscode = acquireVsCodeApi();
-				vscode.postMessage({  });
+				const vscode = AcquireVsCodeApi();
+				vscode.postMessAge({  });
 			</script>`);
 
-		webview.webview.postMessage({ value: 1 });
-		await firstResponse;
-		assert.strictEqual(webview.viewColumn, vscode.ViewColumn.One);
+		webview.webview.postMessAge({ vAlue: 1 });
+		AwAit firstResponse;
+		Assert.strictEquAl(webview.viewColumn, vscode.ViewColumn.One);
 	});
 
-	if (os.platform() === 'darwin') {
-		test.skip('webview can copy text from webview', async () => {
-			const expectedText = `webview text from: ${Date.now()}!`;
+	if (os.plAtform() === 'dArwin') {
+		test.skip('webview cAn copy text from webview', Async () => {
+			const expectedText = `webview text from: ${DAte.now()}!`;
 
-			const webview = _register(vscode.window.createWebviewPanel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enableScripts: true, retainContextWhenHidden: true }));
-			const ready = getMesssage(webview);
+			const webview = _register(vscode.window.creAteWebviewPAnel(webviewId, 'title', { viewColumn: vscode.ViewColumn.One }, { enAbleScripts: true, retAinContextWhenHidden: true }));
+			const reAdy = getMesssAge(webview);
 
 
-			webview.webview.html = createHtmlDocumentWithBody(/*html*/`
+			webview.webview.html = creAteHtmlDocumentWithBody(/*html*/`
 			<b>${expectedText}</b>
 			<script>
-				const vscode = acquireVsCodeApi();
-				document.execCommand('selectAll');
-				vscode.postMessage({ type: 'ready' });
+				const vscode = AcquireVsCodeApi();
+				document.execCommAnd('selectAll');
+				vscode.postMessAge({ type: 'reAdy' });
 			</script>`);
-			await ready;
+			AwAit reAdy;
 
-			await vscode.commands.executeCommand('editor.action.clipboardCopyAction');
-			await delay(200); // Make sure copy has time to reach webview
-			assert.strictEqual(await vscode.env.clipboard.readText(), expectedText);
+			AwAit vscode.commAnds.executeCommAnd('editor.Action.clipboArdCopyAction');
+			AwAit delAy(200); // MAke sure copy hAs time to reAch webview
+			Assert.strictEquAl(AwAit vscode.env.clipboArd.reAdText(), expectedText);
 		});
 	}
 });
 
-function createHtmlDocumentWithBody(body: string): string {
+function creAteHtmlDocumentWithBody(body: string): string {
 	return /*html*/`<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<html lAng="en">
+<heAd>
+	<metA chArset="UTF-8">
+	<metA nAme="viewport" content="width=device-width, initiAl-scAle=1.0">
+	<metA http-equiv="X-UA-CompAtible" content="ie=edge">
 	<title>Document</title>
-</head>
+</heAd>
 <body>
 	${body}
 </body>
 </html>`;
 }
 
-const statefulWebviewHtml = createHtmlDocumentWithBody(/*html*/ `
+const stAtefulWebviewHtml = creAteHtmlDocumentWithBody(/*html*/ `
 	<script>
-		const vscode = acquireVsCodeApi();
-		let value = 0;
-		window.addEventListener('message', (message) => {
-			switch (message.data.type) {
-				case 'get':
-					vscode.postMessage({ value });
-					break;
+		const vscode = AcquireVsCodeApi();
+		let vAlue = 0;
+		window.AddEventListener('messAge', (messAge) => {
+			switch (messAge.dAtA.type) {
+				cAse 'get':
+					vscode.postMessAge({ vAlue });
+					breAk;
 
-				case 'add':
-					++value;;
-					vscode.setState({ value });
-					vscode.postMessage({ value });
-					break;
+				cAse 'Add':
+					++vAlue;;
+					vscode.setStAte({ vAlue });
+					vscode.postMessAge({ vAlue });
+					breAk;
 			}
 		});
-		vscode.postMessage({ type: 'ready' });
+		vscode.postMessAge({ type: 'reAdy' });
 	</script>`);
 
 
-function getMesssage<R = any>(webview: vscode.WebviewPanel): Promise<R> {
+function getMesssAge<R = Any>(webview: vscode.WebviewPAnel): Promise<R> {
 	return new Promise<R>(resolve => {
-		const sub = webview.webview.onDidReceiveMessage(message => {
+		const sub = webview.webview.onDidReceiveMessAge(messAge => {
 			sub.dispose();
-			resolve(message);
+			resolve(messAge);
 		});
 	});
 }
 
-function sendRecieveMessage<T = {}, R = any>(webview: vscode.WebviewPanel, message: T): Promise<R> {
-	const p = getMesssage<R>(webview);
-	webview.webview.postMessage(message);
+function sendRecieveMessAge<T = {}, R = Any>(webview: vscode.WebviewPAnel, messAge: T): Promise<R> {
+	const p = getMesssAge<R>(webview);
+	webview.webview.postMessAge(messAge);
 	return p;
 }

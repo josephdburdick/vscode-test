@@ -1,112 +1,112 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Emitter } from 'vs/base/common/event';
-import { toResource } from 'vs/base/test/common/utils';
+import * As Assert from 'Assert';
+import { Emitter } from 'vs/bAse/common/event';
+import { toResource } from 'vs/bAse/test/common/utils';
 import { TestFileService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
 import { getContext } from 'vs/workbench/contrib/files/browser/views/explorerView';
-import { listInvalidItemForeground } from 'vs/platform/theme/common/colorRegistry';
-import { CompressedNavigationController } from 'vs/workbench/contrib/files/browser/views/explorerViewer';
-import * as dom from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { provideDecorations } from 'vs/workbench/contrib/files/browser/views/explorerDecorationsProvider';
+import { listInvAlidItemForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { CompressedNAvigAtionController } from 'vs/workbench/contrib/files/browser/views/explorerViewer';
+import * As dom from 'vs/bAse/browser/dom';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { provideDecorAtions } from 'vs/workbench/contrib/files/browser/views/explorerDecorAtionsProvider';
 const $ = dom.$;
 
 const fileService = new TestFileService();
 
-function createStat(this: any, path: string, name: string, isFolder: boolean, hasChildren: boolean, size: number, mtime: number, isSymLink = false, isUnknown = false): ExplorerItem {
-	return new ExplorerItem(toResource.call(this, path), fileService, undefined, isFolder, isSymLink, name, mtime, isUnknown);
+function creAteStAt(this: Any, pAth: string, nAme: string, isFolder: booleAn, hAsChildren: booleAn, size: number, mtime: number, isSymLink = fAlse, isUnknown = fAlse): ExplorerItem {
+	return new ExplorerItem(toResource.cAll(this, pAth), fileService, undefined, isFolder, isSymLink, nAme, mtime, isUnknown);
 }
 
 suite('Files - ExplorerView', () => {
 
-	test('getContext', async function () {
-		const d = new Date().getTime();
-		const s1 = createStat.call(this, '/', '/', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s4 = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d);
-		const noNavigationController = { getCompressedNavigationController: (stat: ExplorerItem) => undefined };
+	test('getContext', Async function () {
+		const d = new DAte().getTime();
+		const s1 = creAteStAt.cAll(this, '/', '/', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s4 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', fAlse, fAlse, 8096, d);
+		const noNAvigAtionController = { getCompressedNAvigAtionController: (stAt: ExplorerItem) => undefined };
 
-		assert.deepEqual(getContext([s1], [s2, s3, s4], true, noNavigationController), [s1]);
-		assert.deepEqual(getContext([s1], [s1, s3, s4], true, noNavigationController), [s1, s3, s4]);
-		assert.deepEqual(getContext([s1], [s3, s1, s4], false, noNavigationController), [s1]);
-		assert.deepEqual(getContext([], [s3, s1, s4], false, noNavigationController), []);
-		assert.deepEqual(getContext([], [s3, s1, s4], true, noNavigationController), [s3, s1, s4]);
+		Assert.deepEquAl(getContext([s1], [s2, s3, s4], true, noNAvigAtionController), [s1]);
+		Assert.deepEquAl(getContext([s1], [s1, s3, s4], true, noNAvigAtionController), [s1, s3, s4]);
+		Assert.deepEquAl(getContext([s1], [s3, s1, s4], fAlse, noNAvigAtionController), [s1]);
+		Assert.deepEquAl(getContext([], [s3, s1, s4], fAlse, noNAvigAtionController), []);
+		Assert.deepEquAl(getContext([], [s3, s1, s4], true, noNAvigAtionController), [s3, s1, s4]);
 	});
 
-	test('decoration provider', async function () {
-		const d = new Date().getTime();
-		const s1 = createStat.call(this, '/path', 'path', true, false, 8096, d);
+	test('decorAtion provider', Async function () {
+		const d = new DAte().getTime();
+		const s1 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
 		s1.isError = true;
-		const s2 = createStat.call(this, '/path/to', 'to', true, false, 8096, d, true);
-		const s3 = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d);
-		assert.equal(provideDecorations(s3), undefined);
-		assert.deepEqual(provideDecorations(s2), {
+		const s2 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d, true);
+		const s3 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', fAlse, fAlse, 8096, d);
+		Assert.equAl(provideDecorAtions(s3), undefined);
+		Assert.deepEquAl(provideDecorAtions(s2), {
 			tooltip: 'Symbolic Link',
 			letter: '\u2937'
 		});
-		assert.deepEqual(provideDecorations(s1), {
-			tooltip: 'Unable to resolve workspace folder',
+		Assert.deepEquAl(provideDecorAtions(s1), {
+			tooltip: 'UnAble to resolve workspAce folder',
 			letter: '!',
-			color: listInvalidItemForeground
+			color: listInvAlidItemForeground
 		});
 
-		const unknown = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d, false, true);
-		assert.deepEqual(provideDecorations(unknown), {
+		const unknown = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', fAlse, fAlse, 8096, d, fAlse, true);
+		Assert.deepEquAl(provideDecorAtions(unknown), {
 			tooltip: 'Unknown File Type',
 			letter: '?'
 		});
 	});
 
-	test('compressed navigation controller', async function () {
-		const container = $('.file');
-		const label = $('.label');
-		const labelName1 = $('.label-name');
-		const labelName2 = $('.label-name');
-		const labelName3 = $('.label-name');
-		const d = new Date().getTime();
-		const s1 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d);
+	test('compressed nAvigAtion controller', Async function () {
+		const contAiner = $('.file');
+		const lAbel = $('.lAbel');
+		const lAbelNAme1 = $('.lAbel-nAme');
+		const lAbelNAme2 = $('.lAbel-nAme');
+		const lAbelNAme3 = $('.lAbel-nAme');
+		const d = new DAte().getTime();
+		const s1 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', fAlse, fAlse, 8096, d);
 
-		dom.append(container, label);
-		dom.append(label, labelName1);
-		dom.append(label, labelName2);
-		dom.append(label, labelName3);
+		dom.Append(contAiner, lAbel);
+		dom.Append(lAbel, lAbelNAme1);
+		dom.Append(lAbel, lAbelNAme2);
+		dom.Append(lAbel, lAbelNAme3);
 		const emitter = new Emitter<void>();
 
-		const navigationController = new CompressedNavigationController('id', [s1, s2, s3], {
-			container,
-			elementDisposable: Disposable.None,
-			label: <any>{
-				container: label,
+		const nAvigAtionController = new CompressedNAvigAtionController('id', [s1, s2, s3], {
+			contAiner,
+			elementDisposAble: DisposAble.None,
+			lAbel: <Any>{
+				contAiner: lAbel,
 				onDidRender: emitter.event
 			}
-		}, 1, false);
+		}, 1, fAlse);
 
-		assert.equal(navigationController.count, 3);
-		assert.equal(navigationController.index, 2);
-		assert.equal(navigationController.current, s3);
-		navigationController.next();
-		assert.equal(navigationController.current, s3);
-		navigationController.previous();
-		assert.equal(navigationController.current, s2);
-		navigationController.previous();
-		assert.equal(navigationController.current, s1);
-		navigationController.previous();
-		assert.equal(navigationController.current, s1);
-		navigationController.last();
-		assert.equal(navigationController.current, s3);
-		navigationController.first();
-		assert.equal(navigationController.current, s1);
-		navigationController.setIndex(1);
-		assert.equal(navigationController.current, s2);
-		navigationController.setIndex(44);
-		assert.equal(navigationController.current, s2);
+		Assert.equAl(nAvigAtionController.count, 3);
+		Assert.equAl(nAvigAtionController.index, 2);
+		Assert.equAl(nAvigAtionController.current, s3);
+		nAvigAtionController.next();
+		Assert.equAl(nAvigAtionController.current, s3);
+		nAvigAtionController.previous();
+		Assert.equAl(nAvigAtionController.current, s2);
+		nAvigAtionController.previous();
+		Assert.equAl(nAvigAtionController.current, s1);
+		nAvigAtionController.previous();
+		Assert.equAl(nAvigAtionController.current, s1);
+		nAvigAtionController.lAst();
+		Assert.equAl(nAvigAtionController.current, s3);
+		nAvigAtionController.first();
+		Assert.equAl(nAvigAtionController.current, s1);
+		nAvigAtionController.setIndex(1);
+		Assert.equAl(nAvigAtionController.current, s2);
+		nAvigAtionController.setIndex(44);
+		Assert.equAl(nAvigAtionController.current, s2);
 	});
 });

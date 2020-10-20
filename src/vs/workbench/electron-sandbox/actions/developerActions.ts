@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import * as nls from 'vs/nls';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { Action } from 'vs/bAse/common/Actions';
+import * As nls from 'vs/nls';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 
-export class ToggleDevToolsAction extends Action {
+export clAss ToggleDevToolsAction extends Action {
 
-	static readonly ID = 'workbench.action.toggleDevTools';
-	static readonly LABEL = nls.localize('toggleDevTools', "Toggle Developer Tools");
+	stAtic reAdonly ID = 'workbench.Action.toggleDevTools';
+	stAtic reAdonly LABEL = nls.locAlize('toggleDevTools', "Toggle Developer Tools");
 
 	constructor(
 		id: string,
-		label: string,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		lAbel: string,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
 	run(): Promise<void> {
-		return this.nativeHostService.toggleDevTools();
+		return this.nAtiveHostService.toggleDevTools();
 	}
 }
 
-export class ConfigureRuntimeArgumentsAction extends Action {
+export clAss ConfigureRuntimeArgumentsAction extends Action {
 
-	static readonly ID = 'workbench.action.configureRuntimeArguments';
-	static readonly LABEL = nls.localize('configureRuntimeArguments', "Configure Runtime Arguments");
+	stAtic reAdonly ID = 'workbench.Action.configureRuntimeArguments';
+	stAtic reAdonly LABEL = nls.locAlize('configureRuntimeArguments', "Configure Runtime Arguments");
 
 	constructor(
 		id: string,
-		label: string,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		@IEditorService private readonly editorService: IEditorService
+		lAbel: string,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService,
+		@IEditorService privAte reAdonly editorService: IEditorService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<void> {
-		await this.editorService.openEditor({ resource: this.environmentService.argvResource });
+	Async run(): Promise<void> {
+		AwAit this.editorService.openEditor({ resource: this.environmentService.ArgvResource });
 	}
 }

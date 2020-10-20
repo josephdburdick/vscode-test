@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { extname } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { extnAme } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
 import { ServicesAccessor } from 'vs/editor/browser/editorExtensions';
-import { Range } from 'vs/editor/common/core/range';
-import { ToggleCaseSensitiveKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding } from 'vs/editor/contrib/find/findModel';
-import { localize } from 'vs/nls';
-import { Action2, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { ContextKeyExpr, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { EditorDescriptor, Extensions as EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { ActiveEditorContext, Extensions as EditorInputExtensions, IEditorInputFactory, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ToggleCAseSensitiveKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding } from 'vs/editor/contrib/find/findModel';
+import { locAlize } from 'vs/nls';
+import { Action2, MenuId, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { ContextKeyExpr, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { EditorDescriptor, Extensions As EditorExtensions, IEditorRegistry } from 'vs/workbench/browser/editor';
+import { Extensions As WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { ActiveEditorContext, Extensions As EditorInputExtensions, IEditorInputFActory, IEditorInputFActoryRegistry } from 'vs/workbench/common/editor';
 import { IViewsService } from 'vs/workbench/common/views';
-import { getSearchView } from 'vs/workbench/contrib/search/browser/searchActions';
-import { searchRefreshIcon } from 'vs/workbench/contrib/search/browser/searchIcons';
-import * as SearchConstants from 'vs/workbench/contrib/search/common/constants';
-import * as SearchEditorConstants from 'vs/workbench/contrib/searchEditor/browser/constants';
-import { SearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditor';
-import { createEditorFromSearchResult, modifySearchEditorContextLinesCommand, openNewSearchEditor, selectAllSearchEditorMatchesCommand, toggleSearchEditorCaseSensitiveCommand, toggleSearchEditorContextLinesCommand, toggleSearchEditorRegexCommand, toggleSearchEditorWholeWordCommand } from 'vs/workbench/contrib/searchEditor/browser/searchEditorActions';
-import { getOrMakeSearchEditorInput, SearchConfiguration, SearchEditorInput, SEARCH_EDITOR_EXT } from 'vs/workbench/contrib/searchEditor/browser/searchEditorInput';
-import { parseSavedSearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditorSerialization';
+import { getSeArchView } from 'vs/workbench/contrib/seArch/browser/seArchActions';
+import { seArchRefreshIcon } from 'vs/workbench/contrib/seArch/browser/seArchIcons';
+import * As SeArchConstAnts from 'vs/workbench/contrib/seArch/common/constAnts';
+import * As SeArchEditorConstAnts from 'vs/workbench/contrib/seArchEditor/browser/constAnts';
+import { SeArchEditor } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditor';
+import { creAteEditorFromSeArchResult, modifySeArchEditorContextLinesCommAnd, openNewSeArchEditor, selectAllSeArchEditorMAtchesCommAnd, toggleSeArchEditorCAseSensitiveCommAnd, toggleSeArchEditorContextLinesCommAnd, toggleSeArchEditorRegexCommAnd, toggleSeArchEditorWholeWordCommAnd } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorActions';
+import { getOrMAkeSeArchEditorInput, SeArchConfigurAtion, SeArchEditorInput, SEARCH_EDITOR_EXT } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorInput';
+import { pArseSAvedSeArchEditor } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorSeriAlizAtion';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 
 
-const OpenInEditorCommandId = 'search.action.openInEditor';
-const OpenNewEditorToSideCommandId = 'search.action.openNewEditorToSide';
-const FocusQueryEditorWidgetCommandId = 'search.action.focusQueryEditorWidget';
+const OpenInEditorCommAndId = 'seArch.Action.openInEditor';
+const OpenNewEditorToSideCommAndId = 'seArch.Action.openNewEditorToSide';
+const FocusQueryEditorWidgetCommAndId = 'seArch.Action.focusQueryEditorWidget';
 
-const ToggleSearchEditorCaseSensitiveCommandId = 'toggleSearchEditorCaseSensitive';
-const ToggleSearchEditorWholeWordCommandId = 'toggleSearchEditorWholeWord';
-const ToggleSearchEditorRegexCommandId = 'toggleSearchEditorRegex';
-const ToggleSearchEditorContextLinesCommandId = 'toggleSearchEditorContextLines';
-const IncreaseSearchEditorContextLinesCommandId = 'increaseSearchEditorContextLines';
-const DecreaseSearchEditorContextLinesCommandId = 'decreaseSearchEditorContextLines';
+const ToggleSeArchEditorCAseSensitiveCommAndId = 'toggleSeArchEditorCAseSensitive';
+const ToggleSeArchEditorWholeWordCommAndId = 'toggleSeArchEditorWholeWord';
+const ToggleSeArchEditorRegexCommAndId = 'toggleSeArchEditorRegex';
+const ToggleSeArchEditorContextLinesCommAndId = 'toggleSeArchEditorContextLines';
+const IncreAseSeArchEditorContextLinesCommAndId = 'increAseSeArchEditorContextLines';
+const DecreAseSeArchEditorContextLinesCommAndId = 'decreAseSeArchEditorContextLines';
 
-const RerunSearchEditorSearchCommandId = 'rerunSearchEditorSearch';
-const CleanSearchEditorStateCommandId = 'cleanSearchEditorState';
-const SelectAllSearchEditorMatchesCommandId = 'selectAllSearchEditorMatches';
+const RerunSeArchEditorSeArchCommAndId = 'rerunSeArchEditorSeArch';
+const CleAnSeArchEditorStAteCommAndId = 'cleAnSeArchEditorStAte';
+const SelectAllSeArchEditorMAtchesCommAndId = 'selectAllSeArchEditorMAtches';
 
 
 
 //#region Editor Descriptior
-Registry.as<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
-	EditorDescriptor.create(
-		SearchEditor,
-		SearchEditor.ID,
-		localize('searchEditor', "Search Editor")
+Registry.As<IEditorRegistry>(EditorExtensions.Editors).registerEditor(
+	EditorDescriptor.creAte(
+		SeArchEditor,
+		SeArchEditor.ID,
+		locAlize('seArchEditor', "SeArch Editor")
 	),
 	[
-		new SyncDescriptor(SearchEditorInput)
+		new SyncDescriptor(SeArchEditorInput)
 	]
 );
 //#endregion
 
-//#region Startup Contribution
-class SearchEditorContribution implements IWorkbenchContribution {
+//#region StArtup Contribution
+clAss SeArchEditorContribution implements IWorkbenchContribution {
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@IInstantiationService protected readonly instantiationService: IInstantiationService,
-		@ITelemetryService protected readonly telemetryService: ITelemetryService,
-		@IContextKeyService protected readonly contextKeyService: IContextKeyService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IInstAntiAtionService protected reAdonly instAntiAtionService: IInstAntiAtionService,
+		@ITelemetryService protected reAdonly telemetryService: ITelemetryService,
+		@IContextKeyService protected reAdonly contextKeyService: IContextKeyService,
 	) {
 
 		this.editorService.overrideOpenEditor({
@@ -78,21 +78,21 @@ class SearchEditorContribution implements IWorkbenchContribution {
 				const resource = editor.resource;
 				if (!resource) { return undefined; }
 
-				if (extname(resource) !== SEARCH_EDITOR_EXT) {
+				if (extnAme(resource) !== SEARCH_EDITOR_EXT) {
 					return undefined;
 				}
 
-				if (editor instanceof SearchEditorInput && group.isOpened(editor)) {
+				if (editor instAnceof SeArchEditorInput && group.isOpened(editor)) {
 					return undefined;
 				}
 
-				this.telemetryService.publicLog2('searchEditor/openSavedSearchEditor');
+				this.telemetryService.publicLog2('seArchEditor/openSAvedSeArchEditor');
 
 				return {
-					override: (async () => {
-						const { config } = await instantiationService.invokeFunction(parseSavedSearchEditor, resource);
-						const input = instantiationService.invokeFunction(getOrMakeSearchEditorInput, { backingUri: resource, config });
-						return editorService.openEditor(input, { ...options, override: false }, group);
+					override: (Async () => {
+						const { config } = AwAit instAntiAtionService.invokeFunction(pArseSAvedSeArchEditor, resource);
+						const input = instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput, { bAckingUri: resource, config });
+						return editorService.openEditor(input, { ...options, override: fAlse }, group);
 					})()
 				};
 			}
@@ -100,53 +100,53 @@ class SearchEditorContribution implements IWorkbenchContribution {
 	}
 }
 
-const workbenchContributionsRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchContributionsRegistry.registerWorkbenchContribution(SearchEditorContribution, LifecyclePhase.Starting);
+const workbenchContributionsRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchContributionsRegistry.registerWorkbenchContribution(SeArchEditorContribution, LifecyclePhAse.StArting);
 //#endregion
 
-//#region Input Factory
-type SerializedSearchEditor = { modelUri: string | undefined, dirty: boolean, config: SearchConfiguration, name: string, matchRanges: Range[], backingUri: string };
+//#region Input FActory
+type SeriAlizedSeArchEditor = { modelUri: string | undefined, dirty: booleAn, config: SeArchConfigurAtion, nAme: string, mAtchRAnges: RAnge[], bAckingUri: string };
 
-class SearchEditorInputFactory implements IEditorInputFactory {
+clAss SeArchEditorInputFActory implements IEditorInputFActory {
 
-	canSerialize(input: SearchEditorInput) {
+	cAnSeriAlize(input: SeArchEditorInput) {
 		return !!input.config;
 	}
 
-	serialize(input: SearchEditorInput) {
+	seriAlize(input: SeArchEditorInput) {
 		if (input.isDisposed()) {
-			return JSON.stringify({ modelUri: undefined, dirty: false, config: input.config, name: input.getName(), matchRanges: [], backingUri: input.backingUri?.toString() } as SerializedSearchEditor);
+			return JSON.stringify({ modelUri: undefined, dirty: fAlse, config: input.config, nAme: input.getNAme(), mAtchRAnges: [], bAckingUri: input.bAckingUri?.toString() } As SeriAlizedSeArchEditor);
 		}
 
 		let modelUri = undefined;
-		if (input.modelUri.path || input.modelUri.fragment) {
+		if (input.modelUri.pAth || input.modelUri.frAgment) {
 			modelUri = input.modelUri.toString();
 		}
 		if (!modelUri) { return undefined; }
 
 		const config = input.config;
 		const dirty = input.isDirty();
-		const matchRanges = input.getMatchRanges();
-		const backingUri = input.backingUri;
+		const mAtchRAnges = input.getMAtchRAnges();
+		const bAckingUri = input.bAckingUri;
 
-		return JSON.stringify({ modelUri, dirty, config, name: input.getName(), matchRanges, backingUri: backingUri?.toString() } as SerializedSearchEditor);
+		return JSON.stringify({ modelUri, dirty, config, nAme: input.getNAme(), mAtchRAnges, bAckingUri: bAckingUri?.toString() } As SeriAlizedSeArchEditor);
 	}
 
-	deserialize(instantiationService: IInstantiationService, serializedEditorInput: string): SearchEditorInput | undefined {
-		const { modelUri, dirty, config, matchRanges, backingUri } = JSON.parse(serializedEditorInput) as SerializedSearchEditor;
+	deseriAlize(instAntiAtionService: IInstAntiAtionService, seriAlizedEditorInput: string): SeArchEditorInput | undefined {
+		const { modelUri, dirty, config, mAtchRAnges, bAckingUri } = JSON.pArse(seriAlizedEditorInput) As SeriAlizedSeArchEditor;
 		if (config && (config.query !== undefined)) {
 			if (modelUri) {
-				const input = instantiationService.invokeFunction(getOrMakeSearchEditorInput,
-					{ config, modelUri: URI.parse(modelUri), backingUri: backingUri ? URI.parse(backingUri) : undefined });
+				const input = instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput,
+					{ config, modelUri: URI.pArse(modelUri), bAckingUri: bAckingUri ? URI.pArse(bAckingUri) : undefined });
 				input.setDirty(dirty);
-				input.setMatchRanges(matchRanges);
+				input.setMAtchRAnges(mAtchRAnges);
 				return input;
 			} else {
-				if (backingUri) {
-					return instantiationService.invokeFunction(getOrMakeSearchEditorInput,
-						{ config, backingUri: URI.parse(backingUri) });
+				if (bAckingUri) {
+					return instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput,
+						{ config, bAckingUri: URI.pArse(bAckingUri) });
 				} else {
-					return instantiationService.invokeFunction(getOrMakeSearchEditorInput,
+					return instAntiAtionService.invokeFunction(getOrMAkeSeArchEditorInput,
 						{ config, text: '' });
 				}
 			}
@@ -155,252 +155,252 @@ class SearchEditorInputFactory implements IEditorInputFactory {
 	}
 }
 
-Registry.as<IEditorInputFactoryRegistry>(EditorInputExtensions.EditorInputFactories).registerEditorInputFactory(
-	SearchEditorInput.ID,
-	SearchEditorInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorInputExtensions.EditorInputFActories).registerEditorInputFActory(
+	SeArchEditorInput.ID,
+	SeArchEditorInputFActory);
 //#endregion
 
-//#region Commands
-KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-	id: ToggleSearchEditorCaseSensitiveCommandId,
+//#region CommAnds
+KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+	id: ToggleSeArchEditorCAseSensitiveCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor, SearchConstants.SearchInputBoxFocusedKey),
-	handler: toggleSearchEditorCaseSensitiveCommand
-}, ToggleCaseSensitiveKeybinding));
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor, SeArchConstAnts.SeArchInputBoxFocusedKey),
+	hAndler: toggleSeArchEditorCAseSensitiveCommAnd
+}, ToggleCAseSensitiveKeybinding));
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-	id: ToggleSearchEditorWholeWordCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+	id: ToggleSeArchEditorWholeWordCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor, SearchConstants.SearchInputBoxFocusedKey),
-	handler: toggleSearchEditorWholeWordCommand
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor, SeArchConstAnts.SeArchInputBoxFocusedKey),
+	hAndler: toggleSeArchEditorWholeWordCommAnd
 }, ToggleWholeWordKeybinding));
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-	id: ToggleSearchEditorRegexCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+	id: ToggleSeArchEditorRegexCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor, SearchConstants.SearchInputBoxFocusedKey),
-	handler: toggleSearchEditorRegexCommand
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor, SeArchConstAnts.SeArchInputBoxFocusedKey),
+	hAndler: toggleSeArchEditorRegexCommAnd
 }, ToggleRegexKeybinding));
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: ToggleSearchEditorContextLinesCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ToggleSeArchEditorContextLinesCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor),
-	handler: toggleSearchEditorContextLinesCommand,
-	primary: KeyMod.Alt | KeyCode.KEY_L,
-	mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_L }
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor),
+	hAndler: toggleSeArchEditorContextLinesCommAnd,
+	primAry: KeyMod.Alt | KeyCode.KEY_L,
+	mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_L }
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: IncreaseSearchEditorContextLinesCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: IncreAseSeArchEditorContextLinesCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor),
-	handler: (accessor: ServicesAccessor) => modifySearchEditorContextLinesCommand(accessor, true),
-	primary: KeyMod.Alt | KeyCode.US_EQUAL
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor),
+	hAndler: (Accessor: ServicesAccessor) => modifySeArchEditorContextLinesCommAnd(Accessor, true),
+	primAry: KeyMod.Alt | KeyCode.US_EQUAL
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: DecreaseSearchEditorContextLinesCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: DecreAseSeArchEditorContextLinesCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor),
-	handler: (accessor: ServicesAccessor) => modifySearchEditorContextLinesCommand(accessor, false),
-	primary: KeyMod.Alt | KeyCode.US_MINUS
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor),
+	hAndler: (Accessor: ServicesAccessor) => modifySeArchEditorContextLinesCommAnd(Accessor, fAlse),
+	primAry: KeyMod.Alt | KeyCode.US_MINUS
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: SelectAllSearchEditorMatchesCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: SelectAllSeArchEditorMAtchesCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(SearchEditorConstants.InSearchEditor),
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_L,
-	handler: selectAllSearchEditorMatchesCommand
+	when: ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor),
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_L,
+	hAndler: selectAllSeArchEditorMAtchesCommAnd
 });
 
-CommandsRegistry.registerCommand(
-	CleanSearchEditorStateCommandId,
-	(accessor: ServicesAccessor) => {
-		const activeEditorPane = accessor.get(IEditorService).activeEditorPane;
-		if (activeEditorPane instanceof SearchEditor) {
-			activeEditorPane.cleanState();
+CommAndsRegistry.registerCommAnd(
+	CleAnSeArchEditorStAteCommAndId,
+	(Accessor: ServicesAccessor) => {
+		const ActiveEditorPAne = Accessor.get(IEditorService).ActiveEditorPAne;
+		if (ActiveEditorPAne instAnceof SeArchEditor) {
+			ActiveEditorPAne.cleAnStAte();
 		}
 	});
 //#endregion
 
 //#region Actions
-const category = { value: localize('search', "Search Editor"), original: 'Search Editor' };
+const cAtegory = { vAlue: locAlize('seArch', "SeArch Editor"), originAl: 'SeArch Editor' };
 
-export type OpenSearchEditorArgs = Partial<SearchConfiguration & { triggerSearch: boolean, focusResults: boolean, location: 'reuse' | 'new' }>;
+export type OpenSeArchEditorArgs = PArtiAl<SeArchConfigurAtion & { triggerSeArch: booleAn, focusResults: booleAn, locAtion: 'reuse' | 'new' }>;
 const openArgDescription = {
-	description: 'Open a new search editor. Arguments passed can include variables like ${relativeFileDirname}.',
-	args: [{
-		name: 'Open new Search Editor args',
-		schema: {
+	description: 'Open A new seArch editor. Arguments pAssed cAn include vAriAbles like ${relAtiveFileDirnAme}.',
+	Args: [{
+		nAme: 'Open new SeArch Editor Args',
+		schemA: {
 			properties: {
 				query: { type: 'string' },
 				includes: { type: 'string' },
 				excludes: { type: 'string' },
 				contextLines: { type: 'number' },
-				wholeWord: { type: 'boolean' },
-				caseSensitive: { type: 'boolean' },
-				regexp: { type: 'boolean' },
-				useIgnores: { type: 'boolean' },
-				showIncludesExcludes: { type: 'boolean' },
-				triggerSearch: { type: 'boolean' },
-				focusResults: { type: 'boolean' },
+				wholeWord: { type: 'booleAn' },
+				cAseSensitive: { type: 'booleAn' },
+				regexp: { type: 'booleAn' },
+				useIgnores: { type: 'booleAn' },
+				showIncludesExcludes: { type: 'booleAn' },
+				triggerSeArch: { type: 'booleAn' },
+				focusResults: { type: 'booleAn' },
 			}
 		}
 	}]
-} as const;
+} As const;
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: 'search.searchEditor.action.deleteFileResults',
-			title: { value: localize('searchEditor.deleteResultBlock', "Delete File Results"), original: 'Delete File Results' },
+			id: 'seArch.seArchEditor.Action.deleteFileResults',
+			title: { vAlue: locAlize('seArchEditor.deleteResultBlock', "Delete File Results"), originAl: 'Delete File Results' },
 			keybinding: {
 				weight: KeybindingWeight.EditorContrib,
-				when: SearchEditorConstants.InSearchEditor,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Backspace,
+				when: SeArchEditorConstAnts.InSeArchEditor,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.BAckspAce,
 			},
-			precondition: SearchEditorConstants.InSearchEditor,
-			category,
+			precondition: SeArchEditorConstAnts.InSeArchEditor,
+			cAtegory,
 			f1: true,
 		});
 	}
 
-	async run(accessor: ServicesAccessor) {
-		const contextService = accessor.get(IContextKeyService).getContext(document.activeElement);
-		if (contextService.getValue(SearchEditorConstants.InSearchEditor.serialize())) {
-			(accessor.get(IEditorService).activeEditorPane as SearchEditor).deleteResultBlock();
+	Async run(Accessor: ServicesAccessor) {
+		const contextService = Accessor.get(IContextKeyService).getContext(document.ActiveElement);
+		if (contextService.getVAlue(SeArchEditorConstAnts.InSeArchEditor.seriAlize())) {
+			(Accessor.get(IEditorService).ActiveEditorPAne As SeArchEditor).deleteResultBlock();
 		}
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: SearchEditorConstants.OpenNewEditorCommandId,
-			title: { value: localize('search.openNewSearchEditor', "New Search Editor"), original: 'New Search Editor' },
-			category,
+			id: SeArchEditorConstAnts.OpenNewEditorCommAndId,
+			title: { vAlue: locAlize('seArch.openNewSeArchEditor', "New SeArch Editor"), originAl: 'New SeArch Editor' },
+			cAtegory,
 			f1: true,
 			description: openArgDescription
 		});
 	}
-	async run(accessor: ServicesAccessor, args: OpenSearchEditorArgs) {
-		await accessor.get(IInstantiationService).invokeFunction(openNewSearchEditor, { ...args, location: 'new' });
+	Async run(Accessor: ServicesAccessor, Args: OpenSeArchEditorArgs) {
+		AwAit Accessor.get(IInstAntiAtionService).invokeFunction(openNewSeArchEditor, { ...Args, locAtion: 'new' });
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: SearchEditorConstants.OpenEditorCommandId,
-			title: { value: localize('search.openSearchEditor', "Open Search Editor"), original: 'Open Search Editor' },
-			category,
+			id: SeArchEditorConstAnts.OpenEditorCommAndId,
+			title: { vAlue: locAlize('seArch.openSeArchEditor', "Open SeArch Editor"), originAl: 'Open SeArch Editor' },
+			cAtegory,
 			f1: true,
 			description: openArgDescription
 		});
 	}
-	async run(accessor: ServicesAccessor, args: OpenSearchEditorArgs) {
-		await accessor.get(IInstantiationService).invokeFunction(openNewSearchEditor, { ...args, location: 'reuse' });
+	Async run(Accessor: ServicesAccessor, Args: OpenSeArchEditorArgs) {
+		AwAit Accessor.get(IInstAntiAtionService).invokeFunction(openNewSeArchEditor, { ...Args, locAtion: 'reuse' });
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: OpenNewEditorToSideCommandId,
-			title: { value: localize('search.openNewEditorToSide', "Open new Search Editor to the Side"), original: 'Open new Search Editor to the Side' },
-			category,
+			id: OpenNewEditorToSideCommAndId,
+			title: { vAlue: locAlize('seArch.openNewEditorToSide', "Open new SeArch Editor to the Side"), originAl: 'Open new SeArch Editor to the Side' },
+			cAtegory,
 			f1: true,
 			description: openArgDescription
 		});
 	}
-	async run(accessor: ServicesAccessor, args: OpenSearchEditorArgs) {
-		await accessor.get(IInstantiationService).invokeFunction(openNewSearchEditor, args, true);
+	Async run(Accessor: ServicesAccessor, Args: OpenSeArchEditorArgs) {
+		AwAit Accessor.get(IInstAntiAtionService).invokeFunction(openNewSeArchEditor, Args, true);
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: OpenInEditorCommandId,
-			title: { value: localize('search.openResultsInEditor', "Open Results in Editor"), original: 'Open Results in Editor' },
-			category,
+			id: OpenInEditorCommAndId,
+			title: { vAlue: locAlize('seArch.openResultsInEditor', "Open Results in Editor"), originAl: 'Open Results in Editor' },
+			cAtegory,
 			f1: true,
 			keybinding: {
-				primary: KeyMod.Alt | KeyCode.Enter,
-				when: ContextKeyExpr.and(SearchConstants.HasSearchResults, SearchConstants.SearchViewFocusedKey),
+				primAry: KeyMod.Alt | KeyCode.Enter,
+				when: ContextKeyExpr.And(SeArchConstAnts.HAsSeArchResults, SeArchConstAnts.SeArchViewFocusedKey),
 				weight: KeybindingWeight.WorkbenchContrib,
-				mac: {
-					primary: KeyMod.CtrlCmd | KeyCode.Enter
+				mAc: {
+					primAry: KeyMod.CtrlCmd | KeyCode.Enter
 				}
 			},
 		});
 	}
-	async run(accessor: ServicesAccessor) {
-		const viewsService = accessor.get(IViewsService);
-		const instantiationService = accessor.get(IInstantiationService);
-		const searchView = getSearchView(viewsService);
-		if (searchView) {
-			await instantiationService.invokeFunction(createEditorFromSearchResult, searchView.searchResult, searchView.searchIncludePattern.getValue(), searchView.searchExcludePattern.getValue());
+	Async run(Accessor: ServicesAccessor) {
+		const viewsService = Accessor.get(IViewsService);
+		const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+		const seArchView = getSeArchView(viewsService);
+		if (seArchView) {
+			AwAit instAntiAtionService.invokeFunction(creAteEditorFromSeArchResult, seArchView.seArchResult, seArchView.seArchIncludePAttern.getVAlue(), seArchView.seArchExcludePAttern.getVAlue());
 		}
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: RerunSearchEditorSearchCommandId,
-			title: { value: localize('search.rerunSearchInEditor', "Search Again"), original: 'Search Again' },
-			category,
+			id: RerunSeArchEditorSeArchCommAndId,
+			title: { vAlue: locAlize('seArch.rerunSeArchInEditor', "SeArch AgAin"), originAl: 'SeArch AgAin' },
+			cAtegory,
 			keybinding: {
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
-				when: SearchEditorConstants.InSearchEditor,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
+				when: SeArchEditorConstAnts.InSeArchEditor,
 				weight: KeybindingWeight.EditorContrib
 			},
-			icon: searchRefreshIcon,
+			icon: seArchRefreshIcon,
 			menu: [{
 				id: MenuId.EditorTitle,
-				group: 'navigation',
-				when: ActiveEditorContext.isEqualTo(SearchEditorConstants.SearchEditorID)
+				group: 'nAvigAtion',
+				when: ActiveEditorContext.isEquAlTo(SeArchEditorConstAnts.SeArchEditorID)
 			},
 			{
-				id: MenuId.CommandPalette,
-				when: ActiveEditorContext.isEqualTo(SearchEditorConstants.SearchEditorID)
+				id: MenuId.CommAndPAlette,
+				when: ActiveEditorContext.isEquAlTo(SeArchEditorConstAnts.SeArchEditorID)
 			}]
 		});
 	}
-	async run(accessor: ServicesAccessor) {
-		const editorService = accessor.get(IEditorService);
-		const input = editorService.activeEditor;
-		if (input instanceof SearchEditorInput) {
-			(editorService.activeEditorPane as SearchEditor).triggerSearch({ resetCursor: false });
+	Async run(Accessor: ServicesAccessor) {
+		const editorService = Accessor.get(IEditorService);
+		const input = editorService.ActiveEditor;
+		if (input instAnceof SeArchEditorInput) {
+			(editorService.ActiveEditorPAne As SeArchEditor).triggerSeArch({ resetCursor: fAlse });
 		}
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
-			id: FocusQueryEditorWidgetCommandId,
-			title: { value: localize('search.action.focusQueryEditorWidget', "Focus Search Editor Input"), original: 'Focus Search Editor Input' },
-			category,
+			id: FocusQueryEditorWidgetCommAndId,
+			title: { vAlue: locAlize('seArch.Action.focusQueryEditorWidget', "Focus SeArch Editor Input"), originAl: 'Focus SeArch Editor Input' },
+			cAtegory,
 			menu: {
-				id: MenuId.CommandPalette,
-				when: ActiveEditorContext.isEqualTo(SearchEditorConstants.SearchEditorID)
+				id: MenuId.CommAndPAlette,
+				when: ActiveEditorContext.isEquAlTo(SeArchEditorConstAnts.SeArchEditorID)
 			},
 			keybinding: {
-				primary: KeyCode.Escape,
-				when: SearchEditorConstants.InSearchEditor,
+				primAry: KeyCode.EscApe,
+				when: SeArchEditorConstAnts.InSeArchEditor,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
-	async run(accessor: ServicesAccessor) {
-		const editorService = accessor.get(IEditorService);
-		const input = editorService.activeEditor;
-		if (input instanceof SearchEditorInput) {
-			(editorService.activeEditorPane as SearchEditor).focusSearchInput();
+	Async run(Accessor: ServicesAccessor) {
+		const editorService = Accessor.get(IEditorService);
+		const input = editorService.ActiveEditor;
+		if (input instAnceof SeArchEditorInput) {
+			(editorService.ActiveEditorPAne As SeArchEditor).focusSeArchInput();
 		}
 	}
 });

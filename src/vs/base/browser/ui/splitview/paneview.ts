@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./paneview';
-import { IDisposable, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import { domEvent } from 'vs/base/browser/event';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { $, append, trackFocus, EventHelper, clearNode } from 'vs/base/browser/dom';
-import { Color, RGBA } from 'vs/base/common/color';
+import 'vs/css!./pAneview';
+import { IDisposAble, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { domEvent } from 'vs/bAse/browser/event';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { $, Append, trAckFocus, EventHelper, cleArNode } from 'vs/bAse/browser/dom';
+import { Color, RGBA } from 'vs/bAse/common/color';
 import { SplitView, IView } from './splitview';
-import { isFirefox } from 'vs/base/browser/browser';
-import { DataTransfers } from 'vs/base/browser/dnd';
-import { Orientation } from 'vs/base/browser/ui/sash/sash';
-import { localize } from 'vs/nls';
+import { isFirefox } from 'vs/bAse/browser/browser';
+import { DAtATrAnsfers } from 'vs/bAse/browser/dnd';
+import { OrientAtion } from 'vs/bAse/browser/ui/sAsh/sAsh';
+import { locAlize } from 'vs/nls';
 
-export interface IPaneOptions {
+export interfAce IPAneOptions {
 	minimumBodySize?: number;
-	maximumBodySize?: number;
-	expanded?: boolean;
-	orientation?: Orientation;
+	mAximumBodySize?: number;
+	expAnded?: booleAn;
+	orientAtion?: OrientAtion;
 	title: string;
 	titleDescription?: string;
 }
 
-export interface IPaneStyles {
-	dropBackground?: Color;
-	headerForeground?: Color;
-	headerBackground?: Color;
-	headerBorder?: Color;
+export interfAce IPAneStyles {
+	dropBAckground?: Color;
+	heAderForeground?: Color;
+	heAderBAckground?: Color;
+	heAderBorder?: Color;
 	leftBorder?: Color;
 }
 
 /**
- * A Pane is a structured SplitView view.
+ * A PAne is A structured SplitView view.
  *
- * WARNING: You must call `render()` after you contruct it.
- * It can't be done automatically at the end of the ctor
- * because of the order of property initialization in TypeScript.
- * Subclasses wouldn't be able to set own properties
- * before the `render()` call, thus forbiding their use.
+ * WARNING: You must cAll `render()` After you contruct it.
+ * It cAn't be done AutomAticAlly At the end of the ctor
+ * becAuse of the order of property initiAlizAtion in TypeScript.
+ * SubclAsses wouldn't be Able to set own properties
+ * before the `render()` cAll, thus forbiding their use.
  */
-export abstract class Pane extends Disposable implements IView {
+export AbstrAct clAss PAne extends DisposAble implements IView {
 
-	private static readonly HEADER_SIZE = 22;
+	privAte stAtic reAdonly HEADER_SIZE = 22;
 
-	readonly element: HTMLElement;
-	private header!: HTMLElement;
-	private body!: HTMLElement;
+	reAdonly element: HTMLElement;
+	privAte heAder!: HTMLElement;
+	privAte body!: HTMLElement;
 
-	protected _expanded: boolean;
-	protected _orientation: Orientation;
+	protected _expAnded: booleAn;
+	protected _orientAtion: OrientAtion;
 
-	private expandedSize: number | undefined = undefined;
-	private _headerVisible = true;
-	private _minimumBodySize: number;
-	private _maximumBodySize: number;
-	private ariaHeaderLabel: string;
-	private styles: IPaneStyles = {};
-	private animationTimer: number | undefined = undefined;
+	privAte expAndedSize: number | undefined = undefined;
+	privAte _heAderVisible = true;
+	privAte _minimumBodySize: number;
+	privAte _mAximumBodySize: number;
+	privAte AriAHeAderLAbel: string;
+	privAte styles: IPAneStyles = {};
+	privAte AnimAtionTimer: number | undefined = undefined;
 
-	private readonly _onDidChange = this._register(new Emitter<number | undefined>());
-	readonly onDidChange: Event<number | undefined> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = this._register(new Emitter<number | undefined>());
+	reAdonly onDidChAnge: Event<number | undefined> = this._onDidChAnge.event;
 
-	private readonly _onDidChangeExpansionState = this._register(new Emitter<boolean>());
-	readonly onDidChangeExpansionState: Event<boolean> = this._onDidChangeExpansionState.event;
+	privAte reAdonly _onDidChAngeExpAnsionStAte = this._register(new Emitter<booleAn>());
+	reAdonly onDidChAngeExpAnsionStAte: Event<booleAn> = this._onDidChAngeExpAnsionStAte.event;
 
-	get draggableElement(): HTMLElement {
-		return this.header;
+	get drAggAbleElement(): HTMLElement {
+		return this.heAder;
 	}
 
-	get dropTargetElement(): HTMLElement {
+	get dropTArgetElement(): HTMLElement {
 		return this.element;
 	}
 
-	private _dropBackground: Color | undefined;
-	get dropBackground(): Color | undefined {
-		return this._dropBackground;
+	privAte _dropBAckground: Color | undefined;
+	get dropBAckground(): Color | undefined {
+		return this._dropBAckground;
 	}
 
 	get minimumBodySize(): number {
@@ -87,419 +87,419 @@ export abstract class Pane extends Disposable implements IView {
 
 	set minimumBodySize(size: number) {
 		this._minimumBodySize = size;
-		this._onDidChange.fire(undefined);
+		this._onDidChAnge.fire(undefined);
 	}
 
-	get maximumBodySize(): number {
-		return this._maximumBodySize;
+	get mAximumBodySize(): number {
+		return this._mAximumBodySize;
 	}
 
-	set maximumBodySize(size: number) {
-		this._maximumBodySize = size;
-		this._onDidChange.fire(undefined);
+	set mAximumBodySize(size: number) {
+		this._mAximumBodySize = size;
+		this._onDidChAnge.fire(undefined);
 	}
 
-	private get headerSize(): number {
-		return this.headerVisible ? Pane.HEADER_SIZE : 0;
+	privAte get heAderSize(): number {
+		return this.heAderVisible ? PAne.HEADER_SIZE : 0;
 	}
 
 	get minimumSize(): number {
-		const headerSize = this.headerSize;
-		const expanded = !this.headerVisible || this.isExpanded();
-		const minimumBodySize = expanded ? this.minimumBodySize : 0;
+		const heAderSize = this.heAderSize;
+		const expAnded = !this.heAderVisible || this.isExpAnded();
+		const minimumBodySize = expAnded ? this.minimumBodySize : 0;
 
-		return headerSize + minimumBodySize;
+		return heAderSize + minimumBodySize;
 	}
 
-	get maximumSize(): number {
-		const headerSize = this.headerSize;
-		const expanded = !this.headerVisible || this.isExpanded();
-		const maximumBodySize = expanded ? this.maximumBodySize : 0;
+	get mAximumSize(): number {
+		const heAderSize = this.heAderSize;
+		const expAnded = !this.heAderVisible || this.isExpAnded();
+		const mAximumBodySize = expAnded ? this.mAximumBodySize : 0;
 
-		return headerSize + maximumBodySize;
+		return heAderSize + mAximumBodySize;
 	}
 
-	orthogonalSize: number = 0;
+	orthogonAlSize: number = 0;
 
-	constructor(options: IPaneOptions) {
+	constructor(options: IPAneOptions) {
 		super();
-		this._expanded = typeof options.expanded === 'undefined' ? true : !!options.expanded;
-		this._orientation = typeof options.orientation === 'undefined' ? Orientation.VERTICAL : options.orientation;
-		this.ariaHeaderLabel = localize('viewSection', "{0} Section", options.title);
-		this._minimumBodySize = typeof options.minimumBodySize === 'number' ? options.minimumBodySize : this._orientation === Orientation.HORIZONTAL ? 200 : 120;
-		this._maximumBodySize = typeof options.maximumBodySize === 'number' ? options.maximumBodySize : Number.POSITIVE_INFINITY;
+		this._expAnded = typeof options.expAnded === 'undefined' ? true : !!options.expAnded;
+		this._orientAtion = typeof options.orientAtion === 'undefined' ? OrientAtion.VERTICAL : options.orientAtion;
+		this.AriAHeAderLAbel = locAlize('viewSection', "{0} Section", options.title);
+		this._minimumBodySize = typeof options.minimumBodySize === 'number' ? options.minimumBodySize : this._orientAtion === OrientAtion.HORIZONTAL ? 200 : 120;
+		this._mAximumBodySize = typeof options.mAximumBodySize === 'number' ? options.mAximumBodySize : Number.POSITIVE_INFINITY;
 
-		this.element = $('.pane');
+		this.element = $('.pAne');
 	}
 
-	isExpanded(): boolean {
-		return this._expanded;
+	isExpAnded(): booleAn {
+		return this._expAnded;
 	}
 
-	setExpanded(expanded: boolean): boolean {
-		if (this._expanded === !!expanded) {
-			return false;
+	setExpAnded(expAnded: booleAn): booleAn {
+		if (this._expAnded === !!expAnded) {
+			return fAlse;
 		}
 
 		if (this.element) {
-			this.element.classList.toggle('expanded', expanded);
+			this.element.clAssList.toggle('expAnded', expAnded);
 		}
 
-		this._expanded = !!expanded;
-		this.updateHeader();
+		this._expAnded = !!expAnded;
+		this.updAteHeAder();
 
-		if (expanded) {
-			if (typeof this.animationTimer === 'number') {
-				clearTimeout(this.animationTimer);
+		if (expAnded) {
+			if (typeof this.AnimAtionTimer === 'number') {
+				cleArTimeout(this.AnimAtionTimer);
 			}
-			append(this.element, this.body);
+			Append(this.element, this.body);
 		} else {
-			this.animationTimer = window.setTimeout(() => {
+			this.AnimAtionTimer = window.setTimeout(() => {
 				this.body.remove();
 			}, 200);
 		}
 
-		this._onDidChangeExpansionState.fire(expanded);
-		this._onDidChange.fire(expanded ? this.expandedSize : undefined);
+		this._onDidChAngeExpAnsionStAte.fire(expAnded);
+		this._onDidChAnge.fire(expAnded ? this.expAndedSize : undefined);
 		return true;
 	}
 
-	get headerVisible(): boolean {
-		return this._headerVisible;
+	get heAderVisible(): booleAn {
+		return this._heAderVisible;
 	}
 
-	set headerVisible(visible: boolean) {
-		if (this._headerVisible === !!visible) {
+	set heAderVisible(visible: booleAn) {
+		if (this._heAderVisible === !!visible) {
 			return;
 		}
 
-		this._headerVisible = !!visible;
-		this.updateHeader();
-		this._onDidChange.fire(undefined);
+		this._heAderVisible = !!visible;
+		this.updAteHeAder();
+		this._onDidChAnge.fire(undefined);
 	}
 
-	get orientation(): Orientation {
-		return this._orientation;
+	get orientAtion(): OrientAtion {
+		return this._orientAtion;
 	}
 
-	set orientation(orientation: Orientation) {
-		if (this._orientation === orientation) {
+	set orientAtion(orientAtion: OrientAtion) {
+		if (this._orientAtion === orientAtion) {
 			return;
 		}
 
-		this._orientation = orientation;
+		this._orientAtion = orientAtion;
 
 		if (this.element) {
-			this.element.classList.toggle('horizontal', this.orientation === Orientation.HORIZONTAL);
-			this.element.classList.toggle('vertical', this.orientation === Orientation.VERTICAL);
+			this.element.clAssList.toggle('horizontAl', this.orientAtion === OrientAtion.HORIZONTAL);
+			this.element.clAssList.toggle('verticAl', this.orientAtion === OrientAtion.VERTICAL);
 		}
 
-		if (this.header) {
-			this.updateHeader();
+		if (this.heAder) {
+			this.updAteHeAder();
 		}
 	}
 
 	render(): void {
-		this.element.classList.toggle('expanded', this.isExpanded());
-		this.element.classList.toggle('horizontal', this.orientation === Orientation.HORIZONTAL);
-		this.element.classList.toggle('vertical', this.orientation === Orientation.VERTICAL);
+		this.element.clAssList.toggle('expAnded', this.isExpAnded());
+		this.element.clAssList.toggle('horizontAl', this.orientAtion === OrientAtion.HORIZONTAL);
+		this.element.clAssList.toggle('verticAl', this.orientAtion === OrientAtion.VERTICAL);
 
-		this.header = $('.pane-header');
-		append(this.element, this.header);
-		this.header.setAttribute('tabindex', '0');
-		// Use role button so the aria-expanded state gets read https://github.com/microsoft/vscode/issues/95996
-		this.header.setAttribute('role', 'button');
-		this.header.setAttribute('aria-label', this.ariaHeaderLabel);
-		this.renderHeader(this.header);
+		this.heAder = $('.pAne-heAder');
+		Append(this.element, this.heAder);
+		this.heAder.setAttribute('tAbindex', '0');
+		// Use role button so the AriA-expAnded stAte gets reAd https://github.com/microsoft/vscode/issues/95996
+		this.heAder.setAttribute('role', 'button');
+		this.heAder.setAttribute('AriA-lAbel', this.AriAHeAderLAbel);
+		this.renderHeAder(this.heAder);
 
-		const focusTracker = trackFocus(this.header);
-		this._register(focusTracker);
-		this._register(focusTracker.onDidFocus(() => this.header.classList.add('focused'), null));
-		this._register(focusTracker.onDidBlur(() => this.header.classList.remove('focused'), null));
+		const focusTrAcker = trAckFocus(this.heAder);
+		this._register(focusTrAcker);
+		this._register(focusTrAcker.onDidFocus(() => this.heAder.clAssList.Add('focused'), null));
+		this._register(focusTrAcker.onDidBlur(() => this.heAder.clAssList.remove('focused'), null));
 
-		this.updateHeader();
+		this.updAteHeAder();
 
 
-		const onHeaderKeyDown = Event.chain(domEvent(this.header, 'keydown'))
-			.map(e => new StandardKeyboardEvent(e));
+		const onHeAderKeyDown = Event.chAin(domEvent(this.heAder, 'keydown'))
+			.mAp(e => new StAndArdKeyboArdEvent(e));
 
-		this._register(onHeaderKeyDown.filter(e => e.keyCode === KeyCode.Enter || e.keyCode === KeyCode.Space)
-			.event(() => this.setExpanded(!this.isExpanded()), null));
+		this._register(onHeAderKeyDown.filter(e => e.keyCode === KeyCode.Enter || e.keyCode === KeyCode.SpAce)
+			.event(() => this.setExpAnded(!this.isExpAnded()), null));
 
-		this._register(onHeaderKeyDown.filter(e => e.keyCode === KeyCode.LeftArrow)
-			.event(() => this.setExpanded(false), null));
+		this._register(onHeAderKeyDown.filter(e => e.keyCode === KeyCode.LeftArrow)
+			.event(() => this.setExpAnded(fAlse), null));
 
-		this._register(onHeaderKeyDown.filter(e => e.keyCode === KeyCode.RightArrow)
-			.event(() => this.setExpanded(true), null));
+		this._register(onHeAderKeyDown.filter(e => e.keyCode === KeyCode.RightArrow)
+			.event(() => this.setExpAnded(true), null));
 
-		this._register(domEvent(this.header, 'click')
+		this._register(domEvent(this.heAder, 'click')
 			(e => {
-				if (!e.defaultPrevented) {
-					this.setExpanded(!this.isExpanded());
+				if (!e.defAultPrevented) {
+					this.setExpAnded(!this.isExpAnded());
 				}
 			}, null));
 
-		this.body = append(this.element, $('.pane-body'));
+		this.body = Append(this.element, $('.pAne-body'));
 		this.renderBody(this.body);
 
-		if (!this.isExpanded()) {
+		if (!this.isExpAnded()) {
 			this.body.remove();
 		}
 	}
 
-	layout(size: number): void {
-		const headerSize = this.headerVisible ? Pane.HEADER_SIZE : 0;
+	lAyout(size: number): void {
+		const heAderSize = this.heAderVisible ? PAne.HEADER_SIZE : 0;
 
-		const width = this._orientation === Orientation.VERTICAL ? this.orthogonalSize : size;
-		const height = this._orientation === Orientation.VERTICAL ? size - headerSize : this.orthogonalSize - headerSize;
+		const width = this._orientAtion === OrientAtion.VERTICAL ? this.orthogonAlSize : size;
+		const height = this._orientAtion === OrientAtion.VERTICAL ? size - heAderSize : this.orthogonAlSize - heAderSize;
 
-		if (this.isExpanded()) {
-			this.body.classList.toggle('wide', width >= 600);
-			this.layoutBody(height, width);
-			this.expandedSize = size;
+		if (this.isExpAnded()) {
+			this.body.clAssList.toggle('wide', width >= 600);
+			this.lAyoutBody(height, width);
+			this.expAndedSize = size;
 		}
 	}
 
-	style(styles: IPaneStyles): void {
+	style(styles: IPAneStyles): void {
 		this.styles = styles;
 
-		if (!this.header) {
+		if (!this.heAder) {
 			return;
 		}
 
-		this.updateHeader();
+		this.updAteHeAder();
 	}
 
-	protected updateHeader(): void {
-		const expanded = !this.headerVisible || this.isExpanded();
+	protected updAteHeAder(): void {
+		const expAnded = !this.heAderVisible || this.isExpAnded();
 
-		this.header.style.lineHeight = `${this.headerSize}px`;
-		this.header.classList.toggle('hidden', !this.headerVisible);
-		this.header.classList.toggle('expanded', expanded);
-		this.header.setAttribute('aria-expanded', String(expanded));
+		this.heAder.style.lineHeight = `${this.heAderSize}px`;
+		this.heAder.clAssList.toggle('hidden', !this.heAderVisible);
+		this.heAder.clAssList.toggle('expAnded', expAnded);
+		this.heAder.setAttribute('AriA-expAnded', String(expAnded));
 
-		this.header.style.color = this.styles.headerForeground ? this.styles.headerForeground.toString() : '';
-		this.header.style.backgroundColor = this.styles.headerBackground ? this.styles.headerBackground.toString() : '';
-		this.header.style.borderTop = this.styles.headerBorder && this.orientation === Orientation.VERTICAL ? `1px solid ${this.styles.headerBorder}` : '';
-		this._dropBackground = this.styles.dropBackground;
-		this.element.style.borderLeft = this.styles.leftBorder && this.orientation === Orientation.HORIZONTAL ? `1px solid ${this.styles.leftBorder}` : '';
+		this.heAder.style.color = this.styles.heAderForeground ? this.styles.heAderForeground.toString() : '';
+		this.heAder.style.bAckgroundColor = this.styles.heAderBAckground ? this.styles.heAderBAckground.toString() : '';
+		this.heAder.style.borderTop = this.styles.heAderBorder && this.orientAtion === OrientAtion.VERTICAL ? `1px solid ${this.styles.heAderBorder}` : '';
+		this._dropBAckground = this.styles.dropBAckground;
+		this.element.style.borderLeft = this.styles.leftBorder && this.orientAtion === OrientAtion.HORIZONTAL ? `1px solid ${this.styles.leftBorder}` : '';
 	}
 
-	protected abstract renderHeader(container: HTMLElement): void;
-	protected abstract renderBody(container: HTMLElement): void;
-	protected abstract layoutBody(height: number, width: number): void;
+	protected AbstrAct renderHeAder(contAiner: HTMLElement): void;
+	protected AbstrAct renderBody(contAiner: HTMLElement): void;
+	protected AbstrAct lAyoutBody(height: number, width: number): void;
 }
 
-interface IDndContext {
-	draggable: PaneDraggable | null;
+interfAce IDndContext {
+	drAggAble: PAneDrAggAble | null;
 }
 
-class PaneDraggable extends Disposable {
+clAss PAneDrAggAble extends DisposAble {
 
-	private static readonly DefaultDragOverBackgroundColor = new Color(new RGBA(128, 128, 128, 0.5));
+	privAte stAtic reAdonly DefAultDrAgOverBAckgroundColor = new Color(new RGBA(128, 128, 128, 0.5));
 
-	private dragOverCounter = 0; // see https://github.com/microsoft/vscode/issues/14470
+	privAte drAgOverCounter = 0; // see https://github.com/microsoft/vscode/issues/14470
 
-	private _onDidDrop = this._register(new Emitter<{ from: Pane, to: Pane }>());
-	readonly onDidDrop = this._onDidDrop.event;
+	privAte _onDidDrop = this._register(new Emitter<{ from: PAne, to: PAne }>());
+	reAdonly onDidDrop = this._onDidDrop.event;
 
-	constructor(private pane: Pane, private dnd: IPaneDndController, private context: IDndContext) {
+	constructor(privAte pAne: PAne, privAte dnd: IPAneDndController, privAte context: IDndContext) {
 		super();
 
-		pane.draggableElement.draggable = true;
-		this._register(domEvent(pane.draggableElement, 'dragstart')(this.onDragStart, this));
-		this._register(domEvent(pane.dropTargetElement, 'dragenter')(this.onDragEnter, this));
-		this._register(domEvent(pane.dropTargetElement, 'dragleave')(this.onDragLeave, this));
-		this._register(domEvent(pane.dropTargetElement, 'dragend')(this.onDragEnd, this));
-		this._register(domEvent(pane.dropTargetElement, 'drop')(this.onDrop, this));
+		pAne.drAggAbleElement.drAggAble = true;
+		this._register(domEvent(pAne.drAggAbleElement, 'drAgstArt')(this.onDrAgStArt, this));
+		this._register(domEvent(pAne.dropTArgetElement, 'drAgenter')(this.onDrAgEnter, this));
+		this._register(domEvent(pAne.dropTArgetElement, 'drAgleAve')(this.onDrAgLeAve, this));
+		this._register(domEvent(pAne.dropTArgetElement, 'drAgend')(this.onDrAgEnd, this));
+		this._register(domEvent(pAne.dropTArgetElement, 'drop')(this.onDrop, this));
 	}
 
-	private onDragStart(e: DragEvent): void {
-		if (!this.dnd.canDrag(this.pane) || !e.dataTransfer) {
-			e.preventDefault();
-			e.stopPropagation();
+	privAte onDrAgStArt(e: DrAgEvent): void {
+		if (!this.dnd.cAnDrAg(this.pAne) || !e.dAtATrAnsfer) {
+			e.preventDefAult();
+			e.stopPropAgAtion();
 			return;
 		}
 
-		e.dataTransfer.effectAllowed = 'move';
+		e.dAtATrAnsfer.effectAllowed = 'move';
 
 		if (isFirefox) {
-			// Firefox: requires to set a text data transfer to get going
-			e.dataTransfer?.setData(DataTransfers.TEXT, this.pane.draggableElement.textContent || '');
+			// Firefox: requires to set A text dAtA trAnsfer to get going
+			e.dAtATrAnsfer?.setDAtA(DAtATrAnsfers.TEXT, this.pAne.drAggAbleElement.textContent || '');
 		}
 
-		const dragImage = append(document.body, $('.monaco-drag-image', {}, this.pane.draggableElement.textContent || ''));
-		e.dataTransfer.setDragImage(dragImage, -10, -10);
-		setTimeout(() => document.body.removeChild(dragImage), 0);
+		const drAgImAge = Append(document.body, $('.monAco-drAg-imAge', {}, this.pAne.drAggAbleElement.textContent || ''));
+		e.dAtATrAnsfer.setDrAgImAge(drAgImAge, -10, -10);
+		setTimeout(() => document.body.removeChild(drAgImAge), 0);
 
-		this.context.draggable = this;
+		this.context.drAggAble = this;
 	}
 
-	private onDragEnter(e: DragEvent): void {
-		if (!this.context.draggable || this.context.draggable === this) {
+	privAte onDrAgEnter(e: DrAgEvent): void {
+		if (!this.context.drAggAble || this.context.drAggAble === this) {
 			return;
 		}
 
-		if (!this.dnd.canDrop(this.context.draggable.pane, this.pane)) {
+		if (!this.dnd.cAnDrop(this.context.drAggAble.pAne, this.pAne)) {
 			return;
 		}
 
-		this.dragOverCounter++;
+		this.drAgOverCounter++;
 		this.render();
 	}
 
-	private onDragLeave(e: DragEvent): void {
-		if (!this.context.draggable || this.context.draggable === this) {
+	privAte onDrAgLeAve(e: DrAgEvent): void {
+		if (!this.context.drAggAble || this.context.drAggAble === this) {
 			return;
 		}
 
-		if (!this.dnd.canDrop(this.context.draggable.pane, this.pane)) {
+		if (!this.dnd.cAnDrop(this.context.drAggAble.pAne, this.pAne)) {
 			return;
 		}
 
-		this.dragOverCounter--;
+		this.drAgOverCounter--;
 
-		if (this.dragOverCounter === 0) {
+		if (this.drAgOverCounter === 0) {
 			this.render();
 		}
 	}
 
-	private onDragEnd(e: DragEvent): void {
-		if (!this.context.draggable) {
+	privAte onDrAgEnd(e: DrAgEvent): void {
+		if (!this.context.drAggAble) {
 			return;
 		}
 
-		this.dragOverCounter = 0;
+		this.drAgOverCounter = 0;
 		this.render();
-		this.context.draggable = null;
+		this.context.drAggAble = null;
 	}
 
-	private onDrop(e: DragEvent): void {
-		if (!this.context.draggable) {
+	privAte onDrop(e: DrAgEvent): void {
+		if (!this.context.drAggAble) {
 			return;
 		}
 
 		EventHelper.stop(e);
 
-		this.dragOverCounter = 0;
+		this.drAgOverCounter = 0;
 		this.render();
 
-		if (this.dnd.canDrop(this.context.draggable.pane, this.pane) && this.context.draggable !== this) {
-			this._onDidDrop.fire({ from: this.context.draggable.pane, to: this.pane });
+		if (this.dnd.cAnDrop(this.context.drAggAble.pAne, this.pAne) && this.context.drAggAble !== this) {
+			this._onDidDrop.fire({ from: this.context.drAggAble.pAne, to: this.pAne });
 		}
 
-		this.context.draggable = null;
+		this.context.drAggAble = null;
 	}
 
-	private render(): void {
-		let backgroundColor: string | null = null;
+	privAte render(): void {
+		let bAckgroundColor: string | null = null;
 
-		if (this.dragOverCounter > 0) {
-			backgroundColor = (this.pane.dropBackground || PaneDraggable.DefaultDragOverBackgroundColor).toString();
+		if (this.drAgOverCounter > 0) {
+			bAckgroundColor = (this.pAne.dropBAckground || PAneDrAggAble.DefAultDrAgOverBAckgroundColor).toString();
 		}
 
-		this.pane.dropTargetElement.style.backgroundColor = backgroundColor || '';
+		this.pAne.dropTArgetElement.style.bAckgroundColor = bAckgroundColor || '';
 	}
 }
 
-export interface IPaneDndController {
-	canDrag(pane: Pane): boolean;
-	canDrop(pane: Pane, overPane: Pane): boolean;
+export interfAce IPAneDndController {
+	cAnDrAg(pAne: PAne): booleAn;
+	cAnDrop(pAne: PAne, overPAne: PAne): booleAn;
 }
 
-export class DefaultPaneDndController implements IPaneDndController {
+export clAss DefAultPAneDndController implements IPAneDndController {
 
-	canDrag(pane: Pane): boolean {
+	cAnDrAg(pAne: PAne): booleAn {
 		return true;
 	}
 
-	canDrop(pane: Pane, overPane: Pane): boolean {
+	cAnDrop(pAne: PAne, overPAne: PAne): booleAn {
 		return true;
 	}
 }
 
-export interface IPaneViewOptions {
-	dnd?: IPaneDndController;
-	orientation?: Orientation;
+export interfAce IPAneViewOptions {
+	dnd?: IPAneDndController;
+	orientAtion?: OrientAtion;
 }
 
-interface IPaneItem {
-	pane: Pane;
-	disposable: IDisposable;
+interfAce IPAneItem {
+	pAne: PAne;
+	disposAble: IDisposAble;
 }
 
-export class PaneView extends Disposable {
+export clAss PAneView extends DisposAble {
 
-	private dnd: IPaneDndController | undefined;
-	private dndContext: IDndContext = { draggable: null };
-	private el: HTMLElement;
-	private paneItems: IPaneItem[] = [];
-	private orthogonalSize: number = 0;
-	private size: number = 0;
-	private splitview: SplitView;
-	private animationTimer: number | undefined = undefined;
+	privAte dnd: IPAneDndController | undefined;
+	privAte dndContext: IDndContext = { drAggAble: null };
+	privAte el: HTMLElement;
+	privAte pAneItems: IPAneItem[] = [];
+	privAte orthogonAlSize: number = 0;
+	privAte size: number = 0;
+	privAte splitview: SplitView;
+	privAte AnimAtionTimer: number | undefined = undefined;
 
-	private _onDidDrop = this._register(new Emitter<{ from: Pane, to: Pane }>());
-	readonly onDidDrop: Event<{ from: Pane, to: Pane }> = this._onDidDrop.event;
+	privAte _onDidDrop = this._register(new Emitter<{ from: PAne, to: PAne }>());
+	reAdonly onDidDrop: Event<{ from: PAne, to: PAne }> = this._onDidDrop.event;
 
-	orientation: Orientation;
-	readonly onDidSashChange: Event<number>;
+	orientAtion: OrientAtion;
+	reAdonly onDidSAshChAnge: Event<number>;
 
-	constructor(container: HTMLElement, options: IPaneViewOptions = {}) {
+	constructor(contAiner: HTMLElement, options: IPAneViewOptions = {}) {
 		super();
 
 		this.dnd = options.dnd;
-		this.orientation = options.orientation ?? Orientation.VERTICAL;
-		this.el = append(container, $('.monaco-pane-view'));
-		this.splitview = this._register(new SplitView(this.el, { orientation: this.orientation }));
-		this.onDidSashChange = this.splitview.onDidSashChange;
+		this.orientAtion = options.orientAtion ?? OrientAtion.VERTICAL;
+		this.el = Append(contAiner, $('.monAco-pAne-view'));
+		this.splitview = this._register(new SplitView(this.el, { orientAtion: this.orientAtion }));
+		this.onDidSAshChAnge = this.splitview.onDidSAshChAnge;
 	}
 
-	addPane(pane: Pane, size: number, index = this.splitview.length): void {
-		const disposables = new DisposableStore();
-		pane.onDidChangeExpansionState(this.setupAnimation, this, disposables);
+	AddPAne(pAne: PAne, size: number, index = this.splitview.length): void {
+		const disposAbles = new DisposAbleStore();
+		pAne.onDidChAngeExpAnsionStAte(this.setupAnimAtion, this, disposAbles);
 
-		const paneItem = { pane: pane, disposable: disposables };
-		this.paneItems.splice(index, 0, paneItem);
-		pane.orientation = this.orientation;
-		pane.orthogonalSize = this.orthogonalSize;
-		this.splitview.addView(pane, size, index);
+		const pAneItem = { pAne: pAne, disposAble: disposAbles };
+		this.pAneItems.splice(index, 0, pAneItem);
+		pAne.orientAtion = this.orientAtion;
+		pAne.orthogonAlSize = this.orthogonAlSize;
+		this.splitview.AddView(pAne, size, index);
 
 		if (this.dnd) {
-			const draggable = new PaneDraggable(pane, this.dnd, this.dndContext);
-			disposables.add(draggable);
-			disposables.add(draggable.onDidDrop(this._onDidDrop.fire, this._onDidDrop));
+			const drAggAble = new PAneDrAggAble(pAne, this.dnd, this.dndContext);
+			disposAbles.Add(drAggAble);
+			disposAbles.Add(drAggAble.onDidDrop(this._onDidDrop.fire, this._onDidDrop));
 		}
 	}
 
-	removePane(pane: Pane): void {
-		const index = this.paneItems.findIndex(item => item.pane === pane);
+	removePAne(pAne: PAne): void {
+		const index = this.pAneItems.findIndex(item => item.pAne === pAne);
 
 		if (index === -1) {
 			return;
 		}
 
 		this.splitview.removeView(index);
-		const paneItem = this.paneItems.splice(index, 1)[0];
-		paneItem.disposable.dispose();
+		const pAneItem = this.pAneItems.splice(index, 1)[0];
+		pAneItem.disposAble.dispose();
 	}
 
-	movePane(from: Pane, to: Pane): void {
-		const fromIndex = this.paneItems.findIndex(item => item.pane === from);
-		const toIndex = this.paneItems.findIndex(item => item.pane === to);
+	movePAne(from: PAne, to: PAne): void {
+		const fromIndex = this.pAneItems.findIndex(item => item.pAne === from);
+		const toIndex = this.pAneItems.findIndex(item => item.pAne === to);
 
 		if (fromIndex === -1 || toIndex === -1) {
 			return;
 		}
 
-		const [paneItem] = this.paneItems.splice(fromIndex, 1);
-		this.paneItems.splice(toIndex, 0, paneItem);
+		const [pAneItem] = this.pAneItems.splice(fromIndex, 1);
+		this.pAneItems.splice(toIndex, 0, pAneItem);
 
 		this.splitview.moveView(fromIndex, toIndex);
 	}
 
-	resizePane(pane: Pane, size: number): void {
-		const index = this.paneItems.findIndex(item => item.pane === pane);
+	resizePAne(pAne: PAne, size: number): void {
+		const index = this.pAneItems.findIndex(item => item.pAne === pAne);
 
 		if (index === -1) {
 			return;
@@ -508,8 +508,8 @@ export class PaneView extends Disposable {
 		this.splitview.resizeView(index, size);
 	}
 
-	getPaneSize(pane: Pane): number {
-		const index = this.paneItems.findIndex(item => item.pane === pane);
+	getPAneSize(pAne: PAne): number {
+		const index = this.pAneItems.findIndex(item => item.pAne === pAne);
 
 		if (index === -1) {
 			return -1;
@@ -518,59 +518,59 @@ export class PaneView extends Disposable {
 		return this.splitview.getViewSize(index);
 	}
 
-	layout(height: number, width: number): void {
-		this.orthogonalSize = this.orientation === Orientation.VERTICAL ? width : height;
-		this.size = this.orientation === Orientation.HORIZONTAL ? width : height;
+	lAyout(height: number, width: number): void {
+		this.orthogonAlSize = this.orientAtion === OrientAtion.VERTICAL ? width : height;
+		this.size = this.orientAtion === OrientAtion.HORIZONTAL ? width : height;
 
-		for (const paneItem of this.paneItems) {
-			paneItem.pane.orthogonalSize = this.orthogonalSize;
+		for (const pAneItem of this.pAneItems) {
+			pAneItem.pAne.orthogonAlSize = this.orthogonAlSize;
 		}
 
-		this.splitview.layout(this.size);
+		this.splitview.lAyout(this.size);
 	}
 
-	flipOrientation(height: number, width: number): void {
-		this.orientation = this.orientation === Orientation.VERTICAL ? Orientation.HORIZONTAL : Orientation.VERTICAL;
-		const paneSizes = this.paneItems.map(pane => this.getPaneSize(pane.pane));
+	flipOrientAtion(height: number, width: number): void {
+		this.orientAtion = this.orientAtion === OrientAtion.VERTICAL ? OrientAtion.HORIZONTAL : OrientAtion.VERTICAL;
+		const pAneSizes = this.pAneItems.mAp(pAne => this.getPAneSize(pAne.pAne));
 
 		this.splitview.dispose();
-		clearNode(this.el);
+		cleArNode(this.el);
 
-		this.splitview = this._register(new SplitView(this.el, { orientation: this.orientation }));
+		this.splitview = this._register(new SplitView(this.el, { orientAtion: this.orientAtion }));
 
-		const newOrthogonalSize = this.orientation === Orientation.VERTICAL ? width : height;
-		const newSize = this.orientation === Orientation.HORIZONTAL ? width : height;
+		const newOrthogonAlSize = this.orientAtion === OrientAtion.VERTICAL ? width : height;
+		const newSize = this.orientAtion === OrientAtion.HORIZONTAL ? width : height;
 
-		this.paneItems.forEach((pane, index) => {
-			pane.pane.orthogonalSize = newOrthogonalSize;
-			pane.pane.orientation = this.orientation;
+		this.pAneItems.forEAch((pAne, index) => {
+			pAne.pAne.orthogonAlSize = newOrthogonAlSize;
+			pAne.pAne.orientAtion = this.orientAtion;
 
-			const viewSize = this.size === 0 ? 0 : (newSize * paneSizes[index]) / this.size;
-			this.splitview.addView(pane.pane, viewSize, index);
+			const viewSize = this.size === 0 ? 0 : (newSize * pAneSizes[index]) / this.size;
+			this.splitview.AddView(pAne.pAne, viewSize, index);
 		});
 
 		this.size = newSize;
-		this.orthogonalSize = newOrthogonalSize;
+		this.orthogonAlSize = newOrthogonAlSize;
 
-		this.splitview.layout(this.size);
+		this.splitview.lAyout(this.size);
 	}
 
-	private setupAnimation(): void {
-		if (typeof this.animationTimer === 'number') {
-			window.clearTimeout(this.animationTimer);
+	privAte setupAnimAtion(): void {
+		if (typeof this.AnimAtionTimer === 'number') {
+			window.cleArTimeout(this.AnimAtionTimer);
 		}
 
-		this.el.classList.add('animated');
+		this.el.clAssList.Add('AnimAted');
 
-		this.animationTimer = window.setTimeout(() => {
-			this.animationTimer = undefined;
-			this.el.classList.remove('animated');
+		this.AnimAtionTimer = window.setTimeout(() => {
+			this.AnimAtionTimer = undefined;
+			this.el.clAssList.remove('AnimAted');
 		}, 200);
 	}
 
 	dispose(): void {
 		super.dispose();
 
-		this.paneItems.forEach(i => i.disposable.dispose());
+		this.pAneItems.forEAch(i => i.disposAble.dispose());
 	}
 }

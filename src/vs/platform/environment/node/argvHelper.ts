@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { localize } from 'vs/nls';
-import { MIN_MAX_MEMORY_SIZE_MB } from 'vs/platform/files/common/files';
-import { parseArgs, ErrorReporter, OPTIONS } from 'vs/platform/environment/node/argv';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
+import * As Assert from 'Assert';
+import { locAlize } from 'vs/nls';
+import { MIN_MAX_MEMORY_SIZE_MB } from 'vs/plAtform/files/common/files';
+import { pArseArgs, ErrorReporter, OPTIONS } from 'vs/plAtform/environment/node/Argv';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
 
-function parseAndValidate(cmdLineArgs: string[], reportWarnings: boolean): NativeParsedArgs {
+function pArseAndVAlidAte(cmdLineArgs: string[], reportWArnings: booleAn): NAtivePArsedArgs {
 	const errorReporter: ErrorReporter = {
 		onUnknownOption: (id) => {
-			console.warn(localize('unknownOption', "Warning: '{0}' is not in the list of known options, but still passed to Electron/Chromium.", id));
+			console.wArn(locAlize('unknownOption', "WArning: '{0}' is not in the list of known options, but still pAssed to Electron/Chromium.", id));
 		},
-		onMultipleValues: (id, val) => {
-			console.warn(localize('multipleValues', "Option '{0}' is defined more than once. Using value '{1}.'", id, val));
+		onMultipleVAlues: (id, vAl) => {
+			console.wArn(locAlize('multipleVAlues', "Option '{0}' is defined more thAn once. Using vAlue '{1}.'", id, vAl));
 		}
 	};
 
-	const args = parseArgs(cmdLineArgs, OPTIONS, reportWarnings ? errorReporter : undefined);
-	if (args.goto) {
-		args._.forEach(arg => assert(/^(\w:)?[^:]+(:\d*){0,2}$/.test(arg), localize('gotoValidation', "Arguments in `--goto` mode should be in the format of `FILE(:LINE(:CHARACTER))`.")));
+	const Args = pArseArgs(cmdLineArgs, OPTIONS, reportWArnings ? errorReporter : undefined);
+	if (Args.goto) {
+		Args._.forEAch(Arg => Assert(/^(\w:)?[^:]+(:\d*){0,2}$/.test(Arg), locAlize('gotoVAlidAtion', "Arguments in `--goto` mode should be in the formAt of `FILE(:LINE(:CHARACTER))`.")));
 	}
 
-	if (args['max-memory']) {
-		assert(parseInt(args['max-memory']) >= MIN_MAX_MEMORY_SIZE_MB, `The max-memory argument cannot be specified lower than ${MIN_MAX_MEMORY_SIZE_MB} MB.`);
+	if (Args['mAx-memory']) {
+		Assert(pArseInt(Args['mAx-memory']) >= MIN_MAX_MEMORY_SIZE_MB, `The mAx-memory Argument cAnnot be specified lower thAn ${MIN_MAX_MEMORY_SIZE_MB} MB.`);
 	}
 
-	return args;
+	return Args;
 }
 
-function stripAppPath(argv: string[]): string[] | undefined {
-	const index = argv.findIndex(a => !/^-/.test(a));
+function stripAppPAth(Argv: string[]): string[] | undefined {
+	const index = Argv.findIndex(A => !/^-/.test(A));
 
 	if (index > -1) {
-		return [...argv.slice(0, index), ...argv.slice(index + 1)];
+		return [...Argv.slice(0, index), ...Argv.slice(index + 1)];
 	}
 	return undefined;
 }
 
 /**
- * Use this to parse raw code process.argv such as: `Electron . --verbose --wait`
+ * Use this to pArse rAw code process.Argv such As: `Electron . --verbose --wAit`
  */
-export function parseMainProcessArgv(processArgv: string[]): NativeParsedArgs {
-	let [, ...args] = processArgv;
+export function pArseMAinProcessArgv(processArgv: string[]): NAtivePArsedArgs {
+	let [, ...Args] = processArgv;
 
-	// If dev, remove the first non-option argument: it's the app location
+	// If dev, remove the first non-option Argument: it's the App locAtion
 	if (process.env['VSCODE_DEV']) {
-		args = stripAppPath(args) || [];
+		Args = stripAppPAth(Args) || [];
 	}
 
-	// If called from CLI, don't report warnings as they are already reported.
-	let reportWarnings = !process.env['VSCODE_CLI'];
-	return parseAndValidate(args, reportWarnings);
+	// If cAlled from CLI, don't report wArnings As they Are AlreAdy reported.
+	let reportWArnings = !process.env['VSCODE_CLI'];
+	return pArseAndVAlidAte(Args, reportWArnings);
 }
 
 /**
- * Use this to parse raw code CLI process.argv such as: `Electron cli.js . --verbose --wait`
+ * Use this to pArse rAw code CLI process.Argv such As: `Electron cli.js . --verbose --wAit`
  */
-export function parseCLIProcessArgv(processArgv: string[]): NativeParsedArgs {
-	let [, , ...args] = processArgv; // remove the first non-option argument: it's always the app location
+export function pArseCLIProcessArgv(processArgv: string[]): NAtivePArsedArgs {
+	let [, , ...Args] = processArgv; // remove the first non-option Argument: it's AlwAys the App locAtion
 
-	return parseAndValidate(args, true);
+	return pArseAndVAlidAte(Args, true);
 }
 
-export function addArg(argv: string[], ...args: string[]): string[] {
-	const endOfArgsMarkerIndex = argv.indexOf('--');
-	if (endOfArgsMarkerIndex === -1) {
-		argv.push(...args);
+export function AddArg(Argv: string[], ...Args: string[]): string[] {
+	const endOfArgsMArkerIndex = Argv.indexOf('--');
+	if (endOfArgsMArkerIndex === -1) {
+		Argv.push(...Args);
 	} else {
-		// if the we have an argument "--" (end of argument marker)
-		// we cannot add arguments at the end. rather, we add
-		// arguments before the "--" marker.
-		argv.splice(endOfArgsMarkerIndex, 0, ...args);
+		// if the we hAve An Argument "--" (end of Argument mArker)
+		// we cAnnot Add Arguments At the end. rAther, we Add
+		// Arguments before the "--" mArker.
+		Argv.splice(endOfArgsMArkerIndex, 0, ...Args);
 	}
 
-	return argv;
+	return Argv;
 }

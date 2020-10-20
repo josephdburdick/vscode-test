@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IMode, LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IMode, LAnguAgeId, LAnguAgeIdentifier } from 'vs/editor/common/modes';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IModeService = createDecorator<IModeService>('modeService');
+export const IModeService = creAteDecorAtor<IModeService>('modeService');
 
-export interface ILanguageExtensionPoint {
+export interfAce ILAnguAgeExtensionPoint {
 	id: string;
 	extensions?: string[];
-	filenames?: string[];
-	filenamePatterns?: string[];
+	filenAmes?: string[];
+	filenAmePAtterns?: string[];
 	firstLine?: string;
-	aliases?: string[];
+	AliAses?: string[];
 	mimetypes?: string[];
-	configuration?: URI;
+	configurAtion?: URI;
 }
 
-export interface ILanguageSelection extends IDisposable {
-	readonly languageIdentifier: LanguageIdentifier;
-	readonly onDidChange: Event<LanguageIdentifier>;
+export interfAce ILAnguAgeSelection extends IDisposAble {
+	reAdonly lAnguAgeIdentifier: LAnguAgeIdentifier;
+	reAdonly onDidChAnge: Event<LAnguAgeIdentifier>;
 }
 
-export interface IModeService {
-	readonly _serviceBrand: undefined;
+export interfAce IModeService {
+	reAdonly _serviceBrAnd: undefined;
 
-	onDidCreateMode: Event<IMode>;
-	onLanguagesMaybeChanged: Event<void>;
+	onDidCreAteMode: Event<IMode>;
+	onLAnguAgesMAybeChAnged: Event<void>;
 
-	// --- reading
-	isRegisteredMode(mimetypeOrModeId: string): boolean;
+	// --- reAding
+	isRegisteredMode(mimetypeOrModeId: string): booleAn;
 	getRegisteredModes(): string[];
-	getRegisteredLanguageNames(): string[];
-	getExtensions(alias: string): string[];
-	getFilenames(alias: string): string[];
+	getRegisteredLAnguAgeNAmes(): string[];
+	getExtensions(AliAs: string): string[];
+	getFilenAmes(AliAs: string): string[];
 	getMimeForMode(modeId: string): string | null;
-	getLanguageName(modeId: string): string | null;
-	getModeIdForLanguageName(alias: string): string | null;
-	getModeIdByFilepathOrFirstLine(resource: URI, firstLine?: string): string | null;
-	getModeId(commaSeparatedMimetypesOrCommaSeparatedIds: string): string | null;
-	getLanguageIdentifier(modeId: string | LanguageId): LanguageIdentifier | null;
-	getConfigurationFiles(modeId: string): URI[];
+	getLAnguAgeNAme(modeId: string): string | null;
+	getModeIdForLAnguAgeNAme(AliAs: string): string | null;
+	getModeIdByFilepAthOrFirstLine(resource: URI, firstLine?: string): string | null;
+	getModeId(commASepArAtedMimetypesOrCommASepArAtedIds: string): string | null;
+	getLAnguAgeIdentifier(modeId: string | LAnguAgeId): LAnguAgeIdentifier | null;
+	getConfigurAtionFiles(modeId: string): URI[];
 
-	// --- instantiation
-	create(commaSeparatedMimetypesOrCommaSeparatedIds: string | undefined): ILanguageSelection;
-	createByLanguageName(languageName: string): ILanguageSelection;
-	createByFilepathOrFirstLine(rsource: URI | null, firstLine?: string): ILanguageSelection;
+	// --- instAntiAtion
+	creAte(commASepArAtedMimetypesOrCommASepArAtedIds: string | undefined): ILAnguAgeSelection;
+	creAteByLAnguAgeNAme(lAnguAgeNAme: string): ILAnguAgeSelection;
+	creAteByFilepAthOrFirstLine(rsource: URI | null, firstLine?: string): ILAnguAgeSelection;
 
-	triggerMode(commaSeparatedMimetypesOrCommaSeparatedIds: string): void;
+	triggerMode(commASepArAtedMimetypesOrCommASepArAtedIds: string): void;
 }

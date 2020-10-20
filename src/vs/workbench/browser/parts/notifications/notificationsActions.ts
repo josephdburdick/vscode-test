@@ -1,165 +1,165 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/notificationsActions';
-import { INotificationViewItem } from 'vs/workbench/common/notifications';
-import { localize } from 'vs/nls';
-import { Action, IAction, ActionRunner, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { CLEAR_NOTIFICATION, EXPAND_NOTIFICATION, COLLAPSE_NOTIFICATION, CLEAR_ALL_NOTIFICATIONS, HIDE_NOTIFICATIONS_CENTER } from 'vs/workbench/browser/parts/notifications/notificationsCommands';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { Codicon, registerIcon } from 'vs/base/common/codicons';
+import 'vs/css!./mediA/notificAtionsActions';
+import { INotificAtionViewItem } from 'vs/workbench/common/notificAtions';
+import { locAlize } from 'vs/nls';
+import { Action, IAction, ActionRunner, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion } from 'vs/bAse/common/Actions';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { CLEAR_NOTIFICATION, EXPAND_NOTIFICATION, COLLAPSE_NOTIFICATION, CLEAR_ALL_NOTIFICATIONS, HIDE_NOTIFICATIONS_CENTER } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsCommAnds';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { Codicon, registerIcon } from 'vs/bAse/common/codicons';
 
-const clearIcon = registerIcon('notifications-clear', Codicon.close);
-const clearAllIcon = registerIcon('notifications-clear-all', Codicon.clearAll);
-const hideIcon = registerIcon('notifications-hide', Codicon.chevronDown);
-const expandIcon = registerIcon('notifications-expand', Codicon.chevronUp);
-const collapseIcon = registerIcon('notifications-collapse', Codicon.chevronDown);
-const configureIcon = registerIcon('notifications-configure', Codicon.gear);
+const cleArIcon = registerIcon('notificAtions-cleAr', Codicon.close);
+const cleArAllIcon = registerIcon('notificAtions-cleAr-All', Codicon.cleArAll);
+const hideIcon = registerIcon('notificAtions-hide', Codicon.chevronDown);
+const expAndIcon = registerIcon('notificAtions-expAnd', Codicon.chevronUp);
+const collApseIcon = registerIcon('notificAtions-collApse', Codicon.chevronDown);
+const configureIcon = registerIcon('notificAtions-configure', Codicon.geAr);
 
-export class ClearNotificationAction extends Action {
+export clAss CleArNotificAtionAction extends Action {
 
-	static readonly ID = CLEAR_NOTIFICATION;
-	static readonly LABEL = localize('clearNotification', "Clear Notification");
-
-	constructor(
-		id: string,
-		label: string,
-		@ICommandService private readonly commandService: ICommandService
-	) {
-		super(id, label, clearIcon.classNames);
-	}
-
-	async run(notification: INotificationViewItem): Promise<void> {
-		this.commandService.executeCommand(CLEAR_NOTIFICATION, notification);
-	}
-}
-
-export class ClearAllNotificationsAction extends Action {
-
-	static readonly ID = CLEAR_ALL_NOTIFICATIONS;
-	static readonly LABEL = localize('clearNotifications', "Clear All Notifications");
+	stAtic reAdonly ID = CLEAR_NOTIFICATION;
+	stAtic reAdonly LABEL = locAlize('cleArNotificAtion', "CleAr NotificAtion");
 
 	constructor(
 		id: string,
-		label: string,
-		@ICommandService private readonly commandService: ICommandService
+		lAbel: string,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(id, label, clearAllIcon.classNames);
+		super(id, lAbel, cleArIcon.clAssNAmes);
 	}
 
-	async run(): Promise<void> {
-		this.commandService.executeCommand(CLEAR_ALL_NOTIFICATIONS);
+	Async run(notificAtion: INotificAtionViewItem): Promise<void> {
+		this.commAndService.executeCommAnd(CLEAR_NOTIFICATION, notificAtion);
 	}
 }
 
-export class HideNotificationsCenterAction extends Action {
+export clAss CleArAllNotificAtionsAction extends Action {
 
-	static readonly ID = HIDE_NOTIFICATIONS_CENTER;
-	static readonly LABEL = localize('hideNotificationsCenter', "Hide Notifications");
+	stAtic reAdonly ID = CLEAR_ALL_NOTIFICATIONS;
+	stAtic reAdonly LABEL = locAlize('cleArNotificAtions', "CleAr All NotificAtions");
 
 	constructor(
 		id: string,
-		label: string,
-		@ICommandService private readonly commandService: ICommandService
+		lAbel: string,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(id, label, hideIcon.classNames);
+		super(id, lAbel, cleArAllIcon.clAssNAmes);
 	}
 
-	async run(): Promise<void> {
-		this.commandService.executeCommand(HIDE_NOTIFICATIONS_CENTER);
+	Async run(): Promise<void> {
+		this.commAndService.executeCommAnd(CLEAR_ALL_NOTIFICATIONS);
 	}
 }
 
-export class ExpandNotificationAction extends Action {
+export clAss HideNotificAtionsCenterAction extends Action {
 
-	static readonly ID = EXPAND_NOTIFICATION;
-	static readonly LABEL = localize('expandNotification', "Expand Notification");
+	stAtic reAdonly ID = HIDE_NOTIFICATIONS_CENTER;
+	stAtic reAdonly LABEL = locAlize('hideNotificAtionsCenter', "Hide NotificAtions");
 
 	constructor(
 		id: string,
-		label: string,
-		@ICommandService private readonly commandService: ICommandService
+		lAbel: string,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(id, label, expandIcon.classNames);
+		super(id, lAbel, hideIcon.clAssNAmes);
 	}
 
-	async run(notification: INotificationViewItem): Promise<void> {
-		this.commandService.executeCommand(EXPAND_NOTIFICATION, notification);
+	Async run(): Promise<void> {
+		this.commAndService.executeCommAnd(HIDE_NOTIFICATIONS_CENTER);
 	}
 }
 
-export class CollapseNotificationAction extends Action {
+export clAss ExpAndNotificAtionAction extends Action {
 
-	static readonly ID = COLLAPSE_NOTIFICATION;
-	static readonly LABEL = localize('collapseNotification', "Collapse Notification");
+	stAtic reAdonly ID = EXPAND_NOTIFICATION;
+	stAtic reAdonly LABEL = locAlize('expAndNotificAtion', "ExpAnd NotificAtion");
 
 	constructor(
 		id: string,
-		label: string,
-		@ICommandService private readonly commandService: ICommandService
+		lAbel: string,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(id, label, collapseIcon.classNames);
+		super(id, lAbel, expAndIcon.clAssNAmes);
 	}
 
-	async run(notification: INotificationViewItem): Promise<void> {
-		this.commandService.executeCommand(COLLAPSE_NOTIFICATION, notification);
+	Async run(notificAtion: INotificAtionViewItem): Promise<void> {
+		this.commAndService.executeCommAnd(EXPAND_NOTIFICATION, notificAtion);
 	}
 }
 
-export class ConfigureNotificationAction extends Action {
+export clAss CollApseNotificAtionAction extends Action {
 
-	static readonly ID = 'workbench.action.configureNotification';
-	static readonly LABEL = localize('configureNotification', "Configure Notification");
+	stAtic reAdonly ID = COLLAPSE_NOTIFICATION;
+	stAtic reAdonly LABEL = locAlize('collApseNotificAtion', "CollApse NotificAtion");
 
 	constructor(
 		id: string,
-		label: string,
-		public readonly configurationActions: ReadonlyArray<IAction>
+		lAbel: string,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService
 	) {
-		super(id, label, configureIcon.classNames);
+		super(id, lAbel, collApseIcon.clAssNAmes);
+	}
+
+	Async run(notificAtion: INotificAtionViewItem): Promise<void> {
+		this.commAndService.executeCommAnd(COLLAPSE_NOTIFICATION, notificAtion);
 	}
 }
 
-export class CopyNotificationMessageAction extends Action {
+export clAss ConfigureNotificAtionAction extends Action {
 
-	static readonly ID = 'workbench.action.copyNotificationMessage';
-	static readonly LABEL = localize('copyNotification', "Copy Text");
+	stAtic reAdonly ID = 'workbench.Action.configureNotificAtion';
+	stAtic reAdonly LABEL = locAlize('configureNotificAtion', "Configure NotificAtion");
 
 	constructor(
 		id: string,
-		label: string,
-		@IClipboardService private readonly clipboardService: IClipboardService
+		lAbel: string,
+		public reAdonly configurAtionActions: ReAdonlyArrAy<IAction>
 	) {
-		super(id, label);
-	}
-
-	run(notification: INotificationViewItem): Promise<void> {
-		return this.clipboardService.writeText(notification.message.raw);
+		super(id, lAbel, configureIcon.clAssNAmes);
 	}
 }
 
-export class NotificationActionRunner extends ActionRunner {
+export clAss CopyNotificAtionMessAgeAction extends Action {
+
+	stAtic reAdonly ID = 'workbench.Action.copyNotificAtionMessAge';
+	stAtic reAdonly LABEL = locAlize('copyNotificAtion', "Copy Text");
 
 	constructor(
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@INotificationService private readonly notificationService: INotificationService
+		id: string,
+		lAbel: string,
+		@IClipboArdService privAte reAdonly clipboArdService: IClipboArdService
+	) {
+		super(id, lAbel);
+	}
+
+	run(notificAtion: INotificAtionViewItem): Promise<void> {
+		return this.clipboArdService.writeText(notificAtion.messAge.rAw);
+	}
+}
+
+export clAss NotificAtionActionRunner extends ActionRunner {
+
+	constructor(
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService
 	) {
 		super();
 	}
 
-	protected async runAction(action: IAction, context: INotificationViewItem): Promise<void> {
-		this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: action.id, from: 'message' });
+	protected Async runAction(Action: IAction, context: INotificAtionViewItem): Promise<void> {
+		this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion>('workbenchActionExecuted', { id: Action.id, from: 'messAge' });
 
-		// Run and make sure to notify on any error again
+		// Run And mAke sure to notify on Any error AgAin
 		try {
-			await super.runAction(action, context);
-		} catch (error) {
-			this.notificationService.error(error);
+			AwAit super.runAction(Action, context);
+		} cAtch (error) {
+			this.notificAtionService.error(error);
 		}
 	}
 }

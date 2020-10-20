@@ -1,386 +1,386 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as browser from 'vs/base/browser/browser';
-import { domEvent } from 'vs/base/browser/event';
-import { IKeyboardEvent, StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { IMouseEvent, StandardMouseEvent } from 'vs/base/browser/mouseEvent';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import * as platform from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { FileAccess, RemoteAuthorities } from 'vs/base/common/network';
-import { BrowserFeatures } from 'vs/base/browser/canIUse';
-import { insane, InsaneOptions } from 'vs/base/common/insane/insane';
+import * As browser from 'vs/bAse/browser/browser';
+import { domEvent } from 'vs/bAse/browser/event';
+import { IKeyboArdEvent, StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { IMouseEvent, StAndArdMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { TimeoutTimer } from 'vs/bAse/common/Async';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
+import { FileAccess, RemoteAuthorities } from 'vs/bAse/common/network';
+import { BrowserFeAtures } from 'vs/bAse/browser/cAnIUse';
+import { insAne, InsAneOptions } from 'vs/bAse/common/insAne/insAne';
 
-export function clearNode(node: HTMLElement): void {
+export function cleArNode(node: HTMLElement): void {
 	while (node.firstChild) {
 		node.removeChild(node.firstChild);
 	}
 }
 
-export function isInDOM(node: Node | null): boolean {
+export function isInDOM(node: Node | null): booleAn {
 	while (node) {
 		if (node === document.body) {
 			return true;
 		}
-		node = node.parentNode || (node as ShadowRoot).host;
+		node = node.pArentNode || (node As ShAdowRoot).host;
 	}
-	return false;
+	return fAlse;
 }
 
-interface IDomClassList {
-	addClass(node: HTMLElement | SVGElement, className: string): void;
-	toggleClass(node: HTMLElement | SVGElement, className: string, shouldHaveIt?: boolean): void;
+interfAce IDomClAssList {
+	AddClAss(node: HTMLElement | SVGElement, clAssNAme: string): void;
+	toggleClAss(node: HTMLElement | SVGElement, clAssNAme: string, shouldHAveIt?: booleAn): void;
 }
 
-const _classList: IDomClassList = new class implements IDomClassList {
+const _clAssList: IDomClAssList = new clAss implements IDomClAssList {
 
-	addClass(node: HTMLElement, className: string): void {
-		if (className && node.classList) {
-			node.classList.add(className);
+	AddClAss(node: HTMLElement, clAssNAme: string): void {
+		if (clAssNAme && node.clAssList) {
+			node.clAssList.Add(clAssNAme);
 		}
 	}
 
-	toggleClass(node: HTMLElement, className: string, shouldHaveIt?: boolean): void {
-		if (node.classList) {
-			node.classList.toggle(className, shouldHaveIt);
+	toggleClAss(node: HTMLElement, clAssNAme: string, shouldHAveIt?: booleAn): void {
+		if (node.clAssList) {
+			node.clAssList.toggle(clAssNAme, shouldHAveIt);
 		}
 	}
 };
 
-/** @deprecated ES6 - use classList*/
-export function addClass(node: HTMLElement | SVGElement, className: string): void { return _classList.addClass(node, className); }
-/** @deprecated ES6 - use classList*/
-export function toggleClass(node: HTMLElement | SVGElement, className: string, shouldHaveIt?: boolean): void { return _classList.toggleClass(node, className, shouldHaveIt); }
+/** @deprecAted ES6 - use clAssList*/
+export function AddClAss(node: HTMLElement | SVGElement, clAssNAme: string): void { return _clAssList.AddClAss(node, clAssNAme); }
+/** @deprecAted ES6 - use clAssList*/
+export function toggleClAss(node: HTMLElement | SVGElement, clAssNAme: string, shouldHAveIt?: booleAn): void { return _clAssList.toggleClAss(node, clAssNAme, shouldHAveIt); }
 
-class DomListener implements IDisposable {
+clAss DomListener implements IDisposAble {
 
-	private _handler: (e: any) => void;
-	private _node: EventTarget;
-	private readonly _type: string;
-	private readonly _options: boolean | AddEventListenerOptions;
+	privAte _hAndler: (e: Any) => void;
+	privAte _node: EventTArget;
+	privAte reAdonly _type: string;
+	privAte reAdonly _options: booleAn | AddEventListenerOptions;
 
-	constructor(node: EventTarget, type: string, handler: (e: any) => void, options?: boolean | AddEventListenerOptions) {
+	constructor(node: EventTArget, type: string, hAndler: (e: Any) => void, options?: booleAn | AddEventListenerOptions) {
 		this._node = node;
 		this._type = type;
-		this._handler = handler;
-		this._options = (options || false);
-		this._node.addEventListener(this._type, this._handler, this._options);
+		this._hAndler = hAndler;
+		this._options = (options || fAlse);
+		this._node.AddEventListener(this._type, this._hAndler, this._options);
 	}
 
 	public dispose(): void {
-		if (!this._handler) {
-			// Already disposed
+		if (!this._hAndler) {
+			// AlreAdy disposed
 			return;
 		}
 
-		this._node.removeEventListener(this._type, this._handler, this._options);
+		this._node.removeEventListener(this._type, this._hAndler, this._options);
 
-		// Prevent leakers from holding on to the dom or handler func
+		// Prevent leAkers from holding on to the dom or hAndler func
 		this._node = null!;
-		this._handler = null!;
+		this._hAndler = null!;
 	}
 }
 
-export function addDisposableListener<K extends keyof GlobalEventHandlersEventMap>(node: EventTarget, type: K, handler: (event: GlobalEventHandlersEventMap[K]) => void, useCapture?: boolean): IDisposable;
-export function addDisposableListener(node: EventTarget, type: string, handler: (event: any) => void, useCapture?: boolean): IDisposable;
-export function addDisposableListener(node: EventTarget, type: string, handler: (event: any) => void, options: AddEventListenerOptions): IDisposable;
-export function addDisposableListener(node: EventTarget, type: string, handler: (event: any) => void, useCaptureOrOptions?: boolean | AddEventListenerOptions): IDisposable {
-	return new DomListener(node, type, handler, useCaptureOrOptions);
+export function AddDisposAbleListener<K extends keyof GlobAlEventHAndlersEventMAp>(node: EventTArget, type: K, hAndler: (event: GlobAlEventHAndlersEventMAp[K]) => void, useCApture?: booleAn): IDisposAble;
+export function AddDisposAbleListener(node: EventTArget, type: string, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble;
+export function AddDisposAbleListener(node: EventTArget, type: string, hAndler: (event: Any) => void, options: AddEventListenerOptions): IDisposAble;
+export function AddDisposAbleListener(node: EventTArget, type: string, hAndler: (event: Any) => void, useCAptureOrOptions?: booleAn | AddEventListenerOptions): IDisposAble {
+	return new DomListener(node, type, hAndler, useCAptureOrOptions);
 }
 
-export interface IAddStandardDisposableListenerSignature {
-	(node: HTMLElement, type: 'click', handler: (event: IMouseEvent) => void, useCapture?: boolean): IDisposable;
-	(node: HTMLElement, type: 'mousedown', handler: (event: IMouseEvent) => void, useCapture?: boolean): IDisposable;
-	(node: HTMLElement, type: 'keydown', handler: (event: IKeyboardEvent) => void, useCapture?: boolean): IDisposable;
-	(node: HTMLElement, type: 'keypress', handler: (event: IKeyboardEvent) => void, useCapture?: boolean): IDisposable;
-	(node: HTMLElement, type: 'keyup', handler: (event: IKeyboardEvent) => void, useCapture?: boolean): IDisposable;
-	(node: HTMLElement, type: string, handler: (event: any) => void, useCapture?: boolean): IDisposable;
+export interfAce IAddStAndArdDisposAbleListenerSignAture {
+	(node: HTMLElement, type: 'click', hAndler: (event: IMouseEvent) => void, useCApture?: booleAn): IDisposAble;
+	(node: HTMLElement, type: 'mousedown', hAndler: (event: IMouseEvent) => void, useCApture?: booleAn): IDisposAble;
+	(node: HTMLElement, type: 'keydown', hAndler: (event: IKeyboArdEvent) => void, useCApture?: booleAn): IDisposAble;
+	(node: HTMLElement, type: 'keypress', hAndler: (event: IKeyboArdEvent) => void, useCApture?: booleAn): IDisposAble;
+	(node: HTMLElement, type: 'keyup', hAndler: (event: IKeyboArdEvent) => void, useCApture?: booleAn): IDisposAble;
+	(node: HTMLElement, type: string, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble;
 }
-function _wrapAsStandardMouseEvent(handler: (e: IMouseEvent) => void): (e: MouseEvent) => void {
+function _wrApAsStAndArdMouseEvent(hAndler: (e: IMouseEvent) => void): (e: MouseEvent) => void {
 	return function (e: MouseEvent) {
-		return handler(new StandardMouseEvent(e));
+		return hAndler(new StAndArdMouseEvent(e));
 	};
 }
-function _wrapAsStandardKeyboardEvent(handler: (e: IKeyboardEvent) => void): (e: KeyboardEvent) => void {
-	return function (e: KeyboardEvent) {
-		return handler(new StandardKeyboardEvent(e));
+function _wrApAsStAndArdKeyboArdEvent(hAndler: (e: IKeyboArdEvent) => void): (e: KeyboArdEvent) => void {
+	return function (e: KeyboArdEvent) {
+		return hAndler(new StAndArdKeyboArdEvent(e));
 	};
 }
-export let addStandardDisposableListener: IAddStandardDisposableListenerSignature = function addStandardDisposableListener(node: HTMLElement, type: string, handler: (event: any) => void, useCapture?: boolean): IDisposable {
-	let wrapHandler = handler;
+export let AddStAndArdDisposAbleListener: IAddStAndArdDisposAbleListenerSignAture = function AddStAndArdDisposAbleListener(node: HTMLElement, type: string, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble {
+	let wrApHAndler = hAndler;
 
 	if (type === 'click' || type === 'mousedown') {
-		wrapHandler = _wrapAsStandardMouseEvent(handler);
+		wrApHAndler = _wrApAsStAndArdMouseEvent(hAndler);
 	} else if (type === 'keydown' || type === 'keypress' || type === 'keyup') {
-		wrapHandler = _wrapAsStandardKeyboardEvent(handler);
+		wrApHAndler = _wrApAsStAndArdKeyboArdEvent(hAndler);
 	}
 
-	return addDisposableListener(node, type, wrapHandler, useCapture);
+	return AddDisposAbleListener(node, type, wrApHAndler, useCApture);
 };
 
-export let addStandardDisposableGenericMouseDownListner = function addStandardDisposableListener(node: HTMLElement, handler: (event: any) => void, useCapture?: boolean): IDisposable {
-	let wrapHandler = _wrapAsStandardMouseEvent(handler);
+export let AddStAndArdDisposAbleGenericMouseDownListner = function AddStAndArdDisposAbleListener(node: HTMLElement, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble {
+	let wrApHAndler = _wrApAsStAndArdMouseEvent(hAndler);
 
-	return addDisposableGenericMouseDownListner(node, wrapHandler, useCapture);
+	return AddDisposAbleGenericMouseDownListner(node, wrApHAndler, useCApture);
 };
 
-export let addStandardDisposableGenericMouseUpListner = function addStandardDisposableListener(node: HTMLElement, handler: (event: any) => void, useCapture?: boolean): IDisposable {
-	let wrapHandler = _wrapAsStandardMouseEvent(handler);
+export let AddStAndArdDisposAbleGenericMouseUpListner = function AddStAndArdDisposAbleListener(node: HTMLElement, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble {
+	let wrApHAndler = _wrApAsStAndArdMouseEvent(hAndler);
 
-	return addDisposableGenericMouseUpListner(node, wrapHandler, useCapture);
+	return AddDisposAbleGenericMouseUpListner(node, wrApHAndler, useCApture);
 };
-export function addDisposableGenericMouseDownListner(node: EventTarget, handler: (event: any) => void, useCapture?: boolean): IDisposable {
-	return addDisposableListener(node, platform.isIOS && BrowserFeatures.pointerEvents ? EventType.POINTER_DOWN : EventType.MOUSE_DOWN, handler, useCapture);
+export function AddDisposAbleGenericMouseDownListner(node: EventTArget, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble {
+	return AddDisposAbleListener(node, plAtform.isIOS && BrowserFeAtures.pointerEvents ? EventType.POINTER_DOWN : EventType.MOUSE_DOWN, hAndler, useCApture);
 }
 
-export function addDisposableGenericMouseMoveListner(node: EventTarget, handler: (event: any) => void, useCapture?: boolean): IDisposable {
-	return addDisposableListener(node, platform.isIOS && BrowserFeatures.pointerEvents ? EventType.POINTER_MOVE : EventType.MOUSE_MOVE, handler, useCapture);
+export function AddDisposAbleGenericMouseMoveListner(node: EventTArget, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble {
+	return AddDisposAbleListener(node, plAtform.isIOS && BrowserFeAtures.pointerEvents ? EventType.POINTER_MOVE : EventType.MOUSE_MOVE, hAndler, useCApture);
 }
 
-export function addDisposableGenericMouseUpListner(node: EventTarget, handler: (event: any) => void, useCapture?: boolean): IDisposable {
-	return addDisposableListener(node, platform.isIOS && BrowserFeatures.pointerEvents ? EventType.POINTER_UP : EventType.MOUSE_UP, handler, useCapture);
+export function AddDisposAbleGenericMouseUpListner(node: EventTArget, hAndler: (event: Any) => void, useCApture?: booleAn): IDisposAble {
+	return AddDisposAbleListener(node, plAtform.isIOS && BrowserFeAtures.pointerEvents ? EventType.POINTER_UP : EventType.MOUSE_UP, hAndler, useCApture);
 }
-export function addDisposableNonBubblingMouseOutListener(node: Element, handler: (event: MouseEvent) => void): IDisposable {
-	return addDisposableListener(node, 'mouseout', (e: MouseEvent) => {
-		// Mouse out bubbles, so this is an attempt to ignore faux mouse outs coming from children elements
-		let toElement: Node | null = <Node>(e.relatedTarget);
+export function AddDisposAbleNonBubblingMouseOutListener(node: Element, hAndler: (event: MouseEvent) => void): IDisposAble {
+	return AddDisposAbleListener(node, 'mouseout', (e: MouseEvent) => {
+		// Mouse out bubbles, so this is An Attempt to ignore fAux mouse outs coming from children elements
+		let toElement: Node | null = <Node>(e.relAtedTArget);
 		while (toElement && toElement !== node) {
-			toElement = toElement.parentNode;
+			toElement = toElement.pArentNode;
 		}
 		if (toElement === node) {
 			return;
 		}
 
-		handler(e);
+		hAndler(e);
 	});
 }
 
-export function addDisposableNonBubblingPointerOutListener(node: Element, handler: (event: MouseEvent) => void): IDisposable {
-	return addDisposableListener(node, 'pointerout', (e: MouseEvent) => {
-		// Mouse out bubbles, so this is an attempt to ignore faux mouse outs coming from children elements
-		let toElement: Node | null = <Node>(e.relatedTarget);
+export function AddDisposAbleNonBubblingPointerOutListener(node: Element, hAndler: (event: MouseEvent) => void): IDisposAble {
+	return AddDisposAbleListener(node, 'pointerout', (e: MouseEvent) => {
+		// Mouse out bubbles, so this is An Attempt to ignore fAux mouse outs coming from children elements
+		let toElement: Node | null = <Node>(e.relAtedTArget);
 		while (toElement && toElement !== node) {
-			toElement = toElement.parentNode;
+			toElement = toElement.pArentNode;
 		}
 		if (toElement === node) {
 			return;
 		}
 
-		handler(e);
+		hAndler(e);
 	});
 }
 
-interface IRequestAnimationFrame {
-	(callback: (time: number) => void): number;
+interfAce IRequestAnimAtionFrAme {
+	(cAllbAck: (time: number) => void): number;
 }
-let _animationFrame: IRequestAnimationFrame | null = null;
-function doRequestAnimationFrame(callback: (time: number) => void): number {
-	if (!_animationFrame) {
-		const emulatedRequestAnimationFrame = (callback: (time: number) => void): any => {
-			return setTimeout(() => callback(new Date().getTime()), 0);
+let _AnimAtionFrAme: IRequestAnimAtionFrAme | null = null;
+function doRequestAnimAtionFrAme(cAllbAck: (time: number) => void): number {
+	if (!_AnimAtionFrAme) {
+		const emulAtedRequestAnimAtionFrAme = (cAllbAck: (time: number) => void): Any => {
+			return setTimeout(() => cAllbAck(new DAte().getTime()), 0);
 		};
-		_animationFrame = (
-			self.requestAnimationFrame
-			|| (<any>self).msRequestAnimationFrame
-			|| (<any>self).webkitRequestAnimationFrame
-			|| (<any>self).mozRequestAnimationFrame
-			|| (<any>self).oRequestAnimationFrame
-			|| emulatedRequestAnimationFrame
+		_AnimAtionFrAme = (
+			self.requestAnimAtionFrAme
+			|| (<Any>self).msRequestAnimAtionFrAme
+			|| (<Any>self).webkitRequestAnimAtionFrAme
+			|| (<Any>self).mozRequestAnimAtionFrAme
+			|| (<Any>self).oRequestAnimAtionFrAme
+			|| emulAtedRequestAnimAtionFrAme
 		);
 	}
-	return _animationFrame.call(self, callback);
+	return _AnimAtionFrAme.cAll(self, cAllbAck);
 }
 
 /**
- * Schedule a callback to be run at the next animation frame.
- * This allows multiple parties to register callbacks that should run at the next animation frame.
- * If currently in an animation frame, `runner` will be executed immediately.
- * @return token that can be used to cancel the scheduled runner (only if `runner` was not executed immediately).
+ * Schedule A cAllbAck to be run At the next AnimAtion frAme.
+ * This Allows multiple pArties to register cAllbAcks thAt should run At the next AnimAtion frAme.
+ * If currently in An AnimAtion frAme, `runner` will be executed immediAtely.
+ * @return token thAt cAn be used to cAncel the scheduled runner (only if `runner` wAs not executed immediAtely).
  */
-export let runAtThisOrScheduleAtNextAnimationFrame: (runner: () => void, priority?: number) => IDisposable;
+export let runAtThisOrScheduleAtNextAnimAtionFrAme: (runner: () => void, priority?: number) => IDisposAble;
 /**
- * Schedule a callback to be run at the next animation frame.
- * This allows multiple parties to register callbacks that should run at the next animation frame.
- * If currently in an animation frame, `runner` will be executed at the next animation frame.
- * @return token that can be used to cancel the scheduled runner.
+ * Schedule A cAllbAck to be run At the next AnimAtion frAme.
+ * This Allows multiple pArties to register cAllbAcks thAt should run At the next AnimAtion frAme.
+ * If currently in An AnimAtion frAme, `runner` will be executed At the next AnimAtion frAme.
+ * @return token thAt cAn be used to cAncel the scheduled runner.
  */
-export let scheduleAtNextAnimationFrame: (runner: () => void, priority?: number) => IDisposable;
+export let scheduleAtNextAnimAtionFrAme: (runner: () => void, priority?: number) => IDisposAble;
 
-class AnimationFrameQueueItem implements IDisposable {
+clAss AnimAtionFrAmeQueueItem implements IDisposAble {
 
-	private _runner: () => void;
+	privAte _runner: () => void;
 	public priority: number;
-	private _canceled: boolean;
+	privAte _cAnceled: booleAn;
 
 	constructor(runner: () => void, priority: number = 0) {
 		this._runner = runner;
 		this.priority = priority;
-		this._canceled = false;
+		this._cAnceled = fAlse;
 	}
 
 	public dispose(): void {
-		this._canceled = true;
+		this._cAnceled = true;
 	}
 
 	public execute(): void {
-		if (this._canceled) {
+		if (this._cAnceled) {
 			return;
 		}
 
 		try {
 			this._runner();
-		} catch (e) {
+		} cAtch (e) {
 			onUnexpectedError(e);
 		}
 	}
 
-	// Sort by priority (largest to lowest)
-	public static sort(a: AnimationFrameQueueItem, b: AnimationFrameQueueItem): number {
-		return b.priority - a.priority;
+	// Sort by priority (lArgest to lowest)
+	public stAtic sort(A: AnimAtionFrAmeQueueItem, b: AnimAtionFrAmeQueueItem): number {
+		return b.priority - A.priority;
 	}
 }
 
 (function () {
 	/**
-	 * The runners scheduled at the next animation frame
+	 * The runners scheduled At the next AnimAtion frAme
 	 */
-	let NEXT_QUEUE: AnimationFrameQueueItem[] = [];
+	let NEXT_QUEUE: AnimAtionFrAmeQueueItem[] = [];
 	/**
-	 * The runners scheduled at the current animation frame
+	 * The runners scheduled At the current AnimAtion frAme
 	 */
-	let CURRENT_QUEUE: AnimationFrameQueueItem[] | null = null;
+	let CURRENT_QUEUE: AnimAtionFrAmeQueueItem[] | null = null;
 	/**
-	 * A flag to keep track if the native requestAnimationFrame was already called
+	 * A flAg to keep trAck if the nAtive requestAnimAtionFrAme wAs AlreAdy cAlled
 	 */
-	let animFrameRequested = false;
+	let AnimFrAmeRequested = fAlse;
 	/**
-	 * A flag to indicate if currently handling a native requestAnimationFrame callback
+	 * A flAg to indicAte if currently hAndling A nAtive requestAnimAtionFrAme cAllbAck
 	 */
-	let inAnimationFrameRunner = false;
+	let inAnimAtionFrAmeRunner = fAlse;
 
-	let animationFrameRunner = () => {
-		animFrameRequested = false;
+	let AnimAtionFrAmeRunner = () => {
+		AnimFrAmeRequested = fAlse;
 
 		CURRENT_QUEUE = NEXT_QUEUE;
 		NEXT_QUEUE = [];
 
-		inAnimationFrameRunner = true;
+		inAnimAtionFrAmeRunner = true;
 		while (CURRENT_QUEUE.length > 0) {
-			CURRENT_QUEUE.sort(AnimationFrameQueueItem.sort);
+			CURRENT_QUEUE.sort(AnimAtionFrAmeQueueItem.sort);
 			let top = CURRENT_QUEUE.shift()!;
 			top.execute();
 		}
-		inAnimationFrameRunner = false;
+		inAnimAtionFrAmeRunner = fAlse;
 	};
 
-	scheduleAtNextAnimationFrame = (runner: () => void, priority: number = 0) => {
-		let item = new AnimationFrameQueueItem(runner, priority);
+	scheduleAtNextAnimAtionFrAme = (runner: () => void, priority: number = 0) => {
+		let item = new AnimAtionFrAmeQueueItem(runner, priority);
 		NEXT_QUEUE.push(item);
 
-		if (!animFrameRequested) {
-			animFrameRequested = true;
-			doRequestAnimationFrame(animationFrameRunner);
+		if (!AnimFrAmeRequested) {
+			AnimFrAmeRequested = true;
+			doRequestAnimAtionFrAme(AnimAtionFrAmeRunner);
 		}
 
 		return item;
 	};
 
-	runAtThisOrScheduleAtNextAnimationFrame = (runner: () => void, priority?: number) => {
-		if (inAnimationFrameRunner) {
-			let item = new AnimationFrameQueueItem(runner, priority);
+	runAtThisOrScheduleAtNextAnimAtionFrAme = (runner: () => void, priority?: number) => {
+		if (inAnimAtionFrAmeRunner) {
+			let item = new AnimAtionFrAmeQueueItem(runner, priority);
 			CURRENT_QUEUE!.push(item);
 			return item;
 		} else {
-			return scheduleAtNextAnimationFrame(runner, priority);
+			return scheduleAtNextAnimAtionFrAme(runner, priority);
 		}
 	};
 })();
 
-export function measure(callback: () => void): IDisposable {
-	return scheduleAtNextAnimationFrame(callback, 10000 /* must be early */);
+export function meAsure(cAllbAck: () => void): IDisposAble {
+	return scheduleAtNextAnimAtionFrAme(cAllbAck, 10000 /* must be eArly */);
 }
 
-export function modify(callback: () => void): IDisposable {
-	return scheduleAtNextAnimationFrame(callback, -10000 /* must be late */);
+export function modify(cAllbAck: () => void): IDisposAble {
+	return scheduleAtNextAnimAtionFrAme(cAllbAck, -10000 /* must be lAte */);
 }
 
 /**
- * Add a throttled listener. `handler` is fired at most every 16ms or with the next animation frame (if browser supports it).
+ * Add A throttled listener. `hAndler` is fired At most every 16ms or with the next AnimAtion frAme (if browser supports it).
  */
-export interface IEventMerger<R, E> {
-	(lastEvent: R | null, currentEvent: E): R;
+export interfAce IEventMerger<R, E> {
+	(lAstEvent: R | null, currentEvent: E): R;
 }
 
-export interface DOMEvent {
-	preventDefault(): void;
-	stopPropagation(): void;
+export interfAce DOMEvent {
+	preventDefAult(): void;
+	stopPropAgAtion(): void;
 }
 
 const MINIMUM_TIME_MS = 16;
-const DEFAULT_EVENT_MERGER: IEventMerger<DOMEvent, DOMEvent> = function (lastEvent: DOMEvent | null, currentEvent: DOMEvent) {
+const DEFAULT_EVENT_MERGER: IEventMerger<DOMEvent, DOMEvent> = function (lAstEvent: DOMEvent | null, currentEvent: DOMEvent) {
 	return currentEvent;
 };
 
-class TimeoutThrottledDomListener<R, E extends DOMEvent> extends Disposable {
+clAss TimeoutThrottledDomListener<R, E extends DOMEvent> extends DisposAble {
 
-	constructor(node: any, type: string, handler: (event: R) => void, eventMerger: IEventMerger<R, E> = <any>DEFAULT_EVENT_MERGER, minimumTimeMs: number = MINIMUM_TIME_MS) {
+	constructor(node: Any, type: string, hAndler: (event: R) => void, eventMerger: IEventMerger<R, E> = <Any>DEFAULT_EVENT_MERGER, minimumTimeMs: number = MINIMUM_TIME_MS) {
 		super();
 
-		let lastEvent: R | null = null;
-		let lastHandlerTime = 0;
+		let lAstEvent: R | null = null;
+		let lAstHAndlerTime = 0;
 		let timeout = this._register(new TimeoutTimer());
 
-		let invokeHandler = () => {
-			lastHandlerTime = (new Date()).getTime();
-			handler(<R>lastEvent);
-			lastEvent = null;
+		let invokeHAndler = () => {
+			lAstHAndlerTime = (new DAte()).getTime();
+			hAndler(<R>lAstEvent);
+			lAstEvent = null;
 		};
 
-		this._register(addDisposableListener(node, type, (e) => {
+		this._register(AddDisposAbleListener(node, type, (e) => {
 
-			lastEvent = eventMerger(lastEvent, e);
-			let elapsedTime = (new Date()).getTime() - lastHandlerTime;
+			lAstEvent = eventMerger(lAstEvent, e);
+			let elApsedTime = (new DAte()).getTime() - lAstHAndlerTime;
 
-			if (elapsedTime >= minimumTimeMs) {
-				timeout.cancel();
-				invokeHandler();
+			if (elApsedTime >= minimumTimeMs) {
+				timeout.cAncel();
+				invokeHAndler();
 			} else {
-				timeout.setIfNotSet(invokeHandler, minimumTimeMs - elapsedTime);
+				timeout.setIfNotSet(invokeHAndler, minimumTimeMs - elApsedTime);
 			}
 		}));
 	}
 }
 
-export function addDisposableThrottledListener<R, E extends DOMEvent = DOMEvent>(node: any, type: string, handler: (event: R) => void, eventMerger?: IEventMerger<R, E>, minimumTimeMs?: number): IDisposable {
-	return new TimeoutThrottledDomListener<R, E>(node, type, handler, eventMerger, minimumTimeMs);
+export function AddDisposAbleThrottledListener<R, E extends DOMEvent = DOMEvent>(node: Any, type: string, hAndler: (event: R) => void, eventMerger?: IEventMerger<R, E>, minimumTimeMs?: number): IDisposAble {
+	return new TimeoutThrottledDomListener<R, E>(node, type, hAndler, eventMerger, minimumTimeMs);
 }
 
-export function getComputedStyle(el: HTMLElement): CSSStyleDeclaration {
-	return document.defaultView!.getComputedStyle(el, null);
+export function getComputedStyle(el: HTMLElement): CSSStyleDeclArAtion {
+	return document.defAultView!.getComputedStyle(el, null);
 }
 
-export function getClientArea(element: HTMLElement): Dimension {
+export function getClientAreA(element: HTMLElement): Dimension {
 
 	// Try with DOM clientWidth / clientHeight
 	if (element !== document.body) {
 		return new Dimension(element.clientWidth, element.clientHeight);
 	}
 
-	// If visual view port exits and it's on mobile, it should be used instead of window innerWidth / innerHeight, or document.body.clientWidth / document.body.clientHeight
-	if (platform.isIOS && window.visualViewport) {
-		const width = window.visualViewport.width;
-		const height = window.visualViewport.height - (
-			browser.isStandalone
-				// in PWA mode, the visual viewport always includes the safe-area-inset-bottom (which is for the home indicator)
-				// even when you are using the onscreen monitor, the visual viewport will include the area between system statusbar and the onscreen keyboard
-				// plus the area between onscreen keyboard and the bottom bezel, which is 20px on iOS.
-				? (20 + 4) // + 4px for body margin
+	// If visuAl view port exits And it's on mobile, it should be used insteAd of window innerWidth / innerHeight, or document.body.clientWidth / document.body.clientHeight
+	if (plAtform.isIOS && window.visuAlViewport) {
+		const width = window.visuAlViewport.width;
+		const height = window.visuAlViewport.height - (
+			browser.isStAndAlone
+				// in PWA mode, the visuAl viewport AlwAys includes the sAfe-AreA-inset-bottom (which is for the home indicAtor)
+				// even when you Are using the onscreen monitor, the visuAl viewport will include the AreA between system stAtusbAr And the onscreen keyboArd
+				// plus the AreA between onscreen keyboArd And the bottom bezel, which is 20px on iOS.
+				? (20 + 4) // + 4px for body mArgin
 				: 0
 		);
 		return new Dimension(width, height);
@@ -401,121 +401,121 @@ export function getClientArea(element: HTMLElement): Dimension {
 		return new Dimension(document.documentElement.clientWidth, document.documentElement.clientHeight);
 	}
 
-	throw new Error('Unable to figure out browser width and height');
+	throw new Error('UnAble to figure out browser width And height');
 }
 
-class SizeUtils {
-	// Adapted from WinJS
-	// Converts a CSS positioning string for the specified element to pixels.
-	private static convertToPixels(element: HTMLElement, value: string): number {
-		return parseFloat(value) || 0;
+clAss SizeUtils {
+	// AdApted from WinJS
+	// Converts A CSS positioning string for the specified element to pixels.
+	privAte stAtic convertToPixels(element: HTMLElement, vAlue: string): number {
+		return pArseFloAt(vAlue) || 0;
 	}
 
-	private static getDimension(element: HTMLElement, cssPropertyName: string, jsPropertyName: string): number {
-		let computedStyle: CSSStyleDeclaration = getComputedStyle(element);
-		let value = '0';
+	privAte stAtic getDimension(element: HTMLElement, cssPropertyNAme: string, jsPropertyNAme: string): number {
+		let computedStyle: CSSStyleDeclArAtion = getComputedStyle(element);
+		let vAlue = '0';
 		if (computedStyle) {
-			if (computedStyle.getPropertyValue) {
-				value = computedStyle.getPropertyValue(cssPropertyName);
+			if (computedStyle.getPropertyVAlue) {
+				vAlue = computedStyle.getPropertyVAlue(cssPropertyNAme);
 			} else {
 				// IE8
-				value = (<any>computedStyle).getAttribute(jsPropertyName);
+				vAlue = (<Any>computedStyle).getAttribute(jsPropertyNAme);
 			}
 		}
-		return SizeUtils.convertToPixels(element, value);
+		return SizeUtils.convertToPixels(element, vAlue);
 	}
 
-	static getBorderLeftWidth(element: HTMLElement): number {
+	stAtic getBorderLeftWidth(element: HTMLElement): number {
 		return SizeUtils.getDimension(element, 'border-left-width', 'borderLeftWidth');
 	}
-	static getBorderRightWidth(element: HTMLElement): number {
+	stAtic getBorderRightWidth(element: HTMLElement): number {
 		return SizeUtils.getDimension(element, 'border-right-width', 'borderRightWidth');
 	}
-	static getBorderTopWidth(element: HTMLElement): number {
+	stAtic getBorderTopWidth(element: HTMLElement): number {
 		return SizeUtils.getDimension(element, 'border-top-width', 'borderTopWidth');
 	}
-	static getBorderBottomWidth(element: HTMLElement): number {
+	stAtic getBorderBottomWidth(element: HTMLElement): number {
 		return SizeUtils.getDimension(element, 'border-bottom-width', 'borderBottomWidth');
 	}
 
-	static getPaddingLeft(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'padding-left', 'paddingLeft');
+	stAtic getPAddingLeft(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'pAdding-left', 'pAddingLeft');
 	}
-	static getPaddingRight(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'padding-right', 'paddingRight');
+	stAtic getPAddingRight(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'pAdding-right', 'pAddingRight');
 	}
-	static getPaddingTop(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'padding-top', 'paddingTop');
+	stAtic getPAddingTop(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'pAdding-top', 'pAddingTop');
 	}
-	static getPaddingBottom(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'padding-bottom', 'paddingBottom');
+	stAtic getPAddingBottom(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'pAdding-bottom', 'pAddingBottom');
 	}
 
-	static getMarginLeft(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'margin-left', 'marginLeft');
+	stAtic getMArginLeft(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'mArgin-left', 'mArginLeft');
 	}
-	static getMarginTop(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'margin-top', 'marginTop');
+	stAtic getMArginTop(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'mArgin-top', 'mArginTop');
 	}
-	static getMarginRight(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'margin-right', 'marginRight');
+	stAtic getMArginRight(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'mArgin-right', 'mArginRight');
 	}
-	static getMarginBottom(element: HTMLElement): number {
-		return SizeUtils.getDimension(element, 'margin-bottom', 'marginBottom');
+	stAtic getMArginBottom(element: HTMLElement): number {
+		return SizeUtils.getDimension(element, 'mArgin-bottom', 'mArginBottom');
 	}
 }
 
 // ----------------------------------------------------------------------------------------
 // Position & Dimension
 
-export interface IDimension {
-	readonly width: number;
-	readonly height: number;
+export interfAce IDimension {
+	reAdonly width: number;
+	reAdonly height: number;
 }
 
-export class Dimension implements IDimension {
+export clAss Dimension implements IDimension {
 
 	constructor(
-		public readonly width: number,
-		public readonly height: number,
+		public reAdonly width: number,
+		public reAdonly height: number,
 	) { }
 
-	static equals(a: Dimension | undefined, b: Dimension | undefined): boolean {
-		if (a === b) {
+	stAtic equAls(A: Dimension | undefined, b: Dimension | undefined): booleAn {
+		if (A === b) {
 			return true;
 		}
-		if (!a || !b) {
-			return false;
+		if (!A || !b) {
+			return fAlse;
 		}
-		return a.width === b.width && a.height === b.height;
+		return A.width === b.width && A.height === b.height;
 	}
 }
 
 export function getTopLeftOffset(element: HTMLElement): { left: number; top: number; } {
-	// Adapted from WinJS.Utilities.getPosition
-	// and added borders to the mix
+	// AdApted from WinJS.Utilities.getPosition
+	// And Added borders to the mix
 
-	let offsetParent = element.offsetParent;
+	let offsetPArent = element.offsetPArent;
 	let top = element.offsetTop;
 	let left = element.offsetLeft;
 
 	while (
-		(element = <HTMLElement>element.parentNode) !== null
+		(element = <HTMLElement>element.pArentNode) !== null
 		&& element !== document.body
 		&& element !== document.documentElement
 	) {
 		top -= element.scrollTop;
-		const c = isShadowRoot(element) ? null : getComputedStyle(element);
+		const c = isShAdowRoot(element) ? null : getComputedStyle(element);
 		if (c) {
 			left -= c.direction !== 'rtl' ? element.scrollLeft : -element.scrollLeft;
 		}
 
-		if (element === offsetParent) {
+		if (element === offsetPArent) {
 			left += SizeUtils.getBorderLeftWidth(element);
 			top += SizeUtils.getBorderTopWidth(element);
 			top += element.offsetTop;
 			left += element.offsetLeft;
-			offsetParent = element.offsetParent;
+			offsetPArent = element.offsetPArent;
 		}
 	}
 
@@ -525,7 +525,7 @@ export function getTopLeftOffset(element: HTMLElement): { left: number; top: num
 	};
 }
 
-export interface IDomNodePagePosition {
+export interfAce IDomNodePAgePosition {
 	left: number;
 	top: number;
 	width: number;
@@ -542,7 +542,7 @@ export function size(element: HTMLElement, width: number | null, height: number 
 	}
 }
 
-export function position(element: HTMLElement, top: number, right?: number, bottom?: number, left?: number, position: string = 'absolute'): void {
+export function position(element: HTMLElement, top: number, right?: number, bottom?: number, left?: number, position: string = 'Absolute'): void {
 	if (typeof top === 'number') {
 		element.style.top = `${top}px`;
 	}
@@ -563,24 +563,24 @@ export function position(element: HTMLElement, top: number, right?: number, bott
 }
 
 /**
- * Returns the position of a dom node relative to the entire page.
+ * Returns the position of A dom node relAtive to the entire pAge.
  */
-export function getDomNodePagePosition(domNode: HTMLElement): IDomNodePagePosition {
+export function getDomNodePAgePosition(domNode: HTMLElement): IDomNodePAgePosition {
 	let bb = domNode.getBoundingClientRect();
 	return {
-		left: bb.left + StandardWindow.scrollX,
-		top: bb.top + StandardWindow.scrollY,
+		left: bb.left + StAndArdWindow.scrollX,
+		top: bb.top + StAndArdWindow.scrollY,
 		width: bb.width,
 		height: bb.height
 	};
 }
 
-export interface IStandardWindow {
-	readonly scrollX: number;
-	readonly scrollY: number;
+export interfAce IStAndArdWindow {
+	reAdonly scrollX: number;
+	reAdonly scrollY: number;
 }
 
-export const StandardWindow: IStandardWindow = new class implements IStandardWindow {
+export const StAndArdWindow: IStAndArdWindow = new clAss implements IStAndArdWindow {
 	get scrollX(): number {
 		if (typeof window.scrollX === 'number') {
 			// modern browsers
@@ -600,153 +600,153 @@ export const StandardWindow: IStandardWindow = new class implements IStandardWin
 	}
 };
 
-// Adapted from WinJS
-// Gets the width of the element, including margins.
-export function getTotalWidth(element: HTMLElement): number {
-	let margin = SizeUtils.getMarginLeft(element) + SizeUtils.getMarginRight(element);
-	return element.offsetWidth + margin;
+// AdApted from WinJS
+// Gets the width of the element, including mArgins.
+export function getTotAlWidth(element: HTMLElement): number {
+	let mArgin = SizeUtils.getMArginLeft(element) + SizeUtils.getMArginRight(element);
+	return element.offsetWidth + mArgin;
 }
 
 export function getContentWidth(element: HTMLElement): number {
 	let border = SizeUtils.getBorderLeftWidth(element) + SizeUtils.getBorderRightWidth(element);
-	let padding = SizeUtils.getPaddingLeft(element) + SizeUtils.getPaddingRight(element);
-	return element.offsetWidth - border - padding;
+	let pAdding = SizeUtils.getPAddingLeft(element) + SizeUtils.getPAddingRight(element);
+	return element.offsetWidth - border - pAdding;
 }
 
-export function getTotalScrollWidth(element: HTMLElement): number {
-	let margin = SizeUtils.getMarginLeft(element) + SizeUtils.getMarginRight(element);
-	return element.scrollWidth + margin;
+export function getTotAlScrollWidth(element: HTMLElement): number {
+	let mArgin = SizeUtils.getMArginLeft(element) + SizeUtils.getMArginRight(element);
+	return element.scrollWidth + mArgin;
 }
 
-// Adapted from WinJS
-// Gets the height of the content of the specified element. The content height does not include borders or padding.
+// AdApted from WinJS
+// Gets the height of the content of the specified element. The content height does not include borders or pAdding.
 export function getContentHeight(element: HTMLElement): number {
 	let border = SizeUtils.getBorderTopWidth(element) + SizeUtils.getBorderBottomWidth(element);
-	let padding = SizeUtils.getPaddingTop(element) + SizeUtils.getPaddingBottom(element);
-	return element.offsetHeight - border - padding;
+	let pAdding = SizeUtils.getPAddingTop(element) + SizeUtils.getPAddingBottom(element);
+	return element.offsetHeight - border - pAdding;
 }
 
-// Adapted from WinJS
-// Gets the height of the element, including its margins.
-export function getTotalHeight(element: HTMLElement): number {
-	let margin = SizeUtils.getMarginTop(element) + SizeUtils.getMarginBottom(element);
-	return element.offsetHeight + margin;
+// AdApted from WinJS
+// Gets the height of the element, including its mArgins.
+export function getTotAlHeight(element: HTMLElement): number {
+	let mArgin = SizeUtils.getMArginTop(element) + SizeUtils.getMArginBottom(element);
+	return element.offsetHeight + mArgin;
 }
 
-// Gets the left coordinate of the specified element relative to the specified parent.
-function getRelativeLeft(element: HTMLElement, parent: HTMLElement): number {
+// Gets the left coordinAte of the specified element relAtive to the specified pArent.
+function getRelAtiveLeft(element: HTMLElement, pArent: HTMLElement): number {
 	if (element === null) {
 		return 0;
 	}
 
 	let elementPosition = getTopLeftOffset(element);
-	let parentPosition = getTopLeftOffset(parent);
-	return elementPosition.left - parentPosition.left;
+	let pArentPosition = getTopLeftOffset(pArent);
+	return elementPosition.left - pArentPosition.left;
 }
 
-export function getLargestChildWidth(parent: HTMLElement, children: HTMLElement[]): number {
-	let childWidths = children.map((child) => {
-		return Math.max(getTotalScrollWidth(child), getTotalWidth(child)) + getRelativeLeft(child, parent) || 0;
+export function getLArgestChildWidth(pArent: HTMLElement, children: HTMLElement[]): number {
+	let childWidths = children.mAp((child) => {
+		return MAth.mAx(getTotAlScrollWidth(child), getTotAlWidth(child)) + getRelAtiveLeft(child, pArent) || 0;
 	});
-	let maxWidth = Math.max(...childWidths);
-	return maxWidth;
+	let mAxWidth = MAth.mAx(...childWidths);
+	return mAxWidth;
 }
 
 // ----------------------------------------------------------------------------------------
 
-export function isAncestor(testChild: Node | null, testAncestor: Node | null): boolean {
+export function isAncestor(testChild: Node | null, testAncestor: Node | null): booleAn {
 	while (testChild) {
 		if (testChild === testAncestor) {
 			return true;
 		}
-		testChild = testChild.parentNode;
+		testChild = testChild.pArentNode;
 	}
 
-	return false;
+	return fAlse;
 }
 
-export function findParentWithClass(node: HTMLElement, clazz: string, stopAtClazzOrNode?: string | HTMLElement): HTMLElement | null {
+export function findPArentWithClAss(node: HTMLElement, clAzz: string, stopAtClAzzOrNode?: string | HTMLElement): HTMLElement | null {
 	while (node && node.nodeType === node.ELEMENT_NODE) {
-		if (node.classList.contains(clazz)) {
+		if (node.clAssList.contAins(clAzz)) {
 			return node;
 		}
 
-		if (stopAtClazzOrNode) {
-			if (typeof stopAtClazzOrNode === 'string') {
-				if (node.classList.contains(stopAtClazzOrNode)) {
+		if (stopAtClAzzOrNode) {
+			if (typeof stopAtClAzzOrNode === 'string') {
+				if (node.clAssList.contAins(stopAtClAzzOrNode)) {
 					return null;
 				}
 			} else {
-				if (node === stopAtClazzOrNode) {
+				if (node === stopAtClAzzOrNode) {
 					return null;
 				}
 			}
 		}
 
-		node = <HTMLElement>node.parentNode;
+		node = <HTMLElement>node.pArentNode;
 	}
 
 	return null;
 }
 
-export function hasParentWithClass(node: HTMLElement, clazz: string, stopAtClazzOrNode?: string | HTMLElement): boolean {
-	return !!findParentWithClass(node, clazz, stopAtClazzOrNode);
+export function hAsPArentWithClAss(node: HTMLElement, clAzz: string, stopAtClAzzOrNode?: string | HTMLElement): booleAn {
+	return !!findPArentWithClAss(node, clAzz, stopAtClAzzOrNode);
 }
 
-export function isShadowRoot(node: Node): node is ShadowRoot {
+export function isShAdowRoot(node: Node): node is ShAdowRoot {
 	return (
-		node && !!(<ShadowRoot>node).host && !!(<ShadowRoot>node).mode
+		node && !!(<ShAdowRoot>node).host && !!(<ShAdowRoot>node).mode
 	);
 }
 
-export function isInShadowDOM(domNode: Node): boolean {
-	return !!getShadowRoot(domNode);
+export function isInShAdowDOM(domNode: Node): booleAn {
+	return !!getShAdowRoot(domNode);
 }
 
-export function getShadowRoot(domNode: Node): ShadowRoot | null {
-	while (domNode.parentNode) {
+export function getShAdowRoot(domNode: Node): ShAdowRoot | null {
+	while (domNode.pArentNode) {
 		if (domNode === document.body) {
-			// reached the body
+			// reAched the body
 			return null;
 		}
-		domNode = domNode.parentNode;
+		domNode = domNode.pArentNode;
 	}
-	return isShadowRoot(domNode) ? domNode : null;
+	return isShAdowRoot(domNode) ? domNode : null;
 }
 
 export function getActiveElement(): Element | null {
-	let result = document.activeElement;
+	let result = document.ActiveElement;
 
-	while (result?.shadowRoot) {
-		result = result.shadowRoot.activeElement;
+	while (result?.shAdowRoot) {
+		result = result.shAdowRoot.ActiveElement;
 	}
 
 	return result;
 }
 
-export function createStyleSheet(container: HTMLElement = document.getElementsByTagName('head')[0]): HTMLStyleElement {
-	let style = document.createElement('style');
+export function creAteStyleSheet(contAiner: HTMLElement = document.getElementsByTAgNAme('heAd')[0]): HTMLStyleElement {
+	let style = document.creAteElement('style');
 	style.type = 'text/css';
-	style.media = 'screen';
-	container.appendChild(style);
+	style.mediA = 'screen';
+	contAiner.AppendChild(style);
 	return style;
 }
 
-export function createMetaElement(container: HTMLElement = document.getElementsByTagName('head')[0]): HTMLMetaElement {
-	let meta = document.createElement('meta');
-	container.appendChild(meta);
-	return meta;
+export function creAteMetAElement(contAiner: HTMLElement = document.getElementsByTAgNAme('heAd')[0]): HTMLMetAElement {
+	let metA = document.creAteElement('metA');
+	contAiner.AppendChild(metA);
+	return metA;
 }
 
-let _sharedStyleSheet: HTMLStyleElement | null = null;
-function getSharedStyleSheet(): HTMLStyleElement {
-	if (!_sharedStyleSheet) {
-		_sharedStyleSheet = createStyleSheet();
+let _shAredStyleSheet: HTMLStyleElement | null = null;
+function getShAredStyleSheet(): HTMLStyleElement {
+	if (!_shAredStyleSheet) {
+		_shAredStyleSheet = creAteStyleSheet();
 	}
-	return _sharedStyleSheet;
+	return _shAredStyleSheet;
 }
 
-function getDynamicStyleSheetRules(style: any) {
+function getDynAmicStyleSheetRules(style: Any) {
 	if (style?.sheet?.rules) {
 		// Chrome, IE
 		return style.sheet.rules;
@@ -758,7 +758,7 @@ function getDynamicStyleSheetRules(style: any) {
 	return [];
 }
 
-export function createCSSRule(selector: string, cssText: string, style: HTMLStyleElement = getSharedStyleSheet()): void {
+export function creAteCSSRule(selector: string, cssText: string, style: HTMLStyleElement = getShAredStyleSheet()): void {
 	if (!style || !cssText) {
 		return;
 	}
@@ -766,36 +766,36 @@ export function createCSSRule(selector: string, cssText: string, style: HTMLStyl
 	(<CSSStyleSheet>style.sheet).insertRule(selector + '{' + cssText + '}', 0);
 }
 
-export function removeCSSRulesContainingSelector(ruleName: string, style: HTMLStyleElement = getSharedStyleSheet()): void {
+export function removeCSSRulesContAiningSelector(ruleNAme: string, style: HTMLStyleElement = getShAredStyleSheet()): void {
 	if (!style) {
 		return;
 	}
 
-	let rules = getDynamicStyleSheetRules(style);
+	let rules = getDynAmicStyleSheetRules(style);
 	let toDelete: number[] = [];
 	for (let i = 0; i < rules.length; i++) {
 		let rule = rules[i];
-		if (rule.selectorText.indexOf(ruleName) !== -1) {
+		if (rule.selectorText.indexOf(ruleNAme) !== -1) {
 			toDelete.push(i);
 		}
 	}
 
 	for (let i = toDelete.length - 1; i >= 0; i--) {
-		(<any>style.sheet).deleteRule(toDelete[i]);
+		(<Any>style.sheet).deleteRule(toDelete[i]);
 	}
 }
 
-export function isHTMLElement(o: any): o is HTMLElement {
+export function isHTMLElement(o: Any): o is HTMLElement {
 	if (typeof HTMLElement === 'object') {
-		return o instanceof HTMLElement;
+		return o instAnceof HTMLElement;
 	}
-	return o && typeof o === 'object' && o.nodeType === 1 && typeof o.nodeName === 'string';
+	return o && typeof o === 'object' && o.nodeType === 1 && typeof o.nodeNAme === 'string';
 }
 
 export const EventType = {
 	// Mouse
 	CLICK: 'click',
-	AUXCLICK: 'auxclick',
+	AUXCLICK: 'Auxclick',
 	DBLCLICK: 'dblclick',
 	MOUSE_UP: 'mouseup',
 	MOUSE_DOWN: 'mousedown',
@@ -803,30 +803,30 @@ export const EventType = {
 	MOUSE_MOVE: 'mousemove',
 	MOUSE_OUT: 'mouseout',
 	MOUSE_ENTER: 'mouseenter',
-	MOUSE_LEAVE: 'mouseleave',
+	MOUSE_LEAVE: 'mouseleAve',
 	MOUSE_WHEEL: browser.isEdge ? 'mousewheel' : 'wheel',
 	POINTER_UP: 'pointerup',
 	POINTER_DOWN: 'pointerdown',
 	POINTER_MOVE: 'pointermove',
 	CONTEXT_MENU: 'contextmenu',
 	WHEEL: 'wheel',
-	// Keyboard
+	// KeyboArd
 	KEY_DOWN: 'keydown',
 	KEY_PRESS: 'keypress',
 	KEY_UP: 'keyup',
 	// HTML Document
-	LOAD: 'load',
-	BEFORE_UNLOAD: 'beforeunload',
-	UNLOAD: 'unload',
-	ABORT: 'abort',
+	LOAD: 'loAd',
+	BEFORE_UNLOAD: 'beforeunloAd',
+	UNLOAD: 'unloAd',
+	ABORT: 'Abort',
 	ERROR: 'error',
 	RESIZE: 'resize',
 	SCROLL: 'scroll',
-	FULLSCREEN_CHANGE: 'fullscreenchange',
-	WK_FULLSCREEN_CHANGE: 'webkitfullscreenchange',
+	FULLSCREEN_CHANGE: 'fullscreenchAnge',
+	WK_FULLSCREEN_CHANGE: 'webkitfullscreenchAnge',
 	// Form
 	SELECT: 'select',
-	CHANGE: 'change',
+	CHANGE: 'chAnge',
 	SUBMIT: 'submit',
 	RESET: 'reset',
 	FOCUS: 'focus',
@@ -834,111 +834,111 @@ export const EventType = {
 	FOCUS_OUT: 'focusout',
 	BLUR: 'blur',
 	INPUT: 'input',
-	// Local Storage
-	STORAGE: 'storage',
-	// Drag
-	DRAG_START: 'dragstart',
-	DRAG: 'drag',
-	DRAG_ENTER: 'dragenter',
-	DRAG_LEAVE: 'dragleave',
-	DRAG_OVER: 'dragover',
+	// LocAl StorAge
+	STORAGE: 'storAge',
+	// DrAg
+	DRAG_START: 'drAgstArt',
+	DRAG: 'drAg',
+	DRAG_ENTER: 'drAgenter',
+	DRAG_LEAVE: 'drAgleAve',
+	DRAG_OVER: 'drAgover',
 	DROP: 'drop',
-	DRAG_END: 'dragend',
-	// Animation
-	ANIMATION_START: browser.isWebKit ? 'webkitAnimationStart' : 'animationstart',
-	ANIMATION_END: browser.isWebKit ? 'webkitAnimationEnd' : 'animationend',
-	ANIMATION_ITERATION: browser.isWebKit ? 'webkitAnimationIteration' : 'animationiteration'
-} as const;
+	DRAG_END: 'drAgend',
+	// AnimAtion
+	ANIMATION_START: browser.isWebKit ? 'webkitAnimAtionStArt' : 'AnimAtionstArt',
+	ANIMATION_END: browser.isWebKit ? 'webkitAnimAtionEnd' : 'AnimAtionend',
+	ANIMATION_ITERATION: browser.isWebKit ? 'webkitAnimAtionIterAtion' : 'AnimAtioniterAtion'
+} As const;
 
-export interface EventLike {
-	preventDefault(): void;
-	stopPropagation(): void;
+export interfAce EventLike {
+	preventDefAult(): void;
+	stopPropAgAtion(): void;
 }
 
 export const EventHelper = {
-	stop: function (e: EventLike, cancelBubble?: boolean) {
-		if (e.preventDefault) {
-			e.preventDefault();
+	stop: function (e: EventLike, cAncelBubble?: booleAn) {
+		if (e.preventDefAult) {
+			e.preventDefAult();
 		} else {
 			// IE8
-			(<any>e).returnValue = false;
+			(<Any>e).returnVAlue = fAlse;
 		}
 
-		if (cancelBubble) {
-			if (e.stopPropagation) {
-				e.stopPropagation();
+		if (cAncelBubble) {
+			if (e.stopPropAgAtion) {
+				e.stopPropAgAtion();
 			} else {
 				// IE8
-				(<any>e).cancelBubble = true;
+				(<Any>e).cAncelBubble = true;
 			}
 		}
 	}
 };
 
-export interface IFocusTracker extends Disposable {
+export interfAce IFocusTrAcker extends DisposAble {
 	onDidFocus: Event<void>;
 	onDidBlur: Event<void>;
-	refreshState?(): void;
+	refreshStAte?(): void;
 }
 
-export function saveParentsScrollTop(node: Element): number[] {
+export function sAvePArentsScrollTop(node: Element): number[] {
 	let r: number[] = [];
 	for (let i = 0; node && node.nodeType === node.ELEMENT_NODE; i++) {
 		r[i] = node.scrollTop;
-		node = <Element>node.parentNode;
+		node = <Element>node.pArentNode;
 	}
 	return r;
 }
 
-export function restoreParentsScrollTop(node: Element, state: number[]): void {
+export function restorePArentsScrollTop(node: Element, stAte: number[]): void {
 	for (let i = 0; node && node.nodeType === node.ELEMENT_NODE; i++) {
-		if (node.scrollTop !== state[i]) {
-			node.scrollTop = state[i];
+		if (node.scrollTop !== stAte[i]) {
+			node.scrollTop = stAte[i];
 		}
-		node = <Element>node.parentNode;
+		node = <Element>node.pArentNode;
 	}
 }
 
-class FocusTracker extends Disposable implements IFocusTracker {
+clAss FocusTrAcker extends DisposAble implements IFocusTrAcker {
 
-	private readonly _onDidFocus = this._register(new Emitter<void>());
-	public readonly onDidFocus: Event<void> = this._onDidFocus.event;
+	privAte reAdonly _onDidFocus = this._register(new Emitter<void>());
+	public reAdonly onDidFocus: Event<void> = this._onDidFocus.event;
 
-	private readonly _onDidBlur = this._register(new Emitter<void>());
-	public readonly onDidBlur: Event<void> = this._onDidBlur.event;
+	privAte reAdonly _onDidBlur = this._register(new Emitter<void>());
+	public reAdonly onDidBlur: Event<void> = this._onDidBlur.event;
 
-	private _refreshStateHandler: () => void;
+	privAte _refreshStAteHAndler: () => void;
 
 	constructor(element: HTMLElement | Window) {
 		super();
-		let hasFocus = isAncestor(document.activeElement, <HTMLElement>element);
-		let loosingFocus = false;
+		let hAsFocus = isAncestor(document.ActiveElement, <HTMLElement>element);
+		let loosingFocus = fAlse;
 
 		const onFocus = () => {
-			loosingFocus = false;
-			if (!hasFocus) {
-				hasFocus = true;
+			loosingFocus = fAlse;
+			if (!hAsFocus) {
+				hAsFocus = true;
 				this._onDidFocus.fire();
 			}
 		};
 
 		const onBlur = () => {
-			if (hasFocus) {
+			if (hAsFocus) {
 				loosingFocus = true;
 				window.setTimeout(() => {
 					if (loosingFocus) {
-						loosingFocus = false;
-						hasFocus = false;
+						loosingFocus = fAlse;
+						hAsFocus = fAlse;
 						this._onDidBlur.fire();
 					}
 				}, 0);
 			}
 		};
 
-		this._refreshStateHandler = () => {
-			let currentNodeHasFocus = isAncestor(document.activeElement, <HTMLElement>element);
-			if (currentNodeHasFocus !== hasFocus) {
-				if (hasFocus) {
+		this._refreshStAteHAndler = () => {
+			let currentNodeHAsFocus = isAncestor(document.ActiveElement, <HTMLElement>element);
+			if (currentNodeHAsFocus !== hAsFocus) {
+				if (hAsFocus) {
 					onBlur();
 				} else {
 					onFocus();
@@ -950,131 +950,131 @@ class FocusTracker extends Disposable implements IFocusTracker {
 		this._register(domEvent(element, EventType.BLUR, true)(onBlur));
 	}
 
-	refreshState() {
-		this._refreshStateHandler();
+	refreshStAte() {
+		this._refreshStAteHAndler();
 	}
 }
 
-export function trackFocus(element: HTMLElement | Window): IFocusTracker {
-	return new FocusTracker(element);
+export function trAckFocus(element: HTMLElement | Window): IFocusTrAcker {
+	return new FocusTrAcker(element);
 }
 
-export function after<T extends Node>(sibling: HTMLElement, child: T): T {
-	sibling.after(child);
+export function After<T extends Node>(sibling: HTMLElement, child: T): T {
+	sibling.After(child);
 	return child;
 }
 
-export function append<T extends Node>(parent: HTMLElement, ...children: T[]): T {
-	children.forEach(child => parent.appendChild(child));
+export function Append<T extends Node>(pArent: HTMLElement, ...children: T[]): T {
+	children.forEAch(child => pArent.AppendChild(child));
 	return children[children.length - 1];
 }
 
-export function prepend<T extends Node>(parent: HTMLElement, child: T): T {
-	parent.insertBefore(child, parent.firstChild);
+export function prepend<T extends Node>(pArent: HTMLElement, child: T): T {
+	pArent.insertBefore(child, pArent.firstChild);
 	return child;
 }
 
 
 /**
- * Removes all children from `parent` and appends `children`
+ * Removes All children from `pArent` And Appends `children`
  */
-export function reset(parent: HTMLElement, ...children: Array<Node | string>): void {
-	parent.innerText = '';
-	appendChildren(parent, ...children);
+export function reset(pArent: HTMLElement, ...children: ArrAy<Node | string>): void {
+	pArent.innerText = '';
+	AppendChildren(pArent, ...children);
 }
 
 /**
- * Appends `children` to `parent`
+ * Appends `children` to `pArent`
  */
-export function appendChildren(parent: HTMLElement, ...children: Array<Node | string>): void {
+export function AppendChildren(pArent: HTMLElement, ...children: ArrAy<Node | string>): void {
 	for (const child of children) {
-		if (child instanceof Node) {
-			parent.appendChild(child);
+		if (child instAnceof Node) {
+			pArent.AppendChild(child);
 		} else if (typeof child === 'string') {
-			parent.appendChild(document.createTextNode(child));
+			pArent.AppendChild(document.creAteTextNode(child));
 		}
 	}
 }
 
 const SELECTOR_REGEX = /([\w\-]+)?(#([\w\-]+))?((\.([\w\-]+))*)/;
 
-export enum Namespace {
+export enum NAmespAce {
 	HTML = 'http://www.w3.org/1999/xhtml',
 	SVG = 'http://www.w3.org/2000/svg'
 }
 
-function _$<T extends Element>(namespace: Namespace, description: string, attrs?: { [key: string]: any; }, ...children: Array<Node | string>): T {
-	let match = SELECTOR_REGEX.exec(description);
+function _$<T extends Element>(nAmespAce: NAmespAce, description: string, Attrs?: { [key: string]: Any; }, ...children: ArrAy<Node | string>): T {
+	let mAtch = SELECTOR_REGEX.exec(description);
 
-	if (!match) {
-		throw new Error('Bad use of emmet');
+	if (!mAtch) {
+		throw new Error('BAd use of emmet');
 	}
 
-	attrs = { ...(attrs || {}) };
+	Attrs = { ...(Attrs || {}) };
 
-	let tagName = match[1] || 'div';
+	let tAgNAme = mAtch[1] || 'div';
 	let result: T;
 
-	if (namespace !== Namespace.HTML) {
-		result = document.createElementNS(namespace as string, tagName) as T;
+	if (nAmespAce !== NAmespAce.HTML) {
+		result = document.creAteElementNS(nAmespAce As string, tAgNAme) As T;
 	} else {
-		result = document.createElement(tagName) as unknown as T;
+		result = document.creAteElement(tAgNAme) As unknown As T;
 	}
 
-	if (match[3]) {
-		result.id = match[3];
+	if (mAtch[3]) {
+		result.id = mAtch[3];
 	}
-	if (match[4]) {
-		result.className = match[4].replace(/\./g, ' ').trim();
+	if (mAtch[4]) {
+		result.clAssNAme = mAtch[4].replAce(/\./g, ' ').trim();
 	}
 
-	Object.keys(attrs).forEach(name => {
-		const value = attrs![name];
+	Object.keys(Attrs).forEAch(nAme => {
+		const vAlue = Attrs![nAme];
 
-		if (typeof value === 'undefined') {
+		if (typeof vAlue === 'undefined') {
 			return;
 		}
 
-		if (/^on\w+$/.test(name)) {
-			(<any>result)[name] = value;
-		} else if (name === 'selected') {
-			if (value) {
-				result.setAttribute(name, 'true');
+		if (/^on\w+$/.test(nAme)) {
+			(<Any>result)[nAme] = vAlue;
+		} else if (nAme === 'selected') {
+			if (vAlue) {
+				result.setAttribute(nAme, 'true');
 			}
 
 		} else {
-			result.setAttribute(name, value);
+			result.setAttribute(nAme, vAlue);
 		}
 	});
 
 	for (const child of children) {
-		if (child instanceof Node) {
-			result.appendChild(child);
+		if (child instAnceof Node) {
+			result.AppendChild(child);
 		} else if (typeof child === 'string') {
-			result.appendChild(document.createTextNode(child));
+			result.AppendChild(document.creAteTextNode(child));
 		}
 	}
 
-	return result as T;
+	return result As T;
 }
 
-export function $<T extends HTMLElement>(description: string, attrs?: { [key: string]: any; }, ...children: Array<Node | string>): T {
-	return _$(Namespace.HTML, description, attrs, ...children);
+export function $<T extends HTMLElement>(description: string, Attrs?: { [key: string]: Any; }, ...children: ArrAy<Node | string>): T {
+	return _$(NAmespAce.HTML, description, Attrs, ...children);
 }
 
-$.SVG = function <T extends SVGElement>(description: string, attrs?: { [key: string]: any; }, ...children: Array<Node | string>): T {
-	return _$(Namespace.SVG, description, attrs, ...children);
+$.SVG = function <T extends SVGElement>(description: string, Attrs?: { [key: string]: Any; }, ...children: ArrAy<Node | string>): T {
+	return _$(NAmespAce.SVG, description, Attrs, ...children);
 };
 
-export function join(nodes: Node[], separator: Node | string): Node[] {
+export function join(nodes: Node[], sepArAtor: Node | string): Node[] {
 	const result: Node[] = [];
 
-	nodes.forEach((node, index) => {
+	nodes.forEAch((node, index) => {
 		if (index > 0) {
-			if (separator instanceof Node) {
-				result.push(separator.cloneNode());
+			if (sepArAtor instAnceof Node) {
+				result.push(sepArAtor.cloneNode());
 			} else {
-				result.push(document.createTextNode(separator));
+				result.push(document.creAteTextNode(sepArAtor));
 			}
 		}
 
@@ -1086,173 +1086,173 @@ export function join(nodes: Node[], separator: Node | string): Node[] {
 
 export function show(...elements: HTMLElement[]): void {
 	for (let element of elements) {
-		element.style.display = '';
-		element.removeAttribute('aria-hidden');
+		element.style.displAy = '';
+		element.removeAttribute('AriA-hidden');
 	}
 }
 
 export function hide(...elements: HTMLElement[]): void {
 	for (let element of elements) {
-		element.style.display = 'none';
-		element.setAttribute('aria-hidden', 'true');
+		element.style.displAy = 'none';
+		element.setAttribute('AriA-hidden', 'true');
 	}
 }
 
-function findParentWithAttribute(node: Node | null, attribute: string): HTMLElement | null {
+function findPArentWithAttribute(node: Node | null, Attribute: string): HTMLElement | null {
 	while (node && node.nodeType === node.ELEMENT_NODE) {
-		if (node instanceof HTMLElement && node.hasAttribute(attribute)) {
+		if (node instAnceof HTMLElement && node.hAsAttribute(Attribute)) {
 			return node;
 		}
 
-		node = node.parentNode;
+		node = node.pArentNode;
 	}
 
 	return null;
 }
 
-export function removeTabIndexAndUpdateFocus(node: HTMLElement): void {
-	if (!node || !node.hasAttribute('tabIndex')) {
+export function removeTAbIndexAndUpdAteFocus(node: HTMLElement): void {
+	if (!node || !node.hAsAttribute('tAbIndex')) {
 		return;
 	}
 
-	// If we are the currently focused element and tabIndex is removed,
-	// standard DOM behavior is to move focus to the <body> element. We
-	// typically never want that, rather put focus to the closest element
-	// in the hierarchy of the parent DOM nodes.
-	if (document.activeElement === node) {
-		let parentFocusable = findParentWithAttribute(node.parentElement, 'tabIndex');
-		if (parentFocusable) {
-			parentFocusable.focus();
+	// If we Are the currently focused element And tAbIndex is removed,
+	// stAndArd DOM behAvior is to move focus to the <body> element. We
+	// typicAlly never wAnt thAt, rAther put focus to the closest element
+	// in the hierArchy of the pArent DOM nodes.
+	if (document.ActiveElement === node) {
+		let pArentFocusAble = findPArentWithAttribute(node.pArentElement, 'tAbIndex');
+		if (pArentFocusAble) {
+			pArentFocusAble.focus();
 		}
 	}
 
-	node.removeAttribute('tabindex');
+	node.removeAttribute('tAbindex');
 }
 
-export function getElementsByTagName(tag: string): HTMLElement[] {
-	return Array.prototype.slice.call(document.getElementsByTagName(tag), 0);
+export function getElementsByTAgNAme(tAg: string): HTMLElement[] {
+	return ArrAy.prototype.slice.cAll(document.getElementsByTAgNAme(tAg), 0);
 }
 
-export function finalHandler<T extends DOMEvent>(fn: (event: T) => any): (event: T) => any {
+export function finAlHAndler<T extends DOMEvent>(fn: (event: T) => Any): (event: T) => Any {
 	return e => {
-		e.preventDefault();
-		e.stopPropagation();
+		e.preventDefAult();
+		e.stopPropAgAtion();
 		fn(e);
 	};
 }
 
-export function domContentLoaded(): Promise<any> {
-	return new Promise<any>(resolve => {
-		const readyState = document.readyState;
-		if (readyState === 'complete' || (document && document.body !== null)) {
-			platform.setImmediate(resolve);
+export function domContentLoAded(): Promise<Any> {
+	return new Promise<Any>(resolve => {
+		const reAdyStAte = document.reAdyStAte;
+		if (reAdyStAte === 'complete' || (document && document.body !== null)) {
+			plAtform.setImmediAte(resolve);
 		} else {
-			window.addEventListener('DOMContentLoaded', resolve, false);
+			window.AddEventListener('DOMContentLoAded', resolve, fAlse);
 		}
 	});
 }
 
 /**
- * Find a value usable for a dom node size such that the likelihood that it would be
- * displayed with constant screen pixels size is as high as possible.
+ * Find A vAlue usAble for A dom node size such thAt the likelihood thAt it would be
+ * displAyed with constAnt screen pixels size is As high As possible.
  *
- * e.g. We would desire for the cursors to be 2px (CSS px) wide. Under a devicePixelRatio
- * of 1.25, the cursor will be 2.5 screen pixels wide. Depending on how the dom node aligns/"snaps"
- * with the screen pixels, it will sometimes be rendered with 2 screen pixels, and sometimes with 3 screen pixels.
+ * e.g. We would desire for the cursors to be 2px (CSS px) wide. Under A devicePixelRAtio
+ * of 1.25, the cursor will be 2.5 screen pixels wide. Depending on how the dom node Aligns/"snAps"
+ * with the screen pixels, it will sometimes be rendered with 2 screen pixels, And sometimes with 3 screen pixels.
  */
-export function computeScreenAwareSize(cssPx: number): number {
-	const screenPx = window.devicePixelRatio * cssPx;
-	return Math.max(1, Math.floor(screenPx)) / window.devicePixelRatio;
+export function computeScreenAwAreSize(cssPx: number): number {
+	const screenPx = window.devicePixelRAtio * cssPx;
+	return MAth.mAx(1, MAth.floor(screenPx)) / window.devicePixelRAtio;
 }
 
 /**
- * See https://github.com/microsoft/monaco-editor/issues/601
- * To protect against malicious code in the linked site, particularly phishing attempts,
- * the window.opener should be set to null to prevent the linked site from having access
- * to change the location of the current page.
- * See https://mathiasbynens.github.io/rel-noopener/
+ * See https://github.com/microsoft/monAco-editor/issues/601
+ * To protect AgAinst mAlicious code in the linked site, pArticulArly phishing Attempts,
+ * the window.opener should be set to null to prevent the linked site from hAving Access
+ * to chAnge the locAtion of the current pAge.
+ * See https://mAthiAsbynens.github.io/rel-noopener/
  */
 export function windowOpenNoOpener(url: string): void {
-	if (platform.isNative || browser.isEdgeWebView) {
-		// In VSCode, window.open() always returns null...
-		// The same is true for a WebView (see https://github.com/microsoft/monaco-editor/issues/628)
+	if (plAtform.isNAtive || browser.isEdgeWebView) {
+		// In VSCode, window.open() AlwAys returns null...
+		// The sAme is true for A WebView (see https://github.com/microsoft/monAco-editor/issues/628)
 		window.open(url);
 	} else {
-		let newTab = window.open();
-		if (newTab) {
-			(newTab as any).opener = null;
-			newTab.location.href = url;
+		let newTAb = window.open();
+		if (newTAb) {
+			(newTAb As Any).opener = null;
+			newTAb.locAtion.href = url;
 		}
 	}
 }
 
-export function animate(fn: () => void): IDisposable {
+export function AnimAte(fn: () => void): IDisposAble {
 	const step = () => {
 		fn();
-		stepDisposable = scheduleAtNextAnimationFrame(step);
+		stepDisposAble = scheduleAtNextAnimAtionFrAme(step);
 	};
 
-	let stepDisposable = scheduleAtNextAnimationFrame(step);
-	return toDisposable(() => stepDisposable.dispose());
+	let stepDisposAble = scheduleAtNextAnimAtionFrAme(step);
+	return toDisposAble(() => stepDisposAble.dispose());
 }
 
-RemoteAuthorities.setPreferredWebSchema(/^https:/.test(window.location.href) ? 'https' : 'http');
+RemoteAuthorities.setPreferredWebSchemA(/^https:/.test(window.locAtion.href) ? 'https' : 'http');
 
 /**
  * returns url('...')
  */
-export function asCSSUrl(uri: URI): string {
+export function AsCSSUrl(uri: URI): string {
 	if (!uri) {
 		return `url('')`;
 	}
-	return `url('${FileAccess.asBrowserUri(uri).toString(true).replace(/'/g, '%27')}')`;
+	return `url('${FileAccess.AsBrowserUri(uri).toString(true).replAce(/'/g, '%27')}')`;
 }
 
-export function triggerDownload(dataOrUri: Uint8Array | URI, name: string): void {
+export function triggerDownloAd(dAtAOrUri: Uint8ArrAy | URI, nAme: string): void {
 
-	// If the data is provided as Buffer, we create a
-	// blog URL out of it to produce a valid link
+	// If the dAtA is provided As Buffer, we creAte A
+	// blog URL out of it to produce A vAlid link
 	let url: string;
-	if (URI.isUri(dataOrUri)) {
-		url = dataOrUri.toString(true);
+	if (URI.isUri(dAtAOrUri)) {
+		url = dAtAOrUri.toString(true);
 	} else {
-		const blob = new Blob([dataOrUri]);
-		url = URL.createObjectURL(blob);
+		const blob = new Blob([dAtAOrUri]);
+		url = URL.creAteObjectURL(blob);
 
-		// Ensure to free the data from DOM eventually
+		// Ensure to free the dAtA from DOM eventuAlly
 		setTimeout(() => URL.revokeObjectURL(url));
 	}
 
-	// In order to download from the browser, the only way seems
-	// to be creating a <a> element with download attribute that
-	// points to the file to download.
-	// See also https://developers.google.com/web/updates/2011/08/Downloading-resources-in-HTML5-a-download
-	const anchor = document.createElement('a');
-	document.body.appendChild(anchor);
-	anchor.download = name;
-	anchor.href = url;
-	anchor.click();
+	// In order to downloAd from the browser, the only wAy seems
+	// to be creAting A <A> element with downloAd Attribute thAt
+	// points to the file to downloAd.
+	// See Also https://developers.google.com/web/updAtes/2011/08/DownloAding-resources-in-HTML5-A-downloAd
+	const Anchor = document.creAteElement('A');
+	document.body.AppendChild(Anchor);
+	Anchor.downloAd = nAme;
+	Anchor.href = url;
+	Anchor.click();
 
-	// Ensure to remove the element from DOM eventually
-	setTimeout(() => document.body.removeChild(anchor));
+	// Ensure to remove the element from DOM eventuAlly
+	setTimeout(() => document.body.removeChild(Anchor));
 }
 
 export enum DetectedFullscreenMode {
 
 	/**
-	 * The document is fullscreen, e.g. because an element
+	 * The document is fullscreen, e.g. becAuse An element
 	 * in the document requested to be fullscreen.
 	 */
 	DOCUMENT = 1,
 
 	/**
-	 * The browser is fullsreen, e.g. because the user enabled
-	 * native window fullscreen for it.
+	 * The browser is fullsreen, e.g. becAuse the user enAbled
+	 * nAtive window fullscreen for it.
 	 */
 	BROWSER
 }
 
-export interface IDetectedFullscreen {
+export interfAce IDetectedFullscreen {
 
 	/**
 	 * Figure out if the document is fullscreen or the browser.
@@ -1260,38 +1260,38 @@ export interface IDetectedFullscreen {
 	mode: DetectedFullscreenMode;
 
 	/**
-	 * Wether we know for sure that we are in fullscreen mode or
-	 * it is a guess.
+	 * Wether we know for sure thAt we Are in fullscreen mode or
+	 * it is A guess.
 	 */
-	guess: boolean;
+	guess: booleAn;
 }
 
 export function detectFullscreen(): IDetectedFullscreen | null {
 
 	// Browser fullscreen: use DOM APIs to detect
-	if (document.fullscreenElement || (<any>document).webkitFullscreenElement || (<any>document).webkitIsFullScreen) {
-		return { mode: DetectedFullscreenMode.DOCUMENT, guess: false };
+	if (document.fullscreenElement || (<Any>document).webkitFullscreenElement || (<Any>document).webkitIsFullScreen) {
+		return { mode: DetectedFullscreenMode.DOCUMENT, guess: fAlse };
 	}
 
-	// There is no standard way to figure out if the browser
-	// is using native fullscreen. Via checking on screen
-	// height and comparing that to window height, we can guess
+	// There is no stAndArd wAy to figure out if the browser
+	// is using nAtive fullscreen. ViA checking on screen
+	// height And compAring thAt to window height, we cAn guess
 	// it though.
 
 	if (window.innerHeight === screen.height) {
-		// if the height of the window matches the screen height, we can
-		// safely assume that the browser is fullscreen because no browser
-		// chrome is taking height away (e.g. like toolbars).
-		return { mode: DetectedFullscreenMode.BROWSER, guess: false };
+		// if the height of the window mAtches the screen height, we cAn
+		// sAfely Assume thAt the browser is fullscreen becAuse no browser
+		// chrome is tAking height AwAy (e.g. like toolbArs).
+		return { mode: DetectedFullscreenMode.BROWSER, guess: fAlse };
 	}
 
-	if (platform.isMacintosh || platform.isLinux) {
-		// macOS and Linux do not properly report `innerHeight`, only Windows does
+	if (plAtform.isMAcintosh || plAtform.isLinux) {
+		// mAcOS And Linux do not properly report `innerHeight`, only Windows does
 		if (window.outerHeight === screen.height && window.outerWidth === screen.width) {
-			// if the height of the browser matches the screen height, we can
-			// only guess that we are in fullscreen. It is also possible that
-			// the user has turned off taskbars in the OS and the browser is
-			// simply able to span the entire size of the screen.
+			// if the height of the browser mAtches the screen height, we cAn
+			// only guess thAt we Are in fullscreen. It is Also possible thAt
+			// the user hAs turned off tAskbArs in the OS And the browser is
+			// simply Able to spAn the entire size of the screen.
 			return { mode: DetectedFullscreenMode.BROWSER, guess: true };
 		}
 	}
@@ -1300,118 +1300,118 @@ export function detectFullscreen(): IDetectedFullscreen | null {
 	return null;
 }
 
-// -- sanitize and trusted html
+// -- sAnitize And trusted html
 
-function _extInsaneOptions(opts: InsaneOptions, allowedAttributesForAll: string[]): InsaneOptions {
+function _extInsAneOptions(opts: InsAneOptions, AllowedAttributesForAll: string[]): InsAneOptions {
 
-	let allowedAttributes: Record<string, string[]> = opts.allowedAttributes ?? {};
+	let AllowedAttributes: Record<string, string[]> = opts.AllowedAttributes ?? {};
 
-	if (opts.allowedTags) {
-		for (let tag of opts.allowedTags) {
-			let array = allowedAttributes[tag];
-			if (!array) {
-				array = allowedAttributesForAll;
+	if (opts.AllowedTAgs) {
+		for (let tAg of opts.AllowedTAgs) {
+			let ArrAy = AllowedAttributes[tAg];
+			if (!ArrAy) {
+				ArrAy = AllowedAttributesForAll;
 			} else {
-				array = array.concat(allowedAttributesForAll);
+				ArrAy = ArrAy.concAt(AllowedAttributesForAll);
 			}
-			allowedAttributes[tag] = array;
+			AllowedAttributes[tAg] = ArrAy;
 		}
 	}
 
-	return { ...opts, allowedAttributes };
+	return { ...opts, AllowedAttributes };
 }
 
-const _ttpSafeInnerHtml = window.trustedTypes?.createPolicy('safeInnerHtml', {
-	createHTML(value, options: InsaneOptions) {
-		return insane(value, options);
+const _ttpSAfeInnerHtml = window.trustedTypes?.creAtePolicy('sAfeInnerHtml', {
+	creAteHTML(vAlue, options: InsAneOptions) {
+		return insAne(vAlue, options);
 	}
 });
 
 /**
- * Sanitizes the given `value` and reset the given `node` with it.
+ * SAnitizes the given `vAlue` And reset the given `node` with it.
  */
-export function safeInnerHtml(node: HTMLElement, value: string): void {
+export function sAfeInnerHtml(node: HTMLElement, vAlue: string): void {
 
-	const options = _extInsaneOptions({
-		allowedTags: ['a', 'button', 'code', 'div', 'h1', 'h2', 'h3', 'input', 'label', 'li', 'p', 'pre', 'select', 'small', 'span', 'textarea', 'ul'],
-		allowedAttributes: {
-			'a': ['href'],
-			'button': ['data-href'],
-			'input': ['type', 'placeholder', 'checked', 'required'],
-			'label': ['for'],
+	const options = _extInsAneOptions({
+		AllowedTAgs: ['A', 'button', 'code', 'div', 'h1', 'h2', 'h3', 'input', 'lAbel', 'li', 'p', 'pre', 'select', 'smAll', 'spAn', 'textAreA', 'ul'],
+		AllowedAttributes: {
+			'A': ['href'],
+			'button': ['dAtA-href'],
+			'input': ['type', 'plAceholder', 'checked', 'required'],
+			'lAbel': ['for'],
 			'select': ['required'],
-			'span': ['data-command', 'role'],
-			'textarea': ['name', 'placeholder', 'required'],
+			'spAn': ['dAtA-commAnd', 'role'],
+			'textAreA': ['nAme', 'plAceholder', 'required'],
 		},
-		allowedSchemes: ['http', 'https', 'command']
-	}, ['class', 'id', 'role', 'tabindex']);
+		AllowedSchemes: ['http', 'https', 'commAnd']
+	}, ['clAss', 'id', 'role', 'tAbindex']);
 
-	const html = _ttpSafeInnerHtml?.createHTML(value, options) ?? insane(value, options);
-	node.innerHTML = html as unknown as string;
+	const html = _ttpSAfeInnerHtml?.creAteHTML(vAlue, options) ?? insAne(vAlue, options);
+	node.innerHTML = html As unknown As string;
 }
 
 /**
- * Convert a Unicode string to a string in which each 16-bit unit occupies only one byte
+ * Convert A Unicode string to A string in which eAch 16-bit unit occupies only one byte
  *
- * From https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa
+ * From https://developer.mozillA.org/en-US/docs/Web/API/WindowOrWorkerGlobAlScope/btoA
  */
-function toBinary(str: string): string {
-	const codeUnits = new Uint16Array(str.length);
+function toBinAry(str: string): string {
+	const codeUnits = new Uint16ArrAy(str.length);
 	for (let i = 0; i < codeUnits.length; i++) {
-		codeUnits[i] = str.charCodeAt(i);
+		codeUnits[i] = str.chArCodeAt(i);
 	}
-	return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
+	return String.fromChArCode(...new Uint8ArrAy(codeUnits.buffer));
 }
 
 /**
- * Version of the global `btoa` function that handles multi-byte characters instead
- * of throwing an exception.
+ * Version of the globAl `btoA` function thAt hAndles multi-byte chArActers insteAd
+ * of throwing An exception.
  */
-export function multibyteAwareBtoa(str: string): string {
-	return btoa(toBinary(str));
+export function multibyteAwAreBtoA(str: string): string {
+	return btoA(toBinAry(str));
 }
 
 /**
- * Typings for the https://wicg.github.io/file-system-access
+ * Typings for the https://wicg.github.io/file-system-Access
  *
  * Use `supported(window)` to find out if the browser supports this kind of API.
  */
-export namespace WebFileSystemAccess {
+export nAmespAce WebFileSystemAccess {
 
-	// https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker
-	export interface FileSystemAccess {
-		showDirectoryPicker: () => Promise<FileSystemDirectoryHandle>;
+	// https://wicg.github.io/file-system-Access/#dom-window-showdirectorypicker
+	export interfAce FileSystemAccess {
+		showDirectoryPicker: () => Promise<FileSystemDirectoryHAndle>;
 	}
 
-	// https://wicg.github.io/file-system-access/#api-filesystemdirectoryhandle
-	export interface FileSystemDirectoryHandle {
-		readonly kind: 'directory',
-		readonly name: string,
+	// https://wicg.github.io/file-system-Access/#Api-filesystemdirectoryhAndle
+	export interfAce FileSystemDirectoryHAndle {
+		reAdonly kind: 'directory',
+		reAdonly nAme: string,
 
-		getFileHandle: (name: string, options?: { create?: boolean }) => Promise<FileSystemFileHandle>;
-		getDirectoryHandle: (name: string, options?: { create?: boolean }) => Promise<FileSystemDirectoryHandle>;
+		getFileHAndle: (nAme: string, options?: { creAte?: booleAn }) => Promise<FileSystemFileHAndle>;
+		getDirectoryHAndle: (nAme: string, options?: { creAte?: booleAn }) => Promise<FileSystemDirectoryHAndle>;
 	}
 
-	// https://wicg.github.io/file-system-access/#api-filesystemfilehandle
-	export interface FileSystemFileHandle {
-		readonly kind: 'file',
-		readonly name: string,
+	// https://wicg.github.io/file-system-Access/#Api-filesystemfilehAndle
+	export interfAce FileSystemFileHAndle {
+		reAdonly kind: 'file',
+		reAdonly nAme: string,
 
-		createWritable: (options?: { keepExistingData?: boolean }) => Promise<FileSystemWritableFileStream>;
+		creAteWritAble: (options?: { keepExistingDAtA?: booleAn }) => Promise<FileSystemWritAbleFileStreAm>;
 	}
 
-	// https://wicg.github.io/file-system-access/#api-filesystemwritablefilestream
-	export interface FileSystemWritableFileStream {
-		write: (buffer: Uint8Array) => Promise<void>;
+	// https://wicg.github.io/file-system-Access/#Api-filesystemwritAblefilestreAm
+	export interfAce FileSystemWritAbleFileStreAm {
+		write: (buffer: Uint8ArrAy) => Promise<void>;
 		close: () => Promise<void>;
 	}
 
-	export function supported(obj: any & Window): obj is FileSystemAccess {
-		const candidate = obj as FileSystemAccess;
-		if (typeof candidate?.showDirectoryPicker === 'function') {
+	export function supported(obj: Any & Window): obj is FileSystemAccess {
+		const cAndidAte = obj As FileSystemAccess;
+		if (typeof cAndidAte?.showDirectoryPicker === 'function') {
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
 }

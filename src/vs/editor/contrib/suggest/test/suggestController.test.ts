@@ -1,417 +1,417 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { SuggestController } from 'vs/editor/contrib/suggest/suggestController';
-import { createTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { creAteTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { MockKeybindingService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { IStorAgeService, InMemoryStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { MockKeybindingService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
 import { ISuggestMemoryService } from 'vs/editor/contrib/suggest/suggestMemory';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { mock } from 'vs/base/test/common/mock';
+import { mock } from 'vs/bAse/test/common/mock';
 import { Selection } from 'vs/editor/common/core/selection';
 import { CompletionProviderRegistry, CompletionItemKind, CompletionItemInsertTextRule } from 'vs/editor/common/modes';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/bAse/common/event';
 import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
-import { IMenuService, IMenu } from 'vs/platform/actions/common/actions';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { Range } from 'vs/editor/common/core/range';
-import { timeout } from 'vs/base/common/async';
-import { NullLogService, ILogService } from 'vs/platform/log/common/log';
+import { IMenuService, IMenu } from 'vs/plAtform/Actions/common/Actions';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { timeout } from 'vs/bAse/common/Async';
+import { NullLogService, ILogService } from 'vs/plAtform/log/common/log';
 
 suite('SuggestController', function () {
 
-	const disposables = new DisposableStore();
+	const disposAbles = new DisposAbleStore();
 
 	let controller: SuggestController;
 	let editor: ITestCodeEditor;
 	let model: TextModel;
 
 	setup(function () {
-		disposables.clear();
+		disposAbles.cleAr();
 
 		const serviceCollection = new ServiceCollection(
 			[ITelemetryService, NullTelemetryService],
 			[ILogService, new NullLogService()],
-			[IStorageService, new InMemoryStorageService()],
+			[IStorAgeService, new InMemoryStorAgeService()],
 			[IKeybindingService, new MockKeybindingService()],
-			[IEditorWorkerService, new class extends mock<IEditorWorkerService>() {
-				computeWordRanges() {
+			[IEditorWorkerService, new clAss extends mock<IEditorWorkerService>() {
+				computeWordRAnges() {
 					return Promise.resolve({});
 				}
 			}],
-			[ISuggestMemoryService, new class extends mock<ISuggestMemoryService>() {
+			[ISuggestMemoryService, new clAss extends mock<ISuggestMemoryService>() {
 				memorize(): void { }
 				select(): number { return 0; }
 			}],
-			[IMenuService, new class extends mock<IMenuService>() {
-				createMenu() {
-					return new class extends mock<IMenu>() {
-						onDidChange = Event.None;
+			[IMenuService, new clAss extends mock<IMenuService>() {
+				creAteMenu() {
+					return new clAss extends mock<IMenu>() {
+						onDidChAnge = Event.None;
 					};
 				}
 			}]
 		);
 
-		model = createTextModel('', undefined, undefined, URI.from({ scheme: 'test-ctrl', path: '/path.tst' }));
-		editor = createTestCodeEditor({
+		model = creAteTextModel('', undefined, undefined, URI.from({ scheme: 'test-ctrl', pAth: '/pAth.tst' }));
+		editor = creAteTestCodeEditor({
 			model,
 			serviceCollection,
 		});
 
-		editor.registerAndInstantiateContribution(SnippetController2.ID, SnippetController2);
-		controller = editor.registerAndInstantiateContribution(SuggestController.ID, SuggestController);
+		editor.registerAndInstAntiAteContribution(SnippetController2.ID, SnippetController2);
+		controller = editor.registerAndInstAntiAteContribution(SuggestController.ID, SuggestController);
 	});
 
-	test('postfix completion reports incorrect position #86984', async function () {
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+	test('postfix completion reports incorrect position #86984', Async function () {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
-						insertText: 'let ${1:name} = foo$0',
+						lAbel: 'let',
+						insertText: 'let ${1:nAme} = foo$0',
 						insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-						range: { startLineNumber: 1, startColumn: 9, endLineNumber: 1, endColumn: 11 },
-						additionalTextEdits: [{
+						rAnge: { stArtLineNumber: 1, stArtColumn: 9, endLineNumber: 1, endColumn: 11 },
+						AdditionAlTextEdits: [{
 							text: '',
-							range: { startLineNumber: 1, startColumn: 5, endLineNumber: 1, endColumn: 9 }
+							rAnge: { stArtLineNumber: 1, stArtColumn: 5, endLineNumber: 1, endColumn: 9 }
 						}]
 					}]
 				};
 			}
 		}));
 
-		editor.setValue('    foo.le');
+		editor.setVAlue('    foo.le');
 		editor.setSelection(new Selection(1, 11, 1, 11));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(false, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(fAlse, fAlse);
+		AwAit p2;
 
-		assert.equal(editor.getValue(), '    let name = foo');
+		Assert.equAl(editor.getVAlue(), '    let nAme = foo');
 	});
 
-	test('use additionalTextEdits sync when possible', async function () {
+	test('use AdditionAlTextEdits sync when possible', Async function () {
 
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
+						lAbel: 'let',
 						insertText: 'hello',
-						range: Range.fromPositions(pos),
-						additionalTextEdits: [{
-							text: 'I came sync',
-							range: { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 }
+						rAnge: RAnge.fromPositions(pos),
+						AdditionAlTextEdits: [{
+							text: 'I cAme sync',
+							rAnge: { stArtLineNumber: 1, stArtColumn: 1, endLineNumber: 1, endColumn: 1 }
 						}]
 					}]
 				};
 			},
-			async resolveCompletionItem(item) {
+			Async resolveCompletionItem(item) {
 				return item;
 			}
 		}));
 
-		editor.setValue('hello\nhallo');
+		editor.setVAlue('hello\nhAllo');
 		editor.setSelection(new Selection(2, 6, 2, 6));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(false, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(fAlse, fAlse);
+		AwAit p2;
 
-		// insertText happens sync!
-		assert.equal(editor.getValue(), 'I came synchello\nhallohello');
+		// insertText hAppens sync!
+		Assert.equAl(editor.getVAlue(), 'I cAme synchello\nhAllohello');
 	});
 
-	test('resolve additionalTextEdits async when needed', async function () {
+	test('resolve AdditionAlTextEdits Async when needed', Async function () {
 
-		let resolveCallCount = 0;
+		let resolveCAllCount = 0;
 
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
+						lAbel: 'let',
 						insertText: 'hello',
-						range: Range.fromPositions(pos)
+						rAnge: RAnge.fromPositions(pos)
 					}]
 				};
 			},
-			async resolveCompletionItem(item) {
-				resolveCallCount += 1;
-				await timeout(10);
-				item.additionalTextEdits = [{
-					text: 'I came late',
-					range: { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 }
+			Async resolveCompletionItem(item) {
+				resolveCAllCount += 1;
+				AwAit timeout(10);
+				item.AdditionAlTextEdits = [{
+					text: 'I cAme lAte',
+					rAnge: { stArtLineNumber: 1, stArtColumn: 1, endLineNumber: 1, endColumn: 1 }
 				}];
 				return item;
 			}
 		}));
 
-		editor.setValue('hello\nhallo');
+		editor.setVAlue('hello\nhAllo');
 		editor.setSelection(new Selection(2, 6, 2, 6));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(false, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(fAlse, fAlse);
+		AwAit p2;
 
-		// insertText happens sync!
-		assert.equal(editor.getValue(), 'hello\nhallohello');
-		assert.equal(resolveCallCount, 1);
+		// insertText hAppens sync!
+		Assert.equAl(editor.getVAlue(), 'hello\nhAllohello');
+		Assert.equAl(resolveCAllCount, 1);
 
-		// additional edits happened after a litte wait
-		await timeout(20);
-		assert.equal(editor.getValue(), 'I came latehello\nhallohello');
+		// AdditionAl edits hAppened After A litte wAit
+		AwAit timeout(20);
+		Assert.equAl(editor.getVAlue(), 'I cAme lAtehello\nhAllohello');
 
 		// single undo stop
 		editor.getModel()?.undo();
-		assert.equal(editor.getValue(), 'hello\nhallo');
+		Assert.equAl(editor.getVAlue(), 'hello\nhAllo');
 	});
 
-	test('resolve additionalTextEdits async when needed (typing)', async function () {
+	test('resolve AdditionAlTextEdits Async when needed (typing)', Async function () {
 
-		let resolveCallCount = 0;
+		let resolveCAllCount = 0;
 		let resolve: Function = () => { };
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
+						lAbel: 'let',
 						insertText: 'hello',
-						range: Range.fromPositions(pos)
+						rAnge: RAnge.fromPositions(pos)
 					}]
 				};
 			},
-			async resolveCompletionItem(item) {
-				resolveCallCount += 1;
-				await new Promise(_resolve => resolve = _resolve);
-				item.additionalTextEdits = [{
-					text: 'I came late',
-					range: { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 }
+			Async resolveCompletionItem(item) {
+				resolveCAllCount += 1;
+				AwAit new Promise(_resolve => resolve = _resolve);
+				item.AdditionAlTextEdits = [{
+					text: 'I cAme lAte',
+					rAnge: { stArtLineNumber: 1, stArtColumn: 1, endLineNumber: 1, endColumn: 1 }
 				}];
 				return item;
 			}
 		}));
 
-		editor.setValue('hello\nhallo');
+		editor.setVAlue('hello\nhAllo');
 		editor.setSelection(new Selection(2, 6, 2, 6));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(false, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(fAlse, fAlse);
+		AwAit p2;
 
-		// insertText happens sync!
-		assert.equal(editor.getValue(), 'hello\nhallohello');
-		assert.equal(resolveCallCount, 1);
+		// insertText hAppens sync!
+		Assert.equAl(editor.getVAlue(), 'hello\nhAllohello');
+		Assert.equAl(resolveCAllCount, 1);
 
-		// additional edits happened after a litte wait
-		assert.ok(editor.getSelection()?.equalsSelection(new Selection(2, 11, 2, 11)));
+		// AdditionAl edits hAppened After A litte wAit
+		Assert.ok(editor.getSelection()?.equAlsSelection(new Selection(2, 11, 2, 11)));
 		editor.trigger('test', 'type', { text: 'TYPING' });
 
-		assert.equal(editor.getValue(), 'hello\nhallohelloTYPING');
+		Assert.equAl(editor.getVAlue(), 'hello\nhAllohelloTYPING');
 
 		resolve();
-		await timeout(10);
-		assert.equal(editor.getValue(), 'I came latehello\nhallohelloTYPING');
-		assert.ok(editor.getSelection()?.equalsSelection(new Selection(2, 17, 2, 17)));
+		AwAit timeout(10);
+		Assert.equAl(editor.getVAlue(), 'I cAme lAtehello\nhAllohelloTYPING');
+		Assert.ok(editor.getSelection()?.equAlsSelection(new Selection(2, 17, 2, 17)));
 	});
 
-	// additional edit come late and are AFTER the selection -> cancel
-	test('resolve additionalTextEdits async when needed (simple conflict)', async function () {
+	// AdditionAl edit come lAte And Are AFTER the selection -> cAncel
+	test('resolve AdditionAlTextEdits Async when needed (simple conflict)', Async function () {
 
-		let resolveCallCount = 0;
+		let resolveCAllCount = 0;
 		let resolve: Function = () => { };
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
+						lAbel: 'let',
 						insertText: 'hello',
-						range: Range.fromPositions(pos)
+						rAnge: RAnge.fromPositions(pos)
 					}]
 				};
 			},
-			async resolveCompletionItem(item) {
-				resolveCallCount += 1;
-				await new Promise(_resolve => resolve = _resolve);
-				item.additionalTextEdits = [{
-					text: 'I came late',
-					range: { startLineNumber: 1, startColumn: 6, endLineNumber: 1, endColumn: 6 }
+			Async resolveCompletionItem(item) {
+				resolveCAllCount += 1;
+				AwAit new Promise(_resolve => resolve = _resolve);
+				item.AdditionAlTextEdits = [{
+					text: 'I cAme lAte',
+					rAnge: { stArtLineNumber: 1, stArtColumn: 6, endLineNumber: 1, endColumn: 6 }
 				}];
 				return item;
 			}
 		}));
 
-		editor.setValue('');
+		editor.setVAlue('');
 		editor.setSelection(new Selection(1, 1, 1, 1));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(false, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(fAlse, fAlse);
+		AwAit p2;
 
-		// insertText happens sync!
-		assert.equal(editor.getValue(), 'hello');
-		assert.equal(resolveCallCount, 1);
+		// insertText hAppens sync!
+		Assert.equAl(editor.getVAlue(), 'hello');
+		Assert.equAl(resolveCAllCount, 1);
 
 		resolve();
-		await timeout(10);
-		assert.equal(editor.getValue(), 'hello');
+		AwAit timeout(10);
+		Assert.equAl(editor.getVAlue(), 'hello');
 	});
 
-	// additional edit come late and are AFTER the position at which the user typed -> cancelled
-	test('resolve additionalTextEdits async when needed (conflict)', async function () {
+	// AdditionAl edit come lAte And Are AFTER the position At which the user typed -> cAncelled
+	test('resolve AdditionAlTextEdits Async when needed (conflict)', Async function () {
 
-		let resolveCallCount = 0;
+		let resolveCAllCount = 0;
 		let resolve: Function = () => { };
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
+						lAbel: 'let',
 						insertText: 'hello',
-						range: Range.fromPositions(pos)
+						rAnge: RAnge.fromPositions(pos)
 					}]
 				};
 			},
-			async resolveCompletionItem(item) {
-				resolveCallCount += 1;
-				await new Promise(_resolve => resolve = _resolve);
-				item.additionalTextEdits = [{
-					text: 'I came late',
-					range: { startLineNumber: 1, startColumn: 2, endLineNumber: 1, endColumn: 2 }
+			Async resolveCompletionItem(item) {
+				resolveCAllCount += 1;
+				AwAit new Promise(_resolve => resolve = _resolve);
+				item.AdditionAlTextEdits = [{
+					text: 'I cAme lAte',
+					rAnge: { stArtLineNumber: 1, stArtColumn: 2, endLineNumber: 1, endColumn: 2 }
 				}];
 				return item;
 			}
 		}));
 
-		editor.setValue('hello\nhallo');
+		editor.setVAlue('hello\nhAllo');
 		editor.setSelection(new Selection(2, 6, 2, 6));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(false, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(fAlse, fAlse);
+		AwAit p2;
 
-		// insertText happens sync!
-		assert.equal(editor.getValue(), 'hello\nhallohello');
-		assert.equal(resolveCallCount, 1);
+		// insertText hAppens sync!
+		Assert.equAl(editor.getVAlue(), 'hello\nhAllohello');
+		Assert.equAl(resolveCAllCount, 1);
 
-		// additional edits happened after a litte wait
+		// AdditionAl edits hAppened After A litte wAit
 		editor.setSelection(new Selection(1, 1, 1, 1));
 		editor.trigger('test', 'type', { text: 'TYPING' });
 
-		assert.equal(editor.getValue(), 'TYPINGhello\nhallohello');
+		Assert.equAl(editor.getVAlue(), 'TYPINGhello\nhAllohello');
 
 		resolve();
-		await timeout(10);
-		assert.equal(editor.getValue(), 'TYPINGhello\nhallohello');
-		assert.ok(editor.getSelection()?.equalsSelection(new Selection(1, 7, 1, 7)));
+		AwAit timeout(10);
+		Assert.equAl(editor.getVAlue(), 'TYPINGhello\nhAllohello');
+		Assert.ok(editor.getSelection()?.equAlsSelection(new Selection(1, 7, 1, 7)));
 	});
 
-	test('resolve additionalTextEdits async when needed (cancel)', async function () {
+	test('resolve AdditionAlTextEdits Async when needed (cAncel)', Async function () {
 
 		let resolve: Function[] = [];
-		disposables.add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
+		disposAbles.Add(CompletionProviderRegistry.register({ scheme: 'test-ctrl' }, {
 			provideCompletionItems(doc, pos) {
 				return {
 					suggestions: [{
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
+						lAbel: 'let',
 						insertText: 'hello',
-						range: Range.fromPositions(pos)
+						rAnge: RAnge.fromPositions(pos)
 					}, {
 						kind: CompletionItemKind.Snippet,
-						label: 'let',
-						insertText: 'hallo',
-						range: Range.fromPositions(pos)
+						lAbel: 'let',
+						insertText: 'hAllo',
+						rAnge: RAnge.fromPositions(pos)
 					}]
 				};
 			},
-			async resolveCompletionItem(item) {
-				await new Promise(_resolve => resolve.push(_resolve));
-				item.additionalTextEdits = [{
-					text: 'additionalTextEdits',
-					range: { startLineNumber: 1, startColumn: 2, endLineNumber: 1, endColumn: 2 }
+			Async resolveCompletionItem(item) {
+				AwAit new Promise(_resolve => resolve.push(_resolve));
+				item.AdditionAlTextEdits = [{
+					text: 'AdditionAlTextEdits',
+					rAnge: { stArtLineNumber: 1, stArtColumn: 2, endLineNumber: 1, endColumn: 2 }
 				}];
 				return item;
 			}
 		}));
 
-		editor.setValue('abc');
+		editor.setVAlue('Abc');
 		editor.setSelection(new Selection(1, 1, 1, 1));
 
 		// trigger
 		let p1 = Event.toPromise(controller.model.onDidSuggest);
 		controller.triggerSuggest();
-		await p1;
+		AwAit p1;
 
 		//
-		let p2 = Event.toPromise(controller.model.onDidCancel);
-		controller.acceptSelectedSuggestion(true, false);
-		await p2;
+		let p2 = Event.toPromise(controller.model.onDidCAncel);
+		controller.AcceptSelectedSuggestion(true, fAlse);
+		AwAit p2;
 
-		// insertText happens sync!
-		assert.equal(editor.getValue(), 'helloabc');
+		// insertText hAppens sync!
+		Assert.equAl(editor.getVAlue(), 'helloAbc');
 
 		// next
-		controller.acceptNextSuggestion();
+		controller.AcceptNextSuggestion();
 
-		// resolve additional edits (MUST be cancelled)
-		resolve.forEach(fn => fn);
+		// resolve AdditionAl edits (MUST be cAncelled)
+		resolve.forEAch(fn => fn);
 		resolve.length = 0;
-		await timeout(10);
+		AwAit timeout(10);
 
 		// next suggestion used
-		assert.equal(editor.getValue(), 'halloabc');
+		Assert.equAl(editor.getVAlue(), 'hAlloAbc');
 	});
 });

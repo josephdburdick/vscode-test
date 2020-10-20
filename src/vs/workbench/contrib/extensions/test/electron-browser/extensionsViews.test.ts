@@ -1,551 +1,551 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { generateUuid } from 'vs/base/common/uuid';
+import * As Assert from 'Assert';
+import { generAteUuid } from 'vs/bAse/common/uuid';
 import { ExtensionsListView } from 'vs/workbench/contrib/extensions/browser/extensionsViews';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
 import { IExtensionsWorkbenchService } from 'vs/workbench/contrib/extensions/common/extensions';
 import { ExtensionsWorkbenchService } from 'vs/workbench/contrib/extensions/browser/extensionsWorkbenchService';
 import {
-	IExtensionManagementService, IExtensionGalleryService, ILocalExtension, IGalleryExtension, IQueryOptions,
-	DidInstallExtensionEvent, DidUninstallExtensionEvent, InstallExtensionEvent, IExtensionIdentifier, SortBy
-} from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService, EnablementState, IExtensionManagementServerService, IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationsService, ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { getGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { TestExtensionEnablementService } from 'vs/workbench/services/extensionManagement/test/browser/extensionEnablementService.test';
-import { ExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionGalleryService';
-import { IURLService } from 'vs/platform/url/common/url';
-import { Emitter } from 'vs/base/common/event';
-import { IPager } from 'vs/base/common/paging';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
+	IExtensionMAnAgementService, IExtensionGAlleryService, ILocAlExtension, IGAlleryExtension, IQueryOptions,
+	DidInstAllExtensionEvent, DidUninstAllExtensionEvent, InstAllExtensionEvent, IExtensionIdentifier, SortBy
+} from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IWorkbenchExtensionEnAblementService, EnAblementStAte, IExtensionMAnAgementServerService, IExtensionMAnAgementServer } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { IExtensionRecommendAtionsService, ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { getGAlleryExtensionId } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { TestExtensionEnAblementService } from 'vs/workbench/services/extensionMAnAgement/test/browser/extensionEnAblementService.test';
+import { ExtensionGAlleryService } from 'vs/plAtform/extensionMAnAgement/common/extensionGAlleryService';
+import { IURLService } from 'vs/plAtform/url/common/url';
+import { Emitter } from 'vs/bAse/common/event';
+import { IPAger } from 'vs/bAse/common/pAging';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
 import { IExtensionService, toExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { TestMenuService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TestSharedProcessService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILogService, NullLogService } from 'vs/platform/log/common/log';
-import { NativeURLService } from 'vs/platform/url/common/urlService';
-import { URI } from 'vs/base/common/uri';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
+import { TestShAredProcessService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILogService, NullLogService } from 'vs/plAtform/log/common/log';
+import { NAtiveURLService } from 'vs/plAtform/url/common/urlService';
+import { URI } from 'vs/bAse/common/uri';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
 import { SinonStub } from 'sinon';
-import { IExperimentService, ExperimentState, ExperimentActionType, ExperimentService } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { IExperimentService, ExperimentStAte, ExperimentActionType, ExperimentService } from 'vs/workbench/contrib/experiments/common/experimentService';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
 import { RemoteAgentService } from 'vs/workbench/services/remote/electron-browser/remoteAgentServiceImpl';
-import { ExtensionType, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { ExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/electron-browser/extensionManagementServerService';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
-import { IMenuService } from 'vs/platform/actions/common/actions';
+import { ExtensionType, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { IShAredProcessService } from 'vs/plAtform/ipc/electron-browser/shAredProcessService';
+import { ExtensionMAnAgementServerService } from 'vs/workbench/services/extensionMAnAgement/electron-browser/extensionMAnAgementServerService';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { MockContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
+import { IMenuService } from 'vs/plAtform/Actions/common/Actions';
 import { TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
-import { IViewDescriptorService, ViewContainerLocation } from 'vs/workbench/common/views';
+import { IViewDescriptorService, ViewContAinerLocAtion } from 'vs/workbench/common/views';
 
 suite('ExtensionsListView Tests', () => {
 
-	let instantiationService: TestInstantiationService;
-	let testableView: ExtensionsListView;
-	let installEvent: Emitter<InstallExtensionEvent>,
-		didInstallEvent: Emitter<DidInstallExtensionEvent>,
-		uninstallEvent: Emitter<IExtensionIdentifier>,
-		didUninstallEvent: Emitter<DidUninstallExtensionEvent>;
+	let instAntiAtionService: TestInstAntiAtionService;
+	let testAbleView: ExtensionsListView;
+	let instAllEvent: Emitter<InstAllExtensionEvent>,
+		didInstAllEvent: Emitter<DidInstAllExtensionEvent>,
+		uninstAllEvent: Emitter<IExtensionIdentifier>,
+		didUninstAllEvent: Emitter<DidUninstAllExtensionEvent>;
 
-	const localEnabledTheme = aLocalExtension('first-enabled-extension', { categories: ['Themes', 'random'] });
-	const localEnabledLanguage = aLocalExtension('second-enabled-extension', { categories: ['Programming languages'] });
-	const localDisabledTheme = aLocalExtension('first-disabled-extension', { categories: ['themes'] });
-	const localDisabledLanguage = aLocalExtension('second-disabled-extension', { categories: ['programming languages'] });
-	const localRandom = aLocalExtension('random-enabled-extension', { categories: ['random'] });
-	const builtInTheme = aLocalExtension('my-theme', { contributes: { themes: ['my-theme'] } }, { type: ExtensionType.System });
-	const builtInBasic = aLocalExtension('my-lang', { contributes: { grammars: [{ language: 'my-language' }] } }, { type: ExtensionType.System });
+	const locAlEnAbledTheme = ALocAlExtension('first-enAbled-extension', { cAtegories: ['Themes', 'rAndom'] });
+	const locAlEnAbledLAnguAge = ALocAlExtension('second-enAbled-extension', { cAtegories: ['ProgrAmming lAnguAges'] });
+	const locAlDisAbledTheme = ALocAlExtension('first-disAbled-extension', { cAtegories: ['themes'] });
+	const locAlDisAbledLAnguAge = ALocAlExtension('second-disAbled-extension', { cAtegories: ['progrAmming lAnguAges'] });
+	const locAlRAndom = ALocAlExtension('rAndom-enAbled-extension', { cAtegories: ['rAndom'] });
+	const builtInTheme = ALocAlExtension('my-theme', { contributes: { themes: ['my-theme'] } }, { type: ExtensionType.System });
+	const builtInBAsic = ALocAlExtension('my-lAng', { contributes: { grAmmArs: [{ lAnguAge: 'my-lAnguAge' }] } }, { type: ExtensionType.System });
 
-	const workspaceRecommendationA = aGalleryExtension('workspace-recommendation-A');
-	const workspaceRecommendationB = aGalleryExtension('workspace-recommendation-B');
-	const configBasedRecommendationA = aGalleryExtension('configbased-recommendation-A');
-	const configBasedRecommendationB = aGalleryExtension('configbased-recommendation-B');
-	const fileBasedRecommendationA = aGalleryExtension('filebased-recommendation-A');
-	const fileBasedRecommendationB = aGalleryExtension('filebased-recommendation-B');
-	const otherRecommendationA = aGalleryExtension('other-recommendation-A');
+	const workspAceRecommendAtionA = AGAlleryExtension('workspAce-recommendAtion-A');
+	const workspAceRecommendAtionB = AGAlleryExtension('workspAce-recommendAtion-B');
+	const configBAsedRecommendAtionA = AGAlleryExtension('configbAsed-recommendAtion-A');
+	const configBAsedRecommendAtionB = AGAlleryExtension('configbAsed-recommendAtion-B');
+	const fileBAsedRecommendAtionA = AGAlleryExtension('filebAsed-recommendAtion-A');
+	const fileBAsedRecommendAtionB = AGAlleryExtension('filebAsed-recommendAtion-B');
+	const otherRecommendAtionA = AGAlleryExtension('other-recommendAtion-A');
 
 	suiteSetup(() => {
-		installEvent = new Emitter<InstallExtensionEvent>();
-		didInstallEvent = new Emitter<DidInstallExtensionEvent>();
-		uninstallEvent = new Emitter<IExtensionIdentifier>();
-		didUninstallEvent = new Emitter<DidUninstallExtensionEvent>();
+		instAllEvent = new Emitter<InstAllExtensionEvent>();
+		didInstAllEvent = new Emitter<DidInstAllExtensionEvent>();
+		uninstAllEvent = new Emitter<IExtensionIdentifier>();
+		didUninstAllEvent = new Emitter<DidUninstAllExtensionEvent>();
 
-		instantiationService = new TestInstantiationService();
-		instantiationService.stub(ITelemetryService, NullTelemetryService);
-		instantiationService.stub(ILogService, NullLogService);
+		instAntiAtionService = new TestInstAntiAtionService();
+		instAntiAtionService.stub(ITelemetryService, NullTelemetryService);
+		instAntiAtionService.stub(ILogService, NullLogService);
 
-		instantiationService.stub(IWorkspaceContextService, new TestContextService());
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
+		instAntiAtionService.stub(IWorkspAceContextService, new TestContextService());
+		instAntiAtionService.stub(IConfigurAtionService, new TestConfigurAtionService());
 
-		instantiationService.stub(IExtensionGalleryService, ExtensionGalleryService);
-		instantiationService.stub(ISharedProcessService, TestSharedProcessService);
-		instantiationService.stub(IExperimentService, ExperimentService);
+		instAntiAtionService.stub(IExtensionGAlleryService, ExtensionGAlleryService);
+		instAntiAtionService.stub(IShAredProcessService, TestShAredProcessService);
+		instAntiAtionService.stub(IExperimentService, ExperimentService);
 
-		instantiationService.stub(IExtensionManagementService, <Partial<IExtensionManagementService>>{
-			onInstallExtension: installEvent.event,
-			onDidInstallExtension: didInstallEvent.event,
-			onUninstallExtension: uninstallEvent.event,
-			onDidUninstallExtension: didUninstallEvent.event,
-			async getInstalled() { return []; },
-			async canInstall() { return true; },
-			async getExtensionsReport() { return []; },
+		instAntiAtionService.stub(IExtensionMAnAgementService, <PArtiAl<IExtensionMAnAgementService>>{
+			onInstAllExtension: instAllEvent.event,
+			onDidInstAllExtension: didInstAllEvent.event,
+			onUninstAllExtension: uninstAllEvent.event,
+			onDidUninstAllExtension: didUninstAllEvent.event,
+			Async getInstAlled() { return []; },
+			Async cAnInstAll() { return true; },
+			Async getExtensionsReport() { return []; },
 		});
-		instantiationService.stub(IRemoteAgentService, RemoteAgentService);
-		instantiationService.stub(IContextKeyService, new MockContextKeyService());
-		instantiationService.stub(IMenuService, new TestMenuService());
+		instAntiAtionService.stub(IRemoteAgentService, RemoteAgentService);
+		instAntiAtionService.stub(IContextKeyService, new MockContextKeyService());
+		instAntiAtionService.stub(IMenuService, new TestMenuService());
 
-		instantiationService.stub(IExtensionManagementServerService, new class extends ExtensionManagementServerService {
-			#localExtensionManagementServer: IExtensionManagementServer = { extensionManagementService: instantiationService.get(IExtensionManagementService), label: 'local', id: 'vscode-local' };
+		instAntiAtionService.stub(IExtensionMAnAgementServerService, new clAss extends ExtensionMAnAgementServerService {
+			#locAlExtensionMAnAgementServer: IExtensionMAnAgementServer = { extensionMAnAgementService: instAntiAtionService.get(IExtensionMAnAgementService), lAbel: 'locAl', id: 'vscode-locAl' };
 			constructor() {
-				super(instantiationService.get(ISharedProcessService), instantiationService.get(IRemoteAgentService), instantiationService.get(ILabelService), instantiationService);
+				super(instAntiAtionService.get(IShAredProcessService), instAntiAtionService.get(IRemoteAgentService), instAntiAtionService.get(ILAbelService), instAntiAtionService);
 			}
-			get localExtensionManagementServer(): IExtensionManagementServer { return this.#localExtensionManagementServer; }
-			set localExtensionManagementServer(server: IExtensionManagementServer) { }
+			get locAlExtensionMAnAgementServer(): IExtensionMAnAgementServer { return this.#locAlExtensionMAnAgementServer; }
+			set locAlExtensionMAnAgementServer(server: IExtensionMAnAgementServer) { }
 		}());
 
-		instantiationService.stub(IWorkbenchExtensionEnablementService, new TestExtensionEnablementService(instantiationService));
+		instAntiAtionService.stub(IWorkbenchExtensionEnAblementService, new TestExtensionEnAblementService(instAntiAtionService));
 
-		const reasons: { [key: string]: any } = {};
-		reasons[workspaceRecommendationA.identifier.id] = { reasonId: ExtensionRecommendationReason.Workspace };
-		reasons[workspaceRecommendationB.identifier.id] = { reasonId: ExtensionRecommendationReason.Workspace };
-		reasons[fileBasedRecommendationA.identifier.id] = { reasonId: ExtensionRecommendationReason.File };
-		reasons[fileBasedRecommendationB.identifier.id] = { reasonId: ExtensionRecommendationReason.File };
-		reasons[otherRecommendationA.identifier.id] = { reasonId: ExtensionRecommendationReason.Executable };
-		reasons[configBasedRecommendationA.identifier.id] = { reasonId: ExtensionRecommendationReason.WorkspaceConfig };
-		instantiationService.stub(IExtensionRecommendationsService, <Partial<IExtensionRecommendationsService>>{
-			getWorkspaceRecommendations() {
+		const reAsons: { [key: string]: Any } = {};
+		reAsons[workspAceRecommendAtionA.identifier.id] = { reAsonId: ExtensionRecommendAtionReAson.WorkspAce };
+		reAsons[workspAceRecommendAtionB.identifier.id] = { reAsonId: ExtensionRecommendAtionReAson.WorkspAce };
+		reAsons[fileBAsedRecommendAtionA.identifier.id] = { reAsonId: ExtensionRecommendAtionReAson.File };
+		reAsons[fileBAsedRecommendAtionB.identifier.id] = { reAsonId: ExtensionRecommendAtionReAson.File };
+		reAsons[otherRecommendAtionA.identifier.id] = { reAsonId: ExtensionRecommendAtionReAson.ExecutAble };
+		reAsons[configBAsedRecommendAtionA.identifier.id] = { reAsonId: ExtensionRecommendAtionReAson.WorkspAceConfig };
+		instAntiAtionService.stub(IExtensionRecommendAtionsService, <PArtiAl<IExtensionRecommendAtionsService>>{
+			getWorkspAceRecommendAtions() {
 				return Promise.resolve([
-					workspaceRecommendationA.identifier.id,
-					workspaceRecommendationB.identifier.id]);
+					workspAceRecommendAtionA.identifier.id,
+					workspAceRecommendAtionB.identifier.id]);
 			},
-			getConfigBasedRecommendations() {
+			getConfigBAsedRecommendAtions() {
 				return Promise.resolve({
-					important: [configBasedRecommendationA.identifier.id],
-					others: [configBasedRecommendationB.identifier.id],
+					importAnt: [configBAsedRecommendAtionA.identifier.id],
+					others: [configBAsedRecommendAtionB.identifier.id],
 				});
 			},
-			getImportantRecommendations(): Promise<string[]> {
+			getImportAntRecommendAtions(): Promise<string[]> {
 				return Promise.resolve([]);
 			},
-			getFileBasedRecommendations() {
+			getFileBAsedRecommendAtions() {
 				return [
-					fileBasedRecommendationA.identifier.id,
-					fileBasedRecommendationB.identifier.id
+					fileBAsedRecommendAtionA.identifier.id,
+					fileBAsedRecommendAtionB.identifier.id
 				];
 			},
-			getOtherRecommendations() {
+			getOtherRecommendAtions() {
 				return Promise.resolve([
-					configBasedRecommendationB.identifier.id,
-					otherRecommendationA.identifier.id
+					configBAsedRecommendAtionB.identifier.id,
+					otherRecommendAtionA.identifier.id
 				]);
 			},
-			getAllRecommendationsWithReason() {
-				return reasons;
+			getAllRecommendAtionsWithReAson() {
+				return reAsons;
 			}
 		});
-		instantiationService.stub(IURLService, NativeURLService);
+		instAntiAtionService.stub(IURLService, NAtiveURLService);
 	});
 
-	setup(async () => {
-		instantiationService.stubPromise(IExtensionManagementService, 'getInstalled', [localEnabledTheme, localEnabledLanguage, localRandom, localDisabledTheme, localDisabledLanguage, builtInTheme, builtInBasic]);
-		instantiationService.stubPromise(IExtensionManagementService, 'getExtensionsReport', []);
-		instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage());
-		instantiationService.stubPromise(IExperimentService, 'getExperimentsByType', []);
+	setup(Async () => {
+		instAntiAtionService.stubPromise(IExtensionMAnAgementService, 'getInstAlled', [locAlEnAbledTheme, locAlEnAbledLAnguAge, locAlRAndom, locAlDisAbledTheme, locAlDisAbledLAnguAge, builtInTheme, builtInBAsic]);
+		instAntiAtionService.stubPromise(IExtensionMAnAgementService, 'getExtensionsReport', []);
+		instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge());
+		instAntiAtionService.stubPromise(IExperimentService, 'getExperimentsByType', []);
 
-		instantiationService.stub(IViewDescriptorService, {
-			getViewLocationById(): ViewContainerLocation {
-				return ViewContainerLocation.Sidebar;
+		instAntiAtionService.stub(IViewDescriptorService, {
+			getViewLocAtionById(): ViewContAinerLocAtion {
+				return ViewContAinerLocAtion.SidebAr;
 			}
 		});
 
-		instantiationService.stub(IExtensionService, {
+		instAntiAtionService.stub(IExtensionService, {
 			getExtensions: (): Promise<IExtensionDescription[]> => {
 				return Promise.resolve([
-					toExtensionDescription(localEnabledTheme),
-					toExtensionDescription(localEnabledLanguage),
-					toExtensionDescription(localRandom),
+					toExtensionDescription(locAlEnAbledTheme),
+					toExtensionDescription(locAlEnAbledLAnguAge),
+					toExtensionDescription(locAlRAndom),
 					toExtensionDescription(builtInTheme),
-					toExtensionDescription(builtInBasic)
+					toExtensionDescription(builtInBAsic)
 				]);
 			}
 		});
-		await (<TestExtensionEnablementService>instantiationService.get(IWorkbenchExtensionEnablementService)).setEnablement([localDisabledTheme], EnablementState.DisabledGlobally);
-		await (<TestExtensionEnablementService>instantiationService.get(IWorkbenchExtensionEnablementService)).setEnablement([localDisabledLanguage], EnablementState.DisabledGlobally);
+		AwAit (<TestExtensionEnAblementService>instAntiAtionService.get(IWorkbenchExtensionEnAblementService)).setEnAblement([locAlDisAbledTheme], EnAblementStAte.DisAbledGlobAlly);
+		AwAit (<TestExtensionEnAblementService>instAntiAtionService.get(IWorkbenchExtensionEnAblementService)).setEnAblement([locAlDisAbledLAnguAge], EnAblementStAte.DisAbledGlobAlly);
 
-		instantiationService.set(IExtensionsWorkbenchService, instantiationService.createInstance(ExtensionsWorkbenchService));
-		testableView = instantiationService.createInstance(ExtensionsListView, {});
+		instAntiAtionService.set(IExtensionsWorkbenchService, instAntiAtionService.creAteInstAnce(ExtensionsWorkbenchService));
+		testAbleView = instAntiAtionService.creAteInstAnce(ExtensionsListView, {});
 	});
 
-	teardown(() => {
-		(<ExtensionsWorkbenchService>instantiationService.get(IExtensionsWorkbenchService)).dispose();
-		testableView.dispose();
+	teArdown(() => {
+		(<ExtensionsWorkbenchService>instAntiAtionService.get(IExtensionsWorkbenchService)).dispose();
+		testAbleView.dispose();
 	});
 
 	test('Test query types', () => {
-		assert.equal(ExtensionsListView.isBuiltInExtensionsQuery('@builtin'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@installed'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@enabled'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@disabled'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@outdated'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@installed searchText'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@enabled searchText'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@disabled searchText'), true);
-		assert.equal(ExtensionsListView.isLocalExtensionsQuery('@outdated searchText'), true);
+		Assert.equAl(ExtensionsListView.isBuiltInExtensionsQuery('@builtin'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@instAlled'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@enAbled'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@disAbled'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@outdAted'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@instAlled seArchText'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@enAbled seArchText'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@disAbled seArchText'), true);
+		Assert.equAl(ExtensionsListView.isLocAlExtensionsQuery('@outdAted seArchText'), true);
 	});
 
-	test('Test empty query equates to sort by install count', () => {
-		const target = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage());
-		return testableView.show('').then(() => {
-			assert.ok(target.calledOnce);
-			const options: IQueryOptions = target.args[0][0];
-			assert.equal(options.sortBy, SortBy.InstallCount);
+	test('Test empty query equAtes to sort by instAll count', () => {
+		const tArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge());
+		return testAbleView.show('').then(() => {
+			Assert.ok(tArget.cAlledOnce);
+			const options: IQueryOptions = tArget.Args[0][0];
+			Assert.equAl(options.sortBy, SortBy.InstAllCount);
 		});
 	});
 
 	test('Test non empty query without sort doesnt use sortBy', () => {
-		const target = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage());
-		return testableView.show('some extension').then(() => {
-			assert.ok(target.calledOnce);
-			const options: IQueryOptions = target.args[0][0];
-			assert.equal(options.sortBy, undefined);
+		const tArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge());
+		return testAbleView.show('some extension').then(() => {
+			Assert.ok(tArget.cAlledOnce);
+			const options: IQueryOptions = tArget.Args[0][0];
+			Assert.equAl(options.sortBy, undefined);
 		});
 	});
 
 	test('Test query with sort uses sortBy', () => {
-		const target = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage());
-		return testableView.show('some extension @sort:rating').then(() => {
-			assert.ok(target.calledOnce);
-			const options: IQueryOptions = target.args[0][0];
-			assert.equal(options.sortBy, SortBy.WeightedRating);
+		const tArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge());
+		return testAbleView.show('some extension @sort:rAting').then(() => {
+			Assert.ok(tArget.cAlledOnce);
+			const options: IQueryOptions = tArget.Args[0][0];
+			Assert.equAl(options.sortBy, SortBy.WeightedRAting);
 		});
 	});
 
-	test('Test installed query results', async () => {
-		await testableView.show('@installed').then(result => {
-			assert.equal(result.length, 5, 'Unexpected number of results for @installed query');
-			const actual = [result.get(0).name, result.get(1).name, result.get(2).name, result.get(3).name, result.get(4).name].sort();
-			const expected = [localDisabledTheme.manifest.name, localEnabledTheme.manifest.name, localRandom.manifest.name, localDisabledLanguage.manifest.name, localEnabledLanguage.manifest.name];
+	test('Test instAlled query results', Async () => {
+		AwAit testAbleView.show('@instAlled').then(result => {
+			Assert.equAl(result.length, 5, 'Unexpected number of results for @instAlled query');
+			const ActuAl = [result.get(0).nAme, result.get(1).nAme, result.get(2).nAme, result.get(3).nAme, result.get(4).nAme].sort();
+			const expected = [locAlDisAbledTheme.mAnifest.nAme, locAlEnAbledTheme.mAnifest.nAme, locAlRAndom.mAnifest.nAme, locAlDisAbledLAnguAge.mAnifest.nAme, locAlEnAbledLAnguAge.mAnifest.nAme];
 			for (let i = 0; i < result.length; i++) {
-				assert.equal(actual[i], expected[i], 'Unexpected extension for @installed query.');
+				Assert.equAl(ActuAl[i], expected[i], 'Unexpected extension for @instAlled query.');
 			}
 		});
 
-		await testableView.show('@installed first').then(result => {
-			assert.equal(result.length, 2, 'Unexpected number of results for @installed query');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @installed query with search text.');
-			assert.equal(result.get(1).name, localDisabledTheme.manifest.name, 'Unexpected extension for @installed query with search text.');
+		AwAit testAbleView.show('@instAlled first').then(result => {
+			Assert.equAl(result.length, 2, 'Unexpected number of results for @instAlled query');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with seArch text.');
+			Assert.equAl(result.get(1).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with seArch text.');
 		});
 
-		await testableView.show('@disabled').then(result => {
-			assert.equal(result.length, 2, 'Unexpected number of results for @disabled query');
-			assert.equal(result.get(0).name, localDisabledTheme.manifest.name, 'Unexpected extension for @disabled query.');
-			assert.equal(result.get(1).name, localDisabledLanguage.manifest.name, 'Unexpected extension for @disabled query.');
+		AwAit testAbleView.show('@disAbled').then(result => {
+			Assert.equAl(result.length, 2, 'Unexpected number of results for @disAbled query');
+			Assert.equAl(result.get(0).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @disAbled query.');
+			Assert.equAl(result.get(1).nAme, locAlDisAbledLAnguAge.mAnifest.nAme, 'Unexpected extension for @disAbled query.');
 		});
 
-		await testableView.show('@enabled').then(result => {
-			assert.equal(result.length, 3, 'Unexpected number of results for @enabled query');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @enabled query.');
-			assert.equal(result.get(1).name, localRandom.manifest.name, 'Unexpected extension for @enabled query.');
-			assert.equal(result.get(2).name, localEnabledLanguage.manifest.name, 'Unexpected extension for @enabled query.');
+		AwAit testAbleView.show('@enAbled').then(result => {
+			Assert.equAl(result.length, 3, 'Unexpected number of results for @enAbled query');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @enAbled query.');
+			Assert.equAl(result.get(1).nAme, locAlRAndom.mAnifest.nAme, 'Unexpected extension for @enAbled query.');
+			Assert.equAl(result.get(2).nAme, locAlEnAbledLAnguAge.mAnifest.nAme, 'Unexpected extension for @enAbled query.');
 		});
 
-		await testableView.show('@builtin:themes').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @builtin:themes query');
-			assert.equal(result.get(0).name, builtInTheme.manifest.name, 'Unexpected extension for @builtin:themes query.');
+		AwAit testAbleView.show('@builtin:themes').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @builtin:themes query');
+			Assert.equAl(result.get(0).nAme, builtInTheme.mAnifest.nAme, 'Unexpected extension for @builtin:themes query.');
 		});
 
-		await testableView.show('@builtin:basics').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @builtin:basics query');
-			assert.equal(result.get(0).name, builtInBasic.manifest.name, 'Unexpected extension for @builtin:basics query.');
+		AwAit testAbleView.show('@builtin:bAsics').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @builtin:bAsics query');
+			Assert.equAl(result.get(0).nAme, builtInBAsic.mAnifest.nAme, 'Unexpected extension for @builtin:bAsics query.');
 		});
 
-		await testableView.show('@builtin').then(result => {
-			assert.equal(result.length, 2, 'Unexpected number of results for @builtin query');
-			assert.equal(result.get(0).name, builtInBasic.manifest.name, 'Unexpected extension for @builtin query.');
-			assert.equal(result.get(1).name, builtInTheme.manifest.name, 'Unexpected extension for @builtin query.');
+		AwAit testAbleView.show('@builtin').then(result => {
+			Assert.equAl(result.length, 2, 'Unexpected number of results for @builtin query');
+			Assert.equAl(result.get(0).nAme, builtInBAsic.mAnifest.nAme, 'Unexpected extension for @builtin query.');
+			Assert.equAl(result.get(1).nAme, builtInTheme.mAnifest.nAme, 'Unexpected extension for @builtin query.');
 		});
 
-		await testableView.show('@builtin my-theme').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @builtin query');
-			assert.equal(result.get(0).name, builtInTheme.manifest.name, 'Unexpected extension for @builtin query.');
-		});
-	});
-
-	test('Test installed query with category', async () => {
-		await testableView.show('@installed category:themes').then(result => {
-			assert.equal(result.length, 2, 'Unexpected number of results for @installed query with category');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @installed query with category.');
-			assert.equal(result.get(1).name, localDisabledTheme.manifest.name, 'Unexpected extension for @installed query with category.');
-		});
-
-		await testableView.show('@installed category:"themes"').then(result => {
-			assert.equal(result.length, 2, 'Unexpected number of results for @installed query with quoted category');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @installed query with quoted category.');
-			assert.equal(result.get(1).name, localDisabledTheme.manifest.name, 'Unexpected extension for @installed query with quoted category.');
-		});
-
-		await testableView.show('@installed category:"programming languages"').then(result => {
-			assert.equal(result.length, 2, 'Unexpected number of results for @installed query with quoted category including space');
-			assert.equal(result.get(0).name, localEnabledLanguage.manifest.name, 'Unexpected extension for @installed query with quoted category including space.');
-			assert.equal(result.get(1).name, localDisabledLanguage.manifest.name, 'Unexpected extension for @installed query with quoted category inlcuding space.');
-		});
-
-		await testableView.show('@installed category:themes category:random').then(result => {
-			assert.equal(result.length, 3, 'Unexpected number of results for @installed query with multiple category');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @installed query with multiple category.');
-			assert.equal(result.get(1).name, localRandom.manifest.name, 'Unexpected extension for @installed query with multiple category.');
-			assert.equal(result.get(2).name, localDisabledTheme.manifest.name, 'Unexpected extension for @installed query with multiple category.');
-		});
-
-		await testableView.show('@enabled category:themes').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @enabled query with category');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @enabled query with category.');
-		});
-
-		await testableView.show('@enabled category:"themes"').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @enabled query with quoted category');
-			assert.equal(result.get(0).name, localEnabledTheme.manifest.name, 'Unexpected extension for @enabled query with quoted category.');
-		});
-
-		await testableView.show('@enabled category:"programming languages"').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @enabled query with quoted category inlcuding space');
-			assert.equal(result.get(0).name, localEnabledLanguage.manifest.name, 'Unexpected extension for @enabled query with quoted category including space.');
-		});
-
-		await testableView.show('@disabled category:themes').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @disabled query with category');
-			assert.equal(result.get(0).name, localDisabledTheme.manifest.name, 'Unexpected extension for @disabled query with category.');
-		});
-
-		await testableView.show('@disabled category:"themes"').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @disabled query with quoted category');
-			assert.equal(result.get(0).name, localDisabledTheme.manifest.name, 'Unexpected extension for @disabled query with quoted category.');
-		});
-
-		await testableView.show('@disabled category:"programming languages"').then(result => {
-			assert.equal(result.length, 1, 'Unexpected number of results for @disabled query with quoted category inlcuding space');
-			assert.equal(result.get(0).name, localDisabledLanguage.manifest.name, 'Unexpected extension for @disabled query with quoted category including space.');
+		AwAit testAbleView.show('@builtin my-theme').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @builtin query');
+			Assert.equAl(result.get(0).nAme, builtInTheme.mAnifest.nAme, 'Unexpected extension for @builtin query.');
 		});
 	});
 
-	test('Test @recommended:workspace query', () => {
-		const workspaceRecommendedExtensions = [
-			workspaceRecommendationA,
-			workspaceRecommendationB,
-			configBasedRecommendationA,
+	test('Test instAlled query with cAtegory', Async () => {
+		AwAit testAbleView.show('@instAlled cAtegory:themes').then(result => {
+			Assert.equAl(result.length, 2, 'Unexpected number of results for @instAlled query with cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with cAtegory.');
+			Assert.equAl(result.get(1).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with cAtegory.');
+		});
+
+		AwAit testAbleView.show('@instAlled cAtegory:"themes"').then(result => {
+			Assert.equAl(result.length, 2, 'Unexpected number of results for @instAlled query with quoted cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with quoted cAtegory.');
+			Assert.equAl(result.get(1).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with quoted cAtegory.');
+		});
+
+		AwAit testAbleView.show('@instAlled cAtegory:"progrAmming lAnguAges"').then(result => {
+			Assert.equAl(result.length, 2, 'Unexpected number of results for @instAlled query with quoted cAtegory including spAce');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledLAnguAge.mAnifest.nAme, 'Unexpected extension for @instAlled query with quoted cAtegory including spAce.');
+			Assert.equAl(result.get(1).nAme, locAlDisAbledLAnguAge.mAnifest.nAme, 'Unexpected extension for @instAlled query with quoted cAtegory inlcuding spAce.');
+		});
+
+		AwAit testAbleView.show('@instAlled cAtegory:themes cAtegory:rAndom').then(result => {
+			Assert.equAl(result.length, 3, 'Unexpected number of results for @instAlled query with multiple cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with multiple cAtegory.');
+			Assert.equAl(result.get(1).nAme, locAlRAndom.mAnifest.nAme, 'Unexpected extension for @instAlled query with multiple cAtegory.');
+			Assert.equAl(result.get(2).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @instAlled query with multiple cAtegory.');
+		});
+
+		AwAit testAbleView.show('@enAbled cAtegory:themes').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @enAbled query with cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @enAbled query with cAtegory.');
+		});
+
+		AwAit testAbleView.show('@enAbled cAtegory:"themes"').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @enAbled query with quoted cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledTheme.mAnifest.nAme, 'Unexpected extension for @enAbled query with quoted cAtegory.');
+		});
+
+		AwAit testAbleView.show('@enAbled cAtegory:"progrAmming lAnguAges"').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @enAbled query with quoted cAtegory inlcuding spAce');
+			Assert.equAl(result.get(0).nAme, locAlEnAbledLAnguAge.mAnifest.nAme, 'Unexpected extension for @enAbled query with quoted cAtegory including spAce.');
+		});
+
+		AwAit testAbleView.show('@disAbled cAtegory:themes').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @disAbled query with cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @disAbled query with cAtegory.');
+		});
+
+		AwAit testAbleView.show('@disAbled cAtegory:"themes"').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @disAbled query with quoted cAtegory');
+			Assert.equAl(result.get(0).nAme, locAlDisAbledTheme.mAnifest.nAme, 'Unexpected extension for @disAbled query with quoted cAtegory.');
+		});
+
+		AwAit testAbleView.show('@disAbled cAtegory:"progrAmming lAnguAges"').then(result => {
+			Assert.equAl(result.length, 1, 'Unexpected number of results for @disAbled query with quoted cAtegory inlcuding spAce');
+			Assert.equAl(result.get(0).nAme, locAlDisAbledLAnguAge.mAnifest.nAme, 'Unexpected extension for @disAbled query with quoted cAtegory including spAce.');
+		});
+	});
+
+	test('Test @recommended:workspAce query', () => {
+		const workspAceRecommendedExtensions = [
+			workspAceRecommendAtionA,
+			workspAceRecommendAtionB,
+			configBAsedRecommendAtionA,
 		];
-		const target = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...workspaceRecommendedExtensions));
+		const tArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...workspAceRecommendedExtensions));
 
-		return testableView.show('@recommended:workspace').then(result => {
-			assert.ok(target.calledOnce);
-			const options: IQueryOptions = target.args[0][0];
-			assert.equal(options.names!.length, workspaceRecommendedExtensions.length);
-			assert.equal(result.length, workspaceRecommendedExtensions.length);
-			for (let i = 0; i < workspaceRecommendedExtensions.length; i++) {
-				assert.equal(options.names![i], workspaceRecommendedExtensions[i].identifier.id);
-				assert.equal(result.get(i).identifier.id, workspaceRecommendedExtensions[i].identifier.id);
+		return testAbleView.show('@recommended:workspAce').then(result => {
+			Assert.ok(tArget.cAlledOnce);
+			const options: IQueryOptions = tArget.Args[0][0];
+			Assert.equAl(options.nAmes!.length, workspAceRecommendedExtensions.length);
+			Assert.equAl(result.length, workspAceRecommendedExtensions.length);
+			for (let i = 0; i < workspAceRecommendedExtensions.length; i++) {
+				Assert.equAl(options.nAmes![i], workspAceRecommendedExtensions[i].identifier.id);
+				Assert.equAl(result.get(i).identifier.id, workspAceRecommendedExtensions[i].identifier.id);
 			}
 		});
 	});
 
 	test('Test @recommended query', () => {
-		const allRecommendedExtensions = [
-			fileBasedRecommendationA,
-			fileBasedRecommendationB,
-			configBasedRecommendationB,
-			otherRecommendationA
+		const AllRecommendedExtensions = [
+			fileBAsedRecommendAtionA,
+			fileBAsedRecommendAtionB,
+			configBAsedRecommendAtionB,
+			otherRecommendAtionA
 		];
-		const target = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...allRecommendedExtensions));
+		const tArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...AllRecommendedExtensions));
 
-		return testableView.show('@recommended').then(result => {
-			const options: IQueryOptions = target.args[0][0];
+		return testAbleView.show('@recommended').then(result => {
+			const options: IQueryOptions = tArget.Args[0][0];
 
-			assert.ok(target.calledOnce);
-			assert.equal(options.names!.length, allRecommendedExtensions.length);
-			assert.equal(result.length, allRecommendedExtensions.length);
-			for (let i = 0; i < allRecommendedExtensions.length; i++) {
-				assert.equal(options.names![i], allRecommendedExtensions[i].identifier.id);
-				assert.equal(result.get(i).identifier.id, allRecommendedExtensions[i].identifier.id);
+			Assert.ok(tArget.cAlledOnce);
+			Assert.equAl(options.nAmes!.length, AllRecommendedExtensions.length);
+			Assert.equAl(result.length, AllRecommendedExtensions.length);
+			for (let i = 0; i < AllRecommendedExtensions.length; i++) {
+				Assert.equAl(options.nAmes![i], AllRecommendedExtensions[i].identifier.id);
+				Assert.equAl(result.get(i).identifier.id, AllRecommendedExtensions[i].identifier.id);
 			}
 		});
 	});
 
 
-	test('Test @recommended:all query', () => {
-		const allRecommendedExtensions = [
-			workspaceRecommendationA,
-			workspaceRecommendationB,
-			configBasedRecommendationA,
-			fileBasedRecommendationA,
-			fileBasedRecommendationB,
-			configBasedRecommendationB,
-			otherRecommendationA,
+	test('Test @recommended:All query', () => {
+		const AllRecommendedExtensions = [
+			workspAceRecommendAtionA,
+			workspAceRecommendAtionB,
+			configBAsedRecommendAtionA,
+			fileBAsedRecommendAtionA,
+			fileBAsedRecommendAtionB,
+			configBAsedRecommendAtionB,
+			otherRecommendAtionA,
 		];
-		const target = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...allRecommendedExtensions));
+		const tArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...AllRecommendedExtensions));
 
-		return testableView.show('@recommended:all').then(result => {
-			const options: IQueryOptions = target.args[0][0];
+		return testAbleView.show('@recommended:All').then(result => {
+			const options: IQueryOptions = tArget.Args[0][0];
 
-			assert.ok(target.calledOnce);
-			assert.equal(options.names!.length, allRecommendedExtensions.length);
-			assert.equal(result.length, allRecommendedExtensions.length);
-			for (let i = 0; i < allRecommendedExtensions.length; i++) {
-				assert.equal(options.names![i], allRecommendedExtensions[i].identifier.id);
-				assert.equal(result.get(i).identifier.id, allRecommendedExtensions[i].identifier.id);
+			Assert.ok(tArget.cAlledOnce);
+			Assert.equAl(options.nAmes!.length, AllRecommendedExtensions.length);
+			Assert.equAl(result.length, AllRecommendedExtensions.length);
+			for (let i = 0; i < AllRecommendedExtensions.length; i++) {
+				Assert.equAl(options.nAmes![i], AllRecommendedExtensions[i].identifier.id);
+				Assert.equAl(result.get(i).identifier.id, AllRecommendedExtensions[i].identifier.id);
 			}
 		});
 	});
 
-	test('Test curated list experiment', () => {
-		const curatedList = [
-			workspaceRecommendationA,
-			fileBasedRecommendationA
+	test('Test curAted list experiment', () => {
+		const curAtedList = [
+			workspAceRecommendAtionA,
+			fileBAsedRecommendAtionA
 		];
-		const experimentTarget = <SinonStub>instantiationService.stubPromise(IExperimentService, 'getCuratedExtensionsList', curatedList.map(e => e.identifier.id));
-		const queryTarget = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...curatedList));
+		const experimentTArget = <SinonStub>instAntiAtionService.stubPromise(IExperimentService, 'getCurAtedExtensionsList', curAtedList.mAp(e => e.identifier.id));
+		const queryTArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...curAtedList));
 
-		return testableView.show('curated:mykey').then(result => {
-			const curatedKey: string = experimentTarget.args[0][0];
-			const options: IQueryOptions = queryTarget.args[0][0];
+		return testAbleView.show('curAted:mykey').then(result => {
+			const curAtedKey: string = experimentTArget.Args[0][0];
+			const options: IQueryOptions = queryTArget.Args[0][0];
 
-			assert.ok(experimentTarget.calledOnce);
-			assert.ok(queryTarget.calledOnce);
-			assert.equal(options.names!.length, curatedList.length);
-			assert.equal(result.length, curatedList.length);
-			for (let i = 0; i < curatedList.length; i++) {
-				assert.equal(options.names![i], curatedList[i].identifier.id);
-				assert.equal(result.get(i).identifier.id, curatedList[i].identifier.id);
+			Assert.ok(experimentTArget.cAlledOnce);
+			Assert.ok(queryTArget.cAlledOnce);
+			Assert.equAl(options.nAmes!.length, curAtedList.length);
+			Assert.equAl(result.length, curAtedList.length);
+			for (let i = 0; i < curAtedList.length; i++) {
+				Assert.equAl(options.nAmes![i], curAtedList[i].identifier.id);
+				Assert.equAl(result.get(i).identifier.id, curAtedList[i].identifier.id);
 			}
-			assert.equal(curatedKey, 'mykey');
+			Assert.equAl(curAtedKey, 'mykey');
 		});
 	});
 
-	test('Test search', () => {
-		const searchText = 'search-me';
+	test('Test seArch', () => {
+		const seArchText = 'seArch-me';
 		const results = [
-			fileBasedRecommendationA,
-			workspaceRecommendationA,
-			otherRecommendationA,
-			workspaceRecommendationB
+			fileBAsedRecommendAtionA,
+			workspAceRecommendAtionA,
+			otherRecommendAtionA,
+			workspAceRecommendAtionB
 		];
-		const queryTarget = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...results));
-		return testableView.show('search-me').then(result => {
-			const options: IQueryOptions = queryTarget.args[0][0];
+		const queryTArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...results));
+		return testAbleView.show('seArch-me').then(result => {
+			const options: IQueryOptions = queryTArget.Args[0][0];
 
-			assert.ok(queryTarget.calledOnce);
-			assert.equal(options.text, searchText);
-			assert.equal(result.length, results.length);
+			Assert.ok(queryTArget.cAlledOnce);
+			Assert.equAl(options.text, seArchText);
+			Assert.equAl(result.length, results.length);
 			for (let i = 0; i < results.length; i++) {
-				assert.equal(result.get(i).identifier.id, results[i].identifier.id);
+				Assert.equAl(result.get(i).identifier.id, results[i].identifier.id);
 			}
 		});
 	});
 
-	test('Test preferred search experiment', () => {
-		const searchText = 'search-me';
-		const actual = [
-			fileBasedRecommendationA,
-			workspaceRecommendationA,
-			otherRecommendationA,
-			workspaceRecommendationB
+	test('Test preferred seArch experiment', () => {
+		const seArchText = 'seArch-me';
+		const ActuAl = [
+			fileBAsedRecommendAtionA,
+			workspAceRecommendAtionA,
+			otherRecommendAtionA,
+			workspAceRecommendAtionB
 		];
 		const expected = [
-			workspaceRecommendationA,
-			workspaceRecommendationB,
-			fileBasedRecommendationA,
-			otherRecommendationA
+			workspAceRecommendAtionA,
+			workspAceRecommendAtionB,
+			fileBAsedRecommendAtionA,
+			otherRecommendAtionA
 		];
 
-		const queryTarget = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...actual));
-		const experimentTarget = <SinonStub>instantiationService.stubPromise(IExperimentService, 'getExperimentsByType', [{
+		const queryTArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...ActuAl));
+		const experimentTArget = <SinonStub>instAntiAtionService.stubPromise(IExperimentService, 'getExperimentsByType', [{
 			id: 'someId',
-			enabled: true,
-			state: ExperimentState.Run,
-			action: {
-				type: ExperimentActionType.ExtensionSearchResults,
+			enAbled: true,
+			stAte: ExperimentStAte.Run,
+			Action: {
+				type: ExperimentActionType.ExtensionSeArchResults,
 				properties: {
-					searchText: 'search-me',
+					seArchText: 'seArch-me',
 					preferredResults: [
-						workspaceRecommendationA.identifier.id,
-						'something-that-wasnt-in-first-page',
-						workspaceRecommendationB.identifier.id
+						workspAceRecommendAtionA.identifier.id,
+						'something-thAt-wAsnt-in-first-pAge',
+						workspAceRecommendAtionB.identifier.id
 					]
 				}
 			}
 		}]);
 
-		testableView.dispose();
-		testableView = instantiationService.createInstance(ExtensionsListView, {});
+		testAbleView.dispose();
+		testAbleView = instAntiAtionService.creAteInstAnce(ExtensionsListView, {});
 
-		return testableView.show('search-me').then(result => {
-			const options: IQueryOptions = queryTarget.args[0][0];
+		return testAbleView.show('seArch-me').then(result => {
+			const options: IQueryOptions = queryTArget.Args[0][0];
 
-			assert.ok(experimentTarget.calledOnce);
-			assert.ok(queryTarget.calledOnce);
-			assert.equal(options.text, searchText);
-			assert.equal(result.length, expected.length);
+			Assert.ok(experimentTArget.cAlledOnce);
+			Assert.ok(queryTArget.cAlledOnce);
+			Assert.equAl(options.text, seArchText);
+			Assert.equAl(result.length, expected.length);
 			for (let i = 0; i < expected.length; i++) {
-				assert.equal(result.get(i).identifier.id, expected[i].identifier.id);
+				Assert.equAl(result.get(i).identifier.id, expected[i].identifier.id);
 			}
 		});
 	});
 
-	test('Skip preferred search experiment when user defines sort order', () => {
-		const searchText = 'search-me';
-		const realResults = [
-			fileBasedRecommendationA,
-			workspaceRecommendationA,
-			otherRecommendationA,
-			workspaceRecommendationB
+	test('Skip preferred seArch experiment when user defines sort order', () => {
+		const seArchText = 'seArch-me';
+		const reAlResults = [
+			fileBAsedRecommendAtionA,
+			workspAceRecommendAtionA,
+			otherRecommendAtionA,
+			workspAceRecommendAtionB
 		];
 
-		const queryTarget = <SinonStub>instantiationService.stubPromise(IExtensionGalleryService, 'query', aPage(...realResults));
+		const queryTArget = <SinonStub>instAntiAtionService.stubPromise(IExtensionGAlleryService, 'query', APAge(...reAlResults));
 
-		testableView.dispose();
-		testableView = instantiationService.createInstance(ExtensionsListView, {});
+		testAbleView.dispose();
+		testAbleView = instAntiAtionService.creAteInstAnce(ExtensionsListView, {});
 
-		return testableView.show('search-me @sort:installs').then(result => {
-			const options: IQueryOptions = queryTarget.args[0][0];
+		return testAbleView.show('seArch-me @sort:instAlls').then(result => {
+			const options: IQueryOptions = queryTArget.Args[0][0];
 
-			assert.ok(queryTarget.calledOnce);
-			assert.equal(options.text, searchText);
-			assert.equal(result.length, realResults.length);
-			for (let i = 0; i < realResults.length; i++) {
-				assert.equal(result.get(i).identifier.id, realResults[i].identifier.id);
+			Assert.ok(queryTArget.cAlledOnce);
+			Assert.equAl(options.text, seArchText);
+			Assert.equAl(result.length, reAlResults.length);
+			for (let i = 0; i < reAlResults.length; i++) {
+				Assert.equAl(result.get(i).identifier.id, reAlResults[i].identifier.id);
 			}
 		});
 	});
 
-	function aLocalExtension(name: string = 'someext', manifest: any = {}, properties: any = {}): ILocalExtension {
-		manifest = { name, publisher: 'pub', version: '1.0.0', ...manifest };
+	function ALocAlExtension(nAme: string = 'someext', mAnifest: Any = {}, properties: Any = {}): ILocAlExtension {
+		mAnifest = { nAme, publisher: 'pub', version: '1.0.0', ...mAnifest };
 		properties = {
 			type: ExtensionType.User,
-			location: URI.file(`pub.${name}`),
-			identifier: { id: getGalleryExtensionId(manifest.publisher, manifest.name) },
-			metadata: { id: getGalleryExtensionId(manifest.publisher, manifest.name), publisherId: manifest.publisher, publisherDisplayName: 'somename' },
+			locAtion: URI.file(`pub.${nAme}`),
+			identifier: { id: getGAlleryExtensionId(mAnifest.publisher, mAnifest.nAme) },
+			metAdAtA: { id: getGAlleryExtensionId(mAnifest.publisher, mAnifest.nAme), publisherId: mAnifest.publisher, publisherDisplAyNAme: 'somenAme' },
 			...properties
 		};
 		properties.isBuiltin = properties.type === ExtensionType.System;
-		return <ILocalExtension>Object.create({ manifest, ...properties });
+		return <ILocAlExtension>Object.creAte({ mAnifest, ...properties });
 	}
 
-	function aGalleryExtension(name: string, properties: any = {}, galleryExtensionProperties: any = {}, assets: any = {}): IGalleryExtension {
-		const galleryExtension = <IGalleryExtension>Object.create({ name, publisher: 'pub', version: '1.0.0', properties: {}, assets: {}, ...properties });
-		galleryExtension.properties = { ...galleryExtension.properties, dependencies: [], ...galleryExtensionProperties };
-		galleryExtension.assets = { ...galleryExtension.assets, ...assets };
-		galleryExtension.identifier = { id: getGalleryExtensionId(galleryExtension.publisher, galleryExtension.name), uuid: generateUuid() };
-		return <IGalleryExtension>galleryExtension;
+	function AGAlleryExtension(nAme: string, properties: Any = {}, gAlleryExtensionProperties: Any = {}, Assets: Any = {}): IGAlleryExtension {
+		const gAlleryExtension = <IGAlleryExtension>Object.creAte({ nAme, publisher: 'pub', version: '1.0.0', properties: {}, Assets: {}, ...properties });
+		gAlleryExtension.properties = { ...gAlleryExtension.properties, dependencies: [], ...gAlleryExtensionProperties };
+		gAlleryExtension.Assets = { ...gAlleryExtension.Assets, ...Assets };
+		gAlleryExtension.identifier = { id: getGAlleryExtensionId(gAlleryExtension.publisher, gAlleryExtension.nAme), uuid: generAteUuid() };
+		return <IGAlleryExtension>gAlleryExtension;
 	}
 
-	function aPage<T>(...objects: T[]): IPager<T> {
-		return { firstPage: objects, total: objects.length, pageSize: objects.length, getPage: () => null! };
+	function APAge<T>(...objects: T[]): IPAger<T> {
+		return { firstPAge: objects, totAl: objects.length, pAgeSize: objects.length, getPAge: () => null! };
 	}
 
 });

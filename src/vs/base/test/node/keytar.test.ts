@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as platform from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import * As plAtform from 'vs/bAse/common/plAtform';
 
-suite('Keytar', () => {
+suite('KeytAr', () => {
 
-	test('loads and is functional', function (done) {
-		if (platform.isLinux) {
-			// Skip test due to set up issue with Travis.
+	test('loAds And is functionAl', function (done) {
+		if (plAtform.isLinux) {
+			// Skip test due to set up issue with TrAvis.
 			this.skip();
 			return;
 		}
-		(async () => {
-			const keytar = await import('keytar');
-			const name = `VSCode Test ${Math.floor(Math.random() * 1e9)}`;
+		(Async () => {
+			const keytAr = AwAit import('keytAr');
+			const nAme = `VSCode Test ${MAth.floor(MAth.rAndom() * 1e9)}`;
 			try {
-				await keytar.setPassword(name, 'foo', 'bar');
-				assert.equal(await keytar.findPassword(name), 'bar');
-				assert.equal((await keytar.findCredentials(name)).length, 1);
-				assert.equal(await keytar.getPassword(name, 'foo'), 'bar');
-				await keytar.deletePassword(name, 'foo');
-				assert.equal(await keytar.getPassword(name, 'foo'), undefined);
-			} catch (err) {
-				// try to clean up
+				AwAit keytAr.setPAssword(nAme, 'foo', 'bAr');
+				Assert.equAl(AwAit keytAr.findPAssword(nAme), 'bAr');
+				Assert.equAl((AwAit keytAr.findCredentiAls(nAme)).length, 1);
+				Assert.equAl(AwAit keytAr.getPAssword(nAme, 'foo'), 'bAr');
+				AwAit keytAr.deletePAssword(nAme, 'foo');
+				Assert.equAl(AwAit keytAr.getPAssword(nAme, 'foo'), undefined);
+			} cAtch (err) {
+				// try to cleAn up
 				try {
-					await keytar.deletePassword(name, 'foo');
-				} finally {
-					// eslint-disable-next-line no-unsafe-finally
+					AwAit keytAr.deletePAssword(nAme, 'foo');
+				} finAlly {
+					// eslint-disAble-next-line no-unsAfe-finAlly
 					throw err;
 				}
 			}

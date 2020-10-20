@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILocalExtension, IGalleryExtension, IExtensionIdentifier, IReportedExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { compareIgnoreCase } from 'vs/base/common/strings';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ILocAlExtension, IGAlleryExtension, IExtensionIdentifier, IReportedExtension } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { compAreIgnoreCAse } from 'vs/bAse/common/strings';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 
-export function areSameExtensions(a: IExtensionIdentifier, b: IExtensionIdentifier): boolean {
-	if (a.uuid && b.uuid) {
-		return a.uuid === b.uuid;
+export function AreSAmeExtensions(A: IExtensionIdentifier, b: IExtensionIdentifier): booleAn {
+	if (A.uuid && b.uuid) {
+		return A.uuid === b.uuid;
 	}
-	if (a.id === b.id) {
+	if (A.id === b.id) {
 		return true;
 	}
-	return compareIgnoreCase(a.id, b.id) === 0;
+	return compAreIgnoreCAse(A.id, b.id) === 0;
 }
 
-export class ExtensionIdentifierWithVersion {
+export clAss ExtensionIdentifierWithVersion {
 	constructor(
-		readonly identifier: IExtensionIdentifier,
-		readonly version: string
+		reAdonly identifier: IExtensionIdentifier,
+		reAdonly version: string
 	) { }
 
 	key(): string {
 		return `${this.identifier.id}-${this.version}`;
 	}
 
-	equals(o: any): boolean {
-		if (!(o instanceof ExtensionIdentifierWithVersion)) {
-			return false;
+	equAls(o: Any): booleAn {
+		if (!(o instAnceof ExtensionIdentifierWithVersion)) {
+			return fAlse;
 		}
-		return areSameExtensions(this.identifier, o.identifier) && this.version === o.version;
+		return AreSAmeExtensions(this.identifier, o.identifier) && this.version === o.version;
 	}
 }
 
-export function adoptToGalleryExtensionId(id: string): string {
-	return id.toLocaleLowerCase();
+export function AdoptToGAlleryExtensionId(id: string): string {
+	return id.toLocAleLowerCAse();
 }
 
-export function getGalleryExtensionId(publisher: string, name: string): string {
-	return `${publisher.toLocaleLowerCase()}.${name.toLocaleLowerCase()}`;
+export function getGAlleryExtensionId(publisher: string, nAme: string): string {
+	return `${publisher.toLocAleLowerCAse()}.${nAme.toLocAleLowerCAse()}`;
 }
 
 export function groupByExtension<T>(extensions: T[], getExtensionIdentifier: (t: T) => IExtensionIdentifier): T[][] {
 	const byExtension: T[][] = [];
 	const findGroup = (extension: T) => {
 		for (const group of byExtension) {
-			if (group.some(e => areSameExtensions(getExtensionIdentifier(e), getExtensionIdentifier(extension)))) {
+			if (group.some(e => AreSAmeExtensions(getExtensionIdentifier(e), getExtensionIdentifier(extension)))) {
 				return group;
 			}
 		}
@@ -64,54 +64,54 @@ export function groupByExtension<T>(extensions: T[], getExtensionIdentifier: (t:
 	return byExtension;
 }
 
-export function getLocalExtensionTelemetryData(extension: ILocalExtension): any {
+export function getLocAlExtensionTelemetryDAtA(extension: ILocAlExtension): Any {
 	return {
 		id: extension.identifier.id,
-		name: extension.manifest.name,
-		galleryId: null,
+		nAme: extension.mAnifest.nAme,
+		gAlleryId: null,
 		publisherId: extension.publisherId,
-		publisherName: extension.manifest.publisher,
-		publisherDisplayName: extension.publisherDisplayName,
-		dependencies: extension.manifest.extensionDependencies && extension.manifest.extensionDependencies.length > 0
+		publisherNAme: extension.mAnifest.publisher,
+		publisherDisplAyNAme: extension.publisherDisplAyNAme,
+		dependencies: extension.mAnifest.extensionDependencies && extension.mAnifest.extensionDependencies.length > 0
 	};
 }
 
 
 /* __GDPR__FRAGMENT__
-	"GalleryExtensionTelemetryData" : {
-		"id" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-		"name": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-		"galleryId": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-		"publisherId": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-		"publisherName": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-		"publisherDisplayName": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-		"dependencies": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+	"GAlleryExtensionTelemetryDAtA" : {
+		"id" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+		"nAme": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+		"gAlleryId": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+		"publisherId": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+		"publisherNAme": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+		"publisherDisplAyNAme": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" },
+		"dependencies": { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true },
 		"${include}": [
-			"${GalleryExtensionTelemetryData2}"
+			"${GAlleryExtensionTelemetryDAtA2}"
 		]
 	}
 */
-export function getGalleryExtensionTelemetryData(extension: IGalleryExtension): any {
+export function getGAlleryExtensionTelemetryDAtA(extension: IGAlleryExtension): Any {
 	return {
 		id: extension.identifier.id,
-		name: extension.name,
-		galleryId: extension.identifier.uuid,
+		nAme: extension.nAme,
+		gAlleryId: extension.identifier.uuid,
 		publisherId: extension.publisherId,
-		publisherName: extension.publisher,
-		publisherDisplayName: extension.publisherDisplayName,
+		publisherNAme: extension.publisher,
+		publisherDisplAyNAme: extension.publisherDisplAyNAme,
 		dependencies: !!(extension.properties.dependencies && extension.properties.dependencies.length > 0),
-		...extension.telemetryData
+		...extension.telemetryDAtA
 	};
 }
 
 export const BetterMergeId = new ExtensionIdentifier('pprice.better-merge');
 
-export function getMaliciousExtensionsSet(report: IReportedExtension[]): Set<string> {
+export function getMAliciousExtensionsSet(report: IReportedExtension[]): Set<string> {
 	const result = new Set<string>();
 
 	for (const extension of report) {
-		if (extension.malicious) {
-			result.add(extension.id.id);
+		if (extension.mAlicious) {
+			result.Add(extension.id.id);
 		}
 	}
 

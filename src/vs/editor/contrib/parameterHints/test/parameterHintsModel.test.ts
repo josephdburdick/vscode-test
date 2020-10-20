@@ -1,380 +1,380 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { Position } from 'vs/editor/common/core/position';
-import { Handler } from 'vs/editor/common/editorCommon';
+import { HAndler } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import * as modes from 'vs/editor/common/modes';
-import { createTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { ParameterHintsModel } from 'vs/editor/contrib/parameterHints/parameterHintsModel';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
+import * As modes from 'vs/editor/common/modes';
+import { creAteTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IStorAgeService, InMemoryStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { PArAmeterHintsModel } from 'vs/editor/contrib/pArAmeterHints/pArAmeterHintsModel';
 
-const mockFile = URI.parse('test:somefile.ttt');
+const mockFile = URI.pArse('test:somefile.ttt');
 const mockFileSelector = { scheme: 'test' };
 
 
-const emptySigHelp: modes.SignatureHelp = {
-	signatures: [{
-		label: 'none',
-		parameters: []
+const emptySigHelp: modes.SignAtureHelp = {
+	signAtures: [{
+		lAbel: 'none',
+		pArAmeters: []
 	}],
-	activeParameter: 0,
-	activeSignature: 0
+	ActivePArAmeter: 0,
+	ActiveSignAture: 0
 };
 
-const emptySigHelpResult: modes.SignatureHelpResult = {
-	value: emptySigHelp,
+const emptySigHelpResult: modes.SignAtureHelpResult = {
+	vAlue: emptySigHelp,
 	dispose: () => { }
 };
 
-suite('ParameterHintsModel', () => {
-	const disposables = new DisposableStore();
+suite('PArAmeterHintsModel', () => {
+	const disposAbles = new DisposAbleStore();
 
 	setup(() => {
-		disposables.clear();
+		disposAbles.cleAr();
 	});
 
-	teardown(() => {
-		disposables.clear();
+	teArdown(() => {
+		disposAbles.cleAr();
 	});
 
-	function createMockEditor(fileContents: string) {
-		const textModel = createTextModel(fileContents, undefined, undefined, mockFile);
-		const editor = createTestCodeEditor({
+	function creAteMockEditor(fileContents: string) {
+		const textModel = creAteTextModel(fileContents, undefined, undefined, mockFile);
+		const editor = creAteTestCodeEditor({
 			model: textModel,
 			serviceCollection: new ServiceCollection(
 				[ITelemetryService, NullTelemetryService],
-				[IStorageService, new InMemoryStorageService()]
+				[IStorAgeService, new InMemoryStorAgeService()]
 			)
 		});
-		disposables.add(textModel);
-		disposables.add(editor);
+		disposAbles.Add(textModel);
+		disposAbles.Add(editor);
 		return editor;
 	}
 
-	test('Provider should get trigger character on type', (done) => {
-		const triggerChar = '(';
+	test('Provider should get trigger chArActer on type', (done) => {
+		const triggerChAr = '(';
 
-		const editor = createMockEditor('');
-		disposables.add(new ParameterHintsModel(editor));
+		const editor = creAteMockEditor('');
+		disposAbles.Add(new PArAmeterHintsModel(editor));
 
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerChar];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChAr];
+			signAtureHelpRetriggerChArActers = [];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext) {
-				assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-				assert.strictEqual(context.triggerCharacter, triggerChar);
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext) {
+				Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+				Assert.strictEquAl(context.triggerChArActer, triggerChAr);
 				done();
 				return undefined;
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: triggerChar });
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr });
 	});
 
-	test('Provider should be retriggered if already active', (done) => {
-		const triggerChar = '(';
+	test('Provider should be retriggered if AlreAdy Active', (done) => {
+		const triggerChAr = '(';
 
-		const editor = createMockEditor('');
-		disposables.add(new ParameterHintsModel(editor));
+		const editor = creAteMockEditor('');
+		disposAbles.Add(new PArAmeterHintsModel(editor));
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerChar];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChAr];
+			signAtureHelpRetriggerChArActers = [];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): modes.SignatureHelpResult | Promise<modes.SignatureHelpResult> {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): modes.SignAtureHelpResult | Promise<modes.SignAtureHelpResult> {
 				++invokeCount;
 				try {
 					if (invokeCount === 1) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, triggerChar);
-						assert.strictEqual(context.isRetrigger, false);
-						assert.strictEqual(context.activeSignatureHelp, undefined);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, triggerChAr);
+						Assert.strictEquAl(context.isRetrigger, fAlse);
+						Assert.strictEquAl(context.ActiveSignAtureHelp, undefined);
 
 						// Retrigger
-						setTimeout(() => editor.trigger('keyboard', Handler.Type, { text: triggerChar }), 50);
+						setTimeout(() => editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr }), 50);
 					} else {
-						assert.strictEqual(invokeCount, 2);
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.isRetrigger, true);
-						assert.strictEqual(context.triggerCharacter, triggerChar);
-						assert.strictEqual(context.activeSignatureHelp, emptySigHelp);
+						Assert.strictEquAl(invokeCount, 2);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.isRetrigger, true);
+						Assert.strictEquAl(context.triggerChArActer, triggerChAr);
+						Assert.strictEquAl(context.ActiveSignAtureHelp, emptySigHelp);
 
 						done();
 					}
 					return emptySigHelpResult;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: triggerChar });
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr });
 	});
 
-	test('Provider should not be retriggered if previous help is canceled first', (done) => {
-		const triggerChar = '(';
+	test('Provider should not be retriggered if previous help is cAnceled first', (done) => {
+		const triggerChAr = '(';
 
-		const editor = createMockEditor('');
-		const hintModel = new ParameterHintsModel(editor);
-		disposables.add(hintModel);
+		const editor = creAteMockEditor('');
+		const hintModel = new PArAmeterHintsModel(editor);
+		disposAbles.Add(hintModel);
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerChar];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChAr];
+			signAtureHelpRetriggerChArActers = [];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): modes.SignatureHelpResult | Promise<modes.SignatureHelpResult> {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): modes.SignAtureHelpResult | Promise<modes.SignAtureHelpResult> {
 				try {
 					++invokeCount;
 					if (invokeCount === 1) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, triggerChar);
-						assert.strictEqual(context.isRetrigger, false);
-						assert.strictEqual(context.activeSignatureHelp, undefined);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, triggerChAr);
+						Assert.strictEquAl(context.isRetrigger, fAlse);
+						Assert.strictEquAl(context.ActiveSignAtureHelp, undefined);
 
-						// Cancel and retrigger
-						hintModel.cancel();
-						editor.trigger('keyboard', Handler.Type, { text: triggerChar });
+						// CAncel And retrigger
+						hintModel.cAncel();
+						editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr });
 					} else {
-						assert.strictEqual(invokeCount, 2);
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, triggerChar);
-						assert.strictEqual(context.isRetrigger, true);
-						assert.strictEqual(context.activeSignatureHelp, undefined);
+						Assert.strictEquAl(invokeCount, 2);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, triggerChAr);
+						Assert.strictEquAl(context.isRetrigger, true);
+						Assert.strictEquAl(context.ActiveSignAtureHelp, undefined);
 						done();
 					}
 					return emptySigHelpResult;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: triggerChar });
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr });
 	});
 
-	test('Provider should get last trigger character when triggered multiple times and only be invoked once', (done) => {
-		const editor = createMockEditor('');
-		disposables.add(new ParameterHintsModel(editor, 5));
+	test('Provider should get lAst trigger chArActer when triggered multiple times And only be invoked once', (done) => {
+		const editor = creAteMockEditor('');
+		disposAbles.Add(new PArAmeterHintsModel(editor, 5));
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = ['a', 'b', 'c'];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = ['A', 'b', 'c'];
+			signAtureHelpRetriggerChArActers = [];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext) {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext) {
 				try {
 					++invokeCount;
 
-					assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-					assert.strictEqual(context.isRetrigger, false);
-					assert.strictEqual(context.triggerCharacter, 'c');
+					Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+					Assert.strictEquAl(context.isRetrigger, fAlse);
+					Assert.strictEquAl(context.triggerChArActer, 'c');
 
-					// Give some time to allow for later triggers
+					// Give some time to Allow for lAter triggers
 					setTimeout(() => {
-						assert.strictEqual(invokeCount, 1);
+						Assert.strictEquAl(invokeCount, 1);
 
 						done();
 					}, 50);
 					return undefined;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: 'a' });
-		editor.trigger('keyboard', Handler.Type, { text: 'b' });
-		editor.trigger('keyboard', Handler.Type, { text: 'c' });
+		editor.trigger('keyboArd', HAndler.Type, { text: 'A' });
+		editor.trigger('keyboArd', HAndler.Type, { text: 'b' });
+		editor.trigger('keyboArd', HAndler.Type, { text: 'c' });
 	});
 
-	test('Provider should be retriggered if already active', (done) => {
-		const editor = createMockEditor('');
-		disposables.add(new ParameterHintsModel(editor, 5));
+	test('Provider should be retriggered if AlreAdy Active', (done) => {
+		const editor = creAteMockEditor('');
+		disposAbles.Add(new PArAmeterHintsModel(editor, 5));
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = ['a', 'b'];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = ['A', 'b'];
+			signAtureHelpRetriggerChArActers = [];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): modes.SignatureHelpResult | Promise<modes.SignatureHelpResult> {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): modes.SignAtureHelpResult | Promise<modes.SignAtureHelpResult> {
 				try {
 					++invokeCount;
 					if (invokeCount === 1) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, 'a');
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, 'A');
 
-						// retrigger after delay for widget to show up
-						setTimeout(() => editor.trigger('keyboard', Handler.Type, { text: 'b' }), 50);
+						// retrigger After delAy for widget to show up
+						setTimeout(() => editor.trigger('keyboArd', HAndler.Type, { text: 'b' }), 50);
 					} else if (invokeCount === 2) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.ok(context.isRetrigger);
-						assert.strictEqual(context.triggerCharacter, 'b');
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.ok(context.isRetrigger);
+						Assert.strictEquAl(context.triggerChArActer, 'b');
 						done();
 					} else {
-						assert.fail('Unexpected invoke');
+						Assert.fAil('Unexpected invoke');
 					}
 
 					return emptySigHelpResult;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: 'a' });
+		editor.trigger('keyboArd', HAndler.Type, { text: 'A' });
 	});
 
-	test('Should cancel existing request when new request comes in', () => {
-		const editor = createMockEditor('abc def');
-		const hintsModel = new ParameterHintsModel(editor);
+	test('Should cAncel existing request when new request comes in', () => {
+		const editor = creAteMockEditor('Abc def');
+		const hintsModel = new PArAmeterHintsModel(editor);
 
-		let didRequestCancellationOf = -1;
+		let didRequestCAncellAtionOf = -1;
 		let invokeCount = 0;
-		const longRunningProvider = new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [];
-			signatureHelpRetriggerCharacters = [];
+		const longRunningProvider = new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [];
+			signAtureHelpRetriggerChArActers = [];
 
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, token: CancellationToken): modes.SignatureHelpResult | Promise<modes.SignatureHelpResult> {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, token: CAncellAtionToken): modes.SignAtureHelpResult | Promise<modes.SignAtureHelpResult> {
 				try {
 					const count = invokeCount++;
-					token.onCancellationRequested(() => { didRequestCancellationOf = count; });
+					token.onCAncellAtionRequested(() => { didRequestCAncellAtionOf = count; });
 
 					// retrigger on first request
 					if (count === 0) {
-						hintsModel.trigger({ triggerKind: modes.SignatureHelpTriggerKind.Invoke }, 0);
+						hintsModel.trigger({ triggerKind: modes.SignAtureHelpTriggerKind.Invoke }, 0);
 					}
 
-					return new Promise<modes.SignatureHelpResult>(resolve => {
+					return new Promise<modes.SignAtureHelpResult>(resolve => {
 						setTimeout(() => {
 							resolve({
-								value: {
-									signatures: [{
-										label: '' + count,
-										parameters: []
+								vAlue: {
+									signAtures: [{
+										lAbel: '' + count,
+										pArAmeters: []
 									}],
-									activeParameter: 0,
-									activeSignature: 0
+									ActivePArAmeter: 0,
+									ActiveSignAture: 0
 								},
 								dispose: () => { }
 							});
 						}, 100);
 					});
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		};
 
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, longRunningProvider));
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, longRunningProvider));
 
-		hintsModel.trigger({ triggerKind: modes.SignatureHelpTriggerKind.Invoke }, 0);
-		assert.strictEqual(-1, didRequestCancellationOf);
+		hintsModel.trigger({ triggerKind: modes.SignAtureHelpTriggerKind.Invoke }, 0);
+		Assert.strictEquAl(-1, didRequestCAncellAtionOf);
 
 		return new Promise<void>((resolve, reject) =>
-			hintsModel.onChangedHints(newParamterHints => {
+			hintsModel.onChAngedHints(newPArAmterHints => {
 				try {
-					assert.strictEqual(0, didRequestCancellationOf);
-					assert.strictEqual('1', newParamterHints!.signatures[0].label);
+					Assert.strictEquAl(0, didRequestCAncellAtionOf);
+					Assert.strictEquAl('1', newPArAmterHints!.signAtures[0].lAbel);
 					resolve();
-				} catch (e) {
+				} cAtch (e) {
 					reject(e);
 				}
 			}));
 	});
 
-	test('Provider should be retriggered by retrigger character', (done) => {
-		const triggerChar = 'a';
-		const retriggerChar = 'b';
+	test('Provider should be retriggered by retrigger chArActer', (done) => {
+		const triggerChAr = 'A';
+		const retriggerChAr = 'b';
 
-		const editor = createMockEditor('');
-		disposables.add(new ParameterHintsModel(editor, 5));
+		const editor = creAteMockEditor('');
+		disposAbles.Add(new PArAmeterHintsModel(editor, 5));
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerChar];
-			signatureHelpRetriggerCharacters = [retriggerChar];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChAr];
+			signAtureHelpRetriggerChArActers = [retriggerChAr];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): modes.SignatureHelpResult | Promise<modes.SignatureHelpResult> {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): modes.SignAtureHelpResult | Promise<modes.SignAtureHelpResult> {
 				try {
 					++invokeCount;
 					if (invokeCount === 1) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, triggerChar);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, triggerChAr);
 
-						// retrigger after delay for widget to show up
-						setTimeout(() => editor.trigger('keyboard', Handler.Type, { text: retriggerChar }), 50);
+						// retrigger After delAy for widget to show up
+						setTimeout(() => editor.trigger('keyboArd', HAndler.Type, { text: retriggerChAr }), 50);
 					} else if (invokeCount === 2) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.ok(context.isRetrigger);
-						assert.strictEqual(context.triggerCharacter, retriggerChar);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.ok(context.isRetrigger);
+						Assert.strictEquAl(context.triggerChArActer, retriggerChAr);
 						done();
 					} else {
-						assert.fail('Unexpected invoke');
+						Assert.fAil('Unexpected invoke');
 					}
 
 					return emptySigHelpResult;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		// This should not trigger anything
-		editor.trigger('keyboard', Handler.Type, { text: retriggerChar });
+		// This should not trigger Anything
+		editor.trigger('keyboArd', HAndler.Type, { text: retriggerChAr });
 
-		// But a trigger character should
-		editor.trigger('keyboard', Handler.Type, { text: triggerChar });
+		// But A trigger chArActer should
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr });
 	});
 
-	test('should use first result from multiple providers', async () => {
-		const triggerChar = 'a';
+	test('should use first result from multiple providers', Async () => {
+		const triggerChAr = 'A';
 		const firstProviderId = 'firstProvider';
 		const secondProviderId = 'secondProvider';
-		const paramterLabel = 'parameter';
+		const pArAmterLAbel = 'pArAmeter';
 
-		const editor = createMockEditor('');
-		const model = new ParameterHintsModel(editor, 5);
-		disposables.add(model);
+		const editor = creAteMockEditor('');
+		const model = new PArAmeterHintsModel(editor, 5);
+		disposAbles.Add(model);
 
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerChar];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChAr];
+			signAtureHelpRetriggerChArActers = [];
 
-			async provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): Promise<modes.SignatureHelpResult | undefined> {
+			Async provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): Promise<modes.SignAtureHelpResult | undefined> {
 				try {
 					if (!context.isRetrigger) {
-						// retrigger after delay for widget to show up
-						setTimeout(() => editor.trigger('keyboard', Handler.Type, { text: triggerChar }), 50);
+						// retrigger After delAy for widget to show up
+						setTimeout(() => editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr }), 50);
 
 						return {
-							value: {
-								activeParameter: 0,
-								activeSignature: 0,
-								signatures: [{
-									label: firstProviderId,
-									parameters: [
-										{ label: paramterLabel }
+							vAlue: {
+								ActivePArAmeter: 0,
+								ActiveSignAture: 0,
+								signAtures: [{
+									lAbel: firstProviderId,
+									pArAmeters: [
+										{ lAbel: pArAmterLAbel }
 									]
 								}]
 							},
@@ -383,26 +383,26 @@ suite('ParameterHintsModel', () => {
 					}
 
 					return undefined;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerChar];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChAr];
+			signAtureHelpRetriggerChArActers = [];
 
-			async provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): Promise<modes.SignatureHelpResult | undefined> {
+			Async provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): Promise<modes.SignAtureHelpResult | undefined> {
 				if (context.isRetrigger) {
 					return {
-						value: {
-							activeParameter: 0,
-							activeSignature: context.activeSignatureHelp ? context.activeSignatureHelp.activeSignature + 1 : 0,
-							signatures: [{
-								label: secondProviderId,
-								parameters: context.activeSignatureHelp ? context.activeSignatureHelp.signatures[0].parameters : []
+						vAlue: {
+							ActivePArAmeter: 0,
+							ActiveSignAture: context.ActiveSignAtureHelp ? context.ActiveSignAtureHelp.ActiveSignAture + 1 : 0,
+							signAtures: [{
+								lAbel: secondProviderId,
+								pArAmeters: context.ActiveSignAtureHelp ? context.ActiveSignAtureHelp.signAtures[0].pArAmeters : []
 							}]
 						},
 						dispose: () => { }
@@ -413,91 +413,91 @@ suite('ParameterHintsModel', () => {
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: triggerChar });
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChAr });
 
-		const firstHint = (await getNextHint(model))!.value;
-		assert.strictEqual(firstHint.signatures[0].label, firstProviderId);
-		assert.strictEqual(firstHint.activeSignature, 0);
-		assert.strictEqual(firstHint.signatures[0].parameters[0].label, paramterLabel);
+		const firstHint = (AwAit getNextHint(model))!.vAlue;
+		Assert.strictEquAl(firstHint.signAtures[0].lAbel, firstProviderId);
+		Assert.strictEquAl(firstHint.ActiveSignAture, 0);
+		Assert.strictEquAl(firstHint.signAtures[0].pArAmeters[0].lAbel, pArAmterLAbel);
 
-		const secondHint = (await getNextHint(model))!.value;
-		assert.strictEqual(secondHint.signatures[0].label, secondProviderId);
-		assert.strictEqual(secondHint.activeSignature, 1);
-		assert.strictEqual(secondHint.signatures[0].parameters[0].label, paramterLabel);
+		const secondHint = (AwAit getNextHint(model))!.vAlue;
+		Assert.strictEquAl(secondHint.signAtures[0].lAbel, secondProviderId);
+		Assert.strictEquAl(secondHint.ActiveSignAture, 1);
+		Assert.strictEquAl(secondHint.signAtures[0].pArAmeters[0].lAbel, pArAmterLAbel);
 	});
 
-	test('Quick typing should use the first trigger character', async () => {
-		const editor = createMockEditor('');
-		const model = new ParameterHintsModel(editor, 50);
-		disposables.add(model);
+	test('Quick typing should use the first trigger chArActer', Async () => {
+		const editor = creAteMockEditor('');
+		const model = new PArAmeterHintsModel(editor, 50);
+		disposAbles.Add(model);
 
-		const triggerCharacter = 'a';
+		const triggerChArActer = 'A';
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerCharacter];
-			signatureHelpRetriggerCharacters = [];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChArActer];
+			signAtureHelpRetriggerChArActers = [];
 
-			provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): modes.SignatureHelpResult | Promise<modes.SignatureHelpResult> {
+			provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): modes.SignAtureHelpResult | Promise<modes.SignAtureHelpResult> {
 				try {
 					++invokeCount;
 
 					if (invokeCount === 1) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, triggerCharacter);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, triggerChArActer);
 					} else {
-						assert.fail('Unexpected invoke');
+						Assert.fAil('Unexpected invoke');
 					}
 
 					return emptySigHelpResult;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					throw err;
 				}
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: triggerCharacter });
-		editor.trigger('keyboard', Handler.Type, { text: 'x' });
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChArActer });
+		editor.trigger('keyboArd', HAndler.Type, { text: 'x' });
 
-		await getNextHint(model);
+		AwAit getNextHint(model);
 	});
 
-	test('Retrigger while a pending resolve is still going on should preserve last active signature #96702', (done) => {
-		const editor = createMockEditor('');
-		const model = new ParameterHintsModel(editor, 50);
-		disposables.add(model);
+	test('Retrigger while A pending resolve is still going on should preserve lAst Active signAture #96702', (done) => {
+		const editor = creAteMockEditor('');
+		const model = new PArAmeterHintsModel(editor, 50);
+		disposAbles.Add(model);
 
-		const triggerCharacter = 'a';
-		const retriggerCharacter = 'b';
+		const triggerChArActer = 'A';
+		const retriggerChArActer = 'b';
 
 		let invokeCount = 0;
-		disposables.add(modes.SignatureHelpProviderRegistry.register(mockFileSelector, new class implements modes.SignatureHelpProvider {
-			signatureHelpTriggerCharacters = [triggerCharacter];
-			signatureHelpRetriggerCharacters = [retriggerCharacter];
+		disposAbles.Add(modes.SignAtureHelpProviderRegistry.register(mockFileSelector, new clAss implements modes.SignAtureHelpProvider {
+			signAtureHelpTriggerChArActers = [triggerChArActer];
+			signAtureHelpRetriggerChArActers = [retriggerChArActer];
 
-			async provideSignatureHelp(_model: ITextModel, _position: Position, _token: CancellationToken, context: modes.SignatureHelpContext): Promise<modes.SignatureHelpResult> {
+			Async provideSignAtureHelp(_model: ITextModel, _position: Position, _token: CAncellAtionToken, context: modes.SignAtureHelpContext): Promise<modes.SignAtureHelpResult> {
 				try {
 					++invokeCount;
 
 					if (invokeCount === 1) {
-						assert.strictEqual(context.triggerKind, modes.SignatureHelpTriggerKind.TriggerCharacter);
-						assert.strictEqual(context.triggerCharacter, triggerCharacter);
-						setTimeout(() => editor.trigger('keyboard', Handler.Type, { text: retriggerCharacter }), 50);
+						Assert.strictEquAl(context.triggerKind, modes.SignAtureHelpTriggerKind.TriggerChArActer);
+						Assert.strictEquAl(context.triggerChArActer, triggerChArActer);
+						setTimeout(() => editor.trigger('keyboArd', HAndler.Type, { text: retriggerChArActer }), 50);
 					} else if (invokeCount === 2) {
-						// Trigger again while we wait for resolve to take place
-						setTimeout(() => editor.trigger('keyboard', Handler.Type, { text: retriggerCharacter }), 50);
-						await new Promise(resolve => setTimeout(resolve, 1000));
+						// Trigger AgAin while we wAit for resolve to tAke plAce
+						setTimeout(() => editor.trigger('keyboArd', HAndler.Type, { text: retriggerChArActer }), 50);
+						AwAit new Promise(resolve => setTimeout(resolve, 1000));
 					} else if (invokeCount === 3) {
-						// Make sure that in a retrigger during a pending resolve, we still have the old active signature.
-						assert.strictEqual(context.activeSignatureHelp, emptySigHelp);
+						// MAke sure thAt in A retrigger during A pending resolve, we still hAve the old Active signAture.
+						Assert.strictEquAl(context.ActiveSignAtureHelp, emptySigHelp);
 						done();
 					} else {
-						assert.fail('Unexpected invoke');
+						Assert.fAil('Unexpected invoke');
 					}
 
 					return emptySigHelpResult;
-				} catch (err) {
+				} cAtch (err) {
 					console.error(err);
 					done(err);
 					throw err;
@@ -505,18 +505,18 @@ suite('ParameterHintsModel', () => {
 			}
 		}));
 
-		editor.trigger('keyboard', Handler.Type, { text: triggerCharacter });
+		editor.trigger('keyboArd', HAndler.Type, { text: triggerChArActer });
 
 		getNextHint(model)
 			.then(() => getNextHint(model));
 	});
 });
 
-function getNextHint(model: ParameterHintsModel) {
-	return new Promise<modes.SignatureHelpResult | undefined>(resolve => {
-		const sub = model.onChangedHints(e => {
+function getNextHint(model: PArAmeterHintsModel) {
+	return new Promise<modes.SignAtureHelpResult | undefined>(resolve => {
+		const sub = model.onChAngedHints(e => {
 			sub.dispose();
-			return resolve(e ? { value: e, dispose: () => { } } : undefined);
+			return resolve(e ? { vAlue: e, dispose: () => { } } : undefined);
 		});
 	});
 }

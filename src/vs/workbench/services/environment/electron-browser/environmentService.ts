@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { NativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
-import { INativeWorkbenchConfiguration, INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { memoize } from 'vs/base/common/decorators';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
-import { join } from 'vs/base/common/path';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { NAtiveEnvironmentService } from 'vs/plAtform/environment/node/environmentService';
+import { INAtiveWorkbenchConfigurAtion, INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { URI } from 'vs/bAse/common/uri';
+import { SchemAs } from 'vs/bAse/common/network';
+import { join } from 'vs/bAse/common/pAth';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 
-export class NativeWorkbenchEnvironmentService extends NativeEnvironmentService implements INativeWorkbenchEnvironmentService {
+export clAss NAtiveWorkbenchEnvironmentService extends NAtiveEnvironmentService implements INAtiveWorkbenchEnvironmentService {
 
-	declare readonly _serviceBrand: undefined;
-
-	@memoize
-	get machineId() { return this.configuration.machineId; }
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	@memoize
-	get sessionId() { return this.configuration.sessionId; }
+	get mAchineId() { return this.configurAtion.mAchineId; }
 
 	@memoize
-	get remoteAuthority() { return this.configuration.remoteAuthority; }
+	get sessionId() { return this.configurAtion.sessionId; }
 
 	@memoize
-	get execPath() { return this.configuration.execPath; }
+	get remoteAuthority() { return this.configurAtion.remoteAuthority; }
 
 	@memoize
-	get userRoamingDataHome(): URI { return this.appSettingsHome.with({ scheme: Schemas.userData }); }
+	get execPAth() { return this.configurAtion.execPAth; }
 
-	// Do NOT! memoize as `backupPath` can change in configuration
-	// via the `updateBackupPath` method below
-	get backupWorkspaceHome(): URI | undefined {
-		if (this.configuration.backupPath) {
-			return URI.file(this.configuration.backupPath).with({ scheme: this.userRoamingDataHome.scheme });
+	@memoize
+	get userRoAmingDAtAHome(): URI { return this.AppSettingsHome.with({ scheme: SchemAs.userDAtA }); }
+
+	// Do NOT! memoize As `bAckupPAth` cAn chAnge in configurAtion
+	// viA the `updAteBAckupPAth` method below
+	get bAckupWorkspAceHome(): URI | undefined {
+		if (this.configurAtion.bAckupPAth) {
+			return URI.file(this.configurAtion.bAckupPAth).with({ scheme: this.userRoAmingDAtAHome.scheme });
 		}
 
 		return undefined;
 	}
 
-	updateBackupPath(newBackupPath: string | undefined): void {
-		this.configuration.backupPath = newBackupPath;
+	updAteBAckupPAth(newBAckupPAth: string | undefined): void {
+		this.configurAtion.bAckupPAth = newBAckupPAth;
 	}
 
 	@memoize
-	get logFile(): URI { return URI.file(join(this.logsPath, `renderer${this.configuration.windowId}.log`)); }
+	get logFile(): URI { return URI.file(join(this.logsPAth, `renderer${this.configurAtion.windowId}.log`)); }
 
 	@memoize
-	get extHostLogsPath(): URI { return URI.file(join(this.logsPath, `exthost${this.configuration.windowId}`)); }
+	get extHostLogsPAth(): URI { return URI.file(join(this.logsPAth, `exthost${this.configurAtion.windowId}`)); }
 
 	@memoize
-	get webviewExternalEndpoint(): string {
-		const baseEndpoint = 'https://{{uuid}}.vscode-webview-test.com/{{commit}}';
+	get webviewExternAlEndpoint(): string {
+		const bAseEndpoint = 'https://{{uuid}}.vscode-webview-test.com/{{commit}}';
 
-		return baseEndpoint.replace('{{commit}}', this.productService.commit || '0d728c31ebdf03869d2687d9be0b017667c9ff37');
+		return bAseEndpoint.replAce('{{commit}}', this.productService.commit || '0d728c31ebdf03869d2687d9be0b017667c9ff37');
 	}
 
 	@memoize
-	get webviewResourceRoot(): string { return `${Schemas.vscodeWebviewResource}://{{uuid}}/{{resource}}`; }
+	get webviewResourceRoot(): string { return `${SchemAs.vscodeWebviewResource}://{{uuid}}/{{resource}}`; }
 
 	@memoize
-	get webviewCspSource(): string { return `${Schemas.vscodeWebviewResource}:`; }
+	get webviewCspSource(): string { return `${SchemAs.vscodeWebviewResource}:`; }
 
 	@memoize
-	get skipReleaseNotes(): boolean { return !!this.args['skip-release-notes']; }
+	get skipReleAseNotes(): booleAn { return !!this.Args['skip-releAse-notes']; }
 
 	@memoize
-	get logExtensionHostCommunication(): boolean { return !!this.args.logExtensionHostCommunication; }
+	get logExtensionHostCommunicAtion(): booleAn { return !!this.Args.logExtensionHostCommunicAtion; }
 
 	@memoize
-	get extensionEnabledProposedApi(): string[] | undefined {
-		if (Array.isArray(this.args['enable-proposed-api'])) {
-			return this.args['enable-proposed-api'];
+	get extensionEnAbledProposedApi(): string[] | undefined {
+		if (ArrAy.isArrAy(this.Args['enAble-proposed-Api'])) {
+			return this.Args['enAble-proposed-Api'];
 		}
 
-		if ('enable-proposed-api' in this.args) {
+		if ('enAble-proposed-Api' in this.Args) {
 			return [];
 		}
 
@@ -83,9 +83,9 @@ export class NativeWorkbenchEnvironmentService extends NativeEnvironmentService 
 	}
 
 	constructor(
-		readonly configuration: INativeWorkbenchConfiguration,
-		private readonly productService: IProductService
+		reAdonly configurAtion: INAtiveWorkbenchConfigurAtion,
+		privAte reAdonly productService: IProductService
 	) {
-		super(configuration);
+		super(configurAtion);
 	}
 }

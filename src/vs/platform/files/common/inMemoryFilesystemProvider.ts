@@ -1,173 +1,173 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import * as resources from 'vs/base/common/resources';
-import { FileChangeType, FileType, IWatchOptions, IStat, FileSystemProviderErrorCode, FileSystemProviderError, FileWriteOptions, IFileChange, FileDeleteOptions, FileSystemProviderCapabilities, FileOverwriteOptions, IFileSystemProviderWithFileReadWriteCapability } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import * As resources from 'vs/bAse/common/resources';
+import { FileChAngeType, FileType, IWAtchOptions, IStAt, FileSystemProviderErrorCode, FileSystemProviderError, FileWriteOptions, IFileChAnge, FileDeleteOptions, FileSystemProviderCApAbilities, FileOverwriteOptions, IFileSystemProviderWithFileReAdWriteCApAbility } from 'vs/plAtform/files/common/files';
+import { URI } from 'vs/bAse/common/uri';
 
-class File implements IStat {
+clAss File implements IStAt {
 
 	type: FileType.File;
 	ctime: number;
 	mtime: number;
 	size: number;
 
-	name: string;
-	data?: Uint8Array;
+	nAme: string;
+	dAtA?: Uint8ArrAy;
 
-	constructor(name: string) {
+	constructor(nAme: string) {
 		this.type = FileType.File;
-		this.ctime = Date.now();
-		this.mtime = Date.now();
+		this.ctime = DAte.now();
+		this.mtime = DAte.now();
 		this.size = 0;
-		this.name = name;
+		this.nAme = nAme;
 	}
 }
 
-class Directory implements IStat {
+clAss Directory implements IStAt {
 
 	type: FileType.Directory;
 	ctime: number;
 	mtime: number;
 	size: number;
 
-	name: string;
-	entries: Map<string, File | Directory>;
+	nAme: string;
+	entries: MAp<string, File | Directory>;
 
-	constructor(name: string) {
+	constructor(nAme: string) {
 		this.type = FileType.Directory;
-		this.ctime = Date.now();
-		this.mtime = Date.now();
+		this.ctime = DAte.now();
+		this.mtime = DAte.now();
 		this.size = 0;
-		this.name = name;
-		this.entries = new Map();
+		this.nAme = nAme;
+		this.entries = new MAp();
 	}
 }
 
 export type Entry = File | Directory;
 
-export class InMemoryFileSystemProvider extends Disposable implements IFileSystemProviderWithFileReadWriteCapability {
+export clAss InMemoryFileSystemProvider extends DisposAble implements IFileSystemProviderWithFileReAdWriteCApAbility {
 
-	readonly capabilities: FileSystemProviderCapabilities =
-		FileSystemProviderCapabilities.FileReadWrite
-		| FileSystemProviderCapabilities.PathCaseSensitive;
-	readonly onDidChangeCapabilities: Event<void> = Event.None;
+	reAdonly cApAbilities: FileSystemProviderCApAbilities =
+		FileSystemProviderCApAbilities.FileReAdWrite
+		| FileSystemProviderCApAbilities.PAthCAseSensitive;
+	reAdonly onDidChAngeCApAbilities: Event<void> = Event.None;
 
 	root = new Directory('');
 
-	// --- manage file metadata
+	// --- mAnAge file metAdAtA
 
-	async stat(resource: URI): Promise<IStat> {
-		return this._lookup(resource, false);
+	Async stAt(resource: URI): Promise<IStAt> {
+		return this._lookup(resource, fAlse);
 	}
 
-	async readdir(resource: URI): Promise<[string, FileType][]> {
-		const entry = this._lookupAsDirectory(resource, false);
+	Async reAddir(resource: URI): Promise<[string, FileType][]> {
+		const entry = this._lookupAsDirectory(resource, fAlse);
 		let result: [string, FileType][] = [];
-		entry.entries.forEach((child, name) => result.push([name, child.type]));
+		entry.entries.forEAch((child, nAme) => result.push([nAme, child.type]));
 		return result;
 	}
 
-	// --- manage file contents
+	// --- mAnAge file contents
 
-	async readFile(resource: URI): Promise<Uint8Array> {
-		const data = this._lookupAsFile(resource, false).data;
-		if (data) {
-			return data;
+	Async reAdFile(resource: URI): Promise<Uint8ArrAy> {
+		const dAtA = this._lookupAsFile(resource, fAlse).dAtA;
+		if (dAtA) {
+			return dAtA;
 		}
 		throw new FileSystemProviderError('file not found', FileSystemProviderErrorCode.FileNotFound);
 	}
 
-	async writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> {
-		let basename = resources.basename(resource);
-		let parent = this._lookupParentDirectory(resource);
-		let entry = parent.entries.get(basename);
-		if (entry instanceof Directory) {
+	Async writeFile(resource: URI, content: Uint8ArrAy, opts: FileWriteOptions): Promise<void> {
+		let bAsenAme = resources.bAsenAme(resource);
+		let pArent = this._lookupPArentDirectory(resource);
+		let entry = pArent.entries.get(bAsenAme);
+		if (entry instAnceof Directory) {
 			throw new FileSystemProviderError('file is directory', FileSystemProviderErrorCode.FileIsADirectory);
 		}
-		if (!entry && !opts.create) {
+		if (!entry && !opts.creAte) {
 			throw new FileSystemProviderError('file not found', FileSystemProviderErrorCode.FileNotFound);
 		}
-		if (entry && opts.create && !opts.overwrite) {
-			throw new FileSystemProviderError('file exists already', FileSystemProviderErrorCode.FileExists);
+		if (entry && opts.creAte && !opts.overwrite) {
+			throw new FileSystemProviderError('file exists AlreAdy', FileSystemProviderErrorCode.FileExists);
 		}
 		if (!entry) {
-			entry = new File(basename);
-			parent.entries.set(basename, entry);
-			this._fireSoon({ type: FileChangeType.ADDED, resource });
+			entry = new File(bAsenAme);
+			pArent.entries.set(bAsenAme, entry);
+			this._fireSoon({ type: FileChAngeType.ADDED, resource });
 		}
-		entry.mtime = Date.now();
+		entry.mtime = DAte.now();
 		entry.size = content.byteLength;
-		entry.data = content;
+		entry.dAtA = content;
 
-		this._fireSoon({ type: FileChangeType.UPDATED, resource });
+		this._fireSoon({ type: FileChAngeType.UPDATED, resource });
 	}
 
-	// --- manage files/folders
+	// --- mAnAge files/folders
 
-	async rename(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> {
+	Async renAme(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> {
 		if (!opts.overwrite && this._lookup(to, true)) {
-			throw new FileSystemProviderError('file exists already', FileSystemProviderErrorCode.FileExists);
+			throw new FileSystemProviderError('file exists AlreAdy', FileSystemProviderErrorCode.FileExists);
 		}
 
-		let entry = this._lookup(from, false);
-		let oldParent = this._lookupParentDirectory(from);
+		let entry = this._lookup(from, fAlse);
+		let oldPArent = this._lookupPArentDirectory(from);
 
-		let newParent = this._lookupParentDirectory(to);
-		let newName = resources.basename(to);
+		let newPArent = this._lookupPArentDirectory(to);
+		let newNAme = resources.bAsenAme(to);
 
-		oldParent.entries.delete(entry.name);
-		entry.name = newName;
-		newParent.entries.set(newName, entry);
+		oldPArent.entries.delete(entry.nAme);
+		entry.nAme = newNAme;
+		newPArent.entries.set(newNAme, entry);
 
 		this._fireSoon(
-			{ type: FileChangeType.DELETED, resource: from },
-			{ type: FileChangeType.ADDED, resource: to }
+			{ type: FileChAngeType.DELETED, resource: from },
+			{ type: FileChAngeType.ADDED, resource: to }
 		);
 	}
 
-	async delete(resource: URI, opts: FileDeleteOptions): Promise<void> {
-		let dirname = resources.dirname(resource);
-		let basename = resources.basename(resource);
-		let parent = this._lookupAsDirectory(dirname, false);
-		if (parent.entries.has(basename)) {
-			parent.entries.delete(basename);
-			parent.mtime = Date.now();
-			parent.size -= 1;
-			this._fireSoon({ type: FileChangeType.UPDATED, resource: dirname }, { resource, type: FileChangeType.DELETED });
+	Async delete(resource: URI, opts: FileDeleteOptions): Promise<void> {
+		let dirnAme = resources.dirnAme(resource);
+		let bAsenAme = resources.bAsenAme(resource);
+		let pArent = this._lookupAsDirectory(dirnAme, fAlse);
+		if (pArent.entries.hAs(bAsenAme)) {
+			pArent.entries.delete(bAsenAme);
+			pArent.mtime = DAte.now();
+			pArent.size -= 1;
+			this._fireSoon({ type: FileChAngeType.UPDATED, resource: dirnAme }, { resource, type: FileChAngeType.DELETED });
 		}
 	}
 
-	async mkdir(resource: URI): Promise<void> {
-		let basename = resources.basename(resource);
-		let dirname = resources.dirname(resource);
-		let parent = this._lookupAsDirectory(dirname, false);
+	Async mkdir(resource: URI): Promise<void> {
+		let bAsenAme = resources.bAsenAme(resource);
+		let dirnAme = resources.dirnAme(resource);
+		let pArent = this._lookupAsDirectory(dirnAme, fAlse);
 
-		let entry = new Directory(basename);
-		parent.entries.set(entry.name, entry);
-		parent.mtime = Date.now();
-		parent.size += 1;
-		this._fireSoon({ type: FileChangeType.UPDATED, resource: dirname }, { type: FileChangeType.ADDED, resource });
+		let entry = new Directory(bAsenAme);
+		pArent.entries.set(entry.nAme, entry);
+		pArent.mtime = DAte.now();
+		pArent.size += 1;
+		this._fireSoon({ type: FileChAngeType.UPDATED, resource: dirnAme }, { type: FileChAngeType.ADDED, resource });
 	}
 
 	// --- lookup
 
-	private _lookup(uri: URI, silent: false): Entry;
-	private _lookup(uri: URI, silent: boolean): Entry | undefined;
-	private _lookup(uri: URI, silent: boolean): Entry | undefined {
-		let parts = uri.path.split('/');
+	privAte _lookup(uri: URI, silent: fAlse): Entry;
+	privAte _lookup(uri: URI, silent: booleAn): Entry | undefined;
+	privAte _lookup(uri: URI, silent: booleAn): Entry | undefined {
+		let pArts = uri.pAth.split('/');
 		let entry: Entry = this.root;
-		for (const part of parts) {
-			if (!part) {
+		for (const pArt of pArts) {
+			if (!pArt) {
 				continue;
 			}
 			let child: Entry | undefined;
-			if (entry instanceof Directory) {
-				child = entry.entries.get(part);
+			if (entry instAnceof Directory) {
+				child = entry.entries.get(pArt);
 			}
 			if (!child) {
 				if (!silent) {
@@ -181,50 +181,50 @@ export class InMemoryFileSystemProvider extends Disposable implements IFileSyste
 		return entry;
 	}
 
-	private _lookupAsDirectory(uri: URI, silent: boolean): Directory {
+	privAte _lookupAsDirectory(uri: URI, silent: booleAn): Directory {
 		let entry = this._lookup(uri, silent);
-		if (entry instanceof Directory) {
+		if (entry instAnceof Directory) {
 			return entry;
 		}
-		throw new FileSystemProviderError('file not a directory', FileSystemProviderErrorCode.FileNotADirectory);
+		throw new FileSystemProviderError('file not A directory', FileSystemProviderErrorCode.FileNotADirectory);
 	}
 
-	private _lookupAsFile(uri: URI, silent: boolean): File {
+	privAte _lookupAsFile(uri: URI, silent: booleAn): File {
 		let entry = this._lookup(uri, silent);
-		if (entry instanceof File) {
+		if (entry instAnceof File) {
 			return entry;
 		}
-		throw new FileSystemProviderError('file is a directory', FileSystemProviderErrorCode.FileIsADirectory);
+		throw new FileSystemProviderError('file is A directory', FileSystemProviderErrorCode.FileIsADirectory);
 	}
 
-	private _lookupParentDirectory(uri: URI): Directory {
-		const dirname = resources.dirname(uri);
-		return this._lookupAsDirectory(dirname, false);
+	privAte _lookupPArentDirectory(uri: URI): Directory {
+		const dirnAme = resources.dirnAme(uri);
+		return this._lookupAsDirectory(dirnAme, fAlse);
 	}
 
-	// --- manage file events
+	// --- mAnAge file events
 
-	private readonly _onDidChangeFile = this._register(new Emitter<readonly IFileChange[]>());
-	readonly onDidChangeFile: Event<readonly IFileChange[]> = this._onDidChangeFile.event;
+	privAte reAdonly _onDidChAngeFile = this._register(new Emitter<reAdonly IFileChAnge[]>());
+	reAdonly onDidChAngeFile: Event<reAdonly IFileChAnge[]> = this._onDidChAngeFile.event;
 
-	private _bufferedChanges: IFileChange[] = [];
-	private _fireSoonHandle?: any;
+	privAte _bufferedChAnges: IFileChAnge[] = [];
+	privAte _fireSoonHAndle?: Any;
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable {
-		// ignore, fires for all changes...
-		return Disposable.None;
+	wAtch(resource: URI, opts: IWAtchOptions): IDisposAble {
+		// ignore, fires for All chAnges...
+		return DisposAble.None;
 	}
 
-	private _fireSoon(...changes: IFileChange[]): void {
-		this._bufferedChanges.push(...changes);
+	privAte _fireSoon(...chAnges: IFileChAnge[]): void {
+		this._bufferedChAnges.push(...chAnges);
 
-		if (this._fireSoonHandle) {
-			clearTimeout(this._fireSoonHandle);
+		if (this._fireSoonHAndle) {
+			cleArTimeout(this._fireSoonHAndle);
 		}
 
-		this._fireSoonHandle = setTimeout(() => {
-			this._onDidChangeFile.fire(this._bufferedChanges);
-			this._bufferedChanges.length = 0;
+		this._fireSoonHAndle = setTimeout(() => {
+			this._onDidChAngeFile.fire(this._bufferedChAnges);
+			this._bufferedChAnges.length = 0;
 		}, 5);
 	}
 }

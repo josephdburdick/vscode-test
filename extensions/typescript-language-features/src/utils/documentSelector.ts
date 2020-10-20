@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export interface DocumentSelector {
+export interfAce DocumentSelector {
 	/**
-	 * Selector for files which only require a basic syntax server.
+	 * Selector for files which only require A bAsic syntAx server.
 	 */
-	readonly syntax: vscode.DocumentFilter[];
+	reAdonly syntAx: vscode.DocumentFilter[];
 
 	/**
-	 * Selector for files which require semantic server support.
+	 * Selector for files which require semAntic server support.
 	 */
-	readonly semantic: vscode.DocumentFilter[];
+	reAdonly semAntic: vscode.DocumentFilter[];
 }

@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { BinarySizeStatusBarEntry } from './binarySizeStatusBarEntry';
-import { PreviewManager } from './preview';
-import { SizeStatusBarEntry } from './sizeStatusBarEntry';
-import { ZoomStatusBarEntry } from './zoomStatusBarEntry';
+import * As vscode from 'vscode';
+import { BinArySizeStAtusBArEntry } from './binArySizeStAtusBArEntry';
+import { PreviewMAnAger } from './preview';
+import { SizeStAtusBArEntry } from './sizeStAtusBArEntry';
+import { ZoomStAtusBArEntry } from './zoomStAtusBArEntry';
 
-export function activate(context: vscode.ExtensionContext) {
-	const sizeStatusBarEntry = new SizeStatusBarEntry();
-	context.subscriptions.push(sizeStatusBarEntry);
+export function ActivAte(context: vscode.ExtensionContext) {
+	const sizeStAtusBArEntry = new SizeStAtusBArEntry();
+	context.subscriptions.push(sizeStAtusBArEntry);
 
-	const binarySizeStatusBarEntry = new BinarySizeStatusBarEntry();
-	context.subscriptions.push(binarySizeStatusBarEntry);
+	const binArySizeStAtusBArEntry = new BinArySizeStAtusBArEntry();
+	context.subscriptions.push(binArySizeStAtusBArEntry);
 
-	const zoomStatusBarEntry = new ZoomStatusBarEntry();
-	context.subscriptions.push(zoomStatusBarEntry);
+	const zoomStAtusBArEntry = new ZoomStAtusBArEntry();
+	context.subscriptions.push(zoomStAtusBArEntry);
 
-	const previewManager = new PreviewManager(context.extensionUri, sizeStatusBarEntry, binarySizeStatusBarEntry, zoomStatusBarEntry);
+	const previewMAnAger = new PreviewMAnAger(context.extensionUri, sizeStAtusBArEntry, binArySizeStAtusBArEntry, zoomStAtusBArEntry);
 
-	context.subscriptions.push(vscode.window.registerCustomEditorProvider(PreviewManager.viewType, previewManager, {
+	context.subscriptions.push(vscode.window.registerCustomEditorProvider(PreviewMAnAger.viewType, previewMAnAger, {
 		supportsMultipleEditorsPerDocument: true,
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('imagePreview.zoomIn', () => {
-		previewManager.activePreview?.zoomIn();
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('imAgePreview.zoomIn', () => {
+		previewMAnAger.ActivePreview?.zoomIn();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('imagePreview.zoomOut', () => {
-		previewManager.activePreview?.zoomOut();
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('imAgePreview.zoomOut', () => {
+		previewMAnAger.ActivePreview?.zoomOut();
 	}));
 }

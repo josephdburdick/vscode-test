@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IPickAndOpenOptions, ISaveDialogOptions, IOpenDialogOptions, IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { URI } from 'vs/base/common/uri';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { AbstractFileDialogService } from 'vs/workbench/services/dialogs/browser/abstractFileDialogService';
-import { Schemas } from 'vs/base/common/network';
+import { IPickAndOpenOptions, ISAveDiAlogOptions, IOpenDiAlogOptions, IFileDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { URI } from 'vs/bAse/common/uri';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { AbstrActFileDiAlogService } from 'vs/workbench/services/diAlogs/browser/AbstrActFileDiAlogService';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class FileDialogService extends AbstractFileDialogService implements IFileDialogService {
+export clAss FileDiAlogService extends AbstrActFileDiAlogService implements IFileDiAlogService {
 
-	async pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<any> {
-		const schema = this.getFileSystemSchema(options);
+	Async pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<Any> {
+		const schemA = this.getFileSystemSchemA(options);
 
-		if (!options.defaultUri) {
-			options.defaultUri = this.defaultFilePath(schema);
+		if (!options.defAultUri) {
+			options.defAultUri = this.defAultFilePAth(schemA);
 		}
 
-		return this.pickFileFolderAndOpenSimplified(schema, options, false);
+		return this.pickFileFolderAndOpenSimplified(schemA, options, fAlse);
 	}
 
-	async pickFileAndOpen(options: IPickAndOpenOptions): Promise<any> {
-		const schema = this.getFileSystemSchema(options);
+	Async pickFileAndOpen(options: IPickAndOpenOptions): Promise<Any> {
+		const schemA = this.getFileSystemSchemA(options);
 
-		if (!options.defaultUri) {
-			options.defaultUri = this.defaultFilePath(schema);
+		if (!options.defAultUri) {
+			options.defAultUri = this.defAultFilePAth(schemA);
 		}
 
-		return this.pickFileAndOpenSimplified(schema, options, false);
+		return this.pickFileAndOpenSimplified(schemA, options, fAlse);
 	}
 
-	async pickFolderAndOpen(options: IPickAndOpenOptions): Promise<any> {
-		const schema = this.getFileSystemSchema(options);
+	Async pickFolderAndOpen(options: IPickAndOpenOptions): Promise<Any> {
+		const schemA = this.getFileSystemSchemA(options);
 
-		if (!options.defaultUri) {
-			options.defaultUri = this.defaultFolderPath(schema);
+		if (!options.defAultUri) {
+			options.defAultUri = this.defAultFolderPAth(schemA);
 		}
 
-		return this.pickFolderAndOpenSimplified(schema, options);
+		return this.pickFolderAndOpenSimplified(schemA, options);
 	}
 
-	async pickWorkspaceAndOpen(options: IPickAndOpenOptions): Promise<void> {
-		const schema = this.getFileSystemSchema(options);
+	Async pickWorkspAceAndOpen(options: IPickAndOpenOptions): Promise<void> {
+		const schemA = this.getFileSystemSchemA(options);
 
-		if (!options.defaultUri) {
-			options.defaultUri = this.defaultWorkspacePath(schema);
+		if (!options.defAultUri) {
+			options.defAultUri = this.defAultWorkspAcePAth(schemA);
 		}
 
-		return this.pickWorkspaceAndOpenSimplified(schema, options);
+		return this.pickWorkspAceAndOpenSimplified(schemA, options);
 	}
 
-	async pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined> {
-		const schema = this.getFileSystemSchema({ defaultUri, availableFileSystems });
-		return this.pickFileToSaveSimplified(schema, this.getPickFileToSaveDialogOptions(defaultUri, availableFileSystems));
+	Async pickFileToSAve(defAultUri: URI, AvAilAbleFileSystems?: string[]): Promise<URI | undefined> {
+		const schemA = this.getFileSystemSchemA({ defAultUri, AvAilAbleFileSystems });
+		return this.pickFileToSAveSimplified(schemA, this.getPickFileToSAveDiAlogOptions(defAultUri, AvAilAbleFileSystems));
 	}
 
-	async showSaveDialog(options: ISaveDialogOptions): Promise<URI | undefined> {
-		const schema = this.getFileSystemSchema(options);
-		return this.showSaveDialogSimplified(schema, options);
+	Async showSAveDiAlog(options: ISAveDiAlogOptions): Promise<URI | undefined> {
+		const schemA = this.getFileSystemSchemA(options);
+		return this.showSAveDiAlogSimplified(schemA, options);
 	}
 
-	async showOpenDialog(options: IOpenDialogOptions): Promise<URI[] | undefined> {
-		const schema = this.getFileSystemSchema(options);
-		return this.showOpenDialogSimplified(schema, options);
+	Async showOpenDiAlog(options: IOpenDiAlogOptions): Promise<URI[] | undefined> {
+		const schemA = this.getFileSystemSchemA(options);
+		return this.showOpenDiAlogSimplified(schemA, options);
 	}
 
-	protected addFileSchemaIfNeeded(schema: string): string[] {
-		return schema === Schemas.untitled ? [Schemas.file] : [schema];
+	protected AddFileSchemAIfNeeded(schemA: string): string[] {
+		return schemA === SchemAs.untitled ? [SchemAs.file] : [schemA];
 	}
 }
 
-registerSingleton(IFileDialogService, FileDialogService, true);
+registerSingleton(IFileDiAlogService, FileDiAlogService, true);

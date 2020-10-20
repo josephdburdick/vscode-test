@@ -1,12 +1,12 @@
-import * as Proto from 'typescript/lib/protocol';
+import * As Proto from 'typescript/lib/protocol';
 export = Proto;
 
-declare enum ServerType {
-	Syntax = 'syntax',
-	Semantic = 'semantic',
+declAre enum ServerType {
+	SyntAx = 'syntAx',
+	SemAntic = 'semAntic',
 }
-declare module 'typescript/lib/protocol' {
-	interface Response {
-		readonly _serverType?: ServerType;
+declAre module 'typescript/lib/protocol' {
+	interfAce Response {
+		reAdonly _serverType?: ServerType;
 	}
 }

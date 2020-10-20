@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import TypeScriptServiceClientHost from '../typeScriptServiceClientHost';
-import { Lazy } from '../utils/lazy';
-import { Command } from './commandManager';
+import { LAzy } from '../utils/lAzy';
+import { CommAnd } from './commAndMAnAger';
 
-export class ReloadTypeScriptProjectsCommand implements Command {
-	public readonly id = 'typescript.reloadProjects';
+export clAss ReloAdTypeScriptProjectsCommAnd implements CommAnd {
+	public reAdonly id = 'typescript.reloAdProjects';
 
 	public constructor(
-		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>
+		privAte reAdonly lAzyClientHost: LAzy<TypeScriptServiceClientHost>
 	) { }
 
 	public execute() {
-		this.lazyClientHost.value.reloadProjects();
+		this.lAzyClientHost.vAlue.reloAdProjects();
 	}
 }
 
-export class ReloadJavaScriptProjectsCommand implements Command {
-	public readonly id = 'javascript.reloadProjects';
+export clAss ReloAdJAvAScriptProjectsCommAnd implements CommAnd {
+	public reAdonly id = 'jAvAscript.reloAdProjects';
 
 	public constructor(
-		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>
+		privAte reAdonly lAzyClientHost: LAzy<TypeScriptServiceClientHost>
 	) { }
 
 	public execute() {
-		this.lazyClientHost.value.reloadProjects();
+		this.lAzyClientHost.vAlue.reloAdProjects();
 	}
 }

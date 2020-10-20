@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { CommandManager } from './commands/commandManager';
-import { OngoingRequestCancellerFactory } from './tsServer/cancellation';
+import * As vscode from 'vscode';
+import { CommAndMAnAger } from './commAnds/commAndMAnAger';
+import { OngoingRequestCAncellerFActory } from './tsServer/cAncellAtion';
 import { ILogDirectoryProvider } from './tsServer/logDirectoryProvider';
-import { TsServerProcessFactory } from './tsServer/server';
+import { TsServerProcessFActory } from './tsServer/server';
 import { ITypeScriptVersionProvider } from './tsServer/versionProvider';
 import TypeScriptServiceClientHost from './typeScriptServiceClientHost';
-import { flatten } from './utils/arrays';
-import * as fileSchemes from './utils/fileSchemes';
-import { standardLanguageDescriptions } from './utils/languageDescription';
-import { lazy, Lazy } from './utils/lazy';
-import ManagedFileContextManager from './utils/managedFileContext';
-import { PluginManager } from './utils/plugins';
+import { flAtten } from './utils/ArrAys';
+import * As fileSchemes from './utils/fileSchemes';
+import { stAndArdLAnguAgeDescriptions } from './utils/lAnguAgeDescription';
+import { lAzy, LAzy } from './utils/lAzy';
+import MAnAgedFileContextMAnAger from './utils/mAnAgedFileContext';
+import { PluginMAnAger } from './utils/plugins';
 
-export function createLazyClientHost(
+export function creAteLAzyClientHost(
 	context: vscode.ExtensionContext,
-	onCaseInsenitiveFileSystem: boolean,
+	onCAseInsenitiveFileSystem: booleAn,
 	services: {
-		pluginManager: PluginManager,
-		commandManager: CommandManager,
+		pluginMAnAger: PluginMAnAger,
+		commAndMAnAger: CommAndMAnAger,
 		logDirectoryProvider: ILogDirectoryProvider,
-		cancellerFactory: OngoingRequestCancellerFactory,
+		cAncellerFActory: OngoingRequestCAncellerFActory,
 		versionProvider: ITypeScriptVersionProvider,
-		processFactory: TsServerProcessFactory,
+		processFActory: TsServerProcessFActory,
 	},
 	onCompletionAccepted: (item: vscode.CompletionItem) => void,
-): Lazy<TypeScriptServiceClientHost> {
-	return lazy(() => {
+): LAzy<TypeScriptServiceClientHost> {
+	return lAzy(() => {
 		const clientHost = new TypeScriptServiceClientHost(
-			standardLanguageDescriptions,
-			context.workspaceState,
-			onCaseInsenitiveFileSystem,
+			stAndArdLAnguAgeDescriptions,
+			context.workspAceStAte,
+			onCAseInsenitiveFileSystem,
 			services,
 			onCompletionAccepted);
 
@@ -44,48 +44,48 @@ export function createLazyClientHost(
 	});
 }
 
-export function lazilyActivateClient(
-	lazyClientHost: Lazy<TypeScriptServiceClientHost>,
-	pluginManager: PluginManager,
-): vscode.Disposable {
-	const disposables: vscode.Disposable[] = [];
+export function lAzilyActivAteClient(
+	lAzyClientHost: LAzy<TypeScriptServiceClientHost>,
+	pluginMAnAger: PluginMAnAger,
+): vscode.DisposAble {
+	const disposAbles: vscode.DisposAble[] = [];
 
-	const supportedLanguage = flatten([
-		...standardLanguageDescriptions.map(x => x.modeIds),
-		...pluginManager.plugins.map(x => x.languages)
+	const supportedLAnguAge = flAtten([
+		...stAndArdLAnguAgeDescriptions.mAp(x => x.modeIds),
+		...pluginMAnAger.plugins.mAp(x => x.lAnguAges)
 	]);
 
-	let hasActivated = false;
-	const maybeActivate = (textDocument: vscode.TextDocument): boolean => {
-		if (!hasActivated && isSupportedDocument(supportedLanguage, textDocument)) {
-			hasActivated = true;
-			// Force activation
-			void lazyClientHost.value;
+	let hAsActivAted = fAlse;
+	const mAybeActivAte = (textDocument: vscode.TextDocument): booleAn => {
+		if (!hAsActivAted && isSupportedDocument(supportedLAnguAge, textDocument)) {
+			hAsActivAted = true;
+			// Force ActivAtion
+			void lAzyClientHost.vAlue;
 
-			disposables.push(new ManagedFileContextManager(resource => {
-				return lazyClientHost.value.serviceClient.toPath(resource);
+			disposAbles.push(new MAnAgedFileContextMAnAger(resource => {
+				return lAzyClientHost.vAlue.serviceClient.toPAth(resource);
 			}));
 			return true;
 		}
-		return false;
+		return fAlse;
 	};
 
-	const didActivate = vscode.workspace.textDocuments.some(maybeActivate);
-	if (!didActivate) {
-		const openListener = vscode.workspace.onDidOpenTextDocument(doc => {
-			if (maybeActivate(doc)) {
+	const didActivAte = vscode.workspAce.textDocuments.some(mAybeActivAte);
+	if (!didActivAte) {
+		const openListener = vscode.workspAce.onDidOpenTextDocument(doc => {
+			if (mAybeActivAte(doc)) {
 				openListener.dispose();
 			}
-		}, undefined, disposables);
+		}, undefined, disposAbles);
 	}
 
-	return vscode.Disposable.from(...disposables);
+	return vscode.DisposAble.from(...disposAbles);
 }
 
 function isSupportedDocument(
-	supportedLanguage: readonly string[],
+	supportedLAnguAge: reAdonly string[],
 	document: vscode.TextDocument
-): boolean {
-	return supportedLanguage.indexOf(document.languageId) >= 0
-		&& !fileSchemes.disabledSchemes.has(document.uri.scheme);
+): booleAn {
+	return supportedLAnguAge.indexOf(document.lAnguAgeId) >= 0
+		&& !fileSchemes.disAbledSchemes.hAs(document.uri.scheme);
 }

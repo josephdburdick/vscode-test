@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { Action2, registerAction2 } from 'vs/platform/actions/common/actions';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import * As nls from 'vs/nls';
+import { IShAredProcessService } from 'vs/plAtform/ipc/electron-browser/shAredProcessService';
+import { Action2, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 
-class ToggleSharedProcessAction extends Action2 {
+clAss ToggleShAredProcessAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.action.toggleSharedProcess',
-			title: { value: nls.localize('toggleSharedProcess', "Toggle Shared Process"), original: 'Toggle Shared Process' },
-			category: CATEGORIES.Developer,
+			id: 'workbench.Action.toggleShAredProcess',
+			title: { vAlue: nls.locAlize('toggleShAredProcess', "Toggle ShAred Process"), originAl: 'Toggle ShAred Process' },
+			cAtegory: CATEGORIES.Developer,
 			f1: true
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		return accessor.get(ISharedProcessService).toggleSharedProcessWindow();
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		return Accessor.get(IShAredProcessService).toggleShAredProcessWindow();
 	}
 }
 
-registerAction2(ToggleSharedProcessAction);
+registerAction2(ToggleShAredProcessAction);

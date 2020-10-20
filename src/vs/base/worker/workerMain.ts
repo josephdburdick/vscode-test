@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 (function () {
 
-	let MonacoEnvironment = (<any>self).MonacoEnvironment;
-	let monacoBaseUrl = MonacoEnvironment && MonacoEnvironment.baseUrl ? MonacoEnvironment.baseUrl : '../../../';
+	let MonAcoEnvironment = (<Any>self).MonAcoEnvironment;
+	let monAcoBAseUrl = MonAcoEnvironment && MonAcoEnvironment.bAseUrl ? MonAcoEnvironment.bAseUrl : '../../../';
 
-	if (typeof (<any>self).define !== 'function' || !(<any>self).define.amd) {
-		importScripts(monacoBaseUrl + 'vs/loader.js');
+	if (typeof (<Any>self).define !== 'function' || !(<Any>self).define.Amd) {
+		importScripts(monAcoBAseUrl + 'vs/loAder.js');
 	}
 
 	require.config({
-		baseUrl: monacoBaseUrl,
-		catchError: true,
-		createTrustedScriptURL: (value: string) => value,
+		bAseUrl: monAcoBAseUrl,
+		cAtchError: true,
+		creAteTrustedScriptURL: (vAlue: string) => vAlue,
 	});
 
-	let loadCode = function (moduleId: string) {
+	let loAdCode = function (moduleId: string) {
 		require([moduleId], function (ws) {
 			setTimeout(function () {
-				let messageHandler = ws.create((msg: any, transfer?: Transferable[]) => {
-					(<any>self).postMessage(msg, transfer);
+				let messAgeHAndler = ws.creAte((msg: Any, trAnsfer?: TrAnsferAble[]) => {
+					(<Any>self).postMessAge(msg, trAnsfer);
 				}, null);
 
-				self.onmessage = (e: MessageEvent) => messageHandler.onmessage(e.data);
-				while (beforeReadyMessages.length > 0) {
-					self.onmessage(beforeReadyMessages.shift()!);
+				self.onmessAge = (e: MessAgeEvent) => messAgeHAndler.onmessAge(e.dAtA);
+				while (beforeReAdyMessAges.length > 0) {
+					self.onmessAge(beforeReAdyMessAges.shift()!);
 				}
 			}, 0);
 		});
 	};
 
-	let isFirstMessage = true;
-	let beforeReadyMessages: MessageEvent[] = [];
-	self.onmessage = (message: MessageEvent) => {
-		if (!isFirstMessage) {
-			beforeReadyMessages.push(message);
+	let isFirstMessAge = true;
+	let beforeReAdyMessAges: MessAgeEvent[] = [];
+	self.onmessAge = (messAge: MessAgeEvent) => {
+		if (!isFirstMessAge) {
+			beforeReAdyMessAges.push(messAge);
 			return;
 		}
 
-		isFirstMessage = false;
-		loadCode(message.data);
+		isFirstMessAge = fAlse;
+		loAdCode(messAge.dAtA);
 	};
 })();

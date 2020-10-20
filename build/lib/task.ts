@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as fancyLog from 'fancy-log';
-import * as ansiColors from 'ansi-colors';
+import * As fAncyLog from 'fAncy-log';
+import * As AnsiColors from 'Ansi-colors';
 
-export interface BaseTask {
-	displayName?: string;
-	taskName?: string;
-	_tasks?: Task[];
+export interfAce BAseTAsk {
+	displAyNAme?: string;
+	tAskNAme?: string;
+	_tAsks?: TAsk[];
 }
-export interface PromiseTask extends BaseTask {
+export interfAce PromiseTAsk extends BAseTAsk {
 	(): Promise<void>;
 }
-export interface StreamTask extends BaseTask {
-	(): NodeJS.ReadWriteStream;
+export interfAce StreAmTAsk extends BAseTAsk {
+	(): NodeJS.ReAdWriteStreAm;
 }
-export interface CallbackTask extends BaseTask {
-	(cb?: (err?: any) => void): void;
+export interfAce CAllbAckTAsk extends BAseTAsk {
+	(cb?: (err?: Any) => void): void;
 }
 
-export type Task = PromiseTask | StreamTask | CallbackTask;
+export type TAsk = PromiseTAsk | StreAmTAsk | CAllbAckTAsk;
 
-function _isPromise(p: Promise<void> | NodeJS.ReadWriteStream): p is Promise<void> {
-	if (typeof (<any>p).then === 'function') {
+function _isPromise(p: Promise<void> | NodeJS.ReAdWriteStreAm): p is Promise<void> {
+	if (typeof (<Any>p).then === 'function') {
 		return true;
 	}
-	return false;
+	return fAlse;
 }
 
 function _renderTime(time: number): string {
-	return `${Math.round(time)} ms`;
+	return `${MAth.round(time)} ms`;
 }
 
-async function _execute(task: Task): Promise<void> {
-	const name = task.taskName || task.displayName || `<anonymous>`;
-	if (!task._tasks) {
-		fancyLog('Starting', ansiColors.cyan(name), '...');
+Async function _execute(tAsk: TAsk): Promise<void> {
+	const nAme = tAsk.tAskNAme || tAsk.displAyNAme || `<Anonymous>`;
+	if (!tAsk._tAsks) {
+		fAncyLog('StArting', AnsiColors.cyAn(nAme), '...');
 	}
-	const startTime = process.hrtime();
-	await _doExecute(task);
-	const elapsedArr = process.hrtime(startTime);
-	const elapsedNanoseconds = (elapsedArr[0] * 1e9 + elapsedArr[1]);
-	if (!task._tasks) {
-		fancyLog(`Finished`, ansiColors.cyan(name), 'after', ansiColors.magenta(_renderTime(elapsedNanoseconds / 1e6)));
+	const stArtTime = process.hrtime();
+	AwAit _doExecute(tAsk);
+	const elApsedArr = process.hrtime(stArtTime);
+	const elApsedNAnoseconds = (elApsedArr[0] * 1e9 + elApsedArr[1]);
+	if (!tAsk._tAsks) {
+		fAncyLog(`Finished`, AnsiColors.cyAn(nAme), 'After', AnsiColors.mAgentA(_renderTime(elApsedNAnoseconds / 1e6)));
 	}
 }
 
-async function _doExecute(task: Task): Promise<void> {
-	// Always invoke as if it were a callback task
+Async function _doExecute(tAsk: TAsk): Promise<void> {
+	// AlwAys invoke As if it were A cAllbAck tAsk
 	return new Promise((resolve, reject) => {
-		if (task.length === 1) {
-			// this is a callback task
-			task((err) => {
+		if (tAsk.length === 1) {
+			// this is A cAllbAck tAsk
+			tAsk((err) => {
 				if (err) {
 					return reject(err);
 				}
@@ -64,62 +64,62 @@ async function _doExecute(task: Task): Promise<void> {
 			return;
 		}
 
-		const taskResult = task();
+		const tAskResult = tAsk();
 
-		if (typeof taskResult === 'undefined') {
-			// this is a sync task
+		if (typeof tAskResult === 'undefined') {
+			// this is A sync tAsk
 			resolve();
 			return;
 		}
 
-		if (_isPromise(taskResult)) {
-			// this is a promise returning task
-			taskResult.then(resolve, reject);
+		if (_isPromise(tAskResult)) {
+			// this is A promise returning tAsk
+			tAskResult.then(resolve, reject);
 			return;
 		}
 
-		// this is a stream returning task
-		taskResult.on('end', _ => resolve());
-		taskResult.on('error', err => reject(err));
+		// this is A streAm returning tAsk
+		tAskResult.on('end', _ => resolve());
+		tAskResult.on('error', err => reject(err));
 	});
 }
 
-export function series(...tasks: Task[]): PromiseTask {
-	const result = async () => {
-		for (let i = 0; i < tasks.length; i++) {
-			await _execute(tasks[i]);
+export function series(...tAsks: TAsk[]): PromiseTAsk {
+	const result = Async () => {
+		for (let i = 0; i < tAsks.length; i++) {
+			AwAit _execute(tAsks[i]);
 		}
 	};
-	result._tasks = tasks;
+	result._tAsks = tAsks;
 	return result;
 }
 
-export function parallel(...tasks: Task[]): PromiseTask {
-	const result = async () => {
-		await Promise.all(tasks.map(t => _execute(t)));
+export function pArAllel(...tAsks: TAsk[]): PromiseTAsk {
+	const result = Async () => {
+		AwAit Promise.All(tAsks.mAp(t => _execute(t)));
 	};
-	result._tasks = tasks;
+	result._tAsks = tAsks;
 	return result;
 }
 
-export function define(name: string, task: Task): Task {
-	if (task._tasks) {
-		// This is a composite task
-		const lastTask = task._tasks[task._tasks.length - 1];
+export function define(nAme: string, tAsk: TAsk): TAsk {
+	if (tAsk._tAsks) {
+		// This is A composite tAsk
+		const lAstTAsk = tAsk._tAsks[tAsk._tAsks.length - 1];
 
-		if (lastTask._tasks || lastTask.taskName) {
-			// This is a composite task without a real task function
-			// => generate a fake task function
-			return define(name, series(task, () => Promise.resolve()));
+		if (lAstTAsk._tAsks || lAstTAsk.tAskNAme) {
+			// This is A composite tAsk without A reAl tAsk function
+			// => generAte A fAke tAsk function
+			return define(nAme, series(tAsk, () => Promise.resolve()));
 		}
 
-		lastTask.taskName = name;
-		task.displayName = name;
-		return task;
+		lAstTAsk.tAskNAme = nAme;
+		tAsk.displAyNAme = nAme;
+		return tAsk;
 	}
 
-	// This is a simple task
-	task.taskName = name;
-	task.displayName = name;
-	return task;
+	// This is A simple tAsk
+	tAsk.tAskNAme = nAme;
+	tAsk.displAyNAme = nAme;
+	return tAsk;
 }

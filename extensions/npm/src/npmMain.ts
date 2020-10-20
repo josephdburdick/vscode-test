@@ -1,118 +1,118 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as httpRequest from 'request-light';
-import * as vscode from 'vscode';
-import { addJSONProviders } from './features/jsonContributions';
-import { runSelectedScript, selectAndRunScriptFromFolder } from './commands';
-import { NpmScriptsTreeDataProvider } from './npmView';
-import { invalidateTasksCache, NpmTaskProvider } from './tasks';
-import { invalidateHoverScriptsCache, NpmScriptHoverProvider } from './scriptHover';
+import * As httpRequest from 'request-light';
+import * As vscode from 'vscode';
+import { AddJSONProviders } from './feAtures/jsonContributions';
+import { runSelectedScript, selectAndRunScriptFromFolder } from './commAnds';
+import { NpmScriptsTreeDAtAProvider } from './npmView';
+import { invAlidAteTAsksCAche, NpmTAskProvider } from './tAsks';
+import { invAlidAteHoverScriptsCAche, NpmScriptHoverProvider } from './scriptHover';
 
-let treeDataProvider: NpmScriptsTreeDataProvider | undefined;
+let treeDAtAProvider: NpmScriptsTreeDAtAProvider | undefined;
 
-function invalidateScriptCaches() {
-	invalidateHoverScriptsCache();
-	invalidateTasksCache();
-	if (treeDataProvider) {
-		treeDataProvider.refresh();
+function invAlidAteScriptCAches() {
+	invAlidAteHoverScriptsCAche();
+	invAlidAteTAsksCAche();
+	if (treeDAtAProvider) {
+		treeDAtAProvider.refresh();
 	}
 }
 
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
+export Async function ActivAte(context: vscode.ExtensionContext): Promise<void> {
 	configureHttpRequest();
-	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
-		if (e.affectsConfiguration('http.proxy') || e.affectsConfiguration('http.proxyStrictSSL')) {
+	context.subscriptions.push(vscode.workspAce.onDidChAngeConfigurAtion(e => {
+		if (e.AffectsConfigurAtion('http.proxy') || e.AffectsConfigurAtion('http.proxyStrictSSL')) {
 			configureHttpRequest();
 		}
 	}));
 
-	const canRunNPM = canRunNpmInCurrentWorkspace();
-	context.subscriptions.push(addJSONProviders(httpRequest.xhr, canRunNPM));
+	const cAnRunNPM = cAnRunNpmInCurrentWorkspAce();
+	context.subscriptions.push(AddJSONProviders(httpRequest.xhr, cAnRunNPM));
 
-	treeDataProvider = registerExplorer(context);
+	treeDAtAProvider = registerExplorer(context);
 
-	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e) => {
-		if (e.affectsConfiguration('npm.exclude') || e.affectsConfiguration('npm.autoDetect')) {
-			invalidateTasksCache();
-			if (treeDataProvider) {
-				treeDataProvider.refresh();
+	context.subscriptions.push(vscode.workspAce.onDidChAngeConfigurAtion((e) => {
+		if (e.AffectsConfigurAtion('npm.exclude') || e.AffectsConfigurAtion('npm.AutoDetect')) {
+			invAlidAteTAsksCAche();
+			if (treeDAtAProvider) {
+				treeDAtAProvider.refresh();
 			}
 		}
-		if (e.affectsConfiguration('npm.scriptExplorerAction')) {
-			if (treeDataProvider) {
-				treeDataProvider.refresh();
+		if (e.AffectsConfigurAtion('npm.scriptExplorerAction')) {
+			if (treeDAtAProvider) {
+				treeDAtAProvider.refresh();
 			}
 		}
 	}));
 
-	registerTaskProvider(context);
+	registerTAskProvider(context);
 	registerHoverProvider(context);
 
-	context.subscriptions.push(vscode.commands.registerCommand('npm.runSelectedScript', runSelectedScript));
-	context.subscriptions.push(vscode.commands.registerCommand('npm.runScriptFromFolder', selectAndRunScriptFromFolder));
-	context.subscriptions.push(vscode.commands.registerCommand('npm.refresh', () => {
-		invalidateScriptCaches();
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('npm.runSelectedScript', runSelectedScript));
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('npm.runScriptFromFolder', selectAndRunScriptFromFolder));
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('npm.refresh', () => {
+		invAlidAteScriptCAches();
 	}));
 
 }
 
-function canRunNpmInCurrentWorkspace() {
-	if (vscode.workspace.workspaceFolders) {
-		return vscode.workspace.workspaceFolders.some(f => f.uri.scheme === 'file');
+function cAnRunNpmInCurrentWorkspAce() {
+	if (vscode.workspAce.workspAceFolders) {
+		return vscode.workspAce.workspAceFolders.some(f => f.uri.scheme === 'file');
 	}
-	return false;
+	return fAlse;
 }
 
-function registerTaskProvider(context: vscode.ExtensionContext): vscode.Disposable | undefined {
-	if (vscode.workspace.workspaceFolders) {
-		let watcher = vscode.workspace.createFileSystemWatcher('**/package.json');
-		watcher.onDidChange((_e) => invalidateScriptCaches());
-		watcher.onDidDelete((_e) => invalidateScriptCaches());
-		watcher.onDidCreate((_e) => invalidateScriptCaches());
-		context.subscriptions.push(watcher);
+function registerTAskProvider(context: vscode.ExtensionContext): vscode.DisposAble | undefined {
+	if (vscode.workspAce.workspAceFolders) {
+		let wAtcher = vscode.workspAce.creAteFileSystemWAtcher('**/pAckAge.json');
+		wAtcher.onDidChAnge((_e) => invAlidAteScriptCAches());
+		wAtcher.onDidDelete((_e) => invAlidAteScriptCAches());
+		wAtcher.onDidCreAte((_e) => invAlidAteScriptCAches());
+		context.subscriptions.push(wAtcher);
 
-		let workspaceWatcher = vscode.workspace.onDidChangeWorkspaceFolders((_e) => invalidateScriptCaches());
-		context.subscriptions.push(workspaceWatcher);
+		let workspAceWAtcher = vscode.workspAce.onDidChAngeWorkspAceFolders((_e) => invAlidAteScriptCAches());
+		context.subscriptions.push(workspAceWAtcher);
 
-		let provider: vscode.TaskProvider = new NpmTaskProvider();
-		let disposable = vscode.tasks.registerTaskProvider('npm', provider);
-		context.subscriptions.push(disposable);
-		return disposable;
+		let provider: vscode.TAskProvider = new NpmTAskProvider();
+		let disposAble = vscode.tAsks.registerTAskProvider('npm', provider);
+		context.subscriptions.push(disposAble);
+		return disposAble;
 	}
 	return undefined;
 }
 
-function registerExplorer(context: vscode.ExtensionContext): NpmScriptsTreeDataProvider | undefined {
-	if (vscode.workspace.workspaceFolders) {
-		let treeDataProvider = new NpmScriptsTreeDataProvider(context);
-		const view = vscode.window.createTreeView('npm', { treeDataProvider: treeDataProvider, showCollapseAll: true });
+function registerExplorer(context: vscode.ExtensionContext): NpmScriptsTreeDAtAProvider | undefined {
+	if (vscode.workspAce.workspAceFolders) {
+		let treeDAtAProvider = new NpmScriptsTreeDAtAProvider(context);
+		const view = vscode.window.creAteTreeView('npm', { treeDAtAProvider: treeDAtAProvider, showCollApseAll: true });
 		context.subscriptions.push(view);
-		return treeDataProvider;
+		return treeDAtAProvider;
 	}
 	return undefined;
 }
 
 function registerHoverProvider(context: vscode.ExtensionContext): NpmScriptHoverProvider | undefined {
-	if (vscode.workspace.workspaceFolders) {
+	if (vscode.workspAce.workspAceFolders) {
 		let npmSelector: vscode.DocumentSelector = {
-			language: 'json',
+			lAnguAge: 'json',
 			scheme: 'file',
-			pattern: '**/package.json'
+			pAttern: '**/pAckAge.json'
 		};
 		let provider = new NpmScriptHoverProvider(context);
-		context.subscriptions.push(vscode.languages.registerHoverProvider(npmSelector, provider));
+		context.subscriptions.push(vscode.lAnguAges.registerHoverProvider(npmSelector, provider));
 		return provider;
 	}
 	return undefined;
 }
 
 function configureHttpRequest() {
-	const httpSettings = vscode.workspace.getConfiguration('http');
-	httpRequest.configure(httpSettings.get<string>('proxy', ''), httpSettings.get<boolean>('proxyStrictSSL', true));
+	const httpSettings = vscode.workspAce.getConfigurAtion('http');
+	httpRequest.configure(httpSettings.get<string>('proxy', ''), httpSettings.get<booleAn>('proxyStrictSSL', true));
 }
 
-export function deactivate(): void {
+export function deActivAte(): void {
 }

@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-// Increase max listeners for event emitters
-require('events').EventEmitter.defaultMaxListeners = 100;
+// IncreAse mAx listeners for event emitters
+require('events').EventEmitter.defAultMAxListeners = 100;
 
 const gulp = require('gulp');
 const util = require('./build/lib/util');
-const task = require('./build/lib/task');
-const path = require('path');
-const compilation = require('./build/lib/compilation');
-const { monacoTypecheckTask/* , monacoTypecheckWatchTask */ } = require('./build/gulpfile.editor');
-const { compileExtensionsTask, watchExtensionsTask } = require('./build/gulpfile.extensions');
+const tAsk = require('./build/lib/tAsk');
+const pAth = require('pAth');
+const compilAtion = require('./build/lib/compilAtion');
+const { monAcoTypecheckTAsk/* , monAcoTypecheckWAtchTAsk */ } = require('./build/gulpfile.editor');
+const { compileExtensionsTAsk, wAtchExtensionsTAsk } = require('./build/gulpfile.extensions');
 
-// Fast compile for development time
-const compileClientTask = task.define('compile-client', task.series(util.rimraf('out'), compilation.compileTask('src', 'out', false)));
-gulp.task(compileClientTask);
+// FAst compile for development time
+const compileClientTAsk = tAsk.define('compile-client', tAsk.series(util.rimrAf('out'), compilAtion.compileTAsk('src', 'out', fAlse)));
+gulp.tAsk(compileClientTAsk);
 
-const watchClientTask = task.define('watch-client', task.series(util.rimraf('out'), compilation.watchTask('out', false)));
-gulp.task(watchClientTask);
+const wAtchClientTAsk = tAsk.define('wAtch-client', tAsk.series(util.rimrAf('out'), compilAtion.wAtchTAsk('out', fAlse)));
+gulp.tAsk(wAtchClientTAsk);
 
 // All
-const compileTask = task.define('compile', task.parallel(monacoTypecheckTask, compileClientTask, compileExtensionsTask));
-gulp.task(compileTask);
+const compileTAsk = tAsk.define('compile', tAsk.pArAllel(monAcoTypecheckTAsk, compileClientTAsk, compileExtensionsTAsk));
+gulp.tAsk(compileTAsk);
 
-gulp.task(task.define('watch', task.parallel(/* monacoTypecheckWatchTask, */ watchClientTask, watchExtensionsTask)));
+gulp.tAsk(tAsk.define('wAtch', tAsk.pArAllel(/* monAcoTypecheckWAtchTAsk, */ wAtchClientTAsk, wAtchExtensionsTAsk)));
 
-// Default
-gulp.task('default', compileTask);
+// DefAult
+gulp.tAsk('defAult', compileTAsk);
 
-process.on('unhandledRejection', (reason, p) => {
-	console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+process.on('unhAndledRejection', (reAson, p) => {
+	console.log('UnhAndled Rejection At: Promise', p, 'reAson:', reAson);
 	process.exit(1);
 });
 
-// Load all the gulpfiles only if running tasks other than the editor tasks
-const build = path.join(__dirname, 'build');
+// LoAd All the gulpfiles only if running tAsks other thAn the editor tAsks
+const build = pAth.join(__dirnAme, 'build');
 require('glob').sync('gulpfile.*.js', { cwd: build })
-	.forEach(f => require(`./build/${f}`));
+	.forEAch(f => require(`./build/${f}`));

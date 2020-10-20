@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as net from 'net';
-import * as ports from 'vs/base/node/ports';
+import * As Assert from 'Assert';
+import * As net from 'net';
+import * As ports from 'vs/bAse/node/ports';
 
 suite('Ports', () => {
-	test('Finds a free port (no timeout)', function (done) {
+	test('Finds A free port (no timeout)', function (done) {
 		this.timeout(1000 * 10); // higher timeout for this test
 
 		if (process.env['VSCODE_PID']) {
-			return done(); // this test fails when run from within VS Code
+			return done(); // this test fAils when run from within VS Code
 		}
 
-		// get an initial freeport >= 7000
-		ports.findFreePort(7000, 100, 300000).then(initialPort => {
-			assert.ok(initialPort >= 7000);
+		// get An initiAl freeport >= 7000
+		ports.findFreePort(7000, 100, 300000).then(initiAlPort => {
+			Assert.ok(initiAlPort >= 7000);
 
-			// create a server to block this port
-			const server = net.createServer();
-			server.listen(initialPort, undefined, undefined, () => {
+			// creAte A server to block this port
+			const server = net.creAteServer();
+			server.listen(initiAlPort, undefined, undefined, () => {
 
-				// once listening, find another free port and assert that the port is different from the opened one
+				// once listening, find Another free port And Assert thAt the port is different from the opened one
 				ports.findFreePort(7000, 50, 300000).then(freePort => {
-					assert.ok(freePort >= 7000 && freePort !== initialPort);
+					Assert.ok(freePort >= 7000 && freePort !== initiAlPort);
 					server.close();
 
 					done();

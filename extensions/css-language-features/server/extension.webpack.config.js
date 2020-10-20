@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withDefaults = require('../../shared.webpack.config');
-const path = require('path');
+const withDefAults = require('../../shAred.webpAck.config');
+const pAth = require('pAth');
 
-module.exports = withDefaults({
-	context: path.join(__dirname),
+module.exports = withDefAults({
+	context: pAth.join(__dirnAme),
 	entry: {
-		extension: './src/node/cssServerMain.ts',
+		extension: './src/node/cssServerMAin.ts',
 	},
 	output: {
-		filename: 'cssServerMain.js',
-		path: path.join(__dirname, 'dist', 'node'),
+		filenAme: 'cssServerMAin.js',
+		pAth: pAth.join(__dirnAme, 'dist', 'node'),
 	}
 });

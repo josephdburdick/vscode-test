@@ -1,77 +1,77 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IDiffEditorModel } from 'vs/editor/common/editorCommon';
 import { EditorModel } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
+import { BAseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
 import { DiffEditorModel } from 'vs/workbench/common/editor/diffEditorModel';
 
 /**
- * The base text editor model for the diff editor. It is made up of two text editor models, the original version
- * and the modified version.
+ * The bAse text editor model for the diff editor. It is mAde up of two text editor models, the originAl version
+ * And the modified version.
  */
-export class TextDiffEditorModel extends DiffEditorModel {
+export clAss TextDiffEditorModel extends DiffEditorModel {
 
-	protected readonly _originalModel: BaseTextEditorModel | null;
-	get originalModel(): BaseTextEditorModel | null { return this._originalModel; }
+	protected reAdonly _originAlModel: BAseTextEditorModel | null;
+	get originAlModel(): BAseTextEditorModel | null { return this._originAlModel; }
 
-	protected readonly _modifiedModel: BaseTextEditorModel | null;
-	get modifiedModel(): BaseTextEditorModel | null { return this._modifiedModel; }
+	protected reAdonly _modifiedModel: BAseTextEditorModel | null;
+	get modifiedModel(): BAseTextEditorModel | null { return this._modifiedModel; }
 
-	private _textDiffEditorModel: IDiffEditorModel | null = null;
+	privAte _textDiffEditorModel: IDiffEditorModel | null = null;
 	get textDiffEditorModel(): IDiffEditorModel | null { return this._textDiffEditorModel; }
 
-	constructor(originalModel: BaseTextEditorModel, modifiedModel: BaseTextEditorModel) {
-		super(originalModel, modifiedModel);
+	constructor(originAlModel: BAseTextEditorModel, modifiedModel: BAseTextEditorModel) {
+		super(originAlModel, modifiedModel);
 
-		this._originalModel = originalModel;
+		this._originAlModel = originAlModel;
 		this._modifiedModel = modifiedModel;
 
-		this.updateTextDiffEditorModel();
+		this.updAteTextDiffEditorModel();
 	}
 
-	async load(): Promise<EditorModel> {
-		await super.load();
+	Async loAd(): Promise<EditorModel> {
+		AwAit super.loAd();
 
-		this.updateTextDiffEditorModel();
+		this.updAteTextDiffEditorModel();
 
 		return this;
 	}
 
-	private updateTextDiffEditorModel(): void {
-		if (this.originalModel?.isResolved() && this.modifiedModel?.isResolved()) {
+	privAte updAteTextDiffEditorModel(): void {
+		if (this.originAlModel?.isResolved() && this.modifiedModel?.isResolved()) {
 
-			// Create new
+			// CreAte new
 			if (!this._textDiffEditorModel) {
 				this._textDiffEditorModel = {
-					original: this.originalModel.textEditorModel,
+					originAl: this.originAlModel.textEditorModel,
 					modified: this.modifiedModel.textEditorModel
 				};
 			}
 
-			// Update existing
+			// UpdAte existing
 			else {
-				this._textDiffEditorModel.original = this.originalModel.textEditorModel;
+				this._textDiffEditorModel.originAl = this.originAlModel.textEditorModel;
 				this._textDiffEditorModel.modified = this.modifiedModel.textEditorModel;
 			}
 		}
 	}
 
-	isResolved(): boolean {
+	isResolved(): booleAn {
 		return !!this._textDiffEditorModel;
 	}
 
-	isReadonly(): boolean {
-		return !!this.modifiedModel && this.modifiedModel.isReadonly();
+	isReAdonly(): booleAn {
+		return !!this.modifiedModel && this.modifiedModel.isReAdonly();
 	}
 
 	dispose(): void {
 
-		// Free the diff editor model but do not propagate the dispose() call to the two models
-		// inside. We never created the two models (original and modified) so we can not dispose
-		// them without sideeffects. Rather rely on the models getting disposed when their related
+		// Free the diff editor model but do not propAgAte the dispose() cAll to the two models
+		// inside. We never creAted the two models (originAl And modified) so we cAn not dispose
+		// them without sideeffects. RAther rely on the models getting disposed when their relAted
 		// inputs get disposed from the diffEditorInput.
 		this._textDiffEditorModel = null;
 

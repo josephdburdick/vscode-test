@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const path = require('path');
+const pAth = require('pAth');
 
-const withDefaults = require('../shared.webpack.config');
+const withDefAults = require('../shAred.webpAck.config');
 
-module.exports = withDefaults({
-	context: __dirname,
+module.exports = withDefAults({
+	context: __dirnAme,
 	entry: {
-		extension: './src/node/emmetNodeMain.ts',
+		extension: './src/node/emmetNodeMAin.ts',
 	},
 	output: {
-		path: path.join(__dirname, 'dist', 'node'),
-		filename: 'emmetNodeMain.js'
+		pAth: pAth.join(__dirnAme, 'dist', 'node'),
+		filenAme: 'emmetNodeMAin.js'
 	},
-	externals: {
+	externAls: {
 		'vscode-emmet-helper': 'commonjs vscode-emmet-helper',
 	},
 });

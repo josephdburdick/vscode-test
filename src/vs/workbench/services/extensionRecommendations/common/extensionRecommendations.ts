@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { Event } from 'vs/base/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { Event } from 'vs/bAse/common/event';
 
-export interface IExtensionsConfigContent {
-	recommendations: string[];
-	unwantedRecommendations: string[];
+export interfAce IExtensionsConfigContent {
+	recommendAtions: string[];
+	unwAntedRecommendAtions: string[];
 }
 
-export type DynamicRecommendation = 'dynamic';
-export type ConfigRecommendation = 'config';
-export type ExecutableRecommendation = 'executable';
-export type CachedRecommendation = 'cached';
-export type ApplicationRecommendation = 'application';
-export type ExperimentalRecommendation = 'experimental';
+export type DynAmicRecommendAtion = 'dynAmic';
+export type ConfigRecommendAtion = 'config';
+export type ExecutAbleRecommendAtion = 'executAble';
+export type CAchedRecommendAtion = 'cAched';
+export type ApplicAtionRecommendAtion = 'ApplicAtion';
+export type ExperimentAlRecommendAtion = 'experimentAl';
 
-export const enum ExtensionRecommendationReason {
-	Workspace,
+export const enum ExtensionRecommendAtionReAson {
+	WorkspAce,
 	File,
-	Executable,
-	WorkspaceConfig,
-	DynamicWorkspace,
-	Experimental,
-	Application,
+	ExecutAble,
+	WorkspAceConfig,
+	DynAmicWorkspAce,
+	ExperimentAl,
+	ApplicAtion,
 }
 
-export interface IExtensionRecommendationReson {
-	reasonId: ExtensionRecommendationReason;
-	reasonText: string;
+export interfAce IExtensionRecommendAtionReson {
+	reAsonId: ExtensionRecommendAtionReAson;
+	reAsonText: string;
 }
 
-export const IExtensionRecommendationsService = createDecorator<IExtensionRecommendationsService>('extensionRecommendationsService');
+export const IExtensionRecommendAtionsService = creAteDecorAtor<IExtensionRecommendAtionsService>('extensionRecommendAtionsService');
 
-export interface IExtensionRecommendationsService {
-	readonly _serviceBrand: undefined;
+export interfAce IExtensionRecommendAtionsService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidChangeRecommendations: Event<void>;
-	getAllRecommendationsWithReason(): IStringDictionary<IExtensionRecommendationReson>;
+	reAdonly onDidChAngeRecommendAtions: Event<void>;
+	getAllRecommendAtionsWithReAson(): IStringDictionAry<IExtensionRecommendAtionReson>;
 
-	getImportantRecommendations(): Promise<string[]>;
-	getOtherRecommendations(): Promise<string[]>;
-	getFileBasedRecommendations(): string[];
-	getExeBasedRecommendations(exe?: string): Promise<{ important: string[], others: string[] }>;
-	getConfigBasedRecommendations(): Promise<{ important: string[], others: string[] }>;
-	getWorkspaceRecommendations(): Promise<string[]>;
-	getKeymapRecommendations(): string[];
+	getImportAntRecommendAtions(): Promise<string[]>;
+	getOtherRecommendAtions(): Promise<string[]>;
+	getFileBAsedRecommendAtions(): string[];
+	getExeBAsedRecommendAtions(exe?: string): Promise<{ importAnt: string[], others: string[] }>;
+	getConfigBAsedRecommendAtions(): Promise<{ importAnt: string[], others: string[] }>;
+	getWorkspAceRecommendAtions(): Promise<string[]>;
+	getKeymApRecommendAtions(): string[];
 }
 
-export type IgnoredRecommendationChangeNotification = {
+export type IgnoredRecommendAtionChAngeNotificAtion = {
 	extensionId: string,
-	isRecommended: boolean
+	isRecommended: booleAn
 };
 
-export const IExtensionIgnoredRecommendationsService = createDecorator<IExtensionIgnoredRecommendationsService>('IExtensionIgnoredRecommendationsService');
+export const IExtensionIgnoredRecommendAtionsService = creAteDecorAtor<IExtensionIgnoredRecommendAtionsService>('IExtensionIgnoredRecommendAtionsService');
 
-export interface IExtensionIgnoredRecommendationsService {
-	readonly _serviceBrand: undefined;
+export interfAce IExtensionIgnoredRecommendAtionsService {
+	reAdonly _serviceBrAnd: undefined;
 
-	onDidChangeIgnoredRecommendations: Event<void>;
-	readonly ignoredRecommendations: string[];
+	onDidChAngeIgnoredRecommendAtions: Event<void>;
+	reAdonly ignoredRecommendAtions: string[];
 
-	onDidChangeGlobalIgnoredRecommendation: Event<IgnoredRecommendationChangeNotification>;
-	readonly globalIgnoredRecommendations: string[];
-	toggleGlobalIgnoredRecommendation(extensionId: string, ignore: boolean): void;
+	onDidChAngeGlobAlIgnoredRecommendAtion: Event<IgnoredRecommendAtionChAngeNotificAtion>;
+	reAdonly globAlIgnoredRecommendAtions: string[];
+	toggleGlobAlIgnoredRecommendAtion(extensionId: string, ignore: booleAn): void;
 }
 
 

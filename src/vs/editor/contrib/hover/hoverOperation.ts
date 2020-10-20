@@ -1,204 +1,204 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancelablePromise, RunOnceScheduler, createCancelablePromise } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { CAncelAblePromise, RunOnceScheduler, creAteCAncelAblePromise } from 'vs/bAse/common/Async';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 
-export interface IHoverComputer<Result> {
+export interfAce IHoverComputer<Result> {
 
 	/**
-	 * This is called after half the hover time
+	 * This is cAlled After hAlf the hover time
 	 */
-	computeAsync?: (token: CancellationToken) => Promise<Result>;
+	computeAsync?: (token: CAncellAtionToken) => Promise<Result>;
 
 	/**
-	 * This is called after all the hover time
+	 * This is cAlled After All the hover time
 	 */
 	computeSync?: () => Result;
 
 	/**
-	 * This is called whenever one of the compute* methods returns a truey value
+	 * This is cAlled whenever one of the compute* methods returns A truey vAlue
 	 */
-	onResult: (result: Result, isFromSynchronousComputation: boolean) => void;
+	onResult: (result: Result, isFromSynchronousComputAtion: booleAn) => void;
 
 	/**
-	 * This is what will be sent as progress/complete to the computation promise
+	 * This is whAt will be sent As progress/complete to the computAtion promise
 	 */
 	getResult: () => Result;
 
-	getResultWithLoadingMessage: () => Result;
+	getResultWithLoAdingMessAge: () => Result;
 
 }
 
-const enum ComputeHoverOperationState {
+const enum ComputeHoverOperAtionStAte {
 	IDLE = 0,
 	FIRST_WAIT = 1,
 	SECOND_WAIT = 2,
 	WAITING_FOR_ASYNC_COMPUTATION = 3
 }
 
-export const enum HoverStartMode {
-	Delayed = 0,
-	Immediate = 1
+export const enum HoverStArtMode {
+	DelAyed = 0,
+	ImmediAte = 1
 }
 
-export class HoverOperation<Result> {
+export clAss HoverOperAtion<Result> {
 
-	private readonly _computer: IHoverComputer<Result>;
-	private _state: ComputeHoverOperationState;
-	private _hoverTime: number;
+	privAte reAdonly _computer: IHoverComputer<Result>;
+	privAte _stAte: ComputeHoverOperAtionStAte;
+	privAte _hoverTime: number;
 
-	private readonly _firstWaitScheduler: RunOnceScheduler;
-	private readonly _secondWaitScheduler: RunOnceScheduler;
-	private readonly _loadingMessageScheduler: RunOnceScheduler;
-	private _asyncComputationPromise: CancelablePromise<Result> | null;
-	private _asyncComputationPromiseDone: boolean;
+	privAte reAdonly _firstWAitScheduler: RunOnceScheduler;
+	privAte reAdonly _secondWAitScheduler: RunOnceScheduler;
+	privAte reAdonly _loAdingMessAgeScheduler: RunOnceScheduler;
+	privAte _AsyncComputAtionPromise: CAncelAblePromise<Result> | null;
+	privAte _AsyncComputAtionPromiseDone: booleAn;
 
-	private readonly _completeCallback: (r: Result) => void;
-	private readonly _errorCallback: ((err: any) => void) | null | undefined;
-	private readonly _progressCallback: (progress: any) => void;
+	privAte reAdonly _completeCAllbAck: (r: Result) => void;
+	privAte reAdonly _errorCAllbAck: ((err: Any) => void) | null | undefined;
+	privAte reAdonly _progressCAllbAck: (progress: Any) => void;
 
-	constructor(computer: IHoverComputer<Result>, success: (r: Result) => void, error: ((err: any) => void) | null | undefined, progress: (progress: any) => void, hoverTime: number) {
+	constructor(computer: IHoverComputer<Result>, success: (r: Result) => void, error: ((err: Any) => void) | null | undefined, progress: (progress: Any) => void, hoverTime: number) {
 		this._computer = computer;
-		this._state = ComputeHoverOperationState.IDLE;
+		this._stAte = ComputeHoverOperAtionStAte.IDLE;
 		this._hoverTime = hoverTime;
 
-		this._firstWaitScheduler = new RunOnceScheduler(() => this._triggerAsyncComputation(), 0);
-		this._secondWaitScheduler = new RunOnceScheduler(() => this._triggerSyncComputation(), 0);
-		this._loadingMessageScheduler = new RunOnceScheduler(() => this._showLoadingMessage(), 0);
+		this._firstWAitScheduler = new RunOnceScheduler(() => this._triggerAsyncComputAtion(), 0);
+		this._secondWAitScheduler = new RunOnceScheduler(() => this._triggerSyncComputAtion(), 0);
+		this._loAdingMessAgeScheduler = new RunOnceScheduler(() => this._showLoAdingMessAge(), 0);
 
-		this._asyncComputationPromise = null;
-		this._asyncComputationPromiseDone = false;
+		this._AsyncComputAtionPromise = null;
+		this._AsyncComputAtionPromiseDone = fAlse;
 
-		this._completeCallback = success;
-		this._errorCallback = error;
-		this._progressCallback = progress;
+		this._completeCAllbAck = success;
+		this._errorCAllbAck = error;
+		this._progressCAllbAck = progress;
 	}
 
 	public setHoverTime(hoverTime: number): void {
 		this._hoverTime = hoverTime;
 	}
 
-	private _firstWaitTime(): number {
+	privAte _firstWAitTime(): number {
 		return this._hoverTime / 2;
 	}
 
-	private _secondWaitTime(): number {
+	privAte _secondWAitTime(): number {
 		return this._hoverTime / 2;
 	}
 
-	private _loadingMessageTime(): number {
+	privAte _loAdingMessAgeTime(): number {
 		return 3 * this._hoverTime;
 	}
 
-	private _triggerAsyncComputation(): void {
-		this._state = ComputeHoverOperationState.SECOND_WAIT;
-		this._secondWaitScheduler.schedule(this._secondWaitTime());
+	privAte _triggerAsyncComputAtion(): void {
+		this._stAte = ComputeHoverOperAtionStAte.SECOND_WAIT;
+		this._secondWAitScheduler.schedule(this._secondWAitTime());
 
 		if (this._computer.computeAsync) {
-			this._asyncComputationPromiseDone = false;
-			this._asyncComputationPromise = createCancelablePromise(token => this._computer.computeAsync!(token));
-			this._asyncComputationPromise.then((asyncResult: Result) => {
-				this._asyncComputationPromiseDone = true;
-				this._withAsyncResult(asyncResult);
+			this._AsyncComputAtionPromiseDone = fAlse;
+			this._AsyncComputAtionPromise = creAteCAncelAblePromise(token => this._computer.computeAsync!(token));
+			this._AsyncComputAtionPromise.then((AsyncResult: Result) => {
+				this._AsyncComputAtionPromiseDone = true;
+				this._withAsyncResult(AsyncResult);
 			}, (e) => this._onError(e));
 
 		} else {
-			this._asyncComputationPromiseDone = true;
+			this._AsyncComputAtionPromiseDone = true;
 		}
 	}
 
-	private _triggerSyncComputation(): void {
+	privAte _triggerSyncComputAtion(): void {
 		if (this._computer.computeSync) {
 			this._computer.onResult(this._computer.computeSync(), true);
 		}
 
-		if (this._asyncComputationPromiseDone) {
-			this._state = ComputeHoverOperationState.IDLE;
+		if (this._AsyncComputAtionPromiseDone) {
+			this._stAte = ComputeHoverOperAtionStAte.IDLE;
 			this._onComplete(this._computer.getResult());
 		} else {
-			this._state = ComputeHoverOperationState.WAITING_FOR_ASYNC_COMPUTATION;
+			this._stAte = ComputeHoverOperAtionStAte.WAITING_FOR_ASYNC_COMPUTATION;
 			this._onProgress(this._computer.getResult());
 		}
 	}
 
-	private _showLoadingMessage(): void {
-		if (this._state === ComputeHoverOperationState.WAITING_FOR_ASYNC_COMPUTATION) {
-			this._onProgress(this._computer.getResultWithLoadingMessage());
+	privAte _showLoAdingMessAge(): void {
+		if (this._stAte === ComputeHoverOperAtionStAte.WAITING_FOR_ASYNC_COMPUTATION) {
+			this._onProgress(this._computer.getResultWithLoAdingMessAge());
 		}
 	}
 
-	private _withAsyncResult(asyncResult: Result): void {
-		if (asyncResult) {
-			this._computer.onResult(asyncResult, false);
+	privAte _withAsyncResult(AsyncResult: Result): void {
+		if (AsyncResult) {
+			this._computer.onResult(AsyncResult, fAlse);
 		}
 
-		if (this._state === ComputeHoverOperationState.WAITING_FOR_ASYNC_COMPUTATION) {
-			this._state = ComputeHoverOperationState.IDLE;
+		if (this._stAte === ComputeHoverOperAtionStAte.WAITING_FOR_ASYNC_COMPUTATION) {
+			this._stAte = ComputeHoverOperAtionStAte.IDLE;
 			this._onComplete(this._computer.getResult());
 		}
 	}
 
-	private _onComplete(value: Result): void {
-		this._completeCallback(value);
+	privAte _onComplete(vAlue: Result): void {
+		this._completeCAllbAck(vAlue);
 	}
 
-	private _onError(error: any): void {
-		if (this._errorCallback) {
-			this._errorCallback(error);
+	privAte _onError(error: Any): void {
+		if (this._errorCAllbAck) {
+			this._errorCAllbAck(error);
 		} else {
 			onUnexpectedError(error);
 		}
 	}
 
-	private _onProgress(value: Result): void {
-		this._progressCallback(value);
+	privAte _onProgress(vAlue: Result): void {
+		this._progressCAllbAck(vAlue);
 	}
 
-	public start(mode: HoverStartMode): void {
-		if (mode === HoverStartMode.Delayed) {
-			if (this._state === ComputeHoverOperationState.IDLE) {
-				this._state = ComputeHoverOperationState.FIRST_WAIT;
-				this._firstWaitScheduler.schedule(this._firstWaitTime());
-				this._loadingMessageScheduler.schedule(this._loadingMessageTime());
+	public stArt(mode: HoverStArtMode): void {
+		if (mode === HoverStArtMode.DelAyed) {
+			if (this._stAte === ComputeHoverOperAtionStAte.IDLE) {
+				this._stAte = ComputeHoverOperAtionStAte.FIRST_WAIT;
+				this._firstWAitScheduler.schedule(this._firstWAitTime());
+				this._loAdingMessAgeScheduler.schedule(this._loAdingMessAgeTime());
 			}
 		} else {
-			switch (this._state) {
-				case ComputeHoverOperationState.IDLE:
-					this._triggerAsyncComputation();
-					this._secondWaitScheduler.cancel();
-					this._triggerSyncComputation();
-					break;
-				case ComputeHoverOperationState.SECOND_WAIT:
-					this._secondWaitScheduler.cancel();
-					this._triggerSyncComputation();
-					break;
+			switch (this._stAte) {
+				cAse ComputeHoverOperAtionStAte.IDLE:
+					this._triggerAsyncComputAtion();
+					this._secondWAitScheduler.cAncel();
+					this._triggerSyncComputAtion();
+					breAk;
+				cAse ComputeHoverOperAtionStAte.SECOND_WAIT:
+					this._secondWAitScheduler.cAncel();
+					this._triggerSyncComputAtion();
+					breAk;
 			}
 		}
 	}
 
-	public cancel(): void {
-		this._loadingMessageScheduler.cancel();
-		if (this._state === ComputeHoverOperationState.FIRST_WAIT) {
-			this._firstWaitScheduler.cancel();
+	public cAncel(): void {
+		this._loAdingMessAgeScheduler.cAncel();
+		if (this._stAte === ComputeHoverOperAtionStAte.FIRST_WAIT) {
+			this._firstWAitScheduler.cAncel();
 		}
-		if (this._state === ComputeHoverOperationState.SECOND_WAIT) {
-			this._secondWaitScheduler.cancel();
-			if (this._asyncComputationPromise) {
-				this._asyncComputationPromise.cancel();
-				this._asyncComputationPromise = null;
+		if (this._stAte === ComputeHoverOperAtionStAte.SECOND_WAIT) {
+			this._secondWAitScheduler.cAncel();
+			if (this._AsyncComputAtionPromise) {
+				this._AsyncComputAtionPromise.cAncel();
+				this._AsyncComputAtionPromise = null;
 			}
 		}
-		if (this._state === ComputeHoverOperationState.WAITING_FOR_ASYNC_COMPUTATION) {
-			if (this._asyncComputationPromise) {
-				this._asyncComputationPromise.cancel();
-				this._asyncComputationPromise = null;
+		if (this._stAte === ComputeHoverOperAtionStAte.WAITING_FOR_ASYNC_COMPUTATION) {
+			if (this._AsyncComputAtionPromise) {
+				this._AsyncComputAtionPromise.cAncel();
+				this._AsyncComputAtionPromise = null;
 			}
 		}
-		this._state = ComputeHoverOperationState.IDLE;
+		this._stAte = ComputeHoverOperAtionStAte.IDLE;
 	}
 
 }

@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { SelectionRangeProvider, SelectionRange } from 'vs/editor/common/modes';
+import { SelectionRAngeProvider, SelectionRAnge } from 'vs/editor/common/modes';
 import { ITextModel } from 'vs/editor/common/model';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { CharCode } from 'vs/base/common/charCode';
-import { isUpperAsciiLetter, isLowerAsciiLetter } from 'vs/base/common/strings';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { isUpperAsciiLetter, isLowerAsciiLetter } from 'vs/bAse/common/strings';
 
-export class WordSelectionRangeProvider implements SelectionRangeProvider {
+export clAss WordSelectionRAngeProvider implements SelectionRAngeProvider {
 
-	provideSelectionRanges(model: ITextModel, positions: Position[]): SelectionRange[][] {
-		const result: SelectionRange[][] = [];
+	provideSelectionRAnges(model: ITextModel, positions: Position[]): SelectionRAnge[][] {
+		const result: SelectionRAnge[][] = [];
 		for (const position of positions) {
-			const bucket: SelectionRange[] = [];
+			const bucket: SelectionRAnge[] = [];
 			result.push(bucket);
-			this._addInWordRanges(bucket, model, position);
-			this._addWordRanges(bucket, model, position);
-			this._addWhitespaceLine(bucket, model, position);
-			bucket.push({ range: model.getFullModelRange() });
+			this._AddInWordRAnges(bucket, model, position);
+			this._AddWordRAnges(bucket, model, position);
+			this._AddWhitespAceLine(bucket, model, position);
+			bucket.push({ rAnge: model.getFullModelRAnge() });
 		}
 		return result;
 	}
 
-	private _addInWordRanges(bucket: SelectionRange[], model: ITextModel, pos: Position): void {
+	privAte _AddInWordRAnges(bucket: SelectionRAnge[], model: ITextModel, pos: Position): void {
 		const obj = model.getWordAtPosition(pos);
 		if (!obj) {
 			return;
 		}
 
-		let { word, startColumn } = obj;
-		let offset = pos.column - startColumn;
-		let start = offset;
+		let { word, stArtColumn } = obj;
+		let offset = pos.column - stArtColumn;
+		let stArt = offset;
 		let end = offset;
-		let lastCh: number = 0;
+		let lAstCh: number = 0;
 
-		// LEFT anchor (start)
-		for (; start >= 0; start--) {
-			let ch = word.charCodeAt(start);
-			if ((start !== offset) && (ch === CharCode.Underline || ch === CharCode.Dash)) {
-				// foo-bar OR foo_bar
-				break;
-			} else if (isLowerAsciiLetter(ch) && isUpperAsciiLetter(lastCh)) {
-				// fooBar
-				break;
+		// LEFT Anchor (stArt)
+		for (; stArt >= 0; stArt--) {
+			let ch = word.chArCodeAt(stArt);
+			if ((stArt !== offset) && (ch === ChArCode.Underline || ch === ChArCode.DAsh)) {
+				// foo-bAr OR foo_bAr
+				breAk;
+			} else if (isLowerAsciiLetter(ch) && isUpperAsciiLetter(lAstCh)) {
+				// fooBAr
+				breAk;
 			}
-			lastCh = ch;
+			lAstCh = ch;
 		}
-		start += 1;
+		stArt += 1;
 
-		// RIGHT anchor (end)
+		// RIGHT Anchor (end)
 		for (; end < word.length; end++) {
-			let ch = word.charCodeAt(end);
-			if (isUpperAsciiLetter(ch) && isLowerAsciiLetter(lastCh)) {
-				// fooBar
-				break;
-			} else if (ch === CharCode.Underline || ch === CharCode.Dash) {
-				// foo-bar OR foo_bar
-				break;
+			let ch = word.chArCodeAt(end);
+			if (isUpperAsciiLetter(ch) && isLowerAsciiLetter(lAstCh)) {
+				// fooBAr
+				breAk;
+			} else if (ch === ChArCode.Underline || ch === ChArCode.DAsh) {
+				// foo-bAr OR foo_bAr
+				breAk;
 			}
-			lastCh = ch;
+			lAstCh = ch;
 		}
 
-		if (start < end) {
-			bucket.push({ range: new Range(pos.lineNumber, startColumn + start, pos.lineNumber, startColumn + end) });
+		if (stArt < end) {
+			bucket.push({ rAnge: new RAnge(pos.lineNumber, stArtColumn + stArt, pos.lineNumber, stArtColumn + end) });
 		}
 	}
 
-	private _addWordRanges(bucket: SelectionRange[], model: ITextModel, pos: Position): void {
+	privAte _AddWordRAnges(bucket: SelectionRAnge[], model: ITextModel, pos: Position): void {
 		const word = model.getWordAtPosition(pos);
 		if (word) {
-			bucket.push({ range: new Range(pos.lineNumber, word.startColumn, pos.lineNumber, word.endColumn) });
+			bucket.push({ rAnge: new RAnge(pos.lineNumber, word.stArtColumn, pos.lineNumber, word.endColumn) });
 		}
 	}
 
-	private _addWhitespaceLine(bucket: SelectionRange[], model: ITextModel, pos: Position): void {
+	privAte _AddWhitespAceLine(bucket: SelectionRAnge[], model: ITextModel, pos: Position): void {
 		if (model.getLineLength(pos.lineNumber) > 0
-			&& model.getLineFirstNonWhitespaceColumn(pos.lineNumber) === 0
-			&& model.getLineLastNonWhitespaceColumn(pos.lineNumber) === 0
+			&& model.getLineFirstNonWhitespAceColumn(pos.lineNumber) === 0
+			&& model.getLineLAstNonWhitespAceColumn(pos.lineNumber) === 0
 		) {
-			bucket.push({ range: new Range(pos.lineNumber, 1, pos.lineNumber, model.getLineMaxColumn(pos.lineNumber)) });
+			bucket.push({ rAnge: new RAnge(pos.lineNumber, 1, pos.lineNumber, model.getLineMAxColumn(pos.lineNumber)) });
 		}
 	}
 }

@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILineBreaksComputerFactory, LineBreakData, ILineBreaksComputer } from 'vs/editor/common/viewModel/splitLinesCollection';
-import { WrappingIndent } from 'vs/editor/common/config/editorOptions';
+import { ILineBreAksComputerFActory, LineBreAkDAtA, ILineBreAksComputer } from 'vs/editor/common/viewModel/splitLinesCollection';
+import { WrAppingIndent } from 'vs/editor/common/config/editorOptions';
 import { FontInfo } from 'vs/editor/common/config/fontInfo';
-import { createStringBuilder, IStringBuilder } from 'vs/editor/common/core/stringBuilder';
-import { CharCode } from 'vs/base/common/charCode';
-import * as strings from 'vs/base/common/strings';
-import { Configuration } from 'vs/editor/browser/config/configuration';
+import { creAteStringBuilder, IStringBuilder } from 'vs/editor/common/core/stringBuilder';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import * As strings from 'vs/bAse/common/strings';
+import { ConfigurAtion } from 'vs/editor/browser/config/configurAtion';
 
-export class DOMLineBreaksComputerFactory implements ILineBreaksComputerFactory {
+export clAss DOMLineBreAksComputerFActory implements ILineBreAksComputerFActory {
 
-	public static create(): DOMLineBreaksComputerFactory {
-		return new DOMLineBreaksComputerFactory();
+	public stAtic creAte(): DOMLineBreAksComputerFActory {
+		return new DOMLineBreAksComputerFActory();
 	}
 
 	constructor() {
 	}
 
-	public createLineBreaksComputer(fontInfo: FontInfo, tabSize: number, wrappingColumn: number, wrappingIndent: WrappingIndent): ILineBreaksComputer {
-		tabSize = tabSize | 0; //@perf
-		wrappingColumn = +wrappingColumn; //@perf
+	public creAteLineBreAksComputer(fontInfo: FontInfo, tAbSize: number, wrAppingColumn: number, wrAppingIndent: WrAppingIndent): ILineBreAksComputer {
+		tAbSize = tAbSize | 0; //@perf
+		wrAppingColumn = +wrAppingColumn; //@perf
 
 		let requests: string[] = [];
 		return {
-			addRequest: (lineText: string, previousLineBreakData: LineBreakData | null) => {
+			AddRequest: (lineText: string, previousLineBreAkDAtA: LineBreAkDAtA | null) => {
 				requests.push(lineText);
 			},
-			finalize: () => {
-				return createLineBreaks(requests, fontInfo, tabSize, wrappingColumn, wrappingIndent);
+			finAlize: () => {
+				return creAteLineBreAks(requests, fontInfo, tAbSize, wrAppingColumn, wrAppingIndent);
 			}
 		};
 	}
 }
 
-function createLineBreaks(requests: string[], fontInfo: FontInfo, tabSize: number, firstLineBreakColumn: number, wrappingIndent: WrappingIndent): (LineBreakData | null)[] {
-	if (firstLineBreakColumn === -1) {
+function creAteLineBreAks(requests: string[], fontInfo: FontInfo, tAbSize: number, firstLineBreAkColumn: number, wrAppingIndent: WrAppingIndent): (LineBreAkDAtA | null)[] {
+	if (firstLineBreAkColumn === -1) {
 		const result: null[] = [];
 		for (let i = 0, len = requests.length; i < len; i++) {
 			result[i] = null;
@@ -45,260 +45,260 @@ function createLineBreaks(requests: string[], fontInfo: FontInfo, tabSize: numbe
 		return result;
 	}
 
-	const overallWidth = Math.round(firstLineBreakColumn * fontInfo.typicalHalfwidthCharacterWidth);
+	const overAllWidth = MAth.round(firstLineBreAkColumn * fontInfo.typicAlHAlfwidthChArActerWidth);
 
-	// Cannot respect WrappingIndent.Indent and WrappingIndent.DeepIndent because that would require
-	// two dom layouts, in order to first set the width of the first line, and then set the width of the wrapped lines
-	if (wrappingIndent === WrappingIndent.Indent || wrappingIndent === WrappingIndent.DeepIndent) {
-		wrappingIndent = WrappingIndent.Same;
+	// CAnnot respect WrAppingIndent.Indent And WrAppingIndent.DeepIndent becAuse thAt would require
+	// two dom lAyouts, in order to first set the width of the first line, And then set the width of the wrApped lines
+	if (wrAppingIndent === WrAppingIndent.Indent || wrAppingIndent === WrAppingIndent.DeepIndent) {
+		wrAppingIndent = WrAppingIndent.SAme;
 	}
 
-	const containerDomNode = document.createElement('div');
-	Configuration.applyFontInfoSlow(containerDomNode, fontInfo);
+	const contAinerDomNode = document.creAteElement('div');
+	ConfigurAtion.ApplyFontInfoSlow(contAinerDomNode, fontInfo);
 
-	const sb = createStringBuilder(10000);
-	const firstNonWhitespaceIndices: number[] = [];
-	const wrappedTextIndentLengths: number[] = [];
+	const sb = creAteStringBuilder(10000);
+	const firstNonWhitespAceIndices: number[] = [];
+	const wrAppedTextIndentLengths: number[] = [];
 	const renderLineContents: string[] = [];
-	const allCharOffsets: number[][] = [];
-	const allVisibleColumns: number[][] = [];
+	const AllChArOffsets: number[][] = [];
+	const AllVisibleColumns: number[][] = [];
 	for (let i = 0; i < requests.length; i++) {
 		const lineContent = requests[i];
 
-		let firstNonWhitespaceIndex = 0;
-		let wrappedTextIndentLength = 0;
-		let width = overallWidth;
+		let firstNonWhitespAceIndex = 0;
+		let wrAppedTextIndentLength = 0;
+		let width = overAllWidth;
 
-		if (wrappingIndent !== WrappingIndent.None) {
-			firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineContent);
-			if (firstNonWhitespaceIndex === -1) {
-				// all whitespace line
-				firstNonWhitespaceIndex = 0;
+		if (wrAppingIndent !== WrAppingIndent.None) {
+			firstNonWhitespAceIndex = strings.firstNonWhitespAceIndex(lineContent);
+			if (firstNonWhitespAceIndex === -1) {
+				// All whitespAce line
+				firstNonWhitespAceIndex = 0;
 
 			} else {
-				// Track existing indent
+				// TrAck existing indent
 
-				for (let i = 0; i < firstNonWhitespaceIndex; i++) {
-					const charWidth = (
-						lineContent.charCodeAt(i) === CharCode.Tab
-							? (tabSize - (wrappedTextIndentLength % tabSize))
+				for (let i = 0; i < firstNonWhitespAceIndex; i++) {
+					const chArWidth = (
+						lineContent.chArCodeAt(i) === ChArCode.TAb
+							? (tAbSize - (wrAppedTextIndentLength % tAbSize))
 							: 1
 					);
-					wrappedTextIndentLength += charWidth;
+					wrAppedTextIndentLength += chArWidth;
 				}
 
-				const indentWidth = Math.ceil(fontInfo.spaceWidth * wrappedTextIndentLength);
+				const indentWidth = MAth.ceil(fontInfo.spAceWidth * wrAppedTextIndentLength);
 
-				// Force sticking to beginning of line if no character would fit except for the indentation
-				if (indentWidth + fontInfo.typicalFullwidthCharacterWidth > overallWidth) {
-					firstNonWhitespaceIndex = 0;
-					wrappedTextIndentLength = 0;
+				// Force sticking to beginning of line if no chArActer would fit except for the indentAtion
+				if (indentWidth + fontInfo.typicAlFullwidthChArActerWidth > overAllWidth) {
+					firstNonWhitespAceIndex = 0;
+					wrAppedTextIndentLength = 0;
 				} else {
-					width = overallWidth - indentWidth;
+					width = overAllWidth - indentWidth;
 				}
 			}
 		}
 
-		const renderLineContent = lineContent.substr(firstNonWhitespaceIndex);
-		const tmp = renderLine(renderLineContent, wrappedTextIndentLength, tabSize, width, sb);
-		firstNonWhitespaceIndices[i] = firstNonWhitespaceIndex;
-		wrappedTextIndentLengths[i] = wrappedTextIndentLength;
+		const renderLineContent = lineContent.substr(firstNonWhitespAceIndex);
+		const tmp = renderLine(renderLineContent, wrAppedTextIndentLength, tAbSize, width, sb);
+		firstNonWhitespAceIndices[i] = firstNonWhitespAceIndex;
+		wrAppedTextIndentLengths[i] = wrAppedTextIndentLength;
 		renderLineContents[i] = renderLineContent;
-		allCharOffsets[i] = tmp[0];
-		allVisibleColumns[i] = tmp[1];
+		AllChArOffsets[i] = tmp[0];
+		AllVisibleColumns[i] = tmp[1];
 	}
-	containerDomNode.innerHTML = sb.build();
+	contAinerDomNode.innerHTML = sb.build();
 
-	containerDomNode.style.position = 'absolute';
-	containerDomNode.style.top = '10000';
-	containerDomNode.style.wordWrap = 'break-word';
-	document.body.appendChild(containerDomNode);
+	contAinerDomNode.style.position = 'Absolute';
+	contAinerDomNode.style.top = '10000';
+	contAinerDomNode.style.wordWrAp = 'breAk-word';
+	document.body.AppendChild(contAinerDomNode);
 
-	let range = document.createRange();
-	const lineDomNodes = Array.prototype.slice.call(containerDomNode.children, 0);
+	let rAnge = document.creAteRAnge();
+	const lineDomNodes = ArrAy.prototype.slice.cAll(contAinerDomNode.children, 0);
 
-	let result: (LineBreakData | null)[] = [];
+	let result: (LineBreAkDAtA | null)[] = [];
 	for (let i = 0; i < requests.length; i++) {
 		const lineDomNode = lineDomNodes[i];
-		const breakOffsets: number[] | null = readLineBreaks(range, lineDomNode, renderLineContents[i], allCharOffsets[i]);
-		if (breakOffsets === null) {
+		const breAkOffsets: number[] | null = reAdLineBreAks(rAnge, lineDomNode, renderLineContents[i], AllChArOffsets[i]);
+		if (breAkOffsets === null) {
 			result[i] = null;
 			continue;
 		}
 
-		const firstNonWhitespaceIndex = firstNonWhitespaceIndices[i];
-		const wrappedTextIndentLength = wrappedTextIndentLengths[i];
-		const visibleColumns = allVisibleColumns[i];
+		const firstNonWhitespAceIndex = firstNonWhitespAceIndices[i];
+		const wrAppedTextIndentLength = wrAppedTextIndentLengths[i];
+		const visibleColumns = AllVisibleColumns[i];
 
-		const breakOffsetsVisibleColumn: number[] = [];
-		for (let j = 0, len = breakOffsets.length; j < len; j++) {
-			breakOffsetsVisibleColumn[j] = visibleColumns[breakOffsets[j]];
+		const breAkOffsetsVisibleColumn: number[] = [];
+		for (let j = 0, len = breAkOffsets.length; j < len; j++) {
+			breAkOffsetsVisibleColumn[j] = visibleColumns[breAkOffsets[j]];
 		}
 
-		if (firstNonWhitespaceIndex !== 0) {
-			// All break offsets are relative to the renderLineContent, make them absolute again
-			for (let j = 0, len = breakOffsets.length; j < len; j++) {
-				breakOffsets[j] += firstNonWhitespaceIndex;
+		if (firstNonWhitespAceIndex !== 0) {
+			// All breAk offsets Are relAtive to the renderLineContent, mAke them Absolute AgAin
+			for (let j = 0, len = breAkOffsets.length; j < len; j++) {
+				breAkOffsets[j] += firstNonWhitespAceIndex;
 			}
 		}
 
-		result[i] = new LineBreakData(breakOffsets, breakOffsetsVisibleColumn, wrappedTextIndentLength);
+		result[i] = new LineBreAkDAtA(breAkOffsets, breAkOffsetsVisibleColumn, wrAppedTextIndentLength);
 	}
 
-	document.body.removeChild(containerDomNode);
+	document.body.removeChild(contAinerDomNode);
 	return result;
 }
 
-const enum Constants {
+const enum ConstAnts {
 	SPAN_MODULO_LIMIT = 16384
 }
 
-function renderLine(lineContent: string, initialVisibleColumn: number, tabSize: number, width: number, sb: IStringBuilder): [number[], number[]] {
-	sb.appendASCIIString('<div style="width:');
-	sb.appendASCIIString(String(width));
-	sb.appendASCIIString('px;">');
-	// if (containsRTL) {
-	// 	sb.appendASCIIString('" dir="ltr');
+function renderLine(lineContent: string, initiAlVisibleColumn: number, tAbSize: number, width: number, sb: IStringBuilder): [number[], number[]] {
+	sb.AppendASCIIString('<div style="width:');
+	sb.AppendASCIIString(String(width));
+	sb.AppendASCIIString('px;">');
+	// if (contAinsRTL) {
+	// 	sb.AppendASCIIString('" dir="ltr');
 	// }
 
 	const len = lineContent.length;
-	let visibleColumn = initialVisibleColumn;
-	let charOffset = 0;
-	let charOffsets: number[] = [];
+	let visibleColumn = initiAlVisibleColumn;
+	let chArOffset = 0;
+	let chArOffsets: number[] = [];
 	let visibleColumns: number[] = [];
-	let nextCharCode = (0 < len ? lineContent.charCodeAt(0) : CharCode.Null);
+	let nextChArCode = (0 < len ? lineContent.chArCodeAt(0) : ChArCode.Null);
 
-	sb.appendASCIIString('<span>');
-	for (let charIndex = 0; charIndex < len; charIndex++) {
-		if (charIndex !== 0 && charIndex % Constants.SPAN_MODULO_LIMIT === 0) {
-			sb.appendASCIIString('</span><span>');
+	sb.AppendASCIIString('<spAn>');
+	for (let chArIndex = 0; chArIndex < len; chArIndex++) {
+		if (chArIndex !== 0 && chArIndex % ConstAnts.SPAN_MODULO_LIMIT === 0) {
+			sb.AppendASCIIString('</spAn><spAn>');
 		}
-		charOffsets[charIndex] = charOffset;
-		visibleColumns[charIndex] = visibleColumn;
-		const charCode = nextCharCode;
-		nextCharCode = (charIndex + 1 < len ? lineContent.charCodeAt(charIndex + 1) : CharCode.Null);
-		let producedCharacters = 1;
-		let charWidth = 1;
-		switch (charCode) {
-			case CharCode.Tab:
-				producedCharacters = (tabSize - (visibleColumn % tabSize));
-				charWidth = producedCharacters;
-				for (let space = 1; space <= producedCharacters; space++) {
-					if (space < producedCharacters) {
+		chArOffsets[chArIndex] = chArOffset;
+		visibleColumns[chArIndex] = visibleColumn;
+		const chArCode = nextChArCode;
+		nextChArCode = (chArIndex + 1 < len ? lineContent.chArCodeAt(chArIndex + 1) : ChArCode.Null);
+		let producedChArActers = 1;
+		let chArWidth = 1;
+		switch (chArCode) {
+			cAse ChArCode.TAb:
+				producedChArActers = (tAbSize - (visibleColumn % tAbSize));
+				chArWidth = producedChArActers;
+				for (let spAce = 1; spAce <= producedChArActers; spAce++) {
+					if (spAce < producedChArActers) {
 						sb.write1(0xA0); // &nbsp;
 					} else {
-						sb.appendASCII(CharCode.Space);
+						sb.AppendASCII(ChArCode.SpAce);
 					}
 				}
-				break;
+				breAk;
 
-			case CharCode.Space:
-				if (nextCharCode === CharCode.Space) {
+			cAse ChArCode.SpAce:
+				if (nextChArCode === ChArCode.SpAce) {
 					sb.write1(0xA0); // &nbsp;
 				} else {
-					sb.appendASCII(CharCode.Space);
+					sb.AppendASCII(ChArCode.SpAce);
 				}
-				break;
+				breAk;
 
-			case CharCode.LessThan:
-				sb.appendASCIIString('&lt;');
-				break;
+			cAse ChArCode.LessThAn:
+				sb.AppendASCIIString('&lt;');
+				breAk;
 
-			case CharCode.GreaterThan:
-				sb.appendASCIIString('&gt;');
-				break;
+			cAse ChArCode.GreAterThAn:
+				sb.AppendASCIIString('&gt;');
+				breAk;
 
-			case CharCode.Ampersand:
-				sb.appendASCIIString('&amp;');
-				break;
+			cAse ChArCode.AmpersAnd:
+				sb.AppendASCIIString('&Amp;');
+				breAk;
 
-			case CharCode.Null:
-				sb.appendASCIIString('&#00;');
-				break;
+			cAse ChArCode.Null:
+				sb.AppendASCIIString('&#00;');
+				breAk;
 
-			case CharCode.UTF8_BOM:
-			case CharCode.LINE_SEPARATOR:
-			case CharCode.PARAGRAPH_SEPARATOR:
-			case CharCode.NEXT_LINE:
+			cAse ChArCode.UTF8_BOM:
+			cAse ChArCode.LINE_SEPARATOR:
+			cAse ChArCode.PARAGRAPH_SEPARATOR:
+			cAse ChArCode.NEXT_LINE:
 				sb.write1(0xFFFD);
-				break;
+				breAk;
 
-			default:
-				if (strings.isFullWidthCharacter(charCode)) {
-					charWidth++;
+			defAult:
+				if (strings.isFullWidthChArActer(chArCode)) {
+					chArWidth++;
 				}
-				// if (renderControlCharacters && charCode < 32) {
-				// 	sb.write1(9216 + charCode);
+				// if (renderControlChArActers && chArCode < 32) {
+				// 	sb.write1(9216 + chArCode);
 				// } else {
-				sb.write1(charCode);
+				sb.write1(chArCode);
 			// }
 		}
 
-		charOffset += producedCharacters;
-		visibleColumn += charWidth;
+		chArOffset += producedChArActers;
+		visibleColumn += chArWidth;
 	}
-	sb.appendASCIIString('</span>');
+	sb.AppendASCIIString('</spAn>');
 
-	charOffsets[lineContent.length] = charOffset;
+	chArOffsets[lineContent.length] = chArOffset;
 	visibleColumns[lineContent.length] = visibleColumn;
 
-	sb.appendASCIIString('</div>');
+	sb.AppendASCIIString('</div>');
 
-	return [charOffsets, visibleColumns];
+	return [chArOffsets, visibleColumns];
 }
 
-function readLineBreaks(range: Range, lineDomNode: HTMLDivElement, lineContent: string, charOffsets: number[]): number[] | null {
+function reAdLineBreAks(rAnge: RAnge, lineDomNode: HTMLDivElement, lineContent: string, chArOffsets: number[]): number[] | null {
 	if (lineContent.length <= 1) {
 		return null;
 	}
-	const spans = <HTMLSpanElement[]>Array.prototype.slice.call(lineDomNode.children, 0);
+	const spAns = <HTMLSpAnElement[]>ArrAy.prototype.slice.cAll(lineDomNode.children, 0);
 
-	const breakOffsets: number[] = [];
+	const breAkOffsets: number[] = [];
 	try {
-		discoverBreaks(range, spans, charOffsets, 0, null, lineContent.length - 1, null, breakOffsets);
-	} catch (err) {
+		discoverBreAks(rAnge, spAns, chArOffsets, 0, null, lineContent.length - 1, null, breAkOffsets);
+	} cAtch (err) {
 		console.log(err);
 		return null;
 	}
 
-	if (breakOffsets.length === 0) {
+	if (breAkOffsets.length === 0) {
 		return null;
 	}
 
-	breakOffsets.push(lineContent.length);
-	return breakOffsets;
+	breAkOffsets.push(lineContent.length);
+	return breAkOffsets;
 }
 
-type MaybeRects = ClientRectList | DOMRectList | null;
+type MAybeRects = ClientRectList | DOMRectList | null;
 
-function discoverBreaks(range: Range, spans: HTMLSpanElement[], charOffsets: number[], low: number, lowRects: MaybeRects, high: number, highRects: MaybeRects, result: number[]): void {
+function discoverBreAks(rAnge: RAnge, spAns: HTMLSpAnElement[], chArOffsets: number[], low: number, lowRects: MAybeRects, high: number, highRects: MAybeRects, result: number[]): void {
 	if (low === high) {
 		return;
 	}
 
-	lowRects = lowRects || readClientRect(range, spans, charOffsets[low], charOffsets[low + 1]);
-	highRects = highRects || readClientRect(range, spans, charOffsets[high], charOffsets[high + 1]);
+	lowRects = lowRects || reAdClientRect(rAnge, spAns, chArOffsets[low], chArOffsets[low + 1]);
+	highRects = highRects || reAdClientRect(rAnge, spAns, chArOffsets[high], chArOffsets[high + 1]);
 
-	if (Math.abs(lowRects[0].top - highRects[0].top) <= 0.1) {
-		// same line
+	if (MAth.Abs(lowRects[0].top - highRects[0].top) <= 0.1) {
+		// sAme line
 		return;
 	}
 
-	// there is at least one line break between these two offsets
+	// there is At leAst one line breAk between these two offsets
 	if (low + 1 === high) {
-		// the two characters are adjacent, so the line break must be exactly between them
+		// the two chArActers Are AdjAcent, so the line breAk must be exActly between them
 		result.push(high);
 		return;
 	}
 
 	const mid = low + ((high - low) / 2) | 0;
-	const midRects = readClientRect(range, spans, charOffsets[mid], charOffsets[mid + 1]);
-	discoverBreaks(range, spans, charOffsets, low, lowRects, mid, midRects, result);
-	discoverBreaks(range, spans, charOffsets, mid, midRects, high, highRects, result);
+	const midRects = reAdClientRect(rAnge, spAns, chArOffsets[mid], chArOffsets[mid + 1]);
+	discoverBreAks(rAnge, spAns, chArOffsets, low, lowRects, mid, midRects, result);
+	discoverBreAks(rAnge, spAns, chArOffsets, mid, midRects, high, highRects, result);
 }
 
-function readClientRect(range: Range, spans: HTMLSpanElement[], startOffset: number, endOffset: number): ClientRectList | DOMRectList {
-	range.setStart(spans[(startOffset / Constants.SPAN_MODULO_LIMIT) | 0].firstChild!, startOffset % Constants.SPAN_MODULO_LIMIT);
-	range.setEnd(spans[(endOffset / Constants.SPAN_MODULO_LIMIT) | 0].firstChild!, endOffset % Constants.SPAN_MODULO_LIMIT);
-	return range.getClientRects();
+function reAdClientRect(rAnge: RAnge, spAns: HTMLSpAnElement[], stArtOffset: number, endOffset: number): ClientRectList | DOMRectList {
+	rAnge.setStArt(spAns[(stArtOffset / ConstAnts.SPAN_MODULO_LIMIT) | 0].firstChild!, stArtOffset % ConstAnts.SPAN_MODULO_LIMIT);
+	rAnge.setEnd(spAns[(endOffset / ConstAnts.SPAN_MODULO_LIMIT) | 0].firstChild!, endOffset % ConstAnts.SPAN_MODULO_LIMIT);
+	return rAnge.getClientRects();
 }

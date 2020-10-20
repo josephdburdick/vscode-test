@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { TestRPCProtocol } from 'vs/workbench/test/browser/api/testRPCProtocol';
-import { NullLogService } from 'vs/platform/log/common/log';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { ExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { TestRPCProtocol } from 'vs/workbench/test/browser/Api/testRPCProtocol';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 
 suite('ExtHostDocumentsAndEditors', () => {
 
@@ -17,14 +17,14 @@ suite('ExtHostDocumentsAndEditors', () => {
 		editors = new ExtHostDocumentsAndEditors(new TestRPCProtocol(), new NullLogService());
 	});
 
-	test('The value of TextDocument.isClosed is incorrect when a text document is closed, #27949', () => {
+	test('The vAlue of TextDocument.isClosed is incorrect when A text document is closed, #27949', () => {
 
-		editors.$acceptDocumentsAndEditorsDelta({
-			addedDocuments: [{
+		editors.$AcceptDocumentsAndEditorsDeltA({
+			AddedDocuments: [{
 				EOL: '\n',
 				isDirty: true,
-				modeId: 'fooLang',
-				uri: URI.parse('foo:bar'),
+				modeId: 'fooLAng',
+				uri: URI.pArse('foo:bAr'),
 				versionId: 1,
 				lines: [
 					'first',
@@ -38,17 +38,17 @@ suite('ExtHostDocumentsAndEditors', () => {
 			editors.onDidRemoveDocuments(e => {
 				try {
 
-					for (const data of e) {
-						assert.equal(data.document.isClosed, true);
+					for (const dAtA of e) {
+						Assert.equAl(dAtA.document.isClosed, true);
 					}
 					resolve(undefined);
-				} catch (e) {
+				} cAtch (e) {
 					reject(e);
 				}
 			});
 
-			editors.$acceptDocumentsAndEditorsDelta({
-				removedDocuments: [URI.parse('foo:bar')]
+			editors.$AcceptDocumentsAndEditorsDeltA({
+				removedDocuments: [URI.pArse('foo:bAr')]
 			});
 
 		});

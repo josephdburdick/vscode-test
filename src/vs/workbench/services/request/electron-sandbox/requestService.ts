@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILogService } from 'vs/platform/log/common/log';
-import { RequestService } from 'vs/platform/request/browser/requestService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { RequestService } from 'vs/plAtform/request/browser/requestService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-export class NativeRequestService extends RequestService {
+export clAss NAtiveRequestService extends RequestService {
 
 	constructor(
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@ILogService logService: ILogService,
-		@INativeHostService private nativeHostService: INativeHostService
+		@INAtiveHostService privAte nAtiveHostService: INAtiveHostService
 	) {
-		super(configurationService, logService);
+		super(configurAtionService, logService);
 	}
 
-	async resolveProxy(url: string): Promise<string | undefined> {
-		return this.nativeHostService.resolveProxy(url);
+	Async resolveProxy(url: string): Promise<string | undefined> {
+		return this.nAtiveHostService.resolveProxy(url);
 	}
 }
 
-registerSingleton(IRequestService, NativeRequestService, true);
+registerSingleton(IRequestService, NAtiveRequestService, true);

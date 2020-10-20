@@ -1,102 +1,102 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { EditorModel, EditorInput, SideBySideEditorInput, TEXT_DIFF_EDITOR_ID, BINARY_DIFF_EDITOR_ID } from 'vs/workbench/common/editor';
-import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
+import { BAseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
 import { DiffEditorModel } from 'vs/workbench/common/editor/diffEditorModel';
 import { TextDiffEditorModel } from 'vs/workbench/common/editor/textDiffEditorModel';
-import { localize } from 'vs/nls';
+import { locAlize } from 'vs/nls';
 
 /**
- * The base editor input for the diff editor. It is made up of two editor inputs, the original version
- * and the modified version.
+ * The bAse editor input for the diff editor. It is mAde up of two editor inputs, the originAl version
+ * And the modified version.
  */
-export class DiffEditorInput extends SideBySideEditorInput {
+export clAss DiffEditorInput extends SideBySideEditorInput {
 
-	static readonly ID = 'workbench.editors.diffEditorInput';
+	stAtic reAdonly ID = 'workbench.editors.diffEditorInput';
 
-	private cachedModel: DiffEditorModel | undefined = undefined;
+	privAte cAchedModel: DiffEditorModel | undefined = undefined;
 
 	constructor(
-		protected name: string | undefined,
+		protected nAme: string | undefined,
 		description: string | undefined,
-		public readonly originalInput: EditorInput,
-		public readonly modifiedInput: EditorInput,
-		private readonly forceOpenAsBinary?: boolean
+		public reAdonly originAlInput: EditorInput,
+		public reAdonly modifiedInput: EditorInput,
+		privAte reAdonly forceOpenAsBinAry?: booleAn
 	) {
-		super(name, description, originalInput, modifiedInput);
+		super(nAme, description, originAlInput, modifiedInput);
 	}
 
 	getTypeId(): string {
 		return DiffEditorInput.ID;
 	}
 
-	getName(): string {
-		if (!this.name) {
-			return localize('sideBySideLabels', "{0} ↔ {1}", this.originalInput.getName(), this.modifiedInput.getName());
+	getNAme(): string {
+		if (!this.nAme) {
+			return locAlize('sideBySideLAbels', "{0} ↔ {1}", this.originAlInput.getNAme(), this.modifiedInput.getNAme());
 		}
 
-		return this.name;
+		return this.nAme;
 	}
 
-	async resolve(): Promise<EditorModel> {
+	Async resolve(): Promise<EditorModel> {
 
-		// Create Model - we never reuse our cached model if refresh is true because we cannot
-		// decide for the inputs within if the cached model can be reused or not. There may be
-		// inputs that need to be loaded again and thus we always recreate the model and dispose
-		// the previous one - if any.
-		const resolvedModel = await this.createModel();
-		if (this.cachedModel) {
-			this.cachedModel.dispose();
+		// CreAte Model - we never reuse our cAched model if refresh is true becAuse we cAnnot
+		// decide for the inputs within if the cAched model cAn be reused or not. There mAy be
+		// inputs thAt need to be loAded AgAin And thus we AlwAys recreAte the model And dispose
+		// the previous one - if Any.
+		const resolvedModel = AwAit this.creAteModel();
+		if (this.cAchedModel) {
+			this.cAchedModel.dispose();
 		}
 
-		this.cachedModel = resolvedModel;
+		this.cAchedModel = resolvedModel;
 
-		return this.cachedModel;
+		return this.cAchedModel;
 	}
 
-	getPreferredEditorId(candidates: string[]): string {
-		return this.forceOpenAsBinary ? BINARY_DIFF_EDITOR_ID : TEXT_DIFF_EDITOR_ID;
+	getPreferredEditorId(cAndidAtes: string[]): string {
+		return this.forceOpenAsBinAry ? BINARY_DIFF_EDITOR_ID : TEXT_DIFF_EDITOR_ID;
 	}
 
-	private async createModel(): Promise<DiffEditorModel> {
+	privAte Async creAteModel(): Promise<DiffEditorModel> {
 
-		// Join resolve call over two inputs and build diff editor model
-		const models = await Promise.all([
-			this.originalInput.resolve(),
+		// Join resolve cAll over two inputs And build diff editor model
+		const models = AwAit Promise.All([
+			this.originAlInput.resolve(),
 			this.modifiedInput.resolve()
 		]);
 
-		const originalEditorModel = models[0];
+		const originAlEditorModel = models[0];
 		const modifiedEditorModel = models[1];
 
-		// If both are text models, return textdiffeditor model
-		if (modifiedEditorModel instanceof BaseTextEditorModel && originalEditorModel instanceof BaseTextEditorModel) {
-			return new TextDiffEditorModel(originalEditorModel, modifiedEditorModel);
+		// If both Are text models, return textdiffeditor model
+		if (modifiedEditorModel instAnceof BAseTextEditorModel && originAlEditorModel instAnceof BAseTextEditorModel) {
+			return new TextDiffEditorModel(originAlEditorModel, modifiedEditorModel);
 		}
 
-		// Otherwise return normal diff model
-		return new DiffEditorModel(originalEditorModel, modifiedEditorModel);
+		// Otherwise return normAl diff model
+		return new DiffEditorModel(originAlEditorModel, modifiedEditorModel);
 	}
 
-	matches(otherInput: unknown): boolean {
-		if (!super.matches(otherInput)) {
-			return false;
+	mAtches(otherInput: unknown): booleAn {
+		if (!super.mAtches(otherInput)) {
+			return fAlse;
 		}
 
-		return otherInput instanceof DiffEditorInput && otherInput.forceOpenAsBinary === this.forceOpenAsBinary;
+		return otherInput instAnceof DiffEditorInput && otherInput.forceOpenAsBinAry === this.forceOpenAsBinAry;
 	}
 
 	dispose(): void {
 
-		// Free the diff editor model but do not propagate the dispose() call to the two inputs
-		// We never created the two inputs (original and modified) so we can not dispose
+		// Free the diff editor model but do not propAgAte the dispose() cAll to the two inputs
+		// We never creAted the two inputs (originAl And modified) so we cAn not dispose
 		// them without sideeffects.
-		if (this.cachedModel) {
-			this.cachedModel.dispose();
-			this.cachedModel = undefined;
+		if (this.cAchedModel) {
+			this.cAchedModel.dispose();
+			this.cAchedModel = undefined;
 		}
 
 		super.dispose();

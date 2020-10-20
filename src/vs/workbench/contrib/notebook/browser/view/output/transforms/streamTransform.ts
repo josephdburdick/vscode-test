@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { IRenderOutput, CellOutputKind, IStreamOutput, RenderOutputType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import * As DOM from 'vs/bAse/browser/dom';
+import { IRenderOutput, CellOutputKind, IStreAmOutput, RenderOutputType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 import { NotebookRegistry } from 'vs/workbench/contrib/notebook/browser/notebookRegistry';
-import { INotebookEditor, IOutputTransformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { INotebookEditor, IOutputTrAnsformContribution } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 
-class StreamRenderer implements IOutputTransformContribution {
+clAss StreAmRenderer implements IOutputTrAnsformContribution {
 	constructor(
 		editor: INotebookEditor
 	) {
 	}
 
-	render(output: IStreamOutput, container: HTMLElement): IRenderOutput {
-		const contentNode = DOM.$('.output-stream');
+	render(output: IStreAmOutput, contAiner: HTMLElement): IRenderOutput {
+		const contentNode = DOM.$('.output-streAm');
 		contentNode.innerText = output.text;
-		container.appendChild(contentNode);
-		return { type: RenderOutputType.None, hasDynamicHeight: false };
+		contAiner.AppendChild(contentNode);
+		return { type: RenderOutputType.None, hAsDynAmicHeight: fAlse };
 	}
 
 	dispose(): void {
 	}
 }
 
-NotebookRegistry.registerOutputTransform('notebook.output.stream', CellOutputKind.Text, StreamRenderer);
+NotebookRegistry.registerOutputTrAnsform('notebook.output.streAm', CellOutputKind.Text, StreAmRenderer);

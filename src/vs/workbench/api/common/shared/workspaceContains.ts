@@ -1,138 +1,138 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as resources from 'vs/base/common/resources';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import * as errors from 'vs/base/common/errors';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
-import { ISearchService } from 'vs/workbench/services/search/common/search';
-import { toWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import * As resources from 'vs/bAse/common/resources';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { CAncellAtionTokenSource, CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import * As errors from 'vs/bAse/common/errors';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { QueryBuilder } from 'vs/workbench/contrib/seArch/common/queryBuilder';
+import { ISeArchService } from 'vs/workbench/services/seArch/common/seArch';
+import { toWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
 
 const WORKSPACE_CONTAINS_TIMEOUT = 7000;
 
-export interface IExtensionActivationHost {
-	readonly folders: readonly UriComponents[];
-	readonly forceUsingSearch: boolean;
+export interfAce IExtensionActivAtionHost {
+	reAdonly folders: reAdonly UriComponents[];
+	reAdonly forceUsingSeArch: booleAn;
 
-	exists(uri: URI): Promise<boolean>;
-	checkExists(folders: readonly UriComponents[], includes: string[], token: CancellationToken): Promise<boolean>;
+	exists(uri: URI): Promise<booleAn>;
+	checkExists(folders: reAdonly UriComponents[], includes: string[], token: CAncellAtionToken): Promise<booleAn>;
 }
 
-export interface IExtensionActivationResult {
-	activationEvent: string;
+export interfAce IExtensionActivAtionResult {
+	ActivAtionEvent: string;
 }
 
-export function checkActivateWorkspaceContainsExtension(host: IExtensionActivationHost, desc: IExtensionDescription): Promise<IExtensionActivationResult | undefined> {
-	const activationEvents = desc.activationEvents;
-	if (!activationEvents) {
+export function checkActivAteWorkspAceContAinsExtension(host: IExtensionActivAtionHost, desc: IExtensionDescription): Promise<IExtensionActivAtionResult | undefined> {
+	const ActivAtionEvents = desc.ActivAtionEvents;
+	if (!ActivAtionEvents) {
 		return Promise.resolve(undefined);
 	}
 
-	const fileNames: string[] = [];
-	const globPatterns: string[] = [];
+	const fileNAmes: string[] = [];
+	const globPAtterns: string[] = [];
 
-	for (const activationEvent of activationEvents) {
-		if (/^workspaceContains:/.test(activationEvent)) {
-			const fileNameOrGlob = activationEvent.substr('workspaceContains:'.length);
-			if (fileNameOrGlob.indexOf('*') >= 0 || fileNameOrGlob.indexOf('?') >= 0 || host.forceUsingSearch) {
-				globPatterns.push(fileNameOrGlob);
+	for (const ActivAtionEvent of ActivAtionEvents) {
+		if (/^workspAceContAins:/.test(ActivAtionEvent)) {
+			const fileNAmeOrGlob = ActivAtionEvent.substr('workspAceContAins:'.length);
+			if (fileNAmeOrGlob.indexOf('*') >= 0 || fileNAmeOrGlob.indexOf('?') >= 0 || host.forceUsingSeArch) {
+				globPAtterns.push(fileNAmeOrGlob);
 			} else {
-				fileNames.push(fileNameOrGlob);
+				fileNAmes.push(fileNAmeOrGlob);
 			}
 		}
 	}
 
-	if (fileNames.length === 0 && globPatterns.length === 0) {
+	if (fileNAmes.length === 0 && globPAtterns.length === 0) {
 		return Promise.resolve(undefined);
 	}
 
-	let resolveResult: (value: IExtensionActivationResult | undefined) => void;
-	const result = new Promise<IExtensionActivationResult | undefined>((resolve, reject) => { resolveResult = resolve; });
-	const activate = (activationEvent: string) => resolveResult({ activationEvent });
+	let resolveResult: (vAlue: IExtensionActivAtionResult | undefined) => void;
+	const result = new Promise<IExtensionActivAtionResult | undefined>((resolve, reject) => { resolveResult = resolve; });
+	const ActivAte = (ActivAtionEvent: string) => resolveResult({ ActivAtionEvent });
 
-	const fileNamePromise = Promise.all(fileNames.map((fileName) => _activateIfFileName(host, fileName, activate))).then(() => { });
-	const globPatternPromise = _activateIfGlobPatterns(host, desc.identifier, globPatterns, activate);
+	const fileNAmePromise = Promise.All(fileNAmes.mAp((fileNAme) => _ActivAteIfFileNAme(host, fileNAme, ActivAte))).then(() => { });
+	const globPAtternPromise = _ActivAteIfGlobPAtterns(host, desc.identifier, globPAtterns, ActivAte);
 
-	Promise.all([fileNamePromise, globPatternPromise]).then(() => {
-		// when all are done, resolve with undefined (relevant only if it was not activated so far)
+	Promise.All([fileNAmePromise, globPAtternPromise]).then(() => {
+		// when All Are done, resolve with undefined (relevAnt only if it wAs not ActivAted so fAr)
 		resolveResult(undefined);
 	});
 
 	return result;
 }
 
-async function _activateIfFileName(host: IExtensionActivationHost, fileName: string, activate: (activationEvent: string) => void): Promise<void> {
-	// find exact path
+Async function _ActivAteIfFileNAme(host: IExtensionActivAtionHost, fileNAme: string, ActivAte: (ActivAtionEvent: string) => void): Promise<void> {
+	// find exAct pAth
 	for (const uri of host.folders) {
-		if (await host.exists(resources.joinPath(URI.revive(uri), fileName))) {
-			// the file was found
-			activate(`workspaceContains:${fileName}`);
+		if (AwAit host.exists(resources.joinPAth(URI.revive(uri), fileNAme))) {
+			// the file wAs found
+			ActivAte(`workspAceContAins:${fileNAme}`);
 			return;
 		}
 	}
 }
 
-async function _activateIfGlobPatterns(host: IExtensionActivationHost, extensionId: ExtensionIdentifier, globPatterns: string[], activate: (activationEvent: string) => void): Promise<void> {
-	if (globPatterns.length === 0) {
+Async function _ActivAteIfGlobPAtterns(host: IExtensionActivAtionHost, extensionId: ExtensionIdentifier, globPAtterns: string[], ActivAte: (ActivAtionEvent: string) => void): Promise<void> {
+	if (globPAtterns.length === 0) {
 		return Promise.resolve(undefined);
 	}
 
-	const tokenSource = new CancellationTokenSource();
-	const searchP = host.checkExists(host.folders, globPatterns, tokenSource.token);
+	const tokenSource = new CAncellAtionTokenSource();
+	const seArchP = host.checkExists(host.folders, globPAtterns, tokenSource.token);
 
-	const timer = setTimeout(async () => {
-		tokenSource.cancel();
-		activate(`workspaceContainsTimeout:${globPatterns.join(',')}`);
+	const timer = setTimeout(Async () => {
+		tokenSource.cAncel();
+		ActivAte(`workspAceContAinsTimeout:${globPAtterns.join(',')}`);
 	}, WORKSPACE_CONTAINS_TIMEOUT);
 
-	let exists: boolean = false;
+	let exists: booleAn = fAlse;
 	try {
-		exists = await searchP;
-	} catch (err) {
-		if (!errors.isPromiseCanceledError(err)) {
+		exists = AwAit seArchP;
+	} cAtch (err) {
+		if (!errors.isPromiseCAnceledError(err)) {
 			errors.onUnexpectedError(err);
 		}
 	}
 
 	tokenSource.dispose();
-	clearTimeout(timer);
+	cleArTimeout(timer);
 
 	if (exists) {
-		// a file was found matching one of the glob patterns
-		activate(`workspaceContains:${globPatterns.join(',')}`);
+		// A file wAs found mAtching one of the glob pAtterns
+		ActivAte(`workspAceContAins:${globPAtterns.join(',')}`);
 	}
 }
 
 export function checkGlobFileExists(
-	accessor: ServicesAccessor,
-	folders: readonly UriComponents[],
+	Accessor: ServicesAccessor,
+	folders: reAdonly UriComponents[],
 	includes: string[],
-	token: CancellationToken,
-): Promise<boolean> {
-	const instantiationService = accessor.get(IInstantiationService);
-	const searchService = accessor.get(ISearchService);
-	const queryBuilder = instantiationService.createInstance(QueryBuilder);
-	const query = queryBuilder.file(folders.map(folder => toWorkspaceFolder(URI.revive(folder))), {
-		_reason: 'checkExists',
-		includePattern: includes.join(', '),
-		expandPatterns: true,
+	token: CAncellAtionToken,
+): Promise<booleAn> {
+	const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+	const seArchService = Accessor.get(ISeArchService);
+	const queryBuilder = instAntiAtionService.creAteInstAnce(QueryBuilder);
+	const query = queryBuilder.file(folders.mAp(folder => toWorkspAceFolder(URI.revive(folder))), {
+		_reAson: 'checkExists',
+		includePAttern: includes.join(', '),
+		expAndPAtterns: true,
 		exists: true
 	});
 
-	return searchService.fileSearch(query, token).then(
+	return seArchService.fileSeArch(query, token).then(
 		result => {
 			return !!result.limitHit;
 		},
 		err => {
-			if (!errors.isPromiseCanceledError(err)) {
+			if (!errors.isPromiseCAnceledError(err)) {
 				return Promise.reject(err);
 			}
 
-			return false;
+			return fAlse;
 		});
 }

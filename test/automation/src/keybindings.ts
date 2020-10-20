@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-const SEARCH_INPUT = '.keybindings-header .settings-search-input input';
+const SEARCH_INPUT = '.keybindings-heAder .settings-seArch-input input';
 
-export class KeybindingsEditor {
+export clAss KeybindingsEditor {
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	async updateKeybinding(command: string, keybinding: string, title: string): Promise<any> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+k cmd+s');
+	Async updAteKeybinding(commAnd: string, keybinding: string, title: string): Promise<Any> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+k cmd+s');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+k ctrl+s');
+			AwAit this.code.dispAtchKeybinding('ctrl+k ctrl+s');
 		}
 
-		await this.code.waitForActiveElement(SEARCH_INPUT);
-		await this.code.waitForSetValue(SEARCH_INPUT, command);
+		AwAit this.code.wAitForActiveElement(SEARCH_INPUT);
+		AwAit this.code.wAitForSetVAlue(SEARCH_INPUT, commAnd);
 
-		await this.code.waitAndClick('.keybindings-list-container .monaco-list-row.keybinding-item');
-		await this.code.waitForElement('.keybindings-list-container .monaco-list-row.keybinding-item.focused.selected');
+		AwAit this.code.wAitAndClick('.keybindings-list-contAiner .monAco-list-row.keybinding-item');
+		AwAit this.code.wAitForElement('.keybindings-list-contAiner .monAco-list-row.keybinding-item.focused.selected');
 
-		await this.code.waitAndClick('.keybindings-list-container .monaco-list-row.keybinding-item .action-item .codicon.codicon-add');
-		await this.code.waitForActiveElement('.defineKeybindingWidget .monaco-inputbox input');
+		AwAit this.code.wAitAndClick('.keybindings-list-contAiner .monAco-list-row.keybinding-item .Action-item .codicon.codicon-Add');
+		AwAit this.code.wAitForActiveElement('.defineKeybindingWidget .monAco-inputbox input');
 
-		await this.code.dispatchKeybinding(keybinding);
-		await this.code.dispatchKeybinding('enter');
-		await this.code.waitForElement(`.keybindings-list-container .keybinding-label div[title="${title}"]`);
+		AwAit this.code.dispAtchKeybinding(keybinding);
+		AwAit this.code.dispAtchKeybinding('enter');
+		AwAit this.code.wAitForElement(`.keybindings-list-contAiner .keybinding-lAbel div[title="${title}"]`);
 	}
 }

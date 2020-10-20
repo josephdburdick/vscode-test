@@ -1,91 +1,91 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { illegalArgument } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import { registerLanguageCommand } from 'vs/editor/browser/editorExtensions';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { illegAlArgument } from 'vs/bAse/common/errors';
+import { URI } from 'vs/bAse/common/uri';
+import { registerLAnguAgeCommAnd } from 'vs/editor/browser/editorExtensions';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
-import { ColorProviderRegistry, DocumentColorProvider, IColorInformation, IColorPresentation } from 'vs/editor/common/modes';
+import { ColorProviderRegistry, DocumentColorProvider, IColorInformAtion, IColorPresentAtion } from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
 
 
-export interface IColorData {
-	colorInfo: IColorInformation;
+export interfAce IColorDAtA {
+	colorInfo: IColorInformAtion;
 	provider: DocumentColorProvider;
 }
 
-export function getColors(model: ITextModel, token: CancellationToken): Promise<IColorData[]> {
-	const colors: IColorData[] = [];
+export function getColors(model: ITextModel, token: CAncellAtionToken): Promise<IColorDAtA[]> {
+	const colors: IColorDAtA[] = [];
 	const providers = ColorProviderRegistry.ordered(model).reverse();
-	const promises = providers.map(provider => Promise.resolve(provider.provideDocumentColors(model, token)).then(result => {
-		if (Array.isArray(result)) {
+	const promises = providers.mAp(provider => Promise.resolve(provider.provideDocumentColors(model, token)).then(result => {
+		if (ArrAy.isArrAy(result)) {
 			for (let colorInfo of result) {
 				colors.push({ colorInfo, provider });
 			}
 		}
 	}));
 
-	return Promise.all(promises).then(() => colors);
+	return Promise.All(promises).then(() => colors);
 }
 
-export function getColorPresentations(model: ITextModel, colorInfo: IColorInformation, provider: DocumentColorProvider, token: CancellationToken): Promise<IColorPresentation[] | null | undefined> {
-	return Promise.resolve(provider.provideColorPresentations(model, colorInfo, token));
+export function getColorPresentAtions(model: ITextModel, colorInfo: IColorInformAtion, provider: DocumentColorProvider, token: CAncellAtionToken): Promise<IColorPresentAtion[] | null | undefined> {
+	return Promise.resolve(provider.provideColorPresentAtions(model, colorInfo, token));
 }
 
-registerLanguageCommand('_executeDocumentColorProvider', function (accessor, args) {
+registerLAnguAgeCommAnd('_executeDocumentColorProvider', function (Accessor, Args) {
 
-	const { resource } = args;
-	if (!(resource instanceof URI)) {
-		throw illegalArgument();
+	const { resource } = Args;
+	if (!(resource instAnceof URI)) {
+		throw illegAlArgument();
 	}
 
-	const model = accessor.get(IModelService).getModel(resource);
+	const model = Accessor.get(IModelService).getModel(resource);
 	if (!model) {
-		throw illegalArgument();
+		throw illegAlArgument();
 	}
 
-	const rawCIs: { range: IRange, color: [number, number, number, number] }[] = [];
+	const rAwCIs: { rAnge: IRAnge, color: [number, number, number, number] }[] = [];
 	const providers = ColorProviderRegistry.ordered(model).reverse();
-	const promises = providers.map(provider => Promise.resolve(provider.provideDocumentColors(model, CancellationToken.None)).then(result => {
-		if (Array.isArray(result)) {
+	const promises = providers.mAp(provider => Promise.resolve(provider.provideDocumentColors(model, CAncellAtionToken.None)).then(result => {
+		if (ArrAy.isArrAy(result)) {
 			for (let ci of result) {
-				rawCIs.push({ range: ci.range, color: [ci.color.red, ci.color.green, ci.color.blue, ci.color.alpha] });
+				rAwCIs.push({ rAnge: ci.rAnge, color: [ci.color.red, ci.color.green, ci.color.blue, ci.color.AlphA] });
 			}
 		}
 	}));
 
-	return Promise.all(promises).then(() => rawCIs);
+	return Promise.All(promises).then(() => rAwCIs);
 });
 
 
-registerLanguageCommand('_executeColorPresentationProvider', function (accessor, args) {
+registerLAnguAgeCommAnd('_executeColorPresentAtionProvider', function (Accessor, Args) {
 
-	const { resource, color, range } = args;
-	if (!(resource instanceof URI) || !Array.isArray(color) || color.length !== 4 || !Range.isIRange(range)) {
-		throw illegalArgument();
+	const { resource, color, rAnge } = Args;
+	if (!(resource instAnceof URI) || !ArrAy.isArrAy(color) || color.length !== 4 || !RAnge.isIRAnge(rAnge)) {
+		throw illegAlArgument();
 	}
-	const [red, green, blue, alpha] = color;
+	const [red, green, blue, AlphA] = color;
 
-	const model = accessor.get(IModelService).getModel(resource);
+	const model = Accessor.get(IModelService).getModel(resource);
 	if (!model) {
-		throw illegalArgument();
+		throw illegAlArgument();
 	}
 
 	const colorInfo = {
-		range,
-		color: { red, green, blue, alpha }
+		rAnge,
+		color: { red, green, blue, AlphA }
 	};
 
-	const presentations: IColorPresentation[] = [];
+	const presentAtions: IColorPresentAtion[] = [];
 	const providers = ColorProviderRegistry.ordered(model).reverse();
-	const promises = providers.map(provider => Promise.resolve(provider.provideColorPresentations(model, colorInfo, CancellationToken.None)).then(result => {
-		if (Array.isArray(result)) {
-			presentations.push(...result);
+	const promises = providers.mAp(provider => Promise.resolve(provider.provideColorPresentAtions(model, colorInfo, CAncellAtionToken.None)).then(result => {
+		if (ArrAy.isArrAy(result)) {
+			presentAtions.push(...result);
 		}
 	}));
-	return Promise.all(promises).then(() => presentations);
+	return Promise.All(promises).then(() => presentAtions);
 });

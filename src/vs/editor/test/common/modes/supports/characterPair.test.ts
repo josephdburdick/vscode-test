@@ -1,130 +1,130 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { StandardTokenType } from 'vs/editor/common/modes';
-import { CharacterPairSupport } from 'vs/editor/common/modes/supports/characterPair';
-import { TokenText, createFakeScopedLineTokens } from 'vs/editor/test/common/modesTestUtils';
-import { StandardAutoClosingPairConditional } from 'vs/editor/common/modes/languageConfiguration';
+import * As Assert from 'Assert';
+import { StAndArdTokenType } from 'vs/editor/common/modes';
+import { ChArActerPAirSupport } from 'vs/editor/common/modes/supports/chArActerPAir';
+import { TokenText, creAteFAkeScopedLineTokens } from 'vs/editor/test/common/modesTestUtils';
+import { StAndArdAutoClosingPAirConditionAl } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
 
-suite('CharacterPairSupport', () => {
+suite('ChArActerPAirSupport', () => {
 
-	test('only autoClosingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [{ open: 'a', close: 'b' }] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
+	test('only AutoClosingPAirs', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: 'A', close: 'b' }] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), [{ open: 'A', close: 'b', _stAndArdTokenMAsk: 0 }]);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), [{ open: 'A', close: 'b', _stAndArdTokenMAsk: 0 }]);
 	});
 
-	test('only empty autoClosingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
+	test('only empty AutoClosingPAirs', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ AutoClosingPAirs: [] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), []);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), []);
 	});
 
-	test('only brackets', () => {
-		let characaterPairSupport = new CharacterPairSupport({ brackets: [['a', 'b']] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'b', _standardTokenMask: 0 }]);
+	test('only brAckets', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ brAckets: [['A', 'b']] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), [{ open: 'A', close: 'b', _stAndArdTokenMAsk: 0 }]);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), [{ open: 'A', close: 'b', _stAndArdTokenMAsk: 0 }]);
 	});
 
-	test('only empty brackets', () => {
-		let characaterPairSupport = new CharacterPairSupport({ brackets: [] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
+	test('only empty brAckets', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ brAckets: [] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), []);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), []);
 	});
 
-	test('only surroundingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ surroundingPairs: [{ open: 'a', close: 'b' }] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), [{ open: 'a', close: 'b' }]);
+	test('only surroundingPAirs', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ surroundingPAirs: [{ open: 'A', close: 'b' }] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), []);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), [{ open: 'A', close: 'b' }]);
 	});
 
-	test('only empty surroundingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ surroundingPairs: [] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
+	test('only empty surroundingPAirs', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ surroundingPAirs: [] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), []);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), []);
 	});
 
-	test('brackets is ignored when having autoClosingPairs', () => {
-		let characaterPairSupport = new CharacterPairSupport({ autoClosingPairs: [], brackets: [['a', 'b']] });
-		assert.deepEqual(characaterPairSupport.getAutoClosingPairs(), []);
-		assert.deepEqual(characaterPairSupport.getSurroundingPairs(), []);
+	test('brAckets is ignored when hAving AutoClosingPAirs', () => {
+		let chArAcAterPAirSupport = new ChArActerPAirSupport({ AutoClosingPAirs: [], brAckets: [['A', 'b']] });
+		Assert.deepEquAl(chArAcAterPAirSupport.getAutoClosingPAirs(), []);
+		Assert.deepEquAl(chArAcAterPAirSupport.getSurroundingPAirs(), []);
 	});
 
-	function findAutoClosingPair(characterPairSupport: CharacterPairSupport, character: string): StandardAutoClosingPairConditional | undefined {
-		return characterPairSupport.getAutoClosingPairs().find(autoClosingPair => autoClosingPair.open === character);
+	function findAutoClosingPAir(chArActerPAirSupport: ChArActerPAirSupport, chArActer: string): StAndArdAutoClosingPAirConditionAl | undefined {
+		return chArActerPAirSupport.getAutoClosingPAirs().find(AutoClosingPAir => AutoClosingPAir.open === chArActer);
 	}
 
-	function testShouldAutoClose(characterPairSupport: CharacterPairSupport, line: TokenText[], character: string, column: number): boolean {
-		const autoClosingPair = findAutoClosingPair(characterPairSupport, character);
-		if (!autoClosingPair) {
-			return false;
+	function testShouldAutoClose(chArActerPAirSupport: ChArActerPAirSupport, line: TokenText[], chArActer: string, column: number): booleAn {
+		const AutoClosingPAir = findAutoClosingPAir(chArActerPAirSupport, chArActer);
+		if (!AutoClosingPAir) {
+			return fAlse;
 		}
-		return CharacterPairSupport.shouldAutoClosePair(autoClosingPair, createFakeScopedLineTokens(line), column);
+		return ChArActerPAirSupport.shouldAutoClosePAir(AutoClosingPAir, creAteFAkeScopedLineTokens(line), column);
 	}
 
-	test('shouldAutoClosePair in empty line', () => {
-		let sup = new CharacterPairSupport({ autoClosingPairs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
-		assert.equal(testShouldAutoClose(sup, [], 'a', 1), false);
-		assert.equal(testShouldAutoClose(sup, [], '{', 1), true);
+	test('shouldAutoClosePAir in empty line', () => {
+		let sup = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
+		Assert.equAl(testShouldAutoClose(sup, [], 'A', 1), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [], '{', 1), true);
 	});
 
-	test('shouldAutoClosePair in not interesting line 1', () => {
-		let sup = new CharacterPairSupport({ autoClosingPairs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
-		assert.equal(testShouldAutoClose(sup, [{ text: 'do', type: StandardTokenType.Other }], '{', 3), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'do', type: StandardTokenType.Other }], 'a', 3), false);
+	test('shouldAutoClosePAir in not interesting line 1', () => {
+		let sup = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'do', type: StAndArdTokenType.Other }], '{', 3), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'do', type: StAndArdTokenType.Other }], 'A', 3), fAlse);
 	});
 
-	test('shouldAutoClosePair in not interesting line 2', () => {
-		let sup = new CharacterPairSupport({ autoClosingPairs: [{ open: '{', close: '}' }] });
-		assert.equal(testShouldAutoClose(sup, [{ text: 'do', type: StandardTokenType.String }], '{', 3), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'do', type: StandardTokenType.String }], 'a', 3), false);
+	test('shouldAutoClosePAir in not interesting line 2', () => {
+		let sup = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: '{', close: '}' }] });
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'do', type: StAndArdTokenType.String }], '{', 3), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'do', type: StAndArdTokenType.String }], 'A', 3), fAlse);
 	});
 
-	test('shouldAutoClosePair in interesting line 1', () => {
-		let sup = new CharacterPairSupport({ autoClosingPairs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], '{', 1), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], 'a', 1), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], '{', 2), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], 'a', 2), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], '{', 3), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], 'a', 3), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], '{', 4), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: '"a"', type: StandardTokenType.String }], 'a', 4), false);
+	test('shouldAutoClosePAir in interesting line 1', () => {
+		let sup = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], '{', 1), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], 'A', 1), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], '{', 2), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], 'A', 2), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], '{', 3), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], 'A', 3), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], '{', 4), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: '"A"', type: StAndArdTokenType.String }], 'A', 4), fAlse);
 	});
 
-	test('shouldAutoClosePair in interesting line 2', () => {
-		let sup = new CharacterPairSupport({ autoClosingPairs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 1), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 1), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 2), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 2), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 3), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 3), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 4), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 4), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 5), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 5), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 6), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 6), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], '{', 7), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: 'x=', type: StandardTokenType.Other }, { text: '"a"', type: StandardTokenType.String }, { text: ';', type: StandardTokenType.Other }], 'a', 7), false);
+	test('shouldAutoClosePAir in interesting line 2', () => {
+		let sup = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 1), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 1), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 2), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 2), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 3), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 3), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 4), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 4), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 5), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 5), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 6), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 6), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], '{', 7), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: 'x=', type: StAndArdTokenType.Other }, { text: '"A"', type: StAndArdTokenType.String }, { text: ';', type: StAndArdTokenType.Other }], 'A', 7), fAlse);
 	});
 
-	test('shouldAutoClosePair in interesting line 3', () => {
-		let sup = new CharacterPairSupport({ autoClosingPairs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], '{', 1), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], 'a', 1), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], '{', 2), true);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], 'a', 2), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], '{', 3), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], 'a', 3), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], '{', 4), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], 'a', 4), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], '{', 5), false);
-		assert.equal(testShouldAutoClose(sup, [{ text: ' ', type: StandardTokenType.Other }, { text: '//a', type: StandardTokenType.Comment }], 'a', 5), false);
+	test('shouldAutoClosePAir in interesting line 3', () => {
+		let sup = new ChArActerPAirSupport({ AutoClosingPAirs: [{ open: '{', close: '}', notIn: ['string', 'comment'] }] });
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], '{', 1), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], 'A', 1), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], '{', 2), true);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], 'A', 2), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], '{', 3), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], 'A', 3), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], '{', 4), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], 'A', 4), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], '{', 5), fAlse);
+		Assert.equAl(testShouldAutoClose(sup, [{ text: ' ', type: StAndArdTokenType.Other }, { text: '//A', type: StAndArdTokenType.Comment }], 'A', 5), fAlse);
 	});
 
 });

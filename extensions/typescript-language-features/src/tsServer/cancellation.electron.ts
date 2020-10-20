@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
+import * As fs from 'fs';
 import { getTempFile } from '../utils/temp.electron';
-import Tracer from '../utils/tracer';
-import { OngoingRequestCanceller, OngoingRequestCancellerFactory } from './cancellation';
+import TrAcer from '../utils/trAcer';
+import { OngoingRequestCAnceller, OngoingRequestCAncellerFActory } from './cAncellAtion';
 
-export class NodeRequestCanceller implements OngoingRequestCanceller {
-	public readonly cancellationPipeName: string;
+export clAss NodeRequestCAnceller implements OngoingRequestCAnceller {
+	public reAdonly cAncellAtionPipeNAme: string;
 
 	public constructor(
-		private readonly _serverId: string,
-		private readonly _tracer: Tracer,
+		privAte reAdonly _serverId: string,
+		privAte reAdonly _trAcer: TrAcer,
 	) {
-		this.cancellationPipeName = getTempFile('tscancellation');
+		this.cAncellAtionPipeNAme = getTempFile('tscAncellAtion');
 	}
 
-	public tryCancelOngoingRequest(seq: number): boolean {
-		if (!this.cancellationPipeName) {
-			return false;
+	public tryCAncelOngoingRequest(seq: number): booleAn {
+		if (!this.cAncellAtionPipeNAme) {
+			return fAlse;
 		}
-		this._tracer.logTrace(this._serverId, `TypeScript Server: trying to cancel ongoing request with sequence number ${seq}`);
+		this._trAcer.logTrAce(this._serverId, `TypeScript Server: trying to cAncel ongoing request with sequence number ${seq}`);
 		try {
-			fs.writeFileSync(this.cancellationPipeName + seq, '');
-		} catch {
+			fs.writeFileSync(this.cAncellAtionPipeNAme + seq, '');
+		} cAtch {
 			// noop
 		}
 		return true;
@@ -33,8 +33,8 @@ export class NodeRequestCanceller implements OngoingRequestCanceller {
 }
 
 
-export const nodeRequestCancellerFactory = new class implements OngoingRequestCancellerFactory {
-	create(serverId: string, tracer: Tracer): OngoingRequestCanceller {
-		return new NodeRequestCanceller(serverId, tracer);
+export const nodeRequestCAncellerFActory = new clAss implements OngoingRequestCAncellerFActory {
+	creAte(serverId: string, trAcer: TrAcer): OngoingRequestCAnceller {
+		return new NodeRequestCAnceller(serverId, trAcer);
 	}
 };

@@ -1,115 +1,115 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { IPosition, Position } from 'vs/editor/common/core/position';
-import { IRange, Range } from 'vs/editor/common/core/range';
-import { Handler } from 'vs/editor/common/editorCommon';
-import * as modes from 'vs/editor/common/modes';
-import { OnTypeRenameContribution } from 'vs/editor/contrib/rename/onTypeRename';
-import { createTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { CoreEditingCommands } from 'vs/editor/browser/controller/coreCommands';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
+import { HAndler } from 'vs/editor/common/editorCommon';
+import * As modes from 'vs/editor/common/modes';
+import { OnTypeRenAmeContribution } from 'vs/editor/contrib/renAme/onTypeRenAme';
+import { creAteTestCodeEditor, ITestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { CoreEditingCommAnds } from 'vs/editor/browser/controller/coreCommAnds';
 import { ITextModel } from 'vs/editor/common/model';
 import { USUAL_WORD_SEPARATORS } from 'vs/editor/common/model/wordHelper';
 
-const mockFile = URI.parse('test:somefile.ttt');
+const mockFile = URI.pArse('test:somefile.ttt');
 const mockFileSelector = { scheme: 'test' };
 const timeout = 30;
 
-interface TestEditor {
-	setPosition(pos: Position): Promise<any>;
-	setSelection(sel: IRange): Promise<any>;
-	trigger(source: string | null | undefined, handlerId: string, payload: any): Promise<any>;
+interfAce TestEditor {
+	setPosition(pos: Position): Promise<Any>;
+	setSelection(sel: IRAnge): Promise<Any>;
+	trigger(source: string | null | undefined, hAndlerId: string, pAyloAd: Any): Promise<Any>;
 	undo(): void;
 	redo(): void;
 }
 
-suite('On type rename', () => {
-	const disposables = new DisposableStore();
+suite('On type renAme', () => {
+	const disposAbles = new DisposAbleStore();
 
 	setup(() => {
-		disposables.clear();
+		disposAbles.cleAr();
 	});
 
-	teardown(() => {
-		disposables.clear();
+	teArdown(() => {
+		disposAbles.cleAr();
 	});
 
-	function createMockEditor(text: string | string[]): ITestCodeEditor {
+	function creAteMockEditor(text: string | string[]): ITestCodeEditor {
 		const model = typeof text === 'string'
-			? createTextModel(text, undefined, undefined, mockFile)
-			: createTextModel(text.join('\n'), undefined, undefined, mockFile);
+			? creAteTextModel(text, undefined, undefined, mockFile)
+			: creAteTextModel(text.join('\n'), undefined, undefined, mockFile);
 
-		const editor = createTestCodeEditor({ model });
-		disposables.add(model);
-		disposables.add(editor);
+		const editor = creAteTestCodeEditor({ model });
+		disposAbles.Add(model);
+		disposAbles.Add(editor);
 
 		return editor;
 	}
 
 
-	function testCase(
-		name: string,
-		initialState: { text: string | string[], responseWordPattern?: RegExp, providerWordPattern?: RegExp },
-		operations: (editor: TestEditor) => Promise<void>,
+	function testCAse(
+		nAme: string,
+		initiAlStAte: { text: string | string[], responseWordPAttern?: RegExp, providerWordPAttern?: RegExp },
+		operAtions: (editor: TestEditor) => Promise<void>,
 		expectedEndText: string | string[]
 	) {
-		test(name, async () => {
-			disposables.add(modes.OnTypeRenameProviderRegistry.register(mockFileSelector, {
-				wordPattern: initialState.providerWordPattern,
-				provideOnTypeRenameRanges(model: ITextModel, pos: IPosition) {
+		test(nAme, Async () => {
+			disposAbles.Add(modes.OnTypeRenAmeProviderRegistry.register(mockFileSelector, {
+				wordPAttern: initiAlStAte.providerWordPAttern,
+				provideOnTypeRenAmeRAnges(model: ITextModel, pos: IPosition) {
 					const wordAtPos = model.getWordAtPosition(pos);
 					if (wordAtPos) {
-						const matches = model.findMatches(wordAtPos.word, false, false, true, USUAL_WORD_SEPARATORS, false);
-						assert.ok(matches.length > 0);
-						return { ranges: matches.map(m => m.range), wordPattern: initialState.responseWordPattern };
+						const mAtches = model.findMAtches(wordAtPos.word, fAlse, fAlse, true, USUAL_WORD_SEPARATORS, fAlse);
+						Assert.ok(mAtches.length > 0);
+						return { rAnges: mAtches.mAp(m => m.rAnge), wordPAttern: initiAlStAte.responseWordPAttern };
 					}
-					return { ranges: [], wordPattern: initialState.responseWordPattern };
+					return { rAnges: [], wordPAttern: initiAlStAte.responseWordPAttern };
 				}
 			}));
 
-			const editor = createMockEditor(initialState.text);
-			editor.updateOptions({ renameOnType: true });
-			const ontypeRenameContribution = editor.registerAndInstantiateContribution(
-				OnTypeRenameContribution.ID,
-				OnTypeRenameContribution
+			const editor = creAteMockEditor(initiAlStAte.text);
+			editor.updAteOptions({ renAmeOnType: true });
+			const ontypeRenAmeContribution = editor.registerAndInstAntiAteContribution(
+				OnTypeRenAmeContribution.ID,
+				OnTypeRenAmeContribution
 			);
-			ontypeRenameContribution.setDebounceDuration(0);
+			ontypeRenAmeContribution.setDebounceDurAtion(0);
 
 			const testEditor: TestEditor = {
 				setPosition(pos: Position) {
 					editor.setPosition(pos);
-					return ontypeRenameContribution.currentUpdateTriggerPromise;
+					return ontypeRenAmeContribution.currentUpdAteTriggerPromise;
 				},
-				setSelection(sel: IRange) {
+				setSelection(sel: IRAnge) {
 					editor.setSelection(sel);
-					return ontypeRenameContribution.currentUpdateTriggerPromise;
+					return ontypeRenAmeContribution.currentUpdAteTriggerPromise;
 				},
-				trigger(source: string | null | undefined, handlerId: string, payload: any) {
-					editor.trigger(source, handlerId, payload);
-					return ontypeRenameContribution.currentSyncTriggerPromise;
+				trigger(source: string | null | undefined, hAndlerId: string, pAyloAd: Any) {
+					editor.trigger(source, hAndlerId, pAyloAd);
+					return ontypeRenAmeContribution.currentSyncTriggerPromise;
 				},
 				undo() {
-					CoreEditingCommands.Undo.runEditorCommand(null, editor, null);
+					CoreEditingCommAnds.Undo.runEditorCommAnd(null, editor, null);
 				},
 				redo() {
-					CoreEditingCommands.Redo.runEditorCommand(null, editor, null);
+					CoreEditingCommAnds.Redo.runEditorCommAnd(null, editor, null);
 				}
 			};
 
-			await operations(testEditor);
+			AwAit operAtions(testEditor);
 
 			return new Promise<void>((resolve) => {
 				setTimeout(() => {
 					if (typeof expectedEndText === 'string') {
-						assert.equal(editor.getModel()!.getValue(), expectedEndText);
+						Assert.equAl(editor.getModel()!.getVAlue(), expectedEndText);
 					} else {
-						assert.equal(editor.getModel()!.getValue(), expectedEndText.join('\n'));
+						Assert.equAl(editor.getModel()!.getVAlue(), expectedEndText.join('\n'));
 					}
 					resolve();
 				}, timeout);
@@ -117,259 +117,259 @@ suite('On type rename', () => {
 		});
 	}
 
-	const state = {
+	const stAte = {
 		text: '<ooo></ooo>'
 	};
 
 	/**
 	 * Simple insertion
 	 */
-	testCase('Simple insert - initial', state, async (editor) => {
+	testCAse('Simple insert - initiAl', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<iooo></iooo>');
 
-	testCase('Simple insert - middle', state, async (editor) => {
+	testCAse('Simple insert - middle', stAte, Async (editor) => {
 		const pos = new Position(1, 3);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<oioo></oioo>');
 
-	testCase('Simple insert - end', state, async (editor) => {
+	testCAse('Simple insert - end', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<oooi></oooi>');
 
 	/**
 	 * Simple insertion - end
 	 */
-	testCase('Simple insert end - initial', state, async (editor) => {
+	testCAse('Simple insert end - initiAl', stAte, Async (editor) => {
 		const pos = new Position(1, 8);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<iooo></iooo>');
 
-	testCase('Simple insert end - middle', state, async (editor) => {
+	testCAse('Simple insert end - middle', stAte, Async (editor) => {
 		const pos = new Position(1, 9);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<oioo></oioo>');
 
-	testCase('Simple insert end - end', state, async (editor) => {
+	testCAse('Simple insert end - end', stAte, Async (editor) => {
 		const pos = new Position(1, 11);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<oooi></oooi>');
 
 	/**
-	 * Boundary insertion
+	 * BoundAry insertion
 	 */
-	testCase('Simple insert - out of boundary', state, async (editor) => {
+	testCAse('Simple insert - out of boundAry', stAte, Async (editor) => {
 		const pos = new Position(1, 1);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, 'i<ooo></ooo>');
 
-	testCase('Simple insert - out of boundary 2', state, async (editor) => {
+	testCAse('Simple insert - out of boundAry 2', stAte, Async (editor) => {
 		const pos = new Position(1, 6);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<ooo>i</ooo>');
 
-	testCase('Simple insert - out of boundary 3', state, async (editor) => {
+	testCAse('Simple insert - out of boundAry 3', stAte, Async (editor) => {
 		const pos = new Position(1, 7);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<ooo><i/ooo>');
 
-	testCase('Simple insert - out of boundary 4', state, async (editor) => {
+	testCAse('Simple insert - out of boundAry 4', stAte, Async (editor) => {
 		const pos = new Position(1, 12);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<ooo></ooo>i');
 
 	/**
 	 * Insert + Move
 	 */
-	testCase('Continuous insert', state, async (editor) => {
+	testCAse('Continuous insert', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<iiooo></iiooo>');
 
-	testCase('Insert - move - insert', state, async (editor) => {
+	testCAse('Insert - move - insert', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
-		await editor.setPosition(new Position(1, 4));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
+		AwAit editor.setPosition(new Position(1, 4));
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<ioioo></ioioo>');
 
-	testCase('Insert - move - insert outside region', state, async (editor) => {
+	testCAse('Insert - move - insert outside region', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
-		await editor.setPosition(new Position(1, 7));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
+		AwAit editor.setPosition(new Position(1, 7));
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<iooo>i</iooo>');
 
 	/**
 	 * Selection insert
 	 */
-	testCase('Selection insert - simple', state, async (editor) => {
+	testCAse('Selection insert - simple', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.setSelection(new Range(1, 2, 1, 3));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.setSelection(new RAnge(1, 2, 1, 3));
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<ioo></ioo>');
 
-	testCase('Selection insert - whole', state, async (editor) => {
+	testCAse('Selection insert - whole', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.setSelection(new Range(1, 2, 1, 5));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.setSelection(new RAnge(1, 2, 1, 5));
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<i></i>');
 
-	testCase('Selection insert - across boundary', state, async (editor) => {
+	testCAse('Selection insert - Across boundAry', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.setSelection(new Range(1, 1, 1, 3));
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.setSelection(new RAnge(1, 1, 1, 3));
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, 'ioo></oo>');
 
 	/**
 	 * @todo
-	 * Undefined behavior
+	 * Undefined behAvior
 	 */
-	// testCase('Selection insert - across two boundary', state, async (editor) => {
+	// testCAse('Selection insert - Across two boundAry', stAte, Async (editor) => {
 	// 	const pos = new Position(1, 2);
-	// 	await editor.setPosition(pos);
-	// 	await ontypeRenameContribution.updateLinkedUI(pos);
-	// 	await editor.setSelection(new Range(1, 4, 1, 9));
-	// 	await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+	// 	AwAit editor.setPosition(pos);
+	// 	AwAit ontypeRenAmeContribution.updAteLinkedUI(pos);
+	// 	AwAit editor.setSelection(new RAnge(1, 4, 1, 9));
+	// 	AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	// }, '<ooioo>');
 
 	/**
-	 * Break out behavior
+	 * BreAk out behAvior
 	 */
-	testCase('Breakout - type space', state, async (editor) => {
+	testCAse('BreAkout - type spAce', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: ' ' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: ' ' });
 	}, '<ooo ></ooo>');
 
-	testCase('Breakout - type space then undo', state, async (editor) => {
+	testCAse('BreAkout - type spAce then undo', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: ' ' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: ' ' });
 		editor.undo();
 	}, '<ooo></ooo>');
 
-	testCase('Breakout - type space in middle', state, async (editor) => {
+	testCAse('BreAkout - type spAce in middle', stAte, Async (editor) => {
 		const pos = new Position(1, 4);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: ' ' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: ' ' });
 	}, '<oo o></ooo>');
 
-	testCase('Breakout - paste content starting with space', state, async (editor) => {
+	testCAse('BreAkout - pAste content stArting with spAce', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: ' i="i"' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.PAste, { text: ' i="i"' });
 	}, '<ooo i="i"></ooo>');
 
-	testCase('Breakout - paste content starting with space then undo', state, async (editor) => {
+	testCAse('BreAkout - pAste content stArting with spAce then undo', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: ' i="i"' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.PAste, { text: ' i="i"' });
 		editor.undo();
 	}, '<ooo></ooo>');
 
-	testCase('Breakout - paste content starting with space in middle', state, async (editor) => {
+	testCAse('BreAkout - pAste content stArting with spAce in middle', stAte, Async (editor) => {
 		const pos = new Position(1, 4);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: ' i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.PAste, { text: ' i' });
 	}, '<oo io></ooo>');
 
 	/**
-	 * Break out with custom provider wordPattern
+	 * BreAk out with custom provider wordPAttern
 	 */
 
-	const state3 = {
-		...state,
-		providerWordPattern: /[a-yA-Y]+/
+	const stAte3 = {
+		...stAte,
+		providerWordPAttern: /[A-yA-Y]+/
 	};
 
-	testCase('Breakout with stop pattern - insert', state3, async (editor) => {
+	testCAse('BreAkout with stop pAttern - insert', stAte3, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<iooo></iooo>');
 
-	testCase('Breakout with stop pattern - insert stop char', state3, async (editor) => {
+	testCAse('BreAkout with stop pAttern - insert stop chAr', stAte3, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'z' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'z' });
 	}, '<zooo></ooo>');
 
-	testCase('Breakout with stop pattern - paste char', state3, async (editor) => {
+	testCAse('BreAkout with stop pAttern - pAste chAr', stAte3, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: 'z' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.PAste, { text: 'z' });
 	}, '<zooo></ooo>');
 
-	testCase('Breakout with stop pattern - paste string', state3, async (editor) => {
+	testCAse('BreAkout with stop pAttern - pAste string', stAte3, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Paste, { text: 'zo' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.PAste, { text: 'zo' });
 	}, '<zoooo></ooo>');
 
-	testCase('Breakout with stop pattern - insert at end', state3, async (editor) => {
+	testCAse('BreAkout with stop pAttern - insert At end', stAte3, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'z' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'z' });
 	}, '<oooz></ooo>');
 
-	const state4 = {
-		...state,
-		providerWordPattern: /[a-yA-Y]+/,
-		responseWordPattern: /[a-eA-E]+/
+	const stAte4 = {
+		...stAte,
+		providerWordPAttern: /[A-yA-Y]+/,
+		responseWordPAttern: /[A-eA-E]+/
 	};
 
-	testCase('Breakout with stop pattern - insert stop char, respos', state4, async (editor) => {
+	testCAse('BreAkout with stop pAttern - insert stop chAr, respos', stAte4, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, '<iooo></ooo>');
 
 	/**
 	 * Delete
 	 */
-	testCase('Delete - left char', state, async (editor) => {
+	testCAse('Delete - left chAr', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', 'deleteLeft', {});
 	}, '<oo></oo>');
 
-	testCase('Delete - left char then undo', state, async (editor) => {
+	testCAse('Delete - left chAr then undo', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', 'deleteLeft', {});
 		editor.undo();
 	}, '<ooo></ooo>');
 
-	testCase('Delete - left word', state, async (editor) => {
+	testCAse('Delete - left word', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteWordLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', 'deleteWordLeft', {});
 	}, '<></>');
 
-	testCase('Delete - left word then undo', state, async (editor) => {
+	testCAse('Delete - left word then undo', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteWordLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', 'deleteWordLeft', {});
 		editor.undo();
 		editor.undo();
 	}, '<ooo></ooo>');
@@ -377,61 +377,61 @@ suite('On type rename', () => {
 	/**
 	 * Todo: Fix test
 	 */
-	// testCase('Delete - left all', state, async (editor) => {
+	// testCAse('Delete - left All', stAte, Async (editor) => {
 	// 	const pos = new Position(1, 3);
-	// 	await editor.setPosition(pos);
-	// 	await ontypeRenameContribution.updateLinkedUI(pos);
-	// 	await editor.trigger('keyboard', 'deleteAllLeft', {});
+	// 	AwAit editor.setPosition(pos);
+	// 	AwAit ontypeRenAmeContribution.updAteLinkedUI(pos);
+	// 	AwAit editor.trigger('keyboArd', 'deleteAllLeft', {});
 	// }, '></>');
 
 	/**
 	 * Todo: Fix test
 	 */
-	// testCase('Delete - left all then undo', state, async (editor) => {
+	// testCAse('Delete - left All then undo', stAte, Async (editor) => {
 	// 	const pos = new Position(1, 5);
-	// 	await editor.setPosition(pos);
-	// 	await ontypeRenameContribution.updateLinkedUI(pos);
-	// 	await editor.trigger('keyboard', 'deleteAllLeft', {});
+	// 	AwAit editor.setPosition(pos);
+	// 	AwAit ontypeRenAmeContribution.updAteLinkedUI(pos);
+	// 	AwAit editor.trigger('keyboArd', 'deleteAllLeft', {});
 	// 	editor.undo();
 	// }, '></ooo>');
 
-	testCase('Delete - left all then undo twice', state, async (editor) => {
+	testCAse('Delete - left All then undo twice', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', 'deleteAllLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', 'deleteAllLeft', {});
 		editor.undo();
 		editor.undo();
 	}, '<ooo></ooo>');
 
-	testCase('Delete - selection', state, async (editor) => {
+	testCAse('Delete - selection', stAte, Async (editor) => {
 		const pos = new Position(1, 5);
-		await editor.setPosition(pos);
-		await editor.setSelection(new Range(1, 2, 1, 3));
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.setSelection(new RAnge(1, 2, 1, 3));
+		AwAit editor.trigger('keyboArd', 'deleteLeft', {});
 	}, '<oo></oo>');
 
-	testCase('Delete - selection across boundary', state, async (editor) => {
+	testCAse('Delete - selection Across boundAry', stAte, Async (editor) => {
 		const pos = new Position(1, 3);
-		await editor.setPosition(pos);
-		await editor.setSelection(new Range(1, 1, 1, 3));
-		await editor.trigger('keyboard', 'deleteLeft', {});
+		AwAit editor.setPosition(pos);
+		AwAit editor.setSelection(new RAnge(1, 1, 1, 3));
+		AwAit editor.trigger('keyboArd', 'deleteLeft', {});
 	}, 'oo></oo>');
 
 	/**
 	 * Undo / redo
 	 */
-	testCase('Undo/redo - simple undo', state, async (editor) => {
+	testCAse('Undo/redo - simple undo', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 		editor.undo();
 		editor.undo();
 	}, '<ooo></ooo>');
 
-	testCase('Undo/redo - simple undo/redo', state, async (editor) => {
+	testCAse('Undo/redo - simple undo/redo', stAte, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 		editor.undo();
 		editor.redo();
 	}, '<iooo></iooo>');
@@ -439,17 +439,17 @@ suite('On type rename', () => {
 	/**
 	 * Multi line
 	 */
-	const state2 = {
+	const stAte2 = {
 		text: [
 			'<ooo>',
 			'</ooo>'
 		]
 	};
 
-	testCase('Multiline insert', state2, async (editor) => {
+	testCAse('Multiline insert', stAte2, Async (editor) => {
 		const pos = new Position(1, 2);
-		await editor.setPosition(pos);
-		await editor.trigger('keyboard', Handler.Type, { text: 'i' });
+		AwAit editor.setPosition(pos);
+		AwAit editor.trigger('keyboArd', HAndler.Type, { text: 'i' });
 	}, [
 		'<iooo>',
 		'</iooo>'

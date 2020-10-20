@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { ExtHostExtensionService } from 'vs/workbench/api/worker/extHostExtensionService';
-import { ExtHostLogService } from 'vs/workbench/api/worker/extHostLogService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IExtHostExtensionService } from 'vs/workbench/Api/common/extHostExtensionService';
+import { ExtHostExtensionService } from 'vs/workbench/Api/worker/extHostExtensionService';
+import { ExtHostLogService } from 'vs/workbench/Api/worker/extHostLogService';
 
 // #########################################################################
 // ###                                                                   ###

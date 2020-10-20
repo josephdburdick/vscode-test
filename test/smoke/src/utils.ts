@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISuiteCallbackContext, ITestCallbackContext } from 'mocha';
+import { ISuiteCAllbAckContext, ITestCAllbAckContext } from 'mochA';
 
-export function describeRepeat(n: number, description: string, callback: (this: ISuiteCallbackContext) => void): void {
+export function describeRepeAt(n: number, description: string, cAllbAck: (this: ISuiteCAllbAckContext) => void): void {
 	for (let i = 0; i < n; i++) {
-		describe(`${description} (iteration ${i})`, callback);
+		describe(`${description} (iterAtion ${i})`, cAllbAck);
 	}
 }
 
-export function itRepeat(n: number, description: string, callback: (this: ITestCallbackContext, done: MochaDone) => any): void {
+export function itRepeAt(n: number, description: string, cAllbAck: (this: ITestCAllbAckContext, done: MochADone) => Any): void {
 	for (let i = 0; i < n; i++) {
-		it(`${description} (iteration ${i})`, callback);
+		it(`${description} (iterAtion ${i})`, cAllbAck);
 	}
 }

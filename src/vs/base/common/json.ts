@@ -1,359 +1,359 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export const enum ScanError {
+export const enum ScAnError {
 	None = 0,
 	UnexpectedEndOfComment = 1,
 	UnexpectedEndOfString = 2,
 	UnexpectedEndOfNumber = 3,
-	InvalidUnicode = 4,
-	InvalidEscapeCharacter = 5,
-	InvalidCharacter = 6
+	InvAlidUnicode = 4,
+	InvAlidEscApeChArActer = 5,
+	InvAlidChArActer = 6
 }
 
-export const enum SyntaxKind {
-	OpenBraceToken = 1,
-	CloseBraceToken = 2,
-	OpenBracketToken = 3,
-	CloseBracketToken = 4,
-	CommaToken = 5,
+export const enum SyntAxKind {
+	OpenBrAceToken = 1,
+	CloseBrAceToken = 2,
+	OpenBrAcketToken = 3,
+	CloseBrAcketToken = 4,
+	CommAToken = 5,
 	ColonToken = 6,
 	NullKeyword = 7,
 	TrueKeyword = 8,
-	FalseKeyword = 9,
-	StringLiteral = 10,
-	NumericLiteral = 11,
-	LineCommentTrivia = 12,
-	BlockCommentTrivia = 13,
-	LineBreakTrivia = 14,
-	Trivia = 15,
+	FAlseKeyword = 9,
+	StringLiterAl = 10,
+	NumericLiterAl = 11,
+	LineCommentTriviA = 12,
+	BlockCommentTriviA = 13,
+	LineBreAkTriviA = 14,
+	TriviA = 15,
 	Unknown = 16,
 	EOF = 17
 }
 
 /**
- * The scanner object, representing a JSON scanner at a position in the input string.
+ * The scAnner object, representing A JSON scAnner At A position in the input string.
  */
-export interface JSONScanner {
+export interfAce JSONScAnner {
 	/**
-	 * Sets the scan position to a new offset. A call to 'scan' is needed to get the first token.
+	 * Sets the scAn position to A new offset. A cAll to 'scAn' is needed to get the first token.
 	 */
 	setPosition(pos: number): void;
 	/**
-	 * Read the next token. Returns the token code.
+	 * ReAd the next token. Returns the token code.
 	 */
-	scan(): SyntaxKind;
+	scAn(): SyntAxKind;
 	/**
-	 * Returns the current scan position, which is after the last read token.
+	 * Returns the current scAn position, which is After the lAst reAd token.
 	 */
 	getPosition(): number;
 	/**
-	 * Returns the last read token.
+	 * Returns the lAst reAd token.
 	 */
-	getToken(): SyntaxKind;
+	getToken(): SyntAxKind;
 	/**
-	 * Returns the last read token value. The value for strings is the decoded string content. For numbers its of type number, for boolean it's true or false.
+	 * Returns the lAst reAd token vAlue. The vAlue for strings is the decoded string content. For numbers its of type number, for booleAn it's true or fAlse.
 	 */
-	getTokenValue(): string;
+	getTokenVAlue(): string;
 	/**
-	 * The start offset of the last read token.
+	 * The stArt offset of the lAst reAd token.
 	 */
 	getTokenOffset(): number;
 	/**
-	 * The length of the last read token.
+	 * The length of the lAst reAd token.
 	 */
 	getTokenLength(): number;
 	/**
-	 * An error code of the last scan.
+	 * An error code of the lAst scAn.
 	 */
-	getTokenError(): ScanError;
+	getTokenError(): ScAnError;
 }
 
 
 
-export interface ParseError {
-	error: ParseErrorCode;
+export interfAce PArseError {
+	error: PArseErrorCode;
 	offset: number;
 	length: number;
 }
 
-export const enum ParseErrorCode {
-	InvalidSymbol = 1,
-	InvalidNumberFormat = 2,
-	PropertyNameExpected = 3,
-	ValueExpected = 4,
+export const enum PArseErrorCode {
+	InvAlidSymbol = 1,
+	InvAlidNumberFormAt = 2,
+	PropertyNAmeExpected = 3,
+	VAlueExpected = 4,
 	ColonExpected = 5,
-	CommaExpected = 6,
-	CloseBraceExpected = 7,
-	CloseBracketExpected = 8,
+	CommAExpected = 6,
+	CloseBrAceExpected = 7,
+	CloseBrAcketExpected = 8,
 	EndOfFileExpected = 9,
-	InvalidCommentToken = 10,
+	InvAlidCommentToken = 10,
 	UnexpectedEndOfComment = 11,
 	UnexpectedEndOfString = 12,
 	UnexpectedEndOfNumber = 13,
-	InvalidUnicode = 14,
-	InvalidEscapeCharacter = 15,
-	InvalidCharacter = 16
+	InvAlidUnicode = 14,
+	InvAlidEscApeChArActer = 15,
+	InvAlidChArActer = 16
 }
 
-export type NodeType = 'object' | 'array' | 'property' | 'string' | 'number' | 'boolean' | 'null';
+export type NodeType = 'object' | 'ArrAy' | 'property' | 'string' | 'number' | 'booleAn' | 'null';
 
-export interface Node {
-	readonly type: NodeType;
-	readonly value?: any;
-	readonly offset: number;
-	readonly length: number;
-	readonly colonOffset?: number;
-	readonly parent?: Node;
-	readonly children?: Node[];
+export interfAce Node {
+	reAdonly type: NodeType;
+	reAdonly vAlue?: Any;
+	reAdonly offset: number;
+	reAdonly length: number;
+	reAdonly colonOffset?: number;
+	reAdonly pArent?: Node;
+	reAdonly children?: Node[];
 }
 
 export type Segment = string | number;
-export type JSONPath = Segment[];
+export type JSONPAth = Segment[];
 
-export interface Location {
+export interfAce LocAtion {
 	/**
-	 * The previous property key or literal value (string, number, boolean or null) or undefined.
+	 * The previous property key or literAl vAlue (string, number, booleAn or null) or undefined.
 	 */
 	previousNode?: Node;
 	/**
-	 * The path describing the location in the JSON document. The path consists of a sequence strings
-	 * representing an object property or numbers for array indices.
+	 * The pAth describing the locAtion in the JSON document. The pAth consists of A sequence strings
+	 * representing An object property or numbers for ArrAy indices.
 	 */
-	path: JSONPath;
+	pAth: JSONPAth;
 	/**
-	 * Matches the locations path against a pattern consisting of strings (for properties) and numbers (for array indices).
-	 * '*' will match a single segment, of any property name or index.
-	 * '**' will match a sequece of segments or no segment, of any property name or index.
+	 * MAtches the locAtions pAth AgAinst A pAttern consisting of strings (for properties) And numbers (for ArrAy indices).
+	 * '*' will mAtch A single segment, of Any property nAme or index.
+	 * '**' will mAtch A sequece of segments or no segment, of Any property nAme or index.
 	 */
-	matches: (patterns: JSONPath) => boolean;
+	mAtches: (pAtterns: JSONPAth) => booleAn;
 	/**
-	 * If set, the location's offset is at a property key.
+	 * If set, the locAtion's offset is At A property key.
 	 */
-	isAtPropertyKey: boolean;
+	isAtPropertyKey: booleAn;
 }
 
-export interface ParseOptions {
-	disallowComments?: boolean;
-	allowTrailingComma?: boolean;
-	allowEmptyContent?: boolean;
+export interfAce PArseOptions {
+	disAllowComments?: booleAn;
+	AllowTrAilingCommA?: booleAn;
+	AllowEmptyContent?: booleAn;
 }
 
-export namespace ParseOptions {
+export nAmespAce PArseOptions {
 	export const DEFAULT = {
-		allowTrailingComma: true
+		AllowTrAilingCommA: true
 	};
 }
 
-export interface JSONVisitor {
+export interfAce JSONVisitor {
 	/**
-	 * Invoked when an open brace is encountered and an object is started. The offset and length represent the location of the open brace.
+	 * Invoked when An open brAce is encountered And An object is stArted. The offset And length represent the locAtion of the open brAce.
 	 */
 	onObjectBegin?: (offset: number, length: number) => void;
 
 	/**
-	 * Invoked when a property is encountered. The offset and length represent the location of the property name.
+	 * Invoked when A property is encountered. The offset And length represent the locAtion of the property nAme.
 	 */
 	onObjectProperty?: (property: string, offset: number, length: number) => void;
 
 	/**
-	 * Invoked when a closing brace is encountered and an object is completed. The offset and length represent the location of the closing brace.
+	 * Invoked when A closing brAce is encountered And An object is completed. The offset And length represent the locAtion of the closing brAce.
 	 */
 	onObjectEnd?: (offset: number, length: number) => void;
 
 	/**
-	 * Invoked when an open bracket is encountered. The offset and length represent the location of the open bracket.
+	 * Invoked when An open brAcket is encountered. The offset And length represent the locAtion of the open brAcket.
 	 */
-	onArrayBegin?: (offset: number, length: number) => void;
+	onArrAyBegin?: (offset: number, length: number) => void;
 
 	/**
-	 * Invoked when a closing bracket is encountered. The offset and length represent the location of the closing bracket.
+	 * Invoked when A closing brAcket is encountered. The offset And length represent the locAtion of the closing brAcket.
 	 */
-	onArrayEnd?: (offset: number, length: number) => void;
+	onArrAyEnd?: (offset: number, length: number) => void;
 
 	/**
-	 * Invoked when a literal value is encountered. The offset and length represent the location of the literal value.
+	 * Invoked when A literAl vAlue is encountered. The offset And length represent the locAtion of the literAl vAlue.
 	 */
-	onLiteralValue?: (value: any, offset: number, length: number) => void;
+	onLiterAlVAlue?: (vAlue: Any, offset: number, length: number) => void;
 
 	/**
-	 * Invoked when a comma or colon separator is encountered. The offset and length represent the location of the separator.
+	 * Invoked when A commA or colon sepArAtor is encountered. The offset And length represent the locAtion of the sepArAtor.
 	 */
-	onSeparator?: (character: string, offset: number, length: number) => void;
+	onSepArAtor?: (chArActer: string, offset: number, length: number) => void;
 
 	/**
-	 * When comments are allowed, invoked when a line or block comment is encountered. The offset and length represent the location of the comment.
+	 * When comments Are Allowed, invoked when A line or block comment is encountered. The offset And length represent the locAtion of the comment.
 	 */
 	onComment?: (offset: number, length: number) => void;
 
 	/**
-	 * Invoked on an error.
+	 * Invoked on An error.
 	 */
-	onError?: (error: ParseErrorCode, offset: number, length: number) => void;
+	onError?: (error: PArseErrorCode, offset: number, length: number) => void;
 }
 
 /**
- * Creates a JSON scanner on the given text.
- * If ignoreTrivia is set, whitespaces or comments are ignored.
+ * CreAtes A JSON scAnner on the given text.
+ * If ignoreTriviA is set, whitespAces or comments Are ignored.
  */
-export function createScanner(text: string, ignoreTrivia: boolean = false): JSONScanner {
+export function creAteScAnner(text: string, ignoreTriviA: booleAn = fAlse): JSONScAnner {
 
 	let pos = 0,
 		len = text.length,
-		value: string = '',
+		vAlue: string = '',
 		tokenOffset = 0,
-		token: SyntaxKind = SyntaxKind.Unknown,
-		scanError: ScanError = ScanError.None;
+		token: SyntAxKind = SyntAxKind.Unknown,
+		scAnError: ScAnError = ScAnError.None;
 
-	function scanHexDigits(count: number): number {
+	function scAnHexDigits(count: number): number {
 		let digits = 0;
-		let hexValue = 0;
+		let hexVAlue = 0;
 		while (digits < count) {
-			const ch = text.charCodeAt(pos);
-			if (ch >= CharacterCodes._0 && ch <= CharacterCodes._9) {
-				hexValue = hexValue * 16 + ch - CharacterCodes._0;
+			const ch = text.chArCodeAt(pos);
+			if (ch >= ChArActerCodes._0 && ch <= ChArActerCodes._9) {
+				hexVAlue = hexVAlue * 16 + ch - ChArActerCodes._0;
 			}
-			else if (ch >= CharacterCodes.A && ch <= CharacterCodes.F) {
-				hexValue = hexValue * 16 + ch - CharacterCodes.A + 10;
+			else if (ch >= ChArActerCodes.A && ch <= ChArActerCodes.F) {
+				hexVAlue = hexVAlue * 16 + ch - ChArActerCodes.A + 10;
 			}
-			else if (ch >= CharacterCodes.a && ch <= CharacterCodes.f) {
-				hexValue = hexValue * 16 + ch - CharacterCodes.a + 10;
+			else if (ch >= ChArActerCodes.A && ch <= ChArActerCodes.f) {
+				hexVAlue = hexVAlue * 16 + ch - ChArActerCodes.A + 10;
 			}
 			else {
-				break;
+				breAk;
 			}
 			pos++;
 			digits++;
 		}
 		if (digits < count) {
-			hexValue = -1;
+			hexVAlue = -1;
 		}
-		return hexValue;
+		return hexVAlue;
 	}
 
 	function setPosition(newPosition: number) {
 		pos = newPosition;
-		value = '';
+		vAlue = '';
 		tokenOffset = 0;
-		token = SyntaxKind.Unknown;
-		scanError = ScanError.None;
+		token = SyntAxKind.Unknown;
+		scAnError = ScAnError.None;
 	}
 
-	function scanNumber(): string {
-		const start = pos;
-		if (text.charCodeAt(pos) === CharacterCodes._0) {
+	function scAnNumber(): string {
+		const stArt = pos;
+		if (text.chArCodeAt(pos) === ChArActerCodes._0) {
 			pos++;
 		} else {
 			pos++;
-			while (pos < text.length && isDigit(text.charCodeAt(pos))) {
+			while (pos < text.length && isDigit(text.chArCodeAt(pos))) {
 				pos++;
 			}
 		}
-		if (pos < text.length && text.charCodeAt(pos) === CharacterCodes.dot) {
+		if (pos < text.length && text.chArCodeAt(pos) === ChArActerCodes.dot) {
 			pos++;
-			if (pos < text.length && isDigit(text.charCodeAt(pos))) {
+			if (pos < text.length && isDigit(text.chArCodeAt(pos))) {
 				pos++;
-				while (pos < text.length && isDigit(text.charCodeAt(pos))) {
+				while (pos < text.length && isDigit(text.chArCodeAt(pos))) {
 					pos++;
 				}
 			} else {
-				scanError = ScanError.UnexpectedEndOfNumber;
-				return text.substring(start, pos);
+				scAnError = ScAnError.UnexpectedEndOfNumber;
+				return text.substring(stArt, pos);
 			}
 		}
 		let end = pos;
-		if (pos < text.length && (text.charCodeAt(pos) === CharacterCodes.E || text.charCodeAt(pos) === CharacterCodes.e)) {
+		if (pos < text.length && (text.chArCodeAt(pos) === ChArActerCodes.E || text.chArCodeAt(pos) === ChArActerCodes.e)) {
 			pos++;
-			if (pos < text.length && text.charCodeAt(pos) === CharacterCodes.plus || text.charCodeAt(pos) === CharacterCodes.minus) {
+			if (pos < text.length && text.chArCodeAt(pos) === ChArActerCodes.plus || text.chArCodeAt(pos) === ChArActerCodes.minus) {
 				pos++;
 			}
-			if (pos < text.length && isDigit(text.charCodeAt(pos))) {
+			if (pos < text.length && isDigit(text.chArCodeAt(pos))) {
 				pos++;
-				while (pos < text.length && isDigit(text.charCodeAt(pos))) {
+				while (pos < text.length && isDigit(text.chArCodeAt(pos))) {
 					pos++;
 				}
 				end = pos;
 			} else {
-				scanError = ScanError.UnexpectedEndOfNumber;
+				scAnError = ScAnError.UnexpectedEndOfNumber;
 			}
 		}
-		return text.substring(start, end);
+		return text.substring(stArt, end);
 	}
 
-	function scanString(): string {
+	function scAnString(): string {
 
 		let result = '',
-			start = pos;
+			stArt = pos;
 
 		while (true) {
 			if (pos >= len) {
-				result += text.substring(start, pos);
-				scanError = ScanError.UnexpectedEndOfString;
-				break;
+				result += text.substring(stArt, pos);
+				scAnError = ScAnError.UnexpectedEndOfString;
+				breAk;
 			}
-			const ch = text.charCodeAt(pos);
-			if (ch === CharacterCodes.doubleQuote) {
-				result += text.substring(start, pos);
+			const ch = text.chArCodeAt(pos);
+			if (ch === ChArActerCodes.doubleQuote) {
+				result += text.substring(stArt, pos);
 				pos++;
-				break;
+				breAk;
 			}
-			if (ch === CharacterCodes.backslash) {
-				result += text.substring(start, pos);
+			if (ch === ChArActerCodes.bAckslAsh) {
+				result += text.substring(stArt, pos);
 				pos++;
 				if (pos >= len) {
-					scanError = ScanError.UnexpectedEndOfString;
-					break;
+					scAnError = ScAnError.UnexpectedEndOfString;
+					breAk;
 				}
-				const ch2 = text.charCodeAt(pos++);
+				const ch2 = text.chArCodeAt(pos++);
 				switch (ch2) {
-					case CharacterCodes.doubleQuote:
+					cAse ChArActerCodes.doubleQuote:
 						result += '\"';
-						break;
-					case CharacterCodes.backslash:
+						breAk;
+					cAse ChArActerCodes.bAckslAsh:
 						result += '\\';
-						break;
-					case CharacterCodes.slash:
+						breAk;
+					cAse ChArActerCodes.slAsh:
 						result += '/';
-						break;
-					case CharacterCodes.b:
+						breAk;
+					cAse ChArActerCodes.b:
 						result += '\b';
-						break;
-					case CharacterCodes.f:
+						breAk;
+					cAse ChArActerCodes.f:
 						result += '\f';
-						break;
-					case CharacterCodes.n:
+						breAk;
+					cAse ChArActerCodes.n:
 						result += '\n';
-						break;
-					case CharacterCodes.r:
+						breAk;
+					cAse ChArActerCodes.r:
 						result += '\r';
-						break;
-					case CharacterCodes.t:
+						breAk;
+					cAse ChArActerCodes.t:
 						result += '\t';
-						break;
-					case CharacterCodes.u:
-						const ch3 = scanHexDigits(4);
+						breAk;
+					cAse ChArActerCodes.u:
+						const ch3 = scAnHexDigits(4);
 						if (ch3 >= 0) {
-							result += String.fromCharCode(ch3);
+							result += String.fromChArCode(ch3);
 						} else {
-							scanError = ScanError.InvalidUnicode;
+							scAnError = ScAnError.InvAlidUnicode;
 						}
-						break;
-					default:
-						scanError = ScanError.InvalidEscapeCharacter;
+						breAk;
+					defAult:
+						scAnError = ScAnError.InvAlidEscApeChArActer;
 				}
-				start = pos;
+				stArt = pos;
 				continue;
 			}
 			if (ch >= 0 && ch <= 0x1F) {
-				if (isLineBreak(ch)) {
-					result += text.substring(start, pos);
-					scanError = ScanError.UnexpectedEndOfString;
-					break;
+				if (isLineBreAk(ch)) {
+					result += text.substring(stArt, pos);
+					scAnError = ScAnError.UnexpectedEndOfString;
+					breAk;
 				} else {
-					scanError = ScanError.InvalidCharacter;
-					// mark as error but continue with string
+					scAnError = ScAnError.InvAlidChArActer;
+					// mArk As error but continue with string
 				}
 			}
 			pos++;
@@ -361,248 +361,248 @@ export function createScanner(text: string, ignoreTrivia: boolean = false): JSON
 		return result;
 	}
 
-	function scanNext(): SyntaxKind {
+	function scAnNext(): SyntAxKind {
 
-		value = '';
-		scanError = ScanError.None;
+		vAlue = '';
+		scAnError = ScAnError.None;
 
 		tokenOffset = pos;
 
 		if (pos >= len) {
-			// at the end
+			// At the end
 			tokenOffset = len;
-			return token = SyntaxKind.EOF;
+			return token = SyntAxKind.EOF;
 		}
 
-		let code = text.charCodeAt(pos);
-		// trivia: whitespace
-		if (isWhitespace(code)) {
+		let code = text.chArCodeAt(pos);
+		// triviA: whitespAce
+		if (isWhitespAce(code)) {
 			do {
 				pos++;
-				value += String.fromCharCode(code);
-				code = text.charCodeAt(pos);
-			} while (isWhitespace(code));
+				vAlue += String.fromChArCode(code);
+				code = text.chArCodeAt(pos);
+			} while (isWhitespAce(code));
 
-			return token = SyntaxKind.Trivia;
+			return token = SyntAxKind.TriviA;
 		}
 
-		// trivia: newlines
-		if (isLineBreak(code)) {
+		// triviA: newlines
+		if (isLineBreAk(code)) {
 			pos++;
-			value += String.fromCharCode(code);
-			if (code === CharacterCodes.carriageReturn && text.charCodeAt(pos) === CharacterCodes.lineFeed) {
+			vAlue += String.fromChArCode(code);
+			if (code === ChArActerCodes.cArriAgeReturn && text.chArCodeAt(pos) === ChArActerCodes.lineFeed) {
 				pos++;
-				value += '\n';
+				vAlue += '\n';
 			}
-			return token = SyntaxKind.LineBreakTrivia;
+			return token = SyntAxKind.LineBreAkTriviA;
 		}
 
 		switch (code) {
 			// tokens: []{}:,
-			case CharacterCodes.openBrace:
+			cAse ChArActerCodes.openBrAce:
 				pos++;
-				return token = SyntaxKind.OpenBraceToken;
-			case CharacterCodes.closeBrace:
+				return token = SyntAxKind.OpenBrAceToken;
+			cAse ChArActerCodes.closeBrAce:
 				pos++;
-				return token = SyntaxKind.CloseBraceToken;
-			case CharacterCodes.openBracket:
+				return token = SyntAxKind.CloseBrAceToken;
+			cAse ChArActerCodes.openBrAcket:
 				pos++;
-				return token = SyntaxKind.OpenBracketToken;
-			case CharacterCodes.closeBracket:
+				return token = SyntAxKind.OpenBrAcketToken;
+			cAse ChArActerCodes.closeBrAcket:
 				pos++;
-				return token = SyntaxKind.CloseBracketToken;
-			case CharacterCodes.colon:
+				return token = SyntAxKind.CloseBrAcketToken;
+			cAse ChArActerCodes.colon:
 				pos++;
-				return token = SyntaxKind.ColonToken;
-			case CharacterCodes.comma:
+				return token = SyntAxKind.ColonToken;
+			cAse ChArActerCodes.commA:
 				pos++;
-				return token = SyntaxKind.CommaToken;
+				return token = SyntAxKind.CommAToken;
 
 			// strings
-			case CharacterCodes.doubleQuote:
+			cAse ChArActerCodes.doubleQuote:
 				pos++;
-				value = scanString();
-				return token = SyntaxKind.StringLiteral;
+				vAlue = scAnString();
+				return token = SyntAxKind.StringLiterAl;
 
 			// comments
-			case CharacterCodes.slash:
-				const start = pos - 1;
+			cAse ChArActerCodes.slAsh:
+				const stArt = pos - 1;
 				// Single-line comment
-				if (text.charCodeAt(pos + 1) === CharacterCodes.slash) {
+				if (text.chArCodeAt(pos + 1) === ChArActerCodes.slAsh) {
 					pos += 2;
 
 					while (pos < len) {
-						if (isLineBreak(text.charCodeAt(pos))) {
-							break;
+						if (isLineBreAk(text.chArCodeAt(pos))) {
+							breAk;
 						}
 						pos++;
 
 					}
-					value = text.substring(start, pos);
-					return token = SyntaxKind.LineCommentTrivia;
+					vAlue = text.substring(stArt, pos);
+					return token = SyntAxKind.LineCommentTriviA;
 				}
 
 				// Multi-line comment
-				if (text.charCodeAt(pos + 1) === CharacterCodes.asterisk) {
+				if (text.chArCodeAt(pos + 1) === ChArActerCodes.Asterisk) {
 					pos += 2;
 
-					const safeLength = len - 1; // For lookahead.
-					let commentClosed = false;
-					while (pos < safeLength) {
-						const ch = text.charCodeAt(pos);
+					const sAfeLength = len - 1; // For lookAheAd.
+					let commentClosed = fAlse;
+					while (pos < sAfeLength) {
+						const ch = text.chArCodeAt(pos);
 
-						if (ch === CharacterCodes.asterisk && text.charCodeAt(pos + 1) === CharacterCodes.slash) {
+						if (ch === ChArActerCodes.Asterisk && text.chArCodeAt(pos + 1) === ChArActerCodes.slAsh) {
 							pos += 2;
 							commentClosed = true;
-							break;
+							breAk;
 						}
 						pos++;
 					}
 
 					if (!commentClosed) {
 						pos++;
-						scanError = ScanError.UnexpectedEndOfComment;
+						scAnError = ScAnError.UnexpectedEndOfComment;
 					}
 
-					value = text.substring(start, pos);
-					return token = SyntaxKind.BlockCommentTrivia;
+					vAlue = text.substring(stArt, pos);
+					return token = SyntAxKind.BlockCommentTriviA;
 				}
-				// just a single slash
-				value += String.fromCharCode(code);
+				// just A single slAsh
+				vAlue += String.fromChArCode(code);
 				pos++;
-				return token = SyntaxKind.Unknown;
+				return token = SyntAxKind.Unknown;
 
 			// numbers
-			case CharacterCodes.minus:
-				value += String.fromCharCode(code);
+			cAse ChArActerCodes.minus:
+				vAlue += String.fromChArCode(code);
 				pos++;
-				if (pos === len || !isDigit(text.charCodeAt(pos))) {
-					return token = SyntaxKind.Unknown;
+				if (pos === len || !isDigit(text.chArCodeAt(pos))) {
+					return token = SyntAxKind.Unknown;
 				}
-			// found a minus, followed by a number so
-			// we fall through to proceed with scanning
+			// found A minus, followed by A number so
+			// we fAll through to proceed with scAnning
 			// numbers
-			case CharacterCodes._0:
-			case CharacterCodes._1:
-			case CharacterCodes._2:
-			case CharacterCodes._3:
-			case CharacterCodes._4:
-			case CharacterCodes._5:
-			case CharacterCodes._6:
-			case CharacterCodes._7:
-			case CharacterCodes._8:
-			case CharacterCodes._9:
-				value += scanNumber();
-				return token = SyntaxKind.NumericLiteral;
-			// literals and unknown symbols
-			default:
-				// is a literal? Read the full word.
-				while (pos < len && isUnknownContentCharacter(code)) {
+			cAse ChArActerCodes._0:
+			cAse ChArActerCodes._1:
+			cAse ChArActerCodes._2:
+			cAse ChArActerCodes._3:
+			cAse ChArActerCodes._4:
+			cAse ChArActerCodes._5:
+			cAse ChArActerCodes._6:
+			cAse ChArActerCodes._7:
+			cAse ChArActerCodes._8:
+			cAse ChArActerCodes._9:
+				vAlue += scAnNumber();
+				return token = SyntAxKind.NumericLiterAl;
+			// literAls And unknown symbols
+			defAult:
+				// is A literAl? ReAd the full word.
+				while (pos < len && isUnknownContentChArActer(code)) {
 					pos++;
-					code = text.charCodeAt(pos);
+					code = text.chArCodeAt(pos);
 				}
 				if (tokenOffset !== pos) {
-					value = text.substring(tokenOffset, pos);
-					// keywords: true, false, null
-					switch (value) {
-						case 'true': return token = SyntaxKind.TrueKeyword;
-						case 'false': return token = SyntaxKind.FalseKeyword;
-						case 'null': return token = SyntaxKind.NullKeyword;
+					vAlue = text.substring(tokenOffset, pos);
+					// keywords: true, fAlse, null
+					switch (vAlue) {
+						cAse 'true': return token = SyntAxKind.TrueKeyword;
+						cAse 'fAlse': return token = SyntAxKind.FAlseKeyword;
+						cAse 'null': return token = SyntAxKind.NullKeyword;
 					}
-					return token = SyntaxKind.Unknown;
+					return token = SyntAxKind.Unknown;
 				}
 				// some
-				value += String.fromCharCode(code);
+				vAlue += String.fromChArCode(code);
 				pos++;
-				return token = SyntaxKind.Unknown;
+				return token = SyntAxKind.Unknown;
 		}
 	}
 
-	function isUnknownContentCharacter(code: CharacterCodes) {
-		if (isWhitespace(code) || isLineBreak(code)) {
-			return false;
+	function isUnknownContentChArActer(code: ChArActerCodes) {
+		if (isWhitespAce(code) || isLineBreAk(code)) {
+			return fAlse;
 		}
 		switch (code) {
-			case CharacterCodes.closeBrace:
-			case CharacterCodes.closeBracket:
-			case CharacterCodes.openBrace:
-			case CharacterCodes.openBracket:
-			case CharacterCodes.doubleQuote:
-			case CharacterCodes.colon:
-			case CharacterCodes.comma:
-			case CharacterCodes.slash:
-				return false;
+			cAse ChArActerCodes.closeBrAce:
+			cAse ChArActerCodes.closeBrAcket:
+			cAse ChArActerCodes.openBrAce:
+			cAse ChArActerCodes.openBrAcket:
+			cAse ChArActerCodes.doubleQuote:
+			cAse ChArActerCodes.colon:
+			cAse ChArActerCodes.commA:
+			cAse ChArActerCodes.slAsh:
+				return fAlse;
 		}
 		return true;
 	}
 
 
-	function scanNextNonTrivia(): SyntaxKind {
-		let result: SyntaxKind;
+	function scAnNextNonTriviA(): SyntAxKind {
+		let result: SyntAxKind;
 		do {
-			result = scanNext();
-		} while (result >= SyntaxKind.LineCommentTrivia && result <= SyntaxKind.Trivia);
+			result = scAnNext();
+		} while (result >= SyntAxKind.LineCommentTriviA && result <= SyntAxKind.TriviA);
 		return result;
 	}
 
 	return {
 		setPosition: setPosition,
 		getPosition: () => pos,
-		scan: ignoreTrivia ? scanNextNonTrivia : scanNext,
+		scAn: ignoreTriviA ? scAnNextNonTriviA : scAnNext,
 		getToken: () => token,
-		getTokenValue: () => value,
+		getTokenVAlue: () => vAlue,
 		getTokenOffset: () => tokenOffset,
 		getTokenLength: () => pos - tokenOffset,
-		getTokenError: () => scanError
+		getTokenError: () => scAnError
 	};
 }
 
-function isWhitespace(ch: number): boolean {
-	return ch === CharacterCodes.space || ch === CharacterCodes.tab || ch === CharacterCodes.verticalTab || ch === CharacterCodes.formFeed ||
-		ch === CharacterCodes.nonBreakingSpace || ch === CharacterCodes.ogham || ch >= CharacterCodes.enQuad && ch <= CharacterCodes.zeroWidthSpace ||
-		ch === CharacterCodes.narrowNoBreakSpace || ch === CharacterCodes.mathematicalSpace || ch === CharacterCodes.ideographicSpace || ch === CharacterCodes.byteOrderMark;
+function isWhitespAce(ch: number): booleAn {
+	return ch === ChArActerCodes.spAce || ch === ChArActerCodes.tAb || ch === ChArActerCodes.verticAlTAb || ch === ChArActerCodes.formFeed ||
+		ch === ChArActerCodes.nonBreAkingSpAce || ch === ChArActerCodes.oghAm || ch >= ChArActerCodes.enQuAd && ch <= ChArActerCodes.zeroWidthSpAce ||
+		ch === ChArActerCodes.nArrowNoBreAkSpAce || ch === ChArActerCodes.mAthemAticAlSpAce || ch === ChArActerCodes.ideogrAphicSpAce || ch === ChArActerCodes.byteOrderMArk;
 }
 
-function isLineBreak(ch: number): boolean {
-	return ch === CharacterCodes.lineFeed || ch === CharacterCodes.carriageReturn || ch === CharacterCodes.lineSeparator || ch === CharacterCodes.paragraphSeparator;
+function isLineBreAk(ch: number): booleAn {
+	return ch === ChArActerCodes.lineFeed || ch === ChArActerCodes.cArriAgeReturn || ch === ChArActerCodes.lineSepArAtor || ch === ChArActerCodes.pArAgrAphSepArAtor;
 }
 
-function isDigit(ch: number): boolean {
-	return ch >= CharacterCodes._0 && ch <= CharacterCodes._9;
+function isDigit(ch: number): booleAn {
+	return ch >= ChArActerCodes._0 && ch <= ChArActerCodes._9;
 }
 
-const enum CharacterCodes {
-	nullCharacter = 0,
-	maxAsciiCharacter = 0x7F,
+const enum ChArActerCodes {
+	nullChArActer = 0,
+	mAxAsciiChArActer = 0x7F,
 
 	lineFeed = 0x0A,              // \n
-	carriageReturn = 0x0D,        // \r
-	lineSeparator = 0x2028,
-	paragraphSeparator = 0x2029,
+	cArriAgeReturn = 0x0D,        // \r
+	lineSepArAtor = 0x2028,
+	pArAgrAphSepArAtor = 0x2029,
 
-	// REVIEW: do we need to support this?  The scanner doesn't, but our IText does.  This seems
-	// like an odd disparity?  (Or maybe it's completely fine for them to be different).
+	// REVIEW: do we need to support this?  The scAnner doesn't, but our IText does.  This seems
+	// like An odd dispArity?  (Or mAybe it's completely fine for them to be different).
 	nextLine = 0x0085,
 
-	// Unicode 3.0 space characters
-	space = 0x0020,   // " "
-	nonBreakingSpace = 0x00A0,   //
-	enQuad = 0x2000,
-	emQuad = 0x2001,
-	enSpace = 0x2002,
-	emSpace = 0x2003,
-	threePerEmSpace = 0x2004,
-	fourPerEmSpace = 0x2005,
-	sixPerEmSpace = 0x2006,
-	figureSpace = 0x2007,
-	punctuationSpace = 0x2008,
-	thinSpace = 0x2009,
-	hairSpace = 0x200A,
-	zeroWidthSpace = 0x200B,
-	narrowNoBreakSpace = 0x202F,
-	ideographicSpace = 0x3000,
-	mathematicalSpace = 0x205F,
-	ogham = 0x1680,
+	// Unicode 3.0 spAce chArActers
+	spAce = 0x0020,   // " "
+	nonBreAkingSpAce = 0x00A0,   //
+	enQuAd = 0x2000,
+	emQuAd = 0x2001,
+	enSpAce = 0x2002,
+	emSpAce = 0x2003,
+	threePerEmSpAce = 0x2004,
+	fourPerEmSpAce = 0x2005,
+	sixPerEmSpAce = 0x2006,
+	figureSpAce = 0x2007,
+	punctuAtionSpAce = 0x2008,
+	thinSpAce = 0x2009,
+	hAirSpAce = 0x200A,
+	zeroWidthSpAce = 0x200B,
+	nArrowNoBreAkSpAce = 0x202F,
+	ideogrAphicSpAce = 0x3000,
+	mAthemAticAlSpAce = 0x205F,
+	oghAm = 0x1680,
 
 	_ = 0x5F,
 	$ = 0x24,
@@ -618,7 +618,7 @@ const enum CharacterCodes {
 	_8 = 0x38,
 	_9 = 0x39,
 
-	a = 0x61,
+	A = 0x61,
 	b = 0x62,
 	c = 0x63,
 	d = 0x64,
@@ -672,69 +672,69 @@ const enum CharacterCodes {
 	Y = 0x59,
 	Z = 0x5A,
 
-	ampersand = 0x26,             // &
-	asterisk = 0x2A,              // *
-	at = 0x40,                    // @
-	backslash = 0x5C,             // \
-	bar = 0x7C,                   // |
-	caret = 0x5E,                 // ^
-	closeBrace = 0x7D,            // }
-	closeBracket = 0x5D,          // ]
-	closeParen = 0x29,            // )
+	AmpersAnd = 0x26,             // &
+	Asterisk = 0x2A,              // *
+	At = 0x40,                    // @
+	bAckslAsh = 0x5C,             // \
+	bAr = 0x7C,                   // |
+	cAret = 0x5E,                 // ^
+	closeBrAce = 0x7D,            // }
+	closeBrAcket = 0x5D,          // ]
+	closePAren = 0x29,            // )
 	colon = 0x3A,                 // :
-	comma = 0x2C,                 // ,
+	commA = 0x2C,                 // ,
 	dot = 0x2E,                   // .
 	doubleQuote = 0x22,           // "
-	equals = 0x3D,                // =
-	exclamation = 0x21,           // !
-	greaterThan = 0x3E,           // >
-	lessThan = 0x3C,              // <
+	equAls = 0x3D,                // =
+	exclAmAtion = 0x21,           // !
+	greAterThAn = 0x3E,           // >
+	lessThAn = 0x3C,              // <
 	minus = 0x2D,                 // -
-	openBrace = 0x7B,             // {
-	openBracket = 0x5B,           // [
-	openParen = 0x28,             // (
+	openBrAce = 0x7B,             // {
+	openBrAcket = 0x5B,           // [
+	openPAren = 0x28,             // (
 	percent = 0x25,               // %
 	plus = 0x2B,                  // +
 	question = 0x3F,              // ?
 	semicolon = 0x3B,             // ;
 	singleQuote = 0x27,           // '
-	slash = 0x2F,                 // /
+	slAsh = 0x2F,                 // /
 	tilde = 0x7E,                 // ~
 
-	backspace = 0x08,             // \b
+	bAckspAce = 0x08,             // \b
 	formFeed = 0x0C,              // \f
-	byteOrderMark = 0xFEFF,
-	tab = 0x09,                   // \t
-	verticalTab = 0x0B,           // \v
+	byteOrderMArk = 0xFEFF,
+	tAb = 0x09,                   // \t
+	verticAlTAb = 0x0B,           // \v
 }
 
-interface NodeImpl extends Node {
+interfAce NodeImpl extends Node {
 	type: NodeType;
-	value?: any;
+	vAlue?: Any;
 	offset: number;
 	length: number;
 	colonOffset?: number;
-	parent?: NodeImpl;
+	pArent?: NodeImpl;
 	children?: NodeImpl[];
 }
 
 /**
- * For a given offset, evaluate the location in the JSON document. Each segment in the location path is either a property name or an array index.
+ * For A given offset, evAluAte the locAtion in the JSON document. EAch segment in the locAtion pAth is either A property nAme or An ArrAy index.
  */
-export function getLocation(text: string, position: number): Location {
+export function getLocAtion(text: string, position: number): LocAtion {
 	const segments: Segment[] = []; // strings or numbers
-	const earlyReturnException = new Object();
+	const eArlyReturnException = new Object();
 	let previousNode: NodeImpl | undefined = undefined;
 	const previousNodeInst: NodeImpl = {
-		value: {},
+		vAlue: {},
 		offset: 0,
 		length: 0,
 		type: 'object',
-		parent: undefined
+		pArent: undefined
 	};
-	let isAtPropertyKey = false;
-	function setPreviousNode(value: string, offset: number, length: number, type: NodeType) {
-		previousNodeInst.value = value;
+	let isAtPropertyKey = fAlse;
+	function setPreviousNode(vAlue: string, offset: number, length: number, type: NodeType) {
+		previousNodeInst.vAlue = vAlue;
 		previousNodeInst.offset = offset;
 		previousNodeInst.length = length;
 		previousNodeInst.type = type;
@@ -746,65 +746,65 @@ export function getLocation(text: string, position: number): Location {
 		visit(text, {
 			onObjectBegin: (offset: number, length: number) => {
 				if (position <= offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 				previousNode = undefined;
 				isAtPropertyKey = position > offset;
-				segments.push(''); // push a placeholder (will be replaced)
+				segments.push(''); // push A plAceholder (will be replAced)
 			},
-			onObjectProperty: (name: string, offset: number, length: number) => {
+			onObjectProperty: (nAme: string, offset: number, length: number) => {
 				if (position < offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
-				setPreviousNode(name, offset, length, 'property');
-				segments[segments.length - 1] = name;
+				setPreviousNode(nAme, offset, length, 'property');
+				segments[segments.length - 1] = nAme;
 				if (position <= offset + length) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 			},
 			onObjectEnd: (offset: number, length: number) => {
 				if (position <= offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 				previousNode = undefined;
 				segments.pop();
 			},
-			onArrayBegin: (offset: number, length: number) => {
+			onArrAyBegin: (offset: number, length: number) => {
 				if (position <= offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 				previousNode = undefined;
 				segments.push(0);
 			},
-			onArrayEnd: (offset: number, length: number) => {
+			onArrAyEnd: (offset: number, length: number) => {
 				if (position <= offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 				previousNode = undefined;
 				segments.pop();
 			},
-			onLiteralValue: (value: any, offset: number, length: number) => {
+			onLiterAlVAlue: (vAlue: Any, offset: number, length: number) => {
 				if (position < offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
-				setPreviousNode(value, offset, length, getNodeType(value));
+				setPreviousNode(vAlue, offset, length, getNodeType(vAlue));
 
 				if (position <= offset + length) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 			},
-			onSeparator: (sep: string, offset: number, length: number) => {
+			onSepArAtor: (sep: string, offset: number, length: number) => {
 				if (position <= offset) {
-					throw earlyReturnException;
+					throw eArlyReturnException;
 				}
 				if (sep === ':' && previousNode && previousNode.type === 'property') {
 					previousNode.colonOffset = offset;
-					isAtPropertyKey = false;
+					isAtPropertyKey = fAlse;
 					previousNode = undefined;
 				} else if (sep === ',') {
-					const last = segments[segments.length - 1];
-					if (typeof last === 'number') {
-						segments[segments.length - 1] = last + 1;
+					const lAst = segments[segments.length - 1];
+					if (typeof lAst === 'number') {
+						segments[segments.length - 1] = lAst + 1;
 					} else {
 						isAtPropertyKey = true;
 						segments[segments.length - 1] = '';
@@ -813,166 +813,166 @@ export function getLocation(text: string, position: number): Location {
 				}
 			}
 		});
-	} catch (e) {
-		if (e !== earlyReturnException) {
+	} cAtch (e) {
+		if (e !== eArlyReturnException) {
 			throw e;
 		}
 	}
 
 	return {
-		path: segments,
+		pAth: segments,
 		previousNode,
 		isAtPropertyKey,
-		matches: (pattern: Segment[]) => {
+		mAtches: (pAttern: Segment[]) => {
 			let k = 0;
-			for (let i = 0; k < pattern.length && i < segments.length; i++) {
-				if (pattern[k] === segments[i] || pattern[k] === '*') {
+			for (let i = 0; k < pAttern.length && i < segments.length; i++) {
+				if (pAttern[k] === segments[i] || pAttern[k] === '*') {
 					k++;
-				} else if (pattern[k] !== '**') {
-					return false;
+				} else if (pAttern[k] !== '**') {
+					return fAlse;
 				}
 			}
-			return k === pattern.length;
+			return k === pAttern.length;
 		}
 	};
 }
 
 
 /**
- * Parses the given text and returns the object the JSON content represents. On invalid input, the parser tries to be as fault tolerant as possible, but still return a result.
- * Therefore always check the errors list to find out if the input was valid.
+ * PArses the given text And returns the object the JSON content represents. On invAlid input, the pArser tries to be As fAult tolerAnt As possible, but still return A result.
+ * Therefore AlwAys check the errors list to find out if the input wAs vAlid.
  */
-export function parse(text: string, errors: ParseError[] = [], options: ParseOptions = ParseOptions.DEFAULT): any {
+export function pArse(text: string, errors: PArseError[] = [], options: PArseOptions = PArseOptions.DEFAULT): Any {
 	let currentProperty: string | null = null;
-	let currentParent: any = [];
-	const previousParents: any[] = [];
+	let currentPArent: Any = [];
+	const previousPArents: Any[] = [];
 
-	function onValue(value: any) {
-		if (Array.isArray(currentParent)) {
-			(<any[]>currentParent).push(value);
+	function onVAlue(vAlue: Any) {
+		if (ArrAy.isArrAy(currentPArent)) {
+			(<Any[]>currentPArent).push(vAlue);
 		} else if (currentProperty !== null) {
-			currentParent[currentProperty] = value;
+			currentPArent[currentProperty] = vAlue;
 		}
 	}
 
 	const visitor: JSONVisitor = {
 		onObjectBegin: () => {
 			const object = {};
-			onValue(object);
-			previousParents.push(currentParent);
-			currentParent = object;
+			onVAlue(object);
+			previousPArents.push(currentPArent);
+			currentPArent = object;
 			currentProperty = null;
 		},
-		onObjectProperty: (name: string) => {
-			currentProperty = name;
+		onObjectProperty: (nAme: string) => {
+			currentProperty = nAme;
 		},
 		onObjectEnd: () => {
-			currentParent = previousParents.pop();
+			currentPArent = previousPArents.pop();
 		},
-		onArrayBegin: () => {
-			const array: any[] = [];
-			onValue(array);
-			previousParents.push(currentParent);
-			currentParent = array;
+		onArrAyBegin: () => {
+			const ArrAy: Any[] = [];
+			onVAlue(ArrAy);
+			previousPArents.push(currentPArent);
+			currentPArent = ArrAy;
 			currentProperty = null;
 		},
-		onArrayEnd: () => {
-			currentParent = previousParents.pop();
+		onArrAyEnd: () => {
+			currentPArent = previousPArents.pop();
 		},
-		onLiteralValue: onValue,
-		onError: (error: ParseErrorCode, offset: number, length: number) => {
+		onLiterAlVAlue: onVAlue,
+		onError: (error: PArseErrorCode, offset: number, length: number) => {
 			errors.push({ error, offset, length });
 		}
 	};
 	visit(text, visitor, options);
-	return currentParent[0];
+	return currentPArent[0];
 }
 
 
 /**
- * Parses the given text and returns a tree representation the JSON content. On invalid input, the parser tries to be as fault tolerant as possible, but still return a result.
+ * PArses the given text And returns A tree representAtion the JSON content. On invAlid input, the pArser tries to be As fAult tolerAnt As possible, but still return A result.
  */
-export function parseTree(text: string, errors: ParseError[] = [], options: ParseOptions = ParseOptions.DEFAULT): Node {
-	let currentParent: NodeImpl = { type: 'array', offset: -1, length: -1, children: [], parent: undefined }; // artificial root
+export function pArseTree(text: string, errors: PArseError[] = [], options: PArseOptions = PArseOptions.DEFAULT): Node {
+	let currentPArent: NodeImpl = { type: 'ArrAy', offset: -1, length: -1, children: [], pArent: undefined }; // ArtificiAl root
 
 	function ensurePropertyComplete(endOffset: number) {
-		if (currentParent.type === 'property') {
-			currentParent.length = endOffset - currentParent.offset;
-			currentParent = currentParent.parent!;
+		if (currentPArent.type === 'property') {
+			currentPArent.length = endOffset - currentPArent.offset;
+			currentPArent = currentPArent.pArent!;
 		}
 	}
 
-	function onValue(valueNode: Node): Node {
-		currentParent.children!.push(valueNode);
-		return valueNode;
+	function onVAlue(vAlueNode: Node): Node {
+		currentPArent.children!.push(vAlueNode);
+		return vAlueNode;
 	}
 
 	const visitor: JSONVisitor = {
 		onObjectBegin: (offset: number) => {
-			currentParent = onValue({ type: 'object', offset, length: -1, parent: currentParent, children: [] });
+			currentPArent = onVAlue({ type: 'object', offset, length: -1, pArent: currentPArent, children: [] });
 		},
-		onObjectProperty: (name: string, offset: number, length: number) => {
-			currentParent = onValue({ type: 'property', offset, length: -1, parent: currentParent, children: [] });
-			currentParent.children!.push({ type: 'string', value: name, offset, length, parent: currentParent });
+		onObjectProperty: (nAme: string, offset: number, length: number) => {
+			currentPArent = onVAlue({ type: 'property', offset, length: -1, pArent: currentPArent, children: [] });
+			currentPArent.children!.push({ type: 'string', vAlue: nAme, offset, length, pArent: currentPArent });
 		},
 		onObjectEnd: (offset: number, length: number) => {
-			currentParent.length = offset + length - currentParent.offset;
-			currentParent = currentParent.parent!;
+			currentPArent.length = offset + length - currentPArent.offset;
+			currentPArent = currentPArent.pArent!;
 			ensurePropertyComplete(offset + length);
 		},
-		onArrayBegin: (offset: number, length: number) => {
-			currentParent = onValue({ type: 'array', offset, length: -1, parent: currentParent, children: [] });
+		onArrAyBegin: (offset: number, length: number) => {
+			currentPArent = onVAlue({ type: 'ArrAy', offset, length: -1, pArent: currentPArent, children: [] });
 		},
-		onArrayEnd: (offset: number, length: number) => {
-			currentParent.length = offset + length - currentParent.offset;
-			currentParent = currentParent.parent!;
+		onArrAyEnd: (offset: number, length: number) => {
+			currentPArent.length = offset + length - currentPArent.offset;
+			currentPArent = currentPArent.pArent!;
 			ensurePropertyComplete(offset + length);
 		},
-		onLiteralValue: (value: any, offset: number, length: number) => {
-			onValue({ type: getNodeType(value), offset, length, parent: currentParent, value });
+		onLiterAlVAlue: (vAlue: Any, offset: number, length: number) => {
+			onVAlue({ type: getNodeType(vAlue), offset, length, pArent: currentPArent, vAlue });
 			ensurePropertyComplete(offset + length);
 		},
-		onSeparator: (sep: string, offset: number, length: number) => {
-			if (currentParent.type === 'property') {
+		onSepArAtor: (sep: string, offset: number, length: number) => {
+			if (currentPArent.type === 'property') {
 				if (sep === ':') {
-					currentParent.colonOffset = offset;
+					currentPArent.colonOffset = offset;
 				} else if (sep === ',') {
 					ensurePropertyComplete(offset);
 				}
 			}
 		},
-		onError: (error: ParseErrorCode, offset: number, length: number) => {
+		onError: (error: PArseErrorCode, offset: number, length: number) => {
 			errors.push({ error, offset, length });
 		}
 	};
 	visit(text, visitor, options);
 
-	const result = currentParent.children![0];
+	const result = currentPArent.children![0];
 	if (result) {
-		delete result.parent;
+		delete result.pArent;
 	}
 	return result;
 }
 
 /**
- * Finds the node at the given path in a JSON DOM.
+ * Finds the node At the given pAth in A JSON DOM.
  */
-export function findNodeAtLocation(root: Node, path: JSONPath): Node | undefined {
+export function findNodeAtLocAtion(root: Node, pAth: JSONPAth): Node | undefined {
 	if (!root) {
 		return undefined;
 	}
 	let node = root;
-	for (let segment of path) {
+	for (let segment of pAth) {
 		if (typeof segment === 'string') {
-			if (node.type !== 'object' || !Array.isArray(node.children)) {
+			if (node.type !== 'object' || !ArrAy.isArrAy(node.children)) {
 				return undefined;
 			}
-			let found = false;
+			let found = fAlse;
 			for (const propertyNode of node.children) {
-				if (Array.isArray(propertyNode.children) && propertyNode.children[0].value === segment) {
+				if (ArrAy.isArrAy(propertyNode.children) && propertyNode.children[0].vAlue === segment) {
 					node = propertyNode.children[1];
 					found = true;
-					break;
+					breAk;
 				}
 			}
 			if (!found) {
@@ -980,7 +980,7 @@ export function findNodeAtLocation(root: Node, path: JSONPath): Node | undefined
 			}
 		} else {
 			const index = <number>segment;
-			if (node.type !== 'array' || index < 0 || !Array.isArray(node.children) || index >= node.children.length) {
+			if (node.type !== 'ArrAy' || index < 0 || !ArrAy.isArrAy(node.children) || index >= node.children.length) {
 				return undefined;
 			}
 			node = node.children[index];
@@ -990,63 +990,63 @@ export function findNodeAtLocation(root: Node, path: JSONPath): Node | undefined
 }
 
 /**
- * Gets the JSON path of the given JSON DOM node
+ * Gets the JSON pAth of the given JSON DOM node
  */
-export function getNodePath(node: Node): JSONPath {
-	if (!node.parent || !node.parent.children) {
+export function getNodePAth(node: Node): JSONPAth {
+	if (!node.pArent || !node.pArent.children) {
 		return [];
 	}
-	const path = getNodePath(node.parent);
-	if (node.parent.type === 'property') {
-		const key = node.parent.children[0].value;
-		path.push(key);
-	} else if (node.parent.type === 'array') {
-		const index = node.parent.children.indexOf(node);
+	const pAth = getNodePAth(node.pArent);
+	if (node.pArent.type === 'property') {
+		const key = node.pArent.children[0].vAlue;
+		pAth.push(key);
+	} else if (node.pArent.type === 'ArrAy') {
+		const index = node.pArent.children.indexOf(node);
 		if (index !== -1) {
-			path.push(index);
+			pAth.push(index);
 		}
 	}
-	return path;
+	return pAth;
 }
 
 /**
- * Evaluates the JavaScript object of the given JSON DOM node
+ * EvAluAtes the JAvAScript object of the given JSON DOM node
  */
-export function getNodeValue(node: Node): any {
+export function getNodeVAlue(node: Node): Any {
 	switch (node.type) {
-		case 'array':
-			return node.children!.map(getNodeValue);
-		case 'object':
-			const obj = Object.create(null);
+		cAse 'ArrAy':
+			return node.children!.mAp(getNodeVAlue);
+		cAse 'object':
+			const obj = Object.creAte(null);
 			for (let prop of node.children!) {
-				const valueNode = prop.children![1];
-				if (valueNode) {
-					obj[prop.children![0].value] = getNodeValue(valueNode);
+				const vAlueNode = prop.children![1];
+				if (vAlueNode) {
+					obj[prop.children![0].vAlue] = getNodeVAlue(vAlueNode);
 				}
 			}
 			return obj;
-		case 'null':
-		case 'string':
-		case 'number':
-		case 'boolean':
-			return node.value;
-		default:
+		cAse 'null':
+		cAse 'string':
+		cAse 'number':
+		cAse 'booleAn':
+			return node.vAlue;
+		defAult:
 			return undefined;
 	}
 
 }
 
-export function contains(node: Node, offset: number, includeRightBound = false): boolean {
+export function contAins(node: Node, offset: number, includeRightBound = fAlse): booleAn {
 	return (offset >= node.offset && offset < (node.offset + node.length)) || includeRightBound && (offset === (node.offset + node.length));
 }
 
 /**
- * Finds the most inner node at the given offset. If includeRightBound is set, also finds nodes that end at the given offset.
+ * Finds the most inner node At the given offset. If includeRightBound is set, Also finds nodes thAt end At the given offset.
  */
-export function findNodeAtOffset(node: Node, offset: number, includeRightBound = false): Node | undefined {
-	if (contains(node, offset, includeRightBound)) {
+export function findNodeAtOffset(node: Node, offset: number, includeRightBound = fAlse): Node | undefined {
+	if (contAins(node, offset, includeRightBound)) {
 		const children = node.children;
-		if (Array.isArray(children)) {
+		if (ArrAy.isArrAy(children)) {
 			for (let i = 0; i < children.length && children[i].offset <= offset; i++) {
 				const item = findNodeAtOffset(children[i], offset, includeRightBound);
 				if (item) {
@@ -1062,296 +1062,296 @@ export function findNodeAtOffset(node: Node, offset: number, includeRightBound =
 
 
 /**
- * Parses the given text and invokes the visitor functions for each object, array and literal reached.
+ * PArses the given text And invokes the visitor functions for eAch object, ArrAy And literAl reAched.
  */
-export function visit(text: string, visitor: JSONVisitor, options: ParseOptions = ParseOptions.DEFAULT): any {
+export function visit(text: string, visitor: JSONVisitor, options: PArseOptions = PArseOptions.DEFAULT): Any {
 
-	const _scanner = createScanner(text, false);
+	const _scAnner = creAteScAnner(text, fAlse);
 
 	function toNoArgVisit(visitFunction?: (offset: number, length: number) => void): () => void {
-		return visitFunction ? () => visitFunction(_scanner.getTokenOffset(), _scanner.getTokenLength()) : () => true;
+		return visitFunction ? () => visitFunction(_scAnner.getTokenOffset(), _scAnner.getTokenLength()) : () => true;
 	}
-	function toOneArgVisit<T>(visitFunction?: (arg: T, offset: number, length: number) => void): (arg: T) => void {
-		return visitFunction ? (arg: T) => visitFunction(arg, _scanner.getTokenOffset(), _scanner.getTokenLength()) : () => true;
+	function toOneArgVisit<T>(visitFunction?: (Arg: T, offset: number, length: number) => void): (Arg: T) => void {
+		return visitFunction ? (Arg: T) => visitFunction(Arg, _scAnner.getTokenOffset(), _scAnner.getTokenLength()) : () => true;
 	}
 
 	const onObjectBegin = toNoArgVisit(visitor.onObjectBegin),
 		onObjectProperty = toOneArgVisit(visitor.onObjectProperty),
 		onObjectEnd = toNoArgVisit(visitor.onObjectEnd),
-		onArrayBegin = toNoArgVisit(visitor.onArrayBegin),
-		onArrayEnd = toNoArgVisit(visitor.onArrayEnd),
-		onLiteralValue = toOneArgVisit(visitor.onLiteralValue),
-		onSeparator = toOneArgVisit(visitor.onSeparator),
+		onArrAyBegin = toNoArgVisit(visitor.onArrAyBegin),
+		onArrAyEnd = toNoArgVisit(visitor.onArrAyEnd),
+		onLiterAlVAlue = toOneArgVisit(visitor.onLiterAlVAlue),
+		onSepArAtor = toOneArgVisit(visitor.onSepArAtor),
 		onComment = toNoArgVisit(visitor.onComment),
 		onError = toOneArgVisit(visitor.onError);
 
-	const disallowComments = options && options.disallowComments;
-	const allowTrailingComma = options && options.allowTrailingComma;
-	function scanNext(): SyntaxKind {
+	const disAllowComments = options && options.disAllowComments;
+	const AllowTrAilingCommA = options && options.AllowTrAilingCommA;
+	function scAnNext(): SyntAxKind {
 		while (true) {
-			const token = _scanner.scan();
-			switch (_scanner.getTokenError()) {
-				case ScanError.InvalidUnicode:
-					handleError(ParseErrorCode.InvalidUnicode);
-					break;
-				case ScanError.InvalidEscapeCharacter:
-					handleError(ParseErrorCode.InvalidEscapeCharacter);
-					break;
-				case ScanError.UnexpectedEndOfNumber:
-					handleError(ParseErrorCode.UnexpectedEndOfNumber);
-					break;
-				case ScanError.UnexpectedEndOfComment:
-					if (!disallowComments) {
-						handleError(ParseErrorCode.UnexpectedEndOfComment);
+			const token = _scAnner.scAn();
+			switch (_scAnner.getTokenError()) {
+				cAse ScAnError.InvAlidUnicode:
+					hAndleError(PArseErrorCode.InvAlidUnicode);
+					breAk;
+				cAse ScAnError.InvAlidEscApeChArActer:
+					hAndleError(PArseErrorCode.InvAlidEscApeChArActer);
+					breAk;
+				cAse ScAnError.UnexpectedEndOfNumber:
+					hAndleError(PArseErrorCode.UnexpectedEndOfNumber);
+					breAk;
+				cAse ScAnError.UnexpectedEndOfComment:
+					if (!disAllowComments) {
+						hAndleError(PArseErrorCode.UnexpectedEndOfComment);
 					}
-					break;
-				case ScanError.UnexpectedEndOfString:
-					handleError(ParseErrorCode.UnexpectedEndOfString);
-					break;
-				case ScanError.InvalidCharacter:
-					handleError(ParseErrorCode.InvalidCharacter);
-					break;
+					breAk;
+				cAse ScAnError.UnexpectedEndOfString:
+					hAndleError(PArseErrorCode.UnexpectedEndOfString);
+					breAk;
+				cAse ScAnError.InvAlidChArActer:
+					hAndleError(PArseErrorCode.InvAlidChArActer);
+					breAk;
 			}
 			switch (token) {
-				case SyntaxKind.LineCommentTrivia:
-				case SyntaxKind.BlockCommentTrivia:
-					if (disallowComments) {
-						handleError(ParseErrorCode.InvalidCommentToken);
+				cAse SyntAxKind.LineCommentTriviA:
+				cAse SyntAxKind.BlockCommentTriviA:
+					if (disAllowComments) {
+						hAndleError(PArseErrorCode.InvAlidCommentToken);
 					} else {
 						onComment();
 					}
-					break;
-				case SyntaxKind.Unknown:
-					handleError(ParseErrorCode.InvalidSymbol);
-					break;
-				case SyntaxKind.Trivia:
-				case SyntaxKind.LineBreakTrivia:
-					break;
-				default:
+					breAk;
+				cAse SyntAxKind.Unknown:
+					hAndleError(PArseErrorCode.InvAlidSymbol);
+					breAk;
+				cAse SyntAxKind.TriviA:
+				cAse SyntAxKind.LineBreAkTriviA:
+					breAk;
+				defAult:
 					return token;
 			}
 		}
 	}
 
-	function handleError(error: ParseErrorCode, skipUntilAfter: SyntaxKind[] = [], skipUntil: SyntaxKind[] = []): void {
+	function hAndleError(error: PArseErrorCode, skipUntilAfter: SyntAxKind[] = [], skipUntil: SyntAxKind[] = []): void {
 		onError(error);
 		if (skipUntilAfter.length + skipUntil.length > 0) {
-			let token = _scanner.getToken();
-			while (token !== SyntaxKind.EOF) {
+			let token = _scAnner.getToken();
+			while (token !== SyntAxKind.EOF) {
 				if (skipUntilAfter.indexOf(token) !== -1) {
-					scanNext();
-					break;
+					scAnNext();
+					breAk;
 				} else if (skipUntil.indexOf(token) !== -1) {
-					break;
+					breAk;
 				}
-				token = scanNext();
+				token = scAnNext();
 			}
 		}
 	}
 
-	function parseString(isValue: boolean): boolean {
-		const value = _scanner.getTokenValue();
-		if (isValue) {
-			onLiteralValue(value);
+	function pArseString(isVAlue: booleAn): booleAn {
+		const vAlue = _scAnner.getTokenVAlue();
+		if (isVAlue) {
+			onLiterAlVAlue(vAlue);
 		} else {
-			onObjectProperty(value);
+			onObjectProperty(vAlue);
 		}
-		scanNext();
+		scAnNext();
 		return true;
 	}
 
-	function parseLiteral(): boolean {
-		switch (_scanner.getToken()) {
-			case SyntaxKind.NumericLiteral:
-				let value = 0;
+	function pArseLiterAl(): booleAn {
+		switch (_scAnner.getToken()) {
+			cAse SyntAxKind.NumericLiterAl:
+				let vAlue = 0;
 				try {
-					value = JSON.parse(_scanner.getTokenValue());
-					if (typeof value !== 'number') {
-						handleError(ParseErrorCode.InvalidNumberFormat);
-						value = 0;
+					vAlue = JSON.pArse(_scAnner.getTokenVAlue());
+					if (typeof vAlue !== 'number') {
+						hAndleError(PArseErrorCode.InvAlidNumberFormAt);
+						vAlue = 0;
 					}
-				} catch (e) {
-					handleError(ParseErrorCode.InvalidNumberFormat);
+				} cAtch (e) {
+					hAndleError(PArseErrorCode.InvAlidNumberFormAt);
 				}
-				onLiteralValue(value);
-				break;
-			case SyntaxKind.NullKeyword:
-				onLiteralValue(null);
-				break;
-			case SyntaxKind.TrueKeyword:
-				onLiteralValue(true);
-				break;
-			case SyntaxKind.FalseKeyword:
-				onLiteralValue(false);
-				break;
-			default:
-				return false;
+				onLiterAlVAlue(vAlue);
+				breAk;
+			cAse SyntAxKind.NullKeyword:
+				onLiterAlVAlue(null);
+				breAk;
+			cAse SyntAxKind.TrueKeyword:
+				onLiterAlVAlue(true);
+				breAk;
+			cAse SyntAxKind.FAlseKeyword:
+				onLiterAlVAlue(fAlse);
+				breAk;
+			defAult:
+				return fAlse;
 		}
-		scanNext();
+		scAnNext();
 		return true;
 	}
 
-	function parseProperty(): boolean {
-		if (_scanner.getToken() !== SyntaxKind.StringLiteral) {
-			handleError(ParseErrorCode.PropertyNameExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
-			return false;
+	function pArseProperty(): booleAn {
+		if (_scAnner.getToken() !== SyntAxKind.StringLiterAl) {
+			hAndleError(PArseErrorCode.PropertyNAmeExpected, [], [SyntAxKind.CloseBrAceToken, SyntAxKind.CommAToken]);
+			return fAlse;
 		}
-		parseString(false);
-		if (_scanner.getToken() === SyntaxKind.ColonToken) {
-			onSeparator(':');
-			scanNext(); // consume colon
+		pArseString(fAlse);
+		if (_scAnner.getToken() === SyntAxKind.ColonToken) {
+			onSepArAtor(':');
+			scAnNext(); // consume colon
 
-			if (!parseValue()) {
-				handleError(ParseErrorCode.ValueExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+			if (!pArseVAlue()) {
+				hAndleError(PArseErrorCode.VAlueExpected, [], [SyntAxKind.CloseBrAceToken, SyntAxKind.CommAToken]);
 			}
 		} else {
-			handleError(ParseErrorCode.ColonExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+			hAndleError(PArseErrorCode.ColonExpected, [], [SyntAxKind.CloseBrAceToken, SyntAxKind.CommAToken]);
 		}
 		return true;
 	}
 
-	function parseObject(): boolean {
+	function pArseObject(): booleAn {
 		onObjectBegin();
-		scanNext(); // consume open brace
+		scAnNext(); // consume open brAce
 
-		let needsComma = false;
-		while (_scanner.getToken() !== SyntaxKind.CloseBraceToken && _scanner.getToken() !== SyntaxKind.EOF) {
-			if (_scanner.getToken() === SyntaxKind.CommaToken) {
-				if (!needsComma) {
-					handleError(ParseErrorCode.ValueExpected, [], []);
+		let needsCommA = fAlse;
+		while (_scAnner.getToken() !== SyntAxKind.CloseBrAceToken && _scAnner.getToken() !== SyntAxKind.EOF) {
+			if (_scAnner.getToken() === SyntAxKind.CommAToken) {
+				if (!needsCommA) {
+					hAndleError(PArseErrorCode.VAlueExpected, [], []);
 				}
-				onSeparator(',');
-				scanNext(); // consume comma
-				if (_scanner.getToken() === SyntaxKind.CloseBraceToken && allowTrailingComma) {
-					break;
+				onSepArAtor(',');
+				scAnNext(); // consume commA
+				if (_scAnner.getToken() === SyntAxKind.CloseBrAceToken && AllowTrAilingCommA) {
+					breAk;
 				}
-			} else if (needsComma) {
-				handleError(ParseErrorCode.CommaExpected, [], []);
+			} else if (needsCommA) {
+				hAndleError(PArseErrorCode.CommAExpected, [], []);
 			}
-			if (!parseProperty()) {
-				handleError(ParseErrorCode.ValueExpected, [], [SyntaxKind.CloseBraceToken, SyntaxKind.CommaToken]);
+			if (!pArseProperty()) {
+				hAndleError(PArseErrorCode.VAlueExpected, [], [SyntAxKind.CloseBrAceToken, SyntAxKind.CommAToken]);
 			}
-			needsComma = true;
+			needsCommA = true;
 		}
 		onObjectEnd();
-		if (_scanner.getToken() !== SyntaxKind.CloseBraceToken) {
-			handleError(ParseErrorCode.CloseBraceExpected, [SyntaxKind.CloseBraceToken], []);
+		if (_scAnner.getToken() !== SyntAxKind.CloseBrAceToken) {
+			hAndleError(PArseErrorCode.CloseBrAceExpected, [SyntAxKind.CloseBrAceToken], []);
 		} else {
-			scanNext(); // consume close brace
+			scAnNext(); // consume close brAce
 		}
 		return true;
 	}
 
-	function parseArray(): boolean {
-		onArrayBegin();
-		scanNext(); // consume open bracket
+	function pArseArrAy(): booleAn {
+		onArrAyBegin();
+		scAnNext(); // consume open brAcket
 
-		let needsComma = false;
-		while (_scanner.getToken() !== SyntaxKind.CloseBracketToken && _scanner.getToken() !== SyntaxKind.EOF) {
-			if (_scanner.getToken() === SyntaxKind.CommaToken) {
-				if (!needsComma) {
-					handleError(ParseErrorCode.ValueExpected, [], []);
+		let needsCommA = fAlse;
+		while (_scAnner.getToken() !== SyntAxKind.CloseBrAcketToken && _scAnner.getToken() !== SyntAxKind.EOF) {
+			if (_scAnner.getToken() === SyntAxKind.CommAToken) {
+				if (!needsCommA) {
+					hAndleError(PArseErrorCode.VAlueExpected, [], []);
 				}
-				onSeparator(',');
-				scanNext(); // consume comma
-				if (_scanner.getToken() === SyntaxKind.CloseBracketToken && allowTrailingComma) {
-					break;
+				onSepArAtor(',');
+				scAnNext(); // consume commA
+				if (_scAnner.getToken() === SyntAxKind.CloseBrAcketToken && AllowTrAilingCommA) {
+					breAk;
 				}
-			} else if (needsComma) {
-				handleError(ParseErrorCode.CommaExpected, [], []);
+			} else if (needsCommA) {
+				hAndleError(PArseErrorCode.CommAExpected, [], []);
 			}
-			if (!parseValue()) {
-				handleError(ParseErrorCode.ValueExpected, [], [SyntaxKind.CloseBracketToken, SyntaxKind.CommaToken]);
+			if (!pArseVAlue()) {
+				hAndleError(PArseErrorCode.VAlueExpected, [], [SyntAxKind.CloseBrAcketToken, SyntAxKind.CommAToken]);
 			}
-			needsComma = true;
+			needsCommA = true;
 		}
-		onArrayEnd();
-		if (_scanner.getToken() !== SyntaxKind.CloseBracketToken) {
-			handleError(ParseErrorCode.CloseBracketExpected, [SyntaxKind.CloseBracketToken], []);
+		onArrAyEnd();
+		if (_scAnner.getToken() !== SyntAxKind.CloseBrAcketToken) {
+			hAndleError(PArseErrorCode.CloseBrAcketExpected, [SyntAxKind.CloseBrAcketToken], []);
 		} else {
-			scanNext(); // consume close bracket
+			scAnNext(); // consume close brAcket
 		}
 		return true;
 	}
 
-	function parseValue(): boolean {
-		switch (_scanner.getToken()) {
-			case SyntaxKind.OpenBracketToken:
-				return parseArray();
-			case SyntaxKind.OpenBraceToken:
-				return parseObject();
-			case SyntaxKind.StringLiteral:
-				return parseString(true);
-			default:
-				return parseLiteral();
+	function pArseVAlue(): booleAn {
+		switch (_scAnner.getToken()) {
+			cAse SyntAxKind.OpenBrAcketToken:
+				return pArseArrAy();
+			cAse SyntAxKind.OpenBrAceToken:
+				return pArseObject();
+			cAse SyntAxKind.StringLiterAl:
+				return pArseString(true);
+			defAult:
+				return pArseLiterAl();
 		}
 	}
 
-	scanNext();
-	if (_scanner.getToken() === SyntaxKind.EOF) {
-		if (options.allowEmptyContent) {
+	scAnNext();
+	if (_scAnner.getToken() === SyntAxKind.EOF) {
+		if (options.AllowEmptyContent) {
 			return true;
 		}
-		handleError(ParseErrorCode.ValueExpected, [], []);
-		return false;
+		hAndleError(PArseErrorCode.VAlueExpected, [], []);
+		return fAlse;
 	}
-	if (!parseValue()) {
-		handleError(ParseErrorCode.ValueExpected, [], []);
-		return false;
+	if (!pArseVAlue()) {
+		hAndleError(PArseErrorCode.VAlueExpected, [], []);
+		return fAlse;
 	}
-	if (_scanner.getToken() !== SyntaxKind.EOF) {
-		handleError(ParseErrorCode.EndOfFileExpected, [], []);
+	if (_scAnner.getToken() !== SyntAxKind.EOF) {
+		hAndleError(PArseErrorCode.EndOfFileExpected, [], []);
 	}
 	return true;
 }
 
 /**
- * Takes JSON with JavaScript-style comments and remove
- * them. Optionally replaces every none-newline character
- * of comments with a replaceCharacter
+ * TAkes JSON with JAvAScript-style comments And remove
+ * them. OptionAlly replAces every none-newline chArActer
+ * of comments with A replAceChArActer
  */
-export function stripComments(text: string, replaceCh?: string): string {
+export function stripComments(text: string, replAceCh?: string): string {
 
-	let _scanner = createScanner(text),
-		parts: string[] = [],
-		kind: SyntaxKind,
+	let _scAnner = creAteScAnner(text),
+		pArts: string[] = [],
+		kind: SyntAxKind,
 		offset = 0,
 		pos: number;
 
 	do {
-		pos = _scanner.getPosition();
-		kind = _scanner.scan();
+		pos = _scAnner.getPosition();
+		kind = _scAnner.scAn();
 		switch (kind) {
-			case SyntaxKind.LineCommentTrivia:
-			case SyntaxKind.BlockCommentTrivia:
-			case SyntaxKind.EOF:
+			cAse SyntAxKind.LineCommentTriviA:
+			cAse SyntAxKind.BlockCommentTriviA:
+			cAse SyntAxKind.EOF:
 				if (offset !== pos) {
-					parts.push(text.substring(offset, pos));
+					pArts.push(text.substring(offset, pos));
 				}
-				if (replaceCh !== undefined) {
-					parts.push(_scanner.getTokenValue().replace(/[^\r\n]/g, replaceCh));
+				if (replAceCh !== undefined) {
+					pArts.push(_scAnner.getTokenVAlue().replAce(/[^\r\n]/g, replAceCh));
 				}
-				offset = _scanner.getPosition();
-				break;
+				offset = _scAnner.getPosition();
+				breAk;
 		}
-	} while (kind !== SyntaxKind.EOF);
+	} while (kind !== SyntAxKind.EOF);
 
-	return parts.join('');
+	return pArts.join('');
 }
 
-export function getNodeType(value: any): NodeType {
-	switch (typeof value) {
-		case 'boolean': return 'boolean';
-		case 'number': return 'number';
-		case 'string': return 'string';
-		case 'object': {
-			if (!value) {
+export function getNodeType(vAlue: Any): NodeType {
+	switch (typeof vAlue) {
+		cAse 'booleAn': return 'booleAn';
+		cAse 'number': return 'number';
+		cAse 'string': return 'string';
+		cAse 'object': {
+			if (!vAlue) {
 				return 'null';
-			} else if (Array.isArray(value)) {
-				return 'array';
+			} else if (ArrAy.isArrAy(vAlue)) {
+				return 'ArrAy';
 			}
 			return 'object';
 		}
-		default: return 'null';
+		defAult: return 'null';
 	}
 }

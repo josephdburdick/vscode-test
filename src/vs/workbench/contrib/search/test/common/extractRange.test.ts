@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { extractRangeFromFilter } from 'vs/workbench/contrib/search/common/search';
+import * As Assert from 'Assert';
+import { extrActRAngeFromFilter } from 'vs/workbench/contrib/seArch/common/seArch';
 
-suite('extractRangeFromFilter', () => {
+suite('extrActRAngeFromFilter', () => {
 
-	test('basics', async function () {
-		assert.ok(!extractRangeFromFilter(''));
-		assert.ok(!extractRangeFromFilter('/some/path'));
-		assert.ok(!extractRangeFromFilter('/some/path/file.txt'));
+	test('bAsics', Async function () {
+		Assert.ok(!extrActRAngeFromFilter(''));
+		Assert.ok(!extrActRAngeFromFilter('/some/pAth'));
+		Assert.ok(!extrActRAngeFromFilter('/some/pAth/file.txt'));
 
 		for (const lineSep of [':', '#', '(', ':line ']) {
 			for (const colSep of [':', '#', ',']) {
-				const base = '/some/path/file.txt';
+				const bAse = '/some/pAth/file.txt';
 
-				let res = extractRangeFromFilter(`${base}${lineSep}20`);
-				assert.equal(res?.filter, base);
-				assert.equal(res?.range.startLineNumber, 20);
-				assert.equal(res?.range.startColumn, 1);
+				let res = extrActRAngeFromFilter(`${bAse}${lineSep}20`);
+				Assert.equAl(res?.filter, bAse);
+				Assert.equAl(res?.rAnge.stArtLineNumber, 20);
+				Assert.equAl(res?.rAnge.stArtColumn, 1);
 
-				res = extractRangeFromFilter(`${base}${lineSep}20${colSep}`);
-				assert.equal(res?.filter, base);
-				assert.equal(res?.range.startLineNumber, 20);
-				assert.equal(res?.range.startColumn, 1);
+				res = extrActRAngeFromFilter(`${bAse}${lineSep}20${colSep}`);
+				Assert.equAl(res?.filter, bAse);
+				Assert.equAl(res?.rAnge.stArtLineNumber, 20);
+				Assert.equAl(res?.rAnge.stArtColumn, 1);
 
-				res = extractRangeFromFilter(`${base}${lineSep}20${colSep}3`);
-				assert.equal(res?.filter, base);
-				assert.equal(res?.range.startLineNumber, 20);
-				assert.equal(res?.range.startColumn, 3);
+				res = extrActRAngeFromFilter(`${bAse}${lineSep}20${colSep}3`);
+				Assert.equAl(res?.filter, bAse);
+				Assert.equAl(res?.rAnge.stArtLineNumber, 20);
+				Assert.equAl(res?.rAnge.stArtColumn, 3);
 			}
 		}
 	});
 
-	test('allow space after path', async function () {
-		const res = extractRangeFromFilter('/some/path/file.txt (19,20)');
+	test('Allow spAce After pAth', Async function () {
+		const res = extrActRAngeFromFilter('/some/pAth/file.txt (19,20)');
 
-		assert.equal(res?.filter, '/some/path/file.txt');
-		assert.equal(res?.range.startLineNumber, 19);
-		assert.equal(res?.range.startColumn, 20);
+		Assert.equAl(res?.filter, '/some/pAth/file.txt');
+		Assert.equAl(res?.rAnge.stArtLineNumber, 19);
+		Assert.equAl(res?.rAnge.stArtColumn, 20);
 	});
 
-	test('unless', async function () {
-		const res = extractRangeFromFilter('/some/path/file.txt@ (19,20)', ['@']);
+	test('unless', Async function () {
+		const res = extrActRAngeFromFilter('/some/pAth/file.txt@ (19,20)', ['@']);
 
-		assert.ok(!res);
+		Assert.ok(!res);
 	});
 });

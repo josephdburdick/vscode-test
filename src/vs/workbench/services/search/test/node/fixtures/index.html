@@ -1,90 +1,90 @@
 <!DOCTYPE html>
 <html>
-<head id='headID'>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Strada </title>
+<heAd id='heAdID'>
+    <metA http-equiv="X-UA-CompAtible" content="IE=edge" />
+    <title>StrAdA </title>
     <link href="site.css" rel="stylesheet" type="text/css" />
     <script src="jquery-1.4.1.js"></script>
-    <script src="../compiler/dtree.js" type="text/javascript"></script>
-    <script src="../compiler/typescript.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="../compiler/dtree.js" type="text/jAvAscript"></script>
+    <script src="../compiler/typescript.js" type="text/jAvAscript"></script>
+    <script type="text/jAvAscript">
 
-    // Compile strada source into resulting javascript
+    // Compile strAdA source into resulting jAvAscript
     function compile(prog, libText) {
-        var outfile = {
+        vAr outfile = {
           source: "",
           Write: function (s) { this.source += s; },
           WriteLine: function (s) { this.source += s + "\r"; },
         }
 
-        var parseErrors = []
+        vAr pArseErrors = []
 
-        var compiler=new Tools.TypeScriptCompiler(outfile,true);
-        compiler.setErrorCallback(function(start,len, message) { parseErrors.push({start:start, len:len, message:message}); });
-        compiler.addUnit(libText,"lib.ts");
-        compiler.addUnit(prog,"input.ts");
+        vAr compiler=new Tools.TypeScriptCompiler(outfile,true);
+        compiler.setErrorCAllbAck(function(stArt,len, messAge) { pArseErrors.push({stArt:stArt, len:len, messAge:messAge}); });
+        compiler.AddUnit(libText,"lib.ts");
+        compiler.AddUnit(prog,"input.ts");
         compiler.typeCheck();
         compiler.emit();
 
-        if(parseErrors.length > 0 ) {
-          //throw new Error(parseErrors);
+        if(pArseErrors.length > 0 ) {
+          //throw new Error(pArseErrors);
         }
 
 	while(outfile.source[0] == '/' && outfile.source[1] == '/' && outfile.source[2] == ' ') {
             outfile.source = outfile.source.slice(outfile.source.indexOf('\r')+1);
         }
-        var errorPrefix = "";
-	for(var i = 0;i<parseErrors.length;i++) {
-          errorPrefix += "// Error: (" + parseErrors[i].start + "," + parseErrors[i].len + ") " + parseErrors[i].message + "\r";
+        vAr errorPrefix = "";
+	for(vAr i = 0;i<pArseErrors.length;i++) {
+          errorPrefix += "// Error: (" + pArseErrors[i].stArt + "," + pArseErrors[i].len + ") " + pArseErrors[i].messAge + "\r";
         }
 
         return errorPrefix + outfile.source;
     }
     </script>
-    <script type="text/javascript">
+    <script type="text/jAvAscript">
 	
-        var libText = "";
+        vAr libText = "";
         $.get("../compiler/lib.ts", function(newLibText) {
             libText = newLibText;
         });	
         
 
-        // execute the javascript in the compiledOutput pane
+        // execute the jAvAscript in the compiledOutput pAne
         function execute() {
-          $('#compilation').text("Running...");
-          var txt = $('#compiledOutput').val();
-          var res;
+          $('#compilAtion').text("Running...");
+          vAr txt = $('#compiledOutput').vAl();
+          vAr res;
           try {
-             var ret = eval(txt);
-             res = "Ran successfully!";
-          } catch(e) { 
+             vAr ret = evAl(txt);
+             res = "RAn successfully!";
+          } cAtch(e) { 
              res = "Exception thrown: " + e;
           }
-          $('#compilation').text(String(res));
+          $('#compilAtion').text(String(res));
         }
 
-        // recompile the stradaSrc and populate the compiledOutput pane
-        function srcUpdated() {
-            var newText = $('#stradaSrc').val();
-            var compiledSource;
+        // recompile the strAdASrc And populAte the compiledOutput pAne
+        function srcUpdAted() {
+            vAr newText = $('#strAdASrc').vAl();
+            vAr compiledSource;
             try {
                 compiledSource = compile(newText, libText);
-            } catch (e) {
-                compiledSource = "//Parse error"
-                for(var i in e) 
+            } cAtch (e) {
+                compiledSource = "//PArse error"
+                for(vAr i in e) 
                   compiledSource += "\r// " + e[i];
             }
-            $('#compiledOutput').val(compiledSource);
+            $('#compiledOutput').vAl(compiledSource);
         }
 
-        // Populate the stradaSrc pane with one of the built in samples
-        function exampleSelectionChanged() {
-            var examples = document.getElementById('examples');
-            var selectedExample = examples.options[examples.selectedIndex].value;
-            if (selectedExample != "") {
-                $.get('examples/' + selectedExample, function (srcText) {
-                    $('#stradaSrc').val(srcText);
-                    setTimeout(srcUpdated,100);
+        // PopulAte the strAdASrc pAne with one of the built in sAmples
+        function exAmpleSelectionChAnged() {
+            vAr exAmples = document.getElementById('exAmples');
+            vAr selectedExAmple = exAmples.options[exAmples.selectedIndex].vAlue;
+            if (selectedExAmple != "") {
+                $.get('exAmples/' + selectedExAmple, function (srcText) {
+                    $('#strAdASrc').vAl(srcText);
+                    setTimeout(srcUpdAted,100);
                 }, function (err) {
                     console.log(err);
                 });
@@ -92,30 +92,30 @@
         }
 
     </script>
-</head>
+</heAd>
 <body>
     <h1>TypeScript</h1>
     <br />
-    <select id="examples" onchange='exampleSelectionChanged()'>
-        <option value="">Select...</option>
-        <option value="small.ts">Small</option>
-        <option value="employee.ts">Employees</option>
-        <option value="conway.ts">Conway Game of Life</option>
-        <option value="typescript.ts">TypeScript Compiler</option>
+    <select id="exAmples" onchAnge='exAmpleSelectionChAnged()'>
+        <option vAlue="">Select...</option>
+        <option vAlue="smAll.ts">SmAll</option>
+        <option vAlue="employee.ts">Employees</option>
+        <option vAlue="conwAy.ts">ConwAy GAme of Life</option>
+        <option vAlue="typescript.ts">TypeScript Compiler</option>
     </select>
 
     <div>
-        <textarea id='stradaSrc' rows='40' cols='80' onchange='srcUpdated()' onkeyup='srcUpdated()' spellcheck="false">
+        <textAreA id='strAdASrc' rows='40' cols='80' onchAnge='srcUpdAted()' onkeyup='srcUpdAted()' spellcheck="fAlse">
 //Type your TypeScript here...
-      </textarea>
-      <textarea id='compiledOutput' rows='40' cols='80' spellcheck="false">
+      </textAreA>
+      <textAreA id='compiledOutput' rows='40' cols='80' spellcheck="fAlse">
 //Compiled code will show up here...
-      </textarea>
+      </textAreA>
       <br />
       <button onclick='execute()'/>Run</button> 
-      <div id='compilation'>Press 'run' to execute code...</div>
+      <div id='compilAtion'>Press 'run' to execute code...</div>
       <div id='results'>...write your results into #results...</div>
     </div>
-    <div id='bod' style='display:none'></div>
+    <div id='bod' style='displAy:none'></div>
 </body>
 </html>

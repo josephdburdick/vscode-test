@@ -1,577 +1,577 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { distinct, coalesce } from 'vs/base/common/arrays';
-import * as strings from 'vs/base/common/strings';
-import { OperatingSystem, Language } from 'vs/base/common/platform';
-import { IMatch, IFilter, or, matchesContiguousSubString, matchesPrefix, matchesCamelCase, matchesWords } from 'vs/base/common/filters';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ResolvedKeybinding, ResolvedKeybindingPart } from 'vs/base/common/keyCodes';
-import { AriaLabelProvider, UserSettingsLabelProvider, UILabelProvider, ModifierLabels as ModLabels } from 'vs/base/common/keybindingLabels';
-import { MenuRegistry, ILocalizedString, ICommandAction } from 'vs/platform/actions/common/actions';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions } from 'vs/workbench/common/actions';
+import { locAlize } from 'vs/nls';
+import { distinct, coAlesce } from 'vs/bAse/common/ArrAys';
+import * As strings from 'vs/bAse/common/strings';
+import { OperAtingSystem, LAnguAge } from 'vs/bAse/common/plAtform';
+import { IMAtch, IFilter, or, mAtchesContiguousSubString, mAtchesPrefix, mAtchesCAmelCAse, mAtchesWords } from 'vs/bAse/common/filters';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ResolvedKeybinding, ResolvedKeybindingPArt } from 'vs/bAse/common/keyCodes';
+import { AriALAbelProvider, UserSettingsLAbelProvider, UILAbelProvider, ModifierLAbels As ModLAbels } from 'vs/bAse/common/keybindingLAbels';
+import { MenuRegistry, ILocAlizedString, ICommAndAction } from 'vs/plAtform/Actions/common/Actions';
+import { IWorkbenchActionRegistry, Extensions As ActionExtensions } from 'vs/workbench/common/Actions';
 import { EditorModel } from 'vs/workbench/common/editor';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { KeybindingResolver } from 'vs/platform/keybinding/common/keybindingResolver';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { ResolvedKeybindingItem } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
+import { KeybindingResolver } from 'vs/plAtform/keybinding/common/keybindingResolver';
 
-export const KEYBINDING_ENTRY_TEMPLATE_ID = 'keybinding.entry.template';
+export const KEYBINDING_ENTRY_TEMPLATE_ID = 'keybinding.entry.templAte';
 
-const SOURCE_DEFAULT = localize('default', "Default");
-const SOURCE_USER = localize('user', "User");
+const SOURCE_DEFAULT = locAlize('defAult', "DefAult");
+const SOURCE_USER = locAlize('user', "User");
 
-export interface KeybindingMatch {
-	ctrlKey?: boolean;
-	shiftKey?: boolean;
-	altKey?: boolean;
-	metaKey?: boolean;
-	keyCode?: boolean;
+export interfAce KeybindingMAtch {
+	ctrlKey?: booleAn;
+	shiftKey?: booleAn;
+	AltKey?: booleAn;
+	metAKey?: booleAn;
+	keyCode?: booleAn;
 }
 
-export interface KeybindingMatches {
-	firstPart: KeybindingMatch;
-	chordPart: KeybindingMatch;
+export interfAce KeybindingMAtches {
+	firstPArt: KeybindingMAtch;
+	chordPArt: KeybindingMAtch;
 }
 
-export interface IListEntry {
+export interfAce IListEntry {
 	id: string;
-	templateId: string;
+	templAteId: string;
 }
 
-export interface IKeybindingItemEntry extends IListEntry {
+export interfAce IKeybindingItemEntry extends IListEntry {
 	keybindingItem: IKeybindingItem;
-	commandIdMatches?: IMatch[];
-	commandLabelMatches?: IMatch[];
-	commandDefaultLabelMatches?: IMatch[];
-	sourceMatches?: IMatch[];
-	whenMatches?: IMatch[];
-	keybindingMatches?: KeybindingMatches;
+	commAndIdMAtches?: IMAtch[];
+	commAndLAbelMAtches?: IMAtch[];
+	commAndDefAultLAbelMAtches?: IMAtch[];
+	sourceMAtches?: IMAtch[];
+	whenMAtches?: IMAtch[];
+	keybindingMAtches?: KeybindingMAtches;
 }
 
-export interface IKeybindingItem {
+export interfAce IKeybindingItem {
 	keybinding: ResolvedKeybinding;
 	keybindingItem: ResolvedKeybindingItem;
-	commandLabel: string;
-	commandDefaultLabel: string;
-	command: string;
+	commAndLAbel: string;
+	commAndDefAultLAbel: string;
+	commAnd: string;
 	source: string;
 	when: string;
 }
 
-interface ModifierLabels {
-	ui: ModLabels;
-	aria: ModLabels;
-	user: ModLabels;
+interfAce ModifierLAbels {
+	ui: ModLAbels;
+	AriA: ModLAbels;
+	user: ModLAbels;
 }
 
-const wordFilter = or(matchesPrefix, matchesWords, matchesContiguousSubString);
+const wordFilter = or(mAtchesPrefix, mAtchesWords, mAtchesContiguousSubString);
 
-export class KeybindingsEditorModel extends EditorModel {
+export clAss KeybindingsEditorModel extends EditorModel {
 
-	private _keybindingItems: IKeybindingItem[];
-	private _keybindingItemsSortedByPrecedence: IKeybindingItem[];
-	private modifierLabels: ModifierLabels;
+	privAte _keybindingItems: IKeybindingItem[];
+	privAte _keybindingItemsSortedByPrecedence: IKeybindingItem[];
+	privAte modifierLAbels: ModifierLAbels;
 
 	constructor(
-		os: OperatingSystem,
-		@IKeybindingService private readonly keybindingsService: IKeybindingService
+		os: OperAtingSystem,
+		@IKeybindingService privAte reAdonly keybindingsService: IKeybindingService
 	) {
 		super();
 		this._keybindingItems = [];
 		this._keybindingItemsSortedByPrecedence = [];
-		this.modifierLabels = {
-			ui: UILabelProvider.modifierLabels[os],
-			aria: AriaLabelProvider.modifierLabels[os],
-			user: UserSettingsLabelProvider.modifierLabels[os]
+		this.modifierLAbels = {
+			ui: UILAbelProvider.modifierLAbels[os],
+			AriA: AriALAbelProvider.modifierLAbels[os],
+			user: UserSettingsLAbelProvider.modifierLAbels[os]
 		};
 	}
 
-	fetch(searchValue: string, sortByPrecedence: boolean = false): IKeybindingItemEntry[] {
+	fetch(seArchVAlue: string, sortByPrecedence: booleAn = fAlse): IKeybindingItemEntry[] {
 		let keybindingItems = sortByPrecedence ? this._keybindingItemsSortedByPrecedence : this._keybindingItems;
 
-		if (/@source:\s*(user|default)/i.test(searchValue)) {
-			keybindingItems = this.filterBySource(keybindingItems, searchValue);
-			searchValue = searchValue.replace(/@source:\s*(user|default)/i, '');
+		if (/@source:\s*(user|defAult)/i.test(seArchVAlue)) {
+			keybindingItems = this.filterBySource(keybindingItems, seArchVAlue);
+			seArchVAlue = seArchVAlue.replAce(/@source:\s*(user|defAult)/i, '');
 		}
 
-		searchValue = searchValue.trim();
-		if (!searchValue) {
-			return keybindingItems.map(keybindingItem => (<IKeybindingItemEntry>{ id: KeybindingsEditorModel.getId(keybindingItem), keybindingItem, templateId: KEYBINDING_ENTRY_TEMPLATE_ID }));
+		seArchVAlue = seArchVAlue.trim();
+		if (!seArchVAlue) {
+			return keybindingItems.mAp(keybindingItem => (<IKeybindingItemEntry>{ id: KeybindingsEditorModel.getId(keybindingItem), keybindingItem, templAteId: KEYBINDING_ENTRY_TEMPLATE_ID }));
 		}
 
-		return this.filterByText(keybindingItems, searchValue);
+		return this.filterByText(keybindingItems, seArchVAlue);
 	}
 
-	private filterBySource(keybindingItems: IKeybindingItem[], searchValue: string): IKeybindingItem[] {
-		if (/@source:\s*default/i.test(searchValue)) {
+	privAte filterBySource(keybindingItems: IKeybindingItem[], seArchVAlue: string): IKeybindingItem[] {
+		if (/@source:\s*defAult/i.test(seArchVAlue)) {
 			return keybindingItems.filter(k => k.source === SOURCE_DEFAULT);
 		}
-		if (/@source:\s*user/i.test(searchValue)) {
+		if (/@source:\s*user/i.test(seArchVAlue)) {
 			return keybindingItems.filter(k => k.source === SOURCE_USER);
 		}
 		return keybindingItems;
 	}
 
-	private filterByText(keybindingItems: IKeybindingItem[], searchValue: string): IKeybindingItemEntry[] {
-		const quoteAtFirstChar = searchValue.charAt(0) === '"';
-		const quoteAtLastChar = searchValue.charAt(searchValue.length - 1) === '"';
-		const completeMatch = quoteAtFirstChar && quoteAtLastChar;
-		if (quoteAtFirstChar) {
-			searchValue = searchValue.substring(1);
+	privAte filterByText(keybindingItems: IKeybindingItem[], seArchVAlue: string): IKeybindingItemEntry[] {
+		const quoteAtFirstChAr = seArchVAlue.chArAt(0) === '"';
+		const quoteAtLAstChAr = seArchVAlue.chArAt(seArchVAlue.length - 1) === '"';
+		const completeMAtch = quoteAtFirstChAr && quoteAtLAstChAr;
+		if (quoteAtFirstChAr) {
+			seArchVAlue = seArchVAlue.substring(1);
 		}
-		if (quoteAtLastChar) {
-			searchValue = searchValue.substring(0, searchValue.length - 1);
+		if (quoteAtLAstChAr) {
+			seArchVAlue = seArchVAlue.substring(0, seArchVAlue.length - 1);
 		}
-		searchValue = searchValue.trim();
+		seArchVAlue = seArchVAlue.trim();
 
 		const result: IKeybindingItemEntry[] = [];
-		const words = searchValue.split(' ');
+		const words = seArchVAlue.split(' ');
 		const keybindingWords = this.splitKeybindingWords(words);
 		for (const keybindingItem of keybindingItems) {
-			const keybindingMatches = new KeybindingItemMatches(this.modifierLabels, keybindingItem, searchValue, words, keybindingWords, completeMatch);
-			if (keybindingMatches.commandIdMatches
-				|| keybindingMatches.commandLabelMatches
-				|| keybindingMatches.commandDefaultLabelMatches
-				|| keybindingMatches.sourceMatches
-				|| keybindingMatches.whenMatches
-				|| keybindingMatches.keybindingMatches) {
+			const keybindingMAtches = new KeybindingItemMAtches(this.modifierLAbels, keybindingItem, seArchVAlue, words, keybindingWords, completeMAtch);
+			if (keybindingMAtches.commAndIdMAtches
+				|| keybindingMAtches.commAndLAbelMAtches
+				|| keybindingMAtches.commAndDefAultLAbelMAtches
+				|| keybindingMAtches.sourceMAtches
+				|| keybindingMAtches.whenMAtches
+				|| keybindingMAtches.keybindingMAtches) {
 				result.push({
 					id: KeybindingsEditorModel.getId(keybindingItem),
-					templateId: KEYBINDING_ENTRY_TEMPLATE_ID,
-					commandLabelMatches: keybindingMatches.commandLabelMatches || undefined,
-					commandDefaultLabelMatches: keybindingMatches.commandDefaultLabelMatches || undefined,
+					templAteId: KEYBINDING_ENTRY_TEMPLATE_ID,
+					commAndLAbelMAtches: keybindingMAtches.commAndLAbelMAtches || undefined,
+					commAndDefAultLAbelMAtches: keybindingMAtches.commAndDefAultLAbelMAtches || undefined,
 					keybindingItem,
-					keybindingMatches: keybindingMatches.keybindingMatches || undefined,
-					commandIdMatches: keybindingMatches.commandIdMatches || undefined,
-					sourceMatches: keybindingMatches.sourceMatches || undefined,
-					whenMatches: keybindingMatches.whenMatches || undefined
+					keybindingMAtches: keybindingMAtches.keybindingMAtches || undefined,
+					commAndIdMAtches: keybindingMAtches.commAndIdMAtches || undefined,
+					sourceMAtches: keybindingMAtches.sourceMAtches || undefined,
+					whenMAtches: keybindingMAtches.whenMAtches || undefined
 				});
 			}
 		}
 		return result;
 	}
 
-	private splitKeybindingWords(wordsSeparatedBySpaces: string[]): string[] {
+	privAte splitKeybindingWords(wordsSepArAtedBySpAces: string[]): string[] {
 		const result: string[] = [];
-		for (const word of wordsSeparatedBySpaces) {
-			result.push(...coalesce(word.split('+')));
+		for (const word of wordsSepArAtedBySpAces) {
+			result.push(...coAlesce(word.split('+')));
 		}
 		return result;
 	}
 
-	resolve(actionLabels: Map<string, string>): Promise<EditorModel> {
-		const workbenchActionsRegistry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+	resolve(ActionLAbels: MAp<string, string>): Promise<EditorModel> {
+		const workbenchActionsRegistry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
 
 		this._keybindingItemsSortedByPrecedence = [];
-		const boundCommands: Map<string, boolean> = new Map<string, boolean>();
+		const boundCommAnds: MAp<string, booleAn> = new MAp<string, booleAn>();
 		for (const keybinding of this.keybindingsService.getKeybindings()) {
-			if (keybinding.command) { // Skip keybindings without commands
-				this._keybindingItemsSortedByPrecedence.push(KeybindingsEditorModel.toKeybindingEntry(keybinding.command, keybinding, workbenchActionsRegistry, actionLabels));
-				boundCommands.set(keybinding.command, true);
+			if (keybinding.commAnd) { // Skip keybindings without commAnds
+				this._keybindingItemsSortedByPrecedence.push(KeybindingsEditorModel.toKeybindingEntry(keybinding.commAnd, keybinding, workbenchActionsRegistry, ActionLAbels));
+				boundCommAnds.set(keybinding.commAnd, true);
 			}
 		}
 
-		const commandsWithDefaultKeybindings = this.keybindingsService.getDefaultKeybindings().map(keybinding => keybinding.command);
-		for (const command of KeybindingResolver.getAllUnboundCommands(boundCommands)) {
-			const keybindingItem = new ResolvedKeybindingItem(undefined, command, null, undefined, commandsWithDefaultKeybindings.indexOf(command) === -1, null);
-			this._keybindingItemsSortedByPrecedence.push(KeybindingsEditorModel.toKeybindingEntry(command, keybindingItem, workbenchActionsRegistry, actionLabels));
+		const commAndsWithDefAultKeybindings = this.keybindingsService.getDefAultKeybindings().mAp(keybinding => keybinding.commAnd);
+		for (const commAnd of KeybindingResolver.getAllUnboundCommAnds(boundCommAnds)) {
+			const keybindingItem = new ResolvedKeybindingItem(undefined, commAnd, null, undefined, commAndsWithDefAultKeybindings.indexOf(commAnd) === -1, null);
+			this._keybindingItemsSortedByPrecedence.push(KeybindingsEditorModel.toKeybindingEntry(commAnd, keybindingItem, workbenchActionsRegistry, ActionLAbels));
 		}
-		this._keybindingItems = this._keybindingItemsSortedByPrecedence.slice(0).sort((a, b) => KeybindingsEditorModel.compareKeybindingData(a, b));
+		this._keybindingItems = this._keybindingItemsSortedByPrecedence.slice(0).sort((A, b) => KeybindingsEditorModel.compAreKeybindingDAtA(A, b));
 		return Promise.resolve(this);
 	}
 
-	private static getId(keybindingItem: IKeybindingItem): string {
-		return keybindingItem.command + (keybindingItem.keybinding ? keybindingItem.keybinding.getAriaLabel() : '') + keybindingItem.source + keybindingItem.when;
+	privAte stAtic getId(keybindingItem: IKeybindingItem): string {
+		return keybindingItem.commAnd + (keybindingItem.keybinding ? keybindingItem.keybinding.getAriALAbel() : '') + keybindingItem.source + keybindingItem.when;
 	}
 
-	private static compareKeybindingData(a: IKeybindingItem, b: IKeybindingItem): number {
-		if (a.keybinding && !b.keybinding) {
+	privAte stAtic compAreKeybindingDAtA(A: IKeybindingItem, b: IKeybindingItem): number {
+		if (A.keybinding && !b.keybinding) {
 			return -1;
 		}
-		if (b.keybinding && !a.keybinding) {
+		if (b.keybinding && !A.keybinding) {
 			return 1;
 		}
-		if (a.commandLabel && !b.commandLabel) {
+		if (A.commAndLAbel && !b.commAndLAbel) {
 			return -1;
 		}
-		if (b.commandLabel && !a.commandLabel) {
+		if (b.commAndLAbel && !A.commAndLAbel) {
 			return 1;
 		}
-		if (a.commandLabel && b.commandLabel) {
-			if (a.commandLabel !== b.commandLabel) {
-				return a.commandLabel.localeCompare(b.commandLabel);
+		if (A.commAndLAbel && b.commAndLAbel) {
+			if (A.commAndLAbel !== b.commAndLAbel) {
+				return A.commAndLAbel.locAleCompAre(b.commAndLAbel);
 			}
 		}
-		if (a.command === b.command) {
-			return a.keybindingItem.isDefault ? 1 : -1;
+		if (A.commAnd === b.commAnd) {
+			return A.keybindingItem.isDefAult ? 1 : -1;
 		}
-		return a.command.localeCompare(b.command);
+		return A.commAnd.locAleCompAre(b.commAnd);
 	}
 
-	private static toKeybindingEntry(command: string, keybindingItem: ResolvedKeybindingItem, workbenchActionsRegistry: IWorkbenchActionRegistry, actions: Map<string, string>): IKeybindingItem {
-		const menuCommand = MenuRegistry.getCommand(command)!;
-		const editorActionLabel = actions.get(command)!;
+	privAte stAtic toKeybindingEntry(commAnd: string, keybindingItem: ResolvedKeybindingItem, workbenchActionsRegistry: IWorkbenchActionRegistry, Actions: MAp<string, string>): IKeybindingItem {
+		const menuCommAnd = MenuRegistry.getCommAnd(commAnd)!;
+		const editorActionLAbel = Actions.get(commAnd)!;
 		return <IKeybindingItem>{
 			keybinding: keybindingItem.resolvedKeybinding,
 			keybindingItem,
-			command,
-			commandLabel: KeybindingsEditorModel.getCommandLabel(menuCommand, editorActionLabel),
-			commandDefaultLabel: KeybindingsEditorModel.getCommandDefaultLabel(menuCommand, workbenchActionsRegistry),
-			when: keybindingItem.when ? keybindingItem.when.serialize() : '',
-			source: keybindingItem.isDefault ? SOURCE_DEFAULT : SOURCE_USER
+			commAnd,
+			commAndLAbel: KeybindingsEditorModel.getCommAndLAbel(menuCommAnd, editorActionLAbel),
+			commAndDefAultLAbel: KeybindingsEditorModel.getCommAndDefAultLAbel(menuCommAnd, workbenchActionsRegistry),
+			when: keybindingItem.when ? keybindingItem.when.seriAlize() : '',
+			source: keybindingItem.isDefAult ? SOURCE_DEFAULT : SOURCE_USER
 		};
 	}
 
-	private static getCommandDefaultLabel(menuCommand: ICommandAction, workbenchActionsRegistry: IWorkbenchActionRegistry): string | null {
-		if (!Language.isDefaultVariant()) {
-			if (menuCommand && menuCommand.title && (<ILocalizedString>menuCommand.title).original) {
-				const category: string | undefined = menuCommand.category ? (<ILocalizedString>menuCommand.category).original : undefined;
-				const title = (<ILocalizedString>menuCommand.title).original;
-				return category ? localize('cat.title', "{0}: {1}", category, title) : title;
+	privAte stAtic getCommAndDefAultLAbel(menuCommAnd: ICommAndAction, workbenchActionsRegistry: IWorkbenchActionRegistry): string | null {
+		if (!LAnguAge.isDefAultVAriAnt()) {
+			if (menuCommAnd && menuCommAnd.title && (<ILocAlizedString>menuCommAnd.title).originAl) {
+				const cAtegory: string | undefined = menuCommAnd.cAtegory ? (<ILocAlizedString>menuCommAnd.cAtegory).originAl : undefined;
+				const title = (<ILocAlizedString>menuCommAnd.title).originAl;
+				return cAtegory ? locAlize('cAt.title', "{0}: {1}", cAtegory, title) : title;
 			}
 		}
 		return null;
 	}
 
-	private static getCommandLabel(menuCommand: ICommandAction, editorActionLabel: string): string {
-		if (menuCommand) {
-			const category: string | undefined = menuCommand.category ? typeof menuCommand.category === 'string' ? menuCommand.category : menuCommand.category.value : undefined;
-			const title = typeof menuCommand.title === 'string' ? menuCommand.title : menuCommand.title.value;
-			return category ? localize('cat.title', "{0}: {1}", category, title) : title;
+	privAte stAtic getCommAndLAbel(menuCommAnd: ICommAndAction, editorActionLAbel: string): string {
+		if (menuCommAnd) {
+			const cAtegory: string | undefined = menuCommAnd.cAtegory ? typeof menuCommAnd.cAtegory === 'string' ? menuCommAnd.cAtegory : menuCommAnd.cAtegory.vAlue : undefined;
+			const title = typeof menuCommAnd.title === 'string' ? menuCommAnd.title : menuCommAnd.title.vAlue;
+			return cAtegory ? locAlize('cAt.title', "{0}: {1}", cAtegory, title) : title;
 		}
 
-		if (editorActionLabel) {
-			return editorActionLabel;
+		if (editorActionLAbel) {
+			return editorActionLAbel;
 		}
 
 		return '';
 	}
 }
 
-class KeybindingItemMatches {
+clAss KeybindingItemMAtches {
 
-	readonly commandIdMatches: IMatch[] | null = null;
-	readonly commandLabelMatches: IMatch[] | null = null;
-	readonly commandDefaultLabelMatches: IMatch[] | null = null;
-	readonly sourceMatches: IMatch[] | null = null;
-	readonly whenMatches: IMatch[] | null = null;
-	readonly keybindingMatches: KeybindingMatches | null = null;
+	reAdonly commAndIdMAtches: IMAtch[] | null = null;
+	reAdonly commAndLAbelMAtches: IMAtch[] | null = null;
+	reAdonly commAndDefAultLAbelMAtches: IMAtch[] | null = null;
+	reAdonly sourceMAtches: IMAtch[] | null = null;
+	reAdonly whenMAtches: IMAtch[] | null = null;
+	reAdonly keybindingMAtches: KeybindingMAtches | null = null;
 
-	constructor(private modifierLabels: ModifierLabels, keybindingItem: IKeybindingItem, searchValue: string, words: string[], keybindingWords: string[], completeMatch: boolean) {
-		if (!completeMatch) {
-			this.commandIdMatches = this.matches(searchValue, keybindingItem.command, or(matchesWords, matchesCamelCase), words);
-			this.commandLabelMatches = keybindingItem.commandLabel ? this.matches(searchValue, keybindingItem.commandLabel, (word, wordToMatchAgainst) => matchesWords(word, keybindingItem.commandLabel, true), words) : null;
-			this.commandDefaultLabelMatches = keybindingItem.commandDefaultLabel ? this.matches(searchValue, keybindingItem.commandDefaultLabel, (word, wordToMatchAgainst) => matchesWords(word, keybindingItem.commandDefaultLabel, true), words) : null;
-			this.sourceMatches = this.matches(searchValue, keybindingItem.source, (word, wordToMatchAgainst) => matchesWords(word, keybindingItem.source, true), words);
-			this.whenMatches = keybindingItem.when ? this.matches(null, keybindingItem.when, or(matchesWords, matchesCamelCase), words) : null;
+	constructor(privAte modifierLAbels: ModifierLAbels, keybindingItem: IKeybindingItem, seArchVAlue: string, words: string[], keybindingWords: string[], completeMAtch: booleAn) {
+		if (!completeMAtch) {
+			this.commAndIdMAtches = this.mAtches(seArchVAlue, keybindingItem.commAnd, or(mAtchesWords, mAtchesCAmelCAse), words);
+			this.commAndLAbelMAtches = keybindingItem.commAndLAbel ? this.mAtches(seArchVAlue, keybindingItem.commAndLAbel, (word, wordToMAtchAgAinst) => mAtchesWords(word, keybindingItem.commAndLAbel, true), words) : null;
+			this.commAndDefAultLAbelMAtches = keybindingItem.commAndDefAultLAbel ? this.mAtches(seArchVAlue, keybindingItem.commAndDefAultLAbel, (word, wordToMAtchAgAinst) => mAtchesWords(word, keybindingItem.commAndDefAultLAbel, true), words) : null;
+			this.sourceMAtches = this.mAtches(seArchVAlue, keybindingItem.source, (word, wordToMAtchAgAinst) => mAtchesWords(word, keybindingItem.source, true), words);
+			this.whenMAtches = keybindingItem.when ? this.mAtches(null, keybindingItem.when, or(mAtchesWords, mAtchesCAmelCAse), words) : null;
 		}
-		this.keybindingMatches = keybindingItem.keybinding ? this.matchesKeybinding(keybindingItem.keybinding, searchValue, keybindingWords, completeMatch) : null;
+		this.keybindingMAtches = keybindingItem.keybinding ? this.mAtchesKeybinding(keybindingItem.keybinding, seArchVAlue, keybindingWords, completeMAtch) : null;
 	}
 
-	private matches(searchValue: string | null, wordToMatchAgainst: string, wordMatchesFilter: IFilter, words: string[]): IMatch[] | null {
-		let matches = searchValue ? wordFilter(searchValue, wordToMatchAgainst) : null;
-		if (!matches) {
-			matches = this.matchesWords(words, wordToMatchAgainst, wordMatchesFilter);
+	privAte mAtches(seArchVAlue: string | null, wordToMAtchAgAinst: string, wordMAtchesFilter: IFilter, words: string[]): IMAtch[] | null {
+		let mAtches = seArchVAlue ? wordFilter(seArchVAlue, wordToMAtchAgAinst) : null;
+		if (!mAtches) {
+			mAtches = this.mAtchesWords(words, wordToMAtchAgAinst, wordMAtchesFilter);
 		}
-		if (matches) {
-			matches = this.filterAndSort(matches);
+		if (mAtches) {
+			mAtches = this.filterAndSort(mAtches);
 		}
-		return matches;
+		return mAtches;
 	}
 
-	private matchesWords(words: string[], wordToMatchAgainst: string, wordMatchesFilter: IFilter): IMatch[] | null {
-		let matches: IMatch[] | null = [];
+	privAte mAtchesWords(words: string[], wordToMAtchAgAinst: string, wordMAtchesFilter: IFilter): IMAtch[] | null {
+		let mAtches: IMAtch[] | null = [];
 		for (const word of words) {
-			const wordMatches = wordMatchesFilter(word, wordToMatchAgainst);
-			if (wordMatches) {
-				matches = [...(matches || []), ...wordMatches];
+			const wordMAtches = wordMAtchesFilter(word, wordToMAtchAgAinst);
+			if (wordMAtches) {
+				mAtches = [...(mAtches || []), ...wordMAtches];
 			} else {
-				matches = null;
-				break;
+				mAtches = null;
+				breAk;
 			}
 		}
-		return matches;
+		return mAtches;
 	}
 
-	private filterAndSort(matches: IMatch[]): IMatch[] {
-		return distinct(matches, (a => a.start + '.' + a.end)).filter(match => !matches.some(m => !(m.start === match.start && m.end === match.end) && (m.start <= match.start && m.end >= match.end))).sort((a, b) => a.start - b.start);
+	privAte filterAndSort(mAtches: IMAtch[]): IMAtch[] {
+		return distinct(mAtches, (A => A.stArt + '.' + A.end)).filter(mAtch => !mAtches.some(m => !(m.stArt === mAtch.stArt && m.end === mAtch.end) && (m.stArt <= mAtch.stArt && m.end >= mAtch.end))).sort((A, b) => A.stArt - b.stArt);
 	}
 
-	private matchesKeybinding(keybinding: ResolvedKeybinding, searchValue: string, words: string[], completeMatch: boolean): KeybindingMatches | null {
-		const [firstPart, chordPart] = keybinding.getParts();
+	privAte mAtchesKeybinding(keybinding: ResolvedKeybinding, seArchVAlue: string, words: string[], completeMAtch: booleAn): KeybindingMAtches | null {
+		const [firstPArt, chordPArt] = keybinding.getPArts();
 
-		const userSettingsLabel = keybinding.getUserSettingsLabel();
-		const ariaLabel = keybinding.getAriaLabel();
-		const label = keybinding.getLabel();
-		if ((userSettingsLabel && strings.compareIgnoreCase(searchValue, userSettingsLabel) === 0)
-			|| (ariaLabel && strings.compareIgnoreCase(searchValue, ariaLabel) === 0)
-			|| (label && strings.compareIgnoreCase(searchValue, label) === 0)) {
+		const userSettingsLAbel = keybinding.getUserSettingsLAbel();
+		const AriALAbel = keybinding.getAriALAbel();
+		const lAbel = keybinding.getLAbel();
+		if ((userSettingsLAbel && strings.compAreIgnoreCAse(seArchVAlue, userSettingsLAbel) === 0)
+			|| (AriALAbel && strings.compAreIgnoreCAse(seArchVAlue, AriALAbel) === 0)
+			|| (lAbel && strings.compAreIgnoreCAse(seArchVAlue, lAbel) === 0)) {
 			return {
-				firstPart: this.createCompleteMatch(firstPart),
-				chordPart: this.createCompleteMatch(chordPart)
+				firstPArt: this.creAteCompleteMAtch(firstPArt),
+				chordPArt: this.creAteCompleteMAtch(chordPArt)
 			};
 		}
 
-		const firstPartMatch: KeybindingMatch = {};
-		let chordPartMatch: KeybindingMatch = {};
+		const firstPArtMAtch: KeybindingMAtch = {};
+		let chordPArtMAtch: KeybindingMAtch = {};
 
-		const matchedWords: number[] = [];
-		const firstPartMatchedWords: number[] = [];
-		let chordPartMatchedWords: number[] = [];
-		let matchFirstPart = true;
+		const mAtchedWords: number[] = [];
+		const firstPArtMAtchedWords: number[] = [];
+		let chordPArtMAtchedWords: number[] = [];
+		let mAtchFirstPArt = true;
 		for (let index = 0; index < words.length; index++) {
 			const word = words[index];
-			let firstPartMatched = false;
-			let chordPartMatched = false;
+			let firstPArtMAtched = fAlse;
+			let chordPArtMAtched = fAlse;
 
-			matchFirstPart = matchFirstPart && !firstPartMatch.keyCode;
-			let matchChordPart = !chordPartMatch.keyCode;
+			mAtchFirstPArt = mAtchFirstPArt && !firstPArtMAtch.keyCode;
+			let mAtchChordPArt = !chordPArtMAtch.keyCode;
 
-			if (matchFirstPart) {
-				firstPartMatched = this.matchPart(firstPart, firstPartMatch, word, completeMatch);
-				if (firstPartMatch.keyCode) {
-					for (const cordPartMatchedWordIndex of chordPartMatchedWords) {
-						if (firstPartMatchedWords.indexOf(cordPartMatchedWordIndex) === -1) {
-							matchedWords.splice(matchedWords.indexOf(cordPartMatchedWordIndex), 1);
+			if (mAtchFirstPArt) {
+				firstPArtMAtched = this.mAtchPArt(firstPArt, firstPArtMAtch, word, completeMAtch);
+				if (firstPArtMAtch.keyCode) {
+					for (const cordPArtMAtchedWordIndex of chordPArtMAtchedWords) {
+						if (firstPArtMAtchedWords.indexOf(cordPArtMAtchedWordIndex) === -1) {
+							mAtchedWords.splice(mAtchedWords.indexOf(cordPArtMAtchedWordIndex), 1);
 						}
 					}
-					chordPartMatch = {};
-					chordPartMatchedWords = [];
-					matchChordPart = false;
+					chordPArtMAtch = {};
+					chordPArtMAtchedWords = [];
+					mAtchChordPArt = fAlse;
 				}
 			}
 
-			if (matchChordPart) {
-				chordPartMatched = this.matchPart(chordPart, chordPartMatch, word, completeMatch);
+			if (mAtchChordPArt) {
+				chordPArtMAtched = this.mAtchPArt(chordPArt, chordPArtMAtch, word, completeMAtch);
 			}
 
-			if (firstPartMatched) {
-				firstPartMatchedWords.push(index);
+			if (firstPArtMAtched) {
+				firstPArtMAtchedWords.push(index);
 			}
-			if (chordPartMatched) {
-				chordPartMatchedWords.push(index);
+			if (chordPArtMAtched) {
+				chordPArtMAtchedWords.push(index);
 			}
-			if (firstPartMatched || chordPartMatched) {
-				matchedWords.push(index);
+			if (firstPArtMAtched || chordPArtMAtched) {
+				mAtchedWords.push(index);
 			}
 
-			matchFirstPart = matchFirstPart && this.isModifier(word);
+			mAtchFirstPArt = mAtchFirstPArt && this.isModifier(word);
 		}
-		if (matchedWords.length !== words.length) {
+		if (mAtchedWords.length !== words.length) {
 			return null;
 		}
-		if (completeMatch && (!this.isCompleteMatch(firstPart, firstPartMatch) || !this.isCompleteMatch(chordPart, chordPartMatch))) {
+		if (completeMAtch && (!this.isCompleteMAtch(firstPArt, firstPArtMAtch) || !this.isCompleteMAtch(chordPArt, chordPArtMAtch))) {
 			return null;
 		}
-		return this.hasAnyMatch(firstPartMatch) || this.hasAnyMatch(chordPartMatch) ? { firstPart: firstPartMatch, chordPart: chordPartMatch } : null;
+		return this.hAsAnyMAtch(firstPArtMAtch) || this.hAsAnyMAtch(chordPArtMAtch) ? { firstPArt: firstPArtMAtch, chordPArt: chordPArtMAtch } : null;
 	}
 
-	private matchPart(part: ResolvedKeybindingPart | null, match: KeybindingMatch, word: string, completeMatch: boolean): boolean {
-		let matched = false;
-		if (this.matchesMetaModifier(part, word)) {
-			matched = true;
-			match.metaKey = true;
+	privAte mAtchPArt(pArt: ResolvedKeybindingPArt | null, mAtch: KeybindingMAtch, word: string, completeMAtch: booleAn): booleAn {
+		let mAtched = fAlse;
+		if (this.mAtchesMetAModifier(pArt, word)) {
+			mAtched = true;
+			mAtch.metAKey = true;
 		}
-		if (this.matchesCtrlModifier(part, word)) {
-			matched = true;
-			match.ctrlKey = true;
+		if (this.mAtchesCtrlModifier(pArt, word)) {
+			mAtched = true;
+			mAtch.ctrlKey = true;
 		}
-		if (this.matchesShiftModifier(part, word)) {
-			matched = true;
-			match.shiftKey = true;
+		if (this.mAtchesShiftModifier(pArt, word)) {
+			mAtched = true;
+			mAtch.shiftKey = true;
 		}
-		if (this.matchesAltModifier(part, word)) {
-			matched = true;
-			match.altKey = true;
+		if (this.mAtchesAltModifier(pArt, word)) {
+			mAtched = true;
+			mAtch.AltKey = true;
 		}
-		if (this.matchesKeyCode(part, word, completeMatch)) {
-			match.keyCode = true;
-			matched = true;
+		if (this.mAtchesKeyCode(pArt, word, completeMAtch)) {
+			mAtch.keyCode = true;
+			mAtched = true;
 		}
-		return matched;
+		return mAtched;
 	}
 
-	private matchesKeyCode(keybinding: ResolvedKeybindingPart | null, word: string, completeMatch: boolean): boolean {
+	privAte mAtchesKeyCode(keybinding: ResolvedKeybindingPArt | null, word: string, completeMAtch: booleAn): booleAn {
 		if (!keybinding) {
-			return false;
+			return fAlse;
 		}
-		const ariaLabel: string = keybinding.keyAriaLabel || '';
-		if (completeMatch || ariaLabel.length === 1 || word.length === 1) {
-			if (strings.compareIgnoreCase(ariaLabel, word) === 0) {
+		const AriALAbel: string = keybinding.keyAriALAbel || '';
+		if (completeMAtch || AriALAbel.length === 1 || word.length === 1) {
+			if (strings.compAreIgnoreCAse(AriALAbel, word) === 0) {
 				return true;
 			}
 		} else {
-			if (matchesContiguousSubString(word, ariaLabel)) {
+			if (mAtchesContiguousSubString(word, AriALAbel)) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	private matchesMetaModifier(keybinding: ResolvedKeybindingPart | null, word: string): boolean {
+	privAte mAtchesMetAModifier(keybinding: ResolvedKeybindingPArt | null, word: string): booleAn {
 		if (!keybinding) {
-			return false;
+			return fAlse;
 		}
-		if (!keybinding.metaKey) {
-			return false;
+		if (!keybinding.metAKey) {
+			return fAlse;
 		}
-		return this.wordMatchesMetaModifier(word);
+		return this.wordMAtchesMetAModifier(word);
 	}
 
-	private matchesCtrlModifier(keybinding: ResolvedKeybindingPart | null, word: string): boolean {
+	privAte mAtchesCtrlModifier(keybinding: ResolvedKeybindingPArt | null, word: string): booleAn {
 		if (!keybinding) {
-			return false;
+			return fAlse;
 		}
 		if (!keybinding.ctrlKey) {
-			return false;
+			return fAlse;
 		}
-		return this.wordMatchesCtrlModifier(word);
+		return this.wordMAtchesCtrlModifier(word);
 	}
 
-	private matchesShiftModifier(keybinding: ResolvedKeybindingPart | null, word: string): boolean {
+	privAte mAtchesShiftModifier(keybinding: ResolvedKeybindingPArt | null, word: string): booleAn {
 		if (!keybinding) {
-			return false;
+			return fAlse;
 		}
 		if (!keybinding.shiftKey) {
-			return false;
+			return fAlse;
 		}
-		return this.wordMatchesShiftModifier(word);
+		return this.wordMAtchesShiftModifier(word);
 	}
 
-	private matchesAltModifier(keybinding: ResolvedKeybindingPart | null, word: string): boolean {
+	privAte mAtchesAltModifier(keybinding: ResolvedKeybindingPArt | null, word: string): booleAn {
 		if (!keybinding) {
-			return false;
+			return fAlse;
 		}
-		if (!keybinding.altKey) {
-			return false;
+		if (!keybinding.AltKey) {
+			return fAlse;
 		}
-		return this.wordMatchesAltModifier(word);
+		return this.wordMAtchesAltModifier(word);
 	}
 
-	private hasAnyMatch(keybindingMatch: KeybindingMatch): boolean {
-		return !!keybindingMatch.altKey ||
-			!!keybindingMatch.ctrlKey ||
-			!!keybindingMatch.metaKey ||
-			!!keybindingMatch.shiftKey ||
-			!!keybindingMatch.keyCode;
+	privAte hAsAnyMAtch(keybindingMAtch: KeybindingMAtch): booleAn {
+		return !!keybindingMAtch.AltKey ||
+			!!keybindingMAtch.ctrlKey ||
+			!!keybindingMAtch.metAKey ||
+			!!keybindingMAtch.shiftKey ||
+			!!keybindingMAtch.keyCode;
 	}
 
-	private isCompleteMatch(part: ResolvedKeybindingPart | null, match: KeybindingMatch): boolean {
-		if (!part) {
+	privAte isCompleteMAtch(pArt: ResolvedKeybindingPArt | null, mAtch: KeybindingMAtch): booleAn {
+		if (!pArt) {
 			return true;
 		}
-		if (!match.keyCode) {
-			return false;
+		if (!mAtch.keyCode) {
+			return fAlse;
 		}
-		if (part.metaKey && !match.metaKey) {
-			return false;
+		if (pArt.metAKey && !mAtch.metAKey) {
+			return fAlse;
 		}
-		if (part.altKey && !match.altKey) {
-			return false;
+		if (pArt.AltKey && !mAtch.AltKey) {
+			return fAlse;
 		}
-		if (part.ctrlKey && !match.ctrlKey) {
-			return false;
+		if (pArt.ctrlKey && !mAtch.ctrlKey) {
+			return fAlse;
 		}
-		if (part.shiftKey && !match.shiftKey) {
-			return false;
+		if (pArt.shiftKey && !mAtch.shiftKey) {
+			return fAlse;
 		}
 		return true;
 	}
 
-	private createCompleteMatch(part: ResolvedKeybindingPart | null): KeybindingMatch {
-		const match: KeybindingMatch = {};
-		if (part) {
-			match.keyCode = true;
-			if (part.metaKey) {
-				match.metaKey = true;
+	privAte creAteCompleteMAtch(pArt: ResolvedKeybindingPArt | null): KeybindingMAtch {
+		const mAtch: KeybindingMAtch = {};
+		if (pArt) {
+			mAtch.keyCode = true;
+			if (pArt.metAKey) {
+				mAtch.metAKey = true;
 			}
-			if (part.altKey) {
-				match.altKey = true;
+			if (pArt.AltKey) {
+				mAtch.AltKey = true;
 			}
-			if (part.ctrlKey) {
-				match.ctrlKey = true;
+			if (pArt.ctrlKey) {
+				mAtch.ctrlKey = true;
 			}
-			if (part.shiftKey) {
-				match.shiftKey = true;
+			if (pArt.shiftKey) {
+				mAtch.shiftKey = true;
 			}
 		}
-		return match;
+		return mAtch;
 	}
 
-	private isModifier(word: string): boolean {
-		if (this.wordMatchesAltModifier(word)) {
+	privAte isModifier(word: string): booleAn {
+		if (this.wordMAtchesAltModifier(word)) {
 			return true;
 		}
-		if (this.wordMatchesCtrlModifier(word)) {
+		if (this.wordMAtchesCtrlModifier(word)) {
 			return true;
 		}
-		if (this.wordMatchesMetaModifier(word)) {
+		if (this.wordMAtchesMetAModifier(word)) {
 			return true;
 		}
-		if (this.wordMatchesShiftModifier(word)) {
+		if (this.wordMAtchesShiftModifier(word)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private wordMatchesAltModifier(word: string): boolean {
-		if (strings.equalsIgnoreCase(this.modifierLabels.ui.altKey, word)) {
+	privAte wordMAtchesAltModifier(word: string): booleAn {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.ui.AltKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.aria.altKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.AriA.AltKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.user.altKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.user.AltKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(localize('option', "option"), word)) {
+		if (strings.equAlsIgnoreCAse(locAlize('option', "option"), word)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private wordMatchesCtrlModifier(word: string): boolean {
-		if (strings.equalsIgnoreCase(this.modifierLabels.ui.ctrlKey, word)) {
+	privAte wordMAtchesCtrlModifier(word: string): booleAn {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.ui.ctrlKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.aria.ctrlKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.AriA.ctrlKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.user.ctrlKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.user.ctrlKey, word)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private wordMatchesMetaModifier(word: string): boolean {
-		if (strings.equalsIgnoreCase(this.modifierLabels.ui.metaKey, word)) {
+	privAte wordMAtchesMetAModifier(word: string): booleAn {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.ui.metAKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.aria.metaKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.AriA.metAKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.user.metaKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.user.metAKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(localize('meta', "meta"), word)) {
+		if (strings.equAlsIgnoreCAse(locAlize('metA', "metA"), word)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private wordMatchesShiftModifier(word: string): boolean {
-		if (strings.equalsIgnoreCase(this.modifierLabels.ui.shiftKey, word)) {
+	privAte wordMAtchesShiftModifier(word: string): booleAn {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.ui.shiftKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.aria.shiftKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.AriA.shiftKey, word)) {
 			return true;
 		}
-		if (strings.equalsIgnoreCase(this.modifierLabels.user.shiftKey, word)) {
+		if (strings.equAlsIgnoreCAse(this.modifierLAbels.user.shiftKey, word)) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 }

@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import * as fs from 'fs';
-import { INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { writeFileSync, readFile } from 'vs/base/node/pfs';
-import { isUndefined, isUndefinedOrNull } from 'vs/base/common/types';
-import { IStateService } from 'vs/platform/state/node/state';
-import { ILogService } from 'vs/platform/log/common/log';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As fs from 'fs';
+import { INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { writeFileSync, reAdFile } from 'vs/bAse/node/pfs';
+import { isUndefined, isUndefinedOrNull } from 'vs/bAse/common/types';
+import { IStAteService } from 'vs/plAtform/stAte/node/stAte';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
-type StorageDatabase = { [key: string]: any; };
+type StorAgeDAtAbAse = { [key: string]: Any; };
 
-export class FileStorage {
+export clAss FileStorAge {
 
-	private _database: StorageDatabase | null = null;
-	private lastFlushedSerializedDatabase: string | null = null;
+	privAte _dAtAbAse: StorAgeDAtAbAse | null = null;
+	privAte lAstFlushedSeriAlizedDAtAbAse: string | null = null;
 
-	constructor(private dbPath: string, private onError: (error: Error) => void) { }
+	constructor(privAte dbPAth: string, privAte onError: (error: Error) => void) { }
 
-	private get database(): StorageDatabase {
-		if (!this._database) {
-			this._database = this.loadSync();
+	privAte get dAtAbAse(): StorAgeDAtAbAse {
+		if (!this._dAtAbAse) {
+			this._dAtAbAse = this.loAdSync();
 		}
 
-		return this._database;
+		return this._dAtAbAse;
 	}
 
-	async init(): Promise<void> {
-		if (this._database) {
-			return; // return if database was already loaded
+	Async init(): Promise<void> {
+		if (this._dAtAbAse) {
+			return; // return if dAtAbAse wAs AlreAdy loAded
 		}
 
-		const database = await this.loadAsync();
+		const dAtAbAse = AwAit this.loAdAsync();
 
-		if (this._database) {
-			return; // return if database was already loaded
+		if (this._dAtAbAse) {
+			return; // return if dAtAbAse wAs AlreAdy loAded
 		}
 
-		this._database = database;
+		this._dAtAbAse = dAtAbAse;
 	}
 
-	private loadSync(): StorageDatabase {
+	privAte loAdSync(): StorAgeDAtAbAse {
 		try {
-			this.lastFlushedSerializedDatabase = fs.readFileSync(this.dbPath).toString();
+			this.lAstFlushedSeriAlizedDAtAbAse = fs.reAdFileSync(this.dbPAth).toString();
 
-			return JSON.parse(this.lastFlushedSerializedDatabase);
-		} catch (error) {
+			return JSON.pArse(this.lAstFlushedSeriAlizedDAtAbAse);
+		} cAtch (error) {
 			if (error.code !== 'ENOENT') {
 				this.onError(error);
 			}
@@ -56,12 +56,12 @@ export class FileStorage {
 		}
 	}
 
-	private async loadAsync(): Promise<StorageDatabase> {
+	privAte Async loAdAsync(): Promise<StorAgeDAtAbAse> {
 		try {
-			this.lastFlushedSerializedDatabase = (await readFile(this.dbPath)).toString();
+			this.lAstFlushedSeriAlizedDAtAbAse = (AwAit reAdFile(this.dbPAth)).toString();
 
-			return JSON.parse(this.lastFlushedSerializedDatabase);
-		} catch (error) {
+			return JSON.pArse(this.lAstFlushedSeriAlizedDAtAbAse);
+		} cAtch (error) {
 			if (error.code !== 'ENOENT') {
 				this.onError(error);
 			}
@@ -70,89 +70,89 @@ export class FileStorage {
 		}
 	}
 
-	getItem<T>(key: string, defaultValue: T): T;
-	getItem<T>(key: string, defaultValue?: T): T | undefined;
-	getItem<T>(key: string, defaultValue?: T): T | undefined {
-		const res = this.database[key];
+	getItem<T>(key: string, defAultVAlue: T): T;
+	getItem<T>(key: string, defAultVAlue?: T): T | undefined;
+	getItem<T>(key: string, defAultVAlue?: T): T | undefined {
+		const res = this.dAtAbAse[key];
 		if (isUndefinedOrNull(res)) {
-			return defaultValue;
+			return defAultVAlue;
 		}
 
 		return res;
 	}
 
-	setItem(key: string, data?: object | string | number | boolean | undefined | null): void {
+	setItem(key: string, dAtA?: object | string | number | booleAn | undefined | null): void {
 
-		// Remove an item when it is undefined or null
-		if (isUndefinedOrNull(data)) {
+		// Remove An item when it is undefined or null
+		if (isUndefinedOrNull(dAtA)) {
 			return this.removeItem(key);
 		}
 
-		// Shortcut for primitives that did not change
-		if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean') {
-			if (this.database[key] === data) {
+		// Shortcut for primitives thAt did not chAnge
+		if (typeof dAtA === 'string' || typeof dAtA === 'number' || typeof dAtA === 'booleAn') {
+			if (this.dAtAbAse[key] === dAtA) {
 				return;
 			}
 		}
 
-		this.database[key] = data;
-		this.saveSync();
+		this.dAtAbAse[key] = dAtA;
+		this.sAveSync();
 	}
 
 	removeItem(key: string): void {
 
-		// Only update if the key is actually present (not undefined)
-		if (!isUndefined(this.database[key])) {
-			this.database[key] = undefined;
-			this.saveSync();
+		// Only updAte if the key is ActuAlly present (not undefined)
+		if (!isUndefined(this.dAtAbAse[key])) {
+			this.dAtAbAse[key] = undefined;
+			this.sAveSync();
 		}
 	}
 
-	private saveSync(): void {
-		const serializedDatabase = JSON.stringify(this.database, null, 4);
-		if (serializedDatabase === this.lastFlushedSerializedDatabase) {
-			return; // return early if the database has not changed
+	privAte sAveSync(): void {
+		const seriAlizedDAtAbAse = JSON.stringify(this.dAtAbAse, null, 4);
+		if (seriAlizedDAtAbAse === this.lAstFlushedSeriAlizedDAtAbAse) {
+			return; // return eArly if the dAtAbAse hAs not chAnged
 		}
 
 		try {
-			writeFileSync(this.dbPath, serializedDatabase); // permission issue can happen here
-			this.lastFlushedSerializedDatabase = serializedDatabase;
-		} catch (error) {
+			writeFileSync(this.dbPAth, seriAlizedDAtAbAse); // permission issue cAn hAppen here
+			this.lAstFlushedSeriAlizedDAtAbAse = seriAlizedDAtAbAse;
+		} cAtch (error) {
 			this.onError(error);
 		}
 	}
 }
 
-export class StateService implements IStateService {
+export clAss StAteService implements IStAteService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly STATE_FILE = 'storage.json';
+	privAte stAtic reAdonly STATE_FILE = 'storAge.json';
 
-	private fileStorage: FileStorage;
+	privAte fileStorAge: FileStorAge;
 
 	constructor(
-		@INativeEnvironmentService environmentService: INativeEnvironmentService,
+		@INAtiveEnvironmentService environmentService: INAtiveEnvironmentService,
 		@ILogService logService: ILogService
 	) {
-		this.fileStorage = new FileStorage(path.join(environmentService.userDataPath, StateService.STATE_FILE), error => logService.error(error));
+		this.fileStorAge = new FileStorAge(pAth.join(environmentService.userDAtAPAth, StAteService.STATE_FILE), error => logService.error(error));
 	}
 
 	init(): Promise<void> {
-		return this.fileStorage.init();
+		return this.fileStorAge.init();
 	}
 
-	getItem<T>(key: string, defaultValue: T): T;
-	getItem<T>(key: string, defaultValue: T | undefined): T | undefined;
-	getItem<T>(key: string, defaultValue?: T): T | undefined {
-		return this.fileStorage.getItem(key, defaultValue);
+	getItem<T>(key: string, defAultVAlue: T): T;
+	getItem<T>(key: string, defAultVAlue: T | undefined): T | undefined;
+	getItem<T>(key: string, defAultVAlue?: T): T | undefined {
+		return this.fileStorAge.getItem(key, defAultVAlue);
 	}
 
-	setItem(key: string, data?: object | string | number | boolean | undefined | null): void {
-		this.fileStorage.setItem(key, data);
+	setItem(key: string, dAtA?: object | string | number | booleAn | undefined | null): void {
+		this.fileStorAge.setItem(key, dAtA);
 	}
 
 	removeItem(key: string): void {
-		this.fileStorage.removeItem(key);
+		this.fileStorAge.removeItem(key);
 	}
 }

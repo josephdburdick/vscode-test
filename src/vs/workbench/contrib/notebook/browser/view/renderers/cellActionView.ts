@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action, IAction, Separator } from 'vs/base/common/actions';
-import { IMenu, IMenuActionOptions, MenuItemAction, SubmenuItemAction } from 'vs/platform/actions/common/actions';
-import { DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { BaseActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { Action, IAction, SepArAtor } from 'vs/bAse/common/Actions';
+import { IMenu, IMenuActionOptions, MenuItemAction, SubmenuItemAction } from 'vs/plAtform/Actions/common/Actions';
+import { DisposAbleStore, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { BAseActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export class VerticalSeparator extends Action {
-	static readonly ID = 'vs.actions.verticalSeparator';
+export clAss VerticAlSepArAtor extends Action {
+	stAtic reAdonly ID = 'vs.Actions.verticAlSepArAtor';
 
 	constructor(
-		label?: string
+		lAbel?: string
 	) {
-		super(VerticalSeparator.ID, label, label ? 'verticalSeparator text' : 'verticalSeparator');
-		this.checked = false;
-		this.enabled = false;
+		super(VerticAlSepArAtor.ID, lAbel, lAbel ? 'verticAlSepArAtor text' : 'verticAlSepArAtor');
+		this.checked = fAlse;
+		this.enAbled = fAlse;
 	}
 }
 
-export class VerticalSeparatorViewItem extends BaseActionViewItem {
-	render(container: HTMLElement) {
-		container.classList.add('verticalSeparator');
-		// const iconContainer = DOM.append(container, $('.verticalSeparator'));
-		// DOM.addClasses(iconContainer, 'codicon', 'codicon-chrome-minimize');
+export clAss VerticAlSepArAtorViewItem extends BAseActionViewItem {
+	render(contAiner: HTMLElement) {
+		contAiner.clAssList.Add('verticAlSepArAtor');
+		// const iconContAiner = DOM.Append(contAiner, $('.verticAlSepArAtor'));
+		// DOM.AddClAsses(iconContAiner, 'codicon', 'codicon-chrome-minimize');
 	}
 }
 
-export function createAndFillInActionBarActionsWithVerticalSeparators(menu: IMenu, options: IMenuActionOptions | undefined, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, alwaysFillSecondary?: boolean, isPrimaryGroup?: (group: string) => boolean): IDisposable {
+export function creAteAndFillInActionBArActionsWithVerticAlSepArAtors(menu: IMenu, options: IMenuActionOptions | undefined, tArget: IAction[] | { primAry: IAction[]; secondAry: IAction[]; }, AlwAysFillSecondAry?: booleAn, isPrimAryGroup?: (group: string) => booleAn): IDisposAble {
 	const groups = menu.getActions(options);
-	// Action bars handle alternative actions on their own so the alternative actions should be ignored
-	fillInActions(groups, target, false, alwaysFillSecondary, isPrimaryGroup);
-	return asDisposable(groups);
+	// Action bArs hAndle AlternAtive Actions on their own so the AlternAtive Actions should be ignored
+	fillInActions(groups, tArget, fAlse, AlwAysFillSecondAry, isPrimAryGroup);
+	return AsDisposAble(groups);
 }
 
-function fillInActions(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SubmenuItemAction>]>, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, useAlternativeActions: boolean, alwaysFillSecondary = false, isPrimaryGroup: (group: string) => boolean = group => group === 'navigation'): void {
+function fillInActions(groups: ReAdonlyArrAy<[string, ReAdonlyArrAy<MenuItemAction | SubmenuItemAction>]>, tArget: IAction[] | { primAry: IAction[]; secondAry: IAction[]; }, useAlternAtiveActions: booleAn, AlwAysFillSecondAry = fAlse, isPrimAryGroup: (group: string) => booleAn = group => group === 'nAvigAtion'): void {
 	for (const tuple of groups) {
-		let [group, actions] = tuple;
-		if (useAlternativeActions) {
-			actions = actions.map(a => (a instanceof MenuItemAction) && !!a.alt ? a.alt : a);
+		let [group, Actions] = tuple;
+		if (useAlternAtiveActions) {
+			Actions = Actions.mAp(A => (A instAnceof MenuItemAction) && !!A.Alt ? A.Alt : A);
 		}
 
-		const isPrimary = isPrimaryGroup(group);
-		if (isPrimary) {
-			const to = Array.isArray(target) ? target : target.primary;
+		const isPrimAry = isPrimAryGroup(group);
+		if (isPrimAry) {
+			const to = ArrAy.isArrAy(tArget) ? tArget : tArget.primAry;
 
 			if (to.length > 0) {
-				to.push(new VerticalSeparator());
+				to.push(new VerticAlSepArAtor());
 			}
 
-			to.push(...actions);
+			to.push(...Actions);
 		}
 
-		if (!isPrimary || alwaysFillSecondary) {
-			const to = Array.isArray(target) ? target : target.secondary;
+		if (!isPrimAry || AlwAysFillSecondAry) {
+			const to = ArrAy.isArrAy(tArget) ? tArget : tArget.secondAry;
 
 			if (to.length > 0) {
-				to.push(new Separator());
+				to.push(new SepArAtor());
 			}
 
-			to.push(...actions);
+			to.push(...Actions);
 		}
 	}
 }
 
-function asDisposable(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SubmenuItemAction>]>): IDisposable {
-	const disposables = new DisposableStore();
-	for (const [, actions] of groups) {
-		for (const action of actions) {
-			disposables.add(action);
+function AsDisposAble(groups: ReAdonlyArrAy<[string, ReAdonlyArrAy<MenuItemAction | SubmenuItemAction>]>): IDisposAble {
+	const disposAbles = new DisposAbleStore();
+	for (const [, Actions] of groups) {
+		for (const Action of Actions) {
+			disposAbles.Add(Action);
 		}
 	}
-	return disposables;
+	return disposAbles;
 }

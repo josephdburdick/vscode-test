@@ -1,136 +1,136 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
+import { FAstDomNode, creAteFAstDomNode } from 'vs/bAse/browser/fAstDomNode';
 import { IOverviewRuler } from 'vs/editor/browser/editorBrowser';
 import { OverviewRulerPosition, EditorOption } from 'vs/editor/common/config/editorOptions';
-import { ColorZone, OverviewRulerZone, OverviewZoneManager } from 'vs/editor/common/view/overviewZoneManager';
+import { ColorZone, OverviewRulerZone, OverviewZoneMAnAger } from 'vs/editor/common/view/overviewZoneMAnAger';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
-import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
+import { ViewEventHAndler } from 'vs/editor/common/viewModel/viewEventHAndler';
 
-export class OverviewRuler extends ViewEventHandler implements IOverviewRuler {
+export clAss OverviewRuler extends ViewEventHAndler implements IOverviewRuler {
 
-	private readonly _context: ViewContext;
-	private readonly _domNode: FastDomNode<HTMLCanvasElement>;
-	private readonly _zoneManager: OverviewZoneManager;
+	privAte reAdonly _context: ViewContext;
+	privAte reAdonly _domNode: FAstDomNode<HTMLCAnvAsElement>;
+	privAte reAdonly _zoneMAnAger: OverviewZoneMAnAger;
 
-	constructor(context: ViewContext, cssClassName: string) {
+	constructor(context: ViewContext, cssClAssNAme: string) {
 		super();
 		this._context = context;
-		const options = this._context.configuration.options;
+		const options = this._context.configurAtion.options;
 
-		this._domNode = createFastDomNode(document.createElement('canvas'));
-		this._domNode.setClassName(cssClassName);
-		this._domNode.setPosition('absolute');
-		this._domNode.setLayerHinting(true);
-		this._domNode.setContain('strict');
+		this._domNode = creAteFAstDomNode(document.creAteElement('cAnvAs'));
+		this._domNode.setClAssNAme(cssClAssNAme);
+		this._domNode.setPosition('Absolute');
+		this._domNode.setLAyerHinting(true);
+		this._domNode.setContAin('strict');
 
-		this._zoneManager = new OverviewZoneManager((lineNumber: number) => this._context.viewLayout.getVerticalOffsetForLineNumber(lineNumber));
-		this._zoneManager.setDOMWidth(0);
-		this._zoneManager.setDOMHeight(0);
-		this._zoneManager.setOuterHeight(this._context.viewLayout.getScrollHeight());
-		this._zoneManager.setLineHeight(options.get(EditorOption.lineHeight));
+		this._zoneMAnAger = new OverviewZoneMAnAger((lineNumber: number) => this._context.viewLAyout.getVerticAlOffsetForLineNumber(lineNumber));
+		this._zoneMAnAger.setDOMWidth(0);
+		this._zoneMAnAger.setDOMHeight(0);
+		this._zoneMAnAger.setOuterHeight(this._context.viewLAyout.getScrollHeight());
+		this._zoneMAnAger.setLineHeight(options.get(EditorOption.lineHeight));
 
-		this._zoneManager.setPixelRatio(options.get(EditorOption.pixelRatio));
+		this._zoneMAnAger.setPixelRAtio(options.get(EditorOption.pixelRAtio));
 
-		this._context.addEventHandler(this);
+		this._context.AddEventHAndler(this);
 	}
 
 	public dispose(): void {
-		this._context.removeEventHandler(this);
+		this._context.removeEventHAndler(this);
 		super.dispose();
 	}
 
-	// ---- begin view event handlers
+	// ---- begin view event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const options = this._context.configuration.options;
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		const options = this._context.configurAtion.options;
 
-		if (e.hasChanged(EditorOption.lineHeight)) {
-			this._zoneManager.setLineHeight(options.get(EditorOption.lineHeight));
+		if (e.hAsChAnged(EditorOption.lineHeight)) {
+			this._zoneMAnAger.setLineHeight(options.get(EditorOption.lineHeight));
 			this._render();
 		}
 
-		if (e.hasChanged(EditorOption.pixelRatio)) {
-			this._zoneManager.setPixelRatio(options.get(EditorOption.pixelRatio));
-			this._domNode.setWidth(this._zoneManager.getDOMWidth());
-			this._domNode.setHeight(this._zoneManager.getDOMHeight());
-			this._domNode.domNode.width = this._zoneManager.getCanvasWidth();
-			this._domNode.domNode.height = this._zoneManager.getCanvasHeight();
+		if (e.hAsChAnged(EditorOption.pixelRAtio)) {
+			this._zoneMAnAger.setPixelRAtio(options.get(EditorOption.pixelRAtio));
+			this._domNode.setWidth(this._zoneMAnAger.getDOMWidth());
+			this._domNode.setHeight(this._zoneMAnAger.getDOMHeight());
+			this._domNode.domNode.width = this._zoneMAnAger.getCAnvAsWidth();
+			this._domNode.domNode.height = this._zoneMAnAger.getCAnvAsHeight();
 			this._render();
 		}
 
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	public onFlushed(e: viewEvents.ViewFlushedEvent): booleAn {
 		this._render();
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		if (e.scrollHeightChanged) {
-			this._zoneManager.setOuterHeight(e.scrollHeight);
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		if (e.scrollHeightChAnged) {
+			this._zoneMAnAger.setOuterHeight(e.scrollHeight);
 			this._render();
 		}
 		return true;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	public onZonesChAnged(e: viewEvents.ViewZonesChAngedEvent): booleAn {
 		this._render();
 		return true;
 	}
 
-	// ---- end view event handlers
+	// ---- end view event hAndlers
 
 	public getDomNode(): HTMLElement {
 		return this._domNode.domNode;
 	}
 
-	public setLayout(position: OverviewRulerPosition): void {
+	public setLAyout(position: OverviewRulerPosition): void {
 		this._domNode.setTop(position.top);
 		this._domNode.setRight(position.right);
 
-		let hasChanged = false;
-		hasChanged = this._zoneManager.setDOMWidth(position.width) || hasChanged;
-		hasChanged = this._zoneManager.setDOMHeight(position.height) || hasChanged;
+		let hAsChAnged = fAlse;
+		hAsChAnged = this._zoneMAnAger.setDOMWidth(position.width) || hAsChAnged;
+		hAsChAnged = this._zoneMAnAger.setDOMHeight(position.height) || hAsChAnged;
 
-		if (hasChanged) {
-			this._domNode.setWidth(this._zoneManager.getDOMWidth());
-			this._domNode.setHeight(this._zoneManager.getDOMHeight());
-			this._domNode.domNode.width = this._zoneManager.getCanvasWidth();
-			this._domNode.domNode.height = this._zoneManager.getCanvasHeight();
+		if (hAsChAnged) {
+			this._domNode.setWidth(this._zoneMAnAger.getDOMWidth());
+			this._domNode.setHeight(this._zoneMAnAger.getDOMHeight());
+			this._domNode.domNode.width = this._zoneMAnAger.getCAnvAsWidth();
+			this._domNode.domNode.height = this._zoneMAnAger.getCAnvAsHeight();
 
 			this._render();
 		}
 	}
 
 	public setZones(zones: OverviewRulerZone[]): void {
-		this._zoneManager.setZones(zones);
+		this._zoneMAnAger.setZones(zones);
 		this._render();
 	}
 
-	private _render(): boolean {
-		if (this._zoneManager.getOuterHeight() === 0) {
-			return false;
+	privAte _render(): booleAn {
+		if (this._zoneMAnAger.getOuterHeight() === 0) {
+			return fAlse;
 		}
 
-		const width = this._zoneManager.getCanvasWidth();
-		const height = this._zoneManager.getCanvasHeight();
+		const width = this._zoneMAnAger.getCAnvAsWidth();
+		const height = this._zoneMAnAger.getCAnvAsHeight();
 
-		const colorZones = this._zoneManager.resolveColorZones();
-		const id2Color = this._zoneManager.getId2Color();
+		const colorZones = this._zoneMAnAger.resolveColorZones();
+		const id2Color = this._zoneMAnAger.getId2Color();
 
 		const ctx = this._domNode.domNode.getContext('2d')!;
-		ctx.clearRect(0, 0, width, height);
+		ctx.cleArRect(0, 0, width, height);
 		if (colorZones.length > 0) {
-			this._renderOneLane(ctx, colorZones, id2Color, width);
+			this._renderOneLAne(ctx, colorZones, id2Color, width);
 		}
 
 		return true;
 	}
 
-	private _renderOneLane(ctx: CanvasRenderingContext2D, colorZones: ColorZone[], id2Color: string[], width: number): void {
+	privAte _renderOneLAne(ctx: CAnvAsRenderingContext2D, colorZones: ColorZone[], id2Color: string[], width: number): void {
 
 		let currentColorId = 0;
 		let currentFrom = 0;
@@ -151,7 +151,7 @@ export class OverviewRuler extends ViewEventHandler implements IOverviewRuler {
 				currentTo = zoneTo;
 			} else {
 				if (currentTo >= zoneFrom) {
-					currentTo = Math.max(currentTo, zoneTo);
+					currentTo = MAth.mAx(currentTo, zoneTo);
 				} else {
 					ctx.fillRect(0, currentFrom, width, currentTo - currentFrom);
 					currentFrom = zoneFrom;

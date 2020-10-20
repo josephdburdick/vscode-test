@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { CommandService } from 'vs/workbench/services/commands/common/commandService';
+import * As Assert from 'Assert';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { CommAndService } from 'vs/workbench/services/commAnds/common/commAndService';
 import { NullExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { NullLogService } from 'vs/platform/log/common/log';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 
-suite('CommandService', function () {
+suite('CommAndService', function () {
 
-	let commandRegistration: IDisposable;
+	let commAndRegistrAtion: IDisposAble;
 
 	setup(function () {
-		commandRegistration = CommandsRegistry.registerCommand('foo', function () { });
+		commAndRegistrAtion = CommAndsRegistry.registerCommAnd('foo', function () { });
 	});
 
-	teardown(function () {
-		commandRegistration.dispose();
+	teArdown(function () {
+		commAndRegistrAtion.dispose();
 	});
 
-	test('activateOnCommand', () => {
+	test('ActivAteOnCommAnd', () => {
 
-		let lastEvent: string;
+		let lAstEvent: string;
 
-		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
-			activateByEvent(activationEvent: string): Promise<void> {
-				lastEvent = activationEvent;
-				return super.activateByEvent(activationEvent);
+		let service = new CommAndService(new InstAntiAtionService(), new clAss extends NullExtensionService {
+			ActivAteByEvent(ActivAtionEvent: string): Promise<void> {
+				lAstEvent = ActivAtionEvent;
+				return super.ActivAteByEvent(ActivAtionEvent);
 			}
 		}, new NullLogService());
 
-		return service.executeCommand('foo').then(() => {
-			assert.ok(lastEvent, 'onCommand:foo');
-			return service.executeCommand('unknownCommandId');
+		return service.executeCommAnd('foo').then(() => {
+			Assert.ok(lAstEvent, 'onCommAnd:foo');
+			return service.executeCommAnd('unknownCommAndId');
 		}).then(() => {
-			assert.ok(false);
+			Assert.ok(fAlse);
 		}, () => {
-			assert.ok(lastEvent, 'onCommand:unknownCommandId');
+			Assert.ok(lAstEvent, 'onCommAnd:unknownCommAndId');
 		});
 	});
 
-	test('fwd activation error', async function () {
+	test('fwd ActivAtion error', Async function () {
 
-		const extensionService = new class extends NullExtensionService {
-			activateByEvent(activationEvent: string): Promise<void> {
-				return Promise.reject(new Error('bad_activate'));
+		const extensionService = new clAss extends NullExtensionService {
+			ActivAteByEvent(ActivAtionEvent: string): Promise<void> {
+				return Promise.reject(new Error('bAd_ActivAte'));
 			}
 		};
 
-		let service = new CommandService(new InstantiationService(), extensionService, new NullLogService());
+		let service = new CommAndService(new InstAntiAtionService(), extensionService, new NullLogService());
 
-		await extensionService.whenInstalledExtensionsRegistered();
+		AwAit extensionService.whenInstAlledExtensionsRegistered();
 
-		return service.executeCommand('foo').then(() => assert.ok(false), err => {
-			assert.equal(err.message, 'bad_activate');
+		return service.executeCommAnd('foo').then(() => Assert.ok(fAlse), err => {
+			Assert.equAl(err.messAge, 'bAd_ActivAte');
 		});
 	});
 
-	test('!onReady, but executeCommand', function () {
+	test('!onReAdy, but executeCommAnd', function () {
 
-		let callCounter = 0;
-		let reg = CommandsRegistry.registerCommand('bar', () => callCounter += 1);
+		let cAllCounter = 0;
+		let reg = CommAndsRegistry.registerCommAnd('bAr', () => cAllCounter += 1);
 
-		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
-			whenInstalledExtensionsRegistered() {
-				return new Promise<boolean>(_resolve => { /*ignore*/ });
+		let service = new CommAndService(new InstAntiAtionService(), new clAss extends NullExtensionService {
+			whenInstAlledExtensionsRegistered() {
+				return new Promise<booleAn>(_resolve => { /*ignore*/ });
 			}
 		}, new NullLogService());
 
-		service.executeCommand('bar');
-		assert.equal(callCounter, 1);
+		service.executeCommAnd('bAr');
+		Assert.equAl(cAllCounter, 1);
 		reg.dispose();
 	});
 
-	test('issue #34913: !onReady, unknown command', function () {
+	test('issue #34913: !onReAdy, unknown commAnd', function () {
 
-		let callCounter = 0;
+		let cAllCounter = 0;
 		let resolveFunc: Function;
-		const whenInstalledExtensionsRegistered = new Promise<boolean>(_resolve => { resolveFunc = _resolve; });
+		const whenInstAlledExtensionsRegistered = new Promise<booleAn>(_resolve => { resolveFunc = _resolve; });
 
-		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
-			whenInstalledExtensionsRegistered() {
-				return whenInstalledExtensionsRegistered;
+		let service = new CommAndService(new InstAntiAtionService(), new clAss extends NullExtensionService {
+			whenInstAlledExtensionsRegistered() {
+				return whenInstAlledExtensionsRegistered;
 			}
 		}, new NullLogService());
 
-		let r = service.executeCommand('bar');
-		assert.equal(callCounter, 0);
+		let r = service.executeCommAnd('bAr');
+		Assert.equAl(cAllCounter, 0);
 
-		let reg = CommandsRegistry.registerCommand('bar', () => callCounter += 1);
+		let reg = CommAndsRegistry.registerCommAnd('bAr', () => cAllCounter += 1);
 		resolveFunc!(true);
 
 		return r.then(() => {
 			reg.dispose();
-			assert.equal(callCounter, 1);
+			Assert.equAl(cAllCounter, 1);
 		});
 	});
 
-	test('Stop waiting for * extensions to activate when trigger is satisfied #62457', function () {
+	test('Stop wAiting for * extensions to ActivAte when trigger is sAtisfied #62457', function () {
 
-		let callCounter = 0;
-		const disposable = new DisposableStore();
+		let cAllCounter = 0;
+		const disposAble = new DisposAbleStore();
 		let events: string[] = [];
-		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
+		let service = new CommAndService(new InstAntiAtionService(), new clAss extends NullExtensionService {
 
-			activateByEvent(event: string): Promise<void> {
+			ActivAteByEvent(event: string): Promise<void> {
 				events.push(event);
 				if (event === '*') {
 					return new Promise(() => { }); //forever promise...
 				}
-				if (event.indexOf('onCommand:') === 0) {
+				if (event.indexOf('onCommAnd:') === 0) {
 					return new Promise(resolve => {
 						setTimeout(() => {
-							let reg = CommandsRegistry.registerCommand(event.substr('onCommand:'.length), () => {
-								callCounter += 1;
+							let reg = CommAndsRegistry.registerCommAnd(event.substr('onCommAnd:'.length), () => {
+								cAllCounter += 1;
 							});
-							disposable.add(reg);
+							disposAble.Add(reg);
 							resolve();
 						}, 0);
 					});
@@ -128,37 +128,37 @@ suite('CommandService', function () {
 
 		}, new NullLogService());
 
-		return service.executeCommand('farboo').then(() => {
-			assert.equal(callCounter, 1);
-			assert.deepEqual(events.sort(), ['*', 'onCommand:farboo'].sort());
-		}).finally(() => {
-			disposable.dispose();
+		return service.executeCommAnd('fArboo').then(() => {
+			Assert.equAl(cAllCounter, 1);
+			Assert.deepEquAl(events.sort(), ['*', 'onCommAnd:fArboo'].sort());
+		}).finAlly(() => {
+			disposAble.dispose();
 		});
 	});
 
-	test('issue #71471: wait for onCommand activation even if a command is registered', () => {
-		let expectedOrder: string[] = ['registering command', 'resolving activation event', 'executing command'];
-		let actualOrder: string[] = [];
-		const disposables = new DisposableStore();
-		let service = new CommandService(new InstantiationService(), new class extends NullExtensionService {
+	test('issue #71471: wAit for onCommAnd ActivAtion even if A commAnd is registered', () => {
+		let expectedOrder: string[] = ['registering commAnd', 'resolving ActivAtion event', 'executing commAnd'];
+		let ActuAlOrder: string[] = [];
+		const disposAbles = new DisposAbleStore();
+		let service = new CommAndService(new InstAntiAtionService(), new clAss extends NullExtensionService {
 
-			activateByEvent(event: string): Promise<void> {
+			ActivAteByEvent(event: string): Promise<void> {
 				if (event === '*') {
 					return new Promise(() => { }); //forever promise...
 				}
-				if (event.indexOf('onCommand:') === 0) {
+				if (event.indexOf('onCommAnd:') === 0) {
 					return new Promise(resolve => {
 						setTimeout(() => {
-							// Register the command after some time
-							actualOrder.push('registering command');
-							let reg = CommandsRegistry.registerCommand(event.substr('onCommand:'.length), () => {
-								actualOrder.push('executing command');
+							// Register the commAnd After some time
+							ActuAlOrder.push('registering commAnd');
+							let reg = CommAndsRegistry.registerCommAnd(event.substr('onCommAnd:'.length), () => {
+								ActuAlOrder.push('executing commAnd');
 							});
-							disposables.add(reg);
+							disposAbles.Add(reg);
 
 							setTimeout(() => {
-								// Resolve the activation event after some more time
-								actualOrder.push('resolving activation event');
+								// Resolve the ActivAtion event After some more time
+								ActuAlOrder.push('resolving ActivAtion event');
 								resolve();
 							}, 10);
 						}, 10);
@@ -169,10 +169,10 @@ suite('CommandService', function () {
 
 		}, new NullLogService());
 
-		return service.executeCommand('farboo2').then(() => {
-			assert.deepEqual(actualOrder, expectedOrder);
-		}).finally(() => {
-			disposables.dispose();
+		return service.executeCommAnd('fArboo2').then(() => {
+			Assert.deepEquAl(ActuAlOrder, expectedOrder);
+		}).finAlly(() => {
+			disposAbles.dispose();
 		});
 	});
 });

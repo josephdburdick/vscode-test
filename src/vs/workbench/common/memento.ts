@@ -1,100 +1,100 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { isEmptyObject } from 'vs/base/common/types';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { isEmptyObject } from 'vs/bAse/common/types';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 
-export type MementoObject = { [key: string]: any };
+export type MementoObject = { [key: string]: Any };
 
-export class Memento {
+export clAss Memento {
 
-	private static readonly globalMementos = new Map<string, ScopedMemento>();
-	private static readonly workspaceMementos = new Map<string, ScopedMemento>();
+	privAte stAtic reAdonly globAlMementos = new MAp<string, ScopedMemento>();
+	privAte stAtic reAdonly workspAceMementos = new MAp<string, ScopedMemento>();
 
-	private static readonly COMMON_PREFIX = 'memento/';
+	privAte stAtic reAdonly COMMON_PREFIX = 'memento/';
 
-	private readonly id: string;
+	privAte reAdonly id: string;
 
-	constructor(id: string, private storageService: IStorageService) {
+	constructor(id: string, privAte storAgeService: IStorAgeService) {
 		this.id = Memento.COMMON_PREFIX + id;
 	}
 
-	getMemento(scope: StorageScope): MementoObject {
+	getMemento(scope: StorAgeScope): MementoObject {
 
-		// Scope by Workspace
-		if (scope === StorageScope.WORKSPACE) {
-			let workspaceMemento = Memento.workspaceMementos.get(this.id);
-			if (!workspaceMemento) {
-				workspaceMemento = new ScopedMemento(this.id, scope, this.storageService);
-				Memento.workspaceMementos.set(this.id, workspaceMemento);
+		// Scope by WorkspAce
+		if (scope === StorAgeScope.WORKSPACE) {
+			let workspAceMemento = Memento.workspAceMementos.get(this.id);
+			if (!workspAceMemento) {
+				workspAceMemento = new ScopedMemento(this.id, scope, this.storAgeService);
+				Memento.workspAceMementos.set(this.id, workspAceMemento);
 			}
 
-			return workspaceMemento.getMemento();
+			return workspAceMemento.getMemento();
 		}
 
-		// Scope Global
-		let globalMemento = Memento.globalMementos.get(this.id);
-		if (!globalMemento) {
-			globalMemento = new ScopedMemento(this.id, scope, this.storageService);
-			Memento.globalMementos.set(this.id, globalMemento);
+		// Scope GlobAl
+		let globAlMemento = Memento.globAlMementos.get(this.id);
+		if (!globAlMemento) {
+			globAlMemento = new ScopedMemento(this.id, scope, this.storAgeService);
+			Memento.globAlMementos.set(this.id, globAlMemento);
 		}
 
-		return globalMemento.getMemento();
+		return globAlMemento.getMemento();
 	}
 
-	saveMemento(): void {
+	sAveMemento(): void {
 
-		// Workspace
-		const workspaceMemento = Memento.workspaceMementos.get(this.id);
-		if (workspaceMemento) {
-			workspaceMemento.save();
+		// WorkspAce
+		const workspAceMemento = Memento.workspAceMementos.get(this.id);
+		if (workspAceMemento) {
+			workspAceMemento.sAve();
 		}
 
-		// Global
-		const globalMemento = Memento.globalMementos.get(this.id);
-		if (globalMemento) {
-			globalMemento.save();
+		// GlobAl
+		const globAlMemento = Memento.globAlMementos.get(this.id);
+		if (globAlMemento) {
+			globAlMemento.sAve();
 		}
 	}
 }
 
-class ScopedMemento {
+clAss ScopedMemento {
 
-	private readonly mementoObj: MementoObject;
+	privAte reAdonly mementoObj: MementoObject;
 
-	constructor(private id: string, private scope: StorageScope, private storageService: IStorageService) {
-		this.mementoObj = this.load();
+	constructor(privAte id: string, privAte scope: StorAgeScope, privAte storAgeService: IStorAgeService) {
+		this.mementoObj = this.loAd();
 	}
 
 	getMemento(): MementoObject {
 		return this.mementoObj;
 	}
 
-	private load(): MementoObject {
-		const memento = this.storageService.get(this.id, this.scope);
+	privAte loAd(): MementoObject {
+		const memento = this.storAgeService.get(this.id, this.scope);
 		if (memento) {
 			try {
-				return JSON.parse(memento);
-			} catch (error) {
-				// Seeing reports from users unable to open editors
-				// from memento parsing exceptions. Log the contents
-				// to diagnose further
+				return JSON.pArse(memento);
+			} cAtch (error) {
+				// Seeing reports from users unAble to open editors
+				// from memento pArsing exceptions. Log the contents
+				// to diAgnose further
 				// https://github.com/microsoft/vscode/issues/102251
-				onUnexpectedError(`[memento]: failed to parse contents: ${error} (id: ${this.id}, scope: ${this.scope}, contents: ${memento})`);
+				onUnexpectedError(`[memento]: fAiled to pArse contents: ${error} (id: ${this.id}, scope: ${this.scope}, contents: ${memento})`);
 			}
 		}
 
 		return {};
 	}
 
-	save(): void {
+	sAve(): void {
 		if (!isEmptyObject(this.mementoObj)) {
-			this.storageService.store(this.id, JSON.stringify(this.mementoObj), this.scope);
+			this.storAgeService.store(this.id, JSON.stringify(this.mementoObj), this.scope);
 		} else {
-			this.storageService.remove(this.id, this.scope);
+			this.storAgeService.remove(this.id, this.scope);
 		}
 	}
 }

@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { NotebookDocumentMetadata } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { NotebookLayoutChangeEvent, NotebookLayoutInfo, CellViewModelStateChangeEvent, ICellViewModel } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { Emitter } from 'vs/bAse/common/event';
+import { NotebookDocumentMetAdAtA } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { NotebookLAyoutChAngeEvent, NotebookLAyoutInfo, CellViewModelStAteChAngeEvent, ICellViewModel } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 
 export enum NotebookViewEventType {
-	LayoutChanged = 1,
-	MetadataChanged = 2,
-	CellStateChanged = 3
+	LAyoutChAnged = 1,
+	MetAdAtAChAnged = 2,
+	CellStAteChAnged = 3
 }
 
-export class NotebookLayoutChangedEvent {
-	public readonly type = NotebookViewEventType.LayoutChanged;
+export clAss NotebookLAyoutChAngedEvent {
+	public reAdonly type = NotebookViewEventType.LAyoutChAnged;
 
-	constructor(readonly source: NotebookLayoutChangeEvent, readonly value: NotebookLayoutInfo) {
+	constructor(reAdonly source: NotebookLAyoutChAngeEvent, reAdonly vAlue: NotebookLAyoutInfo) {
 
 	}
 }
 
 
-export class NotebookMetadataChangedEvent {
-	public readonly type = NotebookViewEventType.MetadataChanged;
+export clAss NotebookMetAdAtAChAngedEvent {
+	public reAdonly type = NotebookViewEventType.MetAdAtAChAnged;
 
-	constructor(readonly source: NotebookDocumentMetadata) {
-
-	}
-}
-
-export class NotebookCellStateChangedEvent {
-	public readonly type = NotebookViewEventType.CellStateChanged;
-
-	constructor(readonly source: CellViewModelStateChangeEvent, readonly cell: ICellViewModel) {
+	constructor(reAdonly source: NotebookDocumentMetAdAtA) {
 
 	}
 }
 
+export clAss NotebookCellStAteChAngedEvent {
+	public reAdonly type = NotebookViewEventType.CellStAteChAnged;
 
-export type NotebookViewEvent = NotebookLayoutChangedEvent | NotebookMetadataChangedEvent | NotebookCellStateChangedEvent;
+	constructor(reAdonly source: CellViewModelStAteChAngeEvent, reAdonly cell: ICellViewModel) {
 
-export class NotebookEventDispatcher {
-	protected readonly _onDidChangeLayout = new Emitter<NotebookLayoutChangedEvent>();
-	readonly onDidChangeLayout = this._onDidChangeLayout.event;
-	protected readonly _onDidChangeMetadata = new Emitter<NotebookMetadataChangedEvent>();
-	readonly onDidChangeMetadata = this._onDidChangeMetadata.event;
-	protected readonly _onDidChangeCellState = new Emitter<NotebookCellStateChangedEvent>();
-	readonly onDidChangeCellState = this._onDidChangeCellState.event;
+	}
+}
+
+
+export type NotebookViewEvent = NotebookLAyoutChAngedEvent | NotebookMetAdAtAChAngedEvent | NotebookCellStAteChAngedEvent;
+
+export clAss NotebookEventDispAtcher {
+	protected reAdonly _onDidChAngeLAyout = new Emitter<NotebookLAyoutChAngedEvent>();
+	reAdonly onDidChAngeLAyout = this._onDidChAngeLAyout.event;
+	protected reAdonly _onDidChAngeMetAdAtA = new Emitter<NotebookMetAdAtAChAngedEvent>();
+	reAdonly onDidChAngeMetAdAtA = this._onDidChAngeMetAdAtA.event;
+	protected reAdonly _onDidChAngeCellStAte = new Emitter<NotebookCellStAteChAngedEvent>();
+	reAdonly onDidChAngeCellStAte = this._onDidChAngeCellStAte.event;
 
 	constructor() {
 	}
@@ -57,23 +57,23 @@ export class NotebookEventDispatcher {
 			const e = events[i];
 
 			switch (e.type) {
-				case NotebookViewEventType.LayoutChanged:
-					this._onDidChangeLayout.fire(e);
-					break;
-				case NotebookViewEventType.MetadataChanged:
-					this._onDidChangeMetadata.fire(e);
-					break;
-				case NotebookViewEventType.CellStateChanged:
-					this._onDidChangeCellState.fire(e);
-					break;
+				cAse NotebookViewEventType.LAyoutChAnged:
+					this._onDidChAngeLAyout.fire(e);
+					breAk;
+				cAse NotebookViewEventType.MetAdAtAChAnged:
+					this._onDidChAngeMetAdAtA.fire(e);
+					breAk;
+				cAse NotebookViewEventType.CellStAteChAnged:
+					this._onDidChAngeCellStAte.fire(e);
+					breAk;
 			}
 		}
 	}
 }
 
-export class NotebookDiffEditorEventDispatcher {
-	protected readonly _onDidChangeLayout = new Emitter<NotebookLayoutChangedEvent>();
-	readonly onDidChangeLayout = this._onDidChangeLayout.event;
+export clAss NotebookDiffEditorEventDispAtcher {
+	protected reAdonly _onDidChAngeLAyout = new Emitter<NotebookLAyoutChAngedEvent>();
+	reAdonly onDidChAngeLAyout = this._onDidChAngeLAyout.event;
 
 	constructor() {
 	}
@@ -83,9 +83,9 @@ export class NotebookDiffEditorEventDispatcher {
 			const e = events[i];
 
 			switch (e.type) {
-				case NotebookViewEventType.LayoutChanged:
-					this._onDidChangeLayout.fire(e);
-					break;
+				cAse NotebookViewEventType.LAyoutChAnged:
+					this._onDidChAngeLAyout.fire(e);
+					breAk;
 			}
 		}
 	}

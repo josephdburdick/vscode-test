@@ -1,86 +1,86 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { webContents } from 'electron';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ITunnelService } from 'vs/platform/remote/common/tunnel';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { IWebviewManagerService, RegisterWebviewMetadata } from 'vs/platform/webview/common/webviewManagerService';
-import { WebviewPortMappingProvider } from 'vs/platform/webview/electron-main/webviewPortMappingProvider';
-import { WebviewProtocolProvider } from 'vs/platform/webview/electron-main/webviewProtocolProvider';
-import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ITunnelService } from 'vs/plAtform/remote/common/tunnel';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { IWebviewMAnAgerService, RegisterWebviewMetAdAtA } from 'vs/plAtform/webview/common/webviewMAnAgerService';
+import { WebviewPortMAppingProvider } from 'vs/plAtform/webview/electron-mAin/webviewPortMAppingProvider';
+import { WebviewProtocolProvider } from 'vs/plAtform/webview/electron-mAin/webviewProtocolProvider';
+import { IWindowsMAinService } from 'vs/plAtform/windows/electron-mAin/windows';
 
-export class WebviewMainService extends Disposable implements IWebviewManagerService {
+export clAss WebviewMAinService extends DisposAble implements IWebviewMAnAgerService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly protocolProvider: WebviewProtocolProvider;
-	private readonly portMappingProvider: WebviewPortMappingProvider;
+	privAte reAdonly protocolProvider: WebviewProtocolProvider;
+	privAte reAdonly portMAppingProvider: WebviewPortMAppingProvider;
 
 	constructor(
 		@IFileService fileService: IFileService,
 		@IRequestService requestService: IRequestService,
 		@ITunnelService tunnelService: ITunnelService,
-		@IWindowsMainService windowsMainService: IWindowsMainService,
+		@IWindowsMAinService windowsMAinService: IWindowsMAinService,
 	) {
 		super();
-		this.protocolProvider = this._register(new WebviewProtocolProvider(fileService, requestService, windowsMainService));
-		this.portMappingProvider = this._register(new WebviewPortMappingProvider(tunnelService));
+		this.protocolProvider = this._register(new WebviewProtocolProvider(fileService, requestService, windowsMAinService));
+		this.portMAppingProvider = this._register(new WebviewPortMAppingProvider(tunnelService));
 	}
 
-	public async registerWebview(id: string, windowId: number, metadata: RegisterWebviewMetadata): Promise<void> {
-		const extensionLocation = metadata.extensionLocation ? URI.from(metadata.extensionLocation) : undefined;
+	public Async registerWebview(id: string, windowId: number, metAdAtA: RegisterWebviewMetAdAtA): Promise<void> {
+		const extensionLocAtion = metAdAtA.extensionLocAtion ? URI.from(metAdAtA.extensionLocAtion) : undefined;
 
 		this.protocolProvider.registerWebview(id, {
-			...metadata,
+			...metAdAtA,
 			windowId: windowId,
-			extensionLocation,
-			localResourceRoots: metadata.localResourceRoots.map(x => URI.from(x))
+			extensionLocAtion,
+			locAlResourceRoots: metAdAtA.locAlResourceRoots.mAp(x => URI.from(x))
 		});
 
-		this.portMappingProvider.registerWebview(id, {
-			extensionLocation,
-			mappings: metadata.portMappings,
-			resolvedAuthority: metadata.remoteConnectionData,
+		this.portMAppingProvider.registerWebview(id, {
+			extensionLocAtion,
+			mAppings: metAdAtA.portMAppings,
+			resolvedAuthority: metAdAtA.remoteConnectionDAtA,
 		});
 	}
 
-	public async unregisterWebview(id: string): Promise<void> {
+	public Async unregisterWebview(id: string): Promise<void> {
 		this.protocolProvider.unregisterWebview(id);
-		this.portMappingProvider.unregisterWebview(id);
+		this.portMAppingProvider.unregisterWebview(id);
 	}
 
-	public async updateWebviewMetadata(id: string, metaDataDelta: Partial<RegisterWebviewMetadata>): Promise<void> {
-		const extensionLocation = metaDataDelta.extensionLocation ? URI.from(metaDataDelta.extensionLocation) : undefined;
+	public Async updAteWebviewMetAdAtA(id: string, metADAtADeltA: PArtiAl<RegisterWebviewMetAdAtA>): Promise<void> {
+		const extensionLocAtion = metADAtADeltA.extensionLocAtion ? URI.from(metADAtADeltA.extensionLocAtion) : undefined;
 
-		this.protocolProvider.updateWebviewMetadata(id, {
-			...metaDataDelta,
-			extensionLocation,
-			localResourceRoots: metaDataDelta.localResourceRoots?.map(x => URI.from(x)),
+		this.protocolProvider.updAteWebviewMetAdAtA(id, {
+			...metADAtADeltA,
+			extensionLocAtion,
+			locAlResourceRoots: metADAtADeltA.locAlResourceRoots?.mAp(x => URI.from(x)),
 		});
 
-		this.portMappingProvider.updateWebviewMetadata(id, {
-			...metaDataDelta,
-			extensionLocation,
+		this.portMAppingProvider.updAteWebviewMetAdAtA(id, {
+			...metADAtADeltA,
+			extensionLocAtion,
 		});
 	}
 
-	public async setIgnoreMenuShortcuts(webContentsId: number, enabled: boolean): Promise<void> {
+	public Async setIgnoreMenuShortcuts(webContentsId: number, enAbled: booleAn): Promise<void> {
 		const contents = webContents.fromId(webContentsId);
 		if (!contents) {
-			throw new Error(`Invalid webContentsId: ${webContentsId}`);
+			throw new Error(`InvAlid webContentsId: ${webContentsId}`);
 		}
 		if (!contents.isDestroyed()) {
-			contents.setIgnoreMenuShortcuts(enabled);
+			contents.setIgnoreMenuShortcuts(enAbled);
 		}
 	}
 
-	public async didLoadResource(requestId: number, content: VSBuffer | undefined): Promise<void> {
-		this.protocolProvider.didLoadResource(requestId, content);
+	public Async didLoAdResource(requestId: number, content: VSBuffer | undefined): Promise<void> {
+		this.protocolProvider.didLoAdResource(requestId, content);
 	}
 }

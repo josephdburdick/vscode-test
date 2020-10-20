@@ -1,118 +1,118 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { MarkdownEngine } from './markdownEngine';
+import * As vscode from 'vscode';
+import { MArkdownEngine } from './mArkdownEngine';
 import { Slug, githubSlugifier } from './slugify';
 
-export interface TocEntry {
-	readonly slug: Slug;
-	readonly text: string;
-	readonly level: number;
-	readonly line: number;
-	readonly location: vscode.Location;
+export interfAce TocEntry {
+	reAdonly slug: Slug;
+	reAdonly text: string;
+	reAdonly level: number;
+	reAdonly line: number;
+	reAdonly locAtion: vscode.LocAtion;
 }
 
-export interface SkinnyTextLine {
+export interfAce SkinnyTextLine {
 	text: string;
 }
 
-export interface SkinnyTextDocument {
-	readonly uri: vscode.Uri;
-	readonly version: number;
-	readonly lineCount: number;
+export interfAce SkinnyTextDocument {
+	reAdonly uri: vscode.Uri;
+	reAdonly version: number;
+	reAdonly lineCount: number;
 
 	lineAt(line: number): SkinnyTextLine;
 	getText(): string;
 }
 
-export class TableOfContentsProvider {
-	private toc?: TocEntry[];
+export clAss TAbleOfContentsProvider {
+	privAte toc?: TocEntry[];
 
 	public constructor(
-		private engine: MarkdownEngine,
-		private document: SkinnyTextDocument
+		privAte engine: MArkdownEngine,
+		privAte document: SkinnyTextDocument
 	) { }
 
-	public async getToc(): Promise<TocEntry[]> {
+	public Async getToc(): Promise<TocEntry[]> {
 		if (!this.toc) {
 			try {
-				this.toc = await this.buildToc(this.document);
-			} catch (e) {
+				this.toc = AwAit this.buildToc(this.document);
+			} cAtch (e) {
 				this.toc = [];
 			}
 		}
 		return this.toc;
 	}
 
-	public async lookup(fragment: string): Promise<TocEntry | undefined> {
-		const toc = await this.getToc();
-		const slug = githubSlugifier.fromHeading(fragment);
-		return toc.find(entry => entry.slug.equals(slug));
+	public Async lookup(frAgment: string): Promise<TocEntry | undefined> {
+		const toc = AwAit this.getToc();
+		const slug = githubSlugifier.fromHeAding(frAgment);
+		return toc.find(entry => entry.slug.equAls(slug));
 	}
 
-	private async buildToc(document: SkinnyTextDocument): Promise<TocEntry[]> {
+	privAte Async buildToc(document: SkinnyTextDocument): Promise<TocEntry[]> {
 		const toc: TocEntry[] = [];
-		const tokens = await this.engine.parse(document);
+		const tokens = AwAit this.engine.pArse(document);
 
-		const existingSlugEntries = new Map<string, { count: number }>();
+		const existingSlugEntries = new MAp<string, { count: number }>();
 
-		for (const heading of tokens.filter(token => token.type === 'heading_open')) {
-			const lineNumber = heading.map[0];
+		for (const heAding of tokens.filter(token => token.type === 'heAding_open')) {
+			const lineNumber = heAding.mAp[0];
 			const line = document.lineAt(lineNumber);
 
-			let slug = githubSlugifier.fromHeading(line.text);
-			const existingSlugEntry = existingSlugEntries.get(slug.value);
+			let slug = githubSlugifier.fromHeAding(line.text);
+			const existingSlugEntry = existingSlugEntries.get(slug.vAlue);
 			if (existingSlugEntry) {
 				++existingSlugEntry.count;
-				slug = githubSlugifier.fromHeading(slug.value + '-' + existingSlugEntry.count);
+				slug = githubSlugifier.fromHeAding(slug.vAlue + '-' + existingSlugEntry.count);
 			} else {
-				existingSlugEntries.set(slug.value, { count: 0 });
+				existingSlugEntries.set(slug.vAlue, { count: 0 });
 			}
 
 			toc.push({
 				slug,
-				text: TableOfContentsProvider.getHeaderText(line.text),
-				level: TableOfContentsProvider.getHeaderLevel(heading.markup),
+				text: TAbleOfContentsProvider.getHeAderText(line.text),
+				level: TAbleOfContentsProvider.getHeAderLevel(heAding.mArkup),
 				line: lineNumber,
-				location: new vscode.Location(document.uri,
-					new vscode.Range(lineNumber, 0, lineNumber, line.text.length))
+				locAtion: new vscode.LocAtion(document.uri,
+					new vscode.RAnge(lineNumber, 0, lineNumber, line.text.length))
 			});
 		}
 
-		// Get full range of section
-		return toc.map((entry, startIndex): TocEntry => {
+		// Get full rAnge of section
+		return toc.mAp((entry, stArtIndex): TocEntry => {
 			let end: number | undefined = undefined;
-			for (let i = startIndex + 1; i < toc.length; ++i) {
+			for (let i = stArtIndex + 1; i < toc.length; ++i) {
 				if (toc[i].level <= entry.level) {
 					end = toc[i].line - 1;
-					break;
+					breAk;
 				}
 			}
 			const endLine = end ?? document.lineCount - 1;
 			return {
 				...entry,
-				location: new vscode.Location(document.uri,
-					new vscode.Range(
-						entry.location.range.start,
+				locAtion: new vscode.LocAtion(document.uri,
+					new vscode.RAnge(
+						entry.locAtion.rAnge.stArt,
 						new vscode.Position(endLine, document.lineAt(endLine).text.length)))
 			};
 		});
 	}
 
-	private static getHeaderLevel(markup: string): number {
-		if (markup === '=') {
+	privAte stAtic getHeAderLevel(mArkup: string): number {
+		if (mArkup === '=') {
 			return 1;
-		} else if (markup === '-') {
+		} else if (mArkup === '-') {
 			return 2;
 		} else { // '#', '##', ...
-			return markup.length;
+			return mArkup.length;
 		}
 	}
 
-	private static getHeaderText(header: string): string {
-		return header.replace(/^\s*#+\s*(.*?)\s*#*$/, (_, word) => word.trim());
+	privAte stAtic getHeAderText(heAder: string): string {
+		return heAder.replAce(/^\s*#+\s*(.*?)\s*#*$/, (_, word) => word.trim());
 	}
 }

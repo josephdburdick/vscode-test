@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import * as fs from 'fs';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As fs from 'fs';
 import { promisify } from 'util';
-import * as cp from 'child_process';
-import * as nls from 'vs/nls';
-import * as Types from 'vs/base/common/types';
-import { IStringDictionary } from 'vs/base/common/collections';
-import * as Objects from 'vs/base/common/objects';
-import * as extpath from 'vs/base/common/extpath';
-import * as Platform from 'vs/base/common/platform';
-import { LineDecoder } from 'vs/base/node/decoder';
-import { CommandOptions, ForkOptions, SuccessData, Source, TerminateResponse, TerminateResponseCode, Executable } from 'vs/base/common/processes';
-import { FileAccess } from 'vs/base/common/network';
-export { CommandOptions, ForkOptions, SuccessData, Source, TerminateResponse, TerminateResponseCode };
+import * As cp from 'child_process';
+import * As nls from 'vs/nls';
+import * As Types from 'vs/bAse/common/types';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import * As Objects from 'vs/bAse/common/objects';
+import * As extpAth from 'vs/bAse/common/extpAth';
+import * As PlAtform from 'vs/bAse/common/plAtform';
+import { LineDecoder } from 'vs/bAse/node/decoder';
+import { CommAndOptions, ForkOptions, SuccessDAtA, Source, TerminAteResponse, TerminAteResponseCode, ExecutAble } from 'vs/bAse/common/processes';
+import { FileAccess } from 'vs/bAse/common/network';
+export { CommAndOptions, ForkOptions, SuccessDAtA, Source, TerminAteResponse, TerminAteResponseCode };
 
-export type ValueCallback<T> = (value: T | Promise<T>) => void;
-export type ErrorCallback = (error?: any) => void;
-export type ProgressCallback<T> = (progress: T) => void;
+export type VAlueCAllbAck<T> = (vAlue: T | Promise<T>) => void;
+export type ErrorCAllbAck = (error?: Any) => void;
+export type ProgressCAllbAck<T> = (progress: T) => void;
 
-export interface LineData {
+export interfAce LineDAtA {
 	line: string;
 	source: Source;
 }
 
-function getWindowsCode(status: number): TerminateResponseCode {
-	switch (status) {
-		case 0:
-			return TerminateResponseCode.Success;
-		case 1:
-			return TerminateResponseCode.AccessDenied;
-		case 128:
-			return TerminateResponseCode.ProcessNotFound;
-		default:
-			return TerminateResponseCode.Unknown;
+function getWindowsCode(stAtus: number): TerminAteResponseCode {
+	switch (stAtus) {
+		cAse 0:
+			return TerminAteResponseCode.Success;
+		cAse 1:
+			return TerminAteResponseCode.AccessDenied;
+		cAse 128:
+			return TerminAteResponseCode.ProcessNotFound;
+		defAult:
+			return TerminAteResponseCode.Unknown;
 	}
 }
 
-function terminateProcess(process: cp.ChildProcess, cwd?: string): Promise<TerminateResponse> {
-	if (Platform.isWindows) {
+function terminAteProcess(process: cp.ChildProcess, cwd?: string): Promise<TerminAteResponse> {
+	if (PlAtform.isWindows) {
 		try {
-			const options: any = {
+			const options: Any = {
 				stdio: ['pipe', 'pipe', 'ignore']
 			};
 			if (cwd) {
 				options.cwd = cwd;
 			}
-			const killProcess = cp.execFile('taskkill', ['/T', '/F', '/PID', process.pid.toString()], options);
+			const killProcess = cp.execFile('tAskkill', ['/T', '/F', '/PID', process.pid.toString()], options);
 			return new Promise((resolve, reject) => {
 				killProcess.once('error', (err) => {
-					resolve({ success: false, error: err });
+					resolve({ success: fAlse, error: err });
 				});
-				killProcess.once('exit', (code, signal) => {
+				killProcess.once('exit', (code, signAl) => {
 					if (code === 0) {
 						resolve({ success: true });
 					} else {
-						resolve({ success: false, code: code !== null ? code : TerminateResponseCode.Unknown });
+						resolve({ success: fAlse, code: code !== null ? code : TerminAteResponseCode.Unknown });
 					}
 				});
 			});
-		} catch (err) {
-			return Promise.resolve({ success: false, error: err, code: err.status ? getWindowsCode(err.status) : TerminateResponseCode.Unknown });
+		} cAtch (err) {
+			return Promise.resolve({ success: fAlse, error: err, code: err.stAtus ? getWindowsCode(err.stAtus) : TerminAteResponseCode.Unknown });
 		}
-	} else if (Platform.isLinux || Platform.isMacintosh) {
+	} else if (PlAtform.isLinux || PlAtform.isMAcintosh) {
 		try {
-			const cmd = FileAccess.asFileUri('vs/base/node/terminateProcess.sh', require).fsPath;
+			const cmd = FileAccess.AsFileUri('vs/bAse/node/terminAteProcess.sh', require).fsPAth;
 			return new Promise((resolve, reject) => {
-				cp.execFile(cmd, [process.pid.toString()], { encoding: 'utf8', shell: true } as cp.ExecFileOptions, (err, stdout, stderr) => {
+				cp.execFile(cmd, [process.pid.toString()], { encoding: 'utf8', shell: true } As cp.ExecFileOptions, (err, stdout, stderr) => {
 					if (err) {
-						resolve({ success: false, error: err });
+						resolve({ success: fAlse, error: err });
 					} else {
 						resolve({ success: true });
 					}
 				});
 			});
-		} catch (err) {
-			return Promise.resolve({ success: false, error: err });
+		} cAtch (err) {
+			return Promise.resolve({ success: fAlse, error: err });
 		}
 	} else {
 		process.kill('SIGKILL');
@@ -86,165 +86,165 @@ function terminateProcess(process: cp.ChildProcess, cwd?: string): Promise<Termi
 	return Promise.resolve({ success: true });
 }
 
-export function getWindowsShell(environment: Platform.IProcessEnvironment = process.env as Platform.IProcessEnvironment): string {
+export function getWindowsShell(environment: PlAtform.IProcessEnvironment = process.env As PlAtform.IProcessEnvironment): string {
 	return environment['comspec'] || 'cmd.exe';
 }
 
-export abstract class AbstractProcess<TProgressData> {
-	private cmd: string;
-	private args: string[];
-	private options: CommandOptions | ForkOptions;
-	protected shell: boolean;
+export AbstrAct clAss AbstrActProcess<TProgressDAtA> {
+	privAte cmd: string;
+	privAte Args: string[];
+	privAte options: CommAndOptions | ForkOptions;
+	protected shell: booleAn;
 
-	private childProcess: cp.ChildProcess | null;
+	privAte childProcess: cp.ChildProcess | null;
 	protected childProcessPromise: Promise<cp.ChildProcess> | null;
-	private pidResolve: ValueCallback<number> | undefined;
-	protected terminateRequested: boolean;
+	privAte pidResolve: VAlueCAllbAck<number> | undefined;
+	protected terminAteRequested: booleAn;
 
-	private static WellKnowCommands: IStringDictionary<boolean> = {
-		'ant': true,
-		'cmake': true,
+	privAte stAtic WellKnowCommAnds: IStringDictionAry<booleAn> = {
+		'Ant': true,
+		'cmAke': true,
 		'eslint': true,
-		'gradle': true,
+		'grAdle': true,
 		'grunt': true,
 		'gulp': true,
-		'jake': true,
+		'jAke': true,
 		'jenkins': true,
 		'jshint': true,
-		'make': true,
-		'maven': true,
+		'mAke': true,
+		'mAven': true,
 		'msbuild': true,
 		'msc': true,
-		'nmake': true,
+		'nmAke': true,
 		'npm': true,
-		'rake': true,
+		'rAke': true,
 		'tsc': true,
 		'xbuild': true
 	};
 
-	public constructor(executable: Executable);
-	public constructor(cmd: string, args: string[] | undefined, shell: boolean, options: CommandOptions | undefined);
-	public constructor(arg1: string | Executable, arg2?: string[], arg3?: boolean, arg4?: CommandOptions) {
-		if (arg2 !== undefined && arg3 !== undefined && arg4 !== undefined) {
-			this.cmd = <string>arg1;
-			this.args = arg2;
-			this.shell = arg3;
-			this.options = arg4;
+	public constructor(executAble: ExecutAble);
+	public constructor(cmd: string, Args: string[] | undefined, shell: booleAn, options: CommAndOptions | undefined);
+	public constructor(Arg1: string | ExecutAble, Arg2?: string[], Arg3?: booleAn, Arg4?: CommAndOptions) {
+		if (Arg2 !== undefined && Arg3 !== undefined && Arg4 !== undefined) {
+			this.cmd = <string>Arg1;
+			this.Args = Arg2;
+			this.shell = Arg3;
+			this.options = Arg4;
 		} else {
-			const executable = <Executable>arg1;
-			this.cmd = executable.command;
-			this.shell = executable.isShellCommand;
-			this.args = executable.args.slice(0);
-			this.options = executable.options || {};
+			const executAble = <ExecutAble>Arg1;
+			this.cmd = executAble.commAnd;
+			this.shell = executAble.isShellCommAnd;
+			this.Args = executAble.Args.slice(0);
+			this.options = executAble.options || {};
 		}
 
 		this.childProcess = null;
 		this.childProcessPromise = null;
-		this.terminateRequested = false;
+		this.terminAteRequested = fAlse;
 
 		if (this.options.env) {
-			const newEnv: IStringDictionary<string> = Object.create(null);
-			Object.keys(process.env).forEach((key) => {
+			const newEnv: IStringDictionAry<string> = Object.creAte(null);
+			Object.keys(process.env).forEAch((key) => {
 				newEnv[key] = process.env[key]!;
 			});
-			Object.keys(this.options.env).forEach((key) => {
+			Object.keys(this.options.env).forEAch((key) => {
 				newEnv[key] = this.options.env![key]!;
 			});
 			this.options.env = newEnv;
 		}
 	}
 
-	public getSanitizedCommand(): string {
-		let result = this.cmd.toLowerCase();
-		const index = result.lastIndexOf(path.sep);
+	public getSAnitizedCommAnd(): string {
+		let result = this.cmd.toLowerCAse();
+		const index = result.lAstIndexOf(pAth.sep);
 		if (index !== -1) {
 			result = result.substring(index + 1);
 		}
-		if (AbstractProcess.WellKnowCommands[result]) {
+		if (AbstrActProcess.WellKnowCommAnds[result]) {
 			return result;
 		}
 		return 'other';
 	}
 
-	public start(pp: ProgressCallback<TProgressData>): Promise<SuccessData> {
-		if (Platform.isWindows && ((this.options && this.options.cwd && extpath.isUNC(this.options.cwd)) || !this.options && extpath.isUNC(process.cwd()))) {
-			return Promise.reject(new Error(nls.localize('TaskRunner.UNC', 'Can\'t execute a shell command on a UNC drive.')));
+	public stArt(pp: ProgressCAllbAck<TProgressDAtA>): Promise<SuccessDAtA> {
+		if (PlAtform.isWindows && ((this.options && this.options.cwd && extpAth.isUNC(this.options.cwd)) || !this.options && extpAth.isUNC(process.cwd()))) {
+			return Promise.reject(new Error(nls.locAlize('TAskRunner.UNC', 'CAn\'t execute A shell commAnd on A UNC drive.')));
 		}
 		return this.useExec().then((useExec) => {
-			let cc: ValueCallback<SuccessData>;
-			let ee: ErrorCallback;
-			const result = new Promise<any>((c, e) => {
+			let cc: VAlueCAllbAck<SuccessDAtA>;
+			let ee: ErrorCAllbAck;
+			const result = new Promise<Any>((c, e) => {
 				cc = c;
 				ee = e;
 			});
 
 			if (useExec) {
 				let cmd: string = this.cmd;
-				if (this.args) {
-					cmd = cmd + ' ' + this.args.join(' ');
+				if (this.Args) {
+					cmd = cmd + ' ' + this.Args.join(' ');
 				}
 				this.childProcess = cp.exec(cmd, this.options, (error, stdout, stderr) => {
 					this.childProcess = null;
-					const err: any = error;
-					// This is tricky since executing a command shell reports error back in case the executed command return an
-					// error or the command didn't exist at all. So we can't blindly treat an error as a failed command. So we
-					// always parse the output and report success unless the job got killed.
+					const err: Any = error;
+					// This is tricky since executing A commAnd shell reports error bAck in cAse the executed commAnd return An
+					// error or the commAnd didn't exist At All. So we cAn't blindly treAt An error As A fAiled commAnd. So we
+					// AlwAys pArse the output And report success unless the job got killed.
 					if (err && err.killed) {
-						ee({ killed: this.terminateRequested, stdout: stdout.toString(), stderr: stderr.toString() });
+						ee({ killed: this.terminAteRequested, stdout: stdout.toString(), stderr: stderr.toString() });
 					} else {
-						this.handleExec(cc, pp, error, stdout as any, stderr as any);
+						this.hAndleExec(cc, pp, error, stdout As Any, stderr As Any);
 					}
 				});
 			} else {
 				let childProcess: cp.ChildProcess | null = null;
-				const closeHandler = (data: any) => {
+				const closeHAndler = (dAtA: Any) => {
 					this.childProcess = null;
 					this.childProcessPromise = null;
-					this.handleClose(data, cc, pp, ee);
-					const result: SuccessData = {
-						terminated: this.terminateRequested
+					this.hAndleClose(dAtA, cc, pp, ee);
+					const result: SuccessDAtA = {
+						terminAted: this.terminAteRequested
 					};
-					if (Types.isNumber(data)) {
-						result.cmdCode = <number>data;
+					if (Types.isNumber(dAtA)) {
+						result.cmdCode = <number>dAtA;
 					}
 					cc(result);
 				};
-				if (this.shell && Platform.isWindows) {
-					const options: any = Objects.deepClone(this.options);
-					options.windowsVerbatimArguments = true;
-					options.detached = false;
-					let quotedCommand: boolean = false;
-					let quotedArg: boolean = false;
-					const commandLine: string[] = [];
+				if (this.shell && PlAtform.isWindows) {
+					const options: Any = Objects.deepClone(this.options);
+					options.windowsVerbAtimArguments = true;
+					options.detAched = fAlse;
+					let quotedCommAnd: booleAn = fAlse;
+					let quotedArg: booleAn = fAlse;
+					const commAndLine: string[] = [];
 					let quoted = this.ensureQuotes(this.cmd);
-					commandLine.push(quoted.value);
-					quotedCommand = quoted.quoted;
-					if (this.args) {
-						this.args.forEach((elem) => {
+					commAndLine.push(quoted.vAlue);
+					quotedCommAnd = quoted.quoted;
+					if (this.Args) {
+						this.Args.forEAch((elem) => {
 							quoted = this.ensureQuotes(elem);
-							commandLine.push(quoted.value);
+							commAndLine.push(quoted.vAlue);
 							quotedArg = quotedArg && quoted.quoted;
 						});
 					}
-					const args: string[] = [
+					const Args: string[] = [
 						'/s',
 						'/c',
 					];
-					if (quotedCommand) {
+					if (quotedCommAnd) {
 						if (quotedArg) {
-							args.push('"' + commandLine.join(' ') + '"');
-						} else if (commandLine.length > 1) {
-							args.push('"' + commandLine[0] + '"' + ' ' + commandLine.slice(1).join(' '));
+							Args.push('"' + commAndLine.join(' ') + '"');
+						} else if (commAndLine.length > 1) {
+							Args.push('"' + commAndLine[0] + '"' + ' ' + commAndLine.slice(1).join(' '));
 						} else {
-							args.push('"' + commandLine[0] + '"');
+							Args.push('"' + commAndLine[0] + '"');
 						}
 					} else {
-						args.push(commandLine.join(' '));
+						Args.push(commAndLine.join(' '));
 					}
-					childProcess = cp.spawn(getWindowsShell(), args, options);
+					childProcess = cp.spAwn(getWindowsShell(), Args, options);
 				} else {
 					if (this.cmd) {
-						childProcess = cp.spawn(this.cmd, this.args, this.options);
+						childProcess = cp.spAwn(this.cmd, this.Args, this.options);
 					}
 				}
 				if (childProcess) {
@@ -256,11 +256,11 @@ export abstract class AbstractProcess<TProgressData> {
 					}
 					childProcess.on('error', (error: Error) => {
 						this.childProcess = null;
-						ee({ terminated: this.terminateRequested, error: error });
+						ee({ terminAted: this.terminAteRequested, error: error });
 					});
 					if (childProcess.pid) {
-						this.childProcess.on('close', closeHandler);
-						this.handleSpawn(childProcess, cc!, pp, ee!, true);
+						this.childProcess.on('close', closeHAndler);
+						this.hAndleSpAwn(childProcess, cc!, pp, ee!, true);
 					}
 				}
 			}
@@ -268,24 +268,24 @@ export abstract class AbstractProcess<TProgressData> {
 		});
 	}
 
-	protected abstract handleExec(cc: ValueCallback<SuccessData>, pp: ProgressCallback<TProgressData>, error: Error | null, stdout: Buffer, stderr: Buffer): void;
-	protected abstract handleSpawn(childProcess: cp.ChildProcess, cc: ValueCallback<SuccessData>, pp: ProgressCallback<TProgressData>, ee: ErrorCallback, sync: boolean): void;
+	protected AbstrAct hAndleExec(cc: VAlueCAllbAck<SuccessDAtA>, pp: ProgressCAllbAck<TProgressDAtA>, error: Error | null, stdout: Buffer, stderr: Buffer): void;
+	protected AbstrAct hAndleSpAwn(childProcess: cp.ChildProcess, cc: VAlueCAllbAck<SuccessDAtA>, pp: ProgressCAllbAck<TProgressDAtA>, ee: ErrorCAllbAck, sync: booleAn): void;
 
-	protected handleClose(data: any, cc: ValueCallback<SuccessData>, pp: ProgressCallback<TProgressData>, ee: ErrorCallback): void {
-		// Default is to do nothing.
+	protected hAndleClose(dAtA: Any, cc: VAlueCAllbAck<SuccessDAtA>, pp: ProgressCAllbAck<TProgressDAtA>, ee: ErrorCAllbAck): void {
+		// DefAult is to do nothing.
 	}
 
-	private static readonly regexp = /^[^"].* .*[^"]/;
-	private ensureQuotes(value: string) {
-		if (AbstractProcess.regexp.test(value)) {
+	privAte stAtic reAdonly regexp = /^[^"].* .*[^"]/;
+	privAte ensureQuotes(vAlue: string) {
+		if (AbstrActProcess.regexp.test(vAlue)) {
 			return {
-				value: '"' + value + '"', //`"${value}"`,
+				vAlue: '"' + vAlue + '"', //`"${vAlue}"`,
 				quoted: true
 			};
 		} else {
 			return {
-				value: value,
-				quoted: value.length > 0 && value[0] === '"' && value[value.length - 1] === '"'
+				vAlue: vAlue,
+				quoted: vAlue.length > 0 && vAlue[0] === '"' && vAlue[vAlue.length - 1] === '"'
 			};
 		}
 	}
@@ -300,13 +300,13 @@ export abstract class AbstractProcess<TProgressData> {
 		}
 	}
 
-	public terminate(): Promise<TerminateResponse> {
+	public terminAte(): Promise<TerminAteResponse> {
 		if (!this.childProcessPromise) {
-			return Promise.resolve<TerminateResponse>({ success: true });
+			return Promise.resolve<TerminAteResponse>({ success: true });
 		}
 		return this.childProcessPromise.then((childProcess) => {
-			this.terminateRequested = true;
-			return terminateProcess(childProcess, this.options.cwd).then(response => {
+			this.terminAteRequested = true;
+			return terminAteProcess(childProcess, this.options.cwd).then(response => {
 				if (response.success) {
 					this.childProcess = null;
 				}
@@ -317,41 +317,41 @@ export abstract class AbstractProcess<TProgressData> {
 		});
 	}
 
-	private useExec(): Promise<boolean> {
-		return new Promise<boolean>(resolve => {
-			if (!this.shell || !Platform.isWindows) {
-				return resolve(false);
+	privAte useExec(): Promise<booleAn> {
+		return new Promise<booleAn>(resolve => {
+			if (!this.shell || !PlAtform.isWindows) {
+				return resolve(fAlse);
 			}
-			const cmdShell = cp.spawn(getWindowsShell(), ['/s', '/c']);
+			const cmdShell = cp.spAwn(getWindowsShell(), ['/s', '/c']);
 			cmdShell.on('error', (error: Error) => {
 				return resolve(true);
 			});
-			cmdShell.on('exit', (data: any) => {
-				return resolve(false);
+			cmdShell.on('exit', (dAtA: Any) => {
+				return resolve(fAlse);
 			});
 		});
 	}
 }
 
-export class LineProcess extends AbstractProcess<LineData> {
+export clAss LineProcess extends AbstrActProcess<LineDAtA> {
 
-	private stdoutLineDecoder: LineDecoder | null;
-	private stderrLineDecoder: LineDecoder | null;
+	privAte stdoutLineDecoder: LineDecoder | null;
+	privAte stderrLineDecoder: LineDecoder | null;
 
-	public constructor(executable: Executable);
-	public constructor(cmd: string, args: string[], shell: boolean, options: CommandOptions);
-	public constructor(arg1: string | Executable, arg2?: string[], arg3?: boolean | ForkOptions, arg4?: CommandOptions) {
-		super(<any>arg1, arg2, <any>arg3, arg4);
+	public constructor(executAble: ExecutAble);
+	public constructor(cmd: string, Args: string[], shell: booleAn, options: CommAndOptions);
+	public constructor(Arg1: string | ExecutAble, Arg2?: string[], Arg3?: booleAn | ForkOptions, Arg4?: CommAndOptions) {
+		super(<Any>Arg1, Arg2, <Any>Arg3, Arg4);
 
 		this.stdoutLineDecoder = null;
 		this.stderrLineDecoder = null;
 	}
 
-	protected handleExec(cc: ValueCallback<SuccessData>, pp: ProgressCallback<LineData>, error: Error, stdout: Buffer, stderr: Buffer) {
-		[stdout, stderr].forEach((buffer: Buffer, index: number) => {
+	protected hAndleExec(cc: VAlueCAllbAck<SuccessDAtA>, pp: ProgressCAllbAck<LineDAtA>, error: Error, stdout: Buffer, stderr: Buffer) {
+		[stdout, stderr].forEAch((buffer: Buffer, index: number) => {
 			const lineDecoder = new LineDecoder();
 			const lines = lineDecoder.write(buffer);
-			lines.forEach((line) => {
+			lines.forEAch((line) => {
 				pp({ line: line, source: index === 0 ? Source.stdout : Source.stderr });
 			});
 			const line = lineDecoder.end();
@@ -359,26 +359,26 @@ export class LineProcess extends AbstractProcess<LineData> {
 				pp({ line: line, source: index === 0 ? Source.stdout : Source.stderr });
 			}
 		});
-		cc({ terminated: this.terminateRequested, error: error });
+		cc({ terminAted: this.terminAteRequested, error: error });
 	}
 
-	protected handleSpawn(childProcess: cp.ChildProcess, cc: ValueCallback<SuccessData>, pp: ProgressCallback<LineData>, ee: ErrorCallback, sync: boolean): void {
+	protected hAndleSpAwn(childProcess: cp.ChildProcess, cc: VAlueCAllbAck<SuccessDAtA>, pp: ProgressCAllbAck<LineDAtA>, ee: ErrorCAllbAck, sync: booleAn): void {
 		const stdoutLineDecoder = new LineDecoder();
 		const stderrLineDecoder = new LineDecoder();
-		childProcess.stdout!.on('data', (data: Buffer) => {
-			const lines = stdoutLineDecoder.write(data);
-			lines.forEach(line => pp({ line: line, source: Source.stdout }));
+		childProcess.stdout!.on('dAtA', (dAtA: Buffer) => {
+			const lines = stdoutLineDecoder.write(dAtA);
+			lines.forEAch(line => pp({ line: line, source: Source.stdout }));
 		});
-		childProcess.stderr!.on('data', (data: Buffer) => {
-			const lines = stderrLineDecoder.write(data);
-			lines.forEach(line => pp({ line: line, source: Source.stderr }));
+		childProcess.stderr!.on('dAtA', (dAtA: Buffer) => {
+			const lines = stderrLineDecoder.write(dAtA);
+			lines.forEAch(line => pp({ line: line, source: Source.stderr }));
 		});
 
 		this.stdoutLineDecoder = stdoutLineDecoder;
 		this.stderrLineDecoder = stderrLineDecoder;
 	}
 
-	protected handleClose(data: any, cc: ValueCallback<SuccessData>, pp: ProgressCallback<LineData>, ee: ErrorCallback): void {
+	protected hAndleClose(dAtA: Any, cc: VAlueCAllbAck<SuccessDAtA>, pp: ProgressCAllbAck<LineDAtA>, ee: ErrorCAllbAck): void {
 		const stdoutLine = this.stdoutLineDecoder ? this.stdoutLineDecoder.end() : null;
 		if (stdoutLine) {
 			pp({ line: stdoutLine, source: Source.stdout });
@@ -390,41 +390,41 @@ export class LineProcess extends AbstractProcess<LineData> {
 	}
 }
 
-export interface IQueuedSender {
-	send: (msg: any) => void;
+export interfAce IQueuedSender {
+	send: (msg: Any) => void;
 }
 
-// Wrapper around process.send() that will queue any messages if the internal node.js
-// queue is filled with messages and only continue sending messages when the internal
-// queue is free again to consume messages.
-// On Windows we always wait for the send() method to return before sending the next message
-// to workaround https://github.com/nodejs/node/issues/7657 (IPC can freeze process)
-export function createQueuedSender(childProcess: cp.ChildProcess): IQueuedSender {
+// WrApper Around process.send() thAt will queue Any messAges if the internAl node.js
+// queue is filled with messAges And only continue sending messAges when the internAl
+// queue is free AgAin to consume messAges.
+// On Windows we AlwAys wAit for the send() method to return before sending the next messAge
+// to workAround https://github.com/nodejs/node/issues/7657 (IPC cAn freeze process)
+export function creAteQueuedSender(childProcess: cp.ChildProcess): IQueuedSender {
 	let msgQueue: string[] = [];
-	let useQueue = false;
+	let useQueue = fAlse;
 
-	const send = function (msg: any): void {
+	const send = function (msg: Any): void {
 		if (useQueue) {
-			msgQueue.push(msg); // add to the queue if the process cannot handle more messages
+			msgQueue.push(msg); // Add to the queue if the process cAnnot hAndle more messAges
 			return;
 		}
 
 		const result = childProcess.send(msg, (error: Error | null) => {
 			if (error) {
-				console.error(error); // unlikely to happen, best we can do is log this error
+				console.error(error); // unlikely to hAppen, best we cAn do is log this error
 			}
 
-			useQueue = false; // we are good again to send directly without queue
+			useQueue = fAlse; // we Are good AgAin to send directly without queue
 
-			// now send all the messages that we have in our queue and did not send yet
+			// now send All the messAges thAt we hAve in our queue And did not send yet
 			if (msgQueue.length > 0) {
 				const msgQueueCopy = msgQueue.slice(0);
 				msgQueue = [];
-				msgQueueCopy.forEach(entry => send(entry));
+				msgQueueCopy.forEAch(entry => send(entry));
 			}
 		});
 
-		if (!result || Platform.isWindows /* workaround https://github.com/nodejs/node/issues/7657 */) {
+		if (!result || PlAtform.isWindows /* workAround https://github.com/nodejs/node/issues/7657 */) {
 			useQueue = true;
 		}
 	};
@@ -432,58 +432,58 @@ export function createQueuedSender(childProcess: cp.ChildProcess): IQueuedSender
 	return { send };
 }
 
-export namespace win32 {
-	export async function findExecutable(command: string, cwd?: string, paths?: string[]): Promise<string> {
-		// If we have an absolute path then we take it.
-		if (path.isAbsolute(command)) {
-			return command;
+export nAmespAce win32 {
+	export Async function findExecutAble(commAnd: string, cwd?: string, pAths?: string[]): Promise<string> {
+		// If we hAve An Absolute pAth then we tAke it.
+		if (pAth.isAbsolute(commAnd)) {
+			return commAnd;
 		}
 		if (cwd === undefined) {
 			cwd = process.cwd();
 		}
-		const dir = path.dirname(command);
+		const dir = pAth.dirnAme(commAnd);
 		if (dir !== '.') {
-			// We have a directory and the directory is relative (see above). Make the path absolute
+			// We hAve A directory And the directory is relAtive (see Above). MAke the pAth Absolute
 			// to the current working directory.
-			return path.join(cwd, command);
+			return pAth.join(cwd, commAnd);
 		}
-		if (paths === undefined && Types.isString(process.env.PATH)) {
-			paths = process.env.PATH.split(path.delimiter);
+		if (pAths === undefined && Types.isString(process.env.PATH)) {
+			pAths = process.env.PATH.split(pAth.delimiter);
 		}
-		// No PATH environment. Make path absolute to the cwd.
-		if (paths === undefined || paths.length === 0) {
-			return path.join(cwd, command);
+		// No PATH environment. MAke pAth Absolute to the cwd.
+		if (pAths === undefined || pAths.length === 0) {
+			return pAth.join(cwd, commAnd);
 		}
 
-		async function fileExists(path: string): Promise<boolean> {
-			if (await promisify(fs.exists)(path)) {
-				return !((await promisify(fs.stat)(path)).isDirectory());
+		Async function fileExists(pAth: string): Promise<booleAn> {
+			if (AwAit promisify(fs.exists)(pAth)) {
+				return !((AwAit promisify(fs.stAt)(pAth)).isDirectory());
 			}
-			return false;
+			return fAlse;
 		}
 
-		// We have a simple file name. We get the path variable from the env
-		// and try to find the executable on the path.
-		for (let pathEntry of paths) {
-			// The path entry is absolute.
-			let fullPath: string;
-			if (path.isAbsolute(pathEntry)) {
-				fullPath = path.join(pathEntry, command);
+		// We hAve A simple file nAme. We get the pAth vAriAble from the env
+		// And try to find the executAble on the pAth.
+		for (let pAthEntry of pAths) {
+			// The pAth entry is Absolute.
+			let fullPAth: string;
+			if (pAth.isAbsolute(pAthEntry)) {
+				fullPAth = pAth.join(pAthEntry, commAnd);
 			} else {
-				fullPath = path.join(cwd, pathEntry, command);
+				fullPAth = pAth.join(cwd, pAthEntry, commAnd);
 			}
-			if (await fileExists(fullPath)) {
-				return fullPath;
+			if (AwAit fileExists(fullPAth)) {
+				return fullPAth;
 			}
-			let withExtension = fullPath + '.com';
-			if (await fileExists(withExtension)) {
+			let withExtension = fullPAth + '.com';
+			if (AwAit fileExists(withExtension)) {
 				return withExtension;
 			}
-			withExtension = fullPath + '.exe';
-			if (await fileExists(withExtension)) {
+			withExtension = fullPAth + '.exe';
+			if (AwAit fileExists(withExtension)) {
 				return withExtension;
 			}
 		}
-		return path.join(cwd, command);
+		return pAth.join(cwd, commAnd);
 	}
 }

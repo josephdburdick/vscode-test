@@ -1,154 +1,154 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { normalize, isAbsolute } from 'vs/base/common/path';
-import * as resources from 'vs/base/common/resources';
+import * As nls from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
+import { normAlize, isAbsolute } from 'vs/bAse/common/pAth';
+import * As resources from 'vs/bAse/common/resources';
 import { DEBUG_SCHEME } from 'vs/workbench/contrib/debug/common/debug';
-import { IRange } from 'vs/editor/common/core/range';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
 import { IEditorService, SIDE_GROUP, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { Schemas } from 'vs/base/common/network';
+import { SchemAs } from 'vs/bAse/common/network';
 import { isUri } from 'vs/workbench/contrib/debug/common/debugUtils';
-import { ITextEditorPane } from 'vs/workbench/common/editor';
-import { TextEditorSelectionRevealType } from 'vs/platform/editor/common/editor';
+import { ITextEditorPAne } from 'vs/workbench/common/editor';
+import { TextEditorSelectionReveAlType } from 'vs/plAtform/editor/common/editor';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
-export const UNKNOWN_SOURCE_LABEL = nls.localize('unknownSource', "Unknown Source");
+export const UNKNOWN_SOURCE_LABEL = nls.locAlize('unknownSource', "Unknown Source");
 
 /**
- * Debug URI format
+ * Debug URI formAt
  *
- * a debug URI represents a Source object and the debug session where the Source comes from.
+ * A debug URI represents A Source object And the debug session where the Source comes from.
  *
- *       debug:arbitrary_path?session=123e4567-e89b-12d3-a456-426655440000&ref=1016
+ *       debug:ArbitrAry_pAth?session=123e4567-e89b-12d3-A456-426655440000&ref=1016
  *       \___/ \____________/ \__________________________________________/ \______/
  *         |          |                             |                          |
- *      scheme   source.path                    session id            source.reference
+ *      scheme   source.pAth                    session id            source.reference
  *
  *
  */
 
-export class Source {
+export clAss Source {
 
-	readonly uri: URI;
-	available: boolean;
-	raw: DebugProtocol.Source;
+	reAdonly uri: URI;
+	AvAilAble: booleAn;
+	rAw: DebugProtocol.Source;
 
-	constructor(raw_: DebugProtocol.Source | undefined, sessionId: string, uriIdentityService: IUriIdentityService) {
-		let path: string;
-		if (raw_) {
-			this.raw = raw_;
-			path = this.raw.path || this.raw.name || '';
-			this.available = true;
+	constructor(rAw_: DebugProtocol.Source | undefined, sessionId: string, uriIdentityService: IUriIdentityService) {
+		let pAth: string;
+		if (rAw_) {
+			this.rAw = rAw_;
+			pAth = this.rAw.pAth || this.rAw.nAme || '';
+			this.AvAilAble = true;
 		} else {
-			this.raw = { name: UNKNOWN_SOURCE_LABEL };
-			this.available = false;
-			path = `${DEBUG_SCHEME}:${UNKNOWN_SOURCE_LABEL}`;
+			this.rAw = { nAme: UNKNOWN_SOURCE_LABEL };
+			this.AvAilAble = fAlse;
+			pAth = `${DEBUG_SCHEME}:${UNKNOWN_SOURCE_LABEL}`;
 		}
 
-		this.uri = getUriFromSource(this.raw, path, sessionId, uriIdentityService);
+		this.uri = getUriFromSource(this.rAw, pAth, sessionId, uriIdentityService);
 	}
 
-	get name() {
-		return this.raw.name || resources.basenameOrAuthority(this.uri);
+	get nAme() {
+		return this.rAw.nAme || resources.bAsenAmeOrAuthority(this.uri);
 	}
 
 	get origin() {
-		return this.raw.origin;
+		return this.rAw.origin;
 	}
 
-	get presentationHint() {
-		return this.raw.presentationHint;
+	get presentAtionHint() {
+		return this.rAw.presentAtionHint;
 	}
 
 	get reference() {
-		return this.raw.sourceReference;
+		return this.rAw.sourceReference;
 	}
 
 	get inMemory() {
 		return this.uri.scheme === DEBUG_SCHEME;
 	}
 
-	openInEditor(editorService: IEditorService, selection: IRange, preserveFocus?: boolean, sideBySide?: boolean, pinned?: boolean): Promise<ITextEditorPane | undefined> {
-		return !this.available ? Promise.resolve(undefined) : editorService.openEditor({
+	openInEditor(editorService: IEditorService, selection: IRAnge, preserveFocus?: booleAn, sideBySide?: booleAn, pinned?: booleAn): Promise<ITextEditorPAne | undefined> {
+		return !this.AvAilAble ? Promise.resolve(undefined) : editorService.openEditor({
 			resource: this.uri,
 			description: this.origin,
 			options: {
 				preserveFocus,
 				selection,
-				revealIfOpened: true,
-				selectionRevealType: TextEditorSelectionRevealType.CenterIfOutsideViewport,
+				reveAlIfOpened: true,
+				selectionReveAlType: TextEditorSelectionReveAlType.CenterIfOutsideViewport,
 				pinned: pinned || (!preserveFocus && !this.inMemory)
 			}
 		}, sideBySide ? SIDE_GROUP : ACTIVE_GROUP);
 	}
 
-	static getEncodedDebugData(modelUri: URI): { name: string, path: string, sessionId?: string, sourceReference?: number } {
-		let path: string;
+	stAtic getEncodedDebugDAtA(modelUri: URI): { nAme: string, pAth: string, sessionId?: string, sourceReference?: number } {
+		let pAth: string;
 		let sourceReference: number | undefined;
 		let sessionId: string | undefined;
 
 		switch (modelUri.scheme) {
-			case Schemas.file:
-				path = normalize(modelUri.fsPath);
-				break;
-			case DEBUG_SCHEME:
-				path = modelUri.path;
+			cAse SchemAs.file:
+				pAth = normAlize(modelUri.fsPAth);
+				breAk;
+			cAse DEBUG_SCHEME:
+				pAth = modelUri.pAth;
 				if (modelUri.query) {
-					const keyvalues = modelUri.query.split('&');
-					for (let keyvalue of keyvalues) {
-						const pair = keyvalue.split('=');
-						if (pair.length === 2) {
-							switch (pair[0]) {
-								case 'session':
-									sessionId = pair[1];
-									break;
-								case 'ref':
-									sourceReference = parseInt(pair[1]);
-									break;
+					const keyvAlues = modelUri.query.split('&');
+					for (let keyvAlue of keyvAlues) {
+						const pAir = keyvAlue.split('=');
+						if (pAir.length === 2) {
+							switch (pAir[0]) {
+								cAse 'session':
+									sessionId = pAir[1];
+									breAk;
+								cAse 'ref':
+									sourceReference = pArseInt(pAir[1]);
+									breAk;
 							}
 						}
 					}
 				}
-				break;
-			default:
-				path = modelUri.toString();
-				break;
+				breAk;
+			defAult:
+				pAth = modelUri.toString();
+				breAk;
 		}
 
 		return {
-			name: resources.basenameOrAuthority(modelUri),
-			path,
+			nAme: resources.bAsenAmeOrAuthority(modelUri),
+			pAth,
 			sourceReference,
 			sessionId
 		};
 	}
 }
 
-export function getUriFromSource(raw: DebugProtocol.Source, path: string | undefined, sessionId: string, uriIdentityService: IUriIdentityService): URI {
-	if (typeof raw.sourceReference === 'number' && raw.sourceReference > 0) {
+export function getUriFromSource(rAw: DebugProtocol.Source, pAth: string | undefined, sessionId: string, uriIdentityService: IUriIdentityService): URI {
+	if (typeof rAw.sourceReference === 'number' && rAw.sourceReference > 0) {
 		return URI.from({
 			scheme: DEBUG_SCHEME,
-			path,
-			query: `session=${sessionId}&ref=${raw.sourceReference}`
+			pAth,
+			query: `session=${sessionId}&ref=${rAw.sourceReference}`
 		});
 	}
 
-	if (path && isUri(path)) {	// path looks like a uri
-		return uriIdentityService.asCanonicalUri(URI.parse(path));
+	if (pAth && isUri(pAth)) {	// pAth looks like A uri
+		return uriIdentityService.AsCAnonicAlUri(URI.pArse(pAth));
 	}
-	// assume a filesystem path
-	if (path && isAbsolute(path)) {
-		return uriIdentityService.asCanonicalUri(URI.file(path));
+	// Assume A filesystem pAth
+	if (pAth && isAbsolute(pAth)) {
+		return uriIdentityService.AsCAnonicAlUri(URI.file(pAth));
 	}
-	// path is relative: since VS Code cannot deal with this by itself
-	// create a debug url that will result in a DAP 'source' request when the url is resolved.
-	return uriIdentityService.asCanonicalUri(URI.from({
+	// pAth is relAtive: since VS Code cAnnot deAl with this by itself
+	// creAte A debug url thAt will result in A DAP 'source' request when the url is resolved.
+	return uriIdentityService.AsCAnonicAlUri(URI.from({
 		scheme: DEBUG_SCHEME,
-		path,
+		pAth,
 		query: `session=${sessionId}`
 	}));
 }

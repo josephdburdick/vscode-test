@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { TernarySearchTree } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { MainThreadTelemetryShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostConfigProvider, IExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
+import { TernArySeArchTree } from 'vs/bAse/common/mAp';
+import { URI } from 'vs/bAse/common/uri';
+import { MAinThreAdTelemetryShApe, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostConfigProvider, IExtHostConfigurAtion } from 'vs/workbench/Api/common/extHostConfigurAtion';
 import { nullExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
-import * as vscode from 'vscode';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { IExtensionApiFactory } from 'vs/workbench/api/common/extHost.api.impl';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { platform } from 'vs/base/common/process';
-import { ILogService } from 'vs/platform/log/common/log';
+import * As vscode from 'vscode';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { IExtensionApiFActory } from 'vs/workbench/Api/common/extHost.Api.impl';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostExtensionService } from 'vs/workbench/Api/common/extHostExtensionService';
+import { plAtform } from 'vs/bAse/common/process';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
 
-interface LoadFunction {
-	(request: string): any;
+interfAce LoAdFunction {
+	(request: string): Any;
 }
 
-interface INodeModuleFactory {
-	readonly nodeModuleName: string | string[];
-	load(request: string, parent: URI, original: LoadFunction): any;
-	alternativeModuleName?(name: string): string | undefined;
+interfAce INodeModuleFActory {
+	reAdonly nodeModuleNAme: string | string[];
+	loAd(request: string, pArent: URI, originAl: LoAdFunction): Any;
+	AlternAtiveModuleNAme?(nAme: string): string | undefined;
 }
 
-export abstract class RequireInterceptor {
+export AbstrAct clAss RequireInterceptor {
 
-	protected readonly _factories: Map<string, INodeModuleFactory>;
-	protected readonly _alternatives: ((moduleName: string) => string | undefined)[];
+	protected reAdonly _fActories: MAp<string, INodeModuleFActory>;
+	protected reAdonly _AlternAtives: ((moduleNAme: string) => string | undefined)[];
 
 	constructor(
-		private _apiFactory: IExtensionApiFactory,
-		private _extensionRegistry: ExtensionDescriptionRegistry,
-		@IInstantiationService private readonly _instaService: IInstantiationService,
-		@IExtHostConfiguration private readonly _extHostConfiguration: IExtHostConfiguration,
-		@IExtHostExtensionService private readonly _extHostExtensionService: IExtHostExtensionService,
-		@IExtHostInitDataService private readonly _initData: IExtHostInitDataService,
-		@ILogService private readonly _logService: ILogService,
+		privAte _ApiFActory: IExtensionApiFActory,
+		privAte _extensionRegistry: ExtensionDescriptionRegistry,
+		@IInstAntiAtionService privAte reAdonly _instAService: IInstAntiAtionService,
+		@IExtHostConfigurAtion privAte reAdonly _extHostConfigurAtion: IExtHostConfigurAtion,
+		@IExtHostExtensionService privAte reAdonly _extHostExtensionService: IExtHostExtensionService,
+		@IExtHostInitDAtAService privAte reAdonly _initDAtA: IExtHostInitDAtAService,
+		@ILogService privAte reAdonly _logService: ILogService,
 	) {
-		this._factories = new Map<string, INodeModuleFactory>();
-		this._alternatives = [];
+		this._fActories = new MAp<string, INodeModuleFActory>();
+		this._AlternAtives = [];
 	}
 
-	async install(): Promise<void> {
+	Async instAll(): Promise<void> {
 
-		this._installInterceptor();
+		this._instAllInterceptor();
 
-		const configProvider = await this._extHostConfiguration.getConfigProvider();
-		const extensionPaths = await this._extHostExtensionService.getExtensionPathIndex();
+		const configProvider = AwAit this._extHostConfigurAtion.getConfigProvider();
+		const extensionPAths = AwAit this._extHostExtensionService.getExtensionPAthIndex();
 
-		this.register(new VSCodeNodeModuleFactory(this._apiFactory, extensionPaths, this._extensionRegistry, configProvider, this._logService));
-		this.register(this._instaService.createInstance(KeytarNodeModuleFactory));
-		if (this._initData.remote.isRemote) {
-			this.register(this._instaService.createInstance(OpenNodeModuleFactory, extensionPaths, this._initData.environment.appUriScheme));
+		this.register(new VSCodeNodeModuleFActory(this._ApiFActory, extensionPAths, this._extensionRegistry, configProvider, this._logService));
+		this.register(this._instAService.creAteInstAnce(KeytArNodeModuleFActory));
+		if (this._initDAtA.remote.isRemote) {
+			this.register(this._instAService.creAteInstAnce(OpenNodeModuleFActory, extensionPAths, this._initDAtA.environment.AppUriScheme));
 		}
 	}
 
-	protected abstract _installInterceptor(): void;
+	protected AbstrAct _instAllInterceptor(): void;
 
-	public register(interceptor: INodeModuleFactory): void {
-		if (Array.isArray(interceptor.nodeModuleName)) {
-			for (let moduleName of interceptor.nodeModuleName) {
-				this._factories.set(moduleName, interceptor);
+	public register(interceptor: INodeModuleFActory): void {
+		if (ArrAy.isArrAy(interceptor.nodeModuleNAme)) {
+			for (let moduleNAme of interceptor.nodeModuleNAme) {
+				this._fActories.set(moduleNAme, interceptor);
 			}
 		} else {
-			this._factories.set(interceptor.nodeModuleName, interceptor);
+			this._fActories.set(interceptor.nodeModuleNAme, interceptor);
 		}
-		if (typeof interceptor.alternativeModuleName === 'function') {
-			this._alternatives.push((moduleName) => {
-				return interceptor.alternativeModuleName!(moduleName);
+		if (typeof interceptor.AlternAtiveModuleNAme === 'function') {
+			this._AlternAtives.push((moduleNAme) => {
+				return interceptor.AlternAtiveModuleNAme!(moduleNAme);
 			});
 		}
 	}
@@ -82,119 +82,119 @@ export abstract class RequireInterceptor {
 
 //#region --- vscode-module
 
-class VSCodeNodeModuleFactory implements INodeModuleFactory {
-	public readonly nodeModuleName = 'vscode';
+clAss VSCodeNodeModuleFActory implements INodeModuleFActory {
+	public reAdonly nodeModuleNAme = 'vscode';
 
-	private readonly _extApiImpl = new Map<string, typeof vscode>();
-	private _defaultApiImpl?: typeof vscode;
+	privAte reAdonly _extApiImpl = new MAp<string, typeof vscode>();
+	privAte _defAultApiImpl?: typeof vscode;
 
 	constructor(
-		private readonly _apiFactory: IExtensionApiFactory,
-		private readonly _extensionPaths: TernarySearchTree<string, IExtensionDescription>,
-		private readonly _extensionRegistry: ExtensionDescriptionRegistry,
-		private readonly _configProvider: ExtHostConfigProvider,
-		private readonly _logService: ILogService,
+		privAte reAdonly _ApiFActory: IExtensionApiFActory,
+		privAte reAdonly _extensionPAths: TernArySeArchTree<string, IExtensionDescription>,
+		privAte reAdonly _extensionRegistry: ExtensionDescriptionRegistry,
+		privAte reAdonly _configProvider: ExtHostConfigProvider,
+		privAte reAdonly _logService: ILogService,
 	) {
 	}
 
-	public load(_request: string, parent: URI): any {
+	public loAd(_request: string, pArent: URI): Any {
 
-		// get extension id from filename and api for extension
-		const ext = this._extensionPaths.findSubstr(parent.fsPath);
+		// get extension id from filenAme And Api for extension
+		const ext = this._extensionPAths.findSubstr(pArent.fsPAth);
 		if (ext) {
-			let apiImpl = this._extApiImpl.get(ExtensionIdentifier.toKey(ext.identifier));
-			if (!apiImpl) {
-				apiImpl = this._apiFactory(ext, this._extensionRegistry, this._configProvider);
-				this._extApiImpl.set(ExtensionIdentifier.toKey(ext.identifier), apiImpl);
+			let ApiImpl = this._extApiImpl.get(ExtensionIdentifier.toKey(ext.identifier));
+			if (!ApiImpl) {
+				ApiImpl = this._ApiFActory(ext, this._extensionRegistry, this._configProvider);
+				this._extApiImpl.set(ExtensionIdentifier.toKey(ext.identifier), ApiImpl);
 			}
-			return apiImpl;
+			return ApiImpl;
 		}
 
-		// fall back to a default implementation
-		if (!this._defaultApiImpl) {
-			let extensionPathsPretty = '';
-			this._extensionPaths.forEach((value, index) => extensionPathsPretty += `\t${index} -> ${value.identifier.value}\n`);
-			this._logService.warn(`Could not identify extension for 'vscode' require call from ${parent.fsPath}. These are the extension path mappings: \n${extensionPathsPretty}`);
-			this._defaultApiImpl = this._apiFactory(nullExtensionDescription, this._extensionRegistry, this._configProvider);
+		// fAll bAck to A defAult implementAtion
+		if (!this._defAultApiImpl) {
+			let extensionPAthsPretty = '';
+			this._extensionPAths.forEAch((vAlue, index) => extensionPAthsPretty += `\t${index} -> ${vAlue.identifier.vAlue}\n`);
+			this._logService.wArn(`Could not identify extension for 'vscode' require cAll from ${pArent.fsPAth}. These Are the extension pAth mAppings: \n${extensionPAthsPretty}`);
+			this._defAultApiImpl = this._ApiFActory(nullExtensionDescription, this._extensionRegistry, this._configProvider);
 		}
-		return this._defaultApiImpl;
+		return this._defAultApiImpl;
 	}
 }
 
 //#endregion
 
 
-//#region --- keytar-module
+//#region --- keytAr-module
 
-interface IKeytarModule {
-	getPassword(service: string, account: string): Promise<string | null>;
-	setPassword(service: string, account: string, password: string): Promise<void>;
-	deletePassword(service: string, account: string): Promise<boolean>;
-	findPassword(service: string): Promise<string | null>;
-	findCredentials(service: string): Promise<Array<{ account: string, password: string }>>;
+interfAce IKeytArModule {
+	getPAssword(service: string, Account: string): Promise<string | null>;
+	setPAssword(service: string, Account: string, pAssword: string): Promise<void>;
+	deletePAssword(service: string, Account: string): Promise<booleAn>;
+	findPAssword(service: string): Promise<string | null>;
+	findCredentiAls(service: string): Promise<ArrAy<{ Account: string, pAssword: string }>>;
 }
 
-class KeytarNodeModuleFactory implements INodeModuleFactory {
-	public readonly nodeModuleName: string = 'keytar';
+clAss KeytArNodeModuleFActory implements INodeModuleFActory {
+	public reAdonly nodeModuleNAme: string = 'keytAr';
 
-	private alternativeNames: Set<string> | undefined;
-	private _impl: IKeytarModule;
+	privAte AlternAtiveNAmes: Set<string> | undefined;
+	privAte _impl: IKeytArModule;
 
 	constructor(
 		@IExtHostRpcService rpcService: IExtHostRpcService,
-		@IExtHostInitDataService initData: IExtHostInitDataService,
+		@IExtHostInitDAtAService initDAtA: IExtHostInitDAtAService,
 
 	) {
-		const { environment } = initData;
-		const mainThreadKeytar = rpcService.getProxy(MainContext.MainThreadKeytar);
+		const { environment } = initDAtA;
+		const mAinThreAdKeytAr = rpcService.getProxy(MAinContext.MAinThreAdKeytAr);
 
-		if (environment.appRoot) {
-			let appRoot = environment.appRoot.fsPath;
-			if (platform === 'win32') {
-				appRoot = appRoot.replace(/\\/g, '/');
+		if (environment.AppRoot) {
+			let AppRoot = environment.AppRoot.fsPAth;
+			if (plAtform === 'win32') {
+				AppRoot = AppRoot.replAce(/\\/g, '/');
 			}
-			if (appRoot[appRoot.length - 1] === '/') {
-				appRoot = appRoot.substr(0, appRoot.length - 1);
+			if (AppRoot[AppRoot.length - 1] === '/') {
+				AppRoot = AppRoot.substr(0, AppRoot.length - 1);
 			}
-			this.alternativeNames = new Set();
-			this.alternativeNames.add(`${appRoot}/node_modules.asar/keytar`);
-			this.alternativeNames.add(`${appRoot}/node_modules/keytar`);
+			this.AlternAtiveNAmes = new Set();
+			this.AlternAtiveNAmes.Add(`${AppRoot}/node_modules.AsAr/keytAr`);
+			this.AlternAtiveNAmes.Add(`${AppRoot}/node_modules/keytAr`);
 		}
 		this._impl = {
-			getPassword: (service: string, account: string): Promise<string | null> => {
-				return mainThreadKeytar.$getPassword(service, account);
+			getPAssword: (service: string, Account: string): Promise<string | null> => {
+				return mAinThreAdKeytAr.$getPAssword(service, Account);
 			},
-			setPassword: (service: string, account: string, password: string): Promise<void> => {
-				return mainThreadKeytar.$setPassword(service, account, password);
+			setPAssword: (service: string, Account: string, pAssword: string): Promise<void> => {
+				return mAinThreAdKeytAr.$setPAssword(service, Account, pAssword);
 			},
-			deletePassword: (service: string, account: string): Promise<boolean> => {
-				return mainThreadKeytar.$deletePassword(service, account);
+			deletePAssword: (service: string, Account: string): Promise<booleAn> => {
+				return mAinThreAdKeytAr.$deletePAssword(service, Account);
 			},
-			findPassword: (service: string): Promise<string | null> => {
-				return mainThreadKeytar.$findPassword(service);
+			findPAssword: (service: string): Promise<string | null> => {
+				return mAinThreAdKeytAr.$findPAssword(service);
 			},
-			findCredentials(service: string): Promise<Array<{ account: string, password: string }>> {
-				return mainThreadKeytar.$findCredentials(service);
+			findCredentiAls(service: string): Promise<ArrAy<{ Account: string, pAssword: string }>> {
+				return mAinThreAdKeytAr.$findCredentiAls(service);
 			}
 		};
 	}
 
-	public load(_request: string, _parent: URI): any {
+	public loAd(_request: string, _pArent: URI): Any {
 		return this._impl;
 	}
 
-	public alternativeModuleName(name: string): string | undefined {
-		const length = name.length;
-		// We need at least something like: `?/keytar` which requires
-		// more than 7 characters.
-		if (length <= 7 || !this.alternativeNames) {
+	public AlternAtiveModuleNAme(nAme: string): string | undefined {
+		const length = nAme.length;
+		// We need At leAst something like: `?/keytAr` which requires
+		// more thAn 7 chArActers.
+		if (length <= 7 || !this.AlternAtiveNAmes) {
 			return undefined;
 		}
 		const sep = length - 7;
-		if ((name.charAt(sep) === '/' || name.charAt(sep) === '\\') && name.endsWith('keytar')) {
-			name = name.replace(/\\/g, '/');
-			if (this.alternativeNames.has(name)) {
-				return 'keytar';
+		if ((nAme.chArAt(sep) === '/' || nAme.chArAt(sep) === '\\') && nAme.endsWith('keytAr')) {
+			nAme = nAme.replAce(/\\/g, '/');
+			if (this.AlternAtiveNAmes.hAs(nAme)) {
+				return 'keytAr';
 			}
 		}
 		return undefined;
@@ -206,87 +206,87 @@ class KeytarNodeModuleFactory implements INodeModuleFactory {
 
 //#region --- opn/open-module
 
-interface OpenOptions {
-	wait: boolean;
-	app: string | string[];
+interfAce OpenOptions {
+	wAit: booleAn;
+	App: string | string[];
 }
 
-interface IOriginalOpen {
-	(target: string, options?: OpenOptions): Thenable<any>;
+interfAce IOriginAlOpen {
+	(tArget: string, options?: OpenOptions): ThenAble<Any>;
 }
 
-interface IOpenModule {
-	(target: string, options?: OpenOptions): Thenable<void>;
+interfAce IOpenModule {
+	(tArget: string, options?: OpenOptions): ThenAble<void>;
 }
 
-class OpenNodeModuleFactory implements INodeModuleFactory {
+clAss OpenNodeModuleFActory implements INodeModuleFActory {
 
-	public readonly nodeModuleName: string[] = ['open', 'opn'];
+	public reAdonly nodeModuleNAme: string[] = ['open', 'opn'];
 
-	private _extensionId: string | undefined;
-	private _original?: IOriginalOpen;
-	private _impl: IOpenModule;
-	private _mainThreadTelemetry: MainThreadTelemetryShape;
+	privAte _extensionId: string | undefined;
+	privAte _originAl?: IOriginAlOpen;
+	privAte _impl: IOpenModule;
+	privAte _mAinThreAdTelemetry: MAinThreAdTelemetryShApe;
 
 	constructor(
-		private readonly _extensionPaths: TernarySearchTree<string, IExtensionDescription>,
-		private readonly _appUriScheme: string,
+		privAte reAdonly _extensionPAths: TernArySeArchTree<string, IExtensionDescription>,
+		privAte reAdonly _AppUriScheme: string,
 		@IExtHostRpcService rpcService: IExtHostRpcService,
 	) {
 
-		this._mainThreadTelemetry = rpcService.getProxy(MainContext.MainThreadTelemetry);
-		const mainThreadWindow = rpcService.getProxy(MainContext.MainThreadWindow);
+		this._mAinThreAdTelemetry = rpcService.getProxy(MAinContext.MAinThreAdTelemetry);
+		const mAinThreAdWindow = rpcService.getProxy(MAinContext.MAinThreAdWindow);
 
-		this._impl = (target, options) => {
-			const uri: URI = URI.parse(target);
-			// If we have options use the original method.
+		this._impl = (tArget, options) => {
+			const uri: URI = URI.pArse(tArget);
+			// If we hAve options use the originAl method.
 			if (options) {
-				return this.callOriginal(target, options);
+				return this.cAllOriginAl(tArget, options);
 			}
 			if (uri.scheme === 'http' || uri.scheme === 'https') {
-				return mainThreadWindow.$openUri(uri, target, { allowTunneling: true });
-			} else if (uri.scheme === 'mailto' || uri.scheme === this._appUriScheme) {
-				return mainThreadWindow.$openUri(uri, target, {});
+				return mAinThreAdWindow.$openUri(uri, tArget, { AllowTunneling: true });
+			} else if (uri.scheme === 'mAilto' || uri.scheme === this._AppUriScheme) {
+				return mAinThreAdWindow.$openUri(uri, tArget, {});
 			}
-			return this.callOriginal(target, options);
+			return this.cAllOriginAl(tArget, options);
 		};
 	}
 
-	public load(request: string, parent: URI, original: LoadFunction): any {
-		// get extension id from filename and api for extension
-		const extension = this._extensionPaths.findSubstr(parent.fsPath);
+	public loAd(request: string, pArent: URI, originAl: LoAdFunction): Any {
+		// get extension id from filenAme And Api for extension
+		const extension = this._extensionPAths.findSubstr(pArent.fsPAth);
 		if (extension) {
-			this._extensionId = extension.identifier.value;
+			this._extensionId = extension.identifier.vAlue;
 			this.sendShimmingTelemetry();
 		}
 
-		this._original = original(request);
+		this._originAl = originAl(request);
 		return this._impl;
 	}
 
-	private callOriginal(target: string, options: OpenOptions | undefined): Thenable<any> {
-		this.sendNoForwardTelemetry();
-		return this._original!(target, options);
+	privAte cAllOriginAl(tArget: string, options: OpenOptions | undefined): ThenAble<Any> {
+		this.sendNoForwArdTelemetry();
+		return this._originAl!(tArget, options);
 	}
 
-	private sendShimmingTelemetry(): void {
+	privAte sendShimmingTelemetry(): void {
 		if (!this._extensionId) {
 			return;
 		}
-		type ShimmingOpenClassification = {
-			extension: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
+		type ShimmingOpenClAssificAtion = {
+			extension: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
 		};
-		this._mainThreadTelemetry.$publicLog2<{ extension: string }, ShimmingOpenClassification>('shimming.open', { extension: this._extensionId });
+		this._mAinThreAdTelemetry.$publicLog2<{ extension: string }, ShimmingOpenClAssificAtion>('shimming.open', { extension: this._extensionId });
 	}
 
-	private sendNoForwardTelemetry(): void {
+	privAte sendNoForwArdTelemetry(): void {
 		if (!this._extensionId) {
 			return;
 		}
-		type ShimmingOpenCallNoForwardClassification = {
-			extension: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
+		type ShimmingOpenCAllNoForwArdClAssificAtion = {
+			extension: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
 		};
-		this._mainThreadTelemetry.$publicLog2<{ extension: string }, ShimmingOpenCallNoForwardClassification>('shimming.open.call.noForward', { extension: this._extensionId });
+		this._mAinThreAdTelemetry.$publicLog2<{ extension: string }, ShimmingOpenCAllNoForwArdClAssificAtion>('shimming.open.cAll.noForwArd', { extension: this._extensionId });
 	}
 }
 

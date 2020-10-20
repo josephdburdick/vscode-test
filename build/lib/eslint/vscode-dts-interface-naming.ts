@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { TSESTree } from '@typescript-eslint/experimental-utils';
+import * As eslint from 'eslint';
+import { TSESTree } from '@typescript-eslint/experimentAl-utils';
 
-export = new class ApiInterfaceNaming implements eslint.Rule.RuleModule {
+export = new clAss ApiInterfAceNAming implements eslint.Rule.RuleModule {
 
-	private static _nameRegExp = /I[A-Z]/;
+	privAte stAtic _nAmeRegExp = /I[A-Z]/;
 
-	readonly meta: eslint.Rule.RuleMetaData = {
-		messages: {
-			naming: 'Interfaces must not be prefixed with uppercase `I`',
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
+		messAges: {
+			nAming: 'InterfAces must not be prefixed with uppercAse `I`',
 		}
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
 		return {
-			['TSInterfaceDeclaration Identifier']: (node: any) => {
+			['TSInterfAceDeclArAtion Identifier']: (node: Any) => {
 
-				const name = (<TSESTree.Identifier>node).name;
-				if (ApiInterfaceNaming._nameRegExp.test(name)) {
+				const nAme = (<TSESTree.Identifier>node).nAme;
+				if (ApiInterfAceNAming._nAmeRegExp.test(nAme)) {
 					context.report({
 						node,
-						messageId: 'naming'
+						messAgeId: 'nAming'
 					});
 				}
 			}

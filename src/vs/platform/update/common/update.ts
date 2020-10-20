@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export interface IUpdate {
+export interfAce IUpdAte {
 	version: string;
 	productVersion: string;
-	supportsFastUpdate?: boolean;
+	supportsFAstUpdAte?: booleAn;
 	url?: string;
-	hash?: string;
+	hAsh?: string;
 }
 
 /**
- * Updates are run as a state machine:
+ * UpdAtes Are run As A stAte mAchine:
  *
- *      Uninitialized
+ *      UninitiAlized
  *           ↓
  *          Idle
  *          ↓  ↑
- *   Checking for Updates  →  Available for Download
+ *   Checking for UpdAtes  →  AvAilAble for DownloAd
  *         ↓
- *     Downloading  →   Ready
+ *     DownloAding  →   ReAdy
  *         ↓               ↑
- *     Downloaded   →  Updating
+ *     DownloAded   →  UpdAting
  *
- * Available: There is an update available for download (linux).
- * Ready: Code will be updated as soon as it restarts (win32, darwin).
- * Donwloaded: There is an update ready to be installed in the background (win32).
+ * AvAilAble: There is An updAte AvAilAble for downloAd (linux).
+ * ReAdy: Code will be updAted As soon As it restArts (win32, dArwin).
+ * DonwloAded: There is An updAte reAdy to be instAlled in the bAckground (win32).
  */
 
-export const enum StateType {
-	Uninitialized = 'uninitialized',
+export const enum StAteType {
+	UninitiAlized = 'uninitiAlized',
 	Idle = 'idle',
-	CheckingForUpdates = 'checking for updates',
-	AvailableForDownload = 'available for download',
-	Downloading = 'downloading',
-	Downloaded = 'downloaded',
-	Updating = 'updating',
-	Ready = 'ready',
+	CheckingForUpdAtes = 'checking for updAtes',
+	AvAilAbleForDownloAd = 'AvAilAble for downloAd',
+	DownloAding = 'downloAding',
+	DownloAded = 'downloAded',
+	UpdAting = 'updAting',
+	ReAdy = 'reAdy',
 }
 
-export const enum UpdateType {
+export const enum UpdAteType {
 	Setup,
 	Archive,
-	Snap
+	SnAp
 }
 
-export type Uninitialized = { type: StateType.Uninitialized };
-export type Idle = { type: StateType.Idle, updateType: UpdateType, error?: string };
-export type CheckingForUpdates = { type: StateType.CheckingForUpdates, context: any };
-export type AvailableForDownload = { type: StateType.AvailableForDownload, update: IUpdate };
-export type Downloading = { type: StateType.Downloading, update: IUpdate };
-export type Downloaded = { type: StateType.Downloaded, update: IUpdate };
-export type Updating = { type: StateType.Updating, update: IUpdate };
-export type Ready = { type: StateType.Ready, update: IUpdate };
+export type UninitiAlized = { type: StAteType.UninitiAlized };
+export type Idle = { type: StAteType.Idle, updAteType: UpdAteType, error?: string };
+export type CheckingForUpdAtes = { type: StAteType.CheckingForUpdAtes, context: Any };
+export type AvAilAbleForDownloAd = { type: StAteType.AvAilAbleForDownloAd, updAte: IUpdAte };
+export type DownloAding = { type: StAteType.DownloAding, updAte: IUpdAte };
+export type DownloAded = { type: StAteType.DownloAded, updAte: IUpdAte };
+export type UpdAting = { type: StAteType.UpdAting, updAte: IUpdAte };
+export type ReAdy = { type: StAteType.ReAdy, updAte: IUpdAte };
 
-export type State = Uninitialized | Idle | CheckingForUpdates | AvailableForDownload | Downloading | Downloaded | Updating | Ready;
+export type StAte = UninitiAlized | Idle | CheckingForUpdAtes | AvAilAbleForDownloAd | DownloAding | DownloAded | UpdAting | ReAdy;
 
-export const State = {
-	Uninitialized: { type: StateType.Uninitialized } as Uninitialized,
-	Idle: (updateType: UpdateType, error?: string) => ({ type: StateType.Idle, updateType, error }) as Idle,
-	CheckingForUpdates: (context: any) => ({ type: StateType.CheckingForUpdates, context } as CheckingForUpdates),
-	AvailableForDownload: (update: IUpdate) => ({ type: StateType.AvailableForDownload, update } as AvailableForDownload),
-	Downloading: (update: IUpdate) => ({ type: StateType.Downloading, update } as Downloading),
-	Downloaded: (update: IUpdate) => ({ type: StateType.Downloaded, update } as Downloaded),
-	Updating: (update: IUpdate) => ({ type: StateType.Updating, update } as Updating),
-	Ready: (update: IUpdate) => ({ type: StateType.Ready, update } as Ready),
+export const StAte = {
+	UninitiAlized: { type: StAteType.UninitiAlized } As UninitiAlized,
+	Idle: (updAteType: UpdAteType, error?: string) => ({ type: StAteType.Idle, updAteType, error }) As Idle,
+	CheckingForUpdAtes: (context: Any) => ({ type: StAteType.CheckingForUpdAtes, context } As CheckingForUpdAtes),
+	AvAilAbleForDownloAd: (updAte: IUpdAte) => ({ type: StAteType.AvAilAbleForDownloAd, updAte } As AvAilAbleForDownloAd),
+	DownloAding: (updAte: IUpdAte) => ({ type: StAteType.DownloAding, updAte } As DownloAding),
+	DownloAded: (updAte: IUpdAte) => ({ type: StAteType.DownloAded, updAte } As DownloAded),
+	UpdAting: (updAte: IUpdAte) => ({ type: StAteType.UpdAting, updAte } As UpdAting),
+	ReAdy: (updAte: IUpdAte) => ({ type: StAteType.ReAdy, updAte } As ReAdy),
 };
 
-export interface IAutoUpdater extends Event.NodeEventEmitter {
+export interfAce IAutoUpdAter extends Event.NodeEventEmitter {
 	setFeedURL(url: string): void;
-	checkForUpdates(): void;
-	applyUpdate?(): Promise<void>;
-	quitAndInstall(): void;
+	checkForUpdAtes(): void;
+	ApplyUpdAte?(): Promise<void>;
+	quitAndInstAll(): void;
 }
 
-export const IUpdateService = createDecorator<IUpdateService>('updateService');
+export const IUpdAteService = creAteDecorAtor<IUpdAteService>('updAteService');
 
-export interface IUpdateService {
-	readonly _serviceBrand: undefined;
+export interfAce IUpdAteService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onStateChange: Event<State>;
-	readonly state: State;
+	reAdonly onStAteChAnge: Event<StAte>;
+	reAdonly stAte: StAte;
 
-	checkForUpdates(context: any): Promise<void>;
-	downloadUpdate(): Promise<void>;
-	applyUpdate(): Promise<void>;
-	quitAndInstall(): Promise<void>;
+	checkForUpdAtes(context: Any): Promise<void>;
+	downloAdUpdAte(): Promise<void>;
+	ApplyUpdAte(): Promise<void>;
+	quitAndInstAll(): Promise<void>;
 
-	isLatestVersion(): Promise<boolean | undefined>;
+	isLAtestVersion(): Promise<booleAn | undefined>;
 }

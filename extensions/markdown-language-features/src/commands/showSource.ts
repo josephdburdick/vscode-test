@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { Command } from '../commandManager';
-import { MarkdownPreviewManager } from '../features/previewManager';
+import * As vscode from 'vscode';
+import { CommAnd } from '../commAndMAnAger';
+import { MArkdownPreviewMAnAger } from '../feAtures/previewMAnAger';
 
-export class ShowSourceCommand implements Command {
-	public readonly id = 'markdown.showSource';
+export clAss ShowSourceCommAnd implements CommAnd {
+	public reAdonly id = 'mArkdown.showSource';
 
 	public constructor(
-		private readonly previewManager: MarkdownPreviewManager
+		privAte reAdonly previewMAnAger: MArkdownPreviewMAnAger
 	) { }
 
 	public execute() {
-		const { activePreviewResource, activePreviewResourceColumn } = this.previewManager;
-		if (activePreviewResource && activePreviewResourceColumn) {
-			return vscode.workspace.openTextDocument(activePreviewResource).then(document => {
-				vscode.window.showTextDocument(document, activePreviewResourceColumn);
+		const { ActivePreviewResource, ActivePreviewResourceColumn } = this.previewMAnAger;
+		if (ActivePreviewResource && ActivePreviewResourceColumn) {
+			return vscode.workspAce.openTextDocument(ActivePreviewResource).then(document => {
+				vscode.window.showTextDocument(document, ActivePreviewResourceColumn);
 			});
 		}
 		return undefined;

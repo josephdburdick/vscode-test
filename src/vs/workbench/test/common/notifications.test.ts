@@ -1,244 +1,244 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { NotificationsModel, NotificationViewItem, INotificationChangeEvent, NotificationChangeType, NotificationViewItemContentChangeKind, IStatusMessageChangeEvent, StatusMessageChangeType } from 'vs/workbench/common/notifications';
-import { Action } from 'vs/base/common/actions';
-import { INotification, Severity, NotificationsFilter } from 'vs/platform/notification/common/notification';
-import { createErrorWithActions } from 'vs/base/common/errorsWithActions';
+import * As Assert from 'Assert';
+import { NotificAtionsModel, NotificAtionViewItem, INotificAtionChAngeEvent, NotificAtionChAngeType, NotificAtionViewItemContentChAngeKind, IStAtusMessAgeChAngeEvent, StAtusMessAgeChAngeType } from 'vs/workbench/common/notificAtions';
+import { Action } from 'vs/bAse/common/Actions';
+import { INotificAtion, Severity, NotificAtionsFilter } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { creAteErrorWithActions } from 'vs/bAse/common/errorsWithActions';
 
-suite('Notifications', () => {
+suite('NotificAtions', () => {
 
 	test('Items', () => {
 
-		// Invalid
-		assert.ok(!NotificationViewItem.create({ severity: Severity.Error, message: '' }));
-		assert.ok(!NotificationViewItem.create({ severity: Severity.Error, message: null! }));
+		// InvAlid
+		Assert.ok(!NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: '' }));
+		Assert.ok(!NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: null! }));
 
-		// Duplicates
-		let item1 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message' })!;
-		let item2 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message' })!;
-		let item3 = NotificationViewItem.create({ severity: Severity.Info, message: 'Info Message' })!;
-		let item4 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', source: 'Source' })!;
-		let item5 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'label')] } })!;
-		let item6 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'label')] }, progress: { infinite: true } })!;
+		// DuplicAtes
+		let item1 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge' })!;
+		let item2 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge' })!;
+		let item3 = NotificAtionViewItem.creAte({ severity: Severity.Info, messAge: 'Info MessAge' })!;
+		let item4 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge', source: 'Source' })!;
+		let item5 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge', Actions: { primAry: [new Action('id', 'lAbel')] } })!;
+		let item6 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge', Actions: { primAry: [new Action('id', 'lAbel')] }, progress: { infinite: true } })!;
 
-		assert.equal(item1.equals(item1), true);
-		assert.equal(item2.equals(item2), true);
-		assert.equal(item3.equals(item3), true);
-		assert.equal(item4.equals(item4), true);
-		assert.equal(item5.equals(item5), true);
+		Assert.equAl(item1.equAls(item1), true);
+		Assert.equAl(item2.equAls(item2), true);
+		Assert.equAl(item3.equAls(item3), true);
+		Assert.equAl(item4.equAls(item4), true);
+		Assert.equAl(item5.equAls(item5), true);
 
-		assert.equal(item1.equals(item2), true);
-		assert.equal(item1.equals(item3), false);
-		assert.equal(item1.equals(item4), false);
-		assert.equal(item1.equals(item5), false);
+		Assert.equAl(item1.equAls(item2), true);
+		Assert.equAl(item1.equAls(item3), fAlse);
+		Assert.equAl(item1.equAls(item4), fAlse);
+		Assert.equAl(item1.equAls(item5), fAlse);
 
 		// Progress
-		assert.equal(item1.hasProgress, false);
-		assert.equal(item6.hasProgress, true);
+		Assert.equAl(item1.hAsProgress, fAlse);
+		Assert.equAl(item6.hAsProgress, true);
 
-		// Message Box
-		assert.equal(item5.canCollapse, false);
-		assert.equal(item5.expanded, true);
+		// MessAge Box
+		Assert.equAl(item5.cAnCollApse, fAlse);
+		Assert.equAl(item5.expAnded, true);
 
 		// Events
-		let called = 0;
-		item1.onDidChangeExpansion(() => {
-			called++;
+		let cAlled = 0;
+		item1.onDidChAngeExpAnsion(() => {
+			cAlled++;
 		});
 
-		item1.expand();
-		item1.expand();
-		item1.collapse();
-		item1.collapse();
+		item1.expAnd();
+		item1.expAnd();
+		item1.collApse();
+		item1.collApse();
 
-		assert.equal(called, 2);
+		Assert.equAl(cAlled, 2);
 
-		called = 0;
-		item1.onDidChangeContent(e => {
-			if (e.kind === NotificationViewItemContentChangeKind.PROGRESS) {
-				called++;
+		cAlled = 0;
+		item1.onDidChAngeContent(e => {
+			if (e.kind === NotificAtionViewItemContentChAngeKind.PROGRESS) {
+				cAlled++;
 			}
 		});
 
 		item1.progress.infinite();
 		item1.progress.done();
 
-		assert.equal(called, 2);
+		Assert.equAl(cAlled, 2);
 
-		called = 0;
-		item1.onDidChangeContent(e => {
-			if (e.kind === NotificationViewItemContentChangeKind.MESSAGE) {
-				called++;
+		cAlled = 0;
+		item1.onDidChAngeContent(e => {
+			if (e.kind === NotificAtionViewItemContentChAngeKind.MESSAGE) {
+				cAlled++;
 			}
 		});
 
-		item1.updateMessage('message update');
+		item1.updAteMessAge('messAge updAte');
 
-		called = 0;
-		item1.onDidChangeContent(e => {
-			if (e.kind === NotificationViewItemContentChangeKind.SEVERITY) {
-				called++;
+		cAlled = 0;
+		item1.onDidChAngeContent(e => {
+			if (e.kind === NotificAtionViewItemContentChAngeKind.SEVERITY) {
+				cAlled++;
 			}
 		});
 
-		item1.updateSeverity(Severity.Error);
+		item1.updAteSeverity(Severity.Error);
 
-		called = 0;
-		item1.onDidChangeContent(e => {
-			if (e.kind === NotificationViewItemContentChangeKind.ACTIONS) {
-				called++;
+		cAlled = 0;
+		item1.onDidChAngeContent(e => {
+			if (e.kind === NotificAtionViewItemContentChAngeKind.ACTIONS) {
+				cAlled++;
 			}
 		});
 
-		item1.updateActions({ primary: [new Action('id2', 'label')] });
+		item1.updAteActions({ primAry: [new Action('id2', 'lAbel')] });
 
-		assert.equal(called, 1);
+		Assert.equAl(cAlled, 1);
 
-		called = 0;
-		item1.onDidChangeVisibility(e => {
-			called++;
+		cAlled = 0;
+		item1.onDidChAngeVisibility(e => {
+			cAlled++;
 		});
 
-		item1.updateVisibility(true);
-		item1.updateVisibility(false);
-		item1.updateVisibility(false);
+		item1.updAteVisibility(true);
+		item1.updAteVisibility(fAlse);
+		item1.updAteVisibility(fAlse);
 
-		assert.equal(called, 2);
+		Assert.equAl(cAlled, 2);
 
-		called = 0;
+		cAlled = 0;
 		item1.onDidClose(() => {
-			called++;
+			cAlled++;
 		});
 
 		item1.close();
-		assert.equal(called, 1);
+		Assert.equAl(cAlled, 1);
 
 		// Error with Action
-		let item7 = NotificationViewItem.create({ severity: Severity.Error, message: createErrorWithActions('Hello Error', { actions: [new Action('id', 'label')] }) })!;
-		assert.equal(item7.actions!.primary!.length, 1);
+		let item7 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: creAteErrorWithActions('Hello Error', { Actions: [new Action('id', 'lAbel')] }) })!;
+		Assert.equAl(item7.Actions!.primAry!.length, 1);
 
 		// Filter
-		let item8 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message' }, NotificationsFilter.SILENT)!;
-		assert.equal(item8.silent, true);
+		let item8 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge' }, NotificAtionsFilter.SILENT)!;
+		Assert.equAl(item8.silent, true);
 
-		let item9 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message' }, NotificationsFilter.OFF)!;
-		assert.equal(item9.silent, false);
+		let item9 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge' }, NotificAtionsFilter.OFF)!;
+		Assert.equAl(item9.silent, fAlse);
 
-		let item10 = NotificationViewItem.create({ severity: Severity.Error, message: 'Error Message' }, NotificationsFilter.ERROR)!;
-		assert.equal(item10.silent, false);
+		let item10 = NotificAtionViewItem.creAte({ severity: Severity.Error, messAge: 'Error MessAge' }, NotificAtionsFilter.ERROR)!;
+		Assert.equAl(item10.silent, fAlse);
 
-		let item11 = NotificationViewItem.create({ severity: Severity.Warning, message: 'Error Message' }, NotificationsFilter.ERROR)!;
-		assert.equal(item11.silent, true);
+		let item11 = NotificAtionViewItem.creAte({ severity: Severity.WArning, messAge: 'Error MessAge' }, NotificAtionsFilter.ERROR)!;
+		Assert.equAl(item11.silent, true);
 	});
 
 	test('Model', () => {
-		const model = new NotificationsModel();
+		const model = new NotificAtionsModel();
 
-		let lastNotificationEvent!: INotificationChangeEvent;
-		model.onDidChangeNotification(e => {
-			lastNotificationEvent = e;
+		let lAstNotificAtionEvent!: INotificAtionChAngeEvent;
+		model.onDidChAngeNotificAtion(e => {
+			lAstNotificAtionEvent = e;
 		});
 
-		let lastStatusMessageEvent!: IStatusMessageChangeEvent;
-		model.onDidChangeStatusMessage(e => {
-			lastStatusMessageEvent = e;
+		let lAstStAtusMessAgeEvent!: IStAtusMessAgeChAngeEvent;
+		model.onDidChAngeStAtusMessAge(e => {
+			lAstStAtusMessAgeEvent = e;
 		});
 
-		let item1: INotification = { severity: Severity.Error, message: 'Error Message', actions: { primary: [new Action('id', 'label')] } };
-		let item2: INotification = { severity: Severity.Warning, message: 'Warning Message', source: 'Some Source' };
-		let item2Duplicate: INotification = { severity: Severity.Warning, message: 'Warning Message', source: 'Some Source' };
-		let item3: INotification = { severity: Severity.Info, message: 'Info Message' };
+		let item1: INotificAtion = { severity: Severity.Error, messAge: 'Error MessAge', Actions: { primAry: [new Action('id', 'lAbel')] } };
+		let item2: INotificAtion = { severity: Severity.WArning, messAge: 'WArning MessAge', source: 'Some Source' };
+		let item2DuplicAte: INotificAtion = { severity: Severity.WArning, messAge: 'WArning MessAge', source: 'Some Source' };
+		let item3: INotificAtion = { severity: Severity.Info, messAge: 'Info MessAge' };
 
-		let item1Handle = model.addNotification(item1);
-		assert.equal(lastNotificationEvent.item.severity, item1.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item1.message);
-		assert.equal(lastNotificationEvent.index, 0);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.ADD);
+		let item1HAndle = model.AddNotificAtion(item1);
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item1.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item1.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 0);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.ADD);
 
-		item1Handle.updateMessage('Error Message');
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.CHANGE);
-		assert.equal(lastNotificationEvent.detail, NotificationViewItemContentChangeKind.MESSAGE);
+		item1HAndle.updAteMessAge('Error MessAge');
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.CHANGE);
+		Assert.equAl(lAstNotificAtionEvent.detAil, NotificAtionViewItemContentChAngeKind.MESSAGE);
 
-		item1Handle.updateSeverity(Severity.Error);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.CHANGE);
-		assert.equal(lastNotificationEvent.detail, NotificationViewItemContentChangeKind.SEVERITY);
+		item1HAndle.updAteSeverity(Severity.Error);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.CHANGE);
+		Assert.equAl(lAstNotificAtionEvent.detAil, NotificAtionViewItemContentChAngeKind.SEVERITY);
 
-		item1Handle.updateActions({ primary: [], secondary: [] });
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.CHANGE);
-		assert.equal(lastNotificationEvent.detail, NotificationViewItemContentChangeKind.ACTIONS);
+		item1HAndle.updAteActions({ primAry: [], secondAry: [] });
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.CHANGE);
+		Assert.equAl(lAstNotificAtionEvent.detAil, NotificAtionViewItemContentChAngeKind.ACTIONS);
 
-		item1Handle.progress.infinite();
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.CHANGE);
-		assert.equal(lastNotificationEvent.detail, NotificationViewItemContentChangeKind.PROGRESS);
+		item1HAndle.progress.infinite();
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.CHANGE);
+		Assert.equAl(lAstNotificAtionEvent.detAil, NotificAtionViewItemContentChAngeKind.PROGRESS);
 
-		let item2Handle = model.addNotification(item2);
-		assert.equal(lastNotificationEvent.item.severity, item2.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item2.message);
-		assert.equal(lastNotificationEvent.index, 0);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.ADD);
+		let item2HAndle = model.AddNotificAtion(item2);
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item2.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item2.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 0);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.ADD);
 
-		model.addNotification(item3);
-		assert.equal(lastNotificationEvent.item.severity, item3.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item3.message);
-		assert.equal(lastNotificationEvent.index, 0);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.ADD);
+		model.AddNotificAtion(item3);
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item3.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item3.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 0);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.ADD);
 
-		assert.equal(model.notifications.length, 3);
+		Assert.equAl(model.notificAtions.length, 3);
 
-		let called = 0;
-		item1Handle.onDidClose(() => {
-			called++;
+		let cAlled = 0;
+		item1HAndle.onDidClose(() => {
+			cAlled++;
 		});
 
-		item1Handle.close();
-		assert.equal(called, 1);
-		assert.equal(model.notifications.length, 2);
-		assert.equal(lastNotificationEvent.item.severity, item1.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item1.message);
-		assert.equal(lastNotificationEvent.index, 2);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.REMOVE);
+		item1HAndle.close();
+		Assert.equAl(cAlled, 1);
+		Assert.equAl(model.notificAtions.length, 2);
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item1.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item1.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 2);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.REMOVE);
 
-		model.addNotification(item2Duplicate);
-		assert.equal(model.notifications.length, 2);
-		assert.equal(lastNotificationEvent.item.severity, item2Duplicate.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item2Duplicate.message);
-		assert.equal(lastNotificationEvent.index, 0);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.ADD);
+		model.AddNotificAtion(item2DuplicAte);
+		Assert.equAl(model.notificAtions.length, 2);
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item2DuplicAte.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item2DuplicAte.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 0);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.ADD);
 
-		item2Handle.close();
-		assert.equal(model.notifications.length, 1);
-		assert.equal(lastNotificationEvent.item.severity, item2Duplicate.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item2Duplicate.message);
-		assert.equal(lastNotificationEvent.index, 0);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.REMOVE);
+		item2HAndle.close();
+		Assert.equAl(model.notificAtions.length, 1);
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item2DuplicAte.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item2DuplicAte.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 0);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.REMOVE);
 
-		model.notifications[0].expand();
-		assert.equal(lastNotificationEvent.item.severity, item3.severity);
-		assert.equal(lastNotificationEvent.item.message.linkedText.toString(), item3.message);
-		assert.equal(lastNotificationEvent.index, 0);
-		assert.equal(lastNotificationEvent.kind, NotificationChangeType.EXPAND_COLLAPSE);
+		model.notificAtions[0].expAnd();
+		Assert.equAl(lAstNotificAtionEvent.item.severity, item3.severity);
+		Assert.equAl(lAstNotificAtionEvent.item.messAge.linkedText.toString(), item3.messAge);
+		Assert.equAl(lAstNotificAtionEvent.index, 0);
+		Assert.equAl(lAstNotificAtionEvent.kind, NotificAtionChAngeType.EXPAND_COLLAPSE);
 
-		const disposable = model.showStatusMessage('Hello World');
-		assert.equal(model.statusMessage!.message, 'Hello World');
-		assert.equal(lastStatusMessageEvent.item.message, model.statusMessage!.message);
-		assert.equal(lastStatusMessageEvent.kind, StatusMessageChangeType.ADD);
-		disposable.dispose();
-		assert.ok(!model.statusMessage);
-		assert.equal(lastStatusMessageEvent.kind, StatusMessageChangeType.REMOVE);
+		const disposAble = model.showStAtusMessAge('Hello World');
+		Assert.equAl(model.stAtusMessAge!.messAge, 'Hello World');
+		Assert.equAl(lAstStAtusMessAgeEvent.item.messAge, model.stAtusMessAge!.messAge);
+		Assert.equAl(lAstStAtusMessAgeEvent.kind, StAtusMessAgeChAngeType.ADD);
+		disposAble.dispose();
+		Assert.ok(!model.stAtusMessAge);
+		Assert.equAl(lAstStAtusMessAgeEvent.kind, StAtusMessAgeChAngeType.REMOVE);
 
-		let disposable2 = model.showStatusMessage('Hello World 2');
-		const disposable3 = model.showStatusMessage('Hello World 3');
+		let disposAble2 = model.showStAtusMessAge('Hello World 2');
+		const disposAble3 = model.showStAtusMessAge('Hello World 3');
 
-		assert.equal(model.statusMessage!.message, 'Hello World 3');
+		Assert.equAl(model.stAtusMessAge!.messAge, 'Hello World 3');
 
-		disposable2.dispose();
-		assert.equal(model.statusMessage!.message, 'Hello World 3');
+		disposAble2.dispose();
+		Assert.equAl(model.stAtusMessAge!.messAge, 'Hello World 3');
 
-		disposable3.dispose();
-		assert.ok(!model.statusMessage);
+		disposAble3.dispose();
+		Assert.ok(!model.stAtusMessAge);
 	});
 });

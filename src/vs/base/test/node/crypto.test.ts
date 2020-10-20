@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { checksum } from 'vs/base/node/crypto';
-import { generateUuid } from 'vs/base/common/uuid';
-import { join } from 'vs/base/common/path';
+import { checksum } from 'vs/bAse/node/crypto';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { join } from 'vs/bAse/common/pAth';
 import { tmpdir } from 'os';
-import { mkdirp, rimraf, RimRafMode, writeFile } from 'vs/base/node/pfs';
+import { mkdirp, rimrAf, RimRAfMode, writeFile } from 'vs/bAse/node/pfs';
 
 suite('Crypto', () => {
 
-	test('checksum', async () => {
-		const id = generateUuid();
+	test('checksum', Async () => {
+		const id = generAteUuid();
 		const testDir = join(tmpdir(), 'vsctests', id);
 		const testFile = join(testDir, 'checksum.txt');
 
-		await mkdirp(testDir);
+		AwAit mkdirp(testDir);
 
-		await writeFile(testFile, 'Hello World');
+		AwAit writeFile(testFile, 'Hello World');
 
-		await checksum(testFile, '0a4d55a8d778e5022fab701977c5d840bbc486d0');
+		AwAit checksum(testFile, '0A4d55A8d778e5022fAb701977c5d840bbc486d0');
 
-		await rimraf(testDir, RimRafMode.MOVE);
+		AwAit rimrAf(testDir, RimRAfMode.MOVE);
 	});
 });

@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withDefaults = require('../shared.webpack.config');
+const withDefAults = require('../shAred.webpAck.config');
 
-module.exports = withDefaults({
-	context: __dirname,
+module.exports = withDefAults({
+	context: __dirnAme,
 	resolve: {
-		mainFields: ['module', 'main']
+		mAinFields: ['module', 'mAin']
 	},
-	externals: {
-		'typescript-vscode-sh-plugin': 'commonjs vscode' // used by build/lib/extensions to know what node_modules to bundle
+	externAls: {
+		'typescript-vscode-sh-plugin': 'commonjs vscode' // used by build/lib/extensions to know whAt node_modules to bundle
 	},
 	entry: {
 		extension: './src/extension.ts',

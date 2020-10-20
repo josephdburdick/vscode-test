@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export function randomFilePath(args: { root: vscode.Uri, ext: string }): vscode.Uri {
-	const fileName = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
-	return (vscode.Uri as any).joinPath(args.root, fileName + args.ext);
+export function rAndomFilePAth(Args: { root: vscode.Uri, ext: string }): vscode.Uri {
+	const fileNAme = MAth.rAndom().toString(36).replAce(/[^A-z]+/g, '').substr(0, 10);
+	return (vscode.Uri As Any).joinPAth(Args.root, fileNAme + Args.ext);
 }
 
-export function closeAllEditors(): Thenable<any> {
-	return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+export function closeAllEditors(): ThenAble<Any> {
+	return vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 }
 
-export function disposeAll(disposables: vscode.Disposable[]) {
-	vscode.Disposable.from(...disposables).dispose();
+export function disposeAll(disposAbles: vscode.DisposAble[]) {
+	vscode.DisposAble.from(...disposAbles).dispose();
 }
 
-export function delay(ms: number) {
+export function delAy(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }

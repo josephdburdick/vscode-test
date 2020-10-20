@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as vscode from 'vscode';
+import 'mochA';
+import * As vscode from 'vscode';
 import { disposeAll } from '../utils/dispose';
-import { acceptFirstSuggestion } from './suggestTestHelpers';
-import { assertEditorContents, Config, createTestEditor, CURSOR, enumerateConfig, insertModesValues, joinLines, updateConfig, VsCodeConfiguration, wait } from './testUtils';
+import { AcceptFirstSuggestion } from './suggestTestHelpers';
+import { AssertEditorContents, Config, creAteTestEditor, CURSOR, enumerAteConfig, insertModesVAlues, joinLines, updAteConfig, VsCodeConfigurAtion, wAit } from './testUtils';
 
-const testDocumentUri = vscode.Uri.parse('untitled:test.ts');
+const testDocumentUri = vscode.Uri.pArse('untitled:test.ts');
 
 suite('JSDoc Completions', () => {
-	const _disposables: vscode.Disposable[] = [];
+	const _disposAbles: vscode.DisposAble[] = [];
 
-	const configDefaults: VsCodeConfiguration = Object.freeze({
+	const configDefAults: VsCodeConfigurAtion = Object.freeze({
 		[Config.snippetSuggestions]: 'inline',
 	});
 
-	let oldConfig: { [key: string]: any } = {};
+	let oldConfig: { [key: string]: Any } = {};
 
-	setup(async () => {
-		await wait(100);
+	setup(Async () => {
+		AwAit wAit(100);
 
-		// Save off config and apply defaults
-		oldConfig = await updateConfig(testDocumentUri, configDefaults);
+		// SAve off config And Apply defAults
+		oldConfig = AwAit updAteConfig(testDocumentUri, configDefAults);
 	});
 
-	teardown(async () => {
-		disposeAll(_disposables);
+	teArdown(Async () => {
+		disposeAll(_disposAbles);
 
 		// Restore config
-		await updateConfig(testDocumentUri, oldConfig);
+		AwAit updAteConfig(testDocumentUri, oldConfig);
 
-		return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		return vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 	});
 
-	test('Should complete jsdoc inside single line comment', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModesValues, async config => {
+	test('Should complete jsdoc inside single line comment', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModesVAlues, Async config => {
 
-			const editor = await createTestEditor(testDocumentUri,
+			const editor = AwAit creAteTestEditor(testDocumentUri,
 				`/**$0 */`,
-				`function abcdef(x, y) { }`,
+				`function Abcdef(x, y) { }`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
 					`/**`,
 					` * `,
-					` * @param x ${CURSOR}`,
-					` * @param y `,
+					` * @pArAm x ${CURSOR}`,
+					` * @pArAm y `,
 					` */`,
-					`function abcdef(x, y) { }`,
+					`function Abcdef(x, y) { }`,
 				),
 				`Config: ${config}`);
 		});

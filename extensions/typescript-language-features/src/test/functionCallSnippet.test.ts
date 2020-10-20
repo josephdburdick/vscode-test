@@ -1,140 +1,140 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// todo@matt
-/* eslint code-no-unexternalized-strings: 0 */
+// todo@mAtt
+/* eslint code-no-unexternAlized-strings: 0 */
 
-import * as assert from 'assert';
-import 'mocha';
-import * as vscode from 'vscode';
-import { snippetForFunctionCall } from '../utils/snippetForFunctionCall';
+import * As Assert from 'Assert';
+import 'mochA';
+import * As vscode from 'vscode';
+import { snippetForFunctionCAll } from '../utils/snippetForFunctionCAll';
 
-suite('typescript function call snippets', () => {
-	test('Should use label as function name', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'abc', },
+suite('typescript function cAll snippets', () => {
+	test('Should use lAbel As function nAme', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'Abc', },
 				[]
-			).snippet.value,
-			'abc()$0');
+			).snippet.vAlue,
+			'Abc()$0');
 	});
 
-	test('Should use insertText string to override function name', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'abc', insertText: 'def' },
+	test('Should use insertText string to override function nAme', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'Abc', insertText: 'def' },
 				[]
-			).snippet.value,
+			).snippet.vAlue,
 			'def()$0');
 	});
 
-	test('Should return insertText as-is if it is already a snippet', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'abc', insertText: new vscode.SnippetString('bla()$0') },
+	test('Should return insertText As-is if it is AlreAdy A snippet', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'Abc', insertText: new vscode.SnippetString('blA()$0') },
 				[]
-			).snippet.value,
-			'bla()$0');
+			).snippet.vAlue,
+			'blA()$0');
 	});
 
-	test('Should return insertText as-is if it is already a snippet', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'abc', insertText: new vscode.SnippetString('bla()$0') },
+	test('Should return insertText As-is if it is AlreAdy A snippet', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'Abc', insertText: new vscode.SnippetString('blA()$0') },
 				[]
-			).snippet.value,
-			'bla()$0');
+			).snippet.vAlue,
+			'blA()$0');
 	});
 
-	test('Should extract parameter from display parts', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'activate' },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "activate", "kind": "text" }, { "text": "(", "kind": "punctuation" }, { "text": "context", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "vscode", "kind": "aliasName" }, { "text": ".", "kind": "punctuation" }, { "text": "ExtensionContext", "kind": "interfaceName" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'activate(${1:context})$0');
+	test('Should extrAct pArAmeter from displAy pArts', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'ActivAte' },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "ActivAte", "kind": "text" }, { "text": "(", "kind": "punctuAtion" }, { "text": "context", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "vscode", "kind": "AliAsNAme" }, { "text": ".", "kind": "punctuAtion" }, { "text": "ExtensionContext", "kind": "interfAceNAme" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'ActivAte(${1:context})$0');
 	});
 
-	test('Should extract all parameters from display parts', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foo' },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "foo", "kind": "functionName" }, { "text": "(", "kind": "punctuation" }, { "text": "a", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "string", "kind": "keyword" }, { "text": ",", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "b", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ",", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "c", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "boolean", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'foo(${1:a}, ${2:b}, ${3:c})$0');
+	test('Should extrAct All pArAmeters from displAy pArts', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foo' },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "foo", "kind": "functionNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "A", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "string", "kind": "keyword" }, { "text": ",", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "b", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ",", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "c", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "booleAn", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'foo(${1:A}, ${2:b}, ${3:c})$0');
 	});
 
-	test('Should create empty placeholder at rest parameter', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foo' },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "foo", "kind": "functionName" }, { "text": "(", "kind": "punctuation" }, { "text": "a", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "string", "kind": "keyword" }, { "text": ",", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "...", "kind": "punctuation" }, { "text": "rest", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "any", "kind": "keyword" }, { "text": "[", "kind": "punctuation" }, { "text": "]", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'foo(${1:a}$2)$0');
+	test('Should creAte empty plAceholder At rest pArAmeter', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foo' },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "foo", "kind": "functionNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "A", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "string", "kind": "keyword" }, { "text": ",", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "...", "kind": "punctuAtion" }, { "text": "rest", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "Any", "kind": "keyword" }, { "text": "[", "kind": "punctuAtion" }, { "text": "]", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'foo(${1:A}$2)$0');
 	});
 
-	test('Should skip over inline function and object types when extracting parameters', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foo' },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "foo", "kind": "functionName" }, { "text": "(", "kind": "punctuation" }, { "text": "a", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "(", "kind": "punctuation" }, { "text": "x", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "=>", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "{", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "    ", "kind": "space" }, { "text": "f", "kind": "propertyName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "(", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "=>", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }, { "text": ";", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "}", "kind": "punctuation" }, { "text": ",", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "b", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "{", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "    ", "kind": "space" }, { "text": "f", "kind": "propertyName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "(", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "=>", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }, { "text": ";", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "}", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'foo(${1:a}, ${2:b})$0');
+	test('Should skip over inline function And object types when extrActing pArAmeters', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foo' },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "foo", "kind": "functionNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "A", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "(", "kind": "punctuAtion" }, { "text": "x", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "=>", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "{", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "    ", "kind": "spAce" }, { "text": "f", "kind": "propertyNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "(", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "=>", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }, { "text": ";", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "}", "kind": "punctuAtion" }, { "text": ",", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "b", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "{", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "    ", "kind": "spAce" }, { "text": "f", "kind": "propertyNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "(", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "=>", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }, { "text": ";", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "}", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'foo(${1:A}, ${2:b})$0');
 	});
 
-	test('Should skip over return type while extracting parameters', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foo' },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "foo", "kind": "functionName" }, { "text": "(", "kind": "punctuation" }, { "text": "a", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "{", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "    ", "kind": "space" }, { "text": "f", "kind": "propertyName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "(", "kind": "punctuation" }, { "text": "b", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "=>", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ";", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "}", "kind": "punctuation" }]
-			).snippet.value,
-			'foo(${1:a})$0');
+	test('Should skip over return type while extrActing pArAmeters', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foo' },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "foo", "kind": "functionNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "A", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "{", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "    ", "kind": "spAce" }, { "text": "f", "kind": "propertyNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "(", "kind": "punctuAtion" }, { "text": "b", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "=>", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ";", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "}", "kind": "punctuAtion" }]
+			).snippet.vAlue,
+			'foo(${1:A})$0');
 	});
 
-	test('Should skip over prefix type while extracting parameters', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foo' },
-				[{ "text": "(", "kind": "punctuation" }, { "text": "method", "kind": "text" }, { "text": ")", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "Array", "kind": "localName" }, { "text": "<", "kind": "punctuation" }, { "text": "{", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "dispose", "kind": "methodName" }, { "text": "(", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "any", "kind": "keyword" }, { "text": ";", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "}", "kind": "punctuation" }, { "text": ">", "kind": "punctuation" }, { "text": ".", "kind": "punctuation" }, { "text": "foo", "kind": "methodName" }, { "text": "(", "kind": "punctuation" }, { "text": "searchElement", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "{", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "    ", "kind": "space" }, { "text": "dispose", "kind": "methodName" }, { "text": "(", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "any", "kind": "keyword" }, { "text": ";", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "}", "kind": "punctuation" }, { "text": ",", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "fromIndex", "kind": "parameterName" }, { "text": "?", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }]
-			).snippet.value,
-			'foo(${1:searchElement}$2)$0');
+	test('Should skip over prefix type while extrActing pArAmeters', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foo' },
+				[{ "text": "(", "kind": "punctuAtion" }, { "text": "method", "kind": "text" }, { "text": ")", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "ArrAy", "kind": "locAlNAme" }, { "text": "<", "kind": "punctuAtion" }, { "text": "{", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "dispose", "kind": "methodNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "Any", "kind": "keyword" }, { "text": ";", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "}", "kind": "punctuAtion" }, { "text": ">", "kind": "punctuAtion" }, { "text": ".", "kind": "punctuAtion" }, { "text": "foo", "kind": "methodNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "seArchElement", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "{", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "    ", "kind": "spAce" }, { "text": "dispose", "kind": "methodNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "Any", "kind": "keyword" }, { "text": ";", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "}", "kind": "punctuAtion" }, { "text": ",", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "fromIndex", "kind": "pArAmeterNAme" }, { "text": "?", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }]
+			).snippet.vAlue,
+			'foo(${1:seArchElement}$2)$0');
 	});
 
-	test('Should complete property names', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'methoda' },
-				[{ "text": "(", "kind": "punctuation" }, { "text": "method", "kind": "text" }, { "text": ")", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "methoda", "kind": "propertyName" }, { "text": "(", "kind": "punctuation" }, { "text": "x", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'methoda(${1:x})$0');
+	test('Should complete property nAmes', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'methodA' },
+				[{ "text": "(", "kind": "punctuAtion" }, { "text": "method", "kind": "text" }, { "text": ")", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "methodA", "kind": "propertyNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "x", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "number", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'methodA(${1:x})$0');
 	});
 
-	test('Should escape snippet syntax in method name', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: '$abc', },
+	test('Should escApe snippet syntAx in method nAme', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: '$Abc', },
 				[]
-			).snippet.value,
-			'\\$abc()$0');
+			).snippet.vAlue,
+			'\\$Abc()$0');
 	});
 
-	test('Should not include object key signature in completion, #66297', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foobar', },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "foobar", "kind": "functionName" }, { "text": "(", "kind": "punctuation" }, { "text": "param", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "{", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "    ", "kind": "space" }, { "text": "[", "kind": "punctuation" }, { "text": "key", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "string", "kind": "keyword" }, { "text": "]", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "string", "kind": "keyword" }, { "text": ";", "kind": "punctuation" }, { "text": "\n", "kind": "lineBreak" }, { "text": "}", "kind": "punctuation" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'foobar(${1:param})$0');
+	test('Should not include object key signAture in completion, #66297', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foobAr', },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "foobAr", "kind": "functionNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "pArAm", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "{", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "    ", "kind": "spAce" }, { "text": "[", "kind": "punctuAtion" }, { "text": "key", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "string", "kind": "keyword" }, { "text": "]", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "string", "kind": "keyword" }, { "text": ";", "kind": "punctuAtion" }, { "text": "\n", "kind": "lineBreAk" }, { "text": "}", "kind": "punctuAtion" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'foobAr(${1:pArAm})$0');
 	});
 
-	test('Should skip over this parameter', async () => {
-		assert.strictEqual(
-			snippetForFunctionCall(
-				{ label: 'foobar', },
-				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "space" }, { "text": "foobar", "kind": "functionName" }, { "text": "(", "kind": "punctuation" }, { "text": "this", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "string", "kind": "keyword" }, { "text": ",", "kind": "punctuation" }, { "text": "param", "kind": "parameterName" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "string", "kind": "keyword" }, { "text": ")", "kind": "punctuation" }, { "text": ":", "kind": "punctuation" }, { "text": " ", "kind": "space" }, { "text": "void", "kind": "keyword" }]
-			).snippet.value,
-			'foobar(${1:param})$0');
+	test('Should skip over this pArAmeter', Async () => {
+		Assert.strictEquAl(
+			snippetForFunctionCAll(
+				{ lAbel: 'foobAr', },
+				[{ "text": "function", "kind": "keyword" }, { "text": " ", "kind": "spAce" }, { "text": "foobAr", "kind": "functionNAme" }, { "text": "(", "kind": "punctuAtion" }, { "text": "this", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "string", "kind": "keyword" }, { "text": ",", "kind": "punctuAtion" }, { "text": "pArAm", "kind": "pArAmeterNAme" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "string", "kind": "keyword" }, { "text": ")", "kind": "punctuAtion" }, { "text": ":", "kind": "punctuAtion" }, { "text": " ", "kind": "spAce" }, { "text": "void", "kind": "keyword" }]
+			).snippet.vAlue,
+			'foobAr(${1:pArAm})$0');
 	});
 });

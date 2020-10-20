@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import severity from 'vs/base/common/severity';
-import { IReplElement, IStackFrame, IExpression, IReplElementSource, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
-import { ExpressionContainer } from 'vs/workbench/contrib/debug/common/debugModel';
-import { isString, isUndefinedOrNull, isObject } from 'vs/base/common/types';
-import { basenameOrAuthority } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { Emitter } from 'vs/base/common/event';
+import * As nls from 'vs/nls';
+import severity from 'vs/bAse/common/severity';
+import { IReplElement, IStAckFrAme, IExpression, IReplElementSource, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
+import { ExpressionContAiner } from 'vs/workbench/contrib/debug/common/debugModel';
+import { isString, isUndefinedOrNull, isObject } from 'vs/bAse/common/types';
+import { bAsenAmeOrAuthority } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { Emitter } from 'vs/bAse/common/event';
 
 const MAX_REPL_LENGTH = 10000;
 let topReplElementCounter = 0;
 
-export class SimpleReplElement implements IReplElement {
+export clAss SimpleReplElement implements IReplElement {
 	constructor(
 		public session: IDebugSession,
-		private id: string,
-		public value: string,
+		privAte id: string,
+		public vAlue: string,
 		public severity: severity,
-		public sourceData?: IReplElementSource,
+		public sourceDAtA?: IReplElementSource,
 	) { }
 
 	toString(): string {
-		const sourceStr = this.sourceData ? ` ${this.sourceData.source.name}` : '';
-		return this.value + sourceStr;
+		const sourceStr = this.sourceDAtA ? ` ${this.sourceDAtA.source.nAme}` : '';
+		return this.vAlue + sourceStr;
 	}
 
 	getId(): string {
@@ -35,61 +35,61 @@ export class SimpleReplElement implements IReplElement {
 	}
 }
 
-export class RawObjectReplElement implements IExpression {
+export clAss RAwObjectReplElement implements IExpression {
 
-	private static readonly MAX_CHILDREN = 1000; // upper bound of children per value
+	privAte stAtic reAdonly MAX_CHILDREN = 1000; // upper bound of children per vAlue
 
-	constructor(private id: string, public name: string, public valueObj: any, public sourceData?: IReplElementSource, public annotation?: string) { }
+	constructor(privAte id: string, public nAme: string, public vAlueObj: Any, public sourceDAtA?: IReplElementSource, public AnnotAtion?: string) { }
 
 	getId(): string {
 		return this.id;
 	}
 
-	get value(): string {
-		if (this.valueObj === null) {
+	get vAlue(): string {
+		if (this.vAlueObj === null) {
 			return 'null';
-		} else if (Array.isArray(this.valueObj)) {
-			return `Array[${this.valueObj.length}]`;
-		} else if (isObject(this.valueObj)) {
+		} else if (ArrAy.isArrAy(this.vAlueObj)) {
+			return `ArrAy[${this.vAlueObj.length}]`;
+		} else if (isObject(this.vAlueObj)) {
 			return 'Object';
-		} else if (isString(this.valueObj)) {
-			return `"${this.valueObj}"`;
+		} else if (isString(this.vAlueObj)) {
+			return `"${this.vAlueObj}"`;
 		}
 
-		return String(this.valueObj) || '';
+		return String(this.vAlueObj) || '';
 	}
 
-	get hasChildren(): boolean {
-		return (Array.isArray(this.valueObj) && this.valueObj.length > 0) || (isObject(this.valueObj) && Object.getOwnPropertyNames(this.valueObj).length > 0);
+	get hAsChildren(): booleAn {
+		return (ArrAy.isArrAy(this.vAlueObj) && this.vAlueObj.length > 0) || (isObject(this.vAlueObj) && Object.getOwnPropertyNAmes(this.vAlueObj).length > 0);
 	}
 
 	getChildren(): Promise<IExpression[]> {
 		let result: IExpression[] = [];
-		if (Array.isArray(this.valueObj)) {
-			result = (<any[]>this.valueObj).slice(0, RawObjectReplElement.MAX_CHILDREN)
-				.map((v, index) => new RawObjectReplElement(`${this.id}:${index}`, String(index), v));
-		} else if (isObject(this.valueObj)) {
-			result = Object.getOwnPropertyNames(this.valueObj).slice(0, RawObjectReplElement.MAX_CHILDREN)
-				.map((key, index) => new RawObjectReplElement(`${this.id}:${index}`, key, this.valueObj[key]));
+		if (ArrAy.isArrAy(this.vAlueObj)) {
+			result = (<Any[]>this.vAlueObj).slice(0, RAwObjectReplElement.MAX_CHILDREN)
+				.mAp((v, index) => new RAwObjectReplElement(`${this.id}:${index}`, String(index), v));
+		} else if (isObject(this.vAlueObj)) {
+			result = Object.getOwnPropertyNAmes(this.vAlueObj).slice(0, RAwObjectReplElement.MAX_CHILDREN)
+				.mAp((key, index) => new RAwObjectReplElement(`${this.id}:${index}`, key, this.vAlueObj[key]));
 		}
 
 		return Promise.resolve(result);
 	}
 
 	toString(): string {
-		return `${this.name}\n${this.value}`;
+		return `${this.nAme}\n${this.vAlue}`;
 	}
 }
 
-export class ReplEvaluationInput implements IReplElement {
-	private id: string;
+export clAss ReplEvAluAtionInput implements IReplElement {
+	privAte id: string;
 
-	constructor(public value: string) {
-		this.id = generateUuid();
+	constructor(public vAlue: string) {
+		this.id = generAteUuid();
 	}
 
 	toString(): string {
-		return this.value;
+		return this.vAlue;
 	}
 
 	getId(): string {
@@ -97,45 +97,45 @@ export class ReplEvaluationInput implements IReplElement {
 	}
 }
 
-export class ReplEvaluationResult extends ExpressionContainer implements IReplElement {
-	private _available = true;
+export clAss ReplEvAluAtionResult extends ExpressionContAiner implements IReplElement {
+	privAte _AvAilAble = true;
 
-	get available(): boolean {
-		return this._available;
+	get AvAilAble(): booleAn {
+		return this._AvAilAble;
 	}
 
 	constructor() {
-		super(undefined, undefined, 0, generateUuid());
+		super(undefined, undefined, 0, generAteUuid());
 	}
 
-	async evaluateExpression(expression: string, session: IDebugSession | undefined, stackFrame: IStackFrame | undefined, context: string): Promise<boolean> {
-		const result = await super.evaluateExpression(expression, session, stackFrame, context);
-		this._available = result;
+	Async evAluAteExpression(expression: string, session: IDebugSession | undefined, stAckFrAme: IStAckFrAme | undefined, context: string): Promise<booleAn> {
+		const result = AwAit super.evAluAteExpression(expression, session, stAckFrAme, context);
+		this._AvAilAble = result;
 
 		return result;
 	}
 
 	toString(): string {
-		return `${this.value}`;
+		return `${this.vAlue}`;
 	}
 }
 
-export class ReplGroup implements IReplElement {
+export clAss ReplGroup implements IReplElement {
 
-	private children: IReplElement[] = [];
-	private id: string;
-	private ended = false;
-	static COUNTER = 0;
+	privAte children: IReplElement[] = [];
+	privAte id: string;
+	privAte ended = fAlse;
+	stAtic COUNTER = 0;
 
 	constructor(
-		public name: string,
-		public autoExpand: boolean,
-		public sourceData?: IReplElementSource
+		public nAme: string,
+		public AutoExpAnd: booleAn,
+		public sourceDAtA?: IReplElementSource
 	) {
 		this.id = `replGroup:${ReplGroup.COUNTER++}`;
 	}
 
-	get hasChildren() {
+	get hAsChildren() {
 		return true;
 	}
 
@@ -144,14 +144,14 @@ export class ReplGroup implements IReplElement {
 	}
 
 	toString(): string {
-		const sourceStr = this.sourceData ? ` ${this.sourceData.source.name}` : '';
-		return this.name + sourceStr;
+		const sourceStr = this.sourceDAtA ? ` ${this.sourceDAtA.source.nAme}` : '';
+		return this.nAme + sourceStr;
 	}
 
-	addChild(child: IReplElement): void {
-		const lastElement = this.children.length ? this.children[this.children.length - 1] : undefined;
-		if (lastElement instanceof ReplGroup && !lastElement.hasEnded) {
-			lastElement.addChild(child);
+	AddChild(child: IReplElement): void {
+		const lAstElement = this.children.length ? this.children[this.children.length - 1] : undefined;
+		if (lAstElement instAnceof ReplGroup && !lAstElement.hAsEnded) {
+			lAstElement.AddChild(child);
 		} else {
 			this.children.push(child);
 		}
@@ -162,77 +162,77 @@ export class ReplGroup implements IReplElement {
 	}
 
 	end(): void {
-		const lastElement = this.children.length ? this.children[this.children.length - 1] : undefined;
-		if (lastElement instanceof ReplGroup && !lastElement.hasEnded) {
-			lastElement.end();
+		const lAstElement = this.children.length ? this.children[this.children.length - 1] : undefined;
+		if (lAstElement instAnceof ReplGroup && !lAstElement.hAsEnded) {
+			lAstElement.end();
 		} else {
 			this.ended = true;
 		}
 	}
 
-	get hasEnded(): boolean {
+	get hAsEnded(): booleAn {
 		return this.ended;
 	}
 }
 
-export class ReplModel {
-	private replElements: IReplElement[] = [];
-	private readonly _onDidChangeElements = new Emitter<void>();
-	readonly onDidChangeElements = this._onDidChangeElements.event;
+export clAss ReplModel {
+	privAte replElements: IReplElement[] = [];
+	privAte reAdonly _onDidChAngeElements = new Emitter<void>();
+	reAdonly onDidChAngeElements = this._onDidChAngeElements.event;
 
 	getReplElements(): IReplElement[] {
 		return this.replElements;
 	}
 
-	async addReplExpression(session: IDebugSession, stackFrame: IStackFrame | undefined, name: string): Promise<void> {
-		this.addReplElement(new ReplEvaluationInput(name));
-		const result = new ReplEvaluationResult();
-		await result.evaluateExpression(name, session, stackFrame, 'repl');
-		this.addReplElement(result);
+	Async AddReplExpression(session: IDebugSession, stAckFrAme: IStAckFrAme | undefined, nAme: string): Promise<void> {
+		this.AddReplElement(new ReplEvAluAtionInput(nAme));
+		const result = new ReplEvAluAtionResult();
+		AwAit result.evAluAteExpression(nAme, session, stAckFrAme, 'repl');
+		this.AddReplElement(result);
 	}
 
-	appendToRepl(session: IDebugSession, data: string | IExpression, sev: severity, source?: IReplElementSource): void {
-		const clearAnsiSequence = '\u001b[2J';
-		if (typeof data === 'string' && data.indexOf(clearAnsiSequence) >= 0) {
-			// [2J is the ansi escape sequence for clearing the display http://ascii-table.com/ansi-escape-sequences.php
+	AppendToRepl(session: IDebugSession, dAtA: string | IExpression, sev: severity, source?: IReplElementSource): void {
+		const cleArAnsiSequence = '\u001b[2J';
+		if (typeof dAtA === 'string' && dAtA.indexOf(cleArAnsiSequence) >= 0) {
+			// [2J is the Ansi escApe sequence for cleAring the displAy http://Ascii-tAble.com/Ansi-escApe-sequences.php
 			this.removeReplExpressions();
-			this.appendToRepl(session, nls.localize('consoleCleared', "Console was cleared"), severity.Ignore);
-			data = data.substr(data.lastIndexOf(clearAnsiSequence) + clearAnsiSequence.length);
+			this.AppendToRepl(session, nls.locAlize('consoleCleAred', "Console wAs cleAred"), severity.Ignore);
+			dAtA = dAtA.substr(dAtA.lAstIndexOf(cleArAnsiSequence) + cleArAnsiSequence.length);
 		}
 
-		if (typeof data === 'string') {
+		if (typeof dAtA === 'string') {
 			const previousElement = this.replElements.length ? this.replElements[this.replElements.length - 1] : undefined;
-			if (previousElement instanceof SimpleReplElement && previousElement.severity === sev && !previousElement.value.endsWith('\n') && !previousElement.value.endsWith('\r\n')) {
-				previousElement.value += data;
-				this._onDidChangeElements.fire();
+			if (previousElement instAnceof SimpleReplElement && previousElement.severity === sev && !previousElement.vAlue.endsWith('\n') && !previousElement.vAlue.endsWith('\r\n')) {
+				previousElement.vAlue += dAtA;
+				this._onDidChAngeElements.fire();
 			} else {
-				const element = new SimpleReplElement(session, `topReplElement:${topReplElementCounter++}`, data, sev, source);
-				this.addReplElement(element);
+				const element = new SimpleReplElement(session, `topReplElement:${topReplElementCounter++}`, dAtA, sev, source);
+				this.AddReplElement(element);
 			}
 		} else {
-			// TODO@Isidor hack, we should introduce a new type which is an output that can fetch children like an expression
-			(<any>data).severity = sev;
-			(<any>data).sourceData = source;
-			this.addReplElement(data);
+			// TODO@Isidor hAck, we should introduce A new type which is An output thAt cAn fetch children like An expression
+			(<Any>dAtA).severity = sev;
+			(<Any>dAtA).sourceDAtA = source;
+			this.AddReplElement(dAtA);
 		}
 	}
 
-	startGroup(name: string, autoExpand: boolean, sourceData?: IReplElementSource): void {
-		const group = new ReplGroup(name, autoExpand, sourceData);
-		this.addReplElement(group);
+	stArtGroup(nAme: string, AutoExpAnd: booleAn, sourceDAtA?: IReplElementSource): void {
+		const group = new ReplGroup(nAme, AutoExpAnd, sourceDAtA);
+		this.AddReplElement(group);
 	}
 
 	endGroup(): void {
-		const lastElement = this.replElements[this.replElements.length - 1];
-		if (lastElement instanceof ReplGroup) {
-			lastElement.end();
+		const lAstElement = this.replElements[this.replElements.length - 1];
+		if (lAstElement instAnceof ReplGroup) {
+			lAstElement.end();
 		}
 	}
 
-	private addReplElement(newElement: IReplElement): void {
-		const lastElement = this.replElements.length ? this.replElements[this.replElements.length - 1] : undefined;
-		if (lastElement instanceof ReplGroup && !lastElement.hasEnded) {
-			lastElement.addChild(newElement);
+	privAte AddReplElement(newElement: IReplElement): void {
+		const lAstElement = this.replElements.length ? this.replElements[this.replElements.length - 1] : undefined;
+		if (lAstElement instAnceof ReplGroup && !lAstElement.hAsEnded) {
+			lAstElement.AddChild(newElement);
 		} else {
 			this.replElements.push(newElement);
 			if (this.replElements.length > MAX_REPL_LENGTH) {
@@ -240,86 +240,86 @@ export class ReplModel {
 			}
 		}
 
-		this._onDidChangeElements.fire();
+		this._onDidChAngeElements.fire();
 	}
 
-	logToRepl(session: IDebugSession, sev: severity, args: any[], frame?: { uri: URI, line: number, column: number }) {
+	logToRepl(session: IDebugSession, sev: severity, Args: Any[], frAme?: { uri: URI, line: number, column: number }) {
 
 		let source: IReplElementSource | undefined;
-		if (frame) {
+		if (frAme) {
 			source = {
-				column: frame.column,
-				lineNumber: frame.line,
+				column: frAme.column,
+				lineNumber: frAme.line,
 				source: session.getSource({
-					name: basenameOrAuthority(frame.uri),
-					path: frame.uri.fsPath
+					nAme: bAsenAmeOrAuthority(frAme.uri),
+					pAth: frAme.uri.fsPAth
 				})
 			};
 		}
 
-		// add output for each argument logged
-		let simpleVals: any[] = [];
-		for (let i = 0; i < args.length; i++) {
-			let a = args[i];
+		// Add output for eAch Argument logged
+		let simpleVAls: Any[] = [];
+		for (let i = 0; i < Args.length; i++) {
+			let A = Args[i];
 
-			// undefined gets printed as 'undefined'
-			if (typeof a === 'undefined') {
-				simpleVals.push('undefined');
+			// undefined gets printed As 'undefined'
+			if (typeof A === 'undefined') {
+				simpleVAls.push('undefined');
 			}
 
-			// null gets printed as 'null'
-			else if (a === null) {
-				simpleVals.push('null');
+			// null gets printed As 'null'
+			else if (A === null) {
+				simpleVAls.push('null');
 			}
 
-			// objects & arrays are special because we want to inspect them in the REPL
-			else if (isObject(a) || Array.isArray(a)) {
+			// objects & ArrAys Are speciAl becAuse we wAnt to inspect them in the REPL
+			else if (isObject(A) || ArrAy.isArrAy(A)) {
 
-				// flush any existing simple values logged
-				if (simpleVals.length) {
-					this.appendToRepl(session, simpleVals.join(' '), sev, source);
-					simpleVals = [];
+				// flush Any existing simple vAlues logged
+				if (simpleVAls.length) {
+					this.AppendToRepl(session, simpleVAls.join(' '), sev, source);
+					simpleVAls = [];
 				}
 
 				// show object
-				this.appendToRepl(session, new RawObjectReplElement(`topReplElement:${topReplElementCounter++}`, (<any>a).prototype, a, undefined, nls.localize('snapshotObj', "Only primitive values are shown for this object.")), sev, source);
+				this.AppendToRepl(session, new RAwObjectReplElement(`topReplElement:${topReplElementCounter++}`, (<Any>A).prototype, A, undefined, nls.locAlize('snApshotObj', "Only primitive vAlues Are shown for this object.")), sev, source);
 			}
 
-			// string: watch out for % replacement directive
-			// string substitution and formatting @ https://developer.chrome.com/devtools/docs/console
-			else if (typeof a === 'string') {
+			// string: wAtch out for % replAcement directive
+			// string substitution And formAtting @ https://developer.chrome.com/devtools/docs/console
+			else if (typeof A === 'string') {
 				let buf = '';
 
-				for (let j = 0, len = a.length; j < len; j++) {
-					if (a[j] === '%' && (a[j + 1] === 's' || a[j + 1] === 'i' || a[j + 1] === 'd' || a[j + 1] === 'O')) {
-						i++; // read over substitution
-						buf += !isUndefinedOrNull(args[i]) ? args[i] : ''; // replace
-						j++; // read over directive
+				for (let j = 0, len = A.length; j < len; j++) {
+					if (A[j] === '%' && (A[j + 1] === 's' || A[j + 1] === 'i' || A[j + 1] === 'd' || A[j + 1] === 'O')) {
+						i++; // reAd over substitution
+						buf += !isUndefinedOrNull(Args[i]) ? Args[i] : ''; // replAce
+						j++; // reAd over directive
 					} else {
-						buf += a[j];
+						buf += A[j];
 					}
 				}
 
-				simpleVals.push(buf);
+				simpleVAls.push(buf);
 			}
 
-			// number or boolean is joined together
+			// number or booleAn is joined together
 			else {
-				simpleVals.push(a);
+				simpleVAls.push(A);
 			}
 		}
 
-		// flush simple values
-		// always append a new line for output coming from an extension such that separate logs go to separate lines #23695
-		if (simpleVals.length) {
-			this.appendToRepl(session, simpleVals.join(' ') + '\n', sev, source);
+		// flush simple vAlues
+		// AlwAys Append A new line for output coming from An extension such thAt sepArAte logs go to sepArAte lines #23695
+		if (simpleVAls.length) {
+			this.AppendToRepl(session, simpleVAls.join(' ') + '\n', sev, source);
 		}
 	}
 
 	removeReplExpressions(): void {
 		if (this.replElements.length > 0) {
 			this.replElements = [];
-			this._onDidChangeElements.fire();
+			this._onDidChAngeElements.fire();
 		}
 	}
 }

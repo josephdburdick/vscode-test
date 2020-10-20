@@ -1,166 +1,166 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MinimapCharRenderer } from 'vs/editor/browser/viewParts/minimap/minimapCharRenderer';
-import { allCharCodes } from 'vs/editor/browser/viewParts/minimap/minimapCharSheet';
-import { prebakedMiniMaps } from 'vs/editor/browser/viewParts/minimap/minimapPreBaked';
-import { Constants } from './minimapCharSheet';
-import { toUint8 } from 'vs/base/common/uint';
+import { MinimApChArRenderer } from 'vs/editor/browser/viewPArts/minimAp/minimApChArRenderer';
+import { AllChArCodes } from 'vs/editor/browser/viewPArts/minimAp/minimApChArSheet';
+import { prebAkedMiniMAps } from 'vs/editor/browser/viewPArts/minimAp/minimApPreBAked';
+import { ConstAnts } from './minimApChArSheet';
+import { toUint8 } from 'vs/bAse/common/uint';
 
 /**
- * Creates character renderers. It takes a 'scale' that determines how large
- * characters should be drawn. Using this, it draws data into a canvas and
- * then downsamples the characters as necessary for the current display.
- * This makes rendering more efficient, rather than drawing a full (tiny)
- * font, or downsampling in real-time.
+ * CreAtes chArActer renderers. It tAkes A 'scAle' thAt determines how lArge
+ * chArActers should be drAwn. Using this, it drAws dAtA into A cAnvAs And
+ * then downsAmples the chArActers As necessAry for the current displAy.
+ * This mAkes rendering more efficient, rAther thAn drAwing A full (tiny)
+ * font, or downsAmpling in reAl-time.
  */
-export class MinimapCharRendererFactory {
-	private static lastCreated?: MinimapCharRenderer;
-	private static lastFontFamily?: string;
+export clAss MinimApChArRendererFActory {
+	privAte stAtic lAstCreAted?: MinimApChArRenderer;
+	privAte stAtic lAstFontFAmily?: string;
 
 	/**
-	 * Creates a new character renderer factory with the given scale.
+	 * CreAtes A new chArActer renderer fActory with the given scAle.
 	 */
-	public static create(scale: number, fontFamily: string) {
-		// renderers are immutable. By default we'll 'create' a new minimap
-		// character renderer whenever we switch editors, no need to do extra work.
-		if (this.lastCreated && scale === this.lastCreated.scale && fontFamily === this.lastFontFamily) {
-			return this.lastCreated;
+	public stAtic creAte(scAle: number, fontFAmily: string) {
+		// renderers Are immutAble. By defAult we'll 'creAte' A new minimAp
+		// chArActer renderer whenever we switch editors, no need to do extrA work.
+		if (this.lAstCreAted && scAle === this.lAstCreAted.scAle && fontFAmily === this.lAstFontFAmily) {
+			return this.lAstCreAted;
 		}
 
-		let factory: MinimapCharRenderer;
-		if (prebakedMiniMaps[scale]) {
-			factory = new MinimapCharRenderer(prebakedMiniMaps[scale](), scale);
+		let fActory: MinimApChArRenderer;
+		if (prebAkedMiniMAps[scAle]) {
+			fActory = new MinimApChArRenderer(prebAkedMiniMAps[scAle](), scAle);
 		} else {
-			factory = MinimapCharRendererFactory.createFromSampleData(
-				MinimapCharRendererFactory.createSampleData(fontFamily).data,
-				scale
+			fActory = MinimApChArRendererFActory.creAteFromSAmpleDAtA(
+				MinimApChArRendererFActory.creAteSAmpleDAtA(fontFAmily).dAtA,
+				scAle
 			);
 		}
 
-		this.lastFontFamily = fontFamily;
-		this.lastCreated = factory;
-		return factory;
+		this.lAstFontFAmily = fontFAmily;
+		this.lAstCreAted = fActory;
+		return fActory;
 	}
 
 	/**
-	 * Creates the font sample data, writing to a canvas.
+	 * CreAtes the font sAmple dAtA, writing to A cAnvAs.
 	 */
-	public static createSampleData(fontFamily: string): ImageData {
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d')!;
+	public stAtic creAteSAmpleDAtA(fontFAmily: string): ImAgeDAtA {
+		const cAnvAs = document.creAteElement('cAnvAs');
+		const ctx = cAnvAs.getContext('2d')!;
 
-		canvas.style.height = `${Constants.SAMPLED_CHAR_HEIGHT}px`;
-		canvas.height = Constants.SAMPLED_CHAR_HEIGHT;
-		canvas.width = Constants.CHAR_COUNT * Constants.SAMPLED_CHAR_WIDTH;
-		canvas.style.width = Constants.CHAR_COUNT * Constants.SAMPLED_CHAR_WIDTH + 'px';
+		cAnvAs.style.height = `${ConstAnts.SAMPLED_CHAR_HEIGHT}px`;
+		cAnvAs.height = ConstAnts.SAMPLED_CHAR_HEIGHT;
+		cAnvAs.width = ConstAnts.CHAR_COUNT * ConstAnts.SAMPLED_CHAR_WIDTH;
+		cAnvAs.style.width = ConstAnts.CHAR_COUNT * ConstAnts.SAMPLED_CHAR_WIDTH + 'px';
 
 		ctx.fillStyle = '#ffffff';
-		ctx.font = `bold ${Constants.SAMPLED_CHAR_HEIGHT}px ${fontFamily}`;
-		ctx.textBaseline = 'middle';
+		ctx.font = `bold ${ConstAnts.SAMPLED_CHAR_HEIGHT}px ${fontFAmily}`;
+		ctx.textBAseline = 'middle';
 
 		let x = 0;
-		for (const code of allCharCodes) {
-			ctx.fillText(String.fromCharCode(code), x, Constants.SAMPLED_CHAR_HEIGHT / 2);
-			x += Constants.SAMPLED_CHAR_WIDTH;
+		for (const code of AllChArCodes) {
+			ctx.fillText(String.fromChArCode(code), x, ConstAnts.SAMPLED_CHAR_HEIGHT / 2);
+			x += ConstAnts.SAMPLED_CHAR_WIDTH;
 		}
 
-		return ctx.getImageData(0, 0, Constants.CHAR_COUNT * Constants.SAMPLED_CHAR_WIDTH, Constants.SAMPLED_CHAR_HEIGHT);
+		return ctx.getImAgeDAtA(0, 0, ConstAnts.CHAR_COUNT * ConstAnts.SAMPLED_CHAR_WIDTH, ConstAnts.SAMPLED_CHAR_HEIGHT);
 	}
 
 	/**
-	 * Creates a character renderer from the canvas sample data.
+	 * CreAtes A chArActer renderer from the cAnvAs sAmple dAtA.
 	 */
-	public static createFromSampleData(source: Uint8ClampedArray, scale: number): MinimapCharRenderer {
+	public stAtic creAteFromSAmpleDAtA(source: Uint8ClAmpedArrAy, scAle: number): MinimApChArRenderer {
 		const expectedLength =
-			Constants.SAMPLED_CHAR_HEIGHT * Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT * Constants.CHAR_COUNT;
+			ConstAnts.SAMPLED_CHAR_HEIGHT * ConstAnts.SAMPLED_CHAR_WIDTH * ConstAnts.RGBA_CHANNELS_CNT * ConstAnts.CHAR_COUNT;
 		if (source.length !== expectedLength) {
-			throw new Error('Unexpected source in MinimapCharRenderer');
+			throw new Error('Unexpected source in MinimApChArRenderer');
 		}
 
-		let charData = MinimapCharRendererFactory._downsample(source, scale);
-		return new MinimapCharRenderer(charData, scale);
+		let chArDAtA = MinimApChArRendererFActory._downsAmple(source, scAle);
+		return new MinimApChArRenderer(chArDAtA, scAle);
 	}
 
-	private static _downsampleChar(
-		source: Uint8ClampedArray,
+	privAte stAtic _downsAmpleChAr(
+		source: Uint8ClAmpedArrAy,
 		sourceOffset: number,
-		dest: Uint8ClampedArray,
+		dest: Uint8ClAmpedArrAy,
 		destOffset: number,
-		scale: number
+		scAle: number
 	): number {
-		const width = Constants.BASE_CHAR_WIDTH * scale;
-		const height = Constants.BASE_CHAR_HEIGHT * scale;
+		const width = ConstAnts.BASE_CHAR_WIDTH * scAle;
+		const height = ConstAnts.BASE_CHAR_HEIGHT * scAle;
 
-		let targetIndex = destOffset;
+		let tArgetIndex = destOffset;
 		let brightest = 0;
 
-		// This is essentially an ad-hoc rescaling algorithm. Standard approaches
-		// like bicubic interpolation are awesome for scaling between image sizes,
-		// but don't work so well when scaling to very small pixel values, we end
+		// This is essentiAlly An Ad-hoc rescAling Algorithm. StAndArd ApproAches
+		// like bicubic interpolAtion Are Awesome for scAling between imAge sizes,
+		// but don't work so well when scAling to very smAll pixel vAlues, we end
 		// up with blurry, indistinct forms.
 		//
-		// The approach taken here is simply mapping each source pixel to the target
-		// pixels, and taking the weighted values for all pixels in each, and then
-		// averaging them out. Finally we apply an intensity boost in _downsample,
-		// since when scaling to the smallest pixel sizes there's more black space
-		// which causes characters to be much less distinct.
+		// The ApproAch tAken here is simply mApping eAch source pixel to the tArget
+		// pixels, And tAking the weighted vAlues for All pixels in eAch, And then
+		// AverAging them out. FinAlly we Apply An intensity boost in _downsAmple,
+		// since when scAling to the smAllest pixel sizes there's more blAck spAce
+		// which cAuses chArActers to be much less distinct.
 		for (let y = 0; y < height; y++) {
-			// 1. For this destination pixel, get the source pixels we're sampling
+			// 1. For this destinAtion pixel, get the source pixels we're sAmpling
 			// from (x1, y1) to the next pixel (x2, y2)
-			const sourceY1 = (y / height) * Constants.SAMPLED_CHAR_HEIGHT;
-			const sourceY2 = ((y + 1) / height) * Constants.SAMPLED_CHAR_HEIGHT;
+			const sourceY1 = (y / height) * ConstAnts.SAMPLED_CHAR_HEIGHT;
+			const sourceY2 = ((y + 1) / height) * ConstAnts.SAMPLED_CHAR_HEIGHT;
 
 			for (let x = 0; x < width; x++) {
-				const sourceX1 = (x / width) * Constants.SAMPLED_CHAR_WIDTH;
-				const sourceX2 = ((x + 1) / width) * Constants.SAMPLED_CHAR_WIDTH;
+				const sourceX1 = (x / width) * ConstAnts.SAMPLED_CHAR_WIDTH;
+				const sourceX2 = ((x + 1) / width) * ConstAnts.SAMPLED_CHAR_WIDTH;
 
-				// 2. Sample all of them, summing them up and weighting them. Similar
-				// to bilinear interpolation.
-				let value = 0;
-				let samples = 0;
+				// 2. SAmple All of them, summing them up And weighting them. SimilAr
+				// to bilineAr interpolAtion.
+				let vAlue = 0;
+				let sAmples = 0;
 				for (let sy = sourceY1; sy < sourceY2; sy++) {
-					const sourceRow = sourceOffset + Math.floor(sy) * Constants.RGBA_SAMPLED_ROW_WIDTH;
-					const yBalance = 1 - (sy - Math.floor(sy));
+					const sourceRow = sourceOffset + MAth.floor(sy) * ConstAnts.RGBA_SAMPLED_ROW_WIDTH;
+					const yBAlAnce = 1 - (sy - MAth.floor(sy));
 					for (let sx = sourceX1; sx < sourceX2; sx++) {
-						const xBalance = 1 - (sx - Math.floor(sx));
-						const sourceIndex = sourceRow + Math.floor(sx) * Constants.RGBA_CHANNELS_CNT;
+						const xBAlAnce = 1 - (sx - MAth.floor(sx));
+						const sourceIndex = sourceRow + MAth.floor(sx) * ConstAnts.RGBA_CHANNELS_CNT;
 
-						const weight = xBalance * yBalance;
-						samples += weight;
-						value += ((source[sourceIndex] * source[sourceIndex + 3]) / 255) * weight;
+						const weight = xBAlAnce * yBAlAnce;
+						sAmples += weight;
+						vAlue += ((source[sourceIndex] * source[sourceIndex + 3]) / 255) * weight;
 					}
 				}
 
-				const final = value / samples;
-				brightest = Math.max(brightest, final);
-				dest[targetIndex++] = toUint8(final);
+				const finAl = vAlue / sAmples;
+				brightest = MAth.mAx(brightest, finAl);
+				dest[tArgetIndex++] = toUint8(finAl);
 			}
 		}
 
 		return brightest;
 	}
 
-	private static _downsample(data: Uint8ClampedArray, scale: number): Uint8ClampedArray {
-		const pixelsPerCharacter = Constants.BASE_CHAR_HEIGHT * scale * Constants.BASE_CHAR_WIDTH * scale;
-		const resultLen = pixelsPerCharacter * Constants.CHAR_COUNT;
-		const result = new Uint8ClampedArray(resultLen);
+	privAte stAtic _downsAmple(dAtA: Uint8ClAmpedArrAy, scAle: number): Uint8ClAmpedArrAy {
+		const pixelsPerChArActer = ConstAnts.BASE_CHAR_HEIGHT * scAle * ConstAnts.BASE_CHAR_WIDTH * scAle;
+		const resultLen = pixelsPerChArActer * ConstAnts.CHAR_COUNT;
+		const result = new Uint8ClAmpedArrAy(resultLen);
 
 		let resultOffset = 0;
 		let sourceOffset = 0;
 		let brightest = 0;
-		for (let charIndex = 0; charIndex < Constants.CHAR_COUNT; charIndex++) {
-			brightest = Math.max(brightest, this._downsampleChar(data, sourceOffset, result, resultOffset, scale));
-			resultOffset += pixelsPerCharacter;
-			sourceOffset += Constants.SAMPLED_CHAR_WIDTH * Constants.RGBA_CHANNELS_CNT;
+		for (let chArIndex = 0; chArIndex < ConstAnts.CHAR_COUNT; chArIndex++) {
+			brightest = MAth.mAx(brightest, this._downsAmpleChAr(dAtA, sourceOffset, result, resultOffset, scAle));
+			resultOffset += pixelsPerChArActer;
+			sourceOffset += ConstAnts.SAMPLED_CHAR_WIDTH * ConstAnts.RGBA_CHANNELS_CNT;
 		}
 
 		if (brightest > 0) {
-			const adjust = 255 / brightest;
+			const Adjust = 255 / brightest;
 			for (let i = 0; i < resultLen; i++) {
-				result[i] *= adjust;
+				result[i] *= Adjust;
 			}
 		}
 

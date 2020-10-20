@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { SerializedError, onUnexpectedError } from 'vs/base/common/errors';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { MainContext, MainThreadErrorsShape } from 'vs/workbench/api/common/extHost.protocol';
+import { SeriAlizedError, onUnexpectedError } from 'vs/bAse/common/errors';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { MAinContext, MAinThreAdErrorsShApe } from 'vs/workbench/Api/common/extHost.protocol';
 
-@extHostNamedCustomer(MainContext.MainThreadErrors)
-export class MainThreadErrors implements MainThreadErrorsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdErrors)
+export clAss MAinThreAdErrors implements MAinThreAdErrorsShApe {
 
 	dispose(): void {
 		//
 	}
 
-	$onUnexpectedError(err: any | SerializedError): void {
+	$onUnexpectedError(err: Any | SeriAlizedError): void {
 		if (err && err.$isError) {
-			const { name, message, stack } = err;
+			const { nAme, messAge, stAck } = err;
 			err = new Error();
-			err.message = message;
-			err.name = name;
-			err.stack = stack;
+			err.messAge = messAge;
+			err.nAme = nAme;
+			err.stAck = stAck;
 		}
 		onUnexpectedError(err);
 	}

@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { AutoSaveMode, IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IWorkingCopy, IWorkingCopyService, WorkingCopyCapabilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { ILifecycleService, ShutdownReason } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { ILogService } from 'vs/platform/log/common/log';
-import { BackupTracker } from 'vs/workbench/contrib/backup/common/backupTracker';
+import { AutoSAveMode, IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IWorkingCopy, IWorkingCopyService, WorkingCopyCApAbilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { ILifecycleService, ShutdownReAson } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { BAckupTrAcker } from 'vs/workbench/contrib/bAckup/common/bAckupTrAcker';
 
-export class BrowserBackupTracker extends BackupTracker implements IWorkbenchContribution {
+export clAss BrowserBAckupTrAcker extends BAckupTrAcker implements IWorkbenchContribution {
 
-	// Delay creation of backups when content changes to avoid too much
-	// load on the backup service when the user is typing into the editor
-	// Since we always schedule a backup, even when auto save is on (web
-	// only), we have different scheduling delays based on auto save. This
-	// helps to avoid a race between saving (after 1s per default) and making
-	// a backup of the working copy.
-	private static readonly BACKUP_SCHEDULE_DELAYS = {
-		[AutoSaveMode.OFF]: 1000,
-		[AutoSaveMode.ON_FOCUS_CHANGE]: 1000,
-		[AutoSaveMode.ON_WINDOW_CHANGE]: 1000,
-		[AutoSaveMode.AFTER_SHORT_DELAY]: 2000, // explicitly higher to prevent races
-		[AutoSaveMode.AFTER_LONG_DELAY]: 1000
+	// DelAy creAtion of bAckups when content chAnges to Avoid too much
+	// loAd on the bAckup service when the user is typing into the editor
+	// Since we AlwAys schedule A bAckup, even when Auto sAve is on (web
+	// only), we hAve different scheduling delAys bAsed on Auto sAve. This
+	// helps to Avoid A rAce between sAving (After 1s per defAult) And mAking
+	// A bAckup of the working copy.
+	privAte stAtic reAdonly BACKUP_SCHEDULE_DELAYS = {
+		[AutoSAveMode.OFF]: 1000,
+		[AutoSAveMode.ON_FOCUS_CHANGE]: 1000,
+		[AutoSAveMode.ON_WINDOW_CHANGE]: 1000,
+		[AutoSAveMode.AFTER_SHORT_DELAY]: 2000, // explicitly higher to prevent rAces
+		[AutoSAveMode.AFTER_LONG_DELAY]: 1000
 	};
 
 	constructor(
-		@IBackupFileService backupFileService: IBackupFileService,
-		@IFilesConfigurationService private readonly filesConfigurationService: IFilesConfigurationService,
+		@IBAckupFileService bAckupFileService: IBAckupFileService,
+		@IFilesConfigurAtionService privAte reAdonly filesConfigurAtionService: IFilesConfigurAtionService,
 		@IWorkingCopyService workingCopyService: IWorkingCopyService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@ILogService logService: ILogService
 	) {
-		super(backupFileService, workingCopyService, logService, lifecycleService);
+		super(bAckupFileService, workingCopyService, logService, lifecycleService);
 	}
 
-	protected shouldScheduleBackup(workingCopy: IWorkingCopy): boolean {
-		// Web: we always want to schedule a backup, even if auto save
-		// is enabled because in web there is no handler on shutdown
-		// to trigger saving so there is a higher chance of dataloss.
+	protected shouldScheduleBAckup(workingCopy: IWorkingCopy): booleAn {
+		// Web: we AlwAys wAnt to schedule A bAckup, even if Auto sAve
+		// is enAbled becAuse in web there is no hAndler on shutdown
+		// to trigger sAving so there is A higher chAnce of dAtAloss.
 		// See https://github.com/microsoft/vscode/issues/108789
 		return true;
 	}
 
-	protected getBackupScheduleDelay(workingCopy: IWorkingCopy): number {
-		let autoSaveMode = this.filesConfigurationService.getAutoSaveMode();
-		if (workingCopy.capabilities & WorkingCopyCapabilities.Untitled) {
-			autoSaveMode = AutoSaveMode.OFF; // auto-save is never on for untitled working copies
+	protected getBAckupScheduleDelAy(workingCopy: IWorkingCopy): number {
+		let AutoSAveMode = this.filesConfigurAtionService.getAutoSAveMode();
+		if (workingCopy.cApAbilities & WorkingCopyCApAbilities.Untitled) {
+			AutoSAveMode = AutoSAveMode.OFF; // Auto-sAve is never on for untitled working copies
 		}
 
-		return BrowserBackupTracker.BACKUP_SCHEDULE_DELAYS[autoSaveMode];
+		return BrowserBAckupTrAcker.BACKUP_SCHEDULE_DELAYS[AutoSAveMode];
 	}
 
-	protected onBeforeShutdown(reason: ShutdownReason): boolean | Promise<boolean> {
+	protected onBeforeShutdown(reAson: ShutdownReAson): booleAn | Promise<booleAn> {
 
-		// Web: we cannot perform long running in the shutdown phase
-		// As such we need to check sync if there are any dirty working
-		// copies that have not been backed up yet and then prevent the
-		// shutdown if that is the case.
+		// Web: we cAnnot perform long running in the shutdown phAse
+		// As such we need to check sync if there Are Any dirty working
+		// copies thAt hAve not been bAcked up yet And then prevent the
+		// shutdown if thAt is the cAse.
 
 		const dirtyWorkingCopies = this.workingCopyService.dirtyWorkingCopies;
 		if (!dirtyWorkingCopies.length) {
-			return false; // no dirty: no veto
+			return fAlse; // no dirty: no veto
 		}
 
-		if (!this.filesConfigurationService.isHotExitEnabled) {
-			return true; // dirty without backup: veto
+		if (!this.filesConfigurAtionService.isHotExitEnAbled) {
+			return true; // dirty without bAckup: veto
 		}
 
 		for (const dirtyWorkingCopy of dirtyWorkingCopies) {
-			if (!this.backupFileService.hasBackupSync(dirtyWorkingCopy.resource, this.getContentVersion(dirtyWorkingCopy))) {
-				console.warn('Unload veto: pending backups');
-				return true; // dirty without backup: veto
+			if (!this.bAckupFileService.hAsBAckupSync(dirtyWorkingCopy.resource, this.getContentVersion(dirtyWorkingCopy))) {
+				console.wArn('UnloAd veto: pending bAckups');
+				return true; // dirty without bAckup: veto
 			}
 		}
 
-		return false; // dirty with backups: no veto
+		return fAlse; // dirty with bAckups: no veto
 	}
 }

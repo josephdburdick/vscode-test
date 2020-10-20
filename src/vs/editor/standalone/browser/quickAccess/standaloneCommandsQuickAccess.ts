@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
-import { QuickCommandNLS } from 'vs/editor/common/standaloneStrings';
-import { ICommandQuickPick } from 'vs/platform/quickinput/browser/commandsQuickAccess';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IQuickAccessRegistry, Extensions } from 'vs/plAtform/quickinput/common/quickAccess';
+import { QuickCommAndNLS } from 'vs/editor/common/stAndAloneStrings';
+import { ICommAndQuickPick } from 'vs/plAtform/quickinput/browser/commAndsQuickAccess';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { AbstractEditorCommandsQuickAccessProvider } from 'vs/editor/contrib/quickAccess/commandsQuickAccess';
+import { AbstrActEditorCommAndsQuickAccessProvider } from 'vs/editor/contrib/quickAccess/commAndsQuickAccess';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { EditorAction, registerEditorAction } from 'vs/editor/browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
 
-export class StandaloneCommandsQuickAccessProvider extends AbstractEditorCommandsQuickAccessProvider {
+export clAss StAndAloneCommAndsQuickAccessProvider extends AbstrActEditorCommAndsQuickAccessProvider {
 
-	protected get activeTextEditorControl(): IEditor | undefined { return withNullAsUndefined(this.codeEditorService.getFocusedCodeEditor()); }
+	protected get ActiveTextEditorControl(): IEditor | undefined { return withNullAsUndefined(this.codeEditorService.getFocusedCodeEditor()); }
 
 	constructor(
-		@IInstantiationService instantiationService: IInstantiationService,
-		@ICodeEditorService private readonly codeEditorService: ICodeEditorService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@ICodeEditorService privAte reAdonly codeEditorService: ICodeEditorService,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@ICommandService commandService: ICommandService,
+		@ICommAndService commAndService: ICommAndService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@INotificationService notificationService: INotificationService
+		@INotificAtionService notificAtionService: INotificAtionService
 	) {
-		super({ showAlias: false }, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		super({ showAliAs: fAlse }, instAntiAtionService, keybindingService, commAndService, telemetryService, notificAtionService);
 	}
 
-	protected async getCommandPicks(): Promise<Array<ICommandQuickPick>> {
-		return this.getCodeEditorCommandPicks();
+	protected Async getCommAndPicks(): Promise<ArrAy<ICommAndQuickPick>> {
+		return this.getCodeEditorCommAndPicks();
 	}
 }
 
-Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess).registerQuickAccessProvider({
-	ctor: StandaloneCommandsQuickAccessProvider,
-	prefix: StandaloneCommandsQuickAccessProvider.PREFIX,
-	helpEntries: [{ description: QuickCommandNLS.quickCommandHelp, needsEditor: true }]
+Registry.As<IQuickAccessRegistry>(Extensions.QuickAccess).registerQuickAccessProvider({
+	ctor: StAndAloneCommAndsQuickAccessProvider,
+	prefix: StAndAloneCommAndsQuickAccessProvider.PREFIX,
+	helpEntries: [{ description: QuickCommAndNLS.quickCommAndHelp, needsEditor: true }]
 });
 
-export class GotoLineAction extends EditorAction {
+export clAss GotoLineAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.quickCommand',
-			label: QuickCommandNLS.quickCommandActionLabel,
-			alias: 'Command Palette',
+			id: 'editor.Action.quickCommAnd',
+			lAbel: QuickCommAndNLS.quickCommAndActionLAbel,
+			AliAs: 'CommAnd PAlette',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.focus,
-				primary: KeyCode.F1,
+				primAry: KeyCode.F1,
 				weight: KeybindingWeight.EditorContrib
 			},
 			contextMenuOpts: {
-				group: 'z_commands',
+				group: 'z_commAnds',
 				order: 1
 			}
 		});
 	}
 
-	run(accessor: ServicesAccessor): void {
-		accessor.get(IQuickInputService).quickAccess.show(StandaloneCommandsQuickAccessProvider.PREFIX);
+	run(Accessor: ServicesAccessor): void {
+		Accessor.get(IQuickInputService).quickAccess.show(StAndAloneCommAndsQuickAccessProvider.PREFIX);
 	}
 }
 

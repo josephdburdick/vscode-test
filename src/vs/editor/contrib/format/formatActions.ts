@@ -1,94 +1,94 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { KeyChord, KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { KeyChord, KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, registerEditorAction, registerEditorContribution, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { CharacterSet } from 'vs/editor/common/core/characterClassifier';
-import { Range } from 'vs/editor/common/core/range';
+import { ChArActerSet } from 'vs/editor/common/core/chArActerClAssifier';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { DocumentRangeFormattingEditProviderRegistry, OnTypeFormattingEditProviderRegistry } from 'vs/editor/common/modes';
+import { DocumentRAngeFormAttingEditProviderRegistry, OnTypeFormAttingEditProviderRegistry } from 'vs/editor/common/modes';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { getOnTypeFormattingEdits, alertFormattingEdits, formatDocumentRangesWithSelectedProvider, formatDocumentWithSelectedProvider, FormattingMode } from 'vs/editor/contrib/format/format';
-import { FormattingEdit } from 'vs/editor/contrib/format/formattingEdit';
-import * as nls from 'vs/nls';
-import { CommandsRegistry, ICommandService } from 'vs/platform/commands/common/commands';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { getOnTypeFormAttingEdits, AlertFormAttingEdits, formAtDocumentRAngesWithSelectedProvider, formAtDocumentWithSelectedProvider, FormAttingMode } from 'vs/editor/contrib/formAt/formAt';
+import { FormAttingEdit } from 'vs/editor/contrib/formAt/formAttingEdit';
+import * As nls from 'vs/nls';
+import { CommAndsRegistry, ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { Progress, IEditorProgressService } from 'vs/platform/progress/common/progress';
+import { Progress, IEditorProgressService } from 'vs/plAtform/progress/common/progress';
 
-class FormatOnType implements IEditorContribution {
+clAss FormAtOnType implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.autoFormat';
+	public stAtic reAdonly ID = 'editor.contrib.AutoFormAt';
 
-	private readonly _editor: ICodeEditor;
-	private readonly _callOnDispose = new DisposableStore();
-	private readonly _callOnModel = new DisposableStore();
+	privAte reAdonly _editor: ICodeEditor;
+	privAte reAdonly _cAllOnDispose = new DisposAbleStore();
+	privAte reAdonly _cAllOnModel = new DisposAbleStore();
 
 	constructor(
 		editor: ICodeEditor,
-		@IEditorWorkerService private readonly _workerService: IEditorWorkerService
+		@IEditorWorkerService privAte reAdonly _workerService: IEditorWorkerService
 	) {
 		this._editor = editor;
-		this._callOnDispose.add(editor.onDidChangeConfiguration(() => this._update()));
-		this._callOnDispose.add(editor.onDidChangeModel(() => this._update()));
-		this._callOnDispose.add(editor.onDidChangeModelLanguage(() => this._update()));
-		this._callOnDispose.add(OnTypeFormattingEditProviderRegistry.onDidChange(this._update, this));
+		this._cAllOnDispose.Add(editor.onDidChAngeConfigurAtion(() => this._updAte()));
+		this._cAllOnDispose.Add(editor.onDidChAngeModel(() => this._updAte()));
+		this._cAllOnDispose.Add(editor.onDidChAngeModelLAnguAge(() => this._updAte()));
+		this._cAllOnDispose.Add(OnTypeFormAttingEditProviderRegistry.onDidChAnge(this._updAte, this));
 	}
 
 	dispose(): void {
-		this._callOnDispose.dispose();
-		this._callOnModel.dispose();
+		this._cAllOnDispose.dispose();
+		this._cAllOnModel.dispose();
 	}
 
-	private _update(): void {
+	privAte _updAte(): void {
 
-		// clean up
-		this._callOnModel.clear();
+		// cleAn up
+		this._cAllOnModel.cleAr();
 
-		// we are disabled
-		if (!this._editor.getOption(EditorOption.formatOnType)) {
+		// we Are disAbled
+		if (!this._editor.getOption(EditorOption.formAtOnType)) {
 			return;
 		}
 
 		// no model
-		if (!this._editor.hasModel()) {
+		if (!this._editor.hAsModel()) {
 			return;
 		}
 
 		const model = this._editor.getModel();
 
 		// no support
-		const [support] = OnTypeFormattingEditProviderRegistry.ordered(model);
-		if (!support || !support.autoFormatTriggerCharacters) {
+		const [support] = OnTypeFormAttingEditProviderRegistry.ordered(model);
+		if (!support || !support.AutoFormAtTriggerChArActers) {
 			return;
 		}
 
-		// register typing listeners that will trigger the format
-		let triggerChars = new CharacterSet();
-		for (let ch of support.autoFormatTriggerCharacters) {
-			triggerChars.add(ch.charCodeAt(0));
+		// register typing listeners thAt will trigger the formAt
+		let triggerChArs = new ChArActerSet();
+		for (let ch of support.AutoFormAtTriggerChArActers) {
+			triggerChArs.Add(ch.chArCodeAt(0));
 		}
-		this._callOnModel.add(this._editor.onDidType((text: string) => {
-			let lastCharCode = text.charCodeAt(text.length - 1);
-			if (triggerChars.has(lastCharCode)) {
-				this._trigger(String.fromCharCode(lastCharCode));
+		this._cAllOnModel.Add(this._editor.onDidType((text: string) => {
+			let lAstChArCode = text.chArCodeAt(text.length - 1);
+			if (triggerChArs.hAs(lAstChArCode)) {
+				this._trigger(String.fromChArCode(lAstChArCode));
 			}
 		}));
 	}
 
-	private _trigger(ch: string): void {
-		if (!this._editor.hasModel()) {
+	privAte _trigger(ch: string): void {
+		if (!this._editor.hAsModel()) {
 			return;
 		}
 
@@ -98,25 +98,25 @@ class FormatOnType implements IEditorContribution {
 
 		const model = this._editor.getModel();
 		const position = this._editor.getPosition();
-		let canceled = false;
+		let cAnceled = fAlse;
 
-		// install a listener that checks if edits happens before the
-		// position on which we format right now. If so, we won't
-		// apply the format edits
-		const unbind = this._editor.onDidChangeModelContent((e) => {
+		// instAll A listener thAt checks if edits hAppens before the
+		// position on which we formAt right now. If so, we won't
+		// Apply the formAt edits
+		const unbind = this._editor.onDidChAngeModelContent((e) => {
 			if (e.isFlush) {
-				// a model.setValue() was called
-				// cancel only once
-				canceled = true;
+				// A model.setVAlue() wAs cAlled
+				// cAncel only once
+				cAnceled = true;
 				unbind.dispose();
 				return;
 			}
 
-			for (let i = 0, len = e.changes.length; i < len; i++) {
-				const change = e.changes[i];
-				if (change.range.endLineNumber <= position.lineNumber) {
-					// cancel only once
-					canceled = true;
+			for (let i = 0, len = e.chAnges.length; i < len; i++) {
+				const chAnge = e.chAnges[i];
+				if (chAnge.rAnge.endLineNumber <= position.lineNumber) {
+					// cAncel only once
+					cAnceled = true;
 					unbind.dispose();
 					return;
 				}
@@ -124,23 +124,23 @@ class FormatOnType implements IEditorContribution {
 
 		});
 
-		getOnTypeFormattingEdits(
+		getOnTypeFormAttingEdits(
 			this._workerService,
 			model,
 			position,
 			ch,
-			model.getFormattingOptions()
+			model.getFormAttingOptions()
 		).then(edits => {
 
 			unbind.dispose();
 
-			if (canceled) {
+			if (cAnceled) {
 				return;
 			}
 
-			if (isNonEmptyArray(edits)) {
-				FormattingEdit.execute(this._editor, edits, true);
-				alertFormattingEdits(edits);
+			if (isNonEmptyArrAy(edits)) {
+				FormAttingEdit.execute(this._editor, edits, true);
+				AlertFormAttingEdits(edits);
 			}
 
 		}, (err) => {
@@ -150,154 +150,154 @@ class FormatOnType implements IEditorContribution {
 	}
 }
 
-class FormatOnPaste implements IEditorContribution {
+clAss FormAtOnPAste implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.formatOnPaste';
+	public stAtic reAdonly ID = 'editor.contrib.formAtOnPAste';
 
-	private readonly _callOnDispose = new DisposableStore();
-	private readonly _callOnModel = new DisposableStore();
+	privAte reAdonly _cAllOnDispose = new DisposAbleStore();
+	privAte reAdonly _cAllOnModel = new DisposAbleStore();
 
 	constructor(
-		private readonly editor: ICodeEditor,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		privAte reAdonly editor: ICodeEditor,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
 	) {
-		this._callOnDispose.add(editor.onDidChangeConfiguration(() => this._update()));
-		this._callOnDispose.add(editor.onDidChangeModel(() => this._update()));
-		this._callOnDispose.add(editor.onDidChangeModelLanguage(() => this._update()));
-		this._callOnDispose.add(DocumentRangeFormattingEditProviderRegistry.onDidChange(this._update, this));
+		this._cAllOnDispose.Add(editor.onDidChAngeConfigurAtion(() => this._updAte()));
+		this._cAllOnDispose.Add(editor.onDidChAngeModel(() => this._updAte()));
+		this._cAllOnDispose.Add(editor.onDidChAngeModelLAnguAge(() => this._updAte()));
+		this._cAllOnDispose.Add(DocumentRAngeFormAttingEditProviderRegistry.onDidChAnge(this._updAte, this));
 	}
 
 	dispose(): void {
-		this._callOnDispose.dispose();
-		this._callOnModel.dispose();
+		this._cAllOnDispose.dispose();
+		this._cAllOnModel.dispose();
 	}
 
-	private _update(): void {
+	privAte _updAte(): void {
 
-		// clean up
-		this._callOnModel.clear();
+		// cleAn up
+		this._cAllOnModel.cleAr();
 
-		// we are disabled
-		if (!this.editor.getOption(EditorOption.formatOnPaste)) {
+		// we Are disAbled
+		if (!this.editor.getOption(EditorOption.formAtOnPAste)) {
 			return;
 		}
 
 		// no model
-		if (!this.editor.hasModel()) {
+		if (!this.editor.hAsModel()) {
 			return;
 		}
 
-		// no formatter
-		if (!DocumentRangeFormattingEditProviderRegistry.has(this.editor.getModel())) {
+		// no formAtter
+		if (!DocumentRAngeFormAttingEditProviderRegistry.hAs(this.editor.getModel())) {
 			return;
 		}
 
-		this._callOnModel.add(this.editor.onDidPaste(({ range }) => this._trigger(range)));
+		this._cAllOnModel.Add(this.editor.onDidPAste(({ rAnge }) => this._trigger(rAnge)));
 	}
 
-	private _trigger(range: Range): void {
-		if (!this.editor.hasModel()) {
+	privAte _trigger(rAnge: RAnge): void {
+		if (!this.editor.hAsModel()) {
 			return;
 		}
 		if (this.editor.getSelections().length > 1) {
 			return;
 		}
-		this._instantiationService.invokeFunction(formatDocumentRangesWithSelectedProvider, this.editor, range, FormattingMode.Silent, Progress.None, CancellationToken.None).catch(onUnexpectedError);
+		this._instAntiAtionService.invokeFunction(formAtDocumentRAngesWithSelectedProvider, this.editor, rAnge, FormAttingMode.Silent, Progress.None, CAncellAtionToken.None).cAtch(onUnexpectedError);
 	}
 }
 
-class FormatDocumentAction extends EditorAction {
+clAss FormAtDocumentAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.formatDocument',
-			label: nls.localize('formatDocument.label', "Format Document"),
-			alias: 'Format Document',
-			precondition: ContextKeyExpr.and(EditorContextKeys.notInCompositeEditor, EditorContextKeys.writable, EditorContextKeys.hasDocumentFormattingProvider),
+			id: 'editor.Action.formAtDocument',
+			lAbel: nls.locAlize('formAtDocument.lAbel', "FormAt Document"),
+			AliAs: 'FormAt Document',
+			precondition: ContextKeyExpr.And(EditorContextKeys.notInCompositeEditor, EditorContextKeys.writAble, EditorContextKeys.hAsDocumentFormAttingProvider),
 			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentFormattingProvider),
-				primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
-				linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I },
+				kbExpr: ContextKeyExpr.And(EditorContextKeys.editorTextFocus, EditorContextKeys.hAsDocumentFormAttingProvider),
+				primAry: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
+				linux: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_I },
 				weight: KeybindingWeight.EditorContrib
 			},
 			contextMenuOpts: {
-				when: EditorContextKeys.hasDocumentFormattingProvider,
-				group: '1_modification',
+				when: EditorContextKeys.hAsDocumentFormAttingProvider,
+				group: '1_modificAtion',
 				order: 1.3
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		if (editor.hasModel()) {
-			const instaService = accessor.get(IInstantiationService);
-			const progressService = accessor.get(IEditorProgressService);
-			await progressService.showWhile(
-				instaService.invokeFunction(formatDocumentWithSelectedProvider, editor, FormattingMode.Explicit, Progress.None, CancellationToken.None),
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		if (editor.hAsModel()) {
+			const instAService = Accessor.get(IInstAntiAtionService);
+			const progressService = Accessor.get(IEditorProgressService);
+			AwAit progressService.showWhile(
+				instAService.invokeFunction(formAtDocumentWithSelectedProvider, editor, FormAttingMode.Explicit, Progress.None, CAncellAtionToken.None),
 				250
 			);
 		}
 	}
 }
 
-class FormatSelectionAction extends EditorAction {
+clAss FormAtSelectionAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.formatSelection',
-			label: nls.localize('formatSelection.label', "Format Selection"),
-			alias: 'Format Selection',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasDocumentSelectionFormattingProvider),
+			id: 'editor.Action.formAtSelection',
+			lAbel: nls.locAlize('formAtSelection.lAbel', "FormAt Selection"),
+			AliAs: 'FormAt Selection',
+			precondition: ContextKeyExpr.And(EditorContextKeys.writAble, EditorContextKeys.hAsDocumentSelectionFormAttingProvider),
 			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.editorTextFocus, EditorContextKeys.hasDocumentSelectionFormattingProvider),
-				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_F),
+				kbExpr: ContextKeyExpr.And(EditorContextKeys.editorTextFocus, EditorContextKeys.hAsDocumentSelectionFormAttingProvider),
+				primAry: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_F),
 				weight: KeybindingWeight.EditorContrib
 			},
 			contextMenuOpts: {
-				when: ContextKeyExpr.and(EditorContextKeys.hasDocumentSelectionFormattingProvider, EditorContextKeys.hasNonEmptySelection),
-				group: '1_modification',
+				when: ContextKeyExpr.And(EditorContextKeys.hAsDocumentSelectionFormAttingProvider, EditorContextKeys.hAsNonEmptySelection),
+				group: '1_modificAtion',
 				order: 1.31
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		if (!editor.hasModel()) {
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		if (!editor.hAsModel()) {
 			return;
 		}
-		const instaService = accessor.get(IInstantiationService);
+		const instAService = Accessor.get(IInstAntiAtionService);
 		const model = editor.getModel();
 
-		const ranges = editor.getSelections().map(range => {
-			return range.isEmpty()
-				? new Range(range.startLineNumber, 1, range.startLineNumber, model.getLineMaxColumn(range.startLineNumber))
-				: range;
+		const rAnges = editor.getSelections().mAp(rAnge => {
+			return rAnge.isEmpty()
+				? new RAnge(rAnge.stArtLineNumber, 1, rAnge.stArtLineNumber, model.getLineMAxColumn(rAnge.stArtLineNumber))
+				: rAnge;
 		});
 
-		const progressService = accessor.get(IEditorProgressService);
-		await progressService.showWhile(
-			instaService.invokeFunction(formatDocumentRangesWithSelectedProvider, editor, ranges, FormattingMode.Explicit, Progress.None, CancellationToken.None),
+		const progressService = Accessor.get(IEditorProgressService);
+		AwAit progressService.showWhile(
+			instAService.invokeFunction(formAtDocumentRAngesWithSelectedProvider, editor, rAnges, FormAttingMode.Explicit, Progress.None, CAncellAtionToken.None),
 			250
 		);
 	}
 }
 
-registerEditorContribution(FormatOnType.ID, FormatOnType);
-registerEditorContribution(FormatOnPaste.ID, FormatOnPaste);
-registerEditorAction(FormatDocumentAction);
-registerEditorAction(FormatSelectionAction);
+registerEditorContribution(FormAtOnType.ID, FormAtOnType);
+registerEditorContribution(FormAtOnPAste.ID, FormAtOnPAste);
+registerEditorAction(FormAtDocumentAction);
+registerEditorAction(FormAtSelectionAction);
 
-// this is the old format action that does both (format document OR format selection)
-// and we keep it here such that existing keybinding configurations etc will still work
-CommandsRegistry.registerCommand('editor.action.format', async accessor => {
-	const editor = accessor.get(ICodeEditorService).getFocusedCodeEditor();
-	if (!editor || !editor.hasModel()) {
+// this is the old formAt Action thAt does both (formAt document OR formAt selection)
+// And we keep it here such thAt existing keybinding configurAtions etc will still work
+CommAndsRegistry.registerCommAnd('editor.Action.formAt', Async Accessor => {
+	const editor = Accessor.get(ICodeEditorService).getFocusedCodeEditor();
+	if (!editor || !editor.hAsModel()) {
 		return;
 	}
-	const commandService = accessor.get(ICommandService);
+	const commAndService = Accessor.get(ICommAndService);
 	if (editor.getSelection().isEmpty()) {
-		await commandService.executeCommand('editor.action.formatDocument');
+		AwAit commAndService.executeCommAnd('editor.Action.formAtDocument');
 	} else {
-		await commandService.executeCommand('editor.action.formatSelection');
+		AwAit commAndService.executeCommAnd('editor.Action.formAtSelection');
 	}
 });

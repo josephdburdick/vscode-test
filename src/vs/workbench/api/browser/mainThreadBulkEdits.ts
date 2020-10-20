@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IBulkEditService, ResourceEdit, ResourceFileEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
-import { IExtHostContext, IWorkspaceEditDto, WorkspaceEditType, MainThreadBulkEditsShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { revive } from 'vs/base/common/marshalling';
+import { IExtHostContext, IWorkspAceEditDto, WorkspAceEditType, MAinThreAdBulkEditsShApe, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { revive } from 'vs/bAse/common/mArshAlling';
 import { ResourceNotebookCellEdit } from 'vs/workbench/contrib/bulkEdit/browser/bulkCellEdits';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
 
-function reviveWorkspaceEditDto2(data: IWorkspaceEditDto | undefined): ResourceEdit[] {
-	if (!data?.edits) {
+function reviveWorkspAceEditDto2(dAtA: IWorkspAceEditDto | undefined): ResourceEdit[] {
+	if (!dAtA?.edits) {
 		return [];
 	}
 
 	const result: ResourceEdit[] = [];
-	for (let edit of revive<IWorkspaceEditDto>(data).edits) {
-		if (edit._type === WorkspaceEditType.File) {
-			result.push(new ResourceFileEdit(edit.oldUri, edit.newUri, edit.options, edit.metadata));
-		} else if (edit._type === WorkspaceEditType.Text) {
-			result.push(new ResourceTextEdit(edit.resource, edit.edit, edit.modelVersionId, edit.metadata));
-		} else if (edit._type === WorkspaceEditType.Cell) {
-			result.push(new ResourceNotebookCellEdit(edit.resource, edit.edit, edit.notebookVersionId, edit.metadata));
+	for (let edit of revive<IWorkspAceEditDto>(dAtA).edits) {
+		if (edit._type === WorkspAceEditType.File) {
+			result.push(new ResourceFileEdit(edit.oldUri, edit.newUri, edit.options, edit.metAdAtA));
+		} else if (edit._type === WorkspAceEditType.Text) {
+			result.push(new ResourceTextEdit(edit.resource, edit.edit, edit.modelVersionId, edit.metAdAtA));
+		} else if (edit._type === WorkspAceEditType.Cell) {
+			result.push(new ResourceNotebookCellEdit(edit.resource, edit.edit, edit.notebookVersionId, edit.metAdAtA));
 		}
 	}
 	return result;
 }
 
-@extHostNamedCustomer(MainContext.MainThreadBulkEdits)
-export class MainThreadBulkEdits implements MainThreadBulkEditsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdBulkEdits)
+export clAss MAinThreAdBulkEdits implements MAinThreAdBulkEditsShApe {
 
 	constructor(
 		_extHostContext: IExtHostContext,
-		@IBulkEditService private readonly _bulkEditService: IBulkEditService,
+		@IBulkEditService privAte reAdonly _bulkEditService: IBulkEditService,
 	) { }
 
 	dispose(): void { }
 
-	$tryApplyWorkspaceEdit(dto: IWorkspaceEditDto): Promise<boolean> {
-		const edits = reviveWorkspaceEditDto2(dto);
-		return this._bulkEditService.apply(edits).then(() => true, _err => false);
+	$tryApplyWorkspAceEdit(dto: IWorkspAceEditDto): Promise<booleAn> {
+		const edits = reviveWorkspAceEditDto2(dto);
+		return this._bulkEditService.Apply(edits).then(() => true, _err => fAlse);
 	}
 }

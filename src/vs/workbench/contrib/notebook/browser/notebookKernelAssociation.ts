@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { IConfigurationNode, IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
-import { Registry } from 'vs/platform/registry/common/platform';
+import * As nls from 'vs/nls';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { IConfigurAtionNode, IConfigurAtionRegistry, Extensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { workbenchConfigurAtionNodeBAse } from 'vs/workbench/common/configurAtion';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 
-export class NotebookKernelProviderAssociationRegistry {
-	static extensionIds: (string | null)[] = [];
-	static extensionDescriptions: string[] = [];
+export clAss NotebookKernelProviderAssociAtionRegistry {
+	stAtic extensionIds: (string | null)[] = [];
+	stAtic extensionDescriptions: string[] = [];
 }
 
-export class NotebookViewTypesExtensionRegistry {
-	static viewTypes: string[] = [];
-	static viewTypeDescriptions: string[] = [];
+export clAss NotebookViewTypesExtensionRegistry {
+	stAtic viewTypes: string[] = [];
+	stAtic viewTypeDescriptions: string[] = [];
 }
 
-export type NotebookKernelProviderAssociation = {
-	readonly viewType: string;
-	readonly kernelProvider?: string;
+export type NotebookKernelProviderAssociAtion = {
+	reAdonly viewType: string;
+	reAdonly kernelProvider?: string;
 };
 
-export type NotebookKernelProviderAssociations = readonly NotebookKernelProviderAssociation[];
+export type NotebookKernelProviderAssociAtions = reAdonly NotebookKernelProviderAssociAtion[];
 
 
-export const notebookKernelProviderAssociationsSettingId = 'notebook.kernelProviderAssociations';
+export const notebookKernelProviderAssociAtionsSettingId = 'notebook.kernelProviderAssociAtions';
 
-export const viewTypeSchamaAddition: IJSONSchema = {
+export const viewTypeSchAmAAddition: IJSONSchemA = {
 	type: 'string',
 	enum: []
 };
 
-export const notebookKernelProviderAssociationsConfigurationNode: IConfigurationNode = {
-	...workbenchConfigurationNodeBase,
+export const notebookKernelProviderAssociAtionsConfigurAtionNode: IConfigurAtionNode = {
+	...workbenchConfigurAtionNodeBAse,
 	properties: {
-		[notebookKernelProviderAssociationsSettingId]: {
-			type: 'array',
-			markdownDescription: nls.localize('notebook.kernelProviderAssociations', "Defines a default kernel provider which takes precedence over all other kernel providers settings. Must be the identifier of an extension contributing a kernel provider."),
+		[notebookKernelProviderAssociAtionsSettingId]: {
+			type: 'ArrAy',
+			mArkdownDescription: nls.locAlize('notebook.kernelProviderAssociAtions', "Defines A defAult kernel provider which tAkes precedence over All other kernel providers settings. Must be the identifier of An extension contributing A kernel provider."),
 			items: {
 				type: 'object',
-				defaultSnippets: [{
+				defAultSnippets: [{
 					body: {
 						'viewType': '$1',
 						'kernelProvider': '$2'
@@ -51,15 +51,15 @@ export const notebookKernelProviderAssociationsConfigurationNode: IConfiguration
 				properties: {
 					'viewType': {
 						type: ['string', 'null'],
-						default: null,
+						defAult: null,
 						enum: NotebookViewTypesExtensionRegistry.viewTypes,
-						markdownEnumDescriptions: NotebookViewTypesExtensionRegistry.viewTypeDescriptions
+						mArkdownEnumDescriptions: NotebookViewTypesExtensionRegistry.viewTypeDescriptions
 					},
 					'kernelProvider': {
 						type: ['string', 'null'],
-						default: null,
-						enum: NotebookKernelProviderAssociationRegistry.extensionIds,
-						markdownEnumDescriptions: NotebookKernelProviderAssociationRegistry.extensionDescriptions
+						defAult: null,
+						enum: NotebookKernelProviderAssociAtionRegistry.extensionIds,
+						mArkdownEnumDescriptions: NotebookKernelProviderAssociAtionRegistry.extensionDescriptions
 					}
 				}
 			}
@@ -67,10 +67,10 @@ export const notebookKernelProviderAssociationsConfigurationNode: IConfiguration
 	}
 };
 
-export function updateNotebookKernelProvideAssociationSchema(): void {
-	Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-		.notifyConfigurationSchemaUpdated(notebookKernelProviderAssociationsConfigurationNode);
+export function updAteNotebookKernelProvideAssociAtionSchemA(): void {
+	Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion)
+		.notifyConfigurAtionSchemAUpdAted(notebookKernelProviderAssociAtionsConfigurAtionNode);
 }
 
-Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-	.registerConfiguration(notebookKernelProviderAssociationsConfigurationNode);
+Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion)
+	.registerConfigurAtion(notebookKernelProviderAssociAtionsConfigurAtionNode);

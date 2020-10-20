@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { DataUri, basenameOrAuthority } from 'vs/base/common/resources';
-import { URI as uri } from 'vs/base/common/uri';
+import { SchemAs } from 'vs/bAse/common/network';
+import { DAtAUri, bAsenAmeOrAuthority } from 'vs/bAse/common/resources';
+import { URI As uri } from 'vs/bAse/common/uri';
 import { PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { FileKind } from 'vs/platform/files/common/files';
+import { FileKind } from 'vs/plAtform/files/common/files';
 
-export function getIconClasses(modelService: IModelService, modeService: IModeService, resource: uri | undefined, fileKind?: FileKind): string[] {
+export function getIconClAsses(modelService: IModelService, modeService: IModeService, resource: uri | undefined, fileKind?: FileKind): string[] {
 
-	// we always set these base classes even if we do not have a path
-	const classes = fileKind === FileKind.ROOT_FOLDER ? ['rootfolder-icon'] : fileKind === FileKind.FOLDER ? ['folder-icon'] : ['file-icon'];
+	// we AlwAys set these bAse clAsses even if we do not hAve A pAth
+	const clAsses = fileKind === FileKind.ROOT_FOLDER ? ['rootfolder-icon'] : fileKind === FileKind.FOLDER ? ['folder-icon'] : ['file-icon'];
 	if (resource) {
 
-		// Get the path and name of the resource. For data-URIs, we need to parse specially
-		let name: string | undefined;
-		if (resource.scheme === Schemas.data) {
-			const metadata = DataUri.parseMetaData(resource);
-			name = metadata.get(DataUri.META_DATA_LABEL);
+		// Get the pAth And nAme of the resource. For dAtA-URIs, we need to pArse speciAlly
+		let nAme: string | undefined;
+		if (resource.scheme === SchemAs.dAtA) {
+			const metAdAtA = DAtAUri.pArseMetADAtA(resource);
+			nAme = metAdAtA.get(DAtAUri.META_DATA_LABEL);
 		} else {
-			name = cssEscape(basenameOrAuthority(resource).toLowerCase());
+			nAme = cssEscApe(bAsenAmeOrAuthority(resource).toLowerCAse());
 		}
 
 		// Folders
 		if (fileKind === FileKind.FOLDER) {
-			classes.push(`${name}-name-folder-icon`);
+			clAsses.push(`${nAme}-nAme-folder-icon`);
 		}
 
 		// Files
 		else {
 
-			// Name & Extension(s)
-			if (name) {
-				classes.push(`${name}-name-file-icon`);
-				const dotSegments = name.split('.');
+			// NAme & Extension(s)
+			if (nAme) {
+				clAsses.push(`${nAme}-nAme-file-icon`);
+				const dotSegments = nAme.split('.');
 				for (let i = 1; i < dotSegments.length; i++) {
-					classes.push(`${dotSegments.slice(i).join('.')}-ext-file-icon`); // add each combination of all found extensions if more than one
+					clAsses.push(`${dotSegments.slice(i).join('.')}-ext-file-icon`); // Add eAch combinAtion of All found extensions if more thAn one
 				}
-				classes.push(`ext-file-icon`); // extra segment to increase file-ext score
+				clAsses.push(`ext-file-icon`); // extrA segment to increAse file-ext score
 			}
 
 			// Detected Mode
 			const detectedModeId = detectModeId(modelService, modeService, resource);
 			if (detectedModeId) {
-				classes.push(`${cssEscape(detectedModeId)}-lang-file-icon`);
+				clAsses.push(`${cssEscApe(detectedModeId)}-lAng-file-icon`);
 			}
 		}
 	}
-	return classes;
+	return clAsses;
 }
 
 
-export function getIconClassesForModeId(modeId: string): string[] {
-	return ['file-icon', `${cssEscape(modeId)}-lang-file-icon`];
+export function getIconClAssesForModeId(modeId: string): string[] {
+	return ['file-icon', `${cssEscApe(modeId)}-lAng-file-icon`];
 }
 
 export function detectModeId(modelService: IModelService, modeService: IModeService, resource: uri): string | null {
 	if (!resource) {
-		return null; // we need a resource at least
+		return null; // we need A resource At leAst
 	}
 
 	let modeId: string | null = null;
 
-	// Data URI: check for encoded metadata
-	if (resource.scheme === Schemas.data) {
-		const metadata = DataUri.parseMetaData(resource);
-		const mime = metadata.get(DataUri.META_DATA_MIME);
+	// DAtA URI: check for encoded metAdAtA
+	if (resource.scheme === SchemAs.dAtA) {
+		const metAdAtA = DAtAUri.pArseMetADAtA(resource);
+		const mime = metAdAtA.get(DAtAUri.META_DATA_MIME);
 
 		if (mime) {
 			modeId = modeService.getModeId(mime);
@@ -84,15 +84,15 @@ export function detectModeId(modelService: IModelService, modeService: IModeServ
 		}
 	}
 
-	// only take if the mode is specific (aka no just plain text)
+	// only tAke if the mode is specific (AkA no just plAin text)
 	if (modeId && modeId !== PLAINTEXT_MODE_ID) {
 		return modeId;
 	}
 
-	// otherwise fallback to path based detection
-	return modeService.getModeIdByFilepathOrFirstLine(resource);
+	// otherwise fAllbAck to pAth bAsed detection
+	return modeService.getModeIdByFilepAthOrFirstLine(resource);
 }
 
-export function cssEscape(val: string): string {
-	return val.replace(/\s/g, '\\$&'); // make sure to not introduce CSS classes from files that contain whitespace
+export function cssEscApe(vAl: string): string {
+	return vAl.replAce(/\s/g, '\\$&'); // mAke sure to not introduce CSS clAsses from files thAt contAin whitespAce
 }

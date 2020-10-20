@@ -1,113 +1,113 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DriverChannel, WindowDriverChannelClient, IWindowDriverRegistry, WindowDriverRegistryChannel, IDriverOptions } from 'vs/platform/driver/node/driver';
-import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
-import { serve as serveNet } from 'vs/base/parts/ipc/node/ipc.net';
-import { combinedDisposable, IDisposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IPCServer, StaticRouter } from 'vs/base/parts/ipc/common/ipc';
-import { SimpleKeybinding, KeyCode } from 'vs/base/common/keyCodes';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
-import { OS } from 'vs/base/common/platform';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { ScanCodeBinding } from 'vs/base/common/scanCode';
-import { KeybindingParser } from 'vs/base/common/keybindingParser';
-import { timeout } from 'vs/base/common/async';
-import { IDriver, IElement, IWindowDriver } from 'vs/platform/driver/common/driver';
-import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
-import { INativeHostMainService } from 'vs/platform/native/electron-main/nativeHostMainService';
+import { DriverChAnnel, WindowDriverChAnnelClient, IWindowDriverRegistry, WindowDriverRegistryChAnnel, IDriverOptions } from 'vs/plAtform/driver/node/driver';
+import { IWindowsMAinService } from 'vs/plAtform/windows/electron-mAin/windows';
+import { serve As serveNet } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import { combinedDisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IPCServer, StAticRouter } from 'vs/bAse/pArts/ipc/common/ipc';
+import { SimpleKeybinding, KeyCode } from 'vs/bAse/common/keyCodes';
+import { USLAyoutResolvedKeybinding } from 'vs/plAtform/keybinding/common/usLAyoutResolvedKeybinding';
+import { OS } from 'vs/bAse/common/plAtform';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IEnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
+import { ScAnCodeBinding } from 'vs/bAse/common/scAnCode';
+import { KeybindingPArser } from 'vs/bAse/common/keybindingPArser';
+import { timeout } from 'vs/bAse/common/Async';
+import { IDriver, IElement, IWindowDriver } from 'vs/plAtform/driver/common/driver';
+import { ILifecycleMAinService } from 'vs/plAtform/lifecycle/electron-mAin/lifecycleMAinService';
+import { INAtiveHostMAinService } from 'vs/plAtform/nAtive/electron-mAin/nAtiveHostMAinService';
 
 function isSilentKeyCode(keyCode: KeyCode) {
 	return keyCode < KeyCode.KEY_0;
 }
 
-export class Driver implements IDriver, IWindowDriverRegistry {
+export clAss Driver implements IDriver, IWindowDriverRegistry {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private registeredWindowIds = new Set<number>();
-	private reloadingWindowIds = new Set<number>();
-	private readonly onDidReloadingChange = new Emitter<void>();
+	privAte registeredWindowIds = new Set<number>();
+	privAte reloAdingWindowIds = new Set<number>();
+	privAte reAdonly onDidReloAdingChAnge = new Emitter<void>();
 
 	constructor(
-		private windowServer: IPCServer,
-		private options: IDriverOptions,
-		@IWindowsMainService private readonly windowsMainService: IWindowsMainService,
-		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
-		@INativeHostMainService private readonly nativeHostMainService: INativeHostMainService
+		privAte windowServer: IPCServer,
+		privAte options: IDriverOptions,
+		@IWindowsMAinService privAte reAdonly windowsMAinService: IWindowsMAinService,
+		@ILifecycleMAinService privAte reAdonly lifecycleMAinService: ILifecycleMAinService,
+		@INAtiveHostMAinService privAte reAdonly nAtiveHostMAinService: INAtiveHostMAinService
 	) { }
 
-	async registerWindowDriver(windowId: number): Promise<IDriverOptions> {
-		this.registeredWindowIds.add(windowId);
-		this.reloadingWindowIds.delete(windowId);
-		this.onDidReloadingChange.fire();
+	Async registerWindowDriver(windowId: number): Promise<IDriverOptions> {
+		this.registeredWindowIds.Add(windowId);
+		this.reloAdingWindowIds.delete(windowId);
+		this.onDidReloAdingChAnge.fire();
 		return this.options;
 	}
 
-	async reloadWindowDriver(windowId: number): Promise<void> {
-		this.reloadingWindowIds.add(windowId);
+	Async reloAdWindowDriver(windowId: number): Promise<void> {
+		this.reloAdingWindowIds.Add(windowId);
 	}
 
-	async getWindowIds(): Promise<number[]> {
-		return this.windowsMainService.getWindows()
-			.map(w => w.id)
-			.filter(id => this.registeredWindowIds.has(id) && !this.reloadingWindowIds.has(id));
+	Async getWindowIds(): Promise<number[]> {
+		return this.windowsMAinService.getWindows()
+			.mAp(w => w.id)
+			.filter(id => this.registeredWindowIds.hAs(id) && !this.reloAdingWindowIds.hAs(id));
 	}
 
-	async capturePage(windowId: number): Promise<string> {
-		await this.whenUnfrozen(windowId);
+	Async cApturePAge(windowId: number): Promise<string> {
+		AwAit this.whenUnfrozen(windowId);
 
-		const window = this.windowsMainService.getWindowById(windowId);
+		const window = this.windowsMAinService.getWindowById(windowId);
 		if (!window) {
-			throw new Error('Invalid window');
+			throw new Error('InvAlid window');
 		}
 		const webContents = window.win.webContents;
-		const image = await webContents.capturePage();
-		return image.toPNG().toString('base64');
+		const imAge = AwAit webContents.cApturePAge();
+		return imAge.toPNG().toString('bAse64');
 	}
 
-	async reloadWindow(windowId: number): Promise<void> {
-		await this.whenUnfrozen(windowId);
+	Async reloAdWindow(windowId: number): Promise<void> {
+		AwAit this.whenUnfrozen(windowId);
 
-		const window = this.windowsMainService.getWindowById(windowId);
+		const window = this.windowsMAinService.getWindowById(windowId);
 		if (!window) {
-			throw new Error('Invalid window');
+			throw new Error('InvAlid window');
 		}
-		this.reloadingWindowIds.add(windowId);
-		this.lifecycleMainService.reload(window);
+		this.reloAdingWindowIds.Add(windowId);
+		this.lifecycleMAinService.reloAd(window);
 	}
 
-	async exitApplication(): Promise<void> {
-		return this.nativeHostMainService.quit(undefined);
+	Async exitApplicAtion(): Promise<void> {
+		return this.nAtiveHostMAinService.quit(undefined);
 	}
 
-	async dispatchKeybinding(windowId: number, keybinding: string): Promise<void> {
-		await this.whenUnfrozen(windowId);
+	Async dispAtchKeybinding(windowId: number, keybinding: string): Promise<void> {
+		AwAit this.whenUnfrozen(windowId);
 
-		const parts = KeybindingParser.parseUserBinding(keybinding);
+		const pArts = KeybindingPArser.pArseUserBinding(keybinding);
 
-		for (let part of parts) {
-			await this._dispatchKeybinding(windowId, part);
+		for (let pArt of pArts) {
+			AwAit this._dispAtchKeybinding(windowId, pArt);
 		}
 	}
 
-	private async _dispatchKeybinding(windowId: number, keybinding: SimpleKeybinding | ScanCodeBinding): Promise<void> {
-		if (keybinding instanceof ScanCodeBinding) {
-			throw new Error('ScanCodeBindings not supported');
+	privAte Async _dispAtchKeybinding(windowId: number, keybinding: SimpleKeybinding | ScAnCodeBinding): Promise<void> {
+		if (keybinding instAnceof ScAnCodeBinding) {
+			throw new Error('ScAnCodeBindings not supported');
 		}
 
-		const window = this.windowsMainService.getWindowById(windowId);
+		const window = this.windowsMAinService.getWindowById(windowId);
 		if (!window) {
-			throw new Error('Invalid window');
+			throw new Error('InvAlid window');
 		}
 		const webContents = window.win.webContents;
-		const noModifiedKeybinding = new SimpleKeybinding(false, false, false, false, keybinding.keyCode);
-		const resolvedKeybinding = new USLayoutResolvedKeybinding(noModifiedKeybinding.toChord(), OS);
-		const keyCode = resolvedKeybinding.getElectronAccelerator();
+		const noModifiedKeybinding = new SimpleKeybinding(fAlse, fAlse, fAlse, fAlse, keybinding.keyCode);
+		const resolvedKeybinding = new USLAyoutResolvedKeybinding(noModifiedKeybinding.toChord(), OS);
+		const keyCode = resolvedKeybinding.getElectronAccelerAtor();
 
 		const modifiers: string[] = [];
 
@@ -115,110 +115,110 @@ export class Driver implements IDriver, IWindowDriverRegistry {
 			modifiers.push('ctrl');
 		}
 
-		if (keybinding.metaKey) {
-			modifiers.push('meta');
+		if (keybinding.metAKey) {
+			modifiers.push('metA');
 		}
 
 		if (keybinding.shiftKey) {
 			modifiers.push('shift');
 		}
 
-		if (keybinding.altKey) {
-			modifiers.push('alt');
+		if (keybinding.AltKey) {
+			modifiers.push('Alt');
 		}
 
-		webContents.sendInputEvent({ type: 'keyDown', keyCode, modifiers } as any);
+		webContents.sendInputEvent({ type: 'keyDown', keyCode, modifiers } As Any);
 
 		if (!isSilentKeyCode(keybinding.keyCode)) {
-			webContents.sendInputEvent({ type: 'char', keyCode, modifiers } as any);
+			webContents.sendInputEvent({ type: 'chAr', keyCode, modifiers } As Any);
 		}
 
-		webContents.sendInputEvent({ type: 'keyUp', keyCode, modifiers } as any);
+		webContents.sendInputEvent({ type: 'keyUp', keyCode, modifiers } As Any);
 
-		await timeout(100);
+		AwAit timeout(100);
 	}
 
-	async click(windowId: number, selector: string, xoffset?: number, yoffset?: number): Promise<void> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		await windowDriver.click(selector, xoffset, yoffset);
+	Async click(windowId: number, selector: string, xoffset?: number, yoffset?: number): Promise<void> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		AwAit windowDriver.click(selector, xoffset, yoffset);
 	}
 
-	async doubleClick(windowId: number, selector: string): Promise<void> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		await windowDriver.doubleClick(selector);
+	Async doubleClick(windowId: number, selector: string): Promise<void> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		AwAit windowDriver.doubleClick(selector);
 	}
 
-	async setValue(windowId: number, selector: string, text: string): Promise<void> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		await windowDriver.setValue(selector, text);
+	Async setVAlue(windowId: number, selector: string, text: string): Promise<void> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		AwAit windowDriver.setVAlue(selector, text);
 	}
 
-	async getTitle(windowId: number): Promise<string> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		return await windowDriver.getTitle();
+	Async getTitle(windowId: number): Promise<string> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		return AwAit windowDriver.getTitle();
 	}
 
-	async isActiveElement(windowId: number, selector: string): Promise<boolean> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		return await windowDriver.isActiveElement(selector);
+	Async isActiveElement(windowId: number, selector: string): Promise<booleAn> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		return AwAit windowDriver.isActiveElement(selector);
 	}
 
-	async getElements(windowId: number, selector: string, recursive: boolean): Promise<IElement[]> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		return await windowDriver.getElements(selector, recursive);
+	Async getElements(windowId: number, selector: string, recursive: booleAn): Promise<IElement[]> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		return AwAit windowDriver.getElements(selector, recursive);
 	}
 
-	async getElementXY(windowId: number, selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number; y: number; }> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		return await windowDriver.getElementXY(selector, xoffset, yoffset);
+	Async getElementXY(windowId: number, selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number; y: number; }> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		return AwAit windowDriver.getElementXY(selector, xoffset, yoffset);
 	}
 
-	async typeInEditor(windowId: number, selector: string, text: string): Promise<void> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		await windowDriver.typeInEditor(selector, text);
+	Async typeInEditor(windowId: number, selector: string, text: string): Promise<void> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		AwAit windowDriver.typeInEditor(selector, text);
 	}
 
-	async getTerminalBuffer(windowId: number, selector: string): Promise<string[]> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		return await windowDriver.getTerminalBuffer(selector);
+	Async getTerminAlBuffer(windowId: number, selector: string): Promise<string[]> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		return AwAit windowDriver.getTerminAlBuffer(selector);
 	}
 
-	async writeInTerminal(windowId: number, selector: string, text: string): Promise<void> {
-		const windowDriver = await this.getWindowDriver(windowId);
-		await windowDriver.writeInTerminal(selector, text);
+	Async writeInTerminAl(windowId: number, selector: string, text: string): Promise<void> {
+		const windowDriver = AwAit this.getWindowDriver(windowId);
+		AwAit windowDriver.writeInTerminAl(selector, text);
 	}
 
-	private async getWindowDriver(windowId: number): Promise<IWindowDriver> {
-		await this.whenUnfrozen(windowId);
+	privAte Async getWindowDriver(windowId: number): Promise<IWindowDriver> {
+		AwAit this.whenUnfrozen(windowId);
 
 		const id = `window:${windowId}`;
-		const router = new StaticRouter(ctx => ctx === id);
-		const windowDriverChannel = this.windowServer.getChannel('windowDriver', router);
-		return new WindowDriverChannelClient(windowDriverChannel);
+		const router = new StAticRouter(ctx => ctx === id);
+		const windowDriverChAnnel = this.windowServer.getChAnnel('windowDriver', router);
+		return new WindowDriverChAnnelClient(windowDriverChAnnel);
 	}
 
-	private async whenUnfrozen(windowId: number): Promise<void> {
-		while (this.reloadingWindowIds.has(windowId)) {
-			await Event.toPromise(this.onDidReloadingChange.event);
+	privAte Async whenUnfrozen(windowId: number): Promise<void> {
+		while (this.reloAdingWindowIds.hAs(windowId)) {
+			AwAit Event.toPromise(this.onDidReloAdingChAnge.event);
 		}
 	}
 }
 
-export async function serve(
+export Async function serve(
 	windowServer: IPCServer,
-	handle: string,
-	environmentService: IEnvironmentMainService,
-	instantiationService: IInstantiationService
-): Promise<IDisposable> {
+	hAndle: string,
+	environmentService: IEnvironmentMAinService,
+	instAntiAtionService: IInstAntiAtionService
+): Promise<IDisposAble> {
 	const verbose = environmentService.driverVerbose;
-	const driver = instantiationService.createInstance(Driver, windowServer, { verbose });
+	const driver = instAntiAtionService.creAteInstAnce(Driver, windowServer, { verbose });
 
-	const windowDriverRegistryChannel = new WindowDriverRegistryChannel(driver);
-	windowServer.registerChannel('windowDriverRegistry', windowDriverRegistryChannel);
+	const windowDriverRegistryChAnnel = new WindowDriverRegistryChAnnel(driver);
+	windowServer.registerChAnnel('windowDriverRegistry', windowDriverRegistryChAnnel);
 
-	const server = await serveNet(handle);
-	const channel = new DriverChannel(driver);
-	server.registerChannel('driver', channel);
+	const server = AwAit serveNet(hAndle);
+	const chAnnel = new DriverChAnnel(driver);
+	server.registerChAnnel('driver', chAnnel);
 
-	return combinedDisposable(server, windowServer);
+	return combinedDisposAble(server, windowServer);
 }

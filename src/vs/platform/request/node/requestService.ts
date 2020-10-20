@@ -1,127 +1,127 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as https from 'https';
-import * as http from 'http';
-import * as streams from 'vs/base/common/stream';
-import { createGunzip } from 'zlib';
-import { parse as parseUrl } from 'url';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isBoolean, isNumber } from 'vs/base/common/types';
-import { canceled } from 'vs/base/common/errors';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IRequestService, IHTTPConfiguration } from 'vs/platform/request/common/request';
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
-import { getProxyAgent, Agent } from 'vs/platform/request/node/proxy';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILogService } from 'vs/platform/log/common/log';
-import { streamToBufferReadableStream } from 'vs/base/common/buffer';
+import * As https from 'https';
+import * As http from 'http';
+import * As streAms from 'vs/bAse/common/streAm';
+import { creAteGunzip } from 'zlib';
+import { pArse As pArseUrl } from 'url';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { isBooleAn, isNumber } from 'vs/bAse/common/types';
+import { cAnceled } from 'vs/bAse/common/errors';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IRequestService, IHTTPConfigurAtion } from 'vs/plAtform/request/common/request';
+import { IRequestOptions, IRequestContext } from 'vs/bAse/pArts/request/common/request';
+import { getProxyAgent, Agent } from 'vs/plAtform/request/node/proxy';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { streAmToBufferReAdAbleStreAm } from 'vs/bAse/common/buffer';
 
-export interface IRawRequestFunction {
-	(options: http.RequestOptions, callback?: (res: http.IncomingMessage) => void): http.ClientRequest;
+export interfAce IRAwRequestFunction {
+	(options: http.RequestOptions, cAllbAck?: (res: http.IncomingMessAge) => void): http.ClientRequest;
 }
 
-export interface NodeRequestOptions extends IRequestOptions {
-	agent?: Agent;
-	strictSSL?: boolean;
-	getRawRequest?(options: IRequestOptions): IRawRequestFunction;
+export interfAce NodeRequestOptions extends IRequestOptions {
+	Agent?: Agent;
+	strictSSL?: booleAn;
+	getRAwRequest?(options: IRequestOptions): IRAwRequestFunction;
 }
 
 /**
- * This service exposes the `request` API, while using the global
+ * This service exposes the `request` API, while using the globAl
  * or configured proxy settings.
  */
-export class RequestService extends Disposable implements IRequestService {
+export clAss RequestService extends DisposAble implements IRequestService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private proxyUrl?: string;
-	private strictSSL: boolean | undefined;
-	private authorization?: string;
+	privAte proxyUrl?: string;
+	privAte strictSSL: booleAn | undefined;
+	privAte AuthorizAtion?: string;
 
 	constructor(
-		@IConfigurationService configurationService: IConfigurationService,
-		@ILogService private readonly logService: ILogService
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@ILogService privAte reAdonly logService: ILogService
 	) {
 		super();
-		this.configure(configurationService.getValue<IHTTPConfiguration>());
-		this._register(configurationService.onDidChangeConfiguration(() => this.configure(configurationService.getValue()), this));
+		this.configure(configurAtionService.getVAlue<IHTTPConfigurAtion>());
+		this._register(configurAtionService.onDidChAngeConfigurAtion(() => this.configure(configurAtionService.getVAlue()), this));
 	}
 
-	private configure(config: IHTTPConfiguration) {
+	privAte configure(config: IHTTPConfigurAtion) {
 		this.proxyUrl = config.http && config.http.proxy;
 		this.strictSSL = !!(config.http && config.http.proxyStrictSSL);
-		this.authorization = config.http && config.http.proxyAuthorization;
+		this.AuthorizAtion = config.http && config.http.proxyAuthorizAtion;
 	}
 
-	async request(options: NodeRequestOptions, token: CancellationToken): Promise<IRequestContext> {
-		this.logService.trace('RequestService#request', options.url);
+	Async request(options: NodeRequestOptions, token: CAncellAtionToken): Promise<IRequestContext> {
+		this.logService.trAce('RequestService#request', options.url);
 
 		const { proxyUrl, strictSSL } = this;
-		const agent = options.agent ? options.agent : await getProxyAgent(options.url || '', { proxyUrl, strictSSL });
+		const Agent = options.Agent ? options.Agent : AwAit getProxyAgent(options.url || '', { proxyUrl, strictSSL });
 
-		options.agent = agent;
+		options.Agent = Agent;
 		options.strictSSL = strictSSL;
 
-		if (this.authorization) {
-			options.headers = {
-				...(options.headers || {}),
-				'Proxy-Authorization': this.authorization
+		if (this.AuthorizAtion) {
+			options.heAders = {
+				...(options.heAders || {}),
+				'Proxy-AuthorizAtion': this.AuthorizAtion
 			};
 		}
 
 		return this._request(options, token);
 	}
 
-	private async getNodeRequest(options: IRequestOptions): Promise<IRawRequestFunction> {
-		const endpoint = parseUrl(options.url!);
-		const module = endpoint.protocol === 'https:' ? await import('https') : await import('http');
+	privAte Async getNodeRequest(options: IRequestOptions): Promise<IRAwRequestFunction> {
+		const endpoint = pArseUrl(options.url!);
+		const module = endpoint.protocol === 'https:' ? AwAit import('https') : AwAit import('http');
 		return module.request;
 	}
 
-	private _request(options: NodeRequestOptions, token: CancellationToken): Promise<IRequestContext> {
+	privAte _request(options: NodeRequestOptions, token: CAncellAtionToken): Promise<IRequestContext> {
 
-		return new Promise<IRequestContext>(async (c, e) => {
+		return new Promise<IRequestContext>(Async (c, e) => {
 			let req: http.ClientRequest;
 
-			const endpoint = parseUrl(options.url!);
-			const rawRequest = options.getRawRequest
-				? options.getRawRequest(options)
-				: await this.getNodeRequest(options);
+			const endpoint = pArseUrl(options.url!);
+			const rAwRequest = options.getRAwRequest
+				? options.getRAwRequest(options)
+				: AwAit this.getNodeRequest(options);
 
 			const opts: https.RequestOptions = {
-				hostname: endpoint.hostname,
-				port: endpoint.port ? parseInt(endpoint.port) : (endpoint.protocol === 'https:' ? 443 : 80),
+				hostnAme: endpoint.hostnAme,
+				port: endpoint.port ? pArseInt(endpoint.port) : (endpoint.protocol === 'https:' ? 443 : 80),
 				protocol: endpoint.protocol,
-				path: endpoint.path,
+				pAth: endpoint.pAth,
 				method: options.type || 'GET',
-				headers: options.headers,
-				agent: options.agent,
-				rejectUnauthorized: isBoolean(options.strictSSL) ? options.strictSSL : true
+				heAders: options.heAders,
+				Agent: options.Agent,
+				rejectUnAuthorized: isBooleAn(options.strictSSL) ? options.strictSSL : true
 			};
 
-			if (options.user && options.password) {
-				opts.auth = options.user + ':' + options.password;
+			if (options.user && options.pAssword) {
+				opts.Auth = options.user + ':' + options.pAssword;
 			}
 
-			req = rawRequest(opts, (res: http.IncomingMessage) => {
+			req = rAwRequest(opts, (res: http.IncomingMessAge) => {
 				const followRedirects: number = isNumber(options.followRedirects) ? options.followRedirects : 3;
-				if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && followRedirects > 0 && res.headers['location']) {
+				if (res.stAtusCode && res.stAtusCode >= 300 && res.stAtusCode < 400 && followRedirects > 0 && res.heAders['locAtion']) {
 					this._request({
 						...options,
-						url: res.headers['location'],
+						url: res.heAders['locAtion'],
 						followRedirects: followRedirects - 1
 					}, token).then(c, e);
 				} else {
-					let stream: streams.ReadableStreamEvents<Uint8Array> = res;
+					let streAm: streAms.ReAdAbleStreAmEvents<Uint8ArrAy> = res;
 
-					if (res.headers['content-encoding'] === 'gzip') {
-						stream = res.pipe(createGunzip());
+					if (res.heAders['content-encoding'] === 'gzip') {
+						streAm = res.pipe(creAteGunzip());
 					}
 
-					c({ res, stream: streamToBufferReadableStream(stream) } as IRequestContext);
+					c({ res, streAm: streAmToBufferReAdAbleStreAm(streAm) } As IRequestContext);
 				}
 			});
 
@@ -131,22 +131,22 @@ export class RequestService extends Disposable implements IRequestService {
 				req.setTimeout(options.timeout);
 			}
 
-			if (options.data) {
-				if (typeof options.data === 'string') {
-					req.write(options.data);
+			if (options.dAtA) {
+				if (typeof options.dAtA === 'string') {
+					req.write(options.dAtA);
 				}
 			}
 
 			req.end();
 
-			token.onCancellationRequested(() => {
-				req.abort();
-				e(canceled());
+			token.onCAncellAtionRequested(() => {
+				req.Abort();
+				e(cAnceled());
 			});
 		});
 	}
 
-	async resolveProxy(url: string): Promise<string | undefined> {
+	Async resolveProxy(url: string): Promise<string | undefined> {
 		return undefined; // currently not implemented in node
 	}
 }

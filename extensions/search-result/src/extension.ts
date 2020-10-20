@@ -1,233 +1,233 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as pathUtils from 'path';
+import * As vscode from 'vscode';
+import * As pAthUtils from 'pAth';
 
 const FILE_LINE_REGEX = /^(\S.*):$/;
 const RESULT_LINE_REGEX = /^(\s+)(\d+)(:| )(\s+)(.*)$/;
-const SEARCH_RESULT_SELECTOR = { language: 'search-result' };
-const DIRECTIVES = ['# Query:', '# Flags:', '# Including:', '# Excluding:', '# ContextLines:'];
-const FLAGS = ['RegExp', 'CaseSensitive', 'IgnoreExcludeSettings', 'WordMatch'];
+const SEARCH_RESULT_SELECTOR = { lAnguAge: 'seArch-result' };
+const DIRECTIVES = ['# Query:', '# FlAgs:', '# Including:', '# Excluding:', '# ContextLines:'];
+const FLAGS = ['RegExp', 'CAseSensitive', 'IgnoreExcludeSettings', 'WordMAtch'];
 
-let cachedLastParse: { version: number, parse: ParsedSearchResults, uri: vscode.Uri } | undefined;
-let documentChangeListener: vscode.Disposable | undefined;
+let cAchedLAstPArse: { version: number, pArse: PArsedSeArchResults, uri: vscode.Uri } | undefined;
+let documentChAngeListener: vscode.DisposAble | undefined;
 
 
-export function activate(context: vscode.ExtensionContext) {
+export function ActivAte(context: vscode.ExtensionContext) {
 
-	const contextLineDecorations = vscode.window.createTextEditorDecorationType({ opacity: '0.7' });
-	const matchLineDecorations = vscode.window.createTextEditorDecorationType({ fontWeight: 'bold' });
+	const contextLineDecorAtions = vscode.window.creAteTextEditorDecorAtionType({ opAcity: '0.7' });
+	const mAtchLineDecorAtions = vscode.window.creAteTextEditorDecorAtionType({ fontWeight: 'bold' });
 
-	const decorate = (editor: vscode.TextEditor) => {
-		const parsed = parseSearchResults(editor.document).filter(isResultLine);
-		const contextRanges = parsed.filter(line => line.isContext).map(line => line.prefixRange);
-		const matchRanges = parsed.filter(line => !line.isContext).map(line => line.prefixRange);
-		editor.setDecorations(contextLineDecorations, contextRanges);
-		editor.setDecorations(matchLineDecorations, matchRanges);
+	const decorAte = (editor: vscode.TextEditor) => {
+		const pArsed = pArseSeArchResults(editor.document).filter(isResultLine);
+		const contextRAnges = pArsed.filter(line => line.isContext).mAp(line => line.prefixRAnge);
+		const mAtchRAnges = pArsed.filter(line => !line.isContext).mAp(line => line.prefixRAnge);
+		editor.setDecorAtions(contextLineDecorAtions, contextRAnges);
+		editor.setDecorAtions(mAtchLineDecorAtions, mAtchRAnges);
 	};
 
-	if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'search-result') {
-		decorate(vscode.window.activeTextEditor);
+	if (vscode.window.ActiveTextEditor && vscode.window.ActiveTextEditor.document.lAnguAgeId === 'seArch-result') {
+		decorAte(vscode.window.ActiveTextEditor);
 	}
 
 	context.subscriptions.push(
 
-		vscode.languages.registerDocumentSymbolProvider(SEARCH_RESULT_SELECTOR, {
-			provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.DocumentSymbol[] {
-				const results = parseSearchResults(document, token)
+		vscode.lAnguAges.registerDocumentSymbolProvider(SEARCH_RESULT_SELECTOR, {
+			provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CAncellAtionToken): vscode.DocumentSymbol[] {
+				const results = pArseSeArchResults(document, token)
 					.filter(isFileLine)
-					.map(line => new vscode.DocumentSymbol(
-						line.path,
+					.mAp(line => new vscode.DocumentSymbol(
+						line.pAth,
 						'',
 						vscode.SymbolKind.File,
-						line.allLocations.map(({ originSelectionRange }) => originSelectionRange!).reduce((p, c) => p.union(c), line.location.originSelectionRange!),
-						line.location.originSelectionRange!,
+						line.AllLocAtions.mAp(({ originSelectionRAnge }) => originSelectionRAnge!).reduce((p, c) => p.union(c), line.locAtion.originSelectionRAnge!),
+						line.locAtion.originSelectionRAnge!,
 					));
 
 				return results;
 			}
 		}),
 
-		vscode.languages.registerCompletionItemProvider(SEARCH_RESULT_SELECTOR, {
+		vscode.lAnguAges.registerCompletionItemProvider(SEARCH_RESULT_SELECTOR, {
 			provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
 
 				const line = document.lineAt(position.line);
 				if (position.line > 3) { return []; }
-				if (position.character === 0 || (position.character === 1 && line.text === '#')) {
-					const header = Array.from({ length: DIRECTIVES.length }).map((_, i) => document.lineAt(i).text);
+				if (position.chArActer === 0 || (position.chArActer === 1 && line.text === '#')) {
+					const heAder = ArrAy.from({ length: DIRECTIVES.length }).mAp((_, i) => document.lineAt(i).text);
 
 					return DIRECTIVES
-						.filter(suggestion => header.every(line => line.indexOf(suggestion) === -1))
-						.map(flag => ({ label: flag, insertText: (flag.slice(position.character)) + ' ' }));
+						.filter(suggestion => heAder.every(line => line.indexOf(suggestion) === -1))
+						.mAp(flAg => ({ lAbel: flAg, insertText: (flAg.slice(position.chArActer)) + ' ' }));
 				}
 
-				if (line.text.indexOf('# Flags:') === -1) { return []; }
+				if (line.text.indexOf('# FlAgs:') === -1) { return []; }
 
 				return FLAGS
-					.filter(flag => line.text.indexOf(flag) === -1)
-					.map(flag => ({ label: flag, insertText: flag + ' ' }));
+					.filter(flAg => line.text.indexOf(flAg) === -1)
+					.mAp(flAg => ({ lAbel: flAg, insertText: flAg + ' ' }));
 			}
 		}, '#'),
 
-		vscode.languages.registerDefinitionProvider(SEARCH_RESULT_SELECTOR, {
-			provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.DefinitionLink[] {
-				const lineResult = parseSearchResults(document, token)[position.line];
+		vscode.lAnguAges.registerDefinitionProvider(SEARCH_RESULT_SELECTOR, {
+			provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CAncellAtionToken): vscode.DefinitionLink[] {
+				const lineResult = pArseSeArchResults(document, token)[position.line];
 				if (!lineResult) { return []; }
 				if (lineResult.type === 'file') {
-					return lineResult.allLocations;
+					return lineResult.AllLocAtions;
 				}
 
-				const translateRangeSidewaysBy = (r: vscode.Range, n: number) =>
-					r.with({ start: new vscode.Position(r.start.line, Math.max(0, n - r.start.character)), end: new vscode.Position(r.end.line, Math.max(0, n - r.end.character)) });
+				const trAnslAteRAngeSidewAysBy = (r: vscode.RAnge, n: number) =>
+					r.with({ stArt: new vscode.Position(r.stArt.line, MAth.mAx(0, n - r.stArt.chArActer)), end: new vscode.Position(r.end.line, MAth.mAx(0, n - r.end.chArActer)) });
 
 				return [{
-					...lineResult.location,
-					targetSelectionRange: translateRangeSidewaysBy(lineResult.location.targetSelectionRange!, position.character - 1)
+					...lineResult.locAtion,
+					tArgetSelectionRAnge: trAnslAteRAngeSidewAysBy(lineResult.locAtion.tArgetSelectionRAnge!, position.chArActer - 1)
 				}];
 			}
 		}),
 
-		vscode.languages.registerDocumentLinkProvider(SEARCH_RESULT_SELECTOR, {
-			async provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.DocumentLink[]> {
-				return parseSearchResults(document, token)
+		vscode.lAnguAges.registerDocumentLinkProvider(SEARCH_RESULT_SELECTOR, {
+			Async provideDocumentLinks(document: vscode.TextDocument, token: vscode.CAncellAtionToken): Promise<vscode.DocumentLink[]> {
+				return pArseSeArchResults(document, token)
 					.filter(({ type }) => type === 'file')
-					.map(({ location }) => ({ range: location.originSelectionRange!, target: location.targetUri }));
+					.mAp(({ locAtion }) => ({ rAnge: locAtion.originSelectionRAnge!, tArget: locAtion.tArgetUri }));
 			}
 		}),
 
-		vscode.window.onDidChangeActiveTextEditor(editor => {
-			if (editor?.document.languageId === 'search-result') {
-				// Clear the parse whenever we open a new editor.
-				// Conservative because things like the URI might remain constant even if the contents change, and re-parsing even large files is relatively fast.
-				cachedLastParse = undefined;
+		vscode.window.onDidChAngeActiveTextEditor(editor => {
+			if (editor?.document.lAnguAgeId === 'seArch-result') {
+				// CleAr the pArse whenever we open A new editor.
+				// ConservAtive becAuse things like the URI might remAin constAnt even if the contents chAnge, And re-pArsing even lArge files is relAtively fAst.
+				cAchedLAstPArse = undefined;
 
-				documentChangeListener?.dispose();
-				documentChangeListener = vscode.workspace.onDidChangeTextDocument(doc => {
+				documentChAngeListener?.dispose();
+				documentChAngeListener = vscode.workspAce.onDidChAngeTextDocument(doc => {
 					if (doc.document.uri === editor.document.uri) {
-						decorate(editor);
+						decorAte(editor);
 					}
 				});
 
-				decorate(editor);
+				decorAte(editor);
 			}
 		}),
 
-		{ dispose() { cachedLastParse = undefined; documentChangeListener?.dispose(); } }
+		{ dispose() { cAchedLAstPArse = undefined; documentChAngeListener?.dispose(); } }
 	);
 }
 
 
-function relativePathToUri(path: string, resultsUri: vscode.Uri): vscode.Uri | undefined {
-	if (pathUtils.isAbsolute(path)) {
+function relAtivePAthToUri(pAth: string, resultsUri: vscode.Uri): vscode.Uri | undefined {
+	if (pAthUtils.isAbsolute(pAth)) {
 		return vscode.Uri
-			.file(path)
-			.with({ scheme: process.env.HOME ? 'file' : 'vscode-userdata' });
+			.file(pAth)
+			.with({ scheme: process.env.HOME ? 'file' : 'vscode-userdAtA' });
 	}
 
-	if (path.indexOf('~/') === 0) {
+	if (pAth.indexOf('~/') === 0) {
 		return vscode.Uri
-			.file(pathUtils.join(process.env.HOME ?? '', path.slice(2)))
-			.with({ scheme: process.env.HOME ? 'file' : 'vscode-userdata' });
+			.file(pAthUtils.join(process.env.HOME ?? '', pAth.slice(2)))
+			.with({ scheme: process.env.HOME ? 'file' : 'vscode-userdAtA' });
 	}
 
-	const uriFromFolderWithPath = (folder: vscode.WorkspaceFolder, path: string): vscode.Uri =>
-		vscode.Uri.joinPath(folder.uri, path);
+	const uriFromFolderWithPAth = (folder: vscode.WorkspAceFolder, pAth: string): vscode.Uri =>
+		vscode.Uri.joinPAth(folder.uri, pAth);
 
-	if (vscode.workspace.workspaceFolders) {
-		const multiRootFormattedPath = /^(.*) • (.*)$/.exec(path);
-		if (multiRootFormattedPath) {
-			const [, workspaceName, workspacePath] = multiRootFormattedPath;
-			const folder = vscode.workspace.workspaceFolders.filter(wf => wf.name === workspaceName)[0];
+	if (vscode.workspAce.workspAceFolders) {
+		const multiRootFormAttedPAth = /^(.*) • (.*)$/.exec(pAth);
+		if (multiRootFormAttedPAth) {
+			const [, workspAceNAme, workspAcePAth] = multiRootFormAttedPAth;
+			const folder = vscode.workspAce.workspAceFolders.filter(wf => wf.nAme === workspAceNAme)[0];
 			if (folder) {
-				return uriFromFolderWithPath(folder, workspacePath);
+				return uriFromFolderWithPAth(folder, workspAcePAth);
 			}
 		}
-		else if (vscode.workspace.workspaceFolders.length === 1) {
-			return uriFromFolderWithPath(vscode.workspace.workspaceFolders[0], path);
+		else if (vscode.workspAce.workspAceFolders.length === 1) {
+			return uriFromFolderWithPAth(vscode.workspAce.workspAceFolders[0], pAth);
 		} else if (resultsUri.scheme !== 'untitled') {
-			// We're in a multi-root workspace, but the path is not multi-root formatted
-			// Possibly a saved search from a single root session. Try checking if the search result document's URI is in a current workspace folder.
-			const prefixMatch = vscode.workspace.workspaceFolders.filter(wf => resultsUri.toString().startsWith(wf.uri.toString()))[0];
-			if (prefixMatch) {
-				return uriFromFolderWithPath(prefixMatch, path);
+			// We're in A multi-root workspAce, but the pAth is not multi-root formAtted
+			// Possibly A sAved seArch from A single root session. Try checking if the seArch result document's URI is in A current workspAce folder.
+			const prefixMAtch = vscode.workspAce.workspAceFolders.filter(wf => resultsUri.toString().stArtsWith(wf.uri.toString()))[0];
+			if (prefixMAtch) {
+				return uriFromFolderWithPAth(prefixMAtch, pAth);
 			}
 		}
 	}
 
-	console.error(`Unable to resolve path ${path}`);
+	console.error(`UnAble to resolve pAth ${pAth}`);
 	return undefined;
 }
 
-type ParsedSearchFileLine = { type: 'file', location: vscode.LocationLink, allLocations: vscode.LocationLink[], path: string };
-type ParsedSearchResultLine = { type: 'result', location: vscode.LocationLink, isContext: boolean, prefixRange: vscode.Range };
-type ParsedSearchResults = Array<ParsedSearchFileLine | ParsedSearchResultLine>;
-const isFileLine = (line: ParsedSearchResultLine | ParsedSearchFileLine): line is ParsedSearchFileLine => line.type === 'file';
-const isResultLine = (line: ParsedSearchResultLine | ParsedSearchFileLine): line is ParsedSearchResultLine => line.type === 'result';
+type PArsedSeArchFileLine = { type: 'file', locAtion: vscode.LocAtionLink, AllLocAtions: vscode.LocAtionLink[], pAth: string };
+type PArsedSeArchResultLine = { type: 'result', locAtion: vscode.LocAtionLink, isContext: booleAn, prefixRAnge: vscode.RAnge };
+type PArsedSeArchResults = ArrAy<PArsedSeArchFileLine | PArsedSeArchResultLine>;
+const isFileLine = (line: PArsedSeArchResultLine | PArsedSeArchFileLine): line is PArsedSeArchFileLine => line.type === 'file';
+const isResultLine = (line: PArsedSeArchResultLine | PArsedSeArchFileLine): line is PArsedSeArchResultLine => line.type === 'result';
 
 
-function parseSearchResults(document: vscode.TextDocument, token?: vscode.CancellationToken): ParsedSearchResults {
+function pArseSeArchResults(document: vscode.TextDocument, token?: vscode.CAncellAtionToken): PArsedSeArchResults {
 
-	if (cachedLastParse && cachedLastParse.uri === document.uri && cachedLastParse.version === document.version) {
-		return cachedLastParse.parse;
+	if (cAchedLAstPArse && cAchedLAstPArse.uri === document.uri && cAchedLAstPArse.version === document.version) {
+		return cAchedLAstPArse.pArse;
 	}
 
 	const lines = document.getText().split(/\r?\n/);
-	const links: ParsedSearchResults = [];
+	const links: PArsedSeArchResults = [];
 
-	let currentTarget: vscode.Uri | undefined = undefined;
-	let currentTargetLocations: vscode.LocationLink[] | undefined = undefined;
+	let currentTArget: vscode.Uri | undefined = undefined;
+	let currentTArgetLocAtions: vscode.LocAtionLink[] | undefined = undefined;
 
 	for (let i = 0; i < lines.length; i++) {
-		// TODO: This is probably always false, given we're pegging the thread...
-		if (token?.isCancellationRequested) { return []; }
+		// TODO: This is probAbly AlwAys fAlse, given we're pegging the threAd...
+		if (token?.isCAncellAtionRequested) { return []; }
 		const line = lines[i];
 
 		const fileLine = FILE_LINE_REGEX.exec(line);
 		if (fileLine) {
-			const [, path] = fileLine;
+			const [, pAth] = fileLine;
 
-			currentTarget = relativePathToUri(path, document.uri);
-			if (!currentTarget) { continue; }
-			currentTargetLocations = [];
+			currentTArget = relAtivePAthToUri(pAth, document.uri);
+			if (!currentTArget) { continue; }
+			currentTArgetLocAtions = [];
 
-			const location: vscode.LocationLink = {
-				targetRange: new vscode.Range(0, 0, 0, 1),
-				targetUri: currentTarget,
-				originSelectionRange: new vscode.Range(i, 0, i, line.length),
+			const locAtion: vscode.LocAtionLink = {
+				tArgetRAnge: new vscode.RAnge(0, 0, 0, 1),
+				tArgetUri: currentTArget,
+				originSelectionRAnge: new vscode.RAnge(i, 0, i, line.length),
 			};
 
 
-			links[i] = { type: 'file', location, allLocations: currentTargetLocations, path };
+			links[i] = { type: 'file', locAtion, AllLocAtions: currentTArgetLocAtions, pAth };
 		}
 
-		if (!currentTarget) { continue; }
+		if (!currentTArget) { continue; }
 
 		const resultLine = RESULT_LINE_REGEX.exec(line);
 		if (resultLine) {
-			const [, indentation, _lineNumber, seperator, resultIndentation] = resultLine;
+			const [, indentAtion, _lineNumber, seperAtor, resultIndentAtion] = resultLine;
 			const lineNumber = +_lineNumber - 1;
-			const resultStart = (indentation + _lineNumber + seperator + resultIndentation).length;
-			const metadataOffset = (indentation + _lineNumber + seperator).length;
+			const resultStArt = (indentAtion + _lineNumber + seperAtor + resultIndentAtion).length;
+			const metAdAtAOffset = (indentAtion + _lineNumber + seperAtor).length;
 
-			const location: vscode.LocationLink = {
-				targetRange: new vscode.Range(Math.max(lineNumber - 3, 0), 0, lineNumber + 3, line.length),
-				targetSelectionRange: new vscode.Range(lineNumber, metadataOffset, lineNumber, metadataOffset),
-				targetUri: currentTarget,
-				originSelectionRange: new vscode.Range(i, resultStart, i, line.length),
+			const locAtion: vscode.LocAtionLink = {
+				tArgetRAnge: new vscode.RAnge(MAth.mAx(lineNumber - 3, 0), 0, lineNumber + 3, line.length),
+				tArgetSelectionRAnge: new vscode.RAnge(lineNumber, metAdAtAOffset, lineNumber, metAdAtAOffset),
+				tArgetUri: currentTArget,
+				originSelectionRAnge: new vscode.RAnge(i, resultStArt, i, line.length),
 			};
 
-			currentTargetLocations?.push(location);
+			currentTArgetLocAtions?.push(locAtion);
 
-			links[i] = { type: 'result', location, isContext: seperator === ' ', prefixRange: new vscode.Range(i, 0, i, metadataOffset) };
+			links[i] = { type: 'result', locAtion, isContext: seperAtor === ' ', prefixRAnge: new vscode.RAnge(i, 0, i, metAdAtAOffset) };
 		}
 	}
 
-	cachedLastParse = {
+	cAchedLAstPArse = {
 		version: document.version,
-		parse: links,
+		pArse: links,
 		uri: document.uri
 	};
 

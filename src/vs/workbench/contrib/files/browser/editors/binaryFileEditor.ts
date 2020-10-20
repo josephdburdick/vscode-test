@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { BaseBinaryResourceEditor } from 'vs/workbench/browser/parts/editor/binaryEditor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import * As nls from 'vs/nls';
+import { BAseBinAryResourceEditor } from 'vs/workbench/browser/pArts/editor/binAryEditor';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { EditorInput, EditorOptions } from 'vs/workbench/common/editor';
 import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
 import { BINARY_FILE_EDITOR_ID } from 'vs/workbench/contrib/files/common/files';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
 import { openEditorWith } from 'vs/workbench/services/editor/common/editorOpenWith';
 
 /**
- * An implementation of editor for binary files that cannot be displayed.
+ * An implementAtion of editor for binAry files thAt cAnnot be displAyed.
  */
-export class BinaryFileEditor extends BaseBinaryResourceEditor {
+export clAss BinAryFileEditor extends BAseBinAryResourceEditor {
 
-	static readonly ID = BINARY_FILE_EDITOR_ID;
+	stAtic reAdonly ID = BINARY_FILE_EDITOR_ID;
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IQuickInputService private readonly quickInputService: IQuickInputService,
-		@IStorageService storageService: IStorageService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService,
+		@IStorAgeService storAgeService: IStorAgeService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 	) {
 		super(
-			BinaryFileEditor.ID,
+			BinAryFileEditor.ID,
 			{
-				openInternal: (input, options) => this.openInternal(input, options),
-				openExternal: resource => this.openerService.open(resource, { openExternal: true })
+				openInternAl: (input, options) => this.openInternAl(input, options),
+				openExternAl: resource => this.openerService.open(resource, { openExternAl: true })
 			},
 			telemetryService,
 			themeService,
 			environmentService,
-			storageService
+			storAgeService
 		);
 	}
 
-	private async openInternal(input: EditorInput, options: EditorOptions | undefined): Promise<void> {
-		if (input instanceof FileEditorInput && this.group) {
+	privAte Async openInternAl(input: EditorInput, options: EditorOptions | undefined): Promise<void> {
+		if (input instAnceof FileEditorInput && this.group) {
 
-			// Enforce to open the input as text to enable our text based viewer
+			// Enforce to open the input As text to enAble our text bAsed viewer
 			input.setForceOpenAsText();
 
-			// If more editors are installed that can handle this input, show a picker
-			await openEditorWith(input, undefined, options, this.group, this.editorService, this.configurationService, this.quickInputService);
+			// If more editors Are instAlled thAt cAn hAndle this input, show A picker
+			AwAit openEditorWith(input, undefined, options, this.group, this.editorService, this.configurAtionService, this.quickInputService);
 		}
 	}
 
 	getTitle(): string {
-		return this.input ? this.input.getName() : nls.localize('binaryFileEditor', "Binary File Viewer");
+		return this.input ? this.input.getNAme() : nls.locAlize('binAryFileEditor', "BinAry File Viewer");
 	}
 }

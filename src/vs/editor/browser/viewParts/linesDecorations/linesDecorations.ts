@@ -1,107 +1,107 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./linesDecorations';
-import { DecorationToRender, DedupOverlay } from 'vs/editor/browser/viewParts/glyphMargin/glyphMargin';
+import 'vs/css!./linesDecorAtions';
+import { DecorAtionToRender, DedupOverlAy } from 'vs/editor/browser/viewPArts/glyphMArgin/glyphMArgin';
 import { RenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 
-export class LinesDecorationsOverlay extends DedupOverlay {
+export clAss LinesDecorAtionsOverlAy extends DedupOverlAy {
 
-	private readonly _context: ViewContext;
+	privAte reAdonly _context: ViewContext;
 
-	private _decorationsLeft: number;
-	private _decorationsWidth: number;
-	private _renderResult: string[] | null;
+	privAte _decorAtionsLeft: number;
+	privAte _decorAtionsWidth: number;
+	privAte _renderResult: string[] | null;
 
 	constructor(context: ViewContext) {
 		super();
 		this._context = context;
-		const options = this._context.configuration.options;
-		const layoutInfo = options.get(EditorOption.layoutInfo);
-		this._decorationsLeft = layoutInfo.decorationsLeft;
-		this._decorationsWidth = layoutInfo.decorationsWidth;
+		const options = this._context.configurAtion.options;
+		const lAyoutInfo = options.get(EditorOption.lAyoutInfo);
+		this._decorAtionsLeft = lAyoutInfo.decorAtionsLeft;
+		this._decorAtionsWidth = lAyoutInfo.decorAtionsWidth;
 		this._renderResult = null;
-		this._context.addEventHandler(this);
+		this._context.AddEventHAndler(this);
 	}
 
 	public dispose(): void {
-		this._context.removeEventHandler(this);
+		this._context.removeEventHAndler(this);
 		this._renderResult = null;
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const options = this._context.configuration.options;
-		const layoutInfo = options.get(EditorOption.layoutInfo);
-		this._decorationsLeft = layoutInfo.decorationsLeft;
-		this._decorationsWidth = layoutInfo.decorationsWidth;
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		const options = this._context.configurAtion.options;
+		const lAyoutInfo = options.get(EditorOption.lAyoutInfo);
+		this._decorAtionsLeft = lAyoutInfo.decorAtionsLeft;
+		this._decorAtionsWidth = lAyoutInfo.decorAtionsWidth;
 		return true;
 	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
+	public onDecorAtionsChAnged(e: viewEvents.ViewDecorAtionsChAngedEvent): booleAn {
 		return true;
 	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
+	public onFlushed(e: viewEvents.ViewFlushedEvent): booleAn {
 		return true;
 	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
+	public onLinesChAnged(e: viewEvents.ViewLinesChAngedEvent): booleAn {
 		return true;
 	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
+	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): booleAn {
 		return true;
 	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
+	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): booleAn {
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return e.scrollTopChanged;
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		return e.scrollTopChAnged;
 	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
+	public onZonesChAnged(e: viewEvents.ViewZonesChAngedEvent): booleAn {
 		return true;
 	}
 
-	// --- end event handlers
+	// --- end event hAndlers
 
-	protected _getDecorations(ctx: RenderingContext): DecorationToRender[] {
-		const decorations = ctx.getDecorationsInViewport();
-		let r: DecorationToRender[] = [], rLen = 0;
-		for (let i = 0, len = decorations.length; i < len; i++) {
-			const d = decorations[i];
-			const linesDecorationsClassName = d.options.linesDecorationsClassName;
-			if (linesDecorationsClassName) {
-				r[rLen++] = new DecorationToRender(d.range.startLineNumber, d.range.endLineNumber, linesDecorationsClassName);
+	protected _getDecorAtions(ctx: RenderingContext): DecorAtionToRender[] {
+		const decorAtions = ctx.getDecorAtionsInViewport();
+		let r: DecorAtionToRender[] = [], rLen = 0;
+		for (let i = 0, len = decorAtions.length; i < len; i++) {
+			const d = decorAtions[i];
+			const linesDecorAtionsClAssNAme = d.options.linesDecorAtionsClAssNAme;
+			if (linesDecorAtionsClAssNAme) {
+				r[rLen++] = new DecorAtionToRender(d.rAnge.stArtLineNumber, d.rAnge.endLineNumber, linesDecorAtionsClAssNAme);
 			}
-			const firstLineDecorationClassName = d.options.firstLineDecorationClassName;
-			if (firstLineDecorationClassName) {
-				r[rLen++] = new DecorationToRender(d.range.startLineNumber, d.range.startLineNumber, firstLineDecorationClassName);
+			const firstLineDecorAtionClAssNAme = d.options.firstLineDecorAtionClAssNAme;
+			if (firstLineDecorAtionClAssNAme) {
+				r[rLen++] = new DecorAtionToRender(d.rAnge.stArtLineNumber, d.rAnge.stArtLineNumber, firstLineDecorAtionClAssNAme);
 			}
 		}
 		return r;
 	}
 
-	public prepareRender(ctx: RenderingContext): void {
-		const visibleStartLineNumber = ctx.visibleRange.startLineNumber;
-		const visibleEndLineNumber = ctx.visibleRange.endLineNumber;
-		const toRender = this._render(visibleStartLineNumber, visibleEndLineNumber, this._getDecorations(ctx));
+	public prepAreRender(ctx: RenderingContext): void {
+		const visibleStArtLineNumber = ctx.visibleRAnge.stArtLineNumber;
+		const visibleEndLineNumber = ctx.visibleRAnge.endLineNumber;
+		const toRender = this._render(visibleStArtLineNumber, visibleEndLineNumber, this._getDecorAtions(ctx));
 
-		const left = this._decorationsLeft.toString();
-		const width = this._decorationsWidth.toString();
+		const left = this._decorAtionsLeft.toString();
+		const width = this._decorAtionsWidth.toString();
 		const common = '" style="left:' + left + 'px;width:' + width + 'px;"></div>';
 
 		const output: string[] = [];
-		for (let lineNumber = visibleStartLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
-			const lineIndex = lineNumber - visibleStartLineNumber;
-			const classNames = toRender[lineIndex];
+		for (let lineNumber = visibleStArtLineNumber; lineNumber <= visibleEndLineNumber; lineNumber++) {
+			const lineIndex = lineNumber - visibleStArtLineNumber;
+			const clAssNAmes = toRender[lineIndex];
 			let lineOutput = '';
-			for (let i = 0, len = classNames.length; i < len; i++) {
-				lineOutput += '<div class="cldr ' + classNames[i] + common;
+			for (let i = 0, len = clAssNAmes.length; i < len; i++) {
+				lineOutput += '<div clAss="cldr ' + clAssNAmes[i] + common;
 			}
 			output[lineIndex] = lineOutput;
 		}
@@ -109,10 +109,10 @@ export class LinesDecorationsOverlay extends DedupOverlay {
 		this._renderResult = output;
 	}
 
-	public render(startLineNumber: number, lineNumber: number): string {
+	public render(stArtLineNumber: number, lineNumber: number): string {
 		if (!this._renderResult) {
 			return '';
 		}
-		return this._renderResult[lineNumber - startLineNumber];
+		return this._renderResult[lineNumber - stArtLineNumber];
 	}
 }

@@ -1,497 +1,497 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
 define({
-	Sleep: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	WakeUp: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Sleep: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	WAkeUp: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
 	KeyA: {
-		value: 'a',
+		vAlue: 'A',
 		withShift: 'A',
-		withAltGr: 'a',
+		withAltGr: 'A',
 		withShiftAltGr: 'A'
 	},
 	KeyB: {
-		value: 'b',
+		vAlue: 'b',
 		withShift: 'B',
 		withAltGr: 'b',
 		withShiftAltGr: 'B'
 	},
 	KeyC: {
-		value: 'c',
+		vAlue: 'c',
 		withShift: 'C',
 		withAltGr: 'c',
 		withShiftAltGr: 'C'
 	},
 	KeyD: {
-		value: 'd',
+		vAlue: 'd',
 		withShift: 'D',
 		withAltGr: 'd',
 		withShiftAltGr: 'D'
 	},
 	KeyE: {
-		value: 'e',
+		vAlue: 'e',
 		withShift: 'E',
 		withAltGr: 'e',
 		withShiftAltGr: 'E'
 	},
 	KeyF: {
-		value: 'f',
+		vAlue: 'f',
 		withShift: 'F',
 		withAltGr: 'f',
 		withShiftAltGr: 'F'
 	},
 	KeyG: {
-		value: 'g',
+		vAlue: 'g',
 		withShift: 'G',
 		withAltGr: 'g',
 		withShiftAltGr: 'G'
 	},
 	KeyH: {
-		value: 'h',
+		vAlue: 'h',
 		withShift: 'H',
 		withAltGr: 'h',
 		withShiftAltGr: 'H'
 	},
 	KeyI: {
-		value: 'i',
+		vAlue: 'i',
 		withShift: 'I',
 		withAltGr: 'i',
 		withShiftAltGr: 'I'
 	},
 	KeyJ: {
-		value: 'j',
+		vAlue: 'j',
 		withShift: 'J',
 		withAltGr: 'j',
 		withShiftAltGr: 'J'
 	},
 	KeyK: {
-		value: 'k',
+		vAlue: 'k',
 		withShift: 'K',
 		withAltGr: 'k',
 		withShiftAltGr: 'K'
 	},
 	KeyL: {
-		value: 'l',
+		vAlue: 'l',
 		withShift: 'L',
 		withAltGr: 'l',
 		withShiftAltGr: 'L'
 	},
 	KeyM: {
-		value: 'm',
+		vAlue: 'm',
 		withShift: 'M',
 		withAltGr: 'm',
 		withShiftAltGr: 'M'
 	},
 	KeyN: {
-		value: 'n',
+		vAlue: 'n',
 		withShift: 'N',
 		withAltGr: 'n',
 		withShiftAltGr: 'N'
 	},
 	KeyO: {
-		value: 'o',
+		vAlue: 'o',
 		withShift: 'O',
 		withAltGr: 'o',
 		withShiftAltGr: 'O'
 	},
 	KeyP: {
-		value: 'p',
+		vAlue: 'p',
 		withShift: 'P',
 		withAltGr: 'p',
 		withShiftAltGr: 'P'
 	},
 	KeyQ: {
-		value: 'q',
+		vAlue: 'q',
 		withShift: 'Q',
 		withAltGr: 'q',
 		withShiftAltGr: 'Q'
 	},
 	KeyR: {
-		value: 'r',
+		vAlue: 'r',
 		withShift: 'R',
 		withAltGr: 'r',
 		withShiftAltGr: 'R'
 	},
 	KeyS: {
-		value: 's',
+		vAlue: 's',
 		withShift: 'S',
 		withAltGr: 's',
 		withShiftAltGr: 'S'
 	},
 	KeyT: {
-		value: 't',
+		vAlue: 't',
 		withShift: 'T',
 		withAltGr: 't',
 		withShiftAltGr: 'T'
 	},
 	KeyU: {
-		value: 'u',
+		vAlue: 'u',
 		withShift: 'U',
 		withAltGr: 'u',
 		withShiftAltGr: 'U'
 	},
 	KeyV: {
-		value: 'v',
+		vAlue: 'v',
 		withShift: 'V',
 		withAltGr: 'v',
 		withShiftAltGr: 'V'
 	},
 	KeyW: {
-		value: 'w',
+		vAlue: 'w',
 		withShift: 'W',
 		withAltGr: 'w',
 		withShiftAltGr: 'W'
 	},
 	KeyX: {
-		value: 'x',
+		vAlue: 'x',
 		withShift: 'X',
 		withAltGr: 'x',
 		withShiftAltGr: 'X'
 	},
 	KeyY: {
-		value: 'y',
+		vAlue: 'y',
 		withShift: 'Y',
 		withAltGr: 'y',
 		withShiftAltGr: 'Y'
 	},
 	KeyZ: {
-		value: 'z',
+		vAlue: 'z',
 		withShift: 'Z',
 		withAltGr: 'z',
 		withShiftAltGr: 'Z'
 	},
 	Digit1: {
-		value: '1',
+		vAlue: '1',
 		withShift: '!',
 		withAltGr: '1',
 		withShiftAltGr: '!'
 	},
 	Digit2: {
-		value: '2',
+		vAlue: '2',
 		withShift: '@',
 		withAltGr: '2',
 		withShiftAltGr: '@'
 	},
 	Digit3: {
-		value: '3',
+		vAlue: '3',
 		withShift: '#',
 		withAltGr: '3',
 		withShiftAltGr: '#'
 	},
 	Digit4: {
-		value: '4',
+		vAlue: '4',
 		withShift: '$',
 		withAltGr: '4',
 		withShiftAltGr: '$'
 	},
 	Digit5: {
-		value: '5',
+		vAlue: '5',
 		withShift: '%',
 		withAltGr: '5',
 		withShiftAltGr: '%'
 	},
 	Digit6: {
-		value: '6',
+		vAlue: '6',
 		withShift: '^',
 		withAltGr: '6',
 		withShiftAltGr: '^'
 	},
 	Digit7: {
-		value: '7',
+		vAlue: '7',
 		withShift: '&',
 		withAltGr: '7',
 		withShiftAltGr: '&'
 	},
 	Digit8: {
-		value: '8',
+		vAlue: '8',
 		withShift: '*',
 		withAltGr: '8',
 		withShiftAltGr: '*'
 	},
 	Digit9: {
-		value: '9',
+		vAlue: '9',
 		withShift: '(',
 		withAltGr: '9',
 		withShiftAltGr: '('
 	},
 	Digit0: {
-		value: '0',
+		vAlue: '0',
 		withShift: ')',
 		withAltGr: '0',
 		withShiftAltGr: ')'
 	},
 	Enter: {
-		value: '\r',
+		vAlue: '\r',
 		withShift: '\r',
 		withAltGr: '\r',
 		withShiftAltGr: '\r'
 	},
-	Escape: {
-		value: '\u001b',
+	EscApe: {
+		vAlue: '\u001b',
 		withShift: '\u001b',
 		withAltGr: '\u001b',
 		withShiftAltGr: '\u001b'
 	},
-	Backspace: {
-		value: '\b',
+	BAckspAce: {
+		vAlue: '\b',
 		withShift: '\b',
 		withAltGr: '\b',
 		withShiftAltGr: '\b'
 	},
-	Tab: {
-		value: '\t',
+	TAb: {
+		vAlue: '\t',
 		withShift: '',
 		withAltGr: '\t',
 		withShiftAltGr: ''
 	},
-	Space: {
-		value: ' ',
+	SpAce: {
+		vAlue: ' ',
 		withShift: ' ',
 		withAltGr: ' ',
 		withShiftAltGr: ' '
 	},
 	Minus: {
-		value: '-',
+		vAlue: '-',
 		withShift: '_',
 		withAltGr: '-',
 		withShiftAltGr: '_'
 	},
-	Equal: {
-		value: '=',
+	EquAl: {
+		vAlue: '=',
 		withShift: '+',
 		withAltGr: '=',
 		withShiftAltGr: '+'
 	},
-	BracketLeft: {
-		value: '[',
+	BrAcketLeft: {
+		vAlue: '[',
 		withShift: '{',
 		withAltGr: '[',
 		withShiftAltGr: '{'
 	},
-	BracketRight: {
-		value: ']',
+	BrAcketRight: {
+		vAlue: ']',
 		withShift: '}',
 		withAltGr: ']',
 		withShiftAltGr: '}'
 	},
-	Backslash: {
-		value: '\\',
+	BAckslAsh: {
+		vAlue: '\\',
 		withShift: '|',
 		withAltGr: '\\',
 		withShiftAltGr: '|'
 	},
 	Semicolon: {
-		value: ';',
+		vAlue: ';',
 		withShift: ':',
 		withAltGr: ';',
 		withShiftAltGr: ':'
 	},
 	Quote: {
-		value: '\'',
+		vAlue: '\'',
 		withShift: '"',
 		withAltGr: '\'',
 		withShiftAltGr: '"'
 	},
-	Backquote: {
-		value: '`',
+	BAckquote: {
+		vAlue: '`',
 		withShift: '~',
 		withAltGr: '`',
 		withShiftAltGr: '~'
 	},
-	Comma: {
-		value: ',',
+	CommA: {
+		vAlue: ',',
 		withShift: '<',
 		withAltGr: ',',
 		withShiftAltGr: '<'
 	},
 	Period: {
-		value: '.',
+		vAlue: '.',
 		withShift: '>',
 		withAltGr: '.',
 		withShiftAltGr: '>'
 	},
-	Slash: {
-		value: '/',
+	SlAsh: {
+		vAlue: '/',
 		withShift: '?',
 		withAltGr: '/',
 		withShiftAltGr: '?'
 	},
-	CapsLock: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F1: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F2: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F3: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F4: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F5: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F6: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F7: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F8: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F9: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F10: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F11: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F12: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	PrintScreen: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ScrollLock: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Pause: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Insert: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Home: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	PageUp: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	CApsLock: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F1: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F2: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F3: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F4: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F5: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F6: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F7: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F8: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F9: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F10: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F11: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F12: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	PrintScreen: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ScrollLock: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	PAuse: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Insert: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Home: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	PAgeUp: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
 	Delete: {
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	End: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	PageDown: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ArrowRight: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ArrowLeft: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ArrowDown: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ArrowUp: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	NumLock: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	NumpadDivide: {
-		value: '/',
+	End: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	PAgeDown: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ArrowRight: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ArrowLeft: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ArrowDown: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ArrowUp: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	NumLock: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	NumpAdDivide: {
+		vAlue: '/',
 		withShift: '/',
 		withAltGr: '/',
 		withShiftAltGr: '/'
 	},
-	NumpadMultiply: {
-		value: '*',
+	NumpAdMultiply: {
+		vAlue: '*',
 		withShift: '*',
 		withAltGr: '*',
 		withShiftAltGr: '*'
 	},
-	NumpadSubtract: {
-		value: '-',
+	NumpAdSubtrAct: {
+		vAlue: '-',
 		withShift: '-',
 		withAltGr: '-',
 		withShiftAltGr: '-'
 	},
-	NumpadAdd: {
-		value: '+',
+	NumpAdAdd: {
+		vAlue: '+',
 		withShift: '+',
 		withAltGr: '+',
 		withShiftAltGr: '+'
 	},
-	NumpadEnter: {
-		value: '\r',
+	NumpAdEnter: {
+		vAlue: '\r',
 		withShift: '\r',
 		withAltGr: '\r',
 		withShiftAltGr: '\r'
 	},
-	Numpad1: { value: '', withShift: '1', withAltGr: '', withShiftAltGr: '1' },
-	Numpad2: { value: '', withShift: '2', withAltGr: '', withShiftAltGr: '2' },
-	Numpad3: { value: '', withShift: '3', withAltGr: '', withShiftAltGr: '3' },
-	Numpad4: { value: '', withShift: '4', withAltGr: '', withShiftAltGr: '4' },
-	Numpad5: { value: '', withShift: '5', withAltGr: '', withShiftAltGr: '5' },
-	Numpad6: { value: '', withShift: '6', withAltGr: '', withShiftAltGr: '6' },
-	Numpad7: { value: '', withShift: '7', withAltGr: '', withShiftAltGr: '7' },
-	Numpad8: { value: '', withShift: '8', withAltGr: '', withShiftAltGr: '8' },
-	Numpad9: { value: '', withShift: '9', withAltGr: '', withShiftAltGr: '9' },
-	Numpad0: { value: '', withShift: '0', withAltGr: '', withShiftAltGr: '0' },
-	NumpadDecimal: { value: '', withShift: '.', withAltGr: '', withShiftAltGr: '.' },
-	IntlBackslash: {
-		value: '<',
+	NumpAd1: { vAlue: '', withShift: '1', withAltGr: '', withShiftAltGr: '1' },
+	NumpAd2: { vAlue: '', withShift: '2', withAltGr: '', withShiftAltGr: '2' },
+	NumpAd3: { vAlue: '', withShift: '3', withAltGr: '', withShiftAltGr: '3' },
+	NumpAd4: { vAlue: '', withShift: '4', withAltGr: '', withShiftAltGr: '4' },
+	NumpAd5: { vAlue: '', withShift: '5', withAltGr: '', withShiftAltGr: '5' },
+	NumpAd6: { vAlue: '', withShift: '6', withAltGr: '', withShiftAltGr: '6' },
+	NumpAd7: { vAlue: '', withShift: '7', withAltGr: '', withShiftAltGr: '7' },
+	NumpAd8: { vAlue: '', withShift: '8', withAltGr: '', withShiftAltGr: '8' },
+	NumpAd9: { vAlue: '', withShift: '9', withAltGr: '', withShiftAltGr: '9' },
+	NumpAd0: { vAlue: '', withShift: '0', withAltGr: '', withShiftAltGr: '0' },
+	NumpAdDecimAl: { vAlue: '', withShift: '.', withAltGr: '', withShiftAltGr: '.' },
+	IntlBAckslAsh: {
+		vAlue: '<',
 		withShift: '>',
 		withAltGr: '|',
 		withShiftAltGr: '¦'
 	},
-	ContextMenu: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Power: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	NumpadEqual: {
-		value: '=',
+	ContextMenu: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Power: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	NumpAdEquAl: {
+		vAlue: '=',
 		withShift: '=',
 		withAltGr: '=',
 		withShiftAltGr: '='
 	},
-	F13: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F14: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F15: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F16: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F17: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F18: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F19: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F20: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F21: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F22: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F23: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	F24: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Open: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Help: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Select: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Again: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Undo: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Cut: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Copy: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Paste: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Find: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	AudioVolumeMute: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	AudioVolumeUp: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	AudioVolumeDown: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	NumpadComma: {
-		value: '.',
+	F13: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F14: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F15: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F16: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F17: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F18: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F19: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F20: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F21: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F22: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F23: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	F24: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Open: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Help: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Select: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	AgAin: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Undo: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Cut: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Copy: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	PAste: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Find: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	AudioVolumeMute: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	AudioVolumeUp: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	AudioVolumeDown: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	NumpAdCommA: {
+		vAlue: '.',
 		withShift: '.',
 		withAltGr: '.',
 		withShiftAltGr: '.'
 	},
-	IntlRo: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	KanaMode: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	IntlYen: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Convert: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	NonConvert: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Lang1: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Lang2: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Lang3: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Lang4: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Lang5: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	NumpadParenLeft: {
-		value: '(',
+	IntlRo: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	KAnAMode: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	IntlYen: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Convert: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	NonConvert: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAng1: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAng2: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAng3: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAng4: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAng5: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	NumpAdPArenLeft: {
+		vAlue: '(',
 		withShift: '(',
 		withAltGr: '(',
 		withShiftAltGr: '('
 	},
-	NumpadParenRight: {
-		value: ')',
+	NumpAdPArenRight: {
+		vAlue: ')',
 		withShift: ')',
 		withAltGr: ')',
 		withShiftAltGr: ')'
 	},
-	ControlLeft: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ShiftLeft: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	AltLeft: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MetaLeft: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ControlRight: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	ShiftRight: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	AltRight: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MetaRight: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrightnessUp: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrightnessDown: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaPlay: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaRecord: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaFastForward: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaRewind: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaTrackNext: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaTrackPrevious: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaStop: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	Eject: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaPlayPause: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MediaSelect: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	LaunchMail: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	LaunchApp2: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	LaunchApp1: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	SelectTask: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	LaunchScreenSaver: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserSearch: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserHome: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserBack: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserForward: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserStop: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserRefresh: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	BrowserFavorites: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MailReply: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MailForward: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
-	MailSend: { value: '', withShift: '', withAltGr: '', withShiftAltGr: '' }
+	ControlLeft: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ShiftLeft: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	AltLeft: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MetALeft: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ControlRight: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	ShiftRight: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	AltRight: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MetARight: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrightnessUp: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrightnessDown: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediAPlAy: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediARecord: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediAFAstForwArd: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediARewind: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediATrAckNext: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediATrAckPrevious: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediAStop: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	Eject: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediAPlAyPAuse: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MediASelect: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAunchMAil: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAunchApp2: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAunchApp1: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	SelectTAsk: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	LAunchScreenSAver: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserSeArch: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserHome: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserBAck: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserForwArd: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserStop: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserRefresh: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	BrowserFAvorites: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MAilReply: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MAilForwArd: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' },
+	MAilSend: { vAlue: '', withShift: '', withAltGr: '', withShiftAltGr: '' }
 
 });

@@ -1,173 +1,173 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 
-import { registerColor, ColorIdentifier, ColorDefaults } from 'vs/platform/theme/common/colorRegistry';
+import { registerColor, ColorIdentifier, ColorDefAults } from 'vs/plAtform/theme/common/colorRegistry';
 import { PANEL_BORDER } from 'vs/workbench/common/theme';
 
 /**
- * The color identifiers for the terminal's ansi colors. The index in the array corresponds to the index
- * of the color in the terminal color table.
+ * The color identifiers for the terminAl's Ansi colors. The index in the ArrAy corresponds to the index
+ * of the color in the terminAl color tAble.
  */
-export const ansiColorIdentifiers: ColorIdentifier[] = [];
+export const AnsiColorIdentifiers: ColorIdentifier[] = [];
 
-export const TERMINAL_BACKGROUND_COLOR = registerColor('terminal.background', null, nls.localize('terminal.background', 'The background color of the terminal, this allows coloring the terminal differently to the panel.'));
-export const TERMINAL_FOREGROUND_COLOR = registerColor('terminal.foreground', {
+export const TERMINAL_BACKGROUND_COLOR = registerColor('terminAl.bAckground', null, nls.locAlize('terminAl.bAckground', 'The bAckground color of the terminAl, this Allows coloring the terminAl differently to the pAnel.'));
+export const TERMINAL_FOREGROUND_COLOR = registerColor('terminAl.foreground', {
 	light: '#333333',
-	dark: '#CCCCCC',
+	dArk: '#CCCCCC',
 	hc: '#FFFFFF'
-}, nls.localize('terminal.foreground', 'The foreground color of the terminal.'));
-export const TERMINAL_CURSOR_FOREGROUND_COLOR = registerColor('terminalCursor.foreground', null, nls.localize('terminalCursor.foreground', 'The foreground color of the terminal cursor.'));
-export const TERMINAL_CURSOR_BACKGROUND_COLOR = registerColor('terminalCursor.background', null, nls.localize('terminalCursor.background', 'The background color of the terminal cursor. Allows customizing the color of a character overlapped by a block cursor.'));
-export const TERMINAL_SELECTION_BACKGROUND_COLOR = registerColor('terminal.selectionBackground', {
+}, nls.locAlize('terminAl.foreground', 'The foreground color of the terminAl.'));
+export const TERMINAL_CURSOR_FOREGROUND_COLOR = registerColor('terminAlCursor.foreground', null, nls.locAlize('terminAlCursor.foreground', 'The foreground color of the terminAl cursor.'));
+export const TERMINAL_CURSOR_BACKGROUND_COLOR = registerColor('terminAlCursor.bAckground', null, nls.locAlize('terminAlCursor.bAckground', 'The bAckground color of the terminAl cursor. Allows customizing the color of A chArActer overlApped by A block cursor.'));
+export const TERMINAL_SELECTION_BACKGROUND_COLOR = registerColor('terminAl.selectionBAckground', {
 	light: '#00000040',
-	dark: '#FFFFFF40',
+	dArk: '#FFFFFF40',
 	hc: '#FFFFFF80'
-}, nls.localize('terminal.selectionBackground', 'The selection background color of the terminal.'));
-export const TERMINAL_BORDER_COLOR = registerColor('terminal.border', {
-	dark: PANEL_BORDER,
+}, nls.locAlize('terminAl.selectionBAckground', 'The selection bAckground color of the terminAl.'));
+export const TERMINAL_BORDER_COLOR = registerColor('terminAl.border', {
+	dArk: PANEL_BORDER,
 	light: PANEL_BORDER,
 	hc: PANEL_BORDER
-}, nls.localize('terminal.border', 'The color of the border that separates split panes within the terminal. This defaults to panel.border.'));
+}, nls.locAlize('terminAl.border', 'The color of the border thAt sepArAtes split pAnes within the terminAl. This defAults to pAnel.border.'));
 
-export const ansiColorMap: { [key: string]: { index: number, defaults: ColorDefaults } } = {
-	'terminal.ansiBlack': {
+export const AnsiColorMAp: { [key: string]: { index: number, defAults: ColorDefAults } } = {
+	'terminAl.AnsiBlAck': {
 		index: 0,
-		defaults: {
+		defAults: {
 			light: '#000000',
-			dark: '#000000',
+			dArk: '#000000',
 			hc: '#000000'
 		}
 	},
-	'terminal.ansiRed': {
+	'terminAl.AnsiRed': {
 		index: 1,
-		defaults: {
+		defAults: {
 			light: '#cd3131',
-			dark: '#cd3131',
+			dArk: '#cd3131',
 			hc: '#cd0000'
 		}
 	},
-	'terminal.ansiGreen': {
+	'terminAl.AnsiGreen': {
 		index: 2,
-		defaults: {
+		defAults: {
 			light: '#00BC00',
-			dark: '#0DBC79',
+			dArk: '#0DBC79',
 			hc: '#00cd00'
 		}
 	},
-	'terminal.ansiYellow': {
+	'terminAl.AnsiYellow': {
 		index: 3,
-		defaults: {
+		defAults: {
 			light: '#949800',
-			dark: '#e5e510',
+			dArk: '#e5e510',
 			hc: '#cdcd00'
 		}
 	},
-	'terminal.ansiBlue': {
+	'terminAl.AnsiBlue': {
 		index: 4,
-		defaults: {
-			light: '#0451a5',
-			dark: '#2472c8',
+		defAults: {
+			light: '#0451A5',
+			dArk: '#2472c8',
 			hc: '#0000ee'
 		}
 	},
-	'terminal.ansiMagenta': {
+	'terminAl.AnsiMAgentA': {
 		index: 5,
-		defaults: {
+		defAults: {
 			light: '#bc05bc',
-			dark: '#bc3fbc',
+			dArk: '#bc3fbc',
 			hc: '#cd00cd'
 		}
 	},
-	'terminal.ansiCyan': {
+	'terminAl.AnsiCyAn': {
 		index: 6,
-		defaults: {
+		defAults: {
 			light: '#0598bc',
-			dark: '#11a8cd',
+			dArk: '#11A8cd',
 			hc: '#00cdcd'
 		}
 	},
-	'terminal.ansiWhite': {
+	'terminAl.AnsiWhite': {
 		index: 7,
-		defaults: {
+		defAults: {
 			light: '#555555',
-			dark: '#e5e5e5',
+			dArk: '#e5e5e5',
 			hc: '#e5e5e5'
 		}
 	},
-	'terminal.ansiBrightBlack': {
+	'terminAl.AnsiBrightBlAck': {
 		index: 8,
-		defaults: {
+		defAults: {
 			light: '#666666',
-			dark: '#666666',
+			dArk: '#666666',
 			hc: '#7f7f7f'
 		}
 	},
-	'terminal.ansiBrightRed': {
+	'terminAl.AnsiBrightRed': {
 		index: 9,
-		defaults: {
+		defAults: {
 			light: '#cd3131',
-			dark: '#f14c4c',
+			dArk: '#f14c4c',
 			hc: '#ff0000'
 		}
 	},
-	'terminal.ansiBrightGreen': {
+	'terminAl.AnsiBrightGreen': {
 		index: 10,
-		defaults: {
+		defAults: {
 			light: '#14CE14',
-			dark: '#23d18b',
+			dArk: '#23d18b',
 			hc: '#00ff00'
 		}
 	},
-	'terminal.ansiBrightYellow': {
+	'terminAl.AnsiBrightYellow': {
 		index: 11,
-		defaults: {
-			light: '#b5ba00',
-			dark: '#f5f543',
+		defAults: {
+			light: '#b5bA00',
+			dArk: '#f5f543',
 			hc: '#ffff00'
 		}
 	},
-	'terminal.ansiBrightBlue': {
+	'terminAl.AnsiBrightBlue': {
 		index: 12,
-		defaults: {
-			light: '#0451a5',
-			dark: '#3b8eea',
+		defAults: {
+			light: '#0451A5',
+			dArk: '#3b8eeA',
 			hc: '#5c5cff'
 		}
 	},
-	'terminal.ansiBrightMagenta': {
+	'terminAl.AnsiBrightMAgentA': {
 		index: 13,
-		defaults: {
+		defAults: {
 			light: '#bc05bc',
-			dark: '#d670d6',
+			dArk: '#d670d6',
 			hc: '#ff00ff'
 		}
 	},
-	'terminal.ansiBrightCyan': {
+	'terminAl.AnsiBrightCyAn': {
 		index: 14,
-		defaults: {
+		defAults: {
 			light: '#0598bc',
-			dark: '#29b8db',
+			dArk: '#29b8db',
 			hc: '#00ffff'
 		}
 	},
-	'terminal.ansiBrightWhite': {
+	'terminAl.AnsiBrightWhite': {
 		index: 15,
-		defaults: {
-			light: '#a5a5a5',
-			dark: '#e5e5e5',
+		defAults: {
+			light: '#A5A5A5',
+			dArk: '#e5e5e5',
 			hc: '#ffffff'
 		}
 	}
 };
 
 export function registerColors(): void {
-	for (const id in ansiColorMap) {
-		const entry = ansiColorMap[id];
-		const colorName = id.substring(13);
-		ansiColorIdentifiers[entry.index] = registerColor(id, entry.defaults, nls.localize('terminal.ansiColor', '\'{0}\' ANSI color in the terminal.', colorName));
+	for (const id in AnsiColorMAp) {
+		const entry = AnsiColorMAp[id];
+		const colorNAme = id.substring(13);
+		AnsiColorIdentifiers[entry.index] = registerColor(id, entry.defAults, nls.locAlize('terminAl.AnsiColor', '\'{0}\' ANSI color in the terminAl.', colorNAme));
 	}
 }

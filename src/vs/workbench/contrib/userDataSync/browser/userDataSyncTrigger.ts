@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { SettingsEditor2Input, KeybindingsEditorInput, PreferencesEditorInput } from 'vs/workbench/services/preferences/common/preferencesEditorInput';
-import { isEqual } from 'vs/base/common/resources';
+import { isEquAl } from 'vs/bAse/common/resources';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { VIEWLET_ID } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IEditorInput } from 'vs/workbench/common/editor';
 import { IViewsService } from 'vs/workbench/common/views';
-import { IUserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataSync';
+import { IUserDAtAAutoSyncService } from 'vs/plAtform/userDAtASync/common/userDAtASync';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { isWeb } from 'vs/base/common/platform';
+import { isWeb } from 'vs/bAse/common/plAtform';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
 
-export class UserDataSyncTrigger extends Disposable implements IWorkbenchContribution {
+export clAss UserDAtASyncTrigger extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
 		@IEditorService editorService: IEditorService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
 		@IViewsService viewsService: IViewsService,
-		@IUserDataAutoSyncService userDataAutoSyncService: IUserDataAutoSyncService,
+		@IUserDAtAAutoSyncService userDAtAAutoSyncService: IUserDAtAAutoSyncService,
 		@IHostService hostService: IHostService,
 	) {
 		super();
 		const event = Event.filter(
-			Event.any<string | undefined>(
-				Event.map(editorService.onDidActiveEditorChange, () => this.getUserDataEditorInputSource(editorService.activeEditor)),
-				Event.map(Event.filter(viewsService.onDidChangeViewContainerVisibility, e => e.id === VIEWLET_ID && e.visible), e => e.id)
+			Event.Any<string | undefined>(
+				Event.mAp(editorService.onDidActiveEditorChAnge, () => this.getUserDAtAEditorInputSource(editorService.ActiveEditor)),
+				Event.mAp(Event.filter(viewsService.onDidChAngeViewContAinerVisibility, e => e.id === VIEWLET_ID && e.visible), e => e.id)
 			), source => source !== undefined);
 		if (isWeb) {
 			this._register(Event.debounce<string, string[]>(
-				Event.any<string>(
-					Event.map(hostService.onDidChangeFocus, () => 'windowFocus'),
-					Event.map(event, source => source!),
-				), (last, source) => last ? [...last, source] : [source], 1000)
-				(sources => userDataAutoSyncService.triggerSync(sources, true, false)));
+				Event.Any<string>(
+					Event.mAp(hostService.onDidChAngeFocus, () => 'windowFocus'),
+					Event.mAp(event, source => source!),
+				), (lAst, source) => lAst ? [...lAst, source] : [source], 1000)
+				(sources => userDAtAAutoSyncService.triggerSync(sources, true, fAlse)));
 		} else {
-			this._register(event(source => userDataAutoSyncService.triggerSync([source!], true, false)));
+			this._register(event(source => userDAtAAutoSyncService.triggerSync([source!], true, fAlse)));
 		}
 	}
 
-	private getUserDataEditorInputSource(editorInput: IEditorInput | undefined): string | undefined {
+	privAte getUserDAtAEditorInputSource(editorInput: IEditorInput | undefined): string | undefined {
 		if (!editorInput) {
 			return undefined;
 		}
-		if (editorInput instanceof SettingsEditor2Input) {
+		if (editorInput instAnceof SettingsEditor2Input) {
 			return 'settingsEditor';
 		}
-		if (editorInput instanceof PreferencesEditorInput) {
+		if (editorInput instAnceof PreferencesEditorInput) {
 			return 'settingsEditor';
 		}
-		if (editorInput instanceof KeybindingsEditorInput) {
+		if (editorInput instAnceof KeybindingsEditorInput) {
 			return 'keybindingsEditor';
 		}
 		const resource = editorInput.resource;
-		if (isEqual(resource, this.environmentService.settingsResource)) {
+		if (isEquAl(resource, this.environmentService.settingsResource)) {
 			return 'settingsEditor';
 		}
-		if (isEqual(resource, this.environmentService.keybindingsResource)) {
+		if (isEquAl(resource, this.environmentService.keybindingsResource)) {
 			return 'keybindingsEditor';
 		}
 		return undefined;

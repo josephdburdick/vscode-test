@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 // @ts-check
 (function () {
 	'use strict';
 
-	const { ipcRenderer, webFrame, crashReporter, contextBridge } = require('electron');
+	const { ipcRenderer, webFrAme, crAshReporter, contextBridge } = require('electron');
 
 	// #######################################################################
 	// ###                                                                 ###
@@ -17,89 +17,89 @@
 	// ###                                                                 ###
 	// #######################################################################
 
-	const globals = {
+	const globAls = {
 
 		/**
-		 * A minimal set of methods exposed from Electron's `ipcRenderer`
-		 * to support communication to main process.
+		 * A minimAl set of methods exposed from Electron's `ipcRenderer`
+		 * to support communicAtion to mAin process.
 		 */
 		ipcRenderer: {
 
 			/**
-			 * @param {string} channel
-			 * @param {any[]} args
+			 * @pArAm {string} chAnnel
+			 * @pArAm {Any[]} Args
 			 */
-			send(channel, ...args) {
-				if (validateIPC(channel)) {
-					ipcRenderer.send(channel, ...args);
+			send(chAnnel, ...Args) {
+				if (vAlidAteIPC(chAnnel)) {
+					ipcRenderer.send(chAnnel, ...Args);
 				}
 			},
 
 			/**
-			 * @param {string} channel
-			 * @param {(event: import('electron').IpcRendererEvent, ...args: any[]) => void} listener
+			 * @pArAm {string} chAnnel
+			 * @pArAm {(event: import('electron').IpcRendererEvent, ...Args: Any[]) => void} listener
 			 */
-			on(channel, listener) {
-				if (validateIPC(channel)) {
-					ipcRenderer.on(channel, listener);
+			on(chAnnel, listener) {
+				if (vAlidAteIPC(chAnnel)) {
+					ipcRenderer.on(chAnnel, listener);
 				}
 			},
 
 			/**
-			 * @param {string} channel
-			 * @param {(event: import('electron').IpcRendererEvent, ...args: any[]) => void} listener
+			 * @pArAm {string} chAnnel
+			 * @pArAm {(event: import('electron').IpcRendererEvent, ...Args: Any[]) => void} listener
 			 */
-			once(channel, listener) {
-				if (validateIPC(channel)) {
-					ipcRenderer.once(channel, listener);
+			once(chAnnel, listener) {
+				if (vAlidAteIPC(chAnnel)) {
+					ipcRenderer.once(chAnnel, listener);
 				}
 			},
 
 			/**
-			 * @param {string} channel
-			 * @param {(event: import('electron').IpcRendererEvent, ...args: any[]) => void} listener
+			 * @pArAm {string} chAnnel
+			 * @pArAm {(event: import('electron').IpcRendererEvent, ...Args: Any[]) => void} listener
 			 */
-			removeListener(channel, listener) {
-				if (validateIPC(channel)) {
-					ipcRenderer.removeListener(channel, listener);
+			removeListener(chAnnel, listener) {
+				if (vAlidAteIPC(chAnnel)) {
+					ipcRenderer.removeListener(chAnnel, listener);
 				}
 			}
 		},
 
 		/**
-		 * Support for subset of methods of Electron's `webFrame` type.
+		 * Support for subset of methods of Electron's `webFrAme` type.
 		 */
-		webFrame: {
+		webFrAme: {
 
 			/**
-			 * @param {number} level
+			 * @pArAm {number} level
 			 */
 			setZoomLevel(level) {
 				if (typeof level === 'number') {
-					webFrame.setZoomLevel(level);
+					webFrAme.setZoomLevel(level);
 				}
 			}
 		},
 
 		/**
-		 * Support for subset of methods of Electron's `crashReporter` type.
+		 * Support for subset of methods of Electron's `crAshReporter` type.
 		 */
-		crashReporter: {
+		crAshReporter: {
 
 			/**
-			 * @param {string} key
-			 * @param {string} value
+			 * @pArAm {string} key
+			 * @pArAm {string} vAlue
 			 */
-			addExtraParameter(key, value) {
-				crashReporter.addExtraParameter(key, value);
+			AddExtrAPArAmeter(key, vAlue) {
+				crAshReporter.AddExtrAPArAmeter(key, vAlue);
 			}
 		},
 
 		/**
-		 * Support for a subset of access to node.js global `process`.
+		 * Support for A subset of Access to node.js globAl `process`.
 		 */
 		process: {
-			get platform() { return process.platform; },
+			get plAtform() { return process.plAtform; },
 			get env() { return process.env; },
 			get versions() { return process.versions; },
 			get type() { return 'renderer'; },
@@ -107,7 +107,7 @@
 			_whenEnvResolved: undefined,
 			whenEnvResolved:
 				/**
-				 * @returns when the shell environment has been resolved.
+				 * @returns when the shell environment hAs been resolved.
 				 */
 				function () {
 					if (!this._whenEnvResolved) {
@@ -119,15 +119,15 @@
 
 			nextTick:
 				/**
-				 * Adds callback to the "next tick queue". This queue is fully drained
-				 * after the current operation on the JavaScript stack runs to completion
-				 * and before the event loop is allowed to continue.
+				 * Adds cAllbAck to the "next tick queue". This queue is fully drAined
+				 * After the current operAtion on the JAvAScript stAck runs to completion
+				 * And before the event loop is Allowed to continue.
 				 *
-				 * @param {Function} callback
-				 * @param {any[]} args
+				 * @pArAm {Function} cAllbAck
+				 * @pArAm {Any[]} Args
 				 */
-				function nextTick(callback, ...args) {
-					return process.nextTick(callback, ...args);
+				function nextTick(cAllbAck, ...Args) {
+					return process.nextTick(cAllbAck, ...Args);
 				},
 
 			cwd:
@@ -156,62 +156,62 @@
 
 			on:
 				/**
-				 * @param {string} type
-				 * @param {() => void} callback
+				 * @pArAm {string} type
+				 * @pArAm {() => void} cAllbAck
 				 */
-				function (type, callback) {
-					if (validateProcessEventType(type)) {
-						process.on(type, callback);
+				function (type, cAllbAck) {
+					if (vAlidAteProcessEventType(type)) {
+						process.on(type, cAllbAck);
 					}
 				}
 		},
 
 		/**
-		 * Some information about the context we are running in.
+		 * Some informAtion About the context we Are running in.
 		 */
 		context: {
-			get sandbox() { return process.argv.includes('--enable-sandbox'); }
+			get sAndbox() { return process.Argv.includes('--enAble-sAndbox'); }
 		}
 	};
 
-	// Use `contextBridge` APIs to expose globals to VSCode
-	// only if context isolation is enabled, otherwise just
-	// add to the DOM global.
-	let useContextBridge = process.argv.includes('--context-isolation');
+	// Use `contextBridge` APIs to expose globAls to VSCode
+	// only if context isolAtion is enAbled, otherwise just
+	// Add to the DOM globAl.
+	let useContextBridge = process.Argv.includes('--context-isolAtion');
 	if (useContextBridge) {
 		try {
-			contextBridge.exposeInMainWorld('vscode', globals);
-		} catch (error) {
+			contextBridge.exposeInMAinWorld('vscode', globAls);
+		} cAtch (error) {
 			console.error(error);
 
-			useContextBridge = false;
+			useContextBridge = fAlse;
 		}
 	}
 
 	if (!useContextBridge) {
 		// @ts-ignore
-		window.vscode = globals;
+		window.vscode = globAls;
 	}
 
 	//#region Utilities
 
 	/**
-	 * @param {string} channel
+	 * @pArAm {string} chAnnel
 	 */
-	function validateIPC(channel) {
-		if (!channel || !channel.startsWith('vscode:')) {
-			throw new Error(`Unsupported event IPC channel '${channel}'`);
+	function vAlidAteIPC(chAnnel) {
+		if (!chAnnel || !chAnnel.stArtsWith('vscode:')) {
+			throw new Error(`Unsupported event IPC chAnnel '${chAnnel}'`);
 		}
 
 		return true;
 	}
 
 	/**
-	 * @param {string} type
-	 * @returns {type is 'uncaughtException'}
+	 * @pArAm {string} type
+	 * @returns {type is 'uncAughtException'}
 	 */
-	function validateProcessEventType(type) {
-		if (type !== 'uncaughtException') {
+	function vAlidAteProcessEventType(type) {
+		if (type !== 'uncAughtException') {
 			throw new Error(`Unsupported process event '${type}'`);
 		}
 
@@ -219,25 +219,25 @@
 	}
 
 	/**
-	 * If VSCode is not run from a terminal, we should resolve additional
-	 * shell specific environment from the OS shell to ensure we are seeing
-	 * all development related environment variables. We do this from the
-	 * main process because it may involve spawning a shell.
+	 * If VSCode is not run from A terminAl, we should resolve AdditionAl
+	 * shell specific environment from the OS shell to ensure we Are seeing
+	 * All development relAted environment vAriAbles. We do this from the
+	 * mAin process becAuse it mAy involve spAwning A shell.
 	 */
 	function resolveEnv() {
 		return new Promise(function (resolve) {
-			const handle = setTimeout(function () {
-				console.warn('Preload: Unable to resolve shell environment in a reasonable time');
+			const hAndle = setTimeout(function () {
+				console.wArn('PreloAd: UnAble to resolve shell environment in A reAsonAble time');
 
 				// It took too long to fetch the shell environment, return
 				resolve();
 			}, 3000);
 
-			ipcRenderer.once('vscode:acceptShellEnv', function (event, shellEnv) {
-				clearTimeout(handle);
+			ipcRenderer.once('vscode:AcceptShellEnv', function (event, shellEnv) {
+				cleArTimeout(hAndle);
 
-				// Assign all keys of the shell environment to our process environment
-				Object.assign(process.env, shellEnv);
+				// Assign All keys of the shell environment to our process environment
+				Object.Assign(process.env, shellEnv);
 
 				resolve();
 			});

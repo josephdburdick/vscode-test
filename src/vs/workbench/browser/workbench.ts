@@ -1,181 +1,181 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/workbench/browser/style';
 
-import { localize } from 'vs/nls';
-import { Emitter, setGlobalLeakWarningThreshold } from 'vs/base/common/event';
-import { runWhenIdle } from 'vs/base/common/async';
-import { getZoomLevel, isFirefox, isSafari, isChrome } from 'vs/base/browser/browser';
-import { mark } from 'vs/base/common/performance';
-import { onUnexpectedError, setUnexpectedErrorHandler } from 'vs/base/common/errors';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { isWindows, isLinux, isWeb, isNative, isMacintosh } from 'vs/base/common/platform';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { IEditorInputFactoryRegistry, Extensions as EditorExtensions } from 'vs/workbench/common/editor';
-import { getSingletonServiceDescriptors } from 'vs/platform/instantiation/common/extensions';
-import { Position, Parts, IWorkbenchLayoutService, positionToString } from 'vs/workbench/services/layout/browser/layoutService';
-import { IStorageService, WillSaveStateReason, StorageScope } from 'vs/platform/storage/common/storage';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { LifecyclePhase, ILifecycleService, WillShutdownEvent, BeforeShutdownEvent } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { NotificationService } from 'vs/workbench/services/notification/common/notificationService';
-import { NotificationsCenter } from 'vs/workbench/browser/parts/notifications/notificationsCenter';
-import { NotificationsAlerts } from 'vs/workbench/browser/parts/notifications/notificationsAlerts';
-import { NotificationsStatus } from 'vs/workbench/browser/parts/notifications/notificationsStatus';
-import { registerNotificationCommands } from 'vs/workbench/browser/parts/notifications/notificationsCommands';
-import { NotificationsToasts } from 'vs/workbench/browser/parts/notifications/notificationsToasts';
-import { setARIAContainer } from 'vs/base/browser/ui/aria/aria';
-import { readFontInfo, restoreFontInfo, serializeFontInfo } from 'vs/editor/browser/config/configuration';
-import { BareFontInfo } from 'vs/editor/common/config/fontInfo';
-import { ILogService } from 'vs/platform/log/common/log';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { WorkbenchContextKeysHandler } from 'vs/workbench/browser/contextkeys';
-import { coalesce } from 'vs/base/common/arrays';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { Layout } from 'vs/workbench/browser/layout';
+import { locAlize } from 'vs/nls';
+import { Emitter, setGlobAlLeAkWArningThreshold } from 'vs/bAse/common/event';
+import { runWhenIdle } from 'vs/bAse/common/Async';
+import { getZoomLevel, isFirefox, isSAfAri, isChrome } from 'vs/bAse/browser/browser';
+import { mArk } from 'vs/bAse/common/performAnce';
+import { onUnexpectedError, setUnexpectedErrorHAndler } from 'vs/bAse/common/errors';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { isWindows, isLinux, isWeb, isNAtive, isMAcintosh } from 'vs/bAse/common/plAtform';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IEditorInputFActoryRegistry, Extensions As EditorExtensions } from 'vs/workbench/common/editor';
+import { getSingletonServiceDescriptors } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Position, PArts, IWorkbenchLAyoutService, positionToString } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IStorAgeService, WillSAveStAteReAson, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { LifecyclePhAse, ILifecycleService, WillShutdownEvent, BeforeShutdownEvent } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { NotificAtionService } from 'vs/workbench/services/notificAtion/common/notificAtionService';
+import { NotificAtionsCenter } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsCenter';
+import { NotificAtionsAlerts } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsAlerts';
+import { NotificAtionsStAtus } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsStAtus';
+import { registerNotificAtionCommAnds } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsCommAnds';
+import { NotificAtionsToAsts } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsToAsts';
+import { setARIAContAiner } from 'vs/bAse/browser/ui/AriA/AriA';
+import { reAdFontInfo, restoreFontInfo, seriAlizeFontInfo } from 'vs/editor/browser/config/configurAtion';
+import { BAreFontInfo } from 'vs/editor/common/config/fontInfo';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import { WorkbenchContextKeysHAndler } from 'vs/workbench/browser/contextkeys';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { LAyout } from 'vs/workbench/browser/lAyout';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
 
-export class Workbench extends Layout {
+export clAss Workbench extends LAyout {
 
-	private readonly _onBeforeShutdown = this._register(new Emitter<BeforeShutdownEvent>());
-	readonly onBeforeShutdown = this._onBeforeShutdown.event;
+	privAte reAdonly _onBeforeShutdown = this._register(new Emitter<BeforeShutdownEvent>());
+	reAdonly onBeforeShutdown = this._onBeforeShutdown.event;
 
-	private readonly _onWillShutdown = this._register(new Emitter<WillShutdownEvent>());
-	readonly onWillShutdown = this._onWillShutdown.event;
+	privAte reAdonly _onWillShutdown = this._register(new Emitter<WillShutdownEvent>());
+	reAdonly onWillShutdown = this._onWillShutdown.event;
 
-	private readonly _onShutdown = this._register(new Emitter<void>());
-	readonly onShutdown = this._onShutdown.event;
+	privAte reAdonly _onShutdown = this._register(new Emitter<void>());
+	reAdonly onShutdown = this._onShutdown.event;
 
 	constructor(
-		parent: HTMLElement,
-		private readonly serviceCollection: ServiceCollection,
+		pArent: HTMLElement,
+		privAte reAdonly serviceCollection: ServiceCollection,
 		logService: ILogService
 	) {
-		super(parent);
+		super(pArent);
 
-		this.registerErrorHandler(logService);
+		this.registerErrorHAndler(logService);
 	}
 
-	private registerErrorHandler(logService: ILogService): void {
+	privAte registerErrorHAndler(logService: ILogService): void {
 
-		// Listen on unhandled rejection events
-		window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+		// Listen on unhAndled rejection events
+		window.AddEventListener('unhAndledrejection', (event: PromiseRejectionEvent) => {
 
-			// See https://developer.mozilla.org/en-US/docs/Web/API/PromiseRejectionEvent
-			onUnexpectedError(event.reason);
+			// See https://developer.mozillA.org/en-US/docs/Web/API/PromiseRejectionEvent
+			onUnexpectedError(event.reAson);
 
 			// Prevent the printing of this event to the console
-			event.preventDefault();
+			event.preventDefAult();
 		});
 
-		// Install handler for unexpected errors
-		setUnexpectedErrorHandler(error => this.handleUnexpectedError(error, logService));
+		// InstAll hAndler for unexpected errors
+		setUnexpectedErrorHAndler(error => this.hAndleUnexpectedError(error, logService));
 
-		// Inform user about loading issues from the loader
-		interface AnnotatedLoadingError extends Error {
-			phase: 'loading';
+		// Inform user About loAding issues from the loAder
+		interfAce AnnotAtedLoAdingError extends Error {
+			phAse: 'loAding';
 			moduleId: string;
 			neededBy: string[];
 		}
-		interface AnnotatedFactoryError extends Error {
-			phase: 'factory';
+		interfAce AnnotAtedFActoryError extends Error {
+			phAse: 'fActory';
 			moduleId: string;
 		}
-		interface AnnotatedValidationError extends Error {
-			phase: 'configuration';
+		interfAce AnnotAtedVAlidAtionError extends Error {
+			phAse: 'configurAtion';
 		}
-		type AnnotatedError = AnnotatedLoadingError | AnnotatedFactoryError | AnnotatedValidationError;
-		(<any>window).require.config({
-			onError: (err: AnnotatedError) => {
-				if (err.phase === 'loading') {
-					onUnexpectedError(new Error(localize('loaderErrorNative', "Failed to load a required file. Please restart the application to try again. Details: {0}", JSON.stringify(err))));
+		type AnnotAtedError = AnnotAtedLoAdingError | AnnotAtedFActoryError | AnnotAtedVAlidAtionError;
+		(<Any>window).require.config({
+			onError: (err: AnnotAtedError) => {
+				if (err.phAse === 'loAding') {
+					onUnexpectedError(new Error(locAlize('loAderErrorNAtive', "FAiled to loAd A required file. PleAse restArt the ApplicAtion to try AgAin. DetAils: {0}", JSON.stringify(err))));
 				}
 				console.error(err);
 			}
 		});
 	}
 
-	private previousUnexpectedError: { message: string | undefined, time: number } = { message: undefined, time: 0 };
-	private handleUnexpectedError(error: unknown, logService: ILogService): void {
-		const message = toErrorMessage(error, true);
-		if (!message) {
+	privAte previousUnexpectedError: { messAge: string | undefined, time: number } = { messAge: undefined, time: 0 };
+	privAte hAndleUnexpectedError(error: unknown, logService: ILogService): void {
+		const messAge = toErrorMessAge(error, true);
+		if (!messAge) {
 			return;
 		}
 
-		const now = Date.now();
-		if (message === this.previousUnexpectedError.message && now - this.previousUnexpectedError.time <= 1000) {
-			return; // Return if error message identical to previous and shorter than 1 second
+		const now = DAte.now();
+		if (messAge === this.previousUnexpectedError.messAge && now - this.previousUnexpectedError.time <= 1000) {
+			return; // Return if error messAge identicAl to previous And shorter thAn 1 second
 		}
 
 		this.previousUnexpectedError.time = now;
-		this.previousUnexpectedError.message = message;
+		this.previousUnexpectedError.messAge = messAge;
 
 		// Log it
-		logService.error(message);
+		logService.error(messAge);
 	}
 
-	startup(): IInstantiationService {
+	stArtup(): IInstAntiAtionService {
 		try {
 
-			// Configure emitter leak warning threshold
-			setGlobalLeakWarningThreshold(175);
+			// Configure emitter leAk wArning threshold
+			setGlobAlLeAkWArningThreshold(175);
 
 			// Services
-			const instantiationService = this.initServices(this.serviceCollection);
+			const instAntiAtionService = this.initServices(this.serviceCollection);
 
-			instantiationService.invokeFunction(async accessor => {
-				const lifecycleService = accessor.get(ILifecycleService);
-				const storageService = accessor.get(IStorageService);
-				const configurationService = accessor.get(IConfigurationService);
-				const hostService = accessor.get(IHostService);
+			instAntiAtionService.invokeFunction(Async Accessor => {
+				const lifecycleService = Accessor.get(ILifecycleService);
+				const storAgeService = Accessor.get(IStorAgeService);
+				const configurAtionService = Accessor.get(IConfigurAtionService);
+				const hostService = Accessor.get(IHostService);
 
-				// Layout
-				this.initLayout(accessor);
+				// LAyout
+				this.initLAyout(Accessor);
 
 				// Registries
-				Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).start(accessor);
-				Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).start(accessor);
+				Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).stArt(Accessor);
+				Registry.As<IEditorInputFActoryRegistry>(EditorExtensions.EditorInputFActories).stArt(Accessor);
 
 				// Context Keys
-				this._register(instantiationService.createInstance(WorkbenchContextKeysHandler));
+				this._register(instAntiAtionService.creAteInstAnce(WorkbenchContextKeysHAndler));
 
 				// Register Listeners
-				this.registerListeners(lifecycleService, storageService, configurationService, hostService);
+				this.registerListeners(lifecycleService, storAgeService, configurAtionService, hostService);
 
 				// Render Workbench
-				this.renderWorkbench(instantiationService, accessor.get(INotificationService) as NotificationService, storageService, configurationService);
+				this.renderWorkbench(instAntiAtionService, Accessor.get(INotificAtionService) As NotificAtionService, storAgeService, configurAtionService);
 
-				// Workbench Layout
-				this.createWorkbenchLayout();
+				// Workbench LAyout
+				this.creAteWorkbenchLAyout();
 
-				// Layout
-				this.layout();
+				// LAyout
+				this.lAyout();
 
 				// Restore
 				try {
-					await this.restoreWorkbench(accessor.get(ILogService), lifecycleService);
-				} catch (error) {
+					AwAit this.restoreWorkbench(Accessor.get(ILogService), lifecycleService);
+				} cAtch (error) {
 					onUnexpectedError(error);
 				}
 			});
 
-			return instantiationService;
-		} catch (error) {
+			return instAntiAtionService;
+		} cAtch (error) {
 			onUnexpectedError(error);
 
-			throw error; // rethrow because this is a critical issue we cannot handle properly here
+			throw error; // rethrow becAuse this is A criticAl issue we cAnnot hAndle properly here
 		}
 	}
 
-	private initServices(serviceCollection: ServiceCollection): IInstantiationService {
+	privAte initServices(serviceCollection: ServiceCollection): IInstAntiAtionService {
 
-		// Layout Service
-		serviceCollection.set(IWorkbenchLayoutService, this);
+		// LAyout Service
+		serviceCollection.set(IWorkbenchLAyoutService, this);
 
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// NOTE: DO NOT ADD ANY OTHER SERVICE INTO THE COLLECTION HERE.
@@ -188,46 +188,46 @@ export class Workbench extends Layout {
 			serviceCollection.set(id, descriptor);
 		}
 
-		const instantiationService = new InstantiationService(serviceCollection, true);
+		const instAntiAtionService = new InstAntiAtionService(serviceCollection, true);
 
-		// Wrap up
-		instantiationService.invokeFunction(accessor => {
-			const lifecycleService = accessor.get(ILifecycleService);
+		// WrAp up
+		instAntiAtionService.invokeFunction(Accessor => {
+			const lifecycleService = Accessor.get(ILifecycleService);
 
-			// TODO@Sandeep debt around cyclic dependencies
-			const configurationService = accessor.get(IConfigurationService) as any;
-			if (typeof configurationService.acquireInstantiationService === 'function') {
+			// TODO@SAndeep debt Around cyclic dependencies
+			const configurAtionService = Accessor.get(IConfigurAtionService) As Any;
+			if (typeof configurAtionService.AcquireInstAntiAtionService === 'function') {
 				setTimeout(() => {
-					configurationService.acquireInstantiationService(instantiationService);
+					configurAtionService.AcquireInstAntiAtionService(instAntiAtionService);
 				}, 0);
 			}
 
-			// Signal to lifecycle that services are set
-			lifecycleService.phase = LifecyclePhase.Ready;
+			// SignAl to lifecycle thAt services Are set
+			lifecycleService.phAse = LifecyclePhAse.ReAdy;
 		});
 
-		return instantiationService;
+		return instAntiAtionService;
 	}
 
-	private registerListeners(
+	privAte registerListeners(
 		lifecycleService: ILifecycleService,
-		storageService: IStorageService,
-		configurationService: IConfigurationService,
+		storAgeService: IStorAgeService,
+		configurAtionService: IConfigurAtionService,
 		hostService: IHostService
 	): void {
 
-		// Configuration changes
-		this._register(configurationService.onDidChangeConfiguration(() => this.setFontAliasing(configurationService)));
+		// ConfigurAtion chAnges
+		this._register(configurAtionService.onDidChAngeConfigurAtion(() => this.setFontAliAsing(configurAtionService)));
 
 		// Font Info
-		if (isNative) {
-			this._register(storageService.onWillSaveState(e => {
-				if (e.reason === WillSaveStateReason.SHUTDOWN) {
-					this.storeFontInfo(storageService);
+		if (isNAtive) {
+			this._register(storAgeService.onWillSAveStAte(e => {
+				if (e.reAson === WillSAveStAteReAson.SHUTDOWN) {
+					this.storeFontInfo(storAgeService);
 				}
 			}));
 		} else {
-			this._register(lifecycleService.onWillShutdown(() => this.storeFontInfo(storageService)));
+			this._register(lifecycleService.onWillShutdown(() => this.storeFontInfo(storAgeService)));
 		}
 
 		// Lifecycle
@@ -238,185 +238,185 @@ export class Workbench extends Layout {
 			this.dispose();
 		}));
 
-		// In some environments we do not get enough time to persist state on shutdown.
-		// In other cases, VSCode might crash, so we periodically save state to reduce
-		// the chance of loosing any state.
-		// The window loosing focus is a good indication that the user has stopped working
-		// in that window so we pick that at a time to collect state.
-		this._register(hostService.onDidChangeFocus(focus => { if (!focus) { storageService.flush(); } }));
+		// In some environments we do not get enough time to persist stAte on shutdown.
+		// In other cAses, VSCode might crAsh, so we periodicAlly sAve stAte to reduce
+		// the chAnce of loosing Any stAte.
+		// The window loosing focus is A good indicAtion thAt the user hAs stopped working
+		// in thAt window so we pick thAt At A time to collect stAte.
+		this._register(hostService.onDidChAngeFocus(focus => { if (!focus) { storAgeService.flush(); } }));
 	}
 
-	private fontAliasing: 'default' | 'antialiased' | 'none' | 'auto' | undefined;
-	private setFontAliasing(configurationService: IConfigurationService) {
-		if (!isMacintosh) {
-			return; // macOS only
+	privAte fontAliAsing: 'defAult' | 'AntiAliAsed' | 'none' | 'Auto' | undefined;
+	privAte setFontAliAsing(configurAtionService: IConfigurAtionService) {
+		if (!isMAcintosh) {
+			return; // mAcOS only
 		}
 
-		const aliasing = configurationService.getValue<'default' | 'antialiased' | 'none' | 'auto'>('workbench.fontAliasing');
-		if (this.fontAliasing === aliasing) {
+		const AliAsing = configurAtionService.getVAlue<'defAult' | 'AntiAliAsed' | 'none' | 'Auto'>('workbench.fontAliAsing');
+		if (this.fontAliAsing === AliAsing) {
 			return;
 		}
 
-		this.fontAliasing = aliasing;
+		this.fontAliAsing = AliAsing;
 
-		// Remove all
-		const fontAliasingValues: (typeof aliasing)[] = ['antialiased', 'none', 'auto'];
-		this.container.classList.remove(...fontAliasingValues.map(value => `monaco-font-aliasing-${value}`));
+		// Remove All
+		const fontAliAsingVAlues: (typeof AliAsing)[] = ['AntiAliAsed', 'none', 'Auto'];
+		this.contAiner.clAssList.remove(...fontAliAsingVAlues.mAp(vAlue => `monAco-font-AliAsing-${vAlue}`));
 
 		// Add specific
-		if (fontAliasingValues.some(option => option === aliasing)) {
-			this.container.classList.add(`monaco-font-aliasing-${aliasing}`);
+		if (fontAliAsingVAlues.some(option => option === AliAsing)) {
+			this.contAiner.clAssList.Add(`monAco-font-AliAsing-${AliAsing}`);
 		}
 	}
 
-	private restoreFontInfo(storageService: IStorageService, configurationService: IConfigurationService): void {
+	privAte restoreFontInfo(storAgeService: IStorAgeService, configurAtionService: IConfigurAtionService): void {
 
-		// Restore (native: use storage service, web: use browser specific local storage)
-		const storedFontInfoRaw = isNative ? storageService.get('editorFontInfo', StorageScope.GLOBAL) : window.localStorage.getItem('vscode.editorFontInfo');
-		if (storedFontInfoRaw) {
+		// Restore (nAtive: use storAge service, web: use browser specific locAl storAge)
+		const storedFontInfoRAw = isNAtive ? storAgeService.get('editorFontInfo', StorAgeScope.GLOBAL) : window.locAlStorAge.getItem('vscode.editorFontInfo');
+		if (storedFontInfoRAw) {
 			try {
-				const storedFontInfo = JSON.parse(storedFontInfoRaw);
-				if (Array.isArray(storedFontInfo)) {
+				const storedFontInfo = JSON.pArse(storedFontInfoRAw);
+				if (ArrAy.isArrAy(storedFontInfo)) {
 					restoreFontInfo(storedFontInfo);
 				}
-			} catch (err) {
+			} cAtch (err) {
 				/* ignore */
 			}
 		}
 
-		readFontInfo(BareFontInfo.createFromRawSettings(configurationService.getValue('editor'), getZoomLevel()));
+		reAdFontInfo(BAreFontInfo.creAteFromRAwSettings(configurAtionService.getVAlue('editor'), getZoomLevel()));
 	}
 
-	private storeFontInfo(storageService: IStorageService): void {
-		const serializedFontInfo = serializeFontInfo();
-		if (serializedFontInfo) {
-			const serializedFontInfoRaw = JSON.stringify(serializedFontInfo);
+	privAte storeFontInfo(storAgeService: IStorAgeService): void {
+		const seriAlizedFontInfo = seriAlizeFontInfo();
+		if (seriAlizedFontInfo) {
+			const seriAlizedFontInfoRAw = JSON.stringify(seriAlizedFontInfo);
 
-			// Font info is very specific to the machine the workbench runs
+			// Font info is very specific to the mAchine the workbench runs
 			// on. As such, in the web, we prefer to store this info in
-			// local storage and not global storage because it would not make
-			// much sense to synchronize to other machines.
-			if (isNative) {
-				storageService.store('editorFontInfo', serializedFontInfoRaw, StorageScope.GLOBAL);
+			// locAl storAge And not globAl storAge becAuse it would not mAke
+			// much sense to synchronize to other mAchines.
+			if (isNAtive) {
+				storAgeService.store('editorFontInfo', seriAlizedFontInfoRAw, StorAgeScope.GLOBAL);
 			} else {
-				window.localStorage.setItem('vscode.editorFontInfo', serializedFontInfoRaw);
+				window.locAlStorAge.setItem('vscode.editorFontInfo', seriAlizedFontInfoRAw);
 			}
 		}
 	}
 
-	private renderWorkbench(instantiationService: IInstantiationService, notificationService: NotificationService, storageService: IStorageService, configurationService: IConfigurationService): void {
+	privAte renderWorkbench(instAntiAtionService: IInstAntiAtionService, notificAtionService: NotificAtionService, storAgeService: IStorAgeService, configurAtionService: IConfigurAtionService): void {
 
 		// ARIA
-		setARIAContainer(this.container);
+		setARIAContAiner(this.contAiner);
 
-		// State specific classes
-		const platformClass = isWindows ? 'windows' : isLinux ? 'linux' : 'mac';
-		const workbenchClasses = coalesce([
-			'monaco-workbench',
-			platformClass,
+		// StAte specific clAsses
+		const plAtformClAss = isWindows ? 'windows' : isLinux ? 'linux' : 'mAc';
+		const workbenchClAsses = coAlesce([
+			'monAco-workbench',
+			plAtformClAss,
 			isWeb ? 'web' : undefined,
-			isChrome ? 'chromium' : isFirefox ? 'firefox' : isSafari ? 'safari' : undefined,
-			...this.getLayoutClasses()
+			isChrome ? 'chromium' : isFirefox ? 'firefox' : isSAfAri ? 'sAfAri' : undefined,
+			...this.getLAyoutClAsses()
 		]);
 
-		this.container.classList.add(...workbenchClasses);
-		document.body.classList.add(platformClass); // used by our fonts
+		this.contAiner.clAssList.Add(...workbenchClAsses);
+		document.body.clAssList.Add(plAtformClAss); // used by our fonts
 
 		if (isWeb) {
-			document.body.classList.add('web');
+			document.body.clAssList.Add('web');
 		}
 
-		// Apply font aliasing
-		this.setFontAliasing(configurationService);
+		// Apply font AliAsing
+		this.setFontAliAsing(configurAtionService);
 
-		// Warm up font cache information before building up too many dom elements
-		this.restoreFontInfo(storageService, configurationService);
+		// WArm up font cAche informAtion before building up too mAny dom elements
+		this.restoreFontInfo(storAgeService, configurAtionService);
 
-		// Create Parts
+		// CreAte PArts
 		[
-			{ id: Parts.TITLEBAR_PART, role: 'contentinfo', classes: ['titlebar'] },
-			{ id: Parts.ACTIVITYBAR_PART, role: 'navigation', classes: ['activitybar', this.state.sideBar.position === Position.LEFT ? 'left' : 'right'] },
-			{ id: Parts.SIDEBAR_PART, role: 'complementary', classes: ['sidebar', this.state.sideBar.position === Position.LEFT ? 'left' : 'right'] },
-			{ id: Parts.EDITOR_PART, role: 'main', classes: ['editor'], options: { restorePreviousState: this.state.editor.restoreEditors } },
-			{ id: Parts.PANEL_PART, role: 'complementary', classes: ['panel', positionToString(this.state.panel.position)] },
-			{ id: Parts.STATUSBAR_PART, role: 'status', classes: ['statusbar'] }
-		].forEach(({ id, role, classes, options }) => {
-			const partContainer = this.createPart(id, role, classes);
+			{ id: PArts.TITLEBAR_PART, role: 'contentinfo', clAsses: ['titlebAr'] },
+			{ id: PArts.ACTIVITYBAR_PART, role: 'nAvigAtion', clAsses: ['ActivitybAr', this.stAte.sideBAr.position === Position.LEFT ? 'left' : 'right'] },
+			{ id: PArts.SIDEBAR_PART, role: 'complementAry', clAsses: ['sidebAr', this.stAte.sideBAr.position === Position.LEFT ? 'left' : 'right'] },
+			{ id: PArts.EDITOR_PART, role: 'mAin', clAsses: ['editor'], options: { restorePreviousStAte: this.stAte.editor.restoreEditors } },
+			{ id: PArts.PANEL_PART, role: 'complementAry', clAsses: ['pAnel', positionToString(this.stAte.pAnel.position)] },
+			{ id: PArts.STATUSBAR_PART, role: 'stAtus', clAsses: ['stAtusbAr'] }
+		].forEAch(({ id, role, clAsses, options }) => {
+			const pArtContAiner = this.creAtePArt(id, role, clAsses);
 
-			this.getPart(id).create(partContainer, options);
+			this.getPArt(id).creAte(pArtContAiner, options);
 		});
 
-		// Notification Handlers
-		this.createNotificationsHandlers(instantiationService, notificationService);
+		// NotificAtion HAndlers
+		this.creAteNotificAtionsHAndlers(instAntiAtionService, notificAtionService);
 
 		// Add Workbench to DOM
-		this.parent.appendChild(this.container);
+		this.pArent.AppendChild(this.contAiner);
 	}
 
-	private createPart(id: string, role: string, classes: string[]): HTMLElement {
-		const part = document.createElement(role === 'status' ? 'footer' : 'div'); // Use footer element for status bar #98376
-		part.classList.add('part', ...classes);
-		part.id = id;
-		part.setAttribute('role', role);
-		if (role === 'status') {
-			part.setAttribute('aria-live', 'off');
+	privAte creAtePArt(id: string, role: string, clAsses: string[]): HTMLElement {
+		const pArt = document.creAteElement(role === 'stAtus' ? 'footer' : 'div'); // Use footer element for stAtus bAr #98376
+		pArt.clAssList.Add('pArt', ...clAsses);
+		pArt.id = id;
+		pArt.setAttribute('role', role);
+		if (role === 'stAtus') {
+			pArt.setAttribute('AriA-live', 'off');
 		}
 
-		return part;
+		return pArt;
 	}
 
-	private createNotificationsHandlers(instantiationService: IInstantiationService, notificationService: NotificationService): void {
+	privAte creAteNotificAtionsHAndlers(instAntiAtionService: IInstAntiAtionService, notificAtionService: NotificAtionService): void {
 
-		// Instantiate Notification components
-		const notificationsCenter = this._register(instantiationService.createInstance(NotificationsCenter, this.container, notificationService.model));
-		const notificationsToasts = this._register(instantiationService.createInstance(NotificationsToasts, this.container, notificationService.model));
-		this._register(instantiationService.createInstance(NotificationsAlerts, notificationService.model));
-		const notificationsStatus = instantiationService.createInstance(NotificationsStatus, notificationService.model);
+		// InstAntiAte NotificAtion components
+		const notificAtionsCenter = this._register(instAntiAtionService.creAteInstAnce(NotificAtionsCenter, this.contAiner, notificAtionService.model));
+		const notificAtionsToAsts = this._register(instAntiAtionService.creAteInstAnce(NotificAtionsToAsts, this.contAiner, notificAtionService.model));
+		this._register(instAntiAtionService.creAteInstAnce(NotificAtionsAlerts, notificAtionService.model));
+		const notificAtionsStAtus = instAntiAtionService.creAteInstAnce(NotificAtionsStAtus, notificAtionService.model);
 
 		// Visibility
-		this._register(notificationsCenter.onDidChangeVisibility(() => {
-			notificationsStatus.update(notificationsCenter.isVisible, notificationsToasts.isVisible);
-			notificationsToasts.update(notificationsCenter.isVisible);
+		this._register(notificAtionsCenter.onDidChAngeVisibility(() => {
+			notificAtionsStAtus.updAte(notificAtionsCenter.isVisible, notificAtionsToAsts.isVisible);
+			notificAtionsToAsts.updAte(notificAtionsCenter.isVisible);
 		}));
 
-		this._register(notificationsToasts.onDidChangeVisibility(() => {
-			notificationsStatus.update(notificationsCenter.isVisible, notificationsToasts.isVisible);
+		this._register(notificAtionsToAsts.onDidChAngeVisibility(() => {
+			notificAtionsStAtus.updAte(notificAtionsCenter.isVisible, notificAtionsToAsts.isVisible);
 		}));
 
-		// Register Commands
-		registerNotificationCommands(notificationsCenter, notificationsToasts);
+		// Register CommAnds
+		registerNotificAtionCommAnds(notificAtionsCenter, notificAtionsToAsts);
 	}
 
-	private async restoreWorkbench(
+	privAte Async restoreWorkbench(
 		logService: ILogService,
 		lifecycleService: ILifecycleService
 	): Promise<void> {
 
-		// Emit a warning after 10s if restore does not complete
-		const restoreTimeoutHandle = setTimeout(() => logService.warn('Workbench did not finish loading in 10 seconds, that might be a problem that should be reported.'), 10000);
+		// Emit A wArning After 10s if restore does not complete
+		const restoreTimeoutHAndle = setTimeout(() => logService.wArn('Workbench did not finish loAding in 10 seconds, thAt might be A problem thAt should be reported.'), 10000);
 
 		try {
-			await super.restoreWorkbenchLayout();
+			AwAit super.restoreWorkbenchLAyout();
 
-			clearTimeout(restoreTimeoutHandle);
-		} catch (error) {
+			cleArTimeout(restoreTimeoutHAndle);
+		} cAtch (error) {
 			onUnexpectedError(error);
-		} finally {
+		} finAlly {
 
-			// Set lifecycle phase to `Restored`
-			lifecycleService.phase = LifecyclePhase.Restored;
+			// Set lifecycle phAse to `Restored`
+			lifecycleService.phAse = LifecyclePhAse.Restored;
 
-			// Set lifecycle phase to `Eventually` after a short delay and when idle (min 2.5sec, max 5sec)
+			// Set lifecycle phAse to `EventuAlly` After A short delAy And when idle (min 2.5sec, mAx 5sec)
 			setTimeout(() => {
-				this._register(runWhenIdle(() => lifecycleService.phase = LifecyclePhase.Eventually, 2500));
+				this._register(runWhenIdle(() => lifecycleService.phAse = LifecyclePhAse.EventuAlly, 2500));
 			}, 2500);
 
-			// Telemetry: startup metrics
-			mark('didStartWorkbench');
+			// Telemetry: stArtup metrics
+			mArk('didStArtWorkbench');
 
 			// Perf reporting (devtools)
-			performance.mark('workbench-end');
-			performance.measure('perf: workbench create & restore', 'workbench-start', 'workbench-end');
+			performAnce.mArk('workbench-end');
+			performAnce.meAsure('perf: workbench creAte & restore', 'workbench-stArt', 'workbench-end');
 		}
 	}
 }

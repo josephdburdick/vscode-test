@@ -1,128 +1,128 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
  * Helpers for converting FROM vscode types TO ts types
  */
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
-import * as PConst from '../protocol.const';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
+import * As PConst from '../protocol.const';
 import { ITypeScriptServiceClient } from '../typescriptService';
 
-export namespace Range {
-	export const fromTextSpan = (span: Proto.TextSpan): vscode.Range =>
-		fromLocations(span.start, span.end);
+export nAmespAce RAnge {
+	export const fromTextSpAn = (spAn: Proto.TextSpAn): vscode.RAnge =>
+		fromLocAtions(spAn.stArt, spAn.end);
 
-	export const toTextSpan = (range: vscode.Range): Proto.TextSpan => ({
-		start: Position.toLocation(range.start),
-		end: Position.toLocation(range.end)
+	export const toTextSpAn = (rAnge: vscode.RAnge): Proto.TextSpAn => ({
+		stArt: Position.toLocAtion(rAnge.stArt),
+		end: Position.toLocAtion(rAnge.end)
 	});
 
-	export const fromLocations = (start: Proto.Location, end: Proto.Location): vscode.Range =>
-		new vscode.Range(
-			Math.max(0, start.line - 1), Math.max(start.offset - 1, 0),
-			Math.max(0, end.line - 1), Math.max(0, end.offset - 1));
+	export const fromLocAtions = (stArt: Proto.LocAtion, end: Proto.LocAtion): vscode.RAnge =>
+		new vscode.RAnge(
+			MAth.mAx(0, stArt.line - 1), MAth.mAx(stArt.offset - 1, 0),
+			MAth.mAx(0, end.line - 1), MAth.mAx(0, end.offset - 1));
 
-	export const toFileRangeRequestArgs = (file: string, range: vscode.Range): Proto.FileRangeRequestArgs => ({
+	export const toFileRAngeRequestArgs = (file: string, rAnge: vscode.RAnge): Proto.FileRAngeRequestArgs => ({
 		file,
-		startLine: range.start.line + 1,
-		startOffset: range.start.character + 1,
-		endLine: range.end.line + 1,
-		endOffset: range.end.character + 1
+		stArtLine: rAnge.stArt.line + 1,
+		stArtOffset: rAnge.stArt.chArActer + 1,
+		endLine: rAnge.end.line + 1,
+		endOffset: rAnge.end.chArActer + 1
 	});
 
-	export const toFormattingRequestArgs = (file: string, range: vscode.Range): Proto.FormatRequestArgs => ({
+	export const toFormAttingRequestArgs = (file: string, rAnge: vscode.RAnge): Proto.FormAtRequestArgs => ({
 		file,
-		line: range.start.line + 1,
-		offset: range.start.character + 1,
-		endLine: range.end.line + 1,
-		endOffset: range.end.character + 1
+		line: rAnge.stArt.line + 1,
+		offset: rAnge.stArt.chArActer + 1,
+		endLine: rAnge.end.line + 1,
+		endOffset: rAnge.end.chArActer + 1
 	});
 }
 
-export namespace Position {
-	export const fromLocation = (tslocation: Proto.Location): vscode.Position =>
-		new vscode.Position(tslocation.line - 1, tslocation.offset - 1);
+export nAmespAce Position {
+	export const fromLocAtion = (tslocAtion: Proto.LocAtion): vscode.Position =>
+		new vscode.Position(tslocAtion.line - 1, tslocAtion.offset - 1);
 
-	export const toLocation = (vsPosition: vscode.Position): Proto.Location => ({
+	export const toLocAtion = (vsPosition: vscode.Position): Proto.LocAtion => ({
 		line: vsPosition.line + 1,
-		offset: vsPosition.character + 1,
+		offset: vsPosition.chArActer + 1,
 	});
 
-	export const toFileLocationRequestArgs = (file: string, position: vscode.Position): Proto.FileLocationRequestArgs => ({
+	export const toFileLocAtionRequestArgs = (file: string, position: vscode.Position): Proto.FileLocAtionRequestArgs => ({
 		file,
 		line: position.line + 1,
-		offset: position.character + 1,
+		offset: position.chArActer + 1,
 	});
 }
 
-export namespace Location {
-	export const fromTextSpan = (resource: vscode.Uri, tsTextSpan: Proto.TextSpan): vscode.Location =>
-		new vscode.Location(resource, Range.fromTextSpan(tsTextSpan));
+export nAmespAce LocAtion {
+	export const fromTextSpAn = (resource: vscode.Uri, tsTextSpAn: Proto.TextSpAn): vscode.LocAtion =>
+		new vscode.LocAtion(resource, RAnge.fromTextSpAn(tsTextSpAn));
 }
 
-export namespace TextEdit {
+export nAmespAce TextEdit {
 	export const fromCodeEdit = (edit: Proto.CodeEdit): vscode.TextEdit =>
 		new vscode.TextEdit(
-			Range.fromTextSpan(edit),
+			RAnge.fromTextSpAn(edit),
 			edit.newText);
 }
 
-export namespace WorkspaceEdit {
+export nAmespAce WorkspAceEdit {
 	export function fromFileCodeEdits(
 		client: ITypeScriptServiceClient,
-		edits: Iterable<Proto.FileCodeEdits>
-	): vscode.WorkspaceEdit {
-		return withFileCodeEdits(new vscode.WorkspaceEdit(), client, edits);
+		edits: IterAble<Proto.FileCodeEdits>
+	): vscode.WorkspAceEdit {
+		return withFileCodeEdits(new vscode.WorkspAceEdit(), client, edits);
 	}
 
 	export function withFileCodeEdits(
-		workspaceEdit: vscode.WorkspaceEdit,
+		workspAceEdit: vscode.WorkspAceEdit,
 		client: ITypeScriptServiceClient,
-		edits: Iterable<Proto.FileCodeEdits>
-	): vscode.WorkspaceEdit {
+		edits: IterAble<Proto.FileCodeEdits>
+	): vscode.WorkspAceEdit {
 		for (const edit of edits) {
-			const resource = client.toResource(edit.fileName);
-			for (const textChange of edit.textChanges) {
-				workspaceEdit.replace(resource,
-					Range.fromTextSpan(textChange),
-					textChange.newText);
+			const resource = client.toResource(edit.fileNAme);
+			for (const textChAnge of edit.textChAnges) {
+				workspAceEdit.replAce(resource,
+					RAnge.fromTextSpAn(textChAnge),
+					textChAnge.newText);
 			}
 		}
 
-		return workspaceEdit;
+		return workspAceEdit;
 	}
 }
 
-export namespace SymbolKind {
+export nAmespAce SymbolKind {
 	export function fromProtocolScriptElementKind(kind: Proto.ScriptElementKind) {
 		switch (kind) {
-			case PConst.Kind.module: return vscode.SymbolKind.Module;
-			case PConst.Kind.class: return vscode.SymbolKind.Class;
-			case PConst.Kind.enum: return vscode.SymbolKind.Enum;
-			case PConst.Kind.enumMember: return vscode.SymbolKind.EnumMember;
-			case PConst.Kind.interface: return vscode.SymbolKind.Interface;
-			case PConst.Kind.indexSignature: return vscode.SymbolKind.Method;
-			case PConst.Kind.callSignature: return vscode.SymbolKind.Method;
-			case PConst.Kind.method: return vscode.SymbolKind.Method;
-			case PConst.Kind.memberVariable: return vscode.SymbolKind.Property;
-			case PConst.Kind.memberGetAccessor: return vscode.SymbolKind.Property;
-			case PConst.Kind.memberSetAccessor: return vscode.SymbolKind.Property;
-			case PConst.Kind.variable: return vscode.SymbolKind.Variable;
-			case PConst.Kind.let: return vscode.SymbolKind.Variable;
-			case PConst.Kind.const: return vscode.SymbolKind.Variable;
-			case PConst.Kind.localVariable: return vscode.SymbolKind.Variable;
-			case PConst.Kind.alias: return vscode.SymbolKind.Variable;
-			case PConst.Kind.function: return vscode.SymbolKind.Function;
-			case PConst.Kind.localFunction: return vscode.SymbolKind.Function;
-			case PConst.Kind.constructSignature: return vscode.SymbolKind.Constructor;
-			case PConst.Kind.constructorImplementation: return vscode.SymbolKind.Constructor;
-			case PConst.Kind.typeParameter: return vscode.SymbolKind.TypeParameter;
-			case PConst.Kind.string: return vscode.SymbolKind.String;
-			default: return vscode.SymbolKind.Variable;
+			cAse PConst.Kind.module: return vscode.SymbolKind.Module;
+			cAse PConst.Kind.clAss: return vscode.SymbolKind.ClAss;
+			cAse PConst.Kind.enum: return vscode.SymbolKind.Enum;
+			cAse PConst.Kind.enumMember: return vscode.SymbolKind.EnumMember;
+			cAse PConst.Kind.interfAce: return vscode.SymbolKind.InterfAce;
+			cAse PConst.Kind.indexSignAture: return vscode.SymbolKind.Method;
+			cAse PConst.Kind.cAllSignAture: return vscode.SymbolKind.Method;
+			cAse PConst.Kind.method: return vscode.SymbolKind.Method;
+			cAse PConst.Kind.memberVAriAble: return vscode.SymbolKind.Property;
+			cAse PConst.Kind.memberGetAccessor: return vscode.SymbolKind.Property;
+			cAse PConst.Kind.memberSetAccessor: return vscode.SymbolKind.Property;
+			cAse PConst.Kind.vAriAble: return vscode.SymbolKind.VAriAble;
+			cAse PConst.Kind.let: return vscode.SymbolKind.VAriAble;
+			cAse PConst.Kind.const: return vscode.SymbolKind.VAriAble;
+			cAse PConst.Kind.locAlVAriAble: return vscode.SymbolKind.VAriAble;
+			cAse PConst.Kind.AliAs: return vscode.SymbolKind.VAriAble;
+			cAse PConst.Kind.function: return vscode.SymbolKind.Function;
+			cAse PConst.Kind.locAlFunction: return vscode.SymbolKind.Function;
+			cAse PConst.Kind.constructSignAture: return vscode.SymbolKind.Constructor;
+			cAse PConst.Kind.constructorImplementAtion: return vscode.SymbolKind.Constructor;
+			cAse PConst.Kind.typePArAmeter: return vscode.SymbolKind.TypePArAmeter;
+			cAse PConst.Kind.string: return vscode.SymbolKind.String;
+			defAult: return vscode.SymbolKind.VAriAble;
 		}
 	}
 }

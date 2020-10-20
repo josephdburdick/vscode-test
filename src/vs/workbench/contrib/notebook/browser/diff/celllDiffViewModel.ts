@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { NotebookCellTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookCellTextModel';
-import { NotebookDiffEditorEventDispatcher } from 'vs/workbench/contrib/notebook/browser/viewModel/eventDispatcher';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { CellDiffViewModelLayoutChangeEvent, DIFF_CELL_MARGIN } from 'vs/workbench/contrib/notebook/browser/diff/common';
-import { NotebookLayoutInfo } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { NotebookDiffEditorEventDispAtcher } from 'vs/workbench/contrib/notebook/browser/viewModel/eventDispAtcher';
+import { Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { CellDiffViewModelLAyoutChAngeEvent, DIFF_CELL_MARGIN } from 'vs/workbench/contrib/notebook/browser/diff/common';
+import { NotebookLAyoutInfo } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 import { DiffEditorWidget } from 'vs/editor/browser/widget/diffEditorWidget';
 
-export enum PropertyFoldingState {
-	Expanded,
-	Collapsed
+export enum PropertyFoldingStAte {
+	ExpAnded,
+	CollApsed
 }
 
-export class CellDiffViewModel extends Disposable {
-	public metadataFoldingState: PropertyFoldingState;
-	public outputFoldingState: PropertyFoldingState;
-	private _layoutInfoEmitter = new Emitter<CellDiffViewModelLayoutChangeEvent>();
+export clAss CellDiffViewModel extends DisposAble {
+	public metAdAtAFoldingStAte: PropertyFoldingStAte;
+	public outputFoldingStAte: PropertyFoldingStAte;
+	privAte _lAyoutInfoEmitter = new Emitter<CellDiffViewModelLAyoutChAngeEvent>();
 
-	onDidLayoutChange = this._layoutInfoEmitter.event;
+	onDidLAyoutChAnge = this._lAyoutInfoEmitter.event;
 
 	constructor(
-		readonly original: NotebookCellTextModel | undefined,
-		readonly modified: NotebookCellTextModel | undefined,
-		readonly type: 'unchanged' | 'insert' | 'delete' | 'modified',
-		readonly editorEventDispatcher: NotebookDiffEditorEventDispatcher
+		reAdonly originAl: NotebookCellTextModel | undefined,
+		reAdonly modified: NotebookCellTextModel | undefined,
+		reAdonly type: 'unchAnged' | 'insert' | 'delete' | 'modified',
+		reAdonly editorEventDispAtcher: NotebookDiffEditorEventDispAtcher
 	) {
 		super();
-		this.metadataFoldingState = PropertyFoldingState.Collapsed;
-		this.outputFoldingState = PropertyFoldingState.Collapsed;
+		this.metAdAtAFoldingStAte = PropertyFoldingStAte.CollApsed;
+		this.outputFoldingStAte = PropertyFoldingStAte.CollApsed;
 
-		this._register(this.editorEventDispatcher.onDidChangeLayout(e => {
-			this._layoutInfoEmitter.fire({ outerWidth: e.value.width });
+		this._register(this.editorEventDispAtcher.onDidChAngeLAyout(e => {
+			this._lAyoutInfoEmitter.fire({ outerWidth: e.vAlue.width });
 		}));
 	}
 
-	getComputedCellContainerWidth(layoutInfo: NotebookLayoutInfo, diffEditor: boolean, fullWidth: boolean) {
+	getComputedCellContAinerWidth(lAyoutInfo: NotebookLAyoutInfo, diffEditor: booleAn, fullWidth: booleAn) {
 		if (fullWidth) {
-			return layoutInfo.width - 2 * DIFF_CELL_MARGIN + (diffEditor ? DiffEditorWidget.ENTIRE_DIFF_OVERVIEW_WIDTH : 0) - 2;
+			return lAyoutInfo.width - 2 * DIFF_CELL_MARGIN + (diffEditor ? DiffEditorWidget.ENTIRE_DIFF_OVERVIEW_WIDTH : 0) - 2;
 		}
 
-		return (layoutInfo.width - 2 * DIFF_CELL_MARGIN + (diffEditor ? DiffEditorWidget.ENTIRE_DIFF_OVERVIEW_WIDTH : 0)) / 2 - 18 - 2;
+		return (lAyoutInfo.width - 2 * DIFF_CELL_MARGIN + (diffEditor ? DiffEditorWidget.ENTIRE_DIFF_OVERVIEW_WIDTH : 0)) / 2 - 18 - 2;
 	}
 }

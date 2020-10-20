@@ -1,183 +1,183 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { toDisposable, DisposableStore, Disposable } from 'vs/base/common/lifecycle';
-import { IAction } from 'vs/base/common/actions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { toDisposAble, DisposAbleStore, DisposAble } from 'vs/bAse/common/lifecycle';
+import { IAction } from 'vs/bAse/common/Actions';
 
-export const IProgressService = createDecorator<IProgressService>('progressService');
+export const IProgressService = creAteDecorAtor<IProgressService>('progressService');
 
 /**
- * A progress service that can be used to report progress to various locations of the UI.
+ * A progress service thAt cAn be used to report progress to vArious locAtions of the UI.
  */
-export interface IProgressService {
+export interfAce IProgressService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	withProgress<R>(
-		options: IProgressOptions | IProgressNotificationOptions | IProgressWindowOptions | IProgressCompositeOptions,
-		task: (progress: IProgress<IProgressStep>) => Promise<R>,
-		onDidCancel?: (choice?: number) => void
+		options: IProgressOptions | IProgressNotificAtionOptions | IProgressWindowOptions | IProgressCompositeOptions,
+		tAsk: (progress: IProgress<IProgressStep>) => Promise<R>,
+		onDidCAncel?: (choice?: number) => void
 	): Promise<R>;
 }
 
-export interface IProgressIndicator {
+export interfAce IProgressIndicAtor {
 
 	/**
-	 * Show progress customized with the provided flags.
+	 * Show progress customized with the provided flAgs.
 	 */
-	show(infinite: true, delay?: number): IProgressRunner;
-	show(total: number, delay?: number): IProgressRunner;
+	show(infinite: true, delAy?: number): IProgressRunner;
+	show(totAl: number, delAy?: number): IProgressRunner;
 
 	/**
-	 * Indicate progress for the duration of the provided promise. Progress will stop in
-	 * any case of promise completion, error or cancellation.
+	 * IndicAte progress for the durAtion of the provided promise. Progress will stop in
+	 * Any cAse of promise completion, error or cAncellAtion.
 	 */
-	showWhile(promise: Promise<unknown>, delay?: number): Promise<void>;
+	showWhile(promise: Promise<unknown>, delAy?: number): Promise<void>;
 }
 
-export const enum ProgressLocation {
+export const enum ProgressLocAtion {
 	Explorer = 1,
 	Scm = 3,
 	Extensions = 5,
 	Window = 10,
-	Notification = 15,
-	Dialog = 20
+	NotificAtion = 15,
+	DiAlog = 20
 }
 
-export interface IProgressOptions {
-	readonly location: ProgressLocation | string;
-	readonly title?: string;
-	readonly source?: string;
-	readonly total?: number;
-	readonly cancellable?: boolean;
-	readonly buttons?: string[];
+export interfAce IProgressOptions {
+	reAdonly locAtion: ProgressLocAtion | string;
+	reAdonly title?: string;
+	reAdonly source?: string;
+	reAdonly totAl?: number;
+	reAdonly cAncellAble?: booleAn;
+	reAdonly buttons?: string[];
 }
 
-export interface IProgressNotificationOptions extends IProgressOptions {
-	readonly location: ProgressLocation.Notification;
-	readonly primaryActions?: ReadonlyArray<IAction>;
-	readonly secondaryActions?: ReadonlyArray<IAction>;
-	readonly delay?: number;
-	readonly silent?: boolean;
+export interfAce IProgressNotificAtionOptions extends IProgressOptions {
+	reAdonly locAtion: ProgressLocAtion.NotificAtion;
+	reAdonly primAryActions?: ReAdonlyArrAy<IAction>;
+	reAdonly secondAryActions?: ReAdonlyArrAy<IAction>;
+	reAdonly delAy?: number;
+	reAdonly silent?: booleAn;
 }
 
-export interface IProgressWindowOptions extends IProgressOptions {
-	readonly location: ProgressLocation.Window;
-	readonly command?: string;
+export interfAce IProgressWindowOptions extends IProgressOptions {
+	reAdonly locAtion: ProgressLocAtion.Window;
+	reAdonly commAnd?: string;
 }
 
-export interface IProgressCompositeOptions extends IProgressOptions {
-	readonly location: ProgressLocation.Explorer | ProgressLocation.Extensions | ProgressLocation.Scm | string;
-	readonly delay?: number;
+export interfAce IProgressCompositeOptions extends IProgressOptions {
+	reAdonly locAtion: ProgressLocAtion.Explorer | ProgressLocAtion.Extensions | ProgressLocAtion.Scm | string;
+	reAdonly delAy?: number;
 }
 
-export interface IProgressStep {
-	message?: string;
+export interfAce IProgressStep {
+	messAge?: string;
 	increment?: number;
-	total?: number;
+	totAl?: number;
 }
 
-export interface IProgressRunner {
-	total(value: number): void;
-	worked(value: number): void;
+export interfAce IProgressRunner {
+	totAl(vAlue: number): void;
+	worked(vAlue: number): void;
 	done(): void;
 }
 
 export const emptyProgressRunner: IProgressRunner = Object.freeze({
-	total() { },
+	totAl() { },
 	worked() { },
 	done() { }
 });
 
-export interface IProgress<T> {
+export interfAce IProgress<T> {
 	report(item: T): void;
 }
 
-export class Progress<T> implements IProgress<T> {
+export clAss Progress<T> implements IProgress<T> {
 
-	static readonly None: IProgress<unknown> = Object.freeze({ report() { } });
+	stAtic reAdonly None: IProgress<unknown> = Object.freeze({ report() { } });
 
-	private _value?: T;
-	get value(): T | undefined { return this._value; }
+	privAte _vAlue?: T;
+	get vAlue(): T | undefined { return this._vAlue; }
 
-	constructor(private callback: (data: T) => void) { }
+	constructor(privAte cAllbAck: (dAtA: T) => void) { }
 
 	report(item: T) {
-		this._value = item;
-		this.callback(this._value);
+		this._vAlue = item;
+		this.cAllbAck(this._vAlue);
 	}
 }
 
 /**
- * A helper to show progress during a long running operation. If the operation
- * is started multiple times, only the last invocation will drive the progress.
+ * A helper to show progress during A long running operAtion. If the operAtion
+ * is stArted multiple times, only the lAst invocAtion will drive the progress.
  */
-export interface IOperation {
+export interfAce IOperAtion {
 	id: number;
-	isCurrent: () => boolean;
-	token: CancellationToken;
+	isCurrent: () => booleAn;
+	token: CAncellAtionToken;
 	stop(): void;
 }
 
-export class LongRunningOperation extends Disposable {
-	private currentOperationId = 0;
-	private readonly currentOperationDisposables = this._register(new DisposableStore());
-	private currentProgressRunner: IProgressRunner | undefined;
-	private currentProgressTimeout: any;
+export clAss LongRunningOperAtion extends DisposAble {
+	privAte currentOperAtionId = 0;
+	privAte reAdonly currentOperAtionDisposAbles = this._register(new DisposAbleStore());
+	privAte currentProgressRunner: IProgressRunner | undefined;
+	privAte currentProgressTimeout: Any;
 
 	constructor(
-		private progressIndicator: IProgressIndicator
+		privAte progressIndicAtor: IProgressIndicAtor
 	) {
 		super();
 	}
 
-	start(progressDelay: number): IOperation {
+	stArt(progressDelAy: number): IOperAtion {
 
-		// Stop any previous operation
+		// Stop Any previous operAtion
 		this.stop();
 
-		// Start new
-		const newOperationId = ++this.currentOperationId;
-		const newOperationToken = new CancellationTokenSource();
+		// StArt new
+		const newOperAtionId = ++this.currentOperAtionId;
+		const newOperAtionToken = new CAncellAtionTokenSource();
 		this.currentProgressTimeout = setTimeout(() => {
-			if (newOperationId === this.currentOperationId) {
-				this.currentProgressRunner = this.progressIndicator.show(true);
+			if (newOperAtionId === this.currentOperAtionId) {
+				this.currentProgressRunner = this.progressIndicAtor.show(true);
 			}
-		}, progressDelay);
+		}, progressDelAy);
 
-		this.currentOperationDisposables.add(toDisposable(() => clearTimeout(this.currentProgressTimeout)));
-		this.currentOperationDisposables.add(toDisposable(() => newOperationToken.cancel()));
-		this.currentOperationDisposables.add(toDisposable(() => this.currentProgressRunner ? this.currentProgressRunner.done() : undefined));
+		this.currentOperAtionDisposAbles.Add(toDisposAble(() => cleArTimeout(this.currentProgressTimeout)));
+		this.currentOperAtionDisposAbles.Add(toDisposAble(() => newOperAtionToken.cAncel()));
+		this.currentOperAtionDisposAbles.Add(toDisposAble(() => this.currentProgressRunner ? this.currentProgressRunner.done() : undefined));
 
 		return {
-			id: newOperationId,
-			token: newOperationToken.token,
-			stop: () => this.doStop(newOperationId),
-			isCurrent: () => this.currentOperationId === newOperationId
+			id: newOperAtionId,
+			token: newOperAtionToken.token,
+			stop: () => this.doStop(newOperAtionId),
+			isCurrent: () => this.currentOperAtionId === newOperAtionId
 		};
 	}
 
 	stop(): void {
-		this.doStop(this.currentOperationId);
+		this.doStop(this.currentOperAtionId);
 	}
 
-	private doStop(operationId: number): void {
-		if (this.currentOperationId === operationId) {
-			this.currentOperationDisposables.clear();
+	privAte doStop(operAtionId: number): void {
+		if (this.currentOperAtionId === operAtionId) {
+			this.currentOperAtionDisposAbles.cleAr();
 		}
 	}
 }
 
-export const IEditorProgressService = createDecorator<IEditorProgressService>('editorProgressService');
+export const IEditorProgressService = creAteDecorAtor<IEditorProgressService>('editorProgressService');
 
 /**
- * A progress service that will report progress local to the editor triggered from.
+ * A progress service thAt will report progress locAl to the editor triggered from.
  */
-export interface IEditorProgressService extends IProgressIndicator {
+export interfAce IEditorProgressService extends IProgressIndicAtor {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 }

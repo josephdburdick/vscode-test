@@ -1,253 +1,253 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import Severity from 'vs/base/common/severity';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { basename } from 'vs/base/common/resources';
-import { localize } from 'vs/nls';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+import Severity from 'vs/bAse/common/severity';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { locAlize } from 'vs/nls';
+import { ITelemetryDAtA } from 'vs/plAtform/telemetry/common/telemetry';
 
-export interface FileFilter {
+export interfAce FileFilter {
 	extensions: string[];
-	name: string;
+	nAme: string;
 }
 
-export type DialogType = 'none' | 'info' | 'error' | 'question' | 'warning';
+export type DiAlogType = 'none' | 'info' | 'error' | 'question' | 'wArning';
 
-export interface IConfirmation {
+export interfAce IConfirmAtion {
 	title?: string;
-	type?: DialogType;
-	message: string;
-	detail?: string;
-	primaryButton?: string;
-	secondaryButton?: string;
+	type?: DiAlogType;
+	messAge: string;
+	detAil?: string;
+	primAryButton?: string;
+	secondAryButton?: string;
 	checkbox?: {
-		label: string;
-		checked?: boolean;
+		lAbel: string;
+		checked?: booleAn;
 	};
 }
 
-export interface IConfirmationResult {
+export interfAce IConfirmAtionResult {
 
 	/**
-	 * Will be true if the dialog was confirmed with the primary button
+	 * Will be true if the diAlog wAs confirmed with the primAry button
 	 * pressed.
 	 */
-	confirmed: boolean;
+	confirmed: booleAn;
 
 	/**
-	 * This will only be defined if the confirmation was created
+	 * This will only be defined if the confirmAtion wAs creAted
 	 * with the checkbox option defined.
 	 */
-	checkboxChecked?: boolean;
+	checkboxChecked?: booleAn;
 }
 
-export interface IShowResult {
+export interfAce IShowResult {
 
 	/**
 	 * Selected choice index. If the user refused to choose,
-	 * then a promise with index of `cancelId` option is returned. If there is no such
+	 * then A promise with index of `cAncelId` option is returned. If there is no such
 	 * option then promise with index `0` is returned.
 	 */
 	choice: number;
 
 	/**
-	 * This will only be defined if the confirmation was created
+	 * This will only be defined if the confirmAtion wAs creAted
 	 * with the checkbox option defined.
 	 */
-	checkboxChecked?: boolean;
+	checkboxChecked?: booleAn;
 }
 
-export interface IPickAndOpenOptions {
-	forceNewWindow?: boolean;
-	defaultUri?: URI;
-	telemetryExtraData?: ITelemetryData;
-	availableFileSystems?: string[];
+export interfAce IPickAndOpenOptions {
+	forceNewWindow?: booleAn;
+	defAultUri?: URI;
+	telemetryExtrADAtA?: ITelemetryDAtA;
+	AvAilAbleFileSystems?: string[];
 }
 
-export interface ISaveDialogOptions {
+export interfAce ISAveDiAlogOptions {
 	/**
-	 * A human-readable string for the dialog title
+	 * A humAn-reAdAble string for the diAlog title
 	 */
 	title?: string;
 
 	/**
-	 * The resource the dialog shows when opened.
+	 * The resource the diAlog shows when opened.
 	 */
-	defaultUri?: URI;
+	defAultUri?: URI;
 
 	/**
-	 * A set of file filters that are used by the dialog. Each entry is a human readable label,
-	 * like "TypeScript", and an array of extensions.
+	 * A set of file filters thAt Are used by the diAlog. EAch entry is A humAn reAdAble lAbel,
+	 * like "TypeScript", And An ArrAy of extensions.
 	 */
 	filters?: FileFilter[];
 
 	/**
-	 * A human-readable string for the ok button
+	 * A humAn-reAdAble string for the ok button
 	 */
-	saveLabel?: string;
+	sAveLAbel?: string;
 
 	/**
-	 * Specifies a list of schemas for the file systems the user can save to. If not specified, uses the schema of the defaultURI or, if also not specified,
-	 * the schema of the current window.
+	 * Specifies A list of schemAs for the file systems the user cAn sAve to. If not specified, uses the schemA of the defAultURI or, if Also not specified,
+	 * the schemA of the current window.
 	 */
-	availableFileSystems?: readonly string[];
+	AvAilAbleFileSystems?: reAdonly string[];
 }
 
-export interface IOpenDialogOptions {
+export interfAce IOpenDiAlogOptions {
 	/**
-	 * A human-readable string for the dialog title
+	 * A humAn-reAdAble string for the diAlog title
 	 */
 	title?: string;
 
 	/**
-	 * The resource the dialog shows when opened.
+	 * The resource the diAlog shows when opened.
 	 */
-	defaultUri?: URI;
+	defAultUri?: URI;
 
 	/**
-	 * A human-readable string for the open button.
+	 * A humAn-reAdAble string for the open button.
 	 */
-	openLabel?: string;
+	openLAbel?: string;
 
 	/**
-	 * Allow to select files, defaults to `true`.
+	 * Allow to select files, defAults to `true`.
 	 */
-	canSelectFiles?: boolean;
+	cAnSelectFiles?: booleAn;
 
 	/**
-	 * Allow to select folders, defaults to `false`.
+	 * Allow to select folders, defAults to `fAlse`.
 	 */
-	canSelectFolders?: boolean;
+	cAnSelectFolders?: booleAn;
 
 	/**
-	 * Allow to select many files or folders.
+	 * Allow to select mAny files or folders.
 	 */
-	canSelectMany?: boolean;
+	cAnSelectMAny?: booleAn;
 
 	/**
-	 * A set of file filters that are used by the dialog. Each entry is a human readable label,
-	 * like "TypeScript", and an array of extensions.
+	 * A set of file filters thAt Are used by the diAlog. EAch entry is A humAn reAdAble lAbel,
+	 * like "TypeScript", And An ArrAy of extensions.
 	 */
 	filters?: FileFilter[];
 
 	/**
-	 * Specifies a list of schemas for the file systems the user can load from. If not specified, uses the schema of the defaultURI or, if also not available,
-	 * the schema of the current window.
+	 * Specifies A list of schemAs for the file systems the user cAn loAd from. If not specified, uses the schemA of the defAultURI or, if Also not AvAilAble,
+	 * the schemA of the current window.
 	 */
-	availableFileSystems?: readonly string[];
+	AvAilAbleFileSystems?: reAdonly string[];
 }
 
-export const IDialogService = createDecorator<IDialogService>('dialogService');
+export const IDiAlogService = creAteDecorAtor<IDiAlogService>('diAlogService');
 
-export interface IDialogOptions {
-	cancelId?: number;
-	detail?: string;
+export interfAce IDiAlogOptions {
+	cAncelId?: number;
+	detAil?: string;
 	checkbox?: {
-		label: string;
-		checked?: boolean;
+		lAbel: string;
+		checked?: booleAn;
 	};
 }
 
 /**
- * A service to bring up modal dialogs.
+ * A service to bring up modAl diAlogs.
  *
- * Note: use the `INotificationService.prompt()` method for a non-modal way to ask
+ * Note: use the `INotificAtionService.prompt()` method for A non-modAl wAy to Ask
  * the user for input.
  */
-export interface IDialogService {
+export interfAce IDiAlogService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Ask the user for confirmation with a modal dialog.
+	 * Ask the user for confirmAtion with A modAl diAlog.
 	 */
-	confirm(confirmation: IConfirmation): Promise<IConfirmationResult>;
+	confirm(confirmAtion: IConfirmAtion): Promise<IConfirmAtionResult>;
 
 	/**
-	 * Present a modal dialog to the user.
+	 * Present A modAl diAlog to the user.
 	 *
 	 * @returns A promise with the selected choice index. If the user refused to choose,
-	 * then a promise with index of `cancelId` option is returned. If there is no such
+	 * then A promise with index of `cAncelId` option is returned. If there is no such
 	 * option then promise with index `0` is returned.
 	 */
-	show(severity: Severity, message: string, buttons: string[], options?: IDialogOptions): Promise<IShowResult>;
+	show(severity: Severity, messAge: string, buttons: string[], options?: IDiAlogOptions): Promise<IShowResult>;
 
 	/**
-	 * Present the about dialog to the user.
+	 * Present the About diAlog to the user.
 	 */
-	about(): Promise<void>;
+	About(): Promise<void>;
 }
 
-export const IFileDialogService = createDecorator<IFileDialogService>('fileDialogService');
+export const IFileDiAlogService = creAteDecorAtor<IFileDiAlogService>('fileDiAlogService');
 
 /**
- * A service to bring up file dialogs.
+ * A service to bring up file diAlogs.
  */
-export interface IFileDialogService {
+export interfAce IFileDiAlogService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * The default path for a new file based on previously used files.
-	 * @param schemeFilter The scheme of the file path. If no filter given, the scheme of the current window is used.
+	 * The defAult pAth for A new file bAsed on previously used files.
+	 * @pArAm schemeFilter The scheme of the file pAth. If no filter given, the scheme of the current window is used.
 	 */
-	defaultFilePath(schemeFilter?: string): URI | undefined;
+	defAultFilePAth(schemeFilter?: string): URI | undefined;
 
 	/**
-	 * The default path for a new folder based on previously used folders.
-	 * @param schemeFilter The scheme of the folder path. If no filter given, the scheme of the current window is used.
+	 * The defAult pAth for A new folder bAsed on previously used folders.
+	 * @pArAm schemeFilter The scheme of the folder pAth. If no filter given, the scheme of the current window is used.
 	 */
-	defaultFolderPath(schemeFilter?: string): URI | undefined;
+	defAultFolderPAth(schemeFilter?: string): URI | undefined;
 
 	/**
-	 * The default path for a new workspace based on previously used workspaces.
-	 * @param schemeFilter The scheme of the workspace path. If no filter given, the scheme of the current window is used.
+	 * The defAult pAth for A new workspAce bAsed on previously used workspAces.
+	 * @pArAm schemeFilter The scheme of the workspAce pAth. If no filter given, the scheme of the current window is used.
 	 */
-	defaultWorkspacePath(schemeFilter?: string, filename?: string): URI | undefined;
+	defAultWorkspAcePAth(schemeFilter?: string, filenAme?: string): URI | undefined;
 
 	/**
-	 * Shows a file-folder selection dialog and opens the selected entry.
+	 * Shows A file-folder selection diAlog And opens the selected entry.
 	 */
 	pickFileFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
 
 	/**
-	 * Shows a file selection dialog and opens the selected entry.
+	 * Shows A file selection diAlog And opens the selected entry.
 	 */
 	pickFileAndOpen(options: IPickAndOpenOptions): Promise<void>;
 
 	/**
-	 * Shows a folder selection dialog and opens the selected entry.
+	 * Shows A folder selection diAlog And opens the selected entry.
 	 */
 	pickFolderAndOpen(options: IPickAndOpenOptions): Promise<void>;
 
 	/**
-	 * Shows a workspace selection dialog and opens the selected entry.
+	 * Shows A workspAce selection diAlog And opens the selected entry.
 	 */
-	pickWorkspaceAndOpen(options: IPickAndOpenOptions): Promise<void>;
+	pickWorkspAceAndOpen(options: IPickAndOpenOptions): Promise<void>;
 
 	/**
-	 * Shows a save file dialog and save the file at the chosen file URI.
+	 * Shows A sAve file diAlog And sAve the file At the chosen file URI.
 	 */
-	pickFileToSave(defaultUri: URI, availableFileSystems?: string[]): Promise<URI | undefined>;
+	pickFileToSAve(defAultUri: URI, AvAilAbleFileSystems?: string[]): Promise<URI | undefined>;
 
 	/**
-	 * Shows a save file dialog and returns the chosen file URI.
+	 * Shows A sAve file diAlog And returns the chosen file URI.
 	 */
-	showSaveDialog(options: ISaveDialogOptions): Promise<URI | undefined>;
+	showSAveDiAlog(options: ISAveDiAlogOptions): Promise<URI | undefined>;
 
 	/**
-	 * Shows a confirm dialog for saving 1-N files.
+	 * Shows A confirm diAlog for sAving 1-N files.
 	 */
-	showSaveConfirm(fileNamesOrResources: (string | URI)[]): Promise<ConfirmResult>;
+	showSAveConfirm(fileNAmesOrResources: (string | URI)[]): Promise<ConfirmResult>;
 
 	/**
-	 * Shows a open file dialog and returns the chosen file URI.
+	 * Shows A open file diAlog And returns the chosen file URI.
 	 */
-	showOpenDialog(options: IOpenDialogOptions): Promise<URI[] | undefined>;
+	showOpenDiAlog(options: IOpenDiAlogOptions): Promise<URI[] | undefined>;
 }
 
 export const enum ConfirmResult {
@@ -257,27 +257,27 @@ export const enum ConfirmResult {
 }
 
 const MAX_CONFIRM_FILES = 10;
-export function getFileNamesMessage(fileNamesOrResources: readonly (string | URI)[]): string {
-	const message: string[] = [];
-	message.push(...fileNamesOrResources.slice(0, MAX_CONFIRM_FILES).map(fileNameOrResource => typeof fileNameOrResource === 'string' ? fileNameOrResource : basename(fileNameOrResource)));
+export function getFileNAmesMessAge(fileNAmesOrResources: reAdonly (string | URI)[]): string {
+	const messAge: string[] = [];
+	messAge.push(...fileNAmesOrResources.slice(0, MAX_CONFIRM_FILES).mAp(fileNAmeOrResource => typeof fileNAmeOrResource === 'string' ? fileNAmeOrResource : bAsenAme(fileNAmeOrResource)));
 
-	if (fileNamesOrResources.length > MAX_CONFIRM_FILES) {
-		if (fileNamesOrResources.length - MAX_CONFIRM_FILES === 1) {
-			message.push(localize('moreFile', "...1 additional file not shown"));
+	if (fileNAmesOrResources.length > MAX_CONFIRM_FILES) {
+		if (fileNAmesOrResources.length - MAX_CONFIRM_FILES === 1) {
+			messAge.push(locAlize('moreFile', "...1 AdditionAl file not shown"));
 		} else {
-			message.push(localize('moreFiles', "...{0} additional files not shown", fileNamesOrResources.length - MAX_CONFIRM_FILES));
+			messAge.push(locAlize('moreFiles', "...{0} AdditionAl files not shown", fileNAmesOrResources.length - MAX_CONFIRM_FILES));
 		}
 	}
 
-	message.push('');
-	return message.join('\n');
+	messAge.push('');
+	return messAge.join('\n');
 }
 
-export interface INativeOpenDialogOptions {
-	forceNewWindow?: boolean;
+export interfAce INAtiveOpenDiAlogOptions {
+	forceNewWindow?: booleAn;
 
-	defaultPath?: string;
+	defAultPAth?: string;
 
-	telemetryEventName?: string;
-	telemetryExtraData?: ITelemetryData;
+	telemetryEventNAme?: string;
+	telemetryExtrADAtA?: ITelemetryDAtA;
 }

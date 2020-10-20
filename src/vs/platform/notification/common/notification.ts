@@ -1,232 +1,232 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import BaseSeverity from 'vs/base/common/severity';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IAction } from 'vs/base/common/actions';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import BAseSeverity from 'vs/bAse/common/severity';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IAction } from 'vs/bAse/common/Actions';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export import Severity = BaseSeverity;
+export import Severity = BAseSeverity;
 
-export const INotificationService = createDecorator<INotificationService>('notificationService');
+export const INotificAtionService = creAteDecorAtor<INotificAtionService>('notificAtionService');
 
-export type NotificationMessage = string | Error;
+export type NotificAtionMessAge = string | Error;
 
-export interface INotificationProperties {
-
-	/**
-	 * Sticky notifications are not automatically removed after a certain timeout. By
-	 * default, notifications with primary actions and severity error are always sticky.
-	 */
-	readonly sticky?: boolean;
+export interfAce INotificAtionProperties {
 
 	/**
-	 * Silent notifications are not shown to the user unless the notification center
-	 * is opened. The status bar will still indicate all number of notifications to
-	 * catch some attention.
+	 * Sticky notificAtions Are not AutomAticAlly removed After A certAin timeout. By
+	 * defAult, notificAtions with primAry Actions And severity error Are AlwAys sticky.
 	 */
-	readonly silent?: boolean;
+	reAdonly sticky?: booleAn;
 
 	/**
-	 * Adds an action to never show the notification again. The choice will be persisted
-	 * such as future requests will not cause the notification to show again.
+	 * Silent notificAtions Are not shown to the user unless the notificAtion center
+	 * is opened. The stAtus bAr will still indicAte All number of notificAtions to
+	 * cAtch some Attention.
 	 */
-	readonly neverShowAgain?: INeverShowAgainOptions;
+	reAdonly silent?: booleAn;
+
+	/**
+	 * Adds An Action to never show the notificAtion AgAin. The choice will be persisted
+	 * such As future requests will not cAuse the notificAtion to show AgAin.
+	 */
+	reAdonly neverShowAgAin?: INeverShowAgAinOptions;
 }
 
-export enum NeverShowAgainScope {
+export enum NeverShowAgAinScope {
 
 	/**
-	 * Will never show this notification on the current workspace again.
+	 * Will never show this notificAtion on the current workspAce AgAin.
 	 */
 	WORKSPACE,
 
 	/**
-	 * Will never show this notification on any workspace again.
+	 * Will never show this notificAtion on Any workspAce AgAin.
 	 */
 	GLOBAL
 }
 
-export interface INeverShowAgainOptions {
+export interfAce INeverShowAgAinOptions {
 
 	/**
-	 * The id is used to persist the selection of not showing the notification again.
+	 * The id is used to persist the selection of not showing the notificAtion AgAin.
 	 */
-	readonly id: string;
+	reAdonly id: string;
 
 	/**
-	 * By default the action will show up as primary action. Setting this to true will
-	 * make it a secondary action instead.
+	 * By defAult the Action will show up As primAry Action. Setting this to true will
+	 * mAke it A secondAry Action insteAd.
 	 */
-	readonly isSecondary?: boolean;
+	reAdonly isSecondAry?: booleAn;
 
 	/**
-	 * Whether to persist the choice in the current workspace or for all workspaces. By
-	 * default it will be persisted for all workspaces (= `NeverShowAgainScope.GLOBAL`).
+	 * Whether to persist the choice in the current workspAce or for All workspAces. By
+	 * defAult it will be persisted for All workspAces (= `NeverShowAgAinScope.GLOBAL`).
 	 */
-	readonly scope?: NeverShowAgainScope;
+	reAdonly scope?: NeverShowAgAinScope;
 }
 
-export interface INotification extends INotificationProperties {
+export interfAce INotificAtion extends INotificAtionProperties {
 
 	/**
-	 * The severity of the notification. Either `Info`, `Warning` or `Error`.
+	 * The severity of the notificAtion. Either `Info`, `WArning` or `Error`.
 	 */
-	readonly severity: Severity;
+	reAdonly severity: Severity;
 
 	/**
-	 * The message of the notification. This can either be a `string` or `Error`. Messages
-	 * can optionally include links in the format: `[text](link)`
+	 * The messAge of the notificAtion. This cAn either be A `string` or `Error`. MessAges
+	 * cAn optionAlly include links in the formAt: `[text](link)`
 	 */
-	readonly message: NotificationMessage;
+	reAdonly messAge: NotificAtionMessAge;
 
 	/**
-	 * The source of the notification appears as additional information.
+	 * The source of the notificAtion AppeArs As AdditionAl informAtion.
 	 */
-	readonly source?: string;
+	reAdonly source?: string;
 
 	/**
-	 * Actions to show as part of the notification. Primary actions show up as
-	 * buttons as part of the message and will close the notification once clicked.
+	 * Actions to show As pArt of the notificAtion. PrimAry Actions show up As
+	 * buttons As pArt of the messAge And will close the notificAtion once clicked.
 	 *
-	 * Secondary actions are meant to provide additional configuration or context
-	 * for the notification and will show up less prominent. A notification does not
-	 * close automatically when invoking a secondary action.
+	 * SecondAry Actions Are meAnt to provide AdditionAl configurAtion or context
+	 * for the notificAtion And will show up less prominent. A notificAtion does not
+	 * close AutomAticAlly when invoking A secondAry Action.
 	 *
-	 * **Note:** If your intent is to show a message with actions to the user, consider
-	 * the `INotificationService.prompt()` method instead which are optimized for
-	 * this usecase and much easier to use!
+	 * **Note:** If your intent is to show A messAge with Actions to the user, consider
+	 * the `INotificAtionService.prompt()` method insteAd which Are optimized for
+	 * this usecAse And much eAsier to use!
 	 */
-	actions?: INotificationActions;
+	Actions?: INotificAtionActions;
 
 	/**
-	 * The initial set of progress properties for the notification. To update progress
-	 * later on, access the `INotificationHandle.progress` property.
+	 * The initiAl set of progress properties for the notificAtion. To updAte progress
+	 * lAter on, Access the `INotificAtionHAndle.progress` property.
 	 */
-	readonly progress?: INotificationProgressProperties;
+	reAdonly progress?: INotificAtionProgressProperties;
 }
 
-export interface INotificationActions {
+export interfAce INotificAtionActions {
 
 	/**
-	 * Primary actions show up as buttons as part of the message and will close
-	 * the notification once clicked.
+	 * PrimAry Actions show up As buttons As pArt of the messAge And will close
+	 * the notificAtion once clicked.
 	 */
-	readonly primary?: ReadonlyArray<IAction>;
+	reAdonly primAry?: ReAdonlyArrAy<IAction>;
 
 	/**
-	 * Secondary actions are meant to provide additional configuration or context
-	 * for the notification and will show up less prominent. A notification does not
-	 * close automatically when invoking a secondary action.
+	 * SecondAry Actions Are meAnt to provide AdditionAl configurAtion or context
+	 * for the notificAtion And will show up less prominent. A notificAtion does not
+	 * close AutomAticAlly when invoking A secondAry Action.
 	 */
-	readonly secondary?: ReadonlyArray<IAction>;
+	reAdonly secondAry?: ReAdonlyArrAy<IAction>;
 }
 
-export interface INotificationProgressProperties {
+export interfAce INotificAtionProgressProperties {
 
 	/**
-	 * Causes the progress bar to spin infinitley.
+	 * CAuses the progress bAr to spin infinitley.
 	 */
-	readonly infinite?: boolean;
+	reAdonly infinite?: booleAn;
 
 	/**
-	 * Indicate the total amount of work.
+	 * IndicAte the totAl Amount of work.
 	 */
-	readonly total?: number;
+	reAdonly totAl?: number;
 
 	/**
-	 * Indicate that a specific chunk of work is done.
+	 * IndicAte thAt A specific chunk of work is done.
 	 */
-	readonly worked?: number;
+	reAdonly worked?: number;
 }
 
-export interface INotificationProgress {
+export interfAce INotificAtionProgress {
 
 	/**
-	 * Causes the progress bar to spin infinitley.
+	 * CAuses the progress bAr to spin infinitley.
 	 */
 	infinite(): void;
 
 	/**
-	 * Indicate the total amount of work.
+	 * IndicAte the totAl Amount of work.
 	 */
-	total(value: number): void;
+	totAl(vAlue: number): void;
 
 	/**
-	 * Indicate that a specific chunk of work is done.
+	 * IndicAte thAt A specific chunk of work is done.
 	 */
-	worked(value: number): void;
+	worked(vAlue: number): void;
 
 	/**
-	 * Indicate that the long running operation is done.
+	 * IndicAte thAt the long running operAtion is done.
 	 */
 	done(): void;
 }
 
-export interface INotificationHandle {
+export interfAce INotificAtionHAndle {
 
 	/**
-	 * Will be fired once the notification is closed.
+	 * Will be fired once the notificAtion is closed.
 	 */
-	readonly onDidClose: Event<void>;
+	reAdonly onDidClose: Event<void>;
 
 	/**
-	 * Will be fired whenever the visibility of the notification changes.
-	 * A notification can either be visible as toast or inside the notification
+	 * Will be fired whenever the visibility of the notificAtion chAnges.
+	 * A notificAtion cAn either be visible As toAst or inside the notificAtion
 	 * center if it is visible.
 	 */
-	readonly onDidChangeVisibility: Event<boolean>;
+	reAdonly onDidChAngeVisibility: Event<booleAn>;
 
 	/**
-	 * Allows to indicate progress on the notification even after the
-	 * notification is already visible.
+	 * Allows to indicAte progress on the notificAtion even After the
+	 * notificAtion is AlreAdy visible.
 	 */
-	readonly progress: INotificationProgress;
+	reAdonly progress: INotificAtionProgress;
 
 	/**
-	 * Allows to update the severity of the notification.
+	 * Allows to updAte the severity of the notificAtion.
 	 */
-	updateSeverity(severity: Severity): void;
+	updAteSeverity(severity: Severity): void;
 
 	/**
-	 * Allows to update the message of the notification even after the
-	 * notification is already visible.
+	 * Allows to updAte the messAge of the notificAtion even After the
+	 * notificAtion is AlreAdy visible.
 	 */
-	updateMessage(message: NotificationMessage): void;
+	updAteMessAge(messAge: NotificAtionMessAge): void;
 
 	/**
-	 * Allows to update the actions of the notification even after the
-	 * notification is already visible.
+	 * Allows to updAte the Actions of the notificAtion even After the
+	 * notificAtion is AlreAdy visible.
 	 */
-	updateActions(actions?: INotificationActions): void;
+	updAteActions(Actions?: INotificAtionActions): void;
 
 	/**
-	 * Hide the notification and remove it from the notification center.
+	 * Hide the notificAtion And remove it from the notificAtion center.
 	 */
 	close(): void;
 }
 
-export interface IPromptChoice {
+export interfAce IPromptChoice {
 
 	/**
-	 * Label to show for the choice to the user.
+	 * LAbel to show for the choice to the user.
 	 */
-	readonly label: string;
+	reAdonly lAbel: string;
 
 	/**
-	 * Primary choices show up as buttons in the notification below the message.
-	 * Secondary choices show up under the gear icon in the header of the notification.
+	 * PrimAry choices show up As buttons in the notificAtion below the messAge.
+	 * SecondAry choices show up under the geAr icon in the heAder of the notificAtion.
 	 */
-	readonly isSecondary?: boolean;
+	reAdonly isSecondAry?: booleAn;
 
 	/**
-	 * Whether to keep the notification open after the choice was selected
-	 * by the user. By default, will close the notification upon click.
+	 * Whether to keep the notificAtion open After the choice wAs selected
+	 * by the user. By defAult, will close the notificAtion upon click.
 	 */
-	readonly keepOpen?: boolean;
+	reAdonly keepOpen?: booleAn;
 
 	/**
 	 * Triggered when the user selects the choice.
@@ -234,136 +234,136 @@ export interface IPromptChoice {
 	run: () => void;
 }
 
-export interface IPromptOptions extends INotificationProperties {
+export interfAce IPromptOptions extends INotificAtionProperties {
 
 	/**
-	 * Will be called if the user closed the notification without picking
-	 * any of the provided choices.
+	 * Will be cAlled if the user closed the notificAtion without picking
+	 * Any of the provided choices.
 	 */
-	onCancel?: () => void;
+	onCAncel?: () => void;
 }
 
-export interface IStatusMessageOptions {
+export interfAce IStAtusMessAgeOptions {
 
 	/**
-	 * An optional timeout after which the status message should show. By default
-	 * the status message will show immediately.
+	 * An optionAl timeout After which the stAtus messAge should show. By defAult
+	 * the stAtus messAge will show immediAtely.
 	 */
-	readonly showAfter?: number;
+	reAdonly showAfter?: number;
 
 	/**
-	 * An optional timeout after which the status message is to be hidden. By default
-	 * the status message will not hide until another status message is displayed.
+	 * An optionAl timeout After which the stAtus messAge is to be hidden. By defAult
+	 * the stAtus messAge will not hide until Another stAtus messAge is displAyed.
 	 */
-	readonly hideAfter?: number;
+	reAdonly hideAfter?: number;
 }
 
-export enum NotificationsFilter {
+export enum NotificAtionsFilter {
 
 	/**
-	 * No filter is enabled.
+	 * No filter is enAbled.
 	 */
 	OFF,
 
 	/**
-	 * All notifications are configured as silent. See
-	 * `INotificationProperties.silent` for more info.
+	 * All notificAtions Are configured As silent. See
+	 * `INotificAtionProperties.silent` for more info.
 	 */
 	SILENT,
 
 	/**
-	 * All notifications are silent except error notifications.
+	 * All notificAtions Are silent except error notificAtions.
 	*/
 	ERROR
 }
 
 /**
- * A service to bring up notifications and non-modal prompts.
+ * A service to bring up notificAtions And non-modAl prompts.
  *
- * Note: use the `IDialogService` for a modal way to ask the user for input.
+ * Note: use the `IDiAlogService` for A modAl wAy to Ask the user for input.
  */
-export interface INotificationService {
+export interfAce INotificAtionService {
 
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Show the provided notification to the user. The returned `INotificationHandle`
-	 * can be used to control the notification afterwards.
-	 *
-	 * **Note:** If your intent is to show a message with actions to the user, consider
-	 * the `INotificationService.prompt()` method instead which are optimized for
-	 * this usecase and much easier to use!
-	 *
-	 * @returns a handle on the notification to e.g. hide it or update message, buttons, etc.
-	 */
-	notify(notification: INotification): INotificationHandle;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * A convenient way of reporting infos. Use the `INotificationService.notify`
-	 * method if you need more control over the notification.
+	 * Show the provided notificAtion to the user. The returned `INotificAtionHAndle`
+	 * cAn be used to control the notificAtion AfterwArds.
+	 *
+	 * **Note:** If your intent is to show A messAge with Actions to the user, consider
+	 * the `INotificAtionService.prompt()` method insteAd which Are optimized for
+	 * this usecAse And much eAsier to use!
+	 *
+	 * @returns A hAndle on the notificAtion to e.g. hide it or updAte messAge, buttons, etc.
 	 */
-	info(message: NotificationMessage | NotificationMessage[]): void;
+	notify(notificAtion: INotificAtion): INotificAtionHAndle;
 
 	/**
-	 * A convenient way of reporting warnings. Use the `INotificationService.notify`
-	 * method if you need more control over the notification.
+	 * A convenient wAy of reporting infos. Use the `INotificAtionService.notify`
+	 * method if you need more control over the notificAtion.
 	 */
-	warn(message: NotificationMessage | NotificationMessage[]): void;
+	info(messAge: NotificAtionMessAge | NotificAtionMessAge[]): void;
 
 	/**
-	 * A convenient way of reporting errors. Use the `INotificationService.notify`
-	 * method if you need more control over the notification.
+	 * A convenient wAy of reporting wArnings. Use the `INotificAtionService.notify`
+	 * method if you need more control over the notificAtion.
 	 */
-	error(message: NotificationMessage | NotificationMessage[]): void;
+	wArn(messAge: NotificAtionMessAge | NotificAtionMessAge[]): void;
 
 	/**
-	 * Shows a prompt in the notification area with the provided choices. The prompt
-	 * is non-modal. If you want to show a modal dialog instead, use `IDialogService`.
-	 *
-	 * @param severity the severity of the notification. Either `Info`, `Warning` or `Error`.
-	 * @param message the message to show as status.
-	 * @param choices options to be choosen from.
-	 * @param options provides some optional configuration options.
-	 *
-	 * @returns a handle on the notification to e.g. hide it or update message, buttons, etc.
+	 * A convenient wAy of reporting errors. Use the `INotificAtionService.notify`
+	 * method if you need more control over the notificAtion.
 	 */
-	prompt(severity: Severity, message: string, choices: IPromptChoice[], options?: IPromptOptions): INotificationHandle;
+	error(messAge: NotificAtionMessAge | NotificAtionMessAge[]): void;
 
 	/**
-	 * Shows a status message in the status area with the provided text.
+	 * Shows A prompt in the notificAtion AreA with the provided choices. The prompt
+	 * is non-modAl. If you wAnt to show A modAl diAlog insteAd, use `IDiAlogService`.
 	 *
-	 * @param message the message to show as status
-	 * @param options provides some optional configuration options
+	 * @pArAm severity the severity of the notificAtion. Either `Info`, `WArning` or `Error`.
+	 * @pArAm messAge the messAge to show As stAtus.
+	 * @pArAm choices options to be choosen from.
+	 * @pArAm options provides some optionAl configurAtion options.
 	 *
-	 * @returns a disposable to hide the status message
+	 * @returns A hAndle on the notificAtion to e.g. hide it or updAte messAge, buttons, etc.
 	 */
-	status(message: NotificationMessage, options?: IStatusMessageOptions): IDisposable;
+	prompt(severity: Severity, messAge: string, choices: IPromptChoice[], options?: IPromptOptions): INotificAtionHAndle;
 
 	/**
-	 * Allows to configure a filter for notifications.
+	 * Shows A stAtus messAge in the stAtus AreA with the provided text.
 	 *
-	 * @param filter the filter to use
+	 * @pArAm messAge the messAge to show As stAtus
+	 * @pArAm options provides some optionAl configurAtion options
+	 *
+	 * @returns A disposAble to hide the stAtus messAge
 	 */
-	setFilter(filter: NotificationsFilter): void;
+	stAtus(messAge: NotificAtionMessAge, options?: IStAtusMessAgeOptions): IDisposAble;
+
+	/**
+	 * Allows to configure A filter for notificAtions.
+	 *
+	 * @pArAm filter the filter to use
+	 */
+	setFilter(filter: NotificAtionsFilter): void;
 }
 
-export class NoOpNotification implements INotificationHandle {
+export clAss NoOpNotificAtion implements INotificAtionHAndle {
 
-	readonly progress = new NoOpProgress();
+	reAdonly progress = new NoOpProgress();
 
-	readonly onDidClose = Event.None;
-	readonly onDidChangeVisibility = Event.None;
+	reAdonly onDidClose = Event.None;
+	reAdonly onDidChAngeVisibility = Event.None;
 
-	updateSeverity(severity: Severity): void { }
-	updateMessage(message: NotificationMessage): void { }
-	updateActions(actions?: INotificationActions): void { }
+	updAteSeverity(severity: Severity): void { }
+	updAteMessAge(messAge: NotificAtionMessAge): void { }
+	updAteActions(Actions?: INotificAtionActions): void { }
 
 	close(): void { }
 }
 
-export class NoOpProgress implements INotificationProgress {
+export clAss NoOpProgress implements INotificAtionProgress {
 	infinite(): void { }
 	done(): void { }
-	total(value: number): void { }
-	worked(value: number): void { }
+	totAl(vAlue: number): void { }
+	worked(vAlue: number): void { }
 }

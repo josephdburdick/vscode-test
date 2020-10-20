@@ -1,200 +1,200 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { localize } from 'vs/nls';
-import { IWorkspaceFolder, IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { isWindows, isLinux, isMacintosh } from 'vs/base/common/platform';
-import { extname, isAbsolute } from 'vs/base/common/path';
-import { dirname, resolvePath, isEqualAuthority, relativePath, extname as resourceExtname, extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
-import * as jsonEdit from 'vs/base/common/jsonEdit';
-import * as json from 'vs/base/common/json';
-import { Schemas } from 'vs/base/common/network';
-import { normalizeDriveLetter } from 'vs/base/common/labels';
-import { toSlashes } from 'vs/base/common/extpath';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
-import { getRemoteAuthority } from 'vs/platform/remote/common/remoteHosts';
-import { ILogService } from 'vs/platform/log/common/log';
-import { Event } from 'vs/base/common/event';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { locAlize } from 'vs/nls';
+import { IWorkspAceFolder, IWorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { isWindows, isLinux, isMAcintosh } from 'vs/bAse/common/plAtform';
+import { extnAme, isAbsolute } from 'vs/bAse/common/pAth';
+import { dirnAme, resolvePAth, isEquAlAuthority, relAtivePAth, extnAme As resourceExtnAme, extUriBiAsedIgnorePAthCAse } from 'vs/bAse/common/resources';
+import * As jsonEdit from 'vs/bAse/common/jsonEdit';
+import * As json from 'vs/bAse/common/json';
+import { SchemAs } from 'vs/bAse/common/network';
+import { normAlizeDriveLetter } from 'vs/bAse/common/lAbels';
+import { toSlAshes } from 'vs/bAse/common/extpAth';
+import { FormAttingOptions } from 'vs/bAse/common/jsonFormAtter';
+import { getRemoteAuthority } from 'vs/plAtform/remote/common/remoteHosts';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { Event } from 'vs/bAse/common/event';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 
-export const WORKSPACE_EXTENSION = 'code-workspace';
-export const WORKSPACE_FILTER = [{ name: localize('codeWorkspace', "Code Workspace"), extensions: [WORKSPACE_EXTENSION] }];
-export const UNTITLED_WORKSPACE_NAME = 'workspace.json';
+export const WORKSPACE_EXTENSION = 'code-workspAce';
+export const WORKSPACE_FILTER = [{ nAme: locAlize('codeWorkspAce', "Code WorkspAce"), extensions: [WORKSPACE_EXTENSION] }];
+export const UNTITLED_WORKSPACE_NAME = 'workspAce.json';
 
-export const IWorkspacesService = createDecorator<IWorkspacesService>('workspacesService');
+export const IWorkspAcesService = creAteDecorAtor<IWorkspAcesService>('workspAcesService');
 
-export interface IWorkspacesService {
+export interfAce IWorkspAcesService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	// Workspaces Management
-	enterWorkspace(path: URI): Promise<IEnterWorkspaceResult | null>;
-	createUntitledWorkspace(folders?: IWorkspaceFolderCreationData[], remoteAuthority?: string): Promise<IWorkspaceIdentifier>;
-	deleteUntitledWorkspace(workspace: IWorkspaceIdentifier): Promise<void>;
-	getWorkspaceIdentifier(workspacePath: URI): Promise<IWorkspaceIdentifier>;
+	// WorkspAces MAnAgement
+	enterWorkspAce(pAth: URI): Promise<IEnterWorkspAceResult | null>;
+	creAteUntitledWorkspAce(folders?: IWorkspAceFolderCreAtionDAtA[], remoteAuthority?: string): Promise<IWorkspAceIdentifier>;
+	deleteUntitledWorkspAce(workspAce: IWorkspAceIdentifier): Promise<void>;
+	getWorkspAceIdentifier(workspAcePAth: URI): Promise<IWorkspAceIdentifier>;
 
-	// Workspaces History
-	readonly onRecentlyOpenedChange: Event<void>;
-	addRecentlyOpened(recents: IRecent[]): Promise<void>;
-	removeRecentlyOpened(workspaces: URI[]): Promise<void>;
-	clearRecentlyOpened(): Promise<void>;
+	// WorkspAces History
+	reAdonly onRecentlyOpenedChAnge: Event<void>;
+	AddRecentlyOpened(recents: IRecent[]): Promise<void>;
+	removeRecentlyOpened(workspAces: URI[]): Promise<void>;
+	cleArRecentlyOpened(): Promise<void>;
 	getRecentlyOpened(): Promise<IRecentlyOpened>;
 
-	// Dirty Workspaces
-	getDirtyWorkspaces(): Promise<Array<IWorkspaceIdentifier | URI>>;
+	// Dirty WorkspAces
+	getDirtyWorkspAces(): Promise<ArrAy<IWorkspAceIdentifier | URI>>;
 }
 
-export interface IRecentlyOpened {
-	workspaces: Array<IRecentWorkspace | IRecentFolder>;
+export interfAce IRecentlyOpened {
+	workspAces: ArrAy<IRecentWorkspAce | IRecentFolder>;
 	files: IRecentFile[];
 }
 
-export type IRecent = IRecentWorkspace | IRecentFolder | IRecentFile;
+export type IRecent = IRecentWorkspAce | IRecentFolder | IRecentFile;
 
-export interface IRecentWorkspace {
-	workspace: IWorkspaceIdentifier;
-	label?: string;
+export interfAce IRecentWorkspAce {
+	workspAce: IWorkspAceIdentifier;
+	lAbel?: string;
 }
 
-export interface IRecentFolder {
-	folderUri: ISingleFolderWorkspaceIdentifier;
-	label?: string;
+export interfAce IRecentFolder {
+	folderUri: ISingleFolderWorkspAceIdentifier;
+	lAbel?: string;
 }
 
-export interface IRecentFile {
+export interfAce IRecentFile {
 	fileUri: URI;
-	label?: string;
+	lAbel?: string;
 }
 
-export function isRecentWorkspace(curr: IRecent): curr is IRecentWorkspace {
-	return curr.hasOwnProperty('workspace');
+export function isRecentWorkspAce(curr: IRecent): curr is IRecentWorkspAce {
+	return curr.hAsOwnProperty('workspAce');
 }
 
 export function isRecentFolder(curr: IRecent): curr is IRecentFolder {
-	return curr.hasOwnProperty('folderUri');
+	return curr.hAsOwnProperty('folderUri');
 }
 
 export function isRecentFile(curr: IRecent): curr is IRecentFile {
-	return curr.hasOwnProperty('fileUri');
+	return curr.hAsOwnProperty('fileUri');
 }
 
 /**
- * A single folder workspace identifier is just the path to the folder.
+ * A single folder workspAce identifier is just the pAth to the folder.
  */
-export type ISingleFolderWorkspaceIdentifier = URI;
+export type ISingleFolderWorkspAceIdentifier = URI;
 
-export interface IWorkspaceIdentifier {
+export interfAce IWorkspAceIdentifier {
 	id: string;
-	configPath: URI;
+	configPAth: URI;
 }
 
-export function reviveWorkspaceIdentifier(workspace: { id: string, configPath: UriComponents; }): IWorkspaceIdentifier {
-	return { id: workspace.id, configPath: URI.revive(workspace.configPath) };
+export function reviveWorkspAceIdentifier(workspAce: { id: string, configPAth: UriComponents; }): IWorkspAceIdentifier {
+	return { id: workspAce.id, configPAth: URI.revive(workspAce.configPAth) };
 }
 
-export function isStoredWorkspaceFolder(thing: unknown): thing is IStoredWorkspaceFolder {
-	return isRawFileWorkspaceFolder(thing) || isRawUriWorkspaceFolder(thing);
+export function isStoredWorkspAceFolder(thing: unknown): thing is IStoredWorkspAceFolder {
+	return isRAwFileWorkspAceFolder(thing) || isRAwUriWorkspAceFolder(thing);
 }
 
-export function isRawFileWorkspaceFolder(thing: any): thing is IRawFileWorkspaceFolder {
+export function isRAwFileWorkspAceFolder(thing: Any): thing is IRAwFileWorkspAceFolder {
 	return thing
 		&& typeof thing === 'object'
-		&& typeof thing.path === 'string'
-		&& (!thing.name || typeof thing.name === 'string');
+		&& typeof thing.pAth === 'string'
+		&& (!thing.nAme || typeof thing.nAme === 'string');
 }
 
-export function isRawUriWorkspaceFolder(thing: any): thing is IRawUriWorkspaceFolder {
+export function isRAwUriWorkspAceFolder(thing: Any): thing is IRAwUriWorkspAceFolder {
 	return thing
 		&& typeof thing === 'object'
 		&& typeof thing.uri === 'string'
-		&& (!thing.name || typeof thing.name === 'string');
+		&& (!thing.nAme || typeof thing.nAme === 'string');
 }
 
-export interface IRawFileWorkspaceFolder {
-	path: string;
-	name?: string;
+export interfAce IRAwFileWorkspAceFolder {
+	pAth: string;
+	nAme?: string;
 }
 
-export interface IRawUriWorkspaceFolder {
+export interfAce IRAwUriWorkspAceFolder {
 	uri: string;
-	name?: string;
+	nAme?: string;
 }
 
-export type IStoredWorkspaceFolder = IRawFileWorkspaceFolder | IRawUriWorkspaceFolder;
+export type IStoredWorkspAceFolder = IRAwFileWorkspAceFolder | IRAwUriWorkspAceFolder;
 
-export interface IResolvedWorkspace extends IWorkspaceIdentifier {
-	folders: IWorkspaceFolder[];
+export interfAce IResolvedWorkspAce extends IWorkspAceIdentifier {
+	folders: IWorkspAceFolder[];
 	remoteAuthority?: string;
 }
 
-export interface IStoredWorkspace {
-	folders: IStoredWorkspaceFolder[];
+export interfAce IStoredWorkspAce {
+	folders: IStoredWorkspAceFolder[];
 	remoteAuthority?: string;
 }
 
-export interface IWorkspaceFolderCreationData {
+export interfAce IWorkspAceFolderCreAtionDAtA {
 	uri: URI;
-	name?: string;
+	nAme?: string;
 }
 
-export interface IUntitledWorkspaceInfo {
-	workspace: IWorkspaceIdentifier;
+export interfAce IUntitledWorkspAceInfo {
+	workspAce: IWorkspAceIdentifier;
 	remoteAuthority?: string;
 }
 
-export interface IEnterWorkspaceResult {
-	workspace: IWorkspaceIdentifier;
-	backupPath?: string;
+export interfAce IEnterWorkspAceResult {
+	workspAce: IWorkspAceIdentifier;
+	bAckupPAth?: string;
 }
 
-export function isSingleFolderWorkspaceIdentifier(obj: unknown): obj is ISingleFolderWorkspaceIdentifier {
-	return obj instanceof URI;
+export function isSingleFolderWorkspAceIdentifier(obj: unknown): obj is ISingleFolderWorkspAceIdentifier {
+	return obj instAnceof URI;
 }
 
-export function isWorkspaceIdentifier(obj: unknown): obj is IWorkspaceIdentifier {
-	const workspaceIdentifier = obj as IWorkspaceIdentifier;
+export function isWorkspAceIdentifier(obj: unknown): obj is IWorkspAceIdentifier {
+	const workspAceIdentifier = obj As IWorkspAceIdentifier;
 
-	return workspaceIdentifier && typeof workspaceIdentifier.id === 'string' && workspaceIdentifier.configPath instanceof URI;
+	return workspAceIdentifier && typeof workspAceIdentifier.id === 'string' && workspAceIdentifier.configPAth instAnceof URI;
 }
 
-export function toWorkspaceIdentifier(workspace: IWorkspace): IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier | undefined {
-	if (workspace.configuration) {
+export function toWorkspAceIdentifier(workspAce: IWorkspAce): IWorkspAceIdentifier | ISingleFolderWorkspAceIdentifier | undefined {
+	if (workspAce.configurAtion) {
 		return {
-			configPath: workspace.configuration,
-			id: workspace.id
+			configPAth: workspAce.configurAtion,
+			id: workspAce.id
 		};
 	}
 
-	if (workspace.folders.length === 1) {
-		return workspace.folders[0].uri;
+	if (workspAce.folders.length === 1) {
+		return workspAce.folders[0].uri;
 	}
 
-	// Empty workspace
+	// Empty workspAce
 	return undefined;
 }
 
-export function isUntitledWorkspace(path: URI, environmentService: IEnvironmentService): boolean {
-	return extUriBiasedIgnorePathCase.isEqualOrParent(path, environmentService.untitledWorkspacesHome);
+export function isUntitledWorkspAce(pAth: URI, environmentService: IEnvironmentService): booleAn {
+	return extUriBiAsedIgnorePAthCAse.isEquAlOrPArent(pAth, environmentService.untitledWorkspAcesHome);
 }
 
-export type IMultiFolderWorkspaceInitializationPayload = IWorkspaceIdentifier;
-export interface ISingleFolderWorkspaceInitializationPayload { id: string; folder: ISingleFolderWorkspaceIdentifier; }
-export interface IEmptyWorkspaceInitializationPayload { id: string; }
+export type IMultiFolderWorkspAceInitiAlizAtionPAyloAd = IWorkspAceIdentifier;
+export interfAce ISingleFolderWorkspAceInitiAlizAtionPAyloAd { id: string; folder: ISingleFolderWorkspAceIdentifier; }
+export interfAce IEmptyWorkspAceInitiAlizAtionPAyloAd { id: string; }
 
-export type IWorkspaceInitializationPayload = IMultiFolderWorkspaceInitializationPayload | ISingleFolderWorkspaceInitializationPayload | IEmptyWorkspaceInitializationPayload;
+export type IWorkspAceInitiAlizAtionPAyloAd = IMultiFolderWorkspAceInitiAlizAtionPAyloAd | ISingleFolderWorkspAceInitiAlizAtionPAyloAd | IEmptyWorkspAceInitiAlizAtionPAyloAd;
 
-export function isSingleFolderWorkspaceInitializationPayload(obj: any): obj is ISingleFolderWorkspaceInitializationPayload {
-	return isSingleFolderWorkspaceIdentifier((obj.folder as ISingleFolderWorkspaceIdentifier));
+export function isSingleFolderWorkspAceInitiAlizAtionPAyloAd(obj: Any): obj is ISingleFolderWorkspAceInitiAlizAtionPAyloAd {
+	return isSingleFolderWorkspAceIdentifier((obj.folder As ISingleFolderWorkspAceIdentifier));
 }
 
 const WORKSPACE_SUFFIX = '.' + WORKSPACE_EXTENSION;
 
-export function hasWorkspaceFileExtension(path: string | URI) {
-	const ext = (typeof path === 'string') ? extname(path) : resourceExtname(path);
+export function hAsWorkspAceFileExtension(pAth: string | URI) {
+	const ext = (typeof pAth === 'string') ? extnAme(pAth) : resourceExtnAme(pAth);
 
 	return ext === WORKSPACE_SUFFIX;
 }
@@ -202,160 +202,160 @@ export function hasWorkspaceFileExtension(path: string | URI) {
 const SLASH = '/';
 
 /**
- * Given a folder URI and the workspace config folder, computes the IStoredWorkspaceFolder using
-* a relative or absolute path or a uri.
- * Undefined is returned if the folderURI and the targetConfigFolderURI don't have the same schema or authority
+ * Given A folder URI And the workspAce config folder, computes the IStoredWorkspAceFolder using
+* A relAtive or Absolute pAth or A uri.
+ * Undefined is returned if the folderURI And the tArgetConfigFolderURI don't hAve the sAme schemA or Authority
  *
- * @param folderURI a workspace folder
- * @param forceAbsolute if set, keep the path absolute
- * @param folderName a workspace name
- * @param targetConfigFolderURI the folder where the workspace is living in
- * @param useSlashForPath if set, use forward slashes for file paths on windows
+ * @pArAm folderURI A workspAce folder
+ * @pArAm forceAbsolute if set, keep the pAth Absolute
+ * @pArAm folderNAme A workspAce nAme
+ * @pArAm tArgetConfigFolderURI the folder where the workspAce is living in
+ * @pArAm useSlAshForPAth if set, use forwArd slAshes for file pAths on windows
  */
-export function getStoredWorkspaceFolder(folderURI: URI, forceAbsolute: boolean, folderName: string | undefined, targetConfigFolderURI: URI, useSlashForPath = !isWindows): IStoredWorkspaceFolder {
-	if (folderURI.scheme !== targetConfigFolderURI.scheme) {
-		return { name: folderName, uri: folderURI.toString(true) };
+export function getStoredWorkspAceFolder(folderURI: URI, forceAbsolute: booleAn, folderNAme: string | undefined, tArgetConfigFolderURI: URI, useSlAshForPAth = !isWindows): IStoredWorkspAceFolder {
+	if (folderURI.scheme !== tArgetConfigFolderURI.scheme) {
+		return { nAme: folderNAme, uri: folderURI.toString(true) };
 	}
 
-	let folderPath = !forceAbsolute ? relativePath(targetConfigFolderURI, folderURI) : undefined;
-	if (folderPath !== undefined) {
-		if (folderPath.length === 0) {
-			folderPath = '.';
-		} else if (isWindows && folderURI.scheme === Schemas.file && !useSlashForPath) {
-			// Windows gets special treatment:
-			// - use backslahes unless slash is used by other existing folders
-			folderPath = folderPath.replace(/\//g, '\\');
+	let folderPAth = !forceAbsolute ? relAtivePAth(tArgetConfigFolderURI, folderURI) : undefined;
+	if (folderPAth !== undefined) {
+		if (folderPAth.length === 0) {
+			folderPAth = '.';
+		} else if (isWindows && folderURI.scheme === SchemAs.file && !useSlAshForPAth) {
+			// Windows gets speciAl treAtment:
+			// - use bAckslAhes unless slAsh is used by other existing folders
+			folderPAth = folderPAth.replAce(/\//g, '\\');
 		}
 	} else {
 
-		// use absolute path
-		if (folderURI.scheme === Schemas.file) {
-			folderPath = folderURI.fsPath;
+		// use Absolute pAth
+		if (folderURI.scheme === SchemAs.file) {
+			folderPAth = folderURI.fsPAth;
 			if (isWindows) {
-				// Windows gets special treatment:
-				// - normalize all paths to get nice casing of drive letters
-				// - use backslahes unless slash is used by other existing folders
-				folderPath = normalizeDriveLetter(folderPath);
-				if (useSlashForPath) {
-					folderPath = toSlashes(folderPath);
+				// Windows gets speciAl treAtment:
+				// - normAlize All pAths to get nice cAsing of drive letters
+				// - use bAckslAhes unless slAsh is used by other existing folders
+				folderPAth = normAlizeDriveLetter(folderPAth);
+				if (useSlAshForPAth) {
+					folderPAth = toSlAshes(folderPAth);
 				}
 			}
 		} else {
-			if (!isEqualAuthority(folderURI.authority, targetConfigFolderURI.authority)) {
-				return { name: folderName, uri: folderURI.toString(true) };
+			if (!isEquAlAuthority(folderURI.Authority, tArgetConfigFolderURI.Authority)) {
+				return { nAme: folderNAme, uri: folderURI.toString(true) };
 			}
-			folderPath = folderURI.path;
+			folderPAth = folderURI.pAth;
 		}
 	}
 
-	return { name: folderName, path: folderPath };
+	return { nAme: folderNAme, pAth: folderPAth };
 }
 
 /**
- * Rewrites the content of a workspace file to be saved at a new location.
- * Throws an exception if file is not a valid workspace file
+ * Rewrites the content of A workspAce file to be sAved At A new locAtion.
+ * Throws An exception if file is not A vAlid workspAce file
  */
-export function rewriteWorkspaceFileForNewLocation(rawWorkspaceContents: string, configPathURI: URI, isFromUntitledWorkspace: boolean, targetConfigPathURI: URI) {
-	let storedWorkspace = doParseStoredWorkspace(configPathURI, rawWorkspaceContents);
+export function rewriteWorkspAceFileForNewLocAtion(rAwWorkspAceContents: string, configPAthURI: URI, isFromUntitledWorkspAce: booleAn, tArgetConfigPAthURI: URI) {
+	let storedWorkspAce = doPArseStoredWorkspAce(configPAthURI, rAwWorkspAceContents);
 
-	const sourceConfigFolder = dirname(configPathURI);
-	const targetConfigFolder = dirname(targetConfigPathURI);
+	const sourceConfigFolder = dirnAme(configPAthURI);
+	const tArgetConfigFolder = dirnAme(tArgetConfigPAthURI);
 
-	const rewrittenFolders: IStoredWorkspaceFolder[] = [];
-	const slashForPath = useSlashForPath(storedWorkspace.folders);
+	const rewrittenFolders: IStoredWorkspAceFolder[] = [];
+	const slAshForPAth = useSlAshForPAth(storedWorkspAce.folders);
 
-	for (const folder of storedWorkspace.folders) {
-		const folderURI = isRawFileWorkspaceFolder(folder) ? resolvePath(sourceConfigFolder, folder.path) : URI.parse(folder.uri);
-		let absolute;
-		if (isFromUntitledWorkspace) {
-			// if it was an untitled workspace, try to make paths relative
-			absolute = false;
+	for (const folder of storedWorkspAce.folders) {
+		const folderURI = isRAwFileWorkspAceFolder(folder) ? resolvePAth(sourceConfigFolder, folder.pAth) : URI.pArse(folder.uri);
+		let Absolute;
+		if (isFromUntitledWorkspAce) {
+			// if it wAs An untitled workspAce, try to mAke pAths relAtive
+			Absolute = fAlse;
 		} else {
-			// for existing workspaces, preserve whether a path was absolute or relative
-			absolute = !isRawFileWorkspaceFolder(folder) || isAbsolute(folder.path);
+			// for existing workspAces, preserve whether A pAth wAs Absolute or relAtive
+			Absolute = !isRAwFileWorkspAceFolder(folder) || isAbsolute(folder.pAth);
 		}
-		rewrittenFolders.push(getStoredWorkspaceFolder(folderURI, absolute, folder.name, targetConfigFolder, slashForPath));
+		rewrittenFolders.push(getStoredWorkspAceFolder(folderURI, Absolute, folder.nAme, tArgetConfigFolder, slAshForPAth));
 	}
 
-	// Preserve as much of the existing workspace as possible by using jsonEdit
-	// and only changing the folders portion.
-	const formattingOptions: FormattingOptions = { insertSpaces: false, tabSize: 4, eol: (isLinux || isMacintosh) ? '\n' : '\r\n' };
-	const edits = jsonEdit.setProperty(rawWorkspaceContents, ['folders'], rewrittenFolders, formattingOptions);
-	let newContent = jsonEdit.applyEdits(rawWorkspaceContents, edits);
+	// Preserve As much of the existing workspAce As possible by using jsonEdit
+	// And only chAnging the folders portion.
+	const formAttingOptions: FormAttingOptions = { insertSpAces: fAlse, tAbSize: 4, eol: (isLinux || isMAcintosh) ? '\n' : '\r\n' };
+	const edits = jsonEdit.setProperty(rAwWorkspAceContents, ['folders'], rewrittenFolders, formAttingOptions);
+	let newContent = jsonEdit.ApplyEdits(rAwWorkspAceContents, edits);
 
-	if (storedWorkspace.remoteAuthority === getRemoteAuthority(targetConfigPathURI)) {
-		// unsaved remote workspaces have the remoteAuthority set. Remove it when no longer nexessary.
-		newContent = jsonEdit.applyEdits(newContent, jsonEdit.removeProperty(newContent, ['remoteAuthority'], formattingOptions));
+	if (storedWorkspAce.remoteAuthority === getRemoteAuthority(tArgetConfigPAthURI)) {
+		// unsAved remote workspAces hAve the remoteAuthority set. Remove it when no longer nexessAry.
+		newContent = jsonEdit.ApplyEdits(newContent, jsonEdit.removeProperty(newContent, ['remoteAuthority'], formAttingOptions));
 	}
 
 	return newContent;
 }
 
-function doParseStoredWorkspace(path: URI, contents: string): IStoredWorkspace {
+function doPArseStoredWorkspAce(pAth: URI, contents: string): IStoredWorkspAce {
 
-	// Parse workspace file
-	let storedWorkspace: IStoredWorkspace = json.parse(contents); // use fault tolerant parser
+	// PArse workspAce file
+	let storedWorkspAce: IStoredWorkspAce = json.pArse(contents); // use fAult tolerAnt pArser
 
-	// Filter out folders which do not have a path or uri set
-	if (storedWorkspace && Array.isArray(storedWorkspace.folders)) {
-		storedWorkspace.folders = storedWorkspace.folders.filter(folder => isStoredWorkspaceFolder(folder));
+	// Filter out folders which do not hAve A pAth or uri set
+	if (storedWorkspAce && ArrAy.isArrAy(storedWorkspAce.folders)) {
+		storedWorkspAce.folders = storedWorkspAce.folders.filter(folder => isStoredWorkspAceFolder(folder));
 	} else {
-		throw new Error(`${path} looks like an invalid workspace file.`);
+		throw new Error(`${pAth} looks like An invAlid workspAce file.`);
 	}
 
-	return storedWorkspace;
+	return storedWorkspAce;
 }
 
-export function useSlashForPath(storedFolders: IStoredWorkspaceFolder[]): boolean {
+export function useSlAshForPAth(storedFolders: IStoredWorkspAceFolder[]): booleAn {
 	if (isWindows) {
-		return storedFolders.some(folder => isRawFileWorkspaceFolder(folder) && folder.path.indexOf(SLASH) >= 0);
+		return storedFolders.some(folder => isRAwFileWorkspAceFolder(folder) && folder.pAth.indexOf(SLASH) >= 0);
 	}
 
 	return true;
 }
 
-//#region Workspace Storage
+//#region WorkspAce StorAge
 
-interface ISerializedRecentlyOpened {
-	workspaces3: Array<ISerializedWorkspace | string>; // workspace or URI.toString() // added in 1.32
-	workspaceLabels?: Array<string | null>; // added in 1.33
-	files2: string[]; // files as URI.toString() // added in 1.32
-	fileLabels?: Array<string | null>; // added in 1.33
+interfAce ISeriAlizedRecentlyOpened {
+	workspAces3: ArrAy<ISeriAlizedWorkspAce | string>; // workspAce or URI.toString() // Added in 1.32
+	workspAceLAbels?: ArrAy<string | null>; // Added in 1.33
+	files2: string[]; // files As URI.toString() // Added in 1.32
+	fileLAbels?: ArrAy<string | null>; // Added in 1.33
 }
 
-interface ISerializedWorkspace { id: string; configURIPath: string; }
+interfAce ISeriAlizedWorkspAce { id: string; configURIPAth: string; }
 
-export type RecentlyOpenedStorageData = object;
+export type RecentlyOpenedStorAgeDAtA = object;
 
-export function restoreRecentlyOpened(data: RecentlyOpenedStorageData | undefined, logService: ILogService): IRecentlyOpened {
-	const result: IRecentlyOpened = { workspaces: [], files: [] };
-	if (data) {
-		const restoreGracefully = function <T>(entries: T[], func: (entry: T, index: number) => void) {
+export function restoreRecentlyOpened(dAtA: RecentlyOpenedStorAgeDAtA | undefined, logService: ILogService): IRecentlyOpened {
+	const result: IRecentlyOpened = { workspAces: [], files: [] };
+	if (dAtA) {
+		const restoreGrAcefully = function <T>(entries: T[], func: (entry: T, index: number) => void) {
 			for (let i = 0; i < entries.length; i++) {
 				try {
 					func(entries[i], i);
-				} catch (e) {
-					logService.warn(`Error restoring recent entry ${JSON.stringify(entries[i])}: ${e.toString()}. Skip entry.`);
+				} cAtch (e) {
+					logService.wArn(`Error restoring recent entry ${JSON.stringify(entries[i])}: ${e.toString()}. Skip entry.`);
 				}
 			}
 		};
 
-		const storedRecents = data as ISerializedRecentlyOpened;
-		if (Array.isArray(storedRecents.workspaces3)) {
-			restoreGracefully(storedRecents.workspaces3, (workspace, i) => {
-				const label: string | undefined = (Array.isArray(storedRecents.workspaceLabels) && storedRecents.workspaceLabels[i]) || undefined;
-				if (typeof workspace === 'object' && typeof workspace.id === 'string' && typeof workspace.configURIPath === 'string') {
-					result.workspaces.push({ label, workspace: { id: workspace.id, configPath: URI.parse(workspace.configURIPath) } });
-				} else if (typeof workspace === 'string') {
-					result.workspaces.push({ label, folderUri: URI.parse(workspace) });
+		const storedRecents = dAtA As ISeriAlizedRecentlyOpened;
+		if (ArrAy.isArrAy(storedRecents.workspAces3)) {
+			restoreGrAcefully(storedRecents.workspAces3, (workspAce, i) => {
+				const lAbel: string | undefined = (ArrAy.isArrAy(storedRecents.workspAceLAbels) && storedRecents.workspAceLAbels[i]) || undefined;
+				if (typeof workspAce === 'object' && typeof workspAce.id === 'string' && typeof workspAce.configURIPAth === 'string') {
+					result.workspAces.push({ lAbel, workspAce: { id: workspAce.id, configPAth: URI.pArse(workspAce.configURIPAth) } });
+				} else if (typeof workspAce === 'string') {
+					result.workspAces.push({ lAbel, folderUri: URI.pArse(workspAce) });
 				}
 			});
 		}
-		if (Array.isArray(storedRecents.files2)) {
-			restoreGracefully(storedRecents.files2, (file, i) => {
-				const label: string | undefined = (Array.isArray(storedRecents.fileLabels) && storedRecents.fileLabels[i]) || undefined;
+		if (ArrAy.isArrAy(storedRecents.files2)) {
+			restoreGrAcefully(storedRecents.files2, (file, i) => {
+				const lAbel: string | undefined = (ArrAy.isArrAy(storedRecents.fileLAbels) && storedRecents.fileLAbels[i]) || undefined;
 				if (typeof file === 'string') {
-					result.files.push({ label, fileUri: URI.parse(file) });
+					result.files.push({ lAbel, fileUri: URI.pArse(file) });
 				}
 			});
 		}
@@ -364,39 +364,39 @@ export function restoreRecentlyOpened(data: RecentlyOpenedStorageData | undefine
 	return result;
 }
 
-export function toStoreData(recents: IRecentlyOpened): RecentlyOpenedStorageData {
-	const serialized: ISerializedRecentlyOpened = { workspaces3: [], files2: [] };
+export function toStoreDAtA(recents: IRecentlyOpened): RecentlyOpenedStorAgeDAtA {
+	const seriAlized: ISeriAlizedRecentlyOpened = { workspAces3: [], files2: [] };
 
-	let hasLabel = false;
-	const workspaceLabels: (string | null)[] = [];
-	for (const recent of recents.workspaces) {
+	let hAsLAbel = fAlse;
+	const workspAceLAbels: (string | null)[] = [];
+	for (const recent of recents.workspAces) {
 		if (isRecentFolder(recent)) {
-			serialized.workspaces3.push(recent.folderUri.toString());
+			seriAlized.workspAces3.push(recent.folderUri.toString());
 		} else {
-			serialized.workspaces3.push({ id: recent.workspace.id, configURIPath: recent.workspace.configPath.toString() });
+			seriAlized.workspAces3.push({ id: recent.workspAce.id, configURIPAth: recent.workspAce.configPAth.toString() });
 		}
-		workspaceLabels.push(recent.label || null);
-		hasLabel = hasLabel || !!recent.label;
+		workspAceLAbels.push(recent.lAbel || null);
+		hAsLAbel = hAsLAbel || !!recent.lAbel;
 	}
 
-	if (hasLabel) {
-		serialized.workspaceLabels = workspaceLabels;
+	if (hAsLAbel) {
+		seriAlized.workspAceLAbels = workspAceLAbels;
 	}
 
-	hasLabel = false;
+	hAsLAbel = fAlse;
 
-	const fileLabels: (string | null)[] = [];
+	const fileLAbels: (string | null)[] = [];
 	for (const recent of recents.files) {
-		serialized.files2.push(recent.fileUri.toString());
-		fileLabels.push(recent.label || null);
-		hasLabel = hasLabel || !!recent.label;
+		seriAlized.files2.push(recent.fileUri.toString());
+		fileLAbels.push(recent.lAbel || null);
+		hAsLAbel = hAsLAbel || !!recent.lAbel;
 	}
 
-	if (hasLabel) {
-		serialized.fileLabels = fileLabels;
+	if (hAsLAbel) {
+		seriAlized.fileLAbels = fileLAbels;
 	}
 
-	return serialized;
+	return seriAlized;
 }
 
 //#endregion

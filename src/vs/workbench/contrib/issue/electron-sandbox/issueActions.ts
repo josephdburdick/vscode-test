@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import * as nls from 'vs/nls';
-import { IssueType } from 'vs/platform/issue/common/issue';
-import { IWorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sandbox/issue';
+import { Action } from 'vs/bAse/common/Actions';
+import * As nls from 'vs/nls';
+import { IssueType } from 'vs/plAtform/issue/common/issue';
+import { IWorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sAndbox/issue';
 
-export class OpenProcessExplorer extends Action {
-	static readonly ID = 'workbench.action.openProcessExplorer';
-	static readonly LABEL = nls.localize('openProcessExplorer', "Open Process Explorer");
+export clAss OpenProcessExplorer extends Action {
+	stAtic reAdonly ID = 'workbench.Action.openProcessExplorer';
+	stAtic reAdonly LABEL = nls.locAlize('openProcessExplorer', "Open Process Explorer");
 
 	constructor(
 		id: string,
-		label: string,
-		@IWorkbenchIssueService private readonly issueService: IWorkbenchIssueService
+		lAbel: string,
+		@IWorkbenchIssueService privAte reAdonly issueService: IWorkbenchIssueService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	run(): Promise<boolean> {
+	run(): Promise<booleAn> {
 		return this.issueService.openProcessExplorer().then(() => true);
 	}
 }
 
-export class ReportPerformanceIssueUsingReporterAction extends Action {
-	static readonly ID = 'workbench.action.reportPerformanceIssueUsingReporter';
-	static readonly LABEL = nls.localize('reportPerformanceIssue', "Report Performance Issue");
+export clAss ReportPerformAnceIssueUsingReporterAction extends Action {
+	stAtic reAdonly ID = 'workbench.Action.reportPerformAnceIssueUsingReporter';
+	stAtic reAdonly LABEL = nls.locAlize('reportPerformAnceIssue', "Report PerformAnce Issue");
 
 	constructor(
 		id: string,
-		label: string,
-		@IWorkbenchIssueService private readonly issueService: IWorkbenchIssueService
+		lAbel: string,
+		@IWorkbenchIssueService privAte reAdonly issueService: IWorkbenchIssueService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	run(): Promise<boolean> {
-		return this.issueService.openReporter({ issueType: IssueType.PerformanceIssue }).then(() => true);
+	run(): Promise<booleAn> {
+		return this.issueService.openReporter({ issueType: IssueType.PerformAnceIssue }).then(() => true);
 	}
 }

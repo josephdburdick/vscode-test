@@ -1,427 +1,427 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { distinct } from 'vs/base/common/arrays';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import * as platform from 'vs/base/common/platform';
-import { dirname } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { ToggleCaseSensitiveKeybinding, TogglePreserveCaseKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding } from 'vs/editor/contrib/find/findModel';
-import * as nls from 'vs/nls';
-import { ICommandAction, MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry, ICommandHandler } from 'vs/platform/commands/common/commands';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { ConfigurationScope, Extensions as ConfigurationExtensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
-import { ContextKeyExpr, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IFileService } from 'vs/platform/files/common/files';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IListService, WorkbenchListFocusContextKey, WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { defaultQuickAccessContextKeyValue } from 'vs/workbench/browser/quickaccess';
-import { CATEGORIES, Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { Extensions as ViewExtensions, IViewsRegistry, IViewContainersRegistry, ViewContainerLocation, IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
+import { Action } from 'vs/bAse/common/Actions';
+import { distinct } from 'vs/bAse/common/ArrAys';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { dirnAme } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { ToggleCAseSensitiveKeybinding, TogglePreserveCAseKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding } from 'vs/editor/contrib/find/findModel';
+import * As nls from 'vs/nls';
+import { ICommAndAction, MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { CommAndsRegistry, ICommAndHAndler } from 'vs/plAtform/commAnds/common/commAnds';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ConfigurAtionScope, Extensions As ConfigurAtionExtensions, IConfigurAtionRegistry } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { ContextKeyExpr, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IListService, WorkbenchListFocusContextKey, WorkbenchObjectTree } from 'vs/plAtform/list/browser/listService';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { defAultQuickAccessContextKeyVAlue } from 'vs/workbench/browser/quickAccess';
+import { CATEGORIES, Extensions As ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/Actions';
+import { Extensions As WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { Extensions As ViewExtensions, IViewsRegistry, IViewContAinersRegistry, ViewContAinerLocAtion, IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
 import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
-import { ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition, IExplorerService, VIEWLET_ID as VIEWLET_ID_FILES } from 'vs/workbench/contrib/files/common/files';
-import { registerContributions as replaceContributions } from 'vs/workbench/contrib/search/browser/replaceContributions';
-import { clearHistoryCommand, ClearSearchResultsAction, CloseReplaceAction, CollapseDeepestExpandedLevelAction, copyAllCommand, copyMatchCommand, copyPathCommand, FocusNextInputAction, FocusNextSearchResultAction, FocusPreviousInputAction, FocusPreviousSearchResultAction, focusSearchListCommand, getSearchView, openSearchView, OpenSearchViewletAction, RefreshAction, RemoveAction, ReplaceAction, ReplaceAllAction, ReplaceAllInFolderAction, ReplaceInFilesAction, toggleCaseSensitiveCommand, togglePreserveCaseCommand, toggleRegexCommand, toggleWholeWordCommand, FindInFilesCommand, ToggleSearchOnTypeAction, ExpandAllAction } from 'vs/workbench/contrib/search/browser/searchActions';
-import { SearchView } from 'vs/workbench/contrib/search/browser/searchView';
-import { registerContributions as searchWidgetContributions } from 'vs/workbench/contrib/search/browser/searchWidget';
-import * as Constants from 'vs/workbench/contrib/search/common/constants';
-import * as SearchEditorConstants from 'vs/workbench/contrib/searchEditor/browser/constants';
-import { getWorkspaceSymbols } from 'vs/workbench/contrib/search/common/search';
-import { ISearchHistoryService, SearchHistoryService } from 'vs/workbench/contrib/search/common/searchHistoryService';
-import { FileMatchOrMatch, ISearchWorkbenchService, RenderableMatch, SearchWorkbenchService, FileMatch, Match, FolderMatch } from 'vs/workbench/contrib/search/common/searchModel';
+import { ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition, IExplorerService, VIEWLET_ID As VIEWLET_ID_FILES } from 'vs/workbench/contrib/files/common/files';
+import { registerContributions As replAceContributions } from 'vs/workbench/contrib/seArch/browser/replAceContributions';
+import { cleArHistoryCommAnd, CleArSeArchResultsAction, CloseReplAceAction, CollApseDeepestExpAndedLevelAction, copyAllCommAnd, copyMAtchCommAnd, copyPAthCommAnd, FocusNextInputAction, FocusNextSeArchResultAction, FocusPreviousInputAction, FocusPreviousSeArchResultAction, focusSeArchListCommAnd, getSeArchView, openSeArchView, OpenSeArchViewletAction, RefreshAction, RemoveAction, ReplAceAction, ReplAceAllAction, ReplAceAllInFolderAction, ReplAceInFilesAction, toggleCAseSensitiveCommAnd, togglePreserveCAseCommAnd, toggleRegexCommAnd, toggleWholeWordCommAnd, FindInFilesCommAnd, ToggleSeArchOnTypeAction, ExpAndAllAction } from 'vs/workbench/contrib/seArch/browser/seArchActions';
+import { SeArchView } from 'vs/workbench/contrib/seArch/browser/seArchView';
+import { registerContributions As seArchWidgetContributions } from 'vs/workbench/contrib/seArch/browser/seArchWidget';
+import * As ConstAnts from 'vs/workbench/contrib/seArch/common/constAnts';
+import * As SeArchEditorConstAnts from 'vs/workbench/contrib/seArchEditor/browser/constAnts';
+import { getWorkspAceSymbols } from 'vs/workbench/contrib/seArch/common/seArch';
+import { ISeArchHistoryService, SeArchHistoryService } from 'vs/workbench/contrib/seArch/common/seArchHistoryService';
+import { FileMAtchOrMAtch, ISeArchWorkbenchService, RenderAbleMAtch, SeArchWorkbenchService, FileMAtch, MAtch, FolderMAtch } from 'vs/workbench/contrib/seArch/common/seArchModel';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { VIEWLET_ID, VIEW_ID, SEARCH_EXCLUDE_CONFIG, SearchSortOrder } from 'vs/workbench/services/search/common/search';
+import { VIEWLET_ID, VIEW_ID, SEARCH_EXCLUDE_CONFIG, SeArchSortOrder } from 'vs/workbench/services/seArch/common/seArch';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { ExplorerViewPaneContainer } from 'vs/workbench/contrib/files/browser/explorerViewlet';
-import { assertType, assertIsDefined } from 'vs/base/common/types';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { SearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditor';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IQuickAccessRegistry, Extensions as QuickAccessExtensions } from 'vs/platform/quickinput/common/quickAccess';
-import { SymbolsQuickAccessProvider } from 'vs/workbench/contrib/search/browser/symbolsQuickAccess';
-import { AnythingQuickAccessProvider } from 'vs/workbench/contrib/search/browser/anythingQuickAccess';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { AbstractGotoLineQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoLineQuickAccess';
-import { GotoSymbolQuickAccessProvider } from 'vs/workbench/contrib/codeEditor/browser/quickaccess/gotoSymbolQuickAccess';
-import { searchViewIcon } from 'vs/workbench/contrib/search/browser/searchIcons';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { ExplorerViewPAneContAiner } from 'vs/workbench/contrib/files/browser/explorerViewlet';
+import { AssertType, AssertIsDefined } from 'vs/bAse/common/types';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { SeArchEditor } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditor';
+import { ViewPAneContAiner } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { IQuickAccessRegistry, Extensions As QuickAccessExtensions } from 'vs/plAtform/quickinput/common/quickAccess';
+import { SymbolsQuickAccessProvider } from 'vs/workbench/contrib/seArch/browser/symbolsQuickAccess';
+import { AnythingQuickAccessProvider } from 'vs/workbench/contrib/seArch/browser/AnythingQuickAccess';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { AbstrActGotoLineQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoLineQuickAccess';
+import { GotoSymbolQuickAccessProvider } from 'vs/workbench/contrib/codeEditor/browser/quickAccess/gotoSymbolQuickAccess';
+import { seArchViewIcon } from 'vs/workbench/contrib/seArch/browser/seArchIcons';
 
-registerSingleton(ISearchWorkbenchService, SearchWorkbenchService, true);
-registerSingleton(ISearchHistoryService, SearchHistoryService, true);
+registerSingleton(ISeArchWorkbenchService, SeArchWorkbenchService, true);
+registerSingleton(ISeArchHistoryService, SeArchHistoryService, true);
 
-replaceContributions();
-searchWidgetContributions();
+replAceContributions();
+seArchWidgetContributions();
 
-const category = { value: nls.localize('search', "Search"), original: 'Search' };
+const cAtegory = { vAlue: nls.locAlize('seArch', "SeArch"), originAl: 'SeArch' };
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: 'workbench.action.search.toggleQueryDetails',
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: 'workbench.Action.seArch.toggleQueryDetAils',
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.or(Constants.SearchViewFocusedKey, SearchEditorConstants.InSearchEditor),
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_J,
-	handler: accessor => {
-		const contextService = accessor.get(IContextKeyService).getContext(document.activeElement);
-		if (contextService.getValue(SearchEditorConstants.InSearchEditor.serialize())) {
-			(accessor.get(IEditorService).activeEditorPane as SearchEditor).toggleQueryDetails();
-		} else if (contextService.getValue(Constants.SearchViewFocusedKey.serialize())) {
-			const searchView = getSearchView(accessor.get(IViewsService));
-			assertIsDefined(searchView).toggleQueryDetails();
+	when: ContextKeyExpr.or(ConstAnts.SeArchViewFocusedKey, SeArchEditorConstAnts.InSeArchEditor),
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_J,
+	hAndler: Accessor => {
+		const contextService = Accessor.get(IContextKeyService).getContext(document.ActiveElement);
+		if (contextService.getVAlue(SeArchEditorConstAnts.InSeArchEditor.seriAlize())) {
+			(Accessor.get(IEditorService).ActiveEditorPAne As SeArchEditor).toggleQueryDetAils();
+		} else if (contextService.getVAlue(ConstAnts.SeArchViewFocusedKey.seriAlize())) {
+			const seArchView = getSeArchView(Accessor.get(IViewsService));
+			AssertIsDefined(seArchView).toggleQueryDetAils();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.FocusSearchFromResults,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.FocusSeArchFromResults,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.FirstMatchFocusKey),
-	primary: KeyMod.CtrlCmd | KeyCode.UpArrow,
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			searchView.focusPreviousInputBox();
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.FirstMAtchFocusKey),
+	primAry: KeyMod.CtrlCmd | KeyCode.UpArrow,
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			seArchView.focusPreviousInputBox();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.OpenMatch,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.OpenMAtch,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.FileMatchOrMatchFocusKey),
-	primary: KeyCode.Enter,
-	mac: {
-		primary: KeyCode.Enter,
-		secondary: [KeyMod.CtrlCmd | KeyCode.DownArrow]
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.FileMAtchOrMAtchFocusKey),
+	primAry: KeyCode.Enter,
+	mAc: {
+		primAry: KeyCode.Enter,
+		secondAry: [KeyMod.CtrlCmd | KeyCode.DownArrow]
 	},
-	handler: (accessor) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			searchView.open(<FileMatchOrMatch>tree.getFocus()[0], false, false, true);
+	hAndler: (Accessor) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			seArchView.open(<FileMAtchOrMAtch>tree.getFocus()[0], fAlse, fAlse, true);
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.OpenMatchToSide,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.OpenMAtchToSide,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.FileMatchOrMatchFocusKey),
-	primary: KeyMod.CtrlCmd | KeyCode.Enter,
-	mac: {
-		primary: KeyMod.WinCtrl | KeyCode.Enter
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.FileMAtchOrMAtchFocusKey),
+	primAry: KeyMod.CtrlCmd | KeyCode.Enter,
+	mAc: {
+		primAry: KeyMod.WinCtrl | KeyCode.Enter
 	},
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			searchView.open(<FileMatchOrMatch>tree.getFocus()[0], false, true, true);
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			seArchView.open(<FileMAtchOrMAtch>tree.getFocus()[0], fAlse, true, true);
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.CancelActionId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.CAncelActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, WorkbenchListFocusContextKey),
-	primary: KeyCode.Escape,
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			searchView.cancelSearch();
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, WorkbenchListFocusContextKey),
+	primAry: KeyCode.EscApe,
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			seArchView.cAncelSeArch();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.RemoveActionId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.RemoveActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.FileMatchOrMatchFocusKey),
-	primary: KeyCode.Delete,
-	mac: {
-		primary: KeyMod.CtrlCmd | KeyCode.Backspace,
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.FileMAtchOrMAtchFocusKey),
+	primAry: KeyCode.Delete,
+	mAc: {
+		primAry: KeyMod.CtrlCmd | KeyCode.BAckspAce,
 	},
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			accessor.get(IInstantiationService).createInstance(RemoveAction, tree, tree.getFocus()[0]!).run();
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			Accessor.get(IInstAntiAtionService).creAteInstAnce(RemoveAction, tree, tree.getFocus()[0]!).run();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.ReplaceActionId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.ReplAceActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.ReplaceActiveKey, Constants.MatchFocusKey),
-	primary: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.KEY_1,
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			accessor.get(IInstantiationService).createInstance(ReplaceAction, tree, tree.getFocus()[0] as Match, searchView).run();
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.ReplAceActiveKey, ConstAnts.MAtchFocusKey),
+	primAry: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.KEY_1,
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			Accessor.get(IInstAntiAtionService).creAteInstAnce(ReplAceAction, tree, tree.getFocus()[0] As MAtch, seArchView).run();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.ReplaceAllInFileActionId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.ReplAceAllInFileActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.ReplaceActiveKey, Constants.FileFocusKey),
-	primary: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.KEY_1,
-	secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Enter],
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			accessor.get(IInstantiationService).createInstance(ReplaceAllAction, searchView, tree.getFocus()[0] as FileMatch).run();
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.ReplAceActiveKey, ConstAnts.FileFocusKey),
+	primAry: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.KEY_1,
+	secondAry: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Enter],
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			Accessor.get(IInstAntiAtionService).creAteInstAnce(ReplAceAllAction, seArchView, tree.getFocus()[0] As FileMAtch).run();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.ReplaceAllInFolderActionId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.ReplAceAllInFolderActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.ReplaceActiveKey, Constants.FolderFocusKey),
-	primary: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.KEY_1,
-	secondary: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Enter],
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			accessor.get(IInstantiationService).createInstance(ReplaceAllInFolderAction, tree, tree.getFocus()[0] as FolderMatch).run();
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.ReplAceActiveKey, ConstAnts.FolderFocusKey),
+	primAry: KeyMod.Shift | KeyMod.CtrlCmd | KeyCode.KEY_1,
+	secondAry: [KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Enter],
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			Accessor.get(IInstAntiAtionService).creAteInstAnce(ReplAceAllInFolderAction, tree, tree.getFocus()[0] As FolderMAtch).run();
 		}
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.CloseReplaceWidgetActionId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.CloseReplAceWidgetActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.ReplaceInputBoxFocusedKey),
-	primary: KeyCode.Escape,
-	handler: (accessor, args: any) => {
-		accessor.get(IInstantiationService).createInstance(CloseReplaceAction, Constants.CloseReplaceWidgetActionId, '').run();
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.ReplAceInputBoxFocusedKey),
+	primAry: KeyCode.EscApe,
+	hAndler: (Accessor, Args: Any) => {
+		Accessor.get(IInstAntiAtionService).creAteInstAnce(CloseReplAceAction, ConstAnts.CloseReplAceWidgetActionId, '').run();
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: FocusNextInputAction.ID,
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: ContextKeyExpr.or(
-		ContextKeyExpr.and(SearchEditorConstants.InSearchEditor, Constants.InputBoxFocusedKey),
-		ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.InputBoxFocusedKey)),
-	primary: KeyMod.CtrlCmd | KeyCode.DownArrow,
-	handler: (accessor, args: any) => {
-		accessor.get(IInstantiationService).createInstance(FocusNextInputAction, FocusNextInputAction.ID, '').run();
+		ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor, ConstAnts.InputBoxFocusedKey),
+		ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.InputBoxFocusedKey)),
+	primAry: KeyMod.CtrlCmd | KeyCode.DownArrow,
+	hAndler: (Accessor, Args: Any) => {
+		Accessor.get(IInstAntiAtionService).creAteInstAnce(FocusNextInputAction, FocusNextInputAction.ID, '').run();
 	}
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: FocusPreviousInputAction.ID,
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: ContextKeyExpr.or(
-		ContextKeyExpr.and(SearchEditorConstants.InSearchEditor, Constants.InputBoxFocusedKey),
-		ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.InputBoxFocusedKey, Constants.SearchInputBoxFocusedKey.toNegated())),
-	primary: KeyMod.CtrlCmd | KeyCode.UpArrow,
-	handler: (accessor, args: any) => {
-		accessor.get(IInstantiationService).createInstance(FocusPreviousInputAction, FocusPreviousInputAction.ID, '').run();
+		ContextKeyExpr.And(SeArchEditorConstAnts.InSeArchEditor, ConstAnts.InputBoxFocusedKey),
+		ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.InputBoxFocusedKey, ConstAnts.SeArchInputBoxFocusedKey.toNegAted())),
+	primAry: KeyMod.CtrlCmd | KeyCode.UpArrow,
+	hAndler: (Accessor, Args: Any) => {
+		Accessor.get(IInstAntiAtionService).creAteInstAnce(FocusPreviousInputAction, FocusPreviousInputAction.ID, '').run();
 	}
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.ReplaceActionId,
-		title: ReplaceAction.LABEL
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.ReplAceActionId,
+		title: ReplAceAction.LABEL
 	},
-	when: ContextKeyExpr.and(Constants.ReplaceActiveKey, Constants.MatchFocusKey),
-	group: 'search',
+	when: ContextKeyExpr.And(ConstAnts.ReplAceActiveKey, ConstAnts.MAtchFocusKey),
+	group: 'seArch',
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.ReplaceAllInFolderActionId,
-		title: ReplaceAllInFolderAction.LABEL
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.ReplAceAllInFolderActionId,
+		title: ReplAceAllInFolderAction.LABEL
 	},
-	when: ContextKeyExpr.and(Constants.ReplaceActiveKey, Constants.FolderFocusKey),
-	group: 'search',
+	when: ContextKeyExpr.And(ConstAnts.ReplAceActiveKey, ConstAnts.FolderFocusKey),
+	group: 'seArch',
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.ReplaceAllInFileActionId,
-		title: ReplaceAllAction.LABEL
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.ReplAceAllInFileActionId,
+		title: ReplAceAllAction.LABEL
 	},
-	when: ContextKeyExpr.and(Constants.ReplaceActiveKey, Constants.FileFocusKey),
-	group: 'search',
+	when: ContextKeyExpr.And(ConstAnts.ReplAceActiveKey, ConstAnts.FileFocusKey),
+	group: 'seArch',
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.RemoveActionId,
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.RemoveActionId,
 		title: RemoveAction.LABEL
 	},
-	when: Constants.FileMatchOrMatchFocusKey,
-	group: 'search',
+	when: ConstAnts.FileMAtchOrMAtchFocusKey,
+	group: 'seArch',
 	order: 2
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.CopyMatchCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.CopyMAtchCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: Constants.FileMatchOrMatchFocusKey,
-	primary: KeyMod.CtrlCmd | KeyCode.KEY_C,
-	handler: copyMatchCommand
+	when: ConstAnts.FileMAtchOrMAtchFocusKey,
+	primAry: KeyMod.CtrlCmd | KeyCode.KEY_C,
+	hAndler: copyMAtchCommAnd
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.CopyMatchCommandId,
-		title: nls.localize('copyMatchLabel', "Copy")
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.CopyMAtchCommAndId,
+		title: nls.locAlize('copyMAtchLAbel', "Copy")
 	},
-	when: Constants.FileMatchOrMatchFocusKey,
-	group: 'search_2',
+	when: ConstAnts.FileMAtchOrMAtchFocusKey,
+	group: 'seArch_2',
 	order: 1
 });
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.CopyPathCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.CopyPAthCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: Constants.FileMatchOrFolderMatchWithResourceFocusKey,
-	primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_C,
+	when: ConstAnts.FileMAtchOrFolderMAtchWithResourceFocusKey,
+	primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_C,
 	win: {
-		primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_C
+		primAry: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_C
 	},
-	handler: copyPathCommand
+	hAndler: copyPAthCommAnd
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.CopyPathCommandId,
-		title: nls.localize('copyPathLabel', "Copy Path")
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.CopyPAthCommAndId,
+		title: nls.locAlize('copyPAthLAbel', "Copy PAth")
 	},
-	when: Constants.FileMatchOrFolderMatchWithResourceFocusKey,
-	group: 'search_2',
+	when: ConstAnts.FileMAtchOrFolderMAtchWithResourceFocusKey,
+	group: 'seArch_2',
 	order: 2
 });
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: {
-		id: Constants.CopyAllCommandId,
-		title: nls.localize('copyAllLabel', "Copy All")
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: {
+		id: ConstAnts.CopyAllCommAndId,
+		title: nls.locAlize('copyAllLAbel', "Copy All")
 	},
-	when: Constants.HasSearchResults,
-	group: 'search_2',
+	when: ConstAnts.HAsSeArchResults,
+	group: 'seArch_2',
 	order: 3
 });
 
-CommandsRegistry.registerCommand({
-	id: Constants.CopyAllCommandId,
-	handler: copyAllCommand
+CommAndsRegistry.registerCommAnd({
+	id: ConstAnts.CopyAllCommAndId,
+	hAndler: copyAllCommAnd
 });
 
-CommandsRegistry.registerCommand({
-	id: Constants.ClearSearchHistoryCommandId,
-	handler: clearHistoryCommand
+CommAndsRegistry.registerCommAnd({
+	id: ConstAnts.CleArSeArchHistoryCommAndId,
+	hAndler: cleArHistoryCommAnd
 });
 
-CommandsRegistry.registerCommand({
-	id: Constants.RevealInSideBarForSearchResults,
-	handler: (accessor, args: any) => {
-		const viewletService = accessor.get(IViewletService);
-		const explorerService = accessor.get(IExplorerService);
-		const contextService = accessor.get(IWorkspaceContextService);
+CommAndsRegistry.registerCommAnd({
+	id: ConstAnts.ReveAlInSideBArForSeArchResults,
+	hAndler: (Accessor, Args: Any) => {
+		const viewletService = Accessor.get(IViewletService);
+		const explorerService = Accessor.get(IExplorerService);
+		const contextService = Accessor.get(IWorkspAceContextService);
 
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (!searchView) {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (!seArchView) {
 			return;
 		}
 
-		let fileMatch: FileMatch;
-		if (!(args instanceof FileMatch)) {
-			args = searchView.getControl().getFocus()[0];
+		let fileMAtch: FileMAtch;
+		if (!(Args instAnceof FileMAtch)) {
+			Args = seArchView.getControl().getFocus()[0];
 		}
-		if (args instanceof FileMatch) {
-			fileMatch = args;
+		if (Args instAnceof FileMAtch) {
+			fileMAtch = Args;
 		} else {
 			return;
 		}
 
-		viewletService.openViewlet(VIEWLET_ID_FILES, false).then((viewlet) => {
+		viewletService.openViewlet(VIEWLET_ID_FILES, fAlse).then((viewlet) => {
 			if (!viewlet) {
 				return;
 			}
 
-			const explorerViewContainer = viewlet.getViewPaneContainer() as ExplorerViewPaneContainer;
-			const uri = fileMatch.resource;
-			if (uri && contextService.isInsideWorkspace(uri)) {
-				const explorerView = explorerViewContainer.getExplorerView();
-				explorerView.setExpanded(true);
+			const explorerViewContAiner = viewlet.getViewPAneContAiner() As ExplorerViewPAneContAiner;
+			const uri = fileMAtch.resource;
+			if (uri && contextService.isInsideWorkspAce(uri)) {
+				const explorerView = explorerViewContAiner.getExplorerView();
+				explorerView.setExpAnded(true);
 				explorerService.select(uri, true).then(() => explorerView.focus(), onUnexpectedError);
 			}
 		});
 	}
 });
 
-const RevealInSideBarForSearchResultsCommand: ICommandAction = {
-	id: Constants.RevealInSideBarForSearchResults,
-	title: nls.localize('revealInSideBar', "Reveal in Side Bar")
+const ReveAlInSideBArForSeArchResultsCommAnd: ICommAndAction = {
+	id: ConstAnts.ReveAlInSideBArForSeArchResults,
+	title: nls.locAlize('reveAlInSideBAr', "ReveAl in Side BAr")
 };
 
-MenuRegistry.appendMenuItem(MenuId.SearchContext, {
-	command: RevealInSideBarForSearchResultsCommand,
-	when: ContextKeyExpr.and(Constants.FileFocusKey, Constants.HasSearchResults),
-	group: 'search_3',
+MenuRegistry.AppendMenuItem(MenuId.SeArchContext, {
+	commAnd: ReveAlInSideBArForSeArchResultsCommAnd,
+	when: ContextKeyExpr.And(ConstAnts.FileFocusKey, ConstAnts.HAsSeArchResults),
+	group: 'seArch_3',
 	order: 1
 });
 
-const ClearSearchHistoryCommand: ICommandAction = {
-	id: Constants.ClearSearchHistoryCommandId,
-	title: { value: nls.localize('clearSearchHistoryLabel', "Clear Search History"), original: 'Clear Search History' },
-	category
+const CleArSeArchHistoryCommAnd: ICommAndAction = {
+	id: ConstAnts.CleArSeArchHistoryCommAndId,
+	title: { vAlue: nls.locAlize('cleArSeArchHistoryLAbel', "CleAr SeArch History"), originAl: 'CleAr SeArch History' },
+	cAtegory
 };
-MenuRegistry.addCommand(ClearSearchHistoryCommand);
+MenuRegistry.AddCommAnd(CleArSeArchHistoryCommAnd);
 
-CommandsRegistry.registerCommand({
-	id: Constants.FocusSearchListCommandID,
-	handler: focusSearchListCommand
+CommAndsRegistry.registerCommAnd({
+	id: ConstAnts.FocusSeArchListCommAndID,
+	hAndler: focusSeArchListCommAnd
 });
 
-const FocusSearchListCommand: ICommandAction = {
-	id: Constants.FocusSearchListCommandID,
-	title: { value: nls.localize('focusSearchListCommandLabel', "Focus List"), original: 'Focus List' },
-	category
+const FocusSeArchListCommAnd: ICommAndAction = {
+	id: ConstAnts.FocusSeArchListCommAndID,
+	title: { vAlue: nls.locAlize('focusSeArchListCommAndLAbel', "Focus List"), originAl: 'Focus List' },
+	cAtegory
 };
-MenuRegistry.addCommand(FocusSearchListCommand);
+MenuRegistry.AddCommAnd(FocusSeArchListCommAnd);
 
-const searchInFolderCommand: ICommandHandler = (accessor, resource?: URI) => {
-	const listService = accessor.get(IListService);
-	const fileService = accessor.get(IFileService);
-	const viewsService = accessor.get(IViewsService);
-	const resources = getMultiSelectedResources(resource, listService, accessor.get(IEditorService), accessor.get(IExplorerService));
+const seArchInFolderCommAnd: ICommAndHAndler = (Accessor, resource?: URI) => {
+	const listService = Accessor.get(IListService);
+	const fileService = Accessor.get(IFileService);
+	const viewsService = Accessor.get(IViewsService);
+	const resources = getMultiSelectedResources(resource, listService, Accessor.get(IEditorService), Accessor.get(IExplorerService));
 
-	return openSearchView(viewsService, true).then(searchView => {
-		if (resources && resources.length && searchView) {
-			return fileService.resolveAll(resources.map(resource => ({ resource }))).then(results => {
+	return openSeArchView(viewsService, true).then(seArchView => {
+		if (resources && resources.length && seArchView) {
+			return fileService.resolveAll(resources.mAp(resource => ({ resource }))).then(results => {
 				const folders: URI[] = [];
 
-				results.forEach(result => {
-					if (result.success && result.stat) {
-						folders.push(result.stat.isDirectory ? result.stat.resource : dirname(result.stat.resource));
+				results.forEAch(result => {
+					if (result.success && result.stAt) {
+						folders.push(result.stAt.isDirectory ? result.stAt.resource : dirnAme(result.stAt.resource));
 					}
 				});
 
-				searchView.searchInFolders(distinct(folders, folder => folder.toString()));
+				seArchView.seArchInFolders(distinct(folders, folder => folder.toString()));
 			});
 		}
 
@@ -430,483 +430,483 @@ const searchInFolderCommand: ICommandHandler = (accessor, resource?: URI) => {
 };
 
 const FIND_IN_FOLDER_ID = 'filesExplorer.findInFolder';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: FIND_IN_FOLDER_ID,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(FilesExplorerFocusCondition, ExplorerFolderContext),
-	primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
-	handler: searchInFolderCommand
+	when: ContextKeyExpr.And(FilesExplorerFocusCondition, ExplorerFolderContext),
+	primAry: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
+	hAndler: seArchInFolderCommAnd
 });
 
-CommandsRegistry.registerCommand({
-	id: ClearSearchResultsAction.ID,
-	handler: (accessor, args: any) => {
-		accessor.get(IInstantiationService).createInstance(ClearSearchResultsAction, ClearSearchResultsAction.ID, '').run();
+CommAndsRegistry.registerCommAnd({
+	id: CleArSeArchResultsAction.ID,
+	hAndler: (Accessor, Args: Any) => {
+		Accessor.get(IInstAntiAtionService).creAteInstAnce(CleArSeArchResultsAction, CleArSeArchResultsAction.ID, '').run();
 	}
 });
 
-CommandsRegistry.registerCommand({
+CommAndsRegistry.registerCommAnd({
 	id: RefreshAction.ID,
-	handler: (accessor, args: any) => {
-		accessor.get(IInstantiationService).createInstance(RefreshAction, RefreshAction.ID, '').run();
+	hAndler: (Accessor, Args: Any) => {
+		Accessor.get(IInstAntiAtionService).creAteInstAnce(RefreshAction, RefreshAction.ID, '').run();
 	}
 });
 
-const FIND_IN_WORKSPACE_ID = 'filesExplorer.findInWorkspace';
-CommandsRegistry.registerCommand({
+const FIND_IN_WORKSPACE_ID = 'filesExplorer.findInWorkspAce';
+CommAndsRegistry.registerCommAnd({
 	id: FIND_IN_WORKSPACE_ID,
-	handler: (accessor) => {
-		return openSearchView(accessor.get(IViewsService), true).then(searchView => {
-			if (searchView) {
-				searchView.searchInFolders();
+	hAndler: (Accessor) => {
+		return openSeArchView(Accessor.get(IViewsService), true).then(seArchView => {
+			if (seArchView) {
+				seArchView.seArchInFolders();
 			}
 		});
 	}
 });
 
-MenuRegistry.appendMenuItem(MenuId.ExplorerContext, {
-	group: '4_search',
+MenuRegistry.AppendMenuItem(MenuId.ExplorerContext, {
+	group: '4_seArch',
 	order: 10,
-	command: {
+	commAnd: {
 		id: FIND_IN_FOLDER_ID,
-		title: nls.localize('findInFolder', "Find in Folder...")
+		title: nls.locAlize('findInFolder', "Find in Folder...")
 	},
-	when: ContextKeyExpr.and(ExplorerFolderContext)
+	when: ContextKeyExpr.And(ExplorerFolderContext)
 });
 
-MenuRegistry.appendMenuItem(MenuId.ExplorerContext, {
-	group: '4_search',
+MenuRegistry.AppendMenuItem(MenuId.ExplorerContext, {
+	group: '4_seArch',
 	order: 10,
-	command: {
+	commAnd: {
 		id: FIND_IN_WORKSPACE_ID,
-		title: nls.localize('findInWorkspace', "Find in Workspace...")
+		title: nls.locAlize('findInWorkspAce', "Find in WorkspAce...")
 	},
-	when: ContextKeyExpr.and(ExplorerRootContext, ExplorerFolderContext.toNegated())
+	when: ContextKeyExpr.And(ExplorerRootContext, ExplorerFolderContext.toNegAted())
 });
 
 
-class ShowAllSymbolsAction extends Action {
+clAss ShowAllSymbolsAction extends Action {
 
-	static readonly ID = 'workbench.action.showAllSymbols';
-	static readonly LABEL = nls.localize('showTriggerActions', "Go to Symbol in Workspace...");
-	static readonly ALL_SYMBOLS_PREFIX = '#';
+	stAtic reAdonly ID = 'workbench.Action.showAllSymbols';
+	stAtic reAdonly LABEL = nls.locAlize('showTriggerActions', "Go to Symbol in WorkspAce...");
+	stAtic reAdonly ALL_SYMBOLS_PREFIX = '#';
 
 	constructor(
-		actionId: string,
-		actionLabel: string,
-		@IQuickInputService private readonly quickInputService: IQuickInputService
+		ActionId: string,
+		ActionLAbel: string,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService
 	) {
-		super(actionId, actionLabel);
+		super(ActionId, ActionLAbel);
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 		this.quickInputService.quickAccess.show(ShowAllSymbolsAction.ALL_SYMBOLS_PREFIX);
 	}
 }
 
-const viewContainer = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewContainersRegistry).registerViewContainer({
+const viewContAiner = Registry.As<IViewContAinersRegistry>(ViewExtensions.ViewContAinersRegistry).registerViewContAiner({
 	id: VIEWLET_ID,
-	name: nls.localize('name', "Search"),
-	ctorDescriptor: new SyncDescriptor(ViewPaneContainer, [VIEWLET_ID, { mergeViewWithContainerWhenSingleView: true, donotShowContainerTitleWhenMergedWithContainer: true }]),
+	nAme: nls.locAlize('nAme', "SeArch"),
+	ctorDescriptor: new SyncDescriptor(ViewPAneContAiner, [VIEWLET_ID, { mergeViewWithContAinerWhenSingleView: true, donotShowContAinerTitleWhenMergedWithContAiner: true }]),
 	hideIfEmpty: true,
-	icon: searchViewIcon.classNames,
+	icon: seArchViewIcon.clAssNAmes,
 	order: 1
-}, ViewContainerLocation.Sidebar);
+}, ViewContAinerLocAtion.SidebAr);
 
-const viewDescriptor = { id: VIEW_ID, containerIcon: 'codicon-search', name: nls.localize('search', "Search"), ctorDescriptor: new SyncDescriptor(SearchView), canToggleVisibility: false, canMoveView: true };
+const viewDescriptor = { id: VIEW_ID, contAinerIcon: 'codicon-seArch', nAme: nls.locAlize('seArch', "SeArch"), ctorDescriptor: new SyncDescriptor(SeArchView), cAnToggleVisibility: fAlse, cAnMoveView: true };
 
-// Register search default location to sidebar
-Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([viewDescriptor], viewContainer);
+// Register seArch defAult locAtion to sidebAr
+Registry.As<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([viewDescriptor], viewContAiner);
 
 
-// Migrate search location setting to new model
-class RegisterSearchViewContribution implements IWorkbenchContribution {
+// MigrAte seArch locAtion setting to new model
+clAss RegisterSeArchViewContribution implements IWorkbenchContribution {
 	constructor(
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService
 	) {
-		const data = configurationService.inspect('search.location');
+		const dAtA = configurAtionService.inspect('seArch.locAtion');
 
-		if (data.value === 'panel') {
-			viewDescriptorService.moveViewToLocation(viewDescriptor, ViewContainerLocation.Panel);
+		if (dAtA.vAlue === 'pAnel') {
+			viewDescriptorService.moveViewToLocAtion(viewDescriptor, ViewContAinerLocAtion.PAnel);
 		}
 
-		if (data.userValue) {
-			configurationService.updateValue('search.location', undefined, ConfigurationTarget.USER);
+		if (dAtA.userVAlue) {
+			configurAtionService.updAteVAlue('seArch.locAtion', undefined, ConfigurAtionTArget.USER);
 		}
 
-		if (data.userLocalValue) {
-			configurationService.updateValue('search.location', undefined, ConfigurationTarget.USER_LOCAL);
+		if (dAtA.userLocAlVAlue) {
+			configurAtionService.updAteVAlue('seArch.locAtion', undefined, ConfigurAtionTArget.USER_LOCAL);
 		}
 
-		if (data.userRemoteValue) {
-			configurationService.updateValue('search.location', undefined, ConfigurationTarget.USER_REMOTE);
+		if (dAtA.userRemoteVAlue) {
+			configurAtionService.updAteVAlue('seArch.locAtion', undefined, ConfigurAtionTArget.USER_REMOTE);
 		}
 
-		if (data.workspaceFolderValue) {
-			configurationService.updateValue('search.location', undefined, ConfigurationTarget.WORKSPACE_FOLDER);
+		if (dAtA.workspAceFolderVAlue) {
+			configurAtionService.updAteVAlue('seArch.locAtion', undefined, ConfigurAtionTArget.WORKSPACE_FOLDER);
 		}
 
-		if (data.workspaceValue) {
-			configurationService.updateValue('search.location', undefined, ConfigurationTarget.WORKSPACE);
+		if (dAtA.workspAceVAlue) {
+			configurAtionService.updAteVAlue('seArch.locAtion', undefined, ConfigurAtionTArget.WORKSPACE);
 		}
 	}
 }
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(RegisterSearchViewContribution, LifecyclePhase.Starting);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(RegisterSeArchViewContribution, LifecyclePhAse.StArting);
 
 // Actions
-const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+const registry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
 
-// Show Search and Find in Files are redundant, but we can't break keybindings by removing one. So it's the same action, same keybinding, registered to different IDs.
-// Show Search 'when' is redundant but if the two conflict with exactly the same keybinding and 'when' clause, then they can show up as "unbound" - #51780
-registry.registerWorkbenchAction(SyncActionDescriptor.from(OpenSearchViewletAction, { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F }, Constants.SearchViewVisibleKey.toNegated()), 'View: Show Search', CATEGORIES.View.value);
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+// Show SeArch And Find in Files Are redundAnt, but we cAn't breAk keybindings by removing one. So it's the sAme Action, sAme keybinding, registered to different IDs.
+// Show SeArch 'when' is redundAnt but if the two conflict with exActly the sAme keybinding And 'when' clAuse, then they cAn show up As "unbound" - #51780
+registry.registerWorkbenchAction(SyncActionDescriptor.from(OpenSeArchViewletAction, { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F }, ConstAnts.SeArchViewVisibleKey.toNegAted()), 'View: Show SeArch', CATEGORIES.View.vAlue);
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	description: {
-		description: nls.localize('findInFiles.description', "Open the search viewlet"),
-		args: [
+		description: nls.locAlize('findInFiles.description', "Open the seArch viewlet"),
+		Args: [
 			{
-				name: nls.localize('findInFiles.args', "A set of options for the search viewlet"),
-				schema: {
+				nAme: nls.locAlize('findInFiles.Args', "A set of options for the seArch viewlet"),
+				schemA: {
 					type: 'object',
 					properties: {
 						query: { 'type': 'string' },
-						replace: { 'type': 'string' },
-						triggerSearch: { 'type': 'boolean' },
+						replAce: { 'type': 'string' },
+						triggerSeArch: { 'type': 'booleAn' },
 						filesToInclude: { 'type': 'string' },
 						filesToExclude: { 'type': 'string' },
-						isRegex: { 'type': 'boolean' },
-						isCaseSensitive: { 'type': 'boolean' },
-						matchWholeWord: { 'type': 'boolean' },
+						isRegex: { 'type': 'booleAn' },
+						isCAseSensitive: { 'type': 'booleAn' },
+						mAtchWholeWord: { 'type': 'booleAn' },
 					}
 				}
 			},
 		]
 	},
-	id: Constants.FindInFilesActionId,
+	id: ConstAnts.FindInFilesActionId,
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: null,
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F,
-	handler: FindInFilesCommand
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F,
+	hAndler: FindInFilesCommAnd
 });
-MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command: { id: Constants.FindInFilesActionId, title: { value: nls.localize('findInFiles', "Find in Files"), original: 'Find in Files' }, category } });
-MenuRegistry.appendMenuItem(MenuId.MenubarEditMenu, {
-	group: '4_find_global',
-	command: {
-		id: Constants.FindInFilesActionId,
-		title: nls.localize({ key: 'miFindInFiles', comment: ['&& denotes a mnemonic'] }, "Find &&in Files")
+MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, { commAnd: { id: ConstAnts.FindInFilesActionId, title: { vAlue: nls.locAlize('findInFiles', "Find in Files"), originAl: 'Find in Files' }, cAtegory } });
+MenuRegistry.AppendMenuItem(MenuId.MenubArEditMenu, {
+	group: '4_find_globAl',
+	commAnd: {
+		id: ConstAnts.FindInFilesActionId,
+		title: nls.locAlize({ key: 'miFindInFiles', comment: ['&& denotes A mnemonic'] }, "Find &&in Files")
 	},
 	order: 1
 });
 
-registry.registerWorkbenchAction(SyncActionDescriptor.from(FocusNextSearchResultAction, { primary: KeyCode.F4 }), 'Search: Focus Next Search Result', category.value, ContextKeyExpr.or(Constants.HasSearchResults, SearchEditorConstants.InSearchEditor));
-registry.registerWorkbenchAction(SyncActionDescriptor.from(FocusPreviousSearchResultAction, { primary: KeyMod.Shift | KeyCode.F4 }), 'Search: Focus Previous Search Result', category.value, ContextKeyExpr.or(Constants.HasSearchResults, SearchEditorConstants.InSearchEditor));
+registry.registerWorkbenchAction(SyncActionDescriptor.from(FocusNextSeArchResultAction, { primAry: KeyCode.F4 }), 'SeArch: Focus Next SeArch Result', cAtegory.vAlue, ContextKeyExpr.or(ConstAnts.HAsSeArchResults, SeArchEditorConstAnts.InSeArchEditor));
+registry.registerWorkbenchAction(SyncActionDescriptor.from(FocusPreviousSeArchResultAction, { primAry: KeyMod.Shift | KeyCode.F4 }), 'SeArch: Focus Previous SeArch Result', cAtegory.vAlue, ContextKeyExpr.or(ConstAnts.HAsSeArchResults, SeArchEditorConstAnts.InSeArchEditor));
 
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ReplaceInFilesAction, { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_H }), 'Search: Replace in Files', category.value);
-MenuRegistry.appendMenuItem(MenuId.MenubarEditMenu, {
-	group: '4_find_global',
-	command: {
-		id: ReplaceInFilesAction.ID,
-		title: nls.localize({ key: 'miReplaceInFiles', comment: ['&& denotes a mnemonic'] }, "Replace &&in Files")
+registry.registerWorkbenchAction(SyncActionDescriptor.from(ReplAceInFilesAction, { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_H }), 'SeArch: ReplAce in Files', cAtegory.vAlue);
+MenuRegistry.AppendMenuItem(MenuId.MenubArEditMenu, {
+	group: '4_find_globAl',
+	commAnd: {
+		id: ReplAceInFilesAction.ID,
+		title: nls.locAlize({ key: 'miReplAceInFiles', comment: ['&& denotes A mnemonic'] }, "ReplAce &&in Files")
 	},
 	order: 2
 });
 
-if (platform.isMacintosh) {
-	// Register this with a more restrictive `when` on mac to avoid conflict with "copy path"
-	KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-		id: Constants.ToggleCaseSensitiveCommandId,
+if (plAtform.isMAcintosh) {
+	// Register this with A more restrictive `when` on mAc to Avoid conflict with "copy pAth"
+	KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+		id: ConstAnts.ToggleCAseSensitiveCommAndId,
 		weight: KeybindingWeight.WorkbenchContrib,
-		when: ContextKeyExpr.and(Constants.SearchViewFocusedKey, Constants.FileMatchOrFolderMatchFocusKey.toNegated()),
-		handler: toggleCaseSensitiveCommand
-	}, ToggleCaseSensitiveKeybinding));
+		when: ContextKeyExpr.And(ConstAnts.SeArchViewFocusedKey, ConstAnts.FileMAtchOrFolderMAtchFocusKey.toNegAted()),
+		hAndler: toggleCAseSensitiveCommAnd
+	}, ToggleCAseSensitiveKeybinding));
 } else {
-	KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-		id: Constants.ToggleCaseSensitiveCommandId,
+	KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+		id: ConstAnts.ToggleCAseSensitiveCommAndId,
 		weight: KeybindingWeight.WorkbenchContrib,
-		when: Constants.SearchViewFocusedKey,
-		handler: toggleCaseSensitiveCommand
-	}, ToggleCaseSensitiveKeybinding));
+		when: ConstAnts.SeArchViewFocusedKey,
+		hAndler: toggleCAseSensitiveCommAnd
+	}, ToggleCAseSensitiveKeybinding));
 }
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-	id: Constants.ToggleWholeWordCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+	id: ConstAnts.ToggleWholeWordCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: Constants.SearchViewFocusedKey,
-	handler: toggleWholeWordCommand
+	when: ConstAnts.SeArchViewFocusedKey,
+	hAndler: toggleWholeWordCommAnd
 }, ToggleWholeWordKeybinding));
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-	id: Constants.ToggleRegexCommandId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+	id: ConstAnts.ToggleRegexCommAndId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: Constants.SearchViewFocusedKey,
-	handler: toggleRegexCommand
+	when: ConstAnts.SeArchViewFocusedKey,
+	hAndler: toggleRegexCommAnd
 }, ToggleRegexKeybinding));
 
-KeybindingsRegistry.registerCommandAndKeybindingRule(Object.assign({
-	id: Constants.TogglePreserveCaseId,
+KeybindingsRegistry.registerCommAndAndKeybindingRule(Object.Assign({
+	id: ConstAnts.TogglePreserveCAseId,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: Constants.SearchViewFocusedKey,
-	handler: togglePreserveCaseCommand
-}, TogglePreserveCaseKeybinding));
+	when: ConstAnts.SeArchViewFocusedKey,
+	hAndler: togglePreserveCAseCommAnd
+}, TogglePreserveCAseKeybinding));
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: Constants.AddCursorsAtSearchResults,
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: ConstAnts.AddCursorsAtSeArchResults,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(Constants.SearchViewVisibleKey, Constants.FileMatchOrMatchFocusKey),
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_L,
-	handler: (accessor, args: any) => {
-		const searchView = getSearchView(accessor.get(IViewsService));
-		if (searchView) {
-			const tree: WorkbenchObjectTree<RenderableMatch> = searchView.getControl();
-			searchView.openEditorWithMultiCursor(<FileMatchOrMatch>tree.getFocus()[0]);
+	when: ContextKeyExpr.And(ConstAnts.SeArchViewVisibleKey, ConstAnts.FileMAtchOrMAtchFocusKey),
+	primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_L,
+	hAndler: (Accessor, Args: Any) => {
+		const seArchView = getSeArchView(Accessor.get(IViewsService));
+		if (seArchView) {
+			const tree: WorkbenchObjectTree<RenderAbleMAtch> = seArchView.getControl();
+			seArchView.openEditorWithMultiCursor(<FileMAtchOrMAtch>tree.getFocus()[0]);
 		}
 	}
 });
 
-registry.registerWorkbenchAction(SyncActionDescriptor.from(CollapseDeepestExpandedLevelAction), 'Search: Collapse All', category.value);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ExpandAllAction), 'Search: Expand All', category.value);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ShowAllSymbolsAction, { primary: KeyMod.CtrlCmd | KeyCode.KEY_T }), 'Go to Symbol in Workspace...');
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleSearchOnTypeAction), 'Search: Toggle Search on Type', category.value);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(RefreshAction), 'Search: Refresh', category.value);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ClearSearchResultsAction), 'Search: Clear Search Results', category.value);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(CollApseDeepestExpAndedLevelAction), 'SeArch: CollApse All', cAtegory.vAlue);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(ExpAndAllAction), 'SeArch: ExpAnd All', cAtegory.vAlue);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(ShowAllSymbolsAction, { primAry: KeyMod.CtrlCmd | KeyCode.KEY_T }), 'Go to Symbol in WorkspAce...');
+registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleSeArchOnTypeAction), 'SeArch: Toggle SeArch on Type', cAtegory.vAlue);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(RefreshAction), 'SeArch: Refresh', cAtegory.vAlue);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(CleArSeArchResultsAction), 'SeArch: CleAr SeArch Results', cAtegory.vAlue);
 
-// Register Quick Access Handler
-const quickAccessRegistry = Registry.as<IQuickAccessRegistry>(QuickAccessExtensions.Quickaccess);
+// Register Quick Access HAndler
+const quickAccessRegistry = Registry.As<IQuickAccessRegistry>(QuickAccessExtensions.QuickAccess);
 
 quickAccessRegistry.registerQuickAccessProvider({
 	ctor: AnythingQuickAccessProvider,
 	prefix: AnythingQuickAccessProvider.PREFIX,
-	placeholder: nls.localize('anythingQuickAccessPlaceholder', "Search files by name (append {0} to go to line or {1} to go to symbol)", AbstractGotoLineQuickAccessProvider.PREFIX, GotoSymbolQuickAccessProvider.PREFIX),
-	contextKey: defaultQuickAccessContextKeyValue,
-	helpEntries: [{ description: nls.localize('anythingQuickAccess', "Go to File"), needsEditor: false }]
+	plAceholder: nls.locAlize('AnythingQuickAccessPlAceholder', "SeArch files by nAme (Append {0} to go to line or {1} to go to symbol)", AbstrActGotoLineQuickAccessProvider.PREFIX, GotoSymbolQuickAccessProvider.PREFIX),
+	contextKey: defAultQuickAccessContextKeyVAlue,
+	helpEntries: [{ description: nls.locAlize('AnythingQuickAccess', "Go to File"), needsEditor: fAlse }]
 });
 
 quickAccessRegistry.registerQuickAccessProvider({
 	ctor: SymbolsQuickAccessProvider,
 	prefix: SymbolsQuickAccessProvider.PREFIX,
-	placeholder: nls.localize('symbolsQuickAccessPlaceholder', "Type the name of a symbol to open."),
-	contextKey: 'inWorkspaceSymbolsPicker',
-	helpEntries: [{ description: nls.localize('symbolsQuickAccess', "Go to Symbol in Workspace"), needsEditor: false }]
+	plAceholder: nls.locAlize('symbolsQuickAccessPlAceholder', "Type the nAme of A symbol to open."),
+	contextKey: 'inWorkspAceSymbolsPicker',
+	helpEntries: [{ description: nls.locAlize('symbolsQuickAccess', "Go to Symbol in WorkspAce"), needsEditor: fAlse }]
 });
 
-// Configuration
-const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
-configurationRegistry.registerConfiguration({
-	id: 'search',
+// ConfigurAtion
+const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
+configurAtionRegistry.registerConfigurAtion({
+	id: 'seArch',
 	order: 13,
-	title: nls.localize('searchConfigurationTitle', "Search"),
+	title: nls.locAlize('seArchConfigurAtionTitle', "SeArch"),
 	type: 'object',
 	properties: {
 		[SEARCH_EXCLUDE_CONFIG]: {
 			type: 'object',
-			markdownDescription: nls.localize('exclude', "Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `#files.exclude#` setting. Read more about glob patterns [here](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options)."),
-			default: { '**/node_modules': true, '**/bower_components': true, '**/*.code-search': true },
-			additionalProperties: {
-				anyOf: [
+			mArkdownDescription: nls.locAlize('exclude', "Configure glob pAtterns for excluding files And folders in fulltext seArches And quick open. Inherits All glob pAtterns from the `#files.exclude#` setting. ReAd more About glob pAtterns [here](https://code.visuAlstudio.com/docs/editor/codebAsics#_AdvAnced-seArch-options)."),
+			defAult: { '**/node_modules': true, '**/bower_components': true, '**/*.code-seArch': true },
+			AdditionAlProperties: {
+				AnyOf: [
 					{
-						type: 'boolean',
-						description: nls.localize('exclude.boolean', "The glob pattern to match file paths against. Set to true or false to enable or disable the pattern."),
+						type: 'booleAn',
+						description: nls.locAlize('exclude.booleAn', "The glob pAttern to mAtch file pAths AgAinst. Set to true or fAlse to enAble or disAble the pAttern."),
 					},
 					{
 						type: 'object',
 						properties: {
 							when: {
-								type: 'string', // expression ({ "**/*.js": { "when": "$(basename).js" } })
-								pattern: '\\w*\\$\\(basename\\)\\w*',
-								default: '$(basename).ext',
-								description: nls.localize('exclude.when', 'Additional check on the siblings of a matching file. Use $(basename) as variable for the matching file name.')
+								type: 'string', // expression ({ "**/*.js": { "when": "$(bAsenAme).js" } })
+								pAttern: '\\w*\\$\\(bAsenAme\\)\\w*',
+								defAult: '$(bAsenAme).ext',
+								description: nls.locAlize('exclude.when', 'AdditionAl check on the siblings of A mAtching file. Use $(bAsenAme) As vAriAble for the mAtching file nAme.')
 							}
 						}
 					}
 				]
 			},
-			scope: ConfigurationScope.RESOURCE
+			scope: ConfigurAtionScope.RESOURCE
 		},
-		'search.useRipgrep': {
-			type: 'boolean',
-			description: nls.localize('useRipgrep', "This setting is deprecated and now falls back on \"search.usePCRE2\"."),
-			deprecationMessage: nls.localize('useRipgrepDeprecated', "Deprecated. Consider \"search.usePCRE2\" for advanced regex feature support."),
-			default: true
+		'seArch.useRipgrep': {
+			type: 'booleAn',
+			description: nls.locAlize('useRipgrep', "This setting is deprecAted And now fAlls bAck on \"seArch.usePCRE2\"."),
+			deprecAtionMessAge: nls.locAlize('useRipgrepDeprecAted', "DeprecAted. Consider \"seArch.usePCRE2\" for AdvAnced regex feAture support."),
+			defAult: true
 		},
-		'search.maintainFileSearchCache': {
-			type: 'boolean',
-			description: nls.localize('search.maintainFileSearchCache', "When enabled, the searchService process will be kept alive instead of being shut down after an hour of inactivity. This will keep the file search cache in memory."),
-			default: false
+		'seArch.mAintAinFileSeArchCAche': {
+			type: 'booleAn',
+			description: nls.locAlize('seArch.mAintAinFileSeArchCAche', "When enAbled, the seArchService process will be kept Alive insteAd of being shut down After An hour of inActivity. This will keep the file seArch cAche in memory."),
+			defAult: fAlse
 		},
-		'search.useIgnoreFiles': {
-			type: 'boolean',
-			markdownDescription: nls.localize('useIgnoreFiles', "Controls whether to use `.gitignore` and `.ignore` files when searching for files."),
-			default: true,
-			scope: ConfigurationScope.RESOURCE
+		'seArch.useIgnoreFiles': {
+			type: 'booleAn',
+			mArkdownDescription: nls.locAlize('useIgnoreFiles', "Controls whether to use `.gitignore` And `.ignore` files when seArching for files."),
+			defAult: true,
+			scope: ConfigurAtionScope.RESOURCE
 		},
-		'search.useGlobalIgnoreFiles': {
-			type: 'boolean',
-			markdownDescription: nls.localize('useGlobalIgnoreFiles', "Controls whether to use global `.gitignore` and `.ignore` files when searching for files."),
-			default: false,
-			scope: ConfigurationScope.RESOURCE
+		'seArch.useGlobAlIgnoreFiles': {
+			type: 'booleAn',
+			mArkdownDescription: nls.locAlize('useGlobAlIgnoreFiles', "Controls whether to use globAl `.gitignore` And `.ignore` files when seArching for files."),
+			defAult: fAlse,
+			scope: ConfigurAtionScope.RESOURCE
 		},
-		'search.quickOpen.includeSymbols': {
-			type: 'boolean',
-			description: nls.localize('search.quickOpen.includeSymbols', "Whether to include results from a global symbol search in the file results for Quick Open."),
-			default: false
+		'seArch.quickOpen.includeSymbols': {
+			type: 'booleAn',
+			description: nls.locAlize('seArch.quickOpen.includeSymbols', "Whether to include results from A globAl symbol seArch in the file results for Quick Open."),
+			defAult: fAlse
 		},
-		'search.quickOpen.includeHistory': {
-			type: 'boolean',
-			description: nls.localize('search.quickOpen.includeHistory', "Whether to include results from recently opened files in the file results for Quick Open."),
-			default: true
+		'seArch.quickOpen.includeHistory': {
+			type: 'booleAn',
+			description: nls.locAlize('seArch.quickOpen.includeHistory', "Whether to include results from recently opened files in the file results for Quick Open."),
+			defAult: true
 		},
-		'search.quickOpen.history.filterSortOrder': {
+		'seArch.quickOpen.history.filterSortOrder': {
 			'type': 'string',
-			'enum': ['default', 'recency'],
-			'default': 'default',
+			'enum': ['defAult', 'recency'],
+			'defAult': 'defAult',
 			'enumDescriptions': [
-				nls.localize('filterSortOrder.default', 'History entries are sorted by relevance based on the filter value used. More relevant entries appear first.'),
-				nls.localize('filterSortOrder.recency', 'History entries are sorted by recency. More recently opened entries appear first.')
+				nls.locAlize('filterSortOrder.defAult', 'History entries Are sorted by relevAnce bAsed on the filter vAlue used. More relevAnt entries AppeAr first.'),
+				nls.locAlize('filterSortOrder.recency', 'History entries Are sorted by recency. More recently opened entries AppeAr first.')
 			],
-			'description': nls.localize('filterSortOrder', "Controls sorting order of editor history in quick open when filtering.")
+			'description': nls.locAlize('filterSortOrder', "Controls sorting order of editor history in quick open when filtering.")
 		},
-		'search.followSymlinks': {
-			type: 'boolean',
-			description: nls.localize('search.followSymlinks', "Controls whether to follow symlinks while searching."),
-			default: true
+		'seArch.followSymlinks': {
+			type: 'booleAn',
+			description: nls.locAlize('seArch.followSymlinks', "Controls whether to follow symlinks while seArching."),
+			defAult: true
 		},
-		'search.smartCase': {
-			type: 'boolean',
-			description: nls.localize('search.smartCase', "Search case-insensitively if the pattern is all lowercase, otherwise, search case-sensitively."),
-			default: false
+		'seArch.smArtCAse': {
+			type: 'booleAn',
+			description: nls.locAlize('seArch.smArtCAse', "SeArch cAse-insensitively if the pAttern is All lowercAse, otherwise, seArch cAse-sensitively."),
+			defAult: fAlse
 		},
-		'search.globalFindClipboard': {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('search.globalFindClipboard', "Controls whether the search view should read or modify the shared find clipboard on macOS."),
-			included: platform.isMacintosh
+		'seArch.globAlFindClipboArd': {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('seArch.globAlFindClipboArd', "Controls whether the seArch view should reAd or modify the shAred find clipboArd on mAcOS."),
+			included: plAtform.isMAcintosh
 		},
-		'search.location': {
+		'seArch.locAtion': {
 			type: 'string',
-			enum: ['sidebar', 'panel'],
-			default: 'sidebar',
-			description: nls.localize('search.location', "Controls whether the search will be shown as a view in the sidebar or as a panel in the panel area for more horizontal space."),
-			deprecationMessage: nls.localize('search.location.deprecationMessage', "This setting is deprecated. Please use drag and drop instead by dragging the search icon.")
+			enum: ['sidebAr', 'pAnel'],
+			defAult: 'sidebAr',
+			description: nls.locAlize('seArch.locAtion', "Controls whether the seArch will be shown As A view in the sidebAr or As A pAnel in the pAnel AreA for more horizontAl spAce."),
+			deprecAtionMessAge: nls.locAlize('seArch.locAtion.deprecAtionMessAge', "This setting is deprecAted. PleAse use drAg And drop insteAd by drAgging the seArch icon.")
 		},
-		'search.collapseResults': {
+		'seArch.collApseResults': {
 			type: 'string',
-			enum: ['auto', 'alwaysCollapse', 'alwaysExpand'],
+			enum: ['Auto', 'AlwAysCollApse', 'AlwAysExpAnd'],
 			enumDescriptions: [
-				nls.localize('search.collapseResults.auto', "Files with less than 10 results are expanded. Others are collapsed."),
+				nls.locAlize('seArch.collApseResults.Auto', "Files with less thAn 10 results Are expAnded. Others Are collApsed."),
 				'',
 				''
 			],
-			default: 'alwaysExpand',
-			description: nls.localize('search.collapseAllResults', "Controls whether the search results will be collapsed or expanded."),
+			defAult: 'AlwAysExpAnd',
+			description: nls.locAlize('seArch.collApseAllResults', "Controls whether the seArch results will be collApsed or expAnded."),
 		},
-		'search.useReplacePreview': {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('search.useReplacePreview', "Controls whether to open Replace Preview when selecting or replacing a match."),
+		'seArch.useReplAcePreview': {
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('seArch.useReplAcePreview', "Controls whether to open ReplAce Preview when selecting or replAcing A mAtch."),
 		},
-		'search.showLineNumbers': {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('search.showLineNumbers', "Controls whether to show line numbers for search results."),
+		'seArch.showLineNumbers': {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('seArch.showLineNumbers', "Controls whether to show line numbers for seArch results."),
 		},
-		'search.usePCRE2': {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('search.usePCRE2', "Whether to use the PCRE2 regex engine in text search. This enables using some advanced regex features like lookahead and backreferences. However, not all PCRE2 features are supported - only features that are also supported by JavaScript."),
-			deprecationMessage: nls.localize('usePCRE2Deprecated', "Deprecated. PCRE2 will be used automatically when using regex features that are only supported by PCRE2."),
+		'seArch.usePCRE2': {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('seArch.usePCRE2', "Whether to use the PCRE2 regex engine in text seArch. This enAbles using some AdvAnced regex feAtures like lookAheAd And bAckreferences. However, not All PCRE2 feAtures Are supported - only feAtures thAt Are Also supported by JAvAScript."),
+			deprecAtionMessAge: nls.locAlize('usePCRE2DeprecAted', "DeprecAted. PCRE2 will be used AutomAticAlly when using regex feAtures thAt Are only supported by PCRE2."),
 		},
-		'search.actionsPosition': {
+		'seArch.ActionsPosition': {
 			type: 'string',
-			enum: ['auto', 'right'],
+			enum: ['Auto', 'right'],
 			enumDescriptions: [
-				nls.localize('search.actionsPositionAuto', "Position the actionbar to the right when the search view is narrow, and immediately after the content when the search view is wide."),
-				nls.localize('search.actionsPositionRight', "Always position the actionbar to the right."),
+				nls.locAlize('seArch.ActionsPositionAuto', "Position the ActionbAr to the right when the seArch view is nArrow, And immediAtely After the content when the seArch view is wide."),
+				nls.locAlize('seArch.ActionsPositionRight', "AlwAys position the ActionbAr to the right."),
 			],
-			default: 'auto',
-			description: nls.localize('search.actionsPosition', "Controls the positioning of the actionbar on rows in the search view.")
+			defAult: 'Auto',
+			description: nls.locAlize('seArch.ActionsPosition', "Controls the positioning of the ActionbAr on rows in the seArch view.")
 		},
-		'search.searchOnType': {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('search.searchOnType', "Search all files as you type.")
+		'seArch.seArchOnType': {
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('seArch.seArchOnType', "SeArch All files As you type.")
 		},
-		'search.seedWithNearestWord': {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('search.seedWithNearestWord', "Enable seeding search from the word nearest the cursor when the active editor has no selection.")
+		'seArch.seedWithNeArestWord': {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('seArch.seedWithNeArestWord', "EnAble seeding seArch from the word neArest the cursor when the Active editor hAs no selection.")
 		},
-		'search.seedOnFocus': {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('search.seedOnFocus', "Update workspace search query to the editor's selected text when focusing the search view. This happens either on click or when triggering the `workbench.views.search.focus` command.")
+		'seArch.seedOnFocus': {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('seArch.seedOnFocus', "UpdAte workspAce seArch query to the editor's selected text when focusing the seArch view. This hAppens either on click or when triggering the `workbench.views.seArch.focus` commAnd.")
 		},
-		'search.searchOnTypeDebouncePeriod': {
+		'seArch.seArchOnTypeDebouncePeriod': {
 			type: 'number',
-			default: 300,
-			markdownDescription: nls.localize('search.searchOnTypeDebouncePeriod', "When `#search.searchOnType#` is enabled, controls the timeout in milliseconds between a character being typed and the search starting. Has no effect when `search.searchOnType` is disabled.")
+			defAult: 300,
+			mArkdownDescription: nls.locAlize('seArch.seArchOnTypeDebouncePeriod', "When `#seArch.seArchOnType#` is enAbled, controls the timeout in milliseconds between A chArActer being typed And the seArch stArting. HAs no effect when `seArch.seArchOnType` is disAbled.")
 		},
-		'search.searchEditor.doubleClickBehaviour': {
+		'seArch.seArchEditor.doubleClickBehAviour': {
 			type: 'string',
-			enum: ['selectWord', 'goToLocation', 'openLocationToSide'],
-			default: 'goToLocation',
+			enum: ['selectWord', 'goToLocAtion', 'openLocAtionToSide'],
+			defAult: 'goToLocAtion',
 			enumDescriptions: [
-				nls.localize('search.searchEditor.doubleClickBehaviour.selectWord', "Double clicking selects the word under the cursor."),
-				nls.localize('search.searchEditor.doubleClickBehaviour.goToLocation', "Double clicking opens the result in the active editor group."),
-				nls.localize('search.searchEditor.doubleClickBehaviour.openLocationToSide', "Double clicking opens the result in the editor group to the side, creating one if it does not yet exist."),
+				nls.locAlize('seArch.seArchEditor.doubleClickBehAviour.selectWord', "Double clicking selects the word under the cursor."),
+				nls.locAlize('seArch.seArchEditor.doubleClickBehAviour.goToLocAtion', "Double clicking opens the result in the Active editor group."),
+				nls.locAlize('seArch.seArchEditor.doubleClickBehAviour.openLocAtionToSide', "Double clicking opens the result in the editor group to the side, creAting one if it does not yet exist."),
 			],
-			markdownDescription: nls.localize('search.searchEditor.doubleClickBehaviour', "Configure effect of double clicking a result in a search editor.")
+			mArkdownDescription: nls.locAlize('seArch.seArchEditor.doubleClickBehAviour', "Configure effect of double clicking A result in A seArch editor.")
 		},
-		'search.searchEditor.reusePriorSearchConfiguration': {
-			type: 'boolean',
-			default: false,
-			markdownDescription: nls.localize({ key: 'search.searchEditor.reusePriorSearchConfiguration', comment: ['"Search Editor" is a type that editor that can display search results. "includes, excludes, and flags" just refers to settings that affect search. For example, the "search.exclude" setting.'] }, "When enabled, new Search Editors will reuse the includes, excludes, and flags of the previously opened Search Editor")
+		'seArch.seArchEditor.reusePriorSeArchConfigurAtion': {
+			type: 'booleAn',
+			defAult: fAlse,
+			mArkdownDescription: nls.locAlize({ key: 'seArch.seArchEditor.reusePriorSeArchConfigurAtion', comment: ['"SeArch Editor" is A type thAt editor thAt cAn displAy seArch results. "includes, excludes, And flAgs" just refers to settings thAt Affect seArch. For exAmple, the "seArch.exclude" setting.'] }, "When enAbled, new SeArch Editors will reuse the includes, excludes, And flAgs of the previously opened SeArch Editor")
 		},
-		'search.searchEditor.defaultNumberOfContextLines': {
+		'seArch.seArchEditor.defAultNumberOfContextLines': {
 			type: ['number', 'null'],
-			default: 1,
-			markdownDescription: nls.localize('search.searchEditor.defaultNumberOfContextLines', "The default number of surrounding context lines to use when creating new Search Editors. If using `#search.searchEditor.reusePriorSearchConfiguration#`, this can be set to `null` (empty) to use the prior Search Editor's configuration.")
+			defAult: 1,
+			mArkdownDescription: nls.locAlize('seArch.seArchEditor.defAultNumberOfContextLines', "The defAult number of surrounding context lines to use when creAting new SeArch Editors. If using `#seArch.seArchEditor.reusePriorSeArchConfigurAtion#`, this cAn be set to `null` (empty) to use the prior SeArch Editor's configurAtion.")
 		},
-		'search.sortOrder': {
+		'seArch.sortOrder': {
 			'type': 'string',
-			'enum': [SearchSortOrder.Default, SearchSortOrder.FileNames, SearchSortOrder.Type, SearchSortOrder.Modified, SearchSortOrder.CountDescending, SearchSortOrder.CountAscending],
-			'default': SearchSortOrder.Default,
+			'enum': [SeArchSortOrder.DefAult, SeArchSortOrder.FileNAmes, SeArchSortOrder.Type, SeArchSortOrder.Modified, SeArchSortOrder.CountDescending, SeArchSortOrder.CountAscending],
+			'defAult': SeArchSortOrder.DefAult,
 			'enumDescriptions': [
-				nls.localize('searchSortOrder.default', "Results are sorted by folder and file names, in alphabetical order."),
-				nls.localize('searchSortOrder.filesOnly', "Results are sorted by file names ignoring folder order, in alphabetical order."),
-				nls.localize('searchSortOrder.type', "Results are sorted by file extensions, in alphabetical order."),
-				nls.localize('searchSortOrder.modified', "Results are sorted by file last modified date, in descending order."),
-				nls.localize('searchSortOrder.countDescending', "Results are sorted by count per file, in descending order."),
-				nls.localize('searchSortOrder.countAscending', "Results are sorted by count per file, in ascending order.")
+				nls.locAlize('seArchSortOrder.defAult', "Results Are sorted by folder And file nAmes, in AlphAbeticAl order."),
+				nls.locAlize('seArchSortOrder.filesOnly', "Results Are sorted by file nAmes ignoring folder order, in AlphAbeticAl order."),
+				nls.locAlize('seArchSortOrder.type', "Results Are sorted by file extensions, in AlphAbeticAl order."),
+				nls.locAlize('seArchSortOrder.modified', "Results Are sorted by file lAst modified dAte, in descending order."),
+				nls.locAlize('seArchSortOrder.countDescending', "Results Are sorted by count per file, in descending order."),
+				nls.locAlize('seArchSortOrder.countAscending', "Results Are sorted by count per file, in Ascending order.")
 			],
-			'description': nls.localize('search.sortOrder', "Controls sorting order of search results.")
+			'description': nls.locAlize('seArch.sortOrder', "Controls sorting order of seArch results.")
 		},
 	}
 });
 
-CommandsRegistry.registerCommand('_executeWorkspaceSymbolProvider', function (accessor, ...args) {
-	const [query] = args;
-	assertType(typeof query === 'string');
-	return getWorkspaceSymbols(query);
+CommAndsRegistry.registerCommAnd('_executeWorkspAceSymbolProvider', function (Accessor, ...Args) {
+	const [query] = Args;
+	AssertType(typeof query === 'string');
+	return getWorkspAceSymbols(query);
 });
 
 // View menu
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArViewMenu, {
 	group: '3_views',
-	command: {
+	commAnd: {
 		id: VIEWLET_ID,
-		title: nls.localize({ key: 'miViewSearch', comment: ['&& denotes a mnemonic'] }, "&&Search")
+		title: nls.locAlize({ key: 'miViewSeArch', comment: ['&& denotes A mnemonic'] }, "&&SeArch")
 	},
 	order: 2
 });
 
 // Go to menu
 
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-	group: '3_global_nav',
-	command: {
-		id: 'workbench.action.showAllSymbols',
-		title: nls.localize({ key: 'miGotoSymbolInWorkspace', comment: ['&& denotes a mnemonic'] }, "Go to Symbol in &&Workspace...")
+MenuRegistry.AppendMenuItem(MenuId.MenubArGoMenu, {
+	group: '3_globAl_nAv',
+	commAnd: {
+		id: 'workbench.Action.showAllSymbols',
+		title: nls.locAlize({ key: 'miGotoSymbolInWorkspAce', comment: ['&& denotes A mnemonic'] }, "Go to Symbol in &&WorkspAce...")
 	},
 	order: 2
 });

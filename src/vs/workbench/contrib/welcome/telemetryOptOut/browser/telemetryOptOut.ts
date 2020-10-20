@@ -1,63 +1,63 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { URI } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { IExperimentService, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { language, locale } from 'vs/base/common/platform';
-import { IExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { IExperimentService, ExperimentStAte } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { lAnguAge, locAle } from 'vs/bAse/common/plAtform';
+import { IExtensionGAlleryService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IJSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditing';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { IJSONEditingService } from 'vs/workbench/services/configurAtion/common/jsonEditing';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
 
-export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution {
+export AbstrAct clAss AbstrActTelemetryOptOut implements IWorkbenchContribution {
 
-	private static readonly TELEMETRY_OPT_OUT_SHOWN = 'workbench.telemetryOptOutShown';
-	private privacyUrl: string | undefined;
+	privAte stAtic reAdonly TELEMETRY_OPT_OUT_SHOWN = 'workbench.telemetryOptOutShown';
+	privAte privAcyUrl: string | undefined;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IHostService private readonly hostService: IHostService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IExperimentService private readonly experimentService: IExperimentService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
-		@IProductService private readonly productService: IProductService,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		@IJSONEditingService private readonly jsonEditingService: IJSONEditingService
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IHostService privAte reAdonly hostService: IHostService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IExperimentService privAte reAdonly experimentService: IExperimentService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IExtensionGAlleryService privAte reAdonly gAlleryService: IExtensionGAlleryService,
+		@IProductService privAte reAdonly productService: IProductService,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService,
+		@IJSONEditingService privAte reAdonly jsonEditingService: IJSONEditingService
 	) {
-		storageKeysSyncRegistryService.registerStorageKey({ key: AbstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: AbstrActTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, version: 1 });
 	}
 
-	protected async handleTelemetryOptOut(): Promise<void> {
-		if (this.productService.telemetryOptOutUrl && !this.storageService.get(AbstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, StorageScope.GLOBAL)) {
+	protected Async hAndleTelemetryOptOut(): Promise<void> {
+		if (this.productService.telemetryOptOutUrl && !this.storAgeService.get(AbstrActTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, StorAgeScope.GLOBAL)) {
 			const experimentId = 'telemetryOptOut';
 
-			const [count, experimentState] = await Promise.all([this.getWindowCount(), this.experimentService.getExperimentById(experimentId)]);
+			const [count, experimentStAte] = AwAit Promise.All([this.getWindowCount(), this.experimentService.getExperimentById(experimentId)]);
 
-			if (!this.hostService.hasFocus && count > 1) {
-				return; // return early if meanwhile another window opened (we only show the opt-out once)
+			if (!this.hostService.hAsFocus && count > 1) {
+				return; // return eArly if meAnwhile Another window opened (we only show the opt-out once)
 			}
 
-			this.storageService.store(AbstractTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, true, StorageScope.GLOBAL);
+			this.storAgeService.store(AbstrActTelemetryOptOut.TELEMETRY_OPT_OUT_SHOWN, true, StorAgeScope.GLOBAL);
 
-			this.privacyUrl = this.productService.privacyStatementUrl || this.productService.telemetryOptOutUrl;
+			this.privAcyUrl = this.productService.privAcyStAtementUrl || this.productService.telemetryOptOutUrl;
 
-			if (experimentState && experimentState.state === ExperimentState.Run && this.telemetryService.isOptedIn) {
+			if (experimentStAte && experimentStAte.stAte === ExperimentStAte.Run && this.telemetryService.isOptedIn) {
 				this.runExperiment(experimentId);
 				return;
 			}
@@ -69,50 +69,50 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 		}
 	}
 
-	private showTelemetryOptOut(telemetryOptOutUrl: string): void {
-		const optOutNotice = localize('telemetryOptOut.optOutNotice', "Help improve VS Code by allowing Microsoft to collect usage data. Read our [privacy statement]({0}) and learn how to [opt out]({1}).", this.privacyUrl, this.productService.telemetryOptOutUrl);
-		const optInNotice = localize('telemetryOptOut.optInNotice', "Help improve VS Code by allowing Microsoft to collect usage data. Read our [privacy statement]({0}) and learn how to [opt in]({1}).", this.privacyUrl, this.productService.telemetryOptOutUrl);
+	privAte showTelemetryOptOut(telemetryOptOutUrl: string): void {
+		const optOutNotice = locAlize('telemetryOptOut.optOutNotice', "Help improve VS Code by Allowing Microsoft to collect usAge dAtA. ReAd our [privAcy stAtement]({0}) And leArn how to [opt out]({1}).", this.privAcyUrl, this.productService.telemetryOptOutUrl);
+		const optInNotice = locAlize('telemetryOptOut.optInNotice', "Help improve VS Code by Allowing Microsoft to collect usAge dAtA. ReAd our [privAcy stAtement]({0}) And leArn how to [opt in]({1}).", this.privAcyUrl, this.productService.telemetryOptOutUrl);
 
-		this.notificationService.prompt(
+		this.notificAtionService.prompt(
 			Severity.Info,
 			this.telemetryService.isOptedIn ? optOutNotice : optInNotice,
 			[{
-				label: localize('telemetryOptOut.readMore', "Read More"),
-				run: () => this.openerService.open(URI.parse(telemetryOptOutUrl))
+				lAbel: locAlize('telemetryOptOut.reAdMore', "ReAd More"),
+				run: () => this.openerService.open(URI.pArse(telemetryOptOutUrl))
 			}],
 			{ sticky: true }
 		);
 	}
 
-	protected abstract getWindowCount(): Promise<number>;
+	protected AbstrAct getWindowCount(): Promise<number>;
 
-	private runExperiment(experimentId: string) {
-		const promptMessageKey = 'telemetryOptOut.optOutOption';
-		const yesLabelKey = 'telemetryOptOut.OptIn';
-		const noLabelKey = 'telemetryOptOut.OptOut';
+	privAte runExperiment(experimentId: string) {
+		const promptMessAgeKey = 'telemetryOptOut.optOutOption';
+		const yesLAbelKey = 'telemetryOptOut.OptIn';
+		const noLAbelKey = 'telemetryOptOut.OptOut';
 
-		let promptMessage = localize('telemetryOptOut.optOutOption', "Please help Microsoft improve Visual Studio Code by allowing the collection of usage data. Read our [privacy statement]({0}) for more details.", this.privacyUrl);
-		let yesLabel = localize('telemetryOptOut.OptIn', "Yes, glad to help");
-		let noLabel = localize('telemetryOptOut.OptOut', "No, thanks");
+		let promptMessAge = locAlize('telemetryOptOut.optOutOption', "PleAse help Microsoft improve VisuAl Studio Code by Allowing the collection of usAge dAtA. ReAd our [privAcy stAtement]({0}) for more detAils.", this.privAcyUrl);
+		let yesLAbel = locAlize('telemetryOptOut.OptIn', "Yes, glAd to help");
+		let noLAbel = locAlize('telemetryOptOut.OptOut', "No, thAnks");
 
 		let queryPromise = Promise.resolve(undefined);
-		if (locale && locale !== language && locale !== 'en' && locale.indexOf('en-') === -1) {
-			queryPromise = this.galleryService.query({ text: `tag:lp-${locale}` }, CancellationToken.None).then(tagResult => {
-				if (!tagResult || !tagResult.total) {
+		if (locAle && locAle !== lAnguAge && locAle !== 'en' && locAle.indexOf('en-') === -1) {
+			queryPromise = this.gAlleryService.query({ text: `tAg:lp-${locAle}` }, CAncellAtionToken.None).then(tAgResult => {
+				if (!tAgResult || !tAgResult.totAl) {
 					return undefined;
 				}
-				const extensionToFetchTranslationsFrom = tagResult.firstPage.filter(e => e.publisher === 'MS-CEINTL' && e.name.indexOf('vscode-language-pack') === 0)[0] || tagResult.firstPage[0];
-				if (!extensionToFetchTranslationsFrom.assets || !extensionToFetchTranslationsFrom.assets.coreTranslations.length) {
+				const extensionToFetchTrAnslAtionsFrom = tAgResult.firstPAge.filter(e => e.publisher === 'MS-CEINTL' && e.nAme.indexOf('vscode-lAnguAge-pAck') === 0)[0] || tAgResult.firstPAge[0];
+				if (!extensionToFetchTrAnslAtionsFrom.Assets || !extensionToFetchTrAnslAtionsFrom.Assets.coreTrAnslAtions.length) {
 					return undefined;
 				}
 
-				return this.galleryService.getCoreTranslation(extensionToFetchTranslationsFrom, locale!)
-					.then(translation => {
-						const translationsFromPack: any = translation && translation.contents ? translation.contents['vs/workbench/contrib/welcome/telemetryOptOut/electron-browser/telemetryOptOut'] : {};
-						if (!!translationsFromPack[promptMessageKey] && !!translationsFromPack[yesLabelKey] && !!translationsFromPack[noLabelKey]) {
-							promptMessage = translationsFromPack[promptMessageKey].replace('{0}', this.privacyUrl) + ' (Please help Microsoft improve Visual Studio Code by allowing the collection of usage data.)';
-							yesLabel = translationsFromPack[yesLabelKey] + ' (Yes)';
-							noLabel = translationsFromPack[noLabelKey] + ' (No)';
+				return this.gAlleryService.getCoreTrAnslAtion(extensionToFetchTrAnslAtionsFrom, locAle!)
+					.then(trAnslAtion => {
+						const trAnslAtionsFromPAck: Any = trAnslAtion && trAnslAtion.contents ? trAnslAtion.contents['vs/workbench/contrib/welcome/telemetryOptOut/electron-browser/telemetryOptOut'] : {};
+						if (!!trAnslAtionsFromPAck[promptMessAgeKey] && !!trAnslAtionsFromPAck[yesLAbelKey] && !!trAnslAtionsFromPAck[noLAbelKey]) {
+							promptMessAge = trAnslAtionsFromPAck[promptMessAgeKey].replAce('{0}', this.privAcyUrl) + ' (PleAse help Microsoft improve VisuAl Studio Code by Allowing the collection of usAge dAtA.)';
+							yesLAbel = trAnslAtionsFromPAck[yesLAbelKey] + ' (Yes)';
+							noLAbel = trAnslAtionsFromPAck[noLAbelKey] + ' (No)';
 						}
 						return undefined;
 					});
@@ -120,69 +120,69 @@ export abstract class AbstractTelemetryOptOut implements IWorkbenchContribution 
 			});
 		}
 
-		const logTelemetry = (optout?: boolean) => {
-			type ExperimentsOptOutClassification = {
-				optout?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+		const logTelemetry = (optout?: booleAn) => {
+			type ExperimentsOptOutClAssificAtion = {
+				optout?: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight', isMeAsurement: true };
 			};
 
 			type ExperimentsOptOutEvent = {
-				optout?: boolean;
+				optout?: booleAn;
 			};
-			this.telemetryService.publicLog2<ExperimentsOptOutEvent, ExperimentsOptOutClassification>('experiments:optout', typeof optout === 'boolean' ? { optout } : {});
+			this.telemetryService.publicLog2<ExperimentsOptOutEvent, ExperimentsOptOutClAssificAtion>('experiments:optout', typeof optout === 'booleAn' ? { optout } : {});
 		};
 
 		queryPromise.then(() => {
-			this.notificationService.prompt(
+			this.notificAtionService.prompt(
 				Severity.Info,
-				promptMessage,
+				promptMessAge,
 				[
 					{
-						label: yesLabel,
+						lAbel: yesLAbel,
 						run: () => {
-							logTelemetry(false);
+							logTelemetry(fAlse);
 						}
 					},
 					{
-						label: noLabel,
-						run: async () => {
+						lAbel: noLAbel,
+						run: Async () => {
 							logTelemetry(true);
-							this.configurationService.updateValue('telemetry.enableTelemetry', false);
-							await this.jsonEditingService.write(this.environmentService.argvResource, [{ path: ['enable-crash-reporter'], value: false }], true);
+							this.configurAtionService.updAteVAlue('telemetry.enAbleTelemetry', fAlse);
+							AwAit this.jsonEditingService.write(this.environmentService.ArgvResource, [{ pAth: ['enAble-crAsh-reporter'], vAlue: fAlse }], true);
 						}
 					}
 				],
 				{
 					sticky: true,
-					onCancel: logTelemetry
+					onCAncel: logTelemetry
 				}
 			);
-			this.experimentService.markAsCompleted(experimentId);
+			this.experimentService.mArkAsCompleted(experimentId);
 		});
 	}
 }
 
-export class BrowserTelemetryOptOut extends AbstractTelemetryOptOut {
+export clAss BrowserTelemetryOptOut extends AbstrActTelemetryOptOut {
 
 	constructor(
-		@IStorageService storageService: IStorageService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
 		@IOpenerService openerService: IOpenerService,
-		@INotificationService notificationService: INotificationService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@IHostService hostService: IHostService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IExperimentService experimentService: IExperimentService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IExtensionGalleryService galleryService: IExtensionGalleryService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IExtensionGAlleryService gAlleryService: IExtensionGAlleryService,
 		@IProductService productService: IProductService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 		@IJSONEditingService jsonEditingService: IJSONEditingService
 	) {
-		super(storageService, storageKeysSyncRegistryService, openerService, notificationService, hostService, telemetryService, experimentService, configurationService, galleryService, productService, environmentService, jsonEditingService);
+		super(storAgeService, storAgeKeysSyncRegistryService, openerService, notificAtionService, hostService, telemetryService, experimentService, configurAtionService, gAlleryService, productService, environmentService, jsonEditingService);
 
-		this.handleTelemetryOptOut();
+		this.hAndleTelemetryOptOut();
 	}
 
-	protected async getWindowCount(): Promise<number> {
+	protected Async getWindowCount(): Promise<number> {
 		return 1;
 	}
 }

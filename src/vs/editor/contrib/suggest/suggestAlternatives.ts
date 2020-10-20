@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { IContextKey, IContextKeyService, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { CompletionModel } from './completionModel';
 import { ISelectedSuggestion } from './suggestWidget';
 
-export class SuggestAlternatives {
+export clAss SuggestAlternAtives {
 
-	static readonly OtherSuggestions = new RawContextKey<boolean>('hasOtherSuggestions', false);
+	stAtic reAdonly OtherSuggestions = new RAwContextKey<booleAn>('hAsOtherSuggestions', fAlse);
 
-	private readonly _ckOtherSuggestions: IContextKey<boolean>;
+	privAte reAdonly _ckOtherSuggestions: IContextKey<booleAn>;
 
-	private _index: number = 0;
-	private _model: CompletionModel | undefined;
-	private _acceptNext: ((selected: ISelectedSuggestion) => any) | undefined;
-	private _listener: IDisposable | undefined;
-	private _ignore: boolean | undefined;
+	privAte _index: number = 0;
+	privAte _model: CompletionModel | undefined;
+	privAte _AcceptNext: ((selected: ISelectedSuggestion) => Any) | undefined;
+	privAte _listener: IDisposAble | undefined;
+	privAte _ignore: booleAn | undefined;
 
 	constructor(
-		private readonly _editor: ICodeEditor,
+		privAte reAdonly _editor: ICodeEditor,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
-		this._ckOtherSuggestions = SuggestAlternatives.OtherSuggestions.bindTo(contextKeyService);
+		this._ckOtherSuggestions = SuggestAlternAtives.OtherSuggestions.bindTo(contextKeyService);
 	}
 
 	dispose(): void {
@@ -36,11 +36,11 @@ export class SuggestAlternatives {
 		this._ckOtherSuggestions.reset();
 		this._listener?.dispose();
 		this._model = undefined;
-		this._acceptNext = undefined;
-		this._ignore = false;
+		this._AcceptNext = undefined;
+		this._ignore = fAlse;
 	}
 
-	set({ model, index }: ISelectedSuggestion, acceptNext: (selected: ISelectedSuggestion) => any): void {
+	set({ model, index }: ISelectedSuggestion, AcceptNext: (selected: ISelectedSuggestion) => Any): void {
 
 		// no suggestions -> nothing to do
 		if (model.items.length === 0) {
@@ -48,17 +48,17 @@ export class SuggestAlternatives {
 			return;
 		}
 
-		// no alternative suggestions -> nothing to do
-		let nextIndex = SuggestAlternatives._moveIndex(true, model, index);
+		// no AlternAtive suggestions -> nothing to do
+		let nextIndex = SuggestAlternAtives._moveIndex(true, model, index);
 		if (nextIndex === index) {
 			this.reset();
 			return;
 		}
 
-		this._acceptNext = acceptNext;
+		this._AcceptNext = AcceptNext;
 		this._model = model;
 		this._index = index;
-		this._listener = this._editor.onDidChangeCursorPosition(() => {
+		this._listener = this._editor.onDidChAngeCursorPosition(() => {
 			if (!this._ignore) {
 				this.reset();
 			}
@@ -66,15 +66,15 @@ export class SuggestAlternatives {
 		this._ckOtherSuggestions.set(true);
 	}
 
-	private static _moveIndex(fwd: boolean, model: CompletionModel, index: number): number {
+	privAte stAtic _moveIndex(fwd: booleAn, model: CompletionModel, index: number): number {
 		let newIndex = index;
 		while (true) {
 			newIndex = (newIndex + model.items.length + (fwd ? +1 : -1)) % model.items.length;
 			if (newIndex === index) {
-				break;
+				breAk;
 			}
-			if (!model.items[newIndex].completion.additionalTextEdits) {
-				break;
+			if (!model.items[newIndex].completion.AdditionAlTextEdits) {
+				breAk;
 			}
 		}
 		return newIndex;
@@ -85,20 +85,20 @@ export class SuggestAlternatives {
 	}
 
 	prev(): void {
-		this._move(false);
+		this._move(fAlse);
 	}
 
-	private _move(fwd: boolean): void {
+	privAte _move(fwd: booleAn): void {
 		if (!this._model) {
-			// nothing to reason about
+			// nothing to reAson About
 			return;
 		}
 		try {
 			this._ignore = true;
-			this._index = SuggestAlternatives._moveIndex(fwd, this._model, this._index);
-			this._acceptNext!({ index: this._index, item: this._model.items[this._index], model: this._model });
-		} finally {
-			this._ignore = false;
+			this._index = SuggestAlternAtives._moveIndex(fwd, this._model, this._index);
+			this._AcceptNext!({ index: this._index, item: this._model.items[this._index], model: this._model });
+		} finAlly {
+			this._ignore = fAlse;
 		}
 	}
 }

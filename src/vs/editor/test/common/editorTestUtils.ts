@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { DefaultEndOfLine, ITextModelCreationOptions } from 'vs/editor/common/model';
+import { URI } from 'vs/bAse/common/uri';
+import { DefAultEndOfLine, ITextModelCreAtionOptions } from 'vs/editor/common/model';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { LanguageIdentifier } from 'vs/editor/common/modes';
-import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
+import { LAnguAgeIdentifier } from 'vs/editor/common/modes';
+import { TestDiAlogService } from 'vs/plAtform/diAlogs/test/common/testDiAlogService';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { UndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedoService';
 
-export function withEditorModel(text: string[], callback: (model: TextModel) => void): void {
-	let model = createTextModel(text.join('\n'));
-	callback(model);
+export function withEditorModel(text: string[], cAllbAck: (model: TextModel) => void): void {
+	let model = creAteTextModel(text.join('\n'));
+	cAllbAck(model);
 	model.dispose();
 }
 
-export interface IRelaxedTextModelCreationOptions {
-	tabSize?: number;
+export interfAce IRelAxedTextModelCreAtionOptions {
+	tAbSize?: number;
 	indentSize?: number;
-	insertSpaces?: boolean;
-	detectIndentation?: boolean;
-	trimAutoWhitespace?: boolean;
-	defaultEOL?: DefaultEndOfLine;
-	isForSimpleWidget?: boolean;
-	largeFileOptimizations?: boolean;
+	insertSpAces?: booleAn;
+	detectIndentAtion?: booleAn;
+	trimAutoWhitespAce?: booleAn;
+	defAultEOL?: DefAultEndOfLine;
+	isForSimpleWidget?: booleAn;
+	lArgeFileOptimizAtions?: booleAn;
 }
 
-export function createTextModel(text: string, _options: IRelaxedTextModelCreationOptions = TextModel.DEFAULT_CREATION_OPTIONS, languageIdentifier: LanguageIdentifier | null = null, uri: URI | null = null): TextModel {
-	const options: ITextModelCreationOptions = {
-		tabSize: (typeof _options.tabSize === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.tabSize : _options.tabSize),
+export function creAteTextModel(text: string, _options: IRelAxedTextModelCreAtionOptions = TextModel.DEFAULT_CREATION_OPTIONS, lAnguAgeIdentifier: LAnguAgeIdentifier | null = null, uri: URI | null = null): TextModel {
+	const options: ITextModelCreAtionOptions = {
+		tAbSize: (typeof _options.tAbSize === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.tAbSize : _options.tAbSize),
 		indentSize: (typeof _options.indentSize === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.indentSize : _options.indentSize),
-		insertSpaces: (typeof _options.insertSpaces === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.insertSpaces : _options.insertSpaces),
-		detectIndentation: (typeof _options.detectIndentation === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.detectIndentation : _options.detectIndentation),
-		trimAutoWhitespace: (typeof _options.trimAutoWhitespace === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.trimAutoWhitespace : _options.trimAutoWhitespace),
-		defaultEOL: (typeof _options.defaultEOL === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.defaultEOL : _options.defaultEOL),
+		insertSpAces: (typeof _options.insertSpAces === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.insertSpAces : _options.insertSpAces),
+		detectIndentAtion: (typeof _options.detectIndentAtion === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.detectIndentAtion : _options.detectIndentAtion),
+		trimAutoWhitespAce: (typeof _options.trimAutoWhitespAce === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.trimAutoWhitespAce : _options.trimAutoWhitespAce),
+		defAultEOL: (typeof _options.defAultEOL === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.defAultEOL : _options.defAultEOL),
 		isForSimpleWidget: (typeof _options.isForSimpleWidget === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.isForSimpleWidget : _options.isForSimpleWidget),
-		largeFileOptimizations: (typeof _options.largeFileOptimizations === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.largeFileOptimizations : _options.largeFileOptimizations),
+		lArgeFileOptimizAtions: (typeof _options.lArgeFileOptimizAtions === 'undefined' ? TextModel.DEFAULT_CREATION_OPTIONS.lArgeFileOptimizAtions : _options.lArgeFileOptimizAtions),
 	};
-	const dialogService = new TestDialogService();
-	const notificationService = new TestNotificationService();
-	const undoRedoService = new UndoRedoService(dialogService, notificationService);
-	return new TextModel(text, options, languageIdentifier, uri, undoRedoService);
+	const diAlogService = new TestDiAlogService();
+	const notificAtionService = new TestNotificAtionService();
+	const undoRedoService = new UndoRedoService(diAlogService, notificAtionService);
+	return new TextModel(text, options, lAnguAgeIdentifier, uri, undoRedoService);
 }

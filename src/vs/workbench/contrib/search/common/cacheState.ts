@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { defaultGenerator } from 'vs/base/common/idGenerator';
-import { IFileQuery } from 'vs/workbench/services/search/common/search';
-import { equals } from 'vs/base/common/objects';
+import { defAultGenerAtor } from 'vs/bAse/common/idGenerAtor';
+import { IFileQuery } from 'vs/workbench/services/seArch/common/seArch';
+import { equAls } from 'vs/bAse/common/objects';
 
-enum LoadingPhase {
-	Created = 1,
-	Loading = 2,
-	Loaded = 3,
+enum LoAdingPhAse {
+	CreAted = 1,
+	LoAding = 2,
+	LoAded = 3,
 	Errored = 4,
 	Disposed = 5
 }
 
-export class FileQueryCacheState {
+export clAss FileQueryCAcheStAte {
 
-	private readonly _cacheKey = defaultGenerator.nextId();
-	get cacheKey(): string {
-		if (this.loadingPhase === LoadingPhase.Loaded || !this.previousCacheState) {
-			return this._cacheKey;
+	privAte reAdonly _cAcheKey = defAultGenerAtor.nextId();
+	get cAcheKey(): string {
+		if (this.loAdingPhAse === LoAdingPhAse.LoAded || !this.previousCAcheStAte) {
+			return this._cAcheKey;
 		}
 
-		return this.previousCacheState.cacheKey;
+		return this.previousCAcheStAte.cAcheKey;
 	}
 
-	get isLoaded(): boolean {
-		const isLoaded = this.loadingPhase === LoadingPhase.Loaded;
+	get isLoAded(): booleAn {
+		const isLoAded = this.loAdingPhAse === LoAdingPhAse.LoAded;
 
-		return isLoaded || !this.previousCacheState ? isLoaded : this.previousCacheState.isLoaded;
+		return isLoAded || !this.previousCAcheStAte ? isLoAded : this.previousCAcheStAte.isLoAded;
 	}
 
-	get isUpdating(): boolean {
-		const isUpdating = this.loadingPhase === LoadingPhase.Loading;
+	get isUpdAting(): booleAn {
+		const isUpdAting = this.loAdingPhAse === LoAdingPhAse.LoAding;
 
-		return isUpdating || !this.previousCacheState ? isUpdating : this.previousCacheState.isUpdating;
+		return isUpdAting || !this.previousCAcheStAte ? isUpdAting : this.previousCAcheStAte.isUpdAting;
 	}
 
-	private readonly query = this.cacheQuery(this._cacheKey);
+	privAte reAdonly query = this.cAcheQuery(this._cAcheKey);
 
-	private loadingPhase = LoadingPhase.Created;
-	private loadPromise: Promise<void> | undefined;
+	privAte loAdingPhAse = LoAdingPhAse.CreAted;
+	privAte loAdPromise: Promise<void> | undefined;
 
 	constructor(
-		private cacheQuery: (cacheKey: string) => IFileQuery,
-		private loadFn: (query: IFileQuery) => Promise<any>,
-		private disposeFn: (cacheKey: string) => Promise<void>,
-		private previousCacheState: FileQueryCacheState | undefined
+		privAte cAcheQuery: (cAcheKey: string) => IFileQuery,
+		privAte loAdFn: (query: IFileQuery) => Promise<Any>,
+		privAte disposeFn: (cAcheKey: string) => Promise<void>,
+		privAte previousCAcheStAte: FileQueryCAcheStAte | undefined
 	) {
-		if (this.previousCacheState) {
-			const current = Object.assign({}, this.query, { cacheKey: null });
-			const previous = Object.assign({}, this.previousCacheState.query, { cacheKey: null });
-			if (!equals(current, previous)) {
-				this.previousCacheState.dispose();
-				this.previousCacheState = undefined;
+		if (this.previousCAcheStAte) {
+			const current = Object.Assign({}, this.query, { cAcheKey: null });
+			const previous = Object.Assign({}, this.previousCAcheStAte.query, { cAcheKey: null });
+			if (!equAls(current, previous)) {
+				this.previousCAcheStAte.dispose();
+				this.previousCAcheStAte = undefined;
 			}
 		}
 	}
 
-	load(): FileQueryCacheState {
-		if (this.isUpdating) {
+	loAd(): FileQueryCAcheStAte {
+		if (this.isUpdAting) {
 			return this;
 		}
 
-		this.loadingPhase = LoadingPhase.Loading;
+		this.loAdingPhAse = LoAdingPhAse.LoAding;
 
-		this.loadPromise = (async () => {
+		this.loAdPromise = (Async () => {
 			try {
-				await this.loadFn(this.query);
+				AwAit this.loAdFn(this.query);
 
-				this.loadingPhase = LoadingPhase.Loaded;
+				this.loAdingPhAse = LoAdingPhAse.LoAded;
 
-				if (this.previousCacheState) {
-					this.previousCacheState.dispose();
-					this.previousCacheState = undefined;
+				if (this.previousCAcheStAte) {
+					this.previousCAcheStAte.dispose();
+					this.previousCAcheStAte = undefined;
 				}
-			} catch (error) {
-				this.loadingPhase = LoadingPhase.Errored;
+			} cAtch (error) {
+				this.loAdingPhAse = LoAdingPhAse.Errored;
 
 				throw error;
 			}
@@ -87,24 +87,24 @@ export class FileQueryCacheState {
 	}
 
 	dispose(): void {
-		if (this.loadPromise) {
-			(async () => {
+		if (this.loAdPromise) {
+			(Async () => {
 				try {
-					await this.loadPromise;
-				} catch (error) {
+					AwAit this.loAdPromise;
+				} cAtch (error) {
 					// ignore
 				}
 
-				this.loadingPhase = LoadingPhase.Disposed;
-				this.disposeFn(this._cacheKey);
+				this.loAdingPhAse = LoAdingPhAse.Disposed;
+				this.disposeFn(this._cAcheKey);
 			})();
 		} else {
-			this.loadingPhase = LoadingPhase.Disposed;
+			this.loAdingPhAse = LoAdingPhAse.Disposed;
 		}
 
-		if (this.previousCacheState) {
-			this.previousCacheState.dispose();
-			this.previousCacheState = undefined;
+		if (this.previousCAcheStAte) {
+			this.previousCAcheStAte.dispose();
+			this.previousCAcheStAte = undefined;
 		}
 	}
 }

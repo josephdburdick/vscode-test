@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import * as strings from 'vs/base/common/strings';
-import { DefaultEndOfLine, ITextBuffer, ITextBufferBuilder, ITextBufferFactory } from 'vs/editor/common/model';
-import { StringBuffer, createLineStarts, createLineStartsFast } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBase';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import * As strings from 'vs/bAse/common/strings';
+import { DefAultEndOfLine, ITextBuffer, ITextBufferBuilder, ITextBufferFActory } from 'vs/editor/common/model';
+import { StringBuffer, creAteLineStArts, creAteLineStArtsFAst } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBAse';
 import { PieceTreeTextBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBuffer';
 
-export class PieceTreeTextBufferFactory implements ITextBufferFactory {
+export clAss PieceTreeTextBufferFActory implements ITextBufferFActory {
 
 	constructor(
-		private readonly _chunks: StringBuffer[],
-		private readonly _bom: string,
-		private readonly _cr: number,
-		private readonly _lf: number,
-		private readonly _crlf: number,
-		private readonly _containsRTL: boolean,
-		private readonly _containsUnusualLineTerminators: boolean,
-		private readonly _isBasicASCII: boolean,
-		private readonly _normalizeEOL: boolean
+		privAte reAdonly _chunks: StringBuffer[],
+		privAte reAdonly _bom: string,
+		privAte reAdonly _cr: number,
+		privAte reAdonly _lf: number,
+		privAte reAdonly _crlf: number,
+		privAte reAdonly _contAinsRTL: booleAn,
+		privAte reAdonly _contAinsUnusuAlLineTerminAtors: booleAn,
+		privAte reAdonly _isBAsicASCII: booleAn,
+		privAte reAdonly _normAlizeEOL: booleAn
 	) { }
 
-	private _getEOL(defaultEOL: DefaultEndOfLine): '\r\n' | '\n' {
-		const totalEOLCount = this._cr + this._lf + this._crlf;
-		const totalCRCount = this._cr + this._crlf;
-		if (totalEOLCount === 0) {
-			// This is an empty file or a file with precisely one line
-			return (defaultEOL === DefaultEndOfLine.LF ? '\n' : '\r\n');
+	privAte _getEOL(defAultEOL: DefAultEndOfLine): '\r\n' | '\n' {
+		const totAlEOLCount = this._cr + this._lf + this._crlf;
+		const totAlCRCount = this._cr + this._crlf;
+		if (totAlEOLCount === 0) {
+			// This is An empty file or A file with precisely one line
+			return (defAultEOL === DefAultEndOfLine.LF ? '\n' : '\r\n');
 		}
-		if (totalCRCount > totalEOLCount / 2) {
-			// More than half of the file contains \r\n ending lines
+		if (totAlCRCount > totAlEOLCount / 2) {
+			// More thAn hAlf of the file contAins \r\n ending lines
 			return '\r\n';
 		}
-		// At least one line more ends in \n
+		// At leAst one line more ends in \n
 		return '\n';
 	}
 
-	public create(defaultEOL: DefaultEndOfLine): ITextBuffer {
-		const eol = this._getEOL(defaultEOL);
+	public creAte(defAultEOL: DefAultEndOfLine): ITextBuffer {
+		const eol = this._getEOL(defAultEOL);
 		let chunks = this._chunks;
 
-		if (this._normalizeEOL &&
+		if (this._normAlizeEOL &&
 			((eol === '\r\n' && (this._cr > 0 || this._lf > 0))
 				|| (eol === '\n' && (this._cr > 0 || this._crlf > 0)))
 		) {
-			// Normalize pieces
+			// NormAlize pieces
 			for (let i = 0, len = chunks.length; i < len; i++) {
-				let str = chunks[i].buffer.replace(/\r\n|\r|\n/g, eol);
-				let newLineStart = createLineStartsFast(str);
-				chunks[i] = new StringBuffer(str, newLineStart);
+				let str = chunks[i].buffer.replAce(/\r\n|\r|\n/g, eol);
+				let newLineStArt = creAteLineStArtsFAst(str);
+				chunks[i] = new StringBuffer(str, newLineStArt);
 			}
 		}
 
-		return new PieceTreeTextBuffer(chunks, this._bom, eol, this._containsRTL, this._containsUnusualLineTerminators, this._isBasicASCII, this._normalizeEOL);
+		return new PieceTreeTextBuffer(chunks, this._bom, eol, this._contAinsRTL, this._contAinsUnusuAlLineTerminAtors, this._isBAsicASCII, this._normAlizeEOL);
 	}
 
 	public getFirstLineText(lengthLimit: number): string {
@@ -62,124 +62,124 @@ export class PieceTreeTextBufferFactory implements ITextBufferFactory {
 	}
 }
 
-export class PieceTreeTextBufferBuilder implements ITextBufferBuilder {
-	private readonly chunks: StringBuffer[];
-	private BOM: string;
+export clAss PieceTreeTextBufferBuilder implements ITextBufferBuilder {
+	privAte reAdonly chunks: StringBuffer[];
+	privAte BOM: string;
 
-	private _hasPreviousChar: boolean;
-	private _previousChar: number;
-	private readonly _tmpLineStarts: number[];
+	privAte _hAsPreviousChAr: booleAn;
+	privAte _previousChAr: number;
+	privAte reAdonly _tmpLineStArts: number[];
 
-	private cr: number;
-	private lf: number;
-	private crlf: number;
-	private containsRTL: boolean;
-	private containsUnusualLineTerminators: boolean;
-	private isBasicASCII: boolean;
+	privAte cr: number;
+	privAte lf: number;
+	privAte crlf: number;
+	privAte contAinsRTL: booleAn;
+	privAte contAinsUnusuAlLineTerminAtors: booleAn;
+	privAte isBAsicASCII: booleAn;
 
 	constructor() {
 		this.chunks = [];
 		this.BOM = '';
 
-		this._hasPreviousChar = false;
-		this._previousChar = 0;
-		this._tmpLineStarts = [];
+		this._hAsPreviousChAr = fAlse;
+		this._previousChAr = 0;
+		this._tmpLineStArts = [];
 
 		this.cr = 0;
 		this.lf = 0;
 		this.crlf = 0;
-		this.containsRTL = false;
-		this.containsUnusualLineTerminators = false;
-		this.isBasicASCII = true;
+		this.contAinsRTL = fAlse;
+		this.contAinsUnusuAlLineTerminAtors = fAlse;
+		this.isBAsicASCII = true;
 	}
 
-	public acceptChunk(chunk: string): void {
+	public AcceptChunk(chunk: string): void {
 		if (chunk.length === 0) {
 			return;
 		}
 
 		if (this.chunks.length === 0) {
-			if (strings.startsWithUTF8BOM(chunk)) {
+			if (strings.stArtsWithUTF8BOM(chunk)) {
 				this.BOM = strings.UTF8_BOM_CHARACTER;
 				chunk = chunk.substr(1);
 			}
 		}
 
-		const lastChar = chunk.charCodeAt(chunk.length - 1);
-		if (lastChar === CharCode.CarriageReturn || (lastChar >= 0xD800 && lastChar <= 0xDBFF)) {
-			// last character is \r or a high surrogate => keep it back
-			this._acceptChunk1(chunk.substr(0, chunk.length - 1), false);
-			this._hasPreviousChar = true;
-			this._previousChar = lastChar;
+		const lAstChAr = chunk.chArCodeAt(chunk.length - 1);
+		if (lAstChAr === ChArCode.CArriAgeReturn || (lAstChAr >= 0xD800 && lAstChAr <= 0xDBFF)) {
+			// lAst chArActer is \r or A high surrogAte => keep it bAck
+			this._AcceptChunk1(chunk.substr(0, chunk.length - 1), fAlse);
+			this._hAsPreviousChAr = true;
+			this._previousChAr = lAstChAr;
 		} else {
-			this._acceptChunk1(chunk, false);
-			this._hasPreviousChar = false;
-			this._previousChar = lastChar;
+			this._AcceptChunk1(chunk, fAlse);
+			this._hAsPreviousChAr = fAlse;
+			this._previousChAr = lAstChAr;
 		}
 	}
 
-	private _acceptChunk1(chunk: string, allowEmptyStrings: boolean): void {
-		if (!allowEmptyStrings && chunk.length === 0) {
+	privAte _AcceptChunk1(chunk: string, AllowEmptyStrings: booleAn): void {
+		if (!AllowEmptyStrings && chunk.length === 0) {
 			// Nothing to do
 			return;
 		}
 
-		if (this._hasPreviousChar) {
-			this._acceptChunk2(String.fromCharCode(this._previousChar) + chunk);
+		if (this._hAsPreviousChAr) {
+			this._AcceptChunk2(String.fromChArCode(this._previousChAr) + chunk);
 		} else {
-			this._acceptChunk2(chunk);
+			this._AcceptChunk2(chunk);
 		}
 	}
 
-	private _acceptChunk2(chunk: string): void {
-		const lineStarts = createLineStarts(this._tmpLineStarts, chunk);
+	privAte _AcceptChunk2(chunk: string): void {
+		const lineStArts = creAteLineStArts(this._tmpLineStArts, chunk);
 
-		this.chunks.push(new StringBuffer(chunk, lineStarts.lineStarts));
-		this.cr += lineStarts.cr;
-		this.lf += lineStarts.lf;
-		this.crlf += lineStarts.crlf;
+		this.chunks.push(new StringBuffer(chunk, lineStArts.lineStArts));
+		this.cr += lineStArts.cr;
+		this.lf += lineStArts.lf;
+		this.crlf += lineStArts.crlf;
 
-		if (this.isBasicASCII) {
-			this.isBasicASCII = lineStarts.isBasicASCII;
+		if (this.isBAsicASCII) {
+			this.isBAsicASCII = lineStArts.isBAsicASCII;
 		}
-		if (!this.isBasicASCII && !this.containsRTL) {
-			// No need to check if it is basic ASCII
-			this.containsRTL = strings.containsRTL(chunk);
+		if (!this.isBAsicASCII && !this.contAinsRTL) {
+			// No need to check if it is bAsic ASCII
+			this.contAinsRTL = strings.contAinsRTL(chunk);
 		}
-		if (!this.isBasicASCII && !this.containsUnusualLineTerminators) {
-			// No need to check if it is basic ASCII
-			this.containsUnusualLineTerminators = strings.containsUnusualLineTerminators(chunk);
+		if (!this.isBAsicASCII && !this.contAinsUnusuAlLineTerminAtors) {
+			// No need to check if it is bAsic ASCII
+			this.contAinsUnusuAlLineTerminAtors = strings.contAinsUnusuAlLineTerminAtors(chunk);
 		}
 	}
 
-	public finish(normalizeEOL: boolean = true): PieceTreeTextBufferFactory {
+	public finish(normAlizeEOL: booleAn = true): PieceTreeTextBufferFActory {
 		this._finish();
-		return new PieceTreeTextBufferFactory(
+		return new PieceTreeTextBufferFActory(
 			this.chunks,
 			this.BOM,
 			this.cr,
 			this.lf,
 			this.crlf,
-			this.containsRTL,
-			this.containsUnusualLineTerminators,
-			this.isBasicASCII,
-			normalizeEOL
+			this.contAinsRTL,
+			this.contAinsUnusuAlLineTerminAtors,
+			this.isBAsicASCII,
+			normAlizeEOL
 		);
 	}
 
-	private _finish(): void {
+	privAte _finish(): void {
 		if (this.chunks.length === 0) {
-			this._acceptChunk1('', true);
+			this._AcceptChunk1('', true);
 		}
 
-		if (this._hasPreviousChar) {
-			this._hasPreviousChar = false;
-			// recreate last chunk
-			let lastChunk = this.chunks[this.chunks.length - 1];
-			lastChunk.buffer += String.fromCharCode(this._previousChar);
-			let newLineStarts = createLineStartsFast(lastChunk.buffer);
-			lastChunk.lineStarts = newLineStarts;
-			if (this._previousChar === CharCode.CarriageReturn) {
+		if (this._hAsPreviousChAr) {
+			this._hAsPreviousChAr = fAlse;
+			// recreAte lAst chunk
+			let lAstChunk = this.chunks[this.chunks.length - 1];
+			lAstChunk.buffer += String.fromChArCode(this._previousChAr);
+			let newLineStArts = creAteLineStArtsFAst(lAstChunk.buffer);
+			lAstChunk.lineStArts = newLineStArts;
+			if (this._previousChAr === ChArCode.CArriAgeReturn) {
 				this.cr++;
 			}
 		}

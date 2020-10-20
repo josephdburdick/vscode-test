@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Piece, PieceTreeBase } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBase';
+import { Piece, PieceTreeBAse } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBAse';
 
-export class TreeNode {
-	parent: TreeNode;
+export clAss TreeNode {
+	pArent: TreeNode;
 	left: TreeNode;
 	right: TreeNode;
 	color: NodeColor;
@@ -21,7 +21,7 @@ export class TreeNode {
 		this.color = color;
 		this.size_left = 0;
 		this.lf_left = 0;
-		this.parent = this;
+		this.pArent = this;
 		this.left = this;
 		this.right = this;
 	}
@@ -33,18 +33,18 @@ export class TreeNode {
 
 		let node: TreeNode = this;
 
-		while (node.parent !== SENTINEL) {
-			if (node.parent.left === node) {
-				break;
+		while (node.pArent !== SENTINEL) {
+			if (node.pArent.left === node) {
+				breAk;
 			}
 
-			node = node.parent;
+			node = node.pArent;
 		}
 
-		if (node.parent === SENTINEL) {
+		if (node.pArent === SENTINEL) {
 			return SENTINEL;
 		} else {
-			return node.parent;
+			return node.pArent;
 		}
 	}
 
@@ -55,38 +55,38 @@ export class TreeNode {
 
 		let node: TreeNode = this;
 
-		while (node.parent !== SENTINEL) {
-			if (node.parent.right === node) {
-				break;
+		while (node.pArent !== SENTINEL) {
+			if (node.pArent.right === node) {
+				breAk;
 			}
 
-			node = node.parent;
+			node = node.pArent;
 		}
 
-		if (node.parent === SENTINEL) {
+		if (node.pArent === SENTINEL) {
 			return SENTINEL;
 		} else {
-			return node.parent;
+			return node.pArent;
 		}
 	}
 
-	public detach(): void {
-		this.parent = null!;
+	public detAch(): void {
+		this.pArent = null!;
 		this.left = null!;
 		this.right = null!;
 	}
 }
 
 export const enum NodeColor {
-	Black = 0,
+	BlAck = 0,
 	Red = 1,
 }
 
-export const SENTINEL: TreeNode = new TreeNode(null!, NodeColor.Black);
-SENTINEL.parent = SENTINEL;
+export const SENTINEL: TreeNode = new TreeNode(null!, NodeColor.BlAck);
+SENTINEL.pArent = SENTINEL;
 SENTINEL.left = SENTINEL;
 SENTINEL.right = SENTINEL;
-SENTINEL.color = NodeColor.Black;
+SENTINEL.color = NodeColor.BlAck;
 
 export function leftest(node: TreeNode): TreeNode {
 	while (node.left !== SENTINEL) {
@@ -102,27 +102,27 @@ export function righttest(node: TreeNode): TreeNode {
 	return node;
 }
 
-export function calculateSize(node: TreeNode): number {
+export function cAlculAteSize(node: TreeNode): number {
 	if (node === SENTINEL) {
 		return 0;
 	}
 
-	return node.size_left + node.piece.length + calculateSize(node.right);
+	return node.size_left + node.piece.length + cAlculAteSize(node.right);
 }
 
-export function calculateLF(node: TreeNode): number {
+export function cAlculAteLF(node: TreeNode): number {
 	if (node === SENTINEL) {
 		return 0;
 	}
 
-	return node.lf_left + node.piece.lineFeedCnt + calculateLF(node.right);
+	return node.lf_left + node.piece.lineFeedCnt + cAlculAteLF(node.right);
 }
 
 export function resetSentinel(): void {
-	SENTINEL.parent = SENTINEL;
+	SENTINEL.pArent = SENTINEL;
 }
 
-export function leftRotate(tree: PieceTreeBase, x: TreeNode) {
+export function leftRotAte(tree: PieceTreeBAse, x: TreeNode) {
 	let y = x.right;
 
 	// fix size_left
@@ -131,45 +131,45 @@ export function leftRotate(tree: PieceTreeBase, x: TreeNode) {
 	x.right = y.left;
 
 	if (y.left !== SENTINEL) {
-		y.left.parent = x;
+		y.left.pArent = x;
 	}
-	y.parent = x.parent;
-	if (x.parent === SENTINEL) {
+	y.pArent = x.pArent;
+	if (x.pArent === SENTINEL) {
 		tree.root = y;
-	} else if (x.parent.left === x) {
-		x.parent.left = y;
+	} else if (x.pArent.left === x) {
+		x.pArent.left = y;
 	} else {
-		x.parent.right = y;
+		x.pArent.right = y;
 	}
 	y.left = x;
-	x.parent = y;
+	x.pArent = y;
 }
 
-export function rightRotate(tree: PieceTreeBase, y: TreeNode) {
+export function rightRotAte(tree: PieceTreeBAse, y: TreeNode) {
 	let x = y.left;
 	y.left = x.right;
 	if (x.right !== SENTINEL) {
-		x.right.parent = y;
+		x.right.pArent = y;
 	}
-	x.parent = y.parent;
+	x.pArent = y.pArent;
 
 	// fix size_left
 	y.size_left -= x.size_left + (x.piece ? x.piece.length : 0);
 	y.lf_left -= x.lf_left + (x.piece ? x.piece.lineFeedCnt : 0);
 
-	if (y.parent === SENTINEL) {
+	if (y.pArent === SENTINEL) {
 		tree.root = x;
-	} else if (y === y.parent.right) {
-		y.parent.right = x;
+	} else if (y === y.pArent.right) {
+		y.pArent.right = x;
 	} else {
-		y.parent.left = x;
+		y.pArent.left = x;
 	}
 
 	x.right = y;
-	y.parent = x;
+	y.pArent = x;
 }
 
-export function rbDelete(tree: PieceTreeBase, z: TreeNode) {
+export function rbDelete(tree: PieceTreeBAse, z: TreeNode) {
 	let x: TreeNode;
 	let y: TreeNode;
 
@@ -187,240 +187,240 @@ export function rbDelete(tree: PieceTreeBase, z: TreeNode) {
 	if (y === tree.root) {
 		tree.root = x;
 
-		// if x is null, we are removing the only node
-		x.color = NodeColor.Black;
-		z.detach();
+		// if x is null, we Are removing the only node
+		x.color = NodeColor.BlAck;
+		z.detAch();
 		resetSentinel();
-		tree.root.parent = SENTINEL;
+		tree.root.pArent = SENTINEL;
 
 		return;
 	}
 
-	let yWasRed = (y.color === NodeColor.Red);
+	let yWAsRed = (y.color === NodeColor.Red);
 
-	if (y === y.parent.left) {
-		y.parent.left = x;
+	if (y === y.pArent.left) {
+		y.pArent.left = x;
 	} else {
-		y.parent.right = x;
+		y.pArent.right = x;
 	}
 
 	if (y === z) {
-		x.parent = y.parent;
-		recomputeTreeMetadata(tree, x);
+		x.pArent = y.pArent;
+		recomputeTreeMetAdAtA(tree, x);
 	} else {
-		if (y.parent === z) {
-			x.parent = y;
+		if (y.pArent === z) {
+			x.pArent = y;
 		} else {
-			x.parent = y.parent;
+			x.pArent = y.pArent;
 		}
 
-		// as we make changes to x's hierarchy, update size_left of subtree first
-		recomputeTreeMetadata(tree, x);
+		// As we mAke chAnges to x's hierArchy, updAte size_left of subtree first
+		recomputeTreeMetAdAtA(tree, x);
 
 		y.left = z.left;
 		y.right = z.right;
-		y.parent = z.parent;
+		y.pArent = z.pArent;
 		y.color = z.color;
 
 		if (z === tree.root) {
 			tree.root = y;
 		} else {
-			if (z === z.parent.left) {
-				z.parent.left = y;
+			if (z === z.pArent.left) {
+				z.pArent.left = y;
 			} else {
-				z.parent.right = y;
+				z.pArent.right = y;
 			}
 		}
 
 		if (y.left !== SENTINEL) {
-			y.left.parent = y;
+			y.left.pArent = y;
 		}
 		if (y.right !== SENTINEL) {
-			y.right.parent = y;
+			y.right.pArent = y;
 		}
-		// update metadata
-		// we replace z with y, so in this sub tree, the length change is z.item.length
+		// updAte metAdAtA
+		// we replAce z with y, so in this sub tree, the length chAnge is z.item.length
 		y.size_left = z.size_left;
 		y.lf_left = z.lf_left;
-		recomputeTreeMetadata(tree, y);
+		recomputeTreeMetAdAtA(tree, y);
 	}
 
-	z.detach();
+	z.detAch();
 
-	if (x.parent.left === x) {
-		let newSizeLeft = calculateSize(x);
-		let newLFLeft = calculateLF(x);
-		if (newSizeLeft !== x.parent.size_left || newLFLeft !== x.parent.lf_left) {
-			let delta = newSizeLeft - x.parent.size_left;
-			let lf_delta = newLFLeft - x.parent.lf_left;
-			x.parent.size_left = newSizeLeft;
-			x.parent.lf_left = newLFLeft;
-			updateTreeMetadata(tree, x.parent, delta, lf_delta);
+	if (x.pArent.left === x) {
+		let newSizeLeft = cAlculAteSize(x);
+		let newLFLeft = cAlculAteLF(x);
+		if (newSizeLeft !== x.pArent.size_left || newLFLeft !== x.pArent.lf_left) {
+			let deltA = newSizeLeft - x.pArent.size_left;
+			let lf_deltA = newLFLeft - x.pArent.lf_left;
+			x.pArent.size_left = newSizeLeft;
+			x.pArent.lf_left = newLFLeft;
+			updAteTreeMetAdAtA(tree, x.pArent, deltA, lf_deltA);
 		}
 	}
 
-	recomputeTreeMetadata(tree, x.parent);
+	recomputeTreeMetAdAtA(tree, x.pArent);
 
-	if (yWasRed) {
+	if (yWAsRed) {
 		resetSentinel();
 		return;
 	}
 
 	// RB-DELETE-FIXUP
 	let w: TreeNode;
-	while (x !== tree.root && x.color === NodeColor.Black) {
-		if (x === x.parent.left) {
-			w = x.parent.right;
+	while (x !== tree.root && x.color === NodeColor.BlAck) {
+		if (x === x.pArent.left) {
+			w = x.pArent.right;
 
 			if (w.color === NodeColor.Red) {
-				w.color = NodeColor.Black;
-				x.parent.color = NodeColor.Red;
-				leftRotate(tree, x.parent);
-				w = x.parent.right;
+				w.color = NodeColor.BlAck;
+				x.pArent.color = NodeColor.Red;
+				leftRotAte(tree, x.pArent);
+				w = x.pArent.right;
 			}
 
-			if (w.left.color === NodeColor.Black && w.right.color === NodeColor.Black) {
+			if (w.left.color === NodeColor.BlAck && w.right.color === NodeColor.BlAck) {
 				w.color = NodeColor.Red;
-				x = x.parent;
+				x = x.pArent;
 			} else {
-				if (w.right.color === NodeColor.Black) {
-					w.left.color = NodeColor.Black;
+				if (w.right.color === NodeColor.BlAck) {
+					w.left.color = NodeColor.BlAck;
 					w.color = NodeColor.Red;
-					rightRotate(tree, w);
-					w = x.parent.right;
+					rightRotAte(tree, w);
+					w = x.pArent.right;
 				}
 
-				w.color = x.parent.color;
-				x.parent.color = NodeColor.Black;
-				w.right.color = NodeColor.Black;
-				leftRotate(tree, x.parent);
+				w.color = x.pArent.color;
+				x.pArent.color = NodeColor.BlAck;
+				w.right.color = NodeColor.BlAck;
+				leftRotAte(tree, x.pArent);
 				x = tree.root;
 			}
 		} else {
-			w = x.parent.left;
+			w = x.pArent.left;
 
 			if (w.color === NodeColor.Red) {
-				w.color = NodeColor.Black;
-				x.parent.color = NodeColor.Red;
-				rightRotate(tree, x.parent);
-				w = x.parent.left;
+				w.color = NodeColor.BlAck;
+				x.pArent.color = NodeColor.Red;
+				rightRotAte(tree, x.pArent);
+				w = x.pArent.left;
 			}
 
-			if (w.left.color === NodeColor.Black && w.right.color === NodeColor.Black) {
+			if (w.left.color === NodeColor.BlAck && w.right.color === NodeColor.BlAck) {
 				w.color = NodeColor.Red;
-				x = x.parent;
+				x = x.pArent;
 
 			} else {
-				if (w.left.color === NodeColor.Black) {
-					w.right.color = NodeColor.Black;
+				if (w.left.color === NodeColor.BlAck) {
+					w.right.color = NodeColor.BlAck;
 					w.color = NodeColor.Red;
-					leftRotate(tree, w);
-					w = x.parent.left;
+					leftRotAte(tree, w);
+					w = x.pArent.left;
 				}
 
-				w.color = x.parent.color;
-				x.parent.color = NodeColor.Black;
-				w.left.color = NodeColor.Black;
-				rightRotate(tree, x.parent);
+				w.color = x.pArent.color;
+				x.pArent.color = NodeColor.BlAck;
+				w.left.color = NodeColor.BlAck;
+				rightRotAte(tree, x.pArent);
 				x = tree.root;
 			}
 		}
 	}
-	x.color = NodeColor.Black;
+	x.color = NodeColor.BlAck;
 	resetSentinel();
 }
 
-export function fixInsert(tree: PieceTreeBase, x: TreeNode) {
-	recomputeTreeMetadata(tree, x);
+export function fixInsert(tree: PieceTreeBAse, x: TreeNode) {
+	recomputeTreeMetAdAtA(tree, x);
 
-	while (x !== tree.root && x.parent.color === NodeColor.Red) {
-		if (x.parent === x.parent.parent.left) {
-			const y = x.parent.parent.right;
+	while (x !== tree.root && x.pArent.color === NodeColor.Red) {
+		if (x.pArent === x.pArent.pArent.left) {
+			const y = x.pArent.pArent.right;
 
 			if (y.color === NodeColor.Red) {
-				x.parent.color = NodeColor.Black;
-				y.color = NodeColor.Black;
-				x.parent.parent.color = NodeColor.Red;
-				x = x.parent.parent;
+				x.pArent.color = NodeColor.BlAck;
+				y.color = NodeColor.BlAck;
+				x.pArent.pArent.color = NodeColor.Red;
+				x = x.pArent.pArent;
 			} else {
-				if (x === x.parent.right) {
-					x = x.parent;
-					leftRotate(tree, x);
+				if (x === x.pArent.right) {
+					x = x.pArent;
+					leftRotAte(tree, x);
 				}
 
-				x.parent.color = NodeColor.Black;
-				x.parent.parent.color = NodeColor.Red;
-				rightRotate(tree, x.parent.parent);
+				x.pArent.color = NodeColor.BlAck;
+				x.pArent.pArent.color = NodeColor.Red;
+				rightRotAte(tree, x.pArent.pArent);
 			}
 		} else {
-			const y = x.parent.parent.left;
+			const y = x.pArent.pArent.left;
 
 			if (y.color === NodeColor.Red) {
-				x.parent.color = NodeColor.Black;
-				y.color = NodeColor.Black;
-				x.parent.parent.color = NodeColor.Red;
-				x = x.parent.parent;
+				x.pArent.color = NodeColor.BlAck;
+				y.color = NodeColor.BlAck;
+				x.pArent.pArent.color = NodeColor.Red;
+				x = x.pArent.pArent;
 			} else {
-				if (x === x.parent.left) {
-					x = x.parent;
-					rightRotate(tree, x);
+				if (x === x.pArent.left) {
+					x = x.pArent;
+					rightRotAte(tree, x);
 				}
-				x.parent.color = NodeColor.Black;
-				x.parent.parent.color = NodeColor.Red;
-				leftRotate(tree, x.parent.parent);
+				x.pArent.color = NodeColor.BlAck;
+				x.pArent.pArent.color = NodeColor.Red;
+				leftRotAte(tree, x.pArent.pArent);
 			}
 		}
 	}
 
-	tree.root.color = NodeColor.Black;
+	tree.root.color = NodeColor.BlAck;
 }
 
-export function updateTreeMetadata(tree: PieceTreeBase, x: TreeNode, delta: number, lineFeedCntDelta: number): void {
-	// node length change or line feed count change
+export function updAteTreeMetAdAtA(tree: PieceTreeBAse, x: TreeNode, deltA: number, lineFeedCntDeltA: number): void {
+	// node length chAnge or line feed count chAnge
 	while (x !== tree.root && x !== SENTINEL) {
-		if (x.parent.left === x) {
-			x.parent.size_left += delta;
-			x.parent.lf_left += lineFeedCntDelta;
+		if (x.pArent.left === x) {
+			x.pArent.size_left += deltA;
+			x.pArent.lf_left += lineFeedCntDeltA;
 		}
 
-		x = x.parent;
+		x = x.pArent;
 	}
 }
 
-export function recomputeTreeMetadata(tree: PieceTreeBase, x: TreeNode) {
-	let delta = 0;
-	let lf_delta = 0;
+export function recomputeTreeMetAdAtA(tree: PieceTreeBAse, x: TreeNode) {
+	let deltA = 0;
+	let lf_deltA = 0;
 	if (x === tree.root) {
 		return;
 	}
 
-	if (delta === 0) {
-		// go upwards till the node whose left subtree is changed.
-		while (x !== tree.root && x === x.parent.right) {
-			x = x.parent;
+	if (deltA === 0) {
+		// go upwArds till the node whose left subtree is chAnged.
+		while (x !== tree.root && x === x.pArent.right) {
+			x = x.pArent;
 		}
 
 		if (x === tree.root) {
-			// well, it means we add a node to the end (inorder)
+			// well, it meAns we Add A node to the end (inorder)
 			return;
 		}
 
-		// x is the node whose right subtree is changed.
-		x = x.parent;
+		// x is the node whose right subtree is chAnged.
+		x = x.pArent;
 
-		delta = calculateSize(x.left) - x.size_left;
-		lf_delta = calculateLF(x.left) - x.lf_left;
-		x.size_left += delta;
-		x.lf_left += lf_delta;
+		deltA = cAlculAteSize(x.left) - x.size_left;
+		lf_deltA = cAlculAteLF(x.left) - x.lf_left;
+		x.size_left += deltA;
+		x.lf_left += lf_deltA;
 	}
 
-	// go upwards till root. O(logN)
-	while (x !== tree.root && (delta !== 0 || lf_delta !== 0)) {
-		if (x.parent.left === x) {
-			x.parent.size_left += delta;
-			x.parent.lf_left += lf_delta;
+	// go upwArds till root. O(logN)
+	while (x !== tree.root && (deltA !== 0 || lf_deltA !== 0)) {
+		if (x.pArent.left === x) {
+			x.pArent.size_left += deltA;
+			x.pArent.lf_left += lf_deltA;
 		}
 
-		x = x.parent;
+		x = x.pArent;
 	}
 }

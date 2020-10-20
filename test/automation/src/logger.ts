@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { appendFileSync, writeFileSync } from 'fs';
-import { format } from 'util';
+import { AppendFileSync, writeFileSync } from 'fs';
+import { formAt } from 'util';
 import { EOL } from 'os';
 
-export interface Logger {
-	log(message: string, ...args: any[]): void;
+export interfAce Logger {
+	log(messAge: string, ...Args: Any[]): void;
 }
 
-export class ConsoleLogger implements Logger {
+export clAss ConsoleLogger implements Logger {
 
-	log(message: string, ...args: any[]): void {
-		console.log('**', message, ...args);
+	log(messAge: string, ...Args: Any[]): void {
+		console.log('**', messAge, ...Args);
 	}
 }
 
-export class FileLogger implements Logger {
+export clAss FileLogger implements Logger {
 
-	constructor(private path: string) {
-		writeFileSync(path, '');
+	constructor(privAte pAth: string) {
+		writeFileSync(pAth, '');
 	}
 
-	log(message: string, ...args: any[]): void {
-		const date = new Date().toISOString();
-		appendFileSync(this.path, `[${date}] ${format(message, ...args)}${EOL}`);
+	log(messAge: string, ...Args: Any[]): void {
+		const dAte = new DAte().toISOString();
+		AppendFileSync(this.pAth, `[${dAte}] ${formAt(messAge, ...Args)}${EOL}`);
 	}
 }
 
-export class MultiLogger implements Logger {
+export clAss MultiLogger implements Logger {
 
-	constructor(private loggers: Logger[]) { }
+	constructor(privAte loggers: Logger[]) { }
 
-	log(message: string, ...args: any[]): void {
+	log(messAge: string, ...Args: Any[]): void {
 		for (const logger of this.loggers) {
-			logger.log(message, ...args);
+			logger.log(messAge, ...Args);
 		}
 	}
 }

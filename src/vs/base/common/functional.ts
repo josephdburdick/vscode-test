@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 export function once<T extends Function>(this: unknown, fn: T): T {
 	const _this = this;
-	let didCall = false;
+	let didCAll = fAlse;
 	let result: unknown;
 
 	return function () {
-		if (didCall) {
+		if (didCAll) {
 			return result;
 		}
 
-		didCall = true;
-		result = fn.apply(_this, arguments);
+		didCAll = true;
+		result = fn.Apply(_this, Arguments);
 
 		return result;
-	} as unknown as T;
+	} As unknown As T;
 }

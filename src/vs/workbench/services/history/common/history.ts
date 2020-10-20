@@ -1,90 +1,90 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
 import { IEditorInput, GroupIdentifier } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 
-export const IHistoryService = createDecorator<IHistoryService>('historyService');
+export const IHistoryService = creAteDecorAtor<IHistoryService>('historyService');
 
-export interface IHistoryService {
+export interfAce IHistoryService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Re-opens the last closed editor if any.
+	 * Re-opens the lAst closed editor if Any.
 	 */
-	reopenLastClosedEditor(): void;
+	reopenLAstClosedEditor(): void;
 
 	/**
-	 * Navigates to the last location where an edit happened.
+	 * NAvigAtes to the lAst locAtion where An edit hAppened.
 	 */
-	openLastEditLocation(): void;
+	openLAstEditLocAtion(): void;
 
 	/**
-	 * Navigate forwards in history.
+	 * NAvigAte forwArds in history.
 	 */
-	forward(): void;
+	forwArd(): void;
 
 	/**
-	 * Navigate backwards in history.
+	 * NAvigAte bAckwArds in history.
 	 */
-	back(): void;
+	bAck(): void;
 
 	/**
-	 * Navigate forward or backwards to previous entry in history.
+	 * NAvigAte forwArd or bAckwArds to previous entry in history.
 	 */
-	last(): void;
+	lAst(): void;
 
 	/**
-	 * Removes an entry from history.
+	 * Removes An entry from history.
 	 */
 	remove(input: IEditorInput | IResourceEditorInput): void;
 
 	/**
-	 * Clears all history.
+	 * CleArs All history.
 	 */
-	clear(): void;
+	cleAr(): void;
 
 	/**
-	 * Clear list of recently opened editors.
+	 * CleAr list of recently opened editors.
 	 */
-	clearRecentlyOpened(): void;
+	cleArRecentlyOpened(): void;
 
 	/**
-	 * Get the entire history of editors that were opened.
+	 * Get the entire history of editors thAt were opened.
 	 */
-	getHistory(): ReadonlyArray<IEditorInput | IResourceEditorInput>;
+	getHistory(): ReAdonlyArrAy<IEditorInput | IResourceEditorInput>;
 
 	/**
-	 * Looking at the editor history, returns the workspace root of the last file that was
-	 * inside the workspace and part of the editor history.
+	 * Looking At the editor history, returns the workspAce root of the lAst file thAt wAs
+	 * inside the workspAce And pArt of the editor history.
 	 *
-	 * @param schemeFilter filter to restrict roots by scheme.
+	 * @pArAm schemeFilter filter to restrict roots by scheme.
 	 */
-	getLastActiveWorkspaceRoot(schemeFilter?: string): URI | undefined;
+	getLAstActiveWorkspAceRoot(schemeFilter?: string): URI | undefined;
 
 	/**
-	 * Looking at the editor history, returns the resource of the last file that was opened.
+	 * Looking At the editor history, returns the resource of the lAst file thAt wAs opened.
 	 *
-	 * @param schemeFilter filter to restrict roots by scheme.
+	 * @pArAm schemeFilter filter to restrict roots by scheme.
 	 */
-	getLastActiveFile(schemeFilter: string): URI | undefined;
+	getLAstActiveFile(schemeFilter: string): URI | undefined;
 
 	/**
-	 * Opens the next used editor if any.
+	 * Opens the next used editor if Any.
 	 *
-	 * @param group optional indicator to scope to a specific group.
+	 * @pArAm group optionAl indicAtor to scope to A specific group.
 	 */
 	openNextRecentlyUsedEditor(group?: GroupIdentifier): void;
 
 	/**
-	 * Opens the previously used editor if any.
+	 * Opens the previously used editor if Any.
 	 *
-	 * @param group optional indicator to scope to a specific group.
+	 * @pArAm group optionAl indicAtor to scope to A specific group.
 	 */
 	openPreviouslyUsedEditor(group?: GroupIdentifier): void;
 }

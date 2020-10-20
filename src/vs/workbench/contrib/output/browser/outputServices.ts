@@ -1,221 +1,221 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { IDisposable, dispose, Disposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IOutputChannel, IOutputService, OUTPUT_VIEW_ID, OUTPUT_SCHEME, LOG_SCHEME, LOG_MIME, OUTPUT_MIME } from 'vs/workbench/contrib/output/common/output';
-import { IOutputChannelDescriptor, Extensions, IOutputChannelRegistry } from 'vs/workbench/services/output/common/output';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { URI } from 'vs/bAse/common/uri';
+import { IDisposAble, dispose, DisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IOutputChAnnel, IOutputService, OUTPUT_VIEW_ID, OUTPUT_SCHEME, LOG_SCHEME, LOG_MIME, OUTPUT_MIME } from 'vs/workbench/contrib/output/common/output';
+import { IOutputChAnnelDescriptor, Extensions, IOutputChAnnelRegistry } from 'vs/workbench/services/output/common/output';
 import { OutputLinkProvider } from 'vs/workbench/contrib/output/common/outputLinkProvider';
 import { ITextModelService, ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
 import { ITextModel } from 'vs/editor/common/model';
-import { ILogService } from 'vs/platform/log/common/log';
+import { ILogService } from 'vs/plAtform/log/common/log';
 import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IOutputChannelModel, IOutputChannelModelService } from 'vs/workbench/services/output/common/outputChannelModel';
+import { IOutputChAnnelModel, IOutputChAnnelModelService } from 'vs/workbench/services/output/common/outputChAnnelModel';
 import { IViewsService } from 'vs/workbench/common/views';
-import { OutputViewPane } from 'vs/workbench/contrib/output/browser/outputView';
+import { OutputViewPAne } from 'vs/workbench/contrib/output/browser/outputView';
 
-const OUTPUT_ACTIVE_CHANNEL_KEY = 'output.activechannel';
+const OUTPUT_ACTIVE_CHANNEL_KEY = 'output.ActivechAnnel';
 
-class OutputChannel extends Disposable implements IOutputChannel {
+clAss OutputChAnnel extends DisposAble implements IOutputChAnnel {
 
-	scrollLock: boolean = false;
-	readonly model: IOutputChannelModel;
-	readonly id: string;
-	readonly label: string;
-	readonly uri: URI;
+	scrollLock: booleAn = fAlse;
+	reAdonly model: IOutputChAnnelModel;
+	reAdonly id: string;
+	reAdonly lAbel: string;
+	reAdonly uri: URI;
 
 	constructor(
-		readonly outputChannelDescriptor: IOutputChannelDescriptor,
-		@IOutputChannelModelService outputChannelModelService: IOutputChannelModelService
+		reAdonly outputChAnnelDescriptor: IOutputChAnnelDescriptor,
+		@IOutputChAnnelModelService outputChAnnelModelService: IOutputChAnnelModelService
 	) {
 		super();
-		this.id = outputChannelDescriptor.id;
-		this.label = outputChannelDescriptor.label;
-		this.uri = URI.from({ scheme: OUTPUT_SCHEME, path: this.id });
-		this.model = this._register(outputChannelModelService.createOutputChannelModel(this.id, this.uri, outputChannelDescriptor.log ? LOG_MIME : OUTPUT_MIME, outputChannelDescriptor.file));
+		this.id = outputChAnnelDescriptor.id;
+		this.lAbel = outputChAnnelDescriptor.lAbel;
+		this.uri = URI.from({ scheme: OUTPUT_SCHEME, pAth: this.id });
+		this.model = this._register(outputChAnnelModelService.creAteOutputChAnnelModel(this.id, this.uri, outputChAnnelDescriptor.log ? LOG_MIME : OUTPUT_MIME, outputChAnnelDescriptor.file));
 	}
 
-	append(output: string): void {
-		this.model.append(output);
+	Append(output: string): void {
+		this.model.Append(output);
 	}
 
-	update(): void {
-		this.model.update();
+	updAte(): void {
+		this.model.updAte();
 	}
 
-	clear(till?: number): void {
-		this.model.clear(till);
+	cleAr(till?: number): void {
+		this.model.cleAr(till);
 	}
 }
 
-export class OutputService extends Disposable implements IOutputService, ITextModelContentProvider {
+export clAss OutputService extends DisposAble implements IOutputService, ITextModelContentProvider {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private channels: Map<string, OutputChannel> = new Map<string, OutputChannel>();
-	private activeChannelIdInStorage: string;
-	private activeChannel?: OutputChannel;
+	privAte chAnnels: MAp<string, OutputChAnnel> = new MAp<string, OutputChAnnel>();
+	privAte ActiveChAnnelIdInStorAge: string;
+	privAte ActiveChAnnel?: OutputChAnnel;
 
-	private readonly _onActiveOutputChannel = this._register(new Emitter<string>());
-	readonly onActiveOutputChannel: Event<string> = this._onActiveOutputChannel.event;
+	privAte reAdonly _onActiveOutputChAnnel = this._register(new Emitter<string>());
+	reAdonly onActiveOutputChAnnel: Event<string> = this._onActiveOutputChAnnel.event;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
 		@ITextModelService textModelResolverService: ITextModelService,
-		@ILogService private readonly logService: ILogService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IViewsService private readonly viewsService: IViewsService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IViewsService privAte reAdonly viewsService: IViewsService,
 	) {
 		super();
-		this.activeChannelIdInStorage = this.storageService.get(OUTPUT_ACTIVE_CHANNEL_KEY, StorageScope.WORKSPACE, '');
+		this.ActiveChAnnelIdInStorAge = this.storAgeService.get(OUTPUT_ACTIVE_CHANNEL_KEY, StorAgeScope.WORKSPACE, '');
 
-		// Register as text model content provider for output
+		// Register As text model content provider for output
 		textModelResolverService.registerTextModelContentProvider(OUTPUT_SCHEME, this);
-		instantiationService.createInstance(OutputLinkProvider);
+		instAntiAtionService.creAteInstAnce(OutputLinkProvider);
 
-		// Create output channels for already registered channels
-		const registry = Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels);
-		for (const channelIdentifier of registry.getChannels()) {
-			this.onDidRegisterChannel(channelIdentifier.id);
+		// CreAte output chAnnels for AlreAdy registered chAnnels
+		const registry = Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels);
+		for (const chAnnelIdentifier of registry.getChAnnels()) {
+			this.onDidRegisterChAnnel(chAnnelIdentifier.id);
 		}
-		this._register(registry.onDidRegisterChannel(this.onDidRegisterChannel, this));
+		this._register(registry.onDidRegisterChAnnel(this.onDidRegisterChAnnel, this));
 
-		// Set active channel to first channel if not set
-		if (!this.activeChannel) {
-			const channels = this.getChannelDescriptors();
-			this.setActiveChannel(channels && channels.length > 0 ? this.getChannel(channels[0].id) : undefined);
+		// Set Active chAnnel to first chAnnel if not set
+		if (!this.ActiveChAnnel) {
+			const chAnnels = this.getChAnnelDescriptors();
+			this.setActiveChAnnel(chAnnels && chAnnels.length > 0 ? this.getChAnnel(chAnnels[0].id) : undefined);
 		}
 
 		this._register(this.lifecycleService.onShutdown(() => this.dispose()));
 	}
 
 	provideTextContent(resource: URI): Promise<ITextModel> | null {
-		const channel = <OutputChannel>this.getChannel(resource.path);
-		if (channel) {
-			return channel.model.loadModel();
+		const chAnnel = <OutputChAnnel>this.getChAnnel(resource.pAth);
+		if (chAnnel) {
+			return chAnnel.model.loAdModel();
 		}
 		return null;
 	}
 
-	async showChannel(id: string, preserveFocus?: boolean): Promise<void> {
-		const channel = this.getChannel(id);
-		if (this.activeChannel?.id !== channel?.id) {
-			this.setActiveChannel(channel);
-			this._onActiveOutputChannel.fire(id);
+	Async showChAnnel(id: string, preserveFocus?: booleAn): Promise<void> {
+		const chAnnel = this.getChAnnel(id);
+		if (this.ActiveChAnnel?.id !== chAnnel?.id) {
+			this.setActiveChAnnel(chAnnel);
+			this._onActiveOutputChAnnel.fire(id);
 		}
-		const outputView = await this.viewsService.openView<OutputViewPane>(OUTPUT_VIEW_ID, !preserveFocus);
-		if (outputView && channel) {
-			outputView.showChannel(channel, !!preserveFocus);
+		const outputView = AwAit this.viewsService.openView<OutputViewPAne>(OUTPUT_VIEW_ID, !preserveFocus);
+		if (outputView && chAnnel) {
+			outputView.showChAnnel(chAnnel, !!preserveFocus);
 		}
 	}
 
-	getChannel(id: string): OutputChannel | undefined {
-		return this.channels.get(id);
+	getChAnnel(id: string): OutputChAnnel | undefined {
+		return this.chAnnels.get(id);
 	}
 
-	getChannelDescriptor(id: string): IOutputChannelDescriptor | undefined {
-		return Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).getChannel(id);
+	getChAnnelDescriptor(id: string): IOutputChAnnelDescriptor | undefined {
+		return Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels).getChAnnel(id);
 	}
 
-	getChannelDescriptors(): IOutputChannelDescriptor[] {
-		return Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).getChannels();
+	getChAnnelDescriptors(): IOutputChAnnelDescriptor[] {
+		return Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels).getChAnnels();
 	}
 
-	getActiveChannel(): IOutputChannel | undefined {
-		return this.activeChannel;
+	getActiveChAnnel(): IOutputChAnnel | undefined {
+		return this.ActiveChAnnel;
 	}
 
-	private async onDidRegisterChannel(channelId: string): Promise<void> {
-		const channel = this.createChannel(channelId);
-		this.channels.set(channelId, channel);
-		if (!this.activeChannel || this.activeChannelIdInStorage === channelId) {
-			this.setActiveChannel(channel);
-			this._onActiveOutputChannel.fire(channelId);
-			const outputView = this.viewsService.getActiveViewWithId<OutputViewPane>(OUTPUT_VIEW_ID);
+	privAte Async onDidRegisterChAnnel(chAnnelId: string): Promise<void> {
+		const chAnnel = this.creAteChAnnel(chAnnelId);
+		this.chAnnels.set(chAnnelId, chAnnel);
+		if (!this.ActiveChAnnel || this.ActiveChAnnelIdInStorAge === chAnnelId) {
+			this.setActiveChAnnel(chAnnel);
+			this._onActiveOutputChAnnel.fire(chAnnelId);
+			const outputView = this.viewsService.getActiveViewWithId<OutputViewPAne>(OUTPUT_VIEW_ID);
 			if (outputView) {
-				outputView.showChannel(channel, true);
+				outputView.showChAnnel(chAnnel, true);
 			}
 		}
 	}
 
-	private createChannel(id: string): OutputChannel {
-		const channelDisposables: IDisposable[] = [];
-		const channel = this.instantiateChannel(id);
-		channel.model.onDispose(() => {
-			if (this.activeChannel === channel) {
-				const channels = this.getChannelDescriptors();
-				const channel = channels.length ? this.getChannel(channels[0].id) : undefined;
-				this.setActiveChannel(channel);
-				if (this.activeChannel) {
-					this._onActiveOutputChannel.fire(this.activeChannel.id);
+	privAte creAteChAnnel(id: string): OutputChAnnel {
+		const chAnnelDisposAbles: IDisposAble[] = [];
+		const chAnnel = this.instAntiAteChAnnel(id);
+		chAnnel.model.onDispose(() => {
+			if (this.ActiveChAnnel === chAnnel) {
+				const chAnnels = this.getChAnnelDescriptors();
+				const chAnnel = chAnnels.length ? this.getChAnnel(chAnnels[0].id) : undefined;
+				this.setActiveChAnnel(chAnnel);
+				if (this.ActiveChAnnel) {
+					this._onActiveOutputChAnnel.fire(this.ActiveChAnnel.id);
 				}
 			}
-			Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).removeChannel(id);
-			dispose(channelDisposables);
-		}, channelDisposables);
+			Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels).removeChAnnel(id);
+			dispose(chAnnelDisposAbles);
+		}, chAnnelDisposAbles);
 
-		return channel;
+		return chAnnel;
 	}
 
-	private instantiateChannel(id: string): OutputChannel {
-		const channelData = Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).getChannel(id);
-		if (!channelData) {
-			this.logService.error(`Channel '${id}' is not registered yet`);
-			throw new Error(`Channel '${id}' is not registered yet`);
+	privAte instAntiAteChAnnel(id: string): OutputChAnnel {
+		const chAnnelDAtA = Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels).getChAnnel(id);
+		if (!chAnnelDAtA) {
+			this.logService.error(`ChAnnel '${id}' is not registered yet`);
+			throw new Error(`ChAnnel '${id}' is not registered yet`);
 		}
-		return this.instantiationService.createInstance(OutputChannel, channelData);
+		return this.instAntiAtionService.creAteInstAnce(OutputChAnnel, chAnnelDAtA);
 	}
 
-	private setActiveChannel(channel: OutputChannel | undefined): void {
-		this.activeChannel = channel;
+	privAte setActiveChAnnel(chAnnel: OutputChAnnel | undefined): void {
+		this.ActiveChAnnel = chAnnel;
 
-		if (this.activeChannel) {
-			this.storageService.store(OUTPUT_ACTIVE_CHANNEL_KEY, this.activeChannel.id, StorageScope.WORKSPACE);
+		if (this.ActiveChAnnel) {
+			this.storAgeService.store(OUTPUT_ACTIVE_CHANNEL_KEY, this.ActiveChAnnel.id, StorAgeScope.WORKSPACE);
 		} else {
-			this.storageService.remove(OUTPUT_ACTIVE_CHANNEL_KEY, StorageScope.WORKSPACE);
+			this.storAgeService.remove(OUTPUT_ACTIVE_CHANNEL_KEY, StorAgeScope.WORKSPACE);
 		}
 	}
 }
 
-export class LogContentProvider {
+export clAss LogContentProvider {
 
-	private channelModels: Map<string, IOutputChannelModel> = new Map<string, IOutputChannelModel>();
+	privAte chAnnelModels: MAp<string, IOutputChAnnelModel> = new MAp<string, IOutputChAnnelModel>();
 
 	constructor(
-		@IOutputService private readonly outputService: IOutputService,
-		@IOutputChannelModelService private readonly outputChannelModelService: IOutputChannelModelService
+		@IOutputService privAte reAdonly outputService: IOutputService,
+		@IOutputChAnnelModelService privAte reAdonly outputChAnnelModelService: IOutputChAnnelModelService
 	) {
 	}
 
 	provideTextContent(resource: URI): Promise<ITextModel> | null {
 		if (resource.scheme === LOG_SCHEME) {
-			let channelModel = this.getChannelModel(resource);
-			if (channelModel) {
-				return channelModel.loadModel();
+			let chAnnelModel = this.getChAnnelModel(resource);
+			if (chAnnelModel) {
+				return chAnnelModel.loAdModel();
 			}
 		}
 		return null;
 	}
 
-	private getChannelModel(resource: URI): IOutputChannelModel | undefined {
-		const channelId = resource.path;
-		let channelModel = this.channelModels.get(channelId);
-		if (!channelModel) {
-			const channelDisposables: IDisposable[] = [];
-			const outputChannelDescriptor = this.outputService.getChannelDescriptors().filter(({ id }) => id === channelId)[0];
-			if (outputChannelDescriptor && outputChannelDescriptor.file) {
-				channelModel = this.outputChannelModelService.createOutputChannelModel(channelId, resource, outputChannelDescriptor.log ? LOG_MIME : OUTPUT_MIME, outputChannelDescriptor.file);
-				channelModel.onDispose(() => dispose(channelDisposables), channelDisposables);
-				this.channelModels.set(channelId, channelModel);
+	privAte getChAnnelModel(resource: URI): IOutputChAnnelModel | undefined {
+		const chAnnelId = resource.pAth;
+		let chAnnelModel = this.chAnnelModels.get(chAnnelId);
+		if (!chAnnelModel) {
+			const chAnnelDisposAbles: IDisposAble[] = [];
+			const outputChAnnelDescriptor = this.outputService.getChAnnelDescriptors().filter(({ id }) => id === chAnnelId)[0];
+			if (outputChAnnelDescriptor && outputChAnnelDescriptor.file) {
+				chAnnelModel = this.outputChAnnelModelService.creAteOutputChAnnelModel(chAnnelId, resource, outputChAnnelDescriptor.log ? LOG_MIME : OUTPUT_MIME, outputChAnnelDescriptor.file);
+				chAnnelModel.onDispose(() => dispose(chAnnelDisposAbles), chAnnelDisposAbles);
+				this.chAnnelModels.set(chAnnelId, chAnnelModel);
 			}
 		}
-		return channelModel;
+		return chAnnelModel;
 	}
 }

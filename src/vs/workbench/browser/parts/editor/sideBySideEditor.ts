@@ -1,169 +1,169 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorInput, EditorOptions, SideBySideEditorInput, IEditorControl, IEditorPane, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { scrollbarShadow } from 'vs/platform/theme/common/colorRegistry';
-import { IEditorRegistry, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import * As DOM from 'vs/bAse/browser/dom';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { EditorInput, EditorOptions, SideBySideEditorInput, IEditorControl, IEditorPAne, IEditorOpenContext } from 'vs/workbench/common/editor';
+import { EditorPAne } from 'vs/workbench/browser/pArts/editor/editorPAne';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { scrollbArShAdow } from 'vs/plAtform/theme/common/colorRegistry';
+import { IEditorRegistry, Extensions As EditorExtensions } from 'vs/workbench/browser/editor';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { SplitView, Sizing, Orientation } from 'vs/base/browser/ui/splitview/splitview';
-import { Event, Relay, Emitter } from 'vs/base/common/event';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { assertIsDefined } from 'vs/base/common/types';
+import { SplitView, Sizing, OrientAtion } from 'vs/bAse/browser/ui/splitview/splitview';
+import { Event, RelAy, Emitter } from 'vs/bAse/common/event';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { AssertIsDefined } from 'vs/bAse/common/types';
 
-export class SideBySideEditor extends EditorPane {
+export clAss SideBySideEditor extends EditorPAne {
 
-	static readonly ID: string = 'workbench.editor.sidebysideEditor';
+	stAtic reAdonly ID: string = 'workbench.editor.sidebysideEditor';
 
-	private get minimumPrimaryWidth() { return this.primaryEditorPane ? this.primaryEditorPane.minimumWidth : 0; }
-	private get maximumPrimaryWidth() { return this.primaryEditorPane ? this.primaryEditorPane.maximumWidth : Number.POSITIVE_INFINITY; }
-	private get minimumPrimaryHeight() { return this.primaryEditorPane ? this.primaryEditorPane.minimumHeight : 0; }
-	private get maximumPrimaryHeight() { return this.primaryEditorPane ? this.primaryEditorPane.maximumHeight : Number.POSITIVE_INFINITY; }
+	privAte get minimumPrimAryWidth() { return this.primAryEditorPAne ? this.primAryEditorPAne.minimumWidth : 0; }
+	privAte get mAximumPrimAryWidth() { return this.primAryEditorPAne ? this.primAryEditorPAne.mAximumWidth : Number.POSITIVE_INFINITY; }
+	privAte get minimumPrimAryHeight() { return this.primAryEditorPAne ? this.primAryEditorPAne.minimumHeight : 0; }
+	privAte get mAximumPrimAryHeight() { return this.primAryEditorPAne ? this.primAryEditorPAne.mAximumHeight : Number.POSITIVE_INFINITY; }
 
-	private get minimumSecondaryWidth() { return this.secondaryEditorPane ? this.secondaryEditorPane.minimumWidth : 0; }
-	private get maximumSecondaryWidth() { return this.secondaryEditorPane ? this.secondaryEditorPane.maximumWidth : Number.POSITIVE_INFINITY; }
-	private get minimumSecondaryHeight() { return this.secondaryEditorPane ? this.secondaryEditorPane.minimumHeight : 0; }
-	private get maximumSecondaryHeight() { return this.secondaryEditorPane ? this.secondaryEditorPane.maximumHeight : Number.POSITIVE_INFINITY; }
+	privAte get minimumSecondAryWidth() { return this.secondAryEditorPAne ? this.secondAryEditorPAne.minimumWidth : 0; }
+	privAte get mAximumSecondAryWidth() { return this.secondAryEditorPAne ? this.secondAryEditorPAne.mAximumWidth : Number.POSITIVE_INFINITY; }
+	privAte get minimumSecondAryHeight() { return this.secondAryEditorPAne ? this.secondAryEditorPAne.minimumHeight : 0; }
+	privAte get mAximumSecondAryHeight() { return this.secondAryEditorPAne ? this.secondAryEditorPAne.mAximumHeight : Number.POSITIVE_INFINITY; }
 
-	// these setters need to exist because this extends from EditorPane
-	set minimumWidth(value: number) { /* noop */ }
-	set maximumWidth(value: number) { /* noop */ }
-	set minimumHeight(value: number) { /* noop */ }
-	set maximumHeight(value: number) { /* noop */ }
+	// these setters need to exist becAuse this extends from EditorPAne
+	set minimumWidth(vAlue: number) { /* noop */ }
+	set mAximumWidth(vAlue: number) { /* noop */ }
+	set minimumHeight(vAlue: number) { /* noop */ }
+	set mAximumHeight(vAlue: number) { /* noop */ }
 
-	get minimumWidth() { return this.minimumPrimaryWidth + this.minimumSecondaryWidth; }
-	get maximumWidth() { return this.maximumPrimaryWidth + this.maximumSecondaryWidth; }
-	get minimumHeight() { return this.minimumPrimaryHeight + this.minimumSecondaryHeight; }
-	get maximumHeight() { return this.maximumPrimaryHeight + this.maximumSecondaryHeight; }
+	get minimumWidth() { return this.minimumPrimAryWidth + this.minimumSecondAryWidth; }
+	get mAximumWidth() { return this.mAximumPrimAryWidth + this.mAximumSecondAryWidth; }
+	get minimumHeight() { return this.minimumPrimAryHeight + this.minimumSecondAryHeight; }
+	get mAximumHeight() { return this.mAximumPrimAryHeight + this.mAximumSecondAryHeight; }
 
-	protected primaryEditorPane?: EditorPane;
-	protected secondaryEditorPane?: EditorPane;
+	protected primAryEditorPAne?: EditorPAne;
+	protected secondAryEditorPAne?: EditorPAne;
 
-	private primaryEditorContainer: HTMLElement | undefined;
-	private secondaryEditorContainer: HTMLElement | undefined;
+	privAte primAryEditorContAiner: HTMLElement | undefined;
+	privAte secondAryEditorContAiner: HTMLElement | undefined;
 
-	private splitview: SplitView | undefined;
-	private dimension: DOM.Dimension = new DOM.Dimension(0, 0);
+	privAte splitview: SplitView | undefined;
+	privAte dimension: DOM.Dimension = new DOM.Dimension(0, 0);
 
-	private onDidCreateEditors = this._register(new Emitter<{ width: number; height: number; } | undefined>());
+	privAte onDidCreAteEditors = this._register(new Emitter<{ width: number; height: number; } | undefined>());
 
-	private _onDidSizeConstraintsChange = this._register(new Relay<{ width: number; height: number; } | undefined>());
-	readonly onDidSizeConstraintsChange = Event.any(this.onDidCreateEditors.event, this._onDidSizeConstraintsChange.event);
+	privAte _onDidSizeConstrAintsChAnge = this._register(new RelAy<{ width: number; height: number; } | undefined>());
+	reAdonly onDidSizeConstrAintsChAnge = Event.Any(this.onDidCreAteEditors.event, this._onDidSizeConstrAintsChAnge.event);
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
 		@IThemeService themeService: IThemeService,
-		@IStorageService storageService: IStorageService
+		@IStorAgeService storAgeService: IStorAgeService
 	) {
-		super(SideBySideEditor.ID, telemetryService, themeService, storageService);
+		super(SideBySideEditor.ID, telemetryService, themeService, storAgeService);
 	}
 
-	protected createEditor(parent: HTMLElement): void {
-		parent.classList.add('side-by-side-editor');
+	protected creAteEditor(pArent: HTMLElement): void {
+		pArent.clAssList.Add('side-by-side-editor');
 
-		const splitview = this.splitview = this._register(new SplitView(parent, { orientation: Orientation.HORIZONTAL }));
-		this._register(this.splitview.onDidSashReset(() => splitview.distributeViewSizes()));
+		const splitview = this.splitview = this._register(new SplitView(pArent, { orientAtion: OrientAtion.HORIZONTAL }));
+		this._register(this.splitview.onDidSAshReset(() => splitview.distributeViewSizes()));
 
-		this.secondaryEditorContainer = DOM.$('.secondary-editor-container');
-		this.splitview.addView({
-			element: this.secondaryEditorContainer,
-			layout: size => this.secondaryEditorPane && this.secondaryEditorPane.layout(new DOM.Dimension(size, this.dimension.height)),
+		this.secondAryEditorContAiner = DOM.$('.secondAry-editor-contAiner');
+		this.splitview.AddView({
+			element: this.secondAryEditorContAiner,
+			lAyout: size => this.secondAryEditorPAne && this.secondAryEditorPAne.lAyout(new DOM.Dimension(size, this.dimension.height)),
 			minimumSize: 220,
-			maximumSize: Number.POSITIVE_INFINITY,
-			onDidChange: Event.None
+			mAximumSize: Number.POSITIVE_INFINITY,
+			onDidChAnge: Event.None
 		}, Sizing.Distribute);
 
-		this.primaryEditorContainer = DOM.$('.primary-editor-container');
-		this.splitview.addView({
-			element: this.primaryEditorContainer,
-			layout: size => this.primaryEditorPane && this.primaryEditorPane.layout(new DOM.Dimension(size, this.dimension.height)),
+		this.primAryEditorContAiner = DOM.$('.primAry-editor-contAiner');
+		this.splitview.AddView({
+			element: this.primAryEditorContAiner,
+			lAyout: size => this.primAryEditorPAne && this.primAryEditorPAne.lAyout(new DOM.Dimension(size, this.dimension.height)),
 			minimumSize: 220,
-			maximumSize: Number.POSITIVE_INFINITY,
-			onDidChange: Event.None
+			mAximumSize: Number.POSITIVE_INFINITY,
+			onDidChAnge: Event.None
 		}, Sizing.Distribute);
 
-		this.updateStyles();
+		this.updAteStyles();
 	}
 
-	async setInput(newInput: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
-		const oldInput = this.input as SideBySideEditorInput;
-		await super.setInput(newInput, options, context, token);
+	Async setInput(newInput: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
+		const oldInput = this.input As SideBySideEditorInput;
+		AwAit super.setInput(newInput, options, context, token);
 
-		return this.updateInput(oldInput, (newInput as SideBySideEditorInput), options, context, token);
+		return this.updAteInput(oldInput, (newInput As SideBySideEditorInput), options, context, token);
 	}
 
 	setOptions(options: EditorOptions | undefined): void {
-		if (this.primaryEditorPane) {
-			this.primaryEditorPane.setOptions(options);
+		if (this.primAryEditorPAne) {
+			this.primAryEditorPAne.setOptions(options);
 		}
 	}
 
-	protected setEditorVisible(visible: boolean, group: IEditorGroup | undefined): void {
-		if (this.primaryEditorPane) {
-			this.primaryEditorPane.setVisible(visible, group);
+	protected setEditorVisible(visible: booleAn, group: IEditorGroup | undefined): void {
+		if (this.primAryEditorPAne) {
+			this.primAryEditorPAne.setVisible(visible, group);
 		}
 
-		if (this.secondaryEditorPane) {
-			this.secondaryEditorPane.setVisible(visible, group);
+		if (this.secondAryEditorPAne) {
+			this.secondAryEditorPAne.setVisible(visible, group);
 		}
 
 		super.setEditorVisible(visible, group);
 	}
 
-	clearInput(): void {
-		if (this.primaryEditorPane) {
-			this.primaryEditorPane.clearInput();
+	cleArInput(): void {
+		if (this.primAryEditorPAne) {
+			this.primAryEditorPAne.cleArInput();
 		}
 
-		if (this.secondaryEditorPane) {
-			this.secondaryEditorPane.clearInput();
+		if (this.secondAryEditorPAne) {
+			this.secondAryEditorPAne.cleArInput();
 		}
 
 		this.disposeEditors();
 
-		super.clearInput();
+		super.cleArInput();
 	}
 
 	focus(): void {
-		if (this.primaryEditorPane) {
-			this.primaryEditorPane.focus();
+		if (this.primAryEditorPAne) {
+			this.primAryEditorPAne.focus();
 		}
 	}
 
-	layout(dimension: DOM.Dimension): void {
+	lAyout(dimension: DOM.Dimension): void {
 		this.dimension = dimension;
 
-		const splitview = assertIsDefined(this.splitview);
-		splitview.layout(dimension.width);
+		const splitview = AssertIsDefined(this.splitview);
+		splitview.lAyout(dimension.width);
 	}
 
 	getControl(): IEditorControl | undefined {
-		if (this.primaryEditorPane) {
-			return this.primaryEditorPane.getControl();
+		if (this.primAryEditorPAne) {
+			return this.primAryEditorPAne.getControl();
 		}
 
 		return undefined;
 	}
 
-	getPrimaryEditorPane(): IEditorPane | undefined {
-		return this.primaryEditorPane;
+	getPrimAryEditorPAne(): IEditorPAne | undefined {
+		return this.primAryEditorPAne;
 	}
 
-	getSecondaryEditorPane(): IEditorPane | undefined {
-		return this.secondaryEditorPane;
+	getSecondAryEditorPAne(): IEditorPAne | undefined {
+		return this.secondAryEditorPAne;
 	}
 
-	private async updateInput(oldInput: SideBySideEditorInput, newInput: SideBySideEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
-		if (!newInput.matches(oldInput)) {
+	privAte Async updAteInput(oldInput: SideBySideEditorInput, newInput: SideBySideEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
+		if (!newInput.mAtches(oldInput)) {
 			if (oldInput) {
 				this.disposeEditors();
 			}
@@ -171,78 +171,78 @@ export class SideBySideEditor extends EditorPane {
 			return this.setNewInput(newInput, options, context, token);
 		}
 
-		if (!this.secondaryEditorPane || !this.primaryEditorPane) {
+		if (!this.secondAryEditorPAne || !this.primAryEditorPAne) {
 			return;
 		}
 
-		await Promise.all([
-			this.secondaryEditorPane.setInput(newInput.secondary, undefined, context, token),
-			this.primaryEditorPane.setInput(newInput.primary, options, context, token)
+		AwAit Promise.All([
+			this.secondAryEditorPAne.setInput(newInput.secondAry, undefined, context, token),
+			this.primAryEditorPAne.setInput(newInput.primAry, options, context, token)
 		]);
 	}
 
-	private setNewInput(newInput: SideBySideEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
-		const secondaryEditor = this.doCreateEditor(newInput.secondary, assertIsDefined(this.secondaryEditorContainer));
-		const primaryEditor = this.doCreateEditor(newInput.primary, assertIsDefined(this.primaryEditorContainer));
+	privAte setNewInput(newInput: SideBySideEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
+		const secondAryEditor = this.doCreAteEditor(newInput.secondAry, AssertIsDefined(this.secondAryEditorContAiner));
+		const primAryEditor = this.doCreAteEditor(newInput.primAry, AssertIsDefined(this.primAryEditorContAiner));
 
-		return this.onEditorsCreated(secondaryEditor, primaryEditor, newInput.secondary, newInput.primary, options, context, token);
+		return this.onEditorsCreAted(secondAryEditor, primAryEditor, newInput.secondAry, newInput.primAry, options, context, token);
 	}
 
-	private doCreateEditor(editorInput: EditorInput, container: HTMLElement): EditorPane {
-		const descriptor = Registry.as<IEditorRegistry>(EditorExtensions.Editors).getEditor(editorInput);
+	privAte doCreAteEditor(editorInput: EditorInput, contAiner: HTMLElement): EditorPAne {
+		const descriptor = Registry.As<IEditorRegistry>(EditorExtensions.Editors).getEditor(editorInput);
 		if (!descriptor) {
 			throw new Error('No descriptor for editor found');
 		}
 
-		const editor = descriptor.instantiate(this.instantiationService);
-		editor.create(container);
+		const editor = descriptor.instAntiAte(this.instAntiAtionService);
+		editor.creAte(contAiner);
 		editor.setVisible(this.isVisible(), this.group);
 
 		return editor;
 	}
 
-	private async onEditorsCreated(secondary: EditorPane, primary: EditorPane, secondaryInput: EditorInput, primaryInput: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
-		this.secondaryEditorPane = secondary;
-		this.primaryEditorPane = primary;
+	privAte Async onEditorsCreAted(secondAry: EditorPAne, primAry: EditorPAne, secondAryInput: EditorInput, primAryInput: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
+		this.secondAryEditorPAne = secondAry;
+		this.primAryEditorPAne = primAry;
 
-		this._onDidSizeConstraintsChange.input = Event.any(
-			Event.map(secondary.onDidSizeConstraintsChange, () => undefined),
-			Event.map(primary.onDidSizeConstraintsChange, () => undefined)
+		this._onDidSizeConstrAintsChAnge.input = Event.Any(
+			Event.mAp(secondAry.onDidSizeConstrAintsChAnge, () => undefined),
+			Event.mAp(primAry.onDidSizeConstrAintsChAnge, () => undefined)
 		);
 
-		this.onDidCreateEditors.fire(undefined);
+		this.onDidCreAteEditors.fire(undefined);
 
-		await Promise.all([
-			this.secondaryEditorPane.setInput(secondaryInput, undefined, context, token),
-			this.primaryEditorPane.setInput(primaryInput, options, context, token)]
+		AwAit Promise.All([
+			this.secondAryEditorPAne.setInput(secondAryInput, undefined, context, token),
+			this.primAryEditorPAne.setInput(primAryInput, options, context, token)]
 		);
 	}
 
-	updateStyles(): void {
-		super.updateStyles();
+	updAteStyles(): void {
+		super.updAteStyles();
 
-		if (this.primaryEditorContainer) {
-			this.primaryEditorContainer.style.boxShadow = `-6px 0 5px -5px ${this.getColor(scrollbarShadow)}`;
+		if (this.primAryEditorContAiner) {
+			this.primAryEditorContAiner.style.boxShAdow = `-6px 0 5px -5px ${this.getColor(scrollbArShAdow)}`;
 		}
 	}
 
-	private disposeEditors(): void {
-		if (this.secondaryEditorPane) {
-			this.secondaryEditorPane.dispose();
-			this.secondaryEditorPane = undefined;
+	privAte disposeEditors(): void {
+		if (this.secondAryEditorPAne) {
+			this.secondAryEditorPAne.dispose();
+			this.secondAryEditorPAne = undefined;
 		}
 
-		if (this.primaryEditorPane) {
-			this.primaryEditorPane.dispose();
-			this.primaryEditorPane = undefined;
+		if (this.primAryEditorPAne) {
+			this.primAryEditorPAne.dispose();
+			this.primAryEditorPAne = undefined;
 		}
 
-		if (this.secondaryEditorContainer) {
-			DOM.clearNode(this.secondaryEditorContainer);
+		if (this.secondAryEditorContAiner) {
+			DOM.cleArNode(this.secondAryEditorContAiner);
 		}
 
-		if (this.primaryEditorContainer) {
-			DOM.clearNode(this.primaryEditorContainer);
+		if (this.primAryEditorContAiner) {
+			DOM.cleArNode(this.primAryEditorContAiner);
 		}
 	}
 

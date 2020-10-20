@@ -1,176 +1,176 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as sinon from 'sinon';
-import * as assert from 'assert';
-import { memoize, createMemoizer, throttle } from 'vs/base/common/decorators';
+import * As sinon from 'sinon';
+import * As Assert from 'Assert';
+import { memoize, creAteMemoizer, throttle } from 'vs/bAse/common/decorAtors';
 
-suite('Decorators', () => {
+suite('DecorAtors', () => {
 	test('memoize should memoize methods', () => {
-		class Foo {
+		clAss Foo {
 			count = 0;
 
-			constructor(private _answer: number | null | undefined) { }
+			constructor(privAte _Answer: number | null | undefined) { }
 
 			@memoize
-			answer() {
+			Answer() {
 				this.count++;
-				return this._answer;
+				return this._Answer;
 			}
 		}
 
 		const foo = new Foo(42);
-		assert.equal(foo.count, 0);
-		assert.equal(foo.answer(), 42);
-		assert.equal(foo.count, 1);
-		assert.equal(foo.answer(), 42);
-		assert.equal(foo.count, 1);
+		Assert.equAl(foo.count, 0);
+		Assert.equAl(foo.Answer(), 42);
+		Assert.equAl(foo.count, 1);
+		Assert.equAl(foo.Answer(), 42);
+		Assert.equAl(foo.count, 1);
 
 		const foo2 = new Foo(1337);
-		assert.equal(foo2.count, 0);
-		assert.equal(foo2.answer(), 1337);
-		assert.equal(foo2.count, 1);
-		assert.equal(foo2.answer(), 1337);
-		assert.equal(foo2.count, 1);
+		Assert.equAl(foo2.count, 0);
+		Assert.equAl(foo2.Answer(), 1337);
+		Assert.equAl(foo2.count, 1);
+		Assert.equAl(foo2.Answer(), 1337);
+		Assert.equAl(foo2.count, 1);
 
-		assert.equal(foo.answer(), 42);
-		assert.equal(foo.count, 1);
+		Assert.equAl(foo.Answer(), 42);
+		Assert.equAl(foo.count, 1);
 
 		const foo3 = new Foo(null);
-		assert.equal(foo3.count, 0);
-		assert.equal(foo3.answer(), null);
-		assert.equal(foo3.count, 1);
-		assert.equal(foo3.answer(), null);
-		assert.equal(foo3.count, 1);
+		Assert.equAl(foo3.count, 0);
+		Assert.equAl(foo3.Answer(), null);
+		Assert.equAl(foo3.count, 1);
+		Assert.equAl(foo3.Answer(), null);
+		Assert.equAl(foo3.count, 1);
 
 		const foo4 = new Foo(undefined);
-		assert.equal(foo4.count, 0);
-		assert.equal(foo4.answer(), undefined);
-		assert.equal(foo4.count, 1);
-		assert.equal(foo4.answer(), undefined);
-		assert.equal(foo4.count, 1);
+		Assert.equAl(foo4.count, 0);
+		Assert.equAl(foo4.Answer(), undefined);
+		Assert.equAl(foo4.count, 1);
+		Assert.equAl(foo4.Answer(), undefined);
+		Assert.equAl(foo4.count, 1);
 	});
 
 	test('memoize should memoize getters', () => {
-		class Foo {
+		clAss Foo {
 			count = 0;
 
-			constructor(private _answer: number | null | undefined) { }
+			constructor(privAte _Answer: number | null | undefined) { }
 
 			@memoize
-			get answer() {
+			get Answer() {
 				this.count++;
-				return this._answer;
+				return this._Answer;
 			}
 		}
 
 		const foo = new Foo(42);
-		assert.equal(foo.count, 0);
-		assert.equal(foo.answer, 42);
-		assert.equal(foo.count, 1);
-		assert.equal(foo.answer, 42);
-		assert.equal(foo.count, 1);
+		Assert.equAl(foo.count, 0);
+		Assert.equAl(foo.Answer, 42);
+		Assert.equAl(foo.count, 1);
+		Assert.equAl(foo.Answer, 42);
+		Assert.equAl(foo.count, 1);
 
 		const foo2 = new Foo(1337);
-		assert.equal(foo2.count, 0);
-		assert.equal(foo2.answer, 1337);
-		assert.equal(foo2.count, 1);
-		assert.equal(foo2.answer, 1337);
-		assert.equal(foo2.count, 1);
+		Assert.equAl(foo2.count, 0);
+		Assert.equAl(foo2.Answer, 1337);
+		Assert.equAl(foo2.count, 1);
+		Assert.equAl(foo2.Answer, 1337);
+		Assert.equAl(foo2.count, 1);
 
-		assert.equal(foo.answer, 42);
-		assert.equal(foo.count, 1);
+		Assert.equAl(foo.Answer, 42);
+		Assert.equAl(foo.count, 1);
 
 		const foo3 = new Foo(null);
-		assert.equal(foo3.count, 0);
-		assert.equal(foo3.answer, null);
-		assert.equal(foo3.count, 1);
-		assert.equal(foo3.answer, null);
-		assert.equal(foo3.count, 1);
+		Assert.equAl(foo3.count, 0);
+		Assert.equAl(foo3.Answer, null);
+		Assert.equAl(foo3.count, 1);
+		Assert.equAl(foo3.Answer, null);
+		Assert.equAl(foo3.count, 1);
 
 		const foo4 = new Foo(undefined);
-		assert.equal(foo4.count, 0);
-		assert.equal(foo4.answer, undefined);
-		assert.equal(foo4.count, 1);
-		assert.equal(foo4.answer, undefined);
-		assert.equal(foo4.count, 1);
+		Assert.equAl(foo4.count, 0);
+		Assert.equAl(foo4.Answer, undefined);
+		Assert.equAl(foo4.count, 1);
+		Assert.equAl(foo4.Answer, undefined);
+		Assert.equAl(foo4.count, 1);
 	});
 
-	test('memoized property should not be enumerable', () => {
-		class Foo {
+	test('memoized property should not be enumerAble', () => {
+		clAss Foo {
 			@memoize
-			get answer() {
+			get Answer() {
 				return 42;
 			}
 		}
 
 		const foo = new Foo();
-		assert.equal(foo.answer, 42);
+		Assert.equAl(foo.Answer, 42);
 
-		assert(!Object.keys(foo).some(k => /\$memoize\$/.test(k)));
+		Assert(!Object.keys(foo).some(k => /\$memoize\$/.test(k)));
 	});
 
-	test('memoized property should not be writable', () => {
-		class Foo {
+	test('memoized property should not be writAble', () => {
+		clAss Foo {
 			@memoize
-			get answer() {
+			get Answer() {
 				return 42;
 			}
 		}
 
 		const foo = new Foo();
-		assert.equal(foo.answer, 42);
+		Assert.equAl(foo.Answer, 42);
 
 		try {
-			(foo as any)['$memoize$answer'] = 1337;
-			assert(false);
-		} catch (e) {
-			assert.equal(foo.answer, 42);
+			(foo As Any)['$memoize$Answer'] = 1337;
+			Assert(fAlse);
+		} cAtch (e) {
+			Assert.equAl(foo.Answer, 42);
 		}
 	});
 
-	test('memoize clear', () => {
-		const memoizer = createMemoizer();
+	test('memoize cleAr', () => {
+		const memoizer = creAteMemoizer();
 		let counter = 0;
-		class Foo {
+		clAss Foo {
 			@memoizer
-			get answer() {
+			get Answer() {
 				return ++counter;
 			}
 		}
 
 		const foo = new Foo();
-		assert.equal(foo.answer, 1);
-		assert.equal(foo.answer, 1);
-		memoizer.clear();
-		assert.equal(foo.answer, 2);
-		assert.equal(foo.answer, 2);
-		memoizer.clear();
-		assert.equal(foo.answer, 3);
-		assert.equal(foo.answer, 3);
-		assert.equal(foo.answer, 3);
+		Assert.equAl(foo.Answer, 1);
+		Assert.equAl(foo.Answer, 1);
+		memoizer.cleAr();
+		Assert.equAl(foo.Answer, 2);
+		Assert.equAl(foo.Answer, 2);
+		memoizer.cleAr();
+		Assert.equAl(foo.Answer, 3);
+		Assert.equAl(foo.Answer, 3);
+		Assert.equAl(foo.Answer, 3);
 	});
 
 	test('throttle', () => {
 		const spy = sinon.spy();
-		const clock = sinon.useFakeTimers();
+		const clock = sinon.useFAkeTimers();
 		try {
-			class ThrottleTest {
-				private _handle: Function;
+			clAss ThrottleTest {
+				privAte _hAndle: Function;
 
 				constructor(fn: Function) {
-					this._handle = fn;
+					this._hAndle = fn;
 				}
 
 				@throttle(
 					100,
-					(a: number, b: number) => a + b,
+					(A: number, b: number) => A + b,
 					() => 0
 				)
 				report(p: number): void {
-					this._handle(p);
+					this._hAndle(p);
 				}
 			}
 
@@ -179,10 +179,10 @@ suite('Decorators', () => {
 			t.report(1);
 			t.report(2);
 			t.report(3);
-			assert.deepEqual(spy.args, [[1]]);
+			Assert.deepEquAl(spy.Args, [[1]]);
 
 			clock.tick(200);
-			assert.deepEqual(spy.args, [[1], [5]]);
+			Assert.deepEquAl(spy.Args, [[1], [5]]);
 			spy.reset();
 
 			t.report(4);
@@ -190,10 +190,10 @@ suite('Decorators', () => {
 			clock.tick(50);
 			t.report(6);
 
-			assert.deepEqual(spy.args, [[4]]);
+			Assert.deepEquAl(spy.Args, [[4]]);
 			clock.tick(60);
-			assert.deepEqual(spy.args, [[4], [11]]);
-		} finally {
+			Assert.deepEquAl(spy.Args, [[4], [11]]);
+		} finAlly {
 			clock.restore();
 		}
 	});

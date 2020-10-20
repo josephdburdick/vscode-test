@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import * as platform from 'vs/platform/registry/common/platform';
-import { Event, Emitter } from 'vs/base/common/event';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import * As plAtform from 'vs/plAtform/registry/common/plAtform';
+import { Event, Emitter } from 'vs/bAse/common/event';
 
 export const Extensions = {
-	JSONContribution: 'base.contributions.json'
+	JSONContribution: 'bAse.contributions.json'
 };
 
-export interface ISchemaContributions {
-	schemas: { [id: string]: IJSONSchema };
+export interfAce ISchemAContributions {
+	schemAs: { [id: string]: IJSONSchemA };
 }
 
-export interface IJSONContributionRegistry {
+export interfAce IJSONContributionRegistry {
 
-	readonly onDidChangeSchema: Event<string>;
-
-	/**
-	 * Register a schema to the registry.
-	 */
-	registerSchema(uri: string, unresolvedSchemaContent: IJSONSchema): void;
-
+	reAdonly onDidChAngeSchemA: Event<string>;
 
 	/**
-	 * Notifies all listeners that the content of the given schema has changed.
-	 * @param uri The id of the schema
+	 * Register A schemA to the registry.
 	 */
-	notifySchemaChanged(uri: string): void;
+	registerSchemA(uri: string, unresolvedSchemAContent: IJSONSchemA): void;
+
 
 	/**
-	 * Get all schemas
+	 * Notifies All listeners thAt the content of the given schemA hAs chAnged.
+	 * @pArAm uri The id of the schemA
 	 */
-	getSchemaContributions(): ISchemaContributions;
+	notifySchemAChAnged(uri: string): void;
+
+	/**
+	 * Get All schemAs
+	 */
+	getSchemAContributions(): ISchemAContributions;
 }
 
 
 
-function normalizeId(id: string) {
-	if (id.length > 0 && id.charAt(id.length - 1) === '#') {
+function normAlizeId(id: string) {
+	if (id.length > 0 && id.chArAt(id.length - 1) === '#') {
 		return id.substring(0, id.length - 1);
 	}
 	return id;
@@ -48,33 +48,33 @@ function normalizeId(id: string) {
 
 
 
-class JSONContributionRegistry implements IJSONContributionRegistry {
+clAss JSONContributionRegistry implements IJSONContributionRegistry {
 
-	private schemasById: { [id: string]: IJSONSchema };
+	privAte schemAsById: { [id: string]: IJSONSchemA };
 
-	private readonly _onDidChangeSchema = new Emitter<string>();
-	readonly onDidChangeSchema: Event<string> = this._onDidChangeSchema.event;
+	privAte reAdonly _onDidChAngeSchemA = new Emitter<string>();
+	reAdonly onDidChAngeSchemA: Event<string> = this._onDidChAngeSchemA.event;
 
 	constructor() {
-		this.schemasById = {};
+		this.schemAsById = {};
 	}
 
-	public registerSchema(uri: string, unresolvedSchemaContent: IJSONSchema): void {
-		this.schemasById[normalizeId(uri)] = unresolvedSchemaContent;
-		this._onDidChangeSchema.fire(uri);
+	public registerSchemA(uri: string, unresolvedSchemAContent: IJSONSchemA): void {
+		this.schemAsById[normAlizeId(uri)] = unresolvedSchemAContent;
+		this._onDidChAngeSchemA.fire(uri);
 	}
 
-	public notifySchemaChanged(uri: string): void {
-		this._onDidChangeSchema.fire(uri);
+	public notifySchemAChAnged(uri: string): void {
+		this._onDidChAngeSchemA.fire(uri);
 	}
 
-	public getSchemaContributions(): ISchemaContributions {
+	public getSchemAContributions(): ISchemAContributions {
 		return {
-			schemas: this.schemasById,
+			schemAs: this.schemAsById,
 		};
 	}
 
 }
 
 const jsonContributionRegistry = new JSONContributionRegistry();
-platform.Registry.add(Extensions.JSONContribution, jsonContributionRegistry);
+plAtform.Registry.Add(Extensions.JSONContribution, jsonContributionRegistry);

@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { workspace, window, Position, Range, commands, TextEditor, TextDocument, TextEditorCursorStyle, TextEditorLineNumbersStyle, SnippetString, Selection, Uri, env } from 'vscode';
-import { createRandomFile, deleteFile, closeAllEditors } from '../utils';
+import * As Assert from 'Assert';
+import { workspAce, window, Position, RAnge, commAnds, TextEditor, TextDocument, TextEditorCursorStyle, TextEditorLineNumbersStyle, SnippetString, Selection, Uri, env } from 'vscode';
+import { creAteRAndomFile, deleteFile, closeAllEditors } from '../utils';
 
 suite('vscode API - editors', () => {
 
-	teardown(closeAllEditors);
+	teArdown(closeAllEditors);
 
-	function withRandomFileEditor(initialContents: string, run: (editor: TextEditor, doc: TextDocument) => Thenable<void>): Thenable<boolean> {
-		return createRandomFile(initialContents).then(file => {
-			return workspace.openTextDocument(file).then(doc => {
+	function withRAndomFileEditor(initiAlContents: string, run: (editor: TextEditor, doc: TextDocument) => ThenAble<void>): ThenAble<booleAn> {
+		return creAteRAndomFile(initiAlContents).then(file => {
+			return workspAce.openTextDocument(file).then(doc => {
 				return window.showTextDocument(doc).then((editor) => {
 					return run(editor, doc).then(_ => {
 						if (doc.isDirty) {
-							return doc.save().then(saved => {
-								assert.ok(saved);
-								assert.ok(!doc.isDirty);
+							return doc.sAve().then(sAved => {
+								Assert.ok(sAved);
+								Assert.ok(!doc.isDirty);
 								return deleteFile(file);
 							});
 						} else {
@@ -33,206 +33,206 @@ suite('vscode API - editors', () => {
 
 	test('insert snippet', () => {
 		const snippetString = new SnippetString()
-			.appendText('This is a ')
-			.appendTabstop()
-			.appendPlaceholder('placeholder')
-			.appendText(' snippet');
+			.AppendText('This is A ')
+			.AppendTAbstop()
+			.AppendPlAceholder('plAceholder')
+			.AppendText(' snippet');
 
-		return withRandomFileEditor('', (editor, doc) => {
+		return withRAndomFileEditor('', (editor, doc) => {
 			return editor.insertSnippet(snippetString).then(inserted => {
-				assert.ok(inserted);
-				assert.equal(doc.getText(), 'This is a placeholder snippet');
-				assert.ok(doc.isDirty);
+				Assert.ok(inserted);
+				Assert.equAl(doc.getText(), 'This is A plAceholder snippet');
+				Assert.ok(doc.isDirty);
 			});
 		});
 	});
 
-	test('insert snippet with clipboard variables', async function () {
-		const old = await env.clipboard.readText();
+	test('insert snippet with clipboArd vAriAbles', Async function () {
+		const old = AwAit env.clipboArd.reAdText();
 
-		const newValue = 'INTEGRATION-TESTS';
-		await env.clipboard.writeText(newValue);
+		const newVAlue = 'INTEGRATION-TESTS';
+		AwAit env.clipboArd.writeText(newVAlue);
 
-		const actualValue = await env.clipboard.readText();
+		const ActuAlVAlue = AwAit env.clipboArd.reAdText();
 
-		if (actualValue !== newValue) {
-			// clipboard not working?!?
+		if (ActuAlVAlue !== newVAlue) {
+			// clipboArd not working?!?
 			this.skip();
 			return;
 		}
 
 		const snippetString = new SnippetString('running: $CLIPBOARD');
 
-		await withRandomFileEditor('', async (editor, doc) => {
-			const inserted = await editor.insertSnippet(snippetString);
-			assert.ok(inserted);
-			assert.equal(doc.getText(), 'running: INTEGRATION-TESTS');
-			assert.ok(doc.isDirty);
+		AwAit withRAndomFileEditor('', Async (editor, doc) => {
+			const inserted = AwAit editor.insertSnippet(snippetString);
+			Assert.ok(inserted);
+			Assert.equAl(doc.getText(), 'running: INTEGRATION-TESTS');
+			Assert.ok(doc.isDirty);
 		});
 
-		await env.clipboard.writeText(old);
+		AwAit env.clipboArd.writeText(old);
 	});
 
-	test('insert snippet with replacement, editor selection', () => {
+	test('insert snippet with replAcement, editor selection', () => {
 		const snippetString = new SnippetString()
-			.appendText('has been');
+			.AppendText('hAs been');
 
-		return withRandomFileEditor('This will be replaced', (editor, doc) => {
+		return withRAndomFileEditor('This will be replAced', (editor, doc) => {
 			editor.selection = new Selection(
 				new Position(0, 5),
 				new Position(0, 12)
 			);
 
 			return editor.insertSnippet(snippetString).then(inserted => {
-				assert.ok(inserted);
-				assert.equal(doc.getText(), 'This has been replaced');
-				assert.ok(doc.isDirty);
+				Assert.ok(inserted);
+				Assert.equAl(doc.getText(), 'This hAs been replAced');
+				Assert.ok(doc.isDirty);
 			});
 		});
 	});
 
-	test('insert snippet with replacement, selection as argument', () => {
+	test('insert snippet with replAcement, selection As Argument', () => {
 		const snippetString = new SnippetString()
-			.appendText('has been');
+			.AppendText('hAs been');
 
-		return withRandomFileEditor('This will be replaced', (editor, doc) => {
+		return withRAndomFileEditor('This will be replAced', (editor, doc) => {
 			const selection = new Selection(
 				new Position(0, 5),
 				new Position(0, 12)
 			);
 
 			return editor.insertSnippet(snippetString, selection).then(inserted => {
-				assert.ok(inserted);
-				assert.equal(doc.getText(), 'This has been replaced');
-				assert.ok(doc.isDirty);
+				Assert.ok(inserted);
+				Assert.equAl(doc.getText(), 'This hAs been replAced');
+				Assert.ok(doc.isDirty);
 			});
 		});
 	});
 
-	test('make edit', () => {
-		return withRandomFileEditor('', (editor, doc) => {
+	test('mAke edit', () => {
+		return withRAndomFileEditor('', (editor, doc) => {
 			return editor.edit((builder) => {
 				builder.insert(new Position(0, 0), 'Hello World');
-			}).then(applied => {
-				assert.ok(applied);
-				assert.equal(doc.getText(), 'Hello World');
-				assert.ok(doc.isDirty);
+			}).then(Applied => {
+				Assert.ok(Applied);
+				Assert.equAl(doc.getText(), 'Hello World');
+				Assert.ok(doc.isDirty);
 			});
 		});
 	});
 
-	test('issue #6281: Edits fail to validate ranges correctly before applying', () => {
-		return withRandomFileEditor('Hello world!', (editor, doc) => {
+	test('issue #6281: Edits fAil to vAlidAte rAnges correctly before Applying', () => {
+		return withRAndomFileEditor('Hello world!', (editor, doc) => {
 			return editor.edit((builder) => {
-				builder.replace(new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), 'new');
-			}).then(applied => {
-				assert.ok(applied);
-				assert.equal(doc.getText(), 'new');
-				assert.ok(doc.isDirty);
+				builder.replAce(new RAnge(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), 'new');
+			}).then(Applied => {
+				Assert.ok(Applied);
+				Assert.equAl(doc.getText(), 'new');
+				Assert.ok(doc.isDirty);
 			});
 		});
 	});
 
-	function executeReplace(editor: TextEditor, range: Range, text: string, undoStopBefore: boolean, undoStopAfter: boolean): Thenable<boolean> {
+	function executeReplAce(editor: TextEditor, rAnge: RAnge, text: string, undoStopBefore: booleAn, undoStopAfter: booleAn): ThenAble<booleAn> {
 		return editor.edit((builder) => {
-			builder.replace(range, text);
+			builder.replAce(rAnge, text);
 		}, { undoStopBefore: undoStopBefore, undoStopAfter: undoStopAfter });
 	}
 
-	test('TextEditor.edit can control undo/redo stack 1', () => {
-		return withRandomFileEditor('Hello world!', (editor, doc) => {
-			return executeReplace(editor, new Range(0, 0, 0, 1), 'h', false, false).then(applied => {
-				assert.ok(applied);
-				assert.equal(doc.getText(), 'hello world!');
-				assert.ok(doc.isDirty);
-				return executeReplace(editor, new Range(0, 1, 0, 5), 'ELLO', false, false);
-			}).then(applied => {
-				assert.ok(applied);
-				assert.equal(doc.getText(), 'hELLO world!');
-				assert.ok(doc.isDirty);
-				return commands.executeCommand('undo');
+	test('TextEditor.edit cAn control undo/redo stAck 1', () => {
+		return withRAndomFileEditor('Hello world!', (editor, doc) => {
+			return executeReplAce(editor, new RAnge(0, 0, 0, 1), 'h', fAlse, fAlse).then(Applied => {
+				Assert.ok(Applied);
+				Assert.equAl(doc.getText(), 'hello world!');
+				Assert.ok(doc.isDirty);
+				return executeReplAce(editor, new RAnge(0, 1, 0, 5), 'ELLO', fAlse, fAlse);
+			}).then(Applied => {
+				Assert.ok(Applied);
+				Assert.equAl(doc.getText(), 'hELLO world!');
+				Assert.ok(doc.isDirty);
+				return commAnds.executeCommAnd('undo');
 			}).then(_ => {
-				assert.equal(doc.getText(), 'Hello world!');
+				Assert.equAl(doc.getText(), 'Hello world!');
 			});
 		});
 	});
 
-	test('TextEditor.edit can control undo/redo stack 2', () => {
-		return withRandomFileEditor('Hello world!', (editor, doc) => {
-			return executeReplace(editor, new Range(0, 0, 0, 1), 'h', false, false).then(applied => {
-				assert.ok(applied);
-				assert.equal(doc.getText(), 'hello world!');
-				assert.ok(doc.isDirty);
-				return executeReplace(editor, new Range(0, 1, 0, 5), 'ELLO', true, false);
-			}).then(applied => {
-				assert.ok(applied);
-				assert.equal(doc.getText(), 'hELLO world!');
-				assert.ok(doc.isDirty);
-				return commands.executeCommand('undo');
+	test('TextEditor.edit cAn control undo/redo stAck 2', () => {
+		return withRAndomFileEditor('Hello world!', (editor, doc) => {
+			return executeReplAce(editor, new RAnge(0, 0, 0, 1), 'h', fAlse, fAlse).then(Applied => {
+				Assert.ok(Applied);
+				Assert.equAl(doc.getText(), 'hello world!');
+				Assert.ok(doc.isDirty);
+				return executeReplAce(editor, new RAnge(0, 1, 0, 5), 'ELLO', true, fAlse);
+			}).then(Applied => {
+				Assert.ok(Applied);
+				Assert.equAl(doc.getText(), 'hELLO world!');
+				Assert.ok(doc.isDirty);
+				return commAnds.executeCommAnd('undo');
 			}).then(_ => {
-				assert.equal(doc.getText(), 'hello world!');
+				Assert.equAl(doc.getText(), 'hello world!');
 			});
 		});
 	});
 
-	test('issue #16573: Extension API: insertSpaces and tabSize are undefined', () => {
-		return withRandomFileEditor('Hello world!\n\tHello world!', (editor, _doc) => {
+	test('issue #16573: Extension API: insertSpAces And tAbSize Are undefined', () => {
+		return withRAndomFileEditor('Hello world!\n\tHello world!', (editor, _doc) => {
 
-			assert.equal(editor.options.tabSize, 4);
-			assert.equal(editor.options.insertSpaces, false);
-			assert.equal(editor.options.cursorStyle, TextEditorCursorStyle.Line);
-			assert.equal(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
+			Assert.equAl(editor.options.tAbSize, 4);
+			Assert.equAl(editor.options.insertSpAces, fAlse);
+			Assert.equAl(editor.options.cursorStyle, TextEditorCursorStyle.Line);
+			Assert.equAl(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
 
 			editor.options = {
-				tabSize: 2
+				tAbSize: 2
 			};
 
-			assert.equal(editor.options.tabSize, 2);
-			assert.equal(editor.options.insertSpaces, false);
-			assert.equal(editor.options.cursorStyle, TextEditorCursorStyle.Line);
-			assert.equal(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
+			Assert.equAl(editor.options.tAbSize, 2);
+			Assert.equAl(editor.options.insertSpAces, fAlse);
+			Assert.equAl(editor.options.cursorStyle, TextEditorCursorStyle.Line);
+			Assert.equAl(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
 
-			editor.options.tabSize = 'invalid';
+			editor.options.tAbSize = 'invAlid';
 
-			assert.equal(editor.options.tabSize, 2);
-			assert.equal(editor.options.insertSpaces, false);
-			assert.equal(editor.options.cursorStyle, TextEditorCursorStyle.Line);
-			assert.equal(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
+			Assert.equAl(editor.options.tAbSize, 2);
+			Assert.equAl(editor.options.insertSpAces, fAlse);
+			Assert.equAl(editor.options.cursorStyle, TextEditorCursorStyle.Line);
+			Assert.equAl(editor.options.lineNumbers, TextEditorLineNumbersStyle.On);
 
 			return Promise.resolve();
 		});
 	});
 
-	test('issue #20757: Overlapping ranges are not allowed!', () => {
-		return withRandomFileEditor('Hello world!\n\tHello world!', (editor, _doc) => {
+	test('issue #20757: OverlApping rAnges Are not Allowed!', () => {
+		return withRAndomFileEditor('Hello world!\n\tHello world!', (editor, _doc) => {
 			return editor.edit((builder) => {
-				// create two edits that overlap (i.e. are illegal)
-				builder.replace(new Range(0, 0, 0, 2), 'He');
-				builder.replace(new Range(0, 1, 0, 3), 'el');
+				// creAte two edits thAt overlAp (i.e. Are illegAl)
+				builder.replAce(new RAnge(0, 0, 0, 2), 'He');
+				builder.replAce(new RAnge(0, 1, 0, 3), 'el');
 			}).then(
 
-				(_applied) => {
-					assert.ok(false, 'edit with overlapping ranges should fail');
+				(_Applied) => {
+					Assert.ok(fAlse, 'edit with overlApping rAnges should fAil');
 				},
 
 				(_err) => {
-					assert.ok(true, 'edit with overlapping ranges should fail');
+					Assert.ok(true, 'edit with overlApping rAnges should fAil');
 				}
 			);
 		});
 	});
 
-	test('throw when using invalid edit', async function () {
-		await withRandomFileEditor('foo', editor => {
+	test('throw when using invAlid edit', Async function () {
+		AwAit withRAndomFileEditor('foo', editor => {
 			return new Promise((resolve, reject) => {
 				editor.edit(edit => {
-					edit.insert(new Position(0, 0), 'bar');
+					edit.insert(new Position(0, 0), 'bAr');
 					setTimeout(() => {
 						try {
-							edit.insert(new Position(0, 0), 'bar');
+							edit.insert(new Position(0, 0), 'bAr');
 							reject(new Error('expected error'));
-						} catch (err) {
-							assert.ok(true);
+						} cAtch (err) {
+							Assert.ok(true);
 							resolve();
 						}
 					}, 0);
@@ -241,19 +241,19 @@ suite('vscode API - editors', () => {
 		});
 	});
 
-	test('editor contents are correctly read (small file)', function () {
-		return testEditorContents('/far.js');
+	test('editor contents Are correctly reAd (smAll file)', function () {
+		return testEditorContents('/fAr.js');
 	});
 
-	test('editor contents are correctly read (large file)', async function () {
+	test('editor contents Are correctly reAd (lArge file)', Async function () {
 		return testEditorContents('/lorem.txt');
 	});
 
-	async function testEditorContents(relativePath: string) {
-		const root = workspace.workspaceFolders![0]!.uri;
-		const file = Uri.parse(root.toString() + relativePath);
-		const document = await workspace.openTextDocument(file);
+	Async function testEditorContents(relAtivePAth: string) {
+		const root = workspAce.workspAceFolders![0]!.uri;
+		const file = Uri.pArse(root.toString() + relAtivePAth);
+		const document = AwAit workspAce.openTextDocument(file);
 
-		assert.equal(document.getText(), Buffer.from(await workspace.fs.readFile(file)).toString());
+		Assert.equAl(document.getText(), Buffer.from(AwAit workspAce.fs.reAdFile(file)).toString());
 	}
 });

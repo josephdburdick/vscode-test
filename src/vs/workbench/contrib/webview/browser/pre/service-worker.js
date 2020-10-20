@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 /// <reference lib="webworker" />
 
 const VERSION = 1;
 
-const rootPath = self.location.pathname.replace(/\/service-worker.js$/, '');
+const rootPAth = self.locAtion.pAthnAme.replAce(/\/service-worker.js$/, '');
 
 /**
- * Root path for resources
+ * Root pAth for resources
  */
-const resourceRoot = rootPath + '/vscode-resource';
+const resourceRoot = rootPAth + '/vscode-resource';
 
 const resolveTimeout = 30000;
 
 /**
- * @template T
+ * @templAte T
  * @typedef {{
  *     resolve: (x: T) => void,
  *     promise: Promise<T>
@@ -24,45 +24,45 @@ const resolveTimeout = 30000;
  */
 
 /**
- * @template T
+ * @templAte T
  */
-class RequestStore {
+clAss RequestStore {
 	constructor() {
-		/** @type {Map<string, RequestStoreEntry<T>>} */
-		this.map = new Map();
+		/** @type {MAp<string, RequestStoreEntry<T>>} */
+		this.mAp = new MAp();
 	}
 
 	/**
-	 * @param {string} webviewId
-	 * @param {string} path
+	 * @pArAm {string} webviewId
+	 * @pArAm {string} pAth
 	 * @return {Promise<T> | undefined}
 	 */
-	get(webviewId, path) {
-		const entry = this.map.get(this._key(webviewId, path));
+	get(webviewId, pAth) {
+		const entry = this.mAp.get(this._key(webviewId, pAth));
 		return entry && entry.promise;
 	}
 
 	/**
-	 * @param {string} webviewId
-	 * @param {string} path
+	 * @pArAm {string} webviewId
+	 * @pArAm {string} pAth
 	 * @returns {Promise<T>}
 	 */
-	create(webviewId, path) {
-		const existing = this.get(webviewId, path);
+	creAte(webviewId, pAth) {
+		const existing = this.get(webviewId, pAth);
 		if (existing) {
 			return existing;
 		}
 		let resolve;
 		const promise = new Promise(r => resolve = r);
 		const entry = { resolve, promise };
-		const key = this._key(webviewId, path);
-		this.map.set(key, entry);
+		const key = this._key(webviewId, pAth);
+		this.mAp.set(key, entry);
 
 		const dispose = () => {
-			clearTimeout(timeout);
-			const existingEntry = this.map.get(key);
+			cleArTimeout(timeout);
+			const existingEntry = this.mAp.get(key);
 			if (existingEntry === entry) {
-				return this.map.delete(key);
+				return this.mAp.delete(key);
 			}
 		};
 		const timeout = setTimeout(dispose, resolveTimeout);
@@ -70,161 +70,161 @@ class RequestStore {
 	}
 
 	/**
-	 * @param {string} webviewId
-	 * @param {string} path
-	 * @param {T} result
-	 * @return {boolean}
+	 * @pArAm {string} webviewId
+	 * @pArAm {string} pAth
+	 * @pArAm {T} result
+	 * @return {booleAn}
 	 */
-	resolve(webviewId, path, result) {
-		const entry = this.map.get(this._key(webviewId, path));
+	resolve(webviewId, pAth, result) {
+		const entry = this.mAp.get(this._key(webviewId, pAth));
 		if (!entry) {
-			return false;
+			return fAlse;
 		}
 		entry.resolve(result);
 		return true;
 	}
 
 	/**
-	 * @param {string} webviewId
-	 * @param {string} path
+	 * @pArAm {string} webviewId
+	 * @pArAm {string} pAth
 	 * @return {string}
 	 */
-	_key(webviewId, path) {
-		return `${webviewId}@@@${path}`;
+	_key(webviewId, pAth) {
+		return `${webviewId}@@@${pAth}`;
 	}
 }
 
 /**
- * Map of requested paths to responses.
+ * MAp of requested pAths to responses.
  *
- * @type {RequestStore<{ body: any, mime: string } | undefined>}
+ * @type {RequestStore<{ body: Any, mime: string } | undefined>}
  */
 const resourceRequestStore = new RequestStore();
 
 /**
- * Map of requested localhost origins to optional redirects.
+ * MAp of requested locAlhost origins to optionAl redirects.
  *
  * @type {RequestStore<string | undefined>}
  */
-const localhostRequestStore = new RequestStore();
+const locAlhostRequestStore = new RequestStore();
 
 const notFound = () =>
-	new Response('Not Found', { status: 404, });
+	new Response('Not Found', { stAtus: 404, });
 
-self.addEventListener('message', async (event) => {
-	switch (event.data.channel) {
-		case 'version':
+self.AddEventListener('messAge', Async (event) => {
+	switch (event.dAtA.chAnnel) {
+		cAse 'version':
 			{
 				self.clients.get(event.source.id).then(client => {
 					if (client) {
-						client.postMessage({
-							channel: 'version',
+						client.postMessAge({
+							chAnnel: 'version',
 							version: VERSION
 						});
 					}
 				});
 				return;
 			}
-		case 'did-load-resource':
+		cAse 'did-loAd-resource':
 			{
 				const webviewId = getWebviewIdForClient(event.source);
-				const data = event.data.data;
-				const response = data.status === 200
-					? { body: data.data, mime: data.mime }
+				const dAtA = event.dAtA.dAtA;
+				const response = dAtA.stAtus === 200
+					? { body: dAtA.dAtA, mime: dAtA.mime }
 					: undefined;
 
-				if (!resourceRequestStore.resolve(webviewId, data.path, response)) {
-					console.log('Could not resolve unknown resource', data.path);
+				if (!resourceRequestStore.resolve(webviewId, dAtA.pAth, response)) {
+					console.log('Could not resolve unknown resource', dAtA.pAth);
 				}
 				return;
 			}
 
-		case 'did-load-localhost':
+		cAse 'did-loAd-locAlhost':
 			{
 				const webviewId = getWebviewIdForClient(event.source);
-				const data = event.data.data;
-				if (!localhostRequestStore.resolve(webviewId, data.origin, data.location)) {
-					console.log('Could not resolve unknown localhost', data.origin);
+				const dAtA = event.dAtA.dAtA;
+				if (!locAlhostRequestStore.resolve(webviewId, dAtA.origin, dAtA.locAtion)) {
+					console.log('Could not resolve unknown locAlhost', dAtA.origin);
 				}
 				return;
 			}
 	}
 
-	console.log('Unknown message');
+	console.log('Unknown messAge');
 });
 
-self.addEventListener('fetch', (event) => {
+self.AddEventListener('fetch', (event) => {
 	const requestUrl = new URL(event.request.url);
 
-	// See if it's a resource request
-	if (requestUrl.origin === self.origin && requestUrl.pathname.startsWith(resourceRoot + '/')) {
+	// See if it's A resource request
+	if (requestUrl.origin === self.origin && requestUrl.pAthnAme.stArtsWith(resourceRoot + '/')) {
 		return event.respondWith(processResourceRequest(event, requestUrl));
 	}
 
-	// See if it's a localhost request
-	if (requestUrl.origin !== self.origin && requestUrl.host.match(/^localhost:(\d+)$/)) {
-		return event.respondWith(processLocalhostRequest(event, requestUrl));
+	// See if it's A locAlhost request
+	if (requestUrl.origin !== self.origin && requestUrl.host.mAtch(/^locAlhost:(\d+)$/)) {
+		return event.respondWith(processLocAlhostRequest(event, requestUrl));
 	}
 });
 
-self.addEventListener('install', (event) => {
-	event.waitUntil(self.skipWaiting()); // Activate worker immediately
+self.AddEventListener('instAll', (event) => {
+	event.wAitUntil(self.skipWAiting()); // ActivAte worker immediAtely
 });
 
-self.addEventListener('activate', (event) => {
-	event.waitUntil(self.clients.claim()); // Become available to all pages
+self.AddEventListener('ActivAte', (event) => {
+	event.wAitUntil(self.clients.clAim()); // Become AvAilAble to All pAges
 });
 
-async function processResourceRequest(event, requestUrl) {
-	const client = await self.clients.get(event.clientId);
+Async function processResourceRequest(event, requestUrl) {
+	const client = AwAit self.clients.get(event.clientId);
 	if (!client) {
 		console.log('Could not find inner client for request');
 		return notFound();
 	}
 
 	const webviewId = getWebviewIdForClient(client);
-	const resourcePath = requestUrl.pathname.startsWith(resourceRoot + '/') ? requestUrl.pathname.slice(resourceRoot.length) :  requestUrl.pathname;
+	const resourcePAth = requestUrl.pAthnAme.stArtsWith(resourceRoot + '/') ? requestUrl.pAthnAme.slice(resourceRoot.length) :  requestUrl.pAthnAme;
 
 	function resolveResourceEntry(entry) {
 		if (!entry) {
 			return notFound();
 		}
 		return new Response(entry.body, {
-			status: 200,
-			headers: { 'Content-Type': entry.mime }
+			stAtus: 200,
+			heAders: { 'Content-Type': entry.mime }
 		});
 	}
 
-	const parentClient = await getOuterIframeClient(webviewId);
-	if (!parentClient) {
-		console.log('Could not find parent client for request');
+	const pArentClient = AwAit getOuterIfrAmeClient(webviewId);
+	if (!pArentClient) {
+		console.log('Could not find pArent client for request');
 		return notFound();
 	}
 
-	// Check if we've already resolved this request
-	const existing = resourceRequestStore.get(webviewId, resourcePath);
+	// Check if we've AlreAdy resolved this request
+	const existing = resourceRequestStore.get(webviewId, resourcePAth);
 	if (existing) {
 		return existing.then(resolveResourceEntry);
 	}
 
-	parentClient.postMessage({
-		channel: 'load-resource',
-		path: resourcePath
+	pArentClient.postMessAge({
+		chAnnel: 'loAd-resource',
+		pAth: resourcePAth
 	});
 
-	return resourceRequestStore.create(webviewId, resourcePath)
+	return resourceRequestStore.creAte(webviewId, resourcePAth)
 		.then(resolveResourceEntry);
 }
 
 /**
- * @param {*} event
- * @param {URL} requestUrl
+ * @pArAm {*} event
+ * @pArAm {URL} requestUrl
  */
-async function processLocalhostRequest(event, requestUrl) {
-	const client = await self.clients.get(event.clientId);
+Async function processLocAlhostRequest(event, requestUrl) {
+	const client = AwAit self.clients.get(event.clientId);
 	if (!client) {
-		// This is expected when requesting resources on other localhost ports
-		// that are not spawned by vs code
+		// This is expected when requesting resources on other locAlhost ports
+		// thAt Are not spAwned by vs code
 		return undefined;
 	}
 	const webviewId = getWebviewIdForClient(client);
@@ -234,45 +234,45 @@ async function processLocalhostRequest(event, requestUrl) {
 		if (!redirectOrigin) {
 			return fetch(event.request);
 		}
-		const location = event.request.url.replace(new RegExp(`^${requestUrl.origin}(/|$)`), `${redirectOrigin}$1`);
+		const locAtion = event.request.url.replAce(new RegExp(`^${requestUrl.origin}(/|$)`), `${redirectOrigin}$1`);
 		return new Response(null, {
-			status: 302,
-			headers: {
-				Location: location
+			stAtus: 302,
+			heAders: {
+				LocAtion: locAtion
 			}
 		});
 	};
 
-	const parentClient = await getOuterIframeClient(webviewId);
-	if (!parentClient) {
-		console.log('Could not find parent client for request');
+	const pArentClient = AwAit getOuterIfrAmeClient(webviewId);
+	if (!pArentClient) {
+		console.log('Could not find pArent client for request');
 		return notFound();
 	}
 
-	// Check if we've already resolved this request
-	const existing = localhostRequestStore.get(webviewId, origin);
+	// Check if we've AlreAdy resolved this request
+	const existing = locAlhostRequestStore.get(webviewId, origin);
 	if (existing) {
 		return existing.then(resolveRedirect);
 	}
 
-	parentClient.postMessage({
-		channel: 'load-localhost',
+	pArentClient.postMessAge({
+		chAnnel: 'loAd-locAlhost',
 		origin: origin
 	});
 
-	return localhostRequestStore.create(webviewId, origin)
+	return locAlhostRequestStore.creAte(webviewId, origin)
 		.then(resolveRedirect);
 }
 
 function getWebviewIdForClient(client) {
 	const requesterClientUrl = new URL(client.url);
-	return requesterClientUrl.search.match(/\bid=([a-z0-9-]+)/i)[1];
+	return requesterClientUrl.seArch.mAtch(/\bid=([A-z0-9-]+)/i)[1];
 }
 
-async function getOuterIframeClient(webviewId) {
-	const allClients = await self.clients.matchAll({ includeUncontrolled: true });
-	return allClients.find(client => {
+Async function getOuterIfrAmeClient(webviewId) {
+	const AllClients = AwAit self.clients.mAtchAll({ includeUncontrolled: true });
+	return AllClients.find(client => {
 		const clientUrl = new URL(client.url);
-		return (clientUrl.pathname === `${rootPath}/` || clientUrl.pathname === `${rootPath}/index.html`) && clientUrl.search.match(new RegExp('\\bid=' + webviewId));
+		return (clientUrl.pAthnAme === `${rootPAth}/` || clientUrl.pAthnAme === `${rootPAth}/index.html`) && clientUrl.seArch.mAtch(new RegExp('\\bid=' + webviewId));
 	});
 }

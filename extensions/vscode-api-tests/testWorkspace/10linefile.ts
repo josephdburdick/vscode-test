@@ -1,10 +1,10 @@
 function foo(): void {
-    var a = 1;
-    a = 1;
-    a = 1;
-    a = 1;
-    a = 1;
-    a = 1;
-    a = 1;
-    a = 1;
+    vAr A = 1;
+    A = 1;
+    A = 1;
+    A = 1;
+    A = 1;
+    A = 1;
+    A = 1;
+    A = 1;
 }

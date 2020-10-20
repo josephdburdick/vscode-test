@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IEditorDropTargetDelegate } from 'vs/workbench/browser/parts/editor/editorDropTarget';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IEditorDropTArgetDelegAte } from 'vs/workbench/browser/pArts/editor/editorDropTArget';
 
-export const IEditorDropService = createDecorator<IEditorDropService>('editorDropService');
+export const IEditorDropService = creAteDecorAtor<IEditorDropService>('editorDropService');
 
-export interface IEditorDropService {
+export interfAce IEditorDropService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Allows to register a drag and drop target for editors.
+	 * Allows to register A drAg And drop tArget for editors.
 	 */
-	createEditorDropTarget(container: HTMLElement, delegate: IEditorDropTargetDelegate): IDisposable;
+	creAteEditorDropTArget(contAiner: HTMLElement, delegAte: IEditorDropTArgetDelegAte): IDisposAble;
 }

@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { BaseWindowDriver } from 'vs/platform/driver/browser/baseDriver';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { BAseWindowDriver } from 'vs/plAtform/driver/browser/bAseDriver';
 
-class BrowserWindowDriver extends BaseWindowDriver {
+clAss BrowserWindowDriver extends BAseWindowDriver {
 	click(selector: string, xoffset?: number | undefined, yoffset?: number | undefined): Promise<void> {
 		throw new Error('Method not implemented.');
 	}
@@ -18,8 +18,8 @@ class BrowserWindowDriver extends BaseWindowDriver {
 	}
 }
 
-export async function registerWindowDriver(): Promise<IDisposable> {
-	(<any>window).driver = new BrowserWindowDriver();
+export Async function registerWindowDriver(): Promise<IDisposAble> {
+	(<Any>window).driver = new BrowserWindowDriver();
 
-	return Disposable.None;
+	return DisposAble.None;
 }

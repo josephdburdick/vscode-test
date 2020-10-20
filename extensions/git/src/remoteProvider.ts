@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, Event } from 'vscode';
-import { RemoteSourceProvider } from './api/git';
+import { DisposAble, Event } from 'vscode';
+import { RemoteSourceProvider } from './Api/git';
 
-export interface IRemoteSourceProviderRegistry {
-	readonly onDidAddRemoteSourceProvider: Event<RemoteSourceProvider>;
-	readonly onDidRemoveRemoteSourceProvider: Event<RemoteSourceProvider>;
-	registerRemoteSourceProvider(provider: RemoteSourceProvider): Disposable;
+export interfAce IRemoteSourceProviderRegistry {
+	reAdonly onDidAddRemoteSourceProvider: Event<RemoteSourceProvider>;
+	reAdonly onDidRemoveRemoteSourceProvider: Event<RemoteSourceProvider>;
+	registerRemoteSourceProvider(provider: RemoteSourceProvider): DisposAble;
 	getRemoteProviders(): RemoteSourceProvider[];
 }

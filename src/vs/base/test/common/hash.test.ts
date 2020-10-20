@@ -1,98 +1,98 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { hash, StringSHA1 } from 'vs/base/common/hash';
+import * As Assert from 'Assert';
+import { hAsh, StringSHA1 } from 'vs/bAse/common/hAsh';
 
-suite('Hash', () => {
+suite('HAsh', () => {
 	test('string', () => {
-		assert.equal(hash('hello'), hash('hello'));
-		assert.notEqual(hash('hello'), hash('world'));
-		assert.notEqual(hash('hello'), hash('olleh'));
-		assert.notEqual(hash('hello'), hash('Hello'));
-		assert.notEqual(hash('hello'), hash('Hello '));
-		assert.notEqual(hash('h'), hash('H'));
-		assert.notEqual(hash('-'), hash('_'));
+		Assert.equAl(hAsh('hello'), hAsh('hello'));
+		Assert.notEquAl(hAsh('hello'), hAsh('world'));
+		Assert.notEquAl(hAsh('hello'), hAsh('olleh'));
+		Assert.notEquAl(hAsh('hello'), hAsh('Hello'));
+		Assert.notEquAl(hAsh('hello'), hAsh('Hello '));
+		Assert.notEquAl(hAsh('h'), hAsh('H'));
+		Assert.notEquAl(hAsh('-'), hAsh('_'));
 	});
 
 	test('number', () => {
-		assert.equal(hash(1), hash(1));
-		assert.notEqual(hash(0), hash(1));
-		assert.notEqual(hash(1), hash(-1));
-		assert.notEqual(hash(0x12345678), hash(0x123456789));
+		Assert.equAl(hAsh(1), hAsh(1));
+		Assert.notEquAl(hAsh(0), hAsh(1));
+		Assert.notEquAl(hAsh(1), hAsh(-1));
+		Assert.notEquAl(hAsh(0x12345678), hAsh(0x123456789));
 	});
 
-	test('boolean', () => {
-		assert.equal(hash(true), hash(true));
-		assert.notEqual(hash(true), hash(false));
+	test('booleAn', () => {
+		Assert.equAl(hAsh(true), hAsh(true));
+		Assert.notEquAl(hAsh(true), hAsh(fAlse));
 	});
 
-	test('array', () => {
-		assert.equal(hash([1, 2, 3]), hash([1, 2, 3]));
-		assert.equal(hash(['foo', 'bar']), hash(['foo', 'bar']));
-		assert.equal(hash([]), hash([]));
-		assert.equal(hash([]), hash(new Array()));
-		assert.notEqual(hash(['foo', 'bar']), hash(['bar', 'foo']));
-		assert.notEqual(hash(['foo', 'bar']), hash(['bar', 'foo', null]));
-		assert.notEqual(hash(['foo', 'bar', null]), hash(['bar', 'foo', null]));
-		assert.notEqual(hash(['foo', 'bar']), hash(['bar', 'foo', undefined]));
-		assert.notEqual(hash(['foo', 'bar', undefined]), hash(['bar', 'foo', undefined]));
-		assert.notEqual(hash(['foo', 'bar', null]), hash(['foo', 'bar', undefined]));
+	test('ArrAy', () => {
+		Assert.equAl(hAsh([1, 2, 3]), hAsh([1, 2, 3]));
+		Assert.equAl(hAsh(['foo', 'bAr']), hAsh(['foo', 'bAr']));
+		Assert.equAl(hAsh([]), hAsh([]));
+		Assert.equAl(hAsh([]), hAsh(new ArrAy()));
+		Assert.notEquAl(hAsh(['foo', 'bAr']), hAsh(['bAr', 'foo']));
+		Assert.notEquAl(hAsh(['foo', 'bAr']), hAsh(['bAr', 'foo', null]));
+		Assert.notEquAl(hAsh(['foo', 'bAr', null]), hAsh(['bAr', 'foo', null]));
+		Assert.notEquAl(hAsh(['foo', 'bAr']), hAsh(['bAr', 'foo', undefined]));
+		Assert.notEquAl(hAsh(['foo', 'bAr', undefined]), hAsh(['bAr', 'foo', undefined]));
+		Assert.notEquAl(hAsh(['foo', 'bAr', null]), hAsh(['foo', 'bAr', undefined]));
 	});
 
 	test('object', () => {
-		assert.equal(hash({}), hash({}));
-		assert.equal(hash({}), hash(Object.create(null)));
-		assert.equal(hash({ 'foo': 'bar' }), hash({ 'foo': 'bar' }));
-		assert.equal(hash({ 'foo': 'bar', 'foo2': undefined }), hash({ 'foo2': undefined, 'foo': 'bar' }));
-		assert.notEqual(hash({ 'foo': 'bar' }), hash({ 'foo': 'bar2' }));
-		assert.notEqual(hash({}), hash([]));
+		Assert.equAl(hAsh({}), hAsh({}));
+		Assert.equAl(hAsh({}), hAsh(Object.creAte(null)));
+		Assert.equAl(hAsh({ 'foo': 'bAr' }), hAsh({ 'foo': 'bAr' }));
+		Assert.equAl(hAsh({ 'foo': 'bAr', 'foo2': undefined }), hAsh({ 'foo2': undefined, 'foo': 'bAr' }));
+		Assert.notEquAl(hAsh({ 'foo': 'bAr' }), hAsh({ 'foo': 'bAr2' }));
+		Assert.notEquAl(hAsh({}), hAsh([]));
 	});
 
-	test('array - unexpected collision', function () {
-		const a = hash([undefined, undefined, undefined, undefined, undefined]);
-		const b = hash([undefined, undefined, 'HHHHHH', [{ line: 0, character: 0 }, { line: 0, character: 0 }], undefined]);
-		assert.notEqual(a, b);
+	test('ArrAy - unexpected collision', function () {
+		const A = hAsh([undefined, undefined, undefined, undefined, undefined]);
+		const b = hAsh([undefined, undefined, 'HHHHHH', [{ line: 0, chArActer: 0 }, { line: 0, chArActer: 0 }], undefined]);
+		Assert.notEquAl(A, b);
 	});
 
-	test('all different', () => {
-		const candidates: any[] = [
-			null, undefined, {}, [], 0, false, true, '', ' ', [null], [undefined], [undefined, undefined], { '': undefined }, { [' ']: undefined },
-			'ab', 'ba', ['ab']
+	test('All different', () => {
+		const cAndidAtes: Any[] = [
+			null, undefined, {}, [], 0, fAlse, true, '', ' ', [null], [undefined], [undefined, undefined], { '': undefined }, { [' ']: undefined },
+			'Ab', 'bA', ['Ab']
 		];
-		const hashes: number[] = candidates.map(hash);
-		for (let i = 0; i < hashes.length; i++) {
-			assert.equal(hashes[i], hash(candidates[i])); // verify that repeated invocation returns the same hash
-			for (let k = i + 1; k < hashes.length; k++) {
-				assert.notEqual(hashes[i], hashes[k], `Same hash ${hashes[i]} for ${JSON.stringify(candidates[i])} and ${JSON.stringify(candidates[k])}`);
+		const hAshes: number[] = cAndidAtes.mAp(hAsh);
+		for (let i = 0; i < hAshes.length; i++) {
+			Assert.equAl(hAshes[i], hAsh(cAndidAtes[i])); // verify thAt repeAted invocAtion returns the sAme hAsh
+			for (let k = i + 1; k < hAshes.length; k++) {
+				Assert.notEquAl(hAshes[i], hAshes[k], `SAme hAsh ${hAshes[i]} for ${JSON.stringify(cAndidAtes[i])} And ${JSON.stringify(cAndidAtes[k])}`);
 			}
 		}
 	});
 
 
 	function checkSHA1(strings: string[], expected: string) {
-		const hash = new StringSHA1();
+		const hAsh = new StringSHA1();
 		for (const str of strings) {
-			hash.update(str);
+			hAsh.updAte(str);
 		}
-		const actual = hash.digest();
-		assert.equal(actual, expected);
+		const ActuAl = hAsh.digest();
+		Assert.equAl(ActuAl, expected);
 	}
 
-	test('sha1-1', () => {
+	test('shA1-1', () => {
 		checkSHA1(['\udd56'], '9bdb77276c1852e1fb067820472812fcf6084024');
 	});
 
-	test('sha1-2', () => {
+	test('shA1-2', () => {
 		checkSHA1(['\udb52'], '9bdb77276c1852e1fb067820472812fcf6084024');
 	});
 
-	test('sha1-3', () => {
-		checkSHA1(['\uda02ꑍ'], '9b483a471f22fe7e09d83f221871a987244bbd3f');
+	test('shA1-3', () => {
+		checkSHA1(['\udA02ꑍ'], '9b483A471f22fe7e09d83f221871A987244bbd3f');
 	});
 
-	test('sha1-4', () => {
-		checkSHA1(['hello'], 'aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d');
+	test('shA1-4', () => {
+		checkSHA1(['hello'], 'AAf4c61ddcc5e8A2dAbede0f3b482cd9AeA9434d');
 	});
 });

@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nativeWatchdog from 'native-watchdog';
-import * as net from 'net';
-import * as minimist from 'minimist';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Event } from 'vs/base/common/event';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { PersistentProtocol, ProtocolConstants, BufferedEmitter } from 'vs/base/parts/ipc/common/ipc.net';
-import { NodeSocket, WebSocketNodeSocket } from 'vs/base/parts/ipc/node/ipc.net';
-import product from 'vs/platform/product/common/product';
-import { IInitData } from 'vs/workbench/api/common/extHost.protocol';
-import { MessageType, createMessageOfType, isMessageOfType, IExtHostSocketMessage, IExtHostReadyMessage, IExtHostReduceGraceTimeMessage } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
-import { ExtensionHostMain, IExitFn } from 'vs/workbench/services/extensions/common/extensionHostMain';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IURITransformer, URITransformer, IRawURITransformer } from 'vs/base/common/uriIpc';
-import { exists } from 'vs/base/node/pfs';
-import { realpath } from 'vs/base/node/extpath';
-import { IHostUtils } from 'vs/workbench/api/common/extHostExtensionService';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import * As nAtiveWAtchdog from 'nAtive-wAtchdog';
+import * As net from 'net';
+import * As minimist from 'minimist';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { Event } from 'vs/bAse/common/event';
+import { IMessAgePAssingProtocol } from 'vs/bAse/pArts/ipc/common/ipc';
+import { PersistentProtocol, ProtocolConstAnts, BufferedEmitter } from 'vs/bAse/pArts/ipc/common/ipc.net';
+import { NodeSocket, WebSocketNodeSocket } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import product from 'vs/plAtform/product/common/product';
+import { IInitDAtA } from 'vs/workbench/Api/common/extHost.protocol';
+import { MessAgeType, creAteMessAgeOfType, isMessAgeOfType, IExtHostSocketMessAge, IExtHostReAdyMessAge, IExtHostReduceGrAceTimeMessAge } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
+import { ExtensionHostMAin, IExitFn } from 'vs/workbench/services/extensions/common/extensionHostMAin';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { IURITrAnsformer, URITrAnsformer, IRAwURITrAnsformer } from 'vs/bAse/common/uriIpc';
+import { exists } from 'vs/bAse/node/pfs';
+import { reAlpAth } from 'vs/bAse/node/extpAth';
+import { IHostUtils } from 'vs/workbench/Api/common/extHostExtensionService';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
 
-import 'vs/workbench/api/common/extHost.common.services';
-import 'vs/workbench/api/node/extHost.node.services';
+import 'vs/workbench/Api/common/extHost.common.services';
+import 'vs/workbench/Api/node/extHost.node.services';
 
-interface ParsedExtHostArgs {
-	uriTransformerPath?: string;
+interfAce PArsedExtHostArgs {
+	uriTrAnsformerPAth?: string;
 	useHostProxy?: string;
 }
 
-// workaround for https://github.com/microsoft/vscode/issues/85490
-// remove --inspect-port=0 after start so that it doesn't trigger LSP debugging
+// workAround for https://github.com/microsoft/vscode/issues/85490
+// remove --inspect-port=0 After stArt so thAt it doesn't trigger LSP debugging
 (function removeInspectPort() {
 	for (let i = 0; i < process.execArgv.length; i++) {
 		if (process.execArgv[i] === '--inspect-port=0') {
@@ -41,62 +41,62 @@ interface ParsedExtHostArgs {
 	}
 })();
 
-const args = minimist(process.argv.slice(2), {
+const Args = minimist(process.Argv.slice(2), {
 	string: [
-		'uriTransformerPath',
+		'uriTrAnsformerPAth',
 		'useHostProxy'
 	]
-}) as ParsedExtHostArgs;
+}) As PArsedExtHostArgs;
 
-// With Electron 2.x and node.js 8.x the "natives" module
-// can cause a native crash (see https://github.com/nodejs/node/issues/19891 and
+// With Electron 2.x And node.js 8.x the "nAtives" module
+// cAn cAuse A nAtive crAsh (see https://github.com/nodejs/node/issues/19891 And
 // https://github.com/electron/electron/issues/10905). To prevent this from
-// happening we essentially blocklist this module from getting loaded in any
-// extension by patching the node require() function.
+// hAppening we essentiAlly blocklist this module from getting loAded in Any
+// extension by pAtching the node require() function.
 (function () {
-	const Module = require.__$__nodeRequire('module') as any;
-	const originalLoad = Module._load;
+	const Module = require.__$__nodeRequire('module') As Any;
+	const originAlLoAd = Module._loAd;
 
-	Module._load = function (request: string) {
-		if (request === 'natives') {
-			throw new Error('Either the extension or a NPM dependency is using the "natives" node module which is unsupported as it can cause a crash of the extension host. Click [here](https://go.microsoft.com/fwlink/?linkid=871887) to find out more');
+	Module._loAd = function (request: string) {
+		if (request === 'nAtives') {
+			throw new Error('Either the extension or A NPM dependency is using the "nAtives" node module which is unsupported As it cAn cAuse A crAsh of the extension host. Click [here](https://go.microsoft.com/fwlink/?linkid=871887) to find out more');
 		}
 
-		return originalLoad.apply(this, arguments);
+		return originAlLoAd.Apply(this, Arguments);
 	};
 })();
 
 // custom process.exit logic...
-const nativeExit: IExitFn = process.exit.bind(process);
-function patchProcess(allowExit: boolean) {
+const nAtiveExit: IExitFn = process.exit.bind(process);
+function pAtchProcess(AllowExit: booleAn) {
 	process.exit = function (code?: number) {
-		if (allowExit) {
-			nativeExit(code);
+		if (AllowExit) {
+			nAtiveExit(code);
 		} else {
-			const err = new Error('An extension called process.exit() and this was prevented.');
-			console.warn(err.stack);
+			const err = new Error('An extension cAlled process.exit() And this wAs prevented.');
+			console.wArn(err.stAck);
 		}
-	} as (code?: number) => never;
+	} As (code?: number) => never;
 
-	// override Electron's process.crash() method
-	process.crash = function () {
-		const err = new Error('An extension called process.crash() and this was prevented.');
-		console.warn(err.stack);
+	// override Electron's process.crAsh() method
+	process.crAsh = function () {
+		const err = new Error('An extension cAlled process.crAsh() And this wAs prevented.');
+		console.wArn(err.stAck);
 	};
 }
 
-interface IRendererConnection {
-	protocol: IMessagePassingProtocol;
-	initData: IInitData;
+interfAce IRendererConnection {
+	protocol: IMessAgePAssingProtocol;
+	initDAtA: IInitDAtA;
 }
 
-// This calls exit directly in case the initialization is not finished and we need to exit
-// Otherwise, if initialization completed we go to extensionHostMain.terminate()
-let onTerminate = function () {
-	nativeExit();
+// This cAlls exit directly in cAse the initiAlizAtion is not finished And we need to exit
+// Otherwise, if initiAlizAtion completed we go to extensionHostMAin.terminAte()
+let onTerminAte = function () {
+	nAtiveExit();
 };
 
-function _createExtHostProtocol(): Promise<PersistentProtocol> {
+function _creAteExtHostProtocol(): Promise<PersistentProtocol> {
 	if (process.env.VSCODE_EXTHOST_WILL_SEND_SOCKET) {
 
 		return new Promise<PersistentProtocol>((resolve, reject) => {
@@ -107,53 +107,53 @@ function _createExtHostProtocol(): Promise<PersistentProtocol> {
 				reject(new Error('VSCODE_EXTHOST_IPC_SOCKET timeout'));
 			}, 60000);
 
-			const reconnectionGraceTime = ProtocolConstants.ReconnectionGraceTime;
-			const reconnectionShortGraceTime = ProtocolConstants.ReconnectionShortGraceTime;
-			const disconnectRunner1 = new RunOnceScheduler(() => onTerminate(), reconnectionGraceTime);
-			const disconnectRunner2 = new RunOnceScheduler(() => onTerminate(), reconnectionShortGraceTime);
+			const reconnectionGrAceTime = ProtocolConstAnts.ReconnectionGrAceTime;
+			const reconnectionShortGrAceTime = ProtocolConstAnts.ReconnectionShortGrAceTime;
+			const disconnectRunner1 = new RunOnceScheduler(() => onTerminAte(), reconnectionGrAceTime);
+			const disconnectRunner2 = new RunOnceScheduler(() => onTerminAte(), reconnectionShortGrAceTime);
 
-			process.on('message', (msg: IExtHostSocketMessage | IExtHostReduceGraceTimeMessage, handle: net.Socket) => {
+			process.on('messAge', (msg: IExtHostSocketMessAge | IExtHostReduceGrAceTimeMessAge, hAndle: net.Socket) => {
 				if (msg && msg.type === 'VSCODE_EXTHOST_IPC_SOCKET') {
-					const initialDataChunk = VSBuffer.wrap(Buffer.from(msg.initialDataChunk, 'base64'));
+					const initiAlDAtAChunk = VSBuffer.wrAp(Buffer.from(msg.initiAlDAtAChunk, 'bAse64'));
 					let socket: NodeSocket | WebSocketNodeSocket;
-					if (msg.skipWebSocketFrames) {
-						socket = new NodeSocket(handle);
+					if (msg.skipWebSocketFrAmes) {
+						socket = new NodeSocket(hAndle);
 					} else {
-						socket = new WebSocketNodeSocket(new NodeSocket(handle));
+						socket = new WebSocketNodeSocket(new NodeSocket(hAndle));
 					}
 					if (protocol) {
-						// reconnection case
-						disconnectRunner1.cancel();
-						disconnectRunner2.cancel();
-						protocol.beginAcceptReconnection(socket, initialDataChunk);
+						// reconnection cAse
+						disconnectRunner1.cAncel();
+						disconnectRunner2.cAncel();
+						protocol.beginAcceptReconnection(socket, initiAlDAtAChunk);
 						protocol.endAcceptReconnection();
 					} else {
-						clearTimeout(timer);
-						protocol = new PersistentProtocol(socket, initialDataChunk);
-						protocol.onClose(() => onTerminate());
+						cleArTimeout(timer);
+						protocol = new PersistentProtocol(socket, initiAlDAtAChunk);
+						protocol.onClose(() => onTerminAte());
 						resolve(protocol);
 
-						// Wait for rich client to reconnect
+						// WAit for rich client to reconnect
 						protocol.onSocketClose(() => {
-							// The socket has closed, let's give the renderer a certain amount of time to reconnect
+							// The socket hAs closed, let's give the renderer A certAin Amount of time to reconnect
 							disconnectRunner1.schedule();
 						});
 					}
 				}
 				if (msg && msg.type === 'VSCODE_EXTHOST_IPC_REDUCE_GRACE_TIME') {
 					if (disconnectRunner2.isScheduled()) {
-						// we are disconnected and already running the short reconnection timer
+						// we Are disconnected And AlreAdy running the short reconnection timer
 						return;
 					}
 					if (disconnectRunner1.isScheduled()) {
-						// we are disconnected and running the long reconnection timer
+						// we Are disconnected And running the long reconnection timer
 						disconnectRunner2.schedule();
 					}
 				}
 			});
 
-			// Now that we have managed to install a message listener, ask the other side to send us the socket
-			const req: IExtHostReadyMessage = { type: 'VSCODE_EXTHOST_IPC_READY' };
+			// Now thAt we hAve mAnAged to instAll A messAge listener, Ask the other side to send us the socket
+			const req: IExtHostReAdyMessAge = { type: 'VSCODE_EXTHOST_IPC_READY' };
 			if (process.send) {
 				process.send(req);
 			}
@@ -161,11 +161,11 @@ function _createExtHostProtocol(): Promise<PersistentProtocol> {
 
 	} else {
 
-		const pipeName = process.env.VSCODE_IPC_HOOK_EXTHOST!;
+		const pipeNAme = process.env.VSCODE_IPC_HOOK_EXTHOST!;
 
 		return new Promise<PersistentProtocol>((resolve, reject) => {
 
-			const socket = net.createConnection(pipeName, () => {
+			const socket = net.creAteConnection(pipeNAme, () => {
 				socket.removeListener('error', reject);
 				resolve(new PersistentProtocol(new NodeSocket(socket)));
 			});
@@ -175,161 +175,161 @@ function _createExtHostProtocol(): Promise<PersistentProtocol> {
 	}
 }
 
-async function createExtHostProtocol(): Promise<IMessagePassingProtocol> {
+Async function creAteExtHostProtocol(): Promise<IMessAgePAssingProtocol> {
 
-	const protocol = await _createExtHostProtocol();
+	const protocol = AwAit _creAteExtHostProtocol();
 
-	return new class implements IMessagePassingProtocol {
+	return new clAss implements IMessAgePAssingProtocol {
 
-		private readonly _onMessage = new BufferedEmitter<VSBuffer>();
-		readonly onMessage: Event<VSBuffer> = this._onMessage.event;
+		privAte reAdonly _onMessAge = new BufferedEmitter<VSBuffer>();
+		reAdonly onMessAge: Event<VSBuffer> = this._onMessAge.event;
 
-		private _terminating: boolean;
+		privAte _terminAting: booleAn;
 
 		constructor() {
-			this._terminating = false;
-			protocol.onMessage((msg) => {
-				if (isMessageOfType(msg, MessageType.Terminate)) {
-					this._terminating = true;
-					onTerminate();
+			this._terminAting = fAlse;
+			protocol.onMessAge((msg) => {
+				if (isMessAgeOfType(msg, MessAgeType.TerminAte)) {
+					this._terminAting = true;
+					onTerminAte();
 				} else {
-					this._onMessage.fire(msg);
+					this._onMessAge.fire(msg);
 				}
 			});
 		}
 
-		send(msg: any): void {
-			if (!this._terminating) {
+		send(msg: Any): void {
+			if (!this._terminAting) {
 				protocol.send(msg);
 			}
 		}
 
-		drain(): Promise<void> {
-			return protocol.drain();
+		drAin(): Promise<void> {
+			return protocol.drAin();
 		}
 	};
 }
 
-function connectToRenderer(protocol: IMessagePassingProtocol): Promise<IRendererConnection> {
+function connectToRenderer(protocol: IMessAgePAssingProtocol): Promise<IRendererConnection> {
 	return new Promise<IRendererConnection>((c) => {
 
-		// Listen init data message
-		const first = protocol.onMessage(raw => {
+		// Listen init dAtA messAge
+		const first = protocol.onMessAge(rAw => {
 			first.dispose();
 
-			const initData = <IInitData>JSON.parse(raw.toString());
+			const initDAtA = <IInitDAtA>JSON.pArse(rAw.toString());
 
-			const rendererCommit = initData.commit;
+			const rendererCommit = initDAtA.commit;
 			const myCommit = product.commit;
 
 			if (rendererCommit && myCommit) {
-				// Running in the built version where commits are defined
+				// Running in the built version where commits Are defined
 				if (rendererCommit !== myCommit) {
-					nativeExit(55);
+					nAtiveExit(55);
 				}
 			}
 
-			// Print a console message when rejection isn't handled within N seconds. For details:
-			// see https://nodejs.org/api/process.html#process_event_unhandledrejection
-			// and https://nodejs.org/api/process.html#process_event_rejectionhandled
-			const unhandledPromises: Promise<any>[] = [];
-			process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
-				unhandledPromises.push(promise);
+			// Print A console messAge when rejection isn't hAndled within N seconds. For detAils:
+			// see https://nodejs.org/Api/process.html#process_event_unhAndledrejection
+			// And https://nodejs.org/Api/process.html#process_event_rejectionhAndled
+			const unhAndledPromises: Promise<Any>[] = [];
+			process.on('unhAndledRejection', (reAson: Any, promise: Promise<Any>) => {
+				unhAndledPromises.push(promise);
 				setTimeout(() => {
-					const idx = unhandledPromises.indexOf(promise);
+					const idx = unhAndledPromises.indexOf(promise);
 					if (idx >= 0) {
-						promise.catch(e => {
-							unhandledPromises.splice(idx, 1);
-							console.warn(`rejected promise not handled within 1 second: ${e}`);
-							if (e && e.stack) {
-								console.warn(`stack trace: ${e.stack}`);
+						promise.cAtch(e => {
+							unhAndledPromises.splice(idx, 1);
+							console.wArn(`rejected promise not hAndled within 1 second: ${e}`);
+							if (e && e.stAck) {
+								console.wArn(`stAck trAce: ${e.stAck}`);
 							}
-							onUnexpectedError(reason);
+							onUnexpectedError(reAson);
 						});
 					}
 				}, 1000);
 			});
 
-			process.on('rejectionHandled', (promise: Promise<any>) => {
-				const idx = unhandledPromises.indexOf(promise);
+			process.on('rejectionHAndled', (promise: Promise<Any>) => {
+				const idx = unhAndledPromises.indexOf(promise);
 				if (idx >= 0) {
-					unhandledPromises.splice(idx, 1);
+					unhAndledPromises.splice(idx, 1);
 				}
 			});
 
-			// Print a console message when an exception isn't handled.
-			process.on('uncaughtException', function (err: Error) {
+			// Print A console messAge when An exception isn't hAndled.
+			process.on('uncAughtException', function (err: Error) {
 				onUnexpectedError(err);
 			});
 
-			// Kill oneself if one's parent dies. Much drama.
-			setInterval(function () {
+			// Kill oneself if one's pArent dies. Much drAmA.
+			setIntervAl(function () {
 				try {
-					process.kill(initData.parentPid, 0); // throws an exception if the main process doesn't exist anymore.
-				} catch (e) {
-					onTerminate();
+					process.kill(initDAtA.pArentPid, 0); // throws An exception if the mAin process doesn't exist Anymore.
+				} cAtch (e) {
+					onTerminAte();
 				}
 			}, 1000);
 
-			// In certain cases, the event loop can become busy and never yield
+			// In certAin cAses, the event loop cAn become busy And never yield
 			// e.g. while-true or process.nextTick endless loops
-			// So also use the native node module to do it from a separate thread
-			let watchdog: typeof nativeWatchdog;
+			// So Also use the nAtive node module to do it from A sepArAte threAd
+			let wAtchdog: typeof nAtiveWAtchdog;
 			try {
-				watchdog = require.__$__nodeRequire('native-watchdog');
-				watchdog.start(initData.parentPid);
-			} catch (err) {
+				wAtchdog = require.__$__nodeRequire('nAtive-wAtchdog');
+				wAtchdog.stArt(initDAtA.pArentPid);
+			} cAtch (err) {
 				// no problem...
 				onUnexpectedError(err);
 			}
 
-			// Tell the outside that we are initialized
-			protocol.send(createMessageOfType(MessageType.Initialized));
+			// Tell the outside thAt we Are initiAlized
+			protocol.send(creAteMessAgeOfType(MessAgeType.InitiAlized));
 
-			c({ protocol, initData });
+			c({ protocol, initDAtA });
 		});
 
-		// Tell the outside that we are ready to receive messages
-		protocol.send(createMessageOfType(MessageType.Ready));
+		// Tell the outside thAt we Are reAdy to receive messAges
+		protocol.send(creAteMessAgeOfType(MessAgeType.ReAdy));
 	});
 }
 
-export async function startExtensionHostProcess(): Promise<void> {
+export Async function stArtExtensionHostProcess(): Promise<void> {
 
-	const protocol = await createExtHostProtocol();
-	const renderer = await connectToRenderer(protocol);
-	const { initData } = renderer;
+	const protocol = AwAit creAteExtHostProtocol();
+	const renderer = AwAit connectToRenderer(protocol);
+	const { initDAtA } = renderer;
 	// setup things
-	patchProcess(!!initData.environment.extensionTestsLocationURI); // to support other test frameworks like Jasmin that use process.exit (https://github.com/microsoft/vscode/issues/37708)
-	initData.environment.useHostProxy = args.useHostProxy !== undefined ? args.useHostProxy !== 'false' : undefined;
+	pAtchProcess(!!initDAtA.environment.extensionTestsLocAtionURI); // to support other test frAmeworks like JAsmin thAt use process.exit (https://github.com/microsoft/vscode/issues/37708)
+	initDAtA.environment.useHostProxy = Args.useHostProxy !== undefined ? Args.useHostProxy !== 'fAlse' : undefined;
 
-	// host abstraction
-	const hostUtils = new class NodeHost implements IHostUtils {
-		declare readonly _serviceBrand: undefined;
-		exit(code: number) { nativeExit(code); }
-		exists(path: string) { return exists(path); }
-		realpath(path: string) { return realpath(path); }
+	// host AbstrAction
+	const hostUtils = new clAss NodeHost implements IHostUtils {
+		declAre reAdonly _serviceBrAnd: undefined;
+		exit(code: number) { nAtiveExit(code); }
+		exists(pAth: string) { return exists(pAth); }
+		reAlpAth(pAth: string) { return reAlpAth(pAth); }
 	};
 
-	// Attempt to load uri transformer
-	let uriTransformer: IURITransformer | null = null;
-	if (initData.remote.authority && args.uriTransformerPath) {
+	// Attempt to loAd uri trAnsformer
+	let uriTrAnsformer: IURITrAnsformer | null = null;
+	if (initDAtA.remote.Authority && Args.uriTrAnsformerPAth) {
 		try {
-			const rawURITransformerFactory = <any>require.__$__nodeRequire(args.uriTransformerPath);
-			const rawURITransformer = <IRawURITransformer>rawURITransformerFactory(initData.remote.authority);
-			uriTransformer = new URITransformer(rawURITransformer);
-		} catch (e) {
+			const rAwURITrAnsformerFActory = <Any>require.__$__nodeRequire(Args.uriTrAnsformerPAth);
+			const rAwURITrAnsformer = <IRAwURITrAnsformer>rAwURITrAnsformerFActory(initDAtA.remote.Authority);
+			uriTrAnsformer = new URITrAnsformer(rAwURITrAnsformer);
+		} cAtch (e) {
 			console.error(e);
 		}
 	}
 
-	const extensionHostMain = new ExtensionHostMain(
+	const extensionHostMAin = new ExtensionHostMAin(
 		renderer.protocol,
-		initData,
+		initDAtA,
 		hostUtils,
-		uriTransformer
+		uriTrAnsformer
 	);
 
-	// rewrite onTerminate-function to be a proper shutdown
-	onTerminate = () => extensionHostMain.terminate();
+	// rewrite onTerminAte-function to be A proper shutdown
+	onTerminAte = () => extensionHostMAin.terminAte();
 }

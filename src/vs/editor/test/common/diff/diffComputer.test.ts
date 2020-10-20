@@ -1,139 +1,139 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { DiffComputer } from 'vs/editor/common/diff/diffComputer';
-import { IChange, ICharChange, ILineChange } from 'vs/editor/common/editorCommon';
+import { IChAnge, IChArChAnge, ILineChAnge } from 'vs/editor/common/editorCommon';
 
-function extractCharChangeRepresentation(change: ICharChange, expectedChange: ICharChange | null): ICharChange {
-	let hasOriginal = expectedChange && expectedChange.originalStartLineNumber > 0;
-	let hasModified = expectedChange && expectedChange.modifiedStartLineNumber > 0;
+function extrActChArChAngeRepresentAtion(chAnge: IChArChAnge, expectedChAnge: IChArChAnge | null): IChArChAnge {
+	let hAsOriginAl = expectedChAnge && expectedChAnge.originAlStArtLineNumber > 0;
+	let hAsModified = expectedChAnge && expectedChAnge.modifiedStArtLineNumber > 0;
 	return {
-		originalStartLineNumber: hasOriginal ? change.originalStartLineNumber : 0,
-		originalStartColumn: hasOriginal ? change.originalStartColumn : 0,
-		originalEndLineNumber: hasOriginal ? change.originalEndLineNumber : 0,
-		originalEndColumn: hasOriginal ? change.originalEndColumn : 0,
+		originAlStArtLineNumber: hAsOriginAl ? chAnge.originAlStArtLineNumber : 0,
+		originAlStArtColumn: hAsOriginAl ? chAnge.originAlStArtColumn : 0,
+		originAlEndLineNumber: hAsOriginAl ? chAnge.originAlEndLineNumber : 0,
+		originAlEndColumn: hAsOriginAl ? chAnge.originAlEndColumn : 0,
 
-		modifiedStartLineNumber: hasModified ? change.modifiedStartLineNumber : 0,
-		modifiedStartColumn: hasModified ? change.modifiedStartColumn : 0,
-		modifiedEndLineNumber: hasModified ? change.modifiedEndLineNumber : 0,
-		modifiedEndColumn: hasModified ? change.modifiedEndColumn : 0,
+		modifiedStArtLineNumber: hAsModified ? chAnge.modifiedStArtLineNumber : 0,
+		modifiedStArtColumn: hAsModified ? chAnge.modifiedStArtColumn : 0,
+		modifiedEndLineNumber: hAsModified ? chAnge.modifiedEndLineNumber : 0,
+		modifiedEndColumn: hAsModified ? chAnge.modifiedEndColumn : 0,
 	};
 }
 
-function extractLineChangeRepresentation(change: ILineChange, expectedChange: ILineChange): IChange | ILineChange {
-	if (change.charChanges) {
-		let charChanges: ICharChange[] = [];
-		for (let i = 0; i < change.charChanges.length; i++) {
-			charChanges.push(
-				extractCharChangeRepresentation(
-					change.charChanges[i],
-					expectedChange && expectedChange.charChanges && i < expectedChange.charChanges.length ? expectedChange.charChanges[i] : null
+function extrActLineChAngeRepresentAtion(chAnge: ILineChAnge, expectedChAnge: ILineChAnge): IChAnge | ILineChAnge {
+	if (chAnge.chArChAnges) {
+		let chArChAnges: IChArChAnge[] = [];
+		for (let i = 0; i < chAnge.chArChAnges.length; i++) {
+			chArChAnges.push(
+				extrActChArChAngeRepresentAtion(
+					chAnge.chArChAnges[i],
+					expectedChAnge && expectedChAnge.chArChAnges && i < expectedChAnge.chArChAnges.length ? expectedChAnge.chArChAnges[i] : null
 				)
 			);
 		}
 		return {
-			originalStartLineNumber: change.originalStartLineNumber,
-			originalEndLineNumber: change.originalEndLineNumber,
-			modifiedStartLineNumber: change.modifiedStartLineNumber,
-			modifiedEndLineNumber: change.modifiedEndLineNumber,
-			charChanges: charChanges
+			originAlStArtLineNumber: chAnge.originAlStArtLineNumber,
+			originAlEndLineNumber: chAnge.originAlEndLineNumber,
+			modifiedStArtLineNumber: chAnge.modifiedStArtLineNumber,
+			modifiedEndLineNumber: chAnge.modifiedEndLineNumber,
+			chArChAnges: chArChAnges
 		};
 	}
 	return {
-		originalStartLineNumber: change.originalStartLineNumber,
-		originalEndLineNumber: change.originalEndLineNumber,
-		modifiedStartLineNumber: change.modifiedStartLineNumber,
-		modifiedEndLineNumber: change.modifiedEndLineNumber,
-		charChanges: undefined
+		originAlStArtLineNumber: chAnge.originAlStArtLineNumber,
+		originAlEndLineNumber: chAnge.originAlEndLineNumber,
+		modifiedStArtLineNumber: chAnge.modifiedStArtLineNumber,
+		modifiedEndLineNumber: chAnge.modifiedEndLineNumber,
+		chArChAnges: undefined
 	};
 }
 
-function assertDiff(originalLines: string[], modifiedLines: string[], expectedChanges: IChange[], shouldComputeCharChanges: boolean = true, shouldPostProcessCharChanges: boolean = false, shouldIgnoreTrimWhitespace: boolean = false) {
-	let diffComputer = new DiffComputer(originalLines, modifiedLines, {
-		shouldComputeCharChanges,
-		shouldPostProcessCharChanges,
-		shouldIgnoreTrimWhitespace,
-		shouldMakePrettyDiff: true,
-		maxComputationTime: 0
+function AssertDiff(originAlLines: string[], modifiedLines: string[], expectedChAnges: IChAnge[], shouldComputeChArChAnges: booleAn = true, shouldPostProcessChArChAnges: booleAn = fAlse, shouldIgnoreTrimWhitespAce: booleAn = fAlse) {
+	let diffComputer = new DiffComputer(originAlLines, modifiedLines, {
+		shouldComputeChArChAnges,
+		shouldPostProcessChArChAnges,
+		shouldIgnoreTrimWhitespAce,
+		shouldMAkePrettyDiff: true,
+		mAxComputAtionTime: 0
 	});
-	let changes = diffComputer.computeDiff().changes;
+	let chAnges = diffComputer.computeDiff().chAnges;
 
-	let extracted: IChange[] = [];
-	for (let i = 0; i < changes.length; i++) {
-		extracted.push(extractLineChangeRepresentation(changes[i], <ILineChange>(i < expectedChanges.length ? expectedChanges[i] : null)));
+	let extrActed: IChAnge[] = [];
+	for (let i = 0; i < chAnges.length; i++) {
+		extrActed.push(extrActLineChAngeRepresentAtion(chAnges[i], <ILineChAnge>(i < expectedChAnges.length ? expectedChAnges[i] : null)));
 	}
-	assert.deepEqual(extracted, expectedChanges);
+	Assert.deepEquAl(extrActed, expectedChAnges);
 }
 
-function createLineDeletion(startLineNumber: number, endLineNumber: number, modifiedLineNumber: number): ILineChange {
+function creAteLineDeletion(stArtLineNumber: number, endLineNumber: number, modifiedLineNumber: number): ILineChAnge {
 	return {
-		originalStartLineNumber: startLineNumber,
-		originalEndLineNumber: endLineNumber,
-		modifiedStartLineNumber: modifiedLineNumber,
+		originAlStArtLineNumber: stArtLineNumber,
+		originAlEndLineNumber: endLineNumber,
+		modifiedStArtLineNumber: modifiedLineNumber,
 		modifiedEndLineNumber: 0,
-		charChanges: undefined
+		chArChAnges: undefined
 	};
 }
 
-function createLineInsertion(startLineNumber: number, endLineNumber: number, originalLineNumber: number): ILineChange {
+function creAteLineInsertion(stArtLineNumber: number, endLineNumber: number, originAlLineNumber: number): ILineChAnge {
 	return {
-		originalStartLineNumber: originalLineNumber,
-		originalEndLineNumber: 0,
-		modifiedStartLineNumber: startLineNumber,
+		originAlStArtLineNumber: originAlLineNumber,
+		originAlEndLineNumber: 0,
+		modifiedStArtLineNumber: stArtLineNumber,
 		modifiedEndLineNumber: endLineNumber,
-		charChanges: undefined
+		chArChAnges: undefined
 	};
 }
 
-function createLineChange(originalStartLineNumber: number, originalEndLineNumber: number, modifiedStartLineNumber: number, modifiedEndLineNumber: number, charChanges?: ICharChange[]): ILineChange {
+function creAteLineChAnge(originAlStArtLineNumber: number, originAlEndLineNumber: number, modifiedStArtLineNumber: number, modifiedEndLineNumber: number, chArChAnges?: IChArChAnge[]): ILineChAnge {
 	return {
-		originalStartLineNumber: originalStartLineNumber,
-		originalEndLineNumber: originalEndLineNumber,
-		modifiedStartLineNumber: modifiedStartLineNumber,
+		originAlStArtLineNumber: originAlStArtLineNumber,
+		originAlEndLineNumber: originAlEndLineNumber,
+		modifiedStArtLineNumber: modifiedStArtLineNumber,
 		modifiedEndLineNumber: modifiedEndLineNumber,
-		charChanges: charChanges
+		chArChAnges: chArChAnges
 	};
 }
 
-function createCharInsertion(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) {
+function creAteChArInsertion(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number) {
 	return {
-		originalStartLineNumber: 0,
-		originalStartColumn: 0,
-		originalEndLineNumber: 0,
-		originalEndColumn: 0,
-		modifiedStartLineNumber: startLineNumber,
-		modifiedStartColumn: startColumn,
+		originAlStArtLineNumber: 0,
+		originAlStArtColumn: 0,
+		originAlEndLineNumber: 0,
+		originAlEndColumn: 0,
+		modifiedStArtLineNumber: stArtLineNumber,
+		modifiedStArtColumn: stArtColumn,
 		modifiedEndLineNumber: endLineNumber,
 		modifiedEndColumn: endColumn
 	};
 }
 
-function createCharDeletion(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) {
+function creAteChArDeletion(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number) {
 	return {
-		originalStartLineNumber: startLineNumber,
-		originalStartColumn: startColumn,
-		originalEndLineNumber: endLineNumber,
-		originalEndColumn: endColumn,
-		modifiedStartLineNumber: 0,
-		modifiedStartColumn: 0,
+		originAlStArtLineNumber: stArtLineNumber,
+		originAlStArtColumn: stArtColumn,
+		originAlEndLineNumber: endLineNumber,
+		originAlEndColumn: endColumn,
+		modifiedStArtLineNumber: 0,
+		modifiedStArtColumn: 0,
 		modifiedEndLineNumber: 0,
 		modifiedEndColumn: 0
 	};
 }
 
-function createCharChange(
-	originalStartLineNumber: number, originalStartColumn: number, originalEndLineNumber: number, originalEndColumn: number,
-	modifiedStartLineNumber: number, modifiedStartColumn: number, modifiedEndLineNumber: number, modifiedEndColumn: number
+function creAteChArChAnge(
+	originAlStArtLineNumber: number, originAlStArtColumn: number, originAlEndLineNumber: number, originAlEndColumn: number,
+	modifiedStArtLineNumber: number, modifiedStArtColumn: number, modifiedEndLineNumber: number, modifiedEndColumn: number
 ) {
 	return {
-		originalStartLineNumber: originalStartLineNumber,
-		originalStartColumn: originalStartColumn,
-		originalEndLineNumber: originalEndLineNumber,
-		originalEndColumn: originalEndColumn,
-		modifiedStartLineNumber: modifiedStartLineNumber,
-		modifiedStartColumn: modifiedStartColumn,
+		originAlStArtLineNumber: originAlStArtLineNumber,
+		originAlStArtColumn: originAlStArtColumn,
+		originAlEndLineNumber: originAlEndLineNumber,
+		originAlEndColumn: originAlEndColumn,
+		modifiedStArtLineNumber: modifiedStArtLineNumber,
+		modifiedStArtColumn: modifiedStArtColumn,
 		modifiedEndLineNumber: modifiedEndLineNumber,
 		modifiedEndColumn: modifiedEndColumn
 	};
@@ -144,333 +144,333 @@ suite('Editor Diff - DiffComputer', () => {
 	// ---- insertions
 
 	test('one inserted line below', () => {
-		let original = ['line'];
+		let originAl = ['line'];
 		let modified = ['line', 'new line'];
-		let expected = [createLineInsertion(2, 2, 1)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineInsertion(2, 2, 1)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('two inserted lines below', () => {
-		let original = ['line'];
-		let modified = ['line', 'new line', 'another new line'];
-		let expected = [createLineInsertion(2, 3, 1)];
-		assertDiff(original, modified, expected);
+		let originAl = ['line'];
+		let modified = ['line', 'new line', 'Another new line'];
+		let expected = [creAteLineInsertion(2, 3, 1)];
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one inserted line above', () => {
-		let original = ['line'];
+	test('one inserted line Above', () => {
+		let originAl = ['line'];
 		let modified = ['new line', 'line'];
-		let expected = [createLineInsertion(1, 1, 0)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineInsertion(1, 1, 0)];
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('two inserted lines above', () => {
-		let original = ['line'];
-		let modified = ['new line', 'another new line', 'line'];
-		let expected = [createLineInsertion(1, 2, 0)];
-		assertDiff(original, modified, expected);
+	test('two inserted lines Above', () => {
+		let originAl = ['line'];
+		let modified = ['new line', 'Another new line', 'line'];
+		let expected = [creAteLineInsertion(1, 2, 0)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('one inserted line in middle', () => {
-		let original = ['line1', 'line2', 'line3', 'line4'];
+		let originAl = ['line1', 'line2', 'line3', 'line4'];
 		let modified = ['line1', 'line2', 'new line', 'line3', 'line4'];
-		let expected = [createLineInsertion(3, 3, 2)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineInsertion(3, 3, 2)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('two inserted lines in middle', () => {
-		let original = ['line1', 'line2', 'line3', 'line4'];
-		let modified = ['line1', 'line2', 'new line', 'another new line', 'line3', 'line4'];
-		let expected = [createLineInsertion(3, 4, 2)];
-		assertDiff(original, modified, expected);
+		let originAl = ['line1', 'line2', 'line3', 'line4'];
+		let modified = ['line1', 'line2', 'new line', 'Another new line', 'line3', 'line4'];
+		let expected = [creAteLineInsertion(3, 4, 2)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('two inserted lines in middle interrupted', () => {
-		let original = ['line1', 'line2', 'line3', 'line4'];
-		let modified = ['line1', 'line2', 'new line', 'line3', 'another new line', 'line4'];
-		let expected = [createLineInsertion(3, 3, 2), createLineInsertion(5, 5, 3)];
-		assertDiff(original, modified, expected);
+		let originAl = ['line1', 'line2', 'line3', 'line4'];
+		let modified = ['line1', 'line2', 'new line', 'line3', 'Another new line', 'line4'];
+		let expected = [creAteLineInsertion(3, 3, 2), creAteLineInsertion(5, 5, 3)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	// ---- deletions
 
 	test('one deleted line below', () => {
-		let original = ['line', 'new line'];
+		let originAl = ['line', 'new line'];
 		let modified = ['line'];
-		let expected = [createLineDeletion(2, 2, 1)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(2, 2, 1)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('two deleted lines below', () => {
-		let original = ['line', 'new line', 'another new line'];
+		let originAl = ['line', 'new line', 'Another new line'];
 		let modified = ['line'];
-		let expected = [createLineDeletion(2, 3, 1)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(2, 3, 1)];
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one deleted lines above', () => {
-		let original = ['new line', 'line'];
+	test('one deleted lines Above', () => {
+		let originAl = ['new line', 'line'];
 		let modified = ['line'];
-		let expected = [createLineDeletion(1, 1, 0)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(1, 1, 0)];
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('two deleted lines above', () => {
-		let original = ['new line', 'another new line', 'line'];
+	test('two deleted lines Above', () => {
+		let originAl = ['new line', 'Another new line', 'line'];
 		let modified = ['line'];
-		let expected = [createLineDeletion(1, 2, 0)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(1, 2, 0)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('one deleted line in middle', () => {
-		let original = ['line1', 'line2', 'new line', 'line3', 'line4'];
+		let originAl = ['line1', 'line2', 'new line', 'line3', 'line4'];
 		let modified = ['line1', 'line2', 'line3', 'line4'];
-		let expected = [createLineDeletion(3, 3, 2)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(3, 3, 2)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('two deleted lines in middle', () => {
-		let original = ['line1', 'line2', 'new line', 'another new line', 'line3', 'line4'];
+		let originAl = ['line1', 'line2', 'new line', 'Another new line', 'line3', 'line4'];
 		let modified = ['line1', 'line2', 'line3', 'line4'];
-		let expected = [createLineDeletion(3, 4, 2)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(3, 4, 2)];
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('two deleted lines in middle interrupted', () => {
-		let original = ['line1', 'line2', 'new line', 'line3', 'another new line', 'line4'];
+		let originAl = ['line1', 'line2', 'new line', 'line3', 'Another new line', 'line4'];
 		let modified = ['line1', 'line2', 'line3', 'line4'];
-		let expected = [createLineDeletion(3, 3, 2), createLineDeletion(5, 5, 3)];
-		assertDiff(original, modified, expected);
+		let expected = [creAteLineDeletion(3, 3, 2), creAteLineDeletion(5, 5, 3)];
+		AssertDiff(originAl, modified, expected);
 	});
 
-	// ---- changes
+	// ---- chAnges
 
-	test('one line changed: chars inserted at the end', () => {
-		let original = ['line'];
-		let modified = ['line changed'];
+	test('one line chAnged: chArs inserted At the end', () => {
+		let originAl = ['line'];
+		let modified = ['line chAnged'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharInsertion(1, 5, 1, 13)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArInsertion(1, 5, 1, 13)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one line changed: chars inserted at the beginning', () => {
-		let original = ['line'];
+	test('one line chAnged: chArs inserted At the beginning', () => {
+		let originAl = ['line'];
 		let modified = ['my line'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharInsertion(1, 1, 1, 4)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArInsertion(1, 1, 1, 4)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one line changed: chars inserted in the middle', () => {
-		let original = ['abba'];
-		let modified = ['abzzba'];
+	test('one line chAnged: chArs inserted in the middle', () => {
+		let originAl = ['AbbA'];
+		let modified = ['AbzzbA'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharInsertion(1, 3, 1, 5)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArInsertion(1, 3, 1, 5)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one line changed: chars inserted in the middle (two spots)', () => {
-		let original = ['abba'];
-		let modified = ['abzzbzza'];
+	test('one line chAnged: chArs inserted in the middle (two spots)', () => {
+		let originAl = ['AbbA'];
+		let modified = ['AbzzbzzA'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharInsertion(1, 3, 1, 5),
-				createCharInsertion(1, 6, 1, 8)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArInsertion(1, 3, 1, 5),
+				creAteChArInsertion(1, 6, 1, 8)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one line changed: chars deleted 1', () => {
-		let original = ['abcdefg'];
-		let modified = ['abcfg'];
+	test('one line chAnged: chArs deleted 1', () => {
+		let originAl = ['Abcdefg'];
+		let modified = ['Abcfg'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharDeletion(1, 4, 1, 6)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArDeletion(1, 4, 1, 6)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('one line changed: chars deleted 2', () => {
-		let original = ['abcdefg'];
-		let modified = ['acfg'];
+	test('one line chAnged: chArs deleted 2', () => {
+		let originAl = ['Abcdefg'];
+		let modified = ['Acfg'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharDeletion(1, 2, 1, 3),
-				createCharDeletion(1, 4, 1, 6)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArDeletion(1, 2, 1, 3),
+				creAteChArDeletion(1, 4, 1, 6)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('two lines changed 1', () => {
-		let original = ['abcd', 'efgh'];
-		let modified = ['abcz'];
+	test('two lines chAnged 1', () => {
+		let originAl = ['Abcd', 'efgh'];
+		let modified = ['Abcz'];
 		let expected = [
-			createLineChange(1, 2, 1, 1, [
-				createCharChange(1, 4, 2, 5, 1, 4, 1, 5)
+			creAteLineChAnge(1, 2, 1, 1, [
+				creAteChArChAnge(1, 4, 2, 5, 1, 4, 1, 5)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('two lines changed 2', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
-		let modified = ['foo', 'abcz', 'BAR'];
+	test('two lines chAnged 2', () => {
+		let originAl = ['foo', 'Abcd', 'efgh', 'BAR'];
+		let modified = ['foo', 'Abcz', 'BAR'];
 		let expected = [
-			createLineChange(2, 3, 2, 2, [
-				createCharChange(2, 4, 3, 5, 2, 4, 2, 5)
+			creAteLineChAnge(2, 3, 2, 2, [
+				creAteChArChAnge(2, 4, 3, 5, 2, 4, 2, 5)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('two lines changed 3', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
-		let modified = ['foo', 'abcz', 'zzzzefgh', 'BAR'];
+	test('two lines chAnged 3', () => {
+		let originAl = ['foo', 'Abcd', 'efgh', 'BAR'];
+		let modified = ['foo', 'Abcz', 'zzzzefgh', 'BAR'];
 		let expected = [
-			createLineChange(2, 3, 2, 3, [
-				createCharChange(2, 4, 2, 5, 2, 4, 3, 5)
+			creAteLineChAnge(2, 3, 2, 3, [
+				creAteChArChAnge(2, 4, 2, 5, 2, 4, 3, 5)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('three lines changed', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
+	test('three lines chAnged', () => {
+		let originAl = ['foo', 'Abcd', 'efgh', 'BAR'];
 		let modified = ['foo', 'zzzefgh', 'xxx', 'BAR'];
 		let expected = [
-			createLineChange(2, 3, 2, 3, [
-				createCharChange(2, 1, 2, 5, 2, 1, 2, 4),
-				createCharInsertion(3, 1, 3, 4)
+			creAteLineChAnge(2, 3, 2, 3, [
+				creAteChArChAnge(2, 1, 2, 5, 2, 1, 2, 4),
+				creAteChArInsertion(3, 1, 3, 4)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('big change part 1', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR'];
+	test('big chAnge pArt 1', () => {
+		let originAl = ['foo', 'Abcd', 'efgh', 'BAR'];
 		let modified = ['hello', 'foo', 'zzzefgh', 'xxx', 'BAR'];
 		let expected = [
-			createLineInsertion(1, 1, 0),
-			createLineChange(2, 3, 3, 4, [
-				createCharChange(2, 1, 2, 5, 3, 1, 3, 4),
-				createCharInsertion(4, 1, 4, 4)
+			creAteLineInsertion(1, 1, 0),
+			creAteLineChAnge(2, 3, 3, 4, [
+				creAteChArChAnge(2, 1, 2, 5, 3, 1, 3, 4),
+				creAteChArInsertion(4, 1, 4, 4)
 			])
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('big change part 2', () => {
-		let original = ['foo', 'abcd', 'efgh', 'BAR', 'RAB'];
+	test('big chAnge pArt 2', () => {
+		let originAl = ['foo', 'Abcd', 'efgh', 'BAR', 'RAB'];
 		let modified = ['hello', 'foo', 'zzzefgh', 'xxx', 'BAR'];
 		let expected = [
-			createLineInsertion(1, 1, 0),
-			createLineChange(2, 3, 3, 4, [
-				createCharChange(2, 1, 2, 5, 3, 1, 3, 4),
-				createCharInsertion(4, 1, 4, 4)
+			creAteLineInsertion(1, 1, 0),
+			creAteLineChAnge(2, 3, 3, 4, [
+				creAteChArChAnge(2, 1, 2, 5, 3, 1, 3, 4),
+				creAteChArInsertion(4, 1, 4, 4)
 			]),
-			createLineDeletion(5, 5, 5)
+			creAteLineDeletion(5, 5, 5)
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
-	test('char change postprocessing merges', () => {
-		let original = ['abba'];
-		let modified = ['azzzbzzzbzzza'];
+	test('chAr chAnge postprocessing merges', () => {
+		let originAl = ['AbbA'];
+		let modified = ['AzzzbzzzbzzzA'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharChange(1, 2, 1, 4, 1, 2, 1, 13)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArChAnge(1, 2, 1, 4, 1, 2, 1, 13)
 			])
 		];
-		assertDiff(original, modified, expected, true, true);
+		AssertDiff(originAl, modified, expected, true, true);
 	});
 
-	test('ignore trim whitespace', () => {
-		let original = ['\t\t foo ', 'abcd', 'efgh', '\t\t BAR\t\t'];
+	test('ignore trim whitespAce', () => {
+		let originAl = ['\t\t foo ', 'Abcd', 'efgh', '\t\t BAR\t\t'];
 		let modified = ['  hello\t', '\t foo   \t', 'zzzefgh', 'xxx', '   BAR   \t'];
 		let expected = [
-			createLineInsertion(1, 1, 0),
-			createLineChange(2, 3, 3, 4, [
-				createCharChange(2, 1, 2, 5, 3, 1, 3, 4),
-				createCharInsertion(4, 1, 4, 4)
+			creAteLineInsertion(1, 1, 0),
+			creAteLineChAnge(2, 3, 3, 4, [
+				creAteChArChAnge(2, 1, 2, 5, 3, 1, 3, 4),
+				creAteChArInsertion(4, 1, 4, 4)
 			])
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
-	test('issue #12122 r.hasOwnProperty is not a function', () => {
-		let original = ['hasOwnProperty'];
-		let modified = ['hasOwnProperty', 'and another line'];
+	test('issue #12122 r.hAsOwnProperty is not A function', () => {
+		let originAl = ['hAsOwnProperty'];
+		let modified = ['hAsOwnProperty', 'And Another line'];
 		let expected = [
-			createLineInsertion(2, 2, 1)
+			creAteLineInsertion(2, 2, 1)
 		];
-		assertDiff(original, modified, expected);
+		AssertDiff(originAl, modified, expected);
 	});
 
 	test('empty diff 1', () => {
-		let original = [''];
+		let originAl = [''];
 		let modified = ['something'];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharChange(0, 0, 0, 0, 0, 0, 0, 0)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArChAnge(0, 0, 0, 0, 0, 0, 0, 0)
 			])
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('empty diff 2', () => {
-		let original = [''];
+		let originAl = [''];
 		let modified = ['something', 'something else'];
 		let expected = [
-			createLineChange(1, 1, 1, 2, [
-				createCharChange(0, 0, 0, 0, 0, 0, 0, 0)
+			creAteLineChAnge(1, 1, 1, 2, [
+				creAteChArChAnge(0, 0, 0, 0, 0, 0, 0, 0)
 			])
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('empty diff 3', () => {
-		let original = ['something', 'something else'];
+		let originAl = ['something', 'something else'];
 		let modified = [''];
 		let expected = [
-			createLineChange(1, 2, 1, 1, [
-				createCharChange(0, 0, 0, 0, 0, 0, 0, 0)
+			creAteLineChAnge(1, 2, 1, 1, [
+				creAteChArChAnge(0, 0, 0, 0, 0, 0, 0, 0)
 			])
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('empty diff 4', () => {
-		let original = ['something'];
+		let originAl = ['something'];
 		let modified = [''];
 		let expected = [
-			createLineChange(1, 1, 1, 1, [
-				createCharChange(0, 0, 0, 0, 0, 0, 0, 0)
+			creAteLineChAnge(1, 1, 1, 1, [
+				creAteChArChAnge(0, 0, 0, 0, 0, 0, 0, 0)
 			])
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('pretty diff 1', () => {
-		let original = [
+		let originAl = [
 			'suite(function () {',
 			'	test1() {',
-			'		assert.ok(true);',
+			'		Assert.ok(true);',
 			'	}',
 			'',
 			'	test2() {',
-			'		assert.ok(true);',
+			'		Assert.ok(true);',
 			'	}',
 			'});',
 			'',
@@ -479,32 +479,32 @@ suite('Editor Diff - DiffComputer', () => {
 			'// An insertion',
 			'suite(function () {',
 			'	test1() {',
-			'		assert.ok(true);',
+			'		Assert.ok(true);',
 			'	}',
 			'',
 			'	test2() {',
-			'		assert.ok(true);',
+			'		Assert.ok(true);',
 			'	}',
 			'',
 			'	test3() {',
-			'		assert.ok(true);',
+			'		Assert.ok(true);',
 			'	}',
 			'});',
 			'',
 		];
 		let expected = [
-			createLineInsertion(1, 1, 0),
-			createLineInsertion(10, 13, 8)
+			creAteLineInsertion(1, 1, 0),
+			creAteLineInsertion(10, 13, 8)
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('pretty diff 2', () => {
-		let original = [
-			'// Just a comment',
+		let originAl = [
+			'// Just A comment',
 			'',
-			'function compute(a, b, c, d) {',
-			'	if (a) {',
+			'function compute(A, b, c, d) {',
+			'	if (A) {',
 			'		if (b) {',
 			'			if (c) {',
 			'				return 5;',
@@ -519,13 +519,13 @@ suite('Editor Diff - DiffComputer', () => {
 			'}',
 		];
 		let modified = [
-			'// Here is an inserted line',
-			'// and another inserted line',
-			'// and another one',
-			'// Just a comment',
+			'// Here is An inserted line',
+			'// And Another inserted line',
+			'// And Another one',
+			'// Just A comment',
 			'',
-			'function compute(a, b, c, d) {',
-			'	if (a) {',
+			'function compute(A, b, c, d) {',
+			'	if (A) {',
 			'		if (b) {',
 			'			if (c) {',
 			'				return 5;',
@@ -536,15 +536,15 @@ suite('Editor Diff - DiffComputer', () => {
 			'}',
 		];
 		let expected = [
-			createLineInsertion(1, 3, 0),
-			createLineDeletion(10, 13, 12),
+			creAteLineInsertion(1, 3, 0),
+			creAteLineDeletion(10, 13, 12),
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('pretty diff 3', () => {
-		let original = [
-			'class A {',
+		let originAl = [
+			'clAss A {',
 			'	/**',
 			'	 * m1',
 			'	 */',
@@ -557,7 +557,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'}',
 		];
 		let modified = [
-			'class A {',
+			'clAss A {',
 			'	/**',
 			'	 * m1',
 			'	 */',
@@ -575,129 +575,129 @@ suite('Editor Diff - DiffComputer', () => {
 			'}',
 		];
 		let expected = [
-			createLineInsertion(7, 11, 6)
+			creAteLineInsertion(7, 11, 6)
 		];
-		assertDiff(original, modified, expected, true, false, true);
+		AssertDiff(originAl, modified, expected, true, fAlse, true);
 	});
 
 	test('issue #23636', () => {
-		let original = [
-			'if(!TextDrawLoad[playerid])',
+		let originAl = [
+			'if(!TextDrAwLoAd[plAyerid])',
 			'{',
 			'',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[4]);',
-			'	if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'	TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[3]);',
+			'	TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[4]);',
+			'	if(!AppleJobTreesType[AppleJobTreesPlAyerNum[plAyerid]])',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[5+i]);',
+			'		for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[5+i]);',
 			'	}',
 			'	else',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[15+i]);',
+			'		for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[15+i]);',
 			'	}',
 			'}',
 			'else',
 			'{',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'	TextDrawHideForPlayer(playerid,TD_AppleJob[27]);',
-			'	if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'	TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[3]);',
+			'	TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[27]);',
+			'	if(!AppleJobTreesType[AppleJobTreesPlAyerNum[plAyerid]])',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[28+i]);',
+			'		for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[28+i]);',
 			'	}',
 			'	else',
 			'	{',
-			'		for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[38+i]);',
+			'		for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[38+i]);',
 			'	}',
 			'}',
 		];
 		let modified = [
-			'	if(!TextDrawLoad[playerid])',
+			'	if(!TextDrAwLoAd[plAyerid])',
 			'	{',
 			'	',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[4]);',
-			'		if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'		TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[3]);',
+			'		TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[4]);',
+			'		if(!AppleJobTreesType[AppleJobTreesPlAyerNum[plAyerid]])',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[5+i]);',
+			'			for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[5+i]);',
 			'		}',
 			'		else',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[15+i]);',
+			'			for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[15+i]);',
 			'		}',
 			'	}',
 			'	else',
 			'	{',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[3]);',
-			'		TextDrawHideForPlayer(playerid,TD_AppleJob[27]);',
-			'		if(!AppleJobTreesType[AppleJobTreesPlayerNum[playerid]])',
+			'		TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[3]);',
+			'		TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[27]);',
+			'		if(!AppleJobTreesType[AppleJobTreesPlAyerNum[plAyerid]])',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[28+i]);',
+			'			for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[28+i]);',
 			'		}',
 			'		else',
 			'		{',
-			'			for(new i=0;i<10;i++) if(StatusTD_AppleJobApples[playerid][i]) TextDrawHideForPlayer(playerid,TD_AppleJob[38+i]);',
+			'			for(new i=0;i<10;i++) if(StAtusTD_AppleJobApples[plAyerid][i]) TextDrAwHideForPlAyer(plAyerid,TD_AppleJob[38+i]);',
 			'		}',
 			'	}',
 		];
 		let expected = [
-			createLineChange(
+			creAteLineChAnge(
 				1, 27, 1, 27,
 				[
-					createCharChange(1, 1, 1, 1, 1, 1, 1, 2),
-					createCharChange(2, 1, 2, 1, 2, 1, 2, 2),
-					createCharChange(3, 1, 3, 1, 3, 1, 3, 2),
-					createCharChange(4, 1, 4, 1, 4, 1, 4, 2),
-					createCharChange(5, 1, 5, 1, 5, 1, 5, 2),
-					createCharChange(6, 1, 6, 1, 6, 1, 6, 2),
-					createCharChange(7, 1, 7, 1, 7, 1, 7, 2),
-					createCharChange(8, 1, 8, 1, 8, 1, 8, 2),
-					createCharChange(9, 1, 9, 1, 9, 1, 9, 2),
-					createCharChange(10, 1, 10, 1, 10, 1, 10, 2),
-					createCharChange(11, 1, 11, 1, 11, 1, 11, 2),
-					createCharChange(12, 1, 12, 1, 12, 1, 12, 2),
-					createCharChange(13, 1, 13, 1, 13, 1, 13, 2),
-					createCharChange(14, 1, 14, 1, 14, 1, 14, 2),
-					createCharChange(15, 1, 15, 1, 15, 1, 15, 2),
-					createCharChange(16, 1, 16, 1, 16, 1, 16, 2),
-					createCharChange(17, 1, 17, 1, 17, 1, 17, 2),
-					createCharChange(18, 1, 18, 1, 18, 1, 18, 2),
-					createCharChange(19, 1, 19, 1, 19, 1, 19, 2),
-					createCharChange(20, 1, 20, 1, 20, 1, 20, 2),
-					createCharChange(21, 1, 21, 1, 21, 1, 21, 2),
-					createCharChange(22, 1, 22, 1, 22, 1, 22, 2),
-					createCharChange(23, 1, 23, 1, 23, 1, 23, 2),
-					createCharChange(24, 1, 24, 1, 24, 1, 24, 2),
-					createCharChange(25, 1, 25, 1, 25, 1, 25, 2),
-					createCharChange(26, 1, 26, 1, 26, 1, 26, 2),
-					createCharChange(27, 1, 27, 1, 27, 1, 27, 2),
+					creAteChArChAnge(1, 1, 1, 1, 1, 1, 1, 2),
+					creAteChArChAnge(2, 1, 2, 1, 2, 1, 2, 2),
+					creAteChArChAnge(3, 1, 3, 1, 3, 1, 3, 2),
+					creAteChArChAnge(4, 1, 4, 1, 4, 1, 4, 2),
+					creAteChArChAnge(5, 1, 5, 1, 5, 1, 5, 2),
+					creAteChArChAnge(6, 1, 6, 1, 6, 1, 6, 2),
+					creAteChArChAnge(7, 1, 7, 1, 7, 1, 7, 2),
+					creAteChArChAnge(8, 1, 8, 1, 8, 1, 8, 2),
+					creAteChArChAnge(9, 1, 9, 1, 9, 1, 9, 2),
+					creAteChArChAnge(10, 1, 10, 1, 10, 1, 10, 2),
+					creAteChArChAnge(11, 1, 11, 1, 11, 1, 11, 2),
+					creAteChArChAnge(12, 1, 12, 1, 12, 1, 12, 2),
+					creAteChArChAnge(13, 1, 13, 1, 13, 1, 13, 2),
+					creAteChArChAnge(14, 1, 14, 1, 14, 1, 14, 2),
+					creAteChArChAnge(15, 1, 15, 1, 15, 1, 15, 2),
+					creAteChArChAnge(16, 1, 16, 1, 16, 1, 16, 2),
+					creAteChArChAnge(17, 1, 17, 1, 17, 1, 17, 2),
+					creAteChArChAnge(18, 1, 18, 1, 18, 1, 18, 2),
+					creAteChArChAnge(19, 1, 19, 1, 19, 1, 19, 2),
+					creAteChArChAnge(20, 1, 20, 1, 20, 1, 20, 2),
+					creAteChArChAnge(21, 1, 21, 1, 21, 1, 21, 2),
+					creAteChArChAnge(22, 1, 22, 1, 22, 1, 22, 2),
+					creAteChArChAnge(23, 1, 23, 1, 23, 1, 23, 2),
+					creAteChArChAnge(24, 1, 24, 1, 24, 1, 24, 2),
+					creAteChArChAnge(25, 1, 25, 1, 25, 1, 25, 2),
+					creAteChArChAnge(26, 1, 26, 1, 26, 1, 26, 2),
+					creAteChArChAnge(27, 1, 27, 1, 27, 1, 27, 2),
 				]
 			)
-			// createLineInsertion(7, 11, 6)
+			// creAteLineInsertion(7, 11, 6)
 		];
-		assertDiff(original, modified, expected, true, true, false);
+		AssertDiff(originAl, modified, expected, true, true, fAlse);
 	});
 
 	test('issue #43922', () => {
-		let original = [
-			' * `yarn [install]` -- Install project NPM dependencies. This is automatically done when you first create the project. You should only need to run this if you add dependencies in `package.json`.',
+		let originAl = [
+			' * `yArn [instAll]` -- InstAll project NPM dependencies. This is AutomAticAlly done when you first creAte the project. You should only need to run this if you Add dependencies in `pAckAge.json`.',
 		];
 		let modified = [
-			' * `yarn` -- Install project NPM dependencies. You should only need to run this if you add dependencies in `package.json`.',
+			' * `yArn` -- InstAll project NPM dependencies. You should only need to run this if you Add dependencies in `pAckAge.json`.',
 		];
 		let expected = [
-			createLineChange(
+			creAteLineChAnge(
 				1, 1, 1, 1,
 				[
-					createCharChange(1, 9, 1, 19, 0, 0, 0, 0),
-					createCharChange(1, 58, 1, 120, 0, 0, 0, 0),
+					creAteChArChAnge(1, 9, 1, 19, 0, 0, 0, 0),
+					creAteChArChAnge(1, 58, 1, 120, 0, 0, 0, 0),
 				]
 			)
 		];
-		assertDiff(original, modified, expected, true, true, false);
+		AssertDiff(originAl, modified, expected, true, true, fAlse);
 	});
 
 	test('issue #42751', () => {
-		let original = [
+		let originAl = [
 			'    1',
 			'  2',
 		];
@@ -706,18 +706,18 @@ suite('Editor Diff - DiffComputer', () => {
 			'   3',
 		];
 		let expected = [
-			createLineChange(
+			creAteLineChAnge(
 				2, 2, 2, 2,
 				[
-					createCharChange(2, 3, 2, 4, 2, 3, 2, 5)
+					creAteChArChAnge(2, 3, 2, 4, 2, 3, 2, 5)
 				]
 			)
 		];
-		assertDiff(original, modified, expected, true, true, false);
+		AssertDiff(originAl, modified, expected, true, true, fAlse);
 	});
 
-	test('does not give character changes', () => {
-		let original = [
+	test('does not give chArActer chAnges', () => {
+		let originAl = [
 			'    1',
 			'  2',
 			'A',
@@ -728,16 +728,16 @@ suite('Editor Diff - DiffComputer', () => {
 			' A',
 		];
 		let expected = [
-			createLineChange(
+			creAteLineChAnge(
 				2, 3, 2, 3
 			)
 		];
-		assertDiff(original, modified, expected, false, false, false);
+		AssertDiff(originAl, modified, expected, fAlse, fAlse, fAlse);
 	});
 
-	test('issue #44422: Less than ideal diff results', () => {
-		let original = [
-			'export class C {',
+	test('issue #44422: Less thAn ideAl diff results', () => {
+		let originAl = [
+			'export clAss C {',
 			'',
 			'	public m1(): void {',
 			'		{',
@@ -762,7 +762,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'	}',
 			'',
 			'	public m2(): void {',
-			'		if (a) {',
+			'		if (A) {',
 			'			if (b) {',
 			'				//A1',
 			'				//A2',
@@ -785,14 +785,14 @@ suite('Editor Diff - DiffComputer', () => {
 			'	}',
 			'',
 			'	public m3(): void {',
-			'		if (a) {',
+			'		if (A) {',
 			'			//B1',
 			'		}',
 			'		//B2',
 			'		//B3',
 			'	}',
 			'',
-			'	public m4(): boolean {',
+			'	public m4(): booleAn {',
 			'		//1',
 			'		//2',
 			'		//3',
@@ -802,7 +802,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'}',
 		];
 		let modified = [
-			'export class C {',
+			'export clAss C {',
 			'',
 			'	constructor() {',
 			'',
@@ -833,7 +833,7 @@ suite('Editor Diff - DiffComputer', () => {
 			'		}',
 			'	}',
 			'',
-			'	public m4(): boolean {',
+			'	public m4(): booleAn {',
 			'		//1',
 			'		//2',
 			'		//3',
@@ -843,13 +843,13 @@ suite('Editor Diff - DiffComputer', () => {
 			'}',
 		];
 		let expected = [
-			createLineChange(
+			creAteLineChAnge(
 				2, 0, 3, 9
 			),
-			createLineChange(
+			creAteLineChAnge(
 				25, 55, 31, 0
 			)
 		];
-		assertDiff(original, modified, expected, false, false, false);
+		AssertDiff(originAl, modified, expected, fAlse, fAlse, fAlse);
 	});
 });

@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { registerAction2, Action2 } from 'vs/platform/actions/common/actions';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { locAlize } from 'vs/nls';
+import { registerAction2, Action2 } from 'vs/plAtform/Actions/common/Actions';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 import { Extensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { Extensions as Input, IEditorInputFactory, IEditorInputFactoryRegistry } from 'vs/workbench/common/editor';
-import { PerfviewContrib, PerfviewInput } from 'vs/workbench/contrib/performance/browser/perfviewEditor';
+import { Extensions As Input, IEditorInputFActory, IEditorInputFActoryRegistry } from 'vs/workbench/common/editor';
+import { PerfviewContrib, PerfviewInput } from 'vs/workbench/contrib/performAnce/browser/perfviewEditor';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 
-// -- startup performance view
+// -- stArtup performAnce view
 
-Registry.as<IWorkbenchContributionsRegistry>(Extensions.Workbench).registerWorkbenchContribution(
+Registry.As<IWorkbenchContributionsRegistry>(Extensions.Workbench).registerWorkbenchContribution(
 	PerfviewContrib,
-	LifecyclePhase.Ready
+	LifecyclePhAse.ReAdy
 );
 
-Registry.as<IEditorInputFactoryRegistry>(Input.EditorInputFactories).registerEditorInputFactory(
+Registry.As<IEditorInputFActoryRegistry>(Input.EditorInputFActories).registerEditorInputFActory(
 	PerfviewInput.Id,
-	class implements IEditorInputFactory {
-		canSerialize(): boolean {
+	clAss implements IEditorInputFActory {
+		cAnSeriAlize(): booleAn {
 			return true;
 		}
-		serialize(): string {
+		seriAlize(): string {
 			return '';
 		}
-		deserialize(instantiationService: IInstantiationService): PerfviewInput {
-			return instantiationService.createInstance(PerfviewInput);
+		deseriAlize(instAntiAtionService: IInstAntiAtionService): PerfviewInput {
+			return instAntiAtionService.creAteInstAnce(PerfviewInput);
 		}
 	}
 );
 
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 
 	constructor() {
 		super({
 			id: 'perfview.show',
-			title: { value: localize('show.label', "Startup Performance"), original: 'Startup Performance' },
-			category: CATEGORIES.Developer,
+			title: { vAlue: locAlize('show.lAbel', "StArtup PerformAnce"), originAl: 'StArtup PerformAnce' },
+			cAtegory: CATEGORIES.Developer,
 			f1: true
 		});
 	}
 
-	run(accessor: ServicesAccessor) {
-		const editorService = accessor.get(IEditorService);
-		const instaService = accessor.get(IInstantiationService);
-		return editorService.openEditor(instaService.createInstance(PerfviewInput));
+	run(Accessor: ServicesAccessor) {
+		const editorService = Accessor.get(IEditorService);
+		const instAService = Accessor.get(IInstAntiAtionService);
+		return editorService.openEditor(instAService.creAteInstAnce(PerfviewInput));
 	}
 });

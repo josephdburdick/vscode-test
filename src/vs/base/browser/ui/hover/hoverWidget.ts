@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./hover';
-import * as dom from 'vs/base/browser/dom';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { DomScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
+import * As dom from 'vs/bAse/browser/dom';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { DomScrollAbleElement } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElement';
 
 const $ = dom.$;
 
-export class HoverWidget extends Disposable {
+export clAss HoverWidget extends DisposAble {
 
-	public readonly containerDomNode: HTMLElement;
-	public readonly contentsDomNode: HTMLElement;
-	private readonly _scrollbar: DomScrollableElement;
+	public reAdonly contAinerDomNode: HTMLElement;
+	public reAdonly contentsDomNode: HTMLElement;
+	privAte reAdonly _scrollbAr: DomScrollAbleElement;
 
 	constructor() {
 		super();
 
-		this.containerDomNode = document.createElement('div');
-		this.containerDomNode.className = 'monaco-hover';
-		this.containerDomNode.tabIndex = 0;
-		this.containerDomNode.setAttribute('role', 'tooltip');
+		this.contAinerDomNode = document.creAteElement('div');
+		this.contAinerDomNode.clAssNAme = 'monAco-hover';
+		this.contAinerDomNode.tAbIndex = 0;
+		this.contAinerDomNode.setAttribute('role', 'tooltip');
 
-		this.contentsDomNode = document.createElement('div');
-		this.contentsDomNode.className = 'monaco-hover-content';
+		this.contentsDomNode = document.creAteElement('div');
+		this.contentsDomNode.clAssNAme = 'monAco-hover-content';
 
-		this._scrollbar = this._register(new DomScrollableElement(this.contentsDomNode, {}));
-		this.containerDomNode.appendChild(this._scrollbar.getDomNode());
+		this._scrollbAr = this._register(new DomScrollAbleElement(this.contentsDomNode, {}));
+		this.contAinerDomNode.AppendChild(this._scrollbAr.getDomNode());
 	}
 
-	public onContentsChanged(): void {
-		this._scrollbar.scanDomNode();
+	public onContentsChAnged(): void {
+		this._scrollbAr.scAnDomNode();
 	}
 }
 
-export function renderHoverAction(parent: HTMLElement, actionOptions: { label: string, iconClass?: string, run: (target: HTMLElement) => void, commandId: string }, keybindingLabel: string | null): IDisposable {
-	const actionContainer = dom.append(parent, $('div.action-container'));
-	const action = dom.append(actionContainer, $('a.action'));
-	action.setAttribute('href', '#');
-	action.setAttribute('role', 'button');
-	if (actionOptions.iconClass) {
-		dom.append(action, $(`span.icon.${actionOptions.iconClass}`));
+export function renderHoverAction(pArent: HTMLElement, ActionOptions: { lAbel: string, iconClAss?: string, run: (tArget: HTMLElement) => void, commAndId: string }, keybindingLAbel: string | null): IDisposAble {
+	const ActionContAiner = dom.Append(pArent, $('div.Action-contAiner'));
+	const Action = dom.Append(ActionContAiner, $('A.Action'));
+	Action.setAttribute('href', '#');
+	Action.setAttribute('role', 'button');
+	if (ActionOptions.iconClAss) {
+		dom.Append(Action, $(`spAn.icon.${ActionOptions.iconClAss}`));
 	}
-	const label = dom.append(action, $('span'));
-	label.textContent = keybindingLabel ? `${actionOptions.label} (${keybindingLabel})` : actionOptions.label;
-	return dom.addDisposableListener(actionContainer, dom.EventType.CLICK, e => {
-		e.stopPropagation();
-		e.preventDefault();
-		actionOptions.run(actionContainer);
+	const lAbel = dom.Append(Action, $('spAn'));
+	lAbel.textContent = keybindingLAbel ? `${ActionOptions.lAbel} (${keybindingLAbel})` : ActionOptions.lAbel;
+	return dom.AddDisposAbleListener(ActionContAiner, dom.EventType.CLICK, e => {
+		e.stopPropAgAtion();
+		e.preventDefAult();
+		ActionOptions.run(ActionContAiner);
 	});
 }

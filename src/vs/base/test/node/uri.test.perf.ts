@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { readFileSync } from 'fs';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { reAdFileSync } from 'fs';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
 
 suite('URI - perf', function () {
 
-	let manyFileUris: URI[];
+	let mAnyFileUris: URI[];
 	setup(function () {
-		manyFileUris = [];
-		let data = readFileSync(getPathFromAmdModule(require, './uri.test.data.txt')).toString();
-		let lines = data.split('\n');
+		mAnyFileUris = [];
+		let dAtA = reAdFileSync(getPAthFromAmdModule(require, './uri.test.dAtA.txt')).toString();
+		let lines = dAtA.split('\n');
 		for (let line of lines) {
-			manyFileUris.push(URI.file(line));
+			mAnyFileUris.push(URI.file(line));
 		}
 	});
 
-	function perfTest(name: string, callback: Function) {
-		test(name, _done => {
-			let t1 = Date.now();
-			callback();
-			let d = Date.now() - t1;
-			console.log(`${name} took ${d}ms (${(d / manyFileUris.length).toPrecision(3)} ms/uri)`);
+	function perfTest(nAme: string, cAllbAck: Function) {
+		test(nAme, _done => {
+			let t1 = DAte.now();
+			cAllbAck();
+			let d = DAte.now() - t1;
+			console.log(`${nAme} took ${d}ms (${(d / mAnyFileUris.length).toPrecision(3)} ms/uri)`);
 			_done();
 		});
 	}
 
 	perfTest('toString', function () {
-		for (const uri of manyFileUris) {
-			let data = uri.toString();
-			assert.ok(data);
+		for (const uri of mAnyFileUris) {
+			let dAtA = uri.toString();
+			Assert.ok(dAtA);
 		}
 	});
 
 	perfTest('toString(skipEncoding)', function () {
-		for (const uri of manyFileUris) {
-			let data = uri.toString(true);
-			assert.ok(data);
+		for (const uri of mAnyFileUris) {
+			let dAtA = uri.toString(true);
+			Assert.ok(dAtA);
 		}
 	});
 
-	perfTest('fsPath', function () {
-		for (const uri of manyFileUris) {
-			let data = uri.fsPath;
-			assert.ok(data);
+	perfTest('fsPAth', function () {
+		for (const uri of mAnyFileUris) {
+			let dAtA = uri.fsPAth;
+			Assert.ok(dAtA);
 		}
 	});
 
 	perfTest('toJSON', function () {
-		for (const uri of manyFileUris) {
-			let data = uri.toJSON();
-			assert.ok(data);
+		for (const uri of mAnyFileUris) {
+			let dAtA = uri.toJSON();
+			Assert.ok(dAtA);
 		}
 	});
 

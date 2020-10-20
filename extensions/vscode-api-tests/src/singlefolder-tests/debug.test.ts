@@ -1,130 +1,130 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { debug, workspace, Disposable, commands, window } from 'vscode';
+import * As Assert from 'Assert';
+import { debug, workspAce, DisposAble, commAnds, window } from 'vscode';
 import { disposeAll } from '../utils';
-import { basename } from 'path';
+import { bAsenAme } from 'pAth';
 
 suite('vscode API - debug', function () {
 
-	test('breakpoints', async function () {
-		assert.equal(debug.breakpoints.length, 0);
-		let onDidChangeBreakpointsCounter = 0;
-		const toDispose: Disposable[] = [];
+	test('breAkpoints', Async function () {
+		Assert.equAl(debug.breAkpoints.length, 0);
+		let onDidChAngeBreAkpointsCounter = 0;
+		const toDispose: DisposAble[] = [];
 
-		toDispose.push(debug.onDidChangeBreakpoints(() => {
-			onDidChangeBreakpointsCounter++;
+		toDispose.push(debug.onDidChAngeBreAkpoints(() => {
+			onDidChAngeBreAkpointsCounter++;
 		}));
 
-		debug.addBreakpoints([{ id: '1', enabled: true }, { id: '2', enabled: false, condition: '2 < 5' }]);
-		assert.equal(onDidChangeBreakpointsCounter, 1);
-		assert.equal(debug.breakpoints.length, 2);
-		assert.equal(debug.breakpoints[0].id, '1');
-		assert.equal(debug.breakpoints[1].id, '2');
-		assert.equal(debug.breakpoints[1].condition, '2 < 5');
+		debug.AddBreAkpoints([{ id: '1', enAbled: true }, { id: '2', enAbled: fAlse, condition: '2 < 5' }]);
+		Assert.equAl(onDidChAngeBreAkpointsCounter, 1);
+		Assert.equAl(debug.breAkpoints.length, 2);
+		Assert.equAl(debug.breAkpoints[0].id, '1');
+		Assert.equAl(debug.breAkpoints[1].id, '2');
+		Assert.equAl(debug.breAkpoints[1].condition, '2 < 5');
 
-		debug.removeBreakpoints([{ id: '1', enabled: true }]);
-		assert.equal(onDidChangeBreakpointsCounter, 2);
-		assert.equal(debug.breakpoints.length, 1);
+		debug.removeBreAkpoints([{ id: '1', enAbled: true }]);
+		Assert.equAl(onDidChAngeBreAkpointsCounter, 2);
+		Assert.equAl(debug.breAkpoints.length, 1);
 
-		debug.removeBreakpoints([{ id: '2', enabled: false }]);
-		assert.equal(onDidChangeBreakpointsCounter, 3);
-		assert.equal(debug.breakpoints.length, 0);
+		debug.removeBreAkpoints([{ id: '2', enAbled: fAlse }]);
+		Assert.equAl(onDidChAngeBreAkpointsCounter, 3);
+		Assert.equAl(debug.breAkpoints.length, 0);
 
 		disposeAll(toDispose);
 	});
 
-	test.skip('start debugging', async function () {
+	test.skip('stArt debugging', Async function () {
 		let stoppedEvents = 0;
-		let variablesReceived: () => void;
-		let initializedReceived: () => void;
-		let configurationDoneReceived: () => void;
-		const toDispose: Disposable[] = [];
-		if (debug.activeDebugSession) {
-			// We are re-running due to flakyness, make sure to clear out state
-			let sessionTerminatedRetry: () => void;
-			toDispose.push(debug.onDidTerminateDebugSession(() => {
-				sessionTerminatedRetry();
+		let vAriAblesReceived: () => void;
+		let initiAlizedReceived: () => void;
+		let configurAtionDoneReceived: () => void;
+		const toDispose: DisposAble[] = [];
+		if (debug.ActiveDebugSession) {
+			// We Are re-running due to flAkyness, mAke sure to cleAr out stAte
+			let sessionTerminAtedRetry: () => void;
+			toDispose.push(debug.onDidTerminAteDebugSession(() => {
+				sessionTerminAtedRetry();
 			}));
-			const sessionTerminatedPromise = new Promise<void>(resolve => sessionTerminatedRetry = resolve);
-			await commands.executeCommand('workbench.action.debug.stop');
-			await sessionTerminatedPromise;
+			const sessionTerminAtedPromise = new Promise<void>(resolve => sessionTerminAtedRetry = resolve);
+			AwAit commAnds.executeCommAnd('workbench.Action.debug.stop');
+			AwAit sessionTerminAtedPromise;
 		}
 
-		const firstVariablesRetrieved = new Promise<void>(resolve => variablesReceived = resolve);
-		toDispose.push(debug.registerDebugAdapterTrackerFactory('*', {
-			createDebugAdapterTracker: () => ({
-				onDidSendMessage: m => {
+		const firstVAriAblesRetrieved = new Promise<void>(resolve => vAriAblesReceived = resolve);
+		toDispose.push(debug.registerDebugAdApterTrAckerFActory('*', {
+			creAteDebugAdApterTrAcker: () => ({
+				onDidSendMessAge: m => {
 					if (m.event === 'stopped') {
 						stoppedEvents++;
 					}
-					if (m.type === 'response' && m.command === 'variables') {
-						variablesReceived();
+					if (m.type === 'response' && m.commAnd === 'vAriAbles') {
+						vAriAblesReceived();
 					}
-					if (m.event === 'initialized') {
-						initializedReceived();
+					if (m.event === 'initiAlized') {
+						initiAlizedReceived();
 					}
-					if (m.command === 'configurationDone') {
-						configurationDoneReceived();
+					if (m.commAnd === 'configurAtionDone') {
+						configurAtionDoneReceived();
 					}
 				}
 			})
 		}));
 
-		const initializedPromise = new Promise<void>(resolve => initializedReceived = resolve);
-		const configurationDonePromise = new Promise<void>(resolve => configurationDoneReceived = resolve);
-		const success = await debug.startDebugging(workspace.workspaceFolders![0], 'Launch debug.js');
-		assert.equal(success, true);
-		await initializedPromise;
-		await configurationDonePromise;
+		const initiAlizedPromise = new Promise<void>(resolve => initiAlizedReceived = resolve);
+		const configurAtionDonePromise = new Promise<void>(resolve => configurAtionDoneReceived = resolve);
+		const success = AwAit debug.stArtDebugging(workspAce.workspAceFolders![0], 'LAunch debug.js');
+		Assert.equAl(success, true);
+		AwAit initiAlizedPromise;
+		AwAit configurAtionDonePromise;
 
-		await firstVariablesRetrieved;
-		assert.notEqual(debug.activeDebugSession, undefined);
-		assert.equal(stoppedEvents, 1);
+		AwAit firstVAriAblesRetrieved;
+		Assert.notEquAl(debug.ActiveDebugSession, undefined);
+		Assert.equAl(stoppedEvents, 1);
 
-		const secondVariablesRetrieved = new Promise<void>(resolve => variablesReceived = resolve);
-		await commands.executeCommand('workbench.action.debug.stepOver');
-		await secondVariablesRetrieved;
-		assert.equal(stoppedEvents, 2);
-		const editor = window.activeTextEditor;
-		assert.notEqual(editor, undefined);
-		assert.equal(basename(editor!.document.fileName), 'debug.js');
+		const secondVAriAblesRetrieved = new Promise<void>(resolve => vAriAblesReceived = resolve);
+		AwAit commAnds.executeCommAnd('workbench.Action.debug.stepOver');
+		AwAit secondVAriAblesRetrieved;
+		Assert.equAl(stoppedEvents, 2);
+		const editor = window.ActiveTextEditor;
+		Assert.notEquAl(editor, undefined);
+		Assert.equAl(bAsenAme(editor!.document.fileNAme), 'debug.js');
 
-		const thirdVariablesRetrieved = new Promise<void>(resolve => variablesReceived = resolve);
-		await commands.executeCommand('workbench.action.debug.stepOver');
-		await thirdVariablesRetrieved;
-		assert.equal(stoppedEvents, 3);
+		const thirdVAriAblesRetrieved = new Promise<void>(resolve => vAriAblesReceived = resolve);
+		AwAit commAnds.executeCommAnd('workbench.Action.debug.stepOver');
+		AwAit thirdVAriAblesRetrieved;
+		Assert.equAl(stoppedEvents, 3);
 
-		const fourthVariablesRetrieved = new Promise<void>(resolve => variablesReceived = resolve);
-		await commands.executeCommand('workbench.action.debug.stepInto');
-		await fourthVariablesRetrieved;
-		assert.equal(stoppedEvents, 4);
+		const fourthVAriAblesRetrieved = new Promise<void>(resolve => vAriAblesReceived = resolve);
+		AwAit commAnds.executeCommAnd('workbench.Action.debug.stepInto');
+		AwAit fourthVAriAblesRetrieved;
+		Assert.equAl(stoppedEvents, 4);
 
-		const fifthVariablesRetrieved = new Promise<void>(resolve => variablesReceived = resolve);
-		await commands.executeCommand('workbench.action.debug.stepOut');
-		await fifthVariablesRetrieved;
-		assert.equal(stoppedEvents, 5);
+		const fifthVAriAblesRetrieved = new Promise<void>(resolve => vAriAblesReceived = resolve);
+		AwAit commAnds.executeCommAnd('workbench.Action.debug.stepOut');
+		AwAit fifthVAriAblesRetrieved;
+		Assert.equAl(stoppedEvents, 5);
 
-		let sessionTerminated: () => void;
-		toDispose.push(debug.onDidTerminateDebugSession(() => {
-			sessionTerminated();
+		let sessionTerminAted: () => void;
+		toDispose.push(debug.onDidTerminAteDebugSession(() => {
+			sessionTerminAted();
 		}));
-		const sessionTerminatedPromise = new Promise<void>(resolve => sessionTerminated = resolve);
-		await commands.executeCommand('workbench.action.debug.stop');
-		await sessionTerminatedPromise;
+		const sessionTerminAtedPromise = new Promise<void>(resolve => sessionTerminAted = resolve);
+		AwAit commAnds.executeCommAnd('workbench.Action.debug.stop');
+		AwAit sessionTerminAtedPromise;
 		disposeAll(toDispose);
 	});
 
-	test('start debugging failure', async function () {
+	test('stArt debugging fAilure', Async function () {
 		let errorCount = 0;
 		try {
-			await debug.startDebugging(workspace.workspaceFolders![0], 'non existent');
-		} catch (e) {
+			AwAit debug.stArtDebugging(workspAce.workspAceFolders![0], 'non existent');
+		} cAtch (e) {
 			errorCount++;
 		}
-		assert.equal(errorCount, 1);
+		Assert.equAl(errorCount, 1);
 	});
 });

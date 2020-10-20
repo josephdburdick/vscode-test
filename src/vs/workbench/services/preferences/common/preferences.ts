@@ -1,184 +1,184 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStringDictionary } from 'vs/base/common/collections';
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
-import { IRange } from 'vs/editor/common/core/range';
-import { IJSONSchemaMap, IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { Event } from 'vs/bAse/common/event';
+import { URI } from 'vs/bAse/common/uri';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import { IJSONSchemAMAp, IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 import { ITextModel } from 'vs/editor/common/model';
-import { localize } from 'vs/nls';
-import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { ConfigurationScope, IConfigurationExtensionInfo } from 'vs/platform/configuration/common/configurationRegistry';
-import { IEditorOptions } from 'vs/platform/editor/common/editor';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { EditorOptions, IEditorPane } from 'vs/workbench/common/editor';
+import { locAlize } from 'vs/nls';
+import { ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ConfigurAtionScope, IConfigurAtionExtensionInfo } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { IEditorOptions } from 'vs/plAtform/editor/common/editor';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { EditorOptions, IEditorPAne } from 'vs/workbench/common/editor';
 import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { Settings2EditorModel } from 'vs/workbench/services/preferences/common/preferencesModels';
 
-export enum SettingValueType {
+export enum SettingVAlueType {
 	Null = 'null',
 	Enum = 'enum',
 	String = 'string',
 	Integer = 'integer',
 	Number = 'number',
-	Boolean = 'boolean',
-	ArrayOfString = 'array-of-string',
+	BooleAn = 'booleAn',
+	ArrAyOfString = 'ArrAy-of-string',
 	Exclude = 'exclude',
 	Complex = 'complex',
-	NullableInteger = 'nullable-integer',
-	NullableNumber = 'nullable-number',
+	NullAbleInteger = 'nullAble-integer',
+	NullAbleNumber = 'nullAble-number',
 	Object = 'object'
 }
 
-export interface ISettingsGroup {
+export interfAce ISettingsGroup {
 	id: string;
-	range: IRange;
+	rAnge: IRAnge;
 	title: string;
-	titleRange: IRange;
+	titleRAnge: IRAnge;
 	sections: ISettingsSection[];
-	extensionInfo?: IConfigurationExtensionInfo;
+	extensionInfo?: IConfigurAtionExtensionInfo;
 }
 
-export interface ISettingsSection {
-	titleRange?: IRange;
+export interfAce ISettingsSection {
+	titleRAnge?: IRAnge;
 	title?: string;
 	settings: ISetting[];
 }
 
-export interface ISetting {
-	range: IRange;
+export interfAce ISetting {
+	rAnge: IRAnge;
 	key: string;
-	keyRange: IRange;
-	value: any;
-	valueRange: IRange;
+	keyRAnge: IRAnge;
+	vAlue: Any;
+	vAlueRAnge: IRAnge;
 	description: string[];
-	descriptionIsMarkdown?: boolean;
-	descriptionRanges: IRange[];
+	descriptionIsMArkdown?: booleAn;
+	descriptionRAnges: IRAnge[];
 	overrides?: ISetting[];
 	overrideOf?: ISetting;
-	deprecationMessage?: string;
-	deprecationMessageIsMarkdown?: boolean;
+	deprecAtionMessAge?: string;
+	deprecAtionMessAgeIsMArkdown?: booleAn;
 
-	scope?: ConfigurationScope;
+	scope?: ConfigurAtionScope;
 	type?: string | string[];
-	arrayItemType?: string;
-	objectProperties?: IJSONSchemaMap,
-	objectPatternProperties?: IJSONSchemaMap,
-	objectAdditionalProperties?: boolean | IJSONSchema,
+	ArrAyItemType?: string;
+	objectProperties?: IJSONSchemAMAp,
+	objectPAtternProperties?: IJSONSchemAMAp,
+	objectAdditionAlProperties?: booleAn | IJSONSchemA,
 	enum?: string[];
 	enumDescriptions?: string[];
-	enumDescriptionsAreMarkdown?: boolean;
-	tags?: string[];
-	disallowSyncIgnore?: boolean;
-	extensionInfo?: IConfigurationExtensionInfo;
-	validator?: (value: any) => string | null;
+	enumDescriptionsAreMArkdown?: booleAn;
+	tAgs?: string[];
+	disAllowSyncIgnore?: booleAn;
+	extensionInfo?: IConfigurAtionExtensionInfo;
+	vAlidAtor?: (vAlue: Any) => string | null;
 }
 
-export interface IExtensionSetting extends ISetting {
-	extensionName?: string;
+export interfAce IExtensionSetting extends ISetting {
+	extensionNAme?: string;
 	extensionPublisher?: string;
 }
 
-export interface ISearchResult {
-	filterMatches: ISettingMatch[];
-	exactMatch?: boolean;
-	metadata?: IFilterMetadata;
+export interfAce ISeArchResult {
+	filterMAtches: ISettingMAtch[];
+	exActMAtch?: booleAn;
+	metAdAtA?: IFilterMetAdAtA;
 }
 
-export interface ISearchResultGroup {
+export interfAce ISeArchResultGroup {
 	id: string;
-	label: string;
-	result: ISearchResult;
+	lAbel: string;
+	result: ISeArchResult;
 	order: number;
 }
 
-export interface IFilterResult {
+export interfAce IFilterResult {
 	query?: string;
 	filteredGroups: ISettingsGroup[];
-	allGroups: ISettingsGroup[];
-	matches: IRange[];
-	metadata?: IStringDictionary<IFilterMetadata>;
-	exactMatch?: boolean;
+	AllGroups: ISettingsGroup[];
+	mAtches: IRAnge[];
+	metAdAtA?: IStringDictionAry<IFilterMetAdAtA>;
+	exActMAtch?: booleAn;
 }
 
-export interface ISettingMatch {
+export interfAce ISettingMAtch {
 	setting: ISetting;
-	matches: IRange[] | null;
+	mAtches: IRAnge[] | null;
 	score: number;
 }
 
-export interface IScoredResults {
+export interfAce IScoredResults {
 	[key: string]: IRemoteSetting;
 }
 
-export interface IRemoteSetting {
+export interfAce IRemoteSetting {
 	score: number;
 	key: string;
 	id: string;
-	defaultValue: string;
+	defAultVAlue: string;
 	description: string;
-	packageId: string;
-	extensionName?: string;
+	pAckAgeId: string;
+	extensionNAme?: string;
 	extensionPublisher?: string;
 }
 
-export interface IFilterMetadata {
+export interfAce IFilterMetAdAtA {
 	requestUrl: string;
 	requestBody: string;
-	timestamp: number;
-	duration: number;
+	timestAmp: number;
+	durAtion: number;
 	scoredResults: IScoredResults;
 
-	/** The number of requests made, since requests are split by number of filters */
+	/** The number of requests mAde, since requests Are split by number of filters */
 	requestCount?: number;
 
-	/** The name of the server that actually served the request */
+	/** The nAme of the server thAt ActuAlly served the request */
 	context: string;
 }
 
-export interface IPreferencesEditorModel<T> {
+export interfAce IPreferencesEditorModel<T> {
 	uri?: URI;
 	getPreference(key: string): T | undefined;
 	dispose(): void;
 }
 
-export type IGroupFilter = (group: ISettingsGroup) => boolean | null;
-export type ISettingMatcher = (setting: ISetting, group: ISettingsGroup) => { matches: IRange[], score: number } | null;
+export type IGroupFilter = (group: ISettingsGroup) => booleAn | null;
+export type ISettingMAtcher = (setting: ISetting, group: ISettingsGroup) => { mAtches: IRAnge[], score: number } | null;
 
-export interface ISettingsEditorModel extends IPreferencesEditorModel<ISetting> {
-	readonly onDidChangeGroups: Event<void>;
+export interfAce ISettingsEditorModel extends IPreferencesEditorModel<ISetting> {
+	reAdonly onDidChAngeGroups: Event<void>;
 	settingsGroups: ISettingsGroup[];
-	filterSettings(filter: string, groupFilter: IGroupFilter, settingMatcher: ISettingMatcher): ISettingMatch[];
-	findValueMatches(filter: string, setting: ISetting): IRange[];
-	updateResultGroup(id: string, resultGroup: ISearchResultGroup | undefined): IFilterResult | undefined;
+	filterSettings(filter: string, groupFilter: IGroupFilter, settingMAtcher: ISettingMAtcher): ISettingMAtch[];
+	findVAlueMAtches(filter: string, setting: ISetting): IRAnge[];
+	updAteResultGroup(id: string, resultGroup: ISeArchResultGroup | undefined): IFilterResult | undefined;
 }
 
-export interface ISettingsEditorOptions extends IEditorOptions {
-	target?: ConfigurationTarget;
+export interfAce ISettingsEditorOptions extends IEditorOptions {
+	tArget?: ConfigurAtionTArget;
 	folderUri?: URI;
 	query?: string;
 	editSetting?: string;
 }
 
 /**
- * TODO Why do we need this class?
+ * TODO Why do we need this clAss?
  */
-export class SettingsEditorOptions extends EditorOptions implements ISettingsEditorOptions {
+export clAss SettingsEditorOptions extends EditorOptions implements ISettingsEditorOptions {
 
-	target?: ConfigurationTarget;
+	tArget?: ConfigurAtionTArget;
 	folderUri?: URI;
 	query?: string;
 	editSetting?: string;
 
-	static create(settings: ISettingsEditorOptions): SettingsEditorOptions {
+	stAtic creAte(settings: ISettingsEditorOptions): SettingsEditorOptions {
 		const options = new SettingsEditorOptions();
 		options.overwrite(settings);
 
-		options.target = settings.target;
+		options.tArget = settings.tArget;
 		options.folderUri = settings.folderUri;
 		options.query = settings.query;
 		options.editSetting = settings.editSetting;
@@ -187,48 +187,48 @@ export class SettingsEditorOptions extends EditorOptions implements ISettingsEdi
 	}
 }
 
-export interface IKeybindingsEditorModel<T> extends IPreferencesEditorModel<T> {
+export interfAce IKeybindingsEditorModel<T> extends IPreferencesEditorModel<T> {
 }
 
-export const IPreferencesService = createDecorator<IPreferencesService>('preferencesService');
+export const IPreferencesService = creAteDecorAtor<IPreferencesService>('preferencesService');
 
-export interface IPreferencesService {
-	readonly _serviceBrand: undefined;
+export interfAce IPreferencesService {
+	reAdonly _serviceBrAnd: undefined;
 
 	userSettingsResource: URI;
-	workspaceSettingsResource: URI | null;
+	workspAceSettingsResource: URI | null;
 	getFolderSettingsResource(resource: URI): URI | null;
 
 	resolveModel(uri: URI): Promise<ITextModel | null>;
-	createPreferencesEditorModel<T>(uri: URI): Promise<IPreferencesEditorModel<T> | null>;
-	createSettings2EditorModel(): Settings2EditorModel; // TODO
+	creAtePreferencesEditorModel<T>(uri: URI): Promise<IPreferencesEditorModel<T> | null>;
+	creAteSettings2EditorModel(): Settings2EditorModel; // TODO
 
-	openRawDefaultSettings(): Promise<IEditorPane | undefined>;
-	openSettings(jsonEditor: boolean | undefined, query: string | undefined): Promise<IEditorPane | undefined>;
-	openGlobalSettings(jsonEditor?: boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
-	openRemoteSettings(): Promise<IEditorPane | undefined>;
-	openWorkspaceSettings(jsonEditor?: boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
-	openFolderSettings(folder: URI, jsonEditor?: boolean, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPane | undefined>;
-	switchSettings(target: ConfigurationTarget, resource: URI, jsonEditor?: boolean): Promise<void>;
-	openGlobalKeybindingSettings(textual: boolean): Promise<void>;
-	openDefaultKeybindingsFile(): Promise<IEditorPane | undefined>;
-	getEditableSettingsURI(configurationTarget: ConfigurationTarget, resource?: URI): Promise<URI | null>;
+	openRAwDefAultSettings(): Promise<IEditorPAne | undefined>;
+	openSettings(jsonEditor: booleAn | undefined, query: string | undefined): Promise<IEditorPAne | undefined>;
+	openGlobAlSettings(jsonEditor?: booleAn, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPAne | undefined>;
+	openRemoteSettings(): Promise<IEditorPAne | undefined>;
+	openWorkspAceSettings(jsonEditor?: booleAn, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPAne | undefined>;
+	openFolderSettings(folder: URI, jsonEditor?: booleAn, options?: ISettingsEditorOptions, group?: IEditorGroup): Promise<IEditorPAne | undefined>;
+	switchSettings(tArget: ConfigurAtionTArget, resource: URI, jsonEditor?: booleAn): Promise<void>;
+	openGlobAlKeybindingSettings(textuAl: booleAn): Promise<void>;
+	openDefAultKeybindingsFile(): Promise<IEditorPAne | undefined>;
+	getEditAbleSettingsURI(configurAtionTArget: ConfigurAtionTArget, resource?: URI): Promise<URI | null>;
 }
 
-export function getSettingsTargetName(target: ConfigurationTarget, resource: URI, workspaceContextService: IWorkspaceContextService): string {
-	switch (target) {
-		case ConfigurationTarget.USER:
-		case ConfigurationTarget.USER_LOCAL:
-			return localize('userSettingsTarget', "User Settings");
-		case ConfigurationTarget.WORKSPACE:
-			return localize('workspaceSettingsTarget', "Workspace Settings");
-		case ConfigurationTarget.WORKSPACE_FOLDER:
-			const folder = workspaceContextService.getWorkspaceFolder(resource);
-			return folder ? folder.name : '';
+export function getSettingsTArgetNAme(tArget: ConfigurAtionTArget, resource: URI, workspAceContextService: IWorkspAceContextService): string {
+	switch (tArget) {
+		cAse ConfigurAtionTArget.USER:
+		cAse ConfigurAtionTArget.USER_LOCAL:
+			return locAlize('userSettingsTArget', "User Settings");
+		cAse ConfigurAtionTArget.WORKSPACE:
+			return locAlize('workspAceSettingsTArget', "WorkspAce Settings");
+		cAse ConfigurAtionTArget.WORKSPACE_FOLDER:
+			const folder = workspAceContextService.getWorkspAceFolder(resource);
+			return folder ? folder.nAme : '';
 	}
 	return '';
 }
 
 export const FOLDER_SETTINGS_PATH = '.vscode/settings.json';
-export const DEFAULT_SETTINGS_EDITOR_SETTING = 'workbench.settings.openDefaultSettings';
+export const DEFAULT_SETTINGS_EDITOR_SETTING = 'workbench.settings.openDefAultSettings';
 export const USE_SPLIT_JSON_SETTING = 'workbench.settings.useSplitJSON';

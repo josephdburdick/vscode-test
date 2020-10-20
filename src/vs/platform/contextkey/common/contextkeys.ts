@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { isMacintosh, isLinux, isWindows, isWeb } from 'vs/base/common/platform';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { isMAcintosh, isLinux, isWindows, isWeb } from 'vs/bAse/common/plAtform';
 
-export const IsMacContext = new RawContextKey<boolean>('isMac', isMacintosh);
-export const IsLinuxContext = new RawContextKey<boolean>('isLinux', isLinux);
-export const IsWindowsContext = new RawContextKey<boolean>('isWindows', isWindows);
+export const IsMAcContext = new RAwContextKey<booleAn>('isMAc', isMAcintosh);
+export const IsLinuxContext = new RAwContextKey<booleAn>('isLinux', isLinux);
+export const IsWindowsContext = new RAwContextKey<booleAn>('isWindows', isWindows);
 
-export const IsWebContext = new RawContextKey<boolean>('isWeb', isWeb);
-export const IsMacNativeContext = new RawContextKey<boolean>('isMacNative', isMacintosh && !isWeb);
+export const IsWebContext = new RAwContextKey<booleAn>('isWeb', isWeb);
+export const IsMAcNAtiveContext = new RAwContextKey<booleAn>('isMAcNAtive', isMAcintosh && !isWeb);
 
-export const IsDevelopmentContext = new RawContextKey<boolean>('isDevelopment', false);
+export const IsDevelopmentContext = new RAwContextKey<booleAn>('isDevelopment', fAlse);
 
 export const InputFocusedContextKey = 'inputFocus';
-export const InputFocusedContext = new RawContextKey<boolean>(InputFocusedContextKey, false);
+export const InputFocusedContext = new RAwContextKey<booleAn>(InputFocusedContextKey, fAlse);

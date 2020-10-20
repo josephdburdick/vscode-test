@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppender';
-import { TelemetryClient, Contracts } from 'applicationinsights';
+import * As Assert from 'Assert';
+import { AppInsightsAppender } from 'vs/plAtform/telemetry/node/AppInsightsAppender';
+import { TelemetryClient, ContrActs } from 'ApplicAtioninsights';
 
-class AppInsightsMock extends TelemetryClient {
-	public config: any;
-	public channel: any;
-	public events: Contracts.EventTelemetry[] = [];
-	public IsTrackingPageView: boolean = false;
-	public exceptions: any[] = [];
+clAss AppInsightsMock extends TelemetryClient {
+	public config: Any;
+	public chAnnel: Any;
+	public events: ContrActs.EventTelemetry[] = [];
+	public IsTrAckingPAgeView: booleAn = fAlse;
+	public exceptions: Any[] = [];
 
 	constructor() {
 		super('testKey');
 	}
 
-	public trackEvent(event: any) {
+	public trAckEvent(event: Any) {
 		this.events.push(event);
 	}
 
-	public flush(options: any): void {
-		// called on dispose
+	public flush(options: Any): void {
+		// cAlled on dispose
 	}
 }
 
-suite('AIAdapter', () => {
-	let appInsightsMock: AppInsightsMock;
-	let adapter: AppInsightsAppender;
+suite('AIAdApter', () => {
+	let AppInsightsMock: AppInsightsMock;
+	let AdApter: AppInsightsAppender;
 	let prefix = 'prefix';
 
 
 	setup(() => {
-		appInsightsMock = new AppInsightsMock();
-		adapter = new AppInsightsAppender(prefix, undefined!, () => appInsightsMock);
+		AppInsightsMock = new AppInsightsMock();
+		AdApter = new AppInsightsAppender(prefix, undefined!, () => AppInsightsMock);
 	});
 
-	teardown(() => {
-		adapter.flush();
+	teArdown(() => {
+		AdApter.flush();
 	});
 
 	test('Simple event', () => {
-		adapter.log('testEvent');
+		AdApter.log('testEvent');
 
-		assert.equal(appInsightsMock.events.length, 1);
-		assert.equal(appInsightsMock.events[0].name, `${prefix}/testEvent`);
+		Assert.equAl(AppInsightsMock.events.length, 1);
+		Assert.equAl(AppInsightsMock.events[0].nAme, `${prefix}/testEvent`);
 	});
 
-	test('addional data', () => {
-		adapter = new AppInsightsAppender(prefix, { first: '1st', second: 2, third: true }, () => appInsightsMock);
-		adapter.log('testEvent');
+	test('AddionAl dAtA', () => {
+		AdApter = new AppInsightsAppender(prefix, { first: '1st', second: 2, third: true }, () => AppInsightsMock);
+		AdApter.log('testEvent');
 
-		assert.equal(appInsightsMock.events.length, 1);
-		let [first] = appInsightsMock.events;
-		assert.equal(first.name, `${prefix}/testEvent`);
-		assert.equal(first.properties!['first'], '1st');
-		assert.equal(first.measurements!['second'], '2');
-		assert.equal(first.measurements!['third'], 1);
+		Assert.equAl(AppInsightsMock.events.length, 1);
+		let [first] = AppInsightsMock.events;
+		Assert.equAl(first.nAme, `${prefix}/testEvent`);
+		Assert.equAl(first.properties!['first'], '1st');
+		Assert.equAl(first.meAsurements!['second'], '2');
+		Assert.equAl(first.meAsurements!['third'], 1);
 	});
 
 	test('property limits', () => {
-		let reallyLongPropertyName = 'abcdefghijklmnopqrstuvwxyz';
+		let reAllyLongPropertyNAme = 'Abcdefghijklmnopqrstuvwxyz';
 		for (let i = 0; i < 6; i++) {
-			reallyLongPropertyName += 'abcdefghijklmnopqrstuvwxyz';
+			reAllyLongPropertyNAme += 'Abcdefghijklmnopqrstuvwxyz';
 		}
-		assert(reallyLongPropertyName.length > 150);
+		Assert(reAllyLongPropertyNAme.length > 150);
 
-		let reallyLongPropertyValue = 'abcdefghijklmnopqrstuvwxyz012345678901234567890123';
+		let reAllyLongPropertyVAlue = 'Abcdefghijklmnopqrstuvwxyz012345678901234567890123';
 		for (let i = 0; i < 21; i++) {
-			reallyLongPropertyValue += 'abcdefghijklmnopqrstuvwxyz012345678901234567890123';
+			reAllyLongPropertyVAlue += 'Abcdefghijklmnopqrstuvwxyz012345678901234567890123';
 		}
-		assert(reallyLongPropertyValue.length > 1024);
+		Assert(reAllyLongPropertyVAlue.length > 1024);
 
-		let data = Object.create(null);
-		data[reallyLongPropertyName] = '1234';
-		data['reallyLongPropertyValue'] = reallyLongPropertyValue;
-		adapter.log('testEvent', data);
+		let dAtA = Object.creAte(null);
+		dAtA[reAllyLongPropertyNAme] = '1234';
+		dAtA['reAllyLongPropertyVAlue'] = reAllyLongPropertyVAlue;
+		AdApter.log('testEvent', dAtA);
 
-		assert.equal(appInsightsMock.events.length, 1);
+		Assert.equAl(AppInsightsMock.events.length, 1);
 
-		for (let prop in appInsightsMock.events[0].properties!) {
-			assert(prop.length < 150);
-			assert(appInsightsMock.events[0].properties![prop].length < 1024);
+		for (let prop in AppInsightsMock.events[0].properties!) {
+			Assert(prop.length < 150);
+			Assert(AppInsightsMock.events[0].properties![prop].length < 1024);
 		}
 	});
 
-	test('Different data types', () => {
-		let date = new Date();
-		adapter.log('testEvent', { favoriteDate: date, likeRed: false, likeBlue: true, favoriteNumber: 1, favoriteColor: 'blue', favoriteCars: ['bmw', 'audi', 'ford'] });
+	test('Different dAtA types', () => {
+		let dAte = new DAte();
+		AdApter.log('testEvent', { fAvoriteDAte: dAte, likeRed: fAlse, likeBlue: true, fAvoriteNumber: 1, fAvoriteColor: 'blue', fAvoriteCArs: ['bmw', 'Audi', 'ford'] });
 
-		assert.equal(appInsightsMock.events.length, 1);
-		assert.equal(appInsightsMock.events[0].name, `${prefix}/testEvent`);
-		assert.equal(appInsightsMock.events[0].properties!['favoriteColor'], 'blue');
-		assert.equal(appInsightsMock.events[0].measurements!['likeRed'], 0);
-		assert.equal(appInsightsMock.events[0].measurements!['likeBlue'], 1);
-		assert.equal(appInsightsMock.events[0].properties!['favoriteDate'], date.toISOString());
-		assert.equal(appInsightsMock.events[0].properties!['favoriteCars'], JSON.stringify(['bmw', 'audi', 'ford']));
-		assert.equal(appInsightsMock.events[0].measurements!['favoriteNumber'], 1);
+		Assert.equAl(AppInsightsMock.events.length, 1);
+		Assert.equAl(AppInsightsMock.events[0].nAme, `${prefix}/testEvent`);
+		Assert.equAl(AppInsightsMock.events[0].properties!['fAvoriteColor'], 'blue');
+		Assert.equAl(AppInsightsMock.events[0].meAsurements!['likeRed'], 0);
+		Assert.equAl(AppInsightsMock.events[0].meAsurements!['likeBlue'], 1);
+		Assert.equAl(AppInsightsMock.events[0].properties!['fAvoriteDAte'], dAte.toISOString());
+		Assert.equAl(AppInsightsMock.events[0].properties!['fAvoriteCArs'], JSON.stringify(['bmw', 'Audi', 'ford']));
+		Assert.equAl(AppInsightsMock.events[0].meAsurements!['fAvoriteNumber'], 1);
 	});
 
-	test('Nested data', () => {
-		adapter.log('testEvent', {
+	test('Nested dAtA', () => {
+		AdApter.log('testEvent', {
 			window: {
 				title: 'some title',
-				measurements: {
+				meAsurements: {
 					width: 100,
 					height: 200
 				}
@@ -115,19 +115,19 @@ suite('AIAdapter', () => {
 						testProperty: 'test',
 					}
 				},
-				testMeasurement: 1
+				testMeAsurement: 1
 			}
 		});
 
-		assert.equal(appInsightsMock.events.length, 1);
-		assert.equal(appInsightsMock.events[0].name, `${prefix}/testEvent`);
+		Assert.equAl(AppInsightsMock.events.length, 1);
+		Assert.equAl(AppInsightsMock.events[0].nAme, `${prefix}/testEvent`);
 
-		assert.equal(appInsightsMock.events[0].properties!['window.title'], 'some title');
-		assert.equal(appInsightsMock.events[0].measurements!['window.measurements.width'], 100);
-		assert.equal(appInsightsMock.events[0].measurements!['window.measurements.height'], 200);
+		Assert.equAl(AppInsightsMock.events[0].properties!['window.title'], 'some title');
+		Assert.equAl(AppInsightsMock.events[0].meAsurements!['window.meAsurements.width'], 100);
+		Assert.equAl(AppInsightsMock.events[0].meAsurements!['window.meAsurements.height'], 200);
 
-		assert.equal(appInsightsMock.events[0].properties!['nestedObj.nestedObj2.nestedObj3'], JSON.stringify({ 'testProperty': 'test' }));
-		assert.equal(appInsightsMock.events[0].measurements!['nestedObj.testMeasurement'], 1);
+		Assert.equAl(AppInsightsMock.events[0].properties!['nestedObj.nestedObj2.nestedObj3'], JSON.stringify({ 'testProperty': 'test' }));
+		Assert.equAl(AppInsightsMock.events[0].meAsurements!['nestedObj.testMeAsurement'], 1);
 	});
 
 });

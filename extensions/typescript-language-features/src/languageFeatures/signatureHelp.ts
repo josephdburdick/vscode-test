@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
+import { ClientCApAbility, ITypeScriptServiceClient } from '../typescriptService';
+import { conditionAlRegistrAtion, requireSomeCApAbility } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as Previewer from '../utils/previewer';
-import * as typeConverters from '../utils/typeConverters';
+import * As Previewer from '../utils/previewer';
+import * As typeConverters from '../utils/typeConverters';
 
-class TypeScriptSignatureHelpProvider implements vscode.SignatureHelpProvider {
+clAss TypeScriptSignAtureHelpProvider implements vscode.SignAtureHelpProvider {
 
-	public static readonly triggerCharacters = ['(', ',', '<'];
-	public static readonly retriggerCharacters = [')'];
+	public stAtic reAdonly triggerChArActers = ['(', ',', '<'];
+	public stAtic reAdonly retriggerChArActers = [')'];
 
 	public constructor(
-		private readonly client: ITypeScriptServiceClient
+		privAte reAdonly client: ITypeScriptServiceClient
 	) { }
 
-	public async provideSignatureHelp(
+	public Async provideSignAtureHelp(
 		document: vscode.TextDocument,
 		position: vscode.Position,
-		token: vscode.CancellationToken,
-		context: vscode.SignatureHelpContext,
-	): Promise<vscode.SignatureHelp | undefined> {
-		const filepath = this.client.toOpenedFilePath(document);
-		if (!filepath) {
+		token: vscode.CAncellAtionToken,
+		context: vscode.SignAtureHelpContext,
+	): Promise<vscode.SignAtureHelp | undefined> {
+		const filepAth = this.client.toOpenedFilePAth(document);
+		if (!filepAth) {
 			return undefined;
 		}
 
-		const args: Proto.SignatureHelpRequestArgs = {
-			...typeConverters.Position.toFileLocationRequestArgs(filepath, position),
-			triggerReason: toTsTriggerReason(context)
+		const Args: Proto.SignAtureHelpRequestArgs = {
+			...typeConverters.Position.toFileLocAtionRequestArgs(filepAth, position),
+			triggerReAson: toTsTriggerReAson(context)
 		};
-		const response = await this.client.interruptGetErr(() => this.client.execute('signatureHelp', args, token));
+		const response = AwAit this.client.interruptGetErr(() => this.client.execute('signAtureHelp', Args, token));
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
 		const info = response.body;
-		const result = new vscode.SignatureHelp();
-		result.signatures = info.items.map(signature => this.convertSignature(signature));
-		result.activeSignature = this.getActiveSignature(context, info, result.signatures);
-		result.activeParameter = this.getActiveParameter(info);
+		const result = new vscode.SignAtureHelp();
+		result.signAtures = info.items.mAp(signAture => this.convertSignAture(signAture));
+		result.ActiveSignAture = this.getActiveSignAture(context, info, result.signAtures);
+		result.ActivePArAmeter = this.getActivePArAmeter(info);
 
 		return result;
 	}
 
-	private getActiveSignature(context: vscode.SignatureHelpContext, info: Proto.SignatureHelpItems, signatures: readonly vscode.SignatureInformation[]): number {
-		// Try matching the previous active signature's label to keep it selected
-		const previouslyActiveSignature = context.activeSignatureHelp?.signatures[context.activeSignatureHelp.activeSignature];
-		if (previouslyActiveSignature && context.isRetrigger) {
-			const existingIndex = signatures.findIndex(other => other.label === previouslyActiveSignature?.label);
+	privAte getActiveSignAture(context: vscode.SignAtureHelpContext, info: Proto.SignAtureHelpItems, signAtures: reAdonly vscode.SignAtureInformAtion[]): number {
+		// Try mAtching the previous Active signAture's lAbel to keep it selected
+		const previouslyActiveSignAture = context.ActiveSignAtureHelp?.signAtures[context.ActiveSignAtureHelp.ActiveSignAture];
+		if (previouslyActiveSignAture && context.isRetrigger) {
+			const existingIndex = signAtures.findIndex(other => other.lAbel === previouslyActiveSignAture?.lAbel);
 			if (existingIndex >= 0) {
 				return existingIndex;
 			}
@@ -62,62 +62,62 @@ class TypeScriptSignatureHelpProvider implements vscode.SignatureHelpProvider {
 		return info.selectedItemIndex;
 	}
 
-	private getActiveParameter(info: Proto.SignatureHelpItems): number {
-		const activeSignature = info.items[info.selectedItemIndex];
-		if (activeSignature && activeSignature.isVariadic) {
-			return Math.min(info.argumentIndex, activeSignature.parameters.length - 1);
+	privAte getActivePArAmeter(info: Proto.SignAtureHelpItems): number {
+		const ActiveSignAture = info.items[info.selectedItemIndex];
+		if (ActiveSignAture && ActiveSignAture.isVAriAdic) {
+			return MAth.min(info.ArgumentIndex, ActiveSignAture.pArAmeters.length - 1);
 		}
-		return info.argumentIndex;
+		return info.ArgumentIndex;
 	}
 
-	private convertSignature(item: Proto.SignatureHelpItem) {
-		const signature = new vscode.SignatureInformation(
-			Previewer.plain(item.prefixDisplayParts),
-			Previewer.markdownDocumentation(item.documentation, item.tags.filter(x => x.name !== 'param')));
+	privAte convertSignAture(item: Proto.SignAtureHelpItem) {
+		const signAture = new vscode.SignAtureInformAtion(
+			Previewer.plAin(item.prefixDisplAyPArts),
+			Previewer.mArkdownDocumentAtion(item.documentAtion, item.tAgs.filter(x => x.nAme !== 'pArAm')));
 
-		let textIndex = signature.label.length;
-		const separatorLabel = Previewer.plain(item.separatorDisplayParts);
-		for (let i = 0; i < item.parameters.length; ++i) {
-			const parameter = item.parameters[i];
-			const label = Previewer.plain(parameter.displayParts);
+		let textIndex = signAture.lAbel.length;
+		const sepArAtorLAbel = Previewer.plAin(item.sepArAtorDisplAyPArts);
+		for (let i = 0; i < item.pArAmeters.length; ++i) {
+			const pArAmeter = item.pArAmeters[i];
+			const lAbel = Previewer.plAin(pArAmeter.displAyPArts);
 
-			signature.parameters.push(
-				new vscode.ParameterInformation(
-					[textIndex, textIndex + label.length],
-					Previewer.markdownDocumentation(parameter.documentation, [])));
+			signAture.pArAmeters.push(
+				new vscode.PArAmeterInformAtion(
+					[textIndex, textIndex + lAbel.length],
+					Previewer.mArkdownDocumentAtion(pArAmeter.documentAtion, [])));
 
-			textIndex += label.length;
-			signature.label += label;
+			textIndex += lAbel.length;
+			signAture.lAbel += lAbel;
 
-			if (i !== item.parameters.length - 1) {
-				signature.label += separatorLabel;
-				textIndex += separatorLabel.length;
+			if (i !== item.pArAmeters.length - 1) {
+				signAture.lAbel += sepArAtorLAbel;
+				textIndex += sepArAtorLAbel.length;
 			}
 		}
 
-		signature.label += Previewer.plain(item.suffixDisplayParts);
-		return signature;
+		signAture.lAbel += Previewer.plAin(item.suffixDisplAyPArts);
+		return signAture;
 	}
 }
 
-function toTsTriggerReason(context: vscode.SignatureHelpContext): Proto.SignatureHelpTriggerReason {
+function toTsTriggerReAson(context: vscode.SignAtureHelpContext): Proto.SignAtureHelpTriggerReAson {
 	switch (context.triggerKind) {
-		case vscode.SignatureHelpTriggerKind.TriggerCharacter:
-			if (context.triggerCharacter) {
+		cAse vscode.SignAtureHelpTriggerKind.TriggerChArActer:
+			if (context.triggerChArActer) {
 				if (context.isRetrigger) {
-					return { kind: 'retrigger', triggerCharacter: context.triggerCharacter as any };
+					return { kind: 'retrigger', triggerChArActer: context.triggerChArActer As Any };
 				} else {
-					return { kind: 'characterTyped', triggerCharacter: context.triggerCharacter as any };
+					return { kind: 'chArActerTyped', triggerChArActer: context.triggerChArActer As Any };
 				}
 			} else {
 				return { kind: 'invoked' };
 			}
 
-		case vscode.SignatureHelpTriggerKind.ContentChange:
+		cAse vscode.SignAtureHelpTriggerKind.ContentChAnge:
 			return context.isRetrigger ? { kind: 'retrigger' } : { kind: 'invoked' };
 
-		case vscode.SignatureHelpTriggerKind.Invoke:
-		default:
+		cAse vscode.SignAtureHelpTriggerKind.Invoke:
+		defAult:
 			return { kind: 'invoked' };
 	}
 }
@@ -125,13 +125,13 @@ export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
 ) {
-	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.EnhancedSyntax, ClientCapability.Semantic),
+	return conditionAlRegistrAtion([
+		requireSomeCApAbility(client, ClientCApAbility.EnhAncedSyntAx, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerSignatureHelpProvider(selector.syntax,
-			new TypeScriptSignatureHelpProvider(client), {
-			triggerCharacters: TypeScriptSignatureHelpProvider.triggerCharacters,
-			retriggerCharacters: TypeScriptSignatureHelpProvider.retriggerCharacters
+		return vscode.lAnguAges.registerSignAtureHelpProvider(selector.syntAx,
+			new TypeScriptSignAtureHelpProvider(client), {
+			triggerChArActers: TypeScriptSignAtureHelpProvider.triggerChArActers,
+			retriggerChArActers: TypeScriptSignAtureHelpProvider.retriggerChArActers
 		});
 	});
 }

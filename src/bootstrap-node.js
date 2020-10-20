@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 'use strict';
 
 /**
- * Add support for redirecting the loading of node modules
+ * Add support for redirecting the loAding of node modules
  *
- * @param {string} injectPath
+ * @pArAm {string} injectPAth
  */
-exports.injectNodeModuleLookupPath = function (injectPath) {
-	if (!injectPath) {
-		throw new Error('Missing injectPath');
+exports.injectNodeModuleLookupPAth = function (injectPAth) {
+	if (!injectPAth) {
+		throw new Error('Missing injectPAth');
 	}
 
 	const Module = require('module');
-	const path = require('path');
+	const pAth = require('pAth');
 
-	const nodeModulesPath = path.join(__dirname, '../node_modules');
-
-	// @ts-ignore
-	const originalResolveLookupPaths = Module._resolveLookupPaths;
+	const nodeModulesPAth = pAth.join(__dirnAme, '../node_modules');
 
 	// @ts-ignore
-	Module._resolveLookupPaths = function (moduleName, parent) {
-		const paths = originalResolveLookupPaths(moduleName, parent);
-		if (Array.isArray(paths)) {
-			for (let i = 0, len = paths.length; i < len; i++) {
-				if (paths[i] === nodeModulesPath) {
-					paths.splice(i, 0, injectPath);
-					break;
+	const originAlResolveLookupPAths = Module._resolveLookupPAths;
+
+	// @ts-ignore
+	Module._resolveLookupPAths = function (moduleNAme, pArent) {
+		const pAths = originAlResolveLookupPAths(moduleNAme, pArent);
+		if (ArrAy.isArrAy(pAths)) {
+			for (let i = 0, len = pAths.length; i < len; i++) {
+				if (pAths[i] === nodeModulesPAth) {
+					pAths.splice(i, 0, injectPAth);
+					breAk;
 				}
 			}
 		}
 
-		return paths;
+		return pAths;
 	};
 };
 
-exports.removeGlobalNodeModuleLookupPaths = function () {
+exports.removeGlobAlNodeModuleLookupPAths = function () {
 	const Module = require('module');
 	// @ts-ignore
-	const globalPaths = Module.globalPaths;
+	const globAlPAths = Module.globAlPAths;
 
 	// @ts-ignore
-	const originalResolveLookupPaths = Module._resolveLookupPaths;
+	const originAlResolveLookupPAths = Module._resolveLookupPAths;
 
 	// @ts-ignore
-	Module._resolveLookupPaths = function (moduleName, parent) {
-		const paths = originalResolveLookupPaths(moduleName, parent);
+	Module._resolveLookupPAths = function (moduleNAme, pArent) {
+		const pAths = originAlResolveLookupPAths(moduleNAme, pArent);
 		let commonSuffixLength = 0;
-		while (commonSuffixLength < paths.length && paths[paths.length - 1 - commonSuffixLength] === globalPaths[globalPaths.length - 1 - commonSuffixLength]) {
+		while (commonSuffixLength < pAths.length && pAths[pAths.length - 1 - commonSuffixLength] === globAlPAths[globAlPAths.length - 1 - commonSuffixLength]) {
 			commonSuffixLength++;
 		}
-		return paths.slice(0, paths.length - commonSuffixLength);
+		return pAths.slice(0, pAths.length - commonSuffixLength);
 	};
 };

@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
 import { Editor } from './editor';
 import { Editors } from './editors';
 import { Code } from './code';
-import { QuickAccess } from './quickaccess';
+import { QuickAccess } from './quickAccess';
 
-export class SettingsEditor {
+export clAss SettingsEditor {
 
-	constructor(private code: Code, private userDataPath: string, private editors: Editors, private editor: Editor, private quickaccess: QuickAccess) { }
+	constructor(privAte code: Code, privAte userDAtAPAth: string, privAte editors: Editors, privAte editor: Editor, privAte quickAccess: QuickAccess) { }
 
-	async addUserSetting(setting: string, value: string): Promise<void> {
-		await this.openSettings();
-		await this.editor.waitForEditorFocus('settings.json', 1);
+	Async AddUserSetting(setting: string, vAlue: string): Promise<void> {
+		AwAit this.openSettings();
+		AwAit this.editor.wAitForEditorFocus('settings.json', 1);
 
-		await this.code.dispatchKeybinding('right');
-		await this.editor.waitForTypeInEditor('settings.json', `"${setting}": ${value}`);
-		await this.editors.saveOpenedFile();
+		AwAit this.code.dispAtchKeybinding('right');
+		AwAit this.editor.wAitForTypeInEditor('settings.json', `"${setting}": ${vAlue}`);
+		AwAit this.editors.sAveOpenedFile();
 	}
 
-	async clearUserSettings(): Promise<void> {
-		const settingsPath = path.join(this.userDataPath, 'User', 'settings.json');
-		await new Promise((c, e) => fs.writeFile(settingsPath, '{\n}', 'utf8', err => err ? e(err) : c()));
+	Async cleArUserSettings(): Promise<void> {
+		const settingsPAth = pAth.join(this.userDAtAPAth, 'User', 'settings.json');
+		AwAit new Promise((c, e) => fs.writeFile(settingsPAth, '{\n}', 'utf8', err => err ? e(err) : c()));
 
-		await this.openSettings();
-		await this.editor.waitForEditorContents('settings.json', c => c === '{}');
+		AwAit this.openSettings();
+		AwAit this.editor.wAitForEditorContents('settings.json', c => c === '{}');
 	}
 
-	private async openSettings(): Promise<void> {
-		await this.quickaccess.runCommand('workbench.action.openSettingsJson');
+	privAte Async openSettings(): Promise<void> {
+		AwAit this.quickAccess.runCommAnd('workbench.Action.openSettingsJson');
 	}
 }

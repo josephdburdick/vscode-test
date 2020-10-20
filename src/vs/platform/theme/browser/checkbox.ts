@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CheckboxActionViewItem } from 'vs/base/browser/ui/checkbox/checkbox';
-import { IAction } from 'vs/base/common/actions';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { attachCheckboxStyler } from 'vs/platform/theme/common/styler';
-import { IBaseActionViewItemOptions } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { CheckboxActionViewItem } from 'vs/bAse/browser/ui/checkbox/checkbox';
+import { IAction } from 'vs/bAse/common/Actions';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { AttAchCheckboxStyler } from 'vs/plAtform/theme/common/styler';
+import { IBAseActionViewItemOptions } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export class ThemableCheckboxActionViewItem extends CheckboxActionViewItem {
+export clAss ThemAbleCheckboxActionViewItem extends CheckboxActionViewItem {
 
-	constructor(context: any, action: IAction, options: IBaseActionViewItemOptions | undefined, private readonly themeService: IThemeService) {
-		super(context, action, options);
+	constructor(context: Any, Action: IAction, options: IBAseActionViewItemOptions | undefined, privAte reAdonly themeService: IThemeService) {
+		super(context, Action, options);
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
 		if (this.checkbox) {
-			this.disposables.add(attachCheckboxStyler(this.checkbox, this.themeService));
+			this.disposAbles.Add(AttAchCheckboxStyler(this.checkbox, this.themeService));
 		}
 	}
 

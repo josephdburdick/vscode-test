@@ -1,90 +1,90 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Terminal, ILink } from 'xterm';
-import { TerminalWordLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalWordLinkProvider';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import * As Assert from 'Assert';
+import { TerminAl, ILink } from 'xterm';
+import { TerminAlWordLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlWordLinkProvider';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 
-suite('Workbench - TerminalWordLinkProvider', () => {
+suite('Workbench - TerminAlWordLinkProvider', () => {
 
-	let instantiationService: TestInstantiationService;
-	let configurationService: TestConfigurationService;
+	let instAntiAtionService: TestInstAntiAtionService;
+	let configurAtionService: TestConfigurAtionService;
 
 	setup(() => {
-		instantiationService = new TestInstantiationService();
-		configurationService = new TestConfigurationService();
-		instantiationService.stub(IConfigurationService, configurationService);
+		instAntiAtionService = new TestInstAntiAtionService();
+		configurAtionService = new TestConfigurAtionService();
+		instAntiAtionService.stub(IConfigurAtionService, configurAtionService);
 	});
 
-	async function assertLink(text: string, expected: { text: string, range: [number, number][] }[]) {
-		const xterm = new Terminal();
-		const provider: TerminalWordLinkProvider = instantiationService.createInstance(TerminalWordLinkProvider, xterm, () => { }, () => { });
+	Async function AssertLink(text: string, expected: { text: string, rAnge: [number, number][] }[]) {
+		const xterm = new TerminAl();
+		const provider: TerminAlWordLinkProvider = instAntiAtionService.creAteInstAnce(TerminAlWordLinkProvider, xterm, () => { }, () => { });
 
-		// Write the text and wait for the parser to finish
-		await new Promise<void>(r => xterm.write(text, r));
+		// Write the text And wAit for the pArser to finish
+		AwAit new Promise<void>(r => xterm.write(text, r));
 
-		// Ensure all links are provided
-		const links = (await new Promise<ILink[] | undefined>(r => provider.provideLinks(1, r)))!;
-		assert.equal(links.length, expected.length);
-		const actual = links.map(e => ({
+		// Ensure All links Are provided
+		const links = (AwAit new Promise<ILink[] | undefined>(r => provider.provideLinks(1, r)))!;
+		Assert.equAl(links.length, expected.length);
+		const ActuAl = links.mAp(e => ({
 			text: e.text,
-			range: e.range
+			rAnge: e.rAnge
 		}));
-		const expectedVerbose = expected.map(e => ({
+		const expectedVerbose = expected.mAp(e => ({
 			text: e.text,
-			range: {
-				start: { x: e.range[0][0], y: e.range[0][1] },
-				end: { x: e.range[1][0], y: e.range[1][1] },
+			rAnge: {
+				stArt: { x: e.rAnge[0][0], y: e.rAnge[0][1] },
+				end: { x: e.rAnge[1][0], y: e.rAnge[1][1] },
 			}
 		}));
-		assert.deepEqual(actual, expectedVerbose);
+		Assert.deepEquAl(ActuAl, expectedVerbose);
 	}
 
-	test('should link words as defined by wordSeparators', async () => {
-		await configurationService.setUserConfiguration('terminal', { integrated: { wordSeparators: ' ()[]' } });
-		await assertLink('foo', [{ range: [[1, 1], [3, 1]], text: 'foo' }]);
-		await assertLink('foo', [{ range: [[1, 1], [3, 1]], text: 'foo' }]);
-		await assertLink(' foo ', [{ range: [[2, 1], [4, 1]], text: 'foo' }]);
-		await assertLink('(foo)', [{ range: [[2, 1], [4, 1]], text: 'foo' }]);
-		await assertLink('[foo]', [{ range: [[2, 1], [4, 1]], text: 'foo' }]);
-		await assertLink('{foo}', [{ range: [[1, 1], [5, 1]], text: '{foo}' }]);
+	test('should link words As defined by wordSepArAtors', Async () => {
+		AwAit configurAtionService.setUserConfigurAtion('terminAl', { integrAted: { wordSepArAtors: ' ()[]' } });
+		AwAit AssertLink('foo', [{ rAnge: [[1, 1], [3, 1]], text: 'foo' }]);
+		AwAit AssertLink('foo', [{ rAnge: [[1, 1], [3, 1]], text: 'foo' }]);
+		AwAit AssertLink(' foo ', [{ rAnge: [[2, 1], [4, 1]], text: 'foo' }]);
+		AwAit AssertLink('(foo)', [{ rAnge: [[2, 1], [4, 1]], text: 'foo' }]);
+		AwAit AssertLink('[foo]', [{ rAnge: [[2, 1], [4, 1]], text: 'foo' }]);
+		AwAit AssertLink('{foo}', [{ rAnge: [[1, 1], [5, 1]], text: '{foo}' }]);
 
-		await configurationService.setUserConfiguration('terminal', { integrated: { wordSeparators: ' ' } });
-		await assertLink('foo', [{ range: [[1, 1], [3, 1]], text: 'foo' }]);
-		await assertLink(' foo ', [{ range: [[2, 1], [4, 1]], text: 'foo' }]);
-		await assertLink('(foo)', [{ range: [[1, 1], [5, 1]], text: '(foo)' }]);
-		await assertLink('[foo]', [{ range: [[1, 1], [5, 1]], text: '[foo]' }]);
-		await assertLink('{foo}', [{ range: [[1, 1], [5, 1]], text: '{foo}' }]);
+		AwAit configurAtionService.setUserConfigurAtion('terminAl', { integrAted: { wordSepArAtors: ' ' } });
+		AwAit AssertLink('foo', [{ rAnge: [[1, 1], [3, 1]], text: 'foo' }]);
+		AwAit AssertLink(' foo ', [{ rAnge: [[2, 1], [4, 1]], text: 'foo' }]);
+		AwAit AssertLink('(foo)', [{ rAnge: [[1, 1], [5, 1]], text: '(foo)' }]);
+		AwAit AssertLink('[foo]', [{ rAnge: [[1, 1], [5, 1]], text: '[foo]' }]);
+		AwAit AssertLink('{foo}', [{ rAnge: [[1, 1], [5, 1]], text: '{foo}' }]);
 	});
 
-	test('should support wide characters', async () => {
-		await configurationService.setUserConfiguration('terminal', { integrated: { wordSeparators: ' []' } });
-		await assertLink('aabbccdd.txt ', [{ range: [[1, 1], [12, 1]], text: 'aabbccdd.txt' }]);
-		await assertLink('我是学生.txt ', [{ range: [[1, 1], [12, 1]], text: '我是学生.txt' }]);
-		await assertLink(' aabbccdd.txt ', [{ range: [[2, 1], [13, 1]], text: 'aabbccdd.txt' }]);
-		await assertLink(' 我是学生.txt ', [{ range: [[2, 1], [13, 1]], text: '我是学生.txt' }]);
-		await assertLink(' [aabbccdd.txt] ', [{ range: [[3, 1], [14, 1]], text: 'aabbccdd.txt' }]);
-		await assertLink(' [我是学生.txt] ', [{ range: [[3, 1], [14, 1]], text: '我是学生.txt' }]);
+	test('should support wide chArActers', Async () => {
+		AwAit configurAtionService.setUserConfigurAtion('terminAl', { integrAted: { wordSepArAtors: ' []' } });
+		AwAit AssertLink('AAbbccdd.txt ', [{ rAnge: [[1, 1], [12, 1]], text: 'AAbbccdd.txt' }]);
+		AwAit AssertLink('我是学生.txt ', [{ rAnge: [[1, 1], [12, 1]], text: '我是学生.txt' }]);
+		AwAit AssertLink(' AAbbccdd.txt ', [{ rAnge: [[2, 1], [13, 1]], text: 'AAbbccdd.txt' }]);
+		AwAit AssertLink(' 我是学生.txt ', [{ rAnge: [[2, 1], [13, 1]], text: '我是学生.txt' }]);
+		AwAit AssertLink(' [AAbbccdd.txt] ', [{ rAnge: [[3, 1], [14, 1]], text: 'AAbbccdd.txt' }]);
+		AwAit AssertLink(' [我是学生.txt] ', [{ rAnge: [[3, 1], [14, 1]], text: '我是学生.txt' }]);
 	});
 
-	test('should support multiple link results', async () => {
-		await configurationService.setUserConfiguration('terminal', { integrated: { wordSeparators: ' ' } });
-		await assertLink('foo bar', [
-			{ range: [[1, 1], [3, 1]], text: 'foo' },
-			{ range: [[5, 1], [7, 1]], text: 'bar' }
+	test('should support multiple link results', Async () => {
+		AwAit configurAtionService.setUserConfigurAtion('terminAl', { integrAted: { wordSepArAtors: ' ' } });
+		AwAit AssertLink('foo bAr', [
+			{ rAnge: [[1, 1], [3, 1]], text: 'foo' },
+			{ rAnge: [[5, 1], [7, 1]], text: 'bAr' }
 		]);
 	});
 
-	test('should remove trailing colon in the link results', async () => {
-		await configurationService.setUserConfiguration('terminal', { integrated: { wordSeparators: ' ' } });
-		await assertLink('foo:5:6: bar:0:32:', [
-			{ range: [[1, 1], [7, 1]], text: 'foo:5:6' },
-			{ range: [[10, 1], [17, 1]], text: 'bar:0:32' }
+	test('should remove trAiling colon in the link results', Async () => {
+		AwAit configurAtionService.setUserConfigurAtion('terminAl', { integrAted: { wordSepArAtors: ' ' } });
+		AwAit AssertLink('foo:5:6: bAr:0:32:', [
+			{ rAnge: [[1, 1], [7, 1]], text: 'foo:5:6' },
+			{ rAnge: [[10, 1], [17, 1]], text: 'bAr:0:32' }
 		]);
 	});
 

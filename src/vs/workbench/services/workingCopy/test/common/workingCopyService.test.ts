@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { IWorkingCopy } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { TestWorkingCopy, TestWorkingCopyService } from 'vs/workbench/test/common/workbenchTestServices';
 
 suite('WorkingCopyService', () => {
 
-	test('registry - basics', () => {
+	test('registry - bAsics', () => {
 		const service = new TestWorkingCopyService();
 
-		const onDidChangeDirty: IWorkingCopy[] = [];
-		service.onDidChangeDirty(copy => onDidChangeDirty.push(copy));
+		const onDidChAngeDirty: IWorkingCopy[] = [];
+		service.onDidChAngeDirty(copy => onDidChAngeDirty.push(copy));
 
-		const onDidChangeContent: IWorkingCopy[] = [];
-		service.onDidChangeContent(copy => onDidChangeContent.push(copy));
+		const onDidChAngeContent: IWorkingCopy[] = [];
+		service.onDidChAngeContent(copy => onDidChAngeContent.push(copy));
 
 		const onDidRegister: IWorkingCopy[] = [];
 		service.onDidRegister(copy => onDidRegister.push(copy));
@@ -25,98 +25,98 @@ suite('WorkingCopyService', () => {
 		const onDidUnregister: IWorkingCopy[] = [];
 		service.onDidUnregister(copy => onDidUnregister.push(copy));
 
-		assert.equal(service.hasDirty, false);
-		assert.equal(service.dirtyCount, 0);
-		assert.equal(service.workingCopies.length, 0);
-		assert.equal(service.isDirty(URI.file('/')), false);
+		Assert.equAl(service.hAsDirty, fAlse);
+		Assert.equAl(service.dirtyCount, 0);
+		Assert.equAl(service.workingCopies.length, 0);
+		Assert.equAl(service.isDirty(URI.file('/')), fAlse);
 
 		// resource 1
 		const resource1 = URI.file('/some/folder/file.txt');
 		const copy1 = new TestWorkingCopy(resource1);
 		const unregister1 = service.registerWorkingCopy(copy1);
 
-		assert.equal(service.workingCopies.length, 1);
-		assert.equal(service.workingCopies[0], copy1);
-		assert.equal(onDidRegister.length, 1);
-		assert.equal(onDidRegister[0], copy1);
-		assert.equal(service.dirtyCount, 0);
-		assert.equal(service.isDirty(resource1), false);
-		assert.equal(service.hasDirty, false);
+		Assert.equAl(service.workingCopies.length, 1);
+		Assert.equAl(service.workingCopies[0], copy1);
+		Assert.equAl(onDidRegister.length, 1);
+		Assert.equAl(onDidRegister[0], copy1);
+		Assert.equAl(service.dirtyCount, 0);
+		Assert.equAl(service.isDirty(resource1), fAlse);
+		Assert.equAl(service.hAsDirty, fAlse);
 
 		copy1.setDirty(true);
 
-		assert.equal(copy1.isDirty(), true);
-		assert.equal(service.dirtyCount, 1);
-		assert.equal(service.dirtyWorkingCopies.length, 1);
-		assert.equal(service.dirtyWorkingCopies[0], copy1);
-		assert.equal(service.workingCopies.length, 1);
-		assert.equal(service.workingCopies[0], copy1);
-		assert.equal(service.isDirty(resource1), true);
-		assert.equal(service.hasDirty, true);
-		assert.equal(onDidChangeDirty.length, 1);
-		assert.equal(onDidChangeDirty[0], copy1);
+		Assert.equAl(copy1.isDirty(), true);
+		Assert.equAl(service.dirtyCount, 1);
+		Assert.equAl(service.dirtyWorkingCopies.length, 1);
+		Assert.equAl(service.dirtyWorkingCopies[0], copy1);
+		Assert.equAl(service.workingCopies.length, 1);
+		Assert.equAl(service.workingCopies[0], copy1);
+		Assert.equAl(service.isDirty(resource1), true);
+		Assert.equAl(service.hAsDirty, true);
+		Assert.equAl(onDidChAngeDirty.length, 1);
+		Assert.equAl(onDidChAngeDirty[0], copy1);
 
 		copy1.setContent('foo');
 
-		assert.equal(onDidChangeContent.length, 1);
-		assert.equal(onDidChangeContent[0], copy1);
+		Assert.equAl(onDidChAngeContent.length, 1);
+		Assert.equAl(onDidChAngeContent[0], copy1);
 
-		copy1.setDirty(false);
+		copy1.setDirty(fAlse);
 
-		assert.equal(service.dirtyCount, 0);
-		assert.equal(service.isDirty(resource1), false);
-		assert.equal(service.hasDirty, false);
-		assert.equal(onDidChangeDirty.length, 2);
-		assert.equal(onDidChangeDirty[1], copy1);
+		Assert.equAl(service.dirtyCount, 0);
+		Assert.equAl(service.isDirty(resource1), fAlse);
+		Assert.equAl(service.hAsDirty, fAlse);
+		Assert.equAl(onDidChAngeDirty.length, 2);
+		Assert.equAl(onDidChAngeDirty[1], copy1);
 
 		unregister1.dispose();
 
-		assert.equal(onDidUnregister.length, 1);
-		assert.equal(onDidUnregister[0], copy1);
-		assert.equal(service.workingCopies.length, 0);
+		Assert.equAl(onDidUnregister.length, 1);
+		Assert.equAl(onDidUnregister[0], copy1);
+		Assert.equAl(service.workingCopies.length, 0);
 
 		// resource 2
 		const resource2 = URI.file('/some/folder/file-dirty.txt');
 		const copy2 = new TestWorkingCopy(resource2, true);
 		const unregister2 = service.registerWorkingCopy(copy2);
 
-		assert.equal(onDidRegister.length, 2);
-		assert.equal(onDidRegister[1], copy2);
-		assert.equal(service.dirtyCount, 1);
-		assert.equal(service.isDirty(resource2), true);
-		assert.equal(service.hasDirty, true);
+		Assert.equAl(onDidRegister.length, 2);
+		Assert.equAl(onDidRegister[1], copy2);
+		Assert.equAl(service.dirtyCount, 1);
+		Assert.equAl(service.isDirty(resource2), true);
+		Assert.equAl(service.hAsDirty, true);
 
-		assert.equal(onDidChangeDirty.length, 3);
-		assert.equal(onDidChangeDirty[2], copy2);
+		Assert.equAl(onDidChAngeDirty.length, 3);
+		Assert.equAl(onDidChAngeDirty[2], copy2);
 
 		copy2.setContent('foo');
 
-		assert.equal(onDidChangeContent.length, 2);
-		assert.equal(onDidChangeContent[1], copy2);
+		Assert.equAl(onDidChAngeContent.length, 2);
+		Assert.equAl(onDidChAngeContent[1], copy2);
 
 		unregister2.dispose();
 
-		assert.equal(onDidUnregister.length, 2);
-		assert.equal(onDidUnregister[1], copy2);
-		assert.equal(service.dirtyCount, 0);
-		assert.equal(service.hasDirty, false);
-		assert.equal(onDidChangeDirty.length, 4);
-		assert.equal(onDidChangeDirty[3], copy2);
+		Assert.equAl(onDidUnregister.length, 2);
+		Assert.equAl(onDidUnregister[1], copy2);
+		Assert.equAl(service.dirtyCount, 0);
+		Assert.equAl(service.hAsDirty, fAlse);
+		Assert.equAl(onDidChAngeDirty.length, 4);
+		Assert.equAl(onDidChAngeDirty[3], copy2);
 	});
 
-	test('registry - multiple copies on same resource throws', () => {
+	test('registry - multiple copies on sAme resource throws', () => {
 		const service = new TestWorkingCopyService();
 
-		const onDidChangeDirty: IWorkingCopy[] = [];
-		service.onDidChangeDirty(copy => onDidChangeDirty.push(copy));
+		const onDidChAngeDirty: IWorkingCopy[] = [];
+		service.onDidChAngeDirty(copy => onDidChAngeDirty.push(copy));
 
-		const resource = URI.parse('custom://some/folder/custom.txt');
+		const resource = URI.pArse('custom://some/folder/custom.txt');
 
 		const copy1 = new TestWorkingCopy(resource);
 		service.registerWorkingCopy(copy1);
 
 		const copy2 = new TestWorkingCopy(resource);
 
-		assert.throws(() => service.registerWorkingCopy(copy2));
+		Assert.throws(() => service.registerWorkingCopy(copy2));
 	});
 });

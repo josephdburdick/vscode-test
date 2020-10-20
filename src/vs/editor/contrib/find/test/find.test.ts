@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { getSelectionSearchString } from 'vs/editor/contrib/find/findController';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { getSelectionSeArchString } from 'vs/editor/contrib/find/findController';
 import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
 
 
 suite('Find', () => {
 
-	test('search string at position', () => {
+	test('seArch string At position', () => {
 		withTestCodeEditor([
 			'ABC DEF',
 			'0123 456'
 		], {}, (editor) => {
 
-			// The cursor is at the very top, of the file, at the first ABC
-			let searchStringAtTop = getSelectionSearchString(editor);
-			assert.equal(searchStringAtTop, 'ABC');
+			// The cursor is At the very top, of the file, At the first ABC
+			let seArchStringAtTop = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringAtTop, 'ABC');
 
 			// Move cursor to the end of ABC
 			editor.setPosition(new Position(1, 3));
-			let searchStringAfterABC = getSelectionSearchString(editor);
-			assert.equal(searchStringAfterABC, 'ABC');
+			let seArchStringAfterABC = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringAfterABC, 'ABC');
 
 			// Move cursor to DEF
 			editor.setPosition(new Position(1, 5));
-			let searchStringInsideDEF = getSelectionSearchString(editor);
-			assert.equal(searchStringInsideDEF, 'DEF');
+			let seArchStringInsideDEF = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringInsideDEF, 'DEF');
 
 		});
 	});
 
-	test('search string with selection', () => {
+	test('seArch string with selection', () => {
 		withTestCodeEditor([
 			'ABC DEF',
 			'0123 456'
 		], {}, (editor) => {
 
 			// Select A of ABC
-			editor.setSelection(new Range(1, 1, 1, 2));
-			let searchStringSelectionA = getSelectionSearchString(editor);
-			assert.equal(searchStringSelectionA, 'A');
+			editor.setSelection(new RAnge(1, 1, 1, 2));
+			let seArchStringSelectionA = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringSelectionA, 'A');
 
 			// Select BC of ABC
-			editor.setSelection(new Range(1, 2, 1, 4));
-			let searchStringSelectionBC = getSelectionSearchString(editor);
-			assert.equal(searchStringSelectionBC, 'BC');
+			editor.setSelection(new RAnge(1, 2, 1, 4));
+			let seArchStringSelectionBC = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringSelectionBC, 'BC');
 
 			// Select BC DE
-			editor.setSelection(new Range(1, 2, 1, 7));
-			let searchStringSelectionBCDE = getSelectionSearchString(editor);
-			assert.equal(searchStringSelectionBCDE, 'BC DE');
+			editor.setSelection(new RAnge(1, 2, 1, 7));
+			let seArchStringSelectionBCDE = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringSelectionBCDE, 'BC DE');
 
 		});
 	});
 
-	test('search string with multiline selection', () => {
+	test('seArch string with multiline selection', () => {
 		withTestCodeEditor([
 			'ABC DEF',
 			'0123 456'
 		], {}, (editor) => {
 
-			// Select first line and newline
-			editor.setSelection(new Range(1, 1, 2, 1));
-			let searchStringSelectionWholeLine = getSelectionSearchString(editor);
-			assert.equal(searchStringSelectionWholeLine, null);
+			// Select first line And newline
+			editor.setSelection(new RAnge(1, 1, 2, 1));
+			let seArchStringSelectionWholeLine = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringSelectionWholeLine, null);
 
-			// Select first line and chunk of second
-			editor.setSelection(new Range(1, 1, 2, 4));
-			let searchStringSelectionTwoLines = getSelectionSearchString(editor);
-			assert.equal(searchStringSelectionTwoLines, null);
+			// Select first line And chunk of second
+			editor.setSelection(new RAnge(1, 1, 2, 4));
+			let seArchStringSelectionTwoLines = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringSelectionTwoLines, null);
 
-			// Select end of first line newline and chunk of second
-			editor.setSelection(new Range(1, 7, 2, 4));
-			let searchStringSelectionSpanLines = getSelectionSearchString(editor);
-			assert.equal(searchStringSelectionSpanLines, null);
+			// Select end of first line newline And chunk of second
+			editor.setSelection(new RAnge(1, 7, 2, 4));
+			let seArchStringSelectionSpAnLines = getSelectionSeArchString(editor);
+			Assert.equAl(seArchStringSelectionSpAnLines, null);
 
 		});
 	});

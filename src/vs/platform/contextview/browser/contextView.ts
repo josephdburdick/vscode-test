@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IContextMenuDelegate } from 'vs/base/browser/contextmenu';
-import { AnchorAlignment, IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IContextMenuDelegAte } from 'vs/bAse/browser/contextmenu';
+import { AnchorAlignment, IContextViewProvider } from 'vs/bAse/browser/ui/contextview/contextview';
 
-export const IContextViewService = createDecorator<IContextViewService>('contextViewService');
+export const IContextViewService = creAteDecorAtor<IContextViewService>('contextViewService');
 
-export interface IContextViewService extends IContextViewProvider {
+export interfAce IContextViewService extends IContextViewProvider {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	showContextView(delegate: IContextViewDelegate, container?: HTMLElement, shadowRoot?: boolean): IDisposable;
-	hideContextView(data?: any): void;
+	showContextView(delegAte: IContextViewDelegAte, contAiner?: HTMLElement, shAdowRoot?: booleAn): IDisposAble;
+	hideContextView(dAtA?: Any): void;
 	getContextViewElement(): HTMLElement;
-	layout(): void;
-	anchorAlignment?: AnchorAlignment;
+	lAyout(): void;
+	AnchorAlignment?: AnchorAlignment;
 }
 
-export interface IContextViewDelegate {
+export interfAce IContextViewDelegAte {
 
-	canRelayout?: boolean; // Default: true
+	cAnRelAyout?: booleAn; // DefAult: true
 
 	getAnchor(): HTMLElement | { x: number; y: number; width?: number; height?: number; };
-	render(container: HTMLElement): IDisposable;
-	onDOMEvent?(e: any, activeElement: HTMLElement): void;
-	onHide?(data?: any): void;
+	render(contAiner: HTMLElement): IDisposAble;
+	onDOMEvent?(e: Any, ActiveElement: HTMLElement): void;
+	onHide?(dAtA?: Any): void;
 	focus?(): void;
-	anchorAlignment?: AnchorAlignment;
+	AnchorAlignment?: AnchorAlignment;
 }
 
-export const IContextMenuService = createDecorator<IContextMenuService>('contextMenuService');
+export const IContextMenuService = creAteDecorAtor<IContextMenuService>('contextMenuService');
 
-export interface IContextMenuService {
+export interfAce IContextMenuService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	showContextMenu(delegate: IContextMenuDelegate): void;
-	onDidContextMenu: Event<void>; // TODO@isidor these event should be removed once we get async context menus
+	showContextMenu(delegAte: IContextMenuDelegAte): void;
+	onDidContextMenu: Event<void>; // TODO@isidor these event should be removed once we get Async context menus
 }

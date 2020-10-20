@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import Severity from 'vs/base/common/severity';
-import { IConfirmation, IConfirmationResult, IDialogService, IDialogOptions, IShowResult } from 'vs/platform/dialogs/common/dialogs';
+import Severity from 'vs/bAse/common/severity';
+import { IConfirmAtion, IConfirmAtionResult, IDiAlogService, IDiAlogOptions, IShowResult } from 'vs/plAtform/diAlogs/common/diAlogs';
 
-export class TestDialogService implements IDialogService {
+export clAss TestDiAlogService implements IDiAlogService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	confirm(_confirmation: IConfirmation): Promise<IConfirmationResult> { return Promise.resolve({ confirmed: false }); }
-	show(_severity: Severity, _message: string, _buttons: string[], _options?: IDialogOptions): Promise<IShowResult> { return Promise.resolve({ choice: 0 }); }
-	about(): Promise<void> { return Promise.resolve(); }
+	confirm(_confirmAtion: IConfirmAtion): Promise<IConfirmAtionResult> { return Promise.resolve({ confirmed: fAlse }); }
+	show(_severity: Severity, _messAge: string, _buttons: string[], _options?: IDiAlogOptions): Promise<IShowResult> { return Promise.resolve({ choice: 0 }); }
+	About(): Promise<void> { return Promise.resolve(); }
 }

@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 (function () {
 	'use strict';
 
 	const registerVscodeResourceScheme = (function () {
-		let hasRegistered = false;
+		let hAsRegistered = fAlse;
 		return () => {
-			if (hasRegistered) {
+			if (hAsRegistered) {
 				return;
 			}
-			hasRegistered = true;
+			hAsRegistered = true;
 		};
 	}());
 
 	const ipcRenderer = require('electron').ipcRenderer;
 
-	let isInDevelopmentMode = false;
+	let isInDevelopmentMode = fAlse;
 
 	/**
-	 * @type {import('../../browser/pre/main').WebviewHost}
+	 * @type {import('../../browser/pre/mAin').WebviewHost}
 	 */
 	const host = {
 		onElectron: true,
-		postMessage: (channel, data) => {
-			ipcRenderer.sendToHost(channel, data);
+		postMessAge: (chAnnel, dAtA) => {
+			ipcRenderer.sendToHost(chAnnel, dAtA);
 		},
-		onMessage: (channel, handler) => {
-			ipcRenderer.on(channel, handler);
+		onMessAge: (chAnnel, hAndler) => {
+			ipcRenderer.on(chAnnel, hAndler);
 		},
-		focusIframeOnCreate: true,
-		onIframeLoaded: (newFrame) => {
-			newFrame.contentWindow.onbeforeunload = () => {
-				if (isInDevelopmentMode) { // Allow reloads while developing a webview
-					host.postMessage('do-reload');
-					return false;
+		focusIfrAmeOnCreAte: true,
+		onIfrAmeLoAded: (newFrAme) => {
+			newFrAme.contentWindow.onbeforeunloAd = () => {
+				if (isInDevelopmentMode) { // Allow reloAds while developing A webview
+					host.postMessAge('do-reloAd');
+					return fAlse;
 				}
-				// Block navigation when not in development mode
-				console.log('prevented webview navigation');
-				return false;
+				// Block nAvigAtion when not in development mode
+				console.log('prevented webview nAvigAtion');
+				return fAlse;
 			};
 
-			// Electron 4 eats mouseup events from inside webviews
+			// Electron 4 eAts mouseup events from inside webviews
 			// https://github.com/microsoft/vscode/issues/75090
-			// Try to fix this by rebroadcasting mouse moves and mouseups so that we can
-			// emulate these on the main window
-			let isMouseDown = false;
-			newFrame.contentWindow.addEventListener('mousedown', () => {
+			// Try to fix this by rebroAdcAsting mouse moves And mouseups so thAt we cAn
+			// emulAte these on the mAin window
+			let isMouseDown = fAlse;
+			newFrAme.contentWindow.AddEventListener('mousedown', () => {
 				isMouseDown = true;
 			});
 
-			const tryDispatchSyntheticMouseEvent = (e) => {
+			const tryDispAtchSyntheticMouseEvent = (e) => {
 				if (!isMouseDown) {
-					host.postMessage('synthetic-mouse-event', { type: e.type, screenX: e.screenX, screenY: e.screenY, clientX: e.clientX, clientY: e.clientY });
+					host.postMessAge('synthetic-mouse-event', { type: e.type, screenX: e.screenX, screenY: e.screenY, clientX: e.clientX, clientY: e.clientY });
 				}
 			};
-			newFrame.contentWindow.addEventListener('mouseup', e => {
-				tryDispatchSyntheticMouseEvent(e);
-				isMouseDown = false;
+			newFrAme.contentWindow.AddEventListener('mouseup', e => {
+				tryDispAtchSyntheticMouseEvent(e);
+				isMouseDown = fAlse;
 			});
-			newFrame.contentWindow.addEventListener('mousemove', tryDispatchSyntheticMouseEvent);
+			newFrAme.contentWindow.AddEventListener('mousemove', tryDispAtchSyntheticMouseEvent);
 		},
 		rewriteCSP: (csp) => {
-			return csp.replace(/vscode-resource:(?=(\s|;|$))/g, 'vscode-webview-resource:');
+			return csp.replAce(/vscode-resource:(?=(\s|;|$))/g, 'vscode-webview-resource:');
 		},
 	};
 
-	host.onMessage('devtools-opened', () => {
+	host.onMessAge('devtools-opened', () => {
 		isInDevelopmentMode = true;
 	});
 
-	document.addEventListener('DOMContentLoaded', () => {
+	document.AddEventListener('DOMContentLoAded', () => {
 		registerVscodeResourceScheme();
 
-		// Forward messages from the embedded iframe
-		window.onmessage = (message) => {
-			ipcRenderer.sendToHost(message.data.command, message.data.data);
+		// ForwArd messAges from the embedded ifrAme
+		window.onmessAge = (messAge) => {
+			ipcRenderer.sendToHost(messAge.dAtA.commAnd, messAge.dAtA.dAtA);
 		};
 	});
 
-	require('../../browser/pre/main')(host);
+	require('../../browser/pre/mAin')(host);
 }());

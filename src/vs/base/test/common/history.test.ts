@@ -1,159 +1,159 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { HistoryNavigator } from 'vs/base/common/history';
+import * As Assert from 'Assert';
+import { HistoryNAvigAtor } from 'vs/bAse/common/history';
 
-suite('History Navigator', () => {
+suite('History NAvigAtor', () => {
 
-	test('create reduces the input to limit', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 2);
+	test('creAte reduces the input to limit', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 2);
 
-		assert.deepEqual(['3', '4'], toArray(testObject));
+		Assert.deepEquAl(['3', '4'], toArrAy(testObject));
 	});
 
-	test('create sets the position to last', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 100);
+	test('creAte sets the position to lAst', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 100);
 
-		assert.equal(testObject.current(), null);
-		assert.equal(testObject.next(), null);
-		assert.equal(testObject.previous(), '4');
+		Assert.equAl(testObject.current(), null);
+		Assert.equAl(testObject.next(), null);
+		Assert.equAl(testObject.previous(), '4');
 	});
 
-	test('last returns last element', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 100);
+	test('lAst returns lAst element', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 100);
 
-		assert.equal(testObject.first(), '1');
-		assert.equal(testObject.last(), '4');
+		Assert.equAl(testObject.first(), '1');
+		Assert.equAl(testObject.lAst(), '4');
 	});
 
 	test('first returns first element', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 3);
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 3);
 
-		assert.equal('2', testObject.first());
+		Assert.equAl('2', testObject.first());
 	});
 
 	test('next returns next element', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 3);
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 3);
 
 		testObject.first();
 
-		assert.equal(testObject.next(), '3');
-		assert.equal(testObject.next(), '4');
-		assert.equal(testObject.next(), null);
+		Assert.equAl(testObject.next(), '3');
+		Assert.equAl(testObject.next(), '4');
+		Assert.equAl(testObject.next(), null);
 	});
 
 	test('previous returns previous element', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 3);
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 3);
 
-		assert.equal(testObject.previous(), '4');
-		assert.equal(testObject.previous(), '3');
-		assert.equal(testObject.previous(), '2');
-		assert.equal(testObject.previous(), null);
+		Assert.equAl(testObject.previous(), '4');
+		Assert.equAl(testObject.previous(), '3');
+		Assert.equAl(testObject.previous(), '2');
+		Assert.equAl(testObject.previous(), null);
 	});
 
-	test('next on last element returs null and remains on last', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 3);
+	test('next on lAst element returs null And remAins on lAst', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 3);
 
 		testObject.first();
-		testObject.last();
+		testObject.lAst();
 
-		assert.equal(testObject.current(), '4');
-		assert.equal(testObject.next(), null);
+		Assert.equAl(testObject.current(), '4');
+		Assert.equAl(testObject.next(), null);
 	});
 
-	test('previous on first element returs null and remains on first', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 3);
+	test('previous on first element returs null And remAins on first', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 3);
 
 		testObject.first();
 
-		assert.equal(testObject.current(), '2');
-		assert.equal(testObject.previous(), null);
+		Assert.equAl(testObject.current(), '2');
+		Assert.equAl(testObject.previous(), null);
 	});
 
-	test('add reduces the input to limit', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 2);
+	test('Add reduces the input to limit', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 2);
 
-		testObject.add('5');
+		testObject.Add('5');
 
-		assert.deepEqual(toArray(testObject), ['4', '5']);
+		Assert.deepEquAl(toArrAy(testObject), ['4', '5']);
 	});
 
-	test('adding existing element changes the position', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 5);
+	test('Adding existing element chAnges the position', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 5);
 
-		testObject.add('2');
+		testObject.Add('2');
 
-		assert.deepEqual(toArray(testObject), ['1', '3', '4', '2']);
+		Assert.deepEquAl(toArrAy(testObject), ['1', '3', '4', '2']);
 	});
 
-	test('add resets the navigator to last', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3', '4'], 3);
+	test('Add resets the nAvigAtor to lAst', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3', '4'], 3);
 
 		testObject.first();
-		testObject.add('5');
+		testObject.Add('5');
 
-		assert.equal(testObject.previous(), '5');
-		assert.equal(testObject.next(), null);
+		Assert.equAl(testObject.previous(), '5');
+		Assert.equAl(testObject.next(), null);
 	});
 
-	test('adding an existing item changes the order', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3']);
+	test('Adding An existing item chAnges the order', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3']);
 
-		testObject.add('1');
+		testObject.Add('1');
 
-		assert.deepEqual(['2', '3', '1'], toArray(testObject));
+		Assert.deepEquAl(['2', '3', '1'], toArrAy(testObject));
 	});
 
 	test('previous returns null if the current position is the first one', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3']);
+		const testObject = new HistoryNAvigAtor(['1', '2', '3']);
 
 		testObject.first();
 
-		assert.deepEqual(testObject.previous(), null);
+		Assert.deepEquAl(testObject.previous(), null);
 	});
 
 	test('previous returns object if the current position is not the first one', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3']);
+		const testObject = new HistoryNAvigAtor(['1', '2', '3']);
 
 		testObject.first();
 		testObject.next();
 
-		assert.deepEqual(testObject.previous(), '1');
+		Assert.deepEquAl(testObject.previous(), '1');
 	});
 
-	test('next returns null if the current position is the last one', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3']);
+	test('next returns null if the current position is the lAst one', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3']);
 
-		testObject.last();
+		testObject.lAst();
 
-		assert.deepEqual(testObject.next(), null);
+		Assert.deepEquAl(testObject.next(), null);
 	});
 
-	test('next returns object if the current position is not the last one', () => {
-		const testObject = new HistoryNavigator(['1', '2', '3']);
+	test('next returns object if the current position is not the lAst one', () => {
+		const testObject = new HistoryNAvigAtor(['1', '2', '3']);
 
-		testObject.last();
+		testObject.lAst();
 		testObject.previous();
 
-		assert.deepEqual(testObject.next(), '3');
+		Assert.deepEquAl(testObject.next(), '3');
 	});
 
-	test('clear', () => {
-		const testObject = new HistoryNavigator(['a', 'b', 'c']);
-		assert.equal(testObject.previous(), 'c');
-		testObject.clear();
-		assert.equal(testObject.current(), undefined);
+	test('cleAr', () => {
+		const testObject = new HistoryNAvigAtor(['A', 'b', 'c']);
+		Assert.equAl(testObject.previous(), 'c');
+		testObject.cleAr();
+		Assert.equAl(testObject.current(), undefined);
 	});
 
-	function toArray(historyNavigator: HistoryNavigator<string>): Array<string | null> {
-		let result: Array<string | null> = [];
-		historyNavigator.first();
-		if (historyNavigator.current()) {
+	function toArrAy(historyNAvigAtor: HistoryNAvigAtor<string>): ArrAy<string | null> {
+		let result: ArrAy<string | null> = [];
+		historyNAvigAtor.first();
+		if (historyNAvigAtor.current()) {
 			do {
-				result.push(historyNavigator.current()!);
-			} while (historyNavigator.next());
+				result.push(historyNAvigAtor.current()!);
+			} while (historyNAvigAtor.next());
 		}
 		return result;
 	}

@@ -1,249 +1,249 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { UntitledTextEditorModel, IUntitledTextEditorModel } from 'vs/workbench/services/untitled/common/untitledTextEditorModel';
-import { IFilesConfiguration } from 'vs/platform/files/common/files';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { Event, Emitter } from 'vs/base/common/event';
-import { ResourceMap } from 'vs/base/common/map';
-import { Schemas } from 'vs/base/common/network';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IFilesConfigurAtion } from 'vs/plAtform/files/common/files';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { SchemAs } from 'vs/bAse/common/network';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
 
-export const IUntitledTextEditorService = createDecorator<IUntitledTextEditorService>('untitledTextEditorService');
+export const IUntitledTextEditorService = creAteDecorAtor<IUntitledTextEditorService>('untitledTextEditorService');
 
-export interface INewUntitledTextEditorOptions {
+export interfAce INewUntitledTextEditorOptions {
 
 	/**
-	 * Initial value of the untitled editor. An untitled editor with initial
-	 * value is dirty right from the beginning.
+	 * InitiAl vAlue of the untitled editor. An untitled editor with initiAl
+	 * vAlue is dirty right from the beginning.
 	 */
-	initialValue?: string;
+	initiAlVAlue?: string;
 
 	/**
-	 * Preferred language mode to use when saving the untitled editor.
+	 * Preferred lAnguAge mode to use when sAving the untitled editor.
 	 */
 	mode?: string;
 
 	/**
-	 * Preferred encoding to use when saving the untitled editor.
+	 * Preferred encoding to use when sAving the untitled editor.
 	 */
 	encoding?: string;
 }
 
-export interface IExistingUntitledTextEditorOptions extends INewUntitledTextEditorOptions {
+export interfAce IExistingUntitledTextEditorOptions extends INewUntitledTextEditorOptions {
 
 	/**
-	 * A resource to identify the untitled editor to create or return
-	 * if already existing.
+	 * A resource to identify the untitled editor to creAte or return
+	 * if AlreAdy existing.
 	 *
 	 * Note: the resource will not be used unless the scheme is `untitled`.
 	 */
 	untitledResource?: URI;
 }
 
-export interface INewUntitledTextEditorWithAssociatedResourceOptions extends INewUntitledTextEditorOptions {
+export interfAce INewUntitledTextEditorWithAssociAtedResourceOptions extends INewUntitledTextEditorOptions {
 
 	/**
-	 * Resource components to associate with the untitled editor. When saving
-	 * the untitled editor, the associated components will be used and the user
-	 * is not being asked to provide a file path.
+	 * Resource components to AssociAte with the untitled editor. When sAving
+	 * the untitled editor, the AssociAted components will be used And the user
+	 * is not being Asked to provide A file pAth.
 	 *
 	 * Note: currently it is not possible to specify the `scheme` to use. The
-	 * untitled editor will saved to the default local or remote resource.
+	 * untitled editor will sAved to the defAult locAl or remote resource.
 	 */
-	associatedResource?: { authority: string; path: string; query: string; fragment: string; }
+	AssociAtedResource?: { Authority: string; pAth: string; query: string; frAgment: string; }
 }
 
-type IInternalUntitledTextEditorOptions = IExistingUntitledTextEditorOptions & INewUntitledTextEditorWithAssociatedResourceOptions;
+type IInternAlUntitledTextEditorOptions = IExistingUntitledTextEditorOptions & INewUntitledTextEditorWithAssociAtedResourceOptions;
 
-export interface IUntitledTextEditorModelManager {
+export interfAce IUntitledTextEditorModelMAnAger {
 
 	/**
-	 * Events for when untitled text editors change (e.g. getting dirty, saved or reverted).
+	 * Events for when untitled text editors chAnge (e.g. getting dirty, sAved or reverted).
 	 */
-	readonly onDidChangeDirty: Event<IUntitledTextEditorModel>;
+	reAdonly onDidChAngeDirty: Event<IUntitledTextEditorModel>;
 
 	/**
-	 * Events for when untitled text editor encodings change.
+	 * Events for when untitled text editor encodings chAnge.
 	 */
-	readonly onDidChangeEncoding: Event<IUntitledTextEditorModel>;
+	reAdonly onDidChAngeEncoding: Event<IUntitledTextEditorModel>;
 
 	/**
-	 * Events for when untitled text editor labels change.
+	 * Events for when untitled text editor lAbels chAnge.
 	 */
-	readonly onDidChangeLabel: Event<IUntitledTextEditorModel>;
+	reAdonly onDidChAngeLAbel: Event<IUntitledTextEditorModel>;
 
 	/**
-	 * Events for when untitled text editors are disposed.
+	 * Events for when untitled text editors Are disposed.
 	 */
-	readonly onDidDispose: Event<IUntitledTextEditorModel>;
+	reAdonly onDidDispose: Event<IUntitledTextEditorModel>;
 
 	/**
-	 * Creates a new untitled editor model with the provided options. If the `untitledResource`
-	 * property is provided and the untitled editor exists, it will return that existing
-	 * instance instead of creating a new one.
+	 * CreAtes A new untitled editor model with the provided options. If the `untitledResource`
+	 * property is provided And the untitled editor exists, it will return thAt existing
+	 * instAnce insteAd of creAting A new one.
 	 */
-	create(options?: INewUntitledTextEditorOptions): IUntitledTextEditorModel;
-	create(options?: INewUntitledTextEditorWithAssociatedResourceOptions): IUntitledTextEditorModel;
-	create(options?: IExistingUntitledTextEditorOptions): IUntitledTextEditorModel;
+	creAte(options?: INewUntitledTextEditorOptions): IUntitledTextEditorModel;
+	creAte(options?: INewUntitledTextEditorWithAssociAtedResourceOptions): IUntitledTextEditorModel;
+	creAte(options?: IExistingUntitledTextEditorOptions): IUntitledTextEditorModel;
 
 	/**
-	 * Returns an existing untitled editor model if already created before.
+	 * Returns An existing untitled editor model if AlreAdy creAted before.
 	 */
 	get(resource: URI): IUntitledTextEditorModel | undefined;
 
 	/**
-	 * Resolves an untitled editor model from the provided options. If the `untitledResource`
-	 * property is provided and the untitled editor exists, it will return that existing
-	 * instance instead of creating a new one.
+	 * Resolves An untitled editor model from the provided options. If the `untitledResource`
+	 * property is provided And the untitled editor exists, it will return thAt existing
+	 * instAnce insteAd of creAting A new one.
 	 */
 	resolve(options?: INewUntitledTextEditorOptions): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel>;
-	resolve(options?: INewUntitledTextEditorWithAssociatedResourceOptions): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel>;
+	resolve(options?: INewUntitledTextEditorWithAssociAtedResourceOptions): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel>;
 	resolve(options?: IExistingUntitledTextEditorOptions): Promise<IUntitledTextEditorModel & IResolvedTextEditorModel>;
 }
 
-export interface IUntitledTextEditorService extends IUntitledTextEditorModelManager {
+export interfAce IUntitledTextEditorService extends IUntitledTextEditorModelMAnAger {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 }
 
-export class UntitledTextEditorService extends Disposable implements IUntitledTextEditorService {
+export clAss UntitledTextEditorService extends DisposAble implements IUntitledTextEditorService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidChangeDirty = this._register(new Emitter<IUntitledTextEditorModel>());
-	readonly onDidChangeDirty = this._onDidChangeDirty.event;
+	privAte reAdonly _onDidChAngeDirty = this._register(new Emitter<IUntitledTextEditorModel>());
+	reAdonly onDidChAngeDirty = this._onDidChAngeDirty.event;
 
-	private readonly _onDidChangeEncoding = this._register(new Emitter<IUntitledTextEditorModel>());
-	readonly onDidChangeEncoding = this._onDidChangeEncoding.event;
+	privAte reAdonly _onDidChAngeEncoding = this._register(new Emitter<IUntitledTextEditorModel>());
+	reAdonly onDidChAngeEncoding = this._onDidChAngeEncoding.event;
 
-	private readonly _onDidDispose = this._register(new Emitter<IUntitledTextEditorModel>());
-	readonly onDidDispose = this._onDidDispose.event;
+	privAte reAdonly _onDidDispose = this._register(new Emitter<IUntitledTextEditorModel>());
+	reAdonly onDidDispose = this._onDidDispose.event;
 
-	private readonly _onDidChangeLabel = this._register(new Emitter<IUntitledTextEditorModel>());
-	readonly onDidChangeLabel = this._onDidChangeLabel.event;
+	privAte reAdonly _onDidChAngeLAbel = this._register(new Emitter<IUntitledTextEditorModel>());
+	reAdonly onDidChAngeLAbel = this._onDidChAngeLAbel.event;
 
-	private readonly mapResourceToModel = new ResourceMap<UntitledTextEditorModel>();
+	privAte reAdonly mApResourceToModel = new ResourceMAp<UntitledTextEditorModel>();
 
 	constructor(
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
 		super();
 	}
 
 	get(resource: URI): UntitledTextEditorModel | undefined {
-		return this.mapResourceToModel.get(resource);
+		return this.mApResourceToModel.get(resource);
 	}
 
-	resolve(options?: IInternalUntitledTextEditorOptions): Promise<UntitledTextEditorModel & IResolvedTextEditorModel> {
-		return this.doCreateOrGet(options).load();
+	resolve(options?: IInternAlUntitledTextEditorOptions): Promise<UntitledTextEditorModel & IResolvedTextEditorModel> {
+		return this.doCreAteOrGet(options).loAd();
 	}
 
-	create(options?: IInternalUntitledTextEditorOptions): UntitledTextEditorModel {
-		return this.doCreateOrGet(options);
+	creAte(options?: IInternAlUntitledTextEditorOptions): UntitledTextEditorModel {
+		return this.doCreAteOrGet(options);
 	}
 
-	private doCreateOrGet(options: IInternalUntitledTextEditorOptions = Object.create(null)): UntitledTextEditorModel {
-		const massagedOptions = this.massageOptions(options);
+	privAte doCreAteOrGet(options: IInternAlUntitledTextEditorOptions = Object.creAte(null)): UntitledTextEditorModel {
+		const mAssAgedOptions = this.mAssAgeOptions(options);
 
-		// Return existing instance if asked for it
-		if (massagedOptions.untitledResource && this.mapResourceToModel.has(massagedOptions.untitledResource)) {
-			return this.mapResourceToModel.get(massagedOptions.untitledResource)!;
+		// Return existing instAnce if Asked for it
+		if (mAssAgedOptions.untitledResource && this.mApResourceToModel.hAs(mAssAgedOptions.untitledResource)) {
+			return this.mApResourceToModel.get(mAssAgedOptions.untitledResource)!;
 		}
 
-		// Create new instance otherwise
-		return this.doCreate(massagedOptions);
+		// CreAte new instAnce otherwise
+		return this.doCreAte(mAssAgedOptions);
 	}
 
-	private massageOptions(options: IInternalUntitledTextEditorOptions): IInternalUntitledTextEditorOptions {
-		const massagedOptions: IInternalUntitledTextEditorOptions = Object.create(null);
+	privAte mAssAgeOptions(options: IInternAlUntitledTextEditorOptions): IInternAlUntitledTextEditorOptions {
+		const mAssAgedOptions: IInternAlUntitledTextEditorOptions = Object.creAte(null);
 
-		// Figure out associated and untitled resource
-		if (options.associatedResource) {
-			massagedOptions.untitledResource = URI.from({
-				scheme: Schemas.untitled,
-				authority: options.associatedResource.authority,
-				fragment: options.associatedResource.fragment,
-				path: options.associatedResource.path,
-				query: options.associatedResource.query
+		// Figure out AssociAted And untitled resource
+		if (options.AssociAtedResource) {
+			mAssAgedOptions.untitledResource = URI.from({
+				scheme: SchemAs.untitled,
+				Authority: options.AssociAtedResource.Authority,
+				frAgment: options.AssociAtedResource.frAgment,
+				pAth: options.AssociAtedResource.pAth,
+				query: options.AssociAtedResource.query
 			});
-			massagedOptions.associatedResource = options.associatedResource;
+			mAssAgedOptions.AssociAtedResource = options.AssociAtedResource;
 		} else {
-			if (options.untitledResource?.scheme === Schemas.untitled) {
-				massagedOptions.untitledResource = options.untitledResource;
+			if (options.untitledResource?.scheme === SchemAs.untitled) {
+				mAssAgedOptions.untitledResource = options.untitledResource;
 			}
 		}
 
-		// Language mode
+		// LAnguAge mode
 		if (options.mode) {
-			massagedOptions.mode = options.mode;
-		} else if (!massagedOptions.associatedResource) {
-			const configuration = this.configurationService.getValue<IFilesConfiguration>();
-			if (configuration.files?.defaultLanguage) {
-				massagedOptions.mode = configuration.files.defaultLanguage;
+			mAssAgedOptions.mode = options.mode;
+		} else if (!mAssAgedOptions.AssociAtedResource) {
+			const configurAtion = this.configurAtionService.getVAlue<IFilesConfigurAtion>();
+			if (configurAtion.files?.defAultLAnguAge) {
+				mAssAgedOptions.mode = configurAtion.files.defAultLAnguAge;
 			}
 		}
 
-		// Take over encoding and initial value
-		massagedOptions.encoding = options.encoding;
-		massagedOptions.initialValue = options.initialValue;
+		// TAke over encoding And initiAl vAlue
+		mAssAgedOptions.encoding = options.encoding;
+		mAssAgedOptions.initiAlVAlue = options.initiAlVAlue;
 
-		return massagedOptions;
+		return mAssAgedOptions;
 	}
 
-	private doCreate(options: IInternalUntitledTextEditorOptions): UntitledTextEditorModel {
+	privAte doCreAte(options: IInternAlUntitledTextEditorOptions): UntitledTextEditorModel {
 
-		// Create a new untitled resource if none is provided
+		// CreAte A new untitled resource if none is provided
 		let untitledResource = options.untitledResource;
 		if (!untitledResource) {
 			let counter = 1;
 			do {
-				untitledResource = URI.from({ scheme: Schemas.untitled, path: `Untitled-${counter}` });
+				untitledResource = URI.from({ scheme: SchemAs.untitled, pAth: `Untitled-${counter}` });
 				counter++;
-			} while (this.mapResourceToModel.has(untitledResource));
+			} while (this.mApResourceToModel.hAs(untitledResource));
 		}
 
-		// Create new model with provided options
-		const model = this._register(this.instantiationService.createInstance(UntitledTextEditorModel, untitledResource, !!options.associatedResource, options.initialValue, options.mode, options.encoding));
+		// CreAte new model with provided options
+		const model = this._register(this.instAntiAtionService.creAteInstAnce(UntitledTextEditorModel, untitledResource, !!options.AssociAtedResource, options.initiAlVAlue, options.mode, options.encoding));
 
 		this.registerModel(model);
 
 		return model;
 	}
 
-	private registerModel(model: UntitledTextEditorModel): void {
+	privAte registerModel(model: UntitledTextEditorModel): void {
 
-		// Install model listeners
-		const modelListeners = new DisposableStore();
-		modelListeners.add(model.onDidChangeDirty(() => this._onDidChangeDirty.fire(model)));
-		modelListeners.add(model.onDidChangeName(() => this._onDidChangeLabel.fire(model)));
-		modelListeners.add(model.onDidChangeEncoding(() => this._onDidChangeEncoding.fire(model)));
-		modelListeners.add(model.onDispose(() => this._onDidDispose.fire(model)));
+		// InstAll model listeners
+		const modelListeners = new DisposAbleStore();
+		modelListeners.Add(model.onDidChAngeDirty(() => this._onDidChAngeDirty.fire(model)));
+		modelListeners.Add(model.onDidChAngeNAme(() => this._onDidChAngeLAbel.fire(model)));
+		modelListeners.Add(model.onDidChAngeEncoding(() => this._onDidChAngeEncoding.fire(model)));
+		modelListeners.Add(model.onDispose(() => this._onDidDispose.fire(model)));
 
-		// Remove from cache on dispose
+		// Remove from cAche on dispose
 		Event.once(model.onDispose)(() => {
 
 			// Registry
-			this.mapResourceToModel.delete(model.resource);
+			this.mApResourceToModel.delete(model.resource);
 
 			// Listeners
 			modelListeners.dispose();
 		});
 
-		// Add to cache
-		this.mapResourceToModel.set(model.resource, model);
+		// Add to cAche
+		this.mApResourceToModel.set(model.resource, model);
 
 		// If the model is dirty right from the beginning,
-		// make sure to emit this as an event
+		// mAke sure to emit this As An event
 		if (model.isDirty()) {
-			this._onDidChangeDirty.fire(model);
+			this._onDidChAngeDirty.fire(model);
 		}
 	}
 }

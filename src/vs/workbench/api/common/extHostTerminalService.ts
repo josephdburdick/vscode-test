@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
-import { Event, Emitter } from 'vs/base/common/event';
-import { ExtHostTerminalServiceShape, MainContext, MainThreadTerminalServiceShape, IShellLaunchConfigDto, IShellDefinitionDto, IShellAndArgsDto, ITerminalDimensionsDto, ITerminalLinkDto } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostConfigProvider } from 'vs/workbench/api/common/extHostConfiguration';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { ITerminalChildProcess, ITerminalDimensions, EXT_HOST_CREATION_DELAY, ITerminalLaunchError } from 'vs/workbench/contrib/terminal/common/terminal';
-import { timeout } from 'vs/base/common/async';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { TerminalDataBufferer } from 'vs/workbench/contrib/terminal/common/terminalDataBuffering';
-import { IDisposable, DisposableStore, Disposable } from 'vs/base/common/lifecycle';
-import { Disposable as VSCodeDisposable, EnvironmentVariableMutatorType } from './extHostTypes';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ISerializableEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { localize } from 'vs/nls';
-import { NotSupportedError } from 'vs/base/common/errors';
-import { serializeEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariableShared';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import type * As vscode from 'vscode';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { ExtHostTerminAlServiceShApe, MAinContext, MAinThreAdTerminAlServiceShApe, IShellLAunchConfigDto, IShellDefinitionDto, IShellAndArgsDto, ITerminAlDimensionsDto, ITerminAlLinkDto } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostConfigProvider } from 'vs/workbench/Api/common/extHostConfigurAtion';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { ITerminAlChildProcess, ITerminAlDimensions, EXT_HOST_CREATION_DELAY, ITerminAlLAunchError } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { timeout } from 'vs/bAse/common/Async';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { TerminAlDAtABufferer } from 'vs/workbench/contrib/terminAl/common/terminAlDAtABuffering';
+import { IDisposAble, DisposAbleStore, DisposAble } from 'vs/bAse/common/lifecycle';
+import { DisposAble As VSCodeDisposAble, EnvironmentVAriAbleMutAtorType } from './extHostTypes';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { ISeriAlizAbleEnvironmentVAriAbleCollection } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
+import { locAlize } from 'vs/nls';
+import { NotSupportedError } from 'vs/bAse/common/errors';
+import { seriAlizeEnvironmentVAriAbleCollection } from 'vs/workbench/contrib/terminAl/common/environmentVAriAbleShAred';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
 
-export interface IExtHostTerminalService extends ExtHostTerminalServiceShape, IDisposable {
+export interfAce IExtHostTerminAlService extends ExtHostTerminAlServiceShApe, IDisposAble {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	activeTerminal: vscode.Terminal | undefined;
-	terminals: vscode.Terminal[];
+	ActiveTerminAl: vscode.TerminAl | undefined;
+	terminAls: vscode.TerminAl[];
 
-	onDidCloseTerminal: Event<vscode.Terminal>;
-	onDidOpenTerminal: Event<vscode.Terminal>;
-	onDidChangeActiveTerminal: Event<vscode.Terminal | undefined>;
-	onDidChangeTerminalDimensions: Event<vscode.TerminalDimensionsChangeEvent>;
-	onDidWriteTerminalData: Event<vscode.TerminalDataWriteEvent>;
+	onDidCloseTerminAl: Event<vscode.TerminAl>;
+	onDidOpenTerminAl: Event<vscode.TerminAl>;
+	onDidChAngeActiveTerminAl: Event<vscode.TerminAl | undefined>;
+	onDidChAngeTerminAlDimensions: Event<vscode.TerminAlDimensionsChAngeEvent>;
+	onDidWriteTerminAlDAtA: Event<vscode.TerminAlDAtAWriteEvent>;
 
-	createTerminal(name?: string, shellPath?: string, shellArgs?: string[] | string): vscode.Terminal;
-	createTerminalFromOptions(options: vscode.TerminalOptions): vscode.Terminal;
-	createExtensionTerminal(options: vscode.ExtensionTerminalOptions): vscode.Terminal;
-	attachPtyToTerminal(id: number, pty: vscode.Pseudoterminal): void;
-	getDefaultShell(useAutomationShell: boolean, configProvider: ExtHostConfigProvider): string;
-	getDefaultShellArgs(useAutomationShell: boolean, configProvider: ExtHostConfigProvider): string[] | string;
-	registerLinkProvider(provider: vscode.TerminalLinkProvider): vscode.Disposable;
-	getEnvironmentVariableCollection(extension: IExtensionDescription, persistent?: boolean): vscode.EnvironmentVariableCollection;
+	creAteTerminAl(nAme?: string, shellPAth?: string, shellArgs?: string[] | string): vscode.TerminAl;
+	creAteTerminAlFromOptions(options: vscode.TerminAlOptions): vscode.TerminAl;
+	creAteExtensionTerminAl(options: vscode.ExtensionTerminAlOptions): vscode.TerminAl;
+	AttAchPtyToTerminAl(id: number, pty: vscode.PseudoterminAl): void;
+	getDefAultShell(useAutomAtionShell: booleAn, configProvider: ExtHostConfigProvider): string;
+	getDefAultShellArgs(useAutomAtionShell: booleAn, configProvider: ExtHostConfigProvider): string[] | string;
+	registerLinkProvider(provider: vscode.TerminAlLinkProvider): vscode.DisposAble;
+	getEnvironmentVAriAbleCollection(extension: IExtensionDescription, persistent?: booleAn): vscode.EnvironmentVAriAbleCollection;
 }
 
-export const IExtHostTerminalService = createDecorator<IExtHostTerminalService>('IExtHostTerminalService');
+export const IExtHostTerminAlService = creAteDecorAtor<IExtHostTerminAlService>('IExtHostTerminAlService');
 
-export class BaseExtHostTerminal {
+export clAss BAseExtHostTerminAl {
 	public _id: number | undefined;
 	protected _idPromise: Promise<number>;
-	private _idPromiseComplete: ((value: number) => any) | undefined;
-	private _disposed: boolean = false;
-	private _queuedRequests: ApiRequest[] = [];
+	privAte _idPromiseComplete: ((vAlue: number) => Any) | undefined;
+	privAte _disposed: booleAn = fAlse;
+	privAte _queuedRequests: ApiRequest[] = [];
 
 	constructor(
-		protected _proxy: MainThreadTerminalServiceShape,
+		protected _proxy: MAinThreAdTerminAlServiceShApe,
 		id?: number
 	) {
 		this._idPromise = new Promise<number>(c => {
@@ -77,12 +77,12 @@ export class BaseExtHostTerminal {
 
 	protected _checkDisposed() {
 		if (this._disposed) {
-			throw new Error('Terminal has already been disposed');
+			throw new Error('TerminAl hAs AlreAdy been disposed');
 		}
 	}
 
-	protected _queueApiRequest(callback: (...args: any[]) => void, args: any[]): void {
-		const request: ApiRequest = new ApiRequest(callback, args);
+	protected _queueApiRequest(cAllbAck: (...Args: Any[]) => void, Args: Any[]): void {
+		const request: ApiRequest = new ApiRequest(cAllbAck, Args);
 		if (!this._id) {
 			this._queuedRequests.push(request);
 			return;
@@ -96,67 +96,67 @@ export class BaseExtHostTerminal {
 			this._idPromiseComplete(id);
 			this._idPromiseComplete = undefined;
 		}
-		this._queuedRequests.forEach((r) => {
+		this._queuedRequests.forEAch((r) => {
 			r.run(this._proxy, id);
 		});
 		this._queuedRequests.length = 0;
 	}
 }
 
-export class ExtHostTerminal extends BaseExtHostTerminal implements vscode.Terminal {
-	private _pidPromise: Promise<number | undefined>;
-	private _cols: number | undefined;
-	private _pidPromiseComplete: ((value: number | undefined) => any) | undefined;
-	private _rows: number | undefined;
-	private _exitStatus: vscode.TerminalExitStatus | undefined;
+export clAss ExtHostTerminAl extends BAseExtHostTerminAl implements vscode.TerminAl {
+	privAte _pidPromise: Promise<number | undefined>;
+	privAte _cols: number | undefined;
+	privAte _pidPromiseComplete: ((vAlue: number | undefined) => Any) | undefined;
+	privAte _rows: number | undefined;
+	privAte _exitStAtus: vscode.TerminAlExitStAtus | undefined;
 
-	public isOpen: boolean = false;
+	public isOpen: booleAn = fAlse;
 
 	constructor(
-		proxy: MainThreadTerminalServiceShape,
-		private readonly _creationOptions: vscode.TerminalOptions | vscode.ExtensionTerminalOptions,
-		private _name?: string,
+		proxy: MAinThreAdTerminAlServiceShApe,
+		privAte reAdonly _creAtionOptions: vscode.TerminAlOptions | vscode.ExtensionTerminAlOptions,
+		privAte _nAme?: string,
 		id?: number
 	) {
 		super(proxy, id);
-		this._creationOptions = Object.freeze(this._creationOptions);
+		this._creAtionOptions = Object.freeze(this._creAtionOptions);
 		this._pidPromise = new Promise<number | undefined>(c => this._pidPromiseComplete = c);
 	}
 
-	public async create(
-		shellPath?: string,
+	public Async creAte(
+		shellPAth?: string,
 		shellArgs?: string[] | string,
 		cwd?: string | URI,
 		env?: { [key: string]: string | null },
-		waitOnExit?: boolean,
-		strictEnv?: boolean,
-		hideFromUser?: boolean
+		wAitOnExit?: booleAn,
+		strictEnv?: booleAn,
+		hideFromUser?: booleAn
 	): Promise<void> {
-		const result = await this._proxy.$createTerminal({ name: this._name, shellPath, shellArgs, cwd, env, waitOnExit, strictEnv, hideFromUser });
-		this._name = result.name;
+		const result = AwAit this._proxy.$creAteTerminAl({ nAme: this._nAme, shellPAth, shellArgs, cwd, env, wAitOnExit, strictEnv, hideFromUser });
+		this._nAme = result.nAme;
 		this._runQueuedRequests(result.id);
 	}
 
-	public async createExtensionTerminal(): Promise<number> {
-		const result = await this._proxy.$createTerminal({ name: this._name, isExtensionTerminal: true });
-		this._name = result.name;
+	public Async creAteExtensionTerminAl(): Promise<number> {
+		const result = AwAit this._proxy.$creAteTerminAl({ nAme: this._nAme, isExtensionTerminAl: true });
+		this._nAme = result.nAme;
 		this._runQueuedRequests(result.id);
 		return result.id;
 	}
 
-	public get name(): string {
-		return this._name || '';
+	public get nAme(): string {
+		return this._nAme || '';
 	}
 
-	public set name(name: string) {
-		this._name = name;
+	public set nAme(nAme: string) {
+		this._nAme = nAme;
 	}
 
-	public get exitStatus(): vscode.TerminalExitStatus | undefined {
-		return this._exitStatus;
+	public get exitStAtus(): vscode.TerminAlExitStAtus | undefined {
+		return this._exitStAtus;
 	}
 
-	public get dimensions(): vscode.TerminalDimensions | undefined {
+	public get dimensions(): vscode.TerminAlDimensions | undefined {
 		if (this._cols === undefined || this._rows === undefined) {
 			return undefined;
 		}
@@ -167,16 +167,16 @@ export class ExtHostTerminal extends BaseExtHostTerminal implements vscode.Termi
 	}
 
 	public setExitCode(code: number | undefined) {
-		this._exitStatus = Object.freeze({ code });
+		this._exitStAtus = Object.freeze({ code });
 	}
 
-	public setDimensions(cols: number, rows: number): boolean {
+	public setDimensions(cols: number, rows: number): booleAn {
 		if (cols === this._cols && rows === this._rows) {
-			// Nothing changed
-			return false;
+			// Nothing chAnged
+			return fAlse;
 		}
 		if (cols === 0 || rows === 0) {
-			return false;
+			return fAlse;
 		}
 		this._cols = cols;
 		this._rows = rows;
@@ -187,16 +187,16 @@ export class ExtHostTerminal extends BaseExtHostTerminal implements vscode.Termi
 		return this._pidPromise;
 	}
 
-	public get creationOptions(): Readonly<vscode.TerminalOptions | vscode.ExtensionTerminalOptions> {
-		return this._creationOptions;
+	public get creAtionOptions(): ReAdonly<vscode.TerminAlOptions | vscode.ExtensionTerminAlOptions> {
+		return this._creAtionOptions;
 	}
 
-	public sendText(text: string, addNewLine: boolean = true): void {
+	public sendText(text: string, AddNewLine: booleAn = true): void {
 		this._checkDisposed();
-		this._queueApiRequest(this._proxy.$sendText, [text, addNewLine]);
+		this._queueApiRequest(this._proxy.$sendText, [text, AddNewLine]);
 	}
 
-	public show(preserveFocus: boolean): void {
+	public show(preserveFocus: booleAn): void {
 		this._checkDisposed();
 		this._queueApiRequest(this._proxy.$show, [preserveFocus]);
 	}
@@ -207,12 +207,12 @@ export class ExtHostTerminal extends BaseExtHostTerminal implements vscode.Termi
 	}
 
 	public _setProcessId(processId: number | undefined): void {
-		// The event may fire 2 times when the panel is restored
+		// The event mAy fire 2 times when the pAnel is restored
 		if (this._pidPromiseComplete) {
 			this._pidPromiseComplete(processId);
 			this._pidPromiseComplete = undefined;
 		} else {
-			// Recreate the promise if this is the nth processId set (e.g. reused task terminals)
+			// RecreAte the promise if this is the nth processId set (e.g. reused tAsk terminAls)
 			this._pidPromise.then(pid => {
 				if (pid !== processId) {
 					this._pidPromise = Promise.resolve(processId);
@@ -222,35 +222,35 @@ export class ExtHostTerminal extends BaseExtHostTerminal implements vscode.Termi
 	}
 }
 
-class ApiRequest {
-	private _callback: (...args: any[]) => void;
-	private _args: any[];
+clAss ApiRequest {
+	privAte _cAllbAck: (...Args: Any[]) => void;
+	privAte _Args: Any[];
 
-	constructor(callback: (...args: any[]) => void, args: any[]) {
-		this._callback = callback;
-		this._args = args;
+	constructor(cAllbAck: (...Args: Any[]) => void, Args: Any[]) {
+		this._cAllbAck = cAllbAck;
+		this._Args = Args;
 	}
 
-	public run(proxy: MainThreadTerminalServiceShape, id: number) {
-		this._callback.apply(proxy, [id].concat(this._args));
+	public run(proxy: MAinThreAdTerminAlServiceShApe, id: number) {
+		this._cAllbAck.Apply(proxy, [id].concAt(this._Args));
 	}
 }
 
-export class ExtHostPseudoterminal implements ITerminalChildProcess {
-	private readonly _onProcessData = new Emitter<string>();
-	public readonly onProcessData: Event<string> = this._onProcessData.event;
-	private readonly _onProcessExit = new Emitter<number | undefined>();
-	public readonly onProcessExit: Event<number | undefined> = this._onProcessExit.event;
-	private readonly _onProcessReady = new Emitter<{ pid: number, cwd: string }>();
-	public get onProcessReady(): Event<{ pid: number, cwd: string }> { return this._onProcessReady.event; }
-	private readonly _onProcessTitleChanged = new Emitter<string>();
-	public readonly onProcessTitleChanged: Event<string> = this._onProcessTitleChanged.event;
-	private readonly _onProcessOverrideDimensions = new Emitter<ITerminalDimensions | undefined>();
-	public get onProcessOverrideDimensions(): Event<ITerminalDimensions | undefined> { return this._onProcessOverrideDimensions.event; }
+export clAss ExtHostPseudoterminAl implements ITerminAlChildProcess {
+	privAte reAdonly _onProcessDAtA = new Emitter<string>();
+	public reAdonly onProcessDAtA: Event<string> = this._onProcessDAtA.event;
+	privAte reAdonly _onProcessExit = new Emitter<number | undefined>();
+	public reAdonly onProcessExit: Event<number | undefined> = this._onProcessExit.event;
+	privAte reAdonly _onProcessReAdy = new Emitter<{ pid: number, cwd: string }>();
+	public get onProcessReAdy(): Event<{ pid: number, cwd: string }> { return this._onProcessReAdy.event; }
+	privAte reAdonly _onProcessTitleChAnged = new Emitter<string>();
+	public reAdonly onProcessTitleChAnged: Event<string> = this._onProcessTitleChAnged.event;
+	privAte reAdonly _onProcessOverrideDimensions = new Emitter<ITerminAlDimensions | undefined>();
+	public get onProcessOverrideDimensions(): Event<ITerminAlDimensions | undefined> { return this._onProcessOverrideDimensions.event; }
 
-	constructor(private readonly _pty: vscode.Pseudoterminal) { }
+	constructor(privAte reAdonly _pty: vscode.PseudoterminAl) { }
 
-	async start(): Promise<undefined> {
+	Async stArt(): Promise<undefined> {
 		return undefined;
 	}
 
@@ -258,9 +258,9 @@ export class ExtHostPseudoterminal implements ITerminalChildProcess {
 		this._pty.close();
 	}
 
-	input(data: string): void {
-		if (this._pty.handleInput) {
-			this._pty.handleInput(data);
+	input(dAtA: string): void {
+		if (this._pty.hAndleInput) {
+			this._pty.hAndleInput(dAtA);
 		}
 	}
 
@@ -270,7 +270,7 @@ export class ExtHostPseudoterminal implements ITerminalChildProcess {
 		}
 	}
 
-	getInitialCwd(): Promise<string> {
+	getInitiAlCwd(): Promise<string> {
 		return Promise.resolve('');
 	}
 
@@ -278,13 +278,13 @@ export class ExtHostPseudoterminal implements ITerminalChildProcess {
 		return Promise.resolve('');
 	}
 
-	getLatency(): Promise<number> {
+	getLAtency(): Promise<number> {
 		return Promise.resolve(0);
 	}
 
-	startSendingEvents(initialDimensions: ITerminalDimensionsDto | undefined): void {
-		// Attach the listeners
-		this._pty.onDidWrite(e => this._onProcessData.fire(e));
+	stArtSendingEvents(initiAlDimensions: ITerminAlDimensionsDto | undefined): void {
+		// AttAch the listeners
+		this._pty.onDidWrite(e => this._onProcessDAtA.fire(e));
 		if (this._pty.onDidClose) {
 			this._pty.onDidClose((e: number | void = undefined) => {
 				this._onProcessExit.fire(e === void 0 ? undefined : e);
@@ -294,208 +294,208 @@ export class ExtHostPseudoterminal implements ITerminalChildProcess {
 			this._pty.onDidOverrideDimensions(e => this._onProcessOverrideDimensions.fire(e ? { cols: e.columns, rows: e.rows } : e));
 		}
 
-		this._pty.open(initialDimensions ? initialDimensions : undefined);
-		this._onProcessReady.fire({ pid: -1, cwd: '' });
+		this._pty.open(initiAlDimensions ? initiAlDimensions : undefined);
+		this._onProcessReAdy.fire({ pid: -1, cwd: '' });
 	}
 }
 
 let nextLinkId = 1;
 
-interface ICachedLinkEntry {
-	provider: vscode.TerminalLinkProvider;
-	link: vscode.TerminalLink;
+interfAce ICAchedLinkEntry {
+	provider: vscode.TerminAlLinkProvider;
+	link: vscode.TerminAlLink;
 }
 
-export abstract class BaseExtHostTerminalService extends Disposable implements IExtHostTerminalService, ExtHostTerminalServiceShape {
+export AbstrAct clAss BAseExtHostTerminAlService extends DisposAble implements IExtHostTerminAlService, ExtHostTerminAlServiceShApe {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	protected _proxy: MainThreadTerminalServiceShape;
-	protected _activeTerminal: ExtHostTerminal | undefined;
-	protected _terminals: ExtHostTerminal[] = [];
-	protected _terminalProcesses: Map<number, ITerminalChildProcess> = new Map();
-	protected _terminalProcessDisposables: { [id: number]: IDisposable } = {};
-	protected _extensionTerminalAwaitingStart: { [id: number]: { initialDimensions: ITerminalDimensionsDto | undefined } | undefined } = {};
-	protected _getTerminalPromises: { [id: number]: Promise<ExtHostTerminal | undefined> } = {};
-	protected _environmentVariableCollections: Map<string, EnvironmentVariableCollection> = new Map();
+	protected _proxy: MAinThreAdTerminAlServiceShApe;
+	protected _ActiveTerminAl: ExtHostTerminAl | undefined;
+	protected _terminAls: ExtHostTerminAl[] = [];
+	protected _terminAlProcesses: MAp<number, ITerminAlChildProcess> = new MAp();
+	protected _terminAlProcessDisposAbles: { [id: number]: IDisposAble } = {};
+	protected _extensionTerminAlAwAitingStArt: { [id: number]: { initiAlDimensions: ITerminAlDimensionsDto | undefined } | undefined } = {};
+	protected _getTerminAlPromises: { [id: number]: Promise<ExtHostTerminAl | undefined> } = {};
+	protected _environmentVAriAbleCollections: MAp<string, EnvironmentVAriAbleCollection> = new MAp();
 
-	private readonly _bufferer: TerminalDataBufferer;
-	private readonly _linkProviders: Set<vscode.TerminalLinkProvider> = new Set();
-	private readonly _terminalLinkCache: Map<number, Map<number, ICachedLinkEntry>> = new Map();
-	private readonly _terminalLinkCancellationSource: Map<number, CancellationTokenSource> = new Map();
+	privAte reAdonly _bufferer: TerminAlDAtABufferer;
+	privAte reAdonly _linkProviders: Set<vscode.TerminAlLinkProvider> = new Set();
+	privAte reAdonly _terminAlLinkCAche: MAp<number, MAp<number, ICAchedLinkEntry>> = new MAp();
+	privAte reAdonly _terminAlLinkCAncellAtionSource: MAp<number, CAncellAtionTokenSource> = new MAp();
 
-	public get activeTerminal(): ExtHostTerminal | undefined { return this._activeTerminal; }
-	public get terminals(): ExtHostTerminal[] { return this._terminals; }
+	public get ActiveTerminAl(): ExtHostTerminAl | undefined { return this._ActiveTerminAl; }
+	public get terminAls(): ExtHostTerminAl[] { return this._terminAls; }
 
-	protected readonly _onDidCloseTerminal: Emitter<vscode.Terminal> = new Emitter<vscode.Terminal>();
-	public get onDidCloseTerminal(): Event<vscode.Terminal> { return this._onDidCloseTerminal && this._onDidCloseTerminal.event; }
-	protected readonly _onDidOpenTerminal: Emitter<vscode.Terminal> = new Emitter<vscode.Terminal>();
-	public get onDidOpenTerminal(): Event<vscode.Terminal> { return this._onDidOpenTerminal && this._onDidOpenTerminal.event; }
-	protected readonly _onDidChangeActiveTerminal: Emitter<vscode.Terminal | undefined> = new Emitter<vscode.Terminal | undefined>();
-	public get onDidChangeActiveTerminal(): Event<vscode.Terminal | undefined> { return this._onDidChangeActiveTerminal && this._onDidChangeActiveTerminal.event; }
-	protected readonly _onDidChangeTerminalDimensions: Emitter<vscode.TerminalDimensionsChangeEvent> = new Emitter<vscode.TerminalDimensionsChangeEvent>();
-	public get onDidChangeTerminalDimensions(): Event<vscode.TerminalDimensionsChangeEvent> { return this._onDidChangeTerminalDimensions && this._onDidChangeTerminalDimensions.event; }
-	protected readonly _onDidWriteTerminalData: Emitter<vscode.TerminalDataWriteEvent>;
-	public get onDidWriteTerminalData(): Event<vscode.TerminalDataWriteEvent> { return this._onDidWriteTerminalData && this._onDidWriteTerminalData.event; }
+	protected reAdonly _onDidCloseTerminAl: Emitter<vscode.TerminAl> = new Emitter<vscode.TerminAl>();
+	public get onDidCloseTerminAl(): Event<vscode.TerminAl> { return this._onDidCloseTerminAl && this._onDidCloseTerminAl.event; }
+	protected reAdonly _onDidOpenTerminAl: Emitter<vscode.TerminAl> = new Emitter<vscode.TerminAl>();
+	public get onDidOpenTerminAl(): Event<vscode.TerminAl> { return this._onDidOpenTerminAl && this._onDidOpenTerminAl.event; }
+	protected reAdonly _onDidChAngeActiveTerminAl: Emitter<vscode.TerminAl | undefined> = new Emitter<vscode.TerminAl | undefined>();
+	public get onDidChAngeActiveTerminAl(): Event<vscode.TerminAl | undefined> { return this._onDidChAngeActiveTerminAl && this._onDidChAngeActiveTerminAl.event; }
+	protected reAdonly _onDidChAngeTerminAlDimensions: Emitter<vscode.TerminAlDimensionsChAngeEvent> = new Emitter<vscode.TerminAlDimensionsChAngeEvent>();
+	public get onDidChAngeTerminAlDimensions(): Event<vscode.TerminAlDimensionsChAngeEvent> { return this._onDidChAngeTerminAlDimensions && this._onDidChAngeTerminAlDimensions.event; }
+	protected reAdonly _onDidWriteTerminAlDAtA: Emitter<vscode.TerminAlDAtAWriteEvent>;
+	public get onDidWriteTerminAlDAtA(): Event<vscode.TerminAlDAtAWriteEvent> { return this._onDidWriteTerminAlDAtA && this._onDidWriteTerminAlDAtA.event; }
 
 	constructor(
-		supportsProcesses: boolean,
+		supportsProcesses: booleAn,
 		@IExtHostRpcService extHostRpc: IExtHostRpcService
 	) {
 		super();
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadTerminalService);
-		this._bufferer = new TerminalDataBufferer(this._proxy.$sendProcessData);
-		this._onDidWriteTerminalData = new Emitter<vscode.TerminalDataWriteEvent>({
-			onFirstListenerAdd: () => this._proxy.$startSendingDataEvents(),
-			onLastListenerRemove: () => this._proxy.$stopSendingDataEvents()
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdTerminAlService);
+		this._bufferer = new TerminAlDAtABufferer(this._proxy.$sendProcessDAtA);
+		this._onDidWriteTerminAlDAtA = new Emitter<vscode.TerminAlDAtAWriteEvent>({
+			onFirstListenerAdd: () => this._proxy.$stArtSendingDAtAEvents(),
+			onLAstListenerRemove: () => this._proxy.$stopSendingDAtAEvents()
 		});
 		this._proxy.$registerProcessSupport(supportsProcesses);
 		this._register({
 			dispose: () => {
-				for (const [_, terminalProcess] of this._terminalProcesses) {
-					terminalProcess.shutdown(true);
+				for (const [_, terminAlProcess] of this._terminAlProcesses) {
+					terminAlProcess.shutdown(true);
 				}
 			}
 		});
 	}
 
-	public abstract createTerminal(name?: string, shellPath?: string, shellArgs?: string[] | string): vscode.Terminal;
-	public abstract createTerminalFromOptions(options: vscode.TerminalOptions): vscode.Terminal;
-	public abstract getDefaultShell(useAutomationShell: boolean, configProvider: ExtHostConfigProvider): string;
-	public abstract getDefaultShellArgs(useAutomationShell: boolean, configProvider: ExtHostConfigProvider): string[] | string;
-	public abstract $spawnExtHostProcess(id: number, shellLaunchConfigDto: IShellLaunchConfigDto, activeWorkspaceRootUriComponents: UriComponents, cols: number, rows: number, isWorkspaceShellAllowed: boolean): Promise<ITerminalLaunchError | undefined>;
-	public abstract $getAvailableShells(): Promise<IShellDefinitionDto[]>;
-	public abstract $getDefaultShellAndArgs(useAutomationShell: boolean): Promise<IShellAndArgsDto>;
-	public abstract $acceptWorkspacePermissionsChanged(isAllowed: boolean): void;
+	public AbstrAct creAteTerminAl(nAme?: string, shellPAth?: string, shellArgs?: string[] | string): vscode.TerminAl;
+	public AbstrAct creAteTerminAlFromOptions(options: vscode.TerminAlOptions): vscode.TerminAl;
+	public AbstrAct getDefAultShell(useAutomAtionShell: booleAn, configProvider: ExtHostConfigProvider): string;
+	public AbstrAct getDefAultShellArgs(useAutomAtionShell: booleAn, configProvider: ExtHostConfigProvider): string[] | string;
+	public AbstrAct $spAwnExtHostProcess(id: number, shellLAunchConfigDto: IShellLAunchConfigDto, ActiveWorkspAceRootUriComponents: UriComponents, cols: number, rows: number, isWorkspAceShellAllowed: booleAn): Promise<ITerminAlLAunchError | undefined>;
+	public AbstrAct $getAvAilAbleShells(): Promise<IShellDefinitionDto[]>;
+	public AbstrAct $getDefAultShellAndArgs(useAutomAtionShell: booleAn): Promise<IShellAndArgsDto>;
+	public AbstrAct $AcceptWorkspAcePermissionsChAnged(isAllowed: booleAn): void;
 
-	public createExtensionTerminal(options: vscode.ExtensionTerminalOptions): vscode.Terminal {
-		const terminal = new ExtHostTerminal(this._proxy, options, options.name);
-		const p = new ExtHostPseudoterminal(options.pty);
-		terminal.createExtensionTerminal().then(id => {
-			const disposable = this._setupExtHostProcessListeners(id, p);
-			this._terminalProcessDisposables[id] = disposable;
+	public creAteExtensionTerminAl(options: vscode.ExtensionTerminAlOptions): vscode.TerminAl {
+		const terminAl = new ExtHostTerminAl(this._proxy, options, options.nAme);
+		const p = new ExtHostPseudoterminAl(options.pty);
+		terminAl.creAteExtensionTerminAl().then(id => {
+			const disposAble = this._setupExtHostProcessListeners(id, p);
+			this._terminAlProcessDisposAbles[id] = disposAble;
 		});
-		this._terminals.push(terminal);
-		return terminal;
+		this._terminAls.push(terminAl);
+		return terminAl;
 	}
 
-	public attachPtyToTerminal(id: number, pty: vscode.Pseudoterminal): void {
-		const terminal = this._getTerminalByIdEventually(id);
-		if (!terminal) {
-			throw new Error(`Cannot resolve terminal with id ${id} for virtual process`);
+	public AttAchPtyToTerminAl(id: number, pty: vscode.PseudoterminAl): void {
+		const terminAl = this._getTerminAlByIdEventuAlly(id);
+		if (!terminAl) {
+			throw new Error(`CAnnot resolve terminAl with id ${id} for virtuAl process`);
 		}
-		const p = new ExtHostPseudoterminal(pty);
-		const disposable = this._setupExtHostProcessListeners(id, p);
-		this._terminalProcessDisposables[id] = disposable;
+		const p = new ExtHostPseudoterminAl(pty);
+		const disposAble = this._setupExtHostProcessListeners(id, p);
+		this._terminAlProcessDisposAbles[id] = disposAble;
 	}
 
-	public async $acceptActiveTerminalChanged(id: number | null): Promise<void> {
-		const original = this._activeTerminal;
+	public Async $AcceptActiveTerminAlChAnged(id: number | null): Promise<void> {
+		const originAl = this._ActiveTerminAl;
 		if (id === null) {
-			this._activeTerminal = undefined;
-			if (original !== this._activeTerminal) {
-				this._onDidChangeActiveTerminal.fire(this._activeTerminal);
+			this._ActiveTerminAl = undefined;
+			if (originAl !== this._ActiveTerminAl) {
+				this._onDidChAngeActiveTerminAl.fire(this._ActiveTerminAl);
 			}
 			return;
 		}
-		const terminal = await this._getTerminalByIdEventually(id);
-		if (terminal) {
-			this._activeTerminal = terminal;
-			if (original !== this._activeTerminal) {
-				this._onDidChangeActiveTerminal.fire(this._activeTerminal);
+		const terminAl = AwAit this._getTerminAlByIdEventuAlly(id);
+		if (terminAl) {
+			this._ActiveTerminAl = terminAl;
+			if (originAl !== this._ActiveTerminAl) {
+				this._onDidChAngeActiveTerminAl.fire(this._ActiveTerminAl);
 			}
 		}
 	}
 
-	public async $acceptTerminalProcessData(id: number, data: string): Promise<void> {
-		const terminal = await this._getTerminalByIdEventually(id);
-		if (terminal) {
-			this._onDidWriteTerminalData.fire({ terminal, data });
+	public Async $AcceptTerminAlProcessDAtA(id: number, dAtA: string): Promise<void> {
+		const terminAl = AwAit this._getTerminAlByIdEventuAlly(id);
+		if (terminAl) {
+			this._onDidWriteTerminAlDAtA.fire({ terminAl, dAtA });
 		}
 	}
 
-	public async $acceptTerminalDimensions(id: number, cols: number, rows: number): Promise<void> {
-		const terminal = await this._getTerminalByIdEventually(id);
-		if (terminal) {
-			if (terminal.setDimensions(cols, rows)) {
-				this._onDidChangeTerminalDimensions.fire({
-					terminal: terminal,
-					dimensions: terminal.dimensions as vscode.TerminalDimensions
+	public Async $AcceptTerminAlDimensions(id: number, cols: number, rows: number): Promise<void> {
+		const terminAl = AwAit this._getTerminAlByIdEventuAlly(id);
+		if (terminAl) {
+			if (terminAl.setDimensions(cols, rows)) {
+				this._onDidChAngeTerminAlDimensions.fire({
+					terminAl: terminAl,
+					dimensions: terminAl.dimensions As vscode.TerminAlDimensions
 				});
 			}
 		}
 	}
 
-	public async $acceptTerminalMaximumDimensions(id: number, cols: number, rows: number): Promise<void> {
-		await this._getTerminalByIdEventually(id);
+	public Async $AcceptTerminAlMAximumDimensions(id: number, cols: number, rows: number): Promise<void> {
+		AwAit this._getTerminAlByIdEventuAlly(id);
 
-		// Extension pty terminal only - when virtual process resize fires it means that the
-		// terminal's maximum dimensions changed
-		this._terminalProcesses.get(id)?.resize(cols, rows);
+		// Extension pty terminAl only - when virtuAl process resize fires it meAns thAt the
+		// terminAl's mAximum dimensions chAnged
+		this._terminAlProcesses.get(id)?.resize(cols, rows);
 	}
 
-	public async $acceptTerminalTitleChange(id: number, name: string): Promise<void> {
-		await this._getTerminalByIdEventually(id);
-		const extHostTerminal = this._getTerminalObjectById(this.terminals, id);
-		if (extHostTerminal) {
-			extHostTerminal.name = name;
+	public Async $AcceptTerminAlTitleChAnge(id: number, nAme: string): Promise<void> {
+		AwAit this._getTerminAlByIdEventuAlly(id);
+		const extHostTerminAl = this._getTerminAlObjectById(this.terminAls, id);
+		if (extHostTerminAl) {
+			extHostTerminAl.nAme = nAme;
 		}
 	}
 
-	public async $acceptTerminalClosed(id: number, exitCode: number | undefined): Promise<void> {
-		await this._getTerminalByIdEventually(id);
-		const index = this._getTerminalObjectIndexById(this.terminals, id);
+	public Async $AcceptTerminAlClosed(id: number, exitCode: number | undefined): Promise<void> {
+		AwAit this._getTerminAlByIdEventuAlly(id);
+		const index = this._getTerminAlObjectIndexById(this.terminAls, id);
 		if (index !== null) {
-			const terminal = this._terminals.splice(index, 1)[0];
-			terminal.setExitCode(exitCode);
-			this._onDidCloseTerminal.fire(terminal);
+			const terminAl = this._terminAls.splice(index, 1)[0];
+			terminAl.setExitCode(exitCode);
+			this._onDidCloseTerminAl.fire(terminAl);
 		}
 	}
 
-	public $acceptTerminalOpened(id: number, name: string, shellLaunchConfigDto: IShellLaunchConfigDto): void {
-		const index = this._getTerminalObjectIndexById(this._terminals, id);
+	public $AcceptTerminAlOpened(id: number, nAme: string, shellLAunchConfigDto: IShellLAunchConfigDto): void {
+		const index = this._getTerminAlObjectIndexById(this._terminAls, id);
 		if (index !== null) {
-			// The terminal has already been created (via createTerminal*), only fire the event
-			this._onDidOpenTerminal.fire(this.terminals[index]);
-			this.terminals[index].isOpen = true;
+			// The terminAl hAs AlreAdy been creAted (viA creAteTerminAl*), only fire the event
+			this._onDidOpenTerminAl.fire(this.terminAls[index]);
+			this.terminAls[index].isOpen = true;
 			return;
 		}
 
-		const creationOptions: vscode.TerminalOptions = {
-			name: shellLaunchConfigDto.name,
-			shellPath: shellLaunchConfigDto.executable,
-			shellArgs: shellLaunchConfigDto.args,
-			cwd: typeof shellLaunchConfigDto.cwd === 'string' ? shellLaunchConfigDto.cwd : URI.revive(shellLaunchConfigDto.cwd),
-			env: shellLaunchConfigDto.env,
-			hideFromUser: shellLaunchConfigDto.hideFromUser
+		const creAtionOptions: vscode.TerminAlOptions = {
+			nAme: shellLAunchConfigDto.nAme,
+			shellPAth: shellLAunchConfigDto.executAble,
+			shellArgs: shellLAunchConfigDto.Args,
+			cwd: typeof shellLAunchConfigDto.cwd === 'string' ? shellLAunchConfigDto.cwd : URI.revive(shellLAunchConfigDto.cwd),
+			env: shellLAunchConfigDto.env,
+			hideFromUser: shellLAunchConfigDto.hideFromUser
 		};
-		const terminal = new ExtHostTerminal(this._proxy, creationOptions, name, id);
-		this._terminals.push(terminal);
-		this._onDidOpenTerminal.fire(terminal);
-		terminal.isOpen = true;
+		const terminAl = new ExtHostTerminAl(this._proxy, creAtionOptions, nAme, id);
+		this._terminAls.push(terminAl);
+		this._onDidOpenTerminAl.fire(terminAl);
+		terminAl.isOpen = true;
 	}
 
-	public async $acceptTerminalProcessId(id: number, processId: number): Promise<void> {
-		const terminal = await this._getTerminalByIdEventually(id);
-		if (terminal) {
-			terminal._setProcessId(processId);
+	public Async $AcceptTerminAlProcessId(id: number, processId: number): Promise<void> {
+		const terminAl = AwAit this._getTerminAlByIdEventuAlly(id);
+		if (terminAl) {
+			terminAl._setProcessId(processId);
 		}
 	}
 
-	public async $startExtensionTerminal(id: number, initialDimensions: ITerminalDimensionsDto | undefined): Promise<ITerminalLaunchError | undefined> {
-		// Make sure the ExtHostTerminal exists so onDidOpenTerminal has fired before we call
-		// Pseudoterminal.start
-		const terminal = await this._getTerminalByIdEventually(id);
-		if (!terminal) {
-			return { message: localize('launchFail.idMissingOnExtHost', "Could not find the terminal with id {0} on the extension host", id) };
+	public Async $stArtExtensionTerminAl(id: number, initiAlDimensions: ITerminAlDimensionsDto | undefined): Promise<ITerminAlLAunchError | undefined> {
+		// MAke sure the ExtHostTerminAl exists so onDidOpenTerminAl hAs fired before we cAll
+		// PseudoterminAl.stArt
+		const terminAl = AwAit this._getTerminAlByIdEventuAlly(id);
+		if (!terminAl) {
+			return { messAge: locAlize('lAunchFAil.idMissingOnExtHost', "Could not find the terminAl with id {0} on the extension host", id) };
 		}
 
-		// Wait for onDidOpenTerminal to fire
-		if (!terminal.isOpen) {
-			await new Promise<void>(r => {
-				// Ensure open is called after onDidOpenTerminal
-				const listener = this.onDidOpenTerminal(async e => {
-					if (e === terminal) {
+		// WAit for onDidOpenTerminAl to fire
+		if (!terminAl.isOpen) {
+			AwAit new Promise<void>(r => {
+				// Ensure open is cAlled After onDidOpenTerminAl
+				const listener = this.onDidOpenTerminAl(Async e => {
+					if (e === terminAl) {
 						listener.dispose();
 						r();
 					}
@@ -503,78 +503,78 @@ export abstract class BaseExtHostTerminalService extends Disposable implements I
 			});
 		}
 
-		const terminalProcess = this._terminalProcesses.get(id);
-		if (terminalProcess) {
-			(terminalProcess as ExtHostPseudoterminal).startSendingEvents(initialDimensions);
+		const terminAlProcess = this._terminAlProcesses.get(id);
+		if (terminAlProcess) {
+			(terminAlProcess As ExtHostPseudoterminAl).stArtSendingEvents(initiAlDimensions);
 		} else {
-			// Defer startSendingEvents call to when _setupExtHostProcessListeners is called
-			this._extensionTerminalAwaitingStart[id] = { initialDimensions };
+			// Defer stArtSendingEvents cAll to when _setupExtHostProcessListeners is cAlled
+			this._extensionTerminAlAwAitingStArt[id] = { initiAlDimensions };
 		}
 
 		return undefined;
 	}
 
-	protected _setupExtHostProcessListeners(id: number, p: ITerminalChildProcess): IDisposable {
-		const disposables = new DisposableStore();
+	protected _setupExtHostProcessListeners(id: number, p: ITerminAlChildProcess): IDisposAble {
+		const disposAbles = new DisposAbleStore();
 
-		disposables.add(p.onProcessReady((e: { pid: number, cwd: string }) => this._proxy.$sendProcessReady(id, e.pid, e.cwd)));
-		disposables.add(p.onProcessTitleChanged(title => this._proxy.$sendProcessTitle(id, title)));
+		disposAbles.Add(p.onProcessReAdy((e: { pid: number, cwd: string }) => this._proxy.$sendProcessReAdy(id, e.pid, e.cwd)));
+		disposAbles.Add(p.onProcessTitleChAnged(title => this._proxy.$sendProcessTitle(id, title)));
 
-		// Buffer data events to reduce the amount of messages going to the renderer
-		this._bufferer.startBuffering(id, p.onProcessData);
-		disposables.add(p.onProcessExit(exitCode => this._onProcessExit(id, exitCode)));
+		// Buffer dAtA events to reduce the Amount of messAges going to the renderer
+		this._bufferer.stArtBuffering(id, p.onProcessDAtA);
+		disposAbles.Add(p.onProcessExit(exitCode => this._onProcessExit(id, exitCode)));
 
 		if (p.onProcessOverrideDimensions) {
-			disposables.add(p.onProcessOverrideDimensions(e => this._proxy.$sendOverrideDimensions(id, e)));
+			disposAbles.Add(p.onProcessOverrideDimensions(e => this._proxy.$sendOverrideDimensions(id, e)));
 		}
-		this._terminalProcesses.set(id, p);
+		this._terminAlProcesses.set(id, p);
 
-		const awaitingStart = this._extensionTerminalAwaitingStart[id];
-		if (awaitingStart && p instanceof ExtHostPseudoterminal) {
-			p.startSendingEvents(awaitingStart.initialDimensions);
-			delete this._extensionTerminalAwaitingStart[id];
+		const AwAitingStArt = this._extensionTerminAlAwAitingStArt[id];
+		if (AwAitingStArt && p instAnceof ExtHostPseudoterminAl) {
+			p.stArtSendingEvents(AwAitingStArt.initiAlDimensions);
+			delete this._extensionTerminAlAwAitingStArt[id];
 		}
 
-		return disposables;
+		return disposAbles;
 	}
 
-	public $acceptProcessInput(id: number, data: string): void {
-		this._terminalProcesses.get(id)?.input(data);
+	public $AcceptProcessInput(id: number, dAtA: string): void {
+		this._terminAlProcesses.get(id)?.input(dAtA);
 	}
 
-	public $acceptProcessResize(id: number, cols: number, rows: number): void {
+	public $AcceptProcessResize(id: number, cols: number, rows: number): void {
 		try {
-			this._terminalProcesses.get(id)?.resize(cols, rows);
-		} catch (error) {
-			// We tried to write to a closed pipe / channel.
+			this._terminAlProcesses.get(id)?.resize(cols, rows);
+		} cAtch (error) {
+			// We tried to write to A closed pipe / chAnnel.
 			if (error.code !== 'EPIPE' && error.code !== 'ERR_IPC_CHANNEL_CLOSED') {
 				throw (error);
 			}
 		}
 	}
 
-	public $acceptProcessShutdown(id: number, immediate: boolean): void {
-		this._terminalProcesses.get(id)?.shutdown(immediate);
+	public $AcceptProcessShutdown(id: number, immediAte: booleAn): void {
+		this._terminAlProcesses.get(id)?.shutdown(immediAte);
 	}
 
-	public $acceptProcessRequestInitialCwd(id: number): void {
-		this._terminalProcesses.get(id)?.getInitialCwd().then(initialCwd => this._proxy.$sendProcessInitialCwd(id, initialCwd));
+	public $AcceptProcessRequestInitiAlCwd(id: number): void {
+		this._terminAlProcesses.get(id)?.getInitiAlCwd().then(initiAlCwd => this._proxy.$sendProcessInitiAlCwd(id, initiAlCwd));
 	}
 
-	public $acceptProcessRequestCwd(id: number): void {
-		this._terminalProcesses.get(id)?.getCwd().then(cwd => this._proxy.$sendProcessCwd(id, cwd));
+	public $AcceptProcessRequestCwd(id: number): void {
+		this._terminAlProcesses.get(id)?.getCwd().then(cwd => this._proxy.$sendProcessCwd(id, cwd));
 	}
 
-	public $acceptProcessRequestLatency(id: number): number {
+	public $AcceptProcessRequestLAtency(id: number): number {
 		return id;
 	}
 
-	public registerLinkProvider(provider: vscode.TerminalLinkProvider): vscode.Disposable {
-		this._linkProviders.add(provider);
+	public registerLinkProvider(provider: vscode.TerminAlLinkProvider): vscode.DisposAble {
+		this._linkProviders.Add(provider);
 		if (this._linkProviders.size === 1) {
-			this._proxy.$startLinkProvider();
+			this._proxy.$stArtLinkProvider();
 		}
-		return new VSCodeDisposable(() => {
+		return new VSCodeDisposAble(() => {
 			this._linkProviders.delete(provider);
 			if (this._linkProviders.size === 0) {
 				this._proxy.$stopLinkProvider();
@@ -582,54 +582,54 @@ export abstract class BaseExtHostTerminalService extends Disposable implements I
 		});
 	}
 
-	public async $provideLinks(terminalId: number, line: string): Promise<ITerminalLinkDto[]> {
-		const terminal = this._getTerminalById(terminalId);
-		if (!terminal) {
+	public Async $provideLinks(terminAlId: number, line: string): Promise<ITerminAlLinkDto[]> {
+		const terminAl = this._getTerminAlById(terminAlId);
+		if (!terminAl) {
 			return [];
 		}
 
-		// Discard any cached links the terminal has been holding, currently all links are released
-		// when new links are provided.
-		this._terminalLinkCache.delete(terminalId);
+		// DiscArd Any cAched links the terminAl hAs been holding, currently All links Are releAsed
+		// when new links Are provided.
+		this._terminAlLinkCAche.delete(terminAlId);
 
-		const oldToken = this._terminalLinkCancellationSource.get(terminalId);
+		const oldToken = this._terminAlLinkCAncellAtionSource.get(terminAlId);
 		if (oldToken) {
 			oldToken.dispose(true);
 		}
-		const cancellationSource = new CancellationTokenSource();
-		this._terminalLinkCancellationSource.set(terminalId, cancellationSource);
+		const cAncellAtionSource = new CAncellAtionTokenSource();
+		this._terminAlLinkCAncellAtionSource.set(terminAlId, cAncellAtionSource);
 
-		const result: ITerminalLinkDto[] = [];
-		const context: vscode.TerminalLinkContext = { terminal, line };
-		const promises: vscode.ProviderResult<{ provider: vscode.TerminalLinkProvider, links: vscode.TerminalLink[] }>[] = [];
+		const result: ITerminAlLinkDto[] = [];
+		const context: vscode.TerminAlLinkContext = { terminAl, line };
+		const promises: vscode.ProviderResult<{ provider: vscode.TerminAlLinkProvider, links: vscode.TerminAlLink[] }>[] = [];
 
 		for (const provider of this._linkProviders) {
-			promises.push(new Promise(async r => {
-				cancellationSource.token.onCancellationRequested(() => r({ provider, links: [] }));
-				const links = (await provider.provideTerminalLinks(context, cancellationSource.token)) || [];
-				if (!cancellationSource.token.isCancellationRequested) {
+			promises.push(new Promise(Async r => {
+				cAncellAtionSource.token.onCAncellAtionRequested(() => r({ provider, links: [] }));
+				const links = (AwAit provider.provideTerminAlLinks(context, cAncellAtionSource.token)) || [];
+				if (!cAncellAtionSource.token.isCAncellAtionRequested) {
 					r({ provider, links });
 				}
 			}));
 		}
 
-		const provideResults = await Promise.all(promises);
+		const provideResults = AwAit Promise.All(promises);
 
-		if (cancellationSource.token.isCancellationRequested) {
+		if (cAncellAtionSource.token.isCAncellAtionRequested) {
 			return [];
 		}
 
-		const cacheLinkMap = new Map<number, ICachedLinkEntry>();
+		const cAcheLinkMAp = new MAp<number, ICAchedLinkEntry>();
 		for (const provideResult of provideResults) {
 			if (provideResult && provideResult.links.length > 0) {
-				result.push(...provideResult.links.map(providerLink => {
+				result.push(...provideResult.links.mAp(providerLink => {
 					const link = {
 						id: nextLinkId++,
-						startIndex: providerLink.startIndex,
+						stArtIndex: providerLink.stArtIndex,
 						length: providerLink.length,
-						label: providerLink.tooltip
+						lAbel: providerLink.tooltip
 					};
-					cacheLinkMap.set(link.id, {
+					cAcheLinkMAp.set(link.id, {
 						provider: provideResult.provider,
 						link: providerLink
 					});
@@ -638,218 +638,218 @@ export abstract class BaseExtHostTerminalService extends Disposable implements I
 			}
 		}
 
-		this._terminalLinkCache.set(terminalId, cacheLinkMap);
+		this._terminAlLinkCAche.set(terminAlId, cAcheLinkMAp);
 
 		return result;
 	}
 
-	$activateLink(terminalId: number, linkId: number): void {
-		const cachedLink = this._terminalLinkCache.get(terminalId)?.get(linkId);
-		if (!cachedLink) {
+	$ActivAteLink(terminAlId: number, linkId: number): void {
+		const cAchedLink = this._terminAlLinkCAche.get(terminAlId)?.get(linkId);
+		if (!cAchedLink) {
 			return;
 		}
-		cachedLink.provider.handleTerminalLink(cachedLink.link);
+		cAchedLink.provider.hAndleTerminAlLink(cAchedLink.link);
 	}
 
-	private _onProcessExit(id: number, exitCode: number | undefined): void {
+	privAte _onProcessExit(id: number, exitCode: number | undefined): void {
 		this._bufferer.stopBuffering(id);
 
 		// Remove process reference
-		this._terminalProcesses.delete(id);
-		delete this._extensionTerminalAwaitingStart[id];
+		this._terminAlProcesses.delete(id);
+		delete this._extensionTerminAlAwAitingStArt[id];
 
-		// Clean up process disposables
-		const processDiposable = this._terminalProcessDisposables[id];
-		if (processDiposable) {
-			processDiposable.dispose();
-			delete this._terminalProcessDisposables[id];
+		// CleAn up process disposAbles
+		const processDiposAble = this._terminAlProcessDisposAbles[id];
+		if (processDiposAble) {
+			processDiposAble.dispose();
+			delete this._terminAlProcessDisposAbles[id];
 		}
 
-		// Send exit event to main side
+		// Send exit event to mAin side
 		this._proxy.$sendProcessExit(id, exitCode);
 	}
 
-	// TODO: This could be improved by using a single promise and resolve it when the terminal is ready
-	private _getTerminalByIdEventually(id: number, retries: number = 5): Promise<ExtHostTerminal | undefined> {
-		if (!this._getTerminalPromises[id]) {
-			this._getTerminalPromises[id] = this._createGetTerminalPromise(id, retries);
+	// TODO: This could be improved by using A single promise And resolve it when the terminAl is reAdy
+	privAte _getTerminAlByIdEventuAlly(id: number, retries: number = 5): Promise<ExtHostTerminAl | undefined> {
+		if (!this._getTerminAlPromises[id]) {
+			this._getTerminAlPromises[id] = this._creAteGetTerminAlPromise(id, retries);
 		}
-		return this._getTerminalPromises[id];
+		return this._getTerminAlPromises[id];
 	}
 
-	private _createGetTerminalPromise(id: number, retries: number = 5): Promise<ExtHostTerminal | undefined> {
+	privAte _creAteGetTerminAlPromise(id: number, retries: number = 5): Promise<ExtHostTerminAl | undefined> {
 		return new Promise(c => {
 			if (retries === 0) {
 				c(undefined);
 				return;
 			}
 
-			const terminal = this._getTerminalById(id);
-			if (terminal) {
-				c(terminal);
+			const terminAl = this._getTerminAlById(id);
+			if (terminAl) {
+				c(terminAl);
 			} else {
-				// This should only be needed immediately after createTerminalRenderer is called as
-				// the ExtHostTerminal has not yet been iniitalized
-				timeout(EXT_HOST_CREATION_DELAY * 2).then(() => c(this._createGetTerminalPromise(id, retries - 1)));
+				// This should only be needed immediAtely After creAteTerminAlRenderer is cAlled As
+				// the ExtHostTerminAl hAs not yet been iniitAlized
+				timeout(EXT_HOST_CREATION_DELAY * 2).then(() => c(this._creAteGetTerminAlPromise(id, retries - 1)));
 			}
 		});
 	}
 
-	private _getTerminalById(id: number): ExtHostTerminal | null {
-		return this._getTerminalObjectById(this._terminals, id);
+	privAte _getTerminAlById(id: number): ExtHostTerminAl | null {
+		return this._getTerminAlObjectById(this._terminAls, id);
 	}
 
-	private _getTerminalObjectById<T extends ExtHostTerminal>(array: T[], id: number): T | null {
-		const index = this._getTerminalObjectIndexById(array, id);
-		return index !== null ? array[index] : null;
+	privAte _getTerminAlObjectById<T extends ExtHostTerminAl>(ArrAy: T[], id: number): T | null {
+		const index = this._getTerminAlObjectIndexById(ArrAy, id);
+		return index !== null ? ArrAy[index] : null;
 	}
 
-	private _getTerminalObjectIndexById<T extends ExtHostTerminal>(array: T[], id: number): number | null {
+	privAte _getTerminAlObjectIndexById<T extends ExtHostTerminAl>(ArrAy: T[], id: number): number | null {
 		let index: number | null = null;
-		array.some((item, i) => {
+		ArrAy.some((item, i) => {
 			const thisId = item._id;
 			if (thisId === id) {
 				index = i;
 				return true;
 			}
-			return false;
+			return fAlse;
 		});
 		return index;
 	}
 
-	public getEnvironmentVariableCollection(extension: IExtensionDescription): vscode.EnvironmentVariableCollection {
-		let collection = this._environmentVariableCollections.get(extension.identifier.value);
+	public getEnvironmentVAriAbleCollection(extension: IExtensionDescription): vscode.EnvironmentVAriAbleCollection {
+		let collection = this._environmentVAriAbleCollections.get(extension.identifier.vAlue);
 		if (!collection) {
-			collection = new EnvironmentVariableCollection();
-			this._setEnvironmentVariableCollection(extension.identifier.value, collection);
+			collection = new EnvironmentVAriAbleCollection();
+			this._setEnvironmentVAriAbleCollection(extension.identifier.vAlue, collection);
 		}
 		return collection;
 	}
 
-	private _syncEnvironmentVariableCollection(extensionIdentifier: string, collection: EnvironmentVariableCollection): void {
-		const serialized = serializeEnvironmentVariableCollection(collection.map);
-		this._proxy.$setEnvironmentVariableCollection(extensionIdentifier, collection.persistent, serialized.length === 0 ? undefined : serialized);
+	privAte _syncEnvironmentVAriAbleCollection(extensionIdentifier: string, collection: EnvironmentVAriAbleCollection): void {
+		const seriAlized = seriAlizeEnvironmentVAriAbleCollection(collection.mAp);
+		this._proxy.$setEnvironmentVAriAbleCollection(extensionIdentifier, collection.persistent, seriAlized.length === 0 ? undefined : seriAlized);
 	}
 
-	public $initEnvironmentVariableCollections(collections: [string, ISerializableEnvironmentVariableCollection][]): void {
-		collections.forEach(entry => {
+	public $initEnvironmentVAriAbleCollections(collections: [string, ISeriAlizAbleEnvironmentVAriAbleCollection][]): void {
+		collections.forEAch(entry => {
 			const extensionIdentifier = entry[0];
-			const collection = new EnvironmentVariableCollection(entry[1]);
-			this._setEnvironmentVariableCollection(extensionIdentifier, collection);
+			const collection = new EnvironmentVAriAbleCollection(entry[1]);
+			this._setEnvironmentVAriAbleCollection(extensionIdentifier, collection);
 		});
 	}
 
-	private _setEnvironmentVariableCollection(extensionIdentifier: string, collection: EnvironmentVariableCollection): void {
-		this._environmentVariableCollections.set(extensionIdentifier, collection);
-		collection.onDidChangeCollection(() => {
-			// When any collection value changes send this immediately, this is done to ensure
-			// following calls to createTerminal will be created with the new environment. It will
-			// result in more noise by sending multiple updates when called but collections are
-			// expected to be small.
-			this._syncEnvironmentVariableCollection(extensionIdentifier, collection!);
+	privAte _setEnvironmentVAriAbleCollection(extensionIdentifier: string, collection: EnvironmentVAriAbleCollection): void {
+		this._environmentVAriAbleCollections.set(extensionIdentifier, collection);
+		collection.onDidChAngeCollection(() => {
+			// When Any collection vAlue chAnges send this immediAtely, this is done to ensure
+			// following cAlls to creAteTerminAl will be creAted with the new environment. It will
+			// result in more noise by sending multiple updAtes when cAlled but collections Are
+			// expected to be smAll.
+			this._syncEnvironmentVAriAbleCollection(extensionIdentifier, collection!);
 		});
 	}
 }
 
-export class EnvironmentVariableCollection implements vscode.EnvironmentVariableCollection {
-	readonly map: Map<string, vscode.EnvironmentVariableMutator> = new Map();
-	private _persistent: boolean = true;
+export clAss EnvironmentVAriAbleCollection implements vscode.EnvironmentVAriAbleCollection {
+	reAdonly mAp: MAp<string, vscode.EnvironmentVAriAbleMutAtor> = new MAp();
+	privAte _persistent: booleAn = true;
 
-	public get persistent(): boolean { return this._persistent; }
-	public set persistent(value: boolean) {
-		this._persistent = value;
-		this._onDidChangeCollection.fire();
+	public get persistent(): booleAn { return this._persistent; }
+	public set persistent(vAlue: booleAn) {
+		this._persistent = vAlue;
+		this._onDidChAngeCollection.fire();
 	}
 
-	protected readonly _onDidChangeCollection: Emitter<void> = new Emitter<void>();
-	get onDidChangeCollection(): Event<void> { return this._onDidChangeCollection && this._onDidChangeCollection.event; }
+	protected reAdonly _onDidChAngeCollection: Emitter<void> = new Emitter<void>();
+	get onDidChAngeCollection(): Event<void> { return this._onDidChAngeCollection && this._onDidChAngeCollection.event; }
 
 	constructor(
-		serialized?: ISerializableEnvironmentVariableCollection
+		seriAlized?: ISeriAlizAbleEnvironmentVAriAbleCollection
 	) {
-		this.map = new Map(serialized);
+		this.mAp = new MAp(seriAlized);
 	}
 
 	get size(): number {
-		return this.map.size;
+		return this.mAp.size;
 	}
 
-	replace(variable: string, value: string): void {
-		this._setIfDiffers(variable, { value, type: EnvironmentVariableMutatorType.Replace });
+	replAce(vAriAble: string, vAlue: string): void {
+		this._setIfDiffers(vAriAble, { vAlue, type: EnvironmentVAriAbleMutAtorType.ReplAce });
 	}
 
-	append(variable: string, value: string): void {
-		this._setIfDiffers(variable, { value, type: EnvironmentVariableMutatorType.Append });
+	Append(vAriAble: string, vAlue: string): void {
+		this._setIfDiffers(vAriAble, { vAlue, type: EnvironmentVAriAbleMutAtorType.Append });
 	}
 
-	prepend(variable: string, value: string): void {
-		this._setIfDiffers(variable, { value, type: EnvironmentVariableMutatorType.Prepend });
+	prepend(vAriAble: string, vAlue: string): void {
+		this._setIfDiffers(vAriAble, { vAlue, type: EnvironmentVAriAbleMutAtorType.Prepend });
 	}
 
-	private _setIfDiffers(variable: string, mutator: vscode.EnvironmentVariableMutator): void {
-		const current = this.map.get(variable);
-		if (!current || current.value !== mutator.value || current.type !== mutator.type) {
-			this.map.set(variable, mutator);
-			this._onDidChangeCollection.fire();
+	privAte _setIfDiffers(vAriAble: string, mutAtor: vscode.EnvironmentVAriAbleMutAtor): void {
+		const current = this.mAp.get(vAriAble);
+		if (!current || current.vAlue !== mutAtor.vAlue || current.type !== mutAtor.type) {
+			this.mAp.set(vAriAble, mutAtor);
+			this._onDidChAngeCollection.fire();
 		}
 	}
 
-	get(variable: string): vscode.EnvironmentVariableMutator | undefined {
-		return this.map.get(variable);
+	get(vAriAble: string): vscode.EnvironmentVAriAbleMutAtor | undefined {
+		return this.mAp.get(vAriAble);
 	}
 
-	forEach(callback: (variable: string, mutator: vscode.EnvironmentVariableMutator, collection: vscode.EnvironmentVariableCollection) => any, thisArg?: any): void {
-		this.map.forEach((value, key) => callback.call(thisArg, key, value, this));
+	forEAch(cAllbAck: (vAriAble: string, mutAtor: vscode.EnvironmentVAriAbleMutAtor, collection: vscode.EnvironmentVAriAbleCollection) => Any, thisArg?: Any): void {
+		this.mAp.forEAch((vAlue, key) => cAllbAck.cAll(thisArg, key, vAlue, this));
 	}
 
-	delete(variable: string): void {
-		this.map.delete(variable);
-		this._onDidChangeCollection.fire();
+	delete(vAriAble: string): void {
+		this.mAp.delete(vAriAble);
+		this._onDidChAngeCollection.fire();
 	}
 
-	clear(): void {
-		this.map.clear();
-		this._onDidChangeCollection.fire();
+	cleAr(): void {
+		this.mAp.cleAr();
+		this._onDidChAngeCollection.fire();
 	}
 }
 
-export class WorkerExtHostTerminalService extends BaseExtHostTerminalService {
+export clAss WorkerExtHostTerminAlService extends BAseExtHostTerminAlService {
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService
 	) {
-		super(false, extHostRpc);
+		super(fAlse, extHostRpc);
 	}
 
-	public createTerminal(name?: string, shellPath?: string, shellArgs?: string[] | string): vscode.Terminal {
+	public creAteTerminAl(nAme?: string, shellPAth?: string, shellArgs?: string[] | string): vscode.TerminAl {
 		throw new NotSupportedError();
 	}
 
-	public createTerminalFromOptions(options: vscode.TerminalOptions): vscode.Terminal {
+	public creAteTerminAlFromOptions(options: vscode.TerminAlOptions): vscode.TerminAl {
 		throw new NotSupportedError();
 	}
 
-	public getDefaultShell(useAutomationShell: boolean, configProvider: ExtHostConfigProvider): string {
-		// Return the empty string to avoid throwing
+	public getDefAultShell(useAutomAtionShell: booleAn, configProvider: ExtHostConfigProvider): string {
+		// Return the empty string to Avoid throwing
 		return '';
 	}
 
-	public getDefaultShellArgs(useAutomationShell: boolean, configProvider: ExtHostConfigProvider): string[] | string {
+	public getDefAultShellArgs(useAutomAtionShell: booleAn, configProvider: ExtHostConfigProvider): string[] | string {
 		throw new NotSupportedError();
 	}
 
-	public $spawnExtHostProcess(id: number, shellLaunchConfigDto: IShellLaunchConfigDto, activeWorkspaceRootUriComponents: UriComponents, cols: number, rows: number, isWorkspaceShellAllowed: boolean): Promise<ITerminalLaunchError | undefined> {
+	public $spAwnExtHostProcess(id: number, shellLAunchConfigDto: IShellLAunchConfigDto, ActiveWorkspAceRootUriComponents: UriComponents, cols: number, rows: number, isWorkspAceShellAllowed: booleAn): Promise<ITerminAlLAunchError | undefined> {
 		throw new NotSupportedError();
 	}
 
-	public $getAvailableShells(): Promise<IShellDefinitionDto[]> {
+	public $getAvAilAbleShells(): Promise<IShellDefinitionDto[]> {
 		throw new NotSupportedError();
 	}
 
-	public async $getDefaultShellAndArgs(useAutomationShell: boolean): Promise<IShellAndArgsDto> {
+	public Async $getDefAultShellAndArgs(useAutomAtionShell: booleAn): Promise<IShellAndArgsDto> {
 		throw new NotSupportedError();
 	}
 
-	public $acceptWorkspacePermissionsChanged(isAllowed: boolean): void {
-		// No-op for web worker ext host as workspace permissions aren't used
+	public $AcceptWorkspAcePermissionsChAnged(isAllowed: booleAn): void {
+		// No-op for web worker ext host As workspAce permissions Aren't used
 	}
 }

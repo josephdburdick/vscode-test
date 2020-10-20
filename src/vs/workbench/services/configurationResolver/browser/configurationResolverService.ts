@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI as uri } from 'vs/base/common/uri';
-import * as nls from 'vs/nls';
-import * as Types from 'vs/base/common/types';
-import { Schemas } from 'vs/base/common/network';
+import { URI As uri } from 'vs/bAse/common/uri';
+import * As nls from 'vs/nls';
+import * As Types from 'vs/bAse/common/types';
+import { SchemAs } from 'vs/bAse/common/network';
 import { SideBySideEditor, EditorResourceAccessor } from 'vs/workbench/common/editor';
-import { IStringDictionary, forEach, fromMap } from 'vs/base/common/collections';
+import { IStringDictionAry, forEAch, fromMAp } from 'vs/bAse/common/collections';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IWorkspaceFolder, IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IWorkspAceFolder, IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { AbstractVariableResolverService } from 'vs/workbench/services/configurationResolver/common/variableResolver';
+import { AbstrActVAriAbleResolverService } from 'vs/workbench/services/configurAtionResolver/common/vAriAbleResolver';
 import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IQuickInputService, IInputOptions, IQuickPickItem, IPickOptions } from 'vs/platform/quickinput/common/quickInput';
-import { ConfiguredInput, IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import { IProcessEnvironment } from 'vs/base/common/platform';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { IQuickInputService, IInputOptions, IQuickPickItem, IPickOptions } from 'vs/plAtform/quickinput/common/quickInput';
+import { ConfiguredInput, IConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolver';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
 
-export abstract class BaseConfigurationResolverService extends AbstractVariableResolverService {
+export AbstrAct clAss BAseConfigurAtionResolverService extends AbstrActVAriAbleResolverService {
 
-	static readonly INPUT_OR_COMMAND_VARIABLES_PATTERN = /\${((input|command):(.*?))}/g;
+	stAtic reAdonly INPUT_OR_COMMAND_VARIABLES_PATTERN = /\${((input|commAnd):(.*?))}/g;
 
 	constructor(
-		context: { getExecPath: () => string | undefined },
-		envVariables: IProcessEnvironment,
+		context: { getExecPAth: () => string | undefined },
+		envVAriAbles: IProcessEnvironment,
 		editorService: IEditorService,
-		private readonly configurationService: IConfigurationService,
-		private readonly commandService: ICommandService,
-		private readonly workspaceContextService: IWorkspaceContextService,
-		private readonly quickInputService: IQuickInputService,
-		private readonly labelService: ILabelService
+		privAte reAdonly configurAtionService: IConfigurAtionService,
+		privAte reAdonly commAndService: ICommAndService,
+		privAte reAdonly workspAceContextService: IWorkspAceContextService,
+		privAte reAdonly quickInputService: IQuickInputService,
+		privAte reAdonly lAbelService: ILAbelService
 	) {
 		super({
-			getFolderUri: (folderName: string): uri | undefined => {
-				const folder = workspaceContextService.getWorkspace().folders.filter(f => f.name === folderName).pop();
+			getFolderUri: (folderNAme: string): uri | undefined => {
+				const folder = workspAceContextService.getWorkspAce().folders.filter(f => f.nAme === folderNAme).pop();
 				return folder ? folder.uri : undefined;
 			},
-			getWorkspaceFolderCount: (): number => {
-				return workspaceContextService.getWorkspace().folders.length;
+			getWorkspAceFolderCount: (): number => {
+				return workspAceContextService.getWorkspAce().folders.length;
 			},
-			getConfigurationValue: (folderUri: uri, suffix: string): string | undefined => {
-				return configurationService.getValue<string>(suffix, folderUri ? { resource: folderUri } : {});
+			getConfigurAtionVAlue: (folderUri: uri, suffix: string): string | undefined => {
+				return configurAtionService.getVAlue<string>(suffix, folderUri ? { resource: folderUri } : {});
 			},
-			getExecPath: (): string | undefined => {
-				return context.getExecPath();
+			getExecPAth: (): string | undefined => {
+				return context.getExecPAth();
 			},
-			getFilePath: (): string | undefined => {
-				const fileResource = EditorResourceAccessor.getOriginalUri(editorService.activeEditor, {
+			getFilePAth: (): string | undefined => {
+				const fileResource = EditorResourceAccessor.getOriginAlUri(editorService.ActiveEditor, {
 					supportSideBySide: SideBySideEditor.PRIMARY,
-					filterByScheme: [Schemas.file, Schemas.userData, Schemas.vscodeRemote]
+					filterByScheme: [SchemAs.file, SchemAs.userDAtA, SchemAs.vscodeRemote]
 				});
 				if (!fileResource) {
 					return undefined;
 				}
-				return this.labelService.getUriLabel(fileResource, { noPrefix: true });
+				return this.lAbelService.getUriLAbel(fileResource, { noPrefix: true });
 			},
 			getSelectedText: (): string | undefined => {
-				const activeTextEditorControl = editorService.activeTextEditorControl;
-				if (isCodeEditor(activeTextEditorControl)) {
-					const editorModel = activeTextEditorControl.getModel();
-					const editorSelection = activeTextEditorControl.getSelection();
+				const ActiveTextEditorControl = editorService.ActiveTextEditorControl;
+				if (isCodeEditor(ActiveTextEditorControl)) {
+					const editorModel = ActiveTextEditorControl.getModel();
+					const editorSelection = ActiveTextEditorControl.getSelection();
 					if (editorModel && editorSelection) {
-						return editorModel.getValueInRange(editorSelection);
+						return editorModel.getVAlueInRAnge(editorSelection);
 					}
 				}
 				return undefined;
 			},
 			getLineNumber: (): string | undefined => {
-				const activeTextEditorControl = editorService.activeTextEditorControl;
-				if (isCodeEditor(activeTextEditorControl)) {
-					const selection = activeTextEditorControl.getSelection();
+				const ActiveTextEditorControl = editorService.ActiveTextEditorControl;
+				if (isCodeEditor(ActiveTextEditorControl)) {
+					const selection = ActiveTextEditorControl.getSelection();
 					if (selection) {
 						const lineNumber = selection.positionLineNumber;
 						return String(lineNumber);
@@ -82,275 +82,275 @@ export abstract class BaseConfigurationResolverService extends AbstractVariableR
 				}
 				return undefined;
 			}
-		}, labelService, envVariables);
+		}, lAbelService, envVAriAbles);
 	}
 
-	public async resolveWithInteractionReplace(folder: IWorkspaceFolder | undefined, config: any, section?: string, variables?: IStringDictionary<string>, target?: ConfigurationTarget): Promise<any> {
-		// resolve any non-interactive variables and any contributed variables
+	public Async resolveWithInterActionReplAce(folder: IWorkspAceFolder | undefined, config: Any, section?: string, vAriAbles?: IStringDictionAry<string>, tArget?: ConfigurAtionTArget): Promise<Any> {
+		// resolve Any non-interActive vAriAbles And Any contributed vAriAbles
 		config = this.resolveAny(folder, config);
 
-		// resolve input variables in the order in which they are encountered
-		return this.resolveWithInteraction(folder, config, section, variables, target).then(mapping => {
-			// finally substitute evaluated command variables (if there are any)
-			if (!mapping) {
+		// resolve input vAriAbles in the order in which they Are encountered
+		return this.resolveWithInterAction(folder, config, section, vAriAbles, tArget).then(mApping => {
+			// finAlly substitute evAluAted commAnd vAriAbles (if there Are Any)
+			if (!mApping) {
 				return null;
-			} else if (mapping.size > 0) {
-				return this.resolveAny(folder, config, fromMap(mapping));
+			} else if (mApping.size > 0) {
+				return this.resolveAny(folder, config, fromMAp(mApping));
 			} else {
 				return config;
 			}
 		});
 	}
 
-	public async resolveWithInteraction(folder: IWorkspaceFolder | undefined, config: any, section?: string, variables?: IStringDictionary<string>, target?: ConfigurationTarget): Promise<Map<string, string> | undefined> {
-		// resolve any non-interactive variables and any contributed variables
-		const resolved = await this.resolveAnyMap(folder, config);
+	public Async resolveWithInterAction(folder: IWorkspAceFolder | undefined, config: Any, section?: string, vAriAbles?: IStringDictionAry<string>, tArget?: ConfigurAtionTArget): Promise<MAp<string, string> | undefined> {
+		// resolve Any non-interActive vAriAbles And Any contributed vAriAbles
+		const resolved = AwAit this.resolveAnyMAp(folder, config);
 		config = resolved.newConfig;
-		const allVariableMapping: Map<string, string> = resolved.resolvedVariables;
+		const AllVAriAbleMApping: MAp<string, string> = resolved.resolvedVAriAbles;
 
-		// resolve input and command variables in the order in which they are encountered
-		return this.resolveWithInputAndCommands(folder, config, variables, section, target).then(inputOrCommandMapping => {
-			if (this.updateMapping(inputOrCommandMapping, allVariableMapping)) {
-				return allVariableMapping;
+		// resolve input And commAnd vAriAbles in the order in which they Are encountered
+		return this.resolveWithInputAndCommAnds(folder, config, vAriAbles, section, tArget).then(inputOrCommAndMApping => {
+			if (this.updAteMApping(inputOrCommAndMApping, AllVAriAbleMApping)) {
+				return AllVAriAbleMApping;
 			}
 			return undefined;
 		});
 	}
 
 	/**
-	 * Add all items from newMapping to fullMapping. Returns false if newMapping is undefined.
+	 * Add All items from newMApping to fullMApping. Returns fAlse if newMApping is undefined.
 	 */
-	private updateMapping(newMapping: IStringDictionary<string> | undefined, fullMapping: Map<string, string>): boolean {
-		if (!newMapping) {
-			return false;
+	privAte updAteMApping(newMApping: IStringDictionAry<string> | undefined, fullMApping: MAp<string, string>): booleAn {
+		if (!newMApping) {
+			return fAlse;
 		}
-		forEach(newMapping, (entry) => {
-			fullMapping.set(entry.key, entry.value);
+		forEAch(newMApping, (entry) => {
+			fullMApping.set(entry.key, entry.vAlue);
 		});
 		return true;
 	}
 
 	/**
-	 * Finds and executes all input and command variables in the given configuration and returns their values as a dictionary.
-	 * Please note: this method does not substitute the input or command variables (so the configuration is not modified).
-	 * The returned dictionary can be passed to "resolvePlatform" for the actual substitution.
+	 * Finds And executes All input And commAnd vAriAbles in the given configurAtion And returns their vAlues As A dictionAry.
+	 * PleAse note: this method does not substitute the input or commAnd vAriAbles (so the configurAtion is not modified).
+	 * The returned dictionAry cAn be pAssed to "resolvePlAtform" for the ActuAl substitution.
 	 * See #6569.
 	 *
-	 * @param variableToCommandMap Aliases for commands
+	 * @pArAm vAriAbleToCommAndMAp AliAses for commAnds
 	 */
-	private async resolveWithInputAndCommands(folder: IWorkspaceFolder | undefined, configuration: any, variableToCommandMap?: IStringDictionary<string>, section?: string, target?: ConfigurationTarget): Promise<IStringDictionary<string> | undefined> {
+	privAte Async resolveWithInputAndCommAnds(folder: IWorkspAceFolder | undefined, configurAtion: Any, vAriAbleToCommAndMAp?: IStringDictionAry<string>, section?: string, tArget?: ConfigurAtionTArget): Promise<IStringDictionAry<string> | undefined> {
 
-		if (!configuration) {
+		if (!configurAtion) {
 			return Promise.resolve(undefined);
 		}
 
-		// get all "inputs"
+		// get All "inputs"
 		let inputs: ConfiguredInput[] = [];
-		if (folder && this.workspaceContextService.getWorkbenchState() !== WorkbenchState.EMPTY && section) {
-			let result = this.configurationService.inspect(section, { resource: folder.uri });
-			if (result && (result.userValue || result.workspaceValue || result.workspaceFolderValue)) {
-				switch (target) {
-					case ConfigurationTarget.USER: inputs = (<any>result.userValue)?.inputs; break;
-					case ConfigurationTarget.WORKSPACE: inputs = (<any>result.workspaceValue)?.inputs; break;
-					default: inputs = (<any>result.workspaceFolderValue)?.inputs;
+		if (folder && this.workspAceContextService.getWorkbenchStAte() !== WorkbenchStAte.EMPTY && section) {
+			let result = this.configurAtionService.inspect(section, { resource: folder.uri });
+			if (result && (result.userVAlue || result.workspAceVAlue || result.workspAceFolderVAlue)) {
+				switch (tArget) {
+					cAse ConfigurAtionTArget.USER: inputs = (<Any>result.userVAlue)?.inputs; breAk;
+					cAse ConfigurAtionTArget.WORKSPACE: inputs = (<Any>result.workspAceVAlue)?.inputs; breAk;
+					defAult: inputs = (<Any>result.workspAceFolderVAlue)?.inputs;
 				}
 			} else {
-				const valueResult = this.configurationService.getValue<any>(section, { resource: folder.uri });
-				if (valueResult) {
-					inputs = valueResult.inputs;
+				const vAlueResult = this.configurAtionService.getVAlue<Any>(section, { resource: folder.uri });
+				if (vAlueResult) {
+					inputs = vAlueResult.inputs;
 				}
 			}
 		}
 
-		// extract and dedupe all "input" and "command" variables and preserve their order in an array
-		const variables: string[] = [];
-		this.findVariables(configuration, variables);
+		// extrAct And dedupe All "input" And "commAnd" vAriAbles And preserve their order in An ArrAy
+		const vAriAbles: string[] = [];
+		this.findVAriAbles(configurAtion, vAriAbles);
 
-		const variableValues: IStringDictionary<string> = Object.create(null);
+		const vAriAbleVAlues: IStringDictionAry<string> = Object.creAte(null);
 
-		for (const variable of variables) {
+		for (const vAriAble of vAriAbles) {
 
-			const [type, name] = variable.split(':', 2);
+			const [type, nAme] = vAriAble.split(':', 2);
 
 			let result: string | undefined;
 
 			switch (type) {
 
-				case 'input':
-					result = await this.showUserInput(name, inputs);
-					break;
+				cAse 'input':
+					result = AwAit this.showUserInput(nAme, inputs);
+					breAk;
 
-				case 'command':
-					// use the name as a command ID #12735
-					const commandId = (variableToCommandMap ? variableToCommandMap[name] : undefined) || name;
-					result = await this.commandService.executeCommand(commandId, configuration);
+				cAse 'commAnd':
+					// use the nAme As A commAnd ID #12735
+					const commAndId = (vAriAbleToCommAndMAp ? vAriAbleToCommAndMAp[nAme] : undefined) || nAme;
+					result = AwAit this.commAndService.executeCommAnd(commAndId, configurAtion);
 					if (typeof result !== 'string' && !Types.isUndefinedOrNull(result)) {
-						throw new Error(nls.localize('commandVariable.noStringType', "Cannot substitute command variable '{0}' because command did not return a result of type string.", commandId));
+						throw new Error(nls.locAlize('commAndVAriAble.noStringType', "CAnnot substitute commAnd vAriAble '{0}' becAuse commAnd did not return A result of type string.", commAndId));
 					}
-					break;
-				default:
-					// Try to resolve it as a contributed variable
-					if (this._contributedVariables.has(variable)) {
-						result = await this._contributedVariables.get(variable)!();
+					breAk;
+				defAult:
+					// Try to resolve it As A contributed vAriAble
+					if (this._contributedVAriAbles.hAs(vAriAble)) {
+						result = AwAit this._contributedVAriAbles.get(vAriAble)!();
 					}
 			}
 
 			if (typeof result === 'string') {
-				variableValues[variable] = result;
+				vAriAbleVAlues[vAriAble] = result;
 			} else {
 				return undefined;
 			}
 		}
 
-		return variableValues;
+		return vAriAbleVAlues;
 	}
 
 	/**
-	 * Recursively finds all command or input variables in object and pushes them into variables.
-	 * @param object object is searched for variables.
-	 * @param variables All found variables are returned in variables.
+	 * Recursively finds All commAnd or input vAriAbles in object And pushes them into vAriAbles.
+	 * @pArAm object object is seArched for vAriAbles.
+	 * @pArAm vAriAbles All found vAriAbles Are returned in vAriAbles.
 	 */
-	private findVariables(object: any, variables: string[]) {
+	privAte findVAriAbles(object: Any, vAriAbles: string[]) {
 		if (typeof object === 'string') {
-			let matches;
-			while ((matches = BaseConfigurationResolverService.INPUT_OR_COMMAND_VARIABLES_PATTERN.exec(object)) !== null) {
-				if (matches.length === 4) {
-					const command = matches[1];
-					if (variables.indexOf(command) < 0) {
-						variables.push(command);
+			let mAtches;
+			while ((mAtches = BAseConfigurAtionResolverService.INPUT_OR_COMMAND_VARIABLES_PATTERN.exec(object)) !== null) {
+				if (mAtches.length === 4) {
+					const commAnd = mAtches[1];
+					if (vAriAbles.indexOf(commAnd) < 0) {
+						vAriAbles.push(commAnd);
 					}
 				}
 			}
-			this._contributedVariables.forEach((value, contributed: string) => {
-				if ((variables.indexOf(contributed) < 0) && (object.indexOf('${' + contributed + '}') >= 0)) {
-					variables.push(contributed);
+			this._contributedVAriAbles.forEAch((vAlue, contributed: string) => {
+				if ((vAriAbles.indexOf(contributed) < 0) && (object.indexOf('${' + contributed + '}') >= 0)) {
+					vAriAbles.push(contributed);
 				}
 			});
-		} else if (Types.isArray(object)) {
-			object.forEach(value => {
-				this.findVariables(value, variables);
+		} else if (Types.isArrAy(object)) {
+			object.forEAch(vAlue => {
+				this.findVAriAbles(vAlue, vAriAbles);
 			});
 		} else if (object) {
-			Object.keys(object).forEach(key => {
-				const value = object[key];
-				this.findVariables(value, variables);
+			Object.keys(object).forEAch(key => {
+				const vAlue = object[key];
+				this.findVAriAbles(vAlue, vAriAbles);
 			});
 		}
 	}
 
 	/**
-	 * Takes the provided input info and shows the quick pick so the user can provide the value for the input
-	 * @param variable Name of the input variable.
-	 * @param inputInfos Information about each possible input variable.
+	 * TAkes the provided input info And shows the quick pick so the user cAn provide the vAlue for the input
+	 * @pArAm vAriAble NAme of the input vAriAble.
+	 * @pArAm inputInfos InformAtion About eAch possible input vAriAble.
 	 */
-	private showUserInput(variable: string, inputInfos: ConfiguredInput[]): Promise<string | undefined> {
+	privAte showUserInput(vAriAble: string, inputInfos: ConfiguredInput[]): Promise<string | undefined> {
 
 		if (!inputInfos) {
-			return Promise.reject(new Error(nls.localize('inputVariable.noInputSection', "Variable '{0}' must be defined in an '{1}' section of the debug or task configuration.", variable, 'input')));
+			return Promise.reject(new Error(nls.locAlize('inputVAriAble.noInputSection', "VAriAble '{0}' must be defined in An '{1}' section of the debug or tAsk configurAtion.", vAriAble, 'input')));
 		}
 
-		// find info for the given input variable
-		const info = inputInfos.filter(item => item.id === variable).pop();
+		// find info for the given input vAriAble
+		const info = inputInfos.filter(item => item.id === vAriAble).pop();
 		if (info) {
 
-			const missingAttribute = (attrName: string) => {
-				throw new Error(nls.localize('inputVariable.missingAttribute', "Input variable '{0}' is of type '{1}' and must include '{2}'.", variable, info.type, attrName));
+			const missingAttribute = (AttrNAme: string) => {
+				throw new Error(nls.locAlize('inputVAriAble.missingAttribute', "Input vAriAble '{0}' is of type '{1}' And must include '{2}'.", vAriAble, info.type, AttrNAme));
 			};
 
 			switch (info.type) {
 
-				case 'promptString': {
+				cAse 'promptString': {
 					if (!Types.isString(info.description)) {
 						missingAttribute('description');
 					}
 					const inputOptions: IInputOptions = { prompt: info.description, ignoreFocusLost: true };
-					if (info.default) {
-						inputOptions.value = info.default;
+					if (info.defAult) {
+						inputOptions.vAlue = info.defAult;
 					}
-					if (info.password) {
-						inputOptions.password = info.password;
+					if (info.pAssword) {
+						inputOptions.pAssword = info.pAssword;
 					}
 					return this.quickInputService.input(inputOptions).then(resolvedInput => {
 						return resolvedInput;
 					});
 				}
 
-				case 'pickString': {
+				cAse 'pickString': {
 					if (!Types.isString(info.description)) {
 						missingAttribute('description');
 					}
-					if (Types.isArray(info.options)) {
-						info.options.forEach(pickOption => {
-							if (!Types.isString(pickOption) && !Types.isString(pickOption.value)) {
-								missingAttribute('value');
+					if (Types.isArrAy(info.options)) {
+						info.options.forEAch(pickOption => {
+							if (!Types.isString(pickOption) && !Types.isString(pickOption.vAlue)) {
+								missingAttribute('vAlue');
 							}
 						});
 					} else {
 						missingAttribute('options');
 					}
-					interface PickStringItem extends IQuickPickItem {
-						value: string;
+					interfAce PickStringItem extends IQuickPickItem {
+						vAlue: string;
 					}
-					const picks = new Array<PickStringItem>();
-					info.options.forEach(pickOption => {
-						const value = Types.isString(pickOption) ? pickOption : pickOption.value;
-						const label = Types.isString(pickOption) ? undefined : pickOption.label;
+					const picks = new ArrAy<PickStringItem>();
+					info.options.forEAch(pickOption => {
+						const vAlue = Types.isString(pickOption) ? pickOption : pickOption.vAlue;
+						const lAbel = Types.isString(pickOption) ? undefined : pickOption.lAbel;
 
-						// If there is no label defined, use value as label
+						// If there is no lAbel defined, use vAlue As lAbel
 						const item: PickStringItem = {
-							label: label ? `${label}: ${value}` : value,
-							value: value
+							lAbel: lAbel ? `${lAbel}: ${vAlue}` : vAlue,
+							vAlue: vAlue
 						};
 
-						if (value === info.default) {
-							item.description = nls.localize('inputVariable.defaultInputValue', "(Default)");
+						if (vAlue === info.defAult) {
+							item.description = nls.locAlize('inputVAriAble.defAultInputVAlue', "(DefAult)");
 							picks.unshift(item);
 						} else {
 							picks.push(item);
 						}
 					});
-					const pickOptions: IPickOptions<PickStringItem> = { placeHolder: info.description, matchOnDetail: true, ignoreFocusLost: true };
+					const pickOptions: IPickOptions<PickStringItem> = { plAceHolder: info.description, mAtchOnDetAil: true, ignoreFocusLost: true };
 					return this.quickInputService.pick(picks, pickOptions, undefined).then(resolvedInput => {
 						if (resolvedInput) {
-							return resolvedInput.value;
+							return resolvedInput.vAlue;
 						}
 						return undefined;
 					});
 				}
 
-				case 'command': {
-					if (!Types.isString(info.command)) {
-						missingAttribute('command');
+				cAse 'commAnd': {
+					if (!Types.isString(info.commAnd)) {
+						missingAttribute('commAnd');
 					}
-					return this.commandService.executeCommand<string>(info.command, info.args).then(result => {
+					return this.commAndService.executeCommAnd<string>(info.commAnd, info.Args).then(result => {
 						if (typeof result === 'string' || Types.isUndefinedOrNull(result)) {
 							return result;
 						}
-						throw new Error(nls.localize('inputVariable.command.noStringType', "Cannot substitute input variable '{0}' because command '{1}' did not return a result of type string.", variable, info.command));
+						throw new Error(nls.locAlize('inputVAriAble.commAnd.noStringType', "CAnnot substitute input vAriAble '{0}' becAuse commAnd '{1}' did not return A result of type string.", vAriAble, info.commAnd));
 					});
 				}
 
-				default:
-					throw new Error(nls.localize('inputVariable.unknownType', "Input variable '{0}' can only be of type 'promptString', 'pickString', or 'command'.", variable));
+				defAult:
+					throw new Error(nls.locAlize('inputVAriAble.unknownType', "Input vAriAble '{0}' cAn only be of type 'promptString', 'pickString', or 'commAnd'.", vAriAble));
 			}
 		}
-		return Promise.reject(new Error(nls.localize('inputVariable.undefinedVariable', "Undefined input variable '{0}' encountered. Remove or define '{0}' to continue.", variable)));
+		return Promise.reject(new Error(nls.locAlize('inputVAriAble.undefinedVAriAble', "Undefined input vAriAble '{0}' encountered. Remove or define '{0}' to continue.", vAriAble)));
 	}
 }
 
-export class ConfigurationResolverService extends BaseConfigurationResolverService {
+export clAss ConfigurAtionResolverService extends BAseConfigurAtionResolverService {
 
 	constructor(
 		@IEditorService editorService: IEditorService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@ICommandService commandService: ICommandService,
-		@IWorkspaceContextService workspaceContextService: IWorkspaceContextService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@ICommAndService commAndService: ICommAndService,
+		@IWorkspAceContextService workspAceContextService: IWorkspAceContextService,
 		@IQuickInputService quickInputService: IQuickInputService,
-		@ILabelService labelService: ILabelService
+		@ILAbelService lAbelService: ILAbelService
 	) {
-		super({ getExecPath: () => undefined }, Object.create(null), editorService, configurationService, commandService, workspaceContextService, quickInputService, labelService);
+		super({ getExecPAth: () => undefined }, Object.creAte(null), editorService, configurAtionService, commAndService, workspAceContextService, quickInputService, lAbelService);
 	}
 }
 
-registerSingleton(IConfigurationResolverService, ConfigurationResolverService, true);
+registerSingleton(IConfigurAtionResolverService, ConfigurAtionResolverService, true);

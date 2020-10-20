@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { URI } from 'vs/bAse/common/uri';
 import { IPosition } from 'vs/editor/common/core/position';
-import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const ITextResourceConfigurationService = createDecorator<ITextResourceConfigurationService>('textResourceConfigurationService');
+export const ITextResourceConfigurAtionService = creAteDecorAtor<ITextResourceConfigurAtionService>('textResourceConfigurAtionService');
 
-export interface ITextResourceConfigurationChangeEvent {
-
-	/**
-	 * All affected keys. Also includes language overrides and keys changed under language overrides.
-	 */
-	readonly affectedKeys: string[];
+export interfAce ITextResourceConfigurAtionChAngeEvent {
 
 	/**
-	 * Returns `true` if the given section has changed for the given resource.
-	 *
-	 * Example: To check if the configuration section has changed for a given resource use `e.affectsConfiguration(resource, section)`.
-	 *
-	 * @param resource Resource for which the configuration has to be checked.
-	 * @param section Section of the configuration
+	 * All Affected keys. Also includes lAnguAge overrides And keys chAnged under lAnguAge overrides.
 	 */
-	affectsConfiguration(resource: URI, section: string): boolean;
+	reAdonly AffectedKeys: string[];
+
+	/**
+	 * Returns `true` if the given section hAs chAnged for the given resource.
+	 *
+	 * ExAmple: To check if the configurAtion section hAs chAnged for A given resource use `e.AffectsConfigurAtion(resource, section)`.
+	 *
+	 * @pArAm resource Resource for which the configurAtion hAs to be checked.
+	 * @pArAm section Section of the configurAtion
+	 */
+	AffectsConfigurAtion(resource: URI, section: string): booleAn;
 }
 
-export interface ITextResourceConfigurationService {
+export interfAce ITextResourceConfigurAtionService {
 
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Event that fires when the configuration changes.
-	 */
-	onDidChangeConfiguration: Event<ITextResourceConfigurationChangeEvent>;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Fetches the value of the section for the given resource by applying language overrides.
-	 * Value can be of native type or an object keyed off the section name.
-	 *
-	 * @param resource - Resource for which the configuration has to be fetched.
-	 * @param position - Position in the resource for which configuration has to be fetched.
-	 * @param section - Section of the configuraion.
-	 *
+	 * Event thAt fires when the configurAtion chAnges.
 	 */
-	getValue<T>(resource: URI | undefined, section?: string): T;
-	getValue<T>(resource: URI | undefined, position?: IPosition, section?: string): T;
+	onDidChAngeConfigurAtion: Event<ITextResourceConfigurAtionChAngeEvent>;
 
 	/**
-	 * Update the configuration value for the given resource at the effective location.
+	 * Fetches the vAlue of the section for the given resource by Applying lAnguAge overrides.
+	 * VAlue cAn be of nAtive type or An object keyed off the section nAme.
 	 *
-	 * - If configurationTarget is not specified, target will be derived by checking where the configuration is defined.
-	 * - If the language overrides for the give resource contains the configuration, then it is updated.
+	 * @pArAm resource - Resource for which the configurAtion hAs to be fetched.
+	 * @pArAm position - Position in the resource for which configurAtion hAs to be fetched.
+	 * @pArAm section - Section of the configurAion.
 	 *
-	 * @param resource Resource for which the configuration has to be updated
-	 * @param key Configuration key
-	 * @param value Configuration value
-	 * @param configurationTarget Optional target into which the configuration has to be updated.
-	 * If not specified, target will be derived by checking where the configuration is defined.
 	 */
-	updateValue(resource: URI, key: string, value: any, configurationTarget?: ConfigurationTarget): Promise<void>;
+	getVAlue<T>(resource: URI | undefined, section?: string): T;
+	getVAlue<T>(resource: URI | undefined, position?: IPosition, section?: string): T;
+
+	/**
+	 * UpdAte the configurAtion vAlue for the given resource At the effective locAtion.
+	 *
+	 * - If configurAtionTArget is not specified, tArget will be derived by checking where the configurAtion is defined.
+	 * - If the lAnguAge overrides for the give resource contAins the configurAtion, then it is updAted.
+	 *
+	 * @pArAm resource Resource for which the configurAtion hAs to be updAted
+	 * @pArAm key ConfigurAtion key
+	 * @pArAm vAlue ConfigurAtion vAlue
+	 * @pArAm configurAtionTArget OptionAl tArget into which the configurAtion hAs to be updAted.
+	 * If not specified, tArget will be derived by checking where the configurAtion is defined.
+	 */
+	updAteVAlue(resource: URI, key: string, vAlue: Any, configurAtionTArget?: ConfigurAtionTArget): Promise<void>;
 
 }
 
-export const ITextResourcePropertiesService = createDecorator<ITextResourcePropertiesService>('textResourcePropertiesService');
+export const ITextResourcePropertiesService = creAteDecorAtor<ITextResourcePropertiesService>('textResourcePropertiesService');
 
-export interface ITextResourcePropertiesService {
+export interfAce ITextResourcePropertiesService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Returns the End of Line characters for the given resource
+	 * Returns the End of Line chArActers for the given resource
 	 */
-	getEOL(resource: URI, language?: string): string;
+	getEOL(resource: URI, lAnguAge?: string): string;
 }

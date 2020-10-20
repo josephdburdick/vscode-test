@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import * as vscode from 'vscode';
+import * As Assert from 'Assert';
+import 'mochA';
+import * As vscode from 'vscode';
 import { disposeAll } from '../utils/dispose';
-import { createTestEditor, joinLines, retryUntilDocumentChanges, wait } from './testUtils';
+import { creAteTestEditor, joinLines, retryUntilDocumentChAnges, wAit } from './testUtils';
 
 suite('TypeScript Quick Fix', () => {
 
-	const _disposables: vscode.Disposable[] = [];
+	const _disposAbles: vscode.DisposAble[] = [];
 
-	teardown(async () => {
-		disposeAll(_disposables);
+	teArdown(Async () => {
+		disposeAll(_disposAbles);
 
-		await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		AwAit vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 	});
 
-	test('Fix all should not be marked as preferred #97866', async () => {
-		const testDocumentUri = vscode.Uri.parse('untitled:test.ts');
+	test('Fix All should not be mArked As preferred #97866', Async () => {
+		const testDocumentUri = vscode.Uri.pArse('untitled:test.ts');
 
-		const editor = await createTestEditor(testDocumentUri,
+		const editor = AwAit creAteTestEditor(testDocumentUri,
 			`export const _ = 1;`,
-			`const a$0 = 1;`,
+			`const A$0 = 1;`,
 			`const b = 2;`,
 		);
 
-		await retryUntilDocumentChanges(testDocumentUri, { retries: 10, timeout: 500 }, _disposables, () => {
-			return vscode.commands.executeCommand('editor.action.autoFix');
+		AwAit retryUntilDocumentChAnges(testDocumentUri, { retries: 10, timeout: 500 }, _disposAbles, () => {
+			return vscode.commAnds.executeCommAnd('editor.Action.AutoFix');
 		});
 
-		assert.strictEqual(editor.document.getText(), joinLines(
+		Assert.strictEquAl(editor.document.getText(), joinLines(
 			`export const _ = 1;`,
 			`const b = 2;`,
 		));
 	});
 
-	test('Add import should be a preferred fix if there is only one possible import', async () => {
-		const testDocumentUri = workspaceFile('foo.ts');
+	test('Add import should be A preferred fix if there is only one possible import', Async () => {
+		const testDocumentUri = workspAceFile('foo.ts');
 
-		await createTestEditor(testDocumentUri,
+		AwAit creAteTestEditor(testDocumentUri,
 			`export const foo = 1;`);
 
-		const editor = await createTestEditor(workspaceFile('index.ts'),
+		const editor = AwAit creAteTestEditor(workspAceFile('index.ts'),
 			`export const _ = 1;`,
 			`foo$0;`
 		);
 
-		await retryUntilDocumentChanges(testDocumentUri, { retries: 10, timeout: 500 }, _disposables, () => {
-			return vscode.commands.executeCommand('editor.action.autoFix');
+		AwAit retryUntilDocumentChAnges(testDocumentUri, { retries: 10, timeout: 500 }, _disposAbles, () => {
+			return vscode.commAnds.executeCommAnd('editor.Action.AutoFix');
 		});
 
-		// Document should not have been changed here
+		// Document should not hAve been chAnged here
 
-		assert.strictEqual(editor.document.getText(), joinLines(
+		Assert.strictEquAl(editor.document.getText(), joinLines(
 			`import { foo } from "./foo";`,
 			``,
 			`export const _ = 1;`,
@@ -63,111 +63,111 @@ suite('TypeScript Quick Fix', () => {
 		));
 	});
 
-	test('Add import should not be a preferred fix if are multiple possible imports', async () => {
-		await createTestEditor(workspaceFile('foo.ts'),
+	test('Add import should not be A preferred fix if Are multiple possible imports', Async () => {
+		AwAit creAteTestEditor(workspAceFile('foo.ts'),
 			`export const foo = 1;`);
 
-		await createTestEditor(workspaceFile('bar.ts'),
+		AwAit creAteTestEditor(workspAceFile('bAr.ts'),
 			`export const foo = 1;`);
 
-		const editor = await createTestEditor(workspaceFile('index.ts'),
+		const editor = AwAit creAteTestEditor(workspAceFile('index.ts'),
 			`export const _ = 1;`,
 			`foo$0;`
 		);
 
-		await wait(3000);
+		AwAit wAit(3000);
 
-		await vscode.commands.executeCommand('editor.action.autoFix');
+		AwAit vscode.commAnds.executeCommAnd('editor.Action.AutoFix');
 
-		await wait(500);
+		AwAit wAit(500);
 
-		assert.strictEqual(editor.document.getText(), joinLines(
+		Assert.strictEquAl(editor.document.getText(), joinLines(
 			`export const _ = 1;`,
 			`foo;`
 		));
 	});
 
-	test('Only a single ts-ignore should be returned if there are multiple errors on one line #98274', async () => {
-		const testDocumentUri = workspaceFile('foojs.js');
-		const editor = await createTestEditor(testDocumentUri,
+	test('Only A single ts-ignore should be returned if there Are multiple errors on one line #98274', Async () => {
+		const testDocumentUri = workspAceFile('foojs.js');
+		const editor = AwAit creAteTestEditor(testDocumentUri,
 			`//@ts-check`,
-			`const a = require('./bla');`);
+			`const A = require('./blA');`);
 
-		await wait(3000);
+		AwAit wAit(3000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			editor.document.lineAt(1).range
+			editor.document.lineAt(1).rAnge
 		);
 
-		const ignoreFixes = fixes?.filter(x => x.title === 'Ignore this error message');
-		assert.strictEqual(ignoreFixes?.length, 1);
+		const ignoreFixes = fixes?.filter(x => x.title === 'Ignore this error messAge');
+		Assert.strictEquAl(ignoreFixes?.length, 1);
 	});
 
-	test('Should prioritize implement interface over remove unused #94212', async () => {
-		const testDocumentUri = workspaceFile('foo.ts');
-		const editor = await createTestEditor(testDocumentUri,
-			`export interface IFoo { value: string; }`,
-			`class Foo implements IFoo { }`);
+	test('Should prioritize implement interfAce over remove unused #94212', Async () => {
+		const testDocumentUri = workspAceFile('foo.ts');
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`export interfAce IFoo { vAlue: string; }`,
+			`clAss Foo implements IFoo { }`);
 
-		await wait(3000);
+		AwAit wAit(3000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			editor.document.lineAt(1).range
+			editor.document.lineAt(1).rAnge
 		);
 
-		assert.strictEqual(fixes?.length, 2);
-		assert.strictEqual(fixes![0].title, `Implement interface 'IFoo'`);
-		assert.strictEqual(fixes![1].title, `Remove unused declaration for: 'Foo'`);
+		Assert.strictEquAl(fixes?.length, 2);
+		Assert.strictEquAl(fixes![0].title, `Implement interfAce 'IFoo'`);
+		Assert.strictEquAl(fixes![1].title, `Remove unused declArAtion for: 'Foo'`);
 	});
 
-	test('Should prioritize implement abstract class over remove unused #101486', async () => {
-		const testDocumentUri = workspaceFile('foo.ts');
-		const editor = await createTestEditor(testDocumentUri,
-			`export abstract class Foo { abstract foo(): number; }`,
-			`class ConcreteFoo extends Foo { }`,
+	test('Should prioritize implement AbstrAct clAss over remove unused #101486', Async () => {
+		const testDocumentUri = workspAceFile('foo.ts');
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`export AbstrAct clAss Foo { AbstrAct foo(): number; }`,
+			`clAss ConcreteFoo extends Foo { }`,
 		);
 
-		await wait(3000);
+		AwAit wAit(3000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			editor.document.lineAt(1).range
+			editor.document.lineAt(1).rAnge
 		);
 
-		assert.strictEqual(fixes?.length, 2);
-		assert.strictEqual(fixes![0].title, `Implement inherited abstract class`);
-		assert.strictEqual(fixes![1].title, `Remove unused declaration for: 'ConcreteFoo'`);
+		Assert.strictEquAl(fixes?.length, 2);
+		Assert.strictEquAl(fixes![0].title, `Implement inherited AbstrAct clAss`);
+		Assert.strictEquAl(fixes![1].title, `Remove unused declArAtion for: 'ConcreteFoo'`);
 	});
 
-	test('Add all missing imports should come after other add import fixes #98613', async () => {
-		await createTestEditor(workspaceFile('foo.ts'),
+	test('Add All missing imports should come After other Add import fixes #98613', Async () => {
+		AwAit creAteTestEditor(workspAceFile('foo.ts'),
 			`export const foo = 1;`);
 
-		await createTestEditor(workspaceFile('bar.ts'),
+		AwAit creAteTestEditor(workspAceFile('bAr.ts'),
 			`export const foo = 1;`);
 
-		const editor = await createTestEditor(workspaceFile('index.ts'),
+		const editor = AwAit creAteTestEditor(workspAceFile('index.ts'),
 			`export const _ = 1;`,
 			`foo$0;`,
 			`foo$0;`
 		);
 
-		await wait(3000);
+		AwAit wAit(3000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
-			workspaceFile('index.ts'),
-			editor.document.lineAt(1).range
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+			workspAceFile('index.ts'),
+			editor.document.lineAt(1).rAnge
 		);
 
-		assert.strictEqual(fixes?.length, 3);
-		assert.strictEqual(fixes![0].title, `Import 'foo' from module "./bar"`);
-		assert.strictEqual(fixes![1].title, `Import 'foo' from module "./foo"`);
-		assert.strictEqual(fixes![2].title, `Add all missing imports`);
+		Assert.strictEquAl(fixes?.length, 3);
+		Assert.strictEquAl(fixes![0].title, `Import 'foo' from module "./bAr"`);
+		Assert.strictEquAl(fixes![1].title, `Import 'foo' from module "./foo"`);
+		Assert.strictEquAl(fixes![2].title, `Add All missing imports`);
 	});
 });
 
-function workspaceFile(fileName: string) {
-	return vscode.Uri.joinPath(vscode.workspace.workspaceFolders![0].uri, fileName);
+function workspAceFile(fileNAme: string) {
+	return vscode.Uri.joinPAth(vscode.workspAce.workspAceFolders![0].uri, fileNAme);
 }

@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMode, LanguageIdentifier } from 'vs/editor/common/modes';
+import { IMode, LAnguAgeIdentifier } from 'vs/editor/common/modes';
 
-export class FrankensteinMode implements IMode {
+export clAss FrAnkensteinMode implements IMode {
 
-	private readonly _languageIdentifier: LanguageIdentifier;
+	privAte reAdonly _lAnguAgeIdentifier: LAnguAgeIdentifier;
 
-	constructor(languageIdentifier: LanguageIdentifier) {
-		this._languageIdentifier = languageIdentifier;
+	constructor(lAnguAgeIdentifier: LAnguAgeIdentifier) {
+		this._lAnguAgeIdentifier = lAnguAgeIdentifier;
 	}
 
 	public getId(): string {
-		return this._languageIdentifier.language;
+		return this._lAnguAgeIdentifier.lAnguAge;
 	}
 
-	public getLanguageIdentifier(): LanguageIdentifier {
-		return this._languageIdentifier;
+	public getLAnguAgeIdentifier(): LAnguAgeIdentifier {
+		return this._lAnguAgeIdentifier;
 	}
 }

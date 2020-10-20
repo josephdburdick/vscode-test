@@ -1,190 +1,190 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { dispose, IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as strings from 'vs/base/common/strings';
-import * as objects from 'vs/base/common/objects';
-import * as json from 'vs/base/common/json';
-import { URI as uri } from 'vs/base/common/uri';
-import * as resources from 'vs/base/common/resources';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import * As nls from 'vs/nls';
+import { dispose, IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import * As strings from 'vs/bAse/common/strings';
+import * As objects from 'vs/bAse/common/objects';
+import * As json from 'vs/bAse/common/json';
+import { URI As uri } from 'vs/bAse/common/uri';
+import * As resources from 'vs/bAse/common/resources';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 import { ITextModel } from 'vs/editor/common/model';
-import { IEditorPane } from 'vs/workbench/common/editor';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import { IEditorPAne } from 'vs/workbench/common/editor';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IWorkspaceContextService, IWorkspaceFolder, WorkbenchState, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IDebugConfigurationProvider, ICompound, IDebugConfiguration, IConfig, IGlobalConfig, IConfigurationManager, ILaunch, IDebugAdapterDescriptorFactory, IDebugAdapter, IDebugSession, IAdapterDescriptor, CONTEXT_DEBUG_CONFIGURATION_TYPE, IDebugAdapterFactory, IConfigPresentation, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workbench/contrib/debug/common/debug';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IWorkspAceContextService, IWorkspAceFolder, WorkbenchStAte, IWorkspAceFoldersChAngeEvent } from 'vs/plAtform/workspAce/common/workspAce';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IDebugConfigurAtionProvider, ICompound, IDebugConfigurAtion, IConfig, IGlobAlConfig, IConfigurAtionMAnAger, ILAunch, IDebugAdApterDescriptorFActory, IDebugAdApter, IDebugSession, IAdApterDescriptor, CONTEXT_DEBUG_CONFIGURATION_TYPE, IDebugAdApterFActory, IConfigPresentAtion, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workbench/contrib/debug/common/debug';
 import { Debugger } from 'vs/workbench/contrib/debug/common/debugger';
 import { IEditorService, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
 import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { launchSchemaId } from 'vs/workbench/services/configuration/common/configuration';
+import { lAunchSchemAId } from 'vs/workbench/services/configurAtion/common/configurAtion';
 import { IPreferencesService } from 'vs/workbench/services/preferences/common/preferences';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IJSONContributionRegistry, Extensions as JSONExtensions } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import { launchSchema, debuggersExtPoint, breakpointsExtPoint } from 'vs/workbench/contrib/debug/common/debugSchemas';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IJSONContributionRegistry, Extensions As JSONExtensions } from 'vs/plAtform/jsonschemAs/common/jsonContributionRegistry';
+import { lAunchSchemA, debuggersExtPoint, breAkpointsExtPoint } from 'vs/workbench/contrib/debug/common/debugSchemAs';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { withUndefinedAsNull } from 'vs/base/common/types';
-import { sequence } from 'vs/base/common/async';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { withUndefinedAsNull } from 'vs/bAse/common/types';
+import { sequence } from 'vs/bAse/common/Async';
 import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { flatten } from 'vs/base/common/arrays';
+import { flAtten } from 'vs/bAse/common/ArrAys';
 import { getVisibleAndSorted } from 'vs/workbench/contrib/debug/common/debugUtils';
-import { DebugConfigurationProviderTriggerKind } from 'vs/workbench/api/common/extHostTypes';
+import { DebugConfigurAtionProviderTriggerKind } from 'vs/workbench/Api/common/extHostTypes';
 
-const jsonRegistry = Registry.as<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
-jsonRegistry.registerSchema(launchSchemaId, launchSchema);
+const jsonRegistry = Registry.As<IJSONContributionRegistry>(JSONExtensions.JSONContribution);
+jsonRegistry.registerSchemA(lAunchSchemAId, lAunchSchemA);
 
-const DEBUG_SELECTED_CONFIG_NAME_KEY = 'debug.selectedconfigname';
+const DEBUG_SELECTED_CONFIG_NAME_KEY = 'debug.selectedconfignAme';
 const DEBUG_SELECTED_ROOT = 'debug.selectedroot';
-// Debug type is only stored if a dynamic configuration is used for better restore
+// Debug type is only stored if A dynAmic configurAtion is used for better restore
 const DEBUG_SELECTED_TYPE = 'debug.selectedtype';
 
-interface IDynamicPickItem { label: string, launch: ILaunch, config: IConfig }
+interfAce IDynAmicPickItem { lAbel: string, lAunch: ILAunch, config: IConfig }
 
-export class ConfigurationManager implements IConfigurationManager {
-	private debuggers: Debugger[];
-	private breakpointModeIdsSet = new Set<string>();
-	private launches!: ILaunch[];
-	private selectedName: string | undefined;
-	private selectedLaunch: ILaunch | undefined;
-	private selectedConfig: IConfig | undefined;
-	private selectedType: string | undefined;
-	private toDispose: IDisposable[];
-	private readonly _onDidSelectConfigurationName = new Emitter<void>();
-	private configProviders: IDebugConfigurationProvider[];
-	private adapterDescriptorFactories: IDebugAdapterDescriptorFactory[];
-	private debugAdapterFactories = new Map<string, IDebugAdapterFactory>();
-	private debugConfigurationTypeContext: IContextKey<string>;
-	private debuggersAvailable: IContextKey<boolean>;
-	private readonly _onDidRegisterDebugger = new Emitter<void>();
+export clAss ConfigurAtionMAnAger implements IConfigurAtionMAnAger {
+	privAte debuggers: Debugger[];
+	privAte breAkpointModeIdsSet = new Set<string>();
+	privAte lAunches!: ILAunch[];
+	privAte selectedNAme: string | undefined;
+	privAte selectedLAunch: ILAunch | undefined;
+	privAte selectedConfig: IConfig | undefined;
+	privAte selectedType: string | undefined;
+	privAte toDispose: IDisposAble[];
+	privAte reAdonly _onDidSelectConfigurAtionNAme = new Emitter<void>();
+	privAte configProviders: IDebugConfigurAtionProvider[];
+	privAte AdApterDescriptorFActories: IDebugAdApterDescriptorFActory[];
+	privAte debugAdApterFActories = new MAp<string, IDebugAdApterFActory>();
+	privAte debugConfigurAtionTypeContext: IContextKey<string>;
+	privAte debuggersAvAilAble: IContextKey<booleAn>;
+	privAte reAdonly _onDidRegisterDebugger = new Emitter<void>();
 
 	constructor(
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IQuickInputService private readonly quickInputService: IQuickInputService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@ICommandService private readonly commandService: ICommandService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@IHistoryService private readonly historyService: IHistoryService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@IHistoryService privAte reAdonly historyService: IHistoryService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		this.configProviders = [];
-		this.adapterDescriptorFactories = [];
+		this.AdApterDescriptorFActories = [];
 		this.debuggers = [];
 		this.toDispose = [];
-		this.initLaunches();
+		this.initLAunches();
 		this.registerListeners();
-		const previousSelectedRoot = this.storageService.get(DEBUG_SELECTED_ROOT, StorageScope.WORKSPACE);
-		const previousSelectedType = this.storageService.get(DEBUG_SELECTED_TYPE, StorageScope.WORKSPACE);
-		const previousSelectedLaunch = this.launches.find(l => l.uri.toString() === previousSelectedRoot);
-		const previousSelectedName = this.storageService.get(DEBUG_SELECTED_CONFIG_NAME_KEY, StorageScope.WORKSPACE);
-		this.debugConfigurationTypeContext = CONTEXT_DEBUG_CONFIGURATION_TYPE.bindTo(contextKeyService);
-		this.debuggersAvailable = CONTEXT_DEBUGGERS_AVAILABLE.bindTo(contextKeyService);
-		if (previousSelectedLaunch && previousSelectedLaunch.getConfigurationNames().length) {
-			this.selectConfiguration(previousSelectedLaunch, previousSelectedName, undefined, previousSelectedType);
-		} else if (this.launches.length > 0) {
-			this.selectConfiguration(undefined, previousSelectedName, undefined, previousSelectedType);
+		const previousSelectedRoot = this.storAgeService.get(DEBUG_SELECTED_ROOT, StorAgeScope.WORKSPACE);
+		const previousSelectedType = this.storAgeService.get(DEBUG_SELECTED_TYPE, StorAgeScope.WORKSPACE);
+		const previousSelectedLAunch = this.lAunches.find(l => l.uri.toString() === previousSelectedRoot);
+		const previousSelectedNAme = this.storAgeService.get(DEBUG_SELECTED_CONFIG_NAME_KEY, StorAgeScope.WORKSPACE);
+		this.debugConfigurAtionTypeContext = CONTEXT_DEBUG_CONFIGURATION_TYPE.bindTo(contextKeyService);
+		this.debuggersAvAilAble = CONTEXT_DEBUGGERS_AVAILABLE.bindTo(contextKeyService);
+		if (previousSelectedLAunch && previousSelectedLAunch.getConfigurAtionNAmes().length) {
+			this.selectConfigurAtion(previousSelectedLAunch, previousSelectedNAme, undefined, previousSelectedType);
+		} else if (this.lAunches.length > 0) {
+			this.selectConfigurAtion(undefined, previousSelectedNAme, undefined, previousSelectedType);
 		}
 	}
 
 	// debuggers
 
-	registerDebugAdapterFactory(debugTypes: string[], debugAdapterLauncher: IDebugAdapterFactory): IDisposable {
-		debugTypes.forEach(debugType => this.debugAdapterFactories.set(debugType, debugAdapterLauncher));
-		this.debuggersAvailable.set(this.debugAdapterFactories.size > 0);
+	registerDebugAdApterFActory(debugTypes: string[], debugAdApterLAuncher: IDebugAdApterFActory): IDisposAble {
+		debugTypes.forEAch(debugType => this.debugAdApterFActories.set(debugType, debugAdApterLAuncher));
+		this.debuggersAvAilAble.set(this.debugAdApterFActories.size > 0);
 		this._onDidRegisterDebugger.fire();
 
 		return {
 			dispose: () => {
-				debugTypes.forEach(debugType => this.debugAdapterFactories.delete(debugType));
+				debugTypes.forEAch(debugType => this.debugAdApterFActories.delete(debugType));
 			}
 		};
 	}
 
-	hasDebuggers(): boolean {
-		return this.debugAdapterFactories.size > 0;
+	hAsDebuggers(): booleAn {
+		return this.debugAdApterFActories.size > 0;
 	}
 
-	createDebugAdapter(session: IDebugSession): IDebugAdapter | undefined {
-		let factory = this.debugAdapterFactories.get(session.configuration.type);
-		if (factory) {
-			return factory.createDebugAdapter(session);
+	creAteDebugAdApter(session: IDebugSession): IDebugAdApter | undefined {
+		let fActory = this.debugAdApterFActories.get(session.configurAtion.type);
+		if (fActory) {
+			return fActory.creAteDebugAdApter(session);
 		}
 		return undefined;
 	}
 
-	substituteVariables(debugType: string, folder: IWorkspaceFolder | undefined, config: IConfig): Promise<IConfig> {
-		let factory = this.debugAdapterFactories.get(debugType);
-		if (factory) {
-			return factory.substituteVariables(folder, config);
+	substituteVAriAbles(debugType: string, folder: IWorkspAceFolder | undefined, config: IConfig): Promise<IConfig> {
+		let fActory = this.debugAdApterFActories.get(debugType);
+		if (fActory) {
+			return fActory.substituteVAriAbles(folder, config);
 		}
 		return Promise.resolve(config);
 	}
 
-	runInTerminal(debugType: string, args: DebugProtocol.RunInTerminalRequestArguments): Promise<number | undefined> {
-		let factory = this.debugAdapterFactories.get(debugType);
-		if (factory) {
-			return factory.runInTerminal(args);
+	runInTerminAl(debugType: string, Args: DebugProtocol.RunInTerminAlRequestArguments): Promise<number | undefined> {
+		let fActory = this.debugAdApterFActories.get(debugType);
+		if (fActory) {
+			return fActory.runInTerminAl(Args);
 		}
 		return Promise.resolve(void 0);
 	}
 
-	// debug adapter
+	// debug AdApter
 
-	registerDebugAdapterDescriptorFactory(debugAdapterProvider: IDebugAdapterDescriptorFactory): IDisposable {
-		this.adapterDescriptorFactories.push(debugAdapterProvider);
+	registerDebugAdApterDescriptorFActory(debugAdApterProvider: IDebugAdApterDescriptorFActory): IDisposAble {
+		this.AdApterDescriptorFActories.push(debugAdApterProvider);
 		return {
 			dispose: () => {
-				this.unregisterDebugAdapterDescriptorFactory(debugAdapterProvider);
+				this.unregisterDebugAdApterDescriptorFActory(debugAdApterProvider);
 			}
 		};
 	}
 
-	unregisterDebugAdapterDescriptorFactory(debugAdapterProvider: IDebugAdapterDescriptorFactory): void {
-		const ix = this.adapterDescriptorFactories.indexOf(debugAdapterProvider);
+	unregisterDebugAdApterDescriptorFActory(debugAdApterProvider: IDebugAdApterDescriptorFActory): void {
+		const ix = this.AdApterDescriptorFActories.indexOf(debugAdApterProvider);
 		if (ix >= 0) {
-			this.adapterDescriptorFactories.splice(ix, 1);
+			this.AdApterDescriptorFActories.splice(ix, 1);
 		}
 	}
 
-	getDebugAdapterDescriptor(session: IDebugSession): Promise<IAdapterDescriptor | undefined> {
+	getDebugAdApterDescriptor(session: IDebugSession): Promise<IAdApterDescriptor | undefined> {
 
-		const config = session.configuration;
+		const config = session.configurAtion;
 
-		// first try legacy proposed API: DebugConfigurationProvider.debugAdapterExecutable
-		const providers0 = this.configProviders.filter(p => p.type === config.type && p.debugAdapterExecutable);
-		if (providers0.length === 1 && providers0[0].debugAdapterExecutable) {
-			return providers0[0].debugAdapterExecutable(session.root ? session.root.uri : undefined);
+		// first try legAcy proposed API: DebugConfigurAtionProvider.debugAdApterExecutAble
+		const providers0 = this.configProviders.filter(p => p.type === config.type && p.debugAdApterExecutAble);
+		if (providers0.length === 1 && providers0[0].debugAdApterExecutAble) {
+			return providers0[0].debugAdApterExecutAble(session.root ? session.root.uri : undefined);
 		} else {
-			// TODO@AW handle n > 1 case
+			// TODO@AW hAndle n > 1 cAse
 		}
 
 		// new API
-		const providers = this.adapterDescriptorFactories.filter(p => p.type === config.type && p.createDebugAdapterDescriptor);
+		const providers = this.AdApterDescriptorFActories.filter(p => p.type === config.type && p.creAteDebugAdApterDescriptor);
 		if (providers.length === 1) {
-			return providers[0].createDebugAdapterDescriptor(session);
+			return providers[0].creAteDebugAdApterDescriptor(session);
 		} else {
-			// TODO@AW handle n > 1 case
+			// TODO@AW hAndle n > 1 cAse
 		}
 		return Promise.resolve(undefined);
 	}
 
-	getDebuggerLabel(type: string): string | undefined {
+	getDebuggerLAbel(type: string): string | undefined {
 		const dbgr = this.getDebugger(type);
 		if (dbgr) {
-			return dbgr.label;
+			return dbgr.lAbel;
 		}
 
 		return undefined;
@@ -194,169 +194,169 @@ export class ConfigurationManager implements IConfigurationManager {
 		return this._onDidRegisterDebugger.event;
 	}
 
-	// debug configurations
+	// debug configurAtions
 
-	registerDebugConfigurationProvider(debugConfigurationProvider: IDebugConfigurationProvider): IDisposable {
-		this.configProviders.push(debugConfigurationProvider);
+	registerDebugConfigurAtionProvider(debugConfigurAtionProvider: IDebugConfigurAtionProvider): IDisposAble {
+		this.configProviders.push(debugConfigurAtionProvider);
 		return {
 			dispose: () => {
-				this.unregisterDebugConfigurationProvider(debugConfigurationProvider);
+				this.unregisterDebugConfigurAtionProvider(debugConfigurAtionProvider);
 			}
 		};
 	}
 
-	unregisterDebugConfigurationProvider(debugConfigurationProvider: IDebugConfigurationProvider): void {
-		const ix = this.configProviders.indexOf(debugConfigurationProvider);
+	unregisterDebugConfigurAtionProvider(debugConfigurAtionProvider: IDebugConfigurAtionProvider): void {
+		const ix = this.configProviders.indexOf(debugConfigurAtionProvider);
 		if (ix >= 0) {
 			this.configProviders.splice(ix, 1);
 		}
 	}
 
 	/**
-	 * if scope is not specified,a value of DebugConfigurationProvideTrigger.Initial is assumed.
+	 * if scope is not specified,A vAlue of DebugConfigurAtionProvideTrigger.InitiAl is Assumed.
 	 */
-	hasDebugConfigurationProvider(debugType: string, triggerKind?: DebugConfigurationProviderTriggerKind): boolean {
+	hAsDebugConfigurAtionProvider(debugType: string, triggerKind?: DebugConfigurAtionProviderTriggerKind): booleAn {
 		if (triggerKind === undefined) {
-			triggerKind = DebugConfigurationProviderTriggerKind.Initial;
+			triggerKind = DebugConfigurAtionProviderTriggerKind.InitiAl;
 		}
-		// check if there are providers for the given type that contribute a provideDebugConfigurations method
-		const provider = this.configProviders.find(p => p.provideDebugConfigurations && (p.type === debugType) && (p.triggerKind === triggerKind));
+		// check if there Are providers for the given type thAt contribute A provideDebugConfigurAtions method
+		const provider = this.configProviders.find(p => p.provideDebugConfigurAtions && (p.type === debugType) && (p.triggerKind === triggerKind));
 		return !!provider;
 	}
 
-	async resolveConfigurationByProviders(folderUri: uri | undefined, type: string | undefined, config: IConfig, token: CancellationToken): Promise<IConfig | null | undefined> {
-		await this.activateDebuggers('onDebugResolve', type);
-		// pipe the config through the promises sequentially. Append at the end the '*' types
-		const providers = this.configProviders.filter(p => p.type === type && p.resolveDebugConfiguration)
-			.concat(this.configProviders.filter(p => p.type === '*' && p.resolveDebugConfiguration));
+	Async resolveConfigurAtionByProviders(folderUri: uri | undefined, type: string | undefined, config: IConfig, token: CAncellAtionToken): Promise<IConfig | null | undefined> {
+		AwAit this.ActivAteDebuggers('onDebugResolve', type);
+		// pipe the config through the promises sequentiAlly. Append At the end the '*' types
+		const providers = this.configProviders.filter(p => p.type === type && p.resolveDebugConfigurAtion)
+			.concAt(this.configProviders.filter(p => p.type === '*' && p.resolveDebugConfigurAtion));
 
 		let result: IConfig | null | undefined = config;
-		await sequence(providers.map(provider => async () => {
-			// If any provider returned undefined or null make sure to respect that and do not pass the result to more resolver
+		AwAit sequence(providers.mAp(provider => Async () => {
+			// If Any provider returned undefined or null mAke sure to respect thAt And do not pAss the result to more resolver
 			if (result) {
-				result = await provider.resolveDebugConfiguration!(folderUri, result, token);
+				result = AwAit provider.resolveDebugConfigurAtion!(folderUri, result, token);
 			}
 		}));
 
 		return result;
 	}
 
-	async resolveDebugConfigurationWithSubstitutedVariables(folderUri: uri | undefined, type: string | undefined, config: IConfig, token: CancellationToken): Promise<IConfig | null | undefined> {
-		// pipe the config through the promises sequentially. Append at the end the '*' types
-		const providers = this.configProviders.filter(p => p.type === type && p.resolveDebugConfigurationWithSubstitutedVariables)
-			.concat(this.configProviders.filter(p => p.type === '*' && p.resolveDebugConfigurationWithSubstitutedVariables));
+	Async resolveDebugConfigurAtionWithSubstitutedVAriAbles(folderUri: uri | undefined, type: string | undefined, config: IConfig, token: CAncellAtionToken): Promise<IConfig | null | undefined> {
+		// pipe the config through the promises sequentiAlly. Append At the end the '*' types
+		const providers = this.configProviders.filter(p => p.type === type && p.resolveDebugConfigurAtionWithSubstitutedVAriAbles)
+			.concAt(this.configProviders.filter(p => p.type === '*' && p.resolveDebugConfigurAtionWithSubstitutedVAriAbles));
 
 		let result: IConfig | null | undefined = config;
-		await sequence(providers.map(provider => async () => {
-			// If any provider returned undefined or null make sure to respect that and do not pass the result to more resolver
+		AwAit sequence(providers.mAp(provider => Async () => {
+			// If Any provider returned undefined or null mAke sure to respect thAt And do not pAss the result to more resolver
 			if (result) {
-				result = await provider.resolveDebugConfigurationWithSubstitutedVariables!(folderUri, result, token);
+				result = AwAit provider.resolveDebugConfigurAtionWithSubstitutedVAriAbles!(folderUri, result, token);
 			}
 		}));
 
 		return result;
 	}
 
-	async provideDebugConfigurations(folderUri: uri | undefined, type: string, token: CancellationToken): Promise<any[]> {
-		await this.activateDebuggers('onDebugInitialConfigurations');
-		const results = await Promise.all(this.configProviders.filter(p => p.type === type && p.triggerKind === DebugConfigurationProviderTriggerKind.Initial && p.provideDebugConfigurations).map(p => p.provideDebugConfigurations!(folderUri, token)));
+	Async provideDebugConfigurAtions(folderUri: uri | undefined, type: string, token: CAncellAtionToken): Promise<Any[]> {
+		AwAit this.ActivAteDebuggers('onDebugInitiAlConfigurAtions');
+		const results = AwAit Promise.All(this.configProviders.filter(p => p.type === type && p.triggerKind === DebugConfigurAtionProviderTriggerKind.InitiAl && p.provideDebugConfigurAtions).mAp(p => p.provideDebugConfigurAtions!(folderUri, token)));
 
-		return results.reduce((first, second) => first.concat(second), []);
+		return results.reduce((first, second) => first.concAt(second), []);
 	}
 
-	async getDynamicProviders(): Promise<{ label: string, provider: IDebugConfigurationProvider | undefined, pick: () => Promise<{ launch: ILaunch, config: IConfig } | undefined> }[]> {
-		const extensions = await this.extensionService.getExtensions();
-		const onDebugDynamicConfigurationsName = 'onDebugDynamicConfigurations';
-		const debugDynamicExtensionsTypes = extensions.reduce((acc, e) => {
-			if (!e.activationEvents) {
-				return acc;
+	Async getDynAmicProviders(): Promise<{ lAbel: string, provider: IDebugConfigurAtionProvider | undefined, pick: () => Promise<{ lAunch: ILAunch, config: IConfig } | undefined> }[]> {
+		const extensions = AwAit this.extensionService.getExtensions();
+		const onDebugDynAmicConfigurAtionsNAme = 'onDebugDynAmicConfigurAtions';
+		const debugDynAmicExtensionsTypes = extensions.reduce((Acc, e) => {
+			if (!e.ActivAtionEvents) {
+				return Acc;
 			}
 
 			const explicitTypes: string[] = [];
-			let hasGenericEvent = false;
-			for (const event of e.activationEvents) {
-				if (event === onDebugDynamicConfigurationsName) {
-					hasGenericEvent = true;
-				} else if (event.startsWith(`${onDebugDynamicConfigurationsName}:`)) {
-					explicitTypes.push(event.slice(onDebugDynamicConfigurationsName.length + 1));
+			let hAsGenericEvent = fAlse;
+			for (const event of e.ActivAtionEvents) {
+				if (event === onDebugDynAmicConfigurAtionsNAme) {
+					hAsGenericEvent = true;
+				} else if (event.stArtsWith(`${onDebugDynAmicConfigurAtionsNAme}:`)) {
+					explicitTypes.push(event.slice(onDebugDynAmicConfigurAtionsNAme.length + 1));
 				}
 			}
 
 			if (explicitTypes.length) {
-				return acc.concat(explicitTypes);
+				return Acc.concAt(explicitTypes);
 			}
 
-			if (hasGenericEvent) {
+			if (hAsGenericEvent) {
 				const debuggerType = e.contributes?.debuggers?.[0].type;
-				return debuggerType ? acc.concat(debuggerType) : acc;
+				return debuggerType ? Acc.concAt(debuggerType) : Acc;
 			}
 
-			return acc;
-		}, [] as string[]);
+			return Acc;
+		}, [] As string[]);
 
-		await Promise.all(debugDynamicExtensionsTypes.map(type => this.activateDebuggers(onDebugDynamicConfigurationsName, type)));
-		return debugDynamicExtensionsTypes.map(type => {
-			const provider = this.configProviders.find(p => p.type === type && p.triggerKind === DebugConfigurationProviderTriggerKind.Dynamic && p.provideDebugConfigurations);
+		AwAit Promise.All(debugDynAmicExtensionsTypes.mAp(type => this.ActivAteDebuggers(onDebugDynAmicConfigurAtionsNAme, type)));
+		return debugDynAmicExtensionsTypes.mAp(type => {
+			const provider = this.configProviders.find(p => p.type === type && p.triggerKind === DebugConfigurAtionProviderTriggerKind.DynAmic && p.provideDebugConfigurAtions);
 			return {
-				label: this.getDebuggerLabel(type)!,
+				lAbel: this.getDebuggerLAbel(type)!,
 				provider,
-				pick: async () => {
-					const disposables = new DisposableStore();
-					const input = disposables.add(this.quickInputService.createQuickPick<IDynamicPickItem>());
+				pick: Async () => {
+					const disposAbles = new DisposAbleStore();
+					const input = disposAbles.Add(this.quickInputService.creAteQuickPick<IDynAmicPickItem>());
 					input.busy = true;
-					input.placeholder = nls.localize('selectConfiguration', "Select Launch Configuration");
+					input.plAceholder = nls.locAlize('selectConfigurAtion', "Select LAunch ConfigurAtion");
 					input.show();
 
-					let chosenDidCancel = false;
-					const chosenPromise = new Promise<IDynamicPickItem | undefined>(resolve => {
-						disposables.add(input.onDidAccept(() => resolve(input.activeItems[0])));
-						disposables.add(input.onDidTriggerItemButton(async (context) => {
+					let chosenDidCAncel = fAlse;
+					const chosenPromise = new Promise<IDynAmicPickItem | undefined>(resolve => {
+						disposAbles.Add(input.onDidAccept(() => resolve(input.ActiveItems[0])));
+						disposAbles.Add(input.onDidTriggerItemButton(Async (context) => {
 							resolve(undefined);
-							const { launch, config } = context.item;
-							await launch.openConfigFile(false, config.type);
-							// Only Launch have a pin trigger button
-							await (launch as Launch).writeConfiguration(config);
-							await this.selectConfiguration(launch, config.name);
+							const { lAunch, config } = context.item;
+							AwAit lAunch.openConfigFile(fAlse, config.type);
+							// Only LAunch hAve A pin trigger button
+							AwAit (lAunch As LAunch).writeConfigurAtion(config);
+							AwAit this.selectConfigurAtion(lAunch, config.nAme);
 						}));
-						disposables.add(input.onDidHide(() => { chosenDidCancel = true; resolve(undefined); }));
+						disposAbles.Add(input.onDidHide(() => { chosenDidCAncel = true; resolve(undefined); }));
 					});
 
-					const token = new CancellationTokenSource();
-					const picks: Promise<IDynamicPickItem[]>[] = [];
-					this.getLaunches().forEach(launch => {
-						if (launch.workspace && provider) {
-							picks.push(provider.provideDebugConfigurations!(launch.workspace.uri, token.token).then(configurations => configurations.map(config => ({
-								label: config.name,
-								description: launch.name,
+					const token = new CAncellAtionTokenSource();
+					const picks: Promise<IDynAmicPickItem[]>[] = [];
+					this.getLAunches().forEAch(lAunch => {
+						if (lAunch.workspAce && provider) {
+							picks.push(provider.provideDebugConfigurAtions!(lAunch.workspAce.uri, token.token).then(configurAtions => configurAtions.mAp(config => ({
+								lAbel: config.nAme,
+								description: lAunch.nAme,
 								config,
 								buttons: [{
-									iconClass: 'codicon-gear',
-									tooltip: nls.localize('editLaunchConfig', "Edit Debug Configuration in launch.json")
+									iconClAss: 'codicon-geAr',
+									tooltip: nls.locAlize('editLAunchConfig', "Edit Debug ConfigurAtion in lAunch.json")
 								}],
-								launch
+								lAunch
 							}))));
 						}
 					});
 
-					const nestedPicks = await Promise.all(picks);
-					const items = flatten(nestedPicks);
+					const nestedPicks = AwAit Promise.All(picks);
+					const items = flAtten(nestedPicks);
 
-					let chosen: IDynamicPickItem | undefined;
+					let chosen: IDynAmicPickItem | undefined;
 
-					// If there's exactly one item to choose from, pick it automatically
-					if (items.length === 1 && !chosenDidCancel) {
+					// If there's exActly one item to choose from, pick it AutomAticAlly
+					if (items.length === 1 && !chosenDidCAncel) {
 						chosen = items[0];
 					} else {
 						input.items = items;
-						input.busy = false;
-						chosen = await chosenPromise;
+						input.busy = fAlse;
+						chosen = AwAit chosenPromise;
 					}
 
-					disposables.dispose();
+					disposAbles.dispose();
 
 					if (!chosen) {
-						// User canceled quick input we should notify the provider to cancel computing configurations
-						token.cancel();
+						// User cAnceled quick input we should notify the provider to cAncel computing configurAtions
+						token.cAncel();
 						return;
 					}
 
@@ -366,289 +366,289 @@ export class ConfigurationManager implements IConfigurationManager {
 		});
 	}
 
-	getAllConfigurations(): { launch: ILaunch; name: string; presentation?: IConfigPresentation }[] {
-		const all: { launch: ILaunch, name: string, presentation?: IConfigPresentation }[] = [];
-		for (let l of this.launches) {
-			for (let name of l.getConfigurationNames()) {
-				const config = l.getConfiguration(name) || l.getCompound(name);
+	getAllConfigurAtions(): { lAunch: ILAunch; nAme: string; presentAtion?: IConfigPresentAtion }[] {
+		const All: { lAunch: ILAunch, nAme: string, presentAtion?: IConfigPresentAtion }[] = [];
+		for (let l of this.lAunches) {
+			for (let nAme of l.getConfigurAtionNAmes()) {
+				const config = l.getConfigurAtion(nAme) || l.getCompound(nAme);
 				if (config) {
-					all.push({ launch: l, name, presentation: config.presentation });
+					All.push({ lAunch: l, nAme, presentAtion: config.presentAtion });
 				}
 			}
 		}
 
-		return getVisibleAndSorted(all);
+		return getVisibleAndSorted(All);
 	}
 
-	private registerListeners(): void {
-		debuggersExtPoint.setHandler((extensions, delta) => {
-			delta.added.forEach(added => {
-				added.value.forEach(rawAdapter => {
-					if (!rawAdapter.type || (typeof rawAdapter.type !== 'string')) {
-						added.collector.error(nls.localize('debugNoType', "Debugger 'type' can not be omitted and must be of type 'string'."));
+	privAte registerListeners(): void {
+		debuggersExtPoint.setHAndler((extensions, deltA) => {
+			deltA.Added.forEAch(Added => {
+				Added.vAlue.forEAch(rAwAdApter => {
+					if (!rAwAdApter.type || (typeof rAwAdApter.type !== 'string')) {
+						Added.collector.error(nls.locAlize('debugNoType', "Debugger 'type' cAn not be omitted And must be of type 'string'."));
 					}
-					if (rawAdapter.enableBreakpointsFor) {
-						rawAdapter.enableBreakpointsFor.languageIds.forEach(modeId => {
-							this.breakpointModeIdsSet.add(modeId);
+					if (rAwAdApter.enAbleBreAkpointsFor) {
+						rAwAdApter.enAbleBreAkpointsFor.lAnguAgeIds.forEAch(modeId => {
+							this.breAkpointModeIdsSet.Add(modeId);
 						});
 					}
 
-					if (rawAdapter.type !== '*') {
-						const existing = this.getDebugger(rawAdapter.type);
+					if (rAwAdApter.type !== '*') {
+						const existing = this.getDebugger(rAwAdApter.type);
 						if (existing) {
-							existing.merge(rawAdapter, added.description);
+							existing.merge(rAwAdApter, Added.description);
 						} else {
-							this.debuggers.push(this.instantiationService.createInstance(Debugger, this, rawAdapter, added.description));
+							this.debuggers.push(this.instAntiAtionService.creAteInstAnce(Debugger, this, rAwAdApter, Added.description));
 						}
 					}
 				});
 			});
 
-			// take care of all wildcard contributions
-			extensions.forEach(extension => {
-				extension.value.forEach(rawAdapter => {
-					if (rawAdapter.type === '*') {
-						this.debuggers.forEach(dbg => dbg.merge(rawAdapter, extension.description));
+			// tAke cAre of All wildcArd contributions
+			extensions.forEAch(extension => {
+				extension.vAlue.forEAch(rAwAdApter => {
+					if (rAwAdApter.type === '*') {
+						this.debuggers.forEAch(dbg => dbg.merge(rAwAdApter, extension.description));
 					}
 				});
 			});
 
-			delta.removed.forEach(removed => {
-				const removedTypes = removed.value.map(rawAdapter => rawAdapter.type);
+			deltA.removed.forEAch(removed => {
+				const removedTypes = removed.vAlue.mAp(rAwAdApter => rAwAdApter.type);
 				this.debuggers = this.debuggers.filter(d => removedTypes.indexOf(d.type) === -1);
 			});
 
-			// update the schema to include all attributes, snippets and types from extensions.
-			this.debuggers.forEach(adapter => {
-				const items = (<IJSONSchema>launchSchema.properties!['configurations'].items);
-				const schemaAttributes = adapter.getSchemaAttributes();
-				if (schemaAttributes && items.oneOf) {
-					items.oneOf.push(...schemaAttributes);
+			// updAte the schemA to include All Attributes, snippets And types from extensions.
+			this.debuggers.forEAch(AdApter => {
+				const items = (<IJSONSchemA>lAunchSchemA.properties!['configurAtions'].items);
+				const schemAAttributes = AdApter.getSchemAAttributes();
+				if (schemAAttributes && items.oneOf) {
+					items.oneOf.push(...schemAAttributes);
 				}
-				const configurationSnippets = adapter.configurationSnippets;
-				if (configurationSnippets && items.defaultSnippets) {
-					items.defaultSnippets.push(...configurationSnippets);
+				const configurAtionSnippets = AdApter.configurAtionSnippets;
+				if (configurAtionSnippets && items.defAultSnippets) {
+					items.defAultSnippets.push(...configurAtionSnippets);
 				}
 			});
 
-			this.setCompoundSchemaValues();
+			this.setCompoundSchemAVAlues();
 		});
 
-		breakpointsExtPoint.setHandler((extensions, delta) => {
-			delta.removed.forEach(removed => {
-				removed.value.forEach(breakpoints => this.breakpointModeIdsSet.delete(breakpoints.language));
+		breAkpointsExtPoint.setHAndler((extensions, deltA) => {
+			deltA.removed.forEAch(removed => {
+				removed.vAlue.forEAch(breAkpoints => this.breAkpointModeIdsSet.delete(breAkpoints.lAnguAge));
 			});
-			delta.added.forEach(added => {
-				added.value.forEach(breakpoints => this.breakpointModeIdsSet.add(breakpoints.language));
+			deltA.Added.forEAch(Added => {
+				Added.vAlue.forEAch(breAkpoints => this.breAkpointModeIdsSet.Add(breAkpoints.lAnguAge));
 			});
 		});
 
-		this.toDispose.push(Event.any<IWorkspaceFoldersChangeEvent | WorkbenchState>(this.contextService.onDidChangeWorkspaceFolders, this.contextService.onDidChangeWorkbenchState)(() => {
-			this.initLaunches();
-			this.selectConfiguration(undefined);
-			this.setCompoundSchemaValues();
+		this.toDispose.push(Event.Any<IWorkspAceFoldersChAngeEvent | WorkbenchStAte>(this.contextService.onDidChAngeWorkspAceFolders, this.contextService.onDidChAngeWorkbenchStAte)(() => {
+			this.initLAunches();
+			this.selectConfigurAtion(undefined);
+			this.setCompoundSchemAVAlues();
 		}));
-		this.toDispose.push(this.configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('launch')) {
-				// A change happen in the launch.json. If there is already a launch configuration selected, do not change the selection.
-				this.selectConfiguration(undefined);
-				this.setCompoundSchemaValues();
+		this.toDispose.push(this.configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('lAunch')) {
+				// A chAnge hAppen in the lAunch.json. If there is AlreAdy A lAunch configurAtion selected, do not chAnge the selection.
+				this.selectConfigurAtion(undefined);
+				this.setCompoundSchemAVAlues();
 			}
 		}));
 	}
 
-	private initLaunches(): void {
-		this.launches = this.contextService.getWorkspace().folders.map(folder => this.instantiationService.createInstance(Launch, this, folder));
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			this.launches.push(this.instantiationService.createInstance(WorkspaceLaunch, this));
+	privAte initLAunches(): void {
+		this.lAunches = this.contextService.getWorkspAce().folders.mAp(folder => this.instAntiAtionService.creAteInstAnce(LAunch, this, folder));
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			this.lAunches.push(this.instAntiAtionService.creAteInstAnce(WorkspAceLAunch, this));
 		}
-		this.launches.push(this.instantiationService.createInstance(UserLaunch, this));
+		this.lAunches.push(this.instAntiAtionService.creAteInstAnce(UserLAunch, this));
 
-		if (this.selectedLaunch && this.launches.indexOf(this.selectedLaunch) === -1) {
-			this.selectConfiguration(undefined);
+		if (this.selectedLAunch && this.lAunches.indexOf(this.selectedLAunch) === -1) {
+			this.selectConfigurAtion(undefined);
 		}
 	}
 
-	private setCompoundSchemaValues(): void {
-		const compoundConfigurationsSchema = (<IJSONSchema>launchSchema.properties!['compounds'].items).properties!['configurations'];
-		const launchNames = this.launches.map(l =>
-			l.getConfigurationNames(true)).reduce((first, second) => first.concat(second), []);
-		(<IJSONSchema>compoundConfigurationsSchema.items).oneOf![0].enum = launchNames;
-		(<IJSONSchema>compoundConfigurationsSchema.items).oneOf![1].properties!.name.enum = launchNames;
+	privAte setCompoundSchemAVAlues(): void {
+		const compoundConfigurAtionsSchemA = (<IJSONSchemA>lAunchSchemA.properties!['compounds'].items).properties!['configurAtions'];
+		const lAunchNAmes = this.lAunches.mAp(l =>
+			l.getConfigurAtionNAmes(true)).reduce((first, second) => first.concAt(second), []);
+		(<IJSONSchemA>compoundConfigurAtionsSchemA.items).oneOf![0].enum = lAunchNAmes;
+		(<IJSONSchemA>compoundConfigurAtionsSchemA.items).oneOf![1].properties!.nAme.enum = lAunchNAmes;
 
-		const folderNames = this.contextService.getWorkspace().folders.map(f => f.name);
-		(<IJSONSchema>compoundConfigurationsSchema.items).oneOf![1].properties!.folder.enum = folderNames;
+		const folderNAmes = this.contextService.getWorkspAce().folders.mAp(f => f.nAme);
+		(<IJSONSchemA>compoundConfigurAtionsSchemA.items).oneOf![1].properties!.folder.enum = folderNAmes;
 
-		jsonRegistry.registerSchema(launchSchemaId, launchSchema);
+		jsonRegistry.registerSchemA(lAunchSchemAId, lAunchSchemA);
 	}
 
-	getLaunches(): ILaunch[] {
-		return this.launches;
+	getLAunches(): ILAunch[] {
+		return this.lAunches;
 	}
 
-	getLaunch(workspaceUri: uri | undefined): ILaunch | undefined {
-		if (!uri.isUri(workspaceUri)) {
+	getLAunch(workspAceUri: uri | undefined): ILAunch | undefined {
+		if (!uri.isUri(workspAceUri)) {
 			return undefined;
 		}
 
-		return this.launches.find(l => l.workspace && l.workspace.uri.toString() === workspaceUri.toString());
+		return this.lAunches.find(l => l.workspAce && l.workspAce.uri.toString() === workspAceUri.toString());
 	}
 
-	get selectedConfiguration(): { launch: ILaunch | undefined, name: string | undefined, config: IConfig | undefined, type: string | undefined } {
+	get selectedConfigurAtion(): { lAunch: ILAunch | undefined, nAme: string | undefined, config: IConfig | undefined, type: string | undefined } {
 		return {
-			launch: this.selectedLaunch,
-			name: this.selectedName,
+			lAunch: this.selectedLAunch,
+			nAme: this.selectedNAme,
 			config: this.selectedConfig,
 			type: this.selectedType
 		};
 	}
 
-	get onDidSelectConfiguration(): Event<void> {
-		return this._onDidSelectConfigurationName.event;
+	get onDidSelectConfigurAtion(): Event<void> {
+		return this._onDidSelectConfigurAtionNAme.event;
 	}
 
-	getWorkspaceLaunch(): ILaunch | undefined {
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			return this.launches[this.launches.length - 1];
+	getWorkspAceLAunch(): ILAunch | undefined {
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			return this.lAunches[this.lAunches.length - 1];
 		}
 
 		return undefined;
 	}
 
-	async selectConfiguration(launch: ILaunch | undefined, name?: string, config?: IConfig, type?: string): Promise<void> {
-		if (typeof launch === 'undefined') {
-			const rootUri = this.historyService.getLastActiveWorkspaceRoot();
-			launch = this.getLaunch(rootUri);
-			if (!launch || launch.getConfigurationNames().length === 0) {
-				launch = this.launches.find(l => !!(l && l.getConfigurationNames().length)) || launch || this.launches[0];
+	Async selectConfigurAtion(lAunch: ILAunch | undefined, nAme?: string, config?: IConfig, type?: string): Promise<void> {
+		if (typeof lAunch === 'undefined') {
+			const rootUri = this.historyService.getLAstActiveWorkspAceRoot();
+			lAunch = this.getLAunch(rootUri);
+			if (!lAunch || lAunch.getConfigurAtionNAmes().length === 0) {
+				lAunch = this.lAunches.find(l => !!(l && l.getConfigurAtionNAmes().length)) || lAunch || this.lAunches[0];
 			}
 		}
 
-		const previousLaunch = this.selectedLaunch;
-		const previousName = this.selectedName;
-		this.selectedLaunch = launch;
+		const previousLAunch = this.selectedLAunch;
+		const previousNAme = this.selectedNAme;
+		this.selectedLAunch = lAunch;
 
-		if (this.selectedLaunch) {
-			this.storageService.store(DEBUG_SELECTED_ROOT, this.selectedLaunch.uri.toString(), StorageScope.WORKSPACE);
+		if (this.selectedLAunch) {
+			this.storAgeService.store(DEBUG_SELECTED_ROOT, this.selectedLAunch.uri.toString(), StorAgeScope.WORKSPACE);
 		} else {
-			this.storageService.remove(DEBUG_SELECTED_ROOT, StorageScope.WORKSPACE);
+			this.storAgeService.remove(DEBUG_SELECTED_ROOT, StorAgeScope.WORKSPACE);
 		}
 
-		const names = launch ? launch.getConfigurationNames() : [];
-		if ((name && names.indexOf(name) >= 0) || config) {
-			this.setSelectedLaunchName(name);
-		} else if (!this.selectedName || names.indexOf(this.selectedName) === -1) {
-			// We could not find the previously used name. We should get all dynamic configurations from providers
-			// And potentially auto select the previously used dynamic configuration #96293
-			const providers = await this.getDynamicProviders();
+		const nAmes = lAunch ? lAunch.getConfigurAtionNAmes() : [];
+		if ((nAme && nAmes.indexOf(nAme) >= 0) || config) {
+			this.setSelectedLAunchNAme(nAme);
+		} else if (!this.selectedNAme || nAmes.indexOf(this.selectedNAme) === -1) {
+			// We could not find the previously used nAme. We should get All dynAmic configurAtions from providers
+			// And potentiAlly Auto select the previously used dynAmic configurAtion #96293
+			const providers = AwAit this.getDynAmicProviders();
 			const provider = providers.find(p => p.provider && p.provider.type === type);
-			let nameToSet = names.length ? names[0] : undefined;
-			if (provider && launch && launch.workspace && provider.provider) {
-				const token = new CancellationTokenSource();
-				const dynamicConfigs = await provider.provider.provideDebugConfigurations!(launch.workspace.uri, token.token);
-				const dynamicConfig = dynamicConfigs.find(c => c.name === name);
-				if (dynamicConfig) {
-					config = dynamicConfig;
-					nameToSet = name;
+			let nAmeToSet = nAmes.length ? nAmes[0] : undefined;
+			if (provider && lAunch && lAunch.workspAce && provider.provider) {
+				const token = new CAncellAtionTokenSource();
+				const dynAmicConfigs = AwAit provider.provider.provideDebugConfigurAtions!(lAunch.workspAce.uri, token.token);
+				const dynAmicConfig = dynAmicConfigs.find(c => c.nAme === nAme);
+				if (dynAmicConfig) {
+					config = dynAmicConfig;
+					nAmeToSet = nAme;
 				}
 			}
 
-			this.setSelectedLaunchName(nameToSet);
+			this.setSelectedLAunchNAme(nAmeToSet);
 		}
 
 		this.selectedConfig = config;
 		this.selectedType = type || this.selectedConfig?.type;
-		this.storageService.store(DEBUG_SELECTED_TYPE, this.selectedType, StorageScope.WORKSPACE);
-		const configForType = this.selectedConfig || (this.selectedLaunch && this.selectedName ? this.selectedLaunch.getConfiguration(this.selectedName) : undefined);
+		this.storAgeService.store(DEBUG_SELECTED_TYPE, this.selectedType, StorAgeScope.WORKSPACE);
+		const configForType = this.selectedConfig || (this.selectedLAunch && this.selectedNAme ? this.selectedLAunch.getConfigurAtion(this.selectedNAme) : undefined);
 		if (configForType) {
-			this.debugConfigurationTypeContext.set(configForType.type);
+			this.debugConfigurAtionTypeContext.set(configForType.type);
 		} else {
-			this.debugConfigurationTypeContext.reset();
+			this.debugConfigurAtionTypeContext.reset();
 		}
 
-		if (this.selectedLaunch !== previousLaunch || this.selectedName !== previousName) {
-			this._onDidSelectConfigurationName.fire();
+		if (this.selectedLAunch !== previousLAunch || this.selectedNAme !== previousNAme) {
+			this._onDidSelectConfigurAtionNAme.fire();
 		}
 	}
 
-	canSetBreakpointsIn(model: ITextModel): boolean {
-		const modeId = model.getLanguageIdentifier().language;
+	cAnSetBreAkpointsIn(model: ITextModel): booleAn {
+		const modeId = model.getLAnguAgeIdentifier().lAnguAge;
 		if (!modeId || modeId === 'jsonc' || modeId === 'log') {
-			// do not allow breakpoints in our settings files and output
-			return false;
+			// do not Allow breAkpoints in our settings files And output
+			return fAlse;
 		}
-		if (this.configurationService.getValue<IDebugConfiguration>('debug').allowBreakpointsEverywhere) {
+		if (this.configurAtionService.getVAlue<IDebugConfigurAtion>('debug').AllowBreAkpointsEverywhere) {
 			return true;
 		}
 
-		return this.breakpointModeIdsSet.has(modeId);
+		return this.breAkpointModeIdsSet.hAs(modeId);
 	}
 
 	getDebugger(type: string): Debugger | undefined {
-		return this.debuggers.find(dbg => strings.equalsIgnoreCase(dbg.type, type));
+		return this.debuggers.find(dbg => strings.equAlsIgnoreCAse(dbg.type, type));
 	}
 
-	isDebuggerInterestedInLanguage(language: string): boolean {
-		return !!this.debuggers.find(a => language && a.languages && a.languages.indexOf(language) >= 0);
+	isDebuggerInterestedInLAnguAge(lAnguAge: string): booleAn {
+		return !!this.debuggers.find(A => lAnguAge && A.lAnguAges && A.lAnguAges.indexOf(lAnguAge) >= 0);
 	}
 
-	async guessDebugger(type?: string): Promise<Debugger | undefined> {
+	Async guessDebugger(type?: string): Promise<Debugger | undefined> {
 		if (type) {
-			const adapter = this.getDebugger(type);
-			return Promise.resolve(adapter);
+			const AdApter = this.getDebugger(type);
+			return Promise.resolve(AdApter);
 		}
 
-		const activeTextEditorControl = this.editorService.activeTextEditorControl;
-		let candidates: Debugger[] | undefined;
-		if (isCodeEditor(activeTextEditorControl)) {
-			const model = activeTextEditorControl.getModel();
-			const language = model ? model.getLanguageIdentifier().language : undefined;
-			const adapters = this.debuggers.filter(a => language && a.languages && a.languages.indexOf(language) >= 0);
-			if (adapters.length === 1) {
-				return adapters[0];
+		const ActiveTextEditorControl = this.editorService.ActiveTextEditorControl;
+		let cAndidAtes: Debugger[] | undefined;
+		if (isCodeEditor(ActiveTextEditorControl)) {
+			const model = ActiveTextEditorControl.getModel();
+			const lAnguAge = model ? model.getLAnguAgeIdentifier().lAnguAge : undefined;
+			const AdApters = this.debuggers.filter(A => lAnguAge && A.lAnguAges && A.lAnguAges.indexOf(lAnguAge) >= 0);
+			if (AdApters.length === 1) {
+				return AdApters[0];
 			}
-			if (adapters.length > 1) {
-				candidates = adapters;
+			if (AdApters.length > 1) {
+				cAndidAtes = AdApters;
 			}
 		}
 
-		if (!candidates) {
-			await this.activateDebuggers('onDebugInitialConfigurations');
-			candidates = this.debuggers.filter(dbg => dbg.hasInitialConfiguration() || dbg.hasConfigurationProvider());
+		if (!cAndidAtes) {
+			AwAit this.ActivAteDebuggers('onDebugInitiAlConfigurAtions');
+			cAndidAtes = this.debuggers.filter(dbg => dbg.hAsInitiAlConfigurAtion() || dbg.hAsConfigurAtionProvider());
 		}
 
-		candidates.sort((first, second) => first.label.localeCompare(second.label));
-		const picks = candidates.map(c => ({ label: c.label, debugger: c }));
-		return this.quickInputService.pick<{ label: string, debugger: Debugger | undefined }>([...picks, { type: 'separator' }, { label: nls.localize('more', "More..."), debugger: undefined }], { placeHolder: nls.localize('selectDebug', "Select Environment") })
+		cAndidAtes.sort((first, second) => first.lAbel.locAleCompAre(second.lAbel));
+		const picks = cAndidAtes.mAp(c => ({ lAbel: c.lAbel, debugger: c }));
+		return this.quickInputService.pick<{ lAbel: string, debugger: Debugger | undefined }>([...picks, { type: 'sepArAtor' }, { lAbel: nls.locAlize('more', "More..."), debugger: undefined }], { plAceHolder: nls.locAlize('selectDebug', "Select Environment") })
 			.then(picked => {
 				if (picked && picked.debugger) {
 					return picked.debugger;
 				}
 				if (picked) {
-					this.commandService.executeCommand('debug.installAdditionalDebuggers');
+					this.commAndService.executeCommAnd('debug.instAllAdditionAlDebuggers');
 				}
 				return undefined;
 			});
 	}
 
-	async activateDebuggers(activationEvent: string, debugType?: string): Promise<void> {
-		const promises: Promise<any>[] = [
-			this.extensionService.activateByEvent(activationEvent),
-			this.extensionService.activateByEvent('onDebug')
+	Async ActivAteDebuggers(ActivAtionEvent: string, debugType?: string): Promise<void> {
+		const promises: Promise<Any>[] = [
+			this.extensionService.ActivAteByEvent(ActivAtionEvent),
+			this.extensionService.ActivAteByEvent('onDebug')
 		];
 		if (debugType) {
-			promises.push(this.extensionService.activateByEvent(`${activationEvent}:${debugType}`));
+			promises.push(this.extensionService.ActivAteByEvent(`${ActivAtionEvent}:${debugType}`));
 		}
-		await Promise.all(promises);
+		AwAit Promise.All(promises);
 	}
 
-	private setSelectedLaunchName(selectedName: string | undefined): void {
-		this.selectedName = selectedName;
+	privAte setSelectedLAunchNAme(selectedNAme: string | undefined): void {
+		this.selectedNAme = selectedNAme;
 
-		if (this.selectedName) {
-			this.storageService.store(DEBUG_SELECTED_CONFIG_NAME_KEY, this.selectedName, StorageScope.WORKSPACE);
+		if (this.selectedNAme) {
+			this.storAgeService.store(DEBUG_SELECTED_CONFIG_NAME_KEY, this.selectedNAme, StorAgeScope.WORKSPACE);
 		} else {
-			this.storageService.remove(DEBUG_SELECTED_CONFIG_NAME_KEY, StorageScope.WORKSPACE);
+			this.storAgeService.remove(DEBUG_SELECTED_CONFIG_NAME_KEY, StorAgeScope.WORKSPACE);
 		}
 	}
 
@@ -657,212 +657,212 @@ export class ConfigurationManager implements IConfigurationManager {
 	}
 }
 
-abstract class AbstractLaunch {
-	protected abstract getConfig(): IGlobalConfig | undefined;
+AbstrAct clAss AbstrActLAunch {
+	protected AbstrAct getConfig(): IGlobAlConfig | undefined;
 
-	constructor(protected configurationManager: ConfigurationManager) {
+	constructor(protected configurAtionMAnAger: ConfigurAtionMAnAger) {
 	}
 
-	getCompound(name: string): ICompound | undefined {
+	getCompound(nAme: string): ICompound | undefined {
 		const config = this.getConfig();
 		if (!config || !config.compounds) {
 			return undefined;
 		}
 
-		return config.compounds.find(compound => compound.name === name);
+		return config.compounds.find(compound => compound.nAme === nAme);
 	}
 
-	getConfigurationNames(ignoreCompoundsAndPresentation = false): string[] {
+	getConfigurAtionNAmes(ignoreCompoundsAndPresentAtion = fAlse): string[] {
 		const config = this.getConfig();
-		if (!config || (!Array.isArray(config.configurations) && !Array.isArray(config.compounds))) {
+		if (!config || (!ArrAy.isArrAy(config.configurAtions) && !ArrAy.isArrAy(config.compounds))) {
 			return [];
 		} else {
-			const configurations: (IConfig | ICompound)[] = [];
-			if (config.configurations) {
-				configurations.push(...config.configurations.filter(cfg => cfg && typeof cfg.name === 'string'));
+			const configurAtions: (IConfig | ICompound)[] = [];
+			if (config.configurAtions) {
+				configurAtions.push(...config.configurAtions.filter(cfg => cfg && typeof cfg.nAme === 'string'));
 			}
 
-			if (ignoreCompoundsAndPresentation) {
-				return configurations.map(c => c.name);
+			if (ignoreCompoundsAndPresentAtion) {
+				return configurAtions.mAp(c => c.nAme);
 			}
 
 			if (config.compounds) {
-				configurations.push(...config.compounds.filter(compound => typeof compound.name === 'string' && compound.configurations && compound.configurations.length));
+				configurAtions.push(...config.compounds.filter(compound => typeof compound.nAme === 'string' && compound.configurAtions && compound.configurAtions.length));
 			}
-			return getVisibleAndSorted(configurations).map(c => c.name);
+			return getVisibleAndSorted(configurAtions).mAp(c => c.nAme);
 		}
 	}
 
-	getConfiguration(name: string): IConfig | undefined {
-		// We need to clone the configuration in order to be able to make changes to it #42198
+	getConfigurAtion(nAme: string): IConfig | undefined {
+		// We need to clone the configurAtion in order to be Able to mAke chAnges to it #42198
 		const config = objects.deepClone(this.getConfig());
-		if (!config || !config.configurations) {
+		if (!config || !config.configurAtions) {
 			return undefined;
 		}
 
-		return config.configurations.find(config => config && config.name === name);
+		return config.configurAtions.find(config => config && config.nAme === nAme);
 	}
 
-	async getInitialConfigurationContent(folderUri?: uri, type?: string, token?: CancellationToken): Promise<string> {
+	Async getInitiAlConfigurAtionContent(folderUri?: uri, type?: string, token?: CAncellAtionToken): Promise<string> {
 		let content = '';
-		const adapter = await this.configurationManager.guessDebugger(type);
-		if (adapter) {
-			const initialConfigs = await this.configurationManager.provideDebugConfigurations(folderUri, adapter.type, token || CancellationToken.None);
-			content = await adapter.getInitialConfigurationContent(initialConfigs);
+		const AdApter = AwAit this.configurAtionMAnAger.guessDebugger(type);
+		if (AdApter) {
+			const initiAlConfigs = AwAit this.configurAtionMAnAger.provideDebugConfigurAtions(folderUri, AdApter.type, token || CAncellAtionToken.None);
+			content = AwAit AdApter.getInitiAlConfigurAtionContent(initiAlConfigs);
 		}
 		return content;
 	}
 
-	get hidden(): boolean {
-		return false;
+	get hidden(): booleAn {
+		return fAlse;
 	}
 }
 
-class Launch extends AbstractLaunch implements ILaunch {
+clAss LAunch extends AbstrActLAunch implements ILAunch {
 
 	constructor(
-		configurationManager: ConfigurationManager,
-		public workspace: IWorkspaceFolder,
-		@IFileService private readonly fileService: IFileService,
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		configurAtionMAnAger: ConfigurAtionMAnAger,
+		public workspAce: IWorkspAceFolder,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@ITextFileService privAte reAdonly textFileService: ITextFileService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
-		super(configurationManager);
+		super(configurAtionMAnAger);
 	}
 
 	get uri(): uri {
-		return resources.joinPath(this.workspace.uri, '/.vscode/launch.json');
+		return resources.joinPAth(this.workspAce.uri, '/.vscode/lAunch.json');
 	}
 
-	get name(): string {
-		return this.workspace.name;
+	get nAme(): string {
+		return this.workspAce.nAme;
 	}
 
-	protected getConfig(): IGlobalConfig | undefined {
-		return this.configurationService.inspect<IGlobalConfig>('launch', { resource: this.workspace.uri }).workspaceFolderValue;
+	protected getConfig(): IGlobAlConfig | undefined {
+		return this.configurAtionService.inspect<IGlobAlConfig>('lAunch', { resource: this.workspAce.uri }).workspAceFolderVAlue;
 	}
 
-	async openConfigFile(preserveFocus: boolean, type?: string, token?: CancellationToken): Promise<{ editor: IEditorPane | null, created: boolean }> {
+	Async openConfigFile(preserveFocus: booleAn, type?: string, token?: CAncellAtionToken): Promise<{ editor: IEditorPAne | null, creAted: booleAn }> {
 		const resource = this.uri;
-		let created = false;
+		let creAted = fAlse;
 		let content = '';
 		try {
-			const fileContent = await this.fileService.readFile(resource);
-			content = fileContent.value.toString();
-		} catch {
-			// launch.json not found: create one by collecting launch configs from debugConfigProviders
-			content = await this.getInitialConfigurationContent(this.workspace.uri, type, token);
+			const fileContent = AwAit this.fileService.reAdFile(resource);
+			content = fileContent.vAlue.toString();
+		} cAtch {
+			// lAunch.json not found: creAte one by collecting lAunch configs from debugConfigProviders
+			content = AwAit this.getInitiAlConfigurAtionContent(this.workspAce.uri, type, token);
 			if (content) {
-				created = true; // pin only if config file is created #8727
+				creAted = true; // pin only if config file is creAted #8727
 				try {
-					await this.textFileService.write(resource, content);
-				} catch (error) {
-					throw new Error(nls.localize('DebugConfig.failed', "Unable to create 'launch.json' file inside the '.vscode' folder ({0}).", error.message));
+					AwAit this.textFileService.write(resource, content);
+				} cAtch (error) {
+					throw new Error(nls.locAlize('DebugConfig.fAiled', "UnAble to creAte 'lAunch.json' file inside the '.vscode' folder ({0}).", error.messAge));
 				}
 			}
 		}
 
 		if (content === '') {
-			return { editor: null, created: false };
+			return { editor: null, creAted: fAlse };
 		}
 
-		const index = content.indexOf(`"${this.configurationManager.selectedConfiguration.name}"`);
-		let startLineNumber = 1;
+		const index = content.indexOf(`"${this.configurAtionMAnAger.selectedConfigurAtion.nAme}"`);
+		let stArtLineNumber = 1;
 		for (let i = 0; i < index; i++) {
-			if (content.charAt(i) === '\n') {
-				startLineNumber++;
+			if (content.chArAt(i) === '\n') {
+				stArtLineNumber++;
 			}
 		}
-		const selection = startLineNumber > 1 ? { startLineNumber, startColumn: 4 } : undefined;
+		const selection = stArtLineNumber > 1 ? { stArtLineNumber, stArtColumn: 4 } : undefined;
 
-		const editor = await this.editorService.openEditor({
+		const editor = AwAit this.editorService.openEditor({
 			resource,
 			options: {
 				selection,
 				preserveFocus,
-				pinned: created,
-				revealIfVisible: true
+				pinned: creAted,
+				reveAlIfVisible: true
 			},
 		}, ACTIVE_GROUP);
 
 		return ({
 			editor: withUndefinedAsNull(editor),
-			created
+			creAted
 		});
 	}
 
-	async writeConfiguration(configuration: IConfig): Promise<void> {
+	Async writeConfigurAtion(configurAtion: IConfig): Promise<void> {
 		const fullConfig = objects.deepClone(this.getConfig()!);
-		if (!fullConfig.configurations) {
-			fullConfig.configurations = [];
+		if (!fullConfig.configurAtions) {
+			fullConfig.configurAtions = [];
 		}
-		fullConfig.configurations.push(configuration);
-		await this.configurationService.updateValue('launch', fullConfig, { resource: this.workspace.uri }, ConfigurationTarget.WORKSPACE_FOLDER);
+		fullConfig.configurAtions.push(configurAtion);
+		AwAit this.configurAtionService.updAteVAlue('lAunch', fullConfig, { resource: this.workspAce.uri }, ConfigurAtionTArget.WORKSPACE_FOLDER);
 	}
 }
 
-class WorkspaceLaunch extends AbstractLaunch implements ILaunch {
+clAss WorkspAceLAunch extends AbstrActLAunch implements ILAunch {
 	constructor(
-		configurationManager: ConfigurationManager,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
+		configurAtionMAnAger: ConfigurAtionMAnAger,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService
 	) {
-		super(configurationManager);
+		super(configurAtionMAnAger);
 	}
 
-	get workspace(): undefined {
+	get workspAce(): undefined {
 		return undefined;
 	}
 
 	get uri(): uri {
-		return this.contextService.getWorkspace().configuration!;
+		return this.contextService.getWorkspAce().configurAtion!;
 	}
 
-	get name(): string {
-		return nls.localize('workspace', "workspace");
+	get nAme(): string {
+		return nls.locAlize('workspAce', "workspAce");
 	}
 
-	protected getConfig(): IGlobalConfig | undefined {
-		return this.configurationService.inspect<IGlobalConfig>('launch').workspaceValue;
+	protected getConfig(): IGlobAlConfig | undefined {
+		return this.configurAtionService.inspect<IGlobAlConfig>('lAunch').workspAceVAlue;
 	}
 
-	async openConfigFile(preserveFocus: boolean, type?: string, token?: CancellationToken): Promise<{ editor: IEditorPane | null, created: boolean }> {
-		let launchExistInFile = !!this.getConfig();
-		if (!launchExistInFile) {
-			// Launch property in workspace config not found: create one by collecting launch configs from debugConfigProviders
-			let content = await this.getInitialConfigurationContent(undefined, type, token);
+	Async openConfigFile(preserveFocus: booleAn, type?: string, token?: CAncellAtionToken): Promise<{ editor: IEditorPAne | null, creAted: booleAn }> {
+		let lAunchExistInFile = !!this.getConfig();
+		if (!lAunchExistInFile) {
+			// LAunch property in workspAce config not found: creAte one by collecting lAunch configs from debugConfigProviders
+			let content = AwAit this.getInitiAlConfigurAtionContent(undefined, type, token);
 			if (content) {
-				await this.configurationService.updateValue('launch', json.parse(content), ConfigurationTarget.WORKSPACE);
+				AwAit this.configurAtionService.updAteVAlue('lAunch', json.pArse(content), ConfigurAtionTArget.WORKSPACE);
 			} else {
-				return { editor: null, created: false };
+				return { editor: null, creAted: fAlse };
 			}
 		}
 
-		const editor = await this.editorService.openEditor({
-			resource: this.contextService.getWorkspace().configuration!,
+		const editor = AwAit this.editorService.openEditor({
+			resource: this.contextService.getWorkspAce().configurAtion!,
 			options: { preserveFocus }
 		}, ACTIVE_GROUP);
 
 		return ({
 			editor: withUndefinedAsNull(editor),
-			created: false
+			creAted: fAlse
 		});
 	}
 }
 
-class UserLaunch extends AbstractLaunch implements ILaunch {
+clAss UserLAunch extends AbstrActLAunch implements ILAunch {
 
 	constructor(
-		configurationManager: ConfigurationManager,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IPreferencesService private readonly preferencesService: IPreferencesService
+		configurAtionMAnAger: ConfigurAtionMAnAger,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IPreferencesService privAte reAdonly preferencesService: IPreferencesService
 	) {
-		super(configurationManager);
+		super(configurAtionMAnAger);
 	}
 
-	get workspace(): undefined {
+	get workspAce(): undefined {
 		return undefined;
 	}
 
@@ -870,23 +870,23 @@ class UserLaunch extends AbstractLaunch implements ILaunch {
 		return this.preferencesService.userSettingsResource;
 	}
 
-	get name(): string {
-		return nls.localize('user settings', "user settings");
+	get nAme(): string {
+		return nls.locAlize('user settings', "user settings");
 	}
 
-	get hidden(): boolean {
+	get hidden(): booleAn {
 		return true;
 	}
 
-	protected getConfig(): IGlobalConfig | undefined {
-		return this.configurationService.inspect<IGlobalConfig>('launch').userValue;
+	protected getConfig(): IGlobAlConfig | undefined {
+		return this.configurAtionService.inspect<IGlobAlConfig>('lAunch').userVAlue;
 	}
 
-	async openConfigFile(preserveFocus: boolean): Promise<{ editor: IEditorPane | null, created: boolean }> {
-		const editor = await this.preferencesService.openGlobalSettings(true, { preserveFocus });
+	Async openConfigFile(preserveFocus: booleAn): Promise<{ editor: IEditorPAne | null, creAted: booleAn }> {
+		const editor = AwAit this.preferencesService.openGlobAlSettings(true, { preserveFocus });
 		return ({
 			editor: withUndefinedAsNull(editor),
-			created: false
+			creAted: fAlse
 		});
 	}
 }

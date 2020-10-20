@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken, ResponseError, ErrorCodes } from 'vscode-languageserver';
+import { CAncellAtionToken, ResponseError, ErrorCodes } from 'vscode-lAnguAgeserver';
 
-export function formatError(message: string, err: any): string {
-	if (err instanceof Error) {
+export function formAtError(messAge: string, err: Any): string {
+	if (err instAnceof Error) {
 		let error = <Error>err;
-		return `${message}: ${error.message}\n${error.stack}`;
+		return `${messAge}: ${error.messAge}\n${error.stAck}`;
 	} else if (typeof err === 'string') {
-		return `${message}: ${err}`;
+		return `${messAge}: ${err}`;
 	} else if (err) {
-		return `${message}: ${err.toString()}`;
+		return `${messAge}: ${err.toString()}`;
 	}
-	return message;
+	return messAge;
 }
 
-export function runSafeAsync<T>(func: () => Thenable<T>, errorVal: T, errorMessage: string, token: CancellationToken): Thenable<T | ResponseError<any>> {
-	return new Promise<T | ResponseError<any>>((resolve) => {
-		setImmediate(() => {
-			if (token.isCancellationRequested) {
-				resolve(cancelValue());
+export function runSAfeAsync<T>(func: () => ThenAble<T>, errorVAl: T, errorMessAge: string, token: CAncellAtionToken): ThenAble<T | ResponseError<Any>> {
+	return new Promise<T | ResponseError<Any>>((resolve) => {
+		setImmediAte(() => {
+			if (token.isCAncellAtionRequested) {
+				resolve(cAncelVAlue());
 			}
 			return func().then(result => {
-				if (token.isCancellationRequested) {
-					resolve(cancelValue());
+				if (token.isCAncellAtionRequested) {
+					resolve(cAncelVAlue());
 					return;
 				} else {
 					resolve(result);
 				}
 			}, e => {
-				console.error(formatError(errorMessage, e));
-				resolve(errorVal);
+				console.error(formAtError(errorMessAge, e));
+				resolve(errorVAl);
 			});
 		});
 	});
 }
 
-export function runSafe<T, E>(func: () => T, errorVal: T, errorMessage: string, token: CancellationToken): Thenable<T | ResponseError<E>> {
+export function runSAfe<T, E>(func: () => T, errorVAl: T, errorMessAge: string, token: CAncellAtionToken): ThenAble<T | ResponseError<E>> {
 	return new Promise<T | ResponseError<E>>((resolve) => {
-		setImmediate(() => {
-			if (token.isCancellationRequested) {
-				resolve(cancelValue());
+		setImmediAte(() => {
+			if (token.isCAncellAtionRequested) {
+				resolve(cAncelVAlue());
 			} else {
 				try {
 					let result = func();
-					if (token.isCancellationRequested) {
-						resolve(cancelValue());
+					if (token.isCAncellAtionRequested) {
+						resolve(cAncelVAlue());
 						return;
 					} else {
 						resolve(result);
 					}
 
-				} catch (e) {
-					console.error(formatError(errorMessage, e));
-					resolve(errorVal);
+				} cAtch (e) {
+					console.error(formAtError(errorMessAge, e));
+					resolve(errorVAl);
 				}
 			}
 		});
 	});
 }
 
-function cancelValue<E>() {
-	console.log('cancelled');
-	return new ResponseError<E>(ErrorCodes.RequestCancelled, 'Request cancelled');
+function cAncelVAlue<E>() {
+	console.log('cAncelled');
+	return new ResponseError<E>(ErrorCodes.RequestCAncelled, 'Request cAncelled');
 }

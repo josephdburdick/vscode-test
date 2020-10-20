@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import { ISequence, LcsDiff } from 'vs/base/common/diff/diff';
-import { hash } from 'vs/base/common/hash';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IRequestHandler } from 'vs/base/common/worker/simpleWorker';
-import * as model from 'vs/editor/common/model';
+import { ISequence, LcsDiff } from 'vs/bAse/common/diff/diff';
+import { hAsh } from 'vs/bAse/common/hAsh';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IRequestHAndler } from 'vs/bAse/common/worker/simpleWorker';
+import * As model from 'vs/editor/common/model';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
-import { CellKind, ICellDto2, IMainCellDto, INotebookDiffResult, IProcessedOutput, NotebookCellMetadata, NotebookCellsChangedEventDto, NotebookCellsChangeType, NotebookCellsSplice2, NotebookDataDto, NotebookDocumentMetadata } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { Range } from 'vs/editor/common/core/range';
+import { CellKind, ICellDto2, IMAinCellDto, INotebookDiffResult, IProcessedOutput, NotebookCellMetAdAtA, NotebookCellsChAngedEventDto, NotebookCellsChAngeType, NotebookCellsSplice2, NotebookDAtADto, NotebookDocumentMetAdAtA } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { EditorWorkerHost } from 'vs/workbench/contrib/notebook/common/services/notebookWorkerServiceImpl';
 
-class MirrorCell {
-	private _textBuffer!: model.IReadonlyTextBuffer;
+clAss MirrorCell {
+	privAte _textBuffer!: model.IReAdonlyTextBuffer;
 
 	get textBuffer() {
 		if (this._textBuffer) {
@@ -22,111 +22,111 @@ class MirrorCell {
 		}
 
 		const builder = new PieceTreeTextBufferBuilder();
-		builder.acceptChunk(Array.isArray(this._source) ? this._source.join('\n') : this._source);
-		const bufferFactory = builder.finish(true);
-		this._textBuffer = bufferFactory.create(model.DefaultEndOfLine.LF);
+		builder.AcceptChunk(ArrAy.isArrAy(this._source) ? this._source.join('\n') : this._source);
+		const bufferFActory = builder.finish(true);
+		this._textBuffer = bufferFActory.creAte(model.DefAultEndOfLine.LF);
 
 		return this._textBuffer;
 	}
 
-	private _primaryKey?: number | null = null;
-	primaryKey(): number | null {
-		if (this._primaryKey === undefined) {
-			this._primaryKey = hash(this.getValue());
+	privAte _primAryKey?: number | null = null;
+	primAryKey(): number | null {
+		if (this._primAryKey === undefined) {
+			this._primAryKey = hAsh(this.getVAlue());
 		}
 
-		return this._primaryKey;
+		return this._primAryKey;
 	}
 
-	private _hash: number | null = null;
+	privAte _hAsh: number | null = null;
 
 	constructor(
-		readonly handle: number,
-		private _source: string | string[],
-		public language: string,
+		reAdonly hAndle: number,
+		privAte _source: string | string[],
+		public lAnguAge: string,
 		public cellKind: CellKind,
 		public outputs: IProcessedOutput[],
-		public metadata?: NotebookCellMetadata
+		public metAdAtA?: NotebookCellMetAdAtA
 
 	) { }
 
-	getFullModelRange() {
+	getFullModelRAnge() {
 		const lineCount = this.textBuffer.getLineCount();
-		return new Range(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
+		return new RAnge(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
 	}
 
-	getValue(): string {
-		const fullRange = this.getFullModelRange();
+	getVAlue(): string {
+		const fullRAnge = this.getFullModelRAnge();
 		const eol = this.textBuffer.getEOL();
 		if (eol === '\n') {
-			return this.textBuffer.getValueInRange(fullRange, model.EndOfLinePreference.LF);
+			return this.textBuffer.getVAlueInRAnge(fullRAnge, model.EndOfLinePreference.LF);
 		} else {
-			return this.textBuffer.getValueInRange(fullRange, model.EndOfLinePreference.CRLF);
+			return this.textBuffer.getVAlueInRAnge(fullRAnge, model.EndOfLinePreference.CRLF);
 		}
 	}
 
-	getComparisonValue(): number {
-		if (this._primaryKey !== null) {
-			return this._primaryKey!;
+	getCompArisonVAlue(): number {
+		if (this._primAryKey !== null) {
+			return this._primAryKey!;
 		}
 
-		this._hash = hash([hash(this.getValue()), this.metadata]);
-		return this._hash;
+		this._hAsh = hAsh([hAsh(this.getVAlue()), this.metAdAtA]);
+		return this._hAsh;
 	}
 
-	getHashValue() {
-		if (this._hash !== null) {
-			return this._hash;
+	getHAshVAlue() {
+		if (this._hAsh !== null) {
+			return this._hAsh;
 		}
 
-		this._hash = hash([hash(this.getValue()), this.language, this.metadata]);
-		return this._hash;
+		this._hAsh = hAsh([hAsh(this.getVAlue()), this.lAnguAge, this.metAdAtA]);
+		return this._hAsh;
 	}
 }
 
-class MirrorNotebookDocument {
+clAss MirrorNotebookDocument {
 	constructor(
-		readonly uri: URI,
+		reAdonly uri: URI,
 		public cells: MirrorCell[],
-		public languages: string[],
-		public metadata: NotebookDocumentMetadata,
+		public lAnguAges: string[],
+		public metAdAtA: NotebookDocumentMetAdAtA,
 	) {
 	}
 
-	acceptModelChanged(event: NotebookCellsChangedEventDto) {
-		// note that the cell content change is not applied to the MirrorCell
-		// but it's fine as if a cell content is modified after the first diff, its position will not change any more
-		// TODO@rebornix, but it might lead to interesting bugs in the future.
-		event.rawEvents.forEach(e => {
-			if (e.kind === NotebookCellsChangeType.ModelChange) {
-				this._spliceNotebookCells(e.changes);
-			} else if (e.kind === NotebookCellsChangeType.Move) {
+	AcceptModelChAnged(event: NotebookCellsChAngedEventDto) {
+		// note thAt the cell content chAnge is not Applied to the MirrorCell
+		// but it's fine As if A cell content is modified After the first diff, its position will not chAnge Any more
+		// TODO@rebornix, but it might leAd to interesting bugs in the future.
+		event.rAwEvents.forEAch(e => {
+			if (e.kind === NotebookCellsChAngeType.ModelChAnge) {
+				this._spliceNotebookCells(e.chAnges);
+			} else if (e.kind === NotebookCellsChAngeType.Move) {
 				const cells = this.cells.splice(e.index, 1);
 				this.cells.splice(e.newIdx, 0, ...cells);
-			} else if (e.kind === NotebookCellsChangeType.Output) {
+			} else if (e.kind === NotebookCellsChAngeType.Output) {
 				const cell = this.cells[e.index];
 				cell.outputs = e.outputs;
-			} else if (e.kind === NotebookCellsChangeType.ChangeLanguage) {
+			} else if (e.kind === NotebookCellsChAngeType.ChAngeLAnguAge) {
 				const cell = this.cells[e.index];
-				cell.language = e.language;
-			} else if (e.kind === NotebookCellsChangeType.ChangeCellMetadata) {
+				cell.lAnguAge = e.lAnguAge;
+			} else if (e.kind === NotebookCellsChAngeType.ChAngeCellMetAdAtA) {
 				const cell = this.cells[e.index];
-				cell.metadata = e.metadata;
+				cell.metAdAtA = e.metAdAtA;
 			}
 		});
 	}
 
 	_spliceNotebookCells(splices: NotebookCellsSplice2[]) {
-		splices.reverse().forEach(splice => {
+		splices.reverse().forEAch(splice => {
 			const cellDtos = splice[2];
-			const newCells = cellDtos.map(cell => {
+			const newCells = cellDtos.mAp(cell => {
 				return new MirrorCell(
-					(cell as unknown as IMainCellDto).handle,
+					(cell As unknown As IMAinCellDto).hAndle,
 					cell.source,
-					cell.language,
+					cell.lAnguAge,
 					cell.cellKind,
 					cell.outputs,
-					cell.metadata
+					cell.metAdAtA
 				);
 			});
 
@@ -135,114 +135,114 @@ class MirrorNotebookDocument {
 	}
 }
 
-export class CellSequence implements ISequence {
+export clAss CellSequence implements ISequence {
 
-	constructor(readonly textModel: MirrorNotebookDocument) {
+	constructor(reAdonly textModel: MirrorNotebookDocument) {
 	}
 
-	getElements(): string[] | number[] | Int32Array {
-		const hashValue = new Int32Array(this.textModel.cells.length);
+	getElements(): string[] | number[] | Int32ArrAy {
+		const hAshVAlue = new Int32ArrAy(this.textModel.cells.length);
 		for (let i = 0; i < this.textModel.cells.length; i++) {
-			hashValue[i] = this.textModel.cells[i].getComparisonValue();
+			hAshVAlue[i] = this.textModel.cells[i].getCompArisonVAlue();
 		}
 
-		return hashValue;
+		return hAshVAlue;
 	}
 
-	getCellHash(cell: ICellDto2) {
-		const source = Array.isArray(cell.source) ? cell.source.join('\n') : cell.source;
-		const hashVal = hash([hash(source), cell.metadata]);
-		return hashVal;
+	getCellHAsh(cell: ICellDto2) {
+		const source = ArrAy.isArrAy(cell.source) ? cell.source.join('\n') : cell.source;
+		const hAshVAl = hAsh([hAsh(source), cell.metAdAtA]);
+		return hAshVAl;
 	}
 }
 
-export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable {
-	_requestHandlerBrand: any;
+export clAss NotebookEditorSimpleWorker implements IRequestHAndler, IDisposAble {
+	_requestHAndlerBrAnd: Any;
 
-	private _models: { [uri: string]: MirrorNotebookDocument; };
+	privAte _models: { [uri: string]: MirrorNotebookDocument; };
 
 	constructor() {
-		this._models = Object.create(null);
+		this._models = Object.creAte(null);
 	}
 	dispose(): void {
 	}
 
-	public acceptNewModel(uri: string, data: NotebookDataDto): void {
-		this._models[uri] = new MirrorNotebookDocument(URI.parse(uri), data.cells.map(dto => new MirrorCell(
-			(dto as unknown as IMainCellDto).handle,
+	public AcceptNewModel(uri: string, dAtA: NotebookDAtADto): void {
+		this._models[uri] = new MirrorNotebookDocument(URI.pArse(uri), dAtA.cells.mAp(dto => new MirrorCell(
+			(dto As unknown As IMAinCellDto).hAndle,
 			dto.source,
-			dto.language,
+			dto.lAnguAge,
 			dto.cellKind,
 			dto.outputs,
-			dto.metadata
-		)), data.languages, data.metadata);
+			dto.metAdAtA
+		)), dAtA.lAnguAges, dAtA.metAdAtA);
 	}
 
-	public acceptModelChanged(strURL: string, event: NotebookCellsChangedEventDto) {
+	public AcceptModelChAnged(strURL: string, event: NotebookCellsChAngedEventDto) {
 		const model = this._models[strURL];
 		if (model) {
-			model.acceptModelChanged(event);
+			model.AcceptModelChAnged(event);
 		}
 	}
 
-	public acceptRemovedModel(strURL: string): void {
+	public AcceptRemovedModel(strURL: string): void {
 		if (!this._models[strURL]) {
 			return;
 		}
 		delete this._models[strURL];
 	}
 
-	computeDiff(originalUrl: string, modifiedUrl: string): INotebookDiffResult {
-		const original = this._getModel(originalUrl);
+	computeDiff(originAlUrl: string, modifiedUrl: string): INotebookDiffResult {
+		const originAl = this._getModel(originAlUrl);
 		const modified = this._getModel(modifiedUrl);
 
-		const diff = new LcsDiff(new CellSequence(original), new CellSequence(modified));
-		const diffResult = diff.ComputeDiff(false);
+		const diff = new LcsDiff(new CellSequence(originAl), new CellSequence(modified));
+		const diffResult = diff.ComputeDiff(fAlse);
 
-		/* let cellLineChanges: { originalCellhandle: number, modifiedCellhandle: number, lineChanges: editorCommon.ILineChange[] }[] = [];
+		/* let cellLineChAnges: { originAlCellhAndle: number, modifiedCellhAndle: number, lineChAnges: editorCommon.ILineChAnge[] }[] = [];
 
-		diffResult.changes.forEach(change => {
-			if (change.modifiedLength === 0) {
+		diffResult.chAnges.forEAch(chAnge => {
+			if (chAnge.modifiedLength === 0) {
 				// deletion ...
 				return;
 			}
 
-			if (change.originalLength === 0) {
+			if (chAnge.originAlLength === 0) {
 				// insertion
 				return;
 			}
 
-			for (let i = 0, len = Math.min(change.modifiedLength, change.originalLength); i < len; i++) {
-				let originalIndex = change.originalStart + i;
-				let modifiedIndex = change.modifiedStart + i;
+			for (let i = 0, len = MAth.min(chAnge.modifiedLength, chAnge.originAlLength); i < len; i++) {
+				let originAlIndex = chAnge.originAlStArt + i;
+				let modifiedIndex = chAnge.modifiedStArt + i;
 
-				const originalCell = original.cells[originalIndex];
+				const originAlCell = originAl.cells[originAlIndex];
 				const modifiedCell = modified.cells[modifiedIndex];
 
-				if (originalCell.getValue() !== modifiedCell.getValue()) {
-					// console.log(`original cell ${originalIndex} content change`);
-					const originalLines = originalCell.textBuffer.getLinesContent();
+				if (originAlCell.getVAlue() !== modifiedCell.getVAlue()) {
+					// console.log(`originAl cell ${originAlIndex} content chAnge`);
+					const originAlLines = originAlCell.textBuffer.getLinesContent();
 					const modifiedLines = modifiedCell.textBuffer.getLinesContent();
-					const diffComputer = new DiffComputer(originalLines, modifiedLines, {
-						shouldComputeCharChanges: true,
-						shouldPostProcessCharChanges: true,
-						shouldIgnoreTrimWhitespace: false,
-						shouldMakePrettyDiff: true,
-						maxComputationTime: 5000
+					const diffComputer = new DiffComputer(originAlLines, modifiedLines, {
+						shouldComputeChArChAnges: true,
+						shouldPostProcessChArChAnges: true,
+						shouldIgnoreTrimWhitespAce: fAlse,
+						shouldMAkePrettyDiff: true,
+						mAxComputAtionTime: 5000
 					});
 
-					const lineChanges = diffComputer.computeDiff().changes;
+					const lineChAnges = diffComputer.computeDiff().chAnges;
 
-					cellLineChanges.push({
-						originalCellhandle: originalCell.handle,
-						modifiedCellhandle: modifiedCell.handle,
-						lineChanges
+					cellLineChAnges.push({
+						originAlCellhAndle: originAlCell.hAndle,
+						modifiedCellhAndle: modifiedCell.hAndle,
+						lineChAnges
 					});
 
-					// console.log(lineDecorations);
+					// console.log(lineDecorAtions);
 
 				} else {
-					// console.log(`original cell ${originalIndex} metadata change`);
+					// console.log(`originAl cell ${originAlIndex} metAdAtA chAnge`);
 				}
 
 			}
@@ -250,7 +250,7 @@ export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable 
  */
 		return {
 			cellsDiff: diffResult,
-			// linesDiff: cellLineChanges
+			// linesDiff: cellLineChAnges
 		};
 	}
 
@@ -260,10 +260,10 @@ export class NotebookEditorSimpleWorker implements IRequestHandler, IDisposable 
 }
 
 /**
- * Called on the worker side
- * @internal
+ * CAlled on the worker side
+ * @internAl
  */
-export function create(host: EditorWorkerHost): IRequestHandler {
+export function creAte(host: EditorWorkerHost): IRequestHAndler {
 	return new NotebookEditorSimpleWorker();
 }
 

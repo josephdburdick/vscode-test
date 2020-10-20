@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ProxyIdentifier, IRPCProtocol } from 'vs/workbench/services/extensions/common/proxyIdentifier';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IExtHostRpcService = createDecorator<IExtHostRpcService>('IExtHostRpcService');
+export const IExtHostRpcService = creAteDecorAtor<IExtHostRpcService>('IExtHostRpcService');
 
-export interface IExtHostRpcService extends IRPCProtocol {
-	readonly _serviceBrand: undefined;
+export interfAce IExtHostRpcService extends IRPCProtocol {
+	reAdonly _serviceBrAnd: undefined;
 }
 
-export class ExtHostRpcService implements IExtHostRpcService {
-	readonly _serviceBrand: undefined;
+export clAss ExtHostRpcService implements IExtHostRpcService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly getProxy: <T>(identifier: ProxyIdentifier<T>) => T;
-	readonly set: <T, R extends T> (identifier: ProxyIdentifier<T>, instance: R) => R;
-	readonly assertRegistered: (identifiers: ProxyIdentifier<any>[]) => void;
-	readonly drain: () => Promise<void>;
+	reAdonly getProxy: <T>(identifier: ProxyIdentifier<T>) => T;
+	reAdonly set: <T, R extends T> (identifier: ProxyIdentifier<T>, instAnce: R) => R;
+	reAdonly AssertRegistered: (identifiers: ProxyIdentifier<Any>[]) => void;
+	reAdonly drAin: () => Promise<void>;
 
 	constructor(rpcProtocol: IRPCProtocol) {
 		this.getProxy = rpcProtocol.getProxy.bind(rpcProtocol);
 		this.set = rpcProtocol.set.bind(rpcProtocol);
-		this.assertRegistered = rpcProtocol.assertRegistered.bind(rpcProtocol);
-		this.drain = rpcProtocol.drain.bind(rpcProtocol);
+		this.AssertRegistered = rpcProtocol.AssertRegistered.bind(rpcProtocol);
+		this.drAin = rpcProtocol.drAin.bind(rpcProtocol);
 	}
 }

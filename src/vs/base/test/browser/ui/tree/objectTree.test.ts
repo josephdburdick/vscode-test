@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ITreeNode, ITreeRenderer } from 'vs/base/browser/ui/tree/tree';
-import { IListVirtualDelegate, IIdentityProvider } from 'vs/base/browser/ui/list/list';
-import { ObjectTree, CompressibleObjectTree, ICompressibleTreeRenderer } from 'vs/base/browser/ui/tree/objectTree';
-import { ICompressedTreeNode } from 'vs/base/browser/ui/tree/compressedObjectTreeModel';
+import * As Assert from 'Assert';
+import { ITreeNode, ITreeRenderer } from 'vs/bAse/browser/ui/tree/tree';
+import { IListVirtuAlDelegAte, IIdentityProvider } from 'vs/bAse/browser/ui/list/list';
+import { ObjectTree, CompressibleObjectTree, ICompressibleTreeRenderer } from 'vs/bAse/browser/ui/tree/objectTree';
+import { ICompressedTreeNode } from 'vs/bAse/browser/ui/tree/compressedObjectTreeModel';
 
 suite('ObjectTree', function () {
-	suite('TreeNavigator', function () {
+	suite('TreeNAvigAtor', function () {
 		let tree: ObjectTree<number>;
 		let filter = (_: number) => true;
 
 		setup(() => {
-			const container = document.createElement('div');
-			container.style.width = '200px';
-			container.style.height = '200px';
+			const contAiner = document.creAteElement('div');
+			contAiner.style.width = '200px';
+			contAiner.style.height = '200px';
 
-			const delegate = new class implements IListVirtualDelegate<number> {
+			const delegAte = new clAss implements IListVirtuAlDelegAte<number> {
 				getHeight() { return 20; }
-				getTemplateId(): string { return 'default'; }
+				getTemplAteId(): string { return 'defAult'; }
 			};
 
-			const renderer = new class implements ITreeRenderer<number, void, HTMLElement> {
-				readonly templateId = 'default';
-				renderTemplate(container: HTMLElement): HTMLElement {
-					return container;
+			const renderer = new clAss implements ITreeRenderer<number, void, HTMLElement> {
+				reAdonly templAteId = 'defAult';
+				renderTemplAte(contAiner: HTMLElement): HTMLElement {
+					return contAiner;
 				}
-				renderElement(element: ITreeNode<number, void>, index: number, templateData: HTMLElement): void {
-					templateData.textContent = `${element.element}`;
+				renderElement(element: ITreeNode<number, void>, index: number, templAteDAtA: HTMLElement): void {
+					templAteDAtA.textContent = `${element.element}`;
 				}
-				disposeTemplate(): void { }
+				disposeTemplAte(): void { }
 			};
 
-			tree = new ObjectTree<number>('test', container, delegate, [renderer], { filter: { filter: (el) => filter(el) } });
-			tree.layout(200);
+			tree = new ObjectTree<number>('test', contAiner, delegAte, [renderer], { filter: { filter: (el) => filter(el) } });
+			tree.lAyout(200);
 		});
 
-		teardown(() => {
+		teArdown(() => {
 			tree.dispose();
 			filter = (_: number) => true;
 		});
 
-		test('should be able to navigate', () => {
+		test('should be Able to nAvigAte', () => {
 			tree.setChildren(null, [
 				{
 					element: 0, children: [
@@ -57,38 +57,38 @@ suite('ObjectTree', function () {
 				{ element: 2 }
 			]);
 
-			const navigator = tree.navigate();
+			const nAvigAtor = tree.nAvigAte();
 
-			assert.equal(navigator.current(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.current(), 0);
-			assert.equal(navigator.next(), 10);
-			assert.equal(navigator.current(), 10);
-			assert.equal(navigator.next(), 11);
-			assert.equal(navigator.current(), 11);
-			assert.equal(navigator.next(), 12);
-			assert.equal(navigator.current(), 12);
-			assert.equal(navigator.next(), 1);
-			assert.equal(navigator.current(), 1);
-			assert.equal(navigator.next(), 2);
-			assert.equal(navigator.current(), 2);
-			assert.equal(navigator.previous(), 1);
-			assert.equal(navigator.current(), 1);
-			assert.equal(navigator.previous(), 12);
-			assert.equal(navigator.previous(), 11);
-			assert.equal(navigator.previous(), 10);
-			assert.equal(navigator.previous(), 0);
-			assert.equal(navigator.previous(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.next(), 10);
-			assert.equal(navigator.first(), 0);
-			assert.equal(navigator.last(), 2);
+			Assert.equAl(nAvigAtor.current(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.current(), 0);
+			Assert.equAl(nAvigAtor.next(), 10);
+			Assert.equAl(nAvigAtor.current(), 10);
+			Assert.equAl(nAvigAtor.next(), 11);
+			Assert.equAl(nAvigAtor.current(), 11);
+			Assert.equAl(nAvigAtor.next(), 12);
+			Assert.equAl(nAvigAtor.current(), 12);
+			Assert.equAl(nAvigAtor.next(), 1);
+			Assert.equAl(nAvigAtor.current(), 1);
+			Assert.equAl(nAvigAtor.next(), 2);
+			Assert.equAl(nAvigAtor.current(), 2);
+			Assert.equAl(nAvigAtor.previous(), 1);
+			Assert.equAl(nAvigAtor.current(), 1);
+			Assert.equAl(nAvigAtor.previous(), 12);
+			Assert.equAl(nAvigAtor.previous(), 11);
+			Assert.equAl(nAvigAtor.previous(), 10);
+			Assert.equAl(nAvigAtor.previous(), 0);
+			Assert.equAl(nAvigAtor.previous(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.next(), 10);
+			Assert.equAl(nAvigAtor.first(), 0);
+			Assert.equAl(nAvigAtor.lAst(), 2);
 		});
 
-		test('should skip collapsed nodes', () => {
+		test('should skip collApsed nodes', () => {
 			tree.setChildren(null, [
 				{
-					element: 0, collapsed: true, children: [
+					element: 0, collApsed: true, children: [
 						{ element: 10 },
 						{ element: 11 },
 						{ element: 12 },
@@ -98,20 +98,20 @@ suite('ObjectTree', function () {
 				{ element: 2 }
 			]);
 
-			const navigator = tree.navigate();
+			const nAvigAtor = tree.nAvigAte();
 
-			assert.equal(navigator.current(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.next(), 1);
-			assert.equal(navigator.next(), 2);
-			assert.equal(navigator.next(), null);
-			assert.equal(navigator.previous(), 2);
-			assert.equal(navigator.previous(), 1);
-			assert.equal(navigator.previous(), 0);
-			assert.equal(navigator.previous(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.first(), 0);
-			assert.equal(navigator.last(), 2);
+			Assert.equAl(nAvigAtor.current(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.next(), 1);
+			Assert.equAl(nAvigAtor.next(), 2);
+			Assert.equAl(nAvigAtor.next(), null);
+			Assert.equAl(nAvigAtor.previous(), 2);
+			Assert.equAl(nAvigAtor.previous(), 1);
+			Assert.equAl(nAvigAtor.previous(), 0);
+			Assert.equAl(nAvigAtor.previous(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.first(), 0);
+			Assert.equAl(nAvigAtor.lAst(), 2);
 		});
 
 		test('should skip filtered elements', () => {
@@ -129,26 +129,26 @@ suite('ObjectTree', function () {
 				{ element: 2 }
 			]);
 
-			const navigator = tree.navigate();
+			const nAvigAtor = tree.nAvigAte();
 
-			assert.equal(navigator.current(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.next(), 10);
-			assert.equal(navigator.next(), 12);
-			assert.equal(navigator.next(), 2);
-			assert.equal(navigator.next(), null);
-			assert.equal(navigator.previous(), 2);
-			assert.equal(navigator.previous(), 12);
-			assert.equal(navigator.previous(), 10);
-			assert.equal(navigator.previous(), 0);
-			assert.equal(navigator.previous(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.next(), 10);
-			assert.equal(navigator.first(), 0);
-			assert.equal(navigator.last(), 2);
+			Assert.equAl(nAvigAtor.current(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.next(), 10);
+			Assert.equAl(nAvigAtor.next(), 12);
+			Assert.equAl(nAvigAtor.next(), 2);
+			Assert.equAl(nAvigAtor.next(), null);
+			Assert.equAl(nAvigAtor.previous(), 2);
+			Assert.equAl(nAvigAtor.previous(), 12);
+			Assert.equAl(nAvigAtor.previous(), 10);
+			Assert.equAl(nAvigAtor.previous(), 0);
+			Assert.equAl(nAvigAtor.previous(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.next(), 10);
+			Assert.equAl(nAvigAtor.first(), 0);
+			Assert.equAl(nAvigAtor.lAst(), 2);
 		});
 
-		test('should be able to start from node', () => {
+		test('should be Able to stArt from node', () => {
 			tree.setChildren(null, [
 				{
 					element: 0, children: [
@@ -161,110 +161,110 @@ suite('ObjectTree', function () {
 				{ element: 2 }
 			]);
 
-			const navigator = tree.navigate(1);
+			const nAvigAtor = tree.nAvigAte(1);
 
-			assert.equal(navigator.current(), 1);
-			assert.equal(navigator.next(), 2);
-			assert.equal(navigator.current(), 2);
-			assert.equal(navigator.previous(), 1);
-			assert.equal(navigator.current(), 1);
-			assert.equal(navigator.previous(), 12);
-			assert.equal(navigator.previous(), 11);
-			assert.equal(navigator.previous(), 10);
-			assert.equal(navigator.previous(), 0);
-			assert.equal(navigator.previous(), null);
-			assert.equal(navigator.next(), 0);
-			assert.equal(navigator.next(), 10);
-			assert.equal(navigator.first(), 0);
-			assert.equal(navigator.last(), 2);
+			Assert.equAl(nAvigAtor.current(), 1);
+			Assert.equAl(nAvigAtor.next(), 2);
+			Assert.equAl(nAvigAtor.current(), 2);
+			Assert.equAl(nAvigAtor.previous(), 1);
+			Assert.equAl(nAvigAtor.current(), 1);
+			Assert.equAl(nAvigAtor.previous(), 12);
+			Assert.equAl(nAvigAtor.previous(), 11);
+			Assert.equAl(nAvigAtor.previous(), 10);
+			Assert.equAl(nAvigAtor.previous(), 0);
+			Assert.equAl(nAvigAtor.previous(), null);
+			Assert.equAl(nAvigAtor.next(), 0);
+			Assert.equAl(nAvigAtor.next(), 10);
+			Assert.equAl(nAvigAtor.first(), 0);
+			Assert.equAl(nAvigAtor.lAst(), 2);
 		});
 	});
 
-	test('traits are preserved according to string identity', function () {
-		const container = document.createElement('div');
-		container.style.width = '200px';
-		container.style.height = '200px';
+	test('trAits Are preserved According to string identity', function () {
+		const contAiner = document.creAteElement('div');
+		contAiner.style.width = '200px';
+		contAiner.style.height = '200px';
 
-		const delegate = new class implements IListVirtualDelegate<number> {
+		const delegAte = new clAss implements IListVirtuAlDelegAte<number> {
 			getHeight() { return 20; }
-			getTemplateId(): string { return 'default'; }
+			getTemplAteId(): string { return 'defAult'; }
 		};
 
-		const renderer = new class implements ITreeRenderer<number, void, HTMLElement> {
-			readonly templateId = 'default';
-			renderTemplate(container: HTMLElement): HTMLElement {
-				return container;
+		const renderer = new clAss implements ITreeRenderer<number, void, HTMLElement> {
+			reAdonly templAteId = 'defAult';
+			renderTemplAte(contAiner: HTMLElement): HTMLElement {
+				return contAiner;
 			}
-			renderElement(element: ITreeNode<number, void>, index: number, templateData: HTMLElement): void {
-				templateData.textContent = `${element.element}`;
+			renderElement(element: ITreeNode<number, void>, index: number, templAteDAtA: HTMLElement): void {
+				templAteDAtA.textContent = `${element.element}`;
 			}
-			disposeTemplate(): void { }
+			disposeTemplAte(): void { }
 		};
 
-		const identityProvider = new class implements IIdentityProvider<number> {
+		const identityProvider = new clAss implements IIdentityProvider<number> {
 			getId(element: number): { toString(): string; } {
 				return `${element % 100}`;
 			}
 		};
 
-		const tree = new ObjectTree<number>('test', container, delegate, [renderer], { identityProvider });
-		tree.layout(200);
+		const tree = new ObjectTree<number>('test', contAiner, delegAte, [renderer], { identityProvider });
+		tree.lAyout(200);
 
 		tree.setChildren(null, [{ element: 0 }, { element: 1 }, { element: 2 }, { element: 3 }]);
 		tree.setFocus([1]);
-		assert.deepStrictEqual(tree.getFocus(), [1]);
+		Assert.deepStrictEquAl(tree.getFocus(), [1]);
 
 		tree.setChildren(null, [{ element: 100 }, { element: 101 }, { element: 102 }, { element: 103 }]);
-		assert.deepStrictEqual(tree.getFocus(), [101]);
+		Assert.deepStrictEquAl(tree.getFocus(), [101]);
 	});
 });
 
-function toArray(list: NodeList): Node[] {
+function toArrAy(list: NodeList): Node[] {
 	const result: Node[] = [];
-	list.forEach(node => result.push(node));
+	list.forEAch(node => result.push(node));
 	return result;
 }
 
 suite('CompressibleObjectTree', function () {
 
-	class Delegate implements IListVirtualDelegate<number> {
+	clAss DelegAte implements IListVirtuAlDelegAte<number> {
 		getHeight() { return 20; }
-		getTemplateId(): string { return 'default'; }
+		getTemplAteId(): string { return 'defAult'; }
 	}
 
-	class Renderer implements ICompressibleTreeRenderer<number, void, HTMLElement> {
-		readonly templateId = 'default';
-		renderTemplate(container: HTMLElement): HTMLElement {
-			return container;
+	clAss Renderer implements ICompressibleTreeRenderer<number, void, HTMLElement> {
+		reAdonly templAteId = 'defAult';
+		renderTemplAte(contAiner: HTMLElement): HTMLElement {
+			return contAiner;
 		}
-		renderElement(node: ITreeNode<number, void>, _: number, templateData: HTMLElement): void {
-			templateData.textContent = `${node.element}`;
+		renderElement(node: ITreeNode<number, void>, _: number, templAteDAtA: HTMLElement): void {
+			templAteDAtA.textContent = `${node.element}`;
 		}
-		renderCompressedElements(node: ITreeNode<ICompressedTreeNode<number>, void>, _: number, templateData: HTMLElement): void {
-			templateData.textContent = `${node.element.elements.join('/')}`;
+		renderCompressedElements(node: ITreeNode<ICompressedTreeNode<number>, void>, _: number, templAteDAtA: HTMLElement): void {
+			templAteDAtA.textContent = `${node.element.elements.join('/')}`;
 		}
-		disposeTemplate(): void { }
+		disposeTemplAte(): void { }
 	}
 
 	test('empty', function () {
-		const container = document.createElement('div');
-		container.style.width = '200px';
-		container.style.height = '200px';
+		const contAiner = document.creAteElement('div');
+		contAiner.style.width = '200px';
+		contAiner.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
-		tree.layout(200);
+		const tree = new CompressibleObjectTree<number>('test', contAiner, new DelegAte(), [new Renderer()]);
+		tree.lAyout(200);
 
-		const rows = toArray(container.querySelectorAll('.monaco-tl-contents'));
-		assert.equal(rows.length, 0);
+		const rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents'));
+		Assert.equAl(rows.length, 0);
 	});
 
 	test('simple', function () {
-		const container = document.createElement('div');
-		container.style.width = '200px';
-		container.style.height = '200px';
+		const contAiner = document.creAteElement('div');
+		contAiner.style.width = '200px';
+		contAiner.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
-		tree.layout(200);
+		const tree = new CompressibleObjectTree<number>('test', contAiner, new DelegAte(), [new Renderer()]);
+		tree.lAyout(200);
 
 		tree.setChildren(null, [
 			{
@@ -278,17 +278,17 @@ suite('CompressibleObjectTree', function () {
 			{ element: 2 }
 		]);
 
-		const rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['0', '10', '11', '12', '1', '2']);
+		const rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['0', '10', '11', '12', '1', '2']);
 	});
 
 	test('compressed', () => {
-		const container = document.createElement('div');
-		container.style.width = '200px';
-		container.style.height = '200px';
+		const contAiner = document.creAteElement('div');
+		contAiner.style.width = '200px';
+		contAiner.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
-		tree.layout(200);
+		const tree = new CompressibleObjectTree<number>('test', contAiner, new DelegAte(), [new Renderer()]);
+		tree.lAyout(200);
 
 		tree.setChildren(null, [
 			{
@@ -304,8 +304,8 @@ suite('CompressibleObjectTree', function () {
 			}
 		]);
 
-		let rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11/111', '1111', '1112', '1113']);
+		let rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11/111', '1111', '1112', '1113']);
 
 		tree.setChildren(11, [
 			{ element: 111 },
@@ -313,39 +313,39 @@ suite('CompressibleObjectTree', function () {
 			{ element: 113 },
 		]);
 
-		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11', '111', '112', '113']);
+		rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11', '111', '112', '113']);
 
 		tree.setChildren(113, [
 			{ element: 1131 }
 		]);
 
-		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11', '111', '112', '113/1131']);
+		rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11', '111', '112', '113/1131']);
 
 		tree.setChildren(1131, [
 			{ element: 1132 }
 		]);
 
-		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11', '111', '112', '113/1131/1132']);
+		rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11', '111', '112', '113/1131/1132']);
 
 		tree.setChildren(1131, [
 			{ element: 1132 },
 			{ element: 1133 },
 		]);
 
-		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11', '111', '112', '113/1131', '1132', '1133']);
+		rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11', '111', '112', '113/1131', '1132', '1133']);
 	});
 
-	test('enableCompression', () => {
-		const container = document.createElement('div');
-		container.style.width = '200px';
-		container.style.height = '200px';
+	test('enAbleCompression', () => {
+		const contAiner = document.creAteElement('div');
+		contAiner.style.width = '200px';
+		contAiner.style.height = '200px';
 
-		const tree = new CompressibleObjectTree<number>('test', container, new Delegate(), [new Renderer()]);
-		tree.layout(200);
+		const tree = new CompressibleObjectTree<number>('test', contAiner, new DelegAte(), [new Renderer()]);
+		tree.lAyout(200);
 
 		tree.setChildren(null, [
 			{
@@ -361,15 +361,15 @@ suite('CompressibleObjectTree', function () {
 			}
 		]);
 
-		let rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11/111', '1111', '1112', '1113']);
+		let rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11/111', '1111', '1112', '1113']);
 
-		tree.updateOptions({ compressionEnabled: false });
-		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1', '11', '111', '1111', '1112', '1113']);
+		tree.updAteOptions({ compressionEnAbled: fAlse });
+		rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1', '11', '111', '1111', '1112', '1113']);
 
-		tree.updateOptions({ compressionEnabled: true });
-		rows = toArray(container.querySelectorAll('.monaco-tl-contents')).map(row => row.textContent);
-		assert.deepEqual(rows, ['1/11/111', '1111', '1112', '1113']);
+		tree.updAteOptions({ compressionEnAbled: true });
+		rows = toArrAy(contAiner.querySelectorAll('.monAco-tl-contents')).mAp(row => row.textContent);
+		Assert.deepEquAl(rows, ['1/11/111', '1111', '1112', '1113']);
 	});
 });

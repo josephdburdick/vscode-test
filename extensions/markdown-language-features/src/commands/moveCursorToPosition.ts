@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-import { Command } from '../commandManager';
+import { CommAnd } from '../commAndMAnAger';
 
-export class MoveCursorToPositionCommand implements Command {
-	public readonly id = '_markdown.moveCursorToPosition';
+export clAss MoveCursorToPositionCommAnd implements CommAnd {
+	public reAdonly id = '_mArkdown.moveCursorToPosition';
 
-	public execute(line: number, character: number) {
-		if (!vscode.window.activeTextEditor) {
+	public execute(line: number, chArActer: number) {
+		if (!vscode.window.ActiveTextEditor) {
 			return;
 		}
-		const position = new vscode.Position(line, character);
+		const position = new vscode.Position(line, chArActer);
 		const selection = new vscode.Selection(position, position);
-		vscode.window.activeTextEditor.revealRange(selection);
-		vscode.window.activeTextEditor.selection = selection;
+		vscode.window.ActiveTextEditor.reveAlRAnge(selection);
+		vscode.window.ActiveTextEditor.selection = selection;
 	}
 }

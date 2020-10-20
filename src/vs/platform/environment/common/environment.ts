@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
 
-export const IEnvironmentService = createDecorator<IEnvironmentService>('environmentService');
-export const INativeEnvironmentService = createDecorator<INativeEnvironmentService>('nativeEnvironmentService');
+export const IEnvironmentService = creAteDecorAtor<IEnvironmentService>('environmentService');
+export const INAtiveEnvironmentService = creAteDecorAtor<INAtiveEnvironmentService>('nAtiveEnvironmentService');
 
-export interface IDebugParams {
+export interfAce IDebugPArAms {
 	port: number | null;
-	break: boolean;
+	breAk: booleAn;
 }
 
-export interface IExtensionHostDebugParams extends IDebugParams {
+export interfAce IExtensionHostDebugPArAms extends IDebugPArAms {
 	debugId?: string;
 }
 
 /**
- * A basic environment service that can be used in various processes,
- * such as main, renderer and shared process. Use subclasses of this
+ * A bAsic environment service thAt cAn be used in vArious processes,
+ * such As mAin, renderer And shAred process. Use subclAsses of this
  * service for specific environment.
  */
-export interface IEnvironmentService {
+export interfAce IEnvironmentService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//
@@ -39,41 +39,41 @@ export interface IEnvironmentService {
 	//
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	// --- user roaming data
-	userRoamingDataHome: URI;
+	// --- user roAming dAtA
+	userRoAmingDAtAHome: URI;
 	settingsResource: URI;
 	keybindingsResource: URI;
-	keyboardLayoutResource: URI;
-	argvResource: URI;
+	keyboArdLAyoutResource: URI;
+	ArgvResource: URI;
 	snippetsHome: URI;
 
-	// --- data paths
-	untitledWorkspacesHome: URI;
-	globalStorageHome: URI;
-	workspaceStorageHome: URI;
+	// --- dAtA pAths
+	untitledWorkspAcesHome: URI;
+	globAlStorAgeHome: URI;
+	workspAceStorAgeHome: URI;
 
 	// --- settings sync
-	userDataSyncHome: URI;
-	userDataSyncLogResource: URI;
+	userDAtASyncHome: URI;
+	userDAtASyncLogResource: URI;
 	sync: 'on' | 'off' | undefined;
 
 	// --- extension development
-	debugExtensionHost: IExtensionHostDebugParams;
-	isExtensionDevelopment: boolean;
-	disableExtensions: boolean | string[];
-	extensionDevelopmentLocationURI?: URI[];
-	extensionTestsLocationURI?: URI;
+	debugExtensionHost: IExtensionHostDebugPArAms;
+	isExtensionDevelopment: booleAn;
+	disAbleExtensions: booleAn | string[];
+	extensionDevelopmentLocAtionURI?: URI[];
+	extensionTestsLocAtionURI?: URI;
 
 	// --- logging
-	logsPath: string;
+	logsPAth: string;
 	logLevel?: string;
-	verbose: boolean;
-	isBuilt: boolean;
+	verbose: booleAn;
+	isBuilt: booleAn;
 
 	// --- telemetry
-	disableTelemetry: boolean;
+	disAbleTelemetry: booleAn;
 	telemetryLogResource: URI;
-	serviceMachineIdResource: URI;
+	serviceMAchineIdResource: URI;
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//
@@ -88,10 +88,10 @@ export interface IEnvironmentService {
 }
 
 /**
- * A subclass of the `IEnvironmentService` to be used only in native
- * environments (Windows, Linux, macOS) but not e.g. web.
+ * A subclAss of the `IEnvironmentService` to be used only in nAtive
+ * environments (Windows, Linux, mAcOS) but not e.g. web.
  */
-export interface INativeEnvironmentService extends IEnvironmentService {
+export interfAce INAtiveEnvironmentService extends IEnvironmentService {
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//
@@ -104,27 +104,27 @@ export interface INativeEnvironmentService extends IEnvironmentService {
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	// --- CLI Arguments
-	args: NativeParsedArgs;
+	Args: NAtivePArsedArgs;
 
-	// --- paths
-	appRoot: string;
+	// --- pAths
+	AppRoot: string;
 	userHome: URI;
-	appSettingsHome: URI;
+	AppSettingsHome: URI;
 	tmpDir: URI;
-	userDataPath: string;
-	machineSettingsResource: URI;
-	installSourcePath: string;
+	userDAtAPAth: string;
+	mAchineSettingsResource: URI;
+	instAllSourcePAth: string;
 
-	// --- IPC Handles
-	sharedIPCHandle: string;
+	// --- IPC HAndles
+	shAredIPCHAndle: string;
 
 	// --- Extensions
-	extensionsPath?: string;
-	extensionsDownloadPath: string;
-	builtinExtensionsPath: string;
+	extensionsPAth?: string;
+	extensionsDownloAdPAth: string;
+	builtinExtensionsPAth: string;
 
 	// --- Smoke test support
-	driverHandle?: string;
+	driverHAndle?: string;
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//

@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { isEqual } from 'vs/base/common/extpath';
-import { posix } from 'vs/base/common/path';
-import { ResourceMap } from 'vs/base/common/map';
-import { IFileStat, IFileService, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
-import { rtrim, startsWithIgnoreCase, equalsIgnoreCase } from 'vs/base/common/strings';
-import { coalesce } from 'vs/base/common/arrays';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { memoize } from 'vs/base/common/decorators';
-import { Emitter, Event } from 'vs/base/common/event';
-import { joinPath, isEqualOrParent, basenameOrAuthority } from 'vs/base/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { isEquAl } from 'vs/bAse/common/extpAth';
+import { posix } from 'vs/bAse/common/pAth';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { IFileStAt, IFileService, FileSystemProviderCApAbilities } from 'vs/plAtform/files/common/files';
+import { rtrim, stArtsWithIgnoreCAse, equAlsIgnoreCAse } from 'vs/bAse/common/strings';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { joinPAth, isEquAlOrPArent, bAsenAmeOrAuthority } from 'vs/bAse/common/resources';
 import { SortOrder } from 'vs/workbench/contrib/files/common/files';
 
-export class ExplorerModel implements IDisposable {
+export clAss ExplorerModel implements IDisposAble {
 
-	private _roots!: ExplorerItem[];
-	private _listener: IDisposable;
-	private readonly _onDidChangeRoots = new Emitter<void>();
+	privAte _roots!: ExplorerItem[];
+	privAte _listener: IDisposAble;
+	privAte reAdonly _onDidChAngeRoots = new Emitter<void>();
 
 	constructor(
-		private readonly contextService: IWorkspaceContextService,
+		privAte reAdonly contextService: IWorkspAceContextService,
 		fileService: IFileService
 	) {
-		const setRoots = () => this._roots = this.contextService.getWorkspace().folders
-			.map(folder => new ExplorerItem(folder.uri, fileService, undefined, true, false, folder.name));
+		const setRoots = () => this._roots = this.contextService.getWorkspAce().folders
+			.mAp(folder => new ExplorerItem(folder.uri, fileService, undefined, true, fAlse, folder.nAme));
 		setRoots();
 
-		this._listener = this.contextService.onDidChangeWorkspaceFolders(() => {
+		this._listener = this.contextService.onDidChAngeWorkspAceFolders(() => {
 			setRoots();
-			this._onDidChangeRoots.fire();
+			this._onDidChAngeRoots.fire();
 		});
 	}
 
@@ -41,26 +41,26 @@ export class ExplorerModel implements IDisposable {
 		return this._roots;
 	}
 
-	get onDidChangeRoots(): Event<void> {
-		return this._onDidChangeRoots.event;
+	get onDidChAngeRoots(): Event<void> {
+		return this._onDidChAngeRoots.event;
 	}
 
 	/**
-	 * Returns an array of child stat from this stat that matches with the provided path.
-	 * Starts matching from the first root.
-	 * Will return empty array in case the FileStat does not exist.
+	 * Returns An ArrAy of child stAt from this stAt thAt mAtches with the provided pAth.
+	 * StArts mAtching from the first root.
+	 * Will return empty ArrAy in cAse the FileStAt does not exist.
 	 */
 	findAll(resource: URI): ExplorerItem[] {
-		return coalesce(this.roots.map(root => root.find(resource)));
+		return coAlesce(this.roots.mAp(root => root.find(resource)));
 	}
 
 	/**
-	 * Returns a FileStat that matches the passed resource.
-	 * In case multiple FileStat are matching the resource (same folder opened multiple times) returns the FileStat that has the closest root.
-	 * Will return undefined in case the FileStat does not exist.
+	 * Returns A FileStAt thAt mAtches the pAssed resource.
+	 * In cAse multiple FileStAt Are mAtching the resource (sAme folder opened multiple times) returns the FileStAt thAt hAs the closest root.
+	 * Will return undefined in cAse the FileStAt does not exist.
 	 */
 	findClosest(resource: URI): ExplorerItem | null {
-		const folder = this.contextService.getWorkspaceFolder(resource);
+		const folder = this.contextService.getWorkspAceFolder(resource);
 		if (folder) {
 			const root = this.roots.find(r => r.resource.toString() === folder.uri.toString());
 			if (root) {
@@ -76,91 +76,91 @@ export class ExplorerModel implements IDisposable {
 	}
 }
 
-export class ExplorerItem {
-	protected _isDirectoryResolved: boolean;
-	public isError = false;
-	private _isExcluded = false;
+export clAss ExplorerItem {
+	protected _isDirectoryResolved: booleAn;
+	public isError = fAlse;
+	privAte _isExcluded = fAlse;
 
 	constructor(
 		public resource: URI,
-		private readonly fileService: IFileService,
-		private _parent: ExplorerItem | undefined,
-		private _isDirectory?: boolean,
-		private _isSymbolicLink?: boolean,
-		private _name: string = basenameOrAuthority(resource),
-		private _mtime?: number,
-		private _unknown = false
+		privAte reAdonly fileService: IFileService,
+		privAte _pArent: ExplorerItem | undefined,
+		privAte _isDirectory?: booleAn,
+		privAte _isSymbolicLink?: booleAn,
+		privAte _nAme: string = bAsenAmeOrAuthority(resource),
+		privAte _mtime?: number,
+		privAte _unknown = fAlse
 	) {
-		this._isDirectoryResolved = false;
+		this._isDirectoryResolved = fAlse;
 	}
 
-	get isExcluded(): boolean {
+	get isExcluded(): booleAn {
 		if (this._isExcluded) {
 			return true;
 		}
-		if (!this._parent) {
-			return false;
+		if (!this._pArent) {
+			return fAlse;
 		}
 
-		return this._parent.isExcluded;
+		return this._pArent.isExcluded;
 	}
 
-	set isExcluded(value: boolean) {
-		this._isExcluded = value;
+	set isExcluded(vAlue: booleAn) {
+		this._isExcluded = vAlue;
 	}
 
-	get isDirectoryResolved(): boolean {
+	get isDirectoryResolved(): booleAn {
 		return this._isDirectoryResolved;
 	}
 
-	get isSymbolicLink(): boolean {
+	get isSymbolicLink(): booleAn {
 		return !!this._isSymbolicLink;
 	}
 
-	get isDirectory(): boolean {
+	get isDirectory(): booleAn {
 		return !!this._isDirectory;
 	}
 
-	get isReadonly(): boolean {
-		return this.fileService.hasCapability(this.resource, FileSystemProviderCapabilities.Readonly);
+	get isReAdonly(): booleAn {
+		return this.fileService.hAsCApAbility(this.resource, FileSystemProviderCApAbilities.ReAdonly);
 	}
 
 	get mtime(): number | undefined {
 		return this._mtime;
 	}
 
-	get name(): string {
-		return this._name;
+	get nAme(): string {
+		return this._nAme;
 	}
 
-	get isUnknown(): boolean {
+	get isUnknown(): booleAn {
 		return this._unknown;
 	}
 
-	get parent(): ExplorerItem | undefined {
-		return this._parent;
+	get pArent(): ExplorerItem | undefined {
+		return this._pArent;
 	}
 
 	get root(): ExplorerItem {
-		if (!this._parent) {
+		if (!this._pArent) {
 			return this;
 		}
 
-		return this._parent.root;
+		return this._pArent.root;
 	}
 
-	@memoize get children(): Map<string, ExplorerItem> {
-		return new Map<string, ExplorerItem>();
+	@memoize get children(): MAp<string, ExplorerItem> {
+		return new MAp<string, ExplorerItem>();
 	}
 
-	private updateName(value: string): void {
-		// Re-add to parent since the parent has a name map to children and the name might have changed
-		if (this._parent) {
-			this._parent.removeChild(this);
+	privAte updAteNAme(vAlue: string): void {
+		// Re-Add to pArent since the pArent hAs A nAme mAp to children And the nAme might hAve chAnged
+		if (this._pArent) {
+			this._pArent.removeChild(this);
 		}
-		this._name = value;
-		if (this._parent) {
-			this._parent.addChild(this);
+		this._nAme = vAlue;
+		if (this._pArent) {
+			this._pArent.AddChild(this);
 		}
 	}
 
@@ -168,122 +168,122 @@ export class ExplorerItem {
 		return this.resource.toString();
 	}
 
-	get isRoot(): boolean {
+	get isRoot(): booleAn {
 		return this === this.root;
 	}
 
-	static create(fileService: IFileService, raw: IFileStat, parent: ExplorerItem | undefined, resolveTo?: readonly URI[]): ExplorerItem {
-		const stat = new ExplorerItem(raw.resource, fileService, parent, raw.isDirectory, raw.isSymbolicLink, raw.name, raw.mtime, !raw.isFile && !raw.isDirectory);
+	stAtic creAte(fileService: IFileService, rAw: IFileStAt, pArent: ExplorerItem | undefined, resolveTo?: reAdonly URI[]): ExplorerItem {
+		const stAt = new ExplorerItem(rAw.resource, fileService, pArent, rAw.isDirectory, rAw.isSymbolicLink, rAw.nAme, rAw.mtime, !rAw.isFile && !rAw.isDirectory);
 
-		// Recursively add children if present
-		if (stat.isDirectory) {
+		// Recursively Add children if present
+		if (stAt.isDirectory) {
 
-			// isDirectoryResolved is a very important indicator in the stat model that tells if the folder was fully resolved
-			// the folder is fully resolved if either it has a list of children or the client requested this by using the resolveTo
-			// array of resource path to resolve.
-			stat._isDirectoryResolved = !!raw.children || (!!resolveTo && resolveTo.some((r) => {
-				return isEqualOrParent(r, stat.resource);
+			// isDirectoryResolved is A very importAnt indicAtor in the stAt model thAt tells if the folder wAs fully resolved
+			// the folder is fully resolved if either it hAs A list of children or the client requested this by using the resolveTo
+			// ArrAy of resource pAth to resolve.
+			stAt._isDirectoryResolved = !!rAw.children || (!!resolveTo && resolveTo.some((r) => {
+				return isEquAlOrPArent(r, stAt.resource);
 			}));
 
 			// Recurse into children
-			if (raw.children) {
-				for (let i = 0, len = raw.children.length; i < len; i++) {
-					const child = ExplorerItem.create(fileService, raw.children[i], stat, resolveTo);
-					stat.addChild(child);
+			if (rAw.children) {
+				for (let i = 0, len = rAw.children.length; i < len; i++) {
+					const child = ExplorerItem.creAte(fileService, rAw.children[i], stAt, resolveTo);
+					stAt.AddChild(child);
 				}
 			}
 		}
 
-		return stat;
+		return stAt;
 	}
 
 	/**
-	 * Merges the stat which was resolved from the disk with the local stat by copying over properties
-	 * and children. The merge will only consider resolved stat elements to avoid overwriting data which
-	 * exists locally.
+	 * Merges the stAt which wAs resolved from the disk with the locAl stAt by copying over properties
+	 * And children. The merge will only consider resolved stAt elements to Avoid overwriting dAtA which
+	 * exists locAlly.
 	 */
-	static mergeLocalWithDisk(disk: ExplorerItem, local: ExplorerItem): void {
-		if (disk.resource.toString() !== local.resource.toString()) {
-			return; // Merging only supported for stats with the same resource
+	stAtic mergeLocAlWithDisk(disk: ExplorerItem, locAl: ExplorerItem): void {
+		if (disk.resource.toString() !== locAl.resource.toString()) {
+			return; // Merging only supported for stAts with the sAme resource
 		}
 
-		// Stop merging when a folder is not resolved to avoid loosing local data
-		const mergingDirectories = disk.isDirectory || local.isDirectory;
-		if (mergingDirectories && local._isDirectoryResolved && !disk._isDirectoryResolved) {
+		// Stop merging when A folder is not resolved to Avoid loosing locAl dAtA
+		const mergingDirectories = disk.isDirectory || locAl.isDirectory;
+		if (mergingDirectories && locAl._isDirectoryResolved && !disk._isDirectoryResolved) {
 			return;
 		}
 
 		// Properties
-		local.resource = disk.resource;
-		if (!local.isRoot) {
-			local.updateName(disk.name);
+		locAl.resource = disk.resource;
+		if (!locAl.isRoot) {
+			locAl.updAteNAme(disk.nAme);
 		}
-		local._isDirectory = disk.isDirectory;
-		local._mtime = disk.mtime;
-		local._isDirectoryResolved = disk._isDirectoryResolved;
-		local._isSymbolicLink = disk.isSymbolicLink;
-		local.isError = disk.isError;
+		locAl._isDirectory = disk.isDirectory;
+		locAl._mtime = disk.mtime;
+		locAl._isDirectoryResolved = disk._isDirectoryResolved;
+		locAl._isSymbolicLink = disk.isSymbolicLink;
+		locAl.isError = disk.isError;
 
 		// Merge Children if resolved
 		if (mergingDirectories && disk._isDirectoryResolved) {
 
-			// Map resource => stat
-			const oldLocalChildren = new ResourceMap<ExplorerItem>();
-			local.children.forEach(child => {
-				oldLocalChildren.set(child.resource, child);
+			// MAp resource => stAt
+			const oldLocAlChildren = new ResourceMAp<ExplorerItem>();
+			locAl.children.forEAch(child => {
+				oldLocAlChildren.set(child.resource, child);
 			});
 
-			// Clear current children
-			local.children.clear();
+			// CleAr current children
+			locAl.children.cleAr();
 
 			// Merge received children
-			disk.children.forEach(diskChild => {
-				const formerLocalChild = oldLocalChildren.get(diskChild.resource);
+			disk.children.forEAch(diskChild => {
+				const formerLocAlChild = oldLocAlChildren.get(diskChild.resource);
 				// Existing child: merge
-				if (formerLocalChild) {
-					ExplorerItem.mergeLocalWithDisk(diskChild, formerLocalChild);
-					local.addChild(formerLocalChild);
-					oldLocalChildren.delete(diskChild.resource);
+				if (formerLocAlChild) {
+					ExplorerItem.mergeLocAlWithDisk(diskChild, formerLocAlChild);
+					locAl.AddChild(formerLocAlChild);
+					oldLocAlChildren.delete(diskChild.resource);
 				}
 
-				// New child: add
+				// New child: Add
 				else {
-					local.addChild(diskChild);
+					locAl.AddChild(diskChild);
 				}
 			});
 
-			oldLocalChildren.forEach(oldChild => {
-				if (oldChild instanceof NewExplorerItem) {
-					local.addChild(oldChild);
+			oldLocAlChildren.forEAch(oldChild => {
+				if (oldChild instAnceof NewExplorerItem) {
+					locAl.AddChild(oldChild);
 				}
 			});
 		}
 	}
 
 	/**
-	 * Adds a child element to this folder.
+	 * Adds A child element to this folder.
 	 */
-	addChild(child: ExplorerItem): void {
-		// Inherit some parent properties to child
-		child._parent = this;
-		child.updateResource(false);
-		this.children.set(this.getPlatformAwareName(child.name), child);
+	AddChild(child: ExplorerItem): void {
+		// Inherit some pArent properties to child
+		child._pArent = this;
+		child.updAteResource(fAlse);
+		this.children.set(this.getPlAtformAwAreNAme(child.nAme), child);
 	}
 
-	getChild(name: string): ExplorerItem | undefined {
-		return this.children.get(this.getPlatformAwareName(name));
+	getChild(nAme: string): ExplorerItem | undefined {
+		return this.children.get(this.getPlAtformAwAreNAme(nAme));
 	}
 
-	async fetchChildren(sortOrder: SortOrder): Promise<ExplorerItem[]> {
+	Async fetchChildren(sortOrder: SortOrder): Promise<ExplorerItem[]> {
 		if (!this._isDirectoryResolved) {
-			// Resolve metadata only when the mtime is needed since this can be expensive
+			// Resolve metAdAtA only when the mtime is needed since this cAn be expensive
 			// Mtime is only used when the sort order is 'modified'
-			const resolveMetadata = sortOrder === SortOrder.Modified;
+			const resolveMetAdAtA = sortOrder === SortOrder.Modified;
 			try {
-				const stat = await this.fileService.resolve(this.resource, { resolveSingleChildDescendants: true, resolveMetadata });
-				const resolved = ExplorerItem.create(this.fileService, stat, this);
-				ExplorerItem.mergeLocalWithDisk(resolved, this);
-			} catch (e) {
+				const stAt = AwAit this.fileService.resolve(this.resource, { resolveSingleChildDescendAnts: true, resolveMetAdAtA });
+				const resolved = ExplorerItem.creAte(this.fileService, stAt, this);
+				ExplorerItem.mergeLocAlWithDisk(resolved, this);
+			} cAtch (e) {
 				this.isError = true;
 				throw e;
 			}
@@ -291,7 +291,7 @@ export class ExplorerItem {
 		}
 
 		const items: ExplorerItem[] = [];
-		this.children.forEach(child => {
+		this.children.forEAch(child => {
 			items.push(child);
 		});
 
@@ -299,101 +299,101 @@ export class ExplorerItem {
 	}
 
 	/**
-	 * Removes a child element from this folder.
+	 * Removes A child element from this folder.
 	 */
 	removeChild(child: ExplorerItem): void {
-		this.children.delete(this.getPlatformAwareName(child.name));
+		this.children.delete(this.getPlAtformAwAreNAme(child.nAme));
 	}
 
 	forgetChildren(): void {
-		this.children.clear();
-		this._isDirectoryResolved = false;
+		this.children.cleAr();
+		this._isDirectoryResolved = fAlse;
 	}
 
-	private getPlatformAwareName(name: string): string {
-		return this.fileService.hasCapability(this.resource, FileSystemProviderCapabilities.PathCaseSensitive) ? name : name.toLowerCase();
+	privAte getPlAtformAwAreNAme(nAme: string): string {
+		return this.fileService.hAsCApAbility(this.resource, FileSystemProviderCApAbilities.PAthCAseSensitive) ? nAme : nAme.toLowerCAse();
 	}
 
 	/**
-	 * Moves this element under a new parent element.
+	 * Moves this element under A new pArent element.
 	 */
-	move(newParent: ExplorerItem): void {
-		if (this._parent) {
-			this._parent.removeChild(this);
+	move(newPArent: ExplorerItem): void {
+		if (this._pArent) {
+			this._pArent.removeChild(this);
 		}
-		newParent.removeChild(this); // make sure to remove any previous version of the file if any
-		newParent.addChild(this);
-		this.updateResource(true);
+		newPArent.removeChild(this); // mAke sure to remove Any previous version of the file if Any
+		newPArent.AddChild(this);
+		this.updAteResource(true);
 	}
 
-	private updateResource(recursive: boolean): void {
-		if (this._parent) {
-			this.resource = joinPath(this._parent.resource, this.name);
+	privAte updAteResource(recursive: booleAn): void {
+		if (this._pArent) {
+			this.resource = joinPAth(this._pArent.resource, this.nAme);
 		}
 
 		if (recursive) {
 			if (this.isDirectory) {
-				this.children.forEach(child => {
-					child.updateResource(true);
+				this.children.forEAch(child => {
+					child.updAteResource(true);
 				});
 			}
 		}
 	}
 
 	/**
-	 * Tells this stat that it was renamed. This requires changes to all children of this stat (if any)
-	 * so that the path property can be updated properly.
+	 * Tells this stAt thAt it wAs renAmed. This requires chAnges to All children of this stAt (if Any)
+	 * so thAt the pAth property cAn be updAted properly.
 	 */
-	rename(renamedStat: { name: string, mtime?: number }): void {
+	renAme(renAmedStAt: { nAme: string, mtime?: number }): void {
 
-		// Merge a subset of Properties that can change on rename
-		this.updateName(renamedStat.name);
-		this._mtime = renamedStat.mtime;
+		// Merge A subset of Properties thAt cAn chAnge on renAme
+		this.updAteNAme(renAmedStAt.nAme);
+		this._mtime = renAmedStAt.mtime;
 
-		// Update Paths including children
-		this.updateResource(true);
+		// UpdAte PAths including children
+		this.updAteResource(true);
 	}
 
 	/**
-	 * Returns a child stat from this stat that matches with the provided path.
-	 * Will return "null" in case the child does not exist.
+	 * Returns A child stAt from this stAt thAt mAtches with the provided pAth.
+	 * Will return "null" in cAse the child does not exist.
 	 */
 	find(resource: URI): ExplorerItem | null {
-		// Return if path found
-		// For performance reasons try to do the comparison as fast as possible
-		const ignoreCase = !this.fileService.hasCapability(resource, FileSystemProviderCapabilities.PathCaseSensitive);
-		if (resource && this.resource.scheme === resource.scheme && equalsIgnoreCase(this.resource.authority, resource.authority) &&
-			(ignoreCase ? startsWithIgnoreCase(resource.path, this.resource.path) : resource.path.startsWith(this.resource.path))) {
-			return this.findByPath(rtrim(resource.path, posix.sep), this.resource.path.length, ignoreCase);
+		// Return if pAth found
+		// For performAnce reAsons try to do the compArison As fAst As possible
+		const ignoreCAse = !this.fileService.hAsCApAbility(resource, FileSystemProviderCApAbilities.PAthCAseSensitive);
+		if (resource && this.resource.scheme === resource.scheme && equAlsIgnoreCAse(this.resource.Authority, resource.Authority) &&
+			(ignoreCAse ? stArtsWithIgnoreCAse(resource.pAth, this.resource.pAth) : resource.pAth.stArtsWith(this.resource.pAth))) {
+			return this.findByPAth(rtrim(resource.pAth, posix.sep), this.resource.pAth.length, ignoreCAse);
 		}
 
-		return null; //Unable to find
+		return null; //UnAble to find
 	}
 
-	private findByPath(path: string, index: number, ignoreCase: boolean): ExplorerItem | null {
-		if (isEqual(rtrim(this.resource.path, posix.sep), path, ignoreCase)) {
+	privAte findByPAth(pAth: string, index: number, ignoreCAse: booleAn): ExplorerItem | null {
+		if (isEquAl(rtrim(this.resource.pAth, posix.sep), pAth, ignoreCAse)) {
 			return this;
 		}
 
 		if (this.isDirectory) {
-			// Ignore separtor to more easily deduct the next name to search
-			while (index < path.length && path[index] === posix.sep) {
+			// Ignore sepArtor to more eAsily deduct the next nAme to seArch
+			while (index < pAth.length && pAth[index] === posix.sep) {
 				index++;
 			}
 
-			let indexOfNextSep = path.indexOf(posix.sep, index);
+			let indexOfNextSep = pAth.indexOf(posix.sep, index);
 			if (indexOfNextSep === -1) {
-				// If there is no separator take the remainder of the path
-				indexOfNextSep = path.length;
+				// If there is no sepArAtor tAke the remAinder of the pAth
+				indexOfNextSep = pAth.length;
 			}
-			// The name to search is between two separators
-			const name = path.substring(index, indexOfNextSep);
+			// The nAme to seArch is between two sepArAtors
+			const nAme = pAth.substring(index, indexOfNextSep);
 
-			const child = this.children.get(this.getPlatformAwareName(name));
+			const child = this.children.get(this.getPlAtformAwAreNAme(nAme));
 
 			if (child) {
-				// We found a child with the given name, search inside it
-				return child.findByPath(path, indexOfNextSep, ignoreCase);
+				// We found A child with the given nAme, seArch inside it
+				return child.findByPAth(pAth, indexOfNextSep, ignoreCAse);
 			}
 		}
 
@@ -401,9 +401,9 @@ export class ExplorerItem {
 	}
 }
 
-export class NewExplorerItem extends ExplorerItem {
-	constructor(fileService: IFileService, parent: ExplorerItem, isDirectory: boolean) {
-		super(URI.file(''), fileService, parent, isDirectory);
+export clAss NewExplorerItem extends ExplorerItem {
+	constructor(fileService: IFileService, pArent: ExplorerItem, isDirectory: booleAn) {
+		super(URI.file(''), fileService, pArent, isDirectory);
 		this._isDirectoryResolved = true;
 	}
 }

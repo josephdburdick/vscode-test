@@ -1,99 +1,99 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OS } from 'vs/base/common/platform';
-import { IContextKey, IContextKeyChangeEvent, IContextKeyService, IContextKeyServiceTarget, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
-import { IKeybindingEvent, IKeybindingService, IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { IResolveResult } from 'vs/platform/keybinding/common/keybindingResolver';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
+import { Event } from 'vs/bAse/common/event';
+import { Keybinding, ResolvedKeybinding, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import { OS } from 'vs/bAse/common/plAtform';
+import { IContextKey, IContextKeyChAngeEvent, IContextKeyService, IContextKeyServiceTArget, ContextKeyExpression } from 'vs/plAtform/contextkey/common/contextkey';
+import { IKeybindingEvent, IKeybindingService, IKeyboArdEvent } from 'vs/plAtform/keybinding/common/keybinding';
+import { IResolveResult } from 'vs/plAtform/keybinding/common/keybindingResolver';
+import { ResolvedKeybindingItem } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
+import { USLAyoutResolvedKeybinding } from 'vs/plAtform/keybinding/common/usLAyoutResolvedKeybinding';
 
-class MockKeybindingContextKey<T> implements IContextKey<T> {
-	private _defaultValue: T | undefined;
-	private _value: T | undefined;
+clAss MockKeybindingContextKey<T> implements IContextKey<T> {
+	privAte _defAultVAlue: T | undefined;
+	privAte _vAlue: T | undefined;
 
-	constructor(defaultValue: T | undefined) {
-		this._defaultValue = defaultValue;
-		this._value = this._defaultValue;
+	constructor(defAultVAlue: T | undefined) {
+		this._defAultVAlue = defAultVAlue;
+		this._vAlue = this._defAultVAlue;
 	}
 
-	public set(value: T | undefined): void {
-		this._value = value;
+	public set(vAlue: T | undefined): void {
+		this._vAlue = vAlue;
 	}
 
 	public reset(): void {
-		this._value = this._defaultValue;
+		this._vAlue = this._defAultVAlue;
 	}
 
 	public get(): T | undefined {
-		return this._value;
+		return this._vAlue;
 	}
 }
 
-export class MockContextKeyService implements IContextKeyService {
+export clAss MockContextKeyService implements IContextKeyService {
 
-	public _serviceBrand: undefined;
-	private _keys = new Map<string, IContextKey<any>>();
+	public _serviceBrAnd: undefined;
+	privAte _keys = new MAp<string, IContextKey<Any>>();
 
 	public dispose(): void {
 		//
 	}
-	public createKey<T>(key: string, defaultValue: T | undefined): IContextKey<T> {
-		let ret = new MockKeybindingContextKey(defaultValue);
+	public creAteKey<T>(key: string, defAultVAlue: T | undefined): IContextKey<T> {
+		let ret = new MockKeybindingContextKey(defAultVAlue);
 		this._keys.set(key, ret);
 		return ret;
 	}
-	public contextMatchesRules(rules: ContextKeyExpression): boolean {
-		return false;
+	public contextMAtchesRules(rules: ContextKeyExpression): booleAn {
+		return fAlse;
 	}
-	public get onDidChangeContext(): Event<IContextKeyChangeEvent> {
+	public get onDidChAngeContext(): Event<IContextKeyChAngeEvent> {
 		return Event.None;
 	}
-	public bufferChangeEvents(callback: () => void) { callback(); }
-	public getContextKeyValue(key: string) {
-		const value = this._keys.get(key);
-		if (value) {
-			return value.get();
+	public bufferChAngeEvents(cAllbAck: () => void) { cAllbAck(); }
+	public getContextKeyVAlue(key: string) {
+		const vAlue = this._keys.get(key);
+		if (vAlue) {
+			return vAlue.get();
 		}
 	}
-	public getContext(domNode: HTMLElement): any {
+	public getContext(domNode: HTMLElement): Any {
 		return null;
 	}
-	public createScoped(domNode: HTMLElement): IContextKeyService {
+	public creAteScoped(domNode: HTMLElement): IContextKeyService {
 		return this;
 	}
-	updateParent(_parentContextKeyService: IContextKeyService): void {
+	updAtePArent(_pArentContextKeyService: IContextKeyService): void {
 		// no-op
 	}
 }
 
-export class MockScopableContextKeyService extends MockContextKeyService {
+export clAss MockScopAbleContextKeyService extends MockContextKeyService {
 	/**
-	 * Don't implement this for all tests since we rarely depend on this behavior and it isn't implemented fully
+	 * Don't implement this for All tests since we rArely depend on this behAvior And it isn't implemented fully
 	 */
-	public createScoped(domNote: HTMLElement): IContextKeyService {
+	public creAteScoped(domNote: HTMLElement): IContextKeyService {
 		return new MockContextKeyService();
 	}
 }
 
-export class MockKeybindingService implements IKeybindingService {
-	public _serviceBrand: undefined;
+export clAss MockKeybindingService implements IKeybindingService {
+	public _serviceBrAnd: undefined;
 
-	public readonly inChordMode: boolean = false;
+	public reAdonly inChordMode: booleAn = fAlse;
 
-	public get onDidUpdateKeybindings(): Event<IKeybindingEvent> {
+	public get onDidUpdAteKeybindings(): Event<IKeybindingEvent> {
 		return Event.None;
 	}
 
-	public getDefaultKeybindingsContent(): string {
+	public getDefAultKeybindingsContent(): string {
 		return '';
 	}
 
-	public getDefaultKeybindings(): ResolvedKeybindingItem[] {
+	public getDefAultKeybindings(): ResolvedKeybindingItem[] {
 		return [];
 	}
 
@@ -102,16 +102,16 @@ export class MockKeybindingService implements IKeybindingService {
 	}
 
 	public resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[] {
-		return [new USLayoutResolvedKeybinding(keybinding, OS)];
+		return [new USLAyoutResolvedKeybinding(keybinding, OS)];
 	}
 
-	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding {
+	public resolveKeyboArdEvent(keyboArdEvent: IKeyboArdEvent): ResolvedKeybinding {
 		let keybinding = new SimpleKeybinding(
-			keyboardEvent.ctrlKey,
-			keyboardEvent.shiftKey,
-			keyboardEvent.altKey,
-			keyboardEvent.metaKey,
-			keyboardEvent.keyCode
+			keyboArdEvent.ctrlKey,
+			keyboArdEvent.shiftKey,
+			keyboArdEvent.AltKey,
+			keyboArdEvent.metAKey,
+			keyboArdEvent.keyCode
 		);
 		return this.resolveKeybinding(keybinding.toChord())[0];
 	}
@@ -120,11 +120,11 @@ export class MockKeybindingService implements IKeybindingService {
 		return [];
 	}
 
-	public lookupKeybindings(commandId: string): ResolvedKeybinding[] {
+	public lookupKeybindings(commAndId: string): ResolvedKeybinding[] {
 		return [];
 	}
 
-	public lookupKeybinding(commandId: string): ResolvedKeybinding | undefined {
+	public lookupKeybinding(commAndId: string): ResolvedKeybinding | undefined {
 		return undefined;
 	}
 
@@ -132,24 +132,24 @@ export class MockKeybindingService implements IKeybindingService {
 		return 0;
 	}
 
-	public softDispatch(keybinding: IKeyboardEvent, target: IContextKeyServiceTarget): IResolveResult | null {
+	public softDispAtch(keybinding: IKeyboArdEvent, tArget: IContextKeyServiceTArget): IResolveResult | null {
 		return null;
 	}
 
-	public dispatchByUserSettingsLabel(userSettingsLabel: string, target: IContextKeyServiceTarget): void {
+	public dispAtchByUserSettingsLAbel(userSettingsLAbel: string, tArget: IContextKeyServiceTArget): void {
 
 	}
 
-	public dispatchEvent(e: IKeyboardEvent, target: IContextKeyServiceTarget): boolean {
-		return false;
+	public dispAtchEvent(e: IKeyboArdEvent, tArget: IContextKeyServiceTArget): booleAn {
+		return fAlse;
 	}
 
-	public mightProducePrintableCharacter(e: IKeyboardEvent): boolean {
-		return false;
+	public mightProducePrintAbleChArActer(e: IKeyboArdEvent): booleAn {
+		return fAlse;
 	}
 
-	public toggleLogging(): boolean {
-		return false;
+	public toggleLogging(): booleAn {
+		return fAlse;
 	}
 
 	public _dumpDebugInfo(): string {
@@ -160,7 +160,7 @@ export class MockKeybindingService implements IKeybindingService {
 		return '';
 	}
 
-	public registerSchemaContribution() {
+	public registerSchemAContribution() {
 		// noop
 	}
 }

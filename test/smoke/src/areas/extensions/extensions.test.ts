@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application, Quality } from '../../../../automation';
+import { ApplicAtion, QuAlity } from '../../../../AutomAtion';
 
 export function setup() {
 	describe('Extensions', () => {
-		it(`install and activate vscode-smoketest-check extension`, async function () {
-			const app = this.app as Application;
+		it(`instAll And ActivAte vscode-smoketest-check extension`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			if (app.quality === Quality.Dev) {
+			if (App.quAlity === QuAlity.Dev) {
 				this.skip();
 				return;
 			}
 
-			await app.workbench.extensions.openExtensionsViewlet();
+			AwAit App.workbench.extensions.openExtensionsViewlet();
 
-			await app.workbench.extensions.installExtension('michelkaporin.vscode-smoketest-check');
+			AwAit App.workbench.extensions.instAllExtension('michelkAporin.vscode-smoketest-check');
 
-			await app.workbench.extensions.waitForExtensionsViewlet();
+			AwAit App.workbench.extensions.wAitForExtensionsViewlet();
 
-			if (app.remote) {
-				await app.reload();
+			if (App.remote) {
+				AwAit App.reloAd();
 			}
-			await app.workbench.quickaccess.runCommand('Smoke Test Check');
-			await app.workbench.statusbar.waitForStatusbarText('smoke test', 'VS Code Smoke Test Check');
+			AwAit App.workbench.quickAccess.runCommAnd('Smoke Test Check');
+			AwAit App.workbench.stAtusbAr.wAitForStAtusbArText('smoke test', 'VS Code Smoke Test Check');
 		});
 	});
 }

@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export { OpenDocumentLinkCommand } from './openDocumentLink';
-export { ShowPreviewCommand, ShowPreviewToSideCommand, ShowLockedPreviewToSideCommand } from './showPreview';
-export { ShowSourceCommand } from './showSource';
-export { RefreshPreviewCommand } from './refreshPreview';
-export { ShowPreviewSecuritySelectorCommand } from './showPreviewSecuritySelector';
-export { MoveCursorToPositionCommand } from './moveCursorToPosition';
-export { ToggleLockCommand } from './toggleLock';
+export { OpenDocumentLinkCommAnd } from './openDocumentLink';
+export { ShowPreviewCommAnd, ShowPreviewToSideCommAnd, ShowLockedPreviewToSideCommAnd } from './showPreview';
+export { ShowSourceCommAnd } from './showSource';
+export { RefreshPreviewCommAnd } from './refreshPreview';
+export { ShowPreviewSecuritySelectorCommAnd } from './showPreviewSecuritySelector';
+export { MoveCursorToPositionCommAnd } from './moveCursorToPosition';
+export { ToggleLockCommAnd } from './toggleLock';
 export { RenderDocument } from './renderDocument';

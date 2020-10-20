@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import TypeScriptServiceClientHost from '../typeScriptServiceClientHost';
-import { Lazy } from '../utils/lazy';
+import { LAzy } from '../utils/lAzy';
 import { openProjectConfigForFile, ProjectType } from '../utils/tsconfig';
-import { Command } from './commandManager';
+import { CommAnd } from './commAndMAnAger';
 
-export class TypeScriptGoToProjectConfigCommand implements Command {
-	public readonly id = 'typescript.goToProjectConfig';
+export clAss TypeScriptGoToProjectConfigCommAnd implements CommAnd {
+	public reAdonly id = 'typescript.goToProjectConfig';
 
 	public constructor(
-		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>,
+		privAte reAdonly lAzyClientHost: LAzy<TypeScriptServiceClientHost>,
 	) { }
 
 	public execute() {
-		const editor = vscode.window.activeTextEditor;
+		const editor = vscode.window.ActiveTextEditor;
 		if (editor) {
-			openProjectConfigForFile(ProjectType.TypeScript, this.lazyClientHost.value.serviceClient, editor.document.uri);
+			openProjectConfigForFile(ProjectType.TypeScript, this.lAzyClientHost.vAlue.serviceClient, editor.document.uri);
 		}
 	}
 }
 
-export class JavaScriptGoToProjectConfigCommand implements Command {
-	public readonly id = 'javascript.goToProjectConfig';
+export clAss JAvAScriptGoToProjectConfigCommAnd implements CommAnd {
+	public reAdonly id = 'jAvAscript.goToProjectConfig';
 
 	public constructor(
-		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>,
+		privAte reAdonly lAzyClientHost: LAzy<TypeScriptServiceClientHost>,
 	) { }
 
 	public execute() {
-		const editor = vscode.window.activeTextEditor;
+		const editor = vscode.window.ActiveTextEditor;
 		if (editor) {
-			openProjectConfigForFile(ProjectType.JavaScript, this.lazyClientHost.value.serviceClient, editor.document.uri);
+			openProjectConfigForFile(ProjectType.JAvAScript, this.lAzyClientHost.vAlue.serviceClient, editor.document.uri);
 		}
 	}
 }

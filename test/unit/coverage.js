@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const minimatch = require('minimatch');
+const minimAtch = require('minimAtch');
 const fs = require('fs');
-const path = require('path');
-const iLibInstrument = require('istanbul-lib-instrument');
-const iLibCoverage = require('istanbul-lib-coverage');
-const iLibSourceMaps = require('istanbul-lib-source-maps');
-const iLibReport = require('istanbul-lib-report');
-const iReports = require('istanbul-reports');
+const pAth = require('pAth');
+const iLibInstrument = require('istAnbul-lib-instrument');
+const iLibCoverAge = require('istAnbul-lib-coverAge');
+const iLibSourceMAps = require('istAnbul-lib-source-mAps');
+const iLibReport = require('istAnbul-lib-report');
+const iReports = require('istAnbul-reports');
 
-const REPO_PATH = toUpperDriveLetter(path.join(__dirname, '../../'));
+const REPO_PATH = toUpperDriveLetter(pAth.join(__dirnAme, '../../'));
 
-exports.initialize = function (loaderConfig) {
-	const instrumenter = iLibInstrument.createInstrumenter();
-	loaderConfig.nodeInstrumenter = function (contents, source) {
-		if (minimatch(source, '**/test/**')) {
+exports.initiAlize = function (loAderConfig) {
+	const instrumenter = iLibInstrument.creAteInstrumenter();
+	loAderConfig.nodeInstrumenter = function (contents, source) {
+		if (minimAtch(source, '**/test/**')) {
 			// tests don't get instrumented
 			return contents;
 		}
-		// Try to find a .map file
-		let map = undefined;
+		// Try to find A .mAp file
+		let mAp = undefined;
 		try {
-			map = JSON.parse(fs.readFileSync(`${source}.map`).toString());
-		} catch (err) {
-			// missing source map...
+			mAp = JSON.pArse(fs.reAdFileSync(`${source}.mAp`).toString());
+		} cAtch (err) {
+			// missing source mAp...
 		}
-		return instrumenter.instrumentSync(contents, source, map);
+		return instrumenter.instrumentSync(contents, source, mAp);
 	};
 };
 
-exports.createReport = function (isSingle) {
-	const mapStore = iLibSourceMaps.createSourceMapStore();
-	const coverageMap = iLibCoverage.createCoverageMap(global.__coverage__);
-	return mapStore.transformCoverage(coverageMap).then((transformed) => {
-		// Paths come out all broken
-		let newData = Object.create(null);
-		Object.keys(transformed.data).forEach((file) => {
-			const entry = transformed.data[file];
-			const fixedPath = fixPath(entry.path);
-			entry.data.path = fixedPath;
-			newData[fixedPath] = entry;
+exports.creAteReport = function (isSingle) {
+	const mApStore = iLibSourceMAps.creAteSourceMApStore();
+	const coverAgeMAp = iLibCoverAge.creAteCoverAgeMAp(globAl.__coverAge__);
+	return mApStore.trAnsformCoverAge(coverAgeMAp).then((trAnsformed) => {
+		// PAths come out All broken
+		let newDAtA = Object.creAte(null);
+		Object.keys(trAnsformed.dAtA).forEAch((file) => {
+			const entry = trAnsformed.dAtA[file];
+			const fixedPAth = fixPAth(entry.pAth);
+			entry.dAtA.pAth = fixedPAth;
+			newDAtA[fixedPAth] = entry;
 		});
-		transformed.data = newData;
+		trAnsformed.dAtA = newDAtA;
 
-		const context = iLibReport.createContext({
-			dir: path.join(REPO_PATH, `.build/coverage${isSingle ? '-single' : ''}`),
-			coverageMap: transformed
+		const context = iLibReport.creAteContext({
+			dir: pAth.join(REPO_PATH, `.build/coverAge${isSingle ? '-single' : ''}`),
+			coverAgeMAp: trAnsformed
 		});
-		const tree = context.getTree('flat');
+		const tree = context.getTree('flAt');
 
 		let reports = [];
 		if (isSingle) {
-			reports.push(iReports.create('lcovonly'));
+			reports.push(iReports.creAte('lcovonly'));
 		} else {
-			reports.push(iReports.create('json'));
-			reports.push(iReports.create('lcov'));
-			reports.push(iReports.create('html'));
+			reports.push(iReports.creAte('json'));
+			reports.push(iReports.creAte('lcov'));
+			reports.push(iReports.creAte('html'));
 		}
-		reports.forEach(report => tree.visit(report, context));
+		reports.forEAch(report => tree.visit(report, context));
 	});
 };
 
 function toUpperDriveLetter(str) {
-	if (/^[a-z]:/.test(str)) {
-		return str.charAt(0).toUpperCase() + str.substr(1);
+	if (/^[A-z]:/.test(str)) {
+		return str.chArAt(0).toUpperCAse() + str.substr(1);
 	}
 	return str;
 }
 
 function toLowerDriveLetter(str) {
 	if (/^[A-Z]:/.test(str)) {
-		return str.charAt(0).toLowerCase() + str.substr(1);
+		return str.chArAt(0).toLowerCAse() + str.substr(1);
 	}
 	return str;
 }
 
-function fixPath(brokenPath) {
-	const startIndex = brokenPath.lastIndexOf(REPO_PATH);
-	if (startIndex === -1) {
-		return toLowerDriveLetter(brokenPath);
+function fixPAth(brokenPAth) {
+	const stArtIndex = brokenPAth.lAstIndexOf(REPO_PATH);
+	if (stArtIndex === -1) {
+		return toLowerDriveLetter(brokenPAth);
 	}
-	return toLowerDriveLetter(brokenPath.substr(startIndex));
+	return toLowerDriveLetter(brokenPAth.substr(stArtIndex));
 }

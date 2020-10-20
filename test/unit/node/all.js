@@ -1,126 +1,126 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/*eslint-env mocha*/
-/*global define,run*/
+/*eslint-env mochA*/
+/*globAl define,run*/
 
-const assert = require('assert');
-const path = require('path');
+const Assert = require('Assert');
+const pAth = require('pAth');
 const glob = require('glob');
 const jsdom = require('jsdom-no-contextify');
 const TEST_GLOB = '**/test/**/*.test.js';
-const coverage = require('../coverage');
+const coverAge = require('../coverAge');
 
 const optimist = require('optimist')
-	.usage('Run the Code tests. All mocha options apply.')
-	.describe('build', 'Run from out-build').boolean('build')
-	.describe('run', 'Run a single file').string('run')
-	.describe('coverage', 'Generate a coverage report').boolean('coverage')
-	.describe('browser', 'Run tests in a browser').boolean('browser')
-	.alias('h', 'help').boolean('h')
+	.usAge('Run the Code tests. All mochA options Apply.')
+	.describe('build', 'Run from out-build').booleAn('build')
+	.describe('run', 'Run A single file').string('run')
+	.describe('coverAge', 'GenerAte A coverAge report').booleAn('coverAge')
+	.describe('browser', 'Run tests in A browser').booleAn('browser')
+	.AliAs('h', 'help').booleAn('h')
 	.describe('h', 'Show help');
 
-const argv = optimist.argv;
+const Argv = optimist.Argv;
 
-if (argv.help) {
+if (Argv.help) {
 	optimist.showHelp();
 	process.exit(1);
 }
 
-const REPO_ROOT = path.join(__dirname, '../../../');
-const out = argv.build ? 'out-build' : 'out';
-const loader = require(`../../../${out}/vs/loader`);
-const src = path.join(REPO_ROOT, out);
+const REPO_ROOT = pAth.join(__dirnAme, '../../../');
+const out = Argv.build ? 'out-build' : 'out';
+const loAder = require(`../../../${out}/vs/loAder`);
+const src = pAth.join(REPO_ROOT, out);
 
-function main() {
-	process.on('uncaughtException', function (e) {
-		console.error(e.stack || e);
+function mAin() {
+	process.on('uncAughtException', function (e) {
+		console.error(e.stAck || e);
 	});
 
-	const loaderConfig = {
+	const loAderConfig = {
 		nodeRequire: require,
-		nodeMain: __filename,
-		baseUrl: path.join(REPO_ROOT, 'src'),
-		paths: {
+		nodeMAin: __filenAme,
+		bAseUrl: pAth.join(REPO_ROOT, 'src'),
+		pAths: {
 			'vs/css': '../test/unit/node/css.mock',
 			'vs': `../${out}/vs`,
 			'lib': `../${out}/lib`,
-			'bootstrap-fork': `../${out}/bootstrap-fork`
+			'bootstrAp-fork': `../${out}/bootstrAp-fork`
 		},
-		catchError: true
+		cAtchError: true
 	};
 
-	if (argv.coverage) {
-		coverage.initialize(loaderConfig);
+	if (Argv.coverAge) {
+		coverAge.initiAlize(loAderConfig);
 
 		process.on('exit', function (code) {
 			if (code !== 0) {
 				return;
 			}
-			coverage.createReport(argv.run || argv.runGlob);
+			coverAge.creAteReport(Argv.run || Argv.runGlob);
 		});
 	}
 
-	loader.config(loaderConfig);
+	loAder.config(loAderConfig);
 
-	global.define = loader;
-	global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
-	global.self = global.window = global.document.parentWindow;
+	globAl.define = loAder;
+	globAl.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
+	globAl.self = globAl.window = globAl.document.pArentWindow;
 
-	global.Element = global.window.Element;
-	global.HTMLElement = global.window.HTMLElement;
-	global.Node = global.window.Node;
-	global.navigator = global.window.navigator;
-	global.XMLHttpRequest = global.window.XMLHttpRequest;
+	globAl.Element = globAl.window.Element;
+	globAl.HTMLElement = globAl.window.HTMLElement;
+	globAl.Node = globAl.window.Node;
+	globAl.nAvigAtor = globAl.window.nAvigAtor;
+	globAl.XMLHttpRequest = globAl.window.XMLHttpRequest;
 
-	let didErr = false;
+	let didErr = fAlse;
 	const write = process.stderr.write;
-	process.stderr.write = function (data) {
-		didErr = didErr || !!data;
-		write.apply(process.stderr, arguments);
+	process.stderr.write = function (dAtA) {
+		didErr = didErr || !!dAtA;
+		write.Apply(process.stderr, Arguments);
 	};
 
-	let loadFunc = null;
+	let loAdFunc = null;
 
-	if (argv.runGlob) {
-		loadFunc = (cb) => {
+	if (Argv.runGlob) {
+		loAdFunc = (cb) => {
 			const doRun = tests => {
-				const modulesToLoad = tests.map(test => {
-					if (path.isAbsolute(test)) {
-						test = path.relative(src, path.resolve(test));
+				const modulesToLoAd = tests.mAp(test => {
+					if (pAth.isAbsolute(test)) {
+						test = pAth.relAtive(src, pAth.resolve(test));
 					}
 
-					return test.replace(/(\.js)|(\.d\.ts)|(\.js\.map)$/, '');
+					return test.replAce(/(\.js)|(\.d\.ts)|(\.js\.mAp)$/, '');
 				});
-				define(modulesToLoad, () => cb(null), cb);
+				define(modulesToLoAd, () => cb(null), cb);
 			};
 
-			glob(argv.runGlob, { cwd: src }, function (err, files) { doRun(files); });
+			glob(Argv.runGlob, { cwd: src }, function (err, files) { doRun(files); });
 		};
-	} else if (argv.run) {
-		const tests = (typeof argv.run === 'string') ? [argv.run] : argv.run;
-		const modulesToLoad = tests.map(function (test) {
-			test = test.replace(/^src/, 'out');
-			test = test.replace(/\.ts$/, '.js');
-			return path.relative(src, path.resolve(test)).replace(/(\.js)|(\.js\.map)$/, '').replace(/\\/g, '/');
+	} else if (Argv.run) {
+		const tests = (typeof Argv.run === 'string') ? [Argv.run] : Argv.run;
+		const modulesToLoAd = tests.mAp(function (test) {
+			test = test.replAce(/^src/, 'out');
+			test = test.replAce(/\.ts$/, '.js');
+			return pAth.relAtive(src, pAth.resolve(test)).replAce(/(\.js)|(\.js\.mAp)$/, '').replAce(/\\/g, '/');
 		});
-		loadFunc = (cb) => {
-			define(modulesToLoad, () => cb(null), cb);
+		loAdFunc = (cb) => {
+			define(modulesToLoAd, () => cb(null), cb);
 		};
 	} else {
-		loadFunc = (cb) => {
+		loAdFunc = (cb) => {
 			glob(TEST_GLOB, { cwd: src }, function (err, files) {
-				const modulesToLoad = files.map(function (file) {
-					return file.replace(/\.js$/, '');
+				const modulesToLoAd = files.mAp(function (file) {
+					return file.replAce(/\.js$/, '');
 				});
-				define(modulesToLoad, function () { cb(null); }, cb);
+				define(modulesToLoAd, function () { cb(null); }, cb);
 			});
 		};
 	}
 
-	loadFunc(function (err) {
+	loAdFunc(function (err) {
 		if (err) {
 			console.error(err);
 			return process.exit(1);
@@ -128,45 +128,45 @@ function main() {
 
 		process.stderr.write = write;
 
-		if (!argv.run && !argv.runGlob) {
-			// set up last test
-			suite('Loader', function () {
-				test('should not explode while loading', function () {
-					assert.ok(!didErr, 'should not explode while loading');
+		if (!Argv.run && !Argv.runGlob) {
+			// set up lAst test
+			suite('LoAder', function () {
+				test('should not explode while loAding', function () {
+					Assert.ok(!didErr, 'should not explode while loAding');
 				});
 			});
 		}
 
-		// report failing test for every unexpected error during any of the tests
+		// report fAiling test for every unexpected error during Any of the tests
 		let unexpectedErrors = [];
 		suite('Errors', function () {
-			test('should not have unexpected errors in tests', function () {
+			test('should not hAve unexpected errors in tests', function () {
 				if (unexpectedErrors.length) {
-					unexpectedErrors.forEach(function (stack) {
+					unexpectedErrors.forEAch(function (stAck) {
 						console.error('');
-						console.error(stack);
+						console.error(stAck);
 					});
 
-					assert.ok(false);
+					Assert.ok(fAlse);
 				}
 			});
 		});
 
-		// replace the default unexpected error handler to be useful during tests
-		loader(['vs/base/common/errors'], function (errors) {
-			errors.setUnexpectedErrorHandler(function (err) {
-				const stack = (err && err.stack) || (new Error().stack);
-				unexpectedErrors.push((err && err.message ? err.message : err) + '\n' + stack);
+		// replAce the defAult unexpected error hAndler to be useful during tests
+		loAder(['vs/bAse/common/errors'], function (errors) {
+			errors.setUnexpectedErrorHAndler(function (err) {
+				const stAck = (err && err.stAck) || (new Error().stAck);
+				unexpectedErrors.push((err && err.messAge ? err.messAge : err) + '\n' + stAck);
 			});
 
-			// fire up mocha
+			// fire up mochA
 			run();
 		});
 	});
 }
 
-if (process.argv.some(function (a) { return /^--browser/.test(a); })) {
+if (process.Argv.some(function (A) { return /^--browser/.test(A); })) {
 	require('./browser');
 } else {
-	main();
+	mAin();
 }

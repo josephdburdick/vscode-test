@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { TSESTree, AST_NODE_TYPES } from '@typescript-eslint/experimental-utils';
+import * As eslint from 'eslint';
+import { TSESTree, AST_NODE_TYPES } from '@typescript-eslint/experimentAl-utils';
 
-export = new class ApiEventNaming implements eslint.Rule.RuleModule {
+export = new clAss ApiEventNAming implements eslint.Rule.RuleModule {
 
-	private static _nameRegExp = /on(Did|Will)([A-Z][a-z]+)([A-Z][a-z]+)?/;
+	privAte stAtic _nAmeRegExp = /on(Did|Will)([A-Z][A-z]+)([A-Z][A-z]+)?/;
 
-	readonly meta: eslint.Rule.RuleMetaData = {
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Extension-API-guidelines#event-naming'
+			url: 'https://github.com/microsoft/vscode/wiki/Extension-API-guidelines#event-nAming'
 		},
-		messages: {
-			naming: 'Event names must follow this patten: `on[Did|Will]<Verb><Subject>`',
-			verb: 'Unknown verb \'{{verb}}\' - is this really a verb? Iff so, then add this verb to the configuration',
-			subject: 'Unknown subject \'{{subject}}\' - This subject has not been used before but it should refer to something in the API',
-			unknown: 'UNKNOWN event declaration, lint-rule needs tweaking'
+		messAges: {
+			nAming: 'Event nAmes must follow this pAtten: `on[Did|Will]<Verb><Subject>`',
+			verb: 'Unknown verb \'{{verb}}\' - is this reAlly A verb? Iff so, then Add this verb to the configurAtion',
+			subject: 'Unknown subject \'{{subject}}\' - This subject hAs not been used before but it should refer to something in the API',
+			unknown: 'UNKNOWN event declArAtion, lint-rule needs tweAking'
 		}
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
-		const config = <{ allowed: string[], verbs: string[] }>context.options[0];
-		const allowed = new Set(config.allowed);
+		const config = <{ Allowed: string[], verbs: string[] }>context.options[0];
+		const Allowed = new Set(config.Allowed);
 		const verbs = new Set(config.verbs);
 
 		return {
-			['TSTypeAnnotation TSTypeReference Identifier[name="Event"]']: (node: any) => {
+			['TSTypeAnnotAtion TSTypeReference Identifier[nAme="Event"]']: (node: Any) => {
 
-				const def = (<TSESTree.Identifier>node).parent?.parent?.parent;
+				const def = (<TSESTree.Identifier>node).pArent?.pArent?.pArent;
 				const ident = this.getIdent(def);
 
 				if (!ident) {
 					// event on unknown structure...
 					return context.report({
 						node,
-						message: 'unknown'
+						messAge: 'unknown'
 					});
 				}
 
-				if (allowed.has(ident.name)) {
+				if (Allowed.hAs(ident.nAme)) {
 					// configured exception
 					return;
 				}
 
-				const match = ApiEventNaming._nameRegExp.exec(ident.name);
-				if (!match) {
+				const mAtch = ApiEventNAming._nAmeRegExp.exec(ident.nAme);
+				if (!mAtch) {
 					context.report({
 						node: ident,
-						messageId: 'naming'
+						messAgeId: 'nAming'
 					});
 					return;
 				}
 
-				// check that <verb> is spelled out (configured) as verb
-				if (!verbs.has(match[2].toLowerCase())) {
+				// check thAt <verb> is spelled out (configured) As verb
+				if (!verbs.hAs(mAtch[2].toLowerCAse())) {
 					context.report({
 						node: ident,
-						messageId: 'verb',
-						data: { verb: match[2] }
+						messAgeId: 'verb',
+						dAtA: { verb: mAtch[2] }
 					});
 				}
 
-				// check that a subject (if present) has occurred
-				if (match[3]) {
-					const regex = new RegExp(match[3], 'ig');
-					const parts = context.getSourceCode().getText().split(regex);
-					if (parts.length < 3) {
+				// check thAt A subject (if present) hAs occurred
+				if (mAtch[3]) {
+					const regex = new RegExp(mAtch[3], 'ig');
+					const pArts = context.getSourceCode().getText().split(regex);
+					if (pArts.length < 3) {
 						context.report({
 							node: ident,
-							messageId: 'subject',
-							data: { subject: match[3] }
+							messAgeId: 'subject',
+							dAtA: { subject: mAtch[3] }
 						});
 					}
 				}
@@ -81,18 +81,18 @@ export = new class ApiEventNaming implements eslint.Rule.RuleModule {
 		};
 	}
 
-	private getIdent(def: TSESTree.Node | undefined): TSESTree.Identifier | undefined {
+	privAte getIdent(def: TSESTree.Node | undefined): TSESTree.Identifier | undefined {
 		if (!def) {
 			return;
 		}
 
 		if (def.type === AST_NODE_TYPES.Identifier) {
 			return def;
-		} else if ((def.type === AST_NODE_TYPES.TSPropertySignature || def.type === AST_NODE_TYPES.ClassProperty) && def.key.type === AST_NODE_TYPES.Identifier) {
+		} else if ((def.type === AST_NODE_TYPES.TSPropertySignAture || def.type === AST_NODE_TYPES.ClAssProperty) && def.key.type === AST_NODE_TYPES.Identifier) {
 			return def.key;
 		}
 
-		return this.getIdent(def.parent);
+		return this.getIdent(def.pArent);
 	}
 };
 

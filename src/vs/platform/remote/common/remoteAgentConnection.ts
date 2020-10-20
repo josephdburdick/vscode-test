@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Client, PersistentProtocol, ISocket, ProtocolConstants } from 'vs/base/parts/ipc/common/ipc.net';
-import { generateUuid } from 'vs/base/common/uuid';
-import { RemoteAgentConnectionContext } from 'vs/platform/remote/common/remoteAgentEnvironment';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { Emitter } from 'vs/base/common/event';
-import { RemoteAuthorityResolverError } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { isPromiseCanceledError, onUnexpectedError } from 'vs/base/common/errors';
-import { ISignService } from 'vs/platform/sign/common/sign';
-import { CancelablePromise, createCancelablePromise } from 'vs/base/common/async';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IIPCLogger } from 'vs/base/parts/ipc/common/ipc';
+import { Client, PersistentProtocol, ISocket, ProtocolConstAnts } from 'vs/bAse/pArts/ipc/common/ipc.net';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { RemoteAgentConnectionContext } from 'vs/plAtform/remote/common/remoteAgentEnvironment';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { Emitter } from 'vs/bAse/common/event';
+import { RemoteAuthorityResolverError } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { isPromiseCAnceledError, onUnexpectedError } from 'vs/bAse/common/errors';
+import { ISignService } from 'vs/plAtform/sign/common/sign';
+import { CAncelAblePromise, creAteCAncelAblePromise } from 'vs/bAse/common/Async';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IIPCLogger } from 'vs/bAse/pArts/ipc/common/ipc';
 
 const INITIAL_CONNECT_TIMEOUT = 120 * 1000 /* 120s */;
 const RECONNECT_TIMEOUT = 30 * 1000 /* 30s */;
 
 export const enum ConnectionType {
-	Management = 1,
+	MAnAgement = 1,
 	ExtensionHost = 2,
 	Tunnel = 3,
 }
 
 function connectionTypeToString(connectionType: ConnectionType): string {
 	switch (connectionType) {
-		case ConnectionType.Management:
-			return 'Management';
-		case ConnectionType.ExtensionHost:
+		cAse ConnectionType.MAnAgement:
+			return 'MAnAgement';
+		cAse ConnectionType.ExtensionHost:
 			return 'ExtensionHost';
-		case ConnectionType.Tunnel:
+		cAse ConnectionType.Tunnel:
 			return 'Tunnel';
 	}
 }
 
-export interface AuthRequest {
-	type: 'auth';
-	auth: string;
+export interfAce AuthRequest {
+	type: 'Auth';
+	Auth: string;
 }
 
-export interface SignRequest {
+export interfAce SignRequest {
 	type: 'sign';
-	data: string;
+	dAtA: string;
 }
 
-export interface ConnectionTypeRequest {
+export interfAce ConnectionTypeRequest {
 	type: 'connectionType';
 	commit?: string;
-	signedData?: string;
+	signedDAtA?: string;
 	desiredConnectionType?: ConnectionType;
-	args?: any;
+	Args?: Any;
 }
 
-export interface ErrorMessage {
+export interfAce ErrorMessAge {
 	type: 'error';
-	reason: string;
+	reAson: string;
 }
 
-export interface OKMessage {
+export interfAce OKMessAge {
 	type: 'ok';
 }
 
-export type HandshakeMessage = AuthRequest | SignRequest | ConnectionTypeRequest | ErrorMessage | OKMessage;
+export type HAndshAkeMessAge = AuthRequest | SignRequest | ConnectionTypeRequest | ErrorMessAge | OKMessAge;
 
 
-interface ISimpleConnectionOptions {
+interfAce ISimpleConnectionOptions {
 	commit: string | undefined;
 	host: string;
 	port: number;
 	reconnectionToken: string;
 	reconnectionProtocol: PersistentProtocol | null;
-	socketFactory: ISocketFactory;
+	socketFActory: ISocketFActory;
 	signService: ISignService;
 	logService: ILogService;
 }
 
-export interface IConnectCallback {
-	(err: any | undefined, socket: ISocket | undefined): void;
+export interfAce IConnectCAllbAck {
+	(err: Any | undefined, socket: ISocket | undefined): void;
 }
 
-export interface ISocketFactory {
-	connect(host: string, port: number, query: string, callback: IConnectCallback): void;
+export interfAce ISocketFActory {
+	connect(host: string, port: number, query: string, cAllbAck: IConnectCAllbAck): void;
 }
 
-async function connectToRemoteExtensionHostAgent(options: ISimpleConnectionOptions, connectionType: ConnectionType, args: any | undefined): Promise<{ protocol: PersistentProtocol; ownsProtocol: boolean; }> {
+Async function connectToRemoteExtensionHostAgent(options: ISimpleConnectionOptions, connectionType: ConnectionType, Args: Any | undefined): Promise<{ protocol: PersistentProtocol; ownsProtocol: booleAn; }> {
 	const logPrefix = connectLogPrefix(options, connectionType);
-	const { protocol, ownsProtocol } = await new Promise<{ protocol: PersistentProtocol; ownsProtocol: boolean; }>((c, e) => {
-		options.logService.trace(`${logPrefix} 1/6. invoking socketFactory.connect().`);
-		options.socketFactory.connect(
+	const { protocol, ownsProtocol } = AwAit new Promise<{ protocol: PersistentProtocol; ownsProtocol: booleAn; }>((c, e) => {
+		options.logService.trAce(`${logPrefix} 1/6. invoking socketFActory.connect().`);
+		options.socketFActory.connect(
 			options.host,
 			options.port,
-			`reconnectionToken=${options.reconnectionToken}&reconnection=${options.reconnectionProtocol ? 'true' : 'false'}`,
-			(err: any, socket: ISocket | undefined) => {
+			`reconnectionToken=${options.reconnectionToken}&reconnection=${options.reconnectionProtocol ? 'true' : 'fAlse'}`,
+			(err: Any, socket: ISocket | undefined) => {
 				if (err || !socket) {
-					options.logService.error(`${logPrefix} socketFactory.connect() failed. Error:`);
+					options.logService.error(`${logPrefix} socketFActory.connect() fAiled. Error:`);
 					options.logService.error(err);
 					e(err);
 					return;
 				}
 
-				options.logService.trace(`${logPrefix} 2/6. socketFactory.connect() was successful.`);
+				options.logService.trAce(`${logPrefix} 2/6. socketFActory.connect() wAs successful.`);
 				if (options.reconnectionProtocol) {
 					options.reconnectionProtocol.beginAcceptReconnection(socket, null);
-					c({ protocol: options.reconnectionProtocol, ownsProtocol: false });
+					c({ protocol: options.reconnectionProtocol, ownsProtocol: fAlse });
 				} else {
 					c({ protocol: new PersistentProtocol(socket, null), ownsProtocol: true });
 				}
@@ -112,210 +112,210 @@ async function connectToRemoteExtensionHostAgent(options: ISimpleConnectionOptio
 		);
 	});
 
-	return new Promise<{ protocol: PersistentProtocol; ownsProtocol: boolean; }>((c, e) => {
+	return new Promise<{ protocol: PersistentProtocol; ownsProtocol: booleAn; }>((c, e) => {
 
 		const errorTimeoutToken = setTimeout(() => {
-			const error: any = new Error('handshake timeout');
+			const error: Any = new Error('hAndshAke timeout');
 			error.code = 'ETIMEDOUT';
-			error.syscall = 'connect';
-			options.logService.error(`${logPrefix} the handshake took longer than 10 seconds. Error:`);
+			error.syscAll = 'connect';
+			options.logService.error(`${logPrefix} the hAndshAke took longer thAn 10 seconds. Error:`);
 			options.logService.error(error);
 			if (ownsProtocol) {
-				safeDisposeProtocolAndSocket(protocol);
+				sAfeDisposeProtocolAndSocket(protocol);
 			}
 			e(error);
 		}, 10000);
 
-		const messageRegistration = protocol.onControlMessage(async raw => {
-			const msg = <HandshakeMessage>JSON.parse(raw.toString());
+		const messAgeRegistrAtion = protocol.onControlMessAge(Async rAw => {
+			const msg = <HAndshAkeMessAge>JSON.pArse(rAw.toString());
 			// Stop listening for further events
-			messageRegistration.dispose();
+			messAgeRegistrAtion.dispose();
 
-			const error = getErrorFromMessage(msg);
+			const error = getErrorFromMessAge(msg);
 			if (error) {
-				options.logService.error(`${logPrefix} received error control message when negotiating connection. Error:`);
+				options.logService.error(`${logPrefix} received error control messAge when negotiAting connection. Error:`);
 				options.logService.error(error);
 				if (ownsProtocol) {
-					safeDisposeProtocolAndSocket(protocol);
+					sAfeDisposeProtocolAndSocket(protocol);
 				}
 				return e(error);
 			}
 
 			if (msg.type === 'sign') {
-				options.logService.trace(`${logPrefix} 4/6. received SignRequest control message.`);
-				const signed = await options.signService.sign(msg.data);
+				options.logService.trAce(`${logPrefix} 4/6. received SignRequest control messAge.`);
+				const signed = AwAit options.signService.sign(msg.dAtA);
 				const connTypeRequest: ConnectionTypeRequest = {
 					type: 'connectionType',
 					commit: options.commit,
-					signedData: signed,
+					signedDAtA: signed,
 					desiredConnectionType: connectionType
 				};
-				if (args) {
-					connTypeRequest.args = args;
+				if (Args) {
+					connTypeRequest.Args = Args;
 				}
-				options.logService.trace(`${logPrefix} 5/6. sending ConnectionTypeRequest control message.`);
+				options.logService.trAce(`${logPrefix} 5/6. sending ConnectionTypeRequest control messAge.`);
 				protocol.sendControl(VSBuffer.fromString(JSON.stringify(connTypeRequest)));
-				clearTimeout(errorTimeoutToken);
+				cleArTimeout(errorTimeoutToken);
 				c({ protocol, ownsProtocol });
 			} else {
-				const error = new Error('handshake error');
-				options.logService.error(`${logPrefix} received unexpected control message. Error:`);
+				const error = new Error('hAndshAke error');
+				options.logService.error(`${logPrefix} received unexpected control messAge. Error:`);
 				options.logService.error(error);
 				if (ownsProtocol) {
-					safeDisposeProtocolAndSocket(protocol);
+					sAfeDisposeProtocolAndSocket(protocol);
 				}
 				e(error);
 			}
 		});
 
-		options.logService.trace(`${logPrefix} 3/6. sending AuthRequest control message.`);
-		// TODO@vs-remote: use real nonce here
-		const authRequest: AuthRequest = {
-			type: 'auth',
-			auth: '00000000000000000000'
+		options.logService.trAce(`${logPrefix} 3/6. sending AuthRequest control messAge.`);
+		// TODO@vs-remote: use reAl nonce here
+		const AuthRequest: AuthRequest = {
+			type: 'Auth',
+			Auth: '00000000000000000000'
 		};
-		protocol.sendControl(VSBuffer.fromString(JSON.stringify(authRequest)));
+		protocol.sendControl(VSBuffer.fromString(JSON.stringify(AuthRequest)));
 	});
 }
 
-interface IManagementConnectionResult {
+interfAce IMAnAgementConnectionResult {
 	protocol: PersistentProtocol;
 }
 
-async function connectToRemoteExtensionHostAgentAndReadOneMessage(options: ISimpleConnectionOptions, connectionType: ConnectionType, args: any | undefined): Promise<{ protocol: PersistentProtocol; firstMessage: any }> {
-	const startTime = Date.now();
+Async function connectToRemoteExtensionHostAgentAndReAdOneMessAge(options: ISimpleConnectionOptions, connectionType: ConnectionType, Args: Any | undefined): Promise<{ protocol: PersistentProtocol; firstMessAge: Any }> {
+	const stArtTime = DAte.now();
 	const logPrefix = connectLogPrefix(options, connectionType);
-	const { protocol, ownsProtocol } = await connectToRemoteExtensionHostAgent(options, connectionType, args);
-	return new Promise<{ protocol: PersistentProtocol; firstMessage: any }>((c, e) => {
-		const registration = protocol.onControlMessage(raw => {
-			registration.dispose();
-			const msg = JSON.parse(raw.toString());
-			const error = getErrorFromMessage(msg);
+	const { protocol, ownsProtocol } = AwAit connectToRemoteExtensionHostAgent(options, connectionType, Args);
+	return new Promise<{ protocol: PersistentProtocol; firstMessAge: Any }>((c, e) => {
+		const registrAtion = protocol.onControlMessAge(rAw => {
+			registrAtion.dispose();
+			const msg = JSON.pArse(rAw.toString());
+			const error = getErrorFromMessAge(msg);
 			if (error) {
-				options.logService.error(`${logPrefix} received error control message when negotiating connection. Error:`);
+				options.logService.error(`${logPrefix} received error control messAge when negotiAting connection. Error:`);
 				options.logService.error(error);
 				if (ownsProtocol) {
-					safeDisposeProtocolAndSocket(protocol);
+					sAfeDisposeProtocolAndSocket(protocol);
 				}
 				return e(error);
 			}
 			if (options.reconnectionProtocol) {
 				options.reconnectionProtocol.endAcceptReconnection();
 			}
-			options.logService.trace(`${logPrefix} 6/6. handshake finished, connection is up and running after ${logElapsed(startTime)}!`);
-			c({ protocol, firstMessage: msg });
+			options.logService.trAce(`${logPrefix} 6/6. hAndshAke finished, connection is up And running After ${logElApsed(stArtTime)}!`);
+			c({ protocol, firstMessAge: msg });
 		});
 	});
 }
 
-async function doConnectRemoteAgentManagement(options: ISimpleConnectionOptions): Promise<IManagementConnectionResult> {
-	const { protocol } = await connectToRemoteExtensionHostAgentAndReadOneMessage(options, ConnectionType.Management, undefined);
+Async function doConnectRemoteAgentMAnAgement(options: ISimpleConnectionOptions): Promise<IMAnAgementConnectionResult> {
+	const { protocol } = AwAit connectToRemoteExtensionHostAgentAndReAdOneMessAge(options, ConnectionType.MAnAgement, undefined);
 	return { protocol };
 }
 
-export interface IRemoteExtensionHostStartParams {
-	language: string;
+export interfAce IRemoteExtensionHostStArtPArAms {
+	lAnguAge: string;
 	debugId?: string;
-	break?: boolean;
+	breAk?: booleAn;
 	port?: number | null;
 	env?: { [key: string]: string | null };
 }
 
-interface IExtensionHostConnectionResult {
+interfAce IExtensionHostConnectionResult {
 	protocol: PersistentProtocol;
 	debugPort?: number;
 }
 
-async function doConnectRemoteAgentExtensionHost(options: ISimpleConnectionOptions, startArguments: IRemoteExtensionHostStartParams): Promise<IExtensionHostConnectionResult> {
-	const { protocol, firstMessage } = await connectToRemoteExtensionHostAgentAndReadOneMessage(options, ConnectionType.ExtensionHost, startArguments);
-	const debugPort = firstMessage && firstMessage.debugPort;
+Async function doConnectRemoteAgentExtensionHost(options: ISimpleConnectionOptions, stArtArguments: IRemoteExtensionHostStArtPArAms): Promise<IExtensionHostConnectionResult> {
+	const { protocol, firstMessAge } = AwAit connectToRemoteExtensionHostAgentAndReAdOneMessAge(options, ConnectionType.ExtensionHost, stArtArguments);
+	const debugPort = firstMessAge && firstMessAge.debugPort;
 	return { protocol, debugPort };
 }
 
-export interface ITunnelConnectionStartParams {
+export interfAce ITunnelConnectionStArtPArAms {
 	port: number;
 }
 
-async function doConnectRemoteAgentTunnel(options: ISimpleConnectionOptions, startParams: ITunnelConnectionStartParams): Promise<PersistentProtocol> {
-	const startTime = Date.now();
+Async function doConnectRemoteAgentTunnel(options: ISimpleConnectionOptions, stArtPArAms: ITunnelConnectionStArtPArAms): Promise<PersistentProtocol> {
+	const stArtTime = DAte.now();
 	const logPrefix = connectLogPrefix(options, ConnectionType.Tunnel);
-	const { protocol } = await connectToRemoteExtensionHostAgent(options, ConnectionType.Tunnel, startParams);
-	options.logService.trace(`${logPrefix} 6/6. handshake finished, connection is up and running after ${logElapsed(startTime)}!`);
+	const { protocol } = AwAit connectToRemoteExtensionHostAgent(options, ConnectionType.Tunnel, stArtPArAms);
+	options.logService.trAce(`${logPrefix} 6/6. hAndshAke finished, connection is up And running After ${logElApsed(stArtTime)}!`);
 	return protocol;
 }
 
-export interface IConnectionOptions {
+export interfAce IConnectionOptions {
 	commit: string | undefined;
-	socketFactory: ISocketFactory;
-	addressProvider: IAddressProvider;
+	socketFActory: ISocketFActory;
+	AddressProvider: IAddressProvider;
 	signService: ISignService;
 	logService: ILogService;
 	ipcLogger: IIPCLogger | null;
 }
 
-async function resolveConnectionOptions(options: IConnectionOptions, reconnectionToken: string, reconnectionProtocol: PersistentProtocol | null): Promise<ISimpleConnectionOptions> {
-	const { host, port } = await options.addressProvider.getAddress();
+Async function resolveConnectionOptions(options: IConnectionOptions, reconnectionToken: string, reconnectionProtocol: PersistentProtocol | null): Promise<ISimpleConnectionOptions> {
+	const { host, port } = AwAit options.AddressProvider.getAddress();
 	return {
 		commit: options.commit,
 		host: host,
 		port: port,
 		reconnectionToken: reconnectionToken,
 		reconnectionProtocol: reconnectionProtocol,
-		socketFactory: options.socketFactory,
+		socketFActory: options.socketFActory,
 		signService: options.signService,
 		logService: options.logService
 	};
 }
 
-export interface IAddress {
+export interfAce IAddress {
 	host: string;
 	port: number;
 }
 
-export interface IAddressProvider {
+export interfAce IAddressProvider {
 	getAddress(): Promise<IAddress>;
 }
 
-export async function connectRemoteAgentManagement(options: IConnectionOptions, remoteAuthority: string, clientId: string): Promise<ManagementPersistentConnection> {
+export Async function connectRemoteAgentMAnAgement(options: IConnectionOptions, remoteAuthority: string, clientId: string): Promise<MAnAgementPersistentConnection> {
 	try {
-		const reconnectionToken = generateUuid();
-		const simpleOptions = await resolveConnectionOptions(options, reconnectionToken, null);
-		const { protocol } = await connectWithTimeLimit(simpleOptions.logService, doConnectRemoteAgentManagement(simpleOptions), INITIAL_CONNECT_TIMEOUT);
-		return new ManagementPersistentConnection(options, remoteAuthority, clientId, reconnectionToken, protocol);
-	} catch (err) {
-		options.logService.error(`[remote-connection] An error occurred in the very first connect attempt, it will be treated as a permanent error! Error:`);
+		const reconnectionToken = generAteUuid();
+		const simpleOptions = AwAit resolveConnectionOptions(options, reconnectionToken, null);
+		const { protocol } = AwAit connectWithTimeLimit(simpleOptions.logService, doConnectRemoteAgentMAnAgement(simpleOptions), INITIAL_CONNECT_TIMEOUT);
+		return new MAnAgementPersistentConnection(options, remoteAuthority, clientId, reconnectionToken, protocol);
+	} cAtch (err) {
+		options.logService.error(`[remote-connection] An error occurred in the very first connect Attempt, it will be treAted As A permAnent error! Error:`);
 		options.logService.error(err);
-		PersistentConnection.triggerPermanentFailure();
+		PersistentConnection.triggerPermAnentFAilure();
 		throw err;
 	}
 }
 
-export async function connectRemoteAgentExtensionHost(options: IConnectionOptions, startArguments: IRemoteExtensionHostStartParams): Promise<ExtensionHostPersistentConnection> {
+export Async function connectRemoteAgentExtensionHost(options: IConnectionOptions, stArtArguments: IRemoteExtensionHostStArtPArAms): Promise<ExtensionHostPersistentConnection> {
 	try {
-		const reconnectionToken = generateUuid();
-		const simpleOptions = await resolveConnectionOptions(options, reconnectionToken, null);
-		const { protocol, debugPort } = await connectWithTimeLimit(simpleOptions.logService, doConnectRemoteAgentExtensionHost(simpleOptions, startArguments), INITIAL_CONNECT_TIMEOUT);
-		return new ExtensionHostPersistentConnection(options, startArguments, reconnectionToken, protocol, debugPort);
-	} catch (err) {
-		options.logService.error(`[remote-connection] An error occurred in the very first connect attempt, it will be treated as a permanent error! Error:`);
+		const reconnectionToken = generAteUuid();
+		const simpleOptions = AwAit resolveConnectionOptions(options, reconnectionToken, null);
+		const { protocol, debugPort } = AwAit connectWithTimeLimit(simpleOptions.logService, doConnectRemoteAgentExtensionHost(simpleOptions, stArtArguments), INITIAL_CONNECT_TIMEOUT);
+		return new ExtensionHostPersistentConnection(options, stArtArguments, reconnectionToken, protocol, debugPort);
+	} cAtch (err) {
+		options.logService.error(`[remote-connection] An error occurred in the very first connect Attempt, it will be treAted As A permAnent error! Error:`);
 		options.logService.error(err);
-		PersistentConnection.triggerPermanentFailure();
+		PersistentConnection.triggerPermAnentFAilure();
 		throw err;
 	}
 }
 
-export async function connectRemoteAgentTunnel(options: IConnectionOptions, tunnelRemotePort: number): Promise<PersistentProtocol> {
-	const simpleOptions = await resolveConnectionOptions(options, generateUuid(), null);
-	const protocol = await connectWithTimeLimit(simpleOptions.logService, doConnectRemoteAgentTunnel(simpleOptions, { port: tunnelRemotePort }), INITIAL_CONNECT_TIMEOUT);
+export Async function connectRemoteAgentTunnel(options: IConnectionOptions, tunnelRemotePort: number): Promise<PersistentProtocol> {
+	const simpleOptions = AwAit resolveConnectionOptions(options, generAteUuid(), null);
+	const protocol = AwAit connectWithTimeLimit(simpleOptions.logService, doConnectRemoteAgentTunnel(simpleOptions, { port: tunnelRemotePort }), INITIAL_CONNECT_TIMEOUT);
 	return protocol;
 }
 
-function sleep(seconds: number): CancelablePromise<void> {
-	return createCancelablePromise(token => {
+function sleep(seconds: number): CAncelAblePromise<void> {
+	return creAteCAncelAblePromise(token => {
 		return new Promise((resolve, reject) => {
 			const timeout = setTimeout(resolve, seconds * 1000);
-			token.onCancellationRequested(() => {
-				clearTimeout(timeout);
+			token.onCAncellAtionRequested(() => {
+				cleArTimeout(timeout);
 				resolve();
 			});
 		});
@@ -324,259 +324,259 @@ function sleep(seconds: number): CancelablePromise<void> {
 
 export const enum PersistentConnectionEventType {
 	ConnectionLost,
-	ReconnectionWait,
+	ReconnectionWAit,
 	ReconnectionRunning,
-	ReconnectionPermanentFailure,
-	ConnectionGain
+	ReconnectionPermAnentFAilure,
+	ConnectionGAin
 }
-export class ConnectionLostEvent {
-	public readonly type = PersistentConnectionEventType.ConnectionLost;
+export clAss ConnectionLostEvent {
+	public reAdonly type = PersistentConnectionEventType.ConnectionLost;
 }
-export class ReconnectionWaitEvent {
-	public readonly type = PersistentConnectionEventType.ReconnectionWait;
+export clAss ReconnectionWAitEvent {
+	public reAdonly type = PersistentConnectionEventType.ReconnectionWAit;
 	constructor(
-		public readonly durationSeconds: number,
-		private readonly cancellableTimer: CancelablePromise<void>
+		public reAdonly durAtionSeconds: number,
+		privAte reAdonly cAncellAbleTimer: CAncelAblePromise<void>
 	) { }
 
-	public skipWait(): void {
-		this.cancellableTimer.cancel();
+	public skipWAit(): void {
+		this.cAncellAbleTimer.cAncel();
 	}
 }
-export class ReconnectionRunningEvent {
-	public readonly type = PersistentConnectionEventType.ReconnectionRunning;
+export clAss ReconnectionRunningEvent {
+	public reAdonly type = PersistentConnectionEventType.ReconnectionRunning;
 }
-export class ConnectionGainEvent {
-	public readonly type = PersistentConnectionEventType.ConnectionGain;
+export clAss ConnectionGAinEvent {
+	public reAdonly type = PersistentConnectionEventType.ConnectionGAin;
 }
-export class ReconnectionPermanentFailureEvent {
-	public readonly type = PersistentConnectionEventType.ReconnectionPermanentFailure;
+export clAss ReconnectionPermAnentFAilureEvent {
+	public reAdonly type = PersistentConnectionEventType.ReconnectionPermAnentFAilure;
 }
-export type PersistentConnectionEvent = ConnectionGainEvent | ConnectionLostEvent | ReconnectionWaitEvent | ReconnectionRunningEvent | ReconnectionPermanentFailureEvent;
+export type PersistentConnectionEvent = ConnectionGAinEvent | ConnectionLostEvent | ReconnectionWAitEvent | ReconnectionRunningEvent | ReconnectionPermAnentFAilureEvent;
 
-abstract class PersistentConnection extends Disposable {
+AbstrAct clAss PersistentConnection extends DisposAble {
 
-	public static triggerPermanentFailure(): void {
-		this._permanentFailure = true;
-		this._instances.forEach(instance => instance._gotoPermanentFailure());
+	public stAtic triggerPermAnentFAilure(): void {
+		this._permAnentFAilure = true;
+		this._instAnces.forEAch(instAnce => instAnce._gotoPermAnentFAilure());
 	}
-	private static _permanentFailure: boolean = false;
-	private static _instances: PersistentConnection[] = [];
+	privAte stAtic _permAnentFAilure: booleAn = fAlse;
+	privAte stAtic _instAnces: PersistentConnection[] = [];
 
-	private readonly _onDidStateChange = this._register(new Emitter<PersistentConnectionEvent>());
-	public readonly onDidStateChange = this._onDidStateChange.event;
+	privAte reAdonly _onDidStAteChAnge = this._register(new Emitter<PersistentConnectionEvent>());
+	public reAdonly onDidStAteChAnge = this._onDidStAteChAnge.event;
 
-	protected readonly _options: IConnectionOptions;
-	public readonly reconnectionToken: string;
-	public readonly protocol: PersistentProtocol;
+	protected reAdonly _options: IConnectionOptions;
+	public reAdonly reconnectionToken: string;
+	public reAdonly protocol: PersistentProtocol;
 
-	private _isReconnecting: boolean;
+	privAte _isReconnecting: booleAn;
 
-	constructor(private readonly _connectionType: ConnectionType, options: IConnectionOptions, reconnectionToken: string, protocol: PersistentProtocol) {
+	constructor(privAte reAdonly _connectionType: ConnectionType, options: IConnectionOptions, reconnectionToken: string, protocol: PersistentProtocol) {
 		super();
 		this._options = options;
 		this.reconnectionToken = reconnectionToken;
 		this.protocol = protocol;
-		this._isReconnecting = false;
+		this._isReconnecting = fAlse;
 
-		this._onDidStateChange.fire(new ConnectionGainEvent());
+		this._onDidStAteChAnge.fire(new ConnectionGAinEvent());
 
 		this._register(protocol.onSocketClose(() => this._beginReconnecting()));
 		this._register(protocol.onSocketTimeout(() => this._beginReconnecting()));
 
-		PersistentConnection._instances.push(this);
+		PersistentConnection._instAnces.push(this);
 
-		if (PersistentConnection._permanentFailure) {
-			this._gotoPermanentFailure();
+		if (PersistentConnection._permAnentFAilure) {
+			this._gotoPermAnentFAilure();
 		}
 	}
 
-	private async _beginReconnecting(): Promise<void> {
-		// Only have one reconnection loop active at a time.
+	privAte Async _beginReconnecting(): Promise<void> {
+		// Only hAve one reconnection loop Active At A time.
 		if (this._isReconnecting) {
 			return;
 		}
 		try {
 			this._isReconnecting = true;
-			await this._runReconnectingLoop();
-		} finally {
-			this._isReconnecting = false;
+			AwAit this._runReconnectingLoop();
+		} finAlly {
+			this._isReconnecting = fAlse;
 		}
 	}
 
-	private async _runReconnectingLoop(): Promise<void> {
-		if (PersistentConnection._permanentFailure) {
-			// no more attempts!
+	privAte Async _runReconnectingLoop(): Promise<void> {
+		if (PersistentConnection._permAnentFAilure) {
+			// no more Attempts!
 			return;
 		}
 		const logPrefix = commonLogPrefix(this._connectionType, this.reconnectionToken, true);
-		this._options.logService.info(`${logPrefix} starting reconnecting loop. You can get more information with the trace log level.`);
-		this._onDidStateChange.fire(new ConnectionLostEvent());
+		this._options.logService.info(`${logPrefix} stArting reconnecting loop. You cAn get more informAtion with the trAce log level.`);
+		this._onDidStAteChAnge.fire(new ConnectionLostEvent());
 		const TIMES = [5, 5, 10, 10, 10, 10, 10, 30];
-		const disconnectStartTime = Date.now();
-		let attempt = -1;
+		const disconnectStArtTime = DAte.now();
+		let Attempt = -1;
 		do {
-			attempt++;
-			const waitTime = (attempt < TIMES.length ? TIMES[attempt] : TIMES[TIMES.length - 1]);
+			Attempt++;
+			const wAitTime = (Attempt < TIMES.length ? TIMES[Attempt] : TIMES[TIMES.length - 1]);
 			try {
-				const sleepPromise = sleep(waitTime);
-				this._onDidStateChange.fire(new ReconnectionWaitEvent(waitTime, sleepPromise));
+				const sleepPromise = sleep(wAitTime);
+				this._onDidStAteChAnge.fire(new ReconnectionWAitEvent(wAitTime, sleepPromise));
 
-				this._options.logService.info(`${logPrefix} waiting for ${waitTime} seconds before reconnecting...`);
+				this._options.logService.info(`${logPrefix} wAiting for ${wAitTime} seconds before reconnecting...`);
 				try {
-					await sleepPromise;
-				} catch { } // User canceled timer
+					AwAit sleepPromise;
+				} cAtch { } // User cAnceled timer
 
-				if (PersistentConnection._permanentFailure) {
-					this._options.logService.error(`${logPrefix} permanent failure occurred while running the reconnecting loop.`);
-					break;
+				if (PersistentConnection._permAnentFAilure) {
+					this._options.logService.error(`${logPrefix} permAnent fAilure occurred while running the reconnecting loop.`);
+					breAk;
 				}
 
-				// connection was lost, let's try to re-establish it
-				this._onDidStateChange.fire(new ReconnectionRunningEvent());
+				// connection wAs lost, let's try to re-estAblish it
+				this._onDidStAteChAnge.fire(new ReconnectionRunningEvent());
 				this._options.logService.info(`${logPrefix} resolving connection...`);
-				const simpleOptions = await resolveConnectionOptions(this._options, this.reconnectionToken, this.protocol);
+				const simpleOptions = AwAit resolveConnectionOptions(this._options, this.reconnectionToken, this.protocol);
 				this._options.logService.info(`${logPrefix} connecting to ${simpleOptions.host}:${simpleOptions.port}...`);
-				await connectWithTimeLimit(simpleOptions.logService, this._reconnect(simpleOptions), RECONNECT_TIMEOUT);
+				AwAit connectWithTimeLimit(simpleOptions.logService, this._reconnect(simpleOptions), RECONNECT_TIMEOUT);
 				this._options.logService.info(`${logPrefix} reconnected!`);
-				this._onDidStateChange.fire(new ConnectionGainEvent());
+				this._onDidStAteChAnge.fire(new ConnectionGAinEvent());
 
-				break;
-			} catch (err) {
+				breAk;
+			} cAtch (err) {
 				if (err.code === 'VSCODE_CONNECTION_ERROR') {
-					this._options.logService.error(`${logPrefix} A permanent error occurred in the reconnecting loop! Will give up now! Error:`);
+					this._options.logService.error(`${logPrefix} A permAnent error occurred in the reconnecting loop! Will give up now! Error:`);
 					this._options.logService.error(err);
-					PersistentConnection.triggerPermanentFailure();
-					break;
+					PersistentConnection.triggerPermAnentFAilure();
+					breAk;
 				}
-				if (Date.now() - disconnectStartTime > ProtocolConstants.ReconnectionGraceTime) {
-					this._options.logService.error(`${logPrefix} An error occurred while reconnecting, but it will be treated as a permanent error because the reconnection grace time has expired! Will give up now! Error:`);
+				if (DAte.now() - disconnectStArtTime > ProtocolConstAnts.ReconnectionGrAceTime) {
+					this._options.logService.error(`${logPrefix} An error occurred while reconnecting, but it will be treAted As A permAnent error becAuse the reconnection grAce time hAs expired! Will give up now! Error:`);
 					this._options.logService.error(err);
-					PersistentConnection.triggerPermanentFailure();
-					break;
+					PersistentConnection.triggerPermAnentFAilure();
+					breAk;
 				}
-				if (RemoteAuthorityResolverError.isTemporarilyNotAvailable(err)) {
-					this._options.logService.info(`${logPrefix} A temporarily not available error occurred while trying to reconnect, will try again...`);
-					this._options.logService.trace(err);
-					// try again!
+				if (RemoteAuthorityResolverError.isTemporArilyNotAvAilAble(err)) {
+					this._options.logService.info(`${logPrefix} A temporArily not AvAilAble error occurred while trying to reconnect, will try AgAin...`);
+					this._options.logService.trAce(err);
+					// try AgAin!
 					continue;
 				}
-				if ((err.code === 'ETIMEDOUT' || err.code === 'ENETUNREACH' || err.code === 'ECONNREFUSED' || err.code === 'ECONNRESET') && err.syscall === 'connect') {
-					this._options.logService.info(`${logPrefix} A network error occurred while trying to reconnect, will try again...`);
-					this._options.logService.trace(err);
-					// try again!
+				if ((err.code === 'ETIMEDOUT' || err.code === 'ENETUNREACH' || err.code === 'ECONNREFUSED' || err.code === 'ECONNRESET') && err.syscAll === 'connect') {
+					this._options.logService.info(`${logPrefix} A network error occurred while trying to reconnect, will try AgAin...`);
+					this._options.logService.trAce(err);
+					// try AgAin!
 					continue;
 				}
-				if (isPromiseCanceledError(err)) {
-					this._options.logService.info(`${logPrefix} A promise cancelation error occurred while trying to reconnect, will try again...`);
-					this._options.logService.trace(err);
-					// try again!
+				if (isPromiseCAnceledError(err)) {
+					this._options.logService.info(`${logPrefix} A promise cAncelAtion error occurred while trying to reconnect, will try AgAin...`);
+					this._options.logService.trAce(err);
+					// try AgAin!
 					continue;
 				}
-				this._options.logService.error(`${logPrefix} An unknown error occurred while trying to reconnect, since this is an unknown case, it will be treated as a permanent error! Will give up now! Error:`);
+				this._options.logService.error(`${logPrefix} An unknown error occurred while trying to reconnect, since this is An unknown cAse, it will be treAted As A permAnent error! Will give up now! Error:`);
 				this._options.logService.error(err);
-				PersistentConnection.triggerPermanentFailure();
-				break;
+				PersistentConnection.triggerPermAnentFAilure();
+				breAk;
 			}
-		} while (!PersistentConnection._permanentFailure);
+		} while (!PersistentConnection._permAnentFAilure);
 	}
 
-	private _gotoPermanentFailure(): void {
-		this._onDidStateChange.fire(new ReconnectionPermanentFailureEvent());
-		safeDisposeProtocolAndSocket(this.protocol);
+	privAte _gotoPermAnentFAilure(): void {
+		this._onDidStAteChAnge.fire(new ReconnectionPermAnentFAilureEvent());
+		sAfeDisposeProtocolAndSocket(this.protocol);
 	}
 
-	protected abstract _reconnect(options: ISimpleConnectionOptions): Promise<void>;
+	protected AbstrAct _reconnect(options: ISimpleConnectionOptions): Promise<void>;
 }
 
-export class ManagementPersistentConnection extends PersistentConnection {
+export clAss MAnAgementPersistentConnection extends PersistentConnection {
 
-	public readonly client: Client<RemoteAgentConnectionContext>;
+	public reAdonly client: Client<RemoteAgentConnectionContext>;
 
 	constructor(options: IConnectionOptions, remoteAuthority: string, clientId: string, reconnectionToken: string, protocol: PersistentProtocol) {
-		super(ConnectionType.Management, options, reconnectionToken, protocol);
+		super(ConnectionType.MAnAgement, options, reconnectionToken, protocol);
 		this.client = this._register(new Client<RemoteAgentConnectionContext>(protocol, {
 			remoteAuthority: remoteAuthority,
 			clientId: clientId
 		}, options.ipcLogger));
 	}
 
-	protected async _reconnect(options: ISimpleConnectionOptions): Promise<void> {
-		await doConnectRemoteAgentManagement(options);
+	protected Async _reconnect(options: ISimpleConnectionOptions): Promise<void> {
+		AwAit doConnectRemoteAgentMAnAgement(options);
 	}
 }
 
-export class ExtensionHostPersistentConnection extends PersistentConnection {
+export clAss ExtensionHostPersistentConnection extends PersistentConnection {
 
-	private readonly _startArguments: IRemoteExtensionHostStartParams;
-	public readonly debugPort: number | undefined;
+	privAte reAdonly _stArtArguments: IRemoteExtensionHostStArtPArAms;
+	public reAdonly debugPort: number | undefined;
 
-	constructor(options: IConnectionOptions, startArguments: IRemoteExtensionHostStartParams, reconnectionToken: string, protocol: PersistentProtocol, debugPort: number | undefined) {
+	constructor(options: IConnectionOptions, stArtArguments: IRemoteExtensionHostStArtPArAms, reconnectionToken: string, protocol: PersistentProtocol, debugPort: number | undefined) {
 		super(ConnectionType.ExtensionHost, options, reconnectionToken, protocol);
-		this._startArguments = startArguments;
+		this._stArtArguments = stArtArguments;
 		this.debugPort = debugPort;
 	}
 
-	protected async _reconnect(options: ISimpleConnectionOptions): Promise<void> {
-		await doConnectRemoteAgentExtensionHost(options, this._startArguments);
+	protected Async _reconnect(options: ISimpleConnectionOptions): Promise<void> {
+		AwAit doConnectRemoteAgentExtensionHost(options, this._stArtArguments);
 	}
 }
 
 function connectWithTimeLimit<T>(logService: ILogService, p: Promise<T>, timeLimit: number): Promise<T> {
 	return new Promise<T>((resolve, reject) => {
 		let timeout = setTimeout(() => {
-			const err: any = new Error('Time limit reached');
+			const err: Any = new Error('Time limit reAched');
 			err.code = 'ETIMEDOUT';
-			err.syscall = 'connect';
-			logService.error(`[remote-connection] The time limit has been reached for a connection. Error:`);
+			err.syscAll = 'connect';
+			logService.error(`[remote-connection] The time limit hAs been reAched for A connection. Error:`);
 			logService.error(err);
 			reject(err);
 		}, timeLimit);
-		p.then((value) => {
-			clearTimeout(timeout);
-			resolve(value);
+		p.then((vAlue) => {
+			cleArTimeout(timeout);
+			resolve(vAlue);
 		}, (err) => {
-			clearTimeout(timeout);
+			cleArTimeout(timeout);
 			reject(err);
 		});
 	});
 }
 
-function safeDisposeProtocolAndSocket(protocol: PersistentProtocol): void {
+function sAfeDisposeProtocolAndSocket(protocol: PersistentProtocol): void {
 	try {
-		protocol.acceptDisconnect();
+		protocol.AcceptDisconnect();
 		const socket = protocol.getSocket();
 		protocol.dispose();
 		socket.dispose();
-	} catch (err) {
+	} cAtch (err) {
 		onUnexpectedError(err);
 	}
 }
 
-function getErrorFromMessage(msg: any): Error | null {
+function getErrorFromMessAge(msg: Any): Error | null {
 	if (msg && msg.type === 'error') {
-		const error = new Error(`Connection error: ${msg.reason}`);
-		(<any>error).code = 'VSCODE_CONNECTION_ERROR';
+		const error = new Error(`Connection error: ${msg.reAson}`);
+		(<Any>error).code = 'VSCODE_CONNECTION_ERROR';
 		return error;
 	}
 	return null;
 }
 
-function stringRightPad(str: string, len: number): string {
+function stringRightPAd(str: string, len: number): string {
 	while (str.length < len) {
 		str += ' ';
 	}
 	return str;
 }
 
-function commonLogPrefix(connectionType: ConnectionType, reconnectionToken: string, isReconnect: boolean): string {
-	return `[remote-connection][${stringRightPad(connectionTypeToString(connectionType), 13)}][${reconnectionToken.substr(0, 5)}…][${isReconnect ? 'reconnect' : 'initial'}]`;
+function commonLogPrefix(connectionType: ConnectionType, reconnectionToken: string, isReconnect: booleAn): string {
+	return `[remote-connection][${stringRightPAd(connectionTypeToString(connectionType), 13)}][${reconnectionToken.substr(0, 5)}…][${isReconnect ? 'reconnect' : 'initiAl'}]`;
 }
 
 function connectLogPrefix(options: ISimpleConnectionOptions, connectionType: ConnectionType): string {
 	return `${commonLogPrefix(connectionType, options.reconnectionToken, !!options.reconnectionProtocol)}[${options.host}:${options.port}]`;
 }
 
-function logElapsed(startTime: number): string {
-	return `${Date.now() - startTime} ms`;
+function logElApsed(stArtTime: number): string {
+	return `${DAte.now() - stArtTime} ms`;
 }

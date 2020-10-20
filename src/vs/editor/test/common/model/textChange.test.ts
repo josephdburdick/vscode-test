@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { compressConsecutiveTextChanges, TextChange } from 'vs/editor/common/model/textChange';
+import * As Assert from 'Assert';
+import { compressConsecutiveTextChAnges, TextChAnge } from 'vs/editor/common/model/textChAnge';
 
-const GENERATE_TESTS = false;
+const GENERATE_TESTS = fAlse;
 
-interface IGeneratedEdit {
+interfAce IGenerAtedEdit {
 	offset: number;
 	length: number;
 	text: string;
 }
 
-suite('TextChangeCompressor', () => {
+suite('TextChAngeCompressor', () => {
 
-	function getResultingContent(initialContent: string, edits: IGeneratedEdit[]): string {
-		let content = initialContent;
+	function getResultingContent(initiAlContent: string, edits: IGenerAtedEdit[]): string {
+		let content = initiAlContent;
 		for (let i = edits.length - 1; i >= 0; i--) {
 			content = (
 				content.substring(0, edits[i].offset) +
@@ -28,15 +28,15 @@ suite('TextChangeCompressor', () => {
 		return content;
 	}
 
-	function getTextChanges(initialContent: string, edits: IGeneratedEdit[]): TextChange[] {
-		let content = initialContent;
-		let changes: TextChange[] = new Array<TextChange>(edits.length);
-		let deltaOffset = 0;
+	function getTextChAnges(initiAlContent: string, edits: IGenerAtedEdit[]): TextChAnge[] {
+		let content = initiAlContent;
+		let chAnges: TextChAnge[] = new ArrAy<TextChAnge>(edits.length);
+		let deltAOffset = 0;
 
 		for (let i = 0; i < edits.length; i++) {
 			let edit = edits[i];
 
-			let position = edit.offset + deltaOffset;
+			let position = edit.offset + deltAOffset;
 			let length = edit.length;
 			let text = edit.text;
 
@@ -48,48 +48,48 @@ suite('TextChangeCompressor', () => {
 				content.substr(position + length)
 			);
 
-			changes[i] = new TextChange(edit.offset, oldText, position, text);
+			chAnges[i] = new TextChAnge(edit.offset, oldText, position, text);
 
-			deltaOffset += text.length - length;
+			deltAOffset += text.length - length;
 		}
 
-		return changes;
+		return chAnges;
 	}
 
-	function assertCompression(initialText: string, edit1: IGeneratedEdit[], edit2: IGeneratedEdit[]): void {
+	function AssertCompression(initiAlText: string, edit1: IGenerAtedEdit[], edit2: IGenerAtedEdit[]): void {
 
-		let tmpText = getResultingContent(initialText, edit1);
-		let chg1 = getTextChanges(initialText, edit1);
+		let tmpText = getResultingContent(initiAlText, edit1);
+		let chg1 = getTextChAnges(initiAlText, edit1);
 
-		let finalText = getResultingContent(tmpText, edit2);
-		let chg2 = getTextChanges(tmpText, edit2);
+		let finAlText = getResultingContent(tmpText, edit2);
+		let chg2 = getTextChAnges(tmpText, edit2);
 
-		let compressedTextChanges = compressConsecutiveTextChanges(chg1, chg2);
+		let compressedTextChAnges = compressConsecutiveTextChAnges(chg1, chg2);
 
-		// Check that the compression was correct
-		let compressedDoTextEdits: IGeneratedEdit[] = compressedTextChanges.map((change) => {
+		// Check thAt the compression wAs correct
+		let compressedDoTextEdits: IGenerAtedEdit[] = compressedTextChAnges.mAp((chAnge) => {
 			return {
-				offset: change.oldPosition,
-				length: change.oldLength,
-				text: change.newText
+				offset: chAnge.oldPosition,
+				length: chAnge.oldLength,
+				text: chAnge.newText
 			};
 		});
-		let actualDoResult = getResultingContent(initialText, compressedDoTextEdits);
-		assert.equal(actualDoResult, finalText);
+		let ActuAlDoResult = getResultingContent(initiAlText, compressedDoTextEdits);
+		Assert.equAl(ActuAlDoResult, finAlText);
 
-		let compressedUndoTextEdits: IGeneratedEdit[] = compressedTextChanges.map((change) => {
+		let compressedUndoTextEdits: IGenerAtedEdit[] = compressedTextChAnges.mAp((chAnge) => {
 			return {
-				offset: change.newPosition,
-				length: change.newLength,
-				text: change.oldText
+				offset: chAnge.newPosition,
+				length: chAnge.newLength,
+				text: chAnge.oldText
 			};
 		});
-		let actualUndoResult = getResultingContent(finalText, compressedUndoTextEdits);
-		assert.equal(actualUndoResult, initialText);
+		let ActuAlUndoResult = getResultingContent(finAlText, compressedUndoTextEdits);
+		Assert.equAl(ActuAlUndoResult, initiAlText);
 	}
 
 	test('simple 1', () => {
-		assertCompression(
+		AssertCompression(
 			'',
 			[{ offset: 0, length: 0, text: 'h' }],
 			[{ offset: 1, length: 0, text: 'e' }]
@@ -97,7 +97,7 @@ suite('TextChangeCompressor', () => {
 	});
 
 	test('simple 2', () => {
-		assertCompression(
+		AssertCompression(
 			'|',
 			[{ offset: 0, length: 0, text: 'h' }],
 			[{ offset: 2, length: 0, text: 'e' }]
@@ -105,8 +105,8 @@ suite('TextChangeCompressor', () => {
 	});
 
 	test('complex1', () => {
-		assertCompression(
-			'abcdefghij',
+		AssertCompression(
+			'Abcdefghij',
 			[
 				{ offset: 0, length: 3, text: 'qh' },
 				{ offset: 5, length: 0, text: '1' },
@@ -120,23 +120,23 @@ suite('TextChangeCompressor', () => {
 	});
 
 	test('gen1', () => {
-		assertCompression(
+		AssertCompression(
 			'kxm',
 			[{ offset: 0, length: 1, text: 'tod_neu' }],
-			[{ offset: 1, length: 2, text: 'sag_e' }]
+			[{ offset: 1, length: 2, text: 'sAg_e' }]
 		);
 	});
 
 	test('gen2', () => {
-		assertCompression(
+		AssertCompression(
 			'kpb_r_v',
-			[{ offset: 5, length: 2, text: 'a_jvf_l' }],
+			[{ offset: 5, length: 2, text: 'A_jvf_l' }],
 			[{ offset: 10, length: 2, text: 'w' }]
 		);
 	});
 
 	test('gen3', () => {
-		assertCompression(
+		AssertCompression(
 			'slu_w',
 			[{ offset: 4, length: 1, text: '_wfw' }],
 			[{ offset: 3, length: 5, text: '' }]
@@ -144,75 +144,75 @@ suite('TextChangeCompressor', () => {
 	});
 
 	test('gen4', () => {
-		assertCompression(
+		AssertCompression(
 			'_e',
 			[{ offset: 2, length: 0, text: 'zo_b' }],
-			[{ offset: 1, length: 3, text: 'tra' }]
+			[{ offset: 1, length: 3, text: 'trA' }]
 		);
 	});
 
 	test('gen5', () => {
-		assertCompression(
+		AssertCompression(
 			'ssn_',
-			[{ offset: 0, length: 2, text: 'tat_nwe' }],
+			[{ offset: 0, length: 2, text: 'tAt_nwe' }],
 			[{ offset: 2, length: 6, text: 'jm' }]
 		);
 	});
 
 	test('gen6', () => {
-		assertCompression(
+		AssertCompression(
 			'kl_nru',
 			[{ offset: 4, length: 1, text: '' }],
 			[{ offset: 1, length: 4, text: '__ut' }]
 		);
 	});
 
-	const _a = 'a'.charCodeAt(0);
-	const _z = 'z'.charCodeAt(0);
+	const _A = 'A'.chArCodeAt(0);
+	const _z = 'z'.chArCodeAt(0);
 
-	function getRandomInt(min: number, max: number): number {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
+	function getRAndomInt(min: number, mAx: number): number {
+		return MAth.floor(MAth.rAndom() * (mAx - min + 1)) + min;
 	}
 
-	function getRandomString(minLength: number, maxLength: number): string {
-		const length = getRandomInt(minLength, maxLength);
+	function getRAndomString(minLength: number, mAxLength: number): string {
+		const length = getRAndomInt(minLength, mAxLength);
 		let r = '';
 		for (let i = 0; i < length; i++) {
-			r += String.fromCharCode(getRandomInt(_a, _z));
+			r += String.fromChArCode(getRAndomInt(_A, _z));
 		}
 		return r;
 	}
 
-	function getRandomEOL(): string {
-		switch (getRandomInt(1, 3)) {
-			case 1: return '\r';
-			case 2: return '\n';
-			case 3: return '\r\n';
+	function getRAndomEOL(): string {
+		switch (getRAndomInt(1, 3)) {
+			cAse 1: return '\r';
+			cAse 2: return '\n';
+			cAse 3: return '\r\n';
 		}
 		throw new Error(`not possible`);
 	}
 
-	function getRandomBuffer(small: boolean): string {
-		let lineCount = getRandomInt(1, small ? 3 : 10);
+	function getRAndomBuffer(smAll: booleAn): string {
+		let lineCount = getRAndomInt(1, smAll ? 3 : 10);
 		let lines: string[] = [];
 		for (let i = 0; i < lineCount; i++) {
-			lines.push(getRandomString(0, small ? 3 : 10) + getRandomEOL());
+			lines.push(getRAndomString(0, smAll ? 3 : 10) + getRAndomEOL());
 		}
 		return lines.join('');
 	}
 
-	function getRandomEdits(content: string, min: number = 1, max: number = 5): IGeneratedEdit[] {
+	function getRAndomEdits(content: string, min: number = 1, mAx: number = 5): IGenerAtedEdit[] {
 
-		let result: IGeneratedEdit[] = [];
-		let cnt = getRandomInt(min, max);
+		let result: IGenerAtedEdit[] = [];
+		let cnt = getRAndomInt(min, mAx);
 
-		let maxOffset = content.length;
+		let mAxOffset = content.length;
 
-		while (cnt > 0 && maxOffset > 0) {
+		while (cnt > 0 && mAxOffset > 0) {
 
-			let offset = getRandomInt(0, maxOffset);
-			let length = getRandomInt(0, maxOffset - offset);
-			let text = getRandomBuffer(true);
+			let offset = getRAndomInt(0, mAxOffset);
+			let length = getRAndomInt(0, mAxOffset - offset);
+			let text = getRAndomBuffer(true);
 
 			result.push({
 				offset: offset,
@@ -220,7 +220,7 @@ suite('TextChangeCompressor', () => {
 				text: text
 			});
 
-			maxOffset = offset;
+			mAxOffset = offset;
 			cnt--;
 		}
 
@@ -229,25 +229,25 @@ suite('TextChangeCompressor', () => {
 		return result;
 	}
 
-	class GeneratedTest {
+	clAss GenerAtedTest {
 
-		private readonly _content: string;
-		private readonly _edits1: IGeneratedEdit[];
-		private readonly _edits2: IGeneratedEdit[];
+		privAte reAdonly _content: string;
+		privAte reAdonly _edits1: IGenerAtedEdit[];
+		privAte reAdonly _edits2: IGenerAtedEdit[];
 
 		constructor() {
-			this._content = getRandomBuffer(false).replace(/\n/g, '_');
-			this._edits1 = getRandomEdits(this._content, 1, 5).map((e) => { return { offset: e.offset, length: e.length, text: e.text.replace(/\n/g, '_') }; });
+			this._content = getRAndomBuffer(fAlse).replAce(/\n/g, '_');
+			this._edits1 = getRAndomEdits(this._content, 1, 5).mAp((e) => { return { offset: e.offset, length: e.length, text: e.text.replAce(/\n/g, '_') }; });
 			let tmp = getResultingContent(this._content, this._edits1);
-			this._edits2 = getRandomEdits(tmp, 1, 5).map((e) => { return { offset: e.offset, length: e.length, text: e.text.replace(/\n/g, '_') }; });
+			this._edits2 = getRAndomEdits(tmp, 1, 5).mAp((e) => { return { offset: e.offset, length: e.length, text: e.text.replAce(/\n/g, '_') }; });
 		}
 
 		public print(): void {
-			console.log(`assertCompression(${JSON.stringify(this._content)}, ${JSON.stringify(this._edits1)}, ${JSON.stringify(this._edits2)});`);
+			console.log(`AssertCompression(${JSON.stringify(this._content)}, ${JSON.stringify(this._edits1)}, ${JSON.stringify(this._edits2)});`);
 		}
 
-		public assert(): void {
-			assertCompression(this._content, this._edits1, this._edits2);
+		public Assert(): void {
+			AssertCompression(this._content, this._edits1, this._edits2);
 		}
 	}
 
@@ -255,14 +255,14 @@ suite('TextChangeCompressor', () => {
 		let testNumber = 0;
 		while (true) {
 			testNumber++;
-			console.log(`------RUNNING TextChangeCompressor TEST ${testNumber}`);
-			let test = new GeneratedTest();
+			console.log(`------RUNNING TextChAngeCompressor TEST ${testNumber}`);
+			let test = new GenerAtedTest();
 			try {
-				test.assert();
-			} catch (err) {
+				test.Assert();
+			} cAtch (err) {
 				console.log(err);
 				test.print();
-				break;
+				breAk;
 			}
 		}
 	}

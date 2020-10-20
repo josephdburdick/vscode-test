@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { ResourcesDropHandler, DragAndDropObserver } from 'vs/workbench/browser/dnd';
-import { listDropBackground } from 'vs/platform/theme/common/colorRegistry';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+import * As nls from 'vs/nls';
+import { IViewletViewOptions } from 'vs/workbench/browser/pArts/views/viewsViewlet';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ViewPAne } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { ResourcesDropHAndler, DrAgAndDropObserver } from 'vs/workbench/browser/dnd';
+import { listDropBAckground } from 'vs/plAtform/theme/common/colorRegistry';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 
-export class EmptyView extends ViewPane {
+export clAss EmptyView extends ViewPAne {
 
-	static readonly ID: string = 'workbench.explorer.emptyView';
-	static readonly NAME = nls.localize('noWorkspace', "No Folder Opened");
+	stAtic reAdonly ID: string = 'workbench.explorer.emptyView';
+	stAtic reAdonly NAME = nls.locAlize('noWorkspAce', "No Folder Opened");
 
 	constructor(
 		options: IViewletViewOptions,
 		@IThemeService themeService: IThemeService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@ILabelService private labelService: ILabelService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@ILAbelService privAte lAbelService: ILAbelService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IOpenerService openerService: IOpenerService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
 
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this.refreshTitle()));
-		this._register(this.labelService.onDidChangeFormatters(() => this.refreshTitle()));
+		this._register(this.contextService.onDidChAngeWorkbenchStAte(() => this.refreshTitle()));
+		this._register(this.lAbelService.onDidChAngeFormAtters(() => this.refreshTitle()));
 	}
 
-	shouldShowWelcome(): boolean {
+	shouldShowWelcome(): booleAn {
 		return true;
 	}
 
-	protected renderBody(container: HTMLElement): void {
-		super.renderBody(container);
+	protected renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
 
-		this._register(new DragAndDropObserver(container, {
+		this._register(new DrAgAndDropObserver(contAiner, {
 			onDrop: e => {
-				container.style.backgroundColor = '';
-				const dropHandler = this.instantiationService.createInstance(ResourcesDropHandler, { allowWorkspaceOpen: true });
-				dropHandler.handleDrop(e, () => undefined, () => undefined);
+				contAiner.style.bAckgroundColor = '';
+				const dropHAndler = this.instAntiAtionService.creAteInstAnce(ResourcesDropHAndler, { AllowWorkspAceOpen: true });
+				dropHAndler.hAndleDrop(e, () => undefined, () => undefined);
 			},
-			onDragEnter: () => {
-				const color = this.themeService.getColorTheme().getColor(listDropBackground);
-				container.style.backgroundColor = color ? color.toString() : '';
+			onDrAgEnter: () => {
+				const color = this.themeService.getColorTheme().getColor(listDropBAckground);
+				contAiner.style.bAckgroundColor = color ? color.toString() : '';
 			},
-			onDragEnd: () => {
-				container.style.backgroundColor = '';
+			onDrAgEnd: () => {
+				contAiner.style.bAckgroundColor = '';
 			},
-			onDragLeave: () => {
-				container.style.backgroundColor = '';
+			onDrAgLeAve: () => {
+				contAiner.style.bAckgroundColor = '';
 			},
-			onDragOver: e => {
-				if (e.dataTransfer) {
-					e.dataTransfer.dropEffect = 'copy';
+			onDrAgOver: e => {
+				if (e.dAtATrAnsfer) {
+					e.dAtATrAnsfer.dropEffect = 'copy';
 				}
 			}
 		}));
@@ -78,11 +78,11 @@ export class EmptyView extends ViewPane {
 		this.refreshTitle();
 	}
 
-	private refreshTitle(): void {
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			this.updateTitle(EmptyView.NAME);
+	privAte refreshTitle(): void {
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			this.updAteTitle(EmptyView.NAME);
 		} else {
-			this.updateTitle(this.title);
+			this.updAteTitle(this.title);
 		}
 	}
 }

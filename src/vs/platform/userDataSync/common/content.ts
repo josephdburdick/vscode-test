@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { JSONPath } from 'vs/base/common/json';
-import { setProperty } from 'vs/base/common/jsonEdit';
-import { FormattingOptions } from 'vs/base/common/jsonFormatter';
+import { JSONPAth } from 'vs/bAse/common/json';
+import { setProperty } from 'vs/bAse/common/jsonEdit';
+import { FormAttingOptions } from 'vs/bAse/common/jsonFormAtter';
 
 
-export function edit(content: string, originalPath: JSONPath, value: any, formattingOptions: FormattingOptions): string {
-	const edit = setProperty(content, originalPath, value, formattingOptions)[0];
+export function edit(content: string, originAlPAth: JSONPAth, vAlue: Any, formAttingOptions: FormAttingOptions): string {
+	const edit = setProperty(content, originAlPAth, vAlue, formAttingOptions)[0];
 	if (edit) {
 		content = content.substring(0, edit.offset) + edit.content + content.substring(edit.offset + edit.length);
 	}
 	return content;
 }
 
-export function getLineStartOffset(content: string, eol: string, atOffset: number): number {
-	let lineStartingOffset = atOffset;
-	while (lineStartingOffset >= 0) {
-		if (content.charAt(lineStartingOffset) === eol.charAt(eol.length - 1)) {
+export function getLineStArtOffset(content: string, eol: string, AtOffset: number): number {
+	let lineStArtingOffset = AtOffset;
+	while (lineStArtingOffset >= 0) {
+		if (content.chArAt(lineStArtingOffset) === eol.chArAt(eol.length - 1)) {
 			if (eol.length === 1) {
-				return lineStartingOffset + 1;
+				return lineStArtingOffset + 1;
 			}
 		}
-		lineStartingOffset--;
+		lineStArtingOffset--;
 		if (eol.length === 2) {
-			if (lineStartingOffset >= 0 && content.charAt(lineStartingOffset) === eol.charAt(0)) {
-				return lineStartingOffset + 2;
+			if (lineStArtingOffset >= 0 && content.chArAt(lineStArtingOffset) === eol.chArAt(0)) {
+				return lineStArtingOffset + 2;
 			}
 		}
 	}
 	return 0;
 }
 
-export function getLineEndOffset(content: string, eol: string, atOffset: number): number {
-	let lineEndOffset = atOffset;
+export function getLineEndOffset(content: string, eol: string, AtOffset: number): number {
+	let lineEndOffset = AtOffset;
 	while (lineEndOffset >= 0) {
-		if (content.charAt(lineEndOffset) === eol.charAt(eol.length - 1)) {
+		if (content.chArAt(lineEndOffset) === eol.chArAt(eol.length - 1)) {
 			if (eol.length === 1) {
 				return lineEndOffset;
 			}
 		}
 		lineEndOffset++;
 		if (eol.length === 2) {
-			if (lineEndOffset >= 0 && content.charAt(lineEndOffset) === eol.charAt(1)) {
+			if (lineEndOffset >= 0 && content.chArAt(lineEndOffset) === eol.chArAt(1)) {
 				return lineEndOffset;
 			}
 		}

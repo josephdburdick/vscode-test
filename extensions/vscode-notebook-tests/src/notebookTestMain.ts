@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { smokeTestActivate } from './notebookSmokeTestMain';
+import * As vscode from 'vscode';
+import { smokeTestActivAte } from './notebookSmokeTestMAin';
 
-export function activate(context: vscode.ExtensionContext): any {
-	smokeTestActivate(context);
+export function ActivAte(context: vscode.ExtensionContext): Any {
+	smokeTestActivAte(context);
 
-	const _onDidChangeNotebook = new vscode.EventEmitter<vscode.NotebookDocumentEditEvent | vscode.NotebookDocumentContentChangeEvent>();
-	context.subscriptions.push(_onDidChangeNotebook);
+	const _onDidChAngeNotebook = new vscode.EventEmitter<vscode.NotebookDocumentEditEvent | vscode.NotebookDocumentContentChAngeEvent>();
+	context.subscriptions.push(_onDidChAngeNotebook);
 	context.subscriptions.push(vscode.notebook.registerNotebookContentProvider('notebookCoreTest', {
-		onDidChangeNotebook: _onDidChangeNotebook.event,
-		openNotebook: async (_resource: vscode.Uri) => {
-			if (/.*empty\-.*\.vsctestnb$/.test(_resource.path)) {
+		onDidChAngeNotebook: _onDidChAngeNotebook.event,
+		openNotebook: Async (_resource: vscode.Uri) => {
+			if (/.*empty\-.*\.vsctestnb$/.test(_resource.pAth)) {
 				return {
-					languages: ['typescript'],
-					metadata: {},
+					lAnguAges: ['typescript'],
+					metAdAtA: {},
 					cells: []
 				};
 			}
 
-			const dto: vscode.NotebookData = {
-				languages: ['typescript'],
-				metadata: {
-					custom: { testMetadata: false }
+			const dto: vscode.NotebookDAtA = {
+				lAnguAges: ['typescript'],
+				metAdAtA: {
+					custom: { testMetAdAtA: fAlse }
 				},
 				cells: [
 					{
 						source: 'test',
-						language: 'typescript',
+						lAnguAge: 'typescript',
 						cellKind: vscode.CellKind.Code,
 						outputs: [],
-						metadata: {
-							custom: { testCellMetadata: 123 }
+						metAdAtA: {
+							custom: { testCellMetAdAtA: 123 }
 						}
 					}
 				]
@@ -42,16 +42,16 @@ export function activate(context: vscode.ExtensionContext): any {
 
 			return dto;
 		},
-		resolveNotebook: async (_document: vscode.NotebookDocument) => {
+		resolveNotebook: Async (_document: vscode.NotebookDocument) => {
 			return;
 		},
-		saveNotebook: async (_document: vscode.NotebookDocument, _cancellation: vscode.CancellationToken) => {
+		sAveNotebook: Async (_document: vscode.NotebookDocument, _cAncellAtion: vscode.CAncellAtionToken) => {
 			return;
 		},
-		saveNotebookAs: async (_targetResource: vscode.Uri, _document: vscode.NotebookDocument, _cancellation: vscode.CancellationToken) => {
+		sAveNotebookAs: Async (_tArgetResource: vscode.Uri, _document: vscode.NotebookDocument, _cAncellAtion: vscode.CAncellAtionToken) => {
 			return;
 		},
-		backupNotebook: async (_document: vscode.NotebookDocument, _context: vscode.NotebookDocumentBackupContext, _cancellation: vscode.CancellationToken) => {
+		bAckupNotebook: Async (_document: vscode.NotebookDocument, _context: vscode.NotebookDocumentBAckupContext, _cAncellAtion: vscode.CAncellAtionToken) => {
 			return {
 				id: '1',
 				delete: () => { }
@@ -60,29 +60,29 @@ export function activate(context: vscode.ExtensionContext): any {
 	}));
 
 	const kernel: vscode.NotebookKernel = {
-		label: 'Notebook Test Kernel',
+		lAbel: 'Notebook Test Kernel',
 		isPreferred: true,
-		executeAllCells: async (_document: vscode.NotebookDocument) => {
+		executeAllCells: Async (_document: vscode.NotebookDocument) => {
 			const cell = _document.cells[0];
 
 			cell.outputs = [{
 				outputKind: vscode.CellOutputKind.Rich,
-				data: {
-					'text/plain': ['my output']
+				dAtA: {
+					'text/plAin': ['my output']
 				}
 			}];
 			return;
 		},
-		cancelAllCellsExecution: async (_document: vscode.NotebookDocument) => { },
-		executeCell: async (document: vscode.NotebookDocument, cell: vscode.NotebookCell | undefined) => {
+		cAncelAllCellsExecution: Async (_document: vscode.NotebookDocument) => { },
+		executeCell: Async (document: vscode.NotebookDocument, cell: vscode.NotebookCell | undefined) => {
 			if (!cell) {
 				cell = document.cells[0];
 			}
 
-			if (document.uri.path.endsWith('customRenderer.vsctestnb')) {
+			if (document.uri.pAth.endsWith('customRenderer.vsctestnb')) {
 				cell.outputs = [{
 					outputKind: vscode.CellOutputKind.Rich,
-					data: {
+					dAtA: {
 						'text/custom': 'test'
 					}
 				}];
@@ -93,14 +93,14 @@ export function activate(context: vscode.ExtensionContext): any {
 			const previousOutputs = cell.outputs;
 			const newOutputs: vscode.CellOutput[] = [{
 				outputKind: vscode.CellOutputKind.Rich,
-				data: {
-					'text/plain': ['my output']
+				dAtA: {
+					'text/plAin': ['my output']
 				}
 			}];
 
 			cell.outputs = newOutputs;
 
-			_onDidChangeNotebook.fire({
+			_onDidChAngeNotebook.fire({
 				document: document,
 				undo: () => {
 					if (cell) {
@@ -115,11 +115,11 @@ export function activate(context: vscode.ExtensionContext): any {
 			});
 			return;
 		},
-		cancelCellExecution: async (_document: vscode.NotebookDocument, _cell: vscode.NotebookCell) => { }
+		cAncelCellExecution: Async (_document: vscode.NotebookDocument, _cell: vscode.NotebookCell) => { }
 	};
 
-	context.subscriptions.push(vscode.notebook.registerNotebookKernelProvider({ filenamePattern: '*.vsctestnb' }, {
-		provideKernels: async () => {
+	context.subscriptions.push(vscode.notebook.registerNotebookKernelProvider({ filenAmePAttern: '*.vsctestnb' }, {
+		provideKernels: Async () => {
 			return [kernel];
 		}
 	}));

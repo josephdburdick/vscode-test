@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { TernarySearchTree } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { getConfigurationKeys, IConfigurationOverrides, IConfigurationService, getConfigurationValue, isConfigurationOverrides, IConfigurationValue } from 'vs/platform/configuration/common/configuration';
-import { Emitter } from 'vs/base/common/event';
+import { TernArySeArchTree } from 'vs/bAse/common/mAp';
+import { URI } from 'vs/bAse/common/uri';
+import { getConfigurAtionKeys, IConfigurAtionOverrides, IConfigurAtionService, getConfigurAtionVAlue, isConfigurAtionOverrides, IConfigurAtionVAlue } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { Emitter } from 'vs/bAse/common/event';
 
-export class TestConfigurationService implements IConfigurationService {
-	public _serviceBrand: undefined;
+export clAss TestConfigurAtionService implements IConfigurAtionService {
+	public _serviceBrAnd: undefined;
 
-	private configuration: any;
-	readonly onDidChangeConfiguration = new Emitter<any>().event;
+	privAte configurAtion: Any;
+	reAdonly onDidChAngeConfigurAtion = new Emitter<Any>().event;
 
-	constructor(configuration?: any) {
-		this.configuration = configuration || Object.create(null);
+	constructor(configurAtion?: Any) {
+		this.configurAtion = configurAtion || Object.creAte(null);
 	}
 
-	private configurationByRoot: TernarySearchTree<string, any> = TernarySearchTree.forPaths<any>();
+	privAte configurAtionByRoot: TernArySeArchTree<string, Any> = TernArySeArchTree.forPAths<Any>();
 
-	public reloadConfiguration<T>(): Promise<T> {
-		return Promise.resolve(this.getValue());
+	public reloAdConfigurAtion<T>(): Promise<T> {
+		return Promise.resolve(this.getVAlue());
 	}
 
-	public getValue(arg1?: any, arg2?: any): any {
-		let configuration;
-		const overrides = isConfigurationOverrides(arg1) ? arg1 : isConfigurationOverrides(arg2) ? arg2 : undefined;
+	public getVAlue(Arg1?: Any, Arg2?: Any): Any {
+		let configurAtion;
+		const overrides = isConfigurAtionOverrides(Arg1) ? Arg1 : isConfigurAtionOverrides(Arg2) ? Arg2 : undefined;
 		if (overrides) {
 			if (overrides.resource) {
-				configuration = this.configurationByRoot.findSubstr(overrides.resource.fsPath);
+				configurAtion = this.configurAtionByRoot.findSubstr(overrides.resource.fsPAth);
 			}
 		}
-		configuration = configuration ? configuration : this.configuration;
-		if (arg1 && typeof arg1 === 'string') {
-			return getConfigurationValue(configuration, arg1);
+		configurAtion = configurAtion ? configurAtion : this.configurAtion;
+		if (Arg1 && typeof Arg1 === 'string') {
+			return getConfigurAtionVAlue(configurAtion, Arg1);
 		}
-		return configuration;
+		return configurAtion;
 	}
 
-	public updateValue(key: string, value: any): Promise<void> {
+	public updAteVAlue(key: string, vAlue: Any): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 
-	public setUserConfiguration(key: any, value: any, root?: URI): Promise<void> {
+	public setUserConfigurAtion(key: Any, vAlue: Any, root?: URI): Promise<void> {
 		if (root) {
-			const configForRoot = this.configurationByRoot.get(root.fsPath) || Object.create(null);
-			configForRoot[key] = value;
-			this.configurationByRoot.set(root.fsPath, configForRoot);
+			const configForRoot = this.configurAtionByRoot.get(root.fsPAth) || Object.creAte(null);
+			configForRoot[key] = vAlue;
+			this.configurAtionByRoot.set(root.fsPAth, configForRoot);
 		} else {
-			this.configuration[key] = value;
+			this.configurAtion[key] = vAlue;
 		}
 
 		return Promise.resolve(undefined);
 	}
 
-	public inspect<T>(key: string, overrides?: IConfigurationOverrides): IConfigurationValue<T> {
-		const config = this.getValue(undefined, overrides);
+	public inspect<T>(key: string, overrides?: IConfigurAtionOverrides): IConfigurAtionVAlue<T> {
+		const config = this.getVAlue(undefined, overrides);
 
 		return {
-			value: getConfigurationValue<T>(config, key),
-			defaultValue: getConfigurationValue<T>(config, key),
-			userValue: getConfigurationValue<T>(config, key)
+			vAlue: getConfigurAtionVAlue<T>(config, key),
+			defAultVAlue: getConfigurAtionVAlue<T>(config, key),
+			userVAlue: getConfigurAtionVAlue<T>(config, key)
 		};
 	}
 
 	public keys() {
 		return {
-			default: getConfigurationKeys(),
-			user: Object.keys(this.configuration),
-			workspace: [],
-			workspaceFolder: []
+			defAult: getConfigurAtionKeys(),
+			user: Object.keys(this.configurAtion),
+			workspAce: [],
+			workspAceFolder: []
 		};
 	}
 
-	public getConfigurationData() {
+	public getConfigurAtionDAtA() {
 		return null;
 	}
 }

@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { ResolvedKeybinding } from 'vs/bAse/common/keyCodes';
+import { ContextKeyExpression } from 'vs/plAtform/contextkey/common/contextkey';
 
-export class ResolvedKeybindingItem {
-	_resolvedKeybindingItemBrand: void;
+export clAss ResolvedKeybindingItem {
+	_resolvedKeybindingItemBrAnd: void;
 
-	public readonly resolvedKeybinding: ResolvedKeybinding | undefined;
-	public readonly keypressParts: string[];
-	public readonly bubble: boolean;
-	public readonly command: string | null;
-	public readonly commandArgs: any;
-	public readonly when: ContextKeyExpression | undefined;
-	public readonly isDefault: boolean;
-	public readonly extensionId: string | null;
+	public reAdonly resolvedKeybinding: ResolvedKeybinding | undefined;
+	public reAdonly keypressPArts: string[];
+	public reAdonly bubble: booleAn;
+	public reAdonly commAnd: string | null;
+	public reAdonly commAndArgs: Any;
+	public reAdonly when: ContextKeyExpression | undefined;
+	public reAdonly isDefAult: booleAn;
+	public reAdonly extensionId: string | null;
 
-	constructor(resolvedKeybinding: ResolvedKeybinding | undefined, command: string | null, commandArgs: any, when: ContextKeyExpression | undefined, isDefault: boolean, extensionId: string | null) {
+	constructor(resolvedKeybinding: ResolvedKeybinding | undefined, commAnd: string | null, commAndArgs: Any, when: ContextKeyExpression | undefined, isDefAult: booleAn, extensionId: string | null) {
 		this.resolvedKeybinding = resolvedKeybinding;
-		this.keypressParts = resolvedKeybinding ? removeElementsAfterNulls(resolvedKeybinding.getDispatchParts()) : [];
-		this.bubble = (command ? command.charCodeAt(0) === CharCode.Caret : false);
-		this.command = this.bubble ? command!.substr(1) : command;
-		this.commandArgs = commandArgs;
+		this.keypressPArts = resolvedKeybinding ? removeElementsAfterNulls(resolvedKeybinding.getDispAtchPArts()) : [];
+		this.bubble = (commAnd ? commAnd.chArCodeAt(0) === ChArCode.CAret : fAlse);
+		this.commAnd = this.bubble ? commAnd!.substr(1) : commAnd;
+		this.commAndArgs = commAndArgs;
 		this.when = when;
-		this.isDefault = isDefault;
+		this.isDefAult = isDefAult;
 		this.extensionId = extensionId;
 	}
 }
 
-export function removeElementsAfterNulls<T>(arr: (T | null)[]): T[] {
+export function removeElementsAfterNulls<T>(Arr: (T | null)[]): T[] {
 	let result: T[] = [];
-	for (let i = 0, len = arr.length; i < len; i++) {
-		const element = arr[i];
+	for (let i = 0, len = Arr.length; i < len; i++) {
+		const element = Arr[i];
 		if (!element) {
-			// stop processing at first encountered null
+			// stop processing At first encountered null
 			return result;
 		}
 		result.push(element);

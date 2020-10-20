@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { SimpleFindWidget } from 'vs/workbench/contrib/codeEditor/browser/find/simpleFindWidget';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
 import { KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_FOCUSED } from 'vs/workbench/contrib/webview/browser/webview';
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/bAse/common/event';
 
-export interface WebviewFindDelegate {
-	readonly hasFindResult: Event<boolean>;
-	find(value: string, previous: boolean): void;
-	startFind(value: string): void;
-	stopFind(keepSelection?: boolean): void;
+export interfAce WebviewFindDelegAte {
+	reAdonly hAsFindResult: Event<booleAn>;
+	find(vAlue: string, previous: booleAn): void;
+	stArtFind(vAlue: string): void;
+	stopFind(keepSelection?: booleAn): void;
 	focus(): void;
 }
 
-export class WebviewFindWidget extends SimpleFindWidget {
-	protected _findWidgetFocused: IContextKey<boolean>;
+export clAss WebviewFindWidget extends SimpleFindWidget {
+	protected _findWidgetFocused: IContextKey<booleAn>;
 
 	constructor(
-		private readonly _delegate: WebviewFindDelegate,
+		privAte reAdonly _delegAte: WebviewFindDelegAte,
 		@IContextViewService contextViewService: IContextViewService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		super(contextViewService, contextKeyService);
 		this._findWidgetFocused = KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_FOCUSED.bindTo(contextKeyService);
 
-		this._register(_delegate.hasFindResult(hasResult => {
-			this.updateButtons(hasResult);
+		this._register(_delegAte.hAsFindResult(hAsResult => {
+			this.updAteButtons(hAsResult);
 		}));
 	}
 
-	public find(previous: boolean) {
-		const val = this.inputValue;
-		if (val) {
-			this._delegate.find(val, previous);
+	public find(previous: booleAn) {
+		const vAl = this.inputVAlue;
+		if (vAl) {
+			this._delegAte.find(vAl, previous);
 		}
 	}
 
 	public hide() {
 		super.hide();
-		this._delegate.stopFind(true);
-		this._delegate.focus();
+		this._delegAte.stopFind(true);
+		this._delegAte.focus();
 	}
 
-	public onInputChanged() {
-		const val = this.inputValue;
-		if (val) {
-			this._delegate.startFind(val);
+	public onInputChAnged() {
+		const vAl = this.inputVAlue;
+		if (vAl) {
+			this._delegAte.stArtFind(vAl);
 		} else {
-			this._delegate.stopFind(false);
+			this._delegAte.stopFind(fAlse);
 		}
-		return false;
+		return fAlse;
 	}
 
-	protected onFocusTrackerFocus() {
+	protected onFocusTrAckerFocus() {
 		this._findWidgetFocused.set(true);
 	}
 
-	protected onFocusTrackerBlur() {
+	protected onFocusTrAckerBlur() {
 		this._findWidgetFocused.reset();
 	}
 
-	protected onFindInputFocusTrackerFocus() { }
+	protected onFindInputFocusTrAckerFocus() { }
 
-	protected onFindInputFocusTrackerBlur() { }
+	protected onFindInputFocusTrAckerBlur() { }
 
 	protected findFirst() { }
 }

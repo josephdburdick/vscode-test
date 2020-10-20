@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import * As nls from 'vs/nls';
+import { IConfigurAtionPropertySchemA } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { lAnguAgesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
 
-export enum DocumentationExtensionPointFields {
+export enum DocumentAtionExtensionPointFields {
 	when = 'when',
 	title = 'title',
-	command = 'command',
+	commAnd = 'commAnd',
 }
 
-export interface RefactoringDocumentationExtensionPoint {
-	readonly [DocumentationExtensionPointFields.title]: string;
-	readonly [DocumentationExtensionPointFields.when]: string;
-	readonly [DocumentationExtensionPointFields.command]: string;
+export interfAce RefActoringDocumentAtionExtensionPoint {
+	reAdonly [DocumentAtionExtensionPointFields.title]: string;
+	reAdonly [DocumentAtionExtensionPointFields.when]: string;
+	reAdonly [DocumentAtionExtensionPointFields.commAnd]: string;
 }
 
-export interface DocumentationExtensionPoint {
-	readonly refactoring?: readonly RefactoringDocumentationExtensionPoint[];
+export interfAce DocumentAtionExtensionPoint {
+	reAdonly refActoring?: reAdonly RefActoringDocumentAtionExtensionPoint[];
 }
 
-const documentationExtensionPointSchema = Object.freeze<IConfigurationPropertySchema>({
+const documentAtionExtensionPointSchemA = Object.freeze<IConfigurAtionPropertySchemA>({
 	type: 'object',
-	description: nls.localize('contributes.documentation', "Contributed documentation."),
+	description: nls.locAlize('contributes.documentAtion', "Contributed documentAtion."),
 	properties: {
-		'refactoring': {
-			type: 'array',
-			description: nls.localize('contributes.documentation.refactorings', "Contributed documentation for refactorings."),
+		'refActoring': {
+			type: 'ArrAy',
+			description: nls.locAlize('contributes.documentAtion.refActorings', "Contributed documentAtion for refActorings."),
 			items: {
 				type: 'object',
-				description: nls.localize('contributes.documentation.refactoring', "Contributed documentation for refactoring."),
+				description: nls.locAlize('contributes.documentAtion.refActoring', "Contributed documentAtion for refActoring."),
 				required: [
-					DocumentationExtensionPointFields.title,
-					DocumentationExtensionPointFields.when,
-					DocumentationExtensionPointFields.command
+					DocumentAtionExtensionPointFields.title,
+					DocumentAtionExtensionPointFields.when,
+					DocumentAtionExtensionPointFields.commAnd
 				],
 				properties: {
-					[DocumentationExtensionPointFields.title]: {
+					[DocumentAtionExtensionPointFields.title]: {
 						type: 'string',
-						description: nls.localize('contributes.documentation.refactoring.title', "Label for the documentation used in the UI."),
+						description: nls.locAlize('contributes.documentAtion.refActoring.title', "LAbel for the documentAtion used in the UI."),
 					},
-					[DocumentationExtensionPointFields.when]: {
+					[DocumentAtionExtensionPointFields.when]: {
 						type: 'string',
-						description: nls.localize('contributes.documentation.refactoring.when', "When clause."),
+						description: nls.locAlize('contributes.documentAtion.refActoring.when', "When clAuse."),
 					},
-					[DocumentationExtensionPointFields.command]: {
+					[DocumentAtionExtensionPointFields.commAnd]: {
 						type: 'string',
-						description: nls.localize('contributes.documentation.refactoring.command', "Command executed."),
+						description: nls.locAlize('contributes.documentAtion.refActoring.commAnd', "CommAnd executed."),
 					},
 				},
 			}
@@ -57,8 +57,8 @@ const documentationExtensionPointSchema = Object.freeze<IConfigurationPropertySc
 	}
 });
 
-export const documentationExtensionPointDescriptor = {
-	extensionPoint: 'documentation',
-	deps: [languagesExtPoint],
-	jsonSchema: documentationExtensionPointSchema
+export const documentAtionExtensionPointDescriptor = {
+	extensionPoint: 'documentAtion',
+	deps: [lAnguAgesExtPoint],
+	jsonSchemA: documentAtionExtensionPointSchemA
 };

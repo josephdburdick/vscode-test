@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IURLService, IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { URLHandlerChannel } from 'vs/platform/url/common/urlIpc';
-import { IOpenerService, IOpener, matchesScheme } from 'vs/platform/opener/common/opener';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { NativeURLService } from 'vs/platform/url/common/urlService';
+import { IURLService, IURLHAndler, IOpenURLOptions } from 'vs/plAtform/url/common/url';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { URLHAndlerChAnnel } from 'vs/plAtform/url/common/urlIpc';
+import { IOpenerService, IOpener, mAtchesScheme } from 'vs/plAtform/opener/common/opener';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { NAtiveURLService } from 'vs/plAtform/url/common/urlService';
 
-export interface IRelayOpenURLOptions extends IOpenURLOptions {
-	openToSide?: boolean;
-	openExternal?: boolean;
+export interfAce IRelAyOpenURLOptions extends IOpenURLOptions {
+	openToSide?: booleAn;
+	openExternAl?: booleAn;
 }
 
-export class RelayURLService extends NativeURLService implements IURLHandler, IOpener {
+export clAss RelAyURLService extends NAtiveURLService implements IURLHAndler, IOpener {
 
-	private urlService: IURLService;
+	privAte urlService: IURLService;
 
 	constructor(
-		@IMainProcessService mainProcessService: IMainProcessService,
+		@IMAinProcessService mAinProcessService: IMAinProcessService,
 		@IOpenerService openerService: IOpenerService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IProductService private readonly productService: IProductService
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@IProductService privAte reAdonly productService: IProductService
 	) {
 		super();
 
-		this.urlService = createChannelSender<IURLService>(mainProcessService.getChannel('url'));
+		this.urlService = creAteChAnnelSender<IURLService>(mAinProcessService.getChAnnel('url'));
 
-		mainProcessService.registerChannel('urlHandler', new URLHandlerChannel(this));
+		mAinProcessService.registerChAnnel('urlHAndler', new URLHAndlerChAnnel(this));
 		openerService.registerOpener(this);
 	}
 
-	create(options?: Partial<UriComponents>): URI {
-		const uri = super.create(options);
+	creAte(options?: PArtiAl<UriComponents>): URI {
+		const uri = super.creAte(options);
 
 		let query = uri.query;
 		if (!query) {
-			query = `windowId=${encodeURIComponent(this.nativeHostService.windowId)}`;
+			query = `windowId=${encodeURIComponent(this.nAtiveHostService.windowId)}`;
 		} else {
-			query += `&windowId=${encodeURIComponent(this.nativeHostService.windowId)}`;
+			query += `&windowId=${encodeURIComponent(this.nAtiveHostService.windowId)}`;
 		}
 
 		return uri.with({ query });
 	}
 
-	async open(resource: URI | string, options?: IRelayOpenURLOptions): Promise<boolean> {
+	Async open(resource: URI | string, options?: IRelAyOpenURLOptions): Promise<booleAn> {
 
-		if (!matchesScheme(resource, this.productService.urlProtocol)) {
-			return false;
+		if (!mAtchesScheme(resource, this.productService.urlProtocol)) {
+			return fAlse;
 		}
 
 		if (typeof resource === 'string') {
-			resource = URI.parse(resource);
+			resource = URI.pArse(resource);
 		}
-		return await this.urlService.open(resource, options);
+		return AwAit this.urlService.open(resource, options);
 	}
 
-	async handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
-		const result = await super.open(uri, options);
+	Async hAndleURL(uri: URI, options?: IOpenURLOptions): Promise<booleAn> {
+		const result = AwAit super.open(uri, options);
 
 		if (result) {
-			await this.nativeHostService.focusWindow({ force: true /* Application may not be active */ });
+			AwAit this.nAtiveHostService.focusWindow({ force: true /* ApplicAtion mAy not be Active */ });
 		}
 
 		return result;
 	}
 }
 
-registerSingleton(IURLService, RelayURLService);
+registerSingleton(IURLService, RelAyURLService);

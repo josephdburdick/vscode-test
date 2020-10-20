@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { DynamicWebviewEditorOverlay } from 'vs/workbench/contrib/webview/browser/dynamicWebviewEditorOverlay';
-import { WebviewContentOptions, WebviewElement, WebviewExtensionDescription, WebviewOptions, WebviewOverlay } from 'vs/workbench/contrib/webview/browser/webview';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { DynAmicWebviewEditorOverlAy } from 'vs/workbench/contrib/webview/browser/dynAmicWebviewEditorOverlAy';
+import { WebviewContentOptions, WebviewElement, WebviewExtensionDescription, WebviewOptions, WebviewOverlAy } from 'vs/workbench/contrib/webview/browser/webview';
 import { WebviewService } from 'vs/workbench/contrib/webview/browser/webviewService';
-import { ElectronIframeWebview } from 'vs/workbench/contrib/webview/electron-sandbox/iframeWebviewElement';
-import { ElectronWebviewBasedWebview } from 'vs/workbench/contrib/webview/electron-browser/webviewElement';
+import { ElectronIfrAmeWebview } from 'vs/workbench/contrib/webview/electron-sAndbox/ifrAmeWebviewElement';
+import { ElectronWebviewBAsedWebview } from 'vs/workbench/contrib/webview/electron-browser/webviewElement';
 
-export class ElectronWebviewService extends WebviewService {
-	declare readonly _serviceBrand: undefined;
+export clAss ElectronWebviewService extends WebviewService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IConfigurationService private readonly _configService: IConfigurationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IConfigurAtionService privAte reAdonly _configService: IConfigurAtionService,
 	) {
-		super(instantiationService);
+		super(instAntiAtionService);
 	}
 
-	createWebviewElement(
+	creAteWebviewElement(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
 	): WebviewElement {
-		const useIframes = this._configService.getValue<string>('webview.experimental.useIframes');
-		const webview = this._instantiationService.createInstance(useIframes ? ElectronIframeWebview : ElectronWebviewBasedWebview, id, options, contentOptions, extension, this._webviewThemeDataProvider);
-		this.addWebviewListeners(webview);
+		const useIfrAmes = this._configService.getVAlue<string>('webview.experimentAl.useIfrAmes');
+		const webview = this._instAntiAtionService.creAteInstAnce(useIfrAmes ? ElectronIfrAmeWebview : ElectronWebviewBAsedWebview, id, options, contentOptions, extension, this._webviewThemeDAtAProvider);
+		this.AddWebviewListeners(webview);
 		return webview;
 	}
 
-	createWebviewOverlay(
+	creAteWebviewOverlAy(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
-	): WebviewOverlay {
-		const webview = this._instantiationService.createInstance(DynamicWebviewEditorOverlay, id, options, contentOptions, extension);
-		this.addWebviewListeners(webview);
+	): WebviewOverlAy {
+		const webview = this._instAntiAtionService.creAteInstAnce(DynAmicWebviewEditorOverlAy, id, options, contentOptions, extension);
+		this.AddWebviewListeners(webview);
 		return webview;
 	}
 }

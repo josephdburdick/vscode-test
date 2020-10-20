@@ -1,420 +1,420 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./sash';
-import { IDisposable, dispose, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { isMacintosh } from 'vs/base/common/platform';
-import * as types from 'vs/base/common/types';
-import { EventType, GestureEvent, Gesture } from 'vs/base/browser/touch';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Event, Emitter } from 'vs/base/common/event';
-import { getElementsByTagName, EventHelper, createStyleSheet, addDisposableListener, append, $ } from 'vs/base/browser/dom';
-import { domEvent } from 'vs/base/browser/event';
+import 'vs/css!./sAsh';
+import { IDisposAble, dispose, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import * As types from 'vs/bAse/common/types';
+import { EventType, GestureEvent, Gesture } from 'vs/bAse/browser/touch';
+import { StAndArdMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { getElementsByTAgNAme, EventHelper, creAteStyleSheet, AddDisposAbleListener, Append, $ } from 'vs/bAse/browser/dom';
+import { domEvent } from 'vs/bAse/browser/event';
 
-const DEBUG = false;
+const DEBUG = fAlse;
 
-export interface ISashLayoutProvider { }
+export interfAce ISAshLAyoutProvider { }
 
-export interface IVerticalSashLayoutProvider extends ISashLayoutProvider {
-	getVerticalSashLeft(sash: Sash): number;
-	getVerticalSashTop?(sash: Sash): number;
-	getVerticalSashHeight?(sash: Sash): number;
+export interfAce IVerticAlSAshLAyoutProvider extends ISAshLAyoutProvider {
+	getVerticAlSAshLeft(sAsh: SAsh): number;
+	getVerticAlSAshTop?(sAsh: SAsh): number;
+	getVerticAlSAshHeight?(sAsh: SAsh): number;
 }
 
-export interface IHorizontalSashLayoutProvider extends ISashLayoutProvider {
-	getHorizontalSashTop(sash: Sash): number;
-	getHorizontalSashLeft?(sash: Sash): number;
-	getHorizontalSashWidth?(sash: Sash): number;
+export interfAce IHorizontAlSAshLAyoutProvider extends ISAshLAyoutProvider {
+	getHorizontAlSAshTop(sAsh: SAsh): number;
+	getHorizontAlSAshLeft?(sAsh: SAsh): number;
+	getHorizontAlSAshWidth?(sAsh: SAsh): number;
 }
 
-export interface ISashEvent {
-	startX: number;
+export interfAce ISAshEvent {
+	stArtX: number;
 	currentX: number;
-	startY: number;
+	stArtY: number;
 	currentY: number;
-	altKey: boolean;
+	AltKey: booleAn;
 }
 
-export interface ISashOptions {
-	readonly orientation: Orientation;
-	readonly orthogonalStartSash?: Sash;
-	readonly orthogonalEndSash?: Sash;
-	readonly size?: number;
+export interfAce ISAshOptions {
+	reAdonly orientAtion: OrientAtion;
+	reAdonly orthogonAlStArtSAsh?: SAsh;
+	reAdonly orthogonAlEndSAsh?: SAsh;
+	reAdonly size?: number;
 }
 
-export interface IVerticalSashOptions extends ISashOptions {
-	readonly orientation: Orientation.VERTICAL;
+export interfAce IVerticAlSAshOptions extends ISAshOptions {
+	reAdonly orientAtion: OrientAtion.VERTICAL;
 }
 
-export interface IHorizontalSashOptions extends ISashOptions {
-	readonly orientation: Orientation.HORIZONTAL;
+export interfAce IHorizontAlSAshOptions extends ISAshOptions {
+	reAdonly orientAtion: OrientAtion.HORIZONTAL;
 }
 
-export const enum Orientation {
+export const enum OrientAtion {
 	VERTICAL,
 	HORIZONTAL
 }
 
-export const enum SashState {
-	Disabled,
+export const enum SAshStAte {
+	DisAbled,
 	Minimum,
-	Maximum,
-	Enabled
+	MAximum,
+	EnAbled
 }
 
-let globalSize = 4;
-const onDidChangeGlobalSize = new Emitter<number>();
-export function setGlobalSashSize(size: number): void {
-	globalSize = size;
-	onDidChangeGlobalSize.fire(size);
+let globAlSize = 4;
+const onDidChAngeGlobAlSize = new Emitter<number>();
+export function setGlobAlSAshSize(size: number): void {
+	globAlSize = size;
+	onDidChAngeGlobAlSize.fire(size);
 }
 
-export class Sash extends Disposable {
+export clAss SAsh extends DisposAble {
 
-	private el: HTMLElement;
-	private layoutProvider: ISashLayoutProvider;
-	private hidden: boolean;
-	private orientation!: Orientation;
-	private size: number;
+	privAte el: HTMLElement;
+	privAte lAyoutProvider: ISAshLAyoutProvider;
+	privAte hidden: booleAn;
+	privAte orientAtion!: OrientAtion;
+	privAte size: number;
 
-	private _state: SashState = SashState.Enabled;
-	get state(): SashState { return this._state; }
-	set state(state: SashState) {
-		if (this._state === state) {
+	privAte _stAte: SAshStAte = SAshStAte.EnAbled;
+	get stAte(): SAshStAte { return this._stAte; }
+	set stAte(stAte: SAshStAte) {
+		if (this._stAte === stAte) {
 			return;
 		}
 
-		this.el.classList.toggle('disabled', state === SashState.Disabled);
-		this.el.classList.toggle('minimum', state === SashState.Minimum);
-		this.el.classList.toggle('maximum', state === SashState.Maximum);
+		this.el.clAssList.toggle('disAbled', stAte === SAshStAte.DisAbled);
+		this.el.clAssList.toggle('minimum', stAte === SAshStAte.Minimum);
+		this.el.clAssList.toggle('mAximum', stAte === SAshStAte.MAximum);
 
-		this._state = state;
-		this._onDidEnablementChange.fire(state);
+		this._stAte = stAte;
+		this._onDidEnAblementChAnge.fire(stAte);
 	}
 
-	private readonly _onDidEnablementChange = this._register(new Emitter<SashState>());
-	readonly onDidEnablementChange: Event<SashState> = this._onDidEnablementChange.event;
+	privAte reAdonly _onDidEnAblementChAnge = this._register(new Emitter<SAshStAte>());
+	reAdonly onDidEnAblementChAnge: Event<SAshStAte> = this._onDidEnAblementChAnge.event;
 
-	private readonly _onDidStart = this._register(new Emitter<ISashEvent>());
-	readonly onDidStart: Event<ISashEvent> = this._onDidStart.event;
+	privAte reAdonly _onDidStArt = this._register(new Emitter<ISAshEvent>());
+	reAdonly onDidStArt: Event<ISAshEvent> = this._onDidStArt.event;
 
-	private readonly _onDidChange = this._register(new Emitter<ISashEvent>());
-	readonly onDidChange: Event<ISashEvent> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = this._register(new Emitter<ISAshEvent>());
+	reAdonly onDidChAnge: Event<ISAshEvent> = this._onDidChAnge.event;
 
-	private readonly _onDidReset = this._register(new Emitter<void>());
-	readonly onDidReset: Event<void> = this._onDidReset.event;
+	privAte reAdonly _onDidReset = this._register(new Emitter<void>());
+	reAdonly onDidReset: Event<void> = this._onDidReset.event;
 
-	private readonly _onDidEnd = this._register(new Emitter<void>());
-	readonly onDidEnd: Event<void> = this._onDidEnd.event;
+	privAte reAdonly _onDidEnd = this._register(new Emitter<void>());
+	reAdonly onDidEnd: Event<void> = this._onDidEnd.event;
 
-	linkedSash: Sash | undefined = undefined;
+	linkedSAsh: SAsh | undefined = undefined;
 
-	private readonly orthogonalStartSashDisposables = this._register(new DisposableStore());
-	private _orthogonalStartSash: Sash | undefined;
-	get orthogonalStartSash(): Sash | undefined { return this._orthogonalStartSash; }
-	set orthogonalStartSash(sash: Sash | undefined) {
-		this.orthogonalStartSashDisposables.clear();
+	privAte reAdonly orthogonAlStArtSAshDisposAbles = this._register(new DisposAbleStore());
+	privAte _orthogonAlStArtSAsh: SAsh | undefined;
+	get orthogonAlStArtSAsh(): SAsh | undefined { return this._orthogonAlStArtSAsh; }
+	set orthogonAlStArtSAsh(sAsh: SAsh | undefined) {
+		this.orthogonAlStArtSAshDisposAbles.cleAr();
 
-		if (sash) {
-			this.orthogonalStartSashDisposables.add(sash.onDidEnablementChange(this.onOrthogonalStartSashEnablementChange, this));
-			this.onOrthogonalStartSashEnablementChange(sash.state);
+		if (sAsh) {
+			this.orthogonAlStArtSAshDisposAbles.Add(sAsh.onDidEnAblementChAnge(this.onOrthogonAlStArtSAshEnAblementChAnge, this));
+			this.onOrthogonAlStArtSAshEnAblementChAnge(sAsh.stAte);
 		} else {
-			this.onOrthogonalStartSashEnablementChange(SashState.Disabled);
+			this.onOrthogonAlStArtSAshEnAblementChAnge(SAshStAte.DisAbled);
 		}
 
-		this._orthogonalStartSash = sash;
+		this._orthogonAlStArtSAsh = sAsh;
 	}
 
-	private readonly orthogonalEndSashDisposables = this._register(new DisposableStore());
-	private _orthogonalEndSash: Sash | undefined;
-	get orthogonalEndSash(): Sash | undefined { return this._orthogonalEndSash; }
-	set orthogonalEndSash(sash: Sash | undefined) {
-		this.orthogonalEndSashDisposables.clear();
+	privAte reAdonly orthogonAlEndSAshDisposAbles = this._register(new DisposAbleStore());
+	privAte _orthogonAlEndSAsh: SAsh | undefined;
+	get orthogonAlEndSAsh(): SAsh | undefined { return this._orthogonAlEndSAsh; }
+	set orthogonAlEndSAsh(sAsh: SAsh | undefined) {
+		this.orthogonAlEndSAshDisposAbles.cleAr();
 
-		if (sash) {
-			this.orthogonalEndSashDisposables.add(sash.onDidEnablementChange(this.onOrthogonalEndSashEnablementChange, this));
-			this.onOrthogonalEndSashEnablementChange(sash.state);
+		if (sAsh) {
+			this.orthogonAlEndSAshDisposAbles.Add(sAsh.onDidEnAblementChAnge(this.onOrthogonAlEndSAshEnAblementChAnge, this));
+			this.onOrthogonAlEndSAshEnAblementChAnge(sAsh.stAte);
 		} else {
-			this.onOrthogonalEndSashEnablementChange(SashState.Disabled);
+			this.onOrthogonAlEndSAshEnAblementChAnge(SAshStAte.DisAbled);
 		}
 
-		this._orthogonalEndSash = sash;
+		this._orthogonAlEndSAsh = sAsh;
 	}
 
-	constructor(container: HTMLElement, layoutProvider: IVerticalSashLayoutProvider, options: ISashOptions);
-	constructor(container: HTMLElement, layoutProvider: IHorizontalSashLayoutProvider, options: ISashOptions);
-	constructor(container: HTMLElement, layoutProvider: ISashLayoutProvider, options: ISashOptions) {
+	constructor(contAiner: HTMLElement, lAyoutProvider: IVerticAlSAshLAyoutProvider, options: ISAshOptions);
+	constructor(contAiner: HTMLElement, lAyoutProvider: IHorizontAlSAshLAyoutProvider, options: ISAshOptions);
+	constructor(contAiner: HTMLElement, lAyoutProvider: ISAshLAyoutProvider, options: ISAshOptions) {
 		super();
 
-		this.el = append(container, $('.monaco-sash'));
+		this.el = Append(contAiner, $('.monAco-sAsh'));
 
-		if (isMacintosh) {
-			this.el.classList.add('mac');
+		if (isMAcintosh) {
+			this.el.clAssList.Add('mAc');
 		}
 
 		this._register(domEvent(this.el, 'mousedown')(this.onMouseDown, this));
 		this._register(domEvent(this.el, 'dblclick')(this.onMouseDoubleClick, this));
 
-		this._register(Gesture.addTarget(this.el));
-		this._register(domEvent(this.el, EventType.Start)(this.onTouchStart, this));
+		this._register(Gesture.AddTArget(this.el));
+		this._register(domEvent(this.el, EventType.StArt)(this.onTouchStArt, this));
 
 		if (typeof options.size === 'number') {
 			this.size = options.size;
 
-			if (options.orientation === Orientation.VERTICAL) {
+			if (options.orientAtion === OrientAtion.VERTICAL) {
 				this.el.style.width = `${this.size}px`;
 			} else {
 				this.el.style.height = `${this.size}px`;
 			}
 		} else {
-			this.size = globalSize;
-			this._register(onDidChangeGlobalSize.event(size => {
+			this.size = globAlSize;
+			this._register(onDidChAngeGlobAlSize.event(size => {
 				this.size = size;
-				this.layout();
+				this.lAyout();
 			}));
 		}
 
-		this.hidden = false;
-		this.layoutProvider = layoutProvider;
+		this.hidden = fAlse;
+		this.lAyoutProvider = lAyoutProvider;
 
-		this.orthogonalStartSash = options.orthogonalStartSash;
-		this.orthogonalEndSash = options.orthogonalEndSash;
+		this.orthogonAlStArtSAsh = options.orthogonAlStArtSAsh;
+		this.orthogonAlEndSAsh = options.orthogonAlEndSAsh;
 
-		this.orientation = options.orientation || Orientation.VERTICAL;
+		this.orientAtion = options.orientAtion || OrientAtion.VERTICAL;
 
-		if (this.orientation === Orientation.HORIZONTAL) {
-			this.el.classList.add('horizontal');
-			this.el.classList.remove('vertical');
+		if (this.orientAtion === OrientAtion.HORIZONTAL) {
+			this.el.clAssList.Add('horizontAl');
+			this.el.clAssList.remove('verticAl');
 		} else {
-			this.el.classList.remove('horizontal');
-			this.el.classList.add('vertical');
+			this.el.clAssList.remove('horizontAl');
+			this.el.clAssList.Add('verticAl');
 		}
 
-		this.el.classList.toggle('debug', DEBUG);
+		this.el.clAssList.toggle('debug', DEBUG);
 
-		this.layout();
+		this.lAyout();
 	}
 
-	private onMouseDown(e: MouseEvent): void {
-		EventHelper.stop(e, false);
+	privAte onMouseDown(e: MouseEvent): void {
+		EventHelper.stop(e, fAlse);
 
-		let isMultisashResize = false;
+		let isMultisAshResize = fAlse;
 
-		if (!(e as any).__orthogonalSashEvent) {
-			const orthogonalSash = this.getOrthogonalSash(e);
+		if (!(e As Any).__orthogonAlSAshEvent) {
+			const orthogonAlSAsh = this.getOrthogonAlSAsh(e);
 
-			if (orthogonalSash) {
-				isMultisashResize = true;
-				(e as any).__orthogonalSashEvent = true;
-				orthogonalSash.onMouseDown(e);
+			if (orthogonAlSAsh) {
+				isMultisAshResize = true;
+				(e As Any).__orthogonAlSAshEvent = true;
+				orthogonAlSAsh.onMouseDown(e);
 			}
 		}
 
-		if (this.linkedSash && !(e as any).__linkedSashEvent) {
-			(e as any).__linkedSashEvent = true;
-			this.linkedSash.onMouseDown(e);
+		if (this.linkedSAsh && !(e As Any).__linkedSAshEvent) {
+			(e As Any).__linkedSAshEvent = true;
+			this.linkedSAsh.onMouseDown(e);
 		}
 
-		if (!this.state) {
+		if (!this.stAte) {
 			return;
 		}
 
-		// Select both iframes and webviews; internally Electron nests an iframe
-		// in its <webview> component, but this isn't queryable.
-		const iframes = [
-			...getElementsByTagName('iframe'),
-			...getElementsByTagName('webview'),
+		// Select both ifrAmes And webviews; internAlly Electron nests An ifrAme
+		// in its <webview> component, but this isn't queryAble.
+		const ifrAmes = [
+			...getElementsByTAgNAme('ifrAme'),
+			...getElementsByTAgNAme('webview'),
 		];
 
-		for (const iframe of iframes) {
-			iframe.style.pointerEvents = 'none'; // disable mouse events on iframes as long as we drag the sash
+		for (const ifrAme of ifrAmes) {
+			ifrAme.style.pointerEvents = 'none'; // disAble mouse events on ifrAmes As long As we drAg the sAsh
 		}
 
-		const mouseDownEvent = new StandardMouseEvent(e);
-		const startX = mouseDownEvent.posx;
-		const startY = mouseDownEvent.posy;
-		const altKey = mouseDownEvent.altKey;
-		const startEvent: ISashEvent = { startX, currentX: startX, startY, currentY: startY, altKey };
+		const mouseDownEvent = new StAndArdMouseEvent(e);
+		const stArtX = mouseDownEvent.posx;
+		const stArtY = mouseDownEvent.posy;
+		const AltKey = mouseDownEvent.AltKey;
+		const stArtEvent: ISAshEvent = { stArtX, currentX: stArtX, stArtY, currentY: stArtY, AltKey };
 
-		this.el.classList.add('active');
-		this._onDidStart.fire(startEvent);
+		this.el.clAssList.Add('Active');
+		this._onDidStArt.fire(stArtEvent);
 
 		// fix https://github.com/microsoft/vscode/issues/21675
-		const style = createStyleSheet(this.el);
-		const updateStyle = () => {
+		const style = creAteStyleSheet(this.el);
+		const updAteStyle = () => {
 			let cursor = '';
 
-			if (isMultisashResize) {
-				cursor = 'all-scroll';
-			} else if (this.orientation === Orientation.HORIZONTAL) {
-				if (this.state === SashState.Minimum) {
+			if (isMultisAshResize) {
+				cursor = 'All-scroll';
+			} else if (this.orientAtion === OrientAtion.HORIZONTAL) {
+				if (this.stAte === SAshStAte.Minimum) {
 					cursor = 's-resize';
-				} else if (this.state === SashState.Maximum) {
+				} else if (this.stAte === SAshStAte.MAximum) {
 					cursor = 'n-resize';
 				} else {
-					cursor = isMacintosh ? 'row-resize' : 'ns-resize';
+					cursor = isMAcintosh ? 'row-resize' : 'ns-resize';
 				}
 			} else {
-				if (this.state === SashState.Minimum) {
+				if (this.stAte === SAshStAte.Minimum) {
 					cursor = 'e-resize';
-				} else if (this.state === SashState.Maximum) {
+				} else if (this.stAte === SAshStAte.MAximum) {
 					cursor = 'w-resize';
 				} else {
-					cursor = isMacintosh ? 'col-resize' : 'ew-resize';
+					cursor = isMAcintosh ? 'col-resize' : 'ew-resize';
 				}
 			}
 
-			style.textContent = `* { cursor: ${cursor} !important; }`;
+			style.textContent = `* { cursor: ${cursor} !importAnt; }`;
 		};
 
-		const disposables = new DisposableStore();
+		const disposAbles = new DisposAbleStore();
 
-		updateStyle();
+		updAteStyle();
 
-		if (!isMultisashResize) {
-			this.onDidEnablementChange(updateStyle, null, disposables);
+		if (!isMultisAshResize) {
+			this.onDidEnAblementChAnge(updAteStyle, null, disposAbles);
 		}
 
 		const onMouseMove = (e: MouseEvent) => {
-			EventHelper.stop(e, false);
-			const mouseMoveEvent = new StandardMouseEvent(e);
-			const event: ISashEvent = { startX, currentX: mouseMoveEvent.posx, startY, currentY: mouseMoveEvent.posy, altKey };
+			EventHelper.stop(e, fAlse);
+			const mouseMoveEvent = new StAndArdMouseEvent(e);
+			const event: ISAshEvent = { stArtX, currentX: mouseMoveEvent.posx, stArtY, currentY: mouseMoveEvent.posy, AltKey };
 
-			this._onDidChange.fire(event);
+			this._onDidChAnge.fire(event);
 		};
 
 		const onMouseUp = (e: MouseEvent) => {
-			EventHelper.stop(e, false);
+			EventHelper.stop(e, fAlse);
 
 			this.el.removeChild(style);
 
-			this.el.classList.remove('active');
+			this.el.clAssList.remove('Active');
 			this._onDidEnd.fire();
 
-			disposables.dispose();
+			disposAbles.dispose();
 
-			for (const iframe of iframes) {
-				iframe.style.pointerEvents = 'auto';
+			for (const ifrAme of ifrAmes) {
+				ifrAme.style.pointerEvents = 'Auto';
 			}
 		};
 
-		domEvent(window, 'mousemove')(onMouseMove, null, disposables);
-		domEvent(window, 'mouseup')(onMouseUp, null, disposables);
+		domEvent(window, 'mousemove')(onMouseMove, null, disposAbles);
+		domEvent(window, 'mouseup')(onMouseUp, null, disposAbles);
 	}
 
-	private onMouseDoubleClick(e: MouseEvent): void {
-		const orthogonalSash = this.getOrthogonalSash(e);
+	privAte onMouseDoubleClick(e: MouseEvent): void {
+		const orthogonAlSAsh = this.getOrthogonAlSAsh(e);
 
-		if (orthogonalSash) {
-			orthogonalSash._onDidReset.fire();
+		if (orthogonAlSAsh) {
+			orthogonAlSAsh._onDidReset.fire();
 		}
 
-		if (this.linkedSash) {
-			this.linkedSash._onDidReset.fire();
+		if (this.linkedSAsh) {
+			this.linkedSAsh._onDidReset.fire();
 		}
 
 		this._onDidReset.fire();
 	}
 
-	private onTouchStart(event: GestureEvent): void {
+	privAte onTouchStArt(event: GestureEvent): void {
 		EventHelper.stop(event);
 
-		const listeners: IDisposable[] = [];
+		const listeners: IDisposAble[] = [];
 
-		const startX = event.pageX;
-		const startY = event.pageY;
-		const altKey = event.altKey;
+		const stArtX = event.pAgeX;
+		const stArtY = event.pAgeY;
+		const AltKey = event.AltKey;
 
-		this._onDidStart.fire({
-			startX: startX,
-			currentX: startX,
-			startY: startY,
-			currentY: startY,
-			altKey
+		this._onDidStArt.fire({
+			stArtX: stArtX,
+			currentX: stArtX,
+			stArtY: stArtY,
+			currentY: stArtY,
+			AltKey
 		});
 
-		listeners.push(addDisposableListener(this.el, EventType.Change, (event: GestureEvent) => {
-			if (types.isNumber(event.pageX) && types.isNumber(event.pageY)) {
-				this._onDidChange.fire({
-					startX: startX,
-					currentX: event.pageX,
-					startY: startY,
-					currentY: event.pageY,
-					altKey
+		listeners.push(AddDisposAbleListener(this.el, EventType.ChAnge, (event: GestureEvent) => {
+			if (types.isNumber(event.pAgeX) && types.isNumber(event.pAgeY)) {
+				this._onDidChAnge.fire({
+					stArtX: stArtX,
+					currentX: event.pAgeX,
+					stArtY: stArtY,
+					currentY: event.pAgeY,
+					AltKey
 				});
 			}
 		}));
 
-		listeners.push(addDisposableListener(this.el, EventType.End, (event: GestureEvent) => {
+		listeners.push(AddDisposAbleListener(this.el, EventType.End, (event: GestureEvent) => {
 			this._onDidEnd.fire();
 			dispose(listeners);
 		}));
 	}
 
-	layout(): void {
-		if (this.orientation === Orientation.VERTICAL) {
-			const verticalProvider = (<IVerticalSashLayoutProvider>this.layoutProvider);
-			this.el.style.left = verticalProvider.getVerticalSashLeft(this) - (this.size / 2) + 'px';
+	lAyout(): void {
+		if (this.orientAtion === OrientAtion.VERTICAL) {
+			const verticAlProvider = (<IVerticAlSAshLAyoutProvider>this.lAyoutProvider);
+			this.el.style.left = verticAlProvider.getVerticAlSAshLeft(this) - (this.size / 2) + 'px';
 
-			if (verticalProvider.getVerticalSashTop) {
-				this.el.style.top = verticalProvider.getVerticalSashTop(this) + 'px';
+			if (verticAlProvider.getVerticAlSAshTop) {
+				this.el.style.top = verticAlProvider.getVerticAlSAshTop(this) + 'px';
 			}
 
-			if (verticalProvider.getVerticalSashHeight) {
-				this.el.style.height = verticalProvider.getVerticalSashHeight(this) + 'px';
+			if (verticAlProvider.getVerticAlSAshHeight) {
+				this.el.style.height = verticAlProvider.getVerticAlSAshHeight(this) + 'px';
 			}
 		} else {
-			const horizontalProvider = (<IHorizontalSashLayoutProvider>this.layoutProvider);
-			this.el.style.top = horizontalProvider.getHorizontalSashTop(this) - (this.size / 2) + 'px';
+			const horizontAlProvider = (<IHorizontAlSAshLAyoutProvider>this.lAyoutProvider);
+			this.el.style.top = horizontAlProvider.getHorizontAlSAshTop(this) - (this.size / 2) + 'px';
 
-			if (horizontalProvider.getHorizontalSashLeft) {
-				this.el.style.left = horizontalProvider.getHorizontalSashLeft(this) + 'px';
+			if (horizontAlProvider.getHorizontAlSAshLeft) {
+				this.el.style.left = horizontAlProvider.getHorizontAlSAshLeft(this) + 'px';
 			}
 
-			if (horizontalProvider.getHorizontalSashWidth) {
-				this.el.style.width = horizontalProvider.getHorizontalSashWidth(this) + 'px';
+			if (horizontAlProvider.getHorizontAlSAshWidth) {
+				this.el.style.width = horizontAlProvider.getHorizontAlSAshWidth(this) + 'px';
 			}
 		}
 	}
 
 	show(): void {
-		this.hidden = false;
-		this.el.style.removeProperty('display');
-		this.el.setAttribute('aria-hidden', 'false');
+		this.hidden = fAlse;
+		this.el.style.removeProperty('displAy');
+		this.el.setAttribute('AriA-hidden', 'fAlse');
 	}
 
 	hide(): void {
 		this.hidden = true;
-		this.el.style.display = 'none';
-		this.el.setAttribute('aria-hidden', 'true');
+		this.el.style.displAy = 'none';
+		this.el.setAttribute('AriA-hidden', 'true');
 	}
 
-	isHidden(): boolean {
+	isHidden(): booleAn {
 		return this.hidden;
 	}
 
-	private onOrthogonalStartSashEnablementChange(state: SashState): void {
-		this.el.classList.toggle('orthogonal-start', state !== SashState.Disabled);
+	privAte onOrthogonAlStArtSAshEnAblementChAnge(stAte: SAshStAte): void {
+		this.el.clAssList.toggle('orthogonAl-stArt', stAte !== SAshStAte.DisAbled);
 	}
 
-	private onOrthogonalEndSashEnablementChange(state: SashState): void {
-		this.el.classList.toggle('orthogonal-end', state !== SashState.Disabled);
+	privAte onOrthogonAlEndSAshEnAblementChAnge(stAte: SAshStAte): void {
+		this.el.clAssList.toggle('orthogonAl-end', stAte !== SAshStAte.DisAbled);
 	}
 
-	private getOrthogonalSash(e: MouseEvent): Sash | undefined {
-		if (this.orientation === Orientation.VERTICAL) {
+	privAte getOrthogonAlSAsh(e: MouseEvent): SAsh | undefined {
+		if (this.orientAtion === OrientAtion.VERTICAL) {
 			if (e.offsetY <= this.size) {
-				return this.orthogonalStartSash;
+				return this.orthogonAlStArtSAsh;
 			} else if (e.offsetY >= this.el.clientHeight - this.size) {
-				return this.orthogonalEndSash;
+				return this.orthogonAlEndSAsh;
 			}
 		} else {
 			if (e.offsetX <= this.size) {
-				return this.orthogonalStartSash;
+				return this.orthogonAlStArtSAsh;
 			} else if (e.offsetX >= this.el.clientWidth - this.size) {
-				return this.orthogonalEndSash;
+				return this.orthogonAlEndSAsh;
 			}
 		}
 

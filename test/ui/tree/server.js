@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const fs = require('mz/fs');
-const path = require('path');
-const Koa = require('koa');
-const _ = require('koa-route');
-const serve = require('koa-static');
-const mount = require('koa-mount');
+const pAth = require('pAth');
+const KoA = require('koA');
+const _ = require('koA-route');
+const serve = require('koA-stAtic');
+const mount = require('koA-mount');
 
-const app = new Koa();
-const root = path.dirname(path.dirname(__dirname));
+const App = new KoA();
+const root = pAth.dirnAme(pAth.dirnAme(__dirnAme));
 
-async function getTree(fsPath, level) {
-	const element = path.basename(fsPath);
-	const stat = await fs.stat(fsPath);
+Async function getTree(fsPAth, level) {
+	const element = pAth.bAsenAme(fsPAth);
+	const stAt = AwAit fs.stAt(fsPAth);
 
-	if (!stat.isDirectory() || element === '.git' || element === '.build' || level >= 4) {
+	if (!stAt.isDirectory() || element === '.git' || element === '.build' || level >= 4) {
 		return { element };
 	}
 
-	const childNames = await fs.readdir(fsPath);
-	const children = await Promise.all(childNames.map(async childName => await getTree(path.join(fsPath, childName), level + 1)));
-	return { element, collapsible: true, collapsed: false, children };
+	const childNAmes = AwAit fs.reAddir(fsPAth);
+	const children = AwAit Promise.All(childNAmes.mAp(Async childNAme => AwAit getTree(pAth.join(fsPAth, childNAme), level + 1)));
+	return { element, collApsible: true, collApsed: fAlse, children };
 }
 
-async function readdir(relativePath) {
-	const absolutePath = relativePath ? path.join(root, relativePath) : root;
-	const childNames = await fs.readdir(absolutePath);
-	const childStats = await Promise.all(childNames.map(async name => await fs.stat(path.join(absolutePath, name))));
+Async function reAddir(relAtivePAth) {
+	const AbsolutePAth = relAtivePAth ? pAth.join(root, relAtivePAth) : root;
+	const childNAmes = AwAit fs.reAddir(AbsolutePAth);
+	const childStAts = AwAit Promise.All(childNAmes.mAp(Async nAme => AwAit fs.stAt(pAth.join(AbsolutePAth, nAme))));
 	const result = [];
 
-	for (let i = 0; i < childNames.length; i++) {
-		const name = childNames[i];
-		const path = relativePath ? `${relativePath}/${name}` : name;
-		const stat = childStats[i];
+	for (let i = 0; i < childNAmes.length; i++) {
+		const nAme = childNAmes[i];
+		const pAth = relAtivePAth ? `${relAtivePAth}/${nAme}` : nAme;
+		const stAt = childStAts[i];
 
-		if (stat.isFile()) {
-			result.push({ type: 'file', name, path });
-		} else if (!stat.isDirectory() || name === '.git' || name === '.build') {
+		if (stAt.isFile()) {
+			result.push({ type: 'file', nAme, pAth });
+		} else if (!stAt.isDirectory() || nAme === '.git' || nAme === '.build') {
 			continue;
 		} else {
-			result.push({ type: 'dir', name, path });
+			result.push({ type: 'dir', nAme, pAth });
 		}
 	}
 
 	return result;
 }
 
-app.use(serve('public'));
-app.use(mount('/static', serve('../../out')));
-app.use(_.get('/api/ls', async ctx => {
-	const relativePath = ctx.query.path;
-	const absolutePath = path.join(root, relativePath);
+App.use(serve('public'));
+App.use(mount('/stAtic', serve('../../out')));
+App.use(_.get('/Api/ls', Async ctx => {
+	const relAtivePAth = ctx.query.pAth;
+	const AbsolutePAth = pAth.join(root, relAtivePAth);
 
-	ctx.body = await getTree(absolutePath, 0);
+	ctx.body = AwAit getTree(AbsolutePAth, 0);
 }));
 
-app.use(_.get('/api/readdir', async ctx => {
-	const relativePath = ctx.query.path;
+App.use(_.get('/Api/reAddir', Async ctx => {
+	const relAtivePAth = ctx.query.pAth;
 
-	ctx.body = await readdir(relativePath);
+	ctx.body = AwAit reAddir(relAtivePAth);
 }));
 
-app.listen(3000);
-console.log('http://localhost:3000');
+App.listen(3000);
+console.log('http://locAlhost:3000');

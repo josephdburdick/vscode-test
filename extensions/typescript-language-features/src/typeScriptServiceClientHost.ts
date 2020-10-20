@@ -1,318 +1,318 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /* --------------------------------------------------------------------------------------------
- * Includes code from typescript-sublime-plugin project, obtained from
- * https://github.com/microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
+ * Includes code from typescript-sublime-plugin project, obtAined from
+ * https://github.com/microsoft/TypeScript-Sublime-Plugin/blob/mAster/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
 
-import * as vscode from 'vscode';
-import { DiagnosticKind } from './languageFeatures/diagnostics';
-import FileConfigurationManager from './languageFeatures/fileConfigurationManager';
-import LanguageProvider from './languageProvider';
-import * as Proto from './protocol';
-import * as PConst from './protocol.const';
-import { OngoingRequestCancellerFactory } from './tsServer/cancellation';
+import * As vscode from 'vscode';
+import { DiAgnosticKind } from './lAnguAgeFeAtures/diAgnostics';
+import FileConfigurAtionMAnAger from './lAnguAgeFeAtures/fileConfigurAtionMAnAger';
+import LAnguAgeProvider from './lAnguAgeProvider';
+import * As Proto from './protocol';
+import * As PConst from './protocol.const';
+import { OngoingRequestCAncellerFActory } from './tsServer/cAncellAtion';
 import { ILogDirectoryProvider } from './tsServer/logDirectoryProvider';
-import { TsServerProcessFactory } from './tsServer/server';
+import { TsServerProcessFActory } from './tsServer/server';
 import { ITypeScriptVersionProvider } from './tsServer/versionProvider';
-import VersionStatus from './tsServer/versionStatus';
+import VersionStAtus from './tsServer/versionStAtus';
 import TypeScriptServiceClient from './typescriptServiceClient';
-import { coalesce, flatten } from './utils/arrays';
-import { CommandManager } from './commands/commandManager';
-import { Disposable } from './utils/dispose';
-import * as errorCodes from './utils/errorCodes';
-import { DiagnosticLanguage, LanguageDescription } from './utils/languageDescription';
-import { PluginManager } from './utils/plugins';
-import * as typeConverters from './utils/typeConverters';
-import TypingsStatus, { AtaProgressReporter } from './utils/typingsStatus';
-import * as ProjectStatus from './utils/largeProjectStatus';
+import { coAlesce, flAtten } from './utils/ArrAys';
+import { CommAndMAnAger } from './commAnds/commAndMAnAger';
+import { DisposAble } from './utils/dispose';
+import * As errorCodes from './utils/errorCodes';
+import { DiAgnosticLAnguAge, LAnguAgeDescription } from './utils/lAnguAgeDescription';
+import { PluginMAnAger } from './utils/plugins';
+import * As typeConverters from './utils/typeConverters';
+import TypingsStAtus, { AtAProgressReporter } from './utils/typingsStAtus';
+import * As ProjectStAtus from './utils/lArgeProjectStAtus';
 
-namespace Experimental {
-	export interface Diagnostic extends Proto.Diagnostic {
-		readonly reportsDeprecated?: {}
+nAmespAce ExperimentAl {
+	export interfAce DiAgnostic extends Proto.DiAgnostic {
+		reAdonly reportsDeprecAted?: {}
 	}
 }
 
-// Style check diagnostics that can be reported as warnings
-const styleCheckDiagnostics = new Set([
-	...errorCodes.variableDeclaredButNeverUsed,
-	...errorCodes.propertyDeclaretedButNeverUsed,
-	...errorCodes.allImportsAreUnused,
-	...errorCodes.unreachableCode,
-	...errorCodes.unusedLabel,
-	...errorCodes.fallThroughCaseInSwitch,
-	...errorCodes.notAllCodePathsReturnAValue,
+// Style check diAgnostics thAt cAn be reported As wArnings
+const styleCheckDiAgnostics = new Set([
+	...errorCodes.vAriAbleDeclAredButNeverUsed,
+	...errorCodes.propertyDeclAretedButNeverUsed,
+	...errorCodes.AllImportsAreUnused,
+	...errorCodes.unreAchAbleCode,
+	...errorCodes.unusedLAbel,
+	...errorCodes.fAllThroughCAseInSwitch,
+	...errorCodes.notAllCodePAthsReturnAVAlue,
 ]);
 
-export default class TypeScriptServiceClientHost extends Disposable {
+export defAult clAss TypeScriptServiceClientHost extends DisposAble {
 
-	private readonly client: TypeScriptServiceClient;
-	private readonly languages: LanguageProvider[] = [];
-	private readonly languagePerId = new Map<string, LanguageProvider>();
+	privAte reAdonly client: TypeScriptServiceClient;
+	privAte reAdonly lAnguAges: LAnguAgeProvider[] = [];
+	privAte reAdonly lAnguAgePerId = new MAp<string, LAnguAgeProvider>();
 
-	private readonly typingsStatus: TypingsStatus;
+	privAte reAdonly typingsStAtus: TypingsStAtus;
 
-	private readonly fileConfigurationManager: FileConfigurationManager;
+	privAte reAdonly fileConfigurAtionMAnAger: FileConfigurAtionMAnAger;
 
-	private reportStyleCheckAsWarnings: boolean = true;
+	privAte reportStyleCheckAsWArnings: booleAn = true;
 
-	private readonly commandManager: CommandManager;
+	privAte reAdonly commAndMAnAger: CommAndMAnAger;
 
 	constructor(
-		descriptions: LanguageDescription[],
-		workspaceState: vscode.Memento,
-		onCaseInsenitiveFileSystem: boolean,
+		descriptions: LAnguAgeDescription[],
+		workspAceStAte: vscode.Memento,
+		onCAseInsenitiveFileSystem: booleAn,
 		services: {
-			pluginManager: PluginManager,
-			commandManager: CommandManager,
+			pluginMAnAger: PluginMAnAger,
+			commAndMAnAger: CommAndMAnAger,
 			logDirectoryProvider: ILogDirectoryProvider,
-			cancellerFactory: OngoingRequestCancellerFactory,
+			cAncellerFActory: OngoingRequestCAncellerFActory,
 			versionProvider: ITypeScriptVersionProvider,
-			processFactory: TsServerProcessFactory,
+			processFActory: TsServerProcessFActory,
 		},
 		onCompletionAccepted: (item: vscode.CompletionItem) => void,
 	) {
 		super();
 
-		this.commandManager = services.commandManager;
+		this.commAndMAnAger = services.commAndMAnAger;
 
-		const allModeIds = this.getAllModeIds(descriptions, services.pluginManager);
+		const AllModeIds = this.getAllModeIds(descriptions, services.pluginMAnAger);
 		this.client = this._register(new TypeScriptServiceClient(
-			workspaceState,
-			onCaseInsenitiveFileSystem,
+			workspAceStAte,
+			onCAseInsenitiveFileSystem,
 			services,
-			allModeIds));
+			AllModeIds));
 
-		this.client.onDiagnosticsReceived(({ kind, resource, diagnostics }) => {
-			this.diagnosticsReceived(kind, resource, diagnostics);
-		}, null, this._disposables);
+		this.client.onDiAgnosticsReceived(({ kind, resource, diAgnostics }) => {
+			this.diAgnosticsReceived(kind, resource, diAgnostics);
+		}, null, this._disposAbles);
 
-		this.client.onConfigDiagnosticsReceived(diag => this.configFileDiagnosticsReceived(diag), null, this._disposables);
-		this.client.onResendModelsRequested(() => this.populateService(), null, this._disposables);
+		this.client.onConfigDiAgnosticsReceived(diAg => this.configFileDiAgnosticsReceived(diAg), null, this._disposAbles);
+		this.client.onResendModelsRequested(() => this.populAteService(), null, this._disposAbles);
 
-		this._register(new VersionStatus(this.client, services.commandManager));
-		this._register(new AtaProgressReporter(this.client));
-		this.typingsStatus = this._register(new TypingsStatus(this.client));
-		this._register(ProjectStatus.create(this.client));
+		this._register(new VersionStAtus(this.client, services.commAndMAnAger));
+		this._register(new AtAProgressReporter(this.client));
+		this.typingsStAtus = this._register(new TypingsStAtus(this.client));
+		this._register(ProjectStAtus.creAte(this.client));
 
-		this.fileConfigurationManager = this._register(new FileConfigurationManager(this.client, onCaseInsenitiveFileSystem));
+		this.fileConfigurAtionMAnAger = this._register(new FileConfigurAtionMAnAger(this.client, onCAseInsenitiveFileSystem));
 
 		for (const description of descriptions) {
-			const manager = new LanguageProvider(this.client, description, this.commandManager, this.client.telemetryReporter, this.typingsStatus, this.fileConfigurationManager, onCompletionAccepted);
-			this.languages.push(manager);
-			this._register(manager);
-			this.languagePerId.set(description.id, manager);
+			const mAnAger = new LAnguAgeProvider(this.client, description, this.commAndMAnAger, this.client.telemetryReporter, this.typingsStAtus, this.fileConfigurAtionMAnAger, onCompletionAccepted);
+			this.lAnguAges.push(mAnAger);
+			this._register(mAnAger);
+			this.lAnguAgePerId.set(description.id, mAnAger);
 		}
 
-		import('./languageFeatures/updatePathsOnRename').then(module =>
-			this._register(module.register(this.client, this.fileConfigurationManager, uri => this.handles(uri))));
+		import('./lAnguAgeFeAtures/updAtePAthsOnRenAme').then(module =>
+			this._register(module.register(this.client, this.fileConfigurAtionMAnAger, uri => this.hAndles(uri))));
 
-		import('./languageFeatures/workspaceSymbols').then(module =>
-			this._register(module.register(this.client, allModeIds)));
+		import('./lAnguAgeFeAtures/workspAceSymbols').then(module =>
+			this._register(module.register(this.client, AllModeIds)));
 
-		this.client.ensureServiceStarted();
-		this.client.onReady(() => {
-			const languages = new Set<string>();
-			for (const plugin of services.pluginManager.plugins) {
-				if (plugin.configNamespace && plugin.languages.length) {
-					this.registerExtensionLanguageProvider({
-						id: plugin.configNamespace,
-						modeIds: Array.from(plugin.languages),
-						diagnosticSource: 'ts-plugin',
-						diagnosticLanguage: DiagnosticLanguage.TypeScript,
-						diagnosticOwner: 'typescript',
-						isExternal: true
+		this.client.ensureServiceStArted();
+		this.client.onReAdy(() => {
+			const lAnguAges = new Set<string>();
+			for (const plugin of services.pluginMAnAger.plugins) {
+				if (plugin.configNAmespAce && plugin.lAnguAges.length) {
+					this.registerExtensionLAnguAgeProvider({
+						id: plugin.configNAmespAce,
+						modeIds: ArrAy.from(plugin.lAnguAges),
+						diAgnosticSource: 'ts-plugin',
+						diAgnosticLAnguAge: DiAgnosticLAnguAge.TypeScript,
+						diAgnosticOwner: 'typescript',
+						isExternAl: true
 					}, onCompletionAccepted);
 				} else {
-					for (const language of plugin.languages) {
-						languages.add(language);
+					for (const lAnguAge of plugin.lAnguAges) {
+						lAnguAges.Add(lAnguAge);
 					}
 				}
 			}
 
-			if (languages.size) {
-				this.registerExtensionLanguageProvider({
+			if (lAnguAges.size) {
+				this.registerExtensionLAnguAgeProvider({
 					id: 'typescript-plugins',
-					modeIds: Array.from(languages.values()),
-					diagnosticSource: 'ts-plugin',
-					diagnosticLanguage: DiagnosticLanguage.TypeScript,
-					diagnosticOwner: 'typescript',
-					isExternal: true
+					modeIds: ArrAy.from(lAnguAges.vAlues()),
+					diAgnosticSource: 'ts-plugin',
+					diAgnosticLAnguAge: DiAgnosticLAnguAge.TypeScript,
+					diAgnosticOwner: 'typescript',
+					isExternAl: true
 				}, onCompletionAccepted);
 			}
 		});
 
-		this.client.onTsServerStarted(() => {
-			this.triggerAllDiagnostics();
+		this.client.onTsServerStArted(() => {
+			this.triggerAllDiAgnostics();
 		});
 
-		vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposables);
-		this.configurationChanged();
+		vscode.workspAce.onDidChAngeConfigurAtion(this.configurAtionChAnged, this, this._disposAbles);
+		this.configurAtionChAnged();
 	}
 
-	private registerExtensionLanguageProvider(description: LanguageDescription, onCompletionAccepted: (item: vscode.CompletionItem) => void) {
-		const manager = new LanguageProvider(this.client, description, this.commandManager, this.client.telemetryReporter, this.typingsStatus, this.fileConfigurationManager, onCompletionAccepted);
-		this.languages.push(manager);
-		this._register(manager);
-		this.languagePerId.set(description.id, manager);
+	privAte registerExtensionLAnguAgeProvider(description: LAnguAgeDescription, onCompletionAccepted: (item: vscode.CompletionItem) => void) {
+		const mAnAger = new LAnguAgeProvider(this.client, description, this.commAndMAnAger, this.client.telemetryReporter, this.typingsStAtus, this.fileConfigurAtionMAnAger, onCompletionAccepted);
+		this.lAnguAges.push(mAnAger);
+		this._register(mAnAger);
+		this.lAnguAgePerId.set(description.id, mAnAger);
 	}
 
-	private getAllModeIds(descriptions: LanguageDescription[], pluginManager: PluginManager) {
-		const allModeIds = flatten([
-			...descriptions.map(x => x.modeIds),
-			...pluginManager.plugins.map(x => x.languages)
+	privAte getAllModeIds(descriptions: LAnguAgeDescription[], pluginMAnAger: PluginMAnAger) {
+		const AllModeIds = flAtten([
+			...descriptions.mAp(x => x.modeIds),
+			...pluginMAnAger.plugins.mAp(x => x.lAnguAges)
 		]);
-		return allModeIds;
+		return AllModeIds;
 	}
 
 	public get serviceClient(): TypeScriptServiceClient {
 		return this.client;
 	}
 
-	public reloadProjects(): void {
-		this.client.executeWithoutWaitingForResponse('reloadProjects', null);
-		this.triggerAllDiagnostics();
+	public reloAdProjects(): void {
+		this.client.executeWithoutWAitingForResponse('reloAdProjects', null);
+		this.triggerAllDiAgnostics();
 	}
 
-	public async handles(resource: vscode.Uri): Promise<boolean> {
-		const provider = await this.findLanguage(resource);
+	public Async hAndles(resource: vscode.Uri): Promise<booleAn> {
+		const provider = AwAit this.findLAnguAge(resource);
 		if (provider) {
 			return true;
 		}
-		return this.client.bufferSyncSupport.handles(resource);
+		return this.client.bufferSyncSupport.hAndles(resource);
 	}
 
-	private configurationChanged(): void {
-		const typescriptConfig = vscode.workspace.getConfiguration('typescript');
+	privAte configurAtionChAnged(): void {
+		const typescriptConfig = vscode.workspAce.getConfigurAtion('typescript');
 
-		this.reportStyleCheckAsWarnings = typescriptConfig.get('reportStyleChecksAsWarnings', true);
+		this.reportStyleCheckAsWArnings = typescriptConfig.get('reportStyleChecksAsWArnings', true);
 	}
 
-	private async findLanguage(resource: vscode.Uri): Promise<LanguageProvider | undefined> {
+	privAte Async findLAnguAge(resource: vscode.Uri): Promise<LAnguAgeProvider | undefined> {
 		try {
-			const doc = await vscode.workspace.openTextDocument(resource);
-			return this.languages.find(language => language.handles(resource, doc));
-		} catch {
+			const doc = AwAit vscode.workspAce.openTextDocument(resource);
+			return this.lAnguAges.find(lAnguAge => lAnguAge.hAndles(resource, doc));
+		} cAtch {
 			return undefined;
 		}
 	}
 
-	private triggerAllDiagnostics() {
-		for (const language of this.languagePerId.values()) {
-			language.triggerAllDiagnostics();
+	privAte triggerAllDiAgnostics() {
+		for (const lAnguAge of this.lAnguAgePerId.vAlues()) {
+			lAnguAge.triggerAllDiAgnostics();
 		}
 	}
 
-	private populateService(): void {
-		this.fileConfigurationManager.reset();
+	privAte populAteService(): void {
+		this.fileConfigurAtionMAnAger.reset();
 
-		for (const language of this.languagePerId.values()) {
-			language.reInitialize();
+		for (const lAnguAge of this.lAnguAgePerId.vAlues()) {
+			lAnguAge.reInitiAlize();
 		}
 	}
 
-	private async diagnosticsReceived(
-		kind: DiagnosticKind,
+	privAte Async diAgnosticsReceived(
+		kind: DiAgnosticKind,
 		resource: vscode.Uri,
-		diagnostics: Proto.Diagnostic[]
+		diAgnostics: Proto.DiAgnostic[]
 	): Promise<void> {
-		const language = await this.findLanguage(resource);
-		if (language) {
-			language.diagnosticsReceived(
+		const lAnguAge = AwAit this.findLAnguAge(resource);
+		if (lAnguAge) {
+			lAnguAge.diAgnosticsReceived(
 				kind,
 				resource,
-				this.createMarkerDatas(diagnostics, language.diagnosticSource));
+				this.creAteMArkerDAtAs(diAgnostics, lAnguAge.diAgnosticSource));
 		}
 	}
 
-	private configFileDiagnosticsReceived(event: Proto.ConfigFileDiagnosticEvent): void {
+	privAte configFileDiAgnosticsReceived(event: Proto.ConfigFileDiAgnosticEvent): void {
 		// See https://github.com/microsoft/TypeScript/issues/10384
 		const body = event.body;
-		if (!body || !body.diagnostics || !body.configFile) {
+		if (!body || !body.diAgnostics || !body.configFile) {
 			return;
 		}
 
-		this.findLanguage(this.client.toResource(body.configFile)).then(language => {
-			if (!language) {
+		this.findLAnguAge(this.client.toResource(body.configFile)).then(lAnguAge => {
+			if (!lAnguAge) {
 				return;
 			}
 
-			language.configFileDiagnosticsReceived(this.client.toResource(body.configFile), body.diagnostics.map(tsDiag => {
-				const range = tsDiag.start && tsDiag.end ? typeConverters.Range.fromTextSpan(tsDiag) : new vscode.Range(0, 0, 0, 1);
-				const diagnostic = new vscode.Diagnostic(range, body.diagnostics[0].text, this.getDiagnosticSeverity(tsDiag));
-				diagnostic.source = language.diagnosticSource;
-				return diagnostic;
+			lAnguAge.configFileDiAgnosticsReceived(this.client.toResource(body.configFile), body.diAgnostics.mAp(tsDiAg => {
+				const rAnge = tsDiAg.stArt && tsDiAg.end ? typeConverters.RAnge.fromTextSpAn(tsDiAg) : new vscode.RAnge(0, 0, 0, 1);
+				const diAgnostic = new vscode.DiAgnostic(rAnge, body.diAgnostics[0].text, this.getDiAgnosticSeverity(tsDiAg));
+				diAgnostic.source = lAnguAge.diAgnosticSource;
+				return diAgnostic;
 			}));
 		});
 	}
 
-	private createMarkerDatas(
-		diagnostics: Proto.Diagnostic[],
+	privAte creAteMArkerDAtAs(
+		diAgnostics: Proto.DiAgnostic[],
 		source: string
-	): (vscode.Diagnostic & { reportUnnecessary: any, reportDeprecated: any })[] {
-		return diagnostics.map(tsDiag => this.tsDiagnosticToVsDiagnostic(tsDiag, source));
+	): (vscode.DiAgnostic & { reportUnnecessAry: Any, reportDeprecAted: Any })[] {
+		return diAgnostics.mAp(tsDiAg => this.tsDiAgnosticToVsDiAgnostic(tsDiAg, source));
 	}
 
-	private tsDiagnosticToVsDiagnostic(diagnostic: Experimental.Diagnostic, source: string): vscode.Diagnostic & { reportUnnecessary: any, reportDeprecated: any } {
-		const { start, end, text } = diagnostic;
-		const range = new vscode.Range(typeConverters.Position.fromLocation(start), typeConverters.Position.fromLocation(end));
-		const converted = new vscode.Diagnostic(range, text, this.getDiagnosticSeverity(diagnostic));
-		converted.source = diagnostic.source || source;
-		if (diagnostic.code) {
-			converted.code = diagnostic.code;
+	privAte tsDiAgnosticToVsDiAgnostic(diAgnostic: ExperimentAl.DiAgnostic, source: string): vscode.DiAgnostic & { reportUnnecessAry: Any, reportDeprecAted: Any } {
+		const { stArt, end, text } = diAgnostic;
+		const rAnge = new vscode.RAnge(typeConverters.Position.fromLocAtion(stArt), typeConverters.Position.fromLocAtion(end));
+		const converted = new vscode.DiAgnostic(rAnge, text, this.getDiAgnosticSeverity(diAgnostic));
+		converted.source = diAgnostic.source || source;
+		if (diAgnostic.code) {
+			converted.code = diAgnostic.code;
 		}
-		const relatedInformation = diagnostic.relatedInformation;
-		if (relatedInformation) {
-			converted.relatedInformation = coalesce(relatedInformation.map((info: any) => {
-				const span = info.span;
-				if (!span) {
+		const relAtedInformAtion = diAgnostic.relAtedInformAtion;
+		if (relAtedInformAtion) {
+			converted.relAtedInformAtion = coAlesce(relAtedInformAtion.mAp((info: Any) => {
+				const spAn = info.spAn;
+				if (!spAn) {
 					return undefined;
 				}
-				return new vscode.DiagnosticRelatedInformation(typeConverters.Location.fromTextSpan(this.client.toResource(span.file), span), info.message);
+				return new vscode.DiAgnosticRelAtedInformAtion(typeConverters.LocAtion.fromTextSpAn(this.client.toResource(spAn.file), spAn), info.messAge);
 			}));
 		}
-		const tags: vscode.DiagnosticTag[] = [];
-		if (diagnostic.reportsUnnecessary) {
-			tags.push(vscode.DiagnosticTag.Unnecessary);
+		const tAgs: vscode.DiAgnosticTAg[] = [];
+		if (diAgnostic.reportsUnnecessAry) {
+			tAgs.push(vscode.DiAgnosticTAg.UnnecessAry);
 		}
-		if (diagnostic.reportsDeprecated) {
-			tags.push(vscode.DiagnosticTag.Deprecated);
+		if (diAgnostic.reportsDeprecAted) {
+			tAgs.push(vscode.DiAgnosticTAg.DeprecAted);
 		}
-		converted.tags = tags.length ? tags : undefined;
+		converted.tAgs = tAgs.length ? tAgs : undefined;
 
-		const resultConverted = converted as vscode.Diagnostic & { reportUnnecessary: any, reportDeprecated: any };
-		resultConverted.reportUnnecessary = diagnostic.reportsUnnecessary;
-		resultConverted.reportDeprecated = diagnostic.reportsDeprecated;
+		const resultConverted = converted As vscode.DiAgnostic & { reportUnnecessAry: Any, reportDeprecAted: Any };
+		resultConverted.reportUnnecessAry = diAgnostic.reportsUnnecessAry;
+		resultConverted.reportDeprecAted = diAgnostic.reportsDeprecAted;
 		return resultConverted;
 	}
 
-	private getDiagnosticSeverity(diagnostic: Proto.Diagnostic): vscode.DiagnosticSeverity {
-		if (this.reportStyleCheckAsWarnings
-			&& this.isStyleCheckDiagnostic(diagnostic.code)
-			&& diagnostic.category === PConst.DiagnosticCategory.error
+	privAte getDiAgnosticSeverity(diAgnostic: Proto.DiAgnostic): vscode.DiAgnosticSeverity {
+		if (this.reportStyleCheckAsWArnings
+			&& this.isStyleCheckDiAgnostic(diAgnostic.code)
+			&& diAgnostic.cAtegory === PConst.DiAgnosticCAtegory.error
 		) {
-			return vscode.DiagnosticSeverity.Warning;
+			return vscode.DiAgnosticSeverity.WArning;
 		}
 
-		switch (diagnostic.category) {
-			case PConst.DiagnosticCategory.error:
-				return vscode.DiagnosticSeverity.Error;
+		switch (diAgnostic.cAtegory) {
+			cAse PConst.DiAgnosticCAtegory.error:
+				return vscode.DiAgnosticSeverity.Error;
 
-			case PConst.DiagnosticCategory.warning:
-				return vscode.DiagnosticSeverity.Warning;
+			cAse PConst.DiAgnosticCAtegory.wArning:
+				return vscode.DiAgnosticSeverity.WArning;
 
-			case PConst.DiagnosticCategory.suggestion:
-				return vscode.DiagnosticSeverity.Hint;
+			cAse PConst.DiAgnosticCAtegory.suggestion:
+				return vscode.DiAgnosticSeverity.Hint;
 
-			default:
-				return vscode.DiagnosticSeverity.Error;
+			defAult:
+				return vscode.DiAgnosticSeverity.Error;
 		}
 	}
 
-	private isStyleCheckDiagnostic(code: number | undefined): boolean {
-		return typeof code === 'number' && styleCheckDiagnostics.has(code);
+	privAte isStyleCheckDiAgnostic(code: number | undefined): booleAn {
+		return typeof code === 'number' && styleCheckDiAgnostics.hAs(code);
 	}
 }

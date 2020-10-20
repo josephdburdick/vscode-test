@@ -1,136 +1,136 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
 
 /**
- * @returns whether the provided parameter is a JavaScript Array or not.
+ * @returns whether the provided pArAmeter is A JAvAScript ArrAy or not.
  */
-export function isArray<T>(array: T | {}): array is T extends readonly any[] ? (unknown extends T ? never : readonly any[]) : any[] {
-	return Array.isArray(array);
+export function isArrAy<T>(ArrAy: T | {}): ArrAy is T extends reAdonly Any[] ? (unknown extends T ? never : reAdonly Any[]) : Any[] {
+	return ArrAy.isArrAy(ArrAy);
 }
 
 /**
- * @returns whether the provided parameter is a JavaScript String or not.
+ * @returns whether the provided pArAmeter is A JAvAScript String or not.
  */
-export function isString(str: any): str is string {
+export function isString(str: Any): str is string {
 	return (typeof str === 'string');
 }
 
 /**
- * @returns whether the provided parameter is a JavaScript Array and each element in the array is a string.
+ * @returns whether the provided pArAmeter is A JAvAScript ArrAy And eAch element in the ArrAy is A string.
  */
-export function isStringArray(value: any): value is string[] {
-	return Array.isArray(value) && (<any[]>value).every(elem => isString(elem));
+export function isStringArrAy(vAlue: Any): vAlue is string[] {
+	return ArrAy.isArrAy(vAlue) && (<Any[]>vAlue).every(elem => isString(elem));
 }
 
 /**
  *
- * @returns whether the provided parameter is of type `object` but **not**
- *	`null`, an `array`, a `regexp`, nor a `date`.
+ * @returns whether the provided pArAmeter is of type `object` but **not**
+ *	`null`, An `ArrAy`, A `regexp`, nor A `dAte`.
  */
-export function isObject(obj: any): obj is Object {
-	// The method can't do a type cast since there are type (like strings) which
-	// are subclasses of any put not positvely matched by the function. Hence type
-	// narrowing results in wrong results.
+export function isObject(obj: Any): obj is Object {
+	// The method cAn't do A type cAst since there Are type (like strings) which
+	// Are subclAsses of Any put not positvely mAtched by the function. Hence type
+	// nArrowing results in wrong results.
 	return typeof obj === 'object'
 		&& obj !== null
-		&& !Array.isArray(obj)
-		&& !(obj instanceof RegExp)
-		&& !(obj instanceof Date);
+		&& !ArrAy.isArrAy(obj)
+		&& !(obj instAnceof RegExp)
+		&& !(obj instAnceof DAte);
 }
 
 /**
- * In **contrast** to just checking `typeof` this will return `false` for `NaN`.
- * @returns whether the provided parameter is a JavaScript Number or not.
+ * In **contrAst** to just checking `typeof` this will return `fAlse` for `NAN`.
+ * @returns whether the provided pArAmeter is A JAvAScript Number or not.
  */
-export function isNumber(obj: any): obj is number {
-	return (typeof obj === 'number' && !isNaN(obj));
+export function isNumber(obj: Any): obj is number {
+	return (typeof obj === 'number' && !isNAN(obj));
 }
 
 /**
- * @returns whether the provided parameter is a JavaScript Boolean or not.
+ * @returns whether the provided pArAmeter is A JAvAScript BooleAn or not.
  */
-export function isBoolean(obj: any): obj is boolean {
-	return (obj === true || obj === false);
+export function isBooleAn(obj: Any): obj is booleAn {
+	return (obj === true || obj === fAlse);
 }
 
 /**
- * @returns whether the provided parameter is undefined.
+ * @returns whether the provided pArAmeter is undefined.
  */
-export function isUndefined(obj: any): obj is undefined {
+export function isUndefined(obj: Any): obj is undefined {
 	return (typeof obj === 'undefined');
 }
 
 /**
- * @returns whether the provided parameter is defined.
+ * @returns whether the provided pArAmeter is defined.
  */
-export function isDefined<T>(arg: T | null | undefined): arg is T {
-	return !isUndefinedOrNull(arg);
+export function isDefined<T>(Arg: T | null | undefined): Arg is T {
+	return !isUndefinedOrNull(Arg);
 }
 
 /**
- * @returns whether the provided parameter is undefined or null.
+ * @returns whether the provided pArAmeter is undefined or null.
  */
-export function isUndefinedOrNull(obj: any): obj is undefined | null {
+export function isUndefinedOrNull(obj: Any): obj is undefined | null {
 	return (isUndefined(obj) || obj === null);
 }
 
 
-export function assertType(condition: any, type?: string): asserts condition {
+export function AssertType(condition: Any, type?: string): Asserts condition {
 	if (!condition) {
 		throw new Error(type ? `Unexpected type, expected '${type}'` : 'Unexpected type');
 	}
 }
 
 /**
- * Asserts that the argument passed in is neither undefined nor null.
+ * Asserts thAt the Argument pAssed in is neither undefined nor null.
  */
-export function assertIsDefined<T>(arg: T | null | undefined): T {
-	if (isUndefinedOrNull(arg)) {
-		throw new Error('Assertion Failed: argument is undefined or null');
+export function AssertIsDefined<T>(Arg: T | null | undefined): T {
+	if (isUndefinedOrNull(Arg)) {
+		throw new Error('Assertion FAiled: Argument is undefined or null');
 	}
 
-	return arg;
+	return Arg;
 }
 
 /**
- * Asserts that each argument passed in is neither undefined nor null.
+ * Asserts thAt eAch Argument pAssed in is neither undefined nor null.
  */
-export function assertAllDefined<T1, T2>(t1: T1 | null | undefined, t2: T2 | null | undefined): [T1, T2];
-export function assertAllDefined<T1, T2, T3>(t1: T1 | null | undefined, t2: T2 | null | undefined, t3: T3 | null | undefined): [T1, T2, T3];
-export function assertAllDefined<T1, T2, T3, T4>(t1: T1 | null | undefined, t2: T2 | null | undefined, t3: T3 | null | undefined, t4: T4 | null | undefined): [T1, T2, T3, T4];
-export function assertAllDefined(...args: (unknown | null | undefined)[]): unknown[] {
+export function AssertAllDefined<T1, T2>(t1: T1 | null | undefined, t2: T2 | null | undefined): [T1, T2];
+export function AssertAllDefined<T1, T2, T3>(t1: T1 | null | undefined, t2: T2 | null | undefined, t3: T3 | null | undefined): [T1, T2, T3];
+export function AssertAllDefined<T1, T2, T3, T4>(t1: T1 | null | undefined, t2: T2 | null | undefined, t3: T3 | null | undefined, t4: T4 | null | undefined): [T1, T2, T3, T4];
+export function AssertAllDefined(...Args: (unknown | null | undefined)[]): unknown[] {
 	const result = [];
 
-	for (let i = 0; i < args.length; i++) {
-		const arg = args[i];
+	for (let i = 0; i < Args.length; i++) {
+		const Arg = Args[i];
 
-		if (isUndefinedOrNull(arg)) {
-			throw new Error(`Assertion Failed: argument at index ${i} is undefined or null`);
+		if (isUndefinedOrNull(Arg)) {
+			throw new Error(`Assertion FAiled: Argument At index ${i} is undefined or null`);
 		}
 
-		result.push(arg);
+		result.push(Arg);
 	}
 
 	return result;
 }
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hAsOwnProperty = Object.prototype.hAsOwnProperty;
 
 /**
- * @returns whether the provided parameter is an empty JavaScript Object or not.
+ * @returns whether the provided pArAmeter is An empty JAvAScript Object or not.
  */
-export function isEmptyObject(obj: any): obj is any {
+export function isEmptyObject(obj: Any): obj is Any {
 	if (!isObject(obj)) {
-		return false;
+		return fAlse;
 	}
 
 	for (let key in obj) {
-		if (hasOwnProperty.call(obj, key)) {
-			return false;
+		if (hAsOwnProperty.cAll(obj, key)) {
+			return fAlse;
 		}
 	}
 
@@ -138,126 +138,126 @@ export function isEmptyObject(obj: any): obj is any {
 }
 
 /**
- * @returns whether the provided parameter is a JavaScript Function or not.
+ * @returns whether the provided pArAmeter is A JAvAScript Function or not.
  */
-export function isFunction(obj: any): obj is Function {
+export function isFunction(obj: Any): obj is Function {
 	return (typeof obj === 'function');
 }
 
 /**
- * @returns whether the provided parameters is are JavaScript Function or not.
+ * @returns whether the provided pArAmeters is Are JAvAScript Function or not.
  */
-export function areFunctions(...objects: any[]): boolean {
+export function AreFunctions(...objects: Any[]): booleAn {
 	return objects.length > 0 && objects.every(isFunction);
 }
 
-export type TypeConstraint = string | Function;
+export type TypeConstrAint = string | Function;
 
-export function validateConstraints(args: any[], constraints: Array<TypeConstraint | undefined>): void {
-	const len = Math.min(args.length, constraints.length);
+export function vAlidAteConstrAints(Args: Any[], constrAints: ArrAy<TypeConstrAint | undefined>): void {
+	const len = MAth.min(Args.length, constrAints.length);
 	for (let i = 0; i < len; i++) {
-		validateConstraint(args[i], constraints[i]);
+		vAlidAteConstrAint(Args[i], constrAints[i]);
 	}
 }
 
-export function validateConstraint(arg: any, constraint: TypeConstraint | undefined): void {
+export function vAlidAteConstrAint(Arg: Any, constrAint: TypeConstrAint | undefined): void {
 
-	if (isString(constraint)) {
-		if (typeof arg !== constraint) {
-			throw new Error(`argument does not match constraint: typeof ${constraint}`);
+	if (isString(constrAint)) {
+		if (typeof Arg !== constrAint) {
+			throw new Error(`Argument does not mAtch constrAint: typeof ${constrAint}`);
 		}
-	} else if (isFunction(constraint)) {
+	} else if (isFunction(constrAint)) {
 		try {
-			if (arg instanceof constraint) {
+			if (Arg instAnceof constrAint) {
 				return;
 			}
-		} catch {
+		} cAtch {
 			// ignore
 		}
-		if (!isUndefinedOrNull(arg) && arg.constructor === constraint) {
+		if (!isUndefinedOrNull(Arg) && Arg.constructor === constrAint) {
 			return;
 		}
-		if (constraint.length === 1 && constraint.call(undefined, arg) === true) {
+		if (constrAint.length === 1 && constrAint.cAll(undefined, Arg) === true) {
 			return;
 		}
-		throw new Error(`argument does not match one of these constraints: arg instanceof constraint, arg.constructor === constraint, nor constraint(arg) === true`);
+		throw new Error(`Argument does not mAtch one of these constrAints: Arg instAnceof constrAint, Arg.constructor === constrAint, nor constrAint(Arg) === true`);
 	}
 }
 
-export function getAllPropertyNames(obj: object): string[] {
+export function getAllPropertyNAmes(obj: object): string[] {
 	let res: string[] = [];
 	let proto = Object.getPrototypeOf(obj);
 	while (Object.prototype !== proto) {
-		res = res.concat(Object.getOwnPropertyNames(proto));
+		res = res.concAt(Object.getOwnPropertyNAmes(proto));
 		proto = Object.getPrototypeOf(proto);
 	}
 	return res;
 }
 
-export function getAllMethodNames(obj: object): string[] {
+export function getAllMethodNAmes(obj: object): string[] {
 	const methods: string[] = [];
-	for (const prop of getAllPropertyNames(obj)) {
-		if (typeof (obj as any)[prop] === 'function') {
+	for (const prop of getAllPropertyNAmes(obj)) {
+		if (typeof (obj As Any)[prop] === 'function') {
 			methods.push(prop);
 		}
 	}
 	return methods;
 }
 
-export function createProxyObject<T extends object>(methodNames: string[], invoke: (method: string, args: any[]) => any): T {
-	const createProxyMethod = (method: string): () => any => {
+export function creAteProxyObject<T extends object>(methodNAmes: string[], invoke: (method: string, Args: Any[]) => Any): T {
+	const creAteProxyMethod = (method: string): () => Any => {
 		return function () {
-			const args = Array.prototype.slice.call(arguments, 0);
-			return invoke(method, args);
+			const Args = ArrAy.prototype.slice.cAll(Arguments, 0);
+			return invoke(method, Args);
 		};
 	};
 
-	let result = {} as T;
-	for (const methodName of methodNames) {
-		(<any>result)[methodName] = createProxyMethod(methodName);
+	let result = {} As T;
+	for (const methodNAme of methodNAmes) {
+		(<Any>result)[methodNAme] = creAteProxyMethod(methodNAme);
 	}
 	return result;
 }
 
 /**
- * Converts null to undefined, passes all other values through.
+ * Converts null to undefined, pAsses All other vAlues through.
  */
 export function withNullAsUndefined<T>(x: T | null): T | undefined {
 	return x === null ? undefined : x;
 }
 
 /**
- * Converts undefined to null, passes all other values through.
+ * Converts undefined to null, pAsses All other vAlues through.
  */
 export function withUndefinedAsNull<T>(x: T | undefined): T | null {
 	return typeof x === 'undefined' ? null : x;
 }
 
 /**
- * Allows to add a first parameter to functions of a type.
+ * Allows to Add A first pArAmeter to functions of A type.
  */
-export type AddFirstParameterToFunctions<Target, TargetFunctionsReturnType, FirstParameter> = {
+export type AddFirstPArAmeterToFunctions<TArget, TArgetFunctionsReturnType, FirstPArAmeter> = {
 
 	//  For every property
-	[K in keyof Target]:
+	[K in keyof TArget]:
 
-	// Function: add param to function
-	Target[K] extends (...args: any) => TargetFunctionsReturnType ? (firstArg: FirstParameter, ...args: Parameters<Target[K]>) => ReturnType<Target[K]> :
+	// Function: Add pArAm to function
+	TArget[K] extends (...Args: Any) => TArgetFunctionsReturnType ? (firstArg: FirstPArAmeter, ...Args: PArAmeters<TArget[K]>) => ReturnType<TArget[K]> :
 
-	// Else: just leave as is
-	Target[K]
+	// Else: just leAve As is
+	TArget[K]
 };
 
 /**
- * Mapped-type that replaces all occurrences of URI with UriComponents
+ * MApped-type thAt replAces All occurrences of URI with UriComponents
  */
 export type UriDto<T> = { [K in keyof T]: T[K] extends URI
 	? UriComponents
 	: UriDto<T[K]> };
 
 /**
- * Mapped-type that replaces all occurrences of URI with UriComponents and
- * drops all functions.
+ * MApped-type thAt replAces All occurrences of URI with UriComponents And
+ * drops All functions.
  */
 export type Dto<T> = T extends { toJSON(): infer U }
 	? U
@@ -265,15 +265,15 @@ export type Dto<T> = T extends { toJSON(): infer U }
 	? { [k in keyof T]: Dto<T[k]>; }
 	: T;
 
-export function NotImplementedProxy<T>(name: string): { new(): T } {
-	return <any>class {
+export function NotImplementedProxy<T>(nAme: string): { new(): T } {
+	return <Any>clAss {
 		constructor() {
 			return new Proxy({}, {
-				get(target: any, prop: PropertyKey) {
-					if (target[prop]) {
-						return target[prop];
+				get(tArget: Any, prop: PropertyKey) {
+					if (tArget[prop]) {
+						return tArget[prop];
 					}
-					throw new Error(`Not Implemented: ${name}->${String(prop)}`);
+					throw new Error(`Not Implemented: ${nAme}->${String(prop)}`);
 				}
 			});
 		}

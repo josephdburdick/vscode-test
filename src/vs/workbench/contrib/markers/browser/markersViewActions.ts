@@ -1,299 +1,299 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Delayer } from 'vs/base/common/async';
-import * as DOM from 'vs/base/browser/dom';
-import { Action, IAction, IActionRunner, Separator } from 'vs/base/common/actions';
-import { HistoryInputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { IContextViewService, IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import Messages from 'vs/workbench/contrib/markers/browser/messages';
-import Constants from 'vs/workbench/contrib/markers/browser/constants';
-import { IThemeService, registerThemingParticipant, ICssStyleCollector, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { attachInputBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { toDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { badgeBackground, badgeForeground, contrastBorder, inputActiveOptionBorder, inputActiveOptionBackground, inputActiveOptionForeground } from 'vs/platform/theme/common/colorRegistry';
-import { localize } from 'vs/nls';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ContextScopedHistoryInputBox } from 'vs/platform/browser/contextScopedHistoryWidget';
-import { Marker } from 'vs/workbench/contrib/markers/browser/markersModel';
-import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { Event, Emitter } from 'vs/base/common/event';
-import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
+import { DelAyer } from 'vs/bAse/common/Async';
+import * As DOM from 'vs/bAse/browser/dom';
+import { Action, IAction, IActionRunner, SepArAtor } from 'vs/bAse/common/Actions';
+import { HistoryInputBox } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { IContextViewService, IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import MessAges from 'vs/workbench/contrib/mArkers/browser/messAges';
+import ConstAnts from 'vs/workbench/contrib/mArkers/browser/constAnts';
+import { IThemeService, registerThemingPArticipAnt, ICssStyleCollector, IColorTheme } from 'vs/plAtform/theme/common/themeService';
+import { AttAchInputBoxStyler, AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { toDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { bAdgeBAckground, bAdgeForeground, contrAstBorder, inputActiveOptionBorder, inputActiveOptionBAckground, inputActiveOptionForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { locAlize } from 'vs/nls';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ContextScopedHistoryInputBox } from 'vs/plAtform/browser/contextScopedHistoryWidget';
+import { MArker } from 'vs/workbench/contrib/mArkers/browser/mArkersModel';
+import { IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { AnchorAlignment } from 'vs/bAse/browser/ui/contextview/contextview';
 import { IViewsService } from 'vs/workbench/common/views';
-import { Codicon } from 'vs/base/common/codicons';
-import { BaseActionViewItem, ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { DropdownMenuActionViewItem } from 'vs/base/browser/ui/dropdown/dropdownActionViewItem';
+import { Codicon } from 'vs/bAse/common/codicons';
+import { BAseActionViewItem, ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { DropdownMenuActionViewItem } from 'vs/bAse/browser/ui/dropdown/dropdownActionViewItem';
 
-export class ShowProblemsPanelAction extends Action {
+export clAss ShowProblemsPAnelAction extends Action {
 
-	public static readonly ID = 'workbench.action.problems.focus';
-	public static readonly LABEL = Messages.MARKERS_PANEL_SHOW_LABEL;
+	public stAtic reAdonly ID = 'workbench.Action.problems.focus';
+	public stAtic reAdonly LABEL = MessAges.MARKERS_PANEL_SHOW_LABEL;
 
-	constructor(id: string, label: string,
-		@IViewsService private readonly viewsService: IViewsService
+	constructor(id: string, lAbel: string,
+		@IViewsService privAte reAdonly viewsService: IViewsService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	public run(): Promise<any> {
-		return this.viewsService.openView(Constants.MARKERS_VIEW_ID, true);
+	public run(): Promise<Any> {
+		return this.viewsService.openView(ConstAnts.MARKERS_VIEW_ID, true);
 	}
 }
 
-export interface IMarkersFiltersChangeEvent {
-	filterText?: boolean;
-	excludedFiles?: boolean;
-	showWarnings?: boolean;
-	showErrors?: boolean;
-	showInfos?: boolean;
-	activeFile?: boolean;
-	layout?: boolean;
+export interfAce IMArkersFiltersChAngeEvent {
+	filterText?: booleAn;
+	excludedFiles?: booleAn;
+	showWArnings?: booleAn;
+	showErrors?: booleAn;
+	showInfos?: booleAn;
+	ActiveFile?: booleAn;
+	lAyout?: booleAn;
 }
 
-export interface IMarkersFiltersOptions {
+export interfAce IMArkersFiltersOptions {
 	filterText: string;
 	filterHistory: string[];
-	showErrors: boolean;
-	showWarnings: boolean;
-	showInfos: boolean;
-	excludedFiles: boolean;
-	activeFile: boolean;
-	layout: DOM.Dimension;
+	showErrors: booleAn;
+	showWArnings: booleAn;
+	showInfos: booleAn;
+	excludedFiles: booleAn;
+	ActiveFile: booleAn;
+	lAyout: DOM.Dimension;
 }
 
-export class MarkersFilters extends Disposable {
+export clAss MArkersFilters extends DisposAble {
 
-	private readonly _onDidChange: Emitter<IMarkersFiltersChangeEvent> = this._register(new Emitter<IMarkersFiltersChangeEvent>());
-	readonly onDidChange: Event<IMarkersFiltersChangeEvent> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge: Emitter<IMArkersFiltersChAngeEvent> = this._register(new Emitter<IMArkersFiltersChAngeEvent>());
+	reAdonly onDidChAnge: Event<IMArkersFiltersChAngeEvent> = this._onDidChAnge.event;
 
-	constructor(options: IMarkersFiltersOptions) {
+	constructor(options: IMArkersFiltersOptions) {
 		super();
 		this._filterText = options.filterText;
 		this._showErrors = options.showErrors;
-		this._showWarnings = options.showWarnings;
+		this._showWArnings = options.showWArnings;
 		this._showInfos = options.showInfos;
 		this._excludedFiles = options.excludedFiles;
-		this._activeFile = options.activeFile;
+		this._ActiveFile = options.ActiveFile;
 		this.filterHistory = options.filterHistory;
-		this._layout = options.layout;
+		this._lAyout = options.lAyout;
 	}
 
-	private _filterText: string;
+	privAte _filterText: string;
 	get filterText(): string {
 		return this._filterText;
 	}
 	set filterText(filterText: string) {
 		if (this._filterText !== filterText) {
 			this._filterText = filterText;
-			this._onDidChange.fire({ filterText: true });
+			this._onDidChAnge.fire({ filterText: true });
 		}
 	}
 
 	filterHistory: string[];
 
-	private _excludedFiles: boolean;
-	get excludedFiles(): boolean {
+	privAte _excludedFiles: booleAn;
+	get excludedFiles(): booleAn {
 		return this._excludedFiles;
 	}
-	set excludedFiles(filesExclude: boolean) {
+	set excludedFiles(filesExclude: booleAn) {
 		if (this._excludedFiles !== filesExclude) {
 			this._excludedFiles = filesExclude;
-			this._onDidChange.fire(<IMarkersFiltersChangeEvent>{ excludedFiles: true });
+			this._onDidChAnge.fire(<IMArkersFiltersChAngeEvent>{ excludedFiles: true });
 		}
 	}
 
-	private _activeFile: boolean;
-	get activeFile(): boolean {
-		return this._activeFile;
+	privAte _ActiveFile: booleAn;
+	get ActiveFile(): booleAn {
+		return this._ActiveFile;
 	}
-	set activeFile(activeFile: boolean) {
-		if (this._activeFile !== activeFile) {
-			this._activeFile = activeFile;
-			this._onDidChange.fire(<IMarkersFiltersChangeEvent>{ activeFile: true });
+	set ActiveFile(ActiveFile: booleAn) {
+		if (this._ActiveFile !== ActiveFile) {
+			this._ActiveFile = ActiveFile;
+			this._onDidChAnge.fire(<IMArkersFiltersChAngeEvent>{ ActiveFile: true });
 		}
 	}
 
-	private _showWarnings: boolean = true;
-	get showWarnings(): boolean {
-		return this._showWarnings;
+	privAte _showWArnings: booleAn = true;
+	get showWArnings(): booleAn {
+		return this._showWArnings;
 	}
-	set showWarnings(showWarnings: boolean) {
-		if (this._showWarnings !== showWarnings) {
-			this._showWarnings = showWarnings;
-			this._onDidChange.fire(<IMarkersFiltersChangeEvent>{ showWarnings: true });
+	set showWArnings(showWArnings: booleAn) {
+		if (this._showWArnings !== showWArnings) {
+			this._showWArnings = showWArnings;
+			this._onDidChAnge.fire(<IMArkersFiltersChAngeEvent>{ showWArnings: true });
 		}
 	}
 
-	private _showErrors: boolean = true;
-	get showErrors(): boolean {
+	privAte _showErrors: booleAn = true;
+	get showErrors(): booleAn {
 		return this._showErrors;
 	}
-	set showErrors(showErrors: boolean) {
+	set showErrors(showErrors: booleAn) {
 		if (this._showErrors !== showErrors) {
 			this._showErrors = showErrors;
-			this._onDidChange.fire(<IMarkersFiltersChangeEvent>{ showErrors: true });
+			this._onDidChAnge.fire(<IMArkersFiltersChAngeEvent>{ showErrors: true });
 		}
 	}
 
-	private _showInfos: boolean = true;
-	get showInfos(): boolean {
+	privAte _showInfos: booleAn = true;
+	get showInfos(): booleAn {
 		return this._showInfos;
 	}
-	set showInfos(showInfos: boolean) {
+	set showInfos(showInfos: booleAn) {
 		if (this._showInfos !== showInfos) {
 			this._showInfos = showInfos;
-			this._onDidChange.fire(<IMarkersFiltersChangeEvent>{ showInfos: true });
+			this._onDidChAnge.fire(<IMArkersFiltersChAngeEvent>{ showInfos: true });
 		}
 	}
 
-	private _layout: DOM.Dimension = new DOM.Dimension(0, 0);
-	get layout(): DOM.Dimension {
-		return this._layout;
+	privAte _lAyout: DOM.Dimension = new DOM.Dimension(0, 0);
+	get lAyout(): DOM.Dimension {
+		return this._lAyout;
 	}
-	set layout(layout: DOM.Dimension) {
-		if (this._layout.width !== layout.width || this._layout.height !== layout.height) {
-			this._layout = layout;
-			this._onDidChange.fire(<IMarkersFiltersChangeEvent>{ layout: true });
+	set lAyout(lAyout: DOM.Dimension) {
+		if (this._lAyout.width !== lAyout.width || this._lAyout.height !== lAyout.height) {
+			this._lAyout = lAyout;
+			this._onDidChAnge.fire(<IMArkersFiltersChAngeEvent>{ lAyout: true });
 		}
 	}
 }
 
-export interface IMarkerFilterController {
-	readonly onDidFocusFilter: Event<void>;
-	readonly onDidClearFilterText: Event<void>;
-	readonly filters: MarkersFilters;
-	readonly onDidChangeFilterStats: Event<{ total: number, filtered: number }>;
-	getFilterStats(): { total: number, filtered: number };
+export interfAce IMArkerFilterController {
+	reAdonly onDidFocusFilter: Event<void>;
+	reAdonly onDidCleArFilterText: Event<void>;
+	reAdonly filters: MArkersFilters;
+	reAdonly onDidChAngeFilterStAts: Event<{ totAl: number, filtered: number }>;
+	getFilterStAts(): { totAl: number, filtered: number };
 }
 
-class FiltersDropdownMenuActionViewItem extends DropdownMenuActionViewItem {
+clAss FiltersDropdownMenuActionViewItem extends DropdownMenuActionViewItem {
 
 	constructor(
-		action: IAction, private filters: MarkersFilters, actionRunner: IActionRunner,
+		Action: IAction, privAte filters: MArkersFilters, ActionRunner: IActionRunner,
 		@IContextMenuService contextMenuService: IContextMenuService
 	) {
-		super(action,
+		super(Action,
 			{ getActions: () => this.getActions() },
 			contextMenuService,
 			{
-				actionRunner,
-				classNames: action.class,
-				anchorAlignmentProvider: () => AnchorAlignment.RIGHT
+				ActionRunner,
+				clAssNAmes: Action.clAss,
+				AnchorAlignmentProvider: () => AnchorAlignment.RIGHT
 			}
 		);
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
-		this.updateChecked();
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
+		this.updAteChecked();
 	}
 
-	private getActions(): IAction[] {
+	privAte getActions(): IAction[] {
 		return [
 			{
 				checked: this.filters.showErrors,
-				class: undefined,
-				enabled: true,
+				clAss: undefined,
+				enAbled: true,
 				id: 'showErrors',
-				label: Messages.MARKERS_PANEL_FILTER_LABEL_SHOW_ERRORS,
-				run: async () => this.filters.showErrors = !this.filters.showErrors,
+				lAbel: MessAges.MARKERS_PANEL_FILTER_LABEL_SHOW_ERRORS,
+				run: Async () => this.filters.showErrors = !this.filters.showErrors,
 				tooltip: '',
 				dispose: () => null
 			},
 			{
-				checked: this.filters.showWarnings,
-				class: undefined,
-				enabled: true,
-				id: 'showWarnings',
-				label: Messages.MARKERS_PANEL_FILTER_LABEL_SHOW_WARNINGS,
-				run: async () => this.filters.showWarnings = !this.filters.showWarnings,
+				checked: this.filters.showWArnings,
+				clAss: undefined,
+				enAbled: true,
+				id: 'showWArnings',
+				lAbel: MessAges.MARKERS_PANEL_FILTER_LABEL_SHOW_WARNINGS,
+				run: Async () => this.filters.showWArnings = !this.filters.showWArnings,
 				tooltip: '',
 				dispose: () => null
 			},
 			{
 				checked: this.filters.showInfos,
-				class: undefined,
-				enabled: true,
+				clAss: undefined,
+				enAbled: true,
 				id: 'showInfos',
-				label: Messages.MARKERS_PANEL_FILTER_LABEL_SHOW_INFOS,
-				run: async () => this.filters.showInfos = !this.filters.showInfos,
+				lAbel: MessAges.MARKERS_PANEL_FILTER_LABEL_SHOW_INFOS,
+				run: Async () => this.filters.showInfos = !this.filters.showInfos,
 				tooltip: '',
 				dispose: () => null
 			},
-			new Separator(),
+			new SepArAtor(),
 			{
-				checked: this.filters.activeFile,
-				class: undefined,
-				enabled: true,
-				id: 'activeFile',
-				label: Messages.MARKERS_PANEL_FILTER_LABEL_ACTIVE_FILE,
-				run: async () => this.filters.activeFile = !this.filters.activeFile,
+				checked: this.filters.ActiveFile,
+				clAss: undefined,
+				enAbled: true,
+				id: 'ActiveFile',
+				lAbel: MessAges.MARKERS_PANEL_FILTER_LABEL_ACTIVE_FILE,
+				run: Async () => this.filters.ActiveFile = !this.filters.ActiveFile,
 				tooltip: '',
 				dispose: () => null
 			},
 			{
 				checked: this.filters.excludedFiles,
-				class: undefined,
-				enabled: true,
+				clAss: undefined,
+				enAbled: true,
 				id: 'useFilesExclude',
-				label: Messages.MARKERS_PANEL_FILTER_LABEL_EXCLUDED_FILES,
-				run: async () => this.filters.excludedFiles = !this.filters.excludedFiles,
+				lAbel: MessAges.MARKERS_PANEL_FILTER_LABEL_EXCLUDED_FILES,
+				run: Async () => this.filters.excludedFiles = !this.filters.excludedFiles,
 				tooltip: '',
 				dispose: () => null
 			},
 		];
 	}
 
-	updateChecked(): void {
-		this.element!.classList.toggle('checked', this._action.checked);
+	updAteChecked(): void {
+		this.element!.clAssList.toggle('checked', this._Action.checked);
 	}
 
 }
 
-export class MarkersFilterActionViewItem extends BaseActionViewItem {
+export clAss MArkersFilterActionViewItem extends BAseActionViewItem {
 
-	private delayedFilterUpdate: Delayer<void>;
-	private container: HTMLElement | null = null;
-	private filterInputBox: HistoryInputBox | null = null;
-	private filterBadge: HTMLElement | null = null;
-	private focusContextKey: IContextKey<boolean>;
-	private readonly filtersAction: IAction;
+	privAte delAyedFilterUpdAte: DelAyer<void>;
+	privAte contAiner: HTMLElement | null = null;
+	privAte filterInputBox: HistoryInputBox | null = null;
+	privAte filterBAdge: HTMLElement | null = null;
+	privAte focusContextKey: IContextKey<booleAn>;
+	privAte reAdonly filtersAction: IAction;
 
 	constructor(
-		action: IAction,
-		private filterController: IMarkerFilterController,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IThemeService private readonly themeService: IThemeService,
+		Action: IAction,
+		privAte filterController: IMArkerFilterController,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
-		super(null, action);
-		this.focusContextKey = Constants.MarkerViewFilterFocusContextKey.bindTo(contextKeyService);
-		this.delayedFilterUpdate = new Delayer<void>(400);
-		this._register(toDisposable(() => this.delayedFilterUpdate.cancel()));
+		super(null, Action);
+		this.focusContextKey = ConstAnts.MArkerViewFilterFocusContextKey.bindTo(contextKeyService);
+		this.delAyedFilterUpdAte = new DelAyer<void>(400);
+		this._register(toDisposAble(() => this.delAyedFilterUpdAte.cAncel()));
 		this._register(filterController.onDidFocusFilter(() => this.focus()));
-		this._register(filterController.onDidClearFilterText(() => this.clearFilterText()));
-		this.filtersAction = new Action('markersFiltersAction', Messages.MARKERS_PANEL_ACTION_TOOLTIP_MORE_FILTERS, 'markers-filters codicon-filter');
-		this.filtersAction.checked = this.hasFiltersChanged();
-		this._register(filterController.filters.onDidChange(e => this.onDidFiltersChange(e)));
+		this._register(filterController.onDidCleArFilterText(() => this.cleArFilterText()));
+		this.filtersAction = new Action('mArkersFiltersAction', MessAges.MARKERS_PANEL_ACTION_TOOLTIP_MORE_FILTERS, 'mArkers-filters codicon-filter');
+		this.filtersAction.checked = this.hAsFiltersChAnged();
+		this._register(filterController.filters.onDidChAnge(e => this.onDidFiltersChAnge(e)));
 	}
 
-	render(container: HTMLElement): void {
-		this.container = container;
-		this.container.classList.add('markers-panel-action-filter-container');
+	render(contAiner: HTMLElement): void {
+		this.contAiner = contAiner;
+		this.contAiner.clAssList.Add('mArkers-pAnel-Action-filter-contAiner');
 
-		this.element = DOM.append(this.container, DOM.$(''));
-		this.element.className = this.class;
-		this.createInput(this.element);
-		this.createControls(this.element);
-		this.updateClass();
+		this.element = DOM.Append(this.contAiner, DOM.$(''));
+		this.element.clAssNAme = this.clAss;
+		this.creAteInput(this.element);
+		this.creAteControls(this.element);
+		this.updAteClAss();
 
-		this.adjustInputBox();
+		this.AdjustInputBox();
 	}
 
 	focus(): void {
@@ -302,176 +302,176 @@ export class MarkersFilterActionViewItem extends BaseActionViewItem {
 		}
 	}
 
-	private clearFilterText(): void {
+	privAte cleArFilterText(): void {
 		if (this.filterInputBox) {
-			this.filterInputBox.value = '';
+			this.filterInputBox.vAlue = '';
 		}
 	}
 
-	private onDidFiltersChange(e: IMarkersFiltersChangeEvent): void {
-		this.filtersAction.checked = this.hasFiltersChanged();
-		if (e.layout) {
-			this.updateClass();
+	privAte onDidFiltersChAnge(e: IMArkersFiltersChAngeEvent): void {
+		this.filtersAction.checked = this.hAsFiltersChAnged();
+		if (e.lAyout) {
+			this.updAteClAss();
 		}
 	}
 
-	private hasFiltersChanged(): boolean {
-		return !this.filterController.filters.showErrors || !this.filterController.filters.showWarnings || !this.filterController.filters.showInfos || this.filterController.filters.excludedFiles || this.filterController.filters.activeFile;
+	privAte hAsFiltersChAnged(): booleAn {
+		return !this.filterController.filters.showErrors || !this.filterController.filters.showWArnings || !this.filterController.filters.showInfos || this.filterController.filters.excludedFiles || this.filterController.filters.ActiveFile;
 	}
 
-	private createInput(container: HTMLElement): void {
-		this.filterInputBox = this._register(this.instantiationService.createInstance(ContextScopedHistoryInputBox, container, this.contextViewService, {
-			placeholder: Messages.MARKERS_PANEL_FILTER_PLACEHOLDER,
-			ariaLabel: Messages.MARKERS_PANEL_FILTER_ARIA_LABEL,
+	privAte creAteInput(contAiner: HTMLElement): void {
+		this.filterInputBox = this._register(this.instAntiAtionService.creAteInstAnce(ContextScopedHistoryInputBox, contAiner, this.contextViewService, {
+			plAceholder: MessAges.MARKERS_PANEL_FILTER_PLACEHOLDER,
+			AriALAbel: MessAges.MARKERS_PANEL_FILTER_ARIA_LABEL,
 			history: this.filterController.filters.filterHistory
 		}));
-		this._register(attachInputBoxStyler(this.filterInputBox, this.themeService));
-		this.filterInputBox.value = this.filterController.filters.filterText;
-		this._register(this.filterInputBox.onDidChange(filter => this.delayedFilterUpdate.trigger(() => this.onDidInputChange(this.filterInputBox!))));
-		this._register(this.filterController.filters.onDidChange((event: IMarkersFiltersChangeEvent) => {
+		this._register(AttAchInputBoxStyler(this.filterInputBox, this.themeService));
+		this.filterInputBox.vAlue = this.filterController.filters.filterText;
+		this._register(this.filterInputBox.onDidChAnge(filter => this.delAyedFilterUpdAte.trigger(() => this.onDidInputChAnge(this.filterInputBox!))));
+		this._register(this.filterController.filters.onDidChAnge((event: IMArkersFiltersChAngeEvent) => {
 			if (event.filterText) {
-				this.filterInputBox!.value = this.filterController.filters.filterText;
+				this.filterInputBox!.vAlue = this.filterController.filters.filterText;
 			}
 		}));
-		this._register(DOM.addStandardDisposableListener(this.filterInputBox.inputElement, DOM.EventType.KEY_DOWN, (e: any) => this.onInputKeyDown(e, this.filterInputBox!)));
-		this._register(DOM.addStandardDisposableListener(container, DOM.EventType.KEY_DOWN, this.handleKeyboardEvent));
-		this._register(DOM.addStandardDisposableListener(container, DOM.EventType.KEY_UP, this.handleKeyboardEvent));
-		this._register(DOM.addStandardDisposableListener(this.filterInputBox.inputElement, DOM.EventType.CLICK, (e) => {
-			e.stopPropagation();
-			e.preventDefault();
+		this._register(DOM.AddStAndArdDisposAbleListener(this.filterInputBox.inputElement, DOM.EventType.KEY_DOWN, (e: Any) => this.onInputKeyDown(e, this.filterInputBox!)));
+		this._register(DOM.AddStAndArdDisposAbleListener(contAiner, DOM.EventType.KEY_DOWN, this.hAndleKeyboArdEvent));
+		this._register(DOM.AddStAndArdDisposAbleListener(contAiner, DOM.EventType.KEY_UP, this.hAndleKeyboArdEvent));
+		this._register(DOM.AddStAndArdDisposAbleListener(this.filterInputBox.inputElement, DOM.EventType.CLICK, (e) => {
+			e.stopPropAgAtion();
+			e.preventDefAult();
 		}));
 
-		const focusTracker = this._register(DOM.trackFocus(this.filterInputBox.inputElement));
-		this._register(focusTracker.onDidFocus(() => this.focusContextKey.set(true)));
-		this._register(focusTracker.onDidBlur(() => this.focusContextKey.set(false)));
-		this._register(toDisposable(() => this.focusContextKey.reset()));
+		const focusTrAcker = this._register(DOM.trAckFocus(this.filterInputBox.inputElement));
+		this._register(focusTrAcker.onDidFocus(() => this.focusContextKey.set(true)));
+		this._register(focusTrAcker.onDidBlur(() => this.focusContextKey.set(fAlse)));
+		this._register(toDisposAble(() => this.focusContextKey.reset()));
 	}
 
-	private createControls(container: HTMLElement): void {
-		const controlsContainer = DOM.append(container, DOM.$('.markers-panel-filter-controls'));
-		this.createBadge(controlsContainer);
-		this.createFilters(controlsContainer);
+	privAte creAteControls(contAiner: HTMLElement): void {
+		const controlsContAiner = DOM.Append(contAiner, DOM.$('.mArkers-pAnel-filter-controls'));
+		this.creAteBAdge(controlsContAiner);
+		this.creAteFilters(controlsContAiner);
 	}
 
-	private createBadge(container: HTMLElement): void {
-		const filterBadge = this.filterBadge = DOM.append(container, DOM.$('.markers-panel-filter-badge'));
-		this._register(attachStylerCallback(this.themeService, { badgeBackground, badgeForeground, contrastBorder }, colors => {
-			const background = colors.badgeBackground ? colors.badgeBackground.toString() : '';
-			const foreground = colors.badgeForeground ? colors.badgeForeground.toString() : '';
-			const border = colors.contrastBorder ? colors.contrastBorder.toString() : '';
+	privAte creAteBAdge(contAiner: HTMLElement): void {
+		const filterBAdge = this.filterBAdge = DOM.Append(contAiner, DOM.$('.mArkers-pAnel-filter-bAdge'));
+		this._register(AttAchStylerCAllbAck(this.themeService, { bAdgeBAckground, bAdgeForeground, contrAstBorder }, colors => {
+			const bAckground = colors.bAdgeBAckground ? colors.bAdgeBAckground.toString() : '';
+			const foreground = colors.bAdgeForeground ? colors.bAdgeForeground.toString() : '';
+			const border = colors.contrAstBorder ? colors.contrAstBorder.toString() : '';
 
-			filterBadge.style.backgroundColor = background;
+			filterBAdge.style.bAckgroundColor = bAckground;
 
-			filterBadge.style.borderWidth = border ? '1px' : '';
-			filterBadge.style.borderStyle = border ? 'solid' : '';
-			filterBadge.style.borderColor = border;
-			filterBadge.style.color = foreground;
+			filterBAdge.style.borderWidth = border ? '1px' : '';
+			filterBAdge.style.borderStyle = border ? 'solid' : '';
+			filterBAdge.style.borderColor = border;
+			filterBAdge.style.color = foreground;
 		}));
-		this.updateBadge();
-		this._register(this.filterController.onDidChangeFilterStats(() => this.updateBadge()));
+		this.updAteBAdge();
+		this._register(this.filterController.onDidChAngeFilterStAts(() => this.updAteBAdge()));
 	}
 
-	private createFilters(container: HTMLElement): void {
-		const actionbar = this._register(new ActionBar(container, {
-			actionViewItemProvider: action => {
-				if (action.id === this.filtersAction.id) {
-					return this.instantiationService.createInstance(FiltersDropdownMenuActionViewItem, action, this.filterController.filters, this.actionRunner);
+	privAte creAteFilters(contAiner: HTMLElement): void {
+		const ActionbAr = this._register(new ActionBAr(contAiner, {
+			ActionViewItemProvider: Action => {
+				if (Action.id === this.filtersAction.id) {
+					return this.instAntiAtionService.creAteInstAnce(FiltersDropdownMenuActionViewItem, Action, this.filterController.filters, this.ActionRunner);
 				}
 				return undefined;
 			}
 		}));
-		actionbar.push(this.filtersAction, { icon: true, label: false });
+		ActionbAr.push(this.filtersAction, { icon: true, lAbel: fAlse });
 	}
 
-	private onDidInputChange(inputbox: HistoryInputBox) {
-		inputbox.addToHistory();
-		this.filterController.filters.filterText = inputbox.value;
+	privAte onDidInputChAnge(inputbox: HistoryInputBox) {
+		inputbox.AddToHistory();
+		this.filterController.filters.filterText = inputbox.vAlue;
 		this.filterController.filters.filterHistory = inputbox.getHistory();
 	}
 
-	private updateBadge(): void {
-		if (this.filterBadge) {
-			const { total, filtered } = this.filterController.getFilterStats();
-			this.filterBadge.classList.toggle('hidden', total === filtered || total === 0);
-			this.filterBadge.textContent = localize('showing filtered problems', "Showing {0} of {1}", filtered, total);
-			this.adjustInputBox();
+	privAte updAteBAdge(): void {
+		if (this.filterBAdge) {
+			const { totAl, filtered } = this.filterController.getFilterStAts();
+			this.filterBAdge.clAssList.toggle('hidden', totAl === filtered || totAl === 0);
+			this.filterBAdge.textContent = locAlize('showing filtered problems', "Showing {0} of {1}", filtered, totAl);
+			this.AdjustInputBox();
 		}
 	}
 
-	private adjustInputBox(): void {
-		if (this.element && this.filterInputBox && this.filterBadge) {
-			this.filterInputBox.inputElement.style.paddingRight = this.element.classList.contains('small') || this.filterBadge.classList.contains('hidden') ? '25px' : '150px';
+	privAte AdjustInputBox(): void {
+		if (this.element && this.filterInputBox && this.filterBAdge) {
+			this.filterInputBox.inputElement.style.pAddingRight = this.element.clAssList.contAins('smAll') || this.filterBAdge.clAssList.contAins('hidden') ? '25px' : '150px';
 		}
 	}
 
-	// Action toolbar is swallowing some keys for action items which should not be for an input box
-	private handleKeyboardEvent(event: StandardKeyboardEvent) {
-		if (event.equals(KeyCode.Space)
-			|| event.equals(KeyCode.LeftArrow)
-			|| event.equals(KeyCode.RightArrow)
-			|| event.equals(KeyCode.Escape)
+	// Action toolbAr is swAllowing some keys for Action items which should not be for An input box
+	privAte hAndleKeyboArdEvent(event: StAndArdKeyboArdEvent) {
+		if (event.equAls(KeyCode.SpAce)
+			|| event.equAls(KeyCode.LeftArrow)
+			|| event.equAls(KeyCode.RightArrow)
+			|| event.equAls(KeyCode.EscApe)
 		) {
-			event.stopPropagation();
+			event.stopPropAgAtion();
 		}
 	}
 
-	private onInputKeyDown(event: StandardKeyboardEvent, filterInputBox: HistoryInputBox) {
-		let handled = false;
-		if (event.equals(KeyCode.Escape)) {
-			this.clearFilterText();
-			handled = true;
+	privAte onInputKeyDown(event: StAndArdKeyboArdEvent, filterInputBox: HistoryInputBox) {
+		let hAndled = fAlse;
+		if (event.equAls(KeyCode.EscApe)) {
+			this.cleArFilterText();
+			hAndled = true;
 		}
-		if (handled) {
-			event.stopPropagation();
-			event.preventDefault();
-		}
-	}
-
-	protected updateClass(): void {
-		if (this.element && this.container) {
-			this.element.className = this.class;
-			this.container.classList.toggle('grow', this.element.classList.contains('grow'));
-			this.adjustInputBox();
+		if (hAndled) {
+			event.stopPropAgAtion();
+			event.preventDefAult();
 		}
 	}
 
-	protected get class(): string {
-		if (this.filterController.filters.layout.width > 600) {
-			return 'markers-panel-action-filter grow';
-		} else if (this.filterController.filters.layout.width < 400) {
-			return 'markers-panel-action-filter small';
+	protected updAteClAss(): void {
+		if (this.element && this.contAiner) {
+			this.element.clAssNAme = this.clAss;
+			this.contAiner.clAssList.toggle('grow', this.element.clAssList.contAins('grow'));
+			this.AdjustInputBox();
+		}
+	}
+
+	protected get clAss(): string {
+		if (this.filterController.filters.lAyout.width > 600) {
+			return 'mArkers-pAnel-Action-filter grow';
+		} else if (this.filterController.filters.lAyout.width < 400) {
+			return 'mArkers-pAnel-Action-filter smAll';
 		} else {
-			return 'markers-panel-action-filter';
+			return 'mArkers-pAnel-Action-filter';
 		}
 	}
 }
 
-export class QuickFixAction extends Action {
+export clAss QuickFixAction extends Action {
 
-	public static readonly ID: string = 'workbench.actions.problems.quickfix';
-	private static readonly CLASS: string = 'markers-panel-action-quickfix ' + Codicon.lightBulb.classNames;
-	private static readonly AUTO_FIX_CLASS: string = QuickFixAction.CLASS + ' autofixable';
+	public stAtic reAdonly ID: string = 'workbench.Actions.problems.quickfix';
+	privAte stAtic reAdonly CLASS: string = 'mArkers-pAnel-Action-quickfix ' + Codicon.lightBulb.clAssNAmes;
+	privAte stAtic reAdonly AUTO_FIX_CLASS: string = QuickFixAction.CLASS + ' AutofixAble';
 
-	private readonly _onShowQuickFixes = this._register(new Emitter<void>());
-	readonly onShowQuickFixes: Event<void> = this._onShowQuickFixes.event;
+	privAte reAdonly _onShowQuickFixes = this._register(new Emitter<void>());
+	reAdonly onShowQuickFixes: Event<void> = this._onShowQuickFixes.event;
 
-	private _quickFixes: IAction[] = [];
+	privAte _quickFixes: IAction[] = [];
 	get quickFixes(): IAction[] {
 		return this._quickFixes;
 	}
 	set quickFixes(quickFixes: IAction[]) {
 		this._quickFixes = quickFixes;
-		this.enabled = this._quickFixes.length > 0;
+		this.enAbled = this._quickFixes.length > 0;
 	}
 
-	autoFixable(autofixable: boolean) {
-		this.class = autofixable ? QuickFixAction.AUTO_FIX_CLASS : QuickFixAction.CLASS;
+	AutoFixAble(AutofixAble: booleAn) {
+		this.clAss = AutofixAble ? QuickFixAction.AUTO_FIX_CLASS : QuickFixAction.CLASS;
 	}
 
 	constructor(
-		readonly marker: Marker,
+		reAdonly mArker: MArker,
 	) {
-		super(QuickFixAction.ID, Messages.MARKERS_PANEL_ACTION_TOOLTIP_QUICKFIX, QuickFixAction.CLASS, false);
+		super(QuickFixAction.ID, MessAges.MARKERS_PANEL_ACTION_TOOLTIP_QUICKFIX, QuickFixAction.CLASS, fAlse);
 	}
 
 	run(): Promise<void> {
@@ -480,12 +480,12 @@ export class QuickFixAction extends Action {
 	}
 }
 
-export class QuickFixActionViewItem extends ActionViewItem {
+export clAss QuickFixActionViewItem extends ActionViewItem {
 
-	constructor(action: QuickFixAction,
-		@IContextMenuService private readonly contextMenuService: IContextMenuService,
+	constructor(Action: QuickFixAction,
+		@IContextMenuService privAte reAdonly contextMenuService: IContextMenuService,
 	) {
-		super(null, action, { icon: true, label: false });
+		super(null, Action, { icon: true, lAbel: fAlse });
 	}
 
 	public onClick(event: DOM.EventLike): void {
@@ -497,10 +497,10 @@ export class QuickFixActionViewItem extends ActionViewItem {
 		if (!this.element) {
 			return;
 		}
-		if (!this.isEnabled()) {
+		if (!this.isEnAbled()) {
 			return;
 		}
-		const elementPosition = DOM.getDomNodePagePosition(this.element);
+		const elementPosition = DOM.getDomNodePAgePosition(this.element);
 		const quickFixes = (<QuickFixAction>this.getAction()).quickFixes;
 		if (quickFixes.length) {
 			this.contextMenuService.showContextMenu({
@@ -511,17 +511,17 @@ export class QuickFixActionViewItem extends ActionViewItem {
 	}
 }
 
-registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
+registerThemingPArticipAnt((theme: IColorTheme, collector: ICssStyleCollector) => {
 	const inputActiveOptionBorderColor = theme.getColor(inputActiveOptionBorder);
 	if (inputActiveOptionBorderColor) {
-		collector.addRule(`.markers-panel-action-filter > .markers-panel-filter-controls > .monaco-action-bar .action-label.markers-filters.checked { border-color: ${inputActiveOptionBorderColor}; }`);
+		collector.AddRule(`.mArkers-pAnel-Action-filter > .mArkers-pAnel-filter-controls > .monAco-Action-bAr .Action-lAbel.mArkers-filters.checked { border-color: ${inputActiveOptionBorderColor}; }`);
 	}
 	const inputActiveOptionForegroundColor = theme.getColor(inputActiveOptionForeground);
 	if (inputActiveOptionForegroundColor) {
-		collector.addRule(`.markers-panel-action-filter > .markers-panel-filter-controls > .monaco-action-bar .action-label.markers-filters.checked { color: ${inputActiveOptionForegroundColor}; }`);
+		collector.AddRule(`.mArkers-pAnel-Action-filter > .mArkers-pAnel-filter-controls > .monAco-Action-bAr .Action-lAbel.mArkers-filters.checked { color: ${inputActiveOptionForegroundColor}; }`);
 	}
-	const inputActiveOptionBackgroundColor = theme.getColor(inputActiveOptionBackground);
-	if (inputActiveOptionBackgroundColor) {
-		collector.addRule(`.markers-panel-action-filter > .markers-panel-filter-controls > .monaco-action-bar .action-label.markers-filters.checked { background-color: ${inputActiveOptionBackgroundColor}; }`);
+	const inputActiveOptionBAckgroundColor = theme.getColor(inputActiveOptionBAckground);
+	if (inputActiveOptionBAckgroundColor) {
+		collector.AddRule(`.mArkers-pAnel-Action-filter > .mArkers-pAnel-filter-controls > .monAco-Action-bAr .Action-lAbel.mArkers-filters.checked { bAckground-color: ${inputActiveOptionBAckgroundColor}; }`);
 	}
 });

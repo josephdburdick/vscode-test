@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as ts from 'typescript';
-import * as lazy from 'lazy.js';
-import { duplex, through } from 'event-stream';
-import * as File from 'vinyl';
-import * as sm from 'source-map';
-import * as  path from 'path';
+import * As ts from 'typescript';
+import * As lAzy from 'lAzy.js';
+import { duplex, through } from 'event-streAm';
+import * As File from 'vinyl';
+import * As sm from 'source-mAp';
+import * As  pAth from 'pAth';
 
-declare class FileSourceMap extends File {
-	public sourceMap: sm.RawSourceMap;
+declAre clAss FileSourceMAp extends File {
+	public sourceMAp: sm.RAwSourceMAp;
 }
 
 enum CollectStepResult {
@@ -32,7 +32,7 @@ function collect(node: ts.Node, fn: (node: ts.Node) => CollectStepResult): ts.No
 		}
 
 		if (stepResult === CollectStepResult.YesAndRecurse || stepResult === CollectStepResult.NoAndRecurse) {
-			ts.forEachChild(node, loop);
+			ts.forEAchChild(node, loop);
 		}
 	}
 
@@ -48,245 +48,245 @@ function clone<T>(object: T): T {
 	return result;
 }
 
-function template(lines: string[]): string {
-	let indent = '', wrap = '';
+function templAte(lines: string[]): string {
+	let indent = '', wrAp = '';
 
 	if (lines.length > 1) {
 		indent = '\t';
-		wrap = '\n';
+		wrAp = '\n';
 	}
 
 	return `/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
+ * Copyright (C) Microsoft CorporAtion. All rights reserved.
  *--------------------------------------------------------*/
-define([], [${ wrap + lines.map(l => indent + l).join(',\n') + wrap}]);`;
+define([], [${ wrAp + lines.mAp(l => indent + l).join(',\n') + wrAp}]);`;
 }
 
 /**
- * Returns a stream containing the patched JavaScript and source maps.
+ * Returns A streAm contAining the pAtched JAvAScript And source mAps.
  */
-function nls(): NodeJS.ReadWriteStream {
+function nls(): NodeJS.ReAdWriteStreAm {
 	const input = through();
-	const output = input.pipe(through(function (f: FileSourceMap) {
-		if (!f.sourceMap) {
-			return this.emit('error', new Error(`File ${f.relative} does not have sourcemaps.`));
+	const output = input.pipe(through(function (f: FileSourceMAp) {
+		if (!f.sourceMAp) {
+			return this.emit('error', new Error(`File ${f.relAtive} does not hAve sourcemAps.`));
 		}
 
-		let source = f.sourceMap.sources[0];
+		let source = f.sourceMAp.sources[0];
 		if (!source) {
-			return this.emit('error', new Error(`File ${f.relative} does not have a source in the source map.`));
+			return this.emit('error', new Error(`File ${f.relAtive} does not hAve A source in the source mAp.`));
 		}
 
-		const root = f.sourceMap.sourceRoot;
+		const root = f.sourceMAp.sourceRoot;
 		if (root) {
-			source = path.join(root, source);
+			source = pAth.join(root, source);
 		}
 
-		const typescript = f.sourceMap.sourcesContent![0];
+		const typescript = f.sourceMAp.sourcesContent![0];
 		if (!typescript) {
-			return this.emit('error', new Error(`File ${f.relative} does not have the original content in the source map.`));
+			return this.emit('error', new Error(`File ${f.relAtive} does not hAve the originAl content in the source mAp.`));
 		}
 
-		nls.patchFiles(f, typescript).forEach(f => this.emit('data', f));
+		nls.pAtchFiles(f, typescript).forEAch(f => this.emit('dAtA', f));
 	}));
 
 	return duplex(input, output);
 }
 
-function isImportNode(node: ts.Node): boolean {
-	return node.kind === ts.SyntaxKind.ImportDeclaration || node.kind === ts.SyntaxKind.ImportEqualsDeclaration;
+function isImportNode(node: ts.Node): booleAn {
+	return node.kind === ts.SyntAxKind.ImportDeclArAtion || node.kind === ts.SyntAxKind.ImportEquAlsDeclArAtion;
 }
 
 module nls {
 
-	export interface INlsStringResult {
-		javascript: string;
-		sourcemap: sm.RawSourceMap;
+	export interfAce INlsStringResult {
+		jAvAscript: string;
+		sourcemAp: sm.RAwSourceMAp;
 		nls?: string;
 		nlsKeys?: string;
 	}
 
-	export interface ISpan {
-		start: ts.LineAndCharacter;
-		end: ts.LineAndCharacter;
+	export interfAce ISpAn {
+		stArt: ts.LineAndChArActer;
+		end: ts.LineAndChArActer;
 	}
 
-	export interface ILocalizeCall {
-		keySpan: ISpan;
+	export interfAce ILocAlizeCAll {
+		keySpAn: ISpAn;
 		key: string;
-		valueSpan: ISpan;
-		value: string;
+		vAlueSpAn: ISpAn;
+		vAlue: string;
 	}
 
-	export interface ILocalizeAnalysisResult {
-		localizeCalls: ILocalizeCall[];
-		nlsExpressions: ISpan[];
+	export interfAce ILocAlizeAnAlysisResult {
+		locAlizeCAlls: ILocAlizeCAll[];
+		nlsExpressions: ISpAn[];
 	}
 
-	export interface IPatch {
-		span: ISpan;
+	export interfAce IPAtch {
+		spAn: ISpAn;
 		content: string;
 	}
 
-	export function fileFrom(file: File, contents: string, path: string = file.path) {
+	export function fileFrom(file: File, contents: string, pAth: string = file.pAth) {
 		return new File({
 			contents: Buffer.from(contents),
-			base: file.base,
+			bAse: file.bAse,
 			cwd: file.cwd,
-			path: path
+			pAth: pAth
 		});
 	}
 
-	export function mappedPositionFrom(source: string, lc: ts.LineAndCharacter): sm.MappedPosition {
-		return { source, line: lc.line + 1, column: lc.character };
+	export function mAppedPositionFrom(source: string, lc: ts.LineAndChArActer): sm.MAppedPosition {
+		return { source, line: lc.line + 1, column: lc.chArActer };
 	}
 
-	export function lcFrom(position: sm.Position): ts.LineAndCharacter {
-		return { line: position.line - 1, character: position.column };
+	export function lcFrom(position: sm.Position): ts.LineAndChArActer {
+		return { line: position.line - 1, chArActer: position.column };
 	}
 
-	export class SingleFileServiceHost implements ts.LanguageServiceHost {
+	export clAss SingleFileServiceHost implements ts.LAnguAgeServiceHost {
 
-		private file: ts.IScriptSnapshot;
-		private lib: ts.IScriptSnapshot;
+		privAte file: ts.IScriptSnApshot;
+		privAte lib: ts.IScriptSnApshot;
 
-		constructor(private options: ts.CompilerOptions, private filename: string, contents: string) {
-			this.file = ts.ScriptSnapshot.fromString(contents);
-			this.lib = ts.ScriptSnapshot.fromString('');
+		constructor(privAte options: ts.CompilerOptions, privAte filenAme: string, contents: string) {
+			this.file = ts.ScriptSnApshot.fromString(contents);
+			this.lib = ts.ScriptSnApshot.fromString('');
 		}
 
-		getCompilationSettings = () => this.options;
-		getScriptFileNames = () => [this.filename];
+		getCompilAtionSettings = () => this.options;
+		getScriptFileNAmes = () => [this.filenAme];
 		getScriptVersion = () => '1';
-		getScriptSnapshot = (name: string) => name === this.filename ? this.file : this.lib;
+		getScriptSnApshot = (nAme: string) => nAme === this.filenAme ? this.file : this.lib;
 		getCurrentDirectory = () => '';
-		getDefaultLibFileName = () => 'lib.d.ts';
+		getDefAultLibFileNAme = () => 'lib.d.ts';
 	}
 
-	function isCallExpressionWithinTextSpanCollectStep(textSpan: ts.TextSpan, node: ts.Node): CollectStepResult {
-		if (!ts.textSpanContainsTextSpan({ start: node.pos, length: node.end - node.pos }, textSpan)) {
+	function isCAllExpressionWithinTextSpAnCollectStep(textSpAn: ts.TextSpAn, node: ts.Node): CollectStepResult {
+		if (!ts.textSpAnContAinsTextSpAn({ stArt: node.pos, length: node.end - node.pos }, textSpAn)) {
 			return CollectStepResult.No;
 		}
 
-		return node.kind === ts.SyntaxKind.CallExpression ? CollectStepResult.YesAndRecurse : CollectStepResult.NoAndRecurse;
+		return node.kind === ts.SyntAxKind.CAllExpression ? CollectStepResult.YesAndRecurse : CollectStepResult.NoAndRecurse;
 	}
 
-	export function analyze(contents: string, options: ts.CompilerOptions = {}): ILocalizeAnalysisResult {
-		const filename = 'file.ts';
-		const serviceHost = new SingleFileServiceHost(Object.assign(clone(options), { noResolve: true }), filename, contents);
-		const service = ts.createLanguageService(serviceHost);
-		const sourceFile = ts.createSourceFile(filename, contents, ts.ScriptTarget.ES5, true);
+	export function AnAlyze(contents: string, options: ts.CompilerOptions = {}): ILocAlizeAnAlysisResult {
+		const filenAme = 'file.ts';
+		const serviceHost = new SingleFileServiceHost(Object.Assign(clone(options), { noResolve: true }), filenAme, contents);
+		const service = ts.creAteLAnguAgeService(serviceHost);
+		const sourceFile = ts.creAteSourceFile(filenAme, contents, ts.ScriptTArget.ES5, true);
 
-		// all imports
-		const imports = lazy(collect(sourceFile, n => isImportNode(n) ? CollectStepResult.YesAndRecurse : CollectStepResult.NoAndRecurse));
+		// All imports
+		const imports = lAzy(collect(sourceFile, n => isImportNode(n) ? CollectStepResult.YesAndRecurse : CollectStepResult.NoAndRecurse));
 
 		// import nls = require('vs/nls');
-		const importEqualsDeclarations = imports
-			.filter(n => n.kind === ts.SyntaxKind.ImportEqualsDeclaration)
-			.map(n => <ts.ImportEqualsDeclaration>n)
-			.filter(d => d.moduleReference.kind === ts.SyntaxKind.ExternalModuleReference)
-			.filter(d => (<ts.ExternalModuleReference>d.moduleReference).expression.getText() === '\'vs/nls\'');
+		const importEquAlsDeclArAtions = imports
+			.filter(n => n.kind === ts.SyntAxKind.ImportEquAlsDeclArAtion)
+			.mAp(n => <ts.ImportEquAlsDeclArAtion>n)
+			.filter(d => d.moduleReference.kind === ts.SyntAxKind.ExternAlModuleReference)
+			.filter(d => (<ts.ExternAlModuleReference>d.moduleReference).expression.getText() === '\'vs/nls\'');
 
 		// import ... from 'vs/nls';
-		const importDeclarations = imports
-			.filter(n => n.kind === ts.SyntaxKind.ImportDeclaration)
-			.map(n => <ts.ImportDeclaration>n)
-			.filter(d => d.moduleSpecifier.kind === ts.SyntaxKind.StringLiteral)
+		const importDeclArAtions = imports
+			.filter(n => n.kind === ts.SyntAxKind.ImportDeclArAtion)
+			.mAp(n => <ts.ImportDeclArAtion>n)
+			.filter(d => d.moduleSpecifier.kind === ts.SyntAxKind.StringLiterAl)
 			.filter(d => d.moduleSpecifier.getText() === '\'vs/nls\'')
-			.filter(d => !!d.importClause && !!d.importClause.namedBindings);
+			.filter(d => !!d.importClAuse && !!d.importClAuse.nAmedBindings);
 
-		const nlsExpressions = importEqualsDeclarations
-			.map(d => (<ts.ExternalModuleReference>d.moduleReference).expression)
-			.concat(importDeclarations.map(d => d.moduleSpecifier))
-			.map<ISpan>(d => ({
-				start: ts.getLineAndCharacterOfPosition(sourceFile, d.getStart()),
-				end: ts.getLineAndCharacterOfPosition(sourceFile, d.getEnd())
+		const nlsExpressions = importEquAlsDeclArAtions
+			.mAp(d => (<ts.ExternAlModuleReference>d.moduleReference).expression)
+			.concAt(importDeclArAtions.mAp(d => d.moduleSpecifier))
+			.mAp<ISpAn>(d => ({
+				stArt: ts.getLineAndChArActerOfPosition(sourceFile, d.getStArt()),
+				end: ts.getLineAndChArActerOfPosition(sourceFile, d.getEnd())
 			}));
 
-		// `nls.localize(...)` calls
-		const nlsLocalizeCallExpressions = importDeclarations
-			.filter(d => !!(d.importClause && d.importClause.namedBindings && d.importClause.namedBindings.kind === ts.SyntaxKind.NamespaceImport))
-			.map(d => (<ts.NamespaceImport>d.importClause!.namedBindings).name)
-			.concat(importEqualsDeclarations.map(d => d.name))
+		// `nls.locAlize(...)` cAlls
+		const nlsLocAlizeCAllExpressions = importDeclArAtions
+			.filter(d => !!(d.importClAuse && d.importClAuse.nAmedBindings && d.importClAuse.nAmedBindings.kind === ts.SyntAxKind.NAmespAceImport))
+			.mAp(d => (<ts.NAmespAceImport>d.importClAuse!.nAmedBindings).nAme)
+			.concAt(importEquAlsDeclArAtions.mAp(d => d.nAme))
 
-			// find read-only references to `nls`
-			.map(n => service.getReferencesAtPosition(filename, n.pos + 1))
-			.flatten()
+			// find reAd-only references to `nls`
+			.mAp(n => service.getReferencesAtPosition(filenAme, n.pos + 1))
+			.flAtten()
 			.filter(r => !r.isWriteAccess)
 
-			// find the deepest call expressions AST nodes that contain those references
-			.map(r => collect(sourceFile, n => isCallExpressionWithinTextSpanCollectStep(r.textSpan, n)))
-			.map(a => lazy(a).last())
+			// find the deepest cAll expressions AST nodes thAt contAin those references
+			.mAp(r => collect(sourceFile, n => isCAllExpressionWithinTextSpAnCollectStep(r.textSpAn, n)))
+			.mAp(A => lAzy(A).lAst())
 			.filter(n => !!n)
-			.map(n => <ts.CallExpression>n)
+			.mAp(n => <ts.CAllExpression>n)
 
-			// only `localize` calls
-			.filter(n => n.expression.kind === ts.SyntaxKind.PropertyAccessExpression && (<ts.PropertyAccessExpression>n.expression).name.getText() === 'localize');
+			// only `locAlize` cAlls
+			.filter(n => n.expression.kind === ts.SyntAxKind.PropertyAccessExpression && (<ts.PropertyAccessExpression>n.expression).nAme.getText() === 'locAlize');
 
-		// `localize` named imports
-		const allLocalizeImportDeclarations = importDeclarations
-			.filter(d => !!(d.importClause && d.importClause.namedBindings && d.importClause.namedBindings.kind === ts.SyntaxKind.NamedImports))
-			.map(d => ([] as any[]).concat((<ts.NamedImports>d.importClause!.namedBindings!).elements))
-			.flatten();
+		// `locAlize` nAmed imports
+		const AllLocAlizeImportDeclArAtions = importDeclArAtions
+			.filter(d => !!(d.importClAuse && d.importClAuse.nAmedBindings && d.importClAuse.nAmedBindings.kind === ts.SyntAxKind.NAmedImports))
+			.mAp(d => ([] As Any[]).concAt((<ts.NAmedImports>d.importClAuse!.nAmedBindings!).elements))
+			.flAtten();
 
-		// `localize` read-only references
-		const localizeReferences = allLocalizeImportDeclarations
-			.filter(d => d.name.getText() === 'localize')
-			.map(n => service.getReferencesAtPosition(filename, n.pos + 1))
-			.flatten()
+		// `locAlize` reAd-only references
+		const locAlizeReferences = AllLocAlizeImportDeclArAtions
+			.filter(d => d.nAme.getText() === 'locAlize')
+			.mAp(n => service.getReferencesAtPosition(filenAme, n.pos + 1))
+			.flAtten()
 			.filter(r => !r.isWriteAccess);
 
-		// custom named `localize` read-only references
-		const namedLocalizeReferences = allLocalizeImportDeclarations
-			.filter(d => d.propertyName && d.propertyName.getText() === 'localize')
-			.map(n => service.getReferencesAtPosition(filename, n.name.pos + 1))
-			.flatten()
+		// custom nAmed `locAlize` reAd-only references
+		const nAmedLocAlizeReferences = AllLocAlizeImportDeclArAtions
+			.filter(d => d.propertyNAme && d.propertyNAme.getText() === 'locAlize')
+			.mAp(n => service.getReferencesAtPosition(filenAme, n.nAme.pos + 1))
+			.flAtten()
 			.filter(r => !r.isWriteAccess);
 
-		// find the deepest call expressions AST nodes that contain those references
-		const localizeCallExpressions = localizeReferences
-			.concat(namedLocalizeReferences)
-			.map(r => collect(sourceFile, n => isCallExpressionWithinTextSpanCollectStep(r.textSpan, n)))
-			.map(a => lazy(a).last())
+		// find the deepest cAll expressions AST nodes thAt contAin those references
+		const locAlizeCAllExpressions = locAlizeReferences
+			.concAt(nAmedLocAlizeReferences)
+			.mAp(r => collect(sourceFile, n => isCAllExpressionWithinTextSpAnCollectStep(r.textSpAn, n)))
+			.mAp(A => lAzy(A).lAst())
 			.filter(n => !!n)
-			.map(n => <ts.CallExpression>n);
+			.mAp(n => <ts.CAllExpression>n);
 
 		// collect everything
-		const localizeCalls = nlsLocalizeCallExpressions
-			.concat(localizeCallExpressions)
-			.map(e => e.arguments)
-			.filter(a => a.length > 1)
-			.sort((a, b) => a[0].getStart() - b[0].getStart())
-			.map<ILocalizeCall>(a => ({
-				keySpan: { start: ts.getLineAndCharacterOfPosition(sourceFile, a[0].getStart()), end: ts.getLineAndCharacterOfPosition(sourceFile, a[0].getEnd()) },
-				key: a[0].getText(),
-				valueSpan: { start: ts.getLineAndCharacterOfPosition(sourceFile, a[1].getStart()), end: ts.getLineAndCharacterOfPosition(sourceFile, a[1].getEnd()) },
-				value: a[1].getText()
+		const locAlizeCAlls = nlsLocAlizeCAllExpressions
+			.concAt(locAlizeCAllExpressions)
+			.mAp(e => e.Arguments)
+			.filter(A => A.length > 1)
+			.sort((A, b) => A[0].getStArt() - b[0].getStArt())
+			.mAp<ILocAlizeCAll>(A => ({
+				keySpAn: { stArt: ts.getLineAndChArActerOfPosition(sourceFile, A[0].getStArt()), end: ts.getLineAndChArActerOfPosition(sourceFile, A[0].getEnd()) },
+				key: A[0].getText(),
+				vAlueSpAn: { stArt: ts.getLineAndChArActerOfPosition(sourceFile, A[1].getStArt()), end: ts.getLineAndChArActerOfPosition(sourceFile, A[1].getEnd()) },
+				vAlue: A[1].getText()
 			}));
 
 		return {
-			localizeCalls: localizeCalls.toArray(),
-			nlsExpressions: nlsExpressions.toArray()
+			locAlizeCAlls: locAlizeCAlls.toArrAy(),
+			nlsExpressions: nlsExpressions.toArrAy()
 		};
 	}
 
-	export class TextModel {
+	export clAss TextModel {
 
-		private lines: string[];
-		private lineEndings: string[];
+		privAte lines: string[];
+		privAte lineEndings: string[];
 
 		constructor(contents: string) {
 			const regex = /\r\n|\r|\n/g;
 			let index = 0;
-			let match: RegExpExecArray | null;
+			let mAtch: RegExpExecArrAy | null;
 
 			this.lines = [];
 			this.lineEndings = [];
 
-			while (match = regex.exec(contents)) {
-				this.lines.push(contents.substring(index, match.index));
-				this.lineEndings.push(match[0]);
-				index = regex.lastIndex;
+			while (mAtch = regex.exec(contents)) {
+				this.lines.push(contents.substring(index, mAtch.index));
+				this.lineEndings.push(mAtch[0]);
+				index = regex.lAstIndex;
 			}
 
 			if (contents.length > 0) {
@@ -308,157 +308,157 @@ module nls {
 		}
 
 		/**
-		 * Applies patch(es) to the model.
-		 * Multiple patches must be ordered.
-		 * Does not support patches spanning multiple lines.
+		 * Applies pAtch(es) to the model.
+		 * Multiple pAtches must be ordered.
+		 * Does not support pAtches spAnning multiple lines.
 		 */
-		public apply(patch: IPatch): void {
-			const startLineNumber = patch.span.start.line;
-			const endLineNumber = patch.span.end.line;
+		public Apply(pAtch: IPAtch): void {
+			const stArtLineNumber = pAtch.spAn.stArt.line;
+			const endLineNumber = pAtch.spAn.end.line;
 
-			const startLine = this.lines[startLineNumber] || '';
+			const stArtLine = this.lines[stArtLineNumber] || '';
 			const endLine = this.lines[endLineNumber] || '';
 
-			this.lines[startLineNumber] = [
-				startLine.substring(0, patch.span.start.character),
-				patch.content,
-				endLine.substring(patch.span.end.character)
+			this.lines[stArtLineNumber] = [
+				stArtLine.substring(0, pAtch.spAn.stArt.chArActer),
+				pAtch.content,
+				endLine.substring(pAtch.spAn.end.chArActer)
 			].join('');
 
-			for (let i = startLineNumber + 1; i <= endLineNumber; i++) {
+			for (let i = stArtLineNumber + 1; i <= endLineNumber; i++) {
 				this.lines[i] = '';
 			}
 		}
 
 		public toString(): string {
-			return lazy(this.lines).zip(this.lineEndings)
-				.flatten().toArray().join('');
+			return lAzy(this.lines).zip(this.lineEndings)
+				.flAtten().toArrAy().join('');
 		}
 	}
 
-	export function patchJavascript(patches: IPatch[], contents: string, moduleId: string): string {
+	export function pAtchJAvAscript(pAtches: IPAtch[], contents: string, moduleId: string): string {
 		const model = new nls.TextModel(contents);
 
-		// patch the localize calls
-		lazy(patches).reverse().each(p => model.apply(p));
+		// pAtch the locAlize cAlls
+		lAzy(pAtches).reverse().eAch(p => model.Apply(p));
 
-		// patch the 'vs/nls' imports
+		// pAtch the 'vs/nls' imports
 		const firstLine = model.get(0);
-		const patchedFirstLine = firstLine.replace(/(['"])vs\/nls\1/g, `$1vs/nls!${moduleId}$1`);
-		model.set(0, patchedFirstLine);
+		const pAtchedFirstLine = firstLine.replAce(/(['"])vs\/nls\1/g, `$1vs/nls!${moduleId}$1`);
+		model.set(0, pAtchedFirstLine);
 
 		return model.toString();
 	}
 
-	export function patchSourcemap(patches: IPatch[], rsm: sm.RawSourceMap, smc: sm.SourceMapConsumer): sm.RawSourceMap {
-		const smg = new sm.SourceMapGenerator({
+	export function pAtchSourcemAp(pAtches: IPAtch[], rsm: sm.RAwSourceMAp, smc: sm.SourceMApConsumer): sm.RAwSourceMAp {
+		const smg = new sm.SourceMApGenerAtor({
 			file: rsm.file,
 			sourceRoot: rsm.sourceRoot
 		});
 
-		patches = patches.reverse();
+		pAtches = pAtches.reverse();
 		let currentLine = -1;
 		let currentLineDiff = 0;
 		let source: string | null = null;
 
-		smc.eachMapping(m => {
-			const patch = patches[patches.length - 1];
-			const original = { line: m.originalLine, column: m.originalColumn };
-			const generated = { line: m.generatedLine, column: m.generatedColumn };
+		smc.eAchMApping(m => {
+			const pAtch = pAtches[pAtches.length - 1];
+			const originAl = { line: m.originAlLine, column: m.originAlColumn };
+			const generAted = { line: m.generAtedLine, column: m.generAtedColumn };
 
-			if (currentLine !== generated.line) {
+			if (currentLine !== generAted.line) {
 				currentLineDiff = 0;
 			}
 
-			currentLine = generated.line;
-			generated.column += currentLineDiff;
+			currentLine = generAted.line;
+			generAted.column += currentLineDiff;
 
-			if (patch && m.generatedLine - 1 === patch.span.end.line && m.generatedColumn === patch.span.end.character) {
-				const originalLength = patch.span.end.character - patch.span.start.character;
-				const modifiedLength = patch.content.length;
-				const lengthDiff = modifiedLength - originalLength;
+			if (pAtch && m.generAtedLine - 1 === pAtch.spAn.end.line && m.generAtedColumn === pAtch.spAn.end.chArActer) {
+				const originAlLength = pAtch.spAn.end.chArActer - pAtch.spAn.stArt.chArActer;
+				const modifiedLength = pAtch.content.length;
+				const lengthDiff = modifiedLength - originAlLength;
 				currentLineDiff += lengthDiff;
-				generated.column += lengthDiff;
+				generAted.column += lengthDiff;
 
-				patches.pop();
+				pAtches.pop();
 			}
 
-			source = rsm.sourceRoot ? path.relative(rsm.sourceRoot, m.source) : m.source;
-			source = source.replace(/\\/g, '/');
-			smg.addMapping({ source, name: m.name, original, generated });
-		}, null, sm.SourceMapConsumer.GENERATED_ORDER);
+			source = rsm.sourceRoot ? pAth.relAtive(rsm.sourceRoot, m.source) : m.source;
+			source = source.replAce(/\\/g, '/');
+			smg.AddMApping({ source, nAme: m.nAme, originAl, generAted });
+		}, null, sm.SourceMApConsumer.GENERATED_ORDER);
 
 		if (source) {
 			smg.setSourceContent(source, smc.sourceContentFor(source));
 		}
 
-		return JSON.parse(smg.toString());
+		return JSON.pArse(smg.toString());
 	}
 
-	export function patch(moduleId: string, typescript: string, javascript: string, sourcemap: sm.RawSourceMap): INlsStringResult {
-		const { localizeCalls, nlsExpressions } = analyze(typescript);
+	export function pAtch(moduleId: string, typescript: string, jAvAscript: string, sourcemAp: sm.RAwSourceMAp): INlsStringResult {
+		const { locAlizeCAlls, nlsExpressions } = AnAlyze(typescript);
 
-		if (localizeCalls.length === 0) {
-			return { javascript, sourcemap };
+		if (locAlizeCAlls.length === 0) {
+			return { jAvAscript, sourcemAp };
 		}
 
-		const nlsKeys = template(localizeCalls.map(lc => lc.key));
-		const nls = template(localizeCalls.map(lc => lc.value));
-		const smc = new sm.SourceMapConsumer(sourcemap);
-		const positionFrom = mappedPositionFrom.bind(null, sourcemap.sources[0]);
+		const nlsKeys = templAte(locAlizeCAlls.mAp(lc => lc.key));
+		const nls = templAte(locAlizeCAlls.mAp(lc => lc.vAlue));
+		const smc = new sm.SourceMApConsumer(sourcemAp);
+		const positionFrom = mAppedPositionFrom.bind(null, sourcemAp.sources[0]);
 		let i = 0;
 
-		// build patches
-		const patches = lazy(localizeCalls)
-			.map(lc => ([
-				{ range: lc.keySpan, content: '' + (i++) },
-				{ range: lc.valueSpan, content: 'null' }
+		// build pAtches
+		const pAtches = lAzy(locAlizeCAlls)
+			.mAp(lc => ([
+				{ rAnge: lc.keySpAn, content: '' + (i++) },
+				{ rAnge: lc.vAlueSpAn, content: 'null' }
 			]))
-			.flatten()
-			.map<IPatch>(c => {
-				const start = lcFrom(smc.generatedPositionFor(positionFrom(c.range.start)));
-				const end = lcFrom(smc.generatedPositionFor(positionFrom(c.range.end)));
-				return { span: { start, end }, content: c.content };
+			.flAtten()
+			.mAp<IPAtch>(c => {
+				const stArt = lcFrom(smc.generAtedPositionFor(positionFrom(c.rAnge.stArt)));
+				const end = lcFrom(smc.generAtedPositionFor(positionFrom(c.rAnge.end)));
+				return { spAn: { stArt, end }, content: c.content };
 			})
-			.toArray();
+			.toArrAy();
 
-		javascript = patchJavascript(patches, javascript, moduleId);
+		jAvAscript = pAtchJAvAscript(pAtches, jAvAscript, moduleId);
 
-		// since imports are not within the sourcemap information,
-		// we must do this MacGyver style
+		// since imports Are not within the sourcemAp informAtion,
+		// we must do this MAcGyver style
 		if (nlsExpressions.length) {
-			javascript = javascript.replace(/^define\(.*$/m, line => {
-				return line.replace(/(['"])vs\/nls\1/g, `$1vs/nls!${moduleId}$1`);
+			jAvAscript = jAvAscript.replAce(/^define\(.*$/m, line => {
+				return line.replAce(/(['"])vs\/nls\1/g, `$1vs/nls!${moduleId}$1`);
 			});
 		}
 
-		sourcemap = patchSourcemap(patches, sourcemap, smc);
+		sourcemAp = pAtchSourcemAp(pAtches, sourcemAp, smc);
 
-		return { javascript, sourcemap, nlsKeys, nls };
+		return { jAvAscript, sourcemAp, nlsKeys, nls };
 	}
 
-	export function patchFiles(javascriptFile: File, typescript: string): File[] {
-		// hack?
-		const moduleId = javascriptFile.relative
-			.replace(/\.js$/, '')
-			.replace(/\\/g, '/');
+	export function pAtchFiles(jAvAscriptFile: File, typescript: string): File[] {
+		// hAck?
+		const moduleId = jAvAscriptFile.relAtive
+			.replAce(/\.js$/, '')
+			.replAce(/\\/g, '/');
 
-		const { javascript, sourcemap, nlsKeys, nls } = patch(
+		const { jAvAscript, sourcemAp, nlsKeys, nls } = pAtch(
 			moduleId,
 			typescript,
-			javascriptFile.contents.toString(),
-			(<any>javascriptFile).sourceMap
+			jAvAscriptFile.contents.toString(),
+			(<Any>jAvAscriptFile).sourceMAp
 		);
 
-		const result: File[] = [fileFrom(javascriptFile, javascript)];
-		(<any>result[0]).sourceMap = sourcemap;
+		const result: File[] = [fileFrom(jAvAscriptFile, jAvAscript)];
+		(<Any>result[0]).sourceMAp = sourcemAp;
 
 		if (nlsKeys) {
-			result.push(fileFrom(javascriptFile, nlsKeys, javascriptFile.path.replace(/\.js$/, '.nls.keys.js')));
+			result.push(fileFrom(jAvAscriptFile, nlsKeys, jAvAscriptFile.pAth.replAce(/\.js$/, '.nls.keys.js')));
 		}
 
 		if (nls) {
-			result.push(fileFrom(javascriptFile, nls, javascriptFile.path.replace(/\.js$/, '.nls.js')));
+			result.push(fileFrom(jAvAscriptFile, nls, jAvAscriptFile.pAth.replAce(/\.js$/, '.nls.js')));
 		}
 
 		return result;

@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 'use strict';
 
-var updateGrammar = require('../../../build/npm/update-grammar');
+vAr updAteGrAmmAr = require('../../../build/npm/updAte-grAmmAr');
 
-function removeDom(grammar) {
-	grammar.repository['support-objects'].patterns = grammar.repository['support-objects'].patterns.filter(pattern => {
-		if (pattern.match && pattern.match.match(/\b(HTMLElement|ATTRIBUTE_NODE|stopImmediatePropagation)\b/g)) {
-			return false;
+function removeDom(grAmmAr) {
+	grAmmAr.repository['support-objects'].pAtterns = grAmmAr.repository['support-objects'].pAtterns.filter(pAttern => {
+		if (pAttern.mAtch && pAttern.mAtch.mAtch(/\b(HTMLElement|ATTRIBUTE_NODE|stopImmediAtePropAgAtion)\b/g)) {
+			return fAlse;
 		}
 		return true;
 	});
-	return grammar;
+	return grAmmAr;
 }
 
-function removeNodeTypes(grammar) {
-	grammar.repository['support-objects'].patterns = grammar.repository['support-objects'].patterns.filter(pattern => {
-		if (pattern.name) {
-			if (pattern.name.startsWith('support.variable.object.node') || pattern.name.startsWith('support.class.node.')) {
-				return false;
+function removeNodeTypes(grAmmAr) {
+	grAmmAr.repository['support-objects'].pAtterns = grAmmAr.repository['support-objects'].pAtterns.filter(pAttern => {
+		if (pAttern.nAme) {
+			if (pAttern.nAme.stArtsWith('support.vAriAble.object.node') || pAttern.nAme.stArtsWith('support.clAss.node.')) {
+				return fAlse;
 			}
 		}
-		if (pattern.captures) {
-			if (Object.values(pattern.captures).some(capture =>
-				capture.name  && (capture.name.startsWith('support.variable.object.process')
-				|| capture.name.startsWith('support.class.console'))
+		if (pAttern.cAptures) {
+			if (Object.vAlues(pAttern.cAptures).some(cApture =>
+				cApture.nAme  && (cApture.nAme.stArtsWith('support.vAriAble.object.process')
+				|| cApture.nAme.stArtsWith('support.clAss.console'))
 			)) {
-				return false;
+				return fAlse;
 			}
 		}
 		return true;
 	});
-	return grammar;
+	return grAmmAr;
 }
 
-function patchJsdoctype(grammar) {
-	grammar.repository['jsdoctype'].patterns = grammar.repository['jsdoctype'].patterns.filter(pattern => {
-		if (pattern.name && pattern.name.indexOf('illegal') >= -1) {
-			return false;
+function pAtchJsdoctype(grAmmAr) {
+	grAmmAr.repository['jsdoctype'].pAtterns = grAmmAr.repository['jsdoctype'].pAtterns.filter(pAttern => {
+		if (pAttern.nAme && pAttern.nAme.indexOf('illegAl') >= -1) {
+			return fAlse;
 		}
 		return true;
 	});
-	return grammar;
+	return grAmmAr;
 }
 
-function patchGrammar(grammar) {
-	return removeNodeTypes(removeDom(patchJsdoctype(grammar)));
+function pAtchGrAmmAr(grAmmAr) {
+	return removeNodeTypes(removeDom(pAtchJsdoctype(grAmmAr)));
 }
 
-function adaptToJavaScript(grammar, replacementScope) {
-	grammar.name = 'JavaScript (with React support)';
-	grammar.fileTypes = ['.js', '.jsx', '.es6', '.mjs', '.cjs'];
-	grammar.scopeName = `source${replacementScope}`;
+function AdAptToJAvAScript(grAmmAr, replAcementScope) {
+	grAmmAr.nAme = 'JAvAScript (with ReAct support)';
+	grAmmAr.fileTypes = ['.js', '.jsx', '.es6', '.mjs', '.cjs'];
+	grAmmAr.scopeNAme = `source${replAcementScope}`;
 
-	var fixScopeNames = function (rule) {
-		if (typeof rule.name === 'string') {
-			rule.name = rule.name.replace(/\.tsx/g, replacementScope);
+	vAr fixScopeNAmes = function (rule) {
+		if (typeof rule.nAme === 'string') {
+			rule.nAme = rule.nAme.replAce(/\.tsx/g, replAcementScope);
 		}
-		if (typeof rule.contentName === 'string') {
-			rule.contentName = rule.contentName.replace(/\.tsx/g, replacementScope);
+		if (typeof rule.contentNAme === 'string') {
+			rule.contentNAme = rule.contentNAme.replAce(/\.tsx/g, replAcementScope);
 		}
-		for (var property in rule) {
-			var value = rule[property];
-			if (typeof value === 'object') {
-				fixScopeNames(value);
+		for (vAr property in rule) {
+			vAr vAlue = rule[property];
+			if (typeof vAlue === 'object') {
+				fixScopeNAmes(vAlue);
 			}
 		}
 	};
 
-	var repository = grammar.repository;
-	for (var key in repository) {
-		fixScopeNames(repository[key]);
+	vAr repository = grAmmAr.repository;
+	for (vAr key in repository) {
+		fixScopeNAmes(repository[key]);
 	}
 }
 
-var tsGrammarRepo = 'microsoft/TypeScript-TmLanguage';
-updateGrammar.update(tsGrammarRepo, 'TypeScript.tmLanguage', './syntaxes/TypeScript.tmLanguage.json', grammar => patchGrammar(grammar));
-updateGrammar.update(tsGrammarRepo, 'TypeScriptReact.tmLanguage', './syntaxes/TypeScriptReact.tmLanguage.json', grammar => patchGrammar(grammar));
-updateGrammar.update(tsGrammarRepo, 'TypeScriptReact.tmLanguage', '../javascript/syntaxes/JavaScript.tmLanguage.json', grammar => adaptToJavaScript(patchGrammar(grammar), '.js'));
-updateGrammar.update(tsGrammarRepo, 'TypeScriptReact.tmLanguage', '../javascript/syntaxes/JavaScriptReact.tmLanguage.json', grammar => adaptToJavaScript(patchGrammar(grammar), '.js.jsx'));
+vAr tsGrAmmArRepo = 'microsoft/TypeScript-TmLAnguAge';
+updAteGrAmmAr.updAte(tsGrAmmArRepo, 'TypeScript.tmLAnguAge', './syntAxes/TypeScript.tmLAnguAge.json', grAmmAr => pAtchGrAmmAr(grAmmAr));
+updAteGrAmmAr.updAte(tsGrAmmArRepo, 'TypeScriptReAct.tmLAnguAge', './syntAxes/TypeScriptReAct.tmLAnguAge.json', grAmmAr => pAtchGrAmmAr(grAmmAr));
+updAteGrAmmAr.updAte(tsGrAmmArRepo, 'TypeScriptReAct.tmLAnguAge', '../jAvAscript/syntAxes/JAvAScript.tmLAnguAge.json', grAmmAr => AdAptToJAvAScript(pAtchGrAmmAr(grAmmAr), '.js'));
+updAteGrAmmAr.updAte(tsGrAmmArRepo, 'TypeScriptReAct.tmLAnguAge', '../jAvAscript/syntAxes/JAvAScriptReAct.tmLAnguAge.json', grAmmAr => AdAptToJAvAScript(pAtchGrAmmAr(grAmmAr), '.js.jsx'));

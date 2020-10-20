@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
-import { BrowserClipboardService } from 'vs/platform/clipboard/browser/clipboardService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
+import { BrowserClipboArdService } from 'vs/plAtform/clipboArd/browser/clipboArdService';
 
-registerSingleton(IClipboardService, BrowserClipboardService, true);
+registerSingleton(IClipboArdService, BrowserClipboArdService, true);

@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IChAnnel, IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
 
-export const ISharedProcessService = createDecorator<ISharedProcessService>('sharedProcessService');
+export const IShAredProcessService = creAteDecorAtor<IShAredProcessService>('shAredProcessService');
 
-export interface ISharedProcessService {
+export interfAce IShAredProcessService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	getChannel(channelName: string): IChannel;
-	registerChannel(channelName: string, channel: IServerChannel<string>): void;
+	getChAnnel(chAnnelNAme: string): IChAnnel;
+	registerChAnnel(chAnnelNAme: string, chAnnel: IServerChAnnel<string>): void;
 
-	whenSharedProcessReady(): Promise<void>;
-	toggleSharedProcessWindow(): Promise<void>;
+	whenShAredProcessReAdy(): Promise<void>;
+	toggleShAredProcessWindow(): Promise<void>;
 }

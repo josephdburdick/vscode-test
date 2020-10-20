@@ -1,216 +1,216 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as errors from 'vs/base/common/errors';
-import { DeferredPromise } from 'vs/base/test/common/utils';
-import { QueryType, IFileQuery } from 'vs/workbench/services/search/common/search';
-import { FileQueryCacheState } from 'vs/workbench/contrib/search/common/cacheState';
+import * As Assert from 'Assert';
+import * As errors from 'vs/bAse/common/errors';
+import { DeferredPromise } from 'vs/bAse/test/common/utils';
+import { QueryType, IFileQuery } from 'vs/workbench/services/seArch/common/seArch';
+import { FileQueryCAcheStAte } from 'vs/workbench/contrib/seArch/common/cAcheStAte';
 
-suite('FileQueryCacheState', () => {
+suite('FileQueryCAcheStAte', () => {
 
-	test('reuse old cacheKey until new cache is loaded', async function () {
+	test('reuse old cAcheKey until new cAche is loAded', Async function () {
 
-		const cache = new MockCache();
+		const cAche = new MockCAche();
 
-		const first = createCacheState(cache);
-		const firstKey = first.cacheKey;
-		assert.strictEqual(first.isLoaded, false);
-		assert.strictEqual(first.isUpdating, false);
+		const first = creAteCAcheStAte(cAche);
+		const firstKey = first.cAcheKey;
+		Assert.strictEquAl(first.isLoAded, fAlse);
+		Assert.strictEquAl(first.isUpdAting, fAlse);
 
-		first.load();
-		assert.strictEqual(first.isLoaded, false);
-		assert.strictEqual(first.isUpdating, true);
+		first.loAd();
+		Assert.strictEquAl(first.isLoAded, fAlse);
+		Assert.strictEquAl(first.isUpdAting, true);
 
-		await cache.loading[firstKey].complete(null);
-		assert.strictEqual(first.isLoaded, true);
-		assert.strictEqual(first.isUpdating, false);
+		AwAit cAche.loAding[firstKey].complete(null);
+		Assert.strictEquAl(first.isLoAded, true);
+		Assert.strictEquAl(first.isUpdAting, fAlse);
 
-		const second = createCacheState(cache, first);
-		second.load();
-		assert.strictEqual(second.isLoaded, true);
-		assert.strictEqual(second.isUpdating, true);
-		await cache.awaitDisposal(0);
-		assert.strictEqual(second.cacheKey, firstKey); // still using old cacheKey
+		const second = creAteCAcheStAte(cAche, first);
+		second.loAd();
+		Assert.strictEquAl(second.isLoAded, true);
+		Assert.strictEquAl(second.isUpdAting, true);
+		AwAit cAche.AwAitDisposAl(0);
+		Assert.strictEquAl(second.cAcheKey, firstKey); // still using old cAcheKey
 
-		const secondKey = cache.cacheKeys[1];
-		await cache.loading[secondKey].complete(null);
-		assert.strictEqual(second.isLoaded, true);
-		assert.strictEqual(second.isUpdating, false);
-		await cache.awaitDisposal(1);
-		assert.strictEqual(second.cacheKey, secondKey);
+		const secondKey = cAche.cAcheKeys[1];
+		AwAit cAche.loAding[secondKey].complete(null);
+		Assert.strictEquAl(second.isLoAded, true);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(1);
+		Assert.strictEquAl(second.cAcheKey, secondKey);
 	});
 
-	test('do not spawn additional load if previous is still loading', async function () {
+	test('do not spAwn AdditionAl loAd if previous is still loAding', Async function () {
 
-		const cache = new MockCache();
+		const cAche = new MockCAche();
 
-		const first = createCacheState(cache);
-		const firstKey = first.cacheKey;
-		first.load();
-		assert.strictEqual(first.isLoaded, false);
-		assert.strictEqual(first.isUpdating, true);
-		assert.strictEqual(Object.keys(cache.loading).length, 1);
+		const first = creAteCAcheStAte(cAche);
+		const firstKey = first.cAcheKey;
+		first.loAd();
+		Assert.strictEquAl(first.isLoAded, fAlse);
+		Assert.strictEquAl(first.isUpdAting, true);
+		Assert.strictEquAl(Object.keys(cAche.loAding).length, 1);
 
-		const second = createCacheState(cache, first);
-		second.load();
-		assert.strictEqual(second.isLoaded, false);
-		assert.strictEqual(second.isUpdating, true);
-		assert.strictEqual(cache.cacheKeys.length, 2);
-		assert.strictEqual(Object.keys(cache.loading).length, 1); // still only one loading
-		assert.strictEqual(second.cacheKey, firstKey);
+		const second = creAteCAcheStAte(cAche, first);
+		second.loAd();
+		Assert.strictEquAl(second.isLoAded, fAlse);
+		Assert.strictEquAl(second.isUpdAting, true);
+		Assert.strictEquAl(cAche.cAcheKeys.length, 2);
+		Assert.strictEquAl(Object.keys(cAche.loAding).length, 1); // still only one loAding
+		Assert.strictEquAl(second.cAcheKey, firstKey);
 
-		await cache.loading[firstKey].complete(null);
-		assert.strictEqual(second.isLoaded, true);
-		assert.strictEqual(second.isUpdating, false);
-		await cache.awaitDisposal(0);
+		AwAit cAche.loAding[firstKey].complete(null);
+		Assert.strictEquAl(second.isLoAded, true);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(0);
 	});
 
-	test('do not use previous cacheKey if query changed', async function () {
+	test('do not use previous cAcheKey if query chAnged', Async function () {
 
-		const cache = new MockCache();
+		const cAche = new MockCAche();
 
-		const first = createCacheState(cache);
-		const firstKey = first.cacheKey;
-		first.load();
-		await cache.loading[firstKey].complete(null);
-		assert.strictEqual(first.isLoaded, true);
-		assert.strictEqual(first.isUpdating, false);
-		await cache.awaitDisposal(0);
+		const first = creAteCAcheStAte(cAche);
+		const firstKey = first.cAcheKey;
+		first.loAd();
+		AwAit cAche.loAding[firstKey].complete(null);
+		Assert.strictEquAl(first.isLoAded, true);
+		Assert.strictEquAl(first.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(0);
 
-		cache.baseQuery.excludePattern = { '**/node_modules': true };
-		const second = createCacheState(cache, first);
-		assert.strictEqual(second.isLoaded, false);
-		assert.strictEqual(second.isUpdating, false);
-		await cache.awaitDisposal(1);
+		cAche.bAseQuery.excludePAttern = { '**/node_modules': true };
+		const second = creAteCAcheStAte(cAche, first);
+		Assert.strictEquAl(second.isLoAded, fAlse);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(1);
 
-		second.load();
-		assert.strictEqual(second.isLoaded, false);
-		assert.strictEqual(second.isUpdating, true);
-		assert.notStrictEqual(second.cacheKey, firstKey); // not using old cacheKey
-		const secondKey = cache.cacheKeys[1];
-		assert.strictEqual(second.cacheKey, secondKey);
+		second.loAd();
+		Assert.strictEquAl(second.isLoAded, fAlse);
+		Assert.strictEquAl(second.isUpdAting, true);
+		Assert.notStrictEquAl(second.cAcheKey, firstKey); // not using old cAcheKey
+		const secondKey = cAche.cAcheKeys[1];
+		Assert.strictEquAl(second.cAcheKey, secondKey);
 
-		await cache.loading[secondKey].complete(null);
-		assert.strictEqual(second.isLoaded, true);
-		assert.strictEqual(second.isUpdating, false);
-		await cache.awaitDisposal(1);
+		AwAit cAche.loAding[secondKey].complete(null);
+		Assert.strictEquAl(second.isLoAded, true);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(1);
 	});
 
-	test('dispose propagates', async function () {
+	test('dispose propAgAtes', Async function () {
 
-		const cache = new MockCache();
+		const cAche = new MockCAche();
 
-		const first = createCacheState(cache);
-		const firstKey = first.cacheKey;
-		first.load();
-		await cache.loading[firstKey].complete(null);
-		const second = createCacheState(cache, first);
-		assert.strictEqual(second.isLoaded, true);
-		assert.strictEqual(second.isUpdating, false);
-		await cache.awaitDisposal(0);
+		const first = creAteCAcheStAte(cAche);
+		const firstKey = first.cAcheKey;
+		first.loAd();
+		AwAit cAche.loAding[firstKey].complete(null);
+		const second = creAteCAcheStAte(cAche, first);
+		Assert.strictEquAl(second.isLoAded, true);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(0);
 
 		second.dispose();
-		assert.strictEqual(second.isLoaded, false);
-		assert.strictEqual(second.isUpdating, false);
-		await cache.awaitDisposal(1);
-		assert.ok(cache.disposing[firstKey]);
+		Assert.strictEquAl(second.isLoAded, fAlse);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		AwAit cAche.AwAitDisposAl(1);
+		Assert.ok(cAche.disposing[firstKey]);
 	});
 
-	test('keep using old cacheKey when loading fails', async function () {
+	test('keep using old cAcheKey when loAding fAils', Async function () {
 
-		const cache = new MockCache();
+		const cAche = new MockCAche();
 
-		const first = createCacheState(cache);
-		const firstKey = first.cacheKey;
-		first.load();
-		await cache.loading[firstKey].complete(null);
+		const first = creAteCAcheStAte(cAche);
+		const firstKey = first.cAcheKey;
+		first.loAd();
+		AwAit cAche.loAding[firstKey].complete(null);
 
-		const second = createCacheState(cache, first);
-		second.load();
-		const secondKey = cache.cacheKeys[1];
-		const origErrorHandler = errors.errorHandler.getUnexpectedErrorHandler();
+		const second = creAteCAcheStAte(cAche, first);
+		second.loAd();
+		const secondKey = cAche.cAcheKeys[1];
+		const origErrorHAndler = errors.errorHAndler.getUnexpectedErrorHAndler();
 		try {
-			errors.setUnexpectedErrorHandler(() => null);
-			await cache.loading[secondKey].error('loading failed');
-		} finally {
-			errors.setUnexpectedErrorHandler(origErrorHandler);
+			errors.setUnexpectedErrorHAndler(() => null);
+			AwAit cAche.loAding[secondKey].error('loAding fAiled');
+		} finAlly {
+			errors.setUnexpectedErrorHAndler(origErrorHAndler);
 		}
-		assert.strictEqual(second.isLoaded, true);
-		assert.strictEqual(second.isUpdating, false);
-		assert.strictEqual(Object.keys(cache.loading).length, 2);
-		await cache.awaitDisposal(0);
-		assert.strictEqual(second.cacheKey, firstKey); // keep using old cacheKey
+		Assert.strictEquAl(second.isLoAded, true);
+		Assert.strictEquAl(second.isUpdAting, fAlse);
+		Assert.strictEquAl(Object.keys(cAche.loAding).length, 2);
+		AwAit cAche.AwAitDisposAl(0);
+		Assert.strictEquAl(second.cAcheKey, firstKey); // keep using old cAcheKey
 
-		const third = createCacheState(cache, second);
-		third.load();
-		assert.strictEqual(third.isLoaded, true);
-		assert.strictEqual(third.isUpdating, true);
-		assert.strictEqual(Object.keys(cache.loading).length, 3);
-		await cache.awaitDisposal(0);
-		assert.strictEqual(third.cacheKey, firstKey);
+		const third = creAteCAcheStAte(cAche, second);
+		third.loAd();
+		Assert.strictEquAl(third.isLoAded, true);
+		Assert.strictEquAl(third.isUpdAting, true);
+		Assert.strictEquAl(Object.keys(cAche.loAding).length, 3);
+		AwAit cAche.AwAitDisposAl(0);
+		Assert.strictEquAl(third.cAcheKey, firstKey);
 
-		const thirdKey = cache.cacheKeys[2];
-		await cache.loading[thirdKey].complete(null);
-		assert.strictEqual(third.isLoaded, true);
-		assert.strictEqual(third.isUpdating, false);
-		assert.strictEqual(Object.keys(cache.loading).length, 3);
-		await cache.awaitDisposal(2);
-		assert.strictEqual(third.cacheKey, thirdKey); // recover with next successful load
+		const thirdKey = cAche.cAcheKeys[2];
+		AwAit cAche.loAding[thirdKey].complete(null);
+		Assert.strictEquAl(third.isLoAded, true);
+		Assert.strictEquAl(third.isUpdAting, fAlse);
+		Assert.strictEquAl(Object.keys(cAche.loAding).length, 3);
+		AwAit cAche.AwAitDisposAl(2);
+		Assert.strictEquAl(third.cAcheKey, thirdKey); // recover with next successful loAd
 	});
 
-	function createCacheState(cache: MockCache, previous?: FileQueryCacheState): FileQueryCacheState {
-		return new FileQueryCacheState(
-			cacheKey => cache.query(cacheKey),
-			query => cache.load(query),
-			cacheKey => cache.dispose(cacheKey),
+	function creAteCAcheStAte(cAche: MockCAche, previous?: FileQueryCAcheStAte): FileQueryCAcheStAte {
+		return new FileQueryCAcheStAte(
+			cAcheKey => cAche.query(cAcheKey),
+			query => cAche.loAd(query),
+			cAcheKey => cAche.dispose(cAcheKey),
 			previous!
 		);
 	}
 
-	class MockCache {
+	clAss MockCAche {
 
-		public cacheKeys: string[] = [];
-		public loading: { [cacheKey: string]: DeferredPromise<any> } = {};
-		public disposing: { [cacheKey: string]: DeferredPromise<void> } = {};
+		public cAcheKeys: string[] = [];
+		public loAding: { [cAcheKey: string]: DeferredPromise<Any> } = {};
+		public disposing: { [cAcheKey: string]: DeferredPromise<void> } = {};
 
-		private _awaitDisposal: (() => void)[][] = [];
+		privAte _AwAitDisposAl: (() => void)[][] = [];
 
-		public baseQuery: IFileQuery = {
+		public bAseQuery: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: []
 		};
 
-		public query(cacheKey: string): IFileQuery {
-			this.cacheKeys.push(cacheKey);
-			return Object.assign({ cacheKey: cacheKey }, this.baseQuery);
+		public query(cAcheKey: string): IFileQuery {
+			this.cAcheKeys.push(cAcheKey);
+			return Object.Assign({ cAcheKey: cAcheKey }, this.bAseQuery);
 		}
 
-		public load(query: IFileQuery): Promise<any> {
-			const promise = new DeferredPromise<any>();
-			this.loading[query.cacheKey!] = promise;
+		public loAd(query: IFileQuery): Promise<Any> {
+			const promise = new DeferredPromise<Any>();
+			this.loAding[query.cAcheKey!] = promise;
 			return promise.p;
 		}
 
-		public dispose(cacheKey: string): Promise<void> {
+		public dispose(cAcheKey: string): Promise<void> {
 			const promise = new DeferredPromise<void>();
-			this.disposing[cacheKey] = promise;
+			this.disposing[cAcheKey] = promise;
 			const n = Object.keys(this.disposing).length;
-			for (const done of this._awaitDisposal[n] || []) {
+			for (const done of this._AwAitDisposAl[n] || []) {
 				done();
 			}
-			delete this._awaitDisposal[n];
+			delete this._AwAitDisposAl[n];
 			return promise.p;
 		}
 
-		public awaitDisposal(n: number) {
+		public AwAitDisposAl(n: number) {
 			return new Promise<void>(resolve => {
 				if (n === Object.keys(this.disposing).length) {
 					resolve();
 				} else {
-					(this._awaitDisposal[n] || (this._awaitDisposal[n] = [])).push(resolve);
+					(this._AwAitDisposAl[n] || (this._AwAitDisposAl[n] = [])).push(resolve);
 				}
 			});
 		}

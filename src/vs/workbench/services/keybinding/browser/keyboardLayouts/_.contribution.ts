@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeymapInfo } from 'vs/workbench/services/keybinding/common/keymapInfo';
+import { IKeymApInfo } from 'vs/workbench/services/keybinding/common/keymApInfo';
 
-export class KeyboardLayoutContribution {
-	public static readonly INSTANCE: KeyboardLayoutContribution = new KeyboardLayoutContribution();
+export clAss KeyboArdLAyoutContribution {
+	public stAtic reAdonly INSTANCE: KeyboArdLAyoutContribution = new KeyboArdLAyoutContribution();
 
-	private _layoutInfos: IKeymapInfo[] = [];
+	privAte _lAyoutInfos: IKeymApInfo[] = [];
 
-	get layoutInfos() {
-		return this._layoutInfos;
+	get lAyoutInfos() {
+		return this._lAyoutInfos;
 	}
 
-	private constructor() {
+	privAte constructor() {
 	}
 
-	registerKeyboardLayout(layout: IKeymapInfo) {
-		this._layoutInfos.push(layout);
+	registerKeyboArdLAyout(lAyout: IKeymApInfo) {
+		this._lAyoutInfos.push(lAyout);
 	}
 }

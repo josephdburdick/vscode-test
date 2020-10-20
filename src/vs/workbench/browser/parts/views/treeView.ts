@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { toDisposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { MenuId } from 'vs/platform/actions/common/actions';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+import { toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
 import { ITreeView, ITreeViewDescriptor, IViewsRegistry, Extensions, IViewDescriptorService } from 'vs/workbench/common/views';
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { IViewletViewOptions } from 'vs/workbench/browser/pArts/views/viewsViewlet';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { ViewPAne, IViewPAneOptions } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 
-export class TreeViewPane extends ViewPane {
+export clAss TreeViewPAne extends ViewPAne {
 
-	protected readonly treeView: ITreeView;
+	protected reAdonly treeView: ITreeView;
 
 	constructor(
 		options: IViewletViewOptions,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IOpenerService openerService: IOpenerService,
 		@IThemeService themeService: IThemeService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super({ ...(options as IViewPaneOptions), titleMenuId: MenuId.ViewTitle }, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
-		const { treeView } = (<ITreeViewDescriptor>Registry.as<IViewsRegistry>(Extensions.ViewsRegistry).getView(options.id));
+		super({ ...(options As IViewPAneOptions), titleMenuId: MenuId.ViewTitle }, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
+		const { treeView } = (<ITreeViewDescriptor>Registry.As<IViewsRegistry>(Extensions.ViewsRegistry).getView(options.id));
 		this.treeView = treeView;
-		this._register(this.treeView.onDidChangeActions(() => this.updateActions(), this));
-		this._register(this.treeView.onDidChangeTitle((newTitle) => this.updateTitle(newTitle)));
-		this._register(this.treeView.onDidChangeDescription((newDescription) => this.updateTitleDescription(newDescription)));
-		this._register(toDisposable(() => this.treeView.setVisibility(false)));
-		this._register(this.onDidChangeBodyVisibility(() => this.updateTreeVisibility()));
-		this._register(this.treeView.onDidChangeWelcomeState(() => this._onDidChangeViewWelcomeState.fire()));
+		this._register(this.treeView.onDidChAngeActions(() => this.updAteActions(), this));
+		this._register(this.treeView.onDidChAngeTitle((newTitle) => this.updAteTitle(newTitle)));
+		this._register(this.treeView.onDidChAngeDescription((newDescription) => this.updAteTitleDescription(newDescription)));
+		this._register(toDisposAble(() => this.treeView.setVisibility(fAlse)));
+		this._register(this.onDidChAngeBodyVisibility(() => this.updAteTreeVisibility()));
+		this._register(this.treeView.onDidChAngeWelcomeStAte(() => this._onDidChAngeViewWelcomeStAte.fire()));
 		if (options.title !== this.treeView.title) {
-			this.updateTitle(this.treeView.title);
+			this.updAteTitle(this.treeView.title);
 		}
-		this.updateTreeVisibility();
+		this.updAteTreeVisibility();
 	}
 
 	focus(): void {
@@ -54,33 +54,33 @@ export class TreeViewPane extends ViewPane {
 		this.treeView.focus();
 	}
 
-	renderBody(container: HTMLElement): void {
-		super.renderBody(container);
-		this.renderTreeView(container);
+	renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
+		this.renderTreeView(contAiner);
 	}
 
-	shouldShowWelcome(): boolean {
-		return ((this.treeView.dataProvider === undefined) || !!this.treeView.dataProvider.isTreeEmpty) && (this.treeView.message === undefined);
+	shouldShowWelcome(): booleAn {
+		return ((this.treeView.dAtAProvider === undefined) || !!this.treeView.dAtAProvider.isTreeEmpty) && (this.treeView.messAge === undefined);
 	}
 
-	layoutBody(height: number, width: number): void {
-		super.layoutBody(height, width);
-		this.layoutTreeView(height, width);
+	lAyoutBody(height: number, width: number): void {
+		super.lAyoutBody(height, width);
+		this.lAyoutTreeView(height, width);
 	}
 
-	getOptimalWidth(): number {
-		return this.treeView.getOptimalWidth();
+	getOptimAlWidth(): number {
+		return this.treeView.getOptimAlWidth();
 	}
 
-	protected renderTreeView(container: HTMLElement): void {
-		this.treeView.show(container);
+	protected renderTreeView(contAiner: HTMLElement): void {
+		this.treeView.show(contAiner);
 	}
 
-	protected layoutTreeView(height: number, width: number): void {
-		this.treeView.layout(height, width);
+	protected lAyoutTreeView(height: number, width: number): void {
+		this.treeView.lAyout(height, width);
 	}
 
-	private updateTreeVisibility(): void {
+	privAte updAteTreeVisibility(): void {
 		this.treeView.setVisibility(this.isBodyVisible());
 	}
 }

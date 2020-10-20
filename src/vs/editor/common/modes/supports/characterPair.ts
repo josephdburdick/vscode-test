@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAutoClosingPair, StandardAutoClosingPairConditional, LanguageConfiguration } from 'vs/editor/common/modes/languageConfiguration';
+import { IAutoClosingPAir, StAndArdAutoClosingPAirConditionAl, LAnguAgeConfigurAtion } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
 import { ScopedLineTokens } from 'vs/editor/common/modes/supports';
 
-export class CharacterPairSupport {
+export clAss ChArActerPAirSupport {
 
-	static readonly DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED = ';:.,=}])> \n\t';
-	static readonly DEFAULT_AUTOCLOSE_BEFORE_WHITESPACE = ' \n\t';
+	stAtic reAdonly DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED = ';:.,=}])> \n\t';
+	stAtic reAdonly DEFAULT_AUTOCLOSE_BEFORE_WHITESPACE = ' \n\t';
 
-	private readonly _autoClosingPairs: StandardAutoClosingPairConditional[];
-	private readonly _surroundingPairs: IAutoClosingPair[];
-	private readonly _autoCloseBefore: string;
+	privAte reAdonly _AutoClosingPAirs: StAndArdAutoClosingPAirConditionAl[];
+	privAte reAdonly _surroundingPAirs: IAutoClosingPAir[];
+	privAte reAdonly _AutoCloseBefore: string;
 
-	constructor(config: LanguageConfiguration) {
-		if (config.autoClosingPairs) {
-			this._autoClosingPairs = config.autoClosingPairs.map(el => new StandardAutoClosingPairConditional(el));
-		} else if (config.brackets) {
-			this._autoClosingPairs = config.brackets.map(b => new StandardAutoClosingPairConditional({ open: b[0], close: b[1] }));
+	constructor(config: LAnguAgeConfigurAtion) {
+		if (config.AutoClosingPAirs) {
+			this._AutoClosingPAirs = config.AutoClosingPAirs.mAp(el => new StAndArdAutoClosingPAirConditionAl(el));
+		} else if (config.brAckets) {
+			this._AutoClosingPAirs = config.brAckets.mAp(b => new StAndArdAutoClosingPAirConditionAl({ open: b[0], close: b[1] }));
 		} else {
-			this._autoClosingPairs = [];
+			this._AutoClosingPAirs = [];
 		}
 
-		if (config.__electricCharacterSupport && config.__electricCharacterSupport.docComment) {
-			const docComment = config.__electricCharacterSupport.docComment;
-			// IDocComment is legacy, only partially supported
-			this._autoClosingPairs.push(new StandardAutoClosingPairConditional({ open: docComment.open, close: docComment.close || '' }));
+		if (config.__electricChArActerSupport && config.__electricChArActerSupport.docComment) {
+			const docComment = config.__electricChArActerSupport.docComment;
+			// IDocComment is legAcy, only pArtiAlly supported
+			this._AutoClosingPAirs.push(new StAndArdAutoClosingPAirConditionAl({ open: docComment.open, close: docComment.close || '' }));
 		}
 
-		this._autoCloseBefore = typeof config.autoCloseBefore === 'string' ? config.autoCloseBefore : CharacterPairSupport.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED;
+		this._AutoCloseBefore = typeof config.AutoCloseBefore === 'string' ? config.AutoCloseBefore : ChArActerPAirSupport.DEFAULT_AUTOCLOSE_BEFORE_LANGUAGE_DEFINED;
 
-		this._surroundingPairs = config.surroundingPairs || this._autoClosingPairs;
+		this._surroundingPAirs = config.surroundingPAirs || this._AutoClosingPAirs;
 	}
 
-	public getAutoClosingPairs(): StandardAutoClosingPairConditional[] {
-		return this._autoClosingPairs;
+	public getAutoClosingPAirs(): StAndArdAutoClosingPAirConditionAl[] {
+		return this._AutoClosingPAirs;
 	}
 
 	public getAutoCloseBeforeSet(): string {
-		return this._autoCloseBefore;
+		return this._AutoCloseBefore;
 	}
 
-	public static shouldAutoClosePair(autoClosingPair: StandardAutoClosingPairConditional, context: ScopedLineTokens, column: number): boolean {
-		// Always complete on empty line
+	public stAtic shouldAutoClosePAir(AutoClosingPAir: StAndArdAutoClosingPAirConditionAl, context: ScopedLineTokens, column: number): booleAn {
+		// AlwAys complete on empty line
 		if (context.getTokenCount() === 0) {
 			return true;
 		}
 
 		const tokenIndex = context.findTokenIndexAtOffset(column - 2);
-		const standardTokenType = context.getStandardTokenType(tokenIndex);
-		return autoClosingPair.isOK(standardTokenType);
+		const stAndArdTokenType = context.getStAndArdTokenType(tokenIndex);
+		return AutoClosingPAir.isOK(stAndArdTokenType);
 	}
 
-	public getSurroundingPairs(): IAutoClosingPair[] {
-		return this._surroundingPairs;
+	public getSurroundingPAirs(): IAutoClosingPAir[] {
+		return this._surroundingPAirs;
 	}
 }

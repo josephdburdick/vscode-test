@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { HelpQuickAccessProvider } from 'vs/platform/quickinput/browser/helpQuickAccess';
-import { ViewQuickAccessProvider, OpenViewPickerAction, QuickAccessViewPickerAction } from 'vs/workbench/contrib/quickaccess/browser/viewQuickAccess';
-import { CommandsQuickAccessProvider, ShowAllCommandsAction, ClearCommandHistoryAction } from 'vs/workbench/contrib/quickaccess/browser/commandsQuickAccess';
-import { MenuRegistry, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
-import { KeyMod } from 'vs/base/common/keyCodes';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { inQuickPickContext, getQuickNavigateHandler } from 'vs/workbench/browser/quickaccess';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import { locAlize } from 'vs/nls';
+import { IQuickAccessRegistry, Extensions } from 'vs/plAtform/quickinput/common/quickAccess';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { HelpQuickAccessProvider } from 'vs/plAtform/quickinput/browser/helpQuickAccess';
+import { ViewQuickAccessProvider, OpenViewPickerAction, QuickAccessViewPickerAction } from 'vs/workbench/contrib/quickAccess/browser/viewQuickAccess';
+import { CommAndsQuickAccessProvider, ShowAllCommAndsAction, CleArCommAndHistoryAction } from 'vs/workbench/contrib/quickAccess/browser/commAndsQuickAccess';
+import { MenuRegistry, MenuId, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { KeyMod } from 'vs/bAse/common/keyCodes';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { inQuickPickContext, getQuickNAvigAteHAndler } from 'vs/workbench/browser/quickAccess';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 
 //#region Quick Access Proviers
 
-const quickAccessRegistry = Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess);
+const quickAccessRegistry = Registry.As<IQuickAccessRegistry>(Extensions.QuickAccess);
 
 quickAccessRegistry.registerQuickAccessProvider({
 	ctor: HelpQuickAccessProvider,
 	prefix: HelpQuickAccessProvider.PREFIX,
-	placeholder: localize('helpQuickAccessPlaceholder', "Type '{0}' to get help on the actions you can take from here.", HelpQuickAccessProvider.PREFIX),
-	helpEntries: [{ description: localize('helpQuickAccess', "Show all Quick Access Providers"), needsEditor: false }]
+	plAceholder: locAlize('helpQuickAccessPlAceholder', "Type '{0}' to get help on the Actions you cAn tAke from here.", HelpQuickAccessProvider.PREFIX),
+	helpEntries: [{ description: locAlize('helpQuickAccess', "Show All Quick Access Providers"), needsEditor: fAlse }]
 });
 
 quickAccessRegistry.registerQuickAccessProvider({
 	ctor: ViewQuickAccessProvider,
 	prefix: ViewQuickAccessProvider.PREFIX,
 	contextKey: 'inViewsPicker',
-	placeholder: localize('viewQuickAccessPlaceholder', "Type the name of a view, output channel or terminal to open."),
-	helpEntries: [{ description: localize('viewQuickAccess', "Open View"), needsEditor: false }]
+	plAceholder: locAlize('viewQuickAccessPlAceholder', "Type the nAme of A view, output chAnnel or terminAl to open."),
+	helpEntries: [{ description: locAlize('viewQuickAccess', "Open View"), needsEditor: fAlse }]
 });
 
 quickAccessRegistry.registerQuickAccessProvider({
-	ctor: CommandsQuickAccessProvider,
-	prefix: CommandsQuickAccessProvider.PREFIX,
-	contextKey: 'inCommandsPicker',
-	placeholder: localize('commandsQuickAccessPlaceholder', "Type the name of a command to run."),
-	helpEntries: [{ description: localize('commandsQuickAccess', "Show and Run Commands"), needsEditor: false }]
+	ctor: CommAndsQuickAccessProvider,
+	prefix: CommAndsQuickAccessProvider.PREFIX,
+	contextKey: 'inCommAndsPicker',
+	plAceholder: locAlize('commAndsQuickAccessPlAceholder', "Type the nAme of A commAnd to run."),
+	helpEntries: [{ description: locAlize('commAndsQuickAccess', "Show And Run CommAnds"), needsEditor: fAlse }]
 });
 
 //#endregion
@@ -48,57 +48,57 @@ quickAccessRegistry.registerQuickAccessProvider({
 
 //#region Menu contributions
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArViewMenu, {
 	group: '1_open',
-	command: {
-		id: ShowAllCommandsAction.ID,
-		title: localize({ key: 'miCommandPalette', comment: ['&& denotes a mnemonic'] }, "&&Command Palette...")
+	commAnd: {
+		id: ShowAllCommAndsAction.ID,
+		title: locAlize({ key: 'miCommAndPAlette', comment: ['&& denotes A mnemonic'] }, "&&CommAnd PAlette...")
 	},
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArViewMenu, {
 	group: '1_open',
-	command: {
+	commAnd: {
 		id: OpenViewPickerAction.ID,
-		title: localize({ key: 'miOpenView', comment: ['&& denotes a mnemonic'] }, "&&Open View...")
+		title: locAlize({ key: 'miOpenView', comment: ['&& denotes A mnemonic'] }, "&&Open View...")
 	},
 	order: 2
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-	group: '4_symbol_nav',
-	command: {
-		id: 'workbench.action.gotoSymbol',
-		title: localize({ key: 'miGotoSymbolInEditor', comment: ['&& denotes a mnemonic'] }, "Go to &&Symbol in Editor...")
+MenuRegistry.AppendMenuItem(MenuId.MenubArGoMenu, {
+	group: '4_symbol_nAv',
+	commAnd: {
+		id: 'workbench.Action.gotoSymbol',
+		title: locAlize({ key: 'miGotoSymbolInEditor', comment: ['&& denotes A mnemonic'] }, "Go to &&Symbol in Editor...")
 	},
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-	group: '5_infile_nav',
-	command: {
-		id: 'workbench.action.gotoLine',
-		title: localize({ key: 'miGotoLine', comment: ['&& denotes a mnemonic'] }, "Go to &&Line/Column...")
+MenuRegistry.AppendMenuItem(MenuId.MenubArGoMenu, {
+	group: '5_infile_nAv',
+	commAnd: {
+		id: 'workbench.Action.gotoLine',
+		title: locAlize({ key: 'miGotoLine', comment: ['&& denotes A mnemonic'] }, "Go to &&Line/Column...")
 	},
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
-	group: '1_command',
-	command: {
-		id: ShowAllCommandsAction.ID,
-		title: localize('commandPalette', "Command Palette...")
+MenuRegistry.AppendMenuItem(MenuId.GlobAlActivity, {
+	group: '1_commAnd',
+	commAnd: {
+		id: ShowAllCommAndsAction.ID,
+		title: locAlize('commAndPAlette', "CommAnd PAlette...")
 	},
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(MenuId.EditorContext, {
-	group: 'z_commands',
-	when: EditorContextKeys.editorSimpleInput.toNegated(),
-	command: {
-		id: ShowAllCommandsAction.ID,
-		title: localize('commandPalette', "Command Palette..."),
+MenuRegistry.AppendMenuItem(MenuId.EditorContext, {
+	group: 'z_commAnds',
+	when: EditorContextKeys.editorSimpleInput.toNegAted(),
+	commAnd: {
+		id: ShowAllCommAndsAction.ID,
+		title: locAlize('commAndPAlette', "CommAnd PAlette..."),
 	},
 	order: 1
 });
@@ -106,38 +106,38 @@ MenuRegistry.appendMenuItem(MenuId.EditorContext, {
 //#endregion
 
 
-//#region Workbench actions and commands
+//#region Workbench Actions And commAnds
 
-registerAction2(ClearCommandHistoryAction);
-registerAction2(ShowAllCommandsAction);
+registerAction2(CleArCommAndHistoryAction);
+registerAction2(ShowAllCommAndsAction);
 registerAction2(OpenViewPickerAction);
 registerAction2(QuickAccessViewPickerAction);
 
 const inViewsPickerContextKey = 'inViewsPicker';
-const inViewsPickerContext = ContextKeyExpr.and(inQuickPickContext, ContextKeyExpr.has(inViewsPickerContextKey));
+const inViewsPickerContext = ContextKeyExpr.And(inQuickPickContext, ContextKeyExpr.hAs(inViewsPickerContextKey));
 const viewPickerKeybinding = QuickAccessViewPickerAction.KEYBINDING;
 
-const quickAccessNavigateNextInViewPickerId = 'workbench.action.quickOpenNavigateNextInViewPicker';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: quickAccessNavigateNextInViewPickerId,
+const quickAccessNAvigAteNextInViewPickerId = 'workbench.Action.quickOpenNAvigAteNextInViewPicker';
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: quickAccessNAvigAteNextInViewPickerId,
 	weight: KeybindingWeight.WorkbenchContrib + 50,
-	handler: getQuickNavigateHandler(quickAccessNavigateNextInViewPickerId, true),
+	hAndler: getQuickNAvigAteHAndler(quickAccessNAvigAteNextInViewPickerId, true),
 	when: inViewsPickerContext,
-	primary: viewPickerKeybinding.primary,
+	primAry: viewPickerKeybinding.primAry,
 	linux: viewPickerKeybinding.linux,
-	mac: viewPickerKeybinding.mac
+	mAc: viewPickerKeybinding.mAc
 });
 
-const quickAccessNavigatePreviousInViewPickerId = 'workbench.action.quickOpenNavigatePreviousInViewPicker';
-KeybindingsRegistry.registerCommandAndKeybindingRule({
-	id: quickAccessNavigatePreviousInViewPickerId,
+const quickAccessNAvigAtePreviousInViewPickerId = 'workbench.Action.quickOpenNAvigAtePreviousInViewPicker';
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
+	id: quickAccessNAvigAtePreviousInViewPickerId,
 	weight: KeybindingWeight.WorkbenchContrib + 50,
-	handler: getQuickNavigateHandler(quickAccessNavigatePreviousInViewPickerId, false),
+	hAndler: getQuickNAvigAteHAndler(quickAccessNAvigAtePreviousInViewPickerId, fAlse),
 	when: inViewsPickerContext,
-	primary: viewPickerKeybinding.primary | KeyMod.Shift,
+	primAry: viewPickerKeybinding.primAry | KeyMod.Shift,
 	linux: viewPickerKeybinding.linux,
-	mac: {
-		primary: viewPickerKeybinding.mac.primary | KeyMod.Shift
+	mAc: {
+		primAry: viewPickerKeybinding.mAc.primAry | KeyMod.Shift
 	}
 });
 

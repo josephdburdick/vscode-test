@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ILineRange {
-	startLineNumber: number;
+export interfAce ILineRAnge {
+	stArtLineNumber: number;
 	endLineNumber: number;
 }
 
@@ -13,55 +13,55 @@ export const MAX_LINE_NUMBER = 0xFFFFFF;
 
 const MASK_INDENT = 0xFF000000;
 
-export class FoldingRegions {
-	private readonly _startIndexes: Uint32Array;
-	private readonly _endIndexes: Uint32Array;
-	private readonly _collapseStates: Uint32Array;
-	private _parentsComputed: boolean;
-	private readonly _types: Array<string | undefined> | undefined;
+export clAss FoldingRegions {
+	privAte reAdonly _stArtIndexes: Uint32ArrAy;
+	privAte reAdonly _endIndexes: Uint32ArrAy;
+	privAte reAdonly _collApseStAtes: Uint32ArrAy;
+	privAte _pArentsComputed: booleAn;
+	privAte reAdonly _types: ArrAy<string | undefined> | undefined;
 
-	constructor(startIndexes: Uint32Array, endIndexes: Uint32Array, types?: Array<string | undefined>) {
-		if (startIndexes.length !== endIndexes.length || startIndexes.length > MAX_FOLDING_REGIONS) {
-			throw new Error('invalid startIndexes or endIndexes size');
+	constructor(stArtIndexes: Uint32ArrAy, endIndexes: Uint32ArrAy, types?: ArrAy<string | undefined>) {
+		if (stArtIndexes.length !== endIndexes.length || stArtIndexes.length > MAX_FOLDING_REGIONS) {
+			throw new Error('invAlid stArtIndexes or endIndexes size');
 		}
-		this._startIndexes = startIndexes;
+		this._stArtIndexes = stArtIndexes;
 		this._endIndexes = endIndexes;
-		this._collapseStates = new Uint32Array(Math.ceil(startIndexes.length / 32));
+		this._collApseStAtes = new Uint32ArrAy(MAth.ceil(stArtIndexes.length / 32));
 		this._types = types;
-		this._parentsComputed = false;
+		this._pArentsComputed = fAlse;
 	}
 
-	private ensureParentIndices() {
-		if (!this._parentsComputed) {
-			this._parentsComputed = true;
-			let parentIndexes: number[] = [];
-			let isInsideLast = (startLineNumber: number, endLineNumber: number) => {
-				let index = parentIndexes[parentIndexes.length - 1];
-				return this.getStartLineNumber(index) <= startLineNumber && this.getEndLineNumber(index) >= endLineNumber;
+	privAte ensurePArentIndices() {
+		if (!this._pArentsComputed) {
+			this._pArentsComputed = true;
+			let pArentIndexes: number[] = [];
+			let isInsideLAst = (stArtLineNumber: number, endLineNumber: number) => {
+				let index = pArentIndexes[pArentIndexes.length - 1];
+				return this.getStArtLineNumber(index) <= stArtLineNumber && this.getEndLineNumber(index) >= endLineNumber;
 			};
-			for (let i = 0, len = this._startIndexes.length; i < len; i++) {
-				let startLineNumber = this._startIndexes[i];
+			for (let i = 0, len = this._stArtIndexes.length; i < len; i++) {
+				let stArtLineNumber = this._stArtIndexes[i];
 				let endLineNumber = this._endIndexes[i];
-				if (startLineNumber > MAX_LINE_NUMBER || endLineNumber > MAX_LINE_NUMBER) {
-					throw new Error('startLineNumber or endLineNumber must not exceed ' + MAX_LINE_NUMBER);
+				if (stArtLineNumber > MAX_LINE_NUMBER || endLineNumber > MAX_LINE_NUMBER) {
+					throw new Error('stArtLineNumber or endLineNumber must not exceed ' + MAX_LINE_NUMBER);
 				}
-				while (parentIndexes.length > 0 && !isInsideLast(startLineNumber, endLineNumber)) {
-					parentIndexes.pop();
+				while (pArentIndexes.length > 0 && !isInsideLAst(stArtLineNumber, endLineNumber)) {
+					pArentIndexes.pop();
 				}
-				let parentIndex = parentIndexes.length > 0 ? parentIndexes[parentIndexes.length - 1] : -1;
-				parentIndexes.push(i);
-				this._startIndexes[i] = startLineNumber + ((parentIndex & 0xFF) << 24);
-				this._endIndexes[i] = endLineNumber + ((parentIndex & 0xFF00) << 16);
+				let pArentIndex = pArentIndexes.length > 0 ? pArentIndexes[pArentIndexes.length - 1] : -1;
+				pArentIndexes.push(i);
+				this._stArtIndexes[i] = stArtLineNumber + ((pArentIndex & 0xFF) << 24);
+				this._endIndexes[i] = endLineNumber + ((pArentIndex & 0xFF00) << 16);
 			}
 		}
 	}
 
 	public get length(): number {
-		return this._startIndexes.length;
+		return this._stArtIndexes.length;
 	}
 
-	public getStartLineNumber(index: number): number {
-		return this._startIndexes[index] & MAX_LINE_NUMBER;
+	public getStArtLineNumber(index: number): number {
+		return this._stArtIndexes[index] & MAX_LINE_NUMBER;
 	}
 
 	public getEndLineNumber(index: number): number {
@@ -72,24 +72,24 @@ export class FoldingRegions {
 		return this._types ? this._types[index] : undefined;
 	}
 
-	public hasTypes() {
+	public hAsTypes() {
 		return !!this._types;
 	}
 
-	public isCollapsed(index: number): boolean {
-		let arrayIndex = (index / 32) | 0;
+	public isCollApsed(index: number): booleAn {
+		let ArrAyIndex = (index / 32) | 0;
 		let bit = index % 32;
-		return (this._collapseStates[arrayIndex] & (1 << bit)) !== 0;
+		return (this._collApseStAtes[ArrAyIndex] & (1 << bit)) !== 0;
 	}
 
-	public setCollapsed(index: number, newState: boolean) {
-		let arrayIndex = (index / 32) | 0;
+	public setCollApsed(index: number, newStAte: booleAn) {
+		let ArrAyIndex = (index / 32) | 0;
 		let bit = index % 32;
-		let value = this._collapseStates[arrayIndex];
-		if (newState) {
-			this._collapseStates[arrayIndex] = value | (1 << bit);
+		let vAlue = this._collApseStAtes[ArrAyIndex];
+		if (newStAte) {
+			this._collApseStAtes[ArrAyIndex] = vAlue | (1 << bit);
 		} else {
-			this._collapseStates[arrayIndex] = value & ~(1 << bit);
+			this._collApseStAtes[ArrAyIndex] = vAlue & ~(1 << bit);
 		}
 	}
 
@@ -97,27 +97,27 @@ export class FoldingRegions {
 		return new FoldingRegion(this, index);
 	}
 
-	public getParentIndex(index: number) {
-		this.ensureParentIndices();
-		let parent = ((this._startIndexes[index] & MASK_INDENT) >>> 24) + ((this._endIndexes[index] & MASK_INDENT) >>> 16);
-		if (parent === MAX_FOLDING_REGIONS) {
+	public getPArentIndex(index: number) {
+		this.ensurePArentIndices();
+		let pArent = ((this._stArtIndexes[index] & MASK_INDENT) >>> 24) + ((this._endIndexes[index] & MASK_INDENT) >>> 16);
+		if (pArent === MAX_FOLDING_REGIONS) {
 			return -1;
 		}
-		return parent;
+		return pArent;
 	}
 
-	public contains(index: number, line: number) {
-		return this.getStartLineNumber(index) <= line && this.getEndLineNumber(index) >= line;
+	public contAins(index: number, line: number) {
+		return this.getStArtLineNumber(index) <= line && this.getEndLineNumber(index) >= line;
 	}
 
-	private findIndex(line: number) {
-		let low = 0, high = this._startIndexes.length;
+	privAte findIndex(line: number) {
+		let low = 0, high = this._stArtIndexes.length;
 		if (high === 0) {
 			return -1; // no children
 		}
 		while (low < high) {
-			let mid = Math.floor((low + high) / 2);
-			if (line < this.getStartLineNumber(mid)) {
+			let mid = MAth.floor((low + high) / 2);
+			if (line < this.getStArtLineNumber(mid)) {
 				high = mid;
 			} else {
 				low = mid + 1;
@@ -126,19 +126,19 @@ export class FoldingRegions {
 		return low - 1;
 	}
 
-	public findRange(line: number): number {
+	public findRAnge(line: number): number {
 		let index = this.findIndex(line);
 		if (index >= 0) {
 			let endLineNumber = this.getEndLineNumber(index);
 			if (endLineNumber >= line) {
 				return index;
 			}
-			index = this.getParentIndex(index);
+			index = this.getPArentIndex(index);
 			while (index !== -1) {
-				if (this.contains(index, line)) {
+				if (this.contAins(index, line)) {
 					return index;
 				}
-				index = this.getParentIndex(index);
+				index = this.getPArentIndex(index);
 			}
 		}
 		return -1;
@@ -147,25 +147,25 @@ export class FoldingRegions {
 	public toString() {
 		let res: string[] = [];
 		for (let i = 0; i < this.length; i++) {
-			res[i] = `[${this.isCollapsed(i) ? '+' : '-'}] ${this.getStartLineNumber(i)}/${this.getEndLineNumber(i)}`;
+			res[i] = `[${this.isCollApsed(i) ? '+' : '-'}] ${this.getStArtLineNumber(i)}/${this.getEndLineNumber(i)}`;
 		}
 		return res.join(', ');
 	}
 
-	public equals(b: FoldingRegions) {
+	public equAls(b: FoldingRegions) {
 		if (this.length !== b.length) {
-			return false;
+			return fAlse;
 		}
 
 		for (let i = 0; i < this.length; i++) {
-			if (this.getStartLineNumber(i) !== b.getStartLineNumber(i)) {
-				return false;
+			if (this.getStArtLineNumber(i) !== b.getStArtLineNumber(i)) {
+				return fAlse;
 			}
 			if (this.getEndLineNumber(i) !== b.getEndLineNumber(i)) {
-				return false;
+				return fAlse;
 			}
 			if (this.getType(i) !== b.getType(i)) {
-				return false;
+				return fAlse;
 			}
 		}
 
@@ -173,38 +173,38 @@ export class FoldingRegions {
 	}
 }
 
-export class FoldingRegion {
+export clAss FoldingRegion {
 
-	constructor(private readonly ranges: FoldingRegions, private index: number) {
+	constructor(privAte reAdonly rAnges: FoldingRegions, privAte index: number) {
 	}
 
-	public get startLineNumber() {
-		return this.ranges.getStartLineNumber(this.index);
+	public get stArtLineNumber() {
+		return this.rAnges.getStArtLineNumber(this.index);
 	}
 
 	public get endLineNumber() {
-		return this.ranges.getEndLineNumber(this.index);
+		return this.rAnges.getEndLineNumber(this.index);
 	}
 
 	public get regionIndex() {
 		return this.index;
 	}
 
-	public get parentIndex() {
-		return this.ranges.getParentIndex(this.index);
+	public get pArentIndex() {
+		return this.rAnges.getPArentIndex(this.index);
 	}
 
-	public get isCollapsed() {
-		return this.ranges.isCollapsed(this.index);
+	public get isCollApsed() {
+		return this.rAnges.isCollApsed(this.index);
 	}
 
-	containedBy(range: ILineRange): boolean {
-		return range.startLineNumber <= this.startLineNumber && range.endLineNumber >= this.endLineNumber;
+	contAinedBy(rAnge: ILineRAnge): booleAn {
+		return rAnge.stArtLineNumber <= this.stArtLineNumber && rAnge.endLineNumber >= this.endLineNumber;
 	}
-	containsLine(lineNumber: number) {
-		return this.startLineNumber <= lineNumber && lineNumber <= this.endLineNumber;
+	contAinsLine(lineNumber: number) {
+		return this.stArtLineNumber <= lineNumber && lineNumber <= this.endLineNumber;
 	}
 	hidesLine(lineNumber: number) {
-		return this.startLineNumber < lineNumber && lineNumber <= this.endLineNumber;
+		return this.stArtLineNumber < lineNumber && lineNumber <= this.endLineNumber;
 	}
 }

@@ -1,122 +1,122 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import { ILogService, LogLevel, DEFAULT_LOG_LEVEL } from 'vs/platform/log/common/log';
-import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
+import * As nls from 'vs/nls';
+import { Action } from 'vs/bAse/common/Actions';
+import { ILogService, LogLevel, DEFAULT_LOG_LEVEL } from 'vs/plAtform/log/common/log';
+import { IQuickInputService, IQuickPickItem } from 'vs/plAtform/quickinput/common/quickInput';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { dirname, basename, isEqual } from 'vs/base/common/resources';
+import { dirnAme, bAsenAme, isEquAl } from 'vs/bAse/common/resources';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 
-export class SetLogLevelAction extends Action {
+export clAss SetLogLevelAction extends Action {
 
-	static readonly ID = 'workbench.action.setLogLevel';
-	static readonly LABEL = nls.localize('setLogLevel', "Set Log Level...");
+	stAtic reAdonly ID = 'workbench.Action.setLogLevel';
+	stAtic reAdonly LABEL = nls.locAlize('setLogLevel', "Set Log Level...");
 
-	constructor(id: string, label: string,
-		@IQuickInputService private readonly quickInputService: IQuickInputService,
-		@ILogService private readonly logService: ILogService
+	constructor(id: string, lAbel: string,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService,
+		@ILogService privAte reAdonly logService: ILogService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
 	run(): Promise<void> {
 		const current = this.logService.getLevel();
 		const entries = [
-			{ label: nls.localize('trace', "Trace"), level: LogLevel.Trace, description: this.getDescription(LogLevel.Trace, current) },
-			{ label: nls.localize('debug', "Debug"), level: LogLevel.Debug, description: this.getDescription(LogLevel.Debug, current) },
-			{ label: nls.localize('info', "Info"), level: LogLevel.Info, description: this.getDescription(LogLevel.Info, current) },
-			{ label: nls.localize('warn', "Warning"), level: LogLevel.Warning, description: this.getDescription(LogLevel.Warning, current) },
-			{ label: nls.localize('err', "Error"), level: LogLevel.Error, description: this.getDescription(LogLevel.Error, current) },
-			{ label: nls.localize('critical', "Critical"), level: LogLevel.Critical, description: this.getDescription(LogLevel.Critical, current) },
-			{ label: nls.localize('off', "Off"), level: LogLevel.Off, description: this.getDescription(LogLevel.Off, current) },
+			{ lAbel: nls.locAlize('trAce', "TrAce"), level: LogLevel.TrAce, description: this.getDescription(LogLevel.TrAce, current) },
+			{ lAbel: nls.locAlize('debug', "Debug"), level: LogLevel.Debug, description: this.getDescription(LogLevel.Debug, current) },
+			{ lAbel: nls.locAlize('info', "Info"), level: LogLevel.Info, description: this.getDescription(LogLevel.Info, current) },
+			{ lAbel: nls.locAlize('wArn', "WArning"), level: LogLevel.WArning, description: this.getDescription(LogLevel.WArning, current) },
+			{ lAbel: nls.locAlize('err', "Error"), level: LogLevel.Error, description: this.getDescription(LogLevel.Error, current) },
+			{ lAbel: nls.locAlize('criticAl', "CriticAl"), level: LogLevel.CriticAl, description: this.getDescription(LogLevel.CriticAl, current) },
+			{ lAbel: nls.locAlize('off', "Off"), level: LogLevel.Off, description: this.getDescription(LogLevel.Off, current) },
 		];
 
-		return this.quickInputService.pick(entries, { placeHolder: nls.localize('selectLogLevel', "Select log level"), activeItem: entries[this.logService.getLevel()] }).then(entry => {
+		return this.quickInputService.pick(entries, { plAceHolder: nls.locAlize('selectLogLevel', "Select log level"), ActiveItem: entries[this.logService.getLevel()] }).then(entry => {
 			if (entry) {
 				this.logService.setLevel(entry.level);
 			}
 		});
 	}
 
-	private getDescription(level: LogLevel, current: LogLevel): string | undefined {
+	privAte getDescription(level: LogLevel, current: LogLevel): string | undefined {
 		if (DEFAULT_LOG_LEVEL === level && current === level) {
-			return nls.localize('default and current', "Default & Current");
+			return nls.locAlize('defAult And current', "DefAult & Current");
 		}
 		if (DEFAULT_LOG_LEVEL === level) {
-			return nls.localize('default', "Default");
+			return nls.locAlize('defAult', "DefAult");
 		}
 		if (current === level) {
-			return nls.localize('current', "Current");
+			return nls.locAlize('current', "Current");
 		}
 		return undefined;
 	}
 }
 
-export class OpenWindowSessionLogFileAction extends Action {
+export clAss OpenWindowSessionLogFileAction extends Action {
 
-	static readonly ID = 'workbench.action.openSessionLogFile';
-	static readonly LABEL = nls.localize('openSessionLogFile', "Open Window Log File (Session)...");
+	stAtic reAdonly ID = 'workbench.Action.openSessionLogFile';
+	stAtic reAdonly LABEL = nls.locAlize('openSessionLogFile', "Open Window Log File (Session)...");
 
-	constructor(id: string, label: string,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IFileService private readonly fileService: IFileService,
-		@IQuickInputService private readonly quickInputService: IQuickInputService,
-		@IEditorService private readonly editorService: IEditorService,
+	constructor(id: string, lAbel: string,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<void> {
-		const sessionResult = await this.quickInputService.pick(
-			this.getSessions().then(sessions => sessions.map((s, index) => (<IQuickPickItem>{
+	Async run(): Promise<void> {
+		const sessionResult = AwAit this.quickInputService.pick(
+			this.getSessions().then(sessions => sessions.mAp((s, index) => (<IQuickPickItem>{
 				id: s.toString(),
-				label: basename(s),
-				description: index === 0 ? nls.localize('current', "Current") : undefined
+				lAbel: bAsenAme(s),
+				description: index === 0 ? nls.locAlize('current', "Current") : undefined
 			}))),
 			{
-				canPickMany: false,
-				placeHolder: nls.localize('sessions placeholder', "Select Session")
+				cAnPickMAny: fAlse,
+				plAceHolder: nls.locAlize('sessions plAceholder', "Select Session")
 			});
 		if (sessionResult) {
-			const logFileResult = await this.quickInputService.pick(
-				this.getLogFiles(URI.parse(sessionResult.id!)).then(logFiles => logFiles.map(s => (<IQuickPickItem>{
+			const logFileResult = AwAit this.quickInputService.pick(
+				this.getLogFiles(URI.pArse(sessionResult.id!)).then(logFiles => logFiles.mAp(s => (<IQuickPickItem>{
 					id: s.toString(),
-					label: basename(s)
+					lAbel: bAsenAme(s)
 				}))),
 				{
-					canPickMany: false,
-					placeHolder: nls.localize('log placeholder', "Select Log file")
+					cAnPickMAny: fAlse,
+					plAceHolder: nls.locAlize('log plAceholder', "Select Log file")
 				});
 			if (logFileResult) {
-				return this.editorService.openEditor({ resource: URI.parse(logFileResult.id!) }).then(() => undefined);
+				return this.editorService.openEditor({ resource: URI.pArse(logFileResult.id!) }).then(() => undefined);
 			}
 		}
 	}
 
-	private async getSessions(): Promise<URI[]> {
-		const logsPath = URI.file(this.environmentService.logsPath).with({ scheme: this.environmentService.logFile.scheme });
-		const result: URI[] = [logsPath];
-		const stat = await this.fileService.resolve(dirname(logsPath));
-		if (stat.children) {
-			result.push(...stat.children
-				.filter(stat => !isEqual(stat.resource, logsPath) && stat.isDirectory && /^\d{8}T\d{6}$/.test(stat.name))
+	privAte Async getSessions(): Promise<URI[]> {
+		const logsPAth = URI.file(this.environmentService.logsPAth).with({ scheme: this.environmentService.logFile.scheme });
+		const result: URI[] = [logsPAth];
+		const stAt = AwAit this.fileService.resolve(dirnAme(logsPAth));
+		if (stAt.children) {
+			result.push(...stAt.children
+				.filter(stAt => !isEquAl(stAt.resource, logsPAth) && stAt.isDirectory && /^\d{8}T\d{6}$/.test(stAt.nAme))
 				.sort()
 				.reverse()
-				.map(d => d.resource));
+				.mAp(d => d.resource));
 		}
 		return result;
 	}
 
-	private async getLogFiles(session: URI): Promise<URI[]> {
-		const stat = await this.fileService.resolve(session);
-		if (stat.children) {
-			return stat.children.filter(stat => !stat.isDirectory).map(stat => stat.resource);
+	privAte Async getLogFiles(session: URI): Promise<URI[]> {
+		const stAt = AwAit this.fileService.resolve(session);
+		if (stAt.children) {
+			return stAt.children.filter(stAt => !stAt.isDirectory).mAp(stAt => stAt.resource);
 		}
 		return [];
 	}

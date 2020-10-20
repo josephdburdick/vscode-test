@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { isWindows, isMacintosh } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
+import * As nls from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { isWindows, isMAcintosh } from 'vs/bAse/common/plAtform';
+import { SchemAs } from 'vs/bAse/common/network';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyMod, KeyCode, KeyChord } from 'vs/base/common/keyCodes';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
+import { KeyMod, KeyCode, KeyChord } from 'vs/bAse/common/keyCodes';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
-import { IListService } from 'vs/platform/list/browser/listService';
+import { IListService } from 'vs/plAtform/list/browser/listService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { revealResourcesInOS } from 'vs/workbench/contrib/files/electron-sandbox/fileCommands';
-import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
+import { reveAlResourcesInOS } from 'vs/workbench/contrib/files/electron-sAndbox/fileCommAnds';
+import { MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
 import { ResourceContextKey } from 'vs/workbench/common/resources';
-import { appendToCommandPalette, appendEditorTitleContextMenuItem } from 'vs/workbench/contrib/files/browser/fileActions.contribution';
+import { AppendToCommAndPAlette, AppendEditorTitleContextMenuItem } from 'vs/workbench/contrib/files/browser/fileActions.contribution';
 import { IExplorerService } from 'vs/workbench/contrib/files/common/files';
 import { SideBySideEditor, EditorResourceAccessor } from 'vs/workbench/common/editor';
 
-const REVEAL_IN_OS_COMMAND_ID = 'revealFileInOS';
-const REVEAL_IN_OS_LABEL = isWindows ? nls.localize('revealInWindows', "Reveal in File Explorer") : isMacintosh ? nls.localize('revealInMac', "Reveal in Finder") : nls.localize('openContainer', "Open Containing Folder");
+const REVEAL_IN_OS_COMMAND_ID = 'reveAlFileInOS';
+const REVEAL_IN_OS_LABEL = isWindows ? nls.locAlize('reveAlInWindows', "ReveAl in File Explorer") : isMAcintosh ? nls.locAlize('reveAlInMAc', "ReveAl in Finder") : nls.locAlize('openContAiner', "Open ContAining Folder");
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	id: REVEAL_IN_OS_COMMAND_ID,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: EditorContextKeys.focus.toNegated(),
-	primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_R,
+	when: EditorContextKeys.focus.toNegAted(),
+	primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_R,
 	win: {
-		primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_R
+		primAry: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_R
 	},
-	handler: (accessor: ServicesAccessor, resource: URI | object) => {
-		const resources = getMultiSelectedResources(resource, accessor.get(IListService), accessor.get(IEditorService), accessor.get(IExplorerService));
-		revealResourcesInOS(resources, accessor.get(INativeHostService), accessor.get(INotificationService), accessor.get(IWorkspaceContextService));
+	hAndler: (Accessor: ServicesAccessor, resource: URI | object) => {
+		const resources = getMultiSelectedResources(resource, Accessor.get(IListService), Accessor.get(IEditorService), Accessor.get(IExplorerService));
+		reveAlResourcesInOS(resources, Accessor.get(INAtiveHostService), Accessor.get(INotificAtionService), Accessor.get(IWorkspAceContextService));
 	}
 });
 
-const REVEAL_ACTIVE_FILE_IN_OS_COMMAND_ID = 'workbench.action.files.revealActiveFileInWindows';
+const REVEAL_ACTIVE_FILE_IN_OS_COMMAND_ID = 'workbench.Action.files.reveAlActiveFileInWindows';
 
-KeybindingsRegistry.registerCommandAndKeybindingRule({
+KeybindingsRegistry.registerCommAndAndKeybindingRule({
 	weight: KeybindingWeight.WorkbenchContrib,
 	when: undefined,
-	primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyCode.KEY_R),
+	primAry: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyCode.KEY_R),
 	id: REVEAL_ACTIVE_FILE_IN_OS_COMMAND_ID,
-	handler: (accessor: ServicesAccessor) => {
-		const editorService = accessor.get(IEditorService);
-		const activeInput = editorService.activeEditor;
-		const resource = EditorResourceAccessor.getOriginalUri(activeInput, { filterByScheme: Schemas.file, supportSideBySide: SideBySideEditor.PRIMARY });
+	hAndler: (Accessor: ServicesAccessor) => {
+		const editorService = Accessor.get(IEditorService);
+		const ActiveInput = editorService.ActiveEditor;
+		const resource = EditorResourceAccessor.getOriginAlUri(ActiveInput, { filterByScheme: SchemAs.file, supportSideBySide: SideBySideEditor.PRIMARY });
 		const resources = resource ? [resource] : [];
-		revealResourcesInOS(resources, accessor.get(INativeHostService), accessor.get(INotificationService), accessor.get(IWorkspaceContextService));
+		reveAlResourcesInOS(resources, Accessor.get(INAtiveHostService), Accessor.get(INotificAtionService), Accessor.get(IWorkspAceContextService));
 	}
 });
 
-appendEditorTitleContextMenuItem(REVEAL_IN_OS_COMMAND_ID, REVEAL_IN_OS_LABEL, ResourceContextKey.Scheme.isEqualTo(Schemas.file));
+AppendEditorTitleContextMenuItem(REVEAL_IN_OS_COMMAND_ID, REVEAL_IN_OS_LABEL, ResourceContextKey.Scheme.isEquAlTo(SchemAs.file));
 
-// Menu registration - open editors
+// Menu registrAtion - open editors
 
-const revealInOsCommand = {
+const reveAlInOsCommAnd = {
 	id: REVEAL_IN_OS_COMMAND_ID,
-	title: isWindows ? nls.localize('revealInWindows', "Reveal in File Explorer") : isMacintosh ? nls.localize('revealInMac', "Reveal in Finder") : nls.localize('openContainer', "Open Containing Folder")
+	title: isWindows ? nls.locAlize('reveAlInWindows', "ReveAl in File Explorer") : isMAcintosh ? nls.locAlize('reveAlInMAc', "ReveAl in Finder") : nls.locAlize('openContAiner', "Open ContAining Folder")
 };
-MenuRegistry.appendMenuItem(MenuId.OpenEditorsContext, {
-	group: 'navigation',
+MenuRegistry.AppendMenuItem(MenuId.OpenEditorsContext, {
+	group: 'nAvigAtion',
 	order: 20,
-	command: revealInOsCommand,
+	commAnd: reveAlInOsCommAnd,
 	when: ResourceContextKey.IsFileSystemResource
 });
 
-// Menu registration - explorer
+// Menu registrAtion - explorer
 
-MenuRegistry.appendMenuItem(MenuId.ExplorerContext, {
-	group: 'navigation',
+MenuRegistry.AppendMenuItem(MenuId.ExplorerContext, {
+	group: 'nAvigAtion',
 	order: 20,
-	command: revealInOsCommand,
-	when: ResourceContextKey.Scheme.isEqualTo(Schemas.file)
+	commAnd: reveAlInOsCommAnd,
+	when: ResourceContextKey.Scheme.isEquAlTo(SchemAs.file)
 });
 
-// Command Palette
+// CommAnd PAlette
 
-const category = { value: nls.localize('filesCategory', "File"), original: 'File' };
-appendToCommandPalette(REVEAL_IN_OS_COMMAND_ID, { value: REVEAL_IN_OS_LABEL, original: isWindows ? 'Reveal in File Explorer' : isMacintosh ? 'Reveal in Finder' : 'Open Containing Folder' }, category, ResourceContextKey.Scheme.isEqualTo(Schemas.file));
+const cAtegory = { vAlue: nls.locAlize('filesCAtegory', "File"), originAl: 'File' };
+AppendToCommAndPAlette(REVEAL_IN_OS_COMMAND_ID, { vAlue: REVEAL_IN_OS_LABEL, originAl: isWindows ? 'ReveAl in File Explorer' : isMAcintosh ? 'ReveAl in Finder' : 'Open ContAining Folder' }, cAtegory, ResourceContextKey.Scheme.isEquAlTo(SchemAs.file));

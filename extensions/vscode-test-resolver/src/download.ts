@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as https from 'https';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as cp from 'child_process';
-import { parse as parseUrl } from 'url';
+import * As https from 'https';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
+import * As cp from 'child_process';
+import { pArse As pArseUrl } from 'url';
 
 function ensureFolderExists(loc: string) {
 	if (!fs.existsSync(loc)) {
-		const parent = path.dirname(loc);
-		if (parent) {
-			ensureFolderExists(parent);
+		const pArent = pAth.dirnAme(loc);
+		if (pArent) {
+			ensureFolderExists(pArent);
 		}
 		fs.mkdirSync(loc);
 	}
 }
 
-function getDownloadUrl(updateUrl: string, commit: string, platform: string, quality: string): string {
-	return `${updateUrl}/commit:${commit}/server-${platform}/${quality}`;
+function getDownloAdUrl(updAteUrl: string, commit: string, plAtform: string, quAlity: string): string {
+	return `${updAteUrl}/commit:${commit}/server-${plAtform}/${quAlity}`;
 }
 
-async function downloadVSCodeServerArchive(updateUrl: string, commit: string, quality: string, destDir: string): Promise<string> {
+Async function downloAdVSCodeServerArchive(updAteUrl: string, commit: string, quAlity: string, destDir: string): Promise<string> {
 	ensureFolderExists(destDir);
 
-	const platform = process.platform === 'win32' ? 'win32-x64' : process.platform === 'darwin' ? 'darwin' : 'linux-x64';
-	const downloadUrl = getDownloadUrl(updateUrl, commit, platform, quality);
+	const plAtform = process.plAtform === 'win32' ? 'win32-x64' : process.plAtform === 'dArwin' ? 'dArwin' : 'linux-x64';
+	const downloAdUrl = getDownloAdUrl(updAteUrl, commit, plAtform, quAlity);
 
 	return new Promise((resolve, reject) => {
-		console.log(`Downloading VS Code Server from: ${downloadUrl}`);
-		const requestOptions: https.RequestOptions = parseUrl(downloadUrl);
+		console.log(`DownloAding VS Code Server from: ${downloAdUrl}`);
+		const requestOptions: https.RequestOptions = pArseUrl(downloAdUrl);
 
 		https.get(requestOptions, res => {
-			if (res.statusCode !== 302) {
-				reject('Failed to get VS Code server archive location');
+			if (res.stAtusCode !== 302) {
+				reject('FAiled to get VS Code server Archive locAtion');
 			}
-			const archiveUrl = res.headers.location;
-			if (!archiveUrl) {
-				reject('Failed to get VS Code server archive location');
+			const ArchiveUrl = res.heAders.locAtion;
+			if (!ArchiveUrl) {
+				reject('FAiled to get VS Code server Archive locAtion');
 				return;
 			}
 
-			const archiveRequestOptions: https.RequestOptions = parseUrl(archiveUrl);
-			if (archiveUrl.endsWith('.zip')) {
-				const archivePath = path.resolve(destDir, `vscode-server-${commit}.zip`);
-				const outStream = fs.createWriteStream(archivePath);
-				outStream.on('close', () => {
-					resolve(archivePath);
+			const ArchiveRequestOptions: https.RequestOptions = pArseUrl(ArchiveUrl);
+			if (ArchiveUrl.endsWith('.zip')) {
+				const ArchivePAth = pAth.resolve(destDir, `vscode-server-${commit}.zip`);
+				const outStreAm = fs.creAteWriteStreAm(ArchivePAth);
+				outStreAm.on('close', () => {
+					resolve(ArchivePAth);
 				});
-				https.get(archiveRequestOptions, res => {
-					res.pipe(outStream);
+				https.get(ArchiveRequestOptions, res => {
+					res.pipe(outStreAm);
 				});
 			} else {
-				const zipPath = path.resolve(destDir, `vscode-server-${commit}.tgz`);
-				const outStream = fs.createWriteStream(zipPath);
-				https.get(archiveRequestOptions, res => {
-					res.pipe(outStream);
+				const zipPAth = pAth.resolve(destDir, `vscode-server-${commit}.tgz`);
+				const outStreAm = fs.creAteWriteStreAm(zipPAth);
+				https.get(ArchiveRequestOptions, res => {
+					res.pipe(outStreAm);
 				});
-				outStream.on('close', () => {
-					resolve(zipPath);
+				outStreAm.on('close', () => {
+					resolve(zipPAth);
 				});
 			}
 		});
@@ -68,50 +68,50 @@ async function downloadVSCodeServerArchive(updateUrl: string, commit: string, qu
 }
 
 /**
- * Unzip a .zip or .tar.gz VS Code archive
+ * Unzip A .zip or .tAr.gz VS Code Archive
  */
-function unzipVSCodeServer(vscodeArchivePath: string, extractDir: string) {
-	if (vscodeArchivePath.endsWith('.zip')) {
+function unzipVSCodeServer(vscodeArchivePAth: string, extrActDir: string) {
+	if (vscodeArchivePAth.endsWith('.zip')) {
 		const tempDir = fs.mkdtempSync('vscode-server');
-		if (process.platform === 'win32') {
-			cp.spawnSync('powershell.exe', [
+		if (process.plAtform === 'win32') {
+			cp.spAwnSync('powershell.exe', [
 				'-NoProfile',
-				'-ExecutionPolicy', 'Bypass',
-				'-NonInteractive',
+				'-ExecutionPolicy', 'BypAss',
+				'-NonInterActive',
 				'-NoLogo',
-				'-Command',
-				`Microsoft.PowerShell.Archive\\Expand-Archive -Path "${vscodeArchivePath}" -DestinationPath "${tempDir}"`
+				'-CommAnd',
+				`Microsoft.PowerShell.Archive\\ExpAnd-Archive -PAth "${vscodeArchivePAth}" -DestinAtionPAth "${tempDir}"`
 			]);
 		} else {
-			cp.spawnSync('unzip', [vscodeArchivePath, '-d', `${tempDir}`]);
+			cp.spAwnSync('unzip', [vscodeArchivePAth, '-d', `${tempDir}`]);
 		}
-		fs.renameSync(path.join(tempDir, process.platform === 'win32' ? 'vscode-server-win32-x64' : 'vscode-server-darwin'), extractDir);
+		fs.renAmeSync(pAth.join(tempDir, process.plAtform === 'win32' ? 'vscode-server-win32-x64' : 'vscode-server-dArwin'), extrActDir);
 	} else {
-		// tar does not create extractDir by default
-		if (!fs.existsSync(extractDir)) {
-			fs.mkdirSync(extractDir);
+		// tAr does not creAte extrActDir by defAult
+		if (!fs.existsSync(extrActDir)) {
+			fs.mkdirSync(extrActDir);
 		}
-		cp.spawnSync('tar', ['-xzf', vscodeArchivePath, '-C', extractDir, '--strip-components', '1']);
+		cp.spAwnSync('tAr', ['-xzf', vscodeArchivePAth, '-C', extrActDir, '--strip-components', '1']);
 	}
 }
 
-export async function downloadAndUnzipVSCodeServer(updateUrl: string, commit: string, quality: string = 'stable', destDir: string): Promise<string> {
+export Async function downloAdAndUnzipVSCodeServer(updAteUrl: string, commit: string, quAlity: string = 'stAble', destDir: string): Promise<string> {
 
-	const extractDir = path.join(destDir, commit);
-	if (fs.existsSync(extractDir)) {
-		console.log(`Found ${extractDir}. Skipping download.`);
+	const extrActDir = pAth.join(destDir, commit);
+	if (fs.existsSync(extrActDir)) {
+		console.log(`Found ${extrActDir}. Skipping downloAd.`);
 	} else {
-		console.log(`Downloading VS Code Server ${quality} - ${commit} into ${extractDir}.`);
+		console.log(`DownloAding VS Code Server ${quAlity} - ${commit} into ${extrActDir}.`);
 		try {
-			const vscodeArchivePath = await downloadVSCodeServerArchive(updateUrl, commit, quality, destDir);
-			if (fs.existsSync(vscodeArchivePath)) {
-				unzipVSCodeServer(vscodeArchivePath, extractDir);
-				// Remove archive
-				fs.unlinkSync(vscodeArchivePath);
+			const vscodeArchivePAth = AwAit downloAdVSCodeServerArchive(updAteUrl, commit, quAlity, destDir);
+			if (fs.existsSync(vscodeArchivePAth)) {
+				unzipVSCodeServer(vscodeArchivePAth, extrActDir);
+				// Remove Archive
+				fs.unlinkSync(vscodeArchivePAth);
 			}
-		} catch (err) {
-			throw Error(`Failed to download and unzip VS Code ${quality} - ${commit}`);
+		} cAtch (err) {
+			throw Error(`FAiled to downloAd And unzip VS Code ${quAlity} - ${commit}`);
 		}
 	}
-	return Promise.resolve(extractDir);
+	return Promise.resolve(extrActDir);
 }

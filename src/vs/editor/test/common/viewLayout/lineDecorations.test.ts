@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Range } from 'vs/editor/common/core/range';
-import { DecorationSegment, LineDecoration, LineDecorationsNormalizer } from 'vs/editor/common/viewLayout/lineDecorations';
-import { InlineDecoration, InlineDecorationType } from 'vs/editor/common/viewModel/viewModel';
+import * As Assert from 'Assert';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { DecorAtionSegment, LineDecorAtion, LineDecorAtionsNormAlizer } from 'vs/editor/common/viewLAyout/lineDecorAtions';
+import { InlineDecorAtion, InlineDecorAtionType } from 'vs/editor/common/viewModel/viewModel';
 
-suite('Editor ViewLayout - ViewLineParts', () => {
+suite('Editor ViewLAyout - ViewLinePArts', () => {
 
-	test('Bug 9827:Overlapping inline decorations can cause wrong inline class to be applied', () => {
+	test('Bug 9827:OverlApping inline decorAtions cAn cAuse wrong inline clAss to be Applied', () => {
 
-		let result = LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 11, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular)
+		let result = LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 11, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr)
 		]);
 
-		assert.deepEqual(result, [
-			new DecorationSegment(0, 1, 'c1', 0),
-			new DecorationSegment(2, 2, 'c2 c1', 0),
-			new DecorationSegment(3, 9, 'c1', 0),
-		]);
-	});
-
-	test('issue #3462: no whitespace shown at the end of a decorated line', () => {
-
-		let result = LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(15, 21, 'mtkw', InlineDecorationType.Regular),
-			new LineDecoration(20, 21, 'inline-folded', InlineDecorationType.Regular),
-		]);
-
-		assert.deepEqual(result, [
-			new DecorationSegment(14, 18, 'mtkw', 0),
-			new DecorationSegment(19, 19, 'mtkw inline-folded', 0)
+		Assert.deepEquAl(result, [
+			new DecorAtionSegment(0, 1, 'c1', 0),
+			new DecorAtionSegment(2, 2, 'c2 c1', 0),
+			new DecorAtionSegment(3, 9, 'c1', 0),
 		]);
 	});
 
-	test('issue #3661: Link decoration bleeds to next line when wrapping', () => {
+	test('issue #3462: no whitespAce shown At the end of A decorAted line', () => {
 
-		let result = LineDecoration.filter([
-			new InlineDecoration(new Range(2, 12, 3, 30), 'detected-link', InlineDecorationType.Regular)
+		let result = LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(15, 21, 'mtkw', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(20, 21, 'inline-folded', InlineDecorAtionType.RegulAr),
+		]);
+
+		Assert.deepEquAl(result, [
+			new DecorAtionSegment(14, 18, 'mtkw', 0),
+			new DecorAtionSegment(19, 19, 'mtkw inline-folded', 0)
+		]);
+	});
+
+	test('issue #3661: Link decorAtion bleeds to next line when wrApping', () => {
+
+		let result = LineDecorAtion.filter([
+			new InlineDecorAtion(new RAnge(2, 12, 3, 30), 'detected-link', InlineDecorAtionType.RegulAr)
 		], 3, 12, 500);
 
-		assert.deepEqual(result, [
-			new LineDecoration(12, 30, 'detected-link', InlineDecorationType.Regular),
+		Assert.deepEquAl(result, [
+			new LineDecorAtion(12, 30, 'detected-link', InlineDecorAtionType.RegulAr),
 		]);
 	});
 
-	test('issue #37401: Allow both before and after decorations on empty line', () => {
-		let result = LineDecoration.filter([
-			new InlineDecoration(new Range(4, 1, 4, 2), 'before', InlineDecorationType.Before),
-			new InlineDecoration(new Range(4, 0, 4, 1), 'after', InlineDecorationType.After),
+	test('issue #37401: Allow both before And After decorAtions on empty line', () => {
+		let result = LineDecorAtion.filter([
+			new InlineDecorAtion(new RAnge(4, 1, 4, 2), 'before', InlineDecorAtionType.Before),
+			new InlineDecorAtion(new RAnge(4, 0, 4, 1), 'After', InlineDecorAtionType.After),
 		], 4, 1, 500);
 
-		assert.deepEqual(result, [
-			new LineDecoration(1, 2, 'before', InlineDecorationType.Before),
-			new LineDecoration(0, 1, 'after', InlineDecorationType.After),
+		Assert.deepEquAl(result, [
+			new LineDecorAtion(1, 2, 'before', InlineDecorAtionType.Before),
+			new LineDecorAtion(0, 1, 'After', InlineDecorAtionType.After),
 		]);
 	});
 
-	test('ViewLineParts', () => {
+	test('ViewLinePArts', () => {
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 2, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 2, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 0, 'c1', 0),
-			new DecorationSegment(2, 2, 'c2', 0)
+			new DecorAtionSegment(0, 0, 'c1', 0),
+			new DecorAtionSegment(2, 2, 'c2', 0)
 		]);
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 3, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 3, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 1, 'c1', 0),
-			new DecorationSegment(2, 2, 'c2', 0)
+			new DecorAtionSegment(0, 1, 'c1', 0),
+			new DecorAtionSegment(2, 2, 'c2', 0)
 		]);
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 4, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 4, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 1, 'c1', 0),
-			new DecorationSegment(2, 2, 'c1 c2', 0)
+			new DecorAtionSegment(0, 1, 'c1', 0),
+			new DecorAtionSegment(2, 2, 'c1 c2', 0)
 		]);
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 4, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1*', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 4, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1*', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 1, 'c1 c1*', 0),
-			new DecorationSegment(2, 2, 'c1 c1* c2', 0)
+			new DecorAtionSegment(0, 1, 'c1 c1*', 0),
+			new DecorAtionSegment(2, 2, 'c1 c1* c2', 0)
 		]);
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 4, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1*', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1**', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 4, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1*', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1**', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 1, 'c1 c1* c1**', 0),
-			new DecorationSegment(2, 2, 'c1 c1* c1** c2', 0)
+			new DecorAtionSegment(0, 1, 'c1 c1* c1**', 0),
+			new DecorAtionSegment(2, 2, 'c1 c1* c1** c2', 0)
 		]);
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 4, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1*', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1**', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2*', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 4, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1*', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1**', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2*', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 1, 'c1 c1* c1**', 0),
-			new DecorationSegment(2, 2, 'c1 c1* c1** c2 c2*', 0)
+			new DecorAtionSegment(0, 1, 'c1 c1* c1**', 0),
+			new DecorAtionSegment(2, 2, 'c1 c1* c1** c2 c2*', 0)
 		]);
 
-		assert.deepEqual(LineDecorationsNormalizer.normalize('abcabcabcabcabcabcabcabcabcabc', [
-			new LineDecoration(1, 4, 'c1', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1*', InlineDecorationType.Regular),
-			new LineDecoration(1, 4, 'c1**', InlineDecorationType.Regular),
-			new LineDecoration(3, 4, 'c2', InlineDecorationType.Regular),
-			new LineDecoration(3, 5, 'c2*', InlineDecorationType.Regular)
+		Assert.deepEquAl(LineDecorAtionsNormAlizer.normAlize('AbcAbcAbcAbcAbcAbcAbcAbcAbcAbc', [
+			new LineDecorAtion(1, 4, 'c1', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1*', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(1, 4, 'c1**', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 4, 'c2', InlineDecorAtionType.RegulAr),
+			new LineDecorAtion(3, 5, 'c2*', InlineDecorAtionType.RegulAr)
 		]), [
-			new DecorationSegment(0, 1, 'c1 c1* c1**', 0),
-			new DecorationSegment(2, 2, 'c1 c1* c1** c2 c2*', 0),
-			new DecorationSegment(3, 3, 'c2*', 0)
+			new DecorAtionSegment(0, 1, 'c1 c1* c1**', 0),
+			new DecorAtionSegment(2, 2, 'c1 c1* c1** c2 c2*', 0),
+			new DecorAtionSegment(3, 3, 'c2*', 0)
 		]);
 	});
 });

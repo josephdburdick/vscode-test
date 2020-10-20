@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { EXTENSION_IDENTIFIER_PATTERN, IExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { distinct, flatten } from 'vs/base/common/arrays';
-import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IExtensionsConfigContent, ExtensionRecommendationReason } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { ILogService } from 'vs/platform/log/common/log';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { localize } from 'vs/nls';
-import { Emitter } from 'vs/base/common/event';
-import { IWorkpsaceExtensionsConfigService } from 'vs/workbench/services/extensionRecommendations/common/workspaceExtensionsConfig';
+import { EXTENSION_IDENTIFIER_PATTERN, IExtensionGAlleryService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { distinct, flAtten } from 'vs/bAse/common/ArrAys';
+import { ExtensionRecommendAtions, ExtensionRecommendAtion } from 'vs/workbench/contrib/extensions/browser/extensionRecommendAtions';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IExtensionsConfigContent, ExtensionRecommendAtionReAson } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { locAlize } from 'vs/nls';
+import { Emitter } from 'vs/bAse/common/event';
+import { IWorkpsAceExtensionsConfigService } from 'vs/workbench/services/extensionRecommendAtions/common/workspAceExtensionsConfig';
 
-export class WorkspaceRecommendations extends ExtensionRecommendations {
+export clAss WorkspAceRecommendAtions extends ExtensionRecommendAtions {
 
-	private _recommendations: ExtensionRecommendation[] = [];
-	get recommendations(): ReadonlyArray<ExtensionRecommendation> { return this._recommendations; }
+	privAte _recommendAtions: ExtensionRecommendAtion[] = [];
+	get recommendAtions(): ReAdonlyArrAy<ExtensionRecommendAtion> { return this._recommendAtions; }
 
-	private _onDidChangeRecommendations = this._register(new Emitter<void>());
-	readonly onDidChangeRecommendations = this._onDidChangeRecommendations.event;
+	privAte _onDidChAngeRecommendAtions = this._register(new Emitter<void>());
+	reAdonly onDidChAngeRecommendAtions = this._onDidChAngeRecommendAtions.event;
 
-	private _ignoredRecommendations: string[] = [];
-	get ignoredRecommendations(): ReadonlyArray<string> { return this._ignoredRecommendations; }
+	privAte _ignoredRecommendAtions: string[] = [];
+	get ignoredRecommendAtions(): ReAdonlyArrAy<string> { return this._ignoredRecommendAtions; }
 
 	constructor(
-		@IWorkpsaceExtensionsConfigService private readonly workpsaceExtensionsConfigService: IWorkpsaceExtensionsConfigService,
-		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
-		@ILogService private readonly logService: ILogService,
-		@INotificationService private readonly notificationService: INotificationService,
+		@IWorkpsAceExtensionsConfigService privAte reAdonly workpsAceExtensionsConfigService: IWorkpsAceExtensionsConfigService,
+		@IExtensionGAlleryService privAte reAdonly gAlleryService: IExtensionGAlleryService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
 	) {
 		super();
 	}
 
-	protected async doActivate(): Promise<void> {
-		await this.fetch();
-		this._register(this.workpsaceExtensionsConfigService.onDidChangeExtensionsConfigs(() => this.onDidChangeExtensionsConfigs()));
+	protected Async doActivAte(): Promise<void> {
+		AwAit this.fetch();
+		this._register(this.workpsAceExtensionsConfigService.onDidChAngeExtensionsConfigs(() => this.onDidChAngeExtensionsConfigs()));
 	}
 
 	/**
-	 * Parse all extensions.json files, fetch workspace recommendations, filter out invalid and unwanted ones
+	 * PArse All extensions.json files, fetch workspAce recommendAtions, filter out invAlid And unwAnted ones
 	 */
-	private async fetch(): Promise<void> {
+	privAte Async fetch(): Promise<void> {
 
-		const extensionsConfigs = await this.workpsaceExtensionsConfigService.getExtensionsConfigs();
+		const extensionsConfigs = AwAit this.workpsAceExtensionsConfigService.getExtensionsConfigs();
 
-		const { invalidRecommendations, message } = await this.validateExtensions(extensionsConfigs);
-		if (invalidRecommendations.length) {
-			this.notificationService.warn(`The ${invalidRecommendations.length} extension(s) below, in workspace recommendations have issues:\n${message}`);
+		const { invAlidRecommendAtions, messAge } = AwAit this.vAlidAteExtensions(extensionsConfigs);
+		if (invAlidRecommendAtions.length) {
+			this.notificAtionService.wArn(`The ${invAlidRecommendAtions.length} extension(s) below, in workspAce recommendAtions hAve issues:\n${messAge}`);
 		}
 
-		this._ignoredRecommendations = [];
+		this._ignoredRecommendAtions = [];
 
 		for (const extensionsConfig of extensionsConfigs) {
-			for (const unwantedRecommendation of extensionsConfig.unwantedRecommendations) {
-				if (invalidRecommendations.indexOf(unwantedRecommendation) === -1) {
-					this._ignoredRecommendations.push(unwantedRecommendation);
+			for (const unwAntedRecommendAtion of extensionsConfig.unwAntedRecommendAtions) {
+				if (invAlidRecommendAtions.indexOf(unwAntedRecommendAtion) === -1) {
+					this._ignoredRecommendAtions.push(unwAntedRecommendAtion);
 				}
 			}
-			for (const extensionId of extensionsConfig.recommendations) {
-				if (invalidRecommendations.indexOf(extensionId) === -1) {
-					this._recommendations.push({
+			for (const extensionId of extensionsConfig.recommendAtions) {
+				if (invAlidRecommendAtions.indexOf(extensionId) === -1) {
+					this._recommendAtions.push({
 						extensionId,
-						reason: {
-							reasonId: ExtensionRecommendationReason.Workspace,
-							reasonText: localize('workspaceRecommendation', "This extension is recommended by users of the current workspace.")
+						reAson: {
+							reAsonId: ExtensionRecommendAtionReAson.WorkspAce,
+							reAsonText: locAlize('workspAceRecommendAtion', "This extension is recommended by users of the current workspAce.")
 						}
 					});
 				}
@@ -73,52 +73,52 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 		}
 	}
 
-	private async validateExtensions(contents: IExtensionsConfigContent[]): Promise<{ validRecommendations: string[], invalidRecommendations: string[], message: string }> {
+	privAte Async vAlidAteExtensions(contents: IExtensionsConfigContent[]): Promise<{ vAlidRecommendAtions: string[], invAlidRecommendAtions: string[], messAge: string }> {
 
-		const validExtensions: string[] = [];
-		const invalidExtensions: string[] = [];
+		const vAlidExtensions: string[] = [];
+		const invAlidExtensions: string[] = [];
 		const extensionsToQuery: string[] = [];
-		let message = '';
+		let messAge = '';
 
-		const allRecommendations = distinct(flatten(contents.map(({ recommendations }) => recommendations || [])));
+		const AllRecommendAtions = distinct(flAtten(contents.mAp(({ recommendAtions }) => recommendAtions || [])));
 		const regEx = new RegExp(EXTENSION_IDENTIFIER_PATTERN);
-		for (const extensionId of allRecommendations) {
+		for (const extensionId of AllRecommendAtions) {
 			if (regEx.test(extensionId)) {
 				extensionsToQuery.push(extensionId);
 			} else {
-				invalidExtensions.push(extensionId);
-				message += `${extensionId} (bad format) Expected: <provider>.<name>\n`;
+				invAlidExtensions.push(extensionId);
+				messAge += `${extensionId} (bAd formAt) Expected: <provider>.<nAme>\n`;
 			}
 		}
 
 		if (extensionsToQuery.length) {
 			try {
-				const queryResult = await this.galleryService.query({ names: extensionsToQuery, pageSize: extensionsToQuery.length }, CancellationToken.None);
-				const extensions = queryResult.firstPage.map(extension => extension.identifier.id.toLowerCase());
+				const queryResult = AwAit this.gAlleryService.query({ nAmes: extensionsToQuery, pAgeSize: extensionsToQuery.length }, CAncellAtionToken.None);
+				const extensions = queryResult.firstPAge.mAp(extension => extension.identifier.id.toLowerCAse());
 
 				for (const extensionId of extensionsToQuery) {
 					if (extensions.indexOf(extensionId) === -1) {
-						invalidExtensions.push(extensionId);
-						message += `${extensionId} (not found in marketplace)\n`;
+						invAlidExtensions.push(extensionId);
+						messAge += `${extensionId} (not found in mArketplAce)\n`;
 					} else {
-						validExtensions.push(extensionId);
+						vAlidExtensions.push(extensionId);
 					}
 				}
 
-			} catch (e) {
-				this.logService.warn('Error querying extensions gallery', e);
+			} cAtch (e) {
+				this.logService.wArn('Error querying extensions gAllery', e);
 			}
 		}
 
-		return { validRecommendations: validExtensions, invalidRecommendations: invalidExtensions, message };
+		return { vAlidRecommendAtions: vAlidExtensions, invAlidRecommendAtions: invAlidExtensions, messAge };
 	}
 
-	private async onDidChangeExtensionsConfigs(): Promise<void> {
-		const oldWorkspaceRecommended = this._recommendations;
-		await this.fetch();
-		// Suggest only if at least one of the newly added recommendations was not suggested before
-		if (this._recommendations.some(current => oldWorkspaceRecommended.every(old => current.extensionId !== old.extensionId))) {
-			this._onDidChangeRecommendations.fire();
+	privAte Async onDidChAngeExtensionsConfigs(): Promise<void> {
+		const oldWorkspAceRecommended = this._recommendAtions;
+		AwAit this.fetch();
+		// Suggest only if At leAst one of the newly Added recommendAtions wAs not suggested before
+		if (this._recommendAtions.some(current => oldWorkspAceRecommended.every(old => current.extensionId !== old.extensionId))) {
+			this._onDidChAngeRecommendAtions.fire();
 		}
 	}
 

@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
+const pAth = require('pAth');
 const testRunner = require('vscode/lib/testrunner');
 
-const options: any = {
+const options: Any = {
 	ui: 'tdd',
-	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.platform !== 'win32'),
+	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.plAtform !== 'win32'),
 	timeout: 60000
 };
 
-// These integration tests is being run in multiple environments (electron, web, remote)
-// so we need to set the suite name based on the environment as the suite name is used
-// for the test results file name
+// These integrAtion tests is being run in multiple environments (electron, web, remote)
+// so we need to set the suite nAme bAsed on the environment As the suite nAme is used
+// for the test results file nAme
 let suite = '';
 if (process.env.VSCODE_BROWSER) {
-	suite = `${process.env.VSCODE_BROWSER} Browser Integration Workspace Tests`;
+	suite = `${process.env.VSCODE_BROWSER} Browser IntegrAtion WorkspAce Tests`;
 } else if (process.env.REMOTE_VSCODE) {
-	suite = 'Remote Integration Workspace Tests';
+	suite = 'Remote IntegrAtion WorkspAce Tests';
 } else {
-	suite = 'Integration Workspace Tests';
+	suite = 'IntegrAtion WorkspAce Tests';
 }
 
 if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
-	options.reporter = 'mocha-multi-reporters';
+	options.reporter = 'mochA-multi-reporters';
 	options.reporterOptions = {
-		reporterEnabled: 'spec, mocha-junit-reporter',
-		mochaJunitReporterReporterOptions: {
-			testsuitesTitle: `${suite} ${process.platform}`,
-			mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${process.arch}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)
+		reporterEnAbled: 'spec, mochA-junit-reporter',
+		mochAJunitReporterReporterOptions: {
+			testsuitesTitle: `${suite} ${process.plAtform}`,
+			mochAFile: pAth.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.plAtform}-${process.Arch}-${suite.toLowerCAse().replAce(/[^\w]/g, '-')}-results.xml`)
 		}
 	};
 }

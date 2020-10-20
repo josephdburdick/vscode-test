@@ -1,166 +1,166 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRange } from 'vs/editor/common/core/range';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 
 /**
- * An event describing that the current mode associated with a model has changed.
+ * An event describing thAt the current mode AssociAted with A model hAs chAnged.
  */
-export interface IModelLanguageChangedEvent {
+export interfAce IModelLAnguAgeChAngedEvent {
 	/**
-	 * Previous language
+	 * Previous lAnguAge
 	 */
-	readonly oldLanguage: string;
+	reAdonly oldLAnguAge: string;
 	/**
-	 * New language
+	 * New lAnguAge
 	 */
-	readonly newLanguage: string;
+	reAdonly newLAnguAge: string;
 }
 
 /**
- * An event describing that the language configuration associated with a model has changed.
+ * An event describing thAt the lAnguAge configurAtion AssociAted with A model hAs chAnged.
  */
-export interface IModelLanguageConfigurationChangedEvent {
+export interfAce IModelLAnguAgeConfigurAtionChAngedEvent {
 }
 
-export interface IModelContentChange {
+export interfAce IModelContentChAnge {
 	/**
-	 * The range that got replaced.
+	 * The rAnge thAt got replAced.
 	 */
-	readonly range: IRange;
+	reAdonly rAnge: IRAnge;
 	/**
-	 * The offset of the range that got replaced.
+	 * The offset of the rAnge thAt got replAced.
 	 */
-	readonly rangeOffset: number;
+	reAdonly rAngeOffset: number;
 	/**
-	 * The length of the range that got replaced.
+	 * The length of the rAnge thAt got replAced.
 	 */
-	readonly rangeLength: number;
+	reAdonly rAngeLength: number;
 	/**
-	 * The new text for the range.
+	 * The new text for the rAnge.
 	 */
-	readonly text: string;
-}
-
-/**
- * An event describing a change in the text of a model.
- */
-export interface IModelContentChangedEvent {
-	readonly changes: IModelContentChange[];
-	/**
-	 * The (new) end-of-line character.
-	 */
-	readonly eol: string;
-	/**
-	 * The new version id the model has transitioned to.
-	 */
-	readonly versionId: number;
-	/**
-	 * Flag that indicates that this event was generated while undoing.
-	 */
-	readonly isUndoing: boolean;
-	/**
-	 * Flag that indicates that this event was generated while redoing.
-	 */
-	readonly isRedoing: boolean;
-	/**
-	 * Flag that indicates that all decorations were lost with this edit.
-	 * The model has been reset to a new value.
-	 */
-	readonly isFlush: boolean;
+	reAdonly text: string;
 }
 
 /**
- * An event describing that model decorations have changed.
+ * An event describing A chAnge in the text of A model.
  */
-export interface IModelDecorationsChangedEvent {
-	readonly affectsMinimap: boolean;
-	readonly affectsOverviewRuler: boolean;
+export interfAce IModelContentChAngedEvent {
+	reAdonly chAnges: IModelContentChAnge[];
+	/**
+	 * The (new) end-of-line chArActer.
+	 */
+	reAdonly eol: string;
+	/**
+	 * The new version id the model hAs trAnsitioned to.
+	 */
+	reAdonly versionId: number;
+	/**
+	 * FlAg thAt indicAtes thAt this event wAs generAted while undoing.
+	 */
+	reAdonly isUndoing: booleAn;
+	/**
+	 * FlAg thAt indicAtes thAt this event wAs generAted while redoing.
+	 */
+	reAdonly isRedoing: booleAn;
+	/**
+	 * FlAg thAt indicAtes thAt All decorAtions were lost with this edit.
+	 * The model hAs been reset to A new vAlue.
+	 */
+	reAdonly isFlush: booleAn;
 }
 
 /**
- * An event describing that some ranges of lines have been tokenized (their tokens have changed).
- * @internal
+ * An event describing thAt model decorAtions hAve chAnged.
  */
-export interface IModelTokensChangedEvent {
-	readonly tokenizationSupportChanged: boolean;
-	readonly semanticTokensApplied: boolean;
-	readonly ranges: {
+export interfAce IModelDecorAtionsChAngedEvent {
+	reAdonly AffectsMinimAp: booleAn;
+	reAdonly AffectsOverviewRuler: booleAn;
+}
+
+/**
+ * An event describing thAt some rAnges of lines hAve been tokenized (their tokens hAve chAnged).
+ * @internAl
+ */
+export interfAce IModelTokensChAngedEvent {
+	reAdonly tokenizAtionSupportChAnged: booleAn;
+	reAdonly semAnticTokensApplied: booleAn;
+	reAdonly rAnges: {
 		/**
-		 * The start of the range (inclusive)
+		 * The stArt of the rAnge (inclusive)
 		 */
-		readonly fromLineNumber: number;
+		reAdonly fromLineNumber: number;
 		/**
-		 * The end of the range (inclusive)
+		 * The end of the rAnge (inclusive)
 		 */
-		readonly toLineNumber: number;
+		reAdonly toLineNumber: number;
 	}[];
 }
 
-export interface IModelOptionsChangedEvent {
-	readonly tabSize: boolean;
-	readonly indentSize: boolean;
-	readonly insertSpaces: boolean;
-	readonly trimAutoWhitespace: boolean;
+export interfAce IModelOptionsChAngedEvent {
+	reAdonly tAbSize: booleAn;
+	reAdonly indentSize: booleAn;
+	reAdonly insertSpAces: booleAn;
+	reAdonly trimAutoWhitespAce: booleAn;
 }
 
 /**
- * @internal
+ * @internAl
  */
-export const enum RawContentChangedType {
+export const enum RAwContentChAngedType {
 	Flush = 1,
-	LineChanged = 2,
+	LineChAnged = 2,
 	LinesDeleted = 3,
 	LinesInserted = 4,
-	EOLChanged = 5
+	EOLChAnged = 5
 }
 
 /**
- * An event describing that a model has been reset to a new value.
- * @internal
+ * An event describing thAt A model hAs been reset to A new vAlue.
+ * @internAl
  */
-export class ModelRawFlush {
-	public readonly changeType = RawContentChangedType.Flush;
+export clAss ModelRAwFlush {
+	public reAdonly chAngeType = RAwContentChAngedType.Flush;
 }
 
 /**
- * An event describing that a line has changed in a model.
- * @internal
+ * An event describing thAt A line hAs chAnged in A model.
+ * @internAl
  */
-export class ModelRawLineChanged {
-	public readonly changeType = RawContentChangedType.LineChanged;
+export clAss ModelRAwLineChAnged {
+	public reAdonly chAngeType = RAwContentChAngedType.LineChAnged;
 	/**
-	 * The line that has changed.
+	 * The line thAt hAs chAnged.
 	 */
-	public readonly lineNumber: number;
+	public reAdonly lineNumber: number;
 	/**
-	 * The new value of the line.
+	 * The new vAlue of the line.
 	 */
-	public readonly detail: string;
+	public reAdonly detAil: string;
 
-	constructor(lineNumber: number, detail: string) {
+	constructor(lineNumber: number, detAil: string) {
 		this.lineNumber = lineNumber;
-		this.detail = detail;
+		this.detAil = detAil;
 	}
 }
 
 /**
- * An event describing that line(s) have been deleted in a model.
- * @internal
+ * An event describing thAt line(s) hAve been deleted in A model.
+ * @internAl
  */
-export class ModelRawLinesDeleted {
-	public readonly changeType = RawContentChangedType.LinesDeleted;
+export clAss ModelRAwLinesDeleted {
+	public reAdonly chAngeType = RAwContentChAngedType.LinesDeleted;
 	/**
-	 * At what line the deletion began (inclusive).
+	 * At whAt line the deletion begAn (inclusive).
 	 */
-	public readonly fromLineNumber: number;
+	public reAdonly fromLineNumber: number;
 	/**
-	 * At what line the deletion stopped (inclusive).
+	 * At whAt line the deletion stopped (inclusive).
 	 */
-	public readonly toLineNumber: number;
+	public reAdonly toLineNumber: number;
 
 	constructor(fromLineNumber: number, toLineNumber: number) {
 		this.fromLineNumber = fromLineNumber;
@@ -169,117 +169,117 @@ export class ModelRawLinesDeleted {
 }
 
 /**
- * An event describing that line(s) have been inserted in a model.
- * @internal
+ * An event describing thAt line(s) hAve been inserted in A model.
+ * @internAl
  */
-export class ModelRawLinesInserted {
-	public readonly changeType = RawContentChangedType.LinesInserted;
+export clAss ModelRAwLinesInserted {
+	public reAdonly chAngeType = RAwContentChAngedType.LinesInserted;
 	/**
-	 * Before what line did the insertion begin
+	 * Before whAt line did the insertion begin
 	 */
-	public readonly fromLineNumber: number;
+	public reAdonly fromLineNumber: number;
 	/**
-	 * `toLineNumber` - `fromLineNumber` + 1 denotes the number of lines that were inserted
+	 * `toLineNumber` - `fromLineNumber` + 1 denotes the number of lines thAt were inserted
 	 */
-	public readonly toLineNumber: number;
+	public reAdonly toLineNumber: number;
 	/**
-	 * The text that was inserted
+	 * The text thAt wAs inserted
 	 */
-	public readonly detail: string[];
+	public reAdonly detAil: string[];
 
-	constructor(fromLineNumber: number, toLineNumber: number, detail: string[]) {
+	constructor(fromLineNumber: number, toLineNumber: number, detAil: string[]) {
 		this.fromLineNumber = fromLineNumber;
 		this.toLineNumber = toLineNumber;
-		this.detail = detail;
+		this.detAil = detAil;
 	}
 }
 
 /**
- * An event describing that a model has had its EOL changed.
- * @internal
+ * An event describing thAt A model hAs hAd its EOL chAnged.
+ * @internAl
  */
-export class ModelRawEOLChanged {
-	public readonly changeType = RawContentChangedType.EOLChanged;
+export clAss ModelRAwEOLChAnged {
+	public reAdonly chAngeType = RAwContentChAngedType.EOLChAnged;
 }
 
 /**
- * @internal
+ * @internAl
  */
-export type ModelRawChange = ModelRawFlush | ModelRawLineChanged | ModelRawLinesDeleted | ModelRawLinesInserted | ModelRawEOLChanged;
+export type ModelRAwChAnge = ModelRAwFlush | ModelRAwLineChAnged | ModelRAwLinesDeleted | ModelRAwLinesInserted | ModelRAwEOLChAnged;
 
 /**
- * An event describing a change in the text of a model.
- * @internal
+ * An event describing A chAnge in the text of A model.
+ * @internAl
  */
-export class ModelRawContentChangedEvent {
+export clAss ModelRAwContentChAngedEvent {
 
-	public readonly changes: ModelRawChange[];
+	public reAdonly chAnges: ModelRAwChAnge[];
 	/**
-	 * The new version id the model has transitioned to.
+	 * The new version id the model hAs trAnsitioned to.
 	 */
-	public readonly versionId: number;
+	public reAdonly versionId: number;
 	/**
-	 * Flag that indicates that this event was generated while undoing.
+	 * FlAg thAt indicAtes thAt this event wAs generAted while undoing.
 	 */
-	public readonly isUndoing: boolean;
+	public reAdonly isUndoing: booleAn;
 	/**
-	 * Flag that indicates that this event was generated while redoing.
+	 * FlAg thAt indicAtes thAt this event wAs generAted while redoing.
 	 */
-	public readonly isRedoing: boolean;
+	public reAdonly isRedoing: booleAn;
 
 	public resultingSelection: Selection[] | null;
 
-	constructor(changes: ModelRawChange[], versionId: number, isUndoing: boolean, isRedoing: boolean) {
-		this.changes = changes;
+	constructor(chAnges: ModelRAwChAnge[], versionId: number, isUndoing: booleAn, isRedoing: booleAn) {
+		this.chAnges = chAnges;
 		this.versionId = versionId;
 		this.isUndoing = isUndoing;
 		this.isRedoing = isRedoing;
 		this.resultingSelection = null;
 	}
 
-	public containsEvent(type: RawContentChangedType): boolean {
-		for (let i = 0, len = this.changes.length; i < len; i++) {
-			const change = this.changes[i];
-			if (change.changeType === type) {
+	public contAinsEvent(type: RAwContentChAngedType): booleAn {
+		for (let i = 0, len = this.chAnges.length; i < len; i++) {
+			const chAnge = this.chAnges[i];
+			if (chAnge.chAngeType === type) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	public static merge(a: ModelRawContentChangedEvent, b: ModelRawContentChangedEvent): ModelRawContentChangedEvent {
-		const changes = ([] as ModelRawChange[]).concat(a.changes).concat(b.changes);
+	public stAtic merge(A: ModelRAwContentChAngedEvent, b: ModelRAwContentChAngedEvent): ModelRAwContentChAngedEvent {
+		const chAnges = ([] As ModelRAwChAnge[]).concAt(A.chAnges).concAt(b.chAnges);
 		const versionId = b.versionId;
-		const isUndoing = (a.isUndoing || b.isUndoing);
-		const isRedoing = (a.isRedoing || b.isRedoing);
-		return new ModelRawContentChangedEvent(changes, versionId, isUndoing, isRedoing);
+		const isUndoing = (A.isUndoing || b.isUndoing);
+		const isRedoing = (A.isRedoing || b.isRedoing);
+		return new ModelRAwContentChAngedEvent(chAnges, versionId, isUndoing, isRedoing);
 	}
 }
 
 /**
- * @internal
+ * @internAl
  */
-export class InternalModelContentChangeEvent {
+export clAss InternAlModelContentChAngeEvent {
 	constructor(
-		public readonly rawContentChangedEvent: ModelRawContentChangedEvent,
-		public readonly contentChangedEvent: IModelContentChangedEvent,
+		public reAdonly rAwContentChAngedEvent: ModelRAwContentChAngedEvent,
+		public reAdonly contentChAngedEvent: IModelContentChAngedEvent,
 	) { }
 
-	public merge(other: InternalModelContentChangeEvent): InternalModelContentChangeEvent {
-		const rawContentChangedEvent = ModelRawContentChangedEvent.merge(this.rawContentChangedEvent, other.rawContentChangedEvent);
-		const contentChangedEvent = InternalModelContentChangeEvent._mergeChangeEvents(this.contentChangedEvent, other.contentChangedEvent);
-		return new InternalModelContentChangeEvent(rawContentChangedEvent, contentChangedEvent);
+	public merge(other: InternAlModelContentChAngeEvent): InternAlModelContentChAngeEvent {
+		const rAwContentChAngedEvent = ModelRAwContentChAngedEvent.merge(this.rAwContentChAngedEvent, other.rAwContentChAngedEvent);
+		const contentChAngedEvent = InternAlModelContentChAngeEvent._mergeChAngeEvents(this.contentChAngedEvent, other.contentChAngedEvent);
+		return new InternAlModelContentChAngeEvent(rAwContentChAngedEvent, contentChAngedEvent);
 	}
 
-	private static _mergeChangeEvents(a: IModelContentChangedEvent, b: IModelContentChangedEvent): IModelContentChangedEvent {
-		const changes = ([] as IModelContentChange[]).concat(a.changes).concat(b.changes);
+	privAte stAtic _mergeChAngeEvents(A: IModelContentChAngedEvent, b: IModelContentChAngedEvent): IModelContentChAngedEvent {
+		const chAnges = ([] As IModelContentChAnge[]).concAt(A.chAnges).concAt(b.chAnges);
 		const eol = b.eol;
 		const versionId = b.versionId;
-		const isUndoing = (a.isUndoing || b.isUndoing);
-		const isRedoing = (a.isRedoing || b.isRedoing);
-		const isFlush = (a.isFlush || b.isFlush);
+		const isUndoing = (A.isUndoing || b.isUndoing);
+		const isRedoing = (A.isRedoing || b.isRedoing);
+		const isFlush = (A.isFlush || b.isFlush);
 		return {
-			changes: changes,
+			chAnges: chAnges,
 			eol: eol,
 			versionId: versionId,
 			isUndoing: isUndoing,

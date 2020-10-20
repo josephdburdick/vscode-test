@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import * as nls from 'vs/nls';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import * As nls from 'vs/nls';
 import { CustomEditorPriority, CustomEditorSelector } from 'vs/workbench/contrib/customEditor/common/customEditor';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import { lAnguAgesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
 
-namespace Fields {
+nAmespAce Fields {
 	export const viewType = 'viewType';
-	export const displayName = 'displayName';
+	export const displAyNAme = 'displAyNAme';
 	export const selector = 'selector';
 	export const priority = 'priority';
 }
 
-export interface ICustomEditorsExtensionPoint {
-	readonly [Fields.viewType]: string;
-	readonly [Fields.displayName]: string;
-	readonly [Fields.selector]?: readonly CustomEditorSelector[];
-	readonly [Fields.priority]?: string;
+export interfAce ICustomEditorsExtensionPoint {
+	reAdonly [Fields.viewType]: string;
+	reAdonly [Fields.displAyNAme]: string;
+	reAdonly [Fields.selector]?: reAdonly CustomEditorSelector[];
+	reAdonly [Fields.priority]?: string;
 }
 
-const CustomEditorsContribution: IJSONSchema = {
-	description: nls.localize('contributes.customEditors', 'Contributed custom editors.'),
-	type: 'array',
-	defaultSnippets: [{
+const CustomEditorsContribution: IJSONSchemA = {
+	description: nls.locAlize('contributes.customEditors', 'Contributed custom editors.'),
+	type: 'ArrAy',
+	defAultSnippets: [{
 		body: [{
 			[Fields.viewType]: '$1',
-			[Fields.displayName]: '$2',
+			[Fields.displAyNAme]: '$2',
 			[Fields.selector]: [{
-				filenamePattern: '$3'
+				filenAmePAttern: '$3'
 			}],
 		}]
 	}],
@@ -39,48 +39,48 @@ const CustomEditorsContribution: IJSONSchema = {
 		type: 'object',
 		required: [
 			Fields.viewType,
-			Fields.displayName,
+			Fields.displAyNAme,
 			Fields.selector,
 		],
 		properties: {
 			[Fields.viewType]: {
 				type: 'string',
-				markdownDescription: nls.localize('contributes.viewType', 'Identifier for the custom editor. This must be unique across all custom editors, so we recommend including your extension id as part of `viewType`. The `viewType` is used when registering custom editors with `vscode.registerCustomEditorProvider` and in the `onCustomEditor:${id}` [activation event](https://code.visualstudio.com/api/references/activation-events).'),
+				mArkdownDescription: nls.locAlize('contributes.viewType', 'Identifier for the custom editor. This must be unique Across All custom editors, so we recommend including your extension id As pArt of `viewType`. The `viewType` is used when registering custom editors with `vscode.registerCustomEditorProvider` And in the `onCustomEditor:${id}` [ActivAtion event](https://code.visuAlstudio.com/Api/references/ActivAtion-events).'),
 			},
-			[Fields.displayName]: {
+			[Fields.displAyNAme]: {
 				type: 'string',
-				description: nls.localize('contributes.displayName', 'Human readable name of the custom editor. This is displayed to users when selecting which editor to use.'),
+				description: nls.locAlize('contributes.displAyNAme', 'HumAn reAdAble nAme of the custom editor. This is displAyed to users when selecting which editor to use.'),
 			},
 			[Fields.selector]: {
-				type: 'array',
-				description: nls.localize('contributes.selector', 'Set of globs that the custom editor is enabled for.'),
+				type: 'ArrAy',
+				description: nls.locAlize('contributes.selector', 'Set of globs thAt the custom editor is enAbled for.'),
 				items: {
 					type: 'object',
-					defaultSnippets: [{
+					defAultSnippets: [{
 						body: {
-							filenamePattern: '$1',
+							filenAmePAttern: '$1',
 						}
 					}],
 					properties: {
-						filenamePattern: {
+						filenAmePAttern: {
 							type: 'string',
-							description: nls.localize('contributes.selector.filenamePattern', 'Glob that the custom editor is enabled for.'),
+							description: nls.locAlize('contributes.selector.filenAmePAttern', 'Glob thAt the custom editor is enAbled for.'),
 						},
 					}
 				}
 			},
 			[Fields.priority]: {
 				type: 'string',
-				markdownDeprecationMessage: nls.localize('contributes.priority', 'Controls if the custom editor is enabled automatically when the user opens a file. This may be overridden by users using the `workbench.editorAssociations` setting.'),
+				mArkdownDeprecAtionMessAge: nls.locAlize('contributes.priority', 'Controls if the custom editor is enAbled AutomAticAlly when the user opens A file. This mAy be overridden by users using the `workbench.editorAssociAtions` setting.'),
 				enum: [
-					CustomEditorPriority.default,
+					CustomEditorPriority.defAult,
 					CustomEditorPriority.option,
 				],
-				markdownEnumDescriptions: [
-					nls.localize('contributes.priority.default', 'The editor is automatically used when the user opens a resource, provided that no other default custom editors are registered for that resource.'),
-					nls.localize('contributes.priority.option', 'The editor is not automatically used when the user opens a resource, but a user can switch to the editor using the `Reopen With` command.'),
+				mArkdownEnumDescriptions: [
+					nls.locAlize('contributes.priority.defAult', 'The editor is AutomAticAlly used when the user opens A resource, provided thAt no other defAult custom editors Are registered for thAt resource.'),
+					nls.locAlize('contributes.priority.option', 'The editor is not AutomAticAlly used when the user opens A resource, but A user cAn switch to the editor using the `Reopen With` commAnd.'),
 				],
-				default: 'default'
+				defAult: 'defAult'
 			}
 		}
 	}
@@ -88,6 +88,6 @@ const CustomEditorsContribution: IJSONSchema = {
 
 export const customEditorsExtensionPoint = ExtensionsRegistry.registerExtensionPoint<ICustomEditorsExtensionPoint[]>({
 	extensionPoint: 'customEditors',
-	deps: [languagesExtPoint],
-	jsonSchema: CustomEditorsContribution
+	deps: [lAnguAgesExtPoint],
+	jsonSchemA: CustomEditorsContribution
 });

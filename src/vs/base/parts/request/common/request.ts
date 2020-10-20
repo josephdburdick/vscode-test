@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBufferReadableStream } from 'vs/base/common/buffer';
+import { VSBufferReAdAbleStreAm } from 'vs/bAse/common/buffer';
 
-export interface IHeaders {
-	[header: string]: string;
+export interfAce IHeAders {
+	[heAder: string]: string;
 }
 
-export interface IRequestOptions {
+export interfAce IRequestOptions {
 	type?: string;
 	url?: string;
 	user?: string;
-	password?: string;
-	headers?: IHeaders;
+	pAssword?: string;
+	heAders?: IHeAders;
 	timeout?: number;
-	data?: string;
+	dAtA?: string;
 	followRedirects?: number;
-	proxyAuthorization?: string;
+	proxyAuthorizAtion?: string;
 }
 
-export interface IRequestContext {
+export interfAce IRequestContext {
 	res: {
-		headers: IHeaders;
-		statusCode?: number;
+		heAders: IHeAders;
+		stAtusCode?: number;
 	};
-	stream: VSBufferReadableStream;
+	streAm: VSBufferReAdAbleStreAm;
 }

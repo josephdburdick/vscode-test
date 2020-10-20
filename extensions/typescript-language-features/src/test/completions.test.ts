@@ -1,112 +1,112 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as vscode from 'vscode';
+import 'mochA';
+import * As vscode from 'vscode';
 import { disposeAll } from '../utils/dispose';
-import { acceptFirstSuggestion, typeCommitCharacter } from './suggestTestHelpers';
-import { assertEditorContents, Config, createTestEditor, joinLines, updateConfig, VsCodeConfiguration, wait, enumerateConfig } from './testUtils';
+import { AcceptFirstSuggestion, typeCommitChArActer } from './suggestTestHelpers';
+import { AssertEditorContents, Config, creAteTestEditor, joinLines, updAteConfig, VsCodeConfigurAtion, wAit, enumerAteConfig } from './testUtils';
 
-const testDocumentUri = vscode.Uri.parse('untitled:test.ts');
+const testDocumentUri = vscode.Uri.pArse('untitled:test.ts');
 
-const insertModes = Object.freeze(['insert', 'replace']);
+const insertModes = Object.freeze(['insert', 'replAce']);
 
 suite('TypeScript Completions', () => {
-	const configDefaults: VsCodeConfiguration = Object.freeze({
-		[Config.autoClosingBrackets]: 'always',
-		[Config.typescriptCompleteFunctionCalls]: false,
+	const configDefAults: VsCodeConfigurAtion = Object.freeze({
+		[Config.AutoClosingBrAckets]: 'AlwAys',
+		[Config.typescriptCompleteFunctionCAlls]: fAlse,
 		[Config.insertMode]: 'insert',
 		[Config.snippetSuggestions]: 'none',
 		[Config.suggestSelection]: 'first',
-		[Config.javascriptQuoteStyle]: 'double',
+		[Config.jAvAscriptQuoteStyle]: 'double',
 		[Config.typescriptQuoteStyle]: 'double',
 	});
 
-	const _disposables: vscode.Disposable[] = [];
-	let oldConfig: { [key: string]: any } = {};
+	const _disposAbles: vscode.DisposAble[] = [];
+	let oldConfig: { [key: string]: Any } = {};
 
-	setup(async () => {
-		await wait(500);
+	setup(Async () => {
+		AwAit wAit(500);
 
-		// Save off config and apply defaults
-		oldConfig = await updateConfig(testDocumentUri, configDefaults);
+		// SAve off config And Apply defAults
+		oldConfig = AwAit updAteConfig(testDocumentUri, configDefAults);
 	});
 
-	teardown(async () => {
-		disposeAll(_disposables);
+	teArdown(Async () => {
+		disposeAll(_disposAbles);
 
 		// Restore config
-		await updateConfig(testDocumentUri, oldConfig);
+		AwAit updAteConfig(testDocumentUri, oldConfig);
 
-		return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		return vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 	});
 
-	test('Basic var completion', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`const abcdef = 123;`,
-				`ab$0;`
+	test('BAsic vAr completion', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`const Abcdef = 123;`,
+				`Ab$0;`
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`const abcdef = 123;`,
-					`abcdef;`
+					`const Abcdef = 123;`,
+					`Abcdef;`
 				),
 				`config: ${config}`
 			);
 		});
 	});
 
-	test('Should treat period as commit character for var completions', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`const abcdef = 123;`,
-				`ab$0;`
+	test('Should treAt period As commit chArActer for vAr completions', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`const Abcdef = 123;`,
+				`Ab$0;`
 			);
 
-			await typeCommitCharacter(testDocumentUri, '.', _disposables);
+			AwAit typeCommitChArActer(testDocumentUri, '.', _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`const abcdef = 123;`,
-					`abcdef.;`
+					`const Abcdef = 123;`,
+					`Abcdef.;`
 				),
 				`config: ${config}`);
 		});
 	});
 
-	test('Should treat paren as commit character for function completions', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`function abcdef() {};`,
-				`ab$0;`
+	test('Should treAt pAren As commit chArActer for function completions', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`function Abcdef() {};`,
+				`Ab$0;`
 			);
 
-			await typeCommitCharacter(testDocumentUri, '(', _disposables);
+			AwAit typeCommitChArActer(testDocumentUri, '(', _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`function abcdef() {};`,
-					`abcdef();`
+					`function Abcdef() {};`,
+					`Abcdef();`
 				), `config: ${config}`);
 		});
 	});
 
-	test('Should insert backets when completing dot properties with spaces in name', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
+	test('Should insert bAckets when completing dot properties with spAces in nAme', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
 				'const x = { "hello world": 1 };',
 				'x.$0'
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
 					'const x = { "hello world": 1 };',
 					'x["hello world"]'
@@ -114,159 +114,159 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Should allow commit characters for backet completions', async () => {
-		for (const { char, insert } of [
-			{ char: '.', insert: '.' },
-			{ char: '(', insert: '()' },
+	test('Should Allow commit chArActers for bAcket completions', Async () => {
+		for (const { chAr, insert } of [
+			{ chAr: '.', insert: '.' },
+			{ chAr: '(', insert: '()' },
 		]) {
-			const editor = await createTestEditor(testDocumentUri,
+			const editor = AwAit creAteTestEditor(testDocumentUri,
 				'const x = { "hello world2": 1 };',
 				'x.$0'
 			);
 
-			await typeCommitCharacter(testDocumentUri, char, _disposables);
+			AwAit typeCommitChArActer(testDocumentUri, chAr, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
 					'const x = { "hello world2": 1 };',
 					`x["hello world2"]${insert}`
 				));
 
-			disposeAll(_disposables);
-			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			disposeAll(_disposAbles);
+			AwAit vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 		}
 	});
 
-	test('Should not prioritize bracket accessor completions. #63100', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			// 'a' should be first entry in completion list
-			const editor = await createTestEditor(testDocumentUri,
-				'const x = { "z-z": 1, a: 1 };',
+	test('Should not prioritize brAcket Accessor completions. #63100', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			// 'A' should be first entry in completion list
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				'const x = { "z-z": 1, A: 1 };',
 				'x.$0'
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					'const x = { "z-z": 1, a: 1 };',
-					'x.a'
+					'const x = { "z-z": 1, A: 1 };',
+					'x.A'
 				),
 				`config: ${config}`);
 		});
 	});
 
-	test('Accepting a string completion should replace the entire string. #53962', async () => {
-		const editor = await createTestEditor(testDocumentUri,
-			'interface TFunction {',
-			`  (_: 'abc.abc2', __ ?: {}): string;`,
-			`  (_: 'abc.abc', __?: {}): string;`,
+	test('Accepting A string completion should replAce the entire string. #53962', Async () => {
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			'interfAce TFunction {',
+			`  (_: 'Abc.Abc2', __ ?: {}): string;`,
+			`  (_: 'Abc.Abc', __?: {}): string;`,
 			`}`,
-			'const f: TFunction = (() => { }) as any;',
-			`f('abc.abc$0')`
+			'const f: TFunction = (() => { }) As Any;',
+			`f('Abc.Abc$0')`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				'interface TFunction {',
-				`  (_: 'abc.abc2', __ ?: {}): string;`,
-				`  (_: 'abc.abc', __?: {}): string;`,
+				'interfAce TFunction {',
+				`  (_: 'Abc.Abc2', __ ?: {}): string;`,
+				`  (_: 'Abc.Abc', __?: {}): string;`,
 				`}`,
-				'const f: TFunction = (() => { }) as any;',
-				`f('abc.abc')`
+				'const f: TFunction = (() => { }) As Any;',
+				`f('Abc.Abc')`
 			));
 	});
 
-	test('completeFunctionCalls should complete function parameters when at end of word', async () => {
-		await updateConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCalls]: true });
+	test('completeFunctionCAlls should complete function pArAmeters when At end of word', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCAlls]: true });
 
 		// Complete with-in word
-		const editor = await createTestEditor(testDocumentUri,
-			`function abcdef(x, y, z) { }`,
-			`abcdef$0`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`function Abcdef(x, y, z) { }`,
+			`Abcdef$0`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`function abcdef(x, y, z) { }`,
-				`abcdef(x, y, z)`
+				`function Abcdef(x, y, z) { }`,
+				`Abcdef(x, y, z)`
 			));
 	});
 
-	test.skip('completeFunctionCalls should complete function parameters when within word', async () => {
-		await updateConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCalls]: true });
+	test.skip('completeFunctionCAlls should complete function pArAmeters when within word', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCAlls]: true });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`function abcdef(x, y, z) { }`,
-			`abcd$0ef`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`function Abcdef(x, y, z) { }`,
+			`Abcd$0ef`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`function abcdef(x, y, z) { }`,
-				`abcdef(x, y, z)`
+				`function Abcdef(x, y, z) { }`,
+				`Abcdef(x, y, z)`
 			));
 	});
 
-	test('completeFunctionCalls should not complete function parameters at end of word if we are already in something that looks like a function call, #18131', async () => {
-		await updateConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCalls]: true });
+	test('completeFunctionCAlls should not complete function pArAmeters At end of word if we Are AlreAdy in something thAt looks like A function cAll, #18131', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCAlls]: true });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`function abcdef(x, y, z) { }`,
-			`abcdef$0(1, 2, 3)`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`function Abcdef(x, y, z) { }`,
+			`Abcdef$0(1, 2, 3)`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`function abcdef(x, y, z) { }`,
-				`abcdef(1, 2, 3)`
+				`function Abcdef(x, y, z) { }`,
+				`Abcdef(1, 2, 3)`
 			));
 	});
 
-	test.skip('completeFunctionCalls should not complete function parameters within word if we are already in something that looks like a function call, #18131', async () => {
-		await updateConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCalls]: true });
+	test.skip('completeFunctionCAlls should not complete function pArAmeters within word if we Are AlreAdy in something thAt looks like A function cAll, #18131', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.typescriptCompleteFunctionCAlls]: true });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`function abcdef(x, y, z) { }`,
-			`abcd$0ef(1, 2, 3)`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`function Abcdef(x, y, z) { }`,
+			`Abcd$0ef(1, 2, 3)`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`function abcdef(x, y, z) { }`,
-				`abcdef(1, 2, 3)`
+				`function Abcdef(x, y, z) { }`,
+				`Abcdef(1, 2, 3)`
 			));
 	});
 
-	test('should not de-prioritize `this.member` suggestion, #74164', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
-				`  private detail = '';`,
+	test('should not de-prioritize `this.member` suggestion, #74164', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
+				`  privAte detAil = '';`,
 				`  foo() {`,
 				`    det$0`,
 				`  }`,
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
-					`  private detail = '';`,
+					`clAss A {`,
+					`  privAte detAil = '';`,
 					`  foo() {`,
-					`    this.detail`,
+					`    this.detAil`,
 					`  }`,
 					`}`,
 				),
@@ -274,10 +274,10 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Member completions for string property name should insert `this.` and use brackets', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
+	test('Member completions for string property nAme should insert `this.` And use brAckets', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
 				`  ['xyz 123'] = 1`,
 				`  foo() {`,
 				`    xyz$0`,
@@ -285,11 +285,11 @@ suite('TypeScript Completions', () => {
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
+					`clAss A {`,
 					`  ['xyz 123'] = 1`,
 					`  foo() {`,
 					`    this["xyz 123"]`,
@@ -300,10 +300,10 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Member completions for string property name already using `this.` should add brackets', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
+	test('Member completions for string property nAme AlreAdy using `this.` should Add brAckets', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
 				`  ['xyz 123'] = 1`,
 				`  foo() {`,
 				`    this.xyz$0`,
@@ -311,11 +311,11 @@ suite('TypeScript Completions', () => {
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
+					`clAss A {`,
 					`  ['xyz 123'] = 1`,
 					`  foo() {`,
 					`    this["xyz 123"]`,
@@ -326,129 +326,129 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Accepting a completion in word using `insert` mode should insert', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
+	test('Accepting A completion in word using `insert` mode should insert', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`const abc = 123;`,
-			`ab$0c`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`const Abc = 123;`,
+			`Ab$0c`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`const abc = 123;`,
-				`abcc`
+				`const Abc = 123;`,
+				`Abcc`
 			));
 	});
 
-	test('Accepting a completion in word using `replace` mode should replace', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'replace' });
+	test('Accepting A completion in word using `replAce` mode should replAce', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'replAce' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`const abc = 123;`,
-			`ab$0c`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`const Abc = 123;`,
+			`Ab$0c`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`const abc = 123;`,
-				`abc`
+				`const Abc = 123;`,
+				`Abc`
 			));
 	});
 
-	test('Accepting a member completion in word using `insert` mode add `this.` and insert', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
+	test('Accepting A member completion in word using `insert` mode Add `this.` And insert', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`class Foo {`,
-			`  abc = 1;`,
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`clAss Foo {`,
+			`  Abc = 1;`,
 			`  foo() {`,
-			`    ab$0c`,
+			`    Ab$0c`,
 			`  }`,
 			`}`,
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`class Foo {`,
-				`  abc = 1;`,
+				`clAss Foo {`,
+				`  Abc = 1;`,
 				`  foo() {`,
-				`    this.abcc`,
+				`    this.Abcc`,
 				`  }`,
 				`}`,
 			));
 	});
 
-	test('Accepting a member completion in word using `replace` mode should add `this.` and replace', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'replace' });
+	test('Accepting A member completion in word using `replAce` mode should Add `this.` And replAce', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'replAce' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`class Foo {`,
-			`  abc = 1;`,
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`clAss Foo {`,
+			`  Abc = 1;`,
 			`  foo() {`,
-			`    ab$0c`,
+			`    Ab$0c`,
 			`  }`,
 			`}`,
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`class Foo {`,
-				`  abc = 1;`,
+				`clAss Foo {`,
+				`  Abc = 1;`,
 				`  foo() {`,
-				`    this.abc`,
+				`    this.Abc`,
 				`  }`,
 				`}`,
 			));
 	});
 
-	test('Accepting string completion inside string using `insert` mode should insert', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
+	test('Accepting string completion inside string using `insert` mode should insert', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`const abc = { 'xy z': 123 }`,
-			`abc["x$0y w"]`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`const Abc = { 'xy z': 123 }`,
+			`Abc["x$0y w"]`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`const abc = { 'xy z': 123 }`,
-				`abc["xy zy w"]`
+				`const Abc = { 'xy z': 123 }`,
+				`Abc["xy zy w"]`
 			));
 	});
 
-	// Waiting on https://github.com/microsoft/TypeScript/issues/35602
-	test.skip('Accepting string completion inside string using insert mode should insert', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'replace' });
+	// WAiting on https://github.com/microsoft/TypeScript/issues/35602
+	test.skip('Accepting string completion inside string using insert mode should insert', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'replAce' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`const abc = { 'xy z': 123 }`,
-			`abc["x$0y w"]`
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`const Abc = { 'xy z': 123 }`,
+			`Abc["x$0y w"]`
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`const abc = { 'xy z': 123 }`,
-				`abc["xy w"]`
+				`const Abc = { 'xy z': 123 }`,
+				`Abc["xy w"]`
 			));
 	});
 
-	test('Private field completions on `this.#` should work', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
+	test('PrivAte field completions on `this.#` should work', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
 				`  #xyz = 1;`,
 				`  foo() {`,
 				`    this.#$0`,
@@ -456,11 +456,11 @@ suite('TypeScript Completions', () => {
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
+					`clAss A {`,
 					`  #xyz = 1;`,
 					`  foo() {`,
 					`    this.#xyz`,
@@ -471,10 +471,10 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Private field completions on `#` should insert `this.`', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
+	test('PrivAte field completions on `#` should insert `this.`', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
 				`  #xyz = 1;`,
 				`  foo() {`,
 				`    #$0`,
@@ -482,11 +482,11 @@ suite('TypeScript Completions', () => {
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
+					`clAss A {`,
 					`  #xyz = 1;`,
 					`  foo() {`,
 					`    this.#xyz`,
@@ -497,10 +497,10 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Private field completions should not require strict prefix match (#89556)', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
+	test('PrivAte field completions should not require strict prefix mAtch (#89556)', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
 				`  #xyz = 1;`,
 				`  foo() {`,
 				`    this.xyz$0`,
@@ -508,11 +508,11 @@ suite('TypeScript Completions', () => {
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
+					`clAss A {`,
 					`  #xyz = 1;`,
 					`  foo() {`,
 					`    this.#xyz`,
@@ -523,10 +523,10 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Private field completions without `this.` should not require strict prefix match (#89556)', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
+	test('PrivAte field completions without `this.` should not require strict prefix mAtch (#89556)', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
 				`  #xyz = 1;`,
 				`  foo() {`,
 				`    xyz$0`,
@@ -534,11 +534,11 @@ suite('TypeScript Completions', () => {
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
+					`clAss A {`,
 					`  #xyz = 1;`,
 					`  foo() {`,
 					`    this.#xyz`,
@@ -549,75 +549,75 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Accepting a completion for async property in `insert` mode should insert and add await', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
+	test('Accepting A completion for Async property in `insert` mode should insert And Add AwAit', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'insert' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`class A {`,
-			`  xyz = Promise.resolve({ 'abc': 1 });`,
-			`  async foo() {`,
-			`    this.xyz.ab$0c`,
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`clAss A {`,
+			`  xyz = Promise.resolve({ 'Abc': 1 });`,
+			`  Async foo() {`,
+			`    this.xyz.Ab$0c`,
 			`  }`,
 			`}`,
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`class A {`,
-				`  xyz = Promise.resolve({ 'abc': 1 });`,
-				`  async foo() {`,
-				`    (await this.xyz).abcc`,
+				`clAss A {`,
+				`  xyz = Promise.resolve({ 'Abc': 1 });`,
+				`  Async foo() {`,
+				`    (AwAit this.xyz).Abcc`,
 				`  }`,
 				`}`,
 			));
 	});
 
-	test('Accepting a completion for async property in `replace` mode should replace and add await', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'replace' });
+	test('Accepting A completion for Async property in `replAce` mode should replAce And Add AwAit', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'replAce' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`class A {`,
-			`  xyz = Promise.resolve({ 'abc': 1 });`,
-			`  async foo() {`,
-			`    this.xyz.ab$0c`,
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`clAss A {`,
+			`  xyz = Promise.resolve({ 'Abc': 1 });`,
+			`  Async foo() {`,
+			`    this.xyz.Ab$0c`,
 			`  }`,
 			`}`,
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`class A {`,
-				`  xyz = Promise.resolve({ 'abc': 1 });`,
-				`  async foo() {`,
-				`    (await this.xyz).abc`,
+				`clAss A {`,
+				`  xyz = Promise.resolve({ 'Abc': 1 });`,
+				`  Async foo() {`,
+				`    (AwAit this.xyz).Abc`,
 				`  }`,
 				`}`,
 			));
 	});
 
-	test.skip('Accepting a completion for async string property should add await plus brackets', async () => {
-		await enumerateConfig(testDocumentUri, Config.insertMode, insertModes, async config => {
-			const editor = await createTestEditor(testDocumentUri,
-				`class A {`,
-				`  xyz = Promise.resolve({ 'ab c': 1 });`,
-				`  async foo() {`,
-				`    this.xyz.ab$0`,
+	test.skip('Accepting A completion for Async string property should Add AwAit plus brAckets', Async () => {
+		AwAit enumerAteConfig(testDocumentUri, Config.insertMode, insertModes, Async config => {
+			const editor = AwAit creAteTestEditor(testDocumentUri,
+				`clAss A {`,
+				`  xyz = Promise.resolve({ 'Ab c': 1 });`,
+				`  Async foo() {`,
+				`    this.xyz.Ab$0`,
 				`  }`,
 				`}`,
 			);
 
-			await acceptFirstSuggestion(testDocumentUri, _disposables);
+			AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-			assertEditorContents(editor,
+			AssertEditorContents(editor,
 				joinLines(
-					`class A {`,
-					`  xyz = Promise.resolve({ 'abc': 1 });`,
-					`  async foo() {`,
-					`    (await this.xyz)["ab c"]`,
+					`clAss A {`,
+					`  xyz = Promise.resolve({ 'Abc': 1 });`,
+					`  Async foo() {`,
+					`    (AwAit this.xyz)["Ab c"]`,
 					`  }`,
 					`}`,
 				),
@@ -625,26 +625,26 @@ suite('TypeScript Completions', () => {
 		});
 	});
 
-	test('Replace should work after this. (#91105)', async () => {
-		await updateConfig(testDocumentUri, { [Config.insertMode]: 'replace' });
+	test('ReplAce should work After this. (#91105)', Async () => {
+		AwAit updAteConfig(testDocumentUri, { [Config.insertMode]: 'replAce' });
 
-		const editor = await createTestEditor(testDocumentUri,
-			`class A {`,
-			`  abc = 1`,
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`clAss A {`,
+			`  Abc = 1`,
 			`  foo() {`,
-			`    this.$0abc`,
+			`    this.$0Abc`,
 			`  }`,
 			`}`,
 		);
 
-		await acceptFirstSuggestion(testDocumentUri, _disposables);
+		AwAit AcceptFirstSuggestion(testDocumentUri, _disposAbles);
 
-		assertEditorContents(editor,
+		AssertEditorContents(editor,
 			joinLines(
-				`class A {`,
-				`  abc = 1`,
+				`clAss A {`,
+				`  Abc = 1`,
 				`  foo() {`,
-				`    this.abc`,
+				`    this.Abc`,
 				`  }`,
 				`}`,
 			));

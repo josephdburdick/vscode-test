@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { localize } from 'vs/nls';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { InstallLocalExtensionsInRemoteAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { locAlize } from 'vs/nls';
+import { DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtensionMAnAgementServerService } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { InstAllLocAlExtensionsInRemoteAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
 
-export class RemoteExtensionsInstaller extends Disposable implements IWorkbenchContribution {
+export clAss RemoteExtensionsInstAller extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IExtensionManagementServerService private readonly extensionManagementServerService: IExtensionManagementServerService,
-		@ILabelService labelService: ILabelService,
-		@IInstantiationService instantiationService: IInstantiationService
+		@IExtensionMAnAgementServerService privAte reAdonly extensionMAnAgementServerService: IExtensionMAnAgementServerService,
+		@ILAbelService lAbelService: ILAbelService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
-		if (this.extensionManagementServerService.localExtensionManagementServer && this.extensionManagementServerService.remoteExtensionManagementServer) {
-			const installLocalExtensionsInRemoteAction = instantiationService.createInstance(InstallLocalExtensionsInRemoteAction);
-			CommandsRegistry.registerCommand('workbench.extensions.installLocalExtensions', () => installLocalExtensionsInRemoteAction.run());
-			let disposable = Disposable.None;
-			const appendMenuItem = () => {
-				disposable.dispose();
-				disposable = MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-					command: {
-						id: 'workbench.extensions.installLocalExtensions',
-						category: localize({ key: 'remote', comment: ['Remote as in remote machine'] }, "Remote"),
-						title: installLocalExtensionsInRemoteAction.label
+		if (this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+			const instAllLocAlExtensionsInRemoteAction = instAntiAtionService.creAteInstAnce(InstAllLocAlExtensionsInRemoteAction);
+			CommAndsRegistry.registerCommAnd('workbench.extensions.instAllLocAlExtensions', () => instAllLocAlExtensionsInRemoteAction.run());
+			let disposAble = DisposAble.None;
+			const AppendMenuItem = () => {
+				disposAble.dispose();
+				disposAble = MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+					commAnd: {
+						id: 'workbench.extensions.instAllLocAlExtensions',
+						cAtegory: locAlize({ key: 'remote', comment: ['Remote As in remote mAchine'] }, "Remote"),
+						title: instAllLocAlExtensionsInRemoteAction.lAbel
 					}
 				});
 			};
-			appendMenuItem();
-			this._register(labelService.onDidChangeFormatters(e => appendMenuItem()));
-			this._register(toDisposable(() => disposable.dispose()));
+			AppendMenuItem();
+			this._register(lAbelService.onDidChAngeFormAtters(e => AppendMenuItem()));
+			this._register(toDisposAble(() => disposAble.dispose()));
 		}
 	}
 

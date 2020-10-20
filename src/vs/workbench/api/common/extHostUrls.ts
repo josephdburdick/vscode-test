@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type * as vscode from 'vscode';
-import { MainContext, IMainContext, ExtHostUrlsShape, MainThreadUrlsShape } from './extHost.protocol';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { toDisposable } from 'vs/base/common/lifecycle';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import type * As vscode from 'vscode';
+import { MAinContext, IMAinContext, ExtHostUrlsShApe, MAinThreAdUrlsShApe } from './extHost.protocol';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { toDisposAble } from 'vs/bAse/common/lifecycle';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 
-export class ExtHostUrls implements ExtHostUrlsShape {
+export clAss ExtHostUrls implements ExtHostUrlsShApe {
 
-	private static HandlePool = 0;
-	private readonly _proxy: MainThreadUrlsShape;
+	privAte stAtic HAndlePool = 0;
+	privAte reAdonly _proxy: MAinThreAdUrlsShApe;
 
-	private handles = new Set<string>();
-	private handlers = new Map<number, vscode.UriHandler>();
+	privAte hAndles = new Set<string>();
+	privAte hAndlers = new MAp<number, vscode.UriHAndler>();
 
 	constructor(
-		mainContext: IMainContext
+		mAinContext: IMAinContext
 	) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadUrls);
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdUrls);
 	}
 
-	registerUriHandler(extensionId: ExtensionIdentifier, handler: vscode.UriHandler): vscode.Disposable {
-		if (this.handles.has(ExtensionIdentifier.toKey(extensionId))) {
-			throw new Error(`Protocol handler already registered for extension ${extensionId}`);
+	registerUriHAndler(extensionId: ExtensionIdentifier, hAndler: vscode.UriHAndler): vscode.DisposAble {
+		if (this.hAndles.hAs(ExtensionIdentifier.toKey(extensionId))) {
+			throw new Error(`Protocol hAndler AlreAdy registered for extension ${extensionId}`);
 		}
 
-		const handle = ExtHostUrls.HandlePool++;
-		this.handles.add(ExtensionIdentifier.toKey(extensionId));
-		this.handlers.set(handle, handler);
-		this._proxy.$registerUriHandler(handle, extensionId);
+		const hAndle = ExtHostUrls.HAndlePool++;
+		this.hAndles.Add(ExtensionIdentifier.toKey(extensionId));
+		this.hAndlers.set(hAndle, hAndler);
+		this._proxy.$registerUriHAndler(hAndle, extensionId);
 
-		return toDisposable(() => {
-			this.handles.delete(ExtensionIdentifier.toKey(extensionId));
-			this.handlers.delete(handle);
-			this._proxy.$unregisterUriHandler(handle);
+		return toDisposAble(() => {
+			this.hAndles.delete(ExtensionIdentifier.toKey(extensionId));
+			this.hAndlers.delete(hAndle);
+			this._proxy.$unregisterUriHAndler(hAndle);
 		});
 	}
 
-	$handleExternalUri(handle: number, uri: UriComponents): Promise<void> {
-		const handler = this.handlers.get(handle);
+	$hAndleExternAlUri(hAndle: number, uri: UriComponents): Promise<void> {
+		const hAndler = this.hAndlers.get(hAndle);
 
-		if (!handler) {
+		if (!hAndler) {
 			return Promise.resolve(undefined);
 		}
 		try {
-			handler.handleUri(URI.revive(uri));
-		} catch (err) {
+			hAndler.hAndleUri(URI.revive(uri));
+		} cAtch (err) {
 			onUnexpectedError(err);
 		}
 
 		return Promise.resolve(undefined);
 	}
 
-	async createAppUri(uri: URI): Promise<vscode.Uri> {
-		return URI.revive(await this._proxy.$createAppUri(uri));
+	Async creAteAppUri(uri: URI): Promise<vscode.Uri> {
+		return URI.revive(AwAit this._proxy.$creAteAppUri(uri));
 	}
 }

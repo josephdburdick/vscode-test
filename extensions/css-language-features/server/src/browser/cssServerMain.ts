@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createConnection, BrowserMessageReader, BrowserMessageWriter } from 'vscode-languageserver/browser';
-import { startServer } from '../cssServer';
+import { creAteConnection, BrowserMessAgeReAder, BrowserMessAgeWriter } from 'vscode-lAnguAgeserver/browser';
+import { stArtServer } from '../cssServer';
 
-declare let self: any;
+declAre let self: Any;
 
-const messageReader = new BrowserMessageReader(self);
-const messageWriter = new BrowserMessageWriter(self);
+const messAgeReAder = new BrowserMessAgeReAder(self);
+const messAgeWriter = new BrowserMessAgeWriter(self);
 
-const connection = createConnection(messageReader, messageWriter);
+const connection = creAteConnection(messAgeReAder, messAgeWriter);
 
-startServer(connection, {});
+stArtServer(connection, {});

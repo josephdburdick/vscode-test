@@ -1,202 +1,202 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import 'mocha';
-import * as assert from 'assert';
-import * as path from 'path';
+import 'mochA';
+import * As Assert from 'Assert';
+import * As pAth from 'pAth';
 import { URI } from 'vscode-uri';
-import { TextDocument, CompletionList, TextEdit } from 'vscode-languageserver-types';
-import { WorkspaceFolder } from 'vscode-languageserver-protocol';
-import { getCSSLanguageService, LanguageServiceOptions, getSCSSLanguageService } from 'vscode-css-languageservice';
+import { TextDocument, CompletionList, TextEdit } from 'vscode-lAnguAgeserver-types';
+import { WorkspAceFolder } from 'vscode-lAnguAgeserver-protocol';
+import { getCSSLAnguAgeService, LAnguAgeServiceOptions, getSCSSLAnguAgeService } from 'vscode-css-lAnguAgeservice';
 import { getNodeFSRequestService } from '../node/nodeFs';
 import { getDocumentContext } from '../utils/documentContext';
 
-export interface ItemDescription {
-	label: string;
+export interfAce ItemDescription {
+	lAbel: string;
 	resultText?: string;
 }
 
 suite('Completions', () => {
 
-	let assertCompletion = function (completions: CompletionList, expected: ItemDescription, document: TextDocument, _offset: number) {
-		let matches = completions.items.filter(completion => {
-			return completion.label === expected.label;
+	let AssertCompletion = function (completions: CompletionList, expected: ItemDescription, document: TextDocument, _offset: number) {
+		let mAtches = completions.items.filter(completion => {
+			return completion.lAbel === expected.lAbel;
 		});
 
-		assert.equal(matches.length, 1, `${expected.label} should only existing once: Actual: ${completions.items.map(c => c.label).join(', ')}`);
-		let match = matches[0];
-		if (expected.resultText && TextEdit.is(match.textEdit)) {
-			assert.equal(TextDocument.applyEdits(document, [match.textEdit]), expected.resultText);
+		Assert.equAl(mAtches.length, 1, `${expected.lAbel} should only existing once: ActuAl: ${completions.items.mAp(c => c.lAbel).join(', ')}`);
+		let mAtch = mAtches[0];
+		if (expected.resultText && TextEdit.is(mAtch.textEdit)) {
+			Assert.equAl(TextDocument.ApplyEdits(document, [mAtch.textEdit]), expected.resultText);
 		}
 	};
 
-	async function assertCompletions(value: string, expected: { count?: number, items?: ItemDescription[] }, testUri: string, workspaceFolders?: WorkspaceFolder[], lang: string = 'css'): Promise<any> {
-		const offset = value.indexOf('|');
-		value = value.substr(0, offset) + value.substr(offset + 1);
+	Async function AssertCompletions(vAlue: string, expected: { count?: number, items?: ItemDescription[] }, testUri: string, workspAceFolders?: WorkspAceFolder[], lAng: string = 'css'): Promise<Any> {
+		const offset = vAlue.indexOf('|');
+		vAlue = vAlue.substr(0, offset) + vAlue.substr(offset + 1);
 
-		const document = TextDocument.create(testUri, lang, 0, value);
+		const document = TextDocument.creAte(testUri, lAng, 0, vAlue);
 		const position = document.positionAt(offset);
 
-		if (!workspaceFolders) {
-			workspaceFolders = [{ name: 'x', uri: testUri.substr(0, testUri.lastIndexOf('/')) }];
+		if (!workspAceFolders) {
+			workspAceFolders = [{ nAme: 'x', uri: testUri.substr(0, testUri.lAstIndexOf('/')) }];
 		}
 
-		const lsOptions: LanguageServiceOptions = { fileSystemProvider: getNodeFSRequestService() };
-		const cssLanguageService = lang === 'scss' ? getSCSSLanguageService(lsOptions) : getCSSLanguageService(lsOptions);
+		const lsOptions: LAnguAgeServiceOptions = { fileSystemProvider: getNodeFSRequestService() };
+		const cssLAnguAgeService = lAng === 'scss' ? getSCSSLAnguAgeService(lsOptions) : getCSSLAnguAgeService(lsOptions);
 
-		const context = getDocumentContext(testUri, workspaceFolders);
-		const stylesheet = cssLanguageService.parseStylesheet(document);
-		let list = await cssLanguageService.doComplete2(document, position, stylesheet, context);
+		const context = getDocumentContext(testUri, workspAceFolders);
+		const stylesheet = cssLAnguAgeService.pArseStylesheet(document);
+		let list = AwAit cssLAnguAgeService.doComplete2(document, position, stylesheet, context);
 
 		if (expected.count) {
-			assert.equal(list.items.length, expected.count);
+			Assert.equAl(list.items.length, expected.count);
 		}
 		if (expected.items) {
 			for (let item of expected.items) {
-				assertCompletion(list, item, document, offset);
+				AssertCompletion(list, item, document, offset);
 			}
 		}
 	}
 
-	test('CSS url() Path completion', async function () {
-		let testUri = URI.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/about/about.css')).toString();
-		let folders = [{ name: 'x', uri: URI.file(path.resolve(__dirname, '../../test')).toString() }];
+	test('CSS url() PAth completion', Async function () {
+		let testUri = URI.file(pAth.resolve(__dirnAme, '../../test/pAthCompletionFixtures/About/About.css')).toString();
+		let folders = [{ nAme: 'x', uri: URI.file(pAth.resolve(__dirnAme, '../../test')).toString() }];
 
-		await assertCompletions('html { background-image: url("./|")', {
+		AwAit AssertCompletions('html { bAckground-imAge: url("./|")', {
 			items: [
-				{ label: 'about.html', resultText: 'html { background-image: url("./about.html")' }
+				{ lAbel: 'About.html', resultText: 'html { bAckground-imAge: url("./About.html")' }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url('../|')`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url('../|')`, {
 			items: [
-				{ label: 'about/', resultText: `html { background-image: url('../about/')` },
-				{ label: 'index.html', resultText: `html { background-image: url('../index.html')` },
-				{ label: 'src/', resultText: `html { background-image: url('../src/')` }
+				{ lAbel: 'About/', resultText: `html { bAckground-imAge: url('../About/')` },
+				{ lAbel: 'index.html', resultText: `html { bAckground-imAge: url('../index.html')` },
+				{ lAbel: 'src/', resultText: `html { bAckground-imAge: url('../src/')` }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url('../src/a|')`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url('../src/A|')`, {
 			items: [
-				{ label: 'feature.js', resultText: `html { background-image: url('../src/feature.js')` },
-				{ label: 'data/', resultText: `html { background-image: url('../src/data/')` },
-				{ label: 'test.js', resultText: `html { background-image: url('../src/test.js')` }
+				{ lAbel: 'feAture.js', resultText: `html { bAckground-imAge: url('../src/feAture.js')` },
+				{ lAbel: 'dAtA/', resultText: `html { bAckground-imAge: url('../src/dAtA/')` },
+				{ lAbel: 'test.js', resultText: `html { bAckground-imAge: url('../src/test.js')` }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url('../src/data/f|.asar')`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url('../src/dAtA/f|.AsAr')`, {
 			items: [
-				{ label: 'foo.asar', resultText: `html { background-image: url('../src/data/foo.asar')` }
+				{ lAbel: 'foo.AsAr', resultText: `html { bAckground-imAge: url('../src/dAtA/foo.AsAr')` }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url('|')`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url('|')`, {
 			items: [
-				{ label: 'about.html', resultText: `html { background-image: url('about.html')` },
+				{ lAbel: 'About.html', resultText: `html { bAckground-imAge: url('About.html')` },
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url('/|')`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url('/|')`, {
 			items: [
-				{ label: 'pathCompletionFixtures/', resultText: `html { background-image: url('/pathCompletionFixtures/')` }
+				{ lAbel: 'pAthCompletionFixtures/', resultText: `html { bAckground-imAge: url('/pAthCompletionFixtures/')` }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url('/pathCompletionFixtures/|')`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url('/pAthCompletionFixtures/|')`, {
 			items: [
-				{ label: 'about/', resultText: `html { background-image: url('/pathCompletionFixtures/about/')` },
-				{ label: 'index.html', resultText: `html { background-image: url('/pathCompletionFixtures/index.html')` },
-				{ label: 'src/', resultText: `html { background-image: url('/pathCompletionFixtures/src/')` }
+				{ lAbel: 'About/', resultText: `html { bAckground-imAge: url('/pAthCompletionFixtures/About/')` },
+				{ lAbel: 'index.html', resultText: `html { bAckground-imAge: url('/pAthCompletionFixtures/index.html')` },
+				{ lAbel: 'src/', resultText: `html { bAckground-imAge: url('/pAthCompletionFixtures/src/')` }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`html { background-image: url("/|")`, {
+		AwAit AssertCompletions(`html { bAckground-imAge: url("/|")`, {
 			items: [
-				{ label: 'pathCompletionFixtures/', resultText: `html { background-image: url("/pathCompletionFixtures/")` }
-			]
-		}, testUri, folders);
-	});
-
-	test('CSS url() Path Completion - Unquoted url', async function () {
-		let testUri = URI.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/about/about.css')).toString();
-		let folders = [{ name: 'x', uri: URI.file(path.resolve(__dirname, '../../test')).toString() }];
-
-		await assertCompletions('html { background-image: url(./|)', {
-			items: [
-				{ label: 'about.html', resultText: 'html { background-image: url(./about.html)' }
-			]
-		}, testUri, folders);
-
-		await assertCompletions('html { background-image: url(./a|)', {
-			items: [
-				{ label: 'about.html', resultText: 'html { background-image: url(./about.html)' }
-			]
-		}, testUri, folders);
-
-		await assertCompletions('html { background-image: url(../|src/)', {
-			items: [
-				{ label: 'about/', resultText: 'html { background-image: url(../about/)' }
-			]
-		}, testUri, folders);
-
-		await assertCompletions('html { background-image: url(../s|rc/)', {
-			items: [
-				{ label: 'about/', resultText: 'html { background-image: url(../about/)' }
+				{ lAbel: 'pAthCompletionFixtures/', resultText: `html { bAckground-imAge: url("/pAthCompletionFixtures/")` }
 			]
 		}, testUri, folders);
 	});
 
-	test('CSS @import Path completion', async function () {
-		let testUri = URI.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/about/about.css')).toString();
-		let folders = [{ name: 'x', uri: URI.file(path.resolve(__dirname, '../../test')).toString() }];
+	test('CSS url() PAth Completion - Unquoted url', Async function () {
+		let testUri = URI.file(pAth.resolve(__dirnAme, '../../test/pAthCompletionFixtures/About/About.css')).toString();
+		let folders = [{ nAme: 'x', uri: URI.file(pAth.resolve(__dirnAme, '../../test')).toString() }];
 
-		await assertCompletions(`@import './|'`, {
+		AwAit AssertCompletions('html { bAckground-imAge: url(./|)', {
 			items: [
-				{ label: 'about.html', resultText: `@import './about.html'` },
+				{ lAbel: 'About.html', resultText: 'html { bAckground-imAge: url(./About.html)' }
 			]
 		}, testUri, folders);
 
-		await assertCompletions(`@import '../|'`, {
+		AwAit AssertCompletions('html { bAckground-imAge: url(./A|)', {
 			items: [
-				{ label: 'about/', resultText: `@import '../about/'` },
-				{ label: 'scss/', resultText: `@import '../scss/'` },
-				{ label: 'index.html', resultText: `@import '../index.html'` },
-				{ label: 'src/', resultText: `@import '../src/'` }
+				{ lAbel: 'About.html', resultText: 'html { bAckground-imAge: url(./About.html)' }
+			]
+		}, testUri, folders);
+
+		AwAit AssertCompletions('html { bAckground-imAge: url(../|src/)', {
+			items: [
+				{ lAbel: 'About/', resultText: 'html { bAckground-imAge: url(../About/)' }
+			]
+		}, testUri, folders);
+
+		AwAit AssertCompletions('html { bAckground-imAge: url(../s|rc/)', {
+			items: [
+				{ lAbel: 'About/', resultText: 'html { bAckground-imAge: url(../About/)' }
+			]
+		}, testUri, folders);
+	});
+
+	test('CSS @import PAth completion', Async function () {
+		let testUri = URI.file(pAth.resolve(__dirnAme, '../../test/pAthCompletionFixtures/About/About.css')).toString();
+		let folders = [{ nAme: 'x', uri: URI.file(pAth.resolve(__dirnAme, '../../test')).toString() }];
+
+		AwAit AssertCompletions(`@import './|'`, {
+			items: [
+				{ lAbel: 'About.html', resultText: `@import './About.html'` },
+			]
+		}, testUri, folders);
+
+		AwAit AssertCompletions(`@import '../|'`, {
+			items: [
+				{ lAbel: 'About/', resultText: `@import '../About/'` },
+				{ lAbel: 'scss/', resultText: `@import '../scss/'` },
+				{ lAbel: 'index.html', resultText: `@import '../index.html'` },
+				{ lAbel: 'src/', resultText: `@import '../src/'` }
 			]
 		}, testUri, folders);
 	});
 
 	/**
-	 * For SCSS, `@import 'foo';` can be used for importing partial file `_foo.scss`
+	 * For SCSS, `@import 'foo';` cAn be used for importing pArtiAl file `_foo.scss`
 	 */
-	test('SCSS @import Path completion', async function () {
-		let testCSSUri = URI.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/about/about.css')).toString();
-		let folders = [{ name: 'x', uri: URI.file(path.resolve(__dirname, '../../test')).toString() }];
+	test('SCSS @import PAth completion', Async function () {
+		let testCSSUri = URI.file(pAth.resolve(__dirnAme, '../../test/pAthCompletionFixtures/About/About.css')).toString();
+		let folders = [{ nAme: 'x', uri: URI.file(pAth.resolve(__dirnAme, '../../test')).toString() }];
 
 		/**
-		 * We are in a CSS file, so no special treatment for SCSS partial files
+		 * We Are in A CSS file, so no speciAl treAtment for SCSS pArtiAl files
 		*/
-		await assertCompletions(`@import '../scss/|'`, {
+		AwAit AssertCompletions(`@import '../scss/|'`, {
 			items: [
-				{ label: 'main.scss', resultText: `@import '../scss/main.scss'` },
-				{ label: '_foo.scss', resultText: `@import '../scss/_foo.scss'` }
+				{ lAbel: 'mAin.scss', resultText: `@import '../scss/mAin.scss'` },
+				{ lAbel: '_foo.scss', resultText: `@import '../scss/_foo.scss'` }
 			]
 		}, testCSSUri, folders);
 
-		let testSCSSUri = URI.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/scss/main.scss')).toString();
-		await assertCompletions(`@import './|'`, {
+		let testSCSSUri = URI.file(pAth.resolve(__dirnAme, '../../test/pAthCompletionFixtures/scss/mAin.scss')).toString();
+		AwAit AssertCompletions(`@import './|'`, {
 			items: [
-				{ label: '_foo.scss', resultText: `@import './foo'` }
+				{ lAbel: '_foo.scss', resultText: `@import './foo'` }
 			]
 		}, testSCSSUri, folders, 'scss');
 	});
 
-	test('Completion should ignore files/folders starting with dot', async function () {
-		let testUri = URI.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/about/about.css')).toString();
-		let folders = [{ name: 'x', uri: URI.file(path.resolve(__dirname, '../../test')).toString() }];
+	test('Completion should ignore files/folders stArting with dot', Async function () {
+		let testUri = URI.file(pAth.resolve(__dirnAme, '../../test/pAthCompletionFixtures/About/About.css')).toString();
+		let folders = [{ nAme: 'x', uri: URI.file(pAth.resolve(__dirnAme, '../../test')).toString() }];
 
-		await assertCompletions('html { background-image: url("../|")', {
+		AwAit AssertCompletions('html { bAckground-imAge: url("../|")', {
 			count: 4
 		}, testUri, folders);
 

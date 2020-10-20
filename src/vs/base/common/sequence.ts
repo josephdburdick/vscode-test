@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface ISplice<T> {
-	readonly start: number;
-	readonly deleteCount: number;
-	readonly toInsert: T[];
+export interfAce ISplice<T> {
+	reAdonly stArt: number;
+	reAdonly deleteCount: number;
+	reAdonly toInsert: T[];
 }
 
-export interface ISpliceable<T> {
-	splice(start: number, deleteCount: number, toInsert: T[]): void;
+export interfAce ISpliceAble<T> {
+	splice(stArt: number, deleteCount: number, toInsert: T[]): void;
 }
 
-export interface ISequence<T> {
-	readonly elements: T[];
-	readonly onDidSplice: Event<ISplice<T>>;
+export interfAce ISequence<T> {
+	reAdonly elements: T[];
+	reAdonly onDidSplice: Event<ISplice<T>>;
 }
 
-export class Sequence<T> implements ISequence<T>, ISpliceable<T> {
+export clAss Sequence<T> implements ISequence<T>, ISpliceAble<T> {
 
-	readonly elements: T[] = [];
+	reAdonly elements: T[] = [];
 
-	private readonly _onDidSplice = new Emitter<ISplice<T>>();
-	readonly onDidSplice: Event<ISplice<T>> = this._onDidSplice.event;
+	privAte reAdonly _onDidSplice = new Emitter<ISplice<T>>();
+	reAdonly onDidSplice: Event<ISplice<T>> = this._onDidSplice.event;
 
-	splice(start: number, deleteCount: number, toInsert: T[] = []): void {
-		this.elements.splice(start, deleteCount, ...toInsert);
-		this._onDidSplice.fire({ start, deleteCount, toInsert });
+	splice(stArt: number, deleteCount: number, toInsert: T[] = []): void {
+		this.elements.splice(stArt, deleteCount, ...toInsert);
+		this._onDidSplice.fire({ stArt, deleteCount, toInsert });
 	}
 }
 
-export class SimpleSequence<T> implements ISequence<T> {
+export clAss SimpleSequence<T> implements ISequence<T> {
 
-	private _elements: T[];
+	privAte _elements: T[];
 	get elements(): T[] { return this._elements; }
 
-	readonly onDidSplice: Event<ISplice<T>>;
-	private disposable: IDisposable;
+	reAdonly onDidSplice: Event<ISplice<T>>;
+	privAte disposAble: IDisposAble;
 
 	constructor(elements: T[], onDidAdd: Event<T>, onDidRemove: Event<T>) {
 		this._elements = [...elements];
-		this.onDidSplice = Event.any(
-			Event.map(onDidAdd, e => ({ start: this.elements.length, deleteCount: 0, toInsert: [e] })),
-			Event.map(Event.filter(Event.map(onDidRemove, e => this.elements.indexOf(e)), i => i > -1), i => ({ start: i, deleteCount: 1, toInsert: [] }))
+		this.onDidSplice = Event.Any(
+			Event.mAp(onDidAdd, e => ({ stArt: this.elements.length, deleteCount: 0, toInsert: [e] })),
+			Event.mAp(Event.filter(Event.mAp(onDidRemove, e => this.elements.indexOf(e)), i => i > -1), i => ({ stArt: i, deleteCount: 1, toInsert: [] }))
 		);
 
-		this.disposable = this.onDidSplice(({ start, deleteCount, toInsert }) => this._elements.splice(start, deleteCount, ...toInsert));
+		this.disposAble = this.onDidSplice(({ stArt, deleteCount, toInsert }) => this._elements.splice(stArt, deleteCount, ...toInsert));
 	}
 
 	dispose(): void {
-		this.disposable.dispose();
+		this.disposAble.dispose();
 	}
 }

@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
-*  Copyright (c) Microsoft Corporation. All rights reserved.
-*  Licensed under the MIT License. See License.txt in the project root for license information.
+*  Copyright (c) Microsoft CorporAtion. All rights reserved.
+*  Licensed under the MIT License. See License.txt in the project root for license informAtion.
 *--------------------------------------------------------------------------------------------*/
 
-declare module '@emmetio/math-expression' {
-	import { BufferStream } from 'EmmetNode';
+declAre module '@emmetio/mAth-expression' {
+	import { BufferStreAm } from 'EmmetNode';
 
-	function index(stream: BufferStream, backward: boolean): number;
+	function index(streAm: BufferStreAm, bAckwArd: booleAn): number;
 
-	export default index;
+	export defAult index;
 }
 

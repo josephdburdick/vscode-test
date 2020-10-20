@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CommonEditorConfiguration, IEnvConfiguration } from 'vs/editor/common/config/commonEditorConfig';
-import { IEditorOptions, EditorFontLigatures } from 'vs/editor/common/config/editorOptions';
-import { BareFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
+import { CommonEditorConfigurAtion, IEnvConfigurAtion } from 'vs/editor/common/config/commonEditorConfig';
+import { IEditorOptions, EditorFontLigAtures } from 'vs/editor/common/config/editorOptions';
+import { BAreFontInfo, FontInfo } from 'vs/editor/common/config/fontInfo';
+import { AccessibilitySupport } from 'vs/plAtform/Accessibility/common/Accessibility';
 
-export class TestConfiguration extends CommonEditorConfiguration {
+export clAss TestConfigurAtion extends CommonEditorConfigurAtion {
 
 	constructor(opts: IEditorOptions) {
-		super(false, opts);
+		super(fAlse, opts);
 		this._recomputeOptions();
 	}
 
-	protected _getEnvConfiguration(): IEnvConfiguration {
+	protected _getEnvConfigurAtion(): IEnvConfigurAtion {
 		return {
-			extraEditorClassName: '',
+			extrAEditorClAssNAme: '',
 			outerWidth: 100,
 			outerHeight: 100,
-			emptySelectionClipboard: true,
-			pixelRatio: 1,
+			emptySelectionClipboArd: true,
+			pixelRAtio: 1,
 			zoomLevel: 0,
-			accessibilitySupport: AccessibilitySupport.Unknown
+			AccessibilitySupport: AccessibilitySupport.Unknown
 		};
 	}
 
-	protected readConfiguration(styling: BareFontInfo): FontInfo {
+	protected reAdConfigurAtion(styling: BAreFontInfo): FontInfo {
 		return new FontInfo({
 			zoomLevel: 0,
-			fontFamily: 'mockFont',
-			fontWeight: 'normal',
+			fontFAmily: 'mockFont',
+			fontWeight: 'normAl',
 			fontSize: 14,
-			fontFeatureSettings: EditorFontLigatures.OFF,
+			fontFeAtureSettings: EditorFontLigAtures.OFF,
 			lineHeight: 19,
-			letterSpacing: 1.5,
-			isMonospace: true,
-			typicalHalfwidthCharacterWidth: 10,
-			typicalFullwidthCharacterWidth: 20,
-			canUseHalfwidthRightwardsArrow: true,
-			spaceWidth: 10,
+			letterSpAcing: 1.5,
+			isMonospAce: true,
+			typicAlHAlfwidthChArActerWidth: 10,
+			typicAlFullwidthChArActerWidth: 20,
+			cAnUseHAlfwidthRightwArdsArrow: true,
+			spAceWidth: 10,
 			middotWidth: 10,
 			wsmiddotWidth: 10,
-			maxDigitWidth: 10,
+			mAxDigitWidth: 10,
 		}, true);
 	}
 }

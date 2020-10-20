@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { Action, IAction } from 'vs/base/common/actions';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { Action, IAction } from 'vs/bAse/common/Actions';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export class ToggleReactionsAction extends Action {
-	static readonly ID = 'toolbar.toggle.pickReactions';
-	private _menuActions: IAction[] = [];
-	private toggleDropdownMenu: () => void;
+export clAss ToggleReActionsAction extends Action {
+	stAtic reAdonly ID = 'toolbAr.toggle.pickReActions';
+	privAte _menuActions: IAction[] = [];
+	privAte toggleDropdownMenu: () => void;
 	constructor(toggleDropdownMenu: () => void, title?: string) {
-		super(ToggleReactionsAction.ID, title || nls.localize('pickReactions', "Pick Reactions..."), 'toggle-reactions', true);
+		super(ToggleReActionsAction.ID, title || nls.locAlize('pickReActions', "Pick ReActions..."), 'toggle-reActions', true);
 		this.toggleDropdownMenu = toggleDropdownMenu;
 	}
-	run(): Promise<any> {
+	run(): Promise<Any> {
 		this.toggleDropdownMenu();
 		return Promise.resolve(true);
 	}
 	get menuActions() {
 		return this._menuActions;
 	}
-	set menuActions(actions: IAction[]) {
-		this._menuActions = actions;
+	set menuActions(Actions: IAction[]) {
+		this._menuActions = Actions;
 	}
 }
-export class ReactionActionViewItem extends ActionViewItem {
-	constructor(action: ReactionAction) {
-		super(null, action, {});
+export clAss ReActionActionViewItem extends ActionViewItem {
+	constructor(Action: ReActionAction) {
+		super(null, Action, {});
 	}
-	updateLabel(): void {
-		if (!this.label) {
+	updAteLAbel(): void {
+		if (!this.lAbel) {
 			return;
 		}
 
-		let action = this.getAction() as ReactionAction;
-		if (action.class) {
-			this.label.classList.add(action.class);
+		let Action = this.getAction() As ReActionAction;
+		if (Action.clAss) {
+			this.lAbel.clAssList.Add(Action.clAss);
 		}
 
-		if (!action.icon) {
-			let reactionLabel = dom.append(this.label, dom.$('span.reaction-label'));
-			reactionLabel.innerText = action.label;
+		if (!Action.icon) {
+			let reActionLAbel = dom.Append(this.lAbel, dom.$('spAn.reAction-lAbel'));
+			reActionLAbel.innerText = Action.lAbel;
 		} else {
-			let reactionIcon = dom.append(this.label, dom.$('.reaction-icon'));
-			reactionIcon.style.display = '';
-			let uri = URI.revive(action.icon);
-			reactionIcon.style.backgroundImage = `url('${uri}')`;
-			reactionIcon.title = action.label;
+			let reActionIcon = dom.Append(this.lAbel, dom.$('.reAction-icon'));
+			reActionIcon.style.displAy = '';
+			let uri = URI.revive(Action.icon);
+			reActionIcon.style.bAckgroundImAge = `url('${uri}')`;
+			reActionIcon.title = Action.lAbel;
 		}
-		if (action.count) {
-			let reactionCount = dom.append(this.label, dom.$('span.reaction-count'));
-			reactionCount.innerText = `${action.count}`;
+		if (Action.count) {
+			let reActionCount = dom.Append(this.lAbel, dom.$('spAn.reAction-count'));
+			reActionCount.innerText = `${Action.count}`;
 		}
 	}
 }
-export class ReactionAction extends Action {
-	static readonly ID = 'toolbar.toggle.reaction';
-	constructor(id: string, label: string = '', cssClass: string = '', enabled: boolean = true, actionCallback?: (event?: any) => Promise<any>, public icon?: UriComponents, public count?: number) {
-		super(ReactionAction.ID, label, cssClass, enabled, actionCallback);
+export clAss ReActionAction extends Action {
+	stAtic reAdonly ID = 'toolbAr.toggle.reAction';
+	constructor(id: string, lAbel: string = '', cssClAss: string = '', enAbled: booleAn = true, ActionCAllbAck?: (event?: Any) => Promise<Any>, public icon?: UriComponents, public count?: number) {
+		super(ReActionAction.ID, lAbel, cssClAss, enAbled, ActionCAllbAck);
 	}
 }

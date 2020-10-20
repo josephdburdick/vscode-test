@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { validateConstraint } from 'vs/base/common/types';
-import { ICommandHandlerDescription } from 'vs/platform/commands/common/commands';
-import * as extHostTypes from 'vs/workbench/api/common/extHostTypes';
-import * as extHostTypeConverter from 'vs/workbench/api/common/extHostTypeConverters';
-import { cloneAndChange } from 'vs/base/common/objects';
-import { MainContext, MainThreadCommandsShape, ExtHostCommandsShape, ObjectIdentifier, ICommandDto } from './extHost.protocol';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import * as modes from 'vs/editor/common/modes';
-import type * as vscode from 'vscode';
-import { ILogService } from 'vs/platform/log/common/log';
-import { revive } from 'vs/base/common/marshalling';
-import { Range } from 'vs/editor/common/core/range';
+import { vAlidAteConstrAint } from 'vs/bAse/common/types';
+import { ICommAndHAndlerDescription } from 'vs/plAtform/commAnds/common/commAnds';
+import * As extHostTypes from 'vs/workbench/Api/common/extHostTypes';
+import * As extHostTypeConverter from 'vs/workbench/Api/common/extHostTypeConverters';
+import { cloneAndChAnge } from 'vs/bAse/common/objects';
+import { MAinContext, MAinThreAdCommAndsShApe, ExtHostCommAndsShApe, ObjectIdentifier, ICommAndDto } from './extHost.protocol';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import * As modes from 'vs/editor/common/modes';
+import type * As vscode from 'vscode';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { revive } from 'vs/bAse/common/mArshAlling';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Position } from 'vs/editor/common/core/position';
-import { URI } from 'vs/base/common/uri';
-import { DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAbleStore, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
 
-interface CommandHandler {
-	callback: Function;
-	thisArg: any;
-	description?: ICommandHandlerDescription;
+interfAce CommAndHAndler {
+	cAllbAck: Function;
+	thisArg: Any;
+	description?: ICommAndHAndlerDescription;
 }
 
-export interface ArgumentProcessor {
-	processArgument(arg: any): any;
+export interfAce ArgumentProcessor {
+	processArgument(Arg: Any): Any;
 }
 
-export class ExtHostCommands implements ExtHostCommandsShape {
+export clAss ExtHostCommAnds implements ExtHostCommAndsShApe {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private readonly _commands = new Map<string, CommandHandler>();
-	private readonly _proxy: MainThreadCommandsShape;
-	private readonly _converter: CommandsConverter;
-	private readonly _logService: ILogService;
-	private readonly _argumentProcessors: ArgumentProcessor[];
+	privAte reAdonly _commAnds = new MAp<string, CommAndHAndler>();
+	privAte reAdonly _proxy: MAinThreAdCommAndsShApe;
+	privAte reAdonly _converter: CommAndsConverter;
+	privAte reAdonly _logService: ILogService;
+	privAte reAdonly _ArgumentProcessors: ArgumentProcessor[];
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
 		@ILogService logService: ILogService
 	) {
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadCommands);
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdCommAnds);
 		this._logService = logService;
-		this._converter = new CommandsConverter(this, logService);
-		this._argumentProcessors = [
+		this._converter = new CommAndsConverter(this, logService);
+		this._ArgumentProcessors = [
 			{
-				processArgument(a) {
+				processArgument(A) {
 					// URI, Regex
-					return revive(a);
+					return revive(A);
 				}
 			},
 			{
-				processArgument(arg) {
-					return cloneAndChange(arg, function (obj) {
-						// Reverse of https://github.com/microsoft/vscode/blob/1f28c5fc681f4c01226460b6d1c7e91b8acb4a5b/src/vs/workbench/api/node/extHostCommands.ts#L112-L127
-						if (Range.isIRange(obj)) {
-							return extHostTypeConverter.Range.to(obj);
+				processArgument(Arg) {
+					return cloneAndChAnge(Arg, function (obj) {
+						// Reverse of https://github.com/microsoft/vscode/blob/1f28c5fc681f4c01226460b6d1c7e91b8Acb4A5b/src/vs/workbench/Api/node/extHostCommAnds.ts#L112-L127
+						if (RAnge.isIRAnge(obj)) {
+							return extHostTypeConverter.RAnge.to(obj);
 						}
 						if (Position.isIPosition(obj)) {
 							return extHostTypeConverter.Position.to(obj);
 						}
-						if (Range.isIRange((obj as modes.Location).range) && URI.isUri((obj as modes.Location).uri)) {
-							return extHostTypeConverter.location.to(obj);
+						if (RAnge.isIRAnge((obj As modes.LocAtion).rAnge) && URI.isUri((obj As modes.LocAtion).uri)) {
+							return extHostTypeConverter.locAtion.to(obj);
 						}
-						if (!Array.isArray(obj)) {
+						if (!ArrAy.isArrAy(obj)) {
 							return obj;
 						}
 					});
@@ -77,77 +77,77 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 		];
 	}
 
-	get converter(): CommandsConverter {
+	get converter(): CommAndsConverter {
 		return this._converter;
 	}
 
 	registerArgumentProcessor(processor: ArgumentProcessor): void {
-		this._argumentProcessors.push(processor);
+		this._ArgumentProcessors.push(processor);
 	}
 
-	registerCommand(global: boolean, id: string, callback: <T>(...args: any[]) => T | Thenable<T>, thisArg?: any, description?: ICommandHandlerDescription): extHostTypes.Disposable {
-		this._logService.trace('ExtHostCommands#registerCommand', id);
+	registerCommAnd(globAl: booleAn, id: string, cAllbAck: <T>(...Args: Any[]) => T | ThenAble<T>, thisArg?: Any, description?: ICommAndHAndlerDescription): extHostTypes.DisposAble {
+		this._logService.trAce('ExtHostCommAnds#registerCommAnd', id);
 
 		if (!id.trim().length) {
-			throw new Error('invalid id');
+			throw new Error('invAlid id');
 		}
 
-		if (this._commands.has(id)) {
-			throw new Error(`command '${id}' already exists`);
+		if (this._commAnds.hAs(id)) {
+			throw new Error(`commAnd '${id}' AlreAdy exists`);
 		}
 
-		this._commands.set(id, { callback, thisArg, description });
-		if (global) {
-			this._proxy.$registerCommand(id);
+		this._commAnds.set(id, { cAllbAck, thisArg, description });
+		if (globAl) {
+			this._proxy.$registerCommAnd(id);
 		}
 
-		return new extHostTypes.Disposable(() => {
-			if (this._commands.delete(id)) {
-				if (global) {
-					this._proxy.$unregisterCommand(id);
+		return new extHostTypes.DisposAble(() => {
+			if (this._commAnds.delete(id)) {
+				if (globAl) {
+					this._proxy.$unregisterCommAnd(id);
 				}
 			}
 		});
 	}
 
-	executeCommand<T>(id: string, ...args: any[]): Promise<T> {
-		this._logService.trace('ExtHostCommands#executeCommand', id);
-		return this._doExecuteCommand(id, args, true);
+	executeCommAnd<T>(id: string, ...Args: Any[]): Promise<T> {
+		this._logService.trAce('ExtHostCommAnds#executeCommAnd', id);
+		return this._doExecuteCommAnd(id, Args, true);
 	}
 
-	private async _doExecuteCommand<T>(id: string, args: any[], retry: boolean): Promise<T> {
+	privAte Async _doExecuteCommAnd<T>(id: string, Args: Any[], retry: booleAn): Promise<T> {
 
-		if (this._commands.has(id)) {
-			// we stay inside the extension host and support
-			// to pass any kind of parameters around
-			return this._executeContributedCommand<T>(id, args);
+		if (this._commAnds.hAs(id)) {
+			// we stAy inside the extension host And support
+			// to pAss Any kind of pArAmeters Around
+			return this._executeContributedCommAnd<T>(id, Args);
 
 		} else {
-			// automagically convert some argument types
-			const toArgs = cloneAndChange(args, function (value) {
-				if (value instanceof extHostTypes.Position) {
-					return extHostTypeConverter.Position.from(value);
+			// AutomAgicAlly convert some Argument types
+			const toArgs = cloneAndChAnge(Args, function (vAlue) {
+				if (vAlue instAnceof extHostTypes.Position) {
+					return extHostTypeConverter.Position.from(vAlue);
 				}
-				if (value instanceof extHostTypes.Range) {
-					return extHostTypeConverter.Range.from(value);
+				if (vAlue instAnceof extHostTypes.RAnge) {
+					return extHostTypeConverter.RAnge.from(vAlue);
 				}
-				if (value instanceof extHostTypes.Location) {
-					return extHostTypeConverter.location.from(value);
+				if (vAlue instAnceof extHostTypes.LocAtion) {
+					return extHostTypeConverter.locAtion.from(vAlue);
 				}
-				if (!Array.isArray(value)) {
-					return value;
+				if (!ArrAy.isArrAy(vAlue)) {
+					return vAlue;
 				}
 			});
 
 			try {
-				const result = await this._proxy.$executeCommand<T>(id, toArgs, retry);
-				return revive<any>(result);
-			} catch (e) {
-				// Rerun the command when it wasn't known, had arguments, and when retry
-				// is enabled. We do this because the command might be registered inside
-				// the extension host now and can therfore accept the arguments as-is.
-				if (e instanceof Error && e.message === '$executeCommand:retry') {
-					return this._doExecuteCommand(id, args, false);
+				const result = AwAit this._proxy.$executeCommAnd<T>(id, toArgs, retry);
+				return revive<Any>(result);
+			} cAtch (e) {
+				// Rerun the commAnd when it wAsn't known, hAd Arguments, And when retry
+				// is enAbled. We do this becAuse the commAnd might be registered inside
+				// the extension host now And cAn therfore Accept the Arguments As-is.
+				if (e instAnceof Error && e.messAge === '$executeCommAnd:retry') {
+					return this._doExecuteCommAnd(id, Args, fAlse);
 				} else {
 					throw e;
 				}
@@ -155,57 +155,57 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 		}
 	}
 
-	private _executeContributedCommand<T>(id: string, args: any[]): Promise<T> {
-		const command = this._commands.get(id);
-		if (!command) {
-			throw new Error('Unknown command');
+	privAte _executeContributedCommAnd<T>(id: string, Args: Any[]): Promise<T> {
+		const commAnd = this._commAnds.get(id);
+		if (!commAnd) {
+			throw new Error('Unknown commAnd');
 		}
-		let { callback, thisArg, description } = command;
+		let { cAllbAck, thisArg, description } = commAnd;
 		if (description) {
-			for (let i = 0; i < description.args.length; i++) {
+			for (let i = 0; i < description.Args.length; i++) {
 				try {
-					validateConstraint(args[i], description.args[i].constraint);
-				} catch (err) {
-					return Promise.reject(new Error(`Running the contributed command: '${id}' failed. Illegal argument '${description.args[i].name}' - ${description.args[i].description}`));
+					vAlidAteConstrAint(Args[i], description.Args[i].constrAint);
+				} cAtch (err) {
+					return Promise.reject(new Error(`Running the contributed commAnd: '${id}' fAiled. IllegAl Argument '${description.Args[i].nAme}' - ${description.Args[i].description}`));
 				}
 			}
 		}
 
 		try {
-			const result = callback.apply(thisArg, args);
+			const result = cAllbAck.Apply(thisArg, Args);
 			return Promise.resolve(result);
-		} catch (err) {
+		} cAtch (err) {
 			this._logService.error(err, id);
-			return Promise.reject(new Error(`Running the contributed command: '${id}' failed.`));
+			return Promise.reject(new Error(`Running the contributed commAnd: '${id}' fAiled.`));
 		}
 	}
 
-	$executeContributedCommand<T>(id: string, ...args: any[]): Promise<T> {
-		this._logService.trace('ExtHostCommands#$executeContributedCommand', id);
+	$executeContributedCommAnd<T>(id: string, ...Args: Any[]): Promise<T> {
+		this._logService.trAce('ExtHostCommAnds#$executeContributedCommAnd', id);
 
-		if (!this._commands.has(id)) {
-			return Promise.reject(new Error(`Contributed command '${id}' does not exist.`));
+		if (!this._commAnds.hAs(id)) {
+			return Promise.reject(new Error(`Contributed commAnd '${id}' does not exist.`));
 		} else {
-			args = args.map(arg => this._argumentProcessors.reduce((r, p) => p.processArgument(r), arg));
-			return this._executeContributedCommand(id, args);
+			Args = Args.mAp(Arg => this._ArgumentProcessors.reduce((r, p) => p.processArgument(r), Arg));
+			return this._executeContributedCommAnd(id, Args);
 		}
 	}
 
-	getCommands(filterUnderscoreCommands: boolean = false): Promise<string[]> {
-		this._logService.trace('ExtHostCommands#getCommands', filterUnderscoreCommands);
+	getCommAnds(filterUnderscoreCommAnds: booleAn = fAlse): Promise<string[]> {
+		this._logService.trAce('ExtHostCommAnds#getCommAnds', filterUnderscoreCommAnds);
 
-		return this._proxy.$getCommands().then(result => {
-			if (filterUnderscoreCommands) {
-				result = result.filter(command => command[0] !== '_');
+		return this._proxy.$getCommAnds().then(result => {
+			if (filterUnderscoreCommAnds) {
+				result = result.filter(commAnd => commAnd[0] !== '_');
 			}
 			return result;
 		});
 	}
 
-	$getContributedCommandHandlerDescriptions(): Promise<{ [id: string]: string | ICommandHandlerDescription }> {
-		const result: { [id: string]: string | ICommandHandlerDescription } = Object.create(null);
-		for (let [id, command] of this._commands) {
-			let { description } = command;
+	$getContributedCommAndHAndlerDescriptions(): Promise<{ [id: string]: string | ICommAndHAndlerDescription }> {
+		const result: { [id: string]: string | ICommAndHAndlerDescription } = Object.creAte(null);
+		for (let [id, commAnd] of this._commAnds) {
+			let { description } = commAnd;
 			if (description) {
 				result[id] = description;
 			}
@@ -215,83 +215,83 @@ export class ExtHostCommands implements ExtHostCommandsShape {
 }
 
 
-export class CommandsConverter {
+export clAss CommAndsConverter {
 
-	private readonly _delegatingCommandId: string;
-	private readonly _cache = new Map<number, vscode.Command>();
-	private _cachIdPool = 0;
+	privAte reAdonly _delegAtingCommAndId: string;
+	privAte reAdonly _cAche = new MAp<number, vscode.CommAnd>();
+	privAte _cAchIdPool = 0;
 
-	// --- conversion between internal and api commands
+	// --- conversion between internAl And Api commAnds
 	constructor(
-		private readonly _commands: ExtHostCommands,
-		private readonly _logService: ILogService
+		privAte reAdonly _commAnds: ExtHostCommAnds,
+		privAte reAdonly _logService: ILogService
 	) {
-		this._delegatingCommandId = `_vscode_delegate_cmd_${Date.now().toString(36)}`;
-		this._commands.registerCommand(true, this._delegatingCommandId, this._executeConvertedCommand, this);
+		this._delegAtingCommAndId = `_vscode_delegAte_cmd_${DAte.now().toString(36)}`;
+		this._commAnds.registerCommAnd(true, this._delegAtingCommAndId, this._executeConvertedCommAnd, this);
 	}
 
-	toInternal(command: vscode.Command, disposables: DisposableStore): ICommandDto;
-	toInternal(command: vscode.Command | undefined, disposables: DisposableStore): ICommandDto | undefined;
-	toInternal(command: vscode.Command | undefined, disposables: DisposableStore): ICommandDto | undefined {
+	toInternAl(commAnd: vscode.CommAnd, disposAbles: DisposAbleStore): ICommAndDto;
+	toInternAl(commAnd: vscode.CommAnd | undefined, disposAbles: DisposAbleStore): ICommAndDto | undefined;
+	toInternAl(commAnd: vscode.CommAnd | undefined, disposAbles: DisposAbleStore): ICommAndDto | undefined {
 
-		if (!command) {
+		if (!commAnd) {
 			return undefined;
 		}
 
-		const result: ICommandDto = {
+		const result: ICommAndDto = {
 			$ident: undefined,
-			id: command.command,
-			title: command.title,
-			tooltip: command.tooltip
+			id: commAnd.commAnd,
+			title: commAnd.title,
+			tooltip: commAnd.tooltip
 		};
 
-		if (command.command && isNonEmptyArray(command.arguments)) {
-			// we have a contributed command with arguments. that
-			// means we don't want to send the arguments around
+		if (commAnd.commAnd && isNonEmptyArrAy(commAnd.Arguments)) {
+			// we hAve A contributed commAnd with Arguments. thAt
+			// meAns we don't wAnt to send the Arguments Around
 
-			const id = ++this._cachIdPool;
-			this._cache.set(id, command);
-			disposables.add(toDisposable(() => {
-				this._cache.delete(id);
-				this._logService.trace('CommandsConverter#DISPOSE', id);
+			const id = ++this._cAchIdPool;
+			this._cAche.set(id, commAnd);
+			disposAbles.Add(toDisposAble(() => {
+				this._cAche.delete(id);
+				this._logService.trAce('CommAndsConverter#DISPOSE', id);
 			}));
 			result.$ident = id;
 
-			result.id = this._delegatingCommandId;
-			result.arguments = [id];
+			result.id = this._delegAtingCommAndId;
+			result.Arguments = [id];
 
-			this._logService.trace('CommandsConverter#CREATE', command.command, id);
+			this._logService.trAce('CommAndsConverter#CREATE', commAnd.commAnd, id);
 		}
 
 		return result;
 	}
 
-	fromInternal(command: modes.Command): vscode.Command | undefined {
+	fromInternAl(commAnd: modes.CommAnd): vscode.CommAnd | undefined {
 
-		const id = ObjectIdentifier.of(command);
+		const id = ObjectIdentifier.of(commAnd);
 		if (typeof id === 'number') {
-			return this._cache.get(id);
+			return this._cAche.get(id);
 
 		} else {
 			return {
-				command: command.id,
-				title: command.title,
-				arguments: command.arguments
+				commAnd: commAnd.id,
+				title: commAnd.title,
+				Arguments: commAnd.Arguments
 			};
 		}
 	}
 
-	private _executeConvertedCommand<R>(...args: any[]): Promise<R> {
-		const actualCmd = this._cache.get(args[0]);
-		this._logService.trace('CommandsConverter#EXECUTE', args[0], actualCmd ? actualCmd.command : 'MISSING');
+	privAte _executeConvertedCommAnd<R>(...Args: Any[]): Promise<R> {
+		const ActuAlCmd = this._cAche.get(Args[0]);
+		this._logService.trAce('CommAndsConverter#EXECUTE', Args[0], ActuAlCmd ? ActuAlCmd.commAnd : 'MISSING');
 
-		if (!actualCmd) {
-			return Promise.reject('actual command NOT FOUND');
+		if (!ActuAlCmd) {
+			return Promise.reject('ActuAl commAnd NOT FOUND');
 		}
-		return this._commands.executeCommand(actualCmd.command, ...(actualCmd.arguments || []));
+		return this._commAnds.executeCommAnd(ActuAlCmd.commAnd, ...(ActuAlCmd.Arguments || []));
 	}
 
 }
 
-export interface IExtHostCommands extends ExtHostCommands { }
-export const IExtHostCommands = createDecorator<IExtHostCommands>('IExtHostCommands');
+export interfAce IExtHostCommAnds extends ExtHostCommAnds { }
+export const IExtHostCommAnds = creAteDecorAtor<IExtHostCommAnds>('IExtHostCommAnds');

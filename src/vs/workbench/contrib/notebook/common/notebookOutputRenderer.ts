@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { joinPath } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import * As glob from 'vs/bAse/common/glob';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
 import { INotebookRendererInfo } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 
-export class NotebookOutputRendererInfo implements INotebookRendererInfo {
+export clAss NotebookOutputRendererInfo implements INotebookRendererInfo {
 
-	readonly id: string;
-	readonly entrypoint: URI;
-	readonly displayName: string;
-	readonly extensionLocation: URI;
-	readonly extensionId: ExtensionIdentifier;
-	// todo: re-add preloads in pure renderer API
-	readonly preloads: ReadonlyArray<URI> = [];
+	reAdonly id: string;
+	reAdonly entrypoint: URI;
+	reAdonly displAyNAme: string;
+	reAdonly extensionLocAtion: URI;
+	reAdonly extensionId: ExtensionIdentifier;
+	// todo: re-Add preloAds in pure renderer API
+	reAdonly preloAds: ReAdonlyArrAy<URI> = [];
 
-	private readonly mimeTypes: readonly string[];
-	private readonly mimeTypeGlobs: glob.ParsedPattern[];
+	privAte reAdonly mimeTypes: reAdonly string[];
+	privAte reAdonly mimeTypeGlobs: glob.PArsedPAttern[];
 
 	constructor(descriptor: {
-		readonly id: string;
-		readonly displayName: string;
-		readonly entrypoint: string;
-		readonly mimeTypes: readonly string[];
-		readonly extension: IExtensionDescription;
+		reAdonly id: string;
+		reAdonly displAyNAme: string;
+		reAdonly entrypoint: string;
+		reAdonly mimeTypes: reAdonly string[];
+		reAdonly extension: IExtensionDescription;
 	}) {
 		this.id = descriptor.id;
 		this.extensionId = descriptor.extension.identifier;
-		this.extensionLocation = descriptor.extension.extensionLocation;
-		this.entrypoint = joinPath(this.extensionLocation, descriptor.entrypoint);
-		this.displayName = descriptor.displayName;
+		this.extensionLocAtion = descriptor.extension.extensionLocAtion;
+		this.entrypoint = joinPAth(this.extensionLocAtion, descriptor.entrypoint);
+		this.displAyNAme = descriptor.displAyNAme;
 		this.mimeTypes = descriptor.mimeTypes;
-		this.mimeTypeGlobs = this.mimeTypes.map(pattern => glob.parse(pattern));
+		this.mimeTypeGlobs = this.mimeTypes.mAp(pAttern => glob.pArse(pAttern));
 	}
 
-	matches(mimeType: string) {
-		return this.mimeTypeGlobs.some(pattern => pattern(mimeType))
-			|| this.mimeTypes.some(pattern => pattern === mimeType);
+	mAtches(mimeType: string) {
+		return this.mimeTypeGlobs.some(pAttern => pAttern(mimeType))
+			|| this.mimeTypes.some(pAttern => pAttern === mimeType);
 	}
 }

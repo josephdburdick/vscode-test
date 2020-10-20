@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ScrollEvent } from 'vs/base/common/scrollable';
-import { ConfigurationChangedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
-import { Range } from 'vs/editor/common/core/range';
+import { ScrollEvent } from 'vs/bAse/common/scrollAble';
+import { ConfigurAtionChAngedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ScrollType } from 'vs/editor/common/editorCommon';
-import { IModelDecorationsChangedEvent } from 'vs/editor/common/model/textModelEvents';
+import { IModelDecorAtionsChAngedEvent } from 'vs/editor/common/model/textModelEvents';
 
 export const enum ViewEventType {
-	ViewConfigurationChanged,
-	ViewCursorStateChanged,
-	ViewDecorationsChanged,
+	ViewConfigurAtionChAnged,
+	ViewCursorStAteChAnged,
+	ViewDecorAtionsChAnged,
 	ViewFlushed,
-	ViewFocusChanged,
-	ViewLanguageConfigurationChanged,
-	ViewLineMappingChanged,
-	ViewLinesChanged,
+	ViewFocusChAnged,
+	ViewLAnguAgeConfigurAtionChAnged,
+	ViewLineMAppingChAnged,
+	ViewLinesChAnged,
 	ViewLinesDeleted,
 	ViewLinesInserted,
-	ViewRevealRangeRequest,
-	ViewScrollChanged,
-	ViewThemeChanged,
-	ViewTokensChanged,
-	ViewTokensColorsChanged,
-	ViewZonesChanged,
+	ViewReveAlRAngeRequest,
+	ViewScrollChAnged,
+	ViewThemeChAnged,
+	ViewTokensChAnged,
+	ViewTokensColorsChAnged,
+	ViewZonesChAnged,
 }
 
-export class ViewConfigurationChangedEvent {
+export clAss ViewConfigurAtionChAngedEvent {
 
-	public readonly type = ViewEventType.ViewConfigurationChanged;
+	public reAdonly type = ViewEventType.ViewConfigurAtionChAnged;
 
-	public readonly _source: ConfigurationChangedEvent;
+	public reAdonly _source: ConfigurAtionChAngedEvent;
 
-	constructor(source: ConfigurationChangedEvent) {
+	constructor(source: ConfigurAtionChAngedEvent) {
 		this._source = source;
 	}
 
-	public hasChanged(id: EditorOption): boolean {
-		return this._source.hasChanged(id);
+	public hAsChAnged(id: EditorOption): booleAn {
+		return this._source.hAsChAnged(id);
 	}
 }
 
-export class ViewCursorStateChangedEvent {
+export clAss ViewCursorStAteChAngedEvent {
 
-	public readonly type = ViewEventType.ViewCursorStateChanged;
+	public reAdonly type = ViewEventType.ViewCursorStAteChAnged;
 
-	public readonly selections: Selection[];
-	public readonly modelSelections: Selection[];
+	public reAdonly selections: Selection[];
+	public reAdonly modelSelections: Selection[];
 
 	constructor(selections: Selection[], modelSelections: Selection[]) {
 		this.selections = selections;
@@ -57,70 +57,70 @@ export class ViewCursorStateChangedEvent {
 	}
 }
 
-export class ViewDecorationsChangedEvent {
+export clAss ViewDecorAtionsChAngedEvent {
 
-	public readonly type = ViewEventType.ViewDecorationsChanged;
+	public reAdonly type = ViewEventType.ViewDecorAtionsChAnged;
 
-	readonly affectsMinimap: boolean;
-	readonly affectsOverviewRuler: boolean;
+	reAdonly AffectsMinimAp: booleAn;
+	reAdonly AffectsOverviewRuler: booleAn;
 
-	constructor(source: IModelDecorationsChangedEvent | null) {
+	constructor(source: IModelDecorAtionsChAngedEvent | null) {
 		if (source) {
-			this.affectsMinimap = source.affectsMinimap;
-			this.affectsOverviewRuler = source.affectsOverviewRuler;
+			this.AffectsMinimAp = source.AffectsMinimAp;
+			this.AffectsOverviewRuler = source.AffectsOverviewRuler;
 		} else {
-			this.affectsMinimap = true;
-			this.affectsOverviewRuler = true;
+			this.AffectsMinimAp = true;
+			this.AffectsOverviewRuler = true;
 		}
 	}
 }
 
-export class ViewFlushedEvent {
+export clAss ViewFlushedEvent {
 
-	public readonly type = ViewEventType.ViewFlushed;
+	public reAdonly type = ViewEventType.ViewFlushed;
 
 	constructor() {
 		// Nothing to do
 	}
 }
 
-export class ViewFocusChangedEvent {
+export clAss ViewFocusChAngedEvent {
 
-	public readonly type = ViewEventType.ViewFocusChanged;
+	public reAdonly type = ViewEventType.ViewFocusChAnged;
 
-	public readonly isFocused: boolean;
+	public reAdonly isFocused: booleAn;
 
-	constructor(isFocused: boolean) {
+	constructor(isFocused: booleAn) {
 		this.isFocused = isFocused;
 	}
 }
 
-export class ViewLanguageConfigurationEvent {
+export clAss ViewLAnguAgeConfigurAtionEvent {
 
-	public readonly type = ViewEventType.ViewLanguageConfigurationChanged;
+	public reAdonly type = ViewEventType.ViewLAnguAgeConfigurAtionChAnged;
 }
 
-export class ViewLineMappingChangedEvent {
+export clAss ViewLineMAppingChAngedEvent {
 
-	public readonly type = ViewEventType.ViewLineMappingChanged;
+	public reAdonly type = ViewEventType.ViewLineMAppingChAnged;
 
 	constructor() {
 		// Nothing to do
 	}
 }
 
-export class ViewLinesChangedEvent {
+export clAss ViewLinesChAngedEvent {
 
-	public readonly type = ViewEventType.ViewLinesChanged;
+	public reAdonly type = ViewEventType.ViewLinesChAnged;
 
 	/**
-	 * The first line that has changed.
+	 * The first line thAt hAs chAnged.
 	 */
-	public readonly fromLineNumber: number;
+	public reAdonly fromLineNumber: number;
 	/**
-	 * The last line that has changed.
+	 * The lAst line thAt hAs chAnged.
 	 */
-	public readonly toLineNumber: number;
+	public reAdonly toLineNumber: number;
 
 	constructor(fromLineNumber: number, toLineNumber: number) {
 		this.fromLineNumber = fromLineNumber;
@@ -128,18 +128,18 @@ export class ViewLinesChangedEvent {
 	}
 }
 
-export class ViewLinesDeletedEvent {
+export clAss ViewLinesDeletedEvent {
 
-	public readonly type = ViewEventType.ViewLinesDeleted;
+	public reAdonly type = ViewEventType.ViewLinesDeleted;
 
 	/**
-	 * At what line the deletion began (inclusive).
+	 * At whAt line the deletion begAn (inclusive).
 	 */
-	public readonly fromLineNumber: number;
+	public reAdonly fromLineNumber: number;
 	/**
-	 * At what line the deletion stopped (inclusive).
+	 * At whAt line the deletion stopped (inclusive).
 	 */
-	public readonly toLineNumber: number;
+	public reAdonly toLineNumber: number;
 
 	constructor(fromLineNumber: number, toLineNumber: number) {
 		this.fromLineNumber = fromLineNumber;
@@ -147,18 +147,18 @@ export class ViewLinesDeletedEvent {
 	}
 }
 
-export class ViewLinesInsertedEvent {
+export clAss ViewLinesInsertedEvent {
 
-	public readonly type = ViewEventType.ViewLinesInserted;
+	public reAdonly type = ViewEventType.ViewLinesInserted;
 
 	/**
-	 * Before what line did the insertion begin
+	 * Before whAt line did the insertion begin
 	 */
-	public readonly fromLineNumber: number;
+	public reAdonly fromLineNumber: number;
 	/**
-	 * `toLineNumber` - `fromLineNumber` + 1 denotes the number of lines that were inserted
+	 * `toLineNumber` - `fromLineNumber` + 1 denotes the number of lines thAt were inserted
 	 */
-	public readonly toLineNumber: number;
+	public reAdonly toLineNumber: number;
 
 	constructor(fromLineNumber: number, toLineNumber: number) {
 		this.fromLineNumber = fromLineNumber;
@@ -166,67 +166,67 @@ export class ViewLinesInsertedEvent {
 	}
 }
 
-export const enum VerticalRevealType {
+export const enum VerticAlReveAlType {
 	Simple = 0,
 	Center = 1,
 	CenterIfOutsideViewport = 2,
 	Top = 3,
 	Bottom = 4,
-	NearTop = 5,
-	NearTopIfOutsideViewport = 6,
+	NeArTop = 5,
+	NeArTopIfOutsideViewport = 6,
 }
 
-export class ViewRevealRangeRequestEvent {
+export clAss ViewReveAlRAngeRequestEvent {
 
-	public readonly type = ViewEventType.ViewRevealRangeRequest;
-
-	/**
-	 * Range to be reavealed.
-	 */
-	public readonly range: Range | null;
+	public reAdonly type = ViewEventType.ViewReveAlRAngeRequest;
 
 	/**
-	 * Selections to be revealed.
+	 * RAnge to be reAveAled.
 	 */
-	public readonly selections: Selection[] | null;
-
-	public readonly verticalType: VerticalRevealType;
-	/**
-	 * If true: there should be a horizontal & vertical revealing
-	 * If false: there should be just a vertical revealing
-	 */
-	public readonly revealHorizontal: boolean;
-
-	public readonly scrollType: ScrollType;
+	public reAdonly rAnge: RAnge | null;
 
 	/**
-	 * Source of the call that caused the event.
+	 * Selections to be reveAled.
 	 */
-	readonly source: string | null | undefined;
+	public reAdonly selections: Selection[] | null;
 
-	constructor(source: string | null | undefined, range: Range | null, selections: Selection[] | null, verticalType: VerticalRevealType, revealHorizontal: boolean, scrollType: ScrollType) {
+	public reAdonly verticAlType: VerticAlReveAlType;
+	/**
+	 * If true: there should be A horizontAl & verticAl reveAling
+	 * If fAlse: there should be just A verticAl reveAling
+	 */
+	public reAdonly reveAlHorizontAl: booleAn;
+
+	public reAdonly scrollType: ScrollType;
+
+	/**
+	 * Source of the cAll thAt cAused the event.
+	 */
+	reAdonly source: string | null | undefined;
+
+	constructor(source: string | null | undefined, rAnge: RAnge | null, selections: Selection[] | null, verticAlType: VerticAlReveAlType, reveAlHorizontAl: booleAn, scrollType: ScrollType) {
 		this.source = source;
-		this.range = range;
+		this.rAnge = rAnge;
 		this.selections = selections;
-		this.verticalType = verticalType;
-		this.revealHorizontal = revealHorizontal;
+		this.verticAlType = verticAlType;
+		this.reveAlHorizontAl = reveAlHorizontAl;
 		this.scrollType = scrollType;
 	}
 }
 
-export class ViewScrollChangedEvent {
+export clAss ViewScrollChAngedEvent {
 
-	public readonly type = ViewEventType.ViewScrollChanged;
+	public reAdonly type = ViewEventType.ViewScrollChAnged;
 
-	public readonly scrollWidth: number;
-	public readonly scrollLeft: number;
-	public readonly scrollHeight: number;
-	public readonly scrollTop: number;
+	public reAdonly scrollWidth: number;
+	public reAdonly scrollLeft: number;
+	public reAdonly scrollHeight: number;
+	public reAdonly scrollTop: number;
 
-	public readonly scrollWidthChanged: boolean;
-	public readonly scrollLeftChanged: boolean;
-	public readonly scrollHeightChanged: boolean;
-	public readonly scrollTopChanged: boolean;
+	public reAdonly scrollWidthChAnged: booleAn;
+	public reAdonly scrollLeftChAnged: booleAn;
+	public reAdonly scrollHeightChAnged: booleAn;
+	public reAdonly scrollTopChAnged: booleAn;
 
 	constructor(source: ScrollEvent) {
 		this.scrollWidth = source.scrollWidth;
@@ -234,50 +234,50 @@ export class ViewScrollChangedEvent {
 		this.scrollHeight = source.scrollHeight;
 		this.scrollTop = source.scrollTop;
 
-		this.scrollWidthChanged = source.scrollWidthChanged;
-		this.scrollLeftChanged = source.scrollLeftChanged;
-		this.scrollHeightChanged = source.scrollHeightChanged;
-		this.scrollTopChanged = source.scrollTopChanged;
+		this.scrollWidthChAnged = source.scrollWidthChAnged;
+		this.scrollLeftChAnged = source.scrollLeftChAnged;
+		this.scrollHeightChAnged = source.scrollHeightChAnged;
+		this.scrollTopChAnged = source.scrollTopChAnged;
 	}
 }
 
-export class ViewThemeChangedEvent {
+export clAss ViewThemeChAngedEvent {
 
-	public readonly type = ViewEventType.ViewThemeChanged;
+	public reAdonly type = ViewEventType.ViewThemeChAnged;
 }
 
-export class ViewTokensChangedEvent {
+export clAss ViewTokensChAngedEvent {
 
-	public readonly type = ViewEventType.ViewTokensChanged;
+	public reAdonly type = ViewEventType.ViewTokensChAnged;
 
-	public readonly ranges: {
+	public reAdonly rAnges: {
 		/**
-		 * Start line number of range
+		 * StArt line number of rAnge
 		 */
-		readonly fromLineNumber: number;
+		reAdonly fromLineNumber: number;
 		/**
-		 * End line number of range
+		 * End line number of rAnge
 		 */
-		readonly toLineNumber: number;
+		reAdonly toLineNumber: number;
 	}[];
 
-	constructor(ranges: { fromLineNumber: number; toLineNumber: number; }[]) {
-		this.ranges = ranges;
+	constructor(rAnges: { fromLineNumber: number; toLineNumber: number; }[]) {
+		this.rAnges = rAnges;
 	}
 }
 
-export class ViewTokensColorsChangedEvent {
+export clAss ViewTokensColorsChAngedEvent {
 
-	public readonly type = ViewEventType.ViewTokensColorsChanged;
+	public reAdonly type = ViewEventType.ViewTokensColorsChAnged;
 
 	constructor() {
 		// Nothing to do
 	}
 }
 
-export class ViewZonesChangedEvent {
+export clAss ViewZonesChAngedEvent {
 
-	public readonly type = ViewEventType.ViewZonesChanged;
+	public reAdonly type = ViewEventType.ViewZonesChAnged;
 
 	constructor() {
 		// Nothing to do
@@ -285,20 +285,20 @@ export class ViewZonesChangedEvent {
 }
 
 export type ViewEvent = (
-	ViewConfigurationChangedEvent
-	| ViewCursorStateChangedEvent
-	| ViewDecorationsChangedEvent
+	ViewConfigurAtionChAngedEvent
+	| ViewCursorStAteChAngedEvent
+	| ViewDecorAtionsChAngedEvent
 	| ViewFlushedEvent
-	| ViewFocusChangedEvent
-	| ViewLanguageConfigurationEvent
-	| ViewLineMappingChangedEvent
-	| ViewLinesChangedEvent
+	| ViewFocusChAngedEvent
+	| ViewLAnguAgeConfigurAtionEvent
+	| ViewLineMAppingChAngedEvent
+	| ViewLinesChAngedEvent
 	| ViewLinesDeletedEvent
 	| ViewLinesInsertedEvent
-	| ViewRevealRangeRequestEvent
-	| ViewScrollChangedEvent
-	| ViewThemeChangedEvent
-	| ViewTokensChangedEvent
-	| ViewTokensColorsChangedEvent
-	| ViewZonesChangedEvent
+	| ViewReveAlRAngeRequestEvent
+	| ViewScrollChAngedEvent
+	| ViewThemeChAngedEvent
+	| ViewTokensChAngedEvent
+	| ViewTokensColorsChAngedEvent
+	| ViewZonesChAngedEvent
 );

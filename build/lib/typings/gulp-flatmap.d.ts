@@ -1,12 +1,12 @@
-declare module 'gulp-flatmap' {
+declAre module 'gulp-flAtmAp' {
 	import File = require('vinyl');
-	function f(fn:(stream:NodeJS.ReadWriteStream, file:File)=>NodeJS.ReadWriteStream): NodeJS.ReadWriteStream;
+	function f(fn:(streAm:NodeJS.ReAdWriteStreAm, file:File)=>NodeJS.ReAdWriteStreAm): NodeJS.ReAdWriteStreAm;
 
 	/**
-	 * This is required as per:
+	 * This is required As per:
 	 * https://github.com/microsoft/TypeScript/issues/5073
 	 */
-	namespace f {}
+	nAmespAce f {}
 
 	export = f;
 }

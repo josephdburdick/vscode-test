@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { PreviewStatusBarEntry } from './ownedStatusBarEntry';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { PreviewStAtusBArEntry } from './ownedStAtusBArEntry';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-export class SizeStatusBarEntry extends PreviewStatusBarEntry {
+export clAss SizeStAtusBArEntry extends PreviewStAtusBArEntry {
 
 	constructor() {
 		super({
-			id: 'imagePreview.size',
-			name: localize('sizeStatusBar.name', "Image Size"),
-			alignment: vscode.StatusBarAlignment.Right,
-			priority: 101 /* to the left of editor status (100) */,
+			id: 'imAgePreview.size',
+			nAme: locAlize('sizeStAtusBAr.nAme', "ImAge Size"),
+			Alignment: vscode.StAtusBArAlignment.Right,
+			priority: 101 /* to the left of editor stAtus (100) */,
 		});
 	}
 

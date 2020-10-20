@@ -1,304 +1,304 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
+import { locAlize } from 'vs/nls';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IWorkingCopyService, IWorkingCopy, WorkingCopyCapabilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
-import { ILifecycleService, LifecyclePhase, ShutdownReason } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { ConfirmResult, IFileDialogService, IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import Severity from 'vs/base/common/severity';
-import { WorkbenchState, IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { isMacintosh } from 'vs/base/common/platform';
-import { HotExitConfiguration } from 'vs/platform/files/common/files';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { BackupTracker } from 'vs/workbench/contrib/backup/common/backupTracker';
-import { ILogService } from 'vs/platform/log/common/log';
+import { IFilesConfigurAtionService, AutoSAveMode } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IWorkingCopyService, IWorkingCopy, WorkingCopyCApAbilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
+import { ILifecycleService, LifecyclePhAse, ShutdownReAson } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ConfirmResult, IFileDiAlogService, IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import Severity from 'vs/bAse/common/severity';
+import { WorkbenchStAte, IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { HotExitConfigurAtion } from 'vs/plAtform/files/common/files';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { BAckupTrAcker } from 'vs/workbench/contrib/bAckup/common/bAckupTrAcker';
+import { ILogService } from 'vs/plAtform/log/common/log';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { SAveReAson } from 'vs/workbench/common/editor';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export class NativeBackupTracker extends BackupTracker implements IWorkbenchContribution {
+export clAss NAtiveBAckupTrAcker extends BAckupTrAcker implements IWorkbenchContribution {
 
-	// Delay creation of backups when working copy changes to avoid too much
-	// load on the backup service when the user is typing into the editor
-	private static readonly BACKUP_SCHEDULE_DELAY = 1000;
+	// DelAy creAtion of bAckups when working copy chAnges to Avoid too much
+	// loAd on the bAckup service when the user is typing into the editor
+	privAte stAtic reAdonly BACKUP_SCHEDULE_DELAY = 1000;
 
-	// Disable backup for when a short auto-save delay is configured with
-	// the rationale that the auto save will trigger a save periodically
-	// anway and thus creating frequent backups is not useful
+	// DisAble bAckup for when A short Auto-sAve delAy is configured with
+	// the rAtionAle thAt the Auto sAve will trigger A sAve periodicAlly
+	// AnwAy And thus creAting frequent bAckups is not useful
 	//
-	// This will only apply to working copies that are not untitled where
-	// auto save is actually saving.
-	private static readonly DISABLE_BACKUP_AUTO_SAVE_THRESHOLD = 1500;
+	// This will only Apply to working copies thAt Are not untitled where
+	// Auto sAve is ActuAlly sAving.
+	privAte stAtic reAdonly DISABLE_BACKUP_AUTO_SAVE_THRESHOLD = 1500;
 
 	constructor(
-		@IBackupFileService backupFileService: IBackupFileService,
-		@IFilesConfigurationService private readonly filesConfigurationService: IFilesConfigurationService,
+		@IBAckupFileService bAckupFileService: IBAckupFileService,
+		@IFilesConfigurAtionService privAte reAdonly filesConfigurAtionService: IFilesConfigurAtionService,
 		@IWorkingCopyService workingCopyService: IWorkingCopyService,
 		@ILifecycleService lifecycleService: ILifecycleService,
-		@IFileDialogService private readonly fileDialogService: IFileDialogService,
-		@IDialogService private readonly dialogService: IDialogService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
+		@IFileDiAlogService privAte reAdonly fileDiAlogService: IFileDiAlogService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
 		@ILogService logService: ILogService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService
 	) {
-		super(backupFileService, workingCopyService, logService, lifecycleService);
+		super(bAckupFileService, workingCopyService, logService, lifecycleService);
 	}
 
-	protected shouldScheduleBackup(workingCopy: IWorkingCopy): boolean {
-		if (workingCopy.capabilities & WorkingCopyCapabilities.Untitled) {
-			return true; // always backup untitled
+	protected shouldScheduleBAckup(workingCopy: IWorkingCopy): booleAn {
+		if (workingCopy.cApAbilities & WorkingCopyCApAbilities.Untitled) {
+			return true; // AlwAys bAckup untitled
 		}
 
-		const autoSaveConfiguration = this.filesConfigurationService.getAutoSaveConfiguration();
-		if (typeof autoSaveConfiguration.autoSaveDelay === 'number' && autoSaveConfiguration.autoSaveDelay < NativeBackupTracker.DISABLE_BACKUP_AUTO_SAVE_THRESHOLD) {
-			return false; // skip backup when auto save is already enabled with a low delay
+		const AutoSAveConfigurAtion = this.filesConfigurAtionService.getAutoSAveConfigurAtion();
+		if (typeof AutoSAveConfigurAtion.AutoSAveDelAy === 'number' && AutoSAveConfigurAtion.AutoSAveDelAy < NAtiveBAckupTrAcker.DISABLE_BACKUP_AUTO_SAVE_THRESHOLD) {
+			return fAlse; // skip bAckup when Auto sAve is AlreAdy enAbled with A low delAy
 		}
 
 		return true;
 	}
 
-	protected getBackupScheduleDelay(): number {
-		return NativeBackupTracker.BACKUP_SCHEDULE_DELAY;
+	protected getBAckupScheduleDelAy(): number {
+		return NAtiveBAckupTrAcker.BACKUP_SCHEDULE_DELAY;
 	}
 
-	protected onBeforeShutdown(reason: ShutdownReason): boolean | Promise<boolean> {
+	protected onBeforeShutdown(reAson: ShutdownReAson): booleAn | Promise<booleAn> {
 
-		// Dirty working copies need treatment on shutdown
+		// Dirty working copies need treAtment on shutdown
 		const dirtyWorkingCopies = this.workingCopyService.dirtyWorkingCopies;
 		if (dirtyWorkingCopies.length) {
-			return this.onBeforeShutdownWithDirty(reason, dirtyWorkingCopies);
+			return this.onBeforeShutdownWithDirty(reAson, dirtyWorkingCopies);
 		}
 
 		// No dirty working copies
 		return this.onBeforeShutdownWithoutDirty();
 	}
 
-	protected async onBeforeShutdownWithDirty(reason: ShutdownReason, workingCopies: IWorkingCopy[]): Promise<boolean> {
+	protected Async onBeforeShutdownWithDirty(reAson: ShutdownReAson, workingCopies: IWorkingCopy[]): Promise<booleAn> {
 
-		// If auto save is enabled, save all non-untitled working copies
-		// and then check again for dirty copies
-		if (this.filesConfigurationService.getAutoSaveMode() !== AutoSaveMode.OFF) {
+		// If Auto sAve is enAbled, sAve All non-untitled working copies
+		// And then check AgAin for dirty copies
+		if (this.filesConfigurAtionService.getAutoSAveMode() !== AutoSAveMode.OFF) {
 
-			// Save all files
-			await this.doSaveAllBeforeShutdown(false /* not untitled */, SaveReason.AUTO);
+			// SAve All files
+			AwAit this.doSAveAllBeforeShutdown(fAlse /* not untitled */, SAveReAson.AUTO);
 
-			// If we still have dirty working copies, we either have untitled ones or working copies that cannot be saved
-			const remainingDirtyWorkingCopies = this.workingCopyService.dirtyWorkingCopies;
-			if (remainingDirtyWorkingCopies.length) {
-				return this.handleDirtyBeforeShutdown(remainingDirtyWorkingCopies, reason);
+			// If we still hAve dirty working copies, we either hAve untitled ones or working copies thAt cAnnot be sAved
+			const remAiningDirtyWorkingCopies = this.workingCopyService.dirtyWorkingCopies;
+			if (remAiningDirtyWorkingCopies.length) {
+				return this.hAndleDirtyBeforeShutdown(remAiningDirtyWorkingCopies, reAson);
 			}
 
-			return false; // no veto (there are no remaining dirty working copies)
+			return fAlse; // no veto (there Are no remAining dirty working copies)
 		}
 
-		// Auto save is not enabled
-		return this.handleDirtyBeforeShutdown(workingCopies, reason);
+		// Auto sAve is not enAbled
+		return this.hAndleDirtyBeforeShutdown(workingCopies, reAson);
 	}
 
-	private async handleDirtyBeforeShutdown(workingCopies: IWorkingCopy[], reason: ShutdownReason): Promise<boolean> {
+	privAte Async hAndleDirtyBeforeShutdown(workingCopies: IWorkingCopy[], reAson: ShutdownReAson): Promise<booleAn> {
 
-		// Trigger backup if configured
-		let backups: IWorkingCopy[] = [];
-		let backupError: Error | undefined = undefined;
-		if (this.filesConfigurationService.isHotExitEnabled) {
+		// Trigger bAckup if configured
+		let bAckups: IWorkingCopy[] = [];
+		let bAckupError: Error | undefined = undefined;
+		if (this.filesConfigurAtionService.isHotExitEnAbled) {
 			try {
-				backups = await this.backupBeforeShutdown(workingCopies, reason);
-				if (backups.length === workingCopies.length) {
-					return false; // no veto (backup was successful for all working copies)
+				bAckups = AwAit this.bAckupBeforeShutdown(workingCopies, reAson);
+				if (bAckups.length === workingCopies.length) {
+					return fAlse; // no veto (bAckup wAs successful for All working copies)
 				}
-			} catch (error) {
-				backupError = error;
+			} cAtch (error) {
+				bAckupError = error;
 			}
 		}
 
-		// we ran a backup but received an error that we show to the user
-		if (backupError) {
-			this.showErrorDialog(localize('backupTrackerBackupFailed', "One or more dirty editors could not be saved to the back up location."), backupError);
+		// we rAn A bAckup but received An error thAt we show to the user
+		if (bAckupError) {
+			this.showErrorDiAlog(locAlize('bAckupTrAckerBAckupFAiled', "One or more dirty editors could not be sAved to the bAck up locAtion."), bAckupError);
 
-			return true; // veto (the backup failed)
+			return true; // veto (the bAckup fAiled)
 		}
 
-		// since a backup did not happen, we have to confirm for
-		// the working copies that did not successfully backup
+		// since A bAckup did not hAppen, we hAve to confirm for
+		// the working copies thAt did not successfully bAckup
 		try {
-			return await this.confirmBeforeShutdown(workingCopies.filter(workingCopy => !backups.includes(workingCopy)));
-		} catch (error) {
-			this.showErrorDialog(localize('backupTrackerConfirmFailed', "One or more dirty editors could not be saved or reverted."), error);
+			return AwAit this.confirmBeforeShutdown(workingCopies.filter(workingCopy => !bAckups.includes(workingCopy)));
+		} cAtch (error) {
+			this.showErrorDiAlog(locAlize('bAckupTrAckerConfirmFAiled', "One or more dirty editors could not be sAved or reverted."), error);
 
-			return true; // veto (save or revert failed)
+			return true; // veto (sAve or revert fAiled)
 		}
 	}
 
-	private showErrorDialog(msg: string, error?: Error): void {
-		this.dialogService.show(Severity.Error, msg, [localize('ok', 'OK')], { detail: localize('backupErrorDetails', "Try saving or reverting the dirty editors first and then try again.") });
+	privAte showErrorDiAlog(msg: string, error?: Error): void {
+		this.diAlogService.show(Severity.Error, msg, [locAlize('ok', 'OK')], { detAil: locAlize('bAckupErrorDetAils', "Try sAving or reverting the dirty editors first And then try AgAin.") });
 
-		this.logService.error(error ? `[backup tracker] ${msg}: ${error}` : `[backup tracker] ${msg}`);
+		this.logService.error(error ? `[bAckup trAcker] ${msg}: ${error}` : `[bAckup trAcker] ${msg}`);
 	}
 
-	private async backupBeforeShutdown(workingCopies: IWorkingCopy[], reason: ShutdownReason): Promise<IWorkingCopy[]> {
+	privAte Async bAckupBeforeShutdown(workingCopies: IWorkingCopy[], reAson: ShutdownReAson): Promise<IWorkingCopy[]> {
 
-		// When quit is requested skip the confirm callback and attempt to backup all workspaces.
-		// When quit is not requested the confirm callback should be shown when the window being
-		// closed is the only VS Code window open, except for on Mac where hot exit is only
-		// ever activated when quit is requested.
+		// When quit is requested skip the confirm cAllbAck And Attempt to bAckup All workspAces.
+		// When quit is not requested the confirm cAllbAck should be shown when the window being
+		// closed is the only VS Code window open, except for on MAc where hot exit is only
+		// ever ActivAted when quit is requested.
 
-		let doBackup: boolean | undefined;
+		let doBAckup: booleAn | undefined;
 		if (this.environmentService.isExtensionDevelopment) {
-			doBackup = true; // always backup closing extension development window without asking to speed up debugging
+			doBAckup = true; // AlwAys bAckup closing extension development window without Asking to speed up debugging
 		} else {
-			switch (reason) {
-				case ShutdownReason.CLOSE:
-					if (this.contextService.getWorkbenchState() !== WorkbenchState.EMPTY && this.filesConfigurationService.hotExitConfiguration === HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE) {
-						doBackup = true; // backup if a folder is open and onExitAndWindowClose is configured
-					} else if (await this.nativeHostService.getWindowCount() > 1 || isMacintosh) {
-						doBackup = false; // do not backup if a window is closed that does not cause quitting of the application
+			switch (reAson) {
+				cAse ShutdownReAson.CLOSE:
+					if (this.contextService.getWorkbenchStAte() !== WorkbenchStAte.EMPTY && this.filesConfigurAtionService.hotExitConfigurAtion === HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE) {
+						doBAckup = true; // bAckup if A folder is open And onExitAndWindowClose is configured
+					} else if (AwAit this.nAtiveHostService.getWindowCount() > 1 || isMAcintosh) {
+						doBAckup = fAlse; // do not bAckup if A window is closed thAt does not cAuse quitting of the ApplicAtion
 					} else {
-						doBackup = true; // backup if last window is closed on win/linux where the application quits right after
+						doBAckup = true; // bAckup if lAst window is closed on win/linux where the ApplicAtion quits right After
 					}
-					break;
+					breAk;
 
-				case ShutdownReason.QUIT:
-					doBackup = true; // backup because next start we restore all backups
-					break;
+				cAse ShutdownReAson.QUIT:
+					doBAckup = true; // bAckup becAuse next stArt we restore All bAckups
+					breAk;
 
-				case ShutdownReason.RELOAD:
-					doBackup = true; // backup because after window reload, backups restore
-					break;
+				cAse ShutdownReAson.RELOAD:
+					doBAckup = true; // bAckup becAuse After window reloAd, bAckups restore
+					breAk;
 
-				case ShutdownReason.LOAD:
-					if (this.contextService.getWorkbenchState() !== WorkbenchState.EMPTY && this.filesConfigurationService.hotExitConfiguration === HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE) {
-						doBackup = true; // backup if a folder is open and onExitAndWindowClose is configured
+				cAse ShutdownReAson.LOAD:
+					if (this.contextService.getWorkbenchStAte() !== WorkbenchStAte.EMPTY && this.filesConfigurAtionService.hotExitConfigurAtion === HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE) {
+						doBAckup = true; // bAckup if A folder is open And onExitAndWindowClose is configured
 					} else {
-						doBackup = false; // do not backup because we are switching contexts
+						doBAckup = fAlse; // do not bAckup becAuse we Are switching contexts
 					}
-					break;
+					breAk;
 			}
 		}
 
-		// Perform a backup of all dirty working copies unless a backup already exists
-		const backups: IWorkingCopy[] = [];
-		if (doBackup) {
-			await Promise.all(workingCopies.map(async workingCopy => {
+		// Perform A bAckup of All dirty working copies unless A bAckup AlreAdy exists
+		const bAckups: IWorkingCopy[] = [];
+		if (doBAckup) {
+			AwAit Promise.All(workingCopies.mAp(Async workingCopy => {
 				const contentVersion = this.getContentVersion(workingCopy);
 
-				// Backup exists
-				if (this.backupFileService.hasBackupSync(workingCopy.resource, contentVersion)) {
-					backups.push(workingCopy);
+				// BAckup exists
+				if (this.bAckupFileService.hAsBAckupSync(workingCopy.resource, contentVersion)) {
+					bAckups.push(workingCopy);
 				}
 
-				// Backup does not exist
+				// BAckup does not exist
 				else {
-					const backup = await workingCopy.backup(CancellationToken.None);
-					await this.backupFileService.backup(workingCopy.resource, backup.content, contentVersion, backup.meta);
+					const bAckup = AwAit workingCopy.bAckup(CAncellAtionToken.None);
+					AwAit this.bAckupFileService.bAckup(workingCopy.resource, bAckup.content, contentVersion, bAckup.metA);
 
-					backups.push(workingCopy);
+					bAckups.push(workingCopy);
 				}
 			}));
 		}
 
-		return backups;
+		return bAckups;
 	}
 
-	private async confirmBeforeShutdown(workingCopies: IWorkingCopy[]): Promise<boolean> {
+	privAte Async confirmBeforeShutdown(workingCopies: IWorkingCopy[]): Promise<booleAn> {
 
-		// Save
-		const confirm = await this.fileDialogService.showSaveConfirm(workingCopies.map(workingCopy => workingCopy.name));
+		// SAve
+		const confirm = AwAit this.fileDiAlogService.showSAveConfirm(workingCopies.mAp(workingCopy => workingCopy.nAme));
 		if (confirm === ConfirmResult.SAVE) {
-			const dirtyCountBeforeSave = this.workingCopyService.dirtyCount;
-			await this.doSaveAllBeforeShutdown(workingCopies, SaveReason.EXPLICIT);
+			const dirtyCountBeforeSAve = this.workingCopyService.dirtyCount;
+			AwAit this.doSAveAllBeforeShutdown(workingCopies, SAveReAson.EXPLICIT);
 
-			const savedWorkingCopies = dirtyCountBeforeSave - this.workingCopyService.dirtyCount;
-			if (savedWorkingCopies < workingCopies.length) {
-				return true; // veto (save failed or was canceled)
+			const sAvedWorkingCopies = dirtyCountBeforeSAve - this.workingCopyService.dirtyCount;
+			if (sAvedWorkingCopies < workingCopies.length) {
+				return true; // veto (sAve fAiled or wAs cAnceled)
 			}
 
-			return this.noVeto(workingCopies); // no veto (dirty saved)
+			return this.noVeto(workingCopies); // no veto (dirty sAved)
 		}
 
-		// Don't Save
+		// Don't SAve
 		else if (confirm === ConfirmResult.DONT_SAVE) {
-			await this.doRevertAllBeforeShutdown(workingCopies);
+			AwAit this.doRevertAllBeforeShutdown(workingCopies);
 
 			return this.noVeto(workingCopies); // no veto (dirty reverted)
 		}
 
-		// Cancel
-		return true; // veto (user canceled)
+		// CAncel
+		return true; // veto (user cAnceled)
 	}
 
-	private async doSaveAllBeforeShutdown(workingCopies: IWorkingCopy[], reason: SaveReason): Promise<void>;
-	private async doSaveAllBeforeShutdown(includeUntitled: boolean, reason: SaveReason): Promise<void>;
-	private async doSaveAllBeforeShutdown(arg1: IWorkingCopy[] | boolean, reason: SaveReason): Promise<void> {
-		const workingCopies = Array.isArray(arg1) ? arg1 : this.workingCopyService.dirtyWorkingCopies.filter(workingCopy => {
-			if (arg1 === false && (workingCopy.capabilities & WorkingCopyCapabilities.Untitled)) {
-				return false; // skip untitled unless explicitly included
+	privAte Async doSAveAllBeforeShutdown(workingCopies: IWorkingCopy[], reAson: SAveReAson): Promise<void>;
+	privAte Async doSAveAllBeforeShutdown(includeUntitled: booleAn, reAson: SAveReAson): Promise<void>;
+	privAte Async doSAveAllBeforeShutdown(Arg1: IWorkingCopy[] | booleAn, reAson: SAveReAson): Promise<void> {
+		const workingCopies = ArrAy.isArrAy(Arg1) ? Arg1 : this.workingCopyService.dirtyWorkingCopies.filter(workingCopy => {
+			if (Arg1 === fAlse && (workingCopy.cApAbilities & WorkingCopyCApAbilities.Untitled)) {
+				return fAlse; // skip untitled unless explicitly included
 			}
 
 			return true;
 		});
 
-		// Skip save participants on shutdown for performance reasons
-		const saveOptions = { skipSaveParticipants: true, reason };
+		// Skip sAve pArticipAnts on shutdown for performAnce reAsons
+		const sAveOptions = { skipSAvePArticipAnts: true, reAson };
 
-		// First save through the editor service if we save all to benefit
-		// from some extras like switching to untitled dirty editors before saving.
-		let result: boolean | undefined = undefined;
-		if (typeof arg1 === 'boolean' || workingCopies.length === this.workingCopyService.dirtyCount) {
-			result = await this.editorService.saveAll({ includeUntitled: typeof arg1 === 'boolean' ? arg1 : true, ...saveOptions });
+		// First sAve through the editor service if we sAve All to benefit
+		// from some extrAs like switching to untitled dirty editors before sAving.
+		let result: booleAn | undefined = undefined;
+		if (typeof Arg1 === 'booleAn' || workingCopies.length === this.workingCopyService.dirtyCount) {
+			result = AwAit this.editorService.sAveAll({ includeUntitled: typeof Arg1 === 'booleAn' ? Arg1 : true, ...sAveOptions });
 		}
 
-		// If we still have dirty working copies, save those directly
-		// unless the save was not successful (e.g. cancelled)
-		if (result !== false) {
-			await Promise.all(workingCopies.map(workingCopy => workingCopy.isDirty() ? workingCopy.save(saveOptions) : true));
+		// If we still hAve dirty working copies, sAve those directly
+		// unless the sAve wAs not successful (e.g. cAncelled)
+		if (result !== fAlse) {
+			AwAit Promise.All(workingCopies.mAp(workingCopy => workingCopy.isDirty() ? workingCopy.sAve(sAveOptions) : true));
 		}
 	}
 
-	private async doRevertAllBeforeShutdown(workingCopies: IWorkingCopy[]): Promise<void> {
+	privAte Async doRevertAllBeforeShutdown(workingCopies: IWorkingCopy[]): Promise<void> {
 
 		// Soft revert is good enough on shutdown
 		const revertOptions = { soft: true };
 
-		// First revert through the editor service if we revert all
+		// First revert through the editor service if we revert All
 		if (workingCopies.length === this.workingCopyService.dirtyCount) {
-			await this.editorService.revertAll(revertOptions);
+			AwAit this.editorService.revertAll(revertOptions);
 		}
 
-		// If we still have dirty working copies, revert those directly
-		// unless the revert operation was not successful (e.g. cancelled)
-		await Promise.all(workingCopies.map(workingCopy => workingCopy.isDirty() ? workingCopy.revert(revertOptions) : undefined));
+		// If we still hAve dirty working copies, revert those directly
+		// unless the revert operAtion wAs not successful (e.g. cAncelled)
+		AwAit Promise.All(workingCopies.mAp(workingCopy => workingCopy.isDirty() ? workingCopy.revert(revertOptions) : undefined));
 	}
 
-	private noVeto(backupsToDiscard: IWorkingCopy[]): boolean | Promise<boolean> {
-		if (this.lifecycleService.phase < LifecyclePhase.Restored) {
-			return false; // if editors have not restored, we are not up to speed with backups and thus should not discard them
+	privAte noVeto(bAckupsToDiscArd: IWorkingCopy[]): booleAn | Promise<booleAn> {
+		if (this.lifecycleService.phAse < LifecyclePhAse.Restored) {
+			return fAlse; // if editors hAve not restored, we Are not up to speed with bAckups And thus should not discArd them
 		}
 
-		return Promise.all(backupsToDiscard.map(workingCopy => this.backupFileService.discardBackup(workingCopy.resource))).then(() => false, () => false);
+		return Promise.All(bAckupsToDiscArd.mAp(workingCopy => this.bAckupFileService.discArdBAckup(workingCopy.resource))).then(() => fAlse, () => fAlse);
 	}
 
-	private async onBeforeShutdownWithoutDirty(): Promise<boolean> {
-		// If we have proceeded enough that editors and dirty state
-		// has restored, we make sure that no backups lure around
-		// given we have no known dirty working copy. This helps
-		// to clean up stale backups as for example reported in
+	privAte Async onBeforeShutdownWithoutDirty(): Promise<booleAn> {
+		// If we hAve proceeded enough thAt editors And dirty stAte
+		// hAs restored, we mAke sure thAt no bAckups lure Around
+		// given we hAve no known dirty working copy. This helps
+		// to cleAn up stAle bAckups As for exAmple reported in
 		// https://github.com/microsoft/vscode/issues/92962
-		if (this.lifecycleService.phase >= LifecyclePhase.Restored) {
+		if (this.lifecycleService.phAse >= LifecyclePhAse.Restored) {
 			try {
-				await this.backupFileService.discardBackups();
-			} catch (error) {
-				this.logService.error(`[backup tracker] error discarding backups: ${error}`);
+				AwAit this.bAckupFileService.discArdBAckups();
+			} cAtch (error) {
+				this.logService.error(`[bAckup trAcker] error discArding bAckups: ${error}`);
 			}
 		}
 
-		return false; // no veto (no dirty)
+		return fAlse; // no veto (no dirty)
 	}
 }

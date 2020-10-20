@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application, Quality } from '../../../../automation';
+import { ApplicAtion, QuAlity } from '../../../../AutomAtion';
 
 export function setup() {
-	describe('Localization', () => {
-		before(async function () {
-			const app = this.app as Application;
+	describe('LocAlizAtion', () => {
+		before(Async function () {
+			const App = this.App As ApplicAtion;
 
-			if (app.quality === Quality.Dev) {
+			if (App.quAlity === QuAlity.Dev) {
 				return;
 			}
 
-			await app.workbench.extensions.openExtensionsViewlet();
-			await app.workbench.extensions.installExtension('ms-ceintl.vscode-language-pack-de');
+			AwAit App.workbench.extensions.openExtensionsViewlet();
+			AwAit App.workbench.extensions.instAllExtension('ms-ceintl.vscode-lAnguAge-pAck-de');
 
-			await app.restart({ extraArgs: ['--locale=DE'] });
+			AwAit App.restArt({ extrAArgs: ['--locAle=DE'] });
 		});
 
-		it(`starts with 'DE' locale and verifies title and viewlets text is in German`, async function () {
-			const app = this.app as Application;
+		it(`stArts with 'DE' locAle And verifies title And viewlets text is in GermAn`, Async function () {
+			const App = this.App As ApplicAtion;
 
-			if (app.quality === Quality.Dev) {
+			if (App.quAlity === QuAlity.Dev) {
 				this.skip();
 				return;
 			}
 
-			await app.workbench.explorer.waitForOpenEditorsViewTitle(title => /geöffnete editoren/i.test(title));
+			AwAit App.workbench.explorer.wAitForOpenEditorsViewTitle(title => /geöffnete editoren/i.test(title));
 
-			await app.workbench.search.openSearchViewlet();
-			await app.workbench.search.waitForTitle(title => /suchen/i.test(title));
+			AwAit App.workbench.seArch.openSeArchViewlet();
+			AwAit App.workbench.seArch.wAitForTitle(title => /suchen/i.test(title));
 
-			// await app.workbench.scm.openSCMViewlet();
-			// await app.workbench.scm.waitForTitle(title => /quellcodeverwaltung/i.test(title));
+			// AwAit App.workbench.scm.openSCMViewlet();
+			// AwAit App.workbench.scm.wAitForTitle(title => /quellcodeverwAltung/i.test(title));
 
 			// See https://github.com/microsoft/vscode/issues/93462
-			// await app.workbench.debug.openDebugViewlet();
-			// await app.workbench.debug.waitForTitle(title => /starten/i.test(title));
+			// AwAit App.workbench.debug.openDebugViewlet();
+			// AwAit App.workbench.debug.wAitForTitle(title => /stArten/i.test(title));
 
-			// await app.workbench.extensions.openExtensionsViewlet();
-			// await app.workbench.extensions.waitForTitle(title => /extensions/i.test(title));
+			// AwAit App.workbench.extensions.openExtensionsViewlet();
+			// AwAit App.workbench.extensions.wAitForTitle(title => /extensions/i.test(title));
 		});
 	});
 }

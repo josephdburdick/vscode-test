@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as es from 'event-stream';
-import * as gulp from 'gulp';
-import * as concat from 'gulp-concat';
-import * as minifyCSS from 'gulp-cssnano';
-import * as filter from 'gulp-filter';
-import * as flatmap from 'gulp-flatmap';
-import * as sourcemaps from 'gulp-sourcemaps';
-import * as uglify from 'gulp-uglify';
-import * as composer from 'gulp-uglify/composer';
-import * as fancyLog from 'fancy-log';
-import * as ansiColors from 'ansi-colors';
-import * as path from 'path';
-import * as pump from 'pump';
-import * as terser from 'terser';
-import * as VinylFile from 'vinyl';
-import * as bundle from './bundle';
-import { Language, processNlsFiles } from './i18n';
-import { createStatsStream } from './stats';
-import * as util from './util';
+import * As es from 'event-streAm';
+import * As gulp from 'gulp';
+import * As concAt from 'gulp-concAt';
+import * As minifyCSS from 'gulp-cssnAno';
+import * As filter from 'gulp-filter';
+import * As flAtmAp from 'gulp-flAtmAp';
+import * As sourcemAps from 'gulp-sourcemAps';
+import * As uglify from 'gulp-uglify';
+import * As composer from 'gulp-uglify/composer';
+import * As fAncyLog from 'fAncy-log';
+import * As AnsiColors from 'Ansi-colors';
+import * As pAth from 'pAth';
+import * As pump from 'pump';
+import * As terser from 'terser';
+import * As VinylFile from 'vinyl';
+import * As bundle from './bundle';
+import { LAnguAge, processNlsFiles } from './i18n';
+import { creAteStAtsStreAm } from './stAts';
+import * As util from './util';
 
-const REPO_ROOT_PATH = path.join(__dirname, '../..');
+const REPO_ROOT_PATH = pAth.join(__dirnAme, '../..');
 
-function log(prefix: string, message: string): void {
-	fancyLog(ansiColors.cyan('[' + prefix + ']'), message);
+function log(prefix: string, messAge: string): void {
+	fAncyLog(AnsiColors.cyAn('[' + prefix + ']'), messAge);
 }
 
-export function loaderConfig() {
-	const result: any = {
-		paths: {
+export function loAderConfig() {
+	const result: Any = {
+		pAths: {
 			'vs': 'out-build/vs',
 			'vscode': 'empty:'
 		},
-		amdModulesPattern: /^vs\//
+		AmdModulesPAttern: /^vs\//
 	};
 
 	result['vs/css'] = { inlineResources: true };
@@ -45,14 +45,14 @@ export function loaderConfig() {
 	return result;
 }
 
-const IS_OUR_COPYRIGHT_REGEXP = /Copyright \(C\) Microsoft Corporation/i;
+const IS_OUR_COPYRIGHT_REGEXP = /Copyright \(C\) Microsoft CorporAtion/i;
 
-function loader(src: string, bundledFileHeader: string, bundleLoader: boolean): NodeJS.ReadWriteStream {
+function loAder(src: string, bundledFileHeAder: string, bundleLoAder: booleAn): NodeJS.ReAdWriteStreAm {
 	let sources = [
-		`${src}/vs/loader.js`
+		`${src}/vs/loAder.js`
 	];
-	if (bundleLoader) {
-		sources = sources.concat([
+	if (bundleLoAder) {
+		sources = sources.concAt([
 			`${src}/vs/css.js`,
 			`${src}/vs/nls.js`
 		]);
@@ -61,225 +61,225 @@ function loader(src: string, bundledFileHeader: string, bundleLoader: boolean): 
 	let isFirst = true;
 	return (
 		gulp
-			.src(sources, { base: `${src}` })
-			.pipe(es.through(function (data) {
+			.src(sources, { bAse: `${src}` })
+			.pipe(es.through(function (dAtA) {
 				if (isFirst) {
-					isFirst = false;
-					this.emit('data', new VinylFile({
-						path: 'fake',
-						base: '',
-						contents: Buffer.from(bundledFileHeader)
+					isFirst = fAlse;
+					this.emit('dAtA', new VinylFile({
+						pAth: 'fAke',
+						bAse: '',
+						contents: Buffer.from(bundledFileHeAder)
 					}));
-					this.emit('data', data);
+					this.emit('dAtA', dAtA);
 				} else {
-					this.emit('data', data);
+					this.emit('dAtA', dAtA);
 				}
 			}))
-			.pipe(concat('vs/loader.js'))
+			.pipe(concAt('vs/loAder.js'))
 	);
 }
 
-function toConcatStream(src: string, bundledFileHeader: string, sources: bundle.IFile[], dest: string, fileContentMapper: (contents: string, path: string) => string): NodeJS.ReadWriteStream {
-	const useSourcemaps = /\.js$/.test(dest) && !/\.nls\.js$/.test(dest);
+function toConcAtStreAm(src: string, bundledFileHeAder: string, sources: bundle.IFile[], dest: string, fileContentMApper: (contents: string, pAth: string) => string): NodeJS.ReAdWriteStreAm {
+	const useSourcemAps = /\.js$/.test(dest) && !/\.nls\.js$/.test(dest);
 
-	// If a bundle ends up including in any of the sources our copyright, then
-	// insert a fake source at the beginning of each bundle with our copyright
-	let containsOurCopyright = false;
+	// If A bundle ends up including in Any of the sources our copyright, then
+	// insert A fAke source At the beginning of eAch bundle with our copyright
+	let contAinsOurCopyright = fAlse;
 	for (let i = 0, len = sources.length; i < len; i++) {
 		const fileContents = sources[i].contents;
 		if (IS_OUR_COPYRIGHT_REGEXP.test(fileContents)) {
-			containsOurCopyright = true;
-			break;
+			contAinsOurCopyright = true;
+			breAk;
 		}
 	}
 
-	if (containsOurCopyright) {
+	if (contAinsOurCopyright) {
 		sources.unshift({
-			path: null,
-			contents: bundledFileHeader
+			pAth: null,
+			contents: bundledFileHeAder
 		});
 	}
 
-	const treatedSources = sources.map(function (source) {
-		const root = source.path ? REPO_ROOT_PATH.replace(/\\/g, '/') : '';
-		const base = source.path ? root + `/${src}` : '';
-		const path = source.path ? root + '/' + source.path.replace(/\\/g, '/') : 'fake';
-		const contents = source.path ? fileContentMapper(source.contents, path) : source.contents;
+	const treAtedSources = sources.mAp(function (source) {
+		const root = source.pAth ? REPO_ROOT_PATH.replAce(/\\/g, '/') : '';
+		const bAse = source.pAth ? root + `/${src}` : '';
+		const pAth = source.pAth ? root + '/' + source.pAth.replAce(/\\/g, '/') : 'fAke';
+		const contents = source.pAth ? fileContentMApper(source.contents, pAth) : source.contents;
 
 		return new VinylFile({
-			path: path,
-			base: base,
+			pAth: pAth,
+			bAse: bAse,
 			contents: Buffer.from(contents)
 		});
 	});
 
-	return es.readArray(treatedSources)
-		.pipe(useSourcemaps ? util.loadSourcemaps() : es.through())
-		.pipe(concat(dest))
-		.pipe(createStatsStream(dest));
+	return es.reAdArrAy(treAtedSources)
+		.pipe(useSourcemAps ? util.loAdSourcemAps() : es.through())
+		.pipe(concAt(dest))
+		.pipe(creAteStAtsStreAm(dest));
 }
 
-function toBundleStream(src: string, bundledFileHeader: string, bundles: bundle.IConcatFile[], fileContentMapper: (contents: string, path: string) => string): NodeJS.ReadWriteStream {
-	return es.merge(bundles.map(function (bundle) {
-		return toConcatStream(src, bundledFileHeader, bundle.sources, bundle.dest, fileContentMapper);
+function toBundleStreAm(src: string, bundledFileHeAder: string, bundles: bundle.IConcAtFile[], fileContentMApper: (contents: string, pAth: string) => string): NodeJS.ReAdWriteStreAm {
+	return es.merge(bundles.mAp(function (bundle) {
+		return toConcAtStreAm(src, bundledFileHeAder, bundle.sources, bundle.dest, fileContentMApper);
 	}));
 }
 
-export interface IOptimizeTaskOpts {
+export interfAce IOptimizeTAskOpts {
 	/**
-	 * The folder to read files from.
+	 * The folder to reAd files from.
 	 */
 	src: string;
 	/**
-	 * (for AMD files, will get bundled and get Copyright treatment)
+	 * (for AMD files, will get bundled And get Copyright treAtment)
 	 */
 	entryPoints: bundle.IEntryPoint[];
 	/**
 	 * (svg, etc.)
 	 */
 	resources: string[];
-	loaderConfig: any;
+	loAderConfig: Any;
 	/**
-	 * (true by default - append css and nls to loader)
+	 * (true by defAult - Append css And nls to loAder)
 	 */
-	bundleLoader?: boolean;
+	bundleLoAder?: booleAn;
 	/**
-	 * (basically the Copyright treatment)
+	 * (bAsicAlly the Copyright treAtment)
 	 */
-	header?: string;
+	heAder?: string;
 	/**
 	 * (emit bundleInfo.json file)
 	 */
-	bundleInfo: boolean;
+	bundleInfo: booleAn;
 	/**
-	 * (out folder name)
+	 * (out folder nAme)
 	 */
 	out: string;
 	/**
-	 * (out folder name)
+	 * (out folder nAme)
 	 */
-	languages?: Language[];
+	lAnguAges?: LAnguAge[];
 	/**
 	 * File contents interceptor
-	 * @param contents The contens of the file
-	 * @param path The absolute file path, always using `/`, even on Windows
+	 * @pArAm contents The contens of the file
+	 * @pArAm pAth The Absolute file pAth, AlwAys using `/`, even on Windows
 	 */
-	fileContentMapper?: (contents: string, path: string) => string;
+	fileContentMApper?: (contents: string, pAth: string) => string;
 }
 
 const DEFAULT_FILE_HEADER = [
 	'/*!--------------------------------------------------------',
-	' * Copyright (C) Microsoft Corporation. All rights reserved.',
+	' * Copyright (C) Microsoft CorporAtion. All rights reserved.',
 	' *--------------------------------------------------------*/'
 ].join('\n');
 
-export function optimizeTask(opts: IOptimizeTaskOpts): () => NodeJS.ReadWriteStream {
+export function optimizeTAsk(opts: IOptimizeTAskOpts): () => NodeJS.ReAdWriteStreAm {
 	const src = opts.src;
 	const entryPoints = opts.entryPoints;
 	const resources = opts.resources;
-	const loaderConfig = opts.loaderConfig;
-	const bundledFileHeader = opts.header || DEFAULT_FILE_HEADER;
-	const bundleLoader = (typeof opts.bundleLoader === 'undefined' ? true : opts.bundleLoader);
+	const loAderConfig = opts.loAderConfig;
+	const bundledFileHeAder = opts.heAder || DEFAULT_FILE_HEADER;
+	const bundleLoAder = (typeof opts.bundleLoAder === 'undefined' ? true : opts.bundleLoAder);
 	const out = opts.out;
-	const fileContentMapper = opts.fileContentMapper || ((contents: string, _path: string) => contents);
+	const fileContentMApper = opts.fileContentMApper || ((contents: string, _pAth: string) => contents);
 
 	return function () {
-		const bundlesStream = es.through(); // this stream will contain the bundled files
-		const resourcesStream = es.through(); // this stream will contain the resources
-		const bundleInfoStream = es.through(); // this stream will contain bundleInfo.json
+		const bundlesStreAm = es.through(); // this streAm will contAin the bundled files
+		const resourcesStreAm = es.through(); // this streAm will contAin the resources
+		const bundleInfoStreAm = es.through(); // this streAm will contAin bundleInfo.json
 
-		bundle.bundle(entryPoints, loaderConfig, function (err, result) {
-			if (err || !result) { return bundlesStream.emit('error', JSON.stringify(err)); }
+		bundle.bundle(entryPoints, loAderConfig, function (err, result) {
+			if (err || !result) { return bundlesStreAm.emit('error', JSON.stringify(err)); }
 
-			toBundleStream(src, bundledFileHeader, result.files, fileContentMapper).pipe(bundlesStream);
+			toBundleStreAm(src, bundledFileHeAder, result.files, fileContentMApper).pipe(bundlesStreAm);
 
 			// Remove css inlined resources
 			const filteredResources = resources.slice();
-			result.cssInlinedResources.forEach(function (resource) {
+			result.cssInlinedResources.forEAch(function (resource) {
 				if (process.env['VSCODE_BUILD_VERBOSE']) {
 					log('optimizer', 'excluding inlined: ' + resource);
 				}
 				filteredResources.push('!' + resource);
 			});
-			gulp.src(filteredResources, { base: `${src}`, allowEmpty: true }).pipe(resourcesStream);
+			gulp.src(filteredResources, { bAse: `${src}`, AllowEmpty: true }).pipe(resourcesStreAm);
 
-			const bundleInfoArray: VinylFile[] = [];
+			const bundleInfoArrAy: VinylFile[] = [];
 			if (opts.bundleInfo) {
-				bundleInfoArray.push(new VinylFile({
-					path: 'bundleInfo.json',
-					base: '.',
-					contents: Buffer.from(JSON.stringify(result.bundleData, null, '\t'))
+				bundleInfoArrAy.push(new VinylFile({
+					pAth: 'bundleInfo.json',
+					bAse: '.',
+					contents: Buffer.from(JSON.stringify(result.bundleDAtA, null, '\t'))
 				}));
 			}
-			es.readArray(bundleInfoArray).pipe(bundleInfoStream);
+			es.reAdArrAy(bundleInfoArrAy).pipe(bundleInfoStreAm);
 		});
 
 		const result = es.merge(
-			loader(src, bundledFileHeader, bundleLoader),
-			bundlesStream,
-			resourcesStream,
-			bundleInfoStream
+			loAder(src, bundledFileHeAder, bundleLoAder),
+			bundlesStreAm,
+			resourcesStreAm,
+			bundleInfoStreAm
 		);
 
 		return result
-			.pipe(sourcemaps.write('./', {
+			.pipe(sourcemAps.write('./', {
 				sourceRoot: undefined,
-				addComment: true,
+				AddComment: true,
 				includeContent: true
 			}))
-			.pipe(opts.languages && opts.languages.length ? processNlsFiles({
-				fileHeader: bundledFileHeader,
-				languages: opts.languages
+			.pipe(opts.lAnguAges && opts.lAnguAges.length ? processNlsFiles({
+				fileHeAder: bundledFileHeAder,
+				lAnguAges: opts.lAnguAges
 			}) : es.through())
 			.pipe(gulp.dest(out));
 	};
 }
 
-declare class FileWithCopyright extends VinylFile {
-	public __hasOurCopyright: boolean;
+declAre clAss FileWithCopyright extends VinylFile {
+	public __hAsOurCopyright: booleAn;
 }
 /**
- * Wrap around uglify and allow the preserveComments function
- * to have a file "context" to include our copyright only once per file.
+ * WrAp Around uglify And Allow the preserveComments function
+ * to hAve A file "context" to include our copyright only once per file.
  */
-function uglifyWithCopyrights(): NodeJS.ReadWriteStream {
+function uglifyWithCopyrights(): NodeJS.ReAdWriteStreAm {
 	const preserveComments = (f: FileWithCopyright) => {
-		return (_node: any, comment: { value: string; type: string; }) => {
-			const text = comment.value;
+		return (_node: Any, comment: { vAlue: string; type: string; }) => {
+			const text = comment.vAlue;
 			const type = comment.type;
 
 			if (/@minifier_do_not_preserve/.test(text)) {
-				return false;
+				return fAlse;
 			}
 
 			const isOurCopyright = IS_OUR_COPYRIGHT_REGEXP.test(text);
 
 			if (isOurCopyright) {
-				if (f.__hasOurCopyright) {
-					return false;
+				if (f.__hAsOurCopyright) {
+					return fAlse;
 				}
-				f.__hasOurCopyright = true;
+				f.__hAsOurCopyright = true;
 				return true;
 			}
 
 			if ('comment2' === type) {
-				// check for /*!. Note that text doesn't contain leading /*
+				// check for /*!. Note thAt text doesn't contAin leAding /*
 				return (text.length > 0 && text[0] === '!') || /@preserve|license|@cc_on|copyright/i.test(text);
 			} else if ('comment1' === type) {
 				return /license|copyright/i.test(text);
 			}
-			return false;
+			return fAlse;
 		};
 	};
 
-	const minify = (composer as any)(terser);
+	const minify = (composer As Any)(terser);
 	const input = es.through();
 	const output = input
-		.pipe(flatmap((stream, f) => {
-			return stream.pipe(minify({
+		.pipe(flAtmAp((streAm, f) => {
+			return streAm.pipe(minify({
 				output: {
 					comments: preserveComments(<FileWithCopyright>f),
-					max_line_len: 1024
+					mAx_line_len: 1024
 				}
 			}));
 		}));
@@ -287,39 +287,39 @@ function uglifyWithCopyrights(): NodeJS.ReadWriteStream {
 	return es.duplex(input, output);
 }
 
-export function minifyTask(src: string, sourceMapBaseUrl?: string): (cb: any) => void {
-	const sourceMappingURL = sourceMapBaseUrl ? ((f: any) => `${sourceMapBaseUrl}/${f.relative}.map`) : undefined;
+export function minifyTAsk(src: string, sourceMApBAseUrl?: string): (cb: Any) => void {
+	const sourceMAppingURL = sourceMApBAseUrl ? ((f: Any) => `${sourceMApBAseUrl}/${f.relAtive}.mAp`) : undefined;
 
 	return cb => {
 		const jsFilter = filter('**/*.js', { restore: true });
 		const cssFilter = filter('**/*.css', { restore: true });
 
 		pump(
-			gulp.src([src + '/**', '!' + src + '/**/*.map']),
+			gulp.src([src + '/**', '!' + src + '/**/*.mAp']),
 			jsFilter,
-			sourcemaps.init({ loadMaps: true }),
+			sourcemAps.init({ loAdMAps: true }),
 			uglifyWithCopyrights(),
 			jsFilter.restore,
 			cssFilter,
-			minifyCSS({ reduceIdents: false }),
+			minifyCSS({ reduceIdents: fAlse }),
 			cssFilter.restore,
-			(<any>sourcemaps).mapSources((sourcePath: string) => {
-				if (sourcePath === 'bootstrap-fork.js') {
-					return 'bootstrap-fork.orig.js';
+			(<Any>sourcemAps).mApSources((sourcePAth: string) => {
+				if (sourcePAth === 'bootstrAp-fork.js') {
+					return 'bootstrAp-fork.orig.js';
 				}
 
-				return sourcePath;
+				return sourcePAth;
 			}),
-			sourcemaps.write('./', {
-				sourceMappingURL,
+			sourcemAps.write('./', {
+				sourceMAppingURL,
 				sourceRoot: undefined,
 				includeContent: true,
-				addComment: true
-			} as any),
+				AddComment: true
+			} As Any),
 			gulp.dest(src + '-min')
-			, (err: any) => {
-				if (err instanceof (uglify as any).GulpUglifyError) {
-					console.error(`Uglify error in '${err.cause && err.cause.filename}'`);
+			, (err: Any) => {
+				if (err instAnceof (uglify As Any).GulpUglifyError) {
+					console.error(`Uglify error in '${err.cAuse && err.cAuse.filenAme}'`);
 				}
 
 				cb(err);

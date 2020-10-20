@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { isEmptyObject } from 'vs/base/common/types';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { isEmptyObject } from 'vs/bAse/common/types';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export interface ISearchHistoryService {
-	readonly _serviceBrand: undefined;
-	onDidClearHistory: Event<void>;
-	clearHistory(): void;
-	load(): ISearchHistoryValues;
-	save(history: ISearchHistoryValues): void;
+export interfAce ISeArchHistoryService {
+	reAdonly _serviceBrAnd: undefined;
+	onDidCleArHistory: Event<void>;
+	cleArHistory(): void;
+	loAd(): ISeArchHistoryVAlues;
+	sAve(history: ISeArchHistoryVAlues): void;
 }
 
-export const ISearchHistoryService = createDecorator<ISearchHistoryService>('searchHistoryService');
+export const ISeArchHistoryService = creAteDecorAtor<ISeArchHistoryService>('seArchHistoryService');
 
-export interface ISearchHistoryValues {
-	search?: string[];
-	replace?: string[];
+export interfAce ISeArchHistoryVAlues {
+	seArch?: string[];
+	replAce?: string[];
 	include?: string[];
 	exclude?: string[];
 }
 
-export class SearchHistoryService implements ISearchHistoryService {
-	declare readonly _serviceBrand: undefined;
+export clAss SeArchHistoryService implements ISeArchHistoryService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly SEARCH_HISTORY_KEY = 'workbench.search.history';
+	privAte stAtic reAdonly SEARCH_HISTORY_KEY = 'workbench.seArch.history';
 
-	private readonly _onDidClearHistory = new Emitter<void>();
-	readonly onDidClearHistory: Event<void> = this._onDidClearHistory.event;
+	privAte reAdonly _onDidCleArHistory = new Emitter<void>();
+	reAdonly onDidCleArHistory: Event<void> = this._onDidCleArHistory.event;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService
 	) { }
 
-	clearHistory(): void {
-		this.storageService.remove(SearchHistoryService.SEARCH_HISTORY_KEY, StorageScope.WORKSPACE);
-		this._onDidClearHistory.fire();
+	cleArHistory(): void {
+		this.storAgeService.remove(SeArchHistoryService.SEARCH_HISTORY_KEY, StorAgeScope.WORKSPACE);
+		this._onDidCleArHistory.fire();
 	}
 
-	load(): ISearchHistoryValues {
-		let result: ISearchHistoryValues | undefined;
-		const raw = this.storageService.get(SearchHistoryService.SEARCH_HISTORY_KEY, StorageScope.WORKSPACE);
+	loAd(): ISeArchHistoryVAlues {
+		let result: ISeArchHistoryVAlues | undefined;
+		const rAw = this.storAgeService.get(SeArchHistoryService.SEARCH_HISTORY_KEY, StorAgeScope.WORKSPACE);
 
-		if (raw) {
+		if (rAw) {
 			try {
-				result = JSON.parse(raw);
-			} catch (e) {
-				// Invalid data
+				result = JSON.pArse(rAw);
+			} cAtch (e) {
+				// InvAlid dAtA
 			}
 		}
 
 		return result || {};
 	}
 
-	save(history: ISearchHistoryValues): void {
+	sAve(history: ISeArchHistoryVAlues): void {
 		if (isEmptyObject(history)) {
-			this.storageService.remove(SearchHistoryService.SEARCH_HISTORY_KEY, StorageScope.WORKSPACE);
+			this.storAgeService.remove(SeArchHistoryService.SEARCH_HISTORY_KEY, StorAgeScope.WORKSPACE);
 		} else {
-			this.storageService.store(SearchHistoryService.SEARCH_HISTORY_KEY, JSON.stringify(history), StorageScope.WORKSPACE);
+			this.storAgeService.store(SeArchHistoryService.SEARCH_HISTORY_KEY, JSON.stringify(history), StorAgeScope.WORKSPACE);
 		}
 	}
 }

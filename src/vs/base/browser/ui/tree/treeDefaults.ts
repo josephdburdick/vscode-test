@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import { AsyncDataTree } from 'vs/base/browser/ui/tree/asyncDataTree';
+import * As nls from 'vs/nls';
+import { Action } from 'vs/bAse/common/Actions';
+import { AsyncDAtATree } from 'vs/bAse/browser/ui/tree/AsyncDAtATree';
 
-export class CollapseAllAction<TInput, T, TFilterData = void> extends Action {
+export clAss CollApseAllAction<TInput, T, TFilterDAtA = void> extends Action {
 
-	constructor(private viewer: AsyncDataTree<TInput, T, TFilterData>, enabled: boolean) {
-		super('vs.tree.collapse', nls.localize('collapse all', "Collapse All"), 'collapse-all', enabled);
+	constructor(privAte viewer: AsyncDAtATree<TInput, T, TFilterDAtA>, enAbled: booleAn) {
+		super('vs.tree.collApse', nls.locAlize('collApse All', "CollApse All"), 'collApse-All', enAbled);
 	}
 
-	async run(): Promise<any> {
-		this.viewer.collapseAll();
+	Async run(): Promise<Any> {
+		this.viewer.collApseAll();
 		this.viewer.setSelection([]);
 		this.viewer.setFocus([]);
 		this.viewer.domFocus();

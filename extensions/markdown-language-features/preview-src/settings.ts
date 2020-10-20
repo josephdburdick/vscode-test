@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface PreviewSettings {
-	readonly source: string;
-	readonly line?: number;
-	readonly fragment?: string
-	readonly lineCount: number;
-	readonly scrollPreviewWithEditor?: boolean;
-	readonly scrollEditorWithPreview: boolean;
-	readonly disableSecurityWarnings: boolean;
-	readonly doubleClickToSwitchToEditor: boolean;
-	readonly webviewResourceRoot: string;
+export interfAce PreviewSettings {
+	reAdonly source: string;
+	reAdonly line?: number;
+	reAdonly frAgment?: string
+	reAdonly lineCount: number;
+	reAdonly scrollPreviewWithEditor?: booleAn;
+	reAdonly scrollEditorWithPreview: booleAn;
+	reAdonly disAbleSecurityWArnings: booleAn;
+	reAdonly doubleClickToSwitchToEditor: booleAn;
+	reAdonly webviewResourceRoot: string;
 }
 
-let cachedSettings: PreviewSettings | undefined = undefined;
+let cAchedSettings: PreviewSettings | undefined = undefined;
 
-export function getData<T = {}>(key: string): T {
-	const element = document.getElementById('vscode-markdown-preview-data');
+export function getDAtA<T = {}>(key: string): T {
+	const element = document.getElementById('vscode-mArkdown-preview-dAtA');
 	if (element) {
-		const data = element.getAttribute(key);
-		if (data) {
-			return JSON.parse(data);
+		const dAtA = element.getAttribute(key);
+		if (dAtA) {
+			return JSON.pArse(dAtA);
 		}
 	}
 
-	throw new Error(`Could not load data for ${key}`);
+	throw new Error(`Could not loAd dAtA for ${key}`);
 }
 
 export function getSettings(): PreviewSettings {
-	if (cachedSettings) {
-		return cachedSettings;
+	if (cAchedSettings) {
+		return cAchedSettings;
 	}
 
-	cachedSettings = getData('data-settings');
-	if (cachedSettings) {
-		return cachedSettings;
+	cAchedSettings = getDAtA('dAtA-settings');
+	if (cAchedSettings) {
+		return cAchedSettings;
 	}
 
-	throw new Error('Could not load settings');
+	throw new Error('Could not loAd settings');
 }

@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import { Application, ApplicationOptions } from '../../../../automation';
+import * As pAth from 'pAth';
+import { ApplicAtion, ApplicAtionOptions } from '../../../../AutomAtion';
 
 export function setup() {
 
-	describe('Launch', () => {
+	describe('LAunch', () => {
 
-		let app: Application;
+		let App: ApplicAtion;
 
-		after(async function () {
-			if (app) {
-				await app.stop();
+		After(Async function () {
+			if (App) {
+				AwAit App.stop();
 			}
 		});
 
-		afterEach(async function () {
-			if (app) {
-				if (this.currentTest.state === 'failed') {
-					const name = this.currentTest.fullTitle().replace(/[^a-z0-9\-]/ig, '_');
-					await app.captureScreenshot(name);
+		AfterEAch(Async function () {
+			if (App) {
+				if (this.currentTest.stAte === 'fAiled') {
+					const nAme = this.currentTest.fullTitle().replAce(/[^A-z0-9\-]/ig, '_');
+					AwAit App.cAptureScreenshot(nAme);
 				}
 			}
 		});
 
-		it(`verifies that application launches when user data directory has non-ascii characters`, async function () {
-			const defaultOptions = this.defaultOptions as ApplicationOptions;
-			const options: ApplicationOptions = { ...defaultOptions, userDataDir: path.join(defaultOptions.userDataDir, 'abcdø') };
-			app = new Application(options);
-			await app.start();
+		it(`verifies thAt ApplicAtion lAunches when user dAtA directory hAs non-Ascii chArActers`, Async function () {
+			const defAultOptions = this.defAultOptions As ApplicAtionOptions;
+			const options: ApplicAtionOptions = { ...defAultOptions, userDAtADir: pAth.join(defAultOptions.userDAtADir, 'Abcdø') };
+			App = new ApplicAtion(options);
+			AwAit App.stArt();
 		});
 
 	});

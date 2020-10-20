@@ -1,201 +1,201 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as Proto from './protocol';
+import * As vscode from 'vscode';
+import * As Proto from './protocol';
 import BufferSyncSupport from './tsServer/bufferSyncSupport';
-import { ExectuionTarget } from './tsServer/server';
+import { ExectuionTArget } from './tsServer/server';
 import { TypeScriptVersion } from './tsServer/versionProvider';
-import API from './utils/api';
-import { TypeScriptServiceConfiguration } from './utils/configuration';
-import { PluginManager } from './utils/plugins';
+import API from './utils/Api';
+import { TypeScriptServiceConfigurAtion } from './utils/configurAtion';
+import { PluginMAnAger } from './utils/plugins';
 import { TelemetryReporter } from './utils/telemetry';
 
 export enum ServerType {
-	Syntax = 'syntax',
-	Semantic = 'semantic',
+	SyntAx = 'syntAx',
+	SemAntic = 'semAntic',
 }
 
-export namespace ServerResponse {
+export nAmespAce ServerResponse {
 
-	export class Cancelled {
-		public readonly type = 'cancelled';
+	export clAss CAncelled {
+		public reAdonly type = 'cAncelled';
 
 		constructor(
-			public readonly reason: string
+			public reAdonly reAson: string
 		) { }
 	}
 
-	export const NoContent = { type: 'noContent' } as const;
+	export const NoContent = { type: 'noContent' } As const;
 
-	export type Response<T extends Proto.Response> = T | Cancelled | typeof NoContent;
+	export type Response<T extends Proto.Response> = T | CAncelled | typeof NoContent;
 }
 
-interface StandardTsServerRequests {
-	'applyCodeActionCommand': [Proto.ApplyCodeActionCommandRequestArgs, Proto.ApplyCodeActionCommandResponse];
-	'completionEntryDetails': [Proto.CompletionDetailsRequestArgs, Proto.CompletionDetailsResponse];
+interfAce StAndArdTsServerRequests {
+	'ApplyCodeActionCommAnd': [Proto.ApplyCodeActionCommAndRequestArgs, Proto.ApplyCodeActionCommAndResponse];
+	'completionEntryDetAils': [Proto.CompletionDetAilsRequestArgs, Proto.CompletionDetAilsResponse];
 	'completionInfo': [Proto.CompletionsRequestArgs, Proto.CompletionInfoResponse];
 	'completions': [Proto.CompletionsRequestArgs, Proto.CompletionsResponse];
 	'configure': [Proto.ConfigureRequestArguments, Proto.ConfigureResponse];
-	'definition': [Proto.FileLocationRequestArgs, Proto.DefinitionResponse];
-	'definitionAndBoundSpan': [Proto.FileLocationRequestArgs, Proto.DefinitionInfoAndBoundSpanResponse];
-	'docCommentTemplate': [Proto.FileLocationRequestArgs, Proto.DocCommandTemplateResponse];
+	'definition': [Proto.FileLocAtionRequestArgs, Proto.DefinitionResponse];
+	'definitionAndBoundSpAn': [Proto.FileLocAtionRequestArgs, Proto.DefinitionInfoAndBoundSpAnResponse];
+	'docCommentTemplAte': [Proto.FileLocAtionRequestArgs, Proto.DocCommAndTemplAteResponse];
 	'documentHighlights': [Proto.DocumentHighlightsRequestArgs, Proto.DocumentHighlightsResponse];
-	'format': [Proto.FormatRequestArgs, Proto.FormatResponse];
-	'formatonkey': [Proto.FormatOnKeyRequestArgs, Proto.FormatResponse];
-	'getApplicableRefactors': [Proto.GetApplicableRefactorsRequestArgs, Proto.GetApplicableRefactorsResponse];
+	'formAt': [Proto.FormAtRequestArgs, Proto.FormAtResponse];
+	'formAtonkey': [Proto.FormAtOnKeyRequestArgs, Proto.FormAtResponse];
+	'getApplicAbleRefActors': [Proto.GetApplicAbleRefActorsRequestArgs, Proto.GetApplicAbleRefActorsResponse];
 	'getCodeFixes': [Proto.CodeFixRequestArgs, Proto.CodeFixResponse];
 	'getCombinedCodeFix': [Proto.GetCombinedCodeFixRequestArgs, Proto.GetCombinedCodeFixResponse];
-	'getEditsForFileRename': [Proto.GetEditsForFileRenameRequestArgs, Proto.GetEditsForFileRenameResponse];
-	'getEditsForRefactor': [Proto.GetEditsForRefactorRequestArgs, Proto.GetEditsForRefactorResponse];
-	'getOutliningSpans': [Proto.FileRequestArgs, Proto.OutliningSpansResponse];
+	'getEditsForFileRenAme': [Proto.GetEditsForFileRenAmeRequestArgs, Proto.GetEditsForFileRenAmeResponse];
+	'getEditsForRefActor': [Proto.GetEditsForRefActorRequestArgs, Proto.GetEditsForRefActorResponse];
+	'getOutliningSpAns': [Proto.FileRequestArgs, Proto.OutliningSpAnsResponse];
 	'getSupportedCodeFixes': [null, Proto.GetSupportedCodeFixesResponse];
-	'implementation': [Proto.FileLocationRequestArgs, Proto.ImplementationResponse];
-	'jsxClosingTag': [Proto.JsxClosingTagRequestArgs, Proto.JsxClosingTagResponse];
-	'navto': [Proto.NavtoRequestArgs, Proto.NavtoResponse];
-	'navtree': [Proto.FileRequestArgs, Proto.NavTreeResponse];
-	'organizeImports': [Proto.OrganizeImportsRequestArgs, Proto.OrganizeImportsResponse];
+	'implementAtion': [Proto.FileLocAtionRequestArgs, Proto.ImplementAtionResponse];
+	'jsxClosingTAg': [Proto.JsxClosingTAgRequestArgs, Proto.JsxClosingTAgResponse];
+	'nAvto': [Proto.NAvtoRequestArgs, Proto.NAvtoResponse];
+	'nAvtree': [Proto.FileRequestArgs, Proto.NAvTreeResponse];
+	'orgAnizeImports': [Proto.OrgAnizeImportsRequestArgs, Proto.OrgAnizeImportsResponse];
 	'projectInfo': [Proto.ProjectInfoRequestArgs, Proto.ProjectInfoResponse];
-	'quickinfo': [Proto.FileLocationRequestArgs, Proto.QuickInfoResponse];
-	'references': [Proto.FileLocationRequestArgs, Proto.ReferencesResponse];
-	'rename': [Proto.RenameRequestArgs, Proto.RenameResponse];
-	'selectionRange': [Proto.SelectionRangeRequestArgs, Proto.SelectionRangeResponse];
-	'signatureHelp': [Proto.SignatureHelpRequestArgs, Proto.SignatureHelpResponse];
-	'typeDefinition': [Proto.FileLocationRequestArgs, Proto.TypeDefinitionResponse];
-	'updateOpen': [Proto.UpdateOpenRequestArgs, Proto.Response];
-	'prepareCallHierarchy': [Proto.FileLocationRequestArgs, Proto.PrepareCallHierarchyResponse];
-	'provideCallHierarchyIncomingCalls': [Proto.FileLocationRequestArgs, Proto.ProvideCallHierarchyIncomingCallsResponse];
-	'provideCallHierarchyOutgoingCalls': [Proto.FileLocationRequestArgs, Proto.ProvideCallHierarchyOutgoingCallsResponse];
+	'quickinfo': [Proto.FileLocAtionRequestArgs, Proto.QuickInfoResponse];
+	'references': [Proto.FileLocAtionRequestArgs, Proto.ReferencesResponse];
+	'renAme': [Proto.RenAmeRequestArgs, Proto.RenAmeResponse];
+	'selectionRAnge': [Proto.SelectionRAngeRequestArgs, Proto.SelectionRAngeResponse];
+	'signAtureHelp': [Proto.SignAtureHelpRequestArgs, Proto.SignAtureHelpResponse];
+	'typeDefinition': [Proto.FileLocAtionRequestArgs, Proto.TypeDefinitionResponse];
+	'updAteOpen': [Proto.UpdAteOpenRequestArgs, Proto.Response];
+	'prepAreCAllHierArchy': [Proto.FileLocAtionRequestArgs, Proto.PrepAreCAllHierArchyResponse];
+	'provideCAllHierArchyIncomingCAlls': [Proto.FileLocAtionRequestArgs, Proto.ProvideCAllHierArchyIncomingCAllsResponse];
+	'provideCAllHierArchyOutgoingCAlls': [Proto.FileLocAtionRequestArgs, Proto.ProvideCAllHierArchyOutgoingCAllsResponse];
 }
 
-interface NoResponseTsServerRequests {
+interfAce NoResponseTsServerRequests {
 	'open': [Proto.OpenRequestArgs, null];
 	'close': [Proto.FileRequestArgs, null];
-	'change': [Proto.ChangeRequestArgs, null];
+	'chAnge': [Proto.ChAngeRequestArgs, null];
 	'compilerOptionsForInferredProjects': [Proto.SetCompilerOptionsForInferredProjectsArgs, null];
-	'reloadProjects': [null, null];
+	'reloAdProjects': [null, null];
 	'configurePlugin': [Proto.ConfigurePluginRequest, Proto.ConfigurePluginResponse];
 }
 
-interface AsyncTsServerRequests {
+interfAce AsyncTsServerRequests {
 	'geterr': [Proto.GeterrRequestArgs, Proto.Response];
 	'geterrForProject': [Proto.GeterrForProjectRequestArgs, Proto.Response];
 }
 
-export type TypeScriptRequests = StandardTsServerRequests & NoResponseTsServerRequests & AsyncTsServerRequests;
+export type TypeScriptRequests = StAndArdTsServerRequests & NoResponseTsServerRequests & AsyncTsServerRequests;
 
 export type ExecConfig = {
-	readonly lowPriority?: boolean;
-	readonly nonRecoverable?: boolean;
-	readonly cancelOnResourceChange?: vscode.Uri;
-	readonly executionTarget?: ExectuionTarget;
+	reAdonly lowPriority?: booleAn;
+	reAdonly nonRecoverAble?: booleAn;
+	reAdonly cAncelOnResourceChAnge?: vscode.Uri;
+	reAdonly executionTArget?: ExectuionTArget;
 };
 
-export enum ClientCapability {
+export enum ClientCApAbility {
 	/**
-	 * Basic syntax server. All clients should support this.
+	 * BAsic syntAx server. All clients should support this.
 	 */
-	Syntax,
+	SyntAx,
 
 	/**
-	 * Advanced syntax server that can provide single file IntelliSense.
+	 * AdvAnced syntAx server thAt cAn provide single file IntelliSense.
 	 */
-	EnhancedSyntax,
+	EnhAncedSyntAx,
 
 	/**
-	 * Complete, multi-file semantic server
+	 * Complete, multi-file semAntic server
 	 */
-	Semantic,
+	SemAntic,
 }
 
-export class ClientCapabilities {
-	private readonly capabilities: ReadonlySet<ClientCapability>;
+export clAss ClientCApAbilities {
+	privAte reAdonly cApAbilities: ReAdonlySet<ClientCApAbility>;
 
-	constructor(...capabilities: ClientCapability[]) {
-		this.capabilities = new Set(capabilities);
+	constructor(...cApAbilities: ClientCApAbility[]) {
+		this.cApAbilities = new Set(cApAbilities);
 	}
 
-	public has(capability: ClientCapability): boolean {
-		return this.capabilities.has(capability);
+	public hAs(cApAbility: ClientCApAbility): booleAn {
+		return this.cApAbilities.hAs(cApAbility);
 	}
 }
 
-export interface ITypeScriptServiceClient {
+export interfAce ITypeScriptServiceClient {
 	/**
-	 * Convert a resource (VS Code) to a normalized path (TypeScript).
+	 * Convert A resource (VS Code) to A normAlized pAth (TypeScript).
 	 *
-	 * Does not try handling case insensitivity.
+	 * Does not try hAndling cAse insensitivity.
 	 */
-	normalizedPath(resource: vscode.Uri): string | undefined;
+	normAlizedPAth(resource: vscode.Uri): string | undefined;
 
 	/**
-	 * Map a resource to a normalized path
+	 * MAp A resource to A normAlized pAth
 	 *
-	 * This will attempt to handle case insensitivity.
+	 * This will Attempt to hAndle cAse insensitivity.
 	 */
-	toPath(resource: vscode.Uri): string | undefined;
+	toPAth(resource: vscode.Uri): string | undefined;
 
 	/**
-	 * Convert a path to a resource.
+	 * Convert A pAth to A resource.
 	 */
-	toResource(filepath: string): vscode.Uri;
+	toResource(filepAth: string): vscode.Uri;
 
 	/**
-	 * Tries to ensure that a vscode document is open on the TS server.
+	 * Tries to ensure thAt A vscode document is open on the TS server.
 	 *
-	 * @return The normalized path or `undefined` if the document is not open on the server.
+	 * @return The normAlized pAth or `undefined` if the document is not open on the server.
 	 */
-	toOpenedFilePath(document: vscode.TextDocument): string | undefined;
+	toOpenedFilePAth(document: vscode.TextDocument): string | undefined;
 
 	/**
-	 * Checks if `resource` has a given capability.
+	 * Checks if `resource` hAs A given cApAbility.
 	 */
-	hasCapabilityForResource(resource: vscode.Uri, capability: ClientCapability): boolean;
+	hAsCApAbilityForResource(resource: vscode.Uri, cApAbility: ClientCApAbility): booleAn;
 
-	getWorkspaceRootForResource(resource: vscode.Uri): string | undefined;
+	getWorkspAceRootForResource(resource: vscode.Uri): string | undefined;
 
-	readonly onTsServerStarted: vscode.Event<{ version: TypeScriptVersion, usedApiVersion: API }>;
-	readonly onProjectLanguageServiceStateChanged: vscode.Event<Proto.ProjectLanguageServiceStateEventBody>;
-	readonly onDidBeginInstallTypings: vscode.Event<Proto.BeginInstallTypesEventBody>;
-	readonly onDidEndInstallTypings: vscode.Event<Proto.EndInstallTypesEventBody>;
-	readonly onTypesInstallerInitializationFailed: vscode.Event<Proto.TypesInstallerInitializationFailedEventBody>;
+	reAdonly onTsServerStArted: vscode.Event<{ version: TypeScriptVersion, usedApiVersion: API }>;
+	reAdonly onProjectLAnguAgeServiceStAteChAnged: vscode.Event<Proto.ProjectLAnguAgeServiceStAteEventBody>;
+	reAdonly onDidBeginInstAllTypings: vscode.Event<Proto.BeginInstAllTypesEventBody>;
+	reAdonly onDidEndInstAllTypings: vscode.Event<Proto.EndInstAllTypesEventBody>;
+	reAdonly onTypesInstAllerInitiAlizAtionFAiled: vscode.Event<Proto.TypesInstAllerInitiAlizAtionFAiledEventBody>;
 
-	readonly capabilities: ClientCapabilities;
-	readonly onDidChangeCapabilities: vscode.Event<void>;
+	reAdonly cApAbilities: ClientCApAbilities;
+	reAdonly onDidChAngeCApAbilities: vscode.Event<void>;
 
-	onReady(f: () => void): Promise<void>;
+	onReAdy(f: () => void): Promise<void>;
 
 	showVersionPicker(): void;
 
-	readonly apiVersion: API;
+	reAdonly ApiVersion: API;
 
-	readonly pluginManager: PluginManager;
-	readonly configuration: TypeScriptServiceConfiguration;
-	readonly bufferSyncSupport: BufferSyncSupport;
-	readonly telemetryReporter: TelemetryReporter;
+	reAdonly pluginMAnAger: PluginMAnAger;
+	reAdonly configurAtion: TypeScriptServiceConfigurAtion;
+	reAdonly bufferSyncSupport: BufferSyncSupport;
+	reAdonly telemetryReporter: TelemetryReporter;
 
-	execute<K extends keyof StandardTsServerRequests>(
-		command: K,
-		args: StandardTsServerRequests[K][0],
-		token: vscode.CancellationToken,
+	execute<K extends keyof StAndArdTsServerRequests>(
+		commAnd: K,
+		Args: StAndArdTsServerRequests[K][0],
+		token: vscode.CAncellAtionToken,
 		config?: ExecConfig
-	): Promise<ServerResponse.Response<StandardTsServerRequests[K][1]>>;
+	): Promise<ServerResponse.Response<StAndArdTsServerRequests[K][1]>>;
 
-	executeWithoutWaitingForResponse<K extends keyof NoResponseTsServerRequests>(
-		command: K,
-		args: NoResponseTsServerRequests[K][0]
+	executeWithoutWAitingForResponse<K extends keyof NoResponseTsServerRequests>(
+		commAnd: K,
+		Args: NoResponseTsServerRequests[K][0]
 	): void;
 
 	executeAsync<K extends keyof AsyncTsServerRequests>(
-		command: K,
-		args: AsyncTsServerRequests[K][0],
-		token: vscode.CancellationToken
+		commAnd: K,
+		Args: AsyncTsServerRequests[K][0],
+		token: vscode.CAncellAtionToken
 	): Promise<ServerResponse.Response<Proto.Response>>;
 
 	/**
-	 * Cancel on going geterr requests and re-queue them after `f` has been evaluated.
+	 * CAncel on going geterr requests And re-queue them After `f` hAs been evAluAted.
 	 */
 	interruptGetErr<R>(f: () => R): R;
 }

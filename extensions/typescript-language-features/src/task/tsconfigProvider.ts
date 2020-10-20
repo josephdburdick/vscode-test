@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export interface TSConfig {
-	readonly uri: vscode.Uri;
-	readonly fsPath: string;
-	readonly posixPath: string;
-	readonly workspaceFolder?: vscode.WorkspaceFolder;
+export interfAce TSConfig {
+	reAdonly uri: vscode.Uri;
+	reAdonly fsPAth: string;
+	reAdonly posixPAth: string;
+	reAdonly workspAceFolder?: vscode.WorkspAceFolder;
 }
 
-export class TsConfigProvider {
-	public async getConfigsForWorkspace(token: vscode.CancellationToken): Promise<Iterable<TSConfig>> {
-		if (!vscode.workspace.workspaceFolders) {
+export clAss TsConfigProvider {
+	public Async getConfigsForWorkspAce(token: vscode.CAncellAtionToken): Promise<IterAble<TSConfig>> {
+		if (!vscode.workspAce.workspAceFolders) {
 			return [];
 		}
 
-		const configs = new Map<string, TSConfig>();
-		for (const config of await this.findConfigFiles(token)) {
-			const root = vscode.workspace.getWorkspaceFolder(config);
+		const configs = new MAp<string, TSConfig>();
+		for (const config of AwAit this.findConfigFiles(token)) {
+			const root = vscode.workspAce.getWorkspAceFolder(config);
 			if (root) {
-				configs.set(config.fsPath, {
+				configs.set(config.fsPAth, {
 					uri: config,
-					fsPath: config.fsPath,
-					posixPath: config.path,
-					workspaceFolder: root
+					fsPAth: config.fsPAth,
+					posixPAth: config.pAth,
+					workspAceFolder: root
 				});
 			}
 		}
-		return configs.values();
+		return configs.vAlues();
 	}
 
-	private async findConfigFiles(token: vscode.CancellationToken): Promise<vscode.Uri[]> {
-		return await vscode.workspace.findFiles('**/tsconfig*.json', '**/{node_modules,.*}/**', undefined, token);
+	privAte Async findConfigFiles(token: vscode.CAncellAtionToken): Promise<vscode.Uri[]> {
+		return AwAit vscode.workspAce.findFiles('**/tsconfig*.json', '**/{node_modules,.*}/**', undefined, token);
 	}
 }

@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IFileService } from 'vs/platform/files/common/files';
-import { basename, dirname } from 'vs/base/common/resources';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { bAsenAme, dirnAme } from 'vs/bAse/common/resources';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
-export class LogsDataCleaner extends Disposable {
+export clAss LogsDAtACleAner extends DisposAble {
 
 	constructor(
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IFileService private readonly fileService: IFileService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
 	) {
 		super();
-		this.cleanUpOldLogsSoon();
+		this.cleAnUpOldLogsSoon();
 	}
 
-	private cleanUpOldLogsSoon(): void {
-		let handle: any = setTimeout(async () => {
-			handle = undefined;
-			const logsPath = URI.file(this.environmentService.logsPath).with({ scheme: this.environmentService.logFile.scheme });
-			const stat = await this.fileService.resolve(dirname(logsPath));
-			if (stat.children) {
-				const currentLog = basename(logsPath);
-				const allSessions = stat.children.filter(stat => stat.isDirectory && /^\d{8}T\d{6}$/.test(stat.name));
-				const oldSessions = allSessions.sort().filter((d, i) => d.name !== currentLog);
-				const toDelete = oldSessions.slice(0, Math.max(0, oldSessions.length - 49));
-				Promise.all(toDelete.map(stat => this.fileService.del(stat.resource, { recursive: true })));
+	privAte cleAnUpOldLogsSoon(): void {
+		let hAndle: Any = setTimeout(Async () => {
+			hAndle = undefined;
+			const logsPAth = URI.file(this.environmentService.logsPAth).with({ scheme: this.environmentService.logFile.scheme });
+			const stAt = AwAit this.fileService.resolve(dirnAme(logsPAth));
+			if (stAt.children) {
+				const currentLog = bAsenAme(logsPAth);
+				const AllSessions = stAt.children.filter(stAt => stAt.isDirectory && /^\d{8}T\d{6}$/.test(stAt.nAme));
+				const oldSessions = AllSessions.sort().filter((d, i) => d.nAme !== currentLog);
+				const toDelete = oldSessions.slice(0, MAth.mAx(0, oldSessions.length - 49));
+				Promise.All(toDelete.mAp(stAt => this.fileService.del(stAt.resource, { recursive: true })));
 			}
 		}, 10 * 1000);
 		this.lifecycleService.onWillShutdown(() => {
-			if (handle) {
-				clearTimeout(handle);
-				handle = undefined;
+			if (hAndle) {
+				cleArTimeout(hAndle);
+				hAndle = undefined;
 			}
 		});
 	}

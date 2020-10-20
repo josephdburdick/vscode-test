@@ -1,152 +1,152 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { Emitter } from 'vs/base/common/event';
-import { isMessageOfType, MessageType, createMessageOfType } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
-import { IInitData } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtensionHostMain } from 'vs/workbench/services/extensions/common/extensionHostMain';
-import { IHostUtils } from 'vs/workbench/api/common/extHostExtensionService';
-import * as path from 'vs/base/common/path';
+import { IMessAgePAssingProtocol } from 'vs/bAse/pArts/ipc/common/ipc';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { Emitter } from 'vs/bAse/common/event';
+import { isMessAgeOfType, MessAgeType, creAteMessAgeOfType } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
+import { IInitDAtA } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtensionHostMAin } from 'vs/workbench/services/extensions/common/extensionHostMAin';
+import { IHostUtils } from 'vs/workbench/Api/common/extHostExtensionService';
+import * As pAth from 'vs/bAse/common/pAth';
 
-import 'vs/workbench/api/common/extHost.common.services';
-import 'vs/workbench/api/worker/extHost.worker.services';
+import 'vs/workbench/Api/common/extHost.common.services';
+import 'vs/workbench/Api/worker/extHost.worker.services';
 
-//#region --- Define, capture, and override some globals
+//#region --- Define, cApture, And override some globAls
 
-declare function postMessage(data: any, transferables?: Transferable[]): void;
+declAre function postMessAge(dAtA: Any, trAnsferAbles?: TrAnsferAble[]): void;
 
-declare namespace self {
-	let close: any;
-	let postMessage: any;
-	let addEventListener: any;
-	let indexedDB: { open: any, [k: string]: any };
-	let caches: { open: any, [k: string]: any };
+declAre nAmespAce self {
+	let close: Any;
+	let postMessAge: Any;
+	let AddEventListener: Any;
+	let indexedDB: { open: Any, [k: string]: Any };
+	let cAches: { open: Any, [k: string]: Any };
 }
 
-const nativeClose = self.close.bind(self);
-self.close = () => console.trace(`'close' has been blocked`);
+const nAtiveClose = self.close.bind(self);
+self.close = () => console.trAce(`'close' hAs been blocked`);
 
-const nativePostMessage = postMessage.bind(self);
-self.postMessage = () => console.trace(`'postMessage' has been blocked`);
+const nAtivePostMessAge = postMessAge.bind(self);
+self.postMessAge = () => console.trAce(`'postMessAge' hAs been blocked`);
 
-// const nativeAddEventListener = addEventListener.bind(self);
-self.addEventListener = () => console.trace(`'addEventListener' has been blocked`);
+// const nAtiveAddEventListener = AddEventListener.bind(self);
+self.AddEventListener = () => console.trAce(`'AddEventListener' hAs been blocked`);
 
-(<any>self)['AMDLoader'] = undefined;
-(<any>self)['NLSLoaderPlugin'] = undefined;
-(<any>self)['define'] = undefined;
-(<any>self)['require'] = undefined;
-(<any>self)['webkitRequestFileSystem'] = undefined;
-(<any>self)['webkitRequestFileSystemSync'] = undefined;
-(<any>self)['webkitResolveLocalFileSystemSyncURL'] = undefined;
-(<any>self)['webkitResolveLocalFileSystemURL'] = undefined;
+(<Any>self)['AMDLoAder'] = undefined;
+(<Any>self)['NLSLoAderPlugin'] = undefined;
+(<Any>self)['define'] = undefined;
+(<Any>self)['require'] = undefined;
+(<Any>self)['webkitRequestFileSystem'] = undefined;
+(<Any>self)['webkitRequestFileSystemSync'] = undefined;
+(<Any>self)['webkitResolveLocAlFileSystemSyncURL'] = undefined;
+(<Any>self)['webkitResolveLocAlFileSystemURL'] = undefined;
 
-if (location.protocol === 'data:') {
-	// make sure new Worker(...) always uses data:
+if (locAtion.protocol === 'dAtA:') {
+	// mAke sure new Worker(...) AlwAys uses dAtA:
 	const _Worker = Worker;
-	Worker = <any>function (stringUrl: string | URL, options?: WorkerOptions) {
+	Worker = <Any>function (stringUrl: string | URL, options?: WorkerOptions) {
 		const js = `importScripts('${stringUrl}');`;
 		options = options || {};
-		options.name = options.name || path.basename(stringUrl.toString());
-		return new _Worker(`data:text/javascript;charset=utf-8,${encodeURIComponent(js)}`, options);
+		options.nAme = options.nAme || pAth.bAsenAme(stringUrl.toString());
+		return new _Worker(`dAtA:text/jAvAscript;chArset=utf-8,${encodeURIComponent(js)}`, options);
 	};
 }
 
 //#endregion ---
 
-const hostUtil = new class implements IHostUtils {
-	declare readonly _serviceBrand: undefined;
+const hostUtil = new clAss implements IHostUtils {
+	declAre reAdonly _serviceBrAnd: undefined;
 	exit(_code?: number | undefined): void {
-		nativeClose();
+		nAtiveClose();
 	}
-	async exists(_path: string): Promise<boolean> {
+	Async exists(_pAth: string): Promise<booleAn> {
 		return true;
 	}
-	async realpath(path: string): Promise<string> {
-		return path;
+	Async reAlpAth(pAth: string): Promise<string> {
+		return pAth;
 	}
 };
 
 
-class ExtensionWorker {
+clAss ExtensionWorker {
 
 	// protocol
-	readonly protocol: IMessagePassingProtocol;
+	reAdonly protocol: IMessAgePAssingProtocol;
 
 	constructor() {
 
-		const channel = new MessageChannel();
+		const chAnnel = new MessAgeChAnnel();
 		const emitter = new Emitter<VSBuffer>();
-		let terminating = false;
+		let terminAting = fAlse;
 
 		// send over port2, keep port1
-		nativePostMessage(channel.port2, [channel.port2]);
+		nAtivePostMessAge(chAnnel.port2, [chAnnel.port2]);
 
-		channel.port1.onmessage = event => {
-			const { data } = event;
-			if (!(data instanceof ArrayBuffer)) {
-				console.warn('UNKNOWN data received', data);
+		chAnnel.port1.onmessAge = event => {
+			const { dAtA } = event;
+			if (!(dAtA instAnceof ArrAyBuffer)) {
+				console.wArn('UNKNOWN dAtA received', dAtA);
 				return;
 			}
 
-			const msg = VSBuffer.wrap(new Uint8Array(data, 0, data.byteLength));
-			if (isMessageOfType(msg, MessageType.Terminate)) {
-				// handle terminate-message right here
-				terminating = true;
-				onTerminate();
+			const msg = VSBuffer.wrAp(new Uint8ArrAy(dAtA, 0, dAtA.byteLength));
+			if (isMessAgeOfType(msg, MessAgeType.TerminAte)) {
+				// hAndle terminAte-messAge right here
+				terminAting = true;
+				onTerminAte();
 				return;
 			}
 
-			// emit non-terminate messages to the outside
+			// emit non-terminAte messAges to the outside
 			emitter.fire(msg);
 		};
 
 		this.protocol = {
-			onMessage: emitter.event,
+			onMessAge: emitter.event,
 			send: vsbuf => {
-				if (!terminating) {
-					const data = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
-					channel.port1.postMessage(data, [data]);
+				if (!terminAting) {
+					const dAtA = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
+					chAnnel.port1.postMessAge(dAtA, [dAtA]);
 				}
 			}
 		};
 	}
 }
 
-interface IRendererConnection {
-	protocol: IMessagePassingProtocol;
-	initData: IInitData;
+interfAce IRendererConnection {
+	protocol: IMessAgePAssingProtocol;
+	initDAtA: IInitDAtA;
 }
-function connectToRenderer(protocol: IMessagePassingProtocol): Promise<IRendererConnection> {
+function connectToRenderer(protocol: IMessAgePAssingProtocol): Promise<IRendererConnection> {
 	return new Promise<IRendererConnection>(resolve => {
-		const once = protocol.onMessage(raw => {
+		const once = protocol.onMessAge(rAw => {
 			once.dispose();
-			const initData = <IInitData>JSON.parse(raw.toString());
-			protocol.send(createMessageOfType(MessageType.Initialized));
-			resolve({ protocol, initData });
+			const initDAtA = <IInitDAtA>JSON.pArse(rAw.toString());
+			protocol.send(creAteMessAgeOfType(MessAgeType.InitiAlized));
+			resolve({ protocol, initDAtA });
 		});
-		protocol.send(createMessageOfType(MessageType.Ready));
+		protocol.send(creAteMessAgeOfType(MessAgeType.ReAdy));
 	});
 }
 
-let onTerminate = nativeClose;
+let onTerminAte = nAtiveClose;
 
-(function create(): void {
+(function creAte(): void {
 	const res = new ExtensionWorker();
 
-	connectToRenderer(res.protocol).then(data => {
+	connectToRenderer(res.protocol).then(dAtA => {
 
-		const extHostMain = new ExtensionHostMain(
-			data.protocol,
-			data.initData,
+		const extHostMAin = new ExtensionHostMAin(
+			dAtA.protocol,
+			dAtA.initDAtA,
 			hostUtil,
 			null,
 		);
 
-		onTerminate = () => extHostMain.terminate();
+		onTerminAte = () => extHostMAin.terminAte();
 	});
 })();

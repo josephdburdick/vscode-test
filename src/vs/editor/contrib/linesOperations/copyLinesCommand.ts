@@ -1,86 +1,86 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection, SelectionDirection } from 'vs/editor/common/core/selection';
-import { ICommand, IEditOperationBuilder, ICursorStateComputerData } from 'vs/editor/common/editorCommon';
+import { ICommAnd, IEditOperAtionBuilder, ICursorStAteComputerDAtA } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 
-export class CopyLinesCommand implements ICommand {
+export clAss CopyLinesCommAnd implements ICommAnd {
 
-	private readonly _selection: Selection;
-	private readonly _isCopyingDown: boolean;
+	privAte reAdonly _selection: Selection;
+	privAte reAdonly _isCopyingDown: booleAn;
 
-	private _selectionDirection: SelectionDirection;
-	private _selectionId: string | null;
-	private _startLineNumberDelta: number;
-	private _endLineNumberDelta: number;
+	privAte _selectionDirection: SelectionDirection;
+	privAte _selectionId: string | null;
+	privAte _stArtLineNumberDeltA: number;
+	privAte _endLineNumberDeltA: number;
 
-	constructor(selection: Selection, isCopyingDown: boolean) {
+	constructor(selection: Selection, isCopyingDown: booleAn) {
 		this._selection = selection;
 		this._isCopyingDown = isCopyingDown;
 		this._selectionDirection = SelectionDirection.LTR;
 		this._selectionId = null;
-		this._startLineNumberDelta = 0;
-		this._endLineNumberDelta = 0;
+		this._stArtLineNumberDeltA = 0;
+		this._endLineNumberDeltA = 0;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
 		let s = this._selection;
 
-		this._startLineNumberDelta = 0;
-		this._endLineNumberDelta = 0;
-		if (s.startLineNumber < s.endLineNumber && s.endColumn === 1) {
-			this._endLineNumberDelta = 1;
-			s = s.setEndPosition(s.endLineNumber - 1, model.getLineMaxColumn(s.endLineNumber - 1));
+		this._stArtLineNumberDeltA = 0;
+		this._endLineNumberDeltA = 0;
+		if (s.stArtLineNumber < s.endLineNumber && s.endColumn === 1) {
+			this._endLineNumberDeltA = 1;
+			s = s.setEndPosition(s.endLineNumber - 1, model.getLineMAxColumn(s.endLineNumber - 1));
 		}
 
 		let sourceLines: string[] = [];
-		for (let i = s.startLineNumber; i <= s.endLineNumber; i++) {
+		for (let i = s.stArtLineNumber; i <= s.endLineNumber; i++) {
 			sourceLines.push(model.getLineContent(i));
 		}
 		const sourceText = sourceLines.join('\n');
 
 		if (sourceText === '') {
-			// Duplicating empty line
+			// DuplicAting empty line
 			if (this._isCopyingDown) {
-				this._startLineNumberDelta++;
-				this._endLineNumberDelta++;
+				this._stArtLineNumberDeltA++;
+				this._endLineNumberDeltA++;
 			}
 		}
 
 		if (!this._isCopyingDown) {
-			builder.addEditOperation(new Range(s.endLineNumber, model.getLineMaxColumn(s.endLineNumber), s.endLineNumber, model.getLineMaxColumn(s.endLineNumber)), '\n' + sourceText);
+			builder.AddEditOperAtion(new RAnge(s.endLineNumber, model.getLineMAxColumn(s.endLineNumber), s.endLineNumber, model.getLineMAxColumn(s.endLineNumber)), '\n' + sourceText);
 		} else {
-			builder.addEditOperation(new Range(s.startLineNumber, 1, s.startLineNumber, 1), sourceText + '\n');
+			builder.AddEditOperAtion(new RAnge(s.stArtLineNumber, 1, s.stArtLineNumber, 1), sourceText + '\n');
 		}
 
-		this._selectionId = builder.trackSelection(s);
+		this._selectionId = builder.trAckSelection(s);
 		this._selectionDirection = this._selection.getDirection();
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
-		let result = helper.getTrackedSelection(this._selectionId!);
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
+		let result = helper.getTrAckedSelection(this._selectionId!);
 
-		if (this._startLineNumberDelta !== 0 || this._endLineNumberDelta !== 0) {
-			let startLineNumber = result.startLineNumber;
-			let startColumn = result.startColumn;
+		if (this._stArtLineNumberDeltA !== 0 || this._endLineNumberDeltA !== 0) {
+			let stArtLineNumber = result.stArtLineNumber;
+			let stArtColumn = result.stArtColumn;
 			let endLineNumber = result.endLineNumber;
 			let endColumn = result.endColumn;
 
-			if (this._startLineNumberDelta !== 0) {
-				startLineNumber = startLineNumber + this._startLineNumberDelta;
-				startColumn = 1;
+			if (this._stArtLineNumberDeltA !== 0) {
+				stArtLineNumber = stArtLineNumber + this._stArtLineNumberDeltA;
+				stArtColumn = 1;
 			}
 
-			if (this._endLineNumberDelta !== 0) {
-				endLineNumber = endLineNumber + this._endLineNumberDelta;
+			if (this._endLineNumberDeltA !== 0) {
+				endLineNumber = endLineNumber + this._endLineNumberDeltA;
 				endColumn = 1;
 			}
 
-			result = Selection.createWithDirection(startLineNumber, startColumn, endLineNumber, endColumn, this._selectionDirection);
+			result = Selection.creAteWithDirection(stArtLineNumber, stArtColumn, endLineNumber, endColumn, this._selectionDirection);
 		}
 
 		return result;

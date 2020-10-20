@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./codicon/codicon';
-import 'vs/css!./codicon/codicon-modifications';
-import 'vs/css!./codicon/codicon-animations';
+import 'vs/css!./codicon/codicon-modificAtions';
+import 'vs/css!./codicon/codicon-AnimAtions';
 
-import { Codicon, iconRegistry } from 'vs/base/common/codicons';
+import { Codicon, iconRegistry } from 'vs/bAse/common/codicons';
 
-export const CodiconStyles = new class {
-	onDidChange = iconRegistry.onDidRegister;
+export const CodiconStyles = new clAss {
+	onDidChAnge = iconRegistry.onDidRegister;
 	public getCSS(): string {
 		const rules = [];
-		for (let c of iconRegistry.all) {
-			rules.push(formatRule(c));
+		for (let c of iconRegistry.All) {
+			rules.push(formAtRule(c));
 		}
 		return rules.join('\n');
 	}
 };
 
-export function formatRule(c: Codicon) {
+export function formAtRule(c: Codicon) {
 	let def = c.definition;
-	while (def instanceof Codicon) {
+	while (def instAnceof Codicon) {
 		def = def.definition;
 	}
-	return `.codicon-${c.id}:before { content: '${def.character}'; }`;
+	return `.codicon-${c.id}:before { content: '${def.chArActer}'; }`;
 }

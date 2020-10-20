@@ -1,143 +1,143 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IExtensionManifest, ExtensionKind, ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IExtensionMAnifest, ExtensionKind, ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { getGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { getGAlleryExtensionId } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 
-export function prefersExecuteOnUI(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): boolean {
-	const extensionKind = getExtensionKind(manifest, productService, configurationService);
+export function prefersExecuteOnUI(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): booleAn {
+	const extensionKind = getExtensionKind(mAnifest, productService, configurAtionService);
 	return (extensionKind.length > 0 && extensionKind[0] === 'ui');
 }
 
-export function prefersExecuteOnWorkspace(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): boolean {
-	const extensionKind = getExtensionKind(manifest, productService, configurationService);
-	return (extensionKind.length > 0 && extensionKind[0] === 'workspace');
+export function prefersExecuteOnWorkspAce(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): booleAn {
+	const extensionKind = getExtensionKind(mAnifest, productService, configurAtionService);
+	return (extensionKind.length > 0 && extensionKind[0] === 'workspAce');
 }
 
-export function prefersExecuteOnWeb(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): boolean {
-	const extensionKind = getExtensionKind(manifest, productService, configurationService);
+export function prefersExecuteOnWeb(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): booleAn {
+	const extensionKind = getExtensionKind(mAnifest, productService, configurAtionService);
 	return (extensionKind.length > 0 && extensionKind[0] === 'web');
 }
 
-export function canExecuteOnUI(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): boolean {
-	const extensionKind = getExtensionKind(manifest, productService, configurationService);
+export function cAnExecuteOnUI(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): booleAn {
+	const extensionKind = getExtensionKind(mAnifest, productService, configurAtionService);
 	return extensionKind.some(kind => kind === 'ui');
 }
 
-export function canExecuteOnWorkspace(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): boolean {
-	const extensionKind = getExtensionKind(manifest, productService, configurationService);
-	return extensionKind.some(kind => kind === 'workspace');
+export function cAnExecuteOnWorkspAce(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): booleAn {
+	const extensionKind = getExtensionKind(mAnifest, productService, configurAtionService);
+	return extensionKind.some(kind => kind === 'workspAce');
 }
 
-export function canExecuteOnWeb(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): boolean {
-	const extensionKind = getExtensionKind(manifest, productService, configurationService);
+export function cAnExecuteOnWeb(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): booleAn {
+	const extensionKind = getExtensionKind(mAnifest, productService, configurAtionService);
 	return extensionKind.some(kind => kind === 'web');
 }
 
-export function getExtensionKind(manifest: IExtensionManifest, productService: IProductService, configurationService: IConfigurationService): ExtensionKind[] {
+export function getExtensionKind(mAnifest: IExtensionMAnifest, productService: IProductService, configurAtionService: IConfigurAtionService): ExtensionKind[] {
 	// check in config
-	let result = getConfiguredExtensionKind(manifest, configurationService);
+	let result = getConfiguredExtensionKind(mAnifest, configurAtionService);
 	if (typeof result !== 'undefined') {
-		return toArray(result);
+		return toArrAy(result);
 	}
 
 	// check product.json
-	result = getProductExtensionKind(manifest, productService);
+	result = getProductExtensionKind(mAnifest, productService);
 	if (typeof result !== 'undefined') {
 		return result;
 	}
 
-	// check the manifest itself
-	result = manifest.extensionKind;
+	// check the mAnifest itself
+	result = mAnifest.extensionKind;
 	if (typeof result !== 'undefined') {
-		return toArray(result);
+		return toArrAy(result);
 	}
 
-	return deduceExtensionKind(manifest);
+	return deduceExtensionKind(mAnifest);
 }
 
-export function deduceExtensionKind(manifest: IExtensionManifest): ExtensionKind[] {
-	// Not an UI extension if it has main
-	if (manifest.main) {
-		if (manifest.browser) {
-			return ['workspace', 'web'];
+export function deduceExtensionKind(mAnifest: IExtensionMAnifest): ExtensionKind[] {
+	// Not An UI extension if it hAs mAin
+	if (mAnifest.mAin) {
+		if (mAnifest.browser) {
+			return ['workspAce', 'web'];
 		}
-		return ['workspace'];
+		return ['workspAce'];
 	}
 
-	if (manifest.browser) {
+	if (mAnifest.browser) {
 		return ['web'];
 	}
 
-	// Not an UI nor web extension if it has dependencies or an extension pack
-	if (isNonEmptyArray(manifest.extensionDependencies) || isNonEmptyArray(manifest.extensionPack)) {
-		return ['workspace'];
+	// Not An UI nor web extension if it hAs dependencies or An extension pAck
+	if (isNonEmptyArrAy(mAnifest.extensionDependencies) || isNonEmptyArrAy(mAnifest.extensionPAck)) {
+		return ['workspAce'];
 	}
 
-	if (manifest.contributes) {
-		// Not an UI nor web extension if it has no ui contributions
-		for (const contribution of Object.keys(manifest.contributes)) {
+	if (mAnifest.contributes) {
+		// Not An UI nor web extension if it hAs no ui contributions
+		for (const contribution of Object.keys(mAnifest.contributes)) {
 			if (!isUIExtensionPoint(contribution)) {
-				return ['workspace'];
+				return ['workspAce'];
 			}
 		}
 	}
 
-	return ['ui', 'workspace', 'web'];
+	return ['ui', 'workspAce', 'web'];
 }
 
 let _uiExtensionPoints: Set<string> | null = null;
-function isUIExtensionPoint(extensionPoint: string): boolean {
+function isUIExtensionPoint(extensionPoint: string): booleAn {
 	if (_uiExtensionPoints === null) {
 		const uiExtensionPoints = new Set<string>();
-		ExtensionsRegistry.getExtensionPoints().filter(e => e.defaultExtensionKind !== 'workspace').forEach(e => {
-			uiExtensionPoints.add(e.name);
+		ExtensionsRegistry.getExtensionPoints().filter(e => e.defAultExtensionKind !== 'workspAce').forEAch(e => {
+			uiExtensionPoints.Add(e.nAme);
 		});
 		_uiExtensionPoints = uiExtensionPoints;
 	}
-	return _uiExtensionPoints.has(extensionPoint);
+	return _uiExtensionPoints.hAs(extensionPoint);
 }
 
-let _productExtensionKindsMap: Map<string, ExtensionKind[]> | null = null;
-function getProductExtensionKind(manifest: IExtensionManifest, productService: IProductService): ExtensionKind[] | undefined {
-	if (_productExtensionKindsMap === null) {
-		const productExtensionKindsMap = new Map<string, ExtensionKind[]>();
+let _productExtensionKindsMAp: MAp<string, ExtensionKind[]> | null = null;
+function getProductExtensionKind(mAnifest: IExtensionMAnifest, productService: IProductService): ExtensionKind[] | undefined {
+	if (_productExtensionKindsMAp === null) {
+		const productExtensionKindsMAp = new MAp<string, ExtensionKind[]>();
 		if (productService.extensionKind) {
 			for (const id of Object.keys(productService.extensionKind)) {
-				productExtensionKindsMap.set(ExtensionIdentifier.toKey(id), productService.extensionKind[id]);
+				productExtensionKindsMAp.set(ExtensionIdentifier.toKey(id), productService.extensionKind[id]);
 			}
 		}
-		_productExtensionKindsMap = productExtensionKindsMap;
+		_productExtensionKindsMAp = productExtensionKindsMAp;
 	}
 
-	const extensionId = getGalleryExtensionId(manifest.publisher, manifest.name);
-	return _productExtensionKindsMap.get(ExtensionIdentifier.toKey(extensionId));
+	const extensionId = getGAlleryExtensionId(mAnifest.publisher, mAnifest.nAme);
+	return _productExtensionKindsMAp.get(ExtensionIdentifier.toKey(extensionId));
 }
 
-let _configuredExtensionKindsMap: Map<string, ExtensionKind | ExtensionKind[]> | null = null;
-function getConfiguredExtensionKind(manifest: IExtensionManifest, configurationService: IConfigurationService): ExtensionKind | ExtensionKind[] | undefined {
-	if (_configuredExtensionKindsMap === null) {
-		const configuredExtensionKindsMap = new Map<string, ExtensionKind | ExtensionKind[]>();
-		const configuredExtensionKinds = configurationService.getValue<{ [key: string]: ExtensionKind | ExtensionKind[] }>('remote.extensionKind') || {};
+let _configuredExtensionKindsMAp: MAp<string, ExtensionKind | ExtensionKind[]> | null = null;
+function getConfiguredExtensionKind(mAnifest: IExtensionMAnifest, configurAtionService: IConfigurAtionService): ExtensionKind | ExtensionKind[] | undefined {
+	if (_configuredExtensionKindsMAp === null) {
+		const configuredExtensionKindsMAp = new MAp<string, ExtensionKind | ExtensionKind[]>();
+		const configuredExtensionKinds = configurAtionService.getVAlue<{ [key: string]: ExtensionKind | ExtensionKind[] }>('remote.extensionKind') || {};
 		for (const id of Object.keys(configuredExtensionKinds)) {
-			configuredExtensionKindsMap.set(ExtensionIdentifier.toKey(id), configuredExtensionKinds[id]);
+			configuredExtensionKindsMAp.set(ExtensionIdentifier.toKey(id), configuredExtensionKinds[id]);
 		}
-		_configuredExtensionKindsMap = configuredExtensionKindsMap;
+		_configuredExtensionKindsMAp = configuredExtensionKindsMAp;
 	}
 
-	const extensionId = getGalleryExtensionId(manifest.publisher, manifest.name);
-	return _configuredExtensionKindsMap.get(ExtensionIdentifier.toKey(extensionId));
+	const extensionId = getGAlleryExtensionId(mAnifest.publisher, mAnifest.nAme);
+	return _configuredExtensionKindsMAp.get(ExtensionIdentifier.toKey(extensionId));
 }
 
-function toArray(extensionKind: ExtensionKind | ExtensionKind[]): ExtensionKind[] {
-	if (Array.isArray(extensionKind)) {
+function toArrAy(extensionKind: ExtensionKind | ExtensionKind[]): ExtensionKind[] {
+	if (ArrAy.isArrAy(extensionKind)) {
 		return extensionKind;
 	}
-	return extensionKind === 'ui' ? ['ui', 'workspace'] : [extensionKind];
+	return extensionKind === 'ui' ? ['ui', 'workspAce'] : [extensionKind];
 }

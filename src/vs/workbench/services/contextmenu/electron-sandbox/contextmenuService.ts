@@ -1,115 +1,115 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, IActionRunner, ActionRunner, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification, Separator, SubmenuAction } from 'vs/base/common/actions';
-import * as dom from 'vs/base/browser/dom';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { getZoomFactor } from 'vs/base/browser/browser';
-import { unmnemonicLabel } from 'vs/base/common/labels';
-import { Event, Emitter } from 'vs/base/common/event';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IContextMenuDelegate, IContextMenuEvent } from 'vs/base/browser/contextmenu';
-import { once } from 'vs/base/common/functional';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IContextMenuItem } from 'vs/base/parts/contextmenu/common/contextmenu';
-import { popup } from 'vs/base/parts/contextmenu/electron-sandbox/contextmenu';
-import { getTitleBarStyle } from 'vs/platform/windows/common/windows';
-import { isMacintosh } from 'vs/base/common/platform';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ContextMenuService as HTMLContextMenuService } from 'vs/platform/contextview/browser/contextMenuService';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { stripCodicons } from 'vs/base/common/codicons';
-import { coalesce } from 'vs/base/common/arrays';
+import { IAction, IActionRunner, ActionRunner, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion, SepArAtor, SubmenuAction } from 'vs/bAse/common/Actions';
+import * As dom from 'vs/bAse/browser/dom';
+import { IContextMenuService, IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { getZoomFActor } from 'vs/bAse/browser/browser';
+import { unmnemonicLAbel } from 'vs/bAse/common/lAbels';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IContextMenuDelegAte, IContextMenuEvent } from 'vs/bAse/browser/contextmenu';
+import { once } from 'vs/bAse/common/functionAl';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IContextMenuItem } from 'vs/bAse/pArts/contextmenu/common/contextmenu';
+import { popup } from 'vs/bAse/pArts/contextmenu/electron-sAndbox/contextmenu';
+import { getTitleBArStyle } from 'vs/plAtform/windows/common/windows';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { ContextMenuService As HTMLContextMenuService } from 'vs/plAtform/contextview/browser/contextMenuService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { stripCodicons } from 'vs/bAse/common/codicons';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
 
-export class ContextMenuService extends Disposable implements IContextMenuService {
+export clAss ContextMenuService extends DisposAble implements IContextMenuService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	get onDidContextMenu(): Event<void> { return this.impl.onDidContextMenu; }
 
-	private impl: IContextMenuService;
+	privAte impl: IContextMenuService;
 
 	constructor(
-		@INotificationService notificationService: INotificationService,
+		@INotificAtionService notificAtionService: INotificAtionService,
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 		@IContextViewService contextViewService: IContextViewService,
 		@IThemeService themeService: IThemeService
 	) {
 		super();
 
-		// Custom context menu: Linux/Windows if custom title is enabled
-		if (!isMacintosh && getTitleBarStyle(configurationService, environmentService) === 'custom') {
-			this.impl = new HTMLContextMenuService(telemetryService, notificationService, contextViewService, keybindingService, themeService);
+		// Custom context menu: Linux/Windows if custom title is enAbled
+		if (!isMAcintosh && getTitleBArStyle(configurAtionService, environmentService) === 'custom') {
+			this.impl = new HTMLContextMenuService(telemetryService, notificAtionService, contextViewService, keybindingService, themeService);
 		}
 
-		// Native context menu: otherwise
+		// NAtive context menu: otherwise
 		else {
-			this.impl = new NativeContextMenuService(notificationService, telemetryService, keybindingService);
+			this.impl = new NAtiveContextMenuService(notificAtionService, telemetryService, keybindingService);
 		}
 	}
 
-	showContextMenu(delegate: IContextMenuDelegate): void {
-		this.impl.showContextMenu(delegate);
+	showContextMenu(delegAte: IContextMenuDelegAte): void {
+		this.impl.showContextMenu(delegAte);
 	}
 }
 
-class NativeContextMenuService extends Disposable implements IContextMenuService {
+clAss NAtiveContextMenuService extends DisposAble implements IContextMenuService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _onDidContextMenu = this._register(new Emitter<void>());
-	readonly onDidContextMenu: Event<void> = this._onDidContextMenu.event;
+	privAte _onDidContextMenu = this._register(new Emitter<void>());
+	reAdonly onDidContextMenu: Event<void> = this._onDidContextMenu.event;
 
 	constructor(
-		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService
 	) {
 		super();
 	}
 
-	showContextMenu(delegate: IContextMenuDelegate): void {
-		const actions = delegate.getActions();
-		if (actions.length) {
+	showContextMenu(delegAte: IContextMenuDelegAte): void {
+		const Actions = delegAte.getActions();
+		if (Actions.length) {
 			const onHide = once(() => {
-				if (delegate.onHide) {
-					delegate.onHide(false);
+				if (delegAte.onHide) {
+					delegAte.onHide(fAlse);
 				}
 
 				this._onDidContextMenu.fire();
 			});
 
-			const menu = this.createMenu(delegate, actions, onHide);
-			const anchor = delegate.getAnchor();
+			const menu = this.creAteMenu(delegAte, Actions, onHide);
+			const Anchor = delegAte.getAnchor();
 
 			let x: number;
 			let y: number;
 
-			const zoom = getZoomFactor();
-			if (dom.isHTMLElement(anchor)) {
-				const elementPosition = dom.getDomNodePagePosition(anchor);
+			const zoom = getZoomFActor();
+			if (dom.isHTMLElement(Anchor)) {
+				const elementPosition = dom.getDomNodePAgePosition(Anchor);
 
 				x = elementPosition.left;
 				y = elementPosition.top + elementPosition.height;
 
-				// Shift macOS menus by a few pixels below elements
-				// to account for extra padding on top of native menu
+				// Shift mAcOS menus by A few pixels below elements
+				// to Account for extrA pAdding on top of nAtive menu
 				// https://github.com/microsoft/vscode/issues/84231
-				if (isMacintosh) {
+				if (isMAcintosh) {
 					y += 4 / zoom;
 				}
 			} else {
-				const pos: { x: number; y: number; } = anchor;
-				x = pos.x + 1; /* prevent first item from being selected automatically under mouse */
+				const pos: { x: number; y: number; } = Anchor;
+				x = pos.x + 1; /* prevent first item from being selected AutomAticAlly under mouse */
 				y = pos.y;
 			}
 
@@ -117,74 +117,74 @@ class NativeContextMenuService extends Disposable implements IContextMenuService
 			y *= zoom;
 
 			popup(menu, {
-				x: Math.floor(x),
-				y: Math.floor(y),
-				positioningItem: delegate.autoSelectFirstItem ? 0 : undefined,
+				x: MAth.floor(x),
+				y: MAth.floor(y),
+				positioningItem: delegAte.AutoSelectFirstItem ? 0 : undefined,
 			}, () => onHide());
 		}
 	}
 
-	private createMenu(delegate: IContextMenuDelegate, entries: IAction[], onHide: () => void, submenuIds = new Set<string>()): IContextMenuItem[] {
-		const actionRunner = delegate.actionRunner || new ActionRunner();
-		return coalesce(entries.map(entry => this.createMenuItem(delegate, entry, actionRunner, onHide, submenuIds)));
+	privAte creAteMenu(delegAte: IContextMenuDelegAte, entries: IAction[], onHide: () => void, submenuIds = new Set<string>()): IContextMenuItem[] {
+		const ActionRunner = delegAte.ActionRunner || new ActionRunner();
+		return coAlesce(entries.mAp(entry => this.creAteMenuItem(delegAte, entry, ActionRunner, onHide, submenuIds)));
 	}
 
-	private createMenuItem(delegate: IContextMenuDelegate, entry: IAction, actionRunner: IActionRunner, onHide: () => void, submenuIds: Set<string>): IContextMenuItem | undefined {
-		// Separator
-		if (entry instanceof Separator) {
-			return { type: 'separator' };
+	privAte creAteMenuItem(delegAte: IContextMenuDelegAte, entry: IAction, ActionRunner: IActionRunner, onHide: () => void, submenuIds: Set<string>): IContextMenuItem | undefined {
+		// SepArAtor
+		if (entry instAnceof SepArAtor) {
+			return { type: 'sepArAtor' };
 		}
 
 		// Submenu
-		if (entry instanceof SubmenuAction) {
-			if (submenuIds.has(entry.id)) {
-				console.warn(`Found submenu cycle: ${entry.id}`);
+		if (entry instAnceof SubmenuAction) {
+			if (submenuIds.hAs(entry.id)) {
+				console.wArn(`Found submenu cycle: ${entry.id}`);
 				return undefined;
 			}
 
 			return {
-				label: unmnemonicLabel(stripCodicons(entry.label)).trim(),
-				submenu: this.createMenu(delegate, entry.actions, onHide, new Set([...submenuIds, entry.id]))
+				lAbel: unmnemonicLAbel(stripCodicons(entry.lAbel)).trim(),
+				submenu: this.creAteMenu(delegAte, entry.Actions, onHide, new Set([...submenuIds, entry.id]))
 			};
 		}
 
-		// Normal Menu Item
+		// NormAl Menu Item
 		else {
-			let type: 'radio' | 'checkbox' | undefined = undefined;
+			let type: 'rAdio' | 'checkbox' | undefined = undefined;
 			if (!!entry.checked) {
-				if (typeof delegate.getCheckedActionsRepresentation === 'function') {
-					type = delegate.getCheckedActionsRepresentation(entry);
+				if (typeof delegAte.getCheckedActionsRepresentAtion === 'function') {
+					type = delegAte.getCheckedActionsRepresentAtion(entry);
 				} else {
 					type = 'checkbox';
 				}
 			}
 
 			const item: IContextMenuItem = {
-				label: unmnemonicLabel(stripCodicons(entry.label)).trim(),
+				lAbel: unmnemonicLAbel(stripCodicons(entry.lAbel)).trim(),
 				checked: !!entry.checked,
 				type,
-				enabled: !!entry.enabled,
+				enAbled: !!entry.enAbled,
 				click: event => {
 
-					// To preserve pre-electron-2.x behaviour, we first trigger
-					// the onHide callback and then the action.
+					// To preserve pre-electron-2.x behAviour, we first trigger
+					// the onHide cAllbAck And then the Action.
 					// Fixes https://github.com/microsoft/vscode/issues/45601
 					onHide();
 
-					// Run action which will close the menu
-					this.runAction(actionRunner, entry, delegate, event);
+					// Run Action which will close the menu
+					this.runAction(ActionRunner, entry, delegAte, event);
 				}
 			};
 
-			const keybinding = !!delegate.getKeyBinding ? delegate.getKeyBinding(entry) : this.keybindingService.lookupKeybinding(entry.id);
+			const keybinding = !!delegAte.getKeyBinding ? delegAte.getKeyBinding(entry) : this.keybindingService.lookupKeybinding(entry.id);
 			if (keybinding) {
-				const electronAccelerator = keybinding.getElectronAccelerator();
-				if (electronAccelerator) {
-					item.accelerator = electronAccelerator;
+				const electronAccelerAtor = keybinding.getElectronAccelerAtor();
+				if (electronAccelerAtor) {
+					item.AccelerAtor = electronAccelerAtor;
 				} else {
-					const label = keybinding.getLabel();
-					if (label) {
-						item.label = `${item.label} [${label}]`;
+					const lAbel = keybinding.getLAbel();
+					if (lAbel) {
+						item.lAbel = `${item.lAbel} [${lAbel}]`;
 					}
 				}
 			}
@@ -193,17 +193,17 @@ class NativeContextMenuService extends Disposable implements IContextMenuService
 		}
 	}
 
-	private async runAction(actionRunner: IActionRunner, actionToRun: IAction, delegate: IContextMenuDelegate, event: IContextMenuEvent): Promise<void> {
-		this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: actionToRun.id, from: 'contextMenu' });
+	privAte Async runAction(ActionRunner: IActionRunner, ActionToRun: IAction, delegAte: IContextMenuDelegAte, event: IContextMenuEvent): Promise<void> {
+		this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion>('workbenchActionExecuted', { id: ActionToRun.id, from: 'contextMenu' });
 
-		const context = delegate.getActionsContext ? delegate.getActionsContext(event) : undefined;
+		const context = delegAte.getActionsContext ? delegAte.getActionsContext(event) : undefined;
 
-		const runnable = actionRunner.run(actionToRun, context);
-		if (runnable) {
+		const runnAble = ActionRunner.run(ActionToRun, context);
+		if (runnAble) {
 			try {
-				await runnable;
-			} catch (error) {
-				this.notificationService.error(error);
+				AwAit runnAble;
+			} cAtch (error) {
+				this.notificAtionService.error(error);
 			}
 		}
 	}

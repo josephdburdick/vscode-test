@@ -1,92 +1,92 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { SimpleFindWidget } from 'vs/workbench/contrib/codeEditor/browser/find/simpleFindWidget';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { FindReplAceStAte } from 'vs/editor/contrib/find/findStAte';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
 
-export class TerminalFindWidget extends SimpleFindWidget {
-	protected _findInputFocused: IContextKey<boolean>;
-	protected _findWidgetFocused: IContextKey<boolean>;
+export clAss TerminAlFindWidget extends SimpleFindWidget {
+	protected _findInputFocused: IContextKey<booleAn>;
+	protected _findWidgetFocused: IContextKey<booleAn>;
 
 	constructor(
-		findState: FindReplaceState,
+		findStAte: FindReplAceStAte,
 		@IContextViewService _contextViewService: IContextViewService,
-		@IContextKeyService private readonly _contextKeyService: IContextKeyService,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		@IContextKeyService privAte reAdonly _contextKeyService: IContextKeyService,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(_contextViewService, _contextKeyService, findState, true);
-		this._register(findState.onFindReplaceStateChange(() => {
+		super(_contextViewService, _contextKeyService, findStAte, true);
+		this._register(findStAte.onFindReplAceStAteChAnge(() => {
 			this.show();
 		}));
 		this._findInputFocused = KEYBINDING_CONTEXT_TERMINAL_FIND_INPUT_FOCUSED.bindTo(this._contextKeyService);
 		this._findWidgetFocused = KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED.bindTo(this._contextKeyService);
 	}
 
-	public find(previous: boolean) {
-		const instance = this._terminalService.getActiveInstance();
-		if (instance !== null) {
+	public find(previous: booleAn) {
+		const instAnce = this._terminAlService.getActiveInstAnce();
+		if (instAnce !== null) {
 			if (previous) {
-				instance.findPrevious(this.inputValue, { regex: this._getRegexValue(), wholeWord: this._getWholeWordValue(), caseSensitive: this._getCaseSensitiveValue() });
+				instAnce.findPrevious(this.inputVAlue, { regex: this._getRegexVAlue(), wholeWord: this._getWholeWordVAlue(), cAseSensitive: this._getCAseSensitiveVAlue() });
 			} else {
-				instance.findNext(this.inputValue, { regex: this._getRegexValue(), wholeWord: this._getWholeWordValue(), caseSensitive: this._getCaseSensitiveValue() });
+				instAnce.findNext(this.inputVAlue, { regex: this._getRegexVAlue(), wholeWord: this._getWholeWordVAlue(), cAseSensitive: this._getCAseSensitiveVAlue() });
 			}
 		}
 	}
 
 	public hide() {
 		super.hide();
-		const instance = this._terminalService.getActiveInstance();
-		if (instance) {
-			instance.focus();
+		const instAnce = this._terminAlService.getActiveInstAnce();
+		if (instAnce) {
+			instAnce.focus();
 		}
 	}
 
-	protected onInputChanged() {
-		// Ignore input changes for now
-		const instance = this._terminalService.getActiveInstance();
-		if (instance !== null) {
-			return instance.findPrevious(this.inputValue, { regex: this._getRegexValue(), wholeWord: this._getWholeWordValue(), caseSensitive: this._getCaseSensitiveValue(), incremental: true });
+	protected onInputChAnged() {
+		// Ignore input chAnges for now
+		const instAnce = this._terminAlService.getActiveInstAnce();
+		if (instAnce !== null) {
+			return instAnce.findPrevious(this.inputVAlue, { regex: this._getRegexVAlue(), wholeWord: this._getWholeWordVAlue(), cAseSensitive: this._getCAseSensitiveVAlue(), incrementAl: true });
 		}
-		return false;
+		return fAlse;
 	}
 
-	protected onFocusTrackerFocus() {
-		const instance = this._terminalService.getActiveInstance();
-		if (instance) {
-			instance.notifyFindWidgetFocusChanged(true);
+	protected onFocusTrAckerFocus() {
+		const instAnce = this._terminAlService.getActiveInstAnce();
+		if (instAnce) {
+			instAnce.notifyFindWidgetFocusChAnged(true);
 		}
 		this._findWidgetFocused.set(true);
 	}
 
-	protected onFocusTrackerBlur() {
-		const instance = this._terminalService.getActiveInstance();
-		if (instance) {
-			instance.notifyFindWidgetFocusChanged(false);
+	protected onFocusTrAckerBlur() {
+		const instAnce = this._terminAlService.getActiveInstAnce();
+		if (instAnce) {
+			instAnce.notifyFindWidgetFocusChAnged(fAlse);
 		}
 		this._findWidgetFocused.reset();
 	}
 
-	protected onFindInputFocusTrackerFocus() {
+	protected onFindInputFocusTrAckerFocus() {
 		this._findInputFocused.set(true);
 	}
 
-	protected onFindInputFocusTrackerBlur() {
+	protected onFindInputFocusTrAckerBlur() {
 		this._findInputFocused.reset();
 	}
 
 	public findFirst() {
-		const instance = this._terminalService.getActiveInstance();
-		if (instance) {
-			if (instance.hasSelection()) {
-				instance.clearSelection();
+		const instAnce = this._terminAlService.getActiveInstAnce();
+		if (instAnce) {
+			if (instAnce.hAsSelection()) {
+				instAnce.cleArSelection();
 			}
-			instance.findPrevious(this.inputValue, { regex: this._getRegexValue(), wholeWord: this._getWholeWordValue(), caseSensitive: this._getCaseSensitiveValue() });
+			instAnce.findPrevious(this.inputVAlue, { regex: this._getRegexVAlue(), wholeWord: this._getWholeWordVAlue(), cAseSensitive: this._getCAseSensitiveVAlue() });
 		}
 	}
 }

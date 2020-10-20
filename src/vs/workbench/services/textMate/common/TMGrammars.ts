@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { ExtensionsRegistry, IExtensionPoint } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { languagesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
+import { lAnguAgesExtPoint } from 'vs/workbench/services/mode/common/workbenchModeService';
 
-export interface IEmbeddedLanguagesMap {
-	[scopeName: string]: string;
+export interfAce IEmbeddedLAnguAgesMAp {
+	[scopeNAme: string]: string;
 }
 
-export interface TokenTypesContribution {
-	[scopeName: string]: string;
+export interfAce TokenTypesContribution {
+	[scopeNAme: string]: string;
 }
 
-export interface ITMSyntaxExtensionPoint {
-	language: string;
-	scopeName: string;
-	path: string;
-	embeddedLanguages: IEmbeddedLanguagesMap;
+export interfAce ITMSyntAxExtensionPoint {
+	lAnguAge: string;
+	scopeNAme: string;
+	pAth: string;
+	embeddedLAnguAges: IEmbeddedLAnguAgesMAp;
 	tokenTypes: TokenTypesContribution;
 	injectTo: string[];
 }
 
-export const grammarsExtPoint: IExtensionPoint<ITMSyntaxExtensionPoint[]> = ExtensionsRegistry.registerExtensionPoint<ITMSyntaxExtensionPoint[]>({
-	extensionPoint: 'grammars',
-	deps: [languagesExtPoint],
-	jsonSchema: {
-		description: nls.localize('vscode.extension.contributes.grammars', 'Contributes textmate tokenizers.'),
-		type: 'array',
-		defaultSnippets: [{ body: [{ language: '${1:id}', scopeName: 'source.${2:id}', path: './syntaxes/${3:id}.tmLanguage.' }] }],
+export const grAmmArsExtPoint: IExtensionPoint<ITMSyntAxExtensionPoint[]> = ExtensionsRegistry.registerExtensionPoint<ITMSyntAxExtensionPoint[]>({
+	extensionPoint: 'grAmmArs',
+	deps: [lAnguAgesExtPoint],
+	jsonSchemA: {
+		description: nls.locAlize('vscode.extension.contributes.grAmmArs', 'Contributes textmAte tokenizers.'),
+		type: 'ArrAy',
+		defAultSnippets: [{ body: [{ lAnguAge: '${1:id}', scopeNAme: 'source.${2:id}', pAth: './syntAxes/${3:id}.tmLAnguAge.' }] }],
 		items: {
 			type: 'object',
-			defaultSnippets: [{ body: { language: '${1:id}', scopeName: 'source.${2:id}', path: './syntaxes/${3:id}.tmLanguage.' } }],
+			defAultSnippets: [{ body: { lAnguAge: '${1:id}', scopeNAme: 'source.${2:id}', pAth: './syntAxes/${3:id}.tmLAnguAge.' } }],
 			properties: {
-				language: {
-					description: nls.localize('vscode.extension.contributes.grammars.language', 'Language identifier for which this syntax is contributed to.'),
+				lAnguAge: {
+					description: nls.locAlize('vscode.extension.contributes.grAmmArs.lAnguAge', 'LAnguAge identifier for which this syntAx is contributed to.'),
 					type: 'string'
 				},
-				scopeName: {
-					description: nls.localize('vscode.extension.contributes.grammars.scopeName', 'Textmate scope name used by the tmLanguage file.'),
+				scopeNAme: {
+					description: nls.locAlize('vscode.extension.contributes.grAmmArs.scopeNAme', 'TextmAte scope nAme used by the tmLAnguAge file.'),
 					type: 'string'
 				},
-				path: {
-					description: nls.localize('vscode.extension.contributes.grammars.path', 'Path of the tmLanguage file. The path is relative to the extension folder and typically starts with \'./syntaxes/\'.'),
+				pAth: {
+					description: nls.locAlize('vscode.extension.contributes.grAmmArs.pAth', 'PAth of the tmLAnguAge file. The pAth is relAtive to the extension folder And typicAlly stArts with \'./syntAxes/\'.'),
 					type: 'string'
 				},
-				embeddedLanguages: {
-					description: nls.localize('vscode.extension.contributes.grammars.embeddedLanguages', 'A map of scope name to language id if this grammar contains embedded languages.'),
+				embeddedLAnguAges: {
+					description: nls.locAlize('vscode.extension.contributes.grAmmArs.embeddedLAnguAges', 'A mAp of scope nAme to lAnguAge id if this grAmmAr contAins embedded lAnguAges.'),
 					type: 'object'
 				},
 				tokenTypes: {
-					description: nls.localize('vscode.extension.contributes.grammars.tokenTypes', 'A map of scope name to token types.'),
+					description: nls.locAlize('vscode.extension.contributes.grAmmArs.tokenTypes', 'A mAp of scope nAme to token types.'),
 					type: 'object',
-					additionalProperties: {
+					AdditionAlProperties: {
 						enum: ['string', 'comment', 'other']
 					}
 				},
 				injectTo: {
-					description: nls.localize('vscode.extension.contributes.grammars.injectTo', 'List of language scope names to which this grammar is injected to.'),
-					type: 'array',
+					description: nls.locAlize('vscode.extension.contributes.grAmmArs.injectTo', 'List of lAnguAge scope nAmes to which this grAmmAr is injected to.'),
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					}
 				}
 			},
-			required: ['scopeName', 'path']
+			required: ['scopeNAme', 'pAth']
 		}
 	}
 });

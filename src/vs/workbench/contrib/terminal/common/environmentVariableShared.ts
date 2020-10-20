@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableMutator, ISerializableEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariable';
+import { IEnvironmentVAriAbleMutAtor, ISeriAlizAbleEnvironmentVAriAbleCollection } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
 
-// This file is shared between the renderer and extension host
+// This file is shAred between the renderer And extension host
 
-export function serializeEnvironmentVariableCollection(collection: ReadonlyMap<string, IEnvironmentVariableMutator>): ISerializableEnvironmentVariableCollection {
+export function seriAlizeEnvironmentVAriAbleCollection(collection: ReAdonlyMAp<string, IEnvironmentVAriAbleMutAtor>): ISeriAlizAbleEnvironmentVAriAbleCollection {
 	return [...collection.entries()];
 }
 
-export function deserializeEnvironmentVariableCollection(
-	serializedCollection: ISerializableEnvironmentVariableCollection
-): Map<string, IEnvironmentVariableMutator> {
-	return new Map<string, IEnvironmentVariableMutator>(serializedCollection);
+export function deseriAlizeEnvironmentVAriAbleCollection(
+	seriAlizedCollection: ISeriAlizAbleEnvironmentVAriAbleCollection
+): MAp<string, IEnvironmentVAriAbleMutAtor> {
+	return new MAp<string, IEnvironmentVAriAbleMutAtor>(seriAlizedCollection);
 }

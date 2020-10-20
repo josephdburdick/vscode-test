@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as path from 'vs/base/common/path';
-import { dirname } from 'vs/base/common/resources';
+import * As nls from 'vs/nls';
+import * As pAth from 'vs/bAse/common/pAth';
+import { dirnAme } from 'vs/bAse/common/resources';
 import { ITextModel } from 'vs/editor/common/model';
 import { Selection } from 'vs/editor/common/core/selection';
-import { VariableResolver, Variable, Text } from 'vs/editor/contrib/snippet/snippetParser';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
-import { getLeadingWhitespace, commonPrefixLength, isFalsyOrWhitespace } from 'vs/base/common/strings';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { isSingleFolderWorkspaceIdentifier, toWorkspaceIdentifier, WORKSPACE_EXTENSION, IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { normalizeDriveLetter } from 'vs/base/common/labels';
-import { URI } from 'vs/base/common/uri';
-import { OvertypingCapturer } from 'vs/editor/contrib/suggest/suggestOvertypingCapturer';
+import { VAriAbleResolver, VAriAble, Text } from 'vs/editor/contrib/snippet/snippetPArser';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
+import { getLeAdingWhitespAce, commonPrefixLength, isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { isSingleFolderWorkspAceIdentifier, toWorkspAceIdentifier, WORKSPACE_EXTENSION, IWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { normAlizeDriveLetter } from 'vs/bAse/common/lAbels';
+import { URI } from 'vs/bAse/common/uri';
+import { OvertypingCApturer } from 'vs/editor/contrib/suggest/suggestOvertypingCApturer';
 
-export const KnownSnippetVariableNames: { [key: string]: true } = Object.freeze({
+export const KnownSnippetVAriAbleNAmes: { [key: string]: true } = Object.freeze({
 	'CURRENT_YEAR': true,
 	'CURRENT_YEAR_SHORT': true,
 	'CURRENT_MONTH': true,
@@ -51,298 +51,298 @@ export const KnownSnippetVariableNames: { [key: string]: true } = Object.freeze(
 	'RANDOM_HEX': true,
 });
 
-export class CompositeSnippetVariableResolver implements VariableResolver {
+export clAss CompositeSnippetVAriAbleResolver implements VAriAbleResolver {
 
-	constructor(private readonly _delegates: VariableResolver[]) {
+	constructor(privAte reAdonly _delegAtes: VAriAbleResolver[]) {
 		//
 	}
 
-	resolve(variable: Variable): string | undefined {
-		for (const delegate of this._delegates) {
-			let value = delegate.resolve(variable);
-			if (value !== undefined) {
-				return value;
+	resolve(vAriAble: VAriAble): string | undefined {
+		for (const delegAte of this._delegAtes) {
+			let vAlue = delegAte.resolve(vAriAble);
+			if (vAlue !== undefined) {
+				return vAlue;
 			}
 		}
 		return undefined;
 	}
 }
 
-export class SelectionBasedVariableResolver implements VariableResolver {
+export clAss SelectionBAsedVAriAbleResolver implements VAriAbleResolver {
 
 	constructor(
-		private readonly _model: ITextModel,
-		private readonly _selection: Selection,
-		private readonly _selectionIdx: number,
-		private readonly _overtypingCapturer: OvertypingCapturer | undefined
+		privAte reAdonly _model: ITextModel,
+		privAte reAdonly _selection: Selection,
+		privAte reAdonly _selectionIdx: number,
+		privAte reAdonly _overtypingCApturer: OvertypingCApturer | undefined
 	) {
 		//
 	}
 
-	resolve(variable: Variable): string | undefined {
+	resolve(vAriAble: VAriAble): string | undefined {
 
-		const { name } = variable;
+		const { nAme } = vAriAble;
 
-		if (name === 'SELECTION' || name === 'TM_SELECTED_TEXT') {
-			let value = this._model.getValueInRange(this._selection) || undefined;
-			let isMultiline = this._selection.startLineNumber !== this._selection.endLineNumber;
+		if (nAme === 'SELECTION' || nAme === 'TM_SELECTED_TEXT') {
+			let vAlue = this._model.getVAlueInRAnge(this._selection) || undefined;
+			let isMultiline = this._selection.stArtLineNumber !== this._selection.endLineNumber;
 
-			// If there was no selected text, try to get last overtyped text
-			if (!value && this._overtypingCapturer) {
-				const info = this._overtypingCapturer.getLastOvertypedInfo(this._selectionIdx);
+			// If there wAs no selected text, try to get lAst overtyped text
+			if (!vAlue && this._overtypingCApturer) {
+				const info = this._overtypingCApturer.getLAstOvertypedInfo(this._selectionIdx);
 				if (info) {
-					value = info.value;
+					vAlue = info.vAlue;
 					isMultiline = info.multiline;
 				}
 			}
 
-			if (value && isMultiline && variable.snippet) {
-				// Selection is a multiline string which we indentation we now
-				// need to adjust. We compare the indentation of this variable
-				// with the indentation at the editor position and add potential
-				// extra indentation to the value
+			if (vAlue && isMultiline && vAriAble.snippet) {
+				// Selection is A multiline string which we indentAtion we now
+				// need to Adjust. We compAre the indentAtion of this vAriAble
+				// with the indentAtion At the editor position And Add potentiAl
+				// extrA indentAtion to the vAlue
 
-				const line = this._model.getLineContent(this._selection.startLineNumber);
-				const lineLeadingWhitespace = getLeadingWhitespace(line, 0, this._selection.startColumn - 1);
+				const line = this._model.getLineContent(this._selection.stArtLineNumber);
+				const lineLeAdingWhitespAce = getLeAdingWhitespAce(line, 0, this._selection.stArtColumn - 1);
 
-				let varLeadingWhitespace = lineLeadingWhitespace;
-				variable.snippet.walk(marker => {
-					if (marker === variable) {
-						return false;
+				let vArLeAdingWhitespAce = lineLeAdingWhitespAce;
+				vAriAble.snippet.wAlk(mArker => {
+					if (mArker === vAriAble) {
+						return fAlse;
 					}
-					if (marker instanceof Text) {
-						varLeadingWhitespace = getLeadingWhitespace(marker.value.split(/\r\n|\r|\n/).pop()!);
+					if (mArker instAnceof Text) {
+						vArLeAdingWhitespAce = getLeAdingWhitespAce(mArker.vAlue.split(/\r\n|\r|\n/).pop()!);
 					}
 					return true;
 				});
-				const whitespaceCommonLength = commonPrefixLength(varLeadingWhitespace, lineLeadingWhitespace);
+				const whitespAceCommonLength = commonPrefixLength(vArLeAdingWhitespAce, lineLeAdingWhitespAce);
 
-				value = value.replace(
+				vAlue = vAlue.replAce(
 					/(\r\n|\r|\n)(.*)/g,
-					(m, newline, rest) => `${newline}${varLeadingWhitespace.substr(whitespaceCommonLength)}${rest}`
+					(m, newline, rest) => `${newline}${vArLeAdingWhitespAce.substr(whitespAceCommonLength)}${rest}`
 				);
 			}
-			return value;
+			return vAlue;
 
-		} else if (name === 'TM_CURRENT_LINE') {
+		} else if (nAme === 'TM_CURRENT_LINE') {
 			return this._model.getLineContent(this._selection.positionLineNumber);
 
-		} else if (name === 'TM_CURRENT_WORD') {
+		} else if (nAme === 'TM_CURRENT_WORD') {
 			const info = this._model.getWordAtPosition({
 				lineNumber: this._selection.positionLineNumber,
 				column: this._selection.positionColumn
 			});
 			return info && info.word || undefined;
 
-		} else if (name === 'TM_LINE_INDEX') {
+		} else if (nAme === 'TM_LINE_INDEX') {
 			return String(this._selection.positionLineNumber - 1);
 
-		} else if (name === 'TM_LINE_NUMBER') {
+		} else if (nAme === 'TM_LINE_NUMBER') {
 			return String(this._selection.positionLineNumber);
 		}
 		return undefined;
 	}
 }
 
-export class ModelBasedVariableResolver implements VariableResolver {
+export clAss ModelBAsedVAriAbleResolver implements VAriAbleResolver {
 
 	constructor(
-		private readonly _labelService: ILabelService | undefined,
-		private readonly _model: ITextModel
+		privAte reAdonly _lAbelService: ILAbelService | undefined,
+		privAte reAdonly _model: ITextModel
 	) {
 		//
 	}
 
-	resolve(variable: Variable): string | undefined {
+	resolve(vAriAble: VAriAble): string | undefined {
 
-		const { name } = variable;
+		const { nAme } = vAriAble;
 
-		if (name === 'TM_FILENAME') {
-			return path.basename(this._model.uri.fsPath);
+		if (nAme === 'TM_FILENAME') {
+			return pAth.bAsenAme(this._model.uri.fsPAth);
 
-		} else if (name === 'TM_FILENAME_BASE') {
-			const name = path.basename(this._model.uri.fsPath);
-			const idx = name.lastIndexOf('.');
+		} else if (nAme === 'TM_FILENAME_BASE') {
+			const nAme = pAth.bAsenAme(this._model.uri.fsPAth);
+			const idx = nAme.lAstIndexOf('.');
 			if (idx <= 0) {
-				return name;
+				return nAme;
 			} else {
-				return name.slice(0, idx);
+				return nAme.slice(0, idx);
 			}
 
-		} else if (name === 'TM_DIRECTORY' && this._labelService) {
-			if (path.dirname(this._model.uri.fsPath) === '.') {
+		} else if (nAme === 'TM_DIRECTORY' && this._lAbelService) {
+			if (pAth.dirnAme(this._model.uri.fsPAth) === '.') {
 				return '';
 			}
-			return this._labelService.getUriLabel(dirname(this._model.uri));
+			return this._lAbelService.getUriLAbel(dirnAme(this._model.uri));
 
-		} else if (name === 'TM_FILEPATH' && this._labelService) {
-			return this._labelService.getUriLabel(this._model.uri);
+		} else if (nAme === 'TM_FILEPATH' && this._lAbelService) {
+			return this._lAbelService.getUriLAbel(this._model.uri);
 		}
 
 		return undefined;
 	}
 }
 
-export interface IReadClipboardText {
+export interfAce IReAdClipboArdText {
 	(): string | undefined;
 }
 
-export class ClipboardBasedVariableResolver implements VariableResolver {
+export clAss ClipboArdBAsedVAriAbleResolver implements VAriAbleResolver {
 
 	constructor(
-		private readonly _readClipboardText: IReadClipboardText,
-		private readonly _selectionIdx: number,
-		private readonly _selectionCount: number,
-		private readonly _spread: boolean
+		privAte reAdonly _reAdClipboArdText: IReAdClipboArdText,
+		privAte reAdonly _selectionIdx: number,
+		privAte reAdonly _selectionCount: number,
+		privAte reAdonly _spreAd: booleAn
 	) {
 		//
 	}
 
-	resolve(variable: Variable): string | undefined {
-		if (variable.name !== 'CLIPBOARD') {
+	resolve(vAriAble: VAriAble): string | undefined {
+		if (vAriAble.nAme !== 'CLIPBOARD') {
 			return undefined;
 		}
 
-		const clipboardText = this._readClipboardText();
-		if (!clipboardText) {
+		const clipboArdText = this._reAdClipboArdText();
+		if (!clipboArdText) {
 			return undefined;
 		}
 
-		// `spread` is assigning each cursor a line of the clipboard
-		// text whenever there the line count equals the cursor count
-		// and when enabled
-		if (this._spread) {
-			const lines = clipboardText.split(/\r\n|\n|\r/).filter(s => !isFalsyOrWhitespace(s));
+		// `spreAd` is Assigning eAch cursor A line of the clipboArd
+		// text whenever there the line count equAls the cursor count
+		// And when enAbled
+		if (this._spreAd) {
+			const lines = clipboArdText.split(/\r\n|\n|\r/).filter(s => !isFAlsyOrWhitespAce(s));
 			if (lines.length === this._selectionCount) {
 				return lines[this._selectionIdx];
 			}
 		}
-		return clipboardText;
+		return clipboArdText;
 	}
 }
-export class CommentBasedVariableResolver implements VariableResolver {
+export clAss CommentBAsedVAriAbleResolver implements VAriAbleResolver {
 	constructor(
-		private readonly _model: ITextModel,
-		private readonly _selection: Selection
+		privAte reAdonly _model: ITextModel,
+		privAte reAdonly _selection: Selection
 	) {
 		//
 	}
-	resolve(variable: Variable): string | undefined {
-		const { name } = variable;
-		const langId = this._model.getLanguageIdAtPosition(this._selection.selectionStartLineNumber, this._selection.selectionStartColumn);
-		const config = LanguageConfigurationRegistry.getComments(langId);
+	resolve(vAriAble: VAriAble): string | undefined {
+		const { nAme } = vAriAble;
+		const lAngId = this._model.getLAnguAgeIdAtPosition(this._selection.selectionStArtLineNumber, this._selection.selectionStArtColumn);
+		const config = LAnguAgeConfigurAtionRegistry.getComments(lAngId);
 		if (!config) {
 			return undefined;
 		}
-		if (name === 'LINE_COMMENT') {
+		if (nAme === 'LINE_COMMENT') {
 			return config.lineCommentToken || undefined;
-		} else if (name === 'BLOCK_COMMENT_START') {
-			return config.blockCommentStartToken || undefined;
-		} else if (name === 'BLOCK_COMMENT_END') {
+		} else if (nAme === 'BLOCK_COMMENT_START') {
+			return config.blockCommentStArtToken || undefined;
+		} else if (nAme === 'BLOCK_COMMENT_END') {
 			return config.blockCommentEndToken || undefined;
 		}
 		return undefined;
 	}
 }
-export class TimeBasedVariableResolver implements VariableResolver {
+export clAss TimeBAsedVAriAbleResolver implements VAriAbleResolver {
 
-	private static readonly dayNames = [nls.localize('Sunday', "Sunday"), nls.localize('Monday', "Monday"), nls.localize('Tuesday', "Tuesday"), nls.localize('Wednesday', "Wednesday"), nls.localize('Thursday', "Thursday"), nls.localize('Friday', "Friday"), nls.localize('Saturday', "Saturday")];
-	private static readonly dayNamesShort = [nls.localize('SundayShort', "Sun"), nls.localize('MondayShort', "Mon"), nls.localize('TuesdayShort', "Tue"), nls.localize('WednesdayShort', "Wed"), nls.localize('ThursdayShort', "Thu"), nls.localize('FridayShort', "Fri"), nls.localize('SaturdayShort', "Sat")];
-	private static readonly monthNames = [nls.localize('January', "January"), nls.localize('February', "February"), nls.localize('March', "March"), nls.localize('April', "April"), nls.localize('May', "May"), nls.localize('June', "June"), nls.localize('July', "July"), nls.localize('August', "August"), nls.localize('September', "September"), nls.localize('October', "October"), nls.localize('November', "November"), nls.localize('December', "December")];
-	private static readonly monthNamesShort = [nls.localize('JanuaryShort', "Jan"), nls.localize('FebruaryShort', "Feb"), nls.localize('MarchShort', "Mar"), nls.localize('AprilShort', "Apr"), nls.localize('MayShort', "May"), nls.localize('JuneShort', "Jun"), nls.localize('JulyShort', "Jul"), nls.localize('AugustShort', "Aug"), nls.localize('SeptemberShort', "Sep"), nls.localize('OctoberShort', "Oct"), nls.localize('NovemberShort', "Nov"), nls.localize('DecemberShort', "Dec")];
+	privAte stAtic reAdonly dAyNAmes = [nls.locAlize('SundAy', "SundAy"), nls.locAlize('MondAy', "MondAy"), nls.locAlize('TuesdAy', "TuesdAy"), nls.locAlize('WednesdAy', "WednesdAy"), nls.locAlize('ThursdAy', "ThursdAy"), nls.locAlize('FridAy', "FridAy"), nls.locAlize('SAturdAy', "SAturdAy")];
+	privAte stAtic reAdonly dAyNAmesShort = [nls.locAlize('SundAyShort', "Sun"), nls.locAlize('MondAyShort', "Mon"), nls.locAlize('TuesdAyShort', "Tue"), nls.locAlize('WednesdAyShort', "Wed"), nls.locAlize('ThursdAyShort', "Thu"), nls.locAlize('FridAyShort', "Fri"), nls.locAlize('SAturdAyShort', "SAt")];
+	privAte stAtic reAdonly monthNAmes = [nls.locAlize('JAnuAry', "JAnuAry"), nls.locAlize('FebruAry', "FebruAry"), nls.locAlize('MArch', "MArch"), nls.locAlize('April', "April"), nls.locAlize('MAy', "MAy"), nls.locAlize('June', "June"), nls.locAlize('July', "July"), nls.locAlize('August', "August"), nls.locAlize('September', "September"), nls.locAlize('October', "October"), nls.locAlize('November', "November"), nls.locAlize('December', "December")];
+	privAte stAtic reAdonly monthNAmesShort = [nls.locAlize('JAnuAryShort', "JAn"), nls.locAlize('FebruAryShort', "Feb"), nls.locAlize('MArchShort', "MAr"), nls.locAlize('AprilShort', "Apr"), nls.locAlize('MAyShort', "MAy"), nls.locAlize('JuneShort', "Jun"), nls.locAlize('JulyShort', "Jul"), nls.locAlize('AugustShort', "Aug"), nls.locAlize('SeptemberShort', "Sep"), nls.locAlize('OctoberShort', "Oct"), nls.locAlize('NovemberShort', "Nov"), nls.locAlize('DecemberShort', "Dec")];
 
-	resolve(variable: Variable): string | undefined {
-		const { name } = variable;
+	resolve(vAriAble: VAriAble): string | undefined {
+		const { nAme } = vAriAble;
 
-		if (name === 'CURRENT_YEAR') {
-			return String(new Date().getFullYear());
-		} else if (name === 'CURRENT_YEAR_SHORT') {
-			return String(new Date().getFullYear()).slice(-2);
-		} else if (name === 'CURRENT_MONTH') {
-			return String(new Date().getMonth().valueOf() + 1).padStart(2, '0');
-		} else if (name === 'CURRENT_DATE') {
-			return String(new Date().getDate().valueOf()).padStart(2, '0');
-		} else if (name === 'CURRENT_HOUR') {
-			return String(new Date().getHours().valueOf()).padStart(2, '0');
-		} else if (name === 'CURRENT_MINUTE') {
-			return String(new Date().getMinutes().valueOf()).padStart(2, '0');
-		} else if (name === 'CURRENT_SECOND') {
-			return String(new Date().getSeconds().valueOf()).padStart(2, '0');
-		} else if (name === 'CURRENT_DAY_NAME') {
-			return TimeBasedVariableResolver.dayNames[new Date().getDay()];
-		} else if (name === 'CURRENT_DAY_NAME_SHORT') {
-			return TimeBasedVariableResolver.dayNamesShort[new Date().getDay()];
-		} else if (name === 'CURRENT_MONTH_NAME') {
-			return TimeBasedVariableResolver.monthNames[new Date().getMonth()];
-		} else if (name === 'CURRENT_MONTH_NAME_SHORT') {
-			return TimeBasedVariableResolver.monthNamesShort[new Date().getMonth()];
-		} else if (name === 'CURRENT_SECONDS_UNIX') {
-			return String(Math.floor(Date.now() / 1000));
+		if (nAme === 'CURRENT_YEAR') {
+			return String(new DAte().getFullYeAr());
+		} else if (nAme === 'CURRENT_YEAR_SHORT') {
+			return String(new DAte().getFullYeAr()).slice(-2);
+		} else if (nAme === 'CURRENT_MONTH') {
+			return String(new DAte().getMonth().vAlueOf() + 1).pAdStArt(2, '0');
+		} else if (nAme === 'CURRENT_DATE') {
+			return String(new DAte().getDAte().vAlueOf()).pAdStArt(2, '0');
+		} else if (nAme === 'CURRENT_HOUR') {
+			return String(new DAte().getHours().vAlueOf()).pAdStArt(2, '0');
+		} else if (nAme === 'CURRENT_MINUTE') {
+			return String(new DAte().getMinutes().vAlueOf()).pAdStArt(2, '0');
+		} else if (nAme === 'CURRENT_SECOND') {
+			return String(new DAte().getSeconds().vAlueOf()).pAdStArt(2, '0');
+		} else if (nAme === 'CURRENT_DAY_NAME') {
+			return TimeBAsedVAriAbleResolver.dAyNAmes[new DAte().getDAy()];
+		} else if (nAme === 'CURRENT_DAY_NAME_SHORT') {
+			return TimeBAsedVAriAbleResolver.dAyNAmesShort[new DAte().getDAy()];
+		} else if (nAme === 'CURRENT_MONTH_NAME') {
+			return TimeBAsedVAriAbleResolver.monthNAmes[new DAte().getMonth()];
+		} else if (nAme === 'CURRENT_MONTH_NAME_SHORT') {
+			return TimeBAsedVAriAbleResolver.monthNAmesShort[new DAte().getMonth()];
+		} else if (nAme === 'CURRENT_SECONDS_UNIX') {
+			return String(MAth.floor(DAte.now() / 1000));
 		}
 
 		return undefined;
 	}
 }
 
-export class WorkspaceBasedVariableResolver implements VariableResolver {
+export clAss WorkspAceBAsedVAriAbleResolver implements VAriAbleResolver {
 	constructor(
-		private readonly _workspaceService: IWorkspaceContextService | undefined,
+		privAte reAdonly _workspAceService: IWorkspAceContextService | undefined,
 	) {
 		//
 	}
 
-	resolve(variable: Variable): string | undefined {
-		if (!this._workspaceService) {
+	resolve(vAriAble: VAriAble): string | undefined {
+		if (!this._workspAceService) {
 			return undefined;
 		}
 
-		const workspaceIdentifier = toWorkspaceIdentifier(this._workspaceService.getWorkspace());
-		if (!workspaceIdentifier) {
+		const workspAceIdentifier = toWorkspAceIdentifier(this._workspAceService.getWorkspAce());
+		if (!workspAceIdentifier) {
 			return undefined;
 		}
 
-		if (variable.name === 'WORKSPACE_NAME') {
-			return this._resolveWorkspaceName(workspaceIdentifier);
-		} else if (variable.name === 'WORKSPACE_FOLDER') {
-			return this._resoveWorkspacePath(workspaceIdentifier);
+		if (vAriAble.nAme === 'WORKSPACE_NAME') {
+			return this._resolveWorkspAceNAme(workspAceIdentifier);
+		} else if (vAriAble.nAme === 'WORKSPACE_FOLDER') {
+			return this._resoveWorkspAcePAth(workspAceIdentifier);
 		}
 
 		return undefined;
 	}
-	private _resolveWorkspaceName(workspaceIdentifier: IWorkspaceIdentifier | URI): string | undefined {
-		if (isSingleFolderWorkspaceIdentifier(workspaceIdentifier)) {
-			return path.basename(workspaceIdentifier.path);
+	privAte _resolveWorkspAceNAme(workspAceIdentifier: IWorkspAceIdentifier | URI): string | undefined {
+		if (isSingleFolderWorkspAceIdentifier(workspAceIdentifier)) {
+			return pAth.bAsenAme(workspAceIdentifier.pAth);
 		}
 
-		let filename = path.basename(workspaceIdentifier.configPath.path);
-		if (filename.endsWith(WORKSPACE_EXTENSION)) {
-			filename = filename.substr(0, filename.length - WORKSPACE_EXTENSION.length - 1);
+		let filenAme = pAth.bAsenAme(workspAceIdentifier.configPAth.pAth);
+		if (filenAme.endsWith(WORKSPACE_EXTENSION)) {
+			filenAme = filenAme.substr(0, filenAme.length - WORKSPACE_EXTENSION.length - 1);
 		}
-		return filename;
+		return filenAme;
 	}
-	private _resoveWorkspacePath(workspaceIdentifier: IWorkspaceIdentifier | URI): string | undefined {
-		if (isSingleFolderWorkspaceIdentifier(workspaceIdentifier)) {
-			return normalizeDriveLetter(workspaceIdentifier.fsPath);
+	privAte _resoveWorkspAcePAth(workspAceIdentifier: IWorkspAceIdentifier | URI): string | undefined {
+		if (isSingleFolderWorkspAceIdentifier(workspAceIdentifier)) {
+			return normAlizeDriveLetter(workspAceIdentifier.fsPAth);
 		}
 
-		let filename = path.basename(workspaceIdentifier.configPath.path);
-		let folderpath = workspaceIdentifier.configPath.fsPath;
-		if (folderpath.endsWith(filename)) {
-			folderpath = folderpath.substr(0, folderpath.length - filename.length - 1);
+		let filenAme = pAth.bAsenAme(workspAceIdentifier.configPAth.pAth);
+		let folderpAth = workspAceIdentifier.configPAth.fsPAth;
+		if (folderpAth.endsWith(filenAme)) {
+			folderpAth = folderpAth.substr(0, folderpAth.length - filenAme.length - 1);
 		}
-		return (folderpath ? normalizeDriveLetter(folderpath) : '/');
+		return (folderpAth ? normAlizeDriveLetter(folderpAth) : '/');
 	}
 }
 
-export class RandomBasedVariableResolver implements VariableResolver {
-	resolve(variable: Variable): string | undefined {
-		const { name } = variable;
+export clAss RAndomBAsedVAriAbleResolver implements VAriAbleResolver {
+	resolve(vAriAble: VAriAble): string | undefined {
+		const { nAme } = vAriAble;
 
-		if (name === 'RANDOM') {
-			return Math.random().toString().slice(-6);
+		if (nAme === 'RANDOM') {
+			return MAth.rAndom().toString().slice(-6);
 		}
-		else if (name === 'RANDOM_HEX') {
-			return Math.random().toString(16).slice(-6);
+		else if (nAme === 'RANDOM_HEX') {
+			return MAth.rAndom().toString(16).slice(-6);
 		}
 
 		return undefined;

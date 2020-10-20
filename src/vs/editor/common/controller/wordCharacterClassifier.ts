@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
-import { CharacterClassifier } from 'vs/editor/common/core/characterClassifier';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { ChArActerClAssifier } from 'vs/editor/common/core/chArActerClAssifier';
 
-export const enum WordCharacterClass {
-	Regular = 0,
-	Whitespace = 1,
-	WordSeparator = 2
+export const enum WordChArActerClAss {
+	RegulAr = 0,
+	WhitespAce = 1,
+	WordSepArAtor = 2
 }
 
-export class WordCharacterClassifier extends CharacterClassifier<WordCharacterClass> {
+export clAss WordChArActerClAssifier extends ChArActerClAssifier<WordChArActerClAss> {
 
-	constructor(wordSeparators: string) {
-		super(WordCharacterClass.Regular);
+	constructor(wordSepArAtors: string) {
+		super(WordChArActerClAss.RegulAr);
 
-		for (let i = 0, len = wordSeparators.length; i < len; i++) {
-			this.set(wordSeparators.charCodeAt(i), WordCharacterClass.WordSeparator);
+		for (let i = 0, len = wordSepArAtors.length; i < len; i++) {
+			this.set(wordSepArAtors.chArCodeAt(i), WordChArActerClAss.WordSepArAtor);
 		}
 
-		this.set(CharCode.Space, WordCharacterClass.Whitespace);
-		this.set(CharCode.Tab, WordCharacterClass.Whitespace);
+		this.set(ChArCode.SpAce, WordChArActerClAss.WhitespAce);
+		this.set(ChArCode.TAb, WordChArActerClAss.WhitespAce);
 	}
 
 }
 
 function once<R>(computeFn: (input: string) => R): (input: string) => R {
-	let cache: { [key: string]: R; } = {}; // TODO@Alex unbounded cache
+	let cAche: { [key: string]: R; } = {}; // TODO@Alex unbounded cAche
 	return (input: string): R => {
-		if (!cache.hasOwnProperty(input)) {
-			cache[input] = computeFn(input);
+		if (!cAche.hAsOwnProperty(input)) {
+			cAche[input] = computeFn(input);
 		}
-		return cache[input];
+		return cAche[input];
 	};
 }
 
-export const getMapForWordSeparators = once<WordCharacterClassifier>(
-	(input) => new WordCharacterClassifier(input)
+export const getMApForWordSepArAtors = once<WordChArActerClAssifier>(
+	(input) => new WordChArActerClAssifier(input)
 );

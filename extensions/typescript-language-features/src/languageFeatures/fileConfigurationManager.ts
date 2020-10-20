@@ -1,220 +1,220 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
-import { Disposable } from '../utils/dispose';
-import * as fileSchemes from '../utils/fileSchemes';
-import { isTypeScriptDocument } from '../utils/languageModeIds';
-import { equals } from '../utils/objects';
-import { ResourceMap } from '../utils/resourceMap';
+import API from '../utils/Api';
+import { DisposAble } from '../utils/dispose';
+import * As fileSchemes from '../utils/fileSchemes';
+import { isTypeScriptDocument } from '../utils/lAnguAgeModeIds';
+import { equAls } from '../utils/objects';
+import { ResourceMAp } from '../utils/resourceMAp';
 
-namespace Experimental {
+nAmespAce ExperimentAl {
 	// https://github.com/microsoft/TypeScript/pull/37871/
-	export interface UserPreferences extends Proto.UserPreferences {
-		readonly provideRefactorNotApplicableReason?: boolean;
+	export interfAce UserPreferences extends Proto.UserPreferences {
+		reAdonly provideRefActorNotApplicAbleReAson?: booleAn;
 	}
 }
 
-interface FileConfiguration {
-	readonly formatOptions: Proto.FormatCodeSettings;
-	readonly preferences: Proto.UserPreferences;
+interfAce FileConfigurAtion {
+	reAdonly formAtOptions: Proto.FormAtCodeSettings;
+	reAdonly preferences: Proto.UserPreferences;
 }
 
-function areFileConfigurationsEqual(a: FileConfiguration, b: FileConfiguration): boolean {
-	return equals(a, b);
+function AreFileConfigurAtionsEquAl(A: FileConfigurAtion, b: FileConfigurAtion): booleAn {
+	return equAls(A, b);
 }
 
-export default class FileConfigurationManager extends Disposable {
-	private readonly formatOptions: ResourceMap<Promise<FileConfiguration | undefined>>;
+export defAult clAss FileConfigurAtionMAnAger extends DisposAble {
+	privAte reAdonly formAtOptions: ResourceMAp<Promise<FileConfigurAtion | undefined>>;
 
 	public constructor(
-		private readonly client: ITypeScriptServiceClient,
-		onCaseInsenitiveFileSystem: boolean
+		privAte reAdonly client: ITypeScriptServiceClient,
+		onCAseInsenitiveFileSystem: booleAn
 	) {
 		super();
-		this.formatOptions = new ResourceMap(undefined, { onCaseInsenitiveFileSystem });
-		vscode.workspace.onDidCloseTextDocument(textDocument => {
-			// When a document gets closed delete the cached formatting options.
-			// This is necessary since the tsserver now closed a project when its
-			// last file in it closes which drops the stored formatting options
-			// as well.
-			this.formatOptions.delete(textDocument.uri);
-		}, undefined, this._disposables);
+		this.formAtOptions = new ResourceMAp(undefined, { onCAseInsenitiveFileSystem });
+		vscode.workspAce.onDidCloseTextDocument(textDocument => {
+			// When A document gets closed delete the cAched formAtting options.
+			// This is necessAry since the tsserver now closed A project when its
+			// lAst file in it closes which drops the stored formAtting options
+			// As well.
+			this.formAtOptions.delete(textDocument.uri);
+		}, undefined, this._disposAbles);
 	}
 
-	public async ensureConfigurationForDocument(
+	public Async ensureConfigurAtionForDocument(
 		document: vscode.TextDocument,
-		token: vscode.CancellationToken
+		token: vscode.CAncellAtionToken
 	): Promise<void> {
-		const formattingOptions = this.getFormattingOptions(document);
-		if (formattingOptions) {
-			return this.ensureConfigurationOptions(document, formattingOptions, token);
+		const formAttingOptions = this.getFormAttingOptions(document);
+		if (formAttingOptions) {
+			return this.ensureConfigurAtionOptions(document, formAttingOptions, token);
 		}
 	}
 
-	private getFormattingOptions(
+	privAte getFormAttingOptions(
 		document: vscode.TextDocument
-	): vscode.FormattingOptions | undefined {
-		const editor = vscode.window.visibleTextEditors.find(editor => editor.document.fileName === document.fileName);
+	): vscode.FormAttingOptions | undefined {
+		const editor = vscode.window.visibleTextEditors.find(editor => editor.document.fileNAme === document.fileNAme);
 		return editor
 			? {
-				tabSize: editor.options.tabSize,
-				insertSpaces: editor.options.insertSpaces
-			} as vscode.FormattingOptions
+				tAbSize: editor.options.tAbSize,
+				insertSpAces: editor.options.insertSpAces
+			} As vscode.FormAttingOptions
 			: undefined;
 	}
 
-	public async ensureConfigurationOptions(
+	public Async ensureConfigurAtionOptions(
 		document: vscode.TextDocument,
-		options: vscode.FormattingOptions,
-		token: vscode.CancellationToken
+		options: vscode.FormAttingOptions,
+		token: vscode.CAncellAtionToken
 	): Promise<void> {
-		const file = this.client.toOpenedFilePath(document);
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return;
 		}
 
 		const currentOptions = this.getFileOptions(document, options);
-		const cachedOptions = this.formatOptions.get(document.uri);
-		if (cachedOptions) {
-			const cachedOptionsValue = await cachedOptions;
-			if (cachedOptionsValue && areFileConfigurationsEqual(cachedOptionsValue, currentOptions)) {
+		const cAchedOptions = this.formAtOptions.get(document.uri);
+		if (cAchedOptions) {
+			const cAchedOptionsVAlue = AwAit cAchedOptions;
+			if (cAchedOptionsVAlue && AreFileConfigurAtionsEquAl(cAchedOptionsVAlue, currentOptions)) {
 				return;
 			}
 		}
 
-		let resolve: (x: FileConfiguration | undefined) => void;
-		this.formatOptions.set(document.uri, new Promise<FileConfiguration | undefined>(r => resolve = r));
+		let resolve: (x: FileConfigurAtion | undefined) => void;
+		this.formAtOptions.set(document.uri, new Promise<FileConfigurAtion | undefined>(r => resolve = r));
 
-		const args: Proto.ConfigureRequestArguments = {
+		const Args: Proto.ConfigureRequestArguments = {
 			file,
 			...currentOptions,
 		};
 		try {
-			const response = await this.client.execute('configure', args, token);
+			const response = AwAit this.client.execute('configure', Args, token);
 			resolve!(response.type === 'response' ? currentOptions : undefined);
-		} finally {
+		} finAlly {
 			resolve!(undefined);
 		}
 	}
 
-	public async setGlobalConfigurationFromDocument(
+	public Async setGlobAlConfigurAtionFromDocument(
 		document: vscode.TextDocument,
-		token: vscode.CancellationToken,
+		token: vscode.CAncellAtionToken,
 	): Promise<void> {
-		const formattingOptions = this.getFormattingOptions(document);
-		if (!formattingOptions) {
+		const formAttingOptions = this.getFormAttingOptions(document);
+		if (!formAttingOptions) {
 			return;
 		}
 
-		const args: Proto.ConfigureRequestArguments = {
-			file: undefined /*global*/,
-			...this.getFileOptions(document, formattingOptions),
+		const Args: Proto.ConfigureRequestArguments = {
+			file: undefined /*globAl*/,
+			...this.getFileOptions(document, formAttingOptions),
 		};
-		await this.client.execute('configure', args, token);
+		AwAit this.client.execute('configure', Args, token);
 	}
 
 	public reset() {
-		this.formatOptions.clear();
+		this.formAtOptions.cleAr();
 	}
 
-	private getFileOptions(
+	privAte getFileOptions(
 		document: vscode.TextDocument,
-		options: vscode.FormattingOptions
-	): FileConfiguration {
+		options: vscode.FormAttingOptions
+	): FileConfigurAtion {
 		return {
-			formatOptions: this.getFormatOptions(document, options),
+			formAtOptions: this.getFormAtOptions(document, options),
 			preferences: this.getPreferences(document)
 		};
 	}
 
-	private getFormatOptions(
+	privAte getFormAtOptions(
 		document: vscode.TextDocument,
-		options: vscode.FormattingOptions
-	): Proto.FormatCodeSettings {
-		const config = vscode.workspace.getConfiguration(
-			isTypeScriptDocument(document) ? 'typescript.format' : 'javascript.format',
+		options: vscode.FormAttingOptions
+	): Proto.FormAtCodeSettings {
+		const config = vscode.workspAce.getConfigurAtion(
+			isTypeScriptDocument(document) ? 'typescript.formAt' : 'jAvAscript.formAt',
 			document.uri);
 
 		return {
-			tabSize: options.tabSize,
-			indentSize: options.tabSize,
-			convertTabsToSpaces: options.insertSpaces,
-			// We can use \n here since the editor normalizes later on to its line endings.
-			newLineCharacter: '\n',
-			insertSpaceAfterCommaDelimiter: config.get<boolean>('insertSpaceAfterCommaDelimiter'),
-			insertSpaceAfterConstructor: config.get<boolean>('insertSpaceAfterConstructor'),
-			insertSpaceAfterSemicolonInForStatements: config.get<boolean>('insertSpaceAfterSemicolonInForStatements'),
-			insertSpaceBeforeAndAfterBinaryOperators: config.get<boolean>('insertSpaceBeforeAndAfterBinaryOperators'),
-			insertSpaceAfterKeywordsInControlFlowStatements: config.get<boolean>('insertSpaceAfterKeywordsInControlFlowStatements'),
-			insertSpaceAfterFunctionKeywordForAnonymousFunctions: config.get<boolean>('insertSpaceAfterFunctionKeywordForAnonymousFunctions'),
-			insertSpaceBeforeFunctionParenthesis: config.get<boolean>('insertSpaceBeforeFunctionParenthesis'),
-			insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis'),
-			insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets'),
-			insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces'),
-			insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces'),
-			insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: config.get<boolean>('insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces'),
-			insertSpaceAfterTypeAssertion: config.get<boolean>('insertSpaceAfterTypeAssertion'),
-			placeOpenBraceOnNewLineForFunctions: config.get<boolean>('placeOpenBraceOnNewLineForFunctions'),
-			placeOpenBraceOnNewLineForControlBlocks: config.get<boolean>('placeOpenBraceOnNewLineForControlBlocks'),
+			tAbSize: options.tAbSize,
+			indentSize: options.tAbSize,
+			convertTAbsToSpAces: options.insertSpAces,
+			// We cAn use \n here since the editor normAlizes lAter on to its line endings.
+			newLineChArActer: '\n',
+			insertSpAceAfterCommADelimiter: config.get<booleAn>('insertSpAceAfterCommADelimiter'),
+			insertSpAceAfterConstructor: config.get<booleAn>('insertSpAceAfterConstructor'),
+			insertSpAceAfterSemicolonInForStAtements: config.get<booleAn>('insertSpAceAfterSemicolonInForStAtements'),
+			insertSpAceBeforeAndAfterBinAryOperAtors: config.get<booleAn>('insertSpAceBeforeAndAfterBinAryOperAtors'),
+			insertSpAceAfterKeywordsInControlFlowStAtements: config.get<booleAn>('insertSpAceAfterKeywordsInControlFlowStAtements'),
+			insertSpAceAfterFunctionKeywordForAnonymousFunctions: config.get<booleAn>('insertSpAceAfterFunctionKeywordForAnonymousFunctions'),
+			insertSpAceBeforeFunctionPArenthesis: config.get<booleAn>('insertSpAceBeforeFunctionPArenthesis'),
+			insertSpAceAfterOpeningAndBeforeClosingNonemptyPArenthesis: config.get<booleAn>('insertSpAceAfterOpeningAndBeforeClosingNonemptyPArenthesis'),
+			insertSpAceAfterOpeningAndBeforeClosingNonemptyBrAckets: config.get<booleAn>('insertSpAceAfterOpeningAndBeforeClosingNonemptyBrAckets'),
+			insertSpAceAfterOpeningAndBeforeClosingNonemptyBrAces: config.get<booleAn>('insertSpAceAfterOpeningAndBeforeClosingNonemptyBrAces'),
+			insertSpAceAfterOpeningAndBeforeClosingTemplAteStringBrAces: config.get<booleAn>('insertSpAceAfterOpeningAndBeforeClosingTemplAteStringBrAces'),
+			insertSpAceAfterOpeningAndBeforeClosingJsxExpressionBrAces: config.get<booleAn>('insertSpAceAfterOpeningAndBeforeClosingJsxExpressionBrAces'),
+			insertSpAceAfterTypeAssertion: config.get<booleAn>('insertSpAceAfterTypeAssertion'),
+			plAceOpenBrAceOnNewLineForFunctions: config.get<booleAn>('plAceOpenBrAceOnNewLineForFunctions'),
+			plAceOpenBrAceOnNewLineForControlBlocks: config.get<booleAn>('plAceOpenBrAceOnNewLineForControlBlocks'),
 			semicolons: config.get<Proto.SemicolonPreference>('semicolons'),
 		};
 	}
 
-	private getPreferences(document: vscode.TextDocument): Proto.UserPreferences {
-		if (this.client.apiVersion.lt(API.v290)) {
+	privAte getPreferences(document: vscode.TextDocument): Proto.UserPreferences {
+		if (this.client.ApiVersion.lt(API.v290)) {
 			return {};
 		}
 
-		const config = vscode.workspace.getConfiguration(
-			isTypeScriptDocument(document) ? 'typescript' : 'javascript',
+		const config = vscode.workspAce.getConfigurAtion(
+			isTypeScriptDocument(document) ? 'typescript' : 'jAvAscript',
 			document.uri);
 
-		const preferencesConfig = vscode.workspace.getConfiguration(
-			isTypeScriptDocument(document) ? 'typescript.preferences' : 'javascript.preferences',
+		const preferencesConfig = vscode.workspAce.getConfigurAtion(
+			isTypeScriptDocument(document) ? 'typescript.preferences' : 'jAvAscript.preferences',
 			document.uri);
 
-		const preferences: Experimental.UserPreferences = {
+		const preferences: ExperimentAl.UserPreferences = {
 			quotePreference: this.getQuoteStylePreference(preferencesConfig),
 			importModuleSpecifierPreference: getImportModuleSpecifierPreference(preferencesConfig),
 			importModuleSpecifierEnding: getImportModuleSpecifierEndingPreference(preferencesConfig),
-			allowTextChangesInNewFiles: document.uri.scheme === fileSchemes.file,
-			providePrefixAndSuffixTextForRename: preferencesConfig.get<boolean>('renameShorthandProperties', true) === false ? false : preferencesConfig.get<boolean>('useAliasesForRenames', true),
-			allowRenameOfImportPath: true,
-			includeAutomaticOptionalChainCompletions: config.get<boolean>('suggest.includeAutomaticOptionalChainCompletions', true),
-			provideRefactorNotApplicableReason: true,
+			AllowTextChAngesInNewFiles: document.uri.scheme === fileSchemes.file,
+			providePrefixAndSuffixTextForRenAme: preferencesConfig.get<booleAn>('renAmeShorthAndProperties', true) === fAlse ? fAlse : preferencesConfig.get<booleAn>('useAliAsesForRenAmes', true),
+			AllowRenAmeOfImportPAth: true,
+			includeAutomAticOptionAlChAinCompletions: config.get<booleAn>('suggest.includeAutomAticOptionAlChAinCompletions', true),
+			provideRefActorNotApplicAbleReAson: true,
 		};
 
 		return preferences;
 	}
 
-	private getQuoteStylePreference(config: vscode.WorkspaceConfiguration) {
+	privAte getQuoteStylePreference(config: vscode.WorkspAceConfigurAtion) {
 		switch (config.get<string>('quoteStyle')) {
-			case 'single': return 'single';
-			case 'double': return 'double';
-			default: return this.client.apiVersion.gte(API.v333) ? 'auto' : undefined;
+			cAse 'single': return 'single';
+			cAse 'double': return 'double';
+			defAult: return this.client.ApiVersion.gte(API.v333) ? 'Auto' : undefined;
 		}
 	}
 }
 
-function getImportModuleSpecifierPreference(config: vscode.WorkspaceConfiguration) {
+function getImportModuleSpecifierPreference(config: vscode.WorkspAceConfigurAtion) {
 	switch (config.get<string>('importModuleSpecifier')) {
-		case 'relative': return 'relative';
-		case 'non-relative': return 'non-relative';
-		default: return undefined;
+		cAse 'relAtive': return 'relAtive';
+		cAse 'non-relAtive': return 'non-relAtive';
+		defAult: return undefined;
 	}
 }
 
-function getImportModuleSpecifierEndingPreference(config: vscode.WorkspaceConfiguration) {
+function getImportModuleSpecifierEndingPreference(config: vscode.WorkspAceConfigurAtion) {
 	switch (config.get<string>('importModuleSpecifierEnding')) {
-		case 'minimal': return 'minimal';
-		case 'index': return 'index';
-		case 'js': return 'js';
-		default: return 'auto';
+		cAse 'minimAl': return 'minimAl';
+		cAse 'index': return 'index';
+		cAse 'js': return 'js';
+		defAult: return 'Auto';
 	}
 }

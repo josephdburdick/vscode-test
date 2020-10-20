@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
-import { RequestService as NodeRequestService, IRawRequestFunction } from 'vs/platform/request/node/requestService';
+import { IRequestOptions, IRequestContext } from 'vs/bAse/pArts/request/common/request';
+import { RequestService As NodeRequestService, IRAwRequestFunction } from 'vs/plAtform/request/node/requestService';
 import { net } from 'electron';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-function getRawRequest(options: IRequestOptions): IRawRequestFunction {
-	return net.request as any as IRawRequestFunction;
+function getRAwRequest(options: IRequestOptions): IRAwRequestFunction {
+	return net.request As Any As IRAwRequestFunction;
 }
 
-export class RequestMainService extends NodeRequestService {
+export clAss RequestMAinService extends NodeRequestService {
 
-	request(options: IRequestOptions, token: CancellationToken): Promise<IRequestContext> {
-		return super.request({ ...(options || {}), getRawRequest }, token);
+	request(options: IRequestOptions, token: CAncellAtionToken): Promise<IRequestContext> {
+		return super.request({ ...(options || {}), getRAwRequest }, token);
 	}
 }

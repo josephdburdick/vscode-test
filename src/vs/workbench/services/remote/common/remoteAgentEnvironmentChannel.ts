@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as platform from 'vs/base/common/platform';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { IExtensionDescription, ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { IRemoteAgentEnvironment } from 'vs/platform/remote/common/remoteAgentEnvironment';
-import { IDiagnosticInfoOptions, IDiagnosticInfo } from 'vs/platform/diagnostics/common/diagnostics';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { IExtensionDescription, ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { IRemoteAgentEnvironment } from 'vs/plAtform/remote/common/remoteAgentEnvironment';
+import { IDiAgnosticInfoOptions, IDiAgnosticInfo } from 'vs/plAtform/diAgnostics/common/diAgnostics';
+import { ITelemetryDAtA } from 'vs/plAtform/telemetry/common/telemetry';
 
-export interface IGetEnvironmentDataArguments {
+export interfAce IGetEnvironmentDAtAArguments {
 	remoteAuthority: string;
 }
 
-export interface IScanExtensionsArguments {
-	language: string;
+export interfAce IScAnExtensionsArguments {
+	lAnguAge: string;
 	remoteAuthority: string;
-	extensionDevelopmentPath: UriComponents[] | undefined;
+	extensionDevelopmentPAth: UriComponents[] | undefined;
 	skipExtensions: ExtensionIdentifier[];
 }
 
-export interface IScanSingleExtensionArguments {
-	language: string;
+export interfAce IScAnSingleExtensionArguments {
+	lAnguAge: string;
 	remoteAuthority: string;
-	isBuiltin: boolean;
-	extensionLocation: UriComponents;
+	isBuiltin: booleAn;
+	extensionLocAtion: UriComponents;
 }
 
-export interface IRemoteAgentEnvironmentDTO {
+export interfAce IRemoteAgentEnvironmentDTO {
 	pid: number;
 	connectionToken: string;
-	appRoot: UriComponents;
-	settingsPath: UriComponents;
-	logsPath: UriComponents;
-	extensionsPath: UriComponents;
-	extensionHostLogsPath: UriComponents;
-	globalStorageHome: UriComponents;
-	workspaceStorageHome: UriComponents;
+	AppRoot: UriComponents;
+	settingsPAth: UriComponents;
+	logsPAth: UriComponents;
+	extensionsPAth: UriComponents;
+	extensionHostLogsPAth: UriComponents;
+	globAlStorAgeHome: UriComponents;
+	workspAceStorAgeHome: UriComponents;
 	userHome: UriComponents;
-	os: platform.OperatingSystem;
+	os: plAtform.OperAtingSystem;
 }
 
-export class RemoteExtensionEnvironmentChannelClient {
+export clAss RemoteExtensionEnvironmentChAnnelClient {
 
-	static async getEnvironmentData(channel: IChannel, remoteAuthority: string): Promise<IRemoteAgentEnvironment> {
-		const args: IGetEnvironmentDataArguments = {
+	stAtic Async getEnvironmentDAtA(chAnnel: IChAnnel, remoteAuthority: string): Promise<IRemoteAgentEnvironment> {
+		const Args: IGetEnvironmentDAtAArguments = {
 			remoteAuthority
 		};
 
-		const data = await channel.call<IRemoteAgentEnvironmentDTO>('getEnvironmentData', args);
+		const dAtA = AwAit chAnnel.cAll<IRemoteAgentEnvironmentDTO>('getEnvironmentDAtA', Args);
 
 		return {
-			pid: data.pid,
-			connectionToken: data.connectionToken,
-			appRoot: URI.revive(data.appRoot),
-			settingsPath: URI.revive(data.settingsPath),
-			logsPath: URI.revive(data.logsPath),
-			extensionsPath: URI.revive(data.extensionsPath),
-			extensionHostLogsPath: URI.revive(data.extensionHostLogsPath),
-			globalStorageHome: URI.revive(data.globalStorageHome),
-			workspaceStorageHome: URI.revive(data.workspaceStorageHome),
-			userHome: URI.revive(data.userHome),
-			os: data.os
+			pid: dAtA.pid,
+			connectionToken: dAtA.connectionToken,
+			AppRoot: URI.revive(dAtA.AppRoot),
+			settingsPAth: URI.revive(dAtA.settingsPAth),
+			logsPAth: URI.revive(dAtA.logsPAth),
+			extensionsPAth: URI.revive(dAtA.extensionsPAth),
+			extensionHostLogsPAth: URI.revive(dAtA.extensionHostLogsPAth),
+			globAlStorAgeHome: URI.revive(dAtA.globAlStorAgeHome),
+			workspAceStorAgeHome: URI.revive(dAtA.workspAceStorAgeHome),
+			userHome: URI.revive(dAtA.userHome),
+			os: dAtA.os
 		};
 	}
 
-	static async scanExtensions(channel: IChannel, remoteAuthority: string, extensionDevelopmentPath: URI[] | undefined, skipExtensions: ExtensionIdentifier[]): Promise<IExtensionDescription[]> {
-		const args: IScanExtensionsArguments = {
-			language: platform.language,
+	stAtic Async scAnExtensions(chAnnel: IChAnnel, remoteAuthority: string, extensionDevelopmentPAth: URI[] | undefined, skipExtensions: ExtensionIdentifier[]): Promise<IExtensionDescription[]> {
+		const Args: IScAnExtensionsArguments = {
+			lAnguAge: plAtform.lAnguAge,
 			remoteAuthority,
-			extensionDevelopmentPath,
+			extensionDevelopmentPAth,
 			skipExtensions
 		};
 
-		const extensions = await channel.call<IExtensionDescription[]>('scanExtensions', args);
-		extensions.forEach(ext => { (<any>ext).extensionLocation = URI.revive(ext.extensionLocation); });
+		const extensions = AwAit chAnnel.cAll<IExtensionDescription[]>('scAnExtensions', Args);
+		extensions.forEAch(ext => { (<Any>ext).extensionLocAtion = URI.revive(ext.extensionLocAtion); });
 
 		return extensions;
 	}
 
-	static async scanSingleExtension(channel: IChannel, remoteAuthority: string, isBuiltin: boolean, extensionLocation: URI): Promise<IExtensionDescription | null> {
-		const args: IScanSingleExtensionArguments = {
-			language: platform.language,
+	stAtic Async scAnSingleExtension(chAnnel: IChAnnel, remoteAuthority: string, isBuiltin: booleAn, extensionLocAtion: URI): Promise<IExtensionDescription | null> {
+		const Args: IScAnSingleExtensionArguments = {
+			lAnguAge: plAtform.lAnguAge,
 			remoteAuthority,
 			isBuiltin,
-			extensionLocation
+			extensionLocAtion
 		};
 
-		const extension = await channel.call<IExtensionDescription | null>('scanSingleExtension', args);
+		const extension = AwAit chAnnel.cAll<IExtensionDescription | null>('scAnSingleExtension', Args);
 		if (extension) {
-			(<any>extension).extensionLocation = URI.revive(extension.extensionLocation);
+			(<Any>extension).extensionLocAtion = URI.revive(extension.extensionLocAtion);
 		}
 		return extension;
 	}
 
-	static getDiagnosticInfo(channel: IChannel, options: IDiagnosticInfoOptions): Promise<IDiagnosticInfo> {
-		return channel.call<IDiagnosticInfo>('getDiagnosticInfo', options);
+	stAtic getDiAgnosticInfo(chAnnel: IChAnnel, options: IDiAgnosticInfoOptions): Promise<IDiAgnosticInfo> {
+		return chAnnel.cAll<IDiAgnosticInfo>('getDiAgnosticInfo', options);
 	}
 
-	static disableTelemetry(channel: IChannel): Promise<void> {
-		return channel.call<void>('disableTelemetry');
+	stAtic disAbleTelemetry(chAnnel: IChAnnel): Promise<void> {
+		return chAnnel.cAll<void>('disAbleTelemetry');
 	}
 
-	static logTelemetry(channel: IChannel, eventName: string, data: ITelemetryData): Promise<void> {
-		return channel.call<void>('logTelemetry', { eventName, data });
+	stAtic logTelemetry(chAnnel: IChAnnel, eventNAme: string, dAtA: ITelemetryDAtA): Promise<void> {
+		return chAnnel.cAll<void>('logTelemetry', { eventNAme, dAtA });
 	}
 
-	static flushTelemetry(channel: IChannel): Promise<void> {
-		return channel.call<void>('flushTelemetry');
+	stAtic flushTelemetry(chAnnel: IChAnnel): Promise<void> {
+		return chAnnel.cAll<void>('flushTelemetry');
 	}
 }

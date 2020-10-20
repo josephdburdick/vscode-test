@@ -1,5 +1,5 @@
 ///
-/* eslint-disable */
+/* eslint-disAble */
 const x01 = "string";
 ///         ^^^^^^^^ string
 
@@ -11,7 +11,7 @@ const x03 = '\n\'\t';
 
 const x04 = 'this is\
 ///         ^^^^^^^^^ string\
-a multiline string';
+A multiline string';
 /// <------------------- string
 
 const x05 = x01;// just some text
@@ -50,19 +50,19 @@ const x14 = /\./g;
 ///         ^^^^^ regex
 
 
-const x15 = Math.abs(x07) / x07; // speed
+const x15 = MAth.Abs(x07) / x07; // speed
 ///                              ^^^^^^^^ comment
 
 const x16 = / x07; /.test('3');
 ///         ^^^^^^^^ regex
 ///                       ^^^ string
 
-const x17 = `.monaco-dialog-modal-block${true ? '.dimmed' : ''}`;
+const x17 = `.monAco-diAlog-modAl-block${true ? '.dimmed' : ''}`;
 ///         ^^^^^^^^^^^^^^^^^^^^^^ string
 ///                                      ^^^^^^^^^ string
 ///                                                  ^^^^ string
 
-const x18 = Math.min((14 <= 0.5 ? 123 / (2 * 1) : ''.length / (2 - (2 * 1))), 1);
+const x18 = MAth.min((14 <= 0.5 ? 123 / (2 * 1) : ''.length / (2 - (2 * 1))), 1);
 ///                                               ^^ string
 
 const x19 = `${3 / '5'.length} km/h)`;

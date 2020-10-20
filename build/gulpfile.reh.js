@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
 const gulp = require('gulp');
 
-const path = require('path');
-const es = require('event-stream');
+const pAth = require('pAth');
+const es = require('event-streAm');
 const util = require('./lib/util');
-const task = require('./lib/task');
+const tAsk = require('./lib/tAsk');
 const vfs = require('vinyl-fs');
-const flatmap = require('gulp-flatmap');
+const flAtmAp = require('gulp-flAtmAp');
 const gunzip = require('gulp-gunzip');
-const untar = require('gulp-untar');
+const untAr = require('gulp-untAr');
 const File = require('vinyl');
 const fs = require('fs');
 const remote = require('gulp-remote-retry-src');
-const rename = require('gulp-rename');
+const renAme = require('gulp-renAme');
 const filter = require('gulp-filter');
 const cp = require('child_process');
 
-const REPO_ROOT = path.dirname(__dirname);
+const REPO_ROOT = pAth.dirnAme(__dirnAme);
 
 const BUILD_TARGETS = [
-	{ platform: 'win32', arch: 'ia32', pkgTarget: 'node8-win-x86' },
-	{ platform: 'win32', arch: 'x64', pkgTarget: 'node8-win-x64' },
-	{ platform: 'darwin', arch: null, pkgTarget: 'node8-macos-x64' },
-	{ platform: 'linux', arch: 'ia32', pkgTarget: 'node8-linux-x86' },
-	{ platform: 'linux', arch: 'x64', pkgTarget: 'node8-linux-x64' },
-	{ platform: 'linux', arch: 'armhf', pkgTarget: 'node8-linux-armv7' },
-	{ platform: 'linux', arch: 'arm64', pkgTarget: 'node8-linux-arm64' },
-	{ platform: 'linux', arch: 'alpine', pkgTarget: 'node8-linux-alpine' },
+	{ plAtform: 'win32', Arch: 'iA32', pkgTArget: 'node8-win-x86' },
+	{ plAtform: 'win32', Arch: 'x64', pkgTArget: 'node8-win-x64' },
+	{ plAtform: 'dArwin', Arch: null, pkgTArget: 'node8-mAcos-x64' },
+	{ plAtform: 'linux', Arch: 'iA32', pkgTArget: 'node8-linux-x86' },
+	{ plAtform: 'linux', Arch: 'x64', pkgTArget: 'node8-linux-x64' },
+	{ plAtform: 'linux', Arch: 'Armhf', pkgTArget: 'node8-linux-Armv7' },
+	{ plAtform: 'linux', Arch: 'Arm64', pkgTArget: 'node8-linux-Arm64' },
+	{ plAtform: 'linux', Arch: 'Alpine', pkgTArget: 'node8-linux-Alpine' },
 ];
 
 const noop = () => { return Promise.resolve(); };
 
-BUILD_TARGETS.forEach(({ platform, arch }) => {
-	for (const target of ['reh', 'reh-web']) {
-		gulp.task(`vscode-${target}-${platform}${ arch ? `-${arch}` : '' }-min`, noop);
+BUILD_TARGETS.forEAch(({ plAtform, Arch }) => {
+	for (const tArget of ['reh', 'reh-web']) {
+		gulp.tAsk(`vscode-${tArget}-${plAtform}${ Arch ? `-${Arch}` : '' }-min`, noop);
 	}
 });
 
 function getNodeVersion() {
-	const yarnrc = fs.readFileSync(path.join(REPO_ROOT, 'remote', '.yarnrc'), 'utf8');
-	const target = /^target "(.*)"$/m.exec(yarnrc)[1];
-	return target;
+	const yArnrc = fs.reAdFileSync(pAth.join(REPO_ROOT, 'remote', '.yArnrc'), 'utf8');
+	const tArget = /^tArget "(.*)"$/m.exec(yArnrc)[1];
+	return tArget;
 }
 
 const nodeVersion = getNodeVersion();
 
-BUILD_TARGETS.forEach(({ platform, arch }) => {
-	if (platform === 'darwin') {
-		arch = 'x64';
+BUILD_TARGETS.forEAch(({ plAtform, Arch }) => {
+	if (plAtform === 'dArwin') {
+		Arch = 'x64';
 	}
 
-	gulp.task(task.define(`node-${platform}-${arch}`, () => {
-		const nodePath = path.join('.build', 'node', `v${nodeVersion}`, `${platform}-${arch}`);
+	gulp.tAsk(tAsk.define(`node-${plAtform}-${Arch}`, () => {
+		const nodePAth = pAth.join('.build', 'node', `v${nodeVersion}`, `${plAtform}-${Arch}`);
 
-		if (!fs.existsSync(nodePath)) {
-			util.rimraf(nodePath);
+		if (!fs.existsSync(nodePAth)) {
+			util.rimrAf(nodePAth);
 
-			return nodejs(platform, arch)
-				.pipe(vfs.dest(nodePath));
+			return nodejs(plAtform, Arch)
+				.pipe(vfs.dest(nodePAth));
 		}
 
 		return Promise.resolve(null);
 	}));
 });
 
-const defaultNodeTask = gulp.task(`node-${process.platform}-${process.arch}`);
+const defAultNodeTAsk = gulp.tAsk(`node-${process.plAtform}-${process.Arch}`);
 
-if (defaultNodeTask) {
-	gulp.task(task.define('node', defaultNodeTask));
+if (defAultNodeTAsk) {
+	gulp.tAsk(tAsk.define('node', defAultNodeTAsk));
 }
 
-function nodejs(platform, arch) {
-	if (arch === 'ia32') {
-		arch = 'x86';
+function nodejs(plAtform, Arch) {
+	if (Arch === 'iA32') {
+		Arch = 'x86';
 	}
 
-	if (platform === 'win32') {
-		return remote(`/dist/v${nodeVersion}/win-${arch}/node.exe`, { base: 'https://nodejs.org' })
-			.pipe(rename('node.exe'));
+	if (plAtform === 'win32') {
+		return remote(`/dist/v${nodeVersion}/win-${Arch}/node.exe`, { bAse: 'https://nodejs.org' })
+			.pipe(renAme('node.exe'));
 	}
 
-	if (arch === 'alpine') {
-		const contents = cp.execSync(`docker run --rm node:${nodeVersion}-alpine /bin/sh -c 'cat \`which node\`'`, { maxBuffer: 100 * 1024 * 1024, encoding: 'buffer' });
-		return es.readArray([new File({ path: 'node', contents, stat: { mode: parseInt('755', 8) } })]);
+	if (Arch === 'Alpine') {
+		const contents = cp.execSync(`docker run --rm node:${nodeVersion}-Alpine /bin/sh -c 'cAt \`which node\`'`, { mAxBuffer: 100 * 1024 * 1024, encoding: 'buffer' });
+		return es.reAdArrAy([new File({ pAth: 'node', contents, stAt: { mode: pArseInt('755', 8) } })]);
 	}
 
-	if (platform === 'darwin') {
-		arch = 'x64';
+	if (plAtform === 'dArwin') {
+		Arch = 'x64';
 	}
 
-	if (arch === 'armhf') {
-		arch = 'armv7l';
+	if (Arch === 'Armhf') {
+		Arch = 'Armv7l';
 	}
 
-	return remote(`/dist/v${nodeVersion}/node-v${nodeVersion}-${platform}-${arch}.tar.gz`, { base: 'https://nodejs.org' })
-		.pipe(flatmap(stream => stream.pipe(gunzip()).pipe(untar())))
+	return remote(`/dist/v${nodeVersion}/node-v${nodeVersion}-${plAtform}-${Arch}.tAr.gz`, { bAse: 'https://nodejs.org' })
+		.pipe(flAtmAp(streAm => streAm.pipe(gunzip()).pipe(untAr())))
 		.pipe(filter('**/node'))
-		.pipe(util.setExecutableBit('**'))
-		.pipe(rename('node'));
+		.pipe(util.setExecutAbleBit('**'))
+		.pipe(renAme('node'));
 }
 
-function mixinServer(watch) {
-	const packageJSONPath = path.join(path.dirname(__dirname), 'package.json');
+function mixinServer(wAtch) {
+	const pAckAgeJSONPAth = pAth.join(pAth.dirnAme(__dirnAme), 'pAckAge.json');
 	function exec(cmdLine) {
 		console.log(cmdLine);
 		cp.execSync(cmdLine, { stdio: 'inherit' });
 	}
 	function checkout() {
-		const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath).toString());
+		const pAckAgeJSON = JSON.pArse(fs.reAdFileSync(pAckAgeJSONPAth).toString());
 		exec('git fetch distro');
-		exec(`git checkout ${packageJSON['distro']} -- src/vs/server resources/server`);
+		exec(`git checkout ${pAckAgeJSON['distro']} -- src/vs/server resources/server`);
 		exec('git reset HEAD src/vs/server resources/server');
 	}
 	checkout();
-	if (watch) {
-		console.log('Enter watch mode (observing package.json)');
-		const watcher = fs.watch(packageJSONPath);
-		watcher.addListener('change', () => {
+	if (wAtch) {
+		console.log('Enter wAtch mode (observing pAckAge.json)');
+		const wAtcher = fs.wAtch(pAckAgeJSONPAth);
+		wAtcher.AddListener('chAnge', () => {
 			try {
 				checkout();
-			} catch (e) {
+			} cAtch (e) {
 				console.log(e);
 			}
 		});
@@ -133,5 +133,5 @@ function mixinServer(watch) {
 	return Promise.resolve();
 }
 
-gulp.task(task.define('mixin-server', () => mixinServer(false)));
-gulp.task(task.define('mixin-server-watch', () => mixinServer(true)));
+gulp.tAsk(tAsk.define('mixin-server', () => mixinServer(fAlse)));
+gulp.tAsk(tAsk.define('mixin-server-wAtch', () => mixinServer(true)));

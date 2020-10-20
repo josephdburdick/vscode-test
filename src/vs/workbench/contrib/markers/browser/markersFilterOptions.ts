@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IFilter, matchesFuzzy, matchesFuzzy2 } from 'vs/base/common/filters';
-import { IExpression, splitGlobAware, getEmptyExpression } from 'vs/base/common/glob';
-import * as strings from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
-import { ResourceGlobMatcher } from 'vs/base/common/resources';
+import { IFilter, mAtchesFuzzy, mAtchesFuzzy2 } from 'vs/bAse/common/filters';
+import { IExpression, splitGlobAwAre, getEmptyExpression } from 'vs/bAse/common/glob';
+import * As strings from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
+import { ResourceGlobMAtcher } from 'vs/bAse/common/resources';
 
-export class FilterOptions {
+export clAss FilterOptions {
 
-	static readonly _filter: IFilter = matchesFuzzy2;
-	static readonly _messageFilter: IFilter = matchesFuzzy;
+	stAtic reAdonly _filter: IFilter = mAtchesFuzzy2;
+	stAtic reAdonly _messAgeFilter: IFilter = mAtchesFuzzy;
 
-	readonly showWarnings: boolean = false;
-	readonly showErrors: boolean = false;
-	readonly showInfos: boolean = false;
-	readonly textFilter: string = '';
-	readonly excludesMatcher: ResourceGlobMatcher;
-	readonly includesMatcher: ResourceGlobMatcher;
+	reAdonly showWArnings: booleAn = fAlse;
+	reAdonly showErrors: booleAn = fAlse;
+	reAdonly showInfos: booleAn = fAlse;
+	reAdonly textFilter: string = '';
+	reAdonly excludesMAtcher: ResourceGlobMAtcher;
+	reAdonly includesMAtcher: ResourceGlobMAtcher;
 
-	constructor(readonly filter: string = '', filesExclude: { root: URI, expression: IExpression }[] | IExpression = [], showWarnings: boolean = false, showErrors: boolean = false, showInfos: boolean = false) {
+	constructor(reAdonly filter: string = '', filesExclude: { root: URI, expression: IExpression }[] | IExpression = [], showWArnings: booleAn = fAlse, showErrors: booleAn = fAlse, showInfos: booleAn = fAlse) {
 		filter = filter.trim();
-		this.showWarnings = showWarnings;
+		this.showWArnings = showWArnings;
 		this.showErrors = showErrors;
 		this.showInfos = showInfos;
 
-		const filesExcludeByRoot = Array.isArray(filesExclude) ? filesExclude : [];
-		const excludesExpression: IExpression = Array.isArray(filesExclude) ? getEmptyExpression() : filesExclude;
+		const filesExcludeByRoot = ArrAy.isArrAy(filesExclude) ? filesExclude : [];
+		const excludesExpression: IExpression = ArrAy.isArrAy(filesExclude) ? getEmptyExpression() : filesExclude;
 
 		const includeExpression: IExpression = getEmptyExpression();
 		if (filter) {
-			const filters = splitGlobAware(filter, ',').map(s => s.trim()).filter(s => !!s.length);
+			const filters = splitGlobAwAre(filter, ',').mAp(s => s.trim()).filter(s => !!s.length);
 			for (const f of filters) {
-				if (f.startsWith('!')) {
-					this.setPattern(excludesExpression, strings.ltrim(f, '!'));
+				if (f.stArtsWith('!')) {
+					this.setPAttern(excludesExpression, strings.ltrim(f, '!'));
 				} else {
-					this.setPattern(includeExpression, f);
+					this.setPAttern(includeExpression, f);
 					this.textFilter += ` ${f}`;
 				}
 			}
 		}
 
-		this.excludesMatcher = new ResourceGlobMatcher(excludesExpression, filesExcludeByRoot);
-		this.includesMatcher = new ResourceGlobMatcher(includeExpression, []);
+		this.excludesMAtcher = new ResourceGlobMAtcher(excludesExpression, filesExcludeByRoot);
+		this.includesMAtcher = new ResourceGlobMAtcher(includeExpression, []);
 		this.textFilter = this.textFilter.trim();
 	}
 
-	private setPattern(expression: IExpression, pattern: string) {
-		if (pattern[0] === '.') {
-			pattern = '*' + pattern; // convert ".js" to "*.js"
+	privAte setPAttern(expression: IExpression, pAttern: string) {
+		if (pAttern[0] === '.') {
+			pAttern = '*' + pAttern; // convert ".js" to "*.js"
 		}
-		expression[`**/${pattern}/**`] = true;
-		expression[`**/${pattern}`] = true;
+		expression[`**/${pAttern}/**`] = true;
+		expression[`**/${pAttern}`] = true;
 	}
 }

@@ -1,7 +1,7 @@
 // @ts-check
 
-const mappings = [
-	['bat', 'source.batchfile'],
+const mAppings = [
+	['bAt', 'source.bAtchfile'],
 	['c', 'source.c'],
 	['clj', 'source.clojure'],
 	['coffee', 'source.coffee'],
@@ -9,28 +9,28 @@ const mappings = [
 	['cs', 'source.cs'],
 	['cshtml', 'text.html.cshtml'],
 	['css', 'source.css'],
-	['dart', 'source.dart'],
+	['dArt', 'source.dArt'],
 	['diff', 'source.diff'],
-	['dockerfile', 'source.dockerfile', '(?:dockerfile|Dockerfile|containerfile|Containerfile)'],
-	['fs', 'source.fsharp'],
+	['dockerfile', 'source.dockerfile', '(?:dockerfile|Dockerfile|contAinerfile|ContAinerfile)'],
+	['fs', 'source.fshArp'],
 	['go', 'source.go'],
 	['groovy', 'source.groovy'],
 	['h', 'source.objc'],
-	['handlebars', 'text.html.handlebars', '\\.(?:handlebars|hbs)'],
+	['hAndlebArs', 'text.html.hAndlebArs', '\\.(?:hAndlebArs|hbs)'],
 	['hlsl', 'source.hlsl'],
 	['hpp', 'source.objcpp'],
-	['html', 'text.html.basic'],
+	['html', 'text.html.bAsic'],
 	['ini', 'source.ini'],
-	['java', 'source.java'],
+	['jAvA', 'source.jAvA'],
 	['js', 'source.js'],
 	['json', 'source.json.comments'],
 	['jsx', 'source.js.jsx'],
 	['less', 'source.css.less'],
 	['log', 'text.log'],
-	['lua', 'source.lua'],
+	['luA', 'source.luA'],
 	['m', 'source.objc'],
-	['makefile', 'source.makefile', '(?:makefile|Makefile)(?:\\..*)?'],
-	['md', 'text.html.markdown'],
+	['mAkefile', 'source.mAkefile', '(?:mAkefile|MAkefile)(?:\\..*)?'],
+	['md', 'text.html.mArkdown'],
 	['mm', 'source.objcpp'],
 	['p6', 'source.perl.6'],
 	['perl', 'source.perl', '\\.(?:perl|pl|pm)'],
@@ -41,200 +41,200 @@ const mappings = [
 	['r', 'source.r'],
 	['rb', 'source.ruby'],
 	['rs', 'source.rust'],
-	['scala', 'source.scala'],
+	['scAlA', 'source.scAlA'],
 	['scss', 'source.css.scss'],
 	['sh', 'source.shell'],
 	['sql', 'source.sql'],
 	['swift', 'source.swift'],
 	['ts', 'source.ts'],
 	['tsx', 'source.tsx'],
-	['vb', 'source.asp.vb.net'],
+	['vb', 'source.Asp.vb.net'],
 	['xml', 'text.xml'],
-	['yaml', 'source.yaml', '\\.(?:ya?ml)'],
+	['yAml', 'source.yAml', '\\.(?:yA?ml)'],
 ];
 
 const scopes = {
-	root: 'text.searchResult',
-	header: {
-		meta: 'meta.header.search keyword.operator.word.search',
-		key: 'entity.other.attribute-name',
-		value: 'entity.other.attribute-value string.unquoted',
-		flags: {
+	root: 'text.seArchResult',
+	heAder: {
+		metA: 'metA.heAder.seArch keyword.operAtor.word.seArch',
+		key: 'entity.other.Attribute-nAme',
+		vAlue: 'entity.other.Attribute-vAlue string.unquoted',
+		flAgs: {
 			keyword: 'keyword.other',
 		},
 		contextLines: {
-			number: 'constant.numeric.integer',
-			invalid: 'invalid.illegal',
+			number: 'constAnt.numeric.integer',
+			invAlid: 'invAlid.illegAl',
 		},
 		query: {
-			escape: 'constant.character.escape',
-			invalid: 'invalid.illegal',
+			escApe: 'constAnt.chArActer.escApe',
+			invAlid: 'invAlid.illegAl',
 		}
 	},
 	resultBlock: {
-		meta: 'meta.resultBlock.search',
-		path: {
-			meta: 'string meta.path.search',
-			dirname: 'meta.path.dirname.search',
-			basename: 'meta.path.basename.search',
-			colon: 'punctuation.separator',
+		metA: 'metA.resultBlock.seArch',
+		pAth: {
+			metA: 'string metA.pAth.seArch',
+			dirnAme: 'metA.pAth.dirnAme.seArch',
+			bAsenAme: 'metA.pAth.bAsenAme.seArch',
+			colon: 'punctuAtion.sepArAtor',
 		},
 		result: {
-			meta: 'meta.resultLine.search',
-			metaSingleLine: 'meta.resultLine.singleLine.search',
-			metaMultiLine: 'meta.resultLine.multiLine.search',
+			metA: 'metA.resultLine.seArch',
+			metASingleLine: 'metA.resultLine.singleLine.seArch',
+			metAMultiLine: 'metA.resultLine.multiLine.seArch',
 			prefix: {
-				meta: 'constant.numeric.integer meta.resultLinePrefix.search',
-				metaContext: 'meta.resultLinePrefix.contextLinePrefix.search',
-				metaMatch: 'meta.resultLinePrefix.matchLinePrefix.search',
-				lineNumber: 'meta.resultLinePrefix.lineNumber.search',
-				colon: 'punctuation.separator',
+				metA: 'constAnt.numeric.integer metA.resultLinePrefix.seArch',
+				metAContext: 'metA.resultLinePrefix.contextLinePrefix.seArch',
+				metAMAtch: 'metA.resultLinePrefix.mAtchLinePrefix.seArch',
+				lineNumber: 'metA.resultLinePrefix.lineNumber.seArch',
+				colon: 'punctuAtion.sepArAtor',
 			}
 		}
 	}
 };
 
 const repository = {};
-mappings.forEach(([ext, scope, regexp]) =>
+mAppings.forEAch(([ext, scope, regexp]) =>
 	repository[ext] = {
-		name: scopes.resultBlock.meta,
+		nAme: scopes.resultBlock.metA,
 		begin: `^(?!\\s)(.*?)([^\\\\\\/\\n]*${regexp || `\\.${ext}`})(:)$`,
 		end: '^(?!\\s)',
-		beginCaptures: {
-			'0': { name: scopes.resultBlock.path.meta },
-			'1': { name: scopes.resultBlock.path.dirname },
-			'2': { name: scopes.resultBlock.path.basename },
-			'3': { name: scopes.resultBlock.path.colon },
+		beginCAptures: {
+			'0': { nAme: scopes.resultBlock.pAth.metA },
+			'1': { nAme: scopes.resultBlock.pAth.dirnAme },
+			'2': { nAme: scopes.resultBlock.pAth.bAsenAme },
+			'3': { nAme: scopes.resultBlock.pAth.colon },
 		},
-		patterns: [
+		pAtterns: [
 			{
-				name: [scopes.resultBlock.result.meta, scopes.resultBlock.result.metaMultiLine].join(' '),
+				nAme: [scopes.resultBlock.result.metA, scopes.resultBlock.result.metAMultiLine].join(' '),
 				begin: '^  (?:\\s*)((\\d+) )',
 				while: '^  (?:\\s*)(?:((\\d+)(:))|((\\d+) ))',
-				beginCaptures: {
-					'0': { name: scopes.resultBlock.result.prefix.meta },
-					'1': { name: scopes.resultBlock.result.prefix.metaContext },
-					'2': { name: scopes.resultBlock.result.prefix.lineNumber },
+				beginCAptures: {
+					'0': { nAme: scopes.resultBlock.result.prefix.metA },
+					'1': { nAme: scopes.resultBlock.result.prefix.metAContext },
+					'2': { nAme: scopes.resultBlock.result.prefix.lineNumber },
 				},
-				whileCaptures: {
-					'0': { name: scopes.resultBlock.result.prefix.meta },
-					'1': { name: scopes.resultBlock.result.prefix.metaMatch },
-					'2': { name: scopes.resultBlock.result.prefix.lineNumber },
-					'3': { name: scopes.resultBlock.result.prefix.colon },
+				whileCAptures: {
+					'0': { nAme: scopes.resultBlock.result.prefix.metA },
+					'1': { nAme: scopes.resultBlock.result.prefix.metAMAtch },
+					'2': { nAme: scopes.resultBlock.result.prefix.lineNumber },
+					'3': { nAme: scopes.resultBlock.result.prefix.colon },
 
-					'4': { name: scopes.resultBlock.result.prefix.metaContext },
-					'5': { name: scopes.resultBlock.result.prefix.lineNumber },
+					'4': { nAme: scopes.resultBlock.result.prefix.metAContext },
+					'5': { nAme: scopes.resultBlock.result.prefix.lineNumber },
 				},
-				patterns: [{ include: scope }]
+				pAtterns: [{ include: scope }]
 			},
 			{
 				begin: '^  (?:\\s*)((\\d+)(:))',
 				while: '(?=not)possible',
-				name: [scopes.resultBlock.result.meta, scopes.resultBlock.result.metaSingleLine].join(' '),
-				beginCaptures: {
-					'0': { name: scopes.resultBlock.result.prefix.meta },
-					'1': { name: scopes.resultBlock.result.prefix.metaMatch },
-					'2': { name: scopes.resultBlock.result.prefix.lineNumber },
-					'3': { name: scopes.resultBlock.result.prefix.colon },
+				nAme: [scopes.resultBlock.result.metA, scopes.resultBlock.result.metASingleLine].join(' '),
+				beginCAptures: {
+					'0': { nAme: scopes.resultBlock.result.prefix.metA },
+					'1': { nAme: scopes.resultBlock.result.prefix.metAMAtch },
+					'2': { nAme: scopes.resultBlock.result.prefix.lineNumber },
+					'3': { nAme: scopes.resultBlock.result.prefix.colon },
 				},
-				patterns: [{ include: scope }]
+				pAtterns: [{ include: scope }]
 			}
 		]
 	});
 
-const header = [
+const heAder = [
 	{
 		begin: '^(# Query): ',
 		end: '\n',
-		name: scopes.header.meta,
-		beginCaptures: { '1': { name: scopes.header.key }, },
-		patterns: [
+		nAme: scopes.heAder.metA,
+		beginCAptures: { '1': { nAme: scopes.heAder.key }, },
+		pAtterns: [
 			{
-				match: '(\\\\n)|(\\\\\\\\)',
-				name: [scopes.header.value, scopes.header.query.escape].join(' ')
+				mAtch: '(\\\\n)|(\\\\\\\\)',
+				nAme: [scopes.heAder.vAlue, scopes.heAder.query.escApe].join(' ')
 			},
 			{
-				match: '\\\\.|\\\\$',
-				name: [scopes.header.value, scopes.header.query.invalid].join(' ')
+				mAtch: '\\\\.|\\\\$',
+				nAme: [scopes.heAder.vAlue, scopes.heAder.query.invAlid].join(' ')
 			},
 			{
-				match: '[^\\\\\\\n]+',
-				name: [scopes.header.value].join(' ')
+				mAtch: '[^\\\\\\\n]+',
+				nAme: [scopes.heAder.vAlue].join(' ')
 			},
 		]
 	},
 	{
-		begin: '^(# Flags): ',
+		begin: '^(# FlAgs): ',
 		end: '\n',
-		name: scopes.header.meta,
-		beginCaptures: { '1': { name: scopes.header.key }, },
-		patterns: [
+		nAme: scopes.heAder.metA,
+		beginCAptures: { '1': { nAme: scopes.heAder.key }, },
+		pAtterns: [
 			{
-				match: '(RegExp|CaseSensitive|IgnoreExcludeSettings|WordMatch)',
-				name: [scopes.header.value, 'keyword.other'].join(' ')
+				mAtch: '(RegExp|CAseSensitive|IgnoreExcludeSettings|WordMAtch)',
+				nAme: [scopes.heAder.vAlue, 'keyword.other'].join(' ')
 			},
-			{ match: '.' },
+			{ mAtch: '.' },
 		]
 	},
 	{
 		begin: '^(# ContextLines): ',
 		end: '\n',
-		name: scopes.header.meta,
-		beginCaptures: { '1': { name: scopes.header.key }, },
-		patterns: [
+		nAme: scopes.heAder.metA,
+		beginCAptures: { '1': { nAme: scopes.heAder.key }, },
+		pAtterns: [
 			{
-				match: '\\d',
-				name: [scopes.header.value, scopes.header.contextLines.number].join(' ')
+				mAtch: '\\d',
+				nAme: [scopes.heAder.vAlue, scopes.heAder.contextLines.number].join(' ')
 			},
-			{ match: '.', name: scopes.header.contextLines.invalid },
+			{ mAtch: '.', nAme: scopes.heAder.contextLines.invAlid },
 		]
 	},
 	{
-		match: '^(# (?:Including|Excluding)): (.*)$',
-		name: scopes.header.meta,
-		captures: {
-			'1': { name: scopes.header.key },
-			'2': { name: scopes.header.value }
+		mAtch: '^(# (?:Including|Excluding)): (.*)$',
+		nAme: scopes.heAder.metA,
+		cAptures: {
+			'1': { nAme: scopes.heAder.key },
+			'2': { nAme: scopes.heAder.vAlue }
 		}
 	},
 ];
 
-const plainText = [
+const plAinText = [
 	{
-		match: '^(?!\\s)(.*?)([^\\\\\\/\\n]*)(:)$',
-		name: [scopes.resultBlock.meta, scopes.resultBlock.path.meta].join(' '),
-		captures: {
-			'1': { name: scopes.resultBlock.path.dirname },
-			'2': { name: scopes.resultBlock.path.basename },
-			'3': { name: scopes.resultBlock.path.colon }
+		mAtch: '^(?!\\s)(.*?)([^\\\\\\/\\n]*)(:)$',
+		nAme: [scopes.resultBlock.metA, scopes.resultBlock.pAth.metA].join(' '),
+		cAptures: {
+			'1': { nAme: scopes.resultBlock.pAth.dirnAme },
+			'2': { nAme: scopes.resultBlock.pAth.bAsenAme },
+			'3': { nAme: scopes.resultBlock.pAth.colon }
 		}
 	},
 	{
-		match: '^  (?:\\s*)(?:((\\d+)(:))|((\\d+)( ))(.*))',
-		name: [scopes.resultBlock.meta, scopes.resultBlock.result.meta].join(' '),
-		captures: {
-			'1': { name: [scopes.resultBlock.result.prefix.meta, scopes.resultBlock.result.prefix.metaMatch].join(' ') },
-			'2': { name: scopes.resultBlock.result.prefix.lineNumber },
-			'3': { name: scopes.resultBlock.result.prefix.colon },
+		mAtch: '^  (?:\\s*)(?:((\\d+)(:))|((\\d+)( ))(.*))',
+		nAme: [scopes.resultBlock.metA, scopes.resultBlock.result.metA].join(' '),
+		cAptures: {
+			'1': { nAme: [scopes.resultBlock.result.prefix.metA, scopes.resultBlock.result.prefix.metAMAtch].join(' ') },
+			'2': { nAme: scopes.resultBlock.result.prefix.lineNumber },
+			'3': { nAme: scopes.resultBlock.result.prefix.colon },
 
-			'4': { name: [scopes.resultBlock.result.prefix.meta, scopes.resultBlock.result.prefix.metaContext].join(' ') },
-			'5': { name: scopes.resultBlock.result.prefix.lineNumber },
+			'4': { nAme: [scopes.resultBlock.result.prefix.metA, scopes.resultBlock.result.prefix.metAContext].join(' ') },
+			'5': { nAme: scopes.resultBlock.result.prefix.lineNumber },
 		}
 	}
 ];
 
-const tmLanguage = {
-	'information_for_contributors': 'This file is generated from ./generateTMLanguage.js.',
-	name: 'Search Results',
-	scopeName: scopes.root,
-	patterns: [
-		...header,
-		...mappings.map(([ext]) => ({ include: `#${ext}` })),
-		...plainText
+const tmLAnguAge = {
+	'informAtion_for_contributors': 'This file is generAted from ./generAteTMLAnguAge.js.',
+	nAme: 'SeArch Results',
+	scopeNAme: scopes.root,
+	pAtterns: [
+		...heAder,
+		...mAppings.mAp(([ext]) => ({ include: `#${ext}` })),
+		...plAinText
 	],
 	repository
 };
 
 require('fs').writeFileSync(
-	require('path').join(__dirname, './searchResult.tmLanguage.json'),
-	JSON.stringify(tmLanguage, null, 2));
+	require('pAth').join(__dirnAme, './seArchResult.tmLAnguAge.json'),
+	JSON.stringify(tmLAnguAge, null, 2));

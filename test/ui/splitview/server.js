@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const fs = require('mz/fs');
-const path = require('path');
-const Koa = require('koa');
-const _ = require('koa-route');
-const serve = require('koa-static');
-const mount = require('koa-mount');
+const pAth = require('pAth');
+const KoA = require('koA');
+const _ = require('koA-route');
+const serve = require('koA-stAtic');
+const mount = require('koA-mount');
 
-const app = new Koa();
+const App = new KoA();
 
-app.use(serve('public'));
-app.use(mount('/static', serve('../../out')));
+App.use(serve('public'));
+App.use(mount('/stAtic', serve('../../out')));
 
-app.listen(3000);
-console.log('http://localhost:3000');
+App.listen(3000);
+console.log('http://locAlhost:3000');

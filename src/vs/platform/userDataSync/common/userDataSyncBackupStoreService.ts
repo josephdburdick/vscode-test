@@ -1,109 +1,109 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, } from 'vs/base/common/lifecycle';
-import { IUserDataSyncLogService, ALL_SYNC_RESOURCES, IUserDataSyncBackupStoreService, IResourceRefHandle, SyncResource } from 'vs/platform/userDataSync/common/userDataSync';
-import { joinPath } from 'vs/base/common/resources';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IFileService, IFileStat } from 'vs/platform/files/common/files';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { toLocalISOString } from 'vs/base/common/date';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { DisposAble, } from 'vs/bAse/common/lifecycle';
+import { IUserDAtASyncLogService, ALL_SYNC_RESOURCES, IUserDAtASyncBAckupStoreService, IResourceRefHAndle, SyncResource } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFileService, IFileStAt } from 'vs/plAtform/files/common/files';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { toLocAlISOString } from 'vs/bAse/common/dAte';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 
-export class UserDataSyncBackupStoreService extends Disposable implements IUserDataSyncBackupStoreService {
+export clAss UserDAtASyncBAckupStoreService extends DisposAble implements IUserDAtASyncBAckupStoreService {
 
-	_serviceBrand: any;
+	_serviceBrAnd: Any;
 
 	constructor(
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		@IFileService private readonly fileService: IFileService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IUserDataSyncLogService private readonly logService: IUserDataSyncLogService,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IUserDAtASyncLogService privAte reAdonly logService: IUserDAtASyncLogService,
 	) {
 		super();
-		ALL_SYNC_RESOURCES.forEach(resourceKey => this.cleanUpBackup(resourceKey));
+		ALL_SYNC_RESOURCES.forEAch(resourceKey => this.cleAnUpBAckup(resourceKey));
 	}
 
-	async getAllRefs(resource: SyncResource): Promise<IResourceRefHandle[]> {
-		const folder = joinPath(this.environmentService.userDataSyncHome, resource);
-		const stat = await this.fileService.resolve(folder);
-		if (stat.children) {
-			const all = stat.children.filter(stat => stat.isFile && /^\d{8}T\d{6}(\.json)?$/.test(stat.name)).sort().reverse();
-			return all.map(stat => ({
-				ref: stat.name,
-				created: this.getCreationTime(stat)
+	Async getAllRefs(resource: SyncResource): Promise<IResourceRefHAndle[]> {
+		const folder = joinPAth(this.environmentService.userDAtASyncHome, resource);
+		const stAt = AwAit this.fileService.resolve(folder);
+		if (stAt.children) {
+			const All = stAt.children.filter(stAt => stAt.isFile && /^\d{8}T\d{6}(\.json)?$/.test(stAt.nAme)).sort().reverse();
+			return All.mAp(stAt => ({
+				ref: stAt.nAme,
+				creAted: this.getCreAtionTime(stAt)
 			}));
 		}
 		return [];
 	}
 
-	async resolveContent(resource: SyncResource, ref?: string): Promise<string | null> {
+	Async resolveContent(resource: SyncResource, ref?: string): Promise<string | null> {
 		if (!ref) {
-			const refs = await this.getAllRefs(resource);
+			const refs = AwAit this.getAllRefs(resource);
 			if (refs.length) {
 				ref = refs[refs.length - 1].ref;
 			}
 		}
 		if (ref) {
-			const file = joinPath(this.environmentService.userDataSyncHome, resource, ref);
-			const content = await this.fileService.readFile(file);
-			return content.value.toString();
+			const file = joinPAth(this.environmentService.userDAtASyncHome, resource, ref);
+			const content = AwAit this.fileService.reAdFile(file);
+			return content.vAlue.toString();
 		}
 		return null;
 	}
 
-	async backup(resourceKey: SyncResource, content: string): Promise<void> {
-		const folder = joinPath(this.environmentService.userDataSyncHome, resourceKey);
-		const resource = joinPath(folder, `${toLocalISOString(new Date()).replace(/-|:|\.\d+Z$/g, '')}.json`);
+	Async bAckup(resourceKey: SyncResource, content: string): Promise<void> {
+		const folder = joinPAth(this.environmentService.userDAtASyncHome, resourceKey);
+		const resource = joinPAth(folder, `${toLocAlISOString(new DAte()).replAce(/-|:|\.\d+Z$/g, '')}.json`);
 		try {
-			await this.fileService.writeFile(resource, VSBuffer.fromString(content));
-		} catch (e) {
+			AwAit this.fileService.writeFile(resource, VSBuffer.fromString(content));
+		} cAtch (e) {
 			this.logService.error(e);
 		}
 		try {
-			this.cleanUpBackup(resourceKey);
-		} catch (e) { /* Ignore */ }
+			this.cleAnUpBAckup(resourceKey);
+		} cAtch (e) { /* Ignore */ }
 	}
 
-	private async cleanUpBackup(resource: SyncResource): Promise<void> {
-		const folder = joinPath(this.environmentService.userDataSyncHome, resource);
+	privAte Async cleAnUpBAckup(resource: SyncResource): Promise<void> {
+		const folder = joinPAth(this.environmentService.userDAtASyncHome, resource);
 		try {
 			try {
-				if (!(await this.fileService.exists(folder))) {
+				if (!(AwAit this.fileService.exists(folder))) {
 					return;
 				}
-			} catch (e) {
+			} cAtch (e) {
 				return;
 			}
-			const stat = await this.fileService.resolve(folder);
-			if (stat.children) {
-				const all = stat.children.filter(stat => stat.isFile && /^\d{8}T\d{6}(\.json)?$/.test(stat.name)).sort();
-				const backUpMaxAge = 1000 * 60 * 60 * 24 * (this.configurationService.getValue<number>('sync.localBackupDuration') || 30 /* Default 30 days */);
-				let toDelete = all.filter(stat => Date.now() - this.getCreationTime(stat) > backUpMaxAge);
-				const remaining = all.length - toDelete.length;
-				if (remaining < 10) {
-					toDelete = toDelete.slice(10 - remaining);
+			const stAt = AwAit this.fileService.resolve(folder);
+			if (stAt.children) {
+				const All = stAt.children.filter(stAt => stAt.isFile && /^\d{8}T\d{6}(\.json)?$/.test(stAt.nAme)).sort();
+				const bAckUpMAxAge = 1000 * 60 * 60 * 24 * (this.configurAtionService.getVAlue<number>('sync.locAlBAckupDurAtion') || 30 /* DefAult 30 dAys */);
+				let toDelete = All.filter(stAt => DAte.now() - this.getCreAtionTime(stAt) > bAckUpMAxAge);
+				const remAining = All.length - toDelete.length;
+				if (remAining < 10) {
+					toDelete = toDelete.slice(10 - remAining);
 				}
-				await Promise.all(toDelete.map(stat => {
-					this.logService.info('Deleting from backup', stat.resource.path);
-					this.fileService.del(stat.resource);
+				AwAit Promise.All(toDelete.mAp(stAt => {
+					this.logService.info('Deleting from bAckup', stAt.resource.pAth);
+					this.fileService.del(stAt.resource);
 				}));
 			}
-		} catch (e) {
+		} cAtch (e) {
 			this.logService.error(e);
 		}
 	}
 
-	private getCreationTime(stat: IFileStat) {
-		return stat.ctime || new Date(
-			parseInt(stat.name.substring(0, 4)),
-			parseInt(stat.name.substring(4, 6)) - 1,
-			parseInt(stat.name.substring(6, 8)),
-			parseInt(stat.name.substring(9, 11)),
-			parseInt(stat.name.substring(11, 13)),
-			parseInt(stat.name.substring(13, 15))
+	privAte getCreAtionTime(stAt: IFileStAt) {
+		return stAt.ctime || new DAte(
+			pArseInt(stAt.nAme.substring(0, 4)),
+			pArseInt(stAt.nAme.substring(4, 6)) - 1,
+			pArseInt(stAt.nAme.substring(6, 8)),
+			pArseInt(stAt.nAme.substring(9, 11)),
+			pArseInt(stAt.nAme.substring(11, 13)),
+			pArseInt(stAt.nAme.substring(13, 15))
 		).getTime();
 	}
 }

@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
+import * As fs from 'fs';
 import { getTempFile } from './temp.electron';
 
-export const onCaseInsenitiveFileSystem = (() => {
-	let value: boolean | undefined;
-	return (): boolean => {
-		if (typeof value === 'undefined') {
-			if (process.platform === 'win32') {
-				value = true;
-			} else if (process.platform !== 'darwin') {
-				value = false;
+export const onCAseInsenitiveFileSystem = (() => {
+	let vAlue: booleAn | undefined;
+	return (): booleAn => {
+		if (typeof vAlue === 'undefined') {
+			if (process.plAtform === 'win32') {
+				vAlue = true;
+			} else if (process.plAtform !== 'dArwin') {
+				vAlue = fAlse;
 			} else {
-				const temp = getTempFile('typescript-case-check');
+				const temp = getTempFile('typescript-cAse-check');
 				fs.writeFileSync(temp, '');
-				value = fs.existsSync(temp.toUpperCase());
+				vAlue = fs.existsSync(temp.toUpperCAse());
 			}
 		}
-		return value;
+		return vAlue;
 	};
 })();

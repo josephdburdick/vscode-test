@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import * As nls from 'vs/nls';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
-import { ReplaceCommand } from 'vs/editor/common/commands/replaceCommand';
-import { Range } from 'vs/editor/common/core/range';
-import { ICommand } from 'vs/editor/common/editorCommon';
+import { ReplAceCommAnd } from 'vs/editor/common/commAnds/replAceCommAnd';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ICommAnd } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { MoveOperations } from 'vs/editor/common/controller/cursorMoveOperations';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { MoveOperAtions } from 'vs/editor/common/controller/cursorMoveOperAtions';
 
-class TransposeLettersAction extends EditorAction {
+clAss TrAnsposeLettersAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.transposeLetters',
-			label: nls.localize('transposeLetters.label', "Transpose Letters"),
-			alias: 'Transpose Letters',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.trAnsposeLetters',
+			lAbel: nls.locAlize('trAnsposeLetters.lAbel', "TrAnspose Letters"),
+			AliAs: 'TrAnspose Letters',
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: 0,
-				mac: {
-					primary: KeyMod.WinCtrl | KeyCode.KEY_T
+				primAry: 0,
+				mAc: {
+					primAry: KeyMod.WinCtrl | KeyCode.KEY_T
 				},
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (!editor.hasModel()) {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
 		let model = editor.getModel();
-		let commands: ICommand[] = [];
+		let commAnds: ICommAnd[] = [];
 		let selections = editor.getSelections();
 
 		for (let selection of selections) {
@@ -47,38 +47,38 @@ class TransposeLettersAction extends EditorAction {
 				continue;
 			}
 
-			let lineNumber = selection.startLineNumber;
-			let column = selection.startColumn;
+			let lineNumber = selection.stArtLineNumber;
+			let column = selection.stArtColumn;
 
-			let lastColumn = model.getLineMaxColumn(lineNumber);
+			let lAstColumn = model.getLineMAxColumn(lineNumber);
 
-			if (lineNumber === 1 && (column === 1 || (column === 2 && lastColumn === 2))) {
-				// at beginning of file, nothing to do
+			if (lineNumber === 1 && (column === 1 || (column === 2 && lAstColumn === 2))) {
+				// At beginning of file, nothing to do
 				continue;
 			}
 
-			// handle special case: when at end of line, transpose left two chars
-			// otherwise, transpose left and right chars
-			let endPosition = (column === lastColumn) ?
+			// hAndle speciAl cAse: when At end of line, trAnspose left two chArs
+			// otherwise, trAnspose left And right chArs
+			let endPosition = (column === lAstColumn) ?
 				selection.getPosition() :
-				MoveOperations.rightPosition(model, selection.getPosition().lineNumber, selection.getPosition().column);
+				MoveOperAtions.rightPosition(model, selection.getPosition().lineNumber, selection.getPosition().column);
 
-			let middlePosition = MoveOperations.leftPosition(model, endPosition.lineNumber, endPosition.column);
-			let beginPosition = MoveOperations.leftPosition(model, middlePosition.lineNumber, middlePosition.column);
+			let middlePosition = MoveOperAtions.leftPosition(model, endPosition.lineNumber, endPosition.column);
+			let beginPosition = MoveOperAtions.leftPosition(model, middlePosition.lineNumber, middlePosition.column);
 
-			let leftChar = model.getValueInRange(Range.fromPositions(beginPosition, middlePosition));
-			let rightChar = model.getValueInRange(Range.fromPositions(middlePosition, endPosition));
+			let leftChAr = model.getVAlueInRAnge(RAnge.fromPositions(beginPosition, middlePosition));
+			let rightChAr = model.getVAlueInRAnge(RAnge.fromPositions(middlePosition, endPosition));
 
-			let replaceRange = Range.fromPositions(beginPosition, endPosition);
-			commands.push(new ReplaceCommand(replaceRange, rightChar + leftChar));
+			let replAceRAnge = RAnge.fromPositions(beginPosition, endPosition);
+			commAnds.push(new ReplAceCommAnd(replAceRAnge, rightChAr + leftChAr));
 		}
 
-		if (commands.length > 0) {
+		if (commAnds.length > 0) {
 			editor.pushUndoStop();
-			editor.executeCommands(this.id, commands);
+			editor.executeCommAnds(this.id, commAnds);
 			editor.pushUndoStop();
 		}
 	}
 }
 
-registerEditorAction(TransposeLettersAction);
+registerEditorAction(TrAnsposeLettersAction);

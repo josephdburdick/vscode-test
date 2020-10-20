@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { LineTokens } from 'vs/editor/common/core/lineTokens';
-import * as modes from 'vs/editor/common/modes';
+import * As modes from 'vs/editor/common/modes';
 
-export function createScopedLineTokens(context: LineTokens, offset: number): ScopedLineTokens {
+export function creAteScopedLineTokens(context: LineTokens, offset: number): ScopedLineTokens {
 	let tokenCount = context.getCount();
 	let tokenIndex = context.findTokenIndexAtOffset(offset);
-	let desiredLanguageId = context.getLanguageId(tokenIndex);
+	let desiredLAnguAgeId = context.getLAnguAgeId(tokenIndex);
 
-	let lastTokenIndex = tokenIndex;
-	while (lastTokenIndex + 1 < tokenCount && context.getLanguageId(lastTokenIndex + 1) === desiredLanguageId) {
-		lastTokenIndex++;
+	let lAstTokenIndex = tokenIndex;
+	while (lAstTokenIndex + 1 < tokenCount && context.getLAnguAgeId(lAstTokenIndex + 1) === desiredLAnguAgeId) {
+		lAstTokenIndex++;
 	}
 
 	let firstTokenIndex = tokenIndex;
-	while (firstTokenIndex > 0 && context.getLanguageId(firstTokenIndex - 1) === desiredLanguageId) {
+	while (firstTokenIndex > 0 && context.getLAnguAgeId(firstTokenIndex - 1) === desiredLAnguAgeId) {
 		firstTokenIndex--;
 	}
 
 	return new ScopedLineTokens(
 		context,
-		desiredLanguageId,
+		desiredLAnguAgeId,
 		firstTokenIndex,
-		lastTokenIndex + 1,
-		context.getStartOffset(firstTokenIndex),
-		context.getEndOffset(lastTokenIndex)
+		lAstTokenIndex + 1,
+		context.getStArtOffset(firstTokenIndex),
+		context.getEndOffset(lAstTokenIndex)
 	);
 }
 
-export class ScopedLineTokens {
-	_scopedLineTokensBrand: void;
+export clAss ScopedLineTokens {
+	_scopedLineTokensBrAnd: void;
 
-	public readonly languageId: modes.LanguageId;
-	private readonly _actual: LineTokens;
-	private readonly _firstTokenIndex: number;
-	private readonly _lastTokenIndex: number;
-	public readonly firstCharOffset: number;
-	private readonly _lastCharOffset: number;
+	public reAdonly lAnguAgeId: modes.LAnguAgeId;
+	privAte reAdonly _ActuAl: LineTokens;
+	privAte reAdonly _firstTokenIndex: number;
+	privAte reAdonly _lAstTokenIndex: number;
+	public reAdonly firstChArOffset: number;
+	privAte reAdonly _lAstChArOffset: number;
 
 	constructor(
-		actual: LineTokens,
-		languageId: modes.LanguageId,
+		ActuAl: LineTokens,
+		lAnguAgeId: modes.LAnguAgeId,
 		firstTokenIndex: number,
-		lastTokenIndex: number,
-		firstCharOffset: number,
-		lastCharOffset: number
+		lAstTokenIndex: number,
+		firstChArOffset: number,
+		lAstChArOffset: number
 	) {
-		this._actual = actual;
-		this.languageId = languageId;
+		this._ActuAl = ActuAl;
+		this.lAnguAgeId = lAnguAgeId;
 		this._firstTokenIndex = firstTokenIndex;
-		this._lastTokenIndex = lastTokenIndex;
-		this.firstCharOffset = firstCharOffset;
-		this._lastCharOffset = lastCharOffset;
+		this._lAstTokenIndex = lAstTokenIndex;
+		this.firstChArOffset = firstChArOffset;
+		this._lAstChArOffset = lAstChArOffset;
 	}
 
 	public getLineContent(): string {
-		const actualLineContent = this._actual.getLineContent();
-		return actualLineContent.substring(this.firstCharOffset, this._lastCharOffset);
+		const ActuAlLineContent = this._ActuAl.getLineContent();
+		return ActuAlLineContent.substring(this.firstChArOffset, this._lAstChArOffset);
 	}
 
-	public getActualLineContentBefore(offset: number): string {
-		const actualLineContent = this._actual.getLineContent();
-		return actualLineContent.substring(0, this.firstCharOffset + offset);
+	public getActuAlLineContentBefore(offset: number): string {
+		const ActuAlLineContent = this._ActuAl.getLineContent();
+		return ActuAlLineContent.substring(0, this.firstChArOffset + offset);
 	}
 
 	public getTokenCount(): number {
-		return this._lastTokenIndex - this._firstTokenIndex;
+		return this._lAstTokenIndex - this._firstTokenIndex;
 	}
 
 	public findTokenIndexAtOffset(offset: number): number {
-		return this._actual.findTokenIndexAtOffset(offset + this.firstCharOffset) - this._firstTokenIndex;
+		return this._ActuAl.findTokenIndexAtOffset(offset + this.firstChArOffset) - this._firstTokenIndex;
 	}
 
-	public getStandardTokenType(tokenIndex: number): modes.StandardTokenType {
-		return this._actual.getStandardTokenType(tokenIndex + this._firstTokenIndex);
+	public getStAndArdTokenType(tokenIndex: number): modes.StAndArdTokenType {
+		return this._ActuAl.getStAndArdTokenType(tokenIndex + this._firstTokenIndex);
 	}
 }
 
-const enum IgnoreBracketsInTokens {
-	value = modes.StandardTokenType.Comment | modes.StandardTokenType.String | modes.StandardTokenType.RegEx
+const enum IgnoreBrAcketsInTokens {
+	vAlue = modes.StAndArdTokenType.Comment | modes.StAndArdTokenType.String | modes.StAndArdTokenType.RegEx
 }
 
-export function ignoreBracketsInToken(standardTokenType: modes.StandardTokenType): boolean {
-	return (standardTokenType & IgnoreBracketsInTokens.value) !== 0;
+export function ignoreBrAcketsInToken(stAndArdTokenType: modes.StAndArdTokenType): booleAn {
+	return (stAndArdTokenType & IgnoreBrAcketsInTokens.vAlue) !== 0;
 }

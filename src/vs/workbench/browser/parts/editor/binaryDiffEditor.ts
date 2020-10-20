@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { BINARY_DIFF_EDITOR_ID } from 'vs/workbench/common/editor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { SideBySideEditor } from 'vs/workbench/browser/parts/editor/sideBySideEditor';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { BaseBinaryResourceEditor } from 'vs/workbench/browser/parts/editor/binaryEditor';
-import { IStorageService } from 'vs/platform/storage/common/storage';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { SideBySideEditor } from 'vs/workbench/browser/pArts/editor/sideBySideEditor';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { BAseBinAryResourceEditor } from 'vs/workbench/browser/pArts/editor/binAryEditor';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
 
 /**
- * An implementation of editor for diffing binary files like images or videos.
+ * An implementAtion of editor for diffing binAry files like imAges or videos.
  */
-export class BinaryResourceDiffEditor extends SideBySideEditor {
+export clAss BinAryResourceDiffEditor extends SideBySideEditor {
 
-	static readonly ID = BINARY_DIFF_EDITOR_ID;
+	stAtic reAdonly ID = BINARY_DIFF_EDITOR_ID;
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IThemeService themeService: IThemeService,
-		@IStorageService storageService: IStorageService
+		@IStorAgeService storAgeService: IStorAgeService
 	) {
-		super(telemetryService, instantiationService, themeService, storageService);
+		super(telemetryService, instAntiAtionService, themeService, storAgeService);
 	}
 
-	getMetadata(): string | undefined {
-		const primary = this.primaryEditorPane;
-		const secondary = this.secondaryEditorPane;
+	getMetAdAtA(): string | undefined {
+		const primAry = this.primAryEditorPAne;
+		const secondAry = this.secondAryEditorPAne;
 
-		if (primary instanceof BaseBinaryResourceEditor && secondary instanceof BaseBinaryResourceEditor) {
-			return nls.localize('metadataDiff', "{0} ↔ {1}", secondary.getMetadata(), primary.getMetadata());
+		if (primAry instAnceof BAseBinAryResourceEditor && secondAry instAnceof BAseBinAryResourceEditor) {
+			return nls.locAlize('metAdAtADiff', "{0} ↔ {1}", secondAry.getMetAdAtA(), primAry.getMetAdAtA());
 		}
 
 		return undefined;

@@ -1,313 +1,313 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as extpath from 'vs/base/common/extpath';
-import * as paths from 'vs/base/common/path';
-import { URI, uriToFsPath } from 'vs/base/common/uri';
-import { equalsIgnoreCase, compare as strCompare } from 'vs/base/common/strings';
-import { Schemas } from 'vs/base/common/network';
-import { isWindows, isLinux } from 'vs/base/common/platform';
-import { CharCode } from 'vs/base/common/charCode';
-import { ParsedExpression, IExpression, parse } from 'vs/base/common/glob';
-import { TernarySearchTree } from 'vs/base/common/map';
+import * As extpAth from 'vs/bAse/common/extpAth';
+import * As pAths from 'vs/bAse/common/pAth';
+import { URI, uriToFsPAth } from 'vs/bAse/common/uri';
+import { equAlsIgnoreCAse, compAre As strCompAre } from 'vs/bAse/common/strings';
+import { SchemAs } from 'vs/bAse/common/network';
+import { isWindows, isLinux } from 'vs/bAse/common/plAtform';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { PArsedExpression, IExpression, pArse } from 'vs/bAse/common/glob';
+import { TernArySeArchTree } from 'vs/bAse/common/mAp';
 
-export function originalFSPath(uri: URI): string {
-	return uriToFsPath(uri, true);
+export function originAlFSPAth(uri: URI): string {
+	return uriToFsPAth(uri, true);
 }
 
 //#region IExtUri
 
-export interface IExtUri {
+export interfAce IExtUri {
 
 	// --- identity
 
 	/**
-	 * Compares two uris.
+	 * CompAres two uris.
 	 *
-	 * @param uri1 Uri
-	 * @param uri2 Uri
-	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
+	 * @pArAm uri1 Uri
+	 * @pArAm uri2 Uri
+	 * @pArAm ignoreFrAgment Ignore the frAgment (defAults to `fAlse`)
 	 */
-	compare(uri1: URI, uri2: URI, ignoreFragment?: boolean): number;
+	compAre(uri1: URI, uri2: URI, ignoreFrAgment?: booleAn): number;
 
 	/**
-	 * Tests whether two uris are equal
+	 * Tests whether two uris Are equAl
 	 *
-	 * @param uri1 Uri
-	 * @param uri2 Uri
-	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
+	 * @pArAm uri1 Uri
+	 * @pArAm uri2 Uri
+	 * @pArAm ignoreFrAgment Ignore the frAgment (defAults to `fAlse`)
 	 */
-	isEqual(uri1: URI | undefined, uri2: URI | undefined, ignoreFragment?: boolean): boolean;
+	isEquAl(uri1: URI | undefined, uri2: URI | undefined, ignoreFrAgment?: booleAn): booleAn;
 
 	/**
-	 * Tests whether a `candidate` URI is a parent or equal of a given `base` URI.
+	 * Tests whether A `cAndidAte` URI is A pArent or equAl of A given `bAse` URI.
 	 *
-	 * @param base A uri which is "longer"
-	 * @param parentCandidate A uri which is "shorter" then `base`
-	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
+	 * @pArAm bAse A uri which is "longer"
+	 * @pArAm pArentCAndidAte A uri which is "shorter" then `bAse`
+	 * @pArAm ignoreFrAgment Ignore the frAgment (defAults to `fAlse`)
 	 */
-	isEqualOrParent(base: URI, parentCandidate: URI, ignoreFragment?: boolean): boolean;
+	isEquAlOrPArent(bAse: URI, pArentCAndidAte: URI, ignoreFrAgment?: booleAn): booleAn;
 
 	/**
-	 * Creates a key from a resource URI to be used to resource comparison and for resource maps.
-	 * @see ResourceMap
-	 * @param uri Uri
-	 * @param ignoreFragment Ignore the fragment (defaults to `false`)
+	 * CreAtes A key from A resource URI to be used to resource compArison And for resource mAps.
+	 * @see ResourceMAp
+	 * @pArAm uri Uri
+	 * @pArAm ignoreFrAgment Ignore the frAgment (defAults to `fAlse`)
 	 */
-	getComparisonKey(uri: URI, ignoreFragment?: boolean): string;
+	getCompArisonKey(uri: URI, ignoreFrAgment?: booleAn): string;
 
-	// --- path math
+	// --- pAth mAth
 
-	basenameOrAuthority(resource: URI): string;
+	bAsenAmeOrAuthority(resource: URI): string;
 
 	/**
-	 * Returns the basename of the path component of an uri.
-	 * @param resource
+	 * Returns the bAsenAme of the pAth component of An uri.
+	 * @pArAm resource
 	 */
-	basename(resource: URI): string;
+	bAsenAme(resource: URI): string;
 
 	/**
-	 * Returns the extension of the path component of an uri.
-	 * @param resource
+	 * Returns the extension of the pAth component of An uri.
+	 * @pArAm resource
 	 */
-	extname(resource: URI): string;
+	extnAme(resource: URI): string;
 	/**
-	 * Return a URI representing the directory of a URI path.
+	 * Return A URI representing the directory of A URI pAth.
 	 *
-	 * @param resource The input URI.
+	 * @pArAm resource The input URI.
 	 * @returns The URI representing the directory of the input URI.
 	 */
-	dirname(resource: URI): URI;
+	dirnAme(resource: URI): URI;
 	/**
-	 * Join a URI path with path fragments and normalizes the resulting path.
+	 * Join A URI pAth with pAth frAgments And normAlizes the resulting pAth.
 	 *
-	 * @param resource The input URI.
-	 * @param pathFragment The path fragment to add to the URI path.
+	 * @pArAm resource The input URI.
+	 * @pArAm pAthFrAgment The pAth frAgment to Add to the URI pAth.
 	 * @returns The resulting URI.
 	 */
-	joinPath(resource: URI, ...pathFragment: string[]): URI
+	joinPAth(resource: URI, ...pAthFrAgment: string[]): URI
 	/**
-	 * Normalizes the path part of a URI: Resolves `.` and `..` elements with directory names.
+	 * NormAlizes the pAth pArt of A URI: Resolves `.` And `..` elements with directory nAmes.
 	 *
-	 * @param resource The URI to normalize the path.
-	 * @returns The URI with the normalized path.
+	 * @pArAm resource The URI to normAlize the pAth.
+	 * @returns The URI with the normAlized pAth.
 	 */
-	normalizePath(resource: URI): URI;
+	normAlizePAth(resource: URI): URI;
 	/**
 	 *
-	 * @param from
-	 * @param to
+	 * @pArAm from
+	 * @pArAm to
 	 */
-	relativePath(from: URI, to: URI): string | undefined;
+	relAtivePAth(from: URI, to: URI): string | undefined;
 	/**
-	 * Resolves an absolute or relative path against a base URI.
-	 * The path can be relative or absolute posix or a Windows path
+	 * Resolves An Absolute or relAtive pAth AgAinst A bAse URI.
+	 * The pAth cAn be relAtive or Absolute posix or A Windows pAth
 	 */
-	resolvePath(base: URI, path: string): URI;
+	resolvePAth(bAse: URI, pAth: string): URI;
 
 	// --- misc
 
 	/**
-	 * Returns true if the URI path is absolute.
+	 * Returns true if the URI pAth is Absolute.
 	 */
-	isAbsolutePath(resource: URI): boolean;
+	isAbsolutePAth(resource: URI): booleAn;
 	/**
-	 * Tests whether the two authorities are the same
+	 * Tests whether the two Authorities Are the sAme
 	 */
-	isEqualAuthority(a1: string, a2: string): boolean;
+	isEquAlAuthority(A1: string, A2: string): booleAn;
 	/**
-	 * Returns true if the URI path has a trailing path separator
+	 * Returns true if the URI pAth hAs A trAiling pAth sepArAtor
 	 */
-	hasTrailingPathSeparator(resource: URI, sep?: string): boolean;
+	hAsTrAilingPAthSepArAtor(resource: URI, sep?: string): booleAn;
 	/**
-	 * Removes a trailing path separator, if there's one.
-	 * Important: Doesn't remove the first slash, it would make the URI invalid
+	 * Removes A trAiling pAth sepArAtor, if there's one.
+	 * ImportAnt: Doesn't remove the first slAsh, it would mAke the URI invAlid
 	 */
-	removeTrailingPathSeparator(resource: URI, sep?: string): URI;
+	removeTrAilingPAthSepArAtor(resource: URI, sep?: string): URI;
 	/**
-	 * Adds a trailing path separator to the URI if there isn't one already.
-	 * For example, c:\ would be unchanged, but c:\users would become c:\users\
+	 * Adds A trAiling pAth sepArAtor to the URI if there isn't one AlreAdy.
+	 * For exAmple, c:\ would be unchAnged, but c:\users would become c:\users\
 	 */
-	addTrailingPathSeparator(resource: URI, sep?: string): URI;
+	AddTrAilingPAthSepArAtor(resource: URI, sep?: string): URI;
 }
 
-export class ExtUri implements IExtUri {
+export clAss ExtUri implements IExtUri {
 
-	constructor(private _ignorePathCasing: (uri: URI) => boolean) { }
+	constructor(privAte _ignorePAthCAsing: (uri: URI) => booleAn) { }
 
-	compare(uri1: URI, uri2: URI, ignoreFragment: boolean = false): number {
+	compAre(uri1: URI, uri2: URI, ignoreFrAgment: booleAn = fAlse): number {
 		if (uri1 === uri2) {
 			return 0;
 		}
-		return strCompare(this.getComparisonKey(uri1, ignoreFragment), this.getComparisonKey(uri2, ignoreFragment));
+		return strCompAre(this.getCompArisonKey(uri1, ignoreFrAgment), this.getCompArisonKey(uri2, ignoreFrAgment));
 	}
 
-	isEqual(uri1: URI | undefined, uri2: URI | undefined, ignoreFragment: boolean = false): boolean {
+	isEquAl(uri1: URI | undefined, uri2: URI | undefined, ignoreFrAgment: booleAn = fAlse): booleAn {
 		if (uri1 === uri2) {
 			return true;
 		}
 		if (!uri1 || !uri2) {
-			return false;
+			return fAlse;
 		}
-		return this.getComparisonKey(uri1, ignoreFragment) === this.getComparisonKey(uri2, ignoreFragment);
+		return this.getCompArisonKey(uri1, ignoreFrAgment) === this.getCompArisonKey(uri2, ignoreFrAgment);
 	}
 
-	getComparisonKey(uri: URI, ignoreFragment: boolean = false): string {
+	getCompArisonKey(uri: URI, ignoreFrAgment: booleAn = fAlse): string {
 		return uri.with({
-			path: this._ignorePathCasing(uri) ? uri.path.toLowerCase() : undefined,
-			fragment: ignoreFragment ? null : undefined
+			pAth: this._ignorePAthCAsing(uri) ? uri.pAth.toLowerCAse() : undefined,
+			frAgment: ignoreFrAgment ? null : undefined
 		}).toString();
 	}
 
-	isEqualOrParent(base: URI, parentCandidate: URI, ignoreFragment: boolean = false): boolean {
-		if (base.scheme === parentCandidate.scheme) {
-			if (base.scheme === Schemas.file) {
-				return extpath.isEqualOrParent(originalFSPath(base), originalFSPath(parentCandidate), this._ignorePathCasing(base)) && base.query === parentCandidate.query && (ignoreFragment || base.fragment === parentCandidate.fragment);
+	isEquAlOrPArent(bAse: URI, pArentCAndidAte: URI, ignoreFrAgment: booleAn = fAlse): booleAn {
+		if (bAse.scheme === pArentCAndidAte.scheme) {
+			if (bAse.scheme === SchemAs.file) {
+				return extpAth.isEquAlOrPArent(originAlFSPAth(bAse), originAlFSPAth(pArentCAndidAte), this._ignorePAthCAsing(bAse)) && bAse.query === pArentCAndidAte.query && (ignoreFrAgment || bAse.frAgment === pArentCAndidAte.frAgment);
 			}
-			if (isEqualAuthority(base.authority, parentCandidate.authority)) {
-				return extpath.isEqualOrParent(base.path, parentCandidate.path, this._ignorePathCasing(base), '/') && base.query === parentCandidate.query && (ignoreFragment || base.fragment === parentCandidate.fragment);
+			if (isEquAlAuthority(bAse.Authority, pArentCAndidAte.Authority)) {
+				return extpAth.isEquAlOrPArent(bAse.pAth, pArentCAndidAte.pAth, this._ignorePAthCAsing(bAse), '/') && bAse.query === pArentCAndidAte.query && (ignoreFrAgment || bAse.frAgment === pArentCAndidAte.frAgment);
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
-	// --- path math
+	// --- pAth mAth
 
-	joinPath(resource: URI, ...pathFragment: string[]): URI {
-		return URI.joinPath(resource, ...pathFragment);
+	joinPAth(resource: URI, ...pAthFrAgment: string[]): URI {
+		return URI.joinPAth(resource, ...pAthFrAgment);
 	}
 
-	basenameOrAuthority(resource: URI): string {
-		return basename(resource) || resource.authority;
+	bAsenAmeOrAuthority(resource: URI): string {
+		return bAsenAme(resource) || resource.Authority;
 	}
 
-	basename(resource: URI): string {
-		return paths.posix.basename(resource.path);
+	bAsenAme(resource: URI): string {
+		return pAths.posix.bAsenAme(resource.pAth);
 	}
 
-	extname(resource: URI): string {
-		return paths.posix.extname(resource.path);
+	extnAme(resource: URI): string {
+		return pAths.posix.extnAme(resource.pAth);
 	}
 
-	dirname(resource: URI): URI {
-		if (resource.path.length === 0) {
+	dirnAme(resource: URI): URI {
+		if (resource.pAth.length === 0) {
 			return resource;
 		}
-		let dirname;
-		if (resource.scheme === Schemas.file) {
-			dirname = URI.file(paths.dirname(originalFSPath(resource))).path;
+		let dirnAme;
+		if (resource.scheme === SchemAs.file) {
+			dirnAme = URI.file(pAths.dirnAme(originAlFSPAth(resource))).pAth;
 		} else {
-			dirname = paths.posix.dirname(resource.path);
-			if (resource.authority && dirname.length && dirname.charCodeAt(0) !== CharCode.Slash) {
-				console.error(`dirname("${resource.toString})) resulted in a relative path`);
-				dirname = '/'; // If a URI contains an authority component, then the path component must either be empty or begin with a CharCode.Slash ("/") character
+			dirnAme = pAths.posix.dirnAme(resource.pAth);
+			if (resource.Authority && dirnAme.length && dirnAme.chArCodeAt(0) !== ChArCode.SlAsh) {
+				console.error(`dirnAme("${resource.toString})) resulted in A relAtive pAth`);
+				dirnAme = '/'; // If A URI contAins An Authority component, then the pAth component must either be empty or begin with A ChArCode.SlAsh ("/") chArActer
 			}
 		}
 		return resource.with({
-			path: dirname
+			pAth: dirnAme
 		});
 	}
 
-	normalizePath(resource: URI): URI {
-		if (!resource.path.length) {
+	normAlizePAth(resource: URI): URI {
+		if (!resource.pAth.length) {
 			return resource;
 		}
-		let normalizedPath: string;
-		if (resource.scheme === Schemas.file) {
-			normalizedPath = URI.file(paths.normalize(originalFSPath(resource))).path;
+		let normAlizedPAth: string;
+		if (resource.scheme === SchemAs.file) {
+			normAlizedPAth = URI.file(pAths.normAlize(originAlFSPAth(resource))).pAth;
 		} else {
-			normalizedPath = paths.posix.normalize(resource.path);
+			normAlizedPAth = pAths.posix.normAlize(resource.pAth);
 		}
 		return resource.with({
-			path: normalizedPath
+			pAth: normAlizedPAth
 		});
 	}
 
-	relativePath(from: URI, to: URI): string | undefined {
-		if (from.scheme !== to.scheme || !isEqualAuthority(from.authority, to.authority)) {
+	relAtivePAth(from: URI, to: URI): string | undefined {
+		if (from.scheme !== to.scheme || !isEquAlAuthority(from.Authority, to.Authority)) {
 			return undefined;
 		}
-		if (from.scheme === Schemas.file) {
-			const relativePath = paths.relative(originalFSPath(from), originalFSPath(to));
-			return isWindows ? extpath.toSlashes(relativePath) : relativePath;
+		if (from.scheme === SchemAs.file) {
+			const relAtivePAth = pAths.relAtive(originAlFSPAth(from), originAlFSPAth(to));
+			return isWindows ? extpAth.toSlAshes(relAtivePAth) : relAtivePAth;
 		}
-		let fromPath = from.path || '/', toPath = to.path || '/';
-		if (this._ignorePathCasing(from)) {
-			// make casing of fromPath match toPath
+		let fromPAth = from.pAth || '/', toPAth = to.pAth || '/';
+		if (this._ignorePAthCAsing(from)) {
+			// mAke cAsing of fromPAth mAtch toPAth
 			let i = 0;
-			for (const len = Math.min(fromPath.length, toPath.length); i < len; i++) {
-				if (fromPath.charCodeAt(i) !== toPath.charCodeAt(i)) {
-					if (fromPath.charAt(i).toLowerCase() !== toPath.charAt(i).toLowerCase()) {
-						break;
+			for (const len = MAth.min(fromPAth.length, toPAth.length); i < len; i++) {
+				if (fromPAth.chArCodeAt(i) !== toPAth.chArCodeAt(i)) {
+					if (fromPAth.chArAt(i).toLowerCAse() !== toPAth.chArAt(i).toLowerCAse()) {
+						breAk;
 					}
 				}
 			}
-			fromPath = toPath.substr(0, i) + fromPath.substr(i);
+			fromPAth = toPAth.substr(0, i) + fromPAth.substr(i);
 		}
-		return paths.posix.relative(fromPath, toPath);
+		return pAths.posix.relAtive(fromPAth, toPAth);
 	}
 
-	resolvePath(base: URI, path: string): URI {
-		if (base.scheme === Schemas.file) {
-			const newURI = URI.file(paths.resolve(originalFSPath(base), path));
-			return base.with({
-				authority: newURI.authority,
-				path: newURI.path
+	resolvePAth(bAse: URI, pAth: string): URI {
+		if (bAse.scheme === SchemAs.file) {
+			const newURI = URI.file(pAths.resolve(originAlFSPAth(bAse), pAth));
+			return bAse.with({
+				Authority: newURI.Authority,
+				pAth: newURI.pAth
 			});
 		}
-		if (path.indexOf('/') === -1) { // no slashes? it's likely a Windows path
-			path = extpath.toSlashes(path);
-			if (/^[a-zA-Z]:(\/|$)/.test(path)) { // starts with a drive letter
-				path = '/' + path;
+		if (pAth.indexOf('/') === -1) { // no slAshes? it's likely A Windows pAth
+			pAth = extpAth.toSlAshes(pAth);
+			if (/^[A-zA-Z]:(\/|$)/.test(pAth)) { // stArts with A drive letter
+				pAth = '/' + pAth;
 			}
 		}
-		return base.with({
-			path: paths.posix.resolve(base.path, path)
+		return bAse.with({
+			pAth: pAths.posix.resolve(bAse.pAth, pAth)
 		});
 	}
 
 	// --- misc
 
-	isAbsolutePath(resource: URI): boolean {
-		return !!resource.path && resource.path[0] === '/';
+	isAbsolutePAth(resource: URI): booleAn {
+		return !!resource.pAth && resource.pAth[0] === '/';
 	}
 
-	isEqualAuthority(a1: string, a2: string) {
-		return a1 === a2 || equalsIgnoreCase(a1, a2);
+	isEquAlAuthority(A1: string, A2: string) {
+		return A1 === A2 || equAlsIgnoreCAse(A1, A2);
 	}
 
-	hasTrailingPathSeparator(resource: URI, sep: string = paths.sep): boolean {
-		if (resource.scheme === Schemas.file) {
-			const fsp = originalFSPath(resource);
-			return fsp.length > extpath.getRoot(fsp).length && fsp[fsp.length - 1] === sep;
+	hAsTrAilingPAthSepArAtor(resource: URI, sep: string = pAths.sep): booleAn {
+		if (resource.scheme === SchemAs.file) {
+			const fsp = originAlFSPAth(resource);
+			return fsp.length > extpAth.getRoot(fsp).length && fsp[fsp.length - 1] === sep;
 		} else {
-			const p = resource.path;
-			return (p.length > 1 && p.charCodeAt(p.length - 1) === CharCode.Slash) && !(/^[a-zA-Z]:(\/$|\\$)/.test(resource.fsPath)); // ignore the slash at offset 0
+			const p = resource.pAth;
+			return (p.length > 1 && p.chArCodeAt(p.length - 1) === ChArCode.SlAsh) && !(/^[A-zA-Z]:(\/$|\\$)/.test(resource.fsPAth)); // ignore the slAsh At offset 0
 		}
 	}
 
-	removeTrailingPathSeparator(resource: URI, sep: string = paths.sep): URI {
-		// Make sure that the path isn't a drive letter. A trailing separator there is not removable.
-		if (hasTrailingPathSeparator(resource, sep)) {
-			return resource.with({ path: resource.path.substr(0, resource.path.length - 1) });
+	removeTrAilingPAthSepArAtor(resource: URI, sep: string = pAths.sep): URI {
+		// MAke sure thAt the pAth isn't A drive letter. A trAiling sepArAtor there is not removAble.
+		if (hAsTrAilingPAthSepArAtor(resource, sep)) {
+			return resource.with({ pAth: resource.pAth.substr(0, resource.pAth.length - 1) });
 		}
 		return resource;
 	}
 
-	addTrailingPathSeparator(resource: URI, sep: string = paths.sep): URI {
-		let isRootSep: boolean = false;
-		if (resource.scheme === Schemas.file) {
-			const fsp = originalFSPath(resource);
-			isRootSep = ((fsp !== undefined) && (fsp.length === extpath.getRoot(fsp).length) && (fsp[fsp.length - 1] === sep));
+	AddTrAilingPAthSepArAtor(resource: URI, sep: string = pAths.sep): URI {
+		let isRootSep: booleAn = fAlse;
+		if (resource.scheme === SchemAs.file) {
+			const fsp = originAlFSPAth(resource);
+			isRootSep = ((fsp !== undefined) && (fsp.length === extpAth.getRoot(fsp).length) && (fsp[fsp.length - 1] === sep));
 		} else {
 			sep = '/';
-			const p = resource.path;
-			isRootSep = p.length === 1 && p.charCodeAt(p.length - 1) === CharCode.Slash;
+			const p = resource.pAth;
+			isRootSep = p.length === 1 && p.chArCodeAt(p.length - 1) === ChArCode.SlAsh;
 		}
-		if (!isRootSep && !hasTrailingPathSeparator(resource, sep)) {
-			return resource.with({ path: resource.path + '/' });
+		if (!isRootSep && !hAsTrAilingPAthSepArAtor(resource, sep)) {
+			return resource.with({ pAth: resource.pAth + '/' });
 		}
 		return resource;
 	}
@@ -315,154 +315,154 @@ export class ExtUri implements IExtUri {
 
 
 /**
- * Unbiased utility that takes uris "as they are". This means it can be interchanged with
- * uri#toString() usages. The following is true
+ * UnbiAsed utility thAt tAkes uris "As they Are". This meAns it cAn be interchAnged with
+ * uri#toString() usAges. The following is true
  * ```
- * assertEqual(aUri.toString() === bUri.toString(), exturi.isEqual(aUri, bUri))
+ * AssertEquAl(AUri.toString() === bUri.toString(), exturi.isEquAl(AUri, bUri))
  * ```
  */
-export const extUri = new ExtUri(() => false);
+export const extUri = new ExtUri(() => fAlse);
 
 /**
- * BIASED utility that _mostly_ ignored the case of urs paths. ONLY use this util if you
- * understand what you are doing.
+ * BIASED utility thAt _mostly_ ignored the cAse of urs pAths. ONLY use this util if you
+ * understAnd whAt you Are doing.
  *
- * This utility is INCOMPATIBLE with `uri.toString()`-usages and both CANNOT be used interchanged.
+ * This utility is INCOMPATIBLE with `uri.toString()`-usAges And both CANNOT be used interchAnged.
  *
- * When dealing with uris from files or documents, `extUri` (the unbiased friend)is sufficient
- * because those uris come from a "trustworthy source". When creating unknown uris it's always
- * better to use `IUriIdentityService` which exposes an `IExtUri`-instance which knows when path
- * casing matters.
+ * When deAling with uris from files or documents, `extUri` (the unbiAsed friend)is sufficient
+ * becAuse those uris come from A "trustworthy source". When creAting unknown uris it's AlwAys
+ * better to use `IUriIdentityService` which exposes An `IExtUri`-instAnce which knows when pAth
+ * cAsing mAtters.
  */
-export const extUriBiasedIgnorePathCase = new ExtUri(uri => {
-	// A file scheme resource is in the same platform as code, so ignore case for non linux platforms
-	// Resource can be from another platform. Lowering the case as an hack. Should come from File system provider
-	return uri.scheme === Schemas.file ? !isLinux : true;
+export const extUriBiAsedIgnorePAthCAse = new ExtUri(uri => {
+	// A file scheme resource is in the sAme plAtform As code, so ignore cAse for non linux plAtforms
+	// Resource cAn be from Another plAtform. Lowering the cAse As An hAck. Should come from File system provider
+	return uri.scheme === SchemAs.file ? !isLinux : true;
 });
 
 
 /**
- * BIASED utility that always ignores the casing of uris paths. ONLY use this util if you
- * understand what you are doing.
+ * BIASED utility thAt AlwAys ignores the cAsing of uris pAths. ONLY use this util if you
+ * understAnd whAt you Are doing.
  *
- * This utility is INCOMPATIBLE with `uri.toString()`-usages and both CANNOT be used interchanged.
+ * This utility is INCOMPATIBLE with `uri.toString()`-usAges And both CANNOT be used interchAnged.
  *
- * When dealing with uris from files or documents, `extUri` (the unbiased friend)is sufficient
- * because those uris come from a "trustworthy source". When creating unknown uris it's always
- * better to use `IUriIdentityService` which exposes an `IExtUri`-instance which knows when path
- * casing matters.
+ * When deAling with uris from files or documents, `extUri` (the unbiAsed friend)is sufficient
+ * becAuse those uris come from A "trustworthy source". When creAting unknown uris it's AlwAys
+ * better to use `IUriIdentityService` which exposes An `IExtUri`-instAnce which knows when pAth
+ * cAsing mAtters.
  */
-export const extUriIgnorePathCase = new ExtUri(_ => true);
+export const extUriIgnorePAthCAse = new ExtUri(_ => true);
 
-export const isEqual = extUri.isEqual.bind(extUri);
-export const isEqualOrParent = extUri.isEqualOrParent.bind(extUri);
-export const getComparisonKey = extUri.getComparisonKey.bind(extUri);
-export const basenameOrAuthority = extUri.basenameOrAuthority.bind(extUri);
-export const basename = extUri.basename.bind(extUri);
-export const extname = extUri.extname.bind(extUri);
-export const dirname = extUri.dirname.bind(extUri);
-export const joinPath = extUri.joinPath.bind(extUri);
-export const normalizePath = extUri.normalizePath.bind(extUri);
-export const relativePath = extUri.relativePath.bind(extUri);
-export const resolvePath = extUri.resolvePath.bind(extUri);
-export const isAbsolutePath = extUri.isAbsolutePath.bind(extUri);
-export const isEqualAuthority = extUri.isEqualAuthority.bind(extUri);
-export const hasTrailingPathSeparator = extUri.hasTrailingPathSeparator.bind(extUri);
-export const removeTrailingPathSeparator = extUri.removeTrailingPathSeparator.bind(extUri);
-export const addTrailingPathSeparator = extUri.addTrailingPathSeparator.bind(extUri);
+export const isEquAl = extUri.isEquAl.bind(extUri);
+export const isEquAlOrPArent = extUri.isEquAlOrPArent.bind(extUri);
+export const getCompArisonKey = extUri.getCompArisonKey.bind(extUri);
+export const bAsenAmeOrAuthority = extUri.bAsenAmeOrAuthority.bind(extUri);
+export const bAsenAme = extUri.bAsenAme.bind(extUri);
+export const extnAme = extUri.extnAme.bind(extUri);
+export const dirnAme = extUri.dirnAme.bind(extUri);
+export const joinPAth = extUri.joinPAth.bind(extUri);
+export const normAlizePAth = extUri.normAlizePAth.bind(extUri);
+export const relAtivePAth = extUri.relAtivePAth.bind(extUri);
+export const resolvePAth = extUri.resolvePAth.bind(extUri);
+export const isAbsolutePAth = extUri.isAbsolutePAth.bind(extUri);
+export const isEquAlAuthority = extUri.isEquAlAuthority.bind(extUri);
+export const hAsTrAilingPAthSepArAtor = extUri.hAsTrAilingPAthSepArAtor.bind(extUri);
+export const removeTrAilingPAthSepArAtor = extUri.removeTrAilingPAthSepArAtor.bind(extUri);
+export const AddTrAilingPAthSepArAtor = extUri.AddTrAilingPAthSepArAtor.bind(extUri);
 
 //#endregion
 
-export function distinctParents<T>(items: T[], resourceAccessor: (item: T) => URI): T[] {
-	const distinctParents: T[] = [];
+export function distinctPArents<T>(items: T[], resourceAccessor: (item: T) => URI): T[] {
+	const distinctPArents: T[] = [];
 	for (let i = 0; i < items.length; i++) {
-		const candidateResource = resourceAccessor(items[i]);
+		const cAndidAteResource = resourceAccessor(items[i]);
 		if (items.some((otherItem, index) => {
 			if (index === i) {
-				return false;
+				return fAlse;
 			}
 
-			return isEqualOrParent(candidateResource, resourceAccessor(otherItem));
+			return isEquAlOrPArent(cAndidAteResource, resourceAccessor(otherItem));
 		})) {
 			continue;
 		}
 
-		distinctParents.push(items[i]);
+		distinctPArents.push(items[i]);
 	}
 
-	return distinctParents;
+	return distinctPArents;
 }
 
 /**
- * Data URI related helpers.
+ * DAtA URI relAted helpers.
  */
-export namespace DataUri {
+export nAmespAce DAtAUri {
 
-	export const META_DATA_LABEL = 'label';
+	export const META_DATA_LABEL = 'lAbel';
 	export const META_DATA_DESCRIPTION = 'description';
 	export const META_DATA_SIZE = 'size';
 	export const META_DATA_MIME = 'mime';
 
-	export function parseMetaData(dataUri: URI): Map<string, string> {
-		const metadata = new Map<string, string>();
+	export function pArseMetADAtA(dAtAUri: URI): MAp<string, string> {
+		const metAdAtA = new MAp<string, string>();
 
-		// Given a URI of:  data:image/png;size:2313;label:SomeLabel;description:SomeDescription;base64,77+9UE5...
-		// the metadata is: size:2313;label:SomeLabel;description:SomeDescription
-		const meta = dataUri.path.substring(dataUri.path.indexOf(';') + 1, dataUri.path.lastIndexOf(';'));
-		meta.split(';').forEach(property => {
-			const [key, value] = property.split(':');
-			if (key && value) {
-				metadata.set(key, value);
+		// Given A URI of:  dAtA:imAge/png;size:2313;lAbel:SomeLAbel;description:SomeDescription;bAse64,77+9UE5...
+		// the metAdAtA is: size:2313;lAbel:SomeLAbel;description:SomeDescription
+		const metA = dAtAUri.pAth.substring(dAtAUri.pAth.indexOf(';') + 1, dAtAUri.pAth.lAstIndexOf(';'));
+		metA.split(';').forEAch(property => {
+			const [key, vAlue] = property.split(':');
+			if (key && vAlue) {
+				metAdAtA.set(key, vAlue);
 			}
 		});
 
-		// Given a URI of:  data:image/png;size:2313;label:SomeLabel;description:SomeDescription;base64,77+9UE5...
-		// the mime is: image/png
-		const mime = dataUri.path.substring(0, dataUri.path.indexOf(';'));
+		// Given A URI of:  dAtA:imAge/png;size:2313;lAbel:SomeLAbel;description:SomeDescription;bAse64,77+9UE5...
+		// the mime is: imAge/png
+		const mime = dAtAUri.pAth.substring(0, dAtAUri.pAth.indexOf(';'));
 		if (mime) {
-			metadata.set(META_DATA_MIME, mime);
+			metAdAtA.set(META_DATA_MIME, mime);
 		}
 
-		return metadata;
+		return metAdAtA;
 	}
 }
 
-export class ResourceGlobMatcher {
+export clAss ResourceGlobMAtcher {
 
-	private readonly globalExpression: ParsedExpression;
-	private readonly expressionsByRoot: TernarySearchTree<URI, { root: URI, expression: ParsedExpression }> = TernarySearchTree.forUris<{ root: URI, expression: ParsedExpression }>();
+	privAte reAdonly globAlExpression: PArsedExpression;
+	privAte reAdonly expressionsByRoot: TernArySeArchTree<URI, { root: URI, expression: PArsedExpression }> = TernArySeArchTree.forUris<{ root: URI, expression: PArsedExpression }>();
 
 	constructor(
-		globalExpression: IExpression,
+		globAlExpression: IExpression,
 		rootExpressions: { root: URI, expression: IExpression }[]
 	) {
-		this.globalExpression = parse(globalExpression);
+		this.globAlExpression = pArse(globAlExpression);
 		for (const expression of rootExpressions) {
-			this.expressionsByRoot.set(expression.root, { root: expression.root, expression: parse(expression.expression) });
+			this.expressionsByRoot.set(expression.root, { root: expression.root, expression: pArse(expression.expression) });
 		}
 	}
 
-	matches(resource: URI): boolean {
+	mAtches(resource: URI): booleAn {
 		const rootExpression = this.expressionsByRoot.findSubstr(resource);
 		if (rootExpression) {
-			const path = relativePath(rootExpression.root, resource);
-			if (path && !!rootExpression.expression(path)) {
+			const pAth = relAtivePAth(rootExpression.root, resource);
+			if (pAth && !!rootExpression.expression(pAth)) {
 				return true;
 			}
 		}
-		return !!this.globalExpression(resource.path);
+		return !!this.globAlExpression(resource.pAth);
 	}
 }
 
-export function toLocalResource(resource: URI, authority: string | undefined, localScheme: string): URI {
-	if (authority) {
-		let path = resource.path;
-		if (path && path[0] !== paths.posix.sep) {
-			path = paths.posix.sep + path;
+export function toLocAlResource(resource: URI, Authority: string | undefined, locAlScheme: string): URI {
+	if (Authority) {
+		let pAth = resource.pAth;
+		if (pAth && pAth[0] !== pAths.posix.sep) {
+			pAth = pAths.posix.sep + pAth;
 		}
 
-		return resource.with({ scheme: localScheme, authority, path });
+		return resource.with({ scheme: locAlScheme, Authority, pAth });
 	}
 
-	return resource.with({ scheme: localScheme });
+	return resource.with({ scheme: locAlScheme });
 }

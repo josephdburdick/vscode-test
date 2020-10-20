@@ -1,116 +1,116 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-import { IPickerQuickAccessItem, PickerQuickAccessProvider } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { localize } from 'vs/nls';
+import { IQuickPickSepArAtor } from 'vs/plAtform/quickinput/common/quickInput';
+import { IPickerQuickAccessItem, PickerQuickAccessProvider } from 'vs/plAtform/quickinput/browser/pickerQuickAccess';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { locAlize } from 'vs/nls';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { VIEWLET_ID, IExtensionsViewPaneContainer } from 'vs/workbench/contrib/extensions/common/extensions';
-import { IExtensionGalleryService, IExtensionManagementService, IGalleryExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ILogService } from 'vs/platform/log/common/log';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { VIEWLET_ID, IExtensionsViewPAneContAiner } from 'vs/workbench/contrib/extensions/common/extensions';
+import { IExtensionGAlleryService, IExtensionMAnAgementService, IGAlleryExtension } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 
-export class InstallExtensionQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
+export clAss InstAllExtensionQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
 
-	static PREFIX = 'ext install ';
+	stAtic PREFIX = 'ext instAll ';
 
 	constructor(
-		@IViewletService private readonly viewletService: IViewletService,
-		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
-		@IExtensionManagementService private readonly extensionsService: IExtensionManagementService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@ILogService private readonly logService: ILogService
+		@IViewletService privAte reAdonly viewletService: IViewletService,
+		@IExtensionGAlleryService privAte reAdonly gAlleryService: IExtensionGAlleryService,
+		@IExtensionMAnAgementService privAte reAdonly extensionsService: IExtensionMAnAgementService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ILogService privAte reAdonly logService: ILogService
 	) {
-		super(InstallExtensionQuickAccessProvider.PREFIX);
+		super(InstAllExtensionQuickAccessProvider.PREFIX);
 	}
 
-	protected getPicks(filter: string, disposables: DisposableStore, token: CancellationToken): Array<IPickerQuickAccessItem | IQuickPickSeparator> | Promise<Array<IPickerQuickAccessItem | IQuickPickSeparator>> {
+	protected getPicks(filter: string, disposAbles: DisposAbleStore, token: CAncellAtionToken): ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor> | Promise<ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor>> {
 
 		// Nothing typed
 		if (!filter) {
 			return [{
-				label: localize('type', "Type an extension name to install or search.")
+				lAbel: locAlize('type', "Type An extension nAme to instAll or seArch.")
 			}];
 		}
 
-		const genericSearchPickItem: IPickerQuickAccessItem = {
-			label: localize('searchFor', "Press Enter to search for extension '{0}'.", filter),
-			accept: () => this.searchExtension(filter)
+		const genericSeArchPickItem: IPickerQuickAccessItem = {
+			lAbel: locAlize('seArchFor', "Press Enter to seArch for extension '{0}'.", filter),
+			Accept: () => this.seArchExtension(filter)
 		};
 
 		// Extension ID typed: try to find it
 		if (/\./.test(filter)) {
-			return this.getPicksForExtensionId(filter, genericSearchPickItem, token);
+			return this.getPicksForExtensionId(filter, genericSeArchPickItem, token);
 		}
 
-		// Extension name typed: offer to search it
-		return [genericSearchPickItem];
+		// Extension nAme typed: offer to seArch it
+		return [genericSeArchPickItem];
 	}
 
-	private async getPicksForExtensionId(filter: string, fallback: IPickerQuickAccessItem, token: CancellationToken): Promise<Array<IPickerQuickAccessItem | IQuickPickSeparator>> {
+	privAte Async getPicksForExtensionId(filter: string, fAllbAck: IPickerQuickAccessItem, token: CAncellAtionToken): Promise<ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor>> {
 		try {
-			const galleryResult = await this.galleryService.query({ names: [filter], pageSize: 1 }, token);
-			if (token.isCancellationRequested) {
-				return []; // return early if canceled
+			const gAlleryResult = AwAit this.gAlleryService.query({ nAmes: [filter], pAgeSize: 1 }, token);
+			if (token.isCAncellAtionRequested) {
+				return []; // return eArly if cAnceled
 			}
 
-			const galleryExtension = galleryResult.firstPage[0];
-			if (!galleryExtension) {
-				return [fallback];
+			const gAlleryExtension = gAlleryResult.firstPAge[0];
+			if (!gAlleryExtension) {
+				return [fAllbAck];
 			}
 
 			return [{
-				label: localize('install', "Press Enter to install extension '{0}'.", filter),
-				accept: () => this.installExtension(galleryExtension, filter)
+				lAbel: locAlize('instAll', "Press Enter to instAll extension '{0}'.", filter),
+				Accept: () => this.instAllExtension(gAlleryExtension, filter)
 			}];
-		} catch (error) {
-			if (token.isCancellationRequested) {
+		} cAtch (error) {
+			if (token.isCAncellAtionRequested) {
 				return []; // expected error
 			}
 
 			this.logService.error(error);
 
-			return [fallback];
+			return [fAllbAck];
 		}
 	}
 
-	private async installExtension(extension: IGalleryExtension, name: string): Promise<void> {
+	privAte Async instAllExtension(extension: IGAlleryExtension, nAme: string): Promise<void> {
 		try {
-			await openExtensionsViewlet(this.viewletService, `@id:${name}`);
-			await this.extensionsService.installFromGallery(extension);
-		} catch (error) {
-			this.notificationService.error(error);
+			AwAit openExtensionsViewlet(this.viewletService, `@id:${nAme}`);
+			AwAit this.extensionsService.instAllFromGAllery(extension);
+		} cAtch (error) {
+			this.notificAtionService.error(error);
 		}
 	}
 
-	private async searchExtension(name: string): Promise<void> {
-		openExtensionsViewlet(this.viewletService, name);
+	privAte Async seArchExtension(nAme: string): Promise<void> {
+		openExtensionsViewlet(this.viewletService, nAme);
 	}
 }
 
-export class ManageExtensionsQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
+export clAss MAnAgeExtensionsQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
 
-	static PREFIX = 'ext ';
+	stAtic PREFIX = 'ext ';
 
-	constructor(@IViewletService private readonly viewletService: IViewletService) {
-		super(ManageExtensionsQuickAccessProvider.PREFIX);
+	constructor(@IViewletService privAte reAdonly viewletService: IViewletService) {
+		super(MAnAgeExtensionsQuickAccessProvider.PREFIX);
 	}
 
-	protected getPicks(): Array<IPickerQuickAccessItem | IQuickPickSeparator> {
+	protected getPicks(): ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor> {
 		return [{
-			label: localize('manage', "Press Enter to manage your extensions."),
-			accept: () => openExtensionsViewlet(this.viewletService)
+			lAbel: locAlize('mAnAge', "Press Enter to mAnAge your extensions."),
+			Accept: () => openExtensionsViewlet(this.viewletService)
 		}];
 	}
 }
 
-async function openExtensionsViewlet(viewletService: IViewletService, search = ''): Promise<void> {
-	const viewlet = await viewletService.openViewlet(VIEWLET_ID, true);
-	const view = viewlet?.getViewPaneContainer() as IExtensionsViewPaneContainer | undefined;
-	view?.search(search);
+Async function openExtensionsViewlet(viewletService: IViewletService, seArch = ''): Promise<void> {
+	const viewlet = AwAit viewletService.openViewlet(VIEWLET_ID, true);
+	const view = viewlet?.getViewPAneContAiner() As IExtensionsViewPAneContAiner | undefined;
+	view?.seArch(seArch);
 	view?.focus();
 }

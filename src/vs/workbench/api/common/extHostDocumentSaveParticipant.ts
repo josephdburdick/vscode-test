@@ -1,117 +1,117 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { illegalState } from 'vs/base/common/errors';
-import { ExtHostDocumentSaveParticipantShape, IWorkspaceEditDto, WorkspaceEditType, MainThreadBulkEditsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { TextEdit } from 'vs/workbench/api/common/extHostTypes';
-import { Range, TextDocumentSaveReason, EndOfLine } from 'vs/workbench/api/common/extHostTypeConverters';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import { SaveReason } from 'vs/workbench/common/editor';
-import type * as vscode from 'vscode';
-import { LinkedList } from 'vs/base/common/linkedList';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import { Event } from 'vs/bAse/common/event';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { illegAlStAte } from 'vs/bAse/common/errors';
+import { ExtHostDocumentSAvePArticipAntShApe, IWorkspAceEditDto, WorkspAceEditType, MAinThreAdBulkEditsShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { TextEdit } from 'vs/workbench/Api/common/extHostTypes';
+import { RAnge, TextDocumentSAveReAson, EndOfLine } from 'vs/workbench/Api/common/extHostTypeConverters';
+import { ExtHostDocuments } from 'vs/workbench/Api/common/extHostDocuments';
+import { SAveReAson } from 'vs/workbench/common/editor';
+import type * As vscode from 'vscode';
+import { LinkedList } from 'vs/bAse/common/linkedList';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
 
-type Listener = [Function, any, IExtensionDescription];
+type Listener = [Function, Any, IExtensionDescription];
 
-export class ExtHostDocumentSaveParticipant implements ExtHostDocumentSaveParticipantShape {
+export clAss ExtHostDocumentSAvePArticipAnt implements ExtHostDocumentSAvePArticipAntShApe {
 
-	private readonly _callbacks = new LinkedList<Listener>();
-	private readonly _badListeners = new WeakMap<Function, number>();
+	privAte reAdonly _cAllbAcks = new LinkedList<Listener>();
+	privAte reAdonly _bAdListeners = new WeAkMAp<Function, number>();
 
 	constructor(
-		private readonly _logService: ILogService,
-		private readonly _documents: ExtHostDocuments,
-		private readonly _mainThreadBulkEdits: MainThreadBulkEditsShape,
-		private readonly _thresholds: { timeout: number; errors: number; } = { timeout: 1500, errors: 3 }
+		privAte reAdonly _logService: ILogService,
+		privAte reAdonly _documents: ExtHostDocuments,
+		privAte reAdonly _mAinThreAdBulkEdits: MAinThreAdBulkEditsShApe,
+		privAte reAdonly _thresholds: { timeout: number; errors: number; } = { timeout: 1500, errors: 3 }
 	) {
 		//
 	}
 
 	dispose(): void {
-		this._callbacks.clear();
+		this._cAllbAcks.cleAr();
 	}
 
-	getOnWillSaveTextDocumentEvent(extension: IExtensionDescription): Event<vscode.TextDocumentWillSaveEvent> {
-		return (listener, thisArg, disposables) => {
-			const remove = this._callbacks.push([listener, thisArg, extension]);
+	getOnWillSAveTextDocumentEvent(extension: IExtensionDescription): Event<vscode.TextDocumentWillSAveEvent> {
+		return (listener, thisArg, disposAbles) => {
+			const remove = this._cAllbAcks.push([listener, thisArg, extension]);
 			const result = { dispose: remove };
-			if (Array.isArray(disposables)) {
-				disposables.push(result);
+			if (ArrAy.isArrAy(disposAbles)) {
+				disposAbles.push(result);
 			}
 			return result;
 		};
 	}
 
-	async $participateInSave(data: UriComponents, reason: SaveReason): Promise<boolean[]> {
-		const resource = URI.revive(data);
+	Async $pArticipAteInSAve(dAtA: UriComponents, reAson: SAveReAson): Promise<booleAn[]> {
+		const resource = URI.revive(dAtA);
 
-		let didTimeout = false;
-		const didTimeoutHandle = setTimeout(() => didTimeout = true, this._thresholds.timeout);
+		let didTimeout = fAlse;
+		const didTimeoutHAndle = setTimeout(() => didTimeout = true, this._thresholds.timeout);
 
-		const results: boolean[] = [];
+		const results: booleAn[] = [];
 		try {
-			for (let listener of [...this._callbacks]) { // copy to prevent concurrent modifications
+			for (let listener of [...this._cAllbAcks]) { // copy to prevent concurrent modificAtions
 				if (didTimeout) {
 					// timeout - no more listeners
-					break;
+					breAk;
 				}
 				const document = this._documents.getDocument(resource);
-				const success = await this._deliverEventAsyncAndBlameBadListeners(listener, <any>{ document, reason: TextDocumentSaveReason.to(reason) });
+				const success = AwAit this._deliverEventAsyncAndBlAmeBAdListeners(listener, <Any>{ document, reAson: TextDocumentSAveReAson.to(reAson) });
 				results.push(success);
 			}
-		} finally {
-			clearTimeout(didTimeoutHandle);
+		} finAlly {
+			cleArTimeout(didTimeoutHAndle);
 		}
 		return results;
 	}
 
-	private _deliverEventAsyncAndBlameBadListeners([listener, thisArg, extension]: Listener, stubEvent: vscode.TextDocumentWillSaveEvent): Promise<any> {
-		const errors = this._badListeners.get(listener);
+	privAte _deliverEventAsyncAndBlAmeBAdListeners([listener, thisArg, extension]: Listener, stubEvent: vscode.TextDocumentWillSAveEvent): Promise<Any> {
+		const errors = this._bAdListeners.get(listener);
 		if (typeof errors === 'number' && errors > this._thresholds.errors) {
-			// bad listener - ignore
-			return Promise.resolve(false);
+			// bAd listener - ignore
+			return Promise.resolve(fAlse);
 		}
 
 		return this._deliverEventAsync(extension, listener, thisArg, stubEvent).then(() => {
-			// don't send result across the wire
+			// don't send result Across the wire
 			return true;
 
 		}, err => {
 
-			this._logService.error(`onWillSaveTextDocument-listener from extension '${extension.identifier.value}' threw ERROR`);
+			this._logService.error(`onWillSAveTextDocument-listener from extension '${extension.identifier.vAlue}' threw ERROR`);
 			this._logService.error(err);
 
-			if (!(err instanceof Error) || (<Error>err).message !== 'concurrent_edits') {
-				const errors = this._badListeners.get(listener);
-				this._badListeners.set(listener, !errors ? 1 : errors + 1);
+			if (!(err instAnceof Error) || (<Error>err).messAge !== 'concurrent_edits') {
+				const errors = this._bAdListeners.get(listener);
+				this._bAdListeners.set(listener, !errors ? 1 : errors + 1);
 
 				if (typeof errors === 'number' && errors > this._thresholds.errors) {
-					this._logService.info(`onWillSaveTextDocument-listener from extension '${extension.identifier.value}' will now be IGNORED because of timeouts and/or errors`);
+					this._logService.info(`onWillSAveTextDocument-listener from extension '${extension.identifier.vAlue}' will now be IGNORED becAuse of timeouts And/or errors`);
 				}
 			}
-			return false;
+			return fAlse;
 		});
 	}
 
-	private _deliverEventAsync(extension: IExtensionDescription, listener: Function, thisArg: any, stubEvent: vscode.TextDocumentWillSaveEvent): Promise<any> {
+	privAte _deliverEventAsync(extension: IExtensionDescription, listener: Function, thisArg: Any, stubEvent: vscode.TextDocumentWillSAveEvent): Promise<Any> {
 
 		const promises: Promise<vscode.TextEdit[]>[] = [];
 
-		const t1 = Date.now();
-		const { document, reason } = stubEvent;
+		const t1 = DAte.now();
+		const { document, reAson } = stubEvent;
 		const { version } = document;
 
-		const event = Object.freeze(<vscode.TextDocumentWillSaveEvent>{
+		const event = Object.freeze(<vscode.TextDocumentWillSAveEvent>{
 			document,
-			reason,
-			waitUntil(p: Promise<any | vscode.TextEdit[]>) {
+			reAson,
+			wAitUntil(p: Promise<Any | vscode.TextEdit[]>) {
 				if (Object.isFrozen(promises)) {
-					throw illegalState('waitUntil can not be called async');
+					throw illegAlStAte('wAitUntil cAn not be cAlled Async');
 				}
 				promises.push(Promise.resolve(p));
 			}
@@ -119,37 +119,37 @@ export class ExtHostDocumentSaveParticipant implements ExtHostDocumentSavePartic
 
 		try {
 			// fire event
-			listener.apply(thisArg, [event]);
-		} catch (err) {
+			listener.Apply(thisArg, [event]);
+		} cAtch (err) {
 			return Promise.reject(err);
 		}
 
-		// freeze promises after event call
+		// freeze promises After event cAll
 		Object.freeze(promises);
 
 		return new Promise<vscode.TextEdit[][]>((resolve, reject) => {
-			// join on all listener promises, reject after timeout
-			const handle = setTimeout(() => reject(new Error('timeout')), this._thresholds.timeout);
+			// join on All listener promises, reject After timeout
+			const hAndle = setTimeout(() => reject(new Error('timeout')), this._thresholds.timeout);
 
-			return Promise.all(promises).then(edits => {
-				this._logService.debug(`onWillSaveTextDocument-listener from extension '${extension.identifier.value}' finished after ${(Date.now() - t1)}ms`);
-				clearTimeout(handle);
+			return Promise.All(promises).then(edits => {
+				this._logService.debug(`onWillSAveTextDocument-listener from extension '${extension.identifier.vAlue}' finished After ${(DAte.now() - t1)}ms`);
+				cleArTimeout(hAndle);
 				resolve(edits);
-			}).catch(err => {
-				clearTimeout(handle);
+			}).cAtch(err => {
+				cleArTimeout(hAndle);
 				reject(err);
 			});
 
-		}).then(values => {
-			const dto: IWorkspaceEditDto = { edits: [] };
-			for (const value of values) {
-				if (Array.isArray(value) && (<vscode.TextEdit[]>value).every(e => e instanceof TextEdit)) {
-					for (const { newText, newEol, range } of value) {
+		}).then(vAlues => {
+			const dto: IWorkspAceEditDto = { edits: [] };
+			for (const vAlue of vAlues) {
+				if (ArrAy.isArrAy(vAlue) && (<vscode.TextEdit[]>vAlue).every(e => e instAnceof TextEdit)) {
+					for (const { newText, newEol, rAnge } of vAlue) {
 						dto.edits.push({
-							_type: WorkspaceEditType.Text,
+							_type: WorkspAceEditType.Text,
 							resource: document.uri,
 							edit: {
-								range: range && Range.from(range),
+								rAnge: rAnge && RAnge.from(rAnge),
 								text: newText,
 								eol: newEol && EndOfLine.from(newEol)
 							}
@@ -158,14 +158,14 @@ export class ExtHostDocumentSaveParticipant implements ExtHostDocumentSavePartic
 				}
 			}
 
-			// apply edits if any and if document
-			// didn't change somehow in the meantime
+			// Apply edits if Any And if document
+			// didn't chAnge somehow in the meAntime
 			if (dto.edits.length === 0) {
 				return undefined;
 			}
 
 			if (version === document.version) {
-				return this._mainThreadBulkEdits.$tryApplyWorkspaceEdit(dto);
+				return this._mAinThreAdBulkEdits.$tryApplyWorkspAceEdit(dto);
 			}
 
 			return Promise.reject(new Error('concurrent_edits'));

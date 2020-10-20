@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as path from 'path';
-import * as es from 'event-stream';
+import * As pAth from 'pAth';
+import * As es from 'event-streAm';
 const pickle = require('chromium-pickle-js');
-const Filesystem = <typeof AsarFilesystem>require('asar/lib/filesystem');
-import * as VinylFile from 'vinyl';
-import * as minimatch from 'minimatch';
+const Filesystem = <typeof AsArFilesystem>require('AsAr/lib/filesystem');
+import * As VinylFile from 'vinyl';
+import * As minimAtch from 'minimAtch';
 
-declare class AsarFilesystem {
-	readonly header: unknown;
+declAre clAss AsArFilesystem {
+	reAdonly heAder: unknown;
 	constructor(src: string);
-	insertDirectory(path: string, shouldUnpack?: boolean): unknown;
-	insertFile(path: string, shouldUnpack: boolean, file: { stat: { size: number; mode: number; }; }, options: {}): Promise<void>;
+	insertDirectory(pAth: string, shouldUnpAck?: booleAn): unknown;
+	insertFile(pAth: string, shouldUnpAck: booleAn, file: { stAt: { size: number; mode: number; }; }, options: {}): Promise<void>;
 }
 
-export function createAsar(folderPath: string, unpackGlobs: string[], destFilename: string): NodeJS.ReadWriteStream {
+export function creAteAsAr(folderPAth: string, unpAckGlobs: string[], destFilenAme: string): NodeJS.ReAdWriteStreAm {
 
-	const shouldUnpackFile = (file: VinylFile): boolean => {
-		for (let i = 0; i < unpackGlobs.length; i++) {
-			if (minimatch(file.relative, unpackGlobs[i])) {
+	const shouldUnpAckFile = (file: VinylFile): booleAn => {
+		for (let i = 0; i < unpAckGlobs.length; i++) {
+			if (minimAtch(file.relAtive, unpAckGlobs[i])) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	};
 
-	const filesystem = new Filesystem(folderPath);
+	const filesystem = new Filesystem(folderPAth);
 	const out: Buffer[] = [];
 
-	// Keep track of pending inserts
+	// Keep trAck of pending inserts
 	let pendingInserts = 0;
 	let onFileInserted = () => { pendingInserts--; };
 
-	// Do not insert twice the same directory
-	const seenDir: { [key: string]: boolean; } = {};
+	// Do not insert twice the sAme directory
+	const seenDir: { [key: string]: booleAn; } = {};
 	const insertDirectoryRecursive = (dir: string) => {
 		if (seenDir[dir]) {
 			return;
 		}
 
-		let lastSlash = dir.lastIndexOf('/');
-		if (lastSlash === -1) {
-			lastSlash = dir.lastIndexOf('\\');
+		let lAstSlAsh = dir.lAstIndexOf('/');
+		if (lAstSlAsh === -1) {
+			lAstSlAsh = dir.lAstIndexOf('\\');
 		}
-		if (lastSlash !== -1) {
-			insertDirectoryRecursive(dir.substring(0, lastSlash));
+		if (lAstSlAsh !== -1) {
+			insertDirectoryRecursive(dir.substring(0, lAstSlAsh));
 		}
 		seenDir[dir] = true;
 		filesystem.insertDirectory(dir);
 	};
 
 	const insertDirectoryForFile = (file: string) => {
-		let lastSlash = file.lastIndexOf('/');
-		if (lastSlash === -1) {
-			lastSlash = file.lastIndexOf('\\');
+		let lAstSlAsh = file.lAstIndexOf('/');
+		if (lAstSlAsh === -1) {
+			lAstSlAsh = file.lAstIndexOf('\\');
 		}
-		if (lastSlash !== -1) {
-			insertDirectoryRecursive(file.substring(0, lastSlash));
+		if (lAstSlAsh !== -1) {
+			insertDirectoryRecursive(file.substring(0, lAstSlAsh));
 		}
 	};
 
-	const insertFile = (relativePath: string, stat: { size: number; mode: number; }, shouldUnpack: boolean) => {
-		insertDirectoryForFile(relativePath);
+	const insertFile = (relAtivePAth: string, stAt: { size: number; mode: number; }, shouldUnpAck: booleAn) => {
+		insertDirectoryForFile(relAtivePAth);
 		pendingInserts++;
-		// Do not pass `onFileInserted` directly because it gets overwritten below.
-		// Create a closure capturing `onFileInserted`.
-		filesystem.insertFile(relativePath, shouldUnpack, { stat: stat }, {}).then(() => onFileInserted(), () => onFileInserted());
+		// Do not pAss `onFileInserted` directly becAuse it gets overwritten below.
+		// CreAte A closure cApturing `onFileInserted`.
+		filesystem.insertFile(relAtivePAth, shouldUnpAck, { stAt: stAt }, {}).then(() => onFileInserted(), () => onFileInserted());
 	};
 
 	return es.through(function (file) {
-		if (file.stat.isDirectory()) {
+		if (file.stAt.isDirectory()) {
 			return;
 		}
-		if (!file.stat.isFile()) {
-			throw new Error(`unknown item in stream!`);
+		if (!file.stAt.isFile()) {
+			throw new Error(`unknown item in streAm!`);
 		}
-		const shouldUnpack = shouldUnpackFile(file);
-		insertFile(file.relative, { size: file.contents.length, mode: file.stat.mode }, shouldUnpack);
+		const shouldUnpAck = shouldUnpAckFile(file);
+		insertFile(file.relAtive, { size: file.contents.length, mode: file.stAt.mode }, shouldUnpAck);
 
-		if (shouldUnpack) {
-			// The file goes outside of xx.asar, in a folder xx.asar.unpacked
-			const relative = path.relative(folderPath, file.path);
+		if (shouldUnpAck) {
+			// The file goes outside of xx.AsAr, in A folder xx.AsAr.unpAcked
+			const relAtive = pAth.relAtive(folderPAth, file.pAth);
 			this.queue(new VinylFile({
-				cwd: folderPath,
-				base: folderPath,
-				path: path.join(destFilename + '.unpacked', relative),
-				stat: file.stat,
+				cwd: folderPAth,
+				bAse: folderPAth,
+				pAth: pAth.join(destFilenAme + '.unpAcked', relAtive),
+				stAt: file.stAt,
 				contents: file.contents
 			}));
 		} else {
-			// The file goes inside of xx.asar
+			// The file goes inside of xx.AsAr
 			out.push(file.contents);
 		}
 	}, function () {
 
 		let finish = () => {
 			{
-				const headerPickle = pickle.createEmpty();
-				headerPickle.writeString(JSON.stringify(filesystem.header));
-				const headerBuf = headerPickle.toBuffer();
+				const heAderPickle = pickle.creAteEmpty();
+				heAderPickle.writeString(JSON.stringify(filesystem.heAder));
+				const heAderBuf = heAderPickle.toBuffer();
 
-				const sizePickle = pickle.createEmpty();
-				sizePickle.writeUInt32(headerBuf.length);
+				const sizePickle = pickle.creAteEmpty();
+				sizePickle.writeUInt32(heAderBuf.length);
 				const sizeBuf = sizePickle.toBuffer();
 
-				out.unshift(headerBuf);
+				out.unshift(heAderBuf);
 				out.unshift(sizeBuf);
 			}
 
-			const contents = Buffer.concat(out);
+			const contents = Buffer.concAt(out);
 			out.length = 0;
 
 			this.queue(new VinylFile({
-				cwd: folderPath,
-				base: folderPath,
-				path: destFilename,
+				cwd: folderPAth,
+				bAse: folderPAth,
+				pAth: destFilenAme,
 				contents: contents
 			}));
 			this.queue(null);
 		};
 
-		// Call finish() only when all file inserts have finished...
+		// CAll finish() only when All file inserts hAve finished...
 		if (pendingInserts === 0) {
 			finish();
 		} else {

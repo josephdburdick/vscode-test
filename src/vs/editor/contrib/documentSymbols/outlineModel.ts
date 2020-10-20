@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { binarySearch, coalesceInPlace, equals } from 'vs/base/common/arrays';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { LRUCache } from 'vs/base/common/map';
-import { commonPrefixLength } from 'vs/base/common/strings';
+import { binArySeArch, coAlesceInPlAce, equAls } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { onUnexpectedExternAlError } from 'vs/bAse/common/errors';
+import { LRUCAche } from 'vs/bAse/common/mAp';
+import { commonPrefixLength } from 'vs/bAse/common/strings';
 import { IPosition } from 'vs/editor/common/core/position';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
 import { DocumentSymbol, DocumentSymbolProvider, DocumentSymbolProviderRegistry } from 'vs/editor/common/modes';
-import { MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { Iterable } from 'vs/base/common/iterator';
-import { URI } from 'vs/base/common/uri';
-import { LanguageFeatureRequestDelays } from 'vs/editor/common/modes/languageFeatureRegistry';
+import { MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
+import { IterAble } from 'vs/bAse/common/iterAtor';
+import { URI } from 'vs/bAse/common/uri';
+import { LAnguAgeFeAtureRequestDelAys } from 'vs/editor/common/modes/lAnguAgeFeAtureRegistry';
 
-export abstract class TreeElement {
+export AbstrAct clAss TreeElement {
 
-	abstract id: string;
-	abstract children: Map<string, TreeElement>;
-	abstract parent: TreeElement | undefined;
+	AbstrAct id: string;
+	AbstrAct children: MAp<string, TreeElement>;
+	AbstrAct pArent: TreeElement | undefined;
 
-	abstract adopt(newParent: TreeElement): TreeElement;
+	AbstrAct Adopt(newPArent: TreeElement): TreeElement;
 
 	remove(): void {
-		if (this.parent) {
-			this.parent.children.delete(this.id);
+		if (this.pArent) {
+			this.pArent.children.delete(this.id);
 		}
 	}
 
-	static findId(candidate: DocumentSymbol | string, container: TreeElement): string {
-		// complex id-computation which contains the origin/extension,
-		// the parent path, and some dedupe logic when names collide
-		let candidateId: string;
-		if (typeof candidate === 'string') {
-			candidateId = `${container.id}/${candidate}`;
+	stAtic findId(cAndidAte: DocumentSymbol | string, contAiner: TreeElement): string {
+		// complex id-computAtion which contAins the origin/extension,
+		// the pArent pAth, And some dedupe logic when nAmes collide
+		let cAndidAteId: string;
+		if (typeof cAndidAte === 'string') {
+			cAndidAteId = `${contAiner.id}/${cAndidAte}`;
 		} else {
-			candidateId = `${container.id}/${candidate.name}`;
-			if (container.children.get(candidateId) !== undefined) {
-				candidateId = `${container.id}/${candidate.name}_${candidate.range.startLineNumber}_${candidate.range.startColumn}`;
+			cAndidAteId = `${contAiner.id}/${cAndidAte.nAme}`;
+			if (contAiner.children.get(cAndidAteId) !== undefined) {
+				cAndidAteId = `${contAiner.id}/${cAndidAte.nAme}_${cAndidAte.rAnge.stArtLineNumber}_${cAndidAte.rAnge.stArtColumn}`;
 			}
 		}
 
-		let id = candidateId;
-		for (let i = 0; container.children.get(id) !== undefined; i++) {
-			id = `${candidateId}_${i}`;
+		let id = cAndidAteId;
+		for (let i = 0; contAiner.children.get(id) !== undefined; i++) {
+			id = `${cAndidAteId}_${i}`;
 		}
 
 		return id;
 	}
 
-	static getElementById(id: string, element: TreeElement): TreeElement | undefined {
+	stAtic getElementById(id: string, element: TreeElement): TreeElement | undefined {
 		if (!id) {
 			return undefined;
 		}
@@ -64,15 +64,15 @@ export abstract class TreeElement {
 			return undefined;
 		}
 		for (const [, child] of element.children) {
-			let candidate = TreeElement.getElementById(id, child);
-			if (candidate) {
-				return candidate;
+			let cAndidAte = TreeElement.getElementById(id, child);
+			if (cAndidAte) {
+				return cAndidAte;
 			}
 		}
 		return undefined;
 	}
 
-	static size(element: TreeElement): number {
+	stAtic size(element: TreeElement): number {
 		let res = 1;
 		for (const [, child] of element.children) {
 			res += TreeElement.size(child);
@@ -80,58 +80,58 @@ export abstract class TreeElement {
 		return res;
 	}
 
-	static empty(element: TreeElement): boolean {
+	stAtic empty(element: TreeElement): booleAn {
 		return element.children.size === 0;
 	}
 }
 
-export interface IOutlineMarker {
-	startLineNumber: number;
-	startColumn: number;
+export interfAce IOutlineMArker {
+	stArtLineNumber: number;
+	stArtColumn: number;
 	endLineNumber: number;
 	endColumn: number;
-	severity: MarkerSeverity;
+	severity: MArkerSeverity;
 }
 
-export class OutlineElement extends TreeElement {
+export clAss OutlineElement extends TreeElement {
 
-	children = new Map<string, OutlineElement>();
-	marker: { count: number, topSev: MarkerSeverity } | undefined;
+	children = new MAp<string, OutlineElement>();
+	mArker: { count: number, topSev: MArkerSeverity } | undefined;
 
 	constructor(
-		readonly id: string,
-		public parent: TreeElement | undefined,
-		readonly symbol: DocumentSymbol
+		reAdonly id: string,
+		public pArent: TreeElement | undefined,
+		reAdonly symbol: DocumentSymbol
 	) {
 		super();
 	}
 
-	adopt(parent: TreeElement): OutlineElement {
-		let res = new OutlineElement(this.id, parent, this.symbol);
-		for (const [key, value] of this.children) {
-			res.children.set(key, value.adopt(res));
+	Adopt(pArent: TreeElement): OutlineElement {
+		let res = new OutlineElement(this.id, pArent, this.symbol);
+		for (const [key, vAlue] of this.children) {
+			res.children.set(key, vAlue.Adopt(res));
 		}
 		return res;
 	}
 }
 
-export class OutlineGroup extends TreeElement {
+export clAss OutlineGroup extends TreeElement {
 
-	children = new Map<string, OutlineElement>();
+	children = new MAp<string, OutlineElement>();
 
 	constructor(
-		readonly id: string,
-		public parent: TreeElement | undefined,
-		readonly label: string,
-		readonly order: number,
+		reAdonly id: string,
+		public pArent: TreeElement | undefined,
+		reAdonly lAbel: string,
+		reAdonly order: number,
 	) {
 		super();
 	}
 
-	adopt(parent: TreeElement): OutlineGroup {
-		let res = new OutlineGroup(this.id, parent, this.label, this.order);
-		for (const [key, value] of this.children) {
-			res.children.set(key, value.adopt(res));
+	Adopt(pArent: TreeElement): OutlineGroup {
+		let res = new OutlineGroup(this.id, pArent, this.lAbel, this.order);
+		for (const [key, vAlue] of this.children) {
+			res.children.set(key, vAlue.Adopt(res));
 		}
 		return res;
 	}
@@ -140,9 +140,9 @@ export class OutlineGroup extends TreeElement {
 		return position ? this._getItemEnclosingPosition(position, this.children) : undefined;
 	}
 
-	private _getItemEnclosingPosition(position: IPosition, children: Map<string, OutlineElement>): OutlineElement | undefined {
+	privAte _getItemEnclosingPosition(position: IPosition, children: MAp<string, OutlineElement>): OutlineElement | undefined {
 		for (const [, item] of children) {
-			if (!item.symbol.range || !Range.containsPosition(item.symbol.range, position)) {
+			if (!item.symbol.rAnge || !RAnge.contAinsPosition(item.symbol.rAnge, position)) {
 				continue;
 			}
 			return this._getItemEnclosingPosition(position, item.children) || item;
@@ -150,82 +150,82 @@ export class OutlineGroup extends TreeElement {
 		return undefined;
 	}
 
-	updateMarker(marker: IOutlineMarker[]): void {
+	updAteMArker(mArker: IOutlineMArker[]): void {
 		for (const [, child] of this.children) {
-			this._updateMarker(marker, child);
+			this._updAteMArker(mArker, child);
 		}
 	}
 
-	private _updateMarker(markers: IOutlineMarker[], item: OutlineElement): void {
-		item.marker = undefined;
+	privAte _updAteMArker(mArkers: IOutlineMArker[], item: OutlineElement): void {
+		item.mArker = undefined;
 
-		// find the proper start index to check for item/marker overlap.
-		let idx = binarySearch<IRange>(markers, item.symbol.range, Range.compareRangesUsingStarts);
-		let start: number;
+		// find the proper stArt index to check for item/mArker overlAp.
+		let idx = binArySeArch<IRAnge>(mArkers, item.symbol.rAnge, RAnge.compAreRAngesUsingStArts);
+		let stArt: number;
 		if (idx < 0) {
-			start = ~idx;
-			if (start > 0 && Range.areIntersecting(markers[start - 1], item.symbol.range)) {
-				start -= 1;
+			stArt = ~idx;
+			if (stArt > 0 && RAnge.AreIntersecting(mArkers[stArt - 1], item.symbol.rAnge)) {
+				stArt -= 1;
 			}
 		} else {
-			start = idx;
+			stArt = idx;
 		}
 
-		let myMarkers: IOutlineMarker[] = [];
-		let myTopSev: MarkerSeverity | undefined;
+		let myMArkers: IOutlineMArker[] = [];
+		let myTopSev: MArkerSeverity | undefined;
 
-		for (; start < markers.length && Range.areIntersecting(item.symbol.range, markers[start]); start++) {
-			// remove markers intersecting with this outline element
-			// and store them in a 'private' array.
-			let marker = markers[start];
-			myMarkers.push(marker);
-			(markers as Array<IOutlineMarker | undefined>)[start] = undefined;
-			if (!myTopSev || marker.severity > myTopSev) {
-				myTopSev = marker.severity;
+		for (; stArt < mArkers.length && RAnge.AreIntersecting(item.symbol.rAnge, mArkers[stArt]); stArt++) {
+			// remove mArkers intersecting with this outline element
+			// And store them in A 'privAte' ArrAy.
+			let mArker = mArkers[stArt];
+			myMArkers.push(mArker);
+			(mArkers As ArrAy<IOutlineMArker | undefined>)[stArt] = undefined;
+			if (!myTopSev || mArker.severity > myTopSev) {
+				myTopSev = mArker.severity;
 			}
 		}
 
-		// Recurse into children and let them match markers that have matched
-		// this outline element. This might remove markers from this element and
-		// therefore we remember that we have had markers. That allows us to render
-		// the dot, saying 'this element has children with markers'
+		// Recurse into children And let them mAtch mArkers thAt hAve mAtched
+		// this outline element. This might remove mArkers from this element And
+		// therefore we remember thAt we hAve hAd mArkers. ThAt Allows us to render
+		// the dot, sAying 'this element hAs children with mArkers'
 		for (const [, child] of item.children) {
-			this._updateMarker(myMarkers, child);
+			this._updAteMArker(myMArkers, child);
 		}
 
 		if (myTopSev) {
-			item.marker = {
-				count: myMarkers.length,
+			item.mArker = {
+				count: myMArkers.length,
 				topSev: myTopSev
 			};
 		}
 
-		coalesceInPlace(markers);
+		coAlesceInPlAce(mArkers);
 	}
 }
 
 
 
-export class OutlineModel extends TreeElement {
+export clAss OutlineModel extends TreeElement {
 
-	private static readonly _requestDurations = new LanguageFeatureRequestDelays(DocumentSymbolProviderRegistry, 350);
-	private static readonly _requests = new LRUCache<string, { promiseCnt: number, source: CancellationTokenSource, promise: Promise<any>, model: OutlineModel | undefined }>(9, 0.75);
-	private static readonly _keys = new class {
+	privAte stAtic reAdonly _requestDurAtions = new LAnguAgeFeAtureRequestDelAys(DocumentSymbolProviderRegistry, 350);
+	privAte stAtic reAdonly _requests = new LRUCAche<string, { promiseCnt: number, source: CAncellAtionTokenSource, promise: Promise<Any>, model: OutlineModel | undefined }>(9, 0.75);
+	privAte stAtic reAdonly _keys = new clAss {
 
-		private _counter = 1;
-		private _data = new WeakMap<DocumentSymbolProvider, number>();
+		privAte _counter = 1;
+		privAte _dAtA = new WeAkMAp<DocumentSymbolProvider, number>();
 
-		for(textModel: ITextModel, version: boolean): string {
-			return `${textModel.id}/${version ? textModel.getVersionId() : ''}/${this._hash(DocumentSymbolProviderRegistry.all(textModel))}`;
+		for(textModel: ITextModel, version: booleAn): string {
+			return `${textModel.id}/${version ? textModel.getVersionId() : ''}/${this._hAsh(DocumentSymbolProviderRegistry.All(textModel))}`;
 		}
 
-		private _hash(providers: DocumentSymbolProvider[]): string {
+		privAte _hAsh(providers: DocumentSymbolProvider[]): string {
 			let result = '';
 			for (const provider of providers) {
-				let n = this._data.get(provider);
+				let n = this._dAtA.get(provider);
 				if (typeof n === 'undefined') {
 					n = this._counter++;
-					this._data.set(provider, n);
+					this._dAtA.set(provider, n);
 				}
 				result += n;
 			}
@@ -234,47 +234,47 @@ export class OutlineModel extends TreeElement {
 	};
 
 
-	static create(textModel: ITextModel, token: CancellationToken): Promise<OutlineModel> {
+	stAtic creAte(textModel: ITextModel, token: CAncellAtionToken): Promise<OutlineModel> {
 
 		let key = this._keys.for(textModel, true);
-		let data = OutlineModel._requests.get(key);
+		let dAtA = OutlineModel._requests.get(key);
 
-		if (!data) {
-			let source = new CancellationTokenSource();
-			data = {
+		if (!dAtA) {
+			let source = new CAncellAtionTokenSource();
+			dAtA = {
 				promiseCnt: 0,
 				source,
-				promise: OutlineModel._create(textModel, source.token),
+				promise: OutlineModel._creAte(textModel, source.token),
 				model: undefined,
 			};
-			OutlineModel._requests.set(key, data);
+			OutlineModel._requests.set(key, dAtA);
 
-			// keep moving average of request durations
-			const now = Date.now();
-			data.promise.then(() => {
-				this._requestDurations.update(textModel, Date.now() - now);
+			// keep moving AverAge of request durAtions
+			const now = DAte.now();
+			dAtA.promise.then(() => {
+				this._requestDurAtions.updAte(textModel, DAte.now() - now);
 			});
 		}
 
-		if (data!.model) {
-			// resolved -> return data
-			return Promise.resolve(data.model!);
+		if (dAtA!.model) {
+			// resolved -> return dAtA
+			return Promise.resolve(dAtA.model!);
 		}
 
-		// increase usage counter
-		data!.promiseCnt += 1;
+		// increAse usAge counter
+		dAtA!.promiseCnt += 1;
 
-		token.onCancellationRequested(() => {
-			// last -> cancel provider request, remove cached promise
-			if (--data!.promiseCnt === 0) {
-				data!.source.cancel();
+		token.onCAncellAtionRequested(() => {
+			// lAst -> cAncel provider request, remove cAched promise
+			if (--dAtA!.promiseCnt === 0) {
+				dAtA!.source.cAncel();
 				OutlineModel._requests.delete(key);
 			}
 		});
 
 		return new Promise((resolve, reject) => {
-			data!.promise.then(model => {
-				data!.model = model;
+			dAtA!.promise.then(model => {
+				dAtA!.model = model;
 				resolve(model);
 			}, err => {
 				OutlineModel._requests.delete(key);
@@ -283,27 +283,27 @@ export class OutlineModel extends TreeElement {
 		});
 	}
 
-	static getRequestDelay(textModel: ITextModel | null): number {
-		return textModel ? this._requestDurations.get(textModel) : this._requestDurations.min;
+	stAtic getRequestDelAy(textModel: ITextModel | null): number {
+		return textModel ? this._requestDurAtions.get(textModel) : this._requestDurAtions.min;
 	}
 
-	private static _create(textModel: ITextModel, token: CancellationToken): Promise<OutlineModel> {
+	privAte stAtic _creAte(textModel: ITextModel, token: CAncellAtionToken): Promise<OutlineModel> {
 
-		const cts = new CancellationTokenSource(token);
+		const cts = new CAncellAtionTokenSource(token);
 		const result = new OutlineModel(textModel.uri);
 		const provider = DocumentSymbolProviderRegistry.ordered(textModel);
-		const promises = provider.map((provider, index) => {
+		const promises = provider.mAp((provider, index) => {
 
 			let id = TreeElement.findId(`provider_${index}`, result);
-			let group = new OutlineGroup(id, result, provider.displayName ?? 'Unknown Outline Provider', index);
+			let group = new OutlineGroup(id, result, provider.displAyNAme ?? 'Unknown Outline Provider', index);
 
 			return Promise.resolve(provider.provideDocumentSymbols(textModel, cts.token)).then(result => {
 				for (const info of result || []) {
-					OutlineModel._makeOutlineElement(info, group);
+					OutlineModel._mAkeOutlineElement(info, group);
 				}
 				return group;
 			}, err => {
-				onUnexpectedExternalError(err);
+				onUnexpectedExternAlError(err);
 				return group;
 			}).then(group => {
 				if (!TreeElement.empty(group)) {
@@ -314,67 +314,67 @@ export class OutlineModel extends TreeElement {
 			});
 		});
 
-		const listener = DocumentSymbolProviderRegistry.onDidChange(() => {
+		const listener = DocumentSymbolProviderRegistry.onDidChAnge(() => {
 			const newProvider = DocumentSymbolProviderRegistry.ordered(textModel);
-			if (!equals(newProvider, provider)) {
-				cts.cancel();
+			if (!equAls(newProvider, provider)) {
+				cts.cAncel();
 			}
 		});
 
-		return Promise.all(promises).then(() => {
-			if (cts.token.isCancellationRequested && !token.isCancellationRequested) {
-				return OutlineModel._create(textModel, token);
+		return Promise.All(promises).then(() => {
+			if (cts.token.isCAncellAtionRequested && !token.isCAncellAtionRequested) {
+				return OutlineModel._creAte(textModel, token);
 			} else {
-				return result._compact();
+				return result._compAct();
 			}
-		}).finally(() => {
+		}).finAlly(() => {
 			listener.dispose();
 		});
 	}
 
-	private static _makeOutlineElement(info: DocumentSymbol, container: OutlineGroup | OutlineElement): void {
-		let id = TreeElement.findId(info, container);
-		let res = new OutlineElement(id, container, info);
+	privAte stAtic _mAkeOutlineElement(info: DocumentSymbol, contAiner: OutlineGroup | OutlineElement): void {
+		let id = TreeElement.findId(info, contAiner);
+		let res = new OutlineElement(id, contAiner, info);
 		if (info.children) {
 			for (const childInfo of info.children) {
-				OutlineModel._makeOutlineElement(childInfo, res);
+				OutlineModel._mAkeOutlineElement(childInfo, res);
 			}
 		}
-		container.children.set(res.id, res);
+		contAiner.children.set(res.id, res);
 	}
 
-	static get(element: TreeElement | undefined): OutlineModel | undefined {
+	stAtic get(element: TreeElement | undefined): OutlineModel | undefined {
 		while (element) {
-			if (element instanceof OutlineModel) {
+			if (element instAnceof OutlineModel) {
 				return element;
 			}
-			element = element.parent;
+			element = element.pArent;
 		}
 		return undefined;
 	}
 
-	readonly id = 'root';
-	readonly parent = undefined;
+	reAdonly id = 'root';
+	reAdonly pArent = undefined;
 
-	protected _groups = new Map<string, OutlineGroup>();
-	children = new Map<string, OutlineGroup | OutlineElement>();
+	protected _groups = new MAp<string, OutlineGroup>();
+	children = new MAp<string, OutlineGroup | OutlineElement>();
 
-	protected constructor(readonly uri: URI) {
+	protected constructor(reAdonly uri: URI) {
 		super();
 
 		this.id = 'root';
-		this.parent = undefined;
+		this.pArent = undefined;
 	}
 
-	adopt(): OutlineModel {
+	Adopt(): OutlineModel {
 		let res = new OutlineModel(this.uri);
-		for (const [key, value] of this._groups) {
-			res._groups.set(key, value.adopt(res));
+		for (const [key, vAlue] of this._groups) {
+			res._groups.set(key, vAlue.Adopt(res));
 		}
-		return res._compact();
+		return res._compAct();
 	}
 
-	private _compact(): this {
+	privAte _compAct(): this {
 		let count = 0;
 		for (const [key, group] of this._groups) {
 			if (group.children.size === 0) { // empty
@@ -387,22 +387,22 @@ export class OutlineModel extends TreeElement {
 			//
 			this.children = this._groups;
 		} else {
-			// adopt all elements of the first group
-			let group = Iterable.first(this._groups.values())!;
+			// Adopt All elements of the first group
+			let group = IterAble.first(this._groups.vAlues())!;
 			for (let [, child] of group.children) {
-				child.parent = this;
+				child.pArent = this;
 				this.children.set(child.id, child);
 			}
 		}
 		return this;
 	}
 
-	merge(other: OutlineModel): boolean {
+	merge(other: OutlineModel): booleAn {
 		if (this.uri.toString() !== other.uri.toString()) {
-			return false;
+			return fAlse;
 		}
 		if (this._groups.size !== other._groups.size) {
-			return false;
+			return fAlse;
 		}
 		this._groups = other._groups;
 		this.children = other.children;
@@ -413,12 +413,12 @@ export class OutlineModel extends TreeElement {
 
 		let preferredGroup: OutlineGroup | undefined;
 		if (context) {
-			let candidate = context.parent;
-			while (candidate && !preferredGroup) {
-				if (candidate instanceof OutlineGroup) {
-					preferredGroup = candidate;
+			let cAndidAte = context.pArent;
+			while (cAndidAte && !preferredGroup) {
+				if (cAndidAte instAnceof OutlineGroup) {
+					preferredGroup = cAndidAte;
 				}
-				candidate = candidate.parent;
+				cAndidAte = cAndidAte.pArent;
 			}
 		}
 
@@ -426,7 +426,7 @@ export class OutlineModel extends TreeElement {
 		for (const [, group] of this._groups) {
 			result = group.getItemEnclosingPosition(position);
 			if (result && (!preferredGroup || preferredGroup === group)) {
-				break;
+				breAk;
 			}
 		}
 		return result;
@@ -436,13 +436,13 @@ export class OutlineModel extends TreeElement {
 		return TreeElement.getElementById(id, this);
 	}
 
-	updateMarker(marker: IOutlineMarker[]): void {
-		// sort markers by start range so that we can use
-		// outline element starts for quicker look up
-		marker.sort(Range.compareRangesUsingStarts);
+	updAteMArker(mArker: IOutlineMArker[]): void {
+		// sort mArkers by stArt rAnge so thAt we cAn use
+		// outline element stArts for quicker look up
+		mArker.sort(RAnge.compAreRAngesUsingStArts);
 
 		for (const [, group] of this._groups) {
-			group.updateMarker(marker.slice(0));
+			group.updAteMArker(mArker.slice(0));
 		}
 	}
 }

@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { TSESTree } from '@typescript-eslint/experimental-utils';
-import { join } from 'path';
-import * as minimatch from 'minimatch';
-import { createImportRuleListener } from './utils';
+import * As eslint from 'eslint';
+import { TSESTree } from '@typescript-eslint/experimentAl-utils';
+import { join } from 'pAth';
+import * As minimAtch from 'minimAtch';
+import { creAteImportRuleListener } from './utils';
 
-interface ImportPatternsConfig {
-	target: string;
+interfAce ImportPAtternsConfig {
+	tArget: string;
 	restrictions: string | string[];
 }
 
-export = new class implements eslint.Rule.RuleModule {
+export = new clAss implements eslint.Rule.RuleModule {
 
-	readonly meta: eslint.Rule.RuleMetaData = {
-		messages: {
-			badImport: 'Imports violates \'{{restrictions}}\' restrictions. See https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
+		messAges: {
+			bAdImport: 'Imports violAtes \'{{restrictions}}\' restrictions. See https://github.com/microsoft/vscode/wiki/Source-Code-OrgAnizAtion'
 		},
 		docs: {
-			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-Organization'
+			url: 'https://github.com/microsoft/vscode/wiki/Source-Code-OrgAnizAtion'
 		}
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
-		const configs = <ImportPatternsConfig[]>context.options;
+		const configs = <ImportPAtternsConfig[]>context.options;
 
 		for (const config of configs) {
-			if (minimatch(context.getFilename(), config.target)) {
-				return createImportRuleListener((node, value) => this._checkImport(context, config, node, value));
+			if (minimAtch(context.getFilenAme(), config.tArget)) {
+				return creAteImportRuleListener((node, vAlue) => this._checkImport(context, config, node, vAlue));
 			}
 		}
 
 		return {};
 	}
 
-	private _checkImport(context: eslint.Rule.RuleContext, config: ImportPatternsConfig, node: TSESTree.Node, path: string) {
+	privAte _checkImport(context: eslint.Rule.RuleContext, config: ImportPAtternsConfig, node: TSESTree.Node, pAth: string) {
 
-		// resolve relative paths
-		if (path[0] === '.') {
-			path = join(context.getFilename(), path);
+		// resolve relAtive pAths
+		if (pAth[0] === '.') {
+			pAth = join(context.getFilenAme(), pAth);
 		}
 
 		let restrictions: string[];
@@ -52,20 +52,20 @@ export = new class implements eslint.Rule.RuleModule {
 			restrictions = config.restrictions;
 		}
 
-		let matched = false;
-		for (const pattern of restrictions) {
-			if (minimatch(path, pattern)) {
-				matched = true;
-				break;
+		let mAtched = fAlse;
+		for (const pAttern of restrictions) {
+			if (minimAtch(pAth, pAttern)) {
+				mAtched = true;
+				breAk;
 			}
 		}
 
-		if (!matched) {
-			// None of the restrictions matched
+		if (!mAtched) {
+			// None of the restrictions mAtched
 			context.report({
 				loc: node.loc,
-				messageId: 'badImport',
-				data: {
+				messAgeId: 'bAdImport',
+				dAtA: {
 					restrictions: restrictions.join(' or ')
 				}
 			});

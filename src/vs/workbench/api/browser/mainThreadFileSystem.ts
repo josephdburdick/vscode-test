@@ -1,143 +1,143 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable, dispose, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { FileWriteOptions, FileSystemProviderCapabilities, IFileChange, IFileService, IStat, IWatchOptions, FileType, FileOverwriteOptions, FileDeleteOptions, FileOpenOptions, IFileStat, FileOperationError, FileOperationResult, FileSystemProviderErrorCode, IFileSystemProviderWithOpenReadWriteCloseCapability, IFileSystemProviderWithFileReadWriteCapability, IFileSystemProviderWithFileFolderCopyCapability } from 'vs/platform/files/common/files';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ExtHostContext, ExtHostFileSystemShape, IExtHostContext, IFileChangeDto, MainContext, MainThreadFileSystemShape } from '../common/extHost.protocol';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IDisposAble, dispose, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { FileWriteOptions, FileSystemProviderCApAbilities, IFileChAnge, IFileService, IStAt, IWAtchOptions, FileType, FileOverwriteOptions, FileDeleteOptions, FileOpenOptions, IFileStAt, FileOperAtionError, FileOperAtionResult, FileSystemProviderErrorCode, IFileSystemProviderWithOpenReAdWriteCloseCApAbility, IFileSystemProviderWithFileReAdWriteCApAbility, IFileSystemProviderWithFileFolderCopyCApAbility } from 'vs/plAtform/files/common/files';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ExtHostContext, ExtHostFileSystemShApe, IExtHostContext, IFileChAngeDto, MAinContext, MAinThreAdFileSystemShApe } from '../common/extHost.protocol';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 
-@extHostNamedCustomer(MainContext.MainThreadFileSystem)
-export class MainThreadFileSystem implements MainThreadFileSystemShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdFileSystem)
+export clAss MAinThreAdFileSystem implements MAinThreAdFileSystemShApe {
 
-	private readonly _proxy: ExtHostFileSystemShape;
-	private readonly _fileProvider = new Map<number, RemoteFileSystemProvider>();
-	private readonly _disposables = new DisposableStore();
+	privAte reAdonly _proxy: ExtHostFileSystemShApe;
+	privAte reAdonly _fileProvider = new MAp<number, RemoteFileSystemProvider>();
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IFileService private readonly _fileService: IFileService,
+		@IFileService privAte reAdonly _fileService: IFileService,
 	) {
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostFileSystem);
 
 		const infoProxy = extHostContext.getProxy(ExtHostContext.ExtHostFileSystemInfo);
 
-		for (let entry of _fileService.listCapabilities()) {
-			infoProxy.$acceptProviderInfos(entry.scheme, entry.capabilities);
+		for (let entry of _fileService.listCApAbilities()) {
+			infoProxy.$AcceptProviderInfos(entry.scheme, entry.cApAbilities);
 		}
-		this._disposables.add(_fileService.onDidChangeFileSystemProviderRegistrations(e => infoProxy.$acceptProviderInfos(e.scheme, e.provider?.capabilities ?? null)));
-		this._disposables.add(_fileService.onDidChangeFileSystemProviderCapabilities(e => infoProxy.$acceptProviderInfos(e.scheme, e.provider.capabilities)));
+		this._disposAbles.Add(_fileService.onDidChAngeFileSystemProviderRegistrAtions(e => infoProxy.$AcceptProviderInfos(e.scheme, e.provider?.cApAbilities ?? null)));
+		this._disposAbles.Add(_fileService.onDidChAngeFileSystemProviderCApAbilities(e => infoProxy.$AcceptProviderInfos(e.scheme, e.provider.cApAbilities)));
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
-		dispose(this._fileProvider.values());
-		this._fileProvider.clear();
+		this._disposAbles.dispose();
+		dispose(this._fileProvider.vAlues());
+		this._fileProvider.cleAr();
 	}
 
-	async $registerFileSystemProvider(handle: number, scheme: string, capabilities: FileSystemProviderCapabilities): Promise<void> {
-		this._fileProvider.set(handle, new RemoteFileSystemProvider(this._fileService, scheme, capabilities, handle, this._proxy));
+	Async $registerFileSystemProvider(hAndle: number, scheme: string, cApAbilities: FileSystemProviderCApAbilities): Promise<void> {
+		this._fileProvider.set(hAndle, new RemoteFileSystemProvider(this._fileService, scheme, cApAbilities, hAndle, this._proxy));
 	}
 
-	$unregisterProvider(handle: number): void {
-		this._fileProvider.get(handle)?.dispose();
-		this._fileProvider.delete(handle);
+	$unregisterProvider(hAndle: number): void {
+		this._fileProvider.get(hAndle)?.dispose();
+		this._fileProvider.delete(hAndle);
 	}
 
-	$onFileSystemChange(handle: number, changes: IFileChangeDto[]): void {
-		const fileProvider = this._fileProvider.get(handle);
+	$onFileSystemChAnge(hAndle: number, chAnges: IFileChAngeDto[]): void {
+		const fileProvider = this._fileProvider.get(hAndle);
 		if (!fileProvider) {
 			throw new Error('Unknown file provider');
 		}
-		fileProvider.$onFileSystemChange(changes);
+		fileProvider.$onFileSystemChAnge(chAnges);
 	}
 
 
-	// --- consumer fs, vscode.workspace.fs
+	// --- consumer fs, vscode.workspAce.fs
 
-	$stat(uri: UriComponents): Promise<IStat> {
-		return this._fileService.resolve(URI.revive(uri), { resolveMetadata: true }).then(stat => {
+	$stAt(uri: UriComponents): Promise<IStAt> {
+		return this._fileService.resolve(URI.revive(uri), { resolveMetAdAtA: true }).then(stAt => {
 			return {
-				ctime: stat.ctime,
-				mtime: stat.mtime,
-				size: stat.size,
-				type: MainThreadFileSystem._asFileType(stat)
+				ctime: stAt.ctime,
+				mtime: stAt.mtime,
+				size: stAt.size,
+				type: MAinThreAdFileSystem._AsFileType(stAt)
 			};
-		}).catch(MainThreadFileSystem._handleError);
+		}).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
-	$readdir(uri: UriComponents): Promise<[string, FileType][]> {
-		return this._fileService.resolve(URI.revive(uri), { resolveMetadata: false }).then(stat => {
-			if (!stat.isDirectory) {
-				const err = new Error(stat.name);
-				err.name = FileSystemProviderErrorCode.FileNotADirectory;
+	$reAddir(uri: UriComponents): Promise<[string, FileType][]> {
+		return this._fileService.resolve(URI.revive(uri), { resolveMetAdAtA: fAlse }).then(stAt => {
+			if (!stAt.isDirectory) {
+				const err = new Error(stAt.nAme);
+				err.nAme = FileSystemProviderErrorCode.FileNotADirectory;
 				throw err;
 			}
-			return !stat.children ? [] : stat.children.map(child => [child.name, MainThreadFileSystem._asFileType(child)] as [string, FileType]);
-		}).catch(MainThreadFileSystem._handleError);
+			return !stAt.children ? [] : stAt.children.mAp(child => [child.nAme, MAinThreAdFileSystem._AsFileType(child)] As [string, FileType]);
+		}).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
-	private static _asFileType(stat: IFileStat): FileType {
+	privAte stAtic _AsFileType(stAt: IFileStAt): FileType {
 		let res = 0;
-		if (stat.isFile) {
+		if (stAt.isFile) {
 			res += FileType.File;
 
-		} else if (stat.isDirectory) {
+		} else if (stAt.isDirectory) {
 			res += FileType.Directory;
 		}
-		if (stat.isSymbolicLink) {
+		if (stAt.isSymbolicLink) {
 			res += FileType.SymbolicLink;
 		}
 		return res;
 	}
 
-	$readFile(uri: UriComponents): Promise<VSBuffer> {
-		return this._fileService.readFile(URI.revive(uri)).then(file => file.value).catch(MainThreadFileSystem._handleError);
+	$reAdFile(uri: UriComponents): Promise<VSBuffer> {
+		return this._fileService.reAdFile(URI.revive(uri)).then(file => file.vAlue).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
 	$writeFile(uri: UriComponents, content: VSBuffer): Promise<void> {
 		return this._fileService.writeFile(URI.revive(uri), content)
-			.then(() => undefined).catch(MainThreadFileSystem._handleError);
+			.then(() => undefined).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
-	$rename(source: UriComponents, target: UriComponents, opts: FileOverwriteOptions): Promise<void> {
-		return this._fileService.move(URI.revive(source), URI.revive(target), opts.overwrite)
-			.then(() => undefined).catch(MainThreadFileSystem._handleError);
+	$renAme(source: UriComponents, tArget: UriComponents, opts: FileOverwriteOptions): Promise<void> {
+		return this._fileService.move(URI.revive(source), URI.revive(tArget), opts.overwrite)
+			.then(() => undefined).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
-	$copy(source: UriComponents, target: UriComponents, opts: FileOverwriteOptions): Promise<void> {
-		return this._fileService.copy(URI.revive(source), URI.revive(target), opts.overwrite)
-			.then(() => undefined).catch(MainThreadFileSystem._handleError);
+	$copy(source: UriComponents, tArget: UriComponents, opts: FileOverwriteOptions): Promise<void> {
+		return this._fileService.copy(URI.revive(source), URI.revive(tArget), opts.overwrite)
+			.then(() => undefined).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
 	$mkdir(uri: UriComponents): Promise<void> {
-		return this._fileService.createFolder(URI.revive(uri))
-			.then(() => undefined).catch(MainThreadFileSystem._handleError);
+		return this._fileService.creAteFolder(URI.revive(uri))
+			.then(() => undefined).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
 	$delete(uri: UriComponents, opts: FileDeleteOptions): Promise<void> {
-		return this._fileService.del(URI.revive(uri), opts).catch(MainThreadFileSystem._handleError);
+		return this._fileService.del(URI.revive(uri), opts).cAtch(MAinThreAdFileSystem._hAndleError);
 	}
 
-	private static _handleError(err: any): never {
-		if (err instanceof FileOperationError) {
-			switch (err.fileOperationResult) {
-				case FileOperationResult.FILE_NOT_FOUND:
-					err.name = FileSystemProviderErrorCode.FileNotFound;
-					break;
-				case FileOperationResult.FILE_IS_DIRECTORY:
-					err.name = FileSystemProviderErrorCode.FileIsADirectory;
-					break;
-				case FileOperationResult.FILE_PERMISSION_DENIED:
-					err.name = FileSystemProviderErrorCode.NoPermissions;
-					break;
-				case FileOperationResult.FILE_MOVE_CONFLICT:
-					err.name = FileSystemProviderErrorCode.FileExists;
-					break;
+	privAte stAtic _hAndleError(err: Any): never {
+		if (err instAnceof FileOperAtionError) {
+			switch (err.fileOperAtionResult) {
+				cAse FileOperAtionResult.FILE_NOT_FOUND:
+					err.nAme = FileSystemProviderErrorCode.FileNotFound;
+					breAk;
+				cAse FileOperAtionResult.FILE_IS_DIRECTORY:
+					err.nAme = FileSystemProviderErrorCode.FileIsADirectory;
+					breAk;
+				cAse FileOperAtionResult.FILE_PERMISSION_DENIED:
+					err.nAme = FileSystemProviderErrorCode.NoPermissions;
+					breAk;
+				cAse FileOperAtionResult.FILE_MOVE_CONFLICT:
+					err.nAme = FileSystemProviderErrorCode.FileExists;
+					breAk;
 			}
 		}
 
@@ -145,100 +145,100 @@ export class MainThreadFileSystem implements MainThreadFileSystemShape {
 	}
 }
 
-class RemoteFileSystemProvider implements IFileSystemProviderWithFileReadWriteCapability, IFileSystemProviderWithOpenReadWriteCloseCapability, IFileSystemProviderWithFileFolderCopyCapability {
+clAss RemoteFileSystemProvider implements IFileSystemProviderWithFileReAdWriteCApAbility, IFileSystemProviderWithOpenReAdWriteCloseCApAbility, IFileSystemProviderWithFileFolderCopyCApAbility {
 
-	private readonly _onDidChange = new Emitter<readonly IFileChange[]>();
-	private readonly _registration: IDisposable;
+	privAte reAdonly _onDidChAnge = new Emitter<reAdonly IFileChAnge[]>();
+	privAte reAdonly _registrAtion: IDisposAble;
 
-	readonly onDidChangeFile: Event<readonly IFileChange[]> = this._onDidChange.event;
+	reAdonly onDidChAngeFile: Event<reAdonly IFileChAnge[]> = this._onDidChAnge.event;
 
-	readonly capabilities: FileSystemProviderCapabilities;
-	readonly onDidChangeCapabilities: Event<void> = Event.None;
+	reAdonly cApAbilities: FileSystemProviderCApAbilities;
+	reAdonly onDidChAngeCApAbilities: Event<void> = Event.None;
 
 	constructor(
 		fileService: IFileService,
 		scheme: string,
-		capabilities: FileSystemProviderCapabilities,
-		private readonly _handle: number,
-		private readonly _proxy: ExtHostFileSystemShape
+		cApAbilities: FileSystemProviderCApAbilities,
+		privAte reAdonly _hAndle: number,
+		privAte reAdonly _proxy: ExtHostFileSystemShApe
 	) {
-		this.capabilities = capabilities;
-		this._registration = fileService.registerProvider(scheme, this);
+		this.cApAbilities = cApAbilities;
+		this._registrAtion = fileService.registerProvider(scheme, this);
 	}
 
 	dispose(): void {
-		this._registration.dispose();
-		this._onDidChange.dispose();
+		this._registrAtion.dispose();
+		this._onDidChAnge.dispose();
 	}
 
-	watch(resource: URI, opts: IWatchOptions) {
-		const session = Math.random();
-		this._proxy.$watch(this._handle, session, resource, opts);
-		return toDisposable(() => {
-			this._proxy.$unwatch(this._handle, session);
+	wAtch(resource: URI, opts: IWAtchOptions) {
+		const session = MAth.rAndom();
+		this._proxy.$wAtch(this._hAndle, session, resource, opts);
+		return toDisposAble(() => {
+			this._proxy.$unwAtch(this._hAndle, session);
 		});
 	}
 
-	$onFileSystemChange(changes: IFileChangeDto[]): void {
-		this._onDidChange.fire(changes.map(RemoteFileSystemProvider._createFileChange));
+	$onFileSystemChAnge(chAnges: IFileChAngeDto[]): void {
+		this._onDidChAnge.fire(chAnges.mAp(RemoteFileSystemProvider._creAteFileChAnge));
 	}
 
-	private static _createFileChange(dto: IFileChangeDto): IFileChange {
+	privAte stAtic _creAteFileChAnge(dto: IFileChAngeDto): IFileChAnge {
 		return { resource: URI.revive(dto.resource), type: dto.type };
 	}
 
-	// --- forwarding calls
+	// --- forwArding cAlls
 
-	stat(resource: URI): Promise<IStat> {
-		return this._proxy.$stat(this._handle, resource).then(undefined, err => {
+	stAt(resource: URI): Promise<IStAt> {
+		return this._proxy.$stAt(this._hAndle, resource).then(undefined, err => {
 			throw err;
 		});
 	}
 
-	readFile(resource: URI): Promise<Uint8Array> {
-		return this._proxy.$readFile(this._handle, resource).then(buffer => buffer.buffer);
+	reAdFile(resource: URI): Promise<Uint8ArrAy> {
+		return this._proxy.$reAdFile(this._hAndle, resource).then(buffer => buffer.buffer);
 	}
 
-	writeFile(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> {
-		return this._proxy.$writeFile(this._handle, resource, VSBuffer.wrap(content), opts);
+	writeFile(resource: URI, content: Uint8ArrAy, opts: FileWriteOptions): Promise<void> {
+		return this._proxy.$writeFile(this._hAndle, resource, VSBuffer.wrAp(content), opts);
 	}
 
 	delete(resource: URI, opts: FileDeleteOptions): Promise<void> {
-		return this._proxy.$delete(this._handle, resource, opts);
+		return this._proxy.$delete(this._hAndle, resource, opts);
 	}
 
 	mkdir(resource: URI): Promise<void> {
-		return this._proxy.$mkdir(this._handle, resource);
+		return this._proxy.$mkdir(this._hAndle, resource);
 	}
 
-	readdir(resource: URI): Promise<[string, FileType][]> {
-		return this._proxy.$readdir(this._handle, resource);
+	reAddir(resource: URI): Promise<[string, FileType][]> {
+		return this._proxy.$reAddir(this._hAndle, resource);
 	}
 
-	rename(resource: URI, target: URI, opts: FileOverwriteOptions): Promise<void> {
-		return this._proxy.$rename(this._handle, resource, target, opts);
+	renAme(resource: URI, tArget: URI, opts: FileOverwriteOptions): Promise<void> {
+		return this._proxy.$renAme(this._hAndle, resource, tArget, opts);
 	}
 
-	copy(resource: URI, target: URI, opts: FileOverwriteOptions): Promise<void> {
-		return this._proxy.$copy(this._handle, resource, target, opts);
+	copy(resource: URI, tArget: URI, opts: FileOverwriteOptions): Promise<void> {
+		return this._proxy.$copy(this._hAndle, resource, tArget, opts);
 	}
 
 	open(resource: URI, opts: FileOpenOptions): Promise<number> {
-		return this._proxy.$open(this._handle, resource, opts);
+		return this._proxy.$open(this._hAndle, resource, opts);
 	}
 
 	close(fd: number): Promise<void> {
-		return this._proxy.$close(this._handle, fd);
+		return this._proxy.$close(this._hAndle, fd);
 	}
 
-	read(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
-		return this._proxy.$read(this._handle, fd, pos, length).then(readData => {
-			data.set(readData.buffer, offset);
-			return readData.byteLength;
+	reAd(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): Promise<number> {
+		return this._proxy.$reAd(this._hAndle, fd, pos, length).then(reAdDAtA => {
+			dAtA.set(reAdDAtA.buffer, offset);
+			return reAdDAtA.byteLength;
 		});
 	}
 
-	write(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> {
-		return this._proxy.$write(this._handle, fd, pos, VSBuffer.wrap(data).slice(offset, offset + length));
+	write(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): Promise<number> {
+		return this._proxy.$write(this._hAndle, fd, pos, VSBuffer.wrAp(dAtA).slice(offset, offset + length));
 	}
 }

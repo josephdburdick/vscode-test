@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Model } from '../model';
-import { Repository as BaseRepository, Resource } from '../repository';
-import { InputBox, Git, API, Repository, Remote, RepositoryState, Branch, Ref, Submodule, Commit, Change, RepositoryUIState, Status, LogOptions, APIState, CommitOptions, RefType, RemoteSourceProvider, CredentialsProvider, BranchQuery, PushErrorHandler } from './git';
-import { Event, SourceControlInputBox, Uri, SourceControl, Disposable, commands } from 'vscode';
-import { mapEvent } from '../util';
+import { Repository As BAseRepository, Resource } from '../repository';
+import { InputBox, Git, API, Repository, Remote, RepositoryStAte, BrAnch, Ref, Submodule, Commit, ChAnge, RepositoryUIStAte, StAtus, LogOptions, APIStAte, CommitOptions, RefType, RemoteSourceProvider, CredentiAlsProvider, BrAnchQuery, PushErrorHAndler } from './git';
+import { Event, SourceControlInputBox, Uri, SourceControl, DisposAble, commAnds } from 'vscode';
+import { mApEvent } from '../util';
 import { toGitUri } from '../uri';
 import { pickRemoteSource, PickRemoteSourceOptions } from '../remoteSource';
 import { GitExtensionImpl } from './extension';
 
-class ApiInputBox implements InputBox {
-	set value(value: string) { this._inputBox.value = value; }
-	get value(): string { return this._inputBox.value; }
-	constructor(private _inputBox: SourceControlInputBox) { }
+clAss ApiInputBox implements InputBox {
+	set vAlue(vAlue: string) { this._inputBox.vAlue = vAlue; }
+	get vAlue(): string { return this._inputBox.vAlue; }
+	constructor(privAte _inputBox: SourceControlInputBox) { }
 }
 
-export class ApiChange implements Change {
+export clAss ApiChAnge implements ChAnge {
 
 	get uri(): Uri { return this.resource.resourceUri; }
-	get originalUri(): Uri { return this.resource.original; }
-	get renameUri(): Uri | undefined { return this.resource.renameResourceUri; }
-	get status(): Status { return this.resource.type; }
+	get originAlUri(): Uri { return this.resource.originAl; }
+	get renAmeUri(): Uri | undefined { return this.resource.renAmeResourceUri; }
+	get stAtus(): StAtus { return this.resource.type; }
 
-	constructor(private readonly resource: Resource) { }
+	constructor(privAte reAdonly resource: Resource) { }
 }
 
-export class ApiRepositoryState implements RepositoryState {
+export clAss ApiRepositoryStAte implements RepositoryStAte {
 
-	get HEAD(): Branch | undefined { return this._repository.HEAD; }
+	get HEAD(): BrAnch | undefined { return this._repository.HEAD; }
 	get refs(): Ref[] { return [...this._repository.refs]; }
 	get remotes(): Remote[] { return [...this._repository.remotes]; }
 	get submodules(): Submodule[] { return [...this._repository.submodules]; }
-	get rebaseCommit(): Commit | undefined { return this._repository.rebaseCommit; }
+	get rebAseCommit(): Commit | undefined { return this._repository.rebAseCommit; }
 
-	get mergeChanges(): Change[] { return this._repository.mergeGroup.resourceStates.map(r => new ApiChange(r)); }
-	get indexChanges(): Change[] { return this._repository.indexGroup.resourceStates.map(r => new ApiChange(r)); }
-	get workingTreeChanges(): Change[] { return this._repository.workingTreeGroup.resourceStates.map(r => new ApiChange(r)); }
+	get mergeChAnges(): ChAnge[] { return this._repository.mergeGroup.resourceStAtes.mAp(r => new ApiChAnge(r)); }
+	get indexChAnges(): ChAnge[] { return this._repository.indexGroup.resourceStAtes.mAp(r => new ApiChAnge(r)); }
+	get workingTreeChAnges(): ChAnge[] { return this._repository.workingTreeGroup.resourceStAtes.mAp(r => new ApiChAnge(r)); }
 
-	readonly onDidChange: Event<void> = this._repository.onDidRunGitStatus;
+	reAdonly onDidChAnge: Event<void> = this._repository.onDidRunGitStAtus;
 
-	constructor(private _repository: BaseRepository) { }
+	constructor(privAte _repository: BAseRepository) { }
 }
 
-export class ApiRepositoryUIState implements RepositoryUIState {
+export clAss ApiRepositoryUIStAte implements RepositoryUIStAte {
 
-	get selected(): boolean { return this._sourceControl.selected; }
+	get selected(): booleAn { return this._sourceControl.selected; }
 
-	readonly onDidChange: Event<void> = mapEvent<boolean, void>(this._sourceControl.onDidChangeSelection, () => null);
+	reAdonly onDidChAnge: Event<void> = mApEvent<booleAn, void>(this._sourceControl.onDidChAngeSelection, () => null);
 
-	constructor(private _sourceControl: SourceControl) { }
+	constructor(privAte _sourceControl: SourceControl) { }
 }
 
-export class ApiRepository implements Repository {
+export clAss ApiRepository implements Repository {
 
-	readonly rootUri: Uri = Uri.file(this._repository.root);
-	readonly inputBox: InputBox = new ApiInputBox(this._repository.inputBox);
-	readonly state: RepositoryState = new ApiRepositoryState(this._repository);
-	readonly ui: RepositoryUIState = new ApiRepositoryUIState(this._repository.sourceControl);
+	reAdonly rootUri: Uri = Uri.file(this._repository.root);
+	reAdonly inputBox: InputBox = new ApiInputBox(this._repository.inputBox);
+	reAdonly stAte: RepositoryStAte = new ApiRepositoryStAte(this._repository);
+	reAdonly ui: RepositoryUIStAte = new ApiRepositoryUIStAte(this._repository.sourceControl);
 
-	constructor(private _repository: BaseRepository) { }
+	constructor(privAte _repository: BAseRepository) { }
 
-	apply(patch: string, reverse?: boolean): Promise<void> {
-		return this._repository.apply(patch, reverse);
+	Apply(pAtch: string, reverse?: booleAn): Promise<void> {
+		return this._repository.Apply(pAtch, reverse);
 	}
 
-	getConfigs(): Promise<{ key: string; value: string; }[]> {
+	getConfigs(): Promise<{ key: string; vAlue: string; }[]> {
 		return this._repository.getConfigs();
 	}
 
@@ -75,178 +75,178 @@ export class ApiRepository implements Repository {
 		return this._repository.getConfig(key);
 	}
 
-	setConfig(key: string, value: string): Promise<string> {
-		return this._repository.setConfig(key, value);
+	setConfig(key: string, vAlue: string): Promise<string> {
+		return this._repository.setConfig(key, vAlue);
 	}
 
-	getGlobalConfig(key: string): Promise<string> {
-		return this._repository.getGlobalConfig(key);
+	getGlobAlConfig(key: string): Promise<string> {
+		return this._repository.getGlobAlConfig(key);
 	}
 
-	getObjectDetails(treeish: string, path: string): Promise<{ mode: string; object: string; size: number; }> {
-		return this._repository.getObjectDetails(treeish, path);
+	getObjectDetAils(treeish: string, pAth: string): Promise<{ mode: string; object: string; size: number; }> {
+		return this._repository.getObjectDetAils(treeish, pAth);
 	}
 
 	detectObjectType(object: string): Promise<{ mimetype: string, encoding?: string }> {
 		return this._repository.detectObjectType(object);
 	}
 
-	buffer(ref: string, filePath: string): Promise<Buffer> {
-		return this._repository.buffer(ref, filePath);
+	buffer(ref: string, filePAth: string): Promise<Buffer> {
+		return this._repository.buffer(ref, filePAth);
 	}
 
-	show(ref: string, path: string): Promise<string> {
-		return this._repository.show(ref, path);
+	show(ref: string, pAth: string): Promise<string> {
+		return this._repository.show(ref, pAth);
 	}
 
 	getCommit(ref: string): Promise<Commit> {
 		return this._repository.getCommit(ref);
 	}
 
-	clean(paths: string[]) {
-		return this._repository.clean(paths.map(p => Uri.file(p)));
+	cleAn(pAths: string[]) {
+		return this._repository.cleAn(pAths.mAp(p => Uri.file(p)));
 	}
 
-	diff(cached?: boolean) {
-		return this._repository.diff(cached);
+	diff(cAched?: booleAn) {
+		return this._repository.diff(cAched);
 	}
 
-	diffWithHEAD(): Promise<Change[]>;
-	diffWithHEAD(path: string): Promise<string>;
-	diffWithHEAD(path?: string): Promise<string | Change[]> {
-		return this._repository.diffWithHEAD(path);
+	diffWithHEAD(): Promise<ChAnge[]>;
+	diffWithHEAD(pAth: string): Promise<string>;
+	diffWithHEAD(pAth?: string): Promise<string | ChAnge[]> {
+		return this._repository.diffWithHEAD(pAth);
 	}
 
-	diffWith(ref: string): Promise<Change[]>;
-	diffWith(ref: string, path: string): Promise<string>;
-	diffWith(ref: string, path?: string): Promise<string | Change[]> {
-		return this._repository.diffWith(ref, path);
+	diffWith(ref: string): Promise<ChAnge[]>;
+	diffWith(ref: string, pAth: string): Promise<string>;
+	diffWith(ref: string, pAth?: string): Promise<string | ChAnge[]> {
+		return this._repository.diffWith(ref, pAth);
 	}
 
-	diffIndexWithHEAD(): Promise<Change[]>;
-	diffIndexWithHEAD(path: string): Promise<string>;
-	diffIndexWithHEAD(path?: string): Promise<string | Change[]> {
-		return this._repository.diffIndexWithHEAD(path);
+	diffIndexWithHEAD(): Promise<ChAnge[]>;
+	diffIndexWithHEAD(pAth: string): Promise<string>;
+	diffIndexWithHEAD(pAth?: string): Promise<string | ChAnge[]> {
+		return this._repository.diffIndexWithHEAD(pAth);
 	}
 
-	diffIndexWith(ref: string): Promise<Change[]>;
-	diffIndexWith(ref: string, path: string): Promise<string>;
-	diffIndexWith(ref: string, path?: string): Promise<string | Change[]> {
-		return this._repository.diffIndexWith(ref, path);
+	diffIndexWith(ref: string): Promise<ChAnge[]>;
+	diffIndexWith(ref: string, pAth: string): Promise<string>;
+	diffIndexWith(ref: string, pAth?: string): Promise<string | ChAnge[]> {
+		return this._repository.diffIndexWith(ref, pAth);
 	}
 
 	diffBlobs(object1: string, object2: string): Promise<string> {
 		return this._repository.diffBlobs(object1, object2);
 	}
 
-	diffBetween(ref1: string, ref2: string): Promise<Change[]>;
-	diffBetween(ref1: string, ref2: string, path: string): Promise<string>;
-	diffBetween(ref1: string, ref2: string, path?: string): Promise<string | Change[]> {
-		return this._repository.diffBetween(ref1, ref2, path);
+	diffBetween(ref1: string, ref2: string): Promise<ChAnge[]>;
+	diffBetween(ref1: string, ref2: string, pAth: string): Promise<string>;
+	diffBetween(ref1: string, ref2: string, pAth?: string): Promise<string | ChAnge[]> {
+		return this._repository.diffBetween(ref1, ref2, pAth);
 	}
 
-	hashObject(data: string): Promise<string> {
-		return this._repository.hashObject(data);
+	hAshObject(dAtA: string): Promise<string> {
+		return this._repository.hAshObject(dAtA);
 	}
 
-	createBranch(name: string, checkout: boolean, ref?: string | undefined): Promise<void> {
-		return this._repository.branch(name, checkout, ref);
+	creAteBrAnch(nAme: string, checkout: booleAn, ref?: string | undefined): Promise<void> {
+		return this._repository.brAnch(nAme, checkout, ref);
 	}
 
-	deleteBranch(name: string, force?: boolean): Promise<void> {
-		return this._repository.deleteBranch(name, force);
+	deleteBrAnch(nAme: string, force?: booleAn): Promise<void> {
+		return this._repository.deleteBrAnch(nAme, force);
 	}
 
-	getBranch(name: string): Promise<Branch> {
-		return this._repository.getBranch(name);
+	getBrAnch(nAme: string): Promise<BrAnch> {
+		return this._repository.getBrAnch(nAme);
 	}
 
-	getBranches(query: BranchQuery): Promise<Ref[]> {
-		return this._repository.getBranches(query);
+	getBrAnches(query: BrAnchQuery): Promise<Ref[]> {
+		return this._repository.getBrAnches(query);
 	}
 
-	setBranchUpstream(name: string, upstream: string): Promise<void> {
-		return this._repository.setBranchUpstream(name, upstream);
+	setBrAnchUpstreAm(nAme: string, upstreAm: string): Promise<void> {
+		return this._repository.setBrAnchUpstreAm(nAme, upstreAm);
 	}
 
-	getMergeBase(ref1: string, ref2: string): Promise<string> {
-		return this._repository.getMergeBase(ref1, ref2);
+	getMergeBAse(ref1: string, ref2: string): Promise<string> {
+		return this._repository.getMergeBAse(ref1, ref2);
 	}
 
-	status(): Promise<void> {
-		return this._repository.status();
+	stAtus(): Promise<void> {
+		return this._repository.stAtus();
 	}
 
 	checkout(treeish: string): Promise<void> {
 		return this._repository.checkout(treeish);
 	}
 
-	addRemote(name: string, url: string): Promise<void> {
-		return this._repository.addRemote(name, url);
+	AddRemote(nAme: string, url: string): Promise<void> {
+		return this._repository.AddRemote(nAme, url);
 	}
 
-	removeRemote(name: string): Promise<void> {
-		return this._repository.removeRemote(name);
+	removeRemote(nAme: string): Promise<void> {
+		return this._repository.removeRemote(nAme);
 	}
 
-	renameRemote(name: string, newName: string): Promise<void> {
-		return this._repository.renameRemote(name, newName);
+	renAmeRemote(nAme: string, newNAme: string): Promise<void> {
+		return this._repository.renAmeRemote(nAme, newNAme);
 	}
 
 	fetch(remote?: string | undefined, ref?: string | undefined, depth?: number | undefined): Promise<void> {
 		return this._repository.fetch(remote, ref, depth);
 	}
 
-	pull(unshallow?: boolean): Promise<void> {
-		return this._repository.pull(undefined, unshallow);
+	pull(unshAllow?: booleAn): Promise<void> {
+		return this._repository.pull(undefined, unshAllow);
 	}
 
-	push(remoteName?: string, branchName?: string, setUpstream: boolean = false): Promise<void> {
-		return this._repository.pushTo(remoteName, branchName, setUpstream);
+	push(remoteNAme?: string, brAnchNAme?: string, setUpstreAm: booleAn = fAlse): Promise<void> {
+		return this._repository.pushTo(remoteNAme, brAnchNAme, setUpstreAm);
 	}
 
-	blame(path: string): Promise<string> {
-		return this._repository.blame(path);
+	blAme(pAth: string): Promise<string> {
+		return this._repository.blAme(pAth);
 	}
 
 	log(options?: LogOptions): Promise<Commit[]> {
 		return this._repository.log(options);
 	}
 
-	commit(message: string, opts?: CommitOptions): Promise<void> {
-		return this._repository.commit(message, opts);
+	commit(messAge: string, opts?: CommitOptions): Promise<void> {
+		return this._repository.commit(messAge, opts);
 	}
 }
 
-export class ApiGit implements Git {
+export clAss ApiGit implements Git {
 
-	get path(): string { return this._model.git.path; }
+	get pAth(): string { return this._model.git.pAth; }
 
-	constructor(private _model: Model) { }
+	constructor(privAte _model: Model) { }
 }
 
-export class ApiImpl implements API {
+export clAss ApiImpl implements API {
 
-	readonly git = new ApiGit(this._model);
+	reAdonly git = new ApiGit(this._model);
 
-	get state(): APIState {
-		return this._model.state;
+	get stAte(): APIStAte {
+		return this._model.stAte;
 	}
 
-	get onDidChangeState(): Event<APIState> {
-		return this._model.onDidChangeState;
+	get onDidChAngeStAte(): Event<APIStAte> {
+		return this._model.onDidChAngeStAte;
 	}
 
 	get onDidOpenRepository(): Event<Repository> {
-		return mapEvent(this._model.onDidOpenRepository, r => new ApiRepository(r));
+		return mApEvent(this._model.onDidOpenRepository, r => new ApiRepository(r));
 	}
 
 	get onDidCloseRepository(): Event<Repository> {
-		return mapEvent(this._model.onDidCloseRepository, r => new ApiRepository(r));
+		return mApEvent(this._model.onDidCloseRepository, r => new ApiRepository(r));
 	}
 
 	get repositories(): Repository[] {
-		return this._model.repositories.map(r => new ApiRepository(r));
+		return this._model.repositories.mAp(r => new ApiRepository(r));
 	}
 
 	toGitUri(uri: Uri, ref: string): Uri {
@@ -258,101 +258,101 @@ export class ApiImpl implements API {
 		return result ? new ApiRepository(result) : null;
 	}
 
-	async init(root: Uri): Promise<Repository | null> {
-		const path = root.fsPath;
-		await this._model.git.init(path);
-		await this._model.openRepository(path);
+	Async init(root: Uri): Promise<Repository | null> {
+		const pAth = root.fsPAth;
+		AwAit this._model.git.init(pAth);
+		AwAit this._model.openRepository(pAth);
 		return this.getRepository(root) || null;
 	}
 
-	registerRemoteSourceProvider(provider: RemoteSourceProvider): Disposable {
+	registerRemoteSourceProvider(provider: RemoteSourceProvider): DisposAble {
 		return this._model.registerRemoteSourceProvider(provider);
 	}
 
-	registerCredentialsProvider(provider: CredentialsProvider): Disposable {
-		return this._model.registerCredentialsProvider(provider);
+	registerCredentiAlsProvider(provider: CredentiAlsProvider): DisposAble {
+		return this._model.registerCredentiAlsProvider(provider);
 	}
 
-	registerPushErrorHandler(handler: PushErrorHandler): Disposable {
-		return this._model.registerPushErrorHandler(handler);
+	registerPushErrorHAndler(hAndler: PushErrorHAndler): DisposAble {
+		return this._model.registerPushErrorHAndler(hAndler);
 	}
 
-	constructor(private _model: Model) { }
+	constructor(privAte _model: Model) { }
 }
 
 function getRefType(type: RefType): string {
 	switch (type) {
-		case RefType.Head: return 'Head';
-		case RefType.RemoteHead: return 'RemoteHead';
-		case RefType.Tag: return 'Tag';
+		cAse RefType.HeAd: return 'HeAd';
+		cAse RefType.RemoteHeAd: return 'RemoteHeAd';
+		cAse RefType.TAg: return 'TAg';
 	}
 
 	return 'unknown';
 }
 
-function getStatus(status: Status): string {
-	switch (status) {
-		case Status.INDEX_MODIFIED: return 'INDEX_MODIFIED';
-		case Status.INDEX_ADDED: return 'INDEX_ADDED';
-		case Status.INDEX_DELETED: return 'INDEX_DELETED';
-		case Status.INDEX_RENAMED: return 'INDEX_RENAMED';
-		case Status.INDEX_COPIED: return 'INDEX_COPIED';
-		case Status.MODIFIED: return 'MODIFIED';
-		case Status.DELETED: return 'DELETED';
-		case Status.UNTRACKED: return 'UNTRACKED';
-		case Status.IGNORED: return 'IGNORED';
-		case Status.INTENT_TO_ADD: return 'INTENT_TO_ADD';
-		case Status.ADDED_BY_US: return 'ADDED_BY_US';
-		case Status.ADDED_BY_THEM: return 'ADDED_BY_THEM';
-		case Status.DELETED_BY_US: return 'DELETED_BY_US';
-		case Status.DELETED_BY_THEM: return 'DELETED_BY_THEM';
-		case Status.BOTH_ADDED: return 'BOTH_ADDED';
-		case Status.BOTH_DELETED: return 'BOTH_DELETED';
-		case Status.BOTH_MODIFIED: return 'BOTH_MODIFIED';
+function getStAtus(stAtus: StAtus): string {
+	switch (stAtus) {
+		cAse StAtus.INDEX_MODIFIED: return 'INDEX_MODIFIED';
+		cAse StAtus.INDEX_ADDED: return 'INDEX_ADDED';
+		cAse StAtus.INDEX_DELETED: return 'INDEX_DELETED';
+		cAse StAtus.INDEX_RENAMED: return 'INDEX_RENAMED';
+		cAse StAtus.INDEX_COPIED: return 'INDEX_COPIED';
+		cAse StAtus.MODIFIED: return 'MODIFIED';
+		cAse StAtus.DELETED: return 'DELETED';
+		cAse StAtus.UNTRACKED: return 'UNTRACKED';
+		cAse StAtus.IGNORED: return 'IGNORED';
+		cAse StAtus.INTENT_TO_ADD: return 'INTENT_TO_ADD';
+		cAse StAtus.ADDED_BY_US: return 'ADDED_BY_US';
+		cAse StAtus.ADDED_BY_THEM: return 'ADDED_BY_THEM';
+		cAse StAtus.DELETED_BY_US: return 'DELETED_BY_US';
+		cAse StAtus.DELETED_BY_THEM: return 'DELETED_BY_THEM';
+		cAse StAtus.BOTH_ADDED: return 'BOTH_ADDED';
+		cAse StAtus.BOTH_DELETED: return 'BOTH_DELETED';
+		cAse StAtus.BOTH_MODIFIED: return 'BOTH_MODIFIED';
 	}
 
 	return 'UNKNOWN';
 }
 
-export function registerAPICommands(extension: GitExtensionImpl): Disposable {
-	const disposables: Disposable[] = [];
+export function registerAPICommAnds(extension: GitExtensionImpl): DisposAble {
+	const disposAbles: DisposAble[] = [];
 
-	disposables.push(commands.registerCommand('git.api.getRepositories', () => {
-		const api = extension.getAPI(1);
-		return api.repositories.map(r => r.rootUri.toString());
+	disposAbles.push(commAnds.registerCommAnd('git.Api.getRepositories', () => {
+		const Api = extension.getAPI(1);
+		return Api.repositories.mAp(r => r.rootUri.toString());
 	}));
 
-	disposables.push(commands.registerCommand('git.api.getRepositoryState', (uri: string) => {
-		const api = extension.getAPI(1);
-		const repository = api.getRepository(Uri.parse(uri));
+	disposAbles.push(commAnds.registerCommAnd('git.Api.getRepositoryStAte', (uri: string) => {
+		const Api = extension.getAPI(1);
+		const repository = Api.getRepository(Uri.pArse(uri));
 
 		if (!repository) {
 			return null;
 		}
 
-		const state = repository.state;
+		const stAte = repository.stAte;
 
 		const ref = (ref: Ref | undefined) => (ref && { ...ref, type: getRefType(ref.type) });
-		const change = (change: Change) => ({
-			uri: change.uri.toString(),
-			originalUri: change.originalUri.toString(),
-			renameUri: change.renameUri?.toString(),
-			status: getStatus(change.status)
+		const chAnge = (chAnge: ChAnge) => ({
+			uri: chAnge.uri.toString(),
+			originAlUri: chAnge.originAlUri.toString(),
+			renAmeUri: chAnge.renAmeUri?.toString(),
+			stAtus: getStAtus(chAnge.stAtus)
 		});
 
 		return {
-			HEAD: ref(state.HEAD),
-			refs: state.refs.map(ref),
-			remotes: state.remotes,
-			submodules: state.submodules,
-			rebaseCommit: state.rebaseCommit,
-			mergeChanges: state.mergeChanges.map(change),
-			indexChanges: state.indexChanges.map(change),
-			workingTreeChanges: state.workingTreeChanges.map(change)
+			HEAD: ref(stAte.HEAD),
+			refs: stAte.refs.mAp(ref),
+			remotes: stAte.remotes,
+			submodules: stAte.submodules,
+			rebAseCommit: stAte.rebAseCommit,
+			mergeChAnges: stAte.mergeChAnges.mAp(chAnge),
+			indexChAnges: stAte.indexChAnges.mAp(chAnge),
+			workingTreeChAnges: stAte.workingTreeChAnges.mAp(chAnge)
 		};
 	}));
 
-	disposables.push(commands.registerCommand('git.api.getRemoteSources', (opts?: PickRemoteSourceOptions) => {
+	disposAbles.push(commAnds.registerCommAnd('git.Api.getRemoteSources', (opts?: PickRemoteSourceOptions) => {
 		if (!extension.model) {
 			return;
 		}
@@ -360,5 +360,5 @@ export function registerAPICommands(extension: GitExtensionImpl): Disposable {
 		return pickRemoteSource(extension.model, opts);
 	}));
 
-	return Disposable.from(...disposables);
+	return DisposAble.from(...disposAbles);
 }

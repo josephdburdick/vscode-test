@@ -1,176 +1,176 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { IOverviewRulerLayoutInfo, SmoothScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
-import { ScrollableElementChangeOptions, ScrollableElementCreationOptions } from 'vs/base/browser/ui/scrollbar/scrollableElementOptions';
-import { PartFingerprint, PartFingerprints, ViewPart } from 'vs/editor/browser/view/viewPart';
+import * As dom from 'vs/bAse/browser/dom';
+import { FAstDomNode, creAteFAstDomNode } from 'vs/bAse/browser/fAstDomNode';
+import { IMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { IOverviewRulerLAyoutInfo, SmoothScrollAbleElement } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElement';
+import { ScrollAbleElementChAngeOptions, ScrollAbleElementCreAtionOptions } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElementOptions';
+import { PArtFingerprint, PArtFingerprints, ViewPArt } from 'vs/editor/browser/view/viewPArt';
 import { INewScrollPosition, ScrollType } from 'vs/editor/common/editorCommon';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
-import { getThemeTypeSelector } from 'vs/platform/theme/common/themeService';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
+import { getThemeTypeSelector } from 'vs/plAtform/theme/common/themeService';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
-export class EditorScrollbar extends ViewPart {
+export clAss EditorScrollbAr extends ViewPArt {
 
-	private readonly scrollbar: SmoothScrollableElement;
-	private readonly scrollbarDomNode: FastDomNode<HTMLElement>;
+	privAte reAdonly scrollbAr: SmoothScrollAbleElement;
+	privAte reAdonly scrollbArDomNode: FAstDomNode<HTMLElement>;
 
 	constructor(
 		context: ViewContext,
-		linesContent: FastDomNode<HTMLElement>,
-		viewDomNode: FastDomNode<HTMLElement>,
-		overflowGuardDomNode: FastDomNode<HTMLElement>
+		linesContent: FAstDomNode<HTMLElement>,
+		viewDomNode: FAstDomNode<HTMLElement>,
+		overflowGuArdDomNode: FAstDomNode<HTMLElement>
 	) {
 		super(context);
 
 
-		const options = this._context.configuration.options;
-		const scrollbar = options.get(EditorOption.scrollbar);
+		const options = this._context.configurAtion.options;
+		const scrollbAr = options.get(EditorOption.scrollbAr);
 		const mouseWheelScrollSensitivity = options.get(EditorOption.mouseWheelScrollSensitivity);
-		const fastScrollSensitivity = options.get(EditorOption.fastScrollSensitivity);
-		const scrollPredominantAxis = options.get(EditorOption.scrollPredominantAxis);
+		const fAstScrollSensitivity = options.get(EditorOption.fAstScrollSensitivity);
+		const scrollPredominAntAxis = options.get(EditorOption.scrollPredominAntAxis);
 
-		const scrollbarOptions: ScrollableElementCreationOptions = {
+		const scrollbArOptions: ScrollAbleElementCreAtionOptions = {
 			listenOnDomNode: viewDomNode.domNode,
-			className: 'editor-scrollable' + ' ' + getThemeTypeSelector(context.theme.type),
-			useShadows: false,
-			lazyRender: true,
+			clAssNAme: 'editor-scrollAble' + ' ' + getThemeTypeSelector(context.theme.type),
+			useShAdows: fAlse,
+			lAzyRender: true,
 
-			vertical: scrollbar.vertical,
-			horizontal: scrollbar.horizontal,
-			verticalHasArrows: scrollbar.verticalHasArrows,
-			horizontalHasArrows: scrollbar.horizontalHasArrows,
-			verticalScrollbarSize: scrollbar.verticalScrollbarSize,
-			verticalSliderSize: scrollbar.verticalSliderSize,
-			horizontalScrollbarSize: scrollbar.horizontalScrollbarSize,
-			horizontalSliderSize: scrollbar.horizontalSliderSize,
-			handleMouseWheel: scrollbar.handleMouseWheel,
-			alwaysConsumeMouseWheel: scrollbar.alwaysConsumeMouseWheel,
-			arrowSize: scrollbar.arrowSize,
+			verticAl: scrollbAr.verticAl,
+			horizontAl: scrollbAr.horizontAl,
+			verticAlHAsArrows: scrollbAr.verticAlHAsArrows,
+			horizontAlHAsArrows: scrollbAr.horizontAlHAsArrows,
+			verticAlScrollbArSize: scrollbAr.verticAlScrollbArSize,
+			verticAlSliderSize: scrollbAr.verticAlSliderSize,
+			horizontAlScrollbArSize: scrollbAr.horizontAlScrollbArSize,
+			horizontAlSliderSize: scrollbAr.horizontAlSliderSize,
+			hAndleMouseWheel: scrollbAr.hAndleMouseWheel,
+			AlwAysConsumeMouseWheel: scrollbAr.AlwAysConsumeMouseWheel,
+			ArrowSize: scrollbAr.ArrowSize,
 			mouseWheelScrollSensitivity: mouseWheelScrollSensitivity,
-			fastScrollSensitivity: fastScrollSensitivity,
-			scrollPredominantAxis: scrollPredominantAxis,
+			fAstScrollSensitivity: fAstScrollSensitivity,
+			scrollPredominAntAxis: scrollPredominAntAxis,
 		};
 
-		this.scrollbar = this._register(new SmoothScrollableElement(linesContent.domNode, scrollbarOptions, this._context.viewLayout.getScrollable()));
-		PartFingerprints.write(this.scrollbar.getDomNode(), PartFingerprint.ScrollableElement);
+		this.scrollbAr = this._register(new SmoothScrollAbleElement(linesContent.domNode, scrollbArOptions, this._context.viewLAyout.getScrollAble()));
+		PArtFingerprints.write(this.scrollbAr.getDomNode(), PArtFingerprint.ScrollAbleElement);
 
-		this.scrollbarDomNode = createFastDomNode(this.scrollbar.getDomNode());
-		this.scrollbarDomNode.setPosition('absolute');
-		this._setLayout();
+		this.scrollbArDomNode = creAteFAstDomNode(this.scrollbAr.getDomNode());
+		this.scrollbArDomNode.setPosition('Absolute');
+		this._setLAyout();
 
-		// When having a zone widget that calls .focus() on one of its dom elements,
-		// the browser will try desperately to reveal that dom node, unexpectedly
-		// changing the .scrollTop of this.linesContent
+		// When hAving A zone widget thAt cAlls .focus() on one of its dom elements,
+		// the browser will try desperAtely to reveAl thAt dom node, unexpectedly
+		// chAnging the .scrollTop of this.linesContent
 
-		const onBrowserDesperateReveal = (domNode: HTMLElement, lookAtScrollTop: boolean, lookAtScrollLeft: boolean) => {
+		const onBrowserDesperAteReveAl = (domNode: HTMLElement, lookAtScrollTop: booleAn, lookAtScrollLeft: booleAn) => {
 			const newScrollPosition: INewScrollPosition = {};
 
 			if (lookAtScrollTop) {
-				const deltaTop = domNode.scrollTop;
-				if (deltaTop) {
-					newScrollPosition.scrollTop = this._context.viewLayout.getCurrentScrollTop() + deltaTop;
+				const deltATop = domNode.scrollTop;
+				if (deltATop) {
+					newScrollPosition.scrollTop = this._context.viewLAyout.getCurrentScrollTop() + deltATop;
 					domNode.scrollTop = 0;
 				}
 			}
 
 			if (lookAtScrollLeft) {
-				const deltaLeft = domNode.scrollLeft;
-				if (deltaLeft) {
-					newScrollPosition.scrollLeft = this._context.viewLayout.getCurrentScrollLeft() + deltaLeft;
+				const deltALeft = domNode.scrollLeft;
+				if (deltALeft) {
+					newScrollPosition.scrollLeft = this._context.viewLAyout.getCurrentScrollLeft() + deltALeft;
 					domNode.scrollLeft = 0;
 				}
 			}
 
-			this._context.model.setScrollPosition(newScrollPosition, ScrollType.Immediate);
+			this._context.model.setScrollPosition(newScrollPosition, ScrollType.ImmediAte);
 		};
 
-		// I've seen this happen both on the view dom node & on the lines content dom node.
-		this._register(dom.addDisposableListener(viewDomNode.domNode, 'scroll', (e: Event) => onBrowserDesperateReveal(viewDomNode.domNode, true, true)));
-		this._register(dom.addDisposableListener(linesContent.domNode, 'scroll', (e: Event) => onBrowserDesperateReveal(linesContent.domNode, true, false)));
-		this._register(dom.addDisposableListener(overflowGuardDomNode.domNode, 'scroll', (e: Event) => onBrowserDesperateReveal(overflowGuardDomNode.domNode, true, false)));
-		this._register(dom.addDisposableListener(this.scrollbarDomNode.domNode, 'scroll', (e: Event) => onBrowserDesperateReveal(this.scrollbarDomNode.domNode, true, false)));
+		// I've seen this hAppen both on the view dom node & on the lines content dom node.
+		this._register(dom.AddDisposAbleListener(viewDomNode.domNode, 'scroll', (e: Event) => onBrowserDesperAteReveAl(viewDomNode.domNode, true, true)));
+		this._register(dom.AddDisposAbleListener(linesContent.domNode, 'scroll', (e: Event) => onBrowserDesperAteReveAl(linesContent.domNode, true, fAlse)));
+		this._register(dom.AddDisposAbleListener(overflowGuArdDomNode.domNode, 'scroll', (e: Event) => onBrowserDesperAteReveAl(overflowGuArdDomNode.domNode, true, fAlse)));
+		this._register(dom.AddDisposAbleListener(this.scrollbArDomNode.domNode, 'scroll', (e: Event) => onBrowserDesperAteReveAl(this.scrollbArDomNode.domNode, true, fAlse)));
 	}
 
 	public dispose(): void {
 		super.dispose();
 	}
 
-	private _setLayout(): void {
-		const options = this._context.configuration.options;
-		const layoutInfo = options.get(EditorOption.layoutInfo);
+	privAte _setLAyout(): void {
+		const options = this._context.configurAtion.options;
+		const lAyoutInfo = options.get(EditorOption.lAyoutInfo);
 
-		this.scrollbarDomNode.setLeft(layoutInfo.contentLeft);
+		this.scrollbArDomNode.setLeft(lAyoutInfo.contentLeft);
 
-		const minimap = options.get(EditorOption.minimap);
-		const side = minimap.side;
+		const minimAp = options.get(EditorOption.minimAp);
+		const side = minimAp.side;
 		if (side === 'right') {
-			this.scrollbarDomNode.setWidth(layoutInfo.contentWidth + layoutInfo.minimap.minimapWidth);
+			this.scrollbArDomNode.setWidth(lAyoutInfo.contentWidth + lAyoutInfo.minimAp.minimApWidth);
 		} else {
-			this.scrollbarDomNode.setWidth(layoutInfo.contentWidth);
+			this.scrollbArDomNode.setWidth(lAyoutInfo.contentWidth);
 		}
-		this.scrollbarDomNode.setHeight(layoutInfo.height);
+		this.scrollbArDomNode.setHeight(lAyoutInfo.height);
 	}
 
-	public getOverviewRulerLayoutInfo(): IOverviewRulerLayoutInfo {
-		return this.scrollbar.getOverviewRulerLayoutInfo();
+	public getOverviewRulerLAyoutInfo(): IOverviewRulerLAyoutInfo {
+		return this.scrollbAr.getOverviewRulerLAyoutInfo();
 	}
 
-	public getDomNode(): FastDomNode<HTMLElement> {
-		return this.scrollbarDomNode;
+	public getDomNode(): FAstDomNode<HTMLElement> {
+		return this.scrollbArDomNode;
 	}
 
-	public delegateVerticalScrollbarMouseDown(browserEvent: IMouseEvent): void {
-		this.scrollbar.delegateVerticalScrollbarMouseDown(browserEvent);
+	public delegAteVerticAlScrollbArMouseDown(browserEvent: IMouseEvent): void {
+		this.scrollbAr.delegAteVerticAlScrollbArMouseDown(browserEvent);
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
 		if (
-			e.hasChanged(EditorOption.scrollbar)
-			|| e.hasChanged(EditorOption.mouseWheelScrollSensitivity)
-			|| e.hasChanged(EditorOption.fastScrollSensitivity)
+			e.hAsChAnged(EditorOption.scrollbAr)
+			|| e.hAsChAnged(EditorOption.mouseWheelScrollSensitivity)
+			|| e.hAsChAnged(EditorOption.fAstScrollSensitivity)
 		) {
-			const options = this._context.configuration.options;
-			const scrollbar = options.get(EditorOption.scrollbar);
+			const options = this._context.configurAtion.options;
+			const scrollbAr = options.get(EditorOption.scrollbAr);
 			const mouseWheelScrollSensitivity = options.get(EditorOption.mouseWheelScrollSensitivity);
-			const fastScrollSensitivity = options.get(EditorOption.fastScrollSensitivity);
-			const scrollPredominantAxis = options.get(EditorOption.scrollPredominantAxis);
-			const newOpts: ScrollableElementChangeOptions = {
-				handleMouseWheel: scrollbar.handleMouseWheel,
+			const fAstScrollSensitivity = options.get(EditorOption.fAstScrollSensitivity);
+			const scrollPredominAntAxis = options.get(EditorOption.scrollPredominAntAxis);
+			const newOpts: ScrollAbleElementChAngeOptions = {
+				hAndleMouseWheel: scrollbAr.hAndleMouseWheel,
 				mouseWheelScrollSensitivity: mouseWheelScrollSensitivity,
-				fastScrollSensitivity: fastScrollSensitivity,
-				scrollPredominantAxis: scrollPredominantAxis
+				fAstScrollSensitivity: fAstScrollSensitivity,
+				scrollPredominAntAxis: scrollPredominAntAxis
 			};
-			this.scrollbar.updateOptions(newOpts);
+			this.scrollbAr.updAteOptions(newOpts);
 		}
-		if (e.hasChanged(EditorOption.layoutInfo)) {
-			this._setLayout();
+		if (e.hAsChAnged(EditorOption.lAyoutInfo)) {
+			this._setLAyout();
 		}
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
 		return true;
 	}
-	public onThemeChanged(e: viewEvents.ViewThemeChangedEvent): boolean {
-		this.scrollbar.updateClassName('editor-scrollable' + ' ' + getThemeTypeSelector(this._context.theme.type));
+	public onThemeChAnged(e: viewEvents.ViewThemeChAngedEvent): booleAn {
+		this.scrollbAr.updAteClAssNAme('editor-scrollAble' + ' ' + getThemeTypeSelector(this._context.theme.type));
 		return true;
 	}
 
-	// --- end event handlers
+	// --- end event hAndlers
 
-	public prepareRender(ctx: RenderingContext): void {
+	public prepAreRender(ctx: RenderingContext): void {
 		// Nothing to do
 	}
 
 	public render(ctx: RestrictedRenderingContext): void {
-		this.scrollbar.renderNow();
+		this.scrollbAr.renderNow();
 	}
 }

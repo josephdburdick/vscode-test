@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { ReplaceCommand } from 'vs/editor/common/commands/replaceCommand';
-import { EditorAutoClosingStrategy } from 'vs/editor/common/config/editorOptions';
-import { CursorColumns, CursorConfiguration, EditOperationResult, EditOperationType, ICursorSimpleModel, isQuote } from 'vs/editor/common/controller/cursorCommon';
-import { MoveOperations } from 'vs/editor/common/controller/cursorMoveOperations';
-import { Range } from 'vs/editor/common/core/range';
+import * As strings from 'vs/bAse/common/strings';
+import { ReplAceCommAnd } from 'vs/editor/common/commAnds/replAceCommAnd';
+import { EditorAutoClosingStrAtegy } from 'vs/editor/common/config/editorOptions';
+import { CursorColumns, CursorConfigurAtion, EditOperAtionResult, EditOperAtionType, ICursorSimpleModel, isQuote } from 'vs/editor/common/controller/cursorCommon';
+import { MoveOperAtions } from 'vs/editor/common/controller/cursorMoveOperAtions';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { ICommand } from 'vs/editor/common/editorCommon';
-import { StandardAutoClosingPairConditional } from 'vs/editor/common/modes/languageConfiguration';
+import { ICommAnd } from 'vs/editor/common/editorCommon';
+import { StAndArdAutoClosingPAirConditionAl } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
 
-export class DeleteOperations {
+export clAss DeleteOperAtions {
 
-	public static deleteRight(prevEditOperationType: EditOperationType, config: CursorConfiguration, model: ICursorSimpleModel, selections: Selection[]): [boolean, Array<ICommand | null>] {
-		let commands: Array<ICommand | null> = [];
-		let shouldPushStackElementBefore = (prevEditOperationType !== EditOperationType.DeletingRight);
+	public stAtic deleteRight(prevEditOperAtionType: EditOperAtionType, config: CursorConfigurAtion, model: ICursorSimpleModel, selections: Selection[]): [booleAn, ArrAy<ICommAnd | null>] {
+		let commAnds: ArrAy<ICommAnd | null> = [];
+		let shouldPushStAckElementBefore = (prevEditOperAtionType !== EditOperAtionType.DeletingRight);
 		for (let i = 0, len = selections.length; i < len; i++) {
 			const selection = selections[i];
 
-			let deleteSelection: Range = selection;
+			let deleteSelection: RAnge = selection;
 
 			if (deleteSelection.isEmpty()) {
 				let position = selection.getPosition();
-				let rightOfPosition = MoveOperations.right(config, model, position.lineNumber, position.column);
-				deleteSelection = new Range(
+				let rightOfPosition = MoveOperAtions.right(config, model, position.lineNumber, position.column);
+				deleteSelection = new RAnge(
 					rightOfPosition.lineNumber,
 					rightOfPosition.column,
 					position.lineNumber,
@@ -35,29 +35,29 @@ export class DeleteOperations {
 			}
 
 			if (deleteSelection.isEmpty()) {
-				// Probably at end of file => ignore
-				commands[i] = null;
+				// ProbAbly At end of file => ignore
+				commAnds[i] = null;
 				continue;
 			}
 
-			if (deleteSelection.startLineNumber !== deleteSelection.endLineNumber) {
-				shouldPushStackElementBefore = true;
+			if (deleteSelection.stArtLineNumber !== deleteSelection.endLineNumber) {
+				shouldPushStAckElementBefore = true;
 			}
 
-			commands[i] = new ReplaceCommand(deleteSelection, '');
+			commAnds[i] = new ReplAceCommAnd(deleteSelection, '');
 		}
-		return [shouldPushStackElementBefore, commands];
+		return [shouldPushStAckElementBefore, commAnds];
 	}
 
-	public static isAutoClosingPairDelete(
-		autoClosingBrackets: EditorAutoClosingStrategy,
-		autoClosingQuotes: EditorAutoClosingStrategy,
-		autoClosingPairsOpen: Map<string, StandardAutoClosingPairConditional[]>,
+	public stAtic isAutoClosingPAirDelete(
+		AutoClosingBrAckets: EditorAutoClosingStrAtegy,
+		AutoClosingQuotes: EditorAutoClosingStrAtegy,
+		AutoClosingPAirsOpen: MAp<string, StAndArdAutoClosingPAirConditionAl[]>,
 		model: ICursorSimpleModel,
 		selections: Selection[]
-	): boolean {
-		if (autoClosingBrackets === 'never' && autoClosingQuotes === 'never') {
-			return false;
+	): booleAn {
+		if (AutoClosingBrAckets === 'never' && AutoClosingQuotes === 'never') {
+			return fAlse;
 		}
 
 		for (let i = 0, len = selections.length; i < len; i++) {
@@ -65,98 +65,98 @@ export class DeleteOperations {
 			const position = selection.getPosition();
 
 			if (!selection.isEmpty()) {
-				return false;
+				return fAlse;
 			}
 
 			const lineText = model.getLineContent(position.lineNumber);
 			if (position.column < 2 || position.column >= lineText.length + 1) {
-				return false;
+				return fAlse;
 			}
-			const character = lineText.charAt(position.column - 2);
+			const chArActer = lineText.chArAt(position.column - 2);
 
-			const autoClosingPairCandidates = autoClosingPairsOpen.get(character);
-			if (!autoClosingPairCandidates) {
-				return false;
+			const AutoClosingPAirCAndidAtes = AutoClosingPAirsOpen.get(chArActer);
+			if (!AutoClosingPAirCAndidAtes) {
+				return fAlse;
 			}
 
-			if (isQuote(character)) {
-				if (autoClosingQuotes === 'never') {
-					return false;
+			if (isQuote(chArActer)) {
+				if (AutoClosingQuotes === 'never') {
+					return fAlse;
 				}
 			} else {
-				if (autoClosingBrackets === 'never') {
-					return false;
+				if (AutoClosingBrAckets === 'never') {
+					return fAlse;
 				}
 			}
 
-			const afterCharacter = lineText.charAt(position.column - 1);
+			const AfterChArActer = lineText.chArAt(position.column - 1);
 
-			let foundAutoClosingPair = false;
-			for (const autoClosingPairCandidate of autoClosingPairCandidates) {
-				if (autoClosingPairCandidate.open === character && autoClosingPairCandidate.close === afterCharacter) {
-					foundAutoClosingPair = true;
+			let foundAutoClosingPAir = fAlse;
+			for (const AutoClosingPAirCAndidAte of AutoClosingPAirCAndidAtes) {
+				if (AutoClosingPAirCAndidAte.open === chArActer && AutoClosingPAirCAndidAte.close === AfterChArActer) {
+					foundAutoClosingPAir = true;
 				}
 			}
-			if (!foundAutoClosingPair) {
-				return false;
+			if (!foundAutoClosingPAir) {
+				return fAlse;
 			}
 		}
 
 		return true;
 	}
 
-	private static _runAutoClosingPairDelete(config: CursorConfiguration, model: ICursorSimpleModel, selections: Selection[]): [boolean, ICommand[]] {
-		let commands: ICommand[] = [];
+	privAte stAtic _runAutoClosingPAirDelete(config: CursorConfigurAtion, model: ICursorSimpleModel, selections: Selection[]): [booleAn, ICommAnd[]] {
+		let commAnds: ICommAnd[] = [];
 		for (let i = 0, len = selections.length; i < len; i++) {
 			const position = selections[i].getPosition();
-			const deleteSelection = new Range(
+			const deleteSelection = new RAnge(
 				position.lineNumber,
 				position.column - 1,
 				position.lineNumber,
 				position.column + 1
 			);
-			commands[i] = new ReplaceCommand(deleteSelection, '');
+			commAnds[i] = new ReplAceCommAnd(deleteSelection, '');
 		}
-		return [true, commands];
+		return [true, commAnds];
 	}
 
-	public static deleteLeft(prevEditOperationType: EditOperationType, config: CursorConfiguration, model: ICursorSimpleModel, selections: Selection[]): [boolean, Array<ICommand | null>] {
+	public stAtic deleteLeft(prevEditOperAtionType: EditOperAtionType, config: CursorConfigurAtion, model: ICursorSimpleModel, selections: Selection[]): [booleAn, ArrAy<ICommAnd | null>] {
 
-		if (this.isAutoClosingPairDelete(config.autoClosingBrackets, config.autoClosingQuotes, config.autoClosingPairsOpen2, model, selections)) {
-			return this._runAutoClosingPairDelete(config, model, selections);
+		if (this.isAutoClosingPAirDelete(config.AutoClosingBrAckets, config.AutoClosingQuotes, config.AutoClosingPAirsOpen2, model, selections)) {
+			return this._runAutoClosingPAirDelete(config, model, selections);
 		}
 
-		let commands: Array<ICommand | null> = [];
-		let shouldPushStackElementBefore = (prevEditOperationType !== EditOperationType.DeletingLeft);
+		let commAnds: ArrAy<ICommAnd | null> = [];
+		let shouldPushStAckElementBefore = (prevEditOperAtionType !== EditOperAtionType.DeletingLeft);
 		for (let i = 0, len = selections.length; i < len; i++) {
 			const selection = selections[i];
 
-			let deleteSelection: Range = selection;
+			let deleteSelection: RAnge = selection;
 
 			if (deleteSelection.isEmpty()) {
 				let position = selection.getPosition();
 
-				if (config.useTabStops && position.column > 1) {
+				if (config.useTAbStops && position.column > 1) {
 					let lineContent = model.getLineContent(position.lineNumber);
 
-					let firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineContent);
-					let lastIndentationColumn = (
-						firstNonWhitespaceIndex === -1
-							? /* entire string is whitespace */lineContent.length + 1
-							: firstNonWhitespaceIndex + 1
+					let firstNonWhitespAceIndex = strings.firstNonWhitespAceIndex(lineContent);
+					let lAstIndentAtionColumn = (
+						firstNonWhitespAceIndex === -1
+							? /* entire string is whitespAce */lineContent.length + 1
+							: firstNonWhitespAceIndex + 1
 					);
 
-					if (position.column <= lastIndentationColumn) {
+					if (position.column <= lAstIndentAtionColumn) {
 						let fromVisibleColumn = CursorColumns.visibleColumnFromColumn2(config, model, position);
-						let toVisibleColumn = CursorColumns.prevIndentTabStop(fromVisibleColumn, config.indentSize);
+						let toVisibleColumn = CursorColumns.prevIndentTAbStop(fromVisibleColumn, config.indentSize);
 						let toColumn = CursorColumns.columnFromVisibleColumn2(config, model, position.lineNumber, toVisibleColumn);
-						deleteSelection = new Range(position.lineNumber, toColumn, position.lineNumber, position.column);
+						deleteSelection = new RAnge(position.lineNumber, toColumn, position.lineNumber, position.column);
 					} else {
-						deleteSelection = new Range(position.lineNumber, position.column - 1, position.lineNumber, position.column);
+						deleteSelection = new RAnge(position.lineNumber, position.column - 1, position.lineNumber, position.column);
 					}
 				} else {
-					let leftOfPosition = MoveOperations.left(config, model, position.lineNumber, position.column);
-					deleteSelection = new Range(
+					let leftOfPosition = MoveOperAtions.left(config, model, position.lineNumber, position.column);
+					deleteSelection = new RAnge(
 						leftOfPosition.lineNumber,
 						leftOfPosition.column,
 						position.lineNumber,
@@ -166,79 +166,79 @@ export class DeleteOperations {
 			}
 
 			if (deleteSelection.isEmpty()) {
-				// Probably at beginning of file => ignore
-				commands[i] = null;
+				// ProbAbly At beginning of file => ignore
+				commAnds[i] = null;
 				continue;
 			}
 
-			if (deleteSelection.startLineNumber !== deleteSelection.endLineNumber) {
-				shouldPushStackElementBefore = true;
+			if (deleteSelection.stArtLineNumber !== deleteSelection.endLineNumber) {
+				shouldPushStAckElementBefore = true;
 			}
 
-			commands[i] = new ReplaceCommand(deleteSelection, '');
+			commAnds[i] = new ReplAceCommAnd(deleteSelection, '');
 		}
-		return [shouldPushStackElementBefore, commands];
+		return [shouldPushStAckElementBefore, commAnds];
 	}
 
-	public static cut(config: CursorConfiguration, model: ICursorSimpleModel, selections: Selection[]): EditOperationResult {
-		let commands: Array<ICommand | null> = [];
+	public stAtic cut(config: CursorConfigurAtion, model: ICursorSimpleModel, selections: Selection[]): EditOperAtionResult {
+		let commAnds: ArrAy<ICommAnd | null> = [];
 		for (let i = 0, len = selections.length; i < len; i++) {
 			const selection = selections[i];
 
 			if (selection.isEmpty()) {
-				if (config.emptySelectionClipboard) {
-					// This is a full line cut
+				if (config.emptySelectionClipboArd) {
+					// This is A full line cut
 
 					let position = selection.getPosition();
 
-					let startLineNumber: number,
-						startColumn: number,
+					let stArtLineNumber: number,
+						stArtColumn: number,
 						endLineNumber: number,
 						endColumn: number;
 
 					if (position.lineNumber < model.getLineCount()) {
-						// Cutting a line in the middle of the model
-						startLineNumber = position.lineNumber;
-						startColumn = 1;
+						// Cutting A line in the middle of the model
+						stArtLineNumber = position.lineNumber;
+						stArtColumn = 1;
 						endLineNumber = position.lineNumber + 1;
 						endColumn = 1;
 					} else if (position.lineNumber > 1) {
-						// Cutting the last line & there are more than 1 lines in the model
-						startLineNumber = position.lineNumber - 1;
-						startColumn = model.getLineMaxColumn(position.lineNumber - 1);
+						// Cutting the lAst line & there Are more thAn 1 lines in the model
+						stArtLineNumber = position.lineNumber - 1;
+						stArtColumn = model.getLineMAxColumn(position.lineNumber - 1);
 						endLineNumber = position.lineNumber;
-						endColumn = model.getLineMaxColumn(position.lineNumber);
+						endColumn = model.getLineMAxColumn(position.lineNumber);
 					} else {
-						// Cutting the single line that the model contains
-						startLineNumber = position.lineNumber;
-						startColumn = 1;
+						// Cutting the single line thAt the model contAins
+						stArtLineNumber = position.lineNumber;
+						stArtColumn = 1;
 						endLineNumber = position.lineNumber;
-						endColumn = model.getLineMaxColumn(position.lineNumber);
+						endColumn = model.getLineMAxColumn(position.lineNumber);
 					}
 
-					let deleteSelection = new Range(
-						startLineNumber,
-						startColumn,
+					let deleteSelection = new RAnge(
+						stArtLineNumber,
+						stArtColumn,
 						endLineNumber,
 						endColumn
 					);
 
 					if (!deleteSelection.isEmpty()) {
-						commands[i] = new ReplaceCommand(deleteSelection, '');
+						commAnds[i] = new ReplAceCommAnd(deleteSelection, '');
 					} else {
-						commands[i] = null;
+						commAnds[i] = null;
 					}
 				} else {
-					// Cannot cut empty selection
-					commands[i] = null;
+					// CAnnot cut empty selection
+					commAnds[i] = null;
 				}
 			} else {
-				commands[i] = new ReplaceCommand(selection, '');
+				commAnds[i] = new ReplAceCommAnd(selection, '');
 			}
 		}
-		return new EditOperationResult(EditOperationType.Other, commands, {
-			shouldPushStackElementBefore: true,
-			shouldPushStackElementAfter: true
+		return new EditOperAtionResult(EditOperAtionType.Other, commAnds, {
+			shouldPushStAckElementBefore: true,
+			shouldPushStAckElementAfter: true
 		});
 	}
 }

@@ -1,64 +1,64 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
 // @ts-check
 
-import * as path from 'path';
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
+import * As pAth from 'pAth';
+import { spAwn } from 'child_process';
+import { promises As fs } from 'fs';
 
-const yarn = process.platform === 'win32' ? 'yarn.cmd' : 'yarn';
-const rootDir = path.resolve(__dirname, '..', '..');
+const yArn = process.plAtform === 'win32' ? 'yArn.cmd' : 'yArn';
+const rootDir = pAth.resolve(__dirnAme, '..', '..');
 
-function runProcess(command: string, args: ReadonlyArray<string> = []) {
+function runProcess(commAnd: string, Args: ReAdonlyArrAy<string> = []) {
 	return new Promise<void>((resolve, reject) => {
-		const child = spawn(command, args, { cwd: rootDir, stdio: 'inherit', env: process.env });
+		const child = spAwn(commAnd, Args, { cwd: rootDir, stdio: 'inherit', env: process.env });
 		child.on('exit', err => !err ? resolve() : process.exit(err ?? 1));
 		child.on('error', reject);
 	});
 }
 
-async function exists(subdir: string) {
+Async function exists(subdir: string) {
 	try {
-		await fs.stat(path.join(rootDir, subdir));
+		AwAit fs.stAt(pAth.join(rootDir, subdir));
 		return true;
-	} catch {
-		return false;
+	} cAtch {
+		return fAlse;
 	}
 }
 
-async function ensureNodeModules() {
-	if (!(await exists('node_modules'))) {
-		await runProcess(yarn);
+Async function ensureNodeModules() {
+	if (!(AwAit exists('node_modules'))) {
+		AwAit runProcess(yArn);
 	}
 }
 
-async function getElectron() {
-	await runProcess(yarn, ['electron']);
+Async function getElectron() {
+	AwAit runProcess(yArn, ['electron']);
 }
 
-async function ensureCompiled() {
-	if (!(await exists('out'))) {
-		await runProcess(yarn, ['compile']);
+Async function ensureCompiled() {
+	if (!(AwAit exists('out'))) {
+		AwAit runProcess(yArn, ['compile']);
 	}
 }
 
-async function main() {
-	await ensureNodeModules();
-	await getElectron();
-	await ensureCompiled();
+Async function mAin() {
+	AwAit ensureNodeModules();
+	AwAit getElectron();
+	AwAit ensureCompiled();
 
-	// Can't require this until after dependencies are installed
+	// CAn't require this until After dependencies Are instAlled
 	const { getBuiltInExtensions } = require('./builtInExtensions');
-	await getBuiltInExtensions();
+	AwAit getBuiltInExtensions();
 }
 
-if (require.main === module) {
-	main().catch(err => {
+if (require.mAin === module) {
+	mAin().cAtch(err => {
 		console.error(err);
 		process.exit(1);
 	});

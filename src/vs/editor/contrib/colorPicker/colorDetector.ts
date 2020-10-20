@@ -1,119 +1,119 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancelablePromise, TimeoutTimer, createCancelablePromise } from 'vs/base/common/async';
-import { RGBA } from 'vs/base/common/color';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { hash } from 'vs/base/common/hash';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { CAncelAblePromise, TimeoutTimer, creAteCAncelAblePromise } from 'vs/bAse/common/Async';
+import { RGBA } from 'vs/bAse/common/color';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { hAsh } from 'vs/bAse/common/hAsh';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { IModelDeltaDecoration } from 'vs/editor/common/model';
-import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
+import { IModelDeltADecorAtion } from 'vs/editor/common/model';
+import { ModelDecorAtionOptions } from 'vs/editor/common/model/textModel';
 import { ColorProviderRegistry } from 'vs/editor/common/modes';
-import { IColorData, getColors } from 'vs/editor/contrib/colorPicker/color';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IColorDAtA, getColors } from 'vs/editor/contrib/colorPicker/color';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 
 const MAX_DECORATORS = 500;
 
-export class ColorDetector extends Disposable implements IEditorContribution {
+export clAss ColorDetector extends DisposAble implements IEditorContribution {
 
-	public static readonly ID: string = 'editor.contrib.colorDetector';
+	public stAtic reAdonly ID: string = 'editor.contrib.colorDetector';
 
-	static readonly RECOMPUTE_TIME = 1000; // ms
+	stAtic reAdonly RECOMPUTE_TIME = 1000; // ms
 
-	private readonly _localToDispose = this._register(new DisposableStore());
-	private _computePromise: CancelablePromise<IColorData[]> | null;
-	private _timeoutTimer: TimeoutTimer | null;
+	privAte reAdonly _locAlToDispose = this._register(new DisposAbleStore());
+	privAte _computePromise: CAncelAblePromise<IColorDAtA[]> | null;
+	privAte _timeoutTimer: TimeoutTimer | null;
 
-	private _decorationsIds: string[] = [];
-	private _colorDatas = new Map<string, IColorData>();
+	privAte _decorAtionsIds: string[] = [];
+	privAte _colorDAtAs = new MAp<string, IColorDAtA>();
 
-	private _colorDecoratorIds: string[] = [];
-	private readonly _decorationsTypes = new Set<string>();
+	privAte _colorDecorAtorIds: string[] = [];
+	privAte reAdonly _decorAtionsTypes = new Set<string>();
 
-	private _isEnabled: boolean;
+	privAte _isEnAbled: booleAn;
 
-	constructor(private readonly _editor: ICodeEditor,
-		@ICodeEditorService private readonly _codeEditorService: ICodeEditorService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+	constructor(privAte reAdonly _editor: ICodeEditor,
+		@ICodeEditorService privAte reAdonly _codeEditorService: ICodeEditorService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
 		super();
-		this._register(_editor.onDidChangeModel((e) => {
-			this._isEnabled = this.isEnabled();
-			this.onModelChanged();
+		this._register(_editor.onDidChAngeModel((e) => {
+			this._isEnAbled = this.isEnAbled();
+			this.onModelChAnged();
 		}));
-		this._register(_editor.onDidChangeModelLanguage((e) => this.onModelChanged()));
-		this._register(ColorProviderRegistry.onDidChange((e) => this.onModelChanged()));
-		this._register(_editor.onDidChangeConfiguration((e) => {
-			let prevIsEnabled = this._isEnabled;
-			this._isEnabled = this.isEnabled();
-			if (prevIsEnabled !== this._isEnabled) {
-				if (this._isEnabled) {
-					this.onModelChanged();
+		this._register(_editor.onDidChAngeModelLAnguAge((e) => this.onModelChAnged()));
+		this._register(ColorProviderRegistry.onDidChAnge((e) => this.onModelChAnged()));
+		this._register(_editor.onDidChAngeConfigurAtion((e) => {
+			let prevIsEnAbled = this._isEnAbled;
+			this._isEnAbled = this.isEnAbled();
+			if (prevIsEnAbled !== this._isEnAbled) {
+				if (this._isEnAbled) {
+					this.onModelChAnged();
 				} else {
-					this.removeAllDecorations();
+					this.removeAllDecorAtions();
 				}
 			}
 		}));
 
 		this._timeoutTimer = null;
 		this._computePromise = null;
-		this._isEnabled = this.isEnabled();
-		this.onModelChanged();
+		this._isEnAbled = this.isEnAbled();
+		this.onModelChAnged();
 	}
 
-	isEnabled(): boolean {
+	isEnAbled(): booleAn {
 		const model = this._editor.getModel();
 		if (!model) {
-			return false;
+			return fAlse;
 		}
-		const languageId = model.getLanguageIdentifier();
-		// handle deprecated settings. [languageId].colorDecorators.enable
-		const deprecatedConfig = this._configurationService.getValue<{}>(languageId.language);
-		if (deprecatedConfig) {
-			const colorDecorators = (deprecatedConfig as any)['colorDecorators']; // deprecatedConfig.valueOf('.colorDecorators.enable');
-			if (colorDecorators && colorDecorators['enable'] !== undefined && !colorDecorators['enable']) {
-				return colorDecorators['enable'];
+		const lAnguAgeId = model.getLAnguAgeIdentifier();
+		// hAndle deprecAted settings. [lAnguAgeId].colorDecorAtors.enAble
+		const deprecAtedConfig = this._configurAtionService.getVAlue<{}>(lAnguAgeId.lAnguAge);
+		if (deprecAtedConfig) {
+			const colorDecorAtors = (deprecAtedConfig As Any)['colorDecorAtors']; // deprecAtedConfig.vAlueOf('.colorDecorAtors.enAble');
+			if (colorDecorAtors && colorDecorAtors['enAble'] !== undefined && !colorDecorAtors['enAble']) {
+				return colorDecorAtors['enAble'];
 			}
 		}
 
-		return this._editor.getOption(EditorOption.colorDecorators);
+		return this._editor.getOption(EditorOption.colorDecorAtors);
 	}
 
-	static get(editor: ICodeEditor): ColorDetector {
+	stAtic get(editor: ICodeEditor): ColorDetector {
 		return editor.getContribution<ColorDetector>(this.ID);
 	}
 
 	dispose(): void {
 		this.stop();
-		this.removeAllDecorations();
+		this.removeAllDecorAtions();
 		super.dispose();
 	}
 
-	private onModelChanged(): void {
+	privAte onModelChAnged(): void {
 		this.stop();
 
-		if (!this._isEnabled) {
+		if (!this._isEnAbled) {
 			return;
 		}
 		const model = this._editor.getModel();
 
-		if (!model || !ColorProviderRegistry.has(model)) {
+		if (!model || !ColorProviderRegistry.hAs(model)) {
 			return;
 		}
 
-		this._localToDispose.add(this._editor.onDidChangeModelContent((e) => {
+		this._locAlToDispose.Add(this._editor.onDidChAngeModelContent((e) => {
 			if (!this._timeoutTimer) {
 				this._timeoutTimer = new TimeoutTimer();
-				this._timeoutTimer.cancelAndSet(() => {
+				this._timeoutTimer.cAncelAndSet(() => {
 					this._timeoutTimer = null;
 					this.beginCompute();
 				}, ColorDetector.RECOMPUTE_TIME);
@@ -122,8 +122,8 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 		this.beginCompute();
 	}
 
-	private beginCompute(): void {
-		this._computePromise = createCancelablePromise(token => {
+	privAte beginCompute(): void {
+		this._computePromise = creAteCAncelAblePromise(token => {
 			const model = this._editor.getModel();
 			if (!model) {
 				return Promise.resolve([]);
@@ -131,63 +131,63 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 			return getColors(model, token);
 		});
 		this._computePromise.then((colorInfos) => {
-			this.updateDecorations(colorInfos);
-			this.updateColorDecorators(colorInfos);
+			this.updAteDecorAtions(colorInfos);
+			this.updAteColorDecorAtors(colorInfos);
 			this._computePromise = null;
 		}, onUnexpectedError);
 	}
 
-	private stop(): void {
+	privAte stop(): void {
 		if (this._timeoutTimer) {
-			this._timeoutTimer.cancel();
+			this._timeoutTimer.cAncel();
 			this._timeoutTimer = null;
 		}
 		if (this._computePromise) {
-			this._computePromise.cancel();
+			this._computePromise.cAncel();
 			this._computePromise = null;
 		}
-		this._localToDispose.clear();
+		this._locAlToDispose.cleAr();
 	}
 
-	private updateDecorations(colorDatas: IColorData[]): void {
-		const decorations = colorDatas.map(c => ({
-			range: {
-				startLineNumber: c.colorInfo.range.startLineNumber,
-				startColumn: c.colorInfo.range.startColumn,
-				endLineNumber: c.colorInfo.range.endLineNumber,
-				endColumn: c.colorInfo.range.endColumn
+	privAte updAteDecorAtions(colorDAtAs: IColorDAtA[]): void {
+		const decorAtions = colorDAtAs.mAp(c => ({
+			rAnge: {
+				stArtLineNumber: c.colorInfo.rAnge.stArtLineNumber,
+				stArtColumn: c.colorInfo.rAnge.stArtColumn,
+				endLineNumber: c.colorInfo.rAnge.endLineNumber,
+				endColumn: c.colorInfo.rAnge.endColumn
 			},
-			options: ModelDecorationOptions.EMPTY
+			options: ModelDecorAtionOptions.EMPTY
 		}));
 
-		this._decorationsIds = this._editor.deltaDecorations(this._decorationsIds, decorations);
+		this._decorAtionsIds = this._editor.deltADecorAtions(this._decorAtionsIds, decorAtions);
 
-		this._colorDatas = new Map<string, IColorData>();
-		this._decorationsIds.forEach((id, i) => this._colorDatas.set(id, colorDatas[i]));
+		this._colorDAtAs = new MAp<string, IColorDAtA>();
+		this._decorAtionsIds.forEAch((id, i) => this._colorDAtAs.set(id, colorDAtAs[i]));
 	}
 
-	private updateColorDecorators(colorData: IColorData[]): void {
-		let decorations: IModelDeltaDecoration[] = [];
-		let newDecorationsTypes: { [key: string]: boolean } = {};
+	privAte updAteColorDecorAtors(colorDAtA: IColorDAtA[]): void {
+		let decorAtions: IModelDeltADecorAtion[] = [];
+		let newDecorAtionsTypes: { [key: string]: booleAn } = {};
 
-		for (let i = 0; i < colorData.length && decorations.length < MAX_DECORATORS; i++) {
-			const { red, green, blue, alpha } = colorData[i].colorInfo.color;
-			const rgba = new RGBA(Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255), alpha);
-			let subKey = hash(`rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`).toString(16);
-			let color = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`;
+		for (let i = 0; i < colorDAtA.length && decorAtions.length < MAX_DECORATORS; i++) {
+			const { red, green, blue, AlphA } = colorDAtA[i].colorInfo.color;
+			const rgbA = new RGBA(MAth.round(red * 255), MAth.round(green * 255), MAth.round(blue * 255), AlphA);
+			let subKey = hAsh(`rgbA(${rgbA.r},${rgbA.g},${rgbA.b},${rgbA.A})`).toString(16);
+			let color = `rgbA(${rgbA.r}, ${rgbA.g}, ${rgbA.b}, ${rgbA.A})`;
 			let key = 'colorBox-' + subKey;
 
-			if (!this._decorationsTypes.has(key) && !newDecorationsTypes[key]) {
-				this._codeEditorService.registerDecorationType(key, {
+			if (!this._decorAtionsTypes.hAs(key) && !newDecorAtionsTypes[key]) {
+				this._codeEditorService.registerDecorAtionType(key, {
 					before: {
 						contentText: ' ',
 						border: 'solid 0.1em #000',
-						margin: '0.1em 0.2em 0 0.2em',
+						mArgin: '0.1em 0.2em 0 0.2em',
 						width: '0.8em',
 						height: '0.8em',
-						backgroundColor: color
+						bAckgroundColor: color
 					},
-					dark: {
+					dArk: {
 						before: {
 							border: 'solid 0.1em #eee'
 						}
@@ -195,51 +195,51 @@ export class ColorDetector extends Disposable implements IEditorContribution {
 				}, undefined, this._editor);
 			}
 
-			newDecorationsTypes[key] = true;
-			decorations.push({
-				range: {
-					startLineNumber: colorData[i].colorInfo.range.startLineNumber,
-					startColumn: colorData[i].colorInfo.range.startColumn,
-					endLineNumber: colorData[i].colorInfo.range.endLineNumber,
-					endColumn: colorData[i].colorInfo.range.endColumn
+			newDecorAtionsTypes[key] = true;
+			decorAtions.push({
+				rAnge: {
+					stArtLineNumber: colorDAtA[i].colorInfo.rAnge.stArtLineNumber,
+					stArtColumn: colorDAtA[i].colorInfo.rAnge.stArtColumn,
+					endLineNumber: colorDAtA[i].colorInfo.rAnge.endLineNumber,
+					endColumn: colorDAtA[i].colorInfo.rAnge.endColumn
 				},
-				options: this._codeEditorService.resolveDecorationOptions(key, true)
+				options: this._codeEditorService.resolveDecorAtionOptions(key, true)
 			});
 		}
 
-		this._decorationsTypes.forEach(subType => {
-			if (!newDecorationsTypes[subType]) {
-				this._codeEditorService.removeDecorationType(subType);
+		this._decorAtionsTypes.forEAch(subType => {
+			if (!newDecorAtionsTypes[subType]) {
+				this._codeEditorService.removeDecorAtionType(subType);
 			}
 		});
 
-		this._colorDecoratorIds = this._editor.deltaDecorations(this._colorDecoratorIds, decorations);
+		this._colorDecorAtorIds = this._editor.deltADecorAtions(this._colorDecorAtorIds, decorAtions);
 	}
 
-	private removeAllDecorations(): void {
-		this._decorationsIds = this._editor.deltaDecorations(this._decorationsIds, []);
-		this._colorDecoratorIds = this._editor.deltaDecorations(this._colorDecoratorIds, []);
+	privAte removeAllDecorAtions(): void {
+		this._decorAtionsIds = this._editor.deltADecorAtions(this._decorAtionsIds, []);
+		this._colorDecorAtorIds = this._editor.deltADecorAtions(this._colorDecorAtorIds, []);
 
-		this._decorationsTypes.forEach(subType => {
-			this._codeEditorService.removeDecorationType(subType);
+		this._decorAtionsTypes.forEAch(subType => {
+			this._codeEditorService.removeDecorAtionType(subType);
 		});
 	}
 
-	getColorData(position: Position): IColorData | null {
+	getColorDAtA(position: Position): IColorDAtA | null {
 		const model = this._editor.getModel();
 		if (!model) {
 			return null;
 		}
 
-		const decorations = model
-			.getDecorationsInRange(Range.fromPositions(position, position))
-			.filter(d => this._colorDatas.has(d.id));
+		const decorAtions = model
+			.getDecorAtionsInRAnge(RAnge.fromPositions(position, position))
+			.filter(d => this._colorDAtAs.hAs(d.id));
 
-		if (decorations.length === 0) {
+		if (decorAtions.length === 0) {
 			return null;
 		}
 
-		return this._colorDatas.get(decorations[0].id)!;
+		return this._colorDAtAs.get(decorAtions[0].id)!;
 	}
 }
 

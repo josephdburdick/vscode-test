@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./keybindingLabel';
-import { equals } from 'vs/base/common/objects';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { ResolvedKeybinding, ResolvedKeybindingPart } from 'vs/base/common/keyCodes';
-import { UILabelProvider } from 'vs/base/common/keybindingLabels';
-import * as dom from 'vs/base/browser/dom';
-import { localize } from 'vs/nls';
+import 'vs/css!./keybindingLAbel';
+import { equAls } from 'vs/bAse/common/objects';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { ResolvedKeybinding, ResolvedKeybindingPArt } from 'vs/bAse/common/keyCodes';
+import { UILAbelProvider } from 'vs/bAse/common/keybindingLAbels';
+import * As dom from 'vs/bAse/browser/dom';
+import { locAlize } from 'vs/nls';
 
 const $ = dom.$;
 
-export interface PartMatches {
-	ctrlKey?: boolean;
-	shiftKey?: boolean;
-	altKey?: boolean;
-	metaKey?: boolean;
-	keyCode?: boolean;
+export interfAce PArtMAtches {
+	ctrlKey?: booleAn;
+	shiftKey?: booleAn;
+	AltKey?: booleAn;
+	metAKey?: booleAn;
+	keyCode?: booleAn;
 }
 
-export interface Matches {
-	firstPart: PartMatches;
-	chordPart: PartMatches;
+export interfAce MAtches {
+	firstPArt: PArtMAtches;
+	chordPArt: PArtMAtches;
 }
 
-export interface KeybindingLabelOptions {
-	renderUnboundKeybindings: boolean;
+export interfAce KeybindingLAbelOptions {
+	renderUnboundKeybindings: booleAn;
 }
 
-export class KeybindingLabel {
+export clAss KeybindingLAbel {
 
-	private domNode: HTMLElement;
-	private keybinding: ResolvedKeybinding | undefined;
-	private matches: Matches | undefined;
-	private didEverRender: boolean;
+	privAte domNode: HTMLElement;
+	privAte keybinding: ResolvedKeybinding | undefined;
+	privAte mAtches: MAtches | undefined;
+	privAte didEverRender: booleAn;
 
-	constructor(container: HTMLElement, private os: OperatingSystem, private options?: KeybindingLabelOptions) {
-		this.domNode = dom.append(container, $('.monaco-keybinding'));
-		this.didEverRender = false;
-		container.appendChild(this.domNode);
+	constructor(contAiner: HTMLElement, privAte os: OperAtingSystem, privAte options?: KeybindingLAbelOptions) {
+		this.domNode = dom.Append(contAiner, $('.monAco-keybinding'));
+		this.didEverRender = fAlse;
+		contAiner.AppendChild(this.domNode);
 	}
 
 	get element(): HTMLElement {
 		return this.domNode;
 	}
 
-	set(keybinding: ResolvedKeybinding | undefined, matches?: Matches) {
-		if (this.didEverRender && this.keybinding === keybinding && KeybindingLabel.areSame(this.matches, matches)) {
+	set(keybinding: ResolvedKeybinding | undefined, mAtches?: MAtches) {
+		if (this.didEverRender && this.keybinding === keybinding && KeybindingLAbel.AreSAme(this.mAtches, mAtches)) {
 			return;
 		}
 
 		this.keybinding = keybinding;
-		this.matches = matches;
+		this.mAtches = mAtches;
 		this.render();
 	}
 
-	private render() {
-		dom.clearNode(this.domNode);
+	privAte render() {
+		dom.cleArNode(this.domNode);
 
 		if (this.keybinding) {
-			let [firstPart, chordPart] = this.keybinding.getParts();
-			if (firstPart) {
-				this.renderPart(this.domNode, firstPart, this.matches ? this.matches.firstPart : null);
+			let [firstPArt, chordPArt] = this.keybinding.getPArts();
+			if (firstPArt) {
+				this.renderPArt(this.domNode, firstPArt, this.mAtches ? this.mAtches.firstPArt : null);
 			}
-			if (chordPart) {
-				dom.append(this.domNode, $('span.monaco-keybinding-key-chord-separator', undefined, ' '));
-				this.renderPart(this.domNode, chordPart, this.matches ? this.matches.chordPart : null);
+			if (chordPArt) {
+				dom.Append(this.domNode, $('spAn.monAco-keybinding-key-chord-sepArAtor', undefined, ' '));
+				this.renderPArt(this.domNode, chordPArt, this.mAtches ? this.mAtches.chordPArt : null);
 			}
-			this.domNode.title = this.keybinding.getAriaLabel() || '';
+			this.domNode.title = this.keybinding.getAriALAbel() || '';
 		} else if (this.options && this.options.renderUnboundKeybindings) {
 			this.renderUnbound(this.domNode);
 		}
@@ -77,41 +77,41 @@ export class KeybindingLabel {
 		this.didEverRender = true;
 	}
 
-	private renderPart(parent: HTMLElement, part: ResolvedKeybindingPart, match: PartMatches | null) {
-		const modifierLabels = UILabelProvider.modifierLabels[this.os];
-		if (part.ctrlKey) {
-			this.renderKey(parent, modifierLabels.ctrlKey, Boolean(match?.ctrlKey), modifierLabels.separator);
+	privAte renderPArt(pArent: HTMLElement, pArt: ResolvedKeybindingPArt, mAtch: PArtMAtches | null) {
+		const modifierLAbels = UILAbelProvider.modifierLAbels[this.os];
+		if (pArt.ctrlKey) {
+			this.renderKey(pArent, modifierLAbels.ctrlKey, BooleAn(mAtch?.ctrlKey), modifierLAbels.sepArAtor);
 		}
-		if (part.shiftKey) {
-			this.renderKey(parent, modifierLabels.shiftKey, Boolean(match?.shiftKey), modifierLabels.separator);
+		if (pArt.shiftKey) {
+			this.renderKey(pArent, modifierLAbels.shiftKey, BooleAn(mAtch?.shiftKey), modifierLAbels.sepArAtor);
 		}
-		if (part.altKey) {
-			this.renderKey(parent, modifierLabels.altKey, Boolean(match?.altKey), modifierLabels.separator);
+		if (pArt.AltKey) {
+			this.renderKey(pArent, modifierLAbels.AltKey, BooleAn(mAtch?.AltKey), modifierLAbels.sepArAtor);
 		}
-		if (part.metaKey) {
-			this.renderKey(parent, modifierLabels.metaKey, Boolean(match?.metaKey), modifierLabels.separator);
+		if (pArt.metAKey) {
+			this.renderKey(pArent, modifierLAbels.metAKey, BooleAn(mAtch?.metAKey), modifierLAbels.sepArAtor);
 		}
-		const keyLabel = part.keyLabel;
-		if (keyLabel) {
-			this.renderKey(parent, keyLabel, Boolean(match?.keyCode), '');
-		}
-	}
-
-	private renderKey(parent: HTMLElement, label: string, highlight: boolean, separator: string): void {
-		dom.append(parent, $('span.monaco-keybinding-key' + (highlight ? '.highlight' : ''), undefined, label));
-		if (separator) {
-			dom.append(parent, $('span.monaco-keybinding-key-separator', undefined, separator));
+		const keyLAbel = pArt.keyLAbel;
+		if (keyLAbel) {
+			this.renderKey(pArent, keyLAbel, BooleAn(mAtch?.keyCode), '');
 		}
 	}
 
-	private renderUnbound(parent: HTMLElement): void {
-		dom.append(parent, $('span.monaco-keybinding-key', undefined, localize('unbound', "Unbound")));
+	privAte renderKey(pArent: HTMLElement, lAbel: string, highlight: booleAn, sepArAtor: string): void {
+		dom.Append(pArent, $('spAn.monAco-keybinding-key' + (highlight ? '.highlight' : ''), undefined, lAbel));
+		if (sepArAtor) {
+			dom.Append(pArent, $('spAn.monAco-keybinding-key-sepArAtor', undefined, sepArAtor));
+		}
 	}
 
-	private static areSame(a: Matches | undefined, b: Matches | undefined): boolean {
-		if (a === b || (!a && !b)) {
+	privAte renderUnbound(pArent: HTMLElement): void {
+		dom.Append(pArent, $('spAn.monAco-keybinding-key', undefined, locAlize('unbound', "Unbound")));
+	}
+
+	privAte stAtic AreSAme(A: MAtches | undefined, b: MAtches | undefined): booleAn {
+		if (A === b || (!A && !b)) {
 			return true;
 		}
-		return !!a && !!b && equals(a.firstPart, b.firstPart) && equals(a.chordPart, b.chordPart);
+		return !!A && !!b && equAls(A.firstPArt, b.firstPArt) && equAls(A.chordPArt, b.chordPArt);
 	}
 }

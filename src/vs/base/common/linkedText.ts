@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { memoize } from 'vs/base/common/decorators';
+import { memoize } from 'vs/bAse/common/decorAtors';
 
-export interface ILink {
-	readonly label: string;
-	readonly href: string;
-	readonly title?: string;
+export interfAce ILink {
+	reAdonly lAbel: string;
+	reAdonly href: string;
+	reAdonly title?: string;
 }
 
 export type LinkedTextNode = string | ILink;
 
-export class LinkedText {
+export clAss LinkedText {
 
-	constructor(readonly nodes: LinkedTextNode[]) { }
+	constructor(reAdonly nodes: LinkedTextNode[]) { }
 
 	@memoize
 	toString(): string {
-		return this.nodes.map(node => typeof node === 'string' ? node : node.label).join('');
+		return this.nodes.mAp(node => typeof node === 'string' ? node : node.lAbel).join('');
 	}
 }
 
-const LINK_REGEX = /\[([^\]]+)\]\(((?:https?:\/\/|command:)[^\)\s]+)(?: ("|')([^\3]+)(\3))?\)/gi;
+const LINK_REGEX = /\[([^\]]+)\]\(((?:https?:\/\/|commAnd:)[^\)\s]+)(?: ("|')([^\3]+)(\3))?\)/gi;
 
-export function parseLinkedText(text: string): LinkedText {
+export function pArseLinkedText(text: string): LinkedText {
 	const result: LinkedTextNode[] = [];
 
 	let index = 0;
-	let match: RegExpExecArray | null;
+	let mAtch: RegExpExecArrAy | null;
 
-	while (match = LINK_REGEX.exec(text)) {
-		if (match.index - index > 0) {
-			result.push(text.substring(index, match.index));
+	while (mAtch = LINK_REGEX.exec(text)) {
+		if (mAtch.index - index > 0) {
+			result.push(text.substring(index, mAtch.index));
 		}
 
-		const [, label, href, , title] = match;
+		const [, lAbel, href, , title] = mAtch;
 
 		if (title) {
-			result.push({ label, href, title });
+			result.push({ lAbel, href, title });
 		} else {
-			result.push({ label, href });
+			result.push({ lAbel, href });
 		}
 
-		index = match.index + match[0].length;
+		index = mAtch.index + mAtch[0].length;
 	}
 
 	if (index < text.length) {

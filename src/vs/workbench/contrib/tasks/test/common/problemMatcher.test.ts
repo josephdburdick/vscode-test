@@ -1,257 +1,257 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as matchers from 'vs/workbench/contrib/tasks/common/problemMatcher';
+import * As mAtchers from 'vs/workbench/contrib/tAsks/common/problemMAtcher';
 
-import * as assert from 'assert';
-import { ValidationState, IProblemReporter, ValidationStatus } from 'vs/base/common/parsers';
+import * As Assert from 'Assert';
+import { VAlidAtionStAte, IProblemReporter, VAlidAtionStAtus } from 'vs/bAse/common/pArsers';
 
-class ProblemReporter implements IProblemReporter {
-	private _validationStatus: ValidationStatus;
-	private _messages: string[];
+clAss ProblemReporter implements IProblemReporter {
+	privAte _vAlidAtionStAtus: VAlidAtionStAtus;
+	privAte _messAges: string[];
 
 	constructor() {
-		this._validationStatus = new ValidationStatus();
-		this._messages = [];
+		this._vAlidAtionStAtus = new VAlidAtionStAtus();
+		this._messAges = [];
 	}
 
-	public info(message: string): void {
-		this._messages.push(message);
-		this._validationStatus.state = ValidationState.Info;
+	public info(messAge: string): void {
+		this._messAges.push(messAge);
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.Info;
 	}
 
-	public warn(message: string): void {
-		this._messages.push(message);
-		this._validationStatus.state = ValidationState.Warning;
+	public wArn(messAge: string): void {
+		this._messAges.push(messAge);
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.WArning;
 	}
 
-	public error(message: string): void {
-		this._messages.push(message);
-		this._validationStatus.state = ValidationState.Error;
+	public error(messAge: string): void {
+		this._messAges.push(messAge);
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.Error;
 	}
 
-	public fatal(message: string): void {
-		this._messages.push(message);
-		this._validationStatus.state = ValidationState.Fatal;
+	public fAtAl(messAge: string): void {
+		this._messAges.push(messAge);
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.FAtAl;
 	}
 
-	public hasMessage(message: string): boolean {
-		return this._messages.indexOf(message) !== null;
+	public hAsMessAge(messAge: string): booleAn {
+		return this._messAges.indexOf(messAge) !== null;
 	}
-	public get messages(): string[] {
-		return this._messages;
+	public get messAges(): string[] {
+		return this._messAges;
 	}
-	public get state(): ValidationState {
-		return this._validationStatus.state;
-	}
-
-	public isOK(): boolean {
-		return this._validationStatus.isOK();
+	public get stAte(): VAlidAtionStAte {
+		return this._vAlidAtionStAtus.stAte;
 	}
 
-	public get status(): ValidationStatus {
-		return this._validationStatus;
+	public isOK(): booleAn {
+		return this._vAlidAtionStAtus.isOK();
+	}
+
+	public get stAtus(): VAlidAtionStAtus {
+		return this._vAlidAtionStAtus;
 	}
 }
 
-suite('ProblemPatternParser', () => {
+suite('ProblemPAtternPArser', () => {
 	let reporter: ProblemReporter;
-	let parser: matchers.ProblemPatternParser;
+	let pArser: mAtchers.ProblemPAtternPArser;
 	const testRegexp = new RegExp('test');
 
 	setup(() => {
 		reporter = new ProblemReporter();
-		parser = new matchers.ProblemPatternParser(reporter);
+		pArser = new mAtchers.ProblemPAtternPArser(reporter);
 	});
 
-	suite('single-pattern definitions', () => {
-		test('parses a pattern defined by only a regexp', () => {
-			let problemPattern: matchers.Config.ProblemPattern = {
+	suite('single-pAttern definitions', () => {
+		test('pArses A pAttern defined by only A regexp', () => {
+			let problemPAttern: mAtchers.Config.ProblemPAttern = {
 				regexp: 'test'
 			};
-			let parsed = parser.parse(problemPattern);
-			assert(reporter.isOK());
-			assert.deepEqual(parsed, {
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert(reporter.isOK());
+			Assert.deepEquAl(pArsed, {
 				regexp: testRegexp,
-				kind: matchers.ProblemLocationKind.Location,
+				kind: mAtchers.ProblemLocAtionKind.LocAtion,
 				file: 1,
 				line: 2,
-				character: 3,
-				message: 0
+				chArActer: 3,
+				messAge: 0
 			});
 		});
-		test('does not sets defaults for line and character if kind is File', () => {
-			let problemPattern: matchers.Config.ProblemPattern = {
+		test('does not sets defAults for line And chArActer if kind is File', () => {
+			let problemPAttern: mAtchers.Config.ProblemPAttern = {
 				regexp: 'test',
 				kind: 'file'
 			};
-			let parsed = parser.parse(problemPattern);
-			assert.deepEqual(parsed, {
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.deepEquAl(pArsed, {
 				regexp: testRegexp,
-				kind: matchers.ProblemLocationKind.File,
+				kind: mAtchers.ProblemLocAtionKind.File,
 				file: 1,
-				message: 0
+				messAge: 0
 			});
 		});
 	});
 
-	suite('multi-pattern definitions', () => {
-		test('defines a pattern based on regexp and property fields, with file/line location', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ regexp: 'test', file: 3, line: 4, column: 5, message: 6 }
+	suite('multi-pAttern definitions', () => {
+		test('defines A pAttern bAsed on regexp And property fields, with file/line locAtion', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ regexp: 'test', file: 3, line: 4, column: 5, messAge: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert(reporter.isOK());
-			assert.deepEqual(parsed,
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert(reporter.isOK());
+			Assert.deepEquAl(pArsed,
 				[{
 					regexp: testRegexp,
-					kind: matchers.ProblemLocationKind.Location,
+					kind: mAtchers.ProblemLocAtionKind.LocAtion,
 					file: 3,
 					line: 4,
-					character: 5,
-					message: 6
+					chArActer: 5,
+					messAge: 6
 				}]
 			);
 		});
-		test('defines a pattern bsaed on regexp and property fields, with location', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ regexp: 'test', file: 3, location: 4, message: 6 }
+		test('defines A pAttern bsAed on regexp And property fields, with locAtion', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ regexp: 'test', file: 3, locAtion: 4, messAge: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert(reporter.isOK());
-			assert.deepEqual(parsed,
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert(reporter.isOK());
+			Assert.deepEquAl(pArsed,
 				[{
 					regexp: testRegexp,
-					kind: matchers.ProblemLocationKind.Location,
+					kind: mAtchers.ProblemLocAtionKind.LocAtion,
 					file: 3,
-					location: 4,
-					message: 6
+					locAtion: 4,
+					messAge: 6
 				}]
 			);
 		});
-		test('accepts a pattern that provides the fields from multiple entries', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
+		test('Accepts A pAttern thAt provides the fields from multiple entries', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
 				{ regexp: 'test', file: 3 },
 				{ regexp: 'test1', line: 4 },
 				{ regexp: 'test2', column: 5 },
-				{ regexp: 'test3', message: 6 }
+				{ regexp: 'test3', messAge: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert(reporter.isOK());
-			assert.deepEqual(parsed, [
-				{ regexp: testRegexp, kind: matchers.ProblemLocationKind.Location, file: 3 },
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert(reporter.isOK());
+			Assert.deepEquAl(pArsed, [
+				{ regexp: testRegexp, kind: mAtchers.ProblemLocAtionKind.LocAtion, file: 3 },
 				{ regexp: new RegExp('test1'), line: 4 },
-				{ regexp: new RegExp('test2'), character: 5 },
-				{ regexp: new RegExp('test3'), message: 6 }
+				{ regexp: new RegExp('test2'), chArActer: 5 },
+				{ regexp: new RegExp('test3'), messAge: 6 }
 			]);
 		});
-		test('forbids setting the loop flag outside of the last element in the array', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
+		test('forbids setting the loop flAg outside of the lAst element in the ArrAy', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
 				{ regexp: 'test', file: 3, loop: true },
 				{ regexp: 'test1', line: 4 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The loop property is only supported on the last line matcher.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The loop property is only supported on the lAst line mAtcher.'));
 		});
-		test('forbids setting the kind outside of the first element of the array', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
+		test('forbids setting the kind outside of the first element of the ArrAy', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
 				{ regexp: 'test', file: 3 },
 				{ regexp: 'test1', kind: 'file', line: 4 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is invalid. The kind property must be provided only in the first element'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is invAlid. The kind property must be provided only in the first element'));
 		});
 
-		test('kind: Location requires a regexp', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ file: 0, line: 1, column: 20, message: 0 }
+		test('kind: LocAtion requires A regexp', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ file: 0, line: 1, column: 20, messAge: 0 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is missing a regular expression.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is missing A regulAr expression.'));
 		});
-		test('kind: Location requires a regexp on every entry', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
+		test('kind: LocAtion requires A regexp on every entry', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
 				{ regexp: 'test', file: 3 },
 				{ line: 4 },
 				{ regexp: 'test2', column: 5 },
-				{ regexp: 'test3', message: 6 }
+				{ regexp: 'test3', messAge: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is missing a regular expression.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is missing A regulAr expression.'));
 		});
-		test('kind: Location requires a message', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
+		test('kind: LocAtion requires A messAge', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
 				{ regexp: 'test', file: 0, line: 1, column: 20 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is invalid. It must have at least have a file and a message.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is invAlid. It must hAve At leAst hAve A file And A messAge.'));
 		});
 
-		test('kind: Location requires a file', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ regexp: 'test', line: 1, column: 20, message: 0 }
+		test('kind: LocAtion requires A file', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ regexp: 'test', line: 1, column: 20, messAge: 0 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is invalid. It must either have kind: "file" or have a line or location match group.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is invAlid. It must either hAve kind: "file" or hAve A line or locAtion mAtch group.'));
 		});
 
-		test('kind: Location requires either a line or location', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ regexp: 'test', file: 1, column: 20, message: 0 }
+		test('kind: LocAtion requires either A line or locAtion', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ regexp: 'test', file: 1, column: 20, messAge: 0 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is invalid. It must either have kind: "file" or have a line or location match group.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is invAlid. It must either hAve kind: "file" or hAve A line or locAtion mAtch group.'));
 		});
 
-		test('kind: File accepts a regexp, file and message', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ regexp: 'test', file: 2, kind: 'file', message: 6 }
+		test('kind: File Accepts A regexp, file And messAge', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ regexp: 'test', file: 2, kind: 'file', messAge: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert(reporter.isOK());
-			assert.deepEqual(parsed,
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert(reporter.isOK());
+			Assert.deepEquAl(pArsed,
 				[{
 					regexp: testRegexp,
-					kind: matchers.ProblemLocationKind.File,
+					kind: mAtchers.ProblemLocAtionKind.File,
 					file: 2,
-					message: 6
+					messAge: 6
 				}]
 			);
 		});
 
-		test('kind: File requires a file', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
-				{ regexp: 'test', kind: 'file', message: 6 }
+		test('kind: File requires A file', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
+				{ regexp: 'test', kind: 'file', messAge: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is invalid. It must have at least have a file and a message.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is invAlid. It must hAve At leAst hAve A file And A messAge.'));
 		});
 
-		test('kind: File requires a message', () => {
-			let problemPattern: matchers.Config.MultiLineProblemPattern = [
+		test('kind: File requires A messAge', () => {
+			let problemPAttern: mAtchers.Config.MultiLineProblemPAttern = [
 				{ regexp: 'test', kind: 'file', file: 6 }
 			];
-			let parsed = parser.parse(problemPattern);
-			assert.equal(null, parsed);
-			assert.equal(ValidationState.Error, reporter.state);
-			assert(reporter.hasMessage('The problem pattern is invalid. It must have at least have a file and a message.'));
+			let pArsed = pArser.pArse(problemPAttern);
+			Assert.equAl(null, pArsed);
+			Assert.equAl(VAlidAtionStAte.Error, reporter.stAte);
+			Assert(reporter.hAsMessAge('The problem pAttern is invAlid. It must hAve At leAst hAve A file And A messAge.'));
 		});
 	});
 });

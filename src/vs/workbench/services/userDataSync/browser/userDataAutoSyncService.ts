@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IUserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataSync';
-import { UserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
+import { IUserDAtAAutoSyncService } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { UserDAtAAutoSyncService } from 'vs/plAtform/userDAtASync/common/userDAtAAutoSyncService';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
-export class WebUserDataAutoSyncService extends UserDataAutoSyncService implements IUserDataAutoSyncService {
+export clAss WebUserDAtAAutoSyncService extends UserDAtAAutoSyncService implements IUserDAtAAutoSyncService {
 
-	private get workbenchEnvironmentService(): IWorkbenchEnvironmentService { return <IWorkbenchEnvironmentService>this.environmentService; }
-	private enabled: boolean | undefined = undefined;
+	privAte get workbenchEnvironmentService(): IWorkbenchEnvironmentService { return <IWorkbenchEnvironmentService>this.environmentService; }
+	privAte enAbled: booleAn | undefined = undefined;
 
-	isEnabled(): boolean {
-		if (this.enabled === undefined) {
-			this.enabled = this.workbenchEnvironmentService.options?.settingsSyncOptions?.enabled;
+	isEnAbled(): booleAn {
+		if (this.enAbled === undefined) {
+			this.enAbled = this.workbenchEnvironmentService.options?.settingsSyncOptions?.enAbled;
 		}
-		if (this.enabled === undefined) {
-			this.enabled = super.isEnabled(this.workbenchEnvironmentService.options?.enableSyncByDefault);
+		if (this.enAbled === undefined) {
+			this.enAbled = super.isEnAbled(this.workbenchEnvironmentService.options?.enAbleSyncByDefAult);
 		}
-		return this.enabled;
+		return this.enAbled;
 	}
 
-	protected setEnablement(enabled: boolean) {
-		if (this.enabled !== enabled) {
-			this.enabled = enabled;
+	protected setEnAblement(enAbled: booleAn) {
+		if (this.enAbled !== enAbled) {
+			this.enAbled = enAbled;
 			if (this.workbenchEnvironmentService.options?.settingsSyncOptions) {
-				if (this.workbenchEnvironmentService.options.settingsSyncOptions?.enablementHandler) {
-					this.workbenchEnvironmentService.options.settingsSyncOptions.enablementHandler(this.enabled);
+				if (this.workbenchEnvironmentService.options.settingsSyncOptions?.enAblementHAndler) {
+					this.workbenchEnvironmentService.options.settingsSyncOptions.enAblementHAndler(this.enAbled);
 				}
 			} else {
-				super.setEnablement(enabled);
+				super.setEnAblement(enAbled);
 			}
 		}
 	}

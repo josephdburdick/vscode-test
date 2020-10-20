@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IOutputChannelModelService, AsbtractOutputChannelModelService } from 'vs/workbench/services/output/common/outputChannelModel';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IOutputChAnnelModelService, AsbtrActOutputChAnnelModelService } from 'vs/workbench/services/output/common/outputChAnnelModel';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-export class OutputChannelModelService extends AsbtractOutputChannelModelService implements IOutputChannelModelService {
-	declare readonly _serviceBrand: undefined;
+export clAss OutputChAnnelModelService extends AsbtrActOutputChAnnelModelService implements IOutputChAnnelModelService {
+	declAre reAdonly _serviceBrAnd: undefined;
 }
 
-registerSingleton(IOutputChannelModelService, OutputChannelModelService);
+registerSingleton(IOutputChAnnelModelService, OutputChAnnelModelService);
 

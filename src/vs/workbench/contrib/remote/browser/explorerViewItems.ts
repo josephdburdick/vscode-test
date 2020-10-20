@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IAction, Action } from 'vs/base/common/actions';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { attachSelectBoxStyler } from 'vs/platform/theme/common/styler';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import * As nls from 'vs/nls';
+import { IAction, Action } from 'vs/bAse/common/Actions';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { AttAchSelectBoxStyler } from 'vs/plAtform/theme/common/styler';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
 import { IRemoteExplorerService, REMOTE_EXPLORER_TYPE_KEY } from 'vs/workbench/services/remote/common/remoteExplorerService';
-import { ISelectOptionItem } from 'vs/base/browser/ui/selectBox/selectBox';
+import { ISelectOptionItem } from 'vs/bAse/browser/ui/selectBox/selectBox';
 import { IViewDescriptor } from 'vs/workbench/common/views';
-import { isStringArray } from 'vs/base/common/types';
+import { isStringArrAy } from 'vs/bAse/common/types';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { SelectActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { SelectActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export interface IRemoteSelectItem extends ISelectOptionItem {
-	authority: string[];
+export interfAce IRemoteSelectItem extends ISelectOptionItem {
+	Authority: string[];
 }
 
-export class SwitchRemoteViewItem extends SelectActionViewItem {
+export clAss SwitchRemoteViewItem extends SelectActionViewItem {
 
 	constructor(
-		action: IAction,
-		private readonly optionsItems: IRemoteSelectItem[],
+		Action: IAction,
+		privAte reAdonly optionsItems: IRemoteSelectItem[],
 		@IThemeService themeService: IThemeService,
 		@IContextViewService contextViewService: IContextViewService,
 		@IRemoteExplorerService remoteExplorerService: IRemoteExplorerService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
-		@IStorageService private readonly storageService: IStorageService
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService
 	) {
-		super(null, action, optionsItems, 0, contextViewService, { ariaLabel: nls.localize('remotes', 'Switch Remote') });
-		this._register(attachSelectBoxStyler(this.selectBox, themeService));
+		super(null, Action, optionsItems, 0, contextViewService, { AriALAbel: nls.locAlize('remotes', 'Switch Remote') });
+		this._register(AttAchSelectBoxStyler(this.selectBox, themeService));
 
 		this.setSelectionForConnection(optionsItems, environmentService, remoteExplorerService);
 	}
 
-	private setSelectionForConnection(optionsItems: IRemoteSelectItem[], environmentService: IWorkbenchEnvironmentService, remoteExplorerService: IRemoteExplorerService) {
+	privAte setSelectionForConnection(optionsItems: IRemoteSelectItem[], environmentService: IWorkbenchEnvironmentService, remoteExplorerService: IRemoteExplorerService) {
 		if (this.optionsItems.length > 0) {
 			let index = 0;
 			const remoteAuthority = environmentService.remoteAuthority;
 			const explorerType: string[] | undefined = remoteAuthority ? [remoteAuthority.split('+')[0]] :
-				this.storageService.get(REMOTE_EXPLORER_TYPE_KEY, StorageScope.WORKSPACE)?.split(',') ?? this.storageService.get(REMOTE_EXPLORER_TYPE_KEY, StorageScope.GLOBAL)?.split(',');
+				this.storAgeService.get(REMOTE_EXPLORER_TYPE_KEY, StorAgeScope.WORKSPACE)?.split(',') ?? this.storAgeService.get(REMOTE_EXPLORER_TYPE_KEY, StorAgeScope.GLOBAL)?.split(',');
 			if (explorerType !== undefined) {
 				index = this.getOptionIndexForExplorerType(optionsItems, explorerType);
 			}
 			this.select(index);
-			remoteExplorerService.targetType = optionsItems[index].authority;
+			remoteExplorerService.tArgetType = optionsItems[index].Authority;
 		}
 	}
 
-	private getOptionIndexForExplorerType(optionsItems: IRemoteSelectItem[], explorerType: string[]): number {
+	privAte getOptionIndexForExplorerType(optionsItems: IRemoteSelectItem[], explorerType: string[]): number {
 		let index = 0;
-		for (let optionIterator = 0; (optionIterator < this.optionsItems.length) && (index === 0); optionIterator++) {
-			for (let authorityIterator = 0; authorityIterator < optionsItems[optionIterator].authority.length; authorityIterator++) {
+		for (let optionIterAtor = 0; (optionIterAtor < this.optionsItems.length) && (index === 0); optionIterAtor++) {
+			for (let AuthorityIterAtor = 0; AuthorityIterAtor < optionsItems[optionIterAtor].Authority.length; AuthorityIterAtor++) {
 				for (let i = 0; i < explorerType.length; i++) {
-					if (optionsItems[optionIterator].authority[authorityIterator] === explorerType[i]) {
-						index = optionIterator;
-						break;
+					if (optionsItems[optionIterAtor].Authority[AuthorityIterAtor] === explorerType[i]) {
+						index = optionIterAtor;
+						breAk;
 					}
 				}
 			}
@@ -67,41 +67,41 @@ export class SwitchRemoteViewItem extends SelectActionViewItem {
 		return index;
 	}
 
-	render(container: HTMLElement) {
+	render(contAiner: HTMLElement) {
 		if (this.optionsItems.length > 1) {
-			super.render(container);
-			container.classList.add('switch-remote');
+			super.render(contAiner);
+			contAiner.clAssList.Add('switch-remote');
 		}
 	}
 
-	protected getActionContext(_: string, index: number): any {
+	protected getActionContext(_: string, index: number): Any {
 		return this.optionsItems[index];
 	}
 
-	static createOptionItems(views: IViewDescriptor[], contextKeyService: IContextKeyService): IRemoteSelectItem[] {
+	stAtic creAteOptionItems(views: IViewDescriptor[], contextKeyService: IContextKeyService): IRemoteSelectItem[] {
 		let options: IRemoteSelectItem[] = [];
-		views.forEach(view => {
-			if (view.group && view.group.startsWith('targets') && view.remoteAuthority && (!view.when || contextKeyService.contextMatchesRules(view.when))) {
-				options.push({ text: view.name, authority: isStringArray(view.remoteAuthority) ? view.remoteAuthority : [view.remoteAuthority] });
+		views.forEAch(view => {
+			if (view.group && view.group.stArtsWith('tArgets') && view.remoteAuthority && (!view.when || contextKeyService.contextMAtchesRules(view.when))) {
+				options.push({ text: view.nAme, Authority: isStringArrAy(view.remoteAuthority) ? view.remoteAuthority : [view.remoteAuthority] });
 			}
 		});
 		return options;
 	}
 }
 
-export class SwitchRemoteAction extends Action {
+export clAss SwitchRemoteAction extends Action {
 
-	public static readonly ID = 'remote.explorer.switch';
-	public static readonly LABEL = nls.localize('remote.explorer.switch', "Switch Remote");
+	public stAtic reAdonly ID = 'remote.explorer.switch';
+	public stAtic reAdonly LABEL = nls.locAlize('remote.explorer.switch', "Switch Remote");
 
 	constructor(
-		id: string, label: string,
-		@IRemoteExplorerService private readonly remoteExplorerService: IRemoteExplorerService
+		id: string, lAbel: string,
+		@IRemoteExplorerService privAte reAdonly remoteExplorerService: IRemoteExplorerService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	public async run(item: IRemoteSelectItem): Promise<any> {
-		this.remoteExplorerService.targetType = item.authority;
+	public Async run(item: IRemoteSelectItem): Promise<Any> {
+		this.remoteExplorerService.tArgetType = item.Authority;
 	}
 }

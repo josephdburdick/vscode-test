@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { isMacintosh, isLinux, isWindows } from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { isMAcintosh, isLinux, isWindows } from 'vs/bAse/common/plAtform';
 import { OutputLinkComputer } from 'vs/workbench/contrib/output/common/outputLinkComputer';
 import { TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
 
-function toOSPath(p: string): string {
-	if (isMacintosh || isLinux) {
-		return p.replace(/\\/g, '/');
+function toOSPAth(p: string): string {
+	if (isMAcintosh || isLinux) {
+		return p.replAce(/\\/g, '/');
 	}
 
 	return p;
@@ -20,281 +20,281 @@ function toOSPath(p: string): string {
 suite('OutputLinkProvider', () => {
 
 	test('OutputLinkProvider - Link detection', function () {
-		const rootFolder = isWindows ? URI.file('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala') :
-			URI.file('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala');
+		const rootFolder = isWindows ? URI.file('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA') :
+			URI.file('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA');
 
-		let patterns = OutputLinkComputer.createPatterns(rootFolder);
+		let pAtterns = OutputLinkComputer.creAtePAtterns(rootFolder);
 
 		let contextService = new TestContextService();
 
-		let line = toOSPath('Foo bar');
-		let result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 0);
+		let line = toOSPAth('Foo bAr');
+		let result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 0);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString());
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 84);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString());
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 84);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336 in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#336');
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 88);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336 in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#336');
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 88);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336:9
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336:9 in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#336,9');
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 90);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336:9
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336:9 in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#336,9');
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 90);
 
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336:9 in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#336,9');
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 90);
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336:9 in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#336,9');
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 90);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts>dir
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts>dir in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString());
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 84);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts>dir
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts>dir in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString());
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 84);
 
-		// Example: at [C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336:9]
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:336:9] in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#336,9');
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 90);
+		// ExAmple: At [C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336:9]
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:336:9] in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#336,9');
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 90);
 
-		// Example: at [C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts]
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts] in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts]').toString());
+		// ExAmple: At [C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts]
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts] in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts]').toString());
 
-		// Example: C:\Users\someone\AppData\Local\Temp\_monacodata_9888\workspaces\express\server.js on line 8
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts on line 8');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#8');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 90);
+		// ExAmple: C:\Users\someone\AppDAtA\LocAl\Temp\_monAcodAtA_9888\workspAces\express\server.js on line 8
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts on line 8');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#8');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 90);
 
-		// Example: C:\Users\someone\AppData\Local\Temp\_monacodata_9888\workspaces\express\server.js on line 8, column 13
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts on line 8, column 13');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#8,13');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 101);
+		// ExAmple: C:\Users\someone\AppDAtA\LocAl\Temp\_monAcodAtA_9888\workspAces\express\server.js on line 8, column 13
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts on line 8, column 13');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#8,13');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 101);
 
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts on LINE 8, COLUMN 13');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#8,13');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 101);
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts on LINE 8, COLUMN 13');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#8,13');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 101);
 
-		// Example: C:\Users\someone\AppData\Local\Temp\_monacodata_9888\workspaces\express\server.js:line 8
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts:line 8');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#8');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 87);
+		// ExAmple: C:\Users\someone\AppDAtA\LocAl\Temp\_monAcodAtA_9888\workspAces\express\server.js:line 8
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts:line 8');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#8');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 87);
 
-		// Example: at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts)
-		line = toOSPath(' at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts)');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString());
-		assert.equal(result[0].range.startColumn, 15);
-		assert.equal(result[0].range.endColumn, 94);
+		// ExAmple: At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts)
+		line = toOSPAth(' At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts)');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString());
+		Assert.equAl(result[0].rAnge.stArtColumn, 15);
+		Assert.equAl(result[0].rAnge.endColumn, 94);
 
-		// Example: at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts:278)
-		line = toOSPath(' at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts:278)');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#278');
-		assert.equal(result[0].range.startColumn, 15);
-		assert.equal(result[0].range.endColumn, 98);
+		// ExAmple: At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts:278)
+		line = toOSPAth(' At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts:278)');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#278');
+		Assert.equAl(result[0].rAnge.stArtColumn, 15);
+		Assert.equAl(result[0].rAnge.endColumn, 98);
 
-		// Example: at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts:278:34)
-		line = toOSPath(' at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts:278:34)');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#278,34');
-		assert.equal(result[0].range.startColumn, 15);
-		assert.equal(result[0].range.endColumn, 101);
+		// ExAmple: At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts:278:34)
+		line = toOSPAth(' At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts:278:34)');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#278,34');
+		Assert.equAl(result[0].rAnge.stArtColumn, 15);
+		Assert.equAl(result[0].rAnge.endColumn, 101);
 
-		line = toOSPath(' at File.put (C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Game.ts:278:34)');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString() + '#278,34');
-		assert.equal(result[0].range.startColumn, 15);
-		assert.equal(result[0].range.endColumn, 101);
+		line = toOSPAth(' At File.put (C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/GAme.ts:278:34)');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString() + '#278,34');
+		Assert.equAl(result[0].rAnge.stArtColumn, 15);
+		Assert.equAl(result[0].rAnge.endColumn, 101);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts(45): error
-		line = toOSPath('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/lib/something/Features.ts(45): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 102);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts(45): error
+		line = toOSPAth('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/lib/something/FeAtures.ts(45): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 102);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts (45,18): error
-		line = toOSPath('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/lib/something/Features.ts (45): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 103);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts (45,18): error
+		line = toOSPAth('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/lib/something/FeAtures.ts (45): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 103);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts(45,18): error
-		line = toOSPath('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/lib/something/Features.ts(45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 105);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts(45,18): error
+		line = toOSPAth('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/lib/something/FeAtures.ts(45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 105);
 
-		line = toOSPath('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/lib/something/Features.ts(45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 105);
+		line = toOSPAth('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/lib/something/FeAtures.ts(45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 105);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts (45,18): error
-		line = toOSPath('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/lib/something/Features.ts (45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 106);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts (45,18): error
+		line = toOSPAth('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/lib/something/FeAtures.ts (45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 106);
 
-		line = toOSPath('C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/lib/something/Features.ts (45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 106);
+		line = toOSPAth('C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/lib/something/FeAtures.ts (45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 106);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts(45): error
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features.ts(45): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 102);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts(45): error
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures.ts(45): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 102);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts (45,18): error
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features.ts (45): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 103);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts (45,18): error
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures.ts (45): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 103);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts(45,18): error
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features.ts(45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 105);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts(45,18): error
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures.ts(45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 105);
 
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features.ts(45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 105);
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures.ts(45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 105);
 
-		// Example: C:/Users/someone/AppData/Local/Temp/_monacodata_9888/workspaces/mankala/Features.ts (45,18): error
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features.ts (45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 106);
+		// ExAmple: C:/Users/someone/AppDAtA/LocAl/Temp/_monAcodAtA_9888/workspAces/mAnkAlA/FeAtures.ts (45,18): error
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures.ts (45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 106);
 
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features.ts (45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 106);
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures.ts (45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 106);
 
-		// Example: C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features Special.ts (45,18): error.
-		line = toOSPath('C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\lib\\something\\Features Special.ts (45,18): error');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/lib/something/Features Special.ts').toString() + '#45,18');
-		assert.equal(result[0].range.startColumn, 1);
-		assert.equal(result[0].range.endColumn, 114);
+		// ExAmple: C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures SpeciAl.ts (45,18): error.
+		line = toOSPAth('C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\lib\\something\\FeAtures SpeciAl.ts (45,18): error');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/lib/something/FeAtures SpeciAl.ts').toString() + '#45,18');
+		Assert.equAl(result[0].rAnge.stArtColumn, 1);
+		Assert.equAl(result[0].rAnge.endColumn, 114);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts.
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts. in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString());
-		assert.equal(result[0].range.startColumn, 5);
-		assert.equal(result[0].range.endColumn, 84);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts.
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts. in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString());
+		Assert.equAl(result[0].rAnge.stArtColumn, 5);
+		Assert.equAl(result[0].rAnge.endColumn, 84);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
 
-		// Example: at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game\\
-		line = toOSPath(' at C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game\\ in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
+		// ExAmple: At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme\\
+		line = toOSPAth(' At C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme\\ in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
 
-		// Example: at "C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts"
-		line = toOSPath(' at "C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts" in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts').toString());
-		assert.equal(result[0].range.startColumn, 6);
-		assert.equal(result[0].range.endColumn, 85);
+		// ExAmple: At "C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts"
+		line = toOSPAth(' At "C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts" in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts').toString());
+		Assert.equAl(result[0].rAnge.stArtColumn, 6);
+		Assert.equAl(result[0].rAnge.endColumn, 85);
 
-		// Example: at 'C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts'
-		line = toOSPath(' at \'C:\\Users\\someone\\AppData\\Local\\Temp\\_monacodata_9888\\workspaces\\mankala\\Game.ts\' in');
-		result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 1);
-		assert.equal(result[0].url, contextService.toResource('/Game.ts\'').toString());
-		assert.equal(result[0].range.startColumn, 6);
-		assert.equal(result[0].range.endColumn, 86);
+		// ExAmple: At 'C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts'
+		line = toOSPAth(' At \'C:\\Users\\someone\\AppDAtA\\LocAl\\Temp\\_monAcodAtA_9888\\workspAces\\mAnkAlA\\GAme.ts\' in');
+		result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 1);
+		Assert.equAl(result[0].url, contextService.toResource('/GAme.ts\'').toString());
+		Assert.equAl(result[0].rAnge.stArtColumn, 6);
+		Assert.equAl(result[0].rAnge.endColumn, 86);
 	});
 
 	test('OutputLinkProvider - #106847', function () {
-		const rootFolder = isWindows ? URI.file('C:\\Users\\bpasero\\Desktop\\test-ts') :
-			URI.file('C:/Users/bpasero/Desktop');
+		const rootFolder = isWindows ? URI.file('C:\\Users\\bpAsero\\Desktop\\test-ts') :
+			URI.file('C:/Users/bpAsero/Desktop');
 
-		let patterns = OutputLinkComputer.createPatterns(rootFolder);
+		let pAtterns = OutputLinkComputer.creAtePAtterns(rootFolder);
 
 		let contextService = new TestContextService();
 
-		let line = toOSPath('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa C:\\Users\\bpasero\\Desktop\\test-ts\\prj.conf C:\\Users\\bpasero\\Desktop\\test-ts\\prj.conf C:\\Users\\bpasero\\Desktop\\test-ts\\prj.conf');
-		let result = OutputLinkComputer.detectLinks(line, 1, patterns, contextService);
-		assert.equal(result.length, 3);
+		let line = toOSPAth('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA C:\\Users\\bpAsero\\Desktop\\test-ts\\prj.conf C:\\Users\\bpAsero\\Desktop\\test-ts\\prj.conf C:\\Users\\bpAsero\\Desktop\\test-ts\\prj.conf');
+		let result = OutputLinkComputer.detectLinks(line, 1, pAtterns, contextService);
+		Assert.equAl(result.length, 3);
 
 		for (const res of result) {
-			assert.ok(res.range.startColumn > 0 && res.range.endColumn > 0);
+			Assert.ok(res.rAnge.stArtColumn > 0 && res.rAnge.endColumn > 0);
 		}
 	});
 });

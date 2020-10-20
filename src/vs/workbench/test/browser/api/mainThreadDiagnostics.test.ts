@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MarkerService } from 'vs/platform/markers/common/markerService';
-import { MainThreadDiagnostics } from 'vs/workbench/api/browser/mainThreadDiagnostics';
-import { URI } from 'vs/base/common/uri';
-import { IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
+import * As Assert from 'Assert';
+import { MArkerService } from 'vs/plAtform/mArkers/common/mArkerService';
+import { MAinThreAdDiAgnostics } from 'vs/workbench/Api/browser/mAinThreAdDiAgnostics';
+import { URI } from 'vs/bAse/common/uri';
+import { IExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
 import { mock } from 'vs/workbench/test/common/workbenchTestServices';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
 
-suite('MainThreadDiagnostics', function () {
+suite('MAinThreAdDiAgnostics', function () {
 
-	let markerService: MarkerService;
+	let mArkerService: MArkerService;
 
 	setup(function () {
-		markerService = new MarkerService();
+		mArkerService = new MArkerService();
 	});
 
-	test('clear markers on dispose', function () {
+	test('cleAr mArkers on dispose', function () {
 
-		let diag = new MainThreadDiagnostics(
-			new class implements IExtHostContext {
+		let diAg = new MAinThreAdDiAgnostics(
+			new clAss implements IExtHostContext {
 				remoteAuthority = '';
-				assertRegistered() { }
-				set(v: any): any { return null; }
-				getProxy(): any {
+				AssertRegistered() { }
+				set(v: Any): Any { return null; }
+				getProxy(): Any {
 					return {
-						$acceptMarkersChange() { }
+						$AcceptMArkersChAnge() { }
 					};
 				}
-				drain(): any { return null; }
+				drAin(): Any { return null; }
 			},
-			markerService,
-			new class extends mock<IUriIdentityService>() {
-				asCanonicalUri(uri: URI) { return uri; }
+			mArkerService,
+			new clAss extends mock<IUriIdentityService>() {
+				AsCAnonicAlUri(uri: URI) { return uri; }
 			}
 		);
 
-		diag.$changeMany('foo', [[URI.file('a'), [{
+		diAg.$chAngeMAny('foo', [[URI.file('A'), [{
 			code: '666',
-			startLineNumber: 1,
-			startColumn: 1,
+			stArtLineNumber: 1,
+			stArtColumn: 1,
 			endLineNumber: 1,
 			endColumn: 1,
-			message: 'fffff',
+			messAge: 'fffff',
 			severity: 1,
 			source: 'me'
 		}]]]);
 
-		assert.equal(markerService.read().length, 1);
-		diag.dispose();
-		assert.equal(markerService.read().length, 0);
+		Assert.equAl(mArkerService.reAd().length, 1);
+		diAg.dispose();
+		Assert.equAl(mArkerService.reAd().length, 0);
 	});
 });

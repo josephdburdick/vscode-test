@@ -1,132 +1,132 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./selectBox';
 
-import { Event } from 'vs/base/common/event';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Color } from 'vs/base/common/color';
-import { deepClone } from 'vs/base/common/objects';
-import { IContentActionHandler } from 'vs/base/browser/formattedTextRenderer';
-import { IContextViewProvider } from 'vs/base/browser/ui/contextview/contextview';
-import { IListStyles } from 'vs/base/browser/ui/list/listWidget';
-import { SelectBoxNative } from 'vs/base/browser/ui/selectBox/selectBoxNative';
-import { SelectBoxList } from 'vs/base/browser/ui/selectBox/selectBoxCustom';
-import { isMacintosh } from 'vs/base/common/platform';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { Color } from 'vs/bAse/common/color';
+import { deepClone } from 'vs/bAse/common/objects';
+import { IContentActionHAndler } from 'vs/bAse/browser/formAttedTextRenderer';
+import { IContextViewProvider } from 'vs/bAse/browser/ui/contextview/contextview';
+import { IListStyles } from 'vs/bAse/browser/ui/list/listWidget';
+import { SelectBoxNAtive } from 'vs/bAse/browser/ui/selectBox/selectBoxNAtive';
+import { SelectBoxList } from 'vs/bAse/browser/ui/selectBox/selectBoxCustom';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
 
-// Public SelectBox interface - Calls routed to appropriate select implementation class
+// Public SelectBox interfAce - CAlls routed to AppropriAte select implementAtion clAss
 
-export interface ISelectBoxDelegate extends IDisposable {
+export interfAce ISelectBoxDelegAte extends IDisposAble {
 
-	// Public SelectBox Interface
-	readonly onDidSelect: Event<ISelectData>;
+	// Public SelectBox InterfAce
+	reAdonly onDidSelect: Event<ISelectDAtA>;
 	setOptions(options: ISelectOptionItem[], selected?: number): void;
 	select(index: number): void;
-	setAriaLabel(label: string): void;
+	setAriALAbel(lAbel: string): void;
 	focus(): void;
 	blur(): void;
 
-	// Delegated Widget interface
-	render(container: HTMLElement): void;
+	// DelegAted Widget interfAce
+	render(contAiner: HTMLElement): void;
 	style(styles: ISelectBoxStyles): void;
-	applyStyles(): void;
+	ApplyStyles(): void;
 }
 
-export interface ISelectBoxOptions {
-	useCustomDrawn?: boolean;
-	ariaLabel?: string;
-	minBottomMargin?: number;
-	optionsAsChildren?: boolean;
+export interfAce ISelectBoxOptions {
+	useCustomDrAwn?: booleAn;
+	AriALAbel?: string;
+	minBottomMArgin?: number;
+	optionsAsChildren?: booleAn;
 }
 
-// Utilize optionItem interface to capture all option parameters
-export interface ISelectOptionItem {
+// Utilize optionItem interfAce to cApture All option pArAmeters
+export interfAce ISelectOptionItem {
 	text: string;
-	decoratorRight?: string;
+	decorAtorRight?: string;
 	description?: string;
-	descriptionIsMarkdown?: boolean;
-	descriptionMarkdownActionHandler?: IContentActionHandler;
-	isDisabled?: boolean;
+	descriptionIsMArkdown?: booleAn;
+	descriptionMArkdownActionHAndler?: IContentActionHAndler;
+	isDisAbled?: booleAn;
 }
 
-export interface ISelectBoxStyles extends IListStyles {
-	selectBackground?: Color;
-	selectListBackground?: Color;
+export interfAce ISelectBoxStyles extends IListStyles {
+	selectBAckground?: Color;
+	selectListBAckground?: Color;
 	selectForeground?: Color;
-	decoratorRightForeground?: Color;
+	decorAtorRightForeground?: Color;
 	selectBorder?: Color;
 	selectListBorder?: Color;
 	focusBorder?: Color;
 }
 
-export const defaultStyles = {
-	selectBackground: Color.fromHex('#3C3C3C'),
+export const defAultStyles = {
+	selectBAckground: Color.fromHex('#3C3C3C'),
 	selectForeground: Color.fromHex('#F0F0F0'),
 	selectBorder: Color.fromHex('#3C3C3C')
 };
 
-export interface ISelectData {
+export interfAce ISelectDAtA {
 	selected: string;
 	index: number;
 }
 
-export class SelectBox extends Widget implements ISelectBoxDelegate {
-	private selectBoxDelegate: ISelectBoxDelegate;
+export clAss SelectBox extends Widget implements ISelectBoxDelegAte {
+	privAte selectBoxDelegAte: ISelectBoxDelegAte;
 
-	constructor(options: ISelectOptionItem[], selected: number, contextViewProvider: IContextViewProvider, styles: ISelectBoxStyles = deepClone(defaultStyles), selectBoxOptions?: ISelectBoxOptions) {
+	constructor(options: ISelectOptionItem[], selected: number, contextViewProvider: IContextViewProvider, styles: ISelectBoxStyles = deepClone(defAultStyles), selectBoxOptions?: ISelectBoxOptions) {
 		super();
 
-		// Default to native SelectBox for OSX unless overridden
-		if (isMacintosh && !selectBoxOptions?.useCustomDrawn) {
-			this.selectBoxDelegate = new SelectBoxNative(options, selected, styles, selectBoxOptions);
+		// DefAult to nAtive SelectBox for OSX unless overridden
+		if (isMAcintosh && !selectBoxOptions?.useCustomDrAwn) {
+			this.selectBoxDelegAte = new SelectBoxNAtive(options, selected, styles, selectBoxOptions);
 		} else {
-			this.selectBoxDelegate = new SelectBoxList(options, selected, contextViewProvider, styles, selectBoxOptions);
+			this.selectBoxDelegAte = new SelectBoxList(options, selected, contextViewProvider, styles, selectBoxOptions);
 		}
 
-		this._register(this.selectBoxDelegate);
+		this._register(this.selectBoxDelegAte);
 	}
 
-	// Public SelectBox Methods - routed through delegate interface
+	// Public SelectBox Methods - routed through delegAte interfAce
 
-	public get onDidSelect(): Event<ISelectData> {
-		return this.selectBoxDelegate.onDidSelect;
+	public get onDidSelect(): Event<ISelectDAtA> {
+		return this.selectBoxDelegAte.onDidSelect;
 	}
 
 	public setOptions(options: ISelectOptionItem[], selected?: number): void {
-		this.selectBoxDelegate.setOptions(options, selected);
+		this.selectBoxDelegAte.setOptions(options, selected);
 	}
 
 	public select(index: number): void {
-		this.selectBoxDelegate.select(index);
+		this.selectBoxDelegAte.select(index);
 	}
 
-	public setAriaLabel(label: string): void {
-		this.selectBoxDelegate.setAriaLabel(label);
+	public setAriALAbel(lAbel: string): void {
+		this.selectBoxDelegAte.setAriALAbel(lAbel);
 	}
 
 	public focus(): void {
-		this.selectBoxDelegate.focus();
+		this.selectBoxDelegAte.focus();
 	}
 
 	public blur(): void {
-		this.selectBoxDelegate.blur();
+		this.selectBoxDelegAte.blur();
 	}
 
-	// Public Widget Methods - routed through delegate interface
+	// Public Widget Methods - routed through delegAte interfAce
 
-	public render(container: HTMLElement): void {
-		this.selectBoxDelegate.render(container);
+	public render(contAiner: HTMLElement): void {
+		this.selectBoxDelegAte.render(contAiner);
 	}
 
 	public style(styles: ISelectBoxStyles): void {
-		this.selectBoxDelegate.style(styles);
+		this.selectBoxDelegAte.style(styles);
 	}
 
-	public applyStyles(): void {
-		this.selectBoxDelegate.applyStyles();
+	public ApplyStyles(): void {
+		this.selectBoxDelegAte.ApplyStyles();
 	}
 }

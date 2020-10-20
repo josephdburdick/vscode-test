@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Uri } from 'vscode';
 
-export interface RequestService {
-	getContent(uri: string, encoding?: string): Thenable<string>;
+export interfAce RequestService {
+	getContent(uri: string, encoding?: string): ThenAble<string>;
 }
 
 export function getScheme(uri: string) {
 	return uri.substr(0, uri.indexOf(':'));
 }
 
-export function dirname(uri: string) {
-	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return lastIndexOfSlash !== -1 ? uri.substr(0, lastIndexOfSlash) : '';
+export function dirnAme(uri: string) {
+	const lAstIndexOfSlAsh = uri.lAstIndexOf('/');
+	return lAstIndexOfSlAsh !== -1 ? uri.substr(0, lAstIndexOfSlAsh) : '';
 }
 
-export function basename(uri: string) {
-	const lastIndexOfSlash = uri.lastIndexOf('/');
-	return uri.substr(lastIndexOfSlash + 1);
+export function bAsenAme(uri: string) {
+	const lAstIndexOfSlAsh = uri.lAstIndexOf('/');
+	return uri.substr(lAstIndexOfSlAsh + 1);
 }
 
-const Slash = '/'.charCodeAt(0);
-const Dot = '.'.charCodeAt(0);
+const SlAsh = '/'.chArCodeAt(0);
+const Dot = '.'.chArCodeAt(0);
 
-export function isAbsolutePath(path: string) {
-	return path.charCodeAt(0) === Slash;
+export function isAbsolutePAth(pAth: string) {
+	return pAth.chArCodeAt(0) === SlAsh;
 }
 
-export function resolvePath(uri: Uri, path: string): Uri {
-	if (isAbsolutePath(path)) {
-		return uri.with({ path: normalizePath(path.split('/')) });
+export function resolvePAth(uri: Uri, pAth: string): Uri {
+	if (isAbsolutePAth(pAth)) {
+		return uri.with({ pAth: normAlizePAth(pAth.split('/')) });
 	}
-	return joinPath(uri, path);
+	return joinPAth(uri, pAth);
 }
 
-export function normalizePath(parts: string[]): string {
-	const newParts: string[] = [];
-	for (const part of parts) {
-		if (part.length === 0 || part.length === 1 && part.charCodeAt(0) === Dot) {
+export function normAlizePAth(pArts: string[]): string {
+	const newPArts: string[] = [];
+	for (const pArt of pArts) {
+		if (pArt.length === 0 || pArt.length === 1 && pArt.chArCodeAt(0) === Dot) {
 			// ignore
-		} else if (part.length === 2 && part.charCodeAt(0) === Dot && part.charCodeAt(1) === Dot) {
-			newParts.pop();
+		} else if (pArt.length === 2 && pArt.chArCodeAt(0) === Dot && pArt.chArCodeAt(1) === Dot) {
+			newPArts.pop();
 		} else {
-			newParts.push(part);
+			newPArts.push(pArt);
 		}
 	}
-	if (parts.length > 1 && parts[parts.length - 1].length === 0) {
-		newParts.push('');
+	if (pArts.length > 1 && pArts[pArts.length - 1].length === 0) {
+		newPArts.push('');
 	}
-	let res = newParts.join('/');
-	if (parts[0].length === 0) {
+	let res = newPArts.join('/');
+	if (pArts[0].length === 0) {
 		res = '/' + res;
 	}
 	return res;
 }
 
 
-export function joinPath(uri: Uri, ...paths: string[]): Uri {
-	const parts = uri.path.split('/');
-	for (let path of paths) {
-		parts.push(...path.split('/'));
+export function joinPAth(uri: Uri, ...pAths: string[]): Uri {
+	const pArts = uri.pAth.split('/');
+	for (let pAth of pAths) {
+		pArts.push(...pAth.split('/'));
 	}
-	return uri.with({ path: normalizePath(parts) });
+	return uri.with({ pAth: normAlizePAth(pArts) });
 }

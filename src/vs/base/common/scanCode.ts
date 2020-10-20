@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
 
 /**
- * keyboardEvent.code
+ * keyboArdEvent.code
  */
-export const enum ScanCode {
+export const enum ScAnCode {
 	None,
 
 	Hyper,
@@ -19,7 +19,7 @@ export const enum ScanCode {
 	Resume,
 	Turbo,
 	Sleep,
-	WakeUp,
+	WAkeUp,
 	KeyA,
 	KeyB,
 	KeyC,
@@ -57,23 +57,23 @@ export const enum ScanCode {
 	Digit9,
 	Digit0,
 	Enter,
-	Escape,
-	Backspace,
-	Tab,
-	Space,
+	EscApe,
+	BAckspAce,
+	TAb,
+	SpAce,
 	Minus,
-	Equal,
-	BracketLeft,
-	BracketRight,
-	Backslash,
-	IntlHash,
+	EquAl,
+	BrAcketLeft,
+	BrAcketRight,
+	BAckslAsh,
+	IntlHAsh,
 	Semicolon,
 	Quote,
-	Backquote,
-	Comma,
+	BAckquote,
+	CommA,
 	Period,
-	Slash,
-	CapsLock,
+	SlAsh,
+	CApsLock,
 	F1,
 	F2,
 	F3,
@@ -88,38 +88,38 @@ export const enum ScanCode {
 	F12,
 	PrintScreen,
 	ScrollLock,
-	Pause,
+	PAuse,
 	Insert,
 	Home,
-	PageUp,
+	PAgeUp,
 	Delete,
 	End,
-	PageDown,
+	PAgeDown,
 	ArrowRight,
 	ArrowLeft,
 	ArrowDown,
 	ArrowUp,
 	NumLock,
-	NumpadDivide,
-	NumpadMultiply,
-	NumpadSubtract,
-	NumpadAdd,
-	NumpadEnter,
-	Numpad1,
-	Numpad2,
-	Numpad3,
-	Numpad4,
-	Numpad5,
-	Numpad6,
-	Numpad7,
-	Numpad8,
-	Numpad9,
-	Numpad0,
-	NumpadDecimal,
-	IntlBackslash,
+	NumpAdDivide,
+	NumpAdMultiply,
+	NumpAdSubtrAct,
+	NumpAdAdd,
+	NumpAdEnter,
+	NumpAd1,
+	NumpAd2,
+	NumpAd3,
+	NumpAd4,
+	NumpAd5,
+	NumpAd6,
+	NumpAd7,
+	NumpAd8,
+	NumpAd9,
+	NumpAd0,
+	NumpAdDecimAl,
+	IntlBAckslAsh,
 	ContextMenu,
 	Power,
-	NumpadEqual,
+	NumpAdEquAl,
 	F13,
 	F14,
 	F15,
@@ -135,339 +135,339 @@ export const enum ScanCode {
 	Open,
 	Help,
 	Select,
-	Again,
+	AgAin,
 	Undo,
 	Cut,
 	Copy,
-	Paste,
+	PAste,
 	Find,
 	AudioVolumeMute,
 	AudioVolumeUp,
 	AudioVolumeDown,
-	NumpadComma,
+	NumpAdCommA,
 	IntlRo,
-	KanaMode,
+	KAnAMode,
 	IntlYen,
 	Convert,
 	NonConvert,
-	Lang1,
-	Lang2,
-	Lang3,
-	Lang4,
-	Lang5,
+	LAng1,
+	LAng2,
+	LAng3,
+	LAng4,
+	LAng5,
 	Abort,
 	Props,
-	NumpadParenLeft,
-	NumpadParenRight,
-	NumpadBackspace,
-	NumpadMemoryStore,
-	NumpadMemoryRecall,
-	NumpadMemoryClear,
-	NumpadMemoryAdd,
-	NumpadMemorySubtract,
-	NumpadClear,
-	NumpadClearEntry,
+	NumpAdPArenLeft,
+	NumpAdPArenRight,
+	NumpAdBAckspAce,
+	NumpAdMemoryStore,
+	NumpAdMemoryRecAll,
+	NumpAdMemoryCleAr,
+	NumpAdMemoryAdd,
+	NumpAdMemorySubtrAct,
+	NumpAdCleAr,
+	NumpAdCleArEntry,
 	ControlLeft,
 	ShiftLeft,
 	AltLeft,
-	MetaLeft,
+	MetALeft,
 	ControlRight,
 	ShiftRight,
 	AltRight,
-	MetaRight,
+	MetARight,
 	BrightnessUp,
 	BrightnessDown,
-	MediaPlay,
-	MediaRecord,
-	MediaFastForward,
-	MediaRewind,
-	MediaTrackNext,
-	MediaTrackPrevious,
-	MediaStop,
+	MediAPlAy,
+	MediARecord,
+	MediAFAstForwArd,
+	MediARewind,
+	MediATrAckNext,
+	MediATrAckPrevious,
+	MediAStop,
 	Eject,
-	MediaPlayPause,
-	MediaSelect,
-	LaunchMail,
-	LaunchApp2,
-	LaunchApp1,
-	SelectTask,
-	LaunchScreenSaver,
-	BrowserSearch,
+	MediAPlAyPAuse,
+	MediASelect,
+	LAunchMAil,
+	LAunchApp2,
+	LAunchApp1,
+	SelectTAsk,
+	LAunchScreenSAver,
+	BrowserSeArch,
 	BrowserHome,
-	BrowserBack,
-	BrowserForward,
+	BrowserBAck,
+	BrowserForwArd,
 	BrowserStop,
 	BrowserRefresh,
-	BrowserFavorites,
+	BrowserFAvorites,
 	ZoomToggle,
-	MailReply,
-	MailForward,
-	MailSend,
+	MAilReply,
+	MAilForwArd,
+	MAilSend,
 
 	MAX_VALUE
 }
 
-const scanCodeIntToStr: string[] = [];
-const scanCodeStrToInt: { [code: string]: number; } = Object.create(null);
-const scanCodeLowerCaseStrToInt: { [code: string]: number; } = Object.create(null);
+const scAnCodeIntToStr: string[] = [];
+const scAnCodeStrToInt: { [code: string]: number; } = Object.creAte(null);
+const scAnCodeLowerCAseStrToInt: { [code: string]: number; } = Object.creAte(null);
 
-export const ScanCodeUtils = {
-	lowerCaseToEnum: (scanCode: string) => scanCodeLowerCaseStrToInt[scanCode] || ScanCode.None,
-	toEnum: (scanCode: string) => scanCodeStrToInt[scanCode] || ScanCode.None,
-	toString: (scanCode: ScanCode) => scanCodeIntToStr[scanCode] || 'None'
+export const ScAnCodeUtils = {
+	lowerCAseToEnum: (scAnCode: string) => scAnCodeLowerCAseStrToInt[scAnCode] || ScAnCode.None,
+	toEnum: (scAnCode: string) => scAnCodeStrToInt[scAnCode] || ScAnCode.None,
+	toString: (scAnCode: ScAnCode) => scAnCodeIntToStr[scAnCode] || 'None'
 };
 
 /**
- * -1 if a ScanCode => KeyCode mapping depends on kb layout.
+ * -1 if A ScAnCode => KeyCode mApping depends on kb lAyout.
  */
 export const IMMUTABLE_CODE_TO_KEY_CODE: KeyCode[] = [];
 
 /**
- * -1 if a KeyCode => ScanCode mapping depends on kb layout.
+ * -1 if A KeyCode => ScAnCode mApping depends on kb lAyout.
  */
-export const IMMUTABLE_KEY_CODE_TO_CODE: ScanCode[] = [];
+export const IMMUTABLE_KEY_CODE_TO_CODE: ScAnCode[] = [];
 
-export class ScanCodeBinding {
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly metaKey: boolean;
-	public readonly scanCode: ScanCode;
+export clAss ScAnCodeBinding {
+	public reAdonly ctrlKey: booleAn;
+	public reAdonly shiftKey: booleAn;
+	public reAdonly AltKey: booleAn;
+	public reAdonly metAKey: booleAn;
+	public reAdonly scAnCode: ScAnCode;
 
-	constructor(ctrlKey: boolean, shiftKey: boolean, altKey: boolean, metaKey: boolean, scanCode: ScanCode) {
+	constructor(ctrlKey: booleAn, shiftKey: booleAn, AltKey: booleAn, metAKey: booleAn, scAnCode: ScAnCode) {
 		this.ctrlKey = ctrlKey;
 		this.shiftKey = shiftKey;
-		this.altKey = altKey;
-		this.metaKey = metaKey;
-		this.scanCode = scanCode;
+		this.AltKey = AltKey;
+		this.metAKey = metAKey;
+		this.scAnCode = scAnCode;
 	}
 
-	public equals(other: ScanCodeBinding): boolean {
+	public equAls(other: ScAnCodeBinding): booleAn {
 		return (
 			this.ctrlKey === other.ctrlKey
 			&& this.shiftKey === other.shiftKey
-			&& this.altKey === other.altKey
-			&& this.metaKey === other.metaKey
-			&& this.scanCode === other.scanCode
+			&& this.AltKey === other.AltKey
+			&& this.metAKey === other.metAKey
+			&& this.scAnCode === other.scAnCode
 		);
 	}
 
 	/**
-	 * Does this keybinding refer to the key code of a modifier and it also has the modifier flag?
+	 * Does this keybinding refer to the key code of A modifier And it Also hAs the modifier flAg?
 	 */
-	public isDuplicateModifierCase(): boolean {
+	public isDuplicAteModifierCAse(): booleAn {
 		return (
-			(this.ctrlKey && (this.scanCode === ScanCode.ControlLeft || this.scanCode === ScanCode.ControlRight))
-			|| (this.shiftKey && (this.scanCode === ScanCode.ShiftLeft || this.scanCode === ScanCode.ShiftRight))
-			|| (this.altKey && (this.scanCode === ScanCode.AltLeft || this.scanCode === ScanCode.AltRight))
-			|| (this.metaKey && (this.scanCode === ScanCode.MetaLeft || this.scanCode === ScanCode.MetaRight))
+			(this.ctrlKey && (this.scAnCode === ScAnCode.ControlLeft || this.scAnCode === ScAnCode.ControlRight))
+			|| (this.shiftKey && (this.scAnCode === ScAnCode.ShiftLeft || this.scAnCode === ScAnCode.ShiftRight))
+			|| (this.AltKey && (this.scAnCode === ScAnCode.AltLeft || this.scAnCode === ScAnCode.AltRight))
+			|| (this.metAKey && (this.scAnCode === ScAnCode.MetALeft || this.scAnCode === ScAnCode.MetARight))
 		);
 	}
 }
 
 (function () {
-	function d(intScanCode: ScanCode, strScanCode: string): void {
-		scanCodeIntToStr[intScanCode] = strScanCode;
-		scanCodeStrToInt[strScanCode] = intScanCode;
-		scanCodeLowerCaseStrToInt[strScanCode.toLowerCase()] = intScanCode;
+	function d(intScAnCode: ScAnCode, strScAnCode: string): void {
+		scAnCodeIntToStr[intScAnCode] = strScAnCode;
+		scAnCodeStrToInt[strScAnCode] = intScAnCode;
+		scAnCodeLowerCAseStrToInt[strScAnCode.toLowerCAse()] = intScAnCode;
 	}
-	d(ScanCode.None, 'None');
-	d(ScanCode.Hyper, 'Hyper');
-	d(ScanCode.Super, 'Super');
-	d(ScanCode.Fn, 'Fn');
-	d(ScanCode.FnLock, 'FnLock');
-	d(ScanCode.Suspend, 'Suspend');
-	d(ScanCode.Resume, 'Resume');
-	d(ScanCode.Turbo, 'Turbo');
-	d(ScanCode.Sleep, 'Sleep');
-	d(ScanCode.WakeUp, 'WakeUp');
-	d(ScanCode.KeyA, 'KeyA');
-	d(ScanCode.KeyB, 'KeyB');
-	d(ScanCode.KeyC, 'KeyC');
-	d(ScanCode.KeyD, 'KeyD');
-	d(ScanCode.KeyE, 'KeyE');
-	d(ScanCode.KeyF, 'KeyF');
-	d(ScanCode.KeyG, 'KeyG');
-	d(ScanCode.KeyH, 'KeyH');
-	d(ScanCode.KeyI, 'KeyI');
-	d(ScanCode.KeyJ, 'KeyJ');
-	d(ScanCode.KeyK, 'KeyK');
-	d(ScanCode.KeyL, 'KeyL');
-	d(ScanCode.KeyM, 'KeyM');
-	d(ScanCode.KeyN, 'KeyN');
-	d(ScanCode.KeyO, 'KeyO');
-	d(ScanCode.KeyP, 'KeyP');
-	d(ScanCode.KeyQ, 'KeyQ');
-	d(ScanCode.KeyR, 'KeyR');
-	d(ScanCode.KeyS, 'KeyS');
-	d(ScanCode.KeyT, 'KeyT');
-	d(ScanCode.KeyU, 'KeyU');
-	d(ScanCode.KeyV, 'KeyV');
-	d(ScanCode.KeyW, 'KeyW');
-	d(ScanCode.KeyX, 'KeyX');
-	d(ScanCode.KeyY, 'KeyY');
-	d(ScanCode.KeyZ, 'KeyZ');
-	d(ScanCode.Digit1, 'Digit1');
-	d(ScanCode.Digit2, 'Digit2');
-	d(ScanCode.Digit3, 'Digit3');
-	d(ScanCode.Digit4, 'Digit4');
-	d(ScanCode.Digit5, 'Digit5');
-	d(ScanCode.Digit6, 'Digit6');
-	d(ScanCode.Digit7, 'Digit7');
-	d(ScanCode.Digit8, 'Digit8');
-	d(ScanCode.Digit9, 'Digit9');
-	d(ScanCode.Digit0, 'Digit0');
-	d(ScanCode.Enter, 'Enter');
-	d(ScanCode.Escape, 'Escape');
-	d(ScanCode.Backspace, 'Backspace');
-	d(ScanCode.Tab, 'Tab');
-	d(ScanCode.Space, 'Space');
-	d(ScanCode.Minus, 'Minus');
-	d(ScanCode.Equal, 'Equal');
-	d(ScanCode.BracketLeft, 'BracketLeft');
-	d(ScanCode.BracketRight, 'BracketRight');
-	d(ScanCode.Backslash, 'Backslash');
-	d(ScanCode.IntlHash, 'IntlHash');
-	d(ScanCode.Semicolon, 'Semicolon');
-	d(ScanCode.Quote, 'Quote');
-	d(ScanCode.Backquote, 'Backquote');
-	d(ScanCode.Comma, 'Comma');
-	d(ScanCode.Period, 'Period');
-	d(ScanCode.Slash, 'Slash');
-	d(ScanCode.CapsLock, 'CapsLock');
-	d(ScanCode.F1, 'F1');
-	d(ScanCode.F2, 'F2');
-	d(ScanCode.F3, 'F3');
-	d(ScanCode.F4, 'F4');
-	d(ScanCode.F5, 'F5');
-	d(ScanCode.F6, 'F6');
-	d(ScanCode.F7, 'F7');
-	d(ScanCode.F8, 'F8');
-	d(ScanCode.F9, 'F9');
-	d(ScanCode.F10, 'F10');
-	d(ScanCode.F11, 'F11');
-	d(ScanCode.F12, 'F12');
-	d(ScanCode.PrintScreen, 'PrintScreen');
-	d(ScanCode.ScrollLock, 'ScrollLock');
-	d(ScanCode.Pause, 'Pause');
-	d(ScanCode.Insert, 'Insert');
-	d(ScanCode.Home, 'Home');
-	d(ScanCode.PageUp, 'PageUp');
-	d(ScanCode.Delete, 'Delete');
-	d(ScanCode.End, 'End');
-	d(ScanCode.PageDown, 'PageDown');
-	d(ScanCode.ArrowRight, 'ArrowRight');
-	d(ScanCode.ArrowLeft, 'ArrowLeft');
-	d(ScanCode.ArrowDown, 'ArrowDown');
-	d(ScanCode.ArrowUp, 'ArrowUp');
-	d(ScanCode.NumLock, 'NumLock');
-	d(ScanCode.NumpadDivide, 'NumpadDivide');
-	d(ScanCode.NumpadMultiply, 'NumpadMultiply');
-	d(ScanCode.NumpadSubtract, 'NumpadSubtract');
-	d(ScanCode.NumpadAdd, 'NumpadAdd');
-	d(ScanCode.NumpadEnter, 'NumpadEnter');
-	d(ScanCode.Numpad1, 'Numpad1');
-	d(ScanCode.Numpad2, 'Numpad2');
-	d(ScanCode.Numpad3, 'Numpad3');
-	d(ScanCode.Numpad4, 'Numpad4');
-	d(ScanCode.Numpad5, 'Numpad5');
-	d(ScanCode.Numpad6, 'Numpad6');
-	d(ScanCode.Numpad7, 'Numpad7');
-	d(ScanCode.Numpad8, 'Numpad8');
-	d(ScanCode.Numpad9, 'Numpad9');
-	d(ScanCode.Numpad0, 'Numpad0');
-	d(ScanCode.NumpadDecimal, 'NumpadDecimal');
-	d(ScanCode.IntlBackslash, 'IntlBackslash');
-	d(ScanCode.ContextMenu, 'ContextMenu');
-	d(ScanCode.Power, 'Power');
-	d(ScanCode.NumpadEqual, 'NumpadEqual');
-	d(ScanCode.F13, 'F13');
-	d(ScanCode.F14, 'F14');
-	d(ScanCode.F15, 'F15');
-	d(ScanCode.F16, 'F16');
-	d(ScanCode.F17, 'F17');
-	d(ScanCode.F18, 'F18');
-	d(ScanCode.F19, 'F19');
-	d(ScanCode.F20, 'F20');
-	d(ScanCode.F21, 'F21');
-	d(ScanCode.F22, 'F22');
-	d(ScanCode.F23, 'F23');
-	d(ScanCode.F24, 'F24');
-	d(ScanCode.Open, 'Open');
-	d(ScanCode.Help, 'Help');
-	d(ScanCode.Select, 'Select');
-	d(ScanCode.Again, 'Again');
-	d(ScanCode.Undo, 'Undo');
-	d(ScanCode.Cut, 'Cut');
-	d(ScanCode.Copy, 'Copy');
-	d(ScanCode.Paste, 'Paste');
-	d(ScanCode.Find, 'Find');
-	d(ScanCode.AudioVolumeMute, 'AudioVolumeMute');
-	d(ScanCode.AudioVolumeUp, 'AudioVolumeUp');
-	d(ScanCode.AudioVolumeDown, 'AudioVolumeDown');
-	d(ScanCode.NumpadComma, 'NumpadComma');
-	d(ScanCode.IntlRo, 'IntlRo');
-	d(ScanCode.KanaMode, 'KanaMode');
-	d(ScanCode.IntlYen, 'IntlYen');
-	d(ScanCode.Convert, 'Convert');
-	d(ScanCode.NonConvert, 'NonConvert');
-	d(ScanCode.Lang1, 'Lang1');
-	d(ScanCode.Lang2, 'Lang2');
-	d(ScanCode.Lang3, 'Lang3');
-	d(ScanCode.Lang4, 'Lang4');
-	d(ScanCode.Lang5, 'Lang5');
-	d(ScanCode.Abort, 'Abort');
-	d(ScanCode.Props, 'Props');
-	d(ScanCode.NumpadParenLeft, 'NumpadParenLeft');
-	d(ScanCode.NumpadParenRight, 'NumpadParenRight');
-	d(ScanCode.NumpadBackspace, 'NumpadBackspace');
-	d(ScanCode.NumpadMemoryStore, 'NumpadMemoryStore');
-	d(ScanCode.NumpadMemoryRecall, 'NumpadMemoryRecall');
-	d(ScanCode.NumpadMemoryClear, 'NumpadMemoryClear');
-	d(ScanCode.NumpadMemoryAdd, 'NumpadMemoryAdd');
-	d(ScanCode.NumpadMemorySubtract, 'NumpadMemorySubtract');
-	d(ScanCode.NumpadClear, 'NumpadClear');
-	d(ScanCode.NumpadClearEntry, 'NumpadClearEntry');
-	d(ScanCode.ControlLeft, 'ControlLeft');
-	d(ScanCode.ShiftLeft, 'ShiftLeft');
-	d(ScanCode.AltLeft, 'AltLeft');
-	d(ScanCode.MetaLeft, 'MetaLeft');
-	d(ScanCode.ControlRight, 'ControlRight');
-	d(ScanCode.ShiftRight, 'ShiftRight');
-	d(ScanCode.AltRight, 'AltRight');
-	d(ScanCode.MetaRight, 'MetaRight');
-	d(ScanCode.BrightnessUp, 'BrightnessUp');
-	d(ScanCode.BrightnessDown, 'BrightnessDown');
-	d(ScanCode.MediaPlay, 'MediaPlay');
-	d(ScanCode.MediaRecord, 'MediaRecord');
-	d(ScanCode.MediaFastForward, 'MediaFastForward');
-	d(ScanCode.MediaRewind, 'MediaRewind');
-	d(ScanCode.MediaTrackNext, 'MediaTrackNext');
-	d(ScanCode.MediaTrackPrevious, 'MediaTrackPrevious');
-	d(ScanCode.MediaStop, 'MediaStop');
-	d(ScanCode.Eject, 'Eject');
-	d(ScanCode.MediaPlayPause, 'MediaPlayPause');
-	d(ScanCode.MediaSelect, 'MediaSelect');
-	d(ScanCode.LaunchMail, 'LaunchMail');
-	d(ScanCode.LaunchApp2, 'LaunchApp2');
-	d(ScanCode.LaunchApp1, 'LaunchApp1');
-	d(ScanCode.SelectTask, 'SelectTask');
-	d(ScanCode.LaunchScreenSaver, 'LaunchScreenSaver');
-	d(ScanCode.BrowserSearch, 'BrowserSearch');
-	d(ScanCode.BrowserHome, 'BrowserHome');
-	d(ScanCode.BrowserBack, 'BrowserBack');
-	d(ScanCode.BrowserForward, 'BrowserForward');
-	d(ScanCode.BrowserStop, 'BrowserStop');
-	d(ScanCode.BrowserRefresh, 'BrowserRefresh');
-	d(ScanCode.BrowserFavorites, 'BrowserFavorites');
-	d(ScanCode.ZoomToggle, 'ZoomToggle');
-	d(ScanCode.MailReply, 'MailReply');
-	d(ScanCode.MailForward, 'MailForward');
-	d(ScanCode.MailSend, 'MailSend');
+	d(ScAnCode.None, 'None');
+	d(ScAnCode.Hyper, 'Hyper');
+	d(ScAnCode.Super, 'Super');
+	d(ScAnCode.Fn, 'Fn');
+	d(ScAnCode.FnLock, 'FnLock');
+	d(ScAnCode.Suspend, 'Suspend');
+	d(ScAnCode.Resume, 'Resume');
+	d(ScAnCode.Turbo, 'Turbo');
+	d(ScAnCode.Sleep, 'Sleep');
+	d(ScAnCode.WAkeUp, 'WAkeUp');
+	d(ScAnCode.KeyA, 'KeyA');
+	d(ScAnCode.KeyB, 'KeyB');
+	d(ScAnCode.KeyC, 'KeyC');
+	d(ScAnCode.KeyD, 'KeyD');
+	d(ScAnCode.KeyE, 'KeyE');
+	d(ScAnCode.KeyF, 'KeyF');
+	d(ScAnCode.KeyG, 'KeyG');
+	d(ScAnCode.KeyH, 'KeyH');
+	d(ScAnCode.KeyI, 'KeyI');
+	d(ScAnCode.KeyJ, 'KeyJ');
+	d(ScAnCode.KeyK, 'KeyK');
+	d(ScAnCode.KeyL, 'KeyL');
+	d(ScAnCode.KeyM, 'KeyM');
+	d(ScAnCode.KeyN, 'KeyN');
+	d(ScAnCode.KeyO, 'KeyO');
+	d(ScAnCode.KeyP, 'KeyP');
+	d(ScAnCode.KeyQ, 'KeyQ');
+	d(ScAnCode.KeyR, 'KeyR');
+	d(ScAnCode.KeyS, 'KeyS');
+	d(ScAnCode.KeyT, 'KeyT');
+	d(ScAnCode.KeyU, 'KeyU');
+	d(ScAnCode.KeyV, 'KeyV');
+	d(ScAnCode.KeyW, 'KeyW');
+	d(ScAnCode.KeyX, 'KeyX');
+	d(ScAnCode.KeyY, 'KeyY');
+	d(ScAnCode.KeyZ, 'KeyZ');
+	d(ScAnCode.Digit1, 'Digit1');
+	d(ScAnCode.Digit2, 'Digit2');
+	d(ScAnCode.Digit3, 'Digit3');
+	d(ScAnCode.Digit4, 'Digit4');
+	d(ScAnCode.Digit5, 'Digit5');
+	d(ScAnCode.Digit6, 'Digit6');
+	d(ScAnCode.Digit7, 'Digit7');
+	d(ScAnCode.Digit8, 'Digit8');
+	d(ScAnCode.Digit9, 'Digit9');
+	d(ScAnCode.Digit0, 'Digit0');
+	d(ScAnCode.Enter, 'Enter');
+	d(ScAnCode.EscApe, 'EscApe');
+	d(ScAnCode.BAckspAce, 'BAckspAce');
+	d(ScAnCode.TAb, 'TAb');
+	d(ScAnCode.SpAce, 'SpAce');
+	d(ScAnCode.Minus, 'Minus');
+	d(ScAnCode.EquAl, 'EquAl');
+	d(ScAnCode.BrAcketLeft, 'BrAcketLeft');
+	d(ScAnCode.BrAcketRight, 'BrAcketRight');
+	d(ScAnCode.BAckslAsh, 'BAckslAsh');
+	d(ScAnCode.IntlHAsh, 'IntlHAsh');
+	d(ScAnCode.Semicolon, 'Semicolon');
+	d(ScAnCode.Quote, 'Quote');
+	d(ScAnCode.BAckquote, 'BAckquote');
+	d(ScAnCode.CommA, 'CommA');
+	d(ScAnCode.Period, 'Period');
+	d(ScAnCode.SlAsh, 'SlAsh');
+	d(ScAnCode.CApsLock, 'CApsLock');
+	d(ScAnCode.F1, 'F1');
+	d(ScAnCode.F2, 'F2');
+	d(ScAnCode.F3, 'F3');
+	d(ScAnCode.F4, 'F4');
+	d(ScAnCode.F5, 'F5');
+	d(ScAnCode.F6, 'F6');
+	d(ScAnCode.F7, 'F7');
+	d(ScAnCode.F8, 'F8');
+	d(ScAnCode.F9, 'F9');
+	d(ScAnCode.F10, 'F10');
+	d(ScAnCode.F11, 'F11');
+	d(ScAnCode.F12, 'F12');
+	d(ScAnCode.PrintScreen, 'PrintScreen');
+	d(ScAnCode.ScrollLock, 'ScrollLock');
+	d(ScAnCode.PAuse, 'PAuse');
+	d(ScAnCode.Insert, 'Insert');
+	d(ScAnCode.Home, 'Home');
+	d(ScAnCode.PAgeUp, 'PAgeUp');
+	d(ScAnCode.Delete, 'Delete');
+	d(ScAnCode.End, 'End');
+	d(ScAnCode.PAgeDown, 'PAgeDown');
+	d(ScAnCode.ArrowRight, 'ArrowRight');
+	d(ScAnCode.ArrowLeft, 'ArrowLeft');
+	d(ScAnCode.ArrowDown, 'ArrowDown');
+	d(ScAnCode.ArrowUp, 'ArrowUp');
+	d(ScAnCode.NumLock, 'NumLock');
+	d(ScAnCode.NumpAdDivide, 'NumpAdDivide');
+	d(ScAnCode.NumpAdMultiply, 'NumpAdMultiply');
+	d(ScAnCode.NumpAdSubtrAct, 'NumpAdSubtrAct');
+	d(ScAnCode.NumpAdAdd, 'NumpAdAdd');
+	d(ScAnCode.NumpAdEnter, 'NumpAdEnter');
+	d(ScAnCode.NumpAd1, 'NumpAd1');
+	d(ScAnCode.NumpAd2, 'NumpAd2');
+	d(ScAnCode.NumpAd3, 'NumpAd3');
+	d(ScAnCode.NumpAd4, 'NumpAd4');
+	d(ScAnCode.NumpAd5, 'NumpAd5');
+	d(ScAnCode.NumpAd6, 'NumpAd6');
+	d(ScAnCode.NumpAd7, 'NumpAd7');
+	d(ScAnCode.NumpAd8, 'NumpAd8');
+	d(ScAnCode.NumpAd9, 'NumpAd9');
+	d(ScAnCode.NumpAd0, 'NumpAd0');
+	d(ScAnCode.NumpAdDecimAl, 'NumpAdDecimAl');
+	d(ScAnCode.IntlBAckslAsh, 'IntlBAckslAsh');
+	d(ScAnCode.ContextMenu, 'ContextMenu');
+	d(ScAnCode.Power, 'Power');
+	d(ScAnCode.NumpAdEquAl, 'NumpAdEquAl');
+	d(ScAnCode.F13, 'F13');
+	d(ScAnCode.F14, 'F14');
+	d(ScAnCode.F15, 'F15');
+	d(ScAnCode.F16, 'F16');
+	d(ScAnCode.F17, 'F17');
+	d(ScAnCode.F18, 'F18');
+	d(ScAnCode.F19, 'F19');
+	d(ScAnCode.F20, 'F20');
+	d(ScAnCode.F21, 'F21');
+	d(ScAnCode.F22, 'F22');
+	d(ScAnCode.F23, 'F23');
+	d(ScAnCode.F24, 'F24');
+	d(ScAnCode.Open, 'Open');
+	d(ScAnCode.Help, 'Help');
+	d(ScAnCode.Select, 'Select');
+	d(ScAnCode.AgAin, 'AgAin');
+	d(ScAnCode.Undo, 'Undo');
+	d(ScAnCode.Cut, 'Cut');
+	d(ScAnCode.Copy, 'Copy');
+	d(ScAnCode.PAste, 'PAste');
+	d(ScAnCode.Find, 'Find');
+	d(ScAnCode.AudioVolumeMute, 'AudioVolumeMute');
+	d(ScAnCode.AudioVolumeUp, 'AudioVolumeUp');
+	d(ScAnCode.AudioVolumeDown, 'AudioVolumeDown');
+	d(ScAnCode.NumpAdCommA, 'NumpAdCommA');
+	d(ScAnCode.IntlRo, 'IntlRo');
+	d(ScAnCode.KAnAMode, 'KAnAMode');
+	d(ScAnCode.IntlYen, 'IntlYen');
+	d(ScAnCode.Convert, 'Convert');
+	d(ScAnCode.NonConvert, 'NonConvert');
+	d(ScAnCode.LAng1, 'LAng1');
+	d(ScAnCode.LAng2, 'LAng2');
+	d(ScAnCode.LAng3, 'LAng3');
+	d(ScAnCode.LAng4, 'LAng4');
+	d(ScAnCode.LAng5, 'LAng5');
+	d(ScAnCode.Abort, 'Abort');
+	d(ScAnCode.Props, 'Props');
+	d(ScAnCode.NumpAdPArenLeft, 'NumpAdPArenLeft');
+	d(ScAnCode.NumpAdPArenRight, 'NumpAdPArenRight');
+	d(ScAnCode.NumpAdBAckspAce, 'NumpAdBAckspAce');
+	d(ScAnCode.NumpAdMemoryStore, 'NumpAdMemoryStore');
+	d(ScAnCode.NumpAdMemoryRecAll, 'NumpAdMemoryRecAll');
+	d(ScAnCode.NumpAdMemoryCleAr, 'NumpAdMemoryCleAr');
+	d(ScAnCode.NumpAdMemoryAdd, 'NumpAdMemoryAdd');
+	d(ScAnCode.NumpAdMemorySubtrAct, 'NumpAdMemorySubtrAct');
+	d(ScAnCode.NumpAdCleAr, 'NumpAdCleAr');
+	d(ScAnCode.NumpAdCleArEntry, 'NumpAdCleArEntry');
+	d(ScAnCode.ControlLeft, 'ControlLeft');
+	d(ScAnCode.ShiftLeft, 'ShiftLeft');
+	d(ScAnCode.AltLeft, 'AltLeft');
+	d(ScAnCode.MetALeft, 'MetALeft');
+	d(ScAnCode.ControlRight, 'ControlRight');
+	d(ScAnCode.ShiftRight, 'ShiftRight');
+	d(ScAnCode.AltRight, 'AltRight');
+	d(ScAnCode.MetARight, 'MetARight');
+	d(ScAnCode.BrightnessUp, 'BrightnessUp');
+	d(ScAnCode.BrightnessDown, 'BrightnessDown');
+	d(ScAnCode.MediAPlAy, 'MediAPlAy');
+	d(ScAnCode.MediARecord, 'MediARecord');
+	d(ScAnCode.MediAFAstForwArd, 'MediAFAstForwArd');
+	d(ScAnCode.MediARewind, 'MediARewind');
+	d(ScAnCode.MediATrAckNext, 'MediATrAckNext');
+	d(ScAnCode.MediATrAckPrevious, 'MediATrAckPrevious');
+	d(ScAnCode.MediAStop, 'MediAStop');
+	d(ScAnCode.Eject, 'Eject');
+	d(ScAnCode.MediAPlAyPAuse, 'MediAPlAyPAuse');
+	d(ScAnCode.MediASelect, 'MediASelect');
+	d(ScAnCode.LAunchMAil, 'LAunchMAil');
+	d(ScAnCode.LAunchApp2, 'LAunchApp2');
+	d(ScAnCode.LAunchApp1, 'LAunchApp1');
+	d(ScAnCode.SelectTAsk, 'SelectTAsk');
+	d(ScAnCode.LAunchScreenSAver, 'LAunchScreenSAver');
+	d(ScAnCode.BrowserSeArch, 'BrowserSeArch');
+	d(ScAnCode.BrowserHome, 'BrowserHome');
+	d(ScAnCode.BrowserBAck, 'BrowserBAck');
+	d(ScAnCode.BrowserForwArd, 'BrowserForwArd');
+	d(ScAnCode.BrowserStop, 'BrowserStop');
+	d(ScAnCode.BrowserRefresh, 'BrowserRefresh');
+	d(ScAnCode.BrowserFAvorites, 'BrowserFAvorites');
+	d(ScAnCode.ZoomToggle, 'ZoomToggle');
+	d(ScAnCode.MAilReply, 'MAilReply');
+	d(ScAnCode.MAilForwArd, 'MAilForwArd');
+	d(ScAnCode.MAilSend, 'MAilSend');
 })();
 
 (function () {
-	for (let i = 0; i <= ScanCode.MAX_VALUE; i++) {
+	for (let i = 0; i <= ScAnCode.MAX_VALUE; i++) {
 		IMMUTABLE_CODE_TO_KEY_CODE[i] = -1;
 	}
 
@@ -475,7 +475,7 @@ export class ScanCodeBinding {
 		IMMUTABLE_KEY_CODE_TO_CODE[i] = -1;
 	}
 
-	function define(code: ScanCode, keyCode: KeyCode): void {
+	function define(code: ScAnCode, keyCode: KeyCode): void {
 		IMMUTABLE_CODE_TO_KEY_CODE[code] = keyCode;
 
 		if (
@@ -484,206 +484,206 @@ export class ScanCodeBinding {
 			&& (keyCode !== KeyCode.Ctrl)
 			&& (keyCode !== KeyCode.Shift)
 			&& (keyCode !== KeyCode.Alt)
-			&& (keyCode !== KeyCode.Meta)
+			&& (keyCode !== KeyCode.MetA)
 		) {
 			IMMUTABLE_KEY_CODE_TO_CODE[keyCode] = code;
 		}
 	}
 
-	// Manually added due to the exclusion above (due to duplication with NumpadEnter)
-	IMMUTABLE_KEY_CODE_TO_CODE[KeyCode.Enter] = ScanCode.Enter;
+	// MAnuAlly Added due to the exclusion Above (due to duplicAtion with NumpAdEnter)
+	IMMUTABLE_KEY_CODE_TO_CODE[KeyCode.Enter] = ScAnCode.Enter;
 
-	define(ScanCode.None, KeyCode.Unknown);
-	define(ScanCode.Hyper, KeyCode.Unknown);
-	define(ScanCode.Super, KeyCode.Unknown);
-	define(ScanCode.Fn, KeyCode.Unknown);
-	define(ScanCode.FnLock, KeyCode.Unknown);
-	define(ScanCode.Suspend, KeyCode.Unknown);
-	define(ScanCode.Resume, KeyCode.Unknown);
-	define(ScanCode.Turbo, KeyCode.Unknown);
-	define(ScanCode.Sleep, KeyCode.Unknown);
-	define(ScanCode.WakeUp, KeyCode.Unknown);
-	// define(ScanCode.KeyA, KeyCode.Unknown);
-	// define(ScanCode.KeyB, KeyCode.Unknown);
-	// define(ScanCode.KeyC, KeyCode.Unknown);
-	// define(ScanCode.KeyD, KeyCode.Unknown);
-	// define(ScanCode.KeyE, KeyCode.Unknown);
-	// define(ScanCode.KeyF, KeyCode.Unknown);
-	// define(ScanCode.KeyG, KeyCode.Unknown);
-	// define(ScanCode.KeyH, KeyCode.Unknown);
-	// define(ScanCode.KeyI, KeyCode.Unknown);
-	// define(ScanCode.KeyJ, KeyCode.Unknown);
-	// define(ScanCode.KeyK, KeyCode.Unknown);
-	// define(ScanCode.KeyL, KeyCode.Unknown);
-	// define(ScanCode.KeyM, KeyCode.Unknown);
-	// define(ScanCode.KeyN, KeyCode.Unknown);
-	// define(ScanCode.KeyO, KeyCode.Unknown);
-	// define(ScanCode.KeyP, KeyCode.Unknown);
-	// define(ScanCode.KeyQ, KeyCode.Unknown);
-	// define(ScanCode.KeyR, KeyCode.Unknown);
-	// define(ScanCode.KeyS, KeyCode.Unknown);
-	// define(ScanCode.KeyT, KeyCode.Unknown);
-	// define(ScanCode.KeyU, KeyCode.Unknown);
-	// define(ScanCode.KeyV, KeyCode.Unknown);
-	// define(ScanCode.KeyW, KeyCode.Unknown);
-	// define(ScanCode.KeyX, KeyCode.Unknown);
-	// define(ScanCode.KeyY, KeyCode.Unknown);
-	// define(ScanCode.KeyZ, KeyCode.Unknown);
-	// define(ScanCode.Digit1, KeyCode.Unknown);
-	// define(ScanCode.Digit2, KeyCode.Unknown);
-	// define(ScanCode.Digit3, KeyCode.Unknown);
-	// define(ScanCode.Digit4, KeyCode.Unknown);
-	// define(ScanCode.Digit5, KeyCode.Unknown);
-	// define(ScanCode.Digit6, KeyCode.Unknown);
-	// define(ScanCode.Digit7, KeyCode.Unknown);
-	// define(ScanCode.Digit8, KeyCode.Unknown);
-	// define(ScanCode.Digit9, KeyCode.Unknown);
-	// define(ScanCode.Digit0, KeyCode.Unknown);
-	define(ScanCode.Enter, KeyCode.Enter);
-	define(ScanCode.Escape, KeyCode.Escape);
-	define(ScanCode.Backspace, KeyCode.Backspace);
-	define(ScanCode.Tab, KeyCode.Tab);
-	define(ScanCode.Space, KeyCode.Space);
-	// define(ScanCode.Minus, KeyCode.Unknown);
-	// define(ScanCode.Equal, KeyCode.Unknown);
-	// define(ScanCode.BracketLeft, KeyCode.Unknown);
-	// define(ScanCode.BracketRight, KeyCode.Unknown);
-	// define(ScanCode.Backslash, KeyCode.Unknown);
-	// define(ScanCode.IntlHash, KeyCode.Unknown);
-	// define(ScanCode.Semicolon, KeyCode.Unknown);
-	// define(ScanCode.Quote, KeyCode.Unknown);
-	// define(ScanCode.Backquote, KeyCode.Unknown);
-	// define(ScanCode.Comma, KeyCode.Unknown);
-	// define(ScanCode.Period, KeyCode.Unknown);
-	// define(ScanCode.Slash, KeyCode.Unknown);
-	define(ScanCode.CapsLock, KeyCode.CapsLock);
-	define(ScanCode.F1, KeyCode.F1);
-	define(ScanCode.F2, KeyCode.F2);
-	define(ScanCode.F3, KeyCode.F3);
-	define(ScanCode.F4, KeyCode.F4);
-	define(ScanCode.F5, KeyCode.F5);
-	define(ScanCode.F6, KeyCode.F6);
-	define(ScanCode.F7, KeyCode.F7);
-	define(ScanCode.F8, KeyCode.F8);
-	define(ScanCode.F9, KeyCode.F9);
-	define(ScanCode.F10, KeyCode.F10);
-	define(ScanCode.F11, KeyCode.F11);
-	define(ScanCode.F12, KeyCode.F12);
-	define(ScanCode.PrintScreen, KeyCode.Unknown);
-	define(ScanCode.ScrollLock, KeyCode.ScrollLock);
-	define(ScanCode.Pause, KeyCode.PauseBreak);
-	define(ScanCode.Insert, KeyCode.Insert);
-	define(ScanCode.Home, KeyCode.Home);
-	define(ScanCode.PageUp, KeyCode.PageUp);
-	define(ScanCode.Delete, KeyCode.Delete);
-	define(ScanCode.End, KeyCode.End);
-	define(ScanCode.PageDown, KeyCode.PageDown);
-	define(ScanCode.ArrowRight, KeyCode.RightArrow);
-	define(ScanCode.ArrowLeft, KeyCode.LeftArrow);
-	define(ScanCode.ArrowDown, KeyCode.DownArrow);
-	define(ScanCode.ArrowUp, KeyCode.UpArrow);
-	define(ScanCode.NumLock, KeyCode.NumLock);
-	define(ScanCode.NumpadDivide, KeyCode.NUMPAD_DIVIDE);
-	define(ScanCode.NumpadMultiply, KeyCode.NUMPAD_MULTIPLY);
-	define(ScanCode.NumpadSubtract, KeyCode.NUMPAD_SUBTRACT);
-	define(ScanCode.NumpadAdd, KeyCode.NUMPAD_ADD);
-	define(ScanCode.NumpadEnter, KeyCode.Enter); // Duplicate
-	define(ScanCode.Numpad1, KeyCode.NUMPAD_1);
-	define(ScanCode.Numpad2, KeyCode.NUMPAD_2);
-	define(ScanCode.Numpad3, KeyCode.NUMPAD_3);
-	define(ScanCode.Numpad4, KeyCode.NUMPAD_4);
-	define(ScanCode.Numpad5, KeyCode.NUMPAD_5);
-	define(ScanCode.Numpad6, KeyCode.NUMPAD_6);
-	define(ScanCode.Numpad7, KeyCode.NUMPAD_7);
-	define(ScanCode.Numpad8, KeyCode.NUMPAD_8);
-	define(ScanCode.Numpad9, KeyCode.NUMPAD_9);
-	define(ScanCode.Numpad0, KeyCode.NUMPAD_0);
-	define(ScanCode.NumpadDecimal, KeyCode.NUMPAD_DECIMAL);
-	// define(ScanCode.IntlBackslash, KeyCode.Unknown);
-	define(ScanCode.ContextMenu, KeyCode.ContextMenu);
-	define(ScanCode.Power, KeyCode.Unknown);
-	define(ScanCode.NumpadEqual, KeyCode.Unknown);
-	define(ScanCode.F13, KeyCode.F13);
-	define(ScanCode.F14, KeyCode.F14);
-	define(ScanCode.F15, KeyCode.F15);
-	define(ScanCode.F16, KeyCode.F16);
-	define(ScanCode.F17, KeyCode.F17);
-	define(ScanCode.F18, KeyCode.F18);
-	define(ScanCode.F19, KeyCode.F19);
-	define(ScanCode.F20, KeyCode.Unknown);
-	define(ScanCode.F21, KeyCode.Unknown);
-	define(ScanCode.F22, KeyCode.Unknown);
-	define(ScanCode.F23, KeyCode.Unknown);
-	define(ScanCode.F24, KeyCode.Unknown);
-	define(ScanCode.Open, KeyCode.Unknown);
-	define(ScanCode.Help, KeyCode.Unknown);
-	define(ScanCode.Select, KeyCode.Unknown);
-	define(ScanCode.Again, KeyCode.Unknown);
-	define(ScanCode.Undo, KeyCode.Unknown);
-	define(ScanCode.Cut, KeyCode.Unknown);
-	define(ScanCode.Copy, KeyCode.Unknown);
-	define(ScanCode.Paste, KeyCode.Unknown);
-	define(ScanCode.Find, KeyCode.Unknown);
-	define(ScanCode.AudioVolumeMute, KeyCode.Unknown);
-	define(ScanCode.AudioVolumeUp, KeyCode.Unknown);
-	define(ScanCode.AudioVolumeDown, KeyCode.Unknown);
-	define(ScanCode.NumpadComma, KeyCode.NUMPAD_SEPARATOR);
-	// define(ScanCode.IntlRo, KeyCode.Unknown);
-	define(ScanCode.KanaMode, KeyCode.Unknown);
-	// define(ScanCode.IntlYen, KeyCode.Unknown);
-	define(ScanCode.Convert, KeyCode.Unknown);
-	define(ScanCode.NonConvert, KeyCode.Unknown);
-	define(ScanCode.Lang1, KeyCode.Unknown);
-	define(ScanCode.Lang2, KeyCode.Unknown);
-	define(ScanCode.Lang3, KeyCode.Unknown);
-	define(ScanCode.Lang4, KeyCode.Unknown);
-	define(ScanCode.Lang5, KeyCode.Unknown);
-	define(ScanCode.Abort, KeyCode.Unknown);
-	define(ScanCode.Props, KeyCode.Unknown);
-	define(ScanCode.NumpadParenLeft, KeyCode.Unknown);
-	define(ScanCode.NumpadParenRight, KeyCode.Unknown);
-	define(ScanCode.NumpadBackspace, KeyCode.Unknown);
-	define(ScanCode.NumpadMemoryStore, KeyCode.Unknown);
-	define(ScanCode.NumpadMemoryRecall, KeyCode.Unknown);
-	define(ScanCode.NumpadMemoryClear, KeyCode.Unknown);
-	define(ScanCode.NumpadMemoryAdd, KeyCode.Unknown);
-	define(ScanCode.NumpadMemorySubtract, KeyCode.Unknown);
-	define(ScanCode.NumpadClear, KeyCode.Unknown);
-	define(ScanCode.NumpadClearEntry, KeyCode.Unknown);
-	define(ScanCode.ControlLeft, KeyCode.Ctrl); // Duplicate
-	define(ScanCode.ShiftLeft, KeyCode.Shift); // Duplicate
-	define(ScanCode.AltLeft, KeyCode.Alt); // Duplicate
-	define(ScanCode.MetaLeft, KeyCode.Meta); // Duplicate
-	define(ScanCode.ControlRight, KeyCode.Ctrl); // Duplicate
-	define(ScanCode.ShiftRight, KeyCode.Shift); // Duplicate
-	define(ScanCode.AltRight, KeyCode.Alt); // Duplicate
-	define(ScanCode.MetaRight, KeyCode.Meta); // Duplicate
-	define(ScanCode.BrightnessUp, KeyCode.Unknown);
-	define(ScanCode.BrightnessDown, KeyCode.Unknown);
-	define(ScanCode.MediaPlay, KeyCode.Unknown);
-	define(ScanCode.MediaRecord, KeyCode.Unknown);
-	define(ScanCode.MediaFastForward, KeyCode.Unknown);
-	define(ScanCode.MediaRewind, KeyCode.Unknown);
-	define(ScanCode.MediaTrackNext, KeyCode.Unknown);
-	define(ScanCode.MediaTrackPrevious, KeyCode.Unknown);
-	define(ScanCode.MediaStop, KeyCode.Unknown);
-	define(ScanCode.Eject, KeyCode.Unknown);
-	define(ScanCode.MediaPlayPause, KeyCode.Unknown);
-	define(ScanCode.MediaSelect, KeyCode.Unknown);
-	define(ScanCode.LaunchMail, KeyCode.Unknown);
-	define(ScanCode.LaunchApp2, KeyCode.Unknown);
-	define(ScanCode.LaunchApp1, KeyCode.Unknown);
-	define(ScanCode.SelectTask, KeyCode.Unknown);
-	define(ScanCode.LaunchScreenSaver, KeyCode.Unknown);
-	define(ScanCode.BrowserSearch, KeyCode.Unknown);
-	define(ScanCode.BrowserHome, KeyCode.Unknown);
-	define(ScanCode.BrowserBack, KeyCode.Unknown);
-	define(ScanCode.BrowserForward, KeyCode.Unknown);
-	define(ScanCode.BrowserStop, KeyCode.Unknown);
-	define(ScanCode.BrowserRefresh, KeyCode.Unknown);
-	define(ScanCode.BrowserFavorites, KeyCode.Unknown);
-	define(ScanCode.ZoomToggle, KeyCode.Unknown);
-	define(ScanCode.MailReply, KeyCode.Unknown);
-	define(ScanCode.MailForward, KeyCode.Unknown);
-	define(ScanCode.MailSend, KeyCode.Unknown);
+	define(ScAnCode.None, KeyCode.Unknown);
+	define(ScAnCode.Hyper, KeyCode.Unknown);
+	define(ScAnCode.Super, KeyCode.Unknown);
+	define(ScAnCode.Fn, KeyCode.Unknown);
+	define(ScAnCode.FnLock, KeyCode.Unknown);
+	define(ScAnCode.Suspend, KeyCode.Unknown);
+	define(ScAnCode.Resume, KeyCode.Unknown);
+	define(ScAnCode.Turbo, KeyCode.Unknown);
+	define(ScAnCode.Sleep, KeyCode.Unknown);
+	define(ScAnCode.WAkeUp, KeyCode.Unknown);
+	// define(ScAnCode.KeyA, KeyCode.Unknown);
+	// define(ScAnCode.KeyB, KeyCode.Unknown);
+	// define(ScAnCode.KeyC, KeyCode.Unknown);
+	// define(ScAnCode.KeyD, KeyCode.Unknown);
+	// define(ScAnCode.KeyE, KeyCode.Unknown);
+	// define(ScAnCode.KeyF, KeyCode.Unknown);
+	// define(ScAnCode.KeyG, KeyCode.Unknown);
+	// define(ScAnCode.KeyH, KeyCode.Unknown);
+	// define(ScAnCode.KeyI, KeyCode.Unknown);
+	// define(ScAnCode.KeyJ, KeyCode.Unknown);
+	// define(ScAnCode.KeyK, KeyCode.Unknown);
+	// define(ScAnCode.KeyL, KeyCode.Unknown);
+	// define(ScAnCode.KeyM, KeyCode.Unknown);
+	// define(ScAnCode.KeyN, KeyCode.Unknown);
+	// define(ScAnCode.KeyO, KeyCode.Unknown);
+	// define(ScAnCode.KeyP, KeyCode.Unknown);
+	// define(ScAnCode.KeyQ, KeyCode.Unknown);
+	// define(ScAnCode.KeyR, KeyCode.Unknown);
+	// define(ScAnCode.KeyS, KeyCode.Unknown);
+	// define(ScAnCode.KeyT, KeyCode.Unknown);
+	// define(ScAnCode.KeyU, KeyCode.Unknown);
+	// define(ScAnCode.KeyV, KeyCode.Unknown);
+	// define(ScAnCode.KeyW, KeyCode.Unknown);
+	// define(ScAnCode.KeyX, KeyCode.Unknown);
+	// define(ScAnCode.KeyY, KeyCode.Unknown);
+	// define(ScAnCode.KeyZ, KeyCode.Unknown);
+	// define(ScAnCode.Digit1, KeyCode.Unknown);
+	// define(ScAnCode.Digit2, KeyCode.Unknown);
+	// define(ScAnCode.Digit3, KeyCode.Unknown);
+	// define(ScAnCode.Digit4, KeyCode.Unknown);
+	// define(ScAnCode.Digit5, KeyCode.Unknown);
+	// define(ScAnCode.Digit6, KeyCode.Unknown);
+	// define(ScAnCode.Digit7, KeyCode.Unknown);
+	// define(ScAnCode.Digit8, KeyCode.Unknown);
+	// define(ScAnCode.Digit9, KeyCode.Unknown);
+	// define(ScAnCode.Digit0, KeyCode.Unknown);
+	define(ScAnCode.Enter, KeyCode.Enter);
+	define(ScAnCode.EscApe, KeyCode.EscApe);
+	define(ScAnCode.BAckspAce, KeyCode.BAckspAce);
+	define(ScAnCode.TAb, KeyCode.TAb);
+	define(ScAnCode.SpAce, KeyCode.SpAce);
+	// define(ScAnCode.Minus, KeyCode.Unknown);
+	// define(ScAnCode.EquAl, KeyCode.Unknown);
+	// define(ScAnCode.BrAcketLeft, KeyCode.Unknown);
+	// define(ScAnCode.BrAcketRight, KeyCode.Unknown);
+	// define(ScAnCode.BAckslAsh, KeyCode.Unknown);
+	// define(ScAnCode.IntlHAsh, KeyCode.Unknown);
+	// define(ScAnCode.Semicolon, KeyCode.Unknown);
+	// define(ScAnCode.Quote, KeyCode.Unknown);
+	// define(ScAnCode.BAckquote, KeyCode.Unknown);
+	// define(ScAnCode.CommA, KeyCode.Unknown);
+	// define(ScAnCode.Period, KeyCode.Unknown);
+	// define(ScAnCode.SlAsh, KeyCode.Unknown);
+	define(ScAnCode.CApsLock, KeyCode.CApsLock);
+	define(ScAnCode.F1, KeyCode.F1);
+	define(ScAnCode.F2, KeyCode.F2);
+	define(ScAnCode.F3, KeyCode.F3);
+	define(ScAnCode.F4, KeyCode.F4);
+	define(ScAnCode.F5, KeyCode.F5);
+	define(ScAnCode.F6, KeyCode.F6);
+	define(ScAnCode.F7, KeyCode.F7);
+	define(ScAnCode.F8, KeyCode.F8);
+	define(ScAnCode.F9, KeyCode.F9);
+	define(ScAnCode.F10, KeyCode.F10);
+	define(ScAnCode.F11, KeyCode.F11);
+	define(ScAnCode.F12, KeyCode.F12);
+	define(ScAnCode.PrintScreen, KeyCode.Unknown);
+	define(ScAnCode.ScrollLock, KeyCode.ScrollLock);
+	define(ScAnCode.PAuse, KeyCode.PAuseBreAk);
+	define(ScAnCode.Insert, KeyCode.Insert);
+	define(ScAnCode.Home, KeyCode.Home);
+	define(ScAnCode.PAgeUp, KeyCode.PAgeUp);
+	define(ScAnCode.Delete, KeyCode.Delete);
+	define(ScAnCode.End, KeyCode.End);
+	define(ScAnCode.PAgeDown, KeyCode.PAgeDown);
+	define(ScAnCode.ArrowRight, KeyCode.RightArrow);
+	define(ScAnCode.ArrowLeft, KeyCode.LeftArrow);
+	define(ScAnCode.ArrowDown, KeyCode.DownArrow);
+	define(ScAnCode.ArrowUp, KeyCode.UpArrow);
+	define(ScAnCode.NumLock, KeyCode.NumLock);
+	define(ScAnCode.NumpAdDivide, KeyCode.NUMPAD_DIVIDE);
+	define(ScAnCode.NumpAdMultiply, KeyCode.NUMPAD_MULTIPLY);
+	define(ScAnCode.NumpAdSubtrAct, KeyCode.NUMPAD_SUBTRACT);
+	define(ScAnCode.NumpAdAdd, KeyCode.NUMPAD_ADD);
+	define(ScAnCode.NumpAdEnter, KeyCode.Enter); // DuplicAte
+	define(ScAnCode.NumpAd1, KeyCode.NUMPAD_1);
+	define(ScAnCode.NumpAd2, KeyCode.NUMPAD_2);
+	define(ScAnCode.NumpAd3, KeyCode.NUMPAD_3);
+	define(ScAnCode.NumpAd4, KeyCode.NUMPAD_4);
+	define(ScAnCode.NumpAd5, KeyCode.NUMPAD_5);
+	define(ScAnCode.NumpAd6, KeyCode.NUMPAD_6);
+	define(ScAnCode.NumpAd7, KeyCode.NUMPAD_7);
+	define(ScAnCode.NumpAd8, KeyCode.NUMPAD_8);
+	define(ScAnCode.NumpAd9, KeyCode.NUMPAD_9);
+	define(ScAnCode.NumpAd0, KeyCode.NUMPAD_0);
+	define(ScAnCode.NumpAdDecimAl, KeyCode.NUMPAD_DECIMAL);
+	// define(ScAnCode.IntlBAckslAsh, KeyCode.Unknown);
+	define(ScAnCode.ContextMenu, KeyCode.ContextMenu);
+	define(ScAnCode.Power, KeyCode.Unknown);
+	define(ScAnCode.NumpAdEquAl, KeyCode.Unknown);
+	define(ScAnCode.F13, KeyCode.F13);
+	define(ScAnCode.F14, KeyCode.F14);
+	define(ScAnCode.F15, KeyCode.F15);
+	define(ScAnCode.F16, KeyCode.F16);
+	define(ScAnCode.F17, KeyCode.F17);
+	define(ScAnCode.F18, KeyCode.F18);
+	define(ScAnCode.F19, KeyCode.F19);
+	define(ScAnCode.F20, KeyCode.Unknown);
+	define(ScAnCode.F21, KeyCode.Unknown);
+	define(ScAnCode.F22, KeyCode.Unknown);
+	define(ScAnCode.F23, KeyCode.Unknown);
+	define(ScAnCode.F24, KeyCode.Unknown);
+	define(ScAnCode.Open, KeyCode.Unknown);
+	define(ScAnCode.Help, KeyCode.Unknown);
+	define(ScAnCode.Select, KeyCode.Unknown);
+	define(ScAnCode.AgAin, KeyCode.Unknown);
+	define(ScAnCode.Undo, KeyCode.Unknown);
+	define(ScAnCode.Cut, KeyCode.Unknown);
+	define(ScAnCode.Copy, KeyCode.Unknown);
+	define(ScAnCode.PAste, KeyCode.Unknown);
+	define(ScAnCode.Find, KeyCode.Unknown);
+	define(ScAnCode.AudioVolumeMute, KeyCode.Unknown);
+	define(ScAnCode.AudioVolumeUp, KeyCode.Unknown);
+	define(ScAnCode.AudioVolumeDown, KeyCode.Unknown);
+	define(ScAnCode.NumpAdCommA, KeyCode.NUMPAD_SEPARATOR);
+	// define(ScAnCode.IntlRo, KeyCode.Unknown);
+	define(ScAnCode.KAnAMode, KeyCode.Unknown);
+	// define(ScAnCode.IntlYen, KeyCode.Unknown);
+	define(ScAnCode.Convert, KeyCode.Unknown);
+	define(ScAnCode.NonConvert, KeyCode.Unknown);
+	define(ScAnCode.LAng1, KeyCode.Unknown);
+	define(ScAnCode.LAng2, KeyCode.Unknown);
+	define(ScAnCode.LAng3, KeyCode.Unknown);
+	define(ScAnCode.LAng4, KeyCode.Unknown);
+	define(ScAnCode.LAng5, KeyCode.Unknown);
+	define(ScAnCode.Abort, KeyCode.Unknown);
+	define(ScAnCode.Props, KeyCode.Unknown);
+	define(ScAnCode.NumpAdPArenLeft, KeyCode.Unknown);
+	define(ScAnCode.NumpAdPArenRight, KeyCode.Unknown);
+	define(ScAnCode.NumpAdBAckspAce, KeyCode.Unknown);
+	define(ScAnCode.NumpAdMemoryStore, KeyCode.Unknown);
+	define(ScAnCode.NumpAdMemoryRecAll, KeyCode.Unknown);
+	define(ScAnCode.NumpAdMemoryCleAr, KeyCode.Unknown);
+	define(ScAnCode.NumpAdMemoryAdd, KeyCode.Unknown);
+	define(ScAnCode.NumpAdMemorySubtrAct, KeyCode.Unknown);
+	define(ScAnCode.NumpAdCleAr, KeyCode.Unknown);
+	define(ScAnCode.NumpAdCleArEntry, KeyCode.Unknown);
+	define(ScAnCode.ControlLeft, KeyCode.Ctrl); // DuplicAte
+	define(ScAnCode.ShiftLeft, KeyCode.Shift); // DuplicAte
+	define(ScAnCode.AltLeft, KeyCode.Alt); // DuplicAte
+	define(ScAnCode.MetALeft, KeyCode.MetA); // DuplicAte
+	define(ScAnCode.ControlRight, KeyCode.Ctrl); // DuplicAte
+	define(ScAnCode.ShiftRight, KeyCode.Shift); // DuplicAte
+	define(ScAnCode.AltRight, KeyCode.Alt); // DuplicAte
+	define(ScAnCode.MetARight, KeyCode.MetA); // DuplicAte
+	define(ScAnCode.BrightnessUp, KeyCode.Unknown);
+	define(ScAnCode.BrightnessDown, KeyCode.Unknown);
+	define(ScAnCode.MediAPlAy, KeyCode.Unknown);
+	define(ScAnCode.MediARecord, KeyCode.Unknown);
+	define(ScAnCode.MediAFAstForwArd, KeyCode.Unknown);
+	define(ScAnCode.MediARewind, KeyCode.Unknown);
+	define(ScAnCode.MediATrAckNext, KeyCode.Unknown);
+	define(ScAnCode.MediATrAckPrevious, KeyCode.Unknown);
+	define(ScAnCode.MediAStop, KeyCode.Unknown);
+	define(ScAnCode.Eject, KeyCode.Unknown);
+	define(ScAnCode.MediAPlAyPAuse, KeyCode.Unknown);
+	define(ScAnCode.MediASelect, KeyCode.Unknown);
+	define(ScAnCode.LAunchMAil, KeyCode.Unknown);
+	define(ScAnCode.LAunchApp2, KeyCode.Unknown);
+	define(ScAnCode.LAunchApp1, KeyCode.Unknown);
+	define(ScAnCode.SelectTAsk, KeyCode.Unknown);
+	define(ScAnCode.LAunchScreenSAver, KeyCode.Unknown);
+	define(ScAnCode.BrowserSeArch, KeyCode.Unknown);
+	define(ScAnCode.BrowserHome, KeyCode.Unknown);
+	define(ScAnCode.BrowserBAck, KeyCode.Unknown);
+	define(ScAnCode.BrowserForwArd, KeyCode.Unknown);
+	define(ScAnCode.BrowserStop, KeyCode.Unknown);
+	define(ScAnCode.BrowserRefresh, KeyCode.Unknown);
+	define(ScAnCode.BrowserFAvorites, KeyCode.Unknown);
+	define(ScAnCode.ZoomToggle, KeyCode.Unknown);
+	define(ScAnCode.MAilReply, KeyCode.Unknown);
+	define(ScAnCode.MAilForwArd, KeyCode.Unknown);
+	define(ScAnCode.MAilSend, KeyCode.Unknown);
 })();

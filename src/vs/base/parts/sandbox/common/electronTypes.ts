@@ -1,253 +1,253 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
 // #######################################################################
 // ###                                                                 ###
-// ###      electron.d.ts types we need in a common layer for reuse    ###
+// ###      electron.d.ts types we need in A common lAyer for reuse    ###
 // ###                    (copied from Electron 9.x)                   ###
 // ###                                                                 ###
 // #######################################################################
 
 
-export interface MessageBoxOptions {
+export interfAce MessAgeBoxOptions {
 	/**
-	 * Can be `"none"`, `"info"`, `"error"`, `"question"` or `"warning"`. On Windows,
-	 * `"question"` displays the same icon as `"info"`, unless you set an icon using
-	 * the `"icon"` option. On macOS, both `"warning"` and `"error"` display the same
-	 * warning icon.
+	 * CAn be `"none"`, `"info"`, `"error"`, `"question"` or `"wArning"`. On Windows,
+	 * `"question"` displAys the sAme icon As `"info"`, unless you set An icon using
+	 * the `"icon"` option. On mAcOS, both `"wArning"` And `"error"` displAy the sAme
+	 * wArning icon.
 	 */
 	type?: string;
 	/**
-	 * Array of texts for buttons. On Windows, an empty array will result in one button
-	 * labeled "OK".
+	 * ArrAy of texts for buttons. On Windows, An empty ArrAy will result in one button
+	 * lAbeled "OK".
 	 */
 	buttons?: string[];
 	/**
-	 * Index of the button in the buttons array which will be selected by default when
-	 * the message box opens.
+	 * Index of the button in the buttons ArrAy which will be selected by defAult when
+	 * the messAge box opens.
 	 */
-	defaultId?: number;
+	defAultId?: number;
 	/**
-	 * Title of the message box, some platforms will not show it.
+	 * Title of the messAge box, some plAtforms will not show it.
 	 */
 	title?: string;
 	/**
-	 * Content of the message box.
+	 * Content of the messAge box.
 	 */
-	message: string;
+	messAge: string;
 	/**
-	 * Extra information of the message.
+	 * ExtrA informAtion of the messAge.
 	 */
-	detail?: string;
+	detAil?: string;
 	/**
-	 * If provided, the message box will include a checkbox with the given label.
+	 * If provided, the messAge box will include A checkbox with the given lAbel.
 	 */
-	checkboxLabel?: string;
+	checkboxLAbel?: string;
 	/**
-	 * Initial checked state of the checkbox. `false` by default.
+	 * InitiAl checked stAte of the checkbox. `fAlse` by defAult.
 	 */
-	checkboxChecked?: boolean;
-	// icon?: NativeImage;
+	checkboxChecked?: booleAn;
+	// icon?: NAtiveImAge;
 	/**
-	 * The index of the button to be used to cancel the dialog, via the `Esc` key. By
-	 * default this is assigned to the first button with "cancel" or "no" as the label.
-	 * If no such labeled buttons exist and this option is not set, `0` will be used as
-	 * the return value.
+	 * The index of the button to be used to cAncel the diAlog, viA the `Esc` key. By
+	 * defAult this is Assigned to the first button with "cAncel" or "no" As the lAbel.
+	 * If no such lAbeled buttons exist And this option is not set, `0` will be used As
+	 * the return vAlue.
 	 */
-	cancelId?: number;
+	cAncelId?: number;
 	/**
-	 * On Windows Electron will try to figure out which one of the `buttons` are common
-	 * buttons (like "Cancel" or "Yes"), and show the others as command links in the
-	 * dialog. This can make the dialog appear in the style of modern Windows apps. If
-	 * you don't like this behavior, you can set `noLink` to `true`.
+	 * On Windows Electron will try to figure out which one of the `buttons` Are common
+	 * buttons (like "CAncel" or "Yes"), And show the others As commAnd links in the
+	 * diAlog. This cAn mAke the diAlog AppeAr in the style of modern Windows Apps. If
+	 * you don't like this behAvior, you cAn set `noLink` to `true`.
 	 */
-	noLink?: boolean;
+	noLink?: booleAn;
 	/**
-	 * Normalize the keyboard access keys across platforms. Default is `false`.
-	 * Enabling this assumes `&` is used in the button labels for the placement of the
-	 * keyboard shortcut access key and labels will be converted so they work correctly
-	 * on each platform, `&` characters are removed on macOS, converted to `_` on
-	 * Linux, and left untouched on Windows. For example, a button label of `Vie&w`
-	 * will be converted to `Vie_w` on Linux and `View` on macOS and can be selected
-	 * via `Alt-W` on Windows and Linux.
+	 * NormAlize the keyboArd Access keys Across plAtforms. DefAult is `fAlse`.
+	 * EnAbling this Assumes `&` is used in the button lAbels for the plAcement of the
+	 * keyboArd shortcut Access key And lAbels will be converted so they work correctly
+	 * on eAch plAtform, `&` chArActers Are removed on mAcOS, converted to `_` on
+	 * Linux, And left untouched on Windows. For exAmple, A button lAbel of `Vie&w`
+	 * will be converted to `Vie_w` on Linux And `View` on mAcOS And cAn be selected
+	 * viA `Alt-W` on Windows And Linux.
 	 */
-	normalizeAccessKeys?: boolean;
+	normAlizeAccessKeys?: booleAn;
 }
 
-export interface MessageBoxReturnValue {
+export interfAce MessAgeBoxReturnVAlue {
 	/**
 	 * The index of the clicked button.
 	 */
 	response: number;
 	/**
-	 * The checked state of the checkbox if `checkboxLabel` was set. Otherwise `false`.
+	 * The checked stAte of the checkbox if `checkboxLAbel` wAs set. Otherwise `fAlse`.
 	 */
-	checkboxChecked: boolean;
+	checkboxChecked: booleAn;
 }
 
-export interface OpenDevToolsOptions {
+export interfAce OpenDevToolsOptions {
 	/**
-	 * Opens the devtools with specified dock state, can be `right`, `bottom`,
-	 * `undocked`, `detach`. Defaults to last used dock state. In `undocked` mode it's
-	 * possible to dock back. In `detach` mode it's not.
+	 * Opens the devtools with specified dock stAte, cAn be `right`, `bottom`,
+	 * `undocked`, `detAch`. DefAults to lAst used dock stAte. In `undocked` mode it's
+	 * possible to dock bAck. In `detAch` mode it's not.
 	 */
-	mode: ('right' | 'bottom' | 'undocked' | 'detach');
+	mode: ('right' | 'bottom' | 'undocked' | 'detAch');
 	/**
-	 * Whether to bring the opened devtools window to the foreground. The default is
+	 * Whether to bring the opened devtools window to the foreground. The defAult is
 	 * `true`.
 	 */
-	activate?: boolean;
+	ActivAte?: booleAn;
 }
 
-export interface SaveDialogOptions {
+export interfAce SAveDiAlogOptions {
 	title?: string;
 	/**
-	 * Absolute directory path, absolute file path, or file name to use by default.
+	 * Absolute directory pAth, Absolute file pAth, or file nAme to use by defAult.
 	 */
-	defaultPath?: string;
+	defAultPAth?: string;
 	/**
-	 * Custom label for the confirmation button, when left empty the default label will
+	 * Custom lAbel for the confirmAtion button, when left empty the defAult lAbel will
 	 * be used.
 	 */
-	buttonLabel?: string;
+	buttonLAbel?: string;
 	filters?: FileFilter[];
 	/**
-	 * Message to display above text fields.
+	 * MessAge to displAy Above text fields.
 	 *
-	 * @platform darwin
+	 * @plAtform dArwin
 	 */
-	message?: string;
+	messAge?: string;
 	/**
-	 * Custom label for the text displayed in front of the filename text field.
+	 * Custom lAbel for the text displAyed in front of the filenAme text field.
 	 *
-	 * @platform darwin
+	 * @plAtform dArwin
 	 */
-	nameFieldLabel?: string;
+	nAmeFieldLAbel?: string;
 	/**
-	 * Show the tags input box, defaults to `true`.
+	 * Show the tAgs input box, defAults to `true`.
 	 *
-	 * @platform darwin
+	 * @plAtform dArwin
 	 */
-	showsTagField?: boolean;
-	properties?: Array<'showHiddenFiles' | 'createDirectory' | 'treatPackageAsDirectory' | 'showOverwriteConfirmation' | 'dontAddToRecent'>;
+	showsTAgField?: booleAn;
+	properties?: ArrAy<'showHiddenFiles' | 'creAteDirectory' | 'treAtPAckAgeAsDirectory' | 'showOverwriteConfirmAtion' | 'dontAddToRecent'>;
 	/**
-	 * Create a security scoped bookmark when packaged for the Mac App Store. If this
-	 * option is enabled and the file doesn't already exist a blank file will be
-	 * created at the chosen path.
+	 * CreAte A security scoped bookmArk when pAckAged for the MAc App Store. If this
+	 * option is enAbled And the file doesn't AlreAdy exist A blAnk file will be
+	 * creAted At the chosen pAth.
 	 *
-	 * @platform darwin,mas
+	 * @plAtform dArwin,mAs
 	 */
-	securityScopedBookmarks?: boolean;
+	securityScopedBookmArks?: booleAn;
 }
 
-export interface OpenDialogOptions {
+export interfAce OpenDiAlogOptions {
 	title?: string;
-	defaultPath?: string;
+	defAultPAth?: string;
 	/**
-	 * Custom label for the confirmation button, when left empty the default label will
+	 * Custom lAbel for the confirmAtion button, when left empty the defAult lAbel will
 	 * be used.
 	 */
-	buttonLabel?: string;
+	buttonLAbel?: string;
 	filters?: FileFilter[];
 	/**
-	 * Contains which features the dialog should use. The following values are
+	 * ContAins which feAtures the diAlog should use. The following vAlues Are
 	 * supported:
 	 */
-	properties?: Array<'openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles' | 'createDirectory' | 'promptToCreate' | 'noResolveAliases' | 'treatPackageAsDirectory' | 'dontAddToRecent'>;
+	properties?: ArrAy<'openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles' | 'creAteDirectory' | 'promptToCreAte' | 'noResolveAliAses' | 'treAtPAckAgeAsDirectory' | 'dontAddToRecent'>;
 	/**
-	 * Message to display above input boxes.
+	 * MessAge to displAy Above input boxes.
 	 *
-	 * @platform darwin
+	 * @plAtform dArwin
 	 */
-	message?: string;
+	messAge?: string;
 	/**
-	 * Create security scoped bookmarks when packaged for the Mac App Store.
+	 * CreAte security scoped bookmArks when pAckAged for the MAc App Store.
 	 *
-	 * @platform darwin,mas
+	 * @plAtform dArwin,mAs
 	 */
-	securityScopedBookmarks?: boolean;
+	securityScopedBookmArks?: booleAn;
 }
 
-export interface OpenDialogReturnValue {
+export interfAce OpenDiAlogReturnVAlue {
 	/**
-	 * whether or not the dialog was canceled.
+	 * whether or not the diAlog wAs cAnceled.
 	 */
-	canceled: boolean;
+	cAnceled: booleAn;
 	/**
-	 * An array of file paths chosen by the user. If the dialog is cancelled this will
-	 * be an empty array.
+	 * An ArrAy of file pAths chosen by the user. If the diAlog is cAncelled this will
+	 * be An empty ArrAy.
 	 */
-	filePaths: string[];
+	filePAths: string[];
 	/**
-	 * An array matching the `filePaths` array of base64 encoded strings which contains
-	 * security scoped bookmark data. `securityScopedBookmarks` must be enabled for
-	 * this to be populated. (For return values, see table here.)
+	 * An ArrAy mAtching the `filePAths` ArrAy of bAse64 encoded strings which contAins
+	 * security scoped bookmArk dAtA. `securityScopedBookmArks` must be enAbled for
+	 * this to be populAted. (For return vAlues, see tAble here.)
 	 *
-	 * @platform darwin,mas
+	 * @plAtform dArwin,mAs
 	 */
-	bookmarks?: string[];
+	bookmArks?: string[];
 }
 
-export interface SaveDialogReturnValue {
+export interfAce SAveDiAlogReturnVAlue {
 	/**
-	 * whether or not the dialog was canceled.
+	 * whether or not the diAlog wAs cAnceled.
 	 */
-	canceled: boolean;
+	cAnceled: booleAn;
 	/**
-	 * If the dialog is canceled, this will be `undefined`.
+	 * If the diAlog is cAnceled, this will be `undefined`.
 	 */
-	filePath?: string;
+	filePAth?: string;
 	/**
-	 * Base64 encoded string which contains the security scoped bookmark data for the
-	 * saved file. `securityScopedBookmarks` must be enabled for this to be present.
-	 * (For return values, see table here.)
+	 * BAse64 encoded string which contAins the security scoped bookmArk dAtA for the
+	 * sAved file. `securityScopedBookmArks` must be enAbled for this to be present.
+	 * (For return vAlues, see tAble here.)
 	 *
-	 * @platform darwin,mas
+	 * @plAtform dArwin,mAs
 	 */
-	bookmark?: string;
+	bookmArk?: string;
 }
 
-export interface FileFilter {
+export interfAce FileFilter {
 
-	// Docs: http://electronjs.org/docs/api/structures/file-filter
+	// Docs: http://electronjs.org/docs/Api/structures/file-filter
 
 	extensions: string[];
-	name: string;
+	nAme: string;
 }
 
-export interface InputEvent {
+export interfAce InputEvent {
 
-	// Docs: http://electronjs.org/docs/api/structures/input-event
+	// Docs: http://electronjs.org/docs/Api/structures/input-event
 
 	/**
-	 * An array of modifiers of the event, can be `shift`, `control`, `ctrl`, `alt`,
-	 * `meta`, `command`, `cmd`, `isKeypad`, `isAutoRepeat`, `leftButtonDown`,
-	 * `middleButtonDown`, `rightButtonDown`, `capsLock`, `numLock`, `left`, `right`.
+	 * An ArrAy of modifiers of the event, cAn be `shift`, `control`, `ctrl`, `Alt`,
+	 * `metA`, `commAnd`, `cmd`, `isKeypAd`, `isAutoRepeAt`, `leftButtonDown`,
+	 * `middleButtonDown`, `rightButtonDown`, `cApsLock`, `numLock`, `left`, `right`.
 	 */
-	modifiers?: Array<'shift' | 'control' | 'ctrl' | 'alt' | 'meta' | 'command' | 'cmd' | 'isKeypad' | 'isAutoRepeat' | 'leftButtonDown' | 'middleButtonDown' | 'rightButtonDown' | 'capsLock' | 'numLock' | 'left' | 'right'>;
+	modifiers?: ArrAy<'shift' | 'control' | 'ctrl' | 'Alt' | 'metA' | 'commAnd' | 'cmd' | 'isKeypAd' | 'isAutoRepeAt' | 'leftButtonDown' | 'middleButtonDown' | 'rightButtonDown' | 'cApsLock' | 'numLock' | 'left' | 'right'>;
 }
 
-export interface MouseInputEvent extends InputEvent {
+export interfAce MouseInputEvent extends InputEvent {
 
-	// Docs: http://electronjs.org/docs/api/structures/mouse-input-event
+	// Docs: http://electronjs.org/docs/Api/structures/mouse-input-event
 
 	/**
-	 * The button pressed, can be `left`, `middle`, `right`.
+	 * The button pressed, cAn be `left`, `middle`, `right`.
 	 */
 	button?: ('left' | 'middle' | 'right');
 	clickCount?: number;
-	globalX?: number;
-	globalY?: number;
+	globAlX?: number;
+	globAlY?: number;
 	movementX?: number;
 	movementY?: number;
 	/**
-	 * The type of the event, can be `mouseDown`, `mouseUp`, `mouseEnter`,
-	 * `mouseLeave`, `contextMenu`, `mouseWheel` or `mouseMove`.
+	 * The type of the event, cAn be `mouseDown`, `mouseUp`, `mouseEnter`,
+	 * `mouseLeAve`, `contextMenu`, `mouseWheel` or `mouseMove`.
 	 */
-	type: ('mouseDown' | 'mouseUp' | 'mouseEnter' | 'mouseLeave' | 'contextMenu' | 'mouseWheel' | 'mouseMove');
+	type: ('mouseDown' | 'mouseUp' | 'mouseEnter' | 'mouseLeAve' | 'contextMenu' | 'mouseWheel' | 'mouseMove');
 	x: number;
 	y: number;
 }

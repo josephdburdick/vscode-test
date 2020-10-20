@@ -1,70 +1,70 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface CancellationToken {
+export interfAce CAncellAtionToken {
 
 	/**
-	 * A flag signalling is cancellation has been requested.
+	 * A flAg signAlling is cAncellAtion hAs been requested.
 	 */
-	readonly isCancellationRequested: boolean;
+	reAdonly isCAncellAtionRequested: booleAn;
 
 	/**
-	 * An event which fires when cancellation is requested. This event
-	 * only ever fires `once` as cancellation can only happen once. Listeners
-	 * that are registered after cancellation will be called (next event loop run),
-	 * but also only once.
+	 * An event which fires when cAncellAtion is requested. This event
+	 * only ever fires `once` As cAncellAtion cAn only hAppen once. Listeners
+	 * thAt Are registered After cAncellAtion will be cAlled (next event loop run),
+	 * but Also only once.
 	 *
 	 * @event
 	 */
-	readonly onCancellationRequested: (listener: (e: any) => any, thisArgs?: any, disposables?: IDisposable[]) => IDisposable;
+	reAdonly onCAncellAtionRequested: (listener: (e: Any) => Any, thisArgs?: Any, disposAbles?: IDisposAble[]) => IDisposAble;
 }
 
-const shortcutEvent: Event<any> = Object.freeze(function (callback, context?): IDisposable {
-	const handle = setTimeout(callback.bind(context), 0);
-	return { dispose() { clearTimeout(handle); } };
+const shortcutEvent: Event<Any> = Object.freeze(function (cAllbAck, context?): IDisposAble {
+	const hAndle = setTimeout(cAllbAck.bind(context), 0);
+	return { dispose() { cleArTimeout(hAndle); } };
 });
 
-export namespace CancellationToken {
+export nAmespAce CAncellAtionToken {
 
-	export function isCancellationToken(thing: unknown): thing is CancellationToken {
-		if (thing === CancellationToken.None || thing === CancellationToken.Cancelled) {
+	export function isCAncellAtionToken(thing: unknown): thing is CAncellAtionToken {
+		if (thing === CAncellAtionToken.None || thing === CAncellAtionToken.CAncelled) {
 			return true;
 		}
-		if (thing instanceof MutableToken) {
+		if (thing instAnceof MutAbleToken) {
 			return true;
 		}
 		if (!thing || typeof thing !== 'object') {
-			return false;
+			return fAlse;
 		}
-		return typeof (thing as CancellationToken).isCancellationRequested === 'boolean'
-			&& typeof (thing as CancellationToken).onCancellationRequested === 'function';
+		return typeof (thing As CAncellAtionToken).isCAncellAtionRequested === 'booleAn'
+			&& typeof (thing As CAncellAtionToken).onCAncellAtionRequested === 'function';
 	}
 
 
-	export const None: CancellationToken = Object.freeze({
-		isCancellationRequested: false,
-		onCancellationRequested: Event.None
+	export const None: CAncellAtionToken = Object.freeze({
+		isCAncellAtionRequested: fAlse,
+		onCAncellAtionRequested: Event.None
 	});
 
-	export const Cancelled: CancellationToken = Object.freeze({
-		isCancellationRequested: true,
-		onCancellationRequested: shortcutEvent
+	export const CAncelled: CAncellAtionToken = Object.freeze({
+		isCAncellAtionRequested: true,
+		onCAncellAtionRequested: shortcutEvent
 	});
 }
 
-class MutableToken implements CancellationToken {
+clAss MutAbleToken implements CAncellAtionToken {
 
-	private _isCancelled: boolean = false;
-	private _emitter: Emitter<any> | null = null;
+	privAte _isCAncelled: booleAn = fAlse;
+	privAte _emitter: Emitter<Any> | null = null;
 
-	public cancel() {
-		if (!this._isCancelled) {
-			this._isCancelled = true;
+	public cAncel() {
+		if (!this._isCAncelled) {
+			this._isCAncelled = true;
 			if (this._emitter) {
 				this._emitter.fire(undefined);
 				this.dispose();
@@ -72,16 +72,16 @@ class MutableToken implements CancellationToken {
 		}
 	}
 
-	get isCancellationRequested(): boolean {
-		return this._isCancelled;
+	get isCAncellAtionRequested(): booleAn {
+		return this._isCAncelled;
 	}
 
-	get onCancellationRequested(): Event<any> {
-		if (this._isCancelled) {
+	get onCAncellAtionRequested(): Event<Any> {
+		if (this._isCAncelled) {
 			return shortcutEvent;
 		}
 		if (!this._emitter) {
-			this._emitter = new Emitter<any>();
+			this._emitter = new Emitter<Any>();
 		}
 		return this._emitter.event;
 	}
@@ -94,50 +94,50 @@ class MutableToken implements CancellationToken {
 	}
 }
 
-export class CancellationTokenSource {
+export clAss CAncellAtionTokenSource {
 
-	private _token?: CancellationToken = undefined;
-	private _parentListener?: IDisposable = undefined;
+	privAte _token?: CAncellAtionToken = undefined;
+	privAte _pArentListener?: IDisposAble = undefined;
 
-	constructor(parent?: CancellationToken) {
-		this._parentListener = parent && parent.onCancellationRequested(this.cancel, this);
+	constructor(pArent?: CAncellAtionToken) {
+		this._pArentListener = pArent && pArent.onCAncellAtionRequested(this.cAncel, this);
 	}
 
-	get token(): CancellationToken {
+	get token(): CAncellAtionToken {
 		if (!this._token) {
-			// be lazy and create the token only when
-			// actually needed
-			this._token = new MutableToken();
+			// be lAzy And creAte the token only when
+			// ActuAlly needed
+			this._token = new MutAbleToken();
 		}
 		return this._token;
 	}
 
-	cancel(): void {
+	cAncel(): void {
 		if (!this._token) {
-			// save an object by returning the default
-			// cancelled token when cancellation happens
-			// before someone asks for the token
-			this._token = CancellationToken.Cancelled;
+			// sAve An object by returning the defAult
+			// cAncelled token when cAncellAtion hAppens
+			// before someone Asks for the token
+			this._token = CAncellAtionToken.CAncelled;
 
-		} else if (this._token instanceof MutableToken) {
-			// actually cancel
-			this._token.cancel();
+		} else if (this._token instAnceof MutAbleToken) {
+			// ActuAlly cAncel
+			this._token.cAncel();
 		}
 	}
 
-	dispose(cancel: boolean = false): void {
-		if (cancel) {
-			this.cancel();
+	dispose(cAncel: booleAn = fAlse): void {
+		if (cAncel) {
+			this.cAncel();
 		}
-		if (this._parentListener) {
-			this._parentListener.dispose();
+		if (this._pArentListener) {
+			this._pArentListener.dispose();
 		}
 		if (!this._token) {
-			// ensure to initialize with an empty token if we had none
-			this._token = CancellationToken.None;
+			// ensure to initiAlize with An empty token if we hAd none
+			this._token = CAncellAtionToken.None;
 
-		} else if (this._token instanceof MutableToken) {
-			// actually dispose
+		} else if (this._token instAnceof MutAbleToken) {
+			// ActuAlly dispose
 			this._token.dispose();
 		}
 	}

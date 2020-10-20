@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { WorkbenchState, IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
+import { WorkbenchStAte, IWorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
 
-export type Tags = { [index: string]: boolean | number | string | undefined };
+export type TAgs = { [index: string]: booleAn | number | string | undefined };
 
-export const IWorkspaceTagsService = createDecorator<IWorkspaceTagsService>('workspaceTagsService');
+export const IWorkspAceTAgsService = creAteDecorAtor<IWorkspAceTAgsService>('workspAceTAgsService');
 
-export interface IWorkspaceTagsService {
-	readonly _serviceBrand: undefined;
+export interfAce IWorkspAceTAgsService {
+	reAdonly _serviceBrAnd: undefined;
 
-	getTags(): Promise<Tags>;
+	getTAgs(): Promise<TAgs>;
 
 	/**
-	 * Returns an id for the workspace, different from the id returned by the context service. A hash based
-	 * on the folder uri or workspace configuration, not time-based, and undefined for empty workspaces.
+	 * Returns An id for the workspAce, different from the id returned by the context service. A hAsh bAsed
+	 * on the folder uri or workspAce configurAtion, not time-bAsed, And undefined for empty workspAces.
 	 */
-	getTelemetryWorkspaceId(workspace: IWorkspace, state: WorkbenchState): string | undefined;
+	getTelemetryWorkspAceId(workspAce: IWorkspAce, stAte: WorkbenchStAte): string | undefined;
 
-	getHashedRemotesFromUri(workspaceUri: URI, stripEndingDotGit?: boolean): Promise<string[]>;
+	getHAshedRemotesFromUri(workspAceUri: URI, stripEndingDotGit?: booleAn): Promise<string[]>;
 }

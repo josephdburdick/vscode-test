@@ -1,11 +1,11 @@
-declare module 'is' {
-	function a(value: any, type: string): boolean;
-	function defined(value: any): boolean;
-	function undef(value: any): boolean;
-	function object(value: any): boolean;
-	function string(value: any): value is string;
-	function boolean(value: any): boolean;
-	function array(value: any): boolean;
-	function empty<T>(value: Object | Array<T>): boolean;
-	function equal<T extends Object | Array<any> | Function | Date>(value: T, other: T): boolean;
+declAre module 'is' {
+	function A(vAlue: Any, type: string): booleAn;
+	function defined(vAlue: Any): booleAn;
+	function undef(vAlue: Any): booleAn;
+	function object(vAlue: Any): booleAn;
+	function string(vAlue: Any): vAlue is string;
+	function booleAn(vAlue: Any): booleAn;
+	function ArrAy(vAlue: Any): booleAn;
+	function empty<T>(vAlue: Object | ArrAy<T>): booleAn;
+	function equAl<T extends Object | ArrAy<Any> | Function | DAte>(vAlue: T, other: T): booleAn;
 }

@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as ts from 'typescript';
-import * as path from 'path';
-import * as fancyLog from 'fancy-log';
-import * as ansiColors from 'ansi-colors';
+import * As fs from 'fs';
+import * As ts from 'typescript';
+import * As pAth from 'pAth';
+import * As fAncyLog from 'fAncy-log';
+import * As AnsiColors from 'Ansi-colors';
 
 const dtsv = '3';
 
 const tsfmt = require('../../tsfmt.json');
 
-const SRC = path.join(__dirname, '../../src');
-export const RECIPE_PATH = path.join(__dirname, '../monaco/monaco.d.ts.recipe');
-const DECLARATION_PATH = path.join(__dirname, '../../src/vs/monaco.d.ts');
+const SRC = pAth.join(__dirnAme, '../../src');
+export const RECIPE_PATH = pAth.join(__dirnAme, '../monAco/monAco.d.ts.recipe');
+const DECLARATION_PATH = pAth.join(__dirnAme, '../../src/vs/monAco.d.ts');
 
-function logErr(message: any, ...rest: any[]): void {
-	fancyLog(ansiColors.yellow(`[monaco.d.ts]`), message, ...rest);
+function logErr(messAge: Any, ...rest: Any[]): void {
+	fAncyLog(AnsiColors.yellow(`[monAco.d.ts]`), messAge, ...rest);
 }
 
 type SourceFileGetter = (moduleId: string) => ts.SourceFile | null;
 
-type TSTopLevelDeclaration = ts.InterfaceDeclaration | ts.EnumDeclaration | ts.ClassDeclaration | ts.TypeAliasDeclaration | ts.FunctionDeclaration | ts.ModuleDeclaration;
-type TSTopLevelDeclare = TSTopLevelDeclaration | ts.VariableStatement;
+type TSTopLevelDeclArAtion = ts.InterfAceDeclArAtion | ts.EnumDeclArAtion | ts.ClAssDeclArAtion | ts.TypeAliAsDeclArAtion | ts.FunctionDeclArAtion | ts.ModuleDeclArAtion;
+type TSTopLevelDeclAre = TSTopLevelDeclArAtion | ts.VAriAbleStAtement;
 
-function isDeclaration(a: TSTopLevelDeclare): a is TSTopLevelDeclaration {
+function isDeclArAtion(A: TSTopLevelDeclAre): A is TSTopLevelDeclArAtion {
 	return (
-		a.kind === ts.SyntaxKind.InterfaceDeclaration
-		|| a.kind === ts.SyntaxKind.EnumDeclaration
-		|| a.kind === ts.SyntaxKind.ClassDeclaration
-		|| a.kind === ts.SyntaxKind.TypeAliasDeclaration
-		|| a.kind === ts.SyntaxKind.FunctionDeclaration
-		|| a.kind === ts.SyntaxKind.ModuleDeclaration
+		A.kind === ts.SyntAxKind.InterfAceDeclArAtion
+		|| A.kind === ts.SyntAxKind.EnumDeclArAtion
+		|| A.kind === ts.SyntAxKind.ClAssDeclArAtion
+		|| A.kind === ts.SyntAxKind.TypeAliAsDeclArAtion
+		|| A.kind === ts.SyntAxKind.FunctionDeclArAtion
+		|| A.kind === ts.SyntAxKind.ModuleDeclArAtion
 	);
 }
 
-function visitTopLevelDeclarations(sourceFile: ts.SourceFile, visitor: (node: TSTopLevelDeclare) => boolean): void {
-	let stop = false;
+function visitTopLevelDeclArAtions(sourceFile: ts.SourceFile, visitor: (node: TSTopLevelDeclAre) => booleAn): void {
+	let stop = fAlse;
 
 	let visit = (node: ts.Node): void => {
 		if (stop) {
@@ -46,66 +46,66 @@ function visitTopLevelDeclarations(sourceFile: ts.SourceFile, visitor: (node: TS
 		}
 
 		switch (node.kind) {
-			case ts.SyntaxKind.InterfaceDeclaration:
-			case ts.SyntaxKind.EnumDeclaration:
-			case ts.SyntaxKind.ClassDeclaration:
-			case ts.SyntaxKind.VariableStatement:
-			case ts.SyntaxKind.TypeAliasDeclaration:
-			case ts.SyntaxKind.FunctionDeclaration:
-			case ts.SyntaxKind.ModuleDeclaration:
-				stop = visitor(<TSTopLevelDeclare>node);
+			cAse ts.SyntAxKind.InterfAceDeclArAtion:
+			cAse ts.SyntAxKind.EnumDeclArAtion:
+			cAse ts.SyntAxKind.ClAssDeclArAtion:
+			cAse ts.SyntAxKind.VAriAbleStAtement:
+			cAse ts.SyntAxKind.TypeAliAsDeclArAtion:
+			cAse ts.SyntAxKind.FunctionDeclArAtion:
+			cAse ts.SyntAxKind.ModuleDeclArAtion:
+				stop = visitor(<TSTopLevelDeclAre>node);
 		}
 
 		if (stop) {
 			return;
 		}
-		ts.forEachChild(node, visit);
+		ts.forEAchChild(node, visit);
 	};
 
 	visit(sourceFile);
 }
 
 
-function getAllTopLevelDeclarations(sourceFile: ts.SourceFile): TSTopLevelDeclare[] {
-	let all: TSTopLevelDeclare[] = [];
-	visitTopLevelDeclarations(sourceFile, (node) => {
-		if (node.kind === ts.SyntaxKind.InterfaceDeclaration || node.kind === ts.SyntaxKind.ClassDeclaration || node.kind === ts.SyntaxKind.ModuleDeclaration) {
-			let interfaceDeclaration = <ts.InterfaceDeclaration>node;
-			let triviaStart = interfaceDeclaration.pos;
-			let triviaEnd = interfaceDeclaration.name.pos;
-			let triviaText = getNodeText(sourceFile, { pos: triviaStart, end: triviaEnd });
+function getAllTopLevelDeclArAtions(sourceFile: ts.SourceFile): TSTopLevelDeclAre[] {
+	let All: TSTopLevelDeclAre[] = [];
+	visitTopLevelDeclArAtions(sourceFile, (node) => {
+		if (node.kind === ts.SyntAxKind.InterfAceDeclArAtion || node.kind === ts.SyntAxKind.ClAssDeclArAtion || node.kind === ts.SyntAxKind.ModuleDeclArAtion) {
+			let interfAceDeclArAtion = <ts.InterfAceDeclArAtion>node;
+			let triviAStArt = interfAceDeclArAtion.pos;
+			let triviAEnd = interfAceDeclArAtion.nAme.pos;
+			let triviAText = getNodeText(sourceFile, { pos: triviAStArt, end: triviAEnd });
 
-			if (triviaText.indexOf('@internal') === -1) {
-				all.push(node);
+			if (triviAText.indexOf('@internAl') === -1) {
+				All.push(node);
 			}
 		} else {
 			let nodeText = getNodeText(sourceFile, node);
-			if (nodeText.indexOf('@internal') === -1) {
-				all.push(node);
+			if (nodeText.indexOf('@internAl') === -1) {
+				All.push(node);
 			}
 		}
-		return false /*continue*/;
+		return fAlse /*continue*/;
 	});
-	return all;
+	return All;
 }
 
 
-function getTopLevelDeclaration(sourceFile: ts.SourceFile, typeName: string): TSTopLevelDeclare | null {
-	let result: TSTopLevelDeclare | null = null;
-	visitTopLevelDeclarations(sourceFile, (node) => {
-		if (isDeclaration(node) && node.name) {
-			if (node.name.text === typeName) {
+function getTopLevelDeclArAtion(sourceFile: ts.SourceFile, typeNAme: string): TSTopLevelDeclAre | null {
+	let result: TSTopLevelDeclAre | null = null;
+	visitTopLevelDeclArAtions(sourceFile, (node) => {
+		if (isDeclArAtion(node) && node.nAme) {
+			if (node.nAme.text === typeNAme) {
 				result = node;
 				return true /*stop*/;
 			}
-			return false /*continue*/;
+			return fAlse /*continue*/;
 		}
-		// node is ts.VariableStatement
-		if (getNodeText(sourceFile, node).indexOf(typeName) >= 0) {
+		// node is ts.VAriAbleStAtement
+		if (getNodeText(sourceFile, node).indexOf(typeNAme) >= 0) {
 			result = node;
 			return true /*stop*/;
 		}
-		return false /*continue*/;
+		return fAlse /*continue*/;
 	});
 	return result;
 }
@@ -115,7 +115,7 @@ function getNodeText(sourceFile: ts.SourceFile, node: { pos: number; end: number
 	return sourceFile.getFullText().substring(node.pos, node.end);
 }
 
-function hasModifier(modifiers: ts.NodeArray<ts.Modifier> | undefined, kind: ts.SyntaxKind): boolean {
+function hAsModifier(modifiers: ts.NodeArrAy<ts.Modifier> | undefined, kind: ts.SyntAxKind): booleAn {
 	if (modifiers) {
 		for (let i = 0; i < modifiers.length; i++) {
 			let mod = modifiers[i];
@@ -124,67 +124,67 @@ function hasModifier(modifiers: ts.NodeArray<ts.Modifier> | undefined, kind: ts.
 			}
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-function isStatic(member: ts.ClassElement | ts.TypeElement): boolean {
-	return hasModifier(member.modifiers, ts.SyntaxKind.StaticKeyword);
+function isStAtic(member: ts.ClAssElement | ts.TypeElement): booleAn {
+	return hAsModifier(member.modifiers, ts.SyntAxKind.StAticKeyword);
 }
 
-function isDefaultExport(declaration: ts.InterfaceDeclaration | ts.ClassDeclaration): boolean {
+function isDefAultExport(declArAtion: ts.InterfAceDeclArAtion | ts.ClAssDeclArAtion): booleAn {
 	return (
-		hasModifier(declaration.modifiers, ts.SyntaxKind.DefaultKeyword)
-		&& hasModifier(declaration.modifiers, ts.SyntaxKind.ExportKeyword)
+		hAsModifier(declArAtion.modifiers, ts.SyntAxKind.DefAultKeyword)
+		&& hAsModifier(declArAtion.modifiers, ts.SyntAxKind.ExportKeyword)
 	);
 }
 
-function getMassagedTopLevelDeclarationText(sourceFile: ts.SourceFile, declaration: TSTopLevelDeclare, importName: string, usage: string[], enums: IEnumEntry[]): string {
-	let result = getNodeText(sourceFile, declaration);
-	if (declaration.kind === ts.SyntaxKind.InterfaceDeclaration || declaration.kind === ts.SyntaxKind.ClassDeclaration) {
-		let interfaceDeclaration = <ts.InterfaceDeclaration | ts.ClassDeclaration>declaration;
+function getMAssAgedTopLevelDeclArAtionText(sourceFile: ts.SourceFile, declArAtion: TSTopLevelDeclAre, importNAme: string, usAge: string[], enums: IEnumEntry[]): string {
+	let result = getNodeText(sourceFile, declArAtion);
+	if (declArAtion.kind === ts.SyntAxKind.InterfAceDeclArAtion || declArAtion.kind === ts.SyntAxKind.ClAssDeclArAtion) {
+		let interfAceDeclArAtion = <ts.InterfAceDeclArAtion | ts.ClAssDeclArAtion>declArAtion;
 
-		const staticTypeName = (
-			isDefaultExport(interfaceDeclaration)
-				? `${importName}.default`
-				: `${importName}.${declaration.name!.text}`
+		const stAticTypeNAme = (
+			isDefAultExport(interfAceDeclArAtion)
+				? `${importNAme}.defAult`
+				: `${importNAme}.${declArAtion.nAme!.text}`
 		);
 
-		let instanceTypeName = staticTypeName;
-		const typeParametersCnt = (interfaceDeclaration.typeParameters ? interfaceDeclaration.typeParameters.length : 0);
-		if (typeParametersCnt > 0) {
-			let arr: string[] = [];
-			for (let i = 0; i < typeParametersCnt; i++) {
-				arr.push('any');
+		let instAnceTypeNAme = stAticTypeNAme;
+		const typePArAmetersCnt = (interfAceDeclArAtion.typePArAmeters ? interfAceDeclArAtion.typePArAmeters.length : 0);
+		if (typePArAmetersCnt > 0) {
+			let Arr: string[] = [];
+			for (let i = 0; i < typePArAmetersCnt; i++) {
+				Arr.push('Any');
 			}
-			instanceTypeName = `${instanceTypeName}<${arr.join(',')}>`;
+			instAnceTypeNAme = `${instAnceTypeNAme}<${Arr.join(',')}>`;
 		}
 
-		const members: ts.NodeArray<ts.ClassElement | ts.TypeElement> = interfaceDeclaration.members;
-		members.forEach((member) => {
+		const members: ts.NodeArrAy<ts.ClAssElement | ts.TypeElement> = interfAceDeclArAtion.members;
+		members.forEAch((member) => {
 			try {
 				let memberText = getNodeText(sourceFile, member);
-				if (memberText.indexOf('@internal') >= 0 || memberText.indexOf('private') >= 0) {
-					result = result.replace(memberText, '');
+				if (memberText.indexOf('@internAl') >= 0 || memberText.indexOf('privAte') >= 0) {
+					result = result.replAce(memberText, '');
 				} else {
-					const memberName = (<ts.Identifier | ts.StringLiteral>member.name).text;
-					const memberAccess = (memberName.indexOf('.') >= 0 ? `['${memberName}']` : `.${memberName}`);
-					if (isStatic(member)) {
-						usage.push(`a = ${staticTypeName}${memberAccess};`);
+					const memberNAme = (<ts.Identifier | ts.StringLiterAl>member.nAme).text;
+					const memberAccess = (memberNAme.indexOf('.') >= 0 ? `['${memberNAme}']` : `.${memberNAme}`);
+					if (isStAtic(member)) {
+						usAge.push(`A = ${stAticTypeNAme}${memberAccess};`);
 					} else {
-						usage.push(`a = (<${instanceTypeName}>b)${memberAccess};`);
+						usAge.push(`A = (<${instAnceTypeNAme}>b)${memberAccess};`);
 					}
 				}
-			} catch (err) {
+			} cAtch (err) {
 				// life..
 			}
 		});
-	} else if (declaration.kind === ts.SyntaxKind.VariableStatement) {
-		const jsDoc = result.substr(0, declaration.getLeadingTriviaWidth(sourceFile));
-		if (jsDoc.indexOf('@monacodtsreplace') >= 0) {
+	} else if (declArAtion.kind === ts.SyntAxKind.VAriAbleStAtement) {
+		const jsDoc = result.substr(0, declArAtion.getLeAdingTriviAWidth(sourceFile));
+		if (jsDoc.indexOf('@monAcodtsreplAce') >= 0) {
 			const jsDocLines = jsDoc.split(/\r\n|\r|\n/);
 			let directives: [RegExp, string][] = [];
 			for (const jsDocLine of jsDocLines) {
-				const m = jsDocLine.match(/^\s*\* \/([^/]+)\/([^/]+)\/$/);
+				const m = jsDocLine.mAtch(/^\s*\* \/([^/]+)\/([^/]+)\/$/);
 				if (m) {
 					directives.push([new RegExp(m[1], 'g'), m[2]]);
 				}
@@ -192,29 +192,29 @@ function getMassagedTopLevelDeclarationText(sourceFile: ts.SourceFile, declarati
 			// remove the jsdoc
 			result = result.substr(jsDoc.length);
 			if (directives.length > 0) {
-				// apply replace directives
-				const replacer = createReplacerFromDirectives(directives);
-				result = replacer(result);
+				// Apply replAce directives
+				const replAcer = creAteReplAcerFromDirectives(directives);
+				result = replAcer(result);
 			}
 		}
 	}
-	result = result.replace(/export default /g, 'export ');
-	result = result.replace(/export declare /g, 'export ');
-	result = result.replace(/declare /g, '');
+	result = result.replAce(/export defAult /g, 'export ');
+	result = result.replAce(/export declAre /g, 'export ');
+	result = result.replAce(/declAre /g, '');
 	let lines = result.split(/\r\n|\r|\n/);
 	for (let i = 0; i < lines.length; i++) {
 		if (/\s*\*/.test(lines[i])) {
-			// very likely a comment
+			// very likely A comment
 			continue;
 		}
-		lines[i] = lines[i].replace(/"/g, '\'');
+		lines[i] = lines[i].replAce(/"/g, '\'');
 	}
 	result = lines.join('\n');
 
-	if (declaration.kind === ts.SyntaxKind.EnumDeclaration) {
-		result = result.replace(/const enum/, 'enum');
+	if (declArAtion.kind === ts.SyntAxKind.EnumDeclArAtion) {
+		result = result.replAce(/const enum/, 'enum');
 		enums.push({
-			enumName: declaration.name.getText(sourceFile),
+			enumNAme: declArAtion.nAme.getText(sourceFile),
 			text: result
 		});
 	}
@@ -222,37 +222,37 @@ function getMassagedTopLevelDeclarationText(sourceFile: ts.SourceFile, declarati
 	return result;
 }
 
-function format(text: string, endl: string): string {
-	const REALLY_FORMAT = false;
+function formAt(text: string, endl: string): string {
+	const REALLY_FORMAT = fAlse;
 
-	text = preformat(text, endl);
+	text = preformAt(text, endl);
 	if (!REALLY_FORMAT) {
 		return text;
 	}
 
-	// Parse the source text
-	let sourceFile = ts.createSourceFile('file.ts', text, ts.ScriptTarget.Latest, /*setParentPointers*/ true);
+	// PArse the source text
+	let sourceFile = ts.creAteSourceFile('file.ts', text, ts.ScriptTArget.LAtest, /*setPArentPointers*/ true);
 
-	// Get the formatting edits on the input sources
-	let edits = (<any>ts).formatting.formatDocument(sourceFile, getRuleProvider(tsfmt), tsfmt);
+	// Get the formAtting edits on the input sources
+	let edits = (<Any>ts).formAtting.formAtDocument(sourceFile, getRuleProvider(tsfmt), tsfmt);
 
 	// Apply the edits on the input code
-	return applyEdits(text, edits);
+	return ApplyEdits(text, edits);
 
-	function countParensCurly(text: string): number {
+	function countPArensCurly(text: string): number {
 		let cnt = 0;
 		for (let i = 0; i < text.length; i++) {
-			if (text.charAt(i) === '(' || text.charAt(i) === '{') {
+			if (text.chArAt(i) === '(' || text.chArAt(i) === '{') {
 				cnt++;
 			}
-			if (text.charAt(i) === ')' || text.charAt(i) === '}') {
+			if (text.chArAt(i) === ')' || text.chArAt(i) === '}') {
 				cnt--;
 			}
 		}
 		return cnt;
 	}
 
-	function repeatStr(s: string, cnt: number): string {
+	function repeAtStr(s: string, cnt: number): string {
 		let r = '';
 		for (let i = 0; i < cnt; i++) {
 			r += s;
@@ -260,28 +260,28 @@ function format(text: string, endl: string): string {
 		return r;
 	}
 
-	function preformat(text: string, endl: string): string {
+	function preformAt(text: string, endl: string): string {
 		let lines = text.split(endl);
-		let inComment = false;
-		let inCommentDeltaIndent = 0;
+		let inComment = fAlse;
+		let inCommentDeltAIndent = 0;
 		let indent = 0;
 		for (let i = 0; i < lines.length; i++) {
-			let line = lines[i].replace(/\s$/, '');
-			let repeat = false;
+			let line = lines[i].replAce(/\s$/, '');
+			let repeAt = fAlse;
 			let lineIndent = 0;
 			do {
-				repeat = false;
+				repeAt = fAlse;
 				if (line.substring(0, 4) === '    ') {
 					line = line.substring(4);
 					lineIndent++;
-					repeat = true;
+					repeAt = true;
 				}
-				if (line.charAt(0) === '\t') {
+				if (line.chArAt(0) === '\t') {
 					line = line.substring(1);
 					lineIndent++;
-					repeat = true;
+					repeAt = true;
 				}
-			} while (repeat);
+			} while (repeAt);
 
 			if (line.length === 0) {
 				continue;
@@ -289,22 +289,22 @@ function format(text: string, endl: string): string {
 
 			if (inComment) {
 				if (/\*\//.test(line)) {
-					inComment = false;
+					inComment = fAlse;
 				}
-				lines[i] = repeatStr('\t', lineIndent + inCommentDeltaIndent) + line;
+				lines[i] = repeAtStr('\t', lineIndent + inCommentDeltAIndent) + line;
 				continue;
 			}
 
 			if (/\/\*/.test(line)) {
 				inComment = true;
-				inCommentDeltaIndent = indent - lineIndent;
-				lines[i] = repeatStr('\t', indent) + line;
+				inCommentDeltAIndent = indent - lineIndent;
+				lines[i] = repeAtStr('\t', indent) + line;
 				continue;
 			}
 
-			const cnt = countParensCurly(line);
-			let shouldUnindentAfter = false;
-			let shouldUnindentBefore = false;
+			const cnt = countPArensCurly(line);
+			let shouldUnindentAfter = fAlse;
+			let shouldUnindentBefore = fAlse;
 			if (cnt < 0) {
 				if (/[({]/.test(line)) {
 					shouldUnindentAfter = true;
@@ -314,7 +314,7 @@ function format(text: string, endl: string): string {
 			} else if (cnt === 0) {
 				shouldUnindentBefore = /^\}/.test(line);
 			}
-			let shouldIndentAfter = false;
+			let shouldIndentAfter = fAlse;
 			if (cnt > 0) {
 				shouldIndentAfter = true;
 			} else if (cnt === 0) {
@@ -325,7 +325,7 @@ function format(text: string, endl: string): string {
 				indent--;
 			}
 
-			lines[i] = repeatStr('\t', indent) + line;
+			lines[i] = repeAtStr('\t', indent) + line;
 
 			if (shouldUnindentAfter) {
 				indent--;
@@ -337,175 +337,175 @@ function format(text: string, endl: string): string {
 		return lines.join(endl);
 	}
 
-	function getRuleProvider(options: ts.FormatCodeSettings) {
-		// Share this between multiple formatters using the same options.
-		// This represents the bulk of the space the formatter uses.
-		return (ts as any).formatting.getFormatContext(options);
+	function getRuleProvider(options: ts.FormAtCodeSettings) {
+		// ShAre this between multiple formAtters using the sAme options.
+		// This represents the bulk of the spAce the formAtter uses.
+		return (ts As Any).formAtting.getFormAtContext(options);
 	}
 
-	function applyEdits(text: string, edits: ts.TextChange[]): string {
+	function ApplyEdits(text: string, edits: ts.TextChAnge[]): string {
 		// Apply edits in reverse on the existing text
 		let result = text;
 		for (let i = edits.length - 1; i >= 0; i--) {
-			let change = edits[i];
-			let head = result.slice(0, change.span.start);
-			let tail = result.slice(change.span.start + change.span.length);
-			result = head + change.newText + tail;
+			let chAnge = edits[i];
+			let heAd = result.slice(0, chAnge.spAn.stArt);
+			let tAil = result.slice(chAnge.spAn.stArt + chAnge.spAn.length);
+			result = heAd + chAnge.newText + tAil;
 		}
 		return result;
 	}
 }
 
-function createReplacerFromDirectives(directives: [RegExp, string][]): (str: string) => string {
+function creAteReplAcerFromDirectives(directives: [RegExp, string][]): (str: string) => string {
 	return (str: string) => {
 		for (let i = 0; i < directives.length; i++) {
-			str = str.replace(directives[i][0], directives[i][1]);
+			str = str.replAce(directives[i][0], directives[i][1]);
 		}
 		return str;
 	};
 }
 
-function createReplacer(data: string): (str: string) => string {
-	data = data || '';
-	let rawDirectives = data.split(';');
+function creAteReplAcer(dAtA: string): (str: string) => string {
+	dAtA = dAtA || '';
+	let rAwDirectives = dAtA.split(';');
 	let directives: [RegExp, string][] = [];
-	rawDirectives.forEach((rawDirective) => {
-		if (rawDirective.length === 0) {
+	rAwDirectives.forEAch((rAwDirective) => {
+		if (rAwDirective.length === 0) {
 			return;
 		}
-		let pieces = rawDirective.split('=>');
+		let pieces = rAwDirective.split('=>');
 		let findStr = pieces[0];
-		let replaceStr = pieces[1];
+		let replAceStr = pieces[1];
 
-		findStr = findStr.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+		findStr = findStr.replAce(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 		findStr = '\\b' + findStr + '\\b';
-		directives.push([new RegExp(findStr, 'g'), replaceStr]);
+		directives.push([new RegExp(findStr, 'g'), replAceStr]);
 	});
 
-	return createReplacerFromDirectives(directives);
+	return creAteReplAcerFromDirectives(directives);
 }
 
-interface ITempResult {
+interfAce ITempResult {
 	result: string;
-	usageContent: string;
+	usAgeContent: string;
 	enums: string;
 }
 
-interface IEnumEntry {
-	enumName: string;
+interfAce IEnumEntry {
+	enumNAme: string;
 	text: string;
 }
 
-function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGetter): ITempResult | null {
+function generAteDeclArAtionFile(recipe: string, sourceFileGetter: SourceFileGetter): ITempResult | null {
 	const endl = /\r\n/.test(recipe) ? '\r\n' : '\n';
 
 	let lines = recipe.split(endl);
 	let result: string[] = [];
 
-	let usageCounter = 0;
-	let usageImports: string[] = [];
-	let usage: string[] = [];
+	let usAgeCounter = 0;
+	let usAgeImports: string[] = [];
+	let usAge: string[] = [];
 
-	let failed = false;
+	let fAiled = fAlse;
 
-	usage.push(`var a: any;`);
-	usage.push(`var b: any;`);
+	usAge.push(`vAr A: Any;`);
+	usAge.push(`vAr b: Any;`);
 
-	const generateUsageImport = (moduleId: string) => {
-		let importName = 'm' + (++usageCounter);
-		usageImports.push(`import * as ${importName} from './${moduleId.replace(/\.d\.ts$/, '')}';`);
-		return importName;
+	const generAteUsAgeImport = (moduleId: string) => {
+		let importNAme = 'm' + (++usAgeCounter);
+		usAgeImports.push(`import * As ${importNAme} from './${moduleId.replAce(/\.d\.ts$/, '')}';`);
+		return importNAme;
 	};
 
 	let enums: IEnumEntry[] = [];
 	let version: string | null = null;
 
-	lines.forEach(line => {
+	lines.forEAch(line => {
 
-		if (failed) {
+		if (fAiled) {
 			return;
 		}
 
-		let m0 = line.match(/^\/\/dtsv=(\d+)$/);
+		let m0 = line.mAtch(/^\/\/dtsv=(\d+)$/);
 		if (m0) {
 			version = m0[1];
 		}
 
-		let m1 = line.match(/^\s*#include\(([^;)]*)(;[^)]*)?\)\:(.*)$/);
+		let m1 = line.mAtch(/^\s*#include\(([^;)]*)(;[^)]*)?\)\:(.*)$/);
 		if (m1) {
 			let moduleId = m1[1];
 			const sourceFile = sourceFileGetter(moduleId);
 			if (!sourceFile) {
-				logErr(`While handling ${line}`);
-				logErr(`Cannot find ${moduleId}`);
-				failed = true;
+				logErr(`While hAndling ${line}`);
+				logErr(`CAnnot find ${moduleId}`);
+				fAiled = true;
 				return;
 			}
 
-			const importName = generateUsageImport(moduleId);
+			const importNAme = generAteUsAgeImport(moduleId);
 
-			let replacer = createReplacer(m1[2]);
+			let replAcer = creAteReplAcer(m1[2]);
 
-			let typeNames = m1[3].split(/,/);
-			typeNames.forEach((typeName) => {
-				typeName = typeName.trim();
-				if (typeName.length === 0) {
+			let typeNAmes = m1[3].split(/,/);
+			typeNAmes.forEAch((typeNAme) => {
+				typeNAme = typeNAme.trim();
+				if (typeNAme.length === 0) {
 					return;
 				}
-				let declaration = getTopLevelDeclaration(sourceFile, typeName);
-				if (!declaration) {
-					logErr(`While handling ${line}`);
-					logErr(`Cannot find ${typeName}`);
-					failed = true;
+				let declArAtion = getTopLevelDeclArAtion(sourceFile, typeNAme);
+				if (!declArAtion) {
+					logErr(`While hAndling ${line}`);
+					logErr(`CAnnot find ${typeNAme}`);
+					fAiled = true;
 					return;
 				}
-				result.push(replacer(getMassagedTopLevelDeclarationText(sourceFile, declaration, importName, usage, enums)));
+				result.push(replAcer(getMAssAgedTopLevelDeclArAtionText(sourceFile, declArAtion, importNAme, usAge, enums)));
 			});
 			return;
 		}
 
-		let m2 = line.match(/^\s*#includeAll\(([^;)]*)(;[^)]*)?\)\:(.*)$/);
+		let m2 = line.mAtch(/^\s*#includeAll\(([^;)]*)(;[^)]*)?\)\:(.*)$/);
 		if (m2) {
 			let moduleId = m2[1];
 			const sourceFile = sourceFileGetter(moduleId);
 			if (!sourceFile) {
-				logErr(`While handling ${line}`);
-				logErr(`Cannot find ${moduleId}`);
-				failed = true;
+				logErr(`While hAndling ${line}`);
+				logErr(`CAnnot find ${moduleId}`);
+				fAiled = true;
 				return;
 			}
 
-			const importName = generateUsageImport(moduleId);
+			const importNAme = generAteUsAgeImport(moduleId);
 
-			let replacer = createReplacer(m2[2]);
+			let replAcer = creAteReplAcer(m2[2]);
 
-			let typeNames = m2[3].split(/,/);
-			let typesToExcludeMap: { [typeName: string]: boolean; } = {};
+			let typeNAmes = m2[3].split(/,/);
+			let typesToExcludeMAp: { [typeNAme: string]: booleAn; } = {};
 			let typesToExcludeArr: string[] = [];
-			typeNames.forEach((typeName) => {
-				typeName = typeName.trim();
-				if (typeName.length === 0) {
+			typeNAmes.forEAch((typeNAme) => {
+				typeNAme = typeNAme.trim();
+				if (typeNAme.length === 0) {
 					return;
 				}
-				typesToExcludeMap[typeName] = true;
-				typesToExcludeArr.push(typeName);
+				typesToExcludeMAp[typeNAme] = true;
+				typesToExcludeArr.push(typeNAme);
 			});
 
-			getAllTopLevelDeclarations(sourceFile).forEach((declaration) => {
-				if (isDeclaration(declaration) && declaration.name) {
-					if (typesToExcludeMap[declaration.name.text]) {
+			getAllTopLevelDeclArAtions(sourceFile).forEAch((declArAtion) => {
+				if (isDeclArAtion(declArAtion) && declArAtion.nAme) {
+					if (typesToExcludeMAp[declArAtion.nAme.text]) {
 						return;
 					}
 				} else {
-					// node is ts.VariableStatement
-					let nodeText = getNodeText(sourceFile, declaration);
+					// node is ts.VAriAbleStAtement
+					let nodeText = getNodeText(sourceFile, declArAtion);
 					for (let i = 0; i < typesToExcludeArr.length; i++) {
 						if (nodeText.indexOf(typesToExcludeArr[i]) >= 0) {
 							return;
 						}
 					}
 				}
-				result.push(replacer(getMassagedTopLevelDeclarationText(sourceFile, declaration, importName, usage, enums)));
+				result.push(replAcer(getMAssAgedTopLevelDeclArAtionText(sourceFile, declArAtion, importNAme, usAge, enums)));
 			});
 			return;
 		}
@@ -513,31 +513,31 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 		result.push(line);
 	});
 
-	if (failed) {
+	if (fAiled) {
 		return null;
 	}
 
 	if (version !== dtsv) {
 		if (!version) {
-			logErr(`gulp watch restart required. 'monaco.d.ts.recipe' is written before versioning was introduced.`);
+			logErr(`gulp wAtch restArt required. 'monAco.d.ts.recipe' is written before versioning wAs introduced.`);
 		} else {
-			logErr(`gulp watch restart required. 'monaco.d.ts.recipe' v${version} does not match runtime v${dtsv}.`);
+			logErr(`gulp wAtch restArt required. 'monAco.d.ts.recipe' v${version} does not mAtch runtime v${dtsv}.`);
 		}
 		return null;
 	}
 
 	let resultTxt = result.join(endl);
-	resultTxt = resultTxt.replace(/\bURI\b/g, 'Uri');
-	resultTxt = resultTxt.replace(/\bEvent</g, 'IEvent<');
+	resultTxt = resultTxt.replAce(/\bURI\b/g, 'Uri');
+	resultTxt = resultTxt.replAce(/\bEvent</g, 'IEvent<');
 	resultTxt = resultTxt.split(/\r\n|\n|\r/).join(endl);
-	resultTxt = format(resultTxt, endl);
+	resultTxt = formAt(resultTxt, endl);
 	resultTxt = resultTxt.split(/\r\n|\n|\r/).join(endl);
 
 	enums.sort((e1, e2) => {
-		if (e1.enumName < e2.enumName) {
+		if (e1.enumNAme < e2.enumNAme) {
 			return -1;
 		}
-		if (e1.enumName > e2.enumName) {
+		if (e1.enumNAme > e2.enumNAme) {
 			return 1;
 		}
 		return 0;
@@ -545,205 +545,205 @@ function generateDeclarationFile(recipe: string, sourceFileGetter: SourceFileGet
 
 	let resultEnums = [
 		'/*---------------------------------------------------------------------------------------------',
-		' *  Copyright (c) Microsoft Corporation. All rights reserved.',
-		' *  Licensed under the MIT License. See License.txt in the project root for license information.',
+		' *  Copyright (c) Microsoft CorporAtion. All rights reserved.',
+		' *  Licensed under the MIT License. See License.txt in the project root for license informAtion.',
 		' *--------------------------------------------------------------------------------------------*/',
 		'',
 		'// THIS IS A GENERATED FILE. DO NOT EDIT DIRECTLY.',
 		''
-	].concat(enums.map(e => e.text)).join(endl);
+	].concAt(enums.mAp(e => e.text)).join(endl);
 	resultEnums = resultEnums.split(/\r\n|\n|\r/).join(endl);
-	resultEnums = format(resultEnums, endl);
+	resultEnums = formAt(resultEnums, endl);
 	resultEnums = resultEnums.split(/\r\n|\n|\r/).join(endl);
 
 	return {
 		result: resultTxt,
-		usageContent: `${usageImports.join('\n')}\n\n${usage.join('\n')}`,
+		usAgeContent: `${usAgeImports.join('\n')}\n\n${usAge.join('\n')}`,
 		enums: resultEnums
 	};
 }
 
-export interface IMonacoDeclarationResult {
+export interfAce IMonAcoDeclArAtionResult {
 	content: string;
-	usageContent: string;
+	usAgeContent: string;
 	enums: string;
-	filePath: string;
-	isTheSame: boolean;
+	filePAth: string;
+	isTheSAme: booleAn;
 }
 
-function _run(sourceFileGetter: SourceFileGetter): IMonacoDeclarationResult | null {
-	const recipe = fs.readFileSync(RECIPE_PATH).toString();
-	const t = generateDeclarationFile(recipe, sourceFileGetter);
+function _run(sourceFileGetter: SourceFileGetter): IMonAcoDeclArAtionResult | null {
+	const recipe = fs.reAdFileSync(RECIPE_PATH).toString();
+	const t = generAteDeclArAtionFile(recipe, sourceFileGetter);
 	if (!t) {
 		return null;
 	}
 
 	const result = t.result;
-	const usageContent = t.usageContent;
+	const usAgeContent = t.usAgeContent;
 	const enums = t.enums;
 
-	const currentContent = fs.readFileSync(DECLARATION_PATH).toString();
-	const one = currentContent.replace(/\r\n/gm, '\n');
-	const other = result.replace(/\r\n/gm, '\n');
-	const isTheSame = (one === other);
+	const currentContent = fs.reAdFileSync(DECLARATION_PATH).toString();
+	const one = currentContent.replAce(/\r\n/gm, '\n');
+	const other = result.replAce(/\r\n/gm, '\n');
+	const isTheSAme = (one === other);
 
 	return {
 		content: result,
-		usageContent: usageContent,
+		usAgeContent: usAgeContent,
 		enums: enums,
-		filePath: DECLARATION_PATH,
-		isTheSame
+		filePAth: DECLARATION_PATH,
+		isTheSAme
 	};
 }
 
-export class FSProvider {
-	public existsSync(filePath: string): boolean {
-		return fs.existsSync(filePath);
+export clAss FSProvider {
+	public existsSync(filePAth: string): booleAn {
+		return fs.existsSync(filePAth);
 	}
-	public statSync(filePath: string): fs.Stats {
-		return fs.statSync(filePath);
+	public stAtSync(filePAth: string): fs.StAts {
+		return fs.stAtSync(filePAth);
 	}
-	public readFileSync(_moduleId: string, filePath: string): Buffer {
-		return fs.readFileSync(filePath);
+	public reAdFileSync(_moduleId: string, filePAth: string): Buffer {
+		return fs.reAdFileSync(filePAth);
 	}
 }
 
-class CacheEntry {
+clAss CAcheEntry {
 	constructor(
-		public readonly sourceFile: ts.SourceFile,
-		public readonly mtime: number
+		public reAdonly sourceFile: ts.SourceFile,
+		public reAdonly mtime: number
 	) {}
 }
 
-export class DeclarationResolver {
+export clAss DeclArAtionResolver {
 
-	private _sourceFileCache: { [moduleId: string]: CacheEntry | null; };
+	privAte _sourceFileCAche: { [moduleId: string]: CAcheEntry | null; };
 
-	constructor(private readonly _fsProvider: FSProvider) {
-		this._sourceFileCache = Object.create(null);
+	constructor(privAte reAdonly _fsProvider: FSProvider) {
+		this._sourceFileCAche = Object.creAte(null);
 	}
 
-	public invalidateCache(moduleId: string): void {
-		this._sourceFileCache[moduleId] = null;
+	public invAlidAteCAche(moduleId: string): void {
+		this._sourceFileCAche[moduleId] = null;
 	}
 
-	public getDeclarationSourceFile(moduleId: string): ts.SourceFile | null {
-		if (this._sourceFileCache[moduleId]) {
-			// Since we cannot trust file watching to invalidate the cache, check also the mtime
-			const fileName = this._getFileName(moduleId);
-			const mtime = this._fsProvider.statSync(fileName).mtime.getTime();
-			if (this._sourceFileCache[moduleId]!.mtime !== mtime) {
-				this._sourceFileCache[moduleId] = null;
+	public getDeclArAtionSourceFile(moduleId: string): ts.SourceFile | null {
+		if (this._sourceFileCAche[moduleId]) {
+			// Since we cAnnot trust file wAtching to invAlidAte the cAche, check Also the mtime
+			const fileNAme = this._getFileNAme(moduleId);
+			const mtime = this._fsProvider.stAtSync(fileNAme).mtime.getTime();
+			if (this._sourceFileCAche[moduleId]!.mtime !== mtime) {
+				this._sourceFileCAche[moduleId] = null;
 			}
 		}
-		if (!this._sourceFileCache[moduleId]) {
-			this._sourceFileCache[moduleId] = this._getDeclarationSourceFile(moduleId);
+		if (!this._sourceFileCAche[moduleId]) {
+			this._sourceFileCAche[moduleId] = this._getDeclArAtionSourceFile(moduleId);
 		}
-		return this._sourceFileCache[moduleId] ? this._sourceFileCache[moduleId]!.sourceFile : null;
+		return this._sourceFileCAche[moduleId] ? this._sourceFileCAche[moduleId]!.sourceFile : null;
 	}
 
-	private _getFileName(moduleId: string): string {
+	privAte _getFileNAme(moduleId: string): string {
 		if (/\.d\.ts$/.test(moduleId)) {
-			return path.join(SRC, moduleId);
+			return pAth.join(SRC, moduleId);
 		}
-		return path.join(SRC, `${moduleId}.ts`);
+		return pAth.join(SRC, `${moduleId}.ts`);
 	}
 
-	private _getDeclarationSourceFile(moduleId: string): CacheEntry | null {
-		const fileName = this._getFileName(moduleId);
-		if (!this._fsProvider.existsSync(fileName)) {
+	privAte _getDeclArAtionSourceFile(moduleId: string): CAcheEntry | null {
+		const fileNAme = this._getFileNAme(moduleId);
+		if (!this._fsProvider.existsSync(fileNAme)) {
 			return null;
 		}
-		const mtime = this._fsProvider.statSync(fileName).mtime.getTime();
+		const mtime = this._fsProvider.stAtSync(fileNAme).mtime.getTime();
 		if (/\.d\.ts$/.test(moduleId)) {
-			// const mtime = this._fsProvider.statFileSync()
-			const fileContents = this._fsProvider.readFileSync(moduleId, fileName).toString();
-			return new CacheEntry(
-				ts.createSourceFile(fileName, fileContents, ts.ScriptTarget.ES5),
+			// const mtime = this._fsProvider.stAtFileSync()
+			const fileContents = this._fsProvider.reAdFileSync(moduleId, fileNAme).toString();
+			return new CAcheEntry(
+				ts.creAteSourceFile(fileNAme, fileContents, ts.ScriptTArget.ES5),
 				mtime
 			);
 		}
-		const fileContents = this._fsProvider.readFileSync(moduleId, fileName).toString();
-		const fileMap: IFileMap = {
+		const fileContents = this._fsProvider.reAdFileSync(moduleId, fileNAme).toString();
+		const fileMAp: IFileMAp = {
 			'file.ts': fileContents
 		};
-		const service = ts.createLanguageService(new TypeScriptLanguageServiceHost({}, fileMap, {}));
+		const service = ts.creAteLAnguAgeService(new TypeScriptLAnguAgeServiceHost({}, fileMAp, {}));
 		const text = service.getEmitOutput('file.ts', true, true).outputFiles[0].text;
-		return new CacheEntry(
-			ts.createSourceFile(fileName, text, ts.ScriptTarget.ES5),
+		return new CAcheEntry(
+			ts.creAteSourceFile(fileNAme, text, ts.ScriptTArget.ES5),
 			mtime
 		);
 	}
 }
 
-export function run3(resolver: DeclarationResolver): IMonacoDeclarationResult | null {
-	const sourceFileGetter = (moduleId: string) => resolver.getDeclarationSourceFile(moduleId);
+export function run3(resolver: DeclArAtionResolver): IMonAcoDeclArAtionResult | null {
+	const sourceFileGetter = (moduleId: string) => resolver.getDeclArAtionSourceFile(moduleId);
 	return _run(sourceFileGetter);
 }
 
 
 
 
-interface ILibMap { [libName: string]: string; }
-interface IFileMap { [fileName: string]: string; }
+interfAce ILibMAp { [libNAme: string]: string; }
+interfAce IFileMAp { [fileNAme: string]: string; }
 
-class TypeScriptLanguageServiceHost implements ts.LanguageServiceHost {
+clAss TypeScriptLAnguAgeServiceHost implements ts.LAnguAgeServiceHost {
 
-	private readonly _libs: ILibMap;
-	private readonly _files: IFileMap;
-	private readonly _compilerOptions: ts.CompilerOptions;
+	privAte reAdonly _libs: ILibMAp;
+	privAte reAdonly _files: IFileMAp;
+	privAte reAdonly _compilerOptions: ts.CompilerOptions;
 
-	constructor(libs: ILibMap, files: IFileMap, compilerOptions: ts.CompilerOptions) {
+	constructor(libs: ILibMAp, files: IFileMAp, compilerOptions: ts.CompilerOptions) {
 		this._libs = libs;
 		this._files = files;
 		this._compilerOptions = compilerOptions;
 	}
 
-	// --- language service host ---------------
+	// --- lAnguAge service host ---------------
 
-	getCompilationSettings(): ts.CompilerOptions {
+	getCompilAtionSettings(): ts.CompilerOptions {
 		return this._compilerOptions;
 	}
-	getScriptFileNames(): string[] {
+	getScriptFileNAmes(): string[] {
 		return (
-			([] as string[])
-				.concat(Object.keys(this._libs))
-				.concat(Object.keys(this._files))
+			([] As string[])
+				.concAt(Object.keys(this._libs))
+				.concAt(Object.keys(this._files))
 		);
 	}
-	getScriptVersion(_fileName: string): string {
+	getScriptVersion(_fileNAme: string): string {
 		return '1';
 	}
 	getProjectVersion(): string {
 		return '1';
 	}
-	getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
-		if (this._files.hasOwnProperty(fileName)) {
-			return ts.ScriptSnapshot.fromString(this._files[fileName]);
-		} else if (this._libs.hasOwnProperty(fileName)) {
-			return ts.ScriptSnapshot.fromString(this._libs[fileName]);
+	getScriptSnApshot(fileNAme: string): ts.IScriptSnApshot {
+		if (this._files.hAsOwnProperty(fileNAme)) {
+			return ts.ScriptSnApshot.fromString(this._files[fileNAme]);
+		} else if (this._libs.hAsOwnProperty(fileNAme)) {
+			return ts.ScriptSnApshot.fromString(this._libs[fileNAme]);
 		} else {
-			return ts.ScriptSnapshot.fromString('');
+			return ts.ScriptSnApshot.fromString('');
 		}
 	}
-	getScriptKind(_fileName: string): ts.ScriptKind {
+	getScriptKind(_fileNAme: string): ts.ScriptKind {
 		return ts.ScriptKind.TS;
 	}
 	getCurrentDirectory(): string {
 		return '';
 	}
-	getDefaultLibFileName(_options: ts.CompilerOptions): string {
-		return 'defaultLib:es5';
+	getDefAultLibFileNAme(_options: ts.CompilerOptions): string {
+		return 'defAultLib:es5';
 	}
-	isDefaultLibFileName(fileName: string): boolean {
-		return fileName === this.getDefaultLibFileName(this._compilerOptions);
+	isDefAultLibFileNAme(fileNAme: string): booleAn {
+		return fileNAme === this.getDefAultLibFileNAme(this._compilerOptions);
 	}
 }
 
-export function execute(): IMonacoDeclarationResult {
-	let r = run3(new DeclarationResolver(new FSProvider()));
+export function execute(): IMonAcoDeclArAtionResult {
+	let r = run3(new DeclArAtionResolver(new FSProvider()));
 	if (!r) {
-		throw new Error(`monaco.d.ts generation error - Cannot continue`);
+		throw new Error(`monAco.d.ts generAtion error - CAnnot continue`);
 	}
 	return r;
 }

@@ -1,152 +1,152 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { IExtensionManagementService, ILocalExtension, IGalleryExtension, IExtensionGalleryService, InstallOperation } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { URI } from 'vs/base/common/uri';
-import { ExtensionType, IExtensionManifest } from 'vs/platform/extensions/common/extensions';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { ILogService } from 'vs/platform/log/common/log';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
+import { IChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { IExtensionMAnAgementService, ILocAlExtension, IGAlleryExtension, IExtensionGAlleryService, InstAllOperAtion } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { URI } from 'vs/bAse/common/uri';
+import { ExtensionType, IExtensionMAnifest } from 'vs/plAtform/extensions/common/extensions';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
 import { prefersExecuteOnUI } from 'vs/workbench/services/extensions/common/extensionsUtil';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { localize } from 'vs/nls';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { generateUuid } from 'vs/base/common/uuid';
-import { joinPath } from 'vs/base/common/resources';
-import { WebRemoteExtensionManagementService } from 'vs/workbench/services/extensionManagement/common/remoteExtensionManagementService';
-import { IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { locAlize } from 'vs/nls';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { WebRemoteExtensionMAnAgementService } from 'vs/workbench/services/extensionMAnAgement/common/remoteExtensionMAnAgementService';
+import { IExtensionMAnAgementServer } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
 
-export class NativeRemoteExtensionManagementService extends WebRemoteExtensionManagementService implements IExtensionManagementService {
+export clAss NAtiveRemoteExtensionMAnAgementService extends WebRemoteExtensionMAnAgementService implements IExtensionMAnAgementService {
 
-	private readonly localExtensionManagementService: IExtensionManagementService;
+	privAte reAdonly locAlExtensionMAnAgementService: IExtensionMAnAgementService;
 
 	constructor(
-		channel: IChannel,
-		localExtensionManagementServer: IExtensionManagementServer,
-		@ILogService private readonly logService: ILogService,
-		@IExtensionGalleryService galleryService: IExtensionGalleryService,
-		@IConfigurationService configurationService: IConfigurationService,
+		chAnnel: IChAnnel,
+		locAlExtensionMAnAgementServer: IExtensionMAnAgementServer,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IExtensionGAlleryService gAlleryService: IExtensionGAlleryService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IProductService productService: IProductService,
-		@INativeWorkbenchEnvironmentService private readonly environmentService: INativeWorkbenchEnvironmentService
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly environmentService: INAtiveWorkbenchEnvironmentService
 	) {
-		super(channel, galleryService, configurationService, productService);
-		this.localExtensionManagementService = localExtensionManagementServer.extensionManagementService;
+		super(chAnnel, gAlleryService, configurAtionService, productService);
+		this.locAlExtensionMAnAgementService = locAlExtensionMAnAgementServer.extensionMAnAgementService;
 	}
 
-	async install(vsix: URI): Promise<ILocalExtension> {
-		const local = await super.install(vsix);
-		await this.installUIDependenciesAndPackedExtensions(local);
-		return local;
+	Async instAll(vsix: URI): Promise<ILocAlExtension> {
+		const locAl = AwAit super.instAll(vsix);
+		AwAit this.instAllUIDependenciesAndPAckedExtensions(locAl);
+		return locAl;
 	}
 
-	async installFromGallery(extension: IGalleryExtension): Promise<ILocalExtension> {
-		const local = await this.doInstallFromGallery(extension);
-		await this.installUIDependenciesAndPackedExtensions(local);
-		return local;
+	Async instAllFromGAllery(extension: IGAlleryExtension): Promise<ILocAlExtension> {
+		const locAl = AwAit this.doInstAllFromGAllery(extension);
+		AwAit this.instAllUIDependenciesAndPAckedExtensions(locAl);
+		return locAl;
 	}
 
-	private async doInstallFromGallery(extension: IGalleryExtension): Promise<ILocalExtension> {
-		if (this.configurationService.getValue<boolean>('remote.downloadExtensionsLocally')) {
-			this.logService.trace(`Download '${extension.identifier.id}' extension locally and install`);
-			return this.downloadCompatibleAndInstall(extension);
+	privAte Async doInstAllFromGAllery(extension: IGAlleryExtension): Promise<ILocAlExtension> {
+		if (this.configurAtionService.getVAlue<booleAn>('remote.downloAdExtensionsLocAlly')) {
+			this.logService.trAce(`DownloAd '${extension.identifier.id}' extension locAlly And instAll`);
+			return this.downloAdCompAtibleAndInstAll(extension);
 		}
 		try {
-			const local = await super.installFromGallery(extension);
-			return local;
-		} catch (error) {
+			const locAl = AwAit super.instAllFromGAllery(extension);
+			return locAl;
+		} cAtch (error) {
 			try {
-				this.logService.error(`Error while installing '${extension.identifier.id}' extension in the remote server.`, toErrorMessage(error));
-				this.logService.info(`Trying to download '${extension.identifier.id}' extension locally and install`);
-				const local = await this.downloadCompatibleAndInstall(extension);
-				this.logService.info(`Successfully installed '${extension.identifier.id}' extension`);
-				return local;
-			} catch (e) {
+				this.logService.error(`Error while instAlling '${extension.identifier.id}' extension in the remote server.`, toErrorMessAge(error));
+				this.logService.info(`Trying to downloAd '${extension.identifier.id}' extension locAlly And instAll`);
+				const locAl = AwAit this.downloAdCompAtibleAndInstAll(extension);
+				this.logService.info(`Successfully instAlled '${extension.identifier.id}' extension`);
+				return locAl;
+			} cAtch (e) {
 				this.logService.error(e);
 				throw error;
 			}
 		}
 	}
 
-	private async downloadCompatibleAndInstall(extension: IGalleryExtension): Promise<ILocalExtension> {
-		const installed = await this.getInstalled(ExtensionType.User);
-		const compatible = await this.galleryService.getCompatibleExtension(extension);
-		if (!compatible) {
-			return Promise.reject(new Error(localize('incompatible', "Unable to install extension '{0}' as it is not compatible with VS Code '{1}'.", extension.identifier.id, this.productService.version)));
+	privAte Async downloAdCompAtibleAndInstAll(extension: IGAlleryExtension): Promise<ILocAlExtension> {
+		const instAlled = AwAit this.getInstAlled(ExtensionType.User);
+		const compAtible = AwAit this.gAlleryService.getCompAtibleExtension(extension);
+		if (!compAtible) {
+			return Promise.reject(new Error(locAlize('incompAtible', "UnAble to instAll extension '{0}' As it is not compAtible with VS Code '{1}'.", extension.identifier.id, this.productService.version)));
 		}
-		const manifest = await this.galleryService.getManifest(compatible, CancellationToken.None);
-		if (manifest) {
-			const workspaceExtensions = await this.getAllWorkspaceDependenciesAndPackedExtensions(manifest, CancellationToken.None);
-			await Promise.all(workspaceExtensions.map(e => this.downloadAndInstall(e, installed)));
+		const mAnifest = AwAit this.gAlleryService.getMAnifest(compAtible, CAncellAtionToken.None);
+		if (mAnifest) {
+			const workspAceExtensions = AwAit this.getAllWorkspAceDependenciesAndPAckedExtensions(mAnifest, CAncellAtionToken.None);
+			AwAit Promise.All(workspAceExtensions.mAp(e => this.downloAdAndInstAll(e, instAlled)));
 		}
-		return this.downloadAndInstall(extension, installed);
+		return this.downloAdAndInstAll(extension, instAlled);
 	}
 
-	private async downloadAndInstall(extension: IGalleryExtension, installed: ILocalExtension[]): Promise<ILocalExtension> {
-		const location = joinPath(this.environmentService.tmpDir, generateUuid());
-		await this.galleryService.download(extension, location, installed.filter(i => areSameExtensions(i.identifier, extension.identifier))[0] ? InstallOperation.Update : InstallOperation.Install);
-		return super.install(location);
+	privAte Async downloAdAndInstAll(extension: IGAlleryExtension, instAlled: ILocAlExtension[]): Promise<ILocAlExtension> {
+		const locAtion = joinPAth(this.environmentService.tmpDir, generAteUuid());
+		AwAit this.gAlleryService.downloAd(extension, locAtion, instAlled.filter(i => AreSAmeExtensions(i.identifier, extension.identifier))[0] ? InstAllOperAtion.UpdAte : InstAllOperAtion.InstAll);
+		return super.instAll(locAtion);
 	}
 
-	private async installUIDependenciesAndPackedExtensions(local: ILocalExtension): Promise<void> {
-		const uiExtensions = await this.getAllUIDependenciesAndPackedExtensions(local.manifest, CancellationToken.None);
-		const installed = await this.localExtensionManagementService.getInstalled();
-		const toInstall = uiExtensions.filter(e => installed.every(i => !areSameExtensions(i.identifier, e.identifier)));
-		await Promise.all(toInstall.map(d => this.localExtensionManagementService.installFromGallery(d)));
+	privAte Async instAllUIDependenciesAndPAckedExtensions(locAl: ILocAlExtension): Promise<void> {
+		const uiExtensions = AwAit this.getAllUIDependenciesAndPAckedExtensions(locAl.mAnifest, CAncellAtionToken.None);
+		const instAlled = AwAit this.locAlExtensionMAnAgementService.getInstAlled();
+		const toInstAll = uiExtensions.filter(e => instAlled.every(i => !AreSAmeExtensions(i.identifier, e.identifier)));
+		AwAit Promise.All(toInstAll.mAp(d => this.locAlExtensionMAnAgementService.instAllFromGAllery(d)));
 	}
 
-	private async getAllUIDependenciesAndPackedExtensions(manifest: IExtensionManifest, token: CancellationToken): Promise<IGalleryExtension[]> {
-		const result = new Map<string, IGalleryExtension>();
-		const extensions = [...(manifest.extensionPack || []), ...(manifest.extensionDependencies || [])];
-		await this.getDependenciesAndPackedExtensionsRecursively(extensions, result, true, token);
-		return [...result.values()];
+	privAte Async getAllUIDependenciesAndPAckedExtensions(mAnifest: IExtensionMAnifest, token: CAncellAtionToken): Promise<IGAlleryExtension[]> {
+		const result = new MAp<string, IGAlleryExtension>();
+		const extensions = [...(mAnifest.extensionPAck || []), ...(mAnifest.extensionDependencies || [])];
+		AwAit this.getDependenciesAndPAckedExtensionsRecursively(extensions, result, true, token);
+		return [...result.vAlues()];
 	}
 
-	private async getAllWorkspaceDependenciesAndPackedExtensions(manifest: IExtensionManifest, token: CancellationToken): Promise<IGalleryExtension[]> {
-		const result = new Map<string, IGalleryExtension>();
-		const extensions = [...(manifest.extensionPack || []), ...(manifest.extensionDependencies || [])];
-		await this.getDependenciesAndPackedExtensionsRecursively(extensions, result, false, token);
-		return [...result.values()];
+	privAte Async getAllWorkspAceDependenciesAndPAckedExtensions(mAnifest: IExtensionMAnifest, token: CAncellAtionToken): Promise<IGAlleryExtension[]> {
+		const result = new MAp<string, IGAlleryExtension>();
+		const extensions = [...(mAnifest.extensionPAck || []), ...(mAnifest.extensionDependencies || [])];
+		AwAit this.getDependenciesAndPAckedExtensionsRecursively(extensions, result, fAlse, token);
+		return [...result.vAlues()];
 	}
 
-	private async getDependenciesAndPackedExtensionsRecursively(toGet: string[], result: Map<string, IGalleryExtension>, uiExtension: boolean, token: CancellationToken): Promise<void> {
+	privAte Async getDependenciesAndPAckedExtensionsRecursively(toGet: string[], result: MAp<string, IGAlleryExtension>, uiExtension: booleAn, token: CAncellAtionToken): Promise<void> {
 		if (toGet.length === 0) {
 			return Promise.resolve();
 		}
 
-		const extensions = (await this.galleryService.query({ names: toGet, pageSize: toGet.length }, token)).firstPage;
-		const manifests = await Promise.all(extensions.map(e => this.galleryService.getManifest(e, token)));
-		const extensionsManifests: IExtensionManifest[] = [];
+		const extensions = (AwAit this.gAlleryService.query({ nAmes: toGet, pAgeSize: toGet.length }, token)).firstPAge;
+		const mAnifests = AwAit Promise.All(extensions.mAp(e => this.gAlleryService.getMAnifest(e, token)));
+		const extensionsMAnifests: IExtensionMAnifest[] = [];
 		for (let idx = 0; idx < extensions.length; idx++) {
 			const extension = extensions[idx];
-			const manifest = manifests[idx];
-			if (manifest && prefersExecuteOnUI(manifest, this.productService, this.configurationService) === uiExtension) {
-				result.set(extension.identifier.id.toLowerCase(), extension);
-				extensionsManifests.push(manifest);
+			const mAnifest = mAnifests[idx];
+			if (mAnifest && prefersExecuteOnUI(mAnifest, this.productService, this.configurAtionService) === uiExtension) {
+				result.set(extension.identifier.id.toLowerCAse(), extension);
+				extensionsMAnifests.push(mAnifest);
 			}
 		}
 		toGet = [];
-		for (const extensionManifest of extensionsManifests) {
-			if (isNonEmptyArray(extensionManifest.extensionDependencies)) {
-				for (const id of extensionManifest.extensionDependencies) {
-					if (!result.has(id.toLowerCase())) {
+		for (const extensionMAnifest of extensionsMAnifests) {
+			if (isNonEmptyArrAy(extensionMAnifest.extensionDependencies)) {
+				for (const id of extensionMAnifest.extensionDependencies) {
+					if (!result.hAs(id.toLowerCAse())) {
 						toGet.push(id);
 					}
 				}
 			}
-			if (isNonEmptyArray(extensionManifest.extensionPack)) {
-				for (const id of extensionManifest.extensionPack) {
-					if (!result.has(id.toLowerCase())) {
+			if (isNonEmptyArrAy(extensionMAnifest.extensionPAck)) {
+				for (const id of extensionMAnifest.extensionPAck) {
+					if (!result.hAs(id.toLowerCAse())) {
 						toGet.push(id);
 					}
 				}
 			}
 		}
-		return this.getDependenciesAndPackedExtensionsRecursively(toGet, result, uiExtension, token);
+		return this.getDependenciesAndPAckedExtensionsRecursively(toGet, result, uiExtension, token);
 	}
 }

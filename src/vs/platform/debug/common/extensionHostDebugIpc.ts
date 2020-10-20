@@ -1,107 +1,107 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IServerChannel, IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { IReloadSessionEvent, ICloseSessionEvent, IAttachSessionEvent, ILogToSessionEvent, ITerminateSessionEvent, IExtensionHostDebugService, IOpenExtensionWindowResult } from 'vs/platform/debug/common/extensionHostDebug';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IRemoteConsoleLog } from 'vs/base/common/console';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { IServerChAnnel, IChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { IReloAdSessionEvent, ICloseSessionEvent, IAttAchSessionEvent, ILogToSessionEvent, ITerminAteSessionEvent, IExtensionHostDebugService, IOpenExtensionWindowResult } from 'vs/plAtform/debug/common/extensionHostDebug';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IRemoteConsoleLog } from 'vs/bAse/common/console';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
 
-export class ExtensionHostDebugBroadcastChannel<TContext> implements IServerChannel<TContext> {
+export clAss ExtensionHostDebugBroAdcAstChAnnel<TContext> implements IServerChAnnel<TContext> {
 
-	static readonly ChannelName = 'extensionhostdebugservice';
+	stAtic reAdonly ChAnnelNAme = 'extensionhostdebugservice';
 
-	private readonly _onCloseEmitter = new Emitter<ICloseSessionEvent>();
-	private readonly _onReloadEmitter = new Emitter<IReloadSessionEvent>();
-	private readonly _onTerminateEmitter = new Emitter<ITerminateSessionEvent>();
-	private readonly _onLogToEmitter = new Emitter<ILogToSessionEvent>();
-	private readonly _onAttachEmitter = new Emitter<IAttachSessionEvent>();
+	privAte reAdonly _onCloseEmitter = new Emitter<ICloseSessionEvent>();
+	privAte reAdonly _onReloAdEmitter = new Emitter<IReloAdSessionEvent>();
+	privAte reAdonly _onTerminAteEmitter = new Emitter<ITerminAteSessionEvent>();
+	privAte reAdonly _onLogToEmitter = new Emitter<ILogToSessionEvent>();
+	privAte reAdonly _onAttAchEmitter = new Emitter<IAttAchSessionEvent>();
 
-	call(ctx: TContext, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'close':
-				return Promise.resolve(this._onCloseEmitter.fire({ sessionId: arg[0] }));
-			case 'reload':
-				return Promise.resolve(this._onReloadEmitter.fire({ sessionId: arg[0] }));
-			case 'terminate':
-				return Promise.resolve(this._onTerminateEmitter.fire({ sessionId: arg[0] }));
-			case 'log':
-				return Promise.resolve(this._onLogToEmitter.fire({ sessionId: arg[0], log: arg[1] }));
-			case 'attach':
-				return Promise.resolve(this._onAttachEmitter.fire({ sessionId: arg[0], port: arg[1], subId: arg[2] }));
+	cAll(ctx: TContext, commAnd: string, Arg?: Any): Promise<Any> {
+		switch (commAnd) {
+			cAse 'close':
+				return Promise.resolve(this._onCloseEmitter.fire({ sessionId: Arg[0] }));
+			cAse 'reloAd':
+				return Promise.resolve(this._onReloAdEmitter.fire({ sessionId: Arg[0] }));
+			cAse 'terminAte':
+				return Promise.resolve(this._onTerminAteEmitter.fire({ sessionId: Arg[0] }));
+			cAse 'log':
+				return Promise.resolve(this._onLogToEmitter.fire({ sessionId: Arg[0], log: Arg[1] }));
+			cAse 'AttAch':
+				return Promise.resolve(this._onAttAchEmitter.fire({ sessionId: Arg[0], port: Arg[1], subId: Arg[2] }));
 		}
 		throw new Error('Method not implemented.');
 	}
 
-	listen(ctx: TContext, event: string, arg?: any): Event<any> {
+	listen(ctx: TContext, event: string, Arg?: Any): Event<Any> {
 		switch (event) {
-			case 'close':
+			cAse 'close':
 				return this._onCloseEmitter.event;
-			case 'reload':
-				return this._onReloadEmitter.event;
-			case 'terminate':
-				return this._onTerminateEmitter.event;
-			case 'log':
+			cAse 'reloAd':
+				return this._onReloAdEmitter.event;
+			cAse 'terminAte':
+				return this._onTerminAteEmitter.event;
+			cAse 'log':
 				return this._onLogToEmitter.event;
-			case 'attach':
-				return this._onAttachEmitter.event;
+			cAse 'AttAch':
+				return this._onAttAchEmitter.event;
 		}
 		throw new Error('Method not implemented.');
 	}
 }
 
-export class ExtensionHostDebugChannelClient extends Disposable implements IExtensionHostDebugService {
+export clAss ExtensionHostDebugChAnnelClient extends DisposAble implements IExtensionHostDebugService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(private channel: IChannel) {
+	constructor(privAte chAnnel: IChAnnel) {
 		super();
 	}
 
-	reload(sessionId: string): void {
-		this.channel.call('reload', [sessionId]);
+	reloAd(sessionId: string): void {
+		this.chAnnel.cAll('reloAd', [sessionId]);
 	}
 
-	get onReload(): Event<IReloadSessionEvent> {
-		return this.channel.listen('reload');
+	get onReloAd(): Event<IReloAdSessionEvent> {
+		return this.chAnnel.listen('reloAd');
 	}
 
 	close(sessionId: string): void {
-		this.channel.call('close', [sessionId]);
+		this.chAnnel.cAll('close', [sessionId]);
 	}
 
 	get onClose(): Event<ICloseSessionEvent> {
-		return this.channel.listen('close');
+		return this.chAnnel.listen('close');
 	}
 
-	attachSession(sessionId: string, port: number, subId?: string): void {
-		this.channel.call('attach', [sessionId, port, subId]);
+	AttAchSession(sessionId: string, port: number, subId?: string): void {
+		this.chAnnel.cAll('AttAch', [sessionId, port, subId]);
 	}
 
-	get onAttachSession(): Event<IAttachSessionEvent> {
-		return this.channel.listen('attach');
+	get onAttAchSession(): Event<IAttAchSessionEvent> {
+		return this.chAnnel.listen('AttAch');
 	}
 
 	logToSession(sessionId: string, log: IRemoteConsoleLog): void {
-		this.channel.call('log', [sessionId, log]);
+		this.chAnnel.cAll('log', [sessionId, log]);
 	}
 
 	get onLogToSession(): Event<ILogToSessionEvent> {
-		return this.channel.listen('log');
+		return this.chAnnel.listen('log');
 	}
 
-	terminateSession(sessionId: string, subId?: string): void {
-		this.channel.call('terminate', [sessionId, subId]);
+	terminAteSession(sessionId: string, subId?: string): void {
+		this.chAnnel.cAll('terminAte', [sessionId, subId]);
 	}
 
-	get onTerminateSession(): Event<ITerminateSessionEvent> {
-		return this.channel.listen('terminate');
+	get onTerminAteSession(): Event<ITerminAteSessionEvent> {
+		return this.chAnnel.listen('terminAte');
 	}
 
-	openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment, debugRenderer: boolean): Promise<IOpenExtensionWindowResult> {
-		return this.channel.call('openExtensionDevelopmentHostWindow', [args, env, debugRenderer]);
+	openExtensionDevelopmentHostWindow(Args: string[], env: IProcessEnvironment, debugRenderer: booleAn): Promise<IOpenExtensionWindowResult> {
+		return this.chAnnel.cAll('openExtensionDevelopmentHostWindow', [Args, env, debugRenderer]);
 	}
 }

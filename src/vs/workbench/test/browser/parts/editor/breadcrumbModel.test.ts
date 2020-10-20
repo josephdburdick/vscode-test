@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { Workspace, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { EditorBreadcrumbsModel, FileElement } from 'vs/workbench/browser/parts/editor/breadcrumbsModel';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { FileKind } from 'vs/platform/files/common/files';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { WorkspAce, WorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { EditorBreAdcrumbsModel, FileElement } from 'vs/workbench/browser/pArts/editor/breAdcrumbsModel';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { FileKind } from 'vs/plAtform/files/common/files';
 import { TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
 
 
-suite('Breadcrumb Model', function () {
+suite('BreAdcrumb Model', function () {
 
-	const workspaceService = new TestContextService(new Workspace('ffff', [new WorkspaceFolder({ uri: URI.parse('foo:/bar/baz/ws'), name: 'ws', index: 0 })]));
-	const configService = new class extends TestConfigurationService {
-		getValue(...args: any[]) {
-			if (args[0] === 'breadcrumbs.filePath') {
+	const workspAceService = new TestContextService(new WorkspAce('ffff', [new WorkspAceFolder({ uri: URI.pArse('foo:/bAr/bAz/ws'), nAme: 'ws', index: 0 })]));
+	const configService = new clAss extends TestConfigurAtionService {
+		getVAlue(...Args: Any[]) {
+			if (Args[0] === 'breAdcrumbs.filePAth') {
 				return 'on';
 			}
-			if (args[0] === 'breadcrumbs.symbolPath') {
+			if (Args[0] === 'breAdcrumbs.symbolPAth') {
 				return 'on';
 			}
-			return super.getValue(...args);
+			return super.getVAlue(...Args);
 		}
-		updateValue() {
+		updAteVAlue() {
 			return Promise.resolve();
 		}
 	};
 
-	test('only uri, inside workspace', function () {
+	test('only uri, inside workspAce', function () {
 
-		let model = new EditorBreadcrumbsModel(URI.parse('foo:/bar/baz/ws/some/path/file.ts'), URI.parse('foo:/bar/baz/ws/some/path/file.ts'), undefined, configService, configService, workspaceService);
+		let model = new EditorBreAdcrumbsModel(URI.pArse('foo:/bAr/bAz/ws/some/pAth/file.ts'), URI.pArse('foo:/bAr/bAz/ws/some/pAth/file.ts'), undefined, configService, configService, workspAceService);
 		let elements = model.getElements();
 
-		assert.equal(elements.length, 3);
-		let [one, two, three] = elements as FileElement[];
-		assert.equal(one.kind, FileKind.FOLDER);
-		assert.equal(two.kind, FileKind.FOLDER);
-		assert.equal(three.kind, FileKind.FILE);
-		assert.equal(one.uri.toString(), 'foo:/bar/baz/ws/some');
-		assert.equal(two.uri.toString(), 'foo:/bar/baz/ws/some/path');
-		assert.equal(three.uri.toString(), 'foo:/bar/baz/ws/some/path/file.ts');
+		Assert.equAl(elements.length, 3);
+		let [one, two, three] = elements As FileElement[];
+		Assert.equAl(one.kind, FileKind.FOLDER);
+		Assert.equAl(two.kind, FileKind.FOLDER);
+		Assert.equAl(three.kind, FileKind.FILE);
+		Assert.equAl(one.uri.toString(), 'foo:/bAr/bAz/ws/some');
+		Assert.equAl(two.uri.toString(), 'foo:/bAr/bAz/ws/some/pAth');
+		Assert.equAl(three.uri.toString(), 'foo:/bAr/bAz/ws/some/pAth/file.ts');
 	});
 
-	test('display uri matters for FileElement', function () {
+	test('displAy uri mAtters for FileElement', function () {
 
-		let model = new EditorBreadcrumbsModel(URI.parse('foo:/bar/baz/ws/some/PATH/file.ts'), URI.parse('foo:/bar/baz/ws/some/path/file.ts'), undefined, configService, configService, workspaceService);
+		let model = new EditorBreAdcrumbsModel(URI.pArse('foo:/bAr/bAz/ws/some/PATH/file.ts'), URI.pArse('foo:/bAr/bAz/ws/some/pAth/file.ts'), undefined, configService, configService, workspAceService);
 		let elements = model.getElements();
 
-		assert.equal(elements.length, 3);
-		let [one, two, three] = elements as FileElement[];
-		assert.equal(one.kind, FileKind.FOLDER);
-		assert.equal(two.kind, FileKind.FOLDER);
-		assert.equal(three.kind, FileKind.FILE);
-		assert.equal(one.uri.toString(), 'foo:/bar/baz/ws/some');
-		assert.equal(two.uri.toString(), 'foo:/bar/baz/ws/some/PATH');
-		assert.equal(three.uri.toString(), 'foo:/bar/baz/ws/some/PATH/file.ts');
+		Assert.equAl(elements.length, 3);
+		let [one, two, three] = elements As FileElement[];
+		Assert.equAl(one.kind, FileKind.FOLDER);
+		Assert.equAl(two.kind, FileKind.FOLDER);
+		Assert.equAl(three.kind, FileKind.FILE);
+		Assert.equAl(one.uri.toString(), 'foo:/bAr/bAz/ws/some');
+		Assert.equAl(two.uri.toString(), 'foo:/bAr/bAz/ws/some/PATH');
+		Assert.equAl(three.uri.toString(), 'foo:/bAr/bAz/ws/some/PATH/file.ts');
 	});
 
-	test('only uri, outside workspace', function () {
+	test('only uri, outside workspAce', function () {
 
-		let model = new EditorBreadcrumbsModel(URI.parse('foo:/outside/file.ts'), URI.parse('foo:/outside/file.ts'), undefined, configService, configService, workspaceService);
+		let model = new EditorBreAdcrumbsModel(URI.pArse('foo:/outside/file.ts'), URI.pArse('foo:/outside/file.ts'), undefined, configService, configService, workspAceService);
 		let elements = model.getElements();
 
-		assert.equal(elements.length, 2);
-		let [one, two] = elements as FileElement[];
-		assert.equal(one.kind, FileKind.FOLDER);
-		assert.equal(two.kind, FileKind.FILE);
-		assert.equal(one.uri.toString(), 'foo:/outside');
-		assert.equal(two.uri.toString(), 'foo:/outside/file.ts');
+		Assert.equAl(elements.length, 2);
+		let [one, two] = elements As FileElement[];
+		Assert.equAl(one.kind, FileKind.FOLDER);
+		Assert.equAl(two.kind, FileKind.FILE);
+		Assert.equAl(one.uri.toString(), 'foo:/outside');
+		Assert.equAl(two.uri.toString(), 'foo:/outside/file.ts');
 	});
 });

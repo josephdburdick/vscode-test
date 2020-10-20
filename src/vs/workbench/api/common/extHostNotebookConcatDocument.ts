@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as types from 'vs/workbench/api/common/extHostTypes';
-import * as vscode from 'vscode';
-import { Event, Emitter } from 'vs/base/common/event';
-import { ExtHostNotebookController } from 'vs/workbench/api/common/extHostNotebook';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
+import * As types from 'vs/workbench/Api/common/extHostTypes';
+import * As vscode from 'vscode';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { ExtHostNotebookController } from 'vs/workbench/Api/common/extHostNotebook';
+import { ExtHostDocuments } from 'vs/workbench/Api/common/extHostDocuments';
 import { PrefixSumComputer } from 'vs/editor/common/viewModel/prefixSumComputer';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { score } from 'vs/editor/common/modes/languageSelector';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { score } from 'vs/editor/common/modes/lAnguAgeSelector';
 import { CellKind } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { ResourceMap } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { URI } from 'vs/bAse/common/uri';
+import { generAteUuid } from 'vs/bAse/common/uuid';
 
-export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextDocument {
+export clAss ExtHostNotebookConcAtDocument implements vscode.NotebookConcAtTextDocument {
 
-	private _disposables = new DisposableStore();
-	private _isClosed = false;
+	privAte _disposAbles = new DisposAbleStore();
+	privAte _isClosed = fAlse;
 
-	private _cells!: vscode.NotebookCell[];
-	private _cellUris!: ResourceMap<number>;
-	private _cellLengths!: PrefixSumComputer;
-	private _cellLines!: PrefixSumComputer;
-	private _versionId = 0;
+	privAte _cells!: vscode.NotebookCell[];
+	privAte _cellUris!: ResourceMAp<number>;
+	privAte _cellLengths!: PrefixSumComputer;
+	privAte _cellLines!: PrefixSumComputer;
+	privAte _versionId = 0;
 
-	private readonly _onDidChange = new Emitter<void>();
-	readonly onDidChange: Event<void> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<void>();
+	reAdonly onDidChAnge: Event<void> = this._onDidChAnge.event;
 
-	readonly uri = URI.from({ scheme: 'vscode-concat-doc', path: generateUuid() });
+	reAdonly uri = URI.from({ scheme: 'vscode-concAt-doc', pAth: generAteUuid() });
 
 	constructor(
 		extHostNotebooks: ExtHostNotebookController,
 		extHostDocuments: ExtHostDocuments,
-		private readonly _notebook: vscode.NotebookDocument,
-		private readonly _selector: vscode.DocumentSelector | undefined,
+		privAte reAdonly _notebook: vscode.NotebookDocument,
+		privAte reAdonly _selector: vscode.DocumentSelector | undefined,
 	) {
 		this._init();
 
-		this._disposables.add(extHostDocuments.onDidChangeDocument(e => {
+		this._disposAbles.Add(extHostDocuments.onDidChAngeDocument(e => {
 			const cellIdx = this._cellUris.get(e.document.uri);
 			if (cellIdx !== undefined) {
-				this._cellLengths.changeValue(cellIdx, this._cells[cellIdx].document.getText().length + 1);
-				this._cellLines.changeValue(cellIdx, this._cells[cellIdx].document.lineCount);
+				this._cellLengths.chAngeVAlue(cellIdx, this._cells[cellIdx].document.getText().length + 1);
+				this._cellLines.chAngeVAlue(cellIdx, this._cells[cellIdx].document.lineCount);
 				this._versionId += 1;
-				this._onDidChange.fire(undefined);
+				this._onDidChAnge.fire(undefined);
 			}
 		}));
-		const documentChange = (document: vscode.NotebookDocument) => {
+		const documentChAnge = (document: vscode.NotebookDocument) => {
 			if (document === this._notebook) {
 				this._init();
 				this._versionId += 1;
-				this._onDidChange.fire(undefined);
+				this._onDidChAnge.fire(undefined);
 			}
 		};
 
-		this._disposables.add(extHostNotebooks.onDidChangeCellLanguage(e => documentChange(e.document)));
-		this._disposables.add(extHostNotebooks.onDidChangeNotebookCells(e => documentChange(e.document)));
+		this._disposAbles.Add(extHostNotebooks.onDidChAngeCellLAnguAge(e => documentChAnge(e.document)));
+		this._disposAbles.Add(extHostNotebooks.onDidChAngeNotebookCells(e => documentChAnge(e.document)));
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 		this._isClosed = true;
 	}
 
@@ -70,119 +70,119 @@ export class ExtHostNotebookConcatDocument implements vscode.NotebookConcatTextD
 		return this._isClosed;
 	}
 
-	private _init() {
+	privAte _init() {
 		this._cells = [];
-		this._cellUris = new ResourceMap();
+		this._cellUris = new ResourceMAp();
 		const cellLengths: number[] = [];
 		const cellLineCounts: number[] = [];
 		for (const cell of this._notebook.cells) {
-			if (cell.cellKind === CellKind.Code && (!this._selector || score(this._selector, cell.uri, cell.language, true))) {
+			if (cell.cellKind === CellKind.Code && (!this._selector || score(this._selector, cell.uri, cell.lAnguAge, true))) {
 				this._cellUris.set(cell.uri, this._cells.length);
 				this._cells.push(cell);
 				cellLengths.push(cell.document.getText().length + 1);
 				cellLineCounts.push(cell.document.lineCount);
 			}
 		}
-		this._cellLengths = new PrefixSumComputer(new Uint32Array(cellLengths));
-		this._cellLines = new PrefixSumComputer(new Uint32Array(cellLineCounts));
+		this._cellLengths = new PrefixSumComputer(new Uint32ArrAy(cellLengths));
+		this._cellLines = new PrefixSumComputer(new Uint32ArrAy(cellLineCounts));
 	}
 
 	get version(): number {
 		return this._versionId;
 	}
 
-	getText(range?: vscode.Range): string {
-		if (!range) {
+	getText(rAnge?: vscode.RAnge): string {
+		if (!rAnge) {
 			let result = '';
 			for (const cell of this._cells) {
 				result += cell.document.getText() + '\n';
 			}
-			// remove last newline again
+			// remove lAst newline AgAin
 			result = result.slice(0, -1);
 			return result;
 		}
 
-		if (range.isEmpty) {
+		if (rAnge.isEmpty) {
 			return '';
 		}
 
-		// get start and end locations and create substrings
-		const start = this.locationAt(range.start);
-		const end = this.locationAt(range.end);
-		const startCell = this._cells[this._cellUris.get(start.uri) ?? -1];
+		// get stArt And end locAtions And creAte substrings
+		const stArt = this.locAtionAt(rAnge.stArt);
+		const end = this.locAtionAt(rAnge.end);
+		const stArtCell = this._cells[this._cellUris.get(stArt.uri) ?? -1];
 		const endCell = this._cells[this._cellUris.get(end.uri) ?? -1];
 
-		if (!startCell || !endCell) {
+		if (!stArtCell || !endCell) {
 			return '';
-		} else if (startCell === endCell) {
-			return startCell.document.getText(new types.Range(start.range.start, end.range.end));
+		} else if (stArtCell === endCell) {
+			return stArtCell.document.getText(new types.RAnge(stArt.rAnge.stArt, end.rAnge.end));
 		} else {
-			const a = startCell.document.getText(new types.Range(start.range.start, new types.Position(startCell.document.lineCount, 0)));
-			const b = endCell.document.getText(new types.Range(new types.Position(0, 0), end.range.end));
-			return a + '\n' + b;
+			const A = stArtCell.document.getText(new types.RAnge(stArt.rAnge.stArt, new types.Position(stArtCell.document.lineCount, 0)));
+			const b = endCell.document.getText(new types.RAnge(new types.Position(0, 0), end.rAnge.end));
+			return A + '\n' + b;
 		}
 	}
 
 	offsetAt(position: vscode.Position): number {
 		const idx = this._cellLines.getIndexOf(position.line);
-		const offset1 = this._cellLengths.getAccumulatedValue(idx.index - 1);
-		const offset2 = this._cells[idx.index].document.offsetAt(position.with(idx.remainder));
+		const offset1 = this._cellLengths.getAccumulAtedVAlue(idx.index - 1);
+		const offset2 = this._cells[idx.index].document.offsetAt(position.with(idx.remAinder));
 		return offset1 + offset2;
 	}
 
-	positionAt(locationOrOffset: vscode.Location | number): vscode.Position {
-		if (typeof locationOrOffset === 'number') {
-			const idx = this._cellLengths.getIndexOf(locationOrOffset);
-			const lineCount = this._cellLines.getAccumulatedValue(idx.index - 1);
-			return this._cells[idx.index].document.positionAt(idx.remainder).translate(lineCount);
+	positionAt(locAtionOrOffset: vscode.LocAtion | number): vscode.Position {
+		if (typeof locAtionOrOffset === 'number') {
+			const idx = this._cellLengths.getIndexOf(locAtionOrOffset);
+			const lineCount = this._cellLines.getAccumulAtedVAlue(idx.index - 1);
+			return this._cells[idx.index].document.positionAt(idx.remAinder).trAnslAte(lineCount);
 		}
 
-		const idx = this._cellUris.get(locationOrOffset.uri);
+		const idx = this._cellUris.get(locAtionOrOffset.uri);
 		if (idx !== undefined) {
-			const line = this._cellLines.getAccumulatedValue(idx - 1);
-			return new types.Position(line + locationOrOffset.range.start.line, locationOrOffset.range.start.character);
+			const line = this._cellLines.getAccumulAtedVAlue(idx - 1);
+			return new types.Position(line + locAtionOrOffset.rAnge.stArt.line, locAtionOrOffset.rAnge.stArt.chArActer);
 		}
 		// do better?
 		// return undefined;
 		return new types.Position(0, 0);
 	}
 
-	locationAt(positionOrRange: vscode.Range | vscode.Position): types.Location {
-		if (!types.Range.isRange(positionOrRange)) {
-			positionOrRange = new types.Range(<types.Position>positionOrRange, <types.Position>positionOrRange);
+	locAtionAt(positionOrRAnge: vscode.RAnge | vscode.Position): types.LocAtion {
+		if (!types.RAnge.isRAnge(positionOrRAnge)) {
+			positionOrRAnge = new types.RAnge(<types.Position>positionOrRAnge, <types.Position>positionOrRAnge);
 		}
 
-		const startIdx = this._cellLines.getIndexOf(positionOrRange.start.line);
-		let endIdx = startIdx;
-		if (!positionOrRange.isEmpty) {
-			endIdx = this._cellLines.getIndexOf(positionOrRange.end.line);
+		const stArtIdx = this._cellLines.getIndexOf(positionOrRAnge.stArt.line);
+		let endIdx = stArtIdx;
+		if (!positionOrRAnge.isEmpty) {
+			endIdx = this._cellLines.getIndexOf(positionOrRAnge.end.line);
 		}
 
-		const startPos = new types.Position(startIdx.remainder, positionOrRange.start.character);
-		const endPos = new types.Position(endIdx.remainder, positionOrRange.end.character);
-		const range = new types.Range(startPos, endPos);
+		const stArtPos = new types.Position(stArtIdx.remAinder, positionOrRAnge.stArt.chArActer);
+		const endPos = new types.Position(endIdx.remAinder, positionOrRAnge.end.chArActer);
+		const rAnge = new types.RAnge(stArtPos, endPos);
 
-		const startCell = this._cells[startIdx.index];
-		return new types.Location(startCell.uri, <types.Range>startCell.document.validateRange(range));
+		const stArtCell = this._cells[stArtIdx.index];
+		return new types.LocAtion(stArtCell.uri, <types.RAnge>stArtCell.document.vAlidAteRAnge(rAnge));
 	}
 
-	contains(uri: vscode.Uri): boolean {
-		return this._cellUris.has(uri);
+	contAins(uri: vscode.Uri): booleAn {
+		return this._cellUris.hAs(uri);
 	}
 
-	validateRange(range: vscode.Range): vscode.Range {
-		const start = this.validatePosition(range.start);
-		const end = this.validatePosition(range.end);
-		return range.with(start, end);
+	vAlidAteRAnge(rAnge: vscode.RAnge): vscode.RAnge {
+		const stArt = this.vAlidAtePosition(rAnge.stArt);
+		const end = this.vAlidAtePosition(rAnge.end);
+		return rAnge.with(stArt, end);
 	}
 
-	validatePosition(position: vscode.Position): vscode.Position {
-		const startIdx = this._cellLines.getIndexOf(position.line);
+	vAlidAtePosition(position: vscode.Position): vscode.Position {
+		const stArtIdx = this._cellLines.getIndexOf(position.line);
 
-		const cellPosition = new types.Position(startIdx.remainder, position.character);
-		const validCellPosition = this._cells[startIdx.index].document.validatePosition(cellPosition);
+		const cellPosition = new types.Position(stArtIdx.remAinder, position.chArActer);
+		const vAlidCellPosition = this._cells[stArtIdx.index].document.vAlidAtePosition(cellPosition);
 
-		const line = this._cellLines.getAccumulatedValue(startIdx.index - 1);
-		return new types.Position(line + validCellPosition.line, validCellPosition.character);
+		const line = this._cellLines.getAccumulAtedVAlue(stArtIdx.index - 1);
+		return new types.Position(line + vAlidCellPosition.line, vAlidCellPosition.chArActer);
 	}
 }

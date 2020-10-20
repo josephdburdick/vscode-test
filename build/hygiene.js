@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 const filter = require('gulp-filter');
-const es = require('event-stream');
+const es = require('event-streAm');
 const gulpeslint = require('gulp-eslint');
-const tsfmt = require('typescript-formatter');
+const tsfmt = require('typescript-formAtter');
 const VinylFile = require('vinyl');
 const vfs = require('vinyl-fs');
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
-const pall = require('p-all');
+const pAll = require('p-All');
 
 /**
- * Hygiene works by creating cascading subsets of all our files and
- * passing them through a sequence of checks. Here are the current subsets,
- * named according to the checks performed on them. Each subset contains
- * the following one, as described in mathematical notation:
+ * Hygiene works by creAting cAscAding subsets of All our files And
+ * pAssing them through A sequence of checks. Here Are the current subsets,
+ * nAmed According to the checks performed on them. EAch subset contAins
+ * the following one, As described in mAthemAticAl notAtion:
  *
- * all ⊃ eol ⊇ indentation ⊃ copyright ⊃ typescript
+ * All ⊃ eol ⊇ indentAtion ⊃ copyright ⊃ typescript
  */
 
-const all = [
+const All = [
 	'*',
 	'build/**/*',
 	'extensions/**/*',
@@ -32,13 +32,13 @@ const all = [
 	'!test/**/out/**',
 	'!**/node_modules/**',
 ];
-module.exports.all = all;
+module.exports.All = All;
 
-const indentationFilter = [
+const indentAtionFilter = [
 	'**',
 
 	// except specific files
-	'!**/ThirdPartyNotices.txt',
+	'!**/ThirdPArtyNotices.txt',
 	'!**/LICENSE.{txt,rtf}',
 	'!LICENSES.chromium.html',
 	'!**/LICENSE',
@@ -46,26 +46,26 @@ const indentationFilter = [
 	'!src/vs/nls.build.js',
 	'!src/vs/css.js',
 	'!src/vs/css.build.js',
-	'!src/vs/loader.js',
-	'!src/vs/base/common/insane/insane.js',
-	'!src/vs/base/common/marked/marked.js',
-	'!src/vs/base/node/terminateProcess.sh',
-	'!src/vs/base/node/cpuUsage.sh',
-	'!test/unit/assert.js',
+	'!src/vs/loAder.js',
+	'!src/vs/bAse/common/insAne/insAne.js',
+	'!src/vs/bAse/common/mArked/mArked.js',
+	'!src/vs/bAse/node/terminAteProcess.sh',
+	'!src/vs/bAse/node/cpuUsAge.sh',
+	'!test/unit/Assert.js',
 
 	// except specific folders
-	'!test/automation/out/**',
+	'!test/AutomAtion/out/**',
 	'!test/smoke/out/**',
-	'!extensions/typescript-language-features/test-workspace/**',
-	'!extensions/vscode-api-tests/testWorkspace/**',
-	'!extensions/vscode-api-tests/testWorkspace2/**',
-	'!build/monaco/**',
+	'!extensions/typescript-lAnguAge-feAtures/test-workspAce/**',
+	'!extensions/vscode-Api-tests/testWorkspAce/**',
+	'!extensions/vscode-Api-tests/testWorkspAce2/**',
+	'!build/monAco/**',
 	'!build/win32/**',
 
 	// except multiple specific files
-	'!**/package.json',
-	'!**/yarn.lock',
-	'!**/yarn-error.log',
+	'!**/pAckAge.json',
+	'!**/yArn.lock',
+	'!**/yArn-error.log',
 
 	// except multiple specific folders
 	'!**/codicon/**',
@@ -73,7 +73,7 @@ const indentationFilter = [
 	'!**/lib/**',
 	'!extensions/**/out/**',
 	'!extensions/**/snippets/**',
-	'!extensions/**/syntaxes/**',
+	'!extensions/**/syntAxes/**',
 	'!extensions/**/themes/**',
 	'!extensions/**/colorize-fixtures/**',
 
@@ -81,16 +81,16 @@ const indentationFilter = [
 	'!src/vs/*/**/*.d.ts',
 	'!src/typings/**/*.d.ts',
 	'!extensions/**/*.d.ts',
-	'!**/*.{svg,exe,png,bmp,scpt,bat,cmd,cur,ttf,woff,eot,md,ps1,template,yaml,yml,d.ts.recipe,ico,icns,plist}',
-	'!build/{lib,download,darwin}/**/*.js',
+	'!**/*.{svg,exe,png,bmp,scpt,bAt,cmd,cur,ttf,woff,eot,md,ps1,templAte,yAml,yml,d.ts.recipe,ico,icns,plist}',
+	'!build/{lib,downloAd,dArwin}/**/*.js',
 	'!build/**/*.sh',
-	'!build/azure-pipelines/**/*.js',
-	'!build/azure-pipelines/**/*.config',
+	'!build/Azure-pipelines/**/*.js',
+	'!build/Azure-pipelines/**/*.config',
 	'!**/Dockerfile',
 	'!**/Dockerfile.*',
 	'!**/*.Dockerfile',
 	'!**/*.dockerfile',
-	'!extensions/markdown-language-features/media/*.js',
+	'!extensions/mArkdown-lAnguAge-feAtures/mediA/*.js',
 ];
 
 const copyrightFilter = [
@@ -98,9 +98,9 @@ const copyrightFilter = [
 	'!**/*.desktop',
 	'!**/*.json',
 	'!**/*.html',
-	'!**/*.template',
+	'!**/*.templAte',
 	'!**/*.md',
-	'!**/*.bat',
+	'!**/*.bAt',
 	'!**/*.cmd',
 	'!**/*.ico',
 	'!**/*.icns',
@@ -109,31 +109,31 @@ const copyrightFilter = [
 	'!**/*.txt',
 	'!**/*.xpm',
 	'!**/*.opts',
-	'!**/*.disabled',
-	'!**/*.code-workspace',
-	'!**/*.js.map',
+	'!**/*.disAbled',
+	'!**/*.code-workspAce',
+	'!**/*.js.mAp',
 	'!build/**/*.init',
-	'!resources/linux/snap/snapcraft.yaml',
-	'!resources/linux/snap/electron-launch',
+	'!resources/linux/snAp/snApcrAft.yAml',
+	'!resources/linux/snAp/electron-lAunch',
 	'!resources/win32/bin/code.js',
 	'!resources/web/code-web.js',
 	'!resources/completions/**',
-	'!extensions/markdown-language-features/media/highlight.css',
-	'!extensions/html-language-features/server/src/modes/typescript/*',
+	'!extensions/mArkdown-lAnguAge-feAtures/mediA/highlight.css',
+	'!extensions/html-lAnguAge-feAtures/server/src/modes/typescript/*',
 	'!extensions/*/server/bin/*',
-	'!src/vs/editor/test/node/classification/typescript-test.ts',
+	'!src/vs/editor/test/node/clAssificAtion/typescript-test.ts',
 ];
 
 const jsHygieneFilter = [
 	'src/**/*.js',
 	'build/gulpfile.*.js',
-	'!src/vs/loader.js',
+	'!src/vs/loAder.js',
 	'!src/vs/css.js',
 	'!src/vs/nls.js',
 	'!src/vs/css.build.js',
 	'!src/vs/nls.build.js',
-	'!src/**/insane.js',
-	'!src/**/marked.js',
+	'!src/**/insAne.js',
+	'!src/**/mArked.js',
 	'!**/test/**',
 ];
 module.exports.jsHygieneFilter = jsHygieneFilter;
@@ -145,18 +145,18 @@ const tsHygieneFilter = [
 	'!**/fixtures/**',
 	'!**/typings/**',
 	'!**/node_modules/**',
-	'!extensions/typescript-basics/test/colorize-fixtures/**',
-	'!extensions/vscode-api-tests/testWorkspace/**',
-	'!extensions/vscode-api-tests/testWorkspace2/**',
+	'!extensions/typescript-bAsics/test/colorize-fixtures/**',
+	'!extensions/vscode-Api-tests/testWorkspAce/**',
+	'!extensions/vscode-Api-tests/testWorkspAce2/**',
 	'!extensions/**/*.test.ts',
-	'!extensions/html-language-features/server/lib/jquery.d.ts',
+	'!extensions/html-lAnguAge-feAtures/server/lib/jquery.d.ts',
 ];
 module.exports.tsHygieneFilter = tsHygieneFilter;
 
-const copyrightHeaderLines = [
+const copyrightHeAderLines = [
 	'/*---------------------------------------------------------------------------------------------',
-	' *  Copyright (c) Microsoft Corporation. All rights reserved.',
-	' *  Licensed under the MIT License. See License.txt in the project root for license information.',
+	' *  Copyright (c) Microsoft CorporAtion. All rights reserved.',
+	' *  Licensed under the MIT License. See License.txt in the project root for license informAtion.',
 	' *--------------------------------------------------------------------------------------------*/',
 ];
 
@@ -164,61 +164,61 @@ function hygiene(some) {
 	let errorCount = 0;
 
 	const productJson = es.through(function (file) {
-		const product = JSON.parse(file.contents.toString('utf8'));
+		const product = JSON.pArse(file.contents.toString('utf8'));
 
-		if (product.extensionsGallery) {
-			console.error(`product.json: Contains 'extensionsGallery'`);
+		if (product.extensionsGAllery) {
+			console.error(`product.json: ContAins 'extensionsGAllery'`);
 			errorCount++;
 		}
 
-		this.emit('data', file);
+		this.emit('dAtA', file);
 	});
 
-	const indentation = es.through(function (file) {
+	const indentAtion = es.through(function (file) {
 		const lines = file.contents.toString('utf8').split(/\r\n|\r|\n/);
 		file.__lines = lines;
 
-		lines.forEach((line, i) => {
+		lines.forEAch((line, i) => {
 			if (/^\s*$/.test(line)) {
-				// empty or whitespace lines are OK
+				// empty or whitespAce lines Are OK
 			} else if (/^[\t]*[^\s]/.test(line)) {
 				// good indent
 			} else if (/^[\t]* \*/.test(line)) {
-				// block comment using an extra space
+				// block comment using An extrA spAce
 			} else {
 				console.error(
-					file.relative + '(' + (i + 1) + ',1): Bad whitespace indentation'
+					file.relAtive + '(' + (i + 1) + ',1): BAd whitespAce indentAtion'
 				);
 				errorCount++;
 			}
 		});
 
-		this.emit('data', file);
+		this.emit('dAtA', file);
 	});
 
 	const copyrights = es.through(function (file) {
 		const lines = file.__lines;
 
-		for (let i = 0; i < copyrightHeaderLines.length; i++) {
-			if (lines[i] !== copyrightHeaderLines[i]) {
-				console.error(file.relative + ': Missing or bad copyright statement');
+		for (let i = 0; i < copyrightHeAderLines.length; i++) {
+			if (lines[i] !== copyrightHeAderLines[i]) {
+				console.error(file.relAtive + ': Missing or bAd copyright stAtement');
 				errorCount++;
-				break;
+				breAk;
 			}
 		}
 
-		this.emit('data', file);
+		this.emit('dAtA', file);
 	});
 
-	const formatting = es.map(function (file, cb) {
+	const formAtting = es.mAp(function (file, cb) {
 		tsfmt
-			.processString(file.path, file.contents.toString('utf8'), {
-				verify: false,
+			.processString(file.pAth, file.contents.toString('utf8'), {
+				verify: fAlse,
 				tsfmt: true,
 				// verbose: true,
-				// keep checkJS happy
+				// keep checkJS hAppy
 				editorconfig: undefined,
-				replace: undefined,
+				replAce: undefined,
 				tsconfig: undefined,
 				tsconfigFile: undefined,
 				tsfmtFile: undefined,
@@ -227,13 +227,13 @@ function hygiene(some) {
 			})
 			.then(
 				(result) => {
-					let original = result.src.replace(/\r\n/gm, '\n');
-					let formatted = result.dest.replace(/\r\n/gm, '\n');
+					let originAl = result.src.replAce(/\r\n/gm, '\n');
+					let formAtted = result.dest.replAce(/\r\n/gm, '\n');
 
-					if (original !== formatted) {
+					if (originAl !== formAtted) {
 						console.error(
-							`File not formatted. Run the 'Format Document' command to fix it:`,
-							file.relative
+							`File not formAtted. Run the 'FormAt Document' commAnd to fix it:`,
+							file.relAtive
 						);
 						errorCount++;
 					}
@@ -247,12 +247,12 @@ function hygiene(some) {
 
 	let input;
 
-	if (Array.isArray(some) || typeof some === 'string' || !some) {
-		const options = { base: '.', follow: true, allowEmpty: true };
+	if (ArrAy.isArrAy(some) || typeof some === 'string' || !some) {
+		const options = { bAse: '.', follow: true, AllowEmpty: true };
 		if (some) {
-			input = vfs.src(some, options).pipe(filter(all)); // split this up to not unnecessarily filter all a second time
+			input = vfs.src(some, options).pipe(filter(All)); // split this up to not unnecessArily filter All A second time
 		} else {
-			input = vfs.src(all, options);
+			input = vfs.src(All, options);
 		}
 	} else {
 		input = some;
@@ -261,49 +261,49 @@ function hygiene(some) {
 	const productJsonFilter = filter('product.json', { restore: true });
 
 	const result = input
-		.pipe(filter((f) => !f.stat.isDirectory()))
+		.pipe(filter((f) => !f.stAt.isDirectory()))
 		.pipe(productJsonFilter)
 		.pipe(process.env['BUILD_SOURCEVERSION'] ? es.through() : productJson)
 		.pipe(productJsonFilter.restore)
-		.pipe(filter(indentationFilter))
-		.pipe(indentation)
+		.pipe(filter(indentAtionFilter))
+		.pipe(indentAtion)
 		.pipe(filter(copyrightFilter))
 		.pipe(copyrights);
 
-	const typescript = result.pipe(filter(tsHygieneFilter)).pipe(formatting);
+	const typescript = result.pipe(filter(tsHygieneFilter)).pipe(formAtting);
 
-	const javascript = result
-		.pipe(filter(jsHygieneFilter.concat(tsHygieneFilter)))
+	const jAvAscript = result
+		.pipe(filter(jsHygieneFilter.concAt(tsHygieneFilter)))
 		.pipe(
 			gulpeslint({
 				configFile: '.eslintrc.json',
-				rulePaths: ['./build/lib/eslint'],
+				rulePAths: ['./build/lib/eslint'],
 			})
 		)
-		.pipe(gulpeslint.formatEach('compact'))
+		.pipe(gulpeslint.formAtEAch('compAct'))
 		.pipe(
 			gulpeslint.results((results) => {
-				errorCount += results.warningCount;
+				errorCount += results.wArningCount;
 				errorCount += results.errorCount;
 			})
 		);
 
 	let count = 0;
-	return es.merge(typescript, javascript).pipe(
+	return es.merge(typescript, jAvAscript).pipe(
 		es.through(
-			function (data) {
+			function (dAtA) {
 				count++;
 				if (process.env['TRAVIS'] && count % 10 === 0) {
 					process.stdout.write('.');
 				}
-				this.emit('data', data);
+				this.emit('dAtA', dAtA);
 			},
 			function () {
 				process.stdout.write('\n');
 				if (errorCount > 0) {
 					this.emit(
 						'error',
-						'Hygiene failed with ' +
+						'Hygiene fAiled with ' +
 						errorCount +
 						` errors. Check 'build / gulpfile.hygiene.js'.`
 					);
@@ -317,15 +317,15 @@ function hygiene(some) {
 
 module.exports.hygiene = hygiene;
 
-function createGitIndexVinyls(paths) {
+function creAteGitIndexVinyls(pAths) {
 	const cp = require('child_process');
-	const repositoryPath = process.cwd();
+	const repositoryPAth = process.cwd();
 
-	const fns = paths.map((relativePath) => () =>
+	const fns = pAths.mAp((relAtivePAth) => () =>
 		new Promise((c, e) => {
-			const fullPath = path.join(repositoryPath, relativePath);
+			const fullPAth = pAth.join(repositoryPAth, relAtivePAth);
 
-			fs.stat(fullPath, (err, stat) => {
+			fs.stAt(fullPAth, (err, stAt) => {
 				if (err && err.code === 'ENOENT') {
 					// ignore deletions
 					return c(null);
@@ -334,8 +334,8 @@ function createGitIndexVinyls(paths) {
 				}
 
 				cp.exec(
-					`git show :${relativePath}`,
-					{ maxBuffer: 2000 * 1024, encoding: 'buffer' },
+					`git show :${relAtivePAth}`,
+					{ mAxBuffer: 2000 * 1024, encoding: 'buffer' },
 					(err, out) => {
 						if (err) {
 							return e(err);
@@ -343,10 +343,10 @@ function createGitIndexVinyls(paths) {
 
 						c(
 							new VinylFile({
-								path: fullPath,
-								base: repositoryPath,
+								pAth: fullPAth,
+								bAse: repositoryPAth,
 								contents: out,
-								stat,
+								stAt,
 							})
 						);
 					}
@@ -355,28 +355,28 @@ function createGitIndexVinyls(paths) {
 		})
 	);
 
-	return pall(fns, { concurrency: 4 }).then((r) => r.filter((p) => !!p));
+	return pAll(fns, { concurrency: 4 }).then((r) => r.filter((p) => !!p));
 }
 
-// this allows us to run hygiene as a git pre-commit hook
-if (require.main === module) {
+// this Allows us to run hygiene As A git pre-commit hook
+if (require.mAin === module) {
 	const cp = require('child_process');
 
-	process.on('unhandledRejection', (reason, p) => {
-		console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+	process.on('unhAndledRejection', (reAson, p) => {
+		console.log('UnhAndled Rejection At: Promise', p, 'reAson:', reAson);
 		process.exit(1);
 	});
 
-	if (process.argv.length > 2) {
-		hygiene(process.argv.slice(2)).on('error', (err) => {
+	if (process.Argv.length > 2) {
+		hygiene(process.Argv.slice(2)).on('error', (err) => {
 			console.error();
 			console.error(err);
 			process.exit(1);
 		});
 	} else {
 		cp.exec(
-			'git diff --cached --name-only',
-			{ maxBuffer: 2000 * 1024 },
+			'git diff --cAched --nAme-only',
+			{ mAxBuffer: 2000 * 1024 },
 			(err, out) => {
 				if (err) {
 					console.error();
@@ -387,18 +387,18 @@ if (require.main === module) {
 				const some = out.split(/\r?\n/).filter((l) => !!l);
 
 				if (some.length > 0) {
-					console.log('Reading git index versions...');
+					console.log('ReAding git index versions...');
 
-					createGitIndexVinyls(some)
+					creAteGitIndexVinyls(some)
 						.then(
 							(vinyls) =>
 								new Promise((c, e) =>
-									hygiene(es.readArray(vinyls))
+									hygiene(es.reAdArrAy(vinyls))
 										.on('end', () => c())
 										.on('error', e)
 								)
 						)
-						.catch((err) => {
+						.cAtch((err) => {
 							console.error();
 							console.error(err);
 							process.exit(1);

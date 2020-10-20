@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import * As nls from 'vs/nls';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { registerEditorAction, registerEditorContribution, ServicesAccessor, EditorAction, EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { registerEditorAction, registerEditorContribution, ServicesAccessor, EditorAction, EditorCommAnd, registerEditorCommAnd } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { ParameterHintsWidget } from './parameterHintsWidget';
-import { Context } from 'vs/editor/contrib/parameterHints/provideSignatureHelp';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import * as modes from 'vs/editor/common/modes';
-import { TriggerContext } from 'vs/editor/contrib/parameterHints/parameterHintsModel';
+import { PArAmeterHintsWidget } from './pArAmeterHintsWidget';
+import { Context } from 'vs/editor/contrib/pArAmeterHints/provideSignAtureHelp';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import * As modes from 'vs/editor/common/modes';
+import { TriggerContext } from 'vs/editor/contrib/pArAmeterHints/pArAmeterHintsModel';
 
-class ParameterHintsController extends Disposable implements IEditorContribution {
+clAss PArAmeterHintsController extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.controller.parameterHints';
+	public stAtic reAdonly ID = 'editor.controller.pArAmeterHints';
 
-	public static get(editor: ICodeEditor): ParameterHintsController {
-		return editor.getContribution<ParameterHintsController>(ParameterHintsController.ID);
+	public stAtic get(editor: ICodeEditor): PArAmeterHintsController {
+		return editor.getContribution<PArAmeterHintsController>(PArAmeterHintsController.ID);
 	}
 
-	private readonly editor: ICodeEditor;
-	private readonly widget: ParameterHintsWidget;
+	privAte reAdonly editor: ICodeEditor;
+	privAte reAdonly widget: PArAmeterHintsWidget;
 
-	constructor(editor: ICodeEditor, @IInstantiationService instantiationService: IInstantiationService) {
+	constructor(editor: ICodeEditor, @IInstAntiAtionService instAntiAtionService: IInstAntiAtionService) {
 		super();
 		this.editor = editor;
-		this.widget = this._register(instantiationService.createInstance(ParameterHintsWidget, this.editor));
+		this.widget = this._register(instAntiAtionService.creAteInstAnce(PArAmeterHintsWidget, this.editor));
 	}
 
-	cancel(): void {
-		this.widget.cancel();
+	cAncel(): void {
+		this.widget.cAncel();
 	}
 
 	previous(): void {
@@ -52,71 +52,71 @@ class ParameterHintsController extends Disposable implements IEditorContribution
 	}
 }
 
-export class TriggerParameterHintsAction extends EditorAction {
+export clAss TriggerPArAmeterHintsAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.triggerParameterHints',
-			label: nls.localize('parameterHints.trigger.label', "Trigger Parameter Hints"),
-			alias: 'Trigger Parameter Hints',
-			precondition: EditorContextKeys.hasSignatureHelpProvider,
+			id: 'editor.Action.triggerPArAmeterHints',
+			lAbel: nls.locAlize('pArAmeterHints.trigger.lAbel', "Trigger PArAmeter Hints"),
+			AliAs: 'Trigger PArAmeter Hints',
+			precondition: EditorContextKeys.hAsSignAtureHelpProvider,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.Space,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.SpAce,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		const controller = ParameterHintsController.get(editor);
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		const controller = PArAmeterHintsController.get(editor);
 		if (controller) {
 			controller.trigger({
-				triggerKind: modes.SignatureHelpTriggerKind.Invoke
+				triggerKind: modes.SignAtureHelpTriggerKind.Invoke
 			});
 		}
 	}
 }
 
-registerEditorContribution(ParameterHintsController.ID, ParameterHintsController);
-registerEditorAction(TriggerParameterHintsAction);
+registerEditorContribution(PArAmeterHintsController.ID, PArAmeterHintsController);
+registerEditorAction(TriggerPArAmeterHintsAction);
 
 const weight = KeybindingWeight.EditorContrib + 75;
 
-const ParameterHintsCommand = EditorCommand.bindToContribution<ParameterHintsController>(ParameterHintsController.get);
+const PArAmeterHintsCommAnd = EditorCommAnd.bindToContribution<PArAmeterHintsController>(PArAmeterHintsController.get);
 
-registerEditorCommand(new ParameterHintsCommand({
-	id: 'closeParameterHints',
+registerEditorCommAnd(new PArAmeterHintsCommAnd({
+	id: 'closePArAmeterHints',
 	precondition: Context.Visible,
-	handler: x => x.cancel(),
+	hAndler: x => x.cAncel(),
 	kbOpts: {
 		weight: weight,
 		kbExpr: EditorContextKeys.focus,
-		primary: KeyCode.Escape,
-		secondary: [KeyMod.Shift | KeyCode.Escape]
+		primAry: KeyCode.EscApe,
+		secondAry: [KeyMod.Shift | KeyCode.EscApe]
 	}
 }));
-registerEditorCommand(new ParameterHintsCommand({
-	id: 'showPrevParameterHint',
-	precondition: ContextKeyExpr.and(Context.Visible, Context.MultipleSignatures),
-	handler: x => x.previous(),
+registerEditorCommAnd(new PArAmeterHintsCommAnd({
+	id: 'showPrevPArAmeterHint',
+	precondition: ContextKeyExpr.And(Context.Visible, Context.MultipleSignAtures),
+	hAndler: x => x.previous(),
 	kbOpts: {
 		weight: weight,
 		kbExpr: EditorContextKeys.focus,
-		primary: KeyCode.UpArrow,
-		secondary: [KeyMod.Alt | KeyCode.UpArrow],
-		mac: { primary: KeyCode.UpArrow, secondary: [KeyMod.Alt | KeyCode.UpArrow, KeyMod.WinCtrl | KeyCode.KEY_P] }
+		primAry: KeyCode.UpArrow,
+		secondAry: [KeyMod.Alt | KeyCode.UpArrow],
+		mAc: { primAry: KeyCode.UpArrow, secondAry: [KeyMod.Alt | KeyCode.UpArrow, KeyMod.WinCtrl | KeyCode.KEY_P] }
 	}
 }));
-registerEditorCommand(new ParameterHintsCommand({
-	id: 'showNextParameterHint',
-	precondition: ContextKeyExpr.and(Context.Visible, Context.MultipleSignatures),
-	handler: x => x.next(),
+registerEditorCommAnd(new PArAmeterHintsCommAnd({
+	id: 'showNextPArAmeterHint',
+	precondition: ContextKeyExpr.And(Context.Visible, Context.MultipleSignAtures),
+	hAndler: x => x.next(),
 	kbOpts: {
 		weight: weight,
 		kbExpr: EditorContextKeys.focus,
-		primary: KeyCode.DownArrow,
-		secondary: [KeyMod.Alt | KeyCode.DownArrow],
-		mac: { primary: KeyCode.DownArrow, secondary: [KeyMod.Alt | KeyCode.DownArrow, KeyMod.WinCtrl | KeyCode.KEY_N] }
+		primAry: KeyCode.DownArrow,
+		secondAry: [KeyMod.Alt | KeyCode.DownArrow],
+		mAc: { primAry: KeyCode.DownArrow, secondAry: [KeyMod.Alt | KeyCode.DownArrow, KeyMod.WinCtrl | KeyCode.KEY_N] }
 	}
 }));

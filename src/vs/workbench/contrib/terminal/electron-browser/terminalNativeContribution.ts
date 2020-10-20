@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { INativeOpenFileRequest } from 'vs/platform/windows/common/windows';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
-import { getWindowsBuildNumber, linuxDistro } from 'vs/workbench/contrib/terminal/node/terminal';
-import { escapeNonWindowsPath } from 'vs/workbench/contrib/terminal/common/terminalEnvironment';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { INAtiveOpenFileRequest } from 'vs/plAtform/windows/common/windows';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { getWindowsBuildNumber, linuxDistro } from 'vs/workbench/contrib/terminAl/node/terminAl';
+import { escApeNonWindowsPAth } from 'vs/workbench/contrib/terminAl/common/terminAlEnvironment';
 import { execFile } from 'child_process';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { registerRemoteContributions } from 'vs/workbench/contrib/terminal/electron-browser/terminalRemote';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { registerRemoteContributions } from 'vs/workbench/contrib/terminAl/electron-browser/terminAlRemote';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 
-export class TerminalNativeContribution extends Disposable implements IWorkbenchContribution {
-	public _serviceBrand: undefined;
+export clAss TerminAlNAtiveContribution extends DisposAble implements IWorkbenchContribution {
+	public _serviceBrAnd: undefined;
 
 	constructor(
-		@IFileService private readonly _fileService: IFileService,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@IInstantiationService readonly instantiationService: IInstantiationService,
-		@IRemoteAgentService readonly remoteAgentService: IRemoteAgentService,
-		@INativeHostService readonly nativeHostService: INativeHostService
+		@IFileService privAte reAdonly _fileService: IFileService,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@IInstAntiAtionService reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IRemoteAgentService reAdonly remoteAgentService: IRemoteAgentService,
+		@INAtiveHostService reAdonly nAtiveHostService: INAtiveHostService
 	) {
 		super();
 
-		ipcRenderer.on('vscode:openFiles', (_: unknown, request: INativeOpenFileRequest) => this._onOpenFileRequest(request));
-		this._register(nativeHostService.onDidResumeOS(() => this._onOsResume()));
+		ipcRenderer.on('vscode:openFiles', (_: unknown, request: INAtiveOpenFileRequest) => this._onOpenFileRequest(request));
+		this._register(nAtiveHostService.onDidResumeOS(() => this._onOsResume()));
 
-		this._terminalService.setLinuxDistro(linuxDistro);
-		this._terminalService.setNativeWindowsDelegate({
-			getWslPath: this._getWslPath.bind(this),
+		this._terminAlService.setLinuxDistro(linuxDistro);
+		this._terminAlService.setNAtiveWindowsDelegAte({
+			getWslPAth: this._getWslPAth.bind(this),
 			getWindowsBuildNumber: this._getWindowsBuildNumber.bind(this)
 		});
 
@@ -45,35 +45,35 @@ export class TerminalNativeContribution extends Disposable implements IWorkbench
 		}
 	}
 
-	private _onOsResume(): void {
-		this._terminalService.terminalInstances.forEach(instance => instance.forceRedraw());
+	privAte _onOsResume(): void {
+		this._terminAlService.terminAlInstAnces.forEAch(instAnce => instAnce.forceRedrAw());
 	}
 
-	private async _onOpenFileRequest(request: INativeOpenFileRequest): Promise<void> {
-		// if the request to open files is coming in from the integrated terminal (identified though
-		// the termProgram variable) and we are instructed to wait for editors close, wait for the
-		// marker file to get deleted and then focus back to the integrated terminal.
-		if (request.termProgram === 'vscode' && request.filesToWait) {
-			const waitMarkerFileUri = URI.revive(request.filesToWait.waitMarkerFileUri);
-			await this._whenFileDeleted(waitMarkerFileUri);
+	privAte Async _onOpenFileRequest(request: INAtiveOpenFileRequest): Promise<void> {
+		// if the request to open files is coming in from the integrAted terminAl (identified though
+		// the termProgrAm vAriAble) And we Are instructed to wAit for editors close, wAit for the
+		// mArker file to get deleted And then focus bAck to the integrAted terminAl.
+		if (request.termProgrAm === 'vscode' && request.filesToWAit) {
+			const wAitMArkerFileUri = URI.revive(request.filesToWAit.wAitMArkerFileUri);
+			AwAit this._whenFileDeleted(wAitMArkerFileUri);
 
-			// Focus active terminal
-			this._terminalService.getActiveInstance()?.focus();
+			// Focus Active terminAl
+			this._terminAlService.getActiveInstAnce()?.focus();
 		}
 	}
 
-	private _whenFileDeleted(path: URI): Promise<void> {
-		// Complete when wait marker file is deleted
+	privAte _whenFileDeleted(pAth: URI): Promise<void> {
+		// Complete when wAit mArker file is deleted
 		return new Promise<void>(resolve => {
-			let running = false;
-			const interval = setInterval(async () => {
+			let running = fAlse;
+			const intervAl = setIntervAl(Async () => {
 				if (!running) {
 					running = true;
-					const exists = await this._fileService.exists(path);
-					running = false;
+					const exists = AwAit this._fileService.exists(pAth);
+					running = fAlse;
 
 					if (!exists) {
-						clearInterval(interval);
+						cleArIntervAl(intervAl);
 						resolve(undefined);
 					}
 				}
@@ -82,22 +82,22 @@ export class TerminalNativeContribution extends Disposable implements IWorkbench
 	}
 
 	/**
-	 * Converts a path to a path on WSL using the wslpath utility.
-	 * @param path The original path.
+	 * Converts A pAth to A pAth on WSL using the wslpAth utility.
+	 * @pArAm pAth The originAl pAth.
 	 */
-	private _getWslPath(path: string): Promise<string> {
+	privAte _getWslPAth(pAth: string): Promise<string> {
 		if (getWindowsBuildNumber() < 17063) {
-			throw new Error('wslpath does not exist on Windows build < 17063');
+			throw new Error('wslpAth does not exist on Windows build < 17063');
 		}
 		return new Promise<string>(c => {
-			const proc = execFile('bash.exe', ['-c', `wslpath ${escapeNonWindowsPath(path)}`], {}, (error, stdout, stderr) => {
-				c(escapeNonWindowsPath(stdout.trim()));
+			const proc = execFile('bAsh.exe', ['-c', `wslpAth ${escApeNonWindowsPAth(pAth)}`], {}, (error, stdout, stderr) => {
+				c(escApeNonWindowsPAth(stdout.trim()));
 			});
 			proc.stdin!.end();
 		});
 	}
 
-	private _getWindowsBuildNumber(): number {
+	privAte _getWindowsBuildNumber(): number {
 		return getWindowsBuildNumber();
 	}
 }

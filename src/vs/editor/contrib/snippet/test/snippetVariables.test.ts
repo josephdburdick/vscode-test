@@ -1,340 +1,340 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { isWindows } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
 import { Selection } from 'vs/editor/common/core/selection';
-import { SelectionBasedVariableResolver, CompositeSnippetVariableResolver, ModelBasedVariableResolver, ClipboardBasedVariableResolver, TimeBasedVariableResolver, WorkspaceBasedVariableResolver } from 'vs/editor/contrib/snippet/snippetVariables';
-import { SnippetParser, Variable, VariableResolver } from 'vs/editor/contrib/snippet/snippetParser';
+import { SelectionBAsedVAriAbleResolver, CompositeSnippetVAriAbleResolver, ModelBAsedVAriAbleResolver, ClipboArdBAsedVAriAbleResolver, TimeBAsedVAriAbleResolver, WorkspAceBAsedVAriAbleResolver } from 'vs/editor/contrib/snippet/snippetVAriAbles';
+import { SnippetPArser, VAriAble, VAriAbleResolver } from 'vs/editor/contrib/snippet/snippetPArser';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { Workspace, toWorkspaceFolders, IWorkspace, IWorkspaceContextService, toWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { mock } from 'vs/base/test/common/mock';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { WorkspAce, toWorkspAceFolders, IWorkspAce, IWorkspAceContextService, toWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { mock } from 'vs/bAse/test/common/mock';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-suite('Snippet Variables Resolver', function () {
+suite('Snippet VAriAbles Resolver', function () {
 
-	const labelService = new class extends mock<ILabelService>() {
-		getUriLabel(uri: URI) {
-			return uri.fsPath;
+	const lAbelService = new clAss extends mock<ILAbelService>() {
+		getUriLAbel(uri: URI) {
+			return uri.fsPAth;
 		}
 	};
 
 	let model: TextModel;
-	let resolver: VariableResolver;
+	let resolver: VAriAbleResolver;
 
 	setup(function () {
-		model = createTextModel([
+		model = creAteTextModel([
 			'this is line one',
 			'this is line two',
 			'    this is line three'
-		].join('\n'), undefined, undefined, URI.parse('file:///foo/files/text.txt'));
+		].join('\n'), undefined, undefined, URI.pArse('file:///foo/files/text.txt'));
 
-		resolver = new CompositeSnippetVariableResolver([
-			new ModelBasedVariableResolver(labelService, model),
-			new SelectionBasedVariableResolver(model, new Selection(1, 1, 1, 1), 0, undefined),
+		resolver = new CompositeSnippetVAriAbleResolver([
+			new ModelBAsedVAriAbleResolver(lAbelService, model),
+			new SelectionBAsedVAriAbleResolver(model, new Selection(1, 1, 1, 1), 0, undefined),
 		]);
 	});
 
-	teardown(function () {
+	teArdown(function () {
 		model.dispose();
 	});
 
-	function assertVariableResolve(resolver: VariableResolver, varName: string, expected?: string) {
-		const snippet = new SnippetParser().parse(`$${varName}`);
-		const variable = <Variable>snippet.children[0];
-		variable.resolve(resolver);
-		if (variable.children.length === 0) {
-			assert.equal(undefined, expected);
+	function AssertVAriAbleResolve(resolver: VAriAbleResolver, vArNAme: string, expected?: string) {
+		const snippet = new SnippetPArser().pArse(`$${vArNAme}`);
+		const vAriAble = <VAriAble>snippet.children[0];
+		vAriAble.resolve(resolver);
+		if (vAriAble.children.length === 0) {
+			Assert.equAl(undefined, expected);
 		} else {
-			assert.equal(variable.toString(), expected);
+			Assert.equAl(vAriAble.toString(), expected);
 		}
 	}
 
-	test('editor variables, basics', function () {
-		assertVariableResolve(resolver, 'TM_FILENAME', 'text.txt');
-		assertVariableResolve(resolver, 'something', undefined);
+	test('editor vAriAbles, bAsics', function () {
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME', 'text.txt');
+		AssertVAriAbleResolve(resolver, 'something', undefined);
 	});
 
-	test('editor variables, file/dir', function () {
+	test('editor vAriAbles, file/dir', function () {
 
-		assertVariableResolve(resolver, 'TM_FILENAME', 'text.txt');
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME', 'text.txt');
 		if (!isWindows) {
-			assertVariableResolve(resolver, 'TM_DIRECTORY', '/foo/files');
-			assertVariableResolve(resolver, 'TM_FILEPATH', '/foo/files/text.txt');
+			AssertVAriAbleResolve(resolver, 'TM_DIRECTORY', '/foo/files');
+			AssertVAriAbleResolve(resolver, 'TM_FILEPATH', '/foo/files/text.txt');
 		}
 
-		resolver = new ModelBasedVariableResolver(
-			labelService,
-			createTextModel('', undefined, undefined, URI.parse('http://www.pb.o/abc/def/ghi'))
+		resolver = new ModelBAsedVAriAbleResolver(
+			lAbelService,
+			creAteTextModel('', undefined, undefined, URI.pArse('http://www.pb.o/Abc/def/ghi'))
 		);
-		assertVariableResolve(resolver, 'TM_FILENAME', 'ghi');
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME', 'ghi');
 		if (!isWindows) {
-			assertVariableResolve(resolver, 'TM_DIRECTORY', '/abc/def');
-			assertVariableResolve(resolver, 'TM_FILEPATH', '/abc/def/ghi');
+			AssertVAriAbleResolve(resolver, 'TM_DIRECTORY', '/Abc/def');
+			AssertVAriAbleResolve(resolver, 'TM_FILEPATH', '/Abc/def/ghi');
 		}
 
-		resolver = new ModelBasedVariableResolver(
-			labelService,
-			createTextModel('', undefined, undefined, URI.parse('mem:fff.ts'))
+		resolver = new ModelBAsedVAriAbleResolver(
+			lAbelService,
+			creAteTextModel('', undefined, undefined, URI.pArse('mem:fff.ts'))
 		);
-		assertVariableResolve(resolver, 'TM_DIRECTORY', '');
-		assertVariableResolve(resolver, 'TM_FILEPATH', 'fff.ts');
+		AssertVAriAbleResolve(resolver, 'TM_DIRECTORY', '');
+		AssertVAriAbleResolve(resolver, 'TM_FILEPATH', 'fff.ts');
 
 	});
 
-	test('Path delimiters in code snippet variables aren\'t specific to remote OS #76840', function () {
+	test('PAth delimiters in code snippet vAriAbles Aren\'t specific to remote OS #76840', function () {
 
-		const labelService = new class extends mock<ILabelService>() {
-			getUriLabel(uri: URI) {
-				return uri.fsPath.replace(/\/|\\/g, '|');
+		const lAbelService = new clAss extends mock<ILAbelService>() {
+			getUriLAbel(uri: URI) {
+				return uri.fsPAth.replAce(/\/|\\/g, '|');
 			}
 		};
 
-		const model = createTextModel([].join('\n'), undefined, undefined, URI.parse('foo:///foo/files/text.txt'));
+		const model = creAteTextModel([].join('\n'), undefined, undefined, URI.pArse('foo:///foo/files/text.txt'));
 
-		const resolver = new CompositeSnippetVariableResolver([new ModelBasedVariableResolver(labelService, model)]);
+		const resolver = new CompositeSnippetVAriAbleResolver([new ModelBAsedVAriAbleResolver(lAbelService, model)]);
 
-		assertVariableResolve(resolver, 'TM_FILEPATH', '|foo|files|text.txt');
+		AssertVAriAbleResolve(resolver, 'TM_FILEPATH', '|foo|files|text.txt');
 	});
 
-	test('editor variables, selection', function () {
+	test('editor vAriAbles, selection', function () {
 
-		resolver = new SelectionBasedVariableResolver(model, new Selection(1, 2, 2, 3), 0, undefined);
-		assertVariableResolve(resolver, 'TM_SELECTED_TEXT', 'his is line one\nth');
-		assertVariableResolve(resolver, 'TM_CURRENT_LINE', 'this is line two');
-		assertVariableResolve(resolver, 'TM_LINE_INDEX', '1');
-		assertVariableResolve(resolver, 'TM_LINE_NUMBER', '2');
+		resolver = new SelectionBAsedVAriAbleResolver(model, new Selection(1, 2, 2, 3), 0, undefined);
+		AssertVAriAbleResolve(resolver, 'TM_SELECTED_TEXT', 'his is line one\nth');
+		AssertVAriAbleResolve(resolver, 'TM_CURRENT_LINE', 'this is line two');
+		AssertVAriAbleResolve(resolver, 'TM_LINE_INDEX', '1');
+		AssertVAriAbleResolve(resolver, 'TM_LINE_NUMBER', '2');
 
-		resolver = new SelectionBasedVariableResolver(model, new Selection(2, 3, 1, 2), 0, undefined);
-		assertVariableResolve(resolver, 'TM_SELECTED_TEXT', 'his is line one\nth');
-		assertVariableResolve(resolver, 'TM_CURRENT_LINE', 'this is line one');
-		assertVariableResolve(resolver, 'TM_LINE_INDEX', '0');
-		assertVariableResolve(resolver, 'TM_LINE_NUMBER', '1');
+		resolver = new SelectionBAsedVAriAbleResolver(model, new Selection(2, 3, 1, 2), 0, undefined);
+		AssertVAriAbleResolve(resolver, 'TM_SELECTED_TEXT', 'his is line one\nth');
+		AssertVAriAbleResolve(resolver, 'TM_CURRENT_LINE', 'this is line one');
+		AssertVAriAbleResolve(resolver, 'TM_LINE_INDEX', '0');
+		AssertVAriAbleResolve(resolver, 'TM_LINE_NUMBER', '1');
 
-		resolver = new SelectionBasedVariableResolver(model, new Selection(1, 2, 1, 2), 0, undefined);
-		assertVariableResolve(resolver, 'TM_SELECTED_TEXT', undefined);
+		resolver = new SelectionBAsedVAriAbleResolver(model, new Selection(1, 2, 1, 2), 0, undefined);
+		AssertVAriAbleResolve(resolver, 'TM_SELECTED_TEXT', undefined);
 
-		assertVariableResolve(resolver, 'TM_CURRENT_WORD', 'this');
+		AssertVAriAbleResolve(resolver, 'TM_CURRENT_WORD', 'this');
 
-		resolver = new SelectionBasedVariableResolver(model, new Selection(3, 1, 3, 1), 0, undefined);
-		assertVariableResolve(resolver, 'TM_CURRENT_WORD', undefined);
-
-	});
-
-	test('TextmateSnippet, resolve variable', function () {
-		const snippet = new SnippetParser().parse('"$TM_CURRENT_WORD"', true);
-		assert.equal(snippet.toString(), '""');
-		snippet.resolveVariables(resolver);
-		assert.equal(snippet.toString(), '"this"');
+		resolver = new SelectionBAsedVAriAbleResolver(model, new Selection(3, 1, 3, 1), 0, undefined);
+		AssertVAriAbleResolve(resolver, 'TM_CURRENT_WORD', undefined);
 
 	});
 
-	test('TextmateSnippet, resolve variable with default', function () {
-		const snippet = new SnippetParser().parse('"${TM_CURRENT_WORD:foo}"', true);
-		assert.equal(snippet.toString(), '"foo"');
-		snippet.resolveVariables(resolver);
-		assert.equal(snippet.toString(), '"this"');
+	test('TextmAteSnippet, resolve vAriAble', function () {
+		const snippet = new SnippetPArser().pArse('"$TM_CURRENT_WORD"', true);
+		Assert.equAl(snippet.toString(), '""');
+		snippet.resolveVAriAbles(resolver);
+		Assert.equAl(snippet.toString(), '"this"');
+
 	});
 
-	test('More useful environment variables for snippets, #32737', function () {
+	test('TextmAteSnippet, resolve vAriAble with defAult', function () {
+		const snippet = new SnippetPArser().pArse('"${TM_CURRENT_WORD:foo}"', true);
+		Assert.equAl(snippet.toString(), '"foo"');
+		snippet.resolveVAriAbles(resolver);
+		Assert.equAl(snippet.toString(), '"this"');
+	});
 
-		assertVariableResolve(resolver, 'TM_FILENAME_BASE', 'text');
+	test('More useful environment vAriAbles for snippets, #32737', function () {
 
-		resolver = new ModelBasedVariableResolver(
-			labelService,
-			createTextModel('', undefined, undefined, URI.parse('http://www.pb.o/abc/def/ghi'))
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME_BASE', 'text');
+
+		resolver = new ModelBAsedVAriAbleResolver(
+			lAbelService,
+			creAteTextModel('', undefined, undefined, URI.pArse('http://www.pb.o/Abc/def/ghi'))
 		);
-		assertVariableResolve(resolver, 'TM_FILENAME_BASE', 'ghi');
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME_BASE', 'ghi');
 
-		resolver = new ModelBasedVariableResolver(
-			labelService,
-			createTextModel('', undefined, undefined, URI.parse('mem:.git'))
+		resolver = new ModelBAsedVAriAbleResolver(
+			lAbelService,
+			creAteTextModel('', undefined, undefined, URI.pArse('mem:.git'))
 		);
-		assertVariableResolve(resolver, 'TM_FILENAME_BASE', '.git');
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME_BASE', '.git');
 
-		resolver = new ModelBasedVariableResolver(
-			labelService,
-			createTextModel('', undefined, undefined, URI.parse('mem:foo.'))
+		resolver = new ModelBAsedVAriAbleResolver(
+			lAbelService,
+			creAteTextModel('', undefined, undefined, URI.pArse('mem:foo.'))
 		);
-		assertVariableResolve(resolver, 'TM_FILENAME_BASE', 'foo');
+		AssertVAriAbleResolve(resolver, 'TM_FILENAME_BASE', 'foo');
 	});
 
 
-	function assertVariableResolve2(input: string, expected: string, varValue?: string) {
-		const snippet = new SnippetParser().parse(input)
-			.resolveVariables({ resolve(variable) { return varValue || variable.name; } });
+	function AssertVAriAbleResolve2(input: string, expected: string, vArVAlue?: string) {
+		const snippet = new SnippetPArser().pArse(input)
+			.resolveVAriAbles({ resolve(vAriAble) { return vArVAlue || vAriAble.nAme; } });
 
-		const actual = snippet.toString();
-		assert.equal(actual, expected);
+		const ActuAl = snippet.toString();
+		Assert.equAl(ActuAl, expected);
 	}
 
-	test('Variable Snippet Transform', function () {
+	test('VAriAble Snippet TrAnsform', function () {
 
-		const snippet = new SnippetParser().parse('name=${TM_FILENAME/(.*)\\..+$/$1/}', true);
-		snippet.resolveVariables(resolver);
-		assert.equal(snippet.toString(), 'name=text');
+		const snippet = new SnippetPArser().pArse('nAme=${TM_FILENAME/(.*)\\..+$/$1/}', true);
+		snippet.resolveVAriAbles(resolver);
+		Assert.equAl(snippet.toString(), 'nAme=text');
 
-		assertVariableResolve2('${ThisIsAVar/([A-Z]).*(Var)/$2/}', 'Var');
-		assertVariableResolve2('${ThisIsAVar/([A-Z]).*(Var)/$2-${1:/downcase}/}', 'Var-t');
-		assertVariableResolve2('${Foo/(.*)/${1:+Bar}/img}', 'Bar');
+		AssertVAriAbleResolve2('${ThisIsAVAr/([A-Z]).*(VAr)/$2/}', 'VAr');
+		AssertVAriAbleResolve2('${ThisIsAVAr/([A-Z]).*(VAr)/$2-${1:/downcAse}/}', 'VAr-t');
+		AssertVAriAbleResolve2('${Foo/(.*)/${1:+BAr}/img}', 'BAr');
 
 		//https://github.com/microsoft/vscode/issues/33162
-		assertVariableResolve2('export default class ${TM_FILENAME/(\\w+)\\.js/$1/g}', 'export default class FooFile', 'FooFile.js');
+		AssertVAriAbleResolve2('export defAult clAss ${TM_FILENAME/(\\w+)\\.js/$1/g}', 'export defAult clAss FooFile', 'FooFile.js');
 
-		assertVariableResolve2('${foobarfoobar/(foo)/${1:+FAR}/g}', 'FARbarFARbar'); // global
-		assertVariableResolve2('${foobarfoobar/(foo)/${1:+FAR}/}', 'FARbarfoobar'); // first match
-		assertVariableResolve2('${foobarfoobar/(bazz)/${1:+FAR}/g}', 'foobarfoobar'); // no match, no else
-		// assertVariableResolve2('${foobarfoobar/(bazz)/${1:+FAR}/g}', ''); // no match
+		AssertVAriAbleResolve2('${foobArfoobAr/(foo)/${1:+FAR}/g}', 'FARbArFARbAr'); // globAl
+		AssertVAriAbleResolve2('${foobArfoobAr/(foo)/${1:+FAR}/}', 'FARbArfoobAr'); // first mAtch
+		AssertVAriAbleResolve2('${foobArfoobAr/(bAzz)/${1:+FAR}/g}', 'foobArfoobAr'); // no mAtch, no else
+		// AssertVAriAbleResolve2('${foobArfoobAr/(bAzz)/${1:+FAR}/g}', ''); // no mAtch
 
-		assertVariableResolve2('${foobarfoobar/(foo)/${2:+FAR}/g}', 'barbar'); // bad group reference
+		AssertVAriAbleResolve2('${foobArfoobAr/(foo)/${2:+FAR}/g}', 'bArbAr'); // bAd group reference
 	});
 
-	test('Snippet transforms do not handle regex with alternatives or optional matches, #36089', function () {
+	test('Snippet trAnsforms do not hAndle regex with AlternAtives or optionAl mAtches, #36089', function () {
 
-		assertVariableResolve2(
-			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcase}${2:/upcase}/g}',
-			'MyClass',
-			'my-class.js'
+		AssertVAriAbleResolve2(
+			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcAse}${2:/upcAse}/g}',
+			'MyClAss',
+			'my-clAss.js'
 		);
 
 		// no hyphens
-		assertVariableResolve2(
-			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcase}${2:/upcase}/g}',
-			'Myclass',
-			'myclass.js'
+		AssertVAriAbleResolve2(
+			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcAse}${2:/upcAse}/g}',
+			'MyclAss',
+			'myclAss.js'
 		);
 
-		// none matching suffix
-		assertVariableResolve2(
-			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcase}${2:/upcase}/g}',
-			'Myclass.foo',
-			'myclass.foo'
+		// none mAtching suffix
+		AssertVAriAbleResolve2(
+			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcAse}${2:/upcAse}/g}',
+			'MyclAss.foo',
+			'myclAss.foo'
 		);
 
-		// more than one hyphen
-		assertVariableResolve2(
-			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcase}${2:/upcase}/g}',
+		// more thAn one hyphen
+		AssertVAriAbleResolve2(
+			'${TM_FILENAME/^(.)|(?:-(.))|(\\.js)/${1:/upcAse}${2:/upcAse}/g}',
 			'ThisIsAFile',
-			'this-is-a-file.js'
+			'this-is-A-file.js'
 		);
 
 		// KEBAB CASE
-		assertVariableResolve2(
-			'${TM_FILENAME_BASE/([A-Z][a-z]+)([A-Z][a-z]+$)?/${1:/downcase}-${2:/downcase}/g}',
-			'capital-case',
-			'CapitalCase'
+		AssertVAriAbleResolve2(
+			'${TM_FILENAME_BASE/([A-Z][A-z]+)([A-Z][A-z]+$)?/${1:/downcAse}-${2:/downcAse}/g}',
+			'cApitAl-cAse',
+			'CApitAlCAse'
 		);
 
-		assertVariableResolve2(
-			'${TM_FILENAME_BASE/([A-Z][a-z]+)([A-Z][a-z]+$)?/${1:/downcase}-${2:/downcase}/g}',
-			'capital-case-more',
-			'CapitalCaseMore'
+		AssertVAriAbleResolve2(
+			'${TM_FILENAME_BASE/([A-Z][A-z]+)([A-Z][A-z]+$)?/${1:/downcAse}-${2:/downcAse}/g}',
+			'cApitAl-cAse-more',
+			'CApitAlCAseMore'
 		);
 	});
 
-	test('Add variable to insert value from clipboard to a snippet #40153', function () {
+	test('Add vAriAble to insert vAlue from clipboArd to A snippet #40153', function () {
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => undefined, 1, 0, true), 'CLIPBOARD', undefined);
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => undefined, 1, 0, true), 'CLIPBOARD', undefined);
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => null!, 1, 0, true), 'CLIPBOARD', undefined);
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => null!, 1, 0, true), 'CLIPBOARD', undefined);
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => '', 1, 0, true), 'CLIPBOARD', undefined);
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => '', 1, 0, true), 'CLIPBOARD', undefined);
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'foo', 1, 0, true), 'CLIPBOARD', 'foo');
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'foo', 1, 0, true), 'CLIPBOARD', 'foo');
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'foo', 1, 0, true), 'foo', undefined);
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'foo', 1, 0, true), 'cLIPBOARD', undefined);
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'foo', 1, 0, true), 'foo', undefined);
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'foo', 1, 0, true), 'cLIPBOARD', undefined);
 	});
 
-	test('Add variable to insert value from clipboard to a snippet #40153', function () {
+	test('Add vAriAble to insert vAlue from clipboArd to A snippet #40153', function () {
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'line1', 1, 2, true), 'CLIPBOARD', 'line1');
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'line1\nline2\nline3', 1, 2, true), 'CLIPBOARD', 'line1\nline2\nline3');
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'line1', 1, 2, true), 'CLIPBOARD', 'line1');
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'line1\nline2\nline3', 1, 2, true), 'CLIPBOARD', 'line1\nline2\nline3');
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'line1\nline2', 1, 2, true), 'CLIPBOARD', 'line2');
-		resolver = new ClipboardBasedVariableResolver(() => 'line1\nline2', 0, 2, true);
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'line1\nline2', 0, 2, true), 'CLIPBOARD', 'line1');
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'line1\nline2', 1, 2, true), 'CLIPBOARD', 'line2');
+		resolver = new ClipboArdBAsedVAriAbleResolver(() => 'line1\nline2', 0, 2, true);
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'line1\nline2', 0, 2, true), 'CLIPBOARD', 'line1');
 
-		assertVariableResolve(new ClipboardBasedVariableResolver(() => 'line1\nline2', 0, 2, false), 'CLIPBOARD', 'line1\nline2');
+		AssertVAriAbleResolve(new ClipboArdBAsedVAriAbleResolver(() => 'line1\nline2', 0, 2, fAlse), 'CLIPBOARD', 'line1\nline2');
 	});
 
 
-	function assertVariableResolve3(resolver: VariableResolver, varName: string) {
-		const snippet = new SnippetParser().parse(`$${varName}`);
-		const variable = <Variable>snippet.children[0];
+	function AssertVAriAbleResolve3(resolver: VAriAbleResolver, vArNAme: string) {
+		const snippet = new SnippetPArser().pArse(`$${vArNAme}`);
+		const vAriAble = <VAriAble>snippet.children[0];
 
-		assert.equal(variable.resolve(resolver), true, `${varName} failed to resolve`);
+		Assert.equAl(vAriAble.resolve(resolver), true, `${vArNAme} fAiled to resolve`);
 	}
 
-	test('Add time variables for snippets #41631, #43140', function () {
+	test('Add time vAriAbles for snippets #41631, #43140', function () {
 
-		const resolver = new TimeBasedVariableResolver;
+		const resolver = new TimeBAsedVAriAbleResolver;
 
-		assertVariableResolve3(resolver, 'CURRENT_YEAR');
-		assertVariableResolve3(resolver, 'CURRENT_YEAR_SHORT');
-		assertVariableResolve3(resolver, 'CURRENT_MONTH');
-		assertVariableResolve3(resolver, 'CURRENT_DATE');
-		assertVariableResolve3(resolver, 'CURRENT_HOUR');
-		assertVariableResolve3(resolver, 'CURRENT_MINUTE');
-		assertVariableResolve3(resolver, 'CURRENT_SECOND');
-		assertVariableResolve3(resolver, 'CURRENT_DAY_NAME');
-		assertVariableResolve3(resolver, 'CURRENT_DAY_NAME_SHORT');
-		assertVariableResolve3(resolver, 'CURRENT_MONTH_NAME');
-		assertVariableResolve3(resolver, 'CURRENT_MONTH_NAME_SHORT');
-		assertVariableResolve3(resolver, 'CURRENT_SECONDS_UNIX');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_YEAR');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_YEAR_SHORT');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_MONTH');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_DATE');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_HOUR');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_MINUTE');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_SECOND');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_DAY_NAME');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_DAY_NAME_SHORT');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_MONTH_NAME');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_MONTH_NAME_SHORT');
+		AssertVAriAbleResolve3(resolver, 'CURRENT_SECONDS_UNIX');
 	});
 
-	test('creating snippet - format-condition doesn\'t work #53617', function () {
+	test('creAting snippet - formAt-condition doesn\'t work #53617', function () {
 
-		const snippet = new SnippetParser().parse('${TM_LINE_NUMBER/(10)/${1:?It is:It is not}/} line 10', true);
-		snippet.resolveVariables({ resolve() { return '10'; } });
-		assert.equal(snippet.toString(), 'It is line 10');
+		const snippet = new SnippetPArser().pArse('${TM_LINE_NUMBER/(10)/${1:?It is:It is not}/} line 10', true);
+		snippet.resolveVAriAbles({ resolve() { return '10'; } });
+		Assert.equAl(snippet.toString(), 'It is line 10');
 
-		snippet.resolveVariables({ resolve() { return '11'; } });
-		assert.equal(snippet.toString(), 'It is not line 10');
+		snippet.resolveVAriAbles({ resolve() { return '11'; } });
+		Assert.equAl(snippet.toString(), 'It is not line 10');
 	});
 
-	test('Add workspace name and folder variables for snippets #68261', function () {
+	test('Add workspAce nAme And folder vAriAbles for snippets #68261', function () {
 
-		let workspace: IWorkspace;
-		let resolver: VariableResolver;
-		const workspaceService = new class implements IWorkspaceContextService {
-			declare readonly _serviceBrand: undefined;
+		let workspAce: IWorkspAce;
+		let resolver: VAriAbleResolver;
+		const workspAceService = new clAss implements IWorkspAceContextService {
+			declAre reAdonly _serviceBrAnd: undefined;
 			_throw = () => { throw new Error(); };
-			onDidChangeWorkbenchState = this._throw;
-			onDidChangeWorkspaceName = this._throw;
-			onDidChangeWorkspaceFolders = this._throw;
-			getCompleteWorkspace = this._throw;
-			getWorkspace(): IWorkspace { return workspace; }
-			getWorkbenchState = this._throw;
-			getWorkspaceFolder = this._throw;
-			isCurrentWorkspace = this._throw;
-			isInsideWorkspace = this._throw;
+			onDidChAngeWorkbenchStAte = this._throw;
+			onDidChAngeWorkspAceNAme = this._throw;
+			onDidChAngeWorkspAceFolders = this._throw;
+			getCompleteWorkspAce = this._throw;
+			getWorkspAce(): IWorkspAce { return workspAce; }
+			getWorkbenchStAte = this._throw;
+			getWorkspAceFolder = this._throw;
+			isCurrentWorkspAce = this._throw;
+			isInsideWorkspAce = this._throw;
 		};
 
-		resolver = new WorkspaceBasedVariableResolver(workspaceService);
+		resolver = new WorkspAceBAsedVAriAbleResolver(workspAceService);
 
-		// empty workspace
-		workspace = new Workspace('');
-		assertVariableResolve(resolver, 'WORKSPACE_NAME', undefined);
-		assertVariableResolve(resolver, 'WORKSPACE_FOLDER', undefined);
+		// empty workspAce
+		workspAce = new WorkspAce('');
+		AssertVAriAbleResolve(resolver, 'WORKSPACE_NAME', undefined);
+		AssertVAriAbleResolve(resolver, 'WORKSPACE_FOLDER', undefined);
 
-		// single folder workspace without config
-		workspace = new Workspace('', [toWorkspaceFolder(URI.file('/folderName'))]);
-		assertVariableResolve(resolver, 'WORKSPACE_NAME', 'folderName');
+		// single folder workspAce without config
+		workspAce = new WorkspAce('', [toWorkspAceFolder(URI.file('/folderNAme'))]);
+		AssertVAriAbleResolve(resolver, 'WORKSPACE_NAME', 'folderNAme');
 		if (!isWindows) {
-			assertVariableResolve(resolver, 'WORKSPACE_FOLDER', '/folderName');
+			AssertVAriAbleResolve(resolver, 'WORKSPACE_FOLDER', '/folderNAme');
 		}
 
-		// workspace with config
-		const workspaceConfigPath = URI.file('testWorkspace.code-workspace');
-		workspace = new Workspace('', toWorkspaceFolders([{ path: 'folderName' }], workspaceConfigPath), workspaceConfigPath);
-		assertVariableResolve(resolver, 'WORKSPACE_NAME', 'testWorkspace');
+		// workspAce with config
+		const workspAceConfigPAth = URI.file('testWorkspAce.code-workspAce');
+		workspAce = new WorkspAce('', toWorkspAceFolders([{ pAth: 'folderNAme' }], workspAceConfigPAth), workspAceConfigPAth);
+		AssertVAriAbleResolve(resolver, 'WORKSPACE_NAME', 'testWorkspAce');
 		if (!isWindows) {
-			assertVariableResolve(resolver, 'WORKSPACE_FOLDER', '/');
+			AssertVAriAbleResolve(resolver, 'WORKSPACE_FOLDER', '/');
 		}
 	});
 });

@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDimension } from 'vs/base/browser/dom';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDimension } from 'vs/bAse/browser/dom';
 
-export const ILayoutService = createDecorator<ILayoutService>('layoutService');
+export const ILAyoutService = creAteDecorAtor<ILAyoutService>('lAyoutService');
 
-export interface ILayoutService {
+export interfAce ILAyoutService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * The dimensions of the container.
+	 * The dimensions of the contAiner.
 	 */
-	readonly dimension: IDimension;
+	reAdonly dimension: IDimension;
 
 	/**
-	 * Container of the application.
+	 * ContAiner of the ApplicAtion.
 	 */
-	readonly container: HTMLElement;
+	reAdonly contAiner: HTMLElement;
 
 	/**
-	 * An offset to use for positioning elements inside the container.
+	 * An offset to use for positioning elements inside the contAiner.
 	 */
-	readonly offset?: { top: number };
+	reAdonly offset?: { top: number };
 
 	/**
-	 * An event that is emitted when the container is layed out. The
-	 * event carries the dimensions of the container as part of it.
+	 * An event thAt is emitted when the contAiner is lAyed out. The
+	 * event cArries the dimensions of the contAiner As pArt of it.
 	 */
-	readonly onLayout: Event<IDimension>;
+	reAdonly onLAyout: Event<IDimension>;
 
 	/**
-	 * Focus the primary component of the container.
+	 * Focus the primAry component of the contAiner.
 	 */
 	focus(): void;
 }

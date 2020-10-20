@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import * as os from 'os';
-import * as fs from 'fs';
+import * As Assert from 'Assert';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As os from 'os';
+import * As fs from 'fs';
 import { resolveWorkbenchCommonProperties } from 'vs/workbench/services/telemetry/electron-browser/workbenchCommonProperties';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { IStorageService, StorageScope, InMemoryStorageService } from 'vs/platform/storage/common/storage';
-import { mkdirp, rimraf, RimRafMode } from 'vs/base/node/pfs';
-import { timeout } from 'vs/base/common/async';
+import { getRAndomTestPAth } from 'vs/bAse/test/node/testUtils';
+import { IStorAgeService, StorAgeScope, InMemoryStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { mkdirp, rimrAf, RimRAfMode } from 'vs/bAse/node/pfs';
+import { timeout } from 'vs/bAse/common/Async';
 
 suite('Telemetry - common properties', function () {
-	const parentDir = getRandomTestPath(os.tmpdir(), 'vsctests', 'telemetryservice');
-	const installSource = path.join(parentDir, 'installSource');
+	const pArentDir = getRAndomTestPAth(os.tmpdir(), 'vsctests', 'telemetryservice');
+	const instAllSource = pAth.join(pArentDir, 'instAllSource');
 
 	const commit: string = (undefined)!;
 	const version: string = (undefined)!;
-	let testStorageService: IStorageService;
+	let testStorAgeService: IStorAgeService;
 
 	setup(() => {
-		testStorageService = new InMemoryStorageService();
+		testStorAgeService = new InMemoryStorAgeService();
 	});
 
-	teardown(done => {
-		rimraf(parentDir, RimRafMode.MOVE).then(done, done);
+	teArdown(done => {
+		rimrAf(pArentDir, RimRAfMode.MOVE).then(done, done);
 	});
 
-	test('default', async function () {
-		await mkdirp(parentDir);
-		fs.writeFileSync(installSource, 'my.install.source');
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
-		assert.ok('commitHash' in props);
-		assert.ok('sessionID' in props);
-		assert.ok('timestamp' in props);
-		assert.ok('common.platform' in props);
-		assert.ok('common.nodePlatform' in props);
-		assert.ok('common.nodeArch' in props);
-		assert.ok('common.timesincesessionstart' in props);
-		assert.ok('common.sequence' in props);
-		// assert.ok('common.version.shell' in first.data); // only when running on electron
-		// assert.ok('common.version.renderer' in first.data);
-		assert.ok('common.platformVersion' in props, 'platformVersion');
-		assert.ok('version' in props);
-		assert.equal(props['common.source'], 'my.install.source');
-		assert.ok('common.firstSessionDate' in props, 'firstSessionDate');
-		assert.ok('common.lastSessionDate' in props, 'lastSessionDate'); // conditional, see below, 'lastSessionDate'ow
-		assert.ok('common.isNewSession' in props, 'isNewSession');
-		// machine id et al
-		assert.ok('common.instanceId' in props, 'instanceId');
-		assert.ok('common.machineId' in props, 'machineId');
-		fs.unlinkSync(installSource);
-		const props_1 = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
-		assert.ok(!('common.source' in props_1));
+	test('defAult', Async function () {
+		AwAit mkdirp(pArentDir);
+		fs.writeFileSync(instAllSource, 'my.instAll.source');
+		const props = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, 'someMAchineId', undefined, instAllSource);
+		Assert.ok('commitHAsh' in props);
+		Assert.ok('sessionID' in props);
+		Assert.ok('timestAmp' in props);
+		Assert.ok('common.plAtform' in props);
+		Assert.ok('common.nodePlAtform' in props);
+		Assert.ok('common.nodeArch' in props);
+		Assert.ok('common.timesincesessionstArt' in props);
+		Assert.ok('common.sequence' in props);
+		// Assert.ok('common.version.shell' in first.dAtA); // only when running on electron
+		// Assert.ok('common.version.renderer' in first.dAtA);
+		Assert.ok('common.plAtformVersion' in props, 'plAtformVersion');
+		Assert.ok('version' in props);
+		Assert.equAl(props['common.source'], 'my.instAll.source');
+		Assert.ok('common.firstSessionDAte' in props, 'firstSessionDAte');
+		Assert.ok('common.lAstSessionDAte' in props, 'lAstSessionDAte'); // conditionAl, see below, 'lAstSessionDAte'ow
+		Assert.ok('common.isNewSession' in props, 'isNewSession');
+		// mAchine id et Al
+		Assert.ok('common.instAnceId' in props, 'instAnceId');
+		Assert.ok('common.mAchineId' in props, 'mAchineId');
+		fs.unlinkSync(instAllSource);
+		const props_1 = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, 'someMAchineId', undefined, instAllSource);
+		Assert.ok(!('common.source' in props_1));
 	});
 
-	test('lastSessionDate when aviablale', async function () {
+	test('lAstSessionDAte when AviAblAle', Async function () {
 
-		testStorageService.store('telemetry.lastSessionDate', new Date().toUTCString(), StorageScope.GLOBAL);
+		testStorAgeService.store('telemetry.lAstSessionDAte', new DAte().toUTCString(), StorAgeScope.GLOBAL);
 
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
-		assert.ok('common.lastSessionDate' in props); // conditional, see below
-		assert.ok('common.isNewSession' in props);
-		assert.equal(props['common.isNewSession'], 0);
+		const props = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, 'someMAchineId', undefined, instAllSource);
+		Assert.ok('common.lAstSessionDAte' in props); // conditionAl, see below
+		Assert.ok('common.isNewSession' in props);
+		Assert.equAl(props['common.isNewSession'], 0);
 	});
 
-	test('values chance on ask', async function () {
-		const props = await resolveWorkbenchCommonProperties(testStorageService, commit, version, 'someMachineId', undefined, installSource);
-		let value1 = props['common.sequence'];
-		let value2 = props['common.sequence'];
-		assert.ok(value1 !== value2, 'seq');
+	test('vAlues chAnce on Ask', Async function () {
+		const props = AwAit resolveWorkbenchCommonProperties(testStorAgeService, commit, version, 'someMAchineId', undefined, instAllSource);
+		let vAlue1 = props['common.sequence'];
+		let vAlue2 = props['common.sequence'];
+		Assert.ok(vAlue1 !== vAlue2, 'seq');
 
-		value1 = props['timestamp'];
-		value2 = props['timestamp'];
-		assert.ok(value1 !== value2, 'timestamp');
+		vAlue1 = props['timestAmp'];
+		vAlue2 = props['timestAmp'];
+		Assert.ok(vAlue1 !== vAlue2, 'timestAmp');
 
-		value1 = props['common.timesincesessionstart'];
-		await timeout(10);
-		value2 = props['common.timesincesessionstart'];
-		assert.ok(value1 !== value2, 'timesincesessionstart');
+		vAlue1 = props['common.timesincesessionstArt'];
+		AwAit timeout(10);
+		vAlue2 = props['common.timesincesessionstArt'];
+		Assert.ok(vAlue1 !== vAlue2, 'timesincesessionstArt');
 	});
 });

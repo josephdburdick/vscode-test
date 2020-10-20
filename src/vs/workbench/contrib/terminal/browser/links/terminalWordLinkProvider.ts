@@ -1,115 +1,115 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type { Terminal, IViewportRange } from 'xterm';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ITerminalConfiguration, TERMINAL_CONFIG_SECTION } from 'vs/workbench/contrib/terminal/common/terminal';
-import { TerminalLink } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
-import { localize } from 'vs/nls';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { ISearchService } from 'vs/workbench/services/search/common/search';
+import type { TerminAl, IViewportRAnge } from 'xterm';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ITerminAlConfigurAtion, TERMINAL_CONFIG_SECTION } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { TerminAlLink } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLink';
+import { locAlize } from 'vs/nls';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { ISeArchService } from 'vs/workbench/services/seArch/common/seArch';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { QueryBuilder } from 'vs/workbench/contrib/search/common/queryBuilder';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { XtermLinkMatcherHandler } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkManager';
-import { TerminalBaseLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalBaseLinkProvider';
+import { QueryBuilder } from 'vs/workbench/contrib/seArch/common/queryBuilder';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { XtermLinkMAtcherHAndler } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLinkMAnAger';
+import { TerminAlBAseLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlBAseLinkProvider';
 
-export class TerminalWordLinkProvider extends TerminalBaseLinkProvider {
-	private readonly _fileQueryBuilder = this._instantiationService.createInstance(QueryBuilder);
+export clAss TerminAlWordLinkProvider extends TerminAlBAseLinkProvider {
+	privAte reAdonly _fileQueryBuilder = this._instAntiAtionService.creAteInstAnce(QueryBuilder);
 
 	constructor(
-		private readonly _xterm: Terminal,
-		private readonly _wrapLinkHandler: (handler: (event: MouseEvent | undefined, link: string) => void) => XtermLinkMatcherHandler,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@IQuickInputService private readonly _quickInputService: IQuickInputService,
-		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService,
-		@ISearchService private readonly _searchService: ISearchService,
-		@IEditorService private readonly _editorService: IEditorService
+		privAte reAdonly _xterm: TerminAl,
+		privAte reAdonly _wrApLinkHAndler: (hAndler: (event: MouseEvent | undefined, link: string) => void) => XtermLinkMAtcherHAndler,
+		privAte reAdonly _tooltipCAllbAck: (link: TerminAlLink, viewportRAnge: IViewportRAnge, modifierDownCAllbAck?: () => void, modifierUpCAllbAck?: () => void) => void,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
+		@IQuickInputService privAte reAdonly _quickInputService: IQuickInputService,
+		@IWorkspAceContextService privAte reAdonly _workspAceContextService: IWorkspAceContextService,
+		@ISeArchService privAte reAdonly _seArchService: ISeArchService,
+		@IEditorService privAte reAdonly _editorService: IEditorService
 	) {
 		super();
 	}
 
-	protected _provideLinks(y: number): TerminalLink[] {
-		// TODO: Support wrapping
-		// Dispose of all old links if new links are provides, links are only cached for the current line
-		const result: TerminalLink[] = [];
-		const wordSeparators = this._configurationService.getValue<ITerminalConfiguration>(TERMINAL_CONFIG_SECTION).wordSeparators;
-		const activateCallback = this._wrapLinkHandler((_, link) => this._activate(link));
+	protected _provideLinks(y: number): TerminAlLink[] {
+		// TODO: Support wrApping
+		// Dispose of All old links if new links Are provides, links Are only cAched for the current line
+		const result: TerminAlLink[] = [];
+		const wordSepArAtors = this._configurAtionService.getVAlue<ITerminAlConfigurAtion>(TERMINAL_CONFIG_SECTION).wordSepArAtors;
+		const ActivAteCAllbAck = this._wrApLinkHAndler((_, link) => this._ActivAte(link));
 
-		const line = this._xterm.buffer.active.getLine(y - 1)!;
+		const line = this._xterm.buffer.Active.getLine(y - 1)!;
 		let text = '';
-		let startX = -1;
-		const cellData = line.getCell(0)!;
+		let stArtX = -1;
+		const cellDAtA = line.getCell(0)!;
 		for (let x = 0; x < line.length; x++) {
-			line.getCell(x, cellData);
-			const chars = cellData.getChars();
-			const width = cellData.getWidth();
+			line.getCell(x, cellDAtA);
+			const chArs = cellDAtA.getChArs();
+			const width = cellDAtA.getWidth();
 
-			// Add a link if this is a separator
-			if (width !== 0 && wordSeparators.indexOf(chars) >= 0) {
-				if (startX !== -1) {
-					result.push(this._createTerminalLink(startX, x, y, text, activateCallback));
+			// Add A link if this is A sepArAtor
+			if (width !== 0 && wordSepArAtors.indexOf(chArs) >= 0) {
+				if (stArtX !== -1) {
+					result.push(this._creAteTerminAlLink(stArtX, x, y, text, ActivAteCAllbAck));
 					text = '';
-					startX = -1;
+					stArtX = -1;
 				}
 				continue;
 			}
 
-			// Mark the start of a link if it hasn't started yet
-			if (startX === -1) {
-				startX = x;
+			// MArk the stArt of A link if it hAsn't stArted yet
+			if (stArtX === -1) {
+				stArtX = x;
 			}
 
-			text += chars;
+			text += chArs;
 		}
 
-		// Add the final link if there is one
-		if (startX !== -1) {
-			result.push(this._createTerminalLink(startX, line.length, y, text, activateCallback));
+		// Add the finAl link if there is one
+		if (stArtX !== -1) {
+			result.push(this._creAteTerminAlLink(stArtX, line.length, y, text, ActivAteCAllbAck));
 		}
 
 		return result;
 	}
 
-	private _createTerminalLink(startX: number, endX: number, y: number, text: string, activateCallback: XtermLinkMatcherHandler): TerminalLink {
-		// Remove trailing colon if there is one so the link is more useful
-		if (text.length > 0 && text.charAt(text.length - 1) === ':') {
+	privAte _creAteTerminAlLink(stArtX: number, endX: number, y: number, text: string, ActivAteCAllbAck: XtermLinkMAtcherHAndler): TerminAlLink {
+		// Remove trAiling colon if there is one so the link is more useful
+		if (text.length > 0 && text.chArAt(text.length - 1) === ':') {
 			text = text.slice(0, -1);
 			endX--;
 		}
-		return this._instantiationService.createInstance(TerminalLink,
+		return this._instAntiAtionService.creAteInstAnce(TerminAlLink,
 			this._xterm,
-			{ start: { x: startX + 1, y }, end: { x: endX, y } },
+			{ stArt: { x: stArtX + 1, y }, end: { x: endX, y } },
 			text,
-			this._xterm.buffer.active.viewportY,
-			activateCallback,
-			this._tooltipCallback,
-			false,
-			localize('searchWorkspace', 'Search workspace')
+			this._xterm.buffer.Active.viewportY,
+			ActivAteCAllbAck,
+			this._tooltipCAllbAck,
+			fAlse,
+			locAlize('seArchWorkspAce', 'SeArch workspAce')
 		);
 	}
 
-	private async _activate(link: string) {
-		const results = await this._searchService.fileSearch(
-			this._fileQueryBuilder.file(this._workspaceContextService.getWorkspace().folders, {
-				filePattern: link,
-				maxResults: 2
+	privAte Async _ActivAte(link: string) {
+		const results = AwAit this._seArchService.fileSeArch(
+			this._fileQueryBuilder.file(this._workspAceContextService.getWorkspAce().folders, {
+				filePAttern: link,
+				mAxResults: 2
 			})
 		);
 
-		// If there was exactly one match, open it
+		// If there wAs exActly one mAtch, open it
 		if (results.results.length === 1) {
-			const match = results.results[0];
-			await this._editorService.openEditor({ resource: match.resource, options: { pinned: true } });
+			const mAtch = results.results[0];
+			AwAit this._editorService.openEditor({ resource: mAtch.resource, options: { pinned: true } });
 			return;
 		}
 
-		// Fallback to searching quick access
+		// FAllbAck to seArching quick Access
 		this._quickInputService.quickAccess.show(link);
 	}
 }

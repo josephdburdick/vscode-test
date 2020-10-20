@@ -1,272 +1,272 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import { Selection, workspace, ConfigurationTarget } from 'vscode';
-import { withRandomFileEditor, closeAllEditors } from './testUtils';
-import { wrapWithAbbreviation, wrapIndividualLinesWithAbbreviation } from '../abbreviationActions';
+import 'mochA';
+import * As Assert from 'Assert';
+import { Selection, workspAce, ConfigurAtionTArget } from 'vscode';
+import { withRAndomFileEditor, closeAllEditors } from './testUtils';
+import { wrApWithAbbreviAtion, wrApIndividuAlLinesWithAbbreviAtion } from '../AbbreviAtionActions';
 
-const htmlContentsForWrapTests = `
-	<ul class="nav main">
-		<li class="item1">img</li>
-		<li class="item2">$hithere</li>
+const htmlContentsForWrApTests = `
+	<ul clAss="nAv mAin">
+		<li clAss="item1">img</li>
+		<li clAss="item2">$hithere</li>
 	</ul>
 `;
 
-const wrapBlockElementExpected = `
-	<ul class="nav main">
+const wrApBlockElementExpected = `
+	<ul clAss="nAv mAin">
 		<div>
-			<li class="item1">img</li>
+			<li clAss="item1">img</li>
 		</div>
 		<div>
-			<li class="item2">$hithere</li>
+			<li clAss="item2">$hithere</li>
 		</div>
 	</ul>
 `;
 
-const wrapInlineElementExpected = `
-	<ul class="nav main">
-		<span><li class="item1">img</li></span>
-		<span><li class="item2">$hithere</li></span>
+const wrApInlineElementExpected = `
+	<ul clAss="nAv mAin">
+		<spAn><li clAss="item1">img</li></spAn>
+		<spAn><li clAss="item2">$hithere</li></spAn>
 	</ul>
 `;
 
-const wrapSnippetExpected = `
-	<ul class="nav main">
-		<a href=""><li class="item1">img</li></a>
-		<a href=""><li class="item2">$hithere</li></a>
+const wrApSnippetExpected = `
+	<ul clAss="nAv mAin">
+		<A href=""><li clAss="item1">img</li></A>
+		<A href=""><li clAss="item2">$hithere</li></A>
 	</ul>
 `;
 
-const wrapMultiLineAbbrExpected = `
-	<ul class="nav main">
+const wrApMultiLineAbbrExpected = `
+	<ul clAss="nAv mAin">
 		<ul>
 			<li>
-				<li class="item1">img</li>
+				<li clAss="item1">img</li>
 			</li>
 		</ul>
 		<ul>
 			<li>
-				<li class="item2">$hithere</li>
+				<li clAss="item2">$hithere</li>
 			</li>
 		</ul>
 	</ul>
 `;
 
-const wrapInlineElementExpectedFormatFalse = `
-	<ul class="nav main">
-		<h1><li class="item1">img</li></h1>
-		<h1><li class="item2">$hithere</li></h1>
+const wrApInlineElementExpectedFormAtFAlse = `
+	<ul clAss="nAv mAin">
+		<h1><li clAss="item1">img</li></h1>
+		<h1><li clAss="item2">$hithere</li></h1>
 	</ul>
 `;
 
-suite('Tests for Wrap with Abbreviations', () => {
-	teardown(closeAllEditors);
+suite('Tests for WrAp with AbbreviAtions', () => {
+	teArdown(closeAllEditors);
 
 	const multiCursors = [new Selection(2, 6, 2, 6), new Selection(3, 6, 3, 6)];
 	const multiCursorsWithSelection = [new Selection(2, 2, 2, 28), new Selection(3, 2, 3, 33)];
 	const multiCursorsWithFullLineSelection = [new Selection(2, 0, 2, 28), new Selection(3, 0, 4, 0)];
 
-	const oldValueForSyntaxProfiles = workspace.getConfiguration('emmet').inspect('syntaxProfile');
+	const oldVAlueForSyntAxProfiles = workspAce.getConfigurAtion('emmet').inspect('syntAxProfile');
 
-	test('Wrap with block element using multi cursor', () => {
-		return testWrapWithAbbreviation(multiCursors, 'div', wrapBlockElementExpected);
+	test('WrAp with block element using multi cursor', () => {
+		return testWrApWithAbbreviAtion(multiCursors, 'div', wrApBlockElementExpected);
 	});
 
-	test('Wrap with inline element using multi cursor', () => {
-		return testWrapWithAbbreviation(multiCursors, 'span', wrapInlineElementExpected);
+	test('WrAp with inline element using multi cursor', () => {
+		return testWrApWithAbbreviAtion(multiCursors, 'spAn', wrApInlineElementExpected);
 	});
 
-	test('Wrap with snippet using multi cursor', () => {
-		return testWrapWithAbbreviation(multiCursors, 'a', wrapSnippetExpected);
+	test('WrAp with snippet using multi cursor', () => {
+		return testWrApWithAbbreviAtion(multiCursors, 'A', wrApSnippetExpected);
 	});
 
-	test('Wrap with multi line abbreviation using multi cursor', () => {
-		return testWrapWithAbbreviation(multiCursors, 'ul>li', wrapMultiLineAbbrExpected);
+	test('WrAp with multi line AbbreviAtion using multi cursor', () => {
+		return testWrApWithAbbreviAtion(multiCursors, 'ul>li', wrApMultiLineAbbrExpected);
 	});
 
-	test('Wrap with block element using multi cursor selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithSelection, 'div', wrapBlockElementExpected);
+	test('WrAp with block element using multi cursor selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithSelection, 'div', wrApBlockElementExpected);
 	});
 
-	test('Wrap with inline element using multi cursor selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithSelection, 'span', wrapInlineElementExpected);
+	test('WrAp with inline element using multi cursor selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithSelection, 'spAn', wrApInlineElementExpected);
 	});
 
-	test('Wrap with snippet using multi cursor selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithSelection, 'a', wrapSnippetExpected);
+	test('WrAp with snippet using multi cursor selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithSelection, 'A', wrApSnippetExpected);
 	});
 
-	test('Wrap with multi line abbreviation using multi cursor selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithSelection, 'ul>li', wrapMultiLineAbbrExpected);
+	test('WrAp with multi line AbbreviAtion using multi cursor selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithSelection, 'ul>li', wrApMultiLineAbbrExpected);
 	});
 
-	test('Wrap with block element using multi cursor full line selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithFullLineSelection, 'div', wrapBlockElementExpected);
+	test('WrAp with block element using multi cursor full line selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithFullLineSelection, 'div', wrApBlockElementExpected);
 	});
 
-	test('Wrap with inline element using multi cursor full line selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithFullLineSelection, 'span', wrapInlineElementExpected);
+	test('WrAp with inline element using multi cursor full line selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithFullLineSelection, 'spAn', wrApInlineElementExpected);
 	});
 
-	test('Wrap with snippet using multi cursor full line selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithFullLineSelection, 'a', wrapSnippetExpected);
+	test('WrAp with snippet using multi cursor full line selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithFullLineSelection, 'A', wrApSnippetExpected);
 	});
 
-	test('Wrap with multi line abbreviation using multi cursor full line selection', () => {
-		return testWrapWithAbbreviation(multiCursorsWithFullLineSelection, 'ul>li', wrapMultiLineAbbrExpected);
+	test('WrAp with multi line AbbreviAtion using multi cursor full line selection', () => {
+		return testWrApWithAbbreviAtion(multiCursorsWithFullLineSelection, 'ul>li', wrApMultiLineAbbrExpected);
 	});
 
-	test('Wrap with abbreviation and comment filter', () => {
+	test('WrAp with AbbreviAtion And comment filter', () => {
 		const contents = `
-	<ul class="nav main">
+	<ul clAss="nAv mAin">
 		line
 	</ul>
 	`;
 		const expectedContents = `
-	<ul class="nav main">
-		<li class="hello">
+	<ul clAss="nAv mAin">
+		<li clAss="hello">
 			line
 		</li>
 		<!-- /.hello -->
 	</ul>
 	`;
-		return testWrapWithAbbreviation([new Selection(2, 0, 2, 0)], 'li.hello|c', expectedContents, contents);
+		return testWrApWithAbbreviAtion([new Selection(2, 0, 2, 0)], 'li.hello|c', expectedContents, contents);
 	});
 
-	test('Wrap with abbreviation entire node when cursor is on opening tag', () => {
+	test('WrAp with AbbreviAtion entire node when cursor is on opening tAg', () => {
 		const contents = `
-	<div class="nav main">
+	<div clAss="nAv mAin">
 		hello
 	</div>
 	`;
 		const expectedContents = `
 	<div>
-		<div class="nav main">
+		<div clAss="nAv mAin">
 			hello
 		</div>
 	</div>
 	`;
-		return testWrapWithAbbreviation([new Selection(1, 1, 1, 1)], 'div', expectedContents, contents);
+		return testWrApWithAbbreviAtion([new Selection(1, 1, 1, 1)], 'div', expectedContents, contents);
 	});
 
-	test('Wrap with abbreviation entire node when cursor is on closing tag', () => {
+	test('WrAp with AbbreviAtion entire node when cursor is on closing tAg', () => {
 		const contents = `
-	<div class="nav main">
+	<div clAss="nAv mAin">
 		hello
 	</div>
 	`;
 		const expectedContents = `
 	<div>
-		<div class="nav main">
+		<div clAss="nAv mAin">
 			hello
 		</div>
 	</div>
 	`;
-		return testWrapWithAbbreviation([new Selection(3, 1, 3, 1)], 'div', expectedContents, contents);
+		return testWrApWithAbbreviAtion([new Selection(3, 1, 3, 1)], 'div', expectedContents, contents);
 	});
 
-	test('Wrap with multiline abbreviation doesnt add extra spaces', () => {
+	test('WrAp with multiline AbbreviAtion doesnt Add extrA spAces', () => {
 		// Issue #29898
 		const contents = `
 	hello
 	`;
 		const expectedContents = `
 	<ul>
-		<li><a href="">hello</a></li>
+		<li><A href="">hello</A></li>
 	</ul>
 	`;
-		return testWrapWithAbbreviation([new Selection(1, 2, 1, 2)], 'ul>li>a', expectedContents, contents);
+		return testWrApWithAbbreviAtion([new Selection(1, 2, 1, 2)], 'ul>li>A', expectedContents, contents);
 	});
 
-	test('Wrap individual lines with abbreviation', () => {
+	test('WrAp individuAl lines with AbbreviAtion', () => {
 		const contents = `
-	<ul class="nav main">
-		<li class="item1">This $10 is not a tabstop</li>
-		<li class="item2">hi.there</li>
+	<ul clAss="nAv mAin">
+		<li clAss="item1">This $10 is not A tAbstop</li>
+		<li clAss="item2">hi.there</li>
 	</ul>
 `;
-		const wrapIndividualLinesExpected = `
-	<ul class="nav main">
+		const wrApIndividuAlLinesExpected = `
+	<ul clAss="nAv mAin">
 		<ul>
-			<li class="hello1"><li class="item1">This $10 is not a tabstop</li></li>
-			<li class="hello2"><li class="item2">hi.there</li></li>
+			<li clAss="hello1"><li clAss="item1">This $10 is not A tAbstop</li></li>
+			<li clAss="hello2"><li clAss="item2">hi.there</li></li>
 		</ul>
 	</ul>
 `;
-		return testWrapIndividualLinesWithAbbreviation([new Selection(2, 2, 3, 33)], 'ul>li.hello$*', wrapIndividualLinesExpected, contents);
+		return testWrApIndividuAlLinesWithAbbreviAtion([new Selection(2, 2, 3, 33)], 'ul>li.hello$*', wrApIndividuAlLinesExpected, contents);
 	});
 
-	test('Wrap individual lines with abbreviation with extra space selected', () => {
+	test('WrAp individuAl lines with AbbreviAtion with extrA spAce selected', () => {
 		const contents = `
-	<ul class="nav main">
-		<li class="item1">img</li>
-		<li class="item2">hi.there</li>
+	<ul clAss="nAv mAin">
+		<li clAss="item1">img</li>
+		<li clAss="item2">hi.there</li>
 	</ul>
 `;
-		const wrapIndividualLinesExpected = `
-	<ul class="nav main">
+		const wrApIndividuAlLinesExpected = `
+	<ul clAss="nAv mAin">
 		<ul>
-			<li class="hello1"><li class="item1">img</li></li>
-			<li class="hello2"><li class="item2">hi.there</li></li>
+			<li clAss="hello1"><li clAss="item1">img</li></li>
+			<li clAss="hello2"><li clAss="item2">hi.there</li></li>
 		</ul>
 	</ul>
 `;
-		return testWrapIndividualLinesWithAbbreviation([new Selection(2, 1, 4, 0)], 'ul>li.hello$*', wrapIndividualLinesExpected, contents);
+		return testWrApIndividuAlLinesWithAbbreviAtion([new Selection(2, 1, 4, 0)], 'ul>li.hello$*', wrApIndividuAlLinesExpected, contents);
 	});
 
-	test('Wrap individual lines with abbreviation with comment filter', () => {
+	test('WrAp individuAl lines with AbbreviAtion with comment filter', () => {
 		const contents = `
-	<ul class="nav main">
-		<li class="item1">img</li>
-		<li class="item2">hi.there</li>
+	<ul clAss="nAv mAin">
+		<li clAss="item1">img</li>
+		<li clAss="item2">hi.there</li>
 	</ul>
 `;
-		const wrapIndividualLinesExpected = `
-	<ul class="nav main">
+		const wrApIndividuAlLinesExpected = `
+	<ul clAss="nAv mAin">
 		<ul>
-			<li class="hello"><li class="item1">img</li></li>
+			<li clAss="hello"><li clAss="item1">img</li></li>
 			<!-- /.hello -->
-			<li class="hello"><li class="item2">hi.there</li></li>
+			<li clAss="hello"><li clAss="item2">hi.there</li></li>
 			<!-- /.hello -->
 		</ul>
 	</ul>
 `;
-		return testWrapIndividualLinesWithAbbreviation([new Selection(2, 2, 3, 33)], 'ul>li.hello*|c', wrapIndividualLinesExpected, contents);
+		return testWrApIndividuAlLinesWithAbbreviAtion([new Selection(2, 2, 3, 33)], 'ul>li.hello*|c', wrApIndividuAlLinesExpected, contents);
 	});
 
-	test('Wrap individual lines with abbreviation and trim', () => {
+	test('WrAp individuAl lines with AbbreviAtion And trim', () => {
 		const contents = `
-		<ul class="nav main">
+		<ul clAss="nAv mAin">
 			• lorem ipsum
 			• lorem ipsum
 		</ul>
 	`;
-		const wrapIndividualLinesExpected = `
-		<ul class="nav main">
+		const wrApIndividuAlLinesExpected = `
+		<ul clAss="nAv mAin">
 			<ul>
-				<li class="hello1">lorem ipsum</li>
-				<li class="hello2">lorem ipsum</li>
+				<li clAss="hello1">lorem ipsum</li>
+				<li clAss="hello2">lorem ipsum</li>
 			</ul>
 		</ul>
 	`;
-		return testWrapIndividualLinesWithAbbreviation([new Selection(2, 3, 3, 16)], 'ul>li.hello$*|t', wrapIndividualLinesExpected, contents);
+		return testWrApIndividuAlLinesWithAbbreviAtion([new Selection(2, 3, 3, 16)], 'ul>li.hello$*|t', wrApIndividuAlLinesExpected, contents);
 	});
 
-	test('Wrap with abbreviation and format set to false', () => {
-		return workspace.getConfiguration('emmet').update('syntaxProfiles',{ 'html' : { 'format': false } } , ConfigurationTarget.Global).then(() => {
-			return testWrapWithAbbreviation(multiCursors,'h1',wrapInlineElementExpectedFormatFalse).then(() => {
-				return workspace.getConfiguration('emmet').update('syntaxProfiles',oldValueForSyntaxProfiles ? oldValueForSyntaxProfiles.globalValue : undefined, ConfigurationTarget.Global);
+	test('WrAp with AbbreviAtion And formAt set to fAlse', () => {
+		return workspAce.getConfigurAtion('emmet').updAte('syntAxProfiles',{ 'html' : { 'formAt': fAlse } } , ConfigurAtionTArget.GlobAl).then(() => {
+			return testWrApWithAbbreviAtion(multiCursors,'h1',wrApInlineElementExpectedFormAtFAlse).then(() => {
+				return workspAce.getConfigurAtion('emmet').updAte('syntAxProfiles',oldVAlueForSyntAxProfiles ? oldVAlueForSyntAxProfiles.globAlVAlue : undefined, ConfigurAtionTArget.GlobAl);
 			});
 		});
 	});
 
-	test('Wrap multi line selections with abbreviation', () => {
-		const htmlContentsForWrapMultiLineTests = `
-			<ul class="nav main">
+	test('WrAp multi line selections with AbbreviAtion', () => {
+		const htmlContentsForWrApMultiLineTests = `
+			<ul clAss="nAv mAin">
 				line1
 				line2
 
@@ -275,8 +275,8 @@ suite('Tests for Wrap with Abbreviations', () => {
 			</ul>
 		`;
 
-		const wrapMultiLineExpected = `
-			<ul class="nav main">
+		const wrApMultiLineExpected = `
+			<ul clAss="nAv mAin">
 				<div>
 					line1
 					line2
@@ -289,62 +289,62 @@ suite('Tests for Wrap with Abbreviations', () => {
 			</ul>
 		`;
 
-		return testWrapWithAbbreviation([new Selection(2, 4, 3, 9), new Selection(5, 4, 6, 9)], 'div', wrapMultiLineExpected, htmlContentsForWrapMultiLineTests);
+		return testWrApWithAbbreviAtion([new Selection(2, 4, 3, 9), new Selection(5, 4, 6, 9)], 'div', wrApMultiLineExpected, htmlContentsForWrApMultiLineTests);
 	});
 
-	test('Wrap multiline with abbreviation uses className for jsx files', () => {
-		const wrapMultiLineJsxExpected = `
-	<ul class="nav main">
-		<div className="hello">
-			<li class="item1">img</li>
-			<li class="item2">$hithere</li>
+	test('WrAp multiline with AbbreviAtion uses clAssNAme for jsx files', () => {
+		const wrApMultiLineJsxExpected = `
+	<ul clAss="nAv mAin">
+		<div clAssNAme="hello">
+			<li clAss="item1">img</li>
+			<li clAss="item2">$hithere</li>
 		</div>
 	</ul>
 `;
 
-		return testWrapWithAbbreviation([new Selection(2,2,3,33)], '.hello', wrapMultiLineJsxExpected, htmlContentsForWrapTests, 'jsx');
+		return testWrApWithAbbreviAtion([new Selection(2,2,3,33)], '.hello', wrApMultiLineJsxExpected, htmlContentsForWrApTests, 'jsx');
 	});
 
-	test('Wrap individual line with abbreviation uses className for jsx files', () => {
-		const wrapIndividualLinesJsxExpected = `
-	<ul class="nav main">
-		<div className="hello1"><li class="item1">img</li></div>
-		<div className="hello2"><li class="item2">$hithere</li></div>
+	test('WrAp individuAl line with AbbreviAtion uses clAssNAme for jsx files', () => {
+		const wrApIndividuAlLinesJsxExpected = `
+	<ul clAss="nAv mAin">
+		<div clAssNAme="hello1"><li clAss="item1">img</li></div>
+		<div clAssNAme="hello2"><li clAss="item2">$hithere</li></div>
 	</ul>
 `;
 
-		return testWrapIndividualLinesWithAbbreviation([new Selection(2,2,3,33)], '.hello$*', wrapIndividualLinesJsxExpected, htmlContentsForWrapTests, 'jsx');
+		return testWrApIndividuAlLinesWithAbbreviAtion([new Selection(2,2,3,33)], '.hello$*', wrApIndividuAlLinesJsxExpected, htmlContentsForWrApTests, 'jsx');
 	});
 });
 
 
-function testWrapWithAbbreviation(selections: Selection[], abbreviation: string, expectedContents: string, input: string = htmlContentsForWrapTests, fileExtension: string = 'html'): Thenable<any> {
-	return withRandomFileEditor(input, fileExtension, (editor, _) => {
+function testWrApWithAbbreviAtion(selections: Selection[], AbbreviAtion: string, expectedContents: string, input: string = htmlContentsForWrApTests, fileExtension: string = 'html'): ThenAble<Any> {
+	return withRAndomFileEditor(input, fileExtension, (editor, _) => {
 		editor.selections = selections;
-		const promise = wrapWithAbbreviation({ abbreviation });
+		const promise = wrApWithAbbreviAtion({ AbbreviAtion });
 		if (!promise) {
-			assert.equal(1, 2, 'Wrap  with Abbreviation returned undefined.');
+			Assert.equAl(1, 2, 'WrAp  with AbbreviAtion returned undefined.');
 			return Promise.resolve();
 		}
 
 		return promise.then(() => {
-			assert.equal(editor.document.getText(), expectedContents);
+			Assert.equAl(editor.document.getText(), expectedContents);
 			return Promise.resolve();
 		});
 	});
 }
 
-function testWrapIndividualLinesWithAbbreviation(selections: Selection[], abbreviation: string, expectedContents: string, input: string = htmlContentsForWrapTests, fileExtension: string = 'html'): Thenable<any> {
-	return withRandomFileEditor(input, fileExtension, (editor, _) => {
+function testWrApIndividuAlLinesWithAbbreviAtion(selections: Selection[], AbbreviAtion: string, expectedContents: string, input: string = htmlContentsForWrApTests, fileExtension: string = 'html'): ThenAble<Any> {
+	return withRAndomFileEditor(input, fileExtension, (editor, _) => {
 		editor.selections = selections;
-		const promise = wrapIndividualLinesWithAbbreviation({ abbreviation });
+		const promise = wrApIndividuAlLinesWithAbbreviAtion({ AbbreviAtion });
 		if (!promise) {
-			assert.equal(1, 2, 'Wrap individual lines with Abbreviation returned undefined.');
+			Assert.equAl(1, 2, 'WrAp individuAl lines with AbbreviAtion returned undefined.');
 			return Promise.resolve();
 		}
 
 		return promise.then(() => {
-			assert.equal(editor.document.getText(), expectedContents);
+			Assert.equAl(editor.document.getText(), expectedContents);
 			return Promise.resolve();
 		});
 	});

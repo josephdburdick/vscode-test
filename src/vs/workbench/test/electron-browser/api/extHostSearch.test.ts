@@ -1,275 +1,275 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { mapArrayOrNot } from 'vs/base/common/arrays';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { joinPath } from 'vs/base/common/resources';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import * as pfs from 'vs/base/node/pfs';
-import { MainContext, MainThreadSearchShape } from 'vs/workbench/api/common/extHost.protocol';
-import { NativeExtHostSearch } from 'vs/workbench/api/node/extHostSearch';
-import { Range } from 'vs/workbench/api/common/extHostTypes';
-import { IFileMatch, IFileQuery, IPatternInfo, IRawFileMatch2, ISearchCompleteStats, ISearchQuery, ITextQuery, QueryType, resultIsMatch } from 'vs/workbench/services/search/common/search';
-import { TestRPCProtocol } from 'vs/workbench/test/browser/api/testRPCProtocol';
-import type * as vscode from 'vscode';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { URITransformerService } from 'vs/workbench/api/common/extHostUriTransformerService';
-import { mock } from 'vs/base/test/common/mock';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { TextSearchManager } from 'vs/workbench/services/search/common/textSearchManager';
-import { NativeTextSearchManager } from 'vs/workbench/services/search/node/textSearchManager';
+import * As Assert from 'Assert';
+import { mApArrAyOrNot } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import * As pfs from 'vs/bAse/node/pfs';
+import { MAinContext, MAinThreAdSeArchShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { NAtiveExtHostSeArch } from 'vs/workbench/Api/node/extHostSeArch';
+import { RAnge } from 'vs/workbench/Api/common/extHostTypes';
+import { IFileMAtch, IFileQuery, IPAtternInfo, IRAwFileMAtch2, ISeArchCompleteStAts, ISeArchQuery, ITextQuery, QueryType, resultIsMAtch } from 'vs/workbench/services/seArch/common/seArch';
+import { TestRPCProtocol } from 'vs/workbench/test/browser/Api/testRPCProtocol';
+import type * As vscode from 'vscode';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { URITrAnsformerService } from 'vs/workbench/Api/common/extHostUriTrAnsformerService';
+import { mock } from 'vs/bAse/test/common/mock';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { TextSeArchMAnAger } from 'vs/workbench/services/seArch/common/textSeArchMAnAger';
+import { NAtiveTextSeArchMAnAger } from 'vs/workbench/services/seArch/node/textSeArchMAnAger';
 
 let rpcProtocol: TestRPCProtocol;
-let extHostSearch: NativeExtHostSearch;
-const disposables = new DisposableStore();
+let extHostSeArch: NAtiveExtHostSeArch;
+const disposAbles = new DisposAbleStore();
 
-let mockMainThreadSearch: MockMainThreadSearch;
-class MockMainThreadSearch implements MainThreadSearchShape {
-	lastHandle!: number;
+let mockMAinThreAdSeArch: MockMAinThreAdSeArch;
+clAss MockMAinThreAdSeArch implements MAinThreAdSeArchShApe {
+	lAstHAndle!: number;
 
-	results: Array<UriComponents | IRawFileMatch2> = [];
+	results: ArrAy<UriComponents | IRAwFileMAtch2> = [];
 
-	$registerFileSearchProvider(handle: number, scheme: string): void {
-		this.lastHandle = handle;
+	$registerFileSeArchProvider(hAndle: number, scheme: string): void {
+		this.lAstHAndle = hAndle;
 	}
 
-	$registerTextSearchProvider(handle: number, scheme: string): void {
-		this.lastHandle = handle;
+	$registerTextSeArchProvider(hAndle: number, scheme: string): void {
+		this.lAstHAndle = hAndle;
 	}
 
-	$unregisterProvider(handle: number): void {
+	$unregisterProvider(hAndle: number): void {
 	}
 
-	$handleFileMatch(handle: number, session: number, data: UriComponents[]): void {
-		this.results.push(...data);
+	$hAndleFileMAtch(hAndle: number, session: number, dAtA: UriComponents[]): void {
+		this.results.push(...dAtA);
 	}
 
-	$handleTextMatch(handle: number, session: number, data: IRawFileMatch2[]): void {
-		this.results.push(...data);
+	$hAndleTextMAtch(hAndle: number, session: number, dAtA: IRAwFileMAtch2[]): void {
+		this.results.push(...dAtA);
 	}
 
-	$handleTelemetry(eventName: string, data: any): void {
+	$hAndleTelemetry(eventNAme: string, dAtA: Any): void {
 	}
 
 	dispose() {
 	}
 }
 
-let mockPFS: Partial<typeof pfs>;
+let mockPFS: PArtiAl<typeof pfs>;
 
-export function extensionResultIsMatch(data: vscode.TextSearchResult): data is vscode.TextSearchMatch {
-	return !!(<vscode.TextSearchMatch>data).preview;
+export function extensionResultIsMAtch(dAtA: vscode.TextSeArchResult): dAtA is vscode.TextSeArchMAtch {
+	return !!(<vscode.TextSeArchMAtch>dAtA).preview;
 }
 
-suite('ExtHostSearch', () => {
-	async function registerTestTextSearchProvider(provider: vscode.TextSearchProvider, scheme = 'file'): Promise<void> {
-		disposables.add(extHostSearch.registerTextSearchProvider(scheme, provider));
-		await rpcProtocol.sync();
+suite('ExtHostSeArch', () => {
+	Async function registerTestTextSeArchProvider(provider: vscode.TextSeArchProvider, scheme = 'file'): Promise<void> {
+		disposAbles.Add(extHostSeArch.registerTextSeArchProvider(scheme, provider));
+		AwAit rpcProtocol.sync();
 	}
 
-	async function registerTestFileSearchProvider(provider: vscode.FileSearchProvider, scheme = 'file'): Promise<void> {
-		disposables.add(extHostSearch.registerFileSearchProvider(scheme, provider));
-		await rpcProtocol.sync();
+	Async function registerTestFileSeArchProvider(provider: vscode.FileSeArchProvider, scheme = 'file'): Promise<void> {
+		disposAbles.Add(extHostSeArch.registerFileSeArchProvider(scheme, provider));
+		AwAit rpcProtocol.sync();
 	}
 
-	async function runFileSearch(query: IFileQuery, cancel = false): Promise<{ results: URI[]; stats: ISearchCompleteStats }> {
-		let stats: ISearchCompleteStats;
+	Async function runFileSeArch(query: IFileQuery, cAncel = fAlse): Promise<{ results: URI[]; stAts: ISeArchCompleteStAts }> {
+		let stAts: ISeArchCompleteStAts;
 		try {
-			const cancellation = new CancellationTokenSource();
-			const p = extHostSearch.$provideFileSearchResults(mockMainThreadSearch.lastHandle, 0, query, cancellation.token);
-			if (cancel) {
-				await new Promise(resolve => process.nextTick(resolve));
-				cancellation.cancel();
+			const cAncellAtion = new CAncellAtionTokenSource();
+			const p = extHostSeArch.$provideFileSeArchResults(mockMAinThreAdSeArch.lAstHAndle, 0, query, cAncellAtion.token);
+			if (cAncel) {
+				AwAit new Promise(resolve => process.nextTick(resolve));
+				cAncellAtion.cAncel();
 			}
 
-			stats = await p;
-		} catch (err) {
-			if (!isPromiseCanceledError(err)) {
-				await rpcProtocol.sync();
+			stAts = AwAit p;
+		} cAtch (err) {
+			if (!isPromiseCAnceledError(err)) {
+				AwAit rpcProtocol.sync();
 				throw err;
 			}
 		}
 
-		await rpcProtocol.sync();
+		AwAit rpcProtocol.sync();
 		return {
-			results: (<UriComponents[]>mockMainThreadSearch.results).map(r => URI.revive(r)),
-			stats: stats!
+			results: (<UriComponents[]>mockMAinThreAdSeArch.results).mAp(r => URI.revive(r)),
+			stAts: stAts!
 		};
 	}
 
-	async function runTextSearch(query: ITextQuery, cancel = false): Promise<{ results: IFileMatch[], stats: ISearchCompleteStats }> {
-		let stats: ISearchCompleteStats;
+	Async function runTextSeArch(query: ITextQuery, cAncel = fAlse): Promise<{ results: IFileMAtch[], stAts: ISeArchCompleteStAts }> {
+		let stAts: ISeArchCompleteStAts;
 		try {
-			const cancellation = new CancellationTokenSource();
-			const p = extHostSearch.$provideTextSearchResults(mockMainThreadSearch.lastHandle, 0, query, cancellation.token);
-			if (cancel) {
-				await new Promise(resolve => process.nextTick(resolve));
-				cancellation.cancel();
+			const cAncellAtion = new CAncellAtionTokenSource();
+			const p = extHostSeArch.$provideTextSeArchResults(mockMAinThreAdSeArch.lAstHAndle, 0, query, cAncellAtion.token);
+			if (cAncel) {
+				AwAit new Promise(resolve => process.nextTick(resolve));
+				cAncellAtion.cAncel();
 			}
 
-			stats = await p;
-		} catch (err) {
-			if (!isPromiseCanceledError(err)) {
-				await rpcProtocol.sync();
+			stAts = AwAit p;
+		} cAtch (err) {
+			if (!isPromiseCAnceledError(err)) {
+				AwAit rpcProtocol.sync();
 				throw err;
 			}
 		}
 
-		await rpcProtocol.sync();
-		const results = (<IRawFileMatch2[]>mockMainThreadSearch.results).map(r => ({
+		AwAit rpcProtocol.sync();
+		const results = (<IRAwFileMAtch2[]>mockMAinThreAdSeArch.results).mAp(r => ({
 			...r,
 			...{
 				resource: URI.revive(r.resource)
 			}
 		}));
 
-		return { results, stats: stats! };
+		return { results, stAts: stAts! };
 	}
 
 	setup(() => {
 		rpcProtocol = new TestRPCProtocol();
 
-		mockMainThreadSearch = new MockMainThreadSearch();
+		mockMAinThreAdSeArch = new MockMAinThreAdSeArch();
 		const logService = new NullLogService();
 
-		rpcProtocol.set(MainContext.MainThreadSearch, mockMainThreadSearch);
+		rpcProtocol.set(MAinContext.MAinThreAdSeArch, mockMAinThreAdSeArch);
 
 		mockPFS = {};
-		extHostSearch = new class extends NativeExtHostSearch {
+		extHostSeArch = new clAss extends NAtiveExtHostSeArch {
 			constructor() {
 				super(
 					rpcProtocol,
-					new class extends mock<IExtHostInitDataService>() { remote = { isRemote: false, authority: undefined, connectionData: null }; },
-					new URITransformerService(null),
+					new clAss extends mock<IExtHostInitDAtAService>() { remote = { isRemote: fAlse, Authority: undefined, connectionDAtA: null }; },
+					new URITrAnsformerService(null),
 					logService
 				);
-				this._pfs = mockPFS as any;
+				this._pfs = mockPFS As Any;
 			}
 
-			protected createTextSearchManager(query: ITextQuery, provider: vscode.TextSearchProvider): TextSearchManager {
-				return new NativeTextSearchManager(query, provider, this._pfs);
+			protected creAteTextSeArchMAnAger(query: ITextQuery, provider: vscode.TextSeArchProvider): TextSeArchMAnAger {
+				return new NAtiveTextSeArchMAnAger(query, provider, this._pfs);
 			}
 		};
 	});
 
-	teardown(() => {
-		disposables.clear();
+	teArdown(() => {
+		disposAbles.cleAr();
 		return rpcProtocol.sync();
 	});
 
-	const rootFolderA = URI.file('/foo/bar1');
-	const rootFolderB = URI.file('/foo/bar2');
-	const fancyScheme = 'fancy';
-	const fancySchemeFolderA = URI.from({ scheme: fancyScheme, path: '/project/folder1' });
+	const rootFolderA = URI.file('/foo/bAr1');
+	const rootFolderB = URI.file('/foo/bAr2');
+	const fAncyScheme = 'fAncy';
+	const fAncySchemeFolderA = URI.from({ scheme: fAncyScheme, pAth: '/project/folder1' });
 
 	suite('File:', () => {
 
-		function getSimpleQuery(filePattern = ''): IFileQuery {
+		function getSimpleQuery(filePAttern = ''): IFileQuery {
 			return {
 				type: QueryType.File,
 
-				filePattern,
+				filePAttern,
 				folderQueries: [
 					{ folder: rootFolderA }
 				]
 			};
 		}
 
-		function compareURIs(actual: URI[], expected: URI[]) {
-			const sortAndStringify = (arr: URI[]) => arr.sort().map(u => u.toString());
+		function compAreURIs(ActuAl: URI[], expected: URI[]) {
+			const sortAndStringify = (Arr: URI[]) => Arr.sort().mAp(u => u.toString());
 
-			assert.deepEqual(
-				sortAndStringify(actual),
+			Assert.deepEquAl(
+				sortAndStringify(ActuAl),
 				sortAndStringify(expected));
 		}
 
-		test('no results', async () => {
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+		test('no results', Async () => {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					return Promise.resolve(null!);
 				}
 			});
 
-			const { results, stats } = await runFileSearch(getSimpleQuery());
-			assert(!stats.limitHit);
-			assert(!results.length);
+			const { results, stAts } = AwAit runFileSeArch(getSimpleQuery());
+			Assert(!stAts.limitHit);
+			Assert(!results.length);
 		});
 
-		test('simple results', async () => {
+		test('simple results', Async () => {
 			const reportedResults = [
-				joinPath(rootFolderA, 'file1.ts'),
-				joinPath(rootFolderA, 'file2.ts'),
-				joinPath(rootFolderA, 'subfolder/file3.ts')
+				joinPAth(rootFolderA, 'file1.ts'),
+				joinPAth(rootFolderA, 'file2.ts'),
+				joinPAth(rootFolderA, 'subfolder/file3.ts')
 			];
 
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					return Promise.resolve(reportedResults);
 				}
 			});
 
-			const { results, stats } = await runFileSearch(getSimpleQuery());
-			assert(!stats.limitHit);
-			assert.equal(results.length, 3);
-			compareURIs(results, reportedResults);
+			const { results, stAts } = AwAit runFileSeArch(getSimpleQuery());
+			Assert(!stAts.limitHit);
+			Assert.equAl(results.length, 3);
+			compAreURIs(results, reportedResults);
 		});
 
-		test('Search canceled', async () => {
-			let cancelRequested = false;
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+		test('SeArch cAnceled', Async () => {
+			let cAncelRequested = fAlse;
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					return new Promise((resolve, reject) => {
-						token.onCancellationRequested(() => {
-							cancelRequested = true;
+						token.onCAncellAtionRequested(() => {
+							cAncelRequested = true;
 
-							resolve([joinPath(options.folder, 'file1.ts')]); // or reject or nothing?
+							resolve([joinPAth(options.folder, 'file1.ts')]); // or reject or nothing?
 						});
 					});
 				}
 			});
 
-			const { results } = await runFileSearch(getSimpleQuery(), true);
-			assert(cancelRequested);
-			assert(!results.length);
+			const { results } = AwAit runFileSeArch(getSimpleQuery(), true);
+			Assert(cAncelRequested);
+			Assert(!results.length);
 		});
 
-		test('provider returns null', async () => {
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+		test('provider returns null', Async () => {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					return null!;
 				}
 			});
 
 			try {
-				await runFileSearch(getSimpleQuery());
-				assert(false, 'Expected to fail');
-			} catch {
+				AwAit runFileSeArch(getSimpleQuery());
+				Assert(fAlse, 'Expected to fAil');
+			} cAtch {
 				// Expected to throw
 			}
 		});
 
-		test('all provider calls get global include/excludes', async () => {
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
-					assert(options.excludes.length === 2 && options.includes.length === 2, 'Missing global include/excludes');
+		test('All provider cAlls get globAl include/excludes', Async () => {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
+					Assert(options.excludes.length === 2 && options.includes.length === 2, 'Missing globAl include/excludes');
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				includePattern: {
+				filePAttern: '',
+				includePAttern: {
 					'foo': true,
-					'bar': true
+					'bAr': true
 				},
-				excludePattern: {
+				excludePAttern: {
 					'something': true,
 					'else': true
 				},
@@ -279,109 +279,109 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			await runFileSearch(query);
+			AwAit runFileSeArch(query);
 		});
 
-		test('global/local include/excludes combined', async () => {
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+		test('globAl/locAl include/excludes combined', Async () => {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					if (options.folder.toString() === rootFolderA.toString()) {
-						assert.deepEqual(options.includes.sort(), ['*.ts', 'foo']);
-						assert.deepEqual(options.excludes.sort(), ['*.js', 'bar']);
+						Assert.deepEquAl(options.includes.sort(), ['*.ts', 'foo']);
+						Assert.deepEquAl(options.excludes.sort(), ['*.js', 'bAr']);
 					} else {
-						assert.deepEqual(options.includes.sort(), ['*.ts']);
-						assert.deepEqual(options.excludes.sort(), ['*.js']);
+						Assert.deepEquAl(options.includes.sort(), ['*.ts']);
+						Assert.deepEquAl(options.excludes.sort(), ['*.js']);
 					}
 
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				includePattern: {
+				filePAttern: '',
+				includePAttern: {
 					'*.ts': true
 				},
-				excludePattern: {
+				excludePAttern: {
 					'*.js': true
 				},
 				folderQueries: [
 					{
 						folder: rootFolderA,
-						includePattern: {
+						includePAttern: {
 							'foo': true
 						},
-						excludePattern: {
-							'bar': true
+						excludePAttern: {
+							'bAr': true
 						}
 					},
 					{ folder: rootFolderB }
 				]
 			};
 
-			await runFileSearch(query);
+			AwAit runFileSeArch(query);
 		});
 
-		test('include/excludes resolved correctly', async () => {
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
-					assert.deepEqual(options.includes.sort(), ['*.jsx', '*.ts']);
-					assert.deepEqual(options.excludes.sort(), []);
+		test('include/excludes resolved correctly', Async () => {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
+					Assert.deepEquAl(options.includes.sort(), ['*.jsx', '*.ts']);
+					Assert.deepEquAl(options.excludes.sort(), []);
 
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				includePattern: {
+				filePAttern: '',
+				includePAttern: {
 					'*.ts': true,
-					'*.jsx': false
+					'*.jsx': fAlse
 				},
-				excludePattern: {
+				excludePAttern: {
 					'*.js': true,
-					'*.tsx': false
+					'*.tsx': fAlse
 				},
 				folderQueries: [
 					{
 						folder: rootFolderA,
-						includePattern: {
+						includePAttern: {
 							'*.jsx': true
 						},
-						excludePattern: {
-							'*.js': false
+						excludePAttern: {
+							'*.js': fAlse
 						}
 					}
 				]
 			};
 
-			await runFileSearch(query);
+			AwAit runFileSeArch(query);
 		});
 
-		test('basic sibling exclude clause', async () => {
+		test('bAsic sibling exclude clAuse', Async () => {
 			const reportedResults = [
 				'file1.ts',
 				'file1.js',
 			];
 
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					return Promise.resolve(reportedResults
-						.map(relativePath => joinPath(options.folder, relativePath)));
+						.mAp(relAtivePAth => joinPAth(options.folder, relAtivePAth)));
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				excludePattern: {
+				filePAttern: '',
+				excludePAttern: {
 					'*.js': {
-						when: '$(basename).ts'
+						when: '$(bAsenAme).ts'
 					}
 				},
 				folderQueries: [
@@ -389,99 +389,99 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results } = await runFileSearch(query);
-			compareURIs(
+			const { results } = AwAit runFileSeArch(query);
+			compAreURIs(
 				results,
 				[
-					joinPath(rootFolderA, 'file1.ts')
+					joinPAth(rootFolderA, 'file1.ts')
 				]);
 		});
 
-		test('multiroot sibling exclude clause', async () => {
+		test('multiroot sibling exclude clAuse', Async () => {
 
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					let reportedResults: URI[];
-					if (options.folder.fsPath === rootFolderA.fsPath) {
+					if (options.folder.fsPAth === rootFolderA.fsPAth) {
 						reportedResults = [
 							'folder/fileA.scss',
 							'folder/fileA.css',
 							'folder/file2.css'
-						].map(relativePath => joinPath(rootFolderA, relativePath));
+						].mAp(relAtivePAth => joinPAth(rootFolderA, relAtivePAth));
 					} else {
 						reportedResults = [
 							'fileB.ts',
 							'fileB.js',
 							'file3.js'
-						].map(relativePath => joinPath(rootFolderB, relativePath));
+						].mAp(relAtivePAth => joinPAth(rootFolderB, relAtivePAth));
 					}
 
 					return Promise.resolve(reportedResults);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				excludePattern: {
+				filePAttern: '',
+				excludePAttern: {
 					'*.js': {
-						when: '$(basename).ts'
+						when: '$(bAsenAme).ts'
 					},
 					'*.css': true
 				},
 				folderQueries: [
 					{
 						folder: rootFolderA,
-						excludePattern: {
+						excludePAttern: {
 							'folder/*.css': {
-								when: '$(basename).scss'
+								when: '$(bAsenAme).scss'
 							}
 						}
 					},
 					{
 						folder: rootFolderB,
-						excludePattern: {
-							'*.js': false
+						excludePAttern: {
+							'*.js': fAlse
 						}
 					}
 				]
 			};
 
-			const { results } = await runFileSearch(query);
-			compareURIs(
+			const { results } = AwAit runFileSeArch(query);
+			compAreURIs(
 				results,
 				[
-					joinPath(rootFolderA, 'folder/fileA.scss'),
-					joinPath(rootFolderA, 'folder/file2.css'),
+					joinPAth(rootFolderA, 'folder/fileA.scss'),
+					joinPAth(rootFolderA, 'folder/file2.css'),
 
-					joinPath(rootFolderB, 'fileB.ts'),
-					joinPath(rootFolderB, 'fileB.js'),
-					joinPath(rootFolderB, 'file3.js'),
+					joinPAth(rootFolderB, 'fileB.ts'),
+					joinPAth(rootFolderB, 'fileB.js'),
+					joinPAth(rootFolderB, 'file3.js'),
 				]);
 		});
 
-		test.skip('max results = 1', async () => {
+		test.skip('mAx results = 1', Async () => {
 			const reportedResults = [
-				joinPath(rootFolderA, 'file1.ts'),
-				joinPath(rootFolderA, 'file2.ts'),
-				joinPath(rootFolderA, 'file3.ts'),
+				joinPAth(rootFolderA, 'file1.ts'),
+				joinPAth(rootFolderA, 'file2.ts'),
+				joinPAth(rootFolderA, 'file3.ts'),
 			];
 
-			let wasCanceled = false;
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
-					token.onCancellationRequested(() => wasCanceled = true);
+			let wAsCAnceled = fAlse;
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
+					token.onCAncellAtionRequested(() => wAsCAnceled = true);
 
 					return Promise.resolve(reportedResults);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				maxResults: 1,
+				filePAttern: '',
+				mAxResults: 1,
 
 				folderQueries: [
 					{
@@ -490,34 +490,34 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results, stats } = await runFileSearch(query);
-			assert(stats.limitHit, 'Expected to return limitHit');
-			assert.equal(results.length, 1);
-			compareURIs(results, reportedResults.slice(0, 1));
-			assert(wasCanceled, 'Expected to be canceled when hitting limit');
+			const { results, stAts } = AwAit runFileSeArch(query);
+			Assert(stAts.limitHit, 'Expected to return limitHit');
+			Assert.equAl(results.length, 1);
+			compAreURIs(results, reportedResults.slice(0, 1));
+			Assert(wAsCAnceled, 'Expected to be cAnceled when hitting limit');
 		});
 
-		test.skip('max results = 2', async () => {
+		test.skip('mAx results = 2', Async () => {
 			const reportedResults = [
-				joinPath(rootFolderA, 'file1.ts'),
-				joinPath(rootFolderA, 'file2.ts'),
-				joinPath(rootFolderA, 'file3.ts'),
+				joinPAth(rootFolderA, 'file1.ts'),
+				joinPAth(rootFolderA, 'file2.ts'),
+				joinPAth(rootFolderA, 'file3.ts'),
 			];
 
-			let wasCanceled = false;
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
-					token.onCancellationRequested(() => wasCanceled = true);
+			let wAsCAnceled = fAlse;
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
+					token.onCAncellAtionRequested(() => wAsCAnceled = true);
 
 					return Promise.resolve(reportedResults);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				maxResults: 2,
+				filePAttern: '',
+				mAxResults: 2,
 
 				folderQueries: [
 					{
@@ -526,33 +526,33 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results, stats } = await runFileSearch(query);
-			assert(stats.limitHit, 'Expected to return limitHit');
-			assert.equal(results.length, 2);
-			compareURIs(results, reportedResults.slice(0, 2));
-			assert(wasCanceled, 'Expected to be canceled when hitting limit');
+			const { results, stAts } = AwAit runFileSeArch(query);
+			Assert(stAts.limitHit, 'Expected to return limitHit');
+			Assert.equAl(results.length, 2);
+			compAreURIs(results, reportedResults.slice(0, 2));
+			Assert(wAsCAnceled, 'Expected to be cAnceled when hitting limit');
 		});
 
-		test.skip('provider returns maxResults exactly', async () => {
+		test.skip('provider returns mAxResults exActly', Async () => {
 			const reportedResults = [
-				joinPath(rootFolderA, 'file1.ts'),
-				joinPath(rootFolderA, 'file2.ts'),
+				joinPAth(rootFolderA, 'file1.ts'),
+				joinPAth(rootFolderA, 'file2.ts'),
 			];
 
-			let wasCanceled = false;
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
-					token.onCancellationRequested(() => wasCanceled = true);
+			let wAsCAnceled = fAlse;
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
+					token.onCAncellAtionRequested(() => wAsCAnceled = true);
 
 					return Promise.resolve(reportedResults);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				maxResults: 2,
+				filePAttern: '',
+				mAxResults: 2,
 
 				folderQueries: [
 					{
@@ -561,34 +561,34 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results, stats } = await runFileSearch(query);
-			assert(!stats.limitHit, 'Expected not to return limitHit');
-			assert.equal(results.length, 2);
-			compareURIs(results, reportedResults);
-			assert(!wasCanceled, 'Expected not to be canceled when just reaching limit');
+			const { results, stAts } = AwAit runFileSeArch(query);
+			Assert(!stAts.limitHit, 'Expected not to return limitHit');
+			Assert.equAl(results.length, 2);
+			compAreURIs(results, reportedResults);
+			Assert(!wAsCAnceled, 'Expected not to be cAnceled when just reAching limit');
 		});
 
-		test('multiroot max results', async () => {
-			let cancels = 0;
-			await registerTestFileSearchProvider({
-				async provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
-					token.onCancellationRequested(() => cancels++);
+		test('multiroot mAx results', Async () => {
+			let cAncels = 0;
+			AwAit registerTestFileSeArchProvider({
+				Async provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
+					token.onCAncellAtionRequested(() => cAncels++);
 
-					// Provice results async so it has a chance to invoke every provider
-					await new Promise(r => process.nextTick(r));
+					// Provice results Async so it hAs A chAnce to invoke every provider
+					AwAit new Promise(r => process.nextTick(r));
 					return [
 						'file1.ts',
 						'file2.ts',
 						'file3.ts',
-					].map(relativePath => joinPath(options.folder, relativePath));
+					].mAp(relAtivePAth => joinPAth(options.folder, relAtivePAth));
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
 
-				filePattern: '',
-				maxResults: 2,
+				filePAttern: '',
+				mAxResults: 2,
 
 				folderQueries: [
 					{
@@ -600,61 +600,61 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results } = await runFileSearch(query);
-			assert.equal(results.length, 2); // Don't care which 2 we got
-			assert.equal(cancels, 2, 'Expected all invocations to be canceled when hitting limit');
+			const { results } = AwAit runFileSeArch(query);
+			Assert.equAl(results.length, 2); // Don't cAre which 2 we got
+			Assert.equAl(cAncels, 2, 'Expected All invocAtions to be cAnceled when hitting limit');
 		});
 
-		test('works with non-file schemes', async () => {
+		test('works with non-file schemes', Async () => {
 			const reportedResults = [
-				joinPath(fancySchemeFolderA, 'file1.ts'),
-				joinPath(fancySchemeFolderA, 'file2.ts'),
-				joinPath(fancySchemeFolderA, 'subfolder/file3.ts'),
+				joinPAth(fAncySchemeFolderA, 'file1.ts'),
+				joinPAth(fAncySchemeFolderA, 'file2.ts'),
+				joinPAth(fAncySchemeFolderA, 'subfolder/file3.ts'),
 
 			];
 
-			await registerTestFileSearchProvider({
-				provideFileSearchResults(query: vscode.FileSearchQuery, options: vscode.FileSearchOptions, token: vscode.CancellationToken): Promise<URI[]> {
+			AwAit registerTestFileSeArchProvider({
+				provideFileSeArchResults(query: vscode.FileSeArchQuery, options: vscode.FileSeArchOptions, token: vscode.CAncellAtionToken): Promise<URI[]> {
 					return Promise.resolve(reportedResults);
 				}
-			}, fancyScheme);
+			}, fAncyScheme);
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.File,
-				filePattern: '',
+				filePAttern: '',
 				folderQueries: [
 					{
-						folder: fancySchemeFolderA
+						folder: fAncySchemeFolderA
 					}
 				]
 			};
 
-			const { results } = await runFileSearch(query);
-			compareURIs(results, reportedResults);
+			const { results } = AwAit runFileSeArch(query);
+			compAreURIs(results, reportedResults);
 		});
 	});
 
 	suite('Text:', () => {
 
-		function makePreview(text: string): vscode.TextSearchMatch['preview'] {
+		function mAkePreview(text: string): vscode.TextSeArchMAtch['preview'] {
 			return {
-				matches: [new Range(0, 0, 0, text.length)],
+				mAtches: [new RAnge(0, 0, 0, text.length)],
 				text
 			};
 		}
 
-		function makeTextResult(baseFolder: URI, relativePath: string): vscode.TextSearchMatch {
+		function mAkeTextResult(bAseFolder: URI, relAtivePAth: string): vscode.TextSeArchMAtch {
 			return {
-				preview: makePreview('foo'),
-				ranges: [new Range(0, 0, 0, 3)],
-				uri: joinPath(baseFolder, relativePath)
+				preview: mAkePreview('foo'),
+				rAnges: [new RAnge(0, 0, 0, 3)],
+				uri: joinPAth(bAseFolder, relAtivePAth)
 			};
 		}
 
 		function getSimpleQuery(queryText: string): ITextQuery {
 			return {
 				type: QueryType.Text,
-				contentPattern: getPattern(queryText),
+				contentPAttern: getPAttern(queryText),
 
 				folderQueries: [
 					{ folder: rootFolderA }
@@ -662,55 +662,55 @@ suite('ExtHostSearch', () => {
 			};
 		}
 
-		function getPattern(queryText: string): IPatternInfo {
+		function getPAttern(queryText: string): IPAtternInfo {
 			return {
-				pattern: queryText
+				pAttern: queryText
 			};
 		}
 
-		function assertResults(actual: IFileMatch[], expected: vscode.TextSearchResult[]) {
-			const actualTextSearchResults: vscode.TextSearchResult[] = [];
-			for (let fileMatch of actual) {
-				// Make relative
-				for (let lineResult of fileMatch.results!) {
-					if (resultIsMatch(lineResult)) {
-						actualTextSearchResults.push({
+		function AssertResults(ActuAl: IFileMAtch[], expected: vscode.TextSeArchResult[]) {
+			const ActuAlTextSeArchResults: vscode.TextSeArchResult[] = [];
+			for (let fileMAtch of ActuAl) {
+				// MAke relAtive
+				for (let lineResult of fileMAtch.results!) {
+					if (resultIsMAtch(lineResult)) {
+						ActuAlTextSeArchResults.push({
 							preview: {
 								text: lineResult.preview.text,
-								matches: mapArrayOrNot(
-									lineResult.preview.matches,
-									m => new Range(m.startLineNumber, m.startColumn, m.endLineNumber, m.endColumn))
+								mAtches: mApArrAyOrNot(
+									lineResult.preview.mAtches,
+									m => new RAnge(m.stArtLineNumber, m.stArtColumn, m.endLineNumber, m.endColumn))
 							},
-							ranges: mapArrayOrNot(
-								lineResult.ranges,
-								r => new Range(r.startLineNumber, r.startColumn, r.endLineNumber, r.endColumn),
+							rAnges: mApArrAyOrNot(
+								lineResult.rAnges,
+								r => new RAnge(r.stArtLineNumber, r.stArtColumn, r.endLineNumber, r.endColumn),
 							),
-							uri: fileMatch.resource
+							uri: fileMAtch.resource
 						});
 					} else {
-						actualTextSearchResults.push(<vscode.TextSearchContext>{
+						ActuAlTextSeArchResults.push(<vscode.TextSeArchContext>{
 							text: lineResult.text,
 							lineNumber: lineResult.lineNumber,
-							uri: fileMatch.resource
+							uri: fileMAtch.resource
 						});
 					}
 				}
 			}
 
-			const rangeToString = (r: vscode.Range) => `(${r.start.line}, ${r.start.character}), (${r.end.line}, ${r.end.character})`;
+			const rAngeToString = (r: vscode.RAnge) => `(${r.stArt.line}, ${r.stArt.chArActer}), (${r.end.line}, ${r.end.chArActer})`;
 
-			const makeComparable = (results: vscode.TextSearchResult[]) => results
-				.sort((a, b) => {
-					const compareKeyA = a.uri.toString() + ': ' + (extensionResultIsMatch(a) ? a.preview.text : a.text);
-					const compareKeyB = b.uri.toString() + ': ' + (extensionResultIsMatch(b) ? b.preview.text : b.text);
-					return compareKeyB.localeCompare(compareKeyA);
+			const mAkeCompArAble = (results: vscode.TextSeArchResult[]) => results
+				.sort((A, b) => {
+					const compAreKeyA = A.uri.toString() + ': ' + (extensionResultIsMAtch(A) ? A.preview.text : A.text);
+					const compAreKeyB = b.uri.toString() + ': ' + (extensionResultIsMAtch(b) ? b.preview.text : b.text);
+					return compAreKeyB.locAleCompAre(compAreKeyA);
 				})
-				.map(r => extensionResultIsMatch(r) ? {
+				.mAp(r => extensionResultIsMAtch(r) ? {
 					uri: r.uri.toString(),
-					range: mapArrayOrNot(r.ranges, rangeToString),
+					rAnge: mApArrAyOrNot(r.rAnges, rAngeToString),
 					preview: {
 						text: r.preview.text,
-						match: null // Don't care about this right now
+						mAtch: null // Don't cAre About this right now
 					}
 				} : {
 						uri: r.uri.toString(),
@@ -718,59 +718,59 @@ suite('ExtHostSearch', () => {
 						lineNumber: r.lineNumber
 					});
 
-			return assert.deepEqual(
-				makeComparable(actualTextSearchResults),
-				makeComparable(expected));
+			return Assert.deepEquAl(
+				mAkeCompArAble(ActuAlTextSeArchResults),
+				mAkeCompArAble(expected));
 		}
 
-		test('no results', async () => {
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
+		test('no results', Async () => {
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
 					return Promise.resolve(null!);
 				}
 			});
 
-			const { results, stats } = await runTextSearch(getSimpleQuery('foo'));
-			assert(!stats.limitHit);
-			assert(!results.length);
+			const { results, stAts } = AwAit runTextSeArch(getSimpleQuery('foo'));
+			Assert(!stAts.limitHit);
+			Assert(!results.length);
 		});
 
-		test('basic results', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.ts'),
-				makeTextResult(rootFolderA, 'file2.ts')
+		test('bAsic results', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.ts'),
+				mAkeTextResult(rootFolderA, 'file2.ts')
 			];
 
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					providedResults.forEach(r => progress.report(r));
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const { results, stats } = await runTextSearch(getSimpleQuery('foo'));
-			assert(!stats.limitHit);
-			assertResults(results, providedResults);
+			const { results, stAts } = AwAit runTextSeArch(getSimpleQuery('foo'));
+			Assert(!stAts.limitHit);
+			AssertResults(results, providedResults);
 		});
 
-		test('all provider calls get global include/excludes', async () => {
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					assert.equal(options.includes.length, 1);
-					assert.equal(options.excludes.length, 1);
+		test('All provider cAlls get globAl include/excludes', Async () => {
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					Assert.equAl(options.includes.length, 1);
+					Assert.equAl(options.excludes.length, 1);
 					return Promise.resolve(null!);
 				}
 			});
 
 			const query: ITextQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				includePattern: {
+				includePAttern: {
 					'*.ts': true
 				},
 
-				excludePattern: {
+				excludePAttern: {
 					'*.js': true
 				},
 
@@ -780,18 +780,18 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			await runTextSearch(query);
+			AwAit runTextSeArch(query);
 		});
 
-		test('global/local include/excludes combined', async () => {
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
+		test('globAl/locAl include/excludes combined', Async () => {
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
 					if (options.folder.toString() === rootFolderA.toString()) {
-						assert.deepEqual(options.includes.sort(), ['*.ts', 'foo']);
-						assert.deepEqual(options.excludes.sort(), ['*.js', 'bar']);
+						Assert.deepEquAl(options.includes.sort(), ['*.ts', 'foo']);
+						Assert.deepEquAl(options.excludes.sort(), ['*.js', 'bAr']);
 					} else {
-						assert.deepEqual(options.includes.sort(), ['*.ts']);
-						assert.deepEqual(options.excludes.sort(), ['*.js']);
+						Assert.deepEquAl(options.includes.sort(), ['*.ts']);
+						Assert.deepEquAl(options.excludes.sort(), ['*.js']);
 					}
 
 					return Promise.resolve(null!);
@@ -800,115 +800,115 @@ suite('ExtHostSearch', () => {
 
 			const query: ITextQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				includePattern: {
+				includePAttern: {
 					'*.ts': true
 				},
-				excludePattern: {
+				excludePAttern: {
 					'*.js': true
 				},
 				folderQueries: [
 					{
 						folder: rootFolderA,
-						includePattern: {
+						includePAttern: {
 							'foo': true
 						},
-						excludePattern: {
-							'bar': true
+						excludePAttern: {
+							'bAr': true
 						}
 					},
 					{ folder: rootFolderB }
 				]
 			};
 
-			await runTextSearch(query);
+			AwAit runTextSeArch(query);
 		});
 
-		test('include/excludes resolved correctly', async () => {
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					assert.deepEqual(options.includes.sort(), ['*.jsx', '*.ts']);
-					assert.deepEqual(options.excludes.sort(), []);
+		test('include/excludes resolved correctly', Async () => {
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					Assert.deepEquAl(options.includes.sort(), ['*.jsx', '*.ts']);
+					Assert.deepEquAl(options.excludes.sort(), []);
 
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				includePattern: {
+				includePAttern: {
 					'*.ts': true,
-					'*.jsx': false
+					'*.jsx': fAlse
 				},
-				excludePattern: {
+				excludePAttern: {
 					'*.js': true,
-					'*.tsx': false
+					'*.tsx': fAlse
 				},
 				folderQueries: [
 					{
 						folder: rootFolderA,
-						includePattern: {
+						includePAttern: {
 							'*.jsx': true
 						},
-						excludePattern: {
-							'*.js': false
+						excludePAttern: {
+							'*.js': fAlse
 						}
 					}
 				]
 			};
 
-			await runTextSearch(query);
+			AwAit runTextSeArch(query);
 		});
 
-		test('provider fail', async () => {
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					throw new Error('Provider fail');
+		test('provider fAil', Async () => {
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					throw new Error('Provider fAil');
 				}
 			});
 
 			try {
-				await runTextSearch(getSimpleQuery('foo'));
-				assert(false, 'Expected to fail');
-			} catch {
-				// expected to fail
+				AwAit runTextSeArch(getSimpleQuery('foo'));
+				Assert(fAlse, 'Expected to fAil');
+			} cAtch {
+				// expected to fAil
 			}
 		});
 
-		test('basic sibling clause', async () => {
-			mockPFS.readdir = (_path: string) => {
-				if (_path === rootFolderA.fsPath) {
+		test('bAsic sibling clAuse', Async () => {
+			mockPFS.reAddir = (_pAth: string) => {
+				if (_pAth === rootFolderA.fsPAth) {
 					return Promise.resolve([
 						'file1.js',
 						'file1.ts'
 					]);
 				} else {
-					return Promise.reject(new Error('Wrong path'));
+					return Promise.reject(new Error('Wrong pAth'));
 				}
 			};
 
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.js'),
-				makeTextResult(rootFolderA, 'file1.ts')
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.js'),
+				mAkeTextResult(rootFolderA, 'file1.ts')
 			];
 
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					providedResults.forEach(r => progress.report(r));
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				excludePattern: {
+				excludePAttern: {
 					'*.js': {
-						when: '$(basename).ts'
+						when: '$(bAsenAme).ts'
 					}
 				},
 
@@ -917,106 +917,106 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results } = await runTextSearch(query);
-			assertResults(results, providedResults.slice(1));
+			const { results } = AwAit runTextSeArch(query);
+			AssertResults(results, providedResults.slice(1));
 		});
 
-		test('multiroot sibling clause', async () => {
-			mockPFS.readdir = (_path: string) => {
-				if (_path === joinPath(rootFolderA, 'folder').fsPath) {
+		test('multiroot sibling clAuse', Async () => {
+			mockPFS.reAddir = (_pAth: string) => {
+				if (_pAth === joinPAth(rootFolderA, 'folder').fsPAth) {
 					return Promise.resolve([
 						'fileA.scss',
 						'fileA.css',
 						'file2.css'
 					]);
-				} else if (_path === rootFolderB.fsPath) {
+				} else if (_pAth === rootFolderB.fsPAth) {
 					return Promise.resolve([
 						'fileB.ts',
 						'fileB.js',
 						'file3.js'
 					]);
 				} else {
-					return Promise.reject(new Error('Wrong path'));
+					return Promise.reject(new Error('Wrong pAth'));
 				}
 			};
 
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
 					let reportedResults;
-					if (options.folder.fsPath === rootFolderA.fsPath) {
+					if (options.folder.fsPAth === rootFolderA.fsPAth) {
 						reportedResults = [
-							makeTextResult(rootFolderA, 'folder/fileA.scss'),
-							makeTextResult(rootFolderA, 'folder/fileA.css'),
-							makeTextResult(rootFolderA, 'folder/file2.css')
+							mAkeTextResult(rootFolderA, 'folder/fileA.scss'),
+							mAkeTextResult(rootFolderA, 'folder/fileA.css'),
+							mAkeTextResult(rootFolderA, 'folder/file2.css')
 						];
 					} else {
 						reportedResults = [
-							makeTextResult(rootFolderB, 'fileB.ts'),
-							makeTextResult(rootFolderB, 'fileB.js'),
-							makeTextResult(rootFolderB, 'file3.js')
+							mAkeTextResult(rootFolderB, 'fileB.ts'),
+							mAkeTextResult(rootFolderB, 'fileB.js'),
+							mAkeTextResult(rootFolderB, 'file3.js')
 						];
 					}
 
-					reportedResults.forEach(r => progress.report(r));
+					reportedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				excludePattern: {
+				excludePAttern: {
 					'*.js': {
-						when: '$(basename).ts'
+						when: '$(bAsenAme).ts'
 					},
 					'*.css': true
 				},
 				folderQueries: [
 					{
 						folder: rootFolderA,
-						excludePattern: {
+						excludePAttern: {
 							'folder/*.css': {
-								when: '$(basename).scss'
+								when: '$(bAsenAme).scss'
 							}
 						}
 					},
 					{
 						folder: rootFolderB,
-						excludePattern: {
-							'*.js': false
+						excludePAttern: {
+							'*.js': fAlse
 						}
 					}
 				]
 			};
 
-			const { results } = await runTextSearch(query);
-			assertResults(results, [
-				makeTextResult(rootFolderA, 'folder/fileA.scss'),
-				makeTextResult(rootFolderA, 'folder/file2.css'),
-				makeTextResult(rootFolderB, 'fileB.ts'),
-				makeTextResult(rootFolderB, 'fileB.js'),
-				makeTextResult(rootFolderB, 'file3.js')]);
+			const { results } = AwAit runTextSeArch(query);
+			AssertResults(results, [
+				mAkeTextResult(rootFolderA, 'folder/fileA.scss'),
+				mAkeTextResult(rootFolderA, 'folder/file2.css'),
+				mAkeTextResult(rootFolderB, 'fileB.ts'),
+				mAkeTextResult(rootFolderB, 'fileB.js'),
+				mAkeTextResult(rootFolderB, 'file3.js')]);
 		});
 
-		test('include pattern applied', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.js'),
-				makeTextResult(rootFolderA, 'file1.ts')
+		test('include pAttern Applied', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.js'),
+				mAkeTextResult(rootFolderA, 'file1.ts')
 			];
 
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					providedResults.forEach(r => progress.report(r));
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				includePattern: {
+				includePAttern: {
 					'*.ts': true
 				},
 
@@ -1025,157 +1025,157 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results } = await runTextSearch(query);
-			assertResults(results, providedResults.slice(1));
+			const { results } = AwAit runTextSeArch(query);
+			AssertResults(results, providedResults.slice(1));
 		});
 
-		test('max results = 1', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.ts'),
-				makeTextResult(rootFolderA, 'file2.ts')
+		test('mAx results = 1', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.ts'),
+				mAkeTextResult(rootFolderA, 'file2.ts')
 			];
 
-			let wasCanceled = false;
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					token.onCancellationRequested(() => wasCanceled = true);
-					providedResults.forEach(r => progress.report(r));
+			let wAsCAnceled = fAlse;
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					token.onCAncellAtionRequested(() => wAsCAnceled = true);
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				maxResults: 1,
+				mAxResults: 1,
 
 				folderQueries: [
 					{ folder: rootFolderA }
 				]
 			};
 
-			const { results, stats } = await runTextSearch(query);
-			assert(stats.limitHit, 'Expected to return limitHit');
-			assertResults(results, providedResults.slice(0, 1));
-			assert(wasCanceled, 'Expected to be canceled');
+			const { results, stAts } = AwAit runTextSeArch(query);
+			Assert(stAts.limitHit, 'Expected to return limitHit');
+			AssertResults(results, providedResults.slice(0, 1));
+			Assert(wAsCAnceled, 'Expected to be cAnceled');
 		});
 
-		test('max results = 2', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.ts'),
-				makeTextResult(rootFolderA, 'file2.ts'),
-				makeTextResult(rootFolderA, 'file3.ts')
+		test('mAx results = 2', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.ts'),
+				mAkeTextResult(rootFolderA, 'file2.ts'),
+				mAkeTextResult(rootFolderA, 'file3.ts')
 			];
 
-			let wasCanceled = false;
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					token.onCancellationRequested(() => wasCanceled = true);
-					providedResults.forEach(r => progress.report(r));
+			let wAsCAnceled = fAlse;
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					token.onCAncellAtionRequested(() => wAsCAnceled = true);
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				maxResults: 2,
+				mAxResults: 2,
 
 				folderQueries: [
 					{ folder: rootFolderA }
 				]
 			};
 
-			const { results, stats } = await runTextSearch(query);
-			assert(stats.limitHit, 'Expected to return limitHit');
-			assertResults(results, providedResults.slice(0, 2));
-			assert(wasCanceled, 'Expected to be canceled');
+			const { results, stAts } = AwAit runTextSeArch(query);
+			Assert(stAts.limitHit, 'Expected to return limitHit');
+			AssertResults(results, providedResults.slice(0, 2));
+			Assert(wAsCAnceled, 'Expected to be cAnceled');
 		});
 
-		test('provider returns maxResults exactly', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.ts'),
-				makeTextResult(rootFolderA, 'file2.ts')
+		test('provider returns mAxResults exActly', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.ts'),
+				mAkeTextResult(rootFolderA, 'file2.ts')
 			];
 
-			let wasCanceled = false;
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					token.onCancellationRequested(() => wasCanceled = true);
-					providedResults.forEach(r => progress.report(r));
+			let wAsCAnceled = fAlse;
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					token.onCAncellAtionRequested(() => wAsCAnceled = true);
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				maxResults: 2,
+				mAxResults: 2,
 
 				folderQueries: [
 					{ folder: rootFolderA }
 				]
 			};
 
-			const { results, stats } = await runTextSearch(query);
-			assert(!stats.limitHit, 'Expected not to return limitHit');
-			assertResults(results, providedResults);
-			assert(!wasCanceled, 'Expected not to be canceled');
+			const { results, stAts } = AwAit runTextSeArch(query);
+			Assert(!stAts.limitHit, 'Expected not to return limitHit');
+			AssertResults(results, providedResults);
+			Assert(!wAsCAnceled, 'Expected not to be cAnceled');
 		});
 
-		test('provider returns early with limitHit', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(rootFolderA, 'file1.ts'),
-				makeTextResult(rootFolderA, 'file2.ts'),
-				makeTextResult(rootFolderA, 'file3.ts')
+		test('provider returns eArly with limitHit', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(rootFolderA, 'file1.ts'),
+				mAkeTextResult(rootFolderA, 'file2.ts'),
+				mAkeTextResult(rootFolderA, 'file3.ts')
 			];
 
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					providedResults.forEach(r => progress.report(r));
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve({ limitHit: true });
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				maxResults: 1000,
+				mAxResults: 1000,
 
 				folderQueries: [
 					{ folder: rootFolderA }
 				]
 			};
 
-			const { results, stats } = await runTextSearch(query);
-			assert(stats.limitHit, 'Expected to return limitHit');
-			assertResults(results, providedResults);
+			const { results, stAts } = AwAit runTextSeArch(query);
+			Assert(stAts.limitHit, 'Expected to return limitHit');
+			AssertResults(results, providedResults);
 		});
 
-		test('multiroot max results', async () => {
-			let cancels = 0;
-			await registerTestTextSearchProvider({
-				async provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					token.onCancellationRequested(() => cancels++);
-					await new Promise(r => process.nextTick(r));
+		test('multiroot mAx results', Async () => {
+			let cAncels = 0;
+			AwAit registerTestTextSeArchProvider({
+				Async provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					token.onCAncellAtionRequested(() => cAncels++);
+					AwAit new Promise(r => process.nextTick(r));
 					[
 						'file1.ts',
 						'file2.ts',
 						'file3.ts',
-					].forEach(f => progress.report(makeTextResult(options.folder, f)));
+					].forEAch(f => progress.report(mAkeTextResult(options.folder, f)));
 					return null!;
 				}
 			});
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
-				maxResults: 2,
+				mAxResults: 2,
 
 				folderQueries: [
 					{ folder: rootFolderA },
@@ -1183,36 +1183,36 @@ suite('ExtHostSearch', () => {
 				]
 			};
 
-			const { results } = await runTextSearch(query);
-			assert.equal(results.length, 2);
-			assert.equal(cancels, 2);
+			const { results } = AwAit runTextSeArch(query);
+			Assert.equAl(results.length, 2);
+			Assert.equAl(cAncels, 2);
 		});
 
-		test('works with non-file schemes', async () => {
-			const providedResults: vscode.TextSearchResult[] = [
-				makeTextResult(fancySchemeFolderA, 'file1.ts'),
-				makeTextResult(fancySchemeFolderA, 'file2.ts'),
-				makeTextResult(fancySchemeFolderA, 'file3.ts')
+		test('works with non-file schemes', Async () => {
+			const providedResults: vscode.TextSeArchResult[] = [
+				mAkeTextResult(fAncySchemeFolderA, 'file1.ts'),
+				mAkeTextResult(fAncySchemeFolderA, 'file2.ts'),
+				mAkeTextResult(fAncySchemeFolderA, 'file3.ts')
 			];
 
-			await registerTestTextSearchProvider({
-				provideTextSearchResults(query: vscode.TextSearchQuery, options: vscode.TextSearchOptions, progress: vscode.Progress<vscode.TextSearchResult>, token: vscode.CancellationToken): Promise<vscode.TextSearchComplete> {
-					providedResults.forEach(r => progress.report(r));
+			AwAit registerTestTextSeArchProvider({
+				provideTextSeArchResults(query: vscode.TextSeArchQuery, options: vscode.TextSeArchOptions, progress: vscode.Progress<vscode.TextSeArchResult>, token: vscode.CAncellAtionToken): Promise<vscode.TextSeArchComplete> {
+					providedResults.forEAch(r => progress.report(r));
 					return Promise.resolve(null!);
 				}
-			}, fancyScheme);
+			}, fAncyScheme);
 
-			const query: ISearchQuery = {
+			const query: ISeArchQuery = {
 				type: QueryType.Text,
-				contentPattern: getPattern('foo'),
+				contentPAttern: getPAttern('foo'),
 
 				folderQueries: [
-					{ folder: fancySchemeFolderA }
+					{ folder: fAncySchemeFolderA }
 				]
 			};
 
-			const { results } = await runTextSearch(query);
-			assertResults(results, providedResults);
+			const { results } = AwAit runTextSeArch(query);
+			AssertResults(results, providedResults);
 		});
 	});
 });

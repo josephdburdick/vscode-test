@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { IModelChangedEvent } from 'vs/editor/common/model/mirrorTextModel';
-import { ExtHostDocumentsShape, IMainContext, MainContext, MainThreadDocumentsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentData, setWordDefinitionFor } from 'vs/workbench/api/common/extHostDocumentData';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import * as TypeConverters from 'vs/workbench/api/common/extHostTypeConverters';
-import type * as vscode from 'vscode';
-import { assertIsDefined } from 'vs/base/common/types';
-import { deepFreeze } from 'vs/base/common/objects';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { IModelChAngedEvent } from 'vs/editor/common/model/mirrorTextModel';
+import { ExtHostDocumentsShApe, IMAinContext, MAinContext, MAinThreAdDocumentsShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostDocumentDAtA, setWordDefinitionFor } from 'vs/workbench/Api/common/extHostDocumentDAtA';
+import { ExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import * As TypeConverters from 'vs/workbench/Api/common/extHostTypeConverters';
+import type * As vscode from 'vscode';
+import { AssertIsDefined } from 'vs/bAse/common/types';
+import { deepFreeze } from 'vs/bAse/common/objects';
 
-export class ExtHostDocuments implements ExtHostDocumentsShape {
+export clAss ExtHostDocuments implements ExtHostDocumentsShApe {
 
-	private readonly _onDidAddDocument = new Emitter<vscode.TextDocument>();
-	private readonly _onDidRemoveDocument = new Emitter<vscode.TextDocument>();
-	private readonly _onDidChangeDocument = new Emitter<vscode.TextDocumentChangeEvent>();
-	private readonly _onDidSaveDocument = new Emitter<vscode.TextDocument>();
+	privAte reAdonly _onDidAddDocument = new Emitter<vscode.TextDocument>();
+	privAte reAdonly _onDidRemoveDocument = new Emitter<vscode.TextDocument>();
+	privAte reAdonly _onDidChAngeDocument = new Emitter<vscode.TextDocumentChAngeEvent>();
+	privAte reAdonly _onDidSAveDocument = new Emitter<vscode.TextDocument>();
 
-	readonly onDidAddDocument: Event<vscode.TextDocument> = this._onDidAddDocument.event;
-	readonly onDidRemoveDocument: Event<vscode.TextDocument> = this._onDidRemoveDocument.event;
-	readonly onDidChangeDocument: Event<vscode.TextDocumentChangeEvent> = this._onDidChangeDocument.event;
-	readonly onDidSaveDocument: Event<vscode.TextDocument> = this._onDidSaveDocument.event;
+	reAdonly onDidAddDocument: Event<vscode.TextDocument> = this._onDidAddDocument.event;
+	reAdonly onDidRemoveDocument: Event<vscode.TextDocument> = this._onDidRemoveDocument.event;
+	reAdonly onDidChAngeDocument: Event<vscode.TextDocumentChAngeEvent> = this._onDidChAngeDocument.event;
+	reAdonly onDidSAveDocument: Event<vscode.TextDocument> = this._onDidSAveDocument.event;
 
-	private readonly _toDispose = new DisposableStore();
-	private _proxy: MainThreadDocumentsShape;
-	private _documentsAndEditors: ExtHostDocumentsAndEditors;
-	private _documentLoader = new Map<string, Promise<ExtHostDocumentData>>();
+	privAte reAdonly _toDispose = new DisposAbleStore();
+	privAte _proxy: MAinThreAdDocumentsShApe;
+	privAte _documentsAndEditors: ExtHostDocumentsAndEditors;
+	privAte _documentLoAder = new MAp<string, Promise<ExtHostDocumentDAtA>>();
 
-	constructor(mainContext: IMainContext, documentsAndEditors: ExtHostDocumentsAndEditors) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadDocuments);
+	constructor(mAinContext: IMAinContext, documentsAndEditors: ExtHostDocumentsAndEditors) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdDocuments);
 		this._documentsAndEditors = documentsAndEditors;
 
 		this._documentsAndEditors.onDidRemoveDocuments(documents => {
-			for (const data of documents) {
-				this._onDidRemoveDocument.fire(data.document);
+			for (const dAtA of documents) {
+				this._onDidRemoveDocument.fire(dAtA.document);
 			}
 		}, undefined, this._toDispose);
 		this._documentsAndEditors.onDidAddDocuments(documents => {
-			for (const data of documents) {
-				this._onDidAddDocument.fire(data.document);
+			for (const dAtA of documents) {
+				this._onDidAddDocument.fire(dAtA.document);
 			}
 		}, undefined, this._toDispose);
 	}
@@ -52,108 +52,108 @@ export class ExtHostDocuments implements ExtHostDocumentsShape {
 		this._toDispose.dispose();
 	}
 
-	public getAllDocumentData(): ExtHostDocumentData[] {
-		return [...this._documentsAndEditors.allDocuments()];
+	public getAllDocumentDAtA(): ExtHostDocumentDAtA[] {
+		return [...this._documentsAndEditors.AllDocuments()];
 	}
 
-	public getDocumentData(resource: vscode.Uri): ExtHostDocumentData | undefined {
+	public getDocumentDAtA(resource: vscode.Uri): ExtHostDocumentDAtA | undefined {
 		if (!resource) {
 			return undefined;
 		}
-		const data = this._documentsAndEditors.getDocument(resource);
-		if (data) {
-			return data;
+		const dAtA = this._documentsAndEditors.getDocument(resource);
+		if (dAtA) {
+			return dAtA;
 		}
 		return undefined;
 	}
 
 	public getDocument(resource: vscode.Uri): vscode.TextDocument {
-		const data = this.getDocumentData(resource);
-		if (!data?.document) {
-			throw new Error(`Unable to retrieve document from URI '${resource}'`);
+		const dAtA = this.getDocumentDAtA(resource);
+		if (!dAtA?.document) {
+			throw new Error(`UnAble to retrieve document from URI '${resource}'`);
 		}
-		return data.document;
+		return dAtA.document;
 	}
 
-	public ensureDocumentData(uri: URI): Promise<ExtHostDocumentData> {
+	public ensureDocumentDAtA(uri: URI): Promise<ExtHostDocumentDAtA> {
 
-		const cached = this._documentsAndEditors.getDocument(uri);
-		if (cached) {
-			return Promise.resolve(cached);
+		const cAched = this._documentsAndEditors.getDocument(uri);
+		if (cAched) {
+			return Promise.resolve(cAched);
 		}
 
-		let promise = this._documentLoader.get(uri.toString());
+		let promise = this._documentLoAder.get(uri.toString());
 		if (!promise) {
-			promise = this._proxy.$tryOpenDocument(uri).then(uriData => {
-				this._documentLoader.delete(uri.toString());
-				const canonicalUri = URI.revive(uriData);
-				return assertIsDefined(this._documentsAndEditors.getDocument(canonicalUri));
+			promise = this._proxy.$tryOpenDocument(uri).then(uriDAtA => {
+				this._documentLoAder.delete(uri.toString());
+				const cAnonicAlUri = URI.revive(uriDAtA);
+				return AssertIsDefined(this._documentsAndEditors.getDocument(cAnonicAlUri));
 			}, err => {
-				this._documentLoader.delete(uri.toString());
+				this._documentLoAder.delete(uri.toString());
 				return Promise.reject(err);
 			});
-			this._documentLoader.set(uri.toString(), promise);
+			this._documentLoAder.set(uri.toString(), promise);
 		}
 
 		return promise;
 	}
 
-	public createDocumentData(options?: { language?: string; content?: string }): Promise<URI> {
-		return this._proxy.$tryCreateDocument(options).then(data => URI.revive(data));
+	public creAteDocumentDAtA(options?: { lAnguAge?: string; content?: string }): Promise<URI> {
+		return this._proxy.$tryCreAteDocument(options).then(dAtA => URI.revive(dAtA));
 	}
 
-	public $acceptModelModeChanged(uriComponents: UriComponents, oldModeId: string, newModeId: string): void {
+	public $AcceptModelModeChAnged(uriComponents: UriComponents, oldModeId: string, newModeId: string): void {
 		const uri = URI.revive(uriComponents);
-		const data = this._documentsAndEditors.getDocument(uri);
-		if (!data) {
+		const dAtA = this._documentsAndEditors.getDocument(uri);
+		if (!dAtA) {
 			throw new Error('unknown document');
 		}
-		// Treat a mode change as a remove + add
+		// TreAt A mode chAnge As A remove + Add
 
-		this._onDidRemoveDocument.fire(data.document);
-		data._acceptLanguageId(newModeId);
-		this._onDidAddDocument.fire(data.document);
+		this._onDidRemoveDocument.fire(dAtA.document);
+		dAtA._AcceptLAnguAgeId(newModeId);
+		this._onDidAddDocument.fire(dAtA.document);
 	}
 
-	public $acceptModelSaved(uriComponents: UriComponents): void {
+	public $AcceptModelSAved(uriComponents: UriComponents): void {
 		const uri = URI.revive(uriComponents);
-		const data = this._documentsAndEditors.getDocument(uri);
-		if (!data) {
+		const dAtA = this._documentsAndEditors.getDocument(uri);
+		if (!dAtA) {
 			throw new Error('unknown document');
 		}
-		this.$acceptDirtyStateChanged(uriComponents, false);
-		this._onDidSaveDocument.fire(data.document);
+		this.$AcceptDirtyStAteChAnged(uriComponents, fAlse);
+		this._onDidSAveDocument.fire(dAtA.document);
 	}
 
-	public $acceptDirtyStateChanged(uriComponents: UriComponents, isDirty: boolean): void {
+	public $AcceptDirtyStAteChAnged(uriComponents: UriComponents, isDirty: booleAn): void {
 		const uri = URI.revive(uriComponents);
-		const data = this._documentsAndEditors.getDocument(uri);
-		if (!data) {
+		const dAtA = this._documentsAndEditors.getDocument(uri);
+		if (!dAtA) {
 			throw new Error('unknown document');
 		}
-		data._acceptIsDirty(isDirty);
-		this._onDidChangeDocument.fire({
-			document: data.document,
-			contentChanges: []
+		dAtA._AcceptIsDirty(isDirty);
+		this._onDidChAngeDocument.fire({
+			document: dAtA.document,
+			contentChAnges: []
 		});
 	}
 
-	public $acceptModelChanged(uriComponents: UriComponents, events: IModelChangedEvent, isDirty: boolean): void {
+	public $AcceptModelChAnged(uriComponents: UriComponents, events: IModelChAngedEvent, isDirty: booleAn): void {
 		const uri = URI.revive(uriComponents);
-		const data = this._documentsAndEditors.getDocument(uri);
-		if (!data) {
+		const dAtA = this._documentsAndEditors.getDocument(uri);
+		if (!dAtA) {
 			throw new Error('unknown document');
 		}
-		data._acceptIsDirty(isDirty);
-		data.onEvents(events);
-		this._onDidChangeDocument.fire(deepFreeze({
-			document: data.document,
-			contentChanges: events.changes.map((change) => {
+		dAtA._AcceptIsDirty(isDirty);
+		dAtA.onEvents(events);
+		this._onDidChAngeDocument.fire(deepFreeze({
+			document: dAtA.document,
+			contentChAnges: events.chAnges.mAp((chAnge) => {
 				return {
-					range: TypeConverters.Range.to(change.range),
-					rangeOffset: change.rangeOffset,
-					rangeLength: change.rangeLength,
-					text: change.text
+					rAnge: TypeConverters.RAnge.to(chAnge.rAnge),
+					rAngeOffset: chAnge.rAngeOffset,
+					rAngeLength: chAnge.rAngeLength,
+					text: chAnge.text
 				};
 			})
 		}));

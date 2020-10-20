@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ResourceLabelFormatter } from 'vs/platform/label/common/label';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { MainThreadLabelServiceShape, ExtHostLabelServiceShape, MainContext, IMainContext } from 'vs/workbench/api/common/extHost.protocol';
+import { ResourceLAbelFormAtter } from 'vs/plAtform/lAbel/common/lAbel';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { MAinThreAdLAbelServiceShApe, ExtHostLAbelServiceShApe, MAinContext, IMAinContext } from 'vs/workbench/Api/common/extHost.protocol';
 
-export class ExtHostLabelService implements ExtHostLabelServiceShape {
+export clAss ExtHostLAbelService implements ExtHostLAbelServiceShApe {
 
-	private readonly _proxy: MainThreadLabelServiceShape;
-	private _handlePool: number = 0;
+	privAte reAdonly _proxy: MAinThreAdLAbelServiceShApe;
+	privAte _hAndlePool: number = 0;
 
-	constructor(mainContext: IMainContext) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadLabelService);
+	constructor(mAinContext: IMAinContext) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdLAbelService);
 	}
 
-	$registerResourceLabelFormatter(formatter: ResourceLabelFormatter): IDisposable {
-		const handle = this._handlePool++;
-		this._proxy.$registerResourceLabelFormatter(handle, formatter);
+	$registerResourceLAbelFormAtter(formAtter: ResourceLAbelFormAtter): IDisposAble {
+		const hAndle = this._hAndlePool++;
+		this._proxy.$registerResourceLAbelFormAtter(hAndle, formAtter);
 
-		return toDisposable(() => {
-			this._proxy.$unregisterResourceLabelFormatter(handle);
+		return toDisposAble(() => {
+			this._proxy.$unregisterResourceLAbelFormAtter(hAndle);
 		});
 	}
 }

@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as ts from 'typescript';
-import { readFileSync, existsSync } from 'fs';
-import { resolve, dirname, join } from 'path';
-import { match } from 'minimatch';
+import * As ts from 'typescript';
+import { reAdFileSync, existsSync } from 'fs';
+import { resolve, dirnAme, join } from 'pAth';
+import { mAtch } from 'minimAtch';
 
 //
 // #############################################################################################
 //
-// A custom typescript checker for the specific task of detecting the use of certain types in a
-// layer that does not allow such use. For example:
-// - using DOM globals in common/node/electron-main layer (e.g. HTMLElement)
-// - using node.js globals in common/browser layer (e.g. process)
+// A custom typescript checker for the specific tAsk of detecting the use of certAin types in A
+// lAyer thAt does not Allow such use. For exAmple:
+// - using DOM globAls in common/node/electron-mAin lAyer (e.g. HTMLElement)
+// - using node.js globAls in common/browser lAyer (e.g. process)
 //
-// Make changes to below RULES to lift certain files from these checks only if absolutely needed
+// MAke chAnges to below RULES to lift certAin files from these checks only if Absolutely needed
 //
 // #############################################################################################
 //
 
-// Types we assume are present in all implementations of JS VMs (node.js, browsers)
-// Feel free to add more core types as you see needed if present in node.js and browsers
+// Types we Assume Are present in All implementAtions of JS VMs (node.js, browsers)
+// Feel free to Add more core types As you see needed if present in node.js And browsers
 const CORE_TYPES = [
-	'require', // from our AMD loader
-	// 'atob',
-	// 'btoa',
+	'require', // from our AMD loAder
+	// 'Atob',
+	// 'btoA',
 	'setTimeout',
-	'clearTimeout',
-	'setInterval',
-	'clearInterval',
+	'cleArTimeout',
+	'setIntervAl',
+	'cleArIntervAl',
 	'console',
 	'log',
 	'info',
-	'warn',
+	'wArn',
 	'error',
 	'group',
 	'groupEnd',
-	'table',
-	'assert',
+	'tAble',
+	'Assert',
 	'Error',
 	'String',
 	'throws',
-	'stack',
-	'captureStackTrace',
-	'stackTraceLimit',
+	'stAck',
+	'cAptureStAckTrAce',
+	'stAckTrAceLimit',
 	'TextDecoder',
 	'TextEncoder',
 	'encode',
@@ -55,95 +55,95 @@ const CORE_TYPES = [
 	'trimRight'
 ];
 
-// Types that are defined in a common layer but are known to be only
-// available in native environments should not be allowed in browser
+// Types thAt Are defined in A common lAyer but Are known to be only
+// AvAilAble in nAtive environments should not be Allowed in browser
 const NATIVE_TYPES = [
-	'NativeParsedArgs',
-	'INativeEnvironmentService',
-	'INativeWindowConfiguration',
-	'ICommonNativeHostService'
+	'NAtivePArsedArgs',
+	'INAtiveEnvironmentService',
+	'INAtiveWindowConfigurAtion',
+	'ICommonNAtiveHostService'
 ];
 
 const RULES = [
 
 	// Tests: skip
 	{
-		target: '**/vs/**/test/**',
-		skip: true // -> skip all test files
+		tArget: '**/vs/**/test/**',
+		skip: true // -> skip All test files
 	},
 
-	// Common: vs/base/common/platform.ts
+	// Common: vs/bAse/common/plAtform.ts
 	{
-		target: '**/vs/base/common/platform.ts',
-		allowedTypes: [
+		tArget: '**/vs/bAse/common/plAtform.ts',
+		AllowedTypes: [
 			...CORE_TYPES,
 
-			// Safe access to postMessage() and friends
-			'MessageEvent',
-			'data'
+			// SAfe Access to postMessAge() And friends
+			'MessAgeEvent',
+			'dAtA'
 		],
-		disallowedTypes: NATIVE_TYPES,
-		disallowedDefinitions: [
+		disAllowedTypes: NATIVE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
-	// Common: vs/platform/environment/common/argv.ts
+	// Common: vs/plAtform/environment/common/Argv.ts
 	{
-		target: '**/vs/platform/environment/common/argv.ts',
-		disallowedTypes: [/* Ignore native types that are defined from here */],
-		allowedTypes: CORE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/plAtform/environment/common/Argv.ts',
+		disAllowedTypes: [/* Ignore nAtive types thAt Are defined from here */],
+		AllowedTypes: CORE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
-	// Common: vs/platform/environment/common/environment.ts
+	// Common: vs/plAtform/environment/common/environment.ts
 	{
-		target: '**/vs/platform/environment/common/environment.ts',
-		disallowedTypes: [/* Ignore native types that are defined from here */],
-		allowedTypes: CORE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/plAtform/environment/common/environment.ts',
+		disAllowedTypes: [/* Ignore nAtive types thAt Are defined from here */],
+		AllowedTypes: CORE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
-	// Common: vs/platform/windows/common/windows.ts
+	// Common: vs/plAtform/windows/common/windows.ts
 	{
-		target: '**/vs/platform/windows/common/windows.ts',
-		disallowedTypes: [/* Ignore native types that are defined from here */],
-		allowedTypes: CORE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/plAtform/windows/common/windows.ts',
+		disAllowedTypes: [/* Ignore nAtive types thAt Are defined from here */],
+		AllowedTypes: CORE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
-	// Common: vs/platform/native/common/native.ts
+	// Common: vs/plAtform/nAtive/common/nAtive.ts
 	{
-		target: '**/vs/platform/native/common/native.ts',
-		disallowedTypes: [/* Ignore native types that are defined from here */],
-		allowedTypes: CORE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/plAtform/nAtive/common/nAtive.ts',
+		disAllowedTypes: [/* Ignore nAtive types thAt Are defined from here */],
+		AllowedTypes: CORE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
 	},
 
-	// Common: vs/workbench/api/common/extHostExtensionService.ts
+	// Common: vs/workbench/Api/common/extHostExtensionService.ts
 	{
-		target: '**/vs/workbench/api/common/extHostExtensionService.ts',
-		allowedTypes: [
+		tArget: '**/vs/workbench/Api/common/extHostExtensionService.ts',
+		AllowedTypes: [
 			...CORE_TYPES,
 
-			// Safe access to global
-			'global'
+			// SAfe Access to globAl
+			'globAl'
 		],
-		disallowedTypes: NATIVE_TYPES,
-		disallowedDefinitions: [
+		disAllowedTypes: NATIVE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
@@ -151,10 +151,10 @@ const RULES = [
 
 	// Common
 	{
-		target: '**/vs/**/common/**',
-		allowedTypes: CORE_TYPES,
-		disallowedTypes: NATIVE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/**/common/**',
+		AllowedTypes: CORE_TYPES,
+		disAllowedTypes: NATIVE_TYPES,
+		disAllowedDefinitions: [
 			'lib.dom.d.ts', // no DOM
 			'@types/node'	// no node.js
 		]
@@ -162,129 +162,129 @@ const RULES = [
 
 	// Browser
 	{
-		target: '**/vs/**/browser/**',
-		allowedTypes: CORE_TYPES,
-		disallowedTypes: NATIVE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/**/browser/**',
+		AllowedTypes: CORE_TYPES,
+		disAllowedTypes: NATIVE_TYPES,
+		disAllowedDefinitions: [
 			'@types/node'	// no node.js
 		]
 	},
 
 	// Browser (editor contrib)
 	{
-		target: '**/src/vs/editor/contrib/**',
-		allowedTypes: CORE_TYPES,
-		disallowedTypes: NATIVE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/src/vs/editor/contrib/**',
+		AllowedTypes: CORE_TYPES,
+		disAllowedTypes: NATIVE_TYPES,
+		disAllowedDefinitions: [
 			'@types/node'	// no node.js
 		]
 	},
 
 	// node.js
 	{
-		target: '**/vs/**/node/**',
-		allowedTypes: [
+		tArget: '**/vs/**/node/**',
+		AllowedTypes: [
 			...CORE_TYPES,
 
-			// --> types from node.d.ts that duplicate from lib.dom.d.ts
+			// --> types from node.d.ts thAt duplicAte from lib.dom.d.ts
 			'URL',
 			'protocol',
-			'hostname',
+			'hostnAme',
 			'port',
-			'pathname',
-			'search',
-			'username',
-			'password'
+			'pAthnAme',
+			'seArch',
+			'usernAme',
+			'pAssword'
 		],
-		disallowedDefinitions: [
+		disAllowedDefinitions: [
 			'lib.dom.d.ts'	// no DOM
 		]
 	},
 
-	// Electron (sandbox)
+	// Electron (sAndbox)
 	{
-		target: '**/vs/**/electron-sandbox/**',
-		allowedTypes: CORE_TYPES,
-		disallowedDefinitions: [
+		tArget: '**/vs/**/electron-sAndbox/**',
+		AllowedTypes: CORE_TYPES,
+		disAllowedDefinitions: [
 			'@types/node'	// no node.js
 		]
 	},
 
 	// Electron (renderer): skip
 	{
-		target: '**/vs/**/electron-browser/**',
-		skip: true // -> supports all types
+		tArget: '**/vs/**/electron-browser/**',
+		skip: true // -> supports All types
 	},
 
-	// Electron (main)
+	// Electron (mAin)
 	{
-		target: '**/vs/**/electron-main/**',
-		allowedTypes: [
+		tArget: '**/vs/**/electron-mAin/**',
+		AllowedTypes: [
 			...CORE_TYPES,
 
-			// --> types from electron.d.ts that duplicate from lib.dom.d.ts
+			// --> types from electron.d.ts thAt duplicAte from lib.dom.d.ts
 			'Event',
 			'Request'
 		],
-		disallowedDefinitions: [
+		disAllowedDefinitions: [
 			'lib.dom.d.ts'	// no DOM
 		]
 	}
 ];
 
-const TS_CONFIG_PATH = join(__dirname, '../../', 'src', 'tsconfig.json');
+const TS_CONFIG_PATH = join(__dirnAme, '../../', 'src', 'tsconfig.json');
 
-interface IRule {
-	target: string;
-	skip?: boolean;
-	allowedTypes?: string[];
-	disallowedDefinitions?: string[];
-	disallowedTypes?: string[];
+interfAce IRule {
+	tArget: string;
+	skip?: booleAn;
+	AllowedTypes?: string[];
+	disAllowedDefinitions?: string[];
+	disAllowedTypes?: string[];
 }
 
-let hasErrors = false;
+let hAsErrors = fAlse;
 
-function checkFile(program: ts.Program, sourceFile: ts.SourceFile, rule: IRule) {
+function checkFile(progrAm: ts.ProgrAm, sourceFile: ts.SourceFile, rule: IRule) {
 	checkNode(sourceFile);
 
 	function checkNode(node: ts.Node): void {
-		if (node.kind !== ts.SyntaxKind.Identifier) {
-			return ts.forEachChild(node, checkNode); // recurse down
+		if (node.kind !== ts.SyntAxKind.Identifier) {
+			return ts.forEAchChild(node, checkNode); // recurse down
 		}
 
 		const text = node.getText(sourceFile);
 
-		if (rule.allowedTypes?.some(allowed => allowed === text)) {
+		if (rule.AllowedTypes?.some(Allowed => Allowed === text)) {
 			return; // override
 		}
 
-		if (rule.disallowedTypes?.some(disallowed => disallowed === text)) {
-			const { line, character } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-			console.log(`[build/lib/layersChecker.ts]: Reference to '${text}' violates layer '${rule.target}' (${sourceFile.fileName} (${line + 1},${character + 1})`);
+		if (rule.disAllowedTypes?.some(disAllowed => disAllowed === text)) {
+			const { line, chArActer } = sourceFile.getLineAndChArActerOfPosition(node.getStArt());
+			console.log(`[build/lib/lAyersChecker.ts]: Reference to '${text}' violAtes lAyer '${rule.tArget}' (${sourceFile.fileNAme} (${line + 1},${chArActer + 1})`);
 
-			hasErrors = true;
+			hAsErrors = true;
 			return;
 		}
 
-		const checker = program.getTypeChecker();
-		const symbol = checker.getSymbolAtLocation(node);
+		const checker = progrAm.getTypeChecker();
+		const symbol = checker.getSymbolAtLocAtion(node);
 		if (symbol) {
-			const declarations = symbol.declarations;
-			if (Array.isArray(declarations)) {
-				for (const declaration of declarations) {
-					if (declaration) {
-						const parent = declaration.parent;
-						if (parent) {
-							const parentSourceFile = parent.getSourceFile();
-							if (parentSourceFile) {
-								const definitionFileName = parentSourceFile.fileName;
-								if (rule.disallowedDefinitions) {
-									for (const disallowedDefinition of rule.disallowedDefinitions) {
-										if (definitionFileName.indexOf(disallowedDefinition) >= 0) {
-											const { line, character } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-											console.log(`[build/lib/layersChecker.ts]: Reference to '${text}' from '${disallowedDefinition}' violates layer '${rule.target}' (${sourceFile.fileName} (${line + 1},${character + 1})`);
+			const declArAtions = symbol.declArAtions;
+			if (ArrAy.isArrAy(declArAtions)) {
+				for (const declArAtion of declArAtions) {
+					if (declArAtion) {
+						const pArent = declArAtion.pArent;
+						if (pArent) {
+							const pArentSourceFile = pArent.getSourceFile();
+							if (pArentSourceFile) {
+								const definitionFileNAme = pArentSourceFile.fileNAme;
+								if (rule.disAllowedDefinitions) {
+									for (const disAllowedDefinition of rule.disAllowedDefinitions) {
+										if (definitionFileNAme.indexOf(disAllowedDefinition) >= 0) {
+											const { line, chArActer } = sourceFile.getLineAndChArActerOfPosition(node.getStArt());
+											console.log(`[build/lib/lAyersChecker.ts]: Reference to '${text}' from '${disAllowedDefinition}' violAtes lAyer '${rule.tArget}' (${sourceFile.fileNAme} (${line + 1},${chArActer + 1})`);
 
-											hasErrors = true;
+											hAsErrors = true;
 											return;
 										}
 									}
@@ -298,34 +298,34 @@ function checkFile(program: ts.Program, sourceFile: ts.SourceFile, rule: IRule) 
 	}
 }
 
-function createProgram(tsconfigPath: string): ts.Program {
-	const tsConfig = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
+function creAteProgrAm(tsconfigPAth: string): ts.ProgrAm {
+	const tsConfig = ts.reAdConfigFile(tsconfigPAth, ts.sys.reAdFile);
 
-	const configHostParser: ts.ParseConfigHost = { fileExists: existsSync, readDirectory: ts.sys.readDirectory, readFile: file => readFileSync(file, 'utf8'), useCaseSensitiveFileNames: process.platform === 'linux' };
-	const tsConfigParsed = ts.parseJsonConfigFileContent(tsConfig.config, configHostParser, resolve(dirname(tsconfigPath)), { noEmit: true });
+	const configHostPArser: ts.PArseConfigHost = { fileExists: existsSync, reAdDirectory: ts.sys.reAdDirectory, reAdFile: file => reAdFileSync(file, 'utf8'), useCAseSensitiveFileNAmes: process.plAtform === 'linux' };
+	const tsConfigPArsed = ts.pArseJsonConfigFileContent(tsConfig.config, configHostPArser, resolve(dirnAme(tsconfigPAth)), { noEmit: true });
 
-	const compilerHost = ts.createCompilerHost(tsConfigParsed.options, true);
+	const compilerHost = ts.creAteCompilerHost(tsConfigPArsed.options, true);
 
-	return ts.createProgram(tsConfigParsed.fileNames, tsConfigParsed.options, compilerHost);
+	return ts.creAteProgrAm(tsConfigPArsed.fileNAmes, tsConfigPArsed.options, compilerHost);
 }
 
 //
-// Create program and start checking
+// CreAte progrAm And stArt checking
 //
-const program = createProgram(TS_CONFIG_PATH);
+const progrAm = creAteProgrAm(TS_CONFIG_PATH);
 
-for (const sourceFile of program.getSourceFiles()) {
+for (const sourceFile of progrAm.getSourceFiles()) {
 	for (const rule of RULES) {
-		if (match([sourceFile.fileName], rule.target).length > 0) {
+		if (mAtch([sourceFile.fileNAme], rule.tArget).length > 0) {
 			if (!rule.skip) {
-				checkFile(program, sourceFile, rule);
+				checkFile(progrAm, sourceFile, rule);
 			}
 
-			break;
+			breAk;
 		}
 	}
 }
 
-if (hasErrors) {
+if (hAsErrors) {
 	process.exit(1);
 }

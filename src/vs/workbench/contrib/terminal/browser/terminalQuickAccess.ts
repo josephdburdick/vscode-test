@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-import { IPickerQuickAccessItem, PickerQuickAccessProvider, TriggerAction } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { matchesFuzzy } from 'vs/base/common/filters';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
+import { locAlize } from 'vs/nls';
+import { IQuickPickSepArAtor } from 'vs/plAtform/quickinput/common/quickInput';
+import { IPickerQuickAccessItem, PickerQuickAccessProvider, TriggerAction } from 'vs/plAtform/quickinput/browser/pickerQuickAccess';
+import { mAtchesFuzzy } from 'vs/bAse/common/filters';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminAl/common/terminAl';
 
-export class TerminalQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
+export clAss TerminAlQuickAccessProvider extends PickerQuickAccessProvider<IPickerQuickAccessItem> {
 
-	static PREFIX = 'term ';
+	stAtic PREFIX = 'term ';
 
 	constructor(
-		@ITerminalService private readonly terminalService: ITerminalService,
-		@ICommandService private readonly commandService: ICommandService,
+		@ITerminAlService privAte reAdonly terminAlService: ITerminAlService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService,
 	) {
-		super(TerminalQuickAccessProvider.PREFIX, { canAcceptInBackground: true });
+		super(TerminAlQuickAccessProvider.PREFIX, { cAnAcceptInBAckground: true });
 	}
 
-	protected getPicks(filter: string): Array<IPickerQuickAccessItem | IQuickPickSeparator> {
-		const terminalPicks: Array<IPickerQuickAccessItem | IQuickPickSeparator> = [];
+	protected getPicks(filter: string): ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor> {
+		const terminAlPicks: ArrAy<IPickerQuickAccessItem | IQuickPickSepArAtor> = [];
 
-		const terminalTabs = this.terminalService.terminalTabs;
-		for (let tabIndex = 0; tabIndex < terminalTabs.length; tabIndex++) {
-			const terminalTab = terminalTabs[tabIndex];
-			for (let terminalIndex = 0; terminalIndex < terminalTab.terminalInstances.length; terminalIndex++) {
-				const terminal = terminalTab.terminalInstances[terminalIndex];
-				const label = `${tabIndex + 1}.${terminalIndex + 1}: ${terminal.title}`;
+		const terminAlTAbs = this.terminAlService.terminAlTAbs;
+		for (let tAbIndex = 0; tAbIndex < terminAlTAbs.length; tAbIndex++) {
+			const terminAlTAb = terminAlTAbs[tAbIndex];
+			for (let terminAlIndex = 0; terminAlIndex < terminAlTAb.terminAlInstAnces.length; terminAlIndex++) {
+				const terminAl = terminAlTAb.terminAlInstAnces[terminAlIndex];
+				const lAbel = `${tAbIndex + 1}.${terminAlIndex + 1}: ${terminAl.title}`;
 
-				const highlights = matchesFuzzy(filter, label, true);
+				const highlights = mAtchesFuzzy(filter, lAbel, true);
 				if (highlights) {
-					terminalPicks.push({
-						label,
-						highlights: { label: highlights },
+					terminAlPicks.push({
+						lAbel,
+						highlights: { lAbel: highlights },
 						buttons: [
 							{
-								iconClass: 'codicon-gear',
-								tooltip: localize('renameTerminal', "Rename Terminal")
+								iconClAss: 'codicon-geAr',
+								tooltip: locAlize('renAmeTerminAl', "RenAme TerminAl")
 							},
 							{
-								iconClass: 'codicon-trash',
-								tooltip: localize('killTerminal', "Kill Terminal Instance")
+								iconClAss: 'codicon-trAsh',
+								tooltip: locAlize('killTerminAl', "Kill TerminAl InstAnce")
 							}
 						],
 						trigger: buttonIndex => {
 							switch (buttonIndex) {
-								case 0:
-									this.commandService.executeCommand(TERMINAL_COMMAND_ID.RENAME, terminal);
+								cAse 0:
+									this.commAndService.executeCommAnd(TERMINAL_COMMAND_ID.RENAME, terminAl);
 									return TriggerAction.NO_ACTION;
-								case 1:
-									terminal.dispose(true);
+								cAse 1:
+									terminAl.dispose(true);
 									return TriggerAction.REMOVE_ITEM;
 							}
 
 							return TriggerAction.NO_ACTION;
 						},
-						accept: (keyMod, event) => {
-							this.terminalService.setActiveInstance(terminal);
-							this.terminalService.showPanel(!event.inBackground);
+						Accept: (keyMod, event) => {
+							this.terminAlService.setActiveInstAnce(terminAl);
+							this.terminAlService.showPAnel(!event.inBAckground);
 						}
 					});
 				}
 			}
 		}
 
-		if (terminalPicks.length > 0) {
-			terminalPicks.push({ type: 'separator' });
+		if (terminAlPicks.length > 0) {
+			terminAlPicks.push({ type: 'sepArAtor' });
 		}
 
-		const createTerminalLabel = localize("workbench.action.terminal.newplus", "Create New Integrated Terminal");
-		terminalPicks.push({
-			label: `$(plus) ${createTerminalLabel}`,
-			ariaLabel: createTerminalLabel,
-			accept: () => this.commandService.executeCommand('workbench.action.terminal.new')
+		const creAteTerminAlLAbel = locAlize("workbench.Action.terminAl.newplus", "CreAte New IntegrAted TerminAl");
+		terminAlPicks.push({
+			lAbel: `$(plus) ${creAteTerminAlLAbel}`,
+			AriALAbel: creAteTerminAlLAbel,
+			Accept: () => this.commAndService.executeCommAnd('workbench.Action.terminAl.new')
 		});
 
-		return terminalPicks;
+		return terminAlPicks;
 
 	}
 }

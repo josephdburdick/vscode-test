@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import * as nls from 'vs/nls';
-import product from 'vs/platform/product/common/product';
-import { SyncActionDescriptor, ICommandAction, MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { ReportPerformanceIssueUsingReporterAction, OpenProcessExplorer } from 'vs/workbench/contrib/issue/electron-sandbox/issueActions';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sandbox/issue';
-import { WorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sandbox/issueService';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IssueReporterData } from 'vs/platform/issue/common/issue';
-import { IIssueService } from 'vs/platform/issue/electron-sandbox/issue';
-import { OpenIssueReporterArgs, OpenIssueReporterActionId } from 'vs/workbench/contrib/issue/common/commands';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import * As nls from 'vs/nls';
+import product from 'vs/plAtform/product/common/product';
+import { SyncActionDescriptor, ICommAndAction, MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/Actions';
+import { ReportPerformAnceIssueUsingReporterAction, OpenProcessExplorer } from 'vs/workbench/contrib/issue/electron-sAndbox/issueActions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IWorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sAndbox/issue';
+import { WorkbenchIssueService } from 'vs/workbench/contrib/issue/electron-sAndbox/issueService';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { IssueReporterDAtA } from 'vs/plAtform/issue/common/issue';
+import { IIssueService } from 'vs/plAtform/issue/electron-sAndbox/issue';
+import { OpenIssueReporterArgs, OpenIssueReporterActionId } from 'vs/workbench/contrib/issue/common/commAnds';
 
-const workbenchActionsRegistry = Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
+const workbenchActionsRegistry = Registry.As<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
 
 if (!!product.reportIssueUrl) {
-	workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(ReportPerformanceIssueUsingReporterAction), 'Help: Report Performance Issue', CATEGORIES.Help.value);
+	workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(ReportPerformAnceIssueUsingReporterAction), 'Help: Report PerformAnce Issue', CATEGORIES.Help.vAlue);
 
-	const OpenIssueReporterActionLabel = nls.localize({ key: 'reportIssueInEnglish', comment: ['Translate this to "Report Issue in English" in all languages please!'] }, "Report Issue...");
+	const OpenIssueReporterActionLAbel = nls.locAlize({ key: 'reportIssueInEnglish', comment: ['TrAnslAte this to "Report Issue in English" in All lAnguAges pleAse!'] }, "Report Issue...");
 
-	CommandsRegistry.registerCommand(OpenIssueReporterActionId, function (accessor, args?: [string] | OpenIssueReporterArgs) {
-		const data: Partial<IssueReporterData> = Array.isArray(args)
-			? { extensionId: args[0] }
-			: args || {};
+	CommAndsRegistry.registerCommAnd(OpenIssueReporterActionId, function (Accessor, Args?: [string] | OpenIssueReporterArgs) {
+		const dAtA: PArtiAl<IssueReporterDAtA> = ArrAy.isArrAy(Args)
+			? { extensionId: Args[0] }
+			: Args || {};
 
-		return accessor.get(IWorkbenchIssueService).openReporter(data);
+		return Accessor.get(IWorkbenchIssueService).openReporter(dAtA);
 	});
 
-	const command: ICommandAction = {
+	const commAnd: ICommAndAction = {
 		id: OpenIssueReporterActionId,
-		title: { value: OpenIssueReporterActionLabel, original: 'Report Issue' },
-		category: CATEGORIES.Help
+		title: { vAlue: OpenIssueReporterActionLAbel, originAl: 'Report Issue' },
+		cAtegory: CATEGORIES.Help
 	};
 
-	MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command });
+	MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, { commAnd });
 }
 
-workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(OpenProcessExplorer), 'Developer: Open Process Explorer', CATEGORIES.Developer.value);
+workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(OpenProcessExplorer), 'Developer: Open Process Explorer', CATEGORIES.Developer.vAlue);
 
 registerSingleton(IWorkbenchIssueService, WorkbenchIssueService, true);
 
-CommandsRegistry.registerCommand('_issues.getSystemStatus', (accessor) => {
-	return accessor.get(IIssueService).getSystemStatus();
+CommAndsRegistry.registerCommAnd('_issues.getSystemStAtus', (Accessor) => {
+	return Accessor.get(IIssueService).getSystemStAtus();
 });

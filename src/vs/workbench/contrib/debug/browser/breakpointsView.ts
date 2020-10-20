@@ -1,108 +1,108 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as resources from 'vs/base/common/resources';
-import * as dom from 'vs/base/browser/dom';
-import { IAction, Action, Separator } from 'vs/base/common/actions';
-import { IDebugService, IBreakpoint, CONTEXT_BREAKPOINTS_FOCUSED, State, DEBUG_SCHEME, IFunctionBreakpoint, IExceptionBreakpoint, IEnablement, BREAKPOINT_EDITOR_CONTRIBUTION_ID, IBreakpointEditorContribution, IDebugModel, IDataBreakpoint } from 'vs/workbench/contrib/debug/common/debug';
-import { ExceptionBreakpoint, FunctionBreakpoint, Breakpoint, DataBreakpoint } from 'vs/workbench/contrib/debug/common/debugModel';
-import { AddFunctionBreakpointAction, ToggleBreakpointsActivatedAction, RemoveAllBreakpointsAction, RemoveBreakpointAction, EnableAllBreakpointsAction, DisableAllBreakpointsAction, ReapplyBreakpointsAction } from 'vs/workbench/contrib/debug/browser/debugActions';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { Constants } from 'vs/base/common/uint';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { IListVirtualDelegate, IListContextMenuEvent, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { IEditorPane } from 'vs/workbench/common/editor';
-import { InputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { WorkbenchList, ListResourceNavigator } from 'vs/platform/list/browser/listService';
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
-import { attachInputBoxStyler } from 'vs/platform/theme/common/styler';
+import * As nls from 'vs/nls';
+import * As resources from 'vs/bAse/common/resources';
+import * As dom from 'vs/bAse/browser/dom';
+import { IAction, Action, SepArAtor } from 'vs/bAse/common/Actions';
+import { IDebugService, IBreAkpoint, CONTEXT_BREAKPOINTS_FOCUSED, StAte, DEBUG_SCHEME, IFunctionBreAkpoint, IExceptionBreAkpoint, IEnAblement, BREAKPOINT_EDITOR_CONTRIBUTION_ID, IBreAkpointEditorContribution, IDebugModel, IDAtABreAkpoint } from 'vs/workbench/contrib/debug/common/debug';
+import { ExceptionBreAkpoint, FunctionBreAkpoint, BreAkpoint, DAtABreAkpoint } from 'vs/workbench/contrib/debug/common/debugModel';
+import { AddFunctionBreAkpointAction, ToggleBreAkpointsActivAtedAction, RemoveAllBreAkpointsAction, RemoveBreAkpointAction, EnAbleAllBreAkpointsAction, DisAbleAllBreAkpointsAction, ReApplyBreAkpointsAction } from 'vs/workbench/contrib/debug/browser/debugActions';
+import { IContextMenuService, IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { ConstAnts } from 'vs/bAse/common/uint';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IListVirtuAlDelegAte, IListContextMenuEvent, IListRenderer } from 'vs/bAse/browser/ui/list/list';
+import { IEditorPAne } from 'vs/workbench/common/editor';
+import { InputBox } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { WorkbenchList, ListResourceNAvigAtor } from 'vs/plAtform/list/browser/listService';
+import { IViewletViewOptions } from 'vs/workbench/browser/pArts/views/viewsViewlet';
+import { AttAchInputBoxStyler } from 'vs/plAtform/theme/common/styler';
 import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { IEditorService, SIDE_GROUP, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { Gesture } from 'vs/base/browser/touch';
+import { ViewPAne } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { Gesture } from 'vs/bAse/browser/touch';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
-import { TextEditorSelectionRevealType } from 'vs/platform/editor/common/editor';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { Orientation } from 'vs/base/browser/ui/splitview/splitview';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
+import { TextEditorSelectionReveAlType } from 'vs/plAtform/editor/common/editor';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { OrientAtion } from 'vs/bAse/browser/ui/splitview/splitview';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
 
 const $ = dom.$;
 
-function createCheckbox(): HTMLInputElement {
+function creAteCheckbox(): HTMLInputElement {
 	const checkbox = <HTMLInputElement>$('input');
 	checkbox.type = 'checkbox';
-	checkbox.tabIndex = -1;
-	Gesture.ignoreTarget(checkbox);
+	checkbox.tAbIndex = -1;
+	Gesture.ignoreTArget(checkbox);
 
 	return checkbox;
 }
 
 const MAX_VISIBLE_BREAKPOINTS = 9;
-export function getExpandedBodySize(model: IDebugModel, countLimit: number): number {
-	const length = model.getBreakpoints().length + model.getExceptionBreakpoints().length + model.getFunctionBreakpoints().length + model.getDataBreakpoints().length;
-	return Math.min(countLimit, length) * 22;
+export function getExpAndedBodySize(model: IDebugModel, countLimit: number): number {
+	const length = model.getBreAkpoints().length + model.getExceptionBreAkpoints().length + model.getFunctionBreAkpoints().length + model.getDAtABreAkpoints().length;
+	return MAth.min(countLimit, length) * 22;
 }
-type BreakpointItem = IBreakpoint | IFunctionBreakpoint | IDataBreakpoint | IExceptionBreakpoint;
+type BreAkpointItem = IBreAkpoint | IFunctionBreAkpoint | IDAtABreAkpoint | IExceptionBreAkpoint;
 
-export class BreakpointsView extends ViewPane {
+export clAss BreAkpointsView extends ViewPAne {
 
-	private list!: WorkbenchList<BreakpointItem>;
-	private needsRefresh = false;
-	private ignoreLayout = false;
+	privAte list!: WorkbenchList<BreAkpointItem>;
+	privAte needsRefresh = fAlse;
+	privAte ignoreLAyout = fAlse;
 
 	constructor(
 		options: IViewletViewOptions,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IDebugService private readonly debugService: IDebugService,
+		@IDebugService privAte reAdonly debugService: IDebugService,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IThemeService themeService: IThemeService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IOpenerService openerService: IOpenerService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@ILabelService private readonly labelService: ILabelService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
 
-		this._register(this.debugService.getModel().onDidChangeBreakpoints(() => this.onBreakpointsChange()));
+		this._register(this.debugService.getModel().onDidChAngeBreAkpoints(() => this.onBreAkpointsChAnge()));
 	}
 
-	public renderBody(container: HTMLElement): void {
-		super.renderBody(container);
+	public renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
 
-		this.element.classList.add('debug-pane');
-		container.classList.add('debug-breakpoints');
-		const delegate = new BreakpointsDelegate(this.debugService);
+		this.element.clAssList.Add('debug-pAne');
+		contAiner.clAssList.Add('debug-breAkpoints');
+		const delegAte = new BreAkpointsDelegAte(this.debugService);
 
-		this.list = <WorkbenchList<BreakpointItem>>this.instantiationService.createInstance(WorkbenchList, 'Breakpoints', container, delegate, [
-			this.instantiationService.createInstance(BreakpointsRenderer),
-			new ExceptionBreakpointsRenderer(this.debugService),
-			this.instantiationService.createInstance(FunctionBreakpointsRenderer),
-			this.instantiationService.createInstance(DataBreakpointsRenderer),
-			new FunctionBreakpointInputRenderer(this.debugService, this.contextViewService, this.themeService, this.labelService)
+		this.list = <WorkbenchList<BreAkpointItem>>this.instAntiAtionService.creAteInstAnce(WorkbenchList, 'BreAkpoints', contAiner, delegAte, [
+			this.instAntiAtionService.creAteInstAnce(BreAkpointsRenderer),
+			new ExceptionBreAkpointsRenderer(this.debugService),
+			this.instAntiAtionService.creAteInstAnce(FunctionBreAkpointsRenderer),
+			this.instAntiAtionService.creAteInstAnce(DAtABreAkpointsRenderer),
+			new FunctionBreAkpointInputRenderer(this.debugService, this.contextViewService, this.themeService, this.lAbelService)
 		], {
-			identityProvider: { getId: (element: IEnablement) => element.getId() },
-			multipleSelectionSupport: false,
-			keyboardNavigationLabelProvider: { getKeyboardNavigationLabel: (e: IEnablement) => e },
-			accessibilityProvider: new BreakpointsAccessibilityProvider(this.debugService, this.labelService),
+			identityProvider: { getId: (element: IEnAblement) => element.getId() },
+			multipleSelectionSupport: fAlse,
+			keyboArdNAvigAtionLAbelProvider: { getKeyboArdNAvigAtionLAbel: (e: IEnAblement) => e },
+			AccessibilityProvider: new BreAkpointsAccessibilityProvider(this.debugService, this.lAbelService),
 			overrideStyles: {
-				listBackground: this.getBackgroundColor()
+				listBAckground: this.getBAckgroundColor()
 			}
 		});
 
@@ -110,49 +110,49 @@ export class BreakpointsView extends ViewPane {
 
 		this._register(this.list.onContextMenu(this.onListContextMenu, this));
 
-		this.list.onMouseMiddleClick(async ({ element }) => {
-			if (element instanceof Breakpoint) {
-				await this.debugService.removeBreakpoints(element.getId());
-			} else if (element instanceof FunctionBreakpoint) {
-				await this.debugService.removeFunctionBreakpoints(element.getId());
-			} else if (element instanceof DataBreakpoint) {
-				await this.debugService.removeDataBreakpoints(element.getId());
+		this.list.onMouseMiddleClick(Async ({ element }) => {
+			if (element instAnceof BreAkpoint) {
+				AwAit this.debugService.removeBreAkpoints(element.getId());
+			} else if (element instAnceof FunctionBreAkpoint) {
+				AwAit this.debugService.removeFunctionBreAkpoints(element.getId());
+			} else if (element instAnceof DAtABreAkpoint) {
+				AwAit this.debugService.removeDAtABreAkpoints(element.getId());
 			}
 		});
 
-		const resourceNavigator = this._register(new ListResourceNavigator(this.list, { configurationService: this.configurationService }));
-		this._register(resourceNavigator.onDidOpen(async e => {
+		const resourceNAvigAtor = this._register(new ListResourceNAvigAtor(this.list, { configurAtionService: this.configurAtionService }));
+		this._register(resourceNAvigAtor.onDidOpen(Async e => {
 			if (e.element === null) {
 				return;
 			}
 
-			if (e.browserEvent instanceof MouseEvent && e.browserEvent.button === 1) { // middle click
+			if (e.browserEvent instAnceof MouseEvent && e.browserEvent.button === 1) { // middle click
 				return;
 			}
 
 			const element = this.list.element(e.element);
 
-			if (element instanceof Breakpoint) {
-				openBreakpointSource(element, e.sideBySide, e.editorOptions.preserveFocus || false, this.debugService, this.editorService);
+			if (element instAnceof BreAkpoint) {
+				openBreAkpointSource(element, e.sideBySide, e.editorOptions.preserveFocus || fAlse, this.debugService, this.editorService);
 			}
-			if (e.browserEvent instanceof MouseEvent && e.browserEvent.detail === 2 && element instanceof FunctionBreakpoint && element !== this.debugService.getViewModel().getSelectedFunctionBreakpoint()) {
+			if (e.browserEvent instAnceof MouseEvent && e.browserEvent.detAil === 2 && element instAnceof FunctionBreAkpoint && element !== this.debugService.getViewModel().getSelectedFunctionBreAkpoint()) {
 				// double click
-				this.debugService.getViewModel().setSelectedFunctionBreakpoint(element);
-				this.onBreakpointsChange();
+				this.debugService.getViewModel().setSelectedFunctionBreAkpoint(element);
+				this.onBreAkpointsChAnge();
 			}
 		}));
 
 		this.list.splice(0, this.list.length, this.elements);
 
-		this._register(this.onDidChangeBodyVisibility(visible => {
+		this._register(this.onDidChAngeBodyVisibility(visible => {
 			if (visible && this.needsRefresh) {
-				this.onBreakpointsChange();
+				this.onBreAkpointsChAnge();
 			}
 		}));
 
-		const containerModel = this.viewDescriptorService.getViewContainerModel(this.viewDescriptorService.getViewContainerByViewId(this.id)!)!;
-		this._register(containerModel.onDidChangeAllViewDescriptors(() => {
-			this.updateSize();
+		const contAinerModel = this.viewDescriptorService.getViewContAinerModel(this.viewDescriptorService.getViewContAinerByViewId(this.id)!)!;
+		this._register(contAinerModel.onDidChAngeAllViewDescriptors(() => {
+			this.updAteSize();
 		}));
 	}
 
@@ -163,98 +163,98 @@ export class BreakpointsView extends ViewPane {
 		}
 	}
 
-	protected layoutBody(height: number, width: number): void {
-		if (this.ignoreLayout) {
+	protected lAyoutBody(height: number, width: number): void {
+		if (this.ignoreLAyout) {
 			return;
 		}
 
-		super.layoutBody(height, width);
+		super.lAyoutBody(height, width);
 		if (this.list) {
-			this.list.layout(height, width);
+			this.list.lAyout(height, width);
 		}
 		try {
-			this.ignoreLayout = true;
-			this.updateSize();
-		} finally {
-			this.ignoreLayout = false;
+			this.ignoreLAyout = true;
+			this.updAteSize();
+		} finAlly {
+			this.ignoreLAyout = fAlse;
 		}
 	}
 
-	private onListContextMenu(e: IListContextMenuEvent<IEnablement>): void {
+	privAte onListContextMenu(e: IListContextMenuEvent<IEnAblement>): void {
 		if (!e.element) {
 			return;
 		}
 
-		const actions: IAction[] = [];
+		const Actions: IAction[] = [];
 		const element = e.element;
 
-		const breakpointType = element instanceof Breakpoint && element.logMessage ? nls.localize('Logpoint', "Logpoint") : nls.localize('Breakpoint', "Breakpoint");
-		if (element instanceof Breakpoint || element instanceof FunctionBreakpoint) {
-			actions.push(new Action('workbench.action.debug.openEditorAndEditBreakpoint', nls.localize('editBreakpoint', "Edit {0}...", breakpointType), '', true, async () => {
-				if (element instanceof Breakpoint) {
-					const editor = await openBreakpointSource(element, false, false, this.debugService, this.editorService);
+		const breAkpointType = element instAnceof BreAkpoint && element.logMessAge ? nls.locAlize('Logpoint', "Logpoint") : nls.locAlize('BreAkpoint', "BreAkpoint");
+		if (element instAnceof BreAkpoint || element instAnceof FunctionBreAkpoint) {
+			Actions.push(new Action('workbench.Action.debug.openEditorAndEditBreAkpoint', nls.locAlize('editBreAkpoint', "Edit {0}...", breAkpointType), '', true, Async () => {
+				if (element instAnceof BreAkpoint) {
+					const editor = AwAit openBreAkpointSource(element, fAlse, fAlse, this.debugService, this.editorService);
 					if (editor) {
 						const codeEditor = editor.getControl();
 						if (isCodeEditor(codeEditor)) {
-							codeEditor.getContribution<IBreakpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID).showBreakpointWidget(element.lineNumber, element.column);
+							codeEditor.getContribution<IBreAkpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID).showBreAkpointWidget(element.lineNumber, element.column);
 						}
 					}
 				} else {
-					this.debugService.getViewModel().setSelectedFunctionBreakpoint(element);
-					this.onBreakpointsChange();
+					this.debugService.getViewModel().setSelectedFunctionBreAkpoint(element);
+					this.onBreAkpointsChAnge();
 				}
 			}));
-			actions.push(new Separator());
+			Actions.push(new SepArAtor());
 		}
 
-		actions.push(new RemoveBreakpointAction(RemoveBreakpointAction.ID, nls.localize('removeBreakpoint', "Remove {0}", breakpointType), this.debugService));
+		Actions.push(new RemoveBreAkpointAction(RemoveBreAkpointAction.ID, nls.locAlize('removeBreAkpoint', "Remove {0}", breAkpointType), this.debugService));
 
-		if (this.debugService.getModel().getBreakpoints().length + this.debugService.getModel().getFunctionBreakpoints().length > 1) {
-			actions.push(new RemoveAllBreakpointsAction(RemoveAllBreakpointsAction.ID, RemoveAllBreakpointsAction.LABEL, this.debugService, this.keybindingService));
-			actions.push(new Separator());
+		if (this.debugService.getModel().getBreAkpoints().length + this.debugService.getModel().getFunctionBreAkpoints().length > 1) {
+			Actions.push(new RemoveAllBreAkpointsAction(RemoveAllBreAkpointsAction.ID, RemoveAllBreAkpointsAction.LABEL, this.debugService, this.keybindingService));
+			Actions.push(new SepArAtor());
 
-			actions.push(new EnableAllBreakpointsAction(EnableAllBreakpointsAction.ID, EnableAllBreakpointsAction.LABEL, this.debugService, this.keybindingService));
-			actions.push(new DisableAllBreakpointsAction(DisableAllBreakpointsAction.ID, DisableAllBreakpointsAction.LABEL, this.debugService, this.keybindingService));
+			Actions.push(new EnAbleAllBreAkpointsAction(EnAbleAllBreAkpointsAction.ID, EnAbleAllBreAkpointsAction.LABEL, this.debugService, this.keybindingService));
+			Actions.push(new DisAbleAllBreAkpointsAction(DisAbleAllBreAkpointsAction.ID, DisAbleAllBreAkpointsAction.LABEL, this.debugService, this.keybindingService));
 		}
 
-		actions.push(new Separator());
-		actions.push(new ReapplyBreakpointsAction(ReapplyBreakpointsAction.ID, ReapplyBreakpointsAction.LABEL, this.debugService, this.keybindingService));
+		Actions.push(new SepArAtor());
+		Actions.push(new ReApplyBreAkpointsAction(ReApplyBreAkpointsAction.ID, ReApplyBreAkpointsAction.LABEL, this.debugService, this.keybindingService));
 
 		this.contextMenuService.showContextMenu({
-			getAnchor: () => e.anchor,
-			getActions: () => actions,
+			getAnchor: () => e.Anchor,
+			getActions: () => Actions,
 			getActionsContext: () => element,
-			onHide: () => dispose(actions)
+			onHide: () => dispose(Actions)
 		});
 	}
 
 	public getActions(): IAction[] {
 		return [
-			new AddFunctionBreakpointAction(AddFunctionBreakpointAction.ID, AddFunctionBreakpointAction.LABEL, this.debugService, this.keybindingService),
-			new ToggleBreakpointsActivatedAction(ToggleBreakpointsActivatedAction.ID, ToggleBreakpointsActivatedAction.ACTIVATE_LABEL, this.debugService, this.keybindingService),
-			new RemoveAllBreakpointsAction(RemoveAllBreakpointsAction.ID, RemoveAllBreakpointsAction.LABEL, this.debugService, this.keybindingService)
+			new AddFunctionBreAkpointAction(AddFunctionBreAkpointAction.ID, AddFunctionBreAkpointAction.LABEL, this.debugService, this.keybindingService),
+			new ToggleBreAkpointsActivAtedAction(ToggleBreAkpointsActivAtedAction.ID, ToggleBreAkpointsActivAtedAction.ACTIVATE_LABEL, this.debugService, this.keybindingService),
+			new RemoveAllBreAkpointsAction(RemoveAllBreAkpointsAction.ID, RemoveAllBreAkpointsAction.LABEL, this.debugService, this.keybindingService)
 		];
 	}
 
-	private updateSize(): void {
-		const containerModel = this.viewDescriptorService.getViewContainerModel(this.viewDescriptorService.getViewContainerByViewId(this.id)!)!;
+	privAte updAteSize(): void {
+		const contAinerModel = this.viewDescriptorService.getViewContAinerModel(this.viewDescriptorService.getViewContAinerByViewId(this.id)!)!;
 
-		// Adjust expanded body size
-		this.minimumBodySize = this.orientation === Orientation.VERTICAL ? getExpandedBodySize(this.debugService.getModel(), MAX_VISIBLE_BREAKPOINTS) : 170;
-		this.maximumBodySize = this.orientation === Orientation.VERTICAL && containerModel.visibleViewDescriptors.length > 1 ? getExpandedBodySize(this.debugService.getModel(), Number.POSITIVE_INFINITY) : Number.POSITIVE_INFINITY;
+		// Adjust expAnded body size
+		this.minimumBodySize = this.orientAtion === OrientAtion.VERTICAL ? getExpAndedBodySize(this.debugService.getModel(), MAX_VISIBLE_BREAKPOINTS) : 170;
+		this.mAximumBodySize = this.orientAtion === OrientAtion.VERTICAL && contAinerModel.visibleViewDescriptors.length > 1 ? getExpAndedBodySize(this.debugService.getModel(), Number.POSITIVE_INFINITY) : Number.POSITIVE_INFINITY;
 	}
 
-	private onBreakpointsChange(): void {
+	privAte onBreAkpointsChAnge(): void {
 		if (this.isBodyVisible()) {
-			this.updateSize();
+			this.updAteSize();
 			if (this.list) {
-				const lastFocusIndex = this.list.getFocus()[0];
-				// Check whether focused element was removed
-				const needsRefocus = lastFocusIndex && !this.elements.includes(this.list.element(lastFocusIndex));
+				const lAstFocusIndex = this.list.getFocus()[0];
+				// Check whether focused element wAs removed
+				const needsRefocus = lAstFocusIndex && !this.elements.includes(this.list.element(lAstFocusIndex));
 				this.list.splice(0, this.list.length, this.elements);
-				this.needsRefresh = false;
+				this.needsRefresh = fAlse;
 				if (needsRefocus) {
-					this.list.focusNth(Math.min(lastFocusIndex, this.list.length - 1));
+					this.list.focusNth(MAth.min(lAstFocusIndex, this.list.length - 1));
 				}
 			}
 		} else {
@@ -262,521 +262,521 @@ export class BreakpointsView extends ViewPane {
 		}
 	}
 
-	private get elements(): BreakpointItem[] {
+	privAte get elements(): BreAkpointItem[] {
 		const model = this.debugService.getModel();
-		const elements = (<ReadonlyArray<IEnablement>>model.getExceptionBreakpoints()).concat(model.getFunctionBreakpoints()).concat(model.getDataBreakpoints()).concat(model.getBreakpoints());
+		const elements = (<ReAdonlyArrAy<IEnAblement>>model.getExceptionBreAkpoints()).concAt(model.getFunctionBreAkpoints()).concAt(model.getDAtABreAkpoints()).concAt(model.getBreAkpoints());
 
-		return elements as BreakpointItem[];
+		return elements As BreAkpointItem[];
 	}
 }
 
-class BreakpointsDelegate implements IListVirtualDelegate<BreakpointItem> {
+clAss BreAkpointsDelegAte implements IListVirtuAlDelegAte<BreAkpointItem> {
 
-	constructor(private debugService: IDebugService) {
+	constructor(privAte debugService: IDebugService) {
 		// noop
 	}
 
-	getHeight(_element: BreakpointItem): number {
+	getHeight(_element: BreAkpointItem): number {
 		return 22;
 	}
 
-	getTemplateId(element: BreakpointItem): string {
-		if (element instanceof Breakpoint) {
-			return BreakpointsRenderer.ID;
+	getTemplAteId(element: BreAkpointItem): string {
+		if (element instAnceof BreAkpoint) {
+			return BreAkpointsRenderer.ID;
 		}
-		if (element instanceof FunctionBreakpoint) {
-			const selected = this.debugService.getViewModel().getSelectedFunctionBreakpoint();
-			if (!element.name || (selected && selected.getId() === element.getId())) {
-				return FunctionBreakpointInputRenderer.ID;
+		if (element instAnceof FunctionBreAkpoint) {
+			const selected = this.debugService.getViewModel().getSelectedFunctionBreAkpoint();
+			if (!element.nAme || (selected && selected.getId() === element.getId())) {
+				return FunctionBreAkpointInputRenderer.ID;
 			}
 
-			return FunctionBreakpointsRenderer.ID;
+			return FunctionBreAkpointsRenderer.ID;
 		}
-		if (element instanceof ExceptionBreakpoint) {
-			return ExceptionBreakpointsRenderer.ID;
+		if (element instAnceof ExceptionBreAkpoint) {
+			return ExceptionBreAkpointsRenderer.ID;
 		}
-		if (element instanceof DataBreakpoint) {
-			return DataBreakpointsRenderer.ID;
+		if (element instAnceof DAtABreAkpoint) {
+			return DAtABreAkpointsRenderer.ID;
 		}
 
 		return '';
 	}
 }
 
-interface IBaseBreakpointTemplateData {
-	breakpoint: HTMLElement;
-	name: HTMLElement;
+interfAce IBAseBreAkpointTemplAteDAtA {
+	breAkpoint: HTMLElement;
+	nAme: HTMLElement;
 	checkbox: HTMLInputElement;
-	context: BreakpointItem;
-	toDispose: IDisposable[];
+	context: BreAkpointItem;
+	toDispose: IDisposAble[];
 }
 
-interface IBaseBreakpointWithIconTemplateData extends IBaseBreakpointTemplateData {
+interfAce IBAseBreAkpointWithIconTemplAteDAtA extends IBAseBreAkpointTemplAteDAtA {
 	icon: HTMLElement;
 }
 
-interface IBreakpointTemplateData extends IBaseBreakpointWithIconTemplateData {
+interfAce IBreAkpointTemplAteDAtA extends IBAseBreAkpointWithIconTemplAteDAtA {
 	lineNumber: HTMLElement;
-	filePath: HTMLElement;
+	filePAth: HTMLElement;
 }
 
-interface IInputTemplateData {
+interfAce IInputTemplAteDAtA {
 	inputBox: InputBox;
 	checkbox: HTMLInputElement;
 	icon: HTMLElement;
-	breakpoint: IFunctionBreakpoint;
-	reactedOnEvent: boolean;
-	toDispose: IDisposable[];
+	breAkpoint: IFunctionBreAkpoint;
+	reActedOnEvent: booleAn;
+	toDispose: IDisposAble[];
 }
 
-class BreakpointsRenderer implements IListRenderer<IBreakpoint, IBreakpointTemplateData> {
+clAss BreAkpointsRenderer implements IListRenderer<IBreAkpoint, IBreAkpointTemplAteDAtA> {
 
 	constructor(
-		@IDebugService private readonly debugService: IDebugService,
-		@ILabelService private readonly labelService: ILabelService
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService
 	) {
 		// noop
 	}
 
-	static readonly ID = 'breakpoints';
+	stAtic reAdonly ID = 'breAkpoints';
 
-	get templateId() {
-		return BreakpointsRenderer.ID;
+	get templAteId() {
+		return BreAkpointsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IBreakpointTemplateData {
-		const data: IBreakpointTemplateData = Object.create(null);
-		data.breakpoint = dom.append(container, $('.breakpoint'));
+	renderTemplAte(contAiner: HTMLElement): IBreAkpointTemplAteDAtA {
+		const dAtA: IBreAkpointTemplAteDAtA = Object.creAte(null);
+		dAtA.breAkpoint = dom.Append(contAiner, $('.breAkpoint'));
 
-		data.icon = $('.icon');
-		data.checkbox = createCheckbox();
-		data.toDispose = [];
-		data.toDispose.push(dom.addStandardDisposableListener(data.checkbox, 'change', (e) => {
-			this.debugService.enableOrDisableBreakpoints(!data.context.enabled, data.context);
+		dAtA.icon = $('.icon');
+		dAtA.checkbox = creAteCheckbox();
+		dAtA.toDispose = [];
+		dAtA.toDispose.push(dom.AddStAndArdDisposAbleListener(dAtA.checkbox, 'chAnge', (e) => {
+			this.debugService.enAbleOrDisAbleBreAkpoints(!dAtA.context.enAbled, dAtA.context);
 		}));
 
-		dom.append(data.breakpoint, data.icon);
-		dom.append(data.breakpoint, data.checkbox);
+		dom.Append(dAtA.breAkpoint, dAtA.icon);
+		dom.Append(dAtA.breAkpoint, dAtA.checkbox);
 
-		data.name = dom.append(data.breakpoint, $('span.name'));
+		dAtA.nAme = dom.Append(dAtA.breAkpoint, $('spAn.nAme'));
 
-		data.filePath = dom.append(data.breakpoint, $('span.file-path'));
-		const lineNumberContainer = dom.append(data.breakpoint, $('.line-number-container'));
-		data.lineNumber = dom.append(lineNumberContainer, $('span.line-number.monaco-count-badge'));
+		dAtA.filePAth = dom.Append(dAtA.breAkpoint, $('spAn.file-pAth'));
+		const lineNumberContAiner = dom.Append(dAtA.breAkpoint, $('.line-number-contAiner'));
+		dAtA.lineNumber = dom.Append(lineNumberContAiner, $('spAn.line-number.monAco-count-bAdge'));
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement(breakpoint: IBreakpoint, index: number, data: IBreakpointTemplateData): void {
-		data.context = breakpoint;
-		data.breakpoint.classList.toggle('disabled', !this.debugService.getModel().areBreakpointsActivated());
+	renderElement(breAkpoint: IBreAkpoint, index: number, dAtA: IBreAkpointTemplAteDAtA): void {
+		dAtA.context = breAkpoint;
+		dAtA.breAkpoint.clAssList.toggle('disAbled', !this.debugService.getModel().AreBreAkpointsActivAted());
 
-		data.name.textContent = resources.basenameOrAuthority(breakpoint.uri);
-		data.lineNumber.textContent = breakpoint.lineNumber.toString();
-		if (breakpoint.column) {
-			data.lineNumber.textContent += `:${breakpoint.column}`;
+		dAtA.nAme.textContent = resources.bAsenAmeOrAuthority(breAkpoint.uri);
+		dAtA.lineNumber.textContent = breAkpoint.lineNumber.toString();
+		if (breAkpoint.column) {
+			dAtA.lineNumber.textContent += `:${breAkpoint.column}`;
 		}
-		data.filePath.textContent = this.labelService.getUriLabel(resources.dirname(breakpoint.uri), { relative: true });
-		data.checkbox.checked = breakpoint.enabled;
+		dAtA.filePAth.textContent = this.lAbelService.getUriLAbel(resources.dirnAme(breAkpoint.uri), { relAtive: true });
+		dAtA.checkbox.checked = breAkpoint.enAbled;
 
-		const { message, className } = getBreakpointMessageAndClassName(this.debugService.state, this.debugService.getModel().areBreakpointsActivated(), breakpoint, this.labelService);
-		data.icon.className = `codicon ${className}`;
-		data.breakpoint.title = breakpoint.message || message || '';
+		const { messAge, clAssNAme } = getBreAkpointMessAgeAndClAssNAme(this.debugService.stAte, this.debugService.getModel().AreBreAkpointsActivAted(), breAkpoint, this.lAbelService);
+		dAtA.icon.clAssNAme = `codicon ${clAssNAme}`;
+		dAtA.breAkpoint.title = breAkpoint.messAge || messAge || '';
 
-		const debugActive = this.debugService.state === State.Running || this.debugService.state === State.Stopped;
-		if (debugActive && !breakpoint.verified) {
-			data.breakpoint.classList.add('disabled');
+		const debugActive = this.debugService.stAte === StAte.Running || this.debugService.stAte === StAte.Stopped;
+		if (debugActive && !breAkpoint.verified) {
+			dAtA.breAkpoint.clAssList.Add('disAbled');
 		}
 	}
 
-	disposeTemplate(templateData: IBreakpointTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: IBreAkpointTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-class ExceptionBreakpointsRenderer implements IListRenderer<IExceptionBreakpoint, IBaseBreakpointTemplateData> {
+clAss ExceptionBreAkpointsRenderer implements IListRenderer<IExceptionBreAkpoint, IBAseBreAkpointTemplAteDAtA> {
 
 	constructor(
-		private debugService: IDebugService
+		privAte debugService: IDebugService
 	) {
 		// noop
 	}
 
-	static readonly ID = 'exceptionbreakpoints';
+	stAtic reAdonly ID = 'exceptionbreAkpoints';
 
-	get templateId() {
-		return ExceptionBreakpointsRenderer.ID;
+	get templAteId() {
+		return ExceptionBreAkpointsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IBaseBreakpointTemplateData {
-		const data: IBreakpointTemplateData = Object.create(null);
-		data.breakpoint = dom.append(container, $('.breakpoint'));
+	renderTemplAte(contAiner: HTMLElement): IBAseBreAkpointTemplAteDAtA {
+		const dAtA: IBreAkpointTemplAteDAtA = Object.creAte(null);
+		dAtA.breAkpoint = dom.Append(contAiner, $('.breAkpoint'));
 
-		data.checkbox = createCheckbox();
-		data.toDispose = [];
-		data.toDispose.push(dom.addStandardDisposableListener(data.checkbox, 'change', (e) => {
-			this.debugService.enableOrDisableBreakpoints(!data.context.enabled, data.context);
+		dAtA.checkbox = creAteCheckbox();
+		dAtA.toDispose = [];
+		dAtA.toDispose.push(dom.AddStAndArdDisposAbleListener(dAtA.checkbox, 'chAnge', (e) => {
+			this.debugService.enAbleOrDisAbleBreAkpoints(!dAtA.context.enAbled, dAtA.context);
 		}));
 
-		dom.append(data.breakpoint, data.checkbox);
+		dom.Append(dAtA.breAkpoint, dAtA.checkbox);
 
-		data.name = dom.append(data.breakpoint, $('span.name'));
-		data.breakpoint.classList.add('exception');
+		dAtA.nAme = dom.Append(dAtA.breAkpoint, $('spAn.nAme'));
+		dAtA.breAkpoint.clAssList.Add('exception');
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement(exceptionBreakpoint: IExceptionBreakpoint, index: number, data: IBaseBreakpointTemplateData): void {
-		data.context = exceptionBreakpoint;
-		data.name.textContent = exceptionBreakpoint.label || `${exceptionBreakpoint.filter} exceptions`;
-		data.breakpoint.title = data.name.textContent;
-		data.checkbox.checked = exceptionBreakpoint.enabled;
+	renderElement(exceptionBreAkpoint: IExceptionBreAkpoint, index: number, dAtA: IBAseBreAkpointTemplAteDAtA): void {
+		dAtA.context = exceptionBreAkpoint;
+		dAtA.nAme.textContent = exceptionBreAkpoint.lAbel || `${exceptionBreAkpoint.filter} exceptions`;
+		dAtA.breAkpoint.title = dAtA.nAme.textContent;
+		dAtA.checkbox.checked = exceptionBreAkpoint.enAbled;
 	}
 
-	disposeTemplate(templateData: IBaseBreakpointTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: IBAseBreAkpointTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-class FunctionBreakpointsRenderer implements IListRenderer<FunctionBreakpoint, IBaseBreakpointWithIconTemplateData> {
+clAss FunctionBreAkpointsRenderer implements IListRenderer<FunctionBreAkpoint, IBAseBreAkpointWithIconTemplAteDAtA> {
 
 	constructor(
-		@IDebugService private readonly debugService: IDebugService,
-		@ILabelService private readonly labelService: ILabelService
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService
 	) {
 		// noop
 	}
 
-	static readonly ID = 'functionbreakpoints';
+	stAtic reAdonly ID = 'functionbreAkpoints';
 
-	get templateId() {
-		return FunctionBreakpointsRenderer.ID;
+	get templAteId() {
+		return FunctionBreAkpointsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IBaseBreakpointWithIconTemplateData {
-		const data: IBreakpointTemplateData = Object.create(null);
-		data.breakpoint = dom.append(container, $('.breakpoint'));
+	renderTemplAte(contAiner: HTMLElement): IBAseBreAkpointWithIconTemplAteDAtA {
+		const dAtA: IBreAkpointTemplAteDAtA = Object.creAte(null);
+		dAtA.breAkpoint = dom.Append(contAiner, $('.breAkpoint'));
 
-		data.icon = $('.icon');
-		data.checkbox = createCheckbox();
-		data.toDispose = [];
-		data.toDispose.push(dom.addStandardDisposableListener(data.checkbox, 'change', (e) => {
-			this.debugService.enableOrDisableBreakpoints(!data.context.enabled, data.context);
+		dAtA.icon = $('.icon');
+		dAtA.checkbox = creAteCheckbox();
+		dAtA.toDispose = [];
+		dAtA.toDispose.push(dom.AddStAndArdDisposAbleListener(dAtA.checkbox, 'chAnge', (e) => {
+			this.debugService.enAbleOrDisAbleBreAkpoints(!dAtA.context.enAbled, dAtA.context);
 		}));
 
-		dom.append(data.breakpoint, data.icon);
-		dom.append(data.breakpoint, data.checkbox);
+		dom.Append(dAtA.breAkpoint, dAtA.icon);
+		dom.Append(dAtA.breAkpoint, dAtA.checkbox);
 
-		data.name = dom.append(data.breakpoint, $('span.name'));
+		dAtA.nAme = dom.Append(dAtA.breAkpoint, $('spAn.nAme'));
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement(functionBreakpoint: FunctionBreakpoint, _index: number, data: IBaseBreakpointWithIconTemplateData): void {
-		data.context = functionBreakpoint;
-		data.name.textContent = functionBreakpoint.name;
-		const { className, message } = getBreakpointMessageAndClassName(this.debugService.state, this.debugService.getModel().areBreakpointsActivated(), functionBreakpoint, this.labelService);
-		data.icon.className = `codicon ${className}`;
-		data.icon.title = message ? message : '';
-		data.checkbox.checked = functionBreakpoint.enabled;
-		data.breakpoint.title = message ? message : '';
+	renderElement(functionBreAkpoint: FunctionBreAkpoint, _index: number, dAtA: IBAseBreAkpointWithIconTemplAteDAtA): void {
+		dAtA.context = functionBreAkpoint;
+		dAtA.nAme.textContent = functionBreAkpoint.nAme;
+		const { clAssNAme, messAge } = getBreAkpointMessAgeAndClAssNAme(this.debugService.stAte, this.debugService.getModel().AreBreAkpointsActivAted(), functionBreAkpoint, this.lAbelService);
+		dAtA.icon.clAssNAme = `codicon ${clAssNAme}`;
+		dAtA.icon.title = messAge ? messAge : '';
+		dAtA.checkbox.checked = functionBreAkpoint.enAbled;
+		dAtA.breAkpoint.title = messAge ? messAge : '';
 
-		// Mark function breakpoints as disabled if deactivated or if debug type does not support them #9099
+		// MArk function breAkpoints As disAbled if deActivAted or if debug type does not support them #9099
 		const session = this.debugService.getViewModel().focusedSession;
-		data.breakpoint.classList.toggle('disabled', (session && !session.capabilities.supportsFunctionBreakpoints) || !this.debugService.getModel().areBreakpointsActivated());
-		if (session && !session.capabilities.supportsFunctionBreakpoints) {
-			data.breakpoint.title = nls.localize('functionBreakpointsNotSupported', "Function breakpoints are not supported by this debug type");
+		dAtA.breAkpoint.clAssList.toggle('disAbled', (session && !session.cApAbilities.supportsFunctionBreAkpoints) || !this.debugService.getModel().AreBreAkpointsActivAted());
+		if (session && !session.cApAbilities.supportsFunctionBreAkpoints) {
+			dAtA.breAkpoint.title = nls.locAlize('functionBreAkpointsNotSupported', "Function breAkpoints Are not supported by this debug type");
 		}
 	}
 
-	disposeTemplate(templateData: IBaseBreakpointWithIconTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: IBAseBreAkpointWithIconTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-class DataBreakpointsRenderer implements IListRenderer<DataBreakpoint, IBaseBreakpointWithIconTemplateData> {
+clAss DAtABreAkpointsRenderer implements IListRenderer<DAtABreAkpoint, IBAseBreAkpointWithIconTemplAteDAtA> {
 
 	constructor(
-		@IDebugService private readonly debugService: IDebugService,
-		@ILabelService private readonly labelService: ILabelService
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService
 	) {
 		// noop
 	}
 
-	static readonly ID = 'databreakpoints';
+	stAtic reAdonly ID = 'dAtAbreAkpoints';
 
-	get templateId() {
-		return DataBreakpointsRenderer.ID;
+	get templAteId() {
+		return DAtABreAkpointsRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IBaseBreakpointWithIconTemplateData {
-		const data: IBreakpointTemplateData = Object.create(null);
-		data.breakpoint = dom.append(container, $('.breakpoint'));
+	renderTemplAte(contAiner: HTMLElement): IBAseBreAkpointWithIconTemplAteDAtA {
+		const dAtA: IBreAkpointTemplAteDAtA = Object.creAte(null);
+		dAtA.breAkpoint = dom.Append(contAiner, $('.breAkpoint'));
 
-		data.icon = $('.icon');
-		data.checkbox = createCheckbox();
-		data.toDispose = [];
-		data.toDispose.push(dom.addStandardDisposableListener(data.checkbox, 'change', (e) => {
-			this.debugService.enableOrDisableBreakpoints(!data.context.enabled, data.context);
+		dAtA.icon = $('.icon');
+		dAtA.checkbox = creAteCheckbox();
+		dAtA.toDispose = [];
+		dAtA.toDispose.push(dom.AddStAndArdDisposAbleListener(dAtA.checkbox, 'chAnge', (e) => {
+			this.debugService.enAbleOrDisAbleBreAkpoints(!dAtA.context.enAbled, dAtA.context);
 		}));
 
-		dom.append(data.breakpoint, data.icon);
-		dom.append(data.breakpoint, data.checkbox);
+		dom.Append(dAtA.breAkpoint, dAtA.icon);
+		dom.Append(dAtA.breAkpoint, dAtA.checkbox);
 
-		data.name = dom.append(data.breakpoint, $('span.name'));
+		dAtA.nAme = dom.Append(dAtA.breAkpoint, $('spAn.nAme'));
 
-		return data;
+		return dAtA;
 	}
 
-	renderElement(dataBreakpoint: DataBreakpoint, _index: number, data: IBaseBreakpointWithIconTemplateData): void {
-		data.context = dataBreakpoint;
-		data.name.textContent = dataBreakpoint.description;
-		const { className, message } = getBreakpointMessageAndClassName(this.debugService.state, this.debugService.getModel().areBreakpointsActivated(), dataBreakpoint, this.labelService);
-		data.icon.className = `codicon ${className}`;
-		data.icon.title = message ? message : '';
-		data.checkbox.checked = dataBreakpoint.enabled;
-		data.breakpoint.title = message ? message : '';
+	renderElement(dAtABreAkpoint: DAtABreAkpoint, _index: number, dAtA: IBAseBreAkpointWithIconTemplAteDAtA): void {
+		dAtA.context = dAtABreAkpoint;
+		dAtA.nAme.textContent = dAtABreAkpoint.description;
+		const { clAssNAme, messAge } = getBreAkpointMessAgeAndClAssNAme(this.debugService.stAte, this.debugService.getModel().AreBreAkpointsActivAted(), dAtABreAkpoint, this.lAbelService);
+		dAtA.icon.clAssNAme = `codicon ${clAssNAme}`;
+		dAtA.icon.title = messAge ? messAge : '';
+		dAtA.checkbox.checked = dAtABreAkpoint.enAbled;
+		dAtA.breAkpoint.title = messAge ? messAge : '';
 
-		// Mark function breakpoints as disabled if deactivated or if debug type does not support them #9099
+		// MArk function breAkpoints As disAbled if deActivAted or if debug type does not support them #9099
 		const session = this.debugService.getViewModel().focusedSession;
-		data.breakpoint.classList.toggle('disabled', (session && !session.capabilities.supportsDataBreakpoints) || !this.debugService.getModel().areBreakpointsActivated());
-		if (session && !session.capabilities.supportsDataBreakpoints) {
-			data.breakpoint.title = nls.localize('dataBreakpointsNotSupported', "Data breakpoints are not supported by this debug type");
+		dAtA.breAkpoint.clAssList.toggle('disAbled', (session && !session.cApAbilities.supportsDAtABreAkpoints) || !this.debugService.getModel().AreBreAkpointsActivAted());
+		if (session && !session.cApAbilities.supportsDAtABreAkpoints) {
+			dAtA.breAkpoint.title = nls.locAlize('dAtABreAkpointsNotSupported', "DAtA breAkpoints Are not supported by this debug type");
 		}
 	}
 
-	disposeTemplate(templateData: IBaseBreakpointWithIconTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: IBAseBreAkpointWithIconTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-class FunctionBreakpointInputRenderer implements IListRenderer<IFunctionBreakpoint, IInputTemplateData> {
+clAss FunctionBreAkpointInputRenderer implements IListRenderer<IFunctionBreAkpoint, IInputTemplAteDAtA> {
 
 	constructor(
-		private debugService: IDebugService,
-		private contextViewService: IContextViewService,
-		private themeService: IThemeService,
-		private labelService: ILabelService
+		privAte debugService: IDebugService,
+		privAte contextViewService: IContextViewService,
+		privAte themeService: IThemeService,
+		privAte lAbelService: ILAbelService
 	) {
 		// noop
 	}
 
-	static readonly ID = 'functionbreakpointinput';
+	stAtic reAdonly ID = 'functionbreAkpointinput';
 
-	get templateId() {
-		return FunctionBreakpointInputRenderer.ID;
+	get templAteId() {
+		return FunctionBreAkpointInputRenderer.ID;
 	}
 
-	renderTemplate(container: HTMLElement): IInputTemplateData {
-		const template: IInputTemplateData = Object.create(null);
+	renderTemplAte(contAiner: HTMLElement): IInputTemplAteDAtA {
+		const templAte: IInputTemplAteDAtA = Object.creAte(null);
 
-		const breakpoint = dom.append(container, $('.breakpoint'));
-		template.icon = $('.icon');
-		template.checkbox = createCheckbox();
+		const breAkpoint = dom.Append(contAiner, $('.breAkpoint'));
+		templAte.icon = $('.icon');
+		templAte.checkbox = creAteCheckbox();
 
-		dom.append(breakpoint, template.icon);
-		dom.append(breakpoint, template.checkbox);
-		const inputBoxContainer = dom.append(breakpoint, $('.inputBoxContainer'));
-		const inputBox = new InputBox(inputBoxContainer, this.contextViewService, {
-			placeholder: nls.localize('functionBreakpointPlaceholder', "Function to break on"),
-			ariaLabel: nls.localize('functionBreakPointInputAriaLabel', "Type function breakpoint")
+		dom.Append(breAkpoint, templAte.icon);
+		dom.Append(breAkpoint, templAte.checkbox);
+		const inputBoxContAiner = dom.Append(breAkpoint, $('.inputBoxContAiner'));
+		const inputBox = new InputBox(inputBoxContAiner, this.contextViewService, {
+			plAceholder: nls.locAlize('functionBreAkpointPlAceholder', "Function to breAk on"),
+			AriALAbel: nls.locAlize('functionBreAkPointInputAriALAbel', "Type function breAkpoint")
 		});
-		const styler = attachInputBoxStyler(inputBox, this.themeService);
-		const toDispose: IDisposable[] = [inputBox, styler];
+		const styler = AttAchInputBoxStyler(inputBox, this.themeService);
+		const toDispose: IDisposAble[] = [inputBox, styler];
 
-		const wrapUp = (renamed: boolean) => {
-			if (!template.reactedOnEvent) {
-				template.reactedOnEvent = true;
-				this.debugService.getViewModel().setSelectedFunctionBreakpoint(undefined);
-				if (inputBox.value && (renamed || template.breakpoint.name)) {
-					this.debugService.renameFunctionBreakpoint(template.breakpoint.getId(), renamed ? inputBox.value : template.breakpoint.name);
+		const wrApUp = (renAmed: booleAn) => {
+			if (!templAte.reActedOnEvent) {
+				templAte.reActedOnEvent = true;
+				this.debugService.getViewModel().setSelectedFunctionBreAkpoint(undefined);
+				if (inputBox.vAlue && (renAmed || templAte.breAkpoint.nAme)) {
+					this.debugService.renAmeFunctionBreAkpoint(templAte.breAkpoint.getId(), renAmed ? inputBox.vAlue : templAte.breAkpoint.nAme);
 				} else {
-					this.debugService.removeFunctionBreakpoints(template.breakpoint.getId());
+					this.debugService.removeFunctionBreAkpoints(templAte.breAkpoint.getId());
 				}
 			}
 		};
 
-		toDispose.push(dom.addStandardDisposableListener(inputBox.inputElement, 'keydown', (e: IKeyboardEvent) => {
-			const isEscape = e.equals(KeyCode.Escape);
-			const isEnter = e.equals(KeyCode.Enter);
-			if (isEscape || isEnter) {
-				e.preventDefault();
-				e.stopPropagation();
-				wrapUp(isEnter);
+		toDispose.push(dom.AddStAndArdDisposAbleListener(inputBox.inputElement, 'keydown', (e: IKeyboArdEvent) => {
+			const isEscApe = e.equAls(KeyCode.EscApe);
+			const isEnter = e.equAls(KeyCode.Enter);
+			if (isEscApe || isEnter) {
+				e.preventDefAult();
+				e.stopPropAgAtion();
+				wrApUp(isEnter);
 			}
 		}));
-		toDispose.push(dom.addDisposableListener(inputBox.inputElement, 'blur', () => {
-			// Need to react with a timeout on the blur event due to possible concurent splices #56443
+		toDispose.push(dom.AddDisposAbleListener(inputBox.inputElement, 'blur', () => {
+			// Need to reAct with A timeout on the blur event due to possible concurent splices #56443
 			setTimeout(() => {
-				if (!template.breakpoint.name) {
-					wrapUp(true);
+				if (!templAte.breAkpoint.nAme) {
+					wrApUp(true);
 				}
 			});
 		}));
 
-		template.inputBox = inputBox;
-		template.toDispose = toDispose;
-		return template;
+		templAte.inputBox = inputBox;
+		templAte.toDispose = toDispose;
+		return templAte;
 	}
 
-	renderElement(functionBreakpoint: FunctionBreakpoint, _index: number, data: IInputTemplateData): void {
-		data.breakpoint = functionBreakpoint;
-		data.reactedOnEvent = false;
-		const { className, message } = getBreakpointMessageAndClassName(this.debugService.state, this.debugService.getModel().areBreakpointsActivated(), functionBreakpoint, this.labelService);
+	renderElement(functionBreAkpoint: FunctionBreAkpoint, _index: number, dAtA: IInputTemplAteDAtA): void {
+		dAtA.breAkpoint = functionBreAkpoint;
+		dAtA.reActedOnEvent = fAlse;
+		const { clAssNAme, messAge } = getBreAkpointMessAgeAndClAssNAme(this.debugService.stAte, this.debugService.getModel().AreBreAkpointsActivAted(), functionBreAkpoint, this.lAbelService);
 
-		data.icon.className = `codicon ${className}`;
-		data.icon.title = message ? message : '';
-		data.checkbox.checked = functionBreakpoint.enabled;
-		data.checkbox.disabled = true;
-		data.inputBox.value = functionBreakpoint.name || '';
+		dAtA.icon.clAssNAme = `codicon ${clAssNAme}`;
+		dAtA.icon.title = messAge ? messAge : '';
+		dAtA.checkbox.checked = functionBreAkpoint.enAbled;
+		dAtA.checkbox.disAbled = true;
+		dAtA.inputBox.vAlue = functionBreAkpoint.nAme || '';
 		setTimeout(() => {
-			data.inputBox.focus();
-			data.inputBox.select();
+			dAtA.inputBox.focus();
+			dAtA.inputBox.select();
 		}, 0);
 	}
 
-	disposeTemplate(templateData: IInputTemplateData): void {
-		dispose(templateData.toDispose);
+	disposeTemplAte(templAteDAtA: IInputTemplAteDAtA): void {
+		dispose(templAteDAtA.toDispose);
 	}
 }
 
-class BreakpointsAccessibilityProvider implements IListAccessibilityProvider<BreakpointItem> {
+clAss BreAkpointsAccessibilityProvider implements IListAccessibilityProvider<BreAkpointItem> {
 
 	constructor(
-		private readonly debugService: IDebugService,
-		private readonly labelService: ILabelService
+		privAte reAdonly debugService: IDebugService,
+		privAte reAdonly lAbelService: ILAbelService
 	) { }
 
-	getWidgetAriaLabel(): string {
-		return nls.localize('breakpoints', "Breakpoints");
+	getWidgetAriALAbel(): string {
+		return nls.locAlize('breAkpoints', "BreAkpoints");
 	}
 
 	getRole() {
 		return 'checkbox';
 	}
 
-	isChecked(breakpoint: IEnablement) {
-		return breakpoint.enabled;
+	isChecked(breAkpoint: IEnAblement) {
+		return breAkpoint.enAbled;
 	}
 
-	getAriaLabel(element: BreakpointItem): string | null {
-		if (element instanceof ExceptionBreakpoint) {
+	getAriALAbel(element: BreAkpointItem): string | null {
+		if (element instAnceof ExceptionBreAkpoint) {
 			return element.toString();
 		}
 
-		const { message } = getBreakpointMessageAndClassName(this.debugService.state, this.debugService.getModel().areBreakpointsActivated(), element as IBreakpoint | IDataBreakpoint | IFunctionBreakpoint, this.labelService);
+		const { messAge } = getBreAkpointMessAgeAndClAssNAme(this.debugService.stAte, this.debugService.getModel().AreBreAkpointsActivAted(), element As IBreAkpoint | IDAtABreAkpoint | IFunctionBreAkpoint, this.lAbelService);
 		const toString = element.toString();
 
-		return message ? `${toString}, ${message}` : toString;
+		return messAge ? `${toString}, ${messAge}` : toString;
 	}
 }
 
-export function openBreakpointSource(breakpoint: IBreakpoint, sideBySide: boolean, preserveFocus: boolean, debugService: IDebugService, editorService: IEditorService): Promise<IEditorPane | undefined> {
-	if (breakpoint.uri.scheme === DEBUG_SCHEME && debugService.state === State.Inactive) {
+export function openBreAkpointSource(breAkpoint: IBreAkpoint, sideBySide: booleAn, preserveFocus: booleAn, debugService: IDebugService, editorService: IEditorService): Promise<IEditorPAne | undefined> {
+	if (breAkpoint.uri.scheme === DEBUG_SCHEME && debugService.stAte === StAte.InActive) {
 		return Promise.resolve(undefined);
 	}
 
-	const selection = breakpoint.endLineNumber ? {
-		startLineNumber: breakpoint.lineNumber,
-		endLineNumber: breakpoint.endLineNumber,
-		startColumn: breakpoint.column || 1,
-		endColumn: breakpoint.endColumn || Constants.MAX_SAFE_SMALL_INTEGER
+	const selection = breAkpoint.endLineNumber ? {
+		stArtLineNumber: breAkpoint.lineNumber,
+		endLineNumber: breAkpoint.endLineNumber,
+		stArtColumn: breAkpoint.column || 1,
+		endColumn: breAkpoint.endColumn || ConstAnts.MAX_SAFE_SMALL_INTEGER
 	} : {
-			startLineNumber: breakpoint.lineNumber,
-			startColumn: breakpoint.column || 1,
-			endLineNumber: breakpoint.lineNumber,
-			endColumn: breakpoint.column || Constants.MAX_SAFE_SMALL_INTEGER
+			stArtLineNumber: breAkpoint.lineNumber,
+			stArtColumn: breAkpoint.column || 1,
+			endLineNumber: breAkpoint.lineNumber,
+			endColumn: breAkpoint.column || ConstAnts.MAX_SAFE_SMALL_INTEGER
 		};
 
 	return editorService.openEditor({
-		resource: breakpoint.uri,
+		resource: breAkpoint.uri,
 		options: {
 			preserveFocus,
 			selection,
-			revealIfOpened: true,
-			selectionRevealType: TextEditorSelectionRevealType.CenterIfOutsideViewport,
+			reveAlIfOpened: true,
+			selectionReveAlType: TextEditorSelectionReveAlType.CenterIfOutsideViewport,
 			pinned: !preserveFocus
 		}
 	}, sideBySide ? SIDE_GROUP : ACTIVE_GROUP);
 }
 
-export function getBreakpointMessageAndClassName(state: State, breakpointsActivated: boolean, breakpoint: IBreakpoint | IFunctionBreakpoint | IDataBreakpoint, labelService?: ILabelService): { message?: string, className: string } {
-	const debugActive = state === State.Running || state === State.Stopped;
+export function getBreAkpointMessAgeAndClAssNAme(stAte: StAte, breAkpointsActivAted: booleAn, breAkpoint: IBreAkpoint | IFunctionBreAkpoint | IDAtABreAkpoint, lAbelService?: ILAbelService): { messAge?: string, clAssNAme: string } {
+	const debugActive = stAte === StAte.Running || stAte === StAte.Stopped;
 
-	if (!breakpoint.enabled || !breakpointsActivated) {
+	if (!breAkpoint.enAbled || !breAkpointsActivAted) {
 		return {
-			className: breakpoint instanceof DataBreakpoint ? 'codicon-debug-breakpoint-data-disabled' : breakpoint instanceof FunctionBreakpoint ? 'codicon-debug-breakpoint-function-disabled' : breakpoint.logMessage ? 'codicon-debug-breakpoint-log-disabled' : 'codicon-debug-breakpoint-disabled',
-			message: breakpoint.logMessage ? nls.localize('disabledLogpoint', "Disabled Logpoint") : nls.localize('disabledBreakpoint', "Disabled Breakpoint"),
+			clAssNAme: breAkpoint instAnceof DAtABreAkpoint ? 'codicon-debug-breAkpoint-dAtA-disAbled' : breAkpoint instAnceof FunctionBreAkpoint ? 'codicon-debug-breAkpoint-function-disAbled' : breAkpoint.logMessAge ? 'codicon-debug-breAkpoint-log-disAbled' : 'codicon-debug-breAkpoint-disAbled',
+			messAge: breAkpoint.logMessAge ? nls.locAlize('disAbledLogpoint', "DisAbled Logpoint") : nls.locAlize('disAbledBreAkpoint', "DisAbled BreAkpoint"),
 		};
 	}
 
-	const appendMessage = (text: string): string => {
-		return ('message' in breakpoint && breakpoint.message) ? text.concat(', ' + breakpoint.message) : text;
+	const AppendMessAge = (text: string): string => {
+		return ('messAge' in breAkpoint && breAkpoint.messAge) ? text.concAt(', ' + breAkpoint.messAge) : text;
 	};
-	if (debugActive && !breakpoint.verified) {
+	if (debugActive && !breAkpoint.verified) {
 		return {
-			className: breakpoint instanceof DataBreakpoint ? 'codicon-debug-breakpoint-data-unverified' : breakpoint instanceof FunctionBreakpoint ? 'codicon-debug-breakpoint-function-unverified' : breakpoint.logMessage ? 'codicon-debug-breakpoint-log-unverified' : 'codicon-debug-breakpoint-unverified',
-			message: ('message' in breakpoint && breakpoint.message) ? breakpoint.message : (breakpoint.logMessage ? nls.localize('unverifiedLogpoint', "Unverified Logpoint") : nls.localize('unverifiedBreakopint', "Unverified Breakpoint")),
+			clAssNAme: breAkpoint instAnceof DAtABreAkpoint ? 'codicon-debug-breAkpoint-dAtA-unverified' : breAkpoint instAnceof FunctionBreAkpoint ? 'codicon-debug-breAkpoint-function-unverified' : breAkpoint.logMessAge ? 'codicon-debug-breAkpoint-log-unverified' : 'codicon-debug-breAkpoint-unverified',
+			messAge: ('messAge' in breAkpoint && breAkpoint.messAge) ? breAkpoint.messAge : (breAkpoint.logMessAge ? nls.locAlize('unverifiedLogpoint', "Unverified Logpoint") : nls.locAlize('unverifiedBreAkopint', "Unverified BreAkpoint")),
 		};
 	}
 
-	if (breakpoint instanceof FunctionBreakpoint) {
-		if (!breakpoint.supported) {
+	if (breAkpoint instAnceof FunctionBreAkpoint) {
+		if (!breAkpoint.supported) {
 			return {
-				className: 'codicon-debug-breakpoint-function-unverified',
-				message: nls.localize('functionBreakpointUnsupported', "Function breakpoints not supported by this debug type"),
+				clAssNAme: 'codicon-debug-breAkpoint-function-unverified',
+				messAge: nls.locAlize('functionBreAkpointUnsupported', "Function breAkpoints not supported by this debug type"),
 			};
 		}
 
 		return {
-			className: 'codicon-debug-breakpoint-function',
-			message: breakpoint.message || nls.localize('functionBreakpoint', "Function Breakpoint")
+			clAssNAme: 'codicon-debug-breAkpoint-function',
+			messAge: breAkpoint.messAge || nls.locAlize('functionBreAkpoint', "Function BreAkpoint")
 		};
 	}
 
-	if (breakpoint instanceof DataBreakpoint) {
-		if (!breakpoint.supported) {
+	if (breAkpoint instAnceof DAtABreAkpoint) {
+		if (!breAkpoint.supported) {
 			return {
-				className: 'codicon-debug-breakpoint-data-unverified',
-				message: nls.localize('dataBreakpointUnsupported', "Data breakpoints not supported by this debug type"),
+				clAssNAme: 'codicon-debug-breAkpoint-dAtA-unverified',
+				messAge: nls.locAlize('dAtABreAkpointUnsupported', "DAtA breAkpoints not supported by this debug type"),
 			};
 		}
 
 		return {
-			className: 'codicon-debug-breakpoint-data',
-			message: breakpoint.message || nls.localize('dataBreakpoint', "Data Breakpoint")
+			clAssNAme: 'codicon-debug-breAkpoint-dAtA',
+			messAge: breAkpoint.messAge || nls.locAlize('dAtABreAkpoint', "DAtA BreAkpoint")
 		};
 	}
 
-	if (breakpoint.logMessage || breakpoint.condition || breakpoint.hitCondition) {
-		const messages: string[] = [];
+	if (breAkpoint.logMessAge || breAkpoint.condition || breAkpoint.hitCondition) {
+		const messAges: string[] = [];
 
-		if (!breakpoint.supported) {
+		if (!breAkpoint.supported) {
 			return {
-				className: 'codicon-debug-breakpoint-unsupported',
-				message: nls.localize('breakpointUnsupported', "Breakpoints of this type are not supported by the debugger"),
+				clAssNAme: 'codicon-debug-breAkpoint-unsupported',
+				messAge: nls.locAlize('breAkpointUnsupported', "BreAkpoints of this type Are not supported by the debugger"),
 			};
 		}
 
-		if (breakpoint.logMessage) {
-			messages.push(nls.localize('logMessage', "Log Message: {0}", breakpoint.logMessage));
+		if (breAkpoint.logMessAge) {
+			messAges.push(nls.locAlize('logMessAge', "Log MessAge: {0}", breAkpoint.logMessAge));
 		}
-		if (breakpoint.condition) {
-			messages.push(nls.localize('expression', "Expression: {0}", breakpoint.condition));
+		if (breAkpoint.condition) {
+			messAges.push(nls.locAlize('expression', "Expression: {0}", breAkpoint.condition));
 		}
-		if (breakpoint.hitCondition) {
-			messages.push(nls.localize('hitCount', "Hit Count: {0}", breakpoint.hitCondition));
+		if (breAkpoint.hitCondition) {
+			messAges.push(nls.locAlize('hitCount', "Hit Count: {0}", breAkpoint.hitCondition));
 		}
 
 		return {
-			className: breakpoint.logMessage ? 'codicon-debug-breakpoint-log' : 'codicon-debug-breakpoint-conditional',
-			message: appendMessage(messages.join('\n'))
+			clAssNAme: breAkpoint.logMessAge ? 'codicon-debug-breAkpoint-log' : 'codicon-debug-breAkpoint-conditionAl',
+			messAge: AppendMessAge(messAges.join('\n'))
 		};
 	}
 
-	const message = ('message' in breakpoint && breakpoint.message) ? breakpoint.message : breakpoint instanceof Breakpoint && labelService ? labelService.getUriLabel(breakpoint.uri) : nls.localize('breakpoint', "Breakpoint");
+	const messAge = ('messAge' in breAkpoint && breAkpoint.messAge) ? breAkpoint.messAge : breAkpoint instAnceof BreAkpoint && lAbelService ? lAbelService.getUriLAbel(breAkpoint.uri) : nls.locAlize('breAkpoint', "BreAkpoint");
 	return {
-		className: 'codicon-debug-breakpoint',
-		message
+		clAssNAme: 'codicon-debug-breAkpoint',
+		messAge
 	};
 }

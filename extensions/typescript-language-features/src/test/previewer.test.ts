@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import { tagsMarkdownPreview, markdownDocumentation } from '../utils/previewer';
+import * As Assert from 'Assert';
+import 'mochA';
+import { tAgsMArkdownPreview, mArkdownDocumentAtion } from '../utils/previewer';
 
 suite('typescript.previewer', () => {
-	test('Should ignore hyphens after a param tag', async () => {
-		assert.strictEqual(
-			tagsMarkdownPreview([
+	test('Should ignore hyphens After A pArAm tAg', Async () => {
+		Assert.strictEquAl(
+			tAgsMArkdownPreview([
 				{
-					name: 'param',
-					text: 'a - b'
+					nAme: 'pArAm',
+					text: 'A - b'
 				}
 			]),
-			'*@param* `a` — b');
+			'*@pArAm* `A` — b');
 	});
 
-	test('Should parse url jsdoc @link', async () => {
-		assert.strictEqual(
-			markdownDocumentation('x {@link http://www.example.com/foo} y {@link https://api.jquery.com/bind/#bind-eventType-eventData-handler} z', []).value,
-			'x [http://www.example.com/foo](http://www.example.com/foo) y [https://api.jquery.com/bind/#bind-eventType-eventData-handler](https://api.jquery.com/bind/#bind-eventType-eventData-handler) z');
+	test('Should pArse url jsdoc @link', Async () => {
+		Assert.strictEquAl(
+			mArkdownDocumentAtion('x {@link http://www.exAmple.com/foo} y {@link https://Api.jquery.com/bind/#bind-eventType-eventDAtA-hAndler} z', []).vAlue,
+			'x [http://www.exAmple.com/foo](http://www.exAmple.com/foo) y [https://Api.jquery.com/bind/#bind-eventType-eventDAtA-hAndler](https://Api.jquery.com/bind/#bind-eventType-eventDAtA-hAndler) z');
 	});
 
-	test('Should parse url jsdoc @link with text', async () => {
-		assert.strictEqual(
-			markdownDocumentation('x {@link http://www.example.com/foo abc xyz} y {@link http://www.example.com/bar|b a z} z', []).value,
-			'x [abc xyz](http://www.example.com/foo) y [b a z](http://www.example.com/bar) z');
+	test('Should pArse url jsdoc @link with text', Async () => {
+		Assert.strictEquAl(
+			mArkdownDocumentAtion('x {@link http://www.exAmple.com/foo Abc xyz} y {@link http://www.exAmple.com/bAr|b A z} z', []).vAlue,
+			'x [Abc xyz](http://www.exAmple.com/foo) y [b A z](http://www.exAmple.com/bAr) z');
 	});
 
-	test('Should treat @linkcode jsdocs links as monospace', async () => {
-		assert.strictEqual(
-			markdownDocumentation('x {@linkcode http://www.example.com/foo} y {@linkplain http://www.example.com/bar} z', []).value,
-			'x [`http://www.example.com/foo`](http://www.example.com/foo) y [http://www.example.com/bar](http://www.example.com/bar) z');
+	test('Should treAt @linkcode jsdocs links As monospAce', Async () => {
+		Assert.strictEquAl(
+			mArkdownDocumentAtion('x {@linkcode http://www.exAmple.com/foo} y {@linkplAin http://www.exAmple.com/bAr} z', []).vAlue,
+			'x [`http://www.exAmple.com/foo`](http://www.exAmple.com/foo) y [http://www.exAmple.com/bAr](http://www.exAmple.com/bAr) z');
 	});
 
-	test('Should parse url jsdoc @link in param tag', async () => {
-		assert.strictEqual(
-			tagsMarkdownPreview([
+	test('Should pArse url jsdoc @link in pArAm tAg', Async () => {
+		Assert.strictEquAl(
+			tAgsMArkdownPreview([
 				{
-					name: 'param',
-					text: 'a x {@link http://www.example.com/foo abc xyz} y {@link http://www.example.com/bar|b a z} z'
+					nAme: 'pArAm',
+					text: 'A x {@link http://www.exAmple.com/foo Abc xyz} y {@link http://www.exAmple.com/bAr|b A z} z'
 				}
 			]),
-			'*@param* `a` — x [abc xyz](http://www.example.com/foo) y [b a z](http://www.example.com/bar) z');
+			'*@pArAm* `A` — x [Abc xyz](http://www.exAmple.com/foo) y [b A z](http://www.exAmple.com/bAr) z');
 	});
 
-	test('Should ignore unclosed jsdocs @link', async () => {
-		assert.strictEqual(
-			markdownDocumentation('x {@link http://www.example.com/foo y {@link http://www.example.com/bar bar} z', []).value,
-			'x {@link http://www.example.com/foo y [bar](http://www.example.com/bar) z');
+	test('Should ignore unclosed jsdocs @link', Async () => {
+		Assert.strictEquAl(
+			mArkdownDocumentAtion('x {@link http://www.exAmple.com/foo y {@link http://www.exAmple.com/bAr bAr} z', []).vAlue,
+			'x {@link http://www.exAmple.com/foo y [bAr](http://www.exAmple.com/bAr) z');
 	});
 
-	test('Should support non-ascii characters in parameter name (#90108)', async () => {
-		assert.strictEqual(
-			tagsMarkdownPreview([
+	test('Should support non-Ascii chArActers in pArAmeter nAme (#90108)', Async () => {
+		Assert.strictEquAl(
+			tAgsMArkdownPreview([
 				{
-					name: 'param',
-					text: 'parámetroConDiacríticos this will not'
+					nAme: 'pArAm',
+					text: 'pArámetroConDiAcríticos this will not'
 				}
 			]),
-			'*@param* `parámetroConDiacríticos` — this will not');
+			'*@pArAm* `pArámetroConDiAcríticos` — this will not');
 	});
 });
 

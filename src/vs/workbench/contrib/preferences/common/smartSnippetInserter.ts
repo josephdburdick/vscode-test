@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { JSONScanner, createScanner as createJSONScanner, SyntaxKind as JSONSyntaxKind } from 'vs/base/common/json';
+import { JSONScAnner, creAteScAnner As creAteJSONScAnner, SyntAxKind As JSONSyntAxKind } from 'vs/bAse/common/json';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
 
-export interface InsertSnippetResult {
+export interfAce InsertSnippetResult {
 	position: Position;
 	prepend: string;
-	append: string;
+	Append: string;
 }
 
-export class SmartSnippetInserter {
+export clAss SmArtSnippetInserter {
 
-	private static hasOpenBrace(scanner: JSONScanner): boolean {
+	privAte stAtic hAsOpenBrAce(scAnner: JSONScAnner): booleAn {
 
-		while (scanner.scan() !== JSONSyntaxKind.EOF) {
-			const kind = scanner.getToken();
+		while (scAnner.scAn() !== JSONSyntAxKind.EOF) {
+			const kind = scAnner.getToken();
 
-			if (kind === JSONSyntaxKind.OpenBraceToken) {
+			if (kind === JSONSyntAxKind.OpenBrAceToken) {
 				return true;
 			}
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	private static offsetToPosition(model: ITextModel, offset: number): Position {
+	privAte stAtic offsetToPosition(model: ITextModel, offset: number): Position {
 		let offsetBeforeLine = 0;
 		const eolLength = model.getEOL().length;
 		const lineCount = model.getLineCount();
 		for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-			const lineTotalLength = model.getLineContent(lineNumber).length + eolLength;
-			const offsetAfterLine = offsetBeforeLine + lineTotalLength;
+			const lineTotAlLength = model.getLineContent(lineNumber).length + eolLength;
+			const offsetAfterLine = offsetBeforeLine + lineTotAlLength;
 
 			if (offsetAfterLine > offset) {
 				return new Position(
@@ -47,111 +47,111 @@ export class SmartSnippetInserter {
 		}
 		return new Position(
 			lineCount,
-			model.getLineMaxColumn(lineCount)
+			model.getLineMAxColumn(lineCount)
 		);
 	}
 
-	static insertSnippet(model: ITextModel, _position: Position): InsertSnippetResult {
+	stAtic insertSnippet(model: ITextModel, _position: Position): InsertSnippetResult {
 
-		const desiredPosition = model.getValueLengthInRange(new Range(1, 1, _position.lineNumber, _position.column));
+		const desiredPosition = model.getVAlueLengthInRAnge(new RAnge(1, 1, _position.lineNumber, _position.column));
 
 		// <INVALID> [ <BEFORE_OBJECT> { <INVALID> } <AFTER_OBJECT>, <BEFORE_OBJECT> { <INVALID> } <AFTER_OBJECT> ] <INVALID>
-		enum State {
+		enum StAte {
 			INVALID = 0,
 			AFTER_OBJECT = 1,
 			BEFORE_OBJECT = 2,
 		}
-		let currentState = State.INVALID;
-		let lastValidPos = -1;
-		let lastValidState = State.INVALID;
+		let currentStAte = StAte.INVALID;
+		let lAstVAlidPos = -1;
+		let lAstVAlidStAte = StAte.INVALID;
 
-		const scanner = createJSONScanner(model.getValue());
-		let arrayLevel = 0;
+		const scAnner = creAteJSONScAnner(model.getVAlue());
+		let ArrAyLevel = 0;
 		let objLevel = 0;
 
-		const checkRangeStatus = (pos: number, state: State) => {
-			if (state !== State.INVALID && arrayLevel === 1 && objLevel === 0) {
-				currentState = state;
-				lastValidPos = pos;
-				lastValidState = state;
+		const checkRAngeStAtus = (pos: number, stAte: StAte) => {
+			if (stAte !== StAte.INVALID && ArrAyLevel === 1 && objLevel === 0) {
+				currentStAte = stAte;
+				lAstVAlidPos = pos;
+				lAstVAlidStAte = stAte;
 			} else {
-				if (currentState !== State.INVALID) {
-					currentState = State.INVALID;
-					lastValidPos = scanner.getTokenOffset();
+				if (currentStAte !== StAte.INVALID) {
+					currentStAte = StAte.INVALID;
+					lAstVAlidPos = scAnner.getTokenOffset();
 				}
 			}
 		};
 
-		while (scanner.scan() !== JSONSyntaxKind.EOF) {
-			const currentPos = scanner.getPosition();
-			const kind = scanner.getToken();
+		while (scAnner.scAn() !== JSONSyntAxKind.EOF) {
+			const currentPos = scAnner.getPosition();
+			const kind = scAnner.getToken();
 
-			let goodKind = false;
+			let goodKind = fAlse;
 			switch (kind) {
-				case JSONSyntaxKind.OpenBracketToken:
+				cAse JSONSyntAxKind.OpenBrAcketToken:
 					goodKind = true;
-					arrayLevel++;
-					checkRangeStatus(currentPos, State.BEFORE_OBJECT);
-					break;
-				case JSONSyntaxKind.CloseBracketToken:
+					ArrAyLevel++;
+					checkRAngeStAtus(currentPos, StAte.BEFORE_OBJECT);
+					breAk;
+				cAse JSONSyntAxKind.CloseBrAcketToken:
 					goodKind = true;
-					arrayLevel--;
-					checkRangeStatus(currentPos, State.INVALID);
-					break;
-				case JSONSyntaxKind.CommaToken:
+					ArrAyLevel--;
+					checkRAngeStAtus(currentPos, StAte.INVALID);
+					breAk;
+				cAse JSONSyntAxKind.CommAToken:
 					goodKind = true;
-					checkRangeStatus(currentPos, State.BEFORE_OBJECT);
-					break;
-				case JSONSyntaxKind.OpenBraceToken:
+					checkRAngeStAtus(currentPos, StAte.BEFORE_OBJECT);
+					breAk;
+				cAse JSONSyntAxKind.OpenBrAceToken:
 					goodKind = true;
 					objLevel++;
-					checkRangeStatus(currentPos, State.INVALID);
-					break;
-				case JSONSyntaxKind.CloseBraceToken:
+					checkRAngeStAtus(currentPos, StAte.INVALID);
+					breAk;
+				cAse JSONSyntAxKind.CloseBrAceToken:
 					goodKind = true;
 					objLevel--;
-					checkRangeStatus(currentPos, State.AFTER_OBJECT);
-					break;
-				case JSONSyntaxKind.Trivia:
-				case JSONSyntaxKind.LineBreakTrivia:
+					checkRAngeStAtus(currentPos, StAte.AFTER_OBJECT);
+					breAk;
+				cAse JSONSyntAxKind.TriviA:
+				cAse JSONSyntAxKind.LineBreAkTriviA:
 					goodKind = true;
 			}
 
-			if (currentPos >= desiredPosition && (currentState !== State.INVALID || lastValidPos !== -1)) {
-				let acceptPosition: number;
-				let acceptState: State;
+			if (currentPos >= desiredPosition && (currentStAte !== StAte.INVALID || lAstVAlidPos !== -1)) {
+				let AcceptPosition: number;
+				let AcceptStAte: StAte;
 
-				if (currentState !== State.INVALID) {
-					acceptPosition = (goodKind ? currentPos : scanner.getTokenOffset());
-					acceptState = currentState;
+				if (currentStAte !== StAte.INVALID) {
+					AcceptPosition = (goodKind ? currentPos : scAnner.getTokenOffset());
+					AcceptStAte = currentStAte;
 				} else {
-					acceptPosition = lastValidPos;
-					acceptState = lastValidState;
+					AcceptPosition = lAstVAlidPos;
+					AcceptStAte = lAstVAlidStAte;
 				}
 
-				if (acceptState as State === State.AFTER_OBJECT) {
+				if (AcceptStAte As StAte === StAte.AFTER_OBJECT) {
 					return {
-						position: this.offsetToPosition(model, acceptPosition),
+						position: this.offsetToPosition(model, AcceptPosition),
 						prepend: ',',
-						append: ''
+						Append: ''
 					};
 				} else {
-					scanner.setPosition(acceptPosition);
+					scAnner.setPosition(AcceptPosition);
 					return {
-						position: this.offsetToPosition(model, acceptPosition),
+						position: this.offsetToPosition(model, AcceptPosition),
 						prepend: '',
-						append: this.hasOpenBrace(scanner) ? ',' : ''
+						Append: this.hAsOpenBrAce(scAnner) ? ',' : ''
 					};
 				}
 			}
 		}
 
-		// no valid position found!
+		// no vAlid position found!
 		const modelLineCount = model.getLineCount();
 		return {
-			position: new Position(modelLineCount, model.getLineMaxColumn(modelLineCount)),
+			position: new Position(modelLineCount, model.getLineMAxColumn(modelLineCount)),
 			prepend: '\n[',
-			append: ']'
+			Append: ']'
 		};
 	}
 }

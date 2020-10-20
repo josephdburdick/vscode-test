@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MockDebugAdapter, createMockDebugModel, mockUriIdentityService } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import * As Assert from 'Assert';
+import { MockDebugAdApter, creAteMockDebugModel, mockUriIdentityService } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
 import { DebugModel } from 'vs/workbench/contrib/debug/common/debugModel';
 import { DebugSession } from 'vs/workbench/contrib/debug/browser/debugSession';
-import { RawDebugSession } from 'vs/workbench/contrib/debug/browser/rawDebugSession';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { RAwDebugSession } from 'vs/workbench/contrib/debug/browser/rAwDebugSession';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 import { stub, SinonStub } from 'sinon';
-import { timeout } from 'vs/base/common/async';
-import { generateUuid } from 'vs/base/common/uuid';
-import { NullOpenerService } from 'vs/platform/opener/common/opener';
+import { timeout } from 'vs/bAse/common/Async';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { NullOpenerService } from 'vs/plAtform/opener/common/opener';
 
 suite('Debug - DebugSession telemetry', () => {
 	let model: DebugModel;
 	let session: DebugSession;
-	let adapter: MockDebugAdapter;
-	let telemetry: { isOptedIn: boolean; sendErrorTelemetry: boolean; publicLog: SinonStub };
+	let AdApter: MockDebugAdApter;
+	let telemetry: { isOptedIn: booleAn; sendErrorTelemetry: booleAn; publicLog: SinonStub };
 
 	setup(() => {
 		telemetry = { isOptedIn: true, sendErrorTelemetry: true, publicLog: stub() };
-		adapter = new MockDebugAdapter();
-		model = createMockDebugModel();
+		AdApter = new MockDebugAdApter();
+		model = creAteMockDebugModel();
 
-		const telemetryService = telemetry as Partial<ITelemetryService> as ITelemetryService;
-		session = new DebugSession(generateUuid(), undefined!, undefined!, model, undefined, undefined!, telemetryService, undefined!, undefined!, undefined!, undefined!, undefined!, undefined!, NullOpenerService, undefined!, undefined!, mockUriIdentityService);
-		session.initializeForTest(new RawDebugSession(adapter, undefined!, undefined!, telemetryService, undefined!, undefined!, undefined!));
+		const telemetryService = telemetry As PArtiAl<ITelemetryService> As ITelemetryService;
+		session = new DebugSession(generAteUuid(), undefined!, undefined!, model, undefined, undefined!, telemetryService, undefined!, undefined!, undefined!, undefined!, undefined!, undefined!, NullOpenerService, undefined!, undefined!, mockUriIdentityService);
+		session.initiAlizeForTest(new RAwDebugSession(AdApter, undefined!, undefined!, telemetryService, undefined!, undefined!, undefined!));
 	});
 
-	test('does not send telemetry when opted out', async () => {
-		telemetry.isOptedIn = false;
-		adapter.sendEventBody('output', {
-			category: 'telemetry',
+	test('does not send telemetry when opted out', Async () => {
+		telemetry.isOptedIn = fAlse;
+		AdApter.sendEventBody('output', {
+			cAtegory: 'telemetry',
 			output: 'someEvent',
-			data: { foo: 'bar', '!err': 'oh no!' }
+			dAtA: { foo: 'bAr', '!err': 'oh no!' }
 		});
 
-		await timeout(0);
-		assert.strictEqual(telemetry.publicLog.callCount, 0);
+		AwAit timeout(0);
+		Assert.strictEquAl(telemetry.publicLog.cAllCount, 0);
 	});
 
-	test('logs telemetry and exceptions when enabled', async () => {
-		adapter.sendEventBody('output', {
-			category: 'telemetry',
+	test('logs telemetry And exceptions when enAbled', Async () => {
+		AdApter.sendEventBody('output', {
+			cAtegory: 'telemetry',
 			output: 'someEvent',
-			data: { foo: 'bar', '!err': 'oh no!' }
+			dAtA: { foo: 'bAr', '!err': 'oh no!' }
 		});
 
-		await timeout(0);
-		assert.deepStrictEqual(telemetry.publicLog.args[0], [
+		AwAit timeout(0);
+		Assert.deepStrictEquAl(telemetry.publicLog.Args[0], [
 			'someEvent',
-			{ foo: 'bar', '!err': 'oh no!' }
+			{ foo: 'bAr', '!err': 'oh no!' }
 		]);
 	});
 
-	test('filters exceptions when error reporting disabled', async () => {
-		telemetry.sendErrorTelemetry = false;
+	test('filters exceptions when error reporting disAbled', Async () => {
+		telemetry.sendErrorTelemetry = fAlse;
 
-		adapter.sendEventBody('output', {
-			category: 'telemetry',
+		AdApter.sendEventBody('output', {
+			cAtegory: 'telemetry',
 			output: 'someEvent',
-			data: { foo: 'bar', '!err': 'oh no!' }
+			dAtA: { foo: 'bAr', '!err': 'oh no!' }
 		});
 
-		await timeout(0);
-		assert.deepStrictEqual(telemetry.publicLog.args[0], [
+		AwAit timeout(0);
+		Assert.deepStrictEquAl(telemetry.publicLog.Args[0], [
 			'someEvent',
-			{ foo: 'bar' }
+			{ foo: 'bAr' }
 		]);
 	});
 });

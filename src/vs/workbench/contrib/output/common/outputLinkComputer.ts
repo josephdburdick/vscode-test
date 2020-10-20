@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IMirrorModel, IWorkerContext } from 'vs/editor/common/services/editorSimpleWorker';
 import { ILink } from 'vs/editor/common/modes';
-import { URI } from 'vs/base/common/uri';
-import * as extpath from 'vs/base/common/extpath';
-import * as resources from 'vs/base/common/resources';
-import * as strings from 'vs/base/common/strings';
-import { Range } from 'vs/editor/common/core/range';
-import { isWindows } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import * As extpAth from 'vs/bAse/common/extpAth';
+import * As resources from 'vs/bAse/common/resources';
+import * As strings from 'vs/bAse/common/strings';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export interface ICreateData {
-	workspaceFolders: string[];
+export interfAce ICreAteDAtA {
+	workspAceFolders: string[];
 }
 
-export interface IResourceCreator {
-	toResource: (folderRelativePath: string) => URI | null;
+export interfAce IResourceCreAtor {
+	toResource: (folderRelAtivePAth: string) => URI | null;
 }
 
-export class OutputLinkComputer {
-	private patterns = new Map<URI /* folder uri */, RegExp[]>();
+export clAss OutputLinkComputer {
+	privAte pAtterns = new MAp<URI /* folder uri */, RegExp[]>();
 
-	constructor(private ctx: IWorkerContext, createData: ICreateData) {
-		this.computePatterns(createData);
+	constructor(privAte ctx: IWorkerContext, creAteDAtA: ICreAteDAtA) {
+		this.computePAtterns(creAteDAtA);
 	}
 
-	private computePatterns(createData: ICreateData): void {
+	privAte computePAtterns(creAteDAtA: ICreAteDAtA): void {
 
-		// Produce patterns for each workspace root we are configured with
-		// This means that we will be able to detect links for paths that
-		// contain any of the workspace roots as segments.
-		const workspaceFolders = createData.workspaceFolders
-			.sort((resourceStrA, resourceStrB) => resourceStrB.length - resourceStrA.length) // longest paths first (for https://github.com/microsoft/vscode/issues/88121)
-			.map(resourceStr => URI.parse(resourceStr));
+		// Produce pAtterns for eAch workspAce root we Are configured with
+		// This meAns thAt we will be Able to detect links for pAths thAt
+		// contAin Any of the workspAce roots As segments.
+		const workspAceFolders = creAteDAtA.workspAceFolders
+			.sort((resourceStrA, resourceStrB) => resourceStrB.length - resourceStrA.length) // longest pAths first (for https://github.com/microsoft/vscode/issues/88121)
+			.mAp(resourceStr => URI.pArse(resourceStr));
 
-		for (const workspaceFolder of workspaceFolders) {
-			const patterns = OutputLinkComputer.createPatterns(workspaceFolder);
-			this.patterns.set(workspaceFolder, patterns);
+		for (const workspAceFolder of workspAceFolders) {
+			const pAtterns = OutputLinkComputer.creAtePAtterns(workspAceFolder);
+			this.pAtterns.set(workspAceFolder, pAtterns);
 		}
 	}
 
-	private getModel(uri: string): IMirrorModel | undefined {
+	privAte getModel(uri: string): IMirrorModel | undefined {
 		const models = this.ctx.getMirrorModels();
 
 		return models.find(model => model.uri.toString() === uri);
@@ -56,14 +56,14 @@ export class OutputLinkComputer {
 		}
 
 		const links: ILink[] = [];
-		const lines = model.getValue().split(/\r\n|\r|\n/);
+		const lines = model.getVAlue().split(/\r\n|\r|\n/);
 
-		// For each workspace root patterns
-		for (const [folderUri, folderPatterns] of this.patterns) {
-			const resourceCreator: IResourceCreator = {
-				toResource: (folderRelativePath: string): URI | null => {
-					if (typeof folderRelativePath === 'string') {
-						return resources.joinPath(folderUri, folderRelativePath);
+		// For eAch workspAce root pAtterns
+		for (const [folderUri, folderPAtterns] of this.pAtterns) {
+			const resourceCreAtor: IResourceCreAtor = {
+				toResource: (folderRelAtivePAth: string): URI | null => {
+					if (typeof folderRelAtivePAth === 'string') {
+						return resources.joinPAth(folderUri, folderRelAtivePAth);
 					}
 
 					return null;
@@ -71,105 +71,105 @@ export class OutputLinkComputer {
 			};
 
 			for (let i = 0, len = lines.length; i < len; i++) {
-				links.push(...OutputLinkComputer.detectLinks(lines[i], i + 1, folderPatterns, resourceCreator));
+				links.push(...OutputLinkComputer.detectLinks(lines[i], i + 1, folderPAtterns, resourceCreAtor));
 			}
 		}
 
 		return links;
 	}
 
-	static createPatterns(workspaceFolder: URI): RegExp[] {
-		const patterns: RegExp[] = [];
+	stAtic creAtePAtterns(workspAceFolder: URI): RegExp[] {
+		const pAtterns: RegExp[] = [];
 
-		const workspaceFolderPath = workspaceFolder.scheme === Schemas.file ? workspaceFolder.fsPath : workspaceFolder.path;
-		const workspaceFolderVariants = [workspaceFolderPath];
-		if (isWindows && workspaceFolder.scheme === Schemas.file) {
-			workspaceFolderVariants.push(extpath.toSlashes(workspaceFolderPath));
+		const workspAceFolderPAth = workspAceFolder.scheme === SchemAs.file ? workspAceFolder.fsPAth : workspAceFolder.pAth;
+		const workspAceFolderVAriAnts = [workspAceFolderPAth];
+		if (isWindows && workspAceFolder.scheme === SchemAs.file) {
+			workspAceFolderVAriAnts.push(extpAth.toSlAshes(workspAceFolderPAth));
 		}
 
-		for (const workspaceFolderVariant of workspaceFolderVariants) {
-			const validPathCharacterPattern = '[^\\s\\(\\):<>"]';
-			const validPathCharacterOrSpacePattern = `(?:${validPathCharacterPattern}| ${validPathCharacterPattern})`;
-			const pathPattern = `${validPathCharacterOrSpacePattern}+\\.${validPathCharacterPattern}+`;
-			const strictPathPattern = `${validPathCharacterPattern}+`;
+		for (const workspAceFolderVAriAnt of workspAceFolderVAriAnts) {
+			const vAlidPAthChArActerPAttern = '[^\\s\\(\\):<>"]';
+			const vAlidPAthChArActerOrSpAcePAttern = `(?:${vAlidPAthChArActerPAttern}| ${vAlidPAthChArActerPAttern})`;
+			const pAthPAttern = `${vAlidPAthChArActerOrSpAcePAttern}+\\.${vAlidPAthChArActerPAttern}+`;
+			const strictPAthPAttern = `${vAlidPAthChArActerPAttern}+`;
 
-			// Example: /workspaces/express/server.js on line 8, column 13
-			patterns.push(new RegExp(strings.escapeRegExpCharacters(workspaceFolderVariant) + `(${pathPattern}) on line ((\\d+)(, column (\\d+))?)`, 'gi'));
+			// ExAmple: /workspAces/express/server.js on line 8, column 13
+			pAtterns.push(new RegExp(strings.escApeRegExpChArActers(workspAceFolderVAriAnt) + `(${pAthPAttern}) on line ((\\d+)(, column (\\d+))?)`, 'gi'));
 
-			// Example: /workspaces/express/server.js:line 8, column 13
-			patterns.push(new RegExp(strings.escapeRegExpCharacters(workspaceFolderVariant) + `(${pathPattern}):line ((\\d+)(, column (\\d+))?)`, 'gi'));
+			// ExAmple: /workspAces/express/server.js:line 8, column 13
+			pAtterns.push(new RegExp(strings.escApeRegExpChArActers(workspAceFolderVAriAnt) + `(${pAthPAttern}):line ((\\d+)(, column (\\d+))?)`, 'gi'));
 
-			// Example: /workspaces/mankala/Features.ts(45): error
-			// Example: /workspaces/mankala/Features.ts (45): error
-			// Example: /workspaces/mankala/Features.ts(45,18): error
-			// Example: /workspaces/mankala/Features.ts (45,18): error
-			// Example: /workspaces/mankala/Features Special.ts (45,18): error
-			patterns.push(new RegExp(strings.escapeRegExpCharacters(workspaceFolderVariant) + `(${pathPattern})(\\s?\\((\\d+)(,(\\d+))?)\\)`, 'gi'));
+			// ExAmple: /workspAces/mAnkAlA/FeAtures.ts(45): error
+			// ExAmple: /workspAces/mAnkAlA/FeAtures.ts (45): error
+			// ExAmple: /workspAces/mAnkAlA/FeAtures.ts(45,18): error
+			// ExAmple: /workspAces/mAnkAlA/FeAtures.ts (45,18): error
+			// ExAmple: /workspAces/mAnkAlA/FeAtures SpeciAl.ts (45,18): error
+			pAtterns.push(new RegExp(strings.escApeRegExpChArActers(workspAceFolderVAriAnt) + `(${pAthPAttern})(\\s?\\((\\d+)(,(\\d+))?)\\)`, 'gi'));
 
-			// Example: at /workspaces/mankala/Game.ts
-			// Example: at /workspaces/mankala/Game.ts:336
-			// Example: at /workspaces/mankala/Game.ts:336:9
-			patterns.push(new RegExp(strings.escapeRegExpCharacters(workspaceFolderVariant) + `(${strictPathPattern})(:(\\d+))?(:(\\d+))?`, 'gi'));
+			// ExAmple: At /workspAces/mAnkAlA/GAme.ts
+			// ExAmple: At /workspAces/mAnkAlA/GAme.ts:336
+			// ExAmple: At /workspAces/mAnkAlA/GAme.ts:336:9
+			pAtterns.push(new RegExp(strings.escApeRegExpChArActers(workspAceFolderVAriAnt) + `(${strictPAthPAttern})(:(\\d+))?(:(\\d+))?`, 'gi'));
 		}
 
-		return patterns;
+		return pAtterns;
 	}
 
 	/**
-	 * Detect links. Made static to allow for tests.
+	 * Detect links. MAde stAtic to Allow for tests.
 	 */
-	static detectLinks(line: string, lineIndex: number, patterns: RegExp[], resourceCreator: IResourceCreator): ILink[] {
+	stAtic detectLinks(line: string, lineIndex: number, pAtterns: RegExp[], resourceCreAtor: IResourceCreAtor): ILink[] {
 		const links: ILink[] = [];
 
-		patterns.forEach(pattern => {
-			pattern.lastIndex = 0; // the holy grail of software development
+		pAtterns.forEAch(pAttern => {
+			pAttern.lAstIndex = 0; // the holy grAil of softwAre development
 
-			let match: RegExpExecArray | null;
+			let mAtch: RegExpExecArrAy | null;
 			let offset = 0;
-			while ((match = pattern.exec(line)) !== null) {
+			while ((mAtch = pAttern.exec(line)) !== null) {
 
-				// Convert the relative path information to a resource that we can use in links
-				const folderRelativePath = strings.rtrim(match[1], '.').replace(/\\/g, '/'); // remove trailing "." that likely indicate end of sentence
+				// Convert the relAtive pAth informAtion to A resource thAt we cAn use in links
+				const folderRelAtivePAth = strings.rtrim(mAtch[1], '.').replAce(/\\/g, '/'); // remove trAiling "." thAt likely indicAte end of sentence
 				let resourceString: string | undefined;
 				try {
-					const resource = resourceCreator.toResource(folderRelativePath);
+					const resource = resourceCreAtor.toResource(folderRelAtivePAth);
 					if (resource) {
 						resourceString = resource.toString();
 					}
-				} catch (error) {
-					continue; // we might find an invalid URI and then we dont want to loose all other links
+				} cAtch (error) {
+					continue; // we might find An invAlid URI And then we dont wAnt to loose All other links
 				}
 
-				// Append line/col information to URI if matching
-				if (match[3]) {
-					const lineNumber = match[3];
+				// Append line/col informAtion to URI if mAtching
+				if (mAtch[3]) {
+					const lineNumber = mAtch[3];
 
-					if (match[5]) {
-						const columnNumber = match[5];
-						resourceString = strings.format('{0}#{1},{2}', resourceString, lineNumber, columnNumber);
+					if (mAtch[5]) {
+						const columnNumber = mAtch[5];
+						resourceString = strings.formAt('{0}#{1},{2}', resourceString, lineNumber, columnNumber);
 					} else {
-						resourceString = strings.format('{0}#{1}', resourceString, lineNumber);
+						resourceString = strings.formAt('{0}#{1}', resourceString, lineNumber);
 					}
 				}
 
-				const fullMatch = strings.rtrim(match[0], '.'); // remove trailing "." that likely indicate end of sentence
+				const fullMAtch = strings.rtrim(mAtch[0], '.'); // remove trAiling "." thAt likely indicAte end of sentence
 
-				const index = line.indexOf(fullMatch, offset);
-				offset = index + fullMatch.length;
+				const index = line.indexOf(fullMAtch, offset);
+				offset = index + fullMAtch.length;
 
-				const linkRange = {
-					startColumn: index + 1,
-					startLineNumber: lineIndex,
-					endColumn: index + 1 + fullMatch.length,
+				const linkRAnge = {
+					stArtColumn: index + 1,
+					stArtLineNumber: lineIndex,
+					endColumn: index + 1 + fullMAtch.length,
 					endLineNumber: lineIndex
 				};
 
-				if (links.some(link => Range.areIntersectingOrTouching(link.range, linkRange))) {
-					return; // Do not detect duplicate links
+				if (links.some(link => RAnge.AreIntersectingOrTouching(link.rAnge, linkRAnge))) {
+					return; // Do not detect duplicAte links
 				}
 
 				links.push({
-					range: linkRange,
+					rAnge: linkRAnge,
 					url: resourceString
 				});
 			}
@@ -179,6 +179,6 @@ export class OutputLinkComputer {
 	}
 }
 
-export function create(ctx: IWorkerContext, createData: ICreateData): OutputLinkComputer {
-	return new OutputLinkComputer(ctx, createData);
+export function creAte(ctx: IWorkerContext, creAteDAtA: ICreAteDAtA): OutputLinkComputer {
+	return new OutputLinkComputer(ctx, creAteDAtA);
 }

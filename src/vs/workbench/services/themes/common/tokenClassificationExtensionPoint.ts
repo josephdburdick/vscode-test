@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { ExtensionsRegistry, ExtensionMessageCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { getTokenClassificationRegistry, ITokenClassificationRegistry, typeAndModifierIdPattern } from 'vs/platform/theme/common/tokenClassificationRegistry';
+import * As nls from 'vs/nls';
+import { ExtensionsRegistry, ExtensionMessAgeCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { getTokenClAssificAtionRegistry, ITokenClAssificAtionRegistry, typeAndModifierIdPAttern } from 'vs/plAtform/theme/common/tokenClAssificAtionRegistry';
 
-interface ITokenTypeExtensionPoint {
+interfAce ITokenTypeExtensionPoint {
 	id: string;
 	description: string;
 	superType?: string;
 }
 
-interface ITokenModifierExtensionPoint {
+interfAce ITokenModifierExtensionPoint {
 	id: string;
 	description: string;
 }
 
-interface ITokenStyleDefaultExtensionPoint {
-	language?: string;
+interfAce ITokenStyleDefAultExtensionPoint {
+	lAnguAge?: string;
 	scopes: { [selector: string]: string[] };
 }
 
-const tokenClassificationRegistry: ITokenClassificationRegistry = getTokenClassificationRegistry();
+const tokenClAssificAtionRegistry: ITokenClAssificAtionRegistry = getTokenClAssificAtionRegistry();
 
 const tokenTypeExtPoint = ExtensionsRegistry.registerExtensionPoint<ITokenTypeExtensionPoint[]>({
-	extensionPoint: 'semanticTokenTypes',
-	jsonSchema: {
-		description: nls.localize('contributes.semanticTokenTypes', 'Contributes semantic token types.'),
-		type: 'array',
+	extensionPoint: 'semAnticTokenTypes',
+	jsonSchemA: {
+		description: nls.locAlize('contributes.semAnticTokenTypes', 'Contributes semAntic token types.'),
+		type: 'ArrAy',
 		items: {
 			type: 'object',
 			properties: {
 				id: {
 					type: 'string',
-					description: nls.localize('contributes.semanticTokenTypes.id', 'The identifier of the semantic token type'),
-					pattern: typeAndModifierIdPattern,
-					patternErrorMessage: nls.localize('contributes.semanticTokenTypes.id.format', 'Identifiers should be in the form letterOrDigit[_-letterOrDigit]*'),
+					description: nls.locAlize('contributes.semAnticTokenTypes.id', 'The identifier of the semAntic token type'),
+					pAttern: typeAndModifierIdPAttern,
+					pAtternErrorMessAge: nls.locAlize('contributes.semAnticTokenTypes.id.formAt', 'Identifiers should be in the form letterOrDigit[_-letterOrDigit]*'),
 				},
 				superType: {
 					type: 'string',
-					description: nls.localize('contributes.semanticTokenTypes.superType', 'The super type of the semantic token type'),
-					pattern: typeAndModifierIdPattern,
-					patternErrorMessage: nls.localize('contributes.semanticTokenTypes.superType.format', 'Super types should be in the form letterOrDigit[_-letterOrDigit]*'),
+					description: nls.locAlize('contributes.semAnticTokenTypes.superType', 'The super type of the semAntic token type'),
+					pAttern: typeAndModifierIdPAttern,
+					pAtternErrorMessAge: nls.locAlize('contributes.semAnticTokenTypes.superType.formAt', 'Super types should be in the form letterOrDigit[_-letterOrDigit]*'),
 				},
 				description: {
 					type: 'string',
-					description: nls.localize('contributes.color.description', 'The description of the semantic token type'),
+					description: nls.locAlize('contributes.color.description', 'The description of the semAntic token type'),
 				}
 			}
 		}
@@ -55,44 +55,44 @@ const tokenTypeExtPoint = ExtensionsRegistry.registerExtensionPoint<ITokenTypeEx
 });
 
 const tokenModifierExtPoint = ExtensionsRegistry.registerExtensionPoint<ITokenModifierExtensionPoint[]>({
-	extensionPoint: 'semanticTokenModifiers',
-	jsonSchema: {
-		description: nls.localize('contributes.semanticTokenModifiers', 'Contributes semantic token modifiers.'),
-		type: 'array',
+	extensionPoint: 'semAnticTokenModifiers',
+	jsonSchemA: {
+		description: nls.locAlize('contributes.semAnticTokenModifiers', 'Contributes semAntic token modifiers.'),
+		type: 'ArrAy',
 		items: {
 			type: 'object',
 			properties: {
 				id: {
 					type: 'string',
-					description: nls.localize('contributes.semanticTokenModifiers.id', 'The identifier of the semantic token modifier'),
-					pattern: typeAndModifierIdPattern,
-					patternErrorMessage: nls.localize('contributes.semanticTokenModifiers.id.format', 'Identifiers should be in the form letterOrDigit[_-letterOrDigit]*')
+					description: nls.locAlize('contributes.semAnticTokenModifiers.id', 'The identifier of the semAntic token modifier'),
+					pAttern: typeAndModifierIdPAttern,
+					pAtternErrorMessAge: nls.locAlize('contributes.semAnticTokenModifiers.id.formAt', 'Identifiers should be in the form letterOrDigit[_-letterOrDigit]*')
 				},
 				description: {
-					description: nls.localize('contributes.semanticTokenModifiers.description', 'The description of the semantic token modifier')
+					description: nls.locAlize('contributes.semAnticTokenModifiers.description', 'The description of the semAntic token modifier')
 				}
 			}
 		}
 	}
 });
 
-const tokenStyleDefaultsExtPoint = ExtensionsRegistry.registerExtensionPoint<ITokenStyleDefaultExtensionPoint[]>({
-	extensionPoint: 'semanticTokenScopes',
-	jsonSchema: {
-		description: nls.localize('contributes.semanticTokenScopes', 'Contributes semantic token scope maps.'),
-		type: 'array',
+const tokenStyleDefAultsExtPoint = ExtensionsRegistry.registerExtensionPoint<ITokenStyleDefAultExtensionPoint[]>({
+	extensionPoint: 'semAnticTokenScopes',
+	jsonSchemA: {
+		description: nls.locAlize('contributes.semAnticTokenScopes', 'Contributes semAntic token scope mAps.'),
+		type: 'ArrAy',
 		items: {
 			type: 'object',
 			properties: {
-				language: {
-					description: nls.localize('contributes.semanticTokenScopes.languages', 'Lists the languge for which the defaults are.'),
+				lAnguAge: {
+					description: nls.locAlize('contributes.semAnticTokenScopes.lAnguAges', 'Lists the lAnguge for which the defAults Are.'),
 					type: 'string'
 				},
 				scopes: {
-					description: nls.localize('contributes.semanticTokenScopes.scopes', 'Maps a semantic token (described by semantic token selector) to one or more textMate scopes used to represent that token.'),
+					description: nls.locAlize('contributes.semAnticTokenScopes.scopes', 'MAps A semAntic token (described by semAntic token selector) to one or more textMAte scopes used to represent thAt token.'),
 					type: 'object',
-					additionalProperties: {
-						type: 'array',
+					AdditionAlProperties: {
+						type: 'ArrAy',
 						items: {
 							type: 'string'
 						}
@@ -104,118 +104,118 @@ const tokenStyleDefaultsExtPoint = ExtensionsRegistry.registerExtensionPoint<ITo
 });
 
 
-export class TokenClassificationExtensionPoints {
+export clAss TokenClAssificAtionExtensionPoints {
 
 	constructor() {
-		function validateTypeOrModifier(contribution: ITokenTypeExtensionPoint | ITokenModifierExtensionPoint, extensionPoint: string, collector: ExtensionMessageCollector): boolean {
+		function vAlidAteTypeOrModifier(contribution: ITokenTypeExtensionPoint | ITokenModifierExtensionPoint, extensionPoint: string, collector: ExtensionMessAgeCollector): booleAn {
 			if (typeof contribution.id !== 'string' || contribution.id.length === 0) {
-				collector.error(nls.localize('invalid.id', "'configuration.{0}.id' must be defined and can not be empty", extensionPoint));
-				return false;
+				collector.error(nls.locAlize('invAlid.id', "'configurAtion.{0}.id' must be defined And cAn not be empty", extensionPoint));
+				return fAlse;
 			}
-			if (!contribution.id.match(typeAndModifierIdPattern)) {
-				collector.error(nls.localize('invalid.id.format', "'configuration.{0}.id' must follow the pattern letterOrDigit[-_letterOrDigit]*", extensionPoint));
-				return false;
+			if (!contribution.id.mAtch(typeAndModifierIdPAttern)) {
+				collector.error(nls.locAlize('invAlid.id.formAt', "'configurAtion.{0}.id' must follow the pAttern letterOrDigit[-_letterOrDigit]*", extensionPoint));
+				return fAlse;
 			}
-			const superType = (contribution as ITokenTypeExtensionPoint).superType;
-			if (superType && !superType.match(typeAndModifierIdPattern)) {
-				collector.error(nls.localize('invalid.superType.format', "'configuration.{0}.superType' must follow the pattern letterOrDigit[-_letterOrDigit]*", extensionPoint));
-				return false;
+			const superType = (contribution As ITokenTypeExtensionPoint).superType;
+			if (superType && !superType.mAtch(typeAndModifierIdPAttern)) {
+				collector.error(nls.locAlize('invAlid.superType.formAt', "'configurAtion.{0}.superType' must follow the pAttern letterOrDigit[-_letterOrDigit]*", extensionPoint));
+				return fAlse;
 			}
 			if (typeof contribution.description !== 'string' || contribution.id.length === 0) {
-				collector.error(nls.localize('invalid.description', "'configuration.{0}.description' must be defined and can not be empty", extensionPoint));
-				return false;
+				collector.error(nls.locAlize('invAlid.description', "'configurAtion.{0}.description' must be defined And cAn not be empty", extensionPoint));
+				return fAlse;
 			}
 			return true;
 		}
 
-		tokenTypeExtPoint.setHandler((extensions, delta) => {
-			for (const extension of delta.added) {
-				const extensionValue = <ITokenTypeExtensionPoint[]>extension.value;
+		tokenTypeExtPoint.setHAndler((extensions, deltA) => {
+			for (const extension of deltA.Added) {
+				const extensionVAlue = <ITokenTypeExtensionPoint[]>extension.vAlue;
 				const collector = extension.collector;
 
-				if (!extensionValue || !Array.isArray(extensionValue)) {
-					collector.error(nls.localize('invalid.semanticTokenTypeConfiguration', "'configuration.semanticTokenType' must be an array"));
+				if (!extensionVAlue || !ArrAy.isArrAy(extensionVAlue)) {
+					collector.error(nls.locAlize('invAlid.semAnticTokenTypeConfigurAtion', "'configurAtion.semAnticTokenType' must be An ArrAy"));
 					return;
 				}
-				for (const contribution of extensionValue) {
-					if (validateTypeOrModifier(contribution, 'semanticTokenType', collector)) {
-						tokenClassificationRegistry.registerTokenType(contribution.id, contribution.description, contribution.superType);
+				for (const contribution of extensionVAlue) {
+					if (vAlidAteTypeOrModifier(contribution, 'semAnticTokenType', collector)) {
+						tokenClAssificAtionRegistry.registerTokenType(contribution.id, contribution.description, contribution.superType);
 					}
 				}
 			}
-			for (const extension of delta.removed) {
-				const extensionValue = <ITokenTypeExtensionPoint[]>extension.value;
-				for (const contribution of extensionValue) {
-					tokenClassificationRegistry.deregisterTokenType(contribution.id);
+			for (const extension of deltA.removed) {
+				const extensionVAlue = <ITokenTypeExtensionPoint[]>extension.vAlue;
+				for (const contribution of extensionVAlue) {
+					tokenClAssificAtionRegistry.deregisterTokenType(contribution.id);
 				}
 			}
 		});
-		tokenModifierExtPoint.setHandler((extensions, delta) => {
-			for (const extension of delta.added) {
-				const extensionValue = <ITokenModifierExtensionPoint[]>extension.value;
+		tokenModifierExtPoint.setHAndler((extensions, deltA) => {
+			for (const extension of deltA.Added) {
+				const extensionVAlue = <ITokenModifierExtensionPoint[]>extension.vAlue;
 				const collector = extension.collector;
 
-				if (!extensionValue || !Array.isArray(extensionValue)) {
-					collector.error(nls.localize('invalid.semanticTokenModifierConfiguration', "'configuration.semanticTokenModifier' must be an array"));
+				if (!extensionVAlue || !ArrAy.isArrAy(extensionVAlue)) {
+					collector.error(nls.locAlize('invAlid.semAnticTokenModifierConfigurAtion', "'configurAtion.semAnticTokenModifier' must be An ArrAy"));
 					return;
 				}
-				for (const contribution of extensionValue) {
-					if (validateTypeOrModifier(contribution, 'semanticTokenModifier', collector)) {
-						tokenClassificationRegistry.registerTokenModifier(contribution.id, contribution.description);
+				for (const contribution of extensionVAlue) {
+					if (vAlidAteTypeOrModifier(contribution, 'semAnticTokenModifier', collector)) {
+						tokenClAssificAtionRegistry.registerTokenModifier(contribution.id, contribution.description);
 					}
 				}
 			}
-			for (const extension of delta.removed) {
-				const extensionValue = <ITokenModifierExtensionPoint[]>extension.value;
-				for (const contribution of extensionValue) {
-					tokenClassificationRegistry.deregisterTokenModifier(contribution.id);
+			for (const extension of deltA.removed) {
+				const extensionVAlue = <ITokenModifierExtensionPoint[]>extension.vAlue;
+				for (const contribution of extensionVAlue) {
+					tokenClAssificAtionRegistry.deregisterTokenModifier(contribution.id);
 				}
 			}
 		});
-		tokenStyleDefaultsExtPoint.setHandler((extensions, delta) => {
-			for (const extension of delta.added) {
-				const extensionValue = <ITokenStyleDefaultExtensionPoint[]>extension.value;
+		tokenStyleDefAultsExtPoint.setHAndler((extensions, deltA) => {
+			for (const extension of deltA.Added) {
+				const extensionVAlue = <ITokenStyleDefAultExtensionPoint[]>extension.vAlue;
 				const collector = extension.collector;
 
-				if (!extensionValue || !Array.isArray(extensionValue)) {
-					collector.error(nls.localize('invalid.semanticTokenScopes.configuration', "'configuration.semanticTokenScopes' must be an array"));
+				if (!extensionVAlue || !ArrAy.isArrAy(extensionVAlue)) {
+					collector.error(nls.locAlize('invAlid.semAnticTokenScopes.configurAtion', "'configurAtion.semAnticTokenScopes' must be An ArrAy"));
 					return;
 				}
-				for (const contribution of extensionValue) {
-					if (contribution.language && typeof contribution.language !== 'string') {
-						collector.error(nls.localize('invalid.semanticTokenScopes.language', "'configuration.semanticTokenScopes.language' must be a string"));
+				for (const contribution of extensionVAlue) {
+					if (contribution.lAnguAge && typeof contribution.lAnguAge !== 'string') {
+						collector.error(nls.locAlize('invAlid.semAnticTokenScopes.lAnguAge', "'configurAtion.semAnticTokenScopes.lAnguAge' must be A string"));
 						continue;
 					}
 					if (!contribution.scopes || typeof contribution.scopes !== 'object') {
-						collector.error(nls.localize('invalid.semanticTokenScopes.scopes', "'configuration.semanticTokenScopes.scopes' must be defined as an object"));
+						collector.error(nls.locAlize('invAlid.semAnticTokenScopes.scopes', "'configurAtion.semAnticTokenScopes.scopes' must be defined As An object"));
 						continue;
 					}
 					for (let selectorString in contribution.scopes) {
 						const tmScopes = contribution.scopes[selectorString];
-						if (!Array.isArray(tmScopes) || tmScopes.some(l => typeof l !== 'string')) {
-							collector.error(nls.localize('invalid.semanticTokenScopes.scopes.value', "'configuration.semanticTokenScopes.scopes' values must be an array of strings"));
+						if (!ArrAy.isArrAy(tmScopes) || tmScopes.some(l => typeof l !== 'string')) {
+							collector.error(nls.locAlize('invAlid.semAnticTokenScopes.scopes.vAlue', "'configurAtion.semAnticTokenScopes.scopes' vAlues must be An ArrAy of strings"));
 							continue;
 						}
 						try {
-							const selector = tokenClassificationRegistry.parseTokenSelector(selectorString, contribution.language);
-							tokenClassificationRegistry.registerTokenStyleDefault(selector, { scopesToProbe: tmScopes.map(s => s.split(' ')) });
-						} catch (e) {
-							collector.error(nls.localize('invalid.semanticTokenScopes.scopes.selector', "configuration.semanticTokenScopes.scopes': Problems parsing selector {0}.", selectorString));
-							// invalid selector, ignore
+							const selector = tokenClAssificAtionRegistry.pArseTokenSelector(selectorString, contribution.lAnguAge);
+							tokenClAssificAtionRegistry.registerTokenStyleDefAult(selector, { scopesToProbe: tmScopes.mAp(s => s.split(' ')) });
+						} cAtch (e) {
+							collector.error(nls.locAlize('invAlid.semAnticTokenScopes.scopes.selector', "configurAtion.semAnticTokenScopes.scopes': Problems pArsing selector {0}.", selectorString));
+							// invAlid selector, ignore
 						}
 					}
 				}
 			}
-			for (const extension of delta.removed) {
-				const extensionValue = <ITokenStyleDefaultExtensionPoint[]>extension.value;
-				for (const contribution of extensionValue) {
+			for (const extension of deltA.removed) {
+				const extensionVAlue = <ITokenStyleDefAultExtensionPoint[]>extension.vAlue;
+				for (const contribution of extensionVAlue) {
 					for (let selectorString in contribution.scopes) {
 						const tmScopes = contribution.scopes[selectorString];
 						try {
-							const selector = tokenClassificationRegistry.parseTokenSelector(selectorString, contribution.language);
-							tokenClassificationRegistry.registerTokenStyleDefault(selector, { scopesToProbe: tmScopes.map(s => s.split(' ')) });
-						} catch (e) {
-							// invalid selector, ignore
+							const selector = tokenClAssificAtionRegistry.pArseTokenSelector(selectorString, contribution.lAnguAge);
+							tokenClAssificAtionRegistry.registerTokenStyleDefAult(selector, { scopesToProbe: tmScopes.mAp(s => s.split(' ')) });
+						} cAtch (e) {
+							// invAlid selector, ignore
 						}
 					}
 				}

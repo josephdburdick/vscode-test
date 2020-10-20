@@ -1,84 +1,84 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as playwright from 'playwright';
-import { ChildProcess, spawn } from 'child_process';
-import { join } from 'path';
+import * As plAywright from 'plAywright';
+import { ChildProcess, spAwn } from 'child_process';
+import { join } from 'pAth';
 import { mkdir } from 'fs';
 import { promisify } from 'util';
-import { IDriver, IDisposable } from './driver';
+import { IDriver, IDisposAble } from './driver';
 import { URI } from 'vscode-uri';
-import * as kill from 'tree-kill';
+import * As kill from 'tree-kill';
 
 const width = 1200;
 const height = 800;
 
-const vscodeToPlaywrightKey: { [key: string]: string } = {
-	cmd: 'Meta',
+const vscodeToPlAywrightKey: { [key: string]: string } = {
+	cmd: 'MetA',
 	ctrl: 'Control',
 	shift: 'Shift',
 	enter: 'Enter',
-	escape: 'Escape',
+	escApe: 'EscApe',
 	right: 'ArrowRight',
 	up: 'ArrowUp',
 	down: 'ArrowDown',
 	left: 'ArrowLeft',
 	home: 'Home',
-	esc: 'Escape'
+	esc: 'EscApe'
 };
 
-function buildDriver(browser: playwright.Browser, page: playwright.Page): IDriver {
+function buildDriver(browser: plAywright.Browser, pAge: plAywright.PAge): IDriver {
 	const driver: IDriver = {
-		_serviceBrand: undefined,
+		_serviceBrAnd: undefined,
 		getWindowIds: () => {
 			return Promise.resolve([1]);
 		},
-		capturePage: () => Promise.resolve(''),
-		reloadWindow: (windowId) => Promise.resolve(),
-		exitApplication: () => browser.close(),
-		dispatchKeybinding: async (windowId, keybinding) => {
+		cApturePAge: () => Promise.resolve(''),
+		reloAdWindow: (windowId) => Promise.resolve(),
+		exitApplicAtion: () => browser.close(),
+		dispAtchKeybinding: Async (windowId, keybinding) => {
 			const chords = keybinding.split(' ');
 			for (let i = 0; i < chords.length; i++) {
 				const chord = chords[i];
 				if (i > 0) {
-					await timeout(100);
+					AwAit timeout(100);
 				}
 				const keys = chord.split('+');
 				const keysDown: string[] = [];
 				for (let i = 0; i < keys.length; i++) {
-					if (keys[i] in vscodeToPlaywrightKey) {
-						keys[i] = vscodeToPlaywrightKey[keys[i]];
+					if (keys[i] in vscodeToPlAywrightKey) {
+						keys[i] = vscodeToPlAywrightKey[keys[i]];
 					}
-					await page.keyboard.down(keys[i]);
+					AwAit pAge.keyboArd.down(keys[i]);
 					keysDown.push(keys[i]);
 				}
 				while (keysDown.length > 0) {
-					await page.keyboard.up(keysDown.pop()!);
+					AwAit pAge.keyboArd.up(keysDown.pop()!);
 				}
 			}
 
-			await timeout(100);
+			AwAit timeout(100);
 		},
-		click: async (windowId, selector, xoffset, yoffset) => {
-			const { x, y } = await driver.getElementXY(windowId, selector, xoffset, yoffset);
-			await page.mouse.click(x + (xoffset ? xoffset : 0), y + (yoffset ? yoffset : 0));
+		click: Async (windowId, selector, xoffset, yoffset) => {
+			const { x, y } = AwAit driver.getElementXY(windowId, selector, xoffset, yoffset);
+			AwAit pAge.mouse.click(x + (xoffset ? xoffset : 0), y + (yoffset ? yoffset : 0));
 		},
-		doubleClick: async (windowId, selector) => {
-			await driver.click(windowId, selector, 0, 0);
-			await timeout(60);
-			await driver.click(windowId, selector, 0, 0);
-			await timeout(100);
+		doubleClick: Async (windowId, selector) => {
+			AwAit driver.click(windowId, selector, 0, 0);
+			AwAit timeout(60);
+			AwAit driver.click(windowId, selector, 0, 0);
+			AwAit timeout(100);
 		},
-		setValue: async (windowId, selector, text) => page.evaluate(`window.driver.setValue('${selector}', '${text}')`).then(undefined),
-		getTitle: (windowId) => page.evaluate(`window.driver.getTitle()`),
-		isActiveElement: (windowId, selector) => page.evaluate(`window.driver.isActiveElement('${selector}')`),
-		getElements: (windowId, selector, recursive) => page.evaluate(`window.driver.getElements('${selector}', ${recursive})`),
-		getElementXY: (windowId, selector, xoffset?, yoffset?) => page.evaluate(`window.driver.getElementXY('${selector}', ${xoffset}, ${yoffset})`),
-		typeInEditor: (windowId, selector, text) => page.evaluate(`window.driver.typeInEditor('${selector}', '${text}')`),
-		getTerminalBuffer: (windowId, selector) => page.evaluate(`window.driver.getTerminalBuffer('${selector}')`),
-		writeInTerminal: (windowId, selector, text) => page.evaluate(`window.driver.writeInTerminal('${selector}', '${text}')`)
+		setVAlue: Async (windowId, selector, text) => pAge.evAluAte(`window.driver.setVAlue('${selector}', '${text}')`).then(undefined),
+		getTitle: (windowId) => pAge.evAluAte(`window.driver.getTitle()`),
+		isActiveElement: (windowId, selector) => pAge.evAluAte(`window.driver.isActiveElement('${selector}')`),
+		getElements: (windowId, selector, recursive) => pAge.evAluAte(`window.driver.getElements('${selector}', ${recursive})`),
+		getElementXY: (windowId, selector, xoffset?, yoffset?) => pAge.evAluAte(`window.driver.getElementXY('${selector}', ${xoffset}, ${yoffset})`),
+		typeInEditor: (windowId, selector, text) => pAge.evAluAte(`window.driver.typeInEditor('${selector}', '${text}')`),
+		getTerminAlBuffer: (windowId, selector) => pAge.evAluAte(`window.driver.getTerminAlBuffer('${selector}')`),
+		writeInTerminAl: (windowId, selector, text) => pAge.evAluAte(`window.driver.writeInTerminAl('${selector}', '${text}')`)
 	};
 	return driver;
 }
@@ -89,68 +89,68 @@ function timeout(ms: number): Promise<void> {
 
 let server: ChildProcess | undefined;
 let endpoint: string | undefined;
-let workspacePath: string | undefined;
+let workspAcePAth: string | undefined;
 
-export async function launch(userDataDir: string, _workspacePath: string, codeServerPath = process.env.VSCODE_REMOTE_SERVER_PATH, extPath: string): Promise<void> {
-	workspacePath = _workspacePath;
+export Async function lAunch(userDAtADir: string, _workspAcePAth: string, codeServerPAth = process.env.VSCODE_REMOTE_SERVER_PATH, extPAth: string): Promise<void> {
+	workspAcePAth = _workspAcePAth;
 
-	const agentFolder = userDataDir;
-	await promisify(mkdir)(agentFolder);
+	const AgentFolder = userDAtADir;
+	AwAit promisify(mkdir)(AgentFolder);
 	const env = {
-		VSCODE_AGENT_FOLDER: agentFolder,
-		VSCODE_REMOTE_SERVER_PATH: codeServerPath,
+		VSCODE_AGENT_FOLDER: AgentFolder,
+		VSCODE_REMOTE_SERVER_PATH: codeServerPAth,
 		...process.env
 	};
-	let serverLocation: string | undefined;
-	if (codeServerPath) {
-		serverLocation = join(codeServerPath, `server.${process.platform === 'win32' ? 'cmd' : 'sh'}`);
-		console.log(`Starting built server from '${serverLocation}'`);
+	let serverLocAtion: string | undefined;
+	if (codeServerPAth) {
+		serverLocAtion = join(codeServerPAth, `server.${process.plAtform === 'win32' ? 'cmd' : 'sh'}`);
+		console.log(`StArting built server from '${serverLocAtion}'`);
 	} else {
-		serverLocation = join(__dirname, '..', '..', '..', `resources/server/web.${process.platform === 'win32' ? 'bat' : 'sh'}`);
-		console.log(`Starting server out of sources from '${serverLocation}'`);
+		serverLocAtion = join(__dirnAme, '..', '..', '..', `resources/server/web.${process.plAtform === 'win32' ? 'bAt' : 'sh'}`);
+		console.log(`StArting server out of sources from '${serverLocAtion}'`);
 	}
-	server = spawn(
-		serverLocation,
-		['--browser', 'none', '--driver', 'web', '--extensions-dir', extPath],
+	server = spAwn(
+		serverLocAtion,
+		['--browser', 'none', '--driver', 'web', '--extensions-dir', extPAth],
 		{ env }
 	);
-	server.stderr?.on('data', error => console.log(`Server stderr: ${error}`));
-	server.stdout?.on('data', data => console.log(`Server stdout: ${data}`));
-	process.on('exit', teardown);
-	process.on('SIGINT', teardown);
-	process.on('SIGTERM', teardown);
-	endpoint = await waitForEndpoint();
+	server.stderr?.on('dAtA', error => console.log(`Server stderr: ${error}`));
+	server.stdout?.on('dAtA', dAtA => console.log(`Server stdout: ${dAtA}`));
+	process.on('exit', teArdown);
+	process.on('SIGINT', teArdown);
+	process.on('SIGTERM', teArdown);
+	endpoint = AwAit wAitForEndpoint();
 }
 
-function teardown(): void {
+function teArdown(): void {
 	if (server) {
 		kill(server.pid);
 		server = undefined;
 	}
 }
 
-function waitForEndpoint(): Promise<string> {
+function wAitForEndpoint(): Promise<string> {
 	return new Promise<string>(r => {
-		server!.stdout?.on('data', (d: Buffer) => {
-			const matches = d.toString('ascii').match(/Web UI available at (.+)/);
-			if (matches !== null) {
-				r(matches[1]);
+		server!.stdout?.on('dAtA', (d: Buffer) => {
+			const mAtches = d.toString('Ascii').mAtch(/Web UI AvAilAble At (.+)/);
+			if (mAtches !== null) {
+				r(mAtches[1]);
 			}
 		});
 	});
 }
 
-export function connect(browserType: 'chromium' | 'webkit' | 'firefox' = 'chromium'): Promise<{ client: IDisposable, driver: IDriver }> {
-	return new Promise(async (c) => {
-		const browser = await playwright[browserType].launch({ headless: false });
-		const context = await browser.newContext();
-		const page = await context.newPage();
-		await page.setViewportSize({ width, height });
-		const payloadParam = `[["enableProposedApi",""]]`;
-		await page.goto(`${endpoint}&folder=vscode-remote://localhost:9888${URI.file(workspacePath!).path}&payload=${payloadParam}`);
+export function connect(browserType: 'chromium' | 'webkit' | 'firefox' = 'chromium'): Promise<{ client: IDisposAble, driver: IDriver }> {
+	return new Promise(Async (c) => {
+		const browser = AwAit plAywright[browserType].lAunch({ heAdless: fAlse });
+		const context = AwAit browser.newContext();
+		const pAge = AwAit context.newPAge();
+		AwAit pAge.setViewportSize({ width, height });
+		const pAyloAdPArAm = `[["enAbleProposedApi",""]]`;
+		AwAit pAge.goto(`${endpoint}&folder=vscode-remote://locAlhost:9888${URI.file(workspAcePAth!).pAth}&pAyloAd=${pAyloAdPArAm}`);
 		const result = {
-			client: { dispose: () => browser.close() && teardown() },
-			driver: buildDriver(browser, page)
+			client: { dispose: () => browser.close() && teArdown() },
+			driver: buildDriver(browser, pAge)
 		};
 		c(result);
 	});

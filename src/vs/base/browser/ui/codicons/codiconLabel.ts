@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { reset } from 'vs/base/browser/dom';
-import { renderCodicons } from 'vs/base/browser/codicons';
+import { reset } from 'vs/bAse/browser/dom';
+import { renderCodicons } from 'vs/bAse/browser/codicons';
 
-export class CodiconLabel {
+export clAss CodiconLAbel {
 
 	constructor(
-		private readonly _container: HTMLElement
+		privAte reAdonly _contAiner: HTMLElement
 	) { }
 
 	set text(text: string) {
-		reset(this._container, ...renderCodicons(text ?? ''));
+		reset(this._contAiner, ...renderCodicons(text ?? ''));
 	}
 
 	set title(title: string) {
-		this._container.title = title;
+		this._contAiner.title = title;
 	}
 }

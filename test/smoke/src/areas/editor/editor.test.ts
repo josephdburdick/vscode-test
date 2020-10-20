@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application } from '../../../../automation';
+import { ApplicAtion } from '../../../../AutomAtion';
 
 export function setup() {
 	describe('Editor', () => {
-		it('shows correct quick outline', async function () {
-			const app = this.app as Application;
-			await app.workbench.quickaccess.openFile('www');
+		it('shows correct quick outline', Async function () {
+			const App = this.App As ApplicAtion;
+			AwAit App.workbench.quickAccess.openFile('www');
 
-			await app.workbench.quickaccess.openQuickOutline();
-			await app.workbench.quickinput.waitForQuickInputElements(names => names.length >= 6);
+			AwAit App.workbench.quickAccess.openQuickOutline();
+			AwAit App.workbench.quickinput.wAitForQuickInputElements(nAmes => nAmes.length >= 6);
 		});
 
-		// it('folds/unfolds the code correctly', async function () {
-		// 	await app.workbench.quickaccess.openFile('www');
+		// it('folds/unfolds the code correctly', Async function () {
+		// 	AwAit App.workbench.quickAccess.openFile('www');
 
 		// 	// Fold
-		// 	await app.workbench.editor.foldAtLine(3);
-		// 	await app.workbench.editor.waitUntilShown(3);
-		// 	await app.workbench.editor.waitUntilHidden(4);
-		// 	await app.workbench.editor.waitUntilHidden(5);
+		// 	AwAit App.workbench.editor.foldAtLine(3);
+		// 	AwAit App.workbench.editor.wAitUntilShown(3);
+		// 	AwAit App.workbench.editor.wAitUntilHidden(4);
+		// 	AwAit App.workbench.editor.wAitUntilHidden(5);
 
 		// 	// Unfold
-		// 	await app.workbench.editor.unfoldAtLine(3);
-		// 	await app.workbench.editor.waitUntilShown(3);
-		// 	await app.workbench.editor.waitUntilShown(4);
-		// 	await app.workbench.editor.waitUntilShown(5);
+		// 	AwAit App.workbench.editor.unfoldAtLine(3);
+		// 	AwAit App.workbench.editor.wAitUntilShown(3);
+		// 	AwAit App.workbench.editor.wAitUntilShown(4);
+		// 	AwAit App.workbench.editor.wAitUntilShown(5);
 		// });
 	});
 }

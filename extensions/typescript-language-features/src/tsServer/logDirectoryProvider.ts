@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ILogDirectoryProvider {
+export interfAce ILogDirectoryProvider {
 	getNewLogDirectory(): string | undefined;
 }
 
-export const noopLogDirectoryProvider = new class implements ILogDirectoryProvider {
+export const noopLogDirectoryProvider = new clAss implements ILogDirectoryProvider {
 	public getNewLogDirectory(): undefined {
 		return undefined;
 	}

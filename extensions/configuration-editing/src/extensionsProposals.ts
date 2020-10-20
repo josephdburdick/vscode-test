@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-const localize = nls.loadMessageBundle();
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+const locAlize = nls.loAdMessAgeBundle();
 
 
-export function provideInstalledExtensionProposals(existing: string[], range: vscode.Range, includeBuiltinExtensions: boolean): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
-	if (Array.isArray(existing)) {
-		const extensions = includeBuiltinExtensions ? vscode.extensions.all : vscode.extensions.all.filter(e => !(e.id.startsWith('vscode.') || e.id === 'Microsoft.vscode-markdown'));
-		const knownExtensionProposals = extensions.filter(e => existing.indexOf(e.id) === -1);
-		if (knownExtensionProposals.length) {
-			return knownExtensionProposals.map(e => {
+export function provideInstAlledExtensionProposAls(existing: string[], rAnge: vscode.RAnge, includeBuiltinExtensions: booleAn): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
+	if (ArrAy.isArrAy(existing)) {
+		const extensions = includeBuiltinExtensions ? vscode.extensions.All : vscode.extensions.All.filter(e => !(e.id.stArtsWith('vscode.') || e.id === 'Microsoft.vscode-mArkdown'));
+		const knownExtensionProposAls = extensions.filter(e => existing.indexOf(e.id) === -1);
+		if (knownExtensionProposAls.length) {
+			return knownExtensionProposAls.mAp(e => {
 				const item = new vscode.CompletionItem(e.id);
 				const insertText = `"${e.id}"`;
-				item.kind = vscode.CompletionItemKind.Value;
+				item.kind = vscode.CompletionItemKind.VAlue;
 				item.insertText = insertText;
-				item.range = range;
+				item.rAnge = rAnge;
 				item.filterText = insertText;
 				return item;
 			});
 		} else {
-			const example = new vscode.CompletionItem(localize('exampleExtension', "Example"));
-			example.insertText = '"vscode.csharp"';
-			example.kind = vscode.CompletionItemKind.Value;
-			example.range = range;
-			return [example];
+			const exAmple = new vscode.CompletionItem(locAlize('exAmpleExtension', "ExAmple"));
+			exAmple.insertText = '"vscode.cshArp"';
+			exAmple.kind = vscode.CompletionItemKind.VAlue;
+			exAmple.rAnge = rAnge;
+			return [exAmple];
 		}
 	}
 	return undefined;

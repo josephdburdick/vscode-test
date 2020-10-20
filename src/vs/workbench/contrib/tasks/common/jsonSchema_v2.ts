@@ -1,171 +1,171 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as Objects from 'vs/base/common/objects';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
+import * As nls from 'vs/nls';
+import * As Objects from 'vs/bAse/common/objects';
+import { IJSONSchemA, IJSONSchemAMAp } from 'vs/bAse/common/jsonSchemA';
 
-import commonSchema from './jsonSchemaCommon';
+import commonSchemA from './jsonSchemACommon';
 
-import { ProblemMatcherRegistry } from 'vs/workbench/contrib/tasks/common/problemMatcher';
-import { TaskDefinitionRegistry } from './taskDefinitionRegistry';
-import * as ConfigurationResolverUtils from 'vs/workbench/services/configurationResolver/common/configurationResolverUtils';
-import { inputsSchema } from 'vs/workbench/services/configurationResolver/common/configurationResolverSchema';
+import { ProblemMAtcherRegistry } from 'vs/workbench/contrib/tAsks/common/problemMAtcher';
+import { TAskDefinitionRegistry } from './tAskDefinitionRegistry';
+import * As ConfigurAtionResolverUtils from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolverUtils';
+import { inputsSchemA } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolverSchemA';
 
-function fixReferences(literal: any) {
-	if (Array.isArray(literal)) {
-		literal.forEach(fixReferences);
-	} else if (typeof literal === 'object') {
-		if (literal['$ref']) {
-			literal['$ref'] = literal['$ref'] + '2';
+function fixReferences(literAl: Any) {
+	if (ArrAy.isArrAy(literAl)) {
+		literAl.forEAch(fixReferences);
+	} else if (typeof literAl === 'object') {
+		if (literAl['$ref']) {
+			literAl['$ref'] = literAl['$ref'] + '2';
 		}
-		Object.getOwnPropertyNames(literal).forEach(property => {
-			let value = literal[property];
-			if (Array.isArray(value) || typeof value === 'object') {
-				fixReferences(value);
+		Object.getOwnPropertyNAmes(literAl).forEAch(property => {
+			let vAlue = literAl[property];
+			if (ArrAy.isArrAy(vAlue) || typeof vAlue === 'object') {
+				fixReferences(vAlue);
 			}
 		});
 	}
 }
 
-const shellCommand: IJSONSchema = {
-	anyOf: [
+const shellCommAnd: IJSONSchemA = {
+	AnyOf: [
 		{
-			type: 'boolean',
-			default: true,
-			description: nls.localize('JsonSchema.shell', 'Specifies whether the command is a shell command or an external program. Defaults to false if omitted.')
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('JsonSchemA.shell', 'Specifies whether the commAnd is A shell commAnd or An externAl progrAm. DefAults to fAlse if omitted.')
 		},
 		{
-			$ref: '#definitions/shellConfiguration'
+			$ref: '#definitions/shellConfigurAtion'
 		}
 	],
-	deprecationMessage: nls.localize('JsonSchema.tasks.isShellCommand.deprecated', 'The property isShellCommand is deprecated. Use the type property of the task and the shell property in the options instead. See also the 1.14 release notes.')
+	deprecAtionMessAge: nls.locAlize('JsonSchemA.tAsks.isShellCommAnd.deprecAted', 'The property isShellCommAnd is deprecAted. Use the type property of the tAsk And the shell property in the options insteAd. See Also the 1.14 releAse notes.')
 };
 
-const taskIdentifier: IJSONSchema = {
+const tAskIdentifier: IJSONSchemA = {
 	type: 'object',
-	additionalProperties: true,
+	AdditionAlProperties: true,
 	properties: {
 		type: {
 			type: 'string',
-			description: nls.localize('JsonSchema.tasks.dependsOn.identifier', 'The task identifier.')
+			description: nls.locAlize('JsonSchemA.tAsks.dependsOn.identifier', 'The tAsk identifier.')
 		}
 	}
 };
 
-const dependsOn: IJSONSchema = {
-	anyOf: [
+const dependsOn: IJSONSchemA = {
+	AnyOf: [
 		{
 			type: 'string',
-			description: nls.localize('JsonSchema.tasks.dependsOn.string', 'Another task this task depends on.')
+			description: nls.locAlize('JsonSchemA.tAsks.dependsOn.string', 'Another tAsk this tAsk depends on.')
 		},
-		taskIdentifier,
+		tAskIdentifier,
 		{
-			type: 'array',
-			description: nls.localize('JsonSchema.tasks.dependsOn.array', 'The other tasks this task depends on.'),
+			type: 'ArrAy',
+			description: nls.locAlize('JsonSchemA.tAsks.dependsOn.ArrAy', 'The other tAsks this tAsk depends on.'),
 			items: {
-				anyOf: [
+				AnyOf: [
 					{
 						type: 'string',
 					},
-					taskIdentifier
+					tAskIdentifier
 				]
 			}
 		}
 	],
-	description: nls.localize('JsonSchema.tasks.dependsOn', 'Either a string representing another task or an array of other tasks that this task depends on.')
+	description: nls.locAlize('JsonSchemA.tAsks.dependsOn', 'Either A string representing Another tAsk or An ArrAy of other tAsks thAt this tAsk depends on.')
 };
 
-const dependsOrder: IJSONSchema = {
+const dependsOrder: IJSONSchemA = {
 	type: 'string',
-	enum: ['parallel', 'sequence'],
+	enum: ['pArAllel', 'sequence'],
 	enumDescriptions: [
-		nls.localize('JsonSchema.tasks.dependsOrder.parallel', 'Run all dependsOn tasks in parallel.'),
-		nls.localize('JsonSchema.tasks.dependsOrder.sequence', 'Run all dependsOn tasks in sequence.'),
+		nls.locAlize('JsonSchemA.tAsks.dependsOrder.pArAllel', 'Run All dependsOn tAsks in pArAllel.'),
+		nls.locAlize('JsonSchemA.tAsks.dependsOrder.sequence', 'Run All dependsOn tAsks in sequence.'),
 	],
-	default: 'parallel',
-	description: nls.localize('JsonSchema.tasks.dependsOrder', 'Determines the order of the dependsOn tasks for this task. Note that this property is not recursive.')
+	defAult: 'pArAllel',
+	description: nls.locAlize('JsonSchemA.tAsks.dependsOrder', 'Determines the order of the dependsOn tAsks for this tAsk. Note thAt this property is not recursive.')
 };
 
-const detail: IJSONSchema = {
+const detAil: IJSONSchemA = {
 	type: 'string',
-	description: nls.localize('JsonSchema.tasks.detail', 'An optional description of a task that shows in the Run Task quick pick as a detail.')
+	description: nls.locAlize('JsonSchemA.tAsks.detAil', 'An optionAl description of A tAsk thAt shows in the Run TAsk quick pick As A detAil.')
 };
 
-const presentation: IJSONSchema = {
+const presentAtion: IJSONSchemA = {
 	type: 'object',
-	default: {
+	defAult: {
 		echo: true,
-		reveal: 'always',
-		focus: false,
-		panel: 'shared',
-		showReuseMessage: true,
-		clear: false,
+		reveAl: 'AlwAys',
+		focus: fAlse,
+		pAnel: 'shAred',
+		showReuseMessAge: true,
+		cleAr: fAlse,
 	},
-	description: nls.localize('JsonSchema.tasks.presentation', 'Configures the panel that is used to present the task\'s output and reads its input.'),
-	additionalProperties: false,
+	description: nls.locAlize('JsonSchemA.tAsks.presentAtion', 'Configures the pAnel thAt is used to present the tAsk\'s output And reAds its input.'),
+	AdditionAlProperties: fAlse,
 	properties: {
 		echo: {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('JsonSchema.tasks.presentation.echo', 'Controls whether the executed command is echoed to the panel. Default is true.')
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.echo', 'Controls whether the executed commAnd is echoed to the pAnel. DefAult is true.')
 		},
 		focus: {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('JsonSchema.tasks.presentation.focus', 'Controls whether the panel takes focus. Default is false. If set to true the panel is revealed as well.')
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.focus', 'Controls whether the pAnel tAkes focus. DefAult is fAlse. If set to true the pAnel is reveAled As well.')
 		},
-		revealProblems: {
+		reveAlProblems: {
 			type: 'string',
-			enum: ['always', 'onProblem', 'never'],
+			enum: ['AlwAys', 'onProblem', 'never'],
 			enumDescriptions: [
-				nls.localize('JsonSchema.tasks.presentation.revealProblems.always', 'Always reveals the problems panel when this task is executed.'),
-				nls.localize('JsonSchema.tasks.presentation.revealProblems.onProblem', 'Only reveals the problems panel if a problem is found.'),
-				nls.localize('JsonSchema.tasks.presentation.revealProblems.never', 'Never reveals the problems panel when this task is executed.'),
+				nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAlProblems.AlwAys', 'AlwAys reveAls the problems pAnel when this tAsk is executed.'),
+				nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAlProblems.onProblem', 'Only reveAls the problems pAnel if A problem is found.'),
+				nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAlProblems.never', 'Never reveAls the problems pAnel when this tAsk is executed.'),
 			],
-			default: 'never',
-			description: nls.localize('JsonSchema.tasks.presentation.revealProblems', 'Controls whether the problems panel is revealed when running this task or not. Takes precedence over option \"reveal\". Default is \"never\".')
+			defAult: 'never',
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAlProblems', 'Controls whether the problems pAnel is reveAled when running this tAsk or not. TAkes precedence over option \"reveAl\". DefAult is \"never\".')
 		},
-		reveal: {
+		reveAl: {
 			type: 'string',
-			enum: ['always', 'silent', 'never'],
+			enum: ['AlwAys', 'silent', 'never'],
 			enumDescriptions: [
-				nls.localize('JsonSchema.tasks.presentation.reveal.always', 'Always reveals the terminal when this task is executed.'),
-				nls.localize('JsonSchema.tasks.presentation.reveal.silent', 'Only reveals the terminal if the task exits with an error or the problem matcher finds an error.'),
-				nls.localize('JsonSchema.tasks.presentation.reveal.never', 'Never reveals the terminal when this task is executed.'),
+				nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAl.AlwAys', 'AlwAys reveAls the terminAl when this tAsk is executed.'),
+				nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAl.silent', 'Only reveAls the terminAl if the tAsk exits with An error or the problem mAtcher finds An error.'),
+				nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAl.never', 'Never reveAls the terminAl when this tAsk is executed.'),
 			],
-			default: 'always',
-			description: nls.localize('JsonSchema.tasks.presentation.reveal', 'Controls whether the terminal running the task is revealed or not. May be overridden by option \"revealProblems\". Default is \"always\".')
+			defAult: 'AlwAys',
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.reveAl', 'Controls whether the terminAl running the tAsk is reveAled or not. MAy be overridden by option \"reveAlProblems\". DefAult is \"AlwAys\".')
 		},
-		panel: {
+		pAnel: {
 			type: 'string',
-			enum: ['shared', 'dedicated', 'new'],
-			default: 'shared',
-			description: nls.localize('JsonSchema.tasks.presentation.instance', 'Controls if the panel is shared between tasks, dedicated to this task or a new one is created on every run.')
+			enum: ['shAred', 'dedicAted', 'new'],
+			defAult: 'shAred',
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.instAnce', 'Controls if the pAnel is shAred between tAsks, dedicAted to this tAsk or A new one is creAted on every run.')
 		},
-		showReuseMessage: {
-			type: 'boolean',
-			default: true,
-			description: nls.localize('JsonSchema.tasks.presentation.showReuseMessage', 'Controls whether to show the `Terminal will be reused by tasks, press any key to close it` message.')
+		showReuseMessAge: {
+			type: 'booleAn',
+			defAult: true,
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.showReuseMessAge', 'Controls whether to show the `TerminAl will be reused by tAsks, press Any key to close it` messAge.')
 		},
-		clear: {
-			type: 'boolean',
-			default: false,
-			description: nls.localize('JsonSchema.tasks.presentation.clear', 'Controls whether the terminal is cleared before executing the task.')
+		cleAr: {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.cleAr', 'Controls whether the terminAl is cleAred before executing the tAsk.')
 		},
 		group: {
 			type: 'string',
-			description: nls.localize('JsonSchema.tasks.presentation.group', 'Controls whether the task is executed in a specific terminal group using split panes.')
+			description: nls.locAlize('JsonSchemA.tAsks.presentAtion.group', 'Controls whether the tAsk is executed in A specific terminAl group using split pAnes.')
 		},
 	}
 };
 
-const terminal: IJSONSchema = Objects.deepClone(presentation);
-terminal.deprecationMessage = nls.localize('JsonSchema.tasks.terminal', 'The terminal property is deprecated. Use presentation instead');
+const terminAl: IJSONSchemA = Objects.deepClone(presentAtion);
+terminAl.deprecAtionMessAge = nls.locAlize('JsonSchemA.tAsks.terminAl', 'The terminAl property is deprecAted. Use presentAtion insteAd');
 
-const group: IJSONSchema = {
+const group: IJSONSchemA = {
 	oneOf: [
 		{
 			type: 'string',
@@ -175,42 +175,42 @@ const group: IJSONSchema = {
 			properties: {
 				kind: {
 					type: 'string',
-					default: 'none',
-					description: nls.localize('JsonSchema.tasks.group.kind', 'The task\'s execution group.')
+					defAult: 'none',
+					description: nls.locAlize('JsonSchemA.tAsks.group.kind', 'The tAsk\'s execution group.')
 				},
-				isDefault: {
-					type: 'boolean',
-					default: false,
-					description: nls.localize('JsonSchema.tasks.group.isDefault', 'Defines if this task is the default task in the group.')
+				isDefAult: {
+					type: 'booleAn',
+					defAult: fAlse,
+					description: nls.locAlize('JsonSchemA.tAsks.group.isDefAult', 'Defines if this tAsk is the defAult tAsk in the group.')
 				}
 			}
 		},
 	],
 	enum: [
-		{ kind: 'build', isDefault: true },
-		{ kind: 'test', isDefault: true },
+		{ kind: 'build', isDefAult: true },
+		{ kind: 'test', isDefAult: true },
 		'build',
 		'test',
 		'none'
 	],
 	enumDescriptions: [
-		nls.localize('JsonSchema.tasks.group.defaultBuild', 'Marks the task as the default build task.'),
-		nls.localize('JsonSchema.tasks.group.defaultTest', 'Marks the task as the default test task.'),
-		nls.localize('JsonSchema.tasks.group.build', 'Marks the task as a build task accessible through the \'Run Build Task\' command.'),
-		nls.localize('JsonSchema.tasks.group.test', 'Marks the task as a test task accessible through the \'Run Test Task\' command.'),
-		nls.localize('JsonSchema.tasks.group.none', 'Assigns the task to no group')
+		nls.locAlize('JsonSchemA.tAsks.group.defAultBuild', 'MArks the tAsk As the defAult build tAsk.'),
+		nls.locAlize('JsonSchemA.tAsks.group.defAultTest', 'MArks the tAsk As the defAult test tAsk.'),
+		nls.locAlize('JsonSchemA.tAsks.group.build', 'MArks the tAsk As A build tAsk Accessible through the \'Run Build TAsk\' commAnd.'),
+		nls.locAlize('JsonSchemA.tAsks.group.test', 'MArks the tAsk As A test tAsk Accessible through the \'Run Test TAsk\' commAnd.'),
+		nls.locAlize('JsonSchemA.tAsks.group.none', 'Assigns the tAsk to no group')
 	],
-	description: nls.localize('JsonSchema.tasks.group', 'Defines to which execution group this task belongs to. It supports "build" to add it to the build group and "test" to add it to the test group.')
+	description: nls.locAlize('JsonSchemA.tAsks.group', 'Defines to which execution group this tAsk belongs to. It supports "build" to Add it to the build group And "test" to Add it to the test group.')
 };
 
-const taskType: IJSONSchema = {
+const tAskType: IJSONSchemA = {
 	type: 'string',
 	enum: ['shell'],
-	default: 'process',
-	description: nls.localize('JsonSchema.tasks.type', 'Defines whether the task is run as a process or as a command inside a shell.')
+	defAult: 'process',
+	description: nls.locAlize('JsonSchemA.tAsks.type', 'Defines whether the tAsk is run As A process or As A commAnd inside A shell.')
 };
 
-const command: IJSONSchema = {
+const commAnd: IJSONSchemA = {
 	oneOf: [
 		{
 			oneOf: [
@@ -218,53 +218,53 @@ const command: IJSONSchema = {
 					type: 'string'
 				},
 				{
-					type: 'array',
+					type: 'ArrAy',
 					items: {
 						type: 'string'
 					},
-					description: nls.localize('JsonSchema.commandArray', 'The shell command to be executed. Array items will be joined using a space character')
+					description: nls.locAlize('JsonSchemA.commAndArrAy', 'The shell commAnd to be executed. ArrAy items will be joined using A spAce chArActer')
 				}
 			]
 		},
 		{
 			type: 'object',
-			required: ['value', 'quoting'],
+			required: ['vAlue', 'quoting'],
 			properties: {
-				value: {
+				vAlue: {
 					oneOf: [
 						{
 							type: 'string'
 						},
 						{
-							type: 'array',
+							type: 'ArrAy',
 							items: {
 								type: 'string'
 							},
-							description: nls.localize('JsonSchema.commandArray', 'The shell command to be executed. Array items will be joined using a space character')
+							description: nls.locAlize('JsonSchemA.commAndArrAy', 'The shell commAnd to be executed. ArrAy items will be joined using A spAce chArActer')
 						}
 					],
-					description: nls.localize('JsonSchema.command.quotedString.value', 'The actual command value')
+					description: nls.locAlize('JsonSchemA.commAnd.quotedString.vAlue', 'The ActuAl commAnd vAlue')
 				},
 				quoting: {
 					type: 'string',
-					enum: ['escape', 'strong', 'weak'],
+					enum: ['escApe', 'strong', 'weAk'],
 					enumDescriptions: [
-						nls.localize('JsonSchema.tasks.quoting.escape', 'Escapes characters using the shell\'s escape character (e.g. ` under PowerShell and \\ under bash).'),
-						nls.localize('JsonSchema.tasks.quoting.strong', 'Quotes the argument using the shell\'s strong quote character (e.g. \' under PowerShell and bash).'),
-						nls.localize('JsonSchema.tasks.quoting.weak', 'Quotes the argument using the shell\'s weak quote character (e.g. " under PowerShell and bash).'),
+						nls.locAlize('JsonSchemA.tAsks.quoting.escApe', 'EscApes chArActers using the shell\'s escApe chArActer (e.g. ` under PowerShell And \\ under bAsh).'),
+						nls.locAlize('JsonSchemA.tAsks.quoting.strong', 'Quotes the Argument using the shell\'s strong quote chArActer (e.g. \' under PowerShell And bAsh).'),
+						nls.locAlize('JsonSchemA.tAsks.quoting.weAk', 'Quotes the Argument using the shell\'s weAk quote chArActer (e.g. " under PowerShell And bAsh).'),
 					],
-					default: 'strong',
-					description: nls.localize('JsonSchema.command.quotesString.quote', 'How the command value should be quoted.')
+					defAult: 'strong',
+					description: nls.locAlize('JsonSchemA.commAnd.quotesString.quote', 'How the commAnd vAlue should be quoted.')
 				}
 			}
 
 		}
 	],
-	description: nls.localize('JsonSchema.command', 'The command to be executed. Can be an external program or a shell command.')
+	description: nls.locAlize('JsonSchemA.commAnd', 'The commAnd to be executed. CAn be An externAl progrAm or A shell commAnd.')
 };
 
-const args: IJSONSchema = {
-	type: 'array',
+const Args: IJSONSchemA = {
+	type: 'ArrAy',
 	items: {
 		oneOf: [
 			{
@@ -272,317 +272,317 @@ const args: IJSONSchema = {
 			},
 			{
 				type: 'object',
-				required: ['value', 'quoting'],
+				required: ['vAlue', 'quoting'],
 				properties: {
-					value: {
+					vAlue: {
 						type: 'string',
-						description: nls.localize('JsonSchema.args.quotedString.value', 'The actual argument value')
+						description: nls.locAlize('JsonSchemA.Args.quotedString.vAlue', 'The ActuAl Argument vAlue')
 					},
 					quoting: {
 						type: 'string',
-						enum: ['escape', 'strong', 'weak'],
+						enum: ['escApe', 'strong', 'weAk'],
 						enumDescriptions: [
-							nls.localize('JsonSchema.tasks.quoting.escape', 'Escapes characters using the shell\'s escape character (e.g. ` under PowerShell and \\ under bash).'),
-							nls.localize('JsonSchema.tasks.quoting.strong', 'Quotes the argument using the shell\'s strong quote character (e.g. \' under PowerShell and bash).'),
-							nls.localize('JsonSchema.tasks.quoting.weak', 'Quotes the argument using the shell\'s weak quote character (e.g. " under PowerShell and bash).'),
+							nls.locAlize('JsonSchemA.tAsks.quoting.escApe', 'EscApes chArActers using the shell\'s escApe chArActer (e.g. ` under PowerShell And \\ under bAsh).'),
+							nls.locAlize('JsonSchemA.tAsks.quoting.strong', 'Quotes the Argument using the shell\'s strong quote chArActer (e.g. \' under PowerShell And bAsh).'),
+							nls.locAlize('JsonSchemA.tAsks.quoting.weAk', 'Quotes the Argument using the shell\'s weAk quote chArActer (e.g. " under PowerShell And bAsh).'),
 						],
-						default: 'strong',
-						description: nls.localize('JsonSchema.args.quotesString.quote', 'How the argument value should be quoted.')
+						defAult: 'strong',
+						description: nls.locAlize('JsonSchemA.Args.quotesString.quote', 'How the Argument vAlue should be quoted.')
 					}
 				}
 
 			}
 		]
 	},
-	description: nls.localize('JsonSchema.tasks.args', 'Arguments passed to the command when this task is invoked.')
+	description: nls.locAlize('JsonSchemA.tAsks.Args', 'Arguments pAssed to the commAnd when this tAsk is invoked.')
 };
 
-const label: IJSONSchema = {
+const lAbel: IJSONSchemA = {
 	type: 'string',
-	description: nls.localize('JsonSchema.tasks.label', "The task's user interface label")
+	description: nls.locAlize('JsonSchemA.tAsks.lAbel', "The tAsk's user interfAce lAbel")
 };
 
-const version: IJSONSchema = {
+const version: IJSONSchemA = {
 	type: 'string',
 	enum: ['2.0.0'],
-	description: nls.localize('JsonSchema.version', 'The config\'s version number.')
+	description: nls.locAlize('JsonSchemA.version', 'The config\'s version number.')
 };
 
-const identifier: IJSONSchema = {
+const identifier: IJSONSchemA = {
 	type: 'string',
-	description: nls.localize('JsonSchema.tasks.identifier', 'A user defined identifier to reference the task in launch.json or a dependsOn clause.'),
-	deprecationMessage: nls.localize('JsonSchema.tasks.identifier.deprecated', 'User defined identifiers are deprecated. For custom task use the name as a reference and for tasks provided by extensions use their defined task identifier.')
+	description: nls.locAlize('JsonSchemA.tAsks.identifier', 'A user defined identifier to reference the tAsk in lAunch.json or A dependsOn clAuse.'),
+	deprecAtionMessAge: nls.locAlize('JsonSchemA.tAsks.identifier.deprecAted', 'User defined identifiers Are deprecAted. For custom tAsk use the nAme As A reference And for tAsks provided by extensions use their defined tAsk identifier.')
 };
 
-const runOptions: IJSONSchema = {
+const runOptions: IJSONSchemA = {
 	type: 'object',
-	additionalProperties: false,
+	AdditionAlProperties: fAlse,
 	properties: {
-		reevaluateOnRerun: {
-			type: 'boolean',
-			description: nls.localize('JsonSchema.tasks.reevaluateOnRerun', 'Whether to reevaluate task variables on rerun.'),
-			default: true
+		reevAluAteOnRerun: {
+			type: 'booleAn',
+			description: nls.locAlize('JsonSchemA.tAsks.reevAluAteOnRerun', 'Whether to reevAluAte tAsk vAriAbles on rerun.'),
+			defAult: true
 		},
 		runOn: {
 			type: 'string',
-			enum: ['default', 'folderOpen'],
-			description: nls.localize('JsonSchema.tasks.runOn', 'Configures when the task should be run. If set to folderOpen, then the task will be run automatically when the folder is opened.'),
-			default: 'default'
+			enum: ['defAult', 'folderOpen'],
+			description: nls.locAlize('JsonSchemA.tAsks.runOn', 'Configures when the tAsk should be run. If set to folderOpen, then the tAsk will be run AutomAticAlly when the folder is opened.'),
+			defAult: 'defAult'
 		},
-		instanceLimit: {
+		instAnceLimit: {
 			type: 'number',
-			description: nls.localize('JsonSchema.tasks.instanceLimit', 'The number of instances of the task that are allowed to run simultaneously.'),
-			default: 1
+			description: nls.locAlize('JsonSchemA.tAsks.instAnceLimit', 'The number of instAnces of the tAsk thAt Are Allowed to run simultAneously.'),
+			defAult: 1
 		},
 	},
-	description: nls.localize('JsonSchema.tasks.runOptions', 'The task\'s run related options')
+	description: nls.locAlize('JsonSchemA.tAsks.runOptions', 'The tAsk\'s run relAted options')
 };
 
-const commonSchemaDefinitions = commonSchema.definitions!;
-const options: IJSONSchema = Objects.deepClone(commonSchemaDefinitions.options);
+const commonSchemADefinitions = commonSchemA.definitions!;
+const options: IJSONSchemA = Objects.deepClone(commonSchemADefinitions.options);
 const optionsProperties = options.properties!;
-optionsProperties.shell = Objects.deepClone(commonSchemaDefinitions.shellConfiguration);
+optionsProperties.shell = Objects.deepClone(commonSchemADefinitions.shellConfigurAtion);
 
-let taskConfiguration: IJSONSchema = {
+let tAskConfigurAtion: IJSONSchemA = {
 	type: 'object',
-	additionalProperties: false,
+	AdditionAlProperties: fAlse,
 	properties: {
-		label: {
+		lAbel: {
 			type: 'string',
-			description: nls.localize('JsonSchema.tasks.taskLabel', "The task's label")
+			description: nls.locAlize('JsonSchemA.tAsks.tAskLAbel', "The tAsk's lAbel")
 		},
-		taskName: {
+		tAskNAme: {
 			type: 'string',
-			description: nls.localize('JsonSchema.tasks.taskName', 'The task\'s name'),
-			deprecationMessage: nls.localize('JsonSchema.tasks.taskName.deprecated', 'The task\'s name property is deprecated. Use the label property instead.')
+			description: nls.locAlize('JsonSchemA.tAsks.tAskNAme', 'The tAsk\'s nAme'),
+			deprecAtionMessAge: nls.locAlize('JsonSchemA.tAsks.tAskNAme.deprecAted', 'The tAsk\'s nAme property is deprecAted. Use the lAbel property insteAd.')
 		},
 		identifier: Objects.deepClone(identifier),
 		group: Objects.deepClone(group),
-		isBackground: {
-			type: 'boolean',
-			description: nls.localize('JsonSchema.tasks.background', 'Whether the executed task is kept alive and is running in the background.'),
-			default: true
+		isBAckground: {
+			type: 'booleAn',
+			description: nls.locAlize('JsonSchemA.tAsks.bAckground', 'Whether the executed tAsk is kept Alive And is running in the bAckground.'),
+			defAult: true
 		},
 		promptOnClose: {
-			type: 'boolean',
-			description: nls.localize('JsonSchema.tasks.promptOnClose', 'Whether the user is prompted when VS Code closes with a running task.'),
-			default: false
+			type: 'booleAn',
+			description: nls.locAlize('JsonSchemA.tAsks.promptOnClose', 'Whether the user is prompted when VS Code closes with A running tAsk.'),
+			defAult: fAlse
 		},
-		presentation: Objects.deepClone(presentation),
+		presentAtion: Objects.deepClone(presentAtion),
 		options: options,
-		problemMatcher: {
-			$ref: '#/definitions/problemMatcherType',
-			description: nls.localize('JsonSchema.tasks.matchers', 'The problem matcher(s) to use. Can either be a string or a problem matcher definition or an array of strings and problem matchers.')
+		problemMAtcher: {
+			$ref: '#/definitions/problemMAtcherType',
+			description: nls.locAlize('JsonSchemA.tAsks.mAtchers', 'The problem mAtcher(s) to use. CAn either be A string or A problem mAtcher definition or An ArrAy of strings And problem mAtchers.')
 		},
 		runOptions: Objects.deepClone(runOptions),
 		dependsOn: Objects.deepClone(dependsOn),
 		dependsOrder: Objects.deepClone(dependsOrder),
-		detail: Objects.deepClone(detail),
+		detAil: Objects.deepClone(detAil),
 	}
 };
 
-let taskDefinitions: IJSONSchema[] = [];
-TaskDefinitionRegistry.onReady().then(() => {
-	for (let taskType of TaskDefinitionRegistry.all()) {
-		let schema: IJSONSchema = Objects.deepClone(taskConfiguration);
-		const schemaProperties = schema.properties!;
-		// Since we do this after the schema is assigned we need to patch the refs.
-		schemaProperties.type = {
+let tAskDefinitions: IJSONSchemA[] = [];
+TAskDefinitionRegistry.onReAdy().then(() => {
+	for (let tAskType of TAskDefinitionRegistry.All()) {
+		let schemA: IJSONSchemA = Objects.deepClone(tAskConfigurAtion);
+		const schemAProperties = schemA.properties!;
+		// Since we do this After the schemA is Assigned we need to pAtch the refs.
+		schemAProperties.type = {
 			type: 'string',
-			description: nls.localize('JsonSchema.customizations.customizes.type', 'The task type to customize'),
-			enum: [taskType.taskType]
+			description: nls.locAlize('JsonSchemA.customizAtions.customizes.type', 'The tAsk type to customize'),
+			enum: [tAskType.tAskType]
 		};
-		if (taskType.required) {
-			schema.required = taskType.required.slice();
+		if (tAskType.required) {
+			schemA.required = tAskType.required.slice();
 		} else {
-			schema.required = [];
+			schemA.required = [];
 		}
-		// Customized tasks require that the task type be set.
-		schema.required.push('type');
-		if (taskType.properties) {
-			for (let key of Object.keys(taskType.properties)) {
-				let property = taskType.properties[key];
-				schemaProperties[key] = Objects.deepClone(property);
+		// Customized tAsks require thAt the tAsk type be set.
+		schemA.required.push('type');
+		if (tAskType.properties) {
+			for (let key of Object.keys(tAskType.properties)) {
+				let property = tAskType.properties[key];
+				schemAProperties[key] = Objects.deepClone(property);
 			}
 		}
-		fixReferences(schema);
-		taskDefinitions.push(schema);
+		fixReferences(schemA);
+		tAskDefinitions.push(schemA);
 	}
 });
 
-let customize = Objects.deepClone(taskConfiguration);
+let customize = Objects.deepClone(tAskConfigurAtion);
 customize.properties!.customize = {
 	type: 'string',
-	deprecationMessage: nls.localize('JsonSchema.tasks.customize.deprecated', 'The customize property is deprecated. See the 1.14 release notes on how to migrate to the new task customization approach')
+	deprecAtionMessAge: nls.locAlize('JsonSchemA.tAsks.customize.deprecAted', 'The customize property is deprecAted. See the 1.14 releAse notes on how to migrAte to the new tAsk customizAtion ApproAch')
 };
 if (!customize.required) {
 	customize.required = [];
 }
 customize.required.push('customize');
-taskDefinitions.push(customize);
+tAskDefinitions.push(customize);
 
-let definitions = Objects.deepClone(commonSchemaDefinitions);
-let taskDescription: IJSONSchema = definitions.taskDescription;
-taskDescription.required = ['label'];
-const taskDescriptionProperties = taskDescription.properties!;
-taskDescriptionProperties.label = Objects.deepClone(label);
-taskDescriptionProperties.command = Objects.deepClone(command);
-taskDescriptionProperties.args = Objects.deepClone(args);
-taskDescriptionProperties.isShellCommand = Objects.deepClone(shellCommand);
-taskDescriptionProperties.dependsOn = dependsOn;
-taskDescriptionProperties.dependsOrder = dependsOrder;
-taskDescriptionProperties.identifier = Objects.deepClone(identifier);
-taskDescriptionProperties.type = Objects.deepClone(taskType);
-taskDescriptionProperties.presentation = Objects.deepClone(presentation);
-taskDescriptionProperties.terminal = terminal;
-taskDescriptionProperties.group = Objects.deepClone(group);
-taskDescriptionProperties.runOptions = Objects.deepClone(runOptions);
-taskDescriptionProperties.detail = detail;
-taskDescriptionProperties.taskName.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.taskName.deprecated',
-	'The task\'s name property is deprecated. Use the label property instead.'
+let definitions = Objects.deepClone(commonSchemADefinitions);
+let tAskDescription: IJSONSchemA = definitions.tAskDescription;
+tAskDescription.required = ['lAbel'];
+const tAskDescriptionProperties = tAskDescription.properties!;
+tAskDescriptionProperties.lAbel = Objects.deepClone(lAbel);
+tAskDescriptionProperties.commAnd = Objects.deepClone(commAnd);
+tAskDescriptionProperties.Args = Objects.deepClone(Args);
+tAskDescriptionProperties.isShellCommAnd = Objects.deepClone(shellCommAnd);
+tAskDescriptionProperties.dependsOn = dependsOn;
+tAskDescriptionProperties.dependsOrder = dependsOrder;
+tAskDescriptionProperties.identifier = Objects.deepClone(identifier);
+tAskDescriptionProperties.type = Objects.deepClone(tAskType);
+tAskDescriptionProperties.presentAtion = Objects.deepClone(presentAtion);
+tAskDescriptionProperties.terminAl = terminAl;
+tAskDescriptionProperties.group = Objects.deepClone(group);
+tAskDescriptionProperties.runOptions = Objects.deepClone(runOptions);
+tAskDescriptionProperties.detAil = detAil;
+tAskDescriptionProperties.tAskNAme.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.tAskNAme.deprecAted',
+	'The tAsk\'s nAme property is deprecAted. Use the lAbel property insteAd.'
 );
-taskDescription.default = {
-	label: 'My Task',
+tAskDescription.defAult = {
+	lAbel: 'My TAsk',
 	type: 'shell',
-	command: 'echo Hello',
-	problemMatcher: []
+	commAnd: 'echo Hello',
+	problemMAtcher: []
 };
-definitions.showOutputType.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.showOutput.deprecated',
-	'The property showOutput is deprecated. Use the reveal property inside the presentation property instead. See also the 1.14 release notes.'
+definitions.showOutputType.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.showOutput.deprecAted',
+	'The property showOutput is deprecAted. Use the reveAl property inside the presentAtion property insteAd. See Also the 1.14 releAse notes.'
 );
-taskDescriptionProperties.echoCommand.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.echoCommand.deprecated',
-	'The property echoCommand is deprecated. Use the echo property inside the presentation property instead. See also the 1.14 release notes.'
+tAskDescriptionProperties.echoCommAnd.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.echoCommAnd.deprecAted',
+	'The property echoCommAnd is deprecAted. Use the echo property inside the presentAtion property insteAd. See Also the 1.14 releAse notes.'
 );
-taskDescriptionProperties.suppressTaskName.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.suppressTaskName.deprecated',
-	'The property suppressTaskName is deprecated. Inline the command with its arguments into the task instead. See also the 1.14 release notes.'
+tAskDescriptionProperties.suppressTAskNAme.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.suppressTAskNAme.deprecAted',
+	'The property suppressTAskNAme is deprecAted. Inline the commAnd with its Arguments into the tAsk insteAd. See Also the 1.14 releAse notes.'
 );
-taskDescriptionProperties.isBuildCommand.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.isBuildCommand.deprecated',
-	'The property isBuildCommand is deprecated. Use the group property instead. See also the 1.14 release notes.'
+tAskDescriptionProperties.isBuildCommAnd.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.isBuildCommAnd.deprecAted',
+	'The property isBuildCommAnd is deprecAted. Use the group property insteAd. See Also the 1.14 releAse notes.'
 );
-taskDescriptionProperties.isTestCommand.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.isTestCommand.deprecated',
-	'The property isTestCommand is deprecated. Use the group property instead. See also the 1.14 release notes.'
+tAskDescriptionProperties.isTestCommAnd.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.isTestCommAnd.deprecAted',
+	'The property isTestCommAnd is deprecAted. Use the group property insteAd. See Also the 1.14 releAse notes.'
 );
 
-// Process tasks are almost identical schema-wise to shell tasks, but they are required to have a command
-const processTask = Objects.deepClone(taskDescription);
-processTask.properties!.type = {
+// Process tAsks Are Almost identicAl schemA-wise to shell tAsks, but they Are required to hAve A commAnd
+const processTAsk = Objects.deepClone(tAskDescription);
+processTAsk.properties!.type = {
 	type: 'string',
 	enum: ['process'],
-	default: 'process',
-	description: nls.localize('JsonSchema.tasks.type', 'Defines whether the task is run as a process or as a command inside a shell.')
+	defAult: 'process',
+	description: nls.locAlize('JsonSchemA.tAsks.type', 'Defines whether the tAsk is run As A process or As A commAnd inside A shell.')
 };
-processTask.required!.push('command');
-processTask.required!.push('type');
+processTAsk.required!.push('commAnd');
+processTAsk.required!.push('type');
 
-taskDefinitions.push(processTask);
+tAskDefinitions.push(processTAsk);
 
-taskDefinitions.push({
-	$ref: '#/definitions/taskDescription'
-} as IJSONSchema);
+tAskDefinitions.push({
+	$ref: '#/definitions/tAskDescription'
+} As IJSONSchemA);
 
-const definitionsTaskRunnerConfigurationProperties = definitions.taskRunnerConfiguration.properties!;
-let tasks = definitionsTaskRunnerConfigurationProperties.tasks;
-tasks.items = {
-	oneOf: taskDefinitions
+const definitionsTAskRunnerConfigurAtionProperties = definitions.tAskRunnerConfigurAtion.properties!;
+let tAsks = definitionsTAskRunnerConfigurAtionProperties.tAsks;
+tAsks.items = {
+	oneOf: tAskDefinitions
 };
 
-definitionsTaskRunnerConfigurationProperties.inputs = inputsSchema.definitions!.inputs;
+definitionsTAskRunnerConfigurAtionProperties.inputs = inputsSchemA.definitions!.inputs;
 
-definitions.commandConfiguration.properties!.isShellCommand = Objects.deepClone(shellCommand);
-definitions.commandConfiguration.properties!.args = Objects.deepClone(args);
+definitions.commAndConfigurAtion.properties!.isShellCommAnd = Objects.deepClone(shellCommAnd);
+definitions.commAndConfigurAtion.properties!.Args = Objects.deepClone(Args);
 definitions.options.properties!.shell = {
-	$ref: '#/definitions/shellConfiguration'
+	$ref: '#/definitions/shellConfigurAtion'
 };
 
-definitionsTaskRunnerConfigurationProperties.isShellCommand = Objects.deepClone(shellCommand);
-definitionsTaskRunnerConfigurationProperties.type = Objects.deepClone(taskType);
-definitionsTaskRunnerConfigurationProperties.group = Objects.deepClone(group);
-definitionsTaskRunnerConfigurationProperties.presentation = Objects.deepClone(presentation);
-definitionsTaskRunnerConfigurationProperties.suppressTaskName.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.suppressTaskName.deprecated',
-	'The property suppressTaskName is deprecated. Inline the command with its arguments into the task instead. See also the 1.14 release notes.'
+definitionsTAskRunnerConfigurAtionProperties.isShellCommAnd = Objects.deepClone(shellCommAnd);
+definitionsTAskRunnerConfigurAtionProperties.type = Objects.deepClone(tAskType);
+definitionsTAskRunnerConfigurAtionProperties.group = Objects.deepClone(group);
+definitionsTAskRunnerConfigurAtionProperties.presentAtion = Objects.deepClone(presentAtion);
+definitionsTAskRunnerConfigurAtionProperties.suppressTAskNAme.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.suppressTAskNAme.deprecAted',
+	'The property suppressTAskNAme is deprecAted. Inline the commAnd with its Arguments into the tAsk insteAd. See Also the 1.14 releAse notes.'
 );
-definitionsTaskRunnerConfigurationProperties.taskSelector.deprecationMessage = nls.localize(
-	'JsonSchema.tasks.taskSelector.deprecated',
-	'The property taskSelector is deprecated. Inline the command with its arguments into the task instead. See also the 1.14 release notes.'
+definitionsTAskRunnerConfigurAtionProperties.tAskSelector.deprecAtionMessAge = nls.locAlize(
+	'JsonSchemA.tAsks.tAskSelector.deprecAted',
+	'The property tAskSelector is deprecAted. Inline the commAnd with its Arguments into the tAsk insteAd. See Also the 1.14 releAse notes.'
 );
 
-let osSpecificTaskRunnerConfiguration = Objects.deepClone(definitions.taskRunnerConfiguration);
-delete osSpecificTaskRunnerConfiguration.properties!.tasks;
-osSpecificTaskRunnerConfiguration.additionalProperties = false;
-definitions.osSpecificTaskRunnerConfiguration = osSpecificTaskRunnerConfiguration;
-definitionsTaskRunnerConfigurationProperties.version = Objects.deepClone(version);
+let osSpecificTAskRunnerConfigurAtion = Objects.deepClone(definitions.tAskRunnerConfigurAtion);
+delete osSpecificTAskRunnerConfigurAtion.properties!.tAsks;
+osSpecificTAskRunnerConfigurAtion.AdditionAlProperties = fAlse;
+definitions.osSpecificTAskRunnerConfigurAtion = osSpecificTAskRunnerConfigurAtion;
+definitionsTAskRunnerConfigurAtionProperties.version = Objects.deepClone(version);
 
-const schema: IJSONSchema = {
+const schemA: IJSONSchemA = {
 	oneOf: [
 		{
-			'allOf': [
+			'AllOf': [
 				{
 					type: 'object',
 					required: ['version'],
 					properties: {
 						version: Objects.deepClone(version),
 						windows: {
-							'$ref': '#/definitions/osSpecificTaskRunnerConfiguration',
-							'description': nls.localize('JsonSchema.windows', 'Windows specific command configuration')
+							'$ref': '#/definitions/osSpecificTAskRunnerConfigurAtion',
+							'description': nls.locAlize('JsonSchemA.windows', 'Windows specific commAnd configurAtion')
 						},
 						osx: {
-							'$ref': '#/definitions/osSpecificTaskRunnerConfiguration',
-							'description': nls.localize('JsonSchema.mac', 'Mac specific command configuration')
+							'$ref': '#/definitions/osSpecificTAskRunnerConfigurAtion',
+							'description': nls.locAlize('JsonSchemA.mAc', 'MAc specific commAnd configurAtion')
 						},
 						linux: {
-							'$ref': '#/definitions/osSpecificTaskRunnerConfiguration',
-							'description': nls.localize('JsonSchema.linux', 'Linux specific command configuration')
+							'$ref': '#/definitions/osSpecificTAskRunnerConfigurAtion',
+							'description': nls.locAlize('JsonSchemA.linux', 'Linux specific commAnd configurAtion')
 						}
 					}
 				},
 				{
-					$ref: '#/definitions/taskRunnerConfiguration'
+					$ref: '#/definitions/tAskRunnerConfigurAtion'
 				}
 			]
 		}
 	]
 };
 
-schema.definitions = definitions;
+schemA.definitions = definitions;
 
-function deprecatedVariableMessage(schemaMap: IJSONSchemaMap, property: string) {
-	const mapAtProperty = schemaMap[property].properties!;
-	if (mapAtProperty) {
-		Object.keys(mapAtProperty).forEach(name => {
-			deprecatedVariableMessage(mapAtProperty, name);
+function deprecAtedVAriAbleMessAge(schemAMAp: IJSONSchemAMAp, property: string) {
+	const mApAtProperty = schemAMAp[property].properties!;
+	if (mApAtProperty) {
+		Object.keys(mApAtProperty).forEAch(nAme => {
+			deprecAtedVAriAbleMessAge(mApAtProperty, nAme);
 		});
 	} else {
-		ConfigurationResolverUtils.applyDeprecatedVariableMessage(schemaMap[property]);
+		ConfigurAtionResolverUtils.ApplyDeprecAtedVAriAbleMessAge(schemAMAp[property]);
 	}
 }
 
-Object.getOwnPropertyNames(definitions).forEach(key => {
+Object.getOwnPropertyNAmes(definitions).forEAch(key => {
 	let newKey = key + '2';
 	definitions[newKey] = definitions[key];
 	delete definitions[key];
-	deprecatedVariableMessage(definitions, newKey);
+	deprecAtedVAriAbleMessAge(definitions, newKey);
 });
-fixReferences(schema);
+fixReferences(schemA);
 
-export function updateProblemMatchers() {
+export function updAteProblemMAtchers() {
 	try {
-		let matcherIds = ProblemMatcherRegistry.keys().map(key => '$' + key);
-		definitions.problemMatcherType2.oneOf![0].enum = matcherIds;
-		(definitions.problemMatcherType2.oneOf![2].items as IJSONSchema).anyOf![0].enum = matcherIds;
-	} catch (err) {
-		console.log('Installing problem matcher ids failed');
+		let mAtcherIds = ProblemMAtcherRegistry.keys().mAp(key => '$' + key);
+		definitions.problemMAtcherType2.oneOf![0].enum = mAtcherIds;
+		(definitions.problemMAtcherType2.oneOf![2].items As IJSONSchemA).AnyOf![0].enum = mAtcherIds;
+	} cAtch (err) {
+		console.log('InstAlling problem mAtcher ids fAiled');
 	}
 }
 
-ProblemMatcherRegistry.onReady().then(() => {
-	updateProblemMatchers();
+ProblemMAtcherRegistry.onReAdy().then(() => {
+	updAteProblemMAtchers();
 });
 
-export default schema;
+export defAult schemA;

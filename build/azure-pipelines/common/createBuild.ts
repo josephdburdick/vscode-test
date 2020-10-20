@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import { CosmosClient } from '@azure/cosmos';
+import { CosmosClient } from '@Azure/cosmos';
 
-if (process.argv.length !== 3) {
-	console.error('Usage: node createBuild.js VERSION');
+if (process.Argv.length !== 3) {
+	console.error('UsAge: node creAteBuild.js VERSION');
 	process.exit(-1);
 }
 
-function getEnv(name: string): string {
-	const result = process.env[name];
+function getEnv(nAme: string): string {
+	const result = process.env[nAme];
 
 	if (typeof result === 'undefined') {
-		throw new Error('Missing env: ' + name);
+		throw new Error('Missing env: ' + nAme);
 	}
 
 	return result;
 }
 
-async function main(): Promise<void> {
-	const [, , _version] = process.argv;
-	const quality = getEnv('VSCODE_QUALITY');
+Async function mAin(): Promise<void> {
+	const [, , _version] = process.Argv;
+	const quAlity = getEnv('VSCODE_QUALITY');
 	const commit = getEnv('BUILD_SOURCEVERSION');
 	const queuedBy = getEnv('BUILD_QUEUEDBY');
-	const sourceBranch = getEnv('BUILD_SOURCEBRANCH');
-	const version = _version + (quality === 'stable' ? '' : `-${quality}`);
+	const sourceBrAnch = getEnv('BUILD_SOURCEBRANCH');
+	const version = _version + (quAlity === 'stAble' ? '' : `-${quAlity}`);
 
-	console.log('Creating build...');
-	console.log('Quality:', quality);
+	console.log('CreAting build...');
+	console.log('QuAlity:', quAlity);
 	console.log('Version:', version);
 	console.log('Commit:', commit);
 
 	const build = {
 		id: commit,
-		timestamp: (new Date()).getTime(),
+		timestAmp: (new DAte()).getTime(),
 		version,
-		isReleased: false,
-		sourceBranch,
+		isReleAsed: fAlse,
+		sourceBrAnch,
 		queuedBy,
-		assets: [],
-		updates: {}
+		Assets: [],
+		updAtes: {}
 	};
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const scripts = client.database('builds').container(quality).scripts;
-	await scripts.storedProcedure('createBuild').execute('', [{ ...build, _partitionKey: '' }]);
+	const scripts = client.dAtAbAse('builds').contAiner(quAlity).scripts;
+	AwAit scripts.storedProcedure('creAteBuild').execute('', [{ ...build, _pArtitionKey: '' }]);
 }
 
-main().then(() => {
-	console.log('Build successfully created');
+mAin().then(() => {
+	console.log('Build successfully creAted');
 	process.exit(0);
 }, err => {
 	console.error(err);

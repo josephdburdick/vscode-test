@@ -1,118 +1,118 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Increase max listeners for event emitters
-require('events').EventEmitter.defaultMaxListeners = 100;
+// IncreAse mAx listeners for event emitters
+require('events').EventEmitter.defAultMAxListeners = 100;
 
 const gulp = require('gulp');
-const path = require('path');
+const pAth = require('pAth');
 const nodeUtil = require('util');
 const tsb = require('gulp-tsb');
-const es = require('event-stream');
+const es = require('event-streAm');
 const filter = require('gulp-filter');
-const webpack = require('webpack');
+const webpAck = require('webpAck');
 const util = require('./lib/util');
-const task = require('./lib/task');
-const watcher = require('./lib/watch');
-const createReporter = require('./lib/reporter').createReporter;
+const tAsk = require('./lib/tAsk');
+const wAtcher = require('./lib/wAtch');
+const creAteReporter = require('./lib/reporter').creAteReporter;
 const glob = require('glob');
-const sourcemaps = require('gulp-sourcemaps');
+const sourcemAps = require('gulp-sourcemAps');
 const nlsDev = require('vscode-nls-dev');
-const root = path.dirname(__dirname);
+const root = pAth.dirnAme(__dirnAme);
 const commit = util.getVersion(root);
 const plumber = require('gulp-plumber');
-const fancyLog = require('fancy-log');
-const ansiColors = require('ansi-colors');
+const fAncyLog = require('fAncy-log');
+const AnsiColors = require('Ansi-colors');
 const ext = require('./lib/extensions');
 
-const extensionsPath = path.join(path.dirname(__dirname), 'extensions');
+const extensionsPAth = pAth.join(pAth.dirnAme(__dirnAme), 'extensions');
 
-const compilations = glob.sync('**/tsconfig.json', {
-	cwd: extensionsPath,
+const compilAtions = glob.sync('**/tsconfig.json', {
+	cwd: extensionsPAth,
 	ignore: ['**/out/**', '**/node_modules/**']
 });
 
-const getBaseUrl = out => `https://ticino.blob.core.windows.net/sourcemaps/${commit}/${out}`;
+const getBAseUrl = out => `https://ticino.blob.core.windows.net/sourcemAps/${commit}/${out}`;
 
-const tasks = compilations.map(function (tsconfigFile) {
-	const absolutePath = path.join(extensionsPath, tsconfigFile);
-	const relativeDirname = path.dirname(tsconfigFile);
+const tAsks = compilAtions.mAp(function (tsconfigFile) {
+	const AbsolutePAth = pAth.join(extensionsPAth, tsconfigFile);
+	const relAtiveDirnAme = pAth.dirnAme(tsconfigFile);
 
 	const overrideOptions = {};
-	overrideOptions.sourceMap = true;
+	overrideOptions.sourceMAp = true;
 
-	const name = relativeDirname.replace(/\//g, '-');
+	const nAme = relAtiveDirnAme.replAce(/\//g, '-');
 
-	const root = path.join('extensions', relativeDirname);
-	const srcBase = path.join(root, 'src');
-	const src = path.join(srcBase, '**');
-	const srcOpts = { cwd: path.dirname(__dirname), base: srcBase };
+	const root = pAth.join('extensions', relAtiveDirnAme);
+	const srcBAse = pAth.join(root, 'src');
+	const src = pAth.join(srcBAse, '**');
+	const srcOpts = { cwd: pAth.dirnAme(__dirnAme), bAse: srcBAse };
 
-	const out = path.join(root, 'out');
-	const baseUrl = getBaseUrl(out);
+	const out = pAth.join(root, 'out');
+	const bAseUrl = getBAseUrl(out);
 
-	let headerId, headerOut;
-	let index = relativeDirname.indexOf('/');
+	let heAderId, heAderOut;
+	let index = relAtiveDirnAme.indexOf('/');
 	if (index < 0) {
-		headerId = 'vscode.' + relativeDirname;
-		headerOut = 'out';
+		heAderId = 'vscode.' + relAtiveDirnAme;
+		heAderOut = 'out';
 	} else {
-		headerId = 'vscode.' + relativeDirname.substr(0, index);
-		headerOut = relativeDirname.substr(index + 1) + '/out';
+		heAderId = 'vscode.' + relAtiveDirnAme.substr(0, index);
+		heAderOut = relAtiveDirnAme.substr(index + 1) + '/out';
 	}
 
-	function createPipeline(build, emitError) {
-		const reporter = createReporter();
+	function creAtePipeline(build, emitError) {
+		const reporter = creAteReporter();
 
-		overrideOptions.inlineSources = Boolean(build);
-		overrideOptions.base = path.dirname(absolutePath);
+		overrideOptions.inlineSources = BooleAn(build);
+		overrideOptions.bAse = pAth.dirnAme(AbsolutePAth);
 
-		const compilation = tsb.create(absolutePath, overrideOptions, false, err => reporter(err.toString()));
+		const compilAtion = tsb.creAte(AbsolutePAth, overrideOptions, fAlse, err => reporter(err.toString()));
 
 		const pipeline = function () {
 			const input = es.through();
 			const tsFilter = filter(['**/*.ts', '!**/lib/lib*.d.ts', '!**/node_modules/**'], { restore: true });
 			const output = input
 				.pipe(plumber({
-					errorHandler: function (err) {
+					errorHAndler: function (err) {
 						if (err && !err.__reporter__) {
 							reporter(err);
 						}
 					}
 				}))
 				.pipe(tsFilter)
-				.pipe(util.loadSourcemaps())
-				.pipe(compilation())
-				.pipe(build ? nlsDev.rewriteLocalizeCalls() : es.through())
-				.pipe(build ? util.stripSourceMappingURL() : es.through())
-				.pipe(sourcemaps.write('.', {
-					sourceMappingURL: !build ? null : f => `${baseUrl}/${f.relative}.map`,
-					addComment: !!build,
+				.pipe(util.loAdSourcemAps())
+				.pipe(compilAtion())
+				.pipe(build ? nlsDev.rewriteLocAlizeCAlls() : es.through())
+				.pipe(build ? util.stripSourceMAppingURL() : es.through())
+				.pipe(sourcemAps.write('.', {
+					sourceMAppingURL: !build ? null : f => `${bAseUrl}/${f.relAtive}.mAp`,
+					AddComment: !!build,
 					includeContent: !!build,
 					sourceRoot: '../src'
 				}))
 				.pipe(tsFilter.restore)
-				.pipe(build ? nlsDev.bundleMetaDataFiles(headerId, headerOut) : es.through())
-				// Filter out *.nls.json file. We needed them only to bundle meta data file.
+				.pipe(build ? nlsDev.bundleMetADAtAFiles(heAderId, heAderOut) : es.through())
+				// Filter out *.nls.json file. We needed them only to bundle metA dAtA file.
 				.pipe(filter(['**', '!**/*.nls.json']))
 				.pipe(reporter.end(emitError));
 
 			return es.duplex(input, output);
 		};
 
-		// add src-stream for project files
+		// Add src-streAm for project files
 		pipeline.tsProjectSrc = () => {
-			return compilation.src(srcOpts);
+			return compilAtion.src(srcOpts);
 		};
 		return pipeline;
 	}
 
-	const cleanTask = task.define(`clean-extension-${name}`, util.rimraf(out));
+	const cleAnTAsk = tAsk.define(`cleAn-extension-${nAme}`, util.rimrAf(out));
 
-	const compileTask = task.define(`compile-extension:${name}`, task.series(cleanTask, () => {
-		const pipeline = createPipeline(false, true);
+	const compileTAsk = tAsk.define(`compile-extension:${nAme}`, tAsk.series(cleAnTAsk, () => {
+		const pipeline = creAtePipeline(fAlse, true);
 		const nonts = gulp.src(src, srcOpts).pipe(filter(['**', '!**/*.ts']));
 		const input = es.merge(nonts, pipeline.tsProjectSrc());
 
@@ -121,19 +121,19 @@ const tasks = compilations.map(function (tsconfigFile) {
 			.pipe(gulp.dest(out));
 	}));
 
-	const watchTask = task.define(`watch-extension:${name}`, task.series(cleanTask, () => {
-		const pipeline = createPipeline(false);
+	const wAtchTAsk = tAsk.define(`wAtch-extension:${nAme}`, tAsk.series(cleAnTAsk, () => {
+		const pipeline = creAtePipeline(fAlse);
 		const nonts = gulp.src(src, srcOpts).pipe(filter(['**', '!**/*.ts']));
 		const input = es.merge(nonts, pipeline.tsProjectSrc());
-		const watchInput = watcher(src, { ...srcOpts, ...{ readDelay: 200 } });
+		const wAtchInput = wAtcher(src, { ...srcOpts, ...{ reAdDelAy: 200 } });
 
-		return watchInput
-			.pipe(util.incremental(pipeline, input))
+		return wAtchInput
+			.pipe(util.incrementAl(pipeline, input))
 			.pipe(gulp.dest(out));
 	}));
 
-	const compileBuildTask = task.define(`compile-build-extension-${name}`, task.series(cleanTask, () => {
-		const pipeline = createPipeline(true, true);
+	const compileBuildTAsk = tAsk.define(`compile-build-extension-${nAme}`, tAsk.series(cleAnTAsk, () => {
+		const pipeline = creAtePipeline(true, true);
 		const nonts = gulp.src(src, srcOpts).pipe(filter(['**', '!**/*.ts']));
 		const input = es.merge(nonts, pipeline.tsProjectSrc());
 
@@ -142,102 +142,102 @@ const tasks = compilations.map(function (tsconfigFile) {
 			.pipe(gulp.dest(out));
 	}));
 
-	// Tasks
-	gulp.task(compileTask);
-	gulp.task(watchTask);
+	// TAsks
+	gulp.tAsk(compileTAsk);
+	gulp.tAsk(wAtchTAsk);
 
-	return { compileTask, watchTask, compileBuildTask };
+	return { compileTAsk, wAtchTAsk, compileBuildTAsk };
 });
 
-const compileExtensionsTask = task.define('compile-extensions', task.parallel(...tasks.map(t => t.compileTask)));
-gulp.task(compileExtensionsTask);
-exports.compileExtensionsTask = compileExtensionsTask;
+const compileExtensionsTAsk = tAsk.define('compile-extensions', tAsk.pArAllel(...tAsks.mAp(t => t.compileTAsk)));
+gulp.tAsk(compileExtensionsTAsk);
+exports.compileExtensionsTAsk = compileExtensionsTAsk;
 
-const watchExtensionsTask = task.define('watch-extensions', task.parallel(...tasks.map(t => t.watchTask)));
-gulp.task(watchExtensionsTask);
-exports.watchExtensionsTask = watchExtensionsTask;
+const wAtchExtensionsTAsk = tAsk.define('wAtch-extensions', tAsk.pArAllel(...tAsks.mAp(t => t.wAtchTAsk)));
+gulp.tAsk(wAtchExtensionsTAsk);
+exports.wAtchExtensionsTAsk = wAtchExtensionsTAsk;
 
-const compileExtensionsBuildLegacyTask = task.define('compile-extensions-build-legacy', task.parallel(...tasks.map(t => t.compileBuildTask)));
-gulp.task(compileExtensionsBuildLegacyTask);
+const compileExtensionsBuildLegAcyTAsk = tAsk.define('compile-extensions-build-legAcy', tAsk.pArAllel(...tAsks.mAp(t => t.compileBuildTAsk)));
+gulp.tAsk(compileExtensionsBuildLegAcyTAsk);
 
 // Azure Pipelines
 
-const cleanExtensionsBuildTask = task.define('clean-extensions-build', util.rimraf('.build/extensions'));
-const compileExtensionsBuildTask = task.define('compile-extensions-build', task.series(
-	cleanExtensionsBuildTask,
-	task.define('bundle-extensions-build', () => ext.packageLocalExtensionsStream(false).pipe(gulp.dest('.build'))),
-	task.define('bundle-marketplace-extensions-build', () => ext.packageMarketplaceExtensionsStream(false).pipe(gulp.dest('.build'))),
+const cleAnExtensionsBuildTAsk = tAsk.define('cleAn-extensions-build', util.rimrAf('.build/extensions'));
+const compileExtensionsBuildTAsk = tAsk.define('compile-extensions-build', tAsk.series(
+	cleAnExtensionsBuildTAsk,
+	tAsk.define('bundle-extensions-build', () => ext.pAckAgeLocAlExtensionsStreAm(fAlse).pipe(gulp.dest('.build'))),
+	tAsk.define('bundle-mArketplAce-extensions-build', () => ext.pAckAgeMArketplAceExtensionsStreAm(fAlse).pipe(gulp.dest('.build'))),
 ));
 
-gulp.task(compileExtensionsBuildTask);
-exports.compileExtensionsBuildTask = compileExtensionsBuildTask;
+gulp.tAsk(compileExtensionsBuildTAsk);
+exports.compileExtensionsBuildTAsk = compileExtensionsBuildTAsk;
 
-const compileWebExtensionsTask = task.define('compile-web', () => buildWebExtensions(false));
-gulp.task(compileWebExtensionsTask);
-exports.compileWebExtensionsTask = compileWebExtensionsTask;
+const compileWebExtensionsTAsk = tAsk.define('compile-web', () => buildWebExtensions(fAlse));
+gulp.tAsk(compileWebExtensionsTAsk);
+exports.compileWebExtensionsTAsk = compileWebExtensionsTAsk;
 
-const watchWebExtensionsTask = task.define('watch-web', () => buildWebExtensions(true));
-gulp.task(watchWebExtensionsTask);
-exports.watchWebExtensionsTask = watchWebExtensionsTask;
+const wAtchWebExtensionsTAsk = tAsk.define('wAtch-web', () => buildWebExtensions(true));
+gulp.tAsk(wAtchWebExtensionsTAsk);
+exports.wAtchWebExtensionsTAsk = wAtchWebExtensionsTAsk;
 
-async function buildWebExtensions(isWatch) {
+Async function buildWebExtensions(isWAtch) {
 
-	const webpackConfigLocations = await nodeUtil.promisify(glob)(
-		path.join(extensionsPath, '**', 'extension-browser.webpack.config.js'),
+	const webpAckConfigLocAtions = AwAit nodeUtil.promisify(glob)(
+		pAth.join(extensionsPAth, '**', 'extension-browser.webpAck.config.js'),
 		{ ignore: ['**/node_modules'] }
 	);
 
-	const webpackConfigs = [];
+	const webpAckConfigs = [];
 
-	for (const webpackConfigPath of webpackConfigLocations) {
-		const configOrFnOrArray = require(webpackConfigPath);
-		function addConfig(configOrFn) {
+	for (const webpAckConfigPAth of webpAckConfigLocAtions) {
+		const configOrFnOrArrAy = require(webpAckConfigPAth);
+		function AddConfig(configOrFn) {
 			if (typeof configOrFn === 'function') {
-				webpackConfigs.push(configOrFn({}, {}));
+				webpAckConfigs.push(configOrFn({}, {}));
 			} else {
-				webpackConfigs.push(configOrFn);
+				webpAckConfigs.push(configOrFn);
 			}
 		}
-		addConfig(configOrFnOrArray);
+		AddConfig(configOrFnOrArrAy);
 	}
-	function reporter(fullStats) {
-		if (Array.isArray(fullStats.children)) {
-			for (const stats of fullStats.children) {
-				const outputPath = stats.outputPath;
-				if (outputPath) {
-					const relativePath = path.relative(extensionsPath, outputPath).replace(/\\/g, '/');
-					const match = relativePath.match(/[^\/]+(\/server|\/client)?/);
-					fancyLog(`Finished ${ansiColors.green('packaging web extension')} ${ansiColors.cyan(match[0])} with ${stats.errors.length} errors.`);
+	function reporter(fullStAts) {
+		if (ArrAy.isArrAy(fullStAts.children)) {
+			for (const stAts of fullStAts.children) {
+				const outputPAth = stAts.outputPAth;
+				if (outputPAth) {
+					const relAtivePAth = pAth.relAtive(extensionsPAth, outputPAth).replAce(/\\/g, '/');
+					const mAtch = relAtivePAth.mAtch(/[^\/]+(\/server|\/client)?/);
+					fAncyLog(`Finished ${AnsiColors.green('pAckAging web extension')} ${AnsiColors.cyAn(mAtch[0])} with ${stAts.errors.length} errors.`);
 				}
-				if (Array.isArray(stats.errors)) {
-					stats.errors.forEach(error => {
-						fancyLog.error(error);
+				if (ArrAy.isArrAy(stAts.errors)) {
+					stAts.errors.forEAch(error => {
+						fAncyLog.error(error);
 					});
 				}
-				if (Array.isArray(stats.warnings)) {
-					stats.warnings.forEach(warning => {
-						fancyLog.warn(warning);
+				if (ArrAy.isArrAy(stAts.wArnings)) {
+					stAts.wArnings.forEAch(wArning => {
+						fAncyLog.wArn(wArning);
 					});
 				}
 			}
 		}
 	}
 	return new Promise((resolve, reject) => {
-		if (isWatch) {
-			webpack(webpackConfigs).watch({}, (err, stats) => {
+		if (isWAtch) {
+			webpAck(webpAckConfigs).wAtch({}, (err, stAts) => {
 				if (err) {
 					reject();
 				} else {
-					reporter(stats.toJson());
+					reporter(stAts.toJson());
 				}
 			});
 		} else {
-			webpack(webpackConfigs).run((err, stats) => {
+			webpAck(webpAckConfigs).run((err, stAts) => {
 				if (err) {
-					fancyLog.error(err);
+					fAncyLog.error(err);
 					reject();
 				} else {
-					reporter(stats.toJson());
+					reporter(stAts.toJson());
 					resolve();
 				}
 			});

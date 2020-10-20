@@ -1,39 +1,39 @@
 <html>
 
-<head>
-	<meta charset="utf-8">
+<heAd>
+	<metA chArset="utf-8">
 	<title>VSCode Tests</title>
-	<link href="../../../node_modules/mocha/mocha.css" rel="stylesheet" />
-</head>
+	<link href="../../../node_modules/mochA/mochA.css" rel="stylesheet" />
+</heAd>
 
 <body>
-	<div id="mocha"></div>
-	<script src="../../../node_modules/mocha/mocha.js"></script>
+	<div id="mochA"></div>
+	<script src="../../../node_modules/mochA/mochA.js"></script>
 
 	<script>
 
 		// !!! DO NOT CHANGE !!!
-		// Our unit tests may run in environments without
-		// display (e.g. from builds) and tests may by
-		// accident bring up native dialogs or even open
-		// windows. This we cannot allow as it may crash
+		// Our unit tests mAy run in environments without
+		// displAy (e.g. from builds) And tests mAy by
+		// Accident bring up nAtive diAlogs or even open
+		// windows. This we cAnnot Allow As it mAy crAsh
 		// the test run.
 		// !!! DO NOT CHANGE !!!
 		window.open = function () { throw new Error('window.open() is not supported in tests!'); };
-		window.alert = function () { throw new Error('window.alert() is not supported in tests!'); }
+		window.Alert = function () { throw new Error('window.Alert() is not supported in tests!'); }
 		window.confirm = function () { throw new Error('window.confirm() is not supported in tests!'); }
 
-		// Ignore uncaught cancelled promise errors
-		window.addEventListener('unhandledrejection', e => {
-			const name = e && e.reason && e.reason.name;
+		// Ignore uncAught cAncelled promise errors
+		window.AddEventListener('unhAndledrejection', e => {
+			const nAme = e && e.reAson && e.reAson.nAme;
 
-			if (name === 'Canceled') {
-				e.preventDefault();
-				e.stopPropagation();
+			if (nAme === 'CAnceled') {
+				e.preventDefAult();
+				e.stopPropAgAtion();
 			}
 		});
 
-		mocha.setup({
+		mochA.setup({
 			ui: 'tdd',
 			timeout: 5000
 		});

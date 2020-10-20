@@ -1,185 +1,185 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { getServiceMachineId } from 'vs/platform/serviceMachineId/common/serviceMachineId';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IUserDataSyncStoreService, IUserData, IUserDataSyncLogService, IUserDataManifest } from 'vs/platform/userDataSync/common/userDataSync';
-import { localize } from 'vs/nls';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { PlatformToString, isWeb, Platform, platform } from 'vs/base/common/platform';
-import { escapeRegExpCharacters } from 'vs/base/common/strings';
-import { Event, Emitter } from 'vs/base/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { getServiceMAchineId } from 'vs/plAtform/serviceMAchineId/common/serviceMAchineId';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IUserDAtASyncStoreService, IUserDAtA, IUserDAtASyncLogService, IUserDAtAMAnifest } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { locAlize } from 'vs/nls';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { PlAtformToString, isWeb, PlAtform, plAtform } from 'vs/bAse/common/plAtform';
+import { escApeRegExpChArActers } from 'vs/bAse/common/strings';
+import { Event, Emitter } from 'vs/bAse/common/event';
 
-interface IMachineData {
+interfAce IMAchineDAtA {
 	id: string;
-	name: string;
-	disabled?: boolean;
+	nAme: string;
+	disAbled?: booleAn;
 }
 
-interface IMachinesData {
+interfAce IMAchinesDAtA {
 	version: number;
-	machines: IMachineData[];
+	mAchines: IMAchineDAtA[];
 }
 
-export type IUserDataSyncMachine = Readonly<IMachineData> & { readonly isCurrent: boolean };
+export type IUserDAtASyncMAchine = ReAdonly<IMAchineDAtA> & { reAdonly isCurrent: booleAn };
 
-export const IUserDataSyncMachinesService = createDecorator<IUserDataSyncMachinesService>('IUserDataSyncMachinesService');
-export interface IUserDataSyncMachinesService {
-	_serviceBrand: any;
+export const IUserDAtASyncMAchinesService = creAteDecorAtor<IUserDAtASyncMAchinesService>('IUserDAtASyncMAchinesService');
+export interfAce IUserDAtASyncMAchinesService {
+	_serviceBrAnd: Any;
 
-	readonly onDidChange: Event<void>;
+	reAdonly onDidChAnge: Event<void>;
 
-	getMachines(manifest?: IUserDataManifest): Promise<IUserDataSyncMachine[]>;
+	getMAchines(mAnifest?: IUserDAtAMAnifest): Promise<IUserDAtASyncMAchine[]>;
 
-	addCurrentMachine(manifest?: IUserDataManifest): Promise<void>;
-	removeCurrentMachine(manifest?: IUserDataManifest): Promise<void>;
-	renameMachine(machineId: string, name: string): Promise<void>;
-	setEnablement(machineId: string, enabled: boolean): Promise<void>;
+	AddCurrentMAchine(mAnifest?: IUserDAtAMAnifest): Promise<void>;
+	removeCurrentMAchine(mAnifest?: IUserDAtAMAnifest): Promise<void>;
+	renAmeMAchine(mAchineId: string, nAme: string): Promise<void>;
+	setEnAblement(mAchineId: string, enAbled: booleAn): Promise<void>;
 }
 
-const currentMachineNameKey = 'sync.currentMachineName';
+const currentMAchineNAmeKey = 'sync.currentMAchineNAme';
 
-export class UserDataSyncMachinesService extends Disposable implements IUserDataSyncMachinesService {
+export clAss UserDAtASyncMAchinesService extends DisposAble implements IUserDAtASyncMAchinesService {
 
-	private static readonly VERSION = 1;
-	private static readonly RESOURCE = 'machines';
+	privAte stAtic reAdonly VERSION = 1;
+	privAte stAtic reAdonly RESOURCE = 'mAchines';
 
-	_serviceBrand: any;
+	_serviceBrAnd: Any;
 
-	private readonly _onDidChange = this._register(new Emitter<void>());
-	readonly onDidChange = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = this._register(new Emitter<void>());
+	reAdonly onDidChAnge = this._onDidChAnge.event;
 
-	private readonly currentMachineIdPromise: Promise<string>;
-	private userData: IUserData | null = null;
+	privAte reAdonly currentMAchineIdPromise: Promise<string>;
+	privAte userDAtA: IUserDAtA | null = null;
 
 	constructor(
 		@IEnvironmentService environmentService: IEnvironmentService,
 		@IFileService fileService: IFileService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IUserDataSyncStoreService private readonly userDataSyncStoreService: IUserDataSyncStoreService,
-		@IUserDataSyncLogService private readonly logService: IUserDataSyncLogService,
-		@IProductService private readonly productService: IProductService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IUserDAtASyncStoreService privAte reAdonly userDAtASyncStoreService: IUserDAtASyncStoreService,
+		@IUserDAtASyncLogService privAte reAdonly logService: IUserDAtASyncLogService,
+		@IProductService privAte reAdonly productService: IProductService,
 	) {
 		super();
-		this.currentMachineIdPromise = getServiceMachineId(environmentService, fileService, storageService);
+		this.currentMAchineIdPromise = getServiceMAchineId(environmentService, fileService, storAgeService);
 	}
 
-	async getMachines(manifest?: IUserDataManifest): Promise<IUserDataSyncMachine[]> {
-		const currentMachineId = await this.currentMachineIdPromise;
-		const machineData = await this.readMachinesData(manifest);
-		return machineData.machines.map<IUserDataSyncMachine>(machine => ({ ...machine, ...{ isCurrent: machine.id === currentMachineId } }));
+	Async getMAchines(mAnifest?: IUserDAtAMAnifest): Promise<IUserDAtASyncMAchine[]> {
+		const currentMAchineId = AwAit this.currentMAchineIdPromise;
+		const mAchineDAtA = AwAit this.reAdMAchinesDAtA(mAnifest);
+		return mAchineDAtA.mAchines.mAp<IUserDAtASyncMAchine>(mAchine => ({ ...mAchine, ...{ isCurrent: mAchine.id === currentMAchineId } }));
 	}
 
-	async addCurrentMachine(manifest?: IUserDataManifest): Promise<void> {
-		const currentMachineId = await this.currentMachineIdPromise;
-		const machineData = await this.readMachinesData(manifest);
-		if (!machineData.machines.some(({ id }) => id === currentMachineId)) {
-			machineData.machines.push({ id: currentMachineId, name: this.computeCurrentMachineName(machineData.machines) });
-			await this.writeMachinesData(machineData);
+	Async AddCurrentMAchine(mAnifest?: IUserDAtAMAnifest): Promise<void> {
+		const currentMAchineId = AwAit this.currentMAchineIdPromise;
+		const mAchineDAtA = AwAit this.reAdMAchinesDAtA(mAnifest);
+		if (!mAchineDAtA.mAchines.some(({ id }) => id === currentMAchineId)) {
+			mAchineDAtA.mAchines.push({ id: currentMAchineId, nAme: this.computeCurrentMAchineNAme(mAchineDAtA.mAchines) });
+			AwAit this.writeMAchinesDAtA(mAchineDAtA);
 		}
 	}
 
-	async removeCurrentMachine(manifest?: IUserDataManifest): Promise<void> {
-		const currentMachineId = await this.currentMachineIdPromise;
-		const machineData = await this.readMachinesData(manifest);
-		const updatedMachines = machineData.machines.filter(({ id }) => id !== currentMachineId);
-		if (updatedMachines.length !== machineData.machines.length) {
-			machineData.machines = updatedMachines;
-			await this.writeMachinesData(machineData);
+	Async removeCurrentMAchine(mAnifest?: IUserDAtAMAnifest): Promise<void> {
+		const currentMAchineId = AwAit this.currentMAchineIdPromise;
+		const mAchineDAtA = AwAit this.reAdMAchinesDAtA(mAnifest);
+		const updAtedMAchines = mAchineDAtA.mAchines.filter(({ id }) => id !== currentMAchineId);
+		if (updAtedMAchines.length !== mAchineDAtA.mAchines.length) {
+			mAchineDAtA.mAchines = updAtedMAchines;
+			AwAit this.writeMAchinesDAtA(mAchineDAtA);
 		}
 	}
 
-	async renameMachine(machineId: string, name: string, manifest?: IUserDataManifest): Promise<void> {
-		const currentMachineId = await this.currentMachineIdPromise;
-		const machineData = await this.readMachinesData(manifest);
-		const machine = machineData.machines.find(({ id }) => id === machineId);
-		if (machine) {
-			machine.name = name;
-			await this.writeMachinesData(machineData);
-			if (machineData.machines.some(({ id }) => id === currentMachineId)) {
-				this.storageService.store(currentMachineNameKey, name, StorageScope.GLOBAL);
+	Async renAmeMAchine(mAchineId: string, nAme: string, mAnifest?: IUserDAtAMAnifest): Promise<void> {
+		const currentMAchineId = AwAit this.currentMAchineIdPromise;
+		const mAchineDAtA = AwAit this.reAdMAchinesDAtA(mAnifest);
+		const mAchine = mAchineDAtA.mAchines.find(({ id }) => id === mAchineId);
+		if (mAchine) {
+			mAchine.nAme = nAme;
+			AwAit this.writeMAchinesDAtA(mAchineDAtA);
+			if (mAchineDAtA.mAchines.some(({ id }) => id === currentMAchineId)) {
+				this.storAgeService.store(currentMAchineNAmeKey, nAme, StorAgeScope.GLOBAL);
 			}
 		}
 	}
 
-	async setEnablement(machineId: string, enabled: boolean): Promise<void> {
-		const machineData = await this.readMachinesData();
-		const machine = machineData.machines.find(({ id }) => id === machineId);
-		if (machine) {
-			machine.disabled = enabled ? undefined : true;
-			await this.writeMachinesData(machineData);
+	Async setEnAblement(mAchineId: string, enAbled: booleAn): Promise<void> {
+		const mAchineDAtA = AwAit this.reAdMAchinesDAtA();
+		const mAchine = mAchineDAtA.mAchines.find(({ id }) => id === mAchineId);
+		if (mAchine) {
+			mAchine.disAbled = enAbled ? undefined : true;
+			AwAit this.writeMAchinesDAtA(mAchineDAtA);
 		}
 	}
 
-	private computeCurrentMachineName(machines: IMachineData[]): string {
-		const previousName = this.storageService.get(currentMachineNameKey, StorageScope.GLOBAL);
-		if (previousName) {
-			return previousName;
+	privAte computeCurrentMAchineNAme(mAchines: IMAchineDAtA[]): string {
+		const previousNAme = this.storAgeService.get(currentMAchineNAmeKey, StorAgeScope.GLOBAL);
+		if (previousNAme) {
+			return previousNAme;
 		}
 
-		const namePrefix = `${this.productService.nameLong} (${PlatformToString(isWeb ? Platform.Web : platform)})`;
-		const nameRegEx = new RegExp(`${escapeRegExpCharacters(namePrefix)}\\s#(\\d+)`);
-		let nameIndex = 0;
-		for (const machine of machines) {
-			const matches = nameRegEx.exec(machine.name);
-			const index = matches ? parseInt(matches[1]) : 0;
-			nameIndex = index > nameIndex ? index : nameIndex;
+		const nAmePrefix = `${this.productService.nAmeLong} (${PlAtformToString(isWeb ? PlAtform.Web : plAtform)})`;
+		const nAmeRegEx = new RegExp(`${escApeRegExpChArActers(nAmePrefix)}\\s#(\\d+)`);
+		let nAmeIndex = 0;
+		for (const mAchine of mAchines) {
+			const mAtches = nAmeRegEx.exec(mAchine.nAme);
+			const index = mAtches ? pArseInt(mAtches[1]) : 0;
+			nAmeIndex = index > nAmeIndex ? index : nAmeIndex;
 		}
-		return `${namePrefix} #${nameIndex + 1}`;
+		return `${nAmePrefix} #${nAmeIndex + 1}`;
 	}
 
-	private async readMachinesData(manifest?: IUserDataManifest): Promise<IMachinesData> {
-		this.userData = await this.readUserData(manifest);
-		const machinesData = this.parse(this.userData);
-		if (machinesData.version !== UserDataSyncMachinesService.VERSION) {
-			throw new Error(localize('error incompatible', "Cannot read machines data as the current version is incompatible. Please update {0} and try again.", this.productService.nameLong));
+	privAte Async reAdMAchinesDAtA(mAnifest?: IUserDAtAMAnifest): Promise<IMAchinesDAtA> {
+		this.userDAtA = AwAit this.reAdUserDAtA(mAnifest);
+		const mAchinesDAtA = this.pArse(this.userDAtA);
+		if (mAchinesDAtA.version !== UserDAtASyncMAchinesService.VERSION) {
+			throw new Error(locAlize('error incompAtible', "CAnnot reAd mAchines dAtA As the current version is incompAtible. PleAse updAte {0} And try AgAin.", this.productService.nAmeLong));
 		}
-		return machinesData;
+		return mAchinesDAtA;
 	}
 
-	private async writeMachinesData(machinesData: IMachinesData): Promise<void> {
-		const content = JSON.stringify(machinesData);
-		const ref = await this.userDataSyncStoreService.write(UserDataSyncMachinesService.RESOURCE, content, this.userData?.ref || null);
-		this.userData = { ref, content };
-		this._onDidChange.fire();
+	privAte Async writeMAchinesDAtA(mAchinesDAtA: IMAchinesDAtA): Promise<void> {
+		const content = JSON.stringify(mAchinesDAtA);
+		const ref = AwAit this.userDAtASyncStoreService.write(UserDAtASyncMAchinesService.RESOURCE, content, this.userDAtA?.ref || null);
+		this.userDAtA = { ref, content };
+		this._onDidChAnge.fire();
 	}
 
-	private async readUserData(manifest?: IUserDataManifest): Promise<IUserData> {
-		if (this.userData) {
+	privAte Async reAdUserDAtA(mAnifest?: IUserDAtAMAnifest): Promise<IUserDAtA> {
+		if (this.userDAtA) {
 
-			const latestRef = manifest && manifest.latest ? manifest.latest[UserDataSyncMachinesService.RESOURCE] : undefined;
+			const lAtestRef = mAnifest && mAnifest.lAtest ? mAnifest.lAtest[UserDAtASyncMAchinesService.RESOURCE] : undefined;
 
-			// Last time synced resource and latest resource on server are same
-			if (this.userData.ref === latestRef) {
-				return this.userData;
+			// LAst time synced resource And lAtest resource on server Are sAme
+			if (this.userDAtA.ref === lAtestRef) {
+				return this.userDAtA;
 			}
 
-			// There is no resource on server and last time it was synced with no resource
-			if (latestRef === undefined && this.userData.content === null) {
-				return this.userData;
+			// There is no resource on server And lAst time it wAs synced with no resource
+			if (lAtestRef === undefined && this.userDAtA.content === null) {
+				return this.userDAtA;
 			}
 		}
 
-		return this.userDataSyncStoreService.read(UserDataSyncMachinesService.RESOURCE, this.userData);
+		return this.userDAtASyncStoreService.reAd(UserDAtASyncMAchinesService.RESOURCE, this.userDAtA);
 	}
 
-	private parse(userData: IUserData): IMachinesData {
-		if (userData.content !== null) {
+	privAte pArse(userDAtA: IUserDAtA): IMAchinesDAtA {
+		if (userDAtA.content !== null) {
 			try {
-				return JSON.parse(userData.content);
-			} catch (e) {
+				return JSON.pArse(userDAtA.content);
+			} cAtch (e) {
 				this.logService.error(e);
 			}
 		}
 		return {
-			version: UserDataSyncMachinesService.VERSION,
-			machines: []
+			version: UserDAtASyncMAchinesService.VERSION,
+			mAchines: []
 		};
 	}
 }

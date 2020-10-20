@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { StorageKeysSyncRegistryChannelClient } from 'vs/platform/userDataSync/common/userDataSyncIpc';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { StorAgeKeysSyncRegistryChAnnelClient } from 'vs/plAtform/userDAtASync/common/userDAtASyncIpc';
 
-class StorageKeysSyncRegistryService extends StorageKeysSyncRegistryChannelClient implements IStorageKeysSyncRegistryService {
+clAss StorAgeKeysSyncRegistryService extends StorAgeKeysSyncRegistryChAnnelClient implements IStorAgeKeysSyncRegistryService {
 
 	constructor(
-		@IMainProcessService mainProcessService: IMainProcessService
+		@IMAinProcessService mAinProcessService: IMAinProcessService
 	) {
-		super(mainProcessService.getChannel('storageKeysSyncRegistryService'));
+		super(mAinProcessService.getChAnnel('storAgeKeysSyncRegistryService'));
 	}
 }
 
-registerSingleton(IStorageKeysSyncRegistryService, StorageKeysSyncRegistryService);
+registerSingleton(IStorAgeKeysSyncRegistryService, StorAgeKeysSyncRegistryService);

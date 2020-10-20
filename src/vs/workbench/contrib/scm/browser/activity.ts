@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { basename } from 'vs/base/common/resources';
-import { IDisposable, dispose, Disposable, DisposableStore, combinedDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
+import { locAlize } from 'vs/nls';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { IDisposAble, dispose, DisposAble, DisposAbleStore, combinedDisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
 import { VIEW_PANE_ID, ISCMService, ISCMRepository } from 'vs/workbench/contrib/scm/common/scm';
-import { IActivityService, NumberBadge } from 'vs/workbench/services/activity/common/activity';
+import { IActivityService, NumberBAdge } from 'vs/workbench/services/Activity/common/Activity';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IStatusbarService, StatusbarAlignment as MainThreadStatusBarAlignment } from 'vs/workbench/services/statusbar/common/statusbar';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IStAtusbArService, StAtusbArAlignment As MAinThreAdStAtusBArAlignment } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { EditorResourceAccessor } from 'vs/workbench/common/editor';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
@@ -25,48 +25,48 @@ function getCount(repository: ISCMRepository): number {
 	}
 }
 
-export class SCMStatusController implements IWorkbenchContribution {
+export clAss SCMStAtusController implements IWorkbenchContribution {
 
-	private statusBarDisposable: IDisposable = Disposable.None;
-	private focusDisposable: IDisposable = Disposable.None;
-	private focusedRepository: ISCMRepository | undefined = undefined;
-	private focusedProviderContextKey: IContextKey<string | undefined>;
-	private readonly badgeDisposable = new MutableDisposable<IDisposable>();
-	private disposables: IDisposable[] = [];
+	privAte stAtusBArDisposAble: IDisposAble = DisposAble.None;
+	privAte focusDisposAble: IDisposAble = DisposAble.None;
+	privAte focusedRepository: ISCMRepository | undefined = undefined;
+	privAte focusedProviderContextKey: IContextKey<string | undefined>;
+	privAte reAdonly bAdgeDisposAble = new MutAbleDisposAble<IDisposAble>();
+	privAte disposAbles: IDisposAble[] = [];
 
 	constructor(
-		@ISCMService private readonly scmService: ISCMService,
-		@IStatusbarService private readonly statusbarService: IStatusbarService,
-		@IContextKeyService readonly contextKeyService: IContextKeyService,
-		@IActivityService private readonly activityService: IActivityService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
+		@ISCMService privAte reAdonly scmService: ISCMService,
+		@IStAtusbArService privAte reAdonly stAtusbArService: IStAtusbArService,
+		@IContextKeyService reAdonly contextKeyService: IContextKeyService,
+		@IActivityService privAte reAdonly ActivityService: IActivityService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IUriIdentityService privAte reAdonly uriIdentityService: IUriIdentityService
 	) {
-		this.focusedProviderContextKey = contextKeyService.createKey<string | undefined>('scmProvider', undefined);
-		this.scmService.onDidAddRepository(this.onDidAddRepository, this, this.disposables);
-		this.scmService.onDidRemoveRepository(this.onDidRemoveRepository, this, this.disposables);
+		this.focusedProviderContextKey = contextKeyService.creAteKey<string | undefined>('scmProvider', undefined);
+		this.scmService.onDidAddRepository(this.onDidAddRepository, this, this.disposAbles);
+		this.scmService.onDidRemoveRepository(this.onDidRemoveRepository, this, this.disposAbles);
 
-		const onDidChangeSCMCountBadge = Event.filter(configurationService.onDidChangeConfiguration, e => e.affectsConfiguration('scm.countBadge'));
-		onDidChangeSCMCountBadge(this.renderActivityCount, this, this.disposables);
+		const onDidChAngeSCMCountBAdge = Event.filter(configurAtionService.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('scm.countBAdge'));
+		onDidChAngeSCMCountBAdge(this.renderActivityCount, this, this.disposAbles);
 
 		for (const repository of this.scmService.repositories) {
 			this.onDidAddRepository(repository);
 		}
 
-		editorService.onDidActiveEditorChange(this.tryFocusRepositoryBasedOnActiveEditor, this, this.disposables);
+		editorService.onDidActiveEditorChAnge(this.tryFocusRepositoryBAsedOnActiveEditor, this, this.disposAbles);
 		this.renderActivityCount();
 	}
 
-	private tryFocusRepositoryBasedOnActiveEditor(): boolean {
-		const resource = EditorResourceAccessor.getOriginalUri(this.editorService.activeEditor);
+	privAte tryFocusRepositoryBAsedOnActiveEditor(): booleAn {
+		const resource = EditorResourceAccessor.getOriginAlUri(this.editorService.ActiveEditor);
 
 		if (!resource) {
-			return false;
+			return fAlse;
 		}
 
 		let bestRepository: ISCMRepository | null = null;
-		let bestMatchLength = Number.POSITIVE_INFINITY;
+		let bestMAtchLength = Number.POSITIVE_INFINITY;
 
 		for (const repository of this.scmService.repositories) {
 			const root = repository.provider.rootUri;
@@ -75,32 +75,32 @@ export class SCMStatusController implements IWorkbenchContribution {
 				continue;
 			}
 
-			const path = this.uriIdentityService.extUri.relativePath(root, resource);
+			const pAth = this.uriIdentityService.extUri.relAtivePAth(root, resource);
 
-			if (path && !/^\.\./.test(path) && path.length < bestMatchLength) {
+			if (pAth && !/^\.\./.test(pAth) && pAth.length < bestMAtchLength) {
 				bestRepository = repository;
-				bestMatchLength = path.length;
+				bestMAtchLength = pAth.length;
 			}
 		}
 
 		if (!bestRepository) {
-			return false;
+			return fAlse;
 		}
 
 		this.focusRepository(bestRepository);
 		return true;
 	}
 
-	private onDidAddRepository(repository: ISCMRepository): void {
-		const selectedDisposable = Event.filter(repository.onDidChangeSelection, selected => selected)(() => this.focusRepository(repository));
+	privAte onDidAddRepository(repository: ISCMRepository): void {
+		const selectedDisposAble = Event.filter(repository.onDidChAngeSelection, selected => selected)(() => this.focusRepository(repository));
 
-		const onDidChange = Event.any(repository.provider.onDidChange, repository.provider.onDidChangeResources);
-		const changeDisposable = onDidChange(() => this.renderActivityCount());
+		const onDidChAnge = Event.Any(repository.provider.onDidChAnge, repository.provider.onDidChAngeResources);
+		const chAngeDisposAble = onDidChAnge(() => this.renderActivityCount());
 
 		const onDidRemove = Event.filter(this.scmService.onDidRemoveRepository, e => e === repository);
-		const removeDisposable = onDidRemove(() => {
-			disposable.dispose();
-			this.disposables = this.disposables.filter(d => d !== removeDisposable);
+		const removeDisposAble = onDidRemove(() => {
+			disposAble.dispose();
+			this.disposAbles = this.disposAbles.filter(d => d !== removeDisposAble);
 
 			if (this.scmService.repositories.length === 0) {
 				this.focusRepository(undefined);
@@ -109,21 +109,21 @@ export class SCMStatusController implements IWorkbenchContribution {
 			this.renderActivityCount();
 		});
 
-		const disposable = combinedDisposable(selectedDisposable, changeDisposable, removeDisposable);
-		this.disposables.push(disposable);
+		const disposAble = combinedDisposAble(selectedDisposAble, chAngeDisposAble, removeDisposAble);
+		this.disposAbles.push(disposAble);
 
 		if (this.focusedRepository) {
 			return;
 		}
 
-		if (this.tryFocusRepositoryBasedOnActiveEditor()) {
+		if (this.tryFocusRepositoryBAsedOnActiveEditor()) {
 			return;
 		}
 
 		this.focusRepository(repository);
 	}
 
-	private onDidRemoveRepository(repository: ISCMRepository): void {
+	privAte onDidRemoveRepository(repository: ISCMRepository): void {
 		if (this.focusedRepository !== repository) {
 			return;
 		}
@@ -131,75 +131,75 @@ export class SCMStatusController implements IWorkbenchContribution {
 		this.focusRepository(this.scmService.repositories[0]);
 	}
 
-	private focusRepository(repository: ISCMRepository | undefined): void {
+	privAte focusRepository(repository: ISCMRepository | undefined): void {
 		if (this.focusedRepository === repository) {
 			return;
 		}
 
-		this.focusDisposable.dispose();
+		this.focusDisposAble.dispose();
 		this.focusedRepository = repository;
 		this.focusedProviderContextKey.set(repository && repository.provider.id);
 
-		if (repository && repository.provider.onDidChangeStatusBarCommands) {
-			this.focusDisposable = repository.provider.onDidChangeStatusBarCommands(() => this.renderStatusBar(repository));
+		if (repository && repository.provider.onDidChAngeStAtusBArCommAnds) {
+			this.focusDisposAble = repository.provider.onDidChAngeStAtusBArCommAnds(() => this.renderStAtusBAr(repository));
 		}
 
-		this.renderStatusBar(repository);
+		this.renderStAtusBAr(repository);
 		this.renderActivityCount();
 	}
 
-	private renderStatusBar(repository: ISCMRepository | undefined): void {
-		this.statusBarDisposable.dispose();
+	privAte renderStAtusBAr(repository: ISCMRepository | undefined): void {
+		this.stAtusBArDisposAble.dispose();
 
 		if (!repository) {
 			return;
 		}
 
-		const commands = repository.provider.statusBarCommands || [];
-		const label = repository.provider.rootUri
-			? `${basename(repository.provider.rootUri)} (${repository.provider.label})`
-			: repository.provider.label;
+		const commAnds = repository.provider.stAtusBArCommAnds || [];
+		const lAbel = repository.provider.rootUri
+			? `${bAsenAme(repository.provider.rootUri)} (${repository.provider.lAbel})`
+			: repository.provider.lAbel;
 
-		const disposables = new DisposableStore();
-		for (const command of commands) {
-			const tooltip = `${label} - ${command.tooltip}`;
+		const disposAbles = new DisposAbleStore();
+		for (const commAnd of commAnds) {
+			const tooltip = `${lAbel} - ${commAnd.tooltip}`;
 
-			disposables.add(this.statusbarService.addEntry({
-				text: command.title,
-				ariaLabel: command.tooltip || label,
+			disposAbles.Add(this.stAtusbArService.AddEntry({
+				text: commAnd.title,
+				AriALAbel: commAnd.tooltip || lAbel,
 				tooltip,
-				command: command.id ? command : undefined
-			}, 'status.scm', localize('status.scm', "Source Control"), MainThreadStatusBarAlignment.LEFT, 10000));
+				commAnd: commAnd.id ? commAnd : undefined
+			}, 'stAtus.scm', locAlize('stAtus.scm', "Source Control"), MAinThreAdStAtusBArAlignment.LEFT, 10000));
 		}
 
-		this.statusBarDisposable = disposables;
+		this.stAtusBArDisposAble = disposAbles;
 	}
 
-	private renderActivityCount(): void {
-		this.badgeDisposable.clear();
+	privAte renderActivityCount(): void {
+		this.bAdgeDisposAble.cleAr();
 
-		const countBadgeType = this.configurationService.getValue<'all' | 'focused' | 'off'>('scm.countBadge');
+		const countBAdgeType = this.configurAtionService.getVAlue<'All' | 'focused' | 'off'>('scm.countBAdge');
 
 		let count = 0;
 
-		if (countBadgeType === 'all') {
+		if (countBAdgeType === 'All') {
 			count = this.scmService.repositories.reduce((r, repository) => r + getCount(repository), 0);
-		} else if (countBadgeType === 'focused' && this.focusedRepository) {
+		} else if (countBAdgeType === 'focused' && this.focusedRepository) {
 			count = getCount(this.focusedRepository);
 		}
 
 		if (count > 0) {
-			const badge = new NumberBadge(count, num => localize('scmPendingChangesBadge', '{0} pending changes', num));
-			this.badgeDisposable.value = this.activityService.showViewActivity(VIEW_PANE_ID, { badge, clazz: 'scm-viewlet-label' });
+			const bAdge = new NumberBAdge(count, num => locAlize('scmPendingChAngesBAdge', '{0} pending chAnges', num));
+			this.bAdgeDisposAble.vAlue = this.ActivityService.showViewActivity(VIEW_PANE_ID, { bAdge, clAzz: 'scm-viewlet-lAbel' });
 		} else {
-			this.badgeDisposable.clear();
+			this.bAdgeDisposAble.cleAr();
 		}
 	}
 
 	dispose(): void {
-		this.focusDisposable.dispose();
-		this.statusBarDisposable.dispose();
-		this.badgeDisposable.dispose();
-		this.disposables = dispose(this.disposables);
+		this.focusDisposAble.dispose();
+		this.stAtusBArDisposAble.dispose();
+		this.bAdgeDisposAble.dispose();
+		this.disposAbles = dispose(this.disposAbles);
 	}
 }

@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/* Based on @sergeche's work in his emmet plugin */
+/* BAsed on @sergeche's work in his emmet plugin */
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
 const reNumber = /[0-9]/;
 
 /**
- * Incerement number under caret of given editor
+ * Incerement number under cAret of given editor
  */
-export function incrementDecrement(delta: number): Thenable<boolean> | undefined {
-	if (!vscode.window.activeTextEditor) {
-		vscode.window.showInformationMessage('No editor is active');
+export function incrementDecrement(deltA: number): ThenAble<booleAn> | undefined {
+	if (!vscode.window.ActiveTextEditor) {
+		vscode.window.showInformAtionMessAge('No editor is Active');
 		return;
 	}
-	const editor = vscode.window.activeTextEditor;
+	const editor = vscode.window.ActiveTextEditor;
 
 	return editor.edit(editBuilder => {
-		editor.selections.forEach(selection => {
-			let rangeToReplace = locate(editor.document, selection.isReversed ? selection.anchor : selection.active);
-			if (!rangeToReplace) {
+		editor.selections.forEAch(selection => {
+			let rAngeToReplAce = locAte(editor.document, selection.isReversed ? selection.Anchor : selection.Active);
+			if (!rAngeToReplAce) {
 				return;
 			}
 
-			const text = editor.document.getText(rangeToReplace);
-			if (isValidNumber(text)) {
-				editBuilder.replace(rangeToReplace, update(text, delta));
+			const text = editor.document.getText(rAngeToReplAce);
+			if (isVAlidNumber(text)) {
+				editBuilder.replAce(rAngeToReplAce, updAte(text, deltA));
 			}
 		});
 	});
 }
 
 /**
- * Updates given number with `delta` and returns string formatted according
- * to original string format
+ * UpdAtes given number with `deltA` And returns string formAtted According
+ * to originAl string formAt
  */
-export function update(numString: string, delta: number): string {
-	let m: RegExpMatchArray | null;
-	let decimals = (m = numString.match(/\.(\d+)$/)) ? m[1].length : 1;
-	let output = String((parseFloat(numString) + delta).toFixed(decimals)).replace(/\.0+$/, '');
+export function updAte(numString: string, deltA: number): string {
+	let m: RegExpMAtchArrAy | null;
+	let decimAls = (m = numString.mAtch(/\.(\d+)$/)) ? m[1].length : 1;
+	let output = String((pArseFloAt(numString) + deltA).toFixed(decimAls)).replAce(/\.0+$/, '');
 
-	if (m = numString.match(/^\-?(0\d+)/)) {
-		// padded number: preserve padding
-		output = output.replace(/^(\-?)(\d+)/, (_, minus, prefix) =>
-			minus + '0'.repeat(Math.max(0, (m ? m[1].length : 0) - prefix.length)) + prefix);
+	if (m = numString.mAtch(/^\-?(0\d+)/)) {
+		// pAdded number: preserve pAdding
+		output = output.replAce(/^(\-?)(\d+)/, (_, minus, prefix) =>
+			minus + '0'.repeAt(MAth.mAx(0, (m ? m[1].length : 0) - prefix.length)) + prefix);
 	}
 
 	if (/^\-?\./.test(numString)) {
-		// omit integer part
-		output = output.replace(/^(\-?)0+/, '$1');
+		// omit integer pArt
+		output = output.replAce(/^(\-?)0+/, '$1');
 	}
 
 	return output;
 }
 
 /**
- * Locates number from given position in the document
+ * LocAtes number from given position in the document
  *
- * @return Range of number or `undefined` if not found
+ * @return RAnge of number or `undefined` if not found
  */
-export function locate(document: vscode.TextDocument, pos: vscode.Position): vscode.Range | undefined {
+export function locAte(document: vscode.TextDocument, pos: vscode.Position): vscode.RAnge | undefined {
 
 	const line = document.lineAt(pos.line).text;
-	let start = pos.character;
-	let end = pos.character;
-	let hadDot = false, hadMinus = false;
+	let stArt = pos.chArActer;
+	let end = pos.chArActer;
+	let hAdDot = fAlse, hAdMinus = fAlse;
 	let ch;
 
-	while (start > 0) {
-		ch = line[--start];
+	while (stArt > 0) {
+		ch = line[--stArt];
 		if (ch === '-') {
-			hadMinus = true;
-			break;
-		} else if (ch === '.' && !hadDot) {
-			hadDot = true;
+			hAdMinus = true;
+			breAk;
+		} else if (ch === '.' && !hAdDot) {
+			hAdDot = true;
 		} else if (!reNumber.test(ch)) {
-			start++;
-			break;
+			stArt++;
+			breAk;
 		}
 	}
 
-	if (line[end] === '-' && !hadMinus) {
+	if (line[end] === '-' && !hAdMinus) {
 		end++;
 	}
 
 	while (end < line.length) {
 		ch = line[end++];
-		if (ch === '.' && !hadDot && reNumber.test(line[end])) {
-			// A dot must be followed by a number. Otherwise stop parsing
-			hadDot = true;
+		if (ch === '.' && !hAdDot && reNumber.test(line[end])) {
+			// A dot must be followed by A number. Otherwise stop pArsing
+			hAdDot = true;
 		} else if (!reNumber.test(ch)) {
 			end--;
-			break;
+			breAk;
 		}
 	}
 
-	// ensure that found range contains valid number
-	if (start !== end && isValidNumber(line.slice(start, end))) {
-		return new vscode.Range(pos.line, start, pos.line, end);
+	// ensure thAt found rAnge contAins vAlid number
+	if (stArt !== end && isVAlidNumber(line.slice(stArt, end))) {
+		return new vscode.RAnge(pos.line, stArt, pos.line, end);
 	}
 
 	return;
 }
 
 /**
- * Check if given string contains valid number
+ * Check if given string contAins vAlid number
  */
-function isValidNumber(str: string): boolean {
-	return str ? !isNaN(parseFloat(str)) : false;
+function isVAlidNumber(str: string): booleAn {
+	return str ? !isNAN(pArseFloAt(str)) : fAlse;
 }

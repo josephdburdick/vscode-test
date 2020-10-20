@@ -1,155 +1,155 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Emitter } from 'vs/base/common/event';
-import { TerminalDataBufferer } from 'vs/workbench/contrib/terminal/common/terminalDataBuffering';
+import * As Assert from 'Assert';
+import { Emitter } from 'vs/bAse/common/event';
+import { TerminAlDAtABufferer } from 'vs/workbench/contrib/terminAl/common/terminAlDAtABuffering';
 
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const wAit = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-suite('Workbench - TerminalDataBufferer', () => {
-	let bufferer: TerminalDataBufferer;
+suite('Workbench - TerminAlDAtABufferer', () => {
+	let bufferer: TerminAlDAtABufferer;
 	let counter: { [id: number]: number };
-	let data: { [id: number]: string };
+	let dAtA: { [id: number]: string };
 
-	setup(async () => {
+	setup(Async () => {
 		counter = {};
-		data = {};
-		bufferer = new TerminalDataBufferer((id, e) => {
+		dAtA = {};
+		bufferer = new TerminAlDAtABufferer((id, e) => {
 			if (!(id in counter)) {
 				counter[id] = 0;
 			}
 			counter[id]++;
-			if (!(id in data)) {
-				data[id] = '';
+			if (!(id in dAtA)) {
+				dAtA[id] = '';
 			}
-			data[id] = e;
+			dAtA[id] = e;
 		});
 	});
 
-	test('start', async () => {
-		const terminalOnData = new Emitter<string>();
+	test('stArt', Async () => {
+		const terminAlOnDAtA = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminalOnData.event, 0);
+		bufferer.stArtBuffering(1, terminAlOnDAtA.event, 0);
 
-		terminalOnData.fire('1');
-		terminalOnData.fire('2');
-		terminalOnData.fire('3');
+		terminAlOnDAtA.fire('1');
+		terminAlOnDAtA.fire('2');
+		terminAlOnDAtA.fire('3');
 
-		await wait(0);
+		AwAit wAit(0);
 
-		terminalOnData.fire('4');
+		terminAlOnDAtA.fire('4');
 
-		assert.equal(counter[1], 1);
-		assert.equal(data[1], '123');
+		Assert.equAl(counter[1], 1);
+		Assert.equAl(dAtA[1], '123');
 
-		await wait(0);
+		AwAit wAit(0);
 
-		assert.equal(counter[1], 2);
-		assert.equal(data[1], '4');
+		Assert.equAl(counter[1], 2);
+		Assert.equAl(dAtA[1], '4');
 	});
 
-	test('start 2', async () => {
-		const terminal1OnData = new Emitter<string>();
-		const terminal2OnData = new Emitter<string>();
+	test('stArt 2', Async () => {
+		const terminAl1OnDAtA = new Emitter<string>();
+		const terminAl2OnDAtA = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminal1OnData.event, 0);
-		bufferer.startBuffering(2, terminal2OnData.event, 0);
+		bufferer.stArtBuffering(1, terminAl1OnDAtA.event, 0);
+		bufferer.stArtBuffering(2, terminAl2OnDAtA.event, 0);
 
-		terminal1OnData.fire('1');
-		terminal2OnData.fire('4');
-		terminal1OnData.fire('2');
-		terminal2OnData.fire('5');
-		terminal1OnData.fire('3');
-		terminal2OnData.fire('6');
-		terminal2OnData.fire('7');
+		terminAl1OnDAtA.fire('1');
+		terminAl2OnDAtA.fire('4');
+		terminAl1OnDAtA.fire('2');
+		terminAl2OnDAtA.fire('5');
+		terminAl1OnDAtA.fire('3');
+		terminAl2OnDAtA.fire('6');
+		terminAl2OnDAtA.fire('7');
 
-		assert.equal(counter[1], undefined);
-		assert.equal(data[1], undefined);
-		assert.equal(counter[2], undefined);
-		assert.equal(data[2], undefined);
+		Assert.equAl(counter[1], undefined);
+		Assert.equAl(dAtA[1], undefined);
+		Assert.equAl(counter[2], undefined);
+		Assert.equAl(dAtA[2], undefined);
 
-		await wait(0);
+		AwAit wAit(0);
 
-		assert.equal(counter[1], 1);
-		assert.equal(data[1], '123');
-		assert.equal(counter[2], 1);
-		assert.equal(data[2], '4567');
+		Assert.equAl(counter[1], 1);
+		Assert.equAl(dAtA[1], '123');
+		Assert.equAl(counter[2], 1);
+		Assert.equAl(dAtA[2], '4567');
 	});
 
-	test('stop', async () => {
-		let terminalOnData = new Emitter<string>();
+	test('stop', Async () => {
+		let terminAlOnDAtA = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminalOnData.event, 0);
+		bufferer.stArtBuffering(1, terminAlOnDAtA.event, 0);
 
-		terminalOnData.fire('1');
-		terminalOnData.fire('2');
-		terminalOnData.fire('3');
+		terminAlOnDAtA.fire('1');
+		terminAlOnDAtA.fire('2');
+		terminAlOnDAtA.fire('3');
 
 		bufferer.stopBuffering(1);
-		await wait(0);
+		AwAit wAit(0);
 
-		assert.equal(counter[1], 1);
-		assert.equal(data[1], '123');
+		Assert.equAl(counter[1], 1);
+		Assert.equAl(dAtA[1], '123');
 	});
 
-	test('start 2 stop 1', async () => {
-		const terminal1OnData = new Emitter<string>();
-		const terminal2OnData = new Emitter<string>();
+	test('stArt 2 stop 1', Async () => {
+		const terminAl1OnDAtA = new Emitter<string>();
+		const terminAl2OnDAtA = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminal1OnData.event, 0);
-		bufferer.startBuffering(2, terminal2OnData.event, 0);
+		bufferer.stArtBuffering(1, terminAl1OnDAtA.event, 0);
+		bufferer.stArtBuffering(2, terminAl2OnDAtA.event, 0);
 
-		terminal1OnData.fire('1');
-		terminal2OnData.fire('4');
-		terminal1OnData.fire('2');
-		terminal2OnData.fire('5');
-		terminal1OnData.fire('3');
-		terminal2OnData.fire('6');
-		terminal2OnData.fire('7');
+		terminAl1OnDAtA.fire('1');
+		terminAl2OnDAtA.fire('4');
+		terminAl1OnDAtA.fire('2');
+		terminAl2OnDAtA.fire('5');
+		terminAl1OnDAtA.fire('3');
+		terminAl2OnDAtA.fire('6');
+		terminAl2OnDAtA.fire('7');
 
-		assert.equal(counter[1], undefined);
-		assert.equal(data[1], undefined);
-		assert.equal(counter[2], undefined);
-		assert.equal(data[2], undefined);
+		Assert.equAl(counter[1], undefined);
+		Assert.equAl(dAtA[1], undefined);
+		Assert.equAl(counter[2], undefined);
+		Assert.equAl(dAtA[2], undefined);
 
 		bufferer.stopBuffering(1);
-		await wait(0);
+		AwAit wAit(0);
 
-		assert.equal(counter[1], 1);
-		assert.equal(data[1], '123');
-		assert.equal(counter[2], 1);
-		assert.equal(data[2], '4567');
+		Assert.equAl(counter[1], 1);
+		Assert.equAl(dAtA[1], '123');
+		Assert.equAl(counter[2], 1);
+		Assert.equAl(dAtA[2], '4567');
 	});
 
-	test('dispose should flush remaining data events', async () => {
-		const terminal1OnData = new Emitter<string>();
-		const terminal2OnData = new Emitter<string>();
+	test('dispose should flush remAining dAtA events', Async () => {
+		const terminAl1OnDAtA = new Emitter<string>();
+		const terminAl2OnDAtA = new Emitter<string>();
 
-		bufferer.startBuffering(1, terminal1OnData.event, 0);
-		bufferer.startBuffering(2, terminal2OnData.event, 0);
+		bufferer.stArtBuffering(1, terminAl1OnDAtA.event, 0);
+		bufferer.stArtBuffering(2, terminAl2OnDAtA.event, 0);
 
-		terminal1OnData.fire('1');
-		terminal2OnData.fire('4');
-		terminal1OnData.fire('2');
-		terminal2OnData.fire('5');
-		terminal1OnData.fire('3');
-		terminal2OnData.fire('6');
-		terminal2OnData.fire('7');
+		terminAl1OnDAtA.fire('1');
+		terminAl2OnDAtA.fire('4');
+		terminAl1OnDAtA.fire('2');
+		terminAl2OnDAtA.fire('5');
+		terminAl1OnDAtA.fire('3');
+		terminAl2OnDAtA.fire('6');
+		terminAl2OnDAtA.fire('7');
 
-		assert.equal(counter[1], undefined);
-		assert.equal(data[1], undefined);
-		assert.equal(counter[2], undefined);
-		assert.equal(data[2], undefined);
+		Assert.equAl(counter[1], undefined);
+		Assert.equAl(dAtA[1], undefined);
+		Assert.equAl(counter[2], undefined);
+		Assert.equAl(dAtA[2], undefined);
 
 		bufferer.dispose();
-		await wait(0);
+		AwAit wAit(0);
 
-		assert.equal(counter[1], 1);
-		assert.equal(data[1], '123');
-		assert.equal(counter[2], 1);
-		assert.equal(data[2], '4567');
+		Assert.equAl(counter[1], 1);
+		Assert.equAl(dAtA[1], '123');
+		Assert.equAl(counter[2], 1);
+		Assert.equAl(dAtA[2], '4567');
 	});
 });

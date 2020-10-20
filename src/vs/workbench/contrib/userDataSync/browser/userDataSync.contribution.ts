@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { UserDataSyncWorkbenchContribution } from 'vs/workbench/contrib/userDataSync/browser/userDataSync';
-import { IUserDataAutoSyncService, UserDataSyncError, UserDataSyncErrorCode } from 'vs/platform/userDataSync/common/userDataSync';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { localize } from 'vs/nls';
-import { isWeb } from 'vs/base/common/platform';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { UserDataSyncTrigger } from 'vs/workbench/contrib/userDataSync/browser/userDataSyncTrigger';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions, IWorkbenchContribution } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { UserDAtASyncWorkbenchContribution } from 'vs/workbench/contrib/userDAtASync/browser/userDAtASync';
+import { IUserDAtAAutoSyncService, UserDAtASyncError, UserDAtASyncErrorCode } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { locAlize } from 'vs/nls';
+import { isWeb } from 'vs/bAse/common/plAtform';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { UserDAtASyncTrigger } from 'vs/workbench/contrib/userDAtASync/browser/userDAtASyncTrigger';
 
-class UserDataSyncReportIssueContribution extends Disposable implements IWorkbenchContribution {
+clAss UserDAtASyncReportIssueContribution extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
-		@IUserDataAutoSyncService userDataAutoSyncService: IUserDataAutoSyncService,
-		@INotificationService private readonly notificationService: INotificationService,
+		@IUserDAtAAutoSyncService userDAtAAutoSyncService: IUserDAtAAutoSyncService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
 	) {
 		super();
-		this._register(userDataAutoSyncService.onError(error => this.onAutoSyncError(error)));
+		this._register(userDAtAAutoSyncService.onError(error => this.onAutoSyncError(error)));
 	}
 
-	private onAutoSyncError(error: UserDataSyncError): void {
+	privAte onAutoSyncError(error: UserDAtASyncError): void {
 		switch (error.code) {
-			case UserDataSyncErrorCode.LocalTooManyRequests:
-			case UserDataSyncErrorCode.TooManyRequests:
-				const operationId = error.operationId ? localize('operationId', "Operation Id: {0}", error.operationId) : undefined;
-				const message = localize('too many requests', "Turned off syncing settings on this device because it is making too many requests.");
-				this.notificationService.notify({
+			cAse UserDAtASyncErrorCode.LocAlTooMAnyRequests:
+			cAse UserDAtASyncErrorCode.TooMAnyRequests:
+				const operAtionId = error.operAtionId ? locAlize('operAtionId', "OperAtion Id: {0}", error.operAtionId) : undefined;
+				const messAge = locAlize('too mAny requests', "Turned off syncing settings on this device becAuse it is mAking too mAny requests.");
+				this.notificAtionService.notify({
 					severity: Severity.Error,
-					message: operationId ? `${message} ${operationId}` : message,
+					messAge: operAtionId ? `${messAge} ${operAtionId}` : messAge,
 				});
 				return;
 		}
 	}
 }
 
-export class UserDataSyncSettingsMigrationContribution implements IWorkbenchContribution {
+export clAss UserDAtASyncSettingsMigrAtionContribution implements IWorkbenchContribution {
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
-		this.migrateSettings();
+		this.migrAteSettings();
 	}
 
-	private async migrateSettings(): Promise<void> {
-		await this.migrateSetting('sync.keybindingsPerPlatform', 'settingsSync.keybindingsPerPlatform');
-		await this.migrateSetting('sync.ignoredExtensions', 'settingsSync.ignoredExtensions');
-		await this.migrateSetting('sync.ignoredSettings', 'settingsSync.ignoredSettings');
+	privAte Async migrAteSettings(): Promise<void> {
+		AwAit this.migrAteSetting('sync.keybindingsPerPlAtform', 'settingsSync.keybindingsPerPlAtform');
+		AwAit this.migrAteSetting('sync.ignoredExtensions', 'settingsSync.ignoredExtensions');
+		AwAit this.migrAteSetting('sync.ignoredSettings', 'settingsSync.ignoredSettings');
 	}
 
-	private async migrateSetting(oldSetting: string, newSetting: string): Promise<void> {
-		const userValue = this.configurationService.inspect(oldSetting).userValue;
-		if (userValue !== undefined) {
+	privAte Async migrAteSetting(oldSetting: string, newSetting: string): Promise<void> {
+		const userVAlue = this.configurAtionService.inspect(oldSetting).userVAlue;
+		if (userVAlue !== undefined) {
 			// remove the old setting
-			await this.configurationService.updateValue(oldSetting, undefined, ConfigurationTarget.USER);
-			// add the new setting
-			await this.configurationService.updateValue(newSetting, userValue, ConfigurationTarget.USER);
+			AwAit this.configurAtionService.updAteVAlue(oldSetting, undefined, ConfigurAtionTArget.USER);
+			// Add the new setting
+			AwAit this.configurAtionService.updAteVAlue(newSetting, userVAlue, ConfigurAtionTArget.USER);
 		}
 	}
 }
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(UserDataSyncWorkbenchContribution, LifecyclePhase.Ready);
-workbenchRegistry.registerWorkbenchContribution(UserDataSyncSettingsMigrationContribution, LifecyclePhase.Eventually);
-workbenchRegistry.registerWorkbenchContribution(UserDataSyncTrigger, LifecyclePhase.Eventually);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(UserDAtASyncWorkbenchContribution, LifecyclePhAse.ReAdy);
+workbenchRegistry.registerWorkbenchContribution(UserDAtASyncSettingsMigrAtionContribution, LifecyclePhAse.EventuAlly);
+workbenchRegistry.registerWorkbenchContribution(UserDAtASyncTrigger, LifecyclePhAse.EventuAlly);
 
 if (isWeb) {
-	workbenchRegistry.registerWorkbenchContribution(UserDataSyncReportIssueContribution, LifecyclePhase.Ready);
+	workbenchRegistry.registerWorkbenchContribution(UserDAtASyncReportIssueContribution, LifecyclePhAse.ReAdy);
 }

@@ -1,57 +1,57 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { SimpleConfigurationService, SimpleNotificationService, StandaloneCommandService, StandaloneKeybindingService } from 'vs/editor/standalone/browser/simpleServices';
-import { ContextKeyService } from 'vs/platform/contextkey/browser/contextKeyService';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IKeyboardEvent } from 'vs/platform/keybinding/common/keybinding';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
+import * As Assert from 'Assert';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { SimpleConfigurAtionService, SimpleNotificAtionService, StAndAloneCommAndService, StAndAloneKeybindingService } from 'vs/editor/stAndAlone/browser/simpleServices';
+import { ContextKeyService } from 'vs/plAtform/contextkey/browser/contextKeyService';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IKeyboArdEvent } from 'vs/plAtform/keybinding/common/keybinding';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
 
-suite('StandaloneKeybindingService', () => {
+suite('StAndAloneKeybindingService', () => {
 
-	class TestStandaloneKeybindingService extends StandaloneKeybindingService {
-		public testDispatch(e: IKeyboardEvent): void {
-			super._dispatch(e, null!);
+	clAss TestStAndAloneKeybindingService extends StAndAloneKeybindingService {
+		public testDispAtch(e: IKeyboArdEvent): void {
+			super._dispAtch(e, null!);
 		}
 	}
 
-	test('issue microsoft/monaco-editor#167', () => {
+	test('issue microsoft/monAco-editor#167', () => {
 
 		let serviceCollection = new ServiceCollection();
-		const instantiationService = new InstantiationService(serviceCollection, true);
+		const instAntiAtionService = new InstAntiAtionService(serviceCollection, true);
 
-		let configurationService = new SimpleConfigurationService();
+		let configurAtionService = new SimpleConfigurAtionService();
 
-		let contextKeyService = new ContextKeyService(configurationService);
+		let contextKeyService = new ContextKeyService(configurAtionService);
 
-		let commandService = new StandaloneCommandService(instantiationService);
+		let commAndService = new StAndAloneCommAndService(instAntiAtionService);
 
-		let notificationService = new SimpleNotificationService();
+		let notificAtionService = new SimpleNotificAtionService();
 
-		let domElement = document.createElement('div');
+		let domElement = document.creAteElement('div');
 
-		let keybindingService = new TestStandaloneKeybindingService(contextKeyService, commandService, NullTelemetryService, notificationService, new NullLogService(), domElement);
+		let keybindingService = new TestStAndAloneKeybindingService(contextKeyService, commAndService, NullTelemetryService, notificAtionService, new NullLogService(), domElement);
 
-		let commandInvoked = false;
-		keybindingService.addDynamicKeybinding('testCommand', KeyCode.F9, () => {
-			commandInvoked = true;
+		let commAndInvoked = fAlse;
+		keybindingService.AddDynAmicKeybinding('testCommAnd', KeyCode.F9, () => {
+			commAndInvoked = true;
 		}, undefined);
 
-		keybindingService.testDispatch({
-			_standardKeyboardEventBrand: true,
-			ctrlKey: false,
-			shiftKey: false,
-			altKey: false,
-			metaKey: false,
+		keybindingService.testDispAtch({
+			_stAndArdKeyboArdEventBrAnd: true,
+			ctrlKey: fAlse,
+			shiftKey: fAlse,
+			AltKey: fAlse,
+			metAKey: fAlse,
 			keyCode: KeyCode.F9,
 			code: null!
 		});
 
-		assert.ok(commandInvoked, 'command invoked');
+		Assert.ok(commAndInvoked, 'commAnd invoked');
 	});
 });

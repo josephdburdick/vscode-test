@@ -1,134 +1,134 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/bAse/common/event';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILayoutService } from 'vs/platform/layout/browser/layoutService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ILAyoutService } from 'vs/plAtform/lAyout/browser/lAyoutService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IWindowSettings, IWindowOpenable, IOpenWindowOptions, isFolderToOpen, isWorkspaceToOpen, isFileToOpen, IOpenEmptyWindowOptions, IPathData, IFileToOpen } from 'vs/platform/windows/common/windows';
-import { pathsToEditors } from 'vs/workbench/common/editor';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { trackFocus } from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IWindowSettings, IWindowOpenAble, IOpenWindowOptions, isFolderToOpen, isWorkspAceToOpen, isFileToOpen, IOpenEmptyWindowOptions, IPAthDAtA, IFileToOpen } from 'vs/plAtform/windows/common/windows';
+import { pAthsToEditors } from 'vs/workbench/common/editor';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { trAckFocus } from 'vs/bAse/browser/dom';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { domEvent } from 'vs/base/browser/event';
-import { memoize } from 'vs/base/common/decorators';
-import { parseLineAndColumnAware } from 'vs/base/common/extpath';
-import { IWorkspaceFolderCreationData } from 'vs/platform/workspaces/common/workspaces';
-import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { domEvent } from 'vs/bAse/browser/event';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { pArseLineAndColumnAwAre } from 'vs/bAse/common/extpAth';
+import { IWorkspAceFolderCreAtionDAtA } from 'vs/plAtform/workspAces/common/workspAces';
+import { IWorkspAceEditingService } from 'vs/workbench/services/workspAces/common/workspAceEditing';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { BeforeShutdownEvent, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
 
 /**
- * A workspace to open in the workbench can either be:
- * - a workspace file with 0-N folders (via `workspaceUri`)
- * - a single folder (via `folderUri`)
- * - empty (via `undefined`)
+ * A workspAce to open in the workbench cAn either be:
+ * - A workspAce file with 0-N folders (viA `workspAceUri`)
+ * - A single folder (viA `folderUri`)
+ * - empty (viA `undefined`)
  */
-export type IWorkspace = { workspaceUri: URI } | { folderUri: URI } | undefined;
+export type IWorkspAce = { workspAceUri: URI } | { folderUri: URI } | undefined;
 
-export interface IWorkspaceProvider {
+export interfAce IWorkspAceProvider {
 
 	/**
-	 * The initial workspace to open.
+	 * The initiAl workspAce to open.
 	 */
-	readonly workspace: IWorkspace;
+	reAdonly workspAce: IWorkspAce;
 
 	/**
-	 * Arbitrary payload from the `IWorkspaceProvider.open` call.
+	 * ArbitrAry pAyloAd from the `IWorkspAceProvider.open` cAll.
 	 */
-	readonly payload?: object;
+	reAdonly pAyloAd?: object;
 
 	/**
-	 * Asks to open a workspace in the current or a new window.
+	 * Asks to open A workspAce in the current or A new window.
 	 *
-	 * @param workspace the workspace to open.
-	 * @param options optional options for the workspace to open.
-	 * - `reuse`: whether to open inside the current window or a new window
-	 * - `payload`: arbitrary payload that should be made available
-	 * to the opening window via the `IWorkspaceProvider.payload` property.
-	 * @param payload optional payload to send to the workspace to open.
+	 * @pArAm workspAce the workspAce to open.
+	 * @pArAm options optionAl options for the workspAce to open.
+	 * - `reuse`: whether to open inside the current window or A new window
+	 * - `pAyloAd`: ArbitrAry pAyloAd thAt should be mAde AvAilAble
+	 * to the opening window viA the `IWorkspAceProvider.pAyloAd` property.
+	 * @pArAm pAyloAd optionAl pAyloAd to send to the workspAce to open.
 	 */
-	open(workspace: IWorkspace, options?: { reuse?: boolean, payload?: object }): Promise<void>;
+	open(workspAce: IWorkspAce, options?: { reuse?: booleAn, pAyloAd?: object }): Promise<void>;
 }
 
-export class BrowserHostService extends Disposable implements IHostService {
+export clAss BrowserHostService extends DisposAble implements IHostService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private workspaceProvider: IWorkspaceProvider;
+	privAte workspAceProvider: IWorkspAceProvider;
 
-	private signalExpectedShutdown = false;
+	privAte signAlExpectedShutdown = fAlse;
 
 	constructor(
-		@ILayoutService private readonly layoutService: ILayoutService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IFileService private readonly fileService: IFileService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService
+		@ILAyoutService privAte reAdonly lAyoutService: ILAyoutService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService
 	) {
 		super();
 
-		if (environmentService.options && environmentService.options.workspaceProvider) {
-			this.workspaceProvider = environmentService.options.workspaceProvider;
+		if (environmentService.options && environmentService.options.workspAceProvider) {
+			this.workspAceProvider = environmentService.options.workspAceProvider;
 		} else {
-			this.workspaceProvider = new class implements IWorkspaceProvider {
-				readonly workspace = undefined;
-				async open() { }
+			this.workspAceProvider = new clAss implements IWorkspAceProvider {
+				reAdonly workspAce = undefined;
+				Async open() { }
 			};
 		}
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 		this._register(this.lifecycleService.onBeforeShutdown(e => this.onBeforeShutdown(e)));
 	}
 
-	private onBeforeShutdown(e: BeforeShutdownEvent): void {
+	privAte onBeforeShutdown(e: BeforeShutdownEvent): void {
 
-		// Veto is setting is configured as such and we are not
-		// expecting a navigation that was triggered by the user
-		if (!this.signalExpectedShutdown && this.configurationService.getValue<boolean>('window.confirmBeforeClose')) {
-			console.warn('Unload veto: window.confirmBeforeClose=true');
+		// Veto is setting is configured As such And we Are not
+		// expecting A nAvigAtion thAt wAs triggered by the user
+		if (!this.signAlExpectedShutdown && this.configurAtionService.getVAlue<booleAn>('window.confirmBeforeClose')) {
+			console.wArn('UnloAd veto: window.confirmBeforeClose=true');
 			e.veto(true);
 		}
 
 		// Unset for next shutdown
-		this.signalExpectedShutdown = false;
+		this.signAlExpectedShutdown = fAlse;
 	}
 
 	//#region Focus
 
 	@memoize
-	get onDidChangeFocus(): Event<boolean> {
-		const focusTracker = this._register(trackFocus(window));
+	get onDidChAngeFocus(): Event<booleAn> {
+		const focusTrAcker = this._register(trAckFocus(window));
 
-		return Event.latch(Event.any(
-			Event.map(focusTracker.onDidFocus, () => this.hasFocus),
-			Event.map(focusTracker.onDidBlur, () => this.hasFocus),
-			Event.map(domEvent(window.document, 'visibilitychange'), () => this.hasFocus)
+		return Event.lAtch(Event.Any(
+			Event.mAp(focusTrAcker.onDidFocus, () => this.hAsFocus),
+			Event.mAp(focusTrAcker.onDidBlur, () => this.hAsFocus),
+			Event.mAp(domEvent(window.document, 'visibilitychAnge'), () => this.hAsFocus)
 		));
 	}
 
-	get hasFocus(): boolean {
-		return document.hasFocus();
+	get hAsFocus(): booleAn {
+		return document.hAsFocus();
 	}
 
-	async hadLastFocus(): Promise<boolean> {
+	Async hAdLAstFocus(): Promise<booleAn> {
 		return true;
 	}
 
-	async focus(): Promise<void> {
+	Async focus(): Promise<void> {
 		window.focus();
 	}
 
@@ -138,62 +138,62 @@ export class BrowserHostService extends Disposable implements IHostService {
 	//#region Window
 
 	openWindow(options?: IOpenEmptyWindowOptions): Promise<void>;
-	openWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void>;
-	openWindow(arg1?: IOpenEmptyWindowOptions | IWindowOpenable[], arg2?: IOpenWindowOptions): Promise<void> {
-		if (Array.isArray(arg1)) {
-			return this.doOpenWindow(arg1, arg2);
+	openWindow(toOpen: IWindowOpenAble[], options?: IOpenWindowOptions): Promise<void>;
+	openWindow(Arg1?: IOpenEmptyWindowOptions | IWindowOpenAble[], Arg2?: IOpenWindowOptions): Promise<void> {
+		if (ArrAy.isArrAy(Arg1)) {
+			return this.doOpenWindow(Arg1, Arg2);
 		}
 
-		return this.doOpenEmptyWindow(arg1);
+		return this.doOpenEmptyWindow(Arg1);
 	}
 
-	private async doOpenWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void> {
-		const payload = this.preservePayload();
-		const fileOpenables: IFileToOpen[] = [];
-		const foldersToAdd: IWorkspaceFolderCreationData[] = [];
+	privAte Async doOpenWindow(toOpen: IWindowOpenAble[], options?: IOpenWindowOptions): Promise<void> {
+		const pAyloAd = this.preservePAyloAd();
+		const fileOpenAbles: IFileToOpen[] = [];
+		const foldersToAdd: IWorkspAceFolderCreAtionDAtA[] = [];
 
-		for (const openable of toOpen) {
-			openable.label = openable.label || this.getRecentLabel(openable);
+		for (const openAble of toOpen) {
+			openAble.lAbel = openAble.lAbel || this.getRecentLAbel(openAble);
 
 			// Folder
-			if (isFolderToOpen(openable)) {
-				if (options?.addMode) {
-					foldersToAdd.push(({ uri: openable.folderUri }));
+			if (isFolderToOpen(openAble)) {
+				if (options?.AddMode) {
+					foldersToAdd.push(({ uri: openAble.folderUri }));
 				} else {
-					this.doOpen({ folderUri: openable.folderUri }, { reuse: this.shouldReuse(options, false /* no file */), payload });
+					this.doOpen({ folderUri: openAble.folderUri }, { reuse: this.shouldReuse(options, fAlse /* no file */), pAyloAd });
 				}
 			}
 
-			// Workspace
-			else if (isWorkspaceToOpen(openable)) {
-				this.doOpen({ workspaceUri: openable.workspaceUri }, { reuse: this.shouldReuse(options, false /* no file */), payload });
+			// WorkspAce
+			else if (isWorkspAceToOpen(openAble)) {
+				this.doOpen({ workspAceUri: openAble.workspAceUri }, { reuse: this.shouldReuse(options, fAlse /* no file */), pAyloAd });
 			}
 
-			// File (handled later in bulk)
-			else if (isFileToOpen(openable)) {
-				fileOpenables.push(openable);
+			// File (hAndled lAter in bulk)
+			else if (isFileToOpen(openAble)) {
+				fileOpenAbles.push(openAble);
 			}
 		}
 
-		// Handle Folders to Add
+		// HAndle Folders to Add
 		if (foldersToAdd.length > 0) {
-			this.instantiationService.invokeFunction(accessor => {
-				const workspaceEditingService: IWorkspaceEditingService = accessor.get(IWorkspaceEditingService);
-				workspaceEditingService.addFolders(foldersToAdd);
+			this.instAntiAtionService.invokeFunction(Accessor => {
+				const workspAceEditingService: IWorkspAceEditingService = Accessor.get(IWorkspAceEditingService);
+				workspAceEditingService.AddFolders(foldersToAdd);
 			});
 		}
 
-		// Handle Files
-		if (fileOpenables.length > 0) {
+		// HAndle Files
+		if (fileOpenAbles.length > 0) {
 
 			// Support diffMode
-			if (options?.diffMode && fileOpenables.length === 2) {
-				const editors = await pathsToEditors(fileOpenables, this.fileService);
+			if (options?.diffMode && fileOpenAbles.length === 2) {
+				const editors = AwAit pAthsToEditors(fileOpenAbles, this.fileService);
 				if (editors.length !== 2 || !editors[0].resource || !editors[1].resource) {
-					return; // invalid resources
+					return; // invAlid resources
 				}
 
-				// Same Window: open via editor service in current window
+				// SAme Window: open viA editor service in current window
 				if (this.shouldReuse(options, true /* file */)) {
 					this.editorService.openEditor({
 						leftResource: editors[0].resource,
@@ -203,106 +203,106 @@ export class BrowserHostService extends Disposable implements IHostService {
 
 				// New Window: open into empty window
 				else {
-					const environment = new Map<string, string>();
-					environment.set('diffFileSecondary', editors[0].resource.toString());
-					environment.set('diffFilePrimary', editors[1].resource.toString());
+					const environment = new MAp<string, string>();
+					environment.set('diffFileSecondAry', editors[0].resource.toString());
+					environment.set('diffFilePrimAry', editors[1].resource.toString());
 
-					this.doOpen(undefined, { payload: Array.from(environment.entries()) });
+					this.doOpen(undefined, { pAyloAd: ArrAy.from(environment.entries()) });
 				}
 			}
 
-			// Just open normally
+			// Just open normAlly
 			else {
-				for (const openable of fileOpenables) {
+				for (const openAble of fileOpenAbles) {
 
-					// Same Window: open via editor service in current window
+					// SAme Window: open viA editor service in current window
 					if (this.shouldReuse(options, true /* file */)) {
-						let openables: IPathData[] = [];
+						let openAbles: IPAthDAtA[] = [];
 
-						// Support: --goto parameter to open on line/col
+						// Support: --goto pArAmeter to open on line/col
 						if (options?.gotoLineMode) {
-							const pathColumnAware = parseLineAndColumnAware(openable.fileUri.path);
-							openables = [{
-								fileUri: openable.fileUri.with({ path: pathColumnAware.path }),
-								lineNumber: pathColumnAware.line,
-								columnNumber: pathColumnAware.column
+							const pAthColumnAwAre = pArseLineAndColumnAwAre(openAble.fileUri.pAth);
+							openAbles = [{
+								fileUri: openAble.fileUri.with({ pAth: pAthColumnAwAre.pAth }),
+								lineNumber: pAthColumnAwAre.line,
+								columnNumber: pAthColumnAwAre.column
 							}];
 						} else {
-							openables = [openable];
+							openAbles = [openAble];
 						}
 
-						this.editorService.openEditors(await pathsToEditors(openables, this.fileService));
+						this.editorService.openEditors(AwAit pAthsToEditors(openAbles, this.fileService));
 					}
 
 					// New Window: open into empty window
 					else {
-						const environment = new Map<string, string>();
-						environment.set('openFile', openable.fileUri.toString());
+						const environment = new MAp<string, string>();
+						environment.set('openFile', openAble.fileUri.toString());
 
 						if (options?.gotoLineMode) {
 							environment.set('gotoLineMode', 'true');
 						}
 
-						this.doOpen(undefined, { payload: Array.from(environment.entries()) });
+						this.doOpen(undefined, { pAyloAd: ArrAy.from(environment.entries()) });
 					}
 				}
 			}
 
-			// Support wait mode
-			const waitMarkerFileURI = options?.waitMarkerFileURI;
-			if (waitMarkerFileURI) {
-				(async () => {
+			// Support wAit mode
+			const wAitMArkerFileURI = options?.wAitMArkerFileURI;
+			if (wAitMArkerFileURI) {
+				(Async () => {
 
-					// Wait for the resources to be closed in the editor...
-					await this.editorService.whenClosed(fileOpenables.map(openable => ({ resource: openable.fileUri })), { waitForSaved: true });
+					// WAit for the resources to be closed in the editor...
+					AwAit this.editorService.whenClosed(fileOpenAbles.mAp(openAble => ({ resource: openAble.fileUri })), { wAitForSAved: true });
 
-					// ...before deleting the wait marker file
-					await this.fileService.del(waitMarkerFileURI);
+					// ...before deleting the wAit mArker file
+					AwAit this.fileService.del(wAitMArkerFileURI);
 				})();
 			}
 		}
 	}
 
-	private preservePayload(): Array<unknown> | undefined {
+	privAte preservePAyloAd(): ArrAy<unknown> | undefined {
 
-		// Selectively copy payload: for now only extension debugging properties are considered
-		let newPayload: Array<unknown> | undefined = undefined;
-		if (this.environmentService.extensionDevelopmentLocationURI) {
-			newPayload = new Array();
+		// Selectively copy pAyloAd: for now only extension debugging properties Are considered
+		let newPAyloAd: ArrAy<unknown> | undefined = undefined;
+		if (this.environmentService.extensionDevelopmentLocAtionURI) {
+			newPAyloAd = new ArrAy();
 
-			newPayload.push(['extensionDevelopmentPath', this.environmentService.extensionDevelopmentLocationURI.toString()]);
+			newPAyloAd.push(['extensionDevelopmentPAth', this.environmentService.extensionDevelopmentLocAtionURI.toString()]);
 
 			if (this.environmentService.debugExtensionHost.debugId) {
-				newPayload.push(['debugId', this.environmentService.debugExtensionHost.debugId]);
+				newPAyloAd.push(['debugId', this.environmentService.debugExtensionHost.debugId]);
 			}
 
 			if (this.environmentService.debugExtensionHost.port) {
-				newPayload.push(['inspect-brk-extensions', String(this.environmentService.debugExtensionHost.port)]);
+				newPAyloAd.push(['inspect-brk-extensions', String(this.environmentService.debugExtensionHost.port)]);
 			}
 		}
 
-		return newPayload;
+		return newPAyloAd;
 	}
 
-	private getRecentLabel(openable: IWindowOpenable): string {
-		if (isFolderToOpen(openable)) {
-			return this.labelService.getWorkspaceLabel(openable.folderUri, { verbose: true });
+	privAte getRecentLAbel(openAble: IWindowOpenAble): string {
+		if (isFolderToOpen(openAble)) {
+			return this.lAbelService.getWorkspAceLAbel(openAble.folderUri, { verbose: true });
 		}
 
-		if (isWorkspaceToOpen(openable)) {
-			return this.labelService.getWorkspaceLabel({ id: '', configPath: openable.workspaceUri }, { verbose: true });
+		if (isWorkspAceToOpen(openAble)) {
+			return this.lAbelService.getWorkspAceLAbel({ id: '', configPAth: openAble.workspAceUri }, { verbose: true });
 		}
 
-		return this.labelService.getUriLabel(openable.fileUri);
+		return this.lAbelService.getUriLAbel(openAble.fileUri);
 	}
 
-	private shouldReuse(options: IOpenWindowOptions = Object.create(null), isFile: boolean): boolean {
-		if (options.waitMarkerFileURI) {
-			return true; // always handle --wait in same window
+	privAte shouldReuse(options: IOpenWindowOptions = Object.creAte(null), isFile: booleAn): booleAn {
+		if (options.wAitMArkerFileURI) {
+			return true; // AlwAys hAndle --wAit in sAme window
 		}
 
-		const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-		const openInNewWindowConfig = isFile ? (windowConfig?.openFilesInNewWindow || 'off' /* default */) : (windowConfig?.openFoldersInNewWindow || 'default' /* default */);
+		const windowConfig = this.configurAtionService.getVAlue<IWindowSettings>('window');
+		const openInNewWindowConfig = isFile ? (windowConfig?.openFilesInNewWindow || 'off' /* defAult */) : (windowConfig?.openFoldersInNewWindow || 'defAult' /* defAult */);
 
 		let openInNewWindow = (options.preferNewWindow || !!options.forceNewWindow) && !options.forceReuseWindow;
 		if (!options.forceNewWindow && !options.forceReuseWindow && (openInNewWindowConfig === 'on' || openInNewWindowConfig === 'off')) {
@@ -312,48 +312,48 @@ export class BrowserHostService extends Disposable implements IHostService {
 		return !openInNewWindow;
 	}
 
-	private async doOpenEmptyWindow(options?: IOpenEmptyWindowOptions): Promise<void> {
+	privAte Async doOpenEmptyWindow(options?: IOpenEmptyWindowOptions): Promise<void> {
 		return this.doOpen(undefined, { reuse: options?.forceReuseWindow });
 	}
 
-	private doOpen(workspace: IWorkspace, options?: { reuse?: boolean, payload?: object }): Promise<void> {
+	privAte doOpen(workspAce: IWorkspAce, options?: { reuse?: booleAn, pAyloAd?: object }): Promise<void> {
 		if (options?.reuse) {
-			this.signalExpectedShutdown = true;
+			this.signAlExpectedShutdown = true;
 		}
 
-		return this.workspaceProvider.open(workspace, options);
+		return this.workspAceProvider.open(workspAce, options);
 	}
 
-	async toggleFullScreen(): Promise<void> {
-		const target = this.layoutService.container;
+	Async toggleFullScreen(): Promise<void> {
+		const tArget = this.lAyoutService.contAiner;
 
 		// Chromium
 		if (document.fullscreen !== undefined) {
 			if (!document.fullscreen) {
 				try {
-					return await target.requestFullscreen();
-				} catch (error) {
-					console.warn('Toggle Full Screen failed'); // https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
+					return AwAit tArget.requestFullscreen();
+				} cAtch (error) {
+					console.wArn('Toggle Full Screen fAiled'); // https://developer.mozillA.org/en-US/docs/Web/API/Element/requestFullscreen
 				}
 			} else {
 				try {
-					return await document.exitFullscreen();
-				} catch (error) {
-					console.warn('Exit Full Screen failed');
+					return AwAit document.exitFullscreen();
+				} cAtch (error) {
+					console.wArn('Exit Full Screen fAiled');
 				}
 			}
 		}
 
-		// Safari and Edge 14 are all using webkit prefix
-		if ((<any>document).webkitIsFullScreen !== undefined) {
+		// SAfAri And Edge 14 Are All using webkit prefix
+		if ((<Any>document).webkitIsFullScreen !== undefined) {
 			try {
-				if (!(<any>document).webkitIsFullScreen) {
-					(<any>target).webkitRequestFullscreen(); // it's async, but doesn't return a real promise.
+				if (!(<Any>document).webkitIsFullScreen) {
+					(<Any>tArget).webkitRequestFullscreen(); // it's Async, but doesn't return A reAl promise.
 				} else {
-					(<any>document).webkitExitFullscreen(); // it's async, but doesn't return a real promise.
+					(<Any>document).webkitExitFullscreen(); // it's Async, but doesn't return A reAl promise.
 				}
-			} catch {
-				console.warn('Enter/Exit Full Screen failed');
+			} cAtch {
+				console.wArn('Enter/Exit Full Screen fAiled');
 			}
 		}
 	}
@@ -362,14 +362,14 @@ export class BrowserHostService extends Disposable implements IHostService {
 
 	//#region Lifecycle
 
-	async restart(): Promise<void> {
-		this.reload();
+	Async restArt(): Promise<void> {
+		this.reloAd();
 	}
 
-	async reload(): Promise<void> {
-		this.signalExpectedShutdown = true;
+	Async reloAd(): Promise<void> {
+		this.signAlExpectedShutdown = true;
 
-		window.location.reload();
+		window.locAtion.reloAd();
 	}
 
 	//#endregion

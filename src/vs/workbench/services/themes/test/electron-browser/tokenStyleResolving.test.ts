@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ColorThemeData } from 'vs/workbench/services/themes/common/colorThemeData';
-import * as assert from 'assert';
-import { ITokenColorCustomizations } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { TokenStyle, getTokenClassificationRegistry } from 'vs/platform/theme/common/tokenClassificationRegistry';
-import { Color } from 'vs/base/common/color';
-import { isString } from 'vs/base/common/types';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { ExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/electron-sandbox/extensionResourceLoaderService';
-import { ITokenStyle } from 'vs/platform/theme/common/themeService';
+import { ColorThemeDAtA } from 'vs/workbench/services/themes/common/colorThemeDAtA';
+import * As Assert from 'Assert';
+import { ITokenColorCustomizAtions } from 'vs/workbench/services/themes/common/workbenchThemeService';
+import { TokenStyle, getTokenClAssificAtionRegistry } from 'vs/plAtform/theme/common/tokenClAssificAtionRegistry';
+import { Color } from 'vs/bAse/common/color';
+import { isString } from 'vs/bAse/common/types';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { DiskFileSystemProvider } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
+import { ExtensionResourceLoAderService } from 'vs/workbench/services/extensionResourceLoAder/electron-sAndbox/extensionResourceLoAderService';
+import { ITokenStyle } from 'vs/plAtform/theme/common/themeService';
 
-const undefinedStyle = { bold: undefined, underline: undefined, italic: undefined };
-const unsetStyle = { bold: false, underline: false, italic: false };
+const undefinedStyle = { bold: undefined, underline: undefined, itAlic: undefined };
+const unsetStyle = { bold: fAlse, underline: fAlse, itAlic: fAlse };
 
-function ts(foreground: string | undefined, styleFlags: { bold?: boolean; underline?: boolean; italic?: boolean } | undefined): TokenStyle {
+function ts(foreground: string | undefined, styleFlAgs: { bold?: booleAn; underline?: booleAn; itAlic?: booleAn } | undefined): TokenStyle {
 	const foregroundColor = isString(foreground) ? Color.fromHex(foreground) : undefined;
-	return new TokenStyle(foregroundColor, styleFlags && styleFlags.bold, styleFlags && styleFlags.underline, styleFlags && styleFlags.italic);
+	return new TokenStyle(foregroundColor, styleFlAgs && styleFlAgs.bold, styleFlAgs && styleFlAgs.underline, styleFlAgs && styleFlAgs.itAlic);
 }
 
 function tokenStyleAsString(ts: TokenStyle | undefined | null) {
@@ -37,44 +37,44 @@ function tokenStyleAsString(ts: TokenStyle | undefined | null) {
 	if (ts.underline !== undefined) {
 		str += ts.underline ? '+U' : '-U';
 	}
-	if (ts.italic !== undefined) {
-		str += ts.italic ? '+I' : '-I';
+	if (ts.itAlic !== undefined) {
+		str += ts.itAlic ? '+I' : '-I';
 	}
 	return str;
 }
 
-function assertTokenStyle(actual: TokenStyle | undefined | null, expected: TokenStyle | undefined | null, message?: string) {
-	assert.equal(tokenStyleAsString(actual), tokenStyleAsString(expected), message);
+function AssertTokenStyle(ActuAl: TokenStyle | undefined | null, expected: TokenStyle | undefined | null, messAge?: string) {
+	Assert.equAl(tokenStyleAsString(ActuAl), tokenStyleAsString(expected), messAge);
 }
 
-function assertTokenStyleMetaData(colorIndex: string[], actual: ITokenStyle | undefined, expected: TokenStyle | undefined | null, message = '') {
-	if (expected === undefined || expected === null || actual === undefined) {
-		assert.equal(actual, expected, message);
+function AssertTokenStyleMetADAtA(colorIndex: string[], ActuAl: ITokenStyle | undefined, expected: TokenStyle | undefined | null, messAge = '') {
+	if (expected === undefined || expected === null || ActuAl === undefined) {
+		Assert.equAl(ActuAl, expected, messAge);
 		return;
 	}
-	assert.strictEqual(actual.bold, expected.bold, 'bold ' + message);
-	assert.strictEqual(actual.italic, expected.italic, 'italic ' + message);
-	assert.strictEqual(actual.underline, expected.underline, 'underline ' + message);
+	Assert.strictEquAl(ActuAl.bold, expected.bold, 'bold ' + messAge);
+	Assert.strictEquAl(ActuAl.itAlic, expected.itAlic, 'itAlic ' + messAge);
+	Assert.strictEquAl(ActuAl.underline, expected.underline, 'underline ' + messAge);
 
-	const actualForegroundIndex = actual.foreground;
-	if (actualForegroundIndex && expected.foreground) {
-		assert.equal(colorIndex[actualForegroundIndex], Color.Format.CSS.formatHexA(expected.foreground, true).toUpperCase(), 'foreground ' + message);
+	const ActuAlForegroundIndex = ActuAl.foreground;
+	if (ActuAlForegroundIndex && expected.foreground) {
+		Assert.equAl(colorIndex[ActuAlForegroundIndex], Color.FormAt.CSS.formAtHexA(expected.foreground, true).toUpperCAse(), 'foreground ' + messAge);
 	} else {
-		assert.equal(actualForegroundIndex, expected.foreground || 0, 'foreground ' + message);
+		Assert.equAl(ActuAlForegroundIndex, expected.foreground || 0, 'foreground ' + messAge);
 	}
 }
 
 
-function assertTokenStyles(themeData: ColorThemeData, expected: { [qualifiedClassifier: string]: TokenStyle }, language = 'typescript') {
-	const colorIndex = themeData.tokenColorMap;
+function AssertTokenStyles(themeDAtA: ColorThemeDAtA, expected: { [quAlifiedClAssifier: string]: TokenStyle }, lAnguAge = 'typescript') {
+	const colorIndex = themeDAtA.tokenColorMAp;
 
-	for (let qualifiedClassifier in expected) {
-		const [type, ...modifiers] = qualifiedClassifier.split('.');
+	for (let quAlifiedClAssifier in expected) {
+		const [type, ...modifiers] = quAlifiedClAssifier.split('.');
 
-		const expectedTokenStyle = expected[qualifiedClassifier];
+		const expectedTokenStyle = expected[quAlifiedClAssifier];
 
-		const tokenStyleMetaData = themeData.getTokenStyleMetadata(type, modifiers, language);
-		assertTokenStyleMetaData(colorIndex, tokenStyleMetaData, expectedTokenStyle, qualifiedClassifier);
+		const tokenStyleMetADAtA = themeDAtA.getTokenStyleMetAdAtA(type, modifiers, lAnguAge);
+		AssertTokenStyleMetADAtA(colorIndex, tokenStyleMetADAtA, expectedTokenStyle, quAlifiedClAssifier);
 	}
 }
 
@@ -82,24 +82,24 @@ suite('Themes - TokenStyleResolving', () => {
 
 
 	const fileService = new FileService(new NullLogService());
-	const extensionResourceLoaderService = new ExtensionResourceLoaderService(fileService);
+	const extensionResourceLoAderService = new ExtensionResourceLoAderService(fileService);
 
 	const diskFileSystemProvider = new DiskFileSystemProvider(new NullLogService());
-	fileService.registerProvider(Schemas.file, diskFileSystemProvider);
+	fileService.registerProvider(SchemAs.file, diskFileSystemProvider);
 
 
-	test('color defaults - monokai', async () => {
-		const themeData = ColorThemeData.createUnloadedTheme('foo');
-		const themeLocation = getPathFromAmdModule(require, '../../../../../../../extensions/theme-monokai/themes/monokai-color-theme.json');
-		themeData.location = URI.file(themeLocation);
-		await themeData.ensureLoaded(extensionResourceLoaderService);
+	test('color defAults - monokAi', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteUnloAdedTheme('foo');
+		const themeLocAtion = getPAthFromAmdModule(require, '../../../../../../../extensions/theme-monokAi/themes/monokAi-color-theme.json');
+		themeDAtA.locAtion = URI.file(themeLocAtion);
+		AwAit themeDAtA.ensureLoAded(extensionResourceLoAderService);
 
-		assert.equal(themeData.isLoaded, true);
+		Assert.equAl(themeDAtA.isLoAded, true);
 
-		assertTokenStyles(themeData, {
+		AssertTokenStyles(themeDAtA, {
 			'comment': ts('#88846f', undefinedStyle),
-			'variable': ts('#F8F8F2', unsetStyle),
-			'type': ts('#A6E22E', { bold: false, underline: true, italic: false }),
+			'vAriAble': ts('#F8F8F2', unsetStyle),
+			'type': ts('#A6E22E', { bold: fAlse, underline: true, itAlic: fAlse }),
 			'function': ts('#A6E22E', unsetStyle),
 			'string': ts('#E6DB74', undefinedStyle),
 			'number': ts('#AE81FF', undefinedStyle),
@@ -108,17 +108,17 @@ suite('Themes - TokenStyleResolving', () => {
 
 	});
 
-	test('color defaults - dark+', async () => {
-		const themeData = ColorThemeData.createUnloadedTheme('foo');
-		const themeLocation = getPathFromAmdModule(require, '../../../../../../../extensions/theme-defaults/themes/dark_plus.json');
-		themeData.location = URI.file(themeLocation);
-		await themeData.ensureLoaded(extensionResourceLoaderService);
+	test('color defAults - dArk+', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteUnloAdedTheme('foo');
+		const themeLocAtion = getPAthFromAmdModule(require, '../../../../../../../extensions/theme-defAults/themes/dArk_plus.json');
+		themeDAtA.locAtion = URI.file(themeLocAtion);
+		AwAit themeDAtA.ensureLoAded(extensionResourceLoAderService);
 
-		assert.equal(themeData.isLoaded, true);
+		Assert.equAl(themeDAtA.isLoAded, true);
 
-		assertTokenStyles(themeData, {
+		AssertTokenStyles(themeDAtA, {
 			'comment': ts('#6A9955', undefinedStyle),
-			'variable': ts('#9CDCFE', undefinedStyle),
+			'vAriAble': ts('#9CDCFE', undefinedStyle),
 			'type': ts('#4EC9B0', undefinedStyle),
 			'function': ts('#DCDCAA', undefinedStyle),
 			'string': ts('#CE9178', undefinedStyle),
@@ -128,120 +128,120 @@ suite('Themes - TokenStyleResolving', () => {
 
 	});
 
-	test('color defaults - light vs', async () => {
-		const themeData = ColorThemeData.createUnloadedTheme('foo');
-		const themeLocation = getPathFromAmdModule(require, '../../../../../../../extensions/theme-defaults/themes/light_vs.json');
-		themeData.location = URI.file(themeLocation);
-		await themeData.ensureLoaded(extensionResourceLoaderService);
+	test('color defAults - light vs', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteUnloAdedTheme('foo');
+		const themeLocAtion = getPAthFromAmdModule(require, '../../../../../../../extensions/theme-defAults/themes/light_vs.json');
+		themeDAtA.locAtion = URI.file(themeLocAtion);
+		AwAit themeDAtA.ensureLoAded(extensionResourceLoAderService);
 
-		assert.equal(themeData.isLoaded, true);
+		Assert.equAl(themeDAtA.isLoAded, true);
 
-		assertTokenStyles(themeData, {
+		AssertTokenStyles(themeDAtA, {
 			'comment': ts('#008000', undefinedStyle),
-			'variable': ts(undefined, undefinedStyle),
+			'vAriAble': ts(undefined, undefinedStyle),
 			'type': ts(undefined, undefinedStyle),
 			'function': ts(undefined, undefinedStyle),
-			'string': ts('#a31515', undefinedStyle),
+			'string': ts('#A31515', undefinedStyle),
 			'number': ts('#098658', undefinedStyle),
 			'keyword': ts('#0000ff', undefinedStyle)
 		});
 
 	});
 
-	test('color defaults - hc', async () => {
-		const themeData = ColorThemeData.createUnloadedTheme('foo');
-		const themeLocation = getPathFromAmdModule(require, '../../../../../../../extensions/theme-defaults/themes/hc_black.json');
-		themeData.location = URI.file(themeLocation);
-		await themeData.ensureLoaded(extensionResourceLoaderService);
+	test('color defAults - hc', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteUnloAdedTheme('foo');
+		const themeLocAtion = getPAthFromAmdModule(require, '../../../../../../../extensions/theme-defAults/themes/hc_blAck.json');
+		themeDAtA.locAtion = URI.file(themeLocAtion);
+		AwAit themeDAtA.ensureLoAded(extensionResourceLoAderService);
 
-		assert.equal(themeData.isLoaded, true);
+		Assert.equAl(themeDAtA.isLoAded, true);
 
-		assertTokenStyles(themeData, {
-			'comment': ts('#7ca668', undefinedStyle),
-			'variable': ts('#9CDCFE', undefinedStyle),
+		AssertTokenStyles(themeDAtA, {
+			'comment': ts('#7cA668', undefinedStyle),
+			'vAriAble': ts('#9CDCFE', undefinedStyle),
 			'type': ts('#4EC9B0', undefinedStyle),
 			'function': ts('#DCDCAA', undefinedStyle),
 			'string': ts('#ce9178', undefinedStyle),
-			'number': ts('#b5cea8', undefinedStyle),
+			'number': ts('#b5ceA8', undefinedStyle),
 			'keyword': ts('#C586C0', undefinedStyle)
 		});
 
 	});
 
-	test('color defaults - kimbie dark', async () => {
-		const themeData = ColorThemeData.createUnloadedTheme('foo');
-		const themeLocation = getPathFromAmdModule(require, '../../../../../../../extensions/theme-kimbie-dark/themes/kimbie-dark-color-theme.json');
-		themeData.location = URI.file(themeLocation);
-		await themeData.ensureLoaded(extensionResourceLoaderService);
+	test('color defAults - kimbie dArk', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteUnloAdedTheme('foo');
+		const themeLocAtion = getPAthFromAmdModule(require, '../../../../../../../extensions/theme-kimbie-dArk/themes/kimbie-dArk-color-theme.json');
+		themeDAtA.locAtion = URI.file(themeLocAtion);
+		AwAit themeDAtA.ensureLoAded(extensionResourceLoAderService);
 
-		assert.equal(themeData.isLoaded, true);
+		Assert.equAl(themeDAtA.isLoAded, true);
 
-		assertTokenStyles(themeData, {
-			'comment': ts('#a57a4c', undefinedStyle),
-			'variable': ts('#dc3958', undefinedStyle),
+		AssertTokenStyles(themeDAtA, {
+			'comment': ts('#A57A4c', undefinedStyle),
+			'vAriAble': ts('#dc3958', undefinedStyle),
 			'type': ts('#f06431', undefinedStyle),
-			'function': ts('#8ab1b0', undefinedStyle),
-			'string': ts('#889b4a', undefinedStyle),
-			'number': ts('#f79a32', undefinedStyle),
-			'keyword': ts('#98676a', undefinedStyle)
+			'function': ts('#8Ab1b0', undefinedStyle),
+			'string': ts('#889b4A', undefinedStyle),
+			'number': ts('#f79A32', undefinedStyle),
+			'keyword': ts('#98676A', undefinedStyle)
 		});
 
 	});
 
-	test('color defaults - abyss', async () => {
-		const themeData = ColorThemeData.createUnloadedTheme('foo');
-		const themeLocation = getPathFromAmdModule(require, '../../../../../../../extensions/theme-abyss/themes/abyss-color-theme.json');
-		themeData.location = URI.file(themeLocation);
-		await themeData.ensureLoaded(extensionResourceLoaderService);
+	test('color defAults - Abyss', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteUnloAdedTheme('foo');
+		const themeLocAtion = getPAthFromAmdModule(require, '../../../../../../../extensions/theme-Abyss/themes/Abyss-color-theme.json');
+		themeDAtA.locAtion = URI.file(themeLocAtion);
+		AwAit themeDAtA.ensureLoAded(extensionResourceLoAderService);
 
-		assert.equal(themeData.isLoaded, true);
+		Assert.equAl(themeDAtA.isLoAded, true);
 
-		assertTokenStyles(themeData, {
+		AssertTokenStyles(themeDAtA, {
 			'comment': ts('#384887', undefinedStyle),
-			'variable': ts(undefined, unsetStyle),
-			'type': ts('#ffeebb', { underline: true, bold: false, italic: false }),
+			'vAriAble': ts(undefined, unsetStyle),
+			'type': ts('#ffeebb', { underline: true, bold: fAlse, itAlic: fAlse }),
 			'function': ts('#ddbb88', unsetStyle),
-			'string': ts('#22aa44', undefinedStyle),
+			'string': ts('#22AA44', undefinedStyle),
 			'number': ts('#f280d0', undefinedStyle),
 			'keyword': ts('#225588', undefinedStyle)
 		});
 
 	});
 
-	test('resolveScopes', async () => {
-		const themeData = ColorThemeData.createLoadedEmptyTheme('test', 'test');
+	test('resolveScopes', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteLoAdedEmptyTheme('test', 'test');
 
-		const customTokenColors: ITokenColorCustomizations = {
-			textMateRules: [
+		const customTokenColors: ITokenColorCustomizAtions = {
+			textMAteRules: [
 				{
-					scope: 'variable',
+					scope: 'vAriAble',
 					settings: {
 						fontStyle: '',
 						foreground: '#F8F8F2'
 					}
 				},
 				{
-					scope: 'keyword.operator',
+					scope: 'keyword.operAtor',
 					settings: {
-						fontStyle: 'italic bold underline',
+						fontStyle: 'itAlic bold underline',
 						foreground: '#F92672'
 					}
 				},
 				{
-					scope: 'storage',
+					scope: 'storAge',
 					settings: {
-						fontStyle: 'italic',
+						fontStyle: 'itAlic',
 						foreground: '#F92672'
 					}
 				},
 				{
-					scope: ['storage.type', 'meta.structure.dictionary.json string.quoted.double.json'],
+					scope: ['storAge.type', 'metA.structure.dictionAry.json string.quoted.double.json'],
 					settings: {
 						foreground: '#66D9EF'
 					}
 				},
 				{
-					scope: 'entity.name.type, entity.name.class, entity.name.namespace, entity.name.scope-resolution',
+					scope: 'entity.nAme.type, entity.nAme.clAss, entity.nAme.nAmespAce, entity.nAme.scope-resolution',
 					settings: {
 						fontStyle: 'underline',
 						foreground: '#A6E22E'
@@ -250,64 +250,64 @@ suite('Themes - TokenStyleResolving', () => {
 			]
 		};
 
-		themeData.setCustomTokenColors(customTokenColors);
+		themeDAtA.setCustomTokenColors(customTokenColors);
 
 		let tokenStyle;
-		let defaultTokenStyle = undefined;
+		let defAultTokenStyle = undefined;
 
-		tokenStyle = themeData.resolveScopes([['variable']]);
-		assertTokenStyle(tokenStyle, ts('#F8F8F2', unsetStyle), 'variable');
+		tokenStyle = themeDAtA.resolveScopes([['vAriAble']]);
+		AssertTokenStyle(tokenStyle, ts('#F8F8F2', unsetStyle), 'vAriAble');
 
-		tokenStyle = themeData.resolveScopes([['keyword.operator']]);
-		assertTokenStyle(tokenStyle, ts('#F92672', { italic: true, bold: true, underline: true }), 'keyword');
+		tokenStyle = themeDAtA.resolveScopes([['keyword.operAtor']]);
+		AssertTokenStyle(tokenStyle, ts('#F92672', { itAlic: true, bold: true, underline: true }), 'keyword');
 
-		tokenStyle = themeData.resolveScopes([['keyword']]);
-		assertTokenStyle(tokenStyle, defaultTokenStyle, 'keyword');
+		tokenStyle = themeDAtA.resolveScopes([['keyword']]);
+		AssertTokenStyle(tokenStyle, defAultTokenStyle, 'keyword');
 
-		tokenStyle = themeData.resolveScopes([['keyword.operator']]);
-		assertTokenStyle(tokenStyle, ts('#F92672', { italic: true, bold: true, underline: true }), 'keyword.operator');
+		tokenStyle = themeDAtA.resolveScopes([['keyword.operAtor']]);
+		AssertTokenStyle(tokenStyle, ts('#F92672', { itAlic: true, bold: true, underline: true }), 'keyword.operAtor');
 
-		tokenStyle = themeData.resolveScopes([['keyword.operators']]);
-		assertTokenStyle(tokenStyle, defaultTokenStyle, 'keyword.operators');
+		tokenStyle = themeDAtA.resolveScopes([['keyword.operAtors']]);
+		AssertTokenStyle(tokenStyle, defAultTokenStyle, 'keyword.operAtors');
 
-		tokenStyle = themeData.resolveScopes([['storage']]);
-		assertTokenStyle(tokenStyle, ts('#F92672', { italic: true, bold: false, underline: false }), 'storage');
+		tokenStyle = themeDAtA.resolveScopes([['storAge']]);
+		AssertTokenStyle(tokenStyle, ts('#F92672', { itAlic: true, bold: fAlse, underline: fAlse }), 'storAge');
 
-		tokenStyle = themeData.resolveScopes([['storage.type']]);
-		assertTokenStyle(tokenStyle, ts('#66D9EF', { italic: true, bold: false, underline: false }), 'storage.type');
+		tokenStyle = themeDAtA.resolveScopes([['storAge.type']]);
+		AssertTokenStyle(tokenStyle, ts('#66D9EF', { itAlic: true, bold: fAlse, underline: fAlse }), 'storAge.type');
 
-		tokenStyle = themeData.resolveScopes([['entity.name.class']]);
-		assertTokenStyle(tokenStyle, ts('#A6E22E', { italic: false, bold: false, underline: true }), 'entity.name.class');
+		tokenStyle = themeDAtA.resolveScopes([['entity.nAme.clAss']]);
+		AssertTokenStyle(tokenStyle, ts('#A6E22E', { itAlic: fAlse, bold: fAlse, underline: true }), 'entity.nAme.clAss');
 
-		tokenStyle = themeData.resolveScopes([['meta.structure.dictionary.json', 'string.quoted.double.json']]);
-		assertTokenStyle(tokenStyle, ts('#66D9EF', undefined), 'json property');
+		tokenStyle = themeDAtA.resolveScopes([['metA.structure.dictionAry.json', 'string.quoted.double.json']]);
+		AssertTokenStyle(tokenStyle, ts('#66D9EF', undefined), 'json property');
 
-		tokenStyle = themeData.resolveScopes([['keyword'], ['storage.type'], ['entity.name.class']]);
-		assertTokenStyle(tokenStyle, ts('#66D9EF', { italic: true, bold: false, underline: false }), 'storage.type');
+		tokenStyle = themeDAtA.resolveScopes([['keyword'], ['storAge.type'], ['entity.nAme.clAss']]);
+		AssertTokenStyle(tokenStyle, ts('#66D9EF', { itAlic: true, bold: fAlse, underline: fAlse }), 'storAge.type');
 
 	});
 
 
-	test('resolveScopes - match most specific', async () => {
-		const themeData = ColorThemeData.createLoadedEmptyTheme('test', 'test');
+	test('resolveScopes - mAtch most specific', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteLoAdedEmptyTheme('test', 'test');
 
-		const customTokenColors: ITokenColorCustomizations = {
-			textMateRules: [
+		const customTokenColors: ITokenColorCustomizAtions = {
+			textMAteRules: [
 				{
-					scope: 'entity.name.type',
+					scope: 'entity.nAme.type',
 					settings: {
 						fontStyle: 'underline',
 						foreground: '#A6E22E'
 					}
 				},
 				{
-					scope: 'entity.name.type.class',
+					scope: 'entity.nAme.type.clAss',
 					settings: {
 						foreground: '#FF00FF'
 					}
 				},
 				{
-					scope: 'entity.name',
+					scope: 'entity.nAme',
 					settings: {
 						foreground: '#FFFFFF'
 					}
@@ -315,131 +315,131 @@ suite('Themes - TokenStyleResolving', () => {
 			]
 		};
 
-		themeData.setCustomTokenColors(customTokenColors);
+		themeDAtA.setCustomTokenColors(customTokenColors);
 
-		const tokenStyle = themeData.resolveScopes([['entity.name.type.class']]);
-		assertTokenStyle(tokenStyle, ts('#FF00FF', { italic: false, bold: false, underline: true }), 'entity.name.type.class');
+		const tokenStyle = themeDAtA.resolveScopes([['entity.nAme.type.clAss']]);
+		AssertTokenStyle(tokenStyle, ts('#FF00FF', { itAlic: fAlse, bold: fAlse, underline: true }), 'entity.nAme.type.clAss');
 
 	});
 
 
-	test('rule matching', async () => {
-		const themeData = ColorThemeData.createLoadedEmptyTheme('test', 'test');
-		themeData.setCustomColors({ 'editor.foreground': '#000000' });
-		themeData.setCustomSemanticTokenColors({
-			enabled: true,
+	test('rule mAtching', Async () => {
+		const themeDAtA = ColorThemeDAtA.creAteLoAdedEmptyTheme('test', 'test');
+		themeDAtA.setCustomColors({ 'editor.foreground': '#000000' });
+		themeDAtA.setCustomSemAnticTokenColors({
+			enAbled: true,
 			rules: {
 				'type': '#ff0000',
-				'class': { foreground: '#0000ff', italic: true },
-				'*.static': { bold: true },
-				'*.declaration': { italic: true },
-				'*.async.static': { italic: true, underline: true },
-				'*.async': { foreground: '#000fff', underline: true }
+				'clAss': { foreground: '#0000ff', itAlic: true },
+				'*.stAtic': { bold: true },
+				'*.declArAtion': { itAlic: true },
+				'*.Async.stAtic': { itAlic: true, underline: true },
+				'*.Async': { foreground: '#000fff', underline: true }
 			}
 		});
 
-		assertTokenStyles(themeData, {
+		AssertTokenStyles(themeDAtA, {
 			'type': ts('#ff0000', undefinedStyle),
-			'type.static': ts('#ff0000', { bold: true }),
-			'type.static.declaration': ts('#ff0000', { bold: true, italic: true }),
-			'class': ts('#0000ff', { italic: true }),
-			'class.static.declaration': ts('#0000ff', { bold: true, italic: true, }),
-			'class.declaration': ts('#0000ff', { italic: true }),
-			'class.declaration.async': ts('#000fff', { underline: true, italic: true }),
-			'class.declaration.async.static': ts('#000fff', { italic: true, underline: true, bold: true }),
+			'type.stAtic': ts('#ff0000', { bold: true }),
+			'type.stAtic.declArAtion': ts('#ff0000', { bold: true, itAlic: true }),
+			'clAss': ts('#0000ff', { itAlic: true }),
+			'clAss.stAtic.declArAtion': ts('#0000ff', { bold: true, itAlic: true, }),
+			'clAss.declArAtion': ts('#0000ff', { itAlic: true }),
+			'clAss.declArAtion.Async': ts('#000fff', { underline: true, itAlic: true }),
+			'clAss.declArAtion.Async.stAtic': ts('#000fff', { itAlic: true, underline: true, bold: true }),
 		});
 
 	});
 
-	test('super type', async () => {
-		const registry = getTokenClassificationRegistry();
+	test('super type', Async () => {
+		const registry = getTokenClAssificAtionRegistry();
 
-		registry.registerTokenType('myTestInterface', 'A type just for testing', 'interface');
-		registry.registerTokenType('myTestSubInterface', 'A type just for testing', 'myTestInterface');
+		registry.registerTokenType('myTestInterfAce', 'A type just for testing', 'interfAce');
+		registry.registerTokenType('myTestSubInterfAce', 'A type just for testing', 'myTestInterfAce');
 
 		try {
-			const themeData = ColorThemeData.createLoadedEmptyTheme('test', 'test');
-			themeData.setCustomColors({ 'editor.foreground': '#000000' });
-			themeData.setCustomSemanticTokenColors({
-				enabled: true,
+			const themeDAtA = ColorThemeDAtA.creAteLoAdedEmptyTheme('test', 'test');
+			themeDAtA.setCustomColors({ 'editor.foreground': '#000000' });
+			themeDAtA.setCustomSemAnticTokenColors({
+				enAbled: true,
 				rules: {
-					'interface': '#ff0000',
-					'myTestInterface': { italic: true },
-					'interface.static': { bold: true }
+					'interfAce': '#ff0000',
+					'myTestInterfAce': { itAlic: true },
+					'interfAce.stAtic': { bold: true }
 				}
 			});
 
-			assertTokenStyles(themeData, { 'myTestSubInterface': ts('#ff0000', { italic: true }) });
-			assertTokenStyles(themeData, { 'myTestSubInterface.static': ts('#ff0000', { italic: true, bold: true }) });
+			AssertTokenStyles(themeDAtA, { 'myTestSubInterfAce': ts('#ff0000', { itAlic: true }) });
+			AssertTokenStyles(themeDAtA, { 'myTestSubInterfAce.stAtic': ts('#ff0000', { itAlic: true, bold: true }) });
 
-			themeData.setCustomSemanticTokenColors({
-				enabled: true,
+			themeDAtA.setCustomSemAnticTokenColors({
+				enAbled: true,
 				rules: {
-					'interface': '#ff0000',
-					'myTestInterface': { foreground: '#ff00ff', italic: true }
+					'interfAce': '#ff0000',
+					'myTestInterfAce': { foreground: '#ff00ff', itAlic: true }
 				}
 			});
-			assertTokenStyles(themeData, { 'myTestSubInterface': ts('#ff00ff', { italic: true }) });
-		} finally {
-			registry.deregisterTokenType('myTestInterface');
-			registry.deregisterTokenType('myTestSubInterface');
+			AssertTokenStyles(themeDAtA, { 'myTestSubInterfAce': ts('#ff00ff', { itAlic: true }) });
+		} finAlly {
+			registry.deregisterTokenType('myTestInterfAce');
+			registry.deregisterTokenType('myTestSubInterfAce');
 		}
 	});
 
-	test('language', async () => {
+	test('lAnguAge', Async () => {
 		try {
-			const themeData = ColorThemeData.createLoadedEmptyTheme('test', 'test');
-			themeData.setCustomColors({ 'editor.foreground': '#000000' });
-			themeData.setCustomSemanticTokenColors({
-				enabled: true,
+			const themeDAtA = ColorThemeDAtA.creAteLoAdedEmptyTheme('test', 'test');
+			themeDAtA.setCustomColors({ 'editor.foreground': '#000000' });
+			themeDAtA.setCustomSemAnticTokenColors({
+				enAbled: true,
 				rules: {
-					'interface': '#fff000',
-					'interface:java': '#ff0000',
-					'interface.static': { bold: true },
-					'interface.static:typescript': { italic: true }
+					'interfAce': '#fff000',
+					'interfAce:jAvA': '#ff0000',
+					'interfAce.stAtic': { bold: true },
+					'interfAce.stAtic:typescript': { itAlic: true }
 				}
 			});
 
-			assertTokenStyles(themeData, { 'interface': ts('#ff0000', undefined) }, 'java');
-			assertTokenStyles(themeData, { 'interface': ts('#fff000', undefined) }, 'typescript');
-			assertTokenStyles(themeData, { 'interface.static': ts('#ff0000', { bold: true }) }, 'java');
-			assertTokenStyles(themeData, { 'interface.static': ts('#fff000', { bold: true, italic: true }) }, 'typescript');
-		} finally {
+			AssertTokenStyles(themeDAtA, { 'interfAce': ts('#ff0000', undefined) }, 'jAvA');
+			AssertTokenStyles(themeDAtA, { 'interfAce': ts('#fff000', undefined) }, 'typescript');
+			AssertTokenStyles(themeDAtA, { 'interfAce.stAtic': ts('#ff0000', { bold: true }) }, 'jAvA');
+			AssertTokenStyles(themeDAtA, { 'interfAce.stAtic': ts('#fff000', { bold: true, itAlic: true }) }, 'typescript');
+		} finAlly {
 		}
 	});
 
-	test('language - scope resolving', async () => {
-		const registry = getTokenClassificationRegistry();
+	test('lAnguAge - scope resolving', Async () => {
+		const registry = getTokenClAssificAtionRegistry();
 
-		const numberOfDefaultRules = registry.getTokenStylingDefaultRules().length;
+		const numberOfDefAultRules = registry.getTokenStylingDefAultRules().length;
 
-		registry.registerTokenStyleDefault(registry.parseTokenSelector('type', 'typescript1'), { scopesToProbe: [['entity.name.type.ts1']] });
-		registry.registerTokenStyleDefault(registry.parseTokenSelector('type:javascript1'), { scopesToProbe: [['entity.name.type.js1']] });
+		registry.registerTokenStyleDefAult(registry.pArseTokenSelector('type', 'typescript1'), { scopesToProbe: [['entity.nAme.type.ts1']] });
+		registry.registerTokenStyleDefAult(registry.pArseTokenSelector('type:jAvAscript1'), { scopesToProbe: [['entity.nAme.type.js1']] });
 
 		try {
-			const themeData = ColorThemeData.createLoadedEmptyTheme('test', 'test');
-			themeData.setCustomColors({ 'editor.foreground': '#000000' });
-			themeData.setCustomTokenColors({
-				textMateRules: [
+			const themeDAtA = ColorThemeDAtA.creAteLoAdedEmptyTheme('test', 'test');
+			themeDAtA.setCustomColors({ 'editor.foreground': '#000000' });
+			themeDAtA.setCustomTokenColors({
+				textMAteRules: [
 					{
-						scope: 'entity.name.type',
-						settings: { foreground: '#aa0000' }
+						scope: 'entity.nAme.type',
+						settings: { foreground: '#AA0000' }
 					},
 					{
-						scope: 'entity.name.type.ts1',
+						scope: 'entity.nAme.type.ts1',
 						settings: { foreground: '#bb0000' }
 					}
 				]
 			});
 
-			assertTokenStyles(themeData, { 'type': ts('#aa0000', undefined) }, 'javascript1');
-			assertTokenStyles(themeData, { 'type': ts('#bb0000', undefined) }, 'typescript1');
+			AssertTokenStyles(themeDAtA, { 'type': ts('#AA0000', undefined) }, 'jAvAscript1');
+			AssertTokenStyles(themeDAtA, { 'type': ts('#bb0000', undefined) }, 'typescript1');
 
-		} finally {
-			registry.deregisterTokenStyleDefault(registry.parseTokenSelector('type', 'typescript1'));
-			registry.deregisterTokenStyleDefault(registry.parseTokenSelector('type:javascript1'));
+		} finAlly {
+			registry.deregisterTokenStyleDefAult(registry.pArseTokenSelector('type', 'typescript1'));
+			registry.deregisterTokenStyleDefAult(registry.pArseTokenSelector('type:jAvAscript1'));
 
-			assert.equal(registry.getTokenStylingDefaultRules().length, numberOfDefaultRules);
+			Assert.equAl(registry.getTokenStylingDefAultRules().length, numberOfDefAultRules);
 		}
 	});
 });

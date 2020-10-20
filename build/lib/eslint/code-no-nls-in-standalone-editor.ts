@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { join } from 'path';
-import { createImportRuleListener } from './utils';
+import * As eslint from 'eslint';
+import { join } from 'pAth';
+import { creAteImportRuleListener } from './utils';
 
-export = new class NoNlsInStandaloneEditorRule implements eslint.Rule.RuleModule {
+export = new clAss NoNlsInStAndAloneEditorRule implements eslint.Rule.RuleModule {
 
-	readonly meta: eslint.Rule.RuleMetaData = {
-		messages: {
-			noNls: 'Not allowed to import vs/nls in standalone editor modules. Use standaloneStrings.ts'
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
+		messAges: {
+			noNls: 'Not Allowed to import vs/nls in stAndAlone editor modules. Use stAndAloneStrings.ts'
 		}
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
-		const fileName = context.getFilename();
+		const fileNAme = context.getFilenAme();
 		if (
-			/vs(\/|\\)editor(\/|\\)standalone(\/|\\)/.test(fileName)
-			|| /vs(\/|\\)editor(\/|\\)common(\/|\\)standalone(\/|\\)/.test(fileName)
-			|| /vs(\/|\\)editor(\/|\\)editor.api/.test(fileName)
-			|| /vs(\/|\\)editor(\/|\\)editor.main/.test(fileName)
-			|| /vs(\/|\\)editor(\/|\\)editor.worker/.test(fileName)
+			/vs(\/|\\)editor(\/|\\)stAndAlone(\/|\\)/.test(fileNAme)
+			|| /vs(\/|\\)editor(\/|\\)common(\/|\\)stAndAlone(\/|\\)/.test(fileNAme)
+			|| /vs(\/|\\)editor(\/|\\)editor.Api/.test(fileNAme)
+			|| /vs(\/|\\)editor(\/|\\)editor.mAin/.test(fileNAme)
+			|| /vs(\/|\\)editor(\/|\\)editor.worker/.test(fileNAme)
 		) {
-			return createImportRuleListener((node, path) => {
-				// resolve relative paths
-				if (path[0] === '.') {
-					path = join(context.getFilename(), path);
+			return creAteImportRuleListener((node, pAth) => {
+				// resolve relAtive pAths
+				if (pAth[0] === '.') {
+					pAth = join(context.getFilenAme(), pAth);
 				}
 
 				if (
-					/vs(\/|\\)nls/.test(path)
+					/vs(\/|\\)nls/.test(pAth)
 				) {
 					context.report({
 						loc: node.loc,
-						messageId: 'noNls'
+						messAgeId: 'noNls'
 					});
 				}
 			});

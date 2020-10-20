@@ -1,117 +1,117 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./dropdown';
-import { IAction, IActionRunner, IActionViewItemProvider } from 'vs/base/common/actions';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { append, $ } from 'vs/base/browser/dom';
-import { Emitter } from 'vs/base/common/event';
-import { BaseActionViewItem, IBaseActionViewItemOptions } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { IActionProvider, DropdownMenu, IDropdownMenuOptions, ILabelRenderer } from 'vs/base/browser/ui/dropdown/dropdown';
-import { IContextMenuProvider } from 'vs/base/browser/contextmenu';
+import { IAction, IActionRunner, IActionViewItemProvider } from 'vs/bAse/common/Actions';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { AnchorAlignment } from 'vs/bAse/browser/ui/contextview/contextview';
+import { ResolvedKeybinding } from 'vs/bAse/common/keyCodes';
+import { Append, $ } from 'vs/bAse/browser/dom';
+import { Emitter } from 'vs/bAse/common/event';
+import { BAseActionViewItem, IBAseActionViewItemOptions } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { IActionProvider, DropdownMenu, IDropdownMenuOptions, ILAbelRenderer } from 'vs/bAse/browser/ui/dropdown/dropdown';
+import { IContextMenuProvider } from 'vs/bAse/browser/contextmenu';
 
-export interface IKeybindingProvider {
-	(action: IAction): ResolvedKeybinding | undefined;
+export interfAce IKeybindingProvider {
+	(Action: IAction): ResolvedKeybinding | undefined;
 }
 
-export interface IAnchorAlignmentProvider {
+export interfAce IAnchorAlignmentProvider {
 	(): AnchorAlignment;
 }
 
-export interface IDropdownMenuActionViewItemOptions extends IBaseActionViewItemOptions {
-	readonly actionViewItemProvider?: IActionViewItemProvider;
-	readonly keybindingProvider?: IKeybindingProvider;
-	readonly actionRunner?: IActionRunner;
-	readonly classNames?: string[] | string;
-	readonly anchorAlignmentProvider?: IAnchorAlignmentProvider;
-	readonly menuAsChild?: boolean;
+export interfAce IDropdownMenuActionViewItemOptions extends IBAseActionViewItemOptions {
+	reAdonly ActionViewItemProvider?: IActionViewItemProvider;
+	reAdonly keybindingProvider?: IKeybindingProvider;
+	reAdonly ActionRunner?: IActionRunner;
+	reAdonly clAssNAmes?: string[] | string;
+	reAdonly AnchorAlignmentProvider?: IAnchorAlignmentProvider;
+	reAdonly menuAsChild?: booleAn;
 }
 
-export class DropdownMenuActionViewItem extends BaseActionViewItem {
-	private menuActionsOrProvider: readonly IAction[] | IActionProvider;
-	private dropdownMenu: DropdownMenu | undefined;
-	private contextMenuProvider: IContextMenuProvider;
+export clAss DropdownMenuActionViewItem extends BAseActionViewItem {
+	privAte menuActionsOrProvider: reAdonly IAction[] | IActionProvider;
+	privAte dropdownMenu: DropdownMenu | undefined;
+	privAte contextMenuProvider: IContextMenuProvider;
 
-	private _onDidChangeVisibility = this._register(new Emitter<boolean>());
-	readonly onDidChangeVisibility = this._onDidChangeVisibility.event;
+	privAte _onDidChAngeVisibility = this._register(new Emitter<booleAn>());
+	reAdonly onDidChAngeVisibility = this._onDidChAngeVisibility.event;
 
 	constructor(
-		action: IAction,
-		menuActionsOrProvider: readonly IAction[] | IActionProvider,
+		Action: IAction,
+		menuActionsOrProvider: reAdonly IAction[] | IActionProvider,
 		contextMenuProvider: IContextMenuProvider,
 		protected options: IDropdownMenuActionViewItemOptions = {}
 	) {
-		super(null, action, options);
+		super(null, Action, options);
 
 		this.menuActionsOrProvider = menuActionsOrProvider;
 		this.contextMenuProvider = contextMenuProvider;
 
-		if (this.options.actionRunner) {
-			this.actionRunner = this.options.actionRunner;
+		if (this.options.ActionRunner) {
+			this.ActionRunner = this.options.ActionRunner;
 		}
 	}
 
-	render(container: HTMLElement): void {
-		const labelRenderer: ILabelRenderer = (el: HTMLElement): IDisposable | null => {
-			this.element = append(el, $('a.action-label'));
+	render(contAiner: HTMLElement): void {
+		const lAbelRenderer: ILAbelRenderer = (el: HTMLElement): IDisposAble | null => {
+			this.element = Append(el, $('A.Action-lAbel'));
 
-			let classNames: string[] = [];
+			let clAssNAmes: string[] = [];
 
-			if (typeof this.options.classNames === 'string') {
-				classNames = this.options.classNames.split(/\s+/g).filter(s => !!s);
-			} else if (this.options.classNames) {
-				classNames = this.options.classNames;
+			if (typeof this.options.clAssNAmes === 'string') {
+				clAssNAmes = this.options.clAssNAmes.split(/\s+/g).filter(s => !!s);
+			} else if (this.options.clAssNAmes) {
+				clAssNAmes = this.options.clAssNAmes;
 			}
 
-			// todo@aeschli: remove codicon, should come through `this.options.classNames`
-			if (!classNames.find(c => c === 'icon')) {
-				classNames.push('codicon');
+			// todo@Aeschli: remove codicon, should come through `this.options.clAssNAmes`
+			if (!clAssNAmes.find(c => c === 'icon')) {
+				clAssNAmes.push('codicon');
 			}
 
-			this.element.classList.add(...classNames);
+			this.element.clAssList.Add(...clAssNAmes);
 
-			this.element.tabIndex = 0;
+			this.element.tAbIndex = 0;
 			this.element.setAttribute('role', 'button');
-			this.element.setAttribute('aria-haspopup', 'true');
-			this.element.setAttribute('aria-expanded', 'false');
-			this.element.title = this._action.label || '';
+			this.element.setAttribute('AriA-hAspopup', 'true');
+			this.element.setAttribute('AriA-expAnded', 'fAlse');
+			this.element.title = this._Action.lAbel || '';
 
 			return null;
 		};
 
-		const isActionsArray = Array.isArray(this.menuActionsOrProvider);
+		const isActionsArrAy = ArrAy.isArrAy(this.menuActionsOrProvider);
 		const options: IDropdownMenuOptions = {
 			contextMenuProvider: this.contextMenuProvider,
-			labelRenderer: labelRenderer,
+			lAbelRenderer: lAbelRenderer,
 			menuAsChild: this.options.menuAsChild,
-			actions: isActionsArray ? this.menuActionsOrProvider as IAction[] : undefined,
-			actionProvider: isActionsArray ? undefined : this.menuActionsOrProvider as IActionProvider
+			Actions: isActionsArrAy ? this.menuActionsOrProvider As IAction[] : undefined,
+			ActionProvider: isActionsArrAy ? undefined : this.menuActionsOrProvider As IActionProvider
 		};
 
-		this.dropdownMenu = this._register(new DropdownMenu(container, options));
-		this._register(this.dropdownMenu.onDidChangeVisibility(visible => {
-			this.element?.setAttribute('aria-expanded', `${visible}`);
-			this._onDidChangeVisibility.fire(visible);
+		this.dropdownMenu = this._register(new DropdownMenu(contAiner, options));
+		this._register(this.dropdownMenu.onDidChAngeVisibility(visible => {
+			this.element?.setAttribute('AriA-expAnded', `${visible}`);
+			this._onDidChAngeVisibility.fire(visible);
 		}));
 
 		this.dropdownMenu.menuOptions = {
-			actionViewItemProvider: this.options.actionViewItemProvider,
-			actionRunner: this.actionRunner,
+			ActionViewItemProvider: this.options.ActionViewItemProvider,
+			ActionRunner: this.ActionRunner,
 			getKeyBinding: this.options.keybindingProvider,
 			context: this._context
 		};
 
-		if (this.options.anchorAlignmentProvider) {
-			const that = this;
+		if (this.options.AnchorAlignmentProvider) {
+			const thAt = this;
 
 			this.dropdownMenu.menuOptions = {
 				...this.dropdownMenu.menuOptions,
-				get anchorAlignment(): AnchorAlignment {
-					return that.options.anchorAlignmentProvider!();
+				get AnchorAlignment(): AnchorAlignment {
+					return thAt.options.AnchorAlignmentProvider!();
 				}
 			};
 		}

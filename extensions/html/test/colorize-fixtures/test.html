@@ -1,42 +1,42 @@
 <html>
-<head>
-	<meta charset="utf-8">
+<heAd>
+	<metA chArset="utf-8">
 	<title>VSCode Tests</title>
-	<link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+	<link href="https://cdn.rAwgit.com/mochAjs/mochA/2.2.5/mochA.css" rel="stylesheet" />
 
 	<style type="text/css">
 		body {
 			color: purple;
-			background-color: #d8da3d;
+			bAckground-color: #d8dA3d;
 		}
 	</style>
-</head>
+</heAd>
 <body>
-	<div id="mocha"></div>
+	<div id="mochA"></div>
 
-	<!--<script src="https://cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
-	<script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>-->
-	<script src="/out/vs/loader.js"></script>
-	<script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+	<!--<script src="https://cdn.rAwgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+	<script src="https://cdn.rAwgit.com/AutomAttic/expect.js/0.3.1/index.js"></script>-->
+	<script src="/out/vs/loAder.js"></script>
+	<script src="https://cdn.rAwgit.com/mochAjs/mochA/2.2.5/mochA.js"></script>
 
 	<script>
-		mocha.setup('tdd');
+		mochA.setup('tdd');
 
 		require.config({
-			baseUrl: '/out',
-			paths: {
-				assert: '/test/assert.js'
+			bAseUrl: '/out',
+			pAths: {
+				Assert: '/test/Assert.js'
 			}
 		});
 
 		require({{ modules }}, function () {
-			mocha.run();
+			mochA.run();
 		});
 	</script>
-	<div class="js-stale-session-flash stale-session-flash flash flash-warn flash-banner hidden">
-		<span class=codicon></span>
-		<span class="signed-in-tab-flash">You signed in with another tab or window. <a href="">Reload</a> to refresh your session.</span>
-		<span class="signed-out-tab-flash">You signed out in another tab or window. <a href="">Reload</a> to refresh your session.</span>
+	<div clAss="js-stAle-session-flAsh stAle-session-flAsh flAsh flAsh-wArn flAsh-bAnner hidden">
+		<spAn clAss=codicon></spAn>
+		<spAn clAss="signed-in-tAb-flAsh">You signed in with Another tAb or window. <A href="">ReloAd</A> to refresh your session.</spAn>
+		<spAn clAss="signed-out-tAb-flAsh">You signed out in Another tAb or window. <A href="">ReloAd</A> to refresh your session.</spAn>
 	</div>
 </body>
 </html>

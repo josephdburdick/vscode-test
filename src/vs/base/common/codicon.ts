@@ -1,135 +1,135 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { matchesFuzzy, IMatch } from 'vs/base/common/filters';
-import { ltrim } from 'vs/base/common/strings';
+import { mAtchesFuzzy, IMAtch } from 'vs/bAse/common/filters';
+import { ltrim } from 'vs/bAse/common/strings';
 
-export const codiconStartMarker = '$(';
+export const codiconStArtMArker = '$(';
 
-export interface IParsedCodicons {
-	readonly text: string;
-	readonly codiconOffsets?: readonly number[];
+export interfAce IPArsedCodicons {
+	reAdonly text: string;
+	reAdonly codiconOffsets?: reAdonly number[];
 }
 
-export function parseCodicons(text: string): IParsedCodicons {
-	const firstCodiconIndex = text.indexOf(codiconStartMarker);
+export function pArseCodicons(text: string): IPArsedCodicons {
+	const firstCodiconIndex = text.indexOf(codiconStArtMArker);
 	if (firstCodiconIndex === -1) {
-		return { text }; // return early if the word does not include an codicon
+		return { text }; // return eArly if the word does not include An codicon
 	}
 
-	return doParseCodicons(text, firstCodiconIndex);
+	return doPArseCodicons(text, firstCodiconIndex);
 }
 
-function doParseCodicons(text: string, firstCodiconIndex: number): IParsedCodicons {
+function doPArseCodicons(text: string, firstCodiconIndex: number): IPArsedCodicons {
 	const codiconOffsets: number[] = [];
 	let textWithoutCodicons: string = '';
 
-	function appendChars(chars: string) {
-		if (chars) {
-			textWithoutCodicons += chars;
+	function AppendChArs(chArs: string) {
+		if (chArs) {
+			textWithoutCodicons += chArs;
 
-			for (const _ of chars) {
-				codiconOffsets.push(codiconsOffset); // make sure to fill in codicon offsets
+			for (const _ of chArs) {
+				codiconOffsets.push(codiconsOffset); // mAke sure to fill in codicon offsets
 			}
 		}
 	}
 
-	let currentCodiconStart = -1;
-	let currentCodiconValue: string = '';
+	let currentCodiconStArt = -1;
+	let currentCodiconVAlue: string = '';
 	let codiconsOffset = 0;
 
-	let char: string;
-	let nextChar: string;
+	let chAr: string;
+	let nextChAr: string;
 
 	let offset = firstCodiconIndex;
 	const length = text.length;
 
-	// Append all characters until the first codicon
-	appendChars(text.substr(0, firstCodiconIndex));
+	// Append All chArActers until the first codicon
+	AppendChArs(text.substr(0, firstCodiconIndex));
 
-	// example: $(file-symlink-file) my cool $(other-codicon) entry
+	// exAmple: $(file-symlink-file) my cool $(other-codicon) entry
 	while (offset < length) {
-		char = text[offset];
-		nextChar = text[offset + 1];
+		chAr = text[offset];
+		nextChAr = text[offset + 1];
 
-		// beginning of codicon: some value $( <--
-		if (char === codiconStartMarker[0] && nextChar === codiconStartMarker[1]) {
-			currentCodiconStart = offset;
+		// beginning of codicon: some vAlue $( <--
+		if (chAr === codiconStArtMArker[0] && nextChAr === codiconStArtMArker[1]) {
+			currentCodiconStArt = offset;
 
-			// if we had a previous potential codicon value without
-			// the closing ')', it was actually not an codicon and
-			// so we have to add it to the actual value
-			appendChars(currentCodiconValue);
+			// if we hAd A previous potentiAl codicon vAlue without
+			// the closing ')', it wAs ActuAlly not An codicon And
+			// so we hAve to Add it to the ActuAl vAlue
+			AppendChArs(currentCodiconVAlue);
 
-			currentCodiconValue = codiconStartMarker;
+			currentCodiconVAlue = codiconStArtMArker;
 
 			offset++; // jump over '('
 		}
 
-		// end of codicon: some value $(some-codicon) <--
-		else if (char === ')' && currentCodiconStart !== -1) {
-			const currentCodiconLength = offset - currentCodiconStart + 1; // +1 to include the closing ')'
+		// end of codicon: some vAlue $(some-codicon) <--
+		else if (chAr === ')' && currentCodiconStArt !== -1) {
+			const currentCodiconLength = offset - currentCodiconStArt + 1; // +1 to include the closing ')'
 			codiconsOffset += currentCodiconLength;
-			currentCodiconStart = -1;
-			currentCodiconValue = '';
+			currentCodiconStArt = -1;
+			currentCodiconVAlue = '';
 		}
 
 		// within codicon
-		else if (currentCodiconStart !== -1) {
-			// Make sure this is a real codicon name
-			if (/^[a-z0-9\-]$/i.test(char)) {
-				currentCodiconValue += char;
+		else if (currentCodiconStArt !== -1) {
+			// MAke sure this is A reAl codicon nAme
+			if (/^[A-z0-9\-]$/i.test(chAr)) {
+				currentCodiconVAlue += chAr;
 			} else {
-				// This is not a real codicon, treat it as text
-				appendChars(currentCodiconValue);
+				// This is not A reAl codicon, treAt it As text
+				AppendChArs(currentCodiconVAlue);
 
-				currentCodiconStart = -1;
-				currentCodiconValue = '';
+				currentCodiconStArt = -1;
+				currentCodiconVAlue = '';
 			}
 		}
 
-		// any value outside of codicons
+		// Any vAlue outside of codicons
 		else {
-			appendChars(char);
+			AppendChArs(chAr);
 		}
 
 		offset++;
 	}
 
-	// if we had a previous potential codicon value without
-	// the closing ')', it was actually not an codicon and
-	// so we have to add it to the actual value
-	appendChars(currentCodiconValue);
+	// if we hAd A previous potentiAl codicon vAlue without
+	// the closing ')', it wAs ActuAlly not An codicon And
+	// so we hAve to Add it to the ActuAl vAlue
+	AppendChArs(currentCodiconVAlue);
 
 	return { text: textWithoutCodicons, codiconOffsets };
 }
 
-export function matchesFuzzyCodiconAware(query: string, target: IParsedCodicons, enableSeparateSubstringMatching = false): IMatch[] | null {
-	const { text, codiconOffsets } = target;
+export function mAtchesFuzzyCodiconAwAre(query: string, tArget: IPArsedCodicons, enAbleSepArAteSubstringMAtching = fAlse): IMAtch[] | null {
+	const { text, codiconOffsets } = tArget;
 
-	// Return early if there are no codicon markers in the word to match against
+	// Return eArly if there Are no codicon mArkers in the word to mAtch AgAinst
 	if (!codiconOffsets || codiconOffsets.length === 0) {
-		return matchesFuzzy(query, text, enableSeparateSubstringMatching);
+		return mAtchesFuzzy(query, text, enAbleSepArAteSubstringMAtching);
 	}
 
-	// Trim the word to match against because it could have leading
-	// whitespace now if the word started with an codicon
-	const wordToMatchAgainstWithoutCodiconsTrimmed = ltrim(text, ' ');
-	const leadingWhitespaceOffset = text.length - wordToMatchAgainstWithoutCodiconsTrimmed.length;
+	// Trim the word to mAtch AgAinst becAuse it could hAve leAding
+	// whitespAce now if the word stArted with An codicon
+	const wordToMAtchAgAinstWithoutCodiconsTrimmed = ltrim(text, ' ');
+	const leAdingWhitespAceOffset = text.length - wordToMAtchAgAinstWithoutCodiconsTrimmed.length;
 
-	// match on value without codicons
-	const matches = matchesFuzzy(query, wordToMatchAgainstWithoutCodiconsTrimmed, enableSeparateSubstringMatching);
+	// mAtch on vAlue without codicons
+	const mAtches = mAtchesFuzzy(query, wordToMAtchAgAinstWithoutCodiconsTrimmed, enAbleSepArAteSubstringMAtching);
 
-	// Map matches back to offsets with codicons and trimming
-	if (matches) {
-		for (const match of matches) {
-			const codiconOffset = codiconOffsets[match.start + leadingWhitespaceOffset] /* codicon offsets at index */ + leadingWhitespaceOffset /* overall leading whitespace offset */;
-			match.start += codiconOffset;
-			match.end += codiconOffset;
+	// MAp mAtches bAck to offsets with codicons And trimming
+	if (mAtches) {
+		for (const mAtch of mAtches) {
+			const codiconOffset = codiconOffsets[mAtch.stArt + leAdingWhitespAceOffset] /* codicon offsets At index */ + leAdingWhitespAceOffset /* overAll leAding whitespAce offset */;
+			mAtch.stArt += codiconOffset;
+			mAtch.end += codiconOffset;
 		}
 	}
 
-	return matches;
+	return mAtches;
 }

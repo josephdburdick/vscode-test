@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { INavigator, ArrayNavigator } from 'vs/base/common/navigator';
+import { INAvigAtor, ArrAyNAvigAtor } from 'vs/bAse/common/nAvigAtor';
 
-export class HistoryNavigator<T> implements INavigator<T> {
+export clAss HistoryNAvigAtor<T> implements INAvigAtor<T> {
 
-	private _history!: Set<T>;
-	private _limit: number;
-	private _navigator!: ArrayNavigator<T>;
+	privAte _history!: Set<T>;
+	privAte _limit: number;
+	privAte _nAvigAtor!: ArrAyNAvigAtor<T>;
 
-	constructor(history: readonly T[] = [], limit: number = 10) {
-		this._initialize(history);
+	constructor(history: reAdonly T[] = [], limit: number = 10) {
+		this._initiAlize(history);
 		this._limit = limit;
-		this._onChange();
+		this._onChAnge();
 	}
 
 	public getHistory(): T[] {
 		return this._elements;
 	}
 
-	public add(t: T) {
+	public Add(t: T) {
 		this._history.delete(t);
-		this._history.add(t);
-		this._onChange();
+		this._history.Add(t);
+		this._onChAnge();
 	}
 
 	public next(): T | null {
 		if (this._currentPosition() !== this._elements.length - 1) {
-			return this._navigator.next();
+			return this._nAvigAtor.next();
 		}
 		return null;
 	}
 
 	public previous(): T | null {
 		if (this._currentPosition() !== 0) {
-			return this._navigator.previous();
+			return this._nAvigAtor.previous();
 		}
 		return null;
 	}
 
 	public current(): T | null {
-		return this._navigator.current();
+		return this._nAvigAtor.current();
 	}
 
 	public first(): T | null {
-		return this._navigator.first();
+		return this._nAvigAtor.first();
 	}
 
-	public last(): T | null {
-		return this._navigator.last();
+	public lAst(): T | null {
+		return this._nAvigAtor.lAst();
 	}
 
-	public has(t: T): boolean {
-		return this._history.has(t);
+	public hAs(t: T): booleAn {
+		return this._history.hAs(t);
 	}
 
-	public clear(): void {
-		this._initialize([]);
-		this._onChange();
+	public cleAr(): void {
+		this._initiAlize([]);
+		this._onChAnge();
 	}
 
-	private _onChange() {
+	privAte _onChAnge() {
 		this._reduceToLimit();
 		const elements = this._elements;
-		this._navigator = new ArrayNavigator(elements, 0, elements.length, elements.length);
+		this._nAvigAtor = new ArrAyNAvigAtor(elements, 0, elements.length, elements.length);
 	}
 
-	private _reduceToLimit() {
-		const data = this._elements;
-		if (data.length > this._limit) {
-			this._initialize(data.slice(data.length - this._limit));
+	privAte _reduceToLimit() {
+		const dAtA = this._elements;
+		if (dAtA.length > this._limit) {
+			this._initiAlize(dAtA.slice(dAtA.length - this._limit));
 		}
 	}
 
-	private _currentPosition(): number {
-		const currentElement = this._navigator.current();
+	privAte _currentPosition(): number {
+		const currentElement = this._nAvigAtor.current();
 		if (!currentElement) {
 			return -1;
 		}
@@ -84,79 +84,79 @@ export class HistoryNavigator<T> implements INavigator<T> {
 		return this._elements.indexOf(currentElement);
 	}
 
-	private _initialize(history: readonly T[]): void {
+	privAte _initiAlize(history: reAdonly T[]): void {
 		this._history = new Set();
 		for (const entry of history) {
-			this._history.add(entry);
+			this._history.Add(entry);
 		}
 	}
 
-	private get _elements(): T[] {
+	privAte get _elements(): T[] {
 		const elements: T[] = [];
-		this._history.forEach(e => elements.push(e));
+		this._history.forEAch(e => elements.push(e));
 		return elements;
 	}
 }
 
-interface HistoryNode<T> {
-	value: T;
+interfAce HistoryNode<T> {
+	vAlue: T;
 	previous: HistoryNode<T> | undefined;
 	next: HistoryNode<T> | undefined;
 }
 
-export class HistoryNavigator2<T> {
+export clAss HistoryNAvigAtor2<T> {
 
-	private head: HistoryNode<T>;
-	private tail: HistoryNode<T>;
-	private cursor: HistoryNode<T>;
-	private size: number;
+	privAte heAd: HistoryNode<T>;
+	privAte tAil: HistoryNode<T>;
+	privAte cursor: HistoryNode<T>;
+	privAte size: number;
 
-	constructor(history: readonly T[], private capacity: number = 10) {
+	constructor(history: reAdonly T[], privAte cApAcity: number = 10) {
 		if (history.length < 1) {
 			throw new Error('not supported');
 		}
 
 		this.size = 1;
-		this.head = this.tail = this.cursor = {
-			value: history[0],
+		this.heAd = this.tAil = this.cursor = {
+			vAlue: history[0],
 			previous: undefined,
 			next: undefined
 		};
 
 		for (let i = 1; i < history.length; i++) {
-			this.add(history[i]);
+			this.Add(history[i]);
 		}
 	}
 
-	add(value: T): void {
+	Add(vAlue: T): void {
 		const node: HistoryNode<T> = {
-			value,
-			previous: this.tail,
+			vAlue,
+			previous: this.tAil,
 			next: undefined
 		};
 
-		this.tail.next = node;
-		this.tail = node;
-		this.cursor = this.tail;
+		this.tAil.next = node;
+		this.tAil = node;
+		this.cursor = this.tAil;
 		this.size++;
 
-		while (this.size > this.capacity) {
-			this.head = this.head.next!;
-			this.head.previous = undefined;
+		while (this.size > this.cApAcity) {
+			this.heAd = this.heAd.next!;
+			this.heAd.previous = undefined;
 			this.size--;
 		}
 	}
 
-	replaceLast(value: T): void {
-		this.tail.value = value;
+	replAceLAst(vAlue: T): void {
+		this.tAil.vAlue = vAlue;
 	}
 
-	isAtEnd(): boolean {
-		return this.cursor === this.tail;
+	isAtEnd(): booleAn {
+		return this.cursor === this.tAil;
 	}
 
 	current(): T {
-		return this.cursor.value;
+		return this.cursor.vAlue;
 	}
 
 	previous(): T {
@@ -164,7 +164,7 @@ export class HistoryNavigator2<T> {
 			this.cursor = this.cursor.previous;
 		}
 
-		return this.cursor.value;
+		return this.cursor.vAlue;
 	}
 
 	next(): T {
@@ -172,19 +172,19 @@ export class HistoryNavigator2<T> {
 			this.cursor = this.cursor.next;
 		}
 
-		return this.cursor.value;
+		return this.cursor.vAlue;
 	}
 
 	resetCursor(): T {
-		this.cursor = this.tail;
-		return this.cursor.value;
+		this.cursor = this.tAil;
+		return this.cursor.vAlue;
 	}
 
-	*[Symbol.iterator](): Iterator<T> {
-		let node: HistoryNode<T> | undefined = this.head;
+	*[Symbol.iterAtor](): IterAtor<T> {
+		let node: HistoryNode<T> | undefined = this.heAd;
 
 		while (node) {
-			yield node.value;
+			yield node.vAlue;
 			node = node.next;
 		}
 	}

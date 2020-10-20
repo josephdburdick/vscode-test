@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Constants } from 'vs/base/common/uint';
-import { HorizontalRange } from 'vs/editor/common/view/renderingContext';
+import { ConstAnts } from 'vs/bAse/common/uint';
+import { HorizontAlRAnge } from 'vs/editor/common/view/renderingContext';
 
-class FloatHorizontalRange {
-	_floatHorizontalRangeBrand: void;
+clAss FloAtHorizontAlRAnge {
+	_floAtHorizontAlRAngeBrAnd: void;
 
-	public readonly left: number;
-	public readonly width: number;
+	public reAdonly left: number;
+	public reAdonly width: number;
 
 	constructor(left: number, width: number) {
 		this.left = left;
@@ -21,145 +21,145 @@ class FloatHorizontalRange {
 		return `[${this.left},${this.width}]`;
 	}
 
-	public static compare(a: FloatHorizontalRange, b: FloatHorizontalRange): number {
-		return a.left - b.left;
+	public stAtic compAre(A: FloAtHorizontAlRAnge, b: FloAtHorizontAlRAnge): number {
+		return A.left - b.left;
 	}
 }
 
-export class RangeUtil {
+export clAss RAngeUtil {
 
 	/**
-	 * Reusing the same range here
-	 * because IE is buggy and constantly freezes when using a large number
-	 * of ranges and calling .detach on them
+	 * Reusing the sAme rAnge here
+	 * becAuse IE is buggy And constAntly freezes when using A lArge number
+	 * of rAnges And cAlling .detAch on them
 	 */
-	private static _handyReadyRange: Range;
+	privAte stAtic _hAndyReAdyRAnge: RAnge;
 
-	private static _createRange(): Range {
-		if (!this._handyReadyRange) {
-			this._handyReadyRange = document.createRange();
+	privAte stAtic _creAteRAnge(): RAnge {
+		if (!this._hAndyReAdyRAnge) {
+			this._hAndyReAdyRAnge = document.creAteRAnge();
 		}
-		return this._handyReadyRange;
+		return this._hAndyReAdyRAnge;
 	}
 
-	private static _detachRange(range: Range, endNode: HTMLElement): void {
-		// Move range out of the span node, IE doesn't like having many ranges in
-		// the same spot and will act badly for lines containing dashes ('-')
-		range.selectNodeContents(endNode);
+	privAte stAtic _detAchRAnge(rAnge: RAnge, endNode: HTMLElement): void {
+		// Move rAnge out of the spAn node, IE doesn't like hAving mAny rAnges in
+		// the sAme spot And will Act bAdly for lines contAining dAshes ('-')
+		rAnge.selectNodeContents(endNode);
 	}
 
-	private static _readClientRects(startElement: Node, startOffset: number, endElement: Node, endOffset: number, endNode: HTMLElement): ClientRectList | DOMRectList | null {
-		const range = this._createRange();
+	privAte stAtic _reAdClientRects(stArtElement: Node, stArtOffset: number, endElement: Node, endOffset: number, endNode: HTMLElement): ClientRectList | DOMRectList | null {
+		const rAnge = this._creAteRAnge();
 		try {
-			range.setStart(startElement, startOffset);
-			range.setEnd(endElement, endOffset);
+			rAnge.setStArt(stArtElement, stArtOffset);
+			rAnge.setEnd(endElement, endOffset);
 
-			return range.getClientRects();
-		} catch (e) {
+			return rAnge.getClientRects();
+		} cAtch (e) {
 			// This is life ...
 			return null;
-		} finally {
-			this._detachRange(range, endNode);
+		} finAlly {
+			this._detAchRAnge(rAnge, endNode);
 		}
 	}
 
-	private static _mergeAdjacentRanges(ranges: FloatHorizontalRange[]): HorizontalRange[] {
-		if (ranges.length === 1) {
+	privAte stAtic _mergeAdjAcentRAnges(rAnges: FloAtHorizontAlRAnge[]): HorizontAlRAnge[] {
+		if (rAnges.length === 1) {
 			// There is nothing to merge
-			return [new HorizontalRange(ranges[0].left, ranges[0].width)];
+			return [new HorizontAlRAnge(rAnges[0].left, rAnges[0].width)];
 		}
 
-		ranges.sort(FloatHorizontalRange.compare);
+		rAnges.sort(FloAtHorizontAlRAnge.compAre);
 
-		let result: HorizontalRange[] = [], resultLen = 0;
-		let prevLeft = ranges[0].left;
-		let prevWidth = ranges[0].width;
+		let result: HorizontAlRAnge[] = [], resultLen = 0;
+		let prevLeft = rAnges[0].left;
+		let prevWidth = rAnges[0].width;
 
-		for (let i = 1, len = ranges.length; i < len; i++) {
-			const range = ranges[i];
-			const myLeft = range.left;
-			const myWidth = range.width;
+		for (let i = 1, len = rAnges.length; i < len; i++) {
+			const rAnge = rAnges[i];
+			const myLeft = rAnge.left;
+			const myWidth = rAnge.width;
 
-			if (prevLeft + prevWidth + 0.9 /* account for browser's rounding errors*/ >= myLeft) {
-				prevWidth = Math.max(prevWidth, myLeft + myWidth - prevLeft);
+			if (prevLeft + prevWidth + 0.9 /* Account for browser's rounding errors*/ >= myLeft) {
+				prevWidth = MAth.mAx(prevWidth, myLeft + myWidth - prevLeft);
 			} else {
-				result[resultLen++] = new HorizontalRange(prevLeft, prevWidth);
+				result[resultLen++] = new HorizontAlRAnge(prevLeft, prevWidth);
 				prevLeft = myLeft;
 				prevWidth = myWidth;
 			}
 		}
 
-		result[resultLen++] = new HorizontalRange(prevLeft, prevWidth);
+		result[resultLen++] = new HorizontAlRAnge(prevLeft, prevWidth);
 
 		return result;
 	}
 
-	private static _createHorizontalRangesFromClientRects(clientRects: ClientRectList | DOMRectList | null, clientRectDeltaLeft: number): HorizontalRange[] | null {
+	privAte stAtic _creAteHorizontAlRAngesFromClientRects(clientRects: ClientRectList | DOMRectList | null, clientRectDeltALeft: number): HorizontAlRAnge[] | null {
 		if (!clientRects || clientRects.length === 0) {
 			return null;
 		}
 
-		// We go through FloatHorizontalRange because it has been observed in bi-di text
-		// that the clientRects are not coming in sorted from the browser
+		// We go through FloAtHorizontAlRAnge becAuse it hAs been observed in bi-di text
+		// thAt the clientRects Are not coming in sorted from the browser
 
-		const result: FloatHorizontalRange[] = [];
+		const result: FloAtHorizontAlRAnge[] = [];
 		for (let i = 0, len = clientRects.length; i < len; i++) {
 			const clientRect = clientRects[i];
-			result[i] = new FloatHorizontalRange(Math.max(0, clientRect.left - clientRectDeltaLeft), clientRect.width);
+			result[i] = new FloAtHorizontAlRAnge(MAth.mAx(0, clientRect.left - clientRectDeltALeft), clientRect.width);
 		}
 
-		return this._mergeAdjacentRanges(result);
+		return this._mergeAdjAcentRAnges(result);
 	}
 
-	public static readHorizontalRanges(domNode: HTMLElement, startChildIndex: number, startOffset: number, endChildIndex: number, endOffset: number, clientRectDeltaLeft: number, endNode: HTMLElement): HorizontalRange[] | null {
-		// Panic check
+	public stAtic reAdHorizontAlRAnges(domNode: HTMLElement, stArtChildIndex: number, stArtOffset: number, endChildIndex: number, endOffset: number, clientRectDeltALeft: number, endNode: HTMLElement): HorizontAlRAnge[] | null {
+		// PAnic check
 		const min = 0;
-		const max = domNode.children.length - 1;
-		if (min > max) {
+		const mAx = domNode.children.length - 1;
+		if (min > mAx) {
 			return null;
 		}
-		startChildIndex = Math.min(max, Math.max(min, startChildIndex));
-		endChildIndex = Math.min(max, Math.max(min, endChildIndex));
+		stArtChildIndex = MAth.min(mAx, MAth.mAx(min, stArtChildIndex));
+		endChildIndex = MAth.min(mAx, MAth.mAx(min, endChildIndex));
 
-		if (startChildIndex === endChildIndex && startOffset === endOffset && startOffset === 0) {
-			// We must find the position at the beginning of a <span>
-			// To cover cases of empty <span>s, aboid using a range and use the <span>'s bounding box
-			const clientRects = domNode.children[startChildIndex].getClientRects();
-			return this._createHorizontalRangesFromClientRects(clientRects, clientRectDeltaLeft);
+		if (stArtChildIndex === endChildIndex && stArtOffset === endOffset && stArtOffset === 0) {
+			// We must find the position At the beginning of A <spAn>
+			// To cover cAses of empty <spAn>s, Aboid using A rAnge And use the <spAn>'s bounding box
+			const clientRects = domNode.children[stArtChildIndex].getClientRects();
+			return this._creAteHorizontAlRAngesFromClientRects(clientRects, clientRectDeltALeft);
 		}
 
-		// If crossing over to a span only to select offset 0, then use the previous span's maximum offset
-		// Chrome is buggy and doesn't handle 0 offsets well sometimes.
-		if (startChildIndex !== endChildIndex) {
+		// If crossing over to A spAn only to select offset 0, then use the previous spAn's mAximum offset
+		// Chrome is buggy And doesn't hAndle 0 offsets well sometimes.
+		if (stArtChildIndex !== endChildIndex) {
 			if (endChildIndex > 0 && endOffset === 0) {
 				endChildIndex--;
-				endOffset = Constants.MAX_SAFE_SMALL_INTEGER;
+				endOffset = ConstAnts.MAX_SAFE_SMALL_INTEGER;
 			}
 		}
 
-		let startElement = domNode.children[startChildIndex].firstChild;
+		let stArtElement = domNode.children[stArtChildIndex].firstChild;
 		let endElement = domNode.children[endChildIndex].firstChild;
 
-		if (!startElement || !endElement) {
-			// When having an empty <span> (without any text content), try to move to the previous <span>
-			if (!startElement && startOffset === 0 && startChildIndex > 0) {
-				startElement = domNode.children[startChildIndex - 1].firstChild;
-				startOffset = Constants.MAX_SAFE_SMALL_INTEGER;
+		if (!stArtElement || !endElement) {
+			// When hAving An empty <spAn> (without Any text content), try to move to the previous <spAn>
+			if (!stArtElement && stArtOffset === 0 && stArtChildIndex > 0) {
+				stArtElement = domNode.children[stArtChildIndex - 1].firstChild;
+				stArtOffset = ConstAnts.MAX_SAFE_SMALL_INTEGER;
 			}
 			if (!endElement && endOffset === 0 && endChildIndex > 0) {
 				endElement = domNode.children[endChildIndex - 1].firstChild;
-				endOffset = Constants.MAX_SAFE_SMALL_INTEGER;
+				endOffset = ConstAnts.MAX_SAFE_SMALL_INTEGER;
 			}
 		}
 
-		if (!startElement || !endElement) {
+		if (!stArtElement || !endElement) {
 			return null;
 		}
 
-		startOffset = Math.min(startElement.textContent!.length, Math.max(0, startOffset));
-		endOffset = Math.min(endElement.textContent!.length, Math.max(0, endOffset));
+		stArtOffset = MAth.min(stArtElement.textContent!.length, MAth.mAx(0, stArtOffset));
+		endOffset = MAth.min(endElement.textContent!.length, MAth.mAx(0, endOffset));
 
-		const clientRects = this._readClientRects(startElement, startOffset, endElement, endOffset, endNode);
-		return this._createHorizontalRangesFromClientRects(clientRects, clientRectDeltaLeft);
+		const clientRects = this._reAdClientRects(stArtElement, stArtOffset, endElement, endOffset, endNode);
+		return this._creAteHorizontAlRAngesFromClientRects(clientRects, clientRectDeltALeft);
 	}
 }

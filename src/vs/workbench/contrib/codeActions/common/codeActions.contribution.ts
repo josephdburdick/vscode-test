@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Extensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { CodeActionsContribution, editorConfiguration } from 'vs/workbench/contrib/codeActions/common/codeActionsContribution';
+import { Extensions, IConfigurAtionRegistry } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { CodeActionsContribution, editorConfigurAtion } from 'vs/workbench/contrib/codeActions/common/codeActionsContribution';
 import { CodeActionsExtensionPoint, codeActionsExtensionPointDescriptor } from 'vs/workbench/contrib/codeActions/common/codeActionsExtensionPoint';
-import { CodeActionDocumentationContribution } from 'vs/workbench/contrib/codeActions/common/documentationContribution';
-import { DocumentationExtensionPoint, documentationExtensionPointDescriptor } from 'vs/workbench/contrib/codeActions/common/documentationExtensionPoint';
+import { CodeActionDocumentAtionContribution } from 'vs/workbench/contrib/codeActions/common/documentAtionContribution';
+import { DocumentAtionExtensionPoint, documentAtionExtensionPointDescriptor } from 'vs/workbench/contrib/codeActions/common/documentAtionExtensionPoint';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 
 const codeActionsExtensionPoint = ExtensionsRegistry.registerExtensionPoint<CodeActionsExtensionPoint[]>(codeActionsExtensionPointDescriptor);
-const documentationExtensionPoint = ExtensionsRegistry.registerExtensionPoint<DocumentationExtensionPoint>(documentationExtensionPointDescriptor);
+const documentAtionExtensionPoint = ExtensionsRegistry.registerExtensionPoint<DocumentAtionExtensionPoint>(documentAtionExtensionPointDescriptor);
 
-Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-	.registerConfiguration(editorConfiguration);
+Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion)
+	.registerConfigurAtion(editorConfigurAtion);
 
-class WorkbenchConfigurationContribution {
+clAss WorkbenchConfigurAtionContribution {
 	constructor(
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 	) {
-		instantiationService.createInstance(CodeActionsContribution, codeActionsExtensionPoint);
-		instantiationService.createInstance(CodeActionDocumentationContribution, documentationExtensionPoint);
+		instAntiAtionService.creAteInstAnce(CodeActionsContribution, codeActionsExtensionPoint);
+		instAntiAtionService.creAteInstAnce(CodeActionDocumentAtionContribution, documentAtionExtensionPoint);
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WorkbenchConfigurationContribution, LifecyclePhase.Eventually);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(WorkbenchConfigurAtionContribution, LifecyclePhAse.EventuAlly);

@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { WelcomePageContribution, WelcomePageAction, WelcomeInputFactory } from 'vs/workbench/contrib/welcome/page/browser/welcomePage';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { IEditorInputFactoryRegistry, Extensions as EditorExtensions } from 'vs/workbench/common/editor';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
+import { locAlize } from 'vs/nls';
+import { IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { WelcomePAgeContribution, WelcomePAgeAction, WelcomeInputFActory } from 'vs/workbench/contrib/welcome/pAge/browser/welcomePAge';
+import { IWorkbenchActionRegistry, Extensions As ActionExtensions, CATEGORIES } from 'vs/workbench/common/Actions';
+import { SyncActionDescriptor, MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions, ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { IEditorInputFActoryRegistry, Extensions As EditorExtensions } from 'vs/workbench/common/editor';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { workbenchConfigurAtionNodeBAse } from 'vs/workbench/common/configurAtion';
 
-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
-	.registerConfiguration({
-		...workbenchConfigurationNodeBase,
+Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion)
+	.registerConfigurAtion({
+		...workbenchConfigurAtionNodeBAse,
 		'properties': {
-			'workbench.startupEditor': {
-				'scope': ConfigurationScope.APPLICATION, // Make sure repositories cannot trigger opening a README for tracking.
+			'workbench.stArtupEditor': {
+				'scope': ConfigurAtionScope.APPLICATION, // MAke sure repositories cAnnot trigger opening A README for trAcking.
 				'type': 'string',
-				'enum': ['none', 'welcomePage', 'readme', 'newUntitledFile', 'welcomePageInEmptyWorkbench'],
+				'enum': ['none', 'welcomePAge', 'reAdme', 'newUntitledFile', 'welcomePAgeInEmptyWorkbench'],
 				'enumDescriptions': [
-					localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.none' }, "Start without an editor."),
-					localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePage' }, "Open the Welcome page (default)."),
-					localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.readme' }, "Open the README when opening a folder that contains one, fallback to 'welcomePage' otherwise."),
-					localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.newUntitledFile' }, "Open a new untitled file (only applies when opening an empty workspace)."),
-					localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'workbench.startupEditor.welcomePageInEmptyWorkbench' }, "Open the Welcome page when opening an empty workbench."),
+					locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'workbench.stArtupEditor.none' }, "StArt without An editor."),
+					locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'workbench.stArtupEditor.welcomePAge' }, "Open the Welcome pAge (defAult)."),
+					locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'workbench.stArtupEditor.reAdme' }, "Open the README when opening A folder thAt contAins one, fAllbAck to 'welcomePAge' otherwise."),
+					locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'workbench.stArtupEditor.newUntitledFile' }, "Open A new untitled file (only Applies when opening An empty workspAce)."),
+					locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'workbench.stArtupEditor.welcomePAgeInEmptyWorkbench' }, "Open the Welcome pAge when opening An empty workbench."),
 				],
-				'default': 'welcomePage',
-				'description': localize('workbench.startupEditor', "Controls which editor is shown at startup, if none are restored from the previous session.")
+				'defAult': 'welcomePAge',
+				'description': locAlize('workbench.stArtupEditor', "Controls which editor is shown At stArtup, if none Are restored from the previous session.")
 			},
 		}
 	});
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
-	.registerWorkbenchContribution(WelcomePageContribution, LifecyclePhase.Restored);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+	.registerWorkbenchContribution(WelcomePAgeContribution, LifecyclePhAse.Restored);
 
-Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions)
-	.registerWorkbenchAction(SyncActionDescriptor.from(WelcomePageAction), 'Help: Welcome', CATEGORIES.Help.value);
+Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions)
+	.registerWorkbenchAction(SyncActionDescriptor.from(WelcomePAgeAction), 'Help: Welcome', CATEGORIES.Help.vAlue);
 
-Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).registerEditorInputFactory(WelcomeInputFactory.ID, WelcomeInputFactory);
+Registry.As<IEditorInputFActoryRegistry>(EditorExtensions.EditorInputFActories).registerEditorInputFActory(WelcomeInputFActory.ID, WelcomeInputFActory);
 
-MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArHelpMenu, {
 	group: '1_welcome',
-	command: {
-		id: 'workbench.action.showWelcomePage',
-		title: localize({ key: 'miWelcome', comment: ['&& denotes a mnemonic'] }, "&&Welcome")
+	commAnd: {
+		id: 'workbench.Action.showWelcomePAge',
+		title: locAlize({ key: 'miWelcome', comment: ['&& denotes A mnemonic'] }, "&&Welcome")
 	},
 	order: 1
 });

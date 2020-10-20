@@ -1,376 +1,376 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { IConfigurationPropertySchema } from 'vs/platform/configuration/common/configurationRegistry';
-import { createValidator, getInvalidTypeError } from 'vs/workbench/services/preferences/common/preferencesValidation';
+import * As Assert from 'Assert';
+import { IConfigurAtionPropertySchemA } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { creAteVAlidAtor, getInvAlidTypeError } from 'vs/workbench/services/preferences/common/preferencesVAlidAtion';
 
 
-suite('Preferences Validation', () => {
-	class Tester {
-		private validator: (value: any) => string | null;
+suite('Preferences VAlidAtion', () => {
+	clAss Tester {
+		privAte vAlidAtor: (vAlue: Any) => string | null;
 
-		constructor(private settings: IConfigurationPropertySchema) {
-			this.validator = createValidator(settings)!;
+		constructor(privAte settings: IConfigurAtionPropertySchemA) {
+			this.vAlidAtor = creAteVAlidAtor(settings)!;
 		}
 
-		public accepts(input: string) {
-			assert.equal(this.validator(input), '', `Expected ${JSON.stringify(this.settings)} to accept \`${input}\`. Got ${this.validator(input)}.`);
+		public Accepts(input: string) {
+			Assert.equAl(this.vAlidAtor(input), '', `Expected ${JSON.stringify(this.settings)} to Accept \`${input}\`. Got ${this.vAlidAtor(input)}.`);
 		}
 
 		public rejects(input: string) {
-			assert.notEqual(this.validator(input), '', `Expected ${JSON.stringify(this.settings)} to reject \`${input}\`.`);
+			Assert.notEquAl(this.vAlidAtor(input), '', `Expected ${JSON.stringify(this.settings)} to reject \`${input}\`.`);
 			return {
-				withMessage:
-					(message: string) => {
-						const actual = this.validator(input);
-						assert.ok(actual);
-						assert(actual!.indexOf(message) > -1,
-							`Expected error of ${JSON.stringify(this.settings)} on \`${input}\` to contain ${message}. Got ${this.validator(input)}.`);
+				withMessAge:
+					(messAge: string) => {
+						const ActuAl = this.vAlidAtor(input);
+						Assert.ok(ActuAl);
+						Assert(ActuAl!.indexOf(messAge) > -1,
+							`Expected error of ${JSON.stringify(this.settings)} on \`${input}\` to contAin ${messAge}. Got ${this.vAlidAtor(input)}.`);
 					}
 			};
 		}
 
 
-		public validatesNumeric() {
-			this.accepts('3');
-			this.accepts('3.');
-			this.accepts('.0');
-			this.accepts('3.0');
-			this.accepts(' 3.0');
-			this.accepts(' 3.0  ');
+		public vAlidAtesNumeric() {
+			this.Accepts('3');
+			this.Accepts('3.');
+			this.Accepts('.0');
+			this.Accepts('3.0');
+			this.Accepts(' 3.0');
+			this.Accepts(' 3.0  ');
 			this.rejects('3f');
 		}
 
-		public validatesNullableNumeric() {
-			this.validatesNumeric();
-			this.accepts('');
+		public vAlidAtesNullAbleNumeric() {
+			this.vAlidAtesNumeric();
+			this.Accepts('');
 		}
 
-		public validatesNonNullableNumeric() {
-			this.validatesNumeric();
+		public vAlidAtesNonNullAbleNumeric() {
+			this.vAlidAtesNumeric();
 			this.rejects('');
 		}
 
-		public validatesString() {
-			this.accepts('3');
-			this.accepts('3.');
-			this.accepts('.0');
-			this.accepts('3.0');
-			this.accepts(' 3.0');
-			this.accepts(' 3.0  ');
-			this.accepts('');
-			this.accepts('3f');
-			this.accepts('hello');
+		public vAlidAtesString() {
+			this.Accepts('3');
+			this.Accepts('3.');
+			this.Accepts('.0');
+			this.Accepts('3.0');
+			this.Accepts(' 3.0');
+			this.Accepts(' 3.0  ');
+			this.Accepts('');
+			this.Accepts('3f');
+			this.Accepts('hello');
 		}
 	}
 
 
-	test('exclusive max and max work together properly', () => {
+	test('exclusive mAx And mAx work together properly', () => {
 		{
-			const justMax = new Tester({ maximum: 5, type: 'number' });
-			justMax.validatesNonNullableNumeric();
-			justMax.rejects('5.1');
-			justMax.accepts('5.0');
+			const justMAx = new Tester({ mAximum: 5, type: 'number' });
+			justMAx.vAlidAtesNonNullAbleNumeric();
+			justMAx.rejects('5.1');
+			justMAx.Accepts('5.0');
 		}
 		{
-			const justEMax = new Tester({ exclusiveMaximum: 5, type: 'number' });
-			justEMax.validatesNonNullableNumeric();
-			justEMax.rejects('5.1');
-			justEMax.rejects('5.0');
-			justEMax.accepts('4.999');
+			const justEMAx = new Tester({ exclusiveMAximum: 5, type: 'number' });
+			justEMAx.vAlidAtesNonNullAbleNumeric();
+			justEMAx.rejects('5.1');
+			justEMAx.rejects('5.0');
+			justEMAx.Accepts('4.999');
 		}
 		{
-			const bothNumeric = new Tester({ exclusiveMaximum: 5, maximum: 4, type: 'number' });
-			bothNumeric.validatesNonNullableNumeric();
+			const bothNumeric = new Tester({ exclusiveMAximum: 5, mAximum: 4, type: 'number' });
+			bothNumeric.vAlidAtesNonNullAbleNumeric();
 			bothNumeric.rejects('5.1');
 			bothNumeric.rejects('5.0');
 			bothNumeric.rejects('4.999');
-			bothNumeric.accepts('4');
+			bothNumeric.Accepts('4');
 		}
 		{
-			const bothNumeric = new Tester({ exclusiveMaximum: 5, maximum: 6, type: 'number' });
-			bothNumeric.validatesNonNullableNumeric();
+			const bothNumeric = new Tester({ exclusiveMAximum: 5, mAximum: 6, type: 'number' });
+			bothNumeric.vAlidAtesNonNullAbleNumeric();
 			bothNumeric.rejects('5.1');
 			bothNumeric.rejects('5.0');
-			bothNumeric.accepts('4.999');
+			bothNumeric.Accepts('4.999');
 		}
 	});
 
-	test('exclusive min and min work together properly', () => {
+	test('exclusive min And min work together properly', () => {
 		{
 			const justMin = new Tester({ minimum: -5, type: 'number' });
-			justMin.validatesNonNullableNumeric();
+			justMin.vAlidAtesNonNullAbleNumeric();
 			justMin.rejects('-5.1');
-			justMin.accepts('-5.0');
+			justMin.Accepts('-5.0');
 		}
 		{
 			const justEMin = new Tester({ exclusiveMinimum: -5, type: 'number' });
-			justEMin.validatesNonNullableNumeric();
+			justEMin.vAlidAtesNonNullAbleNumeric();
 			justEMin.rejects('-5.1');
 			justEMin.rejects('-5.0');
-			justEMin.accepts('-4.999');
+			justEMin.Accepts('-4.999');
 		}
 		{
 			const bothNumeric = new Tester({ exclusiveMinimum: -5, minimum: -4, type: 'number' });
-			bothNumeric.validatesNonNullableNumeric();
+			bothNumeric.vAlidAtesNonNullAbleNumeric();
 			bothNumeric.rejects('-5.1');
 			bothNumeric.rejects('-5.0');
 			bothNumeric.rejects('-4.999');
-			bothNumeric.accepts('-4');
+			bothNumeric.Accepts('-4');
 		}
 		{
 			const bothNumeric = new Tester({ exclusiveMinimum: -5, minimum: -6, type: 'number' });
-			bothNumeric.validatesNonNullableNumeric();
+			bothNumeric.vAlidAtesNonNullAbleNumeric();
 			bothNumeric.rejects('-5.1');
 			bothNumeric.rejects('-5.0');
-			bothNumeric.accepts('-4.999');
+			bothNumeric.Accepts('-4.999');
 		}
 	});
 
-	test('multiple of works for both integers and fractions', () => {
+	test('multiple of works for both integers And frActions', () => {
 		{
 			const onlyEvens = new Tester({ multipleOf: 2, type: 'number' });
-			onlyEvens.accepts('2.0');
-			onlyEvens.accepts('2');
-			onlyEvens.accepts('-4');
-			onlyEvens.accepts('0');
-			onlyEvens.accepts('100');
+			onlyEvens.Accepts('2.0');
+			onlyEvens.Accepts('2');
+			onlyEvens.Accepts('-4');
+			onlyEvens.Accepts('0');
+			onlyEvens.Accepts('100');
 			onlyEvens.rejects('100.1');
 			onlyEvens.rejects('');
 			onlyEvens.rejects('we');
 		}
 		{
-			const hackyIntegers = new Tester({ multipleOf: 1, type: 'number' });
-			hackyIntegers.accepts('2.0');
-			hackyIntegers.rejects('.5');
+			const hAckyIntegers = new Tester({ multipleOf: 1, type: 'number' });
+			hAckyIntegers.Accepts('2.0');
+			hAckyIntegers.rejects('.5');
 		}
 		{
-			const halfIntegers = new Tester({ multipleOf: 0.5, type: 'number' });
-			halfIntegers.accepts('0.5');
-			halfIntegers.accepts('1.5');
-			halfIntegers.rejects('1.51');
+			const hAlfIntegers = new Tester({ multipleOf: 0.5, type: 'number' });
+			hAlfIntegers.Accepts('0.5');
+			hAlfIntegers.Accepts('1.5');
+			hAlfIntegers.rejects('1.51');
 		}
 	});
 
-	test('integer type correctly adds a validation', () => {
+	test('integer type correctly Adds A vAlidAtion', () => {
 		{
 			const integers = new Tester({ multipleOf: 1, type: 'integer' });
-			integers.accepts('02');
-			integers.accepts('2');
-			integers.accepts('20');
+			integers.Accepts('02');
+			integers.Accepts('2');
+			integers.Accepts('20');
 			integers.rejects('.5');
 			integers.rejects('2j');
 			integers.rejects('');
 		}
 	});
 
-	test('null is allowed only when expected', () => {
+	test('null is Allowed only when expected', () => {
 		{
-			const nullableIntegers = new Tester({ type: ['integer', 'null'] });
-			nullableIntegers.accepts('2');
-			nullableIntegers.rejects('.5');
-			nullableIntegers.accepts('2.0');
-			nullableIntegers.rejects('2j');
-			nullableIntegers.accepts('');
+			const nullAbleIntegers = new Tester({ type: ['integer', 'null'] });
+			nullAbleIntegers.Accepts('2');
+			nullAbleIntegers.rejects('.5');
+			nullAbleIntegers.Accepts('2.0');
+			nullAbleIntegers.rejects('2j');
+			nullAbleIntegers.Accepts('');
 		}
 		{
-			const nonnullableIntegers = new Tester({ type: ['integer'] });
-			nonnullableIntegers.accepts('2');
-			nonnullableIntegers.rejects('.5');
-			nonnullableIntegers.accepts('2.0');
-			nonnullableIntegers.rejects('2j');
-			nonnullableIntegers.rejects('');
+			const nonnullAbleIntegers = new Tester({ type: ['integer'] });
+			nonnullAbleIntegers.Accepts('2');
+			nonnullAbleIntegers.rejects('.5');
+			nonnullAbleIntegers.Accepts('2.0');
+			nonnullAbleIntegers.rejects('2j');
+			nonnullAbleIntegers.rejects('');
 		}
 		{
-			const nullableNumbers = new Tester({ type: ['number', 'null'] });
-			nullableNumbers.accepts('2');
-			nullableNumbers.accepts('.5');
-			nullableNumbers.accepts('2.0');
-			nullableNumbers.rejects('2j');
-			nullableNumbers.accepts('');
+			const nullAbleNumbers = new Tester({ type: ['number', 'null'] });
+			nullAbleNumbers.Accepts('2');
+			nullAbleNumbers.Accepts('.5');
+			nullAbleNumbers.Accepts('2.0');
+			nullAbleNumbers.rejects('2j');
+			nullAbleNumbers.Accepts('');
 		}
 		{
-			const nonnullableNumbers = new Tester({ type: ['number'] });
-			nonnullableNumbers.accepts('2');
-			nonnullableNumbers.accepts('.5');
-			nonnullableNumbers.accepts('2.0');
-			nonnullableNumbers.rejects('2j');
-			nonnullableNumbers.rejects('');
+			const nonnullAbleNumbers = new Tester({ type: ['number'] });
+			nonnullAbleNumbers.Accepts('2');
+			nonnullAbleNumbers.Accepts('.5');
+			nonnullAbleNumbers.Accepts('2.0');
+			nonnullAbleNumbers.rejects('2j');
+			nonnullAbleNumbers.rejects('');
 		}
 	});
 
-	test('string max min length work', () => {
+	test('string mAx min length work', () => {
 		{
 			const min = new Tester({ minLength: 4, type: 'string' });
 			min.rejects('123');
-			min.accepts('1234');
-			min.accepts('12345');
+			min.Accepts('1234');
+			min.Accepts('12345');
 		}
 		{
-			const max = new Tester({ maxLength: 6, type: 'string' });
-			max.accepts('12345');
-			max.accepts('123456');
-			max.rejects('1234567');
+			const mAx = new Tester({ mAxLength: 6, type: 'string' });
+			mAx.Accepts('12345');
+			mAx.Accepts('123456');
+			mAx.rejects('1234567');
 		}
 		{
-			const minMax = new Tester({ minLength: 4, maxLength: 6, type: 'string' });
-			minMax.rejects('123');
-			minMax.accepts('1234');
-			minMax.accepts('12345');
-			minMax.accepts('123456');
-			minMax.rejects('1234567');
+			const minMAx = new Tester({ minLength: 4, mAxLength: 6, type: 'string' });
+			minMAx.rejects('123');
+			minMAx.Accepts('1234');
+			minMAx.Accepts('12345');
+			minMAx.Accepts('123456');
+			minMAx.rejects('1234567');
 		}
 	});
 
-	test('patterns work', () => {
+	test('pAtterns work', () => {
 		{
-			const urls = new Tester({ pattern: '^(hello)*$', type: 'string' });
-			urls.accepts('');
+			const urls = new Tester({ pAttern: '^(hello)*$', type: 'string' });
+			urls.Accepts('');
 			urls.rejects('hel');
-			urls.accepts('hello');
+			urls.Accepts('hello');
 			urls.rejects('hellohel');
-			urls.accepts('hellohello');
+			urls.Accepts('hellohello');
 		}
 		{
-			const urls = new Tester({ pattern: '^(hello)*$', type: 'string', patternErrorMessage: 'err: must be friendly' });
-			urls.accepts('');
-			urls.rejects('hel').withMessage('err: must be friendly');
-			urls.accepts('hello');
-			urls.rejects('hellohel').withMessage('err: must be friendly');
-			urls.accepts('hellohello');
+			const urls = new Tester({ pAttern: '^(hello)*$', type: 'string', pAtternErrorMessAge: 'err: must be friendly' });
+			urls.Accepts('');
+			urls.rejects('hel').withMessAge('err: must be friendly');
+			urls.Accepts('hello');
+			urls.rejects('hellohel').withMessAge('err: must be friendly');
+			urls.Accepts('hellohello');
 		}
 	});
 
-	test('custom error messages are shown', () => {
-		const withMessage = new Tester({ minLength: 1, maxLength: 0, type: 'string', errorMessage: 'always error!' });
-		withMessage.rejects('').withMessage('always error!');
-		withMessage.rejects(' ').withMessage('always error!');
-		withMessage.rejects('1').withMessage('always error!');
+	test('custom error messAges Are shown', () => {
+		const withMessAge = new Tester({ minLength: 1, mAxLength: 0, type: 'string', errorMessAge: 'AlwAys error!' });
+		withMessAge.rejects('').withMessAge('AlwAys error!');
+		withMessAge.rejects(' ').withMessAge('AlwAys error!');
+		withMessAge.rejects('1').withMessAge('AlwAys error!');
 	});
 
-	class ArrayTester {
-		private validator: (value: any) => string | null;
+	clAss ArrAyTester {
+		privAte vAlidAtor: (vAlue: Any) => string | null;
 
-		constructor(private settings: IConfigurationPropertySchema) {
-			this.validator = createValidator(settings)!;
+		constructor(privAte settings: IConfigurAtionPropertySchemA) {
+			this.vAlidAtor = creAteVAlidAtor(settings)!;
 		}
 
-		public accepts(input: string[]) {
-			assert.equal(this.validator(input), '', `Expected ${JSON.stringify(this.settings)} to accept \`${JSON.stringify(input)}\`. Got ${this.validator(input)}.`);
+		public Accepts(input: string[]) {
+			Assert.equAl(this.vAlidAtor(input), '', `Expected ${JSON.stringify(this.settings)} to Accept \`${JSON.stringify(input)}\`. Got ${this.vAlidAtor(input)}.`);
 		}
 
-		public rejects(input: any[]) {
-			assert.notEqual(this.validator(input), '', `Expected ${JSON.stringify(this.settings)} to reject \`${JSON.stringify(input)}\`.`);
+		public rejects(input: Any[]) {
+			Assert.notEquAl(this.vAlidAtor(input), '', `Expected ${JSON.stringify(this.settings)} to reject \`${JSON.stringify(input)}\`.`);
 			return {
-				withMessage:
-					(message: string) => {
-						const actual = this.validator(input);
-						assert.ok(actual);
-						assert(actual!.indexOf(message) > -1,
-							`Expected error of ${JSON.stringify(this.settings)} on \`${input}\` to contain ${message}. Got ${this.validator(input)}.`);
+				withMessAge:
+					(messAge: string) => {
+						const ActuAl = this.vAlidAtor(input);
+						Assert.ok(ActuAl);
+						Assert(ActuAl!.indexOf(messAge) > -1,
+							`Expected error of ${JSON.stringify(this.settings)} on \`${input}\` to contAin ${messAge}. Got ${this.vAlidAtor(input)}.`);
 					}
 			};
 		}
 	}
 
-	test('simple array', () => {
+	test('simple ArrAy', () => {
 		{
-			const arr = new ArrayTester({ type: 'array', items: { type: 'string' } });
-			arr.accepts([]);
-			arr.accepts(['foo']);
-			arr.accepts(['foo', 'bar']);
+			const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string' } });
+			Arr.Accepts([]);
+			Arr.Accepts(['foo']);
+			Arr.Accepts(['foo', 'bAr']);
 		}
 	});
 
-	test('min-max items array', () => {
+	test('min-mAx items ArrAy', () => {
 		{
-			const arr = new ArrayTester({ type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 2 });
-			arr.rejects([]).withMessage('Array must have at least 1 items');
-			arr.accepts(['a']);
-			arr.accepts(['a', 'a']);
-			arr.rejects(['a', 'a', 'a']).withMessage('Array must have at most 2 items');
+			const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string' }, minItems: 1, mAxItems: 2 });
+			Arr.rejects([]).withMessAge('ArrAy must hAve At leAst 1 items');
+			Arr.Accepts(['A']);
+			Arr.Accepts(['A', 'A']);
+			Arr.rejects(['A', 'A', 'A']).withMessAge('ArrAy must hAve At most 2 items');
 		}
 	});
 
-	test('array of enums', () => {
+	test('ArrAy of enums', () => {
 		{
-			const arr = new ArrayTester({ type: 'array', items: { type: 'string', enum: ['a', 'b'] } });
-			arr.accepts(['a']);
-			arr.accepts(['a', 'b']);
+			const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string', enum: ['A', 'b'] } });
+			Arr.Accepts(['A']);
+			Arr.Accepts(['A', 'b']);
 
-			arr.rejects(['c']).withMessage(`Value 'c' is not one of`);
-			arr.rejects(['a', 'c']).withMessage(`Value 'c' is not one of`);
+			Arr.rejects(['c']).withMessAge(`VAlue 'c' is not one of`);
+			Arr.rejects(['A', 'c']).withMessAge(`VAlue 'c' is not one of`);
 
-			arr.rejects(['c', 'd']).withMessage(`Value 'c' is not one of`);
-			arr.rejects(['c', 'd']).withMessage(`Value 'd' is not one of`);
+			Arr.rejects(['c', 'd']).withMessAge(`VAlue 'c' is not one of`);
+			Arr.rejects(['c', 'd']).withMessAge(`VAlue 'd' is not one of`);
 		}
 	});
 
-	test('min-max and enum', () => {
-		const arr = new ArrayTester({ type: 'array', items: { type: 'string', enum: ['a', 'b'] }, minItems: 1, maxItems: 2 });
+	test('min-mAx And enum', () => {
+		const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string', enum: ['A', 'b'] }, minItems: 1, mAxItems: 2 });
 
-		arr.rejects(['a', 'b', 'c']).withMessage('Array must have at most 2 items');
-		arr.rejects(['a', 'b', 'c']).withMessage(`Value 'c' is not one of`);
+		Arr.rejects(['A', 'b', 'c']).withMessAge('ArrAy must hAve At most 2 items');
+		Arr.rejects(['A', 'b', 'c']).withMessAge(`VAlue 'c' is not one of`);
 	});
 
-	test('pattern', () => {
-		const arr = new ArrayTester({ type: 'array', items: { type: 'string', pattern: '^(hello)*$' } });
+	test('pAttern', () => {
+		const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string', pAttern: '^(hello)*$' } });
 
-		arr.accepts(['hello']);
-		arr.rejects(['a']).withMessage(`Value 'a' must match regex`);
+		Arr.Accepts(['hello']);
+		Arr.rejects(['A']).withMessAge(`VAlue 'A' must mAtch regex`);
 	});
 
-	test('pattern with error message', () => {
-		const arr = new ArrayTester({ type: 'array', items: { type: 'string', pattern: '^(hello)*$', patternErrorMessage: 'err: must be friendly' } });
+	test('pAttern with error messAge', () => {
+		const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string', pAttern: '^(hello)*$', pAtternErrorMessAge: 'err: must be friendly' } });
 
-		arr.rejects(['a']).withMessage(`err: must be friendly`);
+		Arr.rejects(['A']).withMessAge(`err: must be friendly`);
 	});
 
 	test('uniqueItems', () => {
-		const arr = new ArrayTester({ type: 'array', items: { type: 'string' }, uniqueItems: true });
+		const Arr = new ArrAyTester({ type: 'ArrAy', items: { type: 'string' }, uniqueItems: true });
 
-		arr.rejects(['a', 'a']).withMessage(`Array has duplicate items`);
+		Arr.rejects(['A', 'A']).withMessAge(`ArrAy hAs duplicAte items`);
 	});
 
-	test('getInvalidTypeError', () => {
-		function testInvalidTypeError(value: any, type: string | string[], shouldValidate: boolean) {
-			const message = `value: ${value}, type: ${JSON.stringify(type)}, expected: ${shouldValidate ? 'valid' : 'invalid'}`;
-			if (shouldValidate) {
-				assert.ok(!getInvalidTypeError(value, type), message);
+	test('getInvAlidTypeError', () => {
+		function testInvAlidTypeError(vAlue: Any, type: string | string[], shouldVAlidAte: booleAn) {
+			const messAge = `vAlue: ${vAlue}, type: ${JSON.stringify(type)}, expected: ${shouldVAlidAte ? 'vAlid' : 'invAlid'}`;
+			if (shouldVAlidAte) {
+				Assert.ok(!getInvAlidTypeError(vAlue, type), messAge);
 			} else {
-				assert.ok(getInvalidTypeError(value, type), message);
+				Assert.ok(getInvAlidTypeError(vAlue, type), messAge);
 			}
 		}
 
-		testInvalidTypeError(1, 'number', true);
-		testInvalidTypeError(1.5, 'number', true);
-		testInvalidTypeError([1], 'number', false);
-		testInvalidTypeError('1', 'number', false);
-		testInvalidTypeError({ a: 1 }, 'number', false);
-		testInvalidTypeError(null, 'number', false);
+		testInvAlidTypeError(1, 'number', true);
+		testInvAlidTypeError(1.5, 'number', true);
+		testInvAlidTypeError([1], 'number', fAlse);
+		testInvAlidTypeError('1', 'number', fAlse);
+		testInvAlidTypeError({ A: 1 }, 'number', fAlse);
+		testInvAlidTypeError(null, 'number', fAlse);
 
-		testInvalidTypeError('a', 'string', true);
-		testInvalidTypeError('1', 'string', true);
-		testInvalidTypeError([], 'string', false);
-		testInvalidTypeError({}, 'string', false);
+		testInvAlidTypeError('A', 'string', true);
+		testInvAlidTypeError('1', 'string', true);
+		testInvAlidTypeError([], 'string', fAlse);
+		testInvAlidTypeError({}, 'string', fAlse);
 
-		testInvalidTypeError([1], 'array', true);
-		testInvalidTypeError([], 'array', true);
-		testInvalidTypeError([{}, [[]]], 'array', true);
-		testInvalidTypeError({ a: ['a'] }, 'array', false);
-		testInvalidTypeError('hello', 'array', false);
+		testInvAlidTypeError([1], 'ArrAy', true);
+		testInvAlidTypeError([], 'ArrAy', true);
+		testInvAlidTypeError([{}, [[]]], 'ArrAy', true);
+		testInvAlidTypeError({ A: ['A'] }, 'ArrAy', fAlse);
+		testInvAlidTypeError('hello', 'ArrAy', fAlse);
 
-		testInvalidTypeError(true, 'boolean', true);
-		testInvalidTypeError('hello', 'boolean', false);
-		testInvalidTypeError(null, 'boolean', false);
-		testInvalidTypeError([true], 'boolean', false);
+		testInvAlidTypeError(true, 'booleAn', true);
+		testInvAlidTypeError('hello', 'booleAn', fAlse);
+		testInvAlidTypeError(null, 'booleAn', fAlse);
+		testInvAlidTypeError([true], 'booleAn', fAlse);
 
-		testInvalidTypeError(null, 'null', true);
-		testInvalidTypeError(false, 'null', false);
-		testInvalidTypeError([null], 'null', false);
-		testInvalidTypeError('null', 'null', false);
+		testInvAlidTypeError(null, 'null', true);
+		testInvAlidTypeError(fAlse, 'null', fAlse);
+		testInvAlidTypeError([null], 'null', fAlse);
+		testInvAlidTypeError('null', 'null', fAlse);
 	});
 });

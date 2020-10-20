@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import * as path from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import { IFileQuery, IFolderQuery, ISerializedSearchProgressItem, isProgressMessage, QueryType } from 'vs/workbench/services/search/common/search';
-import { SearchService } from 'vs/workbench/services/search/node/rawSearchService';
+import * As Assert from 'Assert';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
+import * As pAth from 'vs/bAse/common/pAth';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileQuery, IFolderQuery, ISeriAlizedSeArchProgressItem, isProgressMessAge, QueryType } from 'vs/workbench/services/seArch/common/seArch';
+import { SeArchService } from 'vs/workbench/services/seArch/node/rAwSeArchService';
 
-const TEST_FIXTURES = path.normalize(getPathFromAmdModule(require, './fixtures'));
-const TEST_FIXTURES2 = path.normalize(getPathFromAmdModule(require, './fixtures2'));
-const EXAMPLES_FIXTURES = path.join(TEST_FIXTURES, 'examples');
-const MORE_FIXTURES = path.join(TEST_FIXTURES, 'more');
+const TEST_FIXTURES = pAth.normAlize(getPAthFromAmdModule(require, './fixtures'));
+const TEST_FIXTURES2 = pAth.normAlize(getPAthFromAmdModule(require, './fixtures2'));
+const EXAMPLES_FIXTURES = pAth.join(TEST_FIXTURES, 'exAmples');
+const MORE_FIXTURES = pAth.join(TEST_FIXTURES, 'more');
 const TEST_ROOT_FOLDER: IFolderQuery = { folder: URI.file(TEST_FIXTURES) };
 const ROOT_FOLDER_QUERY: IFolderQuery[] = [
 	TEST_ROOT_FOLDER
 ];
 
 const MULTIROOT_QUERIES: IFolderQuery[] = [
-	{ folder: URI.file(EXAMPLES_FIXTURES), folderName: 'examples_folder' },
+	{ folder: URI.file(EXAMPLES_FIXTURES), folderNAme: 'exAmples_folder' },
 	{ folder: URI.file(MORE_FIXTURES) }
 ];
 
-async function doSearchTest(query: IFileQuery, expectedResultCount: number | Function): Promise<void> {
-	const svc = new SearchService();
+Async function doSeArchTest(query: IFileQuery, expectedResultCount: number | Function): Promise<void> {
+	const svc = new SeArchService();
 
-	const results: ISerializedSearchProgressItem[] = [];
-	await svc.doFileSearch(query, e => {
-		if (!isProgressMessage(e)) {
-			if (Array.isArray(e)) {
+	const results: ISeriAlizedSeArchProgressItem[] = [];
+	AwAit svc.doFileSeArch(query, e => {
+		if (!isProgressMessAge(e)) {
+			if (ArrAy.isArrAy(e)) {
 				results.push(...e);
 			} else {
 				results.push(e);
@@ -38,11 +38,11 @@ async function doSearchTest(query: IFileQuery, expectedResultCount: number | Fun
 		}
 	});
 
-	assert.equal(results.length, expectedResultCount, `rg ${results.length} !== ${expectedResultCount}`);
+	Assert.equAl(results.length, expectedResultCount, `rg ${results.length} !== ${expectedResultCount}`);
 }
 
-suite('FileSearch-integration', function () {
-	this.timeout(1000 * 60); // increase timeout for this suite
+suite('FileSeArch-integrAtion', function () {
+	this.timeout(1000 * 60); // increAse timeout for this suite
 
 	test('File - simple', () => {
 		const config: IFileQuery = {
@@ -50,62 +50,62 @@ suite('FileSearch-integration', function () {
 			folderQueries: ROOT_FOLDER_QUERY
 		};
 
-		return doSearchTest(config, 14);
+		return doSeArchTest(config, 14);
 	});
 
-	test('File - filepattern', () => {
+	test('File - filepAttern', () => {
 		const config: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: ROOT_FOLDER_QUERY,
-			filePattern: 'anotherfile'
+			filePAttern: 'Anotherfile'
 		};
 
-		return doSearchTest(config, 1);
+		return doSeArchTest(config, 1);
 	});
 
 	test('File - exclude', () => {
 		const config: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: ROOT_FOLDER_QUERY,
-			filePattern: 'file',
-			excludePattern: { '**/anotherfolder/**': true }
+			filePAttern: 'file',
+			excludePAttern: { '**/Anotherfolder/**': true }
 		};
 
-		return doSearchTest(config, 2);
+		return doSeArchTest(config, 2);
 	});
 
 	test('File - multiroot', () => {
 		const config: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: MULTIROOT_QUERIES,
-			filePattern: 'file',
-			excludePattern: { '**/anotherfolder/**': true }
+			filePAttern: 'file',
+			excludePAttern: { '**/Anotherfolder/**': true }
 		};
 
-		return doSearchTest(config, 2);
+		return doSeArchTest(config, 2);
 	});
 
-	test('File - multiroot with folder name', () => {
+	test('File - multiroot with folder nAme', () => {
 		const config: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: MULTIROOT_QUERIES,
-			filePattern: 'examples_folder anotherfile'
+			filePAttern: 'exAmples_folder Anotherfile'
 		};
 
-		return doSearchTest(config, 1);
+		return doSeArchTest(config, 1);
 	});
 
-	test('File - multiroot with folder name and sibling exclude', () => {
+	test('File - multiroot with folder nAme And sibling exclude', () => {
 		const config: IFileQuery = {
 			type: QueryType.File,
 			folderQueries: [
-				{ folder: URI.file(TEST_FIXTURES), folderName: 'folder1' },
+				{ folder: URI.file(TEST_FIXTURES), folderNAme: 'folder1' },
 				{ folder: URI.file(TEST_FIXTURES2) }
 			],
-			filePattern: 'folder1 site',
-			excludePattern: { '*.css': { when: '$(basename).less' } }
+			filePAttern: 'folder1 site',
+			excludePAttern: { '*.css': { when: '$(bAsenAme).less' } }
 		};
 
-		return doSearchTest(config, 1);
+		return doSeArchTest(config, 1);
 	});
 });

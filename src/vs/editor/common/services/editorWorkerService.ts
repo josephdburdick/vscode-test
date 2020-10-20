@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IRange } from 'vs/editor/common/core/range';
-import { IChange, ILineChange } from 'vs/editor/common/editorCommon';
-import { IInplaceReplaceSupportResult, TextEdit } from 'vs/editor/common/modes';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { URI } from 'vs/bAse/common/uri';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import { IChAnge, ILineChAnge } from 'vs/editor/common/editorCommon';
+import { IInplAceReplAceSupportResult, TextEdit } from 'vs/editor/common/modes';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
 export const ID_EDITOR_WORKER_SERVICE = 'editorWorkerService';
-export const IEditorWorkerService = createDecorator<IEditorWorkerService>(ID_EDITOR_WORKER_SERVICE);
+export const IEditorWorkerService = creAteDecorAtor<IEditorWorkerService>(ID_EDITOR_WORKER_SERVICE);
 
-export interface IDiffComputationResult {
-	quitEarly: boolean;
-	identical: boolean;
-	changes: ILineChange[];
+export interfAce IDiffComputAtionResult {
+	quitEArly: booleAn;
+	identicAl: booleAn;
+	chAnges: ILineChAnge[];
 }
 
-export interface IEditorWorkerService {
-	readonly _serviceBrand: undefined;
+export interfAce IEditorWorkerService {
+	reAdonly _serviceBrAnd: undefined;
 
-	canComputeDiff(original: URI, modified: URI): boolean;
-	computeDiff(original: URI, modified: URI, ignoreTrimWhitespace: boolean, maxComputationTime: number): Promise<IDiffComputationResult | null>;
+	cAnComputeDiff(originAl: URI, modified: URI): booleAn;
+	computeDiff(originAl: URI, modified: URI, ignoreTrimWhitespAce: booleAn, mAxComputAtionTime: number): Promise<IDiffComputAtionResult | null>;
 
-	canComputeDirtyDiff(original: URI, modified: URI): boolean;
-	computeDirtyDiff(original: URI, modified: URI, ignoreTrimWhitespace: boolean): Promise<IChange[] | null>;
+	cAnComputeDirtyDiff(originAl: URI, modified: URI): booleAn;
+	computeDirtyDiff(originAl: URI, modified: URI, ignoreTrimWhitespAce: booleAn): Promise<IChAnge[] | null>;
 
-	computeMoreMinimalEdits(resource: URI, edits: TextEdit[] | null | undefined): Promise<TextEdit[] | undefined>;
+	computeMoreMinimAlEdits(resource: URI, edits: TextEdit[] | null | undefined): Promise<TextEdit[] | undefined>;
 
-	canComputeWordRanges(resource: URI): boolean;
-	computeWordRanges(resource: URI, range: IRange): Promise<{ [word: string]: IRange[] } | null>;
+	cAnComputeWordRAnges(resource: URI): booleAn;
+	computeWordRAnges(resource: URI, rAnge: IRAnge): Promise<{ [word: string]: IRAnge[] } | null>;
 
-	canNavigateValueSet(resource: URI): boolean;
-	navigateValueSet(resource: URI, range: IRange, up: boolean): Promise<IInplaceReplaceSupportResult | null>;
+	cAnNAvigAteVAlueSet(resource: URI): booleAn;
+	nAvigAteVAlueSet(resource: URI, rAnge: IRAnge, up: booleAn): Promise<IInplAceReplAceSupportResult | null>;
 }

@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { RawContextKey, IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { IFilesConfiguration, AutoSaveConfiguration, HotExitConfiguration } from 'vs/platform/files/common/files';
-import { isUndefinedOrNull } from 'vs/base/common/types';
-import { equals } from 'vs/base/common/objects';
-import { URI } from 'vs/base/common/uri';
-import { isWeb } from 'vs/base/common/platform';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { RAwContextKey, IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IConfigurAtionService, ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IFilesConfigurAtion, AutoSAveConfigurAtion, HotExitConfigurAtion } from 'vs/plAtform/files/common/files';
+import { isUndefinedOrNull } from 'vs/bAse/common/types';
+import { equAls } from 'vs/bAse/common/objects';
+import { URI } from 'vs/bAse/common/uri';
+import { isWeb } from 'vs/bAse/common/plAtform';
 
-export const AutoSaveAfterShortDelayContext = new RawContextKey<boolean>('autoSaveAfterShortDelayContext', false);
+export const AutoSAveAfterShortDelAyContext = new RAwContextKey<booleAn>('AutoSAveAfterShortDelAyContext', fAlse);
 
-export interface IAutoSaveConfiguration {
-	autoSaveDelay?: number;
-	autoSaveFocusChange: boolean;
-	autoSaveApplicationChange: boolean;
+export interfAce IAutoSAveConfigurAtion {
+	AutoSAveDelAy?: number;
+	AutoSAveFocusChAnge: booleAn;
+	AutoSAveApplicAtionChAnge: booleAn;
 }
 
-export const enum AutoSaveMode {
+export const enum AutoSAveMode {
 	OFF,
 	AFTER_SHORT_DELAY,
 	AFTER_LONG_DELAY,
@@ -31,186 +31,186 @@ export const enum AutoSaveMode {
 	ON_WINDOW_CHANGE
 }
 
-export const IFilesConfigurationService = createDecorator<IFilesConfigurationService>('filesConfigurationService');
+export const IFilesConfigurAtionService = creAteDecorAtor<IFilesConfigurAtionService>('filesConfigurAtionService');
 
-export interface IFilesConfigurationService {
+export interfAce IFilesConfigurAtionService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	//#region Auto Save
+	//#region Auto SAve
 
-	readonly onAutoSaveConfigurationChange: Event<IAutoSaveConfiguration>;
+	reAdonly onAutoSAveConfigurAtionChAnge: Event<IAutoSAveConfigurAtion>;
 
-	getAutoSaveConfiguration(): IAutoSaveConfiguration;
+	getAutoSAveConfigurAtion(): IAutoSAveConfigurAtion;
 
-	getAutoSaveMode(): AutoSaveMode;
+	getAutoSAveMode(): AutoSAveMode;
 
-	toggleAutoSave(): Promise<void>;
+	toggleAutoSAve(): Promise<void>;
 
 	//#endregion
 
-	readonly onFilesAssociationChange: Event<void>;
+	reAdonly onFilesAssociAtionChAnge: Event<void>;
 
-	readonly isHotExitEnabled: boolean;
+	reAdonly isHotExitEnAbled: booleAn;
 
-	readonly hotExitConfiguration: string | undefined;
+	reAdonly hotExitConfigurAtion: string | undefined;
 
-	preventSaveConflicts(resource: URI, language: string): boolean;
+	preventSAveConflicts(resource: URI, lAnguAge: string): booleAn;
 }
 
-export class FilesConfigurationService extends Disposable implements IFilesConfigurationService {
+export clAss FilesConfigurAtionService extends DisposAble implements IFilesConfigurAtionService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static DEFAULT_AUTO_SAVE_MODE = isWeb ? AutoSaveConfiguration.AFTER_DELAY : AutoSaveConfiguration.OFF;
+	privAte stAtic DEFAULT_AUTO_SAVE_MODE = isWeb ? AutoSAveConfigurAtion.AFTER_DELAY : AutoSAveConfigurAtion.OFF;
 
-	private readonly _onAutoSaveConfigurationChange = this._register(new Emitter<IAutoSaveConfiguration>());
-	readonly onAutoSaveConfigurationChange = this._onAutoSaveConfigurationChange.event;
+	privAte reAdonly _onAutoSAveConfigurAtionChAnge = this._register(new Emitter<IAutoSAveConfigurAtion>());
+	reAdonly onAutoSAveConfigurAtionChAnge = this._onAutoSAveConfigurAtionChAnge.event;
 
-	private readonly _onFilesAssociationChange = this._register(new Emitter<void>());
-	readonly onFilesAssociationChange = this._onFilesAssociationChange.event;
+	privAte reAdonly _onFilesAssociAtionChAnge = this._register(new Emitter<void>());
+	reAdonly onFilesAssociAtionChAnge = this._onFilesAssociAtionChAnge.event;
 
-	private configuredAutoSaveDelay?: number;
-	private configuredAutoSaveOnFocusChange: boolean | undefined;
-	private configuredAutoSaveOnWindowChange: boolean | undefined;
+	privAte configuredAutoSAveDelAy?: number;
+	privAte configuredAutoSAveOnFocusChAnge: booleAn | undefined;
+	privAte configuredAutoSAveOnWindowChAnge: booleAn | undefined;
 
-	private autoSaveAfterShortDelayContext: IContextKey<boolean>;
+	privAte AutoSAveAfterShortDelAyContext: IContextKey<booleAn>;
 
-	private currentFilesAssociationConfig: { [key: string]: string; };
+	privAte currentFilesAssociAtionConfig: { [key: string]: string; };
 
-	private currentHotExitConfig: string;
+	privAte currentHotExitConfig: string;
 
 	constructor(
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
 		super();
 
-		this.autoSaveAfterShortDelayContext = AutoSaveAfterShortDelayContext.bindTo(contextKeyService);
+		this.AutoSAveAfterShortDelAyContext = AutoSAveAfterShortDelAyContext.bindTo(contextKeyService);
 
-		const configuration = configurationService.getValue<IFilesConfiguration>();
+		const configurAtion = configurAtionService.getVAlue<IFilesConfigurAtion>();
 
-		this.currentFilesAssociationConfig = configuration?.files?.associations;
-		this.currentHotExitConfig = configuration?.files?.hotExit || HotExitConfiguration.ON_EXIT;
+		this.currentFilesAssociAtionConfig = configurAtion?.files?.AssociAtions;
+		this.currentHotExitConfig = configurAtion?.files?.hotExit || HotExitConfigurAtion.ON_EXIT;
 
-		this.onFilesConfigurationChange(configuration);
+		this.onFilesConfigurAtionChAnge(configurAtion);
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Files configuration changes
-		this._register(this.configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('files')) {
-				this.onFilesConfigurationChange(this.configurationService.getValue<IFilesConfiguration>());
+		// Files configurAtion chAnges
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('files')) {
+				this.onFilesConfigurAtionChAnge(this.configurAtionService.getVAlue<IFilesConfigurAtion>());
 			}
 		}));
 	}
 
-	protected onFilesConfigurationChange(configuration: IFilesConfiguration): void {
+	protected onFilesConfigurAtionChAnge(configurAtion: IFilesConfigurAtion): void {
 
-		// Auto Save
-		const autoSaveMode = configuration?.files?.autoSave || FilesConfigurationService.DEFAULT_AUTO_SAVE_MODE;
-		switch (autoSaveMode) {
-			case AutoSaveConfiguration.AFTER_DELAY:
-				this.configuredAutoSaveDelay = configuration?.files?.autoSaveDelay;
-				this.configuredAutoSaveOnFocusChange = false;
-				this.configuredAutoSaveOnWindowChange = false;
-				break;
+		// Auto SAve
+		const AutoSAveMode = configurAtion?.files?.AutoSAve || FilesConfigurAtionService.DEFAULT_AUTO_SAVE_MODE;
+		switch (AutoSAveMode) {
+			cAse AutoSAveConfigurAtion.AFTER_DELAY:
+				this.configuredAutoSAveDelAy = configurAtion?.files?.AutoSAveDelAy;
+				this.configuredAutoSAveOnFocusChAnge = fAlse;
+				this.configuredAutoSAveOnWindowChAnge = fAlse;
+				breAk;
 
-			case AutoSaveConfiguration.ON_FOCUS_CHANGE:
-				this.configuredAutoSaveDelay = undefined;
-				this.configuredAutoSaveOnFocusChange = true;
-				this.configuredAutoSaveOnWindowChange = false;
-				break;
+			cAse AutoSAveConfigurAtion.ON_FOCUS_CHANGE:
+				this.configuredAutoSAveDelAy = undefined;
+				this.configuredAutoSAveOnFocusChAnge = true;
+				this.configuredAutoSAveOnWindowChAnge = fAlse;
+				breAk;
 
-			case AutoSaveConfiguration.ON_WINDOW_CHANGE:
-				this.configuredAutoSaveDelay = undefined;
-				this.configuredAutoSaveOnFocusChange = false;
-				this.configuredAutoSaveOnWindowChange = true;
-				break;
+			cAse AutoSAveConfigurAtion.ON_WINDOW_CHANGE:
+				this.configuredAutoSAveDelAy = undefined;
+				this.configuredAutoSAveOnFocusChAnge = fAlse;
+				this.configuredAutoSAveOnWindowChAnge = true;
+				breAk;
 
-			default:
-				this.configuredAutoSaveDelay = undefined;
-				this.configuredAutoSaveOnFocusChange = false;
-				this.configuredAutoSaveOnWindowChange = false;
-				break;
+			defAult:
+				this.configuredAutoSAveDelAy = undefined;
+				this.configuredAutoSAveOnFocusChAnge = fAlse;
+				this.configuredAutoSAveOnWindowChAnge = fAlse;
+				breAk;
 		}
 
-		this.autoSaveAfterShortDelayContext.set(this.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY);
+		this.AutoSAveAfterShortDelAyContext.set(this.getAutoSAveMode() === AutoSAveMode.AFTER_SHORT_DELAY);
 
-		// Emit as event
-		this._onAutoSaveConfigurationChange.fire(this.getAutoSaveConfiguration());
+		// Emit As event
+		this._onAutoSAveConfigurAtionChAnge.fire(this.getAutoSAveConfigurAtion());
 
-		// Check for change in files associations
-		const filesAssociation = configuration?.files?.associations;
-		if (!equals(this.currentFilesAssociationConfig, filesAssociation)) {
-			this.currentFilesAssociationConfig = filesAssociation;
-			this._onFilesAssociationChange.fire();
+		// Check for chAnge in files AssociAtions
+		const filesAssociAtion = configurAtion?.files?.AssociAtions;
+		if (!equAls(this.currentFilesAssociAtionConfig, filesAssociAtion)) {
+			this.currentFilesAssociAtionConfig = filesAssociAtion;
+			this._onFilesAssociAtionChAnge.fire();
 		}
 
 		// Hot exit
-		const hotExitMode = configuration?.files?.hotExit;
-		if (hotExitMode === HotExitConfiguration.OFF || hotExitMode === HotExitConfiguration.ON_EXIT_AND_WINDOW_CLOSE) {
+		const hotExitMode = configurAtion?.files?.hotExit;
+		if (hotExitMode === HotExitConfigurAtion.OFF || hotExitMode === HotExitConfigurAtion.ON_EXIT_AND_WINDOW_CLOSE) {
 			this.currentHotExitConfig = hotExitMode;
 		} else {
-			this.currentHotExitConfig = HotExitConfiguration.ON_EXIT;
+			this.currentHotExitConfig = HotExitConfigurAtion.ON_EXIT;
 		}
 	}
 
-	getAutoSaveMode(): AutoSaveMode {
-		if (this.configuredAutoSaveOnFocusChange) {
-			return AutoSaveMode.ON_FOCUS_CHANGE;
+	getAutoSAveMode(): AutoSAveMode {
+		if (this.configuredAutoSAveOnFocusChAnge) {
+			return AutoSAveMode.ON_FOCUS_CHANGE;
 		}
 
-		if (this.configuredAutoSaveOnWindowChange) {
-			return AutoSaveMode.ON_WINDOW_CHANGE;
+		if (this.configuredAutoSAveOnWindowChAnge) {
+			return AutoSAveMode.ON_WINDOW_CHANGE;
 		}
 
-		if (this.configuredAutoSaveDelay && this.configuredAutoSaveDelay > 0) {
-			return this.configuredAutoSaveDelay <= 1000 ? AutoSaveMode.AFTER_SHORT_DELAY : AutoSaveMode.AFTER_LONG_DELAY;
+		if (this.configuredAutoSAveDelAy && this.configuredAutoSAveDelAy > 0) {
+			return this.configuredAutoSAveDelAy <= 1000 ? AutoSAveMode.AFTER_SHORT_DELAY : AutoSAveMode.AFTER_LONG_DELAY;
 		}
 
-		return AutoSaveMode.OFF;
+		return AutoSAveMode.OFF;
 	}
 
-	getAutoSaveConfiguration(): IAutoSaveConfiguration {
+	getAutoSAveConfigurAtion(): IAutoSAveConfigurAtion {
 		return {
-			autoSaveDelay: this.configuredAutoSaveDelay && this.configuredAutoSaveDelay > 0 ? this.configuredAutoSaveDelay : undefined,
-			autoSaveFocusChange: !!this.configuredAutoSaveOnFocusChange,
-			autoSaveApplicationChange: !!this.configuredAutoSaveOnWindowChange
+			AutoSAveDelAy: this.configuredAutoSAveDelAy && this.configuredAutoSAveDelAy > 0 ? this.configuredAutoSAveDelAy : undefined,
+			AutoSAveFocusChAnge: !!this.configuredAutoSAveOnFocusChAnge,
+			AutoSAveApplicAtionChAnge: !!this.configuredAutoSAveOnWindowChAnge
 		};
 	}
 
-	async toggleAutoSave(): Promise<void> {
-		const setting = this.configurationService.inspect('files.autoSave');
-		let userAutoSaveConfig = setting.userValue;
-		if (isUndefinedOrNull(userAutoSaveConfig)) {
-			userAutoSaveConfig = setting.defaultValue; // use default if setting not defined
+	Async toggleAutoSAve(): Promise<void> {
+		const setting = this.configurAtionService.inspect('files.AutoSAve');
+		let userAutoSAveConfig = setting.userVAlue;
+		if (isUndefinedOrNull(userAutoSAveConfig)) {
+			userAutoSAveConfig = setting.defAultVAlue; // use defAult if setting not defined
 		}
 
-		let newAutoSaveValue: string;
-		if ([AutoSaveConfiguration.AFTER_DELAY, AutoSaveConfiguration.ON_FOCUS_CHANGE, AutoSaveConfiguration.ON_WINDOW_CHANGE].some(s => s === userAutoSaveConfig)) {
-			newAutoSaveValue = AutoSaveConfiguration.OFF;
+		let newAutoSAveVAlue: string;
+		if ([AutoSAveConfigurAtion.AFTER_DELAY, AutoSAveConfigurAtion.ON_FOCUS_CHANGE, AutoSAveConfigurAtion.ON_WINDOW_CHANGE].some(s => s === userAutoSAveConfig)) {
+			newAutoSAveVAlue = AutoSAveConfigurAtion.OFF;
 		} else {
-			newAutoSaveValue = AutoSaveConfiguration.AFTER_DELAY;
+			newAutoSAveVAlue = AutoSAveConfigurAtion.AFTER_DELAY;
 		}
 
-		return this.configurationService.updateValue('files.autoSave', newAutoSaveValue, ConfigurationTarget.USER);
+		return this.configurAtionService.updAteVAlue('files.AutoSAve', newAutoSAveVAlue, ConfigurAtionTArget.USER);
 	}
 
-	get isHotExitEnabled(): boolean {
-		return this.currentHotExitConfig !== HotExitConfiguration.OFF;
+	get isHotExitEnAbled(): booleAn {
+		return this.currentHotExitConfig !== HotExitConfigurAtion.OFF;
 	}
 
-	get hotExitConfiguration(): string {
+	get hotExitConfigurAtion(): string {
 		return this.currentHotExitConfig;
 	}
 
-	preventSaveConflicts(resource: URI, language: string): boolean {
-		return this.configurationService.getValue('files.saveConflictResolution', { resource, overrideIdentifier: language }) !== 'overwriteFileOnDisk';
+	preventSAveConflicts(resource: URI, lAnguAge: string): booleAn {
+		return this.configurAtionService.getVAlue('files.sAveConflictResolution', { resource, overrideIdentifier: lAnguAge }) !== 'overwriteFileOnDisk';
 	}
 }
 
-registerSingleton(IFilesConfigurationService, FilesConfigurationService);
+registerSingleton(IFilesConfigurAtionService, FilesConfigurAtionService);

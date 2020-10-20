@@ -1,360 +1,360 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as sinon from 'sinon';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { Match, FileMatch, SearchResult, SearchModel } from 'vs/workbench/contrib/search/common/searchModel';
-import { URI } from 'vs/base/common/uri';
-import { IFileMatch, TextSearchMatch, OneLineRange, ITextSearchMatch } from 'vs/workbench/services/search/common/search';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { Range } from 'vs/editor/common/core/range';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
+import * As Assert from 'Assert';
+import * As sinon from 'sinon';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { MAtch, FileMAtch, SeArchResult, SeArchModel } from 'vs/workbench/contrib/seArch/common/seArchModel';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileMAtch, TextSeArchMAtch, OneLineRAnge, ITextSeArchMAtch } from 'vs/workbench/services/seArch/common/seArch';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { IReplaceService } from 'vs/workbench/contrib/search/common/replace';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
+import { IReplAceService } from 'vs/workbench/contrib/seArch/common/replAce';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
 
-const lineOneRange = new OneLineRange(1, 0, 1);
+const lineOneRAnge = new OneLineRAnge(1, 0, 1);
 
-suite('SearchResult', () => {
+suite('SeArchResult', () => {
 
-	let instantiationService: TestInstantiationService;
+	let instAntiAtionService: TestInstAntiAtionService;
 
 	setup(() => {
-		instantiationService = new TestInstantiationService();
-		instantiationService.stub(ITelemetryService, NullTelemetryService);
-		instantiationService.stub(IModelService, stubModelService(instantiationService));
-		instantiationService.stubPromise(IReplaceService, {});
-		instantiationService.stubPromise(IReplaceService, 'replace', null);
+		instAntiAtionService = new TestInstAntiAtionService();
+		instAntiAtionService.stub(ITelemetryService, NullTelemetryService);
+		instAntiAtionService.stub(IModelService, stubModelService(instAntiAtionService));
+		instAntiAtionService.stubPromise(IReplAceService, {});
+		instAntiAtionService.stubPromise(IReplAceService, 'replAce', null);
 	});
 
-	test('Line Match', function () {
-		const fileMatch = aFileMatch('folder/file.txt', null!);
-		const lineMatch = new Match(fileMatch, ['0 foo bar'], new OneLineRange(0, 2, 5), new OneLineRange(1, 0, 5));
-		assert.equal(lineMatch.text(), '0 foo bar');
-		assert.equal(lineMatch.range().startLineNumber, 2);
-		assert.equal(lineMatch.range().endLineNumber, 2);
-		assert.equal(lineMatch.range().startColumn, 1);
-		assert.equal(lineMatch.range().endColumn, 6);
-		assert.equal(lineMatch.id(), 'file:///folder/file.txt>[2,1 -> 2,6]foo');
+	test('Line MAtch', function () {
+		const fileMAtch = AFileMAtch('folder/file.txt', null!);
+		const lineMAtch = new MAtch(fileMAtch, ['0 foo bAr'], new OneLineRAnge(0, 2, 5), new OneLineRAnge(1, 0, 5));
+		Assert.equAl(lineMAtch.text(), '0 foo bAr');
+		Assert.equAl(lineMAtch.rAnge().stArtLineNumber, 2);
+		Assert.equAl(lineMAtch.rAnge().endLineNumber, 2);
+		Assert.equAl(lineMAtch.rAnge().stArtColumn, 1);
+		Assert.equAl(lineMAtch.rAnge().endColumn, 6);
+		Assert.equAl(lineMAtch.id(), 'file:///folder/file.txt>[2,1 -> 2,6]foo');
 
-		assert.equal(lineMatch.fullMatchText(), 'foo');
-		assert.equal(lineMatch.fullMatchText(true), '0 foo bar');
+		Assert.equAl(lineMAtch.fullMAtchText(), 'foo');
+		Assert.equAl(lineMAtch.fullMAtchText(true), '0 foo bAr');
 	});
 
-	test('Line Match - Remove', function () {
-		const fileMatch = aFileMatch('folder/file.txt', aSearchResult(), new TextSearchMatch('foo bar', new OneLineRange(1, 0, 3)));
-		const lineMatch = fileMatch.matches()[0];
-		fileMatch.remove(lineMatch);
-		assert.equal(fileMatch.matches().length, 0);
+	test('Line MAtch - Remove', function () {
+		const fileMAtch = AFileMAtch('folder/file.txt', ASeArchResult(), new TextSeArchMAtch('foo bAr', new OneLineRAnge(1, 0, 3)));
+		const lineMAtch = fileMAtch.mAtches()[0];
+		fileMAtch.remove(lineMAtch);
+		Assert.equAl(fileMAtch.mAtches().length, 0);
 	});
 
-	test('File Match', function () {
-		let fileMatch = aFileMatch('folder/file.txt');
-		assert.equal(fileMatch.matches(), 0);
-		assert.equal(fileMatch.resource.toString(), 'file:///folder/file.txt');
-		assert.equal(fileMatch.name(), 'file.txt');
+	test('File MAtch', function () {
+		let fileMAtch = AFileMAtch('folder/file.txt');
+		Assert.equAl(fileMAtch.mAtches(), 0);
+		Assert.equAl(fileMAtch.resource.toString(), 'file:///folder/file.txt');
+		Assert.equAl(fileMAtch.nAme(), 'file.txt');
 
-		fileMatch = aFileMatch('file.txt');
-		assert.equal(fileMatch.matches(), 0);
-		assert.equal(fileMatch.resource.toString(), 'file:///file.txt');
-		assert.equal(fileMatch.name(), 'file.txt');
+		fileMAtch = AFileMAtch('file.txt');
+		Assert.equAl(fileMAtch.mAtches(), 0);
+		Assert.equAl(fileMAtch.resource.toString(), 'file:///file.txt');
+		Assert.equAl(fileMAtch.nAme(), 'file.txt');
 	});
 
-	test('File Match: Select an existing match', function () {
-		const testObject = aFileMatch(
+	test('File MAtch: Select An existing mAtch', function () {
+		const testObject = AFileMAtch(
 			'folder/file.txt',
-			aSearchResult(),
-			new TextSearchMatch('foo', new OneLineRange(1, 0, 3)),
-			new TextSearchMatch('bar', new OneLineRange(1, 5, 3)));
+			ASeArchResult(),
+			new TextSeArchMAtch('foo', new OneLineRAnge(1, 0, 3)),
+			new TextSeArchMAtch('bAr', new OneLineRAnge(1, 5, 3)));
 
-		testObject.setSelectedMatch(testObject.matches()[0]);
+		testObject.setSelectedMAtch(testObject.mAtches()[0]);
 
-		assert.equal(testObject.matches()[0], testObject.getSelectedMatch());
+		Assert.equAl(testObject.mAtches()[0], testObject.getSelectedMAtch());
 	});
 
-	test('File Match: Select non existing match', function () {
-		const testObject = aFileMatch(
+	test('File MAtch: Select non existing mAtch', function () {
+		const testObject = AFileMAtch(
 			'folder/file.txt',
-			aSearchResult(),
-			new TextSearchMatch('foo', new OneLineRange(1, 0, 3)),
-			new TextSearchMatch('bar', new OneLineRange(1, 5, 3)));
-		const target = testObject.matches()[0];
-		testObject.remove(target);
+			ASeArchResult(),
+			new TextSeArchMAtch('foo', new OneLineRAnge(1, 0, 3)),
+			new TextSeArchMAtch('bAr', new OneLineRAnge(1, 5, 3)));
+		const tArget = testObject.mAtches()[0];
+		testObject.remove(tArget);
 
-		testObject.setSelectedMatch(target);
+		testObject.setSelectedMAtch(tArget);
 
-		assert.equal(undefined, testObject.getSelectedMatch());
+		Assert.equAl(undefined, testObject.getSelectedMAtch());
 	});
 
-	test('File Match: isSelected return true for selected match', function () {
-		const testObject = aFileMatch(
+	test('File MAtch: isSelected return true for selected mAtch', function () {
+		const testObject = AFileMAtch(
 			'folder/file.txt',
-			aSearchResult(),
-			new TextSearchMatch('foo', new OneLineRange(1, 0, 3)),
-			new TextSearchMatch('bar', new OneLineRange(1, 5, 3)));
-		const target = testObject.matches()[0];
-		testObject.setSelectedMatch(target);
+			ASeArchResult(),
+			new TextSeArchMAtch('foo', new OneLineRAnge(1, 0, 3)),
+			new TextSeArchMAtch('bAr', new OneLineRAnge(1, 5, 3)));
+		const tArget = testObject.mAtches()[0];
+		testObject.setSelectedMAtch(tArget);
 
-		assert.ok(testObject.isMatchSelected(target));
+		Assert.ok(testObject.isMAtchSelected(tArget));
 	});
 
-	test('File Match: isSelected return false for un-selected match', function () {
-		const testObject = aFileMatch('folder/file.txt',
-			aSearchResult(),
-			new TextSearchMatch('foo', new OneLineRange(1, 0, 3)),
-			new TextSearchMatch('bar', new OneLineRange(1, 5, 3)));
-		testObject.setSelectedMatch(testObject.matches()[0]);
-		assert.ok(!testObject.isMatchSelected(testObject.matches()[1]));
+	test('File MAtch: isSelected return fAlse for un-selected mAtch', function () {
+		const testObject = AFileMAtch('folder/file.txt',
+			ASeArchResult(),
+			new TextSeArchMAtch('foo', new OneLineRAnge(1, 0, 3)),
+			new TextSeArchMAtch('bAr', new OneLineRAnge(1, 5, 3)));
+		testObject.setSelectedMAtch(testObject.mAtches()[0]);
+		Assert.ok(!testObject.isMAtchSelected(testObject.mAtches()[1]));
 	});
 
-	test('File Match: unselect', function () {
-		const testObject = aFileMatch(
+	test('File MAtch: unselect', function () {
+		const testObject = AFileMAtch(
 			'folder/file.txt',
-			aSearchResult(),
-			new TextSearchMatch('foo', new OneLineRange(1, 0, 3)),
-			new TextSearchMatch('bar', new OneLineRange(1, 5, 3)));
-		testObject.setSelectedMatch(testObject.matches()[0]);
-		testObject.setSelectedMatch(null);
+			ASeArchResult(),
+			new TextSeArchMAtch('foo', new OneLineRAnge(1, 0, 3)),
+			new TextSeArchMAtch('bAr', new OneLineRAnge(1, 5, 3)));
+		testObject.setSelectedMAtch(testObject.mAtches()[0]);
+		testObject.setSelectedMAtch(null);
 
-		assert.equal(null, testObject.getSelectedMatch());
+		Assert.equAl(null, testObject.getSelectedMAtch());
 	});
 
-	test('File Match: unselect when not selected', function () {
-		const testObject = aFileMatch(
+	test('File MAtch: unselect when not selected', function () {
+		const testObject = AFileMAtch(
 			'folder/file.txt',
-			aSearchResult(),
-			new TextSearchMatch('foo', new OneLineRange(1, 0, 3)),
-			new TextSearchMatch('bar', new OneLineRange(1, 5, 3)));
-		testObject.setSelectedMatch(null);
+			ASeArchResult(),
+			new TextSeArchMAtch('foo', new OneLineRAnge(1, 0, 3)),
+			new TextSeArchMAtch('bAr', new OneLineRAnge(1, 5, 3)));
+		testObject.setSelectedMAtch(null);
 
-		assert.equal(null, testObject.getSelectedMatch());
+		Assert.equAl(null, testObject.getSelectedMAtch());
 	});
 
-	test('Alle Drei Zusammen', function () {
-		const searchResult = instantiationService.createInstance(SearchResult, null);
-		const fileMatch = aFileMatch('far/boo', searchResult);
-		const lineMatch = new Match(fileMatch, ['foo bar'], new OneLineRange(0, 0, 3), new OneLineRange(1, 0, 3));
+	test('Alle Drei ZusAmmen', function () {
+		const seArchResult = instAntiAtionService.creAteInstAnce(SeArchResult, null);
+		const fileMAtch = AFileMAtch('fAr/boo', seArchResult);
+		const lineMAtch = new MAtch(fileMAtch, ['foo bAr'], new OneLineRAnge(0, 0, 3), new OneLineRAnge(1, 0, 3));
 
-		assert(lineMatch.parent() === fileMatch);
-		assert(fileMatch.parent() === searchResult);
+		Assert(lineMAtch.pArent() === fileMAtch);
+		Assert(fileMAtch.pArent() === seArchResult);
 	});
 
-	test('Adding a raw match will add a file match with line matches', function () {
-		const testObject = aSearchResult();
-		const target = [aRawMatch('file://c:/',
-			new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
-			new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11)),
-			new TextSearchMatch('preview 2', lineOneRange))];
+	test('Adding A rAw mAtch will Add A file mAtch with line mAtches', function () {
+		const testObject = ASeArchResult();
+		const tArget = [ARAwMAtch('file://c:/',
+			new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 1, 4)),
+			new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 4, 11)),
+			new TextSeArchMAtch('preview 2', lineOneRAnge))];
 
-		testObject.add(target);
+		testObject.Add(tArget);
 
-		assert.equal(3, testObject.count());
+		Assert.equAl(3, testObject.count());
 
-		const actual = testObject.matches();
-		assert.equal(1, actual.length);
-		assert.equal('file://c:/', actual[0].resource.toString());
+		const ActuAl = testObject.mAtches();
+		Assert.equAl(1, ActuAl.length);
+		Assert.equAl('file://c:/', ActuAl[0].resource.toString());
 
-		const actuaMatches = actual[0].matches();
-		assert.equal(3, actuaMatches.length);
+		const ActuAMAtches = ActuAl[0].mAtches();
+		Assert.equAl(3, ActuAMAtches.length);
 
-		assert.equal('preview 1', actuaMatches[0].text());
-		assert.ok(new Range(2, 2, 2, 5).equalsRange(actuaMatches[0].range()));
+		Assert.equAl('preview 1', ActuAMAtches[0].text());
+		Assert.ok(new RAnge(2, 2, 2, 5).equAlsRAnge(ActuAMAtches[0].rAnge()));
 
-		assert.equal('preview 1', actuaMatches[1].text());
-		assert.ok(new Range(2, 5, 2, 12).equalsRange(actuaMatches[1].range()));
+		Assert.equAl('preview 1', ActuAMAtches[1].text());
+		Assert.ok(new RAnge(2, 5, 2, 12).equAlsRAnge(ActuAMAtches[1].rAnge()));
 
-		assert.equal('preview 2', actuaMatches[2].text());
-		assert.ok(new Range(2, 1, 2, 2).equalsRange(actuaMatches[2].range()));
+		Assert.equAl('preview 2', ActuAMAtches[2].text());
+		Assert.ok(new RAnge(2, 1, 2, 2).equAlsRAnge(ActuAMAtches[2].rAnge()));
 	});
 
-	test('Adding multiple raw matches', function () {
-		const testObject = aSearchResult();
-		const target = [
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
-				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
-			aRawMatch('file://c:/2',
-				new TextSearchMatch('preview 2', lineOneRange))];
+	test('Adding multiple rAw mAtches', function () {
+		const testObject = ASeArchResult();
+		const tArget = [
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 1, 4)),
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 4, 11))),
+			ARAwMAtch('file://c:/2',
+				new TextSeArchMAtch('preview 2', lineOneRAnge))];
 
-		testObject.add(target);
+		testObject.Add(tArget);
 
-		assert.equal(3, testObject.count());
+		Assert.equAl(3, testObject.count());
 
-		const actual = testObject.matches();
-		assert.equal(2, actual.length);
-		assert.equal('file://c:/1', actual[0].resource.toString());
+		const ActuAl = testObject.mAtches();
+		Assert.equAl(2, ActuAl.length);
+		Assert.equAl('file://c:/1', ActuAl[0].resource.toString());
 
-		let actuaMatches = actual[0].matches();
-		assert.equal(2, actuaMatches.length);
-		assert.equal('preview 1', actuaMatches[0].text());
-		assert.ok(new Range(2, 2, 2, 5).equalsRange(actuaMatches[0].range()));
-		assert.equal('preview 1', actuaMatches[1].text());
-		assert.ok(new Range(2, 5, 2, 12).equalsRange(actuaMatches[1].range()));
+		let ActuAMAtches = ActuAl[0].mAtches();
+		Assert.equAl(2, ActuAMAtches.length);
+		Assert.equAl('preview 1', ActuAMAtches[0].text());
+		Assert.ok(new RAnge(2, 2, 2, 5).equAlsRAnge(ActuAMAtches[0].rAnge()));
+		Assert.equAl('preview 1', ActuAMAtches[1].text());
+		Assert.ok(new RAnge(2, 5, 2, 12).equAlsRAnge(ActuAMAtches[1].rAnge()));
 
-		actuaMatches = actual[1].matches();
-		assert.equal(1, actuaMatches.length);
-		assert.equal('preview 2', actuaMatches[0].text());
-		assert.ok(new Range(2, 1, 2, 2).equalsRange(actuaMatches[0].range()));
+		ActuAMAtches = ActuAl[1].mAtches();
+		Assert.equAl(1, ActuAMAtches.length);
+		Assert.equAl('preview 2', ActuAMAtches[0].text());
+		Assert.ok(new RAnge(2, 1, 2, 2).equAlsRAnge(ActuAMAtches[0].rAnge()));
 	});
 
-	test('Dispose disposes matches', function () {
-		const target1 = sinon.spy();
-		const target2 = sinon.spy();
+	test('Dispose disposes mAtches', function () {
+		const tArget1 = sinon.spy();
+		const tArget2 = sinon.spy();
 
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange)),
-			aRawMatch('file://c:/2',
-				new TextSearchMatch('preview 2', lineOneRange))]);
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge)),
+			ARAwMAtch('file://c:/2',
+				new TextSeArchMAtch('preview 2', lineOneRAnge))]);
 
-		testObject.matches()[0].onDispose(target1);
-		testObject.matches()[1].onDispose(target2);
+		testObject.mAtches()[0].onDispose(tArget1);
+		testObject.mAtches()[1].onDispose(tArget2);
 
 		testObject.dispose();
 
-		assert.ok(testObject.isEmpty());
-		assert.ok(target1.calledOnce);
-		assert.ok(target2.calledOnce);
+		Assert.ok(testObject.isEmpty());
+		Assert.ok(tArget1.cAlledOnce);
+		Assert.ok(tArget2.cAlledOnce);
 	});
 
-	test('remove triggers change event', function () {
-		const target = sinon.spy();
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange))]);
-		const objectToRemove = testObject.matches()[0];
-		testObject.onChange(target);
+	test('remove triggers chAnge event', function () {
+		const tArget = sinon.spy();
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge))]);
+		const objectToRemove = testObject.mAtches()[0];
+		testObject.onChAnge(tArget);
 
 		testObject.remove(objectToRemove);
 
-		assert.ok(target.calledOnce);
-		assert.deepEqual([{ elements: [objectToRemove], removed: true }], target.args[0]);
+		Assert.ok(tArget.cAlledOnce);
+		Assert.deepEquAl([{ elements: [objectToRemove], removed: true }], tArget.Args[0]);
 	});
 
-	test('remove array triggers change event', function () {
-		const target = sinon.spy();
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange)),
-			aRawMatch('file://c:/2',
-				new TextSearchMatch('preview 2', lineOneRange))]);
-		const arrayToRemove = testObject.matches();
-		testObject.onChange(target);
+	test('remove ArrAy triggers chAnge event', function () {
+		const tArget = sinon.spy();
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge)),
+			ARAwMAtch('file://c:/2',
+				new TextSeArchMAtch('preview 2', lineOneRAnge))]);
+		const ArrAyToRemove = testObject.mAtches();
+		testObject.onChAnge(tArget);
 
-		testObject.remove(arrayToRemove);
+		testObject.remove(ArrAyToRemove);
 
-		assert.ok(target.calledOnce);
-		assert.deepEqual([{ elements: arrayToRemove, removed: true }], target.args[0]);
+		Assert.ok(tArget.cAlledOnce);
+		Assert.deepEquAl([{ elements: ArrAyToRemove, removed: true }], tArget.Args[0]);
 	});
 
-	test('remove triggers change event', function () {
-		const target = sinon.spy();
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange))]);
-		const objectToRemove = testObject.matches()[0];
-		testObject.onChange(target);
+	test('remove triggers chAnge event', function () {
+		const tArget = sinon.spy();
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge))]);
+		const objectToRemove = testObject.mAtches()[0];
+		testObject.onChAnge(tArget);
 
 		testObject.remove(objectToRemove);
 
-		assert.ok(target.calledOnce);
-		assert.deepEqual([{ elements: [objectToRemove], removed: true }], target.args[0]);
+		Assert.ok(tArget.cAlledOnce);
+		Assert.deepEquAl([{ elements: [objectToRemove], removed: true }], tArget.Args[0]);
 	});
 
-	test('Removing all line matches and adding back will add file back to result', function () {
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange))]);
-		const target = testObject.matches()[0];
-		const matchToRemove = target.matches()[0];
-		target.remove(matchToRemove);
+	test('Removing All line mAtches And Adding bAck will Add file bAck to result', function () {
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge))]);
+		const tArget = testObject.mAtches()[0];
+		const mAtchToRemove = tArget.mAtches()[0];
+		tArget.remove(mAtchToRemove);
 
-		assert.ok(testObject.isEmpty());
-		target.add(matchToRemove, true);
+		Assert.ok(testObject.isEmpty());
+		tArget.Add(mAtchToRemove, true);
 
-		assert.equal(1, testObject.fileCount());
-		assert.equal(target, testObject.matches()[0]);
+		Assert.equAl(1, testObject.fileCount());
+		Assert.equAl(tArget, testObject.mAtches()[0]);
 	});
 
-	test('replace should remove the file match', function () {
+	test('replAce should remove the file mAtch', function () {
 		const voidPromise = Promise.resolve(null);
-		instantiationService.stub(IReplaceService, 'replace', voidPromise);
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange))]);
+		instAntiAtionService.stub(IReplAceService, 'replAce', voidPromise);
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge))]);
 
-		testObject.replace(testObject.matches()[0]);
+		testObject.replAce(testObject.mAtches()[0]);
 
-		return voidPromise.then(() => assert.ok(testObject.isEmpty()));
+		return voidPromise.then(() => Assert.ok(testObject.isEmpty()));
 	});
 
-	test('replace should trigger the change event', function () {
-		const target = sinon.spy();
+	test('replAce should trigger the chAnge event', function () {
+		const tArget = sinon.spy();
 		const voidPromise = Promise.resolve(null);
-		instantiationService.stub(IReplaceService, 'replace', voidPromise);
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange))]);
-		testObject.onChange(target);
-		const objectToRemove = testObject.matches()[0];
+		instAntiAtionService.stub(IReplAceService, 'replAce', voidPromise);
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge))]);
+		testObject.onChAnge(tArget);
+		const objectToRemove = testObject.mAtches()[0];
 
-		testObject.replace(objectToRemove);
+		testObject.replAce(objectToRemove);
 
 		return voidPromise.then(() => {
-			assert.ok(target.calledOnce);
-			assert.deepEqual([{ elements: [objectToRemove], removed: true }], target.args[0]);
+			Assert.ok(tArget.cAlledOnce);
+			Assert.deepEquAl([{ elements: [objectToRemove], removed: true }], tArget.Args[0]);
 		});
 	});
 
-	test('replaceAll should remove all file matches', function () {
+	test('replAceAll should remove All file mAtches', function () {
 		const voidPromise = Promise.resolve(null);
-		instantiationService.stubPromise(IReplaceService, 'replace', voidPromise);
-		const testObject = aSearchResult();
-		testObject.add([
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', lineOneRange)),
-			aRawMatch('file://c:/2',
-				new TextSearchMatch('preview 2', lineOneRange))]);
+		instAntiAtionService.stubPromise(IReplAceService, 'replAce', voidPromise);
+		const testObject = ASeArchResult();
+		testObject.Add([
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', lineOneRAnge)),
+			ARAwMAtch('file://c:/2',
+				new TextSeArchMAtch('preview 2', lineOneRAnge))]);
 
-		testObject.replaceAll(null!);
+		testObject.replAceAll(null!);
 
-		return voidPromise.then(() => assert.ok(testObject.isEmpty()));
+		return voidPromise.then(() => Assert.ok(testObject.isEmpty()));
 	});
 
-	function aFileMatch(path: string, searchResult?: SearchResult, ...lineMatches: ITextSearchMatch[]): FileMatch {
-		const rawMatch: IFileMatch = {
-			resource: URI.file('/' + path),
-			results: lineMatches
+	function AFileMAtch(pAth: string, seArchResult?: SeArchResult, ...lineMAtches: ITextSeArchMAtch[]): FileMAtch {
+		const rAwMAtch: IFileMAtch = {
+			resource: URI.file('/' + pAth),
+			results: lineMAtches
 		};
-		return instantiationService.createInstance(FileMatch, null, null, null, searchResult, rawMatch);
+		return instAntiAtionService.creAteInstAnce(FileMAtch, null, null, null, seArchResult, rAwMAtch);
 	}
 
-	function aSearchResult(): SearchResult {
-		const searchModel = instantiationService.createInstance(SearchModel);
-		searchModel.searchResult.query = { type: 1, folderQueries: [{ folder: URI.parse('file://c:/') }] };
-		return searchModel.searchResult;
+	function ASeArchResult(): SeArchResult {
+		const seArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
+		seArchModel.seArchResult.query = { type: 1, folderQueries: [{ folder: URI.pArse('file://c:/') }] };
+		return seArchModel.seArchResult;
 	}
 
-	function aRawMatch(resource: string, ...results: ITextSearchMatch[]): IFileMatch {
-		return { resource: URI.parse(resource), results };
+	function ARAwMAtch(resource: string, ...results: ITextSeArchMAtch[]): IFileMAtch {
+		return { resource: URI.pArse(resource), results };
 	}
 
-	function stubModelService(instantiationService: TestInstantiationService): IModelService {
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
-		instantiationService.stub(IThemeService, new TestThemeService());
-		return instantiationService.createInstance(ModelServiceImpl);
+	function stubModelService(instAntiAtionService: TestInstAntiAtionService): IModelService {
+		instAntiAtionService.stub(IConfigurAtionService, new TestConfigurAtionService());
+		instAntiAtionService.stub(IThemeService, new TestThemeService());
+		return instAntiAtionService.creAteInstAnce(ModelServiceImpl);
 	}
 });

@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IQuickAccessProvider } from 'vs/platform/quickinput/common/quickAccess';
+import { IQuickAccessProvider } from 'vs/plAtform/quickinput/common/quickAccess';
 import { IEditor, ScrollType, IDiffEditor } from 'vs/editor/common/editorCommon';
-import { IModelDeltaDecoration, OverviewRulerLane, ITextModel } from 'vs/editor/common/model';
-import { IRange } from 'vs/editor/common/core/range';
-import { themeColorFromId } from 'vs/platform/theme/common/themeService';
-import { overviewRulerRangeHighlight } from 'vs/editor/common/view/editorColorRegistry';
-import { IQuickPick, IQuickPickItem, IKeyMods } from 'vs/platform/quickinput/common/quickInput';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IDisposable, DisposableStore, toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
+import { IModelDeltADecorAtion, OverviewRulerLAne, ITextModel } from 'vs/editor/common/model';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
+import { themeColorFromId } from 'vs/plAtform/theme/common/themeService';
+import { overviewRulerRAngeHighlight } from 'vs/editor/common/view/editorColorRegistry';
+import { IQuickPick, IQuickPickItem, IKeyMods } from 'vs/plAtform/quickinput/common/quickInput';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IDisposAble, DisposAbleStore, toDisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
 import { isDiffEditor, getCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { once } from 'vs/base/common/functional';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { once } from 'vs/bAse/common/functionAl';
 
-interface IEditorLineDecoration {
-	rangeHighlightId: string;
-	overviewRulerDecorationId: string;
+interfAce IEditorLineDecorAtion {
+	rAngeHighlightId: string;
+	overviewRulerDecorAtionId: string;
 }
 
-export interface IEditorNavigationQuickAccessOptions {
-	canAcceptInBackground?: boolean;
+export interfAce IEditorNAvigAtionQuickAccessOptions {
+	cAnAcceptInBAckground?: booleAn;
 }
 
 /**
- * A reusable quick access provider for the editor with support
- * for adding decorations for navigating in the currently active file
- * (for example "Go to line", "Go to symbol").
+ * A reusAble quick Access provider for the editor with support
+ * for Adding decorAtions for nAvigAting in the currently Active file
+ * (for exAmple "Go to line", "Go to symbol").
  */
-export abstract class AbstractEditorNavigationQuickAccessProvider implements IQuickAccessProvider {
+export AbstrAct clAss AbstrActEditorNAvigAtionQuickAccessProvider implements IQuickAccessProvider {
 
-	constructor(protected options?: IEditorNavigationQuickAccessOptions) { }
+	constructor(protected options?: IEditorNAvigAtionQuickAccessOptions) { }
 
 	//#region Provider methods
 
-	provide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable {
-		const disposables = new DisposableStore();
+	provide(picker: IQuickPick<IQuickPickItem>, token: CAncellAtionToken): IDisposAble {
+		const disposAbles = new DisposAbleStore();
 
-		// Apply options if any
-		picker.canAcceptInBackground = !!this.options?.canAcceptInBackground;
+		// Apply options if Any
+		picker.cAnAcceptInBAckground = !!this.options?.cAnAcceptInBAckground;
 
-		// Disable filtering & sorting, we control the results
-		picker.matchOnLabel = picker.matchOnDescription = picker.matchOnDetail = picker.sortByLabel = false;
+		// DisAble filtering & sorting, we control the results
+		picker.mAtchOnLAbel = picker.mAtchOnDescription = picker.mAtchOnDetAil = picker.sortByLAbel = fAlse;
 
-		// Provide based on current active editor
-		const pickerDisposable = disposables.add(new MutableDisposable());
-		pickerDisposable.value = this.doProvide(picker, token);
+		// Provide bAsed on current Active editor
+		const pickerDisposAble = disposAbles.Add(new MutAbleDisposAble());
+		pickerDisposAble.vAlue = this.doProvide(picker, token);
 
-		// Re-create whenever the active editor changes
-		disposables.add(this.onDidActiveTextEditorControlChange(() => {
+		// Re-creAte whenever the Active editor chAnges
+		disposAbles.Add(this.onDidActiveTextEditorControlChAnge(() => {
 
-			// Clear old
-			pickerDisposable.value = undefined;
+			// CleAr old
+			pickerDisposAble.vAlue = undefined;
 
 			// Add new
-			pickerDisposable.value = this.doProvide(picker, token);
+			pickerDisposAble.vAlue = this.doProvide(picker, token);
 		}));
 
-		return disposables;
+		return disposAbles;
 	}
 
-	private doProvide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable {
-		const disposables = new DisposableStore();
+	privAte doProvide(picker: IQuickPick<IQuickPickItem>, token: CAncellAtionToken): IDisposAble {
+		const disposAbles = new DisposAbleStore();
 
 		// With text control
-		const editor = this.activeTextEditorControl;
-		if (editor && this.canProvideWithTextEditor(editor)) {
+		const editor = this.ActiveTextEditorControl;
+		if (editor && this.cAnProvideWithTextEditor(editor)) {
 
-			// Restore any view state if this picker was closed
-			// without actually going to a line
+			// Restore Any view stAte if this picker wAs closed
+			// without ActuAlly going to A line
 			const codeEditor = getCodeEditor(editor);
 			if (codeEditor) {
 
-				// Remember view state and update it when the cursor position
-				// changes even later because it could be that the user has
-				// configured quick access to remain open when focus is lost and
-				// we always want to restore the current location.
-				let lastKnownEditorViewState = withNullAsUndefined(editor.saveViewState());
-				disposables.add(codeEditor.onDidChangeCursorPosition(() => {
-					lastKnownEditorViewState = withNullAsUndefined(editor.saveViewState());
+				// Remember view stAte And updAte it when the cursor position
+				// chAnges even lAter becAuse it could be thAt the user hAs
+				// configured quick Access to remAin open when focus is lost And
+				// we AlwAys wAnt to restore the current locAtion.
+				let lAstKnownEditorViewStAte = withNullAsUndefined(editor.sAveViewStAte());
+				disposAbles.Add(codeEditor.onDidChAngeCursorPosition(() => {
+					lAstKnownEditorViewStAte = withNullAsUndefined(editor.sAveViewStAte());
 				}));
 
-				disposables.add(once(token.onCancellationRequested)(() => {
-					if (lastKnownEditorViewState && editor === this.activeTextEditorControl) {
-						editor.restoreViewState(lastKnownEditorViewState);
+				disposAbles.Add(once(token.onCAncellAtionRequested)(() => {
+					if (lAstKnownEditorViewStAte && editor === this.ActiveTextEditorControl) {
+						editor.restoreViewStAte(lAstKnownEditorViewStAte);
 					}
 				}));
 			}
 
-			// Clean up decorations on dispose
-			disposables.add(toDisposable(() => this.clearDecorations(editor)));
+			// CleAn up decorAtions on dispose
+			disposAbles.Add(toDisposAble(() => this.cleArDecorAtions(editor)));
 
-			// Ask subclass for entries
-			disposables.add(this.provideWithTextEditor(editor, picker, token));
+			// Ask subclAss for entries
+			disposAbles.Add(this.provideWithTextEditor(editor, picker, token));
 		}
 
 		// Without text control
 		else {
-			disposables.add(this.provideWithoutTextEditor(picker, token));
+			disposAbles.Add(this.provideWithoutTextEditor(picker, token));
 		}
 
-		return disposables;
+		return disposAbles;
 	}
 
 	/**
-	 * Subclasses to implement if they can operate on the text editor.
+	 * SubclAsses to implement if they cAn operAte on the text editor.
 	 */
-	protected canProvideWithTextEditor(editor: IEditor): boolean {
+	protected cAnProvideWithTextEditor(editor: IEditor): booleAn {
 		return true;
 	}
 
 	/**
-	 * Subclasses to implement to provide picks for the picker when an editor is active.
+	 * SubclAsses to implement to provide picks for the picker when An editor is Active.
 	 */
-	protected abstract provideWithTextEditor(editor: IEditor, picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable;
+	protected AbstrAct provideWithTextEditor(editor: IEditor, picker: IQuickPick<IQuickPickItem>, token: CAncellAtionToken): IDisposAble;
 
 	/**
-	 * Subclasses to implement to provide picks for the picker when no editor is active.
+	 * SubclAsses to implement to provide picks for the picker when no editor is Active.
 	 */
-	protected abstract provideWithoutTextEditor(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable;
+	protected AbstrAct provideWithoutTextEditor(picker: IQuickPick<IQuickPickItem>, token: CAncellAtionToken): IDisposAble;
 
-	protected gotoLocation(editor: IEditor, options: { range: IRange, keyMods: IKeyMods, forceSideBySide?: boolean, preserveFocus?: boolean }): void {
-		editor.setSelection(options.range);
-		editor.revealRangeInCenter(options.range, ScrollType.Smooth);
+	protected gotoLocAtion(editor: IEditor, options: { rAnge: IRAnge, keyMods: IKeyMods, forceSideBySide?: booleAn, preserveFocus?: booleAn }): void {
+		editor.setSelection(options.rAnge);
+		editor.reveAlRAngeInCenter(options.rAnge, ScrollType.Smooth);
 		if (!options.preserveFocus) {
 			editor.focus();
 		}
@@ -134,84 +134,84 @@ export abstract class AbstractEditorNavigationQuickAccessProvider implements IQu
 	protected getModel(editor: IEditor | IDiffEditor): ITextModel | undefined {
 		return isDiffEditor(editor) ?
 			editor.getModel()?.modified :
-			editor.getModel() as ITextModel;
+			editor.getModel() As ITextModel;
 	}
 
 	//#endregion
 
 
-	//#region Editor access
+	//#region Editor Access
 
 	/**
-	 * Subclasses to provide an event when the active editor control changes.
+	 * SubclAsses to provide An event when the Active editor control chAnges.
 	 */
-	protected abstract readonly onDidActiveTextEditorControlChange: Event<void>;
+	protected AbstrAct reAdonly onDidActiveTextEditorControlChAnge: Event<void>;
 
 	/**
-	 * Subclasses to provide the current active editor control.
+	 * SubclAsses to provide the current Active editor control.
 	 */
-	protected abstract activeTextEditorControl: IEditor | undefined;
+	protected AbstrAct ActiveTextEditorControl: IEditor | undefined;
 
 	//#endregion
 
 
-	//#region Decorations Utils
+	//#region DecorAtions Utils
 
-	private rangeHighlightDecorationId: IEditorLineDecoration | undefined = undefined;
+	privAte rAngeHighlightDecorAtionId: IEditorLineDecorAtion | undefined = undefined;
 
-	protected addDecorations(editor: IEditor, range: IRange): void {
-		editor.changeDecorations(changeAccessor => {
+	protected AddDecorAtions(editor: IEditor, rAnge: IRAnge): void {
+		editor.chAngeDecorAtions(chAngeAccessor => {
 
-			// Reset old decorations if any
-			const deleteDecorations: string[] = [];
-			if (this.rangeHighlightDecorationId) {
-				deleteDecorations.push(this.rangeHighlightDecorationId.overviewRulerDecorationId);
-				deleteDecorations.push(this.rangeHighlightDecorationId.rangeHighlightId);
+			// Reset old decorAtions if Any
+			const deleteDecorAtions: string[] = [];
+			if (this.rAngeHighlightDecorAtionId) {
+				deleteDecorAtions.push(this.rAngeHighlightDecorAtionId.overviewRulerDecorAtionId);
+				deleteDecorAtions.push(this.rAngeHighlightDecorAtionId.rAngeHighlightId);
 
-				this.rangeHighlightDecorationId = undefined;
+				this.rAngeHighlightDecorAtionId = undefined;
 			}
 
-			// Add new decorations for the range
-			const newDecorations: IModelDeltaDecoration[] = [
+			// Add new decorAtions for the rAnge
+			const newDecorAtions: IModelDeltADecorAtion[] = [
 
-				// highlight the entire line on the range
+				// highlight the entire line on the rAnge
 				{
-					range,
+					rAnge,
 					options: {
-						className: 'rangeHighlight',
+						clAssNAme: 'rAngeHighlight',
 						isWholeLine: true
 					}
 				},
 
-				// also add overview ruler highlight
+				// Also Add overview ruler highlight
 				{
-					range,
+					rAnge,
 					options: {
 						overviewRuler: {
-							color: themeColorFromId(overviewRulerRangeHighlight),
-							position: OverviewRulerLane.Full
+							color: themeColorFromId(overviewRulerRAngeHighlight),
+							position: OverviewRulerLAne.Full
 						}
 					}
 				}
 			];
 
-			const [rangeHighlightId, overviewRulerDecorationId] = changeAccessor.deltaDecorations(deleteDecorations, newDecorations);
+			const [rAngeHighlightId, overviewRulerDecorAtionId] = chAngeAccessor.deltADecorAtions(deleteDecorAtions, newDecorAtions);
 
-			this.rangeHighlightDecorationId = { rangeHighlightId, overviewRulerDecorationId };
+			this.rAngeHighlightDecorAtionId = { rAngeHighlightId, overviewRulerDecorAtionId };
 		});
 	}
 
-	protected clearDecorations(editor: IEditor): void {
-		const rangeHighlightDecorationId = this.rangeHighlightDecorationId;
-		if (rangeHighlightDecorationId) {
-			editor.changeDecorations(changeAccessor => {
-				changeAccessor.deltaDecorations([
-					rangeHighlightDecorationId.overviewRulerDecorationId,
-					rangeHighlightDecorationId.rangeHighlightId
+	protected cleArDecorAtions(editor: IEditor): void {
+		const rAngeHighlightDecorAtionId = this.rAngeHighlightDecorAtionId;
+		if (rAngeHighlightDecorAtionId) {
+			editor.chAngeDecorAtions(chAngeAccessor => {
+				chAngeAccessor.deltADecorAtions([
+					rAngeHighlightDecorAtionId.overviewRulerDecorAtionId,
+					rAngeHighlightDecorAtionId.rAngeHighlightId
 				], []);
 			});
 
-			this.rangeHighlightDecorationId = undefined;
+			this.rAngeHighlightDecorAtionId = undefined;
 		}
 	}
 

@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as vscode from 'vscode';
-import { default as VSCodeTelemetryReporter } from 'vscode-extension-telemetry';
+import * As vscode from 'vscode';
+import { defAult As VSCodeTelemetryReporter } from 'vscode-extension-telemetry';
 
-interface IPackageInfo {
-	name: string;
+interfAce IPAckAgeInfo {
+	nAme: string;
 	version: string;
-	aiKey: string;
+	AiKey: string;
 }
 
-export interface TelemetryReporter {
+export interfAce TelemetryReporter {
 	dispose(): void;
-	sendTelemetryEvent(eventName: string, properties?: {
+	sendTelemetryEvent(eventNAme: string, properties?: {
 		[key: string]: string;
 	}): void;
 }
 
-const nullReporter = new class NullTelemetryReporter implements TelemetryReporter {
+const nullReporter = new clAss NullTelemetryReporter implements TelemetryReporter {
 	sendTelemetryEvent() { /** noop */ }
 	dispose() { /** noop */ }
 };
 
-class ExtensionReporter implements TelemetryReporter {
-	private readonly _reporter: VSCodeTelemetryReporter;
+clAss ExtensionReporter implements TelemetryReporter {
+	privAte reAdonly _reporter: VSCodeTelemetryReporter;
 
 	constructor(
-		packageInfo: IPackageInfo
+		pAckAgeInfo: IPAckAgeInfo
 	) {
-		this._reporter = new VSCodeTelemetryReporter(packageInfo.name, packageInfo.version, packageInfo.aiKey);
+		this._reporter = new VSCodeTelemetryReporter(pAckAgeInfo.nAme, pAckAgeInfo.version, pAckAgeInfo.AiKey);
 	}
-	sendTelemetryEvent(eventName: string, properties?: {
+	sendTelemetryEvent(eventNAme: string, properties?: {
 		[key: string]: string;
 	}) {
-		this._reporter.sendTelemetryEvent(eventName, properties);
+		this._reporter.sendTelemetryEvent(eventNAme, properties);
 	}
 
 	dispose() {
@@ -42,18 +42,18 @@ class ExtensionReporter implements TelemetryReporter {
 	}
 }
 
-export function loadDefaultTelemetryReporter(): TelemetryReporter {
-	const packageInfo = getPackageInfo();
-	return packageInfo ? new ExtensionReporter(packageInfo) : nullReporter;
+export function loAdDefAultTelemetryReporter(): TelemetryReporter {
+	const pAckAgeInfo = getPAckAgeInfo();
+	return pAckAgeInfo ? new ExtensionReporter(pAckAgeInfo) : nullReporter;
 }
 
-function getPackageInfo(): IPackageInfo | null {
-	const extension = vscode.extensions.getExtension('Microsoft.vscode-markdown');
-	if (extension && extension.packageJSON) {
+function getPAckAgeInfo(): IPAckAgeInfo | null {
+	const extension = vscode.extensions.getExtension('Microsoft.vscode-mArkdown');
+	if (extension && extension.pAckAgeJSON) {
 		return {
-			name: extension.packageJSON.name,
-			version: extension.packageJSON.version,
-			aiKey: extension.packageJSON.aiKey
+			nAme: extension.pAckAgeJSON.nAme,
+			version: extension.pAckAgeJSON.version,
+			AiKey: extension.pAckAgeJSON.AiKey
 		};
 	}
 	return null;

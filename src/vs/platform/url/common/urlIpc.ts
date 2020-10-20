@@ -1,57 +1,57 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IChannel, IServerChannel, IClientRouter, IConnectionHub, Client } from 'vs/base/parts/ipc/common/ipc';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
-import { IURLHandler, IOpenURLOptions } from 'vs/platform/url/common/url';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { IChAnnel, IServerChAnnel, IClientRouter, IConnectionHub, Client } from 'vs/bAse/pArts/ipc/common/ipc';
+import { URI } from 'vs/bAse/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { IURLHAndler, IOpenURLOptions } from 'vs/plAtform/url/common/url';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export class URLHandlerChannel implements IServerChannel {
+export clAss URLHAndlerChAnnel implements IServerChAnnel {
 
-	constructor(private handler: IURLHandler) { }
+	constructor(privAte hAndler: IURLHAndler) { }
 
 	listen<T>(_: unknown, event: string): Event<T> {
 		throw new Error(`Event not found: ${event}`);
 	}
 
-	call(_: unknown, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'handleURL': return this.handler.handleURL(URI.revive(arg));
+	cAll(_: unknown, commAnd: string, Arg?: Any): Promise<Any> {
+		switch (commAnd) {
+			cAse 'hAndleURL': return this.hAndler.hAndleURL(URI.revive(Arg));
 		}
 
-		throw new Error(`Call not found: ${command}`);
+		throw new Error(`CAll not found: ${commAnd}`);
 	}
 }
 
-export class URLHandlerChannelClient implements IURLHandler {
+export clAss URLHAndlerChAnnelClient implements IURLHAndler {
 
-	constructor(private channel: IChannel) { }
+	constructor(privAte chAnnel: IChAnnel) { }
 
-	handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
-		return this.channel.call('handleURL', uri.toJSON());
+	hAndleURL(uri: URI, options?: IOpenURLOptions): Promise<booleAn> {
+		return this.chAnnel.cAll('hAndleURL', uri.toJSON());
 	}
 }
 
-export class URLHandlerRouter implements IClientRouter<string> {
+export clAss URLHAndlerRouter implements IClientRouter<string> {
 
-	constructor(private next: IClientRouter<string>) { }
+	constructor(privAte next: IClientRouter<string>) { }
 
-	async routeCall(hub: IConnectionHub<string>, command: string, arg?: any, cancellationToken?: CancellationToken): Promise<Client<string>> {
-		if (command !== 'handleURL') {
-			throw new Error(`Call not found: ${command}`);
+	Async routeCAll(hub: IConnectionHub<string>, commAnd: string, Arg?: Any, cAncellAtionToken?: CAncellAtionToken): Promise<Client<string>> {
+		if (commAnd !== 'hAndleURL') {
+			throw new Error(`CAll not found: ${commAnd}`);
 		}
 
-		if (arg) {
-			const uri = URI.revive(arg);
+		if (Arg) {
+			const uri = URI.revive(Arg);
 
 			if (uri && uri.query) {
-				const match = /\bwindowId=(\d+)/.exec(uri.query);
+				const mAtch = /\bwindowId=(\d+)/.exec(uri.query);
 
-				if (match) {
-					const windowId = match[1];
+				if (mAtch) {
+					const windowId = mAtch[1];
 					const regex = new RegExp(`window:${windowId}`);
 					const connection = hub.connections.find(c => regex.test(c.ctx));
 
@@ -62,7 +62,7 @@ export class URLHandlerRouter implements IClientRouter<string> {
 			}
 		}
 
-		return this.next.routeCall(hub, command, arg, cancellationToken);
+		return this.next.routeCAll(hub, commAnd, Arg, cAncellAtionToken);
 	}
 
 	routeEvent(_: IConnectionHub<string>, event: string): Promise<Client<string>> {

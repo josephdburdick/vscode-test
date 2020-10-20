@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import * as dom from 'vs/base/browser/dom';
-import { renderCodicons } from 'vs/base/browser/codicons';
+import * As objects from 'vs/bAse/common/objects';
+import * As dom from 'vs/bAse/browser/dom';
+import { renderCodicons } from 'vs/bAse/browser/codicons';
 
-export interface IHighlight {
-	start: number;
+export interfAce IHighlight {
+	stArt: number;
 	end: number;
-	extraClasses?: string;
+	extrAClAsses?: string;
 }
 
-export class HighlightedLabel {
+export clAss HighlightedLAbel {
 
-	private readonly domNode: HTMLElement;
-	private text: string = '';
-	private title: string = '';
-	private highlights: IHighlight[] = [];
-	private didEverRender: boolean = false;
+	privAte reAdonly domNode: HTMLElement;
+	privAte text: string = '';
+	privAte title: string = '';
+	privAte highlights: IHighlight[] = [];
+	privAte didEverRender: booleAn = fAlse;
 
-	constructor(container: HTMLElement, private supportCodicons: boolean) {
-		this.domNode = document.createElement('span');
-		this.domNode.className = 'monaco-highlighted-label';
+	constructor(contAiner: HTMLElement, privAte supportCodicons: booleAn) {
+		this.domNode = document.creAteElement('spAn');
+		this.domNode.clAssNAme = 'monAco-highlighted-lAbel';
 
-		container.appendChild(this.domNode);
+		contAiner.AppendChild(this.domNode);
 	}
 
 	get element(): HTMLElement {
 		return this.domNode;
 	}
 
-	set(text: string | undefined, highlights: IHighlight[] = [], title: string = '', escapeNewLines?: boolean) {
+	set(text: string | undefined, highlights: IHighlight[] = [], title: string = '', escApeNewLines?: booleAn) {
 		if (!text) {
 			text = '';
 		}
-		if (escapeNewLines) {
-			// adjusts highlights inplace
-			text = HighlightedLabel.escapeNewLines(text, highlights);
+		if (escApeNewLines) {
+			// Adjusts highlights inplAce
+			text = HighlightedLAbel.escApeNewLines(text, highlights);
 		}
-		if (this.didEverRender && this.text === text && this.title === title && objects.equals(this.highlights, highlights)) {
+		if (this.didEverRender && this.text === text && this.title === title && objects.equAls(this.highlights, highlights)) {
 			return;
 		}
 
@@ -50,25 +50,25 @@ export class HighlightedLabel {
 		this.render();
 	}
 
-	private render(): void {
+	privAte render(): void {
 
-		const children: HTMLSpanElement[] = [];
+		const children: HTMLSpAnElement[] = [];
 		let pos = 0;
 
 		for (const highlight of this.highlights) {
-			if (highlight.end === highlight.start) {
+			if (highlight.end === highlight.stArt) {
 				continue;
 			}
-			if (pos < highlight.start) {
-				const substring = this.text.substring(pos, highlight.start);
-				children.push(dom.$('span', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]));
+			if (pos < highlight.stArt) {
+				const substring = this.text.substring(pos, highlight.stArt);
+				children.push(dom.$('spAn', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]));
 				pos = highlight.end;
 			}
 
-			const substring = this.text.substring(highlight.start, highlight.end);
-			const element = dom.$('span.highlight', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]);
-			if (highlight.extraClasses) {
-				element.classList.add(highlight.extraClasses);
+			const substring = this.text.substring(highlight.stArt, highlight.end);
+			const element = dom.$('spAn.highlight', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]);
+			if (highlight.extrAClAsses) {
+				element.clAssList.Add(highlight.extrAClAsses);
 			}
 			children.push(element);
 			pos = highlight.end;
@@ -76,7 +76,7 @@ export class HighlightedLabel {
 
 		if (pos < this.text.length) {
 			const substring = this.text.substring(pos,);
-			children.push(dom.$('span', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]));
+			children.push(dom.$('spAn', undefined, ...this.supportCodicons ? renderCodicons(substring) : [substring]));
 		}
 
 		dom.reset(this.domNode, ...children);
@@ -88,28 +88,28 @@ export class HighlightedLabel {
 		this.didEverRender = true;
 	}
 
-	static escapeNewLines(text: string, highlights: IHighlight[]): string {
+	stAtic escApeNewLines(text: string, highlights: IHighlight[]): string {
 
-		let total = 0;
-		let extra = 0;
+		let totAl = 0;
+		let extrA = 0;
 
-		return text.replace(/\r\n|\r|\n/g, (match, offset) => {
-			extra = match === '\r\n' ? -1 : 0;
-			offset += total;
+		return text.replAce(/\r\n|\r|\n/g, (mAtch, offset) => {
+			extrA = mAtch === '\r\n' ? -1 : 0;
+			offset += totAl;
 
 			for (const highlight of highlights) {
 				if (highlight.end <= offset) {
 					continue;
 				}
-				if (highlight.start >= offset) {
-					highlight.start += extra;
+				if (highlight.stArt >= offset) {
+					highlight.stArt += extrA;
 				}
 				if (highlight.end >= offset) {
-					highlight.end += extra;
+					highlight.end += extrA;
 				}
 			}
 
-			total += extra;
+			totAl += extrA;
 			return '\u23CE';
 		});
 	}

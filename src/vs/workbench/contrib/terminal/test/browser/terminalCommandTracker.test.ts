@@ -1,155 +1,155 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Terminal } from 'xterm';
-import { CommandTrackerAddon } from 'vs/workbench/contrib/terminal/browser/addons/commandTrackerAddon';
-import { isWindows } from 'vs/base/common/platform';
-import { XTermCore } from 'vs/workbench/contrib/terminal/browser/xterm-private';
+import * As Assert from 'Assert';
+import { TerminAl } from 'xterm';
+import { CommAndTrAckerAddon } from 'vs/workbench/contrib/terminAl/browser/Addons/commAndTrAckerAddon';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { XTermCore } from 'vs/workbench/contrib/terminAl/browser/xterm-privAte';
 
-interface TestTerminal extends Terminal {
+interfAce TestTerminAl extends TerminAl {
 	_core: XTermCore;
 }
 
-function writePromise(term: Terminal, data: string): Promise<void> {
-	return new Promise(r => term.write(data, r));
+function writePromise(term: TerminAl, dAtA: string): Promise<void> {
+	return new Promise(r => term.write(dAtA, r));
 }
 
 const ROWS = 10;
 const COLS = 10;
 
-suite('Workbench - TerminalCommandTracker', () => {
-	let xterm: TestTerminal;
-	let commandTracker: CommandTrackerAddon;
+suite('Workbench - TerminAlCommAndTrAcker', () => {
+	let xterm: TestTerminAl;
+	let commAndTrAcker: CommAndTrAckerAddon;
 
-	setup(async () => {
-		xterm = (<TestTerminal>new Terminal({
+	setup(Async () => {
+		xterm = (<TestTerminAl>new TerminAl({
 			cols: COLS,
 			rows: ROWS
 		}));
-		// Fill initial viewport
+		// Fill initiAl viewport
 		for (let i = 0; i < ROWS - 1; i++) {
-			await writePromise(xterm, `${i}\n`);
+			AwAit writePromise(xterm, `${i}\n`);
 		}
-		commandTracker = new CommandTrackerAddon();
-		xterm.loadAddon(commandTracker);
+		commAndTrAcker = new CommAndTrAckerAddon();
+		xterm.loAdAddon(commAndTrAcker);
 	});
 
-	suite('Command tracking', () => {
-		test('should track commands when the prompt is of sufficient size', async () => {
-			assert.equal(xterm.markers.length, 0);
-			await writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
+	suite('CommAnd trAcking', () => {
+		test('should trAck commAnds when the prompt is of sufficient size', Async () => {
+			Assert.equAl(xterm.mArkers.length, 0);
+			AwAit writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
 			xterm._core._onKey.fire({ key: '\x0d' });
-			assert.equal(xterm.markers.length, 1);
+			Assert.equAl(xterm.mArkers.length, 1);
 		});
-		test('should not track commands when the prompt is too small', async () => {
-			assert.equal(xterm.markers.length, 0);
-			await writePromise(xterm, '\x1b[2G'); // Move cursor to column 2
+		test('should not trAck commAnds when the prompt is too smAll', Async () => {
+			Assert.equAl(xterm.mArkers.length, 0);
+			AwAit writePromise(xterm, '\x1b[2G'); // Move cursor to column 2
 			xterm._core._onKey.fire({ key: '\x0d' });
-			assert.equal(xterm.markers.length, 0);
+			Assert.equAl(xterm.mArkers.length, 0);
 		});
 	});
 
-	suite('Commands', () => {
-		test('should scroll to the next and previous commands', async () => {
-			await writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
-			xterm._core._onKey.fire({ key: '\x0d' }); // Mark line #10
-			assert.equal(xterm.markers[0].line, 9);
+	suite('CommAnds', () => {
+		test('should scroll to the next And previous commAnds', Async () => {
+			AwAit writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
+			xterm._core._onKey.fire({ key: '\x0d' }); // MArk line #10
+			Assert.equAl(xterm.mArkers[0].line, 9);
 
 			for (let i = 0; i < 20; i++) {
-				await writePromise(xterm, `\r\n`);
+				AwAit writePromise(xterm, `\r\n`);
 			}
-			assert.equal(xterm.buffer.active.baseY, 20);
-			assert.equal(xterm.buffer.active.viewportY, 20);
+			Assert.equAl(xterm.buffer.Active.bAseY, 20);
+			Assert.equAl(xterm.buffer.Active.viewportY, 20);
 
-			// Scroll to marker
-			commandTracker.scrollToPreviousCommand();
-			assert.equal(xterm.buffer.active.viewportY, 9);
+			// Scroll to mArker
+			commAndTrAcker.scrollToPreviousCommAnd();
+			Assert.equAl(xterm.buffer.Active.viewportY, 9);
 
-			// Scroll to top boundary
-			commandTracker.scrollToPreviousCommand();
-			assert.equal(xterm.buffer.active.viewportY, 0);
+			// Scroll to top boundAry
+			commAndTrAcker.scrollToPreviousCommAnd();
+			Assert.equAl(xterm.buffer.Active.viewportY, 0);
 
-			// Scroll to marker
-			commandTracker.scrollToNextCommand();
-			assert.equal(xterm.buffer.active.viewportY, 9);
+			// Scroll to mArker
+			commAndTrAcker.scrollToNextCommAnd();
+			Assert.equAl(xterm.buffer.Active.viewportY, 9);
 
-			// Scroll to bottom boundary
-			commandTracker.scrollToNextCommand();
-			assert.equal(xterm.buffer.active.viewportY, 20);
+			// Scroll to bottom boundAry
+			commAndTrAcker.scrollToNextCommAnd();
+			Assert.equAl(xterm.buffer.Active.viewportY, 20);
 		});
-		test('should select to the next and previous commands', async () => {
-			(<any>window).matchMedia = () => {
-				return { addListener: () => { } };
+		test('should select to the next And previous commAnds', Async () => {
+			(<Any>window).mAtchMediA = () => {
+				return { AddListener: () => { } };
 			};
-			const e = document.createElement('div');
-			document.body.appendChild(e);
+			const e = document.creAteElement('div');
+			document.body.AppendChild(e);
 			xterm.open(e);
 
-			await writePromise(xterm, '\r0');
-			await writePromise(xterm, '\n\r1');
-			await writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
-			xterm._core._onKey.fire({ key: '\x0d' }); // Mark line
-			assert.equal(xterm.markers[0].line, 10);
-			await writePromise(xterm, '\n\r2');
-			await writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
-			xterm._core._onKey.fire({ key: '\x0d' }); // Mark line
-			assert.equal(xterm.markers[1].line, 11);
-			await writePromise(xterm, '\n\r3');
+			AwAit writePromise(xterm, '\r0');
+			AwAit writePromise(xterm, '\n\r1');
+			AwAit writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
+			xterm._core._onKey.fire({ key: '\x0d' }); // MArk line
+			Assert.equAl(xterm.mArkers[0].line, 10);
+			AwAit writePromise(xterm, '\n\r2');
+			AwAit writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
+			xterm._core._onKey.fire({ key: '\x0d' }); // MArk line
+			Assert.equAl(xterm.mArkers[1].line, 11);
+			AwAit writePromise(xterm, '\n\r3');
 
-			assert.equal(xterm.buffer.active.baseY, 3);
-			assert.equal(xterm.buffer.active.viewportY, 3);
+			Assert.equAl(xterm.buffer.Active.bAseY, 3);
+			Assert.equAl(xterm.buffer.Active.viewportY, 3);
 
-			assert.equal(xterm.getSelection(), '');
-			commandTracker.selectToPreviousCommand();
-			assert.equal(xterm.getSelection(), '2');
-			commandTracker.selectToPreviousCommand();
-			assert.equal(xterm.getSelection(), isWindows ? '1\r\n2' : '1\n2');
-			commandTracker.selectToNextCommand();
-			assert.equal(xterm.getSelection(), '2');
-			commandTracker.selectToNextCommand();
-			assert.equal(xterm.getSelection(), isWindows ? '\r\n' : '\n');
+			Assert.equAl(xterm.getSelection(), '');
+			commAndTrAcker.selectToPreviousCommAnd();
+			Assert.equAl(xterm.getSelection(), '2');
+			commAndTrAcker.selectToPreviousCommAnd();
+			Assert.equAl(xterm.getSelection(), isWindows ? '1\r\n2' : '1\n2');
+			commAndTrAcker.selectToNextCommAnd();
+			Assert.equAl(xterm.getSelection(), '2');
+			commAndTrAcker.selectToNextCommAnd();
+			Assert.equAl(xterm.getSelection(), isWindows ? '\r\n' : '\n');
 
 			document.body.removeChild(e);
 		});
-		test('should select to the next and previous lines & commands', async () => {
-			(<any>window).matchMedia = () => {
-				return { addListener: () => { } };
+		test('should select to the next And previous lines & commAnds', Async () => {
+			(<Any>window).mAtchMediA = () => {
+				return { AddListener: () => { } };
 			};
-			const e = document.createElement('div');
-			document.body.appendChild(e);
+			const e = document.creAteElement('div');
+			document.body.AppendChild(e);
 			xterm.open(e);
 
-			await writePromise(xterm, '\r0');
-			await writePromise(xterm, '\n\r1');
-			await writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
-			xterm._core._onKey.fire({ key: '\x0d' }); // Mark line
-			assert.equal(xterm.markers[0].line, 10);
-			await writePromise(xterm, '\n\r2');
-			await writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
-			xterm._core._onKey.fire({ key: '\x0d' }); // Mark line
-			assert.equal(xterm.markers[1].line, 11);
-			await writePromise(xterm, '\n\r3');
+			AwAit writePromise(xterm, '\r0');
+			AwAit writePromise(xterm, '\n\r1');
+			AwAit writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
+			xterm._core._onKey.fire({ key: '\x0d' }); // MArk line
+			Assert.equAl(xterm.mArkers[0].line, 10);
+			AwAit writePromise(xterm, '\n\r2');
+			AwAit writePromise(xterm, '\x1b[3G'); // Move cursor to column 3
+			xterm._core._onKey.fire({ key: '\x0d' }); // MArk line
+			Assert.equAl(xterm.mArkers[1].line, 11);
+			AwAit writePromise(xterm, '\n\r3');
 
-			assert.equal(xterm.buffer.active.baseY, 3);
-			assert.equal(xterm.buffer.active.viewportY, 3);
+			Assert.equAl(xterm.buffer.Active.bAseY, 3);
+			Assert.equAl(xterm.buffer.Active.viewportY, 3);
 
-			assert.equal(xterm.getSelection(), '');
-			commandTracker.selectToPreviousLine();
-			assert.equal(xterm.getSelection(), '2');
-			commandTracker.selectToNextLine();
-			commandTracker.selectToNextLine();
-			assert.equal(xterm.getSelection(), '3');
-			commandTracker.selectToPreviousCommand();
-			commandTracker.selectToPreviousCommand();
-			commandTracker.selectToNextLine();
-			assert.equal(xterm.getSelection(), '2');
-			commandTracker.selectToPreviousCommand();
-			assert.equal(xterm.getSelection(), isWindows ? '1\r\n2' : '1\n2');
-			commandTracker.selectToPreviousLine();
-			assert.equal(xterm.getSelection(), isWindows ? '0\r\n1\r\n2' : '0\n1\n2');
+			Assert.equAl(xterm.getSelection(), '');
+			commAndTrAcker.selectToPreviousLine();
+			Assert.equAl(xterm.getSelection(), '2');
+			commAndTrAcker.selectToNextLine();
+			commAndTrAcker.selectToNextLine();
+			Assert.equAl(xterm.getSelection(), '3');
+			commAndTrAcker.selectToPreviousCommAnd();
+			commAndTrAcker.selectToPreviousCommAnd();
+			commAndTrAcker.selectToNextLine();
+			Assert.equAl(xterm.getSelection(), '2');
+			commAndTrAcker.selectToPreviousCommAnd();
+			Assert.equAl(xterm.getSelection(), isWindows ? '1\r\n2' : '1\n2');
+			commAndTrAcker.selectToPreviousLine();
+			Assert.equAl(xterm.getSelection(), isWindows ? '0\r\n1\r\n2' : '0\n1\n2');
 
 			document.body.removeChild(e);
 		});

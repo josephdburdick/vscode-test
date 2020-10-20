@@ -1,220 +1,220 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
- * Please make sure to make edits in the .ts file at https://github.com/microsoft/vscode-loader/
+ * PleAse mAke sure to mAke edits in the .ts file At https://github.com/microsoft/vscode-loAder/
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var _cssPluginGlobal = this;
-var CSSBuildLoaderPlugin;
-(function (CSSBuildLoaderPlugin) {
-    var global = (_cssPluginGlobal || {});
+vAr _cssPluginGlobAl = this;
+vAr CSSBuildLoAderPlugin;
+(function (CSSBuildLoAderPlugin) {
+    vAr globAl = (_cssPluginGlobAl || {});
     /**
      * Known issue:
-     * - In IE there is no way to know if the CSS file loaded successfully or not.
+     * - In IE there is no wAy to know if the CSS file loAded successfully or not.
      */
-    var BrowserCSSLoader = /** @class */ (function () {
-        function BrowserCSSLoader() {
-            this._pendingLoads = 0;
+    vAr BrowserCSSLoAder = /** @clAss */ (function () {
+        function BrowserCSSLoAder() {
+            this._pendingLoAds = 0;
         }
-        BrowserCSSLoader.prototype.attachListeners = function (name, linkNode, callback, errorback) {
-            var unbind = function () {
-                linkNode.removeEventListener('load', loadEventListener);
+        BrowserCSSLoAder.prototype.AttAchListeners = function (nAme, linkNode, cAllbAck, errorbAck) {
+            vAr unbind = function () {
+                linkNode.removeEventListener('loAd', loAdEventListener);
                 linkNode.removeEventListener('error', errorEventListener);
             };
-            var loadEventListener = function (e) {
+            vAr loAdEventListener = function (e) {
                 unbind();
-                callback();
+                cAllbAck();
             };
-            var errorEventListener = function (e) {
+            vAr errorEventListener = function (e) {
                 unbind();
-                errorback(e);
+                errorbAck(e);
             };
-            linkNode.addEventListener('load', loadEventListener);
-            linkNode.addEventListener('error', errorEventListener);
+            linkNode.AddEventListener('loAd', loAdEventListener);
+            linkNode.AddEventListener('error', errorEventListener);
         };
-        BrowserCSSLoader.prototype._onLoad = function (name, callback) {
-            this._pendingLoads--;
-            callback();
+        BrowserCSSLoAder.prototype._onLoAd = function (nAme, cAllbAck) {
+            this._pendingLoAds--;
+            cAllbAck();
         };
-        BrowserCSSLoader.prototype._onLoadError = function (name, errorback, err) {
-            this._pendingLoads--;
-            errorback(err);
+        BrowserCSSLoAder.prototype._onLoAdError = function (nAme, errorbAck, err) {
+            this._pendingLoAds--;
+            errorbAck(err);
         };
-        BrowserCSSLoader.prototype._insertLinkNode = function (linkNode) {
-            this._pendingLoads++;
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var other = head.getElementsByTagName('link') || head.getElementsByTagName('script');
+        BrowserCSSLoAder.prototype._insertLinkNode = function (linkNode) {
+            this._pendingLoAds++;
+            vAr heAd = document.heAd || document.getElementsByTAgNAme('heAd')[0];
+            vAr other = heAd.getElementsByTAgNAme('link') || heAd.getElementsByTAgNAme('script');
             if (other.length > 0) {
-                head.insertBefore(linkNode, other[other.length - 1]);
+                heAd.insertBefore(linkNode, other[other.length - 1]);
             }
             else {
-                head.appendChild(linkNode);
+                heAd.AppendChild(linkNode);
             }
         };
-        BrowserCSSLoader.prototype.createLinkTag = function (name, cssUrl, externalCallback, externalErrorback) {
-            var _this = this;
-            var linkNode = document.createElement('link');
+        BrowserCSSLoAder.prototype.creAteLinkTAg = function (nAme, cssUrl, externAlCAllbAck, externAlErrorbAck) {
+            vAr _this = this;
+            vAr linkNode = document.creAteElement('link');
             linkNode.setAttribute('rel', 'stylesheet');
             linkNode.setAttribute('type', 'text/css');
-            linkNode.setAttribute('data-name', name);
-            var callback = function () { return _this._onLoad(name, externalCallback); };
-            var errorback = function (err) { return _this._onLoadError(name, externalErrorback, err); };
-            this.attachListeners(name, linkNode, callback, errorback);
+            linkNode.setAttribute('dAtA-nAme', nAme);
+            vAr cAllbAck = function () { return _this._onLoAd(nAme, externAlCAllbAck); };
+            vAr errorbAck = function (err) { return _this._onLoAdError(nAme, externAlErrorbAck, err); };
+            this.AttAchListeners(nAme, linkNode, cAllbAck, errorbAck);
             linkNode.setAttribute('href', cssUrl);
             return linkNode;
         };
-        BrowserCSSLoader.prototype._linkTagExists = function (name, cssUrl) {
-            var i, len, nameAttr, hrefAttr, links = document.getElementsByTagName('link');
+        BrowserCSSLoAder.prototype._linkTAgExists = function (nAme, cssUrl) {
+            vAr i, len, nAmeAttr, hrefAttr, links = document.getElementsByTAgNAme('link');
             for (i = 0, len = links.length; i < len; i++) {
-                nameAttr = links[i].getAttribute('data-name');
+                nAmeAttr = links[i].getAttribute('dAtA-nAme');
                 hrefAttr = links[i].getAttribute('href');
-                if (nameAttr === name || hrefAttr === cssUrl) {
+                if (nAmeAttr === nAme || hrefAttr === cssUrl) {
                     return true;
                 }
             }
-            return false;
+            return fAlse;
         };
-        BrowserCSSLoader.prototype.load = function (name, cssUrl, externalCallback, externalErrorback) {
-            if (this._linkTagExists(name, cssUrl)) {
-                externalCallback();
+        BrowserCSSLoAder.prototype.loAd = function (nAme, cssUrl, externAlCAllbAck, externAlErrorbAck) {
+            if (this._linkTAgExists(nAme, cssUrl)) {
+                externAlCAllbAck();
                 return;
             }
-            var linkNode = this.createLinkTag(name, cssUrl, externalCallback, externalErrorback);
+            vAr linkNode = this.creAteLinkTAg(nAme, cssUrl, externAlCAllbAck, externAlErrorbAck);
             this._insertLinkNode(linkNode);
         };
-        return BrowserCSSLoader;
+        return BrowserCSSLoAder;
     }());
-    var NodeCSSLoader = /** @class */ (function () {
-        function NodeCSSLoader() {
+    vAr NodeCSSLoAder = /** @clAss */ (function () {
+        function NodeCSSLoAder() {
             this.fs = require.nodeRequire('fs');
         }
-        NodeCSSLoader.prototype.load = function (name, cssUrl, externalCallback, externalErrorback) {
-            var contents = this.fs.readFileSync(cssUrl, 'utf8');
+        NodeCSSLoAder.prototype.loAd = function (nAme, cssUrl, externAlCAllbAck, externAlErrorbAck) {
+            vAr contents = this.fs.reAdFileSync(cssUrl, 'utf8');
             // Remove BOM
-            if (contents.charCodeAt(0) === NodeCSSLoader.BOM_CHAR_CODE) {
+            if (contents.chArCodeAt(0) === NodeCSSLoAder.BOM_CHAR_CODE) {
                 contents = contents.substring(1);
             }
-            externalCallback(contents);
+            externAlCAllbAck(contents);
         };
-        NodeCSSLoader.BOM_CHAR_CODE = 65279;
-        return NodeCSSLoader;
+        NodeCSSLoAder.BOM_CHAR_CODE = 65279;
+        return NodeCSSLoAder;
     }());
-    // ------------------------------ Finally, the plugin
-    var CSSPlugin = /** @class */ (function () {
-        function CSSPlugin(cssLoader) {
-            this.cssLoader = cssLoader;
+    // ------------------------------ FinAlly, the plugin
+    vAr CSSPlugin = /** @clAss */ (function () {
+        function CSSPlugin(cssLoAder) {
+            this.cssLoAder = cssLoAder;
         }
-        CSSPlugin.prototype.load = function (name, req, load, config) {
+        CSSPlugin.prototype.loAd = function (nAme, req, loAd, config) {
             config = config || {};
-            var myConfig = config['vs/css'] || {};
-            global.inlineResources = myConfig.inlineResources;
-            global.inlineResourcesLimit = myConfig.inlineResourcesLimit || 5000;
-            var cssUrl = req.toUrl(name + '.css');
-            this.cssLoader.load(name, cssUrl, function (contents) {
-                // Contents has the CSS file contents if we are in a build
+            vAr myConfig = config['vs/css'] || {};
+            globAl.inlineResources = myConfig.inlineResources;
+            globAl.inlineResourcesLimit = myConfig.inlineResourcesLimit || 5000;
+            vAr cssUrl = req.toUrl(nAme + '.css');
+            this.cssLoAder.loAd(nAme, cssUrl, function (contents) {
+                // Contents hAs the CSS file contents if we Are in A build
                 if (config.isBuild) {
-                    CSSPlugin.BUILD_MAP[name] = contents;
-                    CSSPlugin.BUILD_PATH_MAP[name] = cssUrl;
+                    CSSPlugin.BUILD_MAP[nAme] = contents;
+                    CSSPlugin.BUILD_PATH_MAP[nAme] = cssUrl;
                 }
-                load({});
+                loAd({});
             }, function (err) {
-                if (typeof load.error === 'function') {
-                    load.error('Could not find ' + cssUrl + ' or it was empty');
+                if (typeof loAd.error === 'function') {
+                    loAd.error('Could not find ' + cssUrl + ' or it wAs empty');
                 }
             });
         };
-        CSSPlugin.prototype.write = function (pluginName, moduleName, write) {
-            // getEntryPoint is a Monaco extension to r.js
-            var entryPoint = write.getEntryPoint();
-            // r.js destroys the context of this plugin between calling 'write' and 'writeFile'
-            // so the only option at this point is to leak the data to a global
-            global.cssPluginEntryPoints = global.cssPluginEntryPoints || {};
-            global.cssPluginEntryPoints[entryPoint] = global.cssPluginEntryPoints[entryPoint] || [];
-            global.cssPluginEntryPoints[entryPoint].push({
-                moduleName: moduleName,
-                contents: CSSPlugin.BUILD_MAP[moduleName],
-                fsPath: CSSPlugin.BUILD_PATH_MAP[moduleName],
+        CSSPlugin.prototype.write = function (pluginNAme, moduleNAme, write) {
+            // getEntryPoint is A MonAco extension to r.js
+            vAr entryPoint = write.getEntryPoint();
+            // r.js destroys the context of this plugin between cAlling 'write' And 'writeFile'
+            // so the only option At this point is to leAk the dAtA to A globAl
+            globAl.cssPluginEntryPoints = globAl.cssPluginEntryPoints || {};
+            globAl.cssPluginEntryPoints[entryPoint] = globAl.cssPluginEntryPoints[entryPoint] || [];
+            globAl.cssPluginEntryPoints[entryPoint].push({
+                moduleNAme: moduleNAme,
+                contents: CSSPlugin.BUILD_MAP[moduleNAme],
+                fsPAth: CSSPlugin.BUILD_PATH_MAP[moduleNAme],
             });
-            write.asModule(pluginName + '!' + moduleName, 'define([\'vs/css!' + entryPoint + '\'], {});');
+            write.AsModule(pluginNAme + '!' + moduleNAme, 'define([\'vs/css!' + entryPoint + '\'], {});');
         };
-        CSSPlugin.prototype.writeFile = function (pluginName, moduleName, req, write, config) {
-            if (global.cssPluginEntryPoints && global.cssPluginEntryPoints.hasOwnProperty(moduleName)) {
-                var fileName = req.toUrl(moduleName + '.css');
-                var contents = [
+        CSSPlugin.prototype.writeFile = function (pluginNAme, moduleNAme, req, write, config) {
+            if (globAl.cssPluginEntryPoints && globAl.cssPluginEntryPoints.hAsOwnProperty(moduleNAme)) {
+                vAr fileNAme = req.toUrl(moduleNAme + '.css');
+                vAr contents = [
                     '/*---------------------------------------------------------',
-                    ' * Copyright (c) Microsoft Corporation. All rights reserved.',
+                    ' * Copyright (c) Microsoft CorporAtion. All rights reserved.',
                     ' *--------------------------------------------------------*/'
-                ], entries = global.cssPluginEntryPoints[moduleName];
-                for (var i = 0; i < entries.length; i++) {
-                    if (global.inlineResources) {
-                        contents.push(Utilities.rewriteOrInlineUrls(entries[i].fsPath, entries[i].moduleName, moduleName, entries[i].contents, global.inlineResources === 'base64', global.inlineResourcesLimit));
+                ], entries = globAl.cssPluginEntryPoints[moduleNAme];
+                for (vAr i = 0; i < entries.length; i++) {
+                    if (globAl.inlineResources) {
+                        contents.push(Utilities.rewriteOrInlineUrls(entries[i].fsPAth, entries[i].moduleNAme, moduleNAme, entries[i].contents, globAl.inlineResources === 'bAse64', globAl.inlineResourcesLimit));
                     }
                     else {
-                        contents.push(Utilities.rewriteUrls(entries[i].moduleName, moduleName, entries[i].contents));
+                        contents.push(Utilities.rewriteUrls(entries[i].moduleNAme, moduleNAme, entries[i].contents));
                     }
                 }
-                write(fileName, contents.join('\r\n'));
+                write(fileNAme, contents.join('\r\n'));
             }
         };
         CSSPlugin.prototype.getInlinedResources = function () {
-            return global.cssInlinedResources || [];
+            return globAl.cssInlinedResources || [];
         };
         CSSPlugin.BUILD_MAP = {};
         CSSPlugin.BUILD_PATH_MAP = {};
         return CSSPlugin;
     }());
-    CSSBuildLoaderPlugin.CSSPlugin = CSSPlugin;
-    var Utilities = /** @class */ (function () {
+    CSSBuildLoAderPlugin.CSSPlugin = CSSPlugin;
+    vAr Utilities = /** @clAss */ (function () {
         function Utilities() {
         }
-        Utilities.startsWith = function (haystack, needle) {
-            return haystack.length >= needle.length && haystack.substr(0, needle.length) === needle;
+        Utilities.stArtsWith = function (hAystAck, needle) {
+            return hAystAck.length >= needle.length && hAystAck.substr(0, needle.length) === needle;
         };
         /**
-         * Find the path of a file.
+         * Find the pAth of A file.
          */
-        Utilities.pathOf = function (filename) {
-            var lastSlash = filename.lastIndexOf('/');
-            if (lastSlash !== -1) {
-                return filename.substr(0, lastSlash + 1);
+        Utilities.pAthOf = function (filenAme) {
+            vAr lAstSlAsh = filenAme.lAstIndexOf('/');
+            if (lAstSlAsh !== -1) {
+                return filenAme.substr(0, lAstSlAsh + 1);
             }
             else {
                 return '';
             }
         };
         /**
-         * A conceptual a + b for paths.
-         * Takes into account if `a` contains a protocol.
-         * Also normalizes the result: e.g.: a/b/ + ../c => a/c
+         * A conceptuAl A + b for pAths.
+         * TAkes into Account if `A` contAins A protocol.
+         * Also normAlizes the result: e.g.: A/b/ + ../c => A/c
          */
-        Utilities.joinPaths = function (a, b) {
-            function findSlashIndexAfterPrefix(haystack, prefix) {
-                if (Utilities.startsWith(haystack, prefix)) {
-                    return Math.max(prefix.length, haystack.indexOf('/', prefix.length));
+        Utilities.joinPAths = function (A, b) {
+            function findSlAshIndexAfterPrefix(hAystAck, prefix) {
+                if (Utilities.stArtsWith(hAystAck, prefix)) {
+                    return MAth.mAx(prefix.length, hAystAck.indexOf('/', prefix.length));
                 }
                 return 0;
             }
-            var aPathStartIndex = 0;
-            aPathStartIndex = aPathStartIndex || findSlashIndexAfterPrefix(a, '//');
-            aPathStartIndex = aPathStartIndex || findSlashIndexAfterPrefix(a, 'http://');
-            aPathStartIndex = aPathStartIndex || findSlashIndexAfterPrefix(a, 'https://');
+            vAr APAthStArtIndex = 0;
+            APAthStArtIndex = APAthStArtIndex || findSlAshIndexAfterPrefix(A, '//');
+            APAthStArtIndex = APAthStArtIndex || findSlAshIndexAfterPrefix(A, 'http://');
+            APAthStArtIndex = APAthStArtIndex || findSlAshIndexAfterPrefix(A, 'https://');
             function pushPiece(pieces, piece) {
                 if (piece === './') {
                     // Ignore
                     return;
                 }
                 if (piece === '../') {
-                    var prevPiece = (pieces.length > 0 ? pieces[pieces.length - 1] : null);
+                    vAr prevPiece = (pieces.length > 0 ? pieces[pieces.length - 1] : null);
                     if (prevPiece && prevPiece === '/') {
                         // Ignore
                         return;
@@ -228,135 +228,135 @@ var CSSBuildLoaderPlugin;
                 // Push
                 pieces.push(piece);
             }
-            function push(pieces, path) {
-                while (path.length > 0) {
-                    var slashIndex = path.indexOf('/');
-                    var piece = (slashIndex >= 0 ? path.substring(0, slashIndex + 1) : path);
-                    path = (slashIndex >= 0 ? path.substring(slashIndex + 1) : '');
+            function push(pieces, pAth) {
+                while (pAth.length > 0) {
+                    vAr slAshIndex = pAth.indexOf('/');
+                    vAr piece = (slAshIndex >= 0 ? pAth.substring(0, slAshIndex + 1) : pAth);
+                    pAth = (slAshIndex >= 0 ? pAth.substring(slAshIndex + 1) : '');
                     pushPiece(pieces, piece);
                 }
             }
-            var pieces = [];
-            push(pieces, a.substr(aPathStartIndex));
-            if (b.length > 0 && b.charAt(0) === '/') {
+            vAr pieces = [];
+            push(pieces, A.substr(APAthStArtIndex));
+            if (b.length > 0 && b.chArAt(0) === '/') {
                 pieces = [];
             }
             push(pieces, b);
-            return a.substring(0, aPathStartIndex) + pieces.join('');
+            return A.substring(0, APAthStArtIndex) + pieces.join('');
         };
         Utilities.commonPrefix = function (str1, str2) {
-            var len = Math.min(str1.length, str2.length);
-            for (var i = 0; i < len; i++) {
-                if (str1.charCodeAt(i) !== str2.charCodeAt(i)) {
-                    break;
+            vAr len = MAth.min(str1.length, str2.length);
+            for (vAr i = 0; i < len; i++) {
+                if (str1.chArCodeAt(i) !== str2.chArCodeAt(i)) {
+                    breAk;
                 }
             }
             return str1.substring(0, i);
         };
-        Utilities.commonFolderPrefix = function (fromPath, toPath) {
-            var prefix = Utilities.commonPrefix(fromPath, toPath);
-            var slashIndex = prefix.lastIndexOf('/');
-            if (slashIndex === -1) {
+        Utilities.commonFolderPrefix = function (fromPAth, toPAth) {
+            vAr prefix = Utilities.commonPrefix(fromPAth, toPAth);
+            vAr slAshIndex = prefix.lAstIndexOf('/');
+            if (slAshIndex === -1) {
                 return '';
             }
-            return prefix.substring(0, slashIndex + 1);
+            return prefix.substring(0, slAshIndex + 1);
         };
-        Utilities.relativePath = function (fromPath, toPath) {
-            if (Utilities.startsWith(toPath, '/') || Utilities.startsWith(toPath, 'http://') || Utilities.startsWith(toPath, 'https://')) {
-                return toPath;
+        Utilities.relAtivePAth = function (fromPAth, toPAth) {
+            if (Utilities.stArtsWith(toPAth, '/') || Utilities.stArtsWith(toPAth, 'http://') || Utilities.stArtsWith(toPAth, 'https://')) {
+                return toPAth;
             }
             // Ignore common folder prefix
-            var prefix = Utilities.commonFolderPrefix(fromPath, toPath);
-            fromPath = fromPath.substr(prefix.length);
-            toPath = toPath.substr(prefix.length);
-            var upCount = fromPath.split('/').length;
-            var result = '';
-            for (var i = 1; i < upCount; i++) {
+            vAr prefix = Utilities.commonFolderPrefix(fromPAth, toPAth);
+            fromPAth = fromPAth.substr(prefix.length);
+            toPAth = toPAth.substr(prefix.length);
+            vAr upCount = fromPAth.split('/').length;
+            vAr result = '';
+            for (vAr i = 1; i < upCount; i++) {
                 result += '../';
             }
-            return result + toPath;
+            return result + toPAth;
         };
-        Utilities._replaceURL = function (contents, replacer) {
-            // Use ")" as the terminator as quotes are oftentimes not used at all
-            return contents.replace(/url\(\s*([^\)]+)\s*\)?/g, function (_) {
-                var matches = [];
-                for (var _i = 1; _i < arguments.length; _i++) {
-                    matches[_i - 1] = arguments[_i];
+        Utilities._replAceURL = function (contents, replAcer) {
+            // Use ")" As the terminAtor As quotes Are oftentimes not used At All
+            return contents.replAce(/url\(\s*([^\)]+)\s*\)?/g, function (_) {
+                vAr mAtches = [];
+                for (vAr _i = 1; _i < Arguments.length; _i++) {
+                    mAtches[_i - 1] = Arguments[_i];
                 }
-                var url = matches[0];
-                // Eliminate starting quotes (the initial whitespace is not captured)
-                if (url.charAt(0) === '"' || url.charAt(0) === '\'') {
+                vAr url = mAtches[0];
+                // EliminAte stArting quotes (the initiAl whitespAce is not cAptured)
+                if (url.chArAt(0) === '"' || url.chArAt(0) === '\'') {
                     url = url.substring(1);
                 }
-                // The ending whitespace is captured
-                while (url.length > 0 && (url.charAt(url.length - 1) === ' ' || url.charAt(url.length - 1) === '\t')) {
+                // The ending whitespAce is cAptured
+                while (url.length > 0 && (url.chArAt(url.length - 1) === ' ' || url.chArAt(url.length - 1) === '\t')) {
                     url = url.substring(0, url.length - 1);
                 }
-                // Eliminate ending quotes
-                if (url.charAt(url.length - 1) === '"' || url.charAt(url.length - 1) === '\'') {
+                // EliminAte ending quotes
+                if (url.chArAt(url.length - 1) === '"' || url.chArAt(url.length - 1) === '\'') {
                     url = url.substring(0, url.length - 1);
                 }
-                if (!Utilities.startsWith(url, 'data:') && !Utilities.startsWith(url, 'http://') && !Utilities.startsWith(url, 'https://')) {
-                    url = replacer(url);
+                if (!Utilities.stArtsWith(url, 'dAtA:') && !Utilities.stArtsWith(url, 'http://') && !Utilities.stArtsWith(url, 'https://')) {
+                    url = replAcer(url);
                 }
                 return 'url(' + url + ')';
             });
         };
-        Utilities.rewriteUrls = function (originalFile, newFile, contents) {
-            return this._replaceURL(contents, function (url) {
-                var absoluteUrl = Utilities.joinPaths(Utilities.pathOf(originalFile), url);
-                return Utilities.relativePath(newFile, absoluteUrl);
+        Utilities.rewriteUrls = function (originAlFile, newFile, contents) {
+            return this._replAceURL(contents, function (url) {
+                vAr AbsoluteUrl = Utilities.joinPAths(Utilities.pAthOf(originAlFile), url);
+                return Utilities.relAtivePAth(newFile, AbsoluteUrl);
             });
         };
-        Utilities.rewriteOrInlineUrls = function (originalFileFSPath, originalFile, newFile, contents, forceBase64, inlineByteLimit) {
-            var fs = require.nodeRequire('fs');
-            var path = require.nodeRequire('path');
-            return this._replaceURL(contents, function (url) {
+        Utilities.rewriteOrInlineUrls = function (originAlFileFSPAth, originAlFile, newFile, contents, forceBAse64, inlineByteLimit) {
+            vAr fs = require.nodeRequire('fs');
+            vAr pAth = require.nodeRequire('pAth');
+            return this._replAceURL(contents, function (url) {
                 if (/\.(svg|png)$/.test(url)) {
-                    var fsPath = path.join(path.dirname(originalFileFSPath), url);
-                    var fileContents = fs.readFileSync(fsPath);
+                    vAr fsPAth = pAth.join(pAth.dirnAme(originAlFileFSPAth), url);
+                    vAr fileContents = fs.reAdFileSync(fsPAth);
                     if (fileContents.length < inlineByteLimit) {
-                        global.cssInlinedResources = global.cssInlinedResources || [];
-                        var normalizedFSPath = fsPath.replace(/\\/g, '/');
-                        if (global.cssInlinedResources.indexOf(normalizedFSPath) >= 0) {
-                            // console.warn('CSS INLINING IMAGE AT ' + fsPath + ' MORE THAN ONCE. CONSIDER CONSOLIDATING CSS RULES');
+                        globAl.cssInlinedResources = globAl.cssInlinedResources || [];
+                        vAr normAlizedFSPAth = fsPAth.replAce(/\\/g, '/');
+                        if (globAl.cssInlinedResources.indexOf(normAlizedFSPAth) >= 0) {
+                            // console.wArn('CSS INLINING IMAGE AT ' + fsPAth + ' MORE THAN ONCE. CONSIDER CONSOLIDATING CSS RULES');
                         }
-                        global.cssInlinedResources.push(normalizedFSPath);
-                        var MIME = /\.svg$/.test(url) ? 'image/svg+xml' : 'image/png';
-                        var DATA = ';base64,' + fileContents.toString('base64');
-                        if (!forceBase64 && /\.svg$/.test(url)) {
-                            // .svg => url encode as explained at https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
-                            var newText = fileContents.toString()
-                                .replace(/"/g, '\'')
-                                .replace(/</g, '%3C')
-                                .replace(/>/g, '%3E')
-                                .replace(/&/g, '%26')
-                                .replace(/#/g, '%23')
-                                .replace(/\s+/g, ' ');
-                            var encodedData = ',' + newText;
-                            if (encodedData.length < DATA.length) {
-                                DATA = encodedData;
+                        globAl.cssInlinedResources.push(normAlizedFSPAth);
+                        vAr MIME = /\.svg$/.test(url) ? 'imAge/svg+xml' : 'imAge/png';
+                        vAr DATA = ';bAse64,' + fileContents.toString('bAse64');
+                        if (!forceBAse64 && /\.svg$/.test(url)) {
+                            // .svg => url encode As explAined At https://codepen.io/tigt/post/optimizing-svgs-in-dAtA-uris
+                            vAr newText = fileContents.toString()
+                                .replAce(/"/g, '\'')
+                                .replAce(/</g, '%3C')
+                                .replAce(/>/g, '%3E')
+                                .replAce(/&/g, '%26')
+                                .replAce(/#/g, '%23')
+                                .replAce(/\s+/g, ' ');
+                            vAr encodedDAtA = ',' + newText;
+                            if (encodedDAtA.length < DATA.length) {
+                                DATA = encodedDAtA;
                             }
                         }
-                        return '"data:' + MIME + DATA + '"';
+                        return '"dAtA:' + MIME + DATA + '"';
                     }
                 }
-                var absoluteUrl = Utilities.joinPaths(Utilities.pathOf(originalFile), url);
-                return Utilities.relativePath(newFile, absoluteUrl);
+                vAr AbsoluteUrl = Utilities.joinPAths(Utilities.pAthOf(originAlFile), url);
+                return Utilities.relAtivePAth(newFile, AbsoluteUrl);
             });
         };
         return Utilities;
     }());
-    CSSBuildLoaderPlugin.Utilities = Utilities;
+    CSSBuildLoAderPlugin.Utilities = Utilities;
     (function () {
-        var cssLoader = null;
-        var isElectron = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions['electron'] !== 'undefined');
+        vAr cssLoAder = null;
+        vAr isElectron = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions['electron'] !== 'undefined');
         if (typeof process !== 'undefined' && process.versions && !!process.versions.node && !isElectron) {
-            cssLoader = new NodeCSSLoader();
+            cssLoAder = new NodeCSSLoAder();
         }
         else {
-            cssLoader = new BrowserCSSLoader();
+            cssLoAder = new BrowserCSSLoAder();
         }
-        define('vs/css', new CSSPlugin(cssLoader));
+        define('vs/css', new CSSPlugin(cssLoAder));
     })();
-})(CSSBuildLoaderPlugin || (CSSBuildLoaderPlugin = {}));
+})(CSSBuildLoAderPlugin || (CSSBuildLoAderPlugin = {}));

@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, IReference } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { ITextModel, ITextSnapshot } from 'vs/editor/common/model';
-import { IEditorModel } from 'vs/platform/editor/common/editor';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { IDisposAble, IReference } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { ITextModel, ITextSnApshot } from 'vs/editor/common/model';
+import { IEditorModel } from 'vs/plAtform/editor/common/editor';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const ITextModelService = createDecorator<ITextModelService>('textModelService');
+export const ITextModelService = creAteDecorAtor<ITextModelService>('textModelService');
 
-export interface ITextModelService {
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Provided a resource URI, it will return a model reference
-	 * which should be disposed once not needed anymore.
-	 */
-	createModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>>;
+export interfAce ITextModelService {
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Registers a specific `scheme` content provider.
+	 * Provided A resource URI, it will return A model reference
+	 * which should be disposed once not needed Anymore.
 	 */
-	registerTextModelContentProvider(scheme: string, provider: ITextModelContentProvider): IDisposable;
+	creAteModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>>;
 
 	/**
-	 * Check if the given resource can be resolved to a text model.
+	 * Registers A specific `scheme` content provider.
 	 */
-	canHandleResource(resource: URI): boolean;
+	registerTextModelContentProvider(scheme: string, provider: ITextModelContentProvider): IDisposAble;
+
+	/**
+	 * Check if the given resource cAn be resolved to A text model.
+	 */
+	cAnHAndleResource(resource: URI): booleAn;
 }
 
-export interface ITextModelContentProvider {
+export interfAce ITextModelContentProvider {
 
 	/**
-	 * Given a resource, return the content of the resource as `ITextModel`.
+	 * Given A resource, return the content of the resource As `ITextModel`.
 	 */
 	provideTextContent(resource: URI): Promise<ITextModel | null> | null;
 }
 
-export interface ITextEditorModel extends IEditorModel {
+export interfAce ITextEditorModel extends IEditorModel {
 
 	/**
-	 * Provides access to the underlying `ITextModel`.
+	 * Provides Access to the underlying `ITextModel`.
 	 */
-	readonly textEditorModel: ITextModel | null;
+	reAdonly textEditorModel: ITextModel | null;
 
 	/**
-	 * Creates a snapshot of the model's contents.
+	 * CreAtes A snApshot of the model's contents.
 	 */
-	createSnapshot(this: IResolvedTextEditorModel): ITextSnapshot;
-	createSnapshot(this: ITextEditorModel): ITextSnapshot | null;
+	creAteSnApshot(this: IResolvedTextEditorModel): ITextSnApshot;
+	creAteSnApshot(this: ITextEditorModel): ITextSnApshot | null;
 
 	/**
-	 * Signals if this model is readonly or not.
+	 * SignAls if this model is reAdonly or not.
 	 */
-	isReadonly(): boolean;
+	isReAdonly(): booleAn;
 
 	/**
 	 * Figure out if this model is resolved or not.
@@ -68,10 +68,10 @@ export interface ITextEditorModel extends IEditorModel {
 	getMode(): string | undefined;
 }
 
-export interface IResolvedTextEditorModel extends ITextEditorModel {
+export interfAce IResolvedTextEditorModel extends ITextEditorModel {
 
 	/**
-	 * Same as ITextEditorModel#textEditorModel, but never null.
+	 * SAme As ITextEditorModel#textEditorModel, but never null.
 	 */
-	readonly textEditorModel: ITextModel;
+	reAdonly textEditorModel: ITextModel;
 }

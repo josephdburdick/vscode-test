@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { PreviewStatusBarEntry } from './ownedStatusBarEntry';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { PreviewStAtusBArEntry } from './ownedStAtusBArEntry';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-class BinarySize {
-	static readonly KB = 1024;
-	static readonly MB = BinarySize.KB * BinarySize.KB;
-	static readonly GB = BinarySize.MB * BinarySize.KB;
-	static readonly TB = BinarySize.GB * BinarySize.KB;
+clAss BinArySize {
+	stAtic reAdonly KB = 1024;
+	stAtic reAdonly MB = BinArySize.KB * BinArySize.KB;
+	stAtic reAdonly GB = BinArySize.MB * BinArySize.KB;
+	stAtic reAdonly TB = BinArySize.GB * BinArySize.KB;
 
-	static formatSize(size: number): string {
-		if (size < BinarySize.KB) {
-			return localize('sizeB', "{0}B", size);
+	stAtic formAtSize(size: number): string {
+		if (size < BinArySize.KB) {
+			return locAlize('sizeB', "{0}B", size);
 		}
 
-		if (size < BinarySize.MB) {
-			return localize('sizeKB', "{0}KB", (size / BinarySize.KB).toFixed(2));
+		if (size < BinArySize.MB) {
+			return locAlize('sizeKB', "{0}KB", (size / BinArySize.KB).toFixed(2));
 		}
 
-		if (size < BinarySize.GB) {
-			return localize('sizeMB', "{0}MB", (size / BinarySize.MB).toFixed(2));
+		if (size < BinArySize.GB) {
+			return locAlize('sizeMB', "{0}MB", (size / BinArySize.MB).toFixed(2));
 		}
 
-		if (size < BinarySize.TB) {
-			return localize('sizeGB', "{0}GB", (size / BinarySize.GB).toFixed(2));
+		if (size < BinArySize.TB) {
+			return locAlize('sizeGB', "{0}GB", (size / BinArySize.GB).toFixed(2));
 		}
 
-		return localize('sizeTB', "{0}TB", (size / BinarySize.TB).toFixed(2));
+		return locAlize('sizeTB', "{0}TB", (size / BinArySize.TB).toFixed(2));
 	}
 }
 
-export class BinarySizeStatusBarEntry extends PreviewStatusBarEntry {
+export clAss BinArySizeStAtusBArEntry extends PreviewStAtusBArEntry {
 
 	constructor() {
 		super({
-			id: 'imagePreview.binarySize',
-			name: localize('sizeStatusBar.name', "Image Binary Size"),
-			alignment: vscode.StatusBarAlignment.Right,
+			id: 'imAgePreview.binArySize',
+			nAme: locAlize('sizeStAtusBAr.nAme', "ImAge BinAry Size"),
+			Alignment: vscode.StAtusBArAlignment.Right,
 			priority: 100,
 		});
 	}
 
 	public show(owner: string, size: number | undefined) {
 		if (typeof size === 'number') {
-			super.showItem(owner, BinarySize.formatSize(size));
+			super.showItem(owner, BinArySize.formAtSize(size));
 		} else {
 			this.hide(owner);
 		}

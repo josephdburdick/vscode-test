@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { raceTimeout } from 'vs/base/common/async';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { IDisposable, Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IWorkingCopyFileOperationParticipant } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { URI } from 'vs/base/common/uri';
-import { FileOperation } from 'vs/platform/files/common/files';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { insert } from 'vs/base/common/arrays';
+import { locAlize } from 'vs/nls';
+import { rAceTimeout } from 'vs/bAse/common/Async';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IProgressService, ProgressLocAtion } from 'vs/plAtform/progress/common/progress';
+import { IDisposAble, DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IWorkingCopyFileOperAtionPArticipAnt } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
+import { URI } from 'vs/bAse/common/uri';
+import { FileOperAtion } from 'vs/plAtform/files/common/files';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { insert } from 'vs/bAse/common/ArrAys';
 
-export class WorkingCopyFileOperationParticipant extends Disposable {
+export clAss WorkingCopyFileOperAtionPArticipAnt extends DisposAble {
 
-	private readonly participants: IWorkingCopyFileOperationParticipant[] = [];
+	privAte reAdonly pArticipAnts: IWorkingCopyFileOperAtionPArticipAnt[] = [];
 
 	constructor(
-		@IProgressService private readonly progressService: IProgressService,
-		@ILogService private readonly logService: ILogService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@IProgressService privAte reAdonly progressService: IProgressService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
 		super();
 	}
 
-	addFileOperationParticipant(participant: IWorkingCopyFileOperationParticipant): IDisposable {
-		const remove = insert(this.participants, participant);
+	AddFileOperAtionPArticipAnt(pArticipAnt: IWorkingCopyFileOperAtionPArticipAnt): IDisposAble {
+		const remove = insert(this.pArticipAnts, pArticipAnt);
 
-		return toDisposable(() => remove());
+		return toDisposAble(() => remove());
 	}
 
-	async participate(files: { source?: URI, target: URI }[], operation: FileOperation): Promise<void> {
-		const timeout = this.configurationService.getValue<number>('files.participants.timeout');
+	Async pArticipAte(files: { source?: URI, tArget: URI }[], operAtion: FileOperAtion): Promise<void> {
+		const timeout = this.configurAtionService.getVAlue<number>('files.pArticipAnts.timeout');
 		if (timeout <= 0) {
-			return; // disabled
+			return; // disAbled
 		}
 
-		const cts = new CancellationTokenSource();
+		const cts = new CAncellAtionTokenSource();
 
 		return this.progressService.withProgress({
-			location: ProgressLocation.Window,
-			title: this.progressLabel(operation)
-		}, async progress => {
+			locAtion: ProgressLocAtion.Window,
+			title: this.progressLAbel(operAtion)
+		}, Async progress => {
 
-			// For each participant
-			for (const participant of this.participants) {
-				if (cts.token.isCancellationRequested) {
-					break;
+			// For eAch pArticipAnt
+			for (const pArticipAnt of this.pArticipAnts) {
+				if (cts.token.isCAncellAtionRequested) {
+					breAk;
 				}
 
 				try {
-					const promise = participant.participate(files, operation, progress, timeout, cts.token);
-					await raceTimeout(promise, timeout, () => cts.dispose(true /* cancel */));
-				} catch (err) {
-					this.logService.warn(err);
+					const promise = pArticipAnt.pArticipAte(files, operAtion, progress, timeout, cts.token);
+					AwAit rAceTimeout(promise, timeout, () => cts.dispose(true /* cAncel */));
+				} cAtch (err) {
+					this.logService.wArn(err);
 				}
 			}
 		});
 	}
 
-	private progressLabel(operation: FileOperation): string {
-		switch (operation) {
-			case FileOperation.CREATE:
-				return localize('msg-create', "Running 'File Create' participants...");
-			case FileOperation.MOVE:
-				return localize('msg-rename', "Running 'File Rename' participants...");
-			case FileOperation.COPY:
-				return localize('msg-copy', "Running 'File Copy' participants...");
-			case FileOperation.DELETE:
-				return localize('msg-delete', "Running 'File Delete' participants...");
+	privAte progressLAbel(operAtion: FileOperAtion): string {
+		switch (operAtion) {
+			cAse FileOperAtion.CREATE:
+				return locAlize('msg-creAte', "Running 'File CreAte' pArticipAnts...");
+			cAse FileOperAtion.MOVE:
+				return locAlize('msg-renAme', "Running 'File RenAme' pArticipAnts...");
+			cAse FileOperAtion.COPY:
+				return locAlize('msg-copy', "Running 'File Copy' pArticipAnts...");
+			cAse FileOperAtion.DELETE:
+				return locAlize('msg-delete', "Running 'File Delete' pArticipAnts...");
 		}
 	}
 
 	dispose(): void {
-		this.participants.splice(0, this.participants.length);
+		this.pArticipAnts.splice(0, this.pArticipAnts.length);
 	}
 }

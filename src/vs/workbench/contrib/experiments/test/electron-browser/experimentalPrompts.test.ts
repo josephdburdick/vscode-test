@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Emitter } from 'vs/base/common/event';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
+import * As Assert from 'Assert';
+import { Emitter } from 'vs/bAse/common/event';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
 import { ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { INotificationService, IPromptChoice, IPromptOptions, Severity } from 'vs/platform/notification/common/notification';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { ExperimentalPrompts } from 'vs/workbench/contrib/experiments/browser/experimentalPrompt';
-import { ExperimentActionType, ExperimentState, IExperiment, IExperimentActionPromptProperties, IExperimentService, LocalizedPromptText } from 'vs/workbench/contrib/experiments/common/experimentService';
+import { INotificAtionService, IPromptChoice, IPromptOptions, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { ExperimentAlPrompts } from 'vs/workbench/contrib/experiments/browser/experimentAlPrompt';
+import { ExperimentActionType, ExperimentStAte, IExperiment, IExperimentActionPromptProperties, IExperimentService, LocAlizedPromptText } from 'vs/workbench/contrib/experiments/common/experimentService';
 import { TestExperimentService } from 'vs/workbench/contrib/experiments/test/electron-browser/experimentService.test';
 import { TestLifecycleService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TestCommandService } from 'vs/editor/test/browser/editorTestServices';
-import { ICommandService } from 'vs/platform/commands/common/commands';
+import { TestCommAndService } from 'vs/editor/test/browser/editorTestServices';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
 
-suite('Experimental Prompts', () => {
-	let instantiationService: TestInstantiationService;
+suite('ExperimentAl Prompts', () => {
+	let instAntiAtionService: TestInstAntiAtionService;
 	let experimentService: TestExperimentService;
-	let experimentalPrompt: ExperimentalPrompts;
-	let commandService: TestCommandService;
-	let onExperimentEnabledEvent: Emitter<IExperiment>;
+	let experimentAlPrompt: ExperimentAlPrompts;
+	let commAndService: TestCommAndService;
+	let onExperimentEnAbledEvent: Emitter<IExperiment>;
 
-	let storageData: { [key: string]: any; } = {};
-	const promptText = 'Hello there! Can you see this?';
+	let storAgeDAtA: { [key: string]: Any; } = {};
+	const promptText = 'Hello there! CAn you see this?';
 	const experiment: IExperiment =
 	{
 		id: 'experiment1',
-		enabled: true,
-		raw: undefined,
-		state: ExperimentState.Run,
-		action: {
+		enAbled: true,
+		rAw: undefined,
+		stAte: ExperimentStAte.Run,
+		Action: {
 			type: ExperimentActionType.Prompt,
 			properties: {
 				promptText,
-				commands: [
+				commAnds: [
 					{
 						text: 'Yes',
 					},
@@ -51,93 +51,93 @@ suite('Experimental Prompts', () => {
 	};
 
 	suiteSetup(() => {
-		instantiationService = new TestInstantiationService();
+		instAntiAtionService = new TestInstAntiAtionService();
 
-		instantiationService.stub(ILifecycleService, new TestLifecycleService());
-		instantiationService.stub(ITelemetryService, NullTelemetryService);
+		instAntiAtionService.stub(ILifecycleService, new TestLifecycleService());
+		instAntiAtionService.stub(ITelemetryService, NullTelemetryService);
 
-		onExperimentEnabledEvent = new Emitter<IExperiment>();
+		onExperimentEnAbledEvent = new Emitter<IExperiment>();
 
 	});
 
 	setup(() => {
-		storageData = {};
-		instantiationService.stub(IStorageService, <Partial<IStorageService>>{
-			get: (a: string, b: StorageScope, c?: string) => a === 'experiments.experiment1' ? JSON.stringify(storageData) : c,
-			store: (a, b, c) => {
-				if (a === 'experiments.experiment1') {
-					storageData = JSON.parse(b + '');
+		storAgeDAtA = {};
+		instAntiAtionService.stub(IStorAgeService, <PArtiAl<IStorAgeService>>{
+			get: (A: string, b: StorAgeScope, c?: string) => A === 'experiments.experiment1' ? JSON.stringify(storAgeDAtA) : c,
+			store: (A, b, c) => {
+				if (A === 'experiments.experiment1') {
+					storAgeDAtA = JSON.pArse(b + '');
 				}
 			}
 		});
-		instantiationService.stub(INotificationService, new TestNotificationService());
-		experimentService = instantiationService.createInstance(TestExperimentService);
-		experimentService.onExperimentEnabled = onExperimentEnabledEvent.event;
-		instantiationService.stub(IExperimentService, experimentService);
-		commandService = instantiationService.createInstance(TestCommandService);
-		instantiationService.stub(ICommandService, commandService);
+		instAntiAtionService.stub(INotificAtionService, new TestNotificAtionService());
+		experimentService = instAntiAtionService.creAteInstAnce(TestExperimentService);
+		experimentService.onExperimentEnAbled = onExperimentEnAbledEvent.event;
+		instAntiAtionService.stub(IExperimentService, experimentService);
+		commAndService = instAntiAtionService.creAteInstAnce(TestCommAndService);
+		instAntiAtionService.stub(ICommAndService, commAndService);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		if (experimentService) {
 			experimentService.dispose();
 		}
-		if (experimentalPrompt) {
-			experimentalPrompt.dispose();
+		if (experimentAlPrompt) {
+			experimentAlPrompt.dispose();
 		}
 	});
 
-	test('Show experimental prompt if experiment should be run. Choosing negative option should mark experiment as complete', () => {
+	test('Show experimentAl prompt if experiment should be run. Choosing negAtive option should mArk experiment As complete', () => {
 
-		storageData = {
-			enabled: true,
-			state: ExperimentState.Run
+		storAgeDAtA = {
+			enAbled: true,
+			stAte: ExperimentStAte.Run
 		};
 
-		instantiationService.stub(INotificationService, {
-			prompt: (a: Severity, b: string, c: IPromptChoice[]) => {
-				assert.equal(b, promptText);
-				assert.equal(c.length, 2);
+		instAntiAtionService.stub(INotificAtionService, {
+			prompt: (A: Severity, b: string, c: IPromptChoice[]) => {
+				Assert.equAl(b, promptText);
+				Assert.equAl(c.length, 2);
 				c[1].run();
 				return undefined!;
 			}
 		});
 
-		experimentalPrompt = instantiationService.createInstance(ExperimentalPrompts);
-		onExperimentEnabledEvent.fire(experiment);
+		experimentAlPrompt = instAntiAtionService.creAteInstAnce(ExperimentAlPrompts);
+		onExperimentEnAbledEvent.fire(experiment);
 
 		return Promise.resolve(null).then(result => {
-			assert.equal(storageData['state'], ExperimentState.Complete);
+			Assert.equAl(storAgeDAtA['stAte'], ExperimentStAte.Complete);
 		});
 
 	});
 
-	test('runs experiment command', () => {
+	test('runs experiment commAnd', () => {
 
-		storageData = {
-			enabled: true,
-			state: ExperimentState.Run
+		storAgeDAtA = {
+			enAbled: true,
+			stAte: ExperimentStAte.Run
 		};
 
-		const stub = instantiationService.stub(ICommandService, 'executeCommand', () => undefined);
-		instantiationService.stub(INotificationService, {
-			prompt: (a: Severity, b: string, c: IPromptChoice[], options: IPromptOptions) => {
+		const stub = instAntiAtionService.stub(ICommAndService, 'executeCommAnd', () => undefined);
+		instAntiAtionService.stub(INotificAtionService, {
+			prompt: (A: Severity, b: string, c: IPromptChoice[], options: IPromptOptions) => {
 				c[0].run();
 				return undefined!;
 			}
 		});
 
-		experimentalPrompt = instantiationService.createInstance(ExperimentalPrompts);
-		onExperimentEnabledEvent.fire({
+		experimentAlPrompt = instAntiAtionService.creAteInstAnce(ExperimentAlPrompts);
+		onExperimentEnAbledEvent.fire({
 			...experiment,
-			action: {
+			Action: {
 				type: ExperimentActionType.Prompt,
 				properties: {
 					promptText,
-					commands: [
+					commAnds: [
 						{
 							text: 'Yes',
-							codeCommand: { id: 'greet', arguments: ['world'] }
+							codeCommAnd: { id: 'greet', Arguments: ['world'] }
 						}
 					]
 				}
@@ -145,72 +145,72 @@ suite('Experimental Prompts', () => {
 		});
 
 		return Promise.resolve(null).then(result => {
-			assert.deepStrictEqual(stub.args[0], ['greet', 'world']);
-			assert.equal(storageData['state'], ExperimentState.Complete);
+			Assert.deepStrictEquAl(stub.Args[0], ['greet', 'world']);
+			Assert.equAl(storAgeDAtA['stAte'], ExperimentStAte.Complete);
 		});
 
 	});
 
-	test('Show experimental prompt if experiment should be run. Cancelling should mark experiment as complete', () => {
+	test('Show experimentAl prompt if experiment should be run. CAncelling should mArk experiment As complete', () => {
 
-		storageData = {
-			enabled: true,
-			state: ExperimentState.Run
+		storAgeDAtA = {
+			enAbled: true,
+			stAte: ExperimentStAte.Run
 		};
 
-		instantiationService.stub(INotificationService, {
-			prompt: (a: Severity, b: string, c: IPromptChoice[], options: IPromptOptions) => {
-				assert.equal(b, promptText);
-				assert.equal(c.length, 2);
-				options.onCancel!();
+		instAntiAtionService.stub(INotificAtionService, {
+			prompt: (A: Severity, b: string, c: IPromptChoice[], options: IPromptOptions) => {
+				Assert.equAl(b, promptText);
+				Assert.equAl(c.length, 2);
+				options.onCAncel!();
 				return undefined!;
 			}
 		});
 
-		experimentalPrompt = instantiationService.createInstance(ExperimentalPrompts);
-		onExperimentEnabledEvent.fire(experiment);
+		experimentAlPrompt = instAntiAtionService.creAteInstAnce(ExperimentAlPrompts);
+		onExperimentEnAbledEvent.fire(experiment);
 
 		return Promise.resolve(null).then(result => {
-			assert.equal(storageData['state'], ExperimentState.Complete);
+			Assert.equAl(storAgeDAtA['stAte'], ExperimentStAte.Complete);
 		});
 
 	});
 
 	test('Test getPromptText', () => {
-		const simpleTextCase: IExperimentActionPromptProperties = {
+		const simpleTextCAse: IExperimentActionPromptProperties = {
 			promptText: 'My simple prompt',
-			commands: []
+			commAnds: []
 		};
-		const multipleLocaleCase: IExperimentActionPromptProperties = {
+		const multipleLocAleCAse: IExperimentActionPromptProperties = {
 			promptText: {
 				en: 'My simple prompt for en',
 				de: 'My simple prompt for de',
-				'en-au': 'My simple prompt for Austrailian English',
+				'en-Au': 'My simple prompt for AustrAiliAn English',
 				'en-us': 'My simple prompt for US English'
 			},
-			commands: []
+			commAnds: []
 		};
-		const englishUSTextCase: IExperimentActionPromptProperties = {
+		const englishUSTextCAse: IExperimentActionPromptProperties = {
 			promptText: {
 				'en-us': 'My simple prompt for en'
 			},
-			commands: []
+			commAnds: []
 		};
-		const noEnglishTextCase: IExperimentActionPromptProperties = {
+		const noEnglishTextCAse: IExperimentActionPromptProperties = {
 			promptText: {
-				'de-de': 'My simple prompt for German'
+				'de-de': 'My simple prompt for GermAn'
 			},
-			commands: []
+			commAnds: []
 		};
 
-		assert.equal(ExperimentalPrompts.getLocalizedText(simpleTextCase.promptText, 'any-language'), simpleTextCase.promptText);
-		const multipleLocalePromptText = multipleLocaleCase.promptText as LocalizedPromptText;
-		assert.equal(ExperimentalPrompts.getLocalizedText(multipleLocaleCase.promptText, 'en'), multipleLocalePromptText['en']);
-		assert.equal(ExperimentalPrompts.getLocalizedText(multipleLocaleCase.promptText, 'de'), multipleLocalePromptText['de']);
-		assert.equal(ExperimentalPrompts.getLocalizedText(multipleLocaleCase.promptText, 'en-au'), multipleLocalePromptText['en-au']);
-		assert.equal(ExperimentalPrompts.getLocalizedText(multipleLocaleCase.promptText, 'en-gb'), multipleLocalePromptText['en']);
-		assert.equal(ExperimentalPrompts.getLocalizedText(multipleLocaleCase.promptText, 'fr'), multipleLocalePromptText['en']);
-		assert.equal(ExperimentalPrompts.getLocalizedText(englishUSTextCase.promptText, 'fr'), (englishUSTextCase.promptText as LocalizedPromptText)['en-us']);
-		assert.equal(!!ExperimentalPrompts.getLocalizedText(noEnglishTextCase.promptText, 'fr'), false);
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(simpleTextCAse.promptText, 'Any-lAnguAge'), simpleTextCAse.promptText);
+		const multipleLocAlePromptText = multipleLocAleCAse.promptText As LocAlizedPromptText;
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(multipleLocAleCAse.promptText, 'en'), multipleLocAlePromptText['en']);
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(multipleLocAleCAse.promptText, 'de'), multipleLocAlePromptText['de']);
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(multipleLocAleCAse.promptText, 'en-Au'), multipleLocAlePromptText['en-Au']);
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(multipleLocAleCAse.promptText, 'en-gb'), multipleLocAlePromptText['en']);
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(multipleLocAleCAse.promptText, 'fr'), multipleLocAlePromptText['en']);
+		Assert.equAl(ExperimentAlPrompts.getLocAlizedText(englishUSTextCAse.promptText, 'fr'), (englishUSTextCAse.promptText As LocAlizedPromptText)['en-us']);
+		Assert.equAl(!!ExperimentAlPrompts.getLocAlizedText(noEnglishTextCAse.promptText, 'fr'), fAlse);
 	});
 });

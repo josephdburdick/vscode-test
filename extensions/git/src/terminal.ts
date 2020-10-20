@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtensionContext, workspace } from 'vscode';
-import { filterEvent, IDisposable } from './util';
+import { ExtensionContext, workspAce } from 'vscode';
+import { filterEvent, IDisposAble } from './util';
 
-export class TerminalEnvironmentManager {
+export clAss TerminAlEnvironmentMAnAger {
 
-	private readonly disposable: IDisposable;
+	privAte reAdonly disposAble: IDisposAble;
 
-	private _enabled = false;
-	private set enabled(enabled: boolean) {
-		if (this._enabled === enabled) {
+	privAte _enAbled = fAlse;
+	privAte set enAbled(enAbled: booleAn) {
+		if (this._enAbled === enAbled) {
 			return;
 		}
 
-		this._enabled = enabled;
-		this.context.environmentVariableCollection.clear();
+		this._enAbled = enAbled;
+		this.context.environmentVAriAbleCollection.cleAr();
 
-		if (enabled) {
-			for (const name of Object.keys(this.env)) {
-				this.context.environmentVariableCollection.replace(name, this.env[name]);
+		if (enAbled) {
+			for (const nAme of Object.keys(this.env)) {
+				this.context.environmentVAriAbleCollection.replAce(nAme, this.env[nAme]);
 			}
 		}
 	}
 
-	constructor(private readonly context: ExtensionContext, private readonly env: { [key: string]: string }) {
-		this.disposable = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git'))
+	constructor(privAte reAdonly context: ExtensionContext, privAte reAdonly env: { [key: string]: string }) {
+		this.disposAble = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git'))
 			(this.refresh, this);
 
 		this.refresh();
 	}
 
-	private refresh(): void {
-		const config = workspace.getConfiguration('git', null);
-		this.enabled = config.get<boolean>('enabled', true) && config.get('terminalAuthentication', true);
+	privAte refresh(): void {
+		const config = workspAce.getConfigurAtion('git', null);
+		this.enAbled = config.get<booleAn>('enAbled', true) && config.get('terminAlAuthenticAtion', true);
 	}
 
 	dispose(): void {
-		this.disposable.dispose();
+		this.disposAble.dispose();
 	}
 }

@@ -1,86 +1,86 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IPanel } from 'vs/workbench/common/panel';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IPAnel } from 'vs/workbench/common/pAnel';
 import { CompositeDescriptor, CompositeRegistry } from 'vs/workbench/browser/composite';
-import { IConstructorSignature0, BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { assertIsDefined } from 'vs/base/common/types';
-import { PaneComposite } from 'vs/workbench/browser/panecomposite';
+import { IConstructorSignAture0, BrAndedService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { AssertIsDefined } from 'vs/bAse/common/types';
+import { PAneComposite } from 'vs/workbench/browser/pAnecomposite';
 
-export abstract class Panel extends PaneComposite implements IPanel { }
+export AbstrAct clAss PAnel extends PAneComposite implements IPAnel { }
 
 /**
- * A panel descriptor is a leightweight descriptor of a panel in the workbench.
+ * A pAnel descriptor is A leightweight descriptor of A pAnel in the workbench.
  */
-export class PanelDescriptor extends CompositeDescriptor<Panel> {
+export clAss PAnelDescriptor extends CompositeDescriptor<PAnel> {
 
-	static create<Services extends BrandedService[]>(ctor: { new(...services: Services): Panel }, id: string, name: string, cssClass?: string, order?: number, requestedIndex?: number, _commandId?: string): PanelDescriptor {
-		return new PanelDescriptor(ctor as IConstructorSignature0<Panel>, id, name, cssClass, order, requestedIndex, _commandId);
+	stAtic creAte<Services extends BrAndedService[]>(ctor: { new(...services: Services): PAnel }, id: string, nAme: string, cssClAss?: string, order?: number, requestedIndex?: number, _commAndId?: string): PAnelDescriptor {
+		return new PAnelDescriptor(ctor As IConstructorSignAture0<PAnel>, id, nAme, cssClAss, order, requestedIndex, _commAndId);
 	}
 
-	private constructor(ctor: IConstructorSignature0<Panel>, id: string, name: string, cssClass?: string, order?: number, requestedIndex?: number, _commandId?: string) {
-		super(ctor, id, name, cssClass, order, requestedIndex, _commandId);
+	privAte constructor(ctor: IConstructorSignAture0<PAnel>, id: string, nAme: string, cssClAss?: string, order?: number, requestedIndex?: number, _commAndId?: string) {
+		super(ctor, id, nAme, cssClAss, order, requestedIndex, _commAndId);
 	}
 }
 
-export class PanelRegistry extends CompositeRegistry<Panel> {
-	private defaultPanelId: string | undefined;
+export clAss PAnelRegistry extends CompositeRegistry<PAnel> {
+	privAte defAultPAnelId: string | undefined;
 
 	/**
-	 * Registers a panel to the platform.
+	 * Registers A pAnel to the plAtform.
 	 */
-	registerPanel(descriptor: PanelDescriptor): void {
+	registerPAnel(descriptor: PAnelDescriptor): void {
 		super.registerComposite(descriptor);
 	}
 
 	/**
-	 * Deregisters a panel to the platform.
+	 * Deregisters A pAnel to the plAtform.
 	 */
-	deregisterPanel(id: string): void {
+	deregisterPAnel(id: string): void {
 		super.deregisterComposite(id);
 	}
 
 	/**
-	 * Returns a panel by id.
+	 * Returns A pAnel by id.
 	 */
-	getPanel(id: string): PanelDescriptor | undefined {
+	getPAnel(id: string): PAnelDescriptor | undefined {
 		return this.getComposite(id);
 	}
 
 	/**
-	 * Returns an array of registered panels known to the platform.
+	 * Returns An ArrAy of registered pAnels known to the plAtform.
 	 */
-	getPanels(): PanelDescriptor[] {
+	getPAnels(): PAnelDescriptor[] {
 		return this.getComposites();
 	}
 
 	/**
-	 * Sets the id of the panel that should open on startup by default.
+	 * Sets the id of the pAnel thAt should open on stArtup by defAult.
 	 */
-	setDefaultPanelId(id: string): void {
-		this.defaultPanelId = id;
+	setDefAultPAnelId(id: string): void {
+		this.defAultPAnelId = id;
 	}
 
 	/**
-	 * Gets the id of the panel that should open on startup by default.
+	 * Gets the id of the pAnel thAt should open on stArtup by defAult.
 	 */
-	getDefaultPanelId(): string {
-		return assertIsDefined(this.defaultPanelId);
+	getDefAultPAnelId(): string {
+		return AssertIsDefined(this.defAultPAnelId);
 	}
 
 	/**
-	 * Find out if a panel exists with the provided ID.
+	 * Find out if A pAnel exists with the provided ID.
 	 */
-	hasPanel(id: string): boolean {
-		return this.getPanels().some(panel => panel.id === id);
+	hAsPAnel(id: string): booleAn {
+		return this.getPAnels().some(pAnel => pAnel.id === id);
 	}
 }
 
 export const Extensions = {
-	Panels: 'workbench.contributions.panels'
+	PAnels: 'workbench.contributions.pAnels'
 };
 
-Registry.add(Extensions.Panels, new PanelRegistry());
+Registry.Add(Extensions.PAnels, new PAnelRegistry());

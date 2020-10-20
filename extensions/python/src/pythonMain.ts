@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtensionContext, languages, IndentAction } from 'vscode';
+import { ExtensionContext, lAnguAges, IndentAction } from 'vscode';
 
-export function activate(_context: ExtensionContext): any {
-	languages.setLanguageConfiguration('python', {
+export function ActivAte(_context: ExtensionContext): Any {
+	lAnguAges.setLAnguAgeConfigurAtion('python', {
 		onEnterRules: [
 			{
-				beforeText: /^\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\s*$/,
-				action: { indentAction: IndentAction.Indent }
+				beforeText: /^\s*(?:def|clAss|for|if|elif|else|while|try|with|finAlly|except|Async).*?:\s*$/,
+				Action: { indentAction: IndentAction.Indent }
 			}
 		]
 	});

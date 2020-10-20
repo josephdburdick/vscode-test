@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Memento, MementoObject } from 'vs/workbench/common/memento';
-import { IThemeService, Themable } from 'vs/platform/theme/common/themeService';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import { IThemeService, ThemAble } from 'vs/plAtform/theme/common/themeService';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 
-export class Component extends Themable {
+export clAss Component extends ThemAble {
 
-	private readonly memento: Memento;
+	privAte reAdonly memento: Memento;
 
 	constructor(
-		private readonly id: string,
+		privAte reAdonly id: string,
 		themeService: IThemeService,
-		storageService: IStorageService
+		storAgeService: IStorAgeService
 	) {
 		super(themeService);
 
 		this.id = id;
-		this.memento = new Memento(this.id, storageService);
+		this.memento = new Memento(this.id, storAgeService);
 
-		this._register(storageService.onWillSaveState(() => {
+		this._register(storAgeService.onWillSAveStAte(() => {
 
-			// Ask the component to persist state into the memento
-			this.saveState();
+			// Ask the component to persist stAte into the memento
+			this.sAveStAte();
 
-			// Then save the memento into storage
-			this.memento.saveMemento();
+			// Then sAve the memento into storAge
+			this.memento.sAveMemento();
 		}));
 	}
 
@@ -35,11 +35,11 @@ export class Component extends Themable {
 		return this.id;
 	}
 
-	protected getMemento(scope: StorageScope): MementoObject {
+	protected getMemento(scope: StorAgeScope): MementoObject {
 		return this.memento.getMemento(scope);
 	}
 
-	protected saveState(): void {
-		// Subclasses to implement for storing state
+	protected sAveStAte(): void {
+		// SubclAsses to implement for storing stAte
 	}
 }

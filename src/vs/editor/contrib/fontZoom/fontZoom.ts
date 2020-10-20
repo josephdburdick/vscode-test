@@ -1,57 +1,57 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, ServicesAccessor, registerEditorAction } from 'vs/editor/browser/editorExtensions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
 
-class EditorFontZoomIn extends EditorAction {
+clAss EditorFontZoomIn extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.fontZoomIn',
-			label: nls.localize('EditorFontZoomIn.label', "Editor Font Zoom In"),
-			alias: 'Editor Font Zoom In',
+			id: 'editor.Action.fontZoomIn',
+			lAbel: nls.locAlize('EditorFontZoomIn.lAbel', "Editor Font Zoom In"),
+			AliAs: 'Editor Font Zoom In',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
 		EditorZoom.setZoomLevel(EditorZoom.getZoomLevel() + 1);
 	}
 }
 
-class EditorFontZoomOut extends EditorAction {
+clAss EditorFontZoomOut extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.fontZoomOut',
-			label: nls.localize('EditorFontZoomOut.label', "Editor Font Zoom Out"),
-			alias: 'Editor Font Zoom Out',
+			id: 'editor.Action.fontZoomOut',
+			lAbel: nls.locAlize('EditorFontZoomOut.lAbel', "Editor Font Zoom Out"),
+			AliAs: 'Editor Font Zoom Out',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
 		EditorZoom.setZoomLevel(EditorZoom.getZoomLevel() - 1);
 	}
 }
 
-class EditorFontZoomReset extends EditorAction {
+clAss EditorFontZoomReset extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.fontZoomReset',
-			label: nls.localize('EditorFontZoomReset.label', "Editor Font Zoom Reset"),
-			alias: 'Editor Font Zoom Reset',
+			id: 'editor.Action.fontZoomReset',
+			lAbel: nls.locAlize('EditorFontZoomReset.lAbel', "Editor Font Zoom Reset"),
+			AliAs: 'Editor Font Zoom Reset',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
 		EditorZoom.setZoomLevel(0);
 	}
 }

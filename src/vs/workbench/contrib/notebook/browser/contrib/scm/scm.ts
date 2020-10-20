@@ -1,149 +1,149 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { INotebookEditorContribution, INotebookEditor } from '../../notebookBrowser';
 import { registerNotebookContribution } from '../../notebookEditorExtensions';
 import { ISCMService } from 'vs/workbench/contrib/scm/common/scm';
-import { createProviderComparer } from 'vs/workbench/contrib/scm/browser/dirtydiffDecorator';
-import { first, ThrottledDelayer } from 'vs/base/common/async';
+import { creAteProviderCompArer } from 'vs/workbench/contrib/scm/browser/dirtydiffDecorAtor';
+import { first, ThrottledDelAyer } from 'vs/bAse/common/Async';
 import { INotebookService } from '../../../common/notebookService';
 import { NotebookTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookTextModel';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { URI } from 'vs/base/common/uri';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { URI } from 'vs/bAse/common/uri';
 
-export class SCMController extends Disposable implements INotebookEditorContribution {
-	static id: string = 'workbench.notebook.findController';
-	private _lastDecorationId: string[] = [];
-	private _localDisposable = new DisposableStore();
-	private _originalDocument: NotebookTextModel | undefined = undefined;
-	private _originalResourceDisposableStore = new DisposableStore();
-	private _diffDelayer = new ThrottledDelayer<void>(200);
+export clAss SCMController extends DisposAble implements INotebookEditorContribution {
+	stAtic id: string = 'workbench.notebook.findController';
+	privAte _lAstDecorAtionId: string[] = [];
+	privAte _locAlDisposAble = new DisposAbleStore();
+	privAte _originAlDocument: NotebookTextModel | undefined = undefined;
+	privAte _originAlResourceDisposAbleStore = new DisposAbleStore();
+	privAte _diffDelAyer = new ThrottledDelAyer<void>(200);
 
-	private _lastVersion = -1;
+	privAte _lAstVersion = -1;
 
 
 	constructor(
-		private readonly _notebookEditor: INotebookEditor,
-		@IFileService private readonly _fileService: FileService,
-		@ISCMService private readonly _scmService: ISCMService,
-		@INotebookService private readonly _notebookService: INotebookService
+		privAte reAdonly _notebookEditor: INotebookEditor,
+		@IFileService privAte reAdonly _fileService: FileService,
+		@ISCMService privAte reAdonly _scmService: ISCMService,
+		@INotebookService privAte reAdonly _notebookService: INotebookService
 
 	) {
 		super();
 
 		if (!this._notebookEditor.isEmbedded) {
-			this._register(this._notebookEditor.onDidChangeModel(() => {
-				this._localDisposable.clear();
-				this._originalResourceDisposableStore.clear();
-				this._diffDelayer.cancel();
-				this.update();
+			this._register(this._notebookEditor.onDidChAngeModel(() => {
+				this._locAlDisposAble.cleAr();
+				this._originAlResourceDisposAbleStore.cleAr();
+				this._diffDelAyer.cAncel();
+				this.updAte();
 
 				if (this._notebookEditor.textModel) {
-					this._localDisposable.add(this._notebookEditor.textModel.onDidChangeContent((e) => {
-						this.update();
+					this._locAlDisposAble.Add(this._notebookEditor.textModel.onDidChAngeContent((e) => {
+						this.updAte();
 					}));
 				}
 			}));
 
 			this._register(this._notebookEditor.onWillDispose(() => {
-				this._localDisposable.clear();
-				this._originalResourceDisposableStore.clear();
+				this._locAlDisposAble.cleAr();
+				this._originAlResourceDisposAbleStore.cleAr();
 			}));
 
-			this.update();
+			this.updAte();
 		}
 	}
 
-	private async _resolveNotebookDocument(uri: URI, viewType: string) {
-		const providers = this._scmService.repositories.map(r => r.provider);
+	privAte Async _resolveNotebookDocument(uri: URI, viewType: string) {
+		const providers = this._scmService.repositories.mAp(r => r.provider);
 		const rootedProviders = providers.filter(p => !!p.rootUri);
 
-		rootedProviders.sort(createProviderComparer(uri));
+		rootedProviders.sort(creAteProviderCompArer(uri));
 
-		const result = await first(rootedProviders.map(p => () => p.getOriginalResource(uri)));
+		const result = AwAit first(rootedProviders.mAp(p => () => p.getOriginAlResource(uri)));
 
 		if (!result) {
-			this._originalDocument = undefined;
-			this._originalResourceDisposableStore.clear();
+			this._originAlDocument = undefined;
+			this._originAlResourceDisposAbleStore.cleAr();
 			return;
 		}
 
-		if (result.toString() === this._originalDocument?.uri.toString()) {
-			// original document not changed
+		if (result.toString() === this._originAlDocument?.uri.toString()) {
+			// originAl document not chAnged
 			return;
 		}
 
-		this._originalResourceDisposableStore.add(this._fileService.watch(result));
-		this._originalResourceDisposableStore.add(this._fileService.onDidFilesChange(e => {
-			if (e.contains(result)) {
-				this._originalDocument = undefined;
-				this._originalResourceDisposableStore.clear();
-				this.update();
+		this._originAlResourceDisposAbleStore.Add(this._fileService.wAtch(result));
+		this._originAlResourceDisposAbleStore.Add(this._fileService.onDidFilesChAnge(e => {
+			if (e.contAins(result)) {
+				this._originAlDocument = undefined;
+				this._originAlResourceDisposAbleStore.cleAr();
+				this.updAte();
 			}
 		}));
 
-		const originalDocument = await this._notebookService.resolveNotebook(viewType, result, false);
-		this._originalResourceDisposableStore.add({
+		const originAlDocument = AwAit this._notebookService.resolveNotebook(viewType, result, fAlse);
+		this._originAlResourceDisposAbleStore.Add({
 			dispose: () => {
-				this._originalDocument?.dispose();
-				this._originalDocument = undefined;
+				this._originAlDocument?.dispose();
+				this._originAlDocument = undefined;
 			}
 		});
 
-		this._originalDocument = originalDocument;
+		this._originAlDocument = originAlDocument;
 	}
 
-	async update() {
-		if (!this._diffDelayer) {
+	Async updAte() {
+		if (!this._diffDelAyer) {
 			return;
 		}
 
-		await this._diffDelayer
-			.trigger(async () => {
+		AwAit this._diffDelAyer
+			.trigger(Async () => {
 				const modifiedDocument = this._notebookEditor.textModel;
 				if (!modifiedDocument) {
 					return;
 				}
 
-				if (this._lastVersion >= modifiedDocument.versionId) {
+				if (this._lAstVersion >= modifiedDocument.versionId) {
 					return;
 				}
 
-				this._lastVersion = modifiedDocument.versionId;
-				await this._resolveNotebookDocument(modifiedDocument.uri, modifiedDocument.viewType);
+				this._lAstVersion = modifiedDocument.versionId;
+				AwAit this._resolveNotebookDocument(modifiedDocument.uri, modifiedDocument.viewType);
 
-				if (!this._originalDocument) {
-					this._clear();
+				if (!this._originAlDocument) {
+					this._cleAr();
 					return;
 				}
 
-				// const diff = new LcsDiff(new CellSequence(this._originalDocument), new CellSequence(modifiedDocument));
-				// const diffResult = diff.ComputeDiff(false);
+				// const diff = new LcsDiff(new CellSequence(this._originAlDocument), new CellSequence(modifiedDocument));
+				// const diffResult = diff.ComputeDiff(fAlse);
 
-				// const decorations: INotebookDeltaDecoration[] = [];
-				// diffResult.changes.forEach(change => {
-				// 	if (change.originalLength === 0) {
-				// 		// doesn't exist in original
-				// 		for (let i = 0; i < change.modifiedLength; i++) {
-				// 			decorations.push({
-				// 				handle: modifiedDocument.cells[change.modifiedStart + i].handle,
-				// 				options: { gutterClassName: 'nb-gutter-cell-inserted' }
+				// const decorAtions: INotebookDeltADecorAtion[] = [];
+				// diffResult.chAnges.forEAch(chAnge => {
+				// 	if (chAnge.originAlLength === 0) {
+				// 		// doesn't exist in originAl
+				// 		for (let i = 0; i < chAnge.modifiedLength; i++) {
+				// 			decorAtions.push({
+				// 				hAndle: modifiedDocument.cells[chAnge.modifiedStArt + i].hAndle,
+				// 				options: { gutterClAssNAme: 'nb-gutter-cell-inserted' }
 				// 			});
 				// 		}
 				// 	} else {
-				// 		if (change.modifiedLength === 0) {
+				// 		if (chAnge.modifiedLength === 0) {
 				// 			// diff.deleteCount
-				// 			// removed from original
+				// 			// removed from originAl
 				// 		} else {
-				// 			// modification
-				// 			for (let i = 0; i < change.modifiedLength; i++) {
-				// 				decorations.push({
-				// 					handle: modifiedDocument.cells[change.modifiedStart + i].handle,
-				// 					options: { gutterClassName: 'nb-gutter-cell-changed' }
+				// 			// modificAtion
+				// 			for (let i = 0; i < chAnge.modifiedLength; i++) {
+				// 				decorAtions.push({
+				// 					hAndle: modifiedDocument.cells[chAnge.modifiedStArt + i].hAndle,
+				// 					options: { gutterClAssNAme: 'nb-gutter-cell-chAnged' }
 				// 				});
 				// 			}
 				// 		}
@@ -151,12 +151,12 @@ export class SCMController extends Disposable implements INotebookEditorContribu
 				// });
 
 
-				// this._lastDecorationId = this._notebookEditor.deltaCellDecorations(this._lastDecorationId, decorations);
+				// this._lAstDecorAtionId = this._notebookEditor.deltACellDecorAtions(this._lAstDecorAtionId, decorAtions);
 			});
 	}
 
-	private _clear() {
-		this._lastDecorationId = this._notebookEditor.deltaCellDecorations(this._lastDecorationId, []);
+	privAte _cleAr() {
+		this._lAstDecorAtionId = this._notebookEditor.deltACellDecorAtions(this._lAstDecorAtionId, []);
 	}
 }
 

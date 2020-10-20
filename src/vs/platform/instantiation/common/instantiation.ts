@@ -1,152 +1,152 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ServiceCollection } from './serviceCollection';
-import * as descriptors from './descriptors';
+import * As descriptors from './descriptors';
 
-// ------ internal util
+// ------ internAl util
 
-export namespace _util {
+export nAmespAce _util {
 
-	export const serviceIds = new Map<string, ServiceIdentifier<any>>();
+	export const serviceIds = new MAp<string, ServiceIdentifier<Any>>();
 
-	export const DI_TARGET = '$di$target';
+	export const DI_TARGET = '$di$tArget';
 	export const DI_DEPENDENCIES = '$di$dependencies';
 
-	export function getServiceDependencies(ctor: any): { id: ServiceIdentifier<any>, index: number, optional: boolean }[] {
+	export function getServiceDependencies(ctor: Any): { id: ServiceIdentifier<Any>, index: number, optionAl: booleAn }[] {
 		return ctor[DI_DEPENDENCIES] || [];
 	}
 }
 
-// --- interfaces ------
+// --- interfAces ------
 
-export type BrandedService = { _serviceBrand: undefined };
+export type BrAndedService = { _serviceBrAnd: undefined };
 
-export interface IConstructorSignature0<T> {
-	new(...services: BrandedService[]): T;
+export interfAce IConstructorSignAture0<T> {
+	new(...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature1<A1, T> {
-	new <Services extends BrandedService[]>(first: A1, ...services: Services): T;
+export interfAce IConstructorSignAture1<A1, T> {
+	new <Services extends BrAndedService[]>(first: A1, ...services: Services): T;
 }
 
-export interface IConstructorSignature2<A1, A2, T> {
-	new(first: A1, second: A2, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture2<A1, A2, T> {
+	new(first: A1, second: A2, ...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature3<A1, A2, A3, T> {
-	new(first: A1, second: A2, third: A3, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture3<A1, A2, A3, T> {
+	new(first: A1, second: A2, third: A3, ...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature4<A1, A2, A3, A4, T> {
-	new(first: A1, second: A2, third: A3, fourth: A4, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture4<A1, A2, A3, A4, T> {
+	new(first: A1, second: A2, third: A3, fourth: A4, ...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature5<A1, A2, A3, A4, A5, T> {
-	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture5<A1, A2, A3, A4, A5, T> {
+	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, ...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature6<A1, A2, A3, A4, A5, A6, T> {
-	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, sixth: A6, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture6<A1, A2, A3, A4, A5, A6, T> {
+	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, sixth: A6, ...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature7<A1, A2, A3, A4, A5, A6, A7, T> {
-	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, sixth: A6, seventh: A7, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture7<A1, A2, A3, A4, A5, A6, A7, T> {
+	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, sixth: A6, seventh: A7, ...services: BrAndedService[]): T;
 }
 
-export interface IConstructorSignature8<A1, A2, A3, A4, A5, A6, A7, A8, T> {
-	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, sixth: A6, seventh: A7, eigth: A8, ...services: BrandedService[]): T;
+export interfAce IConstructorSignAture8<A1, A2, A3, A4, A5, A6, A7, A8, T> {
+	new(first: A1, second: A2, third: A3, fourth: A4, fifth: A5, sixth: A6, seventh: A7, eigth: A8, ...services: BrAndedService[]): T;
 }
 
-export interface ServicesAccessor {
+export interfAce ServicesAccessor {
 	get<T>(id: ServiceIdentifier<T>): T;
-	get<T>(id: ServiceIdentifier<T>, isOptional: typeof optional): T | undefined;
+	get<T>(id: ServiceIdentifier<T>, isOptionAl: typeof optionAl): T | undefined;
 }
 
-export const IInstantiationService = createDecorator<IInstantiationService>('instantiationService');
+export const IInstAntiAtionService = creAteDecorAtor<IInstAntiAtionService>('instAntiAtionService');
 
 /**
- * Given a list of arguments as a tuple, attempt to extract the leading, non-service arguments
+ * Given A list of Arguments As A tuple, Attempt to extrAct the leAding, non-service Arguments
  * to their own tuple.
  */
-type GetLeadingNonServiceArgs<Args> =
-	Args extends [...BrandedService[]] ? []
-	: Args extends [infer A1, ...BrandedService[]] ? [A1]
-	: Args extends [infer A1, infer A2, ...BrandedService[]] ? [A1, A2]
-	: Args extends [infer A1, infer A2, infer A3, ...BrandedService[]] ? [A1, A2, A3]
-	: Args extends [infer A1, infer A2, infer A3, infer A4, ...BrandedService[]] ? [A1, A2, A3, A4]
-	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, ...BrandedService[]] ? [A1, A2, A3, A4, A5]
-	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6]
-	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6, A7]
-	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, infer A8, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6, A7, A8]
+type GetLeAdingNonServiceArgs<Args> =
+	Args extends [...BrAndedService[]] ? []
+	: Args extends [infer A1, ...BrAndedService[]] ? [A1]
+	: Args extends [infer A1, infer A2, ...BrAndedService[]] ? [A1, A2]
+	: Args extends [infer A1, infer A2, infer A3, ...BrAndedService[]] ? [A1, A2, A3]
+	: Args extends [infer A1, infer A2, infer A3, infer A4, ...BrAndedService[]] ? [A1, A2, A3, A4]
+	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, ...BrAndedService[]] ? [A1, A2, A3, A4, A5]
+	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, ...BrAndedService[]] ? [A1, A2, A3, A4, A5, A6]
+	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, ...BrAndedService[]] ? [A1, A2, A3, A4, A5, A6, A7]
+	: Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, infer A8, ...BrAndedService[]] ? [A1, A2, A3, A4, A5, A6, A7, A8]
 	: never;
 
-export interface IInstantiationService {
+export interfAce IInstAntiAtionService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Synchronously creates an instance that is denoted by
+	 * Synchronously creAtes An instAnce thAt is denoted by
 	 * the descriptor
 	 */
-	createInstance<T>(descriptor: descriptors.SyncDescriptor0<T>): T;
-	createInstance<A1, T>(descriptor: descriptors.SyncDescriptor1<A1, T>, a1: A1): T;
-	createInstance<A1, A2, T>(descriptor: descriptors.SyncDescriptor2<A1, A2, T>, a1: A1, a2: A2): T;
-	createInstance<A1, A2, A3, T>(descriptor: descriptors.SyncDescriptor3<A1, A2, A3, T>, a1: A1, a2: A2, a3: A3): T;
-	createInstance<A1, A2, A3, A4, T>(descriptor: descriptors.SyncDescriptor4<A1, A2, A3, A4, T>, a1: A1, a2: A2, a3: A3, a4: A4): T;
-	createInstance<A1, A2, A3, A4, A5, T>(descriptor: descriptors.SyncDescriptor5<A1, A2, A3, A4, A5, T>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5): T;
-	createInstance<A1, A2, A3, A4, A5, A6, T>(descriptor: descriptors.SyncDescriptor6<A1, A2, A3, A4, A5, A6, T>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6): T;
-	createInstance<A1, A2, A3, A4, A5, A6, A7, T>(descriptor: descriptors.SyncDescriptor7<A1, A2, A3, A4, A5, A6, A7, T>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7): T;
-	createInstance<A1, A2, A3, A4, A5, A6, A7, A8, T>(descriptor: descriptors.SyncDescriptor8<A1, A2, A3, A4, A5, A6, A7, A8, T>, a1: A1, a2: A2, a3: A3, a4: A4, a5: A5, a6: A6, a7: A7, a8: A8): T;
+	creAteInstAnce<T>(descriptor: descriptors.SyncDescriptor0<T>): T;
+	creAteInstAnce<A1, T>(descriptor: descriptors.SyncDescriptor1<A1, T>, A1: A1): T;
+	creAteInstAnce<A1, A2, T>(descriptor: descriptors.SyncDescriptor2<A1, A2, T>, A1: A1, A2: A2): T;
+	creAteInstAnce<A1, A2, A3, T>(descriptor: descriptors.SyncDescriptor3<A1, A2, A3, T>, A1: A1, A2: A2, A3: A3): T;
+	creAteInstAnce<A1, A2, A3, A4, T>(descriptor: descriptors.SyncDescriptor4<A1, A2, A3, A4, T>, A1: A1, A2: A2, A3: A3, A4: A4): T;
+	creAteInstAnce<A1, A2, A3, A4, A5, T>(descriptor: descriptors.SyncDescriptor5<A1, A2, A3, A4, A5, T>, A1: A1, A2: A2, A3: A3, A4: A4, A5: A5): T;
+	creAteInstAnce<A1, A2, A3, A4, A5, A6, T>(descriptor: descriptors.SyncDescriptor6<A1, A2, A3, A4, A5, A6, T>, A1: A1, A2: A2, A3: A3, A4: A4, A5: A5, A6: A6): T;
+	creAteInstAnce<A1, A2, A3, A4, A5, A6, A7, T>(descriptor: descriptors.SyncDescriptor7<A1, A2, A3, A4, A5, A6, A7, T>, A1: A1, A2: A2, A3: A3, A4: A4, A5: A5, A6: A6, A7: A7): T;
+	creAteInstAnce<A1, A2, A3, A4, A5, A6, A7, A8, T>(descriptor: descriptors.SyncDescriptor8<A1, A2, A3, A4, A5, A6, A7, A8, T>, A1: A1, A2: A2, A3: A3, A4: A4, A5: A5, A6: A6, A7: A7, A8: A8): T;
 
-	createInstance<Ctor extends new (...args: any[]) => any, R extends InstanceType<Ctor>>(t: Ctor, ...args: GetLeadingNonServiceArgs<ConstructorParameters<Ctor>>): R;
+	creAteInstAnce<Ctor extends new (...Args: Any[]) => Any, R extends InstAnceType<Ctor>>(t: Ctor, ...Args: GetLeAdingNonServiceArgs<ConstructorPArAmeters<Ctor>>): R;
 
 	/**
 	 *
 	 */
-	invokeFunction<R, TS extends any[] = []>(fn: (accessor: ServicesAccessor, ...args: TS) => R, ...args: TS): R;
+	invokeFunction<R, TS extends Any[] = []>(fn: (Accessor: ServicesAccessor, ...Args: TS) => R, ...Args: TS): R;
 
 	/**
-	 * Creates a child of this service which inherts all current services
-	 * and adds/overwrites the given services
+	 * CreAtes A child of this service which inherts All current services
+	 * And Adds/overwrites the given services
 	 */
-	createChild(services: ServiceCollection): IInstantiationService;
+	creAteChild(services: ServiceCollection): IInstAntiAtionService;
 }
 
 
 /**
- * Identifies a service of type T
+ * Identifies A service of type T
  */
-export interface ServiceIdentifier<T> {
-	(...args: any[]): void;
+export interfAce ServiceIdentifier<T> {
+	(...Args: Any[]): void;
 	type: T;
 }
 
-function storeServiceDependency(id: Function, target: Function, index: number, optional: boolean): void {
-	if ((target as any)[_util.DI_TARGET] === target) {
-		(target as any)[_util.DI_DEPENDENCIES].push({ id, index, optional });
+function storeServiceDependency(id: Function, tArget: Function, index: number, optionAl: booleAn): void {
+	if ((tArget As Any)[_util.DI_TARGET] === tArget) {
+		(tArget As Any)[_util.DI_DEPENDENCIES].push({ id, index, optionAl });
 	} else {
-		(target as any)[_util.DI_DEPENDENCIES] = [{ id, index, optional }];
-		(target as any)[_util.DI_TARGET] = target;
+		(tArget As Any)[_util.DI_DEPENDENCIES] = [{ id, index, optionAl }];
+		(tArget As Any)[_util.DI_TARGET] = tArget;
 	}
 }
 
 /**
- * The *only* valid way to create a {{ServiceIdentifier}}.
+ * The *only* vAlid wAy to creAte A {{ServiceIdentifier}}.
  */
-export function createDecorator<T>(serviceId: string): ServiceIdentifier<T> {
+export function creAteDecorAtor<T>(serviceId: string): ServiceIdentifier<T> {
 
-	if (_util.serviceIds.has(serviceId)) {
+	if (_util.serviceIds.hAs(serviceId)) {
 		return _util.serviceIds.get(serviceId)!;
 	}
 
-	const id = <any>function (target: Function, key: string, index: number): any {
-		if (arguments.length !== 3) {
-			throw new Error('@IServiceName-decorator can only be used to decorate a parameter');
+	const id = <Any>function (tArget: Function, key: string, index: number): Any {
+		if (Arguments.length !== 3) {
+			throw new Error('@IServiceNAme-decorAtor cAn only be used to decorAte A pArAmeter');
 		}
-		storeServiceDependency(id, target, index, false);
+		storeServiceDependency(id, tArget, index, fAlse);
 	};
 
 	id.toString = () => serviceId;
@@ -156,14 +156,14 @@ export function createDecorator<T>(serviceId: string): ServiceIdentifier<T> {
 }
 
 /**
- * Mark a service dependency as optional.
+ * MArk A service dependency As optionAl.
  */
-export function optional<T>(serviceIdentifier: ServiceIdentifier<T>) {
+export function optionAl<T>(serviceIdentifier: ServiceIdentifier<T>) {
 
-	return function (target: Function, key: string, index: number) {
-		if (arguments.length !== 3) {
-			throw new Error('@optional-decorator can only be used to decorate a parameter');
+	return function (tArget: Function, key: string, index: number) {
+		if (Arguments.length !== 3) {
+			throw new Error('@optionAl-decorAtor cAn only be used to decorAte A pArAmeter');
 		}
-		storeServiceDependency(serviceIdentifier, target, index, true);
+		storeServiceDependency(serviceIdentifier, tArget, index, true);
 	};
 }

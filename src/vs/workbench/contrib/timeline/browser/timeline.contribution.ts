@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IViewsRegistry, IViewDescriptor, Extensions as ViewExtensions } from 'vs/workbench/common/views';
+import { locAlize } from 'vs/nls';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IViewsRegistry, IViewDescriptor, Extensions As ViewExtensions } from 'vs/workbench/common/views';
 import { VIEW_CONTAINER } from 'vs/workbench/contrib/files/browser/explorerViewlet';
-import { ITimelineService, TimelinePaneId } from 'vs/workbench/contrib/timeline/common/timeline';
-import { TimelineHasProviderContext, TimelineService } from 'vs/workbench/contrib/timeline/common/timelineService';
-import { TimelinePane } from './timelinePane';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { MenuId, MenuRegistry } from 'vs/platform/actions/common/actions';
-import { ICommandHandler, CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { ITimelineService, TimelinePAneId } from 'vs/workbench/contrib/timeline/common/timeline';
+import { TimelineHAsProviderContext, TimelineService } from 'vs/workbench/contrib/timeline/common/timelineService';
+import { TimelinePAne } from './timelinePAne';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { MenuId, MenuRegistry } from 'vs/plAtform/Actions/common/Actions';
+import { ICommAndHAndler, CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 import { ExplorerFolderContext } from 'vs/workbench/contrib/files/common/files';
 import { ResourceContextKey } from 'vs/workbench/common/resources';
 
-export class TimelinePaneDescriptor implements IViewDescriptor {
-	readonly id = TimelinePaneId;
-	readonly name = TimelinePane.TITLE;
-	readonly containerIcon = 'codicon-history';
-	readonly ctorDescriptor = new SyncDescriptor(TimelinePane);
-	readonly order = 2;
-	readonly weight = 30;
-	readonly collapsed = true;
-	readonly canToggleVisibility = true;
-	readonly hideByDefault = false;
-	readonly canMoveView = true;
-	readonly when = TimelineHasProviderContext;
+export clAss TimelinePAneDescriptor implements IViewDescriptor {
+	reAdonly id = TimelinePAneId;
+	reAdonly nAme = TimelinePAne.TITLE;
+	reAdonly contAinerIcon = 'codicon-history';
+	reAdonly ctorDescriptor = new SyncDescriptor(TimelinePAne);
+	reAdonly order = 2;
+	reAdonly weight = 30;
+	reAdonly collApsed = true;
+	reAdonly cAnToggleVisibility = true;
+	reAdonly hideByDefAult = fAlse;
+	reAdonly cAnMoveView = true;
+	reAdonly when = TimelineHAsProviderContext;
 
-	focusCommand = { id: 'timeline.focus' };
+	focusCommAnd = { id: 'timeline.focus' };
 }
 
-// Configuration
-const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
-configurationRegistry.registerConfiguration({
+// ConfigurAtion
+const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
+configurAtionRegistry.registerConfigurAtion({
 	id: 'timeline',
 	order: 1001,
-	title: localize('timelineConfigurationTitle', "Timeline"),
+	title: locAlize('timelineConfigurAtionTitle', "Timeline"),
 	type: 'object',
 	properties: {
 		'timeline.excludeSources': {
 			type: [
-				'array',
+				'ArrAy',
 				'null'
 			],
-			default: null,
-			description: localize('timeline.excludeSources', "An array of Timeline sources that should be excluded from the Timeline view"),
+			defAult: null,
+			description: locAlize('timeline.excludeSources', "An ArrAy of Timeline sources thAt should be excluded from the Timeline view"),
 		},
-		'timeline.pageSize': {
+		'timeline.pAgeSize': {
 			type: ['number', 'null'],
-			default: null,
-			markdownDescription: localize('timeline.pageSize', "The number of items to show in the Timeline view by default and when loading more items. Setting to `null` (the default) will automatically choose a page size based on the visible area of the Timeline view"),
+			defAult: null,
+			mArkdownDescription: locAlize('timeline.pAgeSize', "The number of items to show in the Timeline view by defAult And when loAding more items. Setting to `null` (the defAult) will AutomAticAlly choose A pAge size bAsed on the visible AreA of the Timeline view"),
 		},
-		'timeline.pageOnScroll': {
-			type: 'boolean',
-			default: false,
-			description: localize('timeline.pageOnScroll', "Experimental. Controls whether the Timeline view will load the next page of items when you scroll to the end of the list"),
+		'timeline.pAgeOnScroll': {
+			type: 'booleAn',
+			defAult: fAlse,
+			description: locAlize('timeline.pAgeOnScroll', "ExperimentAl. Controls whether the Timeline view will loAd the next pAge of items when you scroll to the end of the list"),
 		},
 	}
 });
 
-Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([new TimelinePaneDescriptor()], VIEW_CONTAINER);
+Registry.As<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([new TimelinePAneDescriptor()], VIEW_CONTAINER);
 
-namespace OpenTimelineAction {
+nAmespAce OpenTimelineAction {
 
 	export const ID = 'files.openTimeline';
-	export const LABEL = localize('files.openTimeline', "Open Timeline");
+	export const LABEL = locAlize('files.openTimeline', "Open Timeline");
 
-	export function handler(): ICommandHandler {
-		return (accessor, arg) => {
-			const service = accessor.get(ITimelineService);
-			return service.setUri(arg);
+	export function hAndler(): ICommAndHAndler {
+		return (Accessor, Arg) => {
+			const service = Accessor.get(ITimelineService);
+			return service.setUri(Arg);
 		};
 	}
 }
 
-CommandsRegistry.registerCommand(OpenTimelineAction.ID, OpenTimelineAction.handler());
+CommAndsRegistry.registerCommAnd(OpenTimelineAction.ID, OpenTimelineAction.hAndler());
 
-MenuRegistry.appendMenuItem(MenuId.ExplorerContext, ({
+MenuRegistry.AppendMenuItem(MenuId.ExplorerContext, ({
 	group: '4_timeline',
 	order: 1,
-	command: {
+	commAnd: {
 		id: OpenTimelineAction.ID,
 		title: OpenTimelineAction.LABEL,
 		icon: { id: 'codicon/history' }
 	},
-	when: ContextKeyExpr.and(ExplorerFolderContext.toNegated(), ResourceContextKey.HasResource)
+	when: ContextKeyExpr.And(ExplorerFolderContext.toNegAted(), ResourceContextKey.HAsResource)
 }));
 
 registerSingleton(ITimelineService, TimelineService, true);

@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IOutputService, IOutputChannel, OUTPUT_VIEW_ID } from 'vs/workbench/contrib/output/common/output';
-import { Extensions, IOutputChannelRegistry } from 'vs/workbench/services/output/common/output';
-import { MainThreadOutputServiceShape, MainContext, IExtHostContext, ExtHostOutputServiceShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { UriComponents, URI } from 'vs/base/common/uri';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IOutputService, IOutputChAnnel, OUTPUT_VIEW_ID } from 'vs/workbench/contrib/output/common/output';
+import { Extensions, IOutputChAnnelRegistry } from 'vs/workbench/services/output/common/output';
+import { MAinThreAdOutputServiceShApe, MAinContext, IExtHostContext, ExtHostOutputServiceShApe, ExtHostContext } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { UriComponents, URI } from 'vs/bAse/common/uri';
+import { DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
 import { IViewsService } from 'vs/workbench/common/views';
 
-@extHostNamedCustomer(MainContext.MainThreadOutputService)
-export class MainThreadOutputService extends Disposable implements MainThreadOutputServiceShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdOutputService)
+export clAss MAinThreAdOutputService extends DisposAble implements MAinThreAdOutputServiceShApe {
 
-	private static _idPool = 1;
+	privAte stAtic _idPool = 1;
 
-	private readonly _proxy: ExtHostOutputServiceShape;
-	private readonly _outputService: IOutputService;
-	private readonly _viewsService: IViewsService;
+	privAte reAdonly _proxy: ExtHostOutputServiceShApe;
+	privAte reAdonly _outputService: IOutputService;
+	privAte reAdonly _viewsService: IViewsService;
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -33,57 +33,57 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostOutputService);
 
-		const setVisibleChannel = () => {
-			const visibleChannel = this._viewsService.isViewVisible(OUTPUT_VIEW_ID) ? this._outputService.getActiveChannel() : undefined;
-			this._proxy.$setVisibleChannel(visibleChannel ? visibleChannel.id : null);
+		const setVisibleChAnnel = () => {
+			const visibleChAnnel = this._viewsService.isViewVisible(OUTPUT_VIEW_ID) ? this._outputService.getActiveChAnnel() : undefined;
+			this._proxy.$setVisibleChAnnel(visibleChAnnel ? visibleChAnnel.id : null);
 		};
-		this._register(Event.any<any>(this._outputService.onActiveOutputChannel, Event.filter(this._viewsService.onDidChangeViewVisibility, ({ id }) => id === OUTPUT_VIEW_ID))(() => setVisibleChannel()));
-		setVisibleChannel();
+		this._register(Event.Any<Any>(this._outputService.onActiveOutputChAnnel, Event.filter(this._viewsService.onDidChAngeViewVisibility, ({ id }) => id === OUTPUT_VIEW_ID))(() => setVisibleChAnnel()));
+		setVisibleChAnnel();
 	}
 
-	public $register(label: string, log: boolean, file?: UriComponents): Promise<string> {
-		const id = 'extension-output-#' + (MainThreadOutputService._idPool++);
-		Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).registerChannel({ id, label, file: file ? URI.revive(file) : undefined, log });
-		this._register(toDisposable(() => this.$dispose(id)));
+	public $register(lAbel: string, log: booleAn, file?: UriComponents): Promise<string> {
+		const id = 'extension-output-#' + (MAinThreAdOutputService._idPool++);
+		Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels).registerChAnnel({ id, lAbel, file: file ? URI.revive(file) : undefined, log });
+		this._register(toDisposAble(() => this.$dispose(id)));
 		return Promise.resolve(id);
 	}
 
-	public $append(channelId: string, value: string): Promise<void> | undefined {
-		const channel = this._getChannel(channelId);
-		if (channel) {
-			channel.append(value);
+	public $Append(chAnnelId: string, vAlue: string): Promise<void> | undefined {
+		const chAnnel = this._getChAnnel(chAnnelId);
+		if (chAnnel) {
+			chAnnel.Append(vAlue);
 		}
 		return undefined;
 	}
 
-	public $update(channelId: string): Promise<void> | undefined {
-		const channel = this._getChannel(channelId);
-		if (channel) {
-			channel.update();
+	public $updAte(chAnnelId: string): Promise<void> | undefined {
+		const chAnnel = this._getChAnnel(chAnnelId);
+		if (chAnnel) {
+			chAnnel.updAte();
 		}
 		return undefined;
 	}
 
-	public $clear(channelId: string, till: number): Promise<void> | undefined {
-		const channel = this._getChannel(channelId);
-		if (channel) {
-			channel.clear(till);
+	public $cleAr(chAnnelId: string, till: number): Promise<void> | undefined {
+		const chAnnel = this._getChAnnel(chAnnelId);
+		if (chAnnel) {
+			chAnnel.cleAr(till);
 		}
 		return undefined;
 	}
 
-	public $reveal(channelId: string, preserveFocus: boolean): Promise<void> | undefined {
-		const channel = this._getChannel(channelId);
-		if (channel) {
-			this._outputService.showChannel(channel.id, preserveFocus);
+	public $reveAl(chAnnelId: string, preserveFocus: booleAn): Promise<void> | undefined {
+		const chAnnel = this._getChAnnel(chAnnelId);
+		if (chAnnel) {
+			this._outputService.showChAnnel(chAnnel.id, preserveFocus);
 		}
 		return undefined;
 	}
 
-	public $close(channelId: string): Promise<void> | undefined {
+	public $close(chAnnelId: string): Promise<void> | undefined {
 		if (this._viewsService.isViewVisible(OUTPUT_VIEW_ID)) {
-			const activeChannel = this._outputService.getActiveChannel();
-			if (activeChannel && channelId === activeChannel.id) {
+			const ActiveChAnnel = this._outputService.getActiveChAnnel();
+			if (ActiveChAnnel && chAnnelId === ActiveChAnnel.id) {
 				this._viewsService.closeView(OUTPUT_VIEW_ID);
 			}
 		}
@@ -91,15 +91,15 @@ export class MainThreadOutputService extends Disposable implements MainThreadOut
 		return undefined;
 	}
 
-	public $dispose(channelId: string): Promise<void> | undefined {
-		const channel = this._getChannel(channelId);
-		if (channel) {
-			channel.dispose();
+	public $dispose(chAnnelId: string): Promise<void> | undefined {
+		const chAnnel = this._getChAnnel(chAnnelId);
+		if (chAnnel) {
+			chAnnel.dispose();
 		}
 		return undefined;
 	}
 
-	private _getChannel(channelId: string): IOutputChannel | undefined {
-		return this._outputService.getChannel(channelId);
+	privAte _getChAnnel(chAnnelId: string): IOutputChAnnel | undefined {
+		return this._outputService.getChAnnel(chAnnelId);
 	}
 }

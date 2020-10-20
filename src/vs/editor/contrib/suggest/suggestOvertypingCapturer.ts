@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { SuggestModel } from 'vs/editor/contrib/suggest/suggestModel';
 
-export class OvertypingCapturer implements IDisposable {
+export clAss OvertypingCApturer implements IDisposAble {
 
-	private static readonly _maxSelectionLength = 51200;
-	private readonly _disposables = new DisposableStore();
+	privAte stAtic reAdonly _mAxSelectionLength = 51200;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
-	private _lastOvertyped: { value: string; multiline: boolean }[] = [];
-	private _empty: boolean = true;
+	privAte _lAstOvertyped: { vAlue: string; multiline: booleAn }[] = [];
+	privAte _empty: booleAn = true;
 
 	constructor(editor: ICodeEditor, suggestModel: SuggestModel) {
 
-		this._disposables.add(editor.onWillType(() => {
+		this._disposAbles.Add(editor.onWillType(() => {
 			if (!this._empty) {
 				return;
 			}
-			if (!editor.hasModel()) {
+			if (!editor.hAsModel()) {
 				return;
 			}
 
 			const selections = editor.getSelections();
 			const selectionsLength = selections.length;
 
-			// Check if it will overtype any selections
-			let willOvertype = false;
+			// Check if it will overtype Any selections
+			let willOvertype = fAlse;
 			for (let i = 0; i < selectionsLength; i++) {
 				if (!selections[i].isEmpty()) {
 					willOvertype = true;
-					break;
+					breAk;
 				}
 			}
 			if (!willOvertype) {
 				return;
 			}
 
-			this._lastOvertyped = [];
+			this._lAstOvertyped = [];
 			const model = editor.getModel();
 			for (let i = 0; i < selectionsLength; i++) {
 				const selection = selections[i];
-				// Check for overtyping capturer restrictions
-				if (model.getValueLengthInRange(selection) > OvertypingCapturer._maxSelectionLength) {
+				// Check for overtyping cApturer restrictions
+				if (model.getVAlueLengthInRAnge(selection) > OvertypingCApturer._mAxSelectionLength) {
 					return;
 				}
-				this._lastOvertyped[i] = { value: model.getValueInRange(selection), multiline: selection.startLineNumber !== selection.endLineNumber };
+				this._lAstOvertyped[i] = { vAlue: model.getVAlueInRAnge(selection), multiline: selection.stArtLineNumber !== selection.endLineNumber };
 			}
-			this._empty = false;
+			this._empty = fAlse;
 		}));
 
-		this._disposables.add(suggestModel.onDidCancel(e => {
+		this._disposAbles.Add(suggestModel.onDidCAncel(e => {
 			if (!this._empty) {
 				this._empty = true;
 			}
 		}));
 	}
 
-	getLastOvertypedInfo(idx: number): { value: string; multiline: boolean } | undefined {
-		if (!this._empty && idx >= 0 && idx < this._lastOvertyped.length) {
-			return this._lastOvertyped[idx];
+	getLAstOvertypedInfo(idx: number): { vAlue: string; multiline: booleAn } | undefined {
+		if (!this._empty && idx >= 0 && idx < this._lAstOvertyped.length) {
+			return this._lAstOvertyped[idx];
 		}
 		return undefined;
 	}
 
 	dispose() {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 	}
 }

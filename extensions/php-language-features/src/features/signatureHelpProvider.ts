@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { SignatureHelpProvider, SignatureHelp, SignatureInformation, CancellationToken, TextDocument, Position, workspace } from 'vscode';
-import phpGlobals = require('./phpGlobals');
-import phpGlobalFunctions = require('./phpGlobalFunctions');
+import { SignAtureHelpProvider, SignAtureHelp, SignAtureInformAtion, CAncellAtionToken, TextDocument, Position, workspAce } from 'vscode';
+import phpGlobAls = require('./phpGlobAls');
+import phpGlobAlFunctions = require('./phpGlobAlFunctions');
 
-const _NL = '\n'.charCodeAt(0);
-const _TAB = '\t'.charCodeAt(0);
-const _WSB = ' '.charCodeAt(0);
-const _LBracket = '['.charCodeAt(0);
-const _RBracket = ']'.charCodeAt(0);
-const _LCurly = '{'.charCodeAt(0);
-const _RCurly = '}'.charCodeAt(0);
-const _LParent = '('.charCodeAt(0);
-const _RParent = ')'.charCodeAt(0);
-const _Comma = ','.charCodeAt(0);
-const _Quote = '\''.charCodeAt(0);
-const _DQuote = '"'.charCodeAt(0);
-const _USC = '_'.charCodeAt(0);
-const _a = 'a'.charCodeAt(0);
-const _z = 'z'.charCodeAt(0);
-const _A = 'A'.charCodeAt(0);
-const _Z = 'Z'.charCodeAt(0);
-const _0 = '0'.charCodeAt(0);
-const _9 = '9'.charCodeAt(0);
+const _NL = '\n'.chArCodeAt(0);
+const _TAB = '\t'.chArCodeAt(0);
+const _WSB = ' '.chArCodeAt(0);
+const _LBrAcket = '['.chArCodeAt(0);
+const _RBrAcket = ']'.chArCodeAt(0);
+const _LCurly = '{'.chArCodeAt(0);
+const _RCurly = '}'.chArCodeAt(0);
+const _LPArent = '('.chArCodeAt(0);
+const _RPArent = ')'.chArCodeAt(0);
+const _CommA = ','.chArCodeAt(0);
+const _Quote = '\''.chArCodeAt(0);
+const _DQuote = '"'.chArCodeAt(0);
+const _USC = '_'.chArCodeAt(0);
+const _A = 'A'.chArCodeAt(0);
+const _z = 'z'.chArCodeAt(0);
+const _A = 'A'.chArCodeAt(0);
+const _Z = 'Z'.chArCodeAt(0);
+const _0 = '0'.chArCodeAt(0);
+const _9 = '9'.chArCodeAt(0);
 
 const BOF = 0;
 
 
-class BackwardIterator {
-	private lineNumber: number;
-	private offset: number;
-	private line: string;
-	private model: TextDocument;
+clAss BAckwArdIterAtor {
+	privAte lineNumber: number;
+	privAte offset: number;
+	privAte line: string;
+	privAte model: TextDocument;
 
 	constructor(model: TextDocument, offset: number, lineNumber: number) {
 		this.lineNumber = lineNumber;
@@ -43,7 +43,7 @@ class BackwardIterator {
 		this.model = model;
 	}
 
-	public hasNext(): boolean {
+	public hAsNext(): booleAn {
 		return this.lineNumber >= 0;
 	}
 
@@ -58,7 +58,7 @@ class BackwardIterator {
 			this.lineNumber = -1;
 			return BOF;
 		}
-		let ch = this.line.charCodeAt(this.offset);
+		let ch = this.line.chArCodeAt(this.offset);
 		this.offset--;
 		return ch;
 	}
@@ -66,104 +66,104 @@ class BackwardIterator {
 }
 
 
-export default class PHPSignatureHelpProvider implements SignatureHelpProvider {
+export defAult clAss PHPSignAtureHelpProvider implements SignAtureHelpProvider {
 
-	public provideSignatureHelp(document: TextDocument, position: Position, _token: CancellationToken): Promise<SignatureHelp> | null {
-		let enable = workspace.getConfiguration('php').get<boolean>('suggest.basic', true);
-		if (!enable) {
+	public provideSignAtureHelp(document: TextDocument, position: Position, _token: CAncellAtionToken): Promise<SignAtureHelp> | null {
+		let enAble = workspAce.getConfigurAtion('php').get<booleAn>('suggest.bAsic', true);
+		if (!enAble) {
 			return null;
 		}
 
-		let iterator = new BackwardIterator(document, position.character - 1, position.line);
+		let iterAtor = new BAckwArdIterAtor(document, position.chArActer - 1, position.line);
 
-		let paramCount = this.readArguments(iterator);
-		if (paramCount < 0) {
+		let pArAmCount = this.reAdArguments(iterAtor);
+		if (pArAmCount < 0) {
 			return null;
 		}
 
-		let ident = this.readIdent(iterator);
+		let ident = this.reAdIdent(iterAtor);
 		if (!ident) {
 			return null;
 		}
 
-		let entry = phpGlobalFunctions.globalfunctions[ident] || phpGlobals.keywords[ident];
-		if (!entry || !entry.signature) {
+		let entry = phpGlobAlFunctions.globAlfunctions[ident] || phpGlobAls.keywords[ident];
+		if (!entry || !entry.signAture) {
 			return null;
 		}
-		let paramsString = entry.signature.substring(0, entry.signature.lastIndexOf(')') + 1);
-		let signatureInfo = new SignatureInformation(ident + paramsString, entry.description);
+		let pArAmsString = entry.signAture.substring(0, entry.signAture.lAstIndexOf(')') + 1);
+		let signAtureInfo = new SignAtureInformAtion(ident + pArAmsString, entry.description);
 
 		let re = /\w*\s+\&?\$[\w_\.]+|void/g;
-		let match: RegExpExecArray | null = null;
-		while ((match = re.exec(paramsString)) !== null) {
-			signatureInfo.parameters.push({ label: match[0], documentation: '' });
+		let mAtch: RegExpExecArrAy | null = null;
+		while ((mAtch = re.exec(pArAmsString)) !== null) {
+			signAtureInfo.pArAmeters.push({ lAbel: mAtch[0], documentAtion: '' });
 		}
-		let ret = new SignatureHelp();
-		ret.signatures.push(signatureInfo);
-		ret.activeSignature = 0;
-		ret.activeParameter = Math.min(paramCount, signatureInfo.parameters.length - 1);
+		let ret = new SignAtureHelp();
+		ret.signAtures.push(signAtureInfo);
+		ret.ActiveSignAture = 0;
+		ret.ActivePArAmeter = MAth.min(pArAmCount, signAtureInfo.pArAmeters.length - 1);
 		return Promise.resolve(ret);
 	}
 
-	private readArguments(iterator: BackwardIterator): number {
-		let parentNesting = 0;
-		let bracketNesting = 0;
+	privAte reAdArguments(iterAtor: BAckwArdIterAtor): number {
+		let pArentNesting = 0;
+		let brAcketNesting = 0;
 		let curlyNesting = 0;
-		let paramCount = 0;
-		while (iterator.hasNext()) {
-			let ch = iterator.next();
+		let pArAmCount = 0;
+		while (iterAtor.hAsNext()) {
+			let ch = iterAtor.next();
 			switch (ch) {
-				case _LParent:
-					parentNesting--;
-					if (parentNesting < 0) {
-						return paramCount;
+				cAse _LPArent:
+					pArentNesting--;
+					if (pArentNesting < 0) {
+						return pArAmCount;
 					}
-					break;
-				case _RParent: parentNesting++; break;
-				case _LCurly: curlyNesting--; break;
-				case _RCurly: curlyNesting++; break;
-				case _LBracket: bracketNesting--; break;
-				case _RBracket: bracketNesting++; break;
-				case _DQuote:
-				case _Quote:
-					while (iterator.hasNext() && ch !== iterator.next()) {
+					breAk;
+				cAse _RPArent: pArentNesting++; breAk;
+				cAse _LCurly: curlyNesting--; breAk;
+				cAse _RCurly: curlyNesting++; breAk;
+				cAse _LBrAcket: brAcketNesting--; breAk;
+				cAse _RBrAcket: brAcketNesting++; breAk;
+				cAse _DQuote:
+				cAse _Quote:
+					while (iterAtor.hAsNext() && ch !== iterAtor.next()) {
 						// find the closing quote or double quote
 					}
-					break;
-				case _Comma:
-					if (!parentNesting && !bracketNesting && !curlyNesting) {
-						paramCount++;
+					breAk;
+				cAse _CommA:
+					if (!pArentNesting && !brAcketNesting && !curlyNesting) {
+						pArAmCount++;
 					}
-					break;
+					breAk;
 			}
 		}
 		return -1;
 	}
 
-	private isIdentPart(ch: number): boolean {
+	privAte isIdentPArt(ch: number): booleAn {
 		if (ch === _USC || // _
-			ch >= _a && ch <= _z || // a-z
+			ch >= _A && ch <= _z || // A-z
 			ch >= _A && ch <= _Z || // A-Z
 			ch >= _0 && ch <= _9 || // 0/9
-			ch >= 0x80 && ch <= 0xFFFF) { // nonascii
+			ch >= 0x80 && ch <= 0xFFFF) { // nonAscii
 
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private readIdent(iterator: BackwardIterator): string {
-		let identStarted = false;
+	privAte reAdIdent(iterAtor: BAckwArdIterAtor): string {
+		let identStArted = fAlse;
 		let ident = '';
-		while (iterator.hasNext()) {
-			let ch = iterator.next();
-			if (!identStarted && (ch === _WSB || ch === _TAB || ch === _NL)) {
+		while (iterAtor.hAsNext()) {
+			let ch = iterAtor.next();
+			if (!identStArted && (ch === _WSB || ch === _TAB || ch === _NL)) {
 				continue;
 			}
-			if (this.isIdentPart(ch)) {
-				identStarted = true;
-				ident = String.fromCharCode(ch) + ident;
-			} else if (identStarted) {
+			if (this.isIdentPArt(ch)) {
+				identStArted = true;
+				ident = String.fromChArCode(ch) + ident;
+			} else if (identStArted) {
 				return ident;
 			}
 		}

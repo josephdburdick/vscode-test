@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { API as GitAPI } from './typings/git';
+import * As vscode from 'vscode';
+import { API As GitAPI } from './typings/git';
 import { publishRepository } from './publish';
-import { combinedDisposable } from './util';
+import { combinedDisposAble } from './util';
 
-export function registerCommands(gitAPI: GitAPI): vscode.Disposable {
-	const disposables: vscode.Disposable[] = [];
+export function registerCommAnds(gitAPI: GitAPI): vscode.DisposAble {
+	const disposAbles: vscode.DisposAble[] = [];
 
-	disposables.push(vscode.commands.registerCommand('github.publish', async () => {
+	disposAbles.push(vscode.commAnds.registerCommAnd('github.publish', Async () => {
 		try {
 			publishRepository(gitAPI);
-		} catch (err) {
-			vscode.window.showErrorMessage(err.message);
+		} cAtch (err) {
+			vscode.window.showErrorMessAge(err.messAge);
 		}
 	}));
 
-	return combinedDisposable(disposables);
+	return combinedDisposAble(disposAbles);
 }

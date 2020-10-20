@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { parseDocument, validate, getHtmlNode } from './util';
+import * As vscode from 'vscode';
+import { pArseDocument, vAlidAte, getHtmlNode } from './util';
 import { HtmlNode } from 'EmmetNode';
 
-export function removeTag() {
-	if (!validate(false) || !vscode.window.activeTextEditor) {
+export function removeTAg() {
+	if (!vAlidAte(fAlse) || !vscode.window.ActiveTextEditor) {
 		return;
 	}
-	const editor = vscode.window.activeTextEditor;
+	const editor = vscode.window.ActiveTextEditor;
 
-	let rootNode = <HtmlNode>parseDocument(editor.document);
+	let rootNode = <HtmlNode>pArseDocument(editor.document);
 	if (!rootNode) {
 		return;
 	}
 
-	let indentInSpaces = '';
-	const tabSize: number = editor.options.tabSize ? +editor.options.tabSize : 0;
-	for (let i = 0; i < tabSize || 0; i++) {
-		indentInSpaces += ' ';
+	let indentInSpAces = '';
+	const tAbSize: number = editor.options.tAbSize ? +editor.options.tAbSize : 0;
+	for (let i = 0; i < tAbSize || 0; i++) {
+		indentInSpAces += ' ';
 	}
 
-	let rangesToRemove: vscode.Range[] = [];
-	editor.selections.reverse().forEach(selection => {
-		rangesToRemove = rangesToRemove.concat(getRangeToRemove(editor, rootNode, selection, indentInSpaces));
+	let rAngesToRemove: vscode.RAnge[] = [];
+	editor.selections.reverse().forEAch(selection => {
+		rAngesToRemove = rAngesToRemove.concAt(getRAngeToRemove(editor, rootNode, selection, indentInSpAces));
 	});
 
 	return editor.edit(editBuilder => {
-		rangesToRemove.forEach(range => {
-			editBuilder.replace(range, '');
+		rAngesToRemove.forEAch(rAnge => {
+			editBuilder.replAce(rAnge, '');
 		});
 	});
 }
 
-function getRangeToRemove(editor: vscode.TextEditor, rootNode: HtmlNode, selection: vscode.Selection, indentInSpaces: string): vscode.Range[] {
+function getRAngeToRemove(editor: vscode.TextEditor, rootNode: HtmlNode, selection: vscode.Selection, indentInSpAces: string): vscode.RAnge[] {
 
-	let nodeToUpdate = getHtmlNode(editor.document, rootNode, selection.start, true);
-	if (!nodeToUpdate) {
+	let nodeToUpdAte = getHtmlNode(editor.document, rootNode, selection.stArt, true);
+	if (!nodeToUpdAte) {
 		return [];
 	}
 
-	let openRange = new vscode.Range(nodeToUpdate.open.start, nodeToUpdate.open.end);
-	let closeRange: vscode.Range | null = null;
-	if (nodeToUpdate.close) {
-		closeRange = new vscode.Range(nodeToUpdate.close.start, nodeToUpdate.close.end);
+	let openRAnge = new vscode.RAnge(nodeToUpdAte.open.stArt, nodeToUpdAte.open.end);
+	let closeRAnge: vscode.RAnge | null = null;
+	if (nodeToUpdAte.close) {
+		closeRAnge = new vscode.RAnge(nodeToUpdAte.close.stArt, nodeToUpdAte.close.end);
 	}
 
-	let ranges = [openRange];
-	if (closeRange) {
-		for (let i = openRange.start.line + 1; i <= closeRange.start.line; i++) {
+	let rAnges = [openRAnge];
+	if (closeRAnge) {
+		for (let i = openRAnge.stArt.line + 1; i <= closeRAnge.stArt.line; i++) {
 			let lineContent = editor.document.lineAt(i).text;
-			if (lineContent.startsWith('\t')) {
-				ranges.push(new vscode.Range(i, 0, i, 1));
-			} else if (lineContent.startsWith(indentInSpaces)) {
-				ranges.push(new vscode.Range(i, 0, i, indentInSpaces.length));
+			if (lineContent.stArtsWith('\t')) {
+				rAnges.push(new vscode.RAnge(i, 0, i, 1));
+			} else if (lineContent.stArtsWith(indentInSpAces)) {
+				rAnges.push(new vscode.RAnge(i, 0, i, indentInSpAces.length));
 			}
 		}
-		ranges.push(closeRange);
+		rAnges.push(closeRAnge);
 	}
-	return ranges;
+	return rAnges;
 }
 

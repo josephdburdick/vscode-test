@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { Schemas } from 'vs/base/common/network';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IUntitledTextResourceEditorInput, IEditorInput, IEditorInputFactoryRegistry, Extensions as EditorExtensions, IEditorInputWithOptions } from 'vs/workbench/common/editor';
-import { toLocalResource, isEqual } from 'vs/base/common/resources';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
+import { SchemAs } from 'vs/bAse/common/network';
+import { ILifecycleService, LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IUntitledTextResourceEditorInput, IEditorInput, IEditorInputFActoryRegistry, Extensions As EditorExtensions, IEditorInputWithOptions } from 'vs/workbench/common/editor';
+import { toLocAlResource, isEquAl } from 'vs/bAse/common/resources';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 
-export class BackupRestorer implements IWorkbenchContribution {
+export clAss BAckupRestorer implements IWorkbenchContribution {
 
-	private static readonly UNTITLED_REGEX = /Untitled-\d+/;
+	privAte stAtic reAdonly UNTITLED_REGEX = /Untitled-\d+/;
 
 	constructor(
-		@IEditorService private readonly editorService: IEditorService,
-		@IBackupFileService private readonly backupFileService: IBackupFileService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IPathService private readonly pathService: IPathService
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IBAckupFileService privAte reAdonly bAckupFileService: IBAckupFileService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IPAthService privAte reAdonly pAthService: IPAthService
 	) {
-		this.restoreBackups();
+		this.restoreBAckups();
 	}
 
-	private restoreBackups(): void {
-		this.lifecycleService.when(LifecyclePhase.Restored).then(() => this.doRestoreBackups());
+	privAte restoreBAckups(): void {
+		this.lifecycleService.when(LifecyclePhAse.Restored).then(() => this.doRestoreBAckups());
 	}
 
-	protected async doRestoreBackups(): Promise<URI[] | undefined> {
+	protected Async doRestoreBAckups(): Promise<URI[] | undefined> {
 
-		// Find all files and untitled with backups
-		const backups = await this.backupFileService.getBackups();
-		const unresolvedBackups = await this.doResolveOpenedBackups(backups);
+		// Find All files And untitled with bAckups
+		const bAckups = AwAit this.bAckupFileService.getBAckups();
+		const unresolvedBAckups = AwAit this.doResolveOpenedBAckups(bAckups);
 
-		// Some failed to restore or were not opened at all so we open and resolve them manually
-		if (unresolvedBackups.length > 0) {
-			await this.doOpenEditors(unresolvedBackups);
+		// Some fAiled to restore or were not opened At All so we open And resolve them mAnuAlly
+		if (unresolvedBAckups.length > 0) {
+			AwAit this.doOpenEditors(unresolvedBAckups);
 
-			return this.doResolveOpenedBackups(unresolvedBackups);
+			return this.doResolveOpenedBAckups(unresolvedBAckups);
 		}
 
 		return undefined;
 	}
 
-	private async doResolveOpenedBackups(backups: URI[]): Promise<URI[]> {
-		const unresolvedBackups: URI[] = [];
+	privAte Async doResolveOpenedBAckups(bAckups: URI[]): Promise<URI[]> {
+		const unresolvedBAckups: URI[] = [];
 
-		await Promise.all(backups.map(async backup => {
-			const openedEditor = this.findEditorByResource(backup);
+		AwAit Promise.All(bAckups.mAp(Async bAckup => {
+			const openedEditor = this.findEditorByResource(bAckup);
 			if (openedEditor) {
 				try {
-					await openedEditor.resolve(); // trigger load
-				} catch (error) {
-					unresolvedBackups.push(backup); // ignore error and remember as unresolved
+					AwAit openedEditor.resolve(); // trigger loAd
+				} cAtch (error) {
+					unresolvedBAckups.push(bAckup); // ignore error And remember As unresolved
 				}
 			} else {
-				unresolvedBackups.push(backup);
+				unresolvedBAckups.push(bAckup);
 			}
 		}));
 
-		return unresolvedBackups;
+		return unresolvedBAckups;
 	}
 
-	private findEditorByResource(resource: URI): IEditorInput | undefined {
+	privAte findEditorByResource(resource: URI): IEditorInput | undefined {
 		for (const editor of this.editorService.editors) {
-			const customFactory = Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).getCustomEditorInputFactory(resource.scheme);
-			if (customFactory && customFactory.canResolveBackup(editor, resource)) {
+			const customFActory = Registry.As<IEditorInputFActoryRegistry>(EditorExtensions.EditorInputFActories).getCustomEditorInputFActory(resource.scheme);
+			if (customFActory && customFActory.cAnResolveBAckup(editor, resource)) {
 				return editor;
-			} else if (isEqual(editor.resource, resource)) {
+			} else if (isEquAl(editor.resource, resource)) {
 				return editor;
 			}
 		}
@@ -84,30 +84,30 @@ export class BackupRestorer implements IWorkbenchContribution {
 		return undefined;
 	}
 
-	private async doOpenEditors(resources: URI[]): Promise<void> {
-		const hasOpenedEditors = this.editorService.visibleEditors.length > 0;
-		const inputs = await Promise.all(resources.map((resource, index) => this.resolveInput(resource, index, hasOpenedEditors)));
+	privAte Async doOpenEditors(resources: URI[]): Promise<void> {
+		const hAsOpenedEditors = this.editorService.visibleEditors.length > 0;
+		const inputs = AwAit Promise.All(resources.mAp((resource, index) => this.resolveInput(resource, index, hAsOpenedEditors)));
 
-		// Open all remaining backups as editors and resolve them to load their backups
-		await this.editorService.openEditors(inputs);
+		// Open All remAining bAckups As editors And resolve them to loAd their bAckups
+		AwAit this.editorService.openEditors(inputs);
 	}
 
-	private async resolveInput(resource: URI, index: number, hasOpenedEditors: boolean): Promise<IResourceEditorInput | IUntitledTextResourceEditorInput | IEditorInputWithOptions> {
-		const options = { pinned: true, preserveFocus: true, inactive: index > 0 || hasOpenedEditors };
+	privAte Async resolveInput(resource: URI, index: number, hAsOpenedEditors: booleAn): Promise<IResourceEditorInput | IUntitledTextResourceEditorInput | IEditorInputWithOptions> {
+		const options = { pinned: true, preserveFocus: true, inActive: index > 0 || hAsOpenedEditors };
 
-		// this is a (weak) strategy to find out if the untitled input had
-		// an associated file path or not by just looking at the path. and
-		// if so, we must ensure to restore the local resource it had.
-		if (resource.scheme === Schemas.untitled && !BackupRestorer.UNTITLED_REGEX.test(resource.path)) {
-			return { resource: toLocalResource(resource, this.environmentService.remoteAuthority, this.pathService.defaultUriScheme), options, forceUntitled: true };
+		// this is A (weAk) strAtegy to find out if the untitled input hAd
+		// An AssociAted file pAth or not by just looking At the pAth. And
+		// if so, we must ensure to restore the locAl resource it hAd.
+		if (resource.scheme === SchemAs.untitled && !BAckupRestorer.UNTITLED_REGEX.test(resource.pAth)) {
+			return { resource: toLocAlResource(resource, this.environmentService.remoteAuthority, this.pAthService.defAultUriScheme), options, forceUntitled: true };
 		}
 
-		// handle custom editors by asking the custom editor input factory
-		// to create the input.
-		const customFactory = Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).getCustomEditorInputFactory(resource.scheme);
+		// hAndle custom editors by Asking the custom editor input fActory
+		// to creAte the input.
+		const customFActory = Registry.As<IEditorInputFActoryRegistry>(EditorExtensions.EditorInputFActories).getCustomEditorInputFActory(resource.scheme);
 
-		if (customFactory) {
-			const editor = await customFactory.createCustomEditorInput(resource, this.instantiationService);
+		if (customFActory) {
+			const editor = AwAit customFActory.creAteCustomEditorInput(resource, this.instAntiAtionService);
 			return { editor, options };
 		}
 

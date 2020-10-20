@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI as uri } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { guessMimeTypes, MIME_TEXT } from 'vs/base/common/mime';
+import { URI As uri } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { guessMimeTypes, MIME_TEXT } from 'vs/bAse/common/mime';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
@@ -14,65 +14,65 @@ import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { DEBUG_SCHEME, IDebugService, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
 import { Source } from 'vs/workbench/contrib/debug/common/debugSource';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
-import { Range } from 'vs/editor/common/core/range';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
 
 /**
- * Debug URI format
+ * Debug URI formAt
  *
- * a debug URI represents a Source object and the debug session where the Source comes from.
+ * A debug URI represents A Source object And the debug session where the Source comes from.
  *
- *       debug:arbitrary_path?session=123e4567-e89b-12d3-a456-426655440000&ref=1016
+ *       debug:ArbitrAry_pAth?session=123e4567-e89b-12d3-A456-426655440000&ref=1016
  *       \___/ \____________/ \__________________________________________/ \______/
  *         |          |                             |                          |
- *      scheme   source.path                    session id            source.reference
+ *      scheme   source.pAth                    session id            source.reference
  *
- * the arbitrary_path and the session id are encoded with 'encodeURIComponent'
+ * the ArbitrAry_pAth And the session id Are encoded with 'encodeURIComponent'
  *
  */
-export class DebugContentProvider implements IWorkbenchContribution, ITextModelContentProvider {
+export clAss DebugContentProvider implements IWorkbenchContribution, ITextModelContentProvider {
 
-	private static INSTANCE: DebugContentProvider;
+	privAte stAtic INSTANCE: DebugContentProvider;
 
-	private readonly pendingUpdates = new Map<string, CancellationTokenSource>();
+	privAte reAdonly pendingUpdAtes = new MAp<string, CAncellAtionTokenSource>();
 
 	constructor(
 		@ITextModelService textModelResolverService: ITextModelService,
-		@IDebugService private readonly debugService: IDebugService,
-		@IModelService private readonly modelService: IModelService,
-		@IModeService private readonly modeService: IModeService,
-		@IEditorWorkerService private readonly editorWorkerService: IEditorWorkerService
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@IModelService privAte reAdonly modelService: IModelService,
+		@IModeService privAte reAdonly modeService: IModeService,
+		@IEditorWorkerService privAte reAdonly editorWorkerService: IEditorWorkerService
 	) {
 		textModelResolverService.registerTextModelContentProvider(DEBUG_SCHEME, this);
 		DebugContentProvider.INSTANCE = this;
 	}
 
 	dispose(): void {
-		this.pendingUpdates.forEach(cancellationSource => cancellationSource.dispose());
+		this.pendingUpdAtes.forEAch(cAncellAtionSource => cAncellAtionSource.dispose());
 	}
 
 	provideTextContent(resource: uri): Promise<ITextModel> | null {
-		return this.createOrUpdateContentModel(resource, true);
+		return this.creAteOrUpdAteContentModel(resource, true);
 	}
 
 	/**
-	 * Reload the model content of the given resource.
+	 * ReloAd the model content of the given resource.
 	 * If there is no model for the given resource, this method does nothing.
 	 */
-	static refreshDebugContent(resource: uri): void {
+	stAtic refreshDebugContent(resource: uri): void {
 		if (DebugContentProvider.INSTANCE) {
-			DebugContentProvider.INSTANCE.createOrUpdateContentModel(resource, false);
+			DebugContentProvider.INSTANCE.creAteOrUpdAteContentModel(resource, fAlse);
 		}
 	}
 
 	/**
-	 * Create or reload the model content of the given resource.
+	 * CreAte or reloAd the model content of the given resource.
 	 */
-	private createOrUpdateContentModel(resource: uri, createIfNotExists: boolean): Promise<ITextModel> | null {
+	privAte creAteOrUpdAteContentModel(resource: uri, creAteIfNotExists: booleAn): Promise<ITextModel> | null {
 
 		const model = this.modelService.getModel(resource);
-		if (!model && !createIfNotExists) {
+		if (!model && !creAteIfNotExists) {
 			// nothing to do
 			return null;
 		}
@@ -80,28 +80,28 @@ export class DebugContentProvider implements IWorkbenchContribution, ITextModelC
 		let session: IDebugSession | undefined;
 
 		if (resource.query) {
-			const data = Source.getEncodedDebugData(resource);
-			session = this.debugService.getModel().getSession(data.sessionId);
+			const dAtA = Source.getEncodedDebugDAtA(resource);
+			session = this.debugService.getModel().getSession(dAtA.sessionId);
 		}
 
 		if (!session) {
-			// fallback: use focused session
+			// fAllbAck: use focused session
 			session = this.debugService.getViewModel().focusedSession;
 		}
 
 		if (!session) {
-			return Promise.reject(new Error(localize('unable', "Unable to resolve the resource without a debug session")));
+			return Promise.reject(new Error(locAlize('unAble', "UnAble to resolve the resource without A debug session")));
 		}
-		const createErrModel = (errMsg?: string) => {
-			this.debugService.sourceIsNotAvailable(resource);
-			const languageSelection = this.modeService.create(MIME_TEXT);
-			const message = errMsg
-				? localize('canNotResolveSourceWithError', "Could not load source '{0}': {1}.", resource.path, errMsg)
-				: localize('canNotResolveSource', "Could not load source '{0}'.", resource.path);
-			return this.modelService.createModel(message, languageSelection, resource);
+		const creAteErrModel = (errMsg?: string) => {
+			this.debugService.sourceIsNotAvAilAble(resource);
+			const lAnguAgeSelection = this.modeService.creAte(MIME_TEXT);
+			const messAge = errMsg
+				? locAlize('cAnNotResolveSourceWithError', "Could not loAd source '{0}': {1}.", resource.pAth, errMsg)
+				: locAlize('cAnNotResolveSource', "Could not loAd source '{0}'.", resource.pAth);
+			return this.modelService.creAteModel(messAge, lAnguAgeSelection, resource);
 		};
 
-		return session.loadSource(resource).then(response => {
+		return session.loAdSource(resource).then(response => {
 
 			if (response && response.body) {
 
@@ -109,38 +109,38 @@ export class DebugContentProvider implements IWorkbenchContribution, ITextModelC
 
 					const newContent = response.body.content;
 
-					// cancel and dispose an existing update
-					const cancellationSource = this.pendingUpdates.get(model.id);
-					if (cancellationSource) {
-						cancellationSource.cancel();
+					// cAncel And dispose An existing updAte
+					const cAncellAtionSource = this.pendingUpdAtes.get(model.id);
+					if (cAncellAtionSource) {
+						cAncellAtionSource.cAncel();
 					}
 
-					// create and keep update token
-					const myToken = new CancellationTokenSource();
-					this.pendingUpdates.set(model.id, myToken);
+					// creAte And keep updAte token
+					const myToken = new CAncellAtionTokenSource();
+					this.pendingUpdAtes.set(model.id, myToken);
 
-					// update text model
-					return this.editorWorkerService.computeMoreMinimalEdits(model.uri, [{ text: newContent, range: model.getFullModelRange() }]).then(edits => {
+					// updAte text model
+					return this.editorWorkerService.computeMoreMinimAlEdits(model.uri, [{ text: newContent, rAnge: model.getFullModelRAnge() }]).then(edits => {
 
 						// remove token
-						this.pendingUpdates.delete(model.id);
+						this.pendingUpdAtes.delete(model.id);
 
-						if (!myToken.token.isCancellationRequested && edits && edits.length > 0) {
-							// use the evil-edit as these models show in readonly-editor only
-							model.applyEdits(edits.map(edit => EditOperation.replace(Range.lift(edit.range), edit.text)));
+						if (!myToken.token.isCAncellAtionRequested && edits && edits.length > 0) {
+							// use the evil-edit As these models show in reAdonly-editor only
+							model.ApplyEdits(edits.mAp(edit => EditOperAtion.replAce(RAnge.lift(edit.rAnge), edit.text)));
 						}
 						return model;
 					});
 				} else {
-					// create text model
+					// creAte text model
 					const mime = response.body.mimeType || guessMimeTypes(resource)[0];
-					const languageSelection = this.modeService.create(mime);
-					return this.modelService.createModel(response.body.content, languageSelection, resource);
+					const lAnguAgeSelection = this.modeService.creAte(mime);
+					return this.modelService.creAteModel(response.body.content, lAnguAgeSelection, resource);
 				}
 			}
 
-			return createErrModel();
+			return creAteErrModel();
 
-		}, (err: DebugProtocol.ErrorResponse) => createErrModel(err.message));
+		}, (err: DebugProtocol.ErrorResponse) => creAteErrModel(err.messAge));
 	}
 }

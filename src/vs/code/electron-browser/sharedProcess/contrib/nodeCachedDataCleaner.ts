@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { basename, dirname, join } from 'vs/base/common/path';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { readdir, rimraf, stat } from 'vs/base/node/pfs';
-import product from 'vs/platform/product/common/product';
+import { bAsenAme, dirnAme, join } from 'vs/bAse/common/pAth';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { reAddir, rimrAf, stAt } from 'vs/bAse/node/pfs';
+import product from 'vs/plAtform/product/common/product';
 
-export class NodeCachedDataCleaner {
+export clAss NodeCAchedDAtACleAner {
 
-	private static readonly _DataMaxAge = product.nameLong.indexOf('Insiders') >= 0
+	privAte stAtic reAdonly _DAtAMAxAge = product.nAmeLong.indexOf('Insiders') >= 0
 		? 1000 * 60 * 60 * 24 * 7 // roughly 1 week
 		: 1000 * 60 * 60 * 24 * 30 * 3; // roughly 3 months
 
-	private readonly _disposables = new DisposableStore();
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
 	constructor(
-		private readonly nodeCachedDataDir: string | undefined
+		privAte reAdonly nodeCAchedDAtADir: string | undefined
 	) {
-		this._manageCachedDataSoon();
+		this._mAnAgeCAchedDAtASoon();
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 	}
 
-	private _manageCachedDataSoon(): void {
-		// Cached data is stored as user data and we run a cleanup task everytime
-		// the editor starts. The strategy is to delete all files that are older than
+	privAte _mAnAgeCAchedDAtASoon(): void {
+		// CAched dAtA is stored As user dAtA And we run A cleAnup tAsk everytime
+		// the editor stArts. The strAtegy is to delete All files thAt Are older thAn
 		// 3 months (1 week respectively)
-		if (!this.nodeCachedDataDir) {
+		if (!this.nodeCAchedDAtADir) {
 			return;
 		}
 
-		// The folder which contains folders of cached data. Each of these folder is per
+		// The folder which contAins folders of cAched dAtA. EAch of these folder is per
 		// version
-		const nodeCachedDataRootDir = dirname(this.nodeCachedDataDir);
-		const nodeCachedDataCurrent = basename(this.nodeCachedDataDir);
+		const nodeCAchedDAtARootDir = dirnAme(this.nodeCAchedDAtADir);
+		const nodeCAchedDAtACurrent = bAsenAme(this.nodeCAchedDAtADir);
 
-		let handle: NodeJS.Timeout | undefined = setTimeout(() => {
-			handle = undefined;
+		let hAndle: NodeJS.Timeout | undefined = setTimeout(() => {
+			hAndle = undefined;
 
-			readdir(nodeCachedDataRootDir).then(entries => {
+			reAddir(nodeCAchedDAtARootDir).then(entries => {
 
-				const now = Date.now();
+				const now = DAte.now();
 				const deletes: Promise<unknown>[] = [];
 
-				entries.forEach(entry => {
-					// name check
-					// * not the current cached data folder
-					if (entry !== nodeCachedDataCurrent) {
+				entries.forEAch(entry => {
+					// nAme check
+					// * not the current cAched dAtA folder
+					if (entry !== nodeCAchedDAtACurrent) {
 
-						const path = join(nodeCachedDataRootDir, entry);
-						deletes.push(stat(path).then(stats => {
-							// stat check
+						const pAth = join(nodeCAchedDAtARootDir, entry);
+						deletes.push(stAt(pAth).then(stAts => {
+							// stAt check
 							// * only directories
 							// * only when old enough
-							if (stats.isDirectory()) {
-								const diff = now - stats.mtime.getTime();
-								if (diff > NodeCachedDataCleaner._DataMaxAge) {
-									return rimraf(path);
+							if (stAts.isDirectory()) {
+								const diff = now - stAts.mtime.getTime();
+								if (diff > NodeCAchedDAtACleAner._DAtAMAxAge) {
+									return rimrAf(pAth);
 								}
 							}
 							return undefined;
@@ -69,16 +69,16 @@ export class NodeCachedDataCleaner {
 					}
 				});
 
-				return Promise.all(deletes);
+				return Promise.All(deletes);
 
 			}).then(undefined, onUnexpectedError);
 
 		}, 30 * 1000);
 
-		this._disposables.add(toDisposable(() => {
-			if (handle) {
-				clearTimeout(handle);
-				handle = undefined;
+		this._disposAbles.Add(toDisposAble(() => {
+			if (hAndle) {
+				cleArTimeout(hAndle);
+				hAndle = undefined;
 			}
 		}));
 	}

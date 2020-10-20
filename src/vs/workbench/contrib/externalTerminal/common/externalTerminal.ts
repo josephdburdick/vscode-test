@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IExternalTerminalService = createDecorator<IExternalTerminalService>('nativeTerminalService');
+export const IExternAlTerminAlService = creAteDecorAtor<IExternAlTerminAlService>('nAtiveTerminAlService');
 
-export interface IExternalTerminalSettings {
+export interfAce IExternAlTerminAlSettings {
 	linuxExec?: string;
 	osxExec?: string;
 	windowsExec?: string;
 }
 
-export interface IExternalTerminalService {
-	readonly _serviceBrand: undefined;
-	openTerminal(path: string): void;
-	runInTerminal(title: string, cwd: string, args: string[], env: { [key: string]: string | null; }, settings: IExternalTerminalSettings): Promise<number | undefined>;
+export interfAce IExternAlTerminAlService {
+	reAdonly _serviceBrAnd: undefined;
+	openTerminAl(pAth: string): void;
+	runInTerminAl(title: string, cwd: string, Args: string[], env: { [key: string]: string | null; }, settings: IExternAlTerminAlSettings): Promise<number | undefined>;
 }
 
-export interface IExternalTerminalConfiguration {
-	terminal: {
-		explorerKind: 'integrated' | 'external',
-		external: IExternalTerminalSettings;
+export interfAce IExternAlTerminAlConfigurAtion {
+	terminAl: {
+		explorerKind: 'integrAted' | 'externAl',
+		externAl: IExternAlTerminAlSettings;
 	};
 }

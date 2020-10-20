@@ -1,130 +1,130 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBufferReadableStream } from 'vs/base/common/buffer';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { isUNC } from 'vs/base/common/extpath';
-import { Schemas } from 'vs/base/common/network';
-import { sep } from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
-import { IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { getWebviewContentMimeType } from 'vs/platform/webview/common/mimeTypes';
+import { VSBufferReAdAbleStreAm } from 'vs/bAse/common/buffer';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { isUNC } from 'vs/bAse/common/extpAth';
+import { SchemAs } from 'vs/bAse/common/network';
+import { sep } from 'vs/bAse/common/pAth';
+import { URI } from 'vs/bAse/common/uri';
+import { IRemoteConnectionDAtA } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { getWebviewContentMimeType } from 'vs/plAtform/webview/common/mimeTypes';
 
 
-export const webviewPartitionId = 'webview';
+export const webviewPArtitionId = 'webview';
 
-export namespace WebviewResourceResponse {
-	export enum Type { Success, Failed, AccessDenied }
+export nAmespAce WebviewResourceResponse {
+	export enum Type { Success, FAiled, AccessDenied }
 
-	export class StreamSuccess {
-		readonly type = Type.Success;
+	export clAss StreAmSuccess {
+		reAdonly type = Type.Success;
 
 		constructor(
-			public readonly stream: VSBufferReadableStream,
-			public readonly mimeType: string
+			public reAdonly streAm: VSBufferReAdAbleStreAm,
+			public reAdonly mimeType: string
 		) { }
 	}
 
-	export const Failed = { type: Type.Failed } as const;
-	export const AccessDenied = { type: Type.AccessDenied } as const;
+	export const FAiled = { type: Type.FAiled } As const;
+	export const AccessDenied = { type: Type.AccessDenied } As const;
 
-	export type StreamResponse = StreamSuccess | typeof Failed | typeof AccessDenied;
+	export type StreAmResponse = StreAmSuccess | typeof FAiled | typeof AccessDenied;
 }
 
-interface FileReader {
-	readFileStream(resource: URI): Promise<VSBufferReadableStream>;
+interfAce FileReAder {
+	reAdFileStreAm(resource: URI): Promise<VSBufferReAdAbleStreAm>;
 }
 
-export async function loadLocalResource(
+export Async function loAdLocAlResource(
 	requestUri: URI,
 	options: {
-		extensionLocation: URI | undefined;
-		roots: ReadonlyArray<URI>;
-		remoteConnectionData?: IRemoteConnectionData | null;
+		extensionLocAtion: URI | undefined;
+		roots: ReAdonlyArrAy<URI>;
+		remoteConnectionDAtA?: IRemoteConnectionDAtA | null;
 		rewriteUri?: (uri: URI) => URI,
 	},
-	fileReader: FileReader,
+	fileReAder: FileReAder,
 	requestService: IRequestService,
-): Promise<WebviewResourceResponse.StreamResponse> {
-	let resourceToLoad = getResourceToLoad(requestUri, options.roots);
-	if (!resourceToLoad) {
+): Promise<WebviewResourceResponse.StreAmResponse> {
+	let resourceToLoAd = getResourceToLoAd(requestUri, options.roots);
+	if (!resourceToLoAd) {
 		return WebviewResourceResponse.AccessDenied;
 	}
 
-	const mime = getWebviewContentMimeType(requestUri); // Use the original path for the mime
+	const mime = getWebviewContentMimeType(requestUri); // Use the originAl pAth for the mime
 
-	// Perform extra normalization if needed
+	// Perform extrA normAlizAtion if needed
 	if (options.rewriteUri) {
-		resourceToLoad = options.rewriteUri(resourceToLoad);
+		resourceToLoAd = options.rewriteUri(resourceToLoAd);
 	}
 
-	if (resourceToLoad.scheme === Schemas.http || resourceToLoad.scheme === Schemas.https) {
-		const response = await requestService.request({ url: resourceToLoad.toString(true) }, CancellationToken.None);
-		if (response.res.statusCode === 200) {
-			return new WebviewResourceResponse.StreamSuccess(response.stream, mime);
+	if (resourceToLoAd.scheme === SchemAs.http || resourceToLoAd.scheme === SchemAs.https) {
+		const response = AwAit requestService.request({ url: resourceToLoAd.toString(true) }, CAncellAtionToken.None);
+		if (response.res.stAtusCode === 200) {
+			return new WebviewResourceResponse.StreAmSuccess(response.streAm, mime);
 		}
-		return WebviewResourceResponse.Failed;
+		return WebviewResourceResponse.FAiled;
 	}
 
 	try {
-		const contents = await fileReader.readFileStream(resourceToLoad);
-		return new WebviewResourceResponse.StreamSuccess(contents, mime);
-	} catch (err) {
+		const contents = AwAit fileReAder.reAdFileStreAm(resourceToLoAd);
+		return new WebviewResourceResponse.StreAmSuccess(contents, mime);
+	} cAtch (err) {
 		console.log(err);
-		return WebviewResourceResponse.Failed;
+		return WebviewResourceResponse.FAiled;
 	}
 }
 
-function getResourceToLoad(
+function getResourceToLoAd(
 	requestUri: URI,
-	roots: ReadonlyArray<URI>
+	roots: ReAdonlyArrAy<URI>
 ): URI | undefined {
-	const normalizedPath = normalizeRequestPath(requestUri);
+	const normAlizedPAth = normAlizeRequestPAth(requestUri);
 
 	for (const root of roots) {
-		if (containsResource(root, normalizedPath)) {
-			return normalizedPath;
+		if (contAinsResource(root, normAlizedPAth)) {
+			return normAlizedPAth;
 		}
 	}
 
 	return undefined;
 }
 
-function normalizeRequestPath(requestUri: URI) {
-	if (requestUri.scheme === Schemas.vscodeWebviewResource) {
-		// The `vscode-webview-resource` scheme has the following format:
+function normAlizeRequestPAth(requestUri: URI) {
+	if (requestUri.scheme === SchemAs.vscodeWebviewResource) {
+		// The `vscode-webview-resource` scheme hAs the following formAt:
 		//
-		// vscode-webview-resource://id/scheme//authority?/path
+		// vscode-webview-resource://id/scheme//Authority?/pAth
 		//
 
-		// Encode requestUri.path so that URI.parse can properly parse special characters like '#', '?', etc.
-		const resourceUri = URI.parse(encodeURIComponent(requestUri.path).replace(/%2F/gi, '/').replace(/^\/([a-z0-9\-]+)(\/{1,2})/i, (_: string, scheme: string, sep: string) => {
+		// Encode requestUri.pAth so thAt URI.pArse cAn properly pArse speciAl chArActers like '#', '?', etc.
+		const resourceUri = URI.pArse(encodeURIComponent(requestUri.pAth).replAce(/%2F/gi, '/').replAce(/^\/([A-z0-9\-]+)(\/{1,2})/i, (_: string, scheme: string, sep: string) => {
 			if (sep.length === 1) {
-				return `${scheme}:///`; // Add empty authority.
+				return `${scheme}:///`; // Add empty Authority.
 			} else {
-				return `${scheme}://`; // Url has own authority.
+				return `${scheme}://`; // Url hAs own Authority.
 			}
 		}));
 		return resourceUri.with({
 			query: requestUri.query,
-			fragment: requestUri.fragment
+			frAgment: requestUri.frAgment
 		});
 	} else {
 		return requestUri;
 	}
 }
 
-function containsResource(root: URI, resource: URI): boolean {
-	let rootPath = root.fsPath + (root.fsPath.endsWith(sep) ? '' : sep);
-	let resourceFsPath = resource.fsPath;
+function contAinsResource(root: URI, resource: URI): booleAn {
+	let rootPAth = root.fsPAth + (root.fsPAth.endsWith(sep) ? '' : sep);
+	let resourceFsPAth = resource.fsPAth;
 
-	if (isUNC(root.fsPath) && isUNC(resource.fsPath)) {
-		rootPath = rootPath.toLowerCase();
-		resourceFsPath = resourceFsPath.toLowerCase();
+	if (isUNC(root.fsPAth) && isUNC(resource.fsPAth)) {
+		rootPAth = rootPAth.toLowerCAse();
+		resourceFsPAth = resourceFsPAth.toLowerCAse();
 	}
 
-	return resourceFsPath.startsWith(rootPath);
+	return resourceFsPAth.stArtsWith(rootPAth);
 }

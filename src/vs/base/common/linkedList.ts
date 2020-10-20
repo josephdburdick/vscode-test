@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-class Node<E> {
+clAss Node<E> {
 
-	static readonly Undefined = new Node<any>(undefined);
+	stAtic reAdonly Undefined = new Node<Any>(undefined);
 
 	element: E;
 	next: Node<E>;
@@ -18,46 +18,46 @@ class Node<E> {
 	}
 }
 
-export class LinkedList<E> {
+export clAss LinkedList<E> {
 
-	private _first: Node<E> = Node.Undefined;
-	private _last: Node<E> = Node.Undefined;
-	private _size: number = 0;
+	privAte _first: Node<E> = Node.Undefined;
+	privAte _lAst: Node<E> = Node.Undefined;
+	privAte _size: number = 0;
 
 	get size(): number {
 		return this._size;
 	}
 
-	isEmpty(): boolean {
+	isEmpty(): booleAn {
 		return this._first === Node.Undefined;
 	}
 
-	clear(): void {
+	cleAr(): void {
 		this._first = Node.Undefined;
-		this._last = Node.Undefined;
+		this._lAst = Node.Undefined;
 		this._size = 0;
 	}
 
 	unshift(element: E): () => void {
-		return this._insert(element, false);
+		return this._insert(element, fAlse);
 	}
 
 	push(element: E): () => void {
 		return this._insert(element, true);
 	}
 
-	private _insert(element: E, atTheEnd: boolean): () => void {
+	privAte _insert(element: E, AtTheEnd: booleAn): () => void {
 		const newNode = new Node(element);
 		if (this._first === Node.Undefined) {
 			this._first = newNode;
-			this._last = newNode;
+			this._lAst = newNode;
 
-		} else if (atTheEnd) {
+		} else if (AtTheEnd) {
 			// push
-			const oldLast = this._last!;
-			this._last = newNode;
-			newNode.prev = oldLast;
-			oldLast.next = newNode;
+			const oldLAst = this._lAst!;
+			this._lAst = newNode;
+			newNode.prev = oldLAst;
+			oldLAst.next = newNode;
 
 		} else {
 			// unshift
@@ -68,7 +68,7 @@ export class LinkedList<E> {
 		}
 		this._size += 1;
 
-		let didRemove = false;
+		let didRemove = fAlse;
 		return () => {
 			if (!didRemove) {
 				didRemove = true;
@@ -88,31 +88,31 @@ export class LinkedList<E> {
 	}
 
 	pop(): E | undefined {
-		if (this._last === Node.Undefined) {
+		if (this._lAst === Node.Undefined) {
 			return undefined;
 		} else {
-			const res = this._last.element;
-			this._remove(this._last);
+			const res = this._lAst.element;
+			this._remove(this._lAst);
 			return res;
 		}
 	}
 
-	private _remove(node: Node<E>): void {
+	privAte _remove(node: Node<E>): void {
 		if (node.prev !== Node.Undefined && node.next !== Node.Undefined) {
 			// middle
-			const anchor = node.prev;
-			anchor.next = node.next;
-			node.next.prev = anchor;
+			const Anchor = node.prev;
+			Anchor.next = node.next;
+			node.next.prev = Anchor;
 
 		} else if (node.prev === Node.Undefined && node.next === Node.Undefined) {
 			// only node
 			this._first = Node.Undefined;
-			this._last = Node.Undefined;
+			this._lAst = Node.Undefined;
 
 		} else if (node.next === Node.Undefined) {
-			// last
-			this._last = this._last!.prev!;
-			this._last.next = Node.Undefined;
+			// lAst
+			this._lAst = this._lAst!.prev!;
+			this._lAst.next = Node.Undefined;
 
 		} else if (node.prev === Node.Undefined) {
 			// first
@@ -124,7 +124,7 @@ export class LinkedList<E> {
 		this._size -= 1;
 	}
 
-	*[Symbol.iterator](): Iterator<E> {
+	*[Symbol.iterAtor](): IterAtor<E> {
 		let node = this._first;
 		while (node !== Node.Undefined) {
 			yield node.element;
@@ -132,7 +132,7 @@ export class LinkedList<E> {
 		}
 	}
 
-	toArray(): E[] {
+	toArrAy(): E[] {
 		const result: E[] = [];
 		for (let node = this._first; node !== Node.Undefined; node = node.next) {
 			result.push(node.element);

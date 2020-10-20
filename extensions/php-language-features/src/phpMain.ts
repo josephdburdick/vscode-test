@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-import PHPCompletionItemProvider from './features/completionItemProvider';
-import PHPHoverProvider from './features/hoverProvider';
-import PHPSignatureHelpProvider from './features/signatureHelpProvider';
-import PHPValidationProvider from './features/validationProvider';
+import PHPCompletionItemProvider from './feAtures/completionItemProvider';
+import PHPHoverProvider from './feAtures/hoverProvider';
+import PHPSignAtureHelpProvider from './feAtures/signAtureHelpProvider';
+import PHPVAlidAtionProvider from './feAtures/vAlidAtionProvider';
 
-export function activate(context: vscode.ExtensionContext): any {
+export function ActivAte(context: vscode.ExtensionContext): Any {
 
-	let validator = new PHPValidationProvider(context.workspaceState);
-	validator.activate(context.subscriptions);
+	let vAlidAtor = new PHPVAlidAtionProvider(context.workspAceStAte);
+	vAlidAtor.ActivAte(context.subscriptions);
 
-	// add providers
-	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('php', new PHPCompletionItemProvider(), '>', '$'));
-	context.subscriptions.push(vscode.languages.registerHoverProvider('php', new PHPHoverProvider()));
-	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('php', new PHPSignatureHelpProvider(), '(', ','));
+	// Add providers
+	context.subscriptions.push(vscode.lAnguAges.registerCompletionItemProvider('php', new PHPCompletionItemProvider(), '>', '$'));
+	context.subscriptions.push(vscode.lAnguAges.registerHoverProvider('php', new PHPHoverProvider()));
+	context.subscriptions.push(vscode.lAnguAges.registerSignAtureHelpProvider('php', new PHPSignAtureHelpProvider(), '(', ','));
 
-	// need to set in the extension host as well as the completion provider uses it.
-	vscode.languages.setLanguageConfiguration('php', {
-		wordPattern: /(-?\d*\.\d\w*)|([^\-\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+	// need to set in the extension host As well As the completion provider uses it.
+	vscode.lAnguAges.setLAnguAgeConfigurAtion('php', {
+		wordPAttern: /(-?\d*\.\d\w*)|([^\-\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
 		onEnterRules: [
 			{
 				// e.g. /** | */
 				beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-				afterText: /^\s*\*\/$/,
-				action: { indentAction: vscode.IndentAction.IndentOutdent, appendText: ' * ' }
+				AfterText: /^\s*\*\/$/,
+				Action: { indentAction: vscode.IndentAction.IndentOutdent, AppendText: ' * ' }
 			},
 			{
 				// e.g. /** ...|
 				beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-				action: { indentAction: vscode.IndentAction.None, appendText: ' * ' }
+				Action: { indentAction: vscode.IndentAction.None, AppendText: ' * ' }
 			},
 			{
 				// e.g.  * ...|
 				beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
-				action: { indentAction: vscode.IndentAction.None, appendText: '* ' }
+				Action: { indentAction: vscode.IndentAction.None, AppendText: '* ' }
 			},
 			{
 				// e.g.  */|
 				beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
-				action: { indentAction: vscode.IndentAction.None, removeText: 1 }
+				Action: { indentAction: vscode.IndentAction.None, removeText: 1 }
 			},
 			{
 				// e.g.  *-----*/|
 				beforeText: /^(\t|(\ \ ))*\ \*[^/]*\*\/\s*$/,
-				action: { indentAction: vscode.IndentAction.None, removeText: 1 }
+				Action: { indentAction: vscode.IndentAction.None, removeText: 1 }
 			}
 		]
 	});

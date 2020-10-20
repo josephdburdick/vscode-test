@@ -1,132 +1,132 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { hash } from 'vs/base/common/hash';
-import { Disposable, DisposableStore, dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { joinPath } from 'vs/base/common/resources';
-import { ISplice } from 'vs/base/common/sequence';
-import { URI } from 'vs/base/common/uri';
-import * as UUID from 'vs/base/common/uuid';
-import { CellKind, INotebookDocumentPropertiesChangeData, IWorkspaceCellEditDto, MainThreadBulkEditsShape, MainThreadNotebookShape, NotebookCellOutputsSplice, WorkspaceEditType } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentsAndEditors, IExtHostModelAddedData } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { CellEditType, CellOutputKind, diff, IMainCellDto, IProcessedOutput, NotebookCellMetadata, NotebookCellsChangedEventDto, NotebookCellsChangeType, NotebookCellsSplice2, notebookDocumentMetadataDefaults } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import * as vscode from 'vscode';
-import { Cache } from './cache';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { hAsh } from 'vs/bAse/common/hAsh';
+import { DisposAble, DisposAbleStore, dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { SchemAs } from 'vs/bAse/common/network';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { ISplice } from 'vs/bAse/common/sequence';
+import { URI } from 'vs/bAse/common/uri';
+import * As UUID from 'vs/bAse/common/uuid';
+import { CellKind, INotebookDocumentPropertiesChAngeDAtA, IWorkspAceCellEditDto, MAinThreAdBulkEditsShApe, MAinThreAdNotebookShApe, NotebookCellOutputsSplice, WorkspAceEditType } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostDocumentsAndEditors, IExtHostModelAddedDAtA } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { CellEditType, CellOutputKind, diff, IMAinCellDto, IProcessedOutput, NotebookCellMetAdAtA, NotebookCellsChAngedEventDto, NotebookCellsChAngeType, NotebookCellsSplice2, notebookDocumentMetAdAtADefAults } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import * As vscode from 'vscode';
+import { CAche } from './cAche';
 
 
-interface IObservable<T> {
+interfAce IObservAble<T> {
 	proxy: T;
-	onDidChange: Event<void>;
+	onDidChAnge: Event<void>;
 }
 
-function getObservable<T extends Object>(obj: T): IObservable<T> {
-	const onDidChange = new Emitter<void>();
+function getObservAble<T extends Object>(obj: T): IObservAble<T> {
+	const onDidChAnge = new Emitter<void>();
 	const proxy = new Proxy(obj, {
-		set(target: T, p: PropertyKey, value: any, _receiver: any): boolean {
-			target[p as keyof T] = value;
-			onDidChange.fire();
+		set(tArget: T, p: PropertyKey, vAlue: Any, _receiver: Any): booleAn {
+			tArget[p As keyof T] = vAlue;
+			onDidChAnge.fire();
 			return true;
 		}
 	});
 
 	return {
 		proxy,
-		onDidChange: onDidChange.event
+		onDidChAnge: onDidChAnge.event
 	};
 }
 
-class RawContentChangeEvent {
+clAss RAwContentChAngeEvent {
 
-	constructor(readonly start: number, readonly deletedCount: number, readonly deletedItems: ExtHostCell[], readonly items: ExtHostCell[]) { }
+	constructor(reAdonly stArt: number, reAdonly deletedCount: number, reAdonly deletedItems: ExtHostCell[], reAdonly items: ExtHostCell[]) { }
 
-	static asApiEvent(event: RawContentChangeEvent): vscode.NotebookCellsChangeData {
+	stAtic AsApiEvent(event: RAwContentChAngeEvent): vscode.NotebookCellsChAngeDAtA {
 		return Object.freeze({
-			start: event.start,
+			stArt: event.stArt,
 			deletedCount: event.deletedCount,
-			deletedItems: event.deletedItems.map(data => data.cell),
-			items: event.items.map(data => data.cell)
+			deletedItems: event.deletedItems.mAp(dAtA => dAtA.cell),
+			items: event.items.mAp(dAtA => dAtA.cell)
 		});
 	}
 }
 
-export class ExtHostCell extends Disposable {
+export clAss ExtHostCell extends DisposAble {
 
-	static asModelAddData(notebook: vscode.NotebookDocument, cell: IMainCellDto): IExtHostModelAddedData {
+	stAtic AsModelAddDAtA(notebook: vscode.NotebookDocument, cell: IMAinCellDto): IExtHostModelAddedDAtA {
 		return {
 			EOL: cell.eol,
 			lines: cell.source,
-			modeId: cell.language,
+			modeId: cell.lAnguAge,
 			uri: cell.uri,
-			isDirty: false,
+			isDirty: fAlse,
 			versionId: 1,
 			notebook
 		};
 	}
 
-	private _onDidDispose = new Emitter<void>();
-	readonly onDidDispose: Event<void> = this._onDidDispose.event;
+	privAte _onDidDispose = new Emitter<void>();
+	reAdonly onDidDispose: Event<void> = this._onDidDispose.event;
 
-	private _onDidChangeOutputs = new Emitter<ISplice<IProcessedOutput>[]>();
-	readonly onDidChangeOutputs: Event<ISplice<IProcessedOutput>[]> = this._onDidChangeOutputs.event;
+	privAte _onDidChAngeOutputs = new Emitter<ISplice<IProcessedOutput>[]>();
+	reAdonly onDidChAngeOutputs: Event<ISplice<IProcessedOutput>[]> = this._onDidChAngeOutputs.event;
 
-	private _outputs: any[];
-	private _outputMapping = new WeakMap<vscode.CellOutput, string | undefined /* output ID */>();
+	privAte _outputs: Any[];
+	privAte _outputMApping = new WeAkMAp<vscode.CellOutput, string | undefined /* output ID */>();
 
-	private _metadata: vscode.NotebookCellMetadata;
-	private _metadataChangeListener: IDisposable;
+	privAte _metAdAtA: vscode.NotebookCellMetAdAtA;
+	privAte _metAdAtAChAngeListener: IDisposAble;
 
-	readonly handle: number;
-	readonly uri: URI;
-	readonly cellKind: CellKind;
+	reAdonly hAndle: number;
+	reAdonly uri: URI;
+	reAdonly cellKind: CellKind;
 
-	private _cell: vscode.NotebookCell | undefined;
+	privAte _cell: vscode.NotebookCell | undefined;
 
 	constructor(
-		private readonly _mainThreadBulkEdits: MainThreadBulkEditsShape,
-		private readonly _notebook: ExtHostNotebookDocument,
-		private readonly _extHostDocument: ExtHostDocumentsAndEditors,
-		private readonly _cellData: IMainCellDto,
+		privAte reAdonly _mAinThreAdBulkEdits: MAinThreAdBulkEditsShApe,
+		privAte reAdonly _notebook: ExtHostNotebookDocument,
+		privAte reAdonly _extHostDocument: ExtHostDocumentsAndEditors,
+		privAte reAdonly _cellDAtA: IMAinCellDto,
 	) {
 		super();
 
-		this.handle = _cellData.handle;
-		this.uri = URI.revive(_cellData.uri);
-		this.cellKind = _cellData.cellKind;
+		this.hAndle = _cellDAtA.hAndle;
+		this.uri = URI.revive(_cellDAtA.uri);
+		this.cellKind = _cellDAtA.cellKind;
 
-		this._outputs = _cellData.outputs;
+		this._outputs = _cellDAtA.outputs;
 		for (const output of this._outputs) {
-			this._outputMapping.set(output, output.outputId);
+			this._outputMApping.set(output, output.outputId);
 			delete output.outputId;
 		}
 
-		const observableMetadata = getObservable(_cellData.metadata ?? {});
-		this._metadata = observableMetadata.proxy;
-		this._metadataChangeListener = this._register(observableMetadata.onDidChange(() => {
-			this._updateMetadata();
+		const observAbleMetAdAtA = getObservAble(_cellDAtA.metAdAtA ?? {});
+		this._metAdAtA = observAbleMetAdAtA.proxy;
+		this._metAdAtAChAngeListener = this._register(observAbleMetAdAtA.onDidChAnge(() => {
+			this._updAteMetAdAtA();
 		}));
 	}
 
 	get cell(): vscode.NotebookCell {
 		if (!this._cell) {
-			const that = this;
+			const thAt = this;
 			const document = this._extHostDocument.getDocument(this.uri)!.document;
 			this._cell = Object.freeze({
-				get index() { return that._notebook.getCellIndex(that); },
-				notebook: that._notebook.notebookDocument,
-				uri: that.uri,
-				cellKind: this._cellData.cellKind,
+				get index() { return thAt._notebook.getCellIndex(thAt); },
+				notebook: thAt._notebook.notebookDocument,
+				uri: thAt.uri,
+				cellKind: this._cellDAtA.cellKind,
 				document,
-				get language() { return document.languageId; },
-				get outputs() { return that._outputs; },
-				set outputs(value) { that._updateOutputs(value); },
-				get metadata() { return that._metadata; },
-				set metadata(value) {
-					that.setMetadata(value);
-					that._updateMetadata();
+				get lAnguAge() { return document.lAnguAgeId; },
+				get outputs() { return thAt._outputs; },
+				set outputs(vAlue) { thAt._updAteOutputs(vAlue); },
+				get metAdAtA() { return thAt._metAdAtA; },
+				set metAdAtA(vAlue) {
+					thAt.setMetAdAtA(vAlue);
+					thAt._updAteMetAdAtA();
 				},
 			});
 		}
@@ -142,271 +142,271 @@ export class ExtHostCell extends Disposable {
 		this._outputs = newOutputs;
 	}
 
-	private _updateOutputs(newOutputs: vscode.CellOutput[]) {
-		const rawDiffs = diff<vscode.CellOutput>(this._outputs || [], newOutputs || [], (a) => {
-			return this._outputMapping.has(a);
+	privAte _updAteOutputs(newOutputs: vscode.CellOutput[]) {
+		const rAwDiffs = diff<vscode.CellOutput>(this._outputs || [], newOutputs || [], (A) => {
+			return this._outputMApping.hAs(A);
 		});
 
-		const transformedDiffs: ISplice<IProcessedOutput>[] = rawDiffs.map(diff => {
-			for (let i = diff.start; i < diff.start + diff.deleteCount; i++) {
-				this._outputMapping.delete(this._outputs[i]);
+		const trAnsformedDiffs: ISplice<IProcessedOutput>[] = rAwDiffs.mAp(diff => {
+			for (let i = diff.stArt; i < diff.stArt + diff.deleteCount; i++) {
+				this._outputMApping.delete(this._outputs[i]);
 			}
 
 			return {
 				deleteCount: diff.deleteCount,
-				start: diff.start,
-				toInsert: diff.toInsert.map((output): IProcessedOutput => {
+				stArt: diff.stArt,
+				toInsert: diff.toInsert.mAp((output): IProcessedOutput => {
 					if (output.outputKind === CellOutputKind.Rich) {
-						const uuid = UUID.generateUuid();
-						this._outputMapping.set(output, uuid);
+						const uuid = UUID.generAteUuid();
+						this._outputMApping.set(output, uuid);
 						return { ...output, outputId: uuid };
 					}
 
-					this._outputMapping.set(output, undefined);
+					this._outputMApping.set(output, undefined);
 					return output;
 				})
 			};
 		});
 
 		this._outputs = newOutputs;
-		this._onDidChangeOutputs.fire(transformedDiffs);
+		this._onDidChAngeOutputs.fire(trAnsformedDiffs);
 	}
 
-	setMetadata(newMetadata: vscode.NotebookCellMetadata): void {
-		// Don't apply metadata defaults here, 'undefined' means 'inherit from document metadata'
-		this._metadataChangeListener.dispose();
-		const observableMetadata = getObservable(newMetadata);
-		this._metadata = observableMetadata.proxy;
-		this._metadataChangeListener = this._register(observableMetadata.onDidChange(() => {
-			this._updateMetadata();
+	setMetAdAtA(newMetAdAtA: vscode.NotebookCellMetAdAtA): void {
+		// Don't Apply metAdAtA defAults here, 'undefined' meAns 'inherit from document metAdAtA'
+		this._metAdAtAChAngeListener.dispose();
+		const observAbleMetAdAtA = getObservAble(newMetAdAtA);
+		this._metAdAtA = observAbleMetAdAtA.proxy;
+		this._metAdAtAChAngeListener = this._register(observAbleMetAdAtA.onDidChAnge(() => {
+			this._updAteMetAdAtA();
 		}));
 	}
 
-	private _updateMetadata(): Promise<boolean> {
+	privAte _updAteMetAdAtA(): Promise<booleAn> {
 		const index = this._notebook.notebookDocument.cells.indexOf(this.cell);
-		const edit: IWorkspaceCellEditDto = {
-			_type: WorkspaceEditType.Cell,
-			metadata: undefined,
+		const edit: IWorkspAceCellEditDto = {
+			_type: WorkspAceEditType.Cell,
+			metAdAtA: undefined,
 			resource: this._notebook.uri,
 			notebookVersionId: this._notebook.notebookDocument.version,
-			edit: { editType: CellEditType.Metadata, index, metadata: this._metadata }
+			edit: { editType: CellEditType.MetAdAtA, index, metAdAtA: this._metAdAtA }
 		};
 
-		return this._mainThreadBulkEdits.$tryApplyWorkspaceEdit({ edits: [edit] });
+		return this._mAinThreAdBulkEdits.$tryApplyWorkspAceEdit({ edits: [edit] });
 	}
 }
 
-export interface INotebookEventEmitter {
-	emitModelChange(events: vscode.NotebookCellsChangeEvent): void;
-	emitDocumentMetadataChange(event: vscode.NotebookDocumentMetadataChangeEvent): void;
-	emitCellOutputsChange(event: vscode.NotebookCellOutputsChangeEvent): void;
-	emitCellLanguageChange(event: vscode.NotebookCellLanguageChangeEvent): void;
-	emitCellMetadataChange(event: vscode.NotebookCellMetadataChangeEvent): void;
+export interfAce INotebookEventEmitter {
+	emitModelChAnge(events: vscode.NotebookCellsChAngeEvent): void;
+	emitDocumentMetAdAtAChAnge(event: vscode.NotebookDocumentMetAdAtAChAngeEvent): void;
+	emitCellOutputsChAnge(event: vscode.NotebookCellOutputsChAngeEvent): void;
+	emitCellLAnguAgeChAnge(event: vscode.NotebookCellLAnguAgeChAngeEvent): void;
+	emitCellMetAdAtAChAnge(event: vscode.NotebookCellMetAdAtAChAngeEvent): void;
 }
 
-function hashPath(resource: URI): string {
-	const str = resource.scheme === Schemas.file || resource.scheme === Schemas.untitled ? resource.fsPath : resource.toString();
-	return hash(str) + '';
+function hAshPAth(resource: URI): string {
+	const str = resource.scheme === SchemAs.file || resource.scheme === SchemAs.untitled ? resource.fsPAth : resource.toString();
+	return hAsh(str) + '';
 }
 
-export class ExtHostNotebookDocument extends Disposable {
+export clAss ExtHostNotebookDocument extends DisposAble {
 
-	private static _handlePool: number = 0;
-	readonly handle = ExtHostNotebookDocument._handlePool++;
+	privAte stAtic _hAndlePool: number = 0;
+	reAdonly hAndle = ExtHostNotebookDocument._hAndlePool++;
 
-	private _cells: ExtHostCell[] = [];
+	privAte _cells: ExtHostCell[] = [];
 
-	private _cellDisposableMapping = new Map<number, DisposableStore>();
+	privAte _cellDisposAbleMApping = new MAp<number, DisposAbleStore>();
 
-	private _notebook: vscode.NotebookDocument | undefined;
-	private _metadata: Required<vscode.NotebookDocumentMetadata>;
-	private _metadataChangeListener: IDisposable;
-	private _versionId = 0;
-	private _isDirty: boolean = false;
-	private _backupCounter = 1;
-	private _backup?: vscode.NotebookDocumentBackup;
-	private _disposed = false;
-	private _languages: string[] = [];
+	privAte _notebook: vscode.NotebookDocument | undefined;
+	privAte _metAdAtA: Required<vscode.NotebookDocumentMetAdAtA>;
+	privAte _metAdAtAChAngeListener: IDisposAble;
+	privAte _versionId = 0;
+	privAte _isDirty: booleAn = fAlse;
+	privAte _bAckupCounter = 1;
+	privAte _bAckup?: vscode.NotebookDocumentBAckup;
+	privAte _disposed = fAlse;
+	privAte _lAnguAges: string[] = [];
 
-	private readonly _edits = new Cache<vscode.NotebookDocumentEditEvent>('notebook documents');
+	privAte reAdonly _edits = new CAche<vscode.NotebookDocumentEditEvent>('notebook documents');
 
 	constructor(
-		private readonly _proxy: MainThreadNotebookShape,
-		private readonly _documentsAndEditors: ExtHostDocumentsAndEditors,
-		private readonly _mainThreadBulkEdits: MainThreadBulkEditsShape,
-		private readonly _emitter: INotebookEventEmitter,
-		private readonly _viewType: string,
-		private readonly _contentOptions: vscode.NotebookDocumentContentOptions,
-		metadata: Required<vscode.NotebookDocumentMetadata>,
-		public readonly uri: URI,
-		private readonly _storagePath: URI | undefined
+		privAte reAdonly _proxy: MAinThreAdNotebookShApe,
+		privAte reAdonly _documentsAndEditors: ExtHostDocumentsAndEditors,
+		privAte reAdonly _mAinThreAdBulkEdits: MAinThreAdBulkEditsShApe,
+		privAte reAdonly _emitter: INotebookEventEmitter,
+		privAte reAdonly _viewType: string,
+		privAte reAdonly _contentOptions: vscode.NotebookDocumentContentOptions,
+		metAdAtA: Required<vscode.NotebookDocumentMetAdAtA>,
+		public reAdonly uri: URI,
+		privAte reAdonly _storAgePAth: URI | undefined
 	) {
 		super();
 
-		const observableMetadata = getObservable(metadata);
-		this._metadata = observableMetadata.proxy;
-		this._metadataChangeListener = this._register(observableMetadata.onDidChange(() => {
-			this._tryUpdateMetadata();
+		const observAbleMetAdAtA = getObservAble(metAdAtA);
+		this._metAdAtA = observAbleMetAdAtA.proxy;
+		this._metAdAtAChAngeListener = this._register(observAbleMetAdAtA.onDidChAnge(() => {
+			this._tryUpdAteMetAdAtA();
 		}));
 	}
 
 	dispose() {
 		this._disposed = true;
 		super.dispose();
-		dispose(this._cellDisposableMapping.values());
+		dispose(this._cellDisposAbleMApping.vAlues());
 	}
 
-	private _updateMetadata(newMetadata: Required<vscode.NotebookDocumentMetadata>) {
-		this._metadataChangeListener.dispose();
-		newMetadata = {
-			...notebookDocumentMetadataDefaults,
-			...newMetadata
+	privAte _updAteMetAdAtA(newMetAdAtA: Required<vscode.NotebookDocumentMetAdAtA>) {
+		this._metAdAtAChAngeListener.dispose();
+		newMetAdAtA = {
+			...notebookDocumentMetAdAtADefAults,
+			...newMetAdAtA
 		};
-		if (this._metadataChangeListener) {
-			this._metadataChangeListener.dispose();
+		if (this._metAdAtAChAngeListener) {
+			this._metAdAtAChAngeListener.dispose();
 		}
 
-		const observableMetadata = getObservable(newMetadata);
-		this._metadata = observableMetadata.proxy;
-		this._metadataChangeListener = this._register(observableMetadata.onDidChange(() => {
-			this._tryUpdateMetadata();
+		const observAbleMetAdAtA = getObservAble(newMetAdAtA);
+		this._metAdAtA = observAbleMetAdAtA.proxy;
+		this._metAdAtAChAngeListener = this._register(observAbleMetAdAtA.onDidChAnge(() => {
+			this._tryUpdAteMetAdAtA();
 		}));
 
-		this._tryUpdateMetadata();
+		this._tryUpdAteMetAdAtA();
 	}
 
-	private _tryUpdateMetadata() {
-		const edit: IWorkspaceCellEditDto = {
-			_type: WorkspaceEditType.Cell,
-			metadata: undefined,
-			edit: { editType: CellEditType.DocumentMetadata, metadata: this._metadata },
+	privAte _tryUpdAteMetAdAtA() {
+		const edit: IWorkspAceCellEditDto = {
+			_type: WorkspAceEditType.Cell,
+			metAdAtA: undefined,
+			edit: { editType: CellEditType.DocumentMetAdAtA, metAdAtA: this._metAdAtA },
 			resource: this.uri,
 			notebookVersionId: this.notebookDocument.version,
 		};
 
-		return this._mainThreadBulkEdits.$tryApplyWorkspaceEdit({ edits: [edit] });
+		return this._mAinThreAdBulkEdits.$tryApplyWorkspAceEdit({ edits: [edit] });
 	}
 
 	get notebookDocument(): vscode.NotebookDocument {
 		if (!this._notebook) {
-			const that = this;
+			const thAt = this;
 			this._notebook = Object.freeze({
-				get uri() { return that.uri; },
-				get version() { return that._versionId; },
-				get fileName() { return that.uri.fsPath; },
-				get viewType() { return that._viewType; },
-				get isDirty() { return that._isDirty; },
-				get isUntitled() { return that.uri.scheme === Schemas.untitled; },
-				get cells(): ReadonlyArray<vscode.NotebookCell> { return that._cells.map(cell => cell.cell); },
-				get languages() { return that._languages; },
-				set languages(value: string[]) { that._trySetLanguages(value); },
-				get metadata() { return that._metadata; },
-				set metadata(value: Required<vscode.NotebookDocumentMetadata>) { that._updateMetadata(value); },
-				get contentOptions() { return that._contentOptions; }
+				get uri() { return thAt.uri; },
+				get version() { return thAt._versionId; },
+				get fileNAme() { return thAt.uri.fsPAth; },
+				get viewType() { return thAt._viewType; },
+				get isDirty() { return thAt._isDirty; },
+				get isUntitled() { return thAt.uri.scheme === SchemAs.untitled; },
+				get cells(): ReAdonlyArrAy<vscode.NotebookCell> { return thAt._cells.mAp(cell => cell.cell); },
+				get lAnguAges() { return thAt._lAnguAges; },
+				set lAnguAges(vAlue: string[]) { thAt._trySetLAnguAges(vAlue); },
+				get metAdAtA() { return thAt._metAdAtA; },
+				set metAdAtA(vAlue: Required<vscode.NotebookDocumentMetAdAtA>) { thAt._updAteMetAdAtA(vAlue); },
+				get contentOptions() { return thAt._contentOptions; }
 			});
 		}
 		return this._notebook;
 	}
 
-	private _trySetLanguages(newLanguages: string[]) {
-		this._languages = newLanguages;
-		this._proxy.$updateNotebookLanguages(this._viewType, this.uri, this._languages);
+	privAte _trySetLAnguAges(newLAnguAges: string[]) {
+		this._lAnguAges = newLAnguAges;
+		this._proxy.$updAteNotebookLAnguAges(this._viewType, this.uri, this._lAnguAges);
 	}
 
-	getNewBackupUri(): URI {
-		if (!this._storagePath) {
-			throw new Error('Backup requires a valid storage path');
+	getNewBAckupUri(): URI {
+		if (!this._storAgePAth) {
+			throw new Error('BAckup requires A vAlid storAge pAth');
 		}
-		const fileName = hashPath(this.uri) + (this._backupCounter++);
-		return joinPath(this._storagePath, fileName);
+		const fileNAme = hAshPAth(this.uri) + (this._bAckupCounter++);
+		return joinPAth(this._storAgePAth, fileNAme);
 	}
 
-	updateBackup(backup: vscode.NotebookDocumentBackup): void {
-		this._backup?.delete();
-		this._backup = backup;
+	updAteBAckup(bAckup: vscode.NotebookDocumentBAckup): void {
+		this._bAckup?.delete();
+		this._bAckup = bAckup;
 	}
 
-	disposeBackup(): void {
-		this._backup?.delete();
-		this._backup = undefined;
+	disposeBAckup(): void {
+		this._bAckup?.delete();
+		this._bAckup = undefined;
 	}
 
-	acceptDocumentPropertiesChanged(data: INotebookDocumentPropertiesChangeData) {
-		const newMetadata = {
-			...notebookDocumentMetadataDefaults,
-			...data.metadata
+	AcceptDocumentPropertiesChAnged(dAtA: INotebookDocumentPropertiesChAngeDAtA) {
+		const newMetAdAtA = {
+			...notebookDocumentMetAdAtADefAults,
+			...dAtA.metAdAtA
 		};
 
-		if (this._metadataChangeListener) {
-			this._metadataChangeListener.dispose();
+		if (this._metAdAtAChAngeListener) {
+			this._metAdAtAChAngeListener.dispose();
 		}
 
-		const observableMetadata = getObservable(newMetadata);
-		this._metadata = observableMetadata.proxy;
-		this._metadataChangeListener = this._register(observableMetadata.onDidChange(() => {
-			this._tryUpdateMetadata();
+		const observAbleMetAdAtA = getObservAble(newMetAdAtA);
+		this._metAdAtA = observAbleMetAdAtA.proxy;
+		this._metAdAtAChAngeListener = this._register(observAbleMetAdAtA.onDidChAnge(() => {
+			this._tryUpdAteMetAdAtA();
 		}));
 
-		this._emitter.emitDocumentMetadataChange({ document: this.notebookDocument });
+		this._emitter.emitDocumentMetAdAtAChAnge({ document: this.notebookDocument });
 	}
 
-	acceptModelChanged(event: NotebookCellsChangedEventDto, isDirty: boolean): void {
+	AcceptModelChAnged(event: NotebookCellsChAngedEventDto, isDirty: booleAn): void {
 		this._versionId = event.versionId;
 		this._isDirty = isDirty;
-		event.rawEvents.forEach(e => {
-			if (e.kind === NotebookCellsChangeType.Initialize) {
-				this._spliceNotebookCells(e.changes, true);
-			} if (e.kind === NotebookCellsChangeType.ModelChange) {
-				this._spliceNotebookCells(e.changes, false);
-			} else if (e.kind === NotebookCellsChangeType.Move) {
+		event.rAwEvents.forEAch(e => {
+			if (e.kind === NotebookCellsChAngeType.InitiAlize) {
+				this._spliceNotebookCells(e.chAnges, true);
+			} if (e.kind === NotebookCellsChAngeType.ModelChAnge) {
+				this._spliceNotebookCells(e.chAnges, fAlse);
+			} else if (e.kind === NotebookCellsChAngeType.Move) {
 				this._moveCell(e.index, e.newIdx);
-			} else if (e.kind === NotebookCellsChangeType.Output) {
+			} else if (e.kind === NotebookCellsChAngeType.Output) {
 				this._setCellOutputs(e.index, e.outputs);
-			} else if (e.kind === NotebookCellsChangeType.ChangeLanguage) {
-				this._changeCellLanguage(e.index, e.language);
-			} else if (e.kind === NotebookCellsChangeType.ChangeCellMetadata) {
-				this._changeCellMetadata(e.index, e.metadata);
+			} else if (e.kind === NotebookCellsChAngeType.ChAngeLAnguAge) {
+				this._chAngeCellLAnguAge(e.index, e.lAnguAge);
+			} else if (e.kind === NotebookCellsChAngeType.ChAngeCellMetAdAtA) {
+				this._chAngeCellMetAdAtA(e.index, e.metAdAtA);
 			}
 		});
 	}
 
-	private _spliceNotebookCells(splices: NotebookCellsSplice2[], initialization: boolean): void {
+	privAte _spliceNotebookCells(splices: NotebookCellsSplice2[], initiAlizAtion: booleAn): void {
 		if (this._disposed) {
 			return;
 		}
 
-		const contentChangeEvents: RawContentChangeEvent[] = [];
-		const addedCellDocuments: IExtHostModelAddedData[] = [];
+		const contentChAngeEvents: RAwContentChAngeEvent[] = [];
+		const AddedCellDocuments: IExtHostModelAddedDAtA[] = [];
 		const removedCellDocuments: URI[] = [];
 
-		splices.reverse().forEach(splice => {
+		splices.reverse().forEAch(splice => {
 			const cellDtos = splice[2];
-			const newCells = cellDtos.map(cell => {
+			const newCells = cellDtos.mAp(cell => {
 
-				const extCell = new ExtHostCell(this._mainThreadBulkEdits, this, this._documentsAndEditors, cell);
+				const extCell = new ExtHostCell(this._mAinThreAdBulkEdits, this, this._documentsAndEditors, cell);
 
-				if (!initialization) {
-					addedCellDocuments.push(ExtHostCell.asModelAddData(this.notebookDocument, cell));
+				if (!initiAlizAtion) {
+					AddedCellDocuments.push(ExtHostCell.AsModelAddDAtA(this.notebookDocument, cell));
 				}
 
-				if (!this._cellDisposableMapping.has(extCell.handle)) {
-					const store = new DisposableStore();
-					store.add(extCell);
-					this._cellDisposableMapping.set(extCell.handle, store);
+				if (!this._cellDisposAbleMApping.hAs(extCell.hAndle)) {
+					const store = new DisposAbleStore();
+					store.Add(extCell);
+					this._cellDisposAbleMApping.set(extCell.hAndle, store);
 				}
 
-				const store = this._cellDisposableMapping.get(extCell.handle)!;
+				const store = this._cellDisposAbleMApping.get(extCell.hAndle)!;
 
-				store.add(extCell.onDidChangeOutputs((diffs) => {
-					this.eventuallyUpdateCellOutputs(extCell, diffs);
+				store.Add(extCell.onDidChAngeOutputs((diffs) => {
+					this.eventuAllyUpdAteCellOutputs(extCell, diffs);
 				}));
 
 				return extCell;
 			});
 
 			for (let j = splice[0]; j < splice[0] + splice[1]; j++) {
-				this._cellDisposableMapping.get(this._cells[j].handle)?.dispose();
-				this._cellDisposableMapping.delete(this._cells[j].handle);
+				this._cellDisposAbleMApping.get(this._cells[j].hAndle)?.dispose();
+				this._cellDisposAbleMApping.delete(this._cells[j].hAndle);
 			}
 
 			const deletedItems = this._cells.splice(splice[0], splice[1], ...newCells);
@@ -414,105 +414,105 @@ export class ExtHostNotebookDocument extends Disposable {
 				removedCellDocuments.push(cell.uri);
 			}
 
-			contentChangeEvents.push(new RawContentChangeEvent(splice[0], splice[1], deletedItems, newCells));
+			contentChAngeEvents.push(new RAwContentChAngeEvent(splice[0], splice[1], deletedItems, newCells));
 		});
 
-		this._documentsAndEditors.acceptDocumentsAndEditorsDelta({
-			addedDocuments: addedCellDocuments,
+		this._documentsAndEditors.AcceptDocumentsAndEditorsDeltA({
+			AddedDocuments: AddedCellDocuments,
 			removedDocuments: removedCellDocuments
 		});
 
-		if (!initialization) {
-			this._emitter.emitModelChange({
+		if (!initiAlizAtion) {
+			this._emitter.emitModelChAnge({
 				document: this.notebookDocument,
-				changes: contentChangeEvents.map(RawContentChangeEvent.asApiEvent)
+				chAnges: contentChAngeEvents.mAp(RAwContentChAngeEvent.AsApiEvent)
 			});
 		}
 	}
 
-	private _moveCell(index: number, newIdx: number): void {
+	privAte _moveCell(index: number, newIdx: number): void {
 		const cells = this._cells.splice(index, 1);
 		this._cells.splice(newIdx, 0, ...cells);
-		const changes: vscode.NotebookCellsChangeData[] = [{
-			start: index,
+		const chAnges: vscode.NotebookCellsChAngeDAtA[] = [{
+			stArt: index,
 			deletedCount: 1,
-			deletedItems: cells.map(data => data.cell),
+			deletedItems: cells.mAp(dAtA => dAtA.cell),
 			items: []
 		}, {
-			start: newIdx,
+			stArt: newIdx,
 			deletedCount: 0,
 			deletedItems: [],
-			items: cells.map(data => data.cell)
+			items: cells.mAp(dAtA => dAtA.cell)
 		}];
-		this._emitter.emitModelChange({
+		this._emitter.emitModelChAnge({
 			document: this.notebookDocument,
-			changes
+			chAnges
 		});
 	}
 
-	private _setCellOutputs(index: number, outputs: IProcessedOutput[]): void {
+	privAte _setCellOutputs(index: number, outputs: IProcessedOutput[]): void {
 		const cell = this._cells[index];
 		cell.setOutputs(outputs);
-		this._emitter.emitCellOutputsChange({ document: this.notebookDocument, cells: [cell.cell] });
+		this._emitter.emitCellOutputsChAnge({ document: this.notebookDocument, cells: [cell.cell] });
 	}
 
-	private _changeCellLanguage(index: number, language: string): void {
+	privAte _chAngeCellLAnguAge(index: number, lAnguAge: string): void {
 		const cell = this._cells[index];
-		const event: vscode.NotebookCellLanguageChangeEvent = { document: this.notebookDocument, cell: cell.cell, language };
-		this._emitter.emitCellLanguageChange(event);
+		const event: vscode.NotebookCellLAnguAgeChAngeEvent = { document: this.notebookDocument, cell: cell.cell, lAnguAge };
+		this._emitter.emitCellLAnguAgeChAnge(event);
 	}
 
-	private _changeCellMetadata(index: number, newMetadata: NotebookCellMetadata | undefined): void {
+	privAte _chAngeCellMetAdAtA(index: number, newMetAdAtA: NotebookCellMetAdAtA | undefined): void {
 		const cell = this._cells[index];
-		cell.setMetadata(newMetadata || {});
-		const event: vscode.NotebookCellMetadataChangeEvent = { document: this.notebookDocument, cell: cell.cell };
-		this._emitter.emitCellMetadataChange(event);
+		cell.setMetAdAtA(newMetAdAtA || {});
+		const event: vscode.NotebookCellMetAdAtAChAngeEvent = { document: this.notebookDocument, cell: cell.cell };
+		this._emitter.emitCellMetAdAtAChAnge(event);
 	}
 
-	async eventuallyUpdateCellOutputs(cell: ExtHostCell, diffs: ISplice<IProcessedOutput>[]) {
-		const outputDtos: NotebookCellOutputsSplice[] = diffs.map(diff => {
+	Async eventuAllyUpdAteCellOutputs(cell: ExtHostCell, diffs: ISplice<IProcessedOutput>[]) {
+		const outputDtos: NotebookCellOutputsSplice[] = diffs.mAp(diff => {
 			const outputs = diff.toInsert;
-			return [diff.start, diff.deleteCount, outputs];
+			return [diff.stArt, diff.deleteCount, outputs];
 		});
 
 		if (!outputDtos.length) {
 			return;
 		}
 
-		await this._proxy.$spliceNotebookCellOutputs(this._viewType, this.uri, cell.handle, outputDtos);
-		this._emitter.emitCellOutputsChange({
+		AwAit this._proxy.$spliceNotebookCellOutputs(this._viewType, this.uri, cell.hAndle, outputDtos);
+		this._emitter.emitCellOutputsChAnge({
 			document: this.notebookDocument,
 			cells: [cell.cell]
 		});
 	}
 
-	getCell(cellHandle: number): ExtHostCell | undefined {
-		return this._cells.find(cell => cell.handle === cellHandle);
+	getCell(cellHAndle: number): ExtHostCell | undefined {
+		return this._cells.find(cell => cell.hAndle === cellHAndle);
 	}
 
 	getCellIndex(cell: ExtHostCell): number {
 		return this._cells.indexOf(cell);
 	}
 
-	addEdit(item: vscode.NotebookDocumentEditEvent): number {
-		return this._edits.add([item]);
+	AddEdit(item: vscode.NotebookDocumentEditEvent): number {
+		return this._edits.Add([item]);
 	}
 
-	async undo(editId: number, isDirty: boolean): Promise<void> {
-		await this.getEdit(editId).undo();
+	Async undo(editId: number, isDirty: booleAn): Promise<void> {
+		AwAit this.getEdit(editId).undo();
 		// if (!isDirty) {
-		// 	this.disposeBackup();
+		// 	this.disposeBAckup();
 		// }
 	}
 
-	async redo(editId: number, isDirty: boolean): Promise<void> {
-		await this.getEdit(editId).redo();
+	Async redo(editId: number, isDirty: booleAn): Promise<void> {
+		AwAit this.getEdit(editId).redo();
 		// if (!isDirty) {
-		// 	this.disposeBackup();
+		// 	this.disposeBAckup();
 		// }
 	}
 
-	private getEdit(editId: number): vscode.NotebookDocumentEditEvent {
+	privAte getEdit(editId: number): vscode.NotebookDocumentEditEvent {
 		const edit = this._edits.get(editId, 0);
 		if (!edit) {
 			throw new Error('No edit found');

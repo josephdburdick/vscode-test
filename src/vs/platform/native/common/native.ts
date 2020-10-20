@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { MessageBoxOptions, MessageBoxReturnValue, OpenDevToolsOptions, SaveDialogOptions, OpenDialogOptions, OpenDialogReturnValue, SaveDialogReturnValue, MouseInputEvent } from 'vs/base/parts/sandbox/common/electronTypes';
-import { IOpenedWindow, IWindowOpenable, IOpenEmptyWindowOptions, IOpenWindowOptions, IColorScheme } from 'vs/platform/windows/common/windows';
-import { INativeOpenDialogOptions } from 'vs/platform/dialogs/common/dialogs';
-import { ISerializableCommandAction } from 'vs/platform/actions/common/actions';
-import { URI } from 'vs/base/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { MessAgeBoxOptions, MessAgeBoxReturnVAlue, OpenDevToolsOptions, SAveDiAlogOptions, OpenDiAlogOptions, OpenDiAlogReturnVAlue, SAveDiAlogReturnVAlue, MouseInputEvent } from 'vs/bAse/pArts/sAndbox/common/electronTypes';
+import { IOpenedWindow, IWindowOpenAble, IOpenEmptyWindowOptions, IOpenWindowOptions, IColorScheme } from 'vs/plAtform/windows/common/windows';
+import { INAtiveOpenDiAlogOptions } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { ISeriAlizAbleCommAndAction } from 'vs/plAtform/Actions/common/Actions';
+import { URI } from 'vs/bAse/common/uri';
 
-export interface ICPUProperties {
+export interfAce ICPUProperties {
 	model: string;
 	speed: number;
 }
 
-export interface IOSProperties {
+export interfAce IOSProperties {
 	type: string;
-	release: string;
-	arch: string;
-	platform: string;
+	releAse: string;
+	Arch: string;
+	plAtform: string;
 	cpus: ICPUProperties[];
 }
 
-export interface IOSStatistics {
-	totalmem: number;
+export interfAce IOSStAtistics {
+	totAlmem: number;
 	freemem: number;
-	loadavg: number[];
+	loAdAvg: number[];
 }
 
-export interface ICommonNativeHostService {
+export interfAce ICommonNAtiveHostService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	// Properties
-	readonly windowId: number;
+	reAdonly windowId: number;
 
 	// Events
-	readonly onDidOpenWindow: Event<number>;
+	reAdonly onDidOpenWindow: Event<number>;
 
-	readonly onDidMaximizeWindow: Event<number>;
-	readonly onDidUnmaximizeWindow: Event<number>;
+	reAdonly onDidMAximizeWindow: Event<number>;
+	reAdonly onDidUnmAximizeWindow: Event<number>;
 
-	readonly onDidFocusWindow: Event<number>;
-	readonly onDidBlurWindow: Event<number>;
+	reAdonly onDidFocusWindow: Event<number>;
+	reAdonly onDidBlurWindow: Event<number>;
 
-	readonly onDidResumeOS: Event<unknown>;
+	reAdonly onDidResumeOS: Event<unknown>;
 
-	readonly onDidChangeColorScheme: Event<IColorScheme>;
+	reAdonly onDidChAngeColorScheme: Event<IColorScheme>;
 
-	readonly onDidChangePassword: Event<void>;
+	reAdonly onDidChAngePAssword: Event<void>;
 
 	// Window
 	getWindows(): Promise<IOpenedWindow[]>;
@@ -57,78 +57,78 @@ export interface ICommonNativeHostService {
 	getActiveWindowId(): Promise<number | undefined>;
 
 	openWindow(options?: IOpenEmptyWindowOptions): Promise<void>;
-	openWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void>;
+	openWindow(toOpen: IWindowOpenAble[], options?: IOpenWindowOptions): Promise<void>;
 
 	toggleFullScreen(): Promise<void>;
 
-	handleTitleDoubleClick(): Promise<void>;
+	hAndleTitleDoubleClick(): Promise<void>;
 
-	isMaximized(): Promise<boolean>;
-	maximizeWindow(): Promise<void>;
-	unmaximizeWindow(): Promise<void>;
+	isMAximized(): Promise<booleAn>;
+	mAximizeWindow(): Promise<void>;
+	unmAximizeWindow(): Promise<void>;
 	minimizeWindow(): Promise<void>;
 
 	setMinimumSize(width: number | undefined, height: number | undefined): Promise<void>;
 
 	/**
-	 * Make the window focused.
+	 * MAke the window focused.
 	 *
-	 * @param options Pass `force: true` if you want to make the window take
-	 * focus even if the application does not have focus currently. This option
-	 * should only be used if it is necessary to steal focus from the current
-	 * focused application which may not be VSCode.
+	 * @pArAm options PAss `force: true` if you wAnt to mAke the window tAke
+	 * focus even if the ApplicAtion does not hAve focus currently. This option
+	 * should only be used if it is necessAry to steAl focus from the current
+	 * focused ApplicAtion which mAy not be VSCode.
 	 */
-	focusWindow(options?: { windowId?: number, force?: boolean }): Promise<void>;
+	focusWindow(options?: { windowId?: number, force?: booleAn }): Promise<void>;
 
-	// Dialogs
-	showMessageBox(options: MessageBoxOptions): Promise<MessageBoxReturnValue>;
-	showSaveDialog(options: SaveDialogOptions): Promise<SaveDialogReturnValue>;
-	showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue>;
+	// DiAlogs
+	showMessAgeBox(options: MessAgeBoxOptions): Promise<MessAgeBoxReturnVAlue>;
+	showSAveDiAlog(options: SAveDiAlogOptions): Promise<SAveDiAlogReturnVAlue>;
+	showOpenDiAlog(options: OpenDiAlogOptions): Promise<OpenDiAlogReturnVAlue>;
 
-	pickFileFolderAndOpen(options: INativeOpenDialogOptions): Promise<void>;
-	pickFileAndOpen(options: INativeOpenDialogOptions): Promise<void>;
-	pickFolderAndOpen(options: INativeOpenDialogOptions): Promise<void>;
-	pickWorkspaceAndOpen(options: INativeOpenDialogOptions): Promise<void>;
+	pickFileFolderAndOpen(options: INAtiveOpenDiAlogOptions): Promise<void>;
+	pickFileAndOpen(options: INAtiveOpenDiAlogOptions): Promise<void>;
+	pickFolderAndOpen(options: INAtiveOpenDiAlogOptions): Promise<void>;
+	pickWorkspAceAndOpen(options: INAtiveOpenDiAlogOptions): Promise<void>;
 
 	// OS
-	showItemInFolder(path: string): Promise<void>;
-	setRepresentedFilename(path: string): Promise<void>;
-	setDocumentEdited(edited: boolean): Promise<void>;
-	openExternal(url: string): Promise<boolean>;
-	moveItemToTrash(fullPath: string, deleteOnFail?: boolean): Promise<boolean>;
+	showItemInFolder(pAth: string): Promise<void>;
+	setRepresentedFilenAme(pAth: string): Promise<void>;
+	setDocumentEdited(edited: booleAn): Promise<void>;
+	openExternAl(url: string): Promise<booleAn>;
+	moveItemToTrAsh(fullPAth: string, deleteOnFAil?: booleAn): Promise<booleAn>;
 
-	isAdmin(): Promise<boolean>;
-	writeElevated(source: URI, target: URI, options?: { overwriteReadonly?: boolean }): Promise<void>;
+	isAdmin(): Promise<booleAn>;
+	writeElevAted(source: URI, tArget: URI, options?: { overwriteReAdonly?: booleAn }): Promise<void>;
 
 	getOSProperties(): Promise<IOSProperties>;
-	getOSStatistics(): Promise<IOSStatistics>;
-	getOSVirtualMachineHint(): Promise<number>;
+	getOSStAtistics(): Promise<IOSStAtistics>;
+	getOSVirtuAlMAchineHint(): Promise<number>;
 
 	// Process
 	killProcess(pid: number, code: string): Promise<void>;
 
-	// Clipboard
-	readClipboardText(type?: 'selection' | 'clipboard'): Promise<string>;
-	writeClipboardText(text: string, type?: 'selection' | 'clipboard'): Promise<void>;
-	readClipboardFindText(): Promise<string>;
-	writeClipboardFindText(text: string): Promise<void>;
-	writeClipboardBuffer(format: string, buffer: Uint8Array, type?: 'selection' | 'clipboard'): Promise<void>;
-	readClipboardBuffer(format: string): Promise<Uint8Array>;
-	hasClipboard(format: string, type?: 'selection' | 'clipboard'): Promise<boolean>;
+	// ClipboArd
+	reAdClipboArdText(type?: 'selection' | 'clipboArd'): Promise<string>;
+	writeClipboArdText(text: string, type?: 'selection' | 'clipboArd'): Promise<void>;
+	reAdClipboArdFindText(): Promise<string>;
+	writeClipboArdFindText(text: string): Promise<void>;
+	writeClipboArdBuffer(formAt: string, buffer: Uint8ArrAy, type?: 'selection' | 'clipboArd'): Promise<void>;
+	reAdClipboArdBuffer(formAt: string): Promise<Uint8ArrAy>;
+	hAsClipboArd(formAt: string, type?: 'selection' | 'clipboArd'): Promise<booleAn>;
 
-	// macOS Touchbar
-	newWindowTab(): Promise<void>;
-	showPreviousWindowTab(): Promise<void>;
-	showNextWindowTab(): Promise<void>;
-	moveWindowTabToNewWindow(): Promise<void>;
-	mergeAllWindowTabs(): Promise<void>;
-	toggleWindowTabsBar(): Promise<void>;
-	updateTouchBar(items: ISerializableCommandAction[][]): Promise<void>;
+	// mAcOS TouchbAr
+	newWindowTAb(): Promise<void>;
+	showPreviousWindowTAb(): Promise<void>;
+	showNextWindowTAb(): Promise<void>;
+	moveWindowTAbToNewWindow(): Promise<void>;
+	mergeAllWindowTAbs(): Promise<void>;
+	toggleWindowTAbsBAr(): Promise<void>;
+	updAteTouchBAr(items: ISeriAlizAbleCommAndAction[][]): Promise<void>;
 
 	// Lifecycle
-	notifyReady(): Promise<void>
-	relaunch(options?: { addArgs?: string[], removeArgs?: string[] }): Promise<void>;
-	reload(options?: { disableExtensions?: boolean }): Promise<void>;
+	notifyReAdy(): Promise<void>
+	relAunch(options?: { AddArgs?: string[], removeArgs?: string[] }): Promise<void>;
+	reloAd(options?: { disAbleExtensions?: booleAn }): Promise<void>;
 	closeWindow(): Promise<void>;
 	closeWindowById(windowId: number): Promise<void>;
 	quit(): Promise<void>;
@@ -143,12 +143,12 @@ export interface ICommonNativeHostService {
 	resolveProxy(url: string): Promise<string | undefined>;
 
 	// Registry (windows only)
-	windowsGetStringRegKey(hive: 'HKEY_CURRENT_USER' | 'HKEY_LOCAL_MACHINE' | 'HKEY_CLASSES_ROOT' | 'HKEY_USERS' | 'HKEY_CURRENT_CONFIG', path: string, name: string): Promise<string | undefined>;
+	windowsGetStringRegKey(hive: 'HKEY_CURRENT_USER' | 'HKEY_LOCAL_MACHINE' | 'HKEY_CLASSES_ROOT' | 'HKEY_USERS' | 'HKEY_CURRENT_CONFIG', pAth: string, nAme: string): Promise<string | undefined>;
 
-	// Credentials
-	getPassword(service: string, account: string): Promise<string | null>;
-	setPassword(service: string, account: string, password: string): Promise<void>;
-	deletePassword(service: string, account: string): Promise<boolean>;
-	findPassword(service: string): Promise<string | null>;
-	findCredentials(service: string): Promise<Array<{ account: string, password: string }>>
+	// CredentiAls
+	getPAssword(service: string, Account: string): Promise<string | null>;
+	setPAssword(service: string, Account: string, pAssword: string): Promise<void>;
+	deletePAssword(service: string, Account: string): Promise<booleAn>;
+	findPAssword(service: string): Promise<string | null>;
+	findCredentiAls(service: string): Promise<ArrAy<{ Account: string, pAssword: string }>>
 }

@@ -1,209 +1,209 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/keybindingsEditor';
-import { localize } from 'vs/nls';
-import { Delayer } from 'vs/base/common/async';
-import * as DOM from 'vs/base/browser/dom';
-import { OS } from 'vs/base/common/platform';
-import { dispose, Disposable, IDisposable, combinedDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { CheckboxActionViewItem } from 'vs/base/browser/ui/checkbox/checkbox';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
-import { KeybindingLabel } from 'vs/base/browser/ui/keybindingLabel/keybindingLabel';
-import { IAction, Action, Separator } from 'vs/base/common/actions';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
+import 'vs/css!./mediA/keybindingsEditor';
+import { locAlize } from 'vs/nls';
+import { DelAyer } from 'vs/bAse/common/Async';
+import * As DOM from 'vs/bAse/browser/dom';
+import { OS } from 'vs/bAse/common/plAtform';
+import { dispose, DisposAble, IDisposAble, combinedDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { CheckboxActionViewItem } from 'vs/bAse/browser/ui/checkbox/checkbox';
+import { HighlightedLAbel } from 'vs/bAse/browser/ui/highlightedlAbel/highlightedLAbel';
+import { KeybindingLAbel } from 'vs/bAse/browser/ui/keybindingLAbel/keybindingLAbel';
+import { IAction, Action, SepArAtor } from 'vs/bAse/common/Actions';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { EditorPAne } from 'vs/workbench/browser/pArts/editor/editorPAne';
 import { EditorOptions, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
 import { KeybindingsEditorModel, IKeybindingItemEntry, IListEntry, KEYBINDING_ENTRY_TEMPLATE_ID } from 'vs/workbench/services/preferences/common/keybindingsEditorModel';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService, IUserFriendlyKeybinding } from 'vs/platform/keybinding/common/keybinding';
-import { DefineKeybindingWidget, KeybindingsSearchWidget, KeybindingsSearchOptions } from 'vs/workbench/contrib/preferences/browser/keybindingWidgets';
-import { IKeybindingsEditorPane, CONTEXT_KEYBINDING_FOCUS, CONTEXT_KEYBINDINGS_EDITOR, CONTEXT_KEYBINDINGS_SEARCH_FOCUS, KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS, KEYBINDINGS_EDITOR_COMMAND_SORTBY_PRECEDENCE, KEYBINDINGS_EDITOR_COMMAND_DEFINE, KEYBINDINGS_EDITOR_COMMAND_REMOVE, KEYBINDINGS_EDITOR_COMMAND_RESET, KEYBINDINGS_EDITOR_COMMAND_COPY, KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND, KEYBINDINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS, KEYBINDINGS_EDITOR_COMMAND_DEFINE_WHEN, KEYBINDINGS_EDITOR_COMMAND_SHOW_SIMILAR } from 'vs/workbench/contrib/preferences/common/preferences';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService, IUserFriendlyKeybinding } from 'vs/plAtform/keybinding/common/keybinding';
+import { DefineKeybindingWidget, KeybindingsSeArchWidget, KeybindingsSeArchOptions } from 'vs/workbench/contrib/preferences/browser/keybindingWidgets';
+import { IKeybindingsEditorPAne, CONTEXT_KEYBINDING_FOCUS, CONTEXT_KEYBINDINGS_EDITOR, CONTEXT_KEYBINDINGS_SEARCH_FOCUS, KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS, KEYBINDINGS_EDITOR_COMMAND_SORTBY_PRECEDENCE, KEYBINDINGS_EDITOR_COMMAND_DEFINE, KEYBINDINGS_EDITOR_COMMAND_REMOVE, KEYBINDINGS_EDITOR_COMMAND_RESET, KEYBINDINGS_EDITOR_COMMAND_COPY, KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND, KEYBINDINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS, KEYBINDINGS_EDITOR_COMMAND_DEFINE_WHEN, KEYBINDINGS_EDITOR_COMMAND_SHOW_SIMILAR } from 'vs/workbench/contrib/preferences/common/preferences';
+import { IContextMenuService, IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
 import { IKeybindingEditingService } from 'vs/workbench/services/keybinding/common/keybindingEditing';
-import { IListVirtualDelegate, IListRenderer, IListContextMenuEvent, IListEvent } from 'vs/base/browser/ui/list/list';
-import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
-import { IContextKeyService, IContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { StandardKeyboardEvent, IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyCode, ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { listHighlightForeground, badgeBackground, contrastBorder, badgeForeground, listActiveSelectionForeground, listInactiveSelectionForeground, listHoverForeground, listFocusForeground, editorBackground, foreground, listActiveSelectionBackground, listInactiveSelectionBackground, listFocusBackground, listHoverBackground } from 'vs/platform/theme/common/colorRegistry';
+import { IListVirtuAlDelegAte, IListRenderer, IListContextMenuEvent, IListEvent } from 'vs/bAse/browser/ui/list/list';
+import { IThemeService, registerThemingPArticipAnt, IColorTheme, ICssStyleCollector } from 'vs/plAtform/theme/common/themeService';
+import { IContextKeyService, IContextKey, ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { StAndArdKeyboArdEvent, IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyCode, ResolvedKeybinding } from 'vs/bAse/common/keyCodes';
+import { listHighlightForeground, bAdgeBAckground, contrAstBorder, bAdgeForeground, listActiveSelectionForeground, listInActiveSelectionForeground, listHoverForeground, listFocusForeground, editorBAckground, foreground, listActiveSelectionBAckground, listInActiveSelectionBAckground, listFocusBAckground, listHoverBAckground } from 'vs/plAtform/theme/common/colorRegistry';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { EditorExtensionsRegistry } from 'vs/editor/browser/editorExtensions';
-import { WorkbenchList } from 'vs/platform/list/browser/listService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { WorkbenchList } from 'vs/plAtform/list/browser/listService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { KeybindingsEditorInput } from 'vs/workbench/services/preferences/common/preferencesEditorInput';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { attachStylerCallback, attachInputBoxStyler } from 'vs/platform/theme/common/styler';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { InputBox, MessageType } from 'vs/base/browser/ui/inputbox/inputBox';
-import { Emitter, Event } from 'vs/base/common/event';
-import { MenuRegistry, MenuId, isIMenuItem } from 'vs/platform/actions/common/actions';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { AttAchStylerCAllbAck, AttAchInputBoxStyler } from 'vs/plAtform/theme/common/styler';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { InputBox, MessAgeType } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { MenuRegistry, MenuId, isIMenuItem } from 'vs/plAtform/Actions/common/Actions';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
 import { preferencesEditIcon } from 'vs/workbench/contrib/preferences/browser/preferencesWidgets';
-import { Color, RGBA } from 'vs/base/common/color';
+import { Color, RGBA } from 'vs/bAse/common/color';
 import { WORKBENCH_BACKGROUND } from 'vs/workbench/common/theme';
-import { ThemableCheckboxActionViewItem } from 'vs/platform/theme/browser/checkbox';
+import { ThemAbleCheckboxActionViewItem } from 'vs/plAtform/theme/browser/checkbox';
 
 const $ = DOM.$;
 
-interface ColumnItem {
+interfAce ColumnItem {
 	column: HTMLElement;
 	proportion?: number;
 	width: number;
 }
 
-const oddRowBackgroundColor = new Color(new RGBA(130, 130, 130, 0.04));
+const oddRowBAckgroundColor = new Color(new RGBA(130, 130, 130, 0.04));
 
-export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorPane {
+export clAss KeybindingsEditor extends EditorPAne implements IKeybindingsEditorPAne {
 
-	static readonly ID: string = 'workbench.editor.keybindings';
+	stAtic reAdonly ID: string = 'workbench.editor.keybindings';
 
-	private _onDefineWhenExpression: Emitter<IKeybindingItemEntry> = this._register(new Emitter<IKeybindingItemEntry>());
-	readonly onDefineWhenExpression: Event<IKeybindingItemEntry> = this._onDefineWhenExpression.event;
+	privAte _onDefineWhenExpression: Emitter<IKeybindingItemEntry> = this._register(new Emitter<IKeybindingItemEntry>());
+	reAdonly onDefineWhenExpression: Event<IKeybindingItemEntry> = this._onDefineWhenExpression.event;
 
-	private _onLayout: Emitter<void> = this._register(new Emitter<void>());
-	readonly onLayout: Event<void> = this._onLayout.event;
+	privAte _onLAyout: Emitter<void> = this._register(new Emitter<void>());
+	reAdonly onLAyout: Event<void> = this._onLAyout.event;
 
-	private keybindingsEditorModel: KeybindingsEditorModel | null = null;
+	privAte keybindingsEditorModel: KeybindingsEditorModel | null = null;
 
-	private headerContainer!: HTMLElement;
-	private actionsContainer!: HTMLElement;
-	private searchWidget!: KeybindingsSearchWidget;
+	privAte heAderContAiner!: HTMLElement;
+	privAte ActionsContAiner!: HTMLElement;
+	privAte seArchWidget!: KeybindingsSeArchWidget;
 
-	private overlayContainer!: HTMLElement;
-	private defineKeybindingWidget!: DefineKeybindingWidget;
+	privAte overlAyContAiner!: HTMLElement;
+	privAte defineKeybindingWidget!: DefineKeybindingWidget;
 
-	private columnItems: ColumnItem[] = [];
-	private keybindingsListContainer!: HTMLElement;
-	private unAssignedKeybindingItemToRevealAndFocus: IKeybindingItemEntry | null = null;
-	private listEntries: IListEntry[] = [];
-	private keybindingsList!: WorkbenchList<IListEntry>;
+	privAte columnItems: ColumnItem[] = [];
+	privAte keybindingsListContAiner!: HTMLElement;
+	privAte unAssignedKeybindingItemToReveAlAndFocus: IKeybindingItemEntry | null = null;
+	privAte listEntries: IListEntry[] = [];
+	privAte keybindingsList!: WorkbenchList<IListEntry>;
 
-	private dimension: DOM.Dimension | null = null;
-	private delayedFiltering: Delayer<void>;
-	private latestEmptyFilters: string[] = [];
-	private delayedFilterLogging: Delayer<void>;
-	private keybindingsEditorContextKey: IContextKey<boolean>;
-	private keybindingFocusContextKey: IContextKey<boolean>;
-	private searchFocusContextKey: IContextKey<boolean>;
+	privAte dimension: DOM.Dimension | null = null;
+	privAte delAyedFiltering: DelAyer<void>;
+	privAte lAtestEmptyFilters: string[] = [];
+	privAte delAyedFilterLogging: DelAyer<void>;
+	privAte keybindingsEditorContextKey: IContextKey<booleAn>;
+	privAte keybindingFocusContextKey: IContextKey<booleAn>;
+	privAte seArchFocusContextKey: IContextKey<booleAn>;
 
-	private readonly sortByPrecedenceAction: Action;
-	private readonly recordKeysAction: Action;
+	privAte reAdonly sortByPrecedenceAction: Action;
+	privAte reAdonly recordKeysAction: Action;
 
-	private ariaLabelElement!: HTMLElement;
+	privAte AriALAbelElement!: HTMLElement;
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
-		@IKeybindingService private readonly keybindingsService: IKeybindingService,
-		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IKeybindingEditingService private readonly keybindingEditingService: IKeybindingEditingService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IClipboardService private readonly clipboardService: IClipboardService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IStorageService storageService: IStorageService
+		@IKeybindingService privAte reAdonly keybindingsService: IKeybindingService,
+		@IContextMenuService privAte reAdonly contextMenuService: IContextMenuService,
+		@IKeybindingEditingService privAte reAdonly keybindingEditingService: IKeybindingEditingService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IClipboArdService privAte reAdonly clipboArdService: IClipboArdService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IStorAgeService storAgeService: IStorAgeService
 	) {
-		super(KeybindingsEditor.ID, telemetryService, themeService, storageService);
-		this.delayedFiltering = new Delayer<void>(300);
-		this._register(keybindingsService.onDidUpdateKeybindings(() => this.render(!!this.keybindingFocusContextKey.get())));
+		super(KeybindingsEditor.ID, telemetryService, themeService, storAgeService);
+		this.delAyedFiltering = new DelAyer<void>(300);
+		this._register(keybindingsService.onDidUpdAteKeybindings(() => this.render(!!this.keybindingFocusContextKey.get())));
 
 		this.keybindingsEditorContextKey = CONTEXT_KEYBINDINGS_EDITOR.bindTo(this.contextKeyService);
-		this.searchFocusContextKey = CONTEXT_KEYBINDINGS_SEARCH_FOCUS.bindTo(this.contextKeyService);
+		this.seArchFocusContextKey = CONTEXT_KEYBINDINGS_SEARCH_FOCUS.bindTo(this.contextKeyService);
 		this.keybindingFocusContextKey = CONTEXT_KEYBINDING_FOCUS.bindTo(this.contextKeyService);
-		this.delayedFilterLogging = new Delayer<void>(1000);
+		this.delAyedFilterLogging = new DelAyer<void>(1000);
 
 		const recordKeysActionKeybinding = this.keybindingsService.lookupKeybinding(KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS);
-		const recordKeysActionLabel = localize('recordKeysLabel', "Record Keys");
-		this.recordKeysAction = new Action(KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS, recordKeysActionKeybinding ? localize('recordKeysLabelWithKeybinding', "{0} ({1})", recordKeysActionLabel, recordKeysActionKeybinding.getLabel()) : recordKeysActionLabel, 'codicon-record-keys');
-		this.recordKeysAction.checked = false;
+		const recordKeysActionLAbel = locAlize('recordKeysLAbel', "Record Keys");
+		this.recordKeysAction = new Action(KEYBINDINGS_EDITOR_COMMAND_RECORD_SEARCH_KEYS, recordKeysActionKeybinding ? locAlize('recordKeysLAbelWithKeybinding', "{0} ({1})", recordKeysActionLAbel, recordKeysActionKeybinding.getLAbel()) : recordKeysActionLAbel, 'codicon-record-keys');
+		this.recordKeysAction.checked = fAlse;
 
 		const sortByPrecedenceActionKeybinding = this.keybindingsService.lookupKeybinding(KEYBINDINGS_EDITOR_COMMAND_SORTBY_PRECEDENCE);
-		const sortByPrecedenceActionLabel = localize('sortByPrecedeneLabel', "Sort by Precedence");
-		this.sortByPrecedenceAction = new Action('keybindings.editor.sortByPrecedence', sortByPrecedenceActionKeybinding ? localize('sortByPrecedeneLabelWithKeybinding', "{0} ({1})", sortByPrecedenceActionLabel, sortByPrecedenceActionKeybinding.getLabel()) : sortByPrecedenceActionLabel, 'codicon-sort-precedence');
-		this.sortByPrecedenceAction.checked = false;
+		const sortByPrecedenceActionLAbel = locAlize('sortByPrecedeneLAbel', "Sort by Precedence");
+		this.sortByPrecedenceAction = new Action('keybindings.editor.sortByPrecedence', sortByPrecedenceActionKeybinding ? locAlize('sortByPrecedeneLAbelWithKeybinding', "{0} ({1})", sortByPrecedenceActionLAbel, sortByPrecedenceActionKeybinding.getLAbel()) : sortByPrecedenceActionLAbel, 'codicon-sort-precedence');
+		this.sortByPrecedenceAction.checked = fAlse;
 	}
 
-	createEditor(parent: HTMLElement): void {
-		const keybindingsEditorElement = DOM.append(parent, $('div', { class: 'keybindings-editor' }));
+	creAteEditor(pArent: HTMLElement): void {
+		const keybindingsEditorElement = DOM.Append(pArent, $('div', { clAss: 'keybindings-editor' }));
 
-		this.createAriaLabelElement(keybindingsEditorElement);
-		this.createOverlayContainer(keybindingsEditorElement);
-		this.createHeader(keybindingsEditorElement);
-		this.createBody(keybindingsEditorElement);
+		this.creAteAriALAbelElement(keybindingsEditorElement);
+		this.creAteOverlAyContAiner(keybindingsEditorElement);
+		this.creAteHeAder(keybindingsEditorElement);
+		this.creAteBody(keybindingsEditorElement);
 	}
 
-	setInput(input: KeybindingsEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
+	setInput(input: KeybindingsEditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
 		this.keybindingsEditorContextKey.set(true);
 		return super.setInput(input, options, context, token)
 			.then(() => this.render(!!(options && options.preserveFocus)));
 	}
 
-	clearInput(): void {
-		super.clearInput();
+	cleArInput(): void {
+		super.cleArInput();
 		this.keybindingsEditorContextKey.reset();
 		this.keybindingFocusContextKey.reset();
 	}
 
-	layout(dimension: DOM.Dimension): void {
+	lAyout(dimension: DOM.Dimension): void {
 		this.dimension = dimension;
-		this.layoutSearchWidget(dimension);
+		this.lAyoutSeArchWidget(dimension);
 
-		this.overlayContainer.style.width = dimension.width + 'px';
-		this.overlayContainer.style.height = dimension.height + 'px';
-		this.defineKeybindingWidget.layout(this.dimension);
+		this.overlAyContAiner.style.width = dimension.width + 'px';
+		this.overlAyContAiner.style.height = dimension.height + 'px';
+		this.defineKeybindingWidget.lAyout(this.dimension);
 
-		this.columnItems.forEach(columnItem => {
+		this.columnItems.forEAch(columnItem => {
 			if (columnItem.proportion) {
 				columnItem.width = 0;
 			}
 		});
-		this.layoutKeybindingsList();
-		this._onLayout.fire();
+		this.lAyoutKeybindingsList();
+		this._onLAyout.fire();
 	}
 
-	layoutColumns(columns: HTMLElement[]): void {
+	lAyoutColumns(columns: HTMLElement[]): void {
 		if (this.columnItems) {
-			columns.forEach((column, index) => {
-				column.style.paddingRight = `6px`;
+			columns.forEAch((column, index) => {
+				column.style.pAddingRight = `6px`;
 				column.style.width = `${this.columnItems[index].width}px`;
 			});
 		}
 	}
 
 	focus(): void {
-		const activeKeybindingEntry = this.activeKeybindingEntry;
-		if (activeKeybindingEntry) {
-			this.selectEntry(activeKeybindingEntry);
+		const ActiveKeybindingEntry = this.ActiveKeybindingEntry;
+		if (ActiveKeybindingEntry) {
+			this.selectEntry(ActiveKeybindingEntry);
 		} else {
-			this.searchWidget.focus();
+			this.seArchWidget.focus();
 		}
 	}
 
-	get activeKeybindingEntry(): IKeybindingItemEntry | null {
+	get ActiveKeybindingEntry(): IKeybindingItemEntry | null {
 		const focusedElement = this.keybindingsList.getFocusedElements()[0];
-		return focusedElement && focusedElement.templateId === KEYBINDING_ENTRY_TEMPLATE_ID ? <IKeybindingItemEntry>focusedElement : null;
+		return focusedElement && focusedElement.templAteId === KEYBINDING_ENTRY_TEMPLATE_ID ? <IKeybindingItemEntry>focusedElement : null;
 	}
 
-	defineKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<any> {
+	defineKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<Any> {
 		this.selectEntry(keybindingEntry);
-		this.showOverlayContainer();
+		this.showOverlAyContAiner();
 		return this.defineKeybindingWidget.define().then(key => {
 			if (key) {
-				this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_DEFINE, keybindingEntry.keybindingItem.command, key);
-				return this.updateKeybinding(keybindingEntry, key, keybindingEntry.keybindingItem.when);
+				this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_DEFINE, keybindingEntry.keybindingItem.commAnd, key);
+				return this.updAteKeybinding(keybindingEntry, key, keybindingEntry.keybindingItem.when);
 			}
 			return null;
 		}).then(() => {
-			this.hideOverlayContainer();
+			this.hideOverlAyContAiner();
 			this.selectEntry(keybindingEntry);
 		}, error => {
-			this.hideOverlayContainer();
+			this.hideOverlAyContAiner();
 			this.onKeybindingEditingError(error);
 			this.selectEntry(keybindingEntry);
 			return error;
@@ -217,23 +217,23 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 		}
 	}
 
-	updateKeybinding(keybindingEntry: IKeybindingItemEntry, key: string, when: string | undefined): Promise<any> {
-		const currentKey = keybindingEntry.keybindingItem.keybinding ? keybindingEntry.keybindingItem.keybinding.getUserSettingsLabel() : '';
+	updAteKeybinding(keybindingEntry: IKeybindingItemEntry, key: string, when: string | undefined): Promise<Any> {
+		const currentKey = keybindingEntry.keybindingItem.keybinding ? keybindingEntry.keybindingItem.keybinding.getUserSettingsLAbel() : '';
 		if (currentKey !== key || keybindingEntry.keybindingItem.when !== when) {
 			return this.keybindingEditingService.editKeybinding(keybindingEntry.keybindingItem.keybindingItem, key, when || undefined)
 				.then(() => {
-					if (!keybindingEntry.keybindingItem.keybinding) { // reveal only if keybinding was added to unassinged. Because the entry will be placed in different position after rendering
-						this.unAssignedKeybindingItemToRevealAndFocus = keybindingEntry;
+					if (!keybindingEntry.keybindingItem.keybinding) { // reveAl only if keybinding wAs Added to unAssinged. BecAuse the entry will be plAced in different position After rendering
+						this.unAssignedKeybindingItemToReveAlAndFocus = keybindingEntry;
 					}
 				});
 		}
 		return Promise.resolve();
 	}
 
-	removeKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<any> {
+	removeKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<Any> {
 		this.selectEntry(keybindingEntry);
-		if (keybindingEntry.keybindingItem.keybinding) { // This should be a pre-condition
-			this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_REMOVE, keybindingEntry.keybindingItem.command, keybindingEntry.keybindingItem.keybinding);
+		if (keybindingEntry.keybindingItem.keybinding) { // This should be A pre-condition
+			this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_REMOVE, keybindingEntry.keybindingItem.commAnd, keybindingEntry.keybindingItem.keybinding);
 			return this.keybindingEditingService.removeKeybinding(keybindingEntry.keybindingItem.keybindingItem)
 				.then(() => this.focus(),
 					error => {
@@ -244,13 +244,13 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 		return Promise.resolve(null);
 	}
 
-	resetKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<any> {
+	resetKeybinding(keybindingEntry: IKeybindingItemEntry): Promise<Any> {
 		this.selectEntry(keybindingEntry);
-		this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_RESET, keybindingEntry.keybindingItem.command, keybindingEntry.keybindingItem.keybinding);
+		this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_RESET, keybindingEntry.keybindingItem.commAnd, keybindingEntry.keybindingItem.keybinding);
 		return this.keybindingEditingService.resetKeybinding(keybindingEntry.keybindingItem.keybindingItem)
 			.then(() => {
-				if (!keybindingEntry.keybindingItem.keybinding) { // reveal only if keybinding was added to unassinged. Because the entry will be placed in different position after rendering
-					this.unAssignedKeybindingItemToRevealAndFocus = keybindingEntry;
+				if (!keybindingEntry.keybindingItem.keybinding) { // reveAl only if keybinding wAs Added to unAssinged. BecAuse the entry will be plAced in different position After rendering
+					this.unAssignedKeybindingItemToReveAlAndFocus = keybindingEntry;
 				}
 				this.selectEntry(keybindingEntry);
 			},
@@ -260,129 +260,129 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 				});
 	}
 
-	async copyKeybinding(keybinding: IKeybindingItemEntry): Promise<void> {
+	Async copyKeybinding(keybinding: IKeybindingItemEntry): Promise<void> {
 		this.selectEntry(keybinding);
-		this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_COPY, keybinding.keybindingItem.command, keybinding.keybindingItem.keybinding);
+		this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_COPY, keybinding.keybindingItem.commAnd, keybinding.keybindingItem.keybinding);
 		const userFriendlyKeybinding: IUserFriendlyKeybinding = {
-			key: keybinding.keybindingItem.keybinding ? keybinding.keybindingItem.keybinding.getUserSettingsLabel() || '' : '',
-			command: keybinding.keybindingItem.command
+			key: keybinding.keybindingItem.keybinding ? keybinding.keybindingItem.keybinding.getUserSettingsLAbel() || '' : '',
+			commAnd: keybinding.keybindingItem.commAnd
 		};
 		if (keybinding.keybindingItem.when) {
 			userFriendlyKeybinding.when = keybinding.keybindingItem.when;
 		}
-		await this.clipboardService.writeText(JSON.stringify(userFriendlyKeybinding, null, '  '));
+		AwAit this.clipboArdService.writeText(JSON.stringify(userFriendlyKeybinding, null, '  '));
 	}
 
-	async copyKeybindingCommand(keybinding: IKeybindingItemEntry): Promise<void> {
+	Async copyKeybindingCommAnd(keybinding: IKeybindingItemEntry): Promise<void> {
 		this.selectEntry(keybinding);
-		this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND, keybinding.keybindingItem.command, keybinding.keybindingItem.keybinding);
-		await this.clipboardService.writeText(keybinding.keybindingItem.command);
+		this.reportKeybindingAction(KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND, keybinding.keybindingItem.commAnd, keybinding.keybindingItem.keybinding);
+		AwAit this.clipboArdService.writeText(keybinding.keybindingItem.commAnd);
 	}
 
-	focusSearch(): void {
-		this.searchWidget.focus();
+	focusSeArch(): void {
+		this.seArchWidget.focus();
 	}
 
-	search(filter: string): void {
-		this.focusSearch();
-		this.searchWidget.setValue(filter);
+	seArch(filter: string): void {
+		this.focusSeArch();
+		this.seArchWidget.setVAlue(filter);
 	}
 
-	clearSearchResults(): void {
-		this.searchWidget.clear();
+	cleArSeArchResults(): void {
+		this.seArchWidget.cleAr();
 	}
 
-	showSimilarKeybindings(keybindingEntry: IKeybindingItemEntry): void {
-		const value = `"${keybindingEntry.keybindingItem.keybinding.getAriaLabel()}"`;
-		if (value !== this.searchWidget.getValue()) {
-			this.searchWidget.setValue(value);
+	showSimilArKeybindings(keybindingEntry: IKeybindingItemEntry): void {
+		const vAlue = `"${keybindingEntry.keybindingItem.keybinding.getAriALAbel()}"`;
+		if (vAlue !== this.seArchWidget.getVAlue()) {
+			this.seArchWidget.setVAlue(vAlue);
 		}
 	}
 
-	private createAriaLabelElement(parent: HTMLElement): void {
-		this.ariaLabelElement = DOM.append(parent, DOM.$(''));
-		this.ariaLabelElement.setAttribute('id', 'keybindings-editor-aria-label-element');
-		this.ariaLabelElement.setAttribute('aria-live', 'assertive');
+	privAte creAteAriALAbelElement(pArent: HTMLElement): void {
+		this.AriALAbelElement = DOM.Append(pArent, DOM.$(''));
+		this.AriALAbelElement.setAttribute('id', 'keybindings-editor-AriA-lAbel-element');
+		this.AriALAbelElement.setAttribute('AriA-live', 'Assertive');
 	}
 
-	private createOverlayContainer(parent: HTMLElement): void {
-		this.overlayContainer = DOM.append(parent, $('.overlay-container'));
-		this.overlayContainer.style.position = 'absolute';
-		this.overlayContainer.style.zIndex = '10';
-		this.defineKeybindingWidget = this._register(this.instantiationService.createInstance(DefineKeybindingWidget, this.overlayContainer));
-		this._register(this.defineKeybindingWidget.onDidChange(keybindingStr => this.defineKeybindingWidget.printExisting(this.keybindingsEditorModel!.fetch(`"${keybindingStr}"`).length)));
-		this._register(this.defineKeybindingWidget.onShowExistingKeybidings(keybindingStr => this.searchWidget.setValue(`"${keybindingStr}"`)));
-		this.hideOverlayContainer();
+	privAte creAteOverlAyContAiner(pArent: HTMLElement): void {
+		this.overlAyContAiner = DOM.Append(pArent, $('.overlAy-contAiner'));
+		this.overlAyContAiner.style.position = 'Absolute';
+		this.overlAyContAiner.style.zIndex = '10';
+		this.defineKeybindingWidget = this._register(this.instAntiAtionService.creAteInstAnce(DefineKeybindingWidget, this.overlAyContAiner));
+		this._register(this.defineKeybindingWidget.onDidChAnge(keybindingStr => this.defineKeybindingWidget.printExisting(this.keybindingsEditorModel!.fetch(`"${keybindingStr}"`).length)));
+		this._register(this.defineKeybindingWidget.onShowExistingKeybidings(keybindingStr => this.seArchWidget.setVAlue(`"${keybindingStr}"`)));
+		this.hideOverlAyContAiner();
 	}
 
-	private showOverlayContainer() {
-		this.overlayContainer.style.display = 'block';
+	privAte showOverlAyContAiner() {
+		this.overlAyContAiner.style.displAy = 'block';
 	}
 
-	private hideOverlayContainer() {
-		this.overlayContainer.style.display = 'none';
+	privAte hideOverlAyContAiner() {
+		this.overlAyContAiner.style.displAy = 'none';
 	}
 
-	private createHeader(parent: HTMLElement): void {
-		this.headerContainer = DOM.append(parent, $('.keybindings-header'));
-		const fullTextSearchPlaceholder = localize('SearchKeybindings.FullTextSearchPlaceholder', "Type to search in keybindings");
-		const keybindingsSearchPlaceholder = localize('SearchKeybindings.KeybindingsSearchPlaceholder', "Recording Keys. Press Escape to exit");
+	privAte creAteHeAder(pArent: HTMLElement): void {
+		this.heAderContAiner = DOM.Append(pArent, $('.keybindings-heAder'));
+		const fullTextSeArchPlAceholder = locAlize('SeArchKeybindings.FullTextSeArchPlAceholder', "Type to seArch in keybindings");
+		const keybindingsSeArchPlAceholder = locAlize('SeArchKeybindings.KeybindingsSeArchPlAceholder', "Recording Keys. Press EscApe to exit");
 
-		const clearInputAction = new Action(KEYBINDINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS, localize('clearInput', "Clear Keybindings Search Input"), 'codicon-clear-all', false, () => { this.search(''); return Promise.resolve(null); });
+		const cleArInputAction = new Action(KEYBINDINGS_EDITOR_COMMAND_CLEAR_SEARCH_RESULTS, locAlize('cleArInput', "CleAr Keybindings SeArch Input"), 'codicon-cleAr-All', fAlse, () => { this.seArch(''); return Promise.resolve(null); });
 
-		const searchContainer = DOM.append(this.headerContainer, $('.search-container'));
-		this.searchWidget = this._register(this.instantiationService.createInstance(KeybindingsSearchWidget, searchContainer, <KeybindingsSearchOptions>{
-			ariaLabel: fullTextSearchPlaceholder,
-			placeholder: fullTextSearchPlaceholder,
-			focusKey: this.searchFocusContextKey,
-			ariaLabelledBy: 'keybindings-editor-aria-label-element',
+		const seArchContAiner = DOM.Append(this.heAderContAiner, $('.seArch-contAiner'));
+		this.seArchWidget = this._register(this.instAntiAtionService.creAteInstAnce(KeybindingsSeArchWidget, seArchContAiner, <KeybindingsSeArchOptions>{
+			AriALAbel: fullTextSeArchPlAceholder,
+			plAceholder: fullTextSeArchPlAceholder,
+			focusKey: this.seArchFocusContextKey,
+			AriALAbelledBy: 'keybindings-editor-AriA-lAbel-element',
 			recordEnter: true,
 			quoteRecordedKeys: true
 		}));
-		this._register(this.searchWidget.onDidChange(searchValue => {
-			clearInputAction.enabled = !!searchValue;
-			this.delayedFiltering.trigger(() => this.filterKeybindings());
-			this.updateSearchOptions();
+		this._register(this.seArchWidget.onDidChAnge(seArchVAlue => {
+			cleArInputAction.enAbled = !!seArchVAlue;
+			this.delAyedFiltering.trigger(() => this.filterKeybindings());
+			this.updAteSeArchOptions();
 		}));
-		this._register(this.searchWidget.onEscape(() => this.recordKeysAction.checked = false));
+		this._register(this.seArchWidget.onEscApe(() => this.recordKeysAction.checked = fAlse));
 
-		this.actionsContainer = DOM.append(searchContainer, DOM.$('.keybindings-search-actions-container'));
-		const recordingBadge = this.createRecordingBadge(this.actionsContainer);
+		this.ActionsContAiner = DOM.Append(seArchContAiner, DOM.$('.keybindings-seArch-Actions-contAiner'));
+		const recordingBAdge = this.creAteRecordingBAdge(this.ActionsContAiner);
 
-		this._register(this.sortByPrecedenceAction.onDidChange(e => {
+		this._register(this.sortByPrecedenceAction.onDidChAnge(e => {
 			if (e.checked !== undefined) {
-				this.renderKeybindingsEntries(false);
+				this.renderKeybindingsEntries(fAlse);
 			}
-			this.updateSearchOptions();
+			this.updAteSeArchOptions();
 		}));
 
-		this._register(this.recordKeysAction.onDidChange(e => {
+		this._register(this.recordKeysAction.onDidChAnge(e => {
 			if (e.checked !== undefined) {
-				recordingBadge.classList.toggle('disabled', !e.checked);
+				recordingBAdge.clAssList.toggle('disAbled', !e.checked);
 				if (e.checked) {
-					this.searchWidget.inputBox.setPlaceHolder(keybindingsSearchPlaceholder);
-					this.searchWidget.inputBox.setAriaLabel(keybindingsSearchPlaceholder);
-					this.searchWidget.startRecordingKeys();
-					this.searchWidget.focus();
+					this.seArchWidget.inputBox.setPlAceHolder(keybindingsSeArchPlAceholder);
+					this.seArchWidget.inputBox.setAriALAbel(keybindingsSeArchPlAceholder);
+					this.seArchWidget.stArtRecordingKeys();
+					this.seArchWidget.focus();
 				} else {
-					this.searchWidget.inputBox.setPlaceHolder(fullTextSearchPlaceholder);
-					this.searchWidget.inputBox.setAriaLabel(fullTextSearchPlaceholder);
-					this.searchWidget.stopRecordingKeys();
-					this.searchWidget.focus();
+					this.seArchWidget.inputBox.setPlAceHolder(fullTextSeArchPlAceholder);
+					this.seArchWidget.inputBox.setAriALAbel(fullTextSeArchPlAceholder);
+					this.seArchWidget.stopRecordingKeys();
+					this.seArchWidget.focus();
 				}
-				this.updateSearchOptions();
+				this.updAteSeArchOptions();
 			}
 		}));
 
-		const actionBar = this._register(new ActionBar(this.actionsContainer, {
-			animated: false,
-			actionViewItemProvider: (action: IAction) => {
+		const ActionBAr = this._register(new ActionBAr(this.ActionsContAiner, {
+			AnimAted: fAlse,
+			ActionViewItemProvider: (Action: IAction) => {
 				let checkboxViewItem: CheckboxActionViewItem | undefined;
-				if (action.id === this.sortByPrecedenceAction.id) {
-					checkboxViewItem = new ThemableCheckboxActionViewItem(null, action, undefined, this.themeService);
+				if (Action.id === this.sortByPrecedenceAction.id) {
+					checkboxViewItem = new ThemAbleCheckboxActionViewItem(null, Action, undefined, this.themeService);
 				}
-				else if (action.id === this.recordKeysAction.id) {
-					checkboxViewItem = new ThemableCheckboxActionViewItem(null, action, undefined, this.themeService);
+				else if (Action.id === this.recordKeysAction.id) {
+					checkboxViewItem = new ThemAbleCheckboxActionViewItem(null, Action, undefined, this.themeService);
 				}
 				if (checkboxViewItem) {
 
@@ -391,191 +391,191 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 			}
 		}));
 
-		actionBar.push([this.recordKeysAction, this.sortByPrecedenceAction, clearInputAction], { label: false, icon: true });
+		ActionBAr.push([this.recordKeysAction, this.sortByPrecedenceAction, cleArInputAction], { lAbel: fAlse, icon: true });
 	}
 
-	private updateSearchOptions(): void {
-		const keybindingsEditorInput = this.input as KeybindingsEditorInput;
+	privAte updAteSeArchOptions(): void {
+		const keybindingsEditorInput = this.input As KeybindingsEditorInput;
 		if (keybindingsEditorInput) {
-			keybindingsEditorInput.searchOptions = {
-				searchValue: this.searchWidget.getValue(),
+			keybindingsEditorInput.seArchOptions = {
+				seArchVAlue: this.seArchWidget.getVAlue(),
 				recordKeybindings: !!this.recordKeysAction.checked,
 				sortByPrecedence: !!this.sortByPrecedenceAction.checked
 			};
 		}
 	}
 
-	private createRecordingBadge(container: HTMLElement): HTMLElement {
-		const recordingBadge = DOM.append(container, DOM.$('.recording-badge.monaco-count-badge.long.disabled'));
-		recordingBadge.textContent = localize('recording', "Recording Keys");
-		this._register(attachStylerCallback(this.themeService, { badgeBackground, contrastBorder, badgeForeground }, colors => {
-			const background = colors.badgeBackground ? colors.badgeBackground.toString() : '';
-			const border = colors.contrastBorder ? colors.contrastBorder.toString() : '';
-			const color = colors.badgeForeground ? colors.badgeForeground.toString() : '';
+	privAte creAteRecordingBAdge(contAiner: HTMLElement): HTMLElement {
+		const recordingBAdge = DOM.Append(contAiner, DOM.$('.recording-bAdge.monAco-count-bAdge.long.disAbled'));
+		recordingBAdge.textContent = locAlize('recording', "Recording Keys");
+		this._register(AttAchStylerCAllbAck(this.themeService, { bAdgeBAckground, contrAstBorder, bAdgeForeground }, colors => {
+			const bAckground = colors.bAdgeBAckground ? colors.bAdgeBAckground.toString() : '';
+			const border = colors.contrAstBorder ? colors.contrAstBorder.toString() : '';
+			const color = colors.bAdgeForeground ? colors.bAdgeForeground.toString() : '';
 
-			recordingBadge.style.backgroundColor = background;
-			recordingBadge.style.borderWidth = border ? '1px' : '';
-			recordingBadge.style.borderStyle = border ? 'solid' : '';
-			recordingBadge.style.borderColor = border;
-			recordingBadge.style.color = color ? color.toString() : '';
+			recordingBAdge.style.bAckgroundColor = bAckground;
+			recordingBAdge.style.borderWidth = border ? '1px' : '';
+			recordingBAdge.style.borderStyle = border ? 'solid' : '';
+			recordingBAdge.style.borderColor = border;
+			recordingBAdge.style.color = color ? color.toString() : '';
 		}));
-		return recordingBadge;
+		return recordingBAdge;
 	}
 
-	private layoutSearchWidget(dimension: DOM.Dimension): void {
-		this.searchWidget.layout(dimension);
-		this.headerContainer.classList.toggle('small', dimension.width < 400);
-		this.searchWidget.inputBox.inputElement.style.paddingRight = `${DOM.getTotalWidth(this.actionsContainer) + 12}px`;
+	privAte lAyoutSeArchWidget(dimension: DOM.Dimension): void {
+		this.seArchWidget.lAyout(dimension);
+		this.heAderContAiner.clAssList.toggle('smAll', dimension.width < 400);
+		this.seArchWidget.inputBox.inputElement.style.pAddingRight = `${DOM.getTotAlWidth(this.ActionsContAiner) + 12}px`;
 	}
 
-	private createBody(parent: HTMLElement): void {
-		const bodyContainer = DOM.append(parent, $('.keybindings-body'));
-		this.createListHeader(bodyContainer);
-		this.createList(bodyContainer);
+	privAte creAteBody(pArent: HTMLElement): void {
+		const bodyContAiner = DOM.Append(pArent, $('.keybindings-body'));
+		this.creAteListHeAder(bodyContAiner);
+		this.creAteList(bodyContAiner);
 	}
 
-	private createListHeader(parent: HTMLElement): void {
-		const keybindingsListHeader = DOM.append(parent, $('.keybindings-list-header'));
-		keybindingsListHeader.style.height = '30px';
-		keybindingsListHeader.style.lineHeight = '30px';
+	privAte creAteListHeAder(pArent: HTMLElement): void {
+		const keybindingsListHeAder = DOM.Append(pArent, $('.keybindings-list-heAder'));
+		keybindingsListHeAder.style.height = '30px';
+		keybindingsListHeAder.style.lineHeight = '30px';
 
 		this.columnItems = [];
-		let column = $('.header.actions');
+		let column = $('.heAder.Actions');
 		this.columnItems.push({ column, width: 30 });
 
-		column = $('.header.command', undefined, localize('command', "Command"));
+		column = $('.heAder.commAnd', undefined, locAlize('commAnd', "CommAnd"));
 		this.columnItems.push({ column, proportion: 0.3, width: 0 });
 
-		column = $('.header.keybinding', undefined, localize('keybinding', "Keybinding"));
+		column = $('.heAder.keybinding', undefined, locAlize('keybinding', "Keybinding"));
 		this.columnItems.push({ column, proportion: 0.2, width: 0 });
 
-		column = $('.header.when', undefined, localize('when', "When"));
+		column = $('.heAder.when', undefined, locAlize('when', "When"));
 		this.columnItems.push({ column, proportion: 0.4, width: 0 });
 
-		column = $('.header.source', undefined, localize('source', "Source"));
+		column = $('.heAder.source', undefined, locAlize('source', "Source"));
 		this.columnItems.push({ column, proportion: 0.1, width: 0 });
 
-		DOM.append(keybindingsListHeader, ...this.columnItems.map(({ column }) => column));
+		DOM.Append(keybindingsListHeAder, ...this.columnItems.mAp(({ column }) => column));
 	}
 
-	private createList(parent: HTMLElement): void {
-		this.keybindingsListContainer = DOM.append(parent, $('.keybindings-list-container'));
-		this.keybindingsList = this._register(this.instantiationService.createInstance(WorkbenchList, 'KeybindingsEditor', this.keybindingsListContainer, new Delegate(), [new KeybindingItemRenderer(this, this.instantiationService)], {
+	privAte creAteList(pArent: HTMLElement): void {
+		this.keybindingsListContAiner = DOM.Append(pArent, $('.keybindings-list-contAiner'));
+		this.keybindingsList = this._register(this.instAntiAtionService.creAteInstAnce(WorkbenchList, 'KeybindingsEditor', this.keybindingsListContAiner, new DelegAte(), [new KeybindingItemRenderer(this, this.instAntiAtionService)], {
 			identityProvider: { getId: (e: IListEntry) => e.id },
-			setRowLineHeight: false,
-			horizontalScrolling: false,
-			accessibilityProvider: new AccessibilityProvider(),
-			keyboardNavigationLabelProvider: { getKeyboardNavigationLabel: (e: IKeybindingItemEntry) => e.keybindingItem.commandLabel || e.keybindingItem.command },
+			setRowLineHeight: fAlse,
+			horizontAlScrolling: fAlse,
+			AccessibilityProvider: new AccessibilityProvider(),
+			keyboArdNAvigAtionLAbelProvider: { getKeyboArdNAvigAtionLAbel: (e: IKeybindingItemEntry) => e.keybindingItem.commAndLAbel || e.keybindingItem.commAnd },
 			overrideStyles: {
-				listBackground: editorBackground
+				listBAckground: editorBAckground
 			}
-		})) as WorkbenchList<IListEntry>;
+		})) As WorkbenchList<IListEntry>;
 
 		this._register(this.keybindingsList.onContextMenu(e => this.onContextMenu(e)));
-		this._register(this.keybindingsList.onDidChangeFocus(e => this.onFocusChange(e)));
+		this._register(this.keybindingsList.onDidChAngeFocus(e => this.onFocusChAnge(e)));
 		this._register(this.keybindingsList.onDidFocus(() => {
-			this.keybindingsList.getHTMLElement().classList.add('focused');
+			this.keybindingsList.getHTMLElement().clAssList.Add('focused');
 		}));
 		this._register(this.keybindingsList.onDidBlur(() => {
-			this.keybindingsList.getHTMLElement().classList.remove('focused');
+			this.keybindingsList.getHTMLElement().clAssList.remove('focused');
 			this.keybindingFocusContextKey.reset();
 		}));
 		this._register(this.keybindingsList.onMouseDblClick(() => {
-			const activeKeybindingEntry = this.activeKeybindingEntry;
-			if (activeKeybindingEntry) {
-				this.defineKeybinding(activeKeybindingEntry);
+			const ActiveKeybindingEntry = this.ActiveKeybindingEntry;
+			if (ActiveKeybindingEntry) {
+				this.defineKeybinding(ActiveKeybindingEntry);
 			}
 		}));
 		this._register(this.keybindingsList.onKeyDown(e => {
-			const event = new StandardKeyboardEvent(e);
+			const event = new StAndArdKeyboArdEvent(e);
 			if (event.keyCode === KeyCode.Enter) {
-				const keybindingEntry = this.activeKeybindingEntry;
+				const keybindingEntry = this.ActiveKeybindingEntry;
 				if (keybindingEntry) {
 					this.defineKeybinding(keybindingEntry);
 				}
-				e.stopPropagation();
+				e.stopPropAgAtion();
 			}
 		}));
 	}
 
-	private async render(preserveFocus: boolean): Promise<void> {
+	privAte Async render(preserveFocus: booleAn): Promise<void> {
 		if (this.input) {
-			const input: KeybindingsEditorInput = this.input as KeybindingsEditorInput;
-			this.keybindingsEditorModel = await input.resolve();
-			await this.keybindingsEditorModel.resolve(this.getActionsLabels());
-			this.renderKeybindingsEntries(false, preserveFocus);
-			if (input.searchOptions) {
-				this.recordKeysAction.checked = input.searchOptions.recordKeybindings;
-				this.sortByPrecedenceAction.checked = input.searchOptions.sortByPrecedence;
-				this.searchWidget.setValue(input.searchOptions.searchValue);
+			const input: KeybindingsEditorInput = this.input As KeybindingsEditorInput;
+			this.keybindingsEditorModel = AwAit input.resolve();
+			AwAit this.keybindingsEditorModel.resolve(this.getActionsLAbels());
+			this.renderKeybindingsEntries(fAlse, preserveFocus);
+			if (input.seArchOptions) {
+				this.recordKeysAction.checked = input.seArchOptions.recordKeybindings;
+				this.sortByPrecedenceAction.checked = input.seArchOptions.sortByPrecedence;
+				this.seArchWidget.setVAlue(input.seArchOptions.seArchVAlue);
 			} else {
-				this.updateSearchOptions();
+				this.updAteSeArchOptions();
 			}
 		}
 	}
 
-	private getActionsLabels(): Map<string, string> {
-		const actionsLabels: Map<string, string> = new Map<string, string>();
-		EditorExtensionsRegistry.getEditorActions().forEach(editorAction => actionsLabels.set(editorAction.id, editorAction.label));
-		for (const menuItem of MenuRegistry.getMenuItems(MenuId.CommandPalette)) {
+	privAte getActionsLAbels(): MAp<string, string> {
+		const ActionsLAbels: MAp<string, string> = new MAp<string, string>();
+		EditorExtensionsRegistry.getEditorActions().forEAch(editorAction => ActionsLAbels.set(editorAction.id, editorAction.lAbel));
+		for (const menuItem of MenuRegistry.getMenuItems(MenuId.CommAndPAlette)) {
 			if (isIMenuItem(menuItem)) {
-				const title = typeof menuItem.command.title === 'string' ? menuItem.command.title : menuItem.command.title.value;
-				const category = menuItem.command.category ? typeof menuItem.command.category === 'string' ? menuItem.command.category : menuItem.command.category.value : undefined;
-				actionsLabels.set(menuItem.command.id, category ? `${category}: ${title}` : title);
+				const title = typeof menuItem.commAnd.title === 'string' ? menuItem.commAnd.title : menuItem.commAnd.title.vAlue;
+				const cAtegory = menuItem.commAnd.cAtegory ? typeof menuItem.commAnd.cAtegory === 'string' ? menuItem.commAnd.cAtegory : menuItem.commAnd.cAtegory.vAlue : undefined;
+				ActionsLAbels.set(menuItem.commAnd.id, cAtegory ? `${cAtegory}: ${title}` : title);
 			}
 		}
-		return actionsLabels;
+		return ActionsLAbels;
 	}
 
-	private filterKeybindings(): void {
-		this.renderKeybindingsEntries(this.searchWidget.hasFocus());
-		this.delayedFilterLogging.trigger(() => this.reportFilteringUsed(this.searchWidget.getValue()));
+	privAte filterKeybindings(): void {
+		this.renderKeybindingsEntries(this.seArchWidget.hAsFocus());
+		this.delAyedFilterLogging.trigger(() => this.reportFilteringUsed(this.seArchWidget.getVAlue()));
 	}
 
-	private renderKeybindingsEntries(reset: boolean, preserveFocus?: boolean): void {
+	privAte renderKeybindingsEntries(reset: booleAn, preserveFocus?: booleAn): void {
 		if (this.keybindingsEditorModel) {
-			const filter = this.searchWidget.getValue();
+			const filter = this.seArchWidget.getVAlue();
 			const keybindingsEntries: IKeybindingItemEntry[] = this.keybindingsEditorModel.fetch(filter, this.sortByPrecedenceAction.checked);
 
-			this.ariaLabelElement.setAttribute('aria-label', this.getAriaLabel(keybindingsEntries));
+			this.AriALAbelElement.setAttribute('AriA-lAbel', this.getAriALAbel(keybindingsEntries));
 
 			if (keybindingsEntries.length === 0) {
-				this.latestEmptyFilters.push(filter);
+				this.lAtestEmptyFilters.push(filter);
 			}
 			const currentSelectedIndex = this.keybindingsList.getSelection()[0];
 			this.listEntries = keybindingsEntries;
 			this.keybindingsList.splice(0, this.keybindingsList.length, this.listEntries);
-			this.layoutKeybindingsList();
+			this.lAyoutKeybindingsList();
 
 			if (reset) {
 				this.keybindingsList.setSelection([]);
 				this.keybindingsList.setFocus([]);
 			} else {
-				if (this.unAssignedKeybindingItemToRevealAndFocus) {
-					const index = this.getNewIndexOfUnassignedKeybinding(this.unAssignedKeybindingItemToRevealAndFocus);
+				if (this.unAssignedKeybindingItemToReveAlAndFocus) {
+					const index = this.getNewIndexOfUnAssignedKeybinding(this.unAssignedKeybindingItemToReveAlAndFocus);
 					if (index !== -1) {
-						this.keybindingsList.reveal(index, 0.2);
+						this.keybindingsList.reveAl(index, 0.2);
 						this.selectEntry(index);
 					}
-					this.unAssignedKeybindingItemToRevealAndFocus = null;
+					this.unAssignedKeybindingItemToReveAlAndFocus = null;
 				} else if (currentSelectedIndex !== -1 && currentSelectedIndex < this.listEntries.length) {
 					this.selectEntry(currentSelectedIndex, preserveFocus);
-				} else if (this.editorService.activeEditorPane === this && !preserveFocus) {
+				} else if (this.editorService.ActiveEditorPAne === this && !preserveFocus) {
 					this.focus();
 				}
 			}
 		}
 	}
 
-	private getAriaLabel(keybindingsEntries: IKeybindingItemEntry[]): string {
+	privAte getAriALAbel(keybindingsEntries: IKeybindingItemEntry[]): string {
 		if (this.sortByPrecedenceAction.checked) {
-			return localize('show sorted keybindings', "Showing {0} Keybindings in precedence order", keybindingsEntries.length);
+			return locAlize('show sorted keybindings', "Showing {0} Keybindings in precedence order", keybindingsEntries.length);
 		} else {
-			return localize('show keybindings', "Showing {0} Keybindings in alphabetical order", keybindingsEntries.length);
+			return locAlize('show keybindings', "Showing {0} Keybindings in AlphAbeticAl order", keybindingsEntries.length);
 		}
 	}
 
-	private layoutKeybindingsList(): void {
+	privAte lAyoutKeybindingsList(): void {
 		if (!this.dimension) {
 			return;
 		}
@@ -591,13 +591,13 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 			}
 		}
 
-		this.layoutColumns(this.columnItems.map(({ column }) => column));
-		const listHeight = this.dimension.height - (DOM.getDomNodePagePosition(this.headerContainer).height + 12 /*padding*/ + 30 /*list header*/);
-		this.keybindingsListContainer.style.height = `${listHeight}px`;
-		this.keybindingsList.layout(listHeight);
+		this.lAyoutColumns(this.columnItems.mAp(({ column }) => column));
+		const listHeight = this.dimension.height - (DOM.getDomNodePAgePosition(this.heAderContAiner).height + 12 /*pAdding*/ + 30 /*list heAder*/);
+		this.keybindingsListContAiner.style.height = `${listHeight}px`;
+		this.keybindingsList.lAyout(listHeight);
 	}
 
-	private getIndexOf(listEntry: IListEntry): number {
+	privAte getIndexOf(listEntry: IListEntry): number {
 		const index = this.listEntries.indexOf(listEntry);
 		if (index === -1) {
 			for (let i = 0; i < this.listEntries.length; i++) {
@@ -609,12 +609,12 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 		return index;
 	}
 
-	private getNewIndexOfUnassignedKeybinding(unassignedKeybinding: IKeybindingItemEntry): number {
+	privAte getNewIndexOfUnAssignedKeybinding(unAssignedKeybinding: IKeybindingItemEntry): number {
 		for (let index = 0; index < this.listEntries.length; index++) {
 			const entry = this.listEntries[index];
-			if (entry.templateId === KEYBINDING_ENTRY_TEMPLATE_ID) {
+			if (entry.templAteId === KEYBINDING_ENTRY_TEMPLATE_ID) {
 				const keybindingItemEntry = (<IKeybindingItemEntry>entry);
-				if (keybindingItemEntry.keybindingItem.command === unassignedKeybinding.keybindingItem.command) {
+				if (keybindingItemEntry.keybindingItem.commAnd === unAssignedKeybinding.keybindingItem.commAnd) {
 					return index;
 				}
 			}
@@ -622,7 +622,7 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 		return -1;
 	}
 
-	private selectEntry(keybindingItemEntry: IKeybindingItemEntry | number, focus: boolean = true): void {
+	privAte selectEntry(keybindingItemEntry: IKeybindingItemEntry | number, focus: booleAn = true): void {
 		const index = typeof keybindingItemEntry === 'number' ? keybindingItemEntry : this.getIndexOf(keybindingItemEntry);
 		if (index !== -1) {
 			if (focus) {
@@ -643,7 +643,7 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 		this.selectEntry(keybindingItemEntry);
 	}
 
-	recordSearchKeys(): void {
+	recordSeArchKeys(): void {
 		this.recordKeysAction.checked = true;
 	}
 
@@ -651,545 +651,545 @@ export class KeybindingsEditor extends EditorPane implements IKeybindingsEditorP
 		this.sortByPrecedenceAction.checked = !this.sortByPrecedenceAction.checked;
 	}
 
-	private onContextMenu(e: IListContextMenuEvent<IListEntry>): void {
+	privAte onContextMenu(e: IListContextMenuEvent<IListEntry>): void {
 		if (!e.element) {
 			return;
 		}
 
-		if (e.element.templateId === KEYBINDING_ENTRY_TEMPLATE_ID) {
+		if (e.element.templAteId === KEYBINDING_ENTRY_TEMPLATE_ID) {
 			this.selectEntry(<IKeybindingItemEntry>e.element);
 			this.contextMenuService.showContextMenu({
-				getAnchor: () => e.anchor,
+				getAnchor: () => e.Anchor,
 				getActions: () => [
-					this.createCopyAction(<IKeybindingItemEntry>e.element),
-					this.createCopyCommandAction(<IKeybindingItemEntry>e.element),
-					new Separator(),
-					this.createDefineAction(<IKeybindingItemEntry>e.element),
-					this.createRemoveAction(<IKeybindingItemEntry>e.element),
-					this.createResetAction(<IKeybindingItemEntry>e.element),
-					this.createDefineWhenExpressionAction(<IKeybindingItemEntry>e.element),
-					new Separator(),
-					this.createShowConflictsAction(<IKeybindingItemEntry>e.element)]
+					this.creAteCopyAction(<IKeybindingItemEntry>e.element),
+					this.creAteCopyCommAndAction(<IKeybindingItemEntry>e.element),
+					new SepArAtor(),
+					this.creAteDefineAction(<IKeybindingItemEntry>e.element),
+					this.creAteRemoveAction(<IKeybindingItemEntry>e.element),
+					this.creAteResetAction(<IKeybindingItemEntry>e.element),
+					this.creAteDefineWhenExpressionAction(<IKeybindingItemEntry>e.element),
+					new SepArAtor(),
+					this.creAteShowConflictsAction(<IKeybindingItemEntry>e.element)]
 			});
 		}
 	}
 
-	private onFocusChange(e: IListEvent<IListEntry>): void {
+	privAte onFocusChAnge(e: IListEvent<IListEntry>): void {
 		this.keybindingFocusContextKey.reset();
 		const element = e.elements[0];
 		if (!element) {
 			return;
 		}
-		if (element.templateId === KEYBINDING_ENTRY_TEMPLATE_ID) {
+		if (element.templAteId === KEYBINDING_ENTRY_TEMPLATE_ID) {
 			this.keybindingFocusContextKey.set(true);
 		}
 	}
 
-	private createDefineAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
+	privAte creAteDefineAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: keybindingItemEntry.keybindingItem.keybinding ? localize('changeLabel', "Change Keybinding") : localize('addLabel', "Add Keybinding"),
-			enabled: true,
+			lAbel: keybindingItemEntry.keybindingItem.keybinding ? locAlize('chAngeLAbel', "ChAnge Keybinding") : locAlize('AddLAbel', "Add Keybinding"),
+			enAbled: true,
 			id: KEYBINDINGS_EDITOR_COMMAND_DEFINE,
 			run: () => this.defineKeybinding(keybindingItemEntry)
 		};
 	}
 
-	private createDefineWhenExpressionAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
+	privAte creAteDefineWhenExpressionAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: localize('editWhen', "Change When Expression"),
-			enabled: !!keybindingItemEntry.keybindingItem.keybinding,
+			lAbel: locAlize('editWhen', "ChAnge When Expression"),
+			enAbled: !!keybindingItemEntry.keybindingItem.keybinding,
 			id: KEYBINDINGS_EDITOR_COMMAND_DEFINE_WHEN,
 			run: () => this.defineWhenExpression(keybindingItemEntry)
 		};
 	}
 
-	private createRemoveAction(keybindingItem: IKeybindingItemEntry): IAction {
+	privAte creAteRemoveAction(keybindingItem: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: localize('removeLabel', "Remove Keybinding"),
-			enabled: !!keybindingItem.keybindingItem.keybinding,
+			lAbel: locAlize('removeLAbel', "Remove Keybinding"),
+			enAbled: !!keybindingItem.keybindingItem.keybinding,
 			id: KEYBINDINGS_EDITOR_COMMAND_REMOVE,
 			run: () => this.removeKeybinding(keybindingItem)
 		};
 	}
 
-	private createResetAction(keybindingItem: IKeybindingItemEntry): IAction {
+	privAte creAteResetAction(keybindingItem: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: localize('resetLabel', "Reset Keybinding"),
-			enabled: !keybindingItem.keybindingItem.keybindingItem.isDefault,
+			lAbel: locAlize('resetLAbel', "Reset Keybinding"),
+			enAbled: !keybindingItem.keybindingItem.keybindingItem.isDefAult,
 			id: KEYBINDINGS_EDITOR_COMMAND_RESET,
 			run: () => this.resetKeybinding(keybindingItem)
 		};
 	}
 
-	private createShowConflictsAction(keybindingItem: IKeybindingItemEntry): IAction {
+	privAte creAteShowConflictsAction(keybindingItem: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: localize('showSameKeybindings', "Show Same Keybindings"),
-			enabled: !!keybindingItem.keybindingItem.keybinding,
+			lAbel: locAlize('showSAmeKeybindings', "Show SAme Keybindings"),
+			enAbled: !!keybindingItem.keybindingItem.keybinding,
 			id: KEYBINDINGS_EDITOR_COMMAND_SHOW_SIMILAR,
-			run: () => this.showSimilarKeybindings(keybindingItem)
+			run: () => this.showSimilArKeybindings(keybindingItem)
 		};
 	}
 
-	private createCopyAction(keybindingItem: IKeybindingItemEntry): IAction {
+	privAte creAteCopyAction(keybindingItem: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: localize('copyLabel', "Copy"),
-			enabled: true,
+			lAbel: locAlize('copyLAbel', "Copy"),
+			enAbled: true,
 			id: KEYBINDINGS_EDITOR_COMMAND_COPY,
 			run: () => this.copyKeybinding(keybindingItem)
 		};
 	}
 
-	private createCopyCommandAction(keybinding: IKeybindingItemEntry): IAction {
+	privAte creAteCopyCommAndAction(keybinding: IKeybindingItemEntry): IAction {
 		return <IAction>{
-			label: localize('copyCommandLabel', "Copy Command ID"),
-			enabled: true,
+			lAbel: locAlize('copyCommAndLAbel', "Copy CommAnd ID"),
+			enAbled: true,
 			id: KEYBINDINGS_EDITOR_COMMAND_COPY_COMMAND,
-			run: () => this.copyKeybindingCommand(keybinding)
+			run: () => this.copyKeybindingCommAnd(keybinding)
 		};
 	}
 
-	private reportFilteringUsed(filter: string): void {
+	privAte reportFilteringUsed(filter: string): void {
 		if (filter) {
-			const data = {
+			const dAtA = {
 				filter,
-				emptyFilters: this.getLatestEmptyFiltersForTelemetry()
+				emptyFilters: this.getLAtestEmptyFiltersForTelemetry()
 			};
-			this.latestEmptyFilters = [];
+			this.lAtestEmptyFilters = [];
 			/* __GDPR__
 				"keybindings.filter" : {
-					"filter": { "classification": "CustomerContent", "purpose": "FeatureInsight" },
-					"emptyFilters" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+					"filter": { "clAssificAtion": "CustomerContent", "purpose": "FeAtureInsight" },
+					"emptyFilters" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog('keybindings.filter', data);
+			this.telemetryService.publicLog('keybindings.filter', dAtA);
 		}
 	}
 
 	/**
-	 * Put a rough limit on the size of the telemetry data, since otherwise it could be an unbounded large amount
-	 * of data. 8192 is the max size of a property value. This is rough since that probably includes ""s, etc.
+	 * Put A rough limit on the size of the telemetry dAtA, since otherwise it could be An unbounded lArge Amount
+	 * of dAtA. 8192 is the mAx size of A property vAlue. This is rough since thAt probAbly includes ""s, etc.
 	 */
-	private getLatestEmptyFiltersForTelemetry(): string[] {
-		let cumulativeSize = 0;
-		return this.latestEmptyFilters.filter(filterText => (cumulativeSize += filterText.length) <= 8192);
+	privAte getLAtestEmptyFiltersForTelemetry(): string[] {
+		let cumulAtiveSize = 0;
+		return this.lAtestEmptyFilters.filter(filterText => (cumulAtiveSize += filterText.length) <= 8192);
 	}
 
-	private reportKeybindingAction(action: string, command: string, keybinding: ResolvedKeybinding | string): void {
-		// __GDPR__TODO__ Need to move off dynamic event names and properties as they cannot be registered statically
-		this.telemetryService.publicLog(action, { command, keybinding: keybinding ? (typeof keybinding === 'string' ? keybinding : keybinding.getUserSettingsLabel()) : '' });
+	privAte reportKeybindingAction(Action: string, commAnd: string, keybinding: ResolvedKeybinding | string): void {
+		// __GDPR__TODO__ Need to move off dynAmic event nAmes And properties As they cAnnot be registered stAticAlly
+		this.telemetryService.publicLog(Action, { commAnd, keybinding: keybinding ? (typeof keybinding === 'string' ? keybinding : keybinding.getUserSettingsLAbel()) : '' });
 	}
 
-	private onKeybindingEditingError(error: any): void {
-		this.notificationService.error(typeof error === 'string' ? error : localize('error', "Error '{0}' while editing the keybinding. Please open 'keybindings.json' file and check for errors.", `${error}`));
+	privAte onKeybindingEditingError(error: Any): void {
+		this.notificAtionService.error(typeof error === 'string' ? error : locAlize('error', "Error '{0}' while editing the keybinding. PleAse open 'keybindings.json' file And check for errors.", `${error}`));
 	}
 }
 
-class Delegate implements IListVirtualDelegate<IListEntry> {
+clAss DelegAte implements IListVirtuAlDelegAte<IListEntry> {
 
 	getHeight(element: IListEntry) {
-		if (element.templateId === KEYBINDING_ENTRY_TEMPLATE_ID) {
-			const commandIdMatched = (<IKeybindingItemEntry>element).keybindingItem.commandLabel && (<IKeybindingItemEntry>element).commandIdMatches;
-			const commandDefaultLabelMatched = !!(<IKeybindingItemEntry>element).commandDefaultLabelMatches;
-			if (commandIdMatched && commandDefaultLabelMatched) {
+		if (element.templAteId === KEYBINDING_ENTRY_TEMPLATE_ID) {
+			const commAndIdMAtched = (<IKeybindingItemEntry>element).keybindingItem.commAndLAbel && (<IKeybindingItemEntry>element).commAndIdMAtches;
+			const commAndDefAultLAbelMAtched = !!(<IKeybindingItemEntry>element).commAndDefAultLAbelMAtches;
+			if (commAndIdMAtched && commAndDefAultLAbelMAtched) {
 				return 60;
 			}
-			if (commandIdMatched || commandDefaultLabelMatched) {
+			if (commAndIdMAtched || commAndDefAultLAbelMAtched) {
 				return 40;
 			}
 		}
 		return 24;
 	}
 
-	getTemplateId(element: IListEntry) {
-		return element.templateId;
+	getTemplAteId(element: IListEntry) {
+		return element.templAteId;
 	}
 }
 
-interface KeybindingItemTemplate {
-	parent: HTMLElement;
+interfAce KeybindingItemTemplAte {
+	pArent: HTMLElement;
 	columns: Column[];
-	disposable: IDisposable;
+	disposAble: IDisposAble;
 }
 
-class KeybindingItemRenderer implements IListRenderer<IKeybindingItemEntry, KeybindingItemTemplate> {
+clAss KeybindingItemRenderer implements IListRenderer<IKeybindingItemEntry, KeybindingItemTemplAte> {
 
-	get templateId(): string { return KEYBINDING_ENTRY_TEMPLATE_ID; }
+	get templAteId(): string { return KEYBINDING_ENTRY_TEMPLATE_ID; }
 
 	constructor(
-		private keybindingsEditor: KeybindingsEditor,
-		private instantiationService: IInstantiationService
+		privAte keybindingsEditor: KeybindingsEditor,
+		privAte instAntiAtionService: IInstAntiAtionService
 	) { }
 
-	renderTemplate(parent: HTMLElement): KeybindingItemTemplate {
-		parent.classList.add('keybinding-item');
+	renderTemplAte(pArent: HTMLElement): KeybindingItemTemplAte {
+		pArent.clAssList.Add('keybinding-item');
 
-		const actions = this.instantiationService.createInstance(ActionsColumn, parent, this.keybindingsEditor);
-		const command = this.instantiationService.createInstance(CommandColumn, parent, this.keybindingsEditor);
-		const keybinding = this.instantiationService.createInstance(KeybindingColumn, parent, this.keybindingsEditor);
-		const when = this.instantiationService.createInstance(WhenColumn, parent, this.keybindingsEditor);
-		const source = this.instantiationService.createInstance(SourceColumn, parent, this.keybindingsEditor);
+		const Actions = this.instAntiAtionService.creAteInstAnce(ActionsColumn, pArent, this.keybindingsEditor);
+		const commAnd = this.instAntiAtionService.creAteInstAnce(CommAndColumn, pArent, this.keybindingsEditor);
+		const keybinding = this.instAntiAtionService.creAteInstAnce(KeybindingColumn, pArent, this.keybindingsEditor);
+		const when = this.instAntiAtionService.creAteInstAnce(WhenColumn, pArent, this.keybindingsEditor);
+		const source = this.instAntiAtionService.creAteInstAnce(SourceColumn, pArent, this.keybindingsEditor);
 
-		const columns: Column[] = [actions, command, keybinding, when, source];
-		const disposables = combinedDisposable(...columns);
-		const elements = columns.map(({ element }) => element);
+		const columns: Column[] = [Actions, commAnd, keybinding, when, source];
+		const disposAbles = combinedDisposAble(...columns);
+		const elements = columns.mAp(({ element }) => element);
 
-		this.keybindingsEditor.layoutColumns(elements);
-		this.keybindingsEditor.onLayout(() => this.keybindingsEditor.layoutColumns(elements));
+		this.keybindingsEditor.lAyoutColumns(elements);
+		this.keybindingsEditor.onLAyout(() => this.keybindingsEditor.lAyoutColumns(elements));
 
 		return {
-			parent,
+			pArent,
 			columns,
-			disposable: disposables
+			disposAble: disposAbles
 		};
 	}
 
-	renderElement(keybindingEntry: IKeybindingItemEntry, index: number, template: KeybindingItemTemplate): void {
-		template.parent.classList.toggle('odd', index % 2 === 1);
-		for (const column of template.columns) {
+	renderElement(keybindingEntry: IKeybindingItemEntry, index: number, templAte: KeybindingItemTemplAte): void {
+		templAte.pArent.clAssList.toggle('odd', index % 2 === 1);
+		for (const column of templAte.columns) {
 			column.render(keybindingEntry);
 		}
 	}
 
-	disposeTemplate(template: KeybindingItemTemplate): void {
-		template.disposable.dispose();
+	disposeTemplAte(templAte: KeybindingItemTemplAte): void {
+		templAte.disposAble.dispose();
 	}
 }
 
-abstract class Column extends Disposable {
+AbstrAct clAss Column extends DisposAble {
 
-	static COUNTER = 0;
+	stAtic COUNTER = 0;
 
-	abstract readonly element: HTMLElement;
-	abstract render(keybindingItemEntry: IKeybindingItemEntry): void;
+	AbstrAct reAdonly element: HTMLElement;
+	AbstrAct render(keybindingItemEntry: IKeybindingItemEntry): void;
 
-	constructor(protected keybindingsEditor: IKeybindingsEditorPane) {
+	constructor(protected keybindingsEditor: IKeybindingsEditorPAne) {
 		super();
 	}
 
 }
 
-class ActionsColumn extends Column {
+clAss ActionsColumn extends Column {
 
-	private readonly actionBar: ActionBar;
-	readonly element: HTMLElement;
+	privAte reAdonly ActionBAr: ActionBAr;
+	reAdonly element: HTMLElement;
 
 	constructor(
-		parent: HTMLElement,
-		keybindingsEditor: IKeybindingsEditorPane,
-		@IKeybindingService private keybindingsService: IKeybindingService
+		pArent: HTMLElement,
+		keybindingsEditor: IKeybindingsEditorPAne,
+		@IKeybindingService privAte keybindingsService: IKeybindingService
 	) {
 		super(keybindingsEditor);
-		this.element = DOM.append(parent, $('.column.actions', { id: 'actions_' + ++Column.COUNTER }));
-		this.actionBar = new ActionBar(this.element, { animated: false });
+		this.element = DOM.Append(pArent, $('.column.Actions', { id: 'Actions_' + ++Column.COUNTER }));
+		this.ActionBAr = new ActionBAr(this.element, { AnimAted: fAlse });
 	}
 
 	render(keybindingItemEntry: IKeybindingItemEntry): void {
-		this.actionBar.clear();
-		const actions: IAction[] = [];
+		this.ActionBAr.cleAr();
+		const Actions: IAction[] = [];
 		if (keybindingItemEntry.keybindingItem.keybinding) {
-			actions.push(this.createEditAction(keybindingItemEntry));
+			Actions.push(this.creAteEditAction(keybindingItemEntry));
 		} else {
-			actions.push(this.createAddAction(keybindingItemEntry));
+			Actions.push(this.creAteAddAction(keybindingItemEntry));
 		}
-		this.actionBar.push(actions, { icon: true });
+		this.ActionBAr.push(Actions, { icon: true });
 	}
 
-	private createEditAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
+	privAte creAteEditAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
 		const keybinding = this.keybindingsService.lookupKeybinding(KEYBINDINGS_EDITOR_COMMAND_DEFINE);
 		return <IAction>{
-			class: preferencesEditIcon.classNames,
-			enabled: true,
+			clAss: preferencesEditIcon.clAssNAmes,
+			enAbled: true,
 			id: 'editKeybinding',
-			tooltip: keybinding ? localize('editKeybindingLabelWithKey', "Change Keybinding {0}", `(${keybinding.getLabel()})`) : localize('editKeybindingLabel', "Change Keybinding"),
+			tooltip: keybinding ? locAlize('editKeybindingLAbelWithKey', "ChAnge Keybinding {0}", `(${keybinding.getLAbel()})`) : locAlize('editKeybindingLAbel', "ChAnge Keybinding"),
 			run: () => this.keybindingsEditor.defineKeybinding(keybindingItemEntry)
 		};
 	}
 
-	private createAddAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
+	privAte creAteAddAction(keybindingItemEntry: IKeybindingItemEntry): IAction {
 		const keybinding = this.keybindingsService.lookupKeybinding(KEYBINDINGS_EDITOR_COMMAND_DEFINE);
 		return <IAction>{
-			class: 'codicon-add',
-			enabled: true,
-			id: 'addKeybinding',
-			tooltip: keybinding ? localize('addKeybindingLabelWithKey', "Add Keybinding {0}", `(${keybinding.getLabel()})`) : localize('addKeybindingLabel', "Add Keybinding"),
+			clAss: 'codicon-Add',
+			enAbled: true,
+			id: 'AddKeybinding',
+			tooltip: keybinding ? locAlize('AddKeybindingLAbelWithKey', "Add Keybinding {0}", `(${keybinding.getLAbel()})`) : locAlize('AddKeybindingLAbel', "Add Keybinding"),
 			run: () => this.keybindingsEditor.defineKeybinding(keybindingItemEntry)
 		};
 	}
 
 	dispose(): void {
 		super.dispose();
-		dispose(this.actionBar);
+		dispose(this.ActionBAr);
 	}
 }
 
-class CommandColumn extends Column {
+clAss CommAndColumn extends Column {
 
-	private readonly commandColumn: HTMLElement;
-	readonly element: HTMLElement;
+	privAte reAdonly commAndColumn: HTMLElement;
+	reAdonly element: HTMLElement;
 
 	constructor(
-		parent: HTMLElement,
-		keybindingsEditor: IKeybindingsEditorPane,
+		pArent: HTMLElement,
+		keybindingsEditor: IKeybindingsEditorPAne,
 	) {
 		super(keybindingsEditor);
-		this.element = this.commandColumn = DOM.append(parent, $('.column.command', { id: 'command_' + ++Column.COUNTER }));
+		this.element = this.commAndColumn = DOM.Append(pArent, $('.column.commAnd', { id: 'commAnd_' + ++Column.COUNTER }));
 	}
 
 	render(keybindingItemEntry: IKeybindingItemEntry): void {
-		DOM.clearNode(this.commandColumn);
+		DOM.cleArNode(this.commAndColumn);
 		const keybindingItem = keybindingItemEntry.keybindingItem;
-		const commandIdMatched = !!(keybindingItem.commandLabel && keybindingItemEntry.commandIdMatches);
-		const commandDefaultLabelMatched = !!keybindingItemEntry.commandDefaultLabelMatches;
-		this.commandColumn.classList.toggle('vertical-align-column', commandIdMatched || commandDefaultLabelMatched);
-		let commandLabel: HighlightedLabel | undefined;
-		if (keybindingItem.commandLabel) {
-			commandLabel = new HighlightedLabel(this.commandColumn, false);
-			commandLabel.set(keybindingItem.commandLabel, keybindingItemEntry.commandLabelMatches);
+		const commAndIdMAtched = !!(keybindingItem.commAndLAbel && keybindingItemEntry.commAndIdMAtches);
+		const commAndDefAultLAbelMAtched = !!keybindingItemEntry.commAndDefAultLAbelMAtches;
+		this.commAndColumn.clAssList.toggle('verticAl-Align-column', commAndIdMAtched || commAndDefAultLAbelMAtched);
+		let commAndLAbel: HighlightedLAbel | undefined;
+		if (keybindingItem.commAndLAbel) {
+			commAndLAbel = new HighlightedLAbel(this.commAndColumn, fAlse);
+			commAndLAbel.set(keybindingItem.commAndLAbel, keybindingItemEntry.commAndLAbelMAtches);
 		}
-		if (keybindingItemEntry.commandDefaultLabelMatches) {
-			commandLabel = new HighlightedLabel(DOM.append(this.commandColumn, $('.command-default-label')), false);
-			commandLabel.set(keybindingItem.commandDefaultLabel, keybindingItemEntry.commandDefaultLabelMatches);
+		if (keybindingItemEntry.commAndDefAultLAbelMAtches) {
+			commAndLAbel = new HighlightedLAbel(DOM.Append(this.commAndColumn, $('.commAnd-defAult-lAbel')), fAlse);
+			commAndLAbel.set(keybindingItem.commAndDefAultLAbel, keybindingItemEntry.commAndDefAultLAbelMAtches);
 		}
-		if (keybindingItemEntry.commandIdMatches || !keybindingItem.commandLabel) {
-			commandLabel = new HighlightedLabel(DOM.append(this.commandColumn, $('.code')), false);
-			commandLabel.set(keybindingItem.command, keybindingItemEntry.commandIdMatches);
+		if (keybindingItemEntry.commAndIdMAtches || !keybindingItem.commAndLAbel) {
+			commAndLAbel = new HighlightedLAbel(DOM.Append(this.commAndColumn, $('.code')), fAlse);
+			commAndLAbel.set(keybindingItem.commAnd, keybindingItemEntry.commAndIdMAtches);
 		}
-		if (commandLabel) {
-			commandLabel.element.title = keybindingItem.commandLabel ? localize('title', "{0} ({1})", keybindingItem.commandLabel, keybindingItem.command) : keybindingItem.command;
+		if (commAndLAbel) {
+			commAndLAbel.element.title = keybindingItem.commAndLAbel ? locAlize('title', "{0} ({1})", keybindingItem.commAndLAbel, keybindingItem.commAnd) : keybindingItem.commAnd;
 		}
 	}
 }
 
-class KeybindingColumn extends Column {
+clAss KeybindingColumn extends Column {
 
-	private readonly keybindingLabel: HTMLElement;
-	readonly element: HTMLElement;
+	privAte reAdonly keybindingLAbel: HTMLElement;
+	reAdonly element: HTMLElement;
 
 	constructor(
-		parent: HTMLElement,
-		keybindingsEditor: IKeybindingsEditorPane,
+		pArent: HTMLElement,
+		keybindingsEditor: IKeybindingsEditorPAne,
 	) {
 		super(keybindingsEditor);
 
-		this.element = DOM.append(parent, $('.column.keybinding', { id: 'keybinding_' + ++Column.COUNTER }));
-		this.keybindingLabel = DOM.append(this.element, $('div.keybinding-label'));
+		this.element = DOM.Append(pArent, $('.column.keybinding', { id: 'keybinding_' + ++Column.COUNTER }));
+		this.keybindingLAbel = DOM.Append(this.element, $('div.keybinding-lAbel'));
 	}
 
 	render(keybindingItemEntry: IKeybindingItemEntry): void {
-		DOM.clearNode(this.keybindingLabel);
+		DOM.cleArNode(this.keybindingLAbel);
 		if (keybindingItemEntry.keybindingItem.keybinding) {
-			new KeybindingLabel(this.keybindingLabel, OS).set(keybindingItemEntry.keybindingItem.keybinding, keybindingItemEntry.keybindingMatches);
+			new KeybindingLAbel(this.keybindingLAbel, OS).set(keybindingItemEntry.keybindingItem.keybinding, keybindingItemEntry.keybindingMAtches);
 		}
 	}
 }
 
-class SourceColumn extends Column {
+clAss SourceColumn extends Column {
 
-	private readonly sourceColumn: HTMLElement;
-	readonly element: HTMLElement;
+	privAte reAdonly sourceColumn: HTMLElement;
+	reAdonly element: HTMLElement;
 
 	constructor(
-		parent: HTMLElement,
-		keybindingsEditor: IKeybindingsEditorPane,
+		pArent: HTMLElement,
+		keybindingsEditor: IKeybindingsEditorPAne,
 	) {
 		super(keybindingsEditor);
-		this.element = this.sourceColumn = DOM.append(parent, $('.column.source', { id: 'source_' + ++Column.COUNTER }));
+		this.element = this.sourceColumn = DOM.Append(pArent, $('.column.source', { id: 'source_' + ++Column.COUNTER }));
 	}
 
 	render(keybindingItemEntry: IKeybindingItemEntry): void {
-		DOM.clearNode(this.sourceColumn);
-		new HighlightedLabel(this.sourceColumn, false).set(keybindingItemEntry.keybindingItem.source, keybindingItemEntry.sourceMatches);
+		DOM.cleArNode(this.sourceColumn);
+		new HighlightedLAbel(this.sourceColumn, fAlse).set(keybindingItemEntry.keybindingItem.source, keybindingItemEntry.sourceMAtches);
 	}
 }
 
-class WhenColumn extends Column {
+clAss WhenColumn extends Column {
 
-	readonly element: HTMLElement;
-	private readonly whenLabel: HTMLElement;
-	private readonly whenInput: InputBox;
-	private readonly renderDisposables = this._register(new DisposableStore());
+	reAdonly element: HTMLElement;
+	privAte reAdonly whenLAbel: HTMLElement;
+	privAte reAdonly whenInput: InputBox;
+	privAte reAdonly renderDisposAbles = this._register(new DisposAbleStore());
 
-	private _onDidAccept: Emitter<void> = this._register(new Emitter<void>());
-	private readonly onDidAccept: Event<void> = this._onDidAccept.event;
+	privAte _onDidAccept: Emitter<void> = this._register(new Emitter<void>());
+	privAte reAdonly onDidAccept: Event<void> = this._onDidAccept.event;
 
-	private _onDidReject: Emitter<void> = this._register(new Emitter<void>());
-	private readonly onDidReject: Event<void> = this._onDidReject.event;
+	privAte _onDidReject: Emitter<void> = this._register(new Emitter<void>());
+	privAte reAdonly onDidReject: Event<void> = this._onDidReject.event;
 
 	constructor(
-		parent: HTMLElement,
-		keybindingsEditor: IKeybindingsEditorPane,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IThemeService private readonly themeService: IThemeService
+		pArent: HTMLElement,
+		keybindingsEditor: IKeybindingsEditorPAne,
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService,
+		@IThemeService privAte reAdonly themeService: IThemeService
 	) {
 		super(keybindingsEditor);
 
-		this.element = DOM.append(parent, $('.column.when', { id: 'when_' + ++Column.COUNTER }));
+		this.element = DOM.Append(pArent, $('.column.when', { id: 'when_' + ++Column.COUNTER }));
 
-		this.whenLabel = DOM.append(this.element, $('div.when-label'));
+		this.whenLAbel = DOM.Append(this.element, $('div.when-lAbel'));
 		this.whenInput = new InputBox(this.element, this.contextViewService, {
-			validationOptions: {
-				validation: (value) => {
+			vAlidAtionOptions: {
+				vAlidAtion: (vAlue) => {
 					try {
-						ContextKeyExpr.deserialize(value, true);
-					} catch (error) {
+						ContextKeyExpr.deseriAlize(vAlue, true);
+					} cAtch (error) {
 						return {
-							content: error.message,
-							formatContent: true,
-							type: MessageType.ERROR
+							content: error.messAge,
+							formAtContent: true,
+							type: MessAgeType.ERROR
 						};
 					}
 					return null;
 				}
 			},
-			ariaLabel: localize('whenContextInputAriaLabel', "Type when context. Press Enter to confirm or Escape to cancel.")
+			AriALAbel: locAlize('whenContextInputAriALAbel', "Type when context. Press Enter to confirm or EscApe to cAncel.")
 		});
-		this._register(attachInputBoxStyler(this.whenInput, this.themeService));
-		this._register(DOM.addStandardDisposableListener(this.whenInput.inputElement, DOM.EventType.KEY_DOWN, e => this.onInputKeyDown(e)));
-		this._register(DOM.addDisposableListener(this.whenInput.inputElement, DOM.EventType.BLUR, () => this.cancelEditing()));
+		this._register(AttAchInputBoxStyler(this.whenInput, this.themeService));
+		this._register(DOM.AddStAndArdDisposAbleListener(this.whenInput.inputElement, DOM.EventType.KEY_DOWN, e => this.onInputKeyDown(e)));
+		this._register(DOM.AddDisposAbleListener(this.whenInput.inputElement, DOM.EventType.BLUR, () => this.cAncelEditing()));
 	}
 
-	private onInputKeyDown(e: IKeyboardEvent): void {
-		let handled = false;
-		if (e.equals(KeyCode.Enter)) {
+	privAte onInputKeyDown(e: IKeyboArdEvent): void {
+		let hAndled = fAlse;
+		if (e.equAls(KeyCode.Enter)) {
 			this.finishEditing();
-			handled = true;
-		} else if (e.equals(KeyCode.Escape)) {
-			this.cancelEditing();
-			handled = true;
+			hAndled = true;
+		} else if (e.equAls(KeyCode.EscApe)) {
+			this.cAncelEditing();
+			hAndled = true;
 		}
-		if (handled) {
-			e.preventDefault();
-			e.stopPropagation();
+		if (hAndled) {
+			e.preventDefAult();
+			e.stopPropAgAtion();
 		}
 	}
 
-	private startEditing(): void {
-		this.element.classList.add('input-mode');
+	privAte stArtEditing(): void {
+		this.element.clAssList.Add('input-mode');
 		this.whenInput.focus();
 		this.whenInput.select();
 	}
 
-	private finishEditing(): void {
-		this.element.classList.remove('input-mode');
+	privAte finishEditing(): void {
+		this.element.clAssList.remove('input-mode');
 		this._onDidAccept.fire();
 	}
 
-	private cancelEditing(): void {
-		this.element.classList.remove('input-mode');
+	privAte cAncelEditing(): void {
+		this.element.clAssList.remove('input-mode');
 		this._onDidReject.fire();
 	}
 
 	render(keybindingItemEntry: IKeybindingItemEntry): void {
-		this.renderDisposables.clear();
-		DOM.clearNode(this.whenLabel);
+		this.renderDisposAbles.cleAr();
+		DOM.cleArNode(this.whenLAbel);
 
 		this.keybindingsEditor.onDefineWhenExpression(e => {
 			if (keybindingItemEntry === e) {
-				this.startEditing();
+				this.stArtEditing();
 			}
-		}, this, this.renderDisposables);
-		this.whenInput.value = keybindingItemEntry.keybindingItem.when || '';
-		this.whenLabel.classList.toggle('code', !!keybindingItemEntry.keybindingItem.when);
-		this.whenLabel.classList.toggle('empty', !keybindingItemEntry.keybindingItem.when);
+		}, this, this.renderDisposAbles);
+		this.whenInput.vAlue = keybindingItemEntry.keybindingItem.when || '';
+		this.whenLAbel.clAssList.toggle('code', !!keybindingItemEntry.keybindingItem.when);
+		this.whenLAbel.clAssList.toggle('empty', !keybindingItemEntry.keybindingItem.when);
 		if (keybindingItemEntry.keybindingItem.when) {
-			const whenLabel = new HighlightedLabel(this.whenLabel, false);
-			whenLabel.set(keybindingItemEntry.keybindingItem.when, keybindingItemEntry.whenMatches);
+			const whenLAbel = new HighlightedLAbel(this.whenLAbel, fAlse);
+			whenLAbel.set(keybindingItemEntry.keybindingItem.when, keybindingItemEntry.whenMAtches);
 			this.element.title = keybindingItemEntry.keybindingItem.when;
-			whenLabel.element.title = keybindingItemEntry.keybindingItem.when;
+			whenLAbel.element.title = keybindingItemEntry.keybindingItem.when;
 		} else {
-			this.whenLabel.textContent = '—';
+			this.whenLAbel.textContent = '—';
 			this.element.title = '';
 		}
 		this.onDidAccept(() => {
-			this.keybindingsEditor.updateKeybinding(keybindingItemEntry, keybindingItemEntry.keybindingItem.keybinding ? keybindingItemEntry.keybindingItem.keybinding.getUserSettingsLabel() || '' : '', this.whenInput.value);
+			this.keybindingsEditor.updAteKeybinding(keybindingItemEntry, keybindingItemEntry.keybindingItem.keybinding ? keybindingItemEntry.keybindingItem.keybinding.getUserSettingsLAbel() || '' : '', this.whenInput.vAlue);
 			this.keybindingsEditor.selectKeybinding(keybindingItemEntry);
-		}, this, this.renderDisposables);
+		}, this, this.renderDisposAbles);
 		this.onDidReject(() => {
-			this.whenInput.value = keybindingItemEntry.keybindingItem.when || '';
+			this.whenInput.vAlue = keybindingItemEntry.keybindingItem.when || '';
 			this.keybindingsEditor.selectKeybinding(keybindingItemEntry);
-		}, this, this.renderDisposables);
+		}, this, this.renderDisposAbles);
 	}
 }
 
-class AccessibilityProvider implements IListAccessibilityProvider<IKeybindingItemEntry> {
+clAss AccessibilityProvider implements IListAccessibilityProvider<IKeybindingItemEntry> {
 
-	getWidgetAriaLabel(): string {
-		return localize('keybindingsLabel', "Keybindings");
+	getWidgetAriALAbel(): string {
+		return locAlize('keybindingsLAbel', "Keybindings");
 	}
 
-	getAriaLabel(keybindingItemEntry: IKeybindingItemEntry): string {
-		let ariaLabel = keybindingItemEntry.keybindingItem.commandLabel ? keybindingItemEntry.keybindingItem.commandLabel : keybindingItemEntry.keybindingItem.command;
-		ariaLabel += ', ' + (keybindingItemEntry.keybindingItem.keybinding?.getAriaLabel() || localize('noKeybinding', "No Keybinding assigned."));
-		ariaLabel += ', ' + keybindingItemEntry.keybindingItem.source;
-		ariaLabel += ', ' + keybindingItemEntry.keybindingItem.when ? keybindingItemEntry.keybindingItem.when : localize('noWhen', "No when context.");
-		return ariaLabel;
+	getAriALAbel(keybindingItemEntry: IKeybindingItemEntry): string {
+		let AriALAbel = keybindingItemEntry.keybindingItem.commAndLAbel ? keybindingItemEntry.keybindingItem.commAndLAbel : keybindingItemEntry.keybindingItem.commAnd;
+		AriALAbel += ', ' + (keybindingItemEntry.keybindingItem.keybinding?.getAriALAbel() || locAlize('noKeybinding', "No Keybinding Assigned."));
+		AriALAbel += ', ' + keybindingItemEntry.keybindingItem.source;
+		AriALAbel += ', ' + keybindingItemEntry.keybindingItem.when ? keybindingItemEntry.keybindingItem.when : locAlize('noWhen', "No when context.");
+		return AriALAbel;
 	}
 
 }
 
-registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
-	collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-header { background-color: ${oddRowBackgroundColor}; }`);
-	collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row.odd:not(.focused):not(.selected):not(:hover) { background-color: ${oddRowBackgroundColor}; }`);
-	collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:not(:focus) .monaco-list-row.focused.odd:not(.selected):not(:hover) { background-color: ${oddRowBackgroundColor}; }`);
-	collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:not(.focused) .monaco-list-row.focused.odd:not(.selected):not(:hover) { background-color: ${oddRowBackgroundColor}; }`);
+registerThemingPArticipAnt((theme: IColorTheme, collector: ICssStyleCollector) => {
+	collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-heAder { bAckground-color: ${oddRowBAckgroundColor}; }`);
+	collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list-row.odd:not(.focused):not(.selected):not(:hover) { bAckground-color: ${oddRowBAckgroundColor}; }`);
+	collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:not(:focus) .monAco-list-row.focused.odd:not(.selected):not(:hover) { bAckground-color: ${oddRowBAckgroundColor}; }`);
+	collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:not(.focused) .monAco-list-row.focused.odd:not(.selected):not(:hover) { bAckground-color: ${oddRowBAckgroundColor}; }`);
 
 	const foregroundColor = theme.getColor(foreground);
 	if (foregroundColor) {
-		const whenForegroundColor = foregroundColor.transparent(.8).makeOpaque(WORKBENCH_BACKGROUND(theme));
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row > .column > .code { color: ${whenForegroundColor}; }`);
-		const whenForegroundColorForOddRow = foregroundColor.transparent(.8).makeOpaque(oddRowBackgroundColor);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row.odd > .column > .code { color: ${whenForegroundColorForOddRow}; }`);
+		const whenForegroundColor = foregroundColor.trAnspArent(.8).mAkeOpAque(WORKBENCH_BACKGROUND(theme));
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list-row > .column > .code { color: ${whenForegroundColor}; }`);
+		const whenForegroundColorForOddRow = foregroundColor.trAnspArent(.8).mAkeOpAque(oddRowBAckgroundColor);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list-row.odd > .column > .code { color: ${whenForegroundColorForOddRow}; }`);
 	}
 
 	const listActiveSelectionForegroundColor = theme.getColor(listActiveSelectionForeground);
-	const listActiveSelectionBackgroundColor = theme.getColor(listActiveSelectionBackground);
-	if (listActiveSelectionForegroundColor && listActiveSelectionBackgroundColor) {
-		const whenForegroundColor = listActiveSelectionForegroundColor.transparent(.8).makeOpaque(listActiveSelectionBackgroundColor);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.selected > .column > .code { color: ${whenForegroundColor}; }`);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.odd.selected > .column > .code { color: ${whenForegroundColor}; }`);
+	const listActiveSelectionBAckgroundColor = theme.getColor(listActiveSelectionBAckground);
+	if (listActiveSelectionForegroundColor && listActiveSelectionBAckgroundColor) {
+		const whenForegroundColor = listActiveSelectionForegroundColor.trAnspArent(.8).mAkeOpAque(listActiveSelectionBAckgroundColor);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.selected > .column > .code { color: ${whenForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.odd.selected > .column > .code { color: ${whenForegroundColor}; }`);
 	}
 
-	const listInactiveSelectionForegroundColor = theme.getColor(listInactiveSelectionForeground);
-	const listInactiveSelectionBackgroundColor = theme.getColor(listInactiveSelectionBackground);
-	if (listInactiveSelectionForegroundColor && listInactiveSelectionBackgroundColor) {
-		const whenForegroundColor = listInactiveSelectionForegroundColor.transparent(.8).makeOpaque(listInactiveSelectionBackgroundColor);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list .monaco-list-row.selected > .column > .code { color: ${whenForegroundColor}; }`);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list .monaco-list-row.odd.selected > .column > .code { color: ${whenForegroundColor}; }`);
+	const listInActiveSelectionForegroundColor = theme.getColor(listInActiveSelectionForeground);
+	const listInActiveSelectionBAckgroundColor = theme.getColor(listInActiveSelectionBAckground);
+	if (listInActiveSelectionForegroundColor && listInActiveSelectionBAckgroundColor) {
+		const whenForegroundColor = listInActiveSelectionForegroundColor.trAnspArent(.8).mAkeOpAque(listInActiveSelectionBAckgroundColor);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list .monAco-list-row.selected > .column > .code { color: ${whenForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list .monAco-list-row.odd.selected > .column > .code { color: ${whenForegroundColor}; }`);
 	}
 
 	const listFocusForegroundColor = theme.getColor(listFocusForeground);
-	const listFocusBackgroundColor = theme.getColor(listFocusBackground);
-	if (listFocusForegroundColor && listFocusBackgroundColor) {
-		const whenForegroundColor = listFocusForegroundColor.transparent(.8).makeOpaque(listFocusBackgroundColor);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.focused > .column > .code { color: ${whenForegroundColor}; }`);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.odd.focused > .column > .code { color: ${whenForegroundColor}; }`);
+	const listFocusBAckgroundColor = theme.getColor(listFocusBAckground);
+	if (listFocusForegroundColor && listFocusBAckgroundColor) {
+		const whenForegroundColor = listFocusForegroundColor.trAnspArent(.8).mAkeOpAque(listFocusBAckgroundColor);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.focused > .column > .code { color: ${whenForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.odd.focused > .column > .code { color: ${whenForegroundColor}; }`);
 	}
 
 	const listHoverForegroundColor = theme.getColor(listHoverForeground);
-	const listHoverBackgroundColor = theme.getColor(listHoverBackground);
-	if (listHoverForegroundColor && listHoverBackgroundColor) {
-		const whenForegroundColor = listHoverForegroundColor.transparent(.8).makeOpaque(listHoverBackgroundColor);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row:hover:not(.focused):not(.selected) > .column > .code { color: ${whenForegroundColor}; }`);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.odd:hover:not(.focused):not(.selected) > .column > .code { color: ${whenForegroundColor}; }`);
+	const listHoverBAckgroundColor = theme.getColor(listHoverBAckground);
+	if (listHoverForegroundColor && listHoverBAckgroundColor) {
+		const whenForegroundColor = listHoverForegroundColor.trAnspArent(.8).mAkeOpAque(listHoverBAckgroundColor);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row:hover:not(.focused):not(.selected) > .column > .code { color: ${whenForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.odd:hover:not(.focused):not(.selected) > .column > .code { color: ${whenForegroundColor}; }`);
 	}
 
 	const listHighlightForegroundColor = theme.getColor(listHighlightForeground);
 	if (listHighlightForegroundColor) {
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row > .column .highlight { color: ${listHighlightForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list-row > .column .highlight { color: ${listHighlightForegroundColor}; }`);
 	}
 
 	if (listActiveSelectionForegroundColor) {
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.selected.focused > .column .monaco-keybinding-key { color: ${listActiveSelectionForegroundColor}; }`);
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.selected > .column .monaco-keybinding-key { color: ${listActiveSelectionForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.selected.focused > .column .monAco-keybinding-key { color: ${listActiveSelectionForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list:focus .monAco-list-row.selected > .column .monAco-keybinding-key { color: ${listActiveSelectionForegroundColor}; }`);
 	}
-	const listInactiveFocusAndSelectionForegroundColor = theme.getColor(listInactiveSelectionForeground);
-	if (listInactiveFocusAndSelectionForegroundColor) {
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list .monaco-list-row.selected > .column .monaco-keybinding-key { color: ${listInactiveFocusAndSelectionForegroundColor}; }`);
+	const listInActiveFocusAndSelectionForegroundColor = theme.getColor(listInActiveSelectionForeground);
+	if (listInActiveFocusAndSelectionForegroundColor) {
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list .monAco-list-row.selected > .column .monAco-keybinding-key { color: ${listInActiveFocusAndSelectionForegroundColor}; }`);
 	}
 	if (listHoverForegroundColor) {
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list .monaco-list-row:hover:not(.selected):not(.focused) > .column .monaco-keybinding-key { color: ${listHoverForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list .monAco-list-row:hover:not(.selected):not(.focused) > .column .monAco-keybinding-key { color: ${listHoverForegroundColor}; }`);
 	}
 	if (listFocusForegroundColor) {
-		collector.addRule(`.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list .monaco-list-row.focused > .column .monaco-keybinding-key { color: ${listFocusForegroundColor}; }`);
+		collector.AddRule(`.keybindings-editor > .keybindings-body > .keybindings-list-contAiner .monAco-list .monAco-list-row.focused > .column .monAco-keybinding-key { color: ${listFocusForegroundColor}; }`);
 	}
 });

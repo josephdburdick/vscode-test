@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
 
-export class LazyPromise implements Promise<any> {
+export clAss LAzyPromise implements Promise<Any> {
 
-	private _actual: Promise<any> | null;
-	private _actualOk: ((value?: any) => any) | null;
-	private _actualErr: ((err?: any) => any) | null;
+	privAte _ActuAl: Promise<Any> | null;
+	privAte _ActuAlOk: ((vAlue?: Any) => Any) | null;
+	privAte _ActuAlErr: ((err?: Any) => Any) | null;
 
-	private _hasValue: boolean;
-	private _value: any;
+	privAte _hAsVAlue: booleAn;
+	privAte _vAlue: Any;
 
-	private _hasErr: boolean;
-	private _err: any;
+	privAte _hAsErr: booleAn;
+	privAte _err: Any;
 
 	constructor() {
-		this._actual = null;
-		this._actualOk = null;
-		this._actualErr = null;
-		this._hasValue = false;
-		this._value = null;
-		this._hasErr = false;
+		this._ActuAl = null;
+		this._ActuAlOk = null;
+		this._ActuAlErr = null;
+		this._hAsVAlue = fAlse;
+		this._vAlue = null;
+		this._hAsErr = fAlse;
 		this._err = null;
 	}
 
-	get [Symbol.toStringTag](): string {
+	get [Symbol.toStringTAg](): string {
 		return this.toString();
 	}
 
-	private _ensureActual(): Promise<any> {
-		if (!this._actual) {
-			this._actual = new Promise<any>((c, e) => {
-				this._actualOk = c;
-				this._actualErr = e;
+	privAte _ensureActuAl(): Promise<Any> {
+		if (!this._ActuAl) {
+			this._ActuAl = new Promise<Any>((c, e) => {
+				this._ActuAlOk = c;
+				this._ActuAlErr = e;
 
-				if (this._hasValue) {
-					this._actualOk(this._value);
+				if (this._hAsVAlue) {
+					this._ActuAlOk(this._vAlue);
 				}
 
-				if (this._hasErr) {
-					this._actualErr(this._err);
+				if (this._hAsErr) {
+					this._ActuAlErr(this._err);
 				}
 			});
 		}
-		return this._actual;
+		return this._ActuAl;
 	}
 
-	public resolveOk(value: any): void {
-		if (this._hasValue || this._hasErr) {
+	public resolveOk(vAlue: Any): void {
+		if (this._hAsVAlue || this._hAsErr) {
 			return;
 		}
 
-		this._hasValue = true;
-		this._value = value;
+		this._hAsVAlue = true;
+		this._vAlue = vAlue;
 
-		if (this._actual) {
-			this._actualOk!(value);
+		if (this._ActuAl) {
+			this._ActuAlOk!(vAlue);
 		}
 	}
 
-	public resolveErr(err: any): void {
-		if (this._hasValue || this._hasErr) {
+	public resolveErr(err: Any): void {
+		if (this._hAsVAlue || this._hAsErr) {
 			return;
 		}
 
-		this._hasErr = true;
+		this._hAsErr = true;
 		this._err = err;
 
-		if (this._actual) {
-			this._actualErr!(err);
+		if (this._ActuAl) {
+			this._ActuAlErr!(err);
 		} else {
-			// If nobody's listening at this point, it is safe to assume they never will,
-			// since resolving this promise is always "async"
+			// If nobody's listening At this point, it is sAfe to Assume they never will,
+			// since resolving this promise is AlwAys "Async"
 			onUnexpectedError(err);
 		}
 	}
 
-	public then(success: any, error: any): any {
-		return this._ensureActual().then(success, error);
+	public then(success: Any, error: Any): Any {
+		return this._ensureActuAl().then(success, error);
 	}
 
-	public catch(error: any): any {
-		return this._ensureActual().then(undefined, error);
+	public cAtch(error: Any): Any {
+		return this._ensureActuAl().then(undefined, error);
 	}
 
-	public finally(callback: () => void): any {
-		return this._ensureActual().finally(callback);
+	public finAlly(cAllbAck: () => void): Any {
+		return this._ensureActuAl().finAlly(cAllbAck);
 	}
 }

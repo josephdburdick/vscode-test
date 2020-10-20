@@ -1,121 +1,121 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
- * Please make sure to make edits in the .ts file at https://github.com/microsoft/vscode-loader/
+ * PleAse mAke sure to mAke edits in the .ts file At https://github.com/microsoft/vscode-loAder/
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var CSSLoaderPlugin;
-(function (CSSLoaderPlugin) {
+vAr CSSLoAderPlugin;
+(function (CSSLoAderPlugin) {
     /**
      * Known issue:
-     * - In IE there is no way to know if the CSS file loaded successfully or not.
+     * - In IE there is no wAy to know if the CSS file loAded successfully or not.
      */
-    var BrowserCSSLoader = /** @class */ (function () {
-        function BrowserCSSLoader() {
-            this._pendingLoads = 0;
+    vAr BrowserCSSLoAder = /** @clAss */ (function () {
+        function BrowserCSSLoAder() {
+            this._pendingLoAds = 0;
         }
-        BrowserCSSLoader.prototype.attachListeners = function (name, linkNode, callback, errorback) {
-            var unbind = function () {
-                linkNode.removeEventListener('load', loadEventListener);
+        BrowserCSSLoAder.prototype.AttAchListeners = function (nAme, linkNode, cAllbAck, errorbAck) {
+            vAr unbind = function () {
+                linkNode.removeEventListener('loAd', loAdEventListener);
                 linkNode.removeEventListener('error', errorEventListener);
             };
-            var loadEventListener = function (e) {
+            vAr loAdEventListener = function (e) {
                 unbind();
-                callback();
+                cAllbAck();
             };
-            var errorEventListener = function (e) {
+            vAr errorEventListener = function (e) {
                 unbind();
-                errorback(e);
+                errorbAck(e);
             };
-            linkNode.addEventListener('load', loadEventListener);
-            linkNode.addEventListener('error', errorEventListener);
+            linkNode.AddEventListener('loAd', loAdEventListener);
+            linkNode.AddEventListener('error', errorEventListener);
         };
-        BrowserCSSLoader.prototype._onLoad = function (name, callback) {
-            this._pendingLoads--;
-            callback();
+        BrowserCSSLoAder.prototype._onLoAd = function (nAme, cAllbAck) {
+            this._pendingLoAds--;
+            cAllbAck();
         };
-        BrowserCSSLoader.prototype._onLoadError = function (name, errorback, err) {
-            this._pendingLoads--;
-            errorback(err);
+        BrowserCSSLoAder.prototype._onLoAdError = function (nAme, errorbAck, err) {
+            this._pendingLoAds--;
+            errorbAck(err);
         };
-        BrowserCSSLoader.prototype._insertLinkNode = function (linkNode) {
-            this._pendingLoads++;
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var other = head.getElementsByTagName('link') || head.getElementsByTagName('script');
+        BrowserCSSLoAder.prototype._insertLinkNode = function (linkNode) {
+            this._pendingLoAds++;
+            vAr heAd = document.heAd || document.getElementsByTAgNAme('heAd')[0];
+            vAr other = heAd.getElementsByTAgNAme('link') || heAd.getElementsByTAgNAme('script');
             if (other.length > 0) {
-                head.insertBefore(linkNode, other[other.length - 1]);
+                heAd.insertBefore(linkNode, other[other.length - 1]);
             }
             else {
-                head.appendChild(linkNode);
+                heAd.AppendChild(linkNode);
             }
         };
-        BrowserCSSLoader.prototype.createLinkTag = function (name, cssUrl, externalCallback, externalErrorback) {
-            var _this = this;
-            var linkNode = document.createElement('link');
+        BrowserCSSLoAder.prototype.creAteLinkTAg = function (nAme, cssUrl, externAlCAllbAck, externAlErrorbAck) {
+            vAr _this = this;
+            vAr linkNode = document.creAteElement('link');
             linkNode.setAttribute('rel', 'stylesheet');
             linkNode.setAttribute('type', 'text/css');
-            linkNode.setAttribute('data-name', name);
-            var callback = function () { return _this._onLoad(name, externalCallback); };
-            var errorback = function (err) { return _this._onLoadError(name, externalErrorback, err); };
-            this.attachListeners(name, linkNode, callback, errorback);
+            linkNode.setAttribute('dAtA-nAme', nAme);
+            vAr cAllbAck = function () { return _this._onLoAd(nAme, externAlCAllbAck); };
+            vAr errorbAck = function (err) { return _this._onLoAdError(nAme, externAlErrorbAck, err); };
+            this.AttAchListeners(nAme, linkNode, cAllbAck, errorbAck);
             linkNode.setAttribute('href', cssUrl);
             return linkNode;
         };
-        BrowserCSSLoader.prototype._linkTagExists = function (name, cssUrl) {
-            var i, len, nameAttr, hrefAttr, links = document.getElementsByTagName('link');
+        BrowserCSSLoAder.prototype._linkTAgExists = function (nAme, cssUrl) {
+            vAr i, len, nAmeAttr, hrefAttr, links = document.getElementsByTAgNAme('link');
             for (i = 0, len = links.length; i < len; i++) {
-                nameAttr = links[i].getAttribute('data-name');
+                nAmeAttr = links[i].getAttribute('dAtA-nAme');
                 hrefAttr = links[i].getAttribute('href');
-                if (nameAttr === name || hrefAttr === cssUrl) {
+                if (nAmeAttr === nAme || hrefAttr === cssUrl) {
                     return true;
                 }
             }
-            return false;
+            return fAlse;
         };
-        BrowserCSSLoader.prototype.load = function (name, cssUrl, externalCallback, externalErrorback) {
-            if (this._linkTagExists(name, cssUrl)) {
-                externalCallback();
+        BrowserCSSLoAder.prototype.loAd = function (nAme, cssUrl, externAlCAllbAck, externAlErrorbAck) {
+            if (this._linkTAgExists(nAme, cssUrl)) {
+                externAlCAllbAck();
                 return;
             }
-            var linkNode = this.createLinkTag(name, cssUrl, externalCallback, externalErrorback);
+            vAr linkNode = this.creAteLinkTAg(nAme, cssUrl, externAlCAllbAck, externAlErrorbAck);
             this._insertLinkNode(linkNode);
         };
-        return BrowserCSSLoader;
+        return BrowserCSSLoAder;
     }());
-    // ------------------------------ Finally, the plugin
-    var CSSPlugin = /** @class */ (function () {
+    // ------------------------------ FinAlly, the plugin
+    vAr CSSPlugin = /** @clAss */ (function () {
         function CSSPlugin() {
-            this._cssLoader = new BrowserCSSLoader();
+            this._cssLoAder = new BrowserCSSLoAder();
         }
-        CSSPlugin.prototype.load = function (name, req, load, config) {
+        CSSPlugin.prototype.loAd = function (nAme, req, loAd, config) {
             config = config || {};
-            var cssConfig = config['vs/css'] || {};
-            if (cssConfig.disabled) {
-                // the plugin is asked to not create any style sheets
-                load({});
+            vAr cssConfig = config['vs/css'] || {};
+            if (cssConfig.disAbled) {
+                // the plugin is Asked to not creAte Any style sheets
+                loAd({});
                 return;
             }
-            var cssUrl = req.toUrl(name + '.css');
-            this._cssLoader.load(name, cssUrl, function (contents) {
-                load({});
+            vAr cssUrl = req.toUrl(nAme + '.css');
+            this._cssLoAder.loAd(nAme, cssUrl, function (contents) {
+                loAd({});
             }, function (err) {
-                if (typeof load.error === 'function') {
-                    load.error('Could not find ' + cssUrl + ' or it was empty');
+                if (typeof loAd.error === 'function') {
+                    loAd.error('Could not find ' + cssUrl + ' or it wAs empty');
                 }
             });
         };
         return CSSPlugin;
     }());
-    CSSLoaderPlugin.CSSPlugin = CSSPlugin;
+    CSSLoAderPlugin.CSSPlugin = CSSPlugin;
     define('vs/css', new CSSPlugin());
-})(CSSLoaderPlugin || (CSSLoaderPlugin = {}));
+})(CSSLoAderPlugin || (CSSLoAderPlugin = {}));

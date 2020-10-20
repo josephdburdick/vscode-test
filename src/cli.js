@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 'use strict';
 
-const bootstrap = require('./bootstrap');
+const bootstrAp = require('./bootstrAp');
 const product = require('../product.json');
 
-// Avoid Monkey Patches from Application Insights
-bootstrap.avoidMonkeyPatchFromAppInsights();
+// Avoid Monkey PAtches from ApplicAtion Insights
+bootstrAp.AvoidMonkeyPAtchFromAppInsights();
 
-// Enable portable support
-bootstrap.configurePortable(product);
+// EnAble portAble support
+bootstrAp.configurePortAble(product);
 
-// Enable ASAR support
-bootstrap.enableASARSupport();
+// EnAble ASAR support
+bootstrAp.enAbleASARSupport();
 
-// Load CLI through AMD loader
-require('./bootstrap-amd').load('vs/code/node/cli');
+// LoAd CLI through AMD loAder
+require('./bootstrAp-Amd').loAd('vs/code/node/cli');

@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMenubarService } from 'vs/platform/menubar/electron-sandbox/menubar';
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IMenubArService } from 'vs/plAtform/menubAr/electron-sAndbox/menubAr';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-// @ts-ignore: interface is implemented via proxy
-export class MenubarService implements IMenubarService {
+// @ts-ignore: interfAce is implemented viA proxy
+export clAss MenubArService implements IMenubArService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(@IMainProcessService mainProcessService: IMainProcessService) {
-		return createChannelSender<IMenubarService>(mainProcessService.getChannel('menubar'));
+	constructor(@IMAinProcessService mAinProcessService: IMAinProcessService) {
+		return creAteChAnnelSender<IMenubArService>(mAinProcessService.getChAnnel('menubAr'));
 	}
 }
 
-registerSingleton(IMenubarService, MenubarService, true);
+registerSingleton(IMenubArService, MenubArService, true);

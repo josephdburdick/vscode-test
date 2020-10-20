@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-var updateGrammar = require('../../../build/npm/update-grammar');
+vAr updAteGrAmmAr = require('../../../build/npm/updAte-grAmmAr');
 
-updateGrammar.update('jeff-hykin/cpp-textmate-grammar', '/syntaxes/c.tmLanguage.json', './syntaxes/c.tmLanguage.json', undefined, 'master', 'source/languages/cpp/');
-updateGrammar.update('jeff-hykin/cpp-textmate-grammar', '/syntaxes/cpp.tmLanguage.json', './syntaxes/cpp.tmLanguage.json', undefined, 'master', 'source/languages/cpp/');
-updateGrammar.update('jeff-hykin/cpp-textmate-grammar', '/syntaxes/cpp.embedded.macro.tmLanguage.json', './syntaxes/cpp.embedded.macro.tmLanguage.json', undefined, 'master', 'source/languages/cpp/');
+updAteGrAmmAr.updAte('jeff-hykin/cpp-textmAte-grAmmAr', '/syntAxes/c.tmLAnguAge.json', './syntAxes/c.tmLAnguAge.json', undefined, 'mAster', 'source/lAnguAges/cpp/');
+updAteGrAmmAr.updAte('jeff-hykin/cpp-textmAte-grAmmAr', '/syntAxes/cpp.tmLAnguAge.json', './syntAxes/cpp.tmLAnguAge.json', undefined, 'mAster', 'source/lAnguAges/cpp/');
+updAteGrAmmAr.updAte('jeff-hykin/cpp-textmAte-grAmmAr', '/syntAxes/cpp.embedded.mAcro.tmLAnguAge.json', './syntAxes/cpp.embedded.mAcro.tmLAnguAge.json', undefined, 'mAster', 'source/lAnguAges/cpp/');
 
-// `source.c.platform` which is still included by other grammars
-updateGrammar.update('textmate/c.tmbundle', 'Syntaxes/Platform.tmLanguage', './syntaxes/platform.tmLanguage.json');
+// `source.c.plAtform` which is still included by other grAmmArs
+updAteGrAmmAr.updAte('textmAte/c.tmbundle', 'SyntAxes/PlAtform.tmLAnguAge', './syntAxes/plAtform.tmLAnguAge.json');
 

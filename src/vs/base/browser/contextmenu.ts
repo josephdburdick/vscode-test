@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, IActionRunner, IActionViewItem } from 'vs/base/common/actions';
-import { ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
+import { IAction, IActionRunner, IActionViewItem } from 'vs/bAse/common/Actions';
+import { ResolvedKeybinding } from 'vs/bAse/common/keyCodes';
+import { AnchorAlignment } from 'vs/bAse/browser/ui/contextview/contextview';
 
-export interface IContextMenuEvent {
-	readonly shiftKey?: boolean;
-	readonly ctrlKey?: boolean;
-	readonly altKey?: boolean;
-	readonly metaKey?: boolean;
+export interfAce IContextMenuEvent {
+	reAdonly shiftKey?: booleAn;
+	reAdonly ctrlKey?: booleAn;
+	reAdonly AltKey?: booleAn;
+	reAdonly metAKey?: booleAn;
 }
 
-export interface IContextMenuDelegate {
+export interfAce IContextMenuDelegAte {
 	getAnchor(): HTMLElement | { x: number; y: number; width?: number; height?: number; };
 	getActions(): IAction[];
-	getCheckedActionsRepresentation?(action: IAction): 'radio' | 'checkbox';
-	getActionViewItem?(action: IAction): IActionViewItem | undefined;
-	getActionsContext?(event?: IContextMenuEvent): any;
-	getKeyBinding?(action: IAction): ResolvedKeybinding | undefined;
-	getMenuClassName?(): string;
-	onHide?(didCancel: boolean): void;
-	actionRunner?: IActionRunner;
-	autoSelectFirstItem?: boolean;
-	anchorAlignment?: AnchorAlignment;
-	domForShadowRoot?: HTMLElement;
+	getCheckedActionsRepresentAtion?(Action: IAction): 'rAdio' | 'checkbox';
+	getActionViewItem?(Action: IAction): IActionViewItem | undefined;
+	getActionsContext?(event?: IContextMenuEvent): Any;
+	getKeyBinding?(Action: IAction): ResolvedKeybinding | undefined;
+	getMenuClAssNAme?(): string;
+	onHide?(didCAncel: booleAn): void;
+	ActionRunner?: IActionRunner;
+	AutoSelectFirstItem?: booleAn;
+	AnchorAlignment?: AnchorAlignment;
+	domForShAdowRoot?: HTMLElement;
 }
 
-export interface IContextMenuProvider {
-	showContextMenu(delegate: IContextMenuDelegate): void;
+export interfAce IContextMenuProvider {
+	showContextMenu(delegAte: IContextMenuDelegAte): void;
 }

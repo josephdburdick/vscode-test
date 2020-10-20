@@ -1,292 +1,292 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { STATUS_BAR_HOST_NAME_BACKGROUND, STATUS_BAR_HOST_NAME_FOREGROUND } from 'vs/workbench/common/theme';
-import { themeColorFromId } from 'vs/platform/theme/common/themeService';
+import { themeColorFromId } from 'vs/plAtform/theme/common/themeService';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { Disposable, dispose } from 'vs/base/common/lifecycle';
-import { MenuId, IMenuService, MenuItemAction, IMenu, MenuRegistry, registerAction2, Action2 } from 'vs/platform/actions/common/actions';
+import { DisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { MenuId, IMenuService, MenuItemAction, IMenu, MenuRegistry, registerAction2, Action2 } from 'vs/plAtform/Actions/common/Actions';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { StatusbarAlignment, IStatusbarService, IStatusbarEntryAccessor, IStatusbarEntry } from 'vs/workbench/services/statusbar/common/statusbar';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { Schemas } from 'vs/base/common/network';
+import { StAtusbArAlignment, IStAtusbArService, IStAtusbArEntryAccessor, IStAtusbArEntry } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IContextKeyService, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { SchemAs } from 'vs/bAse/common/network';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { IQuickInputService, IQuickPickItem, IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
+import { IQuickInputService, IQuickPickItem, IQuickPickSepArAtor } from 'vs/plAtform/quickinput/common/quickInput';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { PersistentConnectionEventType } from 'vs/platform/remote/common/remoteAgentConnection';
-import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
+import { PersistentConnectionEventType } from 'vs/plAtform/remote/common/remoteAgentConnection';
+import { IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { isWeb } from 'vs/base/common/platform';
-import { once } from 'vs/base/common/functional';
+import { isWeb } from 'vs/bAse/common/plAtform';
+import { once } from 'vs/bAse/common/functionAl';
 
-export class RemoteStatusIndicator extends Disposable implements IWorkbenchContribution {
+export clAss RemoteStAtusIndicAtor extends DisposAble implements IWorkbenchContribution {
 
-	private static REMOTE_ACTIONS_COMMAND_ID = 'workbench.action.remote.showMenu';
-	private static CLOSE_REMOTE_COMMAND_ID = 'workbench.action.remote.close';
-	private static SHOW_CLOSE_REMOTE_COMMAND_ID = !isWeb; // web does not have a "Close Remote" command
+	privAte stAtic REMOTE_ACTIONS_COMMAND_ID = 'workbench.Action.remote.showMenu';
+	privAte stAtic CLOSE_REMOTE_COMMAND_ID = 'workbench.Action.remote.close';
+	privAte stAtic SHOW_CLOSE_REMOTE_COMMAND_ID = !isWeb; // web does not hAve A "Close Remote" commAnd
 
-	private remoteStatusEntry: IStatusbarEntryAccessor | undefined;
+	privAte remoteStAtusEntry: IStAtusbArEntryAccessor | undefined;
 
-	private remoteMenu = this._register(this.menuService.createMenu(MenuId.StatusBarWindowIndicatorMenu, this.contextKeyService));
-	private hasRemoteActions = false;
+	privAte remoteMenu = this._register(this.menuService.creAteMenu(MenuId.StAtusBArWindowIndicAtorMenu, this.contextKeyService));
+	privAte hAsRemoteActions = fAlse;
 
-	private remoteAuthority = this.environmentService.remoteAuthority;
-	private connectionState: 'initializing' | 'connected' | 'disconnected' | undefined = undefined;
-	private connectionStateContextKey = new RawContextKey<'' | 'initializing' | 'disconnected' | 'connected'>('remoteConnectionState', '').bindTo(this.contextKeyService);
+	privAte remoteAuthority = this.environmentService.remoteAuthority;
+	privAte connectionStAte: 'initiAlizing' | 'connected' | 'disconnected' | undefined = undefined;
+	privAte connectionStAteContextKey = new RAwContextKey<'' | 'initiAlizing' | 'disconnected' | 'connected'>('remoteConnectionStAte', '').bindTo(this.contextKeyService);
 
 	constructor(
-		@IStatusbarService private readonly statusbarService: IStatusbarService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IContextKeyService private contextKeyService: IContextKeyService,
-		@IMenuService private menuService: IMenuService,
-		@IQuickInputService private readonly quickInputService: IQuickInputService,
-		@ICommandService private readonly commandService: ICommandService,
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@IRemoteAgentService private readonly remoteAgentService: IRemoteAgentService,
-		@IRemoteAuthorityResolverService private readonly remoteAuthorityResolverService: IRemoteAuthorityResolverService,
-		@IHostService private readonly hostService: IHostService
+		@IStAtusbArService privAte reAdonly stAtusbArService: IStAtusbArService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IContextKeyService privAte contextKeyService: IContextKeyService,
+		@IMenuService privAte menuService: IMenuService,
+		@IQuickInputService privAte reAdonly quickInputService: IQuickInputService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService,
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@IRemoteAgentService privAte reAdonly remoteAgentService: IRemoteAgentService,
+		@IRemoteAuthorityResolverService privAte reAdonly remoteAuthorityResolverService: IRemoteAuthorityResolverService,
+		@IHostService privAte reAdonly hostService: IHostService
 	) {
 		super();
 
-		// Set initial connection state
+		// Set initiAl connection stAte
 		if (this.remoteAuthority) {
-			this.connectionState = 'initializing';
-			this.connectionStateContextKey.set(this.connectionState);
+			this.connectionStAte = 'initiAlizing';
+			this.connectionStAteContextKey.set(this.connectionStAte);
 		}
 
 		this.registerActions();
 		this.registerListeners();
 
-		this.updateWhenInstalledExtensionsRegistered();
-		this.updateRemoteStatusIndicator();
+		this.updAteWhenInstAlledExtensionsRegistered();
+		this.updAteRemoteStAtusIndicAtor();
 	}
 
-	private registerActions(): void {
-		const category = { value: nls.localize('remote.category', "Remote"), original: 'Remote' };
+	privAte registerActions(): void {
+		const cAtegory = { vAlue: nls.locAlize('remote.cAtegory', "Remote"), originAl: 'Remote' };
 
 		// Show Remote Menu
-		const that = this;
-		registerAction2(class extends Action2 {
+		const thAt = this;
+		registerAction2(clAss extends Action2 {
 			constructor() {
 				super({
-					id: RemoteStatusIndicator.REMOTE_ACTIONS_COMMAND_ID,
-					category,
-					title: { value: nls.localize('remote.showMenu', "Show Remote Menu"), original: 'Show Remote Menu' },
+					id: RemoteStAtusIndicAtor.REMOTE_ACTIONS_COMMAND_ID,
+					cAtegory,
+					title: { vAlue: nls.locAlize('remote.showMenu', "Show Remote Menu"), originAl: 'Show Remote Menu' },
 					f1: true,
 				});
 			}
-			run = () => that.showRemoteMenu(that.remoteMenu);
+			run = () => thAt.showRemoteMenu(thAt.remoteMenu);
 		});
 
 		// Close Remote Connection
-		if (RemoteStatusIndicator.SHOW_CLOSE_REMOTE_COMMAND_ID && this.remoteAuthority) {
-			registerAction2(class extends Action2 {
+		if (RemoteStAtusIndicAtor.SHOW_CLOSE_REMOTE_COMMAND_ID && this.remoteAuthority) {
+			registerAction2(clAss extends Action2 {
 				constructor() {
 					super({
-						id: RemoteStatusIndicator.CLOSE_REMOTE_COMMAND_ID,
-						category,
-						title: { value: nls.localize('remote.close', "Close Remote Connection"), original: 'Close Remote Connection' },
+						id: RemoteStAtusIndicAtor.CLOSE_REMOTE_COMMAND_ID,
+						cAtegory,
+						title: { vAlue: nls.locAlize('remote.close', "Close Remote Connection"), originAl: 'Close Remote Connection' },
 						f1: true
 					});
 				}
-				run = () => that.remoteAuthority && that.hostService.openWindow({ forceReuseWindow: true });
+				run = () => thAt.remoteAuthority && thAt.hostService.openWindow({ forceReuseWindow: true });
 			});
 
-			MenuRegistry.appendMenuItem(MenuId.MenubarFileMenu, {
+			MenuRegistry.AppendMenuItem(MenuId.MenubArFileMenu, {
 				group: '6_close',
-				command: {
-					id: RemoteStatusIndicator.CLOSE_REMOTE_COMMAND_ID,
-					title: nls.localize({ key: 'miCloseRemote', comment: ['&& denotes a mnemonic'] }, "Close Re&&mote Connection")
+				commAnd: {
+					id: RemoteStAtusIndicAtor.CLOSE_REMOTE_COMMAND_ID,
+					title: nls.locAlize({ key: 'miCloseRemote', comment: ['&& denotes A mnemonic'] }, "Close Re&&mote Connection")
 				},
 				order: 3.5
 			});
 		}
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Menu changes
-		this._register(this.remoteMenu.onDidChange(() => this.updateRemoteActions()));
+		// Menu chAnges
+		this._register(this.remoteMenu.onDidChAnge(() => this.updAteRemoteActions()));
 
-		// Update indicator when formatter changes as it may have an impact on the remote label
-		this._register(this.labelService.onDidChangeFormatters(() => this.updateRemoteStatusIndicator()));
+		// UpdAte indicAtor when formAtter chAnges As it mAy hAve An impAct on the remote lAbel
+		this._register(this.lAbelService.onDidChAngeFormAtters(() => this.updAteRemoteStAtusIndicAtor()));
 
-		// Update based on remote indicator changes if any
-		const remoteIndicator = this.environmentService.options?.windowIndicator;
-		if (remoteIndicator) {
-			this._register(remoteIndicator.onDidChange(() => this.updateRemoteStatusIndicator()));
+		// UpdAte bAsed on remote indicAtor chAnges if Any
+		const remoteIndicAtor = this.environmentService.options?.windowIndicAtor;
+		if (remoteIndicAtor) {
+			this._register(remoteIndicAtor.onDidChAnge(() => this.updAteRemoteStAtusIndicAtor()));
 		}
 
-		// Listen to changes of the connection
+		// Listen to chAnges of the connection
 		if (this.remoteAuthority) {
 			const connection = this.remoteAgentService.getConnection();
 			if (connection) {
-				this._register(connection.onDidStateChange((e) => {
+				this._register(connection.onDidStAteChAnge((e) => {
 					switch (e.type) {
-						case PersistentConnectionEventType.ConnectionLost:
-						case PersistentConnectionEventType.ReconnectionPermanentFailure:
-						case PersistentConnectionEventType.ReconnectionRunning:
-						case PersistentConnectionEventType.ReconnectionWait:
+						cAse PersistentConnectionEventType.ConnectionLost:
+						cAse PersistentConnectionEventType.ReconnectionPermAnentFAilure:
+						cAse PersistentConnectionEventType.ReconnectionRunning:
+						cAse PersistentConnectionEventType.ReconnectionWAit:
 							this.setDisconnected(true);
-							break;
-						case PersistentConnectionEventType.ConnectionGain:
-							this.setDisconnected(false);
-							break;
+							breAk;
+						cAse PersistentConnectionEventType.ConnectionGAin:
+							this.setDisconnected(fAlse);
+							breAk;
 					}
 				}));
 			}
 		}
 	}
 
-	private async updateWhenInstalledExtensionsRegistered(): Promise<void> {
-		await this.extensionService.whenInstalledExtensionsRegistered();
+	privAte Async updAteWhenInstAlledExtensionsRegistered(): Promise<void> {
+		AwAit this.extensionService.whenInstAlledExtensionsRegistered();
 
 		const remoteAuthority = this.remoteAuthority;
 		if (remoteAuthority) {
 
-			// Try to resolve the authority to figure out connection state
-			(async () => {
+			// Try to resolve the Authority to figure out connection stAte
+			(Async () => {
 				try {
-					await this.remoteAuthorityResolverService.resolveAuthority(remoteAuthority);
+					AwAit this.remoteAuthorityResolverService.resolveAuthority(remoteAuthority);
 
-					this.setDisconnected(false);
-				} catch (error) {
+					this.setDisconnected(fAlse);
+				} cAtch (error) {
 					this.setDisconnected(true);
 				}
 			})();
 		}
 
-		this.updateRemoteStatusIndicator();
+		this.updAteRemoteStAtusIndicAtor();
 	}
 
-	private setDisconnected(isDisconnected: boolean): void {
-		const newState = isDisconnected ? 'disconnected' : 'connected';
-		if (this.connectionState !== newState) {
-			this.connectionState = newState;
-			this.connectionStateContextKey.set(this.connectionState);
+	privAte setDisconnected(isDisconnected: booleAn): void {
+		const newStAte = isDisconnected ? 'disconnected' : 'connected';
+		if (this.connectionStAte !== newStAte) {
+			this.connectionStAte = newStAte;
+			this.connectionStAteContextKey.set(this.connectionStAte);
 
-			this.updateRemoteStatusIndicator();
+			this.updAteRemoteStAtusIndicAtor();
 		}
 	}
 
-	private updateRemoteActions() {
-		const newHasWindowActions = this.remoteMenu.getActions().length > 0;
-		if (newHasWindowActions !== this.hasRemoteActions) {
-			this.hasRemoteActions = newHasWindowActions;
+	privAte updAteRemoteActions() {
+		const newHAsWindowActions = this.remoteMenu.getActions().length > 0;
+		if (newHAsWindowActions !== this.hAsRemoteActions) {
+			this.hAsRemoteActions = newHAsWindowActions;
 
-			this.updateRemoteStatusIndicator();
+			this.updAteRemoteStAtusIndicAtor();
 		}
 	}
 
-	private updateRemoteStatusIndicator(): void {
+	privAte updAteRemoteStAtusIndicAtor(): void {
 
-		// Remote indicator: show if provided via options
-		const remoteIndicator = this.environmentService.options?.windowIndicator;
-		if (remoteIndicator) {
-			this.renderRemoteStatusIndicator(remoteIndicator.label, remoteIndicator.tooltip, remoteIndicator.command);
+		// Remote indicAtor: show if provided viA options
+		const remoteIndicAtor = this.environmentService.options?.windowIndicAtor;
+		if (remoteIndicAtor) {
+			this.renderRemoteStAtusIndicAtor(remoteIndicAtor.lAbel, remoteIndicAtor.tooltip, remoteIndicAtor.commAnd);
 		}
 
-		// Remote Authority: show connection state
+		// Remote Authority: show connection stAte
 		else if (this.remoteAuthority) {
-			const hostLabel = this.labelService.getHostLabel(Schemas.vscodeRemote, this.remoteAuthority) || this.remoteAuthority;
-			switch (this.connectionState) {
-				case 'initializing':
-					this.renderRemoteStatusIndicator(nls.localize('host.open', "Opening Remote..."), nls.localize('host.open', "Opening Remote..."), undefined, true /* progress */);
-					break;
-				case 'disconnected':
-					this.renderRemoteStatusIndicator(`$(alert) ${nls.localize('disconnectedFrom', "Disconnected from {0}", hostLabel)}`, nls.localize('host.tooltipDisconnected', "Disconnected from {0}", hostLabel));
-					break;
-				default:
-					this.renderRemoteStatusIndicator(`$(remote) ${hostLabel}`, nls.localize('host.tooltip', "Editing on {0}", hostLabel));
+			const hostLAbel = this.lAbelService.getHostLAbel(SchemAs.vscodeRemote, this.remoteAuthority) || this.remoteAuthority;
+			switch (this.connectionStAte) {
+				cAse 'initiAlizing':
+					this.renderRemoteStAtusIndicAtor(nls.locAlize('host.open', "Opening Remote..."), nls.locAlize('host.open', "Opening Remote..."), undefined, true /* progress */);
+					breAk;
+				cAse 'disconnected':
+					this.renderRemoteStAtusIndicAtor(`$(Alert) ${nls.locAlize('disconnectedFrom', "Disconnected from {0}", hostLAbel)}`, nls.locAlize('host.tooltipDisconnected', "Disconnected from {0}", hostLAbel));
+					breAk;
+				defAult:
+					this.renderRemoteStAtusIndicAtor(`$(remote) ${hostLAbel}`, nls.locAlize('host.tooltip', "Editing on {0}", hostLAbel));
 			}
 		}
 
-		// Remote Extensions Installed: offer the indicator to show actions
+		// Remote Extensions InstAlled: offer the indicAtor to show Actions
 		else if (this.remoteMenu.getActions().length > 0) {
-			this.renderRemoteStatusIndicator(`$(remote)`, nls.localize('noHost.tooltip', "Open a Remote Window"));
+			this.renderRemoteStAtusIndicAtor(`$(remote)`, nls.locAlize('noHost.tooltip', "Open A Remote Window"));
 		}
 
-		// No Remote Extensions: hide status indicator
+		// No Remote Extensions: hide stAtus indicAtor
 		else {
-			dispose(this.remoteStatusEntry);
-			this.remoteStatusEntry = undefined;
+			dispose(this.remoteStAtusEntry);
+			this.remoteStAtusEntry = undefined;
 		}
 	}
 
-	private renderRemoteStatusIndicator(text: string, tooltip?: string, command?: string, showProgress?: boolean): void {
-		const name = nls.localize('remoteHost', "Remote Host");
-		if (typeof command !== 'string' && this.remoteMenu.getActions().length > 0) {
-			command = RemoteStatusIndicator.REMOTE_ACTIONS_COMMAND_ID;
+	privAte renderRemoteStAtusIndicAtor(text: string, tooltip?: string, commAnd?: string, showProgress?: booleAn): void {
+		const nAme = nls.locAlize('remoteHost', "Remote Host");
+		if (typeof commAnd !== 'string' && this.remoteMenu.getActions().length > 0) {
+			commAnd = RemoteStAtusIndicAtor.REMOTE_ACTIONS_COMMAND_ID;
 		}
 
-		const properties: IStatusbarEntry = {
-			backgroundColor: themeColorFromId(STATUS_BAR_HOST_NAME_BACKGROUND),
+		const properties: IStAtusbArEntry = {
+			bAckgroundColor: themeColorFromId(STATUS_BAR_HOST_NAME_BACKGROUND),
 			color: themeColorFromId(STATUS_BAR_HOST_NAME_FOREGROUND),
-			ariaLabel: name,
+			AriALAbel: nAme,
 			text,
 			showProgress,
 			tooltip,
-			command
+			commAnd
 		};
 
-		if (this.remoteStatusEntry) {
-			this.remoteStatusEntry.update(properties);
+		if (this.remoteStAtusEntry) {
+			this.remoteStAtusEntry.updAte(properties);
 		} else {
-			this.remoteStatusEntry = this.statusbarService.addEntry(properties, 'status.host', name, StatusbarAlignment.LEFT, Number.MAX_VALUE /* first entry */);
+			this.remoteStAtusEntry = this.stAtusbArService.AddEntry(properties, 'stAtus.host', nAme, StAtusbArAlignment.LEFT, Number.MAX_VALUE /* first entry */);
 		}
 	}
 
-	private showRemoteMenu(menu: IMenu) {
-		const actions = menu.getActions();
+	privAte showRemoteMenu(menu: IMenu) {
+		const Actions = menu.getActions();
 
-		const items: (IQuickPickItem | IQuickPickSeparator)[] = [];
-		for (let actionGroup of actions) {
+		const items: (IQuickPickItem | IQuickPickSepArAtor)[] = [];
+		for (let ActionGroup of Actions) {
 			if (items.length) {
-				items.push({ type: 'separator' });
+				items.push({ type: 'sepArAtor' });
 			}
 
-			for (let action of actionGroup[1]) {
-				if (action instanceof MenuItemAction) {
-					let label = typeof action.item.title === 'string' ? action.item.title : action.item.title.value;
-					if (action.item.category) {
-						const category = typeof action.item.category === 'string' ? action.item.category : action.item.category.value;
-						label = nls.localize('cat.title', "{0}: {1}", category, label);
+			for (let Action of ActionGroup[1]) {
+				if (Action instAnceof MenuItemAction) {
+					let lAbel = typeof Action.item.title === 'string' ? Action.item.title : Action.item.title.vAlue;
+					if (Action.item.cAtegory) {
+						const cAtegory = typeof Action.item.cAtegory === 'string' ? Action.item.cAtegory : Action.item.cAtegory.vAlue;
+						lAbel = nls.locAlize('cAt.title', "{0}: {1}", cAtegory, lAbel);
 					}
 
 					items.push({
 						type: 'item',
-						id: action.item.id,
-						label
+						id: Action.item.id,
+						lAbel
 					});
 				}
 			}
 		}
 
-		if (RemoteStatusIndicator.SHOW_CLOSE_REMOTE_COMMAND_ID && this.remoteAuthority) {
+		if (RemoteStAtusIndicAtor.SHOW_CLOSE_REMOTE_COMMAND_ID && this.remoteAuthority) {
 			if (items.length) {
-				items.push({ type: 'separator' });
+				items.push({ type: 'sepArAtor' });
 			}
 
 			items.push({
 				type: 'item',
-				id: RemoteStatusIndicator.CLOSE_REMOTE_COMMAND_ID,
-				label: nls.localize('closeRemote.title', 'Close Remote Connection')
+				id: RemoteStAtusIndicAtor.CLOSE_REMOTE_COMMAND_ID,
+				lAbel: nls.locAlize('closeRemote.title', 'Close Remote Connection')
 			});
 		}
 
-		const quickPick = this.quickInputService.createQuickPick();
+		const quickPick = this.quickInputService.creAteQuickPick();
 		quickPick.items = items;
-		quickPick.canSelectMany = false;
+		quickPick.cAnSelectMAny = fAlse;
 		once(quickPick.onDidAccept)((_ => {
 			const selectedItems = quickPick.selectedItems;
 			if (selectedItems.length === 1) {
-				this.commandService.executeCommand(selectedItems[0].id!);
+				this.commAndService.executeCommAnd(selectedItems[0].id!);
 			}
 
 			quickPick.hide();

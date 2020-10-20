@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ExtHostOutputService2 } from 'vs/workbench/api/node/extHostOutputService';
-import { ExtHostTerminalService } from 'vs/workbench/api/node/extHostTerminalService';
-import { ExtHostTask } from 'vs/workbench/api/node/extHostTask';
-import { ExtHostDebugService } from 'vs/workbench/api/node/extHostDebugService';
-import { NativeExtHostSearch } from 'vs/workbench/api/node/extHostSearch';
-import { ExtHostExtensionService } from 'vs/workbench/api/node/extHostExtensionService';
-import { ExtHostLogService } from 'vs/workbench/api/node/extHostLogService';
-import { ExtHostTunnelService } from 'vs/workbench/api/node/extHostTunnelService';
-import { IExtHostDebugService } from 'vs/workbench/api/common/extHostDebugService';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { IExtHostOutputService } from 'vs/workbench/api/common/extHostOutput';
-import { IExtHostSearch } from 'vs/workbench/api/common/extHostSearch';
-import { IExtHostTask } from 'vs/workbench/api/common/extHostTask';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { IExtHostTunnelService } from 'vs/workbench/api/common/extHostTunnelService';
-import { ILogService } from 'vs/platform/log/common/log';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ExtHostOutputService2 } from 'vs/workbench/Api/node/extHostOutputService';
+import { ExtHostTerminAlService } from 'vs/workbench/Api/node/extHostTerminAlService';
+import { ExtHostTAsk } from 'vs/workbench/Api/node/extHostTAsk';
+import { ExtHostDebugService } from 'vs/workbench/Api/node/extHostDebugService';
+import { NAtiveExtHostSeArch } from 'vs/workbench/Api/node/extHostSeArch';
+import { ExtHostExtensionService } from 'vs/workbench/Api/node/extHostExtensionService';
+import { ExtHostLogService } from 'vs/workbench/Api/node/extHostLogService';
+import { ExtHostTunnelService } from 'vs/workbench/Api/node/extHostTunnelService';
+import { IExtHostDebugService } from 'vs/workbench/Api/common/extHostDebugService';
+import { IExtHostExtensionService } from 'vs/workbench/Api/common/extHostExtensionService';
+import { IExtHostOutputService } from 'vs/workbench/Api/common/extHostOutput';
+import { IExtHostSeArch } from 'vs/workbench/Api/common/extHostSeArch';
+import { IExtHostTAsk } from 'vs/workbench/Api/common/extHostTAsk';
+import { IExtHostTerminAlService } from 'vs/workbench/Api/common/extHostTerminAlService';
+import { IExtHostTunnelService } from 'vs/workbench/Api/common/extHostTunnelService';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
 // #########################################################################
 // ###                                                                   ###
@@ -32,7 +32,7 @@ registerSingleton(ILogService, ExtHostLogService);
 
 registerSingleton(IExtHostDebugService, ExtHostDebugService);
 registerSingleton(IExtHostOutputService, ExtHostOutputService2);
-registerSingleton(IExtHostSearch, NativeExtHostSearch);
-registerSingleton(IExtHostTask, ExtHostTask);
-registerSingleton(IExtHostTerminalService, ExtHostTerminalService);
+registerSingleton(IExtHostSeArch, NAtiveExtHostSeArch);
+registerSingleton(IExtHostTAsk, ExtHostTAsk);
+registerSingleton(IExtHostTerminAlService, ExtHostTerminAlService);
 registerSingleton(IExtHostTunnelService, ExtHostTunnelService);

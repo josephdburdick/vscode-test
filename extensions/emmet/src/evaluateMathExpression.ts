@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/* Based on @sergeche's work in his emmet plugin */
+/* BAsed on @sergeche's work in his emmet plugin */
 
-import * as vscode from 'vscode';
-import evaluate from '@emmetio/math-expression';
-import { DocumentStreamReader } from './bufferStream';
+import * As vscode from 'vscode';
+import evAluAte from '@emmetio/mAth-expression';
+import { DocumentStreAmReAder } from './bufferStreAm';
 
-export function evaluateMathExpression() {
-	if (!vscode.window.activeTextEditor) {
-		vscode.window.showInformationMessage('No editor is active');
+export function evAluAteMAthExpression() {
+	if (!vscode.window.ActiveTextEditor) {
+		vscode.window.showInformAtionMessAge('No editor is Active');
 		return;
 	}
-	const editor = vscode.window.activeTextEditor;
-	const stream = new DocumentStreamReader(editor.document);
+	const editor = vscode.window.ActiveTextEditor;
+	const streAm = new DocumentStreAmReAder(editor.document);
 	editor.edit(editBuilder => {
-		editor.selections.forEach(selection => {
-			const pos = selection.isReversed ? selection.anchor : selection.active;
-			stream.pos = pos;
+		editor.selections.forEAch(selection => {
+			const pos = selection.isReversed ? selection.Anchor : selection.Active;
+			streAm.pos = pos;
 
 			try {
-				const result = String(evaluate(stream, true));
-				editBuilder.replace(new vscode.Range(stream.pos, pos), result);
-			} catch (err) {
-				vscode.window.showErrorMessage('Could not evaluate expression');
-				// Ignore error since most likely it’s because of non-math expression
-				console.warn('Math evaluation error', err);
+				const result = String(evAluAte(streAm, true));
+				editBuilder.replAce(new vscode.RAnge(streAm.pos, pos), result);
+			} cAtch (err) {
+				vscode.window.showErrorMessAge('Could not evAluAte expression');
+				// Ignore error since most likely it’s becAuse of non-mAth expression
+				console.wArn('MAth evAluAtion error', err);
 			}
 		});
 	});

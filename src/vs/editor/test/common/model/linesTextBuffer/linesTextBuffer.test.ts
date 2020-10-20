@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Range } from 'vs/editor/common/core/range';
-import { DefaultEndOfLine } from 'vs/editor/common/model';
-import { IValidatedEditOperation, PieceTreeTextBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBuffer';
-import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
+import * As Assert from 'Assert';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { DefAultEndOfLine } from 'vs/editor/common/model';
+import { IVAlidAtedEditOperAtion, PieceTreeTextBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBuffer';
+import { creAteTextBufferFActory } from 'vs/editor/common/model/textModel';
 
 suite('PieceTreeTextBuffer._getInverseEdits', () => {
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, text: string[] | null): IValidatedEditOperation {
+	function editOp(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number, text: string[] | null): IVAlidAtedEditOperAtion {
 		return {
 			sortIndex: 0,
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
-			rangeOffset: 0,
-			rangeLength: 0,
+			rAnge: new RAnge(stArtLineNumber, stArtColumn, endLineNumber, endColumn),
+			rAngeOffset: 0,
+			rAngeLength: 0,
 			text: text ? text.join('\n') : '',
 			eolCount: text ? text.length - 1 : 0,
 			firstLineLength: text ? text[0].length : 0,
-			lastLineLength: text ? text[text.length - 1].length : 0,
-			forceMoveMarkers: false,
-			isAutoWhitespaceEdit: false
+			lAstLineLength: text ? text[text.length - 1].length : 0,
+			forceMoveMArkers: fAlse,
+			isAutoWhitespAceEdit: fAlse
 		};
 	}
 
-	function inverseEditOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number): Range {
-		return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
+	function inverseEditOp(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number): RAnge {
+		return new RAnge(stArtLineNumber, stArtColumn, endLineNumber, endColumn);
 	}
 
-	function assertInverseEdits(ops: IValidatedEditOperation[], expected: Range[]): void {
-		let actual = PieceTreeTextBuffer._getInverseEditRanges(ops);
-		assert.deepEqual(actual, expected);
+	function AssertInverseEdits(ops: IVAlidAtedEditOperAtion[], expected: RAnge[]): void {
+		let ActuAl = PieceTreeTextBuffer._getInverseEditRAnges(ops);
+		Assert.deepEquAl(ActuAl, expected);
 	}
 
 	test('single insert', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello'])
 			],
@@ -48,7 +48,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('Bug 19872: Undo is funky', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(2, 1, 2, 2, ['']),
 				editOp(3, 1, 4, 2, [''])
@@ -60,8 +60,8 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('two single unrelated inserts', () => {
-		assertInverseEdits(
+	test('two single unrelAted inserts', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello']),
 				editOp(2, 1, 2, 1, ['world'])
@@ -74,7 +74,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('two single inserts 1', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello']),
 				editOp(1, 2, 1, 2, ['world'])
@@ -87,7 +87,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('two single inserts 2', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello']),
 				editOp(1, 4, 1, 4, ['world'])
@@ -100,7 +100,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('multiline insert', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello', 'world'])
 			],
@@ -110,11 +110,11 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('two unrelated multiline inserts', () => {
-		assertInverseEdits(
+	test('two unrelAted multiline inserts', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello', 'world']),
-				editOp(2, 1, 2, 1, ['how', 'are', 'you?']),
+				editOp(2, 1, 2, 1, ['how', 'Are', 'you?']),
 			],
 			[
 				inverseEditOp(1, 1, 2, 6),
@@ -124,10 +124,10 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('two multiline inserts 1', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 1, ['hello', 'world']),
-				editOp(1, 2, 1, 2, ['how', 'are', 'you?']),
+				editOp(1, 2, 1, 2, ['how', 'Are', 'you?']),
 			],
 			[
 				inverseEditOp(1, 1, 2, 6),
@@ -137,7 +137,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('single delete', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 6, null)
 			],
@@ -147,8 +147,8 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('two single unrelated deletes', () => {
-		assertInverseEdits(
+	test('two single unrelAted deletes', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 6, null),
 				editOp(2, 1, 2, 6, null)
@@ -161,7 +161,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('two single deletes 1', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 6, null),
 				editOp(1, 7, 1, 12, null)
@@ -174,7 +174,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('two single deletes 2', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 6, null),
 				editOp(1, 9, 1, 14, null)
@@ -187,7 +187,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('multiline delete', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 2, 6, null)
 			],
@@ -197,8 +197,8 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('two unrelated multiline deletes', () => {
-		assertInverseEdits(
+	test('two unrelAted multiline deletes', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 2, 6, null),
 				editOp(3, 1, 5, 5, null),
@@ -211,7 +211,7 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 
 	test('two multiline deletes 1', () => {
-		assertInverseEdits(
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 2, 6, null),
 				editOp(2, 7, 4, 5, null),
@@ -223,8 +223,8 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('single replace', () => {
-		assertInverseEdits(
+	test('single replAce', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 6, ['Hello world'])
 			],
@@ -234,11 +234,11 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('two replaces', () => {
-		assertInverseEdits(
+	test('two replAces', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 1, 1, 6, ['Hello world']),
-				editOp(1, 7, 1, 8, ['How are you?']),
+				editOp(1, 7, 1, 8, ['How Are you?']),
 			],
 			[
 				inverseEditOp(1, 1, 1, 12),
@@ -247,8 +247,8 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 		);
 	});
 
-	test('many edits', () => {
-		assertInverseEdits(
+	test('mAny edits', () => {
+		AssertInverseEdits(
 			[
 				editOp(1, 2, 1, 2, ['', '  ']),
 				editOp(1, 5, 1, 6, ['']),
@@ -263,33 +263,33 @@ suite('PieceTreeTextBuffer._getInverseEdits', () => {
 	});
 });
 
-suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
+suite('PieceTreeTextBuffer._toSingleEditOperAtion', () => {
 
-	function editOp(startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number, rangeOffset: number, rangeLength: number, text: string[] | null): IValidatedEditOperation {
+	function editOp(stArtLineNumber: number, stArtColumn: number, endLineNumber: number, endColumn: number, rAngeOffset: number, rAngeLength: number, text: string[] | null): IVAlidAtedEditOperAtion {
 		return {
 			sortIndex: 0,
 			identifier: null,
-			range: new Range(startLineNumber, startColumn, endLineNumber, endColumn),
-			rangeOffset: rangeOffset,
-			rangeLength: rangeLength,
+			rAnge: new RAnge(stArtLineNumber, stArtColumn, endLineNumber, endColumn),
+			rAngeOffset: rAngeOffset,
+			rAngeLength: rAngeLength,
 			text: text ? text.join('\n') : '',
 			eolCount: text ? text.length - 1 : 0,
 			firstLineLength: text ? text[0].length : 0,
-			lastLineLength: text ? text[text.length - 1].length : 0,
-			forceMoveMarkers: false,
-			isAutoWhitespaceEdit: false
+			lAstLineLength: text ? text[text.length - 1].length : 0,
+			forceMoveMArkers: fAlse,
+			isAutoWhitespAceEdit: fAlse
 		};
 	}
 
-	function testToSingleEditOperation(original: string[], edits: IValidatedEditOperation[], expected: IValidatedEditOperation): void {
-		const textBuffer = <PieceTreeTextBuffer>createTextBufferFactory(original.join('\n')).create(DefaultEndOfLine.LF);
+	function testToSingleEditOperAtion(originAl: string[], edits: IVAlidAtedEditOperAtion[], expected: IVAlidAtedEditOperAtion): void {
+		const textBuffer = <PieceTreeTextBuffer>creAteTextBufferFActory(originAl.join('\n')).creAte(DefAultEndOfLine.LF);
 
-		const actual = textBuffer._toSingleEditOperation(edits);
-		assert.deepEqual(actual, expected);
+		const ActuAl = textBuffer._toSingleEditOperAtion(edits);
+		Assert.deepEquAl(ActuAl, expected);
 	}
 
-	test('one edit op is unchanged', () => {
-		testToSingleEditOperation(
+	test('one edit op is unchAnged', () => {
+		testToSingleEditOperAtion(
 			[
 				'My First Line',
 				'\t\tMy Second Line',
@@ -305,7 +305,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 	});
 
 	test('two edits on one line', () => {
-		testToSingleEditOperation([
+		testToSingleEditOperAtion([
 			'My First Line',
 			'\t\tMy Second Line',
 			'    Third Line',
@@ -323,7 +323,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 	});
 
 	test('insert multiple newlines', () => {
-		testToSingleEditOperation(
+		testToSingleEditOperAtion(
 			[
 				'My First Line',
 				'\t\tMy Second Line',
@@ -333,7 +333,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 			],
 			[
 				editOp(1, 3, 1, 3, 2, 0, ['', '', '', '', '']),
-				editOp(3, 15, 3, 15, 45, 0, ['a', 'b'])
+				editOp(3, 15, 3, 15, 45, 0, ['A', 'b'])
 			],
 			editOp(1, 3, 3, 15, 2, 43, [
 				'',
@@ -342,14 +342,14 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 				'',
 				' First Line',
 				'\t\tMy Second Line',
-				'    Third Linea',
+				'    Third LineA',
 				'b'
 			])
 		);
 	});
 
 	test('delete empty text', () => {
-		testToSingleEditOperation(
+		testToSingleEditOperAtion(
 			[
 				'My First Line',
 				'\t\tMy Second Line',
@@ -364,8 +364,8 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 		);
 	});
 
-	test('two unrelated edits', () => {
-		testToSingleEditOperation(
+	test('two unrelAted edits', () => {
+		testToSingleEditOperAtion(
 			[
 				'My First Line',
 				'\t\tMy Second Line',
@@ -381,8 +381,8 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 		);
 	});
 
-	test('many edits', () => {
-		testToSingleEditOperation(
+	test('mAny edits', () => {
+		testToSingleEditOperAtion(
 			[
 				'{"x" : 1}'
 			],
@@ -399,8 +399,8 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 		);
 	});
 
-	test('many edits reversed', () => {
-		testToSingleEditOperation(
+	test('mAny edits reversed', () => {
+		testToSingleEditOperAtion(
 			[
 				'{',
 				'  "x": 1',
@@ -415,11 +415,11 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 		);
 	});
 
-	test('replacing newlines 1', () => {
-		testToSingleEditOperation(
+	test('replAcing newlines 1', () => {
+		testToSingleEditOperAtion(
 			[
 				'{',
-				'"a": true,',
+				'"A": true,',
 				'',
 				'"b": true',
 				'}'
@@ -430,25 +430,25 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 			],
 			editOp(1, 2, 4, 1, 1, 13, [
 				'',
-				'\t"a": true,',
+				'\t"A": true,',
 				'\t'
 			])
 		);
 	});
 
-	test('replacing newlines 2', () => {
-		testToSingleEditOperation(
+	test('replAcing newlines 2', () => {
+		testToSingleEditOperAtion(
 			[
 				'some text',
 				'some more text',
-				'now comes an empty line',
+				'now comes An empty line',
 				'',
-				'after empty line',
-				'and the last line'
+				'After empty line',
+				'And the lAst line'
 			],
 			[
 				editOp(1, 5, 3, 1, 4, 21, [' text', 'some more text', 'some more text']),
-				editOp(3, 2, 4, 1, 26, 23, ['o more lines', 'asd', 'asd', 'asd']),
+				editOp(3, 2, 4, 1, 26, 23, ['o more lines', 'Asd', 'Asd', 'Asd']),
 				editOp(5, 1, 5, 6, 50, 5, ['zzzzzzzz']),
 				editOp(5, 11, 6, 16, 60, 22, ['1', '2', '3', '4'])
 			],
@@ -456,9 +456,9 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 				' text',
 				'some more text',
 				'some more textno more lines',
-				'asd',
-				'asd',
-				'asd',
+				'Asd',
+				'Asd',
+				'Asd',
 				'zzzzzzzz empt1',
 				'2',
 				'3',
@@ -467,8 +467,8 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 		);
 	});
 
-	test('advanced', () => {
-		testToSingleEditOperation(
+	test('AdvAnced', () => {
+		testToSingleEditOperAtion(
 			[
 				' {       "d": [',
 				'             null',
@@ -499,10 +499,10 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 		);
 	});
 
-	test('advanced simplified', () => {
-		testToSingleEditOperation(
+	test('AdvAnced simplified', () => {
+		testToSingleEditOperAtion(
 			[
-				'   abc',
+				'   Abc',
 				' ,def'
 			],
 			[
@@ -511,7 +511,7 @@ suite('PieceTreeTextBuffer._toSingleEditOperation', () => {
 				editOp(2, 3, 2, 3, 9, 0, ['', ''])
 			],
 			editOp(1, 1, 2, 3, 0, 9, [
-				'abc,',
+				'Abc,',
 				''
 			])
 		);

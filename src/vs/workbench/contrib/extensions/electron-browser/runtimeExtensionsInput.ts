@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI } from 'vs/base/common/uri';
+import * As nls from 'vs/nls';
+import { URI } from 'vs/bAse/common/uri';
 import { EditorInput } from 'vs/workbench/common/editor';
 
-export class RuntimeExtensionsInput extends EditorInput {
+export clAss RuntimeExtensionsInput extends EditorInput {
 
-	static readonly ID = 'workbench.runtimeExtensions.input';
+	stAtic reAdonly ID = 'workbench.runtimeExtensions.input';
 
-	static _instance: RuntimeExtensionsInput;
-	static get instance() {
-		if (!RuntimeExtensionsInput._instance || RuntimeExtensionsInput._instance.isDisposed()) {
-			RuntimeExtensionsInput._instance = new RuntimeExtensionsInput();
+	stAtic _instAnce: RuntimeExtensionsInput;
+	stAtic get instAnce() {
+		if (!RuntimeExtensionsInput._instAnce || RuntimeExtensionsInput._instAnce.isDisposed()) {
+			RuntimeExtensionsInput._instAnce = new RuntimeExtensionsInput();
 		}
 
-		return RuntimeExtensionsInput._instance;
+		return RuntimeExtensionsInput._instAnce;
 	}
 
-	readonly resource = URI.from({
+	reAdonly resource = URI.from({
 		scheme: 'runtime-extensions',
-		path: 'default'
+		pAth: 'defAult'
 	});
 
 	getTypeId(): string {
 		return RuntimeExtensionsInput.ID;
 	}
 
-	getName(): string {
-		return nls.localize('extensionsInputName', "Running Extensions");
+	getNAme(): string {
+		return nls.locAlize('extensionsInputNAme', "Running Extensions");
 	}
 
-	supportsSplitEditor(): boolean {
-		return false;
+	supportsSplitEditor(): booleAn {
+		return fAlse;
 	}
 
-	matches(other: unknown): boolean {
-		return other instanceof RuntimeExtensionsInput;
+	mAtches(other: unknown): booleAn {
+		return other instAnceof RuntimeExtensionsInput;
 	}
 }

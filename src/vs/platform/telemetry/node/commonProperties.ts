@@ -1,91 +1,91 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Platform from 'vs/base/common/platform';
-import * as os from 'os';
-import * as uuid from 'vs/base/common/uuid';
-import { readFile } from 'vs/base/node/pfs';
+import * As PlAtform from 'vs/bAse/common/plAtform';
+import * As os from 'os';
+import * As uuid from 'vs/bAse/common/uuid';
+import { reAdFile } from 'vs/bAse/node/pfs';
 
-export async function resolveCommonProperties(
+export Async function resolveCommonProperties(
 	commit: string | undefined,
 	version: string | undefined,
-	machineId: string | undefined,
-	msftInternalDomains: string[] | undefined,
-	installSourcePath: string,
+	mAchineId: string | undefined,
+	msftInternAlDomAins: string[] | undefined,
+	instAllSourcePAth: string,
 	product?: string
-): Promise<{ [name: string]: string | boolean | undefined; }> {
-	const result: { [name: string]: string | boolean | undefined; } = Object.create(null);
+): Promise<{ [nAme: string]: string | booleAn | undefined; }> {
+	const result: { [nAme: string]: string | booleAn | undefined; } = Object.creAte(null);
 
-	// __GDPR__COMMON__ "common.machineId" : { "endPoint": "MacAddressHash", "classification": "EndUserPseudonymizedInformation", "purpose": "FeatureInsight" }
-	result['common.machineId'] = machineId;
-	// __GDPR__COMMON__ "sessionID" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-	result['sessionID'] = uuid.generateUuid() + Date.now();
-	// __GDPR__COMMON__ "commitHash" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
-	result['commitHash'] = commit;
-	// __GDPR__COMMON__ "version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+	// __GDPR__COMMON__ "common.mAchineId" : { "endPoint": "MAcAddressHAsh", "clAssificAtion": "EndUserPseudonymizedInformAtion", "purpose": "FeAtureInsight" }
+	result['common.mAchineId'] = mAchineId;
+	// __GDPR__COMMON__ "sessionID" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+	result['sessionID'] = uuid.generAteUuid() + DAte.now();
+	// __GDPR__COMMON__ "commitHAsh" : { "clAssificAtion": "SystemMetADAtA", "purpose": "PerformAnceAndHeAlth" }
+	result['commitHAsh'] = commit;
+	// __GDPR__COMMON__ "version" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 	result['version'] = version;
-	// __GDPR__COMMON__ "common.platformVersion" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-	result['common.platformVersion'] = (os.release() || '').replace(/^(\d+)(\.\d+)?(\.\d+)?(.*)/, '$1$2$3');
-	// __GDPR__COMMON__ "common.platform" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-	result['common.platform'] = Platform.PlatformToString(Platform.platform);
-	// __GDPR__COMMON__ "common.nodePlatform" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
-	result['common.nodePlatform'] = process.platform;
-	// __GDPR__COMMON__ "common.nodeArch" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
-	result['common.nodeArch'] = process.arch;
-	// __GDPR__COMMON__ "common.product" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
+	// __GDPR__COMMON__ "common.plAtformVersion" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+	result['common.plAtformVersion'] = (os.releAse() || '').replAce(/^(\d+)(\.\d+)?(\.\d+)?(.*)/, '$1$2$3');
+	// __GDPR__COMMON__ "common.plAtform" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+	result['common.plAtform'] = PlAtform.PlAtformToString(PlAtform.plAtform);
+	// __GDPR__COMMON__ "common.nodePlAtform" : { "clAssificAtion": "SystemMetADAtA", "purpose": "PerformAnceAndHeAlth" }
+	result['common.nodePlAtform'] = process.plAtform;
+	// __GDPR__COMMON__ "common.nodeArch" : { "clAssificAtion": "SystemMetADAtA", "purpose": "PerformAnceAndHeAlth" }
+	result['common.nodeArch'] = process.Arch;
+	// __GDPR__COMMON__ "common.product" : { "clAssificAtion": "SystemMetADAtA", "purpose": "PerformAnceAndHeAlth" }
 	result['common.product'] = product || 'desktop';
 
-	const msftInternal = verifyMicrosoftInternalDomain(msftInternalDomains || []);
-	if (msftInternal) {
-		// __GDPR__COMMON__ "common.msftInternal" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
-		result['common.msftInternal'] = msftInternal;
+	const msftInternAl = verifyMicrosoftInternAlDomAin(msftInternAlDomAins || []);
+	if (msftInternAl) {
+		// __GDPR__COMMON__ "common.msftInternAl" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
+		result['common.msftInternAl'] = msftInternAl;
 	}
 
-	// dynamic properties which value differs on each call
+	// dynAmic properties which vAlue differs on eAch cAll
 	let seq = 0;
-	const startTime = Date.now();
+	const stArtTime = DAte.now();
 	Object.defineProperties(result, {
-		// __GDPR__COMMON__ "timestamp" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-		'timestamp': {
-			get: () => new Date(),
-			enumerable: true
+		// __GDPR__COMMON__ "timestAmp" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+		'timestAmp': {
+			get: () => new DAte(),
+			enumerAble: true
 		},
-		// __GDPR__COMMON__ "common.timesincesessionstart" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
-		'common.timesincesessionstart': {
-			get: () => Date.now() - startTime,
-			enumerable: true
+		// __GDPR__COMMON__ "common.timesincesessionstArt" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
+		'common.timesincesessionstArt': {
+			get: () => DAte.now() - stArtTime,
+			enumerAble: true
 		},
-		// __GDPR__COMMON__ "common.sequence" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
+		// __GDPR__COMMON__ "common.sequence" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
 		'common.sequence': {
 			get: () => seq++,
-			enumerable: true
+			enumerAble: true
 		}
 	});
 
-	if (process.platform === 'linux' && process.env.SNAP && process.env.SNAP_REVISION) {
-		// __GDPR__COMMON__ "common.snap" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-		result['common.snap'] = 'true';
+	if (process.plAtform === 'linux' && process.env.SNAP && process.env.SNAP_REVISION) {
+		// __GDPR__COMMON__ "common.snAp" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
+		result['common.snAp'] = 'true';
 	}
 
 	try {
-		const contents = await readFile(installSourcePath, 'utf8');
+		const contents = AwAit reAdFile(instAllSourcePAth, 'utf8');
 
-		// __GDPR__COMMON__ "common.source" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+		// __GDPR__COMMON__ "common.source" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 		result['common.source'] = contents.slice(0, 30);
-	} catch (error) {
+	} cAtch (error) {
 		// ignore error
 	}
 
 	return result;
 }
 
-function verifyMicrosoftInternalDomain(domainList: readonly string[]): boolean {
+function verifyMicrosoftInternAlDomAin(domAinList: reAdonly string[]): booleAn {
 	if (!process || !process.env || !process.env['USERDNSDOMAIN']) {
-		return false;
+		return fAlse;
 	}
 
-	const domain = process.env['USERDNSDOMAIN']!.toLowerCase();
-	return domainList.some(msftDomain => domain === msftDomain);
+	const domAin = process.env['USERDNSDOMAIN']!.toLowerCAse();
+	return domAinList.some(msftDomAin => domAin === msftDomAin);
 }

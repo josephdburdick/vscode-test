@@ -1,132 +1,132 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { MergeConflictParser } from './mergeConflictParser';
-import * as interfaces from './interfaces';
-import { Delayer } from './delayer';
+import * As vscode from 'vscode';
+import { MergeConflictPArser } from './mergeConflictPArser';
+import * As interfAces from './interfAces';
+import { DelAyer } from './delAyer';
 
-class ScanTask {
+clAss ScAnTAsk {
 	public origins: Set<string> = new Set<string>();
-	public delayTask: Delayer<interfaces.IDocumentMergeConflict[]>;
+	public delAyTAsk: DelAyer<interfAces.IDocumentMergeConflict[]>;
 
-	constructor(delayTime: number, initialOrigin: string) {
-		this.origins.add(initialOrigin);
-		this.delayTask = new Delayer<interfaces.IDocumentMergeConflict[]>(delayTime);
+	constructor(delAyTime: number, initiAlOrigin: string) {
+		this.origins.Add(initiAlOrigin);
+		this.delAyTAsk = new DelAyer<interfAces.IDocumentMergeConflict[]>(delAyTime);
 	}
 
-	public addOrigin(name: string): boolean {
-		if (this.origins.has(name)) {
-			return false;
+	public AddOrigin(nAme: string): booleAn {
+		if (this.origins.hAs(nAme)) {
+			return fAlse;
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	public hasOrigin(name: string): boolean {
-		return this.origins.has(name);
+	public hAsOrigin(nAme: string): booleAn {
+		return this.origins.hAs(nAme);
 	}
 }
 
-class OriginDocumentMergeConflictTracker implements interfaces.IDocumentMergeConflictTracker {
-	constructor(private parent: DocumentMergeConflictTracker, private origin: string) {
+clAss OriginDocumentMergeConflictTrAcker implements interfAces.IDocumentMergeConflictTrAcker {
+	constructor(privAte pArent: DocumentMergeConflictTrAcker, privAte origin: string) {
 	}
 
-	getConflicts(document: vscode.TextDocument): PromiseLike<interfaces.IDocumentMergeConflict[]> {
-		return this.parent.getConflicts(document, this.origin);
+	getConflicts(document: vscode.TextDocument): PromiseLike<interfAces.IDocumentMergeConflict[]> {
+		return this.pArent.getConflicts(document, this.origin);
 	}
 
-	isPending(document: vscode.TextDocument): boolean {
-		return this.parent.isPending(document, this.origin);
+	isPending(document: vscode.TextDocument): booleAn {
+		return this.pArent.isPending(document, this.origin);
 	}
 
 	forget(document: vscode.TextDocument) {
-		this.parent.forget(document);
+		this.pArent.forget(document);
 	}
 }
 
-export default class DocumentMergeConflictTracker implements vscode.Disposable, interfaces.IDocumentMergeConflictTrackerService {
-	private cache: Map<string, ScanTask> = new Map();
-	private delayExpireTime: number = 0;
+export defAult clAss DocumentMergeConflictTrAcker implements vscode.DisposAble, interfAces.IDocumentMergeConflictTrAckerService {
+	privAte cAche: MAp<string, ScAnTAsk> = new MAp();
+	privAte delAyExpireTime: number = 0;
 
-	getConflicts(document: vscode.TextDocument, origin: string): PromiseLike<interfaces.IDocumentMergeConflict[]> {
-		// Attempt from cache
+	getConflicts(document: vscode.TextDocument, origin: string): PromiseLike<interfAces.IDocumentMergeConflict[]> {
+		// Attempt from cAche
 
-		let key = this.getCacheKey(document);
+		let key = this.getCAcheKey(document);
 
 		if (!key) {
-			// Document doesn't have a uri, can't cache it, so return
+			// Document doesn't hAve A uri, cAn't cAche it, so return
 			return Promise.resolve(this.getConflictsOrEmpty(document, [origin]));
 		}
 
-		let cacheItem = this.cache.get(key);
-		if (!cacheItem) {
-			cacheItem = new ScanTask(this.delayExpireTime, origin);
-			this.cache.set(key, cacheItem);
+		let cAcheItem = this.cAche.get(key);
+		if (!cAcheItem) {
+			cAcheItem = new ScAnTAsk(this.delAyExpireTime, origin);
+			this.cAche.set(key, cAcheItem);
 		}
 		else {
-			cacheItem.addOrigin(origin);
+			cAcheItem.AddOrigin(origin);
 		}
 
-		return cacheItem.delayTask.trigger(() => {
-			let conflicts = this.getConflictsOrEmpty(document, Array.from(cacheItem!.origins));
+		return cAcheItem.delAyTAsk.trigger(() => {
+			let conflicts = this.getConflictsOrEmpty(document, ArrAy.from(cAcheItem!.origins));
 
-			if (this.cache) {
-				this.cache.delete(key!);
+			if (this.cAche) {
+				this.cAche.delete(key!);
 			}
 
 			return conflicts;
 		});
 	}
 
-	isPending(document: vscode.TextDocument, origin: string): boolean {
+	isPending(document: vscode.TextDocument, origin: string): booleAn {
 		if (!document) {
-			return false;
+			return fAlse;
 		}
 
-		let key = this.getCacheKey(document);
+		let key = this.getCAcheKey(document);
 		if (!key) {
-			return false;
+			return fAlse;
 		}
 
-		const task = this.cache.get(key);
-		if (!task) {
-			return false;
+		const tAsk = this.cAche.get(key);
+		if (!tAsk) {
+			return fAlse;
 		}
 
-		return task.hasOrigin(origin);
+		return tAsk.hAsOrigin(origin);
 	}
 
-	createTracker(origin: string): interfaces.IDocumentMergeConflictTracker {
-		return new OriginDocumentMergeConflictTracker(this, origin);
+	creAteTrAcker(origin: string): interfAces.IDocumentMergeConflictTrAcker {
+		return new OriginDocumentMergeConflictTrAcker(this, origin);
 	}
 
 	forget(document: vscode.TextDocument) {
-		let key = this.getCacheKey(document);
+		let key = this.getCAcheKey(document);
 
 		if (key) {
-			this.cache.delete(key);
+			this.cAche.delete(key);
 		}
 	}
 
 	dispose() {
-		this.cache.clear();
+		this.cAche.cleAr();
 	}
 
-	private getConflictsOrEmpty(document: vscode.TextDocument, _origins: string[]): interfaces.IDocumentMergeConflict[] {
-		const containsConflict = MergeConflictParser.containsConflict(document);
+	privAte getConflictsOrEmpty(document: vscode.TextDocument, _origins: string[]): interfAces.IDocumentMergeConflict[] {
+		const contAinsConflict = MergeConflictPArser.contAinsConflict(document);
 
-		if (!containsConflict) {
+		if (!contAinsConflict) {
 			return [];
 		}
 
-		const conflicts = MergeConflictParser.scanDocument(document);
+		const conflicts = MergeConflictPArser.scAnDocument(document);
 		return conflicts;
 	}
 
-	private getCacheKey(document: vscode.TextDocument): string | null {
+	privAte getCAcheKey(document: vscode.TextDocument): string | null {
 		if (document.uri) {
 			return document.uri.toString();
 		}

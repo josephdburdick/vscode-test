@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor, IDiffEditor } from 'vs/editor/browser/editorBrowser';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { IDecorationRenderOptions } from 'vs/editor/common/editorCommon';
-import { IModelDecorationOptions, ITextModel } from 'vs/editor/common/model';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { URI } from 'vs/base/common/uri';
+import { IDecorAtionRenderOptions } from 'vs/editor/common/editorCommon';
+import { IModelDecorAtionOptions, ITextModel } from 'vs/editor/common/model';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
+import { URI } from 'vs/bAse/common/uri';
 
-export abstract class AbstractCodeEditorService extends Disposable implements ICodeEditorService {
+export AbstrAct clAss AbstrActCodeEditorService extends DisposAble implements ICodeEditorService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onCodeEditorAdd: Emitter<ICodeEditor> = this._register(new Emitter<ICodeEditor>());
-	public readonly onCodeEditorAdd: Event<ICodeEditor> = this._onCodeEditorAdd.event;
+	privAte reAdonly _onCodeEditorAdd: Emitter<ICodeEditor> = this._register(new Emitter<ICodeEditor>());
+	public reAdonly onCodeEditorAdd: Event<ICodeEditor> = this._onCodeEditorAdd.event;
 
-	private readonly _onCodeEditorRemove: Emitter<ICodeEditor> = this._register(new Emitter<ICodeEditor>());
-	public readonly onCodeEditorRemove: Event<ICodeEditor> = this._onCodeEditorRemove.event;
+	privAte reAdonly _onCodeEditorRemove: Emitter<ICodeEditor> = this._register(new Emitter<ICodeEditor>());
+	public reAdonly onCodeEditorRemove: Event<ICodeEditor> = this._onCodeEditorRemove.event;
 
-	private readonly _onDiffEditorAdd: Emitter<IDiffEditor> = this._register(new Emitter<IDiffEditor>());
-	public readonly onDiffEditorAdd: Event<IDiffEditor> = this._onDiffEditorAdd.event;
+	privAte reAdonly _onDiffEditorAdd: Emitter<IDiffEditor> = this._register(new Emitter<IDiffEditor>());
+	public reAdonly onDiffEditorAdd: Event<IDiffEditor> = this._onDiffEditorAdd.event;
 
-	private readonly _onDiffEditorRemove: Emitter<IDiffEditor> = this._register(new Emitter<IDiffEditor>());
-	public readonly onDiffEditorRemove: Event<IDiffEditor> = this._onDiffEditorRemove.event;
+	privAte reAdonly _onDiffEditorRemove: Emitter<IDiffEditor> = this._register(new Emitter<IDiffEditor>());
+	public reAdonly onDiffEditorRemove: Event<IDiffEditor> = this._onDiffEditorRemove.event;
 
-	private readonly _onDidChangeTransientModelProperty: Emitter<ITextModel> = this._register(new Emitter<ITextModel>());
-	public readonly onDidChangeTransientModelProperty: Event<ITextModel> = this._onDidChangeTransientModelProperty.event;
+	privAte reAdonly _onDidChAngeTrAnsientModelProperty: Emitter<ITextModel> = this._register(new Emitter<ITextModel>());
+	public reAdonly onDidChAngeTrAnsientModelProperty: Event<ITextModel> = this._onDidChAngeTrAnsientModelProperty.event;
 
 
-	private readonly _codeEditors: { [editorId: string]: ICodeEditor; };
-	private readonly _diffEditors: { [editorId: string]: IDiffEditor; };
+	privAte reAdonly _codeEditors: { [editorId: string]: ICodeEditor; };
+	privAte reAdonly _diffEditors: { [editorId: string]: IDiffEditor; };
 
 	constructor() {
 		super();
-		this._codeEditors = Object.create(null);
-		this._diffEditors = Object.create(null);
+		this._codeEditors = Object.creAte(null);
+		this._diffEditors = Object.creAte(null);
 	}
 
-	addCodeEditor(editor: ICodeEditor): void {
+	AddCodeEditor(editor: ICodeEditor): void {
 		this._codeEditors[editor.getId()] = editor;
 		this._onCodeEditorAdd.fire(editor);
 	}
@@ -53,10 +53,10 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 	}
 
 	listCodeEditors(): ICodeEditor[] {
-		return Object.keys(this._codeEditors).map(id => this._codeEditors[id]);
+		return Object.keys(this._codeEditors).mAp(id => this._codeEditors[id]);
 	}
 
-	addDiffEditor(editor: IDiffEditor): void {
+	AddDiffEditor(editor: IDiffEditor): void {
 		this._diffEditors[editor.getId()] = editor;
 		this._onDiffEditorAdd.fire(editor);
 	}
@@ -68,7 +68,7 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 	}
 
 	listDiffEditors(): IDiffEditor[] {
-		return Object.keys(this._diffEditors).map(id => this._diffEditors[id]);
+		return Object.keys(this._diffEditors).mAp(id => this._diffEditors[id]);
 	}
 
 	getFocusedCodeEditor(): ICodeEditor | null {
@@ -77,12 +77,12 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		const editors = this.listCodeEditors();
 		for (const editor of editors) {
 
-			if (editor.hasTextFocus()) {
+			if (editor.hAsTextFocus()) {
 				// bingo!
 				return editor;
 			}
 
-			if (editor.hasWidgetFocus()) {
+			if (editor.hAsWidgetFocus()) {
 				editorWithWidgetFocus = editor;
 			}
 		}
@@ -90,97 +90,97 @@ export abstract class AbstractCodeEditorService extends Disposable implements IC
 		return editorWithWidgetFocus;
 	}
 
-	abstract registerDecorationType(key: string, options: IDecorationRenderOptions, parentTypeKey?: string, editor?: ICodeEditor): void;
-	abstract removeDecorationType(key: string): void;
-	abstract resolveDecorationOptions(decorationTypeKey: string | undefined, writable: boolean): IModelDecorationOptions;
+	AbstrAct registerDecorAtionType(key: string, options: IDecorAtionRenderOptions, pArentTypeKey?: string, editor?: ICodeEditor): void;
+	AbstrAct removeDecorAtionType(key: string): void;
+	AbstrAct resolveDecorAtionOptions(decorAtionTypeKey: string | undefined, writAble: booleAn): IModelDecorAtionOptions;
 
-	private readonly _transientWatchers: { [uri: string]: ModelTransientSettingWatcher; } = {};
-	private readonly _modelProperties = new Map<string, Map<string, any>>();
+	privAte reAdonly _trAnsientWAtchers: { [uri: string]: ModelTrAnsientSettingWAtcher; } = {};
+	privAte reAdonly _modelProperties = new MAp<string, MAp<string, Any>>();
 
-	public setModelProperty(resource: URI, key: string, value: any): void {
+	public setModelProperty(resource: URI, key: string, vAlue: Any): void {
 		const key1 = resource.toString();
-		let dest: Map<string, any>;
-		if (this._modelProperties.has(key1)) {
+		let dest: MAp<string, Any>;
+		if (this._modelProperties.hAs(key1)) {
 			dest = this._modelProperties.get(key1)!;
 		} else {
-			dest = new Map<string, any>();
+			dest = new MAp<string, Any>();
 			this._modelProperties.set(key1, dest);
 		}
 
-		dest.set(key, value);
+		dest.set(key, vAlue);
 	}
 
-	public getModelProperty(resource: URI, key: string): any {
+	public getModelProperty(resource: URI, key: string): Any {
 		const key1 = resource.toString();
-		if (this._modelProperties.has(key1)) {
-			const innerMap = this._modelProperties.get(key1)!;
-			return innerMap.get(key);
+		if (this._modelProperties.hAs(key1)) {
+			const innerMAp = this._modelProperties.get(key1)!;
+			return innerMAp.get(key);
 		}
 		return undefined;
 	}
 
-	public setTransientModelProperty(model: ITextModel, key: string, value: any): void {
+	public setTrAnsientModelProperty(model: ITextModel, key: string, vAlue: Any): void {
 		const uri = model.uri.toString();
 
-		let w: ModelTransientSettingWatcher;
-		if (this._transientWatchers.hasOwnProperty(uri)) {
-			w = this._transientWatchers[uri];
+		let w: ModelTrAnsientSettingWAtcher;
+		if (this._trAnsientWAtchers.hAsOwnProperty(uri)) {
+			w = this._trAnsientWAtchers[uri];
 		} else {
-			w = new ModelTransientSettingWatcher(uri, model, this);
-			this._transientWatchers[uri] = w;
+			w = new ModelTrAnsientSettingWAtcher(uri, model, this);
+			this._trAnsientWAtchers[uri] = w;
 		}
 
-		w.set(key, value);
-		this._onDidChangeTransientModelProperty.fire(model);
+		w.set(key, vAlue);
+		this._onDidChAngeTrAnsientModelProperty.fire(model);
 	}
 
-	public getTransientModelProperty(model: ITextModel, key: string): any {
+	public getTrAnsientModelProperty(model: ITextModel, key: string): Any {
 		const uri = model.uri.toString();
 
-		if (!this._transientWatchers.hasOwnProperty(uri)) {
+		if (!this._trAnsientWAtchers.hAsOwnProperty(uri)) {
 			return undefined;
 		}
 
-		return this._transientWatchers[uri].get(key);
+		return this._trAnsientWAtchers[uri].get(key);
 	}
 
-	public getTransientModelProperties(model: ITextModel): [string, any][] | undefined {
+	public getTrAnsientModelProperties(model: ITextModel): [string, Any][] | undefined {
 		const uri = model.uri.toString();
 
-		if (!this._transientWatchers.hasOwnProperty(uri)) {
+		if (!this._trAnsientWAtchers.hAsOwnProperty(uri)) {
 			return undefined;
 		}
 
-		return this._transientWatchers[uri].keys().map(key => [key, this._transientWatchers[uri].get(key)]);
+		return this._trAnsientWAtchers[uri].keys().mAp(key => [key, this._trAnsientWAtchers[uri].get(key)]);
 	}
 
-	_removeWatcher(w: ModelTransientSettingWatcher): void {
-		delete this._transientWatchers[w.uri];
+	_removeWAtcher(w: ModelTrAnsientSettingWAtcher): void {
+		delete this._trAnsientWAtchers[w.uri];
 	}
 
-	abstract getActiveCodeEditor(): ICodeEditor | null;
-	abstract openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null>;
+	AbstrAct getActiveCodeEditor(): ICodeEditor | null;
+	AbstrAct openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: booleAn): Promise<ICodeEditor | null>;
 }
 
-export class ModelTransientSettingWatcher {
-	public readonly uri: string;
-	private readonly _values: { [key: string]: any; };
+export clAss ModelTrAnsientSettingWAtcher {
+	public reAdonly uri: string;
+	privAte reAdonly _vAlues: { [key: string]: Any; };
 
-	constructor(uri: string, model: ITextModel, owner: AbstractCodeEditorService) {
+	constructor(uri: string, model: ITextModel, owner: AbstrActCodeEditorService) {
 		this.uri = uri;
-		this._values = {};
-		model.onWillDispose(() => owner._removeWatcher(this));
+		this._vAlues = {};
+		model.onWillDispose(() => owner._removeWAtcher(this));
 	}
 
-	public set(key: string, value: any): void {
-		this._values[key] = value;
+	public set(key: string, vAlue: Any): void {
+		this._vAlues[key] = vAlue;
 	}
 
-	public get(key: string): any {
-		return this._values[key];
+	public get(key: string): Any {
+		return this._vAlues[key];
 	}
 
 	public keys(): string[] {
-		return Object.keys(this._values);
+		return Object.keys(this._vAlues);
 	}
 }

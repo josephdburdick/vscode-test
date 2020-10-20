@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { addDisposableListener } from 'vs/base/browser/dom';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { AddDisposAbleListener } from 'vs/bAse/browser/dom';
 
 /**
- * A helper that will execute a provided function when the provided HTMLElement receives
- *  dragover event for 800ms. If the drag is aborted before, the callback will not be triggered.
+ * A helper thAt will execute A provided function when the provided HTMLElement receives
+ *  drAgover event for 800ms. If the drAg is Aborted before, the cAllbAck will not be triggered.
  */
-export class DelayedDragHandler extends Disposable {
-	private timeout: any;
+export clAss DelAyedDrAgHAndler extends DisposAble {
+	privAte timeout: Any;
 
-	constructor(container: HTMLElement, callback: () => void) {
+	constructor(contAiner: HTMLElement, cAllbAck: () => void) {
 		super();
 
-		this._register(addDisposableListener(container, 'dragover', e => {
-			e.preventDefault(); // needed so that the drop event fires (https://stackoverflow.com/questions/21339924/drop-event-not-firing-in-chrome)
+		this._register(AddDisposAbleListener(contAiner, 'drAgover', e => {
+			e.preventDefAult(); // needed so thAt the drop event fires (https://stAckoverflow.com/questions/21339924/drop-event-not-firing-in-chrome)
 
 			if (!this.timeout) {
 				this.timeout = setTimeout(() => {
-					callback();
+					cAllbAck();
 
 					this.timeout = null;
 				}, 800);
 			}
 		}));
 
-		['dragleave', 'drop', 'dragend'].forEach(type => {
-			this._register(addDisposableListener(container, type, () => {
-				this.clearDragTimeout();
+		['drAgleAve', 'drop', 'drAgend'].forEAch(type => {
+			this._register(AddDisposAbleListener(contAiner, type, () => {
+				this.cleArDrAgTimeout();
 			}));
 		});
 	}
 
-	private clearDragTimeout(): void {
+	privAte cleArDrAgTimeout(): void {
 		if (this.timeout) {
-			clearTimeout(this.timeout);
+			cleArTimeout(this.timeout);
 			this.timeout = null;
 		}
 	}
@@ -45,70 +45,70 @@ export class DelayedDragHandler extends Disposable {
 	dispose(): void {
 		super.dispose();
 
-		this.clearDragTimeout();
+		this.cleArDrAgTimeout();
 	}
 }
 
-// Common data transfers
-export const DataTransfers = {
+// Common dAtA trAnsfers
+export const DAtATrAnsfers = {
 
 	/**
-	 * Application specific resource transfer type
+	 * ApplicAtion specific resource trAnsfer type
 	 */
 	RESOURCES: 'ResourceURLs',
 
 	/**
-	 * Browser specific transfer type to download
+	 * Browser specific trAnsfer type to downloAd
 	 */
-	DOWNLOAD_URL: 'DownloadURL',
+	DOWNLOAD_URL: 'DownloAdURL',
 
 	/**
-	 * Browser specific transfer type for files
+	 * Browser specific trAnsfer type for files
 	 */
 	FILES: 'Files',
 
 	/**
-	 * Typically transfer type for copy/paste transfers.
+	 * TypicAlly trAnsfer type for copy/pAste trAnsfers.
 	 */
-	TEXT: 'text/plain'
+	TEXT: 'text/plAin'
 };
 
-export function applyDragImage(event: DragEvent, label: string | null, clazz: string): void {
-	const dragImage = document.createElement('div');
-	dragImage.className = clazz;
-	dragImage.textContent = label;
+export function ApplyDrAgImAge(event: DrAgEvent, lAbel: string | null, clAzz: string): void {
+	const drAgImAge = document.creAteElement('div');
+	drAgImAge.clAssNAme = clAzz;
+	drAgImAge.textContent = lAbel;
 
-	if (event.dataTransfer) {
-		document.body.appendChild(dragImage);
-		event.dataTransfer.setDragImage(dragImage, -10, -10);
+	if (event.dAtATrAnsfer) {
+		document.body.AppendChild(drAgImAge);
+		event.dAtATrAnsfer.setDrAgImAge(drAgImAge, -10, -10);
 
-		// Removes the element when the DND operation is done
-		setTimeout(() => document.body.removeChild(dragImage), 0);
+		// Removes the element when the DND operAtion is done
+		setTimeout(() => document.body.removeChild(drAgImAge), 0);
 	}
 }
 
-export interface IDragAndDropData {
-	update(dataTransfer: DataTransfer): void;
-	getData(): any;
+export interfAce IDrAgAndDropDAtA {
+	updAte(dAtATrAnsfer: DAtATrAnsfer): void;
+	getDAtA(): Any;
 }
 
-export class DragAndDropData<T> implements IDragAndDropData {
+export clAss DrAgAndDropDAtA<T> implements IDrAgAndDropDAtA {
 
-	constructor(private data: T) { }
+	constructor(privAte dAtA: T) { }
 
-	update(): void {
+	updAte(): void {
 		// noop
 	}
 
-	getData(): T {
-		return this.data;
+	getDAtA(): T {
+		return this.dAtA;
 	}
 }
 
-export interface IStaticDND {
-	CurrentDragAndDropData: IDragAndDropData | undefined;
+export interfAce IStAticDND {
+	CurrentDrAgAndDropDAtA: IDrAgAndDropDAtA | undefined;
 }
 
-export const StaticDND: IStaticDND = {
-	CurrentDragAndDropData: undefined
+export const StAticDND: IStAticDND = {
+	CurrentDrAgAndDropDAtA: undefined
 };

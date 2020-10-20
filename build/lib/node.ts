@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as fs from 'fs';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
 
-const root = path.dirname(path.dirname(__dirname));
-const yarnrcPath = path.join(root, 'remote', '.yarnrc');
-const yarnrc = fs.readFileSync(yarnrcPath, 'utf8');
-const version = /^target\s+"([^"]+)"$/m.exec(yarnrc)![1];
-const node = process.platform === 'win32' ? 'node.exe' : 'node';
-const nodePath = path.join(root, '.build', 'node', `v${version}`, `${process.platform}-${process.arch}`, node);
+const root = pAth.dirnAme(pAth.dirnAme(__dirnAme));
+const yArnrcPAth = pAth.join(root, 'remote', '.yArnrc');
+const yArnrc = fs.reAdFileSync(yArnrcPAth, 'utf8');
+const version = /^tArget\s+"([^"]+)"$/m.exec(yArnrc)![1];
+const node = process.plAtform === 'win32' ? 'node.exe' : 'node';
+const nodePAth = pAth.join(root, '.build', 'node', `v${version}`, `${process.plAtform}-${process.Arch}`, node);
 
-console.log(nodePath);
+console.log(nodePAth);

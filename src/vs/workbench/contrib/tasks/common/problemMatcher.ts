@@ -1,125 +1,125 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
+import { locAlize } from 'vs/nls';
 
-import * as Objects from 'vs/base/common/objects';
-import * as Strings from 'vs/base/common/strings';
-import * as Assert from 'vs/base/common/assert';
-import { join, normalize } from 'vs/base/common/path';
-import * as Types from 'vs/base/common/types';
-import * as UUID from 'vs/base/common/uuid';
-import * as Platform from 'vs/base/common/platform';
-import Severity from 'vs/base/common/severity';
-import { URI } from 'vs/base/common/uri';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { ValidationStatus, ValidationState, IProblemReporter, Parser } from 'vs/base/common/parsers';
-import { IStringDictionary } from 'vs/base/common/collections';
+import * As Objects from 'vs/bAse/common/objects';
+import * As Strings from 'vs/bAse/common/strings';
+import * As Assert from 'vs/bAse/common/Assert';
+import { join, normAlize } from 'vs/bAse/common/pAth';
+import * As Types from 'vs/bAse/common/types';
+import * As UUID from 'vs/bAse/common/uuid';
+import * As PlAtform from 'vs/bAse/common/plAtform';
+import Severity from 'vs/bAse/common/severity';
+import { URI } from 'vs/bAse/common/uri';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { VAlidAtionStAtus, VAlidAtionStAte, IProblemReporter, PArser } from 'vs/bAse/common/pArsers';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
 
-import { IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { ExtensionsRegistry, ExtensionMessageCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IFileService, IFileStat } from 'vs/platform/files/common/files';
+import { IMArkerDAtA, MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
+import { ExtensionsRegistry, ExtensionMessAgeCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IFileService, IFileStAt } from 'vs/plAtform/files/common/files';
 
-export enum FileLocationKind {
-	Default,
-	Relative,
+export enum FileLocAtionKind {
+	DefAult,
+	RelAtive,
 	Absolute,
 	AutoDetect
 }
 
-export module FileLocationKind {
-	export function fromString(value: string): FileLocationKind | undefined {
-		value = value.toLowerCase();
-		if (value === 'absolute') {
-			return FileLocationKind.Absolute;
-		} else if (value === 'relative') {
-			return FileLocationKind.Relative;
-		} else if (value === 'autodetect') {
-			return FileLocationKind.AutoDetect;
+export module FileLocAtionKind {
+	export function fromString(vAlue: string): FileLocAtionKind | undefined {
+		vAlue = vAlue.toLowerCAse();
+		if (vAlue === 'Absolute') {
+			return FileLocAtionKind.Absolute;
+		} else if (vAlue === 'relAtive') {
+			return FileLocAtionKind.RelAtive;
+		} else if (vAlue === 'Autodetect') {
+			return FileLocAtionKind.AutoDetect;
 		} else {
 			return undefined;
 		}
 	}
 }
 
-export enum ProblemLocationKind {
+export enum ProblemLocAtionKind {
 	File,
-	Location
+	LocAtion
 }
 
-export module ProblemLocationKind {
-	export function fromString(value: string): ProblemLocationKind | undefined {
-		value = value.toLowerCase();
-		if (value === 'file') {
-			return ProblemLocationKind.File;
-		} else if (value === 'location') {
-			return ProblemLocationKind.Location;
+export module ProblemLocAtionKind {
+	export function fromString(vAlue: string): ProblemLocAtionKind | undefined {
+		vAlue = vAlue.toLowerCAse();
+		if (vAlue === 'file') {
+			return ProblemLocAtionKind.File;
+		} else if (vAlue === 'locAtion') {
+			return ProblemLocAtionKind.LocAtion;
 		} else {
 			return undefined;
 		}
 	}
 }
 
-export interface ProblemPattern {
+export interfAce ProblemPAttern {
 	regexp: RegExp;
 
-	kind?: ProblemLocationKind;
+	kind?: ProblemLocAtionKind;
 
 	file?: number;
 
-	message?: number;
+	messAge?: number;
 
-	location?: number;
+	locAtion?: number;
 
 	line?: number;
 
-	character?: number;
+	chArActer?: number;
 
 	endLine?: number;
 
-	endCharacter?: number;
+	endChArActer?: number;
 
 	code?: number;
 
 	severity?: number;
 
-	loop?: boolean;
+	loop?: booleAn;
 }
 
-export interface NamedProblemPattern extends ProblemPattern {
-	name: string;
+export interfAce NAmedProblemPAttern extends ProblemPAttern {
+	nAme: string;
 }
 
-export type MultiLineProblemPattern = ProblemPattern[];
+export type MultiLineProblemPAttern = ProblemPAttern[];
 
-export interface WatchingPattern {
+export interfAce WAtchingPAttern {
 	regexp: RegExp;
 	file?: number;
 }
 
-export interface WatchingMatcher {
-	activeOnStart: boolean;
-	beginsPattern: WatchingPattern;
-	endsPattern: WatchingPattern;
+export interfAce WAtchingMAtcher {
+	ActiveOnStArt: booleAn;
+	beginsPAttern: WAtchingPAttern;
+	endsPAttern: WAtchingPAttern;
 }
 
 export enum ApplyToKind {
-	allDocuments,
+	AllDocuments,
 	openDocuments,
 	closedDocuments
 }
 
 export module ApplyToKind {
-	export function fromString(value: string): ApplyToKind | undefined {
-		value = value.toLowerCase();
-		if (value === 'alldocuments') {
-			return ApplyToKind.allDocuments;
-		} else if (value === 'opendocuments') {
+	export function fromString(vAlue: string): ApplyToKind | undefined {
+		vAlue = vAlue.toLowerCAse();
+		if (vAlue === 'Alldocuments') {
+			return ApplyToKind.AllDocuments;
+		} else if (vAlue === 'opendocuments') {
 			return ApplyToKind.openDocuments;
-		} else if (value === 'closeddocuments') {
+		} else if (vAlue === 'closeddocuments') {
 			return ApplyToKind.closedDocuments;
 		} else {
 			return undefined;
@@ -127,1064 +127,1064 @@ export module ApplyToKind {
 	}
 }
 
-export interface ProblemMatcher {
+export interfAce ProblemMAtcher {
 	owner: string;
 	source?: string;
-	applyTo: ApplyToKind;
-	fileLocation: FileLocationKind;
+	ApplyTo: ApplyToKind;
+	fileLocAtion: FileLocAtionKind;
 	filePrefix?: string;
-	pattern: ProblemPattern | ProblemPattern[];
+	pAttern: ProblemPAttern | ProblemPAttern[];
 	severity?: Severity;
-	watching?: WatchingMatcher;
-	uriProvider?: (path: string) => URI;
+	wAtching?: WAtchingMAtcher;
+	uriProvider?: (pAth: string) => URI;
 }
 
-export interface NamedProblemMatcher extends ProblemMatcher {
-	name: string;
-	label: string;
-	deprecated?: boolean;
+export interfAce NAmedProblemMAtcher extends ProblemMAtcher {
+	nAme: string;
+	lAbel: string;
+	deprecAted?: booleAn;
 }
 
-export interface NamedMultiLineProblemPattern {
-	name: string;
-	label: string;
-	patterns: MultiLineProblemPattern;
+export interfAce NAmedMultiLineProblemPAttern {
+	nAme: string;
+	lAbel: string;
+	pAtterns: MultiLineProblemPAttern;
 }
 
-export function isNamedProblemMatcher(value: ProblemMatcher | undefined): value is NamedProblemMatcher {
-	return value && Types.isString((<NamedProblemMatcher>value).name) ? true : false;
+export function isNAmedProblemMAtcher(vAlue: ProblemMAtcher | undefined): vAlue is NAmedProblemMAtcher {
+	return vAlue && Types.isString((<NAmedProblemMAtcher>vAlue).nAme) ? true : fAlse;
 }
 
-interface Location {
-	startLineNumber: number;
-	startCharacter: number;
+interfAce LocAtion {
+	stArtLineNumber: number;
+	stArtChArActer: number;
 	endLineNumber: number;
-	endCharacter: number;
+	endChArActer: number;
 }
 
-interface ProblemData {
-	kind?: ProblemLocationKind;
+interfAce ProblemDAtA {
+	kind?: ProblemLocAtionKind;
 	file?: string;
-	location?: string;
+	locAtion?: string;
 	line?: string;
-	character?: string;
+	chArActer?: string;
 	endLine?: string;
-	endCharacter?: string;
-	message?: string;
+	endChArActer?: string;
+	messAge?: string;
 	severity?: string;
 	code?: string;
 }
 
-export interface ProblemMatch {
+export interfAce ProblemMAtch {
 	resource: Promise<URI>;
-	marker: IMarkerData;
-	description: ProblemMatcher;
+	mArker: IMArkerDAtA;
+	description: ProblemMAtcher;
 }
 
-export interface HandleResult {
-	match: ProblemMatch | null;
-	continue: boolean;
+export interfAce HAndleResult {
+	mAtch: ProblemMAtch | null;
+	continue: booleAn;
 }
 
 
-export async function getResource(filename: string, matcher: ProblemMatcher, fileService?: IFileService): Promise<URI> {
-	let kind = matcher.fileLocation;
-	let fullPath: string | undefined;
-	if (kind === FileLocationKind.Absolute) {
-		fullPath = filename;
-	} else if ((kind === FileLocationKind.Relative) && matcher.filePrefix) {
-		fullPath = join(matcher.filePrefix, filename);
-	} else if (kind === FileLocationKind.AutoDetect) {
-		const matcherClone = Objects.deepClone(matcher);
-		matcherClone.fileLocation = FileLocationKind.Relative;
+export Async function getResource(filenAme: string, mAtcher: ProblemMAtcher, fileService?: IFileService): Promise<URI> {
+	let kind = mAtcher.fileLocAtion;
+	let fullPAth: string | undefined;
+	if (kind === FileLocAtionKind.Absolute) {
+		fullPAth = filenAme;
+	} else if ((kind === FileLocAtionKind.RelAtive) && mAtcher.filePrefix) {
+		fullPAth = join(mAtcher.filePrefix, filenAme);
+	} else if (kind === FileLocAtionKind.AutoDetect) {
+		const mAtcherClone = Objects.deepClone(mAtcher);
+		mAtcherClone.fileLocAtion = FileLocAtionKind.RelAtive;
 		if (fileService) {
-			const relative = await getResource(filename, matcherClone);
-			let stat: IFileStat | undefined = undefined;
+			const relAtive = AwAit getResource(filenAme, mAtcherClone);
+			let stAt: IFileStAt | undefined = undefined;
 			try {
-				stat = await fileService.resolve(relative);
-			} catch (ex) {
-				// Do nothing, we just need to catch file resolution errors.
+				stAt = AwAit fileService.resolve(relAtive);
+			} cAtch (ex) {
+				// Do nothing, we just need to cAtch file resolution errors.
 			}
-			if (stat) {
-				return relative;
+			if (stAt) {
+				return relAtive;
 			}
 		}
 
-		matcherClone.fileLocation = FileLocationKind.Absolute;
-		return getResource(filename, matcherClone);
+		mAtcherClone.fileLocAtion = FileLocAtionKind.Absolute;
+		return getResource(filenAme, mAtcherClone);
 	}
-	if (fullPath === undefined) {
-		throw new Error('FileLocationKind is not actionable. Does the matcher have a filePrefix? This should never happen.');
+	if (fullPAth === undefined) {
+		throw new Error('FileLocAtionKind is not ActionAble. Does the mAtcher hAve A filePrefix? This should never hAppen.');
 	}
-	fullPath = normalize(fullPath);
-	fullPath = fullPath.replace(/\\/g, '/');
-	if (fullPath[0] !== '/') {
-		fullPath = '/' + fullPath;
+	fullPAth = normAlize(fullPAth);
+	fullPAth = fullPAth.replAce(/\\/g, '/');
+	if (fullPAth[0] !== '/') {
+		fullPAth = '/' + fullPAth;
 	}
-	if (matcher.uriProvider !== undefined) {
-		return matcher.uriProvider(fullPath);
+	if (mAtcher.uriProvider !== undefined) {
+		return mAtcher.uriProvider(fullPAth);
 	} else {
-		return URI.file(fullPath);
+		return URI.file(fullPAth);
 	}
 }
 
-export interface ILineMatcher {
-	matchLength: number;
-	next(line: string): ProblemMatch | null;
-	handle(lines: string[], start?: number): HandleResult;
+export interfAce ILineMAtcher {
+	mAtchLength: number;
+	next(line: string): ProblemMAtch | null;
+	hAndle(lines: string[], stArt?: number): HAndleResult;
 }
 
-export function createLineMatcher(matcher: ProblemMatcher, fileService?: IFileService): ILineMatcher {
-	let pattern = matcher.pattern;
-	if (Types.isArray(pattern)) {
-		return new MultiLineMatcher(matcher, fileService);
+export function creAteLineMAtcher(mAtcher: ProblemMAtcher, fileService?: IFileService): ILineMAtcher {
+	let pAttern = mAtcher.pAttern;
+	if (Types.isArrAy(pAttern)) {
+		return new MultiLineMAtcher(mAtcher, fileService);
 	} else {
-		return new SingleLineMatcher(matcher, fileService);
+		return new SingleLineMAtcher(mAtcher, fileService);
 	}
 }
 
-const endOfLine: string = Platform.OS === Platform.OperatingSystem.Windows ? '\r\n' : '\n';
+const endOfLine: string = PlAtform.OS === PlAtform.OperAtingSystem.Windows ? '\r\n' : '\n';
 
-abstract class AbstractLineMatcher implements ILineMatcher {
-	private matcher: ProblemMatcher;
-	private fileService?: IFileService;
+AbstrAct clAss AbstrActLineMAtcher implements ILineMAtcher {
+	privAte mAtcher: ProblemMAtcher;
+	privAte fileService?: IFileService;
 
-	constructor(matcher: ProblemMatcher, fileService?: IFileService) {
-		this.matcher = matcher;
+	constructor(mAtcher: ProblemMAtcher, fileService?: IFileService) {
+		this.mAtcher = mAtcher;
 		this.fileService = fileService;
 	}
 
-	public handle(lines: string[], start: number = 0): HandleResult {
-		return { match: null, continue: false };
+	public hAndle(lines: string[], stArt: number = 0): HAndleResult {
+		return { mAtch: null, continue: fAlse };
 	}
 
-	public next(line: string): ProblemMatch | null {
+	public next(line: string): ProblemMAtch | null {
 		return null;
 	}
 
-	public abstract get matchLength(): number;
+	public AbstrAct get mAtchLength(): number;
 
-	protected fillProblemData(data: ProblemData | undefined, pattern: ProblemPattern, matches: RegExpExecArray): data is ProblemData {
-		if (data) {
-			this.fillProperty(data, 'file', pattern, matches, true);
-			this.appendProperty(data, 'message', pattern, matches, true);
-			this.fillProperty(data, 'code', pattern, matches, true);
-			this.fillProperty(data, 'severity', pattern, matches, true);
-			this.fillProperty(data, 'location', pattern, matches, true);
-			this.fillProperty(data, 'line', pattern, matches);
-			this.fillProperty(data, 'character', pattern, matches);
-			this.fillProperty(data, 'endLine', pattern, matches);
-			this.fillProperty(data, 'endCharacter', pattern, matches);
+	protected fillProblemDAtA(dAtA: ProblemDAtA | undefined, pAttern: ProblemPAttern, mAtches: RegExpExecArrAy): dAtA is ProblemDAtA {
+		if (dAtA) {
+			this.fillProperty(dAtA, 'file', pAttern, mAtches, true);
+			this.AppendProperty(dAtA, 'messAge', pAttern, mAtches, true);
+			this.fillProperty(dAtA, 'code', pAttern, mAtches, true);
+			this.fillProperty(dAtA, 'severity', pAttern, mAtches, true);
+			this.fillProperty(dAtA, 'locAtion', pAttern, mAtches, true);
+			this.fillProperty(dAtA, 'line', pAttern, mAtches);
+			this.fillProperty(dAtA, 'chArActer', pAttern, mAtches);
+			this.fillProperty(dAtA, 'endLine', pAttern, mAtches);
+			this.fillProperty(dAtA, 'endChArActer', pAttern, mAtches);
 			return true;
 		} else {
-			return false;
+			return fAlse;
 		}
 	}
 
-	private appendProperty(data: ProblemData, property: keyof ProblemData, pattern: ProblemPattern, matches: RegExpExecArray, trim: boolean = false): void {
-		const patternProperty = pattern[property];
-		if (Types.isUndefined(data[property])) {
-			this.fillProperty(data, property, pattern, matches, trim);
+	privAte AppendProperty(dAtA: ProblemDAtA, property: keyof ProblemDAtA, pAttern: ProblemPAttern, mAtches: RegExpExecArrAy, trim: booleAn = fAlse): void {
+		const pAtternProperty = pAttern[property];
+		if (Types.isUndefined(dAtA[property])) {
+			this.fillProperty(dAtA, property, pAttern, mAtches, trim);
 		}
-		else if (!Types.isUndefined(patternProperty) && patternProperty < matches.length) {
-			let value = matches[patternProperty];
+		else if (!Types.isUndefined(pAtternProperty) && pAtternProperty < mAtches.length) {
+			let vAlue = mAtches[pAtternProperty];
 			if (trim) {
-				value = Strings.trim(value)!;
+				vAlue = Strings.trim(vAlue)!;
 			}
-			(data as any)[property] += endOfLine + value;
+			(dAtA As Any)[property] += endOfLine + vAlue;
 		}
 	}
 
-	private fillProperty(data: ProblemData, property: keyof ProblemData, pattern: ProblemPattern, matches: RegExpExecArray, trim: boolean = false): void {
-		const patternAtProperty = pattern[property];
-		if (Types.isUndefined(data[property]) && !Types.isUndefined(patternAtProperty) && patternAtProperty < matches.length) {
-			let value = matches[patternAtProperty];
-			if (value !== undefined) {
+	privAte fillProperty(dAtA: ProblemDAtA, property: keyof ProblemDAtA, pAttern: ProblemPAttern, mAtches: RegExpExecArrAy, trim: booleAn = fAlse): void {
+		const pAtternAtProperty = pAttern[property];
+		if (Types.isUndefined(dAtA[property]) && !Types.isUndefined(pAtternAtProperty) && pAtternAtProperty < mAtches.length) {
+			let vAlue = mAtches[pAtternAtProperty];
+			if (vAlue !== undefined) {
 				if (trim) {
-					value = Strings.trim(value)!;
+					vAlue = Strings.trim(vAlue)!;
 				}
-				(data as any)[property] = value;
+				(dAtA As Any)[property] = vAlue;
 			}
 		}
 	}
 
-	protected getMarkerMatch(data: ProblemData): ProblemMatch | undefined {
+	protected getMArkerMAtch(dAtA: ProblemDAtA): ProblemMAtch | undefined {
 		try {
-			let location = this.getLocation(data);
-			if (data.file && location && data.message) {
-				let marker: IMarkerData = {
-					severity: this.getSeverity(data),
-					startLineNumber: location.startLineNumber,
-					startColumn: location.startCharacter,
-					endLineNumber: location.endLineNumber,
-					endColumn: location.endCharacter,
-					message: data.message
+			let locAtion = this.getLocAtion(dAtA);
+			if (dAtA.file && locAtion && dAtA.messAge) {
+				let mArker: IMArkerDAtA = {
+					severity: this.getSeverity(dAtA),
+					stArtLineNumber: locAtion.stArtLineNumber,
+					stArtColumn: locAtion.stArtChArActer,
+					endLineNumber: locAtion.endLineNumber,
+					endColumn: locAtion.endChArActer,
+					messAge: dAtA.messAge
 				};
-				if (data.code !== undefined) {
-					marker.code = data.code;
+				if (dAtA.code !== undefined) {
+					mArker.code = dAtA.code;
 				}
-				if (this.matcher.source !== undefined) {
-					marker.source = this.matcher.source;
+				if (this.mAtcher.source !== undefined) {
+					mArker.source = this.mAtcher.source;
 				}
 				return {
-					description: this.matcher,
-					resource: this.getResource(data.file),
-					marker: marker
+					description: this.mAtcher,
+					resource: this.getResource(dAtA.file),
+					mArker: mArker
 				};
 			}
-		} catch (err) {
-			console.error(`Failed to convert problem data into match: ${JSON.stringify(data)}`);
+		} cAtch (err) {
+			console.error(`FAiled to convert problem dAtA into mAtch: ${JSON.stringify(dAtA)}`);
 		}
 		return undefined;
 	}
 
-	protected getResource(filename: string): Promise<URI> {
-		return getResource(filename, this.matcher, this.fileService);
+	protected getResource(filenAme: string): Promise<URI> {
+		return getResource(filenAme, this.mAtcher, this.fileService);
 	}
 
-	private getLocation(data: ProblemData): Location | null {
-		if (data.kind === ProblemLocationKind.File) {
-			return this.createLocation(0, 0, 0, 0);
+	privAte getLocAtion(dAtA: ProblemDAtA): LocAtion | null {
+		if (dAtA.kind === ProblemLocAtionKind.File) {
+			return this.creAteLocAtion(0, 0, 0, 0);
 		}
-		if (data.location) {
-			return this.parseLocationInfo(data.location);
+		if (dAtA.locAtion) {
+			return this.pArseLocAtionInfo(dAtA.locAtion);
 		}
-		if (!data.line) {
+		if (!dAtA.line) {
 			return null;
 		}
-		let startLine = parseInt(data.line);
-		let startColumn = data.character ? parseInt(data.character) : undefined;
-		let endLine = data.endLine ? parseInt(data.endLine) : undefined;
-		let endColumn = data.endCharacter ? parseInt(data.endCharacter) : undefined;
-		return this.createLocation(startLine, startColumn, endLine, endColumn);
+		let stArtLine = pArseInt(dAtA.line);
+		let stArtColumn = dAtA.chArActer ? pArseInt(dAtA.chArActer) : undefined;
+		let endLine = dAtA.endLine ? pArseInt(dAtA.endLine) : undefined;
+		let endColumn = dAtA.endChArActer ? pArseInt(dAtA.endChArActer) : undefined;
+		return this.creAteLocAtion(stArtLine, stArtColumn, endLine, endColumn);
 	}
 
-	private parseLocationInfo(value: string): Location | null {
-		if (!value || !value.match(/(\d+|\d+,\d+|\d+,\d+,\d+,\d+)/)) {
+	privAte pArseLocAtionInfo(vAlue: string): LocAtion | null {
+		if (!vAlue || !vAlue.mAtch(/(\d+|\d+,\d+|\d+,\d+,\d+,\d+)/)) {
 			return null;
 		}
-		let parts = value.split(',');
-		let startLine = parseInt(parts[0]);
-		let startColumn = parts.length > 1 ? parseInt(parts[1]) : undefined;
-		if (parts.length > 3) {
-			return this.createLocation(startLine, startColumn, parseInt(parts[2]), parseInt(parts[3]));
+		let pArts = vAlue.split(',');
+		let stArtLine = pArseInt(pArts[0]);
+		let stArtColumn = pArts.length > 1 ? pArseInt(pArts[1]) : undefined;
+		if (pArts.length > 3) {
+			return this.creAteLocAtion(stArtLine, stArtColumn, pArseInt(pArts[2]), pArseInt(pArts[3]));
 		} else {
-			return this.createLocation(startLine, startColumn, undefined, undefined);
+			return this.creAteLocAtion(stArtLine, stArtColumn, undefined, undefined);
 		}
 	}
 
-	private createLocation(startLine: number, startColumn: number | undefined, endLine: number | undefined, endColumn: number | undefined): Location {
-		if (startColumn !== undefined && endColumn !== undefined) {
-			return { startLineNumber: startLine, startCharacter: startColumn, endLineNumber: endLine || startLine, endCharacter: endColumn };
+	privAte creAteLocAtion(stArtLine: number, stArtColumn: number | undefined, endLine: number | undefined, endColumn: number | undefined): LocAtion {
+		if (stArtColumn !== undefined && endColumn !== undefined) {
+			return { stArtLineNumber: stArtLine, stArtChArActer: stArtColumn, endLineNumber: endLine || stArtLine, endChArActer: endColumn };
 		}
-		if (startColumn !== undefined) {
-			return { startLineNumber: startLine, startCharacter: startColumn, endLineNumber: startLine, endCharacter: startColumn };
+		if (stArtColumn !== undefined) {
+			return { stArtLineNumber: stArtLine, stArtChArActer: stArtColumn, endLineNumber: stArtLine, endChArActer: stArtColumn };
 		}
-		return { startLineNumber: startLine, startCharacter: 1, endLineNumber: startLine, endCharacter: 2 ** 31 - 1 }; // See https://github.com/microsoft/vscode/issues/80288#issuecomment-650636442 for discussion
+		return { stArtLineNumber: stArtLine, stArtChArActer: 1, endLineNumber: stArtLine, endChArActer: 2 ** 31 - 1 }; // See https://github.com/microsoft/vscode/issues/80288#issuecomment-650636442 for discussion
 	}
 
-	private getSeverity(data: ProblemData): MarkerSeverity {
+	privAte getSeverity(dAtA: ProblemDAtA): MArkerSeverity {
 		let result: Severity | null = null;
-		if (data.severity) {
-			let value = data.severity;
-			if (value) {
-				result = Severity.fromValue(value);
+		if (dAtA.severity) {
+			let vAlue = dAtA.severity;
+			if (vAlue) {
+				result = Severity.fromVAlue(vAlue);
 				if (result === Severity.Ignore) {
-					if (value === 'E') {
+					if (vAlue === 'E') {
 						result = Severity.Error;
-					} else if (value === 'W') {
-						result = Severity.Warning;
-					} else if (value === 'I') {
+					} else if (vAlue === 'W') {
+						result = Severity.WArning;
+					} else if (vAlue === 'I') {
 						result = Severity.Info;
-					} else if (Strings.equalsIgnoreCase(value, 'hint')) {
+					} else if (Strings.equAlsIgnoreCAse(vAlue, 'hint')) {
 						result = Severity.Info;
-					} else if (Strings.equalsIgnoreCase(value, 'note')) {
+					} else if (Strings.equAlsIgnoreCAse(vAlue, 'note')) {
 						result = Severity.Info;
 					}
 				}
 			}
 		}
 		if (result === null || result === Severity.Ignore) {
-			result = this.matcher.severity || Severity.Error;
+			result = this.mAtcher.severity || Severity.Error;
 		}
-		return MarkerSeverity.fromSeverity(result);
+		return MArkerSeverity.fromSeverity(result);
 	}
 }
 
-class SingleLineMatcher extends AbstractLineMatcher {
+clAss SingleLineMAtcher extends AbstrActLineMAtcher {
 
-	private pattern: ProblemPattern;
+	privAte pAttern: ProblemPAttern;
 
-	constructor(matcher: ProblemMatcher, fileService?: IFileService) {
-		super(matcher, fileService);
-		this.pattern = <ProblemPattern>matcher.pattern;
+	constructor(mAtcher: ProblemMAtcher, fileService?: IFileService) {
+		super(mAtcher, fileService);
+		this.pAttern = <ProblemPAttern>mAtcher.pAttern;
 	}
 
-	public get matchLength(): number {
+	public get mAtchLength(): number {
 		return 1;
 	}
 
-	public handle(lines: string[], start: number = 0): HandleResult {
-		Assert.ok(lines.length - start === 1);
-		let data: ProblemData = Object.create(null);
-		if (this.pattern.kind !== undefined) {
-			data.kind = this.pattern.kind;
+	public hAndle(lines: string[], stArt: number = 0): HAndleResult {
+		Assert.ok(lines.length - stArt === 1);
+		let dAtA: ProblemDAtA = Object.creAte(null);
+		if (this.pAttern.kind !== undefined) {
+			dAtA.kind = this.pAttern.kind;
 		}
-		let matches = this.pattern.regexp.exec(lines[start]);
-		if (matches) {
-			this.fillProblemData(data, this.pattern, matches);
-			let match = this.getMarkerMatch(data);
-			if (match) {
-				return { match: match, continue: false };
+		let mAtches = this.pAttern.regexp.exec(lines[stArt]);
+		if (mAtches) {
+			this.fillProblemDAtA(dAtA, this.pAttern, mAtches);
+			let mAtch = this.getMArkerMAtch(dAtA);
+			if (mAtch) {
+				return { mAtch: mAtch, continue: fAlse };
 			}
 		}
-		return { match: null, continue: false };
+		return { mAtch: null, continue: fAlse };
 	}
 
-	public next(line: string): ProblemMatch | null {
+	public next(line: string): ProblemMAtch | null {
 		return null;
 	}
 }
 
-class MultiLineMatcher extends AbstractLineMatcher {
+clAss MultiLineMAtcher extends AbstrActLineMAtcher {
 
-	private patterns: ProblemPattern[];
-	private data: ProblemData | undefined;
+	privAte pAtterns: ProblemPAttern[];
+	privAte dAtA: ProblemDAtA | undefined;
 
-	constructor(matcher: ProblemMatcher, fileService?: IFileService) {
-		super(matcher, fileService);
-		this.patterns = <ProblemPattern[]>matcher.pattern;
+	constructor(mAtcher: ProblemMAtcher, fileService?: IFileService) {
+		super(mAtcher, fileService);
+		this.pAtterns = <ProblemPAttern[]>mAtcher.pAttern;
 	}
 
-	public get matchLength(): number {
-		return this.patterns.length;
+	public get mAtchLength(): number {
+		return this.pAtterns.length;
 	}
 
-	public handle(lines: string[], start: number = 0): HandleResult {
-		Assert.ok(lines.length - start === this.patterns.length);
-		this.data = Object.create(null);
-		let data = this.data!;
-		data.kind = this.patterns[0].kind;
-		for (let i = 0; i < this.patterns.length; i++) {
-			let pattern = this.patterns[i];
-			let matches = pattern.regexp.exec(lines[i + start]);
-			if (!matches) {
-				return { match: null, continue: false };
+	public hAndle(lines: string[], stArt: number = 0): HAndleResult {
+		Assert.ok(lines.length - stArt === this.pAtterns.length);
+		this.dAtA = Object.creAte(null);
+		let dAtA = this.dAtA!;
+		dAtA.kind = this.pAtterns[0].kind;
+		for (let i = 0; i < this.pAtterns.length; i++) {
+			let pAttern = this.pAtterns[i];
+			let mAtches = pAttern.regexp.exec(lines[i + stArt]);
+			if (!mAtches) {
+				return { mAtch: null, continue: fAlse };
 			} else {
-				// Only the last pattern can loop
-				if (pattern.loop && i === this.patterns.length - 1) {
-					data = Objects.deepClone(data);
+				// Only the lAst pAttern cAn loop
+				if (pAttern.loop && i === this.pAtterns.length - 1) {
+					dAtA = Objects.deepClone(dAtA);
 				}
-				this.fillProblemData(data, pattern, matches);
+				this.fillProblemDAtA(dAtA, pAttern, mAtches);
 			}
 		}
-		let loop = !!this.patterns[this.patterns.length - 1].loop;
+		let loop = !!this.pAtterns[this.pAtterns.length - 1].loop;
 		if (!loop) {
-			this.data = undefined;
+			this.dAtA = undefined;
 		}
-		const markerMatch = data ? this.getMarkerMatch(data) : null;
-		return { match: markerMatch ? markerMatch : null, continue: loop };
+		const mArkerMAtch = dAtA ? this.getMArkerMAtch(dAtA) : null;
+		return { mAtch: mArkerMAtch ? mArkerMAtch : null, continue: loop };
 	}
 
-	public next(line: string): ProblemMatch | null {
-		let pattern = this.patterns[this.patterns.length - 1];
-		Assert.ok(pattern.loop === true && this.data !== null);
-		let matches = pattern.regexp.exec(line);
-		if (!matches) {
-			this.data = undefined;
+	public next(line: string): ProblemMAtch | null {
+		let pAttern = this.pAtterns[this.pAtterns.length - 1];
+		Assert.ok(pAttern.loop === true && this.dAtA !== null);
+		let mAtches = pAttern.regexp.exec(line);
+		if (!mAtches) {
+			this.dAtA = undefined;
 			return null;
 		}
-		let data = Objects.deepClone(this.data);
-		let problemMatch: ProblemMatch | undefined;
-		if (this.fillProblemData(data, pattern, matches)) {
-			problemMatch = this.getMarkerMatch(data);
+		let dAtA = Objects.deepClone(this.dAtA);
+		let problemMAtch: ProblemMAtch | undefined;
+		if (this.fillProblemDAtA(dAtA, pAttern, mAtches)) {
+			problemMAtch = this.getMArkerMAtch(dAtA);
 		}
-		return problemMatch ? problemMatch : null;
+		return problemMAtch ? problemMAtch : null;
 	}
 }
 
-export namespace Config {
+export nAmespAce Config {
 
-	export interface ProblemPattern {
+	export interfAce ProblemPAttern {
 
 		/**
-		* The regular expression to find a problem in the console output of an
-		* executed task.
+		* The regulAr expression to find A problem in the console output of An
+		* executed tAsk.
 		*/
 		regexp?: string;
 
 		/**
-		* Whether the pattern matches a whole file, or a location (file/line)
+		* Whether the pAttern mAtches A whole file, or A locAtion (file/line)
 		*
-		* The default is to match for a location. Only valid on the
-		* first problem pattern in a multi line problem matcher.
+		* The defAult is to mAtch for A locAtion. Only vAlid on the
+		* first problem pAttern in A multi line problem mAtcher.
 		*/
 		kind?: string;
 
 		/**
-		* The match group index of the filename.
+		* The mAtch group index of the filenAme.
 		* If omitted 1 is used.
 		*/
 		file?: number;
 
 		/**
-		* The match group index of the problem's location. Valid location
-		* patterns are: (line), (line,column) and (startLine,startColumn,endLine,endColumn).
-		* If omitted the line and column properties are used.
+		* The mAtch group index of the problem's locAtion. VAlid locAtion
+		* pAtterns Are: (line), (line,column) And (stArtLine,stArtColumn,endLine,endColumn).
+		* If omitted the line And column properties Are used.
 		*/
-		location?: number;
+		locAtion?: number;
 
 		/**
-		* The match group index of the problem's line in the source file.
+		* The mAtch group index of the problem's line in the source file.
 		*
-		* Defaults to 2.
+		* DefAults to 2.
 		*/
 		line?: number;
 
 		/**
-		* The match group index of the problem's column in the source file.
+		* The mAtch group index of the problem's column in the source file.
 		*
-		* Defaults to 3.
+		* DefAults to 3.
 		*/
 		column?: number;
 
 		/**
-		* The match group index of the problem's end line in the source file.
+		* The mAtch group index of the problem's end line in the source file.
 		*
-		* Defaults to undefined. No end line is captured.
+		* DefAults to undefined. No end line is cAptured.
 		*/
 		endLine?: number;
 
 		/**
-		* The match group index of the problem's end column in the source file.
+		* The mAtch group index of the problem's end column in the source file.
 		*
-		* Defaults to undefined. No end column is captured.
+		* DefAults to undefined. No end column is cAptured.
 		*/
 		endColumn?: number;
 
 		/**
-		* The match group index of the problem's severity.
+		* The mAtch group index of the problem's severity.
 		*
-		* Defaults to undefined. In this case the problem matcher's severity
+		* DefAults to undefined. In this cAse the problem mAtcher's severity
 		* is used.
 		*/
 		severity?: number;
 
 		/**
-		* The match group index of the problem's code.
+		* The mAtch group index of the problem's code.
 		*
-		* Defaults to undefined. No code is captured.
+		* DefAults to undefined. No code is cAptured.
 		*/
 		code?: number;
 
 		/**
-		* The match group index of the message. If omitted it defaults
-		* to 4 if location is specified. Otherwise it defaults to 5.
+		* The mAtch group index of the messAge. If omitted it defAults
+		* to 4 if locAtion is specified. Otherwise it defAults to 5.
 		*/
-		message?: number;
+		messAge?: number;
 
 		/**
-		* Specifies if the last pattern in a multi line problem matcher should
-		* loop as long as it does match a line consequently. Only valid on the
-		* last problem pattern in a multi line problem matcher.
+		* Specifies if the lAst pAttern in A multi line problem mAtcher should
+		* loop As long As it does mAtch A line consequently. Only vAlid on the
+		* lAst problem pAttern in A multi line problem mAtcher.
 		*/
-		loop?: boolean;
+		loop?: booleAn;
 	}
 
-	export interface CheckedProblemPattern extends ProblemPattern {
+	export interfAce CheckedProblemPAttern extends ProblemPAttern {
 		/**
-		* The regular expression to find a problem in the console output of an
-		* executed task.
-		*/
-		regexp: string;
-	}
-
-	export namespace CheckedProblemPattern {
-		export function is(value: any): value is CheckedProblemPattern {
-			let candidate: ProblemPattern = value as ProblemPattern;
-			return candidate && Types.isString(candidate.regexp);
-		}
-	}
-
-	export interface NamedProblemPattern extends ProblemPattern {
-		/**
-		 * The name of the problem pattern.
-		 */
-		name: string;
-
-		/**
-		 * A human readable label
-		 */
-		label?: string;
-	}
-
-	export namespace NamedProblemPattern {
-		export function is(value: any): value is NamedProblemPattern {
-			let candidate: NamedProblemPattern = value as NamedProblemPattern;
-			return candidate && Types.isString(candidate.name);
-		}
-	}
-
-	export interface NamedCheckedProblemPattern extends NamedProblemPattern {
-		/**
-		* The regular expression to find a problem in the console output of an
-		* executed task.
+		* The regulAr expression to find A problem in the console output of An
+		* executed tAsk.
 		*/
 		regexp: string;
 	}
 
-	export namespace NamedCheckedProblemPattern {
-		export function is(value: any): value is NamedCheckedProblemPattern {
-			let candidate: NamedProblemPattern = value as NamedProblemPattern;
-			return candidate && NamedProblemPattern.is(candidate) && Types.isString(candidate.regexp);
+	export nAmespAce CheckedProblemPAttern {
+		export function is(vAlue: Any): vAlue is CheckedProblemPAttern {
+			let cAndidAte: ProblemPAttern = vAlue As ProblemPAttern;
+			return cAndidAte && Types.isString(cAndidAte.regexp);
 		}
 	}
 
-	export type MultiLineProblemPattern = ProblemPattern[];
+	export interfAce NAmedProblemPAttern extends ProblemPAttern {
+		/**
+		 * The nAme of the problem pAttern.
+		 */
+		nAme: string;
 
-	export namespace MultiLineProblemPattern {
-		export function is(value: any): value is MultiLineProblemPattern {
-			return value && Types.isArray(value);
+		/**
+		 * A humAn reAdAble lAbel
+		 */
+		lAbel?: string;
+	}
+
+	export nAmespAce NAmedProblemPAttern {
+		export function is(vAlue: Any): vAlue is NAmedProblemPAttern {
+			let cAndidAte: NAmedProblemPAttern = vAlue As NAmedProblemPAttern;
+			return cAndidAte && Types.isString(cAndidAte.nAme);
 		}
 	}
 
-	export type MultiLineCheckedProblemPattern = CheckedProblemPattern[];
+	export interfAce NAmedCheckedProblemPAttern extends NAmedProblemPAttern {
+		/**
+		* The regulAr expression to find A problem in the console output of An
+		* executed tAsk.
+		*/
+		regexp: string;
+	}
 
-	export namespace MultiLineCheckedProblemPattern {
-		export function is(value: any): value is MultiLineCheckedProblemPattern {
-			if (!MultiLineProblemPattern.is(value)) {
-				return false;
+	export nAmespAce NAmedCheckedProblemPAttern {
+		export function is(vAlue: Any): vAlue is NAmedCheckedProblemPAttern {
+			let cAndidAte: NAmedProblemPAttern = vAlue As NAmedProblemPAttern;
+			return cAndidAte && NAmedProblemPAttern.is(cAndidAte) && Types.isString(cAndidAte.regexp);
+		}
+	}
+
+	export type MultiLineProblemPAttern = ProblemPAttern[];
+
+	export nAmespAce MultiLineProblemPAttern {
+		export function is(vAlue: Any): vAlue is MultiLineProblemPAttern {
+			return vAlue && Types.isArrAy(vAlue);
+		}
+	}
+
+	export type MultiLineCheckedProblemPAttern = CheckedProblemPAttern[];
+
+	export nAmespAce MultiLineCheckedProblemPAttern {
+		export function is(vAlue: Any): vAlue is MultiLineCheckedProblemPAttern {
+			if (!MultiLineProblemPAttern.is(vAlue)) {
+				return fAlse;
 			}
-			for (const element of value) {
-				if (!Config.CheckedProblemPattern.is(element)) {
-					return false;
+			for (const element of vAlue) {
+				if (!Config.CheckedProblemPAttern.is(element)) {
+					return fAlse;
 				}
 			}
 			return true;
 		}
 	}
 
-	export interface NamedMultiLineCheckedProblemPattern {
+	export interfAce NAmedMultiLineCheckedProblemPAttern {
 		/**
-		 * The name of the problem pattern.
+		 * The nAme of the problem pAttern.
 		 */
-		name: string;
+		nAme: string;
 
 		/**
-		 * A human readable label
+		 * A humAn reAdAble lAbel
 		 */
-		label?: string;
+		lAbel?: string;
 
 		/**
-		 * The actual patterns
+		 * The ActuAl pAtterns
 		 */
-		patterns: MultiLineCheckedProblemPattern;
+		pAtterns: MultiLineCheckedProblemPAttern;
 	}
 
-	export namespace NamedMultiLineCheckedProblemPattern {
-		export function is(value: any): value is NamedMultiLineCheckedProblemPattern {
-			let candidate = value as NamedMultiLineCheckedProblemPattern;
-			return candidate && Types.isString(candidate.name) && Types.isArray(candidate.patterns) && MultiLineCheckedProblemPattern.is(candidate.patterns);
+	export nAmespAce NAmedMultiLineCheckedProblemPAttern {
+		export function is(vAlue: Any): vAlue is NAmedMultiLineCheckedProblemPAttern {
+			let cAndidAte = vAlue As NAmedMultiLineCheckedProblemPAttern;
+			return cAndidAte && Types.isString(cAndidAte.nAme) && Types.isArrAy(cAndidAte.pAtterns) && MultiLineCheckedProblemPAttern.is(cAndidAte.pAtterns);
 		}
 	}
 
-	export type NamedProblemPatterns = (Config.NamedProblemPattern | Config.NamedMultiLineCheckedProblemPattern)[];
+	export type NAmedProblemPAtterns = (Config.NAmedProblemPAttern | Config.NAmedMultiLineCheckedProblemPAttern)[];
 
 	/**
-	* A watching pattern
+	* A wAtching pAttern
 	*/
-	export interface WatchingPattern {
+	export interfAce WAtchingPAttern {
 		/**
-		* The actual regular expression
+		* The ActuAl regulAr expression
 		*/
 		regexp?: string;
 
 		/**
-		* The match group index of the filename. If provided the expression
-		* is matched for that file only.
+		* The mAtch group index of the filenAme. If provided the expression
+		* is mAtched for thAt file only.
 		*/
 		file?: number;
 	}
 
 	/**
-	* A description to track the start and end of a watching task.
+	* A description to trAck the stArt And end of A wAtching tAsk.
 	*/
-	export interface BackgroundMonitor {
+	export interfAce BAckgroundMonitor {
 
 		/**
-		* If set to true the watcher is in active mode when the task
-		* starts. This is equals of issuing a line that matches the
-		* beginsPattern.
+		* If set to true the wAtcher is in Active mode when the tAsk
+		* stArts. This is equAls of issuing A line thAt mAtches the
+		* beginsPAttern.
 		*/
-		activeOnStart?: boolean;
+		ActiveOnStArt?: booleAn;
 
 		/**
-		* If matched in the output the start of a watching task is signaled.
+		* If mAtched in the output the stArt of A wAtching tAsk is signAled.
 		*/
-		beginsPattern?: string | WatchingPattern;
+		beginsPAttern?: string | WAtchingPAttern;
 
 		/**
-		* If matched in the output the end of a watching task is signaled.
+		* If mAtched in the output the end of A wAtching tAsk is signAled.
 		*/
-		endsPattern?: string | WatchingPattern;
+		endsPAttern?: string | WAtchingPAttern;
 	}
 
 	/**
-	* A description of a problem matcher that detects problems
+	* A description of A problem mAtcher thAt detects problems
 	* in build output.
 	*/
-	export interface ProblemMatcher {
+	export interfAce ProblemMAtcher {
 
 		/**
-		 * The name of a base problem matcher to use. If specified the
-		 * base problem matcher will be used as a template and properties
-		 * specified here will replace properties of the base problem
-		 * matcher
+		 * The nAme of A bAse problem mAtcher to use. If specified the
+		 * bAse problem mAtcher will be used As A templAte And properties
+		 * specified here will replAce properties of the bAse problem
+		 * mAtcher
 		 */
-		base?: string;
+		bAse?: string;
 
 		/**
-		 * The owner of the produced VSCode problem. This is typically
-		 * the identifier of a VSCode language service if the problems are
-		 * to be merged with the one produced by the language service
-		 * or a generated internal id. Defaults to the generated internal id.
+		 * The owner of the produced VSCode problem. This is typicAlly
+		 * the identifier of A VSCode lAnguAge service if the problems Are
+		 * to be merged with the one produced by the lAnguAge service
+		 * or A generAted internAl id. DefAults to the generAted internAl id.
 		 */
 		owner?: string;
 
 		/**
-		 * A human-readable string describing the source of this problem.
+		 * A humAn-reAdAble string describing the source of this problem.
 		 * E.g. 'typescript' or 'super lint'.
 		 */
 		source?: string;
 
 		/**
 		* Specifies to which kind of documents the problems found by this
-		* matcher are applied. Valid values are:
+		* mAtcher Are Applied. VAlid vAlues Are:
 		*
-		*   "allDocuments": problems found in all documents are applied.
-		*   "openDocuments": problems found in documents that are open
-		*   are applied.
-		*   "closedDocuments": problems found in closed documents are
-		*   applied.
+		*   "AllDocuments": problems found in All documents Are Applied.
+		*   "openDocuments": problems found in documents thAt Are open
+		*   Are Applied.
+		*   "closedDocuments": problems found in closed documents Are
+		*   Applied.
 		*/
-		applyTo?: string;
+		ApplyTo?: string;
 
 		/**
-		* The severity of the VSCode problem produced by this problem matcher.
+		* The severity of the VSCode problem produced by this problem mAtcher.
 		*
-		* Valid values are:
+		* VAlid vAlues Are:
 		*   "error": to produce errors.
-		*   "warning": to produce warnings.
+		*   "wArning": to produce wArnings.
 		*   "info": to produce infos.
 		*
-		* The value is used if a pattern doesn't specify a severity match group.
-		* Defaults to "error" if omitted.
+		* The vAlue is used if A pAttern doesn't specify A severity mAtch group.
+		* DefAults to "error" if omitted.
 		*/
 		severity?: string;
 
 		/**
-		* Defines how filename reported in a problem pattern
-		* should be read. Valid values are:
-		*  - "absolute": the filename is always treated absolute.
-		*  - "relative": the filename is always treated relative to
-		*    the current working directory. This is the default.
-		*  - ["relative", "path value"]: the filename is always
-		*    treated relative to the given path value.
-		*  - "autodetect": the filename is treated relative to
-		*    the current workspace directory, and if the file
-		*    does not exist, it is treated as absolute.
-		*  - ["autodetect", "path value"]: the filename is treated
-		*    relative to the given path value, and if it does not
-		*    exist, it is treated as absolute.
+		* Defines how filenAme reported in A problem pAttern
+		* should be reAd. VAlid vAlues Are:
+		*  - "Absolute": the filenAme is AlwAys treAted Absolute.
+		*  - "relAtive": the filenAme is AlwAys treAted relAtive to
+		*    the current working directory. This is the defAult.
+		*  - ["relAtive", "pAth vAlue"]: the filenAme is AlwAys
+		*    treAted relAtive to the given pAth vAlue.
+		*  - "Autodetect": the filenAme is treAted relAtive to
+		*    the current workspAce directory, And if the file
+		*    does not exist, it is treAted As Absolute.
+		*  - ["Autodetect", "pAth vAlue"]: the filenAme is treAted
+		*    relAtive to the given pAth vAlue, And if it does not
+		*    exist, it is treAted As Absolute.
 		*/
-		fileLocation?: string | string[];
+		fileLocAtion?: string | string[];
 
 		/**
-		* The name of a predefined problem pattern, the inline definition
-		* of a problem pattern or an array of problem patterns to match
-		* problems spread over multiple lines.
+		* The nAme of A predefined problem pAttern, the inline definition
+		* of A problem pAttern or An ArrAy of problem pAtterns to mAtch
+		* problems spreAd over multiple lines.
 		*/
-		pattern?: string | ProblemPattern | ProblemPattern[];
+		pAttern?: string | ProblemPAttern | ProblemPAttern[];
 
 		/**
-		* A regular expression signaling that a watched tasks begins executing
-		* triggered through file watching.
+		* A regulAr expression signAling thAt A wAtched tAsks begins executing
+		* triggered through file wAtching.
 		*/
-		watchedTaskBeginsRegExp?: string;
+		wAtchedTAskBeginsRegExp?: string;
 
 		/**
-		* A regular expression signaling that a watched tasks ends executing.
+		* A regulAr expression signAling thAt A wAtched tAsks ends executing.
 		*/
-		watchedTaskEndsRegExp?: string;
+		wAtchedTAskEndsRegExp?: string;
 
 		/**
-		 * @deprecated Use background instead.
+		 * @deprecAted Use bAckground insteAd.
 		 */
-		watching?: BackgroundMonitor;
-		background?: BackgroundMonitor;
+		wAtching?: BAckgroundMonitor;
+		bAckground?: BAckgroundMonitor;
 	}
 
-	export type ProblemMatcherType = string | ProblemMatcher | Array<string | ProblemMatcher>;
+	export type ProblemMAtcherType = string | ProblemMAtcher | ArrAy<string | ProblemMAtcher>;
 
-	export interface NamedProblemMatcher extends ProblemMatcher {
+	export interfAce NAmedProblemMAtcher extends ProblemMAtcher {
 		/**
-		* This name can be used to refer to the
-		* problem matcher from within a task.
+		* This nAme cAn be used to refer to the
+		* problem mAtcher from within A tAsk.
 		*/
-		name: string;
+		nAme: string;
 
 		/**
-		 * A human readable label.
+		 * A humAn reAdAble lAbel.
 		 */
-		label?: string;
+		lAbel?: string;
 	}
 
-	export function isNamedProblemMatcher(value: ProblemMatcher): value is NamedProblemMatcher {
-		return Types.isString((<NamedProblemMatcher>value).name);
+	export function isNAmedProblemMAtcher(vAlue: ProblemMAtcher): vAlue is NAmedProblemMAtcher {
+		return Types.isString((<NAmedProblemMAtcher>vAlue).nAme);
 	}
 }
 
-export class ProblemPatternParser extends Parser {
+export clAss ProblemPAtternPArser extends PArser {
 
 	constructor(logger: IProblemReporter) {
 		super(logger);
 	}
 
-	public parse(value: Config.ProblemPattern): ProblemPattern;
-	public parse(value: Config.MultiLineProblemPattern): MultiLineProblemPattern;
-	public parse(value: Config.NamedProblemPattern): NamedProblemPattern;
-	public parse(value: Config.NamedMultiLineCheckedProblemPattern): NamedMultiLineProblemPattern;
-	public parse(value: Config.ProblemPattern | Config.MultiLineProblemPattern | Config.NamedProblemPattern | Config.NamedMultiLineCheckedProblemPattern): any {
-		if (Config.NamedMultiLineCheckedProblemPattern.is(value)) {
-			return this.createNamedMultiLineProblemPattern(value);
-		} else if (Config.MultiLineCheckedProblemPattern.is(value)) {
-			return this.createMultiLineProblemPattern(value);
-		} else if (Config.NamedCheckedProblemPattern.is(value)) {
-			let result = this.createSingleProblemPattern(value) as NamedProblemPattern;
-			result.name = value.name;
+	public pArse(vAlue: Config.ProblemPAttern): ProblemPAttern;
+	public pArse(vAlue: Config.MultiLineProblemPAttern): MultiLineProblemPAttern;
+	public pArse(vAlue: Config.NAmedProblemPAttern): NAmedProblemPAttern;
+	public pArse(vAlue: Config.NAmedMultiLineCheckedProblemPAttern): NAmedMultiLineProblemPAttern;
+	public pArse(vAlue: Config.ProblemPAttern | Config.MultiLineProblemPAttern | Config.NAmedProblemPAttern | Config.NAmedMultiLineCheckedProblemPAttern): Any {
+		if (Config.NAmedMultiLineCheckedProblemPAttern.is(vAlue)) {
+			return this.creAteNAmedMultiLineProblemPAttern(vAlue);
+		} else if (Config.MultiLineCheckedProblemPAttern.is(vAlue)) {
+			return this.creAteMultiLineProblemPAttern(vAlue);
+		} else if (Config.NAmedCheckedProblemPAttern.is(vAlue)) {
+			let result = this.creAteSingleProblemPAttern(vAlue) As NAmedProblemPAttern;
+			result.nAme = vAlue.nAme;
 			return result;
-		} else if (Config.CheckedProblemPattern.is(value)) {
-			return this.createSingleProblemPattern(value);
+		} else if (Config.CheckedProblemPAttern.is(vAlue)) {
+			return this.creAteSingleProblemPAttern(vAlue);
 		} else {
-			this.error(localize('ProblemPatternParser.problemPattern.missingRegExp', 'The problem pattern is missing a regular expression.'));
+			this.error(locAlize('ProblemPAtternPArser.problemPAttern.missingRegExp', 'The problem pAttern is missing A regulAr expression.'));
 			return null;
 		}
 	}
 
-	private createSingleProblemPattern(value: Config.CheckedProblemPattern): ProblemPattern | null {
-		let result = this.doCreateSingleProblemPattern(value, true);
+	privAte creAteSingleProblemPAttern(vAlue: Config.CheckedProblemPAttern): ProblemPAttern | null {
+		let result = this.doCreAteSingleProblemPAttern(vAlue, true);
 		if (result === undefined) {
 			return null;
 		} else if (result.kind === undefined) {
-			result.kind = ProblemLocationKind.Location;
+			result.kind = ProblemLocAtionKind.LocAtion;
 		}
-		return this.validateProblemPattern([result]) ? result : null;
+		return this.vAlidAteProblemPAttern([result]) ? result : null;
 	}
 
-	private createNamedMultiLineProblemPattern(value: Config.NamedMultiLineCheckedProblemPattern): NamedMultiLineProblemPattern | null {
-		const validPatterns = this.createMultiLineProblemPattern(value.patterns);
-		if (!validPatterns) {
+	privAte creAteNAmedMultiLineProblemPAttern(vAlue: Config.NAmedMultiLineCheckedProblemPAttern): NAmedMultiLineProblemPAttern | null {
+		const vAlidPAtterns = this.creAteMultiLineProblemPAttern(vAlue.pAtterns);
+		if (!vAlidPAtterns) {
 			return null;
 		}
 		let result = {
-			name: value.name,
-			label: value.label ? value.label : value.name,
-			patterns: validPatterns
+			nAme: vAlue.nAme,
+			lAbel: vAlue.lAbel ? vAlue.lAbel : vAlue.nAme,
+			pAtterns: vAlidPAtterns
 		};
 		return result;
 	}
 
-	private createMultiLineProblemPattern(values: Config.MultiLineCheckedProblemPattern): MultiLineProblemPattern | null {
-		let result: MultiLineProblemPattern = [];
-		for (let i = 0; i < values.length; i++) {
-			let pattern = this.doCreateSingleProblemPattern(values[i], false);
-			if (pattern === undefined) {
+	privAte creAteMultiLineProblemPAttern(vAlues: Config.MultiLineCheckedProblemPAttern): MultiLineProblemPAttern | null {
+		let result: MultiLineProblemPAttern = [];
+		for (let i = 0; i < vAlues.length; i++) {
+			let pAttern = this.doCreAteSingleProblemPAttern(vAlues[i], fAlse);
+			if (pAttern === undefined) {
 				return null;
 			}
-			if (i < values.length - 1) {
-				if (!Types.isUndefined(pattern.loop) && pattern.loop) {
-					pattern.loop = false;
-					this.error(localize('ProblemPatternParser.loopProperty.notLast', 'The loop property is only supported on the last line matcher.'));
+			if (i < vAlues.length - 1) {
+				if (!Types.isUndefined(pAttern.loop) && pAttern.loop) {
+					pAttern.loop = fAlse;
+					this.error(locAlize('ProblemPAtternPArser.loopProperty.notLAst', 'The loop property is only supported on the lAst line mAtcher.'));
 				}
 			}
-			result.push(pattern);
+			result.push(pAttern);
 		}
 		if (result[0].kind === undefined) {
-			result[0].kind = ProblemLocationKind.Location;
+			result[0].kind = ProblemLocAtionKind.LocAtion;
 		}
-		return this.validateProblemPattern(result) ? result : null;
+		return this.vAlidAteProblemPAttern(result) ? result : null;
 	}
 
-	private doCreateSingleProblemPattern(value: Config.CheckedProblemPattern, setDefaults: boolean): ProblemPattern | undefined {
-		const regexp = this.createRegularExpression(value.regexp);
+	privAte doCreAteSingleProblemPAttern(vAlue: Config.CheckedProblemPAttern, setDefAults: booleAn): ProblemPAttern | undefined {
+		const regexp = this.creAteRegulArExpression(vAlue.regexp);
 		if (regexp === undefined) {
 			return undefined;
 		}
-		let result: ProblemPattern = { regexp };
-		if (value.kind) {
-			result.kind = ProblemLocationKind.fromString(value.kind);
+		let result: ProblemPAttern = { regexp };
+		if (vAlue.kind) {
+			result.kind = ProblemLocAtionKind.fromString(vAlue.kind);
 		}
 
-		function copyProperty(result: ProblemPattern, source: Config.ProblemPattern, resultKey: keyof ProblemPattern, sourceKey: keyof Config.ProblemPattern) {
-			const value = source[sourceKey];
-			if (typeof value === 'number') {
-				(result as any)[resultKey] = value;
+		function copyProperty(result: ProblemPAttern, source: Config.ProblemPAttern, resultKey: keyof ProblemPAttern, sourceKey: keyof Config.ProblemPAttern) {
+			const vAlue = source[sourceKey];
+			if (typeof vAlue === 'number') {
+				(result As Any)[resultKey] = vAlue;
 			}
 		}
-		copyProperty(result, value, 'file', 'file');
-		copyProperty(result, value, 'location', 'location');
-		copyProperty(result, value, 'line', 'line');
-		copyProperty(result, value, 'character', 'column');
-		copyProperty(result, value, 'endLine', 'endLine');
-		copyProperty(result, value, 'endCharacter', 'endColumn');
-		copyProperty(result, value, 'severity', 'severity');
-		copyProperty(result, value, 'code', 'code');
-		copyProperty(result, value, 'message', 'message');
-		if (value.loop === true || value.loop === false) {
-			result.loop = value.loop;
+		copyProperty(result, vAlue, 'file', 'file');
+		copyProperty(result, vAlue, 'locAtion', 'locAtion');
+		copyProperty(result, vAlue, 'line', 'line');
+		copyProperty(result, vAlue, 'chArActer', 'column');
+		copyProperty(result, vAlue, 'endLine', 'endLine');
+		copyProperty(result, vAlue, 'endChArActer', 'endColumn');
+		copyProperty(result, vAlue, 'severity', 'severity');
+		copyProperty(result, vAlue, 'code', 'code');
+		copyProperty(result, vAlue, 'messAge', 'messAge');
+		if (vAlue.loop === true || vAlue.loop === fAlse) {
+			result.loop = vAlue.loop;
 		}
-		if (setDefaults) {
-			if (result.location || result.kind === ProblemLocationKind.File) {
-				let defaultValue: Partial<ProblemPattern> = {
+		if (setDefAults) {
+			if (result.locAtion || result.kind === ProblemLocAtionKind.File) {
+				let defAultVAlue: PArtiAl<ProblemPAttern> = {
 					file: 1,
-					message: 0
+					messAge: 0
 				};
-				result = Objects.mixin(result, defaultValue, false);
+				result = Objects.mixin(result, defAultVAlue, fAlse);
 			} else {
-				let defaultValue: Partial<ProblemPattern> = {
+				let defAultVAlue: PArtiAl<ProblemPAttern> = {
 					file: 1,
 					line: 2,
-					character: 3,
-					message: 0
+					chArActer: 3,
+					messAge: 0
 				};
-				result = Objects.mixin(result, defaultValue, false);
+				result = Objects.mixin(result, defAultVAlue, fAlse);
 			}
 		}
 		return result;
 	}
 
-	private validateProblemPattern(values: ProblemPattern[]): boolean {
-		let file: boolean = false, message: boolean = false, location: boolean = false, line: boolean = false;
-		let locationKind = (values[0].kind === undefined) ? ProblemLocationKind.Location : values[0].kind;
+	privAte vAlidAteProblemPAttern(vAlues: ProblemPAttern[]): booleAn {
+		let file: booleAn = fAlse, messAge: booleAn = fAlse, locAtion: booleAn = fAlse, line: booleAn = fAlse;
+		let locAtionKind = (vAlues[0].kind === undefined) ? ProblemLocAtionKind.LocAtion : vAlues[0].kind;
 
-		values.forEach((pattern, i) => {
-			if (i !== 0 && pattern.kind) {
-				this.error(localize('ProblemPatternParser.problemPattern.kindProperty.notFirst', 'The problem pattern is invalid. The kind property must be provided only in the first element'));
+		vAlues.forEAch((pAttern, i) => {
+			if (i !== 0 && pAttern.kind) {
+				this.error(locAlize('ProblemPAtternPArser.problemPAttern.kindProperty.notFirst', 'The problem pAttern is invAlid. The kind property must be provided only in the first element'));
 			}
-			file = file || !Types.isUndefined(pattern.file);
-			message = message || !Types.isUndefined(pattern.message);
-			location = location || !Types.isUndefined(pattern.location);
-			line = line || !Types.isUndefined(pattern.line);
+			file = file || !Types.isUndefined(pAttern.file);
+			messAge = messAge || !Types.isUndefined(pAttern.messAge);
+			locAtion = locAtion || !Types.isUndefined(pAttern.locAtion);
+			line = line || !Types.isUndefined(pAttern.line);
 		});
-		if (!(file && message)) {
-			this.error(localize('ProblemPatternParser.problemPattern.missingProperty', 'The problem pattern is invalid. It must have at least have a file and a message.'));
-			return false;
+		if (!(file && messAge)) {
+			this.error(locAlize('ProblemPAtternPArser.problemPAttern.missingProperty', 'The problem pAttern is invAlid. It must hAve At leAst hAve A file And A messAge.'));
+			return fAlse;
 		}
-		if (locationKind === ProblemLocationKind.Location && !(location || line)) {
-			this.error(localize('ProblemPatternParser.problemPattern.missingLocation', 'The problem pattern is invalid. It must either have kind: "file" or have a line or location match group.'));
-			return false;
+		if (locAtionKind === ProblemLocAtionKind.LocAtion && !(locAtion || line)) {
+			this.error(locAlize('ProblemPAtternPArser.problemPAttern.missingLocAtion', 'The problem pAttern is invAlid. It must either hAve kind: "file" or hAve A line or locAtion mAtch group.'));
+			return fAlse;
 		}
 		return true;
 	}
 
-	private createRegularExpression(value: string): RegExp | undefined {
+	privAte creAteRegulArExpression(vAlue: string): RegExp | undefined {
 		let result: RegExp | undefined;
 		try {
-			result = new RegExp(value);
-		} catch (err) {
-			this.error(localize('ProblemPatternParser.invalidRegexp', 'Error: The string {0} is not a valid regular expression.\n', value));
+			result = new RegExp(vAlue);
+		} cAtch (err) {
+			this.error(locAlize('ProblemPAtternPArser.invAlidRegexp', 'Error: The string {0} is not A vAlid regulAr expression.\n', vAlue));
 		}
 		return result;
 	}
 }
 
-export class ExtensionRegistryReporter implements IProblemReporter {
-	constructor(private _collector: ExtensionMessageCollector, private _validationStatus: ValidationStatus = new ValidationStatus()) {
+export clAss ExtensionRegistryReporter implements IProblemReporter {
+	constructor(privAte _collector: ExtensionMessAgeCollector, privAte _vAlidAtionStAtus: VAlidAtionStAtus = new VAlidAtionStAtus()) {
 	}
 
-	public info(message: string): void {
-		this._validationStatus.state = ValidationState.Info;
-		this._collector.info(message);
+	public info(messAge: string): void {
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.Info;
+		this._collector.info(messAge);
 	}
 
-	public warn(message: string): void {
-		this._validationStatus.state = ValidationState.Warning;
-		this._collector.warn(message);
+	public wArn(messAge: string): void {
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.WArning;
+		this._collector.wArn(messAge);
 	}
 
-	public error(message: string): void {
-		this._validationStatus.state = ValidationState.Error;
-		this._collector.error(message);
+	public error(messAge: string): void {
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.Error;
+		this._collector.error(messAge);
 	}
 
-	public fatal(message: string): void {
-		this._validationStatus.state = ValidationState.Fatal;
-		this._collector.error(message);
+	public fAtAl(messAge: string): void {
+		this._vAlidAtionStAtus.stAte = VAlidAtionStAte.FAtAl;
+		this._collector.error(messAge);
 	}
 
-	public get status(): ValidationStatus {
-		return this._validationStatus;
+	public get stAtus(): VAlidAtionStAtus {
+		return this._vAlidAtionStAtus;
 	}
 }
 
-export namespace Schemas {
+export nAmespAce SchemAs {
 
-	export const ProblemPattern: IJSONSchema = {
-		default: {
+	export const ProblemPAttern: IJSONSchemA = {
+		defAult: {
 			regexp: '^([^\\\\s].*)\\\\((\\\\d+,\\\\d+)\\\\):\\\\s*(.*)$',
 			file: 1,
-			location: 2,
-			message: 3
+			locAtion: 2,
+			messAge: 3
 		},
 		type: 'object',
-		additionalProperties: false,
+		AdditionAlProperties: fAlse,
 		properties: {
 			regexp: {
 				type: 'string',
-				description: localize('ProblemPatternSchema.regexp', 'The regular expression to find an error, warning or info in the output.')
+				description: locAlize('ProblemPAtternSchemA.regexp', 'The regulAr expression to find An error, wArning or info in the output.')
 			},
 			kind: {
 				type: 'string',
-				description: localize('ProblemPatternSchema.kind', 'whether the pattern matches a location (file and line) or only a file.')
+				description: locAlize('ProblemPAtternSchemA.kind', 'whether the pAttern mAtches A locAtion (file And line) or only A file.')
 			},
 			file: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.file', 'The match group index of the filename. If omitted 1 is used.')
+				description: locAlize('ProblemPAtternSchemA.file', 'The mAtch group index of the filenAme. If omitted 1 is used.')
 			},
-			location: {
+			locAtion: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.location', 'The match group index of the problem\'s location. Valid location patterns are: (line), (line,column) and (startLine,startColumn,endLine,endColumn). If omitted (line,column) is assumed.')
+				description: locAlize('ProblemPAtternSchemA.locAtion', 'The mAtch group index of the problem\'s locAtion. VAlid locAtion pAtterns Are: (line), (line,column) And (stArtLine,stArtColumn,endLine,endColumn). If omitted (line,column) is Assumed.')
 			},
 			line: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.line', 'The match group index of the problem\'s line. Defaults to 2')
+				description: locAlize('ProblemPAtternSchemA.line', 'The mAtch group index of the problem\'s line. DefAults to 2')
 			},
 			column: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.column', 'The match group index of the problem\'s line character. Defaults to 3')
+				description: locAlize('ProblemPAtternSchemA.column', 'The mAtch group index of the problem\'s line chArActer. DefAults to 3')
 			},
 			endLine: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.endLine', 'The match group index of the problem\'s end line. Defaults to undefined')
+				description: locAlize('ProblemPAtternSchemA.endLine', 'The mAtch group index of the problem\'s end line. DefAults to undefined')
 			},
 			endColumn: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.endColumn', 'The match group index of the problem\'s end line character. Defaults to undefined')
+				description: locAlize('ProblemPAtternSchemA.endColumn', 'The mAtch group index of the problem\'s end line chArActer. DefAults to undefined')
 			},
 			severity: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.severity', 'The match group index of the problem\'s severity. Defaults to undefined')
+				description: locAlize('ProblemPAtternSchemA.severity', 'The mAtch group index of the problem\'s severity. DefAults to undefined')
 			},
 			code: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.code', 'The match group index of the problem\'s code. Defaults to undefined')
+				description: locAlize('ProblemPAtternSchemA.code', 'The mAtch group index of the problem\'s code. DefAults to undefined')
 			},
-			message: {
+			messAge: {
 				type: 'integer',
-				description: localize('ProblemPatternSchema.message', 'The match group index of the message. If omitted it defaults to 4 if location is specified. Otherwise it defaults to 5.')
+				description: locAlize('ProblemPAtternSchemA.messAge', 'The mAtch group index of the messAge. If omitted it defAults to 4 if locAtion is specified. Otherwise it defAults to 5.')
 			},
 			loop: {
-				type: 'boolean',
-				description: localize('ProblemPatternSchema.loop', 'In a multi line matcher loop indicated whether this pattern is executed in a loop as long as it matches. Can only specified on a last pattern in a multi line pattern.')
+				type: 'booleAn',
+				description: locAlize('ProblemPAtternSchemA.loop', 'In A multi line mAtcher loop indicAted whether this pAttern is executed in A loop As long As it mAtches. CAn only specified on A lAst pAttern in A multi line pAttern.')
 			}
 		}
 	};
 
-	export const NamedProblemPattern: IJSONSchema = Objects.deepClone(ProblemPattern);
-	NamedProblemPattern.properties = Objects.deepClone(NamedProblemPattern.properties) || {};
-	NamedProblemPattern.properties['name'] = {
+	export const NAmedProblemPAttern: IJSONSchemA = Objects.deepClone(ProblemPAttern);
+	NAmedProblemPAttern.properties = Objects.deepClone(NAmedProblemPAttern.properties) || {};
+	NAmedProblemPAttern.properties['nAme'] = {
 		type: 'string',
-		description: localize('NamedProblemPatternSchema.name', 'The name of the problem pattern.')
+		description: locAlize('NAmedProblemPAtternSchemA.nAme', 'The nAme of the problem pAttern.')
 	};
 
-	export const MultiLineProblemPattern: IJSONSchema = {
-		type: 'array',
-		items: ProblemPattern
+	export const MultiLineProblemPAttern: IJSONSchemA = {
+		type: 'ArrAy',
+		items: ProblemPAttern
 	};
 
-	export const NamedMultiLineProblemPattern: IJSONSchema = {
+	export const NAmedMultiLineProblemPAttern: IJSONSchemA = {
 		type: 'object',
-		additionalProperties: false,
+		AdditionAlProperties: fAlse,
 		properties: {
-			name: {
+			nAme: {
 				type: 'string',
-				description: localize('NamedMultiLineProblemPatternSchema.name', 'The name of the problem multi line problem pattern.')
+				description: locAlize('NAmedMultiLineProblemPAtternSchemA.nAme', 'The nAme of the problem multi line problem pAttern.')
 			},
-			patterns: {
-				type: 'array',
-				description: localize('NamedMultiLineProblemPatternSchema.patterns', 'The actual patterns.'),
-				items: ProblemPattern
+			pAtterns: {
+				type: 'ArrAy',
+				description: locAlize('NAmedMultiLineProblemPAtternSchemA.pAtterns', 'The ActuAl pAtterns.'),
+				items: ProblemPAttern
 			}
 		}
 	};
 }
 
-const problemPatternExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NamedProblemPatterns>({
-	extensionPoint: 'problemPatterns',
-	jsonSchema: {
-		description: localize('ProblemPatternExtPoint', 'Contributes problem patterns'),
-		type: 'array',
+const problemPAtternExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NAmedProblemPAtterns>({
+	extensionPoint: 'problemPAtterns',
+	jsonSchemA: {
+		description: locAlize('ProblemPAtternExtPoint', 'Contributes problem pAtterns'),
+		type: 'ArrAy',
 		items: {
-			anyOf: [
-				Schemas.NamedProblemPattern,
-				Schemas.NamedMultiLineProblemPattern
+			AnyOf: [
+				SchemAs.NAmedProblemPAttern,
+				SchemAs.NAmedMultiLineProblemPAttern
 			]
 		}
 	}
 });
 
-export interface IProblemPatternRegistry {
-	onReady(): Promise<void>;
+export interfAce IProblemPAtternRegistry {
+	onReAdy(): Promise<void>;
 
-	get(key: string): ProblemPattern | MultiLineProblemPattern;
+	get(key: string): ProblemPAttern | MultiLineProblemPAttern;
 }
 
-class ProblemPatternRegistryImpl implements IProblemPatternRegistry {
+clAss ProblemPAtternRegistryImpl implements IProblemPAtternRegistry {
 
-	private patterns: IStringDictionary<ProblemPattern | ProblemPattern[]>;
-	private readyPromise: Promise<void>;
+	privAte pAtterns: IStringDictionAry<ProblemPAttern | ProblemPAttern[]>;
+	privAte reAdyPromise: Promise<void>;
 
 	constructor() {
-		this.patterns = Object.create(null);
-		this.fillDefaults();
-		this.readyPromise = new Promise<void>((resolve, reject) => {
-			problemPatternExtPoint.setHandler((extensions, delta) => {
-				// We get all statically know extension during startup in one batch
+		this.pAtterns = Object.creAte(null);
+		this.fillDefAults();
+		this.reAdyPromise = new Promise<void>((resolve, reject) => {
+			problemPAtternExtPoint.setHAndler((extensions, deltA) => {
+				// We get All stAticAlly know extension during stArtup in one bAtch
 				try {
-					delta.removed.forEach(extension => {
-						let problemPatterns = extension.value as Config.NamedProblemPatterns;
-						for (let pattern of problemPatterns) {
-							if (this.patterns[pattern.name]) {
-								delete this.patterns[pattern.name];
+					deltA.removed.forEAch(extension => {
+						let problemPAtterns = extension.vAlue As Config.NAmedProblemPAtterns;
+						for (let pAttern of problemPAtterns) {
+							if (this.pAtterns[pAttern.nAme]) {
+								delete this.pAtterns[pAttern.nAme];
 							}
 						}
 					});
-					delta.added.forEach(extension => {
-						let problemPatterns = extension.value as Config.NamedProblemPatterns;
-						let parser = new ProblemPatternParser(new ExtensionRegistryReporter(extension.collector));
-						for (let pattern of problemPatterns) {
-							if (Config.NamedMultiLineCheckedProblemPattern.is(pattern)) {
-								let result = parser.parse(pattern);
-								if (parser.problemReporter.status.state < ValidationState.Error) {
-									this.add(result.name, result.patterns);
+					deltA.Added.forEAch(extension => {
+						let problemPAtterns = extension.vAlue As Config.NAmedProblemPAtterns;
+						let pArser = new ProblemPAtternPArser(new ExtensionRegistryReporter(extension.collector));
+						for (let pAttern of problemPAtterns) {
+							if (Config.NAmedMultiLineCheckedProblemPAttern.is(pAttern)) {
+								let result = pArser.pArse(pAttern);
+								if (pArser.problemReporter.stAtus.stAte < VAlidAtionStAte.Error) {
+									this.Add(result.nAme, result.pAtterns);
 								} else {
-									extension.collector.error(localize('ProblemPatternRegistry.error', 'Invalid problem pattern. The pattern will be ignored.'));
-									extension.collector.error(JSON.stringify(pattern, undefined, 4));
+									extension.collector.error(locAlize('ProblemPAtternRegistry.error', 'InvAlid problem pAttern. The pAttern will be ignored.'));
+									extension.collector.error(JSON.stringify(pAttern, undefined, 4));
 								}
 							}
-							else if (Config.NamedProblemPattern.is(pattern)) {
-								let result = parser.parse(pattern);
-								if (parser.problemReporter.status.state < ValidationState.Error) {
-									this.add(pattern.name, result);
+							else if (Config.NAmedProblemPAttern.is(pAttern)) {
+								let result = pArser.pArse(pAttern);
+								if (pArser.problemReporter.stAtus.stAte < VAlidAtionStAte.Error) {
+									this.Add(pAttern.nAme, result);
 								} else {
-									extension.collector.error(localize('ProblemPatternRegistry.error', 'Invalid problem pattern. The pattern will be ignored.'));
-									extension.collector.error(JSON.stringify(pattern, undefined, 4));
+									extension.collector.error(locAlize('ProblemPAtternRegistry.error', 'InvAlid problem pAttern. The pAttern will be ignored.'));
+									extension.collector.error(JSON.stringify(pAttern, undefined, 4));
 								}
 							}
-							parser.reset();
+							pArser.reset();
 						}
 					});
-				} catch (error) {
+				} cAtch (error) {
 					// Do nothing
 				}
 				resolve(undefined);
@@ -1192,249 +1192,249 @@ class ProblemPatternRegistryImpl implements IProblemPatternRegistry {
 		});
 	}
 
-	public onReady(): Promise<void> {
-		return this.readyPromise;
+	public onReAdy(): Promise<void> {
+		return this.reAdyPromise;
 	}
 
-	public add(key: string, value: ProblemPattern | ProblemPattern[]): void {
-		this.patterns[key] = value;
+	public Add(key: string, vAlue: ProblemPAttern | ProblemPAttern[]): void {
+		this.pAtterns[key] = vAlue;
 	}
 
-	public get(key: string): ProblemPattern | ProblemPattern[] {
-		return this.patterns[key];
+	public get(key: string): ProblemPAttern | ProblemPAttern[] {
+		return this.pAtterns[key];
 	}
 
-	private fillDefaults(): void {
-		this.add('msCompile', {
-			regexp: /^(?:\s+\d+\>)?([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\)\s*:\s+(error|warning|info)\s+(\w{1,2}\d+)\s*:\s*(.*)$/,
-			kind: ProblemLocationKind.Location,
+	privAte fillDefAults(): void {
+		this.Add('msCompile', {
+			regexp: /^(?:\s+\d+\>)?([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\)\s*:\s+(error|wArning|info)\s+(\w{1,2}\d+)\s*:\s*(.*)$/,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 1,
-			location: 2,
+			locAtion: 2,
 			severity: 3,
 			code: 4,
-			message: 5
+			messAge: 5
 		});
-		this.add('gulp-tsc', {
+		this.Add('gulp-tsc', {
 			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(\d+)\s+(.*)$/,
-			kind: ProblemLocationKind.Location,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 1,
-			location: 2,
+			locAtion: 2,
 			code: 3,
-			message: 4
+			messAge: 4
 		});
-		this.add('cpp', {
-			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|warning|info)\s+(C\d+)\s*:\s*(.*)$/,
-			kind: ProblemLocationKind.Location,
+		this.Add('cpp', {
+			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|wArning|info)\s+(C\d+)\s*:\s*(.*)$/,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 1,
-			location: 2,
+			locAtion: 2,
 			severity: 3,
 			code: 4,
-			message: 5
+			messAge: 5
 		});
-		this.add('csc', {
-			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|warning|info)\s+(CS\d+)\s*:\s*(.*)$/,
-			kind: ProblemLocationKind.Location,
+		this.Add('csc', {
+			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|wArning|info)\s+(CS\d+)\s*:\s*(.*)$/,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 1,
-			location: 2,
+			locAtion: 2,
 			severity: 3,
 			code: 4,
-			message: 5
+			messAge: 5
 		});
-		this.add('vb', {
-			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|warning|info)\s+(BC\d+)\s*:\s*(.*)$/,
-			kind: ProblemLocationKind.Location,
+		this.Add('vb', {
+			regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|wArning|info)\s+(BC\d+)\s*:\s*(.*)$/,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 1,
-			location: 2,
+			locAtion: 2,
 			severity: 3,
 			code: 4,
-			message: 5
+			messAge: 5
 		});
-		this.add('lessCompile', {
+		this.Add('lessCompile', {
 			regexp: /^\s*(.*) in file (.*) line no. (\d+)$/,
-			kind: ProblemLocationKind.Location,
-			message: 1,
+			kind: ProblemLocAtionKind.LocAtion,
+			messAge: 1,
 			file: 2,
 			line: 3
 		});
-		this.add('jshint', {
+		this.Add('jshint', {
 			regexp: /^(.*):\s+line\s+(\d+),\s+col\s+(\d+),\s(.+?)(?:\s+\((\w)(\d+)\))?$/,
-			kind: ProblemLocationKind.Location,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 1,
 			line: 2,
-			character: 3,
-			message: 4,
+			chArActer: 3,
+			messAge: 4,
 			severity: 5,
 			code: 6
 		});
-		this.add('jshint-stylish', [
+		this.Add('jshint-stylish', [
 			{
 				regexp: /^(.+)$/,
-				kind: ProblemLocationKind.Location,
+				kind: ProblemLocAtionKind.LocAtion,
 				file: 1
 			},
 			{
 				regexp: /^\s+line\s+(\d+)\s+col\s+(\d+)\s+(.+?)(?:\s+\((\w)(\d+)\))?$/,
 				line: 1,
-				character: 2,
-				message: 3,
+				chArActer: 2,
+				messAge: 3,
 				severity: 4,
 				code: 5,
 				loop: true
 			}
 		]);
-		this.add('eslint-compact', {
-			regexp: /^(.+):\sline\s(\d+),\scol\s(\d+),\s(Error|Warning|Info)\s-\s(.+)\s\((.+)\)$/,
+		this.Add('eslint-compAct', {
+			regexp: /^(.+):\sline\s(\d+),\scol\s(\d+),\s(Error|WArning|Info)\s-\s(.+)\s\((.+)\)$/,
 			file: 1,
-			kind: ProblemLocationKind.Location,
+			kind: ProblemLocAtionKind.LocAtion,
 			line: 2,
-			character: 3,
+			chArActer: 3,
 			severity: 4,
-			message: 5,
+			messAge: 5,
 			code: 6
 		});
-		this.add('eslint-stylish', [
+		this.Add('eslint-stylish', [
 			{
 				regexp: /^([^\s].*)$/,
-				kind: ProblemLocationKind.Location,
+				kind: ProblemLocAtionKind.LocAtion,
 				file: 1
 			},
 			{
-				regexp: /^\s+(\d+):(\d+)\s+(error|warning|info)\s+(.+?)(?:\s\s+(.*))?$/,
+				regexp: /^\s+(\d+):(\d+)\s+(error|wArning|info)\s+(.+?)(?:\s\s+(.*))?$/,
 				line: 1,
-				character: 2,
+				chArActer: 2,
 				severity: 3,
-				message: 4,
+				messAge: 4,
 				code: 5,
 				loop: true
 			}
 		]);
-		this.add('go', {
+		this.Add('go', {
 			regexp: /^([^:]*: )?((.:)?[^:]*):(\d+)(:(\d+))?: (.*)$/,
-			kind: ProblemLocationKind.Location,
+			kind: ProblemLocAtionKind.LocAtion,
 			file: 2,
 			line: 4,
-			character: 6,
-			message: 7
+			chArActer: 6,
+			messAge: 7
 		});
 	}
 }
 
-export const ProblemPatternRegistry: IProblemPatternRegistry = new ProblemPatternRegistryImpl();
+export const ProblemPAtternRegistry: IProblemPAtternRegistry = new ProblemPAtternRegistryImpl();
 
-export class ProblemMatcherParser extends Parser {
+export clAss ProblemMAtcherPArser extends PArser {
 
 	constructor(logger: IProblemReporter) {
 		super(logger);
 	}
 
-	public parse(json: Config.ProblemMatcher): ProblemMatcher | undefined {
-		let result = this.createProblemMatcher(json);
-		if (!this.checkProblemMatcherValid(json, result)) {
+	public pArse(json: Config.ProblemMAtcher): ProblemMAtcher | undefined {
+		let result = this.creAteProblemMAtcher(json);
+		if (!this.checkProblemMAtcherVAlid(json, result)) {
 			return undefined;
 		}
-		this.addWatchingMatcher(json, result);
+		this.AddWAtchingMAtcher(json, result);
 
 		return result;
 	}
 
-	private checkProblemMatcherValid(externalProblemMatcher: Config.ProblemMatcher, problemMatcher: ProblemMatcher | null): problemMatcher is ProblemMatcher {
-		if (!problemMatcher) {
-			this.error(localize('ProblemMatcherParser.noProblemMatcher', 'Error: the description can\'t be converted into a problem matcher:\n{0}\n', JSON.stringify(externalProblemMatcher, null, 4)));
-			return false;
+	privAte checkProblemMAtcherVAlid(externAlProblemMAtcher: Config.ProblemMAtcher, problemMAtcher: ProblemMAtcher | null): problemMAtcher is ProblemMAtcher {
+		if (!problemMAtcher) {
+			this.error(locAlize('ProblemMAtcherPArser.noProblemMAtcher', 'Error: the description cAn\'t be converted into A problem mAtcher:\n{0}\n', JSON.stringify(externAlProblemMAtcher, null, 4)));
+			return fAlse;
 		}
-		if (!problemMatcher.pattern) {
-			this.error(localize('ProblemMatcherParser.noProblemPattern', 'Error: the description doesn\'t define a valid problem pattern:\n{0}\n', JSON.stringify(externalProblemMatcher, null, 4)));
-			return false;
+		if (!problemMAtcher.pAttern) {
+			this.error(locAlize('ProblemMAtcherPArser.noProblemPAttern', 'Error: the description doesn\'t define A vAlid problem pAttern:\n{0}\n', JSON.stringify(externAlProblemMAtcher, null, 4)));
+			return fAlse;
 		}
-		if (!problemMatcher.owner) {
-			this.error(localize('ProblemMatcherParser.noOwner', 'Error: the description doesn\'t define an owner:\n{0}\n', JSON.stringify(externalProblemMatcher, null, 4)));
-			return false;
+		if (!problemMAtcher.owner) {
+			this.error(locAlize('ProblemMAtcherPArser.noOwner', 'Error: the description doesn\'t define An owner:\n{0}\n', JSON.stringify(externAlProblemMAtcher, null, 4)));
+			return fAlse;
 		}
-		if (Types.isUndefined(problemMatcher.fileLocation)) {
-			this.error(localize('ProblemMatcherParser.noFileLocation', 'Error: the description doesn\'t define a file location:\n{0}\n', JSON.stringify(externalProblemMatcher, null, 4)));
-			return false;
+		if (Types.isUndefined(problemMAtcher.fileLocAtion)) {
+			this.error(locAlize('ProblemMAtcherPArser.noFileLocAtion', 'Error: the description doesn\'t define A file locAtion:\n{0}\n', JSON.stringify(externAlProblemMAtcher, null, 4)));
+			return fAlse;
 		}
 		return true;
 	}
 
-	private createProblemMatcher(description: Config.ProblemMatcher): ProblemMatcher | null {
-		let result: ProblemMatcher | null = null;
+	privAte creAteProblemMAtcher(description: Config.ProblemMAtcher): ProblemMAtcher | null {
+		let result: ProblemMAtcher | null = null;
 
-		let owner = Types.isString(description.owner) ? description.owner : UUID.generateUuid();
+		let owner = Types.isString(description.owner) ? description.owner : UUID.generAteUuid();
 		let source = Types.isString(description.source) ? description.source : undefined;
-		let applyTo = Types.isString(description.applyTo) ? ApplyToKind.fromString(description.applyTo) : ApplyToKind.allDocuments;
-		if (!applyTo) {
-			applyTo = ApplyToKind.allDocuments;
+		let ApplyTo = Types.isString(description.ApplyTo) ? ApplyToKind.fromString(description.ApplyTo) : ApplyToKind.AllDocuments;
+		if (!ApplyTo) {
+			ApplyTo = ApplyToKind.AllDocuments;
 		}
-		let fileLocation: FileLocationKind | undefined = undefined;
+		let fileLocAtion: FileLocAtionKind | undefined = undefined;
 		let filePrefix: string | undefined = undefined;
 
-		let kind: FileLocationKind | undefined;
-		if (Types.isUndefined(description.fileLocation)) {
-			fileLocation = FileLocationKind.Relative;
-			filePrefix = '${workspaceFolder}';
-		} else if (Types.isString(description.fileLocation)) {
-			kind = FileLocationKind.fromString(<string>description.fileLocation);
+		let kind: FileLocAtionKind | undefined;
+		if (Types.isUndefined(description.fileLocAtion)) {
+			fileLocAtion = FileLocAtionKind.RelAtive;
+			filePrefix = '${workspAceFolder}';
+		} else if (Types.isString(description.fileLocAtion)) {
+			kind = FileLocAtionKind.fromString(<string>description.fileLocAtion);
 			if (kind) {
-				fileLocation = kind;
-				if ((kind === FileLocationKind.Relative) || (kind === FileLocationKind.AutoDetect)) {
-					filePrefix = '${workspaceFolder}';
+				fileLocAtion = kind;
+				if ((kind === FileLocAtionKind.RelAtive) || (kind === FileLocAtionKind.AutoDetect)) {
+					filePrefix = '${workspAceFolder}';
 				}
 			}
-		} else if (Types.isStringArray(description.fileLocation)) {
-			let values = <string[]>description.fileLocation;
-			if (values.length > 0) {
-				kind = FileLocationKind.fromString(values[0]);
-				if (values.length === 1 && kind === FileLocationKind.Absolute) {
-					fileLocation = kind;
-				} else if (values.length === 2 && (kind === FileLocationKind.Relative || kind === FileLocationKind.AutoDetect) && values[1]) {
-					fileLocation = kind;
-					filePrefix = values[1];
+		} else if (Types.isStringArrAy(description.fileLocAtion)) {
+			let vAlues = <string[]>description.fileLocAtion;
+			if (vAlues.length > 0) {
+				kind = FileLocAtionKind.fromString(vAlues[0]);
+				if (vAlues.length === 1 && kind === FileLocAtionKind.Absolute) {
+					fileLocAtion = kind;
+				} else if (vAlues.length === 2 && (kind === FileLocAtionKind.RelAtive || kind === FileLocAtionKind.AutoDetect) && vAlues[1]) {
+					fileLocAtion = kind;
+					filePrefix = vAlues[1];
 				}
 			}
 		}
 
-		let pattern = description.pattern ? this.createProblemPattern(description.pattern) : undefined;
+		let pAttern = description.pAttern ? this.creAteProblemPAttern(description.pAttern) : undefined;
 
-		let severity = description.severity ? Severity.fromValue(description.severity) : undefined;
+		let severity = description.severity ? Severity.fromVAlue(description.severity) : undefined;
 		if (severity === Severity.Ignore) {
-			this.info(localize('ProblemMatcherParser.unknownSeverity', 'Info: unknown severity {0}. Valid values are error, warning and info.\n', description.severity));
+			this.info(locAlize('ProblemMAtcherPArser.unknownSeverity', 'Info: unknown severity {0}. VAlid vAlues Are error, wArning And info.\n', description.severity));
 			severity = Severity.Error;
 		}
 
-		if (Types.isString(description.base)) {
-			let variableName = <string>description.base;
-			if (variableName.length > 1 && variableName[0] === '$') {
-				let base = ProblemMatcherRegistry.get(variableName.substring(1));
-				if (base) {
-					result = Objects.deepClone(base);
+		if (Types.isString(description.bAse)) {
+			let vAriAbleNAme = <string>description.bAse;
+			if (vAriAbleNAme.length > 1 && vAriAbleNAme[0] === '$') {
+				let bAse = ProblemMAtcherRegistry.get(vAriAbleNAme.substring(1));
+				if (bAse) {
+					result = Objects.deepClone(bAse);
 					if (description.owner !== undefined && owner !== undefined) {
 						result.owner = owner;
 					}
 					if (description.source !== undefined && source !== undefined) {
 						result.source = source;
 					}
-					if (description.fileLocation !== undefined && fileLocation !== undefined) {
-						result.fileLocation = fileLocation;
+					if (description.fileLocAtion !== undefined && fileLocAtion !== undefined) {
+						result.fileLocAtion = fileLocAtion;
 						result.filePrefix = filePrefix;
 					}
-					if (description.pattern !== undefined && pattern !== undefined && pattern !== null) {
-						result.pattern = pattern;
+					if (description.pAttern !== undefined && pAttern !== undefined && pAttern !== null) {
+						result.pAttern = pAttern;
 					}
 					if (description.severity !== undefined && severity !== undefined) {
 						result.severity = severity;
 					}
-					if (description.applyTo !== undefined && applyTo !== undefined) {
-						result.applyTo = applyTo;
+					if (description.ApplyTo !== undefined && ApplyTo !== undefined) {
+						result.ApplyTo = ApplyTo;
 					}
 				}
 			}
-		} else if (fileLocation && pattern) {
+		} else if (fileLocAtion && pAttern) {
 			result = {
 				owner: owner,
-				applyTo: applyTo,
-				fileLocation: fileLocation,
-				pattern: pattern,
+				ApplyTo: ApplyTo,
+				fileLocAtion: fileLocAtion,
+				pAttern: pAttern,
 			};
 			if (source) {
 				result.source = source;
@@ -1446,82 +1446,82 @@ export class ProblemMatcherParser extends Parser {
 				result.severity = severity;
 			}
 		}
-		if (Config.isNamedProblemMatcher(description)) {
-			(result as NamedProblemMatcher).name = description.name;
-			(result as NamedProblemMatcher).label = Types.isString(description.label) ? description.label : description.name;
+		if (Config.isNAmedProblemMAtcher(description)) {
+			(result As NAmedProblemMAtcher).nAme = description.nAme;
+			(result As NAmedProblemMAtcher).lAbel = Types.isString(description.lAbel) ? description.lAbel : description.nAme;
 		}
 		return result;
 	}
 
-	private createProblemPattern(value: string | Config.ProblemPattern | Config.MultiLineProblemPattern): ProblemPattern | ProblemPattern[] | null {
-		if (Types.isString(value)) {
-			let variableName: string = <string>value;
-			if (variableName.length > 1 && variableName[0] === '$') {
-				let result = ProblemPatternRegistry.get(variableName.substring(1));
+	privAte creAteProblemPAttern(vAlue: string | Config.ProblemPAttern | Config.MultiLineProblemPAttern): ProblemPAttern | ProblemPAttern[] | null {
+		if (Types.isString(vAlue)) {
+			let vAriAbleNAme: string = <string>vAlue;
+			if (vAriAbleNAme.length > 1 && vAriAbleNAme[0] === '$') {
+				let result = ProblemPAtternRegistry.get(vAriAbleNAme.substring(1));
 				if (!result) {
-					this.error(localize('ProblemMatcherParser.noDefinedPatter', 'Error: the pattern with the identifier {0} doesn\'t exist.', variableName));
+					this.error(locAlize('ProblemMAtcherPArser.noDefinedPAtter', 'Error: the pAttern with the identifier {0} doesn\'t exist.', vAriAbleNAme));
 				}
 				return result;
 			} else {
-				if (variableName.length === 0) {
-					this.error(localize('ProblemMatcherParser.noIdentifier', 'Error: the pattern property refers to an empty identifier.'));
+				if (vAriAbleNAme.length === 0) {
+					this.error(locAlize('ProblemMAtcherPArser.noIdentifier', 'Error: the pAttern property refers to An empty identifier.'));
 				} else {
-					this.error(localize('ProblemMatcherParser.noValidIdentifier', 'Error: the pattern property {0} is not a valid pattern variable name.', variableName));
+					this.error(locAlize('ProblemMAtcherPArser.noVAlidIdentifier', 'Error: the pAttern property {0} is not A vAlid pAttern vAriAble nAme.', vAriAbleNAme));
 				}
 			}
-		} else if (value) {
-			let problemPatternParser = new ProblemPatternParser(this.problemReporter);
-			if (Array.isArray(value)) {
-				return problemPatternParser.parse(value);
+		} else if (vAlue) {
+			let problemPAtternPArser = new ProblemPAtternPArser(this.problemReporter);
+			if (ArrAy.isArrAy(vAlue)) {
+				return problemPAtternPArser.pArse(vAlue);
 			} else {
-				return problemPatternParser.parse(value);
+				return problemPAtternPArser.pArse(vAlue);
 			}
 		}
 		return null;
 	}
 
-	private addWatchingMatcher(external: Config.ProblemMatcher, internal: ProblemMatcher): void {
-		let oldBegins = this.createRegularExpression(external.watchedTaskBeginsRegExp);
-		let oldEnds = this.createRegularExpression(external.watchedTaskEndsRegExp);
+	privAte AddWAtchingMAtcher(externAl: Config.ProblemMAtcher, internAl: ProblemMAtcher): void {
+		let oldBegins = this.creAteRegulArExpression(externAl.wAtchedTAskBeginsRegExp);
+		let oldEnds = this.creAteRegulArExpression(externAl.wAtchedTAskEndsRegExp);
 		if (oldBegins && oldEnds) {
-			internal.watching = {
-				activeOnStart: false,
-				beginsPattern: { regexp: oldBegins },
-				endsPattern: { regexp: oldEnds }
+			internAl.wAtching = {
+				ActiveOnStArt: fAlse,
+				beginsPAttern: { regexp: oldBegins },
+				endsPAttern: { regexp: oldEnds }
 			};
 			return;
 		}
-		let backgroundMonitor = external.background || external.watching;
-		if (Types.isUndefinedOrNull(backgroundMonitor)) {
+		let bAckgroundMonitor = externAl.bAckground || externAl.wAtching;
+		if (Types.isUndefinedOrNull(bAckgroundMonitor)) {
 			return;
 		}
-		let begins: WatchingPattern | null = this.createWatchingPattern(backgroundMonitor.beginsPattern);
-		let ends: WatchingPattern | null = this.createWatchingPattern(backgroundMonitor.endsPattern);
+		let begins: WAtchingPAttern | null = this.creAteWAtchingPAttern(bAckgroundMonitor.beginsPAttern);
+		let ends: WAtchingPAttern | null = this.creAteWAtchingPAttern(bAckgroundMonitor.endsPAttern);
 		if (begins && ends) {
-			internal.watching = {
-				activeOnStart: Types.isBoolean(backgroundMonitor.activeOnStart) ? backgroundMonitor.activeOnStart : false,
-				beginsPattern: begins,
-				endsPattern: ends
+			internAl.wAtching = {
+				ActiveOnStArt: Types.isBooleAn(bAckgroundMonitor.ActiveOnStArt) ? bAckgroundMonitor.ActiveOnStArt : fAlse,
+				beginsPAttern: begins,
+				endsPAttern: ends
 			};
 			return;
 		}
 		if (begins || ends) {
-			this.error(localize('ProblemMatcherParser.problemPattern.watchingMatcher', 'A problem matcher must define both a begin pattern and an end pattern for watching.'));
+			this.error(locAlize('ProblemMAtcherPArser.problemPAttern.wAtchingMAtcher', 'A problem mAtcher must define both A begin pAttern And An end pAttern for wAtching.'));
 		}
 	}
 
-	private createWatchingPattern(external: string | Config.WatchingPattern | undefined): WatchingPattern | null {
-		if (Types.isUndefinedOrNull(external)) {
+	privAte creAteWAtchingPAttern(externAl: string | Config.WAtchingPAttern | undefined): WAtchingPAttern | null {
+		if (Types.isUndefinedOrNull(externAl)) {
 			return null;
 		}
 		let regexp: RegExp | null;
 		let file: number | undefined;
-		if (Types.isString(external)) {
-			regexp = this.createRegularExpression(external);
+		if (Types.isString(externAl)) {
+			regexp = this.creAteRegulArExpression(externAl);
 		} else {
-			regexp = this.createRegularExpression(external.regexp);
-			if (Types.isNumber(external.file)) {
-				file = external.file;
+			regexp = this.creAteRegulArExpression(externAl.regexp);
+			if (Types.isNumber(externAl.file)) {
+				file = externAl.file;
 			}
 		}
 		if (!regexp) {
@@ -1530,344 +1530,344 @@ export class ProblemMatcherParser extends Parser {
 		return file ? { regexp, file } : { regexp, file: 1 };
 	}
 
-	private createRegularExpression(value: string | undefined): RegExp | null {
+	privAte creAteRegulArExpression(vAlue: string | undefined): RegExp | null {
 		let result: RegExp | null = null;
-		if (!value) {
+		if (!vAlue) {
 			return result;
 		}
 		try {
-			result = new RegExp(value);
-		} catch (err) {
-			this.error(localize('ProblemMatcherParser.invalidRegexp', 'Error: The string {0} is not a valid regular expression.\n', value));
+			result = new RegExp(vAlue);
+		} cAtch (err) {
+			this.error(locAlize('ProblemMAtcherPArser.invAlidRegexp', 'Error: The string {0} is not A vAlid regulAr expression.\n', vAlue));
 		}
 		return result;
 	}
 }
 
-export namespace Schemas {
+export nAmespAce SchemAs {
 
-	export const WatchingPattern: IJSONSchema = {
+	export const WAtchingPAttern: IJSONSchemA = {
 		type: 'object',
-		additionalProperties: false,
+		AdditionAlProperties: fAlse,
 		properties: {
 			regexp: {
 				type: 'string',
-				description: localize('WatchingPatternSchema.regexp', 'The regular expression to detect the begin or end of a background task.')
+				description: locAlize('WAtchingPAtternSchemA.regexp', 'The regulAr expression to detect the begin or end of A bAckground tAsk.')
 			},
 			file: {
 				type: 'integer',
-				description: localize('WatchingPatternSchema.file', 'The match group index of the filename. Can be omitted.')
+				description: locAlize('WAtchingPAtternSchemA.file', 'The mAtch group index of the filenAme. CAn be omitted.')
 			},
 		}
 	};
 
 
-	export const PatternType: IJSONSchema = {
-		anyOf: [
+	export const PAtternType: IJSONSchemA = {
+		AnyOf: [
 			{
 				type: 'string',
-				description: localize('PatternTypeSchema.name', 'The name of a contributed or predefined pattern')
+				description: locAlize('PAtternTypeSchemA.nAme', 'The nAme of A contributed or predefined pAttern')
 			},
-			Schemas.ProblemPattern,
-			Schemas.MultiLineProblemPattern
+			SchemAs.ProblemPAttern,
+			SchemAs.MultiLineProblemPAttern
 		],
-		description: localize('PatternTypeSchema.description', 'A problem pattern or the name of a contributed or predefined problem pattern. Can be omitted if base is specified.')
+		description: locAlize('PAtternTypeSchemA.description', 'A problem pAttern or the nAme of A contributed or predefined problem pAttern. CAn be omitted if bAse is specified.')
 	};
 
-	export const ProblemMatcher: IJSONSchema = {
+	export const ProblemMAtcher: IJSONSchemA = {
 		type: 'object',
-		additionalProperties: false,
+		AdditionAlProperties: fAlse,
 		properties: {
-			base: {
+			bAse: {
 				type: 'string',
-				description: localize('ProblemMatcherSchema.base', 'The name of a base problem matcher to use.')
+				description: locAlize('ProblemMAtcherSchemA.bAse', 'The nAme of A bAse problem mAtcher to use.')
 			},
 			owner: {
 				type: 'string',
-				description: localize('ProblemMatcherSchema.owner', 'The owner of the problem inside Code. Can be omitted if base is specified. Defaults to \'external\' if omitted and base is not specified.')
+				description: locAlize('ProblemMAtcherSchemA.owner', 'The owner of the problem inside Code. CAn be omitted if bAse is specified. DefAults to \'externAl\' if omitted And bAse is not specified.')
 			},
 			source: {
 				type: 'string',
-				description: localize('ProblemMatcherSchema.source', 'A human-readable string describing the source of this diagnostic, e.g. \'typescript\' or \'super lint\'.')
+				description: locAlize('ProblemMAtcherSchemA.source', 'A humAn-reAdAble string describing the source of this diAgnostic, e.g. \'typescript\' or \'super lint\'.')
 			},
 			severity: {
 				type: 'string',
-				enum: ['error', 'warning', 'info'],
-				description: localize('ProblemMatcherSchema.severity', 'The default severity for captures problems. Is used if the pattern doesn\'t define a match group for severity.')
+				enum: ['error', 'wArning', 'info'],
+				description: locAlize('ProblemMAtcherSchemA.severity', 'The defAult severity for cAptures problems. Is used if the pAttern doesn\'t define A mAtch group for severity.')
 			},
-			applyTo: {
+			ApplyTo: {
 				type: 'string',
-				enum: ['allDocuments', 'openDocuments', 'closedDocuments'],
-				description: localize('ProblemMatcherSchema.applyTo', 'Controls if a problem reported on a text document is applied only to open, closed or all documents.')
+				enum: ['AllDocuments', 'openDocuments', 'closedDocuments'],
+				description: locAlize('ProblemMAtcherSchemA.ApplyTo', 'Controls if A problem reported on A text document is Applied only to open, closed or All documents.')
 			},
-			pattern: PatternType,
-			fileLocation: {
+			pAttern: PAtternType,
+			fileLocAtion: {
 				oneOf: [
 					{
 						type: 'string',
-						enum: ['absolute', 'relative', 'autoDetect']
+						enum: ['Absolute', 'relAtive', 'AutoDetect']
 					},
 					{
-						type: 'array',
+						type: 'ArrAy',
 						items: {
 							type: 'string'
 						}
 					}
 				],
-				description: localize('ProblemMatcherSchema.fileLocation', 'Defines how file names reported in a problem pattern should be interpreted. A relative fileLocation may be an array, where the second element of the array is the path the relative file location.')
+				description: locAlize('ProblemMAtcherSchemA.fileLocAtion', 'Defines how file nAmes reported in A problem pAttern should be interpreted. A relAtive fileLocAtion mAy be An ArrAy, where the second element of the ArrAy is the pAth the relAtive file locAtion.')
 			},
-			background: {
+			bAckground: {
 				type: 'object',
-				additionalProperties: false,
-				description: localize('ProblemMatcherSchema.background', 'Patterns to track the begin and end of a matcher active on a background task.'),
+				AdditionAlProperties: fAlse,
+				description: locAlize('ProblemMAtcherSchemA.bAckground', 'PAtterns to trAck the begin And end of A mAtcher Active on A bAckground tAsk.'),
 				properties: {
-					activeOnStart: {
-						type: 'boolean',
-						description: localize('ProblemMatcherSchema.background.activeOnStart', 'If set to true the background monitor is in active mode when the task starts. This is equals of issuing a line that matches the beginsPattern')
+					ActiveOnStArt: {
+						type: 'booleAn',
+						description: locAlize('ProblemMAtcherSchemA.bAckground.ActiveOnStArt', 'If set to true the bAckground monitor is in Active mode when the tAsk stArts. This is equAls of issuing A line thAt mAtches the beginsPAttern')
 					},
-					beginsPattern: {
+					beginsPAttern: {
 						oneOf: [
 							{
 								type: 'string'
 							},
-							Schemas.WatchingPattern
+							SchemAs.WAtchingPAttern
 						],
-						description: localize('ProblemMatcherSchema.background.beginsPattern', 'If matched in the output the start of a background task is signaled.')
+						description: locAlize('ProblemMAtcherSchemA.bAckground.beginsPAttern', 'If mAtched in the output the stArt of A bAckground tAsk is signAled.')
 					},
-					endsPattern: {
+					endsPAttern: {
 						oneOf: [
 							{
 								type: 'string'
 							},
-							Schemas.WatchingPattern
+							SchemAs.WAtchingPAttern
 						],
-						description: localize('ProblemMatcherSchema.background.endsPattern', 'If matched in the output the end of a background task is signaled.')
+						description: locAlize('ProblemMAtcherSchemA.bAckground.endsPAttern', 'If mAtched in the output the end of A bAckground tAsk is signAled.')
 					}
 				}
 			},
-			watching: {
+			wAtching: {
 				type: 'object',
-				additionalProperties: false,
-				deprecationMessage: localize('ProblemMatcherSchema.watching.deprecated', 'The watching property is deprecated. Use background instead.'),
-				description: localize('ProblemMatcherSchema.watching', 'Patterns to track the begin and end of a watching matcher.'),
+				AdditionAlProperties: fAlse,
+				deprecAtionMessAge: locAlize('ProblemMAtcherSchemA.wAtching.deprecAted', 'The wAtching property is deprecAted. Use bAckground insteAd.'),
+				description: locAlize('ProblemMAtcherSchemA.wAtching', 'PAtterns to trAck the begin And end of A wAtching mAtcher.'),
 				properties: {
-					activeOnStart: {
-						type: 'boolean',
-						description: localize('ProblemMatcherSchema.watching.activeOnStart', 'If set to true the watcher is in active mode when the task starts. This is equals of issuing a line that matches the beginPattern')
+					ActiveOnStArt: {
+						type: 'booleAn',
+						description: locAlize('ProblemMAtcherSchemA.wAtching.ActiveOnStArt', 'If set to true the wAtcher is in Active mode when the tAsk stArts. This is equAls of issuing A line thAt mAtches the beginPAttern')
 					},
-					beginsPattern: {
+					beginsPAttern: {
 						oneOf: [
 							{
 								type: 'string'
 							},
-							Schemas.WatchingPattern
+							SchemAs.WAtchingPAttern
 						],
-						description: localize('ProblemMatcherSchema.watching.beginsPattern', 'If matched in the output the start of a watching task is signaled.')
+						description: locAlize('ProblemMAtcherSchemA.wAtching.beginsPAttern', 'If mAtched in the output the stArt of A wAtching tAsk is signAled.')
 					},
-					endsPattern: {
+					endsPAttern: {
 						oneOf: [
 							{
 								type: 'string'
 							},
-							Schemas.WatchingPattern
+							SchemAs.WAtchingPAttern
 						],
-						description: localize('ProblemMatcherSchema.watching.endsPattern', 'If matched in the output the end of a watching task is signaled.')
+						description: locAlize('ProblemMAtcherSchemA.wAtching.endsPAttern', 'If mAtched in the output the end of A wAtching tAsk is signAled.')
 					}
 				}
 			}
 		}
 	};
 
-	export const LegacyProblemMatcher: IJSONSchema = Objects.deepClone(ProblemMatcher);
-	LegacyProblemMatcher.properties = Objects.deepClone(LegacyProblemMatcher.properties) || {};
-	LegacyProblemMatcher.properties['watchedTaskBeginsRegExp'] = {
+	export const LegAcyProblemMAtcher: IJSONSchemA = Objects.deepClone(ProblemMAtcher);
+	LegAcyProblemMAtcher.properties = Objects.deepClone(LegAcyProblemMAtcher.properties) || {};
+	LegAcyProblemMAtcher.properties['wAtchedTAskBeginsRegExp'] = {
 		type: 'string',
-		deprecationMessage: localize('LegacyProblemMatcherSchema.watchedBegin.deprecated', 'This property is deprecated. Use the watching property instead.'),
-		description: localize('LegacyProblemMatcherSchema.watchedBegin', 'A regular expression signaling that a watched tasks begins executing triggered through file watching.')
+		deprecAtionMessAge: locAlize('LegAcyProblemMAtcherSchemA.wAtchedBegin.deprecAted', 'This property is deprecAted. Use the wAtching property insteAd.'),
+		description: locAlize('LegAcyProblemMAtcherSchemA.wAtchedBegin', 'A regulAr expression signAling thAt A wAtched tAsks begins executing triggered through file wAtching.')
 	};
-	LegacyProblemMatcher.properties['watchedTaskEndsRegExp'] = {
+	LegAcyProblemMAtcher.properties['wAtchedTAskEndsRegExp'] = {
 		type: 'string',
-		deprecationMessage: localize('LegacyProblemMatcherSchema.watchedEnd.deprecated', 'This property is deprecated. Use the watching property instead.'),
-		description: localize('LegacyProblemMatcherSchema.watchedEnd', 'A regular expression signaling that a watched tasks ends executing.')
+		deprecAtionMessAge: locAlize('LegAcyProblemMAtcherSchemA.wAtchedEnd.deprecAted', 'This property is deprecAted. Use the wAtching property insteAd.'),
+		description: locAlize('LegAcyProblemMAtcherSchemA.wAtchedEnd', 'A regulAr expression signAling thAt A wAtched tAsks ends executing.')
 	};
 
-	export const NamedProblemMatcher: IJSONSchema = Objects.deepClone(ProblemMatcher);
-	NamedProblemMatcher.properties = Objects.deepClone(NamedProblemMatcher.properties) || {};
-	NamedProblemMatcher.properties.name = {
+	export const NAmedProblemMAtcher: IJSONSchemA = Objects.deepClone(ProblemMAtcher);
+	NAmedProblemMAtcher.properties = Objects.deepClone(NAmedProblemMAtcher.properties) || {};
+	NAmedProblemMAtcher.properties.nAme = {
 		type: 'string',
-		description: localize('NamedProblemMatcherSchema.name', 'The name of the problem matcher used to refer to it.')
+		description: locAlize('NAmedProblemMAtcherSchemA.nAme', 'The nAme of the problem mAtcher used to refer to it.')
 	};
-	NamedProblemMatcher.properties.label = {
+	NAmedProblemMAtcher.properties.lAbel = {
 		type: 'string',
-		description: localize('NamedProblemMatcherSchema.label', 'A human readable label of the problem matcher.')
+		description: locAlize('NAmedProblemMAtcherSchemA.lAbel', 'A humAn reAdAble lAbel of the problem mAtcher.')
 	};
 }
 
-const problemMatchersExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NamedProblemMatcher[]>({
-	extensionPoint: 'problemMatchers',
-	deps: [problemPatternExtPoint],
-	jsonSchema: {
-		description: localize('ProblemMatcherExtPoint', 'Contributes problem matchers'),
-		type: 'array',
-		items: Schemas.NamedProblemMatcher
+const problemMAtchersExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NAmedProblemMAtcher[]>({
+	extensionPoint: 'problemMAtchers',
+	deps: [problemPAtternExtPoint],
+	jsonSchemA: {
+		description: locAlize('ProblemMAtcherExtPoint', 'Contributes problem mAtchers'),
+		type: 'ArrAy',
+		items: SchemAs.NAmedProblemMAtcher
 	}
 });
 
-export interface IProblemMatcherRegistry {
-	onReady(): Promise<void>;
-	get(name: string): NamedProblemMatcher;
+export interfAce IProblemMAtcherRegistry {
+	onReAdy(): Promise<void>;
+	get(nAme: string): NAmedProblemMAtcher;
 	keys(): string[];
-	readonly onMatcherChanged: Event<void>;
+	reAdonly onMAtcherChAnged: Event<void>;
 }
 
-class ProblemMatcherRegistryImpl implements IProblemMatcherRegistry {
+clAss ProblemMAtcherRegistryImpl implements IProblemMAtcherRegistry {
 
-	private matchers: IStringDictionary<NamedProblemMatcher>;
-	private readyPromise: Promise<void>;
-	private readonly _onMatchersChanged: Emitter<void> = new Emitter<void>();
-	public readonly onMatcherChanged: Event<void> = this._onMatchersChanged.event;
+	privAte mAtchers: IStringDictionAry<NAmedProblemMAtcher>;
+	privAte reAdyPromise: Promise<void>;
+	privAte reAdonly _onMAtchersChAnged: Emitter<void> = new Emitter<void>();
+	public reAdonly onMAtcherChAnged: Event<void> = this._onMAtchersChAnged.event;
 
 
 	constructor() {
-		this.matchers = Object.create(null);
-		this.fillDefaults();
-		this.readyPromise = new Promise<void>((resolve, reject) => {
-			problemMatchersExtPoint.setHandler((extensions, delta) => {
+		this.mAtchers = Object.creAte(null);
+		this.fillDefAults();
+		this.reAdyPromise = new Promise<void>((resolve, reject) => {
+			problemMAtchersExtPoint.setHAndler((extensions, deltA) => {
 				try {
-					delta.removed.forEach(extension => {
-						let problemMatchers = extension.value;
-						for (let matcher of problemMatchers) {
-							if (this.matchers[matcher.name]) {
-								delete this.matchers[matcher.name];
+					deltA.removed.forEAch(extension => {
+						let problemMAtchers = extension.vAlue;
+						for (let mAtcher of problemMAtchers) {
+							if (this.mAtchers[mAtcher.nAme]) {
+								delete this.mAtchers[mAtcher.nAme];
 							}
 						}
 					});
-					delta.added.forEach(extension => {
-						let problemMatchers = extension.value;
-						let parser = new ProblemMatcherParser(new ExtensionRegistryReporter(extension.collector));
-						for (let matcher of problemMatchers) {
-							let result = parser.parse(matcher);
-							if (result && isNamedProblemMatcher(result)) {
-								this.add(result);
+					deltA.Added.forEAch(extension => {
+						let problemMAtchers = extension.vAlue;
+						let pArser = new ProblemMAtcherPArser(new ExtensionRegistryReporter(extension.collector));
+						for (let mAtcher of problemMAtchers) {
+							let result = pArser.pArse(mAtcher);
+							if (result && isNAmedProblemMAtcher(result)) {
+								this.Add(result);
 							}
 						}
 					});
-					if ((delta.removed.length > 0) || (delta.added.length > 0)) {
-						this._onMatchersChanged.fire();
+					if ((deltA.removed.length > 0) || (deltA.Added.length > 0)) {
+						this._onMAtchersChAnged.fire();
 					}
-				} catch (error) {
+				} cAtch (error) {
 				}
-				let matcher = this.get('tsc-watch');
-				if (matcher) {
-					(<any>matcher).tscWatch = true;
+				let mAtcher = this.get('tsc-wAtch');
+				if (mAtcher) {
+					(<Any>mAtcher).tscWAtch = true;
 				}
 				resolve(undefined);
 			});
 		});
 	}
 
-	public onReady(): Promise<void> {
-		ProblemPatternRegistry.onReady();
-		return this.readyPromise;
+	public onReAdy(): Promise<void> {
+		ProblemPAtternRegistry.onReAdy();
+		return this.reAdyPromise;
 	}
 
-	public add(matcher: NamedProblemMatcher): void {
-		this.matchers[matcher.name] = matcher;
+	public Add(mAtcher: NAmedProblemMAtcher): void {
+		this.mAtchers[mAtcher.nAme] = mAtcher;
 	}
 
-	public get(name: string): NamedProblemMatcher {
-		return this.matchers[name];
+	public get(nAme: string): NAmedProblemMAtcher {
+		return this.mAtchers[nAme];
 	}
 
 	public keys(): string[] {
-		return Object.keys(this.matchers);
+		return Object.keys(this.mAtchers);
 	}
 
-	private fillDefaults(): void {
-		this.add({
-			name: 'msCompile',
-			label: localize('msCompile', 'Microsoft compiler problems'),
+	privAte fillDefAults(): void {
+		this.Add({
+			nAme: 'msCompile',
+			lAbel: locAlize('msCompile', 'Microsoft compiler problems'),
 			owner: 'msCompile',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Absolute,
-			pattern: ProblemPatternRegistry.get('msCompile')
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.Absolute,
+			pAttern: ProblemPAtternRegistry.get('msCompile')
 		});
 
-		this.add({
-			name: 'lessCompile',
-			label: localize('lessCompile', 'Less problems'),
-			deprecated: true,
+		this.Add({
+			nAme: 'lessCompile',
+			lAbel: locAlize('lessCompile', 'Less problems'),
+			deprecAted: true,
 			owner: 'lessCompile',
 			source: 'less',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Absolute,
-			pattern: ProblemPatternRegistry.get('lessCompile'),
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.Absolute,
+			pAttern: ProblemPAtternRegistry.get('lessCompile'),
 			severity: Severity.Error
 		});
 
-		this.add({
-			name: 'gulp-tsc',
-			label: localize('gulp-tsc', 'Gulp TSC Problems'),
+		this.Add({
+			nAme: 'gulp-tsc',
+			lAbel: locAlize('gulp-tsc', 'Gulp TSC Problems'),
 			owner: 'typescript',
 			source: 'ts',
-			applyTo: ApplyToKind.closedDocuments,
-			fileLocation: FileLocationKind.Relative,
-			filePrefix: '${workspaceFolder}',
-			pattern: ProblemPatternRegistry.get('gulp-tsc')
+			ApplyTo: ApplyToKind.closedDocuments,
+			fileLocAtion: FileLocAtionKind.RelAtive,
+			filePrefix: '${workspAceFolder}',
+			pAttern: ProblemPAtternRegistry.get('gulp-tsc')
 		});
 
-		this.add({
-			name: 'jshint',
-			label: localize('jshint', 'JSHint problems'),
+		this.Add({
+			nAme: 'jshint',
+			lAbel: locAlize('jshint', 'JSHint problems'),
 			owner: 'jshint',
 			source: 'jshint',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Absolute,
-			pattern: ProblemPatternRegistry.get('jshint')
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.Absolute,
+			pAttern: ProblemPAtternRegistry.get('jshint')
 		});
 
-		this.add({
-			name: 'jshint-stylish',
-			label: localize('jshint-stylish', 'JSHint stylish problems'),
+		this.Add({
+			nAme: 'jshint-stylish',
+			lAbel: locAlize('jshint-stylish', 'JSHint stylish problems'),
 			owner: 'jshint',
 			source: 'jshint',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Absolute,
-			pattern: ProblemPatternRegistry.get('jshint-stylish')
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.Absolute,
+			pAttern: ProblemPAtternRegistry.get('jshint-stylish')
 		});
 
-		this.add({
-			name: 'eslint-compact',
-			label: localize('eslint-compact', 'ESLint compact problems'),
+		this.Add({
+			nAme: 'eslint-compAct',
+			lAbel: locAlize('eslint-compAct', 'ESLint compAct problems'),
 			owner: 'eslint',
 			source: 'eslint',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Absolute,
-			filePrefix: '${workspaceFolder}',
-			pattern: ProblemPatternRegistry.get('eslint-compact')
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.Absolute,
+			filePrefix: '${workspAceFolder}',
+			pAttern: ProblemPAtternRegistry.get('eslint-compAct')
 		});
 
-		this.add({
-			name: 'eslint-stylish',
-			label: localize('eslint-stylish', 'ESLint stylish problems'),
+		this.Add({
+			nAme: 'eslint-stylish',
+			lAbel: locAlize('eslint-stylish', 'ESLint stylish problems'),
 			owner: 'eslint',
 			source: 'eslint',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Absolute,
-			pattern: ProblemPatternRegistry.get('eslint-stylish')
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.Absolute,
+			pAttern: ProblemPAtternRegistry.get('eslint-stylish')
 		});
 
-		this.add({
-			name: 'go',
-			label: localize('go', 'Go problems'),
+		this.Add({
+			nAme: 'go',
+			lAbel: locAlize('go', 'Go problems'),
 			owner: 'go',
 			source: 'go',
-			applyTo: ApplyToKind.allDocuments,
-			fileLocation: FileLocationKind.Relative,
-			filePrefix: '${workspaceFolder}',
-			pattern: ProblemPatternRegistry.get('go')
+			ApplyTo: ApplyToKind.AllDocuments,
+			fileLocAtion: FileLocAtionKind.RelAtive,
+			filePrefix: '${workspAceFolder}',
+			pAttern: ProblemPAtternRegistry.get('go')
 		});
 	}
 }
 
-export const ProblemMatcherRegistry: IProblemMatcherRegistry = new ProblemMatcherRegistryImpl();
+export const ProblemMAtcherRegistry: IProblemMAtcherRegistry = new ProblemMAtcherRegistryImpl();

@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as array from './arrays';
+import * As ArrAy from './ArrAys';
 
-export function equals(one: any, other: any): boolean {
+export function equAls(one: Any, other: Any): booleAn {
 	if (one === other) {
 		return true;
 	}
 	if (one === null || one === undefined || other === null || other === undefined) {
-		return false;
+		return fAlse;
 	}
 	if (typeof one !== typeof other) {
-		return false;
+		return fAlse;
 	}
 	if (typeof one !== 'object') {
-		return false;
+		return fAlse;
 	}
-	if (Array.isArray(one) !== Array.isArray(other)) {
-		return false;
+	if (ArrAy.isArrAy(one) !== ArrAy.isArrAy(other)) {
+		return fAlse;
 	}
 
-	if (Array.isArray(one)) {
-		return array.equals(one, other, equals);
+	if (ArrAy.isArrAy(one)) {
+		return ArrAy.equAls(one, other, equAls);
 	} else {
 		const oneKeys: string[] = [];
 		for (const key in one) {
@@ -35,9 +35,9 @@ export function equals(one: any, other: any): boolean {
 			otherKeys.push(key);
 		}
 		otherKeys.sort();
-		if (!array.equals(oneKeys, otherKeys)) {
-			return false;
+		if (!ArrAy.equAls(oneKeys, otherKeys)) {
+			return fAlse;
 		}
-		return oneKeys.every(key => equals(one[key], other[key]));
+		return oneKeys.every(key => equAls(one[key], other[key]));
 	}
 }

@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICSSDataProvider, newCSSDataProvider } from 'vscode-css-languageservice';
+import { ICSSDAtAProvider, newCSSDAtAProvider } from 'vscode-css-lAnguAgeservice';
 import { RequestService } from './requests';
 
-export function fetchDataProviders(dataPaths: string[], requestService: RequestService): Promise<ICSSDataProvider[]> {
-	const providers = dataPaths.map(async p => {
+export function fetchDAtAProviders(dAtAPAths: string[], requestService: RequestService): Promise<ICSSDAtAProvider[]> {
+	const providers = dAtAPAths.mAp(Async p => {
 		try {
-			const content = await requestService.getContent(p);
-			return parseCSSData(content);
-		} catch (e) {
-			return newCSSDataProvider({ version: 1 });
+			const content = AwAit requestService.getContent(p);
+			return pArseCSSDAtA(content);
+		} cAtch (e) {
+			return newCSSDAtAProvider({ version: 1 });
 		}
 	});
 
-	return Promise.all(providers);
+	return Promise.All(providers);
 }
 
-function parseCSSData(source: string): ICSSDataProvider {
-	let rawData: any;
+function pArseCSSDAtA(source: string): ICSSDAtAProvider {
+	let rAwDAtA: Any;
 
 	try {
-		rawData = JSON.parse(source);
-	} catch (err) {
-		return newCSSDataProvider({ version: 1 });
+		rAwDAtA = JSON.pArse(source);
+	} cAtch (err) {
+		return newCSSDAtAProvider({ version: 1 });
 	}
 
-	return newCSSDataProvider({
-		version: rawData.version || 1,
-		properties: rawData.properties || [],
-		atDirectives: rawData.atDirectives || [],
-		pseudoClasses: rawData.pseudoClasses || [],
-		pseudoElements: rawData.pseudoElements || []
+	return newCSSDAtAProvider({
+		version: rAwDAtA.version || 1,
+		properties: rAwDAtA.properties || [],
+		AtDirectives: rAwDAtA.AtDirectives || [],
+		pseudoClAsses: rAwDAtA.pseudoClAsses || [],
+		pseudoElements: rAwDAtA.pseudoElements || []
 	});
 }

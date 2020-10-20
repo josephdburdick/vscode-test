@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'vs/base/common/path';
-import * as platform from 'vs/base/common/platform';
-import { URI as Uri } from 'vs/base/common/uri';
-import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { IShellLaunchConfig, ITerminalEnvironment } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
-import { sanitizeProcessEnvironment } from 'vs/base/common/processes';
-import { ILogService } from 'vs/platform/log/common/log';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { URI As Uri } from 'vs/bAse/common/uri';
+import { IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { IShellLAunchConfig, ITerminAlEnvironment } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { IConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolver';
+import { sAnitizeProcessEnvironment } from 'vs/bAse/common/processes';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
 /**
- * This module contains utility functions related to the environment, cwd and paths.
+ * This module contAins utility functions relAted to the environment, cwd And pAths.
  */
 
-export function mergeEnvironments(parent: platform.IProcessEnvironment, other: ITerminalEnvironment | undefined): void {
+export function mergeEnvironments(pArent: plAtform.IProcessEnvironment, other: ITerminAlEnvironment | undefined): void {
 	if (!other) {
 		return;
 	}
 
-	// On Windows apply the new values ignoring case, while still retaining
-	// the case of the original key.
-	if (platform.isWindows) {
+	// On Windows Apply the new vAlues ignoring cAse, while still retAining
+	// the cAse of the originAl key.
+	if (plAtform.isWindows) {
 		for (const configKey in other) {
-			let actualKey = configKey;
-			for (const envKey in parent) {
-				if (configKey.toLowerCase() === envKey.toLowerCase()) {
-					actualKey = envKey;
-					break;
+			let ActuAlKey = configKey;
+			for (const envKey in pArent) {
+				if (configKey.toLowerCAse() === envKey.toLowerCAse()) {
+					ActuAlKey = envKey;
+					breAk;
 				}
 			}
-			const value = other[configKey];
-			_mergeEnvironmentValue(parent, actualKey, value);
+			const vAlue = other[configKey];
+			_mergeEnvironmentVAlue(pArent, ActuAlKey, vAlue);
 		}
 	} else {
-		Object.keys(other).forEach((key) => {
-			const value = other[key];
-			_mergeEnvironmentValue(parent, key, value);
+		Object.keys(other).forEAch((key) => {
+			const vAlue = other[key];
+			_mergeEnvironmentVAlue(pArent, key, vAlue);
 		});
 	}
 }
 
-function _mergeEnvironmentValue(env: ITerminalEnvironment, key: string, value: string | null): void {
-	if (typeof value === 'string') {
-		env[key] = value;
+function _mergeEnvironmentVAlue(env: ITerminAlEnvironment, key: string, vAlue: string | null): void {
+	if (typeof vAlue === 'string') {
+		env[key] = vAlue;
 	} else {
 		delete env[key];
 	}
 }
 
-export function addTerminalEnvironmentKeys(env: platform.IProcessEnvironment, version: string | undefined, locale: string | undefined, detectLocale: 'auto' | 'off' | 'on'): void {
+export function AddTerminAlEnvironmentKeys(env: plAtform.IProcessEnvironment, version: string | undefined, locAle: string | undefined, detectLocAle: 'Auto' | 'off' | 'on'): void {
 	env['TERM_PROGRAM'] = 'vscode';
 	if (version) {
 		env['TERM_PROGRAM_VERSION'] = version;
 	}
-	if (shouldSetLangEnvVariable(env, detectLocale)) {
-		env['LANG'] = getLangEnvVariable(locale);
+	if (shouldSetLAngEnvVAriAble(env, detectLocAle)) {
+		env['LANG'] = getLAngEnvVAriAble(locAle);
 	}
 	env['COLORTERM'] = 'truecolor';
 }
 
-function mergeNonNullKeys(env: platform.IProcessEnvironment, other: ITerminalEnvironment | undefined) {
+function mergeNonNullKeys(env: plAtform.IProcessEnvironment, other: ITerminAlEnvironment | undefined) {
 	if (!other) {
 		return;
 	}
 	for (const key of Object.keys(other)) {
-		const value = other[key];
-		if (value) {
-			env[key] = value;
+		const vAlue = other[key];
+		if (vAlue) {
+			env[key] = vAlue;
 		}
 	}
 }
 
-function resolveConfigurationVariables(variableResolver: VariableResolver, env: ITerminalEnvironment): ITerminalEnvironment {
-	Object.keys(env).forEach((key) => {
-		const value = env[key];
-		if (typeof value === 'string') {
+function resolveConfigurAtionVAriAbles(vAriAbleResolver: VAriAbleResolver, env: ITerminAlEnvironment): ITerminAlEnvironment {
+	Object.keys(env).forEAch((key) => {
+		const vAlue = env[key];
+		if (typeof vAlue === 'string') {
 			try {
-				env[key] = variableResolver(value);
-			} catch (e) {
-				env[key] = value;
+				env[key] = vAriAbleResolver(vAlue);
+			} cAtch (e) {
+				env[key] = vAlue;
 			}
 		}
 	});
 	return env;
 }
 
-export function shouldSetLangEnvVariable(env: platform.IProcessEnvironment, detectLocale: 'auto' | 'off' | 'on'): boolean {
-	if (detectLocale === 'on') {
+export function shouldSetLAngEnvVAriAble(env: plAtform.IProcessEnvironment, detectLocAle: 'Auto' | 'off' | 'on'): booleAn {
+	if (detectLocAle === 'on') {
 		return true;
 	}
-	if (detectLocale === 'auto') {
-		return !env['LANG'] || (env['LANG'].search(/\.UTF\-8$/) === -1 && env['LANG'].search(/\.utf8$/) === -1);
+	if (detectLocAle === 'Auto') {
+		return !env['LANG'] || (env['LANG'].seArch(/\.UTF\-8$/) === -1 && env['LANG'].seArch(/\.utf8$/) === -1);
 	}
-	return false; // 'off'
+	return fAlse; // 'off'
 }
 
-export function getLangEnvVariable(locale?: string): string {
-	const parts = locale ? locale.split('-') : [];
-	const n = parts.length;
+export function getLAngEnvVAriAble(locAle?: string): string {
+	const pArts = locAle ? locAle.split('-') : [];
+	const n = pArts.length;
 	if (n === 0) {
-		// Fallback to en_US if the locale is unknown
+		// FAllbAck to en_US if the locAle is unknown
 		return 'en_US.UTF-8';
 	}
 	if (n === 1) {
-		// The local may only contain the language, not the variant, if this is the case guess the
-		// variant such that it can be used as a valid $LANG variable. The language variant chosen
-		// is the original and/or most prominent with help from
-		// https://stackoverflow.com/a/2502675/1156119
-		// The list of locales was generated by running `locale -a` on macOS
-		const languageVariants: { [key: string]: string } = {
-			af: 'ZA',
-			am: 'ET',
+		// The locAl mAy only contAin the lAnguAge, not the vAriAnt, if this is the cAse guess the
+		// vAriAnt such thAt it cAn be used As A vAlid $LANG vAriAble. The lAnguAge vAriAnt chosen
+		// is the originAl And/or most prominent with help from
+		// https://stAckoverflow.com/A/2502675/1156119
+		// The list of locAles wAs generAted by running `locAle -A` on mAcOS
+		const lAnguAgeVAriAnts: { [key: string]: string } = {
+			Af: 'ZA',
+			Am: 'ET',
 			be: 'BY',
 			bg: 'BG',
-			ca: 'ES',
+			cA: 'ES',
 			cs: 'CZ',
-			da: 'DK',
+			dA: 'DK',
 			// de: 'AT',
 			// de: 'CH',
 			de: 'DE',
@@ -144,7 +144,7 @@ export function getLangEnvVariable(locale?: string): string {
 			is: 'IS',
 			// it: 'CH',
 			it: 'IT',
-			ja: 'JP',
+			jA: 'JP',
 			kk: 'KZ',
 			ko: 'KR',
 			lt: 'LT',
@@ -164,249 +164,249 @@ export function getLangEnvVariable(locale?: string): string {
 			uk: 'UA',
 			zh: 'CN',
 		};
-		if (parts[0] in languageVariants) {
-			parts.push(languageVariants[parts[0]]);
+		if (pArts[0] in lAnguAgeVAriAnts) {
+			pArts.push(lAnguAgeVAriAnts[pArts[0]]);
 		}
 	} else {
-		// Ensure the variant is uppercase to be a valid $LANG
-		parts[1] = parts[1].toUpperCase();
+		// Ensure the vAriAnt is uppercAse to be A vAlid $LANG
+		pArts[1] = pArts[1].toUpperCAse();
 	}
-	return parts.join('_') + '.UTF-8';
+	return pArts.join('_') + '.UTF-8';
 }
 
 export function getCwd(
-	shell: IShellLaunchConfig,
+	shell: IShellLAunchConfig,
 	userHome: string | undefined,
-	variableResolver: VariableResolver | undefined,
+	vAriAbleResolver: VAriAbleResolver | undefined,
 	root: Uri | undefined,
 	customCwd: string | undefined,
 	logService?: ILogService
 ): string {
 	if (shell.cwd) {
-		const unresolved = (typeof shell.cwd === 'object') ? shell.cwd.fsPath : shell.cwd;
-		const resolved = _resolveCwd(unresolved, variableResolver);
-		return _sanitizeCwd(resolved || unresolved);
+		const unresolved = (typeof shell.cwd === 'object') ? shell.cwd.fsPAth : shell.cwd;
+		const resolved = _resolveCwd(unresolved, vAriAbleResolver);
+		return _sAnitizeCwd(resolved || unresolved);
 	}
 
 	let cwd: string | undefined;
 
-	if (!shell.ignoreConfigurationCwd && customCwd) {
-		if (variableResolver) {
-			customCwd = _resolveCwd(customCwd, variableResolver, logService);
+	if (!shell.ignoreConfigurAtionCwd && customCwd) {
+		if (vAriAbleResolver) {
+			customCwd = _resolveCwd(customCwd, vAriAbleResolver, logService);
 		}
 		if (customCwd) {
-			if (path.isAbsolute(customCwd)) {
+			if (pAth.isAbsolute(customCwd)) {
 				cwd = customCwd;
 			} else if (root) {
-				cwd = path.join(root.fsPath, customCwd);
+				cwd = pAth.join(root.fsPAth, customCwd);
 			}
 		}
 	}
 
-	// If there was no custom cwd or it was relative with no workspace
+	// If there wAs no custom cwd or it wAs relAtive with no workspAce
 	if (!cwd) {
-		cwd = root ? root.fsPath : userHome || '';
+		cwd = root ? root.fsPAth : userHome || '';
 	}
 
-	return _sanitizeCwd(cwd);
+	return _sAnitizeCwd(cwd);
 }
 
-function _resolveCwd(cwd: string, variableResolver: VariableResolver | undefined, logService?: ILogService): string | undefined {
-	if (variableResolver) {
+function _resolveCwd(cwd: string, vAriAbleResolver: VAriAbleResolver | undefined, logService?: ILogService): string | undefined {
+	if (vAriAbleResolver) {
 		try {
-			return variableResolver(cwd);
-		} catch (e) {
-			logService?.error('Could not resolve terminal cwd', e);
+			return vAriAbleResolver(cwd);
+		} cAtch (e) {
+			logService?.error('Could not resolve terminAl cwd', e);
 			return undefined;
 		}
 	}
 	return cwd;
 }
 
-function _sanitizeCwd(cwd: string): string {
-	// Make the drive letter uppercase on Windows (see #9448)
-	if (platform.platform === platform.Platform.Windows && cwd && cwd[1] === ':') {
-		return cwd[0].toUpperCase() + cwd.substr(1);
+function _sAnitizeCwd(cwd: string): string {
+	// MAke the drive letter uppercAse on Windows (see #9448)
+	if (plAtform.plAtform === plAtform.PlAtform.Windows && cwd && cwd[1] === ':') {
+		return cwd[0].toUpperCAse() + cwd.substr(1);
 	}
 	return cwd;
 }
 
-export function escapeNonWindowsPath(path: string): string {
-	let newPath = path;
-	if (newPath.indexOf('\\') !== 0) {
-		newPath = newPath.replace(/\\/g, '\\\\');
+export function escApeNonWindowsPAth(pAth: string): string {
+	let newPAth = pAth;
+	if (newPAth.indexOf('\\') !== 0) {
+		newPAth = newPAth.replAce(/\\/g, '\\\\');
 	}
-	if (!newPath && (newPath.indexOf('"') !== -1)) {
-		newPath = '\'' + newPath + '\'';
-	} else if (newPath.indexOf(' ') !== -1) {
-		newPath = newPath.replace(/ /g, '\\ ');
+	if (!newPAth && (newPAth.indexOf('"') !== -1)) {
+		newPAth = '\'' + newPAth + '\'';
+	} else if (newPAth.indexOf(' ') !== -1) {
+		newPAth = newPAth.replAce(/ /g, '\\ ');
 	}
-	return newPath;
+	return newPAth;
 }
 
-export type TerminalShellSetting = (
-	`terminal.integrated.automationShell.windows`
-	| `terminal.integrated.automationShell.osx`
-	| `terminal.integrated.automationShell.linux`
-	| `terminal.integrated.shell.windows`
-	| `terminal.integrated.shell.osx`
-	| `terminal.integrated.shell.linux`
+export type TerminAlShellSetting = (
+	`terminAl.integrAted.AutomAtionShell.windows`
+	| `terminAl.integrAted.AutomAtionShell.osx`
+	| `terminAl.integrAted.AutomAtionShell.linux`
+	| `terminAl.integrAted.shell.windows`
+	| `terminAl.integrAted.shell.osx`
+	| `terminAl.integrAted.shell.linux`
 );
 
-export type TerminalShellArgsSetting = (
-	`terminal.integrated.shellArgs.windows`
-	| `terminal.integrated.shellArgs.osx`
-	| `terminal.integrated.shellArgs.linux`
+export type TerminAlShellArgsSetting = (
+	`terminAl.integrAted.shellArgs.windows`
+	| `terminAl.integrAted.shellArgs.osx`
+	| `terminAl.integrAted.shellArgs.linux`
 );
 
-export type VariableResolver = (str: string) => string;
+export type VAriAbleResolver = (str: string) => string;
 
-export function createVariableResolver(lastActiveWorkspace: IWorkspaceFolder | undefined, configurationResolverService: IConfigurationResolverService | undefined): VariableResolver | undefined {
-	if (!configurationResolverService) {
+export function creAteVAriAbleResolver(lAstActiveWorkspAce: IWorkspAceFolder | undefined, configurAtionResolverService: IConfigurAtionResolverService | undefined): VAriAbleResolver | undefined {
+	if (!configurAtionResolverService) {
 		return undefined;
 	}
-	return (str) => configurationResolverService.resolve(lastActiveWorkspace, str);
+	return (str) => configurAtionResolverService.resolve(lAstActiveWorkspAce, str);
 }
 
-export function getDefaultShell(
-	fetchSetting: (key: TerminalShellSetting) => { userValue?: string | string[], value?: string | string[], defaultValue?: string | string[] },
-	isWorkspaceShellAllowed: boolean,
-	defaultShell: string,
-	isWoW64: boolean,
+export function getDefAultShell(
+	fetchSetting: (key: TerminAlShellSetting) => { userVAlue?: string | string[], vAlue?: string | string[], defAultVAlue?: string | string[] },
+	isWorkspAceShellAllowed: booleAn,
+	defAultShell: string,
+	isWoW64: booleAn,
 	windir: string | undefined,
-	variableResolver: VariableResolver | undefined,
+	vAriAbleResolver: VAriAbleResolver | undefined,
 	logService: ILogService,
-	useAutomationShell: boolean,
-	platformOverride: platform.Platform = platform.platform
+	useAutomAtionShell: booleAn,
+	plAtformOverride: plAtform.PlAtform = plAtform.plAtform
 ): string {
-	let maybeExecutable: string | null = null;
-	if (useAutomationShell) {
-		// If automationShell is specified, this should override the normal setting
-		maybeExecutable = getShellSetting(fetchSetting, isWorkspaceShellAllowed, 'automationShell', platformOverride);
+	let mAybeExecutAble: string | null = null;
+	if (useAutomAtionShell) {
+		// If AutomAtionShell is specified, this should override the normAl setting
+		mAybeExecutAble = getShellSetting(fetchSetting, isWorkspAceShellAllowed, 'AutomAtionShell', plAtformOverride);
 	}
-	if (!maybeExecutable) {
-		maybeExecutable = getShellSetting(fetchSetting, isWorkspaceShellAllowed, 'shell', platformOverride);
+	if (!mAybeExecutAble) {
+		mAybeExecutAble = getShellSetting(fetchSetting, isWorkspAceShellAllowed, 'shell', plAtformOverride);
 	}
-	let executable: string = maybeExecutable || defaultShell;
+	let executAble: string = mAybeExecutAble || defAultShell;
 
-	// Change Sysnative to System32 if the OS is Windows but NOT WoW64. It's
-	// safe to assume that this was used by accident as Sysnative does not
-	// exist and will break the terminal in non-WoW64 environments.
-	if ((platformOverride === platform.Platform.Windows) && !isWoW64 && windir) {
-		const sysnativePath = path.join(windir, 'Sysnative').replace(/\//g, '\\').toLowerCase();
-		if (executable && executable.toLowerCase().indexOf(sysnativePath) === 0) {
-			executable = path.join(windir, 'System32', executable.substr(sysnativePath.length + 1));
+	// ChAnge SysnAtive to System32 if the OS is Windows but NOT WoW64. It's
+	// sAfe to Assume thAt this wAs used by Accident As SysnAtive does not
+	// exist And will breAk the terminAl in non-WoW64 environments.
+	if ((plAtformOverride === plAtform.PlAtform.Windows) && !isWoW64 && windir) {
+		const sysnAtivePAth = pAth.join(windir, 'SysnAtive').replAce(/\//g, '\\').toLowerCAse();
+		if (executAble && executAble.toLowerCAse().indexOf(sysnAtivePAth) === 0) {
+			executAble = pAth.join(windir, 'System32', executAble.substr(sysnAtivePAth.length + 1));
 		}
 	}
 
 	// Convert / to \ on Windows for convenience
-	if (executable && platformOverride === platform.Platform.Windows) {
-		executable = executable.replace(/\//g, '\\');
+	if (executAble && plAtformOverride === plAtform.PlAtform.Windows) {
+		executAble = executAble.replAce(/\//g, '\\');
 	}
 
-	if (variableResolver) {
+	if (vAriAbleResolver) {
 		try {
-			executable = variableResolver(executable);
-		} catch (e) {
+			executAble = vAriAbleResolver(executAble);
+		} cAtch (e) {
 			logService.error(`Could not resolve shell`, e);
 		}
 	}
 
-	return executable;
+	return executAble;
 }
 
-export function getDefaultShellArgs(
-	fetchSetting: (key: TerminalShellSetting | TerminalShellArgsSetting) => { userValue?: string | string[], value?: string | string[], defaultValue?: string | string[] },
-	isWorkspaceShellAllowed: boolean,
-	useAutomationShell: boolean,
-	variableResolver: VariableResolver | undefined,
+export function getDefAultShellArgs(
+	fetchSetting: (key: TerminAlShellSetting | TerminAlShellArgsSetting) => { userVAlue?: string | string[], vAlue?: string | string[], defAultVAlue?: string | string[] },
+	isWorkspAceShellAllowed: booleAn,
+	useAutomAtionShell: booleAn,
+	vAriAbleResolver: VAriAbleResolver | undefined,
 	logService: ILogService,
-	platformOverride: platform.Platform = platform.platform,
+	plAtformOverride: plAtform.PlAtform = plAtform.plAtform,
 ): string | string[] {
-	if (useAutomationShell) {
-		if (!!getShellSetting(fetchSetting, isWorkspaceShellAllowed, 'automationShell', platformOverride)) {
+	if (useAutomAtionShell) {
+		if (!!getShellSetting(fetchSetting, isWorkspAceShellAllowed, 'AutomAtionShell', plAtformOverride)) {
 			return [];
 		}
 	}
 
-	const platformKey = platformOverride === platform.Platform.Windows ? 'windows' : platformOverride === platform.Platform.Mac ? 'osx' : 'linux';
-	const shellArgsConfigValue = fetchSetting(<TerminalShellArgsSetting>`terminal.integrated.shellArgs.${platformKey}`);
-	let args = ((isWorkspaceShellAllowed ? shellArgsConfigValue.value : shellArgsConfigValue.userValue) || shellArgsConfigValue.defaultValue);
-	if (!args) {
+	const plAtformKey = plAtformOverride === plAtform.PlAtform.Windows ? 'windows' : plAtformOverride === plAtform.PlAtform.MAc ? 'osx' : 'linux';
+	const shellArgsConfigVAlue = fetchSetting(<TerminAlShellArgsSetting>`terminAl.integrAted.shellArgs.${plAtformKey}`);
+	let Args = ((isWorkspAceShellAllowed ? shellArgsConfigVAlue.vAlue : shellArgsConfigVAlue.userVAlue) || shellArgsConfigVAlue.defAultVAlue);
+	if (!Args) {
 		return [];
 	}
-	if (typeof args === 'string' && platformOverride === platform.Platform.Windows) {
-		return variableResolver ? variableResolver(args) : args;
+	if (typeof Args === 'string' && plAtformOverride === plAtform.PlAtform.Windows) {
+		return vAriAbleResolver ? vAriAbleResolver(Args) : Args;
 	}
-	if (variableResolver) {
+	if (vAriAbleResolver) {
 		const resolvedArgs: string[] = [];
-		for (const arg of args) {
+		for (const Arg of Args) {
 			try {
-				resolvedArgs.push(variableResolver(arg));
-			} catch (e) {
-				logService.error(`Could not resolve terminal.integrated.shellArgs.${platformKey}`, e);
-				resolvedArgs.push(arg);
+				resolvedArgs.push(vAriAbleResolver(Arg));
+			} cAtch (e) {
+				logService.error(`Could not resolve terminAl.integrAted.shellArgs.${plAtformKey}`, e);
+				resolvedArgs.push(Arg);
 			}
 		}
-		args = resolvedArgs;
+		Args = resolvedArgs;
 	}
-	return args;
+	return Args;
 }
 
 function getShellSetting(
-	fetchSetting: (key: TerminalShellSetting) => { userValue?: string | string[], value?: string | string[], defaultValue?: string | string[] },
-	isWorkspaceShellAllowed: boolean,
-	type: 'automationShell' | 'shell',
-	platformOverride: platform.Platform = platform.platform,
+	fetchSetting: (key: TerminAlShellSetting) => { userVAlue?: string | string[], vAlue?: string | string[], defAultVAlue?: string | string[] },
+	isWorkspAceShellAllowed: booleAn,
+	type: 'AutomAtionShell' | 'shell',
+	plAtformOverride: plAtform.PlAtform = plAtform.plAtform,
 ): string | null {
-	const platformKey = platformOverride === platform.Platform.Windows ? 'windows' : platformOverride === platform.Platform.Mac ? 'osx' : 'linux';
-	const shellConfigValue = fetchSetting(<TerminalShellSetting>`terminal.integrated.${type}.${platformKey}`);
-	const executable = (isWorkspaceShellAllowed ? <string>shellConfigValue.value : <string>shellConfigValue.userValue) || (<string | null>shellConfigValue.defaultValue);
-	return executable;
+	const plAtformKey = plAtformOverride === plAtform.PlAtform.Windows ? 'windows' : plAtformOverride === plAtform.PlAtform.MAc ? 'osx' : 'linux';
+	const shellConfigVAlue = fetchSetting(<TerminAlShellSetting>`terminAl.integrAted.${type}.${plAtformKey}`);
+	const executAble = (isWorkspAceShellAllowed ? <string>shellConfigVAlue.vAlue : <string>shellConfigVAlue.userVAlue) || (<string | null>shellConfigVAlue.defAultVAlue);
+	return executAble;
 }
 
-export function createTerminalEnvironment(
-	shellLaunchConfig: IShellLaunchConfig,
-	envFromConfig: { userValue?: ITerminalEnvironment, value?: ITerminalEnvironment, defaultValue?: ITerminalEnvironment },
-	variableResolver: VariableResolver | undefined,
-	isWorkspaceShellAllowed: boolean,
+export function creAteTerminAlEnvironment(
+	shellLAunchConfig: IShellLAunchConfig,
+	envFromConfig: { userVAlue?: ITerminAlEnvironment, vAlue?: ITerminAlEnvironment, defAultVAlue?: ITerminAlEnvironment },
+	vAriAbleResolver: VAriAbleResolver | undefined,
+	isWorkspAceShellAllowed: booleAn,
 	version: string | undefined,
-	detectLocale: 'auto' | 'off' | 'on',
-	baseEnv: platform.IProcessEnvironment
-): platform.IProcessEnvironment {
-	// Create a terminal environment based on settings, launch config and permissions
-	let env: platform.IProcessEnvironment = {};
-	if (shellLaunchConfig.strictEnv) {
+	detectLocAle: 'Auto' | 'off' | 'on',
+	bAseEnv: plAtform.IProcessEnvironment
+): plAtform.IProcessEnvironment {
+	// CreAte A terminAl environment bAsed on settings, lAunch config And permissions
+	let env: plAtform.IProcessEnvironment = {};
+	if (shellLAunchConfig.strictEnv) {
 		// strictEnv is true, only use the requested env (ignoring null entries)
-		mergeNonNullKeys(env, shellLaunchConfig.env);
+		mergeNonNullKeys(env, shellLAunchConfig.env);
 	} else {
-		// Merge process env with the env from config and from shellLaunchConfig
-		mergeNonNullKeys(env, baseEnv);
+		// Merge process env with the env from config And from shellLAunchConfig
+		mergeNonNullKeys(env, bAseEnv);
 
-		// const platformKey = platform.isWindows ? 'windows' : (platform.isMacintosh ? 'osx' : 'linux');
-		// const envFromConfigValue = this._workspaceConfigurationService.inspect<ITerminalEnvironment | undefined>(`terminal.integrated.env.${platformKey}`);
-		const allowedEnvFromConfig = { ...(isWorkspaceShellAllowed ? envFromConfig.value : envFromConfig.userValue) };
+		// const plAtformKey = plAtform.isWindows ? 'windows' : (plAtform.isMAcintosh ? 'osx' : 'linux');
+		// const envFromConfigVAlue = this._workspAceConfigurAtionService.inspect<ITerminAlEnvironment | undefined>(`terminAl.integrAted.env.${plAtformKey}`);
+		const AllowedEnvFromConfig = { ...(isWorkspAceShellAllowed ? envFromConfig.vAlue : envFromConfig.userVAlue) };
 
-		// Resolve env vars from config and shell
-		if (variableResolver) {
-			if (allowedEnvFromConfig) {
-				resolveConfigurationVariables(variableResolver, allowedEnvFromConfig);
+		// Resolve env vArs from config And shell
+		if (vAriAbleResolver) {
+			if (AllowedEnvFromConfig) {
+				resolveConfigurAtionVAriAbles(vAriAbleResolver, AllowedEnvFromConfig);
 			}
-			if (shellLaunchConfig.env) {
-				resolveConfigurationVariables(variableResolver, shellLaunchConfig.env);
+			if (shellLAunchConfig.env) {
+				resolveConfigurAtionVAriAbles(vAriAbleResolver, shellLAunchConfig.env);
 			}
 		}
 
-		// Sanitize the environment, removing any undesirable VS Code and Electron environment
-		// variables
-		sanitizeProcessEnvironment(env, 'VSCODE_IPC_HOOK_CLI');
+		// SAnitize the environment, removing Any undesirAble VS Code And Electron environment
+		// vAriAbles
+		sAnitizeProcessEnvironment(env, 'VSCODE_IPC_HOOK_CLI');
 
-		// Merge config (settings) and ShellLaunchConfig environments
-		mergeEnvironments(env, allowedEnvFromConfig);
-		mergeEnvironments(env, shellLaunchConfig.env);
+		// Merge config (settings) And ShellLAunchConfig environments
+		mergeEnvironments(env, AllowedEnvFromConfig);
+		mergeEnvironments(env, shellLAunchConfig.env);
 
-		// Adding other env keys necessary to create the process
-		addTerminalEnvironmentKeys(env, version, platform.locale, detectLocale);
+		// Adding other env keys necessAry to creAte the process
+		AddTerminAlEnvironmentKeys(env, version, plAtform.locAle, detectLocAle);
 	}
 	return env;
 }

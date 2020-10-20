@@ -1,189 +1,189 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const ILifecycleService = createDecorator<ILifecycleService>('lifecycleService');
+export const ILifecycleService = creAteDecorAtor<ILifecycleService>('lifecycleService');
 
 /**
- * An event that is send out when the window is about to close. Clients have a chance to veto
- * the closing by either calling veto with a boolean "true" directly or with a promise that
- * resolves to a boolean. Returning a promise is useful in cases of long running operations
+ * An event thAt is send out when the window is About to close. Clients hAve A chAnce to veto
+ * the closing by either cAlling veto with A booleAn "true" directly or with A promise thAt
+ * resolves to A booleAn. Returning A promise is useful in cAses of long running operAtions
  * on shutdown.
  *
- * Note: It is absolutely important to avoid long running promises if possible. Please try hard
- * to return a boolean directly. Returning a promise has quite an impact on the shutdown sequence!
+ * Note: It is Absolutely importAnt to Avoid long running promises if possible. PleAse try hArd
+ * to return A booleAn directly. Returning A promise hAs quite An impAct on the shutdown sequence!
  */
-export interface BeforeShutdownEvent {
+export interfAce BeforeShutdownEvent {
 
 	/**
-	 * Allows to veto the shutdown. The veto can be a long running operation but it
-	 * will block the application from closing.
+	 * Allows to veto the shutdown. The veto cAn be A long running operAtion but it
+	 * will block the ApplicAtion from closing.
 	 */
-	veto(value: boolean | Promise<boolean>): void;
+	veto(vAlue: booleAn | Promise<booleAn>): void;
 
 	/**
-	 * The reason why the application will be shutting down.
+	 * The reAson why the ApplicAtion will be shutting down.
 	 */
-	readonly reason: ShutdownReason;
+	reAdonly reAson: ShutdownReAson;
 }
 
 /**
- * An event that is send out when the window closes. Clients have a chance to join the closing
- * by providing a promise from the join method. Returning a promise is useful in cases of long
- * running operations on shutdown.
+ * An event thAt is send out when the window closes. Clients hAve A chAnce to join the closing
+ * by providing A promise from the join method. Returning A promise is useful in cAses of long
+ * running operAtions on shutdown.
  *
- * Note: It is absolutely important to avoid long running promises if possible. Please try hard
- * to return a boolean directly. Returning a promise has quite an impact on the shutdown sequence!
+ * Note: It is Absolutely importAnt to Avoid long running promises if possible. PleAse try hArd
+ * to return A booleAn directly. Returning A promise hAs quite An impAct on the shutdown sequence!
  */
-export interface WillShutdownEvent {
+export interfAce WillShutdownEvent {
 
 	/**
-	 * Allows to join the shutdown. The promise can be a long running operation but it
-	 * will block the application from closing.
+	 * Allows to join the shutdown. The promise cAn be A long running operAtion but it
+	 * will block the ApplicAtion from closing.
 	 */
 	join(promise: Promise<void>): void;
 
 	/**
-	 * The reason why the application is shutting down.
+	 * The reAson why the ApplicAtion is shutting down.
 	 */
-	readonly reason: ShutdownReason;
+	reAdonly reAson: ShutdownReAson;
 }
 
-export const enum ShutdownReason {
+export const enum ShutdownReAson {
 
 	/** Window is closed */
 	CLOSE = 1,
 
-	/** Application is quit */
+	/** ApplicAtion is quit */
 	QUIT = 2,
 
-	/** Window is reloaded */
+	/** Window is reloAded */
 	RELOAD = 3,
 
-	/** Other configuration loaded into window */
+	/** Other configurAtion loAded into window */
 	LOAD = 4
 }
 
-export const enum StartupKind {
+export const enum StArtupKind {
 	NewWindow = 1,
-	ReloadedWindow = 3,
+	ReloAdedWindow = 3,
 	ReopenedWindow = 4,
 }
 
-export function StartupKindToString(startupKind: StartupKind): string {
-	switch (startupKind) {
-		case StartupKind.NewWindow: return 'NewWindow';
-		case StartupKind.ReloadedWindow: return 'ReloadedWindow';
-		case StartupKind.ReopenedWindow: return 'ReopenedWindow';
+export function StArtupKindToString(stArtupKind: StArtupKind): string {
+	switch (stArtupKind) {
+		cAse StArtupKind.NewWindow: return 'NewWindow';
+		cAse StArtupKind.ReloAdedWindow: return 'ReloAdedWindow';
+		cAse StArtupKind.ReopenedWindow: return 'ReopenedWindow';
 	}
 }
 
-export const enum LifecyclePhase {
+export const enum LifecyclePhAse {
 
 	/**
-	 * The first phase signals that we are about to startup getting ready.
+	 * The first phAse signAls thAt we Are About to stArtup getting reAdy.
 	 */
-	Starting = 1,
+	StArting = 1,
 
 	/**
-	 * Services are ready and the view is about to restore its state.
+	 * Services Are reAdy And the view is About to restore its stAte.
 	 */
-	Ready = 2,
+	ReAdy = 2,
 
 	/**
-	 * Views, panels and editors have restored. For editors this means, that
+	 * Views, pAnels And editors hAve restored. For editors this meAns, thAt
 	 * they show their contents fully.
 	 */
 	Restored = 3,
 
 	/**
-	 * The last phase after views, panels and editors have restored and
-	 * some time has passed (few seconds).
+	 * The lAst phAse After views, pAnels And editors hAve restored And
+	 * some time hAs pAssed (few seconds).
 	 */
-	Eventually = 4
+	EventuAlly = 4
 }
 
-export function LifecyclePhaseToString(phase: LifecyclePhase) {
-	switch (phase) {
-		case LifecyclePhase.Starting: return 'Starting';
-		case LifecyclePhase.Ready: return 'Ready';
-		case LifecyclePhase.Restored: return 'Restored';
-		case LifecyclePhase.Eventually: return 'Eventually';
+export function LifecyclePhAseToString(phAse: LifecyclePhAse) {
+	switch (phAse) {
+		cAse LifecyclePhAse.StArting: return 'StArting';
+		cAse LifecyclePhAse.ReAdy: return 'ReAdy';
+		cAse LifecyclePhAse.Restored: return 'Restored';
+		cAse LifecyclePhAse.EventuAlly: return 'EventuAlly';
 	}
 }
 
 /**
- * A lifecycle service informs about lifecycle events of the
- * application, such as shutdown.
+ * A lifecycle service informs About lifecycle events of the
+ * ApplicAtion, such As shutdown.
  */
-export interface ILifecycleService {
+export interfAce ILifecycleService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Value indicates how this window got loaded.
+	 * VAlue indicAtes how this window got loAded.
 	 */
-	readonly startupKind: StartupKind;
+	reAdonly stArtupKind: StArtupKind;
 
 	/**
-	 * A flag indicating in what phase of the lifecycle we currently are.
+	 * A flAg indicAting in whAt phAse of the lifecycle we currently Are.
 	 */
-	phase: LifecyclePhase;
+	phAse: LifecyclePhAse;
 
 	/**
-	 * Fired before shutdown happens. Allows listeners to veto against the
-	 * shutdown to prevent it from happening.
+	 * Fired before shutdown hAppens. Allows listeners to veto AgAinst the
+	 * shutdown to prevent it from hAppening.
 	 *
-	 * The event carries a shutdown reason that indicates how the shutdown was triggered.
+	 * The event cArries A shutdown reAson thAt indicAtes how the shutdown wAs triggered.
 	 */
-	readonly onBeforeShutdown: Event<BeforeShutdownEvent>;
+	reAdonly onBeforeShutdown: Event<BeforeShutdownEvent>;
 
 	/**
-	 * Fired when no client is preventing the shutdown from happening (from onBeforeShutdown).
-	 * Can be used to save UI state even if that is long running through the WillShutdownEvent#join()
+	 * Fired when no client is preventing the shutdown from hAppening (from onBeforeShutdown).
+	 * CAn be used to sAve UI stAte even if thAt is long running through the WillShutdownEvent#join()
 	 * method.
 	 *
-	 * The event carries a shutdown reason that indicates how the shutdown was triggered.
+	 * The event cArries A shutdown reAson thAt indicAtes how the shutdown wAs triggered.
 	 */
-	readonly onWillShutdown: Event<WillShutdownEvent>;
+	reAdonly onWillShutdown: Event<WillShutdownEvent>;
 
 	/**
-	 * Fired when the shutdown is about to happen after long running shutdown operations
-	 * have finished (from onWillShutdown). This is the right place to dispose resources.
+	 * Fired when the shutdown is About to hAppen After long running shutdown operAtions
+	 * hAve finished (from onWillShutdown). This is the right plAce to dispose resources.
 	 */
-	readonly onShutdown: Event<void>;
+	reAdonly onShutdown: Event<void>;
 
 	/**
-	 * Returns a promise that resolves when a certain lifecycle phase
-	 * has started.
+	 * Returns A promise thAt resolves when A certAin lifecycle phAse
+	 * hAs stArted.
 	 */
-	when(phase: LifecyclePhase): Promise<void>;
+	when(phAse: LifecyclePhAse): Promise<void>;
 
 	/**
-	 * Triggers a shutdown of the workbench. Depending on native or web, this can have
-	 * different implementations and behaviour.
+	 * Triggers A shutdown of the workbench. Depending on nAtive or web, this cAn hAve
+	 * different implementAtions And behAviour.
 	 *
-	 * **Note:** this should normally not be called. See related methods in `IHostService`
-	 * and `INativeHostService` to close a window or quit the application.
+	 * **Note:** this should normAlly not be cAlled. See relAted methods in `IHostService`
+	 * And `INAtiveHostService` to close A window or quit the ApplicAtion.
 	 */
 	shutdown(): void;
 }
 
 export const NullLifecycleService: ILifecycleService = {
 
-	_serviceBrand: undefined,
+	_serviceBrAnd: undefined,
 
 	onBeforeShutdown: Event.None,
 	onWillShutdown: Event.None,
 	onShutdown: Event.None,
 
-	phase: LifecyclePhase.Restored,
-	startupKind: StartupKind.NewWindow,
+	phAse: LifecyclePhAse.Restored,
+	stArtupKind: StArtupKind.NewWindow,
 
-	async when() { },
+	Async when() { },
 	shutdown() { }
 };

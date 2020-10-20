@@ -1,148 +1,148 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IPager } from 'vs/base/common/paging';
-import { IQueryOptions, ILocalExtension, IGalleryExtension, IExtensionIdentifier } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { EnablementState, IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { IExtensionManifest, ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { URI } from 'vs/base/common/uri';
-import { IViewPaneContainer } from 'vs/workbench/common/views';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
+import { IPAger } from 'vs/bAse/common/pAging';
+import { IQueryOptions, ILocAlExtension, IGAlleryExtension, IExtensionIdentifier } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { EnAblementStAte, IExtensionMAnAgementServer } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { IExtensionMAnifest, ExtensionType } from 'vs/plAtform/extensions/common/extensions';
+import { URI } from 'vs/bAse/common/uri';
+import { IViewPAneContAiner } from 'vs/workbench/common/views';
 
 export const VIEWLET_ID = 'workbench.view.extensions';
 
-export interface IExtensionsViewPaneContainer extends IViewPaneContainer {
-	search(text: string, refresh?: boolean): void;
+export interfAce IExtensionsViewPAneContAiner extends IViewPAneContAiner {
+	seArch(text: string, refresh?: booleAn): void;
 }
 
-export const enum ExtensionState {
-	Installing,
-	Installed,
-	Uninstalling,
-	Uninstalled
+export const enum ExtensionStAte {
+	InstAlling,
+	InstAlled,
+	UninstAlling,
+	UninstAlled
 }
 
-export interface IExtension {
-	readonly type: ExtensionType;
-	readonly isBuiltin: boolean;
-	readonly state: ExtensionState;
-	readonly name: string;
-	readonly displayName: string;
-	readonly identifier: IExtensionIdentifier;
-	readonly publisher: string;
-	readonly publisherDisplayName: string;
-	readonly version: string;
-	readonly latestVersion: string;
-	readonly description: string;
-	readonly url?: string;
-	readonly repository?: string;
-	readonly iconUrl: string;
-	readonly iconUrlFallback: string;
-	readonly licenseUrl?: string;
-	readonly installCount?: number;
-	readonly rating?: number;
-	readonly ratingCount?: number;
-	readonly outdated: boolean;
-	readonly enablementState: EnablementState;
-	readonly dependencies: string[];
-	readonly extensionPack: string[];
-	readonly telemetryData: any;
-	readonly preview: boolean;
-	getManifest(token: CancellationToken): Promise<IExtensionManifest | null>;
-	getReadme(token: CancellationToken): Promise<string>;
-	hasReadme(): boolean;
-	getChangelog(token: CancellationToken): Promise<string>;
-	hasChangelog(): boolean;
-	readonly server?: IExtensionManagementServer;
-	readonly local?: ILocalExtension;
-	gallery?: IGalleryExtension;
-	readonly isMalicious: boolean;
+export interfAce IExtension {
+	reAdonly type: ExtensionType;
+	reAdonly isBuiltin: booleAn;
+	reAdonly stAte: ExtensionStAte;
+	reAdonly nAme: string;
+	reAdonly displAyNAme: string;
+	reAdonly identifier: IExtensionIdentifier;
+	reAdonly publisher: string;
+	reAdonly publisherDisplAyNAme: string;
+	reAdonly version: string;
+	reAdonly lAtestVersion: string;
+	reAdonly description: string;
+	reAdonly url?: string;
+	reAdonly repository?: string;
+	reAdonly iconUrl: string;
+	reAdonly iconUrlFAllbAck: string;
+	reAdonly licenseUrl?: string;
+	reAdonly instAllCount?: number;
+	reAdonly rAting?: number;
+	reAdonly rAtingCount?: number;
+	reAdonly outdAted: booleAn;
+	reAdonly enAblementStAte: EnAblementStAte;
+	reAdonly dependencies: string[];
+	reAdonly extensionPAck: string[];
+	reAdonly telemetryDAtA: Any;
+	reAdonly preview: booleAn;
+	getMAnifest(token: CAncellAtionToken): Promise<IExtensionMAnifest | null>;
+	getReAdme(token: CAncellAtionToken): Promise<string>;
+	hAsReAdme(): booleAn;
+	getChAngelog(token: CAncellAtionToken): Promise<string>;
+	hAsChAngelog(): booleAn;
+	reAdonly server?: IExtensionMAnAgementServer;
+	reAdonly locAl?: ILocAlExtension;
+	gAllery?: IGAlleryExtension;
+	reAdonly isMAlicious: booleAn;
 }
 
 export const SERVICE_ID = 'extensionsWorkbenchService';
 
-export const IExtensionsWorkbenchService = createDecorator<IExtensionsWorkbenchService>(SERVICE_ID);
+export const IExtensionsWorkbenchService = creAteDecorAtor<IExtensionsWorkbenchService>(SERVICE_ID);
 
-export interface IExtensionsWorkbenchService {
-	readonly _serviceBrand: undefined;
-	onChange: Event<IExtension | undefined>;
-	local: IExtension[];
-	installed: IExtension[];
-	outdated: IExtension[];
-	queryLocal(server?: IExtensionManagementServer): Promise<IExtension[]>;
-	queryGallery(token: CancellationToken): Promise<IPager<IExtension>>;
-	queryGallery(options: IQueryOptions, token: CancellationToken): Promise<IPager<IExtension>>;
-	canInstall(extension: IExtension): boolean;
-	install(vsix: URI): Promise<IExtension>;
-	install(extension: IExtension, promptToInstallDependencies?: boolean): Promise<IExtension>;
-	uninstall(extension: IExtension): Promise<void>;
-	installVersion(extension: IExtension, version: string): Promise<IExtension>;
-	reinstall(extension: IExtension): Promise<IExtension>;
-	setEnablement(extensions: IExtension | IExtension[], enablementState: EnablementState): Promise<void>;
-	open(extension: IExtension, options?: { sideByside?: boolean, preserveFocus?: boolean, pinned?: boolean }): Promise<any>;
-	checkForUpdates(): Promise<void>;
+export interfAce IExtensionsWorkbenchService {
+	reAdonly _serviceBrAnd: undefined;
+	onChAnge: Event<IExtension | undefined>;
+	locAl: IExtension[];
+	instAlled: IExtension[];
+	outdAted: IExtension[];
+	queryLocAl(server?: IExtensionMAnAgementServer): Promise<IExtension[]>;
+	queryGAllery(token: CAncellAtionToken): Promise<IPAger<IExtension>>;
+	queryGAllery(options: IQueryOptions, token: CAncellAtionToken): Promise<IPAger<IExtension>>;
+	cAnInstAll(extension: IExtension): booleAn;
+	instAll(vsix: URI): Promise<IExtension>;
+	instAll(extension: IExtension, promptToInstAllDependencies?: booleAn): Promise<IExtension>;
+	uninstAll(extension: IExtension): Promise<void>;
+	instAllVersion(extension: IExtension, version: string): Promise<IExtension>;
+	reinstAll(extension: IExtension): Promise<IExtension>;
+	setEnAblement(extensions: IExtension | IExtension[], enAblementStAte: EnAblementStAte): Promise<void>;
+	open(extension: IExtension, options?: { sideByside?: booleAn, preserveFocus?: booleAn, pinned?: booleAn }): Promise<Any>;
+	checkForUpdAtes(): Promise<void>;
 
 	// Sync APIs
-	isExtensionIgnoredToSync(extension: IExtension): boolean;
+	isExtensionIgnoredToSync(extension: IExtension): booleAn;
 	toggleExtensionIgnoredToSync(extension: IExtension): Promise<void>;
 }
 
-export const ConfigurationKey = 'extensions';
-export const AutoUpdateConfigurationKey = 'extensions.autoUpdate';
-export const AutoCheckUpdatesConfigurationKey = 'extensions.autoCheckUpdates';
-export const ShowRecommendationsOnlyOnDemandKey = 'extensions.showRecommendationsOnlyOnDemand';
-export const CloseExtensionDetailsOnViewChangeKey = 'extensions.closeExtensionDetailsOnViewChange';
+export const ConfigurAtionKey = 'extensions';
+export const AutoUpdAteConfigurAtionKey = 'extensions.AutoUpdAte';
+export const AutoCheckUpdAtesConfigurAtionKey = 'extensions.AutoCheckUpdAtes';
+export const ShowRecommendAtionsOnlyOnDemAndKey = 'extensions.showRecommendAtionsOnlyOnDemAnd';
+export const CloseExtensionDetAilsOnViewChAngeKey = 'extensions.closeExtensionDetAilsOnViewChAnge';
 
-export interface IExtensionsConfiguration {
-	autoUpdate: boolean;
-	autoCheckUpdates: boolean;
-	ignoreRecommendations: boolean;
-	showRecommendationsOnlyOnDemand: boolean;
-	closeExtensionDetailsOnViewChange: boolean;
+export interfAce IExtensionsConfigurAtion {
+	AutoUpdAte: booleAn;
+	AutoCheckUpdAtes: booleAn;
+	ignoreRecommendAtions: booleAn;
+	showRecommendAtionsOnlyOnDemAnd: booleAn;
+	closeExtensionDetAilsOnViewChAnge: booleAn;
 }
 
-export interface IExtensionContainer {
+export interfAce IExtensionContAiner {
 	extension: IExtension | null;
-	updateWhenCounterExtensionChanges?: boolean;
-	update(): void;
+	updAteWhenCounterExtensionChAnges?: booleAn;
+	updAte(): void;
 }
 
-export class ExtensionContainers extends Disposable {
+export clAss ExtensionContAiners extends DisposAble {
 
 	constructor(
-		private readonly containers: IExtensionContainer[],
+		privAte reAdonly contAiners: IExtensionContAiner[],
 		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
 	) {
 		super();
-		this._register(extensionsWorkbenchService.onChange(this.update, this));
+		this._register(extensionsWorkbenchService.onChAnge(this.updAte, this));
 	}
 
 	set extension(extension: IExtension) {
-		this.containers.forEach(c => c.extension = extension);
+		this.contAiners.forEAch(c => c.extension = extension);
 	}
 
-	private update(extension: IExtension | undefined): void {
-		for (const container of this.containers) {
-			if (extension && container.extension) {
-				if (areSameExtensions(container.extension.identifier, extension.identifier)) {
-					if (!container.extension.server || !extension.server || container.extension.server === extension.server) {
-						container.extension = extension;
-					} else if (container.updateWhenCounterExtensionChanges) {
-						container.update();
+	privAte updAte(extension: IExtension | undefined): void {
+		for (const contAiner of this.contAiners) {
+			if (extension && contAiner.extension) {
+				if (AreSAmeExtensions(contAiner.extension.identifier, extension.identifier)) {
+					if (!contAiner.extension.server || !extension.server || contAiner.extension.server === extension.server) {
+						contAiner.extension = extension;
+					} else if (contAiner.updAteWhenCounterExtensionChAnges) {
+						contAiner.updAte();
 					}
 				}
 			} else {
-				container.update();
+				contAiner.updAte();
 			}
 		}
 	}
 }
 
-export const TOGGLE_IGNORE_EXTENSION_ACTION_ID = 'workbench.extensions.action.toggleIgnoreExtension';
-export const INSTALL_EXTENSION_FROM_VSIX_COMMAND_ID = 'workbench.extensions.command.installFromVSIX';
+export const TOGGLE_IGNORE_EXTENSION_ACTION_ID = 'workbench.extensions.Action.toggleIgnoreExtension';
+export const INSTALL_EXTENSION_FROM_VSIX_COMMAND_ID = 'workbench.extensions.commAnd.instAllFromVSIX';

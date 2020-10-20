@@ -1,177 +1,177 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as extpath from 'vs/base/common/extpath';
-import * as platform from 'vs/base/common/platform';
-import { CharCode } from 'vs/base/common/charCode';
+import * As Assert from 'Assert';
+import * As extpAth from 'vs/bAse/common/extpAth';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { ChArCode } from 'vs/bAse/common/chArCode';
 
-suite('Paths', () => {
+suite('PAths', () => {
 
-	test('toForwardSlashes', () => {
-		assert.equal(extpath.toSlashes('\\\\server\\share\\some\\path'), '//server/share/some/path');
-		assert.equal(extpath.toSlashes('c:\\test'), 'c:/test');
-		assert.equal(extpath.toSlashes('foo\\bar'), 'foo/bar');
-		assert.equal(extpath.toSlashes('/user/far'), '/user/far');
+	test('toForwArdSlAshes', () => {
+		Assert.equAl(extpAth.toSlAshes('\\\\server\\shAre\\some\\pAth'), '//server/shAre/some/pAth');
+		Assert.equAl(extpAth.toSlAshes('c:\\test'), 'c:/test');
+		Assert.equAl(extpAth.toSlAshes('foo\\bAr'), 'foo/bAr');
+		Assert.equAl(extpAth.toSlAshes('/user/fAr'), '/user/fAr');
 	});
 
 	test('getRoot', () => {
-		assert.equal(extpath.getRoot('/user/far'), '/');
-		assert.equal(extpath.getRoot('\\\\server\\share\\some\\path'), '//server/share/');
-		assert.equal(extpath.getRoot('//server/share/some/path'), '//server/share/');
-		assert.equal(extpath.getRoot('//server/share'), '/');
-		assert.equal(extpath.getRoot('//server'), '/');
-		assert.equal(extpath.getRoot('//server//'), '/');
-		assert.equal(extpath.getRoot('c:/user/far'), 'c:/');
-		assert.equal(extpath.getRoot('c:user/far'), 'c:');
-		assert.equal(extpath.getRoot('http://www'), '');
-		assert.equal(extpath.getRoot('http://www/'), 'http://www/');
-		assert.equal(extpath.getRoot('file:///foo'), 'file:///');
-		assert.equal(extpath.getRoot('file://foo'), '');
+		Assert.equAl(extpAth.getRoot('/user/fAr'), '/');
+		Assert.equAl(extpAth.getRoot('\\\\server\\shAre\\some\\pAth'), '//server/shAre/');
+		Assert.equAl(extpAth.getRoot('//server/shAre/some/pAth'), '//server/shAre/');
+		Assert.equAl(extpAth.getRoot('//server/shAre'), '/');
+		Assert.equAl(extpAth.getRoot('//server'), '/');
+		Assert.equAl(extpAth.getRoot('//server//'), '/');
+		Assert.equAl(extpAth.getRoot('c:/user/fAr'), 'c:/');
+		Assert.equAl(extpAth.getRoot('c:user/fAr'), 'c:');
+		Assert.equAl(extpAth.getRoot('http://www'), '');
+		Assert.equAl(extpAth.getRoot('http://www/'), 'http://www/');
+		Assert.equAl(extpAth.getRoot('file:///foo'), 'file:///');
+		Assert.equAl(extpAth.getRoot('file://foo'), '');
 	});
 
 	test('isUNC', () => {
-		if (platform.isWindows) {
-			assert.ok(!extpath.isUNC('foo'));
-			assert.ok(!extpath.isUNC('/foo'));
-			assert.ok(!extpath.isUNC('\\foo'));
-			assert.ok(!extpath.isUNC('\\\\foo'));
-			assert.ok(extpath.isUNC('\\\\a\\b'));
-			assert.ok(!extpath.isUNC('//a/b'));
-			assert.ok(extpath.isUNC('\\\\server\\share'));
-			assert.ok(extpath.isUNC('\\\\server\\share\\'));
-			assert.ok(extpath.isUNC('\\\\server\\share\\path'));
+		if (plAtform.isWindows) {
+			Assert.ok(!extpAth.isUNC('foo'));
+			Assert.ok(!extpAth.isUNC('/foo'));
+			Assert.ok(!extpAth.isUNC('\\foo'));
+			Assert.ok(!extpAth.isUNC('\\\\foo'));
+			Assert.ok(extpAth.isUNC('\\\\A\\b'));
+			Assert.ok(!extpAth.isUNC('//A/b'));
+			Assert.ok(extpAth.isUNC('\\\\server\\shAre'));
+			Assert.ok(extpAth.isUNC('\\\\server\\shAre\\'));
+			Assert.ok(extpAth.isUNC('\\\\server\\shAre\\pAth'));
 		}
 	});
 
-	test('isValidBasename', () => {
-		assert.ok(!extpath.isValidBasename(null));
-		assert.ok(!extpath.isValidBasename(''));
-		assert.ok(extpath.isValidBasename('test.txt'));
-		assert.ok(!extpath.isValidBasename('/test.txt'));
-		assert.ok(!extpath.isValidBasename('\\test.txt'));
+	test('isVAlidBAsenAme', () => {
+		Assert.ok(!extpAth.isVAlidBAsenAme(null));
+		Assert.ok(!extpAth.isVAlidBAsenAme(''));
+		Assert.ok(extpAth.isVAlidBAsenAme('test.txt'));
+		Assert.ok(!extpAth.isVAlidBAsenAme('/test.txt'));
+		Assert.ok(!extpAth.isVAlidBAsenAme('\\test.txt'));
 
-		if (platform.isWindows) {
-			assert.ok(!extpath.isValidBasename('aux'));
-			assert.ok(!extpath.isValidBasename('Aux'));
-			assert.ok(!extpath.isValidBasename('LPT0'));
-			assert.ok(!extpath.isValidBasename('aux.txt'));
-			assert.ok(!extpath.isValidBasename('com0.abc'));
-			assert.ok(extpath.isValidBasename('LPT00'));
-			assert.ok(extpath.isValidBasename('aux1'));
-			assert.ok(extpath.isValidBasename('aux1.txt'));
-			assert.ok(extpath.isValidBasename('aux1.aux.txt'));
+		if (plAtform.isWindows) {
+			Assert.ok(!extpAth.isVAlidBAsenAme('Aux'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('Aux'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('LPT0'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('Aux.txt'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('com0.Abc'));
+			Assert.ok(extpAth.isVAlidBAsenAme('LPT00'));
+			Assert.ok(extpAth.isVAlidBAsenAme('Aux1'));
+			Assert.ok(extpAth.isVAlidBAsenAme('Aux1.txt'));
+			Assert.ok(extpAth.isVAlidBAsenAme('Aux1.Aux.txt'));
 
-			assert.ok(!extpath.isValidBasename('test.txt.'));
-			assert.ok(!extpath.isValidBasename('test.txt..'));
-			assert.ok(!extpath.isValidBasename('test.txt '));
-			assert.ok(!extpath.isValidBasename('test.txt\t'));
-			assert.ok(!extpath.isValidBasename('tes:t.txt'));
-			assert.ok(!extpath.isValidBasename('tes"t.txt'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('test.txt.'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('test.txt..'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('test.txt '));
+			Assert.ok(!extpAth.isVAlidBAsenAme('test.txt\t'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('tes:t.txt'));
+			Assert.ok(!extpAth.isVAlidBAsenAme('tes"t.txt'));
 		}
 	});
 
-	test('sanitizeFilePath', () => {
-		if (platform.isWindows) {
-			assert.equal(extpath.sanitizeFilePath('.', 'C:\\the\\cwd'), 'C:\\the\\cwd');
-			assert.equal(extpath.sanitizeFilePath('', 'C:\\the\\cwd'), 'C:\\the\\cwd');
+	test('sAnitizeFilePAth', () => {
+		if (plAtform.isWindows) {
+			Assert.equAl(extpAth.sAnitizeFilePAth('.', 'C:\\the\\cwd'), 'C:\\the\\cwd');
+			Assert.equAl(extpAth.sAnitizeFilePAth('', 'C:\\the\\cwd'), 'C:\\the\\cwd');
 
-			assert.equal(extpath.sanitizeFilePath('C:', 'C:\\the\\cwd'), 'C:\\');
-			assert.equal(extpath.sanitizeFilePath('C:\\', 'C:\\the\\cwd'), 'C:\\');
-			assert.equal(extpath.sanitizeFilePath('C:\\\\', 'C:\\the\\cwd'), 'C:\\');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:', 'C:\\the\\cwd'), 'C:\\');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\', 'C:\\the\\cwd'), 'C:\\');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\\\', 'C:\\the\\cwd'), 'C:\\');
 
-			assert.equal(extpath.sanitizeFilePath('C:\\folder\\my.txt', 'C:\\the\\cwd'), 'C:\\folder\\my.txt');
-			assert.equal(extpath.sanitizeFilePath('C:\\folder\\my', 'C:\\the\\cwd'), 'C:\\folder\\my');
-			assert.equal(extpath.sanitizeFilePath('C:\\folder\\..\\my', 'C:\\the\\cwd'), 'C:\\my');
-			assert.equal(extpath.sanitizeFilePath('C:\\folder\\my\\', 'C:\\the\\cwd'), 'C:\\folder\\my');
-			assert.equal(extpath.sanitizeFilePath('C:\\folder\\my\\\\\\', 'C:\\the\\cwd'), 'C:\\folder\\my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\folder\\my.txt', 'C:\\the\\cwd'), 'C:\\folder\\my.txt');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\folder\\my', 'C:\\the\\cwd'), 'C:\\folder\\my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\folder\\..\\my', 'C:\\the\\cwd'), 'C:\\my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\folder\\my\\', 'C:\\the\\cwd'), 'C:\\folder\\my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('C:\\folder\\my\\\\\\', 'C:\\the\\cwd'), 'C:\\folder\\my');
 
-			assert.equal(extpath.sanitizeFilePath('my.txt', 'C:\\the\\cwd'), 'C:\\the\\cwd\\my.txt');
-			assert.equal(extpath.sanitizeFilePath('my.txt\\', 'C:\\the\\cwd'), 'C:\\the\\cwd\\my.txt');
+			Assert.equAl(extpAth.sAnitizeFilePAth('my.txt', 'C:\\the\\cwd'), 'C:\\the\\cwd\\my.txt');
+			Assert.equAl(extpAth.sAnitizeFilePAth('my.txt\\', 'C:\\the\\cwd'), 'C:\\the\\cwd\\my.txt');
 
-			assert.equal(extpath.sanitizeFilePath('\\\\localhost\\folder\\my', 'C:\\the\\cwd'), '\\\\localhost\\folder\\my');
-			assert.equal(extpath.sanitizeFilePath('\\\\localhost\\folder\\my\\', 'C:\\the\\cwd'), '\\\\localhost\\folder\\my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('\\\\locAlhost\\folder\\my', 'C:\\the\\cwd'), '\\\\locAlhost\\folder\\my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('\\\\locAlhost\\folder\\my\\', 'C:\\the\\cwd'), '\\\\locAlhost\\folder\\my');
 		} else {
-			assert.equal(extpath.sanitizeFilePath('.', '/the/cwd'), '/the/cwd');
-			assert.equal(extpath.sanitizeFilePath('', '/the/cwd'), '/the/cwd');
-			assert.equal(extpath.sanitizeFilePath('/', '/the/cwd'), '/');
+			Assert.equAl(extpAth.sAnitizeFilePAth('.', '/the/cwd'), '/the/cwd');
+			Assert.equAl(extpAth.sAnitizeFilePAth('', '/the/cwd'), '/the/cwd');
+			Assert.equAl(extpAth.sAnitizeFilePAth('/', '/the/cwd'), '/');
 
-			assert.equal(extpath.sanitizeFilePath('/folder/my.txt', '/the/cwd'), '/folder/my.txt');
-			assert.equal(extpath.sanitizeFilePath('/folder/my', '/the/cwd'), '/folder/my');
-			assert.equal(extpath.sanitizeFilePath('/folder/../my', '/the/cwd'), '/my');
-			assert.equal(extpath.sanitizeFilePath('/folder/my/', '/the/cwd'), '/folder/my');
-			assert.equal(extpath.sanitizeFilePath('/folder/my///', '/the/cwd'), '/folder/my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('/folder/my.txt', '/the/cwd'), '/folder/my.txt');
+			Assert.equAl(extpAth.sAnitizeFilePAth('/folder/my', '/the/cwd'), '/folder/my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('/folder/../my', '/the/cwd'), '/my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('/folder/my/', '/the/cwd'), '/folder/my');
+			Assert.equAl(extpAth.sAnitizeFilePAth('/folder/my///', '/the/cwd'), '/folder/my');
 
-			assert.equal(extpath.sanitizeFilePath('my.txt', '/the/cwd'), '/the/cwd/my.txt');
-			assert.equal(extpath.sanitizeFilePath('my.txt/', '/the/cwd'), '/the/cwd/my.txt');
+			Assert.equAl(extpAth.sAnitizeFilePAth('my.txt', '/the/cwd'), '/the/cwd/my.txt');
+			Assert.equAl(extpAth.sAnitizeFilePAth('my.txt/', '/the/cwd'), '/the/cwd/my.txt');
 		}
 	});
 
 	test('isRoot', () => {
-		if (platform.isWindows) {
-			assert.ok(extpath.isRootOrDriveLetter('c:'));
-			assert.ok(extpath.isRootOrDriveLetter('D:'));
-			assert.ok(extpath.isRootOrDriveLetter('D:/'));
-			assert.ok(extpath.isRootOrDriveLetter('D:\\'));
-			assert.ok(!extpath.isRootOrDriveLetter('D:\\path'));
-			assert.ok(!extpath.isRootOrDriveLetter('D:/path'));
+		if (plAtform.isWindows) {
+			Assert.ok(extpAth.isRootOrDriveLetter('c:'));
+			Assert.ok(extpAth.isRootOrDriveLetter('D:'));
+			Assert.ok(extpAth.isRootOrDriveLetter('D:/'));
+			Assert.ok(extpAth.isRootOrDriveLetter('D:\\'));
+			Assert.ok(!extpAth.isRootOrDriveLetter('D:\\pAth'));
+			Assert.ok(!extpAth.isRootOrDriveLetter('D:/pAth'));
 		} else {
-			assert.ok(extpath.isRootOrDriveLetter('/'));
-			assert.ok(!extpath.isRootOrDriveLetter('/path'));
+			Assert.ok(extpAth.isRootOrDriveLetter('/'));
+			Assert.ok(!extpAth.isRootOrDriveLetter('/pAth'));
 		}
 	});
 
 	test('isWindowsDriveLetter', () => {
-		assert.ok(!extpath.isWindowsDriveLetter(0));
-		assert.ok(!extpath.isWindowsDriveLetter(-1));
-		assert.ok(extpath.isWindowsDriveLetter(CharCode.A));
-		assert.ok(extpath.isWindowsDriveLetter(CharCode.z));
+		Assert.ok(!extpAth.isWindowsDriveLetter(0));
+		Assert.ok(!extpAth.isWindowsDriveLetter(-1));
+		Assert.ok(extpAth.isWindowsDriveLetter(ChArCode.A));
+		Assert.ok(extpAth.isWindowsDriveLetter(ChArCode.z));
 	});
 
-	test('indexOfPath', () => {
-		assert.equal(extpath.indexOfPath('/foo', '/bar', true), -1);
-		assert.equal(extpath.indexOfPath('/foo', '/FOO', false), -1);
-		assert.equal(extpath.indexOfPath('/foo', '/FOO', true), 0);
-		assert.equal(extpath.indexOfPath('/some/long/path', '/some/long', false), 0);
-		assert.equal(extpath.indexOfPath('/some/long/path', '/PATH', true), 10);
+	test('indexOfPAth', () => {
+		Assert.equAl(extpAth.indexOfPAth('/foo', '/bAr', true), -1);
+		Assert.equAl(extpAth.indexOfPAth('/foo', '/FOO', fAlse), -1);
+		Assert.equAl(extpAth.indexOfPAth('/foo', '/FOO', true), 0);
+		Assert.equAl(extpAth.indexOfPAth('/some/long/pAth', '/some/long', fAlse), 0);
+		Assert.equAl(extpAth.indexOfPAth('/some/long/pAth', '/PATH', true), 10);
 	});
 
-	test('parseLineAndColumnAware', () => {
-		let res = extpath.parseLineAndColumnAware('/foo/bar');
-		assert.equal(res.path, '/foo/bar');
-		assert.equal(res.line, undefined);
-		assert.equal(res.column, undefined);
+	test('pArseLineAndColumnAwAre', () => {
+		let res = extpAth.pArseLineAndColumnAwAre('/foo/bAr');
+		Assert.equAl(res.pAth, '/foo/bAr');
+		Assert.equAl(res.line, undefined);
+		Assert.equAl(res.column, undefined);
 
-		res = extpath.parseLineAndColumnAware('/foo/bar:33');
-		assert.equal(res.path, '/foo/bar');
-		assert.equal(res.line, 33);
-		assert.equal(res.column, 1);
+		res = extpAth.pArseLineAndColumnAwAre('/foo/bAr:33');
+		Assert.equAl(res.pAth, '/foo/bAr');
+		Assert.equAl(res.line, 33);
+		Assert.equAl(res.column, 1);
 
-		res = extpath.parseLineAndColumnAware('/foo/bar:33:34');
-		assert.equal(res.path, '/foo/bar');
-		assert.equal(res.line, 33);
-		assert.equal(res.column, 34);
+		res = extpAth.pArseLineAndColumnAwAre('/foo/bAr:33:34');
+		Assert.equAl(res.pAth, '/foo/bAr');
+		Assert.equAl(res.line, 33);
+		Assert.equAl(res.column, 34);
 
-		res = extpath.parseLineAndColumnAware('C:\\foo\\bar');
-		assert.equal(res.path, 'C:\\foo\\bar');
-		assert.equal(res.line, undefined);
-		assert.equal(res.column, undefined);
+		res = extpAth.pArseLineAndColumnAwAre('C:\\foo\\bAr');
+		Assert.equAl(res.pAth, 'C:\\foo\\bAr');
+		Assert.equAl(res.line, undefined);
+		Assert.equAl(res.column, undefined);
 
-		res = extpath.parseLineAndColumnAware('C:\\foo\\bar:33');
-		assert.equal(res.path, 'C:\\foo\\bar');
-		assert.equal(res.line, 33);
-		assert.equal(res.column, 1);
+		res = extpAth.pArseLineAndColumnAwAre('C:\\foo\\bAr:33');
+		Assert.equAl(res.pAth, 'C:\\foo\\bAr');
+		Assert.equAl(res.line, 33);
+		Assert.equAl(res.column, 1);
 
-		res = extpath.parseLineAndColumnAware('C:\\foo\\bar:33:34');
-		assert.equal(res.path, 'C:\\foo\\bar');
-		assert.equal(res.line, 33);
-		assert.equal(res.column, 34);
+		res = extpAth.pArseLineAndColumnAwAre('C:\\foo\\bAr:33:34');
+		Assert.equAl(res.pAth, 'C:\\foo\\bAr');
+		Assert.equAl(res.line, 33);
+		Assert.equAl(res.column, 34);
 
-		res = extpath.parseLineAndColumnAware('/foo/bar:abb');
-		assert.equal(res.path, '/foo/bar:abb');
-		assert.equal(res.line, undefined);
-		assert.equal(res.column, undefined);
+		res = extpAth.pArseLineAndColumnAwAre('/foo/bAr:Abb');
+		Assert.equAl(res.pAth, '/foo/bAr:Abb');
+		Assert.equAl(res.line, undefined);
+		Assert.equAl(res.column, undefined);
 	});
 });

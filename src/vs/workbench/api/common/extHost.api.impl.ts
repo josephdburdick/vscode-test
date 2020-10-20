@@ -1,198 +1,198 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import * as errors from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import * as path from 'vs/base/common/path';
-import Severity from 'vs/base/common/severity';
-import { URI } from 'vs/base/common/uri';
+import * As nls from 'vs/nls';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import * As errors from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import * As pAth from 'vs/bAse/common/pAth';
+import Severity from 'vs/bAse/common/severity';
+import { URI } from 'vs/bAse/common/uri';
 import { TextEditorCursorStyle } from 'vs/editor/common/config/editorOptions';
-import { OverviewRulerLane } from 'vs/editor/common/model';
-import * as languageConfiguration from 'vs/editor/common/modes/languageConfiguration';
-import { score } from 'vs/editor/common/modes/languageSelector';
-import * as files from 'vs/platform/files/common/files';
-import { ExtHostContext, MainContext, ExtHostLogServiceShape, UIKind } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostApiCommands } from 'vs/workbench/api/common/extHostApiCommands';
-import { ExtHostClipboard } from 'vs/workbench/api/common/extHostClipboard';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { ExtHostComments } from 'vs/workbench/api/common/extHostComments';
-import { ExtHostConfigProvider, IExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
-import { ExtHostDiagnostics } from 'vs/workbench/api/common/extHostDiagnostics';
-import { ExtHostDialogs } from 'vs/workbench/api/common/extHostDialogs';
-import { ExtHostDocumentContentProvider } from 'vs/workbench/api/common/extHostDocumentContentProviders';
-import { ExtHostDocumentSaveParticipant } from 'vs/workbench/api/common/extHostDocumentSaveParticipant';
-import { ExtHostDocuments } from 'vs/workbench/api/common/extHostDocuments';
-import { IExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { ExtHostFileSystem } from 'vs/workbench/api/common/extHostFileSystem';
-import { ExtHostFileSystemEventService } from 'vs/workbench/api/common/extHostFileSystemEventService';
-import { ExtHostLanguageFeatures } from 'vs/workbench/api/common/extHostLanguageFeatures';
-import { ExtHostLanguages } from 'vs/workbench/api/common/extHostLanguages';
-import { ExtHostMessageService } from 'vs/workbench/api/common/extHostMessageService';
-import { IExtHostOutputService } from 'vs/workbench/api/common/extHostOutput';
-import { ExtHostProgress } from 'vs/workbench/api/common/extHostProgress';
-import { ExtHostQuickOpen } from 'vs/workbench/api/common/extHostQuickOpen';
-import { ExtHostSCM } from 'vs/workbench/api/common/extHostSCM';
-import { ExtHostStatusBar } from 'vs/workbench/api/common/extHostStatusBar';
-import { IExtHostStorage } from 'vs/workbench/api/common/extHostStorage';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { ExtHostEditors } from 'vs/workbench/api/common/extHostTextEditors';
-import { ExtHostTreeViews } from 'vs/workbench/api/common/extHostTreeViews';
-import * as typeConverters from 'vs/workbench/api/common/extHostTypeConverters';
-import * as extHostTypes from 'vs/workbench/api/common/extHostTypes';
-import { ExtHostUrls } from 'vs/workbench/api/common/extHostUrls';
-import { ExtHostWebviews } from 'vs/workbench/api/common/extHostWebview';
-import { IExtHostWindow } from 'vs/workbench/api/common/extHostWindow';
-import { IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
-import { throwProposedApiError, checkProposedApiEnabled } from 'vs/workbench/services/extensions/common/extensions';
+import { OverviewRulerLAne } from 'vs/editor/common/model';
+import * As lAnguAgeConfigurAtion from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
+import { score } from 'vs/editor/common/modes/lAnguAgeSelector';
+import * As files from 'vs/plAtform/files/common/files';
+import { ExtHostContext, MAinContext, ExtHostLogServiceShApe, UIKind } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostApiCommAnds } from 'vs/workbench/Api/common/extHostApiCommAnds';
+import { ExtHostClipboArd } from 'vs/workbench/Api/common/extHostClipboArd';
+import { IExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { ExtHostComments } from 'vs/workbench/Api/common/extHostComments';
+import { ExtHostConfigProvider, IExtHostConfigurAtion } from 'vs/workbench/Api/common/extHostConfigurAtion';
+import { ExtHostDiAgnostics } from 'vs/workbench/Api/common/extHostDiAgnostics';
+import { ExtHostDiAlogs } from 'vs/workbench/Api/common/extHostDiAlogs';
+import { ExtHostDocumentContentProvider } from 'vs/workbench/Api/common/extHostDocumentContentProviders';
+import { ExtHostDocumentSAvePArticipAnt } from 'vs/workbench/Api/common/extHostDocumentSAvePArticipAnt';
+import { ExtHostDocuments } from 'vs/workbench/Api/common/extHostDocuments';
+import { IExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { IExtHostExtensionService } from 'vs/workbench/Api/common/extHostExtensionService';
+import { ExtHostFileSystem } from 'vs/workbench/Api/common/extHostFileSystem';
+import { ExtHostFileSystemEventService } from 'vs/workbench/Api/common/extHostFileSystemEventService';
+import { ExtHostLAnguAgeFeAtures } from 'vs/workbench/Api/common/extHostLAnguAgeFeAtures';
+import { ExtHostLAnguAges } from 'vs/workbench/Api/common/extHostLAnguAges';
+import { ExtHostMessAgeService } from 'vs/workbench/Api/common/extHostMessAgeService';
+import { IExtHostOutputService } from 'vs/workbench/Api/common/extHostOutput';
+import { ExtHostProgress } from 'vs/workbench/Api/common/extHostProgress';
+import { ExtHostQuickOpen } from 'vs/workbench/Api/common/extHostQuickOpen';
+import { ExtHostSCM } from 'vs/workbench/Api/common/extHostSCM';
+import { ExtHostStAtusBAr } from 'vs/workbench/Api/common/extHostStAtusBAr';
+import { IExtHostStorAge } from 'vs/workbench/Api/common/extHostStorAge';
+import { IExtHostTerminAlService } from 'vs/workbench/Api/common/extHostTerminAlService';
+import { ExtHostEditors } from 'vs/workbench/Api/common/extHostTextEditors';
+import { ExtHostTreeViews } from 'vs/workbench/Api/common/extHostTreeViews';
+import * As typeConverters from 'vs/workbench/Api/common/extHostTypeConverters';
+import * As extHostTypes from 'vs/workbench/Api/common/extHostTypes';
+import { ExtHostUrls } from 'vs/workbench/Api/common/extHostUrls';
+import { ExtHostWebviews } from 'vs/workbench/Api/common/extHostWebview';
+import { IExtHostWindow } from 'vs/workbench/Api/common/extHostWindow';
+import { IExtHostWorkspAce } from 'vs/workbench/Api/common/extHostWorkspAce';
+import { throwProposedApiError, checkProposedApiEnAbled } from 'vs/workbench/services/extensions/common/extensions';
 import { ProxyIdentifier } from 'vs/workbench/services/extensions/common/proxyIdentifier';
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
-import * as vscode from 'vscode';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { originalFSPath } from 'vs/base/common/resources';
-import { values } from 'vs/base/common/collections';
-import { ExtHostEditorInsets } from 'vs/workbench/api/common/extHostCodeInsets';
-import { ExtHostLabelService } from 'vs/workbench/api/common/extHostLabelService';
-import { getRemoteName } from 'vs/platform/remote/common/remoteHosts';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostDecorations } from 'vs/workbench/api/common/extHostDecorations';
-import { IExtHostTask } from 'vs/workbench/api/common/extHostTask';
-import { IExtHostDebugService } from 'vs/workbench/api/common/extHostDebugService';
-import { IExtHostSearch } from 'vs/workbench/api/common/extHostSearch';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IURITransformerService } from 'vs/workbench/api/common/extHostUriTransformerService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { ExtHostNotebookController } from 'vs/workbench/api/common/extHostNotebook';
-import { ExtHostTheming } from 'vs/workbench/api/common/extHostTheming';
-import { IExtHostTunnelService } from 'vs/workbench/api/common/extHostTunnelService';
-import { IExtHostApiDeprecationService } from 'vs/workbench/api/common/extHostApiDeprecationService';
-import { ExtHostAuthentication } from 'vs/workbench/api/common/extHostAuthentication';
-import { ExtHostTimeline } from 'vs/workbench/api/common/extHostTimeline';
-import { ExtHostNotebookConcatDocument } from 'vs/workbench/api/common/extHostNotebookConcatDocument';
-import { IExtensionStoragePaths } from 'vs/workbench/api/common/extHostStoragePaths';
-import { IExtHostConsumerFileSystem } from 'vs/workbench/api/common/extHostFileSystemConsumer';
-import { ExtHostWebviewViews } from 'vs/workbench/api/common/extHostWebviewView';
-import { ExtHostCustomEditors } from 'vs/workbench/api/common/extHostCustomEditors';
-import { ExtHostWebviewPanels } from 'vs/workbench/api/common/extHostWebviewPanels';
-import { ExtHostBulkEdits } from 'vs/workbench/api/common/extHostBulkEdits';
-import { IExtHostFileSystemInfo } from 'vs/workbench/api/common/extHostFileSystemInfo';
+import * As vscode from 'vscode';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { originAlFSPAth } from 'vs/bAse/common/resources';
+import { vAlues } from 'vs/bAse/common/collections';
+import { ExtHostEditorInsets } from 'vs/workbench/Api/common/extHostCodeInsets';
+import { ExtHostLAbelService } from 'vs/workbench/Api/common/extHostLAbelService';
+import { getRemoteNAme } from 'vs/plAtform/remote/common/remoteHosts';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostDecorAtions } from 'vs/workbench/Api/common/extHostDecorAtions';
+import { IExtHostTAsk } from 'vs/workbench/Api/common/extHostTAsk';
+import { IExtHostDebugService } from 'vs/workbench/Api/common/extHostDebugService';
+import { IExtHostSeArch } from 'vs/workbench/Api/common/extHostSeArch';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IURITrAnsformerService } from 'vs/workbench/Api/common/extHostUriTrAnsformerService';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { ExtHostNotebookController } from 'vs/workbench/Api/common/extHostNotebook';
+import { ExtHostTheming } from 'vs/workbench/Api/common/extHostTheming';
+import { IExtHostTunnelService } from 'vs/workbench/Api/common/extHostTunnelService';
+import { IExtHostApiDeprecAtionService } from 'vs/workbench/Api/common/extHostApiDeprecAtionService';
+import { ExtHostAuthenticAtion } from 'vs/workbench/Api/common/extHostAuthenticAtion';
+import { ExtHostTimeline } from 'vs/workbench/Api/common/extHostTimeline';
+import { ExtHostNotebookConcAtDocument } from 'vs/workbench/Api/common/extHostNotebookConcAtDocument';
+import { IExtensionStorAgePAths } from 'vs/workbench/Api/common/extHostStorAgePAths';
+import { IExtHostConsumerFileSystem } from 'vs/workbench/Api/common/extHostFileSystemConsumer';
+import { ExtHostWebviewViews } from 'vs/workbench/Api/common/extHostWebviewView';
+import { ExtHostCustomEditors } from 'vs/workbench/Api/common/extHostCustomEditors';
+import { ExtHostWebviewPAnels } from 'vs/workbench/Api/common/extHostWebviewPAnels';
+import { ExtHostBulkEdits } from 'vs/workbench/Api/common/extHostBulkEdits';
+import { IExtHostFileSystemInfo } from 'vs/workbench/Api/common/extHostFileSystemInfo';
 
-export interface IExtensionApiFactory {
+export interfAce IExtensionApiFActory {
 	(extension: IExtensionDescription, registry: ExtensionDescriptionRegistry, configProvider: ExtHostConfigProvider): typeof vscode;
 }
 
 /**
- * This method instantiates and returns the extension API surface
+ * This method instAntiAtes And returns the extension API surfAce
  */
-export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): IExtensionApiFactory {
+export function creAteApiFActoryAndRegisterActors(Accessor: ServicesAccessor): IExtensionApiFActory {
 
 	// services
-	const initData = accessor.get(IExtHostInitDataService);
-	const extHostFileSystemInfo = accessor.get(IExtHostFileSystemInfo);
-	const extHostConsumerFileSystem = accessor.get(IExtHostConsumerFileSystem);
-	const extensionService = accessor.get(IExtHostExtensionService);
-	const extHostWorkspace = accessor.get(IExtHostWorkspace);
-	const extHostConfiguration = accessor.get(IExtHostConfiguration);
-	const uriTransformer = accessor.get(IURITransformerService);
-	const rpcProtocol = accessor.get(IExtHostRpcService);
-	const extHostStorage = accessor.get(IExtHostStorage);
-	const extensionStoragePaths = accessor.get(IExtensionStoragePaths);
-	const extHostLogService = accessor.get(ILogService);
-	const extHostTunnelService = accessor.get(IExtHostTunnelService);
-	const extHostApiDeprecation = accessor.get(IExtHostApiDeprecationService);
-	const extHostWindow = accessor.get(IExtHostWindow);
+	const initDAtA = Accessor.get(IExtHostInitDAtAService);
+	const extHostFileSystemInfo = Accessor.get(IExtHostFileSystemInfo);
+	const extHostConsumerFileSystem = Accessor.get(IExtHostConsumerFileSystem);
+	const extensionService = Accessor.get(IExtHostExtensionService);
+	const extHostWorkspAce = Accessor.get(IExtHostWorkspAce);
+	const extHostConfigurAtion = Accessor.get(IExtHostConfigurAtion);
+	const uriTrAnsformer = Accessor.get(IURITrAnsformerService);
+	const rpcProtocol = Accessor.get(IExtHostRpcService);
+	const extHostStorAge = Accessor.get(IExtHostStorAge);
+	const extensionStorAgePAths = Accessor.get(IExtensionStorAgePAths);
+	const extHostLogService = Accessor.get(ILogService);
+	const extHostTunnelService = Accessor.get(IExtHostTunnelService);
+	const extHostApiDeprecAtion = Accessor.get(IExtHostApiDeprecAtionService);
+	const extHostWindow = Accessor.get(IExtHostWindow);
 
-	// register addressable instances
+	// register AddressAble instAnces
 	rpcProtocol.set(ExtHostContext.ExtHostFileSystemInfo, extHostFileSystemInfo);
-	rpcProtocol.set(ExtHostContext.ExtHostLogService, <ExtHostLogServiceShape><any>extHostLogService);
-	rpcProtocol.set(ExtHostContext.ExtHostWorkspace, extHostWorkspace);
-	rpcProtocol.set(ExtHostContext.ExtHostConfiguration, extHostConfiguration);
+	rpcProtocol.set(ExtHostContext.ExtHostLogService, <ExtHostLogServiceShApe><Any>extHostLogService);
+	rpcProtocol.set(ExtHostContext.ExtHostWorkspAce, extHostWorkspAce);
+	rpcProtocol.set(ExtHostContext.ExtHostConfigurAtion, extHostConfigurAtion);
 	rpcProtocol.set(ExtHostContext.ExtHostExtensionService, extensionService);
-	rpcProtocol.set(ExtHostContext.ExtHostStorage, extHostStorage);
+	rpcProtocol.set(ExtHostContext.ExtHostStorAge, extHostStorAge);
 	rpcProtocol.set(ExtHostContext.ExtHostTunnelService, extHostTunnelService);
 	rpcProtocol.set(ExtHostContext.ExtHostWindow, extHostWindow);
 
-	// automatically create and register addressable instances
-	const extHostDecorations = rpcProtocol.set(ExtHostContext.ExtHostDecorations, accessor.get(IExtHostDecorations));
-	const extHostDocumentsAndEditors = rpcProtocol.set(ExtHostContext.ExtHostDocumentsAndEditors, accessor.get(IExtHostDocumentsAndEditors));
-	const extHostCommands = rpcProtocol.set(ExtHostContext.ExtHostCommands, accessor.get(IExtHostCommands));
-	const extHostTerminalService = rpcProtocol.set(ExtHostContext.ExtHostTerminalService, accessor.get(IExtHostTerminalService));
-	const extHostDebugService = rpcProtocol.set(ExtHostContext.ExtHostDebugService, accessor.get(IExtHostDebugService));
-	const extHostSearch = rpcProtocol.set(ExtHostContext.ExtHostSearch, accessor.get(IExtHostSearch));
-	const extHostTask = rpcProtocol.set(ExtHostContext.ExtHostTask, accessor.get(IExtHostTask));
-	const extHostOutputService = rpcProtocol.set(ExtHostContext.ExtHostOutputService, accessor.get(IExtHostOutputService));
+	// AutomAticAlly creAte And register AddressAble instAnces
+	const extHostDecorAtions = rpcProtocol.set(ExtHostContext.ExtHostDecorAtions, Accessor.get(IExtHostDecorAtions));
+	const extHostDocumentsAndEditors = rpcProtocol.set(ExtHostContext.ExtHostDocumentsAndEditors, Accessor.get(IExtHostDocumentsAndEditors));
+	const extHostCommAnds = rpcProtocol.set(ExtHostContext.ExtHostCommAnds, Accessor.get(IExtHostCommAnds));
+	const extHostTerminAlService = rpcProtocol.set(ExtHostContext.ExtHostTerminAlService, Accessor.get(IExtHostTerminAlService));
+	const extHostDebugService = rpcProtocol.set(ExtHostContext.ExtHostDebugService, Accessor.get(IExtHostDebugService));
+	const extHostSeArch = rpcProtocol.set(ExtHostContext.ExtHostSeArch, Accessor.get(IExtHostSeArch));
+	const extHostTAsk = rpcProtocol.set(ExtHostContext.ExtHostTAsk, Accessor.get(IExtHostTAsk));
+	const extHostOutputService = rpcProtocol.set(ExtHostContext.ExtHostOutputService, Accessor.get(IExtHostOutputService));
 
-	// manually create and register addressable instances
+	// mAnuAlly creAte And register AddressAble instAnces
 	const extHostUrls = rpcProtocol.set(ExtHostContext.ExtHostUrls, new ExtHostUrls(rpcProtocol));
 	const extHostDocuments = rpcProtocol.set(ExtHostContext.ExtHostDocuments, new ExtHostDocuments(rpcProtocol, extHostDocumentsAndEditors));
 	const extHostDocumentContentProviders = rpcProtocol.set(ExtHostContext.ExtHostDocumentContentProviders, new ExtHostDocumentContentProvider(rpcProtocol, extHostDocumentsAndEditors, extHostLogService));
-	const extHostDocumentSaveParticipant = rpcProtocol.set(ExtHostContext.ExtHostDocumentSaveParticipant, new ExtHostDocumentSaveParticipant(extHostLogService, extHostDocuments, rpcProtocol.getProxy(MainContext.MainThreadBulkEdits)));
-	const extHostNotebook = rpcProtocol.set(ExtHostContext.ExtHostNotebook, new ExtHostNotebookController(rpcProtocol, extHostCommands, extHostDocumentsAndEditors, initData.environment, extHostLogService, extensionStoragePaths));
+	const extHostDocumentSAvePArticipAnt = rpcProtocol.set(ExtHostContext.ExtHostDocumentSAvePArticipAnt, new ExtHostDocumentSAvePArticipAnt(extHostLogService, extHostDocuments, rpcProtocol.getProxy(MAinContext.MAinThreAdBulkEdits)));
+	const extHostNotebook = rpcProtocol.set(ExtHostContext.ExtHostNotebook, new ExtHostNotebookController(rpcProtocol, extHostCommAnds, extHostDocumentsAndEditors, initDAtA.environment, extHostLogService, extensionStorAgePAths));
 	const extHostEditors = rpcProtocol.set(ExtHostContext.ExtHostEditors, new ExtHostEditors(rpcProtocol, extHostDocumentsAndEditors));
-	const extHostTreeViews = rpcProtocol.set(ExtHostContext.ExtHostTreeViews, new ExtHostTreeViews(rpcProtocol.getProxy(MainContext.MainThreadTreeViews), extHostCommands, extHostLogService));
-	const extHostEditorInsets = rpcProtocol.set(ExtHostContext.ExtHostEditorInsets, new ExtHostEditorInsets(rpcProtocol.getProxy(MainContext.MainThreadEditorInsets), extHostEditors, initData.environment));
-	const extHostDiagnostics = rpcProtocol.set(ExtHostContext.ExtHostDiagnostics, new ExtHostDiagnostics(rpcProtocol, extHostLogService));
-	const extHostLanguageFeatures = rpcProtocol.set(ExtHostContext.ExtHostLanguageFeatures, new ExtHostLanguageFeatures(rpcProtocol, uriTransformer, extHostDocuments, extHostCommands, extHostDiagnostics, extHostLogService, extHostApiDeprecation));
-	const extHostFileSystem = rpcProtocol.set(ExtHostContext.ExtHostFileSystem, new ExtHostFileSystem(rpcProtocol, extHostLanguageFeatures));
+	const extHostTreeViews = rpcProtocol.set(ExtHostContext.ExtHostTreeViews, new ExtHostTreeViews(rpcProtocol.getProxy(MAinContext.MAinThreAdTreeViews), extHostCommAnds, extHostLogService));
+	const extHostEditorInsets = rpcProtocol.set(ExtHostContext.ExtHostEditorInsets, new ExtHostEditorInsets(rpcProtocol.getProxy(MAinContext.MAinThreAdEditorInsets), extHostEditors, initDAtA.environment));
+	const extHostDiAgnostics = rpcProtocol.set(ExtHostContext.ExtHostDiAgnostics, new ExtHostDiAgnostics(rpcProtocol, extHostLogService));
+	const extHostLAnguAgeFeAtures = rpcProtocol.set(ExtHostContext.ExtHostLAnguAgeFeAtures, new ExtHostLAnguAgeFeAtures(rpcProtocol, uriTrAnsformer, extHostDocuments, extHostCommAnds, extHostDiAgnostics, extHostLogService, extHostApiDeprecAtion));
+	const extHostFileSystem = rpcProtocol.set(ExtHostContext.ExtHostFileSystem, new ExtHostFileSystem(rpcProtocol, extHostLAnguAgeFeAtures));
 	const extHostFileSystemEvent = rpcProtocol.set(ExtHostContext.ExtHostFileSystemEventService, new ExtHostFileSystemEventService(rpcProtocol, extHostLogService, extHostDocumentsAndEditors));
-	const extHostQuickOpen = rpcProtocol.set(ExtHostContext.ExtHostQuickOpen, new ExtHostQuickOpen(rpcProtocol, extHostWorkspace, extHostCommands));
-	const extHostSCM = rpcProtocol.set(ExtHostContext.ExtHostSCM, new ExtHostSCM(rpcProtocol, extHostCommands, extHostLogService));
-	const extHostComment = rpcProtocol.set(ExtHostContext.ExtHostComments, new ExtHostComments(rpcProtocol, extHostCommands, extHostDocuments));
-	const extHostProgress = rpcProtocol.set(ExtHostContext.ExtHostProgress, new ExtHostProgress(rpcProtocol.getProxy(MainContext.MainThreadProgress)));
-	const extHostLabelService = rpcProtocol.set(ExtHostContext.ExtHosLabelService, new ExtHostLabelService(rpcProtocol));
+	const extHostQuickOpen = rpcProtocol.set(ExtHostContext.ExtHostQuickOpen, new ExtHostQuickOpen(rpcProtocol, extHostWorkspAce, extHostCommAnds));
+	const extHostSCM = rpcProtocol.set(ExtHostContext.ExtHostSCM, new ExtHostSCM(rpcProtocol, extHostCommAnds, extHostLogService));
+	const extHostComment = rpcProtocol.set(ExtHostContext.ExtHostComments, new ExtHostComments(rpcProtocol, extHostCommAnds, extHostDocuments));
+	const extHostProgress = rpcProtocol.set(ExtHostContext.ExtHostProgress, new ExtHostProgress(rpcProtocol.getProxy(MAinContext.MAinThreAdProgress)));
+	const extHostLAbelService = rpcProtocol.set(ExtHostContext.ExtHosLAbelService, new ExtHostLAbelService(rpcProtocol));
 	const extHostTheming = rpcProtocol.set(ExtHostContext.ExtHostTheming, new ExtHostTheming(rpcProtocol));
-	const extHostAuthentication = rpcProtocol.set(ExtHostContext.ExtHostAuthentication, new ExtHostAuthentication(rpcProtocol));
-	const extHostTimeline = rpcProtocol.set(ExtHostContext.ExtHostTimeline, new ExtHostTimeline(rpcProtocol, extHostCommands));
-	const extHostWebviews = rpcProtocol.set(ExtHostContext.ExtHostWebviews, new ExtHostWebviews(rpcProtocol, initData.environment, extHostWorkspace, extHostLogService, extHostApiDeprecation));
-	const extHostWebviewPanels = rpcProtocol.set(ExtHostContext.ExtHostWebviewPanels, new ExtHostWebviewPanels(rpcProtocol, extHostWebviews, extHostWorkspace));
-	const extHostCustomEditors = rpcProtocol.set(ExtHostContext.ExtHostCustomEditors, new ExtHostCustomEditors(rpcProtocol, extHostDocuments, extensionStoragePaths, extHostWebviews, extHostWebviewPanels));
+	const extHostAuthenticAtion = rpcProtocol.set(ExtHostContext.ExtHostAuthenticAtion, new ExtHostAuthenticAtion(rpcProtocol));
+	const extHostTimeline = rpcProtocol.set(ExtHostContext.ExtHostTimeline, new ExtHostTimeline(rpcProtocol, extHostCommAnds));
+	const extHostWebviews = rpcProtocol.set(ExtHostContext.ExtHostWebviews, new ExtHostWebviews(rpcProtocol, initDAtA.environment, extHostWorkspAce, extHostLogService, extHostApiDeprecAtion));
+	const extHostWebviewPAnels = rpcProtocol.set(ExtHostContext.ExtHostWebviewPAnels, new ExtHostWebviewPAnels(rpcProtocol, extHostWebviews, extHostWorkspAce));
+	const extHostCustomEditors = rpcProtocol.set(ExtHostContext.ExtHostCustomEditors, new ExtHostCustomEditors(rpcProtocol, extHostDocuments, extensionStorAgePAths, extHostWebviews, extHostWebviewPAnels));
 	const extHostWebviewViews = rpcProtocol.set(ExtHostContext.ExtHostWebviewViews, new ExtHostWebviewViews(rpcProtocol, extHostWebviews));
 
-	// Check that no named customers are missing
-	const expected: ProxyIdentifier<any>[] = values(ExtHostContext);
-	rpcProtocol.assertRegistered(expected);
+	// Check thAt no nAmed customers Are missing
+	const expected: ProxyIdentifier<Any>[] = vAlues(ExtHostContext);
+	rpcProtocol.AssertRegistered(expected);
 
-	// Other instances
+	// Other instAnces
 	const extHostBulkEdits = new ExtHostBulkEdits(rpcProtocol, extHostDocumentsAndEditors, extHostNotebook);
-	const extHostClipboard = new ExtHostClipboard(rpcProtocol);
-	const extHostMessageService = new ExtHostMessageService(rpcProtocol, extHostLogService);
-	const extHostDialogs = new ExtHostDialogs(rpcProtocol);
-	const extHostStatusBar = new ExtHostStatusBar(rpcProtocol, extHostCommands.converter);
-	const extHostLanguages = new ExtHostLanguages(rpcProtocol, extHostDocuments);
+	const extHostClipboArd = new ExtHostClipboArd(rpcProtocol);
+	const extHostMessAgeService = new ExtHostMessAgeService(rpcProtocol, extHostLogService);
+	const extHostDiAlogs = new ExtHostDiAlogs(rpcProtocol);
+	const extHostStAtusBAr = new ExtHostStAtusBAr(rpcProtocol, extHostCommAnds.converter);
+	const extHostLAnguAges = new ExtHostLAnguAges(rpcProtocol, extHostDocuments);
 
-	// Register API-ish commands
-	ExtHostApiCommands.register(extHostCommands);
+	// Register API-ish commAnds
+	ExtHostApiCommAnds.register(extHostCommAnds);
 
 	return function (extension: IExtensionDescription, extensionRegistry: ExtensionDescriptionRegistry, configProvider: ExtHostConfigProvider): typeof vscode {
 
-		// Check document selectors for being overly generic. Technically this isn't a problem but
-		// in practice many extensions say they support `fooLang` but need fs-access to do so. Those
-		// extension should specify then the `file`-scheme, e.g. `{ scheme: 'fooLang', language: 'fooLang' }`
-		// We only inform once, it is not a warning because we just want to raise awareness and because
-		// we cannot say if the extension is doing it right or wrong...
+		// Check document selectors for being overly generic. TechnicAlly this isn't A problem but
+		// in prActice mAny extensions sAy they support `fooLAng` but need fs-Access to do so. Those
+		// extension should specify then the `file`-scheme, e.g. `{ scheme: 'fooLAng', lAnguAge: 'fooLAng' }`
+		// We only inform once, it is not A wArning becAuse we just wAnt to rAise AwAreness And becAuse
+		// we cAnnot sAy if the extension is doing it right or wrong...
 		const checkSelector = (function () {
 			let done = (!extension.isUnderDevelopment);
 			function informOnce(selector: vscode.DocumentSelector) {
 				if (!done) {
-					extHostLogService.info(`Extension '${extension.identifier.value}' uses a document selector without scheme. Learn more about this: https://go.microsoft.com/fwlink/?linkid=872305`);
+					extHostLogService.info(`Extension '${extension.identifier.vAlue}' uses A document selector without scheme. LeArn more About this: https://go.microsoft.com/fwlink/?linkid=872305`);
 					done = true;
 				}
 			}
 			return function perform(selector: vscode.DocumentSelector): vscode.DocumentSelector {
-				if (Array.isArray(selector)) {
-					selector.forEach(perform);
+				if (ArrAy.isArrAy(selector)) {
+					selector.forEAch(perform);
 				} else if (typeof selector === 'string') {
 					informOnce(selector);
 				} else {
 					if (typeof selector.scheme === 'undefined') {
 						informOnce(selector);
 					}
-					if (!extension.enableProposedApi && typeof selector.exclusive === 'boolean') {
+					if (!extension.enAbleProposedApi && typeof selector.exclusive === 'booleAn') {
 						throwProposedApiError(extension);
 					}
 				}
@@ -200,598 +200,598 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 			};
 		})();
 
-		const authentication: typeof vscode.authentication = {
-			registerAuthenticationProvider(provider: vscode.AuthenticationProvider): vscode.Disposable {
-				return extHostAuthentication.registerAuthenticationProvider(provider);
+		const AuthenticAtion: typeof vscode.AuthenticAtion = {
+			registerAuthenticAtionProvider(provider: vscode.AuthenticAtionProvider): vscode.DisposAble {
+				return extHostAuthenticAtion.registerAuthenticAtionProvider(provider);
 			},
-			get onDidChangeAuthenticationProviders(): Event<vscode.AuthenticationProvidersChangeEvent> {
-				return extHostAuthentication.onDidChangeAuthenticationProviders;
+			get onDidChAngeAuthenticAtionProviders(): Event<vscode.AuthenticAtionProvidersChAngeEvent> {
+				return extHostAuthenticAtion.onDidChAngeAuthenticAtionProviders;
 			},
-			getProviderIds(): Thenable<ReadonlyArray<string>> {
-				return extHostAuthentication.getProviderIds();
+			getProviderIds(): ThenAble<ReAdonlyArrAy<string>> {
+				return extHostAuthenticAtion.getProviderIds();
 			},
 			get providerIds(): string[] {
-				return extHostAuthentication.providerIds;
+				return extHostAuthenticAtion.providerIds;
 			},
-			get providers(): ReadonlyArray<vscode.AuthenticationProviderInformation> {
-				return extHostAuthentication.providers;
+			get providers(): ReAdonlyArrAy<vscode.AuthenticAtionProviderInformAtion> {
+				return extHostAuthenticAtion.providers;
 			},
-			getSession(providerId: string, scopes: string[], options?: vscode.AuthenticationGetSessionOptions) {
-				return extHostAuthentication.getSession(extension, providerId, scopes, options as any);
+			getSession(providerId: string, scopes: string[], options?: vscode.AuthenticAtionGetSessionOptions) {
+				return extHostAuthenticAtion.getSession(extension, providerId, scopes, options As Any);
 			},
-			logout(providerId: string, sessionId: string): Thenable<void> {
-				return extHostAuthentication.logout(providerId, sessionId);
+			logout(providerId: string, sessionId: string): ThenAble<void> {
+				return extHostAuthenticAtion.logout(providerId, sessionId);
 			},
-			get onDidChangeSessions(): Event<vscode.AuthenticationSessionsChangeEvent> {
-				return extHostAuthentication.onDidChangeSessions;
+			get onDidChAngeSessions(): Event<vscode.AuthenticAtionSessionsChAngeEvent> {
+				return extHostAuthenticAtion.onDidChAngeSessions;
 			},
-			getPassword(key: string): Thenable<string | undefined> {
-				return extHostAuthentication.getPassword(extension, key);
+			getPAssword(key: string): ThenAble<string | undefined> {
+				return extHostAuthenticAtion.getPAssword(extension, key);
 			},
-			setPassword(key: string, value: string): Thenable<void> {
-				return extHostAuthentication.setPassword(extension, key, value);
+			setPAssword(key: string, vAlue: string): ThenAble<void> {
+				return extHostAuthenticAtion.setPAssword(extension, key, vAlue);
 			},
-			deletePassword(key: string): Thenable<void> {
-				return extHostAuthentication.deletePassword(extension, key);
+			deletePAssword(key: string): ThenAble<void> {
+				return extHostAuthenticAtion.deletePAssword(extension, key);
 			},
-			get onDidChangePassword(): Event<void> {
-				return extHostAuthentication.onDidChangePassword;
+			get onDidChAngePAssword(): Event<void> {
+				return extHostAuthenticAtion.onDidChAngePAssword;
 			}
 		};
 
-		// namespace: commands
-		const commands: typeof vscode.commands = {
-			registerCommand(id: string, command: <T>(...args: any[]) => T | Thenable<T>, thisArgs?: any): vscode.Disposable {
-				return extHostCommands.registerCommand(true, id, command, thisArgs);
+		// nAmespAce: commAnds
+		const commAnds: typeof vscode.commAnds = {
+			registerCommAnd(id: string, commAnd: <T>(...Args: Any[]) => T | ThenAble<T>, thisArgs?: Any): vscode.DisposAble {
+				return extHostCommAnds.registerCommAnd(true, id, commAnd, thisArgs);
 			},
-			registerTextEditorCommand(id: string, callback: (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, ...args: any[]) => void, thisArg?: any): vscode.Disposable {
-				return extHostCommands.registerCommand(true, id, (...args: any[]): any => {
-					const activeTextEditor = extHostEditors.getActiveTextEditor();
-					if (!activeTextEditor) {
-						extHostLogService.warn('Cannot execute ' + id + ' because there is no active text editor.');
+			registerTextEditorCommAnd(id: string, cAllbAck: (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, ...Args: Any[]) => void, thisArg?: Any): vscode.DisposAble {
+				return extHostCommAnds.registerCommAnd(true, id, (...Args: Any[]): Any => {
+					const ActiveTextEditor = extHostEditors.getActiveTextEditor();
+					if (!ActiveTextEditor) {
+						extHostLogService.wArn('CAnnot execute ' + id + ' becAuse there is no Active text editor.');
 						return undefined;
 					}
 
-					return activeTextEditor.edit((edit: vscode.TextEditorEdit) => {
-						callback.apply(thisArg, [activeTextEditor, edit, ...args]);
+					return ActiveTextEditor.edit((edit: vscode.TextEditorEdit) => {
+						cAllbAck.Apply(thisArg, [ActiveTextEditor, edit, ...Args]);
 
 					}).then((result) => {
 						if (!result) {
-							extHostLogService.warn('Edits from command ' + id + ' were not applied.');
+							extHostLogService.wArn('Edits from commAnd ' + id + ' were not Applied.');
 						}
 					}, (err) => {
-						extHostLogService.warn('An error occurred while running command ' + id, err);
+						extHostLogService.wArn('An error occurred while running commAnd ' + id, err);
 					});
 				});
 			},
-			registerDiffInformationCommand: (id: string, callback: (diff: vscode.LineChange[], ...args: any[]) => any, thisArg?: any): vscode.Disposable => {
-				checkProposedApiEnabled(extension);
-				return extHostCommands.registerCommand(true, id, async (...args: any[]): Promise<any> => {
-					const activeTextEditor = extHostEditors.getActiveTextEditor();
-					if (!activeTextEditor) {
-						extHostLogService.warn('Cannot execute ' + id + ' because there is no active text editor.');
+			registerDiffInformAtionCommAnd: (id: string, cAllbAck: (diff: vscode.LineChAnge[], ...Args: Any[]) => Any, thisArg?: Any): vscode.DisposAble => {
+				checkProposedApiEnAbled(extension);
+				return extHostCommAnds.registerCommAnd(true, id, Async (...Args: Any[]): Promise<Any> => {
+					const ActiveTextEditor = extHostEditors.getActiveTextEditor();
+					if (!ActiveTextEditor) {
+						extHostLogService.wArn('CAnnot execute ' + id + ' becAuse there is no Active text editor.');
 						return undefined;
 					}
 
-					const diff = await extHostEditors.getDiffInformation(activeTextEditor.id);
-					callback.apply(thisArg, [diff, ...args]);
+					const diff = AwAit extHostEditors.getDiffInformAtion(ActiveTextEditor.id);
+					cAllbAck.Apply(thisArg, [diff, ...Args]);
 				});
 			},
-			executeCommand<T>(id: string, ...args: any[]): Thenable<T> {
-				return extHostCommands.executeCommand<T>(id, ...args);
+			executeCommAnd<T>(id: string, ...Args: Any[]): ThenAble<T> {
+				return extHostCommAnds.executeCommAnd<T>(id, ...Args);
 			},
-			getCommands(filterInternal: boolean = false): Thenable<string[]> {
-				return extHostCommands.getCommands(filterInternal);
+			getCommAnds(filterInternAl: booleAn = fAlse): ThenAble<string[]> {
+				return extHostCommAnds.getCommAnds(filterInternAl);
 			}
 		};
 
-		// namespace: env
+		// nAmespAce: env
 		const env: typeof vscode.env = {
-			get machineId() { return initData.telemetryInfo.machineId; },
-			get sessionId() { return initData.telemetryInfo.sessionId; },
-			get language() { return initData.environment.appLanguage; },
-			get appName() { return initData.environment.appName; },
-			get appRoot() { return initData.environment.appRoot?.fsPath ?? ''; },
-			get uriScheme() { return initData.environment.appUriScheme; },
+			get mAchineId() { return initDAtA.telemetryInfo.mAchineId; },
+			get sessionId() { return initDAtA.telemetryInfo.sessionId; },
+			get lAnguAge() { return initDAtA.environment.AppLAnguAge; },
+			get AppNAme() { return initDAtA.environment.AppNAme; },
+			get AppRoot() { return initDAtA.environment.AppRoot?.fsPAth ?? ''; },
+			get uriScheme() { return initDAtA.environment.AppUriScheme; },
 			get logLevel() {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return typeConverters.LogLevel.to(extHostLogService.getLevel());
 			},
-			get onDidChangeLogLevel() {
-				checkProposedApiEnabled(extension);
-				return Event.map(extHostLogService.onDidChangeLogLevel, l => typeConverters.LogLevel.to(l));
+			get onDidChAngeLogLevel() {
+				checkProposedApiEnAbled(extension);
+				return Event.mAp(extHostLogService.onDidChAngeLogLevel, l => typeConverters.LogLevel.to(l));
 			},
-			get clipboard(): vscode.Clipboard {
-				return extHostClipboard;
+			get clipboArd(): vscode.ClipboArd {
+				return extHostClipboArd;
 			},
 			get shell() {
-				return extHostTerminalService.getDefaultShell(false, configProvider);
+				return extHostTerminAlService.getDefAultShell(fAlse, configProvider);
 			},
-			openExternal(uri: URI) {
-				return extHostWindow.openUri(uri, { allowTunneling: !!initData.remote.authority });
+			openExternAl(uri: URI) {
+				return extHostWindow.openUri(uri, { AllowTunneling: !!initDAtA.remote.Authority });
 			},
-			asExternalUri(uri: URI) {
-				if (uri.scheme === initData.environment.appUriScheme) {
-					return extHostUrls.createAppUri(uri);
+			AsExternAlUri(uri: URI) {
+				if (uri.scheme === initDAtA.environment.AppUriScheme) {
+					return extHostUrls.creAteAppUri(uri);
 				}
 
-				return extHostWindow.asExternalUri(uri, { allowTunneling: !!initData.remote.authority });
+				return extHostWindow.AsExternAlUri(uri, { AllowTunneling: !!initDAtA.remote.Authority });
 			},
-			get remoteName() {
-				return getRemoteName(initData.remote.authority);
+			get remoteNAme() {
+				return getRemoteNAme(initDAtA.remote.Authority);
 			},
 			get uiKind() {
-				return initData.uiKind;
+				return initDAtA.uiKind;
 			}
 		};
-		if (!initData.environment.extensionTestsLocationURI) {
-			// allow to patch env-function when running tests
+		if (!initDAtA.environment.extensionTestsLocAtionURI) {
+			// Allow to pAtch env-function when running tests
 			Object.freeze(env);
 		}
 
-		const extensionKind = initData.remote.isRemote
-			? extHostTypes.ExtensionKind.Workspace
+		const extensionKind = initDAtA.remote.isRemote
+			? extHostTypes.ExtensionKind.WorkspAce
 			: extHostTypes.ExtensionKind.UI;
 
-		// namespace: extensions
+		// nAmespAce: extensions
 		const extensions: typeof vscode.extensions = {
-			getExtension(extensionId: string): Extension<any> | undefined {
+			getExtension(extensionId: string): Extension<Any> | undefined {
 				const desc = extensionRegistry.getExtensionDescription(extensionId);
 				if (desc) {
 					return new Extension(extensionService, extension.identifier, desc, extensionKind);
 				}
 				return undefined;
 			},
-			get all(): Extension<any>[] {
-				return extensionRegistry.getAllExtensionDescriptions().map((desc) => new Extension(extensionService, extension.identifier, desc, extensionKind));
+			get All(): Extension<Any>[] {
+				return extensionRegistry.getAllExtensionDescriptions().mAp((desc) => new Extension(extensionService, extension.identifier, desc, extensionKind));
 			},
-			get onDidChange() {
-				return extensionRegistry.onDidChange;
+			get onDidChAnge() {
+				return extensionRegistry.onDidChAnge;
 			}
 		};
 
-		// namespace: languages
-		const languages: typeof vscode.languages = {
-			createDiagnosticCollection(name?: string): vscode.DiagnosticCollection {
-				return extHostDiagnostics.createDiagnosticCollection(extension.identifier, name);
+		// nAmespAce: lAnguAges
+		const lAnguAges: typeof vscode.lAnguAges = {
+			creAteDiAgnosticCollection(nAme?: string): vscode.DiAgnosticCollection {
+				return extHostDiAgnostics.creAteDiAgnosticCollection(extension.identifier, nAme);
 			},
-			get onDidChangeDiagnostics() {
-				return extHostDiagnostics.onDidChangeDiagnostics;
+			get onDidChAngeDiAgnostics() {
+				return extHostDiAgnostics.onDidChAngeDiAgnostics;
 			},
-			getDiagnostics: (resource?: vscode.Uri) => {
-				return <any>extHostDiagnostics.getDiagnostics(resource);
+			getDiAgnostics: (resource?: vscode.Uri) => {
+				return <Any>extHostDiAgnostics.getDiAgnostics(resource);
 			},
-			getLanguages(): Thenable<string[]> {
-				return extHostLanguages.getLanguages();
+			getLAnguAges(): ThenAble<string[]> {
+				return extHostLAnguAges.getLAnguAges();
 			},
-			setTextDocumentLanguage(document: vscode.TextDocument, languageId: string): Thenable<vscode.TextDocument> {
-				return extHostLanguages.changeLanguage(document.uri, languageId);
+			setTextDocumentLAnguAge(document: vscode.TextDocument, lAnguAgeId: string): ThenAble<vscode.TextDocument> {
+				return extHostLAnguAges.chAngeLAnguAge(document.uri, lAnguAgeId);
 			},
-			match(selector: vscode.DocumentSelector, document: vscode.TextDocument): number {
-				return score(typeConverters.LanguageSelector.from(selector), document.uri, document.languageId, true);
+			mAtch(selector: vscode.DocumentSelector, document: vscode.TextDocument): number {
+				return score(typeConverters.LAnguAgeSelector.from(selector), document.uri, document.lAnguAgeId, true);
 			},
-			registerCodeActionsProvider(selector: vscode.DocumentSelector, provider: vscode.CodeActionProvider, metadata?: vscode.CodeActionProviderMetadata): vscode.Disposable {
-				return extHostLanguageFeatures.registerCodeActionProvider(extension, checkSelector(selector), provider, metadata);
+			registerCodeActionsProvider(selector: vscode.DocumentSelector, provider: vscode.CodeActionProvider, metAdAtA?: vscode.CodeActionProviderMetAdAtA): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerCodeActionProvider(extension, checkSelector(selector), provider, metAdAtA);
 			},
-			registerCodeLensProvider(selector: vscode.DocumentSelector, provider: vscode.CodeLensProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerCodeLensProvider(extension, checkSelector(selector), provider);
+			registerCodeLensProvider(selector: vscode.DocumentSelector, provider: vscode.CodeLensProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerCodeLensProvider(extension, checkSelector(selector), provider);
 			},
-			registerDefinitionProvider(selector: vscode.DocumentSelector, provider: vscode.DefinitionProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerDefinitionProvider(extension, checkSelector(selector), provider);
+			registerDefinitionProvider(selector: vscode.DocumentSelector, provider: vscode.DefinitionProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDefinitionProvider(extension, checkSelector(selector), provider);
 			},
-			registerDeclarationProvider(selector: vscode.DocumentSelector, provider: vscode.DeclarationProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerDeclarationProvider(extension, checkSelector(selector), provider);
+			registerDeclArAtionProvider(selector: vscode.DocumentSelector, provider: vscode.DeclArAtionProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDeclArAtionProvider(extension, checkSelector(selector), provider);
 			},
-			registerImplementationProvider(selector: vscode.DocumentSelector, provider: vscode.ImplementationProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerImplementationProvider(extension, checkSelector(selector), provider);
+			registerImplementAtionProvider(selector: vscode.DocumentSelector, provider: vscode.ImplementAtionProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerImplementAtionProvider(extension, checkSelector(selector), provider);
 			},
-			registerTypeDefinitionProvider(selector: vscode.DocumentSelector, provider: vscode.TypeDefinitionProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerTypeDefinitionProvider(extension, checkSelector(selector), provider);
+			registerTypeDefinitionProvider(selector: vscode.DocumentSelector, provider: vscode.TypeDefinitionProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerTypeDefinitionProvider(extension, checkSelector(selector), provider);
 			},
-			registerHoverProvider(selector: vscode.DocumentSelector, provider: vscode.HoverProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerHoverProvider(extension, checkSelector(selector), provider, extension.identifier);
+			registerHoverProvider(selector: vscode.DocumentSelector, provider: vscode.HoverProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerHoverProvider(extension, checkSelector(selector), provider, extension.identifier);
 			},
-			registerEvaluatableExpressionProvider(selector: vscode.DocumentSelector, provider: vscode.EvaluatableExpressionProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerEvaluatableExpressionProvider(extension, checkSelector(selector), provider, extension.identifier);
+			registerEvAluAtAbleExpressionProvider(selector: vscode.DocumentSelector, provider: vscode.EvAluAtAbleExpressionProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerEvAluAtAbleExpressionProvider(extension, checkSelector(selector), provider, extension.identifier);
 			},
-			registerDocumentHighlightProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentHighlightProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentHighlightProvider(extension, checkSelector(selector), provider);
+			registerDocumentHighlightProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentHighlightProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentHighlightProvider(extension, checkSelector(selector), provider);
 			},
-			registerOnTypeRenameProvider(selector: vscode.DocumentSelector, provider: vscode.OnTypeRenameProvider, stopPattern?: RegExp): vscode.Disposable {
-				checkProposedApiEnabled(extension);
-				return extHostLanguageFeatures.registerOnTypeRenameProvider(extension, checkSelector(selector), provider, stopPattern);
+			registerOnTypeRenAmeProvider(selector: vscode.DocumentSelector, provider: vscode.OnTypeRenAmeProvider, stopPAttern?: RegExp): vscode.DisposAble {
+				checkProposedApiEnAbled(extension);
+				return extHostLAnguAgeFeAtures.registerOnTypeRenAmeProvider(extension, checkSelector(selector), provider, stopPAttern);
 			},
-			registerReferenceProvider(selector: vscode.DocumentSelector, provider: vscode.ReferenceProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerReferenceProvider(extension, checkSelector(selector), provider);
+			registerReferenceProvider(selector: vscode.DocumentSelector, provider: vscode.ReferenceProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerReferenceProvider(extension, checkSelector(selector), provider);
 			},
-			registerRenameProvider(selector: vscode.DocumentSelector, provider: vscode.RenameProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerRenameProvider(extension, checkSelector(selector), provider);
+			registerRenAmeProvider(selector: vscode.DocumentSelector, provider: vscode.RenAmeProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerRenAmeProvider(extension, checkSelector(selector), provider);
 			},
-			registerDocumentSymbolProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentSymbolProvider, metadata?: vscode.DocumentSymbolProviderMetadata): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentSymbolProvider(extension, checkSelector(selector), provider, metadata);
+			registerDocumentSymbolProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentSymbolProvider, metAdAtA?: vscode.DocumentSymbolProviderMetAdAtA): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentSymbolProvider(extension, checkSelector(selector), provider, metAdAtA);
 			},
-			registerWorkspaceSymbolProvider(provider: vscode.WorkspaceSymbolProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerWorkspaceSymbolProvider(extension, provider);
+			registerWorkspAceSymbolProvider(provider: vscode.WorkspAceSymbolProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerWorkspAceSymbolProvider(extension, provider);
 			},
-			registerDocumentFormattingEditProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentFormattingEditProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentFormattingEditProvider(extension, checkSelector(selector), provider);
+			registerDocumentFormAttingEditProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentFormAttingEditProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentFormAttingEditProvider(extension, checkSelector(selector), provider);
 			},
-			registerDocumentRangeFormattingEditProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentRangeFormattingEditProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentRangeFormattingEditProvider(extension, checkSelector(selector), provider);
+			registerDocumentRAngeFormAttingEditProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentRAngeFormAttingEditProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentRAngeFormAttingEditProvider(extension, checkSelector(selector), provider);
 			},
-			registerOnTypeFormattingEditProvider(selector: vscode.DocumentSelector, provider: vscode.OnTypeFormattingEditProvider, firstTriggerCharacter: string, ...moreTriggerCharacters: string[]): vscode.Disposable {
-				return extHostLanguageFeatures.registerOnTypeFormattingEditProvider(extension, checkSelector(selector), provider, [firstTriggerCharacter].concat(moreTriggerCharacters));
+			registerOnTypeFormAttingEditProvider(selector: vscode.DocumentSelector, provider: vscode.OnTypeFormAttingEditProvider, firstTriggerChArActer: string, ...moreTriggerChArActers: string[]): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerOnTypeFormAttingEditProvider(extension, checkSelector(selector), provider, [firstTriggerChArActer].concAt(moreTriggerChArActers));
 			},
-			registerDocumentSemanticTokensProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentSemanticTokensProvider, legend: vscode.SemanticTokensLegend): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentSemanticTokensProvider(extension, checkSelector(selector), provider, legend);
+			registerDocumentSemAnticTokensProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentSemAnticTokensProvider, legend: vscode.SemAnticTokensLegend): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentSemAnticTokensProvider(extension, checkSelector(selector), provider, legend);
 			},
-			registerDocumentRangeSemanticTokensProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentRangeSemanticTokensProvider, legend: vscode.SemanticTokensLegend): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentRangeSemanticTokensProvider(extension, checkSelector(selector), provider, legend);
+			registerDocumentRAngeSemAnticTokensProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentRAngeSemAnticTokensProvider, legend: vscode.SemAnticTokensLegend): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentRAngeSemAnticTokensProvider(extension, checkSelector(selector), provider, legend);
 			},
-			registerSignatureHelpProvider(selector: vscode.DocumentSelector, provider: vscode.SignatureHelpProvider, firstItem?: string | vscode.SignatureHelpProviderMetadata, ...remaining: string[]): vscode.Disposable {
+			registerSignAtureHelpProvider(selector: vscode.DocumentSelector, provider: vscode.SignAtureHelpProvider, firstItem?: string | vscode.SignAtureHelpProviderMetAdAtA, ...remAining: string[]): vscode.DisposAble {
 				if (typeof firstItem === 'object') {
-					return extHostLanguageFeatures.registerSignatureHelpProvider(extension, checkSelector(selector), provider, firstItem);
+					return extHostLAnguAgeFeAtures.registerSignAtureHelpProvider(extension, checkSelector(selector), provider, firstItem);
 				}
-				return extHostLanguageFeatures.registerSignatureHelpProvider(extension, checkSelector(selector), provider, typeof firstItem === 'undefined' ? [] : [firstItem, ...remaining]);
+				return extHostLAnguAgeFeAtures.registerSignAtureHelpProvider(extension, checkSelector(selector), provider, typeof firstItem === 'undefined' ? [] : [firstItem, ...remAining]);
 			},
-			registerCompletionItemProvider(selector: vscode.DocumentSelector, provider: vscode.CompletionItemProvider, ...triggerCharacters: string[]): vscode.Disposable {
-				return extHostLanguageFeatures.registerCompletionItemProvider(extension, checkSelector(selector), provider, triggerCharacters);
+			registerCompletionItemProvider(selector: vscode.DocumentSelector, provider: vscode.CompletionItemProvider, ...triggerChArActers: string[]): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerCompletionItemProvider(extension, checkSelector(selector), provider, triggerChArActers);
 			},
-			registerDocumentLinkProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentLinkProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerDocumentLinkProvider(extension, checkSelector(selector), provider);
+			registerDocumentLinkProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentLinkProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerDocumentLinkProvider(extension, checkSelector(selector), provider);
 			},
-			registerColorProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentColorProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerColorProvider(extension, checkSelector(selector), provider);
+			registerColorProvider(selector: vscode.DocumentSelector, provider: vscode.DocumentColorProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerColorProvider(extension, checkSelector(selector), provider);
 			},
-			registerFoldingRangeProvider(selector: vscode.DocumentSelector, provider: vscode.FoldingRangeProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerFoldingRangeProvider(extension, checkSelector(selector), provider);
+			registerFoldingRAngeProvider(selector: vscode.DocumentSelector, provider: vscode.FoldingRAngeProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerFoldingRAngeProvider(extension, checkSelector(selector), provider);
 			},
-			registerSelectionRangeProvider(selector: vscode.DocumentSelector, provider: vscode.SelectionRangeProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerSelectionRangeProvider(extension, selector, provider);
+			registerSelectionRAngeProvider(selector: vscode.DocumentSelector, provider: vscode.SelectionRAngeProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerSelectionRAngeProvider(extension, selector, provider);
 			},
-			registerCallHierarchyProvider(selector: vscode.DocumentSelector, provider: vscode.CallHierarchyProvider): vscode.Disposable {
-				return extHostLanguageFeatures.registerCallHierarchyProvider(extension, selector, provider);
+			registerCAllHierArchyProvider(selector: vscode.DocumentSelector, provider: vscode.CAllHierArchyProvider): vscode.DisposAble {
+				return extHostLAnguAgeFeAtures.registerCAllHierArchyProvider(extension, selector, provider);
 			},
-			setLanguageConfiguration: (language: string, configuration: vscode.LanguageConfiguration): vscode.Disposable => {
-				return extHostLanguageFeatures.setLanguageConfiguration(extension, language, configuration);
+			setLAnguAgeConfigurAtion: (lAnguAge: string, configurAtion: vscode.LAnguAgeConfigurAtion): vscode.DisposAble => {
+				return extHostLAnguAgeFeAtures.setLAnguAgeConfigurAtion(extension, lAnguAge, configurAtion);
 			},
-			getTokenInformationAtPosition(doc: vscode.TextDocument, pos: vscode.Position) {
-				checkProposedApiEnabled(extension);
-				return extHostLanguages.tokenAtPosition(doc, pos);
+			getTokenInformAtionAtPosition(doc: vscode.TextDocument, pos: vscode.Position) {
+				checkProposedApiEnAbled(extension);
+				return extHostLAnguAges.tokenAtPosition(doc, pos);
 			}
 		};
 
-		// namespace: window
+		// nAmespAce: window
 		const window: typeof vscode.window = {
-			get activeTextEditor() {
+			get ActiveTextEditor() {
 				return extHostEditors.getActiveTextEditor();
 			},
 			get visibleTextEditors() {
 				return extHostEditors.getVisibleTextEditors();
 			},
-			get activeTerminal() {
-				return extHostTerminalService.activeTerminal;
+			get ActiveTerminAl() {
+				return extHostTerminAlService.ActiveTerminAl;
 			},
-			get terminals() {
-				return extHostTerminalService.terminals;
+			get terminAls() {
+				return extHostTerminAlService.terminAls;
 			},
-			async showTextDocument(documentOrUri: vscode.TextDocument | vscode.Uri, columnOrOptions?: vscode.ViewColumn | vscode.TextDocumentShowOptions, preserveFocus?: boolean): Promise<vscode.TextEditor> {
-				const document = await (URI.isUri(documentOrUri)
-					? Promise.resolve(workspace.openTextDocument(documentOrUri))
+			Async showTextDocument(documentOrUri: vscode.TextDocument | vscode.Uri, columnOrOptions?: vscode.ViewColumn | vscode.TextDocumentShowOptions, preserveFocus?: booleAn): Promise<vscode.TextEditor> {
+				const document = AwAit (URI.isUri(documentOrUri)
+					? Promise.resolve(workspAce.openTextDocument(documentOrUri))
 					: Promise.resolve(<vscode.TextDocument>documentOrUri));
 
 				return extHostEditors.showTextDocument(document, columnOrOptions, preserveFocus);
 			},
-			createTextEditorDecorationType(options: vscode.DecorationRenderOptions): vscode.TextEditorDecorationType {
-				return extHostEditors.createTextEditorDecorationType(options);
+			creAteTextEditorDecorAtionType(options: vscode.DecorAtionRenderOptions): vscode.TextEditorDecorAtionType {
+				return extHostEditors.creAteTextEditorDecorAtionType(options);
 			},
-			onDidChangeActiveTextEditor(listener, thisArg?, disposables?) {
-				return extHostEditors.onDidChangeActiveTextEditor(listener, thisArg, disposables);
+			onDidChAngeActiveTextEditor(listener, thisArg?, disposAbles?) {
+				return extHostEditors.onDidChAngeActiveTextEditor(listener, thisArg, disposAbles);
 			},
-			onDidChangeVisibleTextEditors(listener, thisArg, disposables) {
-				return extHostEditors.onDidChangeVisibleTextEditors(listener, thisArg, disposables);
+			onDidChAngeVisibleTextEditors(listener, thisArg, disposAbles) {
+				return extHostEditors.onDidChAngeVisibleTextEditors(listener, thisArg, disposAbles);
 			},
-			onDidChangeTextEditorSelection(listener: (e: vscode.TextEditorSelectionChangeEvent) => any, thisArgs?: any, disposables?: extHostTypes.Disposable[]) {
-				return extHostEditors.onDidChangeTextEditorSelection(listener, thisArgs, disposables);
+			onDidChAngeTextEditorSelection(listener: (e: vscode.TextEditorSelectionChAngeEvent) => Any, thisArgs?: Any, disposAbles?: extHostTypes.DisposAble[]) {
+				return extHostEditors.onDidChAngeTextEditorSelection(listener, thisArgs, disposAbles);
 			},
-			onDidChangeTextEditorOptions(listener: (e: vscode.TextEditorOptionsChangeEvent) => any, thisArgs?: any, disposables?: extHostTypes.Disposable[]) {
-				return extHostEditors.onDidChangeTextEditorOptions(listener, thisArgs, disposables);
+			onDidChAngeTextEditorOptions(listener: (e: vscode.TextEditorOptionsChAngeEvent) => Any, thisArgs?: Any, disposAbles?: extHostTypes.DisposAble[]) {
+				return extHostEditors.onDidChAngeTextEditorOptions(listener, thisArgs, disposAbles);
 			},
-			onDidChangeTextEditorVisibleRanges(listener: (e: vscode.TextEditorVisibleRangesChangeEvent) => any, thisArgs?: any, disposables?: extHostTypes.Disposable[]) {
-				return extHostEditors.onDidChangeTextEditorVisibleRanges(listener, thisArgs, disposables);
+			onDidChAngeTextEditorVisibleRAnges(listener: (e: vscode.TextEditorVisibleRAngesChAngeEvent) => Any, thisArgs?: Any, disposAbles?: extHostTypes.DisposAble[]) {
+				return extHostEditors.onDidChAngeTextEditorVisibleRAnges(listener, thisArgs, disposAbles);
 			},
-			onDidChangeTextEditorViewColumn(listener, thisArg?, disposables?) {
-				return extHostEditors.onDidChangeTextEditorViewColumn(listener, thisArg, disposables);
+			onDidChAngeTextEditorViewColumn(listener, thisArg?, disposAbles?) {
+				return extHostEditors.onDidChAngeTextEditorViewColumn(listener, thisArg, disposAbles);
 			},
-			onDidCloseTerminal(listener, thisArg?, disposables?) {
-				return extHostTerminalService.onDidCloseTerminal(listener, thisArg, disposables);
+			onDidCloseTerminAl(listener, thisArg?, disposAbles?) {
+				return extHostTerminAlService.onDidCloseTerminAl(listener, thisArg, disposAbles);
 			},
-			onDidOpenTerminal(listener, thisArg?, disposables?) {
-				return extHostTerminalService.onDidOpenTerminal(listener, thisArg, disposables);
+			onDidOpenTerminAl(listener, thisArg?, disposAbles?) {
+				return extHostTerminAlService.onDidOpenTerminAl(listener, thisArg, disposAbles);
 			},
-			onDidChangeActiveTerminal(listener, thisArg?, disposables?) {
-				return extHostTerminalService.onDidChangeActiveTerminal(listener, thisArg, disposables);
+			onDidChAngeActiveTerminAl(listener, thisArg?, disposAbles?) {
+				return extHostTerminAlService.onDidChAngeActiveTerminAl(listener, thisArg, disposAbles);
 			},
-			onDidChangeTerminalDimensions(listener, thisArg?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostTerminalService.onDidChangeTerminalDimensions(listener, thisArg, disposables);
+			onDidChAngeTerminAlDimensions(listener, thisArg?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostTerminAlService.onDidChAngeTerminAlDimensions(listener, thisArg, disposAbles);
 			},
-			onDidWriteTerminalData(listener, thisArg?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostTerminalService.onDidWriteTerminalData(listener, thisArg, disposables);
+			onDidWriteTerminAlDAtA(listener, thisArg?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostTerminAlService.onDidWriteTerminAlDAtA(listener, thisArg, disposAbles);
 			},
-			get state() {
-				return extHostWindow.state;
+			get stAte() {
+				return extHostWindow.stAte;
 			},
-			onDidChangeWindowState(listener, thisArg?, disposables?) {
-				return extHostWindow.onDidChangeWindowState(listener, thisArg, disposables);
+			onDidChAngeWindowStAte(listener, thisArg?, disposAbles?) {
+				return extHostWindow.onDidChAngeWindowStAte(listener, thisArg, disposAbles);
 			},
-			showInformationMessage(message: string, ...rest: Array<vscode.MessageOptions | string | vscode.MessageItem>) {
-				return <Thenable<any>>extHostMessageService.showMessage(extension, Severity.Info, message, rest[0], <Array<string | vscode.MessageItem>>rest.slice(1));
+			showInformAtionMessAge(messAge: string, ...rest: ArrAy<vscode.MessAgeOptions | string | vscode.MessAgeItem>) {
+				return <ThenAble<Any>>extHostMessAgeService.showMessAge(extension, Severity.Info, messAge, rest[0], <ArrAy<string | vscode.MessAgeItem>>rest.slice(1));
 			},
-			showWarningMessage(message: string, ...rest: Array<vscode.MessageOptions | string | vscode.MessageItem>) {
-				return <Thenable<any>>extHostMessageService.showMessage(extension, Severity.Warning, message, rest[0], <Array<string | vscode.MessageItem>>rest.slice(1));
+			showWArningMessAge(messAge: string, ...rest: ArrAy<vscode.MessAgeOptions | string | vscode.MessAgeItem>) {
+				return <ThenAble<Any>>extHostMessAgeService.showMessAge(extension, Severity.WArning, messAge, rest[0], <ArrAy<string | vscode.MessAgeItem>>rest.slice(1));
 			},
-			showErrorMessage(message: string, ...rest: Array<vscode.MessageOptions | string | vscode.MessageItem>) {
-				return <Thenable<any>>extHostMessageService.showMessage(extension, Severity.Error, message, rest[0], <Array<string | vscode.MessageItem>>rest.slice(1));
+			showErrorMessAge(messAge: string, ...rest: ArrAy<vscode.MessAgeOptions | string | vscode.MessAgeItem>) {
+				return <ThenAble<Any>>extHostMessAgeService.showMessAge(extension, Severity.Error, messAge, rest[0], <ArrAy<string | vscode.MessAgeItem>>rest.slice(1));
 			},
-			showQuickPick(items: any, options?: vscode.QuickPickOptions, token?: vscode.CancellationToken): any {
-				return extHostQuickOpen.showQuickPick(items, !!extension.enableProposedApi, options, token);
+			showQuickPick(items: Any, options?: vscode.QuickPickOptions, token?: vscode.CAncellAtionToken): Any {
+				return extHostQuickOpen.showQuickPick(items, !!extension.enAbleProposedApi, options, token);
 			},
-			showWorkspaceFolderPick(options?: vscode.WorkspaceFolderPickOptions) {
-				return extHostQuickOpen.showWorkspaceFolderPick(options);
+			showWorkspAceFolderPick(options?: vscode.WorkspAceFolderPickOptions) {
+				return extHostQuickOpen.showWorkspAceFolderPick(options);
 			},
-			showInputBox(options?: vscode.InputBoxOptions, token?: vscode.CancellationToken) {
+			showInputBox(options?: vscode.InputBoxOptions, token?: vscode.CAncellAtionToken) {
 				return extHostQuickOpen.showInput(options, token);
 			},
-			showOpenDialog(options) {
-				return extHostDialogs.showOpenDialog(options);
+			showOpenDiAlog(options) {
+				return extHostDiAlogs.showOpenDiAlog(options);
 			},
-			showSaveDialog(options) {
-				return extHostDialogs.showSaveDialog(options);
+			showSAveDiAlog(options) {
+				return extHostDiAlogs.showSAveDiAlog(options);
 			},
-			createStatusBarItem(alignmentOrOptions?: vscode.StatusBarAlignment | vscode.window.StatusBarItemOptions, priority?: number): vscode.StatusBarItem {
+			creAteStAtusBArItem(AlignmentOrOptions?: vscode.StAtusBArAlignment | vscode.window.StAtusBArItemOptions, priority?: number): vscode.StAtusBArItem {
 				let id: string;
-				let name: string;
-				let alignment: number | undefined;
-				let accessibilityInformation: vscode.AccessibilityInformation | undefined = undefined;
+				let nAme: string;
+				let Alignment: number | undefined;
+				let AccessibilityInformAtion: vscode.AccessibilityInformAtion | undefined = undefined;
 
-				if (alignmentOrOptions && typeof alignmentOrOptions !== 'number') {
-					id = alignmentOrOptions.id;
-					name = alignmentOrOptions.name;
-					alignment = alignmentOrOptions.alignment;
-					priority = alignmentOrOptions.priority;
-					accessibilityInformation = alignmentOrOptions.accessibilityInformation;
+				if (AlignmentOrOptions && typeof AlignmentOrOptions !== 'number') {
+					id = AlignmentOrOptions.id;
+					nAme = AlignmentOrOptions.nAme;
+					Alignment = AlignmentOrOptions.Alignment;
+					priority = AlignmentOrOptions.priority;
+					AccessibilityInformAtion = AlignmentOrOptions.AccessibilityInformAtion;
 				} else {
-					id = extension.identifier.value;
-					name = nls.localize('extensionLabel', "{0} (Extension)", extension.displayName || extension.name);
-					alignment = alignmentOrOptions;
+					id = extension.identifier.vAlue;
+					nAme = nls.locAlize('extensionLAbel', "{0} (Extension)", extension.displAyNAme || extension.nAme);
+					Alignment = AlignmentOrOptions;
 					priority = priority;
 				}
 
-				return extHostStatusBar.createStatusBarEntry(id, name, alignment, priority, accessibilityInformation);
+				return extHostStAtusBAr.creAteStAtusBArEntry(id, nAme, Alignment, priority, AccessibilityInformAtion);
 			},
-			setStatusBarMessage(text: string, timeoutOrThenable?: number | Thenable<any>): vscode.Disposable {
-				return extHostStatusBar.setStatusBarMessage(text, timeoutOrThenable);
+			setStAtusBArMessAge(text: string, timeoutOrThenAble?: number | ThenAble<Any>): vscode.DisposAble {
+				return extHostStAtusBAr.setStAtusBArMessAge(text, timeoutOrThenAble);
 			},
-			withScmProgress<R>(task: (progress: vscode.Progress<number>) => Thenable<R>) {
-				extHostApiDeprecation.report('window.withScmProgress', extension,
-					`Use 'withProgress' instead.`);
+			withScmProgress<R>(tAsk: (progress: vscode.Progress<number>) => ThenAble<R>) {
+				extHostApiDeprecAtion.report('window.withScmProgress', extension,
+					`Use 'withProgress' insteAd.`);
 
-				return extHostProgress.withProgress(extension, { location: extHostTypes.ProgressLocation.SourceControl }, (progress, token) => task({ report(n: number) { /*noop*/ } }));
+				return extHostProgress.withProgress(extension, { locAtion: extHostTypes.ProgressLocAtion.SourceControl }, (progress, token) => tAsk({ report(n: number) { /*noop*/ } }));
 			},
-			withProgress<R>(options: vscode.ProgressOptions, task: (progress: vscode.Progress<{ message?: string; worked?: number }>, token: vscode.CancellationToken) => Thenable<R>) {
-				return extHostProgress.withProgress(extension, options, task);
+			withProgress<R>(options: vscode.ProgressOptions, tAsk: (progress: vscode.Progress<{ messAge?: string; worked?: number }>, token: vscode.CAncellAtionToken) => ThenAble<R>) {
+				return extHostProgress.withProgress(extension, options, tAsk);
 			},
-			createOutputChannel(name: string): vscode.OutputChannel {
-				return extHostOutputService.createOutputChannel(name);
+			creAteOutputChAnnel(nAme: string): vscode.OutputChAnnel {
+				return extHostOutputService.creAteOutputChAnnel(nAme);
 			},
-			createWebviewPanel(viewType: string, title: string, showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: boolean }, options?: vscode.WebviewPanelOptions & vscode.WebviewOptions): vscode.WebviewPanel {
-				return extHostWebviewPanels.createWebviewPanel(extension, viewType, title, showOptions, options);
+			creAteWebviewPAnel(viewType: string, title: string, showOptions: vscode.ViewColumn | { viewColumn: vscode.ViewColumn, preserveFocus?: booleAn }, options?: vscode.WebviewPAnelOptions & vscode.WebviewOptions): vscode.WebviewPAnel {
+				return extHostWebviewPAnels.creAteWebviewPAnel(extension, viewType, title, showOptions, options);
 			},
-			createWebviewTextEditorInset(editor: vscode.TextEditor, line: number, height: number, options?: vscode.WebviewOptions): vscode.WebviewEditorInset {
-				checkProposedApiEnabled(extension);
-				return extHostEditorInsets.createWebviewEditorInset(editor, line, height, options, extension);
+			creAteWebviewTextEditorInset(editor: vscode.TextEditor, line: number, height: number, options?: vscode.WebviewOptions): vscode.WebviewEditorInset {
+				checkProposedApiEnAbled(extension);
+				return extHostEditorInsets.creAteWebviewEditorInset(editor, line, height, options, extension);
 			},
-			createTerminal(nameOrOptions?: vscode.TerminalOptions | vscode.ExtensionTerminalOptions | string, shellPath?: string, shellArgs?: string[] | string): vscode.Terminal {
-				if (typeof nameOrOptions === 'object') {
-					if ('pty' in nameOrOptions) {
-						return extHostTerminalService.createExtensionTerminal(nameOrOptions);
+			creAteTerminAl(nAmeOrOptions?: vscode.TerminAlOptions | vscode.ExtensionTerminAlOptions | string, shellPAth?: string, shellArgs?: string[] | string): vscode.TerminAl {
+				if (typeof nAmeOrOptions === 'object') {
+					if ('pty' in nAmeOrOptions) {
+						return extHostTerminAlService.creAteExtensionTerminAl(nAmeOrOptions);
 					}
-					return extHostTerminalService.createTerminalFromOptions(nameOrOptions);
+					return extHostTerminAlService.creAteTerminAlFromOptions(nAmeOrOptions);
 				}
-				return extHostTerminalService.createTerminal(nameOrOptions, shellPath, shellArgs);
+				return extHostTerminAlService.creAteTerminAl(nAmeOrOptions, shellPAth, shellArgs);
 			},
-			registerTerminalLinkProvider(handler: vscode.TerminalLinkProvider): vscode.Disposable {
-				return extHostTerminalService.registerLinkProvider(handler);
+			registerTerminAlLinkProvider(hAndler: vscode.TerminAlLinkProvider): vscode.DisposAble {
+				return extHostTerminAlService.registerLinkProvider(hAndler);
 			},
-			registerTreeDataProvider(viewId: string, treeDataProvider: vscode.TreeDataProvider<any>): vscode.Disposable {
-				return extHostTreeViews.registerTreeDataProvider(viewId, treeDataProvider, extension);
+			registerTreeDAtAProvider(viewId: string, treeDAtAProvider: vscode.TreeDAtAProvider<Any>): vscode.DisposAble {
+				return extHostTreeViews.registerTreeDAtAProvider(viewId, treeDAtAProvider, extension);
 			},
-			createTreeView(viewId: string, options: { treeDataProvider: vscode.TreeDataProvider<any> }): vscode.TreeView<any> {
-				return extHostTreeViews.createTreeView(viewId, options, extension);
+			creAteTreeView(viewId: string, options: { treeDAtAProvider: vscode.TreeDAtAProvider<Any> }): vscode.TreeView<Any> {
+				return extHostTreeViews.creAteTreeView(viewId, options, extension);
 			},
-			registerWebviewPanelSerializer: (viewType: string, serializer: vscode.WebviewPanelSerializer) => {
-				return extHostWebviewPanels.registerWebviewPanelSerializer(extension, viewType, serializer);
+			registerWebviewPAnelSeriAlizer: (viewType: string, seriAlizer: vscode.WebviewPAnelSeriAlizer) => {
+				return extHostWebviewPAnels.registerWebviewPAnelSeriAlizer(extension, viewType, seriAlizer);
 			},
-			registerCustomEditorProvider: (viewType: string, provider: vscode.CustomTextEditorProvider | vscode.CustomReadonlyEditorProvider, options: { webviewOptions?: vscode.WebviewPanelOptions, supportsMultipleEditorsPerDocument?: boolean } = {}) => {
+			registerCustomEditorProvider: (viewType: string, provider: vscode.CustomTextEditorProvider | vscode.CustomReAdonlyEditorProvider, options: { webviewOptions?: vscode.WebviewPAnelOptions, supportsMultipleEditorsPerDocument?: booleAn } = {}) => {
 				return extHostCustomEditors.registerCustomEditorProvider(extension, viewType, provider, options);
 			},
-			registerDecorationProvider(provider: vscode.FileDecorationProvider) {
-				checkProposedApiEnabled(extension);
-				return extHostDecorations.registerDecorationProvider(provider, extension.identifier);
+			registerDecorAtionProvider(provider: vscode.FileDecorAtionProvider) {
+				checkProposedApiEnAbled(extension);
+				return extHostDecorAtions.registerDecorAtionProvider(provider, extension.identifier);
 			},
-			registerUriHandler(handler: vscode.UriHandler) {
-				return extHostUrls.registerUriHandler(extension.identifier, handler);
+			registerUriHAndler(hAndler: vscode.UriHAndler) {
+				return extHostUrls.registerUriHAndler(extension.identifier, hAndler);
 			},
-			createQuickPick<T extends vscode.QuickPickItem>(): vscode.QuickPick<T> {
-				return extHostQuickOpen.createQuickPick(extension.identifier, !!extension.enableProposedApi);
+			creAteQuickPick<T extends vscode.QuickPickItem>(): vscode.QuickPick<T> {
+				return extHostQuickOpen.creAteQuickPick(extension.identifier, !!extension.enAbleProposedApi);
 			},
-			createInputBox(): vscode.InputBox {
-				return extHostQuickOpen.createInputBox(extension.identifier);
+			creAteInputBox(): vscode.InputBox {
+				return extHostQuickOpen.creAteInputBox(extension.identifier);
 			},
-			get activeColorTheme(): vscode.ColorTheme {
-				return extHostTheming.activeColorTheme;
+			get ActiveColorTheme(): vscode.ColorTheme {
+				return extHostTheming.ActiveColorTheme;
 			},
-			onDidChangeActiveColorTheme(listener, thisArg?, disposables?) {
-				return extHostTheming.onDidChangeActiveColorTheme(listener, thisArg, disposables);
+			onDidChAngeActiveColorTheme(listener, thisArg?, disposAbles?) {
+				return extHostTheming.onDidChAngeActiveColorTheme(listener, thisArg, disposAbles);
 			},
 			registerWebviewViewProvider(viewId: string, provider: vscode.WebviewViewProvider, options?: {
 				webviewOptions?: {
-					retainContextWhenHidden?: boolean
+					retAinContextWhenHidden?: booleAn
 				}
 			}) {
 				return extHostWebviewViews.registerWebviewViewProvider(extension, viewId, provider, options?.webviewOptions);
 			},
-			get activeNotebookEditor(): vscode.NotebookEditor | undefined {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.activeNotebookEditor;
+			get ActiveNotebookEditor(): vscode.NotebookEditor | undefined {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.ActiveNotebookEditor;
 			},
-			onDidChangeActiveNotebookEditor(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeActiveNotebookEditor(listener, thisArgs, disposables);
+			onDidChAngeActiveNotebookEditor(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeActiveNotebookEditor(listener, thisArgs, disposAbles);
 			},
 			get visibleNotebookEditors() {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.visibleNotebookEditors;
 			},
-			get onDidChangeVisibleNotebookEditors() {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeVisibleNotebookEditors;
+			get onDidChAngeVisibleNotebookEditors() {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeVisibleNotebookEditors;
 			},
-			onDidChangeNotebookEditorSelection(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeNotebookEditorSelection(listener, thisArgs, disposables);
+			onDidChAngeNotebookEditorSelection(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeNotebookEditorSelection(listener, thisArgs, disposAbles);
 			},
-			onDidChangeNotebookEditorVisibleRanges(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeNotebookEditorVisibleRanges(listener, thisArgs, disposables);
+			onDidChAngeNotebookEditorVisibleRAnges(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeNotebookEditorVisibleRAnges(listener, thisArgs, disposAbles);
 			},
 		};
 
-		// namespace: workspace
+		// nAmespAce: workspAce
 
-		const workspace: typeof vscode.workspace = {
-			get rootPath() {
-				extHostApiDeprecation.report('workspace.rootPath', extension,
-					`Please use 'workspace.workspaceFolders' instead. More details: https://aka.ms/vscode-eliminating-rootpath`);
+		const workspAce: typeof vscode.workspAce = {
+			get rootPAth() {
+				extHostApiDeprecAtion.report('workspAce.rootPAth', extension,
+					`PleAse use 'workspAce.workspAceFolders' insteAd. More detAils: https://AkA.ms/vscode-eliminAting-rootpAth`);
 
-				return extHostWorkspace.getPath();
+				return extHostWorkspAce.getPAth();
 			},
-			set rootPath(value) {
-				throw errors.readonly();
+			set rootPAth(vAlue) {
+				throw errors.reAdonly();
 			},
-			getWorkspaceFolder(resource) {
-				return extHostWorkspace.getWorkspaceFolder(resource);
+			getWorkspAceFolder(resource) {
+				return extHostWorkspAce.getWorkspAceFolder(resource);
 			},
-			get workspaceFolders() {
-				return extHostWorkspace.getWorkspaceFolders();
+			get workspAceFolders() {
+				return extHostWorkspAce.getWorkspAceFolders();
 			},
-			get name() {
-				return extHostWorkspace.name;
+			get nAme() {
+				return extHostWorkspAce.nAme;
 			},
-			set name(value) {
-				throw errors.readonly();
+			set nAme(vAlue) {
+				throw errors.reAdonly();
 			},
-			get workspaceFile() {
-				return extHostWorkspace.workspaceFile;
+			get workspAceFile() {
+				return extHostWorkspAce.workspAceFile;
 			},
-			set workspaceFile(value) {
-				throw errors.readonly();
+			set workspAceFile(vAlue) {
+				throw errors.reAdonly();
 			},
-			updateWorkspaceFolders: (index, deleteCount, ...workspaceFoldersToAdd) => {
-				return extHostWorkspace.updateWorkspaceFolders(extension, index, deleteCount || 0, ...workspaceFoldersToAdd);
+			updAteWorkspAceFolders: (index, deleteCount, ...workspAceFoldersToAdd) => {
+				return extHostWorkspAce.updAteWorkspAceFolders(extension, index, deleteCount || 0, ...workspAceFoldersToAdd);
 			},
-			onDidChangeWorkspaceFolders: function (listener, thisArgs?, disposables?) {
-				return extHostWorkspace.onDidChangeWorkspace(listener, thisArgs, disposables);
+			onDidChAngeWorkspAceFolders: function (listener, thisArgs?, disposAbles?) {
+				return extHostWorkspAce.onDidChAngeWorkspAce(listener, thisArgs, disposAbles);
 			},
-			asRelativePath: (pathOrUri, includeWorkspace?) => {
-				return extHostWorkspace.getRelativePath(pathOrUri, includeWorkspace);
+			AsRelAtivePAth: (pAthOrUri, includeWorkspAce?) => {
+				return extHostWorkspAce.getRelAtivePAth(pAthOrUri, includeWorkspAce);
 			},
-			findFiles: (include, exclude, maxResults?, token?) => {
-				// Note, undefined/null have different meanings on "exclude"
-				return extHostWorkspace.findFiles(typeConverters.GlobPattern.from(include), typeConverters.GlobPattern.from(exclude), maxResults, extension.identifier, token);
+			findFiles: (include, exclude, mAxResults?, token?) => {
+				// Note, undefined/null hAve different meAnings on "exclude"
+				return extHostWorkspAce.findFiles(typeConverters.GlobPAttern.from(include), typeConverters.GlobPAttern.from(exclude), mAxResults, extension.identifier, token);
 			},
-			findTextInFiles: (query: vscode.TextSearchQuery, optionsOrCallback: vscode.FindTextInFilesOptions | ((result: vscode.TextSearchResult) => void), callbackOrToken?: vscode.CancellationToken | ((result: vscode.TextSearchResult) => void), token?: vscode.CancellationToken) => {
+			findTextInFiles: (query: vscode.TextSeArchQuery, optionsOrCAllbAck: vscode.FindTextInFilesOptions | ((result: vscode.TextSeArchResult) => void), cAllbAckOrToken?: vscode.CAncellAtionToken | ((result: vscode.TextSeArchResult) => void), token?: vscode.CAncellAtionToken) => {
 				let options: vscode.FindTextInFilesOptions;
-				let callback: (result: vscode.TextSearchResult) => void;
+				let cAllbAck: (result: vscode.TextSeArchResult) => void;
 
-				if (typeof optionsOrCallback === 'object') {
-					options = optionsOrCallback;
-					callback = callbackOrToken as (result: vscode.TextSearchResult) => void;
+				if (typeof optionsOrCAllbAck === 'object') {
+					options = optionsOrCAllbAck;
+					cAllbAck = cAllbAckOrToken As (result: vscode.TextSeArchResult) => void;
 				} else {
 					options = {};
-					callback = optionsOrCallback;
-					token = callbackOrToken as vscode.CancellationToken;
+					cAllbAck = optionsOrCAllbAck;
+					token = cAllbAckOrToken As vscode.CAncellAtionToken;
 				}
 
-				return extHostWorkspace.findTextInFiles(query, options || {}, callback, extension.identifier, token);
+				return extHostWorkspAce.findTextInFiles(query, options || {}, cAllbAck, extension.identifier, token);
 			},
-			saveAll: (includeUntitled?) => {
-				return extHostWorkspace.saveAll(includeUntitled);
+			sAveAll: (includeUntitled?) => {
+				return extHostWorkspAce.sAveAll(includeUntitled);
 			},
-			applyEdit(edit: vscode.WorkspaceEdit): Thenable<boolean> {
-				return extHostBulkEdits.applyWorkspaceEdit(edit);
+			ApplyEdit(edit: vscode.WorkspAceEdit): ThenAble<booleAn> {
+				return extHostBulkEdits.ApplyWorkspAceEdit(edit);
 			},
-			createFileSystemWatcher: (pattern, ignoreCreate, ignoreChange, ignoreDelete): vscode.FileSystemWatcher => {
-				return extHostFileSystemEvent.createFileSystemWatcher(typeConverters.GlobPattern.from(pattern), ignoreCreate, ignoreChange, ignoreDelete);
+			creAteFileSystemWAtcher: (pAttern, ignoreCreAte, ignoreChAnge, ignoreDelete): vscode.FileSystemWAtcher => {
+				return extHostFileSystemEvent.creAteFileSystemWAtcher(typeConverters.GlobPAttern.from(pAttern), ignoreCreAte, ignoreChAnge, ignoreDelete);
 			},
 			get textDocuments() {
-				return extHostDocuments.getAllDocumentData().map(data => data.document);
+				return extHostDocuments.getAllDocumentDAtA().mAp(dAtA => dAtA.document);
 			},
-			set textDocuments(value) {
-				throw errors.readonly();
+			set textDocuments(vAlue) {
+				throw errors.reAdonly();
 			},
-			openTextDocument(uriOrFileNameOrOptions?: vscode.Uri | string | { language?: string; content?: string; }) {
-				let uriPromise: Thenable<URI>;
+			openTextDocument(uriOrFileNAmeOrOptions?: vscode.Uri | string | { lAnguAge?: string; content?: string; }) {
+				let uriPromise: ThenAble<URI>;
 
-				const options = uriOrFileNameOrOptions as { language?: string; content?: string; };
-				if (typeof uriOrFileNameOrOptions === 'string') {
-					uriPromise = Promise.resolve(URI.file(uriOrFileNameOrOptions));
-				} else if (URI.isUri(uriOrFileNameOrOptions)) {
-					uriPromise = Promise.resolve(uriOrFileNameOrOptions);
+				const options = uriOrFileNAmeOrOptions As { lAnguAge?: string; content?: string; };
+				if (typeof uriOrFileNAmeOrOptions === 'string') {
+					uriPromise = Promise.resolve(URI.file(uriOrFileNAmeOrOptions));
+				} else if (URI.isUri(uriOrFileNAmeOrOptions)) {
+					uriPromise = Promise.resolve(uriOrFileNAmeOrOptions);
 				} else if (!options || typeof options === 'object') {
-					uriPromise = extHostDocuments.createDocumentData(options);
+					uriPromise = extHostDocuments.creAteDocumentDAtA(options);
 				} else {
-					throw new Error('illegal argument - uriOrFileNameOrOptions');
+					throw new Error('illegAl Argument - uriOrFileNAmeOrOptions');
 				}
 
 				return uriPromise.then(uri => {
-					return extHostDocuments.ensureDocumentData(uri).then(documentData => {
-						return documentData.document;
+					return extHostDocuments.ensureDocumentDAtA(uri).then(documentDAtA => {
+						return documentDAtA.document;
 					});
 				});
 			},
-			onDidOpenTextDocument: (listener, thisArgs?, disposables?) => {
-				return extHostDocuments.onDidAddDocument(listener, thisArgs, disposables);
+			onDidOpenTextDocument: (listener, thisArgs?, disposAbles?) => {
+				return extHostDocuments.onDidAddDocument(listener, thisArgs, disposAbles);
 			},
-			onDidCloseTextDocument: (listener, thisArgs?, disposables?) => {
-				return extHostDocuments.onDidRemoveDocument(listener, thisArgs, disposables);
+			onDidCloseTextDocument: (listener, thisArgs?, disposAbles?) => {
+				return extHostDocuments.onDidRemoveDocument(listener, thisArgs, disposAbles);
 			},
-			onDidChangeTextDocument: (listener, thisArgs?, disposables?) => {
-				return extHostDocuments.onDidChangeDocument(listener, thisArgs, disposables);
+			onDidChAngeTextDocument: (listener, thisArgs?, disposAbles?) => {
+				return extHostDocuments.onDidChAngeDocument(listener, thisArgs, disposAbles);
 			},
-			onDidSaveTextDocument: (listener, thisArgs?, disposables?) => {
-				return extHostDocuments.onDidSaveDocument(listener, thisArgs, disposables);
+			onDidSAveTextDocument: (listener, thisArgs?, disposAbles?) => {
+				return extHostDocuments.onDidSAveDocument(listener, thisArgs, disposAbles);
 			},
-			onWillSaveTextDocument: (listener, thisArgs?, disposables?) => {
-				return extHostDocumentSaveParticipant.getOnWillSaveTextDocumentEvent(extension)(listener, thisArgs, disposables);
+			onWillSAveTextDocument: (listener, thisArgs?, disposAbles?) => {
+				return extHostDocumentSAvePArticipAnt.getOnWillSAveTextDocumentEvent(extension)(listener, thisArgs, disposAbles);
 			},
-			onDidChangeConfiguration: (listener: (_: any) => any, thisArgs?: any, disposables?: extHostTypes.Disposable[]) => {
-				return configProvider.onDidChangeConfiguration(listener, thisArgs, disposables);
+			onDidChAngeConfigurAtion: (listener: (_: Any) => Any, thisArgs?: Any, disposAbles?: extHostTypes.DisposAble[]) => {
+				return configProvider.onDidChAngeConfigurAtion(listener, thisArgs, disposAbles);
 			},
-			getConfiguration(section?: string, scope?: vscode.ConfigurationScope | null): vscode.WorkspaceConfiguration {
-				scope = arguments.length === 1 ? undefined : scope;
-				return configProvider.getConfiguration(section, scope, extension);
+			getConfigurAtion(section?: string, scope?: vscode.ConfigurAtionScope | null): vscode.WorkspAceConfigurAtion {
+				scope = Arguments.length === 1 ? undefined : scope;
+				return configProvider.getConfigurAtion(section, scope, extension);
 			},
 			registerTextDocumentContentProvider(scheme: string, provider: vscode.TextDocumentContentProvider) {
 				return extHostDocumentContentProviders.registerTextDocumentContentProvider(scheme, provider);
 			},
-			registerTaskProvider: (type: string, provider: vscode.TaskProvider) => {
-				extHostApiDeprecation.report('window.registerTaskProvider', extension,
-					`Use the corresponding function on the 'tasks' namespace instead`);
+			registerTAskProvider: (type: string, provider: vscode.TAskProvider) => {
+				extHostApiDeprecAtion.report('window.registerTAskProvider', extension,
+					`Use the corresponding function on the 'tAsks' nAmespAce insteAd`);
 
-				return extHostTask.registerTaskProvider(extension, type, provider);
+				return extHostTAsk.registerTAskProvider(extension, type, provider);
 			},
 			registerFileSystemProvider(scheme, provider, options) {
 				return extHostFileSystem.registerFileSystemProvider(extension.identifier, scheme, provider, options);
@@ -799,443 +799,443 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 			get fs() {
 				return extHostConsumerFileSystem;
 			},
-			registerFileSearchProvider: (scheme: string, provider: vscode.FileSearchProvider) => {
-				checkProposedApiEnabled(extension);
-				return extHostSearch.registerFileSearchProvider(scheme, provider);
+			registerFileSeArchProvider: (scheme: string, provider: vscode.FileSeArchProvider) => {
+				checkProposedApiEnAbled(extension);
+				return extHostSeArch.registerFileSeArchProvider(scheme, provider);
 			},
-			registerTextSearchProvider: (scheme: string, provider: vscode.TextSearchProvider) => {
-				checkProposedApiEnabled(extension);
-				return extHostSearch.registerTextSearchProvider(scheme, provider);
+			registerTextSeArchProvider: (scheme: string, provider: vscode.TextSeArchProvider) => {
+				checkProposedApiEnAbled(extension);
+				return extHostSeArch.registerTextSeArchProvider(scheme, provider);
 			},
-			registerRemoteAuthorityResolver: (authorityPrefix: string, resolver: vscode.RemoteAuthorityResolver) => {
-				checkProposedApiEnabled(extension);
-				return extensionService.registerRemoteAuthorityResolver(authorityPrefix, resolver);
+			registerRemoteAuthorityResolver: (AuthorityPrefix: string, resolver: vscode.RemoteAuthorityResolver) => {
+				checkProposedApiEnAbled(extension);
+				return extensionService.registerRemoteAuthorityResolver(AuthorityPrefix, resolver);
 			},
-			registerResourceLabelFormatter: (formatter: vscode.ResourceLabelFormatter) => {
-				checkProposedApiEnabled(extension);
-				return extHostLabelService.$registerResourceLabelFormatter(formatter);
+			registerResourceLAbelFormAtter: (formAtter: vscode.ResourceLAbelFormAtter) => {
+				checkProposedApiEnAbled(extension);
+				return extHostLAbelService.$registerResourceLAbelFormAtter(formAtter);
 			},
-			onDidCreateFiles: (listener, thisArg, disposables) => {
-				return extHostFileSystemEvent.onDidCreateFile(listener, thisArg, disposables);
+			onDidCreAteFiles: (listener, thisArg, disposAbles) => {
+				return extHostFileSystemEvent.onDidCreAteFile(listener, thisArg, disposAbles);
 			},
-			onDidDeleteFiles: (listener, thisArg, disposables) => {
-				return extHostFileSystemEvent.onDidDeleteFile(listener, thisArg, disposables);
+			onDidDeleteFiles: (listener, thisArg, disposAbles) => {
+				return extHostFileSystemEvent.onDidDeleteFile(listener, thisArg, disposAbles);
 			},
-			onDidRenameFiles: (listener, thisArg, disposables) => {
-				return extHostFileSystemEvent.onDidRenameFile(listener, thisArg, disposables);
+			onDidRenAmeFiles: (listener, thisArg, disposAbles) => {
+				return extHostFileSystemEvent.onDidRenAmeFile(listener, thisArg, disposAbles);
 			},
-			onWillCreateFiles: (listener: (e: vscode.FileWillCreateEvent) => any, thisArg?: any, disposables?: vscode.Disposable[]) => {
-				return extHostFileSystemEvent.getOnWillCreateFileEvent(extension)(listener, thisArg, disposables);
+			onWillCreAteFiles: (listener: (e: vscode.FileWillCreAteEvent) => Any, thisArg?: Any, disposAbles?: vscode.DisposAble[]) => {
+				return extHostFileSystemEvent.getOnWillCreAteFileEvent(extension)(listener, thisArg, disposAbles);
 			},
-			onWillDeleteFiles: (listener: (e: vscode.FileWillDeleteEvent) => any, thisArg?: any, disposables?: vscode.Disposable[]) => {
-				return extHostFileSystemEvent.getOnWillDeleteFileEvent(extension)(listener, thisArg, disposables);
+			onWillDeleteFiles: (listener: (e: vscode.FileWillDeleteEvent) => Any, thisArg?: Any, disposAbles?: vscode.DisposAble[]) => {
+				return extHostFileSystemEvent.getOnWillDeleteFileEvent(extension)(listener, thisArg, disposAbles);
 			},
-			onWillRenameFiles: (listener: (e: vscode.FileWillRenameEvent) => any, thisArg?: any, disposables?: vscode.Disposable[]) => {
-				return extHostFileSystemEvent.getOnWillRenameFileEvent(extension)(listener, thisArg, disposables);
+			onWillRenAmeFiles: (listener: (e: vscode.FileWillRenAmeEvent) => Any, thisArg?: Any, disposAbles?: vscode.DisposAble[]) => {
+				return extHostFileSystemEvent.getOnWillRenAmeFileEvent(extension)(listener, thisArg, disposAbles);
 			},
-			openTunnel: (forward: vscode.TunnelOptions) => {
-				checkProposedApiEnabled(extension);
-				return extHostTunnelService.openTunnel(forward).then(value => {
-					if (!value) {
-						throw new Error('cannot open tunnel');
+			openTunnel: (forwArd: vscode.TunnelOptions) => {
+				checkProposedApiEnAbled(extension);
+				return extHostTunnelService.openTunnel(forwArd).then(vAlue => {
+					if (!vAlue) {
+						throw new Error('cAnnot open tunnel');
 					}
-					return value;
+					return vAlue;
 				});
 			},
 			get tunnels() {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostTunnelService.getTunnels();
 			},
-			onDidChangeTunnels: (listener, thisArg?, disposables?) => {
-				checkProposedApiEnabled(extension);
-				return extHostTunnelService.onDidChangeTunnels(listener, thisArg, disposables);
+			onDidChAngeTunnels: (listener, thisArg?, disposAbles?) => {
+				checkProposedApiEnAbled(extension);
+				return extHostTunnelService.onDidChAngeTunnels(listener, thisArg, disposAbles);
 
 			},
 			registerTimelineProvider: (scheme: string | string[], provider: vscode.TimelineProvider) => {
-				checkProposedApiEnabled(extension);
-				return extHostTimeline.registerTimelineProvider(scheme, provider, extension.identifier, extHostCommands.converter);
+				checkProposedApiEnAbled(extension);
+				return extHostTimeline.registerTimelineProvider(scheme, provider, extension.identifier, extHostCommAnds.converter);
 			}
 		};
 
-		// namespace: scm
+		// nAmespAce: scm
 		const scm: typeof vscode.scm = {
 			get inputBox() {
-				extHostApiDeprecation.report('scm.inputBox', extension,
-					`Use 'SourceControl.inputBox' instead`);
+				extHostApiDeprecAtion.report('scm.inputBox', extension,
+					`Use 'SourceControl.inputBox' insteAd`);
 
-				return extHostSCM.getLastInputBox(extension)!; // Strict null override - Deprecated api
+				return extHostSCM.getLAstInputBox(extension)!; // Strict null override - DeprecAted Api
 			},
-			createSourceControl(id: string, label: string, rootUri?: vscode.Uri) {
-				return extHostSCM.createSourceControl(extension, id, label, rootUri);
+			creAteSourceControl(id: string, lAbel: string, rootUri?: vscode.Uri) {
+				return extHostSCM.creAteSourceControl(extension, id, lAbel, rootUri);
 			}
 		};
 
 		const comment: typeof vscode.comments = {
-			createCommentController(id: string, label: string) {
-				return extHostComment.createCommentController(extension, id, label);
+			creAteCommentController(id: string, lAbel: string) {
+				return extHostComment.creAteCommentController(extension, id, lAbel);
 			}
 		};
 
 		const comments = comment;
 
-		// namespace: debug
+		// nAmespAce: debug
 		const debug: typeof vscode.debug = {
-			get activeDebugSession() {
-				return extHostDebugService.activeDebugSession;
+			get ActiveDebugSession() {
+				return extHostDebugService.ActiveDebugSession;
 			},
-			get activeDebugConsole() {
-				return extHostDebugService.activeDebugConsole;
+			get ActiveDebugConsole() {
+				return extHostDebugService.ActiveDebugConsole;
 			},
-			get breakpoints() {
-				return extHostDebugService.breakpoints;
+			get breAkpoints() {
+				return extHostDebugService.breAkpoints;
 			},
-			onDidStartDebugSession(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidStartDebugSession(listener, thisArg, disposables);
+			onDidStArtDebugSession(listener, thisArg?, disposAbles?) {
+				return extHostDebugService.onDidStArtDebugSession(listener, thisArg, disposAbles);
 			},
-			onDidTerminateDebugSession(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidTerminateDebugSession(listener, thisArg, disposables);
+			onDidTerminAteDebugSession(listener, thisArg?, disposAbles?) {
+				return extHostDebugService.onDidTerminAteDebugSession(listener, thisArg, disposAbles);
 			},
-			onDidChangeActiveDebugSession(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidChangeActiveDebugSession(listener, thisArg, disposables);
+			onDidChAngeActiveDebugSession(listener, thisArg?, disposAbles?) {
+				return extHostDebugService.onDidChAngeActiveDebugSession(listener, thisArg, disposAbles);
 			},
-			onDidReceiveDebugSessionCustomEvent(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidReceiveDebugSessionCustomEvent(listener, thisArg, disposables);
+			onDidReceiveDebugSessionCustomEvent(listener, thisArg?, disposAbles?) {
+				return extHostDebugService.onDidReceiveDebugSessionCustomEvent(listener, thisArg, disposAbles);
 			},
-			onDidChangeBreakpoints(listener, thisArgs?, disposables?) {
-				return extHostDebugService.onDidChangeBreakpoints(listener, thisArgs, disposables);
+			onDidChAngeBreAkpoints(listener, thisArgs?, disposAbles?) {
+				return extHostDebugService.onDidChAngeBreAkpoints(listener, thisArgs, disposAbles);
 			},
-			registerDebugConfigurationProvider(debugType: string, provider: vscode.DebugConfigurationProvider, triggerKind?: vscode.DebugConfigurationProviderTriggerKind) {
-				return extHostDebugService.registerDebugConfigurationProvider(debugType, provider, triggerKind || extHostTypes.DebugConfigurationProviderTriggerKind.Initial);
+			registerDebugConfigurAtionProvider(debugType: string, provider: vscode.DebugConfigurAtionProvider, triggerKind?: vscode.DebugConfigurAtionProviderTriggerKind) {
+				return extHostDebugService.registerDebugConfigurAtionProvider(debugType, provider, triggerKind || extHostTypes.DebugConfigurAtionProviderTriggerKind.InitiAl);
 			},
-			registerDebugAdapterDescriptorFactory(debugType: string, factory: vscode.DebugAdapterDescriptorFactory) {
-				return extHostDebugService.registerDebugAdapterDescriptorFactory(extension, debugType, factory);
+			registerDebugAdApterDescriptorFActory(debugType: string, fActory: vscode.DebugAdApterDescriptorFActory) {
+				return extHostDebugService.registerDebugAdApterDescriptorFActory(extension, debugType, fActory);
 			},
-			registerDebugAdapterTrackerFactory(debugType: string, factory: vscode.DebugAdapterTrackerFactory) {
-				return extHostDebugService.registerDebugAdapterTrackerFactory(debugType, factory);
+			registerDebugAdApterTrAckerFActory(debugType: string, fActory: vscode.DebugAdApterTrAckerFActory) {
+				return extHostDebugService.registerDebugAdApterTrAckerFActory(debugType, fActory);
 			},
-			startDebugging(folder: vscode.WorkspaceFolder | undefined, nameOrConfig: string | vscode.DebugConfiguration, parentSessionOrOptions?: vscode.DebugSession | vscode.DebugSessionOptions) {
-				if (!parentSessionOrOptions || (typeof parentSessionOrOptions === 'object' && 'configuration' in parentSessionOrOptions)) {
-					return extHostDebugService.startDebugging(folder, nameOrConfig, { parentSession: parentSessionOrOptions });
+			stArtDebugging(folder: vscode.WorkspAceFolder | undefined, nAmeOrConfig: string | vscode.DebugConfigurAtion, pArentSessionOrOptions?: vscode.DebugSession | vscode.DebugSessionOptions) {
+				if (!pArentSessionOrOptions || (typeof pArentSessionOrOptions === 'object' && 'configurAtion' in pArentSessionOrOptions)) {
+					return extHostDebugService.stArtDebugging(folder, nAmeOrConfig, { pArentSession: pArentSessionOrOptions });
 				}
-				return extHostDebugService.startDebugging(folder, nameOrConfig, parentSessionOrOptions || {});
+				return extHostDebugService.stArtDebugging(folder, nAmeOrConfig, pArentSessionOrOptions || {});
 			},
 			stopDebugging(session?: vscode.DebugSession) {
 				return extHostDebugService.stopDebugging(session);
 			},
-			addBreakpoints(breakpoints: vscode.Breakpoint[]) {
-				return extHostDebugService.addBreakpoints(breakpoints);
+			AddBreAkpoints(breAkpoints: vscode.BreAkpoint[]) {
+				return extHostDebugService.AddBreAkpoints(breAkpoints);
 			},
-			removeBreakpoints(breakpoints: vscode.Breakpoint[]) {
-				return extHostDebugService.removeBreakpoints(breakpoints);
+			removeBreAkpoints(breAkpoints: vscode.BreAkpoint[]) {
+				return extHostDebugService.removeBreAkpoints(breAkpoints);
 			},
-			asDebugSourceUri(source: vscode.DebugProtocolSource, session?: vscode.DebugSession): vscode.Uri {
-				return extHostDebugService.asDebugSourceUri(source, session);
+			AsDebugSourceUri(source: vscode.DebugProtocolSource, session?: vscode.DebugSession): vscode.Uri {
+				return extHostDebugService.AsDebugSourceUri(source, session);
 			}
 		};
 
-		const tasks: typeof vscode.tasks = {
-			registerTaskProvider: (type: string, provider: vscode.TaskProvider) => {
-				return extHostTask.registerTaskProvider(extension, type, provider);
+		const tAsks: typeof vscode.tAsks = {
+			registerTAskProvider: (type: string, provider: vscode.TAskProvider) => {
+				return extHostTAsk.registerTAskProvider(extension, type, provider);
 			},
-			fetchTasks: (filter?: vscode.TaskFilter): Thenable<vscode.Task[]> => {
-				return extHostTask.fetchTasks(filter);
+			fetchTAsks: (filter?: vscode.TAskFilter): ThenAble<vscode.TAsk[]> => {
+				return extHostTAsk.fetchTAsks(filter);
 			},
-			executeTask: (task: vscode.Task): Thenable<vscode.TaskExecution> => {
-				return extHostTask.executeTask(extension, task);
+			executeTAsk: (tAsk: vscode.TAsk): ThenAble<vscode.TAskExecution> => {
+				return extHostTAsk.executeTAsk(extension, tAsk);
 			},
-			get taskExecutions(): vscode.TaskExecution[] {
-				return extHostTask.taskExecutions;
+			get tAskExecutions(): vscode.TAskExecution[] {
+				return extHostTAsk.tAskExecutions;
 			},
-			onDidStartTask: (listeners, thisArgs?, disposables?) => {
-				return extHostTask.onDidStartTask(listeners, thisArgs, disposables);
+			onDidStArtTAsk: (listeners, thisArgs?, disposAbles?) => {
+				return extHostTAsk.onDidStArtTAsk(listeners, thisArgs, disposAbles);
 			},
-			onDidEndTask: (listeners, thisArgs?, disposables?) => {
-				return extHostTask.onDidEndTask(listeners, thisArgs, disposables);
+			onDidEndTAsk: (listeners, thisArgs?, disposAbles?) => {
+				return extHostTAsk.onDidEndTAsk(listeners, thisArgs, disposAbles);
 			},
-			onDidStartTaskProcess: (listeners, thisArgs?, disposables?) => {
-				return extHostTask.onDidStartTaskProcess(listeners, thisArgs, disposables);
+			onDidStArtTAskProcess: (listeners, thisArgs?, disposAbles?) => {
+				return extHostTAsk.onDidStArtTAskProcess(listeners, thisArgs, disposAbles);
 			},
-			onDidEndTaskProcess: (listeners, thisArgs?, disposables?) => {
-				return extHostTask.onDidEndTaskProcess(listeners, thisArgs, disposables);
+			onDidEndTAskProcess: (listeners, thisArgs?, disposAbles?) => {
+				return extHostTAsk.onDidEndTAskProcess(listeners, thisArgs, disposAbles);
 			}
 		};
 
-		// namespace: notebook
+		// nAmespAce: notebook
 		const notebook: (typeof vscode.notebook & {
-			// to ensure that notebook extensions not break before they update APIs.
+			// to ensure thAt notebook extensions not breAk before they updAte APIs.
 			visibleNotebookEditors: vscode.NotebookEditor[];
-			onDidChangeVisibleNotebookEditors: Event<vscode.NotebookEditor[]>;
-			activeNotebookEditor: vscode.NotebookEditor | undefined;
-			onDidChangeActiveNotebookEditor: Event<vscode.NotebookEditor | undefined>;
-			onDidChangeNotebookEditorSelection: Event<vscode.NotebookEditorSelectionChangeEvent>;
-			onDidChangeNotebookEditorVisibleRanges: Event<vscode.NotebookEditorVisibleRangesChangeEvent>;
+			onDidChAngeVisibleNotebookEditors: Event<vscode.NotebookEditor[]>;
+			ActiveNotebookEditor: vscode.NotebookEditor | undefined;
+			onDidChAngeActiveNotebookEditor: Event<vscode.NotebookEditor | undefined>;
+			onDidChAngeNotebookEditorSelection: Event<vscode.NotebookEditorSelectionChAngeEvent>;
+			onDidChAngeNotebookEditorVisibleRAnges: Event<vscode.NotebookEditorVisibleRAngesChAngeEvent>;
 		}) = {
 			openNotebookDocument: (uriComponents, viewType) => {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.openNotebookDocument(uriComponents, viewType);
 			},
 			get onDidOpenNotebookDocument(): Event<vscode.NotebookDocument> {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.onDidOpenNotebookDocument;
 			},
 			get onDidCloseNotebookDocument(): Event<vscode.NotebookDocument> {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.onDidCloseNotebookDocument;
 			},
-			get onDidSaveNotebookDocument(): Event<vscode.NotebookDocument> {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidSaveNotebookDocument;
+			get onDidSAveNotebookDocument(): Event<vscode.NotebookDocument> {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidSAveNotebookDocument;
 			},
 			get notebookDocuments(): vscode.NotebookDocument[] {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.notebookDocuments.map(d => d.notebookDocument);
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.notebookDocuments.mAp(d => d.notebookDocument);
 			},
 			get visibleNotebookEditors(): vscode.NotebookEditor[] {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.visibleNotebookEditors;
 			},
-			get onDidChangeVisibleNotebookEditors() {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeVisibleNotebookEditors;
+			get onDidChAngeVisibleNotebookEditors() {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeVisibleNotebookEditors;
 			},
-			get onDidChangeActiveNotebookKernel() {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeActiveNotebookKernel;
+			get onDidChAngeActiveNotebookKernel() {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeActiveNotebookKernel;
 			},
 			registerNotebookContentProvider: (viewType: string, provider: vscode.NotebookContentProvider, options?: {
-				transientOutputs: boolean;
-				transientMetadata: { [K in keyof vscode.NotebookCellMetadata]?: boolean }
+				trAnsientOutputs: booleAn;
+				trAnsientMetAdAtA: { [K in keyof vscode.NotebookCellMetAdAtA]?: booleAn }
 			}) => {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.registerNotebookContentProvider(extension, viewType, provider, options);
 			},
 			registerNotebookKernelProvider: (selector: vscode.NotebookDocumentFilter, provider: vscode.NotebookKernelProvider) => {
-				checkProposedApiEnabled(extension);
+				checkProposedApiEnAbled(extension);
 				return extHostNotebook.registerNotebookKernelProvider(extension, selector, provider);
 			},
-			createNotebookEditorDecorationType(options: vscode.NotebookDecorationRenderOptions): vscode.NotebookEditorDecorationType {
-				return extHostNotebook.createNotebookEditorDecorationType(options);
+			creAteNotebookEditorDecorAtionType(options: vscode.NotebookDecorAtionRenderOptions): vscode.NotebookEditorDecorAtionType {
+				return extHostNotebook.creAteNotebookEditorDecorAtionType(options);
 			},
-			get activeNotebookEditor(): vscode.NotebookEditor | undefined {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.activeNotebookEditor;
+			get ActiveNotebookEditor(): vscode.NotebookEditor | undefined {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.ActiveNotebookEditor;
 			},
-			onDidChangeActiveNotebookEditor(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeActiveNotebookEditor(listener, thisArgs, disposables);
+			onDidChAngeActiveNotebookEditor(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeActiveNotebookEditor(listener, thisArgs, disposAbles);
 			},
-			onDidChangeNotebookDocumentMetadata(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeNotebookDocumentMetadata(listener, thisArgs, disposables);
+			onDidChAngeNotebookDocumentMetAdAtA(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeNotebookDocumentMetAdAtA(listener, thisArgs, disposAbles);
 			},
-			onDidChangeNotebookCells(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeNotebookCells(listener, thisArgs, disposables);
+			onDidChAngeNotebookCells(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeNotebookCells(listener, thisArgs, disposAbles);
 			},
-			onDidChangeNotebookEditorSelection(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeNotebookEditorSelection(listener, thisArgs, disposables);
+			onDidChAngeNotebookEditorSelection(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeNotebookEditorSelection(listener, thisArgs, disposAbles);
 			},
-			onDidChangeNotebookEditorVisibleRanges(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeNotebookEditorVisibleRanges(listener, thisArgs, disposables);
+			onDidChAngeNotebookEditorVisibleRAnges(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeNotebookEditorVisibleRAnges(listener, thisArgs, disposAbles);
 			},
-			onDidChangeCellOutputs(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeCellOutputs(listener, thisArgs, disposables);
+			onDidChAngeCellOutputs(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeCellOutputs(listener, thisArgs, disposAbles);
 			},
-			onDidChangeCellLanguage(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeCellLanguage(listener, thisArgs, disposables);
+			onDidChAngeCellLAnguAge(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeCellLAnguAge(listener, thisArgs, disposAbles);
 			},
-			onDidChangeCellMetadata(listener, thisArgs?, disposables?) {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.onDidChangeCellMetadata(listener, thisArgs, disposables);
+			onDidChAngeCellMetAdAtA(listener, thisArgs?, disposAbles?) {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.onDidChAngeCellMetAdAtA(listener, thisArgs, disposAbles);
 			},
-			createConcatTextDocument(notebook, selector) {
-				checkProposedApiEnabled(extension);
-				return new ExtHostNotebookConcatDocument(extHostNotebook, extHostDocuments, notebook, selector);
+			creAteConcAtTextDocument(notebook, selector) {
+				checkProposedApiEnAbled(extension);
+				return new ExtHostNotebookConcAtDocument(extHostNotebook, extHostDocuments, notebook, selector);
 			},
-			createCellStatusBarItem(cell: vscode.NotebookCell, alignment?: vscode.NotebookCellStatusBarAlignment, priority?: number): vscode.NotebookCellStatusBarItem {
-				checkProposedApiEnabled(extension);
-				return extHostNotebook.createNotebookCellStatusBarItemInternal(cell, alignment, priority);
+			creAteCellStAtusBArItem(cell: vscode.NotebookCell, Alignment?: vscode.NotebookCellStAtusBArAlignment, priority?: number): vscode.NotebookCellStAtusBArItem {
+				checkProposedApiEnAbled(extension);
+				return extHostNotebook.creAteNotebookCellStAtusBArItemInternAl(cell, Alignment, priority);
 			}
 		};
 
 		return <typeof vscode>{
-			version: initData.version,
-			// namespaces
-			authentication,
-			commands,
+			version: initDAtA.version,
+			// nAmespAces
+			AuthenticAtion,
+			commAnds,
 			debug,
 			env,
 			extensions,
-			languages,
+			lAnguAges,
 			scm,
 			comment,
 			comments,
-			tasks,
+			tAsks,
 			notebook,
 			window,
-			workspace,
+			workspAce,
 			// types
-			Breakpoint: extHostTypes.Breakpoint,
-			CancellationTokenSource: CancellationTokenSource,
+			BreAkpoint: extHostTypes.BreAkpoint,
+			CAncellAtionTokenSource: CAncellAtionTokenSource,
 			CodeAction: extHostTypes.CodeAction,
 			CodeActionKind: extHostTypes.CodeActionKind,
 			CodeActionTrigger: extHostTypes.CodeActionTrigger,
 			CodeLens: extHostTypes.CodeLens,
 			CodeInset: extHostTypes.CodeInset,
 			Color: extHostTypes.Color,
-			ColorInformation: extHostTypes.ColorInformation,
-			ColorPresentation: extHostTypes.ColorPresentation,
-			CommentThreadCollapsibleState: extHostTypes.CommentThreadCollapsibleState,
+			ColorInformAtion: extHostTypes.ColorInformAtion,
+			ColorPresentAtion: extHostTypes.ColorPresentAtion,
+			CommentThreAdCollApsibleStAte: extHostTypes.CommentThreAdCollApsibleStAte,
 			CommentMode: extHostTypes.CommentMode,
 			CompletionItem: extHostTypes.CompletionItem,
 			CompletionItemKind: extHostTypes.CompletionItemKind,
-			CompletionItemTag: extHostTypes.CompletionItemTag,
+			CompletionItemTAg: extHostTypes.CompletionItemTAg,
 			CompletionList: extHostTypes.CompletionList,
 			CompletionTriggerKind: extHostTypes.CompletionTriggerKind,
-			ConfigurationTarget: extHostTypes.ConfigurationTarget,
-			DebugAdapterExecutable: extHostTypes.DebugAdapterExecutable,
-			DebugAdapterServer: extHostTypes.DebugAdapterServer,
-			DebugAdapterNamedPipeServer: extHostTypes.DebugAdapterNamedPipeServer,
-			DebugAdapterInlineImplementation: extHostTypes.DebugAdapterInlineImplementation,
-			DecorationRangeBehavior: extHostTypes.DecorationRangeBehavior,
-			Diagnostic: extHostTypes.Diagnostic,
-			DiagnosticRelatedInformation: extHostTypes.DiagnosticRelatedInformation,
-			DiagnosticSeverity: extHostTypes.DiagnosticSeverity,
-			DiagnosticTag: extHostTypes.DiagnosticTag,
-			Disposable: extHostTypes.Disposable,
+			ConfigurAtionTArget: extHostTypes.ConfigurAtionTArget,
+			DebugAdApterExecutAble: extHostTypes.DebugAdApterExecutAble,
+			DebugAdApterServer: extHostTypes.DebugAdApterServer,
+			DebugAdApterNAmedPipeServer: extHostTypes.DebugAdApterNAmedPipeServer,
+			DebugAdApterInlineImplementAtion: extHostTypes.DebugAdApterInlineImplementAtion,
+			DecorAtionRAngeBehAvior: extHostTypes.DecorAtionRAngeBehAvior,
+			DiAgnostic: extHostTypes.DiAgnostic,
+			DiAgnosticRelAtedInformAtion: extHostTypes.DiAgnosticRelAtedInformAtion,
+			DiAgnosticSeverity: extHostTypes.DiAgnosticSeverity,
+			DiAgnosticTAg: extHostTypes.DiAgnosticTAg,
+			DisposAble: extHostTypes.DisposAble,
 			DocumentHighlight: extHostTypes.DocumentHighlight,
 			DocumentHighlightKind: extHostTypes.DocumentHighlightKind,
 			DocumentLink: extHostTypes.DocumentLink,
 			DocumentSymbol: extHostTypes.DocumentSymbol,
 			EndOfLine: extHostTypes.EndOfLine,
-			EnvironmentVariableMutatorType: extHostTypes.EnvironmentVariableMutatorType,
-			EvaluatableExpression: extHostTypes.EvaluatableExpression,
+			EnvironmentVAriAbleMutAtorType: extHostTypes.EnvironmentVAriAbleMutAtorType,
+			EvAluAtAbleExpression: extHostTypes.EvAluAtAbleExpression,
 			EventEmitter: Emitter,
 			ExtensionKind: extHostTypes.ExtensionKind,
 			ExtensionMode: extHostTypes.ExtensionMode,
 			ExtensionRuntime: extHostTypes.ExtensionRuntime,
 			CustomExecution: extHostTypes.CustomExecution,
-			FileChangeType: extHostTypes.FileChangeType,
+			FileChAngeType: extHostTypes.FileChAngeType,
 			FileSystemError: extHostTypes.FileSystemError,
 			FileType: files.FileType,
-			FoldingRange: extHostTypes.FoldingRange,
-			FoldingRangeKind: extHostTypes.FoldingRangeKind,
-			FunctionBreakpoint: extHostTypes.FunctionBreakpoint,
+			FoldingRAnge: extHostTypes.FoldingRAnge,
+			FoldingRAngeKind: extHostTypes.FoldingRAngeKind,
+			FunctionBreAkpoint: extHostTypes.FunctionBreAkpoint,
 			Hover: extHostTypes.Hover,
-			IndentAction: languageConfiguration.IndentAction,
-			Location: extHostTypes.Location,
+			IndentAction: lAnguAgeConfigurAtion.IndentAction,
+			LocAtion: extHostTypes.LocAtion,
 			LogLevel: extHostTypes.LogLevel,
-			MarkdownString: extHostTypes.MarkdownString,
-			OverviewRulerLane: OverviewRulerLane,
-			ParameterInformation: extHostTypes.ParameterInformation,
+			MArkdownString: extHostTypes.MArkdownString,
+			OverviewRulerLAne: OverviewRulerLAne,
+			PArAmeterInformAtion: extHostTypes.PArAmeterInformAtion,
 			Position: extHostTypes.Position,
 			ProcessExecution: extHostTypes.ProcessExecution,
-			ProgressLocation: extHostTypes.ProgressLocation,
+			ProgressLocAtion: extHostTypes.ProgressLocAtion,
 			QuickInputButtons: extHostTypes.QuickInputButtons,
-			Range: extHostTypes.Range,
-			RelativePattern: extHostTypes.RelativePattern,
+			RAnge: extHostTypes.RAnge,
+			RelAtivePAttern: extHostTypes.RelAtivePAttern,
 			ResolvedAuthority: extHostTypes.ResolvedAuthority,
 			RemoteAuthorityResolverError: extHostTypes.RemoteAuthorityResolverError,
-			SemanticTokensLegend: extHostTypes.SemanticTokensLegend,
-			SemanticTokensBuilder: extHostTypes.SemanticTokensBuilder,
-			SemanticTokens: extHostTypes.SemanticTokens,
-			SemanticTokensEdits: extHostTypes.SemanticTokensEdits,
-			SemanticTokensEdit: extHostTypes.SemanticTokensEdit,
+			SemAnticTokensLegend: extHostTypes.SemAnticTokensLegend,
+			SemAnticTokensBuilder: extHostTypes.SemAnticTokensBuilder,
+			SemAnticTokens: extHostTypes.SemAnticTokens,
+			SemAnticTokensEdits: extHostTypes.SemAnticTokensEdits,
+			SemAnticTokensEdit: extHostTypes.SemAnticTokensEdit,
 			Selection: extHostTypes.Selection,
-			SelectionRange: extHostTypes.SelectionRange,
+			SelectionRAnge: extHostTypes.SelectionRAnge,
 			ShellExecution: extHostTypes.ShellExecution,
 			ShellQuoting: extHostTypes.ShellQuoting,
-			SignatureHelpTriggerKind: extHostTypes.SignatureHelpTriggerKind,
-			SignatureHelp: extHostTypes.SignatureHelp,
-			SignatureInformation: extHostTypes.SignatureInformation,
+			SignAtureHelpTriggerKind: extHostTypes.SignAtureHelpTriggerKind,
+			SignAtureHelp: extHostTypes.SignAtureHelp,
+			SignAtureInformAtion: extHostTypes.SignAtureInformAtion,
 			SnippetString: extHostTypes.SnippetString,
-			SourceBreakpoint: extHostTypes.SourceBreakpoint,
-			SourceControlInputBoxValidationType: extHostTypes.SourceControlInputBoxValidationType,
-			StandardTokenType: extHostTypes.StandardTokenType,
-			StatusBarAlignment: extHostTypes.StatusBarAlignment,
-			SymbolInformation: extHostTypes.SymbolInformation,
+			SourceBreAkpoint: extHostTypes.SourceBreAkpoint,
+			SourceControlInputBoxVAlidAtionType: extHostTypes.SourceControlInputBoxVAlidAtionType,
+			StAndArdTokenType: extHostTypes.StAndArdTokenType,
+			StAtusBArAlignment: extHostTypes.StAtusBArAlignment,
+			SymbolInformAtion: extHostTypes.SymbolInformAtion,
 			SymbolKind: extHostTypes.SymbolKind,
-			SymbolTag: extHostTypes.SymbolTag,
-			Task: extHostTypes.Task,
-			TaskGroup: extHostTypes.TaskGroup,
-			TaskPanelKind: extHostTypes.TaskPanelKind,
-			TaskRevealKind: extHostTypes.TaskRevealKind,
-			TaskScope: extHostTypes.TaskScope,
-			TextDocumentSaveReason: extHostTypes.TextDocumentSaveReason,
+			SymbolTAg: extHostTypes.SymbolTAg,
+			TAsk: extHostTypes.TAsk,
+			TAskGroup: extHostTypes.TAskGroup,
+			TAskPAnelKind: extHostTypes.TAskPAnelKind,
+			TAskReveAlKind: extHostTypes.TAskReveAlKind,
+			TAskScope: extHostTypes.TAskScope,
+			TextDocumentSAveReAson: extHostTypes.TextDocumentSAveReAson,
 			TextEdit: extHostTypes.TextEdit,
 			TextEditorCursorStyle: TextEditorCursorStyle,
 			TextEditorLineNumbersStyle: extHostTypes.TextEditorLineNumbersStyle,
-			TextEditorRevealType: extHostTypes.TextEditorRevealType,
-			TextEditorSelectionChangeKind: extHostTypes.TextEditorSelectionChangeKind,
+			TextEditorReveAlType: extHostTypes.TextEditorReveAlType,
+			TextEditorSelectionChAngeKind: extHostTypes.TextEditorSelectionChAngeKind,
 			ThemeColor: extHostTypes.ThemeColor,
 			ThemeIcon: extHostTypes.ThemeIcon,
 			TreeItem: extHostTypes.TreeItem,
 			TreeItem2: extHostTypes.TreeItem,
-			TreeItemCollapsibleState: extHostTypes.TreeItemCollapsibleState,
+			TreeItemCollApsibleStAte: extHostTypes.TreeItemCollApsibleStAte,
 			Uri: URI,
 			ViewColumn: extHostTypes.ViewColumn,
-			WorkspaceEdit: extHostTypes.WorkspaceEdit,
+			WorkspAceEdit: extHostTypes.WorkspAceEdit,
 			// proposed
-			CallHierarchyOutgoingCall: extHostTypes.CallHierarchyOutgoingCall,
-			CallHierarchyIncomingCall: extHostTypes.CallHierarchyIncomingCall,
-			CallHierarchyItem: extHostTypes.CallHierarchyItem,
+			CAllHierArchyOutgoingCAll: extHostTypes.CAllHierArchyOutgoingCAll,
+			CAllHierArchyIncomingCAll: extHostTypes.CAllHierArchyIncomingCAll,
+			CAllHierArchyItem: extHostTypes.CAllHierArchyItem,
 			DebugConsoleMode: extHostTypes.DebugConsoleMode,
-			DebugConfigurationProviderTriggerKind: extHostTypes.DebugConfigurationProviderTriggerKind,
-			FileDecoration: extHostTypes.FileDecoration,
+			DebugConfigurAtionProviderTriggerKind: extHostTypes.DebugConfigurAtionProviderTriggerKind,
+			FileDecorAtion: extHostTypes.FileDecorAtion,
 			UIKind: UIKind,
 			ColorThemeKind: extHostTypes.ColorThemeKind,
 			TimelineItem: extHostTypes.TimelineItem,
 			CellKind: extHostTypes.CellKind,
 			CellOutputKind: extHostTypes.CellOutputKind,
-			NotebookCellRunState: extHostTypes.NotebookCellRunState,
-			NotebookRunState: extHostTypes.NotebookRunState,
-			NotebookCellStatusBarAlignment: extHostTypes.NotebookCellStatusBarAlignment,
-			NotebookEditorRevealType: extHostTypes.NotebookEditorRevealType,
+			NotebookCellRunStAte: extHostTypes.NotebookCellRunStAte,
+			NotebookRunStAte: extHostTypes.NotebookRunStAte,
+			NotebookCellStAtusBArAlignment: extHostTypes.NotebookCellStAtusBArAlignment,
+			NotebookEditorReveAlType: extHostTypes.NotebookEditorReveAlType,
 			NotebookCellOutput: extHostTypes.NotebookCellOutput,
 			NotebookCellOutputItem: extHostTypes.NotebookCellOutputItem,
 		};
 	};
 }
 
-class Extension<T> implements vscode.Extension<T> {
+clAss Extension<T> implements vscode.Extension<T> {
 
-	private _extensionService: IExtHostExtensionService;
-	private _originExtensionId: ExtensionIdentifier;
-	private _identifier: ExtensionIdentifier;
+	privAte _extensionService: IExtHostExtensionService;
+	privAte _originExtensionId: ExtensionIdentifier;
+	privAte _identifier: ExtensionIdentifier;
 
-	readonly id: string;
-	readonly extensionUri: URI;
-	readonly extensionPath: string;
-	readonly packageJSON: IExtensionDescription;
-	readonly extensionKind: vscode.ExtensionKind;
+	reAdonly id: string;
+	reAdonly extensionUri: URI;
+	reAdonly extensionPAth: string;
+	reAdonly pAckAgeJSON: IExtensionDescription;
+	reAdonly extensionKind: vscode.ExtensionKind;
 
 	constructor(extensionService: IExtHostExtensionService, originExtensionId: ExtensionIdentifier, description: IExtensionDescription, kind: extHostTypes.ExtensionKind) {
 		this._extensionService = extensionService;
 		this._originExtensionId = originExtensionId;
 		this._identifier = description.identifier;
-		this.id = description.identifier.value;
-		this.extensionUri = description.extensionLocation;
-		this.extensionPath = path.normalize(originalFSPath(description.extensionLocation));
-		this.packageJSON = description;
+		this.id = description.identifier.vAlue;
+		this.extensionUri = description.extensionLocAtion;
+		this.extensionPAth = pAth.normAlize(originAlFSPAth(description.extensionLocAtion));
+		this.pAckAgeJSON = description;
 		this.extensionKind = kind;
 	}
 
-	get isActive(): boolean {
-		return this._extensionService.isActivated(this._identifier);
+	get isActive(): booleAn {
+		return this._extensionService.isActivAted(this._identifier);
 	}
 
 	get exports(): T {
-		if (this.packageJSON.api === 'none') {
-			return undefined!; // Strict nulloverride - Public api
+		if (this.pAckAgeJSON.Api === 'none') {
+			return undefined!; // Strict nulloverride - Public Api
 		}
 		return <T>this._extensionService.getExtensionExports(this._identifier);
 	}
 
-	activate(): Thenable<T> {
-		return this._extensionService.activateByIdWithErrors(this._identifier, { startup: false, extensionId: this._originExtensionId, activationEvent: 'api' }).then(() => this.exports);
+	ActivAte(): ThenAble<T> {
+		return this._extensionService.ActivAteByIdWithErrors(this._identifier, { stArtup: fAlse, extensionId: this._originExtensionId, ActivAtionEvent: 'Api' }).then(() => this.exports);
 	}
 }

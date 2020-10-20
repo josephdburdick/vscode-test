@@ -1,100 +1,100 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { coalesce, flatten } from 'vs/base/common/arrays';
-import { URI } from 'vs/base/common/uri';
-import 'vs/css!./media/searchEditor';
+import { coAlesce, flAtten } from 'vs/bAse/common/ArrAys';
+import { URI } from 'vs/bAse/common/uri';
+import 'vs/css!./mediA/seArchEditor';
 import { ServicesAccessor } from 'vs/editor/browser/editorExtensions';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import type { ITextModel } from 'vs/editor/common/model';
-import { localize } from 'vs/nls';
-import { FileMatch, Match, searchMatchComparer, SearchResult, FolderMatch } from 'vs/workbench/contrib/search/common/searchModel';
-import type { SearchConfiguration } from 'vs/workbench/contrib/searchEditor/browser/searchEditorInput';
-import { ITextQuery, SearchSortOrder } from 'vs/workbench/services/search/common/search';
+import { locAlize } from 'vs/nls';
+import { FileMAtch, MAtch, seArchMAtchCompArer, SeArchResult, FolderMAtch } from 'vs/workbench/contrib/seArch/common/seArchModel';
+import type { SeArchConfigurAtion } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorInput';
+import { ITextQuery, SeArchSortOrder } from 'vs/workbench/services/seArch/common/seArch';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 
-// Using \r\n on Windows inserts an extra newline between results.
+// Using \r\n on Windows inserts An extrA newline between results.
 const lineDelimiter = '\n';
 
-const translateRangeLines =
+const trAnslAteRAngeLines =
 	(n: number) =>
-		(range: Range) =>
-			new Range(range.startLineNumber + n, range.startColumn, range.endLineNumber + n, range.endColumn);
+		(rAnge: RAnge) =>
+			new RAnge(rAnge.stArtLineNumber + n, rAnge.stArtColumn, rAnge.endLineNumber + n, rAnge.endColumn);
 
-const matchToSearchResultFormat = (match: Match, longestLineNumber: number): { line: string, ranges: Range[], lineNumber: string }[] => {
-	const getLinePrefix = (i: number) => `${match.range().startLineNumber + i}`;
+const mAtchToSeArchResultFormAt = (mAtch: MAtch, longestLineNumber: number): { line: string, rAnges: RAnge[], lineNumber: string }[] => {
+	const getLinePrefix = (i: number) => `${mAtch.rAnge().stArtLineNumber + i}`;
 
-	const fullMatchLines = match.fullPreviewLines();
+	const fullMAtchLines = mAtch.fullPreviewLines();
 
 
-	const results: { line: string, ranges: Range[], lineNumber: string }[] = [];
+	const results: { line: string, rAnges: RAnge[], lineNumber: string }[] = [];
 
-	fullMatchLines
-		.forEach((sourceLine, i) => {
+	fullMAtchLines
+		.forEAch((sourceLine, i) => {
 			const lineNumber = getLinePrefix(i);
-			const paddingStr = ' '.repeat(longestLineNumber - lineNumber.length);
-			const prefix = `  ${paddingStr}${lineNumber}: `;
+			const pAddingStr = ' '.repeAt(longestLineNumber - lineNumber.length);
+			const prefix = `  ${pAddingStr}${lineNumber}: `;
 			const prefixOffset = prefix.length;
 
-			const line = (prefix + sourceLine).replace(/\r?\n?$/, '');
+			const line = (prefix + sourceLine).replAce(/\r?\n?$/, '');
 
-			const rangeOnThisLine = ({ start, end }: { start?: number; end?: number; }) => new Range(1, (start ?? 1) + prefixOffset, 1, (end ?? sourceLine.length + 1) + prefixOffset);
+			const rAngeOnThisLine = ({ stArt, end }: { stArt?: number; end?: number; }) => new RAnge(1, (stArt ?? 1) + prefixOffset, 1, (end ?? sourceLine.length + 1) + prefixOffset);
 
-			const matchRange = match.rangeInPreview();
-			const matchIsSingleLine = matchRange.startLineNumber === matchRange.endLineNumber;
+			const mAtchRAnge = mAtch.rAngeInPreview();
+			const mAtchIsSingleLine = mAtchRAnge.stArtLineNumber === mAtchRAnge.endLineNumber;
 
-			let lineRange;
-			if (matchIsSingleLine) { lineRange = (rangeOnThisLine({ start: matchRange.startColumn, end: matchRange.endColumn })); }
-			else if (i === 0) { lineRange = (rangeOnThisLine({ start: matchRange.startColumn })); }
-			else if (i === fullMatchLines.length - 1) { lineRange = (rangeOnThisLine({ end: matchRange.endColumn })); }
-			else { lineRange = (rangeOnThisLine({})); }
+			let lineRAnge;
+			if (mAtchIsSingleLine) { lineRAnge = (rAngeOnThisLine({ stArt: mAtchRAnge.stArtColumn, end: mAtchRAnge.endColumn })); }
+			else if (i === 0) { lineRAnge = (rAngeOnThisLine({ stArt: mAtchRAnge.stArtColumn })); }
+			else if (i === fullMAtchLines.length - 1) { lineRAnge = (rAngeOnThisLine({ end: mAtchRAnge.endColumn })); }
+			else { lineRAnge = (rAngeOnThisLine({})); }
 
-			results.push({ lineNumber: lineNumber, line, ranges: [lineRange] });
+			results.push({ lineNumber: lineNumber, line, rAnges: [lineRAnge] });
 		});
 
 	return results;
 };
 
-type SearchResultSerialization = { text: string[], matchRanges: Range[] };
+type SeArchResultSeriAlizAtion = { text: string[], mAtchRAnges: RAnge[] };
 
-function fileMatchToSearchResultFormat(fileMatch: FileMatch, labelFormatter: (x: URI) => string): SearchResultSerialization {
-	const sortedMatches = fileMatch.matches().sort(searchMatchComparer);
-	const longestLineNumber = sortedMatches[sortedMatches.length - 1].range().endLineNumber.toString().length;
-	const serializedMatches = flatten(sortedMatches.map(match => matchToSearchResultFormat(match, longestLineNumber)));
+function fileMAtchToSeArchResultFormAt(fileMAtch: FileMAtch, lAbelFormAtter: (x: URI) => string): SeArchResultSeriAlizAtion {
+	const sortedMAtches = fileMAtch.mAtches().sort(seArchMAtchCompArer);
+	const longestLineNumber = sortedMAtches[sortedMAtches.length - 1].rAnge().endLineNumber.toString().length;
+	const seriAlizedMAtches = flAtten(sortedMAtches.mAp(mAtch => mAtchToSeArchResultFormAt(mAtch, longestLineNumber)));
 
-	const uriString = labelFormatter(fileMatch.resource);
+	const uriString = lAbelFormAtter(fileMAtch.resource);
 	const text: string[] = [`${uriString}:`];
-	const matchRanges: Range[] = [];
+	const mAtchRAnges: RAnge[] = [];
 
-	const targetLineNumberToOffset: Record<string, number> = {};
+	const tArgetLineNumberToOffset: Record<string, number> = {};
 
 	const context: { line: string, lineNumber: number }[] = [];
-	fileMatch.context.forEach((line, lineNumber) => context.push({ line, lineNumber }));
-	context.sort((a, b) => a.lineNumber - b.lineNumber);
+	fileMAtch.context.forEAch((line, lineNumber) => context.push({ line, lineNumber }));
+	context.sort((A, b) => A.lineNumber - b.lineNumber);
 
-	let lastLine: number | undefined = undefined;
+	let lAstLine: number | undefined = undefined;
 
 	const seenLines = new Set<string>();
-	serializedMatches.forEach(match => {
-		if (!seenLines.has(match.line)) {
-			while (context.length && context[0].lineNumber < +match.lineNumber) {
+	seriAlizedMAtches.forEAch(mAtch => {
+		if (!seenLines.hAs(mAtch.line)) {
+			while (context.length && context[0].lineNumber < +mAtch.lineNumber) {
 				const { line, lineNumber } = context.shift()!;
-				if (lastLine !== undefined && lineNumber !== lastLine + 1) {
+				if (lAstLine !== undefined && lineNumber !== lAstLine + 1) {
 					text.push('');
 				}
-				text.push(`  ${' '.repeat(longestLineNumber - `${lineNumber}`.length)}${lineNumber}  ${line}`);
-				lastLine = lineNumber;
+				text.push(`  ${' '.repeAt(longestLineNumber - `${lineNumber}`.length)}${lineNumber}  ${line}`);
+				lAstLine = lineNumber;
 			}
 
-			targetLineNumberToOffset[match.lineNumber] = text.length;
-			seenLines.add(match.line);
-			text.push(match.line);
-			lastLine = +match.lineNumber;
+			tArgetLineNumberToOffset[mAtch.lineNumber] = text.length;
+			seenLines.Add(mAtch.line);
+			text.push(mAtch.line);
+			lAstLine = +mAtch.lineNumber;
 		}
 
-		matchRanges.push(...match.ranges.map(translateRangeLines(targetLineNumberToOffset[match.lineNumber])));
+		mAtchRAnges.push(...mAtch.rAnges.mAp(trAnslAteRAngeLines(tArgetLineNumberToOffset[mAtch.lineNumber])));
 	});
 
 	while (context.length) {
@@ -102,36 +102,36 @@ function fileMatchToSearchResultFormat(fileMatch: FileMatch, labelFormatter: (x:
 		text.push(`  ${lineNumber}  ${line}`);
 	}
 
-	return { text, matchRanges };
+	return { text, mAtchRAnges };
 }
 
-const contentPatternToSearchConfiguration = (pattern: ITextQuery, includes: string, excludes: string, contextLines: number): SearchConfiguration => {
+const contentPAtternToSeArchConfigurAtion = (pAttern: ITextQuery, includes: string, excludes: string, contextLines: number): SeArchConfigurAtion => {
 	return {
-		query: pattern.contentPattern.pattern,
-		regexp: !!pattern.contentPattern.isRegExp,
-		caseSensitive: !!pattern.contentPattern.isCaseSensitive,
-		wholeWord: !!pattern.contentPattern.isWordMatch,
+		query: pAttern.contentPAttern.pAttern,
+		regexp: !!pAttern.contentPAttern.isRegExp,
+		cAseSensitive: !!pAttern.contentPAttern.isCAseSensitive,
+		wholeWord: !!pAttern.contentPAttern.isWordMAtch,
 		excludes, includes,
-		showIncludesExcludes: !!(includes || excludes || pattern?.userDisabledExcludesAndIgnoreFiles),
-		useIgnores: (pattern?.userDisabledExcludesAndIgnoreFiles === undefined ? true : !pattern.userDisabledExcludesAndIgnoreFiles),
+		showIncludesExcludes: !!(includes || excludes || pAttern?.userDisAbledExcludesAndIgnoreFiles),
+		useIgnores: (pAttern?.userDisAbledExcludesAndIgnoreFiles === undefined ? true : !pAttern.userDisAbledExcludesAndIgnoreFiles),
 		contextLines,
 	};
 };
 
-export const serializeSearchConfiguration = (config: Partial<SearchConfiguration>): string => {
-	const removeNullFalseAndUndefined = <T>(a: (T | null | false | undefined)[]) => a.filter(a => a !== false && a !== null && a !== undefined) as T[];
+export const seriAlizeSeArchConfigurAtion = (config: PArtiAl<SeArchConfigurAtion>): string => {
+	const removeNullFAlseAndUndefined = <T>(A: (T | null | fAlse | undefined)[]) => A.filter(A => A !== fAlse && A !== null && A !== undefined) As T[];
 
-	const escapeNewlines = (str: string) => str.replace(/\\/g, '\\\\').replace(/\n/g, '\\n');
+	const escApeNewlines = (str: string) => str.replAce(/\\/g, '\\\\').replAce(/\n/g, '\\n');
 
-	return removeNullFalseAndUndefined([
-		`# Query: ${escapeNewlines(config.query ?? '')}`,
+	return removeNullFAlseAndUndefined([
+		`# Query: ${escApeNewlines(config.query ?? '')}`,
 
-		(config.caseSensitive || config.wholeWord || config.regexp || config.useIgnores === false)
-		&& `# Flags: ${coalesce([
-			config.caseSensitive && 'CaseSensitive',
-			config.wholeWord && 'WordMatch',
+		(config.cAseSensitive || config.wholeWord || config.regexp || config.useIgnores === fAlse)
+		&& `# FlAgs: ${coAlesce([
+			config.cAseSensitive && 'CAseSensitive',
+			config.wholeWord && 'WordMAtch',
 			config.regexp && 'RegExp',
-			(config.useIgnores === false) && 'IgnoreExcludeSettings'
+			(config.useIgnores === fAlse) && 'IgnoreExcludeSettings'
 		]).join(' ')}`,
 		config.includes ? `# Including: ${config.includes}` : undefined,
 		config.excludes ? `# Excluding: ${config.excludes}` : undefined,
@@ -140,40 +140,40 @@ export const serializeSearchConfiguration = (config: Partial<SearchConfiguration
 	]).join(lineDelimiter);
 };
 
-export const extractSearchQueryFromModel = (model: ITextModel): SearchConfiguration =>
-	extractSearchQueryFromLines(model.getValueInRange(new Range(1, 1, 6, 1)).split(lineDelimiter));
+export const extrActSeArchQueryFromModel = (model: ITextModel): SeArchConfigurAtion =>
+	extrActSeArchQueryFromLines(model.getVAlueInRAnge(new RAnge(1, 1, 6, 1)).split(lineDelimiter));
 
-export const defaultSearchConfig = (): SearchConfiguration => ({
+export const defAultSeArchConfig = (): SeArchConfigurAtion => ({
 	query: '',
 	includes: '',
 	excludes: '',
-	regexp: false,
-	caseSensitive: false,
+	regexp: fAlse,
+	cAseSensitive: fAlse,
 	useIgnores: true,
-	wholeWord: false,
+	wholeWord: fAlse,
 	contextLines: 0,
-	showIncludesExcludes: false,
+	showIncludesExcludes: fAlse,
 });
 
-export const extractSearchQueryFromLines = (lines: string[]): SearchConfiguration => {
+export const extrActSeArchQueryFromLines = (lines: string[]): SeArchConfigurAtion => {
 
-	const query = defaultSearchConfig();
+	const query = defAultSeArchConfig();
 
-	const unescapeNewlines = (str: string) => {
+	const unescApeNewlines = (str: string) => {
 		let out = '';
 		for (let i = 0; i < str.length; i++) {
 			if (str[i] === '\\') {
 				i++;
-				const escaped = str[i];
+				const escAped = str[i];
 
-				if (escaped === 'n') {
+				if (escAped === 'n') {
 					out += '\n';
 				}
-				else if (escaped === '\\') {
+				else if (escAped === '\\') {
 					out += '\\';
 				}
 				else {
-					throw Error(localize('invalidQueryStringError', "All backslashes in Query string must be escaped (\\\\)"));
+					throw Error(locAlize('invAlidQueryStringError', "All bAckslAshes in Query string must be escAped (\\\\)"));
 				}
 			} else {
 				out += str[i];
@@ -182,21 +182,21 @@ export const extractSearchQueryFromLines = (lines: string[]): SearchConfiguratio
 		return out;
 	};
 
-	const parseYML = /^# ([^:]*): (.*)$/;
+	const pArseYML = /^# ([^:]*): (.*)$/;
 	for (const line of lines) {
-		const parsed = parseYML.exec(line);
-		if (!parsed) { continue; }
-		const [, key, value] = parsed;
+		const pArsed = pArseYML.exec(line);
+		if (!pArsed) { continue; }
+		const [, key, vAlue] = pArsed;
 		switch (key) {
-			case 'Query': query.query = unescapeNewlines(value); break;
-			case 'Including': query.includes = value; break;
-			case 'Excluding': query.excludes = value; break;
-			case 'ContextLines': query.contextLines = +value; break;
-			case 'Flags': {
-				query.regexp = value.indexOf('RegExp') !== -1;
-				query.caseSensitive = value.indexOf('CaseSensitive') !== -1;
-				query.useIgnores = value.indexOf('IgnoreExcludeSettings') === -1;
-				query.wholeWord = value.indexOf('WordMatch') !== -1;
+			cAse 'Query': query.query = unescApeNewlines(vAlue); breAk;
+			cAse 'Including': query.includes = vAlue; breAk;
+			cAse 'Excluding': query.excludes = vAlue; breAk;
+			cAse 'ContextLines': query.contextLines = +vAlue; breAk;
+			cAse 'FlAgs': {
+				query.regexp = vAlue.indexOf('RegExp') !== -1;
+				query.cAseSensitive = vAlue.indexOf('CAseSensitive') !== -1;
+				query.useIgnores = vAlue.indexOf('IgnoreExcludeSettings') === -1;
+				query.wholeWord = vAlue.indexOf('WordMAtch') !== -1;
 			}
 		}
 	}
@@ -206,72 +206,72 @@ export const extractSearchQueryFromLines = (lines: string[]): SearchConfiguratio
 	return query;
 };
 
-export const serializeSearchResultForEditor =
-	(searchResult: SearchResult, rawIncludePattern: string, rawExcludePattern: string, contextLines: number, labelFormatter: (x: URI) => string, sortOrder: SearchSortOrder, limitHit?: boolean): { matchRanges: Range[], text: string, config: Partial<SearchConfiguration> } => {
-		if (!searchResult.query) { throw Error('Internal Error: Expected query, got null'); }
-		const config = contentPatternToSearchConfiguration(searchResult.query, rawIncludePattern, rawExcludePattern, contextLines);
+export const seriAlizeSeArchResultForEditor =
+	(seArchResult: SeArchResult, rAwIncludePAttern: string, rAwExcludePAttern: string, contextLines: number, lAbelFormAtter: (x: URI) => string, sortOrder: SeArchSortOrder, limitHit?: booleAn): { mAtchRAnges: RAnge[], text: string, config: PArtiAl<SeArchConfigurAtion> } => {
+		if (!seArchResult.query) { throw Error('InternAl Error: Expected query, got null'); }
+		const config = contentPAtternToSeArchConfigurAtion(seArchResult.query, rAwIncludePAttern, rAwExcludePAttern, contextLines);
 
-		const filecount = searchResult.fileCount() > 1 ? localize('numFiles', "{0} files", searchResult.fileCount()) : localize('oneFile', "1 file");
-		const resultcount = searchResult.count() > 1 ? localize('numResults', "{0} results", searchResult.count()) : localize('oneResult', "1 result");
+		const filecount = seArchResult.fileCount() > 1 ? locAlize('numFiles', "{0} files", seArchResult.fileCount()) : locAlize('oneFile', "1 file");
+		const resultcount = seArchResult.count() > 1 ? locAlize('numResults', "{0} results", seArchResult.count()) : locAlize('oneResult', "1 result");
 
 		const info = [
-			searchResult.count()
+			seArchResult.count()
 				? `${resultcount} - ${filecount}`
-				: localize('noResults', "No Results"),
+				: locAlize('noResults', "No Results"),
 		];
 		if (limitHit) {
-			info.push(localize('searchMaxResultsWarning', "The result set only contains a subset of all matches. Please be more specific in your search to narrow down the results."));
+			info.push(locAlize('seArchMAxResultsWArning', "The result set only contAins A subset of All mAtches. PleAse be more specific in your seArch to nArrow down the results."));
 		}
 		info.push('');
 
-		const matchComparer = (a: FileMatch | FolderMatch, b: FileMatch | FolderMatch) => searchMatchComparer(a, b, sortOrder);
+		const mAtchCompArer = (A: FileMAtch | FolderMAtch, b: FileMAtch | FolderMAtch) => seArchMAtchCompArer(A, b, sortOrder);
 
-		const allResults =
-			flattenSearchResultSerializations(
-				flatten(
-					searchResult.folderMatches().sort(matchComparer)
-						.map(folderMatch => folderMatch.matches().sort(matchComparer)
-							.map(fileMatch => fileMatchToSearchResultFormat(fileMatch, labelFormatter)))));
+		const AllResults =
+			flAttenSeArchResultSeriAlizAtions(
+				flAtten(
+					seArchResult.folderMAtches().sort(mAtchCompArer)
+						.mAp(folderMAtch => folderMAtch.mAtches().sort(mAtchCompArer)
+							.mAp(fileMAtch => fileMAtchToSeArchResultFormAt(fileMAtch, lAbelFormAtter)))));
 
 		return {
-			matchRanges: allResults.matchRanges.map(translateRangeLines(info.length)),
-			text: info.concat(allResults.text).join(lineDelimiter),
+			mAtchRAnges: AllResults.mAtchRAnges.mAp(trAnslAteRAngeLines(info.length)),
+			text: info.concAt(AllResults.text).join(lineDelimiter),
 			config
 		};
 	};
 
-const flattenSearchResultSerializations = (serializations: SearchResultSerialization[]): SearchResultSerialization => {
+const flAttenSeArchResultSeriAlizAtions = (seriAlizAtions: SeArchResultSeriAlizAtion[]): SeArchResultSeriAlizAtion => {
 	const text: string[] = [];
-	const matchRanges: Range[] = [];
+	const mAtchRAnges: RAnge[] = [];
 
-	serializations.forEach(serialized => {
-		serialized.matchRanges.map(translateRangeLines(text.length)).forEach(range => matchRanges.push(range));
-		serialized.text.forEach(line => text.push(line));
+	seriAlizAtions.forEAch(seriAlized => {
+		seriAlized.mAtchRAnges.mAp(trAnslAteRAngeLines(text.length)).forEAch(rAnge => mAtchRAnges.push(rAnge));
+		seriAlized.text.forEAch(line => text.push(line));
 		text.push(''); // new line
 	});
 
-	return { text, matchRanges };
+	return { text, mAtchRAnges };
 };
 
-export const parseSavedSearchEditor = async (accessor: ServicesAccessor, resource: URI) => {
-	const textFileService = accessor.get(ITextFileService);
+export const pArseSAvedSeArchEditor = Async (Accessor: ServicesAccessor, resource: URI) => {
+	const textFileService = Accessor.get(ITextFileService);
 
-	const text = (await textFileService.read(resource)).value;
+	const text = (AwAit textFileService.reAd(resource)).vAlue;
 
-	const headerlines = [];
+	const heAderlines = [];
 	const bodylines = [];
 
-	let inHeader = true;
+	let inHeAder = true;
 	for (const line of text.split(/\r?\n/g)) {
-		if (inHeader) {
-			headerlines.push(line);
+		if (inHeAder) {
+			heAderlines.push(line);
 			if (line === '') {
-				inHeader = false;
+				inHeAder = fAlse;
 			}
 		} else {
 			bodylines.push(line);
 		}
 	}
 
-	return { config: extractSearchQueryFromLines(headerlines), text: bodylines.join('\n') };
+	return { config: extrActSeArchQueryFromLines(heAderlines), text: bodylines.join('\n') };
 };

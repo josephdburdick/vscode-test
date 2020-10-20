@@ -1,129 +1,129 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriComponents } from 'vs/base/common/uri';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import { UriComponents } from 'vs/bAse/common/uri';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
 
-export interface TaskDefinitionDTO {
+export interfAce TAskDefinitionDTO {
 	type: string;
-	[name: string]: any;
+	[nAme: string]: Any;
 }
 
-export interface TaskPresentationOptionsDTO {
-	reveal?: number;
-	echo?: boolean;
-	focus?: boolean;
-	panel?: number;
-	showReuseMessage?: boolean;
-	clear?: boolean;
+export interfAce TAskPresentAtionOptionsDTO {
+	reveAl?: number;
+	echo?: booleAn;
+	focus?: booleAn;
+	pAnel?: number;
+	showReuseMessAge?: booleAn;
+	cleAr?: booleAn;
 	group?: string;
 }
 
-export interface RunOptionsDTO {
-	reevaluateOnRerun?: boolean;
+export interfAce RunOptionsDTO {
+	reevAluAteOnRerun?: booleAn;
 }
 
-export interface ExecutionOptionsDTO {
+export interfAce ExecutionOptionsDTO {
 	cwd?: string;
 	env?: { [key: string]: string };
 }
 
-export interface ProcessExecutionOptionsDTO extends ExecutionOptionsDTO {
+export interfAce ProcessExecutionOptionsDTO extends ExecutionOptionsDTO {
 }
 
-export interface ProcessExecutionDTO {
+export interfAce ProcessExecutionDTO {
 	process: string;
-	args: string[];
+	Args: string[];
 	options?: ProcessExecutionOptionsDTO;
 }
 
-export interface ShellQuotingOptionsDTO {
-	escape?: string | {
-		escapeChar: string;
-		charsToEscape: string;
+export interfAce ShellQuotingOptionsDTO {
+	escApe?: string | {
+		escApeChAr: string;
+		chArsToEscApe: string;
 	};
 	strong?: string;
-	weak?: string;
+	weAk?: string;
 }
 
-export interface ShellExecutionOptionsDTO extends ExecutionOptionsDTO {
-	executable?: string;
+export interfAce ShellExecutionOptionsDTO extends ExecutionOptionsDTO {
+	executAble?: string;
 	shellArgs?: string[];
 	shellQuoting?: ShellQuotingOptionsDTO;
 }
 
-export interface ShellQuotedStringDTO {
-	value: string;
+export interfAce ShellQuotedStringDTO {
+	vAlue: string;
 	quoting: number;
 }
 
-export interface ShellExecutionDTO {
-	commandLine?: string;
-	command?: string | ShellQuotedStringDTO;
-	args?: Array<string | ShellQuotedStringDTO>;
+export interfAce ShellExecutionDTO {
+	commAndLine?: string;
+	commAnd?: string | ShellQuotedStringDTO;
+	Args?: ArrAy<string | ShellQuotedStringDTO>;
 	options?: ShellExecutionOptionsDTO;
 }
 
-export interface CustomExecutionDTO {
+export interfAce CustomExecutionDTO {
 	customExecution: 'customExecution';
 }
 
-export interface TaskSourceDTO {
-	label: string;
+export interfAce TAskSourceDTO {
+	lAbel: string;
 	extensionId?: string;
 	scope?: number | UriComponents;
 }
 
-export interface TaskHandleDTO {
+export interfAce TAskHAndleDTO {
 	id: string;
-	workspaceFolder: UriComponents | string;
+	workspAceFolder: UriComponents | string;
 }
 
-export interface TaskDTO {
+export interfAce TAskDTO {
 	_id: string;
-	name?: string;
+	nAme?: string;
 	execution: ProcessExecutionDTO | ShellExecutionDTO | CustomExecutionDTO | undefined;
-	definition: TaskDefinitionDTO;
-	isBackground?: boolean;
-	source: TaskSourceDTO;
+	definition: TAskDefinitionDTO;
+	isBAckground?: booleAn;
+	source: TAskSourceDTO;
 	group?: string;
-	detail?: string;
-	presentationOptions?: TaskPresentationOptionsDTO;
-	problemMatchers: string[];
-	hasDefinedMatchers: boolean;
+	detAil?: string;
+	presentAtionOptions?: TAskPresentAtionOptionsDTO;
+	problemMAtchers: string[];
+	hAsDefinedMAtchers: booleAn;
 	runOptions?: RunOptionsDTO;
 }
 
-export interface TaskSetDTO {
-	tasks: TaskDTO[];
+export interfAce TAskSetDTO {
+	tAsks: TAskDTO[];
 	extension: IExtensionDescription;
 }
 
-export interface TaskExecutionDTO {
+export interfAce TAskExecutionDTO {
 	id: string;
-	task: TaskDTO | undefined;
+	tAsk: TAskDTO | undefined;
 }
 
-export interface TaskProcessStartedDTO {
+export interfAce TAskProcessStArtedDTO {
 	id: string;
 	processId: number;
 }
 
-export interface TaskProcessEndedDTO {
+export interfAce TAskProcessEndedDTO {
 	id: string;
 	exitCode: number;
 }
 
 
-export interface TaskFilterDTO {
+export interfAce TAskFilterDTO {
 	version?: string;
 	type?: string;
 }
 
-export interface TaskSystemInfoDTO {
+export interfAce TAskSystemInfoDTO {
 	scheme: string;
-	authority: string;
-	platform: string;
+	Authority: string;
+	plAtform: string;
 }

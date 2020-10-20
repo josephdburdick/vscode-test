@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DiskFileSystemProvider as NodeDiskFileSystemProvider, IDiskFileSystemProviderOptions } from 'vs/platform/files/node/diskFileSystemProvider';
-import { FileDeleteOptions, FileSystemProviderCapabilities } from 'vs/platform/files/common/files';
-import { isWindows } from 'vs/base/common/platform';
-import { localize } from 'vs/nls';
-import { basename } from 'vs/base/common/path';
-import { ILogService } from 'vs/platform/log/common/log';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { DiskFileSystemProvider As NodeDiskFileSystemProvider, IDiskFileSystemProviderOptions } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { FileDeleteOptions, FileSystemProviderCApAbilities } from 'vs/plAtform/files/common/files';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { locAlize } from 'vs/nls';
+import { bAsenAme } from 'vs/bAse/common/pAth';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-export class DiskFileSystemProvider extends NodeDiskFileSystemProvider {
+export clAss DiskFileSystemProvider extends NodeDiskFileSystemProvider {
 
 	constructor(
 		logService: ILogService,
-		private readonly nativeHostService: INativeHostService,
+		privAte reAdonly nAtiveHostService: INAtiveHostService,
 		options?: IDiskFileSystemProviderOptions
 	) {
 		super(logService, options);
 	}
 
-	get capabilities(): FileSystemProviderCapabilities {
-		if (!this._capabilities) {
-			this._capabilities = super.capabilities | FileSystemProviderCapabilities.Trash;
+	get cApAbilities(): FileSystemProviderCApAbilities {
+		if (!this._cApAbilities) {
+			this._cApAbilities = super.cApAbilities | FileSystemProviderCApAbilities.TrAsh;
 		}
 
-		return this._capabilities;
+		return this._cApAbilities;
 	}
 
-	protected async doDelete(filePath: string, opts: FileDeleteOptions): Promise<void> {
-		if (!opts.useTrash) {
-			return super.doDelete(filePath, opts);
+	protected Async doDelete(filePAth: string, opts: FileDeleteOptions): Promise<void> {
+		if (!opts.useTrAsh) {
+			return super.doDelete(filePAth, opts);
 		}
 
-		const result = await this.nativeHostService.moveItemToTrash(filePath);
+		const result = AwAit this.nAtiveHostService.moveItemToTrAsh(filePAth);
 		if (!result) {
-			throw new Error(isWindows ? localize('binFailed', "Failed to move '{0}' to the recycle bin", basename(filePath)) : localize('trashFailed', "Failed to move '{0}' to the trash", basename(filePath)));
+			throw new Error(isWindows ? locAlize('binFAiled', "FAiled to move '{0}' to the recycle bin", bAsenAme(filePAth)) : locAlize('trAshFAiled', "FAiled to move '{0}' to the trAsh", bAsenAme(filePAth)));
 		}
 	}
 }

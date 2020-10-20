@@ -1,88 +1,88 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { workspace, extensions, Uri, EventEmitter, Disposable } from 'vscode';
-import { resolvePath, joinPath } from './requests';
+import { workspAce, extensions, Uri, EventEmitter, DisposAble } from 'vscode';
+import { resolvePAth, joinPAth } from './requests';
 
-export function getCustomDataSource(toDispose: Disposable[]) {
-	let pathsInWorkspace = getCustomDataPathsInAllWorkspaces();
-	let pathsInExtensions = getCustomDataPathsFromAllExtensions();
+export function getCustomDAtASource(toDispose: DisposAble[]) {
+	let pAthsInWorkspAce = getCustomDAtAPAthsInAllWorkspAces();
+	let pAthsInExtensions = getCustomDAtAPAthsFromAllExtensions();
 
-	const onChange = new EventEmitter<void>();
+	const onChAnge = new EventEmitter<void>();
 
-	toDispose.push(extensions.onDidChange(_ => {
-		const newPathsInExtensions = getCustomDataPathsFromAllExtensions();
-		if (newPathsInExtensions.length !== pathsInExtensions.length || !newPathsInExtensions.every((val, idx) => val === pathsInExtensions[idx])) {
-			pathsInExtensions = newPathsInExtensions;
-			onChange.fire();
+	toDispose.push(extensions.onDidChAnge(_ => {
+		const newPAthsInExtensions = getCustomDAtAPAthsFromAllExtensions();
+		if (newPAthsInExtensions.length !== pAthsInExtensions.length || !newPAthsInExtensions.every((vAl, idx) => vAl === pAthsInExtensions[idx])) {
+			pAthsInExtensions = newPAthsInExtensions;
+			onChAnge.fire();
 		}
 	}));
-	toDispose.push(workspace.onDidChangeConfiguration(e => {
-		if (e.affectsConfiguration('html.customData')) {
-			pathsInWorkspace = getCustomDataPathsInAllWorkspaces();
-			onChange.fire();
+	toDispose.push(workspAce.onDidChAngeConfigurAtion(e => {
+		if (e.AffectsConfigurAtion('html.customDAtA')) {
+			pAthsInWorkspAce = getCustomDAtAPAthsInAllWorkspAces();
+			onChAnge.fire();
 		}
 	}));
 
 	return {
 		get uris() {
-			return pathsInWorkspace.concat(pathsInExtensions);
+			return pAthsInWorkspAce.concAt(pAthsInExtensions);
 		},
-		get onDidChange() {
-			return onChange.event;
+		get onDidChAnge() {
+			return onChAnge.event;
 		}
 	};
 }
 
 
-function getCustomDataPathsInAllWorkspaces(): string[] {
-	const workspaceFolders = workspace.workspaceFolders;
+function getCustomDAtAPAthsInAllWorkspAces(): string[] {
+	const workspAceFolders = workspAce.workspAceFolders;
 
-	const dataPaths: string[] = [];
+	const dAtAPAths: string[] = [];
 
-	if (!workspaceFolders) {
-		return dataPaths;
+	if (!workspAceFolders) {
+		return dAtAPAths;
 	}
 
-	const collect = (paths: string[] | undefined, rootFolder: Uri) => {
-		if (Array.isArray(paths)) {
-			for (const path of paths) {
-				if (typeof path === 'string') {
-					dataPaths.push(resolvePath(rootFolder, path).toString());
+	const collect = (pAths: string[] | undefined, rootFolder: Uri) => {
+		if (ArrAy.isArrAy(pAths)) {
+			for (const pAth of pAths) {
+				if (typeof pAth === 'string') {
+					dAtAPAths.push(resolvePAth(rootFolder, pAth).toString());
 				}
 			}
 		}
 	};
 
-	for (let i = 0; i < workspaceFolders.length; i++) {
-		const folderUri = workspaceFolders[i].uri;
-		const allHtmlConfig = workspace.getConfiguration('html', folderUri);
-		const customDataInspect = allHtmlConfig.inspect<string[]>('customData');
-		if (customDataInspect) {
-			collect(customDataInspect.workspaceFolderValue, folderUri);
+	for (let i = 0; i < workspAceFolders.length; i++) {
+		const folderUri = workspAceFolders[i].uri;
+		const AllHtmlConfig = workspAce.getConfigurAtion('html', folderUri);
+		const customDAtAInspect = AllHtmlConfig.inspect<string[]>('customDAtA');
+		if (customDAtAInspect) {
+			collect(customDAtAInspect.workspAceFolderVAlue, folderUri);
 			if (i === 0) {
-				if (workspace.workspaceFile) {
-					collect(customDataInspect.workspaceValue, workspace.workspaceFile);
+				if (workspAce.workspAceFile) {
+					collect(customDAtAInspect.workspAceVAlue, workspAce.workspAceFile);
 				}
-				collect(customDataInspect.globalValue, folderUri);
+				collect(customDAtAInspect.globAlVAlue, folderUri);
 			}
 		}
 
 	}
-	return dataPaths;
+	return dAtAPAths;
 }
 
-function getCustomDataPathsFromAllExtensions(): string[] {
-	const dataPaths: string[] = [];
-	for (const extension of extensions.all) {
-		const customData = extension.packageJSON?.contributes?.html?.customData;
-		if (Array.isArray(customData)) {
-			for (const rp of customData) {
-				dataPaths.push(joinPath(extension.extensionUri, rp).toString());
+function getCustomDAtAPAthsFromAllExtensions(): string[] {
+	const dAtAPAths: string[] = [];
+	for (const extension of extensions.All) {
+		const customDAtA = extension.pAckAgeJSON?.contributes?.html?.customDAtA;
+		if (ArrAy.isArrAy(customDAtA)) {
+			for (const rp of customDAtA) {
+				dAtAPAths.push(joinPAth(extension.extensionUri, rp).toString());
 			}
 		}
 	}
-	return dataPaths;
+	return dAtAPAths;
 }

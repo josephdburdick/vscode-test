@@ -1,162 +1,162 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals, flatten, isNonEmptyArray, mergeSort, coalesce } from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { illegalArgument, isPromiseCanceledError, onUnexpectedExternalError } from 'vs/base/common/errors';
-import { Disposable, DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { TextModelCancellationTokenSource } from 'vs/editor/browser/core/editorState';
-import { registerLanguageCommand } from 'vs/editor/browser/editorExtensions';
-import { Range } from 'vs/editor/common/core/range';
+import { equAls, flAtten, isNonEmptyArrAy, mergeSort, coAlesce } from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { illegAlArgument, isPromiseCAnceledError, onUnexpectedExternAlError } from 'vs/bAse/common/errors';
+import { DisposAble, DisposAbleStore, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { TextModelCAncellAtionTokenSource } from 'vs/editor/browser/core/editorStAte';
+import { registerLAnguAgeCommAnd } from 'vs/editor/browser/editorExtensions';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ITextModel } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
+import * As modes from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { CodeActionFilter, CodeActionKind, CodeActionTrigger, filtersAction, mayIncludeActionsOfKind } from './types';
-import { IProgress, Progress } from 'vs/platform/progress/common/progress';
+import { CodeActionFilter, CodeActionKind, CodeActionTrigger, filtersAction, mAyIncludeActionsOfKind } from './types';
+import { IProgress, Progress } from 'vs/plAtform/progress/common/progress';
 
-export const codeActionCommandId = 'editor.action.codeAction';
-export const refactorCommandId = 'editor.action.refactor';
-export const sourceActionCommandId = 'editor.action.sourceAction';
-export const organizeImportsCommandId = 'editor.action.organizeImports';
-export const fixAllCommandId = 'editor.action.fixAll';
+export const codeActionCommAndId = 'editor.Action.codeAction';
+export const refActorCommAndId = 'editor.Action.refActor';
+export const sourceActionCommAndId = 'editor.Action.sourceAction';
+export const orgAnizeImportsCommAndId = 'editor.Action.orgAnizeImports';
+export const fixAllCommAndId = 'editor.Action.fixAll';
 
-export class CodeActionItem {
+export clAss CodeActionItem {
 
 	constructor(
-		readonly action: modes.CodeAction,
-		readonly provider: modes.CodeActionProvider | undefined,
+		reAdonly Action: modes.CodeAction,
+		reAdonly provider: modes.CodeActionProvider | undefined,
 	) { }
 
-	async resolve(token: CancellationToken): Promise<this> {
-		if (this.provider?.resolveCodeAction && !this.action.edit) {
-			let action: modes.CodeAction | undefined | null;
+	Async resolve(token: CAncellAtionToken): Promise<this> {
+		if (this.provider?.resolveCodeAction && !this.Action.edit) {
+			let Action: modes.CodeAction | undefined | null;
 			try {
-				action = await this.provider.resolveCodeAction(this.action, token);
-			} catch (err) {
-				onUnexpectedExternalError(err);
+				Action = AwAit this.provider.resolveCodeAction(this.Action, token);
+			} cAtch (err) {
+				onUnexpectedExternAlError(err);
 			}
-			if (action) {
-				this.action.edit = action.edit;
+			if (Action) {
+				this.Action.edit = Action.edit;
 			}
 		}
 		return this;
 	}
 }
 
-export interface CodeActionSet extends IDisposable {
-	readonly validActions: readonly CodeActionItem[];
-	readonly allActions: readonly CodeActionItem[];
-	readonly hasAutoFix: boolean;
+export interfAce CodeActionSet extends IDisposAble {
+	reAdonly vAlidActions: reAdonly CodeActionItem[];
+	reAdonly AllActions: reAdonly CodeActionItem[];
+	reAdonly hAsAutoFix: booleAn;
 
-	readonly documentation: readonly modes.Command[];
+	reAdonly documentAtion: reAdonly modes.CommAnd[];
 }
 
-class ManagedCodeActionSet extends Disposable implements CodeActionSet {
+clAss MAnAgedCodeActionSet extends DisposAble implements CodeActionSet {
 
-	private static codeActionsComparator({ action: a }: CodeActionItem, { action: b }: CodeActionItem): number {
-		if (a.isPreferred && !b.isPreferred) {
+	privAte stAtic codeActionsCompArAtor({ Action: A }: CodeActionItem, { Action: b }: CodeActionItem): number {
+		if (A.isPreferred && !b.isPreferred) {
 			return -1;
-		} else if (!a.isPreferred && b.isPreferred) {
+		} else if (!A.isPreferred && b.isPreferred) {
 			return 1;
 		}
 
-		if (isNonEmptyArray(a.diagnostics)) {
-			if (isNonEmptyArray(b.diagnostics)) {
-				return a.diagnostics[0].message.localeCompare(b.diagnostics[0].message);
+		if (isNonEmptyArrAy(A.diAgnostics)) {
+			if (isNonEmptyArrAy(b.diAgnostics)) {
+				return A.diAgnostics[0].messAge.locAleCompAre(b.diAgnostics[0].messAge);
 			} else {
 				return -1;
 			}
-		} else if (isNonEmptyArray(b.diagnostics)) {
+		} else if (isNonEmptyArrAy(b.diAgnostics)) {
 			return 1;
 		} else {
-			return 0;	// both have no diagnostics
+			return 0;	// both hAve no diAgnostics
 		}
 	}
 
-	public readonly validActions: readonly CodeActionItem[];
-	public readonly allActions: readonly CodeActionItem[];
+	public reAdonly vAlidActions: reAdonly CodeActionItem[];
+	public reAdonly AllActions: reAdonly CodeActionItem[];
 
 	public constructor(
-		actions: readonly CodeActionItem[],
-		public readonly documentation: readonly modes.Command[],
-		disposables: DisposableStore,
+		Actions: reAdonly CodeActionItem[],
+		public reAdonly documentAtion: reAdonly modes.CommAnd[],
+		disposAbles: DisposAbleStore,
 	) {
 		super();
-		this._register(disposables);
-		this.allActions = mergeSort([...actions], ManagedCodeActionSet.codeActionsComparator);
-		this.validActions = this.allActions.filter(({ action }) => !action.disabled);
+		this._register(disposAbles);
+		this.AllActions = mergeSort([...Actions], MAnAgedCodeActionSet.codeActionsCompArAtor);
+		this.vAlidActions = this.AllActions.filter(({ Action }) => !Action.disAbled);
 	}
 
-	public get hasAutoFix() {
-		return this.validActions.some(({ action: fix }) => !!fix.kind && CodeActionKind.QuickFix.contains(new CodeActionKind(fix.kind)) && !!fix.isPreferred);
+	public get hAsAutoFix() {
+		return this.vAlidActions.some(({ Action: fix }) => !!fix.kind && CodeActionKind.QuickFix.contAins(new CodeActionKind(fix.kind)) && !!fix.isPreferred);
 	}
 }
 
 
-const emptyCodeActionsResponse = { actions: [] as CodeActionItem[], documentation: undefined };
+const emptyCodeActionsResponse = { Actions: [] As CodeActionItem[], documentAtion: undefined };
 
 export function getCodeActions(
 	model: ITextModel,
-	rangeOrSelection: Range | Selection,
+	rAngeOrSelection: RAnge | Selection,
 	trigger: CodeActionTrigger,
 	progress: IProgress<modes.CodeActionProvider>,
-	token: CancellationToken,
+	token: CAncellAtionToken,
 ): Promise<CodeActionSet> {
 	const filter = trigger.filter || {};
 
 	const codeActionContext: modes.CodeActionContext = {
-		only: filter.include?.value,
+		only: filter.include?.vAlue,
 		trigger: trigger.type,
 	};
 
-	const cts = new TextModelCancellationTokenSource(model, token);
+	const cts = new TextModelCAncellAtionTokenSource(model, token);
 	const providers = getCodeActionProviders(model, filter);
 
-	const disposables = new DisposableStore();
-	const promises = providers.map(async provider => {
+	const disposAbles = new DisposAbleStore();
+	const promises = providers.mAp(Async provider => {
 		try {
 			progress.report(provider);
-			const providedCodeActions = await provider.provideCodeActions(model, rangeOrSelection, codeActionContext, cts.token);
+			const providedCodeActions = AwAit provider.provideCodeActions(model, rAngeOrSelection, codeActionContext, cts.token);
 			if (providedCodeActions) {
-				disposables.add(providedCodeActions);
+				disposAbles.Add(providedCodeActions);
 			}
 
-			if (cts.token.isCancellationRequested) {
+			if (cts.token.isCAncellAtionRequested) {
 				return emptyCodeActionsResponse;
 			}
 
-			const filteredActions = (providedCodeActions?.actions || []).filter(action => action && filtersAction(filter, action));
-			const documentation = getDocumentation(provider, filteredActions, filter.include);
+			const filteredActions = (providedCodeActions?.Actions || []).filter(Action => Action && filtersAction(filter, Action));
+			const documentAtion = getDocumentAtion(provider, filteredActions, filter.include);
 			return {
-				actions: filteredActions.map(action => new CodeActionItem(action, provider)),
-				documentation
+				Actions: filteredActions.mAp(Action => new CodeActionItem(Action, provider)),
+				documentAtion
 			};
-		} catch (err) {
-			if (isPromiseCanceledError(err)) {
+		} cAtch (err) {
+			if (isPromiseCAnceledError(err)) {
 				throw err;
 			}
-			onUnexpectedExternalError(err);
+			onUnexpectedExternAlError(err);
 			return emptyCodeActionsResponse;
 		}
 	});
 
-	const listener = modes.CodeActionProviderRegistry.onDidChange(() => {
-		const newProviders = modes.CodeActionProviderRegistry.all(model);
-		if (!equals(newProviders, providers)) {
-			cts.cancel();
+	const listener = modes.CodeActionProviderRegistry.onDidChAnge(() => {
+		const newProviders = modes.CodeActionProviderRegistry.All(model);
+		if (!equAls(newProviders, providers)) {
+			cts.cAncel();
 		}
 	});
 
-	return Promise.all(promises).then(actions => {
-		const allActions = flatten(actions.map(x => x.actions));
-		const allDocumentation = coalesce(actions.map(x => x.documentation));
-		return new ManagedCodeActionSet(allActions, allDocumentation, disposables);
+	return Promise.All(promises).then(Actions => {
+		const AllActions = flAtten(Actions.mAp(x => x.Actions));
+		const AllDocumentAtion = coAlesce(Actions.mAp(x => x.documentAtion));
+		return new MAnAgedCodeActionSet(AllActions, AllDocumentAtion, disposAbles);
 	})
-		.finally(() => {
+		.finAlly(() => {
 			listener.dispose();
 			cts.dispose();
 		});
@@ -166,56 +166,56 @@ function getCodeActionProviders(
 	model: ITextModel,
 	filter: CodeActionFilter
 ) {
-	return modes.CodeActionProviderRegistry.all(model)
-		// Don't include providers that we know will not return code actions of interest
+	return modes.CodeActionProviderRegistry.All(model)
+		// Don't include providers thAt we know will not return code Actions of interest
 		.filter(provider => {
 			if (!provider.providedCodeActionKinds) {
-				// We don't know what type of actions this provider will return.
+				// We don't know whAt type of Actions this provider will return.
 				return true;
 			}
-			return provider.providedCodeActionKinds.some(kind => mayIncludeActionsOfKind(filter, new CodeActionKind(kind)));
+			return provider.providedCodeActionKinds.some(kind => mAyIncludeActionsOfKind(filter, new CodeActionKind(kind)));
 		});
 }
 
-function getDocumentation(
+function getDocumentAtion(
 	provider: modes.CodeActionProvider,
-	providedCodeActions: readonly modes.CodeAction[],
+	providedCodeActions: reAdonly modes.CodeAction[],
 	only?: CodeActionKind
-): modes.Command | undefined {
-	if (!provider.documentation) {
+): modes.CommAnd | undefined {
+	if (!provider.documentAtion) {
 		return undefined;
 	}
 
-	const documentation = provider.documentation.map(entry => ({ kind: new CodeActionKind(entry.kind), command: entry.command }));
+	const documentAtion = provider.documentAtion.mAp(entry => ({ kind: new CodeActionKind(entry.kind), commAnd: entry.commAnd }));
 
 	if (only) {
-		let currentBest: { readonly kind: CodeActionKind, readonly command: modes.Command } | undefined;
-		for (const entry of documentation) {
-			if (entry.kind.contains(only)) {
+		let currentBest: { reAdonly kind: CodeActionKind, reAdonly commAnd: modes.CommAnd } | undefined;
+		for (const entry of documentAtion) {
+			if (entry.kind.contAins(only)) {
 				if (!currentBest) {
 					currentBest = entry;
 				} else {
-					// Take best match
-					if (currentBest.kind.contains(entry.kind)) {
+					// TAke best mAtch
+					if (currentBest.kind.contAins(entry.kind)) {
 						currentBest = entry;
 					}
 				}
 			}
 		}
 		if (currentBest) {
-			return currentBest?.command;
+			return currentBest?.commAnd;
 		}
 	}
 
-	// Otherwise, check to see if any of the provided actions match.
-	for (const action of providedCodeActions) {
-		if (!action.kind) {
+	// Otherwise, check to see if Any of the provided Actions mAtch.
+	for (const Action of providedCodeActions) {
+		if (!Action.kind) {
 			continue;
 		}
 
-		for (const entry of documentation) {
-			if (entry.kind.contains(new CodeActionKind(action.kind))) {
-				return entry.command;
+		for (const entry of documentAtion) {
+			if (entry.kind.contAins(new CodeActionKind(Action.kind))) {
+				return entry.commAnd;
 			}
 		}
 	}
@@ -223,45 +223,45 @@ function getDocumentation(
 	return undefined;
 }
 
-registerLanguageCommand('_executeCodeActionProvider', async function (accessor, args): Promise<ReadonlyArray<modes.CodeAction>> {
-	const { resource, rangeOrSelection, kind, itemResolveCount } = args;
-	if (!(resource instanceof URI)) {
-		throw illegalArgument();
+registerLAnguAgeCommAnd('_executeCodeActionProvider', Async function (Accessor, Args): Promise<ReAdonlyArrAy<modes.CodeAction>> {
+	const { resource, rAngeOrSelection, kind, itemResolveCount } = Args;
+	if (!(resource instAnceof URI)) {
+		throw illegAlArgument();
 	}
 
-	const model = accessor.get(IModelService).getModel(resource);
+	const model = Accessor.get(IModelService).getModel(resource);
 	if (!model) {
-		throw illegalArgument();
+		throw illegAlArgument();
 	}
 
-	const validatedRangeOrSelection = Selection.isISelection(rangeOrSelection)
-		? Selection.liftSelection(rangeOrSelection)
-		: Range.isIRange(rangeOrSelection)
-			? model.validateRange(rangeOrSelection)
+	const vAlidAtedRAngeOrSelection = Selection.isISelection(rAngeOrSelection)
+		? Selection.liftSelection(rAngeOrSelection)
+		: RAnge.isIRAnge(rAngeOrSelection)
+			? model.vAlidAteRAnge(rAngeOrSelection)
 			: undefined;
 
-	if (!validatedRangeOrSelection) {
-		throw illegalArgument();
+	if (!vAlidAtedRAngeOrSelection) {
+		throw illegAlArgument();
 	}
 
-	const codeActionSet = await getCodeActions(
+	const codeActionSet = AwAit getCodeActions(
 		model,
-		validatedRangeOrSelection,
-		{ type: modes.CodeActionTriggerType.Manual, filter: { includeSourceActions: true, include: kind && kind.value ? new CodeActionKind(kind.value) : undefined } },
+		vAlidAtedRAngeOrSelection,
+		{ type: modes.CodeActionTriggerType.MAnuAl, filter: { includeSourceActions: true, include: kind && kind.vAlue ? new CodeActionKind(kind.vAlue) : undefined } },
 		Progress.None,
-		CancellationToken.None);
+		CAncellAtionToken.None);
 
 
-	const resolving: Promise<any>[] = [];
-	const resolveCount = Math.min(codeActionSet.validActions.length, typeof itemResolveCount === 'number' ? itemResolveCount : 0);
+	const resolving: Promise<Any>[] = [];
+	const resolveCount = MAth.min(codeActionSet.vAlidActions.length, typeof itemResolveCount === 'number' ? itemResolveCount : 0);
 	for (let i = 0; i < resolveCount; i++) {
-		resolving.push(codeActionSet.validActions[i].resolve(CancellationToken.None));
+		resolving.push(codeActionSet.vAlidActions[i].resolve(CAncellAtionToken.None));
 	}
 
 	try {
-		await Promise.all(resolving);
-		return codeActionSet.validActions.map(item => item.action);
-	} finally {
+		AwAit Promise.All(resolving);
+		return codeActionSet.vAlidActions.mAp(item => item.Action);
+	} finAlly {
 		setTimeout(() => codeActionSet.dispose(), 100);
 	}
 });

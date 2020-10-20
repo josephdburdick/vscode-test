@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IMarkdownString } from 'vs/base/common/htmlContent';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { ITerminalWidget } from 'vs/workbench/contrib/terminal/browser/widgets/widgets';
-import * as dom from 'vs/base/browser/dom';
-import type { IViewportRange } from 'xterm';
-import { IHoverTarget, IHoverService } from 'vs/workbench/services/hover/browser/hover';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { editorHoverHighlight } from 'vs/platform/theme/common/colorRegistry';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IMArkdownString } from 'vs/bAse/common/htmlContent';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { ITerminAlWidget } from 'vs/workbench/contrib/terminAl/browser/widgets/widgets';
+import * As dom from 'vs/bAse/browser/dom';
+import type { IViewportRAnge } from 'xterm';
+import { IHoverTArget, IHoverService } from 'vs/workbench/services/hover/browser/hover';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { editorHoverHighlight } from 'vs/plAtform/theme/common/colorRegistry';
 
 const $ = dom.$;
 
-export interface ILinkHoverTargetOptions {
-	readonly viewportRange: IViewportRange;
-	readonly cellDimensions: { width: number, height: number };
-	readonly terminalDimensions: { width: number, height: number };
-	readonly modifierDownCallback?: () => void;
-	readonly modifierUpCallback?: () => void;
+export interfAce ILinkHoverTArgetOptions {
+	reAdonly viewportRAnge: IViewportRAnge;
+	reAdonly cellDimensions: { width: number, height: number };
+	reAdonly terminAlDimensions: { width: number, height: number };
+	reAdonly modifierDownCAllbAck?: () => void;
+	reAdonly modifierUpCAllbAck?: () => void;
 }
 
-export class TerminalHover extends Disposable implements ITerminalWidget {
-	readonly id = 'hover';
+export clAss TerminAlHover extends DisposAble implements ITerminAlWidget {
+	reAdonly id = 'hover';
 
 	constructor(
-		private readonly _targetOptions: ILinkHoverTargetOptions,
-		private readonly _text: IMarkdownString,
-		private readonly _linkHandler: (url: string) => any,
-		@IHoverService private readonly _hoverService: IHoverService
+		privAte reAdonly _tArgetOptions: ILinkHoverTArgetOptions,
+		privAte reAdonly _text: IMArkdownString,
+		privAte reAdonly _linkHAndler: (url: string) => Any,
+		@IHoverService privAte reAdonly _hoverService: IHoverService
 	) {
 		super();
 	}
@@ -39,14 +39,14 @@ export class TerminalHover extends Disposable implements ITerminalWidget {
 		super.dispose();
 	}
 
-	attach(container: HTMLElement): void {
-		const target = new CellHoverTarget(container, this._targetOptions);
+	AttAch(contAiner: HTMLElement): void {
+		const tArget = new CellHoverTArget(contAiner, this._tArgetOptions);
 		const hover = this._hoverService.showHover({
-			target,
+			tArget,
 			text: this._text,
-			linkHandler: this._linkHandler,
-			// .xterm-hover lets xterm know that the hover is part of a link
-			additionalClasses: ['xterm-hover']
+			linkHAndler: this._linkHAndler,
+			// .xterm-hover lets xterm know thAt the hover is pArt of A link
+			AdditionAlClAsses: ['xterm-hover']
 		});
 		if (hover) {
 			this._register(hover);
@@ -54,81 +54,81 @@ export class TerminalHover extends Disposable implements ITerminalWidget {
 	}
 }
 
-class CellHoverTarget extends Widget implements IHoverTarget {
-	private _domNode: HTMLElement | undefined;
-	private readonly _targetElements: HTMLElement[] = [];
+clAss CellHoverTArget extends Widget implements IHoverTArget {
+	privAte _domNode: HTMLElement | undefined;
+	privAte reAdonly _tArgetElements: HTMLElement[] = [];
 
-	get targetElements(): readonly HTMLElement[] { return this._targetElements; }
+	get tArgetElements(): reAdonly HTMLElement[] { return this._tArgetElements; }
 
 	constructor(
-		container: HTMLElement,
-		private readonly _options: ILinkHoverTargetOptions
+		contAiner: HTMLElement,
+		privAte reAdonly _options: ILinkHoverTArgetOptions
 	) {
 		super();
 
-		this._domNode = $('div.terminal-hover-targets.xterm-hover');
-		const rowCount = this._options.viewportRange.end.y - this._options.viewportRange.start.y + 1;
+		this._domNode = $('div.terminAl-hover-tArgets.xterm-hover');
+		const rowCount = this._options.viewportRAnge.end.y - this._options.viewportRAnge.stArt.y + 1;
 
-		// Add top target row
-		const width = (this._options.viewportRange.end.y > this._options.viewportRange.start.y ? this._options.terminalDimensions.width - this._options.viewportRange.start.x : this._options.viewportRange.end.x - this._options.viewportRange.start.x + 1) * this._options.cellDimensions.width;
-		const topTarget = $('div.terminal-hover-target.hoverHighlight');
-		topTarget.style.left = `${this._options.viewportRange.start.x * this._options.cellDimensions.width}px`;
-		topTarget.style.bottom = `${(this._options.terminalDimensions.height - this._options.viewportRange.start.y - 1) * this._options.cellDimensions.height}px`;
-		topTarget.style.width = `${width}px`;
-		topTarget.style.height = `${this._options.cellDimensions.height}px`;
-		this._targetElements.push(this._domNode.appendChild(topTarget));
+		// Add top tArget row
+		const width = (this._options.viewportRAnge.end.y > this._options.viewportRAnge.stArt.y ? this._options.terminAlDimensions.width - this._options.viewportRAnge.stArt.x : this._options.viewportRAnge.end.x - this._options.viewportRAnge.stArt.x + 1) * this._options.cellDimensions.width;
+		const topTArget = $('div.terminAl-hover-tArget.hoverHighlight');
+		topTArget.style.left = `${this._options.viewportRAnge.stArt.x * this._options.cellDimensions.width}px`;
+		topTArget.style.bottom = `${(this._options.terminAlDimensions.height - this._options.viewportRAnge.stArt.y - 1) * this._options.cellDimensions.height}px`;
+		topTArget.style.width = `${width}px`;
+		topTArget.style.height = `${this._options.cellDimensions.height}px`;
+		this._tArgetElements.push(this._domNode.AppendChild(topTArget));
 
-		// Add middle target rows
+		// Add middle tArget rows
 		if (rowCount > 2) {
-			const middleTarget = $('div.terminal-hover-target.hoverHighlight');
-			middleTarget.style.left = `0px`;
-			middleTarget.style.bottom = `${(this._options.terminalDimensions.height - this._options.viewportRange.start.y - 1 - (rowCount - 2)) * this._options.cellDimensions.height}px`;
-			middleTarget.style.width = `${this._options.terminalDimensions.width * this._options.cellDimensions.width}px`;
-			middleTarget.style.height = `${(rowCount - 2) * this._options.cellDimensions.height}px`;
-			this._targetElements.push(this._domNode.appendChild(middleTarget));
+			const middleTArget = $('div.terminAl-hover-tArget.hoverHighlight');
+			middleTArget.style.left = `0px`;
+			middleTArget.style.bottom = `${(this._options.terminAlDimensions.height - this._options.viewportRAnge.stArt.y - 1 - (rowCount - 2)) * this._options.cellDimensions.height}px`;
+			middleTArget.style.width = `${this._options.terminAlDimensions.width * this._options.cellDimensions.width}px`;
+			middleTArget.style.height = `${(rowCount - 2) * this._options.cellDimensions.height}px`;
+			this._tArgetElements.push(this._domNode.AppendChild(middleTArget));
 		}
 
-		// Add bottom target row
+		// Add bottom tArget row
 		if (rowCount > 1) {
-			const bottomTarget = $('div.terminal-hover-target.hoverHighlight');
-			bottomTarget.style.left = `0px`;
-			bottomTarget.style.bottom = `${(this._options.terminalDimensions.height - this._options.viewportRange.end.y - 1) * this._options.cellDimensions.height}px`;
-			bottomTarget.style.width = `${(this._options.viewportRange.end.x + 1) * this._options.cellDimensions.width}px`;
-			bottomTarget.style.height = `${this._options.cellDimensions.height}px`;
-			this._targetElements.push(this._domNode.appendChild(bottomTarget));
+			const bottomTArget = $('div.terminAl-hover-tArget.hoverHighlight');
+			bottomTArget.style.left = `0px`;
+			bottomTArget.style.bottom = `${(this._options.terminAlDimensions.height - this._options.viewportRAnge.end.y - 1) * this._options.cellDimensions.height}px`;
+			bottomTArget.style.width = `${(this._options.viewportRAnge.end.x + 1) * this._options.cellDimensions.width}px`;
+			bottomTArget.style.height = `${this._options.cellDimensions.height}px`;
+			this._tArgetElements.push(this._domNode.AppendChild(bottomTArget));
 		}
 
-		if (this._options.modifierDownCallback && this._options.modifierUpCallback) {
-			let down = false;
-			this._register(dom.addDisposableListener(document, 'keydown', e => {
+		if (this._options.modifierDownCAllbAck && this._options.modifierUpCAllbAck) {
+			let down = fAlse;
+			this._register(dom.AddDisposAbleListener(document, 'keydown', e => {
 				if (e.ctrlKey && !down) {
 					down = true;
-					this._options.modifierDownCallback!();
+					this._options.modifierDownCAllbAck!();
 				}
 			}));
-			this._register(dom.addDisposableListener(document, 'keyup', e => {
+			this._register(dom.AddDisposAbleListener(document, 'keyup', e => {
 				if (!e.ctrlKey) {
-					down = false;
-					this._options.modifierUpCallback!();
+					down = fAlse;
+					this._options.modifierUpCAllbAck!();
 				}
 			}));
 		}
 
-		container.appendChild(this._domNode);
+		contAiner.AppendChild(this._domNode);
 	}
 
 	dispose(): void {
-		this._domNode?.parentElement?.removeChild(this._domNode);
+		this._domNode?.pArentElement?.removeChild(this._domNode);
 		super.dispose();
 	}
 }
 
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 	let editorHoverHighlightColor = theme.getColor(editorHoverHighlight);
 	if (editorHoverHighlightColor) {
-		if (editorHoverHighlightColor.isOpaque()) {
-			editorHoverHighlightColor = editorHoverHighlightColor.transparent(0.5);
+		if (editorHoverHighlightColor.isOpAque()) {
+			editorHoverHighlightColor = editorHoverHighlightColor.trAnspArent(0.5);
 		}
-		collector.addRule(`.integrated-terminal .hoverHighlight { background-color: ${editorHoverHighlightColor}; }`);
+		collector.AddRule(`.integrAted-terminAl .hoverHighlight { bAckground-color: ${editorHoverHighlightColor}; }`);
 	}
 });

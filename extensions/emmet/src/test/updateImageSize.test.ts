@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// import 'mocha';
-// import * as assert from 'assert';
+// import 'mochA';
+// import * As Assert from 'Assert';
 // import { Selection } from 'vscode';
-// import { withRandomFileEditor, closeAllEditors } from './testUtils';
-// import { updateImageSize } from '../updateImageSize';
+// import { withRAndomFileEditor, closeAllEditors } from './testUtils';
+// import { updAteImAgeSize } from '../updAteImAgeSize';
 
-// suite('Tests for Emmet actions on html tags', () => {
-// 	teardown(closeAllEditors);
+// suite('Tests for Emmet Actions on html tAgs', () => {
+// 	teArdown(closeAllEditors);
 
-	// test('update image css with multiple cursors in css file', () => {
+	// test('updAte imAge css with multiple cursors in css file', () => {
 	// 	const cssContents = `
 	// 	.one {
-	// 		margin: 10px;
-	// 		padding: 10px;
-	// 		background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 		mArgin: 10px;
+	// 		pAdding: 10px;
+	// 		bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 	}
 	// 	.two {
-	// 		background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 		bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 		height: 42px;
 	// 	}
 	// 	.three {
-	// 		background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 		bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 		width: 42px;
 	// 	}
 	// `;
 	// 	const expectedContents = `
 	// 	.one {
-	// 		margin: 10px;
-	// 		padding: 10px;
-	// 		background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 		mArgin: 10px;
+	// 		pAdding: 10px;
+	// 		bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 		width: 32px;
 	// 		height: 32px;
 	// 	}
 	// 	.two {
-	// 		background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 		bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 		width: 32px;
 	// 		height: 32px;
 	// 	}
 	// 	.three {
-	// 		background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 		bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 		height: 32px;
 	// 		width: 32px;
 	// 	}
 	// `;
-	// 	return withRandomFileEditor(cssContents, 'css', (editor, doc) => {
+	// 	return withRAndomFileEditor(cssContents, 'css', (editor, doc) => {
 	// 		editor.selections = [
 	// 			new Selection(4, 50, 4, 50),
 	// 			new Selection(7, 50, 7, 50),
 	// 			new Selection(11, 50, 11, 50)
 	// 		];
 
-	// 		return updateImageSize()!.then(() => {
-	// 			assert.equal(doc.getText(), expectedContents);
+	// 		return updAteImAgeSize()!.then(() => {
+	// 			Assert.equAl(doc.getText(), expectedContents);
 	// 			return Promise.resolve();
 	// 		});
 	// 	});
 	// });
 
-	// test('update image size in css in html file with multiple cursors', () => {
+	// test('updAte imAge size in css in html file with multiple cursors', () => {
 	// 	const htmlWithCssContents = `
 	// 	<html>
 	// 		<style>
 	// 			.one {
-	// 				margin: 10px;
-	// 				padding: 10px;
-	// 				background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 				mArgin: 10px;
+	// 				pAdding: 10px;
+	// 				bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 			}
 	// 			.two {
-	// 				background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 				bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 				height: 42px;
 	// 			}
 	// 			.three {
-	// 				background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 				bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 				width: 42px;
 	// 			}
 	// 		</style>
@@ -85,63 +85,63 @@
 	// 	<html>
 	// 		<style>
 	// 			.one {
-	// 				margin: 10px;
-	// 				padding: 10px;
-	// 				background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 				mArgin: 10px;
+	// 				pAdding: 10px;
+	// 				bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 				width: 32px;
 	// 				height: 32px;
 	// 			}
 	// 			.two {
-	// 				background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 				bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 				width: 32px;
 	// 				height: 32px;
 	// 			}
 	// 			.three {
-	// 				background-image: url(https://github.com/microsoft/vscode/blob/master/resources/linux/code.png);
+	// 				bAckground-imAge: url(https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png);
 	// 				height: 32px;
 	// 				width: 32px;
 	// 			}
 	// 		</style>
 	// 	</html>
 	// `;
-	// 	return withRandomFileEditor(htmlWithCssContents, 'html', (editor, doc) => {
+	// 	return withRAndomFileEditor(htmlWithCssContents, 'html', (editor, doc) => {
 	// 		editor.selections = [
 	// 			new Selection(6, 50, 6, 50),
 	// 			new Selection(9, 50, 9, 50),
 	// 			new Selection(13, 50, 13, 50)
 	// 		];
 
-	// 		return updateImageSize()!.then(() => {
-	// 			assert.equal(doc.getText(), expectedContents);
+	// 		return updAteImAgeSize()!.then(() => {
+	// 			Assert.equAl(doc.getText(), expectedContents);
 	// 			return Promise.resolve();
 	// 		});
 	// 	});
 	// });
 
-	// test('update image size in img tag in html file with multiple cursors', () => {
-	// 	const htmlwithimgtag = `
+	// test('updAte imAge size in img tAg in html file with multiple cursors', () => {
+	// 	const htmlwithimgtAg = `
 	// 	<html>
-	// 		<img id="one" src="https://github.com/microsoft/vscode/blob/master/resources/linux/code.png" />
-	// 		<img id="two" src="https://github.com/microsoft/vscode/blob/master/resources/linux/code.png" width="56" />
-	// 		<img id="three" src="https://github.com/microsoft/vscode/blob/master/resources/linux/code.png" height="56" />
+	// 		<img id="one" src="https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png" />
+	// 		<img id="two" src="https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png" width="56" />
+	// 		<img id="three" src="https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png" height="56" />
 	// 	</html>
 	// `;
 	// 	const expectedContents = `
 	// 	<html>
-	// 		<img id="one" src="https://github.com/microsoft/vscode/blob/master/resources/linux/code.png" width="32" height="32" />
-	// 		<img id="two" src="https://github.com/microsoft/vscode/blob/master/resources/linux/code.png" width="32" height="32" />
-	// 		<img id="three" src="https://github.com/microsoft/vscode/blob/master/resources/linux/code.png" height="32" width="32" />
+	// 		<img id="one" src="https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png" width="32" height="32" />
+	// 		<img id="two" src="https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png" width="32" height="32" />
+	// 		<img id="three" src="https://github.com/microsoft/vscode/blob/mAster/resources/linux/code.png" height="32" width="32" />
 	// 	</html>
 	// `;
-	// 	return withRandomFileEditor(htmlwithimgtag, 'html', (editor, doc) => {
+	// 	return withRAndomFileEditor(htmlwithimgtAg, 'html', (editor, doc) => {
 	// 		editor.selections = [
 	// 			new Selection(2, 50, 2, 50),
 	// 			new Selection(3, 50, 3, 50),
 	// 			new Selection(4, 50, 4, 50)
 	// 		];
 
-	// 		return updateImageSize()!.then(() => {
-	// 			assert.equal(doc.getText(), expectedContents);
+	// 		return updAteImAgeSize()!.then(() => {
+	// 			Assert.equAl(doc.getText(), expectedContents);
 	// 			return Promise.resolve();
 	// 		});
 	// 	});

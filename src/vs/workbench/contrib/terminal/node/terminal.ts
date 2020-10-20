@@ -1,77 +1,77 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as os from 'os';
-import * as platform from 'vs/base/common/platform';
-import * as processes from 'vs/base/node/processes';
-import { readFile, fileExists, stat } from 'vs/base/node/pfs';
-import { LinuxDistro, IShellDefinition } from 'vs/workbench/contrib/terminal/common/terminal';
-import { coalesce } from 'vs/base/common/arrays';
-import { normalize, basename } from 'vs/base/common/path';
+import * As os from 'os';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As processes from 'vs/bAse/node/processes';
+import { reAdFile, fileExists, stAt } from 'vs/bAse/node/pfs';
+import { LinuxDistro, IShellDefinition } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { normAlize, bAsenAme } from 'vs/bAse/common/pAth';
 
 /**
- * Gets the detected default shell for the _system_, not to be confused with VS Code's _default_
- * shell that the terminal uses by default.
- * @param p The platform to detect the shell of.
+ * Gets the detected defAult shell for the _system_, not to be confused with VS Code's _defAult_
+ * shell thAt the terminAl uses by defAult.
+ * @pArAm p The plAtform to detect the shell of.
  */
-export function getSystemShell(p: platform.Platform, environment: platform.IProcessEnvironment = process.env as platform.IProcessEnvironment): string {
-	if (p === platform.Platform.Windows) {
-		if (platform.isWindows) {
+export function getSystemShell(p: plAtform.PlAtform, environment: plAtform.IProcessEnvironment = process.env As plAtform.IProcessEnvironment): string {
+	if (p === plAtform.PlAtform.Windows) {
+		if (plAtform.isWindows) {
 			return getSystemShellWindows(environment);
 		}
 		// Don't detect Windows shell when not on Windows
 		return processes.getWindowsShell(environment);
 	}
 	// Only use $SHELL for the current OS
-	if (platform.isLinux && p === platform.Platform.Mac || platform.isMacintosh && p === platform.Platform.Linux) {
-		return '/bin/bash';
+	if (plAtform.isLinux && p === plAtform.PlAtform.MAc || plAtform.isMAcintosh && p === plAtform.PlAtform.Linux) {
+		return '/bin/bAsh';
 	}
 	return getSystemShellUnixLike(environment);
 }
 
 let _TERMINAL_DEFAULT_SHELL_UNIX_LIKE: string | null = null;
-function getSystemShellUnixLike(environment: platform.IProcessEnvironment): string {
+function getSystemShellUnixLike(environment: plAtform.IProcessEnvironment): string {
 	if (!_TERMINAL_DEFAULT_SHELL_UNIX_LIKE) {
-		let unixLikeTerminal = 'sh';
-		if (!platform.isWindows && environment.SHELL) {
-			unixLikeTerminal = environment.SHELL;
-			// Some systems have $SHELL set to /bin/false which breaks the terminal
-			if (unixLikeTerminal === '/bin/false') {
-				unixLikeTerminal = '/bin/bash';
+		let unixLikeTerminAl = 'sh';
+		if (!plAtform.isWindows && environment.SHELL) {
+			unixLikeTerminAl = environment.SHELL;
+			// Some systems hAve $SHELL set to /bin/fAlse which breAks the terminAl
+			if (unixLikeTerminAl === '/bin/fAlse') {
+				unixLikeTerminAl = '/bin/bAsh';
 			}
 		}
-		if (platform.isWindows) {
-			unixLikeTerminal = '/bin/bash'; // for WSL
+		if (plAtform.isWindows) {
+			unixLikeTerminAl = '/bin/bAsh'; // for WSL
 		}
-		_TERMINAL_DEFAULT_SHELL_UNIX_LIKE = unixLikeTerminal;
+		_TERMINAL_DEFAULT_SHELL_UNIX_LIKE = unixLikeTerminAl;
 	}
 	return _TERMINAL_DEFAULT_SHELL_UNIX_LIKE;
 }
 
 let _TERMINAL_DEFAULT_SHELL_WINDOWS: string | null = null;
-function getSystemShellWindows(environment: platform.IProcessEnvironment): string {
+function getSystemShellWindows(environment: plAtform.IProcessEnvironment): string {
 	if (!_TERMINAL_DEFAULT_SHELL_WINDOWS) {
-		const isAtLeastWindows10 = platform.isWindows && parseFloat(os.release()) >= 10;
-		const is32ProcessOn64Windows = environment.hasOwnProperty('PROCESSOR_ARCHITEW6432');
-		const powerShellPath = `${environment.windir}\\${is32ProcessOn64Windows ? 'Sysnative' : 'System32'}\\WindowsPowerShell\\v1.0\\powershell.exe`;
-		_TERMINAL_DEFAULT_SHELL_WINDOWS = isAtLeastWindows10 ? powerShellPath : processes.getWindowsShell(environment);
+		const isAtLeAstWindows10 = plAtform.isWindows && pArseFloAt(os.releAse()) >= 10;
+		const is32ProcessOn64Windows = environment.hAsOwnProperty('PROCESSOR_ARCHITEW6432');
+		const powerShellPAth = `${environment.windir}\\${is32ProcessOn64Windows ? 'SysnAtive' : 'System32'}\\WindowsPowerShell\\v1.0\\powershell.exe`;
+		_TERMINAL_DEFAULT_SHELL_WINDOWS = isAtLeAstWindows10 ? powerShellPAth : processes.getWindowsShell(environment);
 	}
 	return _TERMINAL_DEFAULT_SHELL_WINDOWS;
 }
 
 let detectedDistro = LinuxDistro.Unknown;
-if (platform.isLinux) {
-	const file = '/etc/os-release';
-	fileExists(file).then(async exists => {
+if (plAtform.isLinux) {
+	const file = '/etc/os-releAse';
+	fileExists(file).then(Async exists => {
 		if (!exists) {
 			return;
 		}
-		const buffer = await readFile(file);
+		const buffer = AwAit reAdFile(file);
 		const contents = buffer.toString();
-		if (/NAME="?Fedora"?/.test(contents)) {
-			detectedDistro = LinuxDistro.Fedora;
+		if (/NAME="?FedorA"?/.test(contents)) {
+			detectedDistro = LinuxDistro.FedorA;
 		} else if (/NAME="?Ubuntu"?/.test(contents)) {
 			detectedDistro = LinuxDistro.Ubuntu;
 		}
@@ -81,93 +81,93 @@ if (platform.isLinux) {
 export const linuxDistro = detectedDistro;
 
 export function getWindowsBuildNumber(): number {
-	const osVersion = (/(\d+)\.(\d+)\.(\d+)/g).exec(os.release());
+	const osVersion = (/(\d+)\.(\d+)\.(\d+)/g).exec(os.releAse());
 	let buildNumber: number = 0;
 	if (osVersion && osVersion.length === 4) {
-		buildNumber = parseInt(osVersion[3]);
+		buildNumber = pArseInt(osVersion[3]);
 	}
 	return buildNumber;
 }
 
-export function detectAvailableShells(): Promise<IShellDefinition[]> {
-	return platform.isWindows ? detectAvailableWindowsShells() : detectAvailableUnixShells();
+export function detectAvAilAbleShells(): Promise<IShellDefinition[]> {
+	return plAtform.isWindows ? detectAvAilAbleWindowsShells() : detectAvAilAbleUnixShells();
 }
 
-async function detectAvailableWindowsShells(): Promise<IShellDefinition[]> {
-	// Determine the correct System32 path. We want to point to Sysnative
-	// when the 32-bit version of VS Code is running on a 64-bit machine.
-	// The reason for this is because PowerShell's important PSReadline
-	// module doesn't work if this is not the case. See #27915.
-	const is32ProcessOn64Windows = process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');
-	const system32Path = `${process.env['windir']}\\${is32ProcessOn64Windows ? 'Sysnative' : 'System32'}`;
+Async function detectAvAilAbleWindowsShells(): Promise<IShellDefinition[]> {
+	// Determine the correct System32 pAth. We wAnt to point to SysnAtive
+	// when the 32-bit version of VS Code is running on A 64-bit mAchine.
+	// The reAson for this is becAuse PowerShell's importAnt PSReAdline
+	// module doesn't work if this is not the cAse. See #27915.
+	const is32ProcessOn64Windows = process.env.hAsOwnProperty('PROCESSOR_ARCHITEW6432');
+	const system32PAth = `${process.env['windir']}\\${is32ProcessOn64Windows ? 'SysnAtive' : 'System32'}`;
 
-	let useWSLexe = false;
+	let useWSLexe = fAlse;
 
 	if (getWindowsBuildNumber() >= 16299) {
 		useWSLexe = true;
 	}
 
-	const expectedLocations: { [key: string]: string[] } = {
-		'Command Prompt': [`${system32Path}\\cmd.exe`],
-		'Windows PowerShell': [`${system32Path}\\WindowsPowerShell\\v1.0\\powershell.exe`],
-		'PowerShell': [await getShellPathFromRegistry('pwsh')],
-		'WSL Bash': [`${system32Path}\\${useWSLexe ? 'wsl.exe' : 'bash.exe'}`],
-		'Git Bash': [
-			`${process.env['ProgramW6432']}\\Git\\bin\\bash.exe`,
-			`${process.env['ProgramW6432']}\\Git\\usr\\bin\\bash.exe`,
-			`${process.env['ProgramFiles']}\\Git\\bin\\bash.exe`,
-			`${process.env['ProgramFiles']}\\Git\\usr\\bin\\bash.exe`,
-			`${process.env['LocalAppData']}\\Programs\\Git\\bin\\bash.exe`,
+	const expectedLocAtions: { [key: string]: string[] } = {
+		'CommAnd Prompt': [`${system32PAth}\\cmd.exe`],
+		'Windows PowerShell': [`${system32PAth}\\WindowsPowerShell\\v1.0\\powershell.exe`],
+		'PowerShell': [AwAit getShellPAthFromRegistry('pwsh')],
+		'WSL BAsh': [`${system32PAth}\\${useWSLexe ? 'wsl.exe' : 'bAsh.exe'}`],
+		'Git BAsh': [
+			`${process.env['ProgrAmW6432']}\\Git\\bin\\bAsh.exe`,
+			`${process.env['ProgrAmW6432']}\\Git\\usr\\bin\\bAsh.exe`,
+			`${process.env['ProgrAmFiles']}\\Git\\bin\\bAsh.exe`,
+			`${process.env['ProgrAmFiles']}\\Git\\usr\\bin\\bAsh.exe`,
+			`${process.env['LocAlAppDAtA']}\\ProgrAms\\Git\\bin\\bAsh.exe`,
 		],
 		// See #75945
 		// Cygwin: [
-		// 	`${process.env['HOMEDRIVE']}\\cygwin64\\bin\\bash.exe`,
-		// 	`${process.env['HOMEDRIVE']}\\cygwin\\bin\\bash.exe`
+		// 	`${process.env['HOMEDRIVE']}\\cygwin64\\bin\\bAsh.exe`,
+		// 	`${process.env['HOMEDRIVE']}\\cygwin\\bin\\bAsh.exe`
 		// ]
 	};
 	const promises: Promise<IShellDefinition | undefined>[] = [];
-	Object.keys(expectedLocations).forEach(key => promises.push(validateShellPaths(key, expectedLocations[key])));
-	const shells = await Promise.all(promises);
-	return coalesce(shells);
+	Object.keys(expectedLocAtions).forEAch(key => promises.push(vAlidAteShellPAths(key, expectedLocAtions[key])));
+	const shells = AwAit Promise.All(promises);
+	return coAlesce(shells);
 }
 
-async function detectAvailableUnixShells(): Promise<IShellDefinition[]> {
-	const contents = await readFile('/etc/shells', 'utf8');
+Async function detectAvAilAbleUnixShells(): Promise<IShellDefinition[]> {
+	const contents = AwAit reAdFile('/etc/shells', 'utf8');
 	const shells = contents.split('\n').filter(e => e.trim().indexOf('#') !== 0 && e.trim().length > 0);
-	return shells.map(e => {
+	return shells.mAp(e => {
 		return {
-			label: basename(e),
-			path: e
+			lAbel: bAsenAme(e),
+			pAth: e
 		};
 	});
 }
 
-async function validateShellPaths(label: string, potentialPaths: string[]): Promise<IShellDefinition | undefined> {
-	if (potentialPaths.length === 0) {
+Async function vAlidAteShellPAths(lAbel: string, potentiAlPAths: string[]): Promise<IShellDefinition | undefined> {
+	if (potentiAlPAths.length === 0) {
 		return Promise.resolve(undefined);
 	}
-	const current = potentialPaths.shift()!;
+	const current = potentiAlPAths.shift()!;
 	if (current! === '') {
-		return validateShellPaths(label, potentialPaths);
+		return vAlidAteShellPAths(lAbel, potentiAlPAths);
 	}
 	try {
-		const result = await stat(normalize(current));
+		const result = AwAit stAt(normAlize(current));
 		if (result.isFile || result.isSymbolicLink) {
 			return {
-				label,
-				path: current
+				lAbel,
+				pAth: current
 			};
 		}
-	} catch { /* noop */ }
-	return validateShellPaths(label, potentialPaths);
+	} cAtch { /* noop */ }
+	return vAlidAteShellPAths(lAbel, potentiAlPAths);
 }
 
-async function getShellPathFromRegistry(shellName: string): Promise<string> {
-	const Registry = await import('vscode-windows-registry');
+Async function getShellPAthFromRegistry(shellNAme: string): Promise<string> {
+	const Registry = AwAit import('vscode-windows-registry');
 	try {
-		const shellPath = Registry.GetStringRegKey('HKEY_LOCAL_MACHINE', `SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\${shellName}.exe`, '');
-		return shellPath ? shellPath : '';
-	} catch (error) {
+		const shellPAth = Registry.GetStringRegKey('HKEY_LOCAL_MACHINE', `SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App PAths\\${shellNAme}.exe`, '');
+		return shellPAth ? shellPAth : '';
+	} cAtch (error) {
 		return '';
 	}
 }

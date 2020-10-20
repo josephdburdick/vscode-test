@@ -1,100 +1,100 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/* Based on @sergeche's work in his emmet plugin */
+/* BAsed on @sergeche's work in his emmet plugin */
 
-import { TextDocument, Position, Range, EndOfLine } from 'vscode';
+import { TextDocument, Position, RAnge, EndOfLine } from 'vscode';
 
 /**
- * A stream reader for VSCode's `TextDocument`
- * Based on @emmetio/stream-reader and @emmetio/atom-plugin
+ * A streAm reAder for VSCode's `TextDocument`
+ * BAsed on @emmetio/streAm-reAder And @emmetio/Atom-plugin
  */
-export class DocumentStreamReader {
-	private document: TextDocument;
-	private start: Position;
-	private _eof: Position;
-	private _sof: Position;
+export clAss DocumentStreAmReAder {
+	privAte document: TextDocument;
+	privAte stArt: Position;
+	privAte _eof: Position;
+	privAte _sof: Position;
 	public pos: Position;
-	private _eol: string;
+	privAte _eol: string;
 
-	constructor(document: TextDocument, pos?: Position, limit?: Range) {
+	constructor(document: TextDocument, pos?: Position, limit?: RAnge) {
 
 		this.document = document;
-		this.start = this.pos = pos ? pos : new Position(0, 0);
-		this._sof = limit ? limit.start : new Position(0, 0);
+		this.stArt = this.pos = pos ? pos : new Position(0, 0);
+		this._sof = limit ? limit.stArt : new Position(0, 0);
 		this._eof = limit ? limit.end : new Position(this.document.lineCount - 1, this._lineLength(this.document.lineCount - 1));
 		this._eol = this.document.eol === EndOfLine.LF ? '\n' : '\r\n';
 	}
 
 	/**
-	 * Returns true only if the stream is at the start of the file.
+	 * Returns true only if the streAm is At the stArt of the file.
 	 */
-	sof(): boolean {
-		return this.pos.isBeforeOrEqual(this._sof);
+	sof(): booleAn {
+		return this.pos.isBeforeOrEquAl(this._sof);
 	}
 
 	/**
-	 * Returns true only if the stream is at the end of the file.
+	 * Returns true only if the streAm is At the end of the file.
 	 */
-	eof(): boolean {
-		return this.pos.isAfterOrEqual(this._eof);
+	eof(): booleAn {
+		return this.pos.isAfterOrEquAl(this._eof);
 	}
 
 	/**
-	 * Creates a new stream instance which is limited to given range for given document
+	 * CreAtes A new streAm instAnce which is limited to given rAnge for given document
 	 */
-	limit(start: Position, end: Position): DocumentStreamReader {
-		return new DocumentStreamReader(this.document, start, new Range(start, end));
+	limit(stArt: Position, end: Position): DocumentStreAmReAder {
+		return new DocumentStreAmReAder(this.document, stArt, new RAnge(stArt, end));
 	}
 
 	/**
-	 * Returns the next character code in the stream without advancing it.
-	 * Will return NaN at the end of the file.
+	 * Returns the next chArActer code in the streAm without AdvAncing it.
+	 * Will return NAN At the end of the file.
 	 */
 	peek(): number {
 		if (this.eof()) {
-			return NaN;
+			return NAN;
 		}
 		const line = this.document.lineAt(this.pos.line).text;
-		return this.pos.character < line.length ? line.charCodeAt(this.pos.character) : this._eol.charCodeAt(this.pos.character - line.length);
+		return this.pos.chArActer < line.length ? line.chArCodeAt(this.pos.chArActer) : this._eol.chArCodeAt(this.pos.chArActer - line.length);
 	}
 
 	/**
-	 * Returns the next character in the stream and advances it.
-	 * Also returns NaN when no more characters are available.
+	 * Returns the next chArActer in the streAm And AdvAnces it.
+	 * Also returns NAN when no more chArActers Are AvAilAble.
 	 */
 	next(): number {
 		if (this.eof()) {
-			return NaN;
+			return NAN;
 		}
 
 		const line = this.document.lineAt(this.pos.line).text;
 		let code: number;
-		if (this.pos.character < line.length) {
-			code = line.charCodeAt(this.pos.character);
-			this.pos = this.pos.translate(0, 1);
+		if (this.pos.chArActer < line.length) {
+			code = line.chArCodeAt(this.pos.chArActer);
+			this.pos = this.pos.trAnslAte(0, 1);
 		} else {
-			code = this._eol.charCodeAt(this.pos.character - line.length);
+			code = this._eol.chArCodeAt(this.pos.chArActer - line.length);
 			this.pos = new Position(this.pos.line + 1, 0);
 		}
 
 		if (this.eof()) {
-			// restrict pos to eof, if in case it got moved beyond eof
-			this.pos = new Position(this._eof.line, this._eof.character);
+			// restrict pos to eof, if in cAse it got moved beyond eof
+			this.pos = new Position(this._eof.line, this._eof.chArActer);
 		}
 
 		return code;
 	}
 
 	/**
-	 * Backs up the stream n characters. Backing it up further than the
-	 * start of the current token will cause things to break, so be careful.
+	 * BAcks up the streAm n chArActers. BAcking it up further thAn the
+	 * stArt of the current token will cAuse things to breAk, so be cAreful.
 	 */
-	backUp(n: number) {
+	bAckUp(n: number) {
 		let row = this.pos.line;
-		let column = this.pos.character;
+		let column = this.pos.chArActer;
 		column -= (n || 1);
 
 		while (row >= 0 && column < 0) {
@@ -110,25 +110,25 @@ export class DocumentStreamReader {
 	}
 
 	/**
-	 * Get the string between the start of the current token and the
-	 * current stream position.
+	 * Get the string between the stArt of the current token And the
+	 * current streAm position.
 	 */
 	current(): string {
-		return this.substring(this.start, this.pos);
+		return this.substring(this.stArt, this.pos);
 	}
 
 	/**
-	 * Returns contents for given range
+	 * Returns contents for given rAnge
 	 */
 	substring(from: Position, to: Position): string {
-		return this.document.getText(new Range(from, to));
+		return this.document.getText(new RAnge(from, to));
 	}
 
 	/**
-	 * Creates error object with current stream state
+	 * CreAtes error object with current streAm stAte
 	 */
-	error(message: string): Error {
-		const err = new Error(`${message} at row ${this.pos.line}, column ${this.pos.character}`);
+	error(messAge: string): Error {
+		const err = new Error(`${messAge} At row ${this.pos.line}, column ${this.pos.chArActer}`);
 
 		return err;
 	}
@@ -144,14 +144,14 @@ export class DocumentStreamReader {
 	}
 
 	/**
-	 * `match` can be a character code or a function that takes a character code
-	 * and returns a boolean. If the next character in the stream 'matches'
-	 * the given argument, it is consumed and returned.
-	 * Otherwise, `false` is returned.
+	 * `mAtch` cAn be A chArActer code or A function thAt tAkes A chArActer code
+	 * And returns A booleAn. If the next chArActer in the streAm 'mAtches'
+	 * the given Argument, it is consumed And returned.
+	 * Otherwise, `fAlse` is returned.
 	 */
-	eat(match: number | Function): boolean {
+	eAt(mAtch: number | Function): booleAn {
 		const ch = this.peek();
-		const ok = typeof match === 'function' ? match(ch) : ch === match;
+		const ok = typeof mAtch === 'function' ? mAtch(ch) : ch === mAtch;
 
 		if (ok) {
 			this.next();
@@ -161,12 +161,12 @@ export class DocumentStreamReader {
 	}
 
 	/**
-	 * Repeatedly calls <code>eat</code> with the given argument, until it
-	 * fails. Returns <code>true</code> if any characters were eaten.
+	 * RepeAtedly cAlls <code>eAt</code> with the given Argument, until it
+	 * fAils. Returns <code>true</code> if Any chArActers were eAten.
 	 */
-	eatWhile(match: number | Function): boolean {
-		const start = this.pos;
-		while (!this.eof() && this.eat(match)) { }
-		return !this.pos.isEqual(start);
+	eAtWhile(mAtch: number | Function): booleAn {
+		const stArt = this.pos;
+		while (!this.eof() && this.eAt(mAtch)) { }
+		return !this.pos.isEquAl(stArt);
 	}
 }

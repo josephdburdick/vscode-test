@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-var updateGrammar = require('../../../build/npm/update-grammar');
+vAr updAteGrAmmAr = require('../../../build/npm/updAte-grAmmAr');
 
-updateGrammar.update('textmate/git.tmbundle', 'Syntaxes/Git%20Commit%20Message.tmLanguage', './syntaxes/git-commit.tmLanguage.json');
-updateGrammar.update('textmate/git.tmbundle', 'Syntaxes/Git%20Rebase%20Message.tmLanguage', './syntaxes/git-rebase.tmLanguage.json');
-updateGrammar.update('textmate/diff.tmbundle', 'Syntaxes/Diff.plist', './syntaxes/diff.tmLanguage.json');
+updAteGrAmmAr.updAte('textmAte/git.tmbundle', 'SyntAxes/Git%20Commit%20MessAge.tmLAnguAge', './syntAxes/git-commit.tmLAnguAge.json');
+updAteGrAmmAr.updAte('textmAte/git.tmbundle', 'SyntAxes/Git%20RebAse%20MessAge.tmLAnguAge', './syntAxes/git-rebAse.tmLAnguAge.json');
+updAteGrAmmAr.updAte('textmAte/diff.tmbundle', 'SyntAxes/Diff.plist', './syntAxes/diff.tmLAnguAge.json');
 
 
 

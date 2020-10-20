@@ -1,128 +1,128 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import type * as vscode from 'vscode';
-import * as env from 'vs/base/common/platform';
-import { DebugAdapterExecutable } from 'vs/workbench/api/common/extHostTypes';
-import { ExecutableDebugAdapter, SocketDebugAdapter, NamedPipeDebugAdapter } from 'vs/workbench/contrib/debug/node/debugAdapter';
-import { AbstractDebugAdapter } from 'vs/workbench/contrib/debug/common/abstractDebugAdapter';
-import { IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
-import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
-import { IExtHostDocumentsAndEditors, ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { IAdapterDescriptor } from 'vs/workbench/contrib/debug/common/debug';
-import { IExtHostConfiguration, ExtHostConfigProvider } from '../common/extHostConfiguration';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
+import * As nls from 'vs/nls';
+import type * As vscode from 'vscode';
+import * As env from 'vs/bAse/common/plAtform';
+import { DebugAdApterExecutAble } from 'vs/workbench/Api/common/extHostTypes';
+import { ExecutAbleDebugAdApter, SocketDebugAdApter, NAmedPipeDebugAdApter } from 'vs/workbench/contrib/debug/node/debugAdApter';
+import { AbstrActDebugAdApter } from 'vs/workbench/contrib/debug/common/AbstrActDebugAdApter';
+import { IExtHostWorkspAce } from 'vs/workbench/Api/common/extHostWorkspAce';
+import { IExtHostExtensionService } from 'vs/workbench/Api/common/extHostExtensionService';
+import { IExtHostDocumentsAndEditors, ExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { IAdApterDescriptor } from 'vs/workbench/contrib/debug/common/debug';
+import { IExtHostConfigurAtion, ExtHostConfigProvider } from '../common/extHostConfigurAtion';
+import { IExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
-import { IExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ExtHostDebugServiceBase, ExtHostDebugSession, ExtHostVariableResolverService } from 'vs/workbench/api/common/extHostDebugService';
-import { ISignService } from 'vs/platform/sign/common/sign';
-import { SignService } from 'vs/platform/sign/node/signService';
-import { hasChildProcesses, prepareCommand, runInExternalTerminal } from 'vs/workbench/contrib/debug/node/terminals';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { AbstractVariableResolverService } from 'vs/workbench/services/configurationResolver/common/variableResolver';
+import { IExtHostTerminAlService } from 'vs/workbench/Api/common/extHostTerminAlService';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { ExtHostDebugServiceBAse, ExtHostDebugSession, ExtHostVAriAbleResolverService } from 'vs/workbench/Api/common/extHostDebugService';
+import { ISignService } from 'vs/plAtform/sign/common/sign';
+import { SignService } from 'vs/plAtform/sign/node/signService';
+import { hAsChildProcesses, prepAreCommAnd, runInExternAlTerminAl } from 'vs/workbench/contrib/debug/node/terminAls';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { AbstrActVAriAbleResolverService } from 'vs/workbench/services/configurAtionResolver/common/vAriAbleResolver';
 
 
-export class ExtHostDebugService extends ExtHostDebugServiceBase {
+export clAss ExtHostDebugService extends ExtHostDebugServiceBAse {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private _integratedTerminalInstance?: vscode.Terminal;
-	private _terminalDisposedListener: IDisposable | undefined;
+	privAte _integrAtedTerminAlInstAnce?: vscode.TerminAl;
+	privAte _terminAlDisposedListener: IDisposAble | undefined;
 
 	constructor(
 		@IExtHostRpcService extHostRpcService: IExtHostRpcService,
-		@IExtHostWorkspace workspaceService: IExtHostWorkspace,
+		@IExtHostWorkspAce workspAceService: IExtHostWorkspAce,
 		@IExtHostExtensionService extensionService: IExtHostExtensionService,
 		@IExtHostDocumentsAndEditors editorsService: IExtHostDocumentsAndEditors,
-		@IExtHostConfiguration configurationService: IExtHostConfiguration,
-		@IExtHostTerminalService private _terminalService: IExtHostTerminalService,
-		@IExtHostCommands commandService: IExtHostCommands
+		@IExtHostConfigurAtion configurAtionService: IExtHostConfigurAtion,
+		@IExtHostTerminAlService privAte _terminAlService: IExtHostTerminAlService,
+		@IExtHostCommAnds commAndService: IExtHostCommAnds
 	) {
-		super(extHostRpcService, workspaceService, extensionService, editorsService, configurationService, commandService);
+		super(extHostRpcService, workspAceService, extensionService, editorsService, configurAtionService, commAndService);
 	}
 
-	protected createDebugAdapter(adapter: IAdapterDescriptor, session: ExtHostDebugSession): AbstractDebugAdapter | undefined {
-		switch (adapter.type) {
-			case 'server':
-				return new SocketDebugAdapter(adapter);
-			case 'pipeServer':
-				return new NamedPipeDebugAdapter(adapter);
-			case 'executable':
-				return new ExecutableDebugAdapter(adapter, session.type);
+	protected creAteDebugAdApter(AdApter: IAdApterDescriptor, session: ExtHostDebugSession): AbstrActDebugAdApter | undefined {
+		switch (AdApter.type) {
+			cAse 'server':
+				return new SocketDebugAdApter(AdApter);
+			cAse 'pipeServer':
+				return new NAmedPipeDebugAdApter(AdApter);
+			cAse 'executAble':
+				return new ExecutAbleDebugAdApter(AdApter, session.type);
 		}
-		return super.createDebugAdapter(adapter, session);
+		return super.creAteDebugAdApter(AdApter, session);
 	}
 
-	protected daExecutableFromPackage(session: ExtHostDebugSession, extensionRegistry: ExtensionDescriptionRegistry): DebugAdapterExecutable | undefined {
-		const dae = ExecutableDebugAdapter.platformAdapterExecutable(extensionRegistry.getAllExtensionDescriptions(), session.type);
-		if (dae) {
-			return new DebugAdapterExecutable(dae.command, dae.args, dae.options);
+	protected dAExecutAbleFromPAckAge(session: ExtHostDebugSession, extensionRegistry: ExtensionDescriptionRegistry): DebugAdApterExecutAble | undefined {
+		const dAe = ExecutAbleDebugAdApter.plAtformAdApterExecutAble(extensionRegistry.getAllExtensionDescriptions(), session.type);
+		if (dAe) {
+			return new DebugAdApterExecutAble(dAe.commAnd, dAe.Args, dAe.options);
 		}
 		return undefined;
 	}
 
-	protected createSignService(): ISignService | undefined {
+	protected creAteSignService(): ISignService | undefined {
 		return new SignService();
 	}
 
-	public async $runInTerminal(args: DebugProtocol.RunInTerminalRequestArguments): Promise<number | undefined> {
+	public Async $runInTerminAl(Args: DebugProtocol.RunInTerminAlRequestArguments): Promise<number | undefined> {
 
-		if (args.kind === 'integrated') {
+		if (Args.kind === 'integrAted') {
 
-			if (!this._terminalDisposedListener) {
-				// React on terminal disposed and check if that is the debug terminal #12956
-				this._terminalDisposedListener = this._terminalService.onDidCloseTerminal(terminal => {
-					if (this._integratedTerminalInstance && this._integratedTerminalInstance === terminal) {
-						this._integratedTerminalInstance = undefined;
+			if (!this._terminAlDisposedListener) {
+				// ReAct on terminAl disposed And check if thAt is the debug terminAl #12956
+				this._terminAlDisposedListener = this._terminAlService.onDidCloseTerminAl(terminAl => {
+					if (this._integrAtedTerminAlInstAnce && this._integrAtedTerminAlInstAnce === terminAl) {
+						this._integrAtedTerminAlInstAnce = undefined;
 					}
 				});
 			}
 
-			let needNewTerminal = true;	// be pessimistic
-			if (this._integratedTerminalInstance) {
-				const pid = await this._integratedTerminalInstance.processId;
-				needNewTerminal = await hasChildProcesses(pid);		// if no processes running in terminal reuse terminal
+			let needNewTerminAl = true;	// be pessimistic
+			if (this._integrAtedTerminAlInstAnce) {
+				const pid = AwAit this._integrAtedTerminAlInstAnce.processId;
+				needNewTerminAl = AwAit hAsChildProcesses(pid);		// if no processes running in terminAl reuse terminAl
 			}
 
-			const configProvider = await this._configurationService.getConfigProvider();
-			const shell = this._terminalService.getDefaultShell(true, configProvider);
-			let cwdForPrepareCommand: string | undefined;
+			const configProvider = AwAit this._configurAtionService.getConfigProvider();
+			const shell = this._terminAlService.getDefAultShell(true, configProvider);
+			let cwdForPrepAreCommAnd: string | undefined;
 
-			if (needNewTerminal || !this._integratedTerminalInstance) {
+			if (needNewTerminAl || !this._integrAtedTerminAlInstAnce) {
 
-				const options: vscode.TerminalOptions = {
-					shellPath: shell,
-					// shellArgs: this._terminalService._getDefaultShellArgs(configProvider),
-					cwd: args.cwd,
-					name: args.title || nls.localize('debug.terminal.title', "debuggee"),
+				const options: vscode.TerminAlOptions = {
+					shellPAth: shell,
+					// shellArgs: this._terminAlService._getDefAultShellArgs(configProvider),
+					cwd: Args.cwd,
+					nAme: Args.title || nls.locAlize('debug.terminAl.title', "debuggee"),
 				};
-				this._integratedTerminalInstance = this._terminalService.createTerminalFromOptions(options);
+				this._integrAtedTerminAlInstAnce = this._terminAlService.creAteTerminAlFromOptions(options);
 			} else {
-				cwdForPrepareCommand = args.cwd;
+				cwdForPrepAreCommAnd = Args.cwd;
 			}
 
-			const terminal = this._integratedTerminalInstance;
+			const terminAl = this._integrAtedTerminAlInstAnce;
 
-			terminal.show();
+			terminAl.show();
 
-			const shellProcessId = await this._integratedTerminalInstance.processId;
-			const command = prepareCommand(shell, args.args, cwdForPrepareCommand, args.env);
-			terminal.sendText(command, true);
+			const shellProcessId = AwAit this._integrAtedTerminAlInstAnce.processId;
+			const commAnd = prepAreCommAnd(shell, Args.Args, cwdForPrepAreCommAnd, Args.env);
+			terminAl.sendText(commAnd, true);
 
 			return shellProcessId;
 
-		} else if (args.kind === 'external') {
+		} else if (Args.kind === 'externAl') {
 
-			return runInExternalTerminal(args, await this._configurationService.getConfigProvider());
+			return runInExternAlTerminAl(Args, AwAit this._configurAtionService.getConfigProvider());
 		}
-		return super.$runInTerminal(args);
+		return super.$runInTerminAl(Args);
 	}
 
-	protected createVariableResolver(folders: vscode.WorkspaceFolder[], editorService: ExtHostDocumentsAndEditors, configurationService: ExtHostConfigProvider): AbstractVariableResolverService {
-		return new ExtHostVariableResolverService(folders, editorService, configurationService, process.env as env.IProcessEnvironment);
+	protected creAteVAriAbleResolver(folders: vscode.WorkspAceFolder[], editorService: ExtHostDocumentsAndEditors, configurAtionService: ExtHostConfigProvider): AbstrActVAriAbleResolverService {
+		return new ExtHostVAriAbleResolverService(folders, editorService, configurAtionService, process.env As env.IProcessEnvironment);
 	}
 }

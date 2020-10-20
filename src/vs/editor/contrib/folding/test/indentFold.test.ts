@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { computeRanges } from 'vs/editor/contrib/folding/indentRangeProvider';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import * As Assert from 'Assert';
+import { computeRAnges } from 'vs/editor/contrib/folding/indentRAngeProvider';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-interface IndentRange {
-	start: number;
+interfAce IndentRAnge {
+	stArt: number;
 	end: number;
 }
 
-suite('Indentation Folding', () => {
-	function r(start: number, end: number): IndentRange {
-		return { start, end };
+suite('IndentAtion Folding', () => {
+	function r(stArt: number, end: number): IndentRAnge {
+		return { stArt, end };
 	}
 
 	test('Limit by indent', () => {
@@ -47,29 +47,29 @@ suite('Indentation Folding', () => {
 		let r8 = r(13, 14);//4
 		let r9 = r(15, 16);//0
 
-		let model = createTextModel(lines.join('\n'));
+		let model = creAteTextModel(lines.join('\n'));
 
-		function assertLimit(maxEntries: number, expectedRanges: IndentRange[], message: string) {
-			let indentRanges = computeRanges(model, true, undefined, maxEntries);
-			assert.ok(indentRanges.length <= maxEntries, 'max ' + message);
-			let actual: IndentRange[] = [];
-			for (let i = 0; i < indentRanges.length; i++) {
-				actual.push({ start: indentRanges.getStartLineNumber(i), end: indentRanges.getEndLineNumber(i) });
+		function AssertLimit(mAxEntries: number, expectedRAnges: IndentRAnge[], messAge: string) {
+			let indentRAnges = computeRAnges(model, true, undefined, mAxEntries);
+			Assert.ok(indentRAnges.length <= mAxEntries, 'mAx ' + messAge);
+			let ActuAl: IndentRAnge[] = [];
+			for (let i = 0; i < indentRAnges.length; i++) {
+				ActuAl.push({ stArt: indentRAnges.getStArtLineNumber(i), end: indentRAnges.getEndLineNumber(i) });
 			}
-			assert.deepEqual(actual, expectedRanges, message);
+			Assert.deepEquAl(ActuAl, expectedRAnges, messAge);
 		}
 
-		assertLimit(1000, [r1, r2, r3, r4, r5, r6, r7, r8, r9], '1000');
-		assertLimit(9, [r1, r2, r3, r4, r5, r6, r7, r8, r9], '9');
-		assertLimit(8, [r1, r2, r3, r4, r5, r6, r7, r9], '8');
-		assertLimit(7, [r1, r2, r3, r4, r5, r7, r9], '7');
-		assertLimit(6, [r1, r2, r3, r4, r7, r9], '6');
-		assertLimit(5, [r1, r2, r3, r7, r9], '5');
-		assertLimit(4, [r1, r2, r7, r9], '4');
-		assertLimit(3, [r1, r2, r9], '3');
-		assertLimit(2, [r1, r9], '2');
-		assertLimit(1, [r1], '1');
-		assertLimit(0, [], '0');
+		AssertLimit(1000, [r1, r2, r3, r4, r5, r6, r7, r8, r9], '1000');
+		AssertLimit(9, [r1, r2, r3, r4, r5, r6, r7, r8, r9], '9');
+		AssertLimit(8, [r1, r2, r3, r4, r5, r6, r7, r9], '8');
+		AssertLimit(7, [r1, r2, r3, r4, r5, r7, r9], '7');
+		AssertLimit(6, [r1, r2, r3, r4, r7, r9], '6');
+		AssertLimit(5, [r1, r2, r3, r7, r9], '5');
+		AssertLimit(4, [r1, r2, r7, r9], '4');
+		AssertLimit(3, [r1, r2, r9], '3');
+		AssertLimit(2, [r1, r9], '2');
+		AssertLimit(1, [r1], '1');
+		AssertLimit(0, [], '0');
 	});
 
 });

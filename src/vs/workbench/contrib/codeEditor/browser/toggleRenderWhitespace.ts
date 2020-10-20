@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { CATEGORIES, Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
+import * As nls from 'vs/nls';
+import { Action } from 'vs/bAse/common/Actions';
+import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { ConfigurAtionTArget, IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { CATEGORIES, Extensions As ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/Actions';
 
-export class ToggleRenderWhitespaceAction extends Action {
+export clAss ToggleRenderWhitespAceAction extends Action {
 
-	public static readonly ID = 'editor.action.toggleRenderWhitespace';
-	public static readonly LABEL = nls.localize('toggleRenderWhitespace', "Toggle Render Whitespace");
+	public stAtic reAdonly ID = 'editor.Action.toggleRenderWhitespAce';
+	public stAtic reAdonly LABEL = nls.locAlize('toggleRenderWhitespAce', "Toggle Render WhitespAce");
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	public run(): Promise<any> {
-		const renderWhitespace = this._configurationService.getValue<string>('editor.renderWhitespace');
+	public run(): Promise<Any> {
+		const renderWhitespAce = this._configurAtionService.getVAlue<string>('editor.renderWhitespAce');
 
-		let newRenderWhitespace: string;
-		if (renderWhitespace === 'none') {
-			newRenderWhitespace = 'all';
+		let newRenderWhitespAce: string;
+		if (renderWhitespAce === 'none') {
+			newRenderWhitespAce = 'All';
 		} else {
-			newRenderWhitespace = 'none';
+			newRenderWhitespAce = 'none';
 		}
 
-		return this._configurationService.updateValue('editor.renderWhitespace', newRenderWhitespace, ConfigurationTarget.USER);
+		return this._configurAtionService.updAteVAlue('editor.renderWhitespAce', newRenderWhitespAce, ConfigurAtionTArget.USER);
 	}
 }
 
-const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
-registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleRenderWhitespaceAction), 'View: Toggle Render Whitespace', CATEGORIES.View.value);
+const registry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleRenderWhitespAceAction), 'View: Toggle Render WhitespAce', CATEGORIES.View.vAlue);
 
-MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArViewMenu, {
 	group: '5_editor',
-	command: {
-		id: ToggleRenderWhitespaceAction.ID,
-		title: nls.localize({ key: 'miToggleRenderWhitespace', comment: ['&& denotes a mnemonic'] }, "&&Render Whitespace"),
-		toggled: ContextKeyExpr.notEquals('config.editor.renderWhitespace', 'none')
+	commAnd: {
+		id: ToggleRenderWhitespAceAction.ID,
+		title: nls.locAlize({ key: 'miToggleRenderWhitespAce', comment: ['&& denotes A mnemonic'] }, "&&Render WhitespAce"),
+		toggled: ContextKeyExpr.notEquAls('config.editor.renderWhitespAce', 'none')
 	},
 	order: 4
 });

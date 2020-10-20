@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Event } from 'vs/base/common/event';
-import { IFileService } from 'vs/platform/files/common/files';
+import * As Assert from 'Assert';
+import { Event } from 'vs/bAse/common/event';
+import { IFileService } from 'vs/plAtform/files/common/files';
 import { mock } from 'vs/workbench/test/common/workbenchTestServices';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { URI } from 'vs/base/common/uri';
-import { BulkFileOperations } from 'vs/workbench/contrib/bulkEdit/browser/preview/bulkEditPreview';
-import { Range } from 'vs/editor/common/core/range';
+import { URI } from 'vs/bAse/common/uri';
+import { BulkFileOperAtions } from 'vs/workbench/contrib/bulkEdit/browser/preview/bulkEditPreview';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ResourceFileEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
 
 suite('BulkEditPreview', function () {
 
 
-	let instaService: IInstantiationService;
+	let instAService: IInstAntiAtionService;
 
 	setup(function () {
 
-		const fileService: IFileService = new class extends mock<IFileService>() {
-			onDidFilesChange = Event.None;
-			async exists() {
+		const fileService: IFileService = new clAss extends mock<IFileService>() {
+			onDidFilesChAnge = Event.None;
+			Async exists() {
 				return true;
 			}
 		};
 
-		const modelService: IModelService = new class extends mock<IModelService>() {
+		const modelService: IModelService = new clAss extends mock<IModelService>() {
 			getModel() {
 				return null;
 			}
@@ -39,88 +39,88 @@ suite('BulkEditPreview', function () {
 			}
 		};
 
-		instaService = new InstantiationService(new ServiceCollection(
+		instAService = new InstAntiAtionService(new ServiceCollection(
 			[IFileService, fileService],
 			[IModelService, modelService],
 		));
 	});
 
-	test('one needsConfirmation unchecks all of file', async function () {
+	test('one needsConfirmAtion unchecks All of file', Async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'cat1', needsConfirmation: true }),
-			new ResourceFileEdit(URI.parse('some:///uri1'), URI.parse('some:///uri2'), undefined, { label: 'cat2', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri1'), undefined, { lAbel: 'cAt1', needsConfirmAtion: true }),
+			new ResourceFileEdit(URI.pArse('some:///uri1'), URI.pArse('some:///uri2'), undefined, { lAbel: 'cAt2', needsConfirmAtion: fAlse }),
 		];
 
-		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
-		assert.equal(ops.fileOperations.length, 1);
-		assert.equal(ops.checked.isChecked(edits[0]), false);
+		const ops = AwAit instAService.invokeFunction(BulkFileOperAtions.creAte, edits);
+		Assert.equAl(ops.fileOperAtions.length, 1);
+		Assert.equAl(ops.checked.isChecked(edits[0]), fAlse);
 	});
 
-	test('has categories', async function () {
+	test('hAs cAtegories', Async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'uri1', needsConfirmation: true }),
-			new ResourceFileEdit(undefined, URI.parse('some:///uri2'), undefined, { label: 'uri2', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri1'), undefined, { lAbel: 'uri1', needsConfirmAtion: true }),
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri2'), undefined, { lAbel: 'uri2', needsConfirmAtion: fAlse }),
 		];
 
 
-		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
-		assert.equal(ops.categories.length, 2);
-		assert.equal(ops.categories[0].metadata.label, 'uri1'); // unconfirmed!
-		assert.equal(ops.categories[1].metadata.label, 'uri2');
+		const ops = AwAit instAService.invokeFunction(BulkFileOperAtions.creAte, edits);
+		Assert.equAl(ops.cAtegories.length, 2);
+		Assert.equAl(ops.cAtegories[0].metAdAtA.lAbel, 'uri1'); // unconfirmed!
+		Assert.equAl(ops.cAtegories[1].metAdAtA.lAbel, 'uri2');
 	});
 
-	test('has not categories', async function () {
+	test('hAs not cAtegories', Async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'uri1', needsConfirmation: true }),
-			new ResourceFileEdit(undefined, URI.parse('some:///uri2'), undefined, { label: 'uri1', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri1'), undefined, { lAbel: 'uri1', needsConfirmAtion: true }),
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri2'), undefined, { lAbel: 'uri1', needsConfirmAtion: fAlse }),
 		];
 
-		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
-		assert.equal(ops.categories.length, 1);
-		assert.equal(ops.categories[0].metadata.label, 'uri1'); // unconfirmed!
-		assert.equal(ops.categories[0].metadata.label, 'uri1');
+		const ops = AwAit instAService.invokeFunction(BulkFileOperAtions.creAte, edits);
+		Assert.equAl(ops.cAtegories.length, 1);
+		Assert.equAl(ops.cAtegories[0].metAdAtA.lAbel, 'uri1'); // unconfirmed!
+		Assert.equAl(ops.cAtegories[0].metAdAtA.lAbel, 'uri1');
 	});
 
-	test('category selection', async function () {
+	test('cAtegory selection', Async function () {
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'C1', needsConfirmation: false }),
-			new ResourceTextEdit(URI.parse('some:///uri2'), { text: 'foo', range: new Range(1, 1, 1, 1) }, undefined, { label: 'C2', needsConfirmation: false }),
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri1'), undefined, { lAbel: 'C1', needsConfirmAtion: fAlse }),
+			new ResourceTextEdit(URI.pArse('some:///uri2'), { text: 'foo', rAnge: new RAnge(1, 1, 1, 1) }, undefined, { lAbel: 'C2', needsConfirmAtion: fAlse }),
 		];
 
 
-		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
+		const ops = AwAit instAService.invokeFunction(BulkFileOperAtions.creAte, edits);
 
-		assert.equal(ops.checked.isChecked(edits[0]), true);
-		assert.equal(ops.checked.isChecked(edits[1]), true);
+		Assert.equAl(ops.checked.isChecked(edits[0]), true);
+		Assert.equAl(ops.checked.isChecked(edits[1]), true);
 
-		assert.ok(edits === ops.getWorkspaceEdit());
+		Assert.ok(edits === ops.getWorkspAceEdit());
 
-		// NOT taking to create, but the invalid text edit will
+		// NOT tAking to creAte, but the invAlid text edit will
 		// go through
-		ops.checked.updateChecked(edits[0], false);
-		const newEdits = ops.getWorkspaceEdit();
-		assert.ok(edits !== newEdits);
+		ops.checked.updAteChecked(edits[0], fAlse);
+		const newEdits = ops.getWorkspAceEdit();
+		Assert.ok(edits !== newEdits);
 
-		assert.equal(edits.length, 2);
-		assert.equal(newEdits.length, 1);
+		Assert.equAl(edits.length, 2);
+		Assert.equAl(newEdits.length, 1);
 	});
 
-	test('fix bad metadata', async function () {
+	test('fix bAd metAdAtA', Async function () {
 
-		// bogous edit that wants creation to be confirmed, but not it's textedit-child...
+		// bogous edit thAt wAnts creAtion to be confirmed, but not it's textedit-child...
 
 		const edits = [
-			new ResourceFileEdit(undefined, URI.parse('some:///uri1'), undefined, { label: 'C1', needsConfirmation: true }),
-			new ResourceTextEdit(URI.parse('some:///uri1'), { text: 'foo', range: new Range(1, 1, 1, 1) }, undefined, { label: 'C2', needsConfirmation: false })
+			new ResourceFileEdit(undefined, URI.pArse('some:///uri1'), undefined, { lAbel: 'C1', needsConfirmAtion: true }),
+			new ResourceTextEdit(URI.pArse('some:///uri1'), { text: 'foo', rAnge: new RAnge(1, 1, 1, 1) }, undefined, { lAbel: 'C2', needsConfirmAtion: fAlse })
 		];
 
-		const ops = await instaService.invokeFunction(BulkFileOperations.create, edits);
+		const ops = AwAit instAService.invokeFunction(BulkFileOperAtions.creAte, edits);
 
-		assert.equal(ops.checked.isChecked(edits[0]), false);
-		assert.equal(ops.checked.isChecked(edits[1]), false);
+		Assert.equAl(ops.checked.isChecked(edits[0]), fAlse);
+		Assert.equAl(ops.checked.isChecked(edits[1]), fAlse);
 	});
 });

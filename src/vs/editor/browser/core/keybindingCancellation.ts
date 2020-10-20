@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { EditorCommand, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { EditorCommAnd, registerEditorCommAnd } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { LinkedList } from 'vs/base/common/linkedList';
-import { createDecorator, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IContextKeyService, RAwContextKey, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { CAncellAtionTokenSource, CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { LinkedList } from 'vs/bAse/common/linkedList';
+import { creAteDecorAtor, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
 
-const IEditorCancellationTokens = createDecorator<IEditorCancellationTokens>('IEditorCancelService');
+const IEditorCAncellAtionTokens = creAteDecorAtor<IEditorCAncellAtionTokens>('IEditorCAncelService');
 
-interface IEditorCancellationTokens {
-	readonly _serviceBrand: undefined;
-	add(editor: ICodeEditor, cts: CancellationTokenSource): () => void;
-	cancel(editor: ICodeEditor): void;
+interfAce IEditorCAncellAtionTokens {
+	reAdonly _serviceBrAnd: undefined;
+	Add(editor: ICodeEditor, cts: CAncellAtionTokenSource): () => void;
+	cAncel(editor: ICodeEditor): void;
 }
 
-const ctxCancellableOperation = new RawContextKey('cancellableOperation', false);
+const ctxCAncellAbleOperAtion = new RAwContextKey('cAncellAbleOperAtion', fAlse);
 
-registerSingleton(IEditorCancellationTokens, class implements IEditorCancellationTokens {
+registerSingleton(IEditorCAncellAtionTokens, clAss implements IEditorCAncellAtionTokens {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _tokens = new WeakMap<ICodeEditor, { key: IContextKey<boolean>, tokens: LinkedList<CancellationTokenSource> }>();
+	privAte reAdonly _tokens = new WeAkMAp<ICodeEditor, { key: IContextKey<booleAn>, tokens: LinkedList<CAncellAtionTokenSource> }>();
 
-	add(editor: ICodeEditor, cts: CancellationTokenSource): () => void {
-		let data = this._tokens.get(editor);
-		if (!data) {
-			data = editor.invokeWithinContext(accessor => {
-				const key = ctxCancellableOperation.bindTo(accessor.get(IContextKeyService));
-				const tokens = new LinkedList<CancellationTokenSource>();
+	Add(editor: ICodeEditor, cts: CAncellAtionTokenSource): () => void {
+		let dAtA = this._tokens.get(editor);
+		if (!dAtA) {
+			dAtA = editor.invokeWithinContext(Accessor => {
+				const key = ctxCAncellAbleOperAtion.bindTo(Accessor.get(IContextKeyService));
+				const tokens = new LinkedList<CAncellAtionTokenSource>();
 				return { key, tokens };
 			});
-			this._tokens.set(editor, data);
+			this._tokens.set(editor, dAtA);
 		}
 
 		let removeFn: Function | undefined;
 
-		data.key.set(true);
-		removeFn = data.tokens.push(cts);
+		dAtA.key.set(true);
+		removeFn = dAtA.tokens.push(cts);
 
 		return () => {
-			// remove w/o cancellation
+			// remove w/o cAncellAtion
 			if (removeFn) {
 				removeFn();
-				data!.key.set(!data!.tokens.isEmpty());
+				dAtA!.key.set(!dAtA!.tokens.isEmpty());
 				removeFn = undefined;
 			}
 		};
 	}
 
-	cancel(editor: ICodeEditor): void {
-		const data = this._tokens.get(editor);
-		if (!data) {
+	cAncel(editor: ICodeEditor): void {
+		const dAtA = this._tokens.get(editor);
+		if (!dAtA) {
 			return;
 		}
-		// remove with cancellation
-		const cts = data.tokens.pop();
+		// remove with cAncellAtion
+		const cts = dAtA.tokens.pop();
 		if (cts) {
-			cts.cancel();
-			data.key.set(!data.tokens.isEmpty());
+			cts.cAncel();
+			dAtA.key.set(!dAtA.tokens.isEmpty());
 		}
 	}
 
 }, true);
 
-export class EditorKeybindingCancellationTokenSource extends CancellationTokenSource {
+export clAss EditorKeybindingCAncellAtionTokenSource extends CAncellAtionTokenSource {
 
-	private readonly _unregister: Function;
+	privAte reAdonly _unregister: Function;
 
-	constructor(readonly editor: ICodeEditor, parent?: CancellationToken) {
-		super(parent);
-		this._unregister = editor.invokeWithinContext(accessor => accessor.get(IEditorCancellationTokens).add(editor, this));
+	constructor(reAdonly editor: ICodeEditor, pArent?: CAncellAtionToken) {
+		super(pArent);
+		this._unregister = editor.invokeWithinContext(Accessor => Accessor.get(IEditorCAncellAtionTokens).Add(editor, this));
 	}
 
 	dispose(): void {
@@ -86,20 +86,20 @@ export class EditorKeybindingCancellationTokenSource extends CancellationTokenSo
 	}
 }
 
-registerEditorCommand(new class extends EditorCommand {
+registerEditorCommAnd(new clAss extends EditorCommAnd {
 
 	constructor() {
 		super({
-			id: 'editor.cancelOperation',
+			id: 'editor.cAncelOperAtion',
 			kbOpts: {
 				weight: KeybindingWeight.EditorContrib,
-				primary: KeyCode.Escape
+				primAry: KeyCode.EscApe
 			},
-			precondition: ctxCancellableOperation
+			precondition: ctxCAncellAbleOperAtion
 		});
 	}
 
-	runEditorCommand(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		accessor.get(IEditorCancellationTokens).cancel(editor);
+	runEditorCommAnd(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		Accessor.get(IEditorCAncellAtionTokens).cAncel(editor);
 	}
 });

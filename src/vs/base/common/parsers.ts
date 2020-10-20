@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export const enum ValidationState {
+export const enum VAlidAtionStAte {
 	OK = 0,
 	Info = 1,
-	Warning = 2,
+	WArning = 2,
 	Error = 3,
-	Fatal = 4
+	FAtAl = 4
 }
 
-export class ValidationStatus {
-	private _state: ValidationState;
+export clAss VAlidAtionStAtus {
+	privAte _stAte: VAlidAtionStAte;
 
 	constructor() {
-		this._state = ValidationState.OK;
+		this._stAte = VAlidAtionStAte.OK;
 	}
 
-	public get state(): ValidationState {
-		return this._state;
+	public get stAte(): VAlidAtionStAte {
+		return this._stAte;
 	}
 
-	public set state(value: ValidationState) {
-		if (value > this._state) {
-			this._state = value;
+	public set stAte(vAlue: VAlidAtionStAte) {
+		if (vAlue > this._stAte) {
+			this._stAte = vAlue;
 		}
 	}
 
-	public isOK(): boolean {
-		return this._state === ValidationState.OK;
+	public isOK(): booleAn {
+		return this._stAte === VAlidAtionStAte.OK;
 	}
 
-	public isFatal(): boolean {
-		return this._state === ValidationState.Fatal;
+	public isFAtAl(): booleAn {
+		return this._stAte === VAlidAtionStAte.FAtAl;
 	}
 }
 
-export interface IProblemReporter {
-	info(message: string): void;
-	warn(message: string): void;
-	error(message: string): void;
-	fatal(message: string): void;
-	status: ValidationStatus;
+export interfAce IProblemReporter {
+	info(messAge: string): void;
+	wArn(messAge: string): void;
+	error(messAge: string): void;
+	fAtAl(messAge: string): void;
+	stAtus: VAlidAtionStAtus;
 }
 
-export abstract class Parser {
+export AbstrAct clAss PArser {
 
-	private _problemReporter: IProblemReporter;
+	privAte _problemReporter: IProblemReporter;
 
 	constructor(problemReporter: IProblemReporter) {
 		this._problemReporter = problemReporter;
 	}
 
 	public reset(): void {
-		this._problemReporter.status.state = ValidationState.OK;
+		this._problemReporter.stAtus.stAte = VAlidAtionStAte.OK;
 	}
 
 	public get problemReporter(): IProblemReporter {
 		return this._problemReporter;
 	}
 
-	public info(message: string): void {
-		this._problemReporter.info(message);
+	public info(messAge: string): void {
+		this._problemReporter.info(messAge);
 	}
 
-	public warn(message: string): void {
-		this._problemReporter.warn(message);
+	public wArn(messAge: string): void {
+		this._problemReporter.wArn(messAge);
 	}
 
-	public error(message: string): void {
-		this._problemReporter.error(message);
+	public error(messAge: string): void {
+		this._problemReporter.error(messAge);
 	}
 
-	public fatal(message: string): void {
-		this._problemReporter.fatal(message);
+	public fAtAl(messAge: string): void {
+		this._problemReporter.fAtAl(messAge);
 	}
 }

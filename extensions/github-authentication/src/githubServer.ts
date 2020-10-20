@@ -1,179 +1,179 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vscode-nls';
-import * as vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import * As vscode from 'vscode';
 import fetch from 'node-fetch';
-import { v4 as uuid } from 'uuid';
-import { PromiseAdapter, promiseFromEvent } from './common/utils';
+import { v4 As uuid } from 'uuid';
+import { PromiseAdApter, promiseFromEvent } from './common/utils';
 import Logger from './common/logger';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
 export const NETWORK_ERROR = 'network error';
-const AUTH_RELAY_SERVER = 'vscode-auth.github.com';
+const AUTH_RELAY_SERVER = 'vscode-Auth.github.com';
 
-class UriEventHandler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHandler {
-	public handleUri(uri: vscode.Uri) {
+clAss UriEventHAndler extends vscode.EventEmitter<vscode.Uri> implements vscode.UriHAndler {
+	public hAndleUri(uri: vscode.Uri) {
 		this.fire(uri);
 	}
 }
 
-export const uriHandler = new UriEventHandler;
+export const uriHAndler = new UriEventHAndler;
 
-const onDidManuallyProvideToken = new vscode.EventEmitter<string>();
+const onDidMAnuAllyProvideToken = new vscode.EventEmitter<string>();
 
-const exchangeCodeForToken: (state: string) => PromiseAdapter<vscode.Uri, string> =
-	(state) => async (uri, resolve, reject) => {
-		Logger.info('Exchanging code for token...');
-		const query = parseQuery(uri);
+const exchAngeCodeForToken: (stAte: string) => PromiseAdApter<vscode.Uri, string> =
+	(stAte) => Async (uri, resolve, reject) => {
+		Logger.info('ExchAnging code for token...');
+		const query = pArseQuery(uri);
 		const code = query.code;
 
-		if (query.state !== state) {
-			reject('Received mismatched state');
+		if (query.stAte !== stAte) {
+			reject('Received mismAtched stAte');
 			return;
 		}
 
 		try {
-			const result = await fetch(`https://${AUTH_RELAY_SERVER}/token?code=${code}&state=${state}`, {
+			const result = AwAit fetch(`https://${AUTH_RELAY_SERVER}/token?code=${code}&stAte=${stAte}`, {
 				method: 'POST',
-				headers: {
-					Accept: 'application/json'
+				heAders: {
+					Accept: 'ApplicAtion/json'
 				}
 			});
 
 			if (result.ok) {
-				const json = await result.json();
-				Logger.info('Token exchange success!');
-				resolve(json.access_token);
+				const json = AwAit result.json();
+				Logger.info('Token exchAnge success!');
+				resolve(json.Access_token);
 			} else {
-				reject(result.statusText);
+				reject(result.stAtusText);
 			}
-		} catch (ex) {
+		} cAtch (ex) {
 			reject(ex);
 		}
 	};
 
-function parseQuery(uri: vscode.Uri) {
-	return uri.query.split('&').reduce((prev: any, current) => {
+function pArseQuery(uri: vscode.Uri) {
+	return uri.query.split('&').reduce((prev: Any, current) => {
 		const queryString = current.split('=');
 		prev[queryString[0]] = queryString[1];
 		return prev;
 	}, {});
 }
 
-export class GitHubServer {
-	private _statusBarItem: vscode.StatusBarItem | undefined;
+export clAss GitHubServer {
+	privAte _stAtusBArItem: vscode.StAtusBArItem | undefined;
 
-	private isTestEnvironment(url: vscode.Uri): boolean {
-		return url.authority === 'vscode-web-test-playground.azurewebsites.net' || url.authority.startsWith('localhost:');
+	privAte isTestEnvironment(url: vscode.Uri): booleAn {
+		return url.Authority === 'vscode-web-test-plAyground.Azurewebsites.net' || url.Authority.stArtsWith('locAlhost:');
 	}
 
-	public async login(scopes: string): Promise<string> {
+	public Async login(scopes: string): Promise<string> {
 		Logger.info('Logging in...');
-		this.updateStatusBarItem(true);
+		this.updAteStAtusBArItem(true);
 
-		const state = uuid();
-		const callbackUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://vscode.github-authentication/did-authenticate`));
+		const stAte = uuid();
+		const cAllbAckUri = AwAit vscode.env.AsExternAlUri(vscode.Uri.pArse(`${vscode.env.uriScheme}://vscode.github-AuthenticAtion/did-AuthenticAte`));
 
-		if (this.isTestEnvironment(callbackUri)) {
-			const token = await vscode.window.showInputBox({ prompt: 'GitHub Personal Access Token', ignoreFocusOut: true });
-			if (!token) { throw new Error('Sign in failed: No token provided'); }
+		if (this.isTestEnvironment(cAllbAckUri)) {
+			const token = AwAit vscode.window.showInputBox({ prompt: 'GitHub PersonAl Access Token', ignoreFocusOut: true });
+			if (!token) { throw new Error('Sign in fAiled: No token provided'); }
 
-			const tokenScopes = await this.getScopes(token);
+			const tokenScopes = AwAit this.getScopes(token);
 			const scopesList = scopes.split(' ');
 			if (!scopesList.every(scope => tokenScopes.includes(scope))) {
-				throw new Error(`The provided token is does not match the requested scopes: ${scopes}`);
+				throw new Error(`The provided token is does not mAtch the requested scopes: ${scopes}`);
 			}
 
-			this.updateStatusBarItem(false);
+			this.updAteStAtusBArItem(fAlse);
 			return token;
 		} else {
-			const uri = vscode.Uri.parse(`https://${AUTH_RELAY_SERVER}/authorize/?callbackUri=${encodeURIComponent(callbackUri.toString())}&scope=${scopes}&state=${state}&responseType=code&authServer=https://github.com`);
-			await vscode.env.openExternal(uri);
+			const uri = vscode.Uri.pArse(`https://${AUTH_RELAY_SERVER}/Authorize/?cAllbAckUri=${encodeURIComponent(cAllbAckUri.toString())}&scope=${scopes}&stAte=${stAte}&responseType=code&AuthServer=https://github.com`);
+			AwAit vscode.env.openExternAl(uri);
 		}
 
-		return Promise.race([
-			promiseFromEvent(uriHandler.event, exchangeCodeForToken(state)),
-			promiseFromEvent<string, string>(onDidManuallyProvideToken.event)
-		]).finally(() => {
-			this.updateStatusBarItem(false);
+		return Promise.rAce([
+			promiseFromEvent(uriHAndler.event, exchAngeCodeForToken(stAte)),
+			promiseFromEvent<string, string>(onDidMAnuAllyProvideToken.event)
+		]).finAlly(() => {
+			this.updAteStAtusBArItem(fAlse);
 		});
 	}
 
-	private updateStatusBarItem(isStart?: boolean) {
-		if (isStart && !this._statusBarItem) {
-			this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-			this._statusBarItem.text = localize('signingIn', "$(mark-github) Signing in to github.com...");
-			this._statusBarItem.command = 'github.provide-token';
-			this._statusBarItem.show();
+	privAte updAteStAtusBArItem(isStArt?: booleAn) {
+		if (isStArt && !this._stAtusBArItem) {
+			this._stAtusBArItem = vscode.window.creAteStAtusBArItem(vscode.StAtusBArAlignment.Left);
+			this._stAtusBArItem.text = locAlize('signingIn', "$(mArk-github) Signing in to github.com...");
+			this._stAtusBArItem.commAnd = 'github.provide-token';
+			this._stAtusBArItem.show();
 		}
 
-		if (!isStart && this._statusBarItem) {
-			this._statusBarItem.dispose();
-			this._statusBarItem = undefined;
+		if (!isStArt && this._stAtusBArItem) {
+			this._stAtusBArItem.dispose();
+			this._stAtusBArItem = undefined;
 		}
 	}
 
-	public async manuallyProvideToken() {
-		const uriOrToken = await vscode.window.showInputBox({ prompt: 'Token', ignoreFocusOut: true });
+	public Async mAnuAllyProvideToken() {
+		const uriOrToken = AwAit vscode.window.showInputBox({ prompt: 'Token', ignoreFocusOut: true });
 		if (!uriOrToken) { return; }
 		try {
-			const uri = vscode.Uri.parse(uriOrToken);
+			const uri = vscode.Uri.pArse(uriOrToken);
 			if (!uri.scheme || uri.scheme === 'file') { throw new Error; }
-			uriHandler.handleUri(uri);
-		} catch (e) {
-			// If it doesn't look like a URI, treat it as a token.
-			Logger.info('Treating input as token');
-			onDidManuallyProvideToken.fire(uriOrToken);
+			uriHAndler.hAndleUri(uri);
+		} cAtch (e) {
+			// If it doesn't look like A URI, treAt it As A token.
+			Logger.info('TreAting input As token');
+			onDidMAnuAllyProvideToken.fire(uriOrToken);
 		}
 	}
 
-	private async getScopes(token: string): Promise<string[]> {
+	privAte Async getScopes(token: string): Promise<string[]> {
 		try {
 			Logger.info('Getting token scopes...');
-			const result = await fetch('https://api.github.com', {
-				headers: {
-					Authorization: `token ${token}`,
-					'User-Agent': 'Visual-Studio-Code'
+			const result = AwAit fetch('https://Api.github.com', {
+				heAders: {
+					AuthorizAtion: `token ${token}`,
+					'User-Agent': 'VisuAl-Studio-Code'
 				}
 			});
 
 			if (result.ok) {
-				const scopes = result.headers.get('X-OAuth-Scopes');
-				return scopes ? scopes.split(',').map(scope => scope.trim()) : [];
+				const scopes = result.heAders.get('X-OAuth-Scopes');
+				return scopes ? scopes.split(',').mAp(scope => scope.trim()) : [];
 			} else {
-				Logger.error(`Getting scopes failed: ${result.statusText}`);
-				throw new Error(result.statusText);
+				Logger.error(`Getting scopes fAiled: ${result.stAtusText}`);
+				throw new Error(result.stAtusText);
 			}
-		} catch (ex) {
-			Logger.error(ex.message);
+		} cAtch (ex) {
+			Logger.error(ex.messAge);
 			throw new Error(NETWORK_ERROR);
 		}
 	}
 
-	public async getUserInfo(token: string): Promise<{ id: string, accountName: string }> {
+	public Async getUserInfo(token: string): Promise<{ id: string, AccountNAme: string }> {
 		try {
 			Logger.info('Getting user info...');
-			const result = await fetch('https://api.github.com/user', {
-				headers: {
-					Authorization: `token ${token}`,
-					'User-Agent': 'Visual-Studio-Code'
+			const result = AwAit fetch('https://Api.github.com/user', {
+				heAders: {
+					AuthorizAtion: `token ${token}`,
+					'User-Agent': 'VisuAl-Studio-Code'
 				}
 			});
 
 			if (result.ok) {
-				const json = await result.json();
-				Logger.info('Got account info!');
-				return { id: json.id, accountName: json.login };
+				const json = AwAit result.json();
+				Logger.info('Got Account info!');
+				return { id: json.id, AccountNAme: json.login };
 			} else {
-				Logger.error(`Getting account info failed: ${result.statusText}`);
-				throw new Error(result.statusText);
+				Logger.error(`Getting Account info fAiled: ${result.stAtusText}`);
+				throw new Error(result.stAtusText);
 			}
-		} catch (ex) {
-			Logger.error(ex.message);
+		} cAtch (ex) {
+			Logger.error(ex.messAge);
 			throw new Error(NETWORK_ERROR);
 		}
 	}

@@ -1,112 +1,112 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { BreadcrumbsWidget } from 'vs/base/browser/ui/breadcrumbs/breadcrumbsWidget';
-import { Emitter, Event } from 'vs/base/common/event';
-import * as glob from 'vs/base/common/glob';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { localize } from 'vs/nls';
-import { IConfigurationOverrides, IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { Extensions, IConfigurationRegistry, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { GroupIdentifier, IEditorPartOptions } from 'vs/workbench/common/editor';
+import { BreAdcrumbsWidget } from 'vs/bAse/browser/ui/breAdcrumbs/breAdcrumbsWidget';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import * As glob from 'vs/bAse/common/glob';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { locAlize } from 'vs/nls';
+import { IConfigurAtionOverrides, IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { Extensions, IConfigurAtionRegistry, ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { GroupIdentifier, IEditorPArtOptions } from 'vs/workbench/common/editor';
 
-export const IBreadcrumbsService = createDecorator<IBreadcrumbsService>('IEditorBreadcrumbsService');
+export const IBreAdcrumbsService = creAteDecorAtor<IBreAdcrumbsService>('IEditorBreAdcrumbsService');
 
-export interface IBreadcrumbsService {
+export interfAce IBreAdcrumbsService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	register(group: GroupIdentifier, widget: BreadcrumbsWidget): IDisposable;
+	register(group: GroupIdentifier, widget: BreAdcrumbsWidget): IDisposAble;
 
-	getWidget(group: GroupIdentifier): BreadcrumbsWidget | undefined;
+	getWidget(group: GroupIdentifier): BreAdcrumbsWidget | undefined;
 }
 
 
-export class BreadcrumbsService implements IBreadcrumbsService {
+export clAss BreAdcrumbsService implements IBreAdcrumbsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _map = new Map<number, BreadcrumbsWidget>();
+	privAte reAdonly _mAp = new MAp<number, BreAdcrumbsWidget>();
 
-	register(group: number, widget: BreadcrumbsWidget): IDisposable {
-		if (this._map.has(group)) {
-			throw new Error(`group (${group}) has already a widget`);
+	register(group: number, widget: BreAdcrumbsWidget): IDisposAble {
+		if (this._mAp.hAs(group)) {
+			throw new Error(`group (${group}) hAs AlreAdy A widget`);
 		}
-		this._map.set(group, widget);
+		this._mAp.set(group, widget);
 		return {
-			dispose: () => this._map.delete(group)
+			dispose: () => this._mAp.delete(group)
 		};
 	}
 
-	getWidget(group: number): BreadcrumbsWidget | undefined {
-		return this._map.get(group);
+	getWidget(group: number): BreAdcrumbsWidget | undefined {
+		return this._mAp.get(group);
 	}
 }
 
-registerSingleton(IBreadcrumbsService, BreadcrumbsService, true);
+registerSingleton(IBreAdcrumbsService, BreAdcrumbsService, true);
 
 
 //#region config
 
-export abstract class BreadcrumbsConfig<T> {
+export AbstrAct clAss BreAdcrumbsConfig<T> {
 
-	abstract get name(): string;
-	abstract get onDidChange(): Event<void>;
+	AbstrAct get nAme(): string;
+	AbstrAct get onDidChAnge(): Event<void>;
 
-	abstract getValue(overrides?: IConfigurationOverrides): T;
-	abstract updateValue(value: T, overrides?: IConfigurationOverrides): Promise<void>;
-	abstract dispose(): void;
+	AbstrAct getVAlue(overrides?: IConfigurAtionOverrides): T;
+	AbstrAct updAteVAlue(vAlue: T, overrides?: IConfigurAtionOverrides): Promise<void>;
+	AbstrAct dispose(): void;
 
-	private constructor() {
-		// internal
+	privAte constructor() {
+		// internAl
 	}
 
-	static readonly IsEnabled = BreadcrumbsConfig._stub<boolean>('breadcrumbs.enabled');
-	static readonly UseQuickPick = BreadcrumbsConfig._stub<boolean>('breadcrumbs.useQuickPick');
-	static readonly FilePath = BreadcrumbsConfig._stub<'on' | 'off' | 'last'>('breadcrumbs.filePath');
-	static readonly SymbolPath = BreadcrumbsConfig._stub<'on' | 'off' | 'last'>('breadcrumbs.symbolPath');
-	static readonly SymbolSortOrder = BreadcrumbsConfig._stub<'position' | 'name' | 'type'>('breadcrumbs.symbolSortOrder');
-	static readonly Icons = BreadcrumbsConfig._stub<boolean>('breadcrumbs.icons');
-	static readonly TitleScrollbarSizing = BreadcrumbsConfig._stub<IEditorPartOptions['titleScrollbarSizing']>('workbench.editor.titleScrollbarSizing');
+	stAtic reAdonly IsEnAbled = BreAdcrumbsConfig._stub<booleAn>('breAdcrumbs.enAbled');
+	stAtic reAdonly UseQuickPick = BreAdcrumbsConfig._stub<booleAn>('breAdcrumbs.useQuickPick');
+	stAtic reAdonly FilePAth = BreAdcrumbsConfig._stub<'on' | 'off' | 'lAst'>('breAdcrumbs.filePAth');
+	stAtic reAdonly SymbolPAth = BreAdcrumbsConfig._stub<'on' | 'off' | 'lAst'>('breAdcrumbs.symbolPAth');
+	stAtic reAdonly SymbolSortOrder = BreAdcrumbsConfig._stub<'position' | 'nAme' | 'type'>('breAdcrumbs.symbolSortOrder');
+	stAtic reAdonly Icons = BreAdcrumbsConfig._stub<booleAn>('breAdcrumbs.icons');
+	stAtic reAdonly TitleScrollbArSizing = BreAdcrumbsConfig._stub<IEditorPArtOptions['titleScrollbArSizing']>('workbench.editor.titleScrollbArSizing');
 
-	static readonly FileExcludes = BreadcrumbsConfig._stub<glob.IExpression>('files.exclude');
+	stAtic reAdonly FileExcludes = BreAdcrumbsConfig._stub<glob.IExpression>('files.exclude');
 
-	private static _stub<T>(name: string): { bindTo(service: IConfigurationService): BreadcrumbsConfig<T> } {
+	privAte stAtic _stub<T>(nAme: string): { bindTo(service: IConfigurAtionService): BreAdcrumbsConfig<T> } {
 		return {
 			bindTo(service) {
-				let onDidChange = new Emitter<void>();
+				let onDidChAnge = new Emitter<void>();
 
-				let listener = service.onDidChangeConfiguration(e => {
-					if (e.affectsConfiguration(name)) {
-						onDidChange.fire(undefined);
+				let listener = service.onDidChAngeConfigurAtion(e => {
+					if (e.AffectsConfigurAtion(nAme)) {
+						onDidChAnge.fire(undefined);
 					}
 				});
 
-				return new class implements BreadcrumbsConfig<T>{
-					readonly name = name;
-					readonly onDidChange = onDidChange.event;
-					getValue(overrides?: IConfigurationOverrides): T {
+				return new clAss implements BreAdcrumbsConfig<T>{
+					reAdonly nAme = nAme;
+					reAdonly onDidChAnge = onDidChAnge.event;
+					getVAlue(overrides?: IConfigurAtionOverrides): T {
 						if (overrides) {
-							return service.getValue(name, overrides);
+							return service.getVAlue(nAme, overrides);
 						} else {
-							return service.getValue(name);
+							return service.getVAlue(nAme);
 						}
 					}
-					updateValue(newValue: T, overrides?: IConfigurationOverrides): Promise<void> {
+					updAteVAlue(newVAlue: T, overrides?: IConfigurAtionOverrides): Promise<void> {
 						if (overrides) {
-							return service.updateValue(name, newValue, overrides);
+							return service.updAteVAlue(nAme, newVAlue, overrides);
 						} else {
-							return service.updateValue(name, newValue);
+							return service.updAteVAlue(nAme, newVAlue);
 						}
 					}
 					dispose(): void {
 						listener.dispose();
-						onDidChange.dispose();
+						onDidChAnge.dispose();
 					}
 				};
 			}
@@ -114,211 +114,211 @@ export abstract class BreadcrumbsConfig<T> {
 	}
 }
 
-Registry.as<IConfigurationRegistry>(Extensions.Configuration).registerConfiguration({
-	id: 'breadcrumbs',
-	title: localize('title', "Breadcrumb Navigation"),
+Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion).registerConfigurAtion({
+	id: 'breAdcrumbs',
+	title: locAlize('title', "BreAdcrumb NAvigAtion"),
 	order: 101,
 	type: 'object',
 	properties: {
-		'breadcrumbs.enabled': {
-			description: localize('enabled', "Enable/disable navigation breadcrumbs."),
-			type: 'boolean',
-			default: true
+		'breAdcrumbs.enAbled': {
+			description: locAlize('enAbled', "EnAble/disAble nAvigAtion breAdcrumbs."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'breadcrumbs.filePath': {
-			description: localize('filepath', "Controls whether and how file paths are shown in the breadcrumbs view."),
+		'breAdcrumbs.filePAth': {
+			description: locAlize('filepAth', "Controls whether And how file pAths Are shown in the breAdcrumbs view."),
 			type: 'string',
-			default: 'on',
-			enum: ['on', 'off', 'last'],
+			defAult: 'on',
+			enum: ['on', 'off', 'lAst'],
 			enumDescriptions: [
-				localize('filepath.on', "Show the file path in the breadcrumbs view."),
-				localize('filepath.off', "Do not show the file path in the breadcrumbs view."),
-				localize('filepath.last', "Only show the last element of the file path in the breadcrumbs view."),
+				locAlize('filepAth.on', "Show the file pAth in the breAdcrumbs view."),
+				locAlize('filepAth.off', "Do not show the file pAth in the breAdcrumbs view."),
+				locAlize('filepAth.lAst', "Only show the lAst element of the file pAth in the breAdcrumbs view."),
 			]
 		},
-		'breadcrumbs.symbolPath': {
-			description: localize('symbolpath', "Controls whether and how symbols are shown in the breadcrumbs view."),
+		'breAdcrumbs.symbolPAth': {
+			description: locAlize('symbolpAth', "Controls whether And how symbols Are shown in the breAdcrumbs view."),
 			type: 'string',
-			default: 'on',
-			enum: ['on', 'off', 'last'],
+			defAult: 'on',
+			enum: ['on', 'off', 'lAst'],
 			enumDescriptions: [
-				localize('symbolpath.on', "Show all symbols in the breadcrumbs view."),
-				localize('symbolpath.off', "Do not show symbols in the breadcrumbs view."),
-				localize('symbolpath.last', "Only show the current symbol in the breadcrumbs view."),
+				locAlize('symbolpAth.on', "Show All symbols in the breAdcrumbs view."),
+				locAlize('symbolpAth.off', "Do not show symbols in the breAdcrumbs view."),
+				locAlize('symbolpAth.lAst', "Only show the current symbol in the breAdcrumbs view."),
 			]
 		},
-		'breadcrumbs.symbolSortOrder': {
-			description: localize('symbolSortOrder', "Controls how symbols are sorted in the breadcrumbs outline view."),
+		'breAdcrumbs.symbolSortOrder': {
+			description: locAlize('symbolSortOrder', "Controls how symbols Are sorted in the breAdcrumbs outline view."),
 			type: 'string',
-			default: 'position',
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			enum: ['position', 'name', 'type'],
+			defAult: 'position',
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			enum: ['position', 'nAme', 'type'],
 			enumDescriptions: [
-				localize('symbolSortOrder.position', "Show symbol outline in file position order."),
-				localize('symbolSortOrder.name', "Show symbol outline in alphabetical order."),
-				localize('symbolSortOrder.type', "Show symbol outline in symbol type order."),
+				locAlize('symbolSortOrder.position', "Show symbol outline in file position order."),
+				locAlize('symbolSortOrder.nAme', "Show symbol outline in AlphAbeticAl order."),
+				locAlize('symbolSortOrder.type', "Show symbol outline in symbol type order."),
 			]
 		},
-		'breadcrumbs.icons': {
-			description: localize('icons', "Render breadcrumb items with icons."),
-			type: 'boolean',
-			default: true
+		'breAdcrumbs.icons': {
+			description: locAlize('icons', "Render breAdcrumb items with icons."),
+			type: 'booleAn',
+			defAult: true
 		},
-		'breadcrumbs.showFiles': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.file', "When enabled breadcrumbs show `file`-symbols.")
+		'breAdcrumbs.showFiles': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.file', "When enAbled breAdcrumbs show `file`-symbols.")
 		},
-		'breadcrumbs.showModules': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.module', "When enabled breadcrumbs show `module`-symbols.")
+		'breAdcrumbs.showModules': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.module', "When enAbled breAdcrumbs show `module`-symbols.")
 		},
-		'breadcrumbs.showNamespaces': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.namespace', "When enabled breadcrumbs show `namespace`-symbols.")
+		'breAdcrumbs.showNAmespAces': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.nAmespAce', "When enAbled breAdcrumbs show `nAmespAce`-symbols.")
 		},
-		'breadcrumbs.showPackages': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.package', "When enabled breadcrumbs show `package`-symbols.")
+		'breAdcrumbs.showPAckAges': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.pAckAge', "When enAbled breAdcrumbs show `pAckAge`-symbols.")
 		},
-		'breadcrumbs.showClasses': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.class', "When enabled breadcrumbs show `class`-symbols.")
+		'breAdcrumbs.showClAsses': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.clAss', "When enAbled breAdcrumbs show `clAss`-symbols.")
 		},
-		'breadcrumbs.showMethods': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.method', "When enabled breadcrumbs show `method`-symbols.")
+		'breAdcrumbs.showMethods': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.method', "When enAbled breAdcrumbs show `method`-symbols.")
 		},
-		'breadcrumbs.showProperties': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.property', "When enabled breadcrumbs show `property`-symbols.")
+		'breAdcrumbs.showProperties': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.property', "When enAbled breAdcrumbs show `property`-symbols.")
 		},
-		'breadcrumbs.showFields': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.field', "When enabled breadcrumbs show `field`-symbols.")
+		'breAdcrumbs.showFields': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.field', "When enAbled breAdcrumbs show `field`-symbols.")
 		},
-		'breadcrumbs.showConstructors': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.constructor', "When enabled breadcrumbs show `constructor`-symbols.")
+		'breAdcrumbs.showConstructors': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.constructor', "When enAbled breAdcrumbs show `constructor`-symbols.")
 		},
-		'breadcrumbs.showEnums': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.enum', "When enabled breadcrumbs show `enum`-symbols.")
+		'breAdcrumbs.showEnums': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.enum', "When enAbled breAdcrumbs show `enum`-symbols.")
 		},
-		'breadcrumbs.showInterfaces': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.interface', "When enabled breadcrumbs show `interface`-symbols.")
+		'breAdcrumbs.showInterfAces': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.interfAce', "When enAbled breAdcrumbs show `interfAce`-symbols.")
 		},
-		'breadcrumbs.showFunctions': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.function', "When enabled breadcrumbs show `function`-symbols.")
+		'breAdcrumbs.showFunctions': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.function', "When enAbled breAdcrumbs show `function`-symbols.")
 		},
-		'breadcrumbs.showVariables': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.variable', "When enabled breadcrumbs show `variable`-symbols.")
+		'breAdcrumbs.showVAriAbles': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.vAriAble', "When enAbled breAdcrumbs show `vAriAble`-symbols.")
 		},
-		'breadcrumbs.showConstants': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.constant', "When enabled breadcrumbs show `constant`-symbols.")
+		'breAdcrumbs.showConstAnts': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.constAnt', "When enAbled breAdcrumbs show `constAnt`-symbols.")
 		},
-		'breadcrumbs.showStrings': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.string', "When enabled breadcrumbs show `string`-symbols.")
+		'breAdcrumbs.showStrings': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.string', "When enAbled breAdcrumbs show `string`-symbols.")
 		},
-		'breadcrumbs.showNumbers': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.number', "When enabled breadcrumbs show `number`-symbols.")
+		'breAdcrumbs.showNumbers': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.number', "When enAbled breAdcrumbs show `number`-symbols.")
 		},
-		'breadcrumbs.showBooleans': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.boolean', "When enabled breadcrumbs show `boolean`-symbols.")
+		'breAdcrumbs.showBooleAns': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.booleAn', "When enAbled breAdcrumbs show `booleAn`-symbols.")
 		},
-		'breadcrumbs.showArrays': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.array', "When enabled breadcrumbs show `array`-symbols.")
+		'breAdcrumbs.showArrAys': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.ArrAy', "When enAbled breAdcrumbs show `ArrAy`-symbols.")
 		},
-		'breadcrumbs.showObjects': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.object', "When enabled breadcrumbs show `object`-symbols.")
+		'breAdcrumbs.showObjects': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.object', "When enAbled breAdcrumbs show `object`-symbols.")
 		},
-		'breadcrumbs.showKeys': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.key', "When enabled breadcrumbs show `key`-symbols.")
+		'breAdcrumbs.showKeys': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.key', "When enAbled breAdcrumbs show `key`-symbols.")
 		},
-		'breadcrumbs.showNull': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.null', "When enabled breadcrumbs show `null`-symbols.")
+		'breAdcrumbs.showNull': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.null', "When enAbled breAdcrumbs show `null`-symbols.")
 		},
-		'breadcrumbs.showEnumMembers': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.enumMember', "When enabled breadcrumbs show `enumMember`-symbols.")
+		'breAdcrumbs.showEnumMembers': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.enumMember', "When enAbled breAdcrumbs show `enumMember`-symbols.")
 		},
-		'breadcrumbs.showStructs': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.struct', "When enabled breadcrumbs show `struct`-symbols.")
+		'breAdcrumbs.showStructs': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.struct', "When enAbled breAdcrumbs show `struct`-symbols.")
 		},
-		'breadcrumbs.showEvents': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.event', "When enabled breadcrumbs show `event`-symbols.")
+		'breAdcrumbs.showEvents': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.event', "When enAbled breAdcrumbs show `event`-symbols.")
 		},
-		'breadcrumbs.showOperators': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.operator', "When enabled breadcrumbs show `operator`-symbols.")
+		'breAdcrumbs.showOperAtors': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.operAtor', "When enAbled breAdcrumbs show `operAtor`-symbols.")
 		},
-		'breadcrumbs.showTypeParameters': {
-			type: 'boolean',
-			default: true,
-			scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
-			markdownDescription: localize('filteredTypes.typeParameter', "When enabled breadcrumbs show `typeParameter`-symbols.")
+		'breAdcrumbs.showTypePArAmeters': {
+			type: 'booleAn',
+			defAult: true,
+			scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
+			mArkdownDescription: locAlize('filteredTypes.typePArAmeter', "When enAbled breAdcrumbs show `typePArAmeter`-symbols.")
 		}
 	}
 });

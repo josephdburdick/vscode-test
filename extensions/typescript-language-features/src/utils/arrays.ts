@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 export const empty = Object.freeze([]);
 
-export function equals<T>(
-	a: ReadonlyArray<T>,
-	b: ReadonlyArray<T>,
-	itemEquals: (a: T, b: T) => boolean = (a, b) => a === b
-): boolean {
-	if (a === b) {
+export function equAls<T>(
+	A: ReAdonlyArrAy<T>,
+	b: ReAdonlyArrAy<T>,
+	itemEquAls: (A: T, b: T) => booleAn = (A, b) => A === b
+): booleAn {
+	if (A === b) {
 		return true;
 	}
-	if (a.length !== b.length) {
-		return false;
+	if (A.length !== b.length) {
+		return fAlse;
 	}
-	return a.every((x, i) => itemEquals(x, b[i]));
+	return A.every((x, i) => itemEquAls(x, b[i]));
 }
 
-export function flatten<T>(array: ReadonlyArray<T>[]): T[] {
-	return Array.prototype.concat.apply([], array);
+export function flAtten<T>(ArrAy: ReAdonlyArrAy<T>[]): T[] {
+	return ArrAy.prototype.concAt.Apply([], ArrAy);
 }
 
-export function coalesce<T>(array: ReadonlyArray<T | undefined>): T[] {
-	return <T[]>array.filter(e => !!e);
+export function coAlesce<T>(ArrAy: ReAdonlyArrAy<T | undefined>): T[] {
+	return <T[]>ArrAy.filter(e => !!e);
 }

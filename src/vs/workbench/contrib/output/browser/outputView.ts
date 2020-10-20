@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IAction, IActionViewItem } from 'vs/base/common/actions';
+import * As nls from 'vs/nls';
+import { IAction, IActionViewItem } from 'vs/bAse/common/Actions';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ITextResourceConfigurAtionService } from 'vs/editor/common/services/textResourceConfigurAtionService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { EditorInput, EditorOptions, IEditorOpenContext } from 'vs/workbench/common/editor';
-import { AbstractTextResourceEditor } from 'vs/workbench/browser/parts/editor/textResourceEditor';
-import { OUTPUT_VIEW_ID, IOutputService, CONTEXT_IN_OUTPUT, IOutputChannel, CONTEXT_ACTIVE_LOG_OUTPUT, CONTEXT_OUTPUT_SCROLL_LOCK } from 'vs/workbench/contrib/output/common/output';
-import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { AbstrActTextResourceEditor } from 'vs/workbench/browser/pArts/editor/textResourceEditor';
+import { OUTPUT_VIEW_ID, IOutputService, CONTEXT_IN_OUTPUT, IOutputChAnnel, CONTEXT_ACTIVE_LOG_OUTPUT, CONTEXT_OUTPUT_SCROLL_LOCK } from 'vs/workbench/contrib/output/common/output';
+import { IThemeService, registerThemingPArticipAnt, IColorTheme, ICssStyleCollector } from 'vs/plAtform/theme/common/themeService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { CursorChangeReason } from 'vs/editor/common/controller/cursorEvents';
-import { ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
+import { CursorChAngeReAson } from 'vs/editor/common/controller/cursorEvents';
+import { ViewPAne, IViewPAneOptions } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IContextMenuService, IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
 import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IOutputChannelDescriptor, IOutputChannelRegistry, Extensions } from 'vs/workbench/services/output/common/output';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { attachSelectBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { ISelectOptionItem } from 'vs/base/browser/ui/selectBox/selectBox';
-import { groupBy } from 'vs/base/common/arrays';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IOutputChAnnelDescriptor, IOutputChAnnelRegistry, Extensions } from 'vs/workbench/services/output/common/output';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { AttAchSelectBoxStyler, AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { ISelectOptionItem } from 'vs/bAse/browser/ui/selectBox/selectBox';
+import { groupBy } from 'vs/bAse/common/ArrAys';
 import { SIDE_BAR_BACKGROUND } from 'vs/workbench/common/theme';
-import { editorBackground, selectBorder } from 'vs/platform/theme/common/colorRegistry';
-import { SelectActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { editorBAckground, selectBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { SelectActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export class OutputViewPane extends ViewPane {
+export clAss OutputViewPAne extends ViewPAne {
 
-	private readonly editor: OutputEditor;
-	private channelId: string | undefined;
-	private editorPromise: Promise<OutputEditor> | null = null;
+	privAte reAdonly editor: OutputEditor;
+	privAte chAnnelId: string | undefined;
+	privAte editorPromise: Promise<OutputEditor> | null = null;
 
-	private readonly scrollLockContextKey: IContextKey<boolean>;
-	get scrollLock(): boolean { return !!this.scrollLockContextKey.get(); }
-	set scrollLock(scrollLock: boolean) { this.scrollLockContextKey.set(scrollLock); }
+	privAte reAdonly scrollLockContextKey: IContextKey<booleAn>;
+	get scrollLock(): booleAn { return !!this.scrollLockContextKey.get(); }
+	set scrollLock(scrollLock: booleAn) { this.scrollLockContextKey.set(scrollLock); }
 
 	constructor(
-		options: IViewPaneOptions,
+		options: IViewPAneOptions,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IOutputService private readonly outputService: IOutputService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IOutputService privAte reAdonly outputService: IOutputService,
 		@IOpenerService openerService: IOpenerService,
 		@IThemeService themeService: IThemeService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
 		this.scrollLockContextKey = CONTEXT_OUTPUT_SCROLL_LOCK.bindTo(this.contextKeyService);
-		this.editor = instantiationService.createInstance(OutputEditor);
-		this._register(this.editor.onTitleAreaUpdate(() => {
-			this.updateTitle(this.editor.getTitle());
-			this.updateActions();
+		this.editor = instAntiAtionService.creAteInstAnce(OutputEditor);
+		this._register(this.editor.onTitleAreAUpdAte(() => {
+			this.updAteTitle(this.editor.getTitle());
+			this.updAteActions();
 		}));
-		this._register(this.onDidChangeBodyVisibility(() => this.onDidChangeVisibility(this.isBodyVisible())));
+		this._register(this.onDidChAngeBodyVisibility(() => this.onDidChAngeVisibility(this.isBodyVisible())));
 	}
 
-	showChannel(channel: IOutputChannel, preserveFocus: boolean): void {
-		if (this.channelId !== channel.id) {
-			this.setInput(channel);
+	showChAnnel(chAnnel: IOutputChAnnel, preserveFocus: booleAn): void {
+		if (this.chAnnelId !== chAnnel.id) {
+			this.setInput(chAnnel);
 		}
 		if (!preserveFocus) {
 			this.focus();
@@ -86,105 +86,105 @@ export class OutputViewPane extends ViewPane {
 		}
 	}
 
-	renderBody(container: HTMLElement): void {
-		super.renderBody(container);
-		this.editor.create(container);
-		container.classList.add('output-view');
+	renderBody(contAiner: HTMLElement): void {
+		super.renderBody(contAiner);
+		this.editor.creAte(contAiner);
+		contAiner.clAssList.Add('output-view');
 		const codeEditor = <ICodeEditor>this.editor.getControl();
-		codeEditor.setAriaOptions({ role: 'document', activeDescendant: undefined });
-		this._register(codeEditor.onDidChangeModelContent(() => {
-			const activeChannel = this.outputService.getActiveChannel();
-			if (activeChannel && !this.scrollLock) {
-				this.editor.revealLastLine();
+		codeEditor.setAriAOptions({ role: 'document', ActiveDescendAnt: undefined });
+		this._register(codeEditor.onDidChAngeModelContent(() => {
+			const ActiveChAnnel = this.outputService.getActiveChAnnel();
+			if (ActiveChAnnel && !this.scrollLock) {
+				this.editor.reveAlLAstLine();
 			}
 		}));
-		this._register(codeEditor.onDidChangeCursorPosition((e) => {
-			if (e.reason !== CursorChangeReason.Explicit) {
+		this._register(codeEditor.onDidChAngeCursorPosition((e) => {
+			if (e.reAson !== CursorChAngeReAson.Explicit) {
 				return;
 			}
 
-			if (!this.configurationService.getValue('output.smartScroll.enabled')) {
+			if (!this.configurAtionService.getVAlue('output.smArtScroll.enAbled')) {
 				return;
 			}
 
 			const model = codeEditor.getModel();
 			if (model) {
 				const newPositionLine = e.position.lineNumber;
-				const lastLine = model.getLineCount();
-				this.scrollLock = lastLine !== newPositionLine;
+				const lAstLine = model.getLineCount();
+				this.scrollLock = lAstLine !== newPositionLine;
 			}
 		}));
 	}
 
-	layoutBody(height: number, width: number): void {
-		super.layoutBody(height, width);
-		this.editor.layout({ height, width });
+	lAyoutBody(height: number, width: number): void {
+		super.lAyoutBody(height, width);
+		this.editor.lAyout({ height, width });
 	}
 
-	getActionViewItem(action: IAction): IActionViewItem | undefined {
-		if (action.id === 'workbench.output.action.switchBetweenOutputs') {
-			return this.instantiationService.createInstance(SwitchOutputActionViewItem, action);
+	getActionViewItem(Action: IAction): IActionViewItem | undefined {
+		if (Action.id === 'workbench.output.Action.switchBetweenOutputs') {
+			return this.instAntiAtionService.creAteInstAnce(SwitchOutputActionViewItem, Action);
 		}
-		return super.getActionViewItem(action);
+		return super.getActionViewItem(Action);
 	}
 
-	private onDidChangeVisibility(visible: boolean): void {
+	privAte onDidChAngeVisibility(visible: booleAn): void {
 		this.editor.setVisible(visible);
-		let channel: IOutputChannel | undefined = undefined;
+		let chAnnel: IOutputChAnnel | undefined = undefined;
 		if (visible) {
-			channel = this.channelId ? this.outputService.getChannel(this.channelId) : this.outputService.getActiveChannel();
+			chAnnel = this.chAnnelId ? this.outputService.getChAnnel(this.chAnnelId) : this.outputService.getActiveChAnnel();
 		}
-		if (channel) {
-			this.setInput(channel);
+		if (chAnnel) {
+			this.setInput(chAnnel);
 		} else {
-			this.clearInput();
+			this.cleArInput();
 		}
 	}
 
-	private setInput(channel: IOutputChannel): void {
-		this.channelId = channel.id;
-		const descriptor = this.outputService.getChannelDescriptor(channel.id);
+	privAte setInput(chAnnel: IOutputChAnnel): void {
+		this.chAnnelId = chAnnel.id;
+		const descriptor = this.outputService.getChAnnelDescriptor(chAnnel.id);
 		CONTEXT_ACTIVE_LOG_OUTPUT.bindTo(this.contextKeyService).set(!!descriptor?.file && descriptor?.log);
-		this.editorPromise = this.editor.setInput(this.createInput(channel), EditorOptions.create({ preserveFocus: true }), Object.create(null), CancellationToken.None)
+		this.editorPromise = this.editor.setInput(this.creAteInput(chAnnel), EditorOptions.creAte({ preserveFocus: true }), Object.creAte(null), CAncellAtionToken.None)
 			.then(() => this.editor);
 	}
 
-	private clearInput(): void {
-		CONTEXT_ACTIVE_LOG_OUTPUT.bindTo(this.contextKeyService).set(false);
-		this.editor.clearInput();
+	privAte cleArInput(): void {
+		CONTEXT_ACTIVE_LOG_OUTPUT.bindTo(this.contextKeyService).set(fAlse);
+		this.editor.cleArInput();
 		this.editorPromise = null;
 	}
 
-	private createInput(channel: IOutputChannel): ResourceEditorInput {
-		return this.instantiationService.createInstance(ResourceEditorInput, channel.uri, nls.localize('output model title', "{0} - Output", channel.label), nls.localize('channel', "Output channel for '{0}'", channel.label), undefined);
+	privAte creAteInput(chAnnel: IOutputChAnnel): ResourceEditorInput {
+		return this.instAntiAtionService.creAteInstAnce(ResourceEditorInput, chAnnel.uri, nls.locAlize('output model title', "{0} - Output", chAnnel.lAbel), nls.locAlize('chAnnel', "Output chAnnel for '{0}'", chAnnel.lAbel), undefined);
 	}
 
 }
 
-export class OutputEditor extends AbstractTextResourceEditor {
+export clAss OutputEditor extends AbstrActTextResourceEditor {
 
-	// Override the instantiation service to use to be the scoped one
-	private scopedInstantiationService: IInstantiationService;
-	protected get instantiationService(): IInstantiationService { return this.scopedInstantiationService; }
-	protected set instantiationService(instantiationService: IInstantiationService) { }
+	// Override the instAntiAtion service to use to be the scoped one
+	privAte scopedInstAntiAtionService: IInstAntiAtionService;
+	protected get instAntiAtionService(): IInstAntiAtionService { return this.scopedInstAntiAtionService; }
+	protected set instAntiAtionService(instAntiAtionService: IInstAntiAtionService) { }
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IStorageService storageService: IStorageService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ITextResourceConfigurationService textResourceConfigurationService: ITextResourceConfigurationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@ITextResourceConfigurAtionService textResourceConfigurAtionService: ITextResourceConfigurAtionService,
 		@IThemeService themeService: IThemeService,
-		@IOutputService private readonly outputService: IOutputService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+		@IOutputService privAte reAdonly outputService: IOutputService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IEditorService editorService: IEditorService
 	) {
-		super(OUTPUT_VIEW_ID, telemetryService, instantiationService, storageService, textResourceConfigurationService, themeService, editorGroupService, editorService);
+		super(OUTPUT_VIEW_ID, telemetryService, instAntiAtionService, storAgeService, textResourceConfigurAtionService, themeService, editorGroupService, editorService);
 
-		// Initially, the scoped instantiation service is the global
-		// one until the editor is created later on
-		this.scopedInstantiationService = instantiationService;
+		// InitiAlly, the scoped instAntiAtion service is the globAl
+		// one until the editor is creAted lAter on
+		this.scopedInstAntiAtionService = instAntiAtionService;
 	}
 
 	getId(): string {
@@ -192,120 +192,120 @@ export class OutputEditor extends AbstractTextResourceEditor {
 	}
 
 	getTitle(): string {
-		return nls.localize('output', "Output");
+		return nls.locAlize('output', "Output");
 	}
 
-	protected getConfigurationOverrides(): IEditorOptions {
-		const options = super.getConfigurationOverrides();
-		options.wordWrap = 'on';				// all output editors wrap
-		options.lineNumbers = 'off';			// all output editors hide line numbers
-		options.glyphMargin = false;
-		options.lineDecorationsWidth = 20;
+	protected getConfigurAtionOverrides(): IEditorOptions {
+		const options = super.getConfigurAtionOverrides();
+		options.wordWrAp = 'on';				// All output editors wrAp
+		options.lineNumbers = 'off';			// All output editors hide line numbers
+		options.glyphMArgin = fAlse;
+		options.lineDecorAtionsWidth = 20;
 		options.rulers = [];
-		options.folding = false;
-		options.scrollBeyondLastLine = false;
+		options.folding = fAlse;
+		options.scrollBeyondLAstLine = fAlse;
 		options.renderLineHighlight = 'none';
-		options.minimap = { enabled: false };
-		options.renderValidationDecorations = 'editable';
-		options.padding = undefined;
+		options.minimAp = { enAbled: fAlse };
+		options.renderVAlidAtionDecorAtions = 'editAble';
+		options.pAdding = undefined;
 
-		const outputConfig = this.configurationService.getValue<any>('[Log]');
+		const outputConfig = this.configurAtionService.getVAlue<Any>('[Log]');
 		if (outputConfig) {
-			if (outputConfig['editor.minimap.enabled']) {
-				options.minimap = { enabled: true };
+			if (outputConfig['editor.minimAp.enAbled']) {
+				options.minimAp = { enAbled: true };
 			}
-			if ('editor.wordWrap' in outputConfig) {
-				options.wordWrap = outputConfig['editor.wordWrap'];
+			if ('editor.wordWrAp' in outputConfig) {
+				options.wordWrAp = outputConfig['editor.wordWrAp'];
 			}
 		}
 
 		return options;
 	}
 
-	protected getAriaLabel(): string {
-		const channel = this.outputService.getActiveChannel();
+	protected getAriALAbel(): string {
+		const chAnnel = this.outputService.getActiveChAnnel();
 
-		return channel ? nls.localize('outputViewWithInputAriaLabel', "{0}, Output panel", channel.label) : nls.localize('outputViewAriaLabel', "Output panel");
+		return chAnnel ? nls.locAlize('outputViewWithInputAriALAbel', "{0}, Output pAnel", chAnnel.lAbel) : nls.locAlize('outputViewAriALAbel', "Output pAnel");
 	}
 
-	async setInput(input: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CancellationToken): Promise<void> {
+	Async setInput(input: EditorInput, options: EditorOptions | undefined, context: IEditorOpenContext, token: CAncellAtionToken): Promise<void> {
 		const focus = !(options && options.preserveFocus);
-		if (input.matches(this.input)) {
+		if (input.mAtches(this.input)) {
 			return;
 		}
 
 		if (this.input) {
-			// Dispose previous input (Output panel is not a workbench editor)
+			// Dispose previous input (Output pAnel is not A workbench editor)
 			this.input.dispose();
 		}
-		await super.setInput(input, options, context, token);
+		AwAit super.setInput(input, options, context, token);
 		if (focus) {
 			this.focus();
 		}
-		this.revealLastLine();
+		this.reveAlLAstLine();
 	}
 
-	clearInput(): void {
+	cleArInput(): void {
 		if (this.input) {
-			// Dispose current input (Output panel is not a workbench editor)
+			// Dispose current input (Output pAnel is not A workbench editor)
 			this.input.dispose();
 		}
-		super.clearInput();
+		super.cleArInput();
 	}
 
-	protected createEditor(parent: HTMLElement): void {
+	protected creAteEditor(pArent: HTMLElement): void {
 
-		parent.setAttribute('role', 'document');
+		pArent.setAttribute('role', 'document');
 
-		// First create the scoped instantiation service and only then construct the editor using the scoped service
-		const scopedContextKeyService = this._register(this.contextKeyService.createScoped(parent));
-		this.scopedInstantiationService = this.instantiationService.createChild(new ServiceCollection([IContextKeyService, scopedContextKeyService]));
+		// First creAte the scoped instAntiAtion service And only then construct the editor using the scoped service
+		const scopedContextKeyService = this._register(this.contextKeyService.creAteScoped(pArent));
+		this.scopedInstAntiAtionService = this.instAntiAtionService.creAteChild(new ServiceCollection([IContextKeyService, scopedContextKeyService]));
 
-		super.createEditor(parent);
+		super.creAteEditor(pArent);
 
 		CONTEXT_IN_OUTPUT.bindTo(scopedContextKeyService).set(true);
 	}
 }
 
-class SwitchOutputActionViewItem extends SelectActionViewItem {
+clAss SwitchOutputActionViewItem extends SelectActionViewItem {
 
-	private static readonly SEPARATOR = '─────────';
+	privAte stAtic reAdonly SEPARATOR = '─────────';
 
-	private outputChannels: IOutputChannelDescriptor[] = [];
-	private logChannels: IOutputChannelDescriptor[] = [];
+	privAte outputChAnnels: IOutputChAnnelDescriptor[] = [];
+	privAte logChAnnels: IOutputChAnnelDescriptor[] = [];
 
 	constructor(
-		action: IAction,
-		@IOutputService private readonly outputService: IOutputService,
-		@IThemeService private readonly themeService: IThemeService,
+		Action: IAction,
+		@IOutputService privAte reAdonly outputService: IOutputService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
 		@IContextViewService contextViewService: IContextViewService
 	) {
-		super(null, action, [], 0, contextViewService, { ariaLabel: nls.localize('outputChannels', 'Output Channels.'), optionsAsChildren: true });
+		super(null, Action, [], 0, contextViewService, { AriALAbel: nls.locAlize('outputChAnnels', 'Output ChAnnels.'), optionsAsChildren: true });
 
-		let outputChannelRegistry = Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels);
-		this._register(outputChannelRegistry.onDidRegisterChannel(() => this.updateOtions()));
-		this._register(outputChannelRegistry.onDidRemoveChannel(() => this.updateOtions()));
-		this._register(this.outputService.onActiveOutputChannel(() => this.updateOtions()));
-		this._register(attachSelectBoxStyler(this.selectBox, themeService));
+		let outputChAnnelRegistry = Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels);
+		this._register(outputChAnnelRegistry.onDidRegisterChAnnel(() => this.updAteOtions()));
+		this._register(outputChAnnelRegistry.onDidRemoveChAnnel(() => this.updAteOtions()));
+		this._register(this.outputService.onActiveOutputChAnnel(() => this.updAteOtions()));
+		this._register(AttAchSelectBoxStyler(this.selectBox, themeService));
 
-		this.updateOtions();
+		this.updAteOtions();
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
-		container.classList.add('switch-output');
-		this._register(attachStylerCallback(this.themeService, { selectBorder }, colors => {
-			container.style.borderColor = colors.selectBorder ? `${colors.selectBorder}` : '';
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
+		contAiner.clAssList.Add('switch-output');
+		this._register(AttAchStylerCAllbAck(this.themeService, { selectBorder }, colors => {
+			contAiner.style.borderColor = colors.selectBorder ? `${colors.selectBorder}` : '';
 		}));
 	}
 
 	protected getActionContext(option: string, index: number): string {
-		const channel = index < this.outputChannels.length ? this.outputChannels[index] : this.logChannels[index - this.outputChannels.length - 1];
-		return channel ? channel.id : option;
+		const chAnnel = index < this.outputChAnnels.length ? this.outputChAnnels[index] : this.logChAnnels[index - this.outputChAnnels.length - 1];
+		return chAnnel ? chAnnel.id : option;
 	}
 
-	private updateOtions(): void {
-		const groups = groupBy(this.outputService.getChannelDescriptors(), (c1: IOutputChannelDescriptor, c2: IOutputChannelDescriptor) => {
+	privAte updAteOtions(): void {
+		const groups = groupBy(this.outputService.getChAnnelDescriptors(), (c1: IOutputChAnnelDescriptor, c2: IOutputChAnnelDescriptor) => {
 			if (!c1.log && c2.log) {
 				return -1;
 			}
@@ -314,33 +314,33 @@ class SwitchOutputActionViewItem extends SelectActionViewItem {
 			}
 			return 0;
 		});
-		this.outputChannels = groups[0] || [];
-		this.logChannels = groups[1] || [];
-		const showSeparator = this.outputChannels.length && this.logChannels.length;
-		const separatorIndex = showSeparator ? this.outputChannels.length : -1;
-		const options: string[] = [...this.outputChannels.map(c => c.label), ...(showSeparator ? [SwitchOutputActionViewItem.SEPARATOR] : []), ...this.logChannels.map(c => nls.localize('logChannel', "Log ({0})", c.label))];
+		this.outputChAnnels = groups[0] || [];
+		this.logChAnnels = groups[1] || [];
+		const showSepArAtor = this.outputChAnnels.length && this.logChAnnels.length;
+		const sepArAtorIndex = showSepArAtor ? this.outputChAnnels.length : -1;
+		const options: string[] = [...this.outputChAnnels.mAp(c => c.lAbel), ...(showSepArAtor ? [SwitchOutputActionViewItem.SEPARATOR] : []), ...this.logChAnnels.mAp(c => nls.locAlize('logChAnnel', "Log ({0})", c.lAbel))];
 		let selected = 0;
-		const activeChannel = this.outputService.getActiveChannel();
-		if (activeChannel) {
-			selected = this.outputChannels.map(c => c.id).indexOf(activeChannel.id);
+		const ActiveChAnnel = this.outputService.getActiveChAnnel();
+		if (ActiveChAnnel) {
+			selected = this.outputChAnnels.mAp(c => c.id).indexOf(ActiveChAnnel.id);
 			if (selected === -1) {
-				const logChannelIndex = this.logChannels.map(c => c.id).indexOf(activeChannel.id);
-				selected = logChannelIndex !== -1 ? separatorIndex + 1 + logChannelIndex : 0;
+				const logChAnnelIndex = this.logChAnnels.mAp(c => c.id).indexOf(ActiveChAnnel.id);
+				selected = logChAnnelIndex !== -1 ? sepArAtorIndex + 1 + logChAnnelIndex : 0;
 			}
 		}
-		this.setOptions(options.map((label, index) => <ISelectOptionItem>{ text: label, isDisabled: (index === separatorIndex ? true : false) }), Math.max(0, selected));
+		this.setOptions(options.mAp((lAbel, index) => <ISelectOptionItem>{ text: lAbel, isDisAbled: (index === sepArAtorIndex ? true : fAlse) }), MAth.mAx(0, selected));
 	}
 }
 
-registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
-	// Sidebar background for the output view
-	const sidebarBackground = theme.getColor(SIDE_BAR_BACKGROUND);
-	if (sidebarBackground && sidebarBackground !== theme.getColor(editorBackground)) {
-		collector.addRule(`
-			.monaco-workbench .part.sidebar .output-view .monaco-editor,
-			.monaco-workbench .part.sidebar .output-view .monaco-editor .margin,
-			.monaco-workbench .part.sidebar .output-view .monaco-editor .monaco-editor-background {
-				background-color: ${sidebarBackground};
+registerThemingPArticipAnt((theme: IColorTheme, collector: ICssStyleCollector) => {
+	// SidebAr bAckground for the output view
+	const sidebArBAckground = theme.getColor(SIDE_BAR_BACKGROUND);
+	if (sidebArBAckground && sidebArBAckground !== theme.getColor(editorBAckground)) {
+		collector.AddRule(`
+			.monAco-workbench .pArt.sidebAr .output-view .monAco-editor,
+			.monAco-workbench .pArt.sidebAr .output-view .monAco-editor .mArgin,
+			.monAco-workbench .pArt.sidebAr .output-view .monAco-editor .monAco-editor-bAckground {
+				bAckground-color: ${sidebArBAckground};
 			}
 		`);
 	}

@@ -1,167 +1,167 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMouseWheelEvent } from 'vs/base/browser/mouseEvent';
-import { Emitter } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/browser/themeing';
+import { IMouseWheelEvent } from 'vs/bAse/browser/mouseEvent';
+import { Emitter } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { WebviewThemeDAtAProvider } from 'vs/workbench/contrib/webview/browser/themeing';
 import { WebviewContentOptions, WebviewExtensionDescription, WebviewOptions } from 'vs/workbench/contrib/webview/browser/webview';
-import { areWebviewInputOptionsEqual } from 'vs/workbench/contrib/webviewPanel/browser/webviewWorkbenchService';
+import { AreWebviewInputOptionsEquAl } from 'vs/workbench/contrib/webviewPAnel/browser/webviewWorkbenchService';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 
-export const enum WebviewMessageChannels {
-	onmessage = 'onmessage',
+export const enum WebviewMessAgeChAnnels {
+	onmessAge = 'onmessAge',
 	didClickLink = 'did-click-link',
 	didScroll = 'did-scroll',
 	didFocus = 'did-focus',
 	didBlur = 'did-blur',
-	didLoad = 'did-load',
-	doUpdateState = 'do-update-state',
-	doReload = 'do-reload',
-	loadResource = 'load-resource',
-	loadLocalhost = 'load-localhost',
-	webviewReady = 'webview-ready',
+	didLoAd = 'did-loAd',
+	doUpdAteStAte = 'do-updAte-stAte',
+	doReloAd = 'do-reloAd',
+	loAdResource = 'loAd-resource',
+	loAdLocAlhost = 'loAd-locAlhost',
+	webviewReAdy = 'webview-reAdy',
 	wheel = 'did-scroll-wheel',
-	fatalError = 'fatal-error',
+	fAtAlError = 'fAtAl-error',
 }
 
-interface IKeydownEvent {
+interfAce IKeydownEvent {
 	key: string;
 	keyCode: number;
 	code: string;
-	shiftKey: boolean;
-	altKey: boolean;
-	ctrlKey: boolean;
-	metaKey: boolean;
-	repeat: boolean;
+	shiftKey: booleAn;
+	AltKey: booleAn;
+	ctrlKey: booleAn;
+	metAKey: booleAn;
+	repeAt: booleAn;
 }
 
-interface WebviewContent {
-	readonly html: string;
-	readonly options: WebviewContentOptions;
-	readonly state: string | undefined;
+interfAce WebviewContent {
+	reAdonly html: string;
+	reAdonly options: WebviewContentOptions;
+	reAdonly stAte: string | undefined;
 }
 
-namespace WebviewState {
-	export const enum Type { Initializing, Ready }
+nAmespAce WebviewStAte {
+	export const enum Type { InitiAlizing, ReAdy }
 
-	export class Initializing {
-		readonly type = Type.Initializing;
+	export clAss InitiAlizing {
+		reAdonly type = Type.InitiAlizing;
 
 		constructor(
-			public readonly pendingMessages: Array<{ readonly channel: string, readonly data?: any }>
+			public reAdonly pendingMessAges: ArrAy<{ reAdonly chAnnel: string, reAdonly dAtA?: Any }>
 		) { }
 	}
 
-	export const Ready = { type: Type.Ready } as const;
+	export const ReAdy = { type: Type.ReAdy } As const;
 
-	export type State = typeof Ready | Initializing;
+	export type StAte = typeof ReAdy | InitiAlizing;
 }
 
-export abstract class BaseWebview<T extends HTMLElement> extends Disposable {
+export AbstrAct clAss BAseWebview<T extends HTMLElement> extends DisposAble {
 
-	private _element: T | undefined;
+	privAte _element: T | undefined;
 	protected get element(): T | undefined { return this._element; }
 
-	private _focused: boolean | undefined;
-	public get isFocused(): boolean { return !!this._focused; }
+	privAte _focused: booleAn | undefined;
+	public get isFocused(): booleAn { return !!this._focused; }
 
-	private _state: WebviewState.State = new WebviewState.Initializing([]);
+	privAte _stAte: WebviewStAte.StAte = new WebviewStAte.InitiAlizing([]);
 
 	protected content: WebviewContent;
 
 	constructor(
-		public readonly id: string,
+		public reAdonly id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		public extension: WebviewExtensionDescription | undefined,
-		private readonly webviewThemeDataProvider: WebviewThemeDataProvider,
-		@INotificationService notificationService: INotificationService,
-		@ILogService private readonly _logService: ILogService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
-		@IWorkbenchEnvironmentService protected readonly environmentService: IWorkbenchEnvironmentService
+		privAte reAdonly webviewThemeDAtAProvider: WebviewThemeDAtAProvider,
+		@INotificAtionService notificAtionService: INotificAtionService,
+		@ILogService privAte reAdonly _logService: ILogService,
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService,
+		@IWorkbenchEnvironmentService protected reAdonly environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 
 		this.content = {
 			html: '',
 			options: contentOptions,
-			state: undefined
+			stAte: undefined
 		};
 
-		this._element = this.createElement(options, contentOptions);
+		this._element = this.creAteElement(options, contentOptions);
 
-		const subscription = this._register(this.on(WebviewMessageChannels.webviewReady, () => {
-			this._logService.debug(`Webview(${this.id}): webview ready`);
+		const subscription = this._register(this.on(WebviewMessAgeChAnnels.webviewReAdy, () => {
+			this._logService.debug(`Webview(${this.id}): webview reAdy`);
 
-			this.element?.classList.add('ready');
+			this.element?.clAssList.Add('reAdy');
 
-			if (this._state.type === WebviewState.Type.Initializing) {
-				this._state.pendingMessages.forEach(({ channel, data }) => this.doPostMessage(channel, data));
+			if (this._stAte.type === WebviewStAte.Type.InitiAlizing) {
+				this._stAte.pendingMessAges.forEAch(({ chAnnel, dAtA }) => this.doPostMessAge(chAnnel, dAtA));
 			}
-			this._state = WebviewState.Ready;
+			this._stAte = WebviewStAte.ReAdy;
 
 			subscription.dispose();
 		}));
 
 		this._register(this.on('no-csp-found', () => {
-			this.handleNoCspFound();
+			this.hAndleNoCspFound();
 		}));
 
-		this._register(this.on(WebviewMessageChannels.didClickLink, (uri: string) => {
+		this._register(this.on(WebviewMessAgeChAnnels.didClickLink, (uri: string) => {
 			this._onDidClickLink.fire(uri);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.onmessage, (data: any) => {
-			this._onMessage.fire(data);
+		this._register(this.on(WebviewMessAgeChAnnels.onmessAge, (dAtA: Any) => {
+			this._onMessAge.fire(dAtA);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.didScroll, (scrollYPercentage: number) => {
-			this._onDidScroll.fire({ scrollYPercentage: scrollYPercentage });
+		this._register(this.on(WebviewMessAgeChAnnels.didScroll, (scrollYPercentAge: number) => {
+			this._onDidScroll.fire({ scrollYPercentAge: scrollYPercentAge });
 		}));
 
-		this._register(this.on(WebviewMessageChannels.doReload, () => {
-			this.reload();
+		this._register(this.on(WebviewMessAgeChAnnels.doReloAd, () => {
+			this.reloAd();
 		}));
 
-		this._register(this.on(WebviewMessageChannels.doUpdateState, (state: any) => {
-			this.state = state;
-			this._onDidUpdateState.fire(state);
+		this._register(this.on(WebviewMessAgeChAnnels.doUpdAteStAte, (stAte: Any) => {
+			this.stAte = stAte;
+			this._onDidUpdAteStAte.fire(stAte);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.didFocus, () => {
-			this.handleFocusChange(true);
+		this._register(this.on(WebviewMessAgeChAnnels.didFocus, () => {
+			this.hAndleFocusChAnge(true);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.wheel, (event: IMouseWheelEvent) => {
+		this._register(this.on(WebviewMessAgeChAnnels.wheel, (event: IMouseWheelEvent) => {
 			this._onDidWheel.fire(event);
 		}));
 
-		this._register(this.on(WebviewMessageChannels.didBlur, () => {
-			this.handleFocusChange(false);
+		this._register(this.on(WebviewMessAgeChAnnels.didBlur, () => {
+			this.hAndleFocusChAnge(fAlse);
 		}));
 
-		this._register(this.on<{ message: string }>(WebviewMessageChannels.fatalError, (e) => {
-			notificationService.error(localize('fatalErrorMessage', "Error loading webview: {0}", e.message));
+		this._register(this.on<{ messAge: string }>(WebviewMessAgeChAnnels.fAtAlError, (e) => {
+			notificAtionService.error(locAlize('fAtAlErrorMessAge', "Error loAding webview: {0}", e.messAge));
 		}));
 
-		this._register(this.on('did-keydown', (data: KeyboardEvent) => {
-			// Electron: workaround for https://github.com/electron/electron/issues/14258
-			// We have to detect keyboard events in the <webview> and dispatch them to our
-			// keybinding service because these events do not bubble to the parent window anymore.
-			this.handleKeyDown(data);
+		this._register(this.on('did-keydown', (dAtA: KeyboArdEvent) => {
+			// Electron: workAround for https://github.com/electron/electron/issues/14258
+			// We hAve to detect keyboArd events in the <webview> And dispAtch them to our
+			// keybinding service becAuse these events do not bubble to the pArent window Anymore.
+			this.hAndleKeyDown(dAtA);
 		}));
 
 		this.style();
-		this._register(webviewThemeDataProvider.onThemeDataChanged(this.style, this));
+		this._register(webviewThemeDAtAProvider.onThemeDAtAChAnged(this.style, this));
 	}
 
 	dispose(): void {
@@ -175,148 +175,148 @@ export abstract class BaseWebview<T extends HTMLElement> extends Disposable {
 		super.dispose();
 	}
 
-	private readonly _onMissingCsp = this._register(new Emitter<ExtensionIdentifier>());
-	public readonly onMissingCsp = this._onMissingCsp.event;
+	privAte reAdonly _onMissingCsp = this._register(new Emitter<ExtensionIdentifier>());
+	public reAdonly onMissingCsp = this._onMissingCsp.event;
 
-	private readonly _onDidClickLink = this._register(new Emitter<string>());
-	public readonly onDidClickLink = this._onDidClickLink.event;
+	privAte reAdonly _onDidClickLink = this._register(new Emitter<string>());
+	public reAdonly onDidClickLink = this._onDidClickLink.event;
 
-	private readonly _onDidReload = this._register(new Emitter<void>());
-	public readonly onDidReload = this._onDidReload.event;
+	privAte reAdonly _onDidReloAd = this._register(new Emitter<void>());
+	public reAdonly onDidReloAd = this._onDidReloAd.event;
 
-	private readonly _onMessage = this._register(new Emitter<any>());
-	public readonly onMessage = this._onMessage.event;
+	privAte reAdonly _onMessAge = this._register(new Emitter<Any>());
+	public reAdonly onMessAge = this._onMessAge.event;
 
-	private readonly _onDidScroll = this._register(new Emitter<{ readonly scrollYPercentage: number; }>());
-	public readonly onDidScroll = this._onDidScroll.event;
+	privAte reAdonly _onDidScroll = this._register(new Emitter<{ reAdonly scrollYPercentAge: number; }>());
+	public reAdonly onDidScroll = this._onDidScroll.event;
 
-	private readonly _onDidWheel = this._register(new Emitter<IMouseWheelEvent>());
-	public readonly onDidWheel = this._onDidWheel.event;
+	privAte reAdonly _onDidWheel = this._register(new Emitter<IMouseWheelEvent>());
+	public reAdonly onDidWheel = this._onDidWheel.event;
 
-	private readonly _onDidUpdateState = this._register(new Emitter<string | undefined>());
-	public readonly onDidUpdateState = this._onDidUpdateState.event;
+	privAte reAdonly _onDidUpdAteStAte = this._register(new Emitter<string | undefined>());
+	public reAdonly onDidUpdAteStAte = this._onDidUpdAteStAte.event;
 
-	private readonly _onDidFocus = this._register(new Emitter<void>());
-	public readonly onDidFocus = this._onDidFocus.event;
+	privAte reAdonly _onDidFocus = this._register(new Emitter<void>());
+	public reAdonly onDidFocus = this._onDidFocus.event;
 
-	private readonly _onDidBlur = this._register(new Emitter<void>());
-	public readonly onDidBlur = this._onDidBlur.event;
+	privAte reAdonly _onDidBlur = this._register(new Emitter<void>());
+	public reAdonly onDidBlur = this._onDidBlur.event;
 
-	private readonly _onDidDispose = this._register(new Emitter<void>());
-	public readonly onDidDispose = this._onDidDispose.event;
+	privAte reAdonly _onDidDispose = this._register(new Emitter<void>());
+	public reAdonly onDidDispose = this._onDidDispose.event;
 
-	public postMessage(data: any): void {
-		this._send('message', data);
+	public postMessAge(dAtA: Any): void {
+		this._send('messAge', dAtA);
 	}
 
-	protected _send(channel: string, data?: any): void {
-		if (this._state.type === WebviewState.Type.Initializing) {
-			this._state.pendingMessages.push({ channel, data });
+	protected _send(chAnnel: string, dAtA?: Any): void {
+		if (this._stAte.type === WebviewStAte.Type.InitiAlizing) {
+			this._stAte.pendingMessAges.push({ chAnnel, dAtA });
 		} else {
-			this.doPostMessage(channel, data);
+			this.doPostMessAge(chAnnel, dAtA);
 		}
 	}
 
-	protected abstract readonly extraContentOptions: { readonly [key: string]: string };
+	protected AbstrAct reAdonly extrAContentOptions: { reAdonly [key: string]: string };
 
-	protected abstract createElement(options: WebviewOptions, contentOptions: WebviewContentOptions): T;
+	protected AbstrAct creAteElement(options: WebviewOptions, contentOptions: WebviewContentOptions): T;
 
-	protected abstract on<T = unknown>(channel: string, handler: (data: T) => void): IDisposable;
+	protected AbstrAct on<T = unknown>(chAnnel: string, hAndler: (dAtA: T) => void): IDisposAble;
 
-	protected abstract doPostMessage(channel: string, data?: any): void;
+	protected AbstrAct doPostMessAge(chAnnel: string, dAtA?: Any): void;
 
-	private _hasAlertedAboutMissingCsp = false;
-	private handleNoCspFound(): void {
-		if (this._hasAlertedAboutMissingCsp) {
+	privAte _hAsAlertedAboutMissingCsp = fAlse;
+	privAte hAndleNoCspFound(): void {
+		if (this._hAsAlertedAboutMissingCsp) {
 			return;
 		}
-		this._hasAlertedAboutMissingCsp = true;
+		this._hAsAlertedAboutMissingCsp = true;
 
 		if (this.extension && this.extension.id) {
 			if (this.environmentService.isExtensionDevelopment) {
 				this._onMissingCsp.fire(this.extension.id);
 			}
 
-			type TelemetryClassification = {
-				extension?: { classification: 'SystemMetaData', purpose: 'FeatureInsight'; };
+			type TelemetryClAssificAtion = {
+				extension?: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight'; };
 			};
-			type TelemetryData = {
+			type TelemetryDAtA = {
 				extension?: string,
 			};
 
-			this._telemetryService.publicLog2<TelemetryData, TelemetryClassification>('webviewMissingCsp', {
-				extension: this.extension.id.value
+			this._telemetryService.publicLog2<TelemetryDAtA, TelemetryClAssificAtion>('webviewMissingCsp', {
+				extension: this.extension.id.vAlue
 			});
 		}
 	}
 
-	public reload(): void {
-		this.doUpdateContent(this.content);
+	public reloAd(): void {
+		this.doUpdAteContent(this.content);
 
-		const subscription = this._register(this.on(WebviewMessageChannels.didLoad, () => {
-			this._onDidReload.fire();
+		const subscription = this._register(this.on(WebviewMessAgeChAnnels.didLoAd, () => {
+			this._onDidReloAd.fire();
 			subscription.dispose();
 		}));
 	}
 
-	public set html(value: string) {
-		this.doUpdateContent({
-			html: value,
+	public set html(vAlue: string) {
+		this.doUpdAteContent({
+			html: vAlue,
 			options: this.content.options,
-			state: this.content.state,
+			stAte: this.content.stAte,
 		});
 	}
 
 	public set contentOptions(options: WebviewContentOptions) {
-		this._logService.debug(`Webview(${this.id}): will update content options`);
+		this._logService.debug(`Webview(${this.id}): will updAte content options`);
 
-		if (areWebviewInputOptionsEqual(options, this.content.options)) {
-			this._logService.debug(`Webview(${this.id}): skipping content options update`);
+		if (AreWebviewInputOptionsEquAl(options, this.content.options)) {
+			this._logService.debug(`Webview(${this.id}): skipping content options updAte`);
 			return;
 		}
 
-		this.doUpdateContent({
+		this.doUpdAteContent({
 			html: this.content.html,
 			options: options,
-			state: this.content.state,
+			stAte: this.content.stAte,
 		});
 	}
 
-	public set localResourcesRoot(resources: URI[]) {
+	public set locAlResourcesRoot(resources: URI[]) {
 		/** no op */
 	}
 
-	public set state(state: string | undefined) {
+	public set stAte(stAte: string | undefined) {
 		this.content = {
 			html: this.content.html,
 			options: this.content.options,
-			state,
+			stAte,
 		};
 	}
 
-	public set initialScrollProgress(value: number) {
-		this._send('initial-scroll-position', value);
+	public set initiAlScrollProgress(vAlue: number) {
+		this._send('initiAl-scroll-position', vAlue);
 	}
 
-	private doUpdateContent(newContent: WebviewContent) {
-		this._logService.debug(`Webview(${this.id}): will update content`);
+	privAte doUpdAteContent(newContent: WebviewContent) {
+		this._logService.debug(`Webview(${this.id}): will updAte content`);
 
 		this.content = newContent;
 
 		this._send('content', {
 			contents: this.content.html,
 			options: this.content.options,
-			state: this.content.state,
-			...this.extraContentOptions
+			stAte: this.content.stAte,
+			...this.extrAContentOptions
 		});
 	}
 
 	protected style(): void {
-		const { styles, activeTheme, themeLabel } = this.webviewThemeDataProvider.getWebviewThemeData();
-		this._send('styles', { styles, activeTheme, themeName: themeLabel });
+		const { styles, ActiveTheme, themeLAbel } = this.webviewThemeDAtAProvider.getWebviewThemeDAtA();
+		this._send('styles', { styles, ActiveTheme, themeNAme: themeLAbel });
 	}
 
-	protected handleFocusChange(isFocused: boolean): void {
+	protected hAndleFocusChAnge(isFocused: booleAn): void {
 		this._focused = isFocused;
 		if (isFocused) {
 			this._onDidFocus.fire();
@@ -325,59 +325,59 @@ export abstract class BaseWebview<T extends HTMLElement> extends Disposable {
 		}
 	}
 
-	private handleKeyDown(event: IKeydownEvent) {
-		// Create a fake KeyboardEvent from the data provided
-		const emulatedKeyboardEvent = new KeyboardEvent('keydown', event);
-		// Force override the target
-		Object.defineProperty(emulatedKeyboardEvent, 'target', {
+	privAte hAndleKeyDown(event: IKeydownEvent) {
+		// CreAte A fAke KeyboArdEvent from the dAtA provided
+		const emulAtedKeyboArdEvent = new KeyboArdEvent('keydown', event);
+		// Force override the tArget
+		Object.defineProperty(emulAtedKeyboArdEvent, 'tArget', {
 			get: () => this.element,
 		});
-		// And re-dispatch
-		window.dispatchEvent(emulatedKeyboardEvent);
+		// And re-dispAtch
+		window.dispAtchEvent(emulAtedKeyboArdEvent);
 	}
 
-	windowDidDragStart(): void {
-		// Webview break drag and droping around the main window (no events are generated when you are over them)
-		// Work around this by disabling pointer events during the drag.
+	windowDidDrAgStArt(): void {
+		// Webview breAk drAg And droping Around the mAin window (no events Are generAted when you Are over them)
+		// Work Around this by disAbling pointer events during the drAg.
 		// https://github.com/electron/electron/issues/18226
 		if (this.element) {
 			this.element.style.pointerEvents = 'none';
 		}
 	}
 
-	windowDidDragEnd(): void {
+	windowDidDrAgEnd(): void {
 		if (this.element) {
 			this.element.style.pointerEvents = '';
 		}
 	}
 
 	public selectAll() {
-		this.execCommand('selectAll');
+		this.execCommAnd('selectAll');
 	}
 
 	public copy() {
-		this.execCommand('copy');
+		this.execCommAnd('copy');
 	}
 
-	public paste() {
-		this.execCommand('paste');
+	public pAste() {
+		this.execCommAnd('pAste');
 	}
 
 	public cut() {
-		this.execCommand('cut');
+		this.execCommAnd('cut');
 	}
 
 	public undo() {
-		this.execCommand('undo');
+		this.execCommAnd('undo');
 	}
 
 	public redo() {
-		this.execCommand('redo');
+		this.execCommAnd('redo');
 	}
 
-	private execCommand(command: string) {
+	privAte execCommAnd(commAnd: string) {
 		if (this.element) {
-			this._send('execCommand', command);
+			this._send('execCommAnd', commAnd);
 		}
 	}
 }

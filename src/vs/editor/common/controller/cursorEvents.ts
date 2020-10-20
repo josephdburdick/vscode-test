@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Position } from 'vs/editor/common/core/position';
 import { Selection } from 'vs/editor/common/core/selection';
 
 /**
- * Describes the reason the cursor has changed its position.
+ * Describes the reAson the cursor hAs chAnged its position.
  */
-export const enum CursorChangeReason {
+export const enum CursorChAngeReAson {
 	/**
 	 * Unknown or not set.
 	 */
 	NotSet = 0,
 	/**
-	 * A `model.setValue()` was called.
+	 * A `model.setVAlue()` wAs cAlled.
 	 */
 	ContentFlush = 1,
 	/**
-	 * The `model` has been changed outside of this cursor and the cursor recovers its position from associated markers.
+	 * The `model` hAs been chAnged outside of this cursor And the cursor recovers its position from AssociAted mArkers.
 	 */
-	RecoverFromMarkers = 2,
+	RecoverFromMArkers = 2,
 	/**
-	 * There was an explicit user gesture.
+	 * There wAs An explicit user gesture.
 	 */
 	Explicit = 3,
 	/**
-	 * There was a Paste.
+	 * There wAs A PAste.
 	 */
-	Paste = 4,
+	PAste = 4,
 	/**
-	 * There was an Undo.
+	 * There wAs An Undo.
 	 */
 	Undo = 5,
 	/**
-	 * There was a Redo.
+	 * There wAs A Redo.
 	 */
 	Redo = 6,
 }
 /**
- * An event describing that the cursor position has changed.
+ * An event describing thAt the cursor position hAs chAnged.
  */
-export interface ICursorPositionChangedEvent {
+export interfAce ICursorPositionChAngedEvent {
 	/**
-	 * Primary cursor's position.
+	 * PrimAry cursor's position.
 	 */
-	readonly position: Position;
+	reAdonly position: Position;
 	/**
-	 * Secondary cursors' position.
+	 * SecondAry cursors' position.
 	 */
-	readonly secondaryPositions: Position[];
+	reAdonly secondAryPositions: Position[];
 	/**
-	 * Reason.
+	 * ReAson.
 	 */
-	readonly reason: CursorChangeReason;
+	reAdonly reAson: CursorChAngeReAson;
 	/**
-	 * Source of the call that caused the event.
+	 * Source of the cAll thAt cAused the event.
 	 */
-	readonly source: string;
+	reAdonly source: string;
 }
 /**
- * An event describing that the cursor selection has changed.
+ * An event describing thAt the cursor selection hAs chAnged.
  */
-export interface ICursorSelectionChangedEvent {
+export interfAce ICursorSelectionChAngedEvent {
 	/**
-	 * The primary selection.
+	 * The primAry selection.
 	 */
-	readonly selection: Selection;
+	reAdonly selection: Selection;
 	/**
-	 * The secondary selections.
+	 * The secondAry selections.
 	 */
-	readonly secondarySelections: Selection[];
+	reAdonly secondArySelections: Selection[];
 	/**
 	 * The model version id.
 	 */
-	readonly modelVersionId: number;
+	reAdonly modelVersionId: number;
 	/**
 	 * The old selections.
 	 */
-	readonly oldSelections: Selection[] | null;
+	reAdonly oldSelections: Selection[] | null;
 	/**
-	 * The model version id the that `oldSelections` refer to.
+	 * The model version id the thAt `oldSelections` refer to.
 	 */
-	readonly oldModelVersionId: number;
+	reAdonly oldModelVersionId: number;
 	/**
-	 * Source of the call that caused the event.
+	 * Source of the cAll thAt cAused the event.
 	 */
-	readonly source: string;
+	reAdonly source: string;
 	/**
-	 * Reason.
+	 * ReAson.
 	 */
-	readonly reason: CursorChangeReason;
+	reAdonly reAson: CursorChAngeReAson;
 }

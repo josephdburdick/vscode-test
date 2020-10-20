@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { RunOnceScheduler, createCancelablePromise, CancelablePromise } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Range } from 'vs/editor/common/core/range';
+import { RunOnceScheduler, creAteCAncelAblePromise, CAncelAblePromise } from 'vs/bAse/common/Async';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { registerEditorContribution } from 'vs/editor/browser/editorExtensions';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
-import { DocumentRangeSemanticTokensProviderRegistry, DocumentRangeSemanticTokensProvider, SemanticTokens } from 'vs/editor/common/modes';
+import { DocumentRAngeSemAnticTokensProviderRegistry, DocumentRAngeSemAnticTokensProvider, SemAnticTokens } from 'vs/editor/common/modes';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { toMultilineTokens2, SemanticTokensProviderStyling } from 'vs/editor/common/services/semanticTokensProviderStyling';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { isSemanticColoringEnabled, SEMANTIC_HIGHLIGHTING_SETTING_ID } from 'vs/editor/common/services/modelServiceImpl';
+import { toMultilineTokens2, SemAnticTokensProviderStyling } from 'vs/editor/common/services/semAnticTokensProviderStyling';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { isSemAnticColoringEnAbled, SEMANTIC_HIGHLIGHTING_SETTING_ID } from 'vs/editor/common/services/modelServiceImpl';
 
-class ViewportSemanticTokensContribution extends Disposable implements IEditorContribution {
+clAss ViewportSemAnticTokensContribution extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.viewportSemanticTokens';
+	public stAtic reAdonly ID = 'editor.contrib.viewportSemAnticTokens';
 
-	public static get(editor: ICodeEditor): ViewportSemanticTokensContribution {
-		return editor.getContribution<ViewportSemanticTokensContribution>(ViewportSemanticTokensContribution.ID);
+	public stAtic get(editor: ICodeEditor): ViewportSemAnticTokensContribution {
+		return editor.getContribution<ViewportSemAnticTokensContribution>(ViewportSemAnticTokensContribution.ID);
 	}
 
-	private readonly _editor: ICodeEditor;
-	private readonly _tokenizeViewport: RunOnceScheduler;
-	private _outstandingRequests: CancelablePromise<SemanticTokens | null | undefined>[];
+	privAte reAdonly _editor: ICodeEditor;
+	privAte reAdonly _tokenizeViewport: RunOnceScheduler;
+	privAte _outstAndingRequests: CAncelAblePromise<SemAnticTokens | null | undefined>[];
 
 	constructor(
 		editor: ICodeEditor,
-		@IModelService private readonly _modelService: IModelService,
-		@IThemeService private readonly _themeService: IThemeService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 	) {
 		super();
 		this._editor = editor;
 		this._tokenizeViewport = new RunOnceScheduler(() => this._tokenizeViewportNow(), 100);
-		this._outstandingRequests = [];
-		this._register(this._editor.onDidScrollChange(() => {
+		this._outstAndingRequests = [];
+		this._register(this._editor.onDidScrollChAnge(() => {
 			this._tokenizeViewport.schedule();
 		}));
-		this._register(this._editor.onDidChangeModel(() => {
-			this._cancelAll();
+		this._register(this._editor.onDidChAngeModel(() => {
+			this._cAncelAll();
 			this._tokenizeViewport.schedule();
 		}));
-		this._register(this._editor.onDidChangeModelContent((e) => {
-			this._cancelAll();
+		this._register(this._editor.onDidChAngeModelContent((e) => {
+			this._cAncelAll();
 			this._tokenizeViewport.schedule();
 		}));
-		this._register(DocumentRangeSemanticTokensProviderRegistry.onDidChange(() => {
-			this._cancelAll();
+		this._register(DocumentRAngeSemAnticTokensProviderRegistry.onDidChAnge(() => {
+			this._cAncelAll();
 			this._tokenizeViewport.schedule();
 		}));
-		this._register(this._configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration(SEMANTIC_HIGHLIGHTING_SETTING_ID)) {
-				this._cancelAll();
+		this._register(this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion(SEMANTIC_HIGHLIGHTING_SETTING_ID)) {
+				this._cAncelAll();
 				this._tokenizeViewport.schedule();
 			}
 		}));
-		this._register(this._themeService.onDidColorThemeChange(() => {
-			this._cancelAll();
+		this._register(this._themeService.onDidColorThemeChAnge(() => {
+			this._cAncelAll();
 			this._tokenizeViewport.schedule();
 		}));
 	}
 
-	private static _getSemanticColoringProvider(model: ITextModel): DocumentRangeSemanticTokensProvider | null {
-		const result = DocumentRangeSemanticTokensProviderRegistry.ordered(model);
+	privAte stAtic _getSemAnticColoringProvider(model: ITextModel): DocumentRAngeSemAnticTokensProvider | null {
+		const result = DocumentRAngeSemAnticTokensProviderRegistry.ordered(model);
 		return (result.length > 0 ? result[0] : null);
 	}
 
-	private _cancelAll(): void {
-		for (const request of this._outstandingRequests) {
-			request.cancel();
+	privAte _cAncelAll(): void {
+		for (const request of this._outstAndingRequests) {
+			request.cAncel();
 		}
-		this._outstandingRequests = [];
+		this._outstAndingRequests = [];
 	}
 
-	private _removeOutstandingRequest(req: CancelablePromise<SemanticTokens | null | undefined>): void {
-		for (let i = 0, len = this._outstandingRequests.length; i < len; i++) {
-			if (this._outstandingRequests[i] === req) {
-				this._outstandingRequests.splice(i, 1);
+	privAte _removeOutstAndingRequest(req: CAncelAblePromise<SemAnticTokens | null | undefined>): void {
+		for (let i = 0, len = this._outstAndingRequests.length; i < len; i++) {
+			if (this._outstAndingRequests[i] === req) {
+				this._outstAndingRequests.splice(i, 1);
 				return;
 			}
 		}
 	}
 
-	private _tokenizeViewportNow(): void {
-		if (!this._editor.hasModel()) {
+	privAte _tokenizeViewportNow(): void {
+		if (!this._editor.hAsModel()) {
 			return;
 		}
 		const model = this._editor.getModel();
-		if (model.hasSemanticTokens()) {
+		if (model.hAsSemAnticTokens()) {
 			return;
 		}
-		if (!isSemanticColoringEnabled(model, this._themeService, this._configurationService)) {
+		if (!isSemAnticColoringEnAbled(model, this._themeService, this._configurAtionService)) {
 			return;
 		}
-		const provider = ViewportSemanticTokensContribution._getSemanticColoringProvider(model);
+		const provider = ViewportSemAnticTokensContribution._getSemAnticColoringProvider(model);
 		if (!provider) {
 			return;
 		}
-		const styling = this._modelService.getSemanticTokensProviderStyling(provider);
-		const visibleRanges = this._editor.getVisibleRangesPlusViewportAboveBelow();
+		const styling = this._modelService.getSemAnticTokensProviderStyling(provider);
+		const visibleRAnges = this._editor.getVisibleRAngesPlusViewportAboveBelow();
 
-		this._outstandingRequests = this._outstandingRequests.concat(visibleRanges.map(range => this._requestRange(model, range, provider, styling)));
+		this._outstAndingRequests = this._outstAndingRequests.concAt(visibleRAnges.mAp(rAnge => this._requestRAnge(model, rAnge, provider, styling)));
 	}
 
-	private _requestRange(model: ITextModel, range: Range, provider: DocumentRangeSemanticTokensProvider, styling: SemanticTokensProviderStyling): CancelablePromise<SemanticTokens | null | undefined> {
+	privAte _requestRAnge(model: ITextModel, rAnge: RAnge, provider: DocumentRAngeSemAnticTokensProvider, styling: SemAnticTokensProviderStyling): CAncelAblePromise<SemAnticTokens | null | undefined> {
 		const requestVersionId = model.getVersionId();
-		const request = createCancelablePromise(token => Promise.resolve(provider.provideDocumentRangeSemanticTokens(model, range, token)));
+		const request = creAteCAncelAblePromise(token => Promise.resolve(provider.provideDocumentRAngeSemAnticTokens(model, rAnge, token)));
 		request.then((r) => {
 			if (!r || model.isDisposed() || model.getVersionId() !== requestVersionId) {
 				return;
 			}
-			model.setPartialSemanticTokens(range, toMultilineTokens2(r, styling, model.getLanguageIdentifier()));
-		}).then(() => this._removeOutstandingRequest(request), () => this._removeOutstandingRequest(request));
+			model.setPArtiAlSemAnticTokens(rAnge, toMultilineTokens2(r, styling, model.getLAnguAgeIdentifier()));
+		}).then(() => this._removeOutstAndingRequest(request), () => this._removeOutstAndingRequest(request));
 		return request;
 	}
 }
 
-registerEditorContribution(ViewportSemanticTokensContribution.ID, ViewportSemanticTokensContribution);
+registerEditorContribution(ViewportSemAnticTokensContribution.ID, ViewportSemAnticTokensContribution);

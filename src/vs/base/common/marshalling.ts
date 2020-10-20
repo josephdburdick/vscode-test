@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBuffer } from 'vs/base/common/buffer';
-import { regExpFlags } from 'vs/base/common/strings';
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { regExpFlAgs } from 'vs/bAse/common/strings';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
 
-export function stringify(obj: any): string {
-	return JSON.stringify(obj, replacer);
+export function stringify(obj: Any): string {
+	return JSON.stringify(obj, replAcer);
 }
 
-export function parse(text: string): any {
-	let data = JSON.parse(text);
-	data = revive(data);
-	return data;
+export function pArse(text: string): Any {
+	let dAtA = JSON.pArse(text);
+	dAtA = revive(dAtA);
+	return dAtA;
 }
 
-export interface MarshalledObject {
+export interfAce MArshAlledObject {
 	$mid: number;
 }
 
-function replacer(key: string, value: any): any {
-	// URI is done via toJSON-member
-	if (value instanceof RegExp) {
+function replAcer(key: string, vAlue: Any): Any {
+	// URI is done viA toJSON-member
+	if (vAlue instAnceof RegExp) {
 		return {
 			$mid: 2,
-			source: value.source,
-			flags: regExpFlags(value),
+			source: vAlue.source,
+			flAgs: regExpFlAgs(vAlue),
 		};
 	}
-	return value;
+	return vAlue;
 }
 
 
-type Deserialize<T> = T extends UriComponents ? URI
+type DeseriAlize<T> = T extends UriComponents ? URI
 	: T extends object
 	? Revived<T>
 	: T;
 
-export type Revived<T> = { [K in keyof T]: Deserialize<T[K]> };
+export type Revived<T> = { [K in keyof T]: DeseriAlize<T[K]> };
 
-export function revive<T = any>(obj: any, depth = 0): Revived<T> {
+export function revive<T = Any>(obj: Any, depth = 0): Revived<T> {
 	if (!obj || depth > 200) {
 		return obj;
 	}
 
 	if (typeof obj === 'object') {
 
-		switch ((<MarshalledObject>obj).$mid) {
-			case 1: return <any>URI.revive(obj);
-			case 2: return <any>new RegExp(obj.source, obj.flags);
+		switch ((<MArshAlledObject>obj).$mid) {
+			cAse 1: return <Any>URI.revive(obj);
+			cAse 2: return <Any>new RegExp(obj.source, obj.flAgs);
 		}
 
 		if (
-			obj instanceof VSBuffer
-			|| obj instanceof Uint8Array
+			obj instAnceof VSBuffer
+			|| obj instAnceof Uint8ArrAy
 		) {
-			return <any>obj;
+			return <Any>obj;
 		}
 
-		if (Array.isArray(obj)) {
+		if (ArrAy.isArrAy(obj)) {
 			for (let i = 0; i < obj.length; ++i) {
 				obj[i] = revive(obj[i], depth + 1);
 			}
 		} else {
-			// walk object
+			// wAlk object
 			for (const key in obj) {
-				if (Object.hasOwnProperty.call(obj, key)) {
+				if (Object.hAsOwnProperty.cAll(obj, key)) {
 					obj[key] = revive(obj[key], depth + 1);
 				}
 			}

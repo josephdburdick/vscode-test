@@ -1,69 +1,69 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { EditorModel } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
-import { MIME_BINARY } from 'vs/base/common/mime';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { MIME_BINARY } from 'vs/bAse/common/mime';
 
 /**
- * An editor model that just represents a resource that can be loaded.
+ * An editor model thAt just represents A resource thAt cAn be loAded.
  */
-export class BinaryEditorModel extends EditorModel {
-	private size: number | undefined;
-	private etag: string | undefined;
-	private readonly mime: string;
+export clAss BinAryEditorModel extends EditorModel {
+	privAte size: number | undefined;
+	privAte etAg: string | undefined;
+	privAte reAdonly mime: string;
 
 	constructor(
-		public readonly resource: URI,
-		private readonly name: string,
-		@IFileService private readonly fileService: IFileService
+		public reAdonly resource: URI,
+		privAte reAdonly nAme: string,
+		@IFileService privAte reAdonly fileService: IFileService
 	) {
 		super();
 
 		this.resource = resource;
-		this.name = name;
+		this.nAme = nAme;
 		this.mime = MIME_BINARY;
 	}
 
 	/**
-	 * The name of the binary resource.
+	 * The nAme of the binAry resource.
 	 */
-	getName(): string {
-		return this.name;
+	getNAme(): string {
+		return this.nAme;
 	}
 
 	/**
-	 * The size of the binary resource if known.
+	 * The size of the binAry resource if known.
 	 */
 	getSize(): number | undefined {
 		return this.size;
 	}
 
 	/**
-	 * The mime of the binary resource if known.
+	 * The mime of the binAry resource if known.
 	 */
 	getMime(): string {
 		return this.mime;
 	}
 
 	/**
-	 * The etag of the binary resource if known.
+	 * The etAg of the binAry resource if known.
 	 */
-	getETag(): string | undefined {
-		return this.etag;
+	getETAg(): string | undefined {
+		return this.etAg;
 	}
 
-	async load(): Promise<BinaryEditorModel> {
+	Async loAd(): Promise<BinAryEditorModel> {
 
-		// Make sure to resolve up to date stat for file resources
-		if (this.fileService.canHandleResource(this.resource)) {
-			const stat = await this.fileService.resolve(this.resource, { resolveMetadata: true });
-			this.etag = stat.etag;
-			if (typeof stat.size === 'number') {
-				this.size = stat.size;
+		// MAke sure to resolve up to dAte stAt for file resources
+		if (this.fileService.cAnHAndleResource(this.resource)) {
+			const stAt = AwAit this.fileService.resolve(this.resource, { resolveMetAdAtA: true });
+			this.etAg = stAt.etAg;
+			if (typeof stAt.size === 'number') {
+				this.size = stAt.size;
 			}
 		}
 

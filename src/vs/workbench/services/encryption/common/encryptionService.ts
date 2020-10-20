@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ICommonEncryptionService } from 'vs/platform/encryption/common/encryptionService';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICommonEncryptionService } from 'vs/plAtform/encryption/common/encryptionService';
 
-export const IEncryptionService = createDecorator<IEncryptionService>('encryptionService');
+export const IEncryptionService = creAteDecorAtor<IEncryptionService>('encryptionService');
 
-export interface IEncryptionService extends ICommonEncryptionService { }
+export interfAce IEncryptionService extends ICommonEncryptionService { }

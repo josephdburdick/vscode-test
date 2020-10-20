@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export function onceDocumentLoaded(f: () => void) {
-	if (document.readyState === 'loading' || document.readyState as string === 'uninitialized') {
-		document.addEventListener('DOMContentLoaded', f);
+export function onceDocumentLoAded(f: () => void) {
+	if (document.reAdyStAte === 'loAding' || document.reAdyStAte As string === 'uninitiAlized') {
+		document.AddEventListener('DOMContentLoAded', f);
 	} else {
 		f();
 	}

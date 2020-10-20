@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as browser from 'vs/base/browser/browser';
-import { KeyCode, KeyCodeUtils, KeyMod, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import * as platform from 'vs/base/common/platform';
+import * As browser from 'vs/bAse/browser/browser';
+import { KeyCode, KeyCodeUtils, KeyMod, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import * As plAtform from 'vs/bAse/common/plAtform';
 
-let KEY_CODE_MAP: { [keyCode: number]: KeyCode } = new Array(230);
-let INVERSE_KEY_CODE_MAP: KeyCode[] = new Array(KeyCode.MAX_VALUE);
+let KEY_CODE_MAP: { [keyCode: number]: KeyCode } = new ArrAy(230);
+let INVERSE_KEY_CODE_MAP: KeyCode[] = new ArrAy(KeyCode.MAX_VALUE);
 
 (function () {
 	for (let i = 0; i < INVERSE_KEY_CODE_MAP.length; i++) {
@@ -20,19 +20,19 @@ let INVERSE_KEY_CODE_MAP: KeyCode[] = new Array(KeyCode.MAX_VALUE);
 		INVERSE_KEY_CODE_MAP[keyCode] = code;
 	}
 
-	define(3, KeyCode.PauseBreak); // VK_CANCEL 0x03 Control-break processing
-	define(8, KeyCode.Backspace);
-	define(9, KeyCode.Tab);
+	define(3, KeyCode.PAuseBreAk); // VK_CANCEL 0x03 Control-breAk processing
+	define(8, KeyCode.BAckspAce);
+	define(9, KeyCode.TAb);
 	define(13, KeyCode.Enter);
 	define(16, KeyCode.Shift);
 	define(17, KeyCode.Ctrl);
 	define(18, KeyCode.Alt);
-	define(19, KeyCode.PauseBreak);
-	define(20, KeyCode.CapsLock);
-	define(27, KeyCode.Escape);
-	define(32, KeyCode.Space);
-	define(33, KeyCode.PageUp);
-	define(34, KeyCode.PageDown);
+	define(19, KeyCode.PAuseBreAk);
+	define(20, KeyCode.CApsLock);
+	define(27, KeyCode.EscApe);
+	define(32, KeyCode.SpAce);
+	define(33, KeyCode.PAgeUp);
+	define(34, KeyCode.PAgeDown);
 	define(35, KeyCode.End);
 	define(36, KeyCode.Home);
 	define(37, KeyCode.LeftArrow);
@@ -140,8 +140,8 @@ let INVERSE_KEY_CODE_MAP: KeyCode[] = new Array(KeyCode.MAX_VALUE);
 	define(226, KeyCode.OEM_102);
 
 	/**
-	 * https://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html
-	 * If an Input Method Editor is processing key input and the event is keydown, return 229.
+	 * https://lists.w3.org/Archives/Public/www-dom/2010JulSep/Att-0182/keyCode-spec.html
+	 * If An Input Method Editor is processing key input And the event is keydown, return 229.
 	 */
 	define(229, KeyCode.KEY_IN_COMPOSITION);
 
@@ -149,25 +149,25 @@ let INVERSE_KEY_CODE_MAP: KeyCode[] = new Array(KeyCode.MAX_VALUE);
 		define(59, KeyCode.US_SEMICOLON);
 		define(107, KeyCode.US_EQUAL);
 		define(109, KeyCode.US_MINUS);
-		if (platform.isMacintosh) {
-			define(224, KeyCode.Meta);
+		if (plAtform.isMAcintosh) {
+			define(224, KeyCode.MetA);
 		}
 	} else if (browser.isWebKit) {
-		define(91, KeyCode.Meta);
-		if (platform.isMacintosh) {
-			// the two meta keys in the Mac have different key codes (91 and 93)
-			define(93, KeyCode.Meta);
+		define(91, KeyCode.MetA);
+		if (plAtform.isMAcintosh) {
+			// the two metA keys in the MAc hAve different key codes (91 And 93)
+			define(93, KeyCode.MetA);
 		} else {
-			define(92, KeyCode.Meta);
+			define(92, KeyCode.MetA);
 		}
 	}
 })();
 
-function extractKeyCode(e: KeyboardEvent): KeyCode {
-	if (e.charCode) {
+function extrActKeyCode(e: KeyboArdEvent): KeyCode {
+	if (e.chArCode) {
 		// "keypress" events mostly
-		let char = String.fromCharCode(e.charCode).toUpperCase();
-		return KeyCodeUtils.fromString(char);
+		let chAr = String.fromChArCode(e.chArCode).toUpperCAse();
+		return KeyCodeUtils.fromString(chAr);
 	}
 	return KEY_CODE_MAP[e.keyCode] || KeyCode.Unknown;
 }
@@ -176,36 +176,36 @@ export function getCodeForKeyCode(keyCode: KeyCode): number {
 	return INVERSE_KEY_CODE_MAP[keyCode];
 }
 
-export interface IKeyboardEvent {
+export interfAce IKeyboArdEvent {
 
-	readonly _standardKeyboardEventBrand: true;
+	reAdonly _stAndArdKeyboArdEventBrAnd: true;
 
-	readonly browserEvent: KeyboardEvent;
-	readonly target: HTMLElement;
+	reAdonly browserEvent: KeyboArdEvent;
+	reAdonly tArget: HTMLElement;
 
-	readonly ctrlKey: boolean;
-	readonly shiftKey: boolean;
-	readonly altKey: boolean;
-	readonly metaKey: boolean;
-	readonly keyCode: KeyCode;
-	readonly code: string;
+	reAdonly ctrlKey: booleAn;
+	reAdonly shiftKey: booleAn;
+	reAdonly AltKey: booleAn;
+	reAdonly metAKey: booleAn;
+	reAdonly keyCode: KeyCode;
+	reAdonly code: string;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	toKeybinding(): SimpleKeybinding;
-	equals(keybinding: number): boolean;
+	equAls(keybinding: number): booleAn;
 
-	preventDefault(): void;
-	stopPropagation(): void;
+	preventDefAult(): void;
+	stopPropAgAtion(): void;
 }
 
-const ctrlKeyMod = (platform.isMacintosh ? KeyMod.WinCtrl : KeyMod.CtrlCmd);
-const altKeyMod = KeyMod.Alt;
+const ctrlKeyMod = (plAtform.isMAcintosh ? KeyMod.WinCtrl : KeyMod.CtrlCmd);
+const AltKeyMod = KeyMod.Alt;
 const shiftKeyMod = KeyMod.Shift;
-const metaKeyMod = (platform.isMacintosh ? KeyMod.CtrlCmd : KeyMod.WinCtrl);
+const metAKeyMod = (plAtform.isMAcintosh ? KeyMod.CtrlCmd : KeyMod.WinCtrl);
 
-export function printKeyboardEvent(e: KeyboardEvent): string {
+export function printKeyboArdEvent(e: KeyboArdEvent): string {
 	let modifiers: string[] = [];
 	if (e.ctrlKey) {
 		modifiers.push(`ctrl`);
@@ -213,16 +213,16 @@ export function printKeyboardEvent(e: KeyboardEvent): string {
 	if (e.shiftKey) {
 		modifiers.push(`shift`);
 	}
-	if (e.altKey) {
-		modifiers.push(`alt`);
+	if (e.AltKey) {
+		modifiers.push(`Alt`);
 	}
-	if (e.metaKey) {
-		modifiers.push(`meta`);
+	if (e.metAKey) {
+		modifiers.push(`metA`);
 	}
 	return `modifiers: [${modifiers.join(',')}], code: ${e.code}, keyCode: ${e.keyCode}, key: ${e.key}`;
 }
 
-export function printStandardKeyboardEvent(e: StandardKeyboardEvent): string {
+export function printStAndArdKeyboArdEvent(e: StAndArdKeyboArdEvent): string {
 	let modifiers: string[] = [];
 	if (e.ctrlKey) {
 		modifiers.push(`ctrl`);
@@ -230,81 +230,81 @@ export function printStandardKeyboardEvent(e: StandardKeyboardEvent): string {
 	if (e.shiftKey) {
 		modifiers.push(`shift`);
 	}
-	if (e.altKey) {
-		modifiers.push(`alt`);
+	if (e.AltKey) {
+		modifiers.push(`Alt`);
 	}
-	if (e.metaKey) {
-		modifiers.push(`meta`);
+	if (e.metAKey) {
+		modifiers.push(`metA`);
 	}
 	return `modifiers: [${modifiers.join(',')}], code: ${e.code}, keyCode: ${e.keyCode} ('${KeyCodeUtils.toString(e.keyCode)}')`;
 }
 
-export class StandardKeyboardEvent implements IKeyboardEvent {
+export clAss StAndArdKeyboArdEvent implements IKeyboArdEvent {
 
-	readonly _standardKeyboardEventBrand = true;
+	reAdonly _stAndArdKeyboArdEventBrAnd = true;
 
-	public readonly browserEvent: KeyboardEvent;
-	public readonly target: HTMLElement;
+	public reAdonly browserEvent: KeyboArdEvent;
+	public reAdonly tArget: HTMLElement;
 
-	public readonly ctrlKey: boolean;
-	public readonly shiftKey: boolean;
-	public readonly altKey: boolean;
-	public readonly metaKey: boolean;
-	public readonly keyCode: KeyCode;
-	public readonly code: string;
+	public reAdonly ctrlKey: booleAn;
+	public reAdonly shiftKey: booleAn;
+	public reAdonly AltKey: booleAn;
+	public reAdonly metAKey: booleAn;
+	public reAdonly keyCode: KeyCode;
+	public reAdonly code: string;
 
-	private _asKeybinding: number;
-	private _asRuntimeKeybinding: SimpleKeybinding;
+	privAte _AsKeybinding: number;
+	privAte _AsRuntimeKeybinding: SimpleKeybinding;
 
-	constructor(source: KeyboardEvent) {
+	constructor(source: KeyboArdEvent) {
 		let e = source;
 
 		this.browserEvent = e;
-		this.target = <HTMLElement>e.target;
+		this.tArget = <HTMLElement>e.tArget;
 
 		this.ctrlKey = e.ctrlKey;
 		this.shiftKey = e.shiftKey;
-		this.altKey = e.altKey;
-		this.metaKey = e.metaKey;
-		this.keyCode = extractKeyCode(e);
+		this.AltKey = e.AltKey;
+		this.metAKey = e.metAKey;
+		this.keyCode = extrActKeyCode(e);
 		this.code = e.code;
 
-		// console.info(e.type + ": keyCode: " + e.keyCode + ", which: " + e.which + ", charCode: " + e.charCode + ", detail: " + e.detail + " ====> " + this.keyCode + ' -- ' + KeyCode[this.keyCode]);
+		// console.info(e.type + ": keyCode: " + e.keyCode + ", which: " + e.which + ", chArCode: " + e.chArCode + ", detAil: " + e.detAil + " ====> " + this.keyCode + ' -- ' + KeyCode[this.keyCode]);
 
 		this.ctrlKey = this.ctrlKey || this.keyCode === KeyCode.Ctrl;
-		this.altKey = this.altKey || this.keyCode === KeyCode.Alt;
+		this.AltKey = this.AltKey || this.keyCode === KeyCode.Alt;
 		this.shiftKey = this.shiftKey || this.keyCode === KeyCode.Shift;
-		this.metaKey = this.metaKey || this.keyCode === KeyCode.Meta;
+		this.metAKey = this.metAKey || this.keyCode === KeyCode.MetA;
 
-		this._asKeybinding = this._computeKeybinding();
-		this._asRuntimeKeybinding = this._computeRuntimeKeybinding();
+		this._AsKeybinding = this._computeKeybinding();
+		this._AsRuntimeKeybinding = this._computeRuntimeKeybinding();
 
 		// console.log(`code: ${e.code}, keyCode: ${e.keyCode}, key: ${e.key}`);
 	}
 
-	public preventDefault(): void {
-		if (this.browserEvent && this.browserEvent.preventDefault) {
-			this.browserEvent.preventDefault();
+	public preventDefAult(): void {
+		if (this.browserEvent && this.browserEvent.preventDefAult) {
+			this.browserEvent.preventDefAult();
 		}
 	}
 
-	public stopPropagation(): void {
-		if (this.browserEvent && this.browserEvent.stopPropagation) {
-			this.browserEvent.stopPropagation();
+	public stopPropAgAtion(): void {
+		if (this.browserEvent && this.browserEvent.stopPropAgAtion) {
+			this.browserEvent.stopPropAgAtion();
 		}
 	}
 
 	public toKeybinding(): SimpleKeybinding {
-		return this._asRuntimeKeybinding;
+		return this._AsRuntimeKeybinding;
 	}
 
-	public equals(other: number): boolean {
-		return this._asKeybinding === other;
+	public equAls(other: number): booleAn {
+		return this._AsKeybinding === other;
 	}
 
-	private _computeKeybinding(): number {
+	privAte _computeKeybinding(): number {
 		let key = KeyCode.Unknown;
-		if (this.keyCode !== KeyCode.Ctrl && this.keyCode !== KeyCode.Shift && this.keyCode !== KeyCode.Alt && this.keyCode !== KeyCode.Meta) {
+		if (this.keyCode !== KeyCode.Ctrl && this.keyCode !== KeyCode.Shift && this.keyCode !== KeyCode.Alt && this.keyCode !== KeyCode.MetA) {
 			key = this.keyCode;
 		}
 
@@ -312,25 +312,25 @@ export class StandardKeyboardEvent implements IKeyboardEvent {
 		if (this.ctrlKey) {
 			result |= ctrlKeyMod;
 		}
-		if (this.altKey) {
-			result |= altKeyMod;
+		if (this.AltKey) {
+			result |= AltKeyMod;
 		}
 		if (this.shiftKey) {
 			result |= shiftKeyMod;
 		}
-		if (this.metaKey) {
-			result |= metaKeyMod;
+		if (this.metAKey) {
+			result |= metAKeyMod;
 		}
 		result |= key;
 
 		return result;
 	}
 
-	private _computeRuntimeKeybinding(): SimpleKeybinding {
+	privAte _computeRuntimeKeybinding(): SimpleKeybinding {
 		let key = KeyCode.Unknown;
-		if (this.keyCode !== KeyCode.Ctrl && this.keyCode !== KeyCode.Shift && this.keyCode !== KeyCode.Alt && this.keyCode !== KeyCode.Meta) {
+		if (this.keyCode !== KeyCode.Ctrl && this.keyCode !== KeyCode.Shift && this.keyCode !== KeyCode.Alt && this.keyCode !== KeyCode.MetA) {
 			key = this.keyCode;
 		}
-		return new SimpleKeybinding(this.ctrlKey, this.shiftKey, this.altKey, this.metaKey, key);
+		return new SimpleKeybinding(this.ctrlKey, this.shiftKey, this.AltKey, this.metAKey, key);
 	}
 }

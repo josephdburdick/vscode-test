@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriComponents } from 'vs/base/common/uri';
-import { ProcessItem } from 'vs/base/common/processes';
-import { IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { UriComponents } from 'vs/bAse/common/uri';
+import { ProcessItem } from 'vs/bAse/common/processes';
+import { IWorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
 
-export interface IMachineInfo {
+export interfAce IMAchineInfo {
 	os: string;
 	cpus?: string;
 	memory: string;
@@ -16,64 +16,64 @@ export interface IMachineInfo {
 	linuxEnv?: ILinuxEnv;
 }
 
-export interface ILinuxEnv {
+export interfAce ILinuxEnv {
 	desktopSession?: string;
 	xdgSessionDesktop?: string;
 	xdgCurrentDesktop?: string;
 	xdgSessionType?: string;
 }
 
-export interface IDiagnosticInfo {
-	machineInfo: IMachineInfo;
-	workspaceMetadata?: IStringDictionary<WorkspaceStats>;
+export interfAce IDiAgnosticInfo {
+	mAchineInfo: IMAchineInfo;
+	workspAceMetAdAtA?: IStringDictionAry<WorkspAceStAts>;
 	processes?: ProcessItem;
 }
-export interface SystemInfo extends IMachineInfo {
+export interfAce SystemInfo extends IMAchineInfo {
 	processArgs: string;
-	gpuStatus: any;
-	screenReader: string;
-	remoteData: (IRemoteDiagnosticInfo | IRemoteDiagnosticError)[];
-	load?: string;
+	gpuStAtus: Any;
+	screenReAder: string;
+	remoteDAtA: (IRemoteDiAgnosticInfo | IRemoteDiAgnosticError)[];
+	loAd?: string;
 }
 
-export interface IRemoteDiagnosticInfo extends IDiagnosticInfo {
-	hostName: string;
+export interfAce IRemoteDiAgnosticInfo extends IDiAgnosticInfo {
+	hostNAme: string;
 }
 
-export interface IRemoteDiagnosticError {
-	hostName: string;
-	errorMessage: string;
+export interfAce IRemoteDiAgnosticError {
+	hostNAme: string;
+	errorMessAge: string;
 }
 
-export interface IDiagnosticInfoOptions {
-	includeProcesses?: boolean;
+export interfAce IDiAgnosticInfoOptions {
+	includeProcesses?: booleAn;
 	folders?: UriComponents[];
-	includeExtensions?: boolean;
+	includeExtensions?: booleAn;
 }
 
-export interface WorkspaceStatItem {
-	name: string;
+export interfAce WorkspAceStAtItem {
+	nAme: string;
 	count: number;
 }
 
-export interface WorkspaceStats {
-	fileTypes: WorkspaceStatItem[];
-	configFiles: WorkspaceStatItem[];
+export interfAce WorkspAceStAts {
+	fileTypes: WorkspAceStAtItem[];
+	configFiles: WorkspAceStAtItem[];
 	fileCount: number;
-	maxFilesReached: boolean;
-	launchConfigFiles: WorkspaceStatItem[];
+	mAxFilesReAched: booleAn;
+	lAunchConfigFiles: WorkspAceStAtItem[];
 }
 
-export interface PerformanceInfo {
+export interfAce PerformAnceInfo {
 	processInfo?: string;
-	workspaceInfo?: string;
+	workspAceInfo?: string;
 }
 
-export interface IWorkspaceInformation extends IWorkspace {
+export interfAce IWorkspAceInformAtion extends IWorkspAce {
 	telemetryId: string | undefined;
 	rendererSessionId: string;
 }
 
-export function isRemoteDiagnosticError(x: any): x is IRemoteDiagnosticError {
-	return !!x.hostName && !!x.errorMessage;
+export function isRemoteDiAgnosticError(x: Any): x is IRemoteDiAgnosticError {
+	return !!x.hostNAme && !!x.errorMessAge;
 }

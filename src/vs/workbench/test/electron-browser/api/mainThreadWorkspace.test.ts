@@ -1,101 +1,101 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { workbenchInstantiationService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { ISearchService, IFileQuery } from 'vs/workbench/services/search/common/search';
-import { MainThreadWorkspace } from 'vs/workbench/api/browser/mainThreadWorkspace';
-import * as assert from 'assert';
-import { SingleProxyRPCProtocol } from 'vs/workbench/test/browser/api/testRPCProtocol';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
+import { workbenchInstAntiAtionService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { ISeArchService, IFileQuery } from 'vs/workbench/services/seArch/common/seArch';
+import { MAinThreAdWorkspAce } from 'vs/workbench/Api/browser/mAinThreAdWorkspAce';
+import * As Assert from 'Assert';
+import { SingleProxyRPCProtocol } from 'vs/workbench/test/browser/Api/testRPCProtocol';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
 
-suite('MainThreadWorkspace', () => {
+suite('MAinThreAdWorkspAce', () => {
 
-	let configService: TestConfigurationService;
-	let instantiationService: TestInstantiationService;
+	let configService: TestConfigurAtionService;
+	let instAntiAtionService: TestInstAntiAtionService;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService() as TestInstantiationService;
+		instAntiAtionService = workbenchInstAntiAtionService() As TestInstAntiAtionService;
 
-		configService = instantiationService.get(IConfigurationService) as TestConfigurationService;
-		configService.setUserConfiguration('search', {});
+		configService = instAntiAtionService.get(IConfigurAtionService) As TestConfigurAtionService;
+		configService.setUserConfigurAtion('seArch', {});
 	});
 
 	test('simple', () => {
-		instantiationService.stub(ISearchService, {
-			fileSearch(query: IFileQuery) {
-				assert.equal(query.folderQueries.length, 1);
-				assert.equal(query.folderQueries[0].disregardIgnoreFiles, true);
+		instAntiAtionService.stub(ISeArchService, {
+			fileSeArch(query: IFileQuery) {
+				Assert.equAl(query.folderQueries.length, 1);
+				Assert.equAl(query.folderQueries[0].disregArdIgnoreFiles, true);
 
-				assert.deepEqual(query.includePattern, { 'foo': true });
-				assert.equal(query.maxResults, 10);
+				Assert.deepEquAl(query.includePAttern, { 'foo': true });
+				Assert.equAl(query.mAxResults, 10);
 
 				return Promise.resolve({ results: [] });
 			}
 		});
 
-		const mtw: MainThreadWorkspace = instantiationService.createInstance(<any>MainThreadWorkspace, SingleProxyRPCProtocol({ $initializeWorkspace: () => { } }));
-		return mtw.$startFileSearch('foo', null, null, 10, new CancellationTokenSource().token);
+		const mtw: MAinThreAdWorkspAce = instAntiAtionService.creAteInstAnce(<Any>MAinThreAdWorkspAce, SingleProxyRPCProtocol({ $initiAlizeWorkspAce: () => { } }));
+		return mtw.$stArtFileSeArch('foo', null, null, 10, new CAncellAtionTokenSource().token);
 	});
 
-	test('exclude defaults', () => {
-		configService.setUserConfiguration('search', {
-			'exclude': { 'searchExclude': true }
+	test('exclude defAults', () => {
+		configService.setUserConfigurAtion('seArch', {
+			'exclude': { 'seArchExclude': true }
 		});
-		configService.setUserConfiguration('files', {
+		configService.setUserConfigurAtion('files', {
 			'exclude': { 'filesExclude': true }
 		});
 
-		instantiationService.stub(ISearchService, {
-			fileSearch(query: IFileQuery) {
-				assert.equal(query.folderQueries.length, 1);
-				assert.equal(query.folderQueries[0].disregardIgnoreFiles, true);
-				assert.deepEqual(query.folderQueries[0].excludePattern, { 'filesExclude': true });
+		instAntiAtionService.stub(ISeArchService, {
+			fileSeArch(query: IFileQuery) {
+				Assert.equAl(query.folderQueries.length, 1);
+				Assert.equAl(query.folderQueries[0].disregArdIgnoreFiles, true);
+				Assert.deepEquAl(query.folderQueries[0].excludePAttern, { 'filesExclude': true });
 
 				return Promise.resolve({ results: [] });
 			}
 		});
 
-		const mtw: MainThreadWorkspace = instantiationService.createInstance(<any>MainThreadWorkspace, SingleProxyRPCProtocol({ $initializeWorkspace: () => { } }));
-		return mtw.$startFileSearch('', null, null, 10, new CancellationTokenSource().token);
+		const mtw: MAinThreAdWorkspAce = instAntiAtionService.creAteInstAnce(<Any>MAinThreAdWorkspAce, SingleProxyRPCProtocol({ $initiAlizeWorkspAce: () => { } }));
+		return mtw.$stArtFileSeArch('', null, null, 10, new CAncellAtionTokenSource().token);
 	});
 
-	test('disregard excludes', () => {
-		configService.setUserConfiguration('search', {
-			'exclude': { 'searchExclude': true }
+	test('disregArd excludes', () => {
+		configService.setUserConfigurAtion('seArch', {
+			'exclude': { 'seArchExclude': true }
 		});
-		configService.setUserConfiguration('files', {
+		configService.setUserConfigurAtion('files', {
 			'exclude': { 'filesExclude': true }
 		});
 
-		instantiationService.stub(ISearchService, {
-			fileSearch(query: IFileQuery) {
-				assert.equal(query.folderQueries[0].excludePattern, undefined);
-				assert.deepEqual(query.excludePattern, undefined);
+		instAntiAtionService.stub(ISeArchService, {
+			fileSeArch(query: IFileQuery) {
+				Assert.equAl(query.folderQueries[0].excludePAttern, undefined);
+				Assert.deepEquAl(query.excludePAttern, undefined);
 
 				return Promise.resolve({ results: [] });
 			}
 		});
 
-		const mtw: MainThreadWorkspace = instantiationService.createInstance(<any>MainThreadWorkspace, SingleProxyRPCProtocol({ $initializeWorkspace: () => { } }));
-		return mtw.$startFileSearch('', null, false, 10, new CancellationTokenSource().token);
+		const mtw: MAinThreAdWorkspAce = instAntiAtionService.creAteInstAnce(<Any>MAinThreAdWorkspAce, SingleProxyRPCProtocol({ $initiAlizeWorkspAce: () => { } }));
+		return mtw.$stArtFileSeArch('', null, fAlse, 10, new CAncellAtionTokenSource().token);
 	});
 
 	test('exclude string', () => {
-		instantiationService.stub(ISearchService, {
-			fileSearch(query: IFileQuery) {
-				assert.equal(query.folderQueries[0].excludePattern, undefined);
-				assert.deepEqual(query.excludePattern, { 'exclude/**': true });
+		instAntiAtionService.stub(ISeArchService, {
+			fileSeArch(query: IFileQuery) {
+				Assert.equAl(query.folderQueries[0].excludePAttern, undefined);
+				Assert.deepEquAl(query.excludePAttern, { 'exclude/**': true });
 
 				return Promise.resolve({ results: [] });
 			}
 		});
 
-		const mtw: MainThreadWorkspace = instantiationService.createInstance(<any>MainThreadWorkspace, SingleProxyRPCProtocol({ $initializeWorkspace: () => { } }));
-		return mtw.$startFileSearch('', null, 'exclude/**', 10, new CancellationTokenSource().token);
+		const mtw: MAinThreAdWorkspAce = instAntiAtionService.creAteInstAnce(<Any>MAinThreAdWorkspAce, SingleProxyRPCProtocol({ $initiAlizeWorkspAce: () => { } }));
+		return mtw.$stArtFileSeArch('', null, 'exclude/**', 10, new CAncellAtionTokenSource().token);
 	});
 });

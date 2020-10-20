@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as platform from 'vs/base/common/platform';
-import { EditorOptions, ValidatedEditorOptions, EditorOption } from 'vs/editor/common/config/editorOptions';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { EditorOptions, VAlidAtedEditorOptions, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
 
 /**
- * Determined from empirical observations.
- * @internal
+ * Determined from empiricAl observAtions.
+ * @internAl
  */
-const GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
+const GOLDEN_LINE_HEIGHT_RATIO = plAtform.isMAcintosh ? 1.5 : 1.35;
 
 /**
- * @internal
+ * @internAl
  */
 const MINIMUM_LINE_HEIGHT = 8;
 
-export class BareFontInfo {
-	readonly _bareFontInfoBrand: void;
+export clAss BAreFontInfo {
+	reAdonly _bAreFontInfoBrAnd: void;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	public static createFromValidatedSettings(options: ValidatedEditorOptions, zoomLevel: number, ignoreEditorZoom: boolean): BareFontInfo {
-		const fontFamily = options.get(EditorOption.fontFamily);
+	public stAtic creAteFromVAlidAtedSettings(options: VAlidAtedEditorOptions, zoomLevel: number, ignoreEditorZoom: booleAn): BAreFontInfo {
+		const fontFAmily = options.get(EditorOption.fontFAmily);
 		const fontWeight = options.get(EditorOption.fontWeight);
 		const fontSize = options.get(EditorOption.fontSize);
-		const fontFeatureSettings = options.get(EditorOption.fontLigatures);
+		const fontFeAtureSettings = options.get(EditorOption.fontLigAtures);
 		const lineHeight = options.get(EditorOption.lineHeight);
-		const letterSpacing = options.get(EditorOption.letterSpacing);
-		return BareFontInfo._create(fontFamily, fontWeight, fontSize, fontFeatureSettings, lineHeight, letterSpacing, zoomLevel, ignoreEditorZoom);
+		const letterSpAcing = options.get(EditorOption.letterSpAcing);
+		return BAreFontInfo._creAte(fontFAmily, fontWeight, fontSize, fontFeAtureSettings, lineHeight, letterSpAcing, zoomLevel, ignoreEditorZoom);
 	}
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	public static createFromRawSettings(opts: { fontFamily?: string; fontWeight?: string; fontSize?: number; fontLigatures?: boolean | string; lineHeight?: number; letterSpacing?: number; }, zoomLevel: number, ignoreEditorZoom: boolean = false): BareFontInfo {
-		const fontFamily = EditorOptions.fontFamily.validate(opts.fontFamily);
-		const fontWeight = EditorOptions.fontWeight.validate(opts.fontWeight);
-		const fontSize = EditorOptions.fontSize.validate(opts.fontSize);
-		const fontFeatureSettings = EditorOptions.fontLigatures2.validate(opts.fontLigatures);
-		const lineHeight = EditorOptions.lineHeight.validate(opts.lineHeight);
-		const letterSpacing = EditorOptions.letterSpacing.validate(opts.letterSpacing);
-		return BareFontInfo._create(fontFamily, fontWeight, fontSize, fontFeatureSettings, lineHeight, letterSpacing, zoomLevel, ignoreEditorZoom);
+	public stAtic creAteFromRAwSettings(opts: { fontFAmily?: string; fontWeight?: string; fontSize?: number; fontLigAtures?: booleAn | string; lineHeight?: number; letterSpAcing?: number; }, zoomLevel: number, ignoreEditorZoom: booleAn = fAlse): BAreFontInfo {
+		const fontFAmily = EditorOptions.fontFAmily.vAlidAte(opts.fontFAmily);
+		const fontWeight = EditorOptions.fontWeight.vAlidAte(opts.fontWeight);
+		const fontSize = EditorOptions.fontSize.vAlidAte(opts.fontSize);
+		const fontFeAtureSettings = EditorOptions.fontLigAtures2.vAlidAte(opts.fontLigAtures);
+		const lineHeight = EditorOptions.lineHeight.vAlidAte(opts.lineHeight);
+		const letterSpAcing = EditorOptions.letterSpAcing.vAlidAte(opts.letterSpAcing);
+		return BAreFontInfo._creAte(fontFAmily, fontWeight, fontSize, fontFeAtureSettings, lineHeight, letterSpAcing, zoomLevel, ignoreEditorZoom);
 	}
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	private static _create(fontFamily: string, fontWeight: string, fontSize: number, fontFeatureSettings: string, lineHeight: number, letterSpacing: number, zoomLevel: number, ignoreEditorZoom: boolean): BareFontInfo {
+	privAte stAtic _creAte(fontFAmily: string, fontWeight: string, fontSize: number, fontFeAtureSettings: string, lineHeight: number, letterSpAcing: number, zoomLevel: number, ignoreEditorZoom: booleAn): BAreFontInfo {
 		if (lineHeight === 0) {
-			lineHeight = Math.round(GOLDEN_LINE_HEIGHT_RATIO * fontSize);
+			lineHeight = MAth.round(GOLDEN_LINE_HEIGHT_RATIO * fontSize);
 		} else if (lineHeight < MINIMUM_LINE_HEIGHT) {
 			lineHeight = MINIMUM_LINE_HEIGHT;
 		}
@@ -61,133 +61,133 @@ export class BareFontInfo {
 		fontSize *= editorZoomLevelMultiplier;
 		lineHeight *= editorZoomLevelMultiplier;
 
-		return new BareFontInfo({
+		return new BAreFontInfo({
 			zoomLevel: zoomLevel,
-			fontFamily: fontFamily,
+			fontFAmily: fontFAmily,
 			fontWeight: fontWeight,
 			fontSize: fontSize,
-			fontFeatureSettings: fontFeatureSettings,
+			fontFeAtureSettings: fontFeAtureSettings,
 			lineHeight: lineHeight,
-			letterSpacing: letterSpacing
+			letterSpAcing: letterSpAcing
 		});
 	}
 
-	readonly zoomLevel: number;
-	readonly fontFamily: string;
-	readonly fontWeight: string;
-	readonly fontSize: number;
-	readonly fontFeatureSettings: string;
-	readonly lineHeight: number;
-	readonly letterSpacing: number;
+	reAdonly zoomLevel: number;
+	reAdonly fontFAmily: string;
+	reAdonly fontWeight: string;
+	reAdonly fontSize: number;
+	reAdonly fontFeAtureSettings: string;
+	reAdonly lineHeight: number;
+	reAdonly letterSpAcing: number;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	protected constructor(opts: {
 		zoomLevel: number;
-		fontFamily: string;
+		fontFAmily: string;
 		fontWeight: string;
 		fontSize: number;
-		fontFeatureSettings: string;
+		fontFeAtureSettings: string;
 		lineHeight: number;
-		letterSpacing: number;
+		letterSpAcing: number;
 	}) {
 		this.zoomLevel = opts.zoomLevel;
-		this.fontFamily = String(opts.fontFamily);
+		this.fontFAmily = String(opts.fontFAmily);
 		this.fontWeight = String(opts.fontWeight);
 		this.fontSize = opts.fontSize;
-		this.fontFeatureSettings = opts.fontFeatureSettings;
+		this.fontFeAtureSettings = opts.fontFeAtureSettings;
 		this.lineHeight = opts.lineHeight | 0;
-		this.letterSpacing = opts.letterSpacing;
+		this.letterSpAcing = opts.letterSpAcing;
 	}
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	public getId(): string {
-		return this.zoomLevel + '-' + this.fontFamily + '-' + this.fontWeight + '-' + this.fontSize + '-' + this.fontFeatureSettings + '-' + this.lineHeight + '-' + this.letterSpacing;
+		return this.zoomLevel + '-' + this.fontFAmily + '-' + this.fontWeight + '-' + this.fontSize + '-' + this.fontFeAtureSettings + '-' + this.lineHeight + '-' + this.letterSpAcing;
 	}
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	public getMassagedFontFamily(): string {
-		if (/[,"']/.test(this.fontFamily)) {
-			// Looks like the font family might be already escaped
-			return this.fontFamily;
+	public getMAssAgedFontFAmily(): string {
+		if (/[,"']/.test(this.fontFAmily)) {
+			// Looks like the font fAmily might be AlreAdy escAped
+			return this.fontFAmily;
 		}
-		if (/[+ ]/.test(this.fontFamily)) {
-			// Wrap a font family using + or <space> with quotes
-			return `"${this.fontFamily}"`;
+		if (/[+ ]/.test(this.fontFAmily)) {
+			// WrAp A font fAmily using + or <spAce> with quotes
+			return `"${this.fontFAmily}"`;
 		}
 
-		return this.fontFamily;
+		return this.fontFAmily;
 	}
 }
 
-export class FontInfo extends BareFontInfo {
-	readonly _editorStylingBrand: void;
+export clAss FontInfo extends BAreFontInfo {
+	reAdonly _editorStylingBrAnd: void;
 
-	readonly isTrusted: boolean;
-	readonly isMonospace: boolean;
-	readonly typicalHalfwidthCharacterWidth: number;
-	readonly typicalFullwidthCharacterWidth: number;
-	readonly canUseHalfwidthRightwardsArrow: boolean;
-	readonly spaceWidth: number;
-	readonly middotWidth: number;
-	readonly wsmiddotWidth: number;
-	readonly maxDigitWidth: number;
+	reAdonly isTrusted: booleAn;
+	reAdonly isMonospAce: booleAn;
+	reAdonly typicAlHAlfwidthChArActerWidth: number;
+	reAdonly typicAlFullwidthChArActerWidth: number;
+	reAdonly cAnUseHAlfwidthRightwArdsArrow: booleAn;
+	reAdonly spAceWidth: number;
+	reAdonly middotWidth: number;
+	reAdonly wsmiddotWidth: number;
+	reAdonly mAxDigitWidth: number;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	constructor(opts: {
 		zoomLevel: number;
-		fontFamily: string;
+		fontFAmily: string;
 		fontWeight: string;
 		fontSize: number;
-		fontFeatureSettings: string;
+		fontFeAtureSettings: string;
 		lineHeight: number;
-		letterSpacing: number;
-		isMonospace: boolean;
-		typicalHalfwidthCharacterWidth: number;
-		typicalFullwidthCharacterWidth: number;
-		canUseHalfwidthRightwardsArrow: boolean;
-		spaceWidth: number;
+		letterSpAcing: number;
+		isMonospAce: booleAn;
+		typicAlHAlfwidthChArActerWidth: number;
+		typicAlFullwidthChArActerWidth: number;
+		cAnUseHAlfwidthRightwArdsArrow: booleAn;
+		spAceWidth: number;
 		middotWidth: number;
 		wsmiddotWidth: number;
-		maxDigitWidth: number;
-	}, isTrusted: boolean) {
+		mAxDigitWidth: number;
+	}, isTrusted: booleAn) {
 		super(opts);
 		this.isTrusted = isTrusted;
-		this.isMonospace = opts.isMonospace;
-		this.typicalHalfwidthCharacterWidth = opts.typicalHalfwidthCharacterWidth;
-		this.typicalFullwidthCharacterWidth = opts.typicalFullwidthCharacterWidth;
-		this.canUseHalfwidthRightwardsArrow = opts.canUseHalfwidthRightwardsArrow;
-		this.spaceWidth = opts.spaceWidth;
+		this.isMonospAce = opts.isMonospAce;
+		this.typicAlHAlfwidthChArActerWidth = opts.typicAlHAlfwidthChArActerWidth;
+		this.typicAlFullwidthChArActerWidth = opts.typicAlFullwidthChArActerWidth;
+		this.cAnUseHAlfwidthRightwArdsArrow = opts.cAnUseHAlfwidthRightwArdsArrow;
+		this.spAceWidth = opts.spAceWidth;
 		this.middotWidth = opts.middotWidth;
 		this.wsmiddotWidth = opts.wsmiddotWidth;
-		this.maxDigitWidth = opts.maxDigitWidth;
+		this.mAxDigitWidth = opts.mAxDigitWidth;
 	}
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	public equals(other: FontInfo): boolean {
+	public equAls(other: FontInfo): booleAn {
 		return (
-			this.fontFamily === other.fontFamily
+			this.fontFAmily === other.fontFAmily
 			&& this.fontWeight === other.fontWeight
 			&& this.fontSize === other.fontSize
-			&& this.fontFeatureSettings === other.fontFeatureSettings
+			&& this.fontFeAtureSettings === other.fontFeAtureSettings
 			&& this.lineHeight === other.lineHeight
-			&& this.letterSpacing === other.letterSpacing
-			&& this.typicalHalfwidthCharacterWidth === other.typicalHalfwidthCharacterWidth
-			&& this.typicalFullwidthCharacterWidth === other.typicalFullwidthCharacterWidth
-			&& this.canUseHalfwidthRightwardsArrow === other.canUseHalfwidthRightwardsArrow
-			&& this.spaceWidth === other.spaceWidth
+			&& this.letterSpAcing === other.letterSpAcing
+			&& this.typicAlHAlfwidthChArActerWidth === other.typicAlHAlfwidthChArActerWidth
+			&& this.typicAlFullwidthChArActerWidth === other.typicAlFullwidthChArActerWidth
+			&& this.cAnUseHAlfwidthRightwArdsArrow === other.cAnUseHAlfwidthRightwArdsArrow
+			&& this.spAceWidth === other.spAceWidth
 			&& this.middotWidth === other.middotWidth
 			&& this.wsmiddotWidth === other.wsmiddotWidth
-			&& this.maxDigitWidth === other.maxDigitWidth
+			&& this.mAxDigitWidth === other.mAxDigitWidth
 		);
 	}
 }

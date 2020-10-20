@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IProgress, IProgressService, IProgressStep, ProgressLocation, IProgressOptions, IProgressNotificationOptions } from 'vs/platform/progress/common/progress';
-import { MainThreadProgressShape, MainContext, IExtHostContext, ExtHostProgressShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { Action } from 'vs/base/common/actions';
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { localize } from 'vs/nls';
+import { IProgress, IProgressService, IProgressStep, ProgressLocAtion, IProgressOptions, IProgressNotificAtionOptions } from 'vs/plAtform/progress/common/progress';
+import { MAinThreAdProgressShApe, MAinContext, IExtHostContext, ExtHostProgressShApe, ExtHostContext } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { Action } from 'vs/bAse/common/Actions';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { locAlize } from 'vs/nls';
 
-class ManageExtensionAction extends Action {
-	constructor(id: ExtensionIdentifier, label: string, commandService: ICommandService) {
-		super(id.value, label, undefined, true, () => {
-			return commandService.executeCommand('_extensions.manage', id.value);
+clAss MAnAgeExtensionAction extends Action {
+	constructor(id: ExtensionIdentifier, lAbel: string, commAndService: ICommAndService) {
+		super(id.vAlue, lAbel, undefined, true, () => {
+			return commAndService.executeCommAnd('_extensions.mAnAge', id.vAlue);
 		});
 	}
 }
 
-@extHostNamedCustomer(MainContext.MainThreadProgress)
-export class MainThreadProgress implements MainThreadProgressShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdProgress)
+export clAss MAinThreAdProgress implements MAinThreAdProgressShApe {
 
-	private readonly _progressService: IProgressService;
-	private _progress = new Map<number, { resolve: () => void, progress: IProgress<IProgressStep> }>();
-	private readonly _proxy: ExtHostProgressShape;
+	privAte reAdonly _progressService: IProgressService;
+	privAte _progress = new MAp<number, { resolve: () => void, progress: IProgress<IProgressStep> }>();
+	privAte reAdonly _proxy: ExtHostProgressShApe;
 
 	constructor(
 		extHostContext: IExtHostContext,
 		@IProgressService progressService: IProgressService,
-		@ICommandService private readonly _commandService: ICommandService
+		@ICommAndService privAte reAdonly _commAndService: ICommAndService
 	) {
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostProgress);
 		this._progressService = progressService;
 	}
 
 	dispose(): void {
-		this._progress.forEach(handle => handle.resolve());
-		this._progress.clear();
+		this._progress.forEAch(hAndle => hAndle.resolve());
+		this._progress.cleAr();
 	}
 
-	$startProgress(handle: number, options: IProgressOptions, extension?: IExtensionDescription): void {
-		const task = this._createTask(handle);
+	$stArtProgress(hAndle: number, options: IProgressOptions, extension?: IExtensionDescription): void {
+		const tAsk = this._creAteTAsk(hAndle);
 
-		if (options.location === ProgressLocation.Notification && extension && !extension.isUnderDevelopment) {
-			const notificationOptions: IProgressNotificationOptions = {
+		if (options.locAtion === ProgressLocAtion.NotificAtion && extension && !extension.isUnderDevelopment) {
+			const notificAtionOptions: IProgressNotificAtionOptions = {
 				...options,
-				location: ProgressLocation.Notification,
-				secondaryActions: [new ManageExtensionAction(extension.identifier, localize('manageExtension', "Manage Extension"), this._commandService)]
+				locAtion: ProgressLocAtion.NotificAtion,
+				secondAryActions: [new MAnAgeExtensionAction(extension.identifier, locAlize('mAnAgeExtension', "MAnAge Extension"), this._commAndService)]
 			};
 
-			options = notificationOptions;
+			options = notificAtionOptions;
 		}
 
-		this._progressService.withProgress(options, task, () => this._proxy.$acceptProgressCanceled(handle));
+		this._progressService.withProgress(options, tAsk, () => this._proxy.$AcceptProgressCAnceled(hAndle));
 	}
 
-	$progressReport(handle: number, message: IProgressStep): void {
-		const entry = this._progress.get(handle);
+	$progressReport(hAndle: number, messAge: IProgressStep): void {
+		const entry = this._progress.get(hAndle);
 		if (entry) {
-			entry.progress.report(message);
+			entry.progress.report(messAge);
 		}
 	}
 
-	$progressEnd(handle: number): void {
-		const entry = this._progress.get(handle);
+	$progressEnd(hAndle: number): void {
+		const entry = this._progress.get(hAndle);
 		if (entry) {
 			entry.resolve();
-			this._progress.delete(handle);
+			this._progress.delete(hAndle);
 		}
 	}
 
-	private _createTask(handle: number) {
+	privAte _creAteTAsk(hAndle: number) {
 		return (progress: IProgress<IProgressStep>) => {
 			return new Promise<void>(resolve => {
-				this._progress.set(handle, { resolve, progress });
+				this._progress.set(hAndle, { resolve, progress });
 			});
 		};
 	}

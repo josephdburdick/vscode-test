@@ -1,139 +1,139 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedExternalError, canceled, isPromiseCanceledError } from 'vs/base/common/errors';
+import { onUnexpectedExternAlError, cAnceled, isPromiseCAnceledError } from 'vs/bAse/common/errors';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
-import { registerDefaultLanguageCommand } from 'vs/editor/browser/editorExtensions';
-import * as modes from 'vs/editor/common/modes';
+import { registerDefAultLAnguAgeCommAnd } from 'vs/editor/browser/editorExtensions';
+import * As modes from 'vs/editor/common/modes';
 import { Position, IPosition } from 'vs/editor/common/core/position';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Range } from 'vs/editor/common/core/range';
-import { FuzzyScore } from 'vs/base/common/filters';
-import { isDisposable, DisposableStore, IDisposable } from 'vs/base/common/lifecycle';
-import { MenuId } from 'vs/platform/actions/common/actions';
-import { SnippetParser } from 'vs/editor/contrib/snippet/snippetParser';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { FuzzyScore } from 'vs/bAse/common/filters';
+import { isDisposAble, DisposAbleStore, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { SnippetPArser } from 'vs/editor/contrib/snippet/snippetPArser';
 
 export const Context = {
-	Visible: new RawContextKey<boolean>('suggestWidgetVisible', false),
-	DetailsVisible: new RawContextKey<boolean>('suggestWidgetDetailsVisible', false),
-	MultipleSuggestions: new RawContextKey<boolean>('suggestWidgetMultipleSuggestions', false),
-	MakesTextEdit: new RawContextKey('suggestionMakesTextEdit', true),
-	AcceptSuggestionsOnEnter: new RawContextKey<boolean>('acceptSuggestionOnEnter', true),
-	HasInsertAndReplaceRange: new RawContextKey('suggestionHasInsertAndReplaceRange', false),
-	CanResolve: new RawContextKey('suggestionCanResolve', false),
+	Visible: new RAwContextKey<booleAn>('suggestWidgetVisible', fAlse),
+	DetAilsVisible: new RAwContextKey<booleAn>('suggestWidgetDetAilsVisible', fAlse),
+	MultipleSuggestions: new RAwContextKey<booleAn>('suggestWidgetMultipleSuggestions', fAlse),
+	MAkesTextEdit: new RAwContextKey('suggestionMAkesTextEdit', true),
+	AcceptSuggestionsOnEnter: new RAwContextKey<booleAn>('AcceptSuggestionOnEnter', true),
+	HAsInsertAndReplAceRAnge: new RAwContextKey('suggestionHAsInsertAndReplAceRAnge', fAlse),
+	CAnResolve: new RAwContextKey('suggestionCAnResolve', fAlse),
 };
 
-export const suggestWidgetStatusbarMenu = new MenuId('suggestWidgetStatusBar');
+export const suggestWidgetStAtusbArMenu = new MenuId('suggestWidgetStAtusBAr');
 
-export class CompletionItem {
+export clAss CompletionItem {
 
-	_brand!: 'ISuggestionItem';
-
-	//
-	readonly editStart: IPosition;
-	readonly editInsertEnd: IPosition;
-	readonly editReplaceEnd: IPosition;
+	_brAnd!: 'ISuggestionItem';
 
 	//
-	readonly textLabel: string;
+	reAdonly editStArt: IPosition;
+	reAdonly editInsertEnd: IPosition;
+	reAdonly editReplAceEnd: IPosition;
+
+	//
+	reAdonly textLAbel: string;
 
 	// perf
-	readonly labelLow: string;
-	readonly sortTextLow?: string;
-	readonly filterTextLow?: string;
+	reAdonly lAbelLow: string;
+	reAdonly sortTextLow?: string;
+	reAdonly filterTextLow?: string;
 
-	// validation
-	readonly isInvalid: boolean = false;
+	// vAlidAtion
+	reAdonly isInvAlid: booleAn = fAlse;
 
 	// sorting, filtering
-	score: FuzzyScore = FuzzyScore.Default;
-	distance: number = 0;
+	score: FuzzyScore = FuzzyScore.DefAult;
+	distAnce: number = 0;
 	idx?: number;
 	word?: string;
 
 	// resolving
-	private _isResolved?: boolean;
-	private _resolveCache?: Promise<void>;
+	privAte _isResolved?: booleAn;
+	privAte _resolveCAche?: Promise<void>;
 
 	constructor(
-		readonly position: IPosition,
-		readonly completion: modes.CompletionItem,
-		readonly container: modes.CompletionList,
-		readonly provider: modes.CompletionItemProvider,
+		reAdonly position: IPosition,
+		reAdonly completion: modes.CompletionItem,
+		reAdonly contAiner: modes.CompletionList,
+		reAdonly provider: modes.CompletionItemProvider,
 	) {
-		this.textLabel = typeof completion.label === 'string'
-			? completion.label
-			: completion.label.name;
+		this.textLAbel = typeof completion.lAbel === 'string'
+			? completion.lAbel
+			: completion.lAbel.nAme;
 
-		// ensure lower-variants (perf)
-		this.labelLow = this.textLabel.toLowerCase();
+		// ensure lower-vAriAnts (perf)
+		this.lAbelLow = this.textLAbel.toLowerCAse();
 
-		// validate label
-		this.isInvalid = !this.textLabel;
+		// vAlidAte lAbel
+		this.isInvAlid = !this.textLAbel;
 
-		this.sortTextLow = completion.sortText && completion.sortText.toLowerCase();
-		this.filterTextLow = completion.filterText && completion.filterText.toLowerCase();
+		this.sortTextLow = completion.sortText && completion.sortText.toLowerCAse();
+		this.filterTextLow = completion.filterText && completion.filterText.toLowerCAse();
 
-		// normalize ranges
-		if (Range.isIRange(completion.range)) {
-			this.editStart = new Position(completion.range.startLineNumber, completion.range.startColumn);
-			this.editInsertEnd = new Position(completion.range.endLineNumber, completion.range.endColumn);
-			this.editReplaceEnd = new Position(completion.range.endLineNumber, completion.range.endColumn);
+		// normAlize rAnges
+		if (RAnge.isIRAnge(completion.rAnge)) {
+			this.editStArt = new Position(completion.rAnge.stArtLineNumber, completion.rAnge.stArtColumn);
+			this.editInsertEnd = new Position(completion.rAnge.endLineNumber, completion.rAnge.endColumn);
+			this.editReplAceEnd = new Position(completion.rAnge.endLineNumber, completion.rAnge.endColumn);
 
-			// validate range
-			this.isInvalid = this.isInvalid
-				|| Range.spansMultipleLines(completion.range) || completion.range.startLineNumber !== position.lineNumber;
+			// vAlidAte rAnge
+			this.isInvAlid = this.isInvAlid
+				|| RAnge.spAnsMultipleLines(completion.rAnge) || completion.rAnge.stArtLineNumber !== position.lineNumber;
 
 		} else {
-			this.editStart = new Position(completion.range.insert.startLineNumber, completion.range.insert.startColumn);
-			this.editInsertEnd = new Position(completion.range.insert.endLineNumber, completion.range.insert.endColumn);
-			this.editReplaceEnd = new Position(completion.range.replace.endLineNumber, completion.range.replace.endColumn);
+			this.editStArt = new Position(completion.rAnge.insert.stArtLineNumber, completion.rAnge.insert.stArtColumn);
+			this.editInsertEnd = new Position(completion.rAnge.insert.endLineNumber, completion.rAnge.insert.endColumn);
+			this.editReplAceEnd = new Position(completion.rAnge.replAce.endLineNumber, completion.rAnge.replAce.endColumn);
 
-			// validate ranges
-			this.isInvalid = this.isInvalid
-				|| Range.spansMultipleLines(completion.range.insert) || Range.spansMultipleLines(completion.range.replace)
-				|| completion.range.insert.startLineNumber !== position.lineNumber || completion.range.replace.startLineNumber !== position.lineNumber
-				|| completion.range.insert.startColumn !== completion.range.replace.startColumn;
+			// vAlidAte rAnges
+			this.isInvAlid = this.isInvAlid
+				|| RAnge.spAnsMultipleLines(completion.rAnge.insert) || RAnge.spAnsMultipleLines(completion.rAnge.replAce)
+				|| completion.rAnge.insert.stArtLineNumber !== position.lineNumber || completion.rAnge.replAce.stArtLineNumber !== position.lineNumber
+				|| completion.rAnge.insert.stArtColumn !== completion.rAnge.replAce.stArtColumn;
 		}
 
-		// create the suggestion resolver
+		// creAte the suggestion resolver
 		if (typeof provider.resolveCompletionItem !== 'function') {
-			this._resolveCache = Promise.resolve();
+			this._resolveCAche = Promise.resolve();
 			this._isResolved = true;
 		}
 	}
 
 	// ---- resolving
 
-	get isResolved(): boolean {
+	get isResolved(): booleAn {
 		return !!this._isResolved;
 	}
 
-	async resolve(token: CancellationToken) {
-		if (!this._resolveCache) {
-			const sub = token.onCancellationRequested(() => {
-				this._resolveCache = undefined;
-				this._isResolved = false;
+	Async resolve(token: CAncellAtionToken) {
+		if (!this._resolveCAche) {
+			const sub = token.onCAncellAtionRequested(() => {
+				this._resolveCAche = undefined;
+				this._isResolved = fAlse;
 			});
-			this._resolveCache = Promise.resolve(this.provider.resolveCompletionItem!(this.completion, token)).then(value => {
-				Object.assign(this.completion, value);
+			this._resolveCAche = Promise.resolve(this.provider.resolveCompletionItem!(this.completion, token)).then(vAlue => {
+				Object.Assign(this.completion, vAlue);
 				this._isResolved = true;
 				sub.dispose();
 			}, err => {
-				if (isPromiseCanceledError(err)) {
+				if (isPromiseCAnceledError(err)) {
 					// the IPC queue will reject the request with the
-					// cancellation error -> reset cached
-					this._resolveCache = undefined;
-					this._isResolved = false;
+					// cAncellAtion error -> reset cAched
+					this._resolveCAche = undefined;
+					this._isResolved = fAlse;
 				}
 			});
 		}
-		return this._resolveCache;
+		return this._resolveCAche;
 	}
 }
 
@@ -141,14 +141,14 @@ export const enum SnippetSortOrder {
 	Top, Inline, Bottom
 }
 
-export class CompletionOptions {
+export clAss CompletionOptions {
 
-	static readonly default = new CompletionOptions();
+	stAtic reAdonly defAult = new CompletionOptions();
 
 	constructor(
-		readonly snippetSortOrder = SnippetSortOrder.Bottom,
-		readonly kindFilter = new Set<modes.CompletionItemKind>(),
-		readonly providerFilter = new Set<modes.CompletionItemProvider>(),
+		reAdonly snippetSortOrder = SnippetSortOrder.Bottom,
+		reAdonly kindFilter = new Set<modes.CompletionItemKind>(),
+		reAdonly providerFilter = new Set<modes.CompletionItemProvider>(),
 	) { }
 }
 
@@ -164,194 +164,194 @@ export function setSnippetSuggestSupport(support: modes.CompletionItemProvider):
 	return old;
 }
 
-class CompletionItemModel {
+clAss CompletionItemModel {
 	constructor(
-		readonly items: CompletionItem[],
-		readonly needsClipboard: boolean,
-		readonly disposable: IDisposable,
+		reAdonly items: CompletionItem[],
+		reAdonly needsClipboArd: booleAn,
+		reAdonly disposAble: IDisposAble,
 	) { }
 }
 
-export async function provideSuggestionItems(
+export Async function provideSuggestionItems(
 	model: ITextModel,
 	position: Position,
-	options: CompletionOptions = CompletionOptions.default,
+	options: CompletionOptions = CompletionOptions.defAult,
 	context: modes.CompletionContext = { triggerKind: modes.CompletionTriggerKind.Invoke },
-	token: CancellationToken = CancellationToken.None
+	token: CAncellAtionToken = CAncellAtionToken.None
 ): Promise<CompletionItemModel> {
 
-	// const t1 = Date.now();
+	// const t1 = DAte.now();
 	position = position.clone();
 
 	const word = model.getWordAtPosition(position);
-	const defaultReplaceRange = word ? new Range(position.lineNumber, word.startColumn, position.lineNumber, word.endColumn) : Range.fromPositions(position);
-	const defaultRange = { replace: defaultReplaceRange, insert: defaultReplaceRange.setEndPosition(position.lineNumber, position.column) };
+	const defAultReplAceRAnge = word ? new RAnge(position.lineNumber, word.stArtColumn, position.lineNumber, word.endColumn) : RAnge.fromPositions(position);
+	const defAultRAnge = { replAce: defAultReplAceRAnge, insert: defAultReplAceRAnge.setEndPosition(position.lineNumber, position.column) };
 
 	const result: CompletionItem[] = [];
-	const disposables = new DisposableStore();
-	let needsClipboard = false;
+	const disposAbles = new DisposAbleStore();
+	let needsClipboArd = fAlse;
 
-	const onCompletionList = (provider: modes.CompletionItemProvider, container: modes.CompletionList | null | undefined) => {
-		if (!container) {
+	const onCompletionList = (provider: modes.CompletionItemProvider, contAiner: modes.CompletionList | null | undefined) => {
+		if (!contAiner) {
 			return;
 		}
-		for (let suggestion of container.suggestions) {
-			if (!options.kindFilter.has(suggestion.kind)) {
-				// fill in default range when missing
-				if (!suggestion.range) {
-					suggestion.range = defaultRange;
+		for (let suggestion of contAiner.suggestions) {
+			if (!options.kindFilter.hAs(suggestion.kind)) {
+				// fill in defAult rAnge when missing
+				if (!suggestion.rAnge) {
+					suggestion.rAnge = defAultRAnge;
 				}
-				// fill in default sortText when missing
+				// fill in defAult sortText when missing
 				if (!suggestion.sortText) {
-					suggestion.sortText = typeof suggestion.label === 'string' ? suggestion.label : suggestion.label.name;
+					suggestion.sortText = typeof suggestion.lAbel === 'string' ? suggestion.lAbel : suggestion.lAbel.nAme;
 				}
-				if (!needsClipboard && suggestion.insertTextRules && suggestion.insertTextRules & modes.CompletionItemInsertTextRule.InsertAsSnippet) {
-					needsClipboard = SnippetParser.guessNeedsClipboard(suggestion.insertText);
+				if (!needsClipboArd && suggestion.insertTextRules && suggestion.insertTextRules & modes.CompletionItemInsertTextRule.InsertAsSnippet) {
+					needsClipboArd = SnippetPArser.guessNeedsClipboArd(suggestion.insertText);
 				}
-				result.push(new CompletionItem(position, suggestion, container, provider));
+				result.push(new CompletionItem(position, suggestion, contAiner, provider));
 			}
 		}
-		if (isDisposable(container)) {
-			disposables.add(container);
+		if (isDisposAble(contAiner)) {
+			disposAbles.Add(contAiner);
 		}
 	};
 
-	// ask for snippets in parallel to asking "real" providers. Only do something if configured to
-	// do so - no snippet filter, no special-providers-only request
-	const snippetCompletions = (async () => {
-		if (!_snippetSuggestSupport || options.kindFilter.has(modes.CompletionItemKind.Snippet)) {
+	// Ask for snippets in pArAllel to Asking "reAl" providers. Only do something if configured to
+	// do so - no snippet filter, no speciAl-providers-only request
+	const snippetCompletions = (Async () => {
+		if (!_snippetSuggestSupport || options.kindFilter.hAs(modes.CompletionItemKind.Snippet)) {
 			return;
 		}
-		if (options.providerFilter.size > 0 && !options.providerFilter.has(_snippetSuggestSupport)) {
+		if (options.providerFilter.size > 0 && !options.providerFilter.hAs(_snippetSuggestSupport)) {
 			return;
 		}
-		const list = await _snippetSuggestSupport.provideCompletionItems(model, position, context, token);
+		const list = AwAit _snippetSuggestSupport.provideCompletionItems(model, position, context, token);
 		onCompletionList(_snippetSuggestSupport, list);
 	})();
 
-	// add suggestions from contributed providers - providers are ordered in groups of
-	// equal score and once a group produces a result the process stops
-	// get provider groups, always add snippet suggestion provider
+	// Add suggestions from contributed providers - providers Are ordered in groups of
+	// equAl score And once A group produces A result the process stops
+	// get provider groups, AlwAys Add snippet suggestion provider
 	for (let providerGroup of modes.CompletionProviderRegistry.orderedGroups(model)) {
 
-		// for each support in the group ask for suggestions
+		// for eAch support in the group Ask for suggestions
 		let lenBefore = result.length;
 
-		await Promise.all(providerGroup.map(async provider => {
-			if (options.providerFilter.size > 0 && !options.providerFilter.has(provider)) {
+		AwAit Promise.All(providerGroup.mAp(Async provider => {
+			if (options.providerFilter.size > 0 && !options.providerFilter.hAs(provider)) {
 				return;
 			}
 			try {
-				const list = await provider.provideCompletionItems(model, position, context, token);
+				const list = AwAit provider.provideCompletionItems(model, position, context, token);
 				onCompletionList(provider, list);
-			} catch (err) {
-				onUnexpectedExternalError(err);
+			} cAtch (err) {
+				onUnexpectedExternAlError(err);
 			}
 		}));
 
-		if (lenBefore !== result.length || token.isCancellationRequested) {
-			break;
+		if (lenBefore !== result.length || token.isCAncellAtionRequested) {
+			breAk;
 		}
 	}
 
-	await snippetCompletions;
+	AwAit snippetCompletions;
 
-	if (token.isCancellationRequested) {
-		disposables.dispose();
-		return Promise.reject<any>(canceled());
+	if (token.isCAncellAtionRequested) {
+		disposAbles.dispose();
+		return Promise.reject<Any>(cAnceled());
 	}
-	// console.log(`${result.length} items AFTER ${Date.now() - t1}ms`);
+	// console.log(`${result.length} items AFTER ${DAte.now() - t1}ms`);
 	return new CompletionItemModel(
-		result.sort(getSuggestionComparator(options.snippetSortOrder)),
-		needsClipboard,
-		disposables
+		result.sort(getSuggestionCompArAtor(options.snippetSortOrder)),
+		needsClipboArd,
+		disposAbles
 	);
 }
 
 
-function defaultComparator(a: CompletionItem, b: CompletionItem): number {
+function defAultCompArAtor(A: CompletionItem, b: CompletionItem): number {
 	// check with 'sortText'
-	if (a.sortTextLow && b.sortTextLow) {
-		if (a.sortTextLow < b.sortTextLow) {
+	if (A.sortTextLow && b.sortTextLow) {
+		if (A.sortTextLow < b.sortTextLow) {
 			return -1;
-		} else if (a.sortTextLow > b.sortTextLow) {
+		} else if (A.sortTextLow > b.sortTextLow) {
 			return 1;
 		}
 	}
-	// check with 'label'
-	if (a.completion.label < b.completion.label) {
+	// check with 'lAbel'
+	if (A.completion.lAbel < b.completion.lAbel) {
 		return -1;
-	} else if (a.completion.label > b.completion.label) {
+	} else if (A.completion.lAbel > b.completion.lAbel) {
 		return 1;
 	}
 	// check with 'type'
-	return a.completion.kind - b.completion.kind;
+	return A.completion.kind - b.completion.kind;
 }
 
-function snippetUpComparator(a: CompletionItem, b: CompletionItem): number {
-	if (a.completion.kind !== b.completion.kind) {
-		if (a.completion.kind === modes.CompletionItemKind.Snippet) {
+function snippetUpCompArAtor(A: CompletionItem, b: CompletionItem): number {
+	if (A.completion.kind !== b.completion.kind) {
+		if (A.completion.kind === modes.CompletionItemKind.Snippet) {
 			return -1;
 		} else if (b.completion.kind === modes.CompletionItemKind.Snippet) {
 			return 1;
 		}
 	}
-	return defaultComparator(a, b);
+	return defAultCompArAtor(A, b);
 }
 
-function snippetDownComparator(a: CompletionItem, b: CompletionItem): number {
-	if (a.completion.kind !== b.completion.kind) {
-		if (a.completion.kind === modes.CompletionItemKind.Snippet) {
+function snippetDownCompArAtor(A: CompletionItem, b: CompletionItem): number {
+	if (A.completion.kind !== b.completion.kind) {
+		if (A.completion.kind === modes.CompletionItemKind.Snippet) {
 			return 1;
 		} else if (b.completion.kind === modes.CompletionItemKind.Snippet) {
 			return -1;
 		}
 	}
-	return defaultComparator(a, b);
+	return defAultCompArAtor(A, b);
 }
 
-interface Comparator<T> { (a: T, b: T): number; }
-const _snippetComparators = new Map<SnippetSortOrder, Comparator<CompletionItem>>();
-_snippetComparators.set(SnippetSortOrder.Top, snippetUpComparator);
-_snippetComparators.set(SnippetSortOrder.Bottom, snippetDownComparator);
-_snippetComparators.set(SnippetSortOrder.Inline, defaultComparator);
+interfAce CompArAtor<T> { (A: T, b: T): number; }
+const _snippetCompArAtors = new MAp<SnippetSortOrder, CompArAtor<CompletionItem>>();
+_snippetCompArAtors.set(SnippetSortOrder.Top, snippetUpCompArAtor);
+_snippetCompArAtors.set(SnippetSortOrder.Bottom, snippetDownCompArAtor);
+_snippetCompArAtors.set(SnippetSortOrder.Inline, defAultCompArAtor);
 
-export function getSuggestionComparator(snippetConfig: SnippetSortOrder): (a: CompletionItem, b: CompletionItem) => number {
-	return _snippetComparators.get(snippetConfig)!;
+export function getSuggestionCompArAtor(snippetConfig: SnippetSortOrder): (A: CompletionItem, b: CompletionItem) => number {
+	return _snippetCompArAtors.get(snippetConfig)!;
 }
 
-registerDefaultLanguageCommand('_executeCompletionItemProvider', async (model, position, args) => {
+registerDefAultLAnguAgeCommAnd('_executeCompletionItemProvider', Async (model, position, Args) => {
 
 	const result: modes.CompletionList = {
-		incomplete: false,
+		incomplete: fAlse,
 		suggestions: []
 	};
 
-	const resolving: Promise<any>[] = [];
-	const maxItemsToResolve = args['maxItemsToResolve'] || 0;
+	const resolving: Promise<Any>[] = [];
+	const mAxItemsToResolve = Args['mAxItemsToResolve'] || 0;
 
-	const completions = await provideSuggestionItems(model, position);
+	const completions = AwAit provideSuggestionItems(model, position);
 	for (const item of completions.items) {
-		if (resolving.length < maxItemsToResolve) {
-			resolving.push(item.resolve(CancellationToken.None));
+		if (resolving.length < mAxItemsToResolve) {
+			resolving.push(item.resolve(CAncellAtionToken.None));
 		}
-		result.incomplete = result.incomplete || item.container.incomplete;
+		result.incomplete = result.incomplete || item.contAiner.incomplete;
 		result.suggestions.push(item.completion);
 	}
 
 	try {
-		await Promise.all(resolving);
+		AwAit Promise.All(resolving);
 		return result;
-	} finally {
-		setTimeout(() => completions.disposable.dispose(), 100);
+	} finAlly {
+		setTimeout(() => completions.disposAble.dispose(), 100);
 	}
 });
 
-interface SuggestController extends IEditorContribution {
+interfAce SuggestController extends IEditorContribution {
 	triggerSuggest(onlyFrom?: Set<modes.CompletionItemProvider>): void;
 }
 
-const _provider = new class implements modes.CompletionItemProvider {
+const _provider = new clAss implements modes.CompletionItemProvider {
 
 	onlyOnceSuggestions: modes.CompletionItem[] = [];
 
@@ -368,6 +368,6 @@ modes.CompletionProviderRegistry.register('*', _provider);
 export function showSimpleSuggestions(editor: ICodeEditor, suggestions: modes.CompletionItem[]) {
 	setTimeout(() => {
 		_provider.onlyOnceSuggestions.push(...suggestions);
-		editor.getContribution<SuggestController>('editor.contrib.suggestController').triggerSuggest(new Set<modes.CompletionItemProvider>().add(_provider));
+		editor.getContribution<SuggestController>('editor.contrib.suggestController').triggerSuggest(new Set<modes.CompletionItemProvider>().Add(_provider));
 	}, 0);
 }

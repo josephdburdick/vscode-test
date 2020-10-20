@@ -1,103 +1,103 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /* --------------------------------------------------------------------------------------------
- * Includes code from typescript-sublime-plugin project, obtained from
- * https://github.com/microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
+ * Includes code from typescript-sublime-plugin project, obtAined from
+ * https://github.com/microsoft/TypeScript-Sublime-Plugin/blob/mAster/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
 
-import * as vscode from 'vscode';
-import { Disposable } from '../utils/dispose';
-import * as languageModeIds from '../utils/languageModeIds';
+import * As vscode from 'vscode';
+import { DisposAble } from '../utils/dispose';
+import * As lAnguAgeModeIds from '../utils/lAnguAgeModeIds';
 
-const jsTsLanguageConfiguration: vscode.LanguageConfiguration = {
-	indentationRules: {
-		decreaseIndentPattern: /^((?!.*?\/\*).*\*\/)?\s*[\}\]].*$/,
-		increaseIndentPattern: /^((?!\/\/).)*(\{[^}"'`]*|\([^)"'`]*|\[[^\]"'`]*)$/
+const jsTsLAnguAgeConfigurAtion: vscode.LAnguAgeConfigurAtion = {
+	indentAtionRules: {
+		decreAseIndentPAttern: /^((?!.*?\/\*).*\*\/)?\s*[\}\]].*$/,
+		increAseIndentPAttern: /^((?!\/\/).)*(\{[^}"'`]*|\([^)"'`]*|\[[^\]"'`]*)$/
 	},
-	wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+	wordPAttern: /(-?\d*\.\d\w*)|([^\`\~\!\@\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
 	onEnterRules: [
 		{
 			// e.g. /** | */
 			beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-			afterText: /^\s*\*\/$/,
-			action: { indentAction: vscode.IndentAction.IndentOutdent, appendText: ' * ' },
+			AfterText: /^\s*\*\/$/,
+			Action: { indentAction: vscode.IndentAction.IndentOutdent, AppendText: ' * ' },
 		}, {
 			// e.g. /** ...|
 			beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-			action: { indentAction: vscode.IndentAction.None, appendText: ' * ' },
+			Action: { indentAction: vscode.IndentAction.None, AppendText: ' * ' },
 		}, {
 			// e.g.  * ...|
 			beforeText: /^(\t|[ ])*[ ]\*([ ]([^\*]|\*(?!\/))*)?$/,
 			oneLineAboveText: /(?=^(\s*(\/\*\*|\*)).*)(?=(?!(\s*\*\/)))/,
-			action: { indentAction: vscode.IndentAction.None, appendText: '* ' },
+			Action: { indentAction: vscode.IndentAction.None, AppendText: '* ' },
 		}, {
 			// e.g.  */|
 			beforeText: /^(\t|[ ])*[ ]\*\/\s*$/,
-			action: { indentAction: vscode.IndentAction.None, removeText: 1 },
+			Action: { indentAction: vscode.IndentAction.None, removeText: 1 },
 		},
 		{
 			// e.g.  *-----*/|
 			beforeText: /^(\t|[ ])*[ ]\*[^/]*\*\/\s*$/,
-			action: { indentAction: vscode.IndentAction.None, removeText: 1 },
+			Action: { indentAction: vscode.IndentAction.None, removeText: 1 },
 		},
 		{
-			beforeText: /^\s*(\bcase\s.+:|\bdefault:)$/,
-			afterText: /^(?!\s*(\bcase\b|\bdefault\b))/,
-			action: { indentAction: vscode.IndentAction.Indent },
+			beforeText: /^\s*(\bcAse\s.+:|\bdefAult:)$/,
+			AfterText: /^(?!\s*(\bcAse\b|\bdefAult\b))/,
+			Action: { indentAction: vscode.IndentAction.Indent },
 		}
 	]
 };
 
-const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
+const EMPTY_ELEMENTS: string[] = ['AreA', 'bAse', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'metA', 'pArAm', 'source', 'trAck', 'wbr'];
 
-const jsxTagsLanguageConfiguration: vscode.LanguageConfiguration = {
-	wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+const jsxTAgsLAnguAgeConfigurAtion: vscode.LAnguAgeConfigurAtion = {
+	wordPAttern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 	onEnterRules: [
 		{
 			beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-			afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
-			action: { indentAction: vscode.IndentAction.IndentOutdent }
+			AfterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+			Action: { indentAction: vscode.IndentAction.IndentOutdent }
 		},
 		{
 			beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w\\-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-			action: { indentAction: vscode.IndentAction.Indent }
+			Action: { indentAction: vscode.IndentAction.Indent }
 		},
 		{
-			// `beforeText` only applies to tokens of a given language. Since we are dealing with jsx-tags,
-			// make sure we apply to the closing `>` of a tag so that mixed language spans
-			// such as `<div onclick={1}>` are handled properly.
+			// `beforeText` only Applies to tokens of A given lAnguAge. Since we Are deAling with jsx-tAgs,
+			// mAke sure we Apply to the closing `>` of A tAg so thAt mixed lAnguAge spAns
+			// such As `<div onclick={1}>` Are hAndled properly.
 			beforeText: /^>$/,
-			afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
-			action: { indentAction: vscode.IndentAction.IndentOutdent }
+			AfterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+			Action: { indentAction: vscode.IndentAction.IndentOutdent }
 		},
 		{
 			beforeText: /^>$/,
-			action: { indentAction: vscode.IndentAction.Indent }
+			Action: { indentAction: vscode.IndentAction.Indent }
 		},
 	],
 };
 
-export class LanguageConfigurationManager extends Disposable {
+export clAss LAnguAgeConfigurAtionMAnAger extends DisposAble {
 
 	constructor() {
 		super();
-		const standardLanguages = [
-			languageModeIds.javascript,
-			languageModeIds.javascriptreact,
-			languageModeIds.typescript,
-			languageModeIds.typescriptreact,
+		const stAndArdLAnguAges = [
+			lAnguAgeModeIds.jAvAscript,
+			lAnguAgeModeIds.jAvAscriptreAct,
+			lAnguAgeModeIds.typescript,
+			lAnguAgeModeIds.typescriptreAct,
 		];
-		for (const language of standardLanguages) {
-			this.registerConfiguration(language, jsTsLanguageConfiguration);
+		for (const lAnguAge of stAndArdLAnguAges) {
+			this.registerConfigurAtion(lAnguAge, jsTsLAnguAgeConfigurAtion);
 		}
 
-		this.registerConfiguration(languageModeIds.jsxTags, jsxTagsLanguageConfiguration);
+		this.registerConfigurAtion(lAnguAgeModeIds.jsxTAgs, jsxTAgsLAnguAgeConfigurAtion);
 	}
 
-	private registerConfiguration(language: string, config: vscode.LanguageConfiguration) {
-		this._register(vscode.languages.setLanguageConfiguration(language, config));
+	privAte registerConfigurAtion(lAnguAge: string, config: vscode.LAnguAgeConfigurAtion) {
+		this._register(vscode.lAnguAges.setLAnguAgeConfigurAtion(lAnguAge, config));
 	}
 }

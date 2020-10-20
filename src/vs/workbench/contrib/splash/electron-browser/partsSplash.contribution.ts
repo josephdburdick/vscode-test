@@ -1,143 +1,143 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { join } from 'vs/base/common/path';
-import { onDidChangeFullscreen, isFullscreen } from 'vs/base/browser/browser';
-import { getTotalHeight, getTotalWidth } from 'vs/base/browser/dom';
-import { Color } from 'vs/base/common/color';
-import { Event } from 'vs/base/common/event';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ColorIdentifier, editorBackground, foreground } from 'vs/platform/theme/common/colorRegistry';
-import { getThemeTypeSelector, IThemeService } from 'vs/platform/theme/common/themeService';
-import { DEFAULT_EDITOR_MIN_DIMENSIONS } from 'vs/workbench/browser/parts/editor/editor';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { join } from 'vs/bAse/common/pAth';
+import { onDidChAngeFullscreen, isFullscreen } from 'vs/bAse/browser/browser';
+import { getTotAlHeight, getTotAlWidth } from 'vs/bAse/browser/dom';
+import { Color } from 'vs/bAse/common/color';
+import { Event } from 'vs/bAse/common/event';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { ILifecycleService, LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ColorIdentifier, editorBAckground, foreground } from 'vs/plAtform/theme/common/colorRegistry';
+import { getThemeTypeSelector, IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { DEFAULT_EDITOR_MIN_DIMENSIONS } from 'vs/workbench/browser/pArts/editor/editor';
 import { Extensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import * as themes from 'vs/workbench/common/theme';
-import { IWorkbenchLayoutService, Parts, Position } from 'vs/workbench/services/layout/browser/layoutService';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
+import * As themes from 'vs/workbench/common/theme';
+import { IWorkbenchLAyoutService, PArts, Position } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import * as perf from 'vs/base/common/performance';
-import { assertIsDefined } from 'vs/base/common/types';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import * As perf from 'vs/bAse/common/performAnce';
+import { AssertIsDefined } from 'vs/bAse/common/types';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-class PartsSplash {
+clAss PArtsSplAsh {
 
-	private static readonly _splashElementId = 'monaco-parts-splash';
+	privAte stAtic reAdonly _splAshElementId = 'monAco-pArts-splAsh';
 
-	private readonly _disposables = new DisposableStore();
+	privAte reAdonly _disposAbles = new DisposAbleStore();
 
-	private _didChangeTitleBarStyle?: boolean;
-	private _lastBaseTheme?: string;
-	private _lastBackground?: string;
+	privAte _didChAngeTitleBArStyle?: booleAn;
+	privAte _lAstBAseTheme?: string;
+	privAte _lAstBAckground?: string;
 
 	constructor(
-		@IThemeService private readonly _themeService: IThemeService,
-		@IWorkbenchLayoutService private readonly _layoutService: IWorkbenchLayoutService,
-		@ITextFileService private readonly _textFileService: ITextFileService,
-		@INativeWorkbenchEnvironmentService private readonly _environmentService: INativeWorkbenchEnvironmentService,
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		@IWorkbenchLAyoutService privAte reAdonly _lAyoutService: IWorkbenchLAyoutService,
+		@ITextFileService privAte reAdonly _textFileService: ITextFileService,
+		@INAtiveWorkbenchEnvironmentService privAte reAdonly _environmentService: INAtiveWorkbenchEnvironmentService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IEditorGroupsService editorGroupsService: IEditorGroupsService,
-		@IConfigurationService configService: IConfigurationService,
-		@INativeHostService private readonly _nativeHostService: INativeHostService
+		@IConfigurAtionService configService: IConfigurAtionService,
+		@INAtiveHostService privAte reAdonly _nAtiveHostService: INAtiveHostService
 	) {
-		lifecycleService.when(LifecyclePhase.Restored).then(_ => {
-			this._removePartsSplash();
-			perf.mark('didRemovePartsSplash');
+		lifecycleService.when(LifecyclePhAse.Restored).then(_ => {
+			this._removePArtsSplAsh();
+			perf.mArk('didRemovePArtsSplAsh');
 		});
-		Event.debounce(Event.any<any>(
-			onDidChangeFullscreen,
-			editorGroupsService.onDidLayout
-		), () => { }, 800)(this._savePartsSplash, this, this._disposables);
+		Event.debounce(Event.Any<Any>(
+			onDidChAngeFullscreen,
+			editorGroupsService.onDidLAyout
+		), () => { }, 800)(this._sAvePArtsSplAsh, this, this._disposAbles);
 
-		configService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('window.titleBarStyle')) {
-				this._didChangeTitleBarStyle = true;
-				this._savePartsSplash();
+		configService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('window.titleBArStyle')) {
+				this._didChAngeTitleBArStyle = true;
+				this._sAvePArtsSplAsh();
 			}
-		}, this, this._disposables);
+		}, this, this._disposAbles);
 
-		_themeService.onDidColorThemeChange(_ => {
-			this._savePartsSplash();
-		}, this, this._disposables);
+		_themeService.onDidColorThemeChAnge(_ => {
+			this._sAvePArtsSplAsh();
+		}, this, this._disposAbles);
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 	}
 
-	private _savePartsSplash() {
-		const baseTheme = getThemeTypeSelector(this._themeService.getColorTheme().type);
+	privAte _sAvePArtsSplAsh() {
+		const bAseTheme = getThemeTypeSelector(this._themeService.getColorTheme().type);
 		const colorInfo = {
 			foreground: this._getThemeColor(foreground),
-			editorBackground: this._getThemeColor(editorBackground),
-			titleBarBackground: this._getThemeColor(themes.TITLE_BAR_ACTIVE_BACKGROUND),
-			activityBarBackground: this._getThemeColor(themes.ACTIVITY_BAR_BACKGROUND),
-			sideBarBackground: this._getThemeColor(themes.SIDE_BAR_BACKGROUND),
-			statusBarBackground: this._getThemeColor(themes.STATUS_BAR_BACKGROUND),
-			statusBarNoFolderBackground: this._getThemeColor(themes.STATUS_BAR_NO_FOLDER_BACKGROUND),
+			editorBAckground: this._getThemeColor(editorBAckground),
+			titleBArBAckground: this._getThemeColor(themes.TITLE_BAR_ACTIVE_BACKGROUND),
+			ActivityBArBAckground: this._getThemeColor(themes.ACTIVITY_BAR_BACKGROUND),
+			sideBArBAckground: this._getThemeColor(themes.SIDE_BAR_BACKGROUND),
+			stAtusBArBAckground: this._getThemeColor(themes.STATUS_BAR_BACKGROUND),
+			stAtusBArNoFolderBAckground: this._getThemeColor(themes.STATUS_BAR_NO_FOLDER_BACKGROUND),
 			windowBorder: this._getThemeColor(themes.WINDOW_ACTIVE_BORDER) ?? this._getThemeColor(themes.WINDOW_INACTIVE_BORDER)
 		};
-		const layoutInfo = !this._shouldSaveLayoutInfo() ? undefined : {
-			sideBarSide: this._layoutService.getSideBarPosition() === Position.RIGHT ? 'right' : 'left',
-			editorPartMinWidth: DEFAULT_EDITOR_MIN_DIMENSIONS.width,
-			titleBarHeight: this._layoutService.isVisible(Parts.TITLEBAR_PART) ? getTotalHeight(assertIsDefined(this._layoutService.getContainer(Parts.TITLEBAR_PART))) : 0,
-			activityBarWidth: this._layoutService.isVisible(Parts.ACTIVITYBAR_PART) ? getTotalWidth(assertIsDefined(this._layoutService.getContainer(Parts.ACTIVITYBAR_PART))) : 0,
-			sideBarWidth: this._layoutService.isVisible(Parts.SIDEBAR_PART) ? getTotalWidth(assertIsDefined(this._layoutService.getContainer(Parts.SIDEBAR_PART))) : 0,
-			statusBarHeight: this._layoutService.isVisible(Parts.STATUSBAR_PART) ? getTotalHeight(assertIsDefined(this._layoutService.getContainer(Parts.STATUSBAR_PART))) : 0,
-			windowBorder: this._layoutService.hasWindowBorder(),
-			windowBorderRadius: this._layoutService.getWindowBorderRadius()
+		const lAyoutInfo = !this._shouldSAveLAyoutInfo() ? undefined : {
+			sideBArSide: this._lAyoutService.getSideBArPosition() === Position.RIGHT ? 'right' : 'left',
+			editorPArtMinWidth: DEFAULT_EDITOR_MIN_DIMENSIONS.width,
+			titleBArHeight: this._lAyoutService.isVisible(PArts.TITLEBAR_PART) ? getTotAlHeight(AssertIsDefined(this._lAyoutService.getContAiner(PArts.TITLEBAR_PART))) : 0,
+			ActivityBArWidth: this._lAyoutService.isVisible(PArts.ACTIVITYBAR_PART) ? getTotAlWidth(AssertIsDefined(this._lAyoutService.getContAiner(PArts.ACTIVITYBAR_PART))) : 0,
+			sideBArWidth: this._lAyoutService.isVisible(PArts.SIDEBAR_PART) ? getTotAlWidth(AssertIsDefined(this._lAyoutService.getContAiner(PArts.SIDEBAR_PART))) : 0,
+			stAtusBArHeight: this._lAyoutService.isVisible(PArts.STATUSBAR_PART) ? getTotAlHeight(AssertIsDefined(this._lAyoutService.getContAiner(PArts.STATUSBAR_PART))) : 0,
+			windowBorder: this._lAyoutService.hAsWindowBorder(),
+			windowBorderRAdius: this._lAyoutService.getWindowBorderRAdius()
 		};
 		this._textFileService.write(
-			URI.file(join(this._environmentService.userDataPath, 'rapid_render.json')),
+			URI.file(join(this._environmentService.userDAtAPAth, 'rApid_render.json')),
 			JSON.stringify({
-				id: PartsSplash._splashElementId,
+				id: PArtsSplAsh._splAshElementId,
 				colorInfo,
-				layoutInfo,
-				baseTheme
+				lAyoutInfo,
+				bAseTheme
 			}),
 			{ encoding: 'utf8', overwriteEncoding: true }
 		);
 
-		if (baseTheme !== this._lastBaseTheme || colorInfo.editorBackground !== this._lastBackground) {
-			// notify the main window on background color changes: the main window sets the background color to new windows
-			this._lastBaseTheme = baseTheme;
-			this._lastBackground = colorInfo.editorBackground;
+		if (bAseTheme !== this._lAstBAseTheme || colorInfo.editorBAckground !== this._lAstBAckground) {
+			// notify the mAin window on bAckground color chAnges: the mAin window sets the bAckground color to new windows
+			this._lAstBAseTheme = bAseTheme;
+			this._lAstBAckground = colorInfo.editorBAckground;
 
 			// the color needs to be in hex
-			const backgroundColor = this._themeService.getColorTheme().getColor(editorBackground) || themes.WORKBENCH_BACKGROUND(this._themeService.getColorTheme());
-			const payload = JSON.stringify({ baseTheme, background: Color.Format.CSS.formatHex(backgroundColor) });
-			ipcRenderer.send('vscode:changeColorTheme', this._nativeHostService.windowId, payload);
+			const bAckgroundColor = this._themeService.getColorTheme().getColor(editorBAckground) || themes.WORKBENCH_BACKGROUND(this._themeService.getColorTheme());
+			const pAyloAd = JSON.stringify({ bAseTheme, bAckground: Color.FormAt.CSS.formAtHex(bAckgroundColor) });
+			ipcRenderer.send('vscode:chAngeColorTheme', this._nAtiveHostService.windowId, pAyloAd);
 		}
 	}
 
-	private _getThemeColor(id: ColorIdentifier): string | undefined {
+	privAte _getThemeColor(id: ColorIdentifier): string | undefined {
 		const theme = this._themeService.getColorTheme();
 		const color = theme.getColor(id);
 		return color ? color.toString() : undefined;
 	}
 
-	private _shouldSaveLayoutInfo(): boolean {
-		return !isFullscreen() && !this._environmentService.isExtensionDevelopment && !this._didChangeTitleBarStyle;
+	privAte _shouldSAveLAyoutInfo(): booleAn {
+		return !isFullscreen() && !this._environmentService.isExtensionDevelopment && !this._didChAngeTitleBArStyle;
 	}
 
-	private _removePartsSplash(): void {
-		let element = document.getElementById(PartsSplash._splashElementId);
+	privAte _removePArtsSplAsh(): void {
+		let element = document.getElementById(PArtsSplAsh._splAshElementId);
 		if (element) {
-			element.style.display = 'none';
+			element.style.displAy = 'none';
 		}
-		// remove initial colors
-		let defaultStyles = document.head.getElementsByClassName('initialShellColors');
-		if (defaultStyles.length) {
-			document.head.removeChild(defaultStyles[0]);
+		// remove initiAl colors
+		let defAultStyles = document.heAd.getElementsByClAssNAme('initiAlShellColors');
+		if (defAultStyles.length) {
+			document.heAd.removeChild(defAultStyles[0]);
 		}
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(Extensions.Workbench).registerWorkbenchContribution(PartsSplash, LifecyclePhase.Starting);
+Registry.As<IWorkbenchContributionsRegistry>(Extensions.Workbench).registerWorkbenchContribution(PArtsSplAsh, LifecyclePhAse.StArting);

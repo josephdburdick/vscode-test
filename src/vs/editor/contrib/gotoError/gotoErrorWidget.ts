@@ -1,413 +1,413 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/gotoErrorWidget';
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { dispose, DisposableStore } from 'vs/base/common/lifecycle';
-import { IMarker, MarkerSeverity, IRelatedInformation } from 'vs/platform/markers/common/markers';
-import { Range } from 'vs/editor/common/core/range';
+import 'vs/css!./mediA/gotoErrorWidget';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { dispose, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { IMArker, MArkerSeverity, IRelAtedInformAtion } from 'vs/plAtform/mArkers/common/mArkers';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { registerColor, oneOf, textLinkForeground, editorErrorForeground, editorErrorBorder, editorWarningForeground, editorWarningBorder, editorInfoForeground, editorInfoBorder } from 'vs/platform/theme/common/colorRegistry';
-import { IThemeService, IColorTheme, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
-import { ScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
-import { ScrollbarVisibility } from 'vs/base/common/scrollable';
+import { registerColor, oneOf, textLinkForeground, editorErrorForeground, editorErrorBorder, editorWArningForeground, editorWArningBorder, editorInfoForeground, editorInfoBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { IThemeService, IColorTheme, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { Color } from 'vs/bAse/common/color';
+import { ScrollAbleElement } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElement';
+import { ScrollbArVisibility } from 'vs/bAse/common/scrollAble';
 import { ScrollType } from 'vs/editor/common/editorCommon';
-import { getBaseLabel, getPathLabel } from 'vs/base/common/labels';
-import { isNonEmptyArray } from 'vs/base/common/arrays';
-import { Event, Emitter } from 'vs/base/common/event';
+import { getBAseLAbel, getPAthLAbel } from 'vs/bAse/common/lAbels';
+import { isNonEmptyArrAy } from 'vs/bAse/common/ArrAys';
+import { Event, Emitter } from 'vs/bAse/common/event';
 import { PeekViewWidget, peekViewTitleForeground, peekViewTitleInfoForeground } from 'vs/editor/contrib/peekView/peekView';
-import { basename } from 'vs/base/common/resources';
-import { IAction } from 'vs/base/common/actions';
-import { IActionBarOptions, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
-import { SeverityIcon } from 'vs/platform/severityIcon/common/severityIcon';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { IAction } from 'vs/bAse/common/Actions';
+import { IActionBArOptions, ActionsOrientAtion } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { SeverityIcon } from 'vs/plAtform/severityIcon/common/severityIcon';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { MenuId, IMenuService } from 'vs/platform/actions/common/actions';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { createAndFillInActionBarActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { MenuId, IMenuService } from 'vs/plAtform/Actions/common/Actions';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { creAteAndFillInActionBArActions } from 'vs/plAtform/Actions/browser/menuEntryActionViewItem';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-class MessageWidget {
+clAss MessAgeWidget {
 
-	private _lines: number = 0;
-	private _longestLineLength: number = 0;
+	privAte _lines: number = 0;
+	privAte _longestLineLength: number = 0;
 
-	private readonly _editor: ICodeEditor;
-	private readonly _messageBlock: HTMLDivElement;
-	private readonly _relatedBlock: HTMLDivElement;
-	private readonly _scrollable: ScrollableElement;
-	private readonly _relatedDiagnostics = new WeakMap<HTMLElement, IRelatedInformation>();
-	private readonly _disposables: DisposableStore = new DisposableStore();
+	privAte reAdonly _editor: ICodeEditor;
+	privAte reAdonly _messAgeBlock: HTMLDivElement;
+	privAte reAdonly _relAtedBlock: HTMLDivElement;
+	privAte reAdonly _scrollAble: ScrollAbleElement;
+	privAte reAdonly _relAtedDiAgnostics = new WeAkMAp<HTMLElement, IRelAtedInformAtion>();
+	privAte reAdonly _disposAbles: DisposAbleStore = new DisposAbleStore();
 
-	private _codeLink?: HTMLElement;
+	privAte _codeLink?: HTMLElement;
 
 	constructor(
-		parent: HTMLElement,
+		pArent: HTMLElement,
 		editor: ICodeEditor,
-		onRelatedInformation: (related: IRelatedInformation) => void,
-		private readonly _openerService: IOpenerService,
+		onRelAtedInformAtion: (relAted: IRelAtedInformAtion) => void,
+		privAte reAdonly _openerService: IOpenerService,
 	) {
 		this._editor = editor;
 
-		const domNode = document.createElement('div');
-		domNode.className = 'descriptioncontainer';
+		const domNode = document.creAteElement('div');
+		domNode.clAssNAme = 'descriptioncontAiner';
 
-		this._messageBlock = document.createElement('div');
-		this._messageBlock.classList.add('message');
-		this._messageBlock.setAttribute('aria-live', 'assertive');
-		this._messageBlock.setAttribute('role', 'alert');
-		domNode.appendChild(this._messageBlock);
+		this._messAgeBlock = document.creAteElement('div');
+		this._messAgeBlock.clAssList.Add('messAge');
+		this._messAgeBlock.setAttribute('AriA-live', 'Assertive');
+		this._messAgeBlock.setAttribute('role', 'Alert');
+		domNode.AppendChild(this._messAgeBlock);
 
-		this._relatedBlock = document.createElement('div');
-		domNode.appendChild(this._relatedBlock);
-		this._disposables.add(dom.addStandardDisposableListener(this._relatedBlock, 'click', event => {
-			event.preventDefault();
-			const related = this._relatedDiagnostics.get(event.target);
-			if (related) {
-				onRelatedInformation(related);
+		this._relAtedBlock = document.creAteElement('div');
+		domNode.AppendChild(this._relAtedBlock);
+		this._disposAbles.Add(dom.AddStAndArdDisposAbleListener(this._relAtedBlock, 'click', event => {
+			event.preventDefAult();
+			const relAted = this._relAtedDiAgnostics.get(event.tArget);
+			if (relAted) {
+				onRelAtedInformAtion(relAted);
 			}
 		}));
 
-		this._scrollable = new ScrollableElement(domNode, {
-			horizontal: ScrollbarVisibility.Auto,
-			vertical: ScrollbarVisibility.Auto,
-			useShadows: false,
-			horizontalScrollbarSize: 3,
-			verticalScrollbarSize: 3
+		this._scrollAble = new ScrollAbleElement(domNode, {
+			horizontAl: ScrollbArVisibility.Auto,
+			verticAl: ScrollbArVisibility.Auto,
+			useShAdows: fAlse,
+			horizontAlScrollbArSize: 3,
+			verticAlScrollbArSize: 3
 		});
-		parent.appendChild(this._scrollable.getDomNode());
-		this._disposables.add(this._scrollable.onScroll(e => {
+		pArent.AppendChild(this._scrollAble.getDomNode());
+		this._disposAbles.Add(this._scrollAble.onScroll(e => {
 			domNode.style.left = `-${e.scrollLeft}px`;
 			domNode.style.top = `-${e.scrollTop}px`;
 		}));
-		this._disposables.add(this._scrollable);
+		this._disposAbles.Add(this._scrollAble);
 	}
 
 	dispose(): void {
-		dispose(this._disposables);
+		dispose(this._disposAbles);
 	}
 
-	update(marker: IMarker): void {
-		const { source, message, relatedInformation, code } = marker;
+	updAte(mArker: IMArker): void {
+		const { source, messAge, relAtedInformAtion, code } = mArker;
 		let sourceAndCodeLength = (source?.length || 0) + '()'.length;
 		if (code) {
 			if (typeof code === 'string') {
 				sourceAndCodeLength += code.length;
 			} else {
-				sourceAndCodeLength += code.value.length;
+				sourceAndCodeLength += code.vAlue.length;
 			}
 		}
 
-		const lines = message.split(/\r\n|\r|\n/g);
+		const lines = messAge.split(/\r\n|\r|\n/g);
 		this._lines = lines.length;
 		this._longestLineLength = 0;
 		for (const line of lines) {
-			this._longestLineLength = Math.max(line.length + sourceAndCodeLength, this._longestLineLength);
+			this._longestLineLength = MAth.mAx(line.length + sourceAndCodeLength, this._longestLineLength);
 		}
 
-		dom.clearNode(this._messageBlock);
-		this._messageBlock.setAttribute('aria-label', this.getAriaLabel(marker));
-		this._editor.applyFontInfo(this._messageBlock);
-		let lastLineElement = this._messageBlock;
+		dom.cleArNode(this._messAgeBlock);
+		this._messAgeBlock.setAttribute('AriA-lAbel', this.getAriALAbel(mArker));
+		this._editor.ApplyFontInfo(this._messAgeBlock);
+		let lAstLineElement = this._messAgeBlock;
 		for (const line of lines) {
-			lastLineElement = document.createElement('div');
-			lastLineElement.innerText = line;
+			lAstLineElement = document.creAteElement('div');
+			lAstLineElement.innerText = line;
 			if (line === '') {
-				lastLineElement.style.height = this._messageBlock.style.lineHeight;
+				lAstLineElement.style.height = this._messAgeBlock.style.lineHeight;
 			}
-			this._messageBlock.appendChild(lastLineElement);
+			this._messAgeBlock.AppendChild(lAstLineElement);
 		}
 		if (source || code) {
-			const detailsElement = document.createElement('span');
-			detailsElement.classList.add('details');
-			lastLineElement.appendChild(detailsElement);
+			const detAilsElement = document.creAteElement('spAn');
+			detAilsElement.clAssList.Add('detAils');
+			lAstLineElement.AppendChild(detAilsElement);
 			if (source) {
-				const sourceElement = document.createElement('span');
+				const sourceElement = document.creAteElement('spAn');
 				sourceElement.innerText = source;
-				sourceElement.classList.add('source');
-				detailsElement.appendChild(sourceElement);
+				sourceElement.clAssList.Add('source');
+				detAilsElement.AppendChild(sourceElement);
 			}
 			if (code) {
 				if (typeof code === 'string') {
-					const codeElement = document.createElement('span');
+					const codeElement = document.creAteElement('spAn');
 					codeElement.innerText = `(${code})`;
-					codeElement.classList.add('code');
-					detailsElement.appendChild(codeElement);
+					codeElement.clAssList.Add('code');
+					detAilsElement.AppendChild(codeElement);
 				} else {
-					this._codeLink = dom.$('a.code-link');
-					this._codeLink.setAttribute('href', `${code.target.toString()}`);
+					this._codeLink = dom.$('A.code-link');
+					this._codeLink.setAttribute('href', `${code.tArget.toString()}`);
 
 					this._codeLink.onclick = (e) => {
-						this._openerService.open(code.target);
-						e.preventDefault();
-						e.stopPropagation();
+						this._openerService.open(code.tArget);
+						e.preventDefAult();
+						e.stopPropAgAtion();
 					};
 
-					const codeElement = dom.append(this._codeLink, dom.$('span'));
-					codeElement.innerText = code.value;
-					detailsElement.appendChild(this._codeLink);
+					const codeElement = dom.Append(this._codeLink, dom.$('spAn'));
+					codeElement.innerText = code.vAlue;
+					detAilsElement.AppendChild(this._codeLink);
 				}
 			}
 		}
 
-		dom.clearNode(this._relatedBlock);
-		this._editor.applyFontInfo(this._relatedBlock);
-		if (isNonEmptyArray(relatedInformation)) {
-			const relatedInformationNode = this._relatedBlock.appendChild(document.createElement('div'));
-			relatedInformationNode.style.paddingTop = `${Math.floor(this._editor.getOption(EditorOption.lineHeight) * 0.66)}px`;
+		dom.cleArNode(this._relAtedBlock);
+		this._editor.ApplyFontInfo(this._relAtedBlock);
+		if (isNonEmptyArrAy(relAtedInformAtion)) {
+			const relAtedInformAtionNode = this._relAtedBlock.AppendChild(document.creAteElement('div'));
+			relAtedInformAtionNode.style.pAddingTop = `${MAth.floor(this._editor.getOption(EditorOption.lineHeight) * 0.66)}px`;
 			this._lines += 1;
 
-			for (const related of relatedInformation) {
+			for (const relAted of relAtedInformAtion) {
 
-				let container = document.createElement('div');
+				let contAiner = document.creAteElement('div');
 
-				let relatedResource = document.createElement('a');
-				relatedResource.classList.add('filename');
-				relatedResource.innerText = `${getBaseLabel(related.resource)}(${related.startLineNumber}, ${related.startColumn}): `;
-				relatedResource.title = getPathLabel(related.resource, undefined);
-				this._relatedDiagnostics.set(relatedResource, related);
+				let relAtedResource = document.creAteElement('A');
+				relAtedResource.clAssList.Add('filenAme');
+				relAtedResource.innerText = `${getBAseLAbel(relAted.resource)}(${relAted.stArtLineNumber}, ${relAted.stArtColumn}): `;
+				relAtedResource.title = getPAthLAbel(relAted.resource, undefined);
+				this._relAtedDiAgnostics.set(relAtedResource, relAted);
 
-				let relatedMessage = document.createElement('span');
-				relatedMessage.innerText = related.message;
+				let relAtedMessAge = document.creAteElement('spAn');
+				relAtedMessAge.innerText = relAted.messAge;
 
-				container.appendChild(relatedResource);
-				container.appendChild(relatedMessage);
+				contAiner.AppendChild(relAtedResource);
+				contAiner.AppendChild(relAtedMessAge);
 
 				this._lines += 1;
-				relatedInformationNode.appendChild(container);
+				relAtedInformAtionNode.AppendChild(contAiner);
 			}
 		}
 
 		const fontInfo = this._editor.getOption(EditorOption.fontInfo);
-		const scrollWidth = Math.ceil(fontInfo.typicalFullwidthCharacterWidth * this._longestLineLength * 0.75);
+		const scrollWidth = MAth.ceil(fontInfo.typicAlFullwidthChArActerWidth * this._longestLineLength * 0.75);
 		const scrollHeight = fontInfo.lineHeight * this._lines;
-		this._scrollable.setScrollDimensions({ scrollWidth, scrollHeight });
+		this._scrollAble.setScrollDimensions({ scrollWidth, scrollHeight });
 	}
 
-	layout(height: number, width: number): void {
-		this._scrollable.getDomNode().style.height = `${height}px`;
-		this._scrollable.getDomNode().style.width = `${width}px`;
-		this._scrollable.setScrollDimensions({ width, height });
+	lAyout(height: number, width: number): void {
+		this._scrollAble.getDomNode().style.height = `${height}px`;
+		this._scrollAble.getDomNode().style.width = `${width}px`;
+		this._scrollAble.setScrollDimensions({ width, height });
 	}
 
 	getHeightInLines(): number {
-		return Math.min(17, this._lines);
+		return MAth.min(17, this._lines);
 	}
 
-	private getAriaLabel(marker: IMarker): string {
-		let severityLabel = '';
-		switch (marker.severity) {
-			case MarkerSeverity.Error:
-				severityLabel = nls.localize('Error', "Error");
-				break;
-			case MarkerSeverity.Warning:
-				severityLabel = nls.localize('Warning', "Warning");
-				break;
-			case MarkerSeverity.Info:
-				severityLabel = nls.localize('Info', "Info");
-				break;
-			case MarkerSeverity.Hint:
-				severityLabel = nls.localize('Hint', "Hint");
-				break;
+	privAte getAriALAbel(mArker: IMArker): string {
+		let severityLAbel = '';
+		switch (mArker.severity) {
+			cAse MArkerSeverity.Error:
+				severityLAbel = nls.locAlize('Error', "Error");
+				breAk;
+			cAse MArkerSeverity.WArning:
+				severityLAbel = nls.locAlize('WArning', "WArning");
+				breAk;
+			cAse MArkerSeverity.Info:
+				severityLAbel = nls.locAlize('Info', "Info");
+				breAk;
+			cAse MArkerSeverity.Hint:
+				severityLAbel = nls.locAlize('Hint', "Hint");
+				breAk;
 		}
 
-		let ariaLabel = nls.localize('marker aria', "{0} at {1}. ", severityLabel, marker.startLineNumber + ':' + marker.startColumn);
+		let AriALAbel = nls.locAlize('mArker AriA', "{0} At {1}. ", severityLAbel, mArker.stArtLineNumber + ':' + mArker.stArtColumn);
 		const model = this._editor.getModel();
-		if (model && (marker.startLineNumber <= model.getLineCount()) && (marker.startLineNumber >= 1)) {
-			const lineContent = model.getLineContent(marker.startLineNumber);
-			ariaLabel = `${lineContent}, ${ariaLabel}`;
+		if (model && (mArker.stArtLineNumber <= model.getLineCount()) && (mArker.stArtLineNumber >= 1)) {
+			const lineContent = model.getLineContent(mArker.stArtLineNumber);
+			AriALAbel = `${lineContent}, ${AriALAbel}`;
 		}
-		return ariaLabel;
+		return AriALAbel;
 	}
 }
 
-export class MarkerNavigationWidget extends PeekViewWidget {
+export clAss MArkerNAvigAtionWidget extends PeekViewWidget {
 
-	static readonly TitleMenu = new MenuId('gotoErrorTitleMenu');
+	stAtic reAdonly TitleMenu = new MenuId('gotoErrorTitleMenu');
 
-	private _parentContainer!: HTMLElement;
-	private _container!: HTMLElement;
-	private _icon!: HTMLElement;
-	private _message!: MessageWidget;
-	private readonly _callOnDispose = new DisposableStore();
-	private _severity: MarkerSeverity;
-	private _backgroundColor?: Color;
-	private readonly _onDidSelectRelatedInformation = new Emitter<IRelatedInformation>();
-	private _heightInPixel!: number;
+	privAte _pArentContAiner!: HTMLElement;
+	privAte _contAiner!: HTMLElement;
+	privAte _icon!: HTMLElement;
+	privAte _messAge!: MessAgeWidget;
+	privAte reAdonly _cAllOnDispose = new DisposAbleStore();
+	privAte _severity: MArkerSeverity;
+	privAte _bAckgroundColor?: Color;
+	privAte reAdonly _onDidSelectRelAtedInformAtion = new Emitter<IRelAtedInformAtion>();
+	privAte _heightInPixel!: number;
 
-	readonly onDidSelectRelatedInformation: Event<IRelatedInformation> = this._onDidSelectRelatedInformation.event;
+	reAdonly onDidSelectRelAtedInformAtion: Event<IRelAtedInformAtion> = this._onDidSelectRelAtedInformAtion.event;
 
 	constructor(
 		editor: ICodeEditor,
-		@IThemeService private readonly _themeService: IThemeService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IMenuService private readonly _menuService: IMenuService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IContextKeyService private readonly _contextKeyService: IContextKeyService
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IMenuService privAte reAdonly _menuService: IMenuService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IContextKeyService privAte reAdonly _contextKeyService: IContextKeyService
 	) {
-		super(editor, { showArrow: true, showFrame: true, isAccessible: true }, instantiationService);
-		this._severity = MarkerSeverity.Warning;
-		this._backgroundColor = Color.white;
+		super(editor, { showArrow: true, showFrAme: true, isAccessible: true }, instAntiAtionService);
+		this._severity = MArkerSeverity.WArning;
+		this._bAckgroundColor = Color.white;
 
-		this._applyTheme(_themeService.getColorTheme());
-		this._callOnDispose.add(_themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
+		this._ApplyTheme(_themeService.getColorTheme());
+		this._cAllOnDispose.Add(_themeService.onDidColorThemeChAnge(this._ApplyTheme.bind(this)));
 
-		this.create();
+		this.creAte();
 	}
 
-	private _applyTheme(theme: IColorTheme) {
-		this._backgroundColor = theme.getColor(editorMarkerNavigationBackground);
-		let colorId = editorMarkerNavigationError;
-		if (this._severity === MarkerSeverity.Warning) {
-			colorId = editorMarkerNavigationWarning;
-		} else if (this._severity === MarkerSeverity.Info) {
-			colorId = editorMarkerNavigationInfo;
+	privAte _ApplyTheme(theme: IColorTheme) {
+		this._bAckgroundColor = theme.getColor(editorMArkerNAvigAtionBAckground);
+		let colorId = editorMArkerNAvigAtionError;
+		if (this._severity === MArkerSeverity.WArning) {
+			colorId = editorMArkerNAvigAtionWArning;
+		} else if (this._severity === MArkerSeverity.Info) {
+			colorId = editorMArkerNAvigAtionInfo;
 		}
-		const frameColor = theme.getColor(colorId);
+		const frAmeColor = theme.getColor(colorId);
 		this.style({
-			arrowColor: frameColor,
-			frameColor: frameColor,
-			headerBackgroundColor: this._backgroundColor,
-			primaryHeadingColor: theme.getColor(peekViewTitleForeground),
-			secondaryHeadingColor: theme.getColor(peekViewTitleInfoForeground)
-		}); // style() will trigger _applyStyles
+			ArrowColor: frAmeColor,
+			frAmeColor: frAmeColor,
+			heAderBAckgroundColor: this._bAckgroundColor,
+			primAryHeAdingColor: theme.getColor(peekViewTitleForeground),
+			secondAryHeAdingColor: theme.getColor(peekViewTitleInfoForeground)
+		}); // style() will trigger _ApplyStyles
 	}
 
-	protected _applyStyles(): void {
-		if (this._parentContainer) {
-			this._parentContainer.style.backgroundColor = this._backgroundColor ? this._backgroundColor.toString() : '';
+	protected _ApplyStyles(): void {
+		if (this._pArentContAiner) {
+			this._pArentContAiner.style.bAckgroundColor = this._bAckgroundColor ? this._bAckgroundColor.toString() : '';
 		}
-		super._applyStyles();
+		super._ApplyStyles();
 	}
 
 	dispose(): void {
-		this._callOnDispose.dispose();
+		this._cAllOnDispose.dispose();
 		super.dispose();
 	}
 
 	focus(): void {
-		this._parentContainer.focus();
+		this._pArentContAiner.focus();
 	}
 
-	protected _fillHead(container: HTMLElement): void {
-		super._fillHead(container);
+	protected _fillHeAd(contAiner: HTMLElement): void {
+		super._fillHeAd(contAiner);
 
-		this._disposables.add(this._actionbarWidget!.actionRunner.onDidBeforeRun(e => this.editor.focus()));
+		this._disposAbles.Add(this._ActionbArWidget!.ActionRunner.onDidBeforeRun(e => this.editor.focus()));
 
-		const actions: IAction[] = [];
-		const menu = this._menuService.createMenu(MarkerNavigationWidget.TitleMenu, this._contextKeyService);
-		createAndFillInActionBarActions(menu, undefined, actions);
-		this._actionbarWidget!.push(actions, { label: false, icon: true, index: 0 });
+		const Actions: IAction[] = [];
+		const menu = this._menuService.creAteMenu(MArkerNAvigAtionWidget.TitleMenu, this._contextKeyService);
+		creAteAndFillInActionBArActions(menu, undefined, Actions);
+		this._ActionbArWidget!.push(Actions, { lAbel: fAlse, icon: true, index: 0 });
 		menu.dispose();
 	}
 
-	protected _fillTitleIcon(container: HTMLElement): void {
-		this._icon = dom.append(container, dom.$(''));
+	protected _fillTitleIcon(contAiner: HTMLElement): void {
+		this._icon = dom.Append(contAiner, dom.$(''));
 	}
 
-	protected _getActionBarOptions(): IActionBarOptions {
+	protected _getActionBArOptions(): IActionBArOptions {
 		return {
-			...super._getActionBarOptions(),
-			orientation: ActionsOrientation.HORIZONTAL
+			...super._getActionBArOptions(),
+			orientAtion: ActionsOrientAtion.HORIZONTAL
 		};
 	}
 
-	protected _fillBody(container: HTMLElement): void {
-		this._parentContainer = container;
-		container.classList.add('marker-widget');
-		this._parentContainer.tabIndex = 0;
-		this._parentContainer.setAttribute('role', 'tooltip');
+	protected _fillBody(contAiner: HTMLElement): void {
+		this._pArentContAiner = contAiner;
+		contAiner.clAssList.Add('mArker-widget');
+		this._pArentContAiner.tAbIndex = 0;
+		this._pArentContAiner.setAttribute('role', 'tooltip');
 
-		this._container = document.createElement('div');
-		container.appendChild(this._container);
+		this._contAiner = document.creAteElement('div');
+		contAiner.AppendChild(this._contAiner);
 
-		this._message = new MessageWidget(this._container, this.editor, related => this._onDidSelectRelatedInformation.fire(related), this._openerService);
-		this._disposables.add(this._message);
+		this._messAge = new MessAgeWidget(this._contAiner, this.editor, relAted => this._onDidSelectRelAtedInformAtion.fire(relAted), this._openerService);
+		this._disposAbles.Add(this._messAge);
 	}
 
 	show(): void {
-		throw new Error('call showAtMarker');
+		throw new Error('cAll showAtMArker');
 	}
 
-	showAtMarker(marker: IMarker, markerIdx: number, markerCount: number): void {
-		// update:
+	showAtMArker(mArker: IMArker, mArkerIdx: number, mArkerCount: number): void {
+		// updAte:
 		// * title
-		// * message
-		this._container.classList.remove('stale');
-		this._message.update(marker);
+		// * messAge
+		this._contAiner.clAssList.remove('stAle');
+		this._messAge.updAte(mArker);
 
-		// update frame color (only applied on 'show')
-		this._severity = marker.severity;
-		this._applyTheme(this._themeService.getColorTheme());
+		// updAte frAme color (only Applied on 'show')
+		this._severity = mArker.severity;
+		this._ApplyTheme(this._themeService.getColorTheme());
 
 		// show
-		let range = Range.lift(marker);
+		let rAnge = RAnge.lift(mArker);
 		const editorPosition = this.editor.getPosition();
-		let position = editorPosition && range.containsPosition(editorPosition) ? editorPosition : range.getStartPosition();
+		let position = editorPosition && rAnge.contAinsPosition(editorPosition) ? editorPosition : rAnge.getStArtPosition();
 		super.show(position, this.computeRequiredHeight());
 
 		const model = this.editor.getModel();
 		if (model) {
-			const detail = markerCount > 1
-				? nls.localize('problems', "{0} of {1} problems", markerIdx, markerCount)
-				: nls.localize('change', "{0} of {1} problem", markerIdx, markerCount);
-			this.setTitle(basename(model.uri), detail);
+			const detAil = mArkerCount > 1
+				? nls.locAlize('problems', "{0} of {1} problems", mArkerIdx, mArkerCount)
+				: nls.locAlize('chAnge', "{0} of {1} problem", mArkerIdx, mArkerCount);
+			this.setTitle(bAsenAme(model.uri), detAil);
 		}
-		this._icon.className = `codicon ${SeverityIcon.className(MarkerSeverity.toSeverity(this._severity))}`;
+		this._icon.clAssNAme = `codicon ${SeverityIcon.clAssNAme(MArkerSeverity.toSeverity(this._severity))}`;
 
-		this.editor.revealPositionNearTop(position, ScrollType.Smooth);
+		this.editor.reveAlPositionNeArTop(position, ScrollType.Smooth);
 		this.editor.focus();
 	}
 
-	updateMarker(marker: IMarker): void {
-		this._container.classList.remove('stale');
-		this._message.update(marker);
+	updAteMArker(mArker: IMArker): void {
+		this._contAiner.clAssList.remove('stAle');
+		this._messAge.updAte(mArker);
 	}
 
-	showStale() {
-		this._container.classList.add('stale');
-		this._relayout();
+	showStAle() {
+		this._contAiner.clAssList.Add('stAle');
+		this._relAyout();
 	}
 
-	protected _doLayoutBody(heightInPixel: number, widthInPixel: number): void {
-		super._doLayoutBody(heightInPixel, widthInPixel);
+	protected _doLAyoutBody(heightInPixel: number, widthInPixel: number): void {
+		super._doLAyoutBody(heightInPixel, widthInPixel);
 		this._heightInPixel = heightInPixel;
-		this._message.layout(heightInPixel, widthInPixel);
-		this._container.style.height = `${heightInPixel}px`;
+		this._messAge.lAyout(heightInPixel, widthInPixel);
+		this._contAiner.style.height = `${heightInPixel}px`;
 	}
 
 	public _onWidth(widthInPixel: number): void {
-		this._message.layout(this._heightInPixel, widthInPixel);
+		this._messAge.lAyout(this._heightInPixel, widthInPixel);
 	}
 
-	protected _relayout(): void {
-		super._relayout(this.computeRequiredHeight());
+	protected _relAyout(): void {
+		super._relAyout(this.computeRequiredHeight());
 	}
 
-	private computeRequiredHeight() {
-		return 3 + this._message.getHeightInLines();
+	privAte computeRequiredHeight() {
+		return 3 + this._messAge.getHeightInLines();
 	}
 }
 
 // theming
 
-let errorDefault = oneOf(editorErrorForeground, editorErrorBorder);
-let warningDefault = oneOf(editorWarningForeground, editorWarningBorder);
-let infoDefault = oneOf(editorInfoForeground, editorInfoBorder);
+let errorDefAult = oneOf(editorErrorForeground, editorErrorBorder);
+let wArningDefAult = oneOf(editorWArningForeground, editorWArningBorder);
+let infoDefAult = oneOf(editorInfoForeground, editorInfoBorder);
 
-export const editorMarkerNavigationError = registerColor('editorMarkerNavigationError.background', { dark: errorDefault, light: errorDefault, hc: errorDefault }, nls.localize('editorMarkerNavigationError', 'Editor marker navigation widget error color.'));
-export const editorMarkerNavigationWarning = registerColor('editorMarkerNavigationWarning.background', { dark: warningDefault, light: warningDefault, hc: warningDefault }, nls.localize('editorMarkerNavigationWarning', 'Editor marker navigation widget warning color.'));
-export const editorMarkerNavigationInfo = registerColor('editorMarkerNavigationInfo.background', { dark: infoDefault, light: infoDefault, hc: infoDefault }, nls.localize('editorMarkerNavigationInfo', 'Editor marker navigation widget info color.'));
-export const editorMarkerNavigationBackground = registerColor('editorMarkerNavigation.background', { dark: '#2D2D30', light: Color.white, hc: '#0C141F' }, nls.localize('editorMarkerNavigationBackground', 'Editor marker navigation widget background.'));
+export const editorMArkerNAvigAtionError = registerColor('editorMArkerNAvigAtionError.bAckground', { dArk: errorDefAult, light: errorDefAult, hc: errorDefAult }, nls.locAlize('editorMArkerNAvigAtionError', 'Editor mArker nAvigAtion widget error color.'));
+export const editorMArkerNAvigAtionWArning = registerColor('editorMArkerNAvigAtionWArning.bAckground', { dArk: wArningDefAult, light: wArningDefAult, hc: wArningDefAult }, nls.locAlize('editorMArkerNAvigAtionWArning', 'Editor mArker nAvigAtion widget wArning color.'));
+export const editorMArkerNAvigAtionInfo = registerColor('editorMArkerNAvigAtionInfo.bAckground', { dArk: infoDefAult, light: infoDefAult, hc: infoDefAult }, nls.locAlize('editorMArkerNAvigAtionInfo', 'Editor mArker nAvigAtion widget info color.'));
+export const editorMArkerNAvigAtionBAckground = registerColor('editorMArkerNAvigAtion.bAckground', { dArk: '#2D2D30', light: Color.white, hc: '#0C141F' }, nls.locAlize('editorMArkerNAvigAtionBAckground', 'Editor mArker nAvigAtion widget bAckground.'));
 
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 	const linkFg = theme.getColor(textLinkForeground);
 	if (linkFg) {
-		collector.addRule(`.monaco-editor .marker-widget a { color: ${linkFg}; }`);
-		collector.addRule(`.monaco-editor .marker-widget a.code-link span:hover { color: ${linkFg}; }`);
+		collector.AddRule(`.monAco-editor .mArker-widget A { color: ${linkFg}; }`);
+		collector.AddRule(`.monAco-editor .mArker-widget A.code-link spAn:hover { color: ${linkFg}; }`);
 	}
 });

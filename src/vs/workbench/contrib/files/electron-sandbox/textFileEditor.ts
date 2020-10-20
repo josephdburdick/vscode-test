@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { TextFileEditor } from 'vs/workbench/contrib/files/browser/editors/textFileEditor';
 import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
 import { EditorOptions } from 'vs/workbench/common/editor';
-import { FileOperationError, FileOperationResult, IFileService, MIN_MAX_MEMORY_SIZE_MB, FALLBACK_MAX_MEMORY_SIZE_MB } from 'vs/platform/files/common/files';
-import { createErrorWithActions } from 'vs/base/common/errorsWithActions';
-import { Action } from 'vs/base/common/actions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { FileOperAtionError, FileOperAtionResult, IFileService, MIN_MAX_MEMORY_SIZE_MB, FALLBACK_MAX_MEMORY_SIZE_MB } from 'vs/plAtform/files/common/files';
+import { creAteErrorWithActions } from 'vs/bAse/common/errorsWithActions';
+import { Action } from 'vs/bAse/common/Actions';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { ITextResourceConfigurAtionService } from 'vs/editor/common/services/textResourceConfigurAtionService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 import { IPreferencesService } from 'vs/workbench/services/preferences/common/preferences';
 import { IExplorerService } from 'vs/workbench/contrib/files/common/files';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
 /**
- * An implementation of editor for file system resources.
+ * An implementAtion of editor for file system resources.
  */
-export class NativeTextFileEditor extends TextFileEditor {
+export clAss NAtiveTextFileEditor extends TextFileEditor {
 
 	constructor(
 		@ITelemetryService telemetryService: ITelemetryService,
 		@IFileService fileService: IFileService,
 		@IViewletService viewletService: IViewletService,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@IWorkspaceContextService contextService: IWorkspaceContextService,
-		@IStorageService storageService: IStorageService,
-		@ITextResourceConfigurationService textResourceConfigurationService: ITextResourceConfigurationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@IWorkspAceContextService contextService: IWorkspAceContextService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@ITextResourceConfigurAtionService textResourceConfigurAtionService: ITextResourceConfigurAtionService,
 		@IEditorService editorService: IEditorService,
 		@IThemeService themeService: IThemeService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@ITextFileService textFileService: ITextFileService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IPreferencesService private readonly preferencesService: IPreferencesService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@IPreferencesService privAte reAdonly preferencesService: IPreferencesService,
 		@IExplorerService explorerService: IExplorerService,
 		@IUriIdentityService uriIdentityService: IUriIdentityService
 	) {
-		super(telemetryService, fileService, viewletService, instantiationService, contextService, storageService, textResourceConfigurationService, editorService, themeService, editorGroupService, textFileService, explorerService, uriIdentityService);
+		super(telemetryService, fileService, viewletService, instAntiAtionService, contextService, storAgeService, textResourceConfigurAtionService, editorService, themeService, editorGroupService, textFileService, explorerService, uriIdentityService);
 	}
 
-	protected handleSetInputError(error: Error, input: FileEditorInput, options: EditorOptions | undefined): void {
+	protected hAndleSetInputError(error: Error, input: FileEditorInput, options: EditorOptions | undefined): void {
 
-		// Allow to restart with higher memory limit if the file is too large
-		if ((<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_EXCEEDS_MEMORY_LIMIT) {
-			const memoryLimit = Math.max(MIN_MAX_MEMORY_SIZE_MB, +this.textResourceConfigurationService.getValue<number>(undefined, 'files.maxMemoryForLargeFilesMB') || FALLBACK_MAX_MEMORY_SIZE_MB);
+		// Allow to restArt with higher memory limit if the file is too lArge
+		if ((<FileOperAtionError>error).fileOperAtionResult === FileOperAtionResult.FILE_EXCEEDS_MEMORY_LIMIT) {
+			const memoryLimit = MAth.mAx(MIN_MAX_MEMORY_SIZE_MB, +this.textResourceConfigurAtionService.getVAlue<number>(undefined, 'files.mAxMemoryForLArgeFilesMB') || FALLBACK_MAX_MEMORY_SIZE_MB);
 
-			throw createErrorWithActions(nls.localize('fileTooLargeForHeapError', "To open a file of this size, you need to restart and allow it to use more memory"), {
-				actions: [
-					new Action('workbench.window.action.relaunchWithIncreasedMemoryLimit', nls.localize('relaunchWithIncreasedMemoryLimit', "Restart with {0} MB", memoryLimit), undefined, true, () => {
-						return this.nativeHostService.relaunch({
-							addArgs: [
-								`--max-memory=${memoryLimit}`
+			throw creAteErrorWithActions(nls.locAlize('fileTooLArgeForHeApError', "To open A file of this size, you need to restArt And Allow it to use more memory"), {
+				Actions: [
+					new Action('workbench.window.Action.relAunchWithIncreAsedMemoryLimit', nls.locAlize('relAunchWithIncreAsedMemoryLimit', "RestArt with {0} MB", memoryLimit), undefined, true, () => {
+						return this.nAtiveHostService.relAunch({
+							AddArgs: [
+								`--mAx-memory=${memoryLimit}`
 							]
 						});
 					}),
-					new Action('workbench.window.action.configureMemoryLimit', nls.localize('configureMemoryLimit', 'Configure Memory Limit'), undefined, true, () => {
-						return this.preferencesService.openGlobalSettings(undefined, { query: 'files.maxMemoryForLargeFilesMB' });
+					new Action('workbench.window.Action.configureMemoryLimit', nls.locAlize('configureMemoryLimit', 'Configure Memory Limit'), undefined, true, () => {
+						return this.preferencesService.openGlobAlSettings(undefined, { query: 'files.mAxMemoryForLArgeFilesMB' });
 					})
 				]
 			});
 		}
 
-		// Fallback to handling in super type
-		super.handleSetInputError(error, input, options);
+		// FAllbAck to hAndling in super type
+		super.hAndleSetInputError(error, input, options);
 	}
 }

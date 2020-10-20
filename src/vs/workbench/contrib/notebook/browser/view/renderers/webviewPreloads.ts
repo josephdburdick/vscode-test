@@ -1,255 +1,255 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type { Event } from 'vs/base/common/event';
-import type { IDisposable } from 'vs/base/common/lifecycle';
-import { ToWebviewMessage } from 'vs/workbench/contrib/notebook/browser/view/renderers/backLayerWebView';
+import type { Event } from 'vs/bAse/common/event';
+import type { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ToWebviewMessAge } from 'vs/workbench/contrib/notebook/browser/view/renderers/bAckLAyerWebView';
 import { RenderOutputType } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 
-// !! IMPORTANT !! everything must be in-line within the webviewPreloads
-// function. Imports are not allowed. This is stringifies and injected into
+// !! IMPORTANT !! everything must be in-line within the webviewPreloAds
+// function. Imports Are not Allowed. This is stringifies And injected into
 // the webview.
 
-declare const acquireVsCodeApi: () => ({ getState(): { [key: string]: unknown; }, setState(data: { [key: string]: unknown; }): void, postMessage: (msg: unknown) => void; });
+declAre const AcquireVsCodeApi: () => ({ getStAte(): { [key: string]: unknown; }, setStAte(dAtA: { [key: string]: unknown; }): void, postMessAge: (msg: unknown) => void; });
 
-declare class ResizeObserver {
-	constructor(onChange: (entries: { target: HTMLElement, contentRect?: ClientRect; }[]) => void);
+declAre clAss ResizeObserver {
+	constructor(onChAnge: (entries: { tArget: HTMLElement, contentRect?: ClientRect; }[]) => void);
 	observe(element: Element): void;
 	disconnect(): void;
 }
 
-declare const __outputNodePadding__: number;
+declAre const __outputNodePAdding__: number;
 
 type Listener<T> = { fn: (evt: T) => void; thisArg: unknown; };
 
-interface EmitterLike<T> {
-	fire(data: T): void;
+interfAce EmitterLike<T> {
+	fire(dAtA: T): void;
 	event: Event<T>;
 }
 
-function webviewPreloads() {
-	const vscode = acquireVsCodeApi();
+function webviewPreloAds() {
+	const vscode = AcquireVsCodeApi();
 
-	const handleInnerClick = (event: MouseEvent) => {
+	const hAndleInnerClick = (event: MouseEvent) => {
 		if (!event || !event.view || !event.view.document) {
 			return;
 		}
 
-		for (let node = event.target as HTMLElement | null; node; node = node.parentNode as HTMLElement) {
-			if (node instanceof HTMLAnchorElement && node.href) {
-				if (node.href.startsWith('blob:')) {
-					handleBlobUrlClick(node.href, node.download);
+		for (let node = event.tArget As HTMLElement | null; node; node = node.pArentNode As HTMLElement) {
+			if (node instAnceof HTMLAnchorElement && node.href) {
+				if (node.href.stArtsWith('blob:')) {
+					hAndleBlobUrlClick(node.href, node.downloAd);
 				}
-				event.preventDefault();
-				break;
+				event.preventDefAult();
+				breAk;
 			}
 		}
 	};
 
-	const handleBlobUrlClick = async (url: string, downloadName: string) => {
+	const hAndleBlobUrlClick = Async (url: string, downloAdNAme: string) => {
 		try {
-			const response = await fetch(url);
-			const blob = await response.blob();
-			const reader = new FileReader();
-			reader.addEventListener('load', () => {
-				const data = reader.result;
-				vscode.postMessage({
-					__vscode_notebook_message: true,
-					type: 'clicked-data-url',
-					data,
-					downloadName
+			const response = AwAit fetch(url);
+			const blob = AwAit response.blob();
+			const reAder = new FileReAder();
+			reAder.AddEventListener('loAd', () => {
+				const dAtA = reAder.result;
+				vscode.postMessAge({
+					__vscode_notebook_messAge: true,
+					type: 'clicked-dAtA-url',
+					dAtA,
+					downloAdNAme
 				});
 			});
-			reader.readAsDataURL(blob);
-		} catch (e) {
-			console.error(e.message);
+			reAder.reAdAsDAtAURL(blob);
+		} cAtch (e) {
+			console.error(e.messAge);
 		}
 	};
 
-	document.body.addEventListener('click', handleInnerClick);
+	document.body.AddEventListener('click', hAndleInnerClick);
 
 	const preservedScriptAttributes: (keyof HTMLScriptElement)[] = [
-		'type', 'src', 'nonce', 'noModule', 'async',
+		'type', 'src', 'nonce', 'noModule', 'Async',
 	];
 
-	// derived from https://github.com/jquery/jquery/blob/d0ce00cdfa680f1f0c38460bc51ea14079ae8b07/src/core/DOMEval.js
-	const domEval = (container: Element) => {
-		const arr = Array.from(container.getElementsByTagName('script'));
-		for (let n = 0; n < arr.length; n++) {
-			const node = arr[n];
-			const scriptTag = document.createElement('script');
-			scriptTag.text = node.innerText;
+	// derived from https://github.com/jquery/jquery/blob/d0ce00cdfA680f1f0c38460bc51eA14079Ae8b07/src/core/DOMEvAl.js
+	const domEvAl = (contAiner: Element) => {
+		const Arr = ArrAy.from(contAiner.getElementsByTAgNAme('script'));
+		for (let n = 0; n < Arr.length; n++) {
+			const node = Arr[n];
+			const scriptTAg = document.creAteElement('script');
+			scriptTAg.text = node.innerText;
 			for (const key of preservedScriptAttributes) {
-				const val = node[key] || node.getAttribute && node.getAttribute(key);
-				if (val) {
-					scriptTag.setAttribute(key, val as any);
+				const vAl = node[key] || node.getAttribute && node.getAttribute(key);
+				if (vAl) {
+					scriptTAg.setAttribute(key, vAl As Any);
 				}
 			}
 
 			// TODO@connor4312: should script with src not be removed?
-			container.appendChild(scriptTag).parentNode!.removeChild(scriptTag);
+			contAiner.AppendChild(scriptTAg).pArentNode!.removeChild(scriptTAg);
 		}
 	};
 
-	const outputObservers = new Map<string, ResizeObserver>();
+	const outputObservers = new MAp<string, ResizeObserver>();
 
-	const resizeObserve = (container: Element, id: string) => {
+	const resizeObserve = (contAiner: Element, id: string) => {
 		const resizeObserver = new ResizeObserver(entries => {
 			for (const entry of entries) {
-				if (!document.body.contains(entry.target)) {
+				if (!document.body.contAins(entry.tArget)) {
 					return;
 				}
 
-				if (entry.target.id === id && entry.contentRect) {
-					vscode.postMessage({
-						__vscode_notebook_message: true,
+				if (entry.tArget.id === id && entry.contentRect) {
+					vscode.postMessAge({
+						__vscode_notebook_messAge: true,
 						type: 'dimension',
 						id: id,
-						data: {
-							height: entry.contentRect.height + __outputNodePadding__ * 2
+						dAtA: {
+							height: entry.contentRect.height + __outputNodePAdding__ * 2
 						}
 					});
 				}
 			}
 		});
 
-		resizeObserver.observe(container);
-		if (outputObservers.has(id)) {
+		resizeObserver.observe(contAiner);
+		if (outputObservers.hAs(id)) {
 			outputObservers.get(id)?.disconnect();
 		}
 
 		outputObservers.set(id, resizeObserver);
 	};
 
-	function scrollWillGoToParent(event: WheelEvent) {
-		for (let node = event.target as Node | null; node; node = node.parentNode) {
-			if (!(node instanceof Element) || node.id === 'container') {
-				return false;
+	function scrollWillGoToPArent(event: WheelEvent) {
+		for (let node = event.tArget As Node | null; node; node = node.pArentNode) {
+			if (!(node instAnceof Element) || node.id === 'contAiner') {
+				return fAlse;
 			}
 
-			if (event.deltaY < 0 && node.scrollTop > 0) {
+			if (event.deltAY < 0 && node.scrollTop > 0) {
 				return true;
 			}
 
-			if (event.deltaY > 0 && node.scrollTop + node.clientHeight < node.scrollHeight) {
+			if (event.deltAY > 0 && node.scrollTop + node.clientHeight < node.scrollHeight) {
 				return true;
 			}
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	const handleWheel = (event: WheelEvent) => {
-		if (event.defaultPrevented || scrollWillGoToParent(event)) {
+	const hAndleWheel = (event: WheelEvent) => {
+		if (event.defAultPrevented || scrollWillGoToPArent(event)) {
 			return;
 		}
 
-		vscode.postMessage({
-			__vscode_notebook_message: true,
+		vscode.postMessAge({
+			__vscode_notebook_messAge: true,
 			type: 'did-scroll-wheel',
-			payload: {
-				deltaMode: event.deltaMode,
-				deltaX: event.deltaX,
-				deltaY: event.deltaY,
-				deltaZ: event.deltaZ,
-				detail: event.detail,
+			pAyloAd: {
+				deltAMode: event.deltAMode,
+				deltAX: event.deltAX,
+				deltAY: event.deltAY,
+				deltAZ: event.deltAZ,
+				detAil: event.detAil,
 				type: event.type
 			}
 		});
 	};
 
-	function focusFirstFocusableInCell(cellId: string) {
-		const cellOutputContainer = document.getElementById(cellId);
-		if (cellOutputContainer) {
-			const focusableElement = cellOutputContainer.querySelector('[tabindex="0"], [href], button, input, option, select, textarea') as HTMLElement | null;
-			focusableElement?.focus();
+	function focusFirstFocusAbleInCell(cellId: string) {
+		const cellOutputContAiner = document.getElementById(cellId);
+		if (cellOutputContAiner) {
+			const focusAbleElement = cellOutputContAiner.querySelector('[tAbindex="0"], [href], button, input, option, select, textAreA') As HTMLElement | null;
+			focusAbleElement?.focus();
 		}
 	}
 
-	function createFocusSink(cellId: string, outputId: string, focusNext?: boolean) {
-		const element = document.createElement('div');
-		element.tabIndex = 0;
-		element.addEventListener('focus', () => {
-			vscode.postMessage({
-				__vscode_notebook_message: true,
+	function creAteFocusSink(cellId: string, outputId: string, focusNext?: booleAn) {
+		const element = document.creAteElement('div');
+		element.tAbIndex = 0;
+		element.AddEventListener('focus', () => {
+			vscode.postMessAge({
+				__vscode_notebook_messAge: true,
 				type: 'focus-editor',
 				id: outputId,
 				focusNext
 			});
 
-			setTimeout(() => { // Wait a tick to prevent the focus indicator blinking before webview blurs
+			setTimeout(() => { // WAit A tick to prevent the focus indicAtor blinking before webview blurs
 				// Move focus off the focus sink - single use
-				focusFirstFocusableInCell(cellId);
+				focusFirstFocusAbleInCell(cellId);
 			}, 50);
 		});
 
 		return element;
 	}
 
-	function addMouseoverListeners(element: HTMLElement, outputId: string): void {
-		element.addEventListener('mouseenter', () => {
-			vscode.postMessage({
-				__vscode_notebook_message: true,
+	function AddMouseoverListeners(element: HTMLElement, outputId: string): void {
+		element.AddEventListener('mouseenter', () => {
+			vscode.postMessAge({
+				__vscode_notebook_messAge: true,
 				type: 'mouseenter',
 				id: outputId,
-				data: {}
+				dAtA: {}
 			});
 		});
-		element.addEventListener('mouseleave', () => {
-			vscode.postMessage({
-				__vscode_notebook_message: true,
-				type: 'mouseleave',
+		element.AddEventListener('mouseleAve', () => {
+			vscode.postMessAge({
+				__vscode_notebook_messAge: true,
+				type: 'mouseleAve',
 				id: outputId,
-				data: {}
+				dAtA: {}
 			});
 		});
 	}
 
 	const dontEmit = Symbol('dontEmit');
 
-	function createEmitter<T>(listenerChange: (listeners: Set<Listener<T>>) => void = () => undefined): EmitterLike<T> {
+	function creAteEmitter<T>(listenerChAnge: (listeners: Set<Listener<T>>) => void = () => undefined): EmitterLike<T> {
 		const listeners = new Set<Listener<T>>();
 		return {
-			fire(data) {
+			fire(dAtA) {
 				for (const listener of [...listeners]) {
-					listener.fn.call(listener.thisArg, data);
+					listener.fn.cAll(listener.thisArg, dAtA);
 				}
 			},
-			event(fn, thisArg, disposables) {
+			event(fn, thisArg, disposAbles) {
 				const listenerObj = { fn, thisArg };
-				const disposable: IDisposable = {
+				const disposAble: IDisposAble = {
 					dispose: () => {
 						listeners.delete(listenerObj);
-						listenerChange(listeners);
+						listenerChAnge(listeners);
 					},
 				};
 
-				listeners.add(listenerObj);
-				listenerChange(listeners);
+				listeners.Add(listenerObj);
+				listenerChAnge(listeners);
 
-				if (disposables instanceof Array) {
-					disposables.push(disposable);
-				} else if (disposables) {
-					disposables.add(disposable);
+				if (disposAbles instAnceof ArrAy) {
+					disposAbles.push(disposAble);
+				} else if (disposAbles) {
+					disposAbles.Add(disposAble);
 				}
 
-				return disposable;
+				return disposAble;
 			},
 		};
 	}
 
-	// Maps the events in the given emitter, invoking mapFn on each one. mapFn can return
+	// MAps the events in the given emitter, invoking mApFn on eAch one. mApFn cAn return
 	// the dontEmit symbol to skip emission.
-	function mapEmitter<T, R>(emitter: EmitterLike<T>, mapFn: (data: T) => R | typeof dontEmit) {
-		let listener: IDisposable;
-		const mapped = createEmitter(listeners => {
+	function mApEmitter<T, R>(emitter: EmitterLike<T>, mApFn: (dAtA: T) => R | typeof dontEmit) {
+		let listener: IDisposAble;
+		const mApped = creAteEmitter(listeners => {
 			if (listeners.size && !listener) {
-				listener = emitter.event(data => {
-					const v = mapFn(data);
+				listener = emitter.event(dAtA => {
+					const v = mApFn(dAtA);
 					if (v !== dontEmit) {
-						mapped.fire(v);
+						mApped.fire(v);
 					}
 				});
 			} else if (listener && !listeners.size) {
@@ -257,74 +257,74 @@ function webviewPreloads() {
 			}
 		});
 
-		return mapped.event;
+		return mApped.event;
 	}
 
-	interface ICreateCellInfo {
+	interfAce ICreAteCellInfo {
 		outputId: string;
 		output?: unknown;
 		mimeType?: string;
 		element: HTMLElement;
 	}
 
-	interface IDestroyCellInfo {
+	interfAce IDestroyCellInfo {
 		outputId: string;
 	}
 
-	const onWillDestroyOutput = createEmitter<[string | undefined /* namespace */, IDestroyCellInfo | undefined /* cell uri */]>();
-	const onDidCreateOutput = createEmitter<[string | undefined /* namespace */, ICreateCellInfo]>();
-	const onDidReceiveMessage = createEmitter<[string, unknown]>();
+	const onWillDestroyOutput = creAteEmitter<[string | undefined /* nAmespAce */, IDestroyCellInfo | undefined /* cell uri */]>();
+	const onDidCreAteOutput = creAteEmitter<[string | undefined /* nAmespAce */, ICreAteCellInfo]>();
+	const onDidReceiveMessAge = creAteEmitter<[string, unknown]>();
 
-	const matchesNs = (namespace: string, query: string | undefined) => namespace === '*' || query === namespace || query === 'undefined';
+	const mAtchesNs = (nAmespAce: string, query: string | undefined) => nAmespAce === '*' || query === nAmespAce || query === 'undefined';
 
-	(window as any).acquireNotebookRendererApi = <T>(namespace: string) => {
-		if (!namespace || typeof namespace !== 'string') {
-			throw new Error(`acquireNotebookRendererApi should be called your renderer type as a string, got: ${namespace}.`);
+	(window As Any).AcquireNotebookRendererApi = <T>(nAmespAce: string) => {
+		if (!nAmespAce || typeof nAmespAce !== 'string') {
+			throw new Error(`AcquireNotebookRendererApi should be cAlled your renderer type As A string, got: ${nAmespAce}.`);
 		}
 
 		return {
-			postMessage(message: unknown) {
-				vscode.postMessage({
-					__vscode_notebook_message: true,
-					type: 'customRendererMessage',
-					rendererId: namespace,
-					message,
+			postMessAge(messAge: unknown) {
+				vscode.postMessAge({
+					__vscode_notebook_messAge: true,
+					type: 'customRendererMessAge',
+					rendererId: nAmespAce,
+					messAge,
 				});
 			},
-			setState(newState: T) {
-				vscode.setState({ ...vscode.getState(), [namespace]: newState });
+			setStAte(newStAte: T) {
+				vscode.setStAte({ ...vscode.getStAte(), [nAmespAce]: newStAte });
 			},
-			getState(): T | undefined {
-				const state = vscode.getState();
-				return typeof state === 'object' && state ? state[namespace] as T : undefined;
+			getStAte(): T | undefined {
+				const stAte = vscode.getStAte();
+				return typeof stAte === 'object' && stAte ? stAte[nAmespAce] As T : undefined;
 			},
-			onDidReceiveMessage: mapEmitter(onDidReceiveMessage, ([ns, data]) => ns === namespace ? data : dontEmit),
-			onWillDestroyOutput: mapEmitter(onWillDestroyOutput, ([ns, data]) => matchesNs(namespace, ns) ? data : dontEmit),
-			onDidCreateOutput: mapEmitter(onDidCreateOutput, ([ns, data]) => matchesNs(namespace, ns) ? data : dontEmit),
+			onDidReceiveMessAge: mApEmitter(onDidReceiveMessAge, ([ns, dAtA]) => ns === nAmespAce ? dAtA : dontEmit),
+			onWillDestroyOutput: mApEmitter(onWillDestroyOutput, ([ns, dAtA]) => mAtchesNs(nAmespAce, ns) ? dAtA : dontEmit),
+			onDidCreAteOutput: mApEmitter(onDidCreAteOutput, ([ns, dAtA]) => mAtchesNs(nAmespAce, ns) ? dAtA : dontEmit),
 		};
 	};
 
 	/**
-	 * Map of preload resource URIs to promises that resolve one the resource
-	 * loads or errors.
+	 * MAp of preloAd resource URIs to promises thAt resolve one the resource
+	 * loAds or errors.
 	 */
-	const preloadPromises = new Map<string, Promise<string | undefined /* error string, or undefined if ok */>>();
-	const queuedOuputActions = new Map<string, Promise<void>>();
+	const preloAdPromises = new MAp<string, Promise<string | undefined /* error string, or undefined if ok */>>();
+	const queuedOuputActions = new MAp<string, Promise<void>>();
 
 	/**
-	 * Enqueues an action that affects a output. This blocks behind renderer load
-	 * requests that affect the same output. This should be called whenever you
-	 * do something that affects output to ensure it runs in
+	 * Enqueues An Action thAt Affects A output. This blocks behind renderer loAd
+	 * requests thAt Affect the sAme output. This should be cAlled whenever you
+	 * do something thAt Affects output to ensure it runs in
 	 * the correct order.
 	 */
 	const enqueueOutputAction = <T extends { outputId: string; }>(event: T, fn: (event: T) => Promise<void> | void) => {
 		const queued = queuedOuputActions.get(event.outputId);
-		const maybePromise = queued ? queued.then(() => fn(event)) : fn(event);
-		if (typeof maybePromise === 'undefined') {
-			return; // a synchonrously-called function, we're done
+		const mAybePromise = queued ? queued.then(() => fn(event)) : fn(event);
+		if (typeof mAybePromise === 'undefined') {
+			return; // A synchonrously-cAlled function, we're done
 		}
 
-		const promise = maybePromise.then(() => {
+		const promise = mAybePromise.then(() => {
 			if (queuedOuputActions.get(event.outputId) === promise) {
 				queuedOuputActions.delete(event.outputId);
 			}
@@ -333,190 +333,190 @@ function webviewPreloads() {
 		queuedOuputActions.set(event.outputId, promise);
 	};
 
-	window.addEventListener('wheel', handleWheel);
+	window.AddEventListener('wheel', hAndleWheel);
 
-	window.addEventListener('message', rawEvent => {
-		const event = rawEvent as ({ data: ToWebviewMessage; });
+	window.AddEventListener('messAge', rAwEvent => {
+		const event = rAwEvent As ({ dAtA: ToWebviewMessAge; });
 
-		switch (event.data.type) {
-			case 'html':
-				enqueueOutputAction(event.data, async data => {
-					const preloadErrs = await Promise.all(data.requiredPreloads.map(p => preloadPromises.get(p.uri)));
-					if (!queuedOuputActions.has(data.outputId)) { // output was cleared while loading
+		switch (event.dAtA.type) {
+			cAse 'html':
+				enqueueOutputAction(event.dAtA, Async dAtA => {
+					const preloAdErrs = AwAit Promise.All(dAtA.requiredPreloAds.mAp(p => preloAdPromises.get(p.uri)));
+					if (!queuedOuputActions.hAs(dAtA.outputId)) { // output wAs cleAred while loAding
 						return;
 					}
 
-					let cellOutputContainer = document.getElementById(data.cellId);
-					const outputId = data.outputId;
-					if (!cellOutputContainer) {
-						const container = document.getElementById('container')!;
+					let cellOutputContAiner = document.getElementById(dAtA.cellId);
+					const outputId = dAtA.outputId;
+					if (!cellOutputContAiner) {
+						const contAiner = document.getElementById('contAiner')!;
 
-						const upperWrapperElement = createFocusSink(data.cellId, outputId);
-						container.appendChild(upperWrapperElement);
+						const upperWrApperElement = creAteFocusSink(dAtA.cellId, outputId);
+						contAiner.AppendChild(upperWrApperElement);
 
-						const newElement = document.createElement('div');
+						const newElement = document.creAteElement('div');
 
-						newElement.id = data.cellId;
-						container.appendChild(newElement);
-						cellOutputContainer = newElement;
+						newElement.id = dAtA.cellId;
+						contAiner.AppendChild(newElement);
+						cellOutputContAiner = newElement;
 
-						const lowerWrapperElement = createFocusSink(data.cellId, outputId, true);
-						container.appendChild(lowerWrapperElement);
+						const lowerWrApperElement = creAteFocusSink(dAtA.cellId, outputId, true);
+						contAiner.AppendChild(lowerWrApperElement);
 					}
 
-					const outputNode = document.createElement('div');
-					outputNode.style.position = 'absolute';
-					outputNode.style.top = data.top + 'px';
-					outputNode.style.left = data.left + 'px';
-					outputNode.style.width = 'calc(100% - ' + data.left + 'px)';
+					const outputNode = document.creAteElement('div');
+					outputNode.style.position = 'Absolute';
+					outputNode.style.top = dAtA.top + 'px';
+					outputNode.style.left = dAtA.left + 'px';
+					outputNode.style.width = 'cAlc(100% - ' + dAtA.left + 'px)';
 					outputNode.style.minHeight = '32px';
 					outputNode.id = outputId;
 
-					addMouseoverListeners(outputNode, outputId);
-					const content = data.content;
+					AddMouseoverListeners(outputNode, outputId);
+					const content = dAtA.content;
 					if (content.type === RenderOutputType.Html) {
 						outputNode.innerHTML = content.htmlContent;
-						cellOutputContainer.appendChild(outputNode);
-						domEval(outputNode);
-					} else if (preloadErrs.some(e => !!e)) {
-						outputNode.innerText = `Error loading preloads:`;
-						const errList = document.createElement('ul');
-						for (const err of preloadErrs) {
+						cellOutputContAiner.AppendChild(outputNode);
+						domEvAl(outputNode);
+					} else if (preloAdErrs.some(e => !!e)) {
+						outputNode.innerText = `Error loAding preloAds:`;
+						const errList = document.creAteElement('ul');
+						for (const err of preloAdErrs) {
 							if (err) {
-								const item = document.createElement('li');
+								const item = document.creAteElement('li');
 								item.innerText = err;
-								errList.appendChild(item);
+								errList.AppendChild(item);
 							}
 						}
-						outputNode.appendChild(errList);
-						cellOutputContainer.appendChild(outputNode);
+						outputNode.AppendChild(errList);
+						cellOutputContAiner.AppendChild(outputNode);
 					} else {
-						onDidCreateOutput.fire([data.apiNamespace, {
+						onDidCreAteOutput.fire([dAtA.ApiNAmespAce, {
 							element: outputNode,
 							output: content.output,
 							mimeType: content.mimeType,
 							outputId
 						}]);
-						cellOutputContainer.appendChild(outputNode);
+						cellOutputContAiner.AppendChild(outputNode);
 					}
 
 					resizeObserve(outputNode, outputId);
 
-					vscode.postMessage({
-						__vscode_notebook_message: true,
+					vscode.postMessAge({
+						__vscode_notebook_messAge: true,
 						type: 'dimension',
 						id: outputId,
-						data: {
+						dAtA: {
 							height: outputNode.clientHeight
 						}
 					});
 
-					// don't hide until after this step so that the height is right
-					cellOutputContainer.style.display = data.initiallyHidden ? 'none' : 'block';
+					// don't hide until After this step so thAt the height is right
+					cellOutputContAiner.style.displAy = dAtA.initiAllyHidden ? 'none' : 'block';
 				});
-				break;
-			case 'view-scroll':
+				breAk;
+			cAse 'view-scroll':
 				{
-					// const date = new Date();
-					// console.log('----- will scroll ----  ', date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds());
+					// const dAte = new DAte();
+					// console.log('----- will scroll ----  ', dAte.getMinutes() + ':' + dAte.getSeconds() + ':' + dAte.getMilliseconds());
 
-					for (let i = 0; i < event.data.widgets.length; i++) {
-						const widget = document.getElementById(event.data.widgets[i].id)!;
+					for (let i = 0; i < event.dAtA.widgets.length; i++) {
+						const widget = document.getElementById(event.dAtA.widgets[i].id)!;
 						if (widget) {
-							widget.style.top = event.data.widgets[i].top + 'px';
-							if (event.data.forceDisplay) {
-								widget.parentElement!.style.display = 'block';
+							widget.style.top = event.dAtA.widgets[i].top + 'px';
+							if (event.dAtA.forceDisplAy) {
+								widget.pArentElement!.style.displAy = 'block';
 							}
 						}
 					}
-					break;
+					breAk;
 				}
-			case 'clear':
-				queuedOuputActions.clear(); // stop all loading outputs
+			cAse 'cleAr':
+				queuedOuputActions.cleAr(); // stop All loAding outputs
 				onWillDestroyOutput.fire([undefined, undefined]);
-				document.getElementById('container')!.innerText = '';
+				document.getElementById('contAiner')!.innerText = '';
 
-				outputObservers.forEach(ob => {
+				outputObservers.forEAch(ob => {
 					ob.disconnect();
 				});
-				outputObservers.clear();
-				break;
-			case 'clearOutput':
-				const output = document.getElementById(event.data.outputId);
-				queuedOuputActions.delete(event.data.outputId); // stop any in-progress rendering
-				if (output && output.parentNode) {
-					onWillDestroyOutput.fire([event.data.apiNamespace, { outputId: event.data.outputId }]);
-					output.parentNode.removeChild(output);
+				outputObservers.cleAr();
+				breAk;
+			cAse 'cleArOutput':
+				const output = document.getElementById(event.dAtA.outputId);
+				queuedOuputActions.delete(event.dAtA.outputId); // stop Any in-progress rendering
+				if (output && output.pArentNode) {
+					onWillDestroyOutput.fire([event.dAtA.ApiNAmespAce, { outputId: event.dAtA.outputId }]);
+					output.pArentNode.removeChild(output);
 				}
-				break;
-			case 'hideOutput':
-				enqueueOutputAction(event.data, ({ outputId }) => {
-					const container = document.getElementById(outputId)?.parentElement;
-					if (container) {
-						container.style.display = 'none';
+				breAk;
+			cAse 'hideOutput':
+				enqueueOutputAction(event.dAtA, ({ outputId }) => {
+					const contAiner = document.getElementById(outputId)?.pArentElement;
+					if (contAiner) {
+						contAiner.style.displAy = 'none';
 					}
 				});
-				break;
-			case 'showOutput':
-				enqueueOutputAction(event.data, ({ outputId, top }) => {
+				breAk;
+			cAse 'showOutput':
+				enqueueOutputAction(event.dAtA, ({ outputId, top }) => {
 					const output = document.getElementById(outputId);
 					if (output) {
-						output.parentElement!.style.display = 'block';
+						output.pArentElement!.style.displAy = 'block';
 						output.style.top = top + 'px';
 
-						vscode.postMessage({
-							__vscode_notebook_message: true,
+						vscode.postMessAge({
+							__vscode_notebook_messAge: true,
 							type: 'dimension',
 							id: outputId,
-							data: {
+							dAtA: {
 								height: output.clientHeight
 							}
 						});
 					}
 				});
-				break;
-			case 'preload':
-				const resources = event.data.resources;
-				const preloadsContainer = document.getElementById('__vscode_preloads')!;
+				breAk;
+			cAse 'preloAd':
+				const resources = event.dAtA.resources;
+				const preloAdsContAiner = document.getElementById('__vscode_preloAds')!;
 				for (let i = 0; i < resources.length; i++) {
-					const { uri, originalUri } = resources[i];
-					const scriptTag = document.createElement('script');
-					scriptTag.setAttribute('src', uri);
-					preloadsContainer.appendChild(scriptTag);
-					preloadPromises.set(uri, new Promise<string | undefined>(resolve => {
-						scriptTag.addEventListener('load', () => resolve(undefined));
-						scriptTag.addEventListener('error', () =>
-							resolve(`Network error loading ${originalUri}, does the path exist?`)
+					const { uri, originAlUri } = resources[i];
+					const scriptTAg = document.creAteElement('script');
+					scriptTAg.setAttribute('src', uri);
+					preloAdsContAiner.AppendChild(scriptTAg);
+					preloAdPromises.set(uri, new Promise<string | undefined>(resolve => {
+						scriptTAg.AddEventListener('loAd', () => resolve(undefined));
+						scriptTAg.AddEventListener('error', () =>
+							resolve(`Network error loAding ${originAlUri}, does the pAth exist?`)
 						);
 					}));
 				}
-				break;
-			case 'focus-output':
-				focusFirstFocusableInCell(event.data.cellId);
-				break;
-			case 'decorations':
+				breAk;
+			cAse 'focus-output':
+				focusFirstFocusAbleInCell(event.dAtA.cellId);
+				breAk;
+			cAse 'decorAtions':
 				{
-					const outputContainer = document.getElementById(event.data.cellId);
-					event.data.addedClassNames.forEach(n => {
-						outputContainer?.classList.add(n);
+					const outputContAiner = document.getElementById(event.dAtA.cellId);
+					event.dAtA.AddedClAssNAmes.forEAch(n => {
+						outputContAiner?.clAssList.Add(n);
 					});
 
-					event.data.removedClassNames.forEach(n => {
-						outputContainer?.classList.remove(n);
+					event.dAtA.removedClAssNAmes.forEAch(n => {
+						outputContAiner?.clAssList.remove(n);
 					});
 				}
 
-				break;
-			case 'customRendererMessage':
-				onDidReceiveMessage.fire([event.data.rendererId, event.data.message]);
-				break;
+				breAk;
+			cAse 'customRendererMessAge':
+				onDidReceiveMessAge.fire([event.dAtA.rendererId, event.dAtA.messAge]);
+				breAk;
 		}
 	});
 
-	vscode.postMessage({
-		__vscode_notebook_message: true,
-		type: 'initialized'
+	vscode.postMessAge({
+		__vscode_notebook_messAge: true,
+		type: 'initiAlized'
 	});
 }
 
-export const preloadsScriptStr = (outputNodePadding: number) => `(${webviewPreloads})()`.replace(/__outputNodePadding__/g, `${outputNodePadding}`);
+export const preloAdsScriptStr = (outputNodePAdding: number) => `(${webviewPreloAds})()`.replAce(/__outputNodePAdding__/g, `${outputNodePAdding}`);

@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IInitData } from './extHost.protocol';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { IInitDAtA } from './extHost.protocol';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IExtHostInitDataService = createDecorator<IExtHostInitDataService>('IExtHostInitDataService');
+export const IExtHostInitDAtAService = creAteDecorAtor<IExtHostInitDAtAService>('IExtHostInitDAtAService');
 
-export interface IExtHostInitDataService extends Readonly<IInitData> {
-	readonly _serviceBrand: undefined;
+export interfAce IExtHostInitDAtAService extends ReAdonly<IInitDAtA> {
+	reAdonly _serviceBrAnd: undefined;
 }
 

@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as uuid from 'vs/base/common/uuid';
-import { OS, OperatingSystem } from 'vs/base/common/platform';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Action } from 'vs/base/common/actions';
-import { KeyCode, SimpleKeybinding, ChordKeybinding } from 'vs/base/common/keyCodes';
-import { SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions } from 'vs/workbench/common/actions';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
+import * As Assert from 'Assert';
+import * As uuid from 'vs/bAse/common/uuid';
+import { OS, OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Action } from 'vs/bAse/common/Actions';
+import { KeyCode, SimpleKeybinding, ChordKeybinding } from 'vs/bAse/common/keyCodes';
+import { SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { IWorkbenchActionRegistry, Extensions As ActionExtensions } from 'vs/workbench/common/Actions';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
 import { KeybindingsEditorModel, IKeybindingItemEntry } from 'vs/workbench/services/preferences/common/keybindingsEditorModel';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
-import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayoutResolvedKeybinding';
+import { ResolvedKeybindingItem } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
+import { USLAyoutResolvedKeybinding } from 'vs/plAtform/keybinding/common/usLAyoutResolvedKeybinding';
 
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
 
-interface Modifiers {
-	metaKey?: boolean;
-	ctrlKey?: boolean;
-	altKey?: boolean;
-	shiftKey?: boolean;
+interfAce Modifiers {
+	metAKey?: booleAn;
+	ctrlKey?: booleAn;
+	AltKey?: booleAn;
+	shiftKey?: booleAn;
 }
 
-class AnAction extends Action {
+clAss AnAction extends Action {
 	constructor(id: string) {
 		super(id);
 	}
@@ -36,636 +36,636 @@ class AnAction extends Action {
 
 suite('KeybindingsEditorModel', () => {
 
-	let instantiationService: TestInstantiationService;
+	let instAntiAtionService: TestInstAntiAtionService;
 	let testObject: KeybindingsEditorModel;
 
 	setup(() => {
-		instantiationService = new TestInstantiationService();
+		instAntiAtionService = new TestInstAntiAtionService();
 
-		instantiationService.stub(IKeybindingService, {});
-		instantiationService.stub(IExtensionService, {}, 'whenInstalledExtensionsRegistered', () => Promise.resolve(null));
+		instAntiAtionService.stub(IKeybindingService, {});
+		instAntiAtionService.stub(IExtensionService, {}, 'whenInstAlledExtensionsRegistered', () => Promise.resolve(null));
 
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OS);
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OS);
 
-		CommandsRegistry.registerCommand('command_without_keybinding', () => { });
+		CommAndsRegistry.registerCommAnd('commAnd_without_keybinding', () => { });
 	});
 
-	test('fetch returns default keybindings', async () => {
-		const expected = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'b' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } })
+	test('fetch returns defAult keybindings', Async () => {
+		const expected = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'b' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } })
 		);
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch(''));
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch(''));
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('fetch returns default keybindings at the top', async () => {
-		const expected = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'b' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } })
+	test('fetch returns defAult keybindings At the top', Async () => {
+		const expected = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'b' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } })
 		);
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch('').slice(0, 2), true);
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch('').slice(0, 2), true);
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('fetch returns default keybindings sorted by command id', async () => {
-		const keybindings = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: 'b' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'c' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Backspace } })
+	test('fetch returns defAult keybindings sorted by commAnd id', Async () => {
+		const keybindings = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: 'b' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'c' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.BAckspAce } })
 		);
 		const expected = [keybindings[2], keybindings[0], keybindings[1]];
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch(''));
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch(''));
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('fetch returns user keybinding first if default and user has same id', async () => {
-		const sameId = 'b' + uuid.generateUuid();
-		const keybindings = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: sameId, firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: sameId, firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape }, isDefault: false })
+	test('fetch returns user keybinding first if defAult And user hAs sAme id', Async () => {
+		const sAmeId = 'b' + uuid.generAteUuid();
+		const keybindings = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: sAmeId, firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: sAmeId, firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe }, isDefAult: fAlse })
 		);
 		const expected = [keybindings[1], keybindings[0]];
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch(''));
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch(''));
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('fetch returns keybinding with titles first', async () => {
-		const keybindings = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'b' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'c' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'd' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } })
+	test('fetch returns keybinding with titles first', Async () => {
+		const keybindings = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'b' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'c' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'd' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } })
 		);
 
-		registerCommandWithTitle(keybindings[1].command!, 'B Title');
-		registerCommandWithTitle(keybindings[3].command!, 'A Title');
+		registerCommAndWithTitle(keybindings[1].commAnd!, 'B Title');
+		registerCommAndWithTitle(keybindings[3].commAnd!, 'A Title');
 
 		const expected = [keybindings[3], keybindings[1], keybindings[0], keybindings[2]];
-		instantiationService.stub(IKeybindingService, 'getKeybindings', () => keybindings);
-		instantiationService.stub(IKeybindingService, 'getDefaultKeybindings', () => keybindings);
+		instAntiAtionService.stub(IKeybindingService, 'getKeybindings', () => keybindings);
+		instAntiAtionService.stub(IKeybindingService, 'getDefAultKeybindings', () => keybindings);
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch(''));
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch(''));
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('fetch returns keybinding with user first if title and id matches', async () => {
-		const sameId = 'b' + uuid.generateUuid();
-		const keybindings = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: sameId, firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'c' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: sameId, firstPart: { keyCode: KeyCode.Escape }, isDefault: false })
+	test('fetch returns keybinding with user first if title And id mAtches', Async () => {
+		const sAmeId = 'b' + uuid.generAteUuid();
+		const keybindings = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: sAmeId, firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'c' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: sAmeId, firstPArt: { keyCode: KeyCode.EscApe }, isDefAult: fAlse })
 		);
 
-		registerCommandWithTitle(keybindings[1].command!, 'Same Title');
-		registerCommandWithTitle(keybindings[3].command!, 'Same Title');
+		registerCommAndWithTitle(keybindings[1].commAnd!, 'SAme Title');
+		registerCommAndWithTitle(keybindings[3].commAnd!, 'SAme Title');
 		const expected = [keybindings[3], keybindings[1], keybindings[0], keybindings[2]];
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch(''));
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch(''));
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('fetch returns default keybindings sorted by precedence', async () => {
-		const expected = prepareKeybindingService(
-			aResolvedKeybindingItem({ command: 'b' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'c' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, chordPart: { keyCode: KeyCode.Escape } }),
-			aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Backspace } })
+	test('fetch returns defAult keybindings sorted by precedence', Async () => {
+		const expected = prepAreKeybindingService(
+			AResolvedKeybindingItem({ commAnd: 'b' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'c' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, chordPArt: { keyCode: KeyCode.EscApe } }),
+			AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.BAckspAce } })
 		);
 
-		await testObject.resolve(new Map<string, string>());
-		const actuals = asResolvedKeybindingItems(testObject.fetch('', true));
-		assertKeybindingItems(actuals, expected);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAls = AsResolvedKeybindingItems(testObject.fetch('', true));
+		AssertKeybindingItems(ActuAls, expected);
 	});
 
-	test('convert keybinding without title to entry', async () => {
-		const expected = aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, when: 'context1 && context2' });
-		prepareKeybindingService(expected);
+	test('convert keybinding without title to entry', Async () => {
+		const expected = AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, when: 'context1 && context2' });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('')[0];
-		assert.equal(actual.keybindingItem.command, expected.command);
-		assert.equal(actual.keybindingItem.commandLabel, '');
-		assert.equal(actual.keybindingItem.commandDefaultLabel, null);
-		assert.equal(actual.keybindingItem.keybinding.getAriaLabel(), expected.resolvedKeybinding!.getAriaLabel());
-		assert.equal(actual.keybindingItem.when, expected.when!.serialize());
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('')[0];
+		Assert.equAl(ActuAl.keybindingItem.commAnd, expected.commAnd);
+		Assert.equAl(ActuAl.keybindingItem.commAndLAbel, '');
+		Assert.equAl(ActuAl.keybindingItem.commAndDefAultLAbel, null);
+		Assert.equAl(ActuAl.keybindingItem.keybinding.getAriALAbel(), expected.resolvedKeybinding!.getAriALAbel());
+		Assert.equAl(ActuAl.keybindingItem.when, expected.when!.seriAlize());
 	});
 
-	test('convert keybinding with title to entry', async () => {
-		const expected = aResolvedKeybindingItem({ command: 'a' + uuid.generateUuid(), firstPart: { keyCode: KeyCode.Escape }, when: 'context1 && context2' });
-		prepareKeybindingService(expected);
-		registerCommandWithTitle(expected.command!, 'Some Title');
+	test('convert keybinding with title to entry', Async () => {
+		const expected = AResolvedKeybindingItem({ commAnd: 'A' + uuid.generAteUuid(), firstPArt: { keyCode: KeyCode.EscApe }, when: 'context1 && context2' });
+		prepAreKeybindingService(expected);
+		registerCommAndWithTitle(expected.commAnd!, 'Some Title');
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('')[0];
-		assert.equal(actual.keybindingItem.command, expected.command);
-		assert.equal(actual.keybindingItem.commandLabel, 'Some Title');
-		assert.equal(actual.keybindingItem.commandDefaultLabel, null);
-		assert.equal(actual.keybindingItem.keybinding.getAriaLabel(), expected.resolvedKeybinding!.getAriaLabel());
-		assert.equal(actual.keybindingItem.when, expected.when!.serialize());
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('')[0];
+		Assert.equAl(ActuAl.keybindingItem.commAnd, expected.commAnd);
+		Assert.equAl(ActuAl.keybindingItem.commAndLAbel, 'Some Title');
+		Assert.equAl(ActuAl.keybindingItem.commAndDefAultLAbel, null);
+		Assert.equAl(ActuAl.keybindingItem.keybinding.getAriALAbel(), expected.resolvedKeybinding!.getAriALAbel());
+		Assert.equAl(ActuAl.keybindingItem.when, expected.when!.seriAlize());
 	});
 
-	test('convert without title and binding to entry', async () => {
-		CommandsRegistry.registerCommand('command_without_keybinding', () => { });
-		prepareKeybindingService();
+	test('convert without title And binding to entry', Async () => {
+		CommAndsRegistry.registerCommAnd('commAnd_without_keybinding', () => { });
+		prepAreKeybindingService();
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('').filter(element => element.keybindingItem.command === 'command_without_keybinding')[0];
-		assert.equal(actual.keybindingItem.command, 'command_without_keybinding');
-		assert.equal(actual.keybindingItem.commandLabel, '');
-		assert.equal(actual.keybindingItem.commandDefaultLabel, null);
-		assert.equal(actual.keybindingItem.keybinding, null);
-		assert.equal(actual.keybindingItem.when, '');
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('').filter(element => element.keybindingItem.commAnd === 'commAnd_without_keybinding')[0];
+		Assert.equAl(ActuAl.keybindingItem.commAnd, 'commAnd_without_keybinding');
+		Assert.equAl(ActuAl.keybindingItem.commAndLAbel, '');
+		Assert.equAl(ActuAl.keybindingItem.commAndDefAultLAbel, null);
+		Assert.equAl(ActuAl.keybindingItem.keybinding, null);
+		Assert.equAl(ActuAl.keybindingItem.when, '');
 	});
 
-	test('convert with title and without binding to entry', async () => {
-		const id = 'a' + uuid.generateUuid();
-		registerCommandWithTitle(id, 'some title');
-		prepareKeybindingService();
+	test('convert with title And without binding to entry', Async () => {
+		const id = 'A' + uuid.generAteUuid();
+		registerCommAndWithTitle(id, 'some title');
+		prepAreKeybindingService();
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('').filter(element => element.keybindingItem.command === id)[0];
-		assert.equal(actual.keybindingItem.command, id);
-		assert.equal(actual.keybindingItem.commandLabel, 'some title');
-		assert.equal(actual.keybindingItem.commandDefaultLabel, null);
-		assert.equal(actual.keybindingItem.keybinding, null);
-		assert.equal(actual.keybindingItem.when, '');
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('').filter(element => element.keybindingItem.commAnd === id)[0];
+		Assert.equAl(ActuAl.keybindingItem.commAnd, id);
+		Assert.equAl(ActuAl.keybindingItem.commAndLAbel, 'some title');
+		Assert.equAl(ActuAl.keybindingItem.commAndDefAultLAbel, null);
+		Assert.equAl(ActuAl.keybindingItem.keybinding, null);
+		Assert.equAl(ActuAl.keybindingItem.when, '');
 	});
 
-	test('filter by command id', async () => {
-		const id = 'workbench.action.increaseViewSize';
-		registerCommandWithTitle(id, 'some title');
-		prepareKeybindingService();
+	test('filter by commAnd id', Async () => {
+		const id = 'workbench.Action.increAseViewSize';
+		registerCommAndWithTitle(id, 'some title');
+		prepAreKeybindingService();
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('workbench action view size').filter(element => element.keybindingItem.command === id)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('workbench Action view size').filter(element => element.keybindingItem.commAnd === id)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by command title', async () => {
-		const id = 'a' + uuid.generateUuid();
-		registerCommandWithTitle(id, 'Increase view size');
-		prepareKeybindingService();
+	test('filter by commAnd title', Async () => {
+		const id = 'A' + uuid.generAteUuid();
+		registerCommAndWithTitle(id, 'IncreAse view size');
+		prepAreKeybindingService();
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('increase size').filter(element => element.keybindingItem.command === id)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('increAse size').filter(element => element.keybindingItem.commAnd === id)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by default source', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, when: 'context1 && context2' });
-		prepareKeybindingService(expected);
+	test('filter by defAult source', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, when: 'context1 && context2' });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('default').filter(element => element.keybindingItem.command === command)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('defAult').filter(element => element.keybindingItem.commAnd === commAnd)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by user source', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, when: 'context1 && context2', isDefault: false });
-		prepareKeybindingService(expected);
+	test('filter by user source', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, when: 'context1 && context2', isDefAult: fAlse });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('user').filter(element => element.keybindingItem.command === command)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('user').filter(element => element.keybindingItem.commAnd === commAnd)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by default source with "@source: " prefix', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, when: 'context1 && context2', isDefault: true });
-		prepareKeybindingService(expected);
+	test('filter by defAult source with "@source: " prefix', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, when: 'context1 && context2', isDefAult: true });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('@source: default').filter(element => element.keybindingItem.command === command)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('@source: defAult').filter(element => element.keybindingItem.commAnd === commAnd)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by user source with "@source: " prefix', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, when: 'context1 && context2', isDefault: false });
-		prepareKeybindingService(expected);
+	test('filter by user source with "@source: " prefix', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, when: 'context1 && context2', isDefAult: fAlse });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('@source: user').filter(element => element.keybindingItem.command === command)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('@source: user').filter(element => element.keybindingItem.commAnd === commAnd)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by when context', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected);
+	test('filter by when context', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('when context').filter(element => element.keybindingItem.command === command)[0];
-		assert.ok(actual);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('when context').filter(element => element.keybindingItem.commAnd === commAnd)[0];
+		Assert.ok(ActuAl);
 	});
 
-	test('filter by cmd key', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
+	test('filter by cmd key', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
 
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected);
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('cmd').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('cmd').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by meta key', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
+	test('filter by metA key', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
 
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('meta').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('metA').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by command key', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
+	test('filter by commAnd key', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
 
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('command').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('commAnd').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by windows key', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Windows);
+	test('filter by windows key', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.Windows);
 
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('windows').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('windows').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by alt key', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by Alt key', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('alt').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { altKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('Alt').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { AltKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by option key', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by option key', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('option').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { altKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('option').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { AltKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by ctrl key', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by ctrl key', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('ctrl').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { ctrlKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('ctrl').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { ctrlKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by control key', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by control key', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('control').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { ctrlKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('control').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { ctrlKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by shift key', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by shift key', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('shift').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { shiftKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('shift').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { shiftKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by arrow', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.RightArrow, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by Arrow', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.RightArrow, modifiers: { shiftKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('arrow').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('Arrow').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by modifier and key', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.RightArrow, modifiers: { altKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.RightArrow, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by modifier And key', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.RightArrow, modifiers: { AltKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.RightArrow, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('alt right').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { altKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('Alt right').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { AltKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by key and modifier', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.RightArrow, modifiers: { altKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.RightArrow, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by key And modifier', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.RightArrow, modifiers: { AltKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.RightArrow, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('right alt').filter(element => element.keybindingItem.command === command);
-		assert.equal(0, actual.length);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('right Alt').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(0, ActuAl.length);
 	});
 
-	test('filter by modifiers and key', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true, metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by modifiers And key', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true, metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('alt cmd esc').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { altKey: true, metaKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('Alt cmd esc').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { AltKey: true, metAKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by modifiers in random order and key', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by modifiers in rAndom order And key', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('cmd shift esc').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true, shiftKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('cmd shift esc').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true, shiftKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter by first part', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.Delete }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter by first pArt', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.Delete }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('cmd shift esc').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true, shiftKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('cmd shift esc').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true, shiftKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter matches in chord part', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.Delete }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter mAtches in chord pArt', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.Delete }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('cmd del').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { metaKey: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, { keyCode: true });
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('cmd del').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { metAKey: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, { keyCode: true });
 	});
 
-	test('filter matches first part and in chord part', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.Delete }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.UpArrow }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter mAtches first pArt And in chord pArt', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.Delete }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.UpArrow }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('cmd shift esc del').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { shiftKey: true, metaKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, { keyCode: true });
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('cmd shift esc del').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { shiftKey: true, metAKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, { keyCode: true });
 	});
 
-	test('filter exact matches', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter exAct mAtches', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"ctrl c"').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { ctrlKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"ctrl c"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { ctrlKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter exact matches with first and chord part', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter exAct mAtches with first And chord pArt', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"shift meta escape ctrl c"').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { shiftKey: true, metaKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, { ctrlKey: true, keyCode: true });
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"shift metA escApe ctrl c"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { shiftKey: true, metAKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, { ctrlKey: true, keyCode: true });
 	});
 
-	test('filter exact matches with first and chord part no results', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.Delete, modifiers: { metaKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.UpArrow }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter exAct mAtches with first And chord pArt no results', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.Delete, modifiers: { metAKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.UpArrow }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"cmd shift esc del"').filter(element => element.keybindingItem.command === command);
-		assert.equal(0, actual.length);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"cmd shift esc del"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(0, ActuAl.length);
 	});
 
-	test('filter matches with + separator', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter mAtches with + sepArAtor', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"control+c"').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { ctrlKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, {});
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"control+c"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { ctrlKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, {});
 	});
 
-	test('filter matches with + separator in first and chord parts', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { shiftKey: true, metaKey: true } }, chordPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter mAtches with + sepArAtor in first And chord pArts', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { shiftKey: true, metAKey: true } }, chordPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.KEY_C, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"shift+meta+escape ctrl+c"').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { shiftKey: true, metaKey: true, keyCode: true });
-		assert.deepEqual(actual[0].keybindingMatches!.chordPart, { keyCode: true, ctrlKey: true });
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"shift+metA+escApe ctrl+c"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { shiftKey: true, metAKey: true, keyCode: true });
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.chordPArt, { keyCode: true, ctrlKey: true });
 	});
 
-	test('filter exact matches with space #32993', async () => {
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Space, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Backspace, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefault: false }));
+	test('filter exAct mAtches with spAce #32993', Async () => {
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.SpAce, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.BAckspAce, modifiers: { ctrlKey: true } }, when: 'whenContext1 && whenContext2', isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"ctrl+space"').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"ctrl+spAce"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
 	});
 
-	test('filter exact matches with user settings label', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = 'a' + uuid.generateUuid();
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.DownArrow } });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command: 'down', firstPart: { keyCode: KeyCode.Escape } }));
+	test('filter exAct mAtches with user settings lAbel', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = 'A' + uuid.generAteUuid();
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.DownArrow } });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd: 'down', firstPArt: { keyCode: KeyCode.EscApe } }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('"down"').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { keyCode: true });
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('"down"').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { keyCode: true });
 	});
 
-	test('filter modifiers are not matched when not completely matched (prefix)', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const term = `alt.${uuid.generateUuid()}`;
-		const command = `command.${term}`;
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command: 'some_command', firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true } }, isDefault: false }));
+	test('filter modifiers Are not mAtched when not completely mAtched (prefix)', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const term = `Alt.${uuid.generAteUuid()}`;
+		const commAnd = `commAnd.${term}`;
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd: 'some_commAnd', firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true } }, isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch(term);
-		assert.equal(1, actual.length);
-		assert.equal(command, actual[0].keybindingItem.command);
-		assert.equal(1, actual[0].commandIdMatches?.length);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch(term);
+		Assert.equAl(1, ActuAl.length);
+		Assert.equAl(commAnd, ActuAl[0].keybindingItem.commAnd);
+		Assert.equAl(1, ActuAl[0].commAndIdMAtches?.length);
 	});
 
-	test('filter modifiers are not matched when not completely matched (includes)', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const term = `abcaltdef.${uuid.generateUuid()}`;
-		const command = `command.${term}`;
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape }, isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command: 'some_command', firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true } }, isDefault: false }));
+	test('filter modifiers Are not mAtched when not completely mAtched (includes)', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const term = `AbcAltdef.${uuid.generAteUuid()}`;
+		const commAnd = `commAnd.${term}`;
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe }, isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd: 'some_commAnd', firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true } }, isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch(term);
-		assert.equal(1, actual.length);
-		assert.equal(command, actual[0].keybindingItem.command);
-		assert.equal(1, actual[0].commandIdMatches?.length);
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch(term);
+		Assert.equAl(1, ActuAl.length);
+		Assert.equAl(commAnd, ActuAl[0].keybindingItem.commAnd);
+		Assert.equAl(1, ActuAl[0].commAndIdMAtches?.length);
 	});
 
-	test('filter modifiers are matched with complete term', async () => {
-		testObject = instantiationService.createInstance(KeybindingsEditorModel, OperatingSystem.Macintosh);
-		const command = `command.${uuid.generateUuid()}`;
-		const expected = aResolvedKeybindingItem({ command, firstPart: { keyCode: KeyCode.Escape, modifiers: { altKey: true } }, isDefault: false });
-		prepareKeybindingService(expected, aResolvedKeybindingItem({ command: 'some_command', firstPart: { keyCode: KeyCode.Escape }, isDefault: false }));
+	test('filter modifiers Are mAtched with complete term', Async () => {
+		testObject = instAntiAtionService.creAteInstAnce(KeybindingsEditorModel, OperAtingSystem.MAcintosh);
+		const commAnd = `commAnd.${uuid.generAteUuid()}`;
+		const expected = AResolvedKeybindingItem({ commAnd, firstPArt: { keyCode: KeyCode.EscApe, modifiers: { AltKey: true } }, isDefAult: fAlse });
+		prepAreKeybindingService(expected, AResolvedKeybindingItem({ commAnd: 'some_commAnd', firstPArt: { keyCode: KeyCode.EscApe }, isDefAult: fAlse }));
 
-		await testObject.resolve(new Map<string, string>());
-		const actual = testObject.fetch('alt').filter(element => element.keybindingItem.command === command);
-		assert.equal(1, actual.length);
-		assert.deepEqual(actual[0].keybindingMatches!.firstPart, { altKey: true });
+		AwAit testObject.resolve(new MAp<string, string>());
+		const ActuAl = testObject.fetch('Alt').filter(element => element.keybindingItem.commAnd === commAnd);
+		Assert.equAl(1, ActuAl.length);
+		Assert.deepEquAl(ActuAl[0].keybindingMAtches!.firstPArt, { AltKey: true });
 	});
 
-	function prepareKeybindingService(...keybindingItems: ResolvedKeybindingItem[]): ResolvedKeybindingItem[] {
-		instantiationService.stub(IKeybindingService, 'getKeybindings', () => keybindingItems);
-		instantiationService.stub(IKeybindingService, 'getDefaultKeybindings', () => keybindingItems);
+	function prepAreKeybindingService(...keybindingItems: ResolvedKeybindingItem[]): ResolvedKeybindingItem[] {
+		instAntiAtionService.stub(IKeybindingService, 'getKeybindings', () => keybindingItems);
+		instAntiAtionService.stub(IKeybindingService, 'getDefAultKeybindings', () => keybindingItems);
 		return keybindingItems;
 
 	}
 
-	function registerCommandWithTitle(command: string, title: string): void {
-		const registry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
-		registry.registerWorkbenchAction(SyncActionDescriptor.create(AnAction, command, title, { primary: 0 }), '');
+	function registerCommAndWithTitle(commAnd: string, title: string): void {
+		const registry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+		registry.registerWorkbenchAction(SyncActionDescriptor.creAte(AnAction, commAnd, title, { primAry: 0 }), '');
 	}
 
-	function assertKeybindingItems(actual: ResolvedKeybindingItem[], expected: ResolvedKeybindingItem[]) {
-		assert.equal(actual.length, expected.length);
-		for (let i = 0; i < actual.length; i++) {
-			assertKeybindingItem(actual[i], expected[i]);
+	function AssertKeybindingItems(ActuAl: ResolvedKeybindingItem[], expected: ResolvedKeybindingItem[]) {
+		Assert.equAl(ActuAl.length, expected.length);
+		for (let i = 0; i < ActuAl.length; i++) {
+			AssertKeybindingItem(ActuAl[i], expected[i]);
 		}
 	}
 
-	function assertKeybindingItem(actual: ResolvedKeybindingItem, expected: ResolvedKeybindingItem): void {
-		assert.equal(actual.command, expected.command);
-		if (actual.when) {
-			assert.ok(!!expected.when);
-			assert.equal(actual.when.serialize(), expected.when!.serialize());
+	function AssertKeybindingItem(ActuAl: ResolvedKeybindingItem, expected: ResolvedKeybindingItem): void {
+		Assert.equAl(ActuAl.commAnd, expected.commAnd);
+		if (ActuAl.when) {
+			Assert.ok(!!expected.when);
+			Assert.equAl(ActuAl.when.seriAlize(), expected.when!.seriAlize());
 		} else {
-			assert.ok(!expected.when);
+			Assert.ok(!expected.when);
 		}
-		assert.equal(actual.isDefault, expected.isDefault);
+		Assert.equAl(ActuAl.isDefAult, expected.isDefAult);
 
-		if (actual.resolvedKeybinding) {
-			assert.ok(!!expected.resolvedKeybinding);
-			assert.equal(actual.resolvedKeybinding.getLabel(), expected.resolvedKeybinding!.getLabel());
+		if (ActuAl.resolvedKeybinding) {
+			Assert.ok(!!expected.resolvedKeybinding);
+			Assert.equAl(ActuAl.resolvedKeybinding.getLAbel(), expected.resolvedKeybinding!.getLAbel());
 		} else {
-			assert.ok(!expected.resolvedKeybinding);
+			Assert.ok(!expected.resolvedKeybinding);
 		}
 	}
 
-	function aResolvedKeybindingItem({ command, when, isDefault, firstPart, chordPart }: { command?: string, when?: string, isDefault?: boolean, firstPart?: { keyCode: KeyCode, modifiers?: Modifiers }, chordPart?: { keyCode: KeyCode, modifiers?: Modifiers } }): ResolvedKeybindingItem {
-		const aSimpleKeybinding = function (part: { keyCode: KeyCode, modifiers?: Modifiers }): SimpleKeybinding {
-			const { ctrlKey, shiftKey, altKey, metaKey } = part.modifiers || { ctrlKey: false, shiftKey: false, altKey: false, metaKey: false };
-			return new SimpleKeybinding(ctrlKey!, shiftKey!, altKey!, metaKey!, part.keyCode);
+	function AResolvedKeybindingItem({ commAnd, when, isDefAult, firstPArt, chordPArt }: { commAnd?: string, when?: string, isDefAult?: booleAn, firstPArt?: { keyCode: KeyCode, modifiers?: Modifiers }, chordPArt?: { keyCode: KeyCode, modifiers?: Modifiers } }): ResolvedKeybindingItem {
+		const ASimpleKeybinding = function (pArt: { keyCode: KeyCode, modifiers?: Modifiers }): SimpleKeybinding {
+			const { ctrlKey, shiftKey, AltKey, metAKey } = pArt.modifiers || { ctrlKey: fAlse, shiftKey: fAlse, AltKey: fAlse, metAKey: fAlse };
+			return new SimpleKeybinding(ctrlKey!, shiftKey!, AltKey!, metAKey!, pArt.keyCode);
 		};
-		let parts: SimpleKeybinding[] = [];
-		if (firstPart) {
-			parts.push(aSimpleKeybinding(firstPart));
-			if (chordPart) {
-				parts.push(aSimpleKeybinding(chordPart));
+		let pArts: SimpleKeybinding[] = [];
+		if (firstPArt) {
+			pArts.push(ASimpleKeybinding(firstPArt));
+			if (chordPArt) {
+				pArts.push(ASimpleKeybinding(chordPArt));
 			}
 		}
-		const keybinding = parts.length > 0 ? new USLayoutResolvedKeybinding(new ChordKeybinding(parts), OS) : undefined;
-		return new ResolvedKeybindingItem(keybinding, command || 'some command', null, when ? ContextKeyExpr.deserialize(when) : undefined, isDefault === undefined ? true : isDefault, null);
+		const keybinding = pArts.length > 0 ? new USLAyoutResolvedKeybinding(new ChordKeybinding(pArts), OS) : undefined;
+		return new ResolvedKeybindingItem(keybinding, commAnd || 'some commAnd', null, when ? ContextKeyExpr.deseriAlize(when) : undefined, isDefAult === undefined ? true : isDefAult, null);
 	}
 
-	function asResolvedKeybindingItems(keybindingEntries: IKeybindingItemEntry[], keepUnassigned: boolean = false): ResolvedKeybindingItem[] {
-		if (!keepUnassigned) {
+	function AsResolvedKeybindingItems(keybindingEntries: IKeybindingItemEntry[], keepUnAssigned: booleAn = fAlse): ResolvedKeybindingItem[] {
+		if (!keepUnAssigned) {
 			keybindingEntries = keybindingEntries.filter(keybindingEntry => !!keybindingEntry.keybindingItem.keybinding);
 		}
-		return keybindingEntries.map(entry => entry.keybindingItem.keybindingItem);
+		return keybindingEntries.mAp(entry => entry.keybindingItem.keybindingItem);
 	}
 
 

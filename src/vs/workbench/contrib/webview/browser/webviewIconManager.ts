@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { memoize } from 'vs/base/common/decorators';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import * As dom from 'vs/bAse/browser/dom';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILifecycleService, LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 import { WebviewIcons } from 'vs/workbench/contrib/webview/browser/webview';
 
-export class WebviewIconManager {
+export clAss WebviewIconMAnAger {
 
-	private readonly _icons = new Map<string, WebviewIcons>();
+	privAte reAdonly _icons = new MAp<string, WebviewIcons>();
 
 	constructor(
-		@ILifecycleService private readonly _lifecycleService: ILifecycleService,
-		@IConfigurationService private readonly _configService: IConfigurationService,
+		@ILifecycleService privAte reAdonly _lifecycleService: ILifecycleService,
+		@IConfigurAtionService privAte reAdonly _configService: IConfigurAtionService,
 	) {
-		this._configService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('workbench.iconTheme')) {
-				this.updateStyleSheet();
+		this._configService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('workbench.iconTheme')) {
+				this.updAteStyleSheet();
 			}
 		});
 	}
 
 	@memoize
-	private get _styleElement(): HTMLStyleElement {
-		const element = dom.createStyleSheet();
-		element.className = 'webview-icons';
+	privAte get _styleElement(): HTMLStyleElement {
+		const element = dom.creAteStyleSheet();
+		element.clAssNAme = 'webview-icons';
 		return element;
 	}
 
 	public setIcons(
 		webviewId: string,
-		iconPath: WebviewIcons | undefined,
+		iconPAth: WebviewIcons | undefined,
 	) {
-		if (iconPath) {
-			this._icons.set(webviewId, iconPath);
+		if (iconPAth) {
+			this._icons.set(webviewId, iconPAth);
 		} else {
 			this._icons.delete(webviewId);
 		}
 
-		this.updateStyleSheet();
+		this.updAteStyleSheet();
 	}
 
-	private async updateStyleSheet() {
-		await this._lifecycleService.when(LifecyclePhase.Starting);
+	privAte Async updAteStyleSheet() {
+		AwAit this._lifecycleService.when(LifecyclePhAse.StArting);
 
 		const cssRules: string[] = [];
-		if (this._configService.getValue('workbench.iconTheme') !== null) {
-			for (const [key, value] of this._icons) {
-				const webviewSelector = `.show-file-icons .webview-${key}-name-file-icon::before`;
+		if (this._configService.getVAlue('workbench.iconTheme') !== null) {
+			for (const [key, vAlue] of this._icons) {
+				const webviewSelector = `.show-file-icons .webview-${key}-nAme-file-icon::before`;
 				try {
 					cssRules.push(
-						`.monaco-workbench.vs ${webviewSelector} { content: ""; background-image: ${dom.asCSSUrl(value.light)}; }`,
-						`.monaco-workbench.vs-dark ${webviewSelector}, .monaco-workbench.hc-black ${webviewSelector} { content: ""; background-image: ${dom.asCSSUrl(value.dark)}; }`
+						`.monAco-workbench.vs ${webviewSelector} { content: ""; bAckground-imAge: ${dom.AsCSSUrl(vAlue.light)}; }`,
+						`.monAco-workbench.vs-dArk ${webviewSelector}, .monAco-workbench.hc-blAck ${webviewSelector} { content: ""; bAckground-imAge: ${dom.AsCSSUrl(vAlue.dArk)}; }`
 					);
-				} catch {
+				} cAtch {
 					// noop
 				}
 			}

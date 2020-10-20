@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { window, workspace, Disposable, TextDocumentContentChangeEvent, TextDocument, Position, SnippetString } from 'vscode';
+import { window, workspAce, DisposAble, TextDocumentContentChAngeEvent, TextDocument, Position, SnippetString } from 'vscode';
 
-export function activateTagClosing(tagProvider: (document: TextDocument, position: Position) => Thenable<string>, supportedLanguages: { [id: string]: boolean }, configName: string): Disposable {
+export function ActivAteTAgClosing(tAgProvider: (document: TextDocument, position: Position) => ThenAble<string>, supportedLAnguAges: { [id: string]: booleAn }, configNAme: string): DisposAble {
 
-	let disposables: Disposable[] = [];
-	workspace.onDidChangeTextDocument(event => onDidChangeTextDocument(event.document, event.contentChanges), null, disposables);
+	let disposAbles: DisposAble[] = [];
+	workspAce.onDidChAngeTextDocument(event => onDidChAngeTextDocument(event.document, event.contentChAnges), null, disposAbles);
 
-	let isEnabled = false;
-	updateEnabledState();
-	window.onDidChangeActiveTextEditor(updateEnabledState, null, disposables);
+	let isEnAbled = fAlse;
+	updAteEnAbledStAte();
+	window.onDidChAngeActiveTextEditor(updAteEnAbledStAte, null, disposAbles);
 
 	let timeout: NodeJS.Timer | undefined = undefined;
 
-	function updateEnabledState() {
-		isEnabled = false;
-		let editor = window.activeTextEditor;
+	function updAteEnAbledStAte() {
+		isEnAbled = fAlse;
+		let editor = window.ActiveTextEditor;
 		if (!editor) {
 			return;
 		}
 		let document = editor.document;
-		if (!supportedLanguages[document.languageId]) {
+		if (!supportedLAnguAges[document.lAnguAgeId]) {
 			return;
 		}
-		if (!workspace.getConfiguration(undefined, document.uri).get<boolean>(configName)) {
+		if (!workspAce.getConfigurAtion(undefined, document.uri).get<booleAn>(configNAme)) {
 			return;
 		}
-		isEnabled = true;
+		isEnAbled = true;
 	}
 
-	function onDidChangeTextDocument(document: TextDocument, changes: readonly TextDocumentContentChangeEvent[]) {
-		if (!isEnabled) {
+	function onDidChAngeTextDocument(document: TextDocument, chAnges: reAdonly TextDocumentContentChAngeEvent[]) {
+		if (!isEnAbled) {
 			return;
 		}
-		let activeDocument = window.activeTextEditor && window.activeTextEditor.document;
-		if (document !== activeDocument || changes.length === 0) {
+		let ActiveDocument = window.ActiveTextEditor && window.ActiveTextEditor.document;
+		if (document !== ActiveDocument || chAnges.length === 0) {
 			return;
 		}
 		if (typeof timeout !== 'undefined') {
-			clearTimeout(timeout);
+			cleArTimeout(timeout);
 		}
-		let lastChange = changes[changes.length - 1];
-		let lastCharacter = lastChange.text[lastChange.text.length - 1];
-		if (lastChange.rangeLength > 0 || lastCharacter !== '>' && lastCharacter !== '/') {
+		let lAstChAnge = chAnges[chAnges.length - 1];
+		let lAstChArActer = lAstChAnge.text[lAstChAnge.text.length - 1];
+		if (lAstChAnge.rAngeLength > 0 || lAstChArActer !== '>' && lAstChArActer !== '/') {
 			return;
 		}
-		let rangeStart = lastChange.range.start;
+		let rAngeStArt = lAstChAnge.rAnge.stArt;
 		let version = document.version;
 		timeout = setTimeout(() => {
-			let position = new Position(rangeStart.line, rangeStart.character + lastChange.text.length);
-			tagProvider(document, position).then(text => {
-				if (text && isEnabled) {
-					let activeEditor = window.activeTextEditor;
-					if (activeEditor) {
-						let activeDocument = activeEditor.document;
-						if (document === activeDocument && activeDocument.version === version) {
-							let selections = activeEditor.selections;
-							if (selections.length && selections.some(s => s.active.isEqual(position))) {
-								activeEditor.insertSnippet(new SnippetString(text), selections.map(s => s.active));
+			let position = new Position(rAngeStArt.line, rAngeStArt.chArActer + lAstChAnge.text.length);
+			tAgProvider(document, position).then(text => {
+				if (text && isEnAbled) {
+					let ActiveEditor = window.ActiveTextEditor;
+					if (ActiveEditor) {
+						let ActiveDocument = ActiveEditor.document;
+						if (document === ActiveDocument && ActiveDocument.version === version) {
+							let selections = ActiveEditor.selections;
+							if (selections.length && selections.some(s => s.Active.isEquAl(position))) {
+								ActiveEditor.insertSnippet(new SnippetString(text), selections.mAp(s => s.Active));
 							} else {
-								activeEditor.insertSnippet(new SnippetString(text), position);
+								ActiveEditor.insertSnippet(new SnippetString(text), position);
 							}
 						}
 					}
@@ -71,5 +71,5 @@ export function activateTagClosing(tagProvider: (document: TextDocument, positio
 			timeout = undefined;
 		}, 100);
 	}
-	return Disposable.from(...disposables);
+	return DisposAble.from(...disposAbles);
 }

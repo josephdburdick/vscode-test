@@ -1,20 +1,20 @@
-declare module 'gulp-remote-retry-src' {
+declAre module 'gulp-remote-retry-src' {
 
-	import stream = require("stream");
+	import streAm = require("streAm");
 
-	function remote(url: string, options: remote.IOptions): stream.Stream;
+	function remote(url: string, options: remote.IOptions): streAm.StreAm;
 
 	module remote {
-		export interface IRequestOptions {
-			body?: any;
-			json?: boolean;
+		export interfAce IRequestOptions {
+			body?: Any;
+			json?: booleAn;
 			method?: string;
-			headers?: any;
+			heAders?: Any;
 		}
 
-		export interface IOptions {
-			base?: string;
-			buffer?: boolean;
+		export interfAce IOptions {
+			bAse?: string;
+			buffer?: booleAn;
 			requestOptions?: IRequestOptions;
 		}
 	}

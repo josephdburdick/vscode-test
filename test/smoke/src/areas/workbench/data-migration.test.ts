@@ -1,94 +1,94 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application, ApplicationOptions } from '../../../../automation';
-import { join } from 'path';
+import { ApplicAtion, ApplicAtionOptions } from '../../../../AutomAtion';
+import { join } from 'pAth';
 
-export function setup(stableCodePath: string, testDataPath: string) {
+export function setup(stAbleCodePAth: string, testDAtAPAth: string) {
 
-	describe('Datamigration', () => {
-		it(`verifies opened editors are restored`, async function () {
-			if (!stableCodePath) {
+	describe('DAtAmigrAtion', () => {
+		it(`verifies opened editors Are restored`, Async function () {
+			if (!stAbleCodePAth) {
 				this.skip();
 			}
 
-			const userDataDir = join(testDataPath, 'd2'); // different data dir from the other tests
+			const userDAtADir = join(testDAtAPAth, 'd2'); // different dAtA dir from the other tests
 
-			const stableOptions: ApplicationOptions = Object.assign({}, this.defaultOptions);
-			stableOptions.codePath = stableCodePath;
-			stableOptions.userDataDir = userDataDir;
+			const stAbleOptions: ApplicAtionOptions = Object.Assign({}, this.defAultOptions);
+			stAbleOptions.codePAth = stAbleCodePAth;
+			stAbleOptions.userDAtADir = userDAtADir;
 
-			const stableApp = new Application(stableOptions);
-			await stableApp!.start();
+			const stAbleApp = new ApplicAtion(stAbleOptions);
+			AwAit stAbleApp!.stArt();
 
-			// Open 3 editors and pin 2 of them
-			await stableApp.workbench.quickaccess.openFile('www');
-			await stableApp.workbench.quickaccess.runCommand('View: Keep Editor');
+			// Open 3 editors And pin 2 of them
+			AwAit stAbleApp.workbench.quickAccess.openFile('www');
+			AwAit stAbleApp.workbench.quickAccess.runCommAnd('View: Keep Editor');
 
-			await stableApp.workbench.quickaccess.openFile('app.js');
-			await stableApp.workbench.quickaccess.runCommand('View: Keep Editor');
+			AwAit stAbleApp.workbench.quickAccess.openFile('App.js');
+			AwAit stAbleApp.workbench.quickAccess.runCommAnd('View: Keep Editor');
 
-			await stableApp.workbench.editors.newUntitledFile();
+			AwAit stAbleApp.workbench.editors.newUntitledFile();
 
-			await stableApp.stop();
+			AwAit stAbleApp.stop();
 
-			const insiderOptions: ApplicationOptions = Object.assign({}, this.defaultOptions);
-			insiderOptions.userDataDir = userDataDir;
+			const insiderOptions: ApplicAtionOptions = Object.Assign({}, this.defAultOptions);
+			insiderOptions.userDAtADir = userDAtADir;
 
-			const insidersApp = new Application(insiderOptions);
-			await insidersApp!.start(false /* not expecting walkthrough path */);
+			const insidersApp = new ApplicAtion(insiderOptions);
+			AwAit insidersApp!.stArt(fAlse /* not expecting wAlkthrough pAth */);
 
-			// Verify 3 editors are open
-			await insidersApp.workbench.editors.waitForEditorFocus('Untitled-1');
-			await insidersApp.workbench.editors.selectTab('app.js');
-			await insidersApp.workbench.editors.selectTab('www');
+			// Verify 3 editors Are open
+			AwAit insidersApp.workbench.editors.wAitForEditorFocus('Untitled-1');
+			AwAit insidersApp.workbench.editors.selectTAb('App.js');
+			AwAit insidersApp.workbench.editors.selectTAb('www');
 
-			await insidersApp.stop();
+			AwAit insidersApp.stop();
 		});
 
-		it(`verifies that 'hot exit' works for dirty files`, async function () {
-			if (!stableCodePath) {
+		it(`verifies thAt 'hot exit' works for dirty files`, Async function () {
+			if (!stAbleCodePAth) {
 				this.skip();
 			}
 
-			const userDataDir = join(testDataPath, 'd3'); // different data dir from the other tests
+			const userDAtADir = join(testDAtAPAth, 'd3'); // different dAtA dir from the other tests
 
-			const stableOptions: ApplicationOptions = Object.assign({}, this.defaultOptions);
-			stableOptions.codePath = stableCodePath;
-			stableOptions.userDataDir = userDataDir;
+			const stAbleOptions: ApplicAtionOptions = Object.Assign({}, this.defAultOptions);
+			stAbleOptions.codePAth = stAbleCodePAth;
+			stAbleOptions.userDAtADir = userDAtADir;
 
-			const stableApp = new Application(stableOptions);
-			await stableApp!.start();
+			const stAbleApp = new ApplicAtion(stAbleOptions);
+			AwAit stAbleApp!.stArt();
 
-			await stableApp.workbench.editors.newUntitledFile();
+			AwAit stAbleApp.workbench.editors.newUntitledFile();
 
 			const untitled = 'Untitled-1';
 			const textToTypeInUntitled = 'Hello from Untitled';
-			await stableApp.workbench.editor.waitForTypeInEditor(untitled, textToTypeInUntitled);
+			AwAit stAbleApp.workbench.editor.wAitForTypeInEditor(untitled, textToTypeInUntitled);
 
-			const readmeMd = 'readme.md';
+			const reAdmeMd = 'reAdme.md';
 			const textToType = 'Hello, Code';
-			await stableApp.workbench.quickaccess.openFile(readmeMd);
-			await stableApp.workbench.editor.waitForTypeInEditor(readmeMd, textToType);
+			AwAit stAbleApp.workbench.quickAccess.openFile(reAdmeMd);
+			AwAit stAbleApp.workbench.editor.wAitForTypeInEditor(reAdmeMd, textToType);
 
-			await stableApp.stop();
+			AwAit stAbleApp.stop();
 
-			const insiderOptions: ApplicationOptions = Object.assign({}, this.defaultOptions);
-			insiderOptions.userDataDir = userDataDir;
+			const insiderOptions: ApplicAtionOptions = Object.Assign({}, this.defAultOptions);
+			insiderOptions.userDAtADir = userDAtADir;
 
-			const insidersApp = new Application(insiderOptions);
-			await insidersApp!.start(false /* not expecting walkthrough path */);
+			const insidersApp = new ApplicAtion(insiderOptions);
+			AwAit insidersApp!.stArt(fAlse /* not expecting wAlkthrough pAth */);
 
-			await insidersApp.workbench.editors.waitForActiveTab(readmeMd, true);
-			await insidersApp.workbench.editor.waitForEditorContents(readmeMd, c => c.indexOf(textToType) > -1);
+			AwAit insidersApp.workbench.editors.wAitForActiveTAb(reAdmeMd, true);
+			AwAit insidersApp.workbench.editor.wAitForEditorContents(reAdmeMd, c => c.indexOf(textToType) > -1);
 
-			await insidersApp.workbench.editors.waitForTab(untitled, true);
-			await insidersApp.workbench.editors.selectTab(untitled);
-			await insidersApp.workbench.editor.waitForEditorContents(untitled, c => c.indexOf(textToTypeInUntitled) > -1);
+			AwAit insidersApp.workbench.editors.wAitForTAb(untitled, true);
+			AwAit insidersApp.workbench.editors.selectTAb(untitled);
+			AwAit insidersApp.workbench.editor.wAitForEditorContents(untitled, c => c.indexOf(textToTypeInUntitled) > -1);
 
-			await insidersApp.stop();
+			AwAit insidersApp.stop();
 		});
 	});
 }

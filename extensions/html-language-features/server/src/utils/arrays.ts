@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 export function pushAll<T>(to: T[], from: T[]) {
@@ -11,59 +11,59 @@ export function pushAll<T>(to: T[], from: T[]) {
 	}
 }
 
-export function contains<T>(arr: T[], val: T) {
-	return arr.indexOf(val) !== -1;
+export function contAins<T>(Arr: T[], vAl: T) {
+	return Arr.indexOf(vAl) !== -1;
 }
 
 /**
- * Like `Array#sort` but always stable. Usually runs a little slower `than Array#sort`
- * so only use this when actually needing stable sort.
+ * Like `ArrAy#sort` but AlwAys stAble. UsuAlly runs A little slower `thAn ArrAy#sort`
+ * so only use this when ActuAlly needing stAble sort.
  */
-export function mergeSort<T>(data: T[], compare: (a: T, b: T) => number): T[] {
-	_divideAndMerge(data, compare);
-	return data;
+export function mergeSort<T>(dAtA: T[], compAre: (A: T, b: T) => number): T[] {
+	_divideAndMerge(dAtA, compAre);
+	return dAtA;
 }
 
-function _divideAndMerge<T>(data: T[], compare: (a: T, b: T) => number): void {
-	if (data.length <= 1) {
+function _divideAndMerge<T>(dAtA: T[], compAre: (A: T, b: T) => number): void {
+	if (dAtA.length <= 1) {
 		// sorted
 		return;
 	}
-	const p = (data.length / 2) | 0;
-	const left = data.slice(0, p);
-	const right = data.slice(p);
+	const p = (dAtA.length / 2) | 0;
+	const left = dAtA.slice(0, p);
+	const right = dAtA.slice(p);
 
-	_divideAndMerge(left, compare);
-	_divideAndMerge(right, compare);
+	_divideAndMerge(left, compAre);
+	_divideAndMerge(right, compAre);
 
 	let leftIdx = 0;
 	let rightIdx = 0;
 	let i = 0;
 	while (leftIdx < left.length && rightIdx < right.length) {
-		let ret = compare(left[leftIdx], right[rightIdx]);
+		let ret = compAre(left[leftIdx], right[rightIdx]);
 		if (ret <= 0) {
-			// smaller_equal -> take left to preserve order
-			data[i++] = left[leftIdx++];
+			// smAller_equAl -> tAke left to preserve order
+			dAtA[i++] = left[leftIdx++];
 		} else {
-			// greater -> take right
-			data[i++] = right[rightIdx++];
+			// greAter -> tAke right
+			dAtA[i++] = right[rightIdx++];
 		}
 	}
 	while (leftIdx < left.length) {
-		data[i++] = left[leftIdx++];
+		dAtA[i++] = left[leftIdx++];
 	}
 	while (rightIdx < right.length) {
-		data[i++] = right[rightIdx++];
+		dAtA[i++] = right[rightIdx++];
 	}
 }
 
-export function binarySearch<T>(array: T[], key: T, comparator: (op1: T, op2: T) => number): number {
+export function binArySeArch<T>(ArrAy: T[], key: T, compArAtor: (op1: T, op2: T) => number): number {
 	let low = 0,
-		high = array.length - 1;
+		high = ArrAy.length - 1;
 
 	while (low <= high) {
 		let mid = ((low + high) / 2) | 0;
-		let comp = comparator(array[mid], key);
+		let comp = compArAtor(ArrAy[mid], key);
 		if (comp < 0) {
 			low = mid + 1;
 		} else if (comp > 0) {

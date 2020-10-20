@@ -1,77 +1,77 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
+import * As Assert from 'Assert';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 
-suite('Command Tests', function () {
+suite('CommAnd Tests', function () {
 
-	test('register command - no handler', function () {
-		assert.throws(() => CommandsRegistry.registerCommand('foo', null!));
+	test('register commAnd - no hAndler', function () {
+		Assert.throws(() => CommAndsRegistry.registerCommAnd('foo', null!));
 	});
 
 	test('register/dispose', () => {
-		const command = function () { };
-		const reg = CommandsRegistry.registerCommand('foo', command);
-		assert.ok(CommandsRegistry.getCommand('foo')!.handler === command);
+		const commAnd = function () { };
+		const reg = CommAndsRegistry.registerCommAnd('foo', commAnd);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo')!.hAndler === commAnd);
 		reg.dispose();
-		assert.ok(CommandsRegistry.getCommand('foo') === undefined);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo') === undefined);
 	});
 
 	test('register/register/dispose', () => {
-		const command1 = function () { };
-		const command2 = function () { };
+		const commAnd1 = function () { };
+		const commAnd2 = function () { };
 
-		// dispose overriding command
-		let reg1 = CommandsRegistry.registerCommand('foo', command1);
-		assert.ok(CommandsRegistry.getCommand('foo')!.handler === command1);
+		// dispose overriding commAnd
+		let reg1 = CommAndsRegistry.registerCommAnd('foo', commAnd1);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo')!.hAndler === commAnd1);
 
-		let reg2 = CommandsRegistry.registerCommand('foo', command2);
-		assert.ok(CommandsRegistry.getCommand('foo')!.handler === command2);
+		let reg2 = CommAndsRegistry.registerCommAnd('foo', commAnd2);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo')!.hAndler === commAnd2);
 		reg2.dispose();
 
-		assert.ok(CommandsRegistry.getCommand('foo')!.handler === command1);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo')!.hAndler === commAnd1);
 		reg1.dispose();
-		assert.ok(CommandsRegistry.getCommand('foo') === undefined);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo') === undefined);
 
-		// dispose override command first
-		reg1 = CommandsRegistry.registerCommand('foo', command1);
-		reg2 = CommandsRegistry.registerCommand('foo', command2);
-		assert.ok(CommandsRegistry.getCommand('foo')!.handler === command2);
+		// dispose override commAnd first
+		reg1 = CommAndsRegistry.registerCommAnd('foo', commAnd1);
+		reg2 = CommAndsRegistry.registerCommAnd('foo', commAnd2);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo')!.hAndler === commAnd2);
 
 		reg1.dispose();
-		assert.ok(CommandsRegistry.getCommand('foo')!.handler === command2);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo')!.hAndler === commAnd2);
 
 		reg2.dispose();
-		assert.ok(CommandsRegistry.getCommand('foo') === undefined);
+		Assert.ok(CommAndsRegistry.getCommAnd('foo') === undefined);
 	});
 
-	test('command with description', function () {
+	test('commAnd with description', function () {
 
-		CommandsRegistry.registerCommand('test', function (accessor, args) {
-			assert.ok(typeof args === 'string');
+		CommAndsRegistry.registerCommAnd('test', function (Accessor, Args) {
+			Assert.ok(typeof Args === 'string');
 		});
 
-		CommandsRegistry.registerCommand('test2', function (accessor, args) {
-			assert.ok(typeof args === 'string');
+		CommAndsRegistry.registerCommAnd('test2', function (Accessor, Args) {
+			Assert.ok(typeof Args === 'string');
 		});
 
-		CommandsRegistry.registerCommand({
+		CommAndsRegistry.registerCommAnd({
 			id: 'test3',
-			handler: function (accessor, args) {
+			hAndler: function (Accessor, Args) {
 				return true;
 			},
 			description: {
-				description: 'a command',
-				args: [{ name: 'value', constraint: Number }]
+				description: 'A commAnd',
+				Args: [{ nAme: 'vAlue', constrAint: Number }]
 			}
 		});
 
-		CommandsRegistry.getCommands().get('test')!.handler.apply(undefined, [undefined!, 'string']);
-		CommandsRegistry.getCommands().get('test2')!.handler.apply(undefined, [undefined!, 'string']);
-		assert.throws(() => CommandsRegistry.getCommands().get('test3')!.handler.apply(undefined, [undefined!, 'string']));
-		assert.equal(CommandsRegistry.getCommands().get('test3')!.handler.apply(undefined, [undefined!, 1]), true);
+		CommAndsRegistry.getCommAnds().get('test')!.hAndler.Apply(undefined, [undefined!, 'string']);
+		CommAndsRegistry.getCommAnds().get('test2')!.hAndler.Apply(undefined, [undefined!, 'string']);
+		Assert.throws(() => CommAndsRegistry.getCommAnds().get('test3')!.hAndler.Apply(undefined, [undefined!, 'string']));
+		Assert.equAl(CommAndsRegistry.getCommAnds().get('test3')!.hAndler.Apply(undefined, [undefined!, 1]), true);
 
 	});
 });

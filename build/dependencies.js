@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-const path = require('path');
-const parseSemver = require('parse-semver');
+const pAth = require('pAth');
+const pArseSemver = require('pArse-semver');
 const cp = require('child_process');
 const _ = require('underscore');
 
-function asYarnDependency(prefix, tree) {
-	let parseResult;
+function AsYArnDependency(prefix, tree) {
+	let pArseResult;
 
 	try {
-		parseResult = parseSemver(tree.name);
-	} catch (err) {
-		err.message += `: ${tree.name}`;
-		console.warn(`Could not parse semver: ${tree.name}`);
+		pArseResult = pArseSemver(tree.nAme);
+	} cAtch (err) {
+		err.messAge += `: ${tree.nAme}`;
+		console.wArn(`Could not pArse semver: ${tree.nAme}`);
 		return null;
 	}
 
-	// not an actual dependency in disk
-	if (parseResult.version !== parseResult.range) {
+	// not An ActuAl dependency in disk
+	if (pArseResult.version !== pArseResult.rAnge) {
 		return null;
 	}
 
-	const name = parseResult.name;
-	const version = parseResult.version;
-	const dependencyPath = path.join(prefix, name);
+	const nAme = pArseResult.nAme;
+	const version = pArseResult.version;
+	const dependencyPAth = pAth.join(prefix, nAme);
 	const children = [];
 
 	for (const child of (tree.children || [])) {
-		const dep = asYarnDependency(path.join(prefix, name, 'node_modules'), child);
+		const dep = AsYArnDependency(pAth.join(prefix, nAme, 'node_modules'), child);
 
 		if (dep) {
 			children.push(dep);
 		}
 	}
 
-	return { name, version, path: dependencyPath, children };
+	return { nAme, version, pAth: dependencyPAth, children };
 }
 
-function getYarnProductionDependencies(cwd) {
-	const raw = cp.execSync('yarn list --json', { cwd, encoding: 'utf8', env: { ...process.env, NODE_ENV: 'production' }, stdio: [null, null, 'inherit'] });
-	const match = /^{"type":"tree".*$/m.exec(raw);
+function getYArnProductionDependencies(cwd) {
+	const rAw = cp.execSync('yArn list --json', { cwd, encoding: 'utf8', env: { ...process.env, NODE_ENV: 'production' }, stdio: [null, null, 'inherit'] });
+	const mAtch = /^{"type":"tree".*$/m.exec(rAw);
 
-	if (!match || match.length !== 1) {
-		throw new Error('Could not parse result of `yarn list --json`');
+	if (!mAtch || mAtch.length !== 1) {
+		throw new Error('Could not pArse result of `yArn list --json`');
 	}
 
-	const trees = JSON.parse(match[0]).data.trees;
+	const trees = JSON.pArse(mAtch[0]).dAtA.trees;
 
 	return trees
-		.map(tree => asYarnDependency(path.join(cwd, 'node_modules'), tree))
+		.mAp(tree => AsYArnDependency(pAth.join(cwd, 'node_modules'), tree))
 		.filter(dep => !!dep);
 }
 
 function getProductionDependencies(cwd) {
 	const result = [];
-	const deps = getYarnProductionDependencies(cwd);
-	const flatten = dep => { result.push({ name: dep.name, version: dep.version, path: dep.path }); dep.children.forEach(flatten); };
-	deps.forEach(flatten);
+	const deps = getYArnProductionDependencies(cwd);
+	const flAtten = dep => { result.push({ nAme: dep.nAme, version: dep.version, pAth: dep.pAth }); dep.children.forEAch(flAtten); };
+	deps.forEAch(flAtten);
 
 	return _.uniq(result);
 }
 
 module.exports.getProductionDependencies = getProductionDependencies;
 
-if (require.main === module) {
-	const root = path.dirname(__dirname);
+if (require.mAin === module) {
+	const root = pAth.dirnAme(__dirnAme);
 	console.log(JSON.stringify(getProductionDependencies(root), null, '  '));
 }

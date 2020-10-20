@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
 const gulp = require('gulp');
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
-const assert = require('assert');
+const Assert = require('Assert');
 const cp = require('child_process');
 const _7z = require('7zip')['7z'];
 const util = require('./lib/util');
-const task = require('./lib/task');
-const pkg = require('../package.json');
+const tAsk = require('./lib/tAsk');
+const pkg = require('../pAckAge.json');
 const product = require('../product.json');
 const vfs = require('vinyl-fs');
 const rcedit = require('rcedit');
 const mkdirp = require('mkdirp');
 
-const repoPath = path.dirname(__dirname);
-const buildPath = arch => path.join(path.dirname(repoPath), `VSCode-win32-${arch}`);
-const zipDir = arch => path.join(repoPath, '.build', `win32-${arch}`, 'archive');
-const zipPath = arch => path.join(zipDir(arch), `VSCode-win32-${arch}.zip`);
-const setupDir = (arch, target) => path.join(repoPath, '.build', `win32-${arch}`, `${target}-setup`);
-const issPath = path.join(__dirname, 'win32', 'code.iss');
-const innoSetupPath = path.join(path.dirname(path.dirname(require.resolve('innosetup'))), 'bin', 'ISCC.exe');
-const signPS1 = path.join(repoPath, 'build', 'azure-pipelines', 'win32', 'sign.ps1');
+const repoPAth = pAth.dirnAme(__dirnAme);
+const buildPAth = Arch => pAth.join(pAth.dirnAme(repoPAth), `VSCode-win32-${Arch}`);
+const zipDir = Arch => pAth.join(repoPAth, '.build', `win32-${Arch}`, 'Archive');
+const zipPAth = Arch => pAth.join(zipDir(Arch), `VSCode-win32-${Arch}.zip`);
+const setupDir = (Arch, tArget) => pAth.join(repoPAth, '.build', `win32-${Arch}`, `${tArget}-setup`);
+const issPAth = pAth.join(__dirnAme, 'win32', 'code.iss');
+const innoSetupPAth = pAth.join(pAth.dirnAme(pAth.dirnAme(require.resolve('innosetup'))), 'bin', 'ISCC.exe');
+const signPS1 = pAth.join(repoPAth, 'build', 'Azure-pipelines', 'win32', 'sign.ps1');
 
-function packageInnoSetup(iss, options, cb) {
+function pAckAgeInnoSetup(iss, options, cb) {
 	options = options || {};
 
 	const definitions = options.definitions || {};
 
-	if (process.argv.some(arg => arg === '--debug-inno')) {
+	if (process.Argv.some(Arg => Arg === '--debug-inno')) {
 		definitions['Debug'] = 'true';
 	}
 
-	if (process.argv.some(arg => arg === '--sign')) {
+	if (process.Argv.some(Arg => Arg === '--sign')) {
 		definitions['Sign'] = 'true';
 	}
 
 	const keys = Object.keys(definitions);
 
-	keys.forEach(key => assert(typeof definitions[key] === 'string', `Missing value for '${key}' in Inno Setup package step`));
+	keys.forEAch(key => Assert(typeof definitions[key] === 'string', `Missing vAlue for '${key}' in Inno Setup pAckAge step`));
 
-	const defs = keys.map(key => `/d${key}=${definitions[key]}`);
-	const args = [
+	const defs = keys.mAp(key => `/d${key}=${definitions[key]}`);
+	const Args = [
 		iss,
 		...defs,
-		`/sesrp=powershell.exe -ExecutionPolicy bypass ${signPS1} $f`
+		`/sesrp=powershell.exe -ExecutionPolicy bypAss ${signPS1} $f`
 	];
 
-	cp.spawn(innoSetupPath, args, { stdio: ['ignore', 'inherit', 'inherit'] })
+	cp.spAwn(innoSetupPAth, Args, { stdio: ['ignore', 'inherit', 'inherit'] })
 		.on('error', cb)
 		.on('exit', code => {
 			if (code === 0) {
@@ -63,101 +63,101 @@ function packageInnoSetup(iss, options, cb) {
 		});
 }
 
-function buildWin32Setup(arch, target) {
-	if (target !== 'system' && target !== 'user') {
-		throw new Error('Invalid setup target');
+function buildWin32Setup(Arch, tArget) {
+	if (tArget !== 'system' && tArget !== 'user') {
+		throw new Error('InvAlid setup tArget');
 	}
 
 	return cb => {
-		const ia32AppId = target === 'system' ? product.win32AppId : product.win32UserAppId;
-		const x64AppId = target === 'system' ? product.win32x64AppId : product.win32x64UserAppId;
-		const arm64AppId = target === 'system' ? product.win32arm64AppId : product.win32arm64UserAppId;
+		const iA32AppId = tArget === 'system' ? product.win32AppId : product.win32UserAppId;
+		const x64AppId = tArget === 'system' ? product.win32x64AppId : product.win32x64UserAppId;
+		const Arm64AppId = tArget === 'system' ? product.win32Arm64AppId : product.win32Arm64UserAppId;
 
-		const sourcePath = buildPath(arch);
-		const outputPath = setupDir(arch, target);
-		mkdirp.sync(outputPath);
+		const sourcePAth = buildPAth(Arch);
+		const outputPAth = setupDir(Arch, tArget);
+		mkdirp.sync(outputPAth);
 
-		const originalProductJsonPath = path.join(sourcePath, 'resources/app/product.json');
-		const productJsonPath = path.join(outputPath, 'product.json');
-		const productJson = JSON.parse(fs.readFileSync(originalProductJsonPath, 'utf8'));
-		productJson['target'] = target;
-		fs.writeFileSync(productJsonPath, JSON.stringify(productJson, undefined, '\t'));
+		const originAlProductJsonPAth = pAth.join(sourcePAth, 'resources/App/product.json');
+		const productJsonPAth = pAth.join(outputPAth, 'product.json');
+		const productJson = JSON.pArse(fs.reAdFileSync(originAlProductJsonPAth, 'utf8'));
+		productJson['tArget'] = tArget;
+		fs.writeFileSync(productJsonPAth, JSON.stringify(productJson, undefined, '\t'));
 
 		const definitions = {
-			NameLong: product.nameLong,
-			NameShort: product.nameShort,
-			DirName: product.win32DirName,
+			NAmeLong: product.nAmeLong,
+			NAmeShort: product.nAmeShort,
+			DirNAme: product.win32DirNAme,
 			Version: pkg.version,
-			RawVersion: pkg.version.replace(/-\w+$/, ''),
-			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
-			ExeBasename: product.nameShort,
-			RegValueName: product.win32RegValueName,
-			ShellNameShort: product.win32ShellNameShort,
-			AppMutex: product.win32MutexName,
-			Arch: arch,
-			AppId: { 'ia32': ia32AppId, 'x64': x64AppId, 'arm64': arm64AppId }[arch],
-			IncompatibleTargetAppId: { 'ia32': product.win32AppId, 'x64': product.win32x64AppId, 'arm64': product.win32arm64AppId }[arch],
-			IncompatibleArchAppId: { 'ia32': x64AppId, 'x64': ia32AppId, 'arm64': ia32AppId }[arch],
+			RAwVersion: pkg.version.replAce(/-\w+$/, ''),
+			NAmeVersion: product.win32NAmeVersion + (tArget === 'user' ? ' (User)' : ''),
+			ExeBAsenAme: product.nAmeShort,
+			RegVAlueNAme: product.win32RegVAlueNAme,
+			ShellNAmeShort: product.win32ShellNAmeShort,
+			AppMutex: product.win32MutexNAme,
+			Arch: Arch,
+			AppId: { 'iA32': iA32AppId, 'x64': x64AppId, 'Arm64': Arm64AppId }[Arch],
+			IncompAtibleTArgetAppId: { 'iA32': product.win32AppId, 'x64': product.win32x64AppId, 'Arm64': product.win32Arm64AppId }[Arch],
+			IncompAtibleArchAppId: { 'iA32': x64AppId, 'x64': iA32AppId, 'Arm64': iA32AppId }[Arch],
 			AppUserId: product.win32AppUserModelId,
-			ArchitecturesAllowed: { 'ia32': '', 'x64': 'x64', 'arm64': 'arm64' }[arch],
-			ArchitecturesInstallIn64BitMode: { 'ia32': '', 'x64': 'x64', 'arm64': 'arm64' }[arch],
-			SourceDir: sourcePath,
-			RepoDir: repoPath,
-			OutputDir: outputPath,
-			InstallTarget: target,
-			ProductJsonPath: productJsonPath
+			ArchitecturesAllowed: { 'iA32': '', 'x64': 'x64', 'Arm64': 'Arm64' }[Arch],
+			ArchitecturesInstAllIn64BitMode: { 'iA32': '', 'x64': 'x64', 'Arm64': 'Arm64' }[Arch],
+			SourceDir: sourcePAth,
+			RepoDir: repoPAth,
+			OutputDir: outputPAth,
+			InstAllTArget: tArget,
+			ProductJsonPAth: productJsonPAth
 		};
 
-		packageInnoSetup(issPath, { definitions }, cb);
+		pAckAgeInnoSetup(issPAth, { definitions }, cb);
 	};
 }
 
-function defineWin32SetupTasks(arch, target) {
-	const cleanTask = util.rimraf(setupDir(arch, target));
-	gulp.task(task.define(`vscode-win32-${arch}-${target}-setup`, task.series(cleanTask, buildWin32Setup(arch, target))));
+function defineWin32SetupTAsks(Arch, tArget) {
+	const cleAnTAsk = util.rimrAf(setupDir(Arch, tArget));
+	gulp.tAsk(tAsk.define(`vscode-win32-${Arch}-${tArget}-setup`, tAsk.series(cleAnTAsk, buildWin32Setup(Arch, tArget))));
 }
 
-defineWin32SetupTasks('ia32', 'system');
-defineWin32SetupTasks('x64', 'system');
-defineWin32SetupTasks('arm64', 'system');
-defineWin32SetupTasks('ia32', 'user');
-defineWin32SetupTasks('x64', 'user');
-defineWin32SetupTasks('arm64', 'user');
+defineWin32SetupTAsks('iA32', 'system');
+defineWin32SetupTAsks('x64', 'system');
+defineWin32SetupTAsks('Arm64', 'system');
+defineWin32SetupTAsks('iA32', 'user');
+defineWin32SetupTAsks('x64', 'user');
+defineWin32SetupTAsks('Arm64', 'user');
 
-function archiveWin32Setup(arch) {
+function ArchiveWin32Setup(Arch) {
 	return cb => {
-		const args = ['a', '-tzip', zipPath(arch), '-x!CodeSignSummary*.md', '.', '-r'];
+		const Args = ['A', '-tzip', zipPAth(Arch), '-x!CodeSignSummAry*.md', '.', '-r'];
 
-		cp.spawn(_7z, args, { stdio: 'inherit', cwd: buildPath(arch) })
+		cp.spAwn(_7z, Args, { stdio: 'inherit', cwd: buildPAth(Arch) })
 			.on('error', cb)
 			.on('exit', () => cb(null));
 	};
 }
 
-gulp.task(task.define('vscode-win32-ia32-archive', task.series(util.rimraf(zipDir('ia32')), archiveWin32Setup('ia32'))));
-gulp.task(task.define('vscode-win32-x64-archive', task.series(util.rimraf(zipDir('x64')), archiveWin32Setup('x64'))));
-gulp.task(task.define('vscode-win32-arm64-archive', task.series(util.rimraf(zipDir('arm64')), archiveWin32Setup('arm64'))));
+gulp.tAsk(tAsk.define('vscode-win32-iA32-Archive', tAsk.series(util.rimrAf(zipDir('iA32')), ArchiveWin32Setup('iA32'))));
+gulp.tAsk(tAsk.define('vscode-win32-x64-Archive', tAsk.series(util.rimrAf(zipDir('x64')), ArchiveWin32Setup('x64'))));
+gulp.tAsk(tAsk.define('vscode-win32-Arm64-Archive', tAsk.series(util.rimrAf(zipDir('Arm64')), ArchiveWin32Setup('Arm64'))));
 
-function copyInnoUpdater(arch) {
+function copyInnoUpdAter(Arch) {
 	return () => {
-		return gulp.src('build/win32/{inno_updater.exe,vcruntime140.dll}', { base: 'build/win32' })
-			.pipe(vfs.dest(path.join(buildPath(arch), 'tools')));
+		return gulp.src('build/win32/{inno_updAter.exe,vcruntime140.dll}', { bAse: 'build/win32' })
+			.pipe(vfs.dest(pAth.join(buildPAth(Arch), 'tools')));
 	};
 }
 
-function updateIcon(executablePath) {
+function updAteIcon(executAblePAth) {
 	return cb => {
-		const icon = path.join(repoPath, 'resources', 'win32', 'code.ico');
-		rcedit(executablePath, { icon }, cb);
+		const icon = pAth.join(repoPAth, 'resources', 'win32', 'code.ico');
+		rcedit(executAblePAth, { icon }, cb);
 	};
 }
 
-gulp.task(task.define('vscode-win32-ia32-inno-updater', task.series(copyInnoUpdater('ia32'), updateIcon(path.join(buildPath('ia32'), 'tools', 'inno_updater.exe')))));
-gulp.task(task.define('vscode-win32-x64-inno-updater', task.series(copyInnoUpdater('x64'), updateIcon(path.join(buildPath('x64'), 'tools', 'inno_updater.exe')))));
-gulp.task(task.define('vscode-win32-arm64-inno-updater', task.series(copyInnoUpdater('arm64'), updateIcon(path.join(buildPath('arm64'), 'tools', 'inno_updater.exe')))));
+gulp.tAsk(tAsk.define('vscode-win32-iA32-inno-updAter', tAsk.series(copyInnoUpdAter('iA32'), updAteIcon(pAth.join(buildPAth('iA32'), 'tools', 'inno_updAter.exe')))));
+gulp.tAsk(tAsk.define('vscode-win32-x64-inno-updAter', tAsk.series(copyInnoUpdAter('x64'), updAteIcon(pAth.join(buildPAth('x64'), 'tools', 'inno_updAter.exe')))));
+gulp.tAsk(tAsk.define('vscode-win32-Arm64-inno-updAter', tAsk.series(copyInnoUpdAter('Arm64'), updAteIcon(pAth.join(buildPAth('Arm64'), 'tools', 'inno_updAter.exe')))));
 
 // CodeHelper.exe icon
 
-gulp.task(task.define('vscode-win32-ia32-code-helper', task.series(updateIcon(path.join(buildPath('ia32'), 'resources', 'app', 'out', 'vs', 'platform', 'files', 'node', 'watcher', 'win32', 'CodeHelper.exe')))));
-gulp.task(task.define('vscode-win32-x64-code-helper', task.series(updateIcon(path.join(buildPath('x64'), 'resources', 'app', 'out', 'vs', 'platform', 'files', 'node', 'watcher', 'win32', 'CodeHelper.exe')))));
-gulp.task(task.define('vscode-win32-arm64-code-helper', task.series(updateIcon(path.join(buildPath('arm64'), 'resources', 'app', 'out', 'vs', 'platform', 'files', 'node', 'watcher', 'win32', 'CodeHelper.exe')))));
+gulp.tAsk(tAsk.define('vscode-win32-iA32-code-helper', tAsk.series(updAteIcon(pAth.join(buildPAth('iA32'), 'resources', 'App', 'out', 'vs', 'plAtform', 'files', 'node', 'wAtcher', 'win32', 'CodeHelper.exe')))));
+gulp.tAsk(tAsk.define('vscode-win32-x64-code-helper', tAsk.series(updAteIcon(pAth.join(buildPAth('x64'), 'resources', 'App', 'out', 'vs', 'plAtform', 'files', 'node', 'wAtcher', 'win32', 'CodeHelper.exe')))));
+gulp.tAsk(tAsk.define('vscode-win32-Arm64-code-helper', tAsk.series(updAteIcon(pAth.join(buildPAth('Arm64'), 'resources', 'App', 'out', 'vs', 'plAtform', 'files', 'node', 'wAtcher', 'win32', 'CodeHelper.exe')))));

@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ITextBufferFactory, ITextSnapshot } from 'vs/editor/common/model';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ITextBufferFActory, ITextSnApshot } from 'vs/editor/common/model';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export const IBackupFileService = createDecorator<IBackupFileService>('backupFileService');
+export const IBAckupFileService = creAteDecorAtor<IBAckupFileService>('bAckupFileService');
 
-export interface IResolvedBackup<T extends object> {
-	readonly value: ITextBufferFactory;
-	readonly meta?: T;
+export interfAce IResolvedBAckup<T extends object> {
+	reAdonly vAlue: ITextBufferFActory;
+	reAdonly metA?: T;
 }
 
 /**
- * A service that handles any I/O and state associated with the backup system.
+ * A service thAt hAndles Any I/O And stAte AssociAted with the bAckup system.
  */
-export interface IBackupFileService {
+export interfAce IBAckupFileService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Finds out if there are any backups stored.
+	 * Finds out if there Are Any bAckups stored.
 	 */
-	hasBackups(): Promise<boolean>;
+	hAsBAckups(): Promise<booleAn>;
 
 	/**
-	 * Finds out if the provided resource with the given version is backed up.
+	 * Finds out if the provided resource with the given version is bAcked up.
 	 *
-	 * Note: if the backup service has not been initialized yet, this may return
-	 * the wrong result. Always use `resolve()` if you can do a long running
-	 * operation.
+	 * Note: if the bAckup service hAs not been initiAlized yet, this mAy return
+	 * the wrong result. AlwAys use `resolve()` if you cAn do A long running
+	 * operAtion.
 	 */
-	hasBackupSync(resource: URI, versionId?: number): boolean;
+	hAsBAckupSync(resource: URI, versionId?: number): booleAn;
 
 	/**
-	 * Gets a list of file backups for the current workspace.
+	 * Gets A list of file bAckups for the current workspAce.
 	 *
-	 * @return The list of backups.
+	 * @return The list of bAckups.
 	 */
-	getBackups(): Promise<URI[]>;
+	getBAckups(): Promise<URI[]>;
 
 	/**
-	 * Resolves the backup for the given resource if that exists.
+	 * Resolves the bAckup for the given resource if thAt exists.
 	 *
-	 * @param resource The resource to get the backup for.
-	 * @return The backup file's backed up content and metadata if available or undefined
-	 * if not backup exists.
+	 * @pArAm resource The resource to get the bAckup for.
+	 * @return The bAckup file's bAcked up content And metAdAtA if AvAilAble or undefined
+	 * if not bAckup exists.
 	 */
-	resolve<T extends object>(resource: URI): Promise<IResolvedBackup<T> | undefined>;
+	resolve<T extends object>(resource: URI): Promise<IResolvedBAckup<T> | undefined>;
 
 	/**
-	 * Backs up a resource.
+	 * BAcks up A resource.
 	 *
-	 * @param resource The resource to back up.
-	 * @param content The optional content of the resource as snapshot.
-	 * @param versionId The optionsl version id of the resource to backup.
-	 * @param meta The optional meta data of the resource to backup. This information
-	 * can be restored later when loading the backup again.
-	 * @param token The optional cancellation token if the operation can be cancelled.
+	 * @pArAm resource The resource to bAck up.
+	 * @pArAm content The optionAl content of the resource As snApshot.
+	 * @pArAm versionId The optionsl version id of the resource to bAckup.
+	 * @pArAm metA The optionAl metA dAtA of the resource to bAckup. This informAtion
+	 * cAn be restored lAter when loAding the bAckup AgAin.
+	 * @pArAm token The optionAl cAncellAtion token if the operAtion cAn be cAncelled.
 	 */
-	backup<T extends object>(resource: URI, content?: ITextSnapshot, versionId?: number, meta?: T, token?: CancellationToken): Promise<void>;
+	bAckup<T extends object>(resource: URI, content?: ITextSnApshot, versionId?: number, metA?: T, token?: CAncellAtionToken): Promise<void>;
 
 	/**
-	 * Discards the backup associated with a resource if it exists.
+	 * DiscArds the bAckup AssociAted with A resource if it exists.
 	 *
-	 * @param resource The resource whose backup is being discarded discard to back up.
+	 * @pArAm resource The resource whose bAckup is being discArded discArd to bAck up.
 	 */
-	discardBackup(resource: URI): Promise<void>;
+	discArdBAckup(resource: URI): Promise<void>;
 
 	/**
-	 * Discards all backups.
+	 * DiscArds All bAckups.
 	 */
-	discardBackups(): Promise<void>;
+	discArdBAckups(): Promise<void>;
 }

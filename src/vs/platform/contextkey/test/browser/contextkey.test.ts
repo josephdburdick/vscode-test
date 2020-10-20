@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { ContextKeyService } from 'vs/platform/contextkey/browser/contextKeyService';
-import * as assert from 'assert';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { ContextKeyService } from 'vs/plAtform/contextkey/browser/contextKeyService';
+import * As Assert from 'Assert';
 
 suite('ContextKeyService', () => {
-	test('updateParent', () => {
-		const root = new ContextKeyService(new TestConfigurationService());
-		const parent1 = root.createScoped(document.createElement('div'));
-		const parent2 = root.createScoped(document.createElement('div'));
+	test('updAtePArent', () => {
+		const root = new ContextKeyService(new TestConfigurAtionService());
+		const pArent1 = root.creAteScoped(document.creAteElement('div'));
+		const pArent2 = root.creAteScoped(document.creAteElement('div'));
 
-		const child = parent1.createScoped(document.createElement('div'));
-		parent1.createKey('testA', 1);
-		parent1.createKey('testB', 2);
-		parent1.createKey('testD', 0);
+		const child = pArent1.creAteScoped(document.creAteElement('div'));
+		pArent1.creAteKey('testA', 1);
+		pArent1.creAteKey('testB', 2);
+		pArent1.creAteKey('testD', 0);
 
-		parent2.createKey('testA', 3);
-		parent2.createKey('testC', 4);
-		parent2.createKey('testD', 0);
+		pArent2.creAteKey('testA', 3);
+		pArent2.creAteKey('testC', 4);
+		pArent2.creAteKey('testD', 0);
 
 		let complete: () => void;
 		let reject: (err: Error) => void;
@@ -27,18 +27,18 @@ suite('ContextKeyService', () => {
 			complete = _complete;
 			reject = _reject;
 		});
-		child.onDidChangeContext(e => {
+		child.onDidChAngeContext(e => {
 			try {
-				assert.ok(e.affectsSome(new Set(['testA'])), 'testA changed');
-				assert.ok(e.affectsSome(new Set(['testB'])), 'testB changed');
-				assert.ok(e.affectsSome(new Set(['testC'])), 'testC changed');
-				assert.ok(!e.affectsSome(new Set(['testD'])), 'testD did not change');
+				Assert.ok(e.AffectsSome(new Set(['testA'])), 'testA chAnged');
+				Assert.ok(e.AffectsSome(new Set(['testB'])), 'testB chAnged');
+				Assert.ok(e.AffectsSome(new Set(['testC'])), 'testC chAnged');
+				Assert.ok(!e.AffectsSome(new Set(['testD'])), 'testD did not chAnge');
 
-				assert.equal(child.getContextKeyValue('testA'), 3);
-				assert.equal(child.getContextKeyValue('testB'), undefined);
-				assert.equal(child.getContextKeyValue('testC'), 4);
-				assert.equal(child.getContextKeyValue('testD'), 0);
-			} catch (err) {
+				Assert.equAl(child.getContextKeyVAlue('testA'), 3);
+				Assert.equAl(child.getContextKeyVAlue('testB'), undefined);
+				Assert.equAl(child.getContextKeyVAlue('testC'), 4);
+				Assert.equAl(child.getContextKeyVAlue('testD'), 0);
+			} cAtch (err) {
 				reject(err);
 				return;
 			}
@@ -46,7 +46,7 @@ suite('ContextKeyService', () => {
 			complete();
 		});
 
-		child.updateParent(parent2);
+		child.updAtePArent(pArent2);
 
 		return p;
 	});

@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * This code is also used by standalone cli's. Avoid adding dependencies to keep the size of the cli small.
+ * This code is Also used by stAndAlone cli's. Avoid Adding dependencies to keep the size of the cli smAll.
  */
-import * as path from 'vs/base/common/path';
-import * as os from 'os';
-import * as fs from 'fs';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As os from 'os';
+import * As fs from 'fs';
 
-export function createWaitMarkerFile(verbose?: boolean): string | undefined {
-	const randomWaitMarkerPath = path.join(os.tmpdir(), Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10));
+export function creAteWAitMArkerFile(verbose?: booleAn): string | undefined {
+	const rAndomWAitMArkerPAth = pAth.join(os.tmpdir(), MAth.rAndom().toString(36).replAce(/[^A-z]+/g, '').substr(0, 10));
 
 	try {
-		fs.writeFileSync(randomWaitMarkerPath, ''); // use built-in fs to avoid dragging in more dependencies
+		fs.writeFileSync(rAndomWAitMArkerPAth, ''); // use built-in fs to Avoid drAgging in more dependencies
 		if (verbose) {
-			console.log(`Marker file for --wait created: ${randomWaitMarkerPath}`);
+			console.log(`MArker file for --wAit creAted: ${rAndomWAitMArkerPAth}`);
 		}
-		return randomWaitMarkerPath;
-	} catch (err) {
+		return rAndomWAitMArkerPAth;
+	} cAtch (err) {
 		if (verbose) {
-			console.error(`Failed to create marker file for --wait: ${err}`);
+			console.error(`FAiled to creAte mArker file for --wAit: ${err}`);
 		}
 		return undefined;
 	}

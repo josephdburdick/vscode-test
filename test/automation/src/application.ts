@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
 import { Workbench } from './workbench';
-import { Code, spawn, SpawnOptions } from './code';
+import { Code, spAwn, SpAwnOptions } from './code';
 import { Logger } from './logger';
 
-export const enum Quality {
+export const enum QuAlity {
 	Dev,
 	Insiders,
-	Stable
+	StAble
 }
 
-export interface ApplicationOptions extends SpawnOptions {
-	quality: Quality;
-	workspacePath: string;
-	waitTime: number;
-	screenshotsPath: string | null;
+export interfAce ApplicAtionOptions extends SpAwnOptions {
+	quAlity: QuAlity;
+	workspAcePAth: string;
+	wAitTime: number;
+	screenshotsPAth: string | null;
 }
 
-export class Application {
+export clAss ApplicAtion {
 
-	private _code: Code | undefined;
-	private _workbench: Workbench | undefined;
+	privAte _code: Code | undefined;
+	privAte _workbench: Workbench | undefined;
 
-	constructor(private options: ApplicationOptions) {
-		this._workspacePathOrFolder = options.workspacePath;
+	constructor(privAte options: ApplicAtionOptions) {
+		this._workspAcePAthOrFolder = options.workspAcePAth;
 	}
 
-	get quality(): Quality {
-		return this.options.quality;
+	get quAlity(): QuAlity {
+		return this.options.quAlity;
 	}
 
 	get code(): Code {
@@ -47,106 +47,106 @@ export class Application {
 		return this.options.logger;
 	}
 
-	get remote(): boolean {
+	get remote(): booleAn {
 		return !!this.options.remote;
 	}
 
-	private _workspacePathOrFolder: string;
-	get workspacePathOrFolder(): string {
-		return this._workspacePathOrFolder;
+	privAte _workspAcePAthOrFolder: string;
+	get workspAcePAthOrFolder(): string {
+		return this._workspAcePAthOrFolder;
 	}
 
-	get extensionsPath(): string {
-		return this.options.extensionsPath;
+	get extensionsPAth(): string {
+		return this.options.extensionsPAth;
 	}
 
-	get userDataPath(): string {
-		return this.options.userDataDir;
+	get userDAtAPAth(): string {
+		return this.options.userDAtADir;
 	}
 
-	async start(expectWalkthroughPart = true): Promise<any> {
-		await this._start();
-		await this.code.waitForElement('.explorer-folders-view');
+	Async stArt(expectWAlkthroughPArt = true): Promise<Any> {
+		AwAit this._stArt();
+		AwAit this.code.wAitForElement('.explorer-folders-view');
 
-		if (expectWalkthroughPart) {
-			await this.code.waitForActiveElement(`.editor-instance[data-editor-id="workbench.editor.walkThroughPart"] > div > div[tabIndex="0"]`);
+		if (expectWAlkthroughPArt) {
+			AwAit this.code.wAitForActiveElement(`.editor-instAnce[dAtA-editor-id="workbench.editor.wAlkThroughPArt"] > div > div[tAbIndex="0"]`);
 		}
 	}
 
-	async restart(options: { workspaceOrFolder?: string, extraArgs?: string[] }): Promise<any> {
-		await this.stop();
-		await new Promise(c => setTimeout(c, 1000));
-		await this._start(options.workspaceOrFolder, options.extraArgs);
+	Async restArt(options: { workspAceOrFolder?: string, extrAArgs?: string[] }): Promise<Any> {
+		AwAit this.stop();
+		AwAit new Promise(c => setTimeout(c, 1000));
+		AwAit this._stArt(options.workspAceOrFolder, options.extrAArgs);
 	}
 
-	private async _start(workspaceOrFolder = this.workspacePathOrFolder, extraArgs: string[] = []): Promise<any> {
-		this._workspacePathOrFolder = workspaceOrFolder;
-		await this.startApplication(extraArgs);
-		await this.checkWindowReady();
+	privAte Async _stArt(workspAceOrFolder = this.workspAcePAthOrFolder, extrAArgs: string[] = []): Promise<Any> {
+		this._workspAcePAthOrFolder = workspAceOrFolder;
+		AwAit this.stArtApplicAtion(extrAArgs);
+		AwAit this.checkWindowReAdy();
 	}
 
-	async reload(): Promise<any> {
-		this.code.reload()
-			.catch(err => null); // ignore the connection drop errors
+	Async reloAd(): Promise<Any> {
+		this.code.reloAd()
+			.cAtch(err => null); // ignore the connection drop errors
 
-		// needs to be enough to propagate the 'Reload Window' command
-		await new Promise(c => setTimeout(c, 1500));
-		await this.checkWindowReady();
+		// needs to be enough to propAgAte the 'ReloAd Window' commAnd
+		AwAit new Promise(c => setTimeout(c, 1500));
+		AwAit this.checkWindowReAdy();
 	}
 
-	async stop(): Promise<any> {
+	Async stop(): Promise<Any> {
 		if (this._code) {
-			await this._code.exit();
+			AwAit this._code.exit();
 			this._code.dispose();
 			this._code = undefined;
 		}
 	}
 
-	async captureScreenshot(name: string): Promise<void> {
-		if (this.options.screenshotsPath) {
-			const raw = await this.code.capturePage();
-			const buffer = Buffer.from(raw, 'base64');
-			const screenshotPath = path.join(this.options.screenshotsPath, `${name}.png`);
+	Async cAptureScreenshot(nAme: string): Promise<void> {
+		if (this.options.screenshotsPAth) {
+			const rAw = AwAit this.code.cApturePAge();
+			const buffer = Buffer.from(rAw, 'bAse64');
+			const screenshotPAth = pAth.join(this.options.screenshotsPAth, `${nAme}.png`);
 			if (this.options.log) {
-				this.logger.log('*** Screenshot recorded:', screenshotPath);
+				this.logger.log('*** Screenshot recorded:', screenshotPAth);
 			}
-			fs.writeFileSync(screenshotPath, buffer);
+			fs.writeFileSync(screenshotPAth, buffer);
 		}
 	}
 
-	private async startApplication(extraArgs: string[] = []): Promise<any> {
-		this._code = await spawn({
-			codePath: this.options.codePath,
-			workspacePath: this.workspacePathOrFolder,
-			userDataDir: this.options.userDataDir,
-			extensionsPath: this.options.extensionsPath,
+	privAte Async stArtApplicAtion(extrAArgs: string[] = []): Promise<Any> {
+		this._code = AwAit spAwn({
+			codePAth: this.options.codePAth,
+			workspAcePAth: this.workspAcePAthOrFolder,
+			userDAtADir: this.options.userDAtADir,
+			extensionsPAth: this.options.extensionsPAth,
 			logger: this.options.logger,
 			verbose: this.options.verbose,
 			log: this.options.log,
-			extraArgs,
+			extrAArgs,
 			remote: this.options.remote,
 			web: this.options.web,
 			browser: this.options.browser
 		});
 
-		this._workbench = new Workbench(this._code, this.userDataPath);
+		this._workbench = new Workbench(this._code, this.userDAtAPAth);
 	}
 
-	private async checkWindowReady(): Promise<any> {
+	privAte Async checkWindowReAdy(): Promise<Any> {
 		if (!this.code) {
-			console.error('No code instance found');
+			console.error('No code instAnce found');
 			return;
 		}
 
-		await this.code.waitForWindowIds(ids => ids.length > 0);
-		await this.code.waitForElement('.monaco-workbench');
+		AwAit this.code.wAitForWindowIds(ids => ids.length > 0);
+		AwAit this.code.wAitForElement('.monAco-workbench');
 
 		if (this.remote) {
-			await this.code.waitForTextContent('.monaco-workbench .statusbar-item[id="status.host"]', ' TestResolver');
+			AwAit this.code.wAitForTextContent('.monAco-workbench .stAtusbAr-item[id="stAtus.host"]', ' TestResolver');
 		}
 
-		// wait a bit, since focus might be stolen off widgets
-		// as soon as they open (e.g. quick access)
-		await new Promise(c => setTimeout(c, 1000));
+		// wAit A bit, since focus might be stolen off widgets
+		// As soon As they open (e.g. quick Access)
+		AwAit new Promise(c => setTimeout(c, 1000));
 	}
 }

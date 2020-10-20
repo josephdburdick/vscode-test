@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ScrollbarState } from 'vs/base/browser/ui/scrollbar/scrollbarState';
+import * As Assert from 'Assert';
+import { ScrollbArStAte } from 'vs/bAse/browser/ui/scrollbAr/scrollbArStAte';
 
-suite('ScrollbarState', () => {
-	test('inflates slider size', () => {
-		let actual = new ScrollbarState(0, 14, 0, 339, 42423, 32787);
+suite('ScrollbArStAte', () => {
+	test('inflAtes slider size', () => {
+		let ActuAl = new ScrollbArStAte(0, 14, 0, 339, 42423, 32787);
 
-		assert.equal(actual.getArrowSize(), 0);
-		assert.equal(actual.getScrollPosition(), 32787);
-		assert.equal(actual.getRectangleLargeSize(), 339);
-		assert.equal(actual.getRectangleSmallSize(), 14);
-		assert.equal(actual.isNeeded(), true);
-		assert.equal(actual.getSliderSize(), 20);
-		assert.equal(actual.getSliderPosition(), 249);
+		Assert.equAl(ActuAl.getArrowSize(), 0);
+		Assert.equAl(ActuAl.getScrollPosition(), 32787);
+		Assert.equAl(ActuAl.getRectAngleLArgeSize(), 339);
+		Assert.equAl(ActuAl.getRectAngleSmAllSize(), 14);
+		Assert.equAl(ActuAl.isNeeded(), true);
+		Assert.equAl(ActuAl.getSliderSize(), 20);
+		Assert.equAl(ActuAl.getSliderPosition(), 249);
 
 
-		assert.equal(actual.getDesiredScrollPositionFromOffset(259), 32849);
-		actual.setScrollPosition(32849);
-		assert.equal(actual.getArrowSize(), 0);
-		assert.equal(actual.getScrollPosition(), 32849);
-		assert.equal(actual.getRectangleLargeSize(), 339);
-		assert.equal(actual.getRectangleSmallSize(), 14);
-		assert.equal(actual.isNeeded(), true);
-		assert.equal(actual.getSliderSize(), 20);
-		assert.equal(actual.getSliderPosition(), 249);
+		Assert.equAl(ActuAl.getDesiredScrollPositionFromOffset(259), 32849);
+		ActuAl.setScrollPosition(32849);
+		Assert.equAl(ActuAl.getArrowSize(), 0);
+		Assert.equAl(ActuAl.getScrollPosition(), 32849);
+		Assert.equAl(ActuAl.getRectAngleLArgeSize(), 339);
+		Assert.equAl(ActuAl.getRectAngleSmAllSize(), 14);
+		Assert.equAl(ActuAl.isNeeded(), true);
+		Assert.equAl(ActuAl.getSliderSize(), 20);
+		Assert.equAl(ActuAl.getSliderPosition(), 249);
 	});
 
-	test('inflates slider size with arrows', () => {
-		let actual = new ScrollbarState(12, 14, 0, 339, 42423, 32787);
+	test('inflAtes slider size with Arrows', () => {
+		let ActuAl = new ScrollbArStAte(12, 14, 0, 339, 42423, 32787);
 
-		assert.equal(actual.getArrowSize(), 12);
-		assert.equal(actual.getScrollPosition(), 32787);
-		assert.equal(actual.getRectangleLargeSize(), 339);
-		assert.equal(actual.getRectangleSmallSize(), 14);
-		assert.equal(actual.isNeeded(), true);
-		assert.equal(actual.getSliderSize(), 20);
-		assert.equal(actual.getSliderPosition(), 230);
+		Assert.equAl(ActuAl.getArrowSize(), 12);
+		Assert.equAl(ActuAl.getScrollPosition(), 32787);
+		Assert.equAl(ActuAl.getRectAngleLArgeSize(), 339);
+		Assert.equAl(ActuAl.getRectAngleSmAllSize(), 14);
+		Assert.equAl(ActuAl.isNeeded(), true);
+		Assert.equAl(ActuAl.getSliderSize(), 20);
+		Assert.equAl(ActuAl.getSliderPosition(), 230);
 
 
-		assert.equal(actual.getDesiredScrollPositionFromOffset(240 + 12), 32811);
-		actual.setScrollPosition(32811);
-		assert.equal(actual.getArrowSize(), 12);
-		assert.equal(actual.getScrollPosition(), 32811);
-		assert.equal(actual.getRectangleLargeSize(), 339);
-		assert.equal(actual.getRectangleSmallSize(), 14);
-		assert.equal(actual.isNeeded(), true);
-		assert.equal(actual.getSliderSize(), 20);
-		assert.equal(actual.getSliderPosition(), 230);
+		Assert.equAl(ActuAl.getDesiredScrollPositionFromOffset(240 + 12), 32811);
+		ActuAl.setScrollPosition(32811);
+		Assert.equAl(ActuAl.getArrowSize(), 12);
+		Assert.equAl(ActuAl.getScrollPosition(), 32811);
+		Assert.equAl(ActuAl.getRectAngleLArgeSize(), 339);
+		Assert.equAl(ActuAl.getRectAngleSmAllSize(), 14);
+		Assert.equAl(ActuAl.isNeeded(), true);
+		Assert.equAl(ActuAl.getSliderSize(), 20);
+		Assert.equAl(ActuAl.getSliderPosition(), 230);
 	});
 });

@@ -1,115 +1,115 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as os from 'os';
-import * as fs from 'fs';
-import { spawn, ChildProcess, SpawnOptions } from 'child_process';
-import { buildHelpMessage, buildVersionMessage, OPTIONS } from 'vs/platform/environment/node/argv';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { parseCLIProcessArgv, addArg } from 'vs/platform/environment/node/argvHelper';
-import { createWaitMarkerFile } from 'vs/platform/environment/node/waitMarkerFile';
-import product from 'vs/platform/product/common/product';
-import * as paths from 'vs/base/common/path';
-import { whenDeleted, writeFileSync } from 'vs/base/node/pfs';
-import { findFreePort, randomPort } from 'vs/base/node/ports';
-import { isWindows, isLinux } from 'vs/base/common/platform';
-import type { ProfilingSession, Target } from 'v8-inspect-profiler';
-import { isString } from 'vs/base/common/types';
-import { hasStdinWithoutTty, stdinDataListener, getStdinFilePath, readFromStdin } from 'vs/platform/environment/node/stdin';
+import * As os from 'os';
+import * As fs from 'fs';
+import { spAwn, ChildProcess, SpAwnOptions } from 'child_process';
+import { buildHelpMessAge, buildVersionMessAge, OPTIONS } from 'vs/plAtform/environment/node/Argv';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { pArseCLIProcessArgv, AddArg } from 'vs/plAtform/environment/node/ArgvHelper';
+import { creAteWAitMArkerFile } from 'vs/plAtform/environment/node/wAitMArkerFile';
+import product from 'vs/plAtform/product/common/product';
+import * As pAths from 'vs/bAse/common/pAth';
+import { whenDeleted, writeFileSync } from 'vs/bAse/node/pfs';
+import { findFreePort, rAndomPort } from 'vs/bAse/node/ports';
+import { isWindows, isLinux } from 'vs/bAse/common/plAtform';
+import type { ProfilingSession, TArget } from 'v8-inspect-profiler';
+import { isString } from 'vs/bAse/common/types';
+import { hAsStdinWithoutTty, stdinDAtAListener, getStdinFilePAth, reAdFromStdin } from 'vs/plAtform/environment/node/stdin';
 
-function shouldSpawnCliProcess(argv: NativeParsedArgs): boolean {
-	return !!argv['install-source']
-		|| !!argv['list-extensions']
-		|| !!argv['install-extension']
-		|| !!argv['uninstall-extension']
-		|| !!argv['locate-extension']
-		|| !!argv['telemetry'];
+function shouldSpAwnCliProcess(Argv: NAtivePArsedArgs): booleAn {
+	return !!Argv['instAll-source']
+		|| !!Argv['list-extensions']
+		|| !!Argv['instAll-extension']
+		|| !!Argv['uninstAll-extension']
+		|| !!Argv['locAte-extension']
+		|| !!Argv['telemetry'];
 }
 
-interface IMainCli {
-	main: (argv: NativeParsedArgs) => Promise<void>;
+interfAce IMAinCli {
+	mAin: (Argv: NAtivePArsedArgs) => Promise<void>;
 }
 
-export async function main(argv: string[]): Promise<any> {
-	let args: NativeParsedArgs;
+export Async function mAin(Argv: string[]): Promise<Any> {
+	let Args: NAtivePArsedArgs;
 
 	try {
-		args = parseCLIProcessArgv(argv);
-	} catch (err) {
-		console.error(err.message);
+		Args = pArseCLIProcessArgv(Argv);
+	} cAtch (err) {
+		console.error(err.messAge);
 		return;
 	}
 
 	// Help
-	if (args.help) {
-		const executable = `${product.applicationName}${isWindows ? '.exe' : ''}`;
-		console.log(buildHelpMessage(product.nameLong, executable, product.version, OPTIONS));
+	if (Args.help) {
+		const executAble = `${product.ApplicAtionNAme}${isWindows ? '.exe' : ''}`;
+		console.log(buildHelpMessAge(product.nAmeLong, executAble, product.version, OPTIONS));
 	}
 
 	// Version Info
-	else if (args.version) {
-		console.log(buildVersionMessage(product.version, product.commit));
+	else if (Args.version) {
+		console.log(buildVersionMessAge(product.version, product.commit));
 	}
 
-	// Extensions Management
-	else if (shouldSpawnCliProcess(args)) {
-		const cli = await new Promise<IMainCli>((c, e) => require(['vs/code/node/cliProcessMain'], c, e));
-		await cli.main(args);
+	// Extensions MAnAgement
+	else if (shouldSpAwnCliProcess(Args)) {
+		const cli = AwAit new Promise<IMAinCli>((c, e) => require(['vs/code/node/cliProcessMAin'], c, e));
+		AwAit cli.mAin(Args);
 
 		return;
 	}
 
 	// Write File
-	else if (args['file-write']) {
-		const source = args._[0];
-		const target = args._[1];
+	else if (Args['file-write']) {
+		const source = Args._[0];
+		const tArget = Args._[1];
 
-		// Validate
+		// VAlidAte
 		if (
-			!source || !target || source === target ||					// make sure source and target are provided and are not the same
-			!paths.isAbsolute(source) || !paths.isAbsolute(target) ||	// make sure both source and target are absolute paths
-			!fs.existsSync(source) || !fs.statSync(source).isFile() ||	// make sure source exists as file
-			!fs.existsSync(target) || !fs.statSync(target).isFile()		// make sure target exists as file
+			!source || !tArget || source === tArget ||					// mAke sure source And tArget Are provided And Are not the sAme
+			!pAths.isAbsolute(source) || !pAths.isAbsolute(tArget) ||	// mAke sure both source And tArget Are Absolute pAths
+			!fs.existsSync(source) || !fs.stAtSync(source).isFile() ||	// mAke sure source exists As file
+			!fs.existsSync(tArget) || !fs.stAtSync(tArget).isFile()		// mAke sure tArget exists As file
 		) {
-			throw new Error('Using --file-write with invalid arguments.');
+			throw new Error('Using --file-write with invAlid Arguments.');
 		}
 
 		try {
 
-			// Check for readonly status and chmod if so if we are told so
-			let targetMode: number = 0;
-			let restoreMode = false;
-			if (!!args['file-chmod']) {
-				targetMode = fs.statSync(target).mode;
-				if (!(targetMode & 128) /* readonly */) {
-					fs.chmodSync(target, targetMode | 128);
+			// Check for reAdonly stAtus And chmod if so if we Are told so
+			let tArgetMode: number = 0;
+			let restoreMode = fAlse;
+			if (!!Args['file-chmod']) {
+				tArgetMode = fs.stAtSync(tArget).mode;
+				if (!(tArgetMode & 128) /* reAdonly */) {
+					fs.chmodSync(tArget, tArgetMode | 128);
 					restoreMode = true;
 				}
 			}
 
-			// Write source to target
-			const data = fs.readFileSync(source);
+			// Write source to tArget
+			const dAtA = fs.reAdFileSync(source);
 			if (isWindows) {
-				// On Windows we use a different strategy of saving the file
-				// by first truncating the file and then writing with r+ mode.
-				// This helps to save hidden files on Windows
-				// (see https://github.com/microsoft/vscode/issues/931) and
-				// prevent removing alternate data streams
+				// On Windows we use A different strAtegy of sAving the file
+				// by first truncAting the file And then writing with r+ mode.
+				// This helps to sAve hidden files on Windows
+				// (see https://github.com/microsoft/vscode/issues/931) And
+				// prevent removing AlternAte dAtA streAms
 				// (see https://github.com/microsoft/vscode/issues/6363)
-				fs.truncateSync(target, 0);
-				writeFileSync(target, data, { flag: 'r+' });
+				fs.truncAteSync(tArget, 0);
+				writeFileSync(tArget, dAtA, { flAg: 'r+' });
 			} else {
-				writeFileSync(target, data);
+				writeFileSync(tArget, dAtA);
 			}
 
-			// Restore previous mode as needed
+			// Restore previous mode As needed
 			if (restoreMode) {
-				fs.chmodSync(target, targetMode);
+				fs.chmodSync(tArget, tArgetMode);
 			}
-		} catch (error) {
-			error.message = `Error using --file-write: ${error.message}`;
+		} cAtch (error) {
+			error.messAge = `Error using --file-write: ${error.messAge}`;
 			throw error;
 		}
 	}
@@ -118,75 +118,75 @@ export async function main(argv: string[]): Promise<any> {
 	else {
 		const env: NodeJS.ProcessEnv = {
 			...process.env,
-			'VSCODE_CLI': '1', // this will signal Code that it was spawned from this module
+			'VSCODE_CLI': '1', // this will signAl Code thAt it wAs spAwned from this module
 			'ELECTRON_NO_ATTACH_CONSOLE': '1'
 		};
 
-		if (args['force-user-env']) {
+		if (Args['force-user-env']) {
 			env['VSCODE_FORCE_USER_ENV'] = '1';
 		}
 
 		delete env['ELECTRON_RUN_AS_NODE'];
 
-		const processCallbacks: ((child: ChildProcess) => Promise<void>)[] = [];
+		const processCAllbAcks: ((child: ChildProcess) => Promise<void>)[] = [];
 
-		const verbose = args.verbose || args.status;
+		const verbose = Args.verbose || Args.stAtus;
 		if (verbose) {
 			env['ELECTRON_ENABLE_LOGGING'] = '1';
 
-			processCallbacks.push(async child => {
-				child.stdout!.on('data', (data: Buffer) => console.log(data.toString('utf8').trim()));
-				child.stderr!.on('data', (data: Buffer) => console.log(data.toString('utf8').trim()));
+			processCAllbAcks.push(Async child => {
+				child.stdout!.on('dAtA', (dAtA: Buffer) => console.log(dAtA.toString('utf8').trim()));
+				child.stderr!.on('dAtA', (dAtA: Buffer) => console.log(dAtA.toString('utf8').trim()));
 
-				await new Promise<void>(resolve => child.once('exit', () => resolve()));
+				AwAit new Promise<void>(resolve => child.once('exit', () => resolve()));
 			});
 		}
 
-		const hasReadStdinArg = args._.some(a => a === '-');
-		if (hasReadStdinArg) {
-			// remove the "-" argument when we read from stdin
-			args._ = args._.filter(a => a !== '-');
-			argv = argv.filter(a => a !== '-');
+		const hAsReAdStdinArg = Args._.some(A => A === '-');
+		if (hAsReAdStdinArg) {
+			// remove the "-" Argument when we reAd from stdin
+			Args._ = Args._.filter(A => A !== '-');
+			Argv = Argv.filter(A => A !== '-');
 		}
 
-		let stdinFilePath: string | undefined;
-		if (hasStdinWithoutTty()) {
+		let stdinFilePAth: string | undefined;
+		if (hAsStdinWithoutTty()) {
 
-			// Read from stdin: we require a single "-" argument to be passed in order to start reading from
-			// stdin. We do this because there is no reliable way to find out if data is piped to stdin. Just
-			// checking for stdin being connected to a TTY is not enough (https://github.com/microsoft/vscode/issues/40351)
+			// ReAd from stdin: we require A single "-" Argument to be pAssed in order to stArt reAding from
+			// stdin. We do this becAuse there is no reliAble wAy to find out if dAtA is piped to stdin. Just
+			// checking for stdin being connected to A TTY is not enough (https://github.com/microsoft/vscode/issues/40351)
 
-			if (args._.length === 0) {
-				if (hasReadStdinArg) {
-					stdinFilePath = getStdinFilePath();
+			if (Args._.length === 0) {
+				if (hAsReAdStdinArg) {
+					stdinFilePAth = getStdinFilePAth();
 
-					// returns a file path where stdin input is written into (write in progress).
+					// returns A file pAth where stdin input is written into (write in progress).
 					try {
-						readFromStdin(stdinFilePath, !!verbose); // throws error if file can not be written
+						reAdFromStdin(stdinFilePAth, !!verbose); // throws error if file cAn not be written
 
-						// Make sure to open tmp file
-						addArg(argv, stdinFilePath);
+						// MAke sure to open tmp file
+						AddArg(Argv, stdinFilePAth);
 
-						// Enable --wait to get all data and ignore adding this to history
-						addArg(argv, '--wait');
-						addArg(argv, '--skip-add-to-recently-opened');
-						args.wait = true;
+						// EnAble --wAit to get All dAtA And ignore Adding this to history
+						AddArg(Argv, '--wAit');
+						AddArg(Argv, '--skip-Add-to-recently-opened');
+						Args.wAit = true;
 
-						console.log(`Reading from stdin via: ${stdinFilePath}`);
-					} catch (e) {
-						console.log(`Failed to create file to read via stdin: ${e.toString()}`);
-						stdinFilePath = undefined;
+						console.log(`ReAding from stdin viA: ${stdinFilePAth}`);
+					} cAtch (e) {
+						console.log(`FAiled to creAte file to reAd viA stdin: ${e.toString()}`);
+						stdinFilePAth = undefined;
 					}
 				} else {
 
-					// If the user pipes data via stdin but forgot to add the "-" argument, help by printing a message
-					// if we detect that data flows into via stdin after a certain timeout.
-					processCallbacks.push(_ => stdinDataListener(1000).then(dataReceived => {
-						if (dataReceived) {
+					// If the user pipes dAtA viA stdin but forgot to Add the "-" Argument, help by printing A messAge
+					// if we detect thAt dAtA flows into viA stdin After A certAin timeout.
+					processCAllbAcks.push(_ => stdinDAtAListener(1000).then(dAtAReceived => {
+						if (dAtAReceived) {
 							if (isWindows) {
-								console.log(`Run with '${product.applicationName} -' to read output from another program (e.g. 'echo Hello World | ${product.applicationName} -').`);
+								console.log(`Run with '${product.ApplicAtionNAme} -' to reAd output from Another progrAm (e.g. 'echo Hello World | ${product.ApplicAtionNAme} -').`);
 							} else {
-								console.log(`Run with '${product.applicationName} -' to read from stdin (e.g. 'ps aux | grep code | ${product.applicationName} -').`);
+								console.log(`Run with '${product.ApplicAtionNAme} -' to reAd from stdin (e.g. 'ps Aux | grep code | ${product.ApplicAtionNAme} -').`);
 							}
 						}
 					}));
@@ -194,91 +194,91 @@ export async function main(argv: string[]): Promise<any> {
 			}
 		}
 
-		// If we are started with --wait create a random temporary file
-		// and pass it over to the starting instance. We can use this file
-		// to wait for it to be deleted to monitor that the edited file
-		// is closed and then exit the waiting process.
-		let waitMarkerFilePath: string | undefined;
-		if (args.wait) {
-			waitMarkerFilePath = createWaitMarkerFile(verbose);
-			if (waitMarkerFilePath) {
-				addArg(argv, '--waitMarkerFilePath', waitMarkerFilePath);
+		// If we Are stArted with --wAit creAte A rAndom temporAry file
+		// And pAss it over to the stArting instAnce. We cAn use this file
+		// to wAit for it to be deleted to monitor thAt the edited file
+		// is closed And then exit the wAiting process.
+		let wAitMArkerFilePAth: string | undefined;
+		if (Args.wAit) {
+			wAitMArkerFilePAth = creAteWAitMArkerFile(verbose);
+			if (wAitMArkerFilePAth) {
+				AddArg(Argv, '--wAitMArkerFilePAth', wAitMArkerFilePAth);
 			}
 		}
 
-		// If we have been started with `--prof-startup` we need to find free ports to profile
-		// the main process, the renderer, and the extension host. We also disable v8 cached data
-		// to get better profile traces. Last, we listen on stdout for a signal that tells us to
+		// If we hAve been stArted with `--prof-stArtup` we need to find free ports to profile
+		// the mAin process, the renderer, And the extension host. We Also disAble v8 cAched dAtA
+		// to get better profile trAces. LAst, we listen on stdout for A signAl thAt tells us to
 		// stop profiling.
-		if (args['prof-startup']) {
-			const portMain = await findFreePort(randomPort(), 10, 3000);
-			const portRenderer = await findFreePort(portMain + 1, 10, 3000);
-			const portExthost = await findFreePort(portRenderer + 1, 10, 3000);
+		if (Args['prof-stArtup']) {
+			const portMAin = AwAit findFreePort(rAndomPort(), 10, 3000);
+			const portRenderer = AwAit findFreePort(portMAin + 1, 10, 3000);
+			const portExthost = AwAit findFreePort(portRenderer + 1, 10, 3000);
 
-			// fail the operation when one of the ports couldn't be accquired.
-			if (portMain * portRenderer * portExthost === 0) {
-				throw new Error('Failed to find free ports for profiler. Make sure to shutdown all instances of the editor first.');
+			// fAil the operAtion when one of the ports couldn't be Accquired.
+			if (portMAin * portRenderer * portExthost === 0) {
+				throw new Error('FAiled to find free ports for profiler. MAke sure to shutdown All instAnces of the editor first.');
 			}
 
-			const filenamePrefix = paths.join(os.homedir(), 'prof-' + Math.random().toString(16).slice(-4));
+			const filenAmePrefix = pAths.join(os.homedir(), 'prof-' + MAth.rAndom().toString(16).slice(-4));
 
-			addArg(argv, `--inspect-brk=${portMain}`);
-			addArg(argv, `--remote-debugging-port=${portRenderer}`);
-			addArg(argv, `--inspect-brk-extensions=${portExthost}`);
-			addArg(argv, `--prof-startup-prefix`, filenamePrefix);
-			addArg(argv, `--no-cached-data`);
+			AddArg(Argv, `--inspect-brk=${portMAin}`);
+			AddArg(Argv, `--remote-debugging-port=${portRenderer}`);
+			AddArg(Argv, `--inspect-brk-extensions=${portExthost}`);
+			AddArg(Argv, `--prof-stArtup-prefix`, filenAmePrefix);
+			AddArg(Argv, `--no-cAched-dAtA`);
 
-			writeFileSync(filenamePrefix, argv.slice(-6).join('|'));
+			writeFileSync(filenAmePrefix, Argv.slice(-6).join('|'));
 
-			processCallbacks.push(async _child => {
+			processCAllbAcks.push(Async _child => {
 
-				class Profiler {
-					static async start(name: string, filenamePrefix: string, opts: { port: number, tries?: number, target?: (targets: Target[]) => Target }) {
-						const profiler = await import('v8-inspect-profiler');
+				clAss Profiler {
+					stAtic Async stArt(nAme: string, filenAmePrefix: string, opts: { port: number, tries?: number, tArget?: (tArgets: TArget[]) => TArget }) {
+						const profiler = AwAit import('v8-inspect-profiler');
 
 						let session: ProfilingSession;
 						try {
-							session = await profiler.startProfiling(opts);
-						} catch (err) {
-							console.error(`FAILED to start profiling for '${name}' on port '${opts.port}'`);
+							session = AwAit profiler.stArtProfiling(opts);
+						} cAtch (err) {
+							console.error(`FAILED to stArt profiling for '${nAme}' on port '${opts.port}'`);
 						}
 
 						return {
-							async stop() {
+							Async stop() {
 								if (!session) {
 									return;
 								}
 								let suffix = '';
-								let profile = await session.stop();
+								let profile = AwAit session.stop();
 								if (!process.env['VSCODE_DEV']) {
-									// when running from a not-development-build we remove
-									// absolute filenames because we don't want to reveal anything
-									// about users. We also append the `.txt` suffix to make it
-									// easier to attach these files to GH issues
-									profile = profiler.rewriteAbsolutePaths(profile, 'piiRemoved');
+									// when running from A not-development-build we remove
+									// Absolute filenAmes becAuse we don't wAnt to reveAl Anything
+									// About users. We Also Append the `.txt` suffix to mAke it
+									// eAsier to AttAch these files to GH issues
+									profile = profiler.rewriteAbsolutePAths(profile, 'piiRemoved');
 									suffix = '.txt';
 								}
 
-								await profiler.writeProfile(profile, `${filenamePrefix}.${name}.cpuprofile${suffix}`);
+								AwAit profiler.writeProfile(profile, `${filenAmePrefix}.${nAme}.cpuprofile${suffix}`);
 							}
 						};
 					}
 				}
 
 				try {
-					// load and start profiler
-					const mainProfileRequest = Profiler.start('main', filenamePrefix, { port: portMain });
-					const extHostProfileRequest = Profiler.start('extHost', filenamePrefix, { port: portExthost, tries: 300 });
-					const rendererProfileRequest = Profiler.start('renderer', filenamePrefix, {
+					// loAd And stArt profiler
+					const mAinProfileRequest = Profiler.stArt('mAin', filenAmePrefix, { port: portMAin });
+					const extHostProfileRequest = Profiler.stArt('extHost', filenAmePrefix, { port: portExthost, tries: 300 });
+					const rendererProfileRequest = Profiler.stArt('renderer', filenAmePrefix, {
 						port: portRenderer,
 						tries: 200,
-						target: function (targets) {
-							return targets.filter(target => {
-								if (!target.webSocketDebuggerUrl) {
-									return false;
+						tArget: function (tArgets) {
+							return tArgets.filter(tArget => {
+								if (!tArget.webSocketDebuggerUrl) {
+									return fAlse;
 								}
-								if (target.type === 'page') {
-									return target.url.indexOf('workbench/workbench.html') > 0;
+								if (tArget.type === 'pAge') {
+									return tArget.url.indexOf('workbench/workbench.html') > 0;
 								} else {
 									return true;
 								}
@@ -286,38 +286,38 @@ export async function main(argv: string[]): Promise<any> {
 						}
 					});
 
-					const main = await mainProfileRequest;
-					const extHost = await extHostProfileRequest;
-					const renderer = await rendererProfileRequest;
+					const mAin = AwAit mAinProfileRequest;
+					const extHost = AwAit extHostProfileRequest;
+					const renderer = AwAit rendererProfileRequest;
 
-					// wait for the renderer to delete the
-					// marker file
-					await whenDeleted(filenamePrefix);
+					// wAit for the renderer to delete the
+					// mArker file
+					AwAit whenDeleted(filenAmePrefix);
 
 					// stop profiling
-					await main.stop();
-					await renderer.stop();
-					await extHost.stop();
+					AwAit mAin.stop();
+					AwAit renderer.stop();
+					AwAit extHost.stop();
 
-					// re-create the marker file to signal that profiling is done
-					writeFileSync(filenamePrefix, '');
+					// re-creAte the mArker file to signAl thAt profiling is done
+					writeFileSync(filenAmePrefix, '');
 
-				} catch (e) {
-					console.error('Failed to profile startup. Make sure to quit Code first.');
+				} cAtch (e) {
+					console.error('FAiled to profile stArtup. MAke sure to quit Code first.');
 				}
 			});
 		}
 
-		const jsFlags = args['js-flags'];
-		if (isString(jsFlags)) {
-			const match = /max_old_space_size=(\d+)/g.exec(jsFlags);
-			if (match && !args['max-memory']) {
-				addArg(argv, `--max-memory=${match[1]}`);
+		const jsFlAgs = Args['js-flAgs'];
+		if (isString(jsFlAgs)) {
+			const mAtch = /mAx_old_spAce_size=(\d+)/g.exec(jsFlAgs);
+			if (mAtch && !Args['mAx-memory']) {
+				AddArg(Argv, `--mAx-memory=${mAtch[1]}`);
 			}
 		}
 
-		const options: SpawnOptions = {
-			detached: true,
+		const options: SpAwnOptions = {
+			detAched: true,
 			env
 		};
 
@@ -326,39 +326,39 @@ export async function main(argv: string[]): Promise<any> {
 		}
 
 		if (isLinux) {
-			addArg(argv, '--no-sandbox'); // Electron 6 introduces a chrome-sandbox that requires root to run. This can fail. Disable sandbox via --no-sandbox
+			AddArg(Argv, '--no-sAndbox'); // Electron 6 introduces A chrome-sAndbox thAt requires root to run. This cAn fAil. DisAble sAndbox viA --no-sAndbox
 		}
 
-		const child = spawn(process.execPath, argv.slice(2), options);
+		const child = spAwn(process.execPAth, Argv.slice(2), options);
 
-		if (args.wait && waitMarkerFilePath) {
+		if (Args.wAit && wAitMArkerFilePAth) {
 			return new Promise<void>(resolve => {
 
 				// Complete when process exits
 				child.once('exit', () => resolve(undefined));
 
-				// Complete when wait marker file is deleted
-				whenDeleted(waitMarkerFilePath!).then(resolve, resolve);
+				// Complete when wAit mArker file is deleted
+				whenDeleted(wAitMArkerFilePAth!).then(resolve, resolve);
 			}).then(() => {
 
-				// Make sure to delete the tmp stdin file if we have any
-				if (stdinFilePath) {
-					fs.unlinkSync(stdinFilePath);
+				// MAke sure to delete the tmp stdin file if we hAve Any
+				if (stdinFilePAth) {
+					fs.unlinkSync(stdinFilePAth);
 				}
 			});
 		}
 
-		return Promise.all(processCallbacks.map(callback => callback(child)));
+		return Promise.All(processCAllbAcks.mAp(cAllbAck => cAllbAck(child)));
 	}
 }
 
-function eventuallyExit(code: number): void {
+function eventuAllyExit(code: number): void {
 	setTimeout(() => process.exit(code), 0);
 }
 
-main(process.argv)
-	.then(() => eventuallyExit(0))
+mAin(process.Argv)
+	.then(() => eventuAllyExit(0))
 	.then(null, err => {
-		console.error(err.message || err.stack || err);
-		eventuallyExit(1);
+		console.error(err.messAge || err.stAck || err);
+		eventuAllyExit(1);
 	});

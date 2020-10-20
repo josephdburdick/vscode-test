@@ -1,255 +1,255 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./inputBox';
 
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { MarkdownRenderOptions } from 'vs/base/browser/markdownRenderer';
-import { renderFormattedText, renderText } from 'vs/base/browser/formattedTextRenderer';
-import * as aria from 'vs/base/browser/ui/aria/aria';
-import { IAction } from 'vs/base/common/actions';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { IContextViewProvider, AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Color } from 'vs/base/common/color';
-import { mixin } from 'vs/base/common/objects';
-import { HistoryNavigator } from 'vs/base/common/history';
-import { IHistoryNavigationWidget } from 'vs/base/browser/history';
-import { ScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
-import { ScrollbarVisibility } from 'vs/base/common/scrollable';
-import { domEvent } from 'vs/base/browser/event';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { MArkdownRenderOptions } from 'vs/bAse/browser/mArkdownRenderer';
+import { renderFormAttedText, renderText } from 'vs/bAse/browser/formAttedTextRenderer';
+import * As AriA from 'vs/bAse/browser/ui/AriA/AriA';
+import { IAction } from 'vs/bAse/common/Actions';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { IContextViewProvider, AnchorAlignment } from 'vs/bAse/browser/ui/contextview/contextview';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { Color } from 'vs/bAse/common/color';
+import { mixin } from 'vs/bAse/common/objects';
+import { HistoryNAvigAtor } from 'vs/bAse/common/history';
+import { IHistoryNAvigAtionWidget } from 'vs/bAse/browser/history';
+import { ScrollAbleElement } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElement';
+import { ScrollbArVisibility } from 'vs/bAse/common/scrollAble';
+import { domEvent } from 'vs/bAse/browser/event';
 
 const $ = dom.$;
 
-export interface IInputOptions extends IInputBoxStyles {
-	readonly placeholder?: string;
-	readonly ariaLabel?: string;
-	readonly type?: string;
-	readonly validationOptions?: IInputValidationOptions;
-	readonly flexibleHeight?: boolean;
-	readonly flexibleWidth?: boolean;
-	readonly flexibleMaxHeight?: number;
-	readonly actions?: ReadonlyArray<IAction>;
+export interfAce IInputOptions extends IInputBoxStyles {
+	reAdonly plAceholder?: string;
+	reAdonly AriALAbel?: string;
+	reAdonly type?: string;
+	reAdonly vAlidAtionOptions?: IInputVAlidAtionOptions;
+	reAdonly flexibleHeight?: booleAn;
+	reAdonly flexibleWidth?: booleAn;
+	reAdonly flexibleMAxHeight?: number;
+	reAdonly Actions?: ReAdonlyArrAy<IAction>;
 }
 
-export interface IInputBoxStyles {
-	readonly inputBackground?: Color;
-	readonly inputForeground?: Color;
-	readonly inputBorder?: Color;
-	readonly inputValidationInfoBorder?: Color;
-	readonly inputValidationInfoBackground?: Color;
-	readonly inputValidationInfoForeground?: Color;
-	readonly inputValidationWarningBorder?: Color;
-	readonly inputValidationWarningBackground?: Color;
-	readonly inputValidationWarningForeground?: Color;
-	readonly inputValidationErrorBorder?: Color;
-	readonly inputValidationErrorBackground?: Color;
-	readonly inputValidationErrorForeground?: Color;
+export interfAce IInputBoxStyles {
+	reAdonly inputBAckground?: Color;
+	reAdonly inputForeground?: Color;
+	reAdonly inputBorder?: Color;
+	reAdonly inputVAlidAtionInfoBorder?: Color;
+	reAdonly inputVAlidAtionInfoBAckground?: Color;
+	reAdonly inputVAlidAtionInfoForeground?: Color;
+	reAdonly inputVAlidAtionWArningBorder?: Color;
+	reAdonly inputVAlidAtionWArningBAckground?: Color;
+	reAdonly inputVAlidAtionWArningForeground?: Color;
+	reAdonly inputVAlidAtionErrorBorder?: Color;
+	reAdonly inputVAlidAtionErrorBAckground?: Color;
+	reAdonly inputVAlidAtionErrorForeground?: Color;
 }
 
-export interface IInputValidator {
-	(value: string): IMessage | null;
+export interfAce IInputVAlidAtor {
+	(vAlue: string): IMessAge | null;
 }
 
-export interface IMessage {
-	readonly content: string;
-	readonly formatContent?: boolean; // defaults to false
-	readonly type?: MessageType;
+export interfAce IMessAge {
+	reAdonly content: string;
+	reAdonly formAtContent?: booleAn; // defAults to fAlse
+	reAdonly type?: MessAgeType;
 }
 
-export interface IInputValidationOptions {
-	validation?: IInputValidator;
+export interfAce IInputVAlidAtionOptions {
+	vAlidAtion?: IInputVAlidAtor;
 }
 
-export const enum MessageType {
+export const enum MessAgeType {
 	INFO = 1,
 	WARNING = 2,
 	ERROR = 3
 }
 
-export interface IRange {
-	start: number;
+export interfAce IRAnge {
+	stArt: number;
 	end: number;
 }
 
-const defaultOpts = {
-	inputBackground: Color.fromHex('#3C3C3C'),
+const defAultOpts = {
+	inputBAckground: Color.fromHex('#3C3C3C'),
 	inputForeground: Color.fromHex('#CCCCCC'),
-	inputValidationInfoBorder: Color.fromHex('#55AAFF'),
-	inputValidationInfoBackground: Color.fromHex('#063B49'),
-	inputValidationWarningBorder: Color.fromHex('#B89500'),
-	inputValidationWarningBackground: Color.fromHex('#352A05'),
-	inputValidationErrorBorder: Color.fromHex('#BE1100'),
-	inputValidationErrorBackground: Color.fromHex('#5A1D1D')
+	inputVAlidAtionInfoBorder: Color.fromHex('#55AAFF'),
+	inputVAlidAtionInfoBAckground: Color.fromHex('#063B49'),
+	inputVAlidAtionWArningBorder: Color.fromHex('#B89500'),
+	inputVAlidAtionWArningBAckground: Color.fromHex('#352A05'),
+	inputVAlidAtionErrorBorder: Color.fromHex('#BE1100'),
+	inputVAlidAtionErrorBAckground: Color.fromHex('#5A1D1D')
 };
 
-export class InputBox extends Widget {
-	private contextViewProvider?: IContextViewProvider;
+export clAss InputBox extends Widget {
+	privAte contextViewProvider?: IContextViewProvider;
 	element: HTMLElement;
-	private input: HTMLInputElement;
-	private actionbar?: ActionBar;
-	private options: IInputOptions;
-	private message: IMessage | null;
-	private placeholder: string;
-	private ariaLabel: string;
-	private validation?: IInputValidator;
-	private state: 'idle' | 'open' | 'closed' = 'idle';
+	privAte input: HTMLInputElement;
+	privAte ActionbAr?: ActionBAr;
+	privAte options: IInputOptions;
+	privAte messAge: IMessAge | null;
+	privAte plAceholder: string;
+	privAte AriALAbel: string;
+	privAte vAlidAtion?: IInputVAlidAtor;
+	privAte stAte: 'idle' | 'open' | 'closed' = 'idle';
 
-	private mirror: HTMLElement | undefined;
-	private cachedHeight: number | undefined;
-	private cachedContentHeight: number | undefined;
-	private maxHeight: number = Number.POSITIVE_INFINITY;
-	private scrollableElement: ScrollableElement | undefined;
+	privAte mirror: HTMLElement | undefined;
+	privAte cAchedHeight: number | undefined;
+	privAte cAchedContentHeight: number | undefined;
+	privAte mAxHeight: number = Number.POSITIVE_INFINITY;
+	privAte scrollAbleElement: ScrollAbleElement | undefined;
 
-	private inputBackground?: Color;
-	private inputForeground?: Color;
-	private inputBorder?: Color;
+	privAte inputBAckground?: Color;
+	privAte inputForeground?: Color;
+	privAte inputBorder?: Color;
 
-	private inputValidationInfoBorder?: Color;
-	private inputValidationInfoBackground?: Color;
-	private inputValidationInfoForeground?: Color;
-	private inputValidationWarningBorder?: Color;
-	private inputValidationWarningBackground?: Color;
-	private inputValidationWarningForeground?: Color;
-	private inputValidationErrorBorder?: Color;
-	private inputValidationErrorBackground?: Color;
-	private inputValidationErrorForeground?: Color;
+	privAte inputVAlidAtionInfoBorder?: Color;
+	privAte inputVAlidAtionInfoBAckground?: Color;
+	privAte inputVAlidAtionInfoForeground?: Color;
+	privAte inputVAlidAtionWArningBorder?: Color;
+	privAte inputVAlidAtionWArningBAckground?: Color;
+	privAte inputVAlidAtionWArningForeground?: Color;
+	privAte inputVAlidAtionErrorBorder?: Color;
+	privAte inputVAlidAtionErrorBAckground?: Color;
+	privAte inputVAlidAtionErrorForeground?: Color;
 
-	private _onDidChange = this._register(new Emitter<string>());
-	public readonly onDidChange: Event<string> = this._onDidChange.event;
+	privAte _onDidChAnge = this._register(new Emitter<string>());
+	public reAdonly onDidChAnge: Event<string> = this._onDidChAnge.event;
 
-	private _onDidHeightChange = this._register(new Emitter<number>());
-	public readonly onDidHeightChange: Event<number> = this._onDidHeightChange.event;
+	privAte _onDidHeightChAnge = this._register(new Emitter<number>());
+	public reAdonly onDidHeightChAnge: Event<number> = this._onDidHeightChAnge.event;
 
-	constructor(container: HTMLElement, contextViewProvider: IContextViewProvider | undefined, options?: IInputOptions) {
+	constructor(contAiner: HTMLElement, contextViewProvider: IContextViewProvider | undefined, options?: IInputOptions) {
 		super();
 
 		this.contextViewProvider = contextViewProvider;
-		this.options = options || Object.create(null);
-		mixin(this.options, defaultOpts, false);
-		this.message = null;
-		this.placeholder = this.options.placeholder || '';
-		this.ariaLabel = this.options.ariaLabel || '';
+		this.options = options || Object.creAte(null);
+		mixin(this.options, defAultOpts, fAlse);
+		this.messAge = null;
+		this.plAceholder = this.options.plAceholder || '';
+		this.AriALAbel = this.options.AriALAbel || '';
 
-		this.inputBackground = this.options.inputBackground;
+		this.inputBAckground = this.options.inputBAckground;
 		this.inputForeground = this.options.inputForeground;
 		this.inputBorder = this.options.inputBorder;
 
-		this.inputValidationInfoBorder = this.options.inputValidationInfoBorder;
-		this.inputValidationInfoBackground = this.options.inputValidationInfoBackground;
-		this.inputValidationInfoForeground = this.options.inputValidationInfoForeground;
-		this.inputValidationWarningBorder = this.options.inputValidationWarningBorder;
-		this.inputValidationWarningBackground = this.options.inputValidationWarningBackground;
-		this.inputValidationWarningForeground = this.options.inputValidationWarningForeground;
-		this.inputValidationErrorBorder = this.options.inputValidationErrorBorder;
-		this.inputValidationErrorBackground = this.options.inputValidationErrorBackground;
-		this.inputValidationErrorForeground = this.options.inputValidationErrorForeground;
+		this.inputVAlidAtionInfoBorder = this.options.inputVAlidAtionInfoBorder;
+		this.inputVAlidAtionInfoBAckground = this.options.inputVAlidAtionInfoBAckground;
+		this.inputVAlidAtionInfoForeground = this.options.inputVAlidAtionInfoForeground;
+		this.inputVAlidAtionWArningBorder = this.options.inputVAlidAtionWArningBorder;
+		this.inputVAlidAtionWArningBAckground = this.options.inputVAlidAtionWArningBAckground;
+		this.inputVAlidAtionWArningForeground = this.options.inputVAlidAtionWArningForeground;
+		this.inputVAlidAtionErrorBorder = this.options.inputVAlidAtionErrorBorder;
+		this.inputVAlidAtionErrorBAckground = this.options.inputVAlidAtionErrorBAckground;
+		this.inputVAlidAtionErrorForeground = this.options.inputVAlidAtionErrorForeground;
 
-		if (this.options.validationOptions) {
-			this.validation = this.options.validationOptions.validation;
+		if (this.options.vAlidAtionOptions) {
+			this.vAlidAtion = this.options.vAlidAtionOptions.vAlidAtion;
 		}
 
-		this.element = dom.append(container, $('.monaco-inputbox.idle'));
+		this.element = dom.Append(contAiner, $('.monAco-inputbox.idle'));
 
-		let tagName = this.options.flexibleHeight ? 'textarea' : 'input';
+		let tAgNAme = this.options.flexibleHeight ? 'textAreA' : 'input';
 
-		let wrapper = dom.append(this.element, $('.wrapper'));
-		this.input = dom.append(wrapper, $(tagName + '.input.empty'));
-		this.input.setAttribute('autocorrect', 'off');
-		this.input.setAttribute('autocapitalize', 'off');
-		this.input.setAttribute('spellcheck', 'false');
+		let wrApper = dom.Append(this.element, $('.wrApper'));
+		this.input = dom.Append(wrApper, $(tAgNAme + '.input.empty'));
+		this.input.setAttribute('Autocorrect', 'off');
+		this.input.setAttribute('AutocApitAlize', 'off');
+		this.input.setAttribute('spellcheck', 'fAlse');
 
-		this.onfocus(this.input, () => this.element.classList.add('synthetic-focus'));
-		this.onblur(this.input, () => this.element.classList.remove('synthetic-focus'));
+		this.onfocus(this.input, () => this.element.clAssList.Add('synthetic-focus'));
+		this.onblur(this.input, () => this.element.clAssList.remove('synthetic-focus'));
 
 		if (this.options.flexibleHeight) {
-			this.maxHeight = typeof this.options.flexibleMaxHeight === 'number' ? this.options.flexibleMaxHeight : Number.POSITIVE_INFINITY;
+			this.mAxHeight = typeof this.options.flexibleMAxHeight === 'number' ? this.options.flexibleMAxHeight : Number.POSITIVE_INFINITY;
 
-			this.mirror = dom.append(wrapper, $('div.mirror'));
-			this.mirror.innerText = '\u00a0';
+			this.mirror = dom.Append(wrApper, $('div.mirror'));
+			this.mirror.innerText = '\u00A0';
 
-			this.scrollableElement = new ScrollableElement(this.element, { vertical: ScrollbarVisibility.Auto });
+			this.scrollAbleElement = new ScrollAbleElement(this.element, { verticAl: ScrollbArVisibility.Auto });
 
 			if (this.options.flexibleWidth) {
-				this.input.setAttribute('wrap', 'off');
-				this.mirror.style.whiteSpace = 'pre';
-				this.mirror.style.wordWrap = 'initial';
+				this.input.setAttribute('wrAp', 'off');
+				this.mirror.style.whiteSpAce = 'pre';
+				this.mirror.style.wordWrAp = 'initiAl';
 			}
 
-			dom.append(container, this.scrollableElement.getDomNode());
-			this._register(this.scrollableElement);
+			dom.Append(contAiner, this.scrollAbleElement.getDomNode());
+			this._register(this.scrollAbleElement);
 
-			// from ScrollableElement to DOM
-			this._register(this.scrollableElement.onScroll(e => this.input.scrollTop = e.scrollTop));
+			// from ScrollAbleElement to DOM
+			this._register(this.scrollAbleElement.onScroll(e => this.input.scrollTop = e.scrollTop));
 
-			const onSelectionChange = Event.filter(domEvent(document, 'selectionchange'), () => {
+			const onSelectionChAnge = Event.filter(domEvent(document, 'selectionchAnge'), () => {
 				const selection = document.getSelection();
-				return selection?.anchorNode === wrapper;
+				return selection?.AnchorNode === wrApper;
 			});
 
-			// from DOM to ScrollableElement
-			this._register(onSelectionChange(this.updateScrollDimensions, this));
-			this._register(this.onDidHeightChange(this.updateScrollDimensions, this));
+			// from DOM to ScrollAbleElement
+			this._register(onSelectionChAnge(this.updAteScrollDimensions, this));
+			this._register(this.onDidHeightChAnge(this.updAteScrollDimensions, this));
 		} else {
 			this.input.type = this.options.type || 'text';
-			this.input.setAttribute('wrap', 'off');
+			this.input.setAttribute('wrAp', 'off');
 		}
 
-		if (this.ariaLabel) {
-			this.input.setAttribute('aria-label', this.ariaLabel);
+		if (this.AriALAbel) {
+			this.input.setAttribute('AriA-lAbel', this.AriALAbel);
 		}
 
-		if (this.placeholder) {
-			this.setPlaceHolder(this.placeholder);
+		if (this.plAceholder) {
+			this.setPlAceHolder(this.plAceholder);
 		}
 
-		this.oninput(this.input, () => this.onValueChange());
+		this.oninput(this.input, () => this.onVAlueChAnge());
 		this.onblur(this.input, () => this.onBlur());
 		this.onfocus(this.input, () => this.onFocus());
 
 		this.ignoreGesture(this.input);
 
-		setTimeout(() => this.updateMirror(), 0);
+		setTimeout(() => this.updAteMirror(), 0);
 
-		// Support actions
-		if (this.options.actions) {
-			this.actionbar = this._register(new ActionBar(this.element));
-			this.actionbar.push(this.options.actions, { icon: true, label: false });
+		// Support Actions
+		if (this.options.Actions) {
+			this.ActionbAr = this._register(new ActionBAr(this.element));
+			this.ActionbAr.push(this.options.Actions, { icon: true, lAbel: fAlse });
 		}
 
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
-	private onBlur(): void {
-		this._hideMessage();
+	privAte onBlur(): void {
+		this._hideMessAge();
 	}
 
-	private onFocus(): void {
-		this._showMessage();
+	privAte onFocus(): void {
+		this._showMessAge();
 	}
 
-	public setPlaceHolder(placeHolder: string): void {
-		this.placeholder = placeHolder;
-		this.input.setAttribute('placeholder', placeHolder);
-		this.input.title = placeHolder;
+	public setPlAceHolder(plAceHolder: string): void {
+		this.plAceholder = plAceHolder;
+		this.input.setAttribute('plAceholder', plAceHolder);
+		this.input.title = plAceHolder;
 	}
 
-	public setAriaLabel(label: string): void {
-		this.ariaLabel = label;
+	public setAriALAbel(lAbel: string): void {
+		this.AriALAbel = lAbel;
 
-		if (label) {
-			this.input.setAttribute('aria-label', this.ariaLabel);
+		if (lAbel) {
+			this.input.setAttribute('AriA-lAbel', this.AriALAbel);
 		} else {
-			this.input.removeAttribute('aria-label');
+			this.input.removeAttribute('AriA-lAbel');
 		}
 	}
 
-	public getAriaLabel(): string {
-		return this.ariaLabel;
+	public getAriALAbel(): string {
+		return this.AriALAbel;
 	}
 
 	public get mirrorElement(): HTMLElement | undefined {
@@ -260,19 +260,19 @@ export class InputBox extends Widget {
 		return this.input;
 	}
 
-	public get value(): string {
-		return this.input.value;
+	public get vAlue(): string {
+		return this.input.vAlue;
 	}
 
-	public set value(newValue: string) {
-		if (this.input.value !== newValue) {
-			this.input.value = newValue;
-			this.onValueChange();
+	public set vAlue(newVAlue: string) {
+		if (this.input.vAlue !== newVAlue) {
+			this.input.vAlue = newVAlue;
+			this.onVAlueChAnge();
 		}
 	}
 
 	public get height(): number {
-		return typeof this.cachedHeight === 'number' ? this.cachedHeight : dom.getTotalHeight(this.element);
+		return typeof this.cAchedHeight === 'number' ? this.cAchedHeight : dom.getTotAlHeight(this.element);
 	}
 
 	public focus(): void {
@@ -283,54 +283,54 @@ export class InputBox extends Widget {
 		this.input.blur();
 	}
 
-	public hasFocus(): boolean {
-		return document.activeElement === this.input;
+	public hAsFocus(): booleAn {
+		return document.ActiveElement === this.input;
 	}
 
-	public select(range: IRange | null = null): void {
+	public select(rAnge: IRAnge | null = null): void {
 		this.input.select();
 
-		if (range) {
-			this.input.setSelectionRange(range.start, range.end);
+		if (rAnge) {
+			this.input.setSelectionRAnge(rAnge.stArt, rAnge.end);
 		}
 	}
 
-	public isSelectionAtEnd(): boolean {
-		return this.input.selectionEnd === this.input.value.length && this.input.selectionStart === this.input.selectionEnd;
+	public isSelectionAtEnd(): booleAn {
+		return this.input.selectionEnd === this.input.vAlue.length && this.input.selectionStArt === this.input.selectionEnd;
 	}
 
-	public enable(): void {
-		this.input.removeAttribute('disabled');
+	public enAble(): void {
+		this.input.removeAttribute('disAbled');
 	}
 
-	public disable(): void {
+	public disAble(): void {
 		this.blur();
-		this.input.disabled = true;
-		this._hideMessage();
+		this.input.disAbled = true;
+		this._hideMessAge();
 	}
 
-	public setEnabled(enabled: boolean): void {
-		if (enabled) {
-			this.enable();
+	public setEnAbled(enAbled: booleAn): void {
+		if (enAbled) {
+			this.enAble();
 		} else {
-			this.disable();
+			this.disAble();
 		}
 	}
 
 	public get width(): number {
-		return dom.getTotalWidth(this.input);
+		return dom.getTotAlWidth(this.input);
 	}
 
 	public set width(width: number) {
 		if (this.options.flexibleHeight && this.options.flexibleWidth) {
-			// textarea with horizontal scrolling
-			let horizontalPadding = 0;
+			// textAreA with horizontAl scrolling
+			let horizontAlPAdding = 0;
 			if (this.mirror) {
-				const paddingLeft = parseFloat(this.mirror.style.paddingLeft || '') || 0;
-				const paddingRight = parseFloat(this.mirror.style.paddingRight || '') || 0;
-				horizontalPadding = paddingLeft + paddingRight;
+				const pAddingLeft = pArseFloAt(this.mirror.style.pAddingLeft || '') || 0;
+				const pAddingRight = pArseFloAt(this.mirror.style.pAddingRight || '') || 0;
+				horizontAlPAdding = pAddingLeft + pAddingRight;
 			}
-			this.input.style.width = (width - horizontalPadding) + 'px';
+			this.input.style.width = (width - horizontAlPAdding) + 'px';
 		} else {
 			this.input.style.width = width + 'px';
 		}
@@ -340,227 +340,227 @@ export class InputBox extends Widget {
 		}
 	}
 
-	public set paddingRight(paddingRight: number) {
+	public set pAddingRight(pAddingRight: number) {
 		if (this.options.flexibleHeight && this.options.flexibleWidth) {
-			this.input.style.width = `calc(100% - ${paddingRight}px)`;
+			this.input.style.width = `cAlc(100% - ${pAddingRight}px)`;
 		} else {
-			this.input.style.paddingRight = paddingRight + 'px';
+			this.input.style.pAddingRight = pAddingRight + 'px';
 		}
 
 		if (this.mirror) {
-			this.mirror.style.paddingRight = paddingRight + 'px';
+			this.mirror.style.pAddingRight = pAddingRight + 'px';
 		}
 	}
 
-	private updateScrollDimensions(): void {
-		if (typeof this.cachedContentHeight !== 'number' || typeof this.cachedHeight !== 'number' || !this.scrollableElement) {
+	privAte updAteScrollDimensions(): void {
+		if (typeof this.cAchedContentHeight !== 'number' || typeof this.cAchedHeight !== 'number' || !this.scrollAbleElement) {
 			return;
 		}
 
-		const scrollHeight = this.cachedContentHeight;
-		const height = this.cachedHeight;
+		const scrollHeight = this.cAchedContentHeight;
+		const height = this.cAchedHeight;
 		const scrollTop = this.input.scrollTop;
 
-		this.scrollableElement.setScrollDimensions({ scrollHeight, height });
-		this.scrollableElement.setScrollPosition({ scrollTop });
+		this.scrollAbleElement.setScrollDimensions({ scrollHeight, height });
+		this.scrollAbleElement.setScrollPosition({ scrollTop });
 	}
 
-	public showMessage(message: IMessage, force?: boolean): void {
-		this.message = message;
+	public showMessAge(messAge: IMessAge, force?: booleAn): void {
+		this.messAge = messAge;
 
-		this.element.classList.remove('idle');
-		this.element.classList.remove('info');
-		this.element.classList.remove('warning');
-		this.element.classList.remove('error');
-		this.element.classList.add(this.classForType(message.type));
+		this.element.clAssList.remove('idle');
+		this.element.clAssList.remove('info');
+		this.element.clAssList.remove('wArning');
+		this.element.clAssList.remove('error');
+		this.element.clAssList.Add(this.clAssForType(messAge.type));
 
-		const styles = this.stylesForType(this.message.type);
+		const styles = this.stylesForType(this.messAge.type);
 		this.element.style.border = styles.border ? `1px solid ${styles.border}` : '';
 
-		if (this.hasFocus() || force) {
-			this._showMessage();
+		if (this.hAsFocus() || force) {
+			this._showMessAge();
 		}
 	}
 
-	public hideMessage(): void {
-		this.message = null;
+	public hideMessAge(): void {
+		this.messAge = null;
 
-		this.element.classList.remove('info');
-		this.element.classList.remove('warning');
-		this.element.classList.remove('error');
-		this.element.classList.add('idle');
+		this.element.clAssList.remove('info');
+		this.element.clAssList.remove('wArning');
+		this.element.clAssList.remove('error');
+		this.element.clAssList.Add('idle');
 
-		this._hideMessage();
-		this.applyStyles();
+		this._hideMessAge();
+		this.ApplyStyles();
 	}
 
-	public isInputValid(): boolean {
-		return !!this.validation && !this.validation(this.value);
+	public isInputVAlid(): booleAn {
+		return !!this.vAlidAtion && !this.vAlidAtion(this.vAlue);
 	}
 
-	public validate(): boolean {
-		let errorMsg: IMessage | null = null;
+	public vAlidAte(): booleAn {
+		let errorMsg: IMessAge | null = null;
 
-		if (this.validation) {
-			errorMsg = this.validation(this.value);
+		if (this.vAlidAtion) {
+			errorMsg = this.vAlidAtion(this.vAlue);
 
 			if (errorMsg) {
-				this.inputElement.setAttribute('aria-invalid', 'true');
-				this.showMessage(errorMsg);
+				this.inputElement.setAttribute('AriA-invAlid', 'true');
+				this.showMessAge(errorMsg);
 			}
-			else if (this.inputElement.hasAttribute('aria-invalid')) {
-				this.inputElement.removeAttribute('aria-invalid');
-				this.hideMessage();
+			else if (this.inputElement.hAsAttribute('AriA-invAlid')) {
+				this.inputElement.removeAttribute('AriA-invAlid');
+				this.hideMessAge();
 			}
 		}
 
 		return !errorMsg;
 	}
 
-	public stylesForType(type: MessageType | undefined): { border: Color | undefined; background: Color | undefined; foreground: Color | undefined } {
+	public stylesForType(type: MessAgeType | undefined): { border: Color | undefined; bAckground: Color | undefined; foreground: Color | undefined } {
 		switch (type) {
-			case MessageType.INFO: return { border: this.inputValidationInfoBorder, background: this.inputValidationInfoBackground, foreground: this.inputValidationInfoForeground };
-			case MessageType.WARNING: return { border: this.inputValidationWarningBorder, background: this.inputValidationWarningBackground, foreground: this.inputValidationWarningForeground };
-			default: return { border: this.inputValidationErrorBorder, background: this.inputValidationErrorBackground, foreground: this.inputValidationErrorForeground };
+			cAse MessAgeType.INFO: return { border: this.inputVAlidAtionInfoBorder, bAckground: this.inputVAlidAtionInfoBAckground, foreground: this.inputVAlidAtionInfoForeground };
+			cAse MessAgeType.WARNING: return { border: this.inputVAlidAtionWArningBorder, bAckground: this.inputVAlidAtionWArningBAckground, foreground: this.inputVAlidAtionWArningForeground };
+			defAult: return { border: this.inputVAlidAtionErrorBorder, bAckground: this.inputVAlidAtionErrorBAckground, foreground: this.inputVAlidAtionErrorForeground };
 		}
 	}
 
-	private classForType(type: MessageType | undefined): string {
+	privAte clAssForType(type: MessAgeType | undefined): string {
 		switch (type) {
-			case MessageType.INFO: return 'info';
-			case MessageType.WARNING: return 'warning';
-			default: return 'error';
+			cAse MessAgeType.INFO: return 'info';
+			cAse MessAgeType.WARNING: return 'wArning';
+			defAult: return 'error';
 		}
 	}
 
-	private _showMessage(): void {
-		if (!this.contextViewProvider || !this.message) {
+	privAte _showMessAge(): void {
+		if (!this.contextViewProvider || !this.messAge) {
 			return;
 		}
 
 		let div: HTMLElement;
-		let layout = () => div.style.width = dom.getTotalWidth(this.element) + 'px';
+		let lAyout = () => div.style.width = dom.getTotAlWidth(this.element) + 'px';
 
 		this.contextViewProvider.showContextView({
 			getAnchor: () => this.element,
-			anchorAlignment: AnchorAlignment.RIGHT,
-			render: (container: HTMLElement) => {
-				if (!this.message) {
+			AnchorAlignment: AnchorAlignment.RIGHT,
+			render: (contAiner: HTMLElement) => {
+				if (!this.messAge) {
 					return null;
 				}
 
-				div = dom.append(container, $('.monaco-inputbox-container'));
-				layout();
+				div = dom.Append(contAiner, $('.monAco-inputbox-contAiner'));
+				lAyout();
 
-				const renderOptions: MarkdownRenderOptions = {
+				const renderOptions: MArkdownRenderOptions = {
 					inline: true,
-					className: 'monaco-inputbox-message'
+					clAssNAme: 'monAco-inputbox-messAge'
 				};
 
-				const spanElement = (this.message.formatContent
-					? renderFormattedText(this.message.content, renderOptions)
-					: renderText(this.message.content, renderOptions));
-				spanElement.classList.add(this.classForType(this.message.type));
+				const spAnElement = (this.messAge.formAtContent
+					? renderFormAttedText(this.messAge.content, renderOptions)
+					: renderText(this.messAge.content, renderOptions));
+				spAnElement.clAssList.Add(this.clAssForType(this.messAge.type));
 
-				const styles = this.stylesForType(this.message.type);
-				spanElement.style.backgroundColor = styles.background ? styles.background.toString() : '';
-				spanElement.style.color = styles.foreground ? styles.foreground.toString() : '';
-				spanElement.style.border = styles.border ? `1px solid ${styles.border}` : '';
+				const styles = this.stylesForType(this.messAge.type);
+				spAnElement.style.bAckgroundColor = styles.bAckground ? styles.bAckground.toString() : '';
+				spAnElement.style.color = styles.foreground ? styles.foreground.toString() : '';
+				spAnElement.style.border = styles.border ? `1px solid ${styles.border}` : '';
 
-				dom.append(div, spanElement);
+				dom.Append(div, spAnElement);
 
 				return null;
 			},
 			onHide: () => {
-				this.state = 'closed';
+				this.stAte = 'closed';
 			},
-			layout: layout
+			lAyout: lAyout
 		});
 
 		// ARIA Support
-		let alertText: string;
-		if (this.message.type === MessageType.ERROR) {
-			alertText = nls.localize('alertErrorMessage', "Error: {0}", this.message.content);
-		} else if (this.message.type === MessageType.WARNING) {
-			alertText = nls.localize('alertWarningMessage', "Warning: {0}", this.message.content);
+		let AlertText: string;
+		if (this.messAge.type === MessAgeType.ERROR) {
+			AlertText = nls.locAlize('AlertErrorMessAge', "Error: {0}", this.messAge.content);
+		} else if (this.messAge.type === MessAgeType.WARNING) {
+			AlertText = nls.locAlize('AlertWArningMessAge', "WArning: {0}", this.messAge.content);
 		} else {
-			alertText = nls.localize('alertInfoMessage', "Info: {0}", this.message.content);
+			AlertText = nls.locAlize('AlertInfoMessAge', "Info: {0}", this.messAge.content);
 		}
 
-		aria.alert(alertText);
+		AriA.Alert(AlertText);
 
-		this.state = 'open';
+		this.stAte = 'open';
 	}
 
-	private _hideMessage(): void {
+	privAte _hideMessAge(): void {
 		if (!this.contextViewProvider) {
 			return;
 		}
 
-		if (this.state === 'open') {
+		if (this.stAte === 'open') {
 			this.contextViewProvider.hideContextView();
 		}
 
-		this.state = 'idle';
+		this.stAte = 'idle';
 	}
 
-	private onValueChange(): void {
-		this._onDidChange.fire(this.value);
+	privAte onVAlueChAnge(): void {
+		this._onDidChAnge.fire(this.vAlue);
 
-		this.validate();
-		this.updateMirror();
-		this.input.classList.toggle('empty', !this.value);
+		this.vAlidAte();
+		this.updAteMirror();
+		this.input.clAssList.toggle('empty', !this.vAlue);
 
-		if (this.state === 'open' && this.contextViewProvider) {
-			this.contextViewProvider.layout();
+		if (this.stAte === 'open' && this.contextViewProvider) {
+			this.contextViewProvider.lAyout();
 		}
 	}
 
-	private updateMirror(): void {
+	privAte updAteMirror(): void {
 		if (!this.mirror) {
 			return;
 		}
 
-		const value = this.value;
-		const lastCharCode = value.charCodeAt(value.length - 1);
-		const suffix = lastCharCode === 10 ? ' ' : '';
-		const mirrorTextContent = value + suffix;
+		const vAlue = this.vAlue;
+		const lAstChArCode = vAlue.chArCodeAt(vAlue.length - 1);
+		const suffix = lAstChArCode === 10 ? ' ' : '';
+		const mirrorTextContent = vAlue + suffix;
 
 		if (mirrorTextContent) {
-			this.mirror.textContent = value + suffix;
+			this.mirror.textContent = vAlue + suffix;
 		} else {
-			this.mirror.innerText = '\u00a0';
+			this.mirror.innerText = '\u00A0';
 		}
 
-		this.layout();
+		this.lAyout();
 	}
 
 	public style(styles: IInputBoxStyles): void {
-		this.inputBackground = styles.inputBackground;
+		this.inputBAckground = styles.inputBAckground;
 		this.inputForeground = styles.inputForeground;
 		this.inputBorder = styles.inputBorder;
 
-		this.inputValidationInfoBackground = styles.inputValidationInfoBackground;
-		this.inputValidationInfoForeground = styles.inputValidationInfoForeground;
-		this.inputValidationInfoBorder = styles.inputValidationInfoBorder;
-		this.inputValidationWarningBackground = styles.inputValidationWarningBackground;
-		this.inputValidationWarningForeground = styles.inputValidationWarningForeground;
-		this.inputValidationWarningBorder = styles.inputValidationWarningBorder;
-		this.inputValidationErrorBackground = styles.inputValidationErrorBackground;
-		this.inputValidationErrorForeground = styles.inputValidationErrorForeground;
-		this.inputValidationErrorBorder = styles.inputValidationErrorBorder;
+		this.inputVAlidAtionInfoBAckground = styles.inputVAlidAtionInfoBAckground;
+		this.inputVAlidAtionInfoForeground = styles.inputVAlidAtionInfoForeground;
+		this.inputVAlidAtionInfoBorder = styles.inputVAlidAtionInfoBorder;
+		this.inputVAlidAtionWArningBAckground = styles.inputVAlidAtionWArningBAckground;
+		this.inputVAlidAtionWArningForeground = styles.inputVAlidAtionWArningForeground;
+		this.inputVAlidAtionWArningBorder = styles.inputVAlidAtionWArningBorder;
+		this.inputVAlidAtionErrorBAckground = styles.inputVAlidAtionErrorBAckground;
+		this.inputVAlidAtionErrorForeground = styles.inputVAlidAtionErrorForeground;
+		this.inputVAlidAtionErrorBorder = styles.inputVAlidAtionErrorBorder;
 
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
-	protected applyStyles(): void {
-		const background = this.inputBackground ? this.inputBackground.toString() : '';
+	protected ApplyStyles(): void {
+		const bAckground = this.inputBAckground ? this.inputBAckground.toString() : '';
 		const foreground = this.inputForeground ? this.inputForeground.toString() : '';
 		const border = this.inputBorder ? this.inputBorder.toString() : '';
 
-		this.element.style.backgroundColor = background;
+		this.element.style.bAckgroundColor = bAckground;
 		this.element.style.color = foreground;
-		this.input.style.backgroundColor = 'inherit';
+		this.input.style.bAckgroundColor = 'inherit';
 		this.input.style.color = foreground;
 
 		this.element.style.borderWidth = border ? '1px' : '';
@@ -568,63 +568,63 @@ export class InputBox extends Widget {
 		this.element.style.borderColor = border;
 	}
 
-	public layout(): void {
+	public lAyout(): void {
 		if (!this.mirror) {
 			return;
 		}
 
-		const previousHeight = this.cachedContentHeight;
-		this.cachedContentHeight = dom.getTotalHeight(this.mirror);
+		const previousHeight = this.cAchedContentHeight;
+		this.cAchedContentHeight = dom.getTotAlHeight(this.mirror);
 
-		if (previousHeight !== this.cachedContentHeight) {
-			this.cachedHeight = Math.min(this.cachedContentHeight, this.maxHeight);
-			this.input.style.height = this.cachedHeight + 'px';
-			this._onDidHeightChange.fire(this.cachedContentHeight);
+		if (previousHeight !== this.cAchedContentHeight) {
+			this.cAchedHeight = MAth.min(this.cAchedContentHeight, this.mAxHeight);
+			this.input.style.height = this.cAchedHeight + 'px';
+			this._onDidHeightChAnge.fire(this.cAchedContentHeight);
 		}
 	}
 
 	public insertAtCursor(text: string): void {
 		const inputElement = this.inputElement;
-		const start = inputElement.selectionStart;
+		const stArt = inputElement.selectionStArt;
 		const end = inputElement.selectionEnd;
-		const content = inputElement.value;
+		const content = inputElement.vAlue;
 
-		if (start !== null && end !== null) {
-			this.value = content.substr(0, start) + text + content.substr(end);
-			inputElement.setSelectionRange(start + 1, start + 1);
-			this.layout();
+		if (stArt !== null && end !== null) {
+			this.vAlue = content.substr(0, stArt) + text + content.substr(end);
+			inputElement.setSelectionRAnge(stArt + 1, stArt + 1);
+			this.lAyout();
 		}
 	}
 
 	public dispose(): void {
-		this._hideMessage();
+		this._hideMessAge();
 
-		this.message = null;
+		this.messAge = null;
 
-		if (this.actionbar) {
-			this.actionbar.dispose();
+		if (this.ActionbAr) {
+			this.ActionbAr.dispose();
 		}
 
 		super.dispose();
 	}
 }
 
-export interface IHistoryInputOptions extends IInputOptions {
+export interfAce IHistoryInputOptions extends IInputOptions {
 	history: string[];
 }
 
-export class HistoryInputBox extends InputBox implements IHistoryNavigationWidget {
+export clAss HistoryInputBox extends InputBox implements IHistoryNAvigAtionWidget {
 
-	private readonly history: HistoryNavigator<string>;
+	privAte reAdonly history: HistoryNAvigAtor<string>;
 
-	constructor(container: HTMLElement, contextViewProvider: IContextViewProvider | undefined, options: IHistoryInputOptions) {
-		super(container, contextViewProvider, options);
-		this.history = new HistoryNavigator<string>(options.history, 100);
+	constructor(contAiner: HTMLElement, contextViewProvider: IContextViewProvider | undefined, options: IHistoryInputOptions) {
+		super(contAiner, contextViewProvider, options);
+		this.history = new HistoryNAvigAtor<string>(options.history, 100);
 	}
 
-	public addToHistory(): void {
-		if (this.value && this.value !== this.getCurrentValue()) {
-			this.history.add(this.value);
+	public AddToHistory(): void {
+		if (this.vAlue && this.vAlue !== this.getCurrentVAlue()) {
+			this.history.Add(this.vAlue);
 		}
 	}
 
@@ -632,56 +632,56 @@ export class HistoryInputBox extends InputBox implements IHistoryNavigationWidge
 		return this.history.getHistory();
 	}
 
-	public showNextValue(): void {
-		if (!this.history.has(this.value)) {
-			this.addToHistory();
+	public showNextVAlue(): void {
+		if (!this.history.hAs(this.vAlue)) {
+			this.AddToHistory();
 		}
 
-		let next = this.getNextValue();
+		let next = this.getNextVAlue();
 		if (next) {
-			next = next === this.value ? this.getNextValue() : next;
+			next = next === this.vAlue ? this.getNextVAlue() : next;
 		}
 
 		if (next) {
-			this.value = next;
-			aria.status(this.value);
+			this.vAlue = next;
+			AriA.stAtus(this.vAlue);
 		}
 	}
 
-	public showPreviousValue(): void {
-		if (!this.history.has(this.value)) {
-			this.addToHistory();
+	public showPreviousVAlue(): void {
+		if (!this.history.hAs(this.vAlue)) {
+			this.AddToHistory();
 		}
 
-		let previous = this.getPreviousValue();
+		let previous = this.getPreviousVAlue();
 		if (previous) {
-			previous = previous === this.value ? this.getPreviousValue() : previous;
+			previous = previous === this.vAlue ? this.getPreviousVAlue() : previous;
 		}
 
 		if (previous) {
-			this.value = previous;
-			aria.status(this.value);
+			this.vAlue = previous;
+			AriA.stAtus(this.vAlue);
 		}
 	}
 
-	public clearHistory(): void {
-		this.history.clear();
+	public cleArHistory(): void {
+		this.history.cleAr();
 	}
 
-	private getCurrentValue(): string | null {
-		let currentValue = this.history.current();
-		if (!currentValue) {
-			currentValue = this.history.last();
+	privAte getCurrentVAlue(): string | null {
+		let currentVAlue = this.history.current();
+		if (!currentVAlue) {
+			currentVAlue = this.history.lAst();
 			this.history.next();
 		}
-		return currentValue;
+		return currentVAlue;
 	}
 
-	private getPreviousValue(): string | null {
+	privAte getPreviousVAlue(): string | null {
 		return this.history.previous() || this.history.first();
 	}
 
-	private getNextValue(): string | null {
-		return this.history.next() || this.history.last();
+	privAte getNextVAlue(): string | null {
+		return this.history.next() || this.history.lAst();
 	}
 }

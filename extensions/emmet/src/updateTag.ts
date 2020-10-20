@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { HtmlNode } from 'EmmetNode';
-import { getHtmlNode, parseDocument, validate } from './util';
+import { getHtmlNode, pArseDocument, vAlidAte } from './util';
 
-export function updateTag(tagName: string): Thenable<boolean> | undefined {
-	if (!validate(false) || !vscode.window.activeTextEditor) {
+export function updAteTAg(tAgNAme: string): ThenAble<booleAn> | undefined {
+	if (!vAlidAte(fAlse) || !vscode.window.ActiveTextEditor) {
 		return;
 	}
-	let editor = vscode.window.activeTextEditor;
-	let rootNode = <HtmlNode>parseDocument(editor.document);
+	let editor = vscode.window.ActiveTextEditor;
+	let rootNode = <HtmlNode>pArseDocument(editor.document);
 	if (!rootNode) {
 		return;
 	}
 
-	let rangesToUpdate: vscode.Range[] = [];
-	editor.selections.reverse().forEach(selection => {
-		rangesToUpdate = rangesToUpdate.concat(getRangesToUpdate(editor, selection, rootNode));
+	let rAngesToUpdAte: vscode.RAnge[] = [];
+	editor.selections.reverse().forEAch(selection => {
+		rAngesToUpdAte = rAngesToUpdAte.concAt(getRAngesToUpdAte(editor, selection, rootNode));
 	});
 
 	return editor.edit(editBuilder => {
-		rangesToUpdate.forEach(range => {
-			editBuilder.replace(range, tagName);
+		rAngesToUpdAte.forEAch(rAnge => {
+			editBuilder.replAce(rAnge, tAgNAme);
 		});
 	});
 }
 
-function getRangesToUpdate(editor: vscode.TextEditor, selection: vscode.Selection, rootNode: HtmlNode): vscode.Range[] {
-	let nodeToUpdate = getHtmlNode(editor.document, rootNode, selection.start, true);
-	if (!nodeToUpdate) {
+function getRAngesToUpdAte(editor: vscode.TextEditor, selection: vscode.Selection, rootNode: HtmlNode): vscode.RAnge[] {
+	let nodeToUpdAte = getHtmlNode(editor.document, rootNode, selection.stArt, true);
+	if (!nodeToUpdAte) {
 		return [];
 	}
 
-	let openStart = nodeToUpdate.open.start.translate(0, 1);
-	let openEnd = openStart.translate(0, nodeToUpdate.name.length);
+	let openStArt = nodeToUpdAte.open.stArt.trAnslAte(0, 1);
+	let openEnd = openStArt.trAnslAte(0, nodeToUpdAte.nAme.length);
 
-	let ranges = [new vscode.Range(openStart, openEnd)];
-	if (nodeToUpdate.close) {
-		let closeStart = nodeToUpdate.close.start.translate(0, 2);
-		let closeEnd = nodeToUpdate.close.end.translate(0, -1);
-		ranges.push(new vscode.Range(closeStart, closeEnd));
+	let rAnges = [new vscode.RAnge(openStArt, openEnd)];
+	if (nodeToUpdAte.close) {
+		let closeStArt = nodeToUpdAte.close.stArt.trAnslAte(0, 2);
+		let closeEnd = nodeToUpdAte.close.end.trAnslAte(0, -1);
+		rAnges.push(new vscode.RAnge(closeStArt, closeEnd));
 	}
-	return ranges;
+	return rAnges;
 }
 
 

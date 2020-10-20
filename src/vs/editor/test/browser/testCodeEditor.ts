@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ICodeEditor, IActiveCodeEditor, IEditorConstructionOptions } from 'vs/editor/browser/editorBrowser';
@@ -8,113 +8,113 @@ import { IEditorContributionCtor } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { View } from 'vs/editor/browser/view/viewImpl';
 import { CodeEditorWidget, ICodeEditorWidgetOptions } from 'vs/editor/browser/widget/codeEditorWidget';
-import * as editorOptions from 'vs/editor/common/config/editorOptions';
-import { IConfiguration, IEditorContribution } from 'vs/editor/common/editorCommon';
+import * As editorOptions from 'vs/editor/common/config/editorOptions';
+import { IConfigurAtion, IEditorContribution } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 import { ViewModel } from 'vs/editor/common/viewModel/viewModelImpl';
-import { TestCodeEditorService, TestCommandService } from 'vs/editor/test/browser/editorTestServices';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { TestConfiguration } from 'vs/editor/test/common/mocks/testConfiguration';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IContextKeyService, IContextKeyServiceTarget } from 'vs/platform/contextkey/common/contextkey';
-import { BrandedService, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { MockContextKeyService } from 'vs/platform/keybinding/test/common/mockKeybindingService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
+import { TestCodeEditorService, TestCommAndService } from 'vs/editor/test/browser/editorTestServices';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { TestConfigurAtion } from 'vs/editor/test/common/mocks/testConfigurAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IContextKeyService, IContextKeyServiceTArget } from 'vs/plAtform/contextkey/common/contextkey';
+import { BrAndedService, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { MockContextKeyService } from 'vs/plAtform/keybinding/test/common/mockKeybindingService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
 
-export interface ITestCodeEditor extends IActiveCodeEditor {
+export interfAce ITestCodeEditor extends IActiveCodeEditor {
 	getViewModel(): ViewModel | undefined;
-	registerAndInstantiateContribution<T extends IEditorContribution, Services extends BrandedService[]>(id: string, ctor: new (editor: ICodeEditor, ...services: Services) => T): T;
+	registerAndInstAntiAteContribution<T extends IEditorContribution, Services extends BrAndedService[]>(id: string, ctor: new (editor: ICodeEditor, ...services: Services) => T): T;
 }
 
-class TestCodeEditor extends CodeEditorWidget implements ICodeEditor {
+clAss TestCodeEditor extends CodeEditorWidget implements ICodeEditor {
 
 	//#region testing overrides
-	protected _createConfiguration(options: IEditorConstructionOptions): IConfiguration {
-		return new TestConfiguration(options);
+	protected _creAteConfigurAtion(options: IEditorConstructionOptions): IConfigurAtion {
+		return new TestConfigurAtion(options);
 	}
-	protected _createView(viewModel: ViewModel): [View, boolean] {
-		// Never create a view
-		return [null! as View, false];
+	protected _creAteView(viewModel: ViewModel): [View, booleAn] {
+		// Never creAte A view
+		return [null! As View, fAlse];
 	}
 	//#endregion
 
 	//#region Testing utils
 	public getViewModel(): ViewModel | undefined {
-		return this._modelData ? this._modelData.viewModel : undefined;
+		return this._modelDAtA ? this._modelDAtA.viewModel : undefined;
 	}
-	public registerAndInstantiateContribution<T extends IEditorContribution, Services extends BrandedService[]>(id: string, ctor: new (editor: ICodeEditor, ...services: Services) => T): T {
-		const r: T = this._instantiationService.createInstance(ctor as IEditorContributionCtor, this);
+	public registerAndInstAntiAteContribution<T extends IEditorContribution, Services extends BrAndedService[]>(id: string, ctor: new (editor: ICodeEditor, ...services: Services) => T): T {
+		const r: T = this._instAntiAtionService.creAteInstAnce(ctor As IEditorContributionCtor, this);
 		this._contributions[id] = r;
 		return r;
 	}
 	public dispose() {
 		super.dispose();
-		if (this._modelData) {
-			this._modelData.model.dispose();
+		if (this._modelDAtA) {
+			this._modelDAtA.model.dispose();
 		}
 	}
 }
 
-class TestEditorDomElement {
-	parentElement: IContextKeyServiceTarget | null = null;
-	setAttribute(attr: string, value: string): void { }
-	removeAttribute(attr: string): void { }
-	hasAttribute(attr: string): boolean { return false; }
-	getAttribute(attr: string): string | undefined { return undefined; }
-	addEventListener(event: string): void { }
+clAss TestEditorDomElement {
+	pArentElement: IContextKeyServiceTArget | null = null;
+	setAttribute(Attr: string, vAlue: string): void { }
+	removeAttribute(Attr: string): void { }
+	hAsAttribute(Attr: string): booleAn { return fAlse; }
+	getAttribute(Attr: string): string | undefined { return undefined; }
+	AddEventListener(event: string): void { }
 	removeEventListener(event: string): void { }
 }
 
-export interface TestCodeEditorCreationOptions extends editorOptions.IEditorOptions {
+export interfAce TestCodeEditorCreAtionOptions extends editorOptions.IEditorOptions {
 	/**
-	 * The initial model associated with this code editor.
+	 * The initiAl model AssociAted with this code editor.
 	 */
 	model?: ITextModel;
 	serviceCollection?: ServiceCollection;
 }
 
-export function withTestCodeEditor(text: string | string[] | null, options: TestCodeEditorCreationOptions, callback: (editor: ITestCodeEditor, viewModel: ViewModel) => void): void {
-	// create a model if necessary and remember it in order to dispose it.
+export function withTestCodeEditor(text: string | string[] | null, options: TestCodeEditorCreAtionOptions, cAllbAck: (editor: ITestCodeEditor, viewModel: ViewModel) => void): void {
+	// creAte A model if necessAry And remember it in order to dispose it.
 	if (!options.model) {
 		if (typeof text === 'string') {
-			options.model = createTextModel(text);
+			options.model = creAteTextModel(text);
 		} else if (text) {
-			options.model = createTextModel(text.join('\n'));
+			options.model = creAteTextModel(text.join('\n'));
 		}
 	}
 
-	const editor = createTestCodeEditor(options);
+	const editor = creAteTestCodeEditor(options);
 	const viewModel = editor.getViewModel()!;
-	viewModel.setHasFocus(true);
-	callback(<ITestCodeEditor>editor, editor.getViewModel()!);
+	viewModel.setHAsFocus(true);
+	cAllbAck(<ITestCodeEditor>editor, editor.getViewModel()!);
 
 	editor.dispose();
 }
 
-export async function withAsyncTestCodeEditor(text: string | string[] | null, options: TestCodeEditorCreationOptions, callback: (editor: ITestCodeEditor, viewModel: ViewModel) => Promise<void>): Promise<void> {
-	// create a model if necessary and remember it in order to dispose it.
+export Async function withAsyncTestCodeEditor(text: string | string[] | null, options: TestCodeEditorCreAtionOptions, cAllbAck: (editor: ITestCodeEditor, viewModel: ViewModel) => Promise<void>): Promise<void> {
+	// creAte A model if necessAry And remember it in order to dispose it.
 	if (!options.model) {
 		if (typeof text === 'string') {
-			options.model = createTextModel(text);
+			options.model = creAteTextModel(text);
 		} else if (text) {
-			options.model = createTextModel(text.join('\n'));
+			options.model = creAteTextModel(text.join('\n'));
 		}
 	}
 
-	const editor = createTestCodeEditor(options);
+	const editor = creAteTestCodeEditor(options);
 	const viewModel = editor.getViewModel()!;
-	viewModel.setHasFocus(true);
-	await callback(<ITestCodeEditor>editor, editor.getViewModel()!);
+	viewModel.setHAsFocus(true);
+	AwAit cAllbAck(<ITestCodeEditor>editor, editor.getViewModel()!);
 
 	editor.dispose();
 }
 
-export function createTestCodeEditor(options: TestCodeEditorCreationOptions): ITestCodeEditor {
+export function creAteTestCodeEditor(options: TestCodeEditorCreAtionOptions): ITestCodeEditor {
 
 	const model = options.model;
 	delete options.model;
@@ -122,30 +122,30 @@ export function createTestCodeEditor(options: TestCodeEditorCreationOptions): IT
 	const services: ServiceCollection = options.serviceCollection || new ServiceCollection();
 	delete options.serviceCollection;
 
-	const instantiationService: IInstantiationService = new InstantiationService(services);
+	const instAntiAtionService: IInstAntiAtionService = new InstAntiAtionService(services);
 
-	if (!services.has(ICodeEditorService)) {
+	if (!services.hAs(ICodeEditorService)) {
 		services.set(ICodeEditorService, new TestCodeEditorService());
 	}
-	if (!services.has(IContextKeyService)) {
+	if (!services.hAs(IContextKeyService)) {
 		services.set(IContextKeyService, new MockContextKeyService());
 	}
-	if (!services.has(INotificationService)) {
-		services.set(INotificationService, new TestNotificationService());
+	if (!services.hAs(INotificAtionService)) {
+		services.set(INotificAtionService, new TestNotificAtionService());
 	}
-	if (!services.has(ICommandService)) {
-		services.set(ICommandService, new TestCommandService(instantiationService));
+	if (!services.hAs(ICommAndService)) {
+		services.set(ICommAndService, new TestCommAndService(instAntiAtionService));
 	}
-	if (!services.has(IThemeService)) {
+	if (!services.hAs(IThemeService)) {
 		services.set(IThemeService, new TestThemeService());
 	}
 
 	const codeEditorWidgetOptions: ICodeEditorWidgetOptions = {
 		contributions: []
 	};
-	const editor = instantiationService.createInstance(
+	const editor = instAntiAtionService.creAteInstAnce(
 		TestCodeEditor,
-		<HTMLElement><any>new TestEditorDomElement(),
+		<HTMLElement><Any>new TestEditorDomElement(),
 		options,
 		codeEditorWidgetOptions
 	);

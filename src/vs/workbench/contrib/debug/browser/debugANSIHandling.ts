@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
-import { RGBA, Color } from 'vs/base/common/color';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ansiColorIdentifiers } from 'vs/workbench/contrib/terminal/common/terminalColorRegistry';
+import { RGBA, Color } from 'vs/bAse/common/color';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { AnsiColorIdentifiers } from 'vs/workbench/contrib/terminAl/common/terminAlColorRegistry';
 import { IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
 
 /**
- * @param text The content to stylize.
- * @returns An {@link HTMLSpanElement} that contains the potentially stylized text.
+ * @pArAm text The content to stylize.
+ * @returns An {@link HTMLSpAnElement} thAt contAins the potentiAlly stylized text.
  */
-export function handleANSIOutput(text: string, linkDetector: LinkDetector, themeService: IThemeService, debugSession: IDebugSession): HTMLSpanElement {
+export function hAndleANSIOutput(text: string, linkDetector: LinkDetector, themeService: IThemeService, debugSession: IDebugSession): HTMLSpAnElement {
 
-	const root: HTMLSpanElement = document.createElement('span');
+	const root: HTMLSpAnElement = document.creAteElement('spAn');
 	const textLength: number = text.length;
 
-	let styleNames: string[] = [];
+	let styleNAmes: string[] = [];
 	let customFgColor: RGBA | undefined;
 	let customBgColor: RGBA | undefined;
 	let currentPos: number = 0;
@@ -26,27 +26,27 @@ export function handleANSIOutput(text: string, linkDetector: LinkDetector, theme
 
 	while (currentPos < textLength) {
 
-		let sequenceFound: boolean = false;
+		let sequenceFound: booleAn = fAlse;
 
-		// Potentially an ANSI escape sequence.
-		// See http://ascii-table.com/ansi-escape-sequences.php & https://en.wikipedia.org/wiki/ANSI_escape_code
-		if (text.charCodeAt(currentPos) === 27 && text.charAt(currentPos + 1) === '[') {
+		// PotentiAlly An ANSI escApe sequence.
+		// See http://Ascii-tAble.com/Ansi-escApe-sequences.php & https://en.wikipediA.org/wiki/ANSI_escApe_code
+		if (text.chArCodeAt(currentPos) === 27 && text.chArAt(currentPos + 1) === '[') {
 
-			const startPos: number = currentPos;
-			currentPos += 2; // Ignore 'Esc[' as it's in every sequence.
+			const stArtPos: number = currentPos;
+			currentPos += 2; // Ignore 'Esc[' As it's in every sequence.
 
-			let ansiSequence: string = '';
+			let AnsiSequence: string = '';
 
 			while (currentPos < textLength) {
-				const char: string = text.charAt(currentPos);
-				ansiSequence += char;
+				const chAr: string = text.chArAt(currentPos);
+				AnsiSequence += chAr;
 
 				currentPos++;
 
-				// Look for a known sequence terminating character.
-				if (char.match(/^[ABCDHIJKfhmpsu]$/)) {
+				// Look for A known sequence terminAting chArActer.
+				if (chAr.mAtch(/^[ABCDHIJKfhmpsu]$/)) {
 					sequenceFound = true;
-					break;
+					breAk;
 				}
 
 			}
@@ -54,25 +54,25 @@ export function handleANSIOutput(text: string, linkDetector: LinkDetector, theme
 			if (sequenceFound) {
 
 				// Flush buffer with previous styles.
-				appendStylizedStringToContainer(root, buffer, styleNames, linkDetector, debugSession, customFgColor, customBgColor);
+				AppendStylizedStringToContAiner(root, buffer, styleNAmes, linkDetector, debugSession, customFgColor, customBgColor);
 
 				buffer = '';
 
 				/*
-				 * Certain ranges that are matched here do not contain real graphics rendition sequences. For
-				 * the sake of having a simpler expression, they have been included anyway.
+				 * CertAin rAnges thAt Are mAtched here do not contAin reAl grAphics rendition sequences. For
+				 * the sAke of hAving A simpler expression, they hAve been included AnywAy.
 				 */
-				if (ansiSequence.match(/^(?:[34][0-8]|9[0-7]|10[0-7]|[013]|4|[34]9)(?:;[349][0-7]|10[0-7]|[013]|[245]|[34]9)?(?:;[012]?[0-9]?[0-9])*;?m$/)) {
+				if (AnsiSequence.mAtch(/^(?:[34][0-8]|9[0-7]|10[0-7]|[013]|4|[34]9)(?:;[349][0-7]|10[0-7]|[013]|[245]|[34]9)?(?:;[012]?[0-9]?[0-9])*;?m$/)) {
 
-					const styleCodes: number[] = ansiSequence.slice(0, -1) // Remove final 'm' character.
-						.split(';')										   // Separate style codes.
-						.filter(elem => elem !== '')			           // Filter empty elems as '34;m' -> ['34', ''].
-						.map(elem => parseInt(elem, 10));		           // Convert to numbers.
+					const styleCodes: number[] = AnsiSequence.slice(0, -1) // Remove finAl 'm' chArActer.
+						.split(';')										   // SepArAte style codes.
+						.filter(elem => elem !== '')			           // Filter empty elems As '34;m' -> ['34', ''].
+						.mAp(elem => pArseInt(elem, 10));		           // Convert to numbers.
 
 					if (styleCodes[0] === 38 || styleCodes[0] === 48) {
-						// Advanced color code - can't be combined with formatting codes like simple colors can
-						// Ignores invalid colors and additional info beyond what is necessary
-						const colorType = (styleCodes[0] === 38) ? 'foreground' : 'background';
+						// AdvAnced color code - cAn't be combined with formAtting codes like simple colors cAn
+						// Ignores invAlid colors And AdditionAl info beyond whAt is necessAry
+						const colorType = (styleCodes[0] === 38) ? 'foreground' : 'bAckground';
 
 						if (styleCodes[1] === 5) {
 							set8BitColor(styleCodes, colorType);
@@ -80,7 +80,7 @@ export function handleANSIOutput(text: string, linkDetector: LinkDetector, theme
 							set24BitColor(styleCodes, colorType);
 						}
 					} else {
-						setBasicFormatters(styleCodes);
+						setBAsicFormAtters(styleCodes);
 					}
 
 				} else {
@@ -88,147 +88,147 @@ export function handleANSIOutput(text: string, linkDetector: LinkDetector, theme
 				}
 
 			} else {
-				currentPos = startPos;
+				currentPos = stArtPos;
 			}
 		}
 
-		if (sequenceFound === false) {
-			buffer += text.charAt(currentPos);
+		if (sequenceFound === fAlse) {
+			buffer += text.chArAt(currentPos);
 			currentPos++;
 		}
 	}
 
-	// Flush remaining text buffer if not empty.
+	// Flush remAining text buffer if not empty.
 	if (buffer) {
-		appendStylizedStringToContainer(root, buffer, styleNames, linkDetector, debugSession, customFgColor, customBgColor);
+		AppendStylizedStringToContAiner(root, buffer, styleNAmes, linkDetector, debugSession, customFgColor, customBgColor);
 	}
 
 	return root;
 
 	/**
-	 * Change the foreground or background color by clearing the current color
-	 * and adding the new one.
-	 * @param colorType If `'foreground'`, will change the foreground color, if
-	 * 	`'background'`, will change the background color.
-	 * @param color Color to change to. If `undefined` or not provided,
-	 * will clear current color without adding a new one.
+	 * ChAnge the foreground or bAckground color by cleAring the current color
+	 * And Adding the new one.
+	 * @pArAm colorType If `'foreground'`, will chAnge the foreground color, if
+	 * 	`'bAckground'`, will chAnge the bAckground color.
+	 * @pArAm color Color to chAnge to. If `undefined` or not provided,
+	 * will cleAr current color without Adding A new one.
 	 */
-	function changeColor(colorType: 'foreground' | 'background', color?: RGBA | undefined): void {
+	function chAngeColor(colorType: 'foreground' | 'bAckground', color?: RGBA | undefined): void {
 		if (colorType === 'foreground') {
 			customFgColor = color;
-		} else if (colorType === 'background') {
+		} else if (colorType === 'bAckground') {
 			customBgColor = color;
 		}
-		styleNames = styleNames.filter(style => style !== `code-${colorType}-colored`);
+		styleNAmes = styleNAmes.filter(style => style !== `code-${colorType}-colored`);
 		if (color !== undefined) {
-			styleNames.push(`code-${colorType}-colored`);
+			styleNAmes.push(`code-${colorType}-colored`);
 		}
 	}
 
 	/**
-	 * Calculate and set basic ANSI formatting. Supports bold, italic, underline,
-	 * normal foreground and background colors, and bright foreground and
-	 * background colors. Not to be used for codes containing advanced colors.
-	 * Will ignore invalid codes.
-	 * @param styleCodes Array of ANSI basic styling numbers, which will be
-	 * applied in order. New colors and backgrounds clear old ones; new formatting
+	 * CAlculAte And set bAsic ANSI formAtting. Supports bold, itAlic, underline,
+	 * normAl foreground And bAckground colors, And bright foreground And
+	 * bAckground colors. Not to be used for codes contAining AdvAnced colors.
+	 * Will ignore invAlid codes.
+	 * @pArAm styleCodes ArrAy of ANSI bAsic styling numbers, which will be
+	 * Applied in order. New colors And bAckgrounds cleAr old ones; new formAtting
 	 * does not.
-	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code }
+	 * @see {@link https://en.wikipediA.org/wiki/ANSI_escApe_code }
 	 */
-	function setBasicFormatters(styleCodes: number[]): void {
+	function setBAsicFormAtters(styleCodes: number[]): void {
 		for (let code of styleCodes) {
 			switch (code) {
-				case 0: {
-					styleNames = [];
+				cAse 0: {
+					styleNAmes = [];
 					customFgColor = undefined;
 					customBgColor = undefined;
-					break;
+					breAk;
 				}
-				case 1: {
-					styleNames.push('code-bold');
-					break;
+				cAse 1: {
+					styleNAmes.push('code-bold');
+					breAk;
 				}
-				case 3: {
-					styleNames.push('code-italic');
-					break;
+				cAse 3: {
+					styleNAmes.push('code-itAlic');
+					breAk;
 				}
-				case 4: {
-					styleNames.push('code-underline');
-					break;
+				cAse 4: {
+					styleNAmes.push('code-underline');
+					breAk;
 				}
-				case 39: {
-					changeColor('foreground', undefined);
-					break;
+				cAse 39: {
+					chAngeColor('foreground', undefined);
+					breAk;
 				}
-				case 49: {
-					changeColor('background', undefined);
-					break;
+				cAse 49: {
+					chAngeColor('bAckground', undefined);
+					breAk;
 				}
-				default: {
-					setBasicColor(code);
-					break;
+				defAult: {
+					setBAsicColor(code);
+					breAk;
 				}
 			}
 		}
 	}
 
 	/**
-	 * Calculate and set styling for complicated 24-bit ANSI color codes.
-	 * @param styleCodes Full list of integer codes that make up the full ANSI
-	 * sequence, including the two defining codes and the three RGB codes.
-	 * @param colorType If `'foreground'`, will set foreground color, if
-	 * `'background'`, will set background color.
-	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit }
+	 * CAlculAte And set styling for complicAted 24-bit ANSI color codes.
+	 * @pArAm styleCodes Full list of integer codes thAt mAke up the full ANSI
+	 * sequence, including the two defining codes And the three RGB codes.
+	 * @pArAm colorType If `'foreground'`, will set foreground color, if
+	 * `'bAckground'`, will set bAckground color.
+	 * @see {@link https://en.wikipediA.org/wiki/ANSI_escApe_code#24-bit }
 	 */
-	function set24BitColor(styleCodes: number[], colorType: 'foreground' | 'background'): void {
+	function set24BitColor(styleCodes: number[], colorType: 'foreground' | 'bAckground'): void {
 		if (styleCodes.length >= 5 &&
 			styleCodes[2] >= 0 && styleCodes[2] <= 255 &&
 			styleCodes[3] >= 0 && styleCodes[3] <= 255 &&
 			styleCodes[4] >= 0 && styleCodes[4] <= 255) {
 			const customColor = new RGBA(styleCodes[2], styleCodes[3], styleCodes[4]);
-			changeColor(colorType, customColor);
+			chAngeColor(colorType, customColor);
 		}
 	}
 
 	/**
-	 * Calculate and set styling for advanced 8-bit ANSI color codes.
-	 * @param styleCodes Full list of integer codes that make up the ANSI
-	 * sequence, including the two defining codes and the one color code.
-	 * @param colorType If `'foreground'`, will set foreground color, if
-	 * `'background'`, will set background color.
-	 * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit }
+	 * CAlculAte And set styling for AdvAnced 8-bit ANSI color codes.
+	 * @pArAm styleCodes Full list of integer codes thAt mAke up the ANSI
+	 * sequence, including the two defining codes And the one color code.
+	 * @pArAm colorType If `'foreground'`, will set foreground color, if
+	 * `'bAckground'`, will set bAckground color.
+	 * @see {@link https://en.wikipediA.org/wiki/ANSI_escApe_code#8-bit }
 	 */
-	function set8BitColor(styleCodes: number[], colorType: 'foreground' | 'background'): void {
+	function set8BitColor(styleCodes: number[], colorType: 'foreground' | 'bAckground'): void {
 		let colorNumber = styleCodes[2];
-		const color = calcANSI8bitColor(colorNumber);
+		const color = cAlcANSI8bitColor(colorNumber);
 
 		if (color) {
-			changeColor(colorType, color);
+			chAngeColor(colorType, color);
 		} else if (colorNumber >= 0 && colorNumber <= 15) {
-			// Need to map to one of the four basic color ranges (30-37, 90-97, 40-47, 100-107)
+			// Need to mAp to one of the four bAsic color rAnges (30-37, 90-97, 40-47, 100-107)
 			colorNumber += 30;
 			if (colorNumber >= 38) {
 				// Bright colors
 				colorNumber += 52;
 			}
-			if (colorType === 'background') {
+			if (colorType === 'bAckground') {
 				colorNumber += 10;
 			}
-			setBasicColor(colorNumber);
+			setBAsicColor(colorNumber);
 		}
 	}
 
 	/**
-	 * Calculate and set styling for basic bright and dark ANSI color codes. Uses
-	 * theme colors if available. Automatically distinguishes between foreground
-	 * and background colors; does not support color-clearing codes 39 and 49.
-	 * @param styleCode Integer color code on one of the following ranges:
-	 * [30-37, 90-97, 40-47, 100-107]. If not on one of these ranges, will do
+	 * CAlculAte And set styling for bAsic bright And dArk ANSI color codes. Uses
+	 * theme colors if AvAilAble. AutomAticAlly distinguishes between foreground
+	 * And bAckground colors; does not support color-cleAring codes 39 And 49.
+	 * @pArAm styleCode Integer color code on one of the following rAnges:
+	 * [30-37, 90-97, 40-47, 100-107]. If not on one of these rAnges, will do
 	 * nothing.
 	 */
-	function setBasicColor(styleCode: number): void {
+	function setBAsicColor(styleCode: number): void {
 		const theme = themeService.getColorTheme();
-		let colorType: 'foreground' | 'background' | undefined;
+		let colorType: 'foreground' | 'bAckground' | undefined;
 		let colorIndex: number | undefined;
 
 		if (styleCode >= 30 && styleCode <= 37) {
@@ -239,67 +239,67 @@ export function handleANSIOutput(text: string, linkDetector: LinkDetector, theme
 			colorType = 'foreground';
 		} else if (styleCode >= 40 && styleCode <= 47) {
 			colorIndex = styleCode - 40;
-			colorType = 'background';
+			colorType = 'bAckground';
 		} else if (styleCode >= 100 && styleCode <= 107) {
 			colorIndex = (styleCode - 100) + 8; // High-intensity (bright)
-			colorType = 'background';
+			colorType = 'bAckground';
 		}
 
 		if (colorIndex !== undefined && colorType) {
-			const colorName = ansiColorIdentifiers[colorIndex];
-			const color = theme.getColor(colorName);
+			const colorNAme = AnsiColorIdentifiers[colorIndex];
+			const color = theme.getColor(colorNAme);
 			if (color) {
-				changeColor(colorType, color.rgba);
+				chAngeColor(colorType, color.rgbA);
 			}
 		}
 	}
 }
 
 /**
- * @param root The {@link HTMLElement} to append the content to.
- * @param stringContent The text content to be appended.
- * @param cssClasses The list of CSS styles to apply to the text content.
- * @param linkDetector The {@link LinkDetector} responsible for generating links from {@param stringContent}.
- * @param customTextColor If provided, will apply custom color with inline style.
- * @param customBackgroundColor If provided, will apply custom color with inline style.
+ * @pArAm root The {@link HTMLElement} to Append the content to.
+ * @pArAm stringContent The text content to be Appended.
+ * @pArAm cssClAsses The list of CSS styles to Apply to the text content.
+ * @pArAm linkDetector The {@link LinkDetector} responsible for generAting links from {@pArAm stringContent}.
+ * @pArAm customTextColor If provided, will Apply custom color with inline style.
+ * @pArAm customBAckgroundColor If provided, will Apply custom color with inline style.
  */
-export function appendStylizedStringToContainer(
+export function AppendStylizedStringToContAiner(
 	root: HTMLElement,
 	stringContent: string,
-	cssClasses: string[],
+	cssClAsses: string[],
 	linkDetector: LinkDetector,
 	debugSession: IDebugSession,
 	customTextColor?: RGBA,
-	customBackgroundColor?: RGBA
+	customBAckgroundColor?: RGBA
 ): void {
 	if (!root || !stringContent) {
 		return;
 	}
 
-	const container = linkDetector.linkify(stringContent, true, debugSession.root);
+	const contAiner = linkDetector.linkify(stringContent, true, debugSession.root);
 
-	container.className = cssClasses.join(' ');
+	contAiner.clAssNAme = cssClAsses.join(' ');
 	if (customTextColor) {
-		container.style.color =
-			Color.Format.CSS.formatRGB(new Color(customTextColor));
+		contAiner.style.color =
+			Color.FormAt.CSS.formAtRGB(new Color(customTextColor));
 	}
-	if (customBackgroundColor) {
-		container.style.backgroundColor =
-			Color.Format.CSS.formatRGB(new Color(customBackgroundColor));
+	if (customBAckgroundColor) {
+		contAiner.style.bAckgroundColor =
+			Color.FormAt.CSS.formAtRGB(new Color(customBAckgroundColor));
 	}
 
-	root.appendChild(container);
+	root.AppendChild(contAiner);
 }
 
 /**
- * Calculate the color from the color set defined in the ANSI 8-bit standard.
- * Standard and high intensity colors are not defined in the standard as specific
- * colors, so these and invalid colors return `undefined`.
- * @see {@link https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit } for info.
- * @param colorNumber The number (ranging from 16 to 255) referring to the color
+ * CAlculAte the color from the color set defined in the ANSI 8-bit stAndArd.
+ * StAndArd And high intensity colors Are not defined in the stAndArd As specific
+ * colors, so these And invAlid colors return `undefined`.
+ * @see {@link https://en.wikipediA.org/wiki/ANSI_escApe_code#8-bit } for info.
+ * @pArAm colorNumber The number (rAnging from 16 to 255) referring to the color
  * desired.
  */
-export function calcANSI8bitColor(colorNumber: number): RGBA | undefined {
+export function cAlcANSI8bitColor(colorNumber: number): RGBA | undefined {
 	if (colorNumber % 1 !== 0) {
 		// Should be integer
 		return;
@@ -313,17 +313,17 @@ export function calcANSI8bitColor(colorNumber: number): RGBA | undefined {
 		colorNumber = (colorNumber - green) / 6;
 		let red: number = colorNumber;
 
-		// red, green, blue now range on [0, 5], need to map to [0,255]
-		const convFactor: number = 255 / 5;
-		blue = Math.round(blue * convFactor);
-		green = Math.round(green * convFactor);
-		red = Math.round(red * convFactor);
+		// red, green, blue now rAnge on [0, 5], need to mAp to [0,255]
+		const convFActor: number = 255 / 5;
+		blue = MAth.round(blue * convFActor);
+		green = MAth.round(green * convFActor);
+		red = MAth.round(red * convFActor);
 
 		return new RGBA(red, green, blue);
 	} else if (colorNumber >= 232 && colorNumber <= 255) {
-		// Converts to a grayscale value
+		// Converts to A grAyscAle vAlue
 		colorNumber -= 232;
-		const colorLevel: number = Math.round(colorNumber / 23 * 255);
+		const colorLevel: number = MAth.round(colorNumber / 23 * 255);
 		return new RGBA(colorLevel, colorLevel, colorLevel);
 	} else {
 		return;

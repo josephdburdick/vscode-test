@@ -1,120 +1,120 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableService, IMergedEnvironmentVariableCollection, ISerializableEnvironmentVariableCollection, IEnvironmentVariableCollectionWithPersistence } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { Event, Emitter } from 'vs/base/common/event';
-import { debounce, throttle } from 'vs/base/common/decorators';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import { IEnvironmentVAriAbleService, IMergedEnvironmentVAriAbleCollection, ISeriAlizAbleEnvironmentVAriAbleCollection, IEnvironmentVAriAbleCollectionWithPersistence } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { debounce, throttle } from 'vs/bAse/common/decorAtors';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { MergedEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariableCollection';
-import { deserializeEnvironmentVariableCollection, serializeEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariableShared';
+import { MergedEnvironmentVAriAbleCollection } from 'vs/workbench/contrib/terminAl/common/environmentVAriAbleCollection';
+import { deseriAlizeEnvironmentVAriAbleCollection, seriAlizeEnvironmentVAriAbleCollection } from 'vs/workbench/contrib/terminAl/common/environmentVAriAbleShAred';
 
-const ENVIRONMENT_VARIABLE_COLLECTIONS_KEY = 'terminal.integrated.environmentVariableCollections';
+const ENVIRONMENT_VARIABLE_COLLECTIONS_KEY = 'terminAl.integrAted.environmentVAriAbleCollections';
 
-interface ISerializableExtensionEnvironmentVariableCollection {
+interfAce ISeriAlizAbleExtensionEnvironmentVAriAbleCollection {
 	extensionIdentifier: string,
-	collection: ISerializableEnvironmentVariableCollection
+	collection: ISeriAlizAbleEnvironmentVAriAbleCollection
 }
 
 /**
- * Tracks and persists environment variable collections as defined by extensions.
+ * TrAcks And persists environment vAriAble collections As defined by extensions.
  */
-export class EnvironmentVariableService implements IEnvironmentVariableService {
-	declare readonly _serviceBrand: undefined;
+export clAss EnvironmentVAriAbleService implements IEnvironmentVAriAbleService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	collections: Map<string, IEnvironmentVariableCollectionWithPersistence> = new Map();
-	mergedCollection: IMergedEnvironmentVariableCollection;
+	collections: MAp<string, IEnvironmentVAriAbleCollectionWithPersistence> = new MAp();
+	mergedCollection: IMergedEnvironmentVAriAbleCollection;
 
-	private readonly _onDidChangeCollections = new Emitter<IMergedEnvironmentVariableCollection>();
-	get onDidChangeCollections(): Event<IMergedEnvironmentVariableCollection> { return this._onDidChangeCollections.event; }
+	privAte reAdonly _onDidChAngeCollections = new Emitter<IMergedEnvironmentVAriAbleCollection>();
+	get onDidChAngeCollections(): Event<IMergedEnvironmentVAriAbleCollection> { return this._onDidChAngeCollections.event; }
 
 	constructor(
-		@IExtensionService private readonly _extensionService: IExtensionService,
-		@IStorageService private readonly _storageService: IStorageService
+		@IExtensionService privAte reAdonly _extensionService: IExtensionService,
+		@IStorAgeService privAte reAdonly _storAgeService: IStorAgeService
 	) {
-		const serializedPersistedCollections = this._storageService.get(ENVIRONMENT_VARIABLE_COLLECTIONS_KEY, StorageScope.WORKSPACE);
-		if (serializedPersistedCollections) {
-			const collectionsJson: ISerializableExtensionEnvironmentVariableCollection[] = JSON.parse(serializedPersistedCollections);
-			collectionsJson.forEach(c => this.collections.set(c.extensionIdentifier, {
+		const seriAlizedPersistedCollections = this._storAgeService.get(ENVIRONMENT_VARIABLE_COLLECTIONS_KEY, StorAgeScope.WORKSPACE);
+		if (seriAlizedPersistedCollections) {
+			const collectionsJson: ISeriAlizAbleExtensionEnvironmentVAriAbleCollection[] = JSON.pArse(seriAlizedPersistedCollections);
+			collectionsJson.forEAch(c => this.collections.set(c.extensionIdentifier, {
 				persistent: true,
-				map: deserializeEnvironmentVariableCollection(c.collection)
+				mAp: deseriAlizeEnvironmentVAriAbleCollection(c.collection)
 			}));
 
-			// Asynchronously invalidate collections where extensions have been uninstalled, this is
-			// async to avoid making all functions on the service synchronous and because extensions
-			// being uninstalled is rare.
-			this._invalidateExtensionCollections();
+			// Asynchronously invAlidAte collections where extensions hAve been uninstAlled, this is
+			// Async to Avoid mAking All functions on the service synchronous And becAuse extensions
+			// being uninstAlled is rAre.
+			this._invAlidAteExtensionCollections();
 		}
 		this.mergedCollection = this._resolveMergedCollection();
 
-		// Listen for uninstalled/disabled extensions
-		this._extensionService.onDidChangeExtensions(() => this._invalidateExtensionCollections());
+		// Listen for uninstAlled/disAbled extensions
+		this._extensionService.onDidChAngeExtensions(() => this._invAlidAteExtensionCollections());
 	}
 
-	set(extensionIdentifier: string, collection: IEnvironmentVariableCollectionWithPersistence): void {
+	set(extensionIdentifier: string, collection: IEnvironmentVAriAbleCollectionWithPersistence): void {
 		this.collections.set(extensionIdentifier, collection);
-		this._updateCollections();
+		this._updAteCollections();
 	}
 
 	delete(extensionIdentifier: string): void {
 		this.collections.delete(extensionIdentifier);
-		this._updateCollections();
+		this._updAteCollections();
 	}
 
-	private _updateCollections(): void {
-		this._persistCollectionsEventually();
+	privAte _updAteCollections(): void {
+		this._persistCollectionsEventuAlly();
 		this.mergedCollection = this._resolveMergedCollection();
-		this._notifyCollectionUpdatesEventually();
+		this._notifyCollectionUpdAtesEventuAlly();
 	}
 
 	@throttle(1000)
-	private _persistCollectionsEventually(): void {
+	privAte _persistCollectionsEventuAlly(): void {
 		this._persistCollections();
 	}
 
 	protected _persistCollections(): void {
-		const collectionsJson: ISerializableExtensionEnvironmentVariableCollection[] = [];
-		this.collections.forEach((collection, extensionIdentifier) => {
+		const collectionsJson: ISeriAlizAbleExtensionEnvironmentVAriAbleCollection[] = [];
+		this.collections.forEAch((collection, extensionIdentifier) => {
 			if (collection.persistent) {
 				collectionsJson.push({
 					extensionIdentifier,
-					collection: serializeEnvironmentVariableCollection(this.collections.get(extensionIdentifier)!.map)
+					collection: seriAlizeEnvironmentVAriAbleCollection(this.collections.get(extensionIdentifier)!.mAp)
 				});
 			}
 		});
 		const stringifiedJson = JSON.stringify(collectionsJson);
-		this._storageService.store(ENVIRONMENT_VARIABLE_COLLECTIONS_KEY, stringifiedJson, StorageScope.WORKSPACE);
+		this._storAgeService.store(ENVIRONMENT_VARIABLE_COLLECTIONS_KEY, stringifiedJson, StorAgeScope.WORKSPACE);
 	}
 
 	@debounce(1000)
-	private _notifyCollectionUpdatesEventually(): void {
-		this._notifyCollectionUpdates();
+	privAte _notifyCollectionUpdAtesEventuAlly(): void {
+		this._notifyCollectionUpdAtes();
 	}
 
-	protected _notifyCollectionUpdates(): void {
-		this._onDidChangeCollections.fire(this.mergedCollection);
+	protected _notifyCollectionUpdAtes(): void {
+		this._onDidChAngeCollections.fire(this.mergedCollection);
 	}
 
-	private _resolveMergedCollection(): IMergedEnvironmentVariableCollection {
-		return new MergedEnvironmentVariableCollection(this.collections);
+	privAte _resolveMergedCollection(): IMergedEnvironmentVAriAbleCollection {
+		return new MergedEnvironmentVAriAbleCollection(this.collections);
 	}
 
-	private async _invalidateExtensionCollections(): Promise<void> {
-		await this._extensionService.whenInstalledExtensionsRegistered();
+	privAte Async _invAlidAteExtensionCollections(): Promise<void> {
+		AwAit this._extensionService.whenInstAlledExtensionsRegistered();
 
-		const registeredExtensions = await this._extensionService.getExtensions();
-		let changes = false;
-		this.collections.forEach((_, extensionIdentifier) => {
-			const isExtensionRegistered = registeredExtensions.some(r => r.identifier.value === extensionIdentifier);
+		const registeredExtensions = AwAit this._extensionService.getExtensions();
+		let chAnges = fAlse;
+		this.collections.forEAch((_, extensionIdentifier) => {
+			const isExtensionRegistered = registeredExtensions.some(r => r.identifier.vAlue === extensionIdentifier);
 			if (!isExtensionRegistered) {
 				this.collections.delete(extensionIdentifier);
-				changes = true;
+				chAnges = true;
 			}
 		});
-		if (changes) {
-			this._updateCollections();
+		if (chAnges) {
+			this._updAteCollections();
 		}
 	}
 }

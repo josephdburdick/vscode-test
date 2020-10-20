@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { ITerminalProcessExtHostProxy, IShellLaunchConfig, ITerminalChildProcess, ITerminalConfigHelper, ITerminalDimensions, ITerminalLaunchError } from 'vs/workbench/contrib/terminal/common/terminal';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { ITerminAlProcessExtHostProxy, IShellLAunchConfig, ITerminAlChildProcess, ITerminAlConfigHelper, ITerminAlDimensions, ITerminAlLAunchError } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import * as nls from 'vs/nls';
-import { ITerminalService } from 'vs/workbench/contrib/terminal/browser/terminal';
+import * As nls from 'vs/nls';
+import { ITerminAlService } from 'vs/workbench/contrib/terminAl/browser/terminAl';
 
-let hasReceivedResponseFromRemoteExtHost: boolean = false;
+let hAsReceivedResponseFromRemoteExtHost: booleAn = fAlse;
 
-export class TerminalProcessExtHostProxy extends Disposable implements ITerminalChildProcess, ITerminalProcessExtHostProxy {
+export clAss TerminAlProcessExtHostProxy extends DisposAble implements ITerminAlChildProcess, ITerminAlProcessExtHostProxy {
 
-	private readonly _onProcessData = this._register(new Emitter<string>());
-	public readonly onProcessData: Event<string> = this._onProcessData.event;
-	private readonly _onProcessExit = this._register(new Emitter<number | undefined>());
-	public readonly onProcessExit: Event<number | undefined> = this._onProcessExit.event;
-	private readonly _onProcessReady = this._register(new Emitter<{ pid: number, cwd: string }>());
-	public get onProcessReady(): Event<{ pid: number, cwd: string }> { return this._onProcessReady.event; }
-	private readonly _onProcessTitleChanged = this._register(new Emitter<string>());
-	public readonly onProcessTitleChanged: Event<string> = this._onProcessTitleChanged.event;
-	private readonly _onProcessOverrideDimensions = this._register(new Emitter<ITerminalDimensions | undefined>());
-	public get onProcessOverrideDimensions(): Event<ITerminalDimensions | undefined> { return this._onProcessOverrideDimensions.event; }
-	private readonly _onProcessResolvedShellLaunchConfig = this._register(new Emitter<IShellLaunchConfig>());
-	public get onProcessResolvedShellLaunchConfig(): Event<IShellLaunchConfig> { return this._onProcessResolvedShellLaunchConfig.event; }
+	privAte reAdonly _onProcessDAtA = this._register(new Emitter<string>());
+	public reAdonly onProcessDAtA: Event<string> = this._onProcessDAtA.event;
+	privAte reAdonly _onProcessExit = this._register(new Emitter<number | undefined>());
+	public reAdonly onProcessExit: Event<number | undefined> = this._onProcessExit.event;
+	privAte reAdonly _onProcessReAdy = this._register(new Emitter<{ pid: number, cwd: string }>());
+	public get onProcessReAdy(): Event<{ pid: number, cwd: string }> { return this._onProcessReAdy.event; }
+	privAte reAdonly _onProcessTitleChAnged = this._register(new Emitter<string>());
+	public reAdonly onProcessTitleChAnged: Event<string> = this._onProcessTitleChAnged.event;
+	privAte reAdonly _onProcessOverrideDimensions = this._register(new Emitter<ITerminAlDimensions | undefined>());
+	public get onProcessOverrideDimensions(): Event<ITerminAlDimensions | undefined> { return this._onProcessOverrideDimensions.event; }
+	privAte reAdonly _onProcessResolvedShellLAunchConfig = this._register(new Emitter<IShellLAunchConfig>());
+	public get onProcessResolvedShellLAunchConfig(): Event<IShellLAunchConfig> { return this._onProcessResolvedShellLAunchConfig.event; }
 
-	private readonly _onStart = this._register(new Emitter<void>());
-	public readonly onStart: Event<void> = this._onStart.event;
-	private readonly _onInput = this._register(new Emitter<string>());
-	public readonly onInput: Event<string> = this._onInput.event;
-	private readonly _onResize: Emitter<{ cols: number, rows: number }> = this._register(new Emitter<{ cols: number, rows: number }>());
-	public readonly onResize: Event<{ cols: number, rows: number }> = this._onResize.event;
-	private readonly _onShutdown = this._register(new Emitter<boolean>());
-	public readonly onShutdown: Event<boolean> = this._onShutdown.event;
-	private readonly _onRequestInitialCwd = this._register(new Emitter<void>());
-	public readonly onRequestInitialCwd: Event<void> = this._onRequestInitialCwd.event;
-	private readonly _onRequestCwd = this._register(new Emitter<void>());
-	public readonly onRequestCwd: Event<void> = this._onRequestCwd.event;
-	private readonly _onRequestLatency = this._register(new Emitter<void>());
-	public readonly onRequestLatency: Event<void> = this._onRequestLatency.event;
+	privAte reAdonly _onStArt = this._register(new Emitter<void>());
+	public reAdonly onStArt: Event<void> = this._onStArt.event;
+	privAte reAdonly _onInput = this._register(new Emitter<string>());
+	public reAdonly onInput: Event<string> = this._onInput.event;
+	privAte reAdonly _onResize: Emitter<{ cols: number, rows: number }> = this._register(new Emitter<{ cols: number, rows: number }>());
+	public reAdonly onResize: Event<{ cols: number, rows: number }> = this._onResize.event;
+	privAte reAdonly _onShutdown = this._register(new Emitter<booleAn>());
+	public reAdonly onShutdown: Event<booleAn> = this._onShutdown.event;
+	privAte reAdonly _onRequestInitiAlCwd = this._register(new Emitter<void>());
+	public reAdonly onRequestInitiAlCwd: Event<void> = this._onRequestInitiAlCwd.event;
+	privAte reAdonly _onRequestCwd = this._register(new Emitter<void>());
+	public reAdonly onRequestCwd: Event<void> = this._onRequestCwd.event;
+	privAte reAdonly _onRequestLAtency = this._register(new Emitter<void>());
+	public reAdonly onRequestLAtency: Event<void> = this._onRequestLAtency.event;
 
-	private _pendingInitialCwdRequests: ((value: string | PromiseLike<string>) => void)[] = [];
-	private _pendingCwdRequests: ((value: string | PromiseLike<string>) => void)[] = [];
-	private _pendingLatencyRequests: ((value: number | PromiseLike<number>) => void)[] = [];
+	privAte _pendingInitiAlCwdRequests: ((vAlue: string | PromiseLike<string>) => void)[] = [];
+	privAte _pendingCwdRequests: ((vAlue: string | PromiseLike<string>) => void)[] = [];
+	privAte _pendingLAtencyRequests: ((vAlue: number | PromiseLike<number>) => void)[] = [];
 
 	constructor(
-		public terminalId: number,
-		private _shellLaunchConfig: IShellLaunchConfig,
-		private _activeWorkspaceRootUri: URI | undefined,
-		private _cols: number,
-		private _rows: number,
-		private _configHelper: ITerminalConfigHelper,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@IRemoteAgentService private readonly _remoteAgentService: IRemoteAgentService
+		public terminAlId: number,
+		privAte _shellLAunchConfig: IShellLAunchConfig,
+		privAte _ActiveWorkspAceRootUri: URI | undefined,
+		privAte _cols: number,
+		privAte _rows: number,
+		privAte _configHelper: ITerminAlConfigHelper,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@IRemoteAgentService privAte reAdonly _remoteAgentService: IRemoteAgentService
 	) {
 		super();
 	}
 
-	public emitData(data: string): void {
-		this._onProcessData.fire(data);
+	public emitDAtA(dAtA: string): void {
+		this._onProcessDAtA.fire(dAtA);
 	}
 
 	public emitTitle(title: string): void {
-		hasReceivedResponseFromRemoteExtHost = true;
-		this._onProcessTitleChanged.fire(title);
+		hAsReceivedResponseFromRemoteExtHost = true;
+		this._onProcessTitleChAnged.fire(title);
 	}
 
-	public emitReady(pid: number, cwd: string): void {
-		this._onProcessReady.fire({ pid, cwd });
+	public emitReAdy(pid: number, cwd: string): void {
+		this._onProcessReAdy.fire({ pid, cwd });
 	}
 
 	public emitExit(exitCode: number | undefined): void {
@@ -78,17 +78,17 @@ export class TerminalProcessExtHostProxy extends Disposable implements ITerminal
 		this.dispose();
 	}
 
-	public emitOverrideDimensions(dimensions: ITerminalDimensions | undefined): void {
+	public emitOverrideDimensions(dimensions: ITerminAlDimensions | undefined): void {
 		this._onProcessOverrideDimensions.fire(dimensions);
 	}
 
-	public emitResolvedShellLaunchConfig(shellLaunchConfig: IShellLaunchConfig): void {
-		this._onProcessResolvedShellLaunchConfig.fire(shellLaunchConfig);
+	public emitResolvedShellLAunchConfig(shellLAunchConfig: IShellLAunchConfig): void {
+		this._onProcessResolvedShellLAunchConfig.fire(shellLAunchConfig);
 	}
 
-	public emitInitialCwd(initialCwd: string): void {
-		while (this._pendingInitialCwdRequests.length > 0) {
-			this._pendingInitialCwdRequests.pop()!(initialCwd);
+	public emitInitiAlCwd(initiAlCwd: string): void {
+		while (this._pendingInitiAlCwdRequests.length > 0) {
+			this._pendingInitiAlCwdRequests.pop()!(initiAlCwd);
 		}
 	}
 
@@ -98,51 +98,51 @@ export class TerminalProcessExtHostProxy extends Disposable implements ITerminal
 		}
 	}
 
-	public emitLatency(latency: number): void {
-		while (this._pendingLatencyRequests.length > 0) {
-			this._pendingLatencyRequests.pop()!(latency);
+	public emitLAtency(lAtency: number): void {
+		while (this._pendingLAtencyRequests.length > 0) {
+			this._pendingLAtencyRequests.pop()!(lAtency);
 		}
 	}
 
-	public async start(): Promise<ITerminalLaunchError | undefined> {
-		// Request a process if needed, if this is a virtual process this step can be skipped as
-		// there is no real "process" and we know it's ready on the ext host already.
-		if (this._shellLaunchConfig.isExtensionTerminal) {
-			return this._terminalService.requestStartExtensionTerminal(this, this._cols, this._rows);
+	public Async stArt(): Promise<ITerminAlLAunchError | undefined> {
+		// Request A process if needed, if this is A virtuAl process this step cAn be skipped As
+		// there is no reAl "process" And we know it's reAdy on the ext host AlreAdy.
+		if (this._shellLAunchConfig.isExtensionTerminAl) {
+			return this._terminAlService.requestStArtExtensionTerminAl(this, this._cols, this._rows);
 		}
 
-		// Add a loading title if the extension host has not started yet as there could be a
-		// decent wait for the user
-		if (!hasReceivedResponseFromRemoteExtHost) {
-			setTimeout(() => this._onProcessTitleChanged.fire(nls.localize('terminal.integrated.starting', "Starting...")), 0);
+		// Add A loAding title if the extension host hAs not stArted yet As there could be A
+		// decent wAit for the user
+		if (!hAsReceivedResponseFromRemoteExtHost) {
+			setTimeout(() => this._onProcessTitleChAnged.fire(nls.locAlize('terminAl.integrAted.stArting', "StArting...")), 0);
 		}
 
 		// Fetch the environment to check shell permissions
-		const env = await this._remoteAgentService.getEnvironment();
+		const env = AwAit this._remoteAgentService.getEnvironment();
 		if (!env) {
-			// Extension host processes are only allowed in remote extension hosts currently
+			// Extension host processes Are only Allowed in remote extension hosts currently
 			throw new Error('Could not fetch remote environment');
 		}
 
-		return this._terminalService.requestSpawnExtHostProcess(this, this._shellLaunchConfig, this._activeWorkspaceRootUri, this._cols, this._rows, this._configHelper.checkWorkspaceShellPermissions(env.os));
+		return this._terminAlService.requestSpAwnExtHostProcess(this, this._shellLAunchConfig, this._ActiveWorkspAceRootUri, this._cols, this._rows, this._configHelper.checkWorkspAceShellPermissions(env.os));
 	}
 
-	public shutdown(immediate: boolean): void {
-		this._onShutdown.fire(immediate);
+	public shutdown(immediAte: booleAn): void {
+		this._onShutdown.fire(immediAte);
 	}
 
-	public input(data: string): void {
-		this._onInput.fire(data);
+	public input(dAtA: string): void {
+		this._onInput.fire(dAtA);
 	}
 
 	public resize(cols: number, rows: number): void {
 		this._onResize.fire({ cols, rows });
 	}
 
-	public getInitialCwd(): Promise<string> {
+	public getInitiAlCwd(): Promise<string> {
 		return new Promise<string>(resolve => {
-			this._onRequestInitialCwd.fire();
-			this._pendingInitialCwdRequests.push(resolve);
+			this._onRequestInitiAlCwd.fire();
+			this._pendingInitiAlCwdRequests.push(resolve);
 		});
 	}
 
@@ -153,10 +153,10 @@ export class TerminalProcessExtHostProxy extends Disposable implements ITerminal
 		});
 	}
 
-	public getLatency(): Promise<number> {
+	public getLAtency(): Promise<number> {
 		return new Promise<number>(resolve => {
-			this._onRequestLatency.fire();
-			this._pendingLatencyRequests.push(resolve);
+			this._onRequestLAtency.fire();
+			this._pendingLAtencyRequests.push(resolve);
 		});
 	}
 }

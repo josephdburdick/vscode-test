@@ -1,234 +1,234 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { IExpression, IDebugService, IExpressionContainer } from 'vs/workbench/contrib/debug/common/debug';
-import { Expression, Variable, ExpressionContainer } from 'vs/workbench/contrib/debug/common/debugModel';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IInputValidationOptions, InputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { ITreeRenderer, ITreeNode } from 'vs/base/browser/ui/tree/tree';
-import { IDisposable, dispose, Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { attachInputBoxStyler } from 'vs/platform/theme/common/styler';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { HighlightedLabel, IHighlight } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
-import { FuzzyScore, createMatches } from 'vs/base/common/filters';
+import * As dom from 'vs/bAse/browser/dom';
+import { IExpression, IDebugService, IExpressionContAiner } from 'vs/workbench/contrib/debug/common/debug';
+import { Expression, VAriAble, ExpressionContAiner } from 'vs/workbench/contrib/debug/common/debugModel';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IInputVAlidAtionOptions, InputBox } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { ITreeRenderer, ITreeNode } from 'vs/bAse/browser/ui/tree/tree';
+import { IDisposAble, dispose, DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { AttAchInputBoxStyler } from 'vs/plAtform/theme/common/styler';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { HighlightedLAbel, IHighlight } from 'vs/bAse/browser/ui/highlightedlAbel/highlightedLAbel';
+import { FuzzyScore, creAteMAtches } from 'vs/bAse/common/filters';
 import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
-import { ReplEvaluationResult } from 'vs/workbench/contrib/debug/common/replModel';
-import { once } from 'vs/base/common/functional';
+import { ReplEvAluAtionResult } from 'vs/workbench/contrib/debug/common/replModel';
+import { once } from 'vs/bAse/common/functionAl';
 
 export const MAX_VALUE_RENDER_LENGTH_IN_VIEWLET = 1024;
 export const twistiePixels = 20;
-const booleanRegex = /^true|false$/i;
+const booleAnRegex = /^true|fAlse$/i;
 const stringRegex = /^(['"]).*\1$/;
 const $ = dom.$;
 
-export interface IRenderValueOptions {
-	showChanged?: boolean;
-	maxValueLength?: number;
-	showHover?: boolean;
-	colorize?: boolean;
+export interfAce IRenderVAlueOptions {
+	showChAnged?: booleAn;
+	mAxVAlueLength?: number;
+	showHover?: booleAn;
+	colorize?: booleAn;
 	linkDetector?: LinkDetector;
 }
 
-export interface IVariableTemplateData {
+export interfAce IVAriAbleTemplAteDAtA {
 	expression: HTMLElement;
-	name: HTMLElement;
-	value: HTMLElement;
-	label: HighlightedLabel;
+	nAme: HTMLElement;
+	vAlue: HTMLElement;
+	lAbel: HighlightedLAbel;
 }
 
-export function renderViewTree(container: HTMLElement): HTMLElement {
-	const treeContainer = $('.');
-	treeContainer.classList.add('debug-view-content');
-	container.appendChild(treeContainer);
-	return treeContainer;
+export function renderViewTree(contAiner: HTMLElement): HTMLElement {
+	const treeContAiner = $('.');
+	treeContAiner.clAssList.Add('debug-view-content');
+	contAiner.AppendChild(treeContAiner);
+	return treeContAiner;
 }
 
-export function renderExpressionValue(expressionOrValue: IExpressionContainer | string, container: HTMLElement, options: IRenderValueOptions): void {
-	let value = typeof expressionOrValue === 'string' ? expressionOrValue : expressionOrValue.value;
+export function renderExpressionVAlue(expressionOrVAlue: IExpressionContAiner | string, contAiner: HTMLElement, options: IRenderVAlueOptions): void {
+	let vAlue = typeof expressionOrVAlue === 'string' ? expressionOrVAlue : expressionOrVAlue.vAlue;
 
-	// remove stale classes
-	container.className = 'value';
-	// when resolving expressions we represent errors from the server as a variable with name === null.
-	if (value === null || ((expressionOrValue instanceof Expression || expressionOrValue instanceof Variable || expressionOrValue instanceof ReplEvaluationResult) && !expressionOrValue.available)) {
-		container.classList.add('unavailable');
-		if (value !== Expression.DEFAULT_VALUE) {
-			container.classList.add('error');
+	// remove stAle clAsses
+	contAiner.clAssNAme = 'vAlue';
+	// when resolving expressions we represent errors from the server As A vAriAble with nAme === null.
+	if (vAlue === null || ((expressionOrVAlue instAnceof Expression || expressionOrVAlue instAnceof VAriAble || expressionOrVAlue instAnceof ReplEvAluAtionResult) && !expressionOrVAlue.AvAilAble)) {
+		contAiner.clAssList.Add('unAvAilAble');
+		if (vAlue !== Expression.DEFAULT_VALUE) {
+			contAiner.clAssList.Add('error');
 		}
-	} else if ((expressionOrValue instanceof ExpressionContainer) && options.showChanged && expressionOrValue.valueChanged && value !== Expression.DEFAULT_VALUE) {
-		// value changed color has priority over other colors.
-		container.className = 'value changed';
-		expressionOrValue.valueChanged = false;
+	} else if ((expressionOrVAlue instAnceof ExpressionContAiner) && options.showChAnged && expressionOrVAlue.vAlueChAnged && vAlue !== Expression.DEFAULT_VALUE) {
+		// vAlue chAnged color hAs priority over other colors.
+		contAiner.clAssNAme = 'vAlue chAnged';
+		expressionOrVAlue.vAlueChAnged = fAlse;
 	}
 
-	if (options.colorize && typeof expressionOrValue !== 'string') {
-		if (expressionOrValue.type === 'number' || expressionOrValue.type === 'boolean' || expressionOrValue.type === 'string') {
-			container.classList.add(expressionOrValue.type);
-		} else if (!isNaN(+value)) {
-			container.classList.add('number');
-		} else if (booleanRegex.test(value)) {
-			container.classList.add('boolean');
-		} else if (stringRegex.test(value)) {
-			container.classList.add('string');
+	if (options.colorize && typeof expressionOrVAlue !== 'string') {
+		if (expressionOrVAlue.type === 'number' || expressionOrVAlue.type === 'booleAn' || expressionOrVAlue.type === 'string') {
+			contAiner.clAssList.Add(expressionOrVAlue.type);
+		} else if (!isNAN(+vAlue)) {
+			contAiner.clAssList.Add('number');
+		} else if (booleAnRegex.test(vAlue)) {
+			contAiner.clAssList.Add('booleAn');
+		} else if (stringRegex.test(vAlue)) {
+			contAiner.clAssList.Add('string');
 		}
 	}
 
-	if (options.maxValueLength && value && value.length > options.maxValueLength) {
-		value = value.substr(0, options.maxValueLength) + '...';
+	if (options.mAxVAlueLength && vAlue && vAlue.length > options.mAxVAlueLength) {
+		vAlue = vAlue.substr(0, options.mAxVAlueLength) + '...';
 	}
-	if (!value) {
-		value = '';
+	if (!vAlue) {
+		vAlue = '';
 	}
 
 	if (options.linkDetector) {
-		container.textContent = '';
-		const session = (expressionOrValue instanceof ExpressionContainer) ? expressionOrValue.getSession() : undefined;
-		container.appendChild(options.linkDetector.linkify(value, false, session ? session.root : undefined));
+		contAiner.textContent = '';
+		const session = (expressionOrVAlue instAnceof ExpressionContAiner) ? expressionOrVAlue.getSession() : undefined;
+		contAiner.AppendChild(options.linkDetector.linkify(vAlue, fAlse, session ? session.root : undefined));
 	} else {
-		container.textContent = value;
+		contAiner.textContent = vAlue;
 	}
 	if (options.showHover) {
-		container.title = value || '';
+		contAiner.title = vAlue || '';
 	}
 }
 
-export function renderVariable(variable: Variable, data: IVariableTemplateData, showChanged: boolean, highlights: IHighlight[], linkDetector?: LinkDetector): void {
-	if (variable.available) {
-		let text = variable.name;
-		if (variable.value && typeof variable.name === 'string') {
+export function renderVAriAble(vAriAble: VAriAble, dAtA: IVAriAbleTemplAteDAtA, showChAnged: booleAn, highlights: IHighlight[], linkDetector?: LinkDetector): void {
+	if (vAriAble.AvAilAble) {
+		let text = vAriAble.nAme;
+		if (vAriAble.vAlue && typeof vAriAble.nAme === 'string') {
 			text += ':';
 		}
-		data.label.set(text, highlights, variable.type ? variable.type : variable.name);
-		data.name.classList.toggle('virtual', !!variable.presentationHint && variable.presentationHint.kind === 'virtual');
-	} else if (variable.value && typeof variable.name === 'string' && variable.name) {
-		data.label.set(':');
+		dAtA.lAbel.set(text, highlights, vAriAble.type ? vAriAble.type : vAriAble.nAme);
+		dAtA.nAme.clAssList.toggle('virtuAl', !!vAriAble.presentAtionHint && vAriAble.presentAtionHint.kind === 'virtuAl');
+	} else if (vAriAble.vAlue && typeof vAriAble.nAme === 'string' && vAriAble.nAme) {
+		dAtA.lAbel.set(':');
 	}
 
-	renderExpressionValue(variable, data.value, {
-		showChanged,
-		maxValueLength: MAX_VALUE_RENDER_LENGTH_IN_VIEWLET,
+	renderExpressionVAlue(vAriAble, dAtA.vAlue, {
+		showChAnged,
+		mAxVAlueLength: MAX_VALUE_RENDER_LENGTH_IN_VIEWLET,
 		showHover: true,
 		colorize: true,
 		linkDetector
 	});
 }
 
-export interface IInputBoxOptions {
-	initialValue: string;
-	ariaLabel: string;
-	placeholder?: string;
-	validationOptions?: IInputValidationOptions;
-	onFinish: (value: string, success: boolean) => void;
+export interfAce IInputBoxOptions {
+	initiAlVAlue: string;
+	AriALAbel: string;
+	plAceholder?: string;
+	vAlidAtionOptions?: IInputVAlidAtionOptions;
+	onFinish: (vAlue: string, success: booleAn) => void;
 }
 
-export interface IExpressionTemplateData {
+export interfAce IExpressionTemplAteDAtA {
 	expression: HTMLElement;
-	name: HTMLSpanElement;
-	value: HTMLSpanElement;
-	inputBoxContainer: HTMLElement;
-	toDispose: IDisposable;
-	label: HighlightedLabel;
+	nAme: HTMLSpAnElement;
+	vAlue: HTMLSpAnElement;
+	inputBoxContAiner: HTMLElement;
+	toDispose: IDisposAble;
+	lAbel: HighlightedLAbel;
 }
 
-export abstract class AbstractExpressionsRenderer implements ITreeRenderer<IExpression, FuzzyScore, IExpressionTemplateData> {
+export AbstrAct clAss AbstrActExpressionsRenderer implements ITreeRenderer<IExpression, FuzzyScore, IExpressionTemplAteDAtA> {
 
 	constructor(
 		@IDebugService protected debugService: IDebugService,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IThemeService private readonly themeService: IThemeService
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService,
+		@IThemeService privAte reAdonly themeService: IThemeService
 	) { }
 
-	abstract get templateId(): string;
+	AbstrAct get templAteId(): string;
 
-	renderTemplate(container: HTMLElement): IExpressionTemplateData {
-		const expression = dom.append(container, $('.expression'));
-		const name = dom.append(expression, $('span.name'));
-		const value = dom.append(expression, $('span.value'));
-		const label = new HighlightedLabel(name, false);
+	renderTemplAte(contAiner: HTMLElement): IExpressionTemplAteDAtA {
+		const expression = dom.Append(contAiner, $('.expression'));
+		const nAme = dom.Append(expression, $('spAn.nAme'));
+		const vAlue = dom.Append(expression, $('spAn.vAlue'));
+		const lAbel = new HighlightedLAbel(nAme, fAlse);
 
-		const inputBoxContainer = dom.append(expression, $('.inputBoxContainer'));
+		const inputBoxContAiner = dom.Append(expression, $('.inputBoxContAiner'));
 
-		return { expression, name, value, label, inputBoxContainer, toDispose: Disposable.None };
+		return { expression, nAme, vAlue, lAbel, inputBoxContAiner, toDispose: DisposAble.None };
 	}
 
-	renderElement(node: ITreeNode<IExpression, FuzzyScore>, index: number, data: IExpressionTemplateData): void {
-		data.toDispose.dispose();
-		data.toDispose = Disposable.None;
+	renderElement(node: ITreeNode<IExpression, FuzzyScore>, index: number, dAtA: IExpressionTemplAteDAtA): void {
+		dAtA.toDispose.dispose();
+		dAtA.toDispose = DisposAble.None;
 		const { element } = node;
-		this.renderExpression(element, data, createMatches(node.filterData));
-		if (element === this.debugService.getViewModel().getSelectedExpression() || (element instanceof Variable && element.errorMessage)) {
+		this.renderExpression(element, dAtA, creAteMAtches(node.filterDAtA));
+		if (element === this.debugService.getViewModel().getSelectedExpression() || (element instAnceof VAriAble && element.errorMessAge)) {
 			const options = this.getInputBoxOptions(element);
 			if (options) {
-				data.toDispose = this.renderInputBox(data.name, data.value, data.inputBoxContainer, options);
+				dAtA.toDispose = this.renderInputBox(dAtA.nAme, dAtA.vAlue, dAtA.inputBoxContAiner, options);
 				return;
 			}
 		}
 	}
 
-	renderInputBox(nameElement: HTMLElement, valueElement: HTMLElement, inputBoxContainer: HTMLElement, options: IInputBoxOptions): IDisposable {
-		nameElement.style.display = 'none';
-		valueElement.style.display = 'none';
-		inputBoxContainer.style.display = 'initial';
+	renderInputBox(nAmeElement: HTMLElement, vAlueElement: HTMLElement, inputBoxContAiner: HTMLElement, options: IInputBoxOptions): IDisposAble {
+		nAmeElement.style.displAy = 'none';
+		vAlueElement.style.displAy = 'none';
+		inputBoxContAiner.style.displAy = 'initiAl';
 
-		const inputBox = new InputBox(inputBoxContainer, this.contextViewService, options);
-		const styler = attachInputBoxStyler(inputBox, this.themeService);
+		const inputBox = new InputBox(inputBoxContAiner, this.contextViewService, options);
+		const styler = AttAchInputBoxStyler(inputBox, this.themeService);
 
-		inputBox.value = options.initialValue;
+		inputBox.vAlue = options.initiAlVAlue;
 		inputBox.focus();
 		inputBox.select();
 
-		const done = once((success: boolean, finishEditing: boolean) => {
-			nameElement.style.display = 'initial';
-			valueElement.style.display = 'initial';
-			inputBoxContainer.style.display = 'none';
-			const value = inputBox.value;
+		const done = once((success: booleAn, finishEditing: booleAn) => {
+			nAmeElement.style.displAy = 'initiAl';
+			vAlueElement.style.displAy = 'initiAl';
+			inputBoxContAiner.style.displAy = 'none';
+			const vAlue = inputBox.vAlue;
 			dispose(toDispose);
 
 			if (finishEditing) {
 				this.debugService.getViewModel().setSelectedExpression(undefined);
-				options.onFinish(value, success);
+				options.onFinish(vAlue, success);
 			}
 		});
 
 		const toDispose = [
 			inputBox,
-			dom.addStandardDisposableListener(inputBox.inputElement, dom.EventType.KEY_DOWN, (e: IKeyboardEvent) => {
-				const isEscape = e.equals(KeyCode.Escape);
-				const isEnter = e.equals(KeyCode.Enter);
-				if (isEscape || isEnter) {
-					e.preventDefault();
-					e.stopPropagation();
+			dom.AddStAndArdDisposAbleListener(inputBox.inputElement, dom.EventType.KEY_DOWN, (e: IKeyboArdEvent) => {
+				const isEscApe = e.equAls(KeyCode.EscApe);
+				const isEnter = e.equAls(KeyCode.Enter);
+				if (isEscApe || isEnter) {
+					e.preventDefAult();
+					e.stopPropAgAtion();
 					done(isEnter, true);
 				}
 			}),
-			dom.addDisposableListener(inputBox.inputElement, dom.EventType.BLUR, () => {
+			dom.AddDisposAbleListener(inputBox.inputElement, dom.EventType.BLUR, () => {
 				done(true, true);
 			}),
-			dom.addDisposableListener(inputBox.inputElement, dom.EventType.CLICK, e => {
-				// Do not expand / collapse selected elements
-				e.preventDefault();
-				e.stopPropagation();
+			dom.AddDisposAbleListener(inputBox.inputElement, dom.EventType.CLICK, e => {
+				// Do not expAnd / collApse selected elements
+				e.preventDefAult();
+				e.stopPropAgAtion();
 			}),
 			styler
 		];
 
-		return toDisposable(() => {
-			done(false, false);
+		return toDisposAble(() => {
+			done(fAlse, fAlse);
 		});
 	}
 
-	protected abstract renderExpression(expression: IExpression, data: IExpressionTemplateData, highlights: IHighlight[]): void;
-	protected abstract getInputBoxOptions(expression: IExpression): IInputBoxOptions | undefined;
+	protected AbstrAct renderExpression(expression: IExpression, dAtA: IExpressionTemplAteDAtA, highlights: IHighlight[]): void;
+	protected AbstrAct getInputBoxOptions(expression: IExpression): IInputBoxOptions | undefined;
 
-	disposeElement(node: ITreeNode<IExpression, FuzzyScore>, index: number, templateData: IExpressionTemplateData): void {
-		templateData.toDispose.dispose();
+	disposeElement(node: ITreeNode<IExpression, FuzzyScore>, index: number, templAteDAtA: IExpressionTemplAteDAtA): void {
+		templAteDAtA.toDispose.dispose();
 	}
 
-	disposeTemplate(templateData: IExpressionTemplateData): void {
-		templateData.toDispose.dispose();
+	disposeTemplAte(templAteDAtA: IExpressionTemplAteDAtA): void {
+		templAteDAtA.toDispose.dispose();
 	}
 }

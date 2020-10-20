@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IUserDataSyncStoreService } from 'vs/platform/userDataSync/common/userDataSync';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IUserDAtASyncStoreService } from 'vs/plAtform/userDAtASync/common/userDAtASync';
 
-export interface IUserDataSyncAccount {
-	readonly authenticationProviderId: string;
-	readonly token: string;
+export interfAce IUserDAtASyncAccount {
+	reAdonly AuthenticAtionProviderId: string;
+	reAdonly token: string;
 }
 
-export const IUserDataSyncAccountService = createDecorator<IUserDataSyncAccountService>('IUserDataSyncAccountService');
-export interface IUserDataSyncAccountService {
-	readonly _serviceBrand: undefined;
+export const IUserDAtASyncAccountService = creAteDecorAtor<IUserDAtASyncAccountService>('IUserDAtASyncAccountService');
+export interfAce IUserDAtASyncAccountService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onTokenFailed: Event<boolean>;
-	readonly account: IUserDataSyncAccount | undefined;
-	readonly onDidChangeAccount: Event<IUserDataSyncAccount | undefined>;
-	updateAccount(account: IUserDataSyncAccount | undefined): Promise<void>;
+	reAdonly onTokenFAiled: Event<booleAn>;
+	reAdonly Account: IUserDAtASyncAccount | undefined;
+	reAdonly onDidChAngeAccount: Event<IUserDAtASyncAccount | undefined>;
+	updAteAccount(Account: IUserDAtASyncAccount | undefined): Promise<void>;
 
 }
 
-export class UserDataSyncAccountService extends Disposable implements IUserDataSyncAccountService {
+export clAss UserDAtASyncAccountService extends DisposAble implements IUserDAtASyncAccountService {
 
-	_serviceBrand: any;
+	_serviceBrAnd: Any;
 
-	private _account: IUserDataSyncAccount | undefined;
-	get account(): IUserDataSyncAccount | undefined { return this._account; }
-	private _onDidChangeAccount = this._register(new Emitter<IUserDataSyncAccount | undefined>());
-	readonly onDidChangeAccount = this._onDidChangeAccount.event;
+	privAte _Account: IUserDAtASyncAccount | undefined;
+	get Account(): IUserDAtASyncAccount | undefined { return this._Account; }
+	privAte _onDidChAngeAccount = this._register(new Emitter<IUserDAtASyncAccount | undefined>());
+	reAdonly onDidChAngeAccount = this._onDidChAngeAccount.event;
 
-	private _onTokenFailed: Emitter<boolean> = this._register(new Emitter<boolean>());
-	readonly onTokenFailed: Event<boolean> = this._onTokenFailed.event;
+	privAte _onTokenFAiled: Emitter<booleAn> = this._register(new Emitter<booleAn>());
+	reAdonly onTokenFAiled: Event<booleAn> = this._onTokenFAiled.event;
 
-	private wasTokenFailed: boolean = false;
+	privAte wAsTokenFAiled: booleAn = fAlse;
 
 	constructor(
-		@IUserDataSyncStoreService private readonly userDataSyncStoreService: IUserDataSyncStoreService
+		@IUserDAtASyncStoreService privAte reAdonly userDAtASyncStoreService: IUserDAtASyncStoreService
 	) {
 		super();
-		this._register(userDataSyncStoreService.onTokenFailed(() => {
-			this.updateAccount(undefined);
-			this._onTokenFailed.fire(this.wasTokenFailed);
-			this.wasTokenFailed = true;
+		this._register(userDAtASyncStoreService.onTokenFAiled(() => {
+			this.updAteAccount(undefined);
+			this._onTokenFAiled.fire(this.wAsTokenFAiled);
+			this.wAsTokenFAiled = true;
 		}));
-		this._register(userDataSyncStoreService.onTokenSucceed(() => this.wasTokenFailed = false));
+		this._register(userDAtASyncStoreService.onTokenSucceed(() => this.wAsTokenFAiled = fAlse));
 	}
 
-	async updateAccount(account: IUserDataSyncAccount | undefined): Promise<void> {
-		if (account && this._account ? account.token !== this._account.token || account.authenticationProviderId !== this._account.authenticationProviderId : account !== this._account) {
-			this._account = account;
-			if (this._account) {
-				this.userDataSyncStoreService.setAuthToken(this._account.token, this._account.authenticationProviderId);
+	Async updAteAccount(Account: IUserDAtASyncAccount | undefined): Promise<void> {
+		if (Account && this._Account ? Account.token !== this._Account.token || Account.AuthenticAtionProviderId !== this._Account.AuthenticAtionProviderId : Account !== this._Account) {
+			this._Account = Account;
+			if (this._Account) {
+				this.userDAtASyncStoreService.setAuthToken(this._Account.token, this._Account.AuthenticAtionProviderId);
 			}
-			this._onDidChangeAccount.fire(account);
+			this._onDidChAngeAccount.fire(Account);
 		}
 	}
 

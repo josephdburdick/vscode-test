@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
-const Mocha = require('mocha');
+const pAth = require('pAth');
+const MochA = require('mochA');
 const glob = require('glob');
 
-const suite = 'Integration CSS Extension Tests';
+const suite = 'IntegrAtion CSS Extension Tests';
 
 const options = {
 	ui: 'tdd',
-	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.platform !== 'win32'),
+	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.plAtform !== 'win32'),
 	timeout: 60000
 };
 
 if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
-	options.reporter = 'mocha-multi-reporters';
+	options.reporter = 'mochA-multi-reporters';
 	options.reporterOptions = {
-		reporterEnabled: 'spec, mocha-junit-reporter',
-		mochaJunitReporterReporterOptions: {
-			testsuitesTitle: `${suite} ${process.platform}`,
-			mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${process.arch}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)
+		reporterEnAbled: 'spec, mochA-junit-reporter',
+		mochAJunitReporterReporterOptions: {
+			testsuitesTitle: `${suite} ${process.plAtform}`,
+			mochAFile: pAth.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.plAtform}-${process.Arch}-${suite.toLowerCAse().replAce(/[^\w]/g, '-')}-results.xml`)
 		}
 	};
 }
 
-const mocha = new Mocha(options);
+const mochA = new MochA(options);
 
-glob.sync(__dirname + '/../out/test/**/*.test.js')
-	.forEach(file => mocha.addFile(file));
+glob.sync(__dirnAme + '/../out/test/**/*.test.js')
+	.forEAch(file => mochA.AddFile(file));
 
-mocha.run(failures => process.exit(failures ? -1 : 0));
+mochA.run(fAilures => process.exit(fAilures ? -1 : 0));

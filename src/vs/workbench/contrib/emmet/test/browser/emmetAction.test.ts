@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IGrammarContributions, ILanguageIdentifierResolver, EmmetEditorAction } from 'vs/workbench/contrib/emmet/browser/emmetActions';
+import { IGrAmmArContributions, ILAnguAgeIdentifierResolver, EmmetEditorAction } from 'vs/workbench/contrib/emmet/browser/emmetActions';
 import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import * as assert from 'assert';
-import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
+import * As Assert from 'Assert';
+import { LAnguAgeId, LAnguAgeIdentifier } from 'vs/editor/common/modes';
 
 //
-// To run the emmet tests only change .vscode/launch.json
+// To run the emmet tests only chAnge .vscode/lAunch.json
 // {
-// 	"name": "Stacks Tests",
+// 	"nAme": "StAcks Tests",
 // 	"type": "node",
-// 	"request": "launch",
-// 	"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-// 	"stopOnEntry": false,
-// 	"args": [
+// 	"request": "lAunch",
+// 	"progrAm": "${workspAceFolder}/node_modules/mochA/bin/_mochA",
+// 	"stopOnEntry": fAlse,
+// 	"Args": [
 // 		"--timeout",
 // 		"999999",
 // 		"--colors",
 // 		"-g",
-// 		"Stacks"   <<<--- Emmet
+// 		"StAcks"   <<<--- Emmet
 // 	],
-// Select the 'Stacks Tests' launch config and F5
+// Select the 'StAcks Tests' lAunch config And F5
 //
 
-class MockGrammarContributions implements IGrammarContributions {
-	private scopeName: string;
+clAss MockGrAmmArContributions implements IGrAmmArContributions {
+	privAte scopeNAme: string;
 
-	constructor(scopeName: string) {
-		this.scopeName = scopeName;
+	constructor(scopeNAme: string) {
+		this.scopeNAme = scopeNAme;
 	}
 
-	public getGrammar(mode: string): string {
-		return this.scopeName;
+	public getGrAmmAr(mode: string): string {
+		return this.scopeNAme;
 	}
 }
 
 suite('Emmet', () => {
 
-	test('Get language mode and parent mode for emmet', () => {
+	test('Get lAnguAge mode And pArent mode for emmet', () => {
 		withTestCodeEditor([], {}, (editor) => {
 
-			function testIsEnabled(mode: string, scopeName: string, expectedLanguage?: string, expectedParentLanguage?: string) {
-				const languageIdentifier = new LanguageIdentifier(mode, 73);
-				const languageIdentifierResolver: ILanguageIdentifierResolver = {
-					getLanguageIdentifier: (languageId: LanguageId) => {
-						if (languageId === 73) {
-							return languageIdentifier;
+			function testIsEnAbled(mode: string, scopeNAme: string, expectedLAnguAge?: string, expectedPArentLAnguAge?: string) {
+				const lAnguAgeIdentifier = new LAnguAgeIdentifier(mode, 73);
+				const lAnguAgeIdentifierResolver: ILAnguAgeIdentifierResolver = {
+					getLAnguAgeIdentifier: (lAnguAgeId: LAnguAgeId) => {
+						if (lAnguAgeId === 73) {
+							return lAnguAgeIdentifier;
 						}
 						throw new Error('Unexpected');
 					}
 				};
 				const model = editor.getModel();
 				if (!model) {
-					assert.fail('Editor model not found');
+					Assert.fAil('Editor model not found');
 				}
 
-				model.setMode(languageIdentifier);
-				let langOutput = EmmetEditorAction.getLanguage(languageIdentifierResolver, editor, new MockGrammarContributions(scopeName));
-				if (!langOutput) {
-					assert.fail('langOutput not found');
+				model.setMode(lAnguAgeIdentifier);
+				let lAngOutput = EmmetEditorAction.getLAnguAge(lAnguAgeIdentifierResolver, editor, new MockGrAmmArContributions(scopeNAme));
+				if (!lAngOutput) {
+					Assert.fAil('lAngOutput not found');
 				}
 
-				assert.equal(langOutput.language, expectedLanguage);
-				assert.equal(langOutput.parentMode, expectedParentLanguage);
+				Assert.equAl(lAngOutput.lAnguAge, expectedLAnguAge);
+				Assert.equAl(lAngOutput.pArentMode, expectedPArentLAnguAge);
 			}
 
-			// syntaxes mapped using the scope name of the grammar
-			testIsEnabled('markdown', 'text.html.markdown', 'markdown', 'html');
-			testIsEnabled('handlebars', 'text.html.handlebars', 'handlebars', 'html');
-			testIsEnabled('nunjucks', 'text.html.nunjucks', 'nunjucks', 'html');
-			testIsEnabled('laravel-blade', 'text.html.php.laravel-blade', 'laravel-blade', 'html');
+			// syntAxes mApped using the scope nAme of the grAmmAr
+			testIsEnAbled('mArkdown', 'text.html.mArkdown', 'mArkdown', 'html');
+			testIsEnAbled('hAndlebArs', 'text.html.hAndlebArs', 'hAndlebArs', 'html');
+			testIsEnAbled('nunjucks', 'text.html.nunjucks', 'nunjucks', 'html');
+			testIsEnAbled('lArAvel-blAde', 'text.html.php.lArAvel-blAde', 'lArAvel-blAde', 'html');
 
-			// languages that have different Language Id and scopeName
-			// testIsEnabled('razor', 'text.html.cshtml', 'razor', 'html');
-			// testIsEnabled('HTML (Eex)', 'text.html.elixir', 'boo', 'html');
+			// lAnguAges thAt hAve different LAnguAge Id And scopeNAme
+			// testIsEnAbled('rAzor', 'text.html.cshtml', 'rAzor', 'html');
+			// testIsEnAbled('HTML (Eex)', 'text.html.elixir', 'boo', 'html');
 
 		});
 	});

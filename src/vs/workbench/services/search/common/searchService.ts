@@ -1,132 +1,132 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { canceled } from 'vs/base/common/errors';
-import { Disposable, IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
-import { Schemas } from 'vs/base/common/network';
-import { StopWatch } from 'vs/base/common/stopwatch';
-import { URI as uri } from 'vs/base/common/uri';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { cAnceled } from 'vs/bAse/common/errors';
+import { DisposAble, IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { SchemAs } from 'vs/bAse/common/network';
+import { StopWAtch } from 'vs/bAse/common/stopwAtch';
+import { URI As uri } from 'vs/bAse/common/uri';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ILogService } from 'vs/platform/log/common/log';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { deserializeSearchError, FileMatch, ICachedSearchStats, IFileMatch, IFileQuery, IFileSearchStats, IFolderQuery, IProgressMessage, ISearchComplete, ISearchEngineStats, ISearchProgressItem, ISearchQuery, ISearchResultProvider, ISearchService, ITextQuery, pathIncludedInQuery, QueryType, SearchError, SearchErrorCode, SearchProviderType, isFileMatch, isProgressMessage } from 'vs/workbench/services/search/common/search';
-import { addContextToEditorMatches, editorMatchesToTextSearchResults } from 'vs/workbench/services/search/common/searchHelpers';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { DeferredPromise } from 'vs/base/test/common/utils';
+import { deseriAlizeSeArchError, FileMAtch, ICAchedSeArchStAts, IFileMAtch, IFileQuery, IFileSeArchStAts, IFolderQuery, IProgressMessAge, ISeArchComplete, ISeArchEngineStAts, ISeArchProgressItem, ISeArchQuery, ISeArchResultProvider, ISeArchService, ITextQuery, pAthIncludedInQuery, QueryType, SeArchError, SeArchErrorCode, SeArchProviderType, isFileMAtch, isProgressMessAge } from 'vs/workbench/services/seArch/common/seArch';
+import { AddContextToEditorMAtches, editorMAtchesToTextSeArchResults } from 'vs/workbench/services/seArch/common/seArchHelpers';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { DeferredPromise } from 'vs/bAse/test/common/utils';
 
-export class SearchService extends Disposable implements ISearchService {
+export clAss SeArchService extends DisposAble implements ISeArchService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	protected diskSearch: ISearchResultProvider | null = null;
-	private readonly fileSearchProviders = new Map<string, ISearchResultProvider>();
-	private readonly textSearchProviders = new Map<string, ISearchResultProvider>();
+	protected diskSeArch: ISeArchResultProvider | null = null;
+	privAte reAdonly fileSeArchProviders = new MAp<string, ISeArchResultProvider>();
+	privAte reAdonly textSeArchProviders = new MAp<string, ISeArchResultProvider>();
 
-	private deferredFileSearchesByScheme = new Map<string, DeferredPromise<ISearchResultProvider>>();
-	private deferredTextSearchesByScheme = new Map<string, DeferredPromise<ISearchResultProvider>>();
+	privAte deferredFileSeArchesByScheme = new MAp<string, DeferredPromise<ISeArchResultProvider>>();
+	privAte deferredTextSeArchesByScheme = new MAp<string, DeferredPromise<ISeArchResultProvider>>();
 
 	constructor(
-		private readonly modelService: IModelService,
-		private readonly editorService: IEditorService,
-		private readonly telemetryService: ITelemetryService,
-		private readonly logService: ILogService,
-		private readonly extensionService: IExtensionService,
-		private readonly fileService: IFileService
+		privAte reAdonly modelService: IModelService,
+		privAte reAdonly editorService: IEditorService,
+		privAte reAdonly telemetryService: ITelemetryService,
+		privAte reAdonly logService: ILogService,
+		privAte reAdonly extensionService: IExtensionService,
+		privAte reAdonly fileService: IFileService
 	) {
 		super();
 	}
 
-	registerSearchResultProvider(scheme: string, type: SearchProviderType, provider: ISearchResultProvider): IDisposable {
-		let list: Map<string, ISearchResultProvider>;
-		let deferredMap: Map<string, DeferredPromise<ISearchResultProvider>>;
-		if (type === SearchProviderType.file) {
-			list = this.fileSearchProviders;
-			deferredMap = this.deferredFileSearchesByScheme;
-		} else if (type === SearchProviderType.text) {
-			list = this.textSearchProviders;
-			deferredMap = this.deferredTextSearchesByScheme;
+	registerSeArchResultProvider(scheme: string, type: SeArchProviderType, provider: ISeArchResultProvider): IDisposAble {
+		let list: MAp<string, ISeArchResultProvider>;
+		let deferredMAp: MAp<string, DeferredPromise<ISeArchResultProvider>>;
+		if (type === SeArchProviderType.file) {
+			list = this.fileSeArchProviders;
+			deferredMAp = this.deferredFileSeArchesByScheme;
+		} else if (type === SeArchProviderType.text) {
+			list = this.textSeArchProviders;
+			deferredMAp = this.deferredTextSeArchesByScheme;
 		} else {
-			throw new Error('Unknown SearchProviderType');
+			throw new Error('Unknown SeArchProviderType');
 		}
 
 		list.set(scheme, provider);
 
-		if (deferredMap.has(scheme)) {
-			deferredMap.get(scheme)!.complete(provider);
-			deferredMap.delete(scheme);
+		if (deferredMAp.hAs(scheme)) {
+			deferredMAp.get(scheme)!.complete(provider);
+			deferredMAp.delete(scheme);
 		}
 
-		return toDisposable(() => {
+		return toDisposAble(() => {
 			list.delete(scheme);
 		});
 	}
 
-	async textSearch(query: ITextQuery, token?: CancellationToken, onProgress?: (item: ISearchProgressItem) => void): Promise<ISearchComplete> {
-		// Get local results from dirty/untitled
-		const localResults = this.getLocalResults(query);
+	Async textSeArch(query: ITextQuery, token?: CAncellAtionToken, onProgress?: (item: ISeArchProgressItem) => void): Promise<ISeArchComplete> {
+		// Get locAl results from dirty/untitled
+		const locAlResults = this.getLocAlResults(query);
 
 		if (onProgress) {
-			arrays.coalesce([...localResults.results.values()]).forEach(onProgress);
+			ArrAys.coAlesce([...locAlResults.results.vAlues()]).forEAch(onProgress);
 		}
 
-		const onProviderProgress = (progress: ISearchProgressItem) => {
-			if (isFileMatch(progress)) {
-				// Match
-				if (!localResults.results.has(progress.resource) && onProgress) { // don't override local results
+		const onProviderProgress = (progress: ISeArchProgressItem) => {
+			if (isFileMAtch(progress)) {
+				// MAtch
+				if (!locAlResults.results.hAs(progress.resource) && onProgress) { // don't override locAl results
 					onProgress(progress);
 				}
 			} else if (onProgress) {
 				// Progress
-				onProgress(<IProgressMessage>progress);
+				onProgress(<IProgressMessAge>progress);
 			}
 
-			if (isProgressMessage(progress)) {
-				this.logService.debug('SearchService#search', progress.message);
+			if (isProgressMessAge(progress)) {
+				this.logService.debug('SeArchService#seArch', progress.messAge);
 			}
 		};
 
-		const otherResults = await this.doSearch(query, token, onProviderProgress);
+		const otherResults = AwAit this.doSeArch(query, token, onProviderProgress);
 		return {
 			...otherResults,
 			...{
-				limitHit: otherResults.limitHit || localResults.limitHit
+				limitHit: otherResults.limitHit || locAlResults.limitHit
 			},
-			results: [...otherResults.results, ...arrays.coalesce([...localResults.results.values()])]
+			results: [...otherResults.results, ...ArrAys.coAlesce([...locAlResults.results.vAlues()])]
 		};
 	}
 
-	fileSearch(query: IFileQuery, token?: CancellationToken): Promise<ISearchComplete> {
-		return this.doSearch(query, token);
+	fileSeArch(query: IFileQuery, token?: CAncellAtionToken): Promise<ISeArchComplete> {
+		return this.doSeArch(query, token);
 	}
 
-	private doSearch(query: ISearchQuery, token?: CancellationToken, onProgress?: (item: ISearchProgressItem) => void): Promise<ISearchComplete> {
-		this.logService.trace('SearchService#search', JSON.stringify(query));
+	privAte doSeArch(query: ISeArchQuery, token?: CAncellAtionToken, onProgress?: (item: ISeArchProgressItem) => void): Promise<ISeArchComplete> {
+		this.logService.trAce('SeArchService#seArch', JSON.stringify(query));
 
 		const schemesInQuery = this.getSchemesInQuery(query);
 
-		const providerActivations: Promise<any>[] = [Promise.resolve(null)];
-		schemesInQuery.forEach(scheme => providerActivations.push(this.extensionService.activateByEvent(`onSearch:${scheme}`)));
-		providerActivations.push(this.extensionService.activateByEvent('onSearch:file'));
+		const providerActivAtions: Promise<Any>[] = [Promise.resolve(null)];
+		schemesInQuery.forEAch(scheme => providerActivAtions.push(this.extensionService.ActivAteByEvent(`onSeArch:${scheme}`)));
+		providerActivAtions.push(this.extensionService.ActivAteByEvent('onSeArch:file'));
 
-		const providerPromise = (async () => {
-			await Promise.all(providerActivations);
-			this.extensionService.whenInstalledExtensionsRegistered();
+		const providerPromise = (Async () => {
+			AwAit Promise.All(providerActivAtions);
+			this.extensionService.whenInstAlledExtensionsRegistered();
 
-			// Cancel faster if search was canceled while waiting for extensions
-			if (token && token.isCancellationRequested) {
-				return Promise.reject(canceled());
+			// CAncel fAster if seArch wAs cAnceled while wAiting for extensions
+			if (token && token.isCAncellAtionRequested) {
+				return Promise.reject(cAnceled());
 			}
 
-			const progressCallback = (item: ISearchProgressItem) => {
-				if (token && token.isCancellationRequested) {
+			const progressCAllbAck = (item: ISeArchProgressItem) => {
+				if (token && token.isCAncellAtionRequested) {
 					return;
 				}
 
@@ -135,29 +135,29 @@ export class SearchService extends Disposable implements ISearchService {
 				}
 			};
 
-			const exists = await Promise.all(query.folderQueries.map(query => this.fileService.exists(query.folder)));
+			const exists = AwAit Promise.All(query.folderQueries.mAp(query => this.fileService.exists(query.folder)));
 			query.folderQueries = query.folderQueries.filter((_, i) => exists[i]);
 
-			let completes = await this.searchWithProviders(query, progressCallback, token);
-			completes = arrays.coalesce(completes);
+			let completes = AwAit this.seArchWithProviders(query, progressCAllbAck, token);
+			completes = ArrAys.coAlesce(completes);
 			if (!completes.length) {
 				return {
-					limitHit: false,
+					limitHit: fAlse,
 					results: []
 				};
 			}
 
-			return <ISearchComplete>{
+			return <ISeArchComplete>{
 				limitHit: completes[0] && completes[0].limitHit,
-				stats: completes[0].stats,
-				results: arrays.flatten(completes.map((c: ISearchComplete) => c.results))
+				stAts: completes[0].stAts,
+				results: ArrAys.flAtten(completes.mAp((c: ISeArchComplete) => c.results))
 			};
 		})();
 
 		return new Promise((resolve, reject) => {
 			if (token) {
-				token.onCancellationRequested(() => {
-					reject(canceled());
+				token.onCAncellAtionRequested(() => {
+					reject(cAnceled());
 				});
 			}
 
@@ -165,113 +165,113 @@ export class SearchService extends Disposable implements ISearchService {
 		});
 	}
 
-	private getSchemesInQuery(query: ISearchQuery): Set<string> {
+	privAte getSchemesInQuery(query: ISeArchQuery): Set<string> {
 		const schemes = new Set<string>();
 		if (query.folderQueries) {
-			query.folderQueries.forEach(fq => schemes.add(fq.folder.scheme));
+			query.folderQueries.forEAch(fq => schemes.Add(fq.folder.scheme));
 		}
 
-		if (query.extraFileResources) {
-			query.extraFileResources.forEach(extraFile => schemes.add(extraFile.scheme));
+		if (query.extrAFileResources) {
+			query.extrAFileResources.forEAch(extrAFile => schemes.Add(extrAFile.scheme));
 		}
 
 		return schemes;
 	}
 
-	private async waitForProvider(queryType: QueryType, scheme: string): Promise<ISearchResultProvider> {
-		const deferredMap: Map<string, DeferredPromise<ISearchResultProvider>> = queryType === QueryType.File ?
-			this.deferredFileSearchesByScheme :
-			this.deferredTextSearchesByScheme;
+	privAte Async wAitForProvider(queryType: QueryType, scheme: string): Promise<ISeArchResultProvider> {
+		const deferredMAp: MAp<string, DeferredPromise<ISeArchResultProvider>> = queryType === QueryType.File ?
+			this.deferredFileSeArchesByScheme :
+			this.deferredTextSeArchesByScheme;
 
-		if (deferredMap.has(scheme)) {
-			return deferredMap.get(scheme)!.p;
+		if (deferredMAp.hAs(scheme)) {
+			return deferredMAp.get(scheme)!.p;
 		} else {
-			const deferred = new DeferredPromise<ISearchResultProvider>();
-			deferredMap.set(scheme, deferred);
+			const deferred = new DeferredPromise<ISeArchResultProvider>();
+			deferredMAp.set(scheme, deferred);
 			return deferred.p;
 		}
 	}
 
-	private async searchWithProviders(query: ISearchQuery, onProviderProgress: (progress: ISearchProgressItem) => void, token?: CancellationToken) {
-		const e2eSW = StopWatch.create(false);
+	privAte Async seArchWithProviders(query: ISeArchQuery, onProviderProgress: (progress: ISeArchProgressItem) => void, token?: CAncellAtionToken) {
+		const e2eSW = StopWAtch.creAte(fAlse);
 
-		const diskSearchQueries: IFolderQuery[] = [];
-		const searchPs: Promise<ISearchComplete>[] = [];
+		const diskSeArchQueries: IFolderQuery[] = [];
+		const seArchPs: Promise<ISeArchComplete>[] = [];
 
 		const fqs = this.groupFolderQueriesByScheme(query);
-		await Promise.all([...fqs.keys()].map(async scheme => {
+		AwAit Promise.All([...fqs.keys()].mAp(Async scheme => {
 			const schemeFQs = fqs.get(scheme)!;
 			let provider = query.type === QueryType.File ?
-				this.fileSearchProviders.get(scheme) :
-				this.textSearchProviders.get(scheme);
+				this.fileSeArchProviders.get(scheme) :
+				this.textSeArchProviders.get(scheme);
 
-			if (!provider && scheme === Schemas.file) {
-				diskSearchQueries.push(...schemeFQs);
+			if (!provider && scheme === SchemAs.file) {
+				diskSeArchQueries.push(...schemeFQs);
 			} else {
 				if (!provider) {
-					if (scheme !== Schemas.vscodeRemote) {
-						console.warn(`No search provider registered for scheme: ${scheme}`);
+					if (scheme !== SchemAs.vscodeRemote) {
+						console.wArn(`No seArch provider registered for scheme: ${scheme}`);
 						return;
 					}
 
-					console.warn(`No search provider registered for scheme: ${scheme}, waiting`);
-					provider = await this.waitForProvider(query.type, scheme);
+					console.wArn(`No seArch provider registered for scheme: ${scheme}, wAiting`);
+					provider = AwAit this.wAitForProvider(query.type, scheme);
 				}
 
-				const oneSchemeQuery: ISearchQuery = {
+				const oneSchemeQuery: ISeArchQuery = {
 					...query,
 					...{
 						folderQueries: schemeFQs
 					}
 				};
 
-				searchPs.push(query.type === QueryType.File ?
-					provider.fileSearch(<IFileQuery>oneSchemeQuery, token) :
-					provider.textSearch(<ITextQuery>oneSchemeQuery, onProviderProgress, token));
+				seArchPs.push(query.type === QueryType.File ?
+					provider.fileSeArch(<IFileQuery>oneSchemeQuery, token) :
+					provider.textSeArch(<ITextQuery>oneSchemeQuery, onProviderProgress, token));
 			}
 		}));
 
-		const diskSearchExtraFileResources = query.extraFileResources && query.extraFileResources.filter(res => res.scheme === Schemas.file);
+		const diskSeArchExtrAFileResources = query.extrAFileResources && query.extrAFileResources.filter(res => res.scheme === SchemAs.file);
 
-		if (diskSearchQueries.length || diskSearchExtraFileResources) {
-			const diskSearchQuery: ISearchQuery = {
+		if (diskSeArchQueries.length || diskSeArchExtrAFileResources) {
+			const diskSeArchQuery: ISeArchQuery = {
 				...query,
 				...{
-					folderQueries: diskSearchQueries
+					folderQueries: diskSeArchQueries
 				},
-				extraFileResources: diskSearchExtraFileResources
+				extrAFileResources: diskSeArchExtrAFileResources
 			};
 
 
-			if (this.diskSearch) {
-				searchPs.push(diskSearchQuery.type === QueryType.File ?
-					this.diskSearch.fileSearch(diskSearchQuery, token) :
-					this.diskSearch.textSearch(diskSearchQuery, onProviderProgress, token));
+			if (this.diskSeArch) {
+				seArchPs.push(diskSeArchQuery.type === QueryType.File ?
+					this.diskSeArch.fileSeArch(diskSeArchQuery, token) :
+					this.diskSeArch.textSeArch(diskSeArchQuery, onProviderProgress, token));
 			}
 		}
 
-		return Promise.all(searchPs).then(completes => {
-			const endToEndTime = e2eSW.elapsed();
-			this.logService.trace(`SearchService#search: ${endToEndTime}ms`);
-			completes.forEach(complete => {
+		return Promise.All(seArchPs).then(completes => {
+			const endToEndTime = e2eSW.elApsed();
+			this.logService.trAce(`SeArchService#seArch: ${endToEndTime}ms`);
+			completes.forEAch(complete => {
 				this.sendTelemetry(query, endToEndTime, complete);
 			});
 			return completes;
 		}, err => {
-			const endToEndTime = e2eSW.elapsed();
-			this.logService.trace(`SearchService#search: ${endToEndTime}ms`);
-			const searchError = deserializeSearchError(err);
-			this.logService.trace(`SearchService#searchError: ${searchError.message}`);
-			this.sendTelemetry(query, endToEndTime, undefined, searchError);
+			const endToEndTime = e2eSW.elApsed();
+			this.logService.trAce(`SeArchService#seArch: ${endToEndTime}ms`);
+			const seArchError = deseriAlizeSeArchError(err);
+			this.logService.trAce(`SeArchService#seArchError: ${seArchError.messAge}`);
+			this.sendTelemetry(query, endToEndTime, undefined, seArchError);
 
-			throw searchError;
+			throw seArchError;
 		});
 	}
 
-	private groupFolderQueriesByScheme(query: ISearchQuery): Map<string, IFolderQuery[]> {
-		const queries = new Map<string, IFolderQuery[]>();
+	privAte groupFolderQueriesByScheme(query: ISeArchQuery): MAp<string, IFolderQuery[]> {
+		const queries = new MAp<string, IFolderQuery[]>();
 
-		query.folderQueries.forEach(fq => {
+		query.folderQueries.forEAch(fq => {
 			const schemeFQs = queries.get(fq.folder.scheme) || [];
 			schemeFQs.push(fq);
 
@@ -281,136 +281,136 @@ export class SearchService extends Disposable implements ISearchService {
 		return queries;
 	}
 
-	private sendTelemetry(query: ISearchQuery, endToEndTime: number, complete?: ISearchComplete, err?: SearchError): void {
-		const fileSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme === Schemas.file);
-		const otherSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme !== Schemas.file);
-		const scheme = fileSchemeOnly ? Schemas.file :
+	privAte sendTelemetry(query: ISeArchQuery, endToEndTime: number, complete?: ISeArchComplete, err?: SeArchError): void {
+		const fileSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme === SchemAs.file);
+		const otherSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme !== SchemAs.file);
+		const scheme = fileSchemeOnly ? SchemAs.file :
 			otherSchemeOnly ? 'other' :
 				'mixed';
 
-		if (query.type === QueryType.File && complete && complete.stats) {
-			const fileSearchStats = complete.stats as IFileSearchStats;
-			if (fileSearchStats.fromCache) {
-				const cacheStats: ICachedSearchStats = fileSearchStats.detailStats as ICachedSearchStats;
+		if (query.type === QueryType.File && complete && complete.stAts) {
+			const fileSeArchStAts = complete.stAts As IFileSeArchStAts;
+			if (fileSeArchStAts.fromCAche) {
+				const cAcheStAts: ICAchedSeArchStAts = fileSeArchStAts.detAilStAts As ICAchedSeArchStAts;
 
-				type CachedSearchCompleteClassifcation = {
-					reason?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-					resultCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					workspaceFolderCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					type: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-					endToEndTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					sortingTime?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					cacheWasResolved: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-					cacheLookupTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					cacheFilterTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					cacheEntryCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					scheme: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
+				type CAchedSeArchCompleteClAssifcAtion = {
+					reAson?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+					resultCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					workspAceFolderCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					type: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+					endToEndTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					sortingTime?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					cAcheWAsResolved: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+					cAcheLookupTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					cAcheFilterTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					cAcheEntryCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					scheme: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
 				};
-				type CachedSearchCompleteEvent = {
-					reason?: string;
+				type CAchedSeArchCompleteEvent = {
+					reAson?: string;
 					resultCount: number;
-					workspaceFolderCount: number;
-					type: 'fileSearchProvider' | 'searchProcess';
+					workspAceFolderCount: number;
+					type: 'fileSeArchProvider' | 'seArchProcess';
 					endToEndTime: number;
 					sortingTime?: number;
-					cacheWasResolved: boolean;
-					cacheLookupTime: number;
-					cacheFilterTime: number;
-					cacheEntryCount: number;
+					cAcheWAsResolved: booleAn;
+					cAcheLookupTime: number;
+					cAcheFilterTime: number;
+					cAcheEntryCount: number;
 					scheme: string;
 				};
-				this.telemetryService.publicLog2<CachedSearchCompleteEvent, CachedSearchCompleteClassifcation>('cachedSearchComplete', {
-					reason: query._reason,
-					resultCount: fileSearchStats.resultCount,
-					workspaceFolderCount: query.folderQueries.length,
-					type: fileSearchStats.type,
+				this.telemetryService.publicLog2<CAchedSeArchCompleteEvent, CAchedSeArchCompleteClAssifcAtion>('cAchedSeArchComplete', {
+					reAson: query._reAson,
+					resultCount: fileSeArchStAts.resultCount,
+					workspAceFolderCount: query.folderQueries.length,
+					type: fileSeArchStAts.type,
 					endToEndTime: endToEndTime,
-					sortingTime: fileSearchStats.sortingTime,
-					cacheWasResolved: cacheStats.cacheWasResolved,
-					cacheLookupTime: cacheStats.cacheLookupTime,
-					cacheFilterTime: cacheStats.cacheFilterTime,
-					cacheEntryCount: cacheStats.cacheEntryCount,
+					sortingTime: fileSeArchStAts.sortingTime,
+					cAcheWAsResolved: cAcheStAts.cAcheWAsResolved,
+					cAcheLookupTime: cAcheStAts.cAcheLookupTime,
+					cAcheFilterTime: cAcheStAts.cAcheFilterTime,
+					cAcheEntryCount: cAcheStAts.cAcheEntryCount,
 					scheme
 				});
 			} else {
-				const searchEngineStats: ISearchEngineStats = fileSearchStats.detailStats as ISearchEngineStats;
+				const seArchEngineStAts: ISeArchEngineStAts = fileSeArchStAts.detAilStAts As ISeArchEngineStAts;
 
-				type SearchCompleteClassification = {
-					reason?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-					resultCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					workspaceFolderCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					type: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-					endToEndTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					sortingTime?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					fileWalkTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					directoriesWalked: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					filesWalked: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					cmdTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					cmdResultCount?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-					scheme: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
+				type SeArchCompleteClAssificAtion = {
+					reAson?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+					resultCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					workspAceFolderCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					type: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+					endToEndTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					sortingTime?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					fileWAlkTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					directoriesWAlked: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					filesWAlked: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					cmdTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					cmdResultCount?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+					scheme: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
 				};
-				type SearchCompleteEvent = {
-					reason?: string;
+				type SeArchCompleteEvent = {
+					reAson?: string;
 					resultCount: number;
-					workspaceFolderCount: number;
-					type: 'fileSearchProvider' | 'searchProcess';
+					workspAceFolderCount: number;
+					type: 'fileSeArchProvider' | 'seArchProcess';
 					endToEndTime: number;
 					sortingTime?: number;
-					fileWalkTime: number
-					directoriesWalked: number;
-					filesWalked: number;
+					fileWAlkTime: number
+					directoriesWAlked: number;
+					filesWAlked: number;
 					cmdTime: number;
 					cmdResultCount?: number;
 					scheme: string;
 
 				};
 
-				this.telemetryService.publicLog2<SearchCompleteEvent, SearchCompleteClassification>('searchComplete', {
-					reason: query._reason,
-					resultCount: fileSearchStats.resultCount,
-					workspaceFolderCount: query.folderQueries.length,
-					type: fileSearchStats.type,
+				this.telemetryService.publicLog2<SeArchCompleteEvent, SeArchCompleteClAssificAtion>('seArchComplete', {
+					reAson: query._reAson,
+					resultCount: fileSeArchStAts.resultCount,
+					workspAceFolderCount: query.folderQueries.length,
+					type: fileSeArchStAts.type,
 					endToEndTime: endToEndTime,
-					sortingTime: fileSearchStats.sortingTime,
-					fileWalkTime: searchEngineStats.fileWalkTime,
-					directoriesWalked: searchEngineStats.directoriesWalked,
-					filesWalked: searchEngineStats.filesWalked,
-					cmdTime: searchEngineStats.cmdTime,
-					cmdResultCount: searchEngineStats.cmdResultCount,
+					sortingTime: fileSeArchStAts.sortingTime,
+					fileWAlkTime: seArchEngineStAts.fileWAlkTime,
+					directoriesWAlked: seArchEngineStAts.directoriesWAlked,
+					filesWAlked: seArchEngineStAts.filesWAlked,
+					cmdTime: seArchEngineStAts.cmdTime,
+					cmdResultCount: seArchEngineStAts.cmdResultCount,
 					scheme
 				});
 			}
 		} else if (query.type === QueryType.Text) {
 			let errorType: string | undefined;
 			if (err) {
-				errorType = err.code === SearchErrorCode.regexParseError ? 'regex' :
-					err.code === SearchErrorCode.unknownEncoding ? 'encoding' :
-						err.code === SearchErrorCode.globParseError ? 'glob' :
-							err.code === SearchErrorCode.invalidLiteral ? 'literal' :
-								err.code === SearchErrorCode.other ? 'other' :
-									err.code === SearchErrorCode.canceled ? 'canceled' :
+				errorType = err.code === SeArchErrorCode.regexPArseError ? 'regex' :
+					err.code === SeArchErrorCode.unknownEncoding ? 'encoding' :
+						err.code === SeArchErrorCode.globPArseError ? 'glob' :
+							err.code === SeArchErrorCode.invAlidLiterAl ? 'literAl' :
+								err.code === SeArchErrorCode.other ? 'other' :
+									err.code === SeArchErrorCode.cAnceled ? 'cAnceled' :
 										'unknown';
 			}
 
-			type TextSearchCompleteClassification = {
-				reason?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-				workspaceFolderCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-				endToEndTime: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-				scheme: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-				error?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
-				usePCRE2: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
+			type TextSeArchCompleteClAssificAtion = {
+				reAson?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+				workspAceFolderCount: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+				endToEndTime: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+				scheme: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+				error?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
+				usePCRE2: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
 			};
-			type TextSearchCompleteEvent = {
-				reason?: string;
-				workspaceFolderCount: number;
+			type TextSeArchCompleteEvent = {
+				reAson?: string;
+				workspAceFolderCount: number;
 				endToEndTime: number;
 				scheme: string;
 				error?: string;
-				usePCRE2: boolean;
+				usePCRE2: booleAn;
 			};
-			this.telemetryService.publicLog2<TextSearchCompleteEvent, TextSearchCompleteClassification>('textSearchComplete', {
-				reason: query._reason,
-				workspaceFolderCount: query.folderQueries.length,
+			this.telemetryService.publicLog2<TextSeArchCompleteEvent, TextSeArchCompleteClAssificAtion>('textSeArchComplete', {
+				reAson: query._reAson,
+				workspAceFolderCount: query.folderQueries.length,
 				endToEndTime: endToEndTime,
 				scheme,
 				error: errorType,
@@ -419,13 +419,13 @@ export class SearchService extends Disposable implements ISearchService {
 		}
 	}
 
-	private getLocalResults(query: ITextQuery): { results: ResourceMap<IFileMatch | null>; limitHit: boolean } {
-		const localResults = new ResourceMap<IFileMatch | null>();
-		let limitHit = false;
+	privAte getLocAlResults(query: ITextQuery): { results: ResourceMAp<IFileMAtch | null>; limitHit: booleAn } {
+		const locAlResults = new ResourceMAp<IFileMAtch | null>();
+		let limitHit = fAlse;
 
 		if (query.type === QueryType.Text) {
 			const models = this.modelService.getModels();
-			models.forEach((model) => {
+			models.forEAch((model) => {
 				const resource = model.uri;
 				if (!resource) {
 					return;
@@ -435,73 +435,73 @@ export class SearchService extends Disposable implements ISearchService {
 					return;
 				}
 
-				// Skip files that are not opened as text file
+				// Skip files thAt Are not opened As text file
 				if (!this.editorService.isOpen({ resource })) {
 					return;
 				}
 
-				// Skip search results
-				if (model.getModeId() === 'search-result' && !(query.includePattern && query.includePattern['**/*.code-search'])) {
-					// TODO: untitled search editors will be excluded from search even when include *.code-search is specified
+				// Skip seArch results
+				if (model.getModeId() === 'seArch-result' && !(query.includePAttern && query.includePAttern['**/*.code-seArch'])) {
+					// TODO: untitled seArch editors will be excluded from seArch even when include *.code-seArch is specified
 					return;
 				}
 
-				// Block walkthrough, webview, etc.
-				if (resource.scheme !== Schemas.untitled && !this.fileService.canHandleResource(resource)) {
+				// Block wAlkthrough, webview, etc.
+				if (resource.scheme !== SchemAs.untitled && !this.fileService.cAnHAndleResource(resource)) {
 					return;
 				}
 
-				// Exclude files from the git FileSystemProvider, e.g. to prevent open staged files from showing in search results
+				// Exclude files from the git FileSystemProvider, e.g. to prevent open stAged files from showing in seArch results
 				if (resource.scheme === 'git') {
 					return;
 				}
 
-				if (!this.matches(resource, query)) {
+				if (!this.mAtches(resource, query)) {
 					return; // respect user filters
 				}
 
-				// Use editor API to find matches
-				const askMax = typeof query.maxResults === 'number' ? query.maxResults + 1 : undefined;
-				let matches = model.findMatches(query.contentPattern.pattern, false, !!query.contentPattern.isRegExp, !!query.contentPattern.isCaseSensitive, query.contentPattern.isWordMatch ? query.contentPattern.wordSeparators! : null, false, askMax);
-				if (matches.length) {
-					if (askMax && matches.length >= askMax) {
+				// Use editor API to find mAtches
+				const AskMAx = typeof query.mAxResults === 'number' ? query.mAxResults + 1 : undefined;
+				let mAtches = model.findMAtches(query.contentPAttern.pAttern, fAlse, !!query.contentPAttern.isRegExp, !!query.contentPAttern.isCAseSensitive, query.contentPAttern.isWordMAtch ? query.contentPAttern.wordSepArAtors! : null, fAlse, AskMAx);
+				if (mAtches.length) {
+					if (AskMAx && mAtches.length >= AskMAx) {
 						limitHit = true;
-						matches = matches.slice(0, askMax - 1);
+						mAtches = mAtches.slice(0, AskMAx - 1);
 					}
 
-					const fileMatch = new FileMatch(resource);
-					localResults.set(resource, fileMatch);
+					const fileMAtch = new FileMAtch(resource);
+					locAlResults.set(resource, fileMAtch);
 
-					const textSearchResults = editorMatchesToTextSearchResults(matches, model, query.previewOptions);
-					fileMatch.results = addContextToEditorMatches(textSearchResults, model, query);
+					const textSeArchResults = editorMAtchesToTextSeArchResults(mAtches, model, query.previewOptions);
+					fileMAtch.results = AddContextToEditorMAtches(textSeArchResults, model, query);
 				} else {
-					localResults.set(resource, null);
+					locAlResults.set(resource, null);
 				}
 			});
 		}
 
 		return {
-			results: localResults,
+			results: locAlResults,
 			limitHit
 		};
 	}
 
-	private matches(resource: uri, query: ITextQuery): boolean {
-		return pathIncludedInQuery(query, resource.fsPath);
+	privAte mAtches(resource: uri, query: ITextQuery): booleAn {
+		return pAthIncludedInQuery(query, resource.fsPAth);
 	}
 
-	clearCache(cacheKey: string): Promise<void> {
-		const clearPs = [
-			this.diskSearch,
-			...Array.from(this.fileSearchProviders.values())
-		].map(provider => provider && provider.clearCache(cacheKey));
+	cleArCAche(cAcheKey: string): Promise<void> {
+		const cleArPs = [
+			this.diskSeArch,
+			...ArrAy.from(this.fileSeArchProviders.vAlues())
+		].mAp(provider => provider && provider.cleArCAche(cAcheKey));
 
-		return Promise.all(clearPs)
+		return Promise.All(cleArPs)
 			.then(() => { });
 	}
 }
 
-export class RemoteSearchService extends SearchService {
+export clAss RemoteSeArchService extends SeArchService {
 	constructor(
 		@IModelService modelService: IModelService,
 		@IEditorService editorService: IEditorService,
@@ -514,4 +514,4 @@ export class RemoteSearchService extends SearchService {
 	}
 }
 
-registerSingleton(ISearchService, RemoteSearchService, true);
+registerSingleton(ISeArchService, RemoteSeArchService, true);

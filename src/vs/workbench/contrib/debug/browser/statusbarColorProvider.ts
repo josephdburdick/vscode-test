@@ -1,98 +1,98 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IThemeService, Themable } from 'vs/platform/theme/common/themeService';
-import { localize } from 'vs/nls';
-import { registerColor, contrastBorder } from 'vs/platform/theme/common/colorRegistry';
+import { IThemeService, ThemAble } from 'vs/plAtform/theme/common/themeService';
+import { locAlize } from 'vs/nls';
+import { registerColor, contrAstBorder } from 'vs/plAtform/theme/common/colorRegistry';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
-import { IDebugService, State, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IWorkbenchLAyoutService, PArts } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IDebugService, StAte, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
 import { STATUS_BAR_NO_FOLDER_BACKGROUND, STATUS_BAR_NO_FOLDER_FOREGROUND, STATUS_BAR_BACKGROUND, STATUS_BAR_FOREGROUND, STATUS_BAR_NO_FOLDER_BORDER, STATUS_BAR_BORDER } from 'vs/workbench/common/theme';
-import { assertIsDefined } from 'vs/base/common/types';
-import { createStyleSheet } from 'vs/base/browser/dom';
+import { AssertIsDefined } from 'vs/bAse/common/types';
+import { creAteStyleSheet } from 'vs/bAse/browser/dom';
 
 // colors for theming
 
-export const STATUS_BAR_DEBUGGING_BACKGROUND = registerColor('statusBar.debuggingBackground', {
-	dark: '#CC6633',
+export const STATUS_BAR_DEBUGGING_BACKGROUND = registerColor('stAtusBAr.debuggingBAckground', {
+	dArk: '#CC6633',
 	light: '#CC6633',
 	hc: '#CC6633'
-}, localize('statusBarDebuggingBackground', "Status bar background color when a program is being debugged. The status bar is shown in the bottom of the window"));
+}, locAlize('stAtusBArDebuggingBAckground', "StAtus bAr bAckground color when A progrAm is being debugged. The stAtus bAr is shown in the bottom of the window"));
 
-export const STATUS_BAR_DEBUGGING_FOREGROUND = registerColor('statusBar.debuggingForeground', {
-	dark: STATUS_BAR_FOREGROUND,
+export const STATUS_BAR_DEBUGGING_FOREGROUND = registerColor('stAtusBAr.debuggingForeground', {
+	dArk: STATUS_BAR_FOREGROUND,
 	light: STATUS_BAR_FOREGROUND,
 	hc: STATUS_BAR_FOREGROUND
-}, localize('statusBarDebuggingForeground', "Status bar foreground color when a program is being debugged. The status bar is shown in the bottom of the window"));
+}, locAlize('stAtusBArDebuggingForeground', "StAtus bAr foreground color when A progrAm is being debugged. The stAtus bAr is shown in the bottom of the window"));
 
-export const STATUS_BAR_DEBUGGING_BORDER = registerColor('statusBar.debuggingBorder', {
-	dark: STATUS_BAR_BORDER,
+export const STATUS_BAR_DEBUGGING_BORDER = registerColor('stAtusBAr.debuggingBorder', {
+	dArk: STATUS_BAR_BORDER,
 	light: STATUS_BAR_BORDER,
 	hc: STATUS_BAR_BORDER
-}, localize('statusBarDebuggingBorder', "Status bar border color separating to the sidebar and editor when a program is being debugged. The status bar is shown in the bottom of the window"));
+}, locAlize('stAtusBArDebuggingBorder', "StAtus bAr border color sepArAting to the sidebAr And editor when A progrAm is being debugged. The stAtus bAr is shown in the bottom of the window"));
 
-export class StatusBarColorProvider extends Themable implements IWorkbenchContribution {
-	private styleElement: HTMLStyleElement | undefined;
+export clAss StAtusBArColorProvider extends ThemAble implements IWorkbenchContribution {
+	privAte styleElement: HTMLStyleElement | undefined;
 
 	constructor(
 		@IThemeService themeService: IThemeService,
-		@IDebugService private readonly debugService: IDebugService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService
 	) {
 		super(themeService);
 
 		this.registerListeners();
-		this.updateStyles();
+		this.updAteStyles();
 	}
 
-	private registerListeners(): void {
-		this._register(this.debugService.onDidChangeState(state => this.updateStyles()));
-		this._register(this.contextService.onDidChangeWorkbenchState(state => this.updateStyles()));
+	privAte registerListeners(): void {
+		this._register(this.debugService.onDidChAngeStAte(stAte => this.updAteStyles()));
+		this._register(this.contextService.onDidChAngeWorkbenchStAte(stAte => this.updAteStyles()));
 	}
 
-	protected updateStyles(): void {
-		super.updateStyles();
+	protected updAteStyles(): void {
+		super.updAteStyles();
 
-		const container = assertIsDefined(this.layoutService.getContainer(Parts.STATUSBAR_PART));
-		if (isStatusbarInDebugMode(this.debugService.state, this.debugService.getViewModel().focusedSession)) {
-			container.classList.add('debugging');
+		const contAiner = AssertIsDefined(this.lAyoutService.getContAiner(PArts.STATUSBAR_PART));
+		if (isStAtusbArInDebugMode(this.debugService.stAte, this.debugService.getViewModel().focusedSession)) {
+			contAiner.clAssList.Add('debugging');
 		} else {
-			container.classList.remove('debugging');
+			contAiner.clAssList.remove('debugging');
 		}
 
-		// Container Colors
-		const backgroundColor = this.getColor(this.getColorKey(STATUS_BAR_NO_FOLDER_BACKGROUND, STATUS_BAR_DEBUGGING_BACKGROUND, STATUS_BAR_BACKGROUND));
-		container.style.backgroundColor = backgroundColor || '';
-		container.style.color = this.getColor(this.getColorKey(STATUS_BAR_NO_FOLDER_FOREGROUND, STATUS_BAR_DEBUGGING_FOREGROUND, STATUS_BAR_FOREGROUND)) || '';
+		// ContAiner Colors
+		const bAckgroundColor = this.getColor(this.getColorKey(STATUS_BAR_NO_FOLDER_BACKGROUND, STATUS_BAR_DEBUGGING_BACKGROUND, STATUS_BAR_BACKGROUND));
+		contAiner.style.bAckgroundColor = bAckgroundColor || '';
+		contAiner.style.color = this.getColor(this.getColorKey(STATUS_BAR_NO_FOLDER_FOREGROUND, STATUS_BAR_DEBUGGING_FOREGROUND, STATUS_BAR_FOREGROUND)) || '';
 
 		// Border Color
-		const borderColor = this.getColor(this.getColorKey(STATUS_BAR_NO_FOLDER_BORDER, STATUS_BAR_DEBUGGING_BORDER, STATUS_BAR_BORDER)) || this.getColor(contrastBorder);
+		const borderColor = this.getColor(this.getColorKey(STATUS_BAR_NO_FOLDER_BORDER, STATUS_BAR_DEBUGGING_BORDER, STATUS_BAR_BORDER)) || this.getColor(contrAstBorder);
 		if (borderColor) {
-			container.classList.add('status-border-top');
-			container.style.setProperty('--status-border-top-color', borderColor.toString());
+			contAiner.clAssList.Add('stAtus-border-top');
+			contAiner.style.setProperty('--stAtus-border-top-color', borderColor.toString());
 		} else {
-			container.classList.remove('status-border-top');
-			container.style.removeProperty('--status-border-top-color');
+			contAiner.clAssList.remove('stAtus-border-top');
+			contAiner.style.removeProperty('--stAtus-border-top-color');
 		}
 
-		// Notification Beak
+		// NotificAtion BeAk
 		if (!this.styleElement) {
-			this.styleElement = createStyleSheet(container);
+			this.styleElement = creAteStyleSheet(contAiner);
 		}
 
-		this.styleElement.textContent = `.monaco-workbench .part.statusbar > .items-container > .statusbar-item.has-beak:before { border-bottom-color: ${backgroundColor} !important; }`;
+		this.styleElement.textContent = `.monAco-workbench .pArt.stAtusbAr > .items-contAiner > .stAtusbAr-item.hAs-beAk:before { border-bottom-color: ${bAckgroundColor} !importAnt; }`;
 	}
 
-	private getColorKey(noFolderColor: string, debuggingColor: string, normalColor: string): string {
+	privAte getColorKey(noFolderColor: string, debuggingColor: string, normAlColor: string): string {
 
 		// Not debugging
-		if (!isStatusbarInDebugMode(this.debugService.state, this.debugService.getViewModel().focusedSession)) {
-			if (this.contextService.getWorkbenchState() !== WorkbenchState.EMPTY) {
-				return normalColor;
+		if (!isStAtusbArInDebugMode(this.debugService.stAte, this.debugService.getViewModel().focusedSession)) {
+			if (this.contextService.getWorkbenchStAte() !== WorkbenchStAte.EMPTY) {
+				return normAlColor;
 			}
 
 			return noFolderColor;
@@ -103,13 +103,13 @@ export class StatusBarColorProvider extends Themable implements IWorkbenchContri
 	}
 }
 
-export function isStatusbarInDebugMode(state: State, session: IDebugSession | undefined): boolean {
-	if (state === State.Inactive || state === State.Initializing) {
-		return false;
+export function isStAtusbArInDebugMode(stAte: StAte, session: IDebugSession | undefined): booleAn {
+	if (stAte === StAte.InActive || stAte === StAte.InitiAlizing) {
+		return fAlse;
 	}
-	const isRunningWithoutDebug = session?.configuration?.noDebug;
+	const isRunningWithoutDebug = session?.configurAtion?.noDebug;
 	if (isRunningWithoutDebug) {
-		return false;
+		return fAlse;
 	}
 
 	return true;

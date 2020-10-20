@@ -1,149 +1,149 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-/// <reference path="typings/require.d.ts" />
+/// <reference pAth="typings/require.d.ts" />
 
 //@ts-check
 'use strict';
 
-// Simple module style to support node.js and browser environments
-(function (globalThis, factory) {
+// Simple module style to support node.js And browser environments
+(function (globAlThis, fActory) {
 
 	// Node.js
 	if (typeof exports === 'object') {
-		module.exports = factory();
+		module.exports = fActory();
 	}
 
 	// Browser
 	else {
-		globalThis.MonacoBootstrapWindow = factory();
+		globAlThis.MonAcoBootstrApWindow = fActory();
 	}
 }(this, function () {
-	const bootstrapLib = bootstrap();
-	const preloadGlobals = globals();
-	const sandbox = preloadGlobals.context.sandbox;
-	const webFrame = preloadGlobals.webFrame;
-	const safeProcess = sandbox ? preloadGlobals.process : process;
+	const bootstrApLib = bootstrAp();
+	const preloAdGlobAls = globAls();
+	const sAndbox = preloAdGlobAls.context.sAndbox;
+	const webFrAme = preloAdGlobAls.webFrAme;
+	const sAfeProcess = sAndbox ? preloAdGlobAls.process : process;
 
 	/**
-	 * @param {string[]} modulePaths
-	 * @param {(result, configuration: object) => any} resultCallback
-	 * @param {{ forceEnableDeveloperKeybindings?: boolean, disallowReloadKeybinding?: boolean, removeDeveloperKeybindingsAfterLoad?: boolean, canModifyDOM?: (config: object) => void, beforeLoaderConfig?: (config: object, loaderConfig: object) => void, beforeRequire?: () => void }=} options
+	 * @pArAm {string[]} modulePAths
+	 * @pArAm {(result, configurAtion: object) => Any} resultCAllbAck
+	 * @pArAm {{ forceEnAbleDeveloperKeybindings?: booleAn, disAllowReloAdKeybinding?: booleAn, removeDeveloperKeybindingsAfterLoAd?: booleAn, cAnModifyDOM?: (config: object) => void, beforeLoAderConfig?: (config: object, loAderConfig: object) => void, beforeRequire?: () => void }=} options
 	 */
-	function load(modulePaths, resultCallback, options) {
-		const args = parseURLQueryArgs();
+	function loAd(modulePAths, resultCAllbAck, options) {
+		const Args = pArseURLQueryArgs();
 		/**
-		 * // configuration: INativeWindowConfiguration
+		 * // configurAtion: INAtiveWindowConfigurAtion
 		 * @type {{
 		 * zoomLevel?: number,
-		 * extensionDevelopmentPath?: string[],
-		 * extensionTestsPath?: string,
+		 * extensionDevelopmentPAth?: string[],
+		 * extensionTestsPAth?: string,
 		 * userEnv?: { [key: string]: string | undefined },
-		 * appRoot?: string,
-		 * nodeCachedDataDir?: string
+		 * AppRoot?: string,
+		 * nodeCAchedDAtADir?: string
 		 * }} */
-		const configuration = JSON.parse(args['config'] || '{}') || {};
+		const configurAtion = JSON.pArse(Args['config'] || '{}') || {};
 
-		// Apply zoom level early to avoid glitches
-		const zoomLevel = configuration.zoomLevel;
+		// Apply zoom level eArly to Avoid glitches
+		const zoomLevel = configurAtion.zoomLevel;
 		if (typeof zoomLevel === 'number' && zoomLevel !== 0) {
-			webFrame.setZoomLevel(zoomLevel);
+			webFrAme.setZoomLevel(zoomLevel);
 		}
 
-		// Error handler
-		safeProcess.on('uncaughtException', function (error) {
-			onUnexpectedError(error, enableDeveloperTools);
+		// Error hAndler
+		sAfeProcess.on('uncAughtException', function (error) {
+			onUnexpectedError(error, enAbleDeveloperTools);
 		});
 
 		// Developer tools
-		const enableDeveloperTools = (safeProcess.env['VSCODE_DEV'] || !!configuration.extensionDevelopmentPath) && !configuration.extensionTestsPath;
+		const enAbleDeveloperTools = (sAfeProcess.env['VSCODE_DEV'] || !!configurAtion.extensionDevelopmentPAth) && !configurAtion.extensionTestsPAth;
 		let developerToolsUnbind;
-		if (enableDeveloperTools || (options && options.forceEnableDeveloperKeybindings)) {
-			developerToolsUnbind = registerDeveloperKeybindings(options && options.disallowReloadKeybinding);
+		if (enAbleDeveloperTools || (options && options.forceEnAbleDeveloperKeybindings)) {
+			developerToolsUnbind = registerDeveloperKeybindings(options && options.disAllowReloAdKeybinding);
 		}
 
-		// Correctly inherit the parent's environment (TODO@sandbox non-sandboxed only)
-		if (!sandbox) {
-			Object.assign(safeProcess.env, configuration.userEnv);
+		// Correctly inherit the pArent's environment (TODO@sAndbox non-sAndboxed only)
+		if (!sAndbox) {
+			Object.Assign(sAfeProcess.env, configurAtion.userEnv);
 		}
 
-		// Enable ASAR support (TODO@sandbox non-sandboxed only)
-		if (!sandbox) {
-			globalThis.MonacoBootstrap.enableASARSupport(configuration.appRoot);
+		// EnAble ASAR support (TODO@sAndbox non-sAndboxed only)
+		if (!sAndbox) {
+			globAlThis.MonAcoBootstrAp.enAbleASARSupport(configurAtion.AppRoot);
 		}
 
-		if (options && typeof options.canModifyDOM === 'function') {
-			options.canModifyDOM(configuration);
+		if (options && typeof options.cAnModifyDOM === 'function') {
+			options.cAnModifyDOM(configurAtion);
 		}
 
-		// Get the nls configuration into the process.env as early as possible  (TODO@sandbox non-sandboxed only)
-		const nlsConfig = sandbox ? { availableLanguages: {} } : globalThis.MonacoBootstrap.setupNLS();
+		// Get the nls configurAtion into the process.env As eArly As possible  (TODO@sAndbox non-sAndboxed only)
+		const nlsConfig = sAndbox ? { AvAilAbleLAnguAges: {} } : globAlThis.MonAcoBootstrAp.setupNLS();
 
-		let locale = nlsConfig.availableLanguages['*'] || 'en';
-		if (locale === 'zh-tw') {
-			locale = 'zh-Hant';
-		} else if (locale === 'zh-cn') {
-			locale = 'zh-Hans';
+		let locAle = nlsConfig.AvAilAbleLAnguAges['*'] || 'en';
+		if (locAle === 'zh-tw') {
+			locAle = 'zh-HAnt';
+		} else if (locAle === 'zh-cn') {
+			locAle = 'zh-HAns';
 		}
 
-		window.document.documentElement.setAttribute('lang', locale);
+		window.document.documentElement.setAttribute('lAng', locAle);
 
-		// do not advertise AMD to avoid confusing UMD modules loaded with nodejs
-		if (!sandbox) {
+		// do not Advertise AMD to Avoid confusing UMD modules loAded with nodejs
+		if (!sAndbox) {
 			window['define'] = undefined;
 		}
 
-		// replace the patched electron fs with the original node fs for all AMD code (TODO@sandbox non-sandboxed only)
-		if (!sandbox) {
-			require.define('fs', ['original-fs'], function (originalFS) { return originalFS; });
+		// replAce the pAtched electron fs with the originAl node fs for All AMD code (TODO@sAndbox non-sAndboxed only)
+		if (!sAndbox) {
+			require.define('fs', ['originAl-fs'], function (originAlFS) { return originAlFS; });
 		}
 
-		window['MonacoEnvironment'] = {};
+		window['MonAcoEnvironment'] = {};
 
-		const loaderConfig = {
-			baseUrl: `${bootstrapLib.fileUriFromPath(configuration.appRoot, { isWindows: safeProcess.platform === 'win32' })}/out`,
+		const loAderConfig = {
+			bAseUrl: `${bootstrApLib.fileUriFromPAth(configurAtion.AppRoot, { isWindows: sAfeProcess.plAtform === 'win32' })}/out`,
 			'vs/nls': nlsConfig
 		};
 
-		// Enable loading of node modules:
-		// - sandbox: we list paths of webpacked modules to help the loader
-		// - non-sandbox: we signal that any module that does not begin with
-		//                `vs/` should be loaded using node.js require()
-		if (sandbox) {
-			loaderConfig.paths = {
-				'vscode-textmate': `../node_modules/vscode-textmate/release/main`,
-				'vscode-oniguruma': `../node_modules/vscode-oniguruma/release/main`,
+		// EnAble loAding of node modules:
+		// - sAndbox: we list pAths of webpAcked modules to help the loAder
+		// - non-sAndbox: we signAl thAt Any module thAt does not begin with
+		//                `vs/` should be loAded using node.js require()
+		if (sAndbox) {
+			loAderConfig.pAths = {
+				'vscode-textmAte': `../node_modules/vscode-textmAte/releAse/mAin`,
+				'vscode-onigurumA': `../node_modules/vscode-onigurumA/releAse/mAin`,
 				'xterm': `../node_modules/xterm/lib/xterm.js`,
-				'xterm-addon-search': `../node_modules/xterm-addon-search/lib/xterm-addon-search.js`,
-				'xterm-addon-unicode11': `../node_modules/xterm-addon-unicode11/lib/xterm-addon-unicode11.js`,
-				'xterm-addon-webgl': `../node_modules/xterm-addon-webgl/lib/xterm-addon-webgl.js`,
+				'xterm-Addon-seArch': `../node_modules/xterm-Addon-seArch/lib/xterm-Addon-seArch.js`,
+				'xterm-Addon-unicode11': `../node_modules/xterm-Addon-unicode11/lib/xterm-Addon-unicode11.js`,
+				'xterm-Addon-webgl': `../node_modules/xterm-Addon-webgl/lib/xterm-Addon-webgl.js`,
 				'semver-umd': `../node_modules/semver-umd/lib/semver-umd.js`,
 				'iconv-lite-umd': `../node_modules/iconv-lite-umd/lib/iconv-lite-umd.js`,
-				'jschardet': `../node_modules/jschardet/dist/jschardet.min.js`,
+				'jschArdet': `../node_modules/jschArdet/dist/jschArdet.min.js`,
 			};
 		} else {
-			loaderConfig.amdModulesPattern = /^vs\//;
+			loAderConfig.AmdModulesPAttern = /^vs\//;
 		}
 
-		// cached data config
-		if (configuration.nodeCachedDataDir) {
-			loaderConfig.nodeCachedData = {
-				path: configuration.nodeCachedDataDir,
-				seed: modulePaths.join('')
+		// cAched dAtA config
+		if (configurAtion.nodeCAchedDAtADir) {
+			loAderConfig.nodeCAchedDAtA = {
+				pAth: configurAtion.nodeCAchedDAtADir,
+				seed: modulePAths.join('')
 			};
 		}
 
-		if (options && typeof options.beforeLoaderConfig === 'function') {
-			options.beforeLoaderConfig(configuration, loaderConfig);
+		if (options && typeof options.beforeLoAderConfig === 'function') {
+			options.beforeLoAderConfig(configurAtion, loAderConfig);
 		}
 
-		require.config(loaderConfig);
+		require.config(loAderConfig);
 
 		if (nlsConfig.pseudo) {
 			require(['vs/nls'], function (nlsPlugin) {
-				nlsPlugin.setPseudoTranslation(nlsConfig.pseudo);
+				nlsPlugin.setPseudoTrAnslAtion(nlsConfig.pseudo);
 			});
 		}
 
@@ -151,69 +151,69 @@
 			options.beforeRequire();
 		}
 
-		require(modulePaths, result => {
+		require(modulePAths, result => {
 			try {
-				const callbackResult = resultCallback(result, configuration);
-				if (callbackResult && typeof callbackResult.then === 'function') {
-					callbackResult.then(() => {
-						if (developerToolsUnbind && options && options.removeDeveloperKeybindingsAfterLoad) {
+				const cAllbAckResult = resultCAllbAck(result, configurAtion);
+				if (cAllbAckResult && typeof cAllbAckResult.then === 'function') {
+					cAllbAckResult.then(() => {
+						if (developerToolsUnbind && options && options.removeDeveloperKeybindingsAfterLoAd) {
 							developerToolsUnbind();
 						}
 					}, error => {
-						onUnexpectedError(error, enableDeveloperTools);
+						onUnexpectedError(error, enAbleDeveloperTools);
 					});
 				}
-			} catch (error) {
-				onUnexpectedError(error, enableDeveloperTools);
+			} cAtch (error) {
+				onUnexpectedError(error, enAbleDeveloperTools);
 			}
 		}, onUnexpectedError);
 	}
 
 	/**
-	 * @returns {{[param: string]: string }}
+	 * @returns {{[pArAm: string]: string }}
 	 */
-	function parseURLQueryArgs() {
-		const search = window.location.search || '';
+	function pArseURLQueryArgs() {
+		const seArch = window.locAtion.seArch || '';
 
-		return search.split(/[?&]/)
-			.filter(function (param) { return !!param; })
-			.map(function (param) { return param.split('='); })
-			.filter(function (param) { return param.length === 2; })
-			.reduce(function (r, param) { r[param[0]] = decodeURIComponent(param[1]); return r; }, {});
+		return seArch.split(/[?&]/)
+			.filter(function (pArAm) { return !!pArAm; })
+			.mAp(function (pArAm) { return pArAm.split('='); })
+			.filter(function (pArAm) { return pArAm.length === 2; })
+			.reduce(function (r, pArAm) { r[pArAm[0]] = decodeURIComponent(pArAm[1]); return r; }, {});
 	}
 
 	/**
-	 * @param {boolean} disallowReloadKeybinding
+	 * @pArAm {booleAn} disAllowReloAdKeybinding
 	 * @returns {() => void}
 	 */
-	function registerDeveloperKeybindings(disallowReloadKeybinding) {
-		const ipcRenderer = preloadGlobals.ipcRenderer;
+	function registerDeveloperKeybindings(disAllowReloAdKeybinding) {
+		const ipcRenderer = preloAdGlobAls.ipcRenderer;
 
-		const extractKey = function (e) {
+		const extrActKey = function (e) {
 			return [
 				e.ctrlKey ? 'ctrl-' : '',
-				e.metaKey ? 'meta-' : '',
-				e.altKey ? 'alt-' : '',
+				e.metAKey ? 'metA-' : '',
+				e.AltKey ? 'Alt-' : '',
 				e.shiftKey ? 'shift-' : '',
 				e.keyCode
 			].join('');
 		};
 
-		// Devtools & reload support
-		const TOGGLE_DEV_TOOLS_KB = (safeProcess.platform === 'darwin' ? 'meta-alt-73' : 'ctrl-shift-73'); // mac: Cmd-Alt-I, rest: Ctrl-Shift-I
+		// Devtools & reloAd support
+		const TOGGLE_DEV_TOOLS_KB = (sAfeProcess.plAtform === 'dArwin' ? 'metA-Alt-73' : 'ctrl-shift-73'); // mAc: Cmd-Alt-I, rest: Ctrl-Shift-I
 		const TOGGLE_DEV_TOOLS_KB_ALT = '123'; // F12
-		const RELOAD_KB = (safeProcess.platform === 'darwin' ? 'meta-82' : 'ctrl-82'); // mac: Cmd-R, rest: Ctrl-R
+		const RELOAD_KB = (sAfeProcess.plAtform === 'dArwin' ? 'metA-82' : 'ctrl-82'); // mAc: Cmd-R, rest: Ctrl-R
 
 		let listener = function (e) {
-			const key = extractKey(e);
+			const key = extrActKey(e);
 			if (key === TOGGLE_DEV_TOOLS_KB || key === TOGGLE_DEV_TOOLS_KB_ALT) {
 				ipcRenderer.send('vscode:toggleDevTools');
-			} else if (key === RELOAD_KB && !disallowReloadKeybinding) {
-				ipcRenderer.send('vscode:reloadWindow');
+			} else if (key === RELOAD_KB && !disAllowReloAdKeybinding) {
+				ipcRenderer.send('vscode:reloAdWindow');
 			}
 		};
 
-		window.addEventListener('keydown', listener);
+		window.AddEventListener('keydown', listener);
 
 		return function () {
 			if (listener) {
@@ -224,40 +224,40 @@
 	}
 
 	/**
-	 * @param {string | Error} error
-	 * @param {boolean} [enableDeveloperTools]
+	 * @pArAm {string | Error} error
+	 * @pArAm {booleAn} [enAbleDeveloperTools]
 	 */
-	function onUnexpectedError(error, enableDeveloperTools) {
-		if (enableDeveloperTools) {
-			const ipcRenderer = preloadGlobals.ipcRenderer;
+	function onUnexpectedError(error, enAbleDeveloperTools) {
+		if (enAbleDeveloperTools) {
+			const ipcRenderer = preloAdGlobAls.ipcRenderer;
 			ipcRenderer.send('vscode:openDevTools');
 		}
 
-		console.error(`[uncaught exception]: ${error}`);
+		console.error(`[uncAught exception]: ${error}`);
 
-		if (error && typeof error !== 'string' && error.stack) {
-			console.error(error.stack);
+		if (error && typeof error !== 'string' && error.stAck) {
+			console.error(error.stAck);
 		}
 	}
 
 	/**
-	 * @return {{ fileUriFromPath: (path: string, config: { isWindows?: boolean, scheme?: string, fallbackAuthority?: string }) => string; }}
+	 * @return {{ fileUriFromPAth: (pAth: string, config: { isWindows?: booleAn, scheme?: string, fAllbAckAuthority?: string }) => string; }}
 	 */
-	function bootstrap() {
-		// @ts-ignore (defined in bootstrap.js)
-		return window.MonacoBootstrap;
+	function bootstrAp() {
+		// @ts-ignore (defined in bootstrAp.js)
+		return window.MonAcoBootstrAp;
 	}
 
 	/**
-	 * @return {typeof import('./vs/base/parts/sandbox/electron-sandbox/globals')}
+	 * @return {typeof import('./vs/bAse/pArts/sAndbox/electron-sAndbox/globAls')}
 	 */
-	function globals() {
-		// @ts-ignore (defined in globals.js)
+	function globAls() {
+		// @ts-ignore (defined in globAls.js)
 		return window.vscode;
 	}
 
 	return {
-		load,
-		globals
+		loAd,
+		globAls
 	};
 }));

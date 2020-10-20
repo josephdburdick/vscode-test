@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { IMouseEvent, IMouseWheelEvent } from 'vs/base/browser/mouseEvent';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { OverviewRulerPosition, ConfigurationChangedEvent, EditorLayoutInfo, IComputedEditorOptions, EditorOption, FindComputedEditorOptionValueById, IEditorOptions, IDiffEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { ICursorPositionChangedEvent, ICursorSelectionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { IMouseEvent, IMouseWheelEvent } from 'vs/bAse/browser/mouseEvent';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { OverviewRulerPosition, ConfigurAtionChAngedEvent, EditorLAyoutInfo, IComputedEditorOptions, EditorOption, FindComputedEditorOptionVAlueById, IEditorOptions, IDiffEditorOptions } from 'vs/editor/common/config/editorOptions';
+import { ICursorPositionChAngedEvent, ICursorSelectionChAngedEvent } from 'vs/editor/common/controller/cursorEvents';
 import { IPosition, Position } from 'vs/editor/common/core/position';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import * as editorCommon from 'vs/editor/common/editorCommon';
-import { IIdentifiedSingleEditOperation, IModelDecoration, IModelDeltaDecoration, ITextModel, ICursorStateComputer, IWordAtPosition } from 'vs/editor/common/model';
-import { IModelContentChangedEvent, IModelDecorationsChangedEvent, IModelLanguageChangedEvent, IModelLanguageConfigurationChangedEvent, IModelOptionsChangedEvent } from 'vs/editor/common/model/textModelEvents';
-import { OverviewRulerZone } from 'vs/editor/common/view/overviewZoneManager';
-import { IEditorWhitespace } from 'vs/editor/common/viewLayout/linesLayout';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IDiffComputationResult } from 'vs/editor/common/services/editorWorkerService';
+import * As editorCommon from 'vs/editor/common/editorCommon';
+import { IIdentifiedSingleEditOperAtion, IModelDecorAtion, IModelDeltADecorAtion, ITextModel, ICursorStAteComputer, IWordAtPosition } from 'vs/editor/common/model';
+import { IModelContentChAngedEvent, IModelDecorAtionsChAngedEvent, IModelLAnguAgeChAngedEvent, IModelLAnguAgeConfigurAtionChAngedEvent, IModelOptionsChAngedEvent } from 'vs/editor/common/model/textModelEvents';
+import { OverviewRulerZone } from 'vs/editor/common/view/overviewZoneMAnAger';
+import { IEditorWhitespAce } from 'vs/editor/common/viewLAyout/linesLAyout';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDiffComputAtionResult } from 'vs/editor/common/services/editorWorkerService';
 import { IViewModel } from 'vs/editor/common/viewModel/viewModel';
 
 /**
- * A view zone is a full horizontal rectangle that 'pushes' text down.
- * The editor reserves space for view zones when rendering.
+ * A view zone is A full horizontAl rectAngle thAt 'pushes' text down.
+ * The editor reserves spAce for view zones when rendering.
  */
-export interface IViewZone {
+export interfAce IViewZone {
 	/**
-	 * The line number after which this zone should appear.
-	 * Use 0 to place a view zone before the first line number.
+	 * The line number After which this zone should AppeAr.
+	 * Use 0 to plAce A view zone before the first line number.
 	 */
-	afterLineNumber: number;
+	AfterLineNumber: number;
 	/**
-	 * The column after which this zone should appear.
-	 * If not set, the maxLineColumn of `afterLineNumber` will be used.
+	 * The column After which this zone should AppeAr.
+	 * If not set, the mAxLineColumn of `AfterLineNumber` will be used.
 	 */
-	afterColumn?: number;
+	AfterColumn?: number;
 	/**
 	 * Suppress mouse down events.
-	 * If set, the editor will attach a mouse down listener to the view zone and .preventDefault on it.
-	 * Defaults to false
+	 * If set, the editor will AttAch A mouse down listener to the view zone And .preventDefAult on it.
+	 * DefAults to fAlse
 	 */
-	suppressMouseDown?: boolean;
+	suppressMouseDown?: booleAn;
 	/**
 	 * The height in lines of the view zone.
-	 * If specified, `heightInPx` will be used instead of this.
-	 * If neither `heightInPx` nor `heightInLines` is specified, a default of `heightInLines` = 1 will be chosen.
+	 * If specified, `heightInPx` will be used insteAd of this.
+	 * If neither `heightInPx` nor `heightInLines` is specified, A defAult of `heightInLines` = 1 will be chosen.
 	 */
 	heightInLines?: number;
 	/**
 	 * The height in px of the view zone.
-	 * If this is set, the editor will give preference to it rather than `heightInLines` above.
-	 * If neither `heightInPx` nor `heightInLines` is specified, a default of `heightInLines` = 1 will be chosen.
+	 * If this is set, the editor will give preference to it rAther thAn `heightInLines` Above.
+	 * If neither `heightInPx` nor `heightInLines` is specified, A defAult of `heightInLines` = 1 will be chosen.
 	 */
 	heightInPx?: number;
 	/**
 	 * The minimum width in px of the view zone.
-	 * If this is set, the editor will ensure that the scroll width is >= than this value.
+	 * If this is set, the editor will ensure thAt the scroll width is >= thAn this vAlue.
 	 */
 	minWidthInPx?: number;
 	/**
@@ -63,38 +63,38 @@ export interface IViewZone {
 	 */
 	domNode: HTMLElement;
 	/**
-	 * An optional dom node for the view zone that will be placed in the margin area.
+	 * An optionAl dom node for the view zone thAt will be plAced in the mArgin AreA.
 	 */
-	marginDomNode?: HTMLElement | null;
+	mArginDomNode?: HTMLElement | null;
 	/**
-	 * Callback which gives the relative top of the view zone as it appears (taking scrolling into account).
+	 * CAllbAck which gives the relAtive top of the view zone As it AppeArs (tAking scrolling into Account).
 	 */
 	onDomNodeTop?: (top: number) => void;
 	/**
-	 * Callback which gives the height in pixels of the view zone.
+	 * CAllbAck which gives the height in pixels of the view zone.
 	 */
 	onComputedHeight?: (height: number) => void;
 }
 /**
- * An accessor that allows for zones to be added or removed.
+ * An Accessor thAt Allows for zones to be Added or removed.
  */
-export interface IViewZoneChangeAccessor {
+export interfAce IViewZoneChAngeAccessor {
 	/**
-	 * Create a new view zone.
-	 * @param zone Zone to create
+	 * CreAte A new view zone.
+	 * @pArAm zone Zone to creAte
 	 * @return A unique identifier to the view zone.
 	 */
-	addZone(zone: IViewZone): string;
+	AddZone(zone: IViewZone): string;
 	/**
-	 * Remove a zone
-	 * @param id A unique identifier to the view zone, as returned by the `addZone` call.
+	 * Remove A zone
+	 * @pArAm id A unique identifier to the view zone, As returned by the `AddZone` cAll.
 	 */
 	removeZone(id: string): void;
 	/**
-	 * Change a zone's position.
-	 * The editor will rescan the `afterLineNumber` and `afterColumn` properties of a view zone.
+	 * ChAnge A zone's position.
+	 * The editor will rescAn the `AfterLineNumber` And `AfterColumn` properties of A view zone.
 	 */
-	layoutZone(id: string): void;
+	lAyoutZone(id: string): void;
 }
 
 /**
@@ -102,49 +102,49 @@ export interface IViewZoneChangeAccessor {
  */
 export const enum ContentWidgetPositionPreference {
 	/**
-	 * Place the content widget exactly at a position
+	 * PlAce the content widget exActly At A position
 	 */
 	EXACT,
 	/**
-	 * Place the content widget above a position
+	 * PlAce the content widget Above A position
 	 */
 	ABOVE,
 	/**
-	 * Place the content widget below a position
+	 * PlAce the content widget below A position
 	 */
 	BELOW
 }
 /**
  * A position for rendering content widgets.
  */
-export interface IContentWidgetPosition {
+export interfAce IContentWidgetPosition {
 	/**
 	 * Desired position for the content widget.
-	 * `preference` will also affect the placement.
+	 * `preference` will Also Affect the plAcement.
 	 */
 	position: IPosition | null;
 	/**
-	 * Optionally, a range can be provided to further
+	 * OptionAlly, A rAnge cAn be provided to further
 	 * define the position of the content widget.
 	 */
-	range?: IRange | null;
+	rAnge?: IRAnge | null;
 	/**
-	 * Placement preference for position, in order of preference.
+	 * PlAcement preference for position, in order of preference.
 	 */
 	preference: ContentWidgetPositionPreference[];
 }
 /**
- * A content widget renders inline with the text and can be easily placed 'near' an editor position.
+ * A content widget renders inline with the text And cAn be eAsily plAced 'neAr' An editor position.
  */
-export interface IContentWidget {
+export interfAce IContentWidget {
 	/**
-	 * Render this content widget in a location where it could overflow the editor's view dom node.
+	 * Render this content widget in A locAtion where it could overflow the editor's view dom node.
 	 */
-	allowEditorOverflow?: boolean;
+	AllowEditorOverflow?: booleAn;
 
-	suppressMouseDown?: boolean;
+	suppressMouseDown?: booleAn;
 	/**
-	 * Get a unique identifier of the content widget.
+	 * Get A unique identifier of the content widget.
 	 */
 	getId(): string;
 	/**
@@ -152,73 +152,73 @@ export interface IContentWidget {
 	 */
 	getDomNode(): HTMLElement;
 	/**
-	 * Get the placement of the content widget.
-	 * If null is returned, the content widget will be placed off screen.
+	 * Get the plAcement of the content widget.
+	 * If null is returned, the content widget will be plAced off screen.
 	 */
 	getPosition(): IContentWidgetPosition | null;
 }
 
 /**
- * A positioning preference for rendering overlay widgets.
+ * A positioning preference for rendering overlAy widgets.
  */
-export const enum OverlayWidgetPositionPreference {
+export const enum OverlAyWidgetPositionPreference {
 	/**
-	 * Position the overlay widget in the top right corner
+	 * Position the overlAy widget in the top right corner
 	 */
 	TOP_RIGHT_CORNER,
 
 	/**
-	 * Position the overlay widget in the bottom right corner
+	 * Position the overlAy widget in the bottom right corner
 	 */
 	BOTTOM_RIGHT_CORNER,
 
 	/**
-	 * Position the overlay widget in the top center
+	 * Position the overlAy widget in the top center
 	 */
 	TOP_CENTER
 }
 /**
- * A position for rendering overlay widgets.
+ * A position for rendering overlAy widgets.
  */
-export interface IOverlayWidgetPosition {
+export interfAce IOverlAyWidgetPosition {
 	/**
-	 * The position preference for the overlay widget.
+	 * The position preference for the overlAy widget.
 	 */
-	preference: OverlayWidgetPositionPreference | null;
+	preference: OverlAyWidgetPositionPreference | null;
 }
 /**
- * An overlay widgets renders on top of the text.
+ * An overlAy widgets renders on top of the text.
  */
-export interface IOverlayWidget {
+export interfAce IOverlAyWidget {
 	/**
-	 * Get a unique identifier of the overlay widget.
+	 * Get A unique identifier of the overlAy widget.
 	 */
 	getId(): string;
 	/**
-	 * Get the dom node of the overlay widget.
+	 * Get the dom node of the overlAy widget.
 	 */
 	getDomNode(): HTMLElement;
 	/**
-	 * Get the placement of the overlay widget.
-	 * If null is returned, the overlay widget is responsible to place itself.
+	 * Get the plAcement of the overlAy widget.
+	 * If null is returned, the overlAy widget is responsible to plAce itself.
 	 */
-	getPosition(): IOverlayWidgetPosition | null;
+	getPosition(): IOverlAyWidgetPosition | null;
 }
 
 /**
  * Type of hit element with the mouse in the editor.
  */
-export const enum MouseTargetType {
+export const enum MouseTArgetType {
 	/**
-	 * Mouse is on top of an unknown element.
+	 * Mouse is on top of An unknown element.
 	 */
 	UNKNOWN,
 	/**
-	 * Mouse is on top of the textarea used for input.
+	 * Mouse is on top of the textAreA used for input.
 	 */
 	TEXTAREA,
 	/**
-	 * Mouse is on top of the glyph margin
+	 * Mouse is on top of the glyph mArgin
 	 */
 	GUTTER_GLYPH_MARGIN,
 	/**
@@ -226,11 +226,11 @@ export const enum MouseTargetType {
 	 */
 	GUTTER_LINE_NUMBERS,
 	/**
-	 * Mouse is on top of the line decorations
+	 * Mouse is on top of the line decorAtions
 	 */
 	GUTTER_LINE_DECORATIONS,
 	/**
-	 * Mouse is on top of the whitespace left in the gutter by a view zone.
+	 * Mouse is on top of the whitespAce left in the gutter by A view zone.
 	 */
 	GUTTER_VIEW_ZONE,
 	/**
@@ -238,27 +238,27 @@ export const enum MouseTargetType {
 	 */
 	CONTENT_TEXT,
 	/**
-	 * Mouse is on top of empty space in the content (e.g. after line text or below last line)
+	 * Mouse is on top of empty spAce in the content (e.g. After line text or below lAst line)
 	 */
 	CONTENT_EMPTY,
 	/**
-	 * Mouse is on top of a view zone in the content.
+	 * Mouse is on top of A view zone in the content.
 	 */
 	CONTENT_VIEW_ZONE,
 	/**
-	 * Mouse is on top of a content widget.
+	 * Mouse is on top of A content widget.
 	 */
 	CONTENT_WIDGET,
 	/**
-	 * Mouse is on top of the decorations overview ruler.
+	 * Mouse is on top of the decorAtions overview ruler.
 	 */
 	OVERVIEW_RULER,
 	/**
-	 * Mouse is on top of a scrollbar.
+	 * Mouse is on top of A scrollbAr.
 	 */
 	SCROLLBAR,
 	/**
-	 * Mouse is on top of an overlay widget.
+	 * Mouse is on top of An overlAy widget.
 	 */
 	OVERLAY_WIDGET,
 	/**
@@ -268,90 +268,90 @@ export const enum MouseTargetType {
 }
 
 /**
- * Target hit with the mouse in the editor.
+ * TArget hit with the mouse in the editor.
  */
-export interface IMouseTarget {
+export interfAce IMouseTArget {
 	/**
-	 * The target element
+	 * The tArget element
 	 */
-	readonly element: Element | null;
+	reAdonly element: Element | null;
 	/**
-	 * The target type
+	 * The tArget type
 	 */
-	readonly type: MouseTargetType;
+	reAdonly type: MouseTArgetType;
 	/**
-	 * The 'approximate' editor position
+	 * The 'ApproximAte' editor position
 	 */
-	readonly position: Position | null;
+	reAdonly position: Position | null;
 	/**
-	 * Desired mouse column (e.g. when position.column gets clamped to text length -- clicking after text on a line).
+	 * Desired mouse column (e.g. when position.column gets clAmped to text length -- clicking After text on A line).
 	 */
-	readonly mouseColumn: number;
+	reAdonly mouseColumn: number;
 	/**
-	 * The 'approximate' editor range
+	 * The 'ApproximAte' editor rAnge
 	 */
-	readonly range: Range | null;
+	reAdonly rAnge: RAnge | null;
 	/**
-	 * Some extra detail.
+	 * Some extrA detAil.
 	 */
-	readonly detail: any;
+	reAdonly detAil: Any;
 }
 /**
- * A mouse event originating from the editor.
+ * A mouse event originAting from the editor.
  */
-export interface IEditorMouseEvent {
-	readonly event: IMouseEvent;
-	readonly target: IMouseTarget;
+export interfAce IEditorMouseEvent {
+	reAdonly event: IMouseEvent;
+	reAdonly tArget: IMouseTArget;
 }
-export interface IPartialEditorMouseEvent {
-	readonly event: IMouseEvent;
-	readonly target: IMouseTarget | null;
+export interfAce IPArtiAlEditorMouseEvent {
+	reAdonly event: IMouseEvent;
+	reAdonly tArget: IMouseTArget | null;
 }
 
 /**
- * A paste event originating from the editor.
+ * A pAste event originAting from the editor.
  */
-export interface IPasteEvent {
-	readonly range: Range;
-	readonly mode: string | null;
+export interfAce IPAsteEvent {
+	reAdonly rAnge: RAnge;
+	reAdonly mode: string | null;
 }
 
 /**
  * An overview ruler
- * @internal
+ * @internAl
  */
-export interface IOverviewRuler {
+export interfAce IOverviewRuler {
 	getDomNode(): HTMLElement;
 	dispose(): void;
 	setZones(zones: OverviewRulerZone[]): void;
-	setLayout(position: OverviewRulerPosition): void;
+	setLAyout(position: OverviewRulerPosition): void;
 }
 
 /**
- * Editor aria options.
- * @internal
+ * Editor AriA options.
+ * @internAl
  */
-export interface IEditorAriaOptions {
-	activeDescendant: string | undefined;
+export interfAce IEditorAriAOptions {
+	ActiveDescendAnt: string | undefined;
 	role?: string;
 }
 
-export interface IEditorConstructionOptions extends IEditorOptions {
+export interfAce IEditorConstructionOptions extends IEditorOptions {
 	/**
-	 * The initial editor dimension (to avoid measuring the container).
+	 * The initiAl editor dimension (to Avoid meAsuring the contAiner).
 	 */
 	dimension?: editorCommon.IDimension;
 	/**
-	 * Place overflow widgets inside an external DOM node.
-	 * Defaults to an internal DOM node.
+	 * PlAce overflow widgets inside An externAl DOM node.
+	 * DefAults to An internAl DOM node.
 	 */
 	overflowWidgetsDomNode?: HTMLElement;
 }
 
-export interface IDiffEditorConstructionOptions extends IDiffEditorOptions {
+export interfAce IDiffEditorConstructionOptions extends IDiffEditorOptions {
 	/**
-	 * Place overflow widgets inside an external DOM node.
-	 * Defaults to an internal DOM node.
+	 * PlAce overflow widgets inside An externAl DOM node.
+	 * DefAults to An internAl DOM node.
 	 */
 	overflowWidgetsDomNode?: HTMLElement;
 }
@@ -359,193 +359,193 @@ export interface IDiffEditorConstructionOptions extends IDiffEditorOptions {
 /**
  * A rich code editor.
  */
-export interface ICodeEditor extends editorCommon.IEditor {
+export interfAce ICodeEditor extends editorCommon.IEditor {
 	/**
-	 * This editor is used as an alternative to an <input> box, i.e. as a simple widget.
-	 * @internal
+	 * This editor is used As An AlternAtive to An <input> box, i.e. As A simple widget.
+	 * @internAl
 	 */
-	readonly isSimpleWidget: boolean;
+	reAdonly isSimpleWidget: booleAn;
 	/**
-	 * An event emitted when the content of the current model has changed.
+	 * An event emitted when the content of the current model hAs chAnged.
 	 * @event
 	 */
-	onDidChangeModelContent(listener: (e: IModelContentChangedEvent) => void): IDisposable;
+	onDidChAngeModelContent(listener: (e: IModelContentChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the language of the current model has changed.
+	 * An event emitted when the lAnguAge of the current model hAs chAnged.
 	 * @event
 	 */
-	onDidChangeModelLanguage(listener: (e: IModelLanguageChangedEvent) => void): IDisposable;
+	onDidChAngeModelLAnguAge(listener: (e: IModelLAnguAgeChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the language configuration of the current model has changed.
+	 * An event emitted when the lAnguAge configurAtion of the current model hAs chAnged.
 	 * @event
 	 */
-	onDidChangeModelLanguageConfiguration(listener: (e: IModelLanguageConfigurationChangedEvent) => void): IDisposable;
+	onDidChAngeModelLAnguAgeConfigurAtion(listener: (e: IModelLAnguAgeConfigurAtionChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the options of the current model has changed.
+	 * An event emitted when the options of the current model hAs chAnged.
 	 * @event
 	 */
-	onDidChangeModelOptions(listener: (e: IModelOptionsChangedEvent) => void): IDisposable;
+	onDidChAngeModelOptions(listener: (e: IModelOptionsChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the configuration of the editor has changed. (e.g. `editor.updateOptions()`)
+	 * An event emitted when the configurAtion of the editor hAs chAnged. (e.g. `editor.updAteOptions()`)
 	 * @event
 	 */
-	onDidChangeConfiguration(listener: (e: ConfigurationChangedEvent) => void): IDisposable;
+	onDidChAngeConfigurAtion(listener: (e: ConfigurAtionChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the cursor position has changed.
+	 * An event emitted when the cursor position hAs chAnged.
 	 * @event
 	 */
-	onDidChangeCursorPosition(listener: (e: ICursorPositionChangedEvent) => void): IDisposable;
+	onDidChAngeCursorPosition(listener: (e: ICursorPositionChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the cursor selection has changed.
+	 * An event emitted when the cursor selection hAs chAnged.
 	 * @event
 	 */
-	onDidChangeCursorSelection(listener: (e: ICursorSelectionChangedEvent) => void): IDisposable;
+	onDidChAngeCursorSelection(listener: (e: ICursorSelectionChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the model of this editor has changed (e.g. `editor.setModel()`).
+	 * An event emitted when the model of this editor hAs chAnged (e.g. `editor.setModel()`).
 	 * @event
 	 */
-	onDidChangeModel(listener: (e: editorCommon.IModelChangedEvent) => void): IDisposable;
+	onDidChAngeModel(listener: (e: editorCommon.IModelChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the decorations of the current model have changed.
+	 * An event emitted when the decorAtions of the current model hAve chAnged.
 	 * @event
 	 */
-	onDidChangeModelDecorations(listener: (e: IModelDecorationsChangedEvent) => void): IDisposable;
+	onDidChAngeModelDecorAtions(listener: (e: IModelDecorAtionsChAngedEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the text inside this editor gained focus (i.e. cursor starts blinking).
+	 * An event emitted when the text inside this editor gAined focus (i.e. cursor stArts blinking).
 	 * @event
 	 */
-	onDidFocusEditorText(listener: () => void): IDisposable;
+	onDidFocusEditorText(listener: () => void): IDisposAble;
 	/**
 	 * An event emitted when the text inside this editor lost focus (i.e. cursor stops blinking).
 	 * @event
 	 */
-	onDidBlurEditorText(listener: () => void): IDisposable;
+	onDidBlurEditorText(listener: () => void): IDisposAble;
 	/**
-	 * An event emitted when the text inside this editor or an editor widget gained focus.
+	 * An event emitted when the text inside this editor or An editor widget gAined focus.
 	 * @event
 	 */
-	onDidFocusEditorWidget(listener: () => void): IDisposable;
+	onDidFocusEditorWidget(listener: () => void): IDisposAble;
 	/**
-	 * An event emitted when the text inside this editor or an editor widget lost focus.
+	 * An event emitted when the text inside this editor or An editor widget lost focus.
 	 * @event
 	 */
-	onDidBlurEditorWidget(listener: () => void): IDisposable;
+	onDidBlurEditorWidget(listener: () => void): IDisposAble;
 	/**
-	 * An event emitted before interpreting typed characters (on the keyboard).
+	 * An event emitted before interpreting typed chArActers (on the keyboArd).
 	 * @event
-	 * @internal
+	 * @internAl
 	 */
-	onWillType(listener: (text: string) => void): IDisposable;
+	onWillType(listener: (text: string) => void): IDisposAble;
 	/**
-	 * An event emitted after interpreting typed characters (on the keyboard).
+	 * An event emitted After interpreting typed chArActers (on the keyboArd).
 	 * @event
-	 * @internal
+	 * @internAl
 	 */
-	onDidType(listener: (text: string) => void): IDisposable;
+	onDidType(listener: (text: string) => void): IDisposAble;
 	/**
-	 * An event emitted after composition has started.
+	 * An event emitted After composition hAs stArted.
 	 */
-	onDidCompositionStart(listener: () => void): IDisposable;
+	onDidCompositionStArt(listener: () => void): IDisposAble;
 	/**
-	 * An event emitted after composition has ended.
+	 * An event emitted After composition hAs ended.
 	 */
-	onDidCompositionEnd(listener: () => void): IDisposable;
+	onDidCompositionEnd(listener: () => void): IDisposAble;
 	/**
-	 * An event emitted when editing failed because the editor is read-only.
-	 * @event
-	 */
-	onDidAttemptReadOnlyEdit(listener: () => void): IDisposable;
-	/**
-	 * An event emitted when users paste text in the editor.
+	 * An event emitted when editing fAiled becAuse the editor is reAd-only.
 	 * @event
 	 */
-	onDidPaste(listener: (e: IPasteEvent) => void): IDisposable;
+	onDidAttemptReAdOnlyEdit(listener: () => void): IDisposAble;
 	/**
-	 * An event emitted on a "mouseup".
+	 * An event emitted when users pAste text in the editor.
 	 * @event
 	 */
-	onMouseUp(listener: (e: IEditorMouseEvent) => void): IDisposable;
+	onDidPAste(listener: (e: IPAsteEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "mousedown".
+	 * An event emitted on A "mouseup".
 	 * @event
 	 */
-	onMouseDown(listener: (e: IEditorMouseEvent) => void): IDisposable;
+	onMouseUp(listener: (e: IEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "mousedrag".
-	 * @internal
+	 * An event emitted on A "mousedown".
 	 * @event
 	 */
-	onMouseDrag(listener: (e: IEditorMouseEvent) => void): IDisposable;
+	onMouseDown(listener: (e: IEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "mousedrop".
-	 * @internal
+	 * An event emitted on A "mousedrAg".
+	 * @internAl
 	 * @event
 	 */
-	onMouseDrop(listener: (e: IPartialEditorMouseEvent) => void): IDisposable;
+	onMouseDrAg(listener: (e: IEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "contextmenu".
+	 * An event emitted on A "mousedrop".
+	 * @internAl
 	 * @event
 	 */
-	onContextMenu(listener: (e: IEditorMouseEvent) => void): IDisposable;
+	onMouseDrop(listener: (e: IPArtiAlEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "mousemove".
+	 * An event emitted on A "contextmenu".
 	 * @event
 	 */
-	onMouseMove(listener: (e: IEditorMouseEvent) => void): IDisposable;
+	onContextMenu(listener: (e: IEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "mouseleave".
+	 * An event emitted on A "mousemove".
 	 * @event
 	 */
-	onMouseLeave(listener: (e: IPartialEditorMouseEvent) => void): IDisposable;
+	onMouseMove(listener: (e: IEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "mousewheel"
-	 * @event
-	 * @internal
-	 */
-	onMouseWheel(listener: (e: IMouseWheelEvent) => void): IDisposable;
-	/**
-	 * An event emitted on a "keyup".
+	 * An event emitted on A "mouseleAve".
 	 * @event
 	 */
-	onKeyUp(listener: (e: IKeyboardEvent) => void): IDisposable;
+	onMouseLeAve(listener: (e: IPArtiAlEditorMouseEvent) => void): IDisposAble;
 	/**
-	 * An event emitted on a "keydown".
+	 * An event emitted on A "mousewheel"
+	 * @event
+	 * @internAl
+	 */
+	onMouseWheel(listener: (e: IMouseWheelEvent) => void): IDisposAble;
+	/**
+	 * An event emitted on A "keyup".
 	 * @event
 	 */
-	onKeyDown(listener: (e: IKeyboardEvent) => void): IDisposable;
+	onKeyUp(listener: (e: IKeyboArdEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the layout of the editor has changed.
+	 * An event emitted on A "keydown".
 	 * @event
 	 */
-	onDidLayoutChange(listener: (e: EditorLayoutInfo) => void): IDisposable;
+	onKeyDown(listener: (e: IKeyboArdEvent) => void): IDisposAble;
 	/**
-	 * An event emitted when the content width or content height in the editor has changed.
+	 * An event emitted when the lAyout of the editor hAs chAnged.
 	 * @event
 	 */
-	onDidContentSizeChange(listener: (e: editorCommon.IContentSizeChangedEvent) => void): IDisposable;
+	onDidLAyoutChAnge(listener: (e: EditorLAyoutInfo) => void): IDisposAble;
 	/**
-	 * An event emitted when the scroll in the editor has changed.
+	 * An event emitted when the content width or content height in the editor hAs chAnged.
 	 * @event
 	 */
-	onDidScrollChange(listener: (e: editorCommon.IScrollEvent) => void): IDisposable;
+	onDidContentSizeChAnge(listener: (e: editorCommon.IContentSizeChAngedEvent) => void): IDisposAble;
+	/**
+	 * An event emitted when the scroll in the editor hAs chAnged.
+	 * @event
+	 */
+	onDidScrollChAnge(listener: (e: editorCommon.IScrollEvent) => void): IDisposAble;
 
 	/**
-	 * Saves current view state of the editor in a serializable object.
+	 * SAves current view stAte of the editor in A seriAlizAble object.
 	 */
-	saveViewState(): editorCommon.ICodeEditorViewState | null;
+	sAveViewStAte(): editorCommon.ICodeEditorViewStAte | null;
 
 	/**
-	 * Restores the view state of the editor from a serializable object generated by `saveViewState`.
+	 * Restores the view stAte of the editor from A seriAlizAble object generAted by `sAveViewStAte`.
 	 */
-	restoreViewState(state: editorCommon.ICodeEditorViewState): void;
+	restoreViewStAte(stAte: editorCommon.ICodeEditorViewStAte): void;
 
 	/**
-	 * Returns true if the text inside this editor or an editor widget has focus.
+	 * Returns true if the text inside this editor or An editor widget hAs focus.
 	 */
-	hasWidgetFocus(): boolean;
+	hAsWidgetFocus(): booleAn;
 
 	/**
-	 * Get a contribution of this editor.
+	 * Get A contribution of this editor.
 	 * @id Unique identifier of the contribution.
 	 * @return The contribution or null if contribution not found.
 	 */
@@ -553,9 +553,9 @@ export interface ICodeEditor extends editorCommon.IEditor {
 
 	/**
 	 * Execute `fn` with the editor's services.
-	 * @internal
+	 * @internAl
 	 */
-	invokeWithinContext<T>(fn: (accessor: ServicesAccessor) => T): T;
+	invokeWithinContext<T>(fn: (Accessor: ServicesAccessor) => T): T;
 
 	/**
 	 * Type the getModel() of IEditor.
@@ -563,55 +563,55 @@ export interface ICodeEditor extends editorCommon.IEditor {
 	getModel(): ITextModel | null;
 
 	/**
-	 * Sets the current model attached to this editor.
-	 * If the previous model was created by the editor via the value key in the options
-	 * literal object, it will be destroyed. Otherwise, if the previous model was set
-	 * via setModel, or the model key in the options literal object, the previous model
+	 * Sets the current model AttAched to this editor.
+	 * If the previous model wAs creAted by the editor viA the vAlue key in the options
+	 * literAl object, it will be destroyed. Otherwise, if the previous model wAs set
+	 * viA setModel, or the model key in the options literAl object, the previous model
 	 * will not be destroyed.
-	 * It is safe to call setModel(null) to simply detach the current model from the editor.
+	 * It is sAfe to cAll setModel(null) to simply detAch the current model from the editor.
 	 */
 	setModel(model: ITextModel | null): void;
 
 	/**
-	 * Gets all the editor computed options.
+	 * Gets All the editor computed options.
 	 */
 	getOptions(): IComputedEditorOptions;
 
 	/**
-	 * Gets a specific editor option.
+	 * Gets A specific editor option.
 	 */
-	getOption<T extends EditorOption>(id: T): FindComputedEditorOptionValueById<T>;
+	getOption<T extends EditorOption>(id: T): FindComputedEditorOptionVAlueById<T>;
 
 	/**
-	 * Returns the editor's configuration (without any validation or defaults).
+	 * Returns the editor's configurAtion (without Any vAlidAtion or defAults).
 	 */
-	getRawOptions(): IEditorOptions;
+	getRAwOptions(): IEditorOptions;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	getOverflowWidgetsDomNode(): HTMLElement | undefined;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	getConfiguredWordAtPosition(position: Position): IWordAtPosition | null;
 
 	/**
-	 * Get value of the current model attached to this editor.
-	 * @see `ITextModel.getValue`
+	 * Get vAlue of the current model AttAched to this editor.
+	 * @see `ITextModel.getVAlue`
 	 */
-	getValue(options?: { preserveBOM: boolean; lineEnding: string; }): string;
+	getVAlue(options?: { preserveBOM: booleAn; lineEnding: string; }): string;
 
 	/**
-	 * Set the value of the current model attached to this editor.
-	 * @see `ITextModel.setValue`
+	 * Set the vAlue of the current model AttAched to this editor.
+	 * @see `ITextModel.setVAlue`
 	 */
-	setValue(newValue: string): void;
+	setVAlue(newVAlue: string): void;
 
 	/**
 	 * Get the width of the editor's content.
-	 * This is information that is "erased" when computing `scrollWidth = Math.max(contentWidth, width)`
+	 * This is informAtion thAt is "erAsed" when computing `scrollWidth = MAth.mAx(contentWidth, width)`
 	 */
 	getContentWidth(): number;
 	/**
@@ -625,7 +625,7 @@ export interface ICodeEditor extends editorCommon.IEditor {
 
 	/**
 	 * Get the height of the editor's content.
-	 * This is information that is "erased" when computing `scrollHeight = Math.max(contentHeight, height)`
+	 * This is informAtion thAt is "erAsed" when computing `scrollHeight = MAth.mAx(contentHeight, height)`
 	 */
 	getContentHeight(): number;
 	/**
@@ -638,138 +638,138 @@ export interface ICodeEditor extends editorCommon.IEditor {
 	getScrollTop(): number;
 
 	/**
-	 * Change the scrollLeft of the editor's viewport.
+	 * ChAnge the scrollLeft of the editor's viewport.
 	 */
 	setScrollLeft(newScrollLeft: number, scrollType?: editorCommon.ScrollType): void;
 	/**
-	 * Change the scrollTop of the editor's viewport.
+	 * ChAnge the scrollTop of the editor's viewport.
 	 */
 	setScrollTop(newScrollTop: number, scrollType?: editorCommon.ScrollType): void;
 	/**
-	 * Change the scroll position of the editor's viewport.
+	 * ChAnge the scroll position of the editor's viewport.
 	 */
 	setScrollPosition(position: editorCommon.INewScrollPosition, scrollType?: editorCommon.ScrollType): void;
 
 	/**
-	 * Get an action that is a contribution to this editor.
+	 * Get An Action thAt is A contribution to this editor.
 	 * @id Unique identifier of the contribution.
-	 * @return The action or null if action not found.
+	 * @return The Action or null if Action not found.
 	 */
 	getAction(id: string): editorCommon.IEditorAction;
 
 	/**
-	 * Execute a command on the editor.
-	 * The edits will land on the undo-redo stack, but no "undo stop" will be pushed.
-	 * @param source The source of the call.
-	 * @param command The command to execute
+	 * Execute A commAnd on the editor.
+	 * The edits will lAnd on the undo-redo stAck, but no "undo stop" will be pushed.
+	 * @pArAm source The source of the cAll.
+	 * @pArAm commAnd The commAnd to execute
 	 */
-	executeCommand(source: string | null | undefined, command: editorCommon.ICommand): void;
+	executeCommAnd(source: string | null | undefined, commAnd: editorCommon.ICommAnd): void;
 
 	/**
-	 * Push an "undo stop" in the undo-redo stack.
+	 * Push An "undo stop" in the undo-redo stAck.
 	 */
-	pushUndoStop(): boolean;
+	pushUndoStop(): booleAn;
 
 	/**
 	 * Execute edits on the editor.
-	 * The edits will land on the undo-redo stack, but no "undo stop" will be pushed.
-	 * @param source The source of the call.
-	 * @param edits The edits to execute.
-	 * @param endCursorState Cursor state after the edits were applied.
+	 * The edits will lAnd on the undo-redo stAck, but no "undo stop" will be pushed.
+	 * @pArAm source The source of the cAll.
+	 * @pArAm edits The edits to execute.
+	 * @pArAm endCursorStAte Cursor stAte After the edits were Applied.
 	 */
-	executeEdits(source: string | null | undefined, edits: IIdentifiedSingleEditOperation[], endCursorState?: ICursorStateComputer | Selection[]): boolean;
+	executeEdits(source: string | null | undefined, edits: IIdentifiedSingleEditOperAtion[], endCursorStAte?: ICursorStAteComputer | Selection[]): booleAn;
 
 	/**
-	 * Execute multiple (concomitant) commands on the editor.
-	 * @param source The source of the call.
-	 * @param command The commands to execute
+	 * Execute multiple (concomitAnt) commAnds on the editor.
+	 * @pArAm source The source of the cAll.
+	 * @pArAm commAnd The commAnds to execute
 	 */
-	executeCommands(source: string | null | undefined, commands: (editorCommon.ICommand | null)[]): void;
+	executeCommAnds(source: string | null | undefined, commAnds: (editorCommon.ICommAnd | null)[]): void;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	_getViewModel(): IViewModel | null;
 
 	/**
-	 * Get all the decorations on a line (filtering out decorations from other editors).
+	 * Get All the decorAtions on A line (filtering out decorAtions from other editors).
 	 */
-	getLineDecorations(lineNumber: number): IModelDecoration[] | null;
+	getLineDecorAtions(lineNumber: number): IModelDecorAtion[] | null;
 
 	/**
-	 * All decorations added through this call will get the ownerId of this editor.
-	 * @see `ITextModel.deltaDecorations`
+	 * All decorAtions Added through this cAll will get the ownerId of this editor.
+	 * @see `ITextModel.deltADecorAtions`
 	 */
-	deltaDecorations(oldDecorations: string[], newDecorations: IModelDeltaDecoration[]): string[];
+	deltADecorAtions(oldDecorAtions: string[], newDecorAtions: IModelDeltADecorAtion[]): string[];
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	setDecorations(decorationTypeKey: string, ranges: editorCommon.IDecorationOptions[]): void;
+	setDecorAtions(decorAtionTypeKey: string, rAnges: editorCommon.IDecorAtionOptions[]): void;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	setDecorationsFast(decorationTypeKey: string, ranges: IRange[]): void;
+	setDecorAtionsFAst(decorAtionTypeKey: string, rAnges: IRAnge[]): void;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	removeDecorations(decorationTypeKey: string): void;
+	removeDecorAtions(decorAtionTypeKey: string): void;
 
 	/**
-	 * Get the layout info for the editor.
+	 * Get the lAyout info for the editor.
 	 */
-	getLayoutInfo(): EditorLayoutInfo;
+	getLAyoutInfo(): EditorLAyoutInfo;
 
 	/**
-	 * Returns the ranges that are currently visible.
-	 * Does not account for horizontal scrolling.
+	 * Returns the rAnges thAt Are currently visible.
+	 * Does not Account for horizontAl scrolling.
 	 */
-	getVisibleRanges(): Range[];
+	getVisibleRAnges(): RAnge[];
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	getVisibleRangesPlusViewportAboveBelow(): Range[];
+	getVisibleRAngesPlusViewportAboveBelow(): RAnge[];
 
 	/**
 	 * Get the view zones.
-	 * @internal
+	 * @internAl
 	 */
-	getWhitespaces(): IEditorWhitespace[];
+	getWhitespAces(): IEditorWhitespAce[];
 
 	/**
-	 * Get the vertical position (top offset) for the line w.r.t. to the first line.
+	 * Get the verticAl position (top offset) for the line w.r.t. to the first line.
 	 */
 	getTopForLineNumber(lineNumber: number): number;
 
 	/**
-	 * Get the vertical position (top offset) for the position w.r.t. to the first line.
+	 * Get the verticAl position (top offset) for the position w.r.t. to the first line.
 	 */
 	getTopForPosition(lineNumber: number, column: number): number;
 
 	/**
-	 * Set the model ranges that will be hidden in the view.
-	 * @internal
+	 * Set the model rAnges thAt will be hidden in the view.
+	 * @internAl
 	 */
-	setHiddenAreas(ranges: IRange[]): void;
+	setHiddenAreAs(rAnges: IRAnge[]): void;
 
 	/**
-	 * Sets the editor aria options, primarily the active descendent.
-	 * @internal
+	 * Sets the editor AriA options, primArily the Active descendent.
+	 * @internAl
 	 */
-	setAriaOptions(options: IEditorAriaOptions): void;
+	setAriAOptions(options: IEditorAriAOptions): void;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
-	getTelemetryData(): { [key: string]: any } | undefined;
+	getTelemetryDAtA(): { [key: string]: Any } | undefined;
 
 	/**
-	 * Returns the editor's container dom node
+	 * Returns the editor's contAiner dom node
 	 */
-	getContainerDomNode(): HTMLElement;
+	getContAinerDomNode(): HTMLElement;
 
 	/**
 	 * Returns the editor's dom node
@@ -777,102 +777,102 @@ export interface ICodeEditor extends editorCommon.IEditor {
 	getDomNode(): HTMLElement | null;
 
 	/**
-	 * Add a content widget. Widgets must have unique ids, otherwise they will be overwritten.
+	 * Add A content widget. Widgets must hAve unique ids, otherwise they will be overwritten.
 	 */
-	addContentWidget(widget: IContentWidget): void;
+	AddContentWidget(widget: IContentWidget): void;
 	/**
-	 * Layout/Reposition a content widget. This is a ping to the editor to call widget.getPosition()
-	 * and update appropriately.
+	 * LAyout/Reposition A content widget. This is A ping to the editor to cAll widget.getPosition()
+	 * And updAte AppropriAtely.
 	 */
-	layoutContentWidget(widget: IContentWidget): void;
+	lAyoutContentWidget(widget: IContentWidget): void;
 	/**
-	 * Remove a content widget.
+	 * Remove A content widget.
 	 */
 	removeContentWidget(widget: IContentWidget): void;
 
 	/**
-	 * Add an overlay widget. Widgets must have unique ids, otherwise they will be overwritten.
+	 * Add An overlAy widget. Widgets must hAve unique ids, otherwise they will be overwritten.
 	 */
-	addOverlayWidget(widget: IOverlayWidget): void;
+	AddOverlAyWidget(widget: IOverlAyWidget): void;
 	/**
-	 * Layout/Reposition an overlay widget. This is a ping to the editor to call widget.getPosition()
-	 * and update appropriately.
+	 * LAyout/Reposition An overlAy widget. This is A ping to the editor to cAll widget.getPosition()
+	 * And updAte AppropriAtely.
 	 */
-	layoutOverlayWidget(widget: IOverlayWidget): void;
+	lAyoutOverlAyWidget(widget: IOverlAyWidget): void;
 	/**
-	 * Remove an overlay widget.
+	 * Remove An overlAy widget.
 	 */
-	removeOverlayWidget(widget: IOverlayWidget): void;
+	removeOverlAyWidget(widget: IOverlAyWidget): void;
 
 	/**
-	 * Change the view zones. View zones are lost when a new model is attached to the editor.
+	 * ChAnge the view zones. View zones Are lost when A new model is AttAched to the editor.
 	 */
-	changeViewZones(callback: (accessor: IViewZoneChangeAccessor) => void): void;
+	chAngeViewZones(cAllbAck: (Accessor: IViewZoneChAngeAccessor) => void): void;
 
 	/**
-	 * Get the horizontal position (left offset) for the column w.r.t to the beginning of the line.
+	 * Get the horizontAl position (left offset) for the column w.r.t to the beginning of the line.
 	 * This method works only if the line `lineNumber` is currently rendered (in the editor's viewport).
-	 * Use this method with caution.
+	 * Use this method with cAution.
 	 */
 	getOffsetForColumn(lineNumber: number, column: number): number;
 
 	/**
-	 * Force an editor render now.
+	 * Force An editor render now.
 	 */
-	render(forceRedraw?: boolean): void;
+	render(forceRedrAw?: booleAn): void;
 
 	/**
-	 * Get the hit test target at coordinates `clientX` and `clientY`.
-	 * The coordinates are relative to the top-left of the viewport.
+	 * Get the hit test tArget At coordinAtes `clientX` And `clientY`.
+	 * The coordinAtes Are relAtive to the top-left of the viewport.
 	 *
-	 * @returns Hit test target or null if the coordinates fall outside the editor or the editor has no model.
+	 * @returns Hit test tArget or null if the coordinAtes fAll outside the editor or the editor hAs no model.
 	 */
-	getTargetAtClientPoint(clientX: number, clientY: number): IMouseTarget | null;
+	getTArgetAtClientPoint(clientX: number, clientY: number): IMouseTArget | null;
 
 	/**
 	 * Get the visible position for `position`.
-	 * The result position takes scrolling into account and is relative to the top left corner of the editor.
-	 * Explanation 1: the results of this method will change for the same `position` if the user scrolls the editor.
-	 * Explanation 2: the results of this method will not change if the container of the editor gets repositioned.
-	 * Warning: the results of this method are inaccurate for positions that are outside the current editor viewport.
+	 * The result position tAkes scrolling into Account And is relAtive to the top left corner of the editor.
+	 * ExplAnAtion 1: the results of this method will chAnge for the sAme `position` if the user scrolls the editor.
+	 * ExplAnAtion 2: the results of this method will not chAnge if the contAiner of the editor gets repositioned.
+	 * WArning: the results of this method Are inAccurAte for positions thAt Are outside the current editor viewport.
 	 */
 	getScrolledVisiblePosition(position: IPosition): { top: number; left: number; height: number; } | null;
 
 	/**
-	 * Apply the same font settings as the editor to `target`.
+	 * Apply the sAme font settings As the editor to `tArget`.
 	 */
-	applyFontInfo(target: HTMLElement): void;
+	ApplyFontInfo(tArget: HTMLElement): void;
 
 	/**
-	 * Check if the current instance has a model attached.
-	 * @internal
+	 * Check if the current instAnce hAs A model AttAched.
+	 * @internAl
 	 */
-	hasModel(): this is IActiveCodeEditor;
+	hAsModel(): this is IActiveCodeEditor;
 }
 
 /**
- * @internal
+ * @internAl
  */
-export interface IActiveCodeEditor extends ICodeEditor {
+export interfAce IActiveCodeEditor extends ICodeEditor {
 	/**
-	 * Returns the primary position of the cursor.
+	 * Returns the primAry position of the cursor.
 	 */
 	getPosition(): Position;
 
 	/**
-	 * Returns the primary selection of the editor.
+	 * Returns the primAry selection of the editor.
 	 */
 	getSelection(): Selection;
 
 	/**
-	 * Returns all the selections of the editor.
+	 * Returns All the selections of the editor.
 	 */
 	getSelections(): Selection[];
 
 	/**
-	 * Saves current view state of the editor in a serializable object.
+	 * SAves current view stAte of the editor in A seriAlizAble object.
 	 */
-	saveViewState(): editorCommon.ICodeEditorViewState;
+	sAveViewStAte(): editorCommon.ICodeEditorViewStAte;
 
 	/**
 	 * Type the getModel() of IEditor.
@@ -880,14 +880,14 @@ export interface IActiveCodeEditor extends ICodeEditor {
 	getModel(): ITextModel;
 
 	/**
-	 * @internal
+	 * @internAl
 	 */
 	_getViewModel(): IViewModel;
 
 	/**
-	 * Get all the decorations on a line (filtering out decorations from other editors).
+	 * Get All the decorAtions on A line (filtering out decorAtions from other editors).
 	 */
-	getLineDecorations(lineNumber: number): IModelDecoration[];
+	getLineDecorAtions(lineNumber: number): IModelDecorAtion[];
 
 	/**
 	 * Returns the editor's dom node
@@ -896,25 +896,25 @@ export interface IActiveCodeEditor extends ICodeEditor {
 
 	/**
 	 * Get the visible position for `position`.
-	 * The result position takes scrolling into account and is relative to the top left corner of the editor.
-	 * Explanation 1: the results of this method will change for the same `position` if the user scrolls the editor.
-	 * Explanation 2: the results of this method will not change if the container of the editor gets repositioned.
-	 * Warning: the results of this method are inaccurate for positions that are outside the current editor viewport.
+	 * The result position tAkes scrolling into Account And is relAtive to the top left corner of the editor.
+	 * ExplAnAtion 1: the results of this method will chAnge for the sAme `position` if the user scrolls the editor.
+	 * ExplAnAtion 2: the results of this method will not chAnge if the contAiner of the editor gets repositioned.
+	 * WArning: the results of this method Are inAccurAte for positions thAt Are outside the current editor viewport.
 	 */
 	getScrolledVisiblePosition(position: IPosition): { top: number; left: number; height: number; };
 }
 
 /**
- * Information about a line in the diff editor
+ * InformAtion About A line in the diff editor
  */
-export interface IDiffLineInformation {
-	readonly equivalentLineNumber: number;
+export interfAce IDiffLineInformAtion {
+	reAdonly equivAlentLineNumber: number;
 }
 
 /**
- * @internal
+ * @internAl
  */
-export const enum DiffEditorState {
+export const enum DiffEditorStAte {
 	Idle,
 	ComputingDiff,
 	DiffComputed
@@ -923,28 +923,28 @@ export const enum DiffEditorState {
 /**
  * A rich diff editor.
  */
-export interface IDiffEditor extends editorCommon.IEditor {
+export interfAce IDiffEditor extends editorCommon.IEditor {
 
 	/**
-	 * Returns whether the diff editor is ignoring trim whitespace or not.
-	 * @internal
+	 * Returns whether the diff editor is ignoring trim whitespAce or not.
+	 * @internAl
 	 */
-	readonly ignoreTrimWhitespace: boolean;
+	reAdonly ignoreTrimWhitespAce: booleAn;
 	/**
 	 * Returns whether the diff editor is rendering side by side or not.
-	 * @internal
+	 * @internAl
 	 */
-	readonly renderSideBySide: boolean;
+	reAdonly renderSideBySide: booleAn;
 	/**
-	 * Returns whether the diff editor is rendering +/- indicators or not.
-	 * @internal
+	 * Returns whether the diff editor is rendering +/- indicAtors or not.
+	 * @internAl
 	 */
-	readonly renderIndicators: boolean;
+	reAdonly renderIndicAtors: booleAn;
 	/**
-	 * Timeout in milliseconds after which diff computation is cancelled.
-	 * @internal
+	 * Timeout in milliseconds After which diff computAtion is cAncelled.
+	 * @internAl
 	 */
-	readonly maxComputationTime: number;
+	reAdonly mAxComputAtionTime: number;
 
 	/**
 	 * @see ICodeEditor.getDomNode
@@ -952,20 +952,20 @@ export interface IDiffEditor extends editorCommon.IEditor {
 	getDomNode(): HTMLElement;
 
 	/**
-	 * An event emitted when the diff information computed by this diff editor has been updated.
+	 * An event emitted when the diff informAtion computed by this diff editor hAs been updAted.
 	 * @event
 	 */
-	onDidUpdateDiff(listener: () => void): IDisposable;
+	onDidUpdAteDiff(listener: () => void): IDisposAble;
 
 	/**
-	 * Saves current view state of the editor in a serializable object.
+	 * SAves current view stAte of the editor in A seriAlizAble object.
 	 */
-	saveViewState(): editorCommon.IDiffEditorViewState | null;
+	sAveViewStAte(): editorCommon.IDiffEditorViewStAte | null;
 
 	/**
-	 * Restores the view state of the editor from a serializable object generated by `saveViewState`.
+	 * Restores the view stAte of the editor from A seriAlizAble object generAted by `sAveViewStAte`.
 	 */
-	restoreViewState(state: editorCommon.IDiffEditorViewState): void;
+	restoreViewStAte(stAte: editorCommon.IDiffEditorViewStAte): void;
 
 	/**
 	 * Type the getModel() of IEditor.
@@ -973,19 +973,19 @@ export interface IDiffEditor extends editorCommon.IEditor {
 	getModel(): editorCommon.IDiffEditorModel | null;
 
 	/**
-	 * Sets the current model attached to this editor.
-	 * If the previous model was created by the editor via the value key in the options
-	 * literal object, it will be destroyed. Otherwise, if the previous model was set
-	 * via setModel, or the model key in the options literal object, the previous model
+	 * Sets the current model AttAched to this editor.
+	 * If the previous model wAs creAted by the editor viA the vAlue key in the options
+	 * literAl object, it will be destroyed. Otherwise, if the previous model wAs set
+	 * viA setModel, or the model key in the options literAl object, the previous model
 	 * will not be destroyed.
-	 * It is safe to call setModel(null) to simply detach the current model from the editor.
+	 * It is sAfe to cAll setModel(null) to simply detAch the current model from the editor.
 	 */
 	setModel(model: editorCommon.IDiffEditorModel | null): void;
 
 	/**
-	 * Get the `original` editor.
+	 * Get the `originAl` editor.
 	 */
-	getOriginalEditor(): ICodeEditor;
+	getOriginAlEditor(): ICodeEditor;
 
 	/**
 	 * Get the `modified` editor.
@@ -993,70 +993,70 @@ export interface IDiffEditor extends editorCommon.IEditor {
 	getModifiedEditor(): ICodeEditor;
 
 	/**
-	 * Get the computed diff information.
+	 * Get the computed diff informAtion.
 	 */
-	getLineChanges(): editorCommon.ILineChange[] | null;
+	getLineChAnges(): editorCommon.ILineChAnge[] | null;
 
 	/**
-	 * Get the computed diff information.
-	 * @internal
+	 * Get the computed diff informAtion.
+	 * @internAl
 	 */
-	getDiffComputationResult(): IDiffComputationResult | null;
+	getDiffComputAtionResult(): IDiffComputAtionResult | null;
 
 	/**
-	 * Get information based on computed diff about a line number from the original model.
-	 * If the diff computation is not finished or the model is missing, will return null.
+	 * Get informAtion bAsed on computed diff About A line number from the originAl model.
+	 * If the diff computAtion is not finished or the model is missing, will return null.
 	 */
-	getDiffLineInformationForOriginal(lineNumber: number): IDiffLineInformation | null;
+	getDiffLineInformAtionForOriginAl(lineNumber: number): IDiffLineInformAtion | null;
 
 	/**
-	 * Get information based on computed diff about a line number from the modified model.
-	 * If the diff computation is not finished or the model is missing, will return null.
+	 * Get informAtion bAsed on computed diff About A line number from the modified model.
+	 * If the diff computAtion is not finished or the model is missing, will return null.
 	 */
-	getDiffLineInformationForModified(lineNumber: number): IDiffLineInformation | null;
+	getDiffLineInformAtionForModified(lineNumber: number): IDiffLineInformAtion | null;
 
 	/**
-	 * Update the editor's options after the editor has been created.
+	 * UpdAte the editor's options After the editor hAs been creAted.
 	 */
-	updateOptions(newOptions: IDiffEditorOptions): void;
+	updAteOptions(newOptions: IDiffEditorOptions): void;
 }
 
 /**
- *@internal
+ *@internAl
  */
-export function isCodeEditor(thing: any): thing is ICodeEditor {
+export function isCodeEditor(thing: Any): thing is ICodeEditor {
 	if (thing && typeof (<ICodeEditor>thing).getEditorType === 'function') {
 		return (<ICodeEditor>thing).getEditorType() === editorCommon.EditorType.ICodeEditor;
 	} else {
-		return false;
+		return fAlse;
 	}
 }
 
 /**
- *@internal
+ *@internAl
  */
-export function isDiffEditor(thing: any): thing is IDiffEditor {
+export function isDiffEditor(thing: Any): thing is IDiffEditor {
 	if (thing && typeof (<IDiffEditor>thing).getEditorType === 'function') {
 		return (<IDiffEditor>thing).getEditorType() === editorCommon.EditorType.IDiffEditor;
 	} else {
-		return false;
+		return fAlse;
 	}
 }
 
 /**
- *@internal
+ *@internAl
  */
-export function isCompositeEditor(thing: any): thing is editorCommon.ICompositeCodeEditor {
+export function isCompositeEditor(thing: Any): thing is editorCommon.ICompositeCodeEditor {
 	return thing
 		&& typeof thing === 'object'
-		&& typeof (<editorCommon.ICompositeCodeEditor>thing).onDidChangeActiveEditor === 'function';
+		&& typeof (<editorCommon.ICompositeCodeEditor>thing).onDidChAngeActiveEditor === 'function';
 
 }
 
 /**
- *@internal
+ *@internAl
  */
-export function getCodeEditor(thing: any): ICodeEditor | null {
+export function getCodeEditor(thing: Any): ICodeEditor | null {
 	if (isCodeEditor(thing)) {
 		return thing;
 	}
@@ -1069,9 +1069,9 @@ export function getCodeEditor(thing: any): ICodeEditor | null {
 }
 
 /**
- *@internal
+ *@internAl
  */
-export function getIEditor(thing: any): editorCommon.IEditor | null {
+export function getIEditor(thing: Any): editorCommon.IEditor | null {
 	if (isCodeEditor(thing) || isDiffEditor(thing)) {
 		return thing;
 	}

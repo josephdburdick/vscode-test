@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { GitHubAuthenticationProvider, onDidChangeSessions } from './github';
-import { uriHandler } from './githubServer';
+import * As vscode from 'vscode';
+import { GitHubAuthenticAtionProvider, onDidChAngeSessions } from './github';
+import { uriHAndler } from './githubServer';
 import Logger from './common/logger';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
-export async function activate(context: vscode.ExtensionContext) {
-	const { name, version, aiKey } = require('../package.json') as { name: string, version: string, aiKey: string };
-	const telemetryReporter = new TelemetryReporter(name, version, aiKey);
+export Async function ActivAte(context: vscode.ExtensionContext) {
+	const { nAme, version, AiKey } = require('../pAckAge.json') As { nAme: string, version: string, AiKey: string };
+	const telemetryReporter = new TelemetryReporter(nAme, version, AiKey);
 
-	context.subscriptions.push(vscode.window.registerUriHandler(uriHandler));
-	const loginService = new GitHubAuthenticationProvider();
+	context.subscriptions.push(vscode.window.registerUriHAndler(uriHAndler));
+	const loginService = new GitHubAuthenticAtionProvider();
 
-	await loginService.initialize(context);
+	AwAit loginService.initiAlize(context);
 
-	context.subscriptions.push(vscode.commands.registerCommand('github.provide-token', () => {
-		return loginService.manuallyProvideToken();
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('github.provide-token', () => {
+		return loginService.mAnuAllyProvideToken();
 	}));
 
-	context.subscriptions.push(vscode.authentication.registerAuthenticationProvider({
+	context.subscriptions.push(vscode.AuthenticAtion.registerAuthenticAtionProvider({
 		id: 'github',
-		label: 'GitHub',
-		supportsMultipleAccounts: false,
-		onDidChangeSessions: onDidChangeSessions.event,
+		lAbel: 'GitHub',
+		supportsMultipleAccounts: fAlse,
+		onDidChAngeSessions: onDidChAngeSessions.event,
 		getSessions: () => Promise.resolve(loginService.sessions),
-		login: async (scopeList: string[]) => {
+		login: Async (scopeList: string[]) => {
 			try {
 				/* __GDPR__
 					"login" : { }
 				*/
 				telemetryReporter.sendTelemetryEvent('login');
 
-				const session = await loginService.login(scopeList.sort().join(' '));
+				const session = AwAit loginService.login(scopeList.sort().join(' '));
 				Logger.info('Login success!');
-				onDidChangeSessions.fire({ added: [session.id], removed: [], changed: [] });
+				onDidChAngeSessions.fire({ Added: [session.id], removed: [], chAnged: [] });
 				return session;
-			} catch (e) {
+			} cAtch (e) {
 				/* __GDPR__
-					"loginFailed" : { }
+					"loginFAiled" : { }
 				*/
-				telemetryReporter.sendTelemetryEvent('loginFailed');
+				telemetryReporter.sendTelemetryEvent('loginFAiled');
 
-				vscode.window.showErrorMessage(`Sign in failed: ${e}`);
+				vscode.window.showErrorMessAge(`Sign in fAiled: ${e}`);
 				Logger.error(e);
 				throw e;
 			}
 		},
-		logout: async (id: string) => {
+		logout: Async (id: string) => {
 			try {
 				/* __GDPR__
 					"logout" : { }
 				*/
 				telemetryReporter.sendTelemetryEvent('logout');
 
-				await loginService.logout(id);
-				onDidChangeSessions.fire({ added: [], removed: [id], changed: [] });
-			} catch (e) {
+				AwAit loginService.logout(id);
+				onDidChAngeSessions.fire({ Added: [], removed: [id], chAnged: [] });
+			} cAtch (e) {
 				/* __GDPR__
-					"logoutFailed" : { }
+					"logoutFAiled" : { }
 				*/
-				telemetryReporter.sendTelemetryEvent('logoutFailed');
+				telemetryReporter.sendTelemetryEvent('logoutFAiled');
 
-				vscode.window.showErrorMessage(`Sign out failed: ${e}`);
+				vscode.window.showErrorMessAge(`Sign out fAiled: ${e}`);
 				Logger.error(e);
 				throw e;
 			}
@@ -75,5 +75,5 @@ export async function activate(context: vscode.ExtensionContext) {
 	return;
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() { }
+// this method is cAlled when your extension is deActivAted
+export function deActivAte() { }

@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
+const pAth = require('pAth');
 
 module.exports = {
 	mode: 'production',
 	entry: {
-		'core': './build/monaco/esm.core.js',
-		'editor.worker': './out-monaco-editor-core/esm/vs/editor/editor.worker.js'
+		'core': './build/monAco/esm.core.js',
+		'editor.worker': './out-monAco-editor-core/esm/vs/editor/editor.worker.js'
 	},
 	output: {
-		globalObject: 'self',
-		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist')
+		globAlObject: 'self',
+		filenAme: '[nAme].bundle.js',
+		pAth: pAth.resolve(__dirnAme, 'dist')
 	},
 	module: {
 		rules: [{
 			test: /\.css$/,
-			use: ['style-loader', 'css-loader']
+			use: ['style-loAder', 'css-loAder']
 		}, {
 			test: /\.ttf$/,
-			use: ['file-loader']
+			use: ['file-loAder']
 		}]
 	},
 	resolve: {
-		alias: {
-			'monaco-editor-core': path.resolve(__dirname, '../../out-monaco-editor-core/esm/vs/editor/editor.main.js'),
+		AliAs: {
+			'monAco-editor-core': pAth.resolve(__dirnAme, '../../out-monAco-editor-core/esm/vs/editor/editor.mAin.js'),
 		}
 	},
-	stats: {
-		all: false,
+	stAts: {
+		All: fAlse,
 		modules: true,
-		maxModules: 0,
+		mAxModules: 0,
 		errors: true,
-		warnings: true,
-		// our additional options
-		moduleTrace: true,
-		errorDetails: true,
+		wArnings: true,
+		// our AdditionAl options
+		moduleTrAce: true,
+		errorDetAils: true,
 		chunks: true
 	}
 };

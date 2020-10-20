@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as vscode from 'vscode';
-import 'mocha';
+import * As Assert from 'Assert';
+import * As vscode from 'vscode';
+import 'mochA';
 
 import { InMemoryDocument } from './inMemoryDocument';
-import { createNewMarkdownEngine } from './engine';
+import { creAteNewMArkdownEngine } from './engine';
 
-const testFileName = vscode.Uri.file('test.md');
+const testFileNAme = vscode.Uri.file('test.md');
 
-suite('markdown.engine', () => {
+suite('mArkdown.engine', () => {
 	suite('rendering', () => {
 		const input = '# hello\n\nworld!';
-		const output = '<h1 id="hello" data-line="0" class="code-line">hello</h1>\n'
-			+ '<p data-line="2" class="code-line">world!</p>\n';
+		const output = '<h1 id="hello" dAtA-line="0" clAss="code-line">hello</h1>\n'
+			+ '<p dAtA-line="2" clAss="code-line">world!</p>\n';
 
-		test('Renders a document', async () => {
-			const doc = new InMemoryDocument(testFileName, input);
-			const engine = createNewMarkdownEngine();
-			assert.strictEqual(await engine.render(doc), output);
+		test('Renders A document', Async () => {
+			const doc = new InMemoryDocument(testFileNAme, input);
+			const engine = creAteNewMArkdownEngine();
+			Assert.strictEquAl(AwAit engine.render(doc), output);
 		});
 
-		test('Renders a string', async () => {
-			const engine = createNewMarkdownEngine();
-			assert.strictEqual(await engine.render(input), output);
+		test('Renders A string', Async () => {
+			const engine = creAteNewMArkdownEngine();
+			Assert.strictEquAl(AwAit engine.render(input), output);
 		});
 	});
 });

@@ -1,1091 +1,1091 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
 define({
 	Sleep: {
 		vkey: 'VK_SLEEP',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	WakeUp: {
+	WAkeUp: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyA: {
 		vkey: 'VK_A',
-		value: 'a',
+		vAlue: 'A',
 		withShift: 'A',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyB: {
 		vkey: 'VK_B',
-		value: 'b',
+		vAlue: 'b',
 		withShift: 'B',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyC: {
 		vkey: 'VK_C',
-		value: 'c',
+		vAlue: 'c',
 		withShift: 'C',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyD: {
 		vkey: 'VK_D',
-		value: 'd',
+		vAlue: 'd',
 		withShift: 'D',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyE: {
 		vkey: 'VK_E',
-		value: 'e',
+		vAlue: 'e',
 		withShift: 'E',
 		withAltGr: '€',
 		withShiftAltGr: ''
 	},
 	KeyF: {
 		vkey: 'VK_F',
-		value: 'f',
+		vAlue: 'f',
 		withShift: 'F',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyG: {
 		vkey: 'VK_G',
-		value: 'g',
+		vAlue: 'g',
 		withShift: 'G',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyH: {
 		vkey: 'VK_H',
-		value: 'h',
+		vAlue: 'h',
 		withShift: 'H',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyI: {
 		vkey: 'VK_I',
-		value: 'i',
+		vAlue: 'i',
 		withShift: 'I',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyJ: {
 		vkey: 'VK_J',
-		value: 'j',
+		vAlue: 'j',
 		withShift: 'J',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyK: {
 		vkey: 'VK_K',
-		value: 'k',
+		vAlue: 'k',
 		withShift: 'K',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyL: {
 		vkey: 'VK_L',
-		value: 'l',
+		vAlue: 'l',
 		withShift: 'L',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyM: {
 		vkey: 'VK_M',
-		value: 'm',
+		vAlue: 'm',
 		withShift: 'M',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyN: {
 		vkey: 'VK_N',
-		value: 'n',
+		vAlue: 'n',
 		withShift: 'N',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyO: {
 		vkey: 'VK_O',
-		value: 'o',
+		vAlue: 'o',
 		withShift: 'O',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyP: {
 		vkey: 'VK_P',
-		value: 'p',
+		vAlue: 'p',
 		withShift: 'P',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyQ: {
 		vkey: 'VK_Q',
-		value: 'q',
+		vAlue: 'q',
 		withShift: 'Q',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyR: {
 		vkey: 'VK_R',
-		value: 'r',
+		vAlue: 'r',
 		withShift: 'R',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyS: {
 		vkey: 'VK_S',
-		value: 's',
+		vAlue: 's',
 		withShift: 'S',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyT: {
 		vkey: 'VK_T',
-		value: 't',
+		vAlue: 't',
 		withShift: 'T',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyU: {
 		vkey: 'VK_U',
-		value: 'u',
+		vAlue: 'u',
 		withShift: 'U',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyV: {
 		vkey: 'VK_V',
-		value: 'v',
+		vAlue: 'v',
 		withShift: 'V',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyW: {
 		vkey: 'VK_W',
-		value: 'w',
+		vAlue: 'w',
 		withShift: 'W',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyX: {
 		vkey: 'VK_X',
-		value: 'x',
+		vAlue: 'x',
 		withShift: 'X',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyY: {
 		vkey: 'VK_Z',
-		value: 'z',
+		vAlue: 'z',
 		withShift: 'Z',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	KeyZ: {
 		vkey: 'VK_Y',
-		value: 'y',
+		vAlue: 'y',
 		withShift: 'Y',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Digit1: {
 		vkey: 'VK_1',
-		value: '1',
+		vAlue: '1',
 		withShift: '+',
 		withAltGr: '¦',
 		withShiftAltGr: ''
 	},
 	Digit2: {
 		vkey: 'VK_2',
-		value: '2',
+		vAlue: '2',
 		withShift: '"',
 		withAltGr: '@',
 		withShiftAltGr: ''
 	},
 	Digit3: {
 		vkey: 'VK_3',
-		value: '3',
+		vAlue: '3',
 		withShift: '*',
 		withAltGr: '#',
 		withShiftAltGr: ''
 	},
 	Digit4: {
 		vkey: 'VK_4',
-		value: '4',
+		vAlue: '4',
 		withShift: 'ç',
 		withAltGr: '°',
 		withShiftAltGr: ''
 	},
 	Digit5: {
 		vkey: 'VK_5',
-		value: '5',
+		vAlue: '5',
 		withShift: '%',
 		withAltGr: '§',
 		withShiftAltGr: ''
 	},
 	Digit6: {
 		vkey: 'VK_6',
-		value: '6',
+		vAlue: '6',
 		withShift: '&',
 		withAltGr: '¬',
 		withShiftAltGr: ''
 	},
 	Digit7: {
 		vkey: 'VK_7',
-		value: '7',
+		vAlue: '7',
 		withShift: '/',
 		withAltGr: '|',
 		withShiftAltGr: ''
 	},
 	Digit8: {
 		vkey: 'VK_8',
-		value: '8',
+		vAlue: '8',
 		withShift: '(',
 		withAltGr: '¢',
 		withShiftAltGr: ''
 	},
 	Digit9: {
 		vkey: 'VK_9',
-		value: '9',
+		vAlue: '9',
 		withShift: ')',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Digit0: {
 		vkey: 'VK_0',
-		value: '0',
+		vAlue: '0',
 		withShift: '=',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Enter: {
 		vkey: 'VK_RETURN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Escape: {
+	EscApe: {
 		vkey: 'VK_ESCAPE',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Backspace: {
+	BAckspAce: {
 		vkey: 'VK_BACK',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Tab: {
+	TAb: {
 		vkey: 'VK_TAB',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Space: {
+	SpAce: {
 		vkey: 'VK_SPACE',
-		value: ' ',
+		vAlue: ' ',
 		withShift: ' ',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Minus: {
 		vkey: 'VK_OEM_4',
-		value: '\'',
+		vAlue: '\'',
 		withShift: '?',
 		withAltGr: '´',
 		withShiftAltGr: ''
 	},
-	Equal: {
+	EquAl: {
 		vkey: 'VK_OEM_6',
-		value: '^',
+		vAlue: '^',
 		withShift: '`',
 		withAltGr: '~',
 		withShiftAltGr: ''
 	},
-	BracketLeft: {
+	BrAcketLeft: {
 		vkey: 'VK_OEM_1',
-		value: 'ü',
+		vAlue: 'ü',
 		withShift: 'è',
 		withAltGr: '[',
 		withShiftAltGr: ''
 	},
-	BracketRight: {
+	BrAcketRight: {
 		vkey: 'VK_OEM_3',
-		value: '¨',
+		vAlue: '¨',
 		withShift: '!',
 		withAltGr: ']',
 		withShiftAltGr: ''
 	},
-	Backslash: {
+	BAckslAsh: {
 		vkey: 'VK_OEM_8',
-		value: '$',
+		vAlue: '$',
 		withShift: '£',
 		withAltGr: '}',
 		withShiftAltGr: ''
 	},
 	Semicolon: {
 		vkey: 'VK_OEM_7',
-		value: 'ö',
+		vAlue: 'ö',
 		withShift: 'é',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Quote: {
 		vkey: 'VK_OEM_5',
-		value: 'ä',
+		vAlue: 'ä',
 		withShift: 'à',
 		withAltGr: '{',
 		withShiftAltGr: ''
 	},
-	Backquote: {
+	BAckquote: {
 		vkey: 'VK_OEM_2',
-		value: '§',
+		vAlue: '§',
 		withShift: '°',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Comma: {
+	CommA: {
 		vkey: 'VK_OEM_COMMA',
-		value: ',',
+		vAlue: ',',
 		withShift: ';',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Period: {
 		vkey: 'VK_OEM_PERIOD',
-		value: '.',
+		vAlue: '.',
 		withShift: ':',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Slash: {
+	SlAsh: {
 		vkey: 'VK_OEM_MINUS',
-		value: '-',
+		vAlue: '-',
 		withShift: '_',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	CapsLock: {
+	CApsLock: {
 		vkey: 'VK_CAPITAL',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F1: {
 		vkey: 'VK_F1',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F2: {
 		vkey: 'VK_F2',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F3: {
 		vkey: 'VK_F3',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F4: {
 		vkey: 'VK_F4',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F5: {
 		vkey: 'VK_F5',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F6: {
 		vkey: 'VK_F6',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F7: {
 		vkey: 'VK_F7',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F8: {
 		vkey: 'VK_F8',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F9: {
 		vkey: 'VK_F9',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F10: {
 		vkey: 'VK_F10',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F11: {
 		vkey: 'VK_F11',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F12: {
 		vkey: 'VK_F12',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	PrintScreen: {
 		vkey: 'VK_SNAPSHOT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ScrollLock: {
 		vkey: 'VK_SCROLL',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Pause: {
+	PAuse: {
 		vkey: 'VK_NUMLOCK',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Insert: {
 		vkey: 'VK_INSERT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Home: {
 		vkey: 'VK_HOME',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	PageUp: {
+	PAgeUp: {
 		vkey: 'VK_PRIOR',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Delete: {
 		vkey: 'VK_DELETE',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	End: {
 		vkey: 'VK_END',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	PageDown: {
+	PAgeDown: {
 		vkey: 'VK_NEXT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ArrowRight: {
 		vkey: 'VK_RIGHT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ArrowLeft: {
 		vkey: 'VK_LEFT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ArrowDown: {
 		vkey: 'VK_DOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ArrowUp: {
 		vkey: 'VK_UP',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	NumLock: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadDivide: {
+	NumpAdDivide: {
 		vkey: 'VK_DIVIDE',
-		value: '/',
+		vAlue: '/',
 		withShift: '/',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadMultiply: {
+	NumpAdMultiply: {
 		vkey: 'VK_MULTIPLY',
-		value: '*',
+		vAlue: '*',
 		withShift: '*',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadSubtract: {
+	NumpAdSubtrAct: {
 		vkey: 'VK_SUBTRACT',
-		value: '-',
+		vAlue: '-',
 		withShift: '-',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadAdd: {
+	NumpAdAdd: {
 		vkey: 'VK_ADD',
-		value: '+',
+		vAlue: '+',
 		withShift: '+',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadEnter: {
+	NumpAdEnter: {
 		vkey: 'VK_RETURN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad1: {
+	NumpAd1: {
 		vkey: 'VK_END',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad2: {
+	NumpAd2: {
 		vkey: 'VK_DOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad3: {
+	NumpAd3: {
 		vkey: 'VK_NEXT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad4: {
+	NumpAd4: {
 		vkey: 'VK_LEFT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad5: {
+	NumpAd5: {
 		vkey: 'VK_CLEAR',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad6: {
+	NumpAd6: {
 		vkey: 'VK_RIGHT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad7: {
+	NumpAd7: {
 		vkey: 'VK_HOME',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad8: {
+	NumpAd8: {
 		vkey: 'VK_UP',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad9: {
+	NumpAd9: {
 		vkey: 'VK_PRIOR',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Numpad0: {
+	NumpAd0: {
 		vkey: 'VK_INSERT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadDecimal: {
+	NumpAdDecimAl: {
 		vkey: 'VK_DELETE',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	IntlBackslash: {
+	IntlBAckslAsh: {
 		vkey: 'VK_OEM_102',
-		value: '<',
+		vAlue: '<',
 		withShift: '>',
 		withAltGr: '\\',
 		withShiftAltGr: ''
 	},
 	ContextMenu: {
 		vkey: 'VK_APPS',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Power: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadEqual: {
+	NumpAdEquAl: {
 		vkey: 'VK_CLEAR',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F13: {
 		vkey: 'VK_F13',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F14: {
 		vkey: 'VK_F14',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F15: {
 		vkey: 'VK_F15',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F16: {
 		vkey: 'VK_F16',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F17: {
 		vkey: 'VK_F17',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F18: {
 		vkey: 'VK_F18',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F19: {
 		vkey: 'VK_F19',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F20: {
 		vkey: 'VK_F20',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F21: {
 		vkey: 'VK_F21',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F22: {
 		vkey: 'VK_F22',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F23: {
 		vkey: 'VK_F23',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	F24: {
 		vkey: 'VK_F24',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Help: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Undo: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Cut: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Copy: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Paste: {
+	PAste: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	AudioVolumeMute: {
 		vkey: 'VK_VOLUME_MUTE',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	AudioVolumeUp: {
 		vkey: 'VK_VOLUME_UP',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	AudioVolumeDown: {
 		vkey: 'VK_VOLUME_DOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	NumpadComma: {
+	NumpAdCommA: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	IntlRo: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	KanaMode: {
+	KAnAMode: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	IntlYen: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Convert: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	NonConvert: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Lang1: {
+	LAng1: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Lang2: {
+	LAng2: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Lang3: {
+	LAng3: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	Lang4: {
+	LAng4: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ControlLeft: {
 		vkey: 'VK_CONTROL',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ShiftLeft: {
 		vkey: 'VK_SHIFT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	AltLeft: {
 		vkey: 'VK_MENU',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MetaLeft: {
+	MetALeft: {
 		vkey: 'VK_LWIN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ControlRight: {
 		vkey: 'VK_CONTROL',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	ShiftRight: {
 		vkey: 'VK_SHIFT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	AltRight: {
 		vkey: 'VK_MENU',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MetaRight: {
+	MetARight: {
 		vkey: 'VK_RWIN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MediaTrackNext: {
+	MediATrAckNext: {
 		vkey: 'VK_MEDIA_NEXT_TRACK',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MediaTrackPrevious: {
+	MediATrAckPrevious: {
 		vkey: 'VK_MEDIA_PREV_TRACK',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MediaStop: {
+	MediAStop: {
 		vkey: 'VK_MEDIA_STOP',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	Eject: {
 		vkey: 'VK_UNKNOWN',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MediaPlayPause: {
+	MediAPlAyPAuse: {
 		vkey: 'VK_MEDIA_PLAY_PAUSE',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	MediaSelect: {
+	MediASelect: {
 		vkey: 'VK_LAUNCH_MEDIA_SELECT',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	LaunchMail: {
+	LAunchMAil: {
 		vkey: 'VK_LAUNCH_MAIL',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	LaunchApp2: {
+	LAunchApp2: {
 		vkey: 'VK_LAUNCH_APP2',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	LaunchApp1: {
+	LAunchApp1: {
 		vkey: 'VK_LAUNCH_APP1',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	BrowserSearch: {
+	BrowserSeArch: {
 		vkey: 'VK_BROWSER_SEARCH',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	BrowserHome: {
 		vkey: 'VK_BROWSER_HOME',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	BrowserBack: {
+	BrowserBAck: {
 		vkey: 'VK_BROWSER_BACK',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	BrowserForward: {
+	BrowserForwArd: {
 		vkey: 'VK_BROWSER_FORWARD',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	BrowserStop: {
 		vkey: 'VK_BROWSER_STOP',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
 	BrowserRefresh: {
 		vkey: 'VK_BROWSER_REFRESH',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''
 	},
-	BrowserFavorites: {
+	BrowserFAvorites: {
 		vkey: 'VK_BROWSER_FAVORITES',
-		value: '',
+		vAlue: '',
 		withShift: '',
 		withAltGr: '',
 		withShiftAltGr: ''

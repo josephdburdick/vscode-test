@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { EditorAction, ServicesAccessor, IActionOptions } from 'vs/editor/browser/editorExtensions';
-import { grammarsExtPoint, ITMSyntaxExtensionPoint } from 'vs/workbench/services/textMate/common/TMGrammars';
+import { grAmmArsExtPoint, ITMSyntAxExtensionPoint } from 'vs/workbench/services/textMAte/common/TMGrAmmArs';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IExtensionService, ExtensionPointContribution } from 'vs/workbench/services/extensions/common/extensions';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { LanguageId, LanguageIdentifier } from 'vs/editor/common/modes';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { LAnguAgeId, LAnguAgeIdentifier } from 'vs/editor/common/modes';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 
-interface ModeScopeMap {
+interfAce ModeScopeMAp {
 	[key: string]: string;
 }
 
-export interface IGrammarContributions {
-	getGrammar(mode: string): string;
+export interfAce IGrAmmArContributions {
+	getGrAmmAr(mode: string): string;
 }
 
-export interface ILanguageIdentifierResolver {
-	getLanguageIdentifier(modeId: string | LanguageId): LanguageIdentifier | null;
+export interfAce ILAnguAgeIdentifierResolver {
+	getLAnguAgeIdentifier(modeId: string | LAnguAgeId): LAnguAgeIdentifier | null;
 }
 
-class GrammarContributions implements IGrammarContributions {
+clAss GrAmmArContributions implements IGrAmmArContributions {
 
-	private static _grammars: ModeScopeMap = {};
+	privAte stAtic _grAmmArs: ModeScopeMAp = {};
 
-	constructor(contributions: ExtensionPointContribution<ITMSyntaxExtensionPoint[]>[]) {
-		if (!Object.keys(GrammarContributions._grammars).length) {
-			this.fillModeScopeMap(contributions);
+	constructor(contributions: ExtensionPointContribution<ITMSyntAxExtensionPoint[]>[]) {
+		if (!Object.keys(GrAmmArContributions._grAmmArs).length) {
+			this.fillModeScopeMAp(contributions);
 		}
 	}
 
-	private fillModeScopeMap(contributions: ExtensionPointContribution<ITMSyntaxExtensionPoint[]>[]) {
-		contributions.forEach((contribution) => {
-			contribution.value.forEach((grammar) => {
-				if (grammar.language && grammar.scopeName) {
-					GrammarContributions._grammars[grammar.language] = grammar.scopeName;
+	privAte fillModeScopeMAp(contributions: ExtensionPointContribution<ITMSyntAxExtensionPoint[]>[]) {
+		contributions.forEAch((contribution) => {
+			contribution.vAlue.forEAch((grAmmAr) => {
+				if (grAmmAr.lAnguAge && grAmmAr.scopeNAme) {
+					GrAmmArContributions._grAmmArs[grAmmAr.lAnguAge] = grAmmAr.scopeNAme;
 				}
 			});
 		});
 	}
 
-	public getGrammar(mode: string): string {
-		return GrammarContributions._grammars[mode];
+	public getGrAmmAr(mode: string): string {
+		return GrAmmArContributions._grAmmArs[mode];
 	}
 }
 
-export interface IEmmetActionOptions extends IActionOptions {
-	actionName: string;
+export interfAce IEmmetActionOptions extends IActionOptions {
+	ActionNAme: string;
 }
 
-export abstract class EmmetEditorAction extends EditorAction {
+export AbstrAct clAss EmmetEditorAction extends EditorAction {
 
-	protected emmetActionName: string;
+	protected emmetActionNAme: string;
 
 	constructor(opts: IEmmetActionOptions) {
 		super(opts);
-		this.emmetActionName = opts.actionName;
+		this.emmetActionNAme = opts.ActionNAme;
 	}
 
-	private static readonly emmetSupportedModes = ['html', 'css', 'xml', 'xsl', 'haml', 'jade', 'jsx', 'slim', 'scss', 'sass', 'less', 'stylus', 'styl', 'svg'];
+	privAte stAtic reAdonly emmetSupportedModes = ['html', 'css', 'xml', 'xsl', 'hAml', 'jAde', 'jsx', 'slim', 'scss', 'sAss', 'less', 'stylus', 'styl', 'svg'];
 
-	private _lastGrammarContributions: Promise<GrammarContributions> | null = null;
-	private _lastExtensionService: IExtensionService | null = null;
-	private _withGrammarContributions(extensionService: IExtensionService): Promise<GrammarContributions | null> {
-		if (this._lastExtensionService !== extensionService) {
-			this._lastExtensionService = extensionService;
-			this._lastGrammarContributions = extensionService.readExtensionPointContributions(grammarsExtPoint).then((contributions) => {
-				return new GrammarContributions(contributions);
+	privAte _lAstGrAmmArContributions: Promise<GrAmmArContributions> | null = null;
+	privAte _lAstExtensionService: IExtensionService | null = null;
+	privAte _withGrAmmArContributions(extensionService: IExtensionService): Promise<GrAmmArContributions | null> {
+		if (this._lAstExtensionService !== extensionService) {
+			this._lAstExtensionService = extensionService;
+			this._lAstGrAmmArContributions = extensionService.reAdExtensionPointContributions(grAmmArsExtPoint).then((contributions) => {
+				return new GrAmmArContributions(contributions);
 			});
 		}
-		return this._lastGrammarContributions || Promise.resolve(null);
+		return this._lAstGrAmmArContributions || Promise.resolve(null);
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const extensionService = accessor.get(IExtensionService);
-		const modeService = accessor.get(IModeService);
-		const commandService = accessor.get(ICommandService);
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const extensionService = Accessor.get(IExtensionService);
+		const modeService = Accessor.get(IModeService);
+		const commAndService = Accessor.get(ICommAndService);
 
-		return this._withGrammarContributions(extensionService).then((grammarContributions) => {
+		return this._withGrAmmArContributions(extensionService).then((grAmmArContributions) => {
 
-			if (this.id === 'editor.emmet.action.expandAbbreviation' && grammarContributions) {
-				return commandService.executeCommand<void>('emmet.expandAbbreviation', EmmetEditorAction.getLanguage(modeService, editor, grammarContributions));
+			if (this.id === 'editor.emmet.Action.expAndAbbreviAtion' && grAmmArContributions) {
+				return commAndService.executeCommAnd<void>('emmet.expAndAbbreviAtion', EmmetEditorAction.getLAnguAge(modeService, editor, grAmmArContributions));
 			}
 
 			return undefined;
@@ -91,7 +91,7 @@ export abstract class EmmetEditorAction extends EditorAction {
 
 	}
 
-	public static getLanguage(languageIdentifierResolver: ILanguageIdentifierResolver, editor: ICodeEditor, grammars: IGrammarContributions) {
+	public stAtic getLAnguAge(lAnguAgeIdentifierResolver: ILAnguAgeIdentifierResolver, editor: ICodeEditor, grAmmArs: IGrAmmArContributions) {
 		const model = editor.getModel();
 		const selection = editor.getSelection();
 
@@ -99,38 +99,38 @@ export abstract class EmmetEditorAction extends EditorAction {
 			return null;
 		}
 
-		const position = selection.getStartPosition();
-		model.tokenizeIfCheap(position.lineNumber);
-		const languageId = model.getLanguageIdAtPosition(position.lineNumber, position.column);
-		const languageIdentifier = languageIdentifierResolver.getLanguageIdentifier(languageId);
-		const language = languageIdentifier ? languageIdentifier.language : '';
-		const syntax = language.split('.').pop();
+		const position = selection.getStArtPosition();
+		model.tokenizeIfCheAp(position.lineNumber);
+		const lAnguAgeId = model.getLAnguAgeIdAtPosition(position.lineNumber, position.column);
+		const lAnguAgeIdentifier = lAnguAgeIdentifierResolver.getLAnguAgeIdentifier(lAnguAgeId);
+		const lAnguAge = lAnguAgeIdentifier ? lAnguAgeIdentifier.lAnguAge : '';
+		const syntAx = lAnguAge.split('.').pop();
 
-		if (!syntax) {
+		if (!syntAx) {
 			return null;
 		}
 
-		let checkParentMode = (): string => {
-			let languageGrammar = grammars.getGrammar(syntax);
-			if (!languageGrammar) {
-				return syntax;
+		let checkPArentMode = (): string => {
+			let lAnguAgeGrAmmAr = grAmmArs.getGrAmmAr(syntAx);
+			if (!lAnguAgeGrAmmAr) {
+				return syntAx;
 			}
-			let languages = languageGrammar.split('.');
-			if (languages.length < 2) {
-				return syntax;
+			let lAnguAges = lAnguAgeGrAmmAr.split('.');
+			if (lAnguAges.length < 2) {
+				return syntAx;
 			}
-			for (let i = 1; i < languages.length; i++) {
-				const language = languages[languages.length - i];
-				if (this.emmetSupportedModes.indexOf(language) !== -1) {
-					return language;
+			for (let i = 1; i < lAnguAges.length; i++) {
+				const lAnguAge = lAnguAges[lAnguAges.length - i];
+				if (this.emmetSupportedModes.indexOf(lAnguAge) !== -1) {
+					return lAnguAge;
 				}
 			}
-			return syntax;
+			return syntAx;
 		};
 
 		return {
-			language: syntax,
-			parentMode: checkParentMode()
+			lAnguAge: syntAx,
+			pArentMode: checkPArentMode()
 		};
 	}
 

@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MockDebugAdapter } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
-import { timeout } from 'vs/base/common/async';
+import * As Assert from 'Assert';
+import { MockDebugAdApter } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import { timeout } from 'vs/bAse/common/Async';
 
-suite('Debug - AbstractDebugAdapter', () => {
+suite('Debug - AbstrActDebugAdApter', () => {
 	suite('event ordering', () => {
-		let adapter: MockDebugAdapter;
+		let AdApter: MockDebugAdApter;
 		let output: string[];
 		setup(() => {
-			adapter = new MockDebugAdapter();
+			AdApter = new MockDebugAdApter();
 			output = [];
-			adapter.onEvent(ev => {
-				output.push((ev as DebugProtocol.OutputEvent).body.output);
-				Promise.resolve().then(() => output.push('--end microtask--'));
+			AdApter.onEvent(ev => {
+				output.push((ev As DebugProtocol.OutputEvent).body.output);
+				Promise.resolve().then(() => output.push('--end microtAsk--'));
 			});
 		});
 
-		const evaluate = async (expression: string) => {
-			await new Promise(resolve => adapter.sendRequest('evaluate', { expression }, resolve));
+		const evAluAte = Async (expression: string) => {
+			AwAit new Promise(resolve => AdApter.sendRequest('evAluAte', { expression }, resolve));
 			output.push(`=${expression}`);
-			Promise.resolve().then(() => output.push('--end microtask--'));
+			Promise.resolve().then(() => output.push('--end microtAsk--'));
 		};
 
-		test('inserts task boundary before response', async () => {
-			await evaluate('before.foo');
-			await timeout(0);
+		test('inserts tAsk boundAry before response', Async () => {
+			AwAit evAluAte('before.foo');
+			AwAit timeout(0);
 
-			assert.deepStrictEqual(output, ['before.foo', '--end microtask--', '=before.foo', '--end microtask--']);
+			Assert.deepStrictEquAl(output, ['before.foo', '--end microtAsk--', '=before.foo', '--end microtAsk--']);
 		});
 
-		test('inserts task boundary after response', async () => {
-			await evaluate('after.foo');
-			await timeout(0);
+		test('inserts tAsk boundAry After response', Async () => {
+			AwAit evAluAte('After.foo');
+			AwAit timeout(0);
 
-			assert.deepStrictEqual(output, ['=after.foo', '--end microtask--', 'after.foo', '--end microtask--']);
+			Assert.deepStrictEquAl(output, ['=After.foo', '--end microtAsk--', 'After.foo', '--end microtAsk--']);
 		});
 
-		test('does not insert boundaries between events', async () => {
-			adapter.sendEventBody('output', { output: 'a' });
-			adapter.sendEventBody('output', { output: 'b' });
-			adapter.sendEventBody('output', { output: 'c' });
-			await timeout(0);
+		test('does not insert boundAries between events', Async () => {
+			AdApter.sendEventBody('output', { output: 'A' });
+			AdApter.sendEventBody('output', { output: 'b' });
+			AdApter.sendEventBody('output', { output: 'c' });
+			AwAit timeout(0);
 
-			assert.deepStrictEqual(output, ['a', 'b', 'c', '--end microtask--', '--end microtask--', '--end microtask--']);
+			Assert.deepStrictEquAl(output, ['A', 'b', 'c', '--end microtAsk--', '--end microtAsk--', '--end microtAsk--']);
 		});
 	});
 });

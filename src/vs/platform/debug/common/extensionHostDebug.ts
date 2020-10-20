@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { IRemoteConsoleLog } from 'vs/base/common/console';
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
+import { IRemoteConsoleLog } from 'vs/bAse/common/console';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
 
-export const IExtensionHostDebugService = createDecorator<IExtensionHostDebugService>('extensionHostDebugService');
+export const IExtensionHostDebugService = creAteDecorAtor<IExtensionHostDebugService>('extensionHostDebugService');
 
-export interface IAttachSessionEvent {
+export interfAce IAttAchSessionEvent {
 	sessionId: string;
 	subId?: string;
 	port: number;
 }
 
-export interface ILogToSessionEvent {
+export interfAce ILogToSessionEvent {
 	sessionId: string;
 	log: IRemoteConsoleLog;
 }
 
-export interface ITerminateSessionEvent {
+export interfAce ITerminAteSessionEvent {
 	sessionId: string;
 	subId?: string;
 }
 
-export interface IReloadSessionEvent {
+export interfAce IReloAdSessionEvent {
 	sessionId: string;
 }
 
-export interface ICloseSessionEvent {
+export interfAce ICloseSessionEvent {
 	sessionId: string;
 }
 
-export interface IOpenExtensionWindowResult {
+export interfAce IOpenExtensionWindowResult {
 	rendererDebugPort?: number;
 }
 
-export interface IExtensionHostDebugService {
-	readonly _serviceBrand: undefined;
+export interfAce IExtensionHostDebugService {
+	reAdonly _serviceBrAnd: undefined;
 
-	reload(sessionId: string): void;
-	readonly onReload: Event<IReloadSessionEvent>;
+	reloAd(sessionId: string): void;
+	reAdonly onReloAd: Event<IReloAdSessionEvent>;
 
 	close(sessionId: string): void;
-	readonly onClose: Event<ICloseSessionEvent>;
+	reAdonly onClose: Event<ICloseSessionEvent>;
 
-	attachSession(sessionId: string, port: number, subId?: string): void;
-	readonly onAttachSession: Event<IAttachSessionEvent>;
+	AttAchSession(sessionId: string, port: number, subId?: string): void;
+	reAdonly onAttAchSession: Event<IAttAchSessionEvent>;
 
 	logToSession(sessionId: string, log: IRemoteConsoleLog): void;
-	readonly onLogToSession: Event<ILogToSessionEvent>;
+	reAdonly onLogToSession: Event<ILogToSessionEvent>;
 
-	terminateSession(sessionId: string, subId?: string): void;
-	readonly onTerminateSession: Event<ITerminateSessionEvent>;
+	terminAteSession(sessionId: string, subId?: string): void;
+	reAdonly onTerminAteSession: Event<ITerminAteSessionEvent>;
 
-	openExtensionDevelopmentHostWindow(args: string[], env: IProcessEnvironment, debugRenderer: boolean): Promise<IOpenExtensionWindowResult>;
+	openExtensionDevelopmentHostWindow(Args: string[], env: IProcessEnvironment, debugRenderer: booleAn): Promise<IOpenExtensionWindowResult>;
 }

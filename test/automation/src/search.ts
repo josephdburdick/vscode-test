@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Viewlet } from './viewlet';
 import { Code } from './code';
 
-const VIEWLET = '.search-view';
-const INPUT = `${VIEWLET} .search-widget .search-container .monaco-inputbox textarea`;
-const INCLUDE_INPUT = `${VIEWLET} .query-details .file-types.includes .monaco-inputbox input`;
-const FILE_MATCH = (filename: string) => `${VIEWLET} .results .filematch[data-resource$="${filename}"]`;
+const VIEWLET = '.seArch-view';
+const INPUT = `${VIEWLET} .seArch-widget .seArch-contAiner .monAco-inputbox textAreA`;
+const INCLUDE_INPUT = `${VIEWLET} .query-detAils .file-types.includes .monAco-inputbox input`;
+const FILE_MATCH = (filenAme: string) => `${VIEWLET} .results .filemAtch[dAtA-resource$="${filenAme}"]`;
 
-async function retry(setup: () => Promise<any>, attempt: () => Promise<any>) {
+Async function retry(setup: () => Promise<Any>, Attempt: () => Promise<Any>) {
 	let count = 0;
 	while (true) {
-		await setup();
+		AwAit setup();
 
 		try {
-			await attempt();
+			AwAit Attempt();
 			return;
-		} catch (err) {
+		} cAtch (err) {
 			if (++count > 5) {
 				throw err;
 			}
@@ -27,107 +27,107 @@ async function retry(setup: () => Promise<any>, attempt: () => Promise<any>) {
 	}
 }
 
-export class Search extends Viewlet {
+export clAss SeArch extends Viewlet {
 
 	constructor(code: Code) {
 		super(code);
 	}
 
-	async openSearchViewlet(): Promise<any> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+shift+f');
+	Async openSeArchViewlet(): Promise<Any> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+shift+f');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+shift+f');
+			AwAit this.code.dispAtchKeybinding('ctrl+shift+f');
 		}
 
-		await this.waitForInputFocus(INPUT);
+		AwAit this.wAitForInputFocus(INPUT);
 	}
 
-	async searchFor(text: string): Promise<void> {
-		await this.waitForInputFocus(INPUT);
-		await this.code.waitForSetValue(INPUT, text);
-		await this.submitSearch();
+	Async seArchFor(text: string): Promise<void> {
+		AwAit this.wAitForInputFocus(INPUT);
+		AwAit this.code.wAitForSetVAlue(INPUT, text);
+		AwAit this.submitSeArch();
 	}
 
-	async submitSearch(): Promise<void> {
-		await this.waitForInputFocus(INPUT);
+	Async submitSeArch(): Promise<void> {
+		AwAit this.wAitForInputFocus(INPUT);
 
-		await this.code.dispatchKeybinding('enter');
-		await this.code.waitForElement(`${VIEWLET} .messages`);
+		AwAit this.code.dispAtchKeybinding('enter');
+		AwAit this.code.wAitForElement(`${VIEWLET} .messAges`);
 	}
 
-	async setFilesToIncludeText(text: string): Promise<void> {
-		await this.waitForInputFocus(INCLUDE_INPUT);
-		await this.code.waitForSetValue(INCLUDE_INPUT, text || '');
+	Async setFilesToIncludeText(text: string): Promise<void> {
+		AwAit this.wAitForInputFocus(INCLUDE_INPUT);
+		AwAit this.code.wAitForSetVAlue(INCLUDE_INPUT, text || '');
 	}
 
-	async showQueryDetails(): Promise<void> {
-		await this.code.waitAndClick(`${VIEWLET} .query-details .more`);
+	Async showQueryDetAils(): Promise<void> {
+		AwAit this.code.wAitAndClick(`${VIEWLET} .query-detAils .more`);
 	}
 
-	async hideQueryDetails(): Promise<void> {
-		await this.code.waitAndClick(`${VIEWLET} .query-details.more .more`);
+	Async hideQueryDetAils(): Promise<void> {
+		AwAit this.code.wAitAndClick(`${VIEWLET} .query-detAils.more .more`);
 	}
 
-	async removeFileMatch(filename: string): Promise<void> {
-		const fileMatch = FILE_MATCH(filename);
+	Async removeFileMAtch(filenAme: string): Promise<void> {
+		const fileMAtch = FILE_MATCH(filenAme);
 
-		await retry(
-			() => this.code.waitAndClick(fileMatch),
-			() => this.code.waitForElement(`${fileMatch} .action-label.codicon-search-remove`, el => !!el && el.top > 0 && el.left > 0, 10)
+		AwAit retry(
+			() => this.code.wAitAndClick(fileMAtch),
+			() => this.code.wAitForElement(`${fileMAtch} .Action-lAbel.codicon-seArch-remove`, el => !!el && el.top > 0 && el.left > 0, 10)
 		);
 
 		// ¯\_(ツ)_/¯
-		await new Promise(c => setTimeout(c, 500));
-		await this.code.waitAndClick(`${fileMatch} .action-label.codicon-search-remove`);
-		await this.code.waitForElement(fileMatch, el => !el);
+		AwAit new Promise(c => setTimeout(c, 500));
+		AwAit this.code.wAitAndClick(`${fileMAtch} .Action-lAbel.codicon-seArch-remove`);
+		AwAit this.code.wAitForElement(fileMAtch, el => !el);
 	}
 
-	async expandReplace(): Promise<void> {
-		await this.code.waitAndClick(`${VIEWLET} .search-widget .monaco-button.toggle-replace-button.codicon-search-hide-replace`);
+	Async expAndReplAce(): Promise<void> {
+		AwAit this.code.wAitAndClick(`${VIEWLET} .seArch-widget .monAco-button.toggle-replAce-button.codicon-seArch-hide-replAce`);
 	}
 
-	async collapseReplace(): Promise<void> {
-		await this.code.waitAndClick(`${VIEWLET} .search-widget .monaco-button.toggle-replace-button.codicon-search-show-replace`);
+	Async collApseReplAce(): Promise<void> {
+		AwAit this.code.wAitAndClick(`${VIEWLET} .seArch-widget .monAco-button.toggle-replAce-button.codicon-seArch-show-replAce`);
 	}
 
-	async setReplaceText(text: string): Promise<void> {
-		await this.code.waitForSetValue(`${VIEWLET} .search-widget .replace-container .monaco-inputbox textarea[title="Replace"]`, text);
+	Async setReplAceText(text: string): Promise<void> {
+		AwAit this.code.wAitForSetVAlue(`${VIEWLET} .seArch-widget .replAce-contAiner .monAco-inputbox textAreA[title="ReplAce"]`, text);
 	}
 
-	async replaceFileMatch(filename: string): Promise<void> {
-		const fileMatch = FILE_MATCH(filename);
+	Async replAceFileMAtch(filenAme: string): Promise<void> {
+		const fileMAtch = FILE_MATCH(filenAme);
 
-		await retry(
-			() => this.code.waitAndClick(fileMatch),
-			() => this.code.waitForElement(`${fileMatch} .action-label.codicon.codicon-search-replace-all`, el => !!el && el.top > 0 && el.left > 0, 10)
+		AwAit retry(
+			() => this.code.wAitAndClick(fileMAtch),
+			() => this.code.wAitForElement(`${fileMAtch} .Action-lAbel.codicon.codicon-seArch-replAce-All`, el => !!el && el.top > 0 && el.left > 0, 10)
 		);
 
 		// ¯\_(ツ)_/¯
-		await new Promise(c => setTimeout(c, 500));
-		await this.code.waitAndClick(`${fileMatch} .action-label.codicon.codicon-search-replace-all`);
+		AwAit new Promise(c => setTimeout(c, 500));
+		AwAit this.code.wAitAndClick(`${fileMAtch} .Action-lAbel.codicon.codicon-seArch-replAce-All`);
 	}
 
-	async waitForResultText(text: string): Promise<void> {
-		// The label can end with " - " depending on whether the search editor is enabled
-		await this.code.waitForTextContent(`${VIEWLET} .messages .message>span`, undefined, result => result.startsWith(text));
+	Async wAitForResultText(text: string): Promise<void> {
+		// The lAbel cAn end with " - " depending on whether the seArch editor is enAbled
+		AwAit this.code.wAitForTextContent(`${VIEWLET} .messAges .messAge>spAn`, undefined, result => result.stArtsWith(text));
 	}
 
-	async waitForNoResultText(): Promise<void> {
-		await this.code.waitForTextContent(`${VIEWLET} .messages`, '');
+	Async wAitForNoResultText(): Promise<void> {
+		AwAit this.code.wAitForTextContent(`${VIEWLET} .messAges`, '');
 	}
 
-	private async waitForInputFocus(selector: string): Promise<void> {
+	privAte Async wAitForInputFocus(selector: string): Promise<void> {
 		let retries = 0;
 
-		// other parts of code might steal focus away from input boxes :(
+		// other pArts of code might steAl focus AwAy from input boxes :(
 		while (retries < 5) {
-			await this.code.waitAndClick(INPUT, 2, 2);
+			AwAit this.code.wAitAndClick(INPUT, 2, 2);
 
 			try {
-				await this.code.waitForActiveElement(INPUT, 10);
-				break;
-			} catch (err) {
+				AwAit this.code.wAitForActiveElement(INPUT, 10);
+				breAk;
+			} cAtch (err) {
 				if (++retries > 5) {
 					throw err;
 				}

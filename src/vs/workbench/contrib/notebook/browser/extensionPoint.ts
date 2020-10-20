@@ -1,133 +1,133 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import * as nls from 'vs/nls';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import * As nls from 'vs/nls';
 import { ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 import { NotebookEditorPriority } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 
-namespace NotebookEditorContribution {
+nAmespAce NotebookEditorContribution {
 	export const viewType = 'viewType';
-	export const displayName = 'displayName';
+	export const displAyNAme = 'displAyNAme';
 	export const selector = 'selector';
 	export const priority = 'priority';
 }
 
-export interface INotebookEditorContribution {
-	readonly [NotebookEditorContribution.viewType]: string;
-	readonly [NotebookEditorContribution.displayName]: string;
-	readonly [NotebookEditorContribution.selector]?: readonly { filenamePattern?: string; excludeFileNamePattern?: string; }[];
-	readonly [NotebookEditorContribution.priority]?: string;
+export interfAce INotebookEditorContribution {
+	reAdonly [NotebookEditorContribution.viewType]: string;
+	reAdonly [NotebookEditorContribution.displAyNAme]: string;
+	reAdonly [NotebookEditorContribution.selector]?: reAdonly { filenAmePAttern?: string; excludeFileNAmePAttern?: string; }[];
+	reAdonly [NotebookEditorContribution.priority]?: string;
 }
 
-namespace NotebookRendererContribution {
+nAmespAce NotebookRendererContribution {
 	export const viewType = 'viewType';
 	export const id = 'id';
-	export const displayName = 'displayName';
+	export const displAyNAme = 'displAyNAme';
 	export const mimeTypes = 'mimeTypes';
 	export const entrypoint = 'entrypoint';
 }
 
-export interface INotebookRendererContribution {
-	readonly [NotebookRendererContribution.id]?: string;
-	readonly [NotebookRendererContribution.viewType]?: string;
-	readonly [NotebookRendererContribution.displayName]: string;
-	readonly [NotebookRendererContribution.mimeTypes]?: readonly string[];
-	readonly [NotebookRendererContribution.entrypoint]: string;
+export interfAce INotebookRendererContribution {
+	reAdonly [NotebookRendererContribution.id]?: string;
+	reAdonly [NotebookRendererContribution.viewType]?: string;
+	reAdonly [NotebookRendererContribution.displAyNAme]: string;
+	reAdonly [NotebookRendererContribution.mimeTypes]?: reAdonly string[];
+	reAdonly [NotebookRendererContribution.entrypoint]: string;
 }
 
-const notebookProviderContribution: IJSONSchema = {
-	description: nls.localize('contributes.notebook.provider', 'Contributes notebook document provider.'),
-	type: 'array',
-	defaultSnippets: [{ body: [{ viewType: '', displayName: '' }] }],
+const notebookProviderContribution: IJSONSchemA = {
+	description: nls.locAlize('contributes.notebook.provider', 'Contributes notebook document provider.'),
+	type: 'ArrAy',
+	defAultSnippets: [{ body: [{ viewType: '', displAyNAme: '' }] }],
 	items: {
 		type: 'object',
 		required: [
 			NotebookEditorContribution.viewType,
-			NotebookEditorContribution.displayName,
+			NotebookEditorContribution.displAyNAme,
 			NotebookEditorContribution.selector,
 		],
 		properties: {
 			[NotebookEditorContribution.viewType]: {
 				type: 'string',
-				description: nls.localize('contributes.notebook.provider.viewType', 'Unique identifier of the notebook.'),
+				description: nls.locAlize('contributes.notebook.provider.viewType', 'Unique identifier of the notebook.'),
 			},
-			[NotebookEditorContribution.displayName]: {
+			[NotebookEditorContribution.displAyNAme]: {
 				type: 'string',
-				description: nls.localize('contributes.notebook.provider.displayName', 'Human readable name of the notebook.'),
+				description: nls.locAlize('contributes.notebook.provider.displAyNAme', 'HumAn reAdAble nAme of the notebook.'),
 			},
 			[NotebookEditorContribution.selector]: {
-				type: 'array',
-				description: nls.localize('contributes.notebook.provider.selector', 'Set of globs that the notebook is for.'),
+				type: 'ArrAy',
+				description: nls.locAlize('contributes.notebook.provider.selector', 'Set of globs thAt the notebook is for.'),
 				items: {
 					type: 'object',
 					properties: {
-						filenamePattern: {
+						filenAmePAttern: {
 							type: 'string',
-							description: nls.localize('contributes.notebook.provider.selector.filenamePattern', 'Glob that the notebook is enabled for.'),
+							description: nls.locAlize('contributes.notebook.provider.selector.filenAmePAttern', 'Glob thAt the notebook is enAbled for.'),
 						},
-						excludeFileNamePattern: {
+						excludeFileNAmePAttern: {
 							type: 'string',
-							description: nls.localize('contributes.notebook.selector.provider.excludeFileNamePattern', 'Glob that the notebook is disabled for.')
+							description: nls.locAlize('contributes.notebook.selector.provider.excludeFileNAmePAttern', 'Glob thAt the notebook is disAbled for.')
 						}
 					}
 				}
 			},
 			[NotebookEditorContribution.priority]: {
 				type: 'string',
-				markdownDeprecationMessage: nls.localize('contributes.priority', 'Controls if the custom editor is enabled automatically when the user opens a file. This may be overridden by users using the `workbench.editorAssociations` setting.'),
+				mArkdownDeprecAtionMessAge: nls.locAlize('contributes.priority', 'Controls if the custom editor is enAbled AutomAticAlly when the user opens A file. This mAy be overridden by users using the `workbench.editorAssociAtions` setting.'),
 				enum: [
-					NotebookEditorPriority.default,
+					NotebookEditorPriority.defAult,
 					NotebookEditorPriority.option,
 				],
-				markdownEnumDescriptions: [
-					nls.localize('contributes.priority.default', 'The editor is automatically used when the user opens a resource, provided that no other default custom editors are registered for that resource.'),
-					nls.localize('contributes.priority.option', 'The editor is not automatically used when the user opens a resource, but a user can switch to the editor using the `Reopen With` command.'),
+				mArkdownEnumDescriptions: [
+					nls.locAlize('contributes.priority.defAult', 'The editor is AutomAticAlly used when the user opens A resource, provided thAt no other defAult custom editors Are registered for thAt resource.'),
+					nls.locAlize('contributes.priority.option', 'The editor is not AutomAticAlly used when the user opens A resource, but A user cAn switch to the editor using the `Reopen With` commAnd.'),
 				],
-				default: 'default'
+				defAult: 'defAult'
 			}
 		}
 	}
 };
 
-const notebookRendererContribution: IJSONSchema = {
-	description: nls.localize('contributes.notebook.renderer', 'Contributes notebook output renderer provider.'),
-	type: 'array',
-	defaultSnippets: [{ body: [{ id: '', displayName: '', mimeTypes: [''], entrypoint: '' }] }],
+const notebookRendererContribution: IJSONSchemA = {
+	description: nls.locAlize('contributes.notebook.renderer', 'Contributes notebook output renderer provider.'),
+	type: 'ArrAy',
+	defAultSnippets: [{ body: [{ id: '', displAyNAme: '', mimeTypes: [''], entrypoint: '' }] }],
 	items: {
 		type: 'object',
 		required: [
 			NotebookRendererContribution.id,
-			NotebookRendererContribution.displayName,
+			NotebookRendererContribution.displAyNAme,
 			NotebookRendererContribution.mimeTypes,
 			NotebookRendererContribution.entrypoint,
 		],
 		properties: {
 			[NotebookRendererContribution.id]: {
 				type: 'string',
-				description: nls.localize('contributes.notebook.renderer.viewType', 'Unique identifier of the notebook output renderer.'),
+				description: nls.locAlize('contributes.notebook.renderer.viewType', 'Unique identifier of the notebook output renderer.'),
 			},
 			[NotebookRendererContribution.viewType]: {
 				type: 'string',
-				deprecationMessage: nls.localize('contributes.notebook.provider.viewType.deprecated', 'Rename `viewType` to `id`.'),
-				description: nls.localize('contributes.notebook.renderer.viewType', 'Unique identifier of the notebook output renderer.'),
+				deprecAtionMessAge: nls.locAlize('contributes.notebook.provider.viewType.deprecAted', 'RenAme `viewType` to `id`.'),
+				description: nls.locAlize('contributes.notebook.renderer.viewType', 'Unique identifier of the notebook output renderer.'),
 			},
-			[NotebookRendererContribution.displayName]: {
+			[NotebookRendererContribution.displAyNAme]: {
 				type: 'string',
-				description: nls.localize('contributes.notebook.renderer.displayName', 'Human readable name of the notebook output renderer.'),
+				description: nls.locAlize('contributes.notebook.renderer.displAyNAme', 'HumAn reAdAble nAme of the notebook output renderer.'),
 			},
 			[NotebookRendererContribution.mimeTypes]: {
-				type: 'array',
-				description: nls.localize('contributes.notebook.selector', 'Set of globs that the notebook is for.'),
+				type: 'ArrAy',
+				description: nls.locAlize('contributes.notebook.selector', 'Set of globs thAt the notebook is for.'),
 				items: {
 					type: 'string'
 				}
 			},
 			[NotebookRendererContribution.entrypoint]: {
 				type: 'string',
-				description: nls.localize('contributes.notebook.renderer.entrypoint', 'File to load in the webview to render the extension.'),
+				description: nls.locAlize('contributes.notebook.renderer.entrypoint', 'File to loAd in the webview to render the extension.'),
 			},
 		}
 	}
@@ -136,11 +136,11 @@ const notebookRendererContribution: IJSONSchema = {
 export const notebookProviderExtensionPoint = ExtensionsRegistry.registerExtensionPoint<INotebookEditorContribution[]>(
 	{
 		extensionPoint: 'notebookProvider',
-		jsonSchema: notebookProviderContribution
+		jsonSchemA: notebookProviderContribution
 	});
 
 export const notebookRendererExtensionPoint = ExtensionsRegistry.registerExtensionPoint<INotebookRendererContribution[]>(
 	{
 		extensionPoint: 'notebookOutputRenderer',
-		jsonSchema: notebookRendererContribution
+		jsonSchemA: notebookRendererContribution
 	});

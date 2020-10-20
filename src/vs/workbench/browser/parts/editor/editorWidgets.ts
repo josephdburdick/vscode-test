@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Widget } from 'vs/base/browser/ui/widget';
-import { IOverlayWidget, ICodeEditor, IOverlayWidgetPosition, OverlayWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
-import { Emitter } from 'vs/base/common/event';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { $, append, clearNode } from 'vs/base/browser/dom';
-import { attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { buttonBackground, buttonForeground, editorBackground, editorForeground, contrastBorder } from 'vs/platform/theme/common/colorRegistry';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { IOverlAyWidget, ICodeEditor, IOverlAyWidgetPosition, OverlAyWidgetPositionPreference } from 'vs/editor/browser/editorBrowser';
+import { Emitter } from 'vs/bAse/common/event';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { $, Append, cleArNode } from 'vs/bAse/browser/dom';
+import { AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { buttonBAckground, buttonForeground, editorBAckground, editorForeground, contrAstBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { hasWorkspaceFileExtension } from 'vs/platform/workspaces/common/workspaces';
-import { Disposable, dispose } from 'vs/base/common/lifecycle';
-import { localize } from 'vs/nls';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { hAsWorkspAceFileExtension } from 'vs/plAtform/workspAces/common/workspAces';
+import { DisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { locAlize } from 'vs/nls';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { isEqual } from 'vs/base/common/resources';
-import { IFileService } from 'vs/platform/files/common/files';
+import { isEquAl } from 'vs/bAse/common/resources';
+import { IFileService } from 'vs/plAtform/files/common/files';
 
-export class FloatingClickWidget extends Widget implements IOverlayWidget {
+export clAss FloAtingClickWidget extends Widget implements IOverlAyWidget {
 
-	private readonly _onClick = this._register(new Emitter<void>());
-	readonly onClick = this._onClick.event;
+	privAte reAdonly _onClick = this._register(new Emitter<void>());
+	reAdonly onClick = this._onClick.event;
 
-	private _domNode: HTMLElement;
+	privAte _domNode: HTMLElement;
 
 	constructor(
-		private editor: ICodeEditor,
-		private label: string,
+		privAte editor: ICodeEditor,
+		privAte lAbel: string,
 		keyBindingAction: string | null,
 		@IKeybindingService keybindingService: IKeybindingService,
-		@IThemeService private readonly themeService: IThemeService
+		@IThemeService privAte reAdonly themeService: IThemeService
 	) {
 		super();
 
-		this._domNode = $('.floating-click-widget');
+		this._domNode = $('.floAting-click-widget');
 
 		if (keyBindingAction) {
 			const keybinding = keybindingService.lookupKeybinding(keyBindingAction);
 			if (keybinding) {
-				this.label += ` (${keybinding.getLabel()})`;
+				this.lAbel += ` (${keybinding.getLAbel()})`;
 			}
 		}
 	}
 
 	getId(): string {
-		return 'editor.overlayWidget.floatingClickWidget';
+		return 'editor.overlAyWidget.floAtingClickWidget';
 	}
 
 	getDomNode(): HTMLElement {
 		return this._domNode;
 	}
 
-	getPosition(): IOverlayWidgetPosition {
+	getPosition(): IOverlAyWidgetPosition {
 		return {
-			preference: OverlayWidgetPositionPreference.BOTTOM_RIGHT_CORNER
+			preference: OverlAyWidgetPositionPreference.BOTTOM_RIGHT_CORNER
 		};
 	}
 
 	render() {
-		clearNode(this._domNode);
+		cleArNode(this._domNode);
 
-		this._register(attachStylerCallback(this.themeService, { buttonBackground, buttonForeground, editorBackground, editorForeground, contrastBorder }, colors => {
-			const backgroundColor = colors.buttonBackground ? colors.buttonBackground : colors.editorBackground;
-			if (backgroundColor) {
-				this._domNode.style.backgroundColor = backgroundColor.toString();
+		this._register(AttAchStylerCAllbAck(this.themeService, { buttonBAckground, buttonForeground, editorBAckground, editorForeground, contrAstBorder }, colors => {
+			const bAckgroundColor = colors.buttonBAckground ? colors.buttonBAckground : colors.editorBAckground;
+			if (bAckgroundColor) {
+				this._domNode.style.bAckgroundColor = bAckgroundColor.toString();
 			}
 
 			const foregroundColor = colors.buttonForeground ? colors.buttonForeground : colors.editorForeground;
@@ -75,107 +75,107 @@ export class FloatingClickWidget extends Widget implements IOverlayWidget {
 				this._domNode.style.color = foregroundColor.toString();
 			}
 
-			const borderColor = colors.contrastBorder ? colors.contrastBorder.toString() : '';
+			const borderColor = colors.contrAstBorder ? colors.contrAstBorder.toString() : '';
 			this._domNode.style.borderWidth = borderColor ? '1px' : '';
 			this._domNode.style.borderStyle = borderColor ? 'solid' : '';
 			this._domNode.style.borderColor = borderColor;
 		}));
 
-		append(this._domNode, $('')).textContent = this.label;
+		Append(this._domNode, $('')).textContent = this.lAbel;
 
 		this.onclick(this._domNode, e => this._onClick.fire());
 
-		this.editor.addOverlayWidget(this);
+		this.editor.AddOverlAyWidget(this);
 	}
 
 	dispose(): void {
-		this.editor.removeOverlayWidget(this);
+		this.editor.removeOverlAyWidget(this);
 
 		super.dispose();
 	}
 }
 
-export class OpenWorkspaceButtonContribution extends Disposable implements IEditorContribution {
+export clAss OpenWorkspAceButtonContribution extends DisposAble implements IEditorContribution {
 
-	static get(editor: ICodeEditor): OpenWorkspaceButtonContribution {
-		return editor.getContribution<OpenWorkspaceButtonContribution>(OpenWorkspaceButtonContribution.ID);
+	stAtic get(editor: ICodeEditor): OpenWorkspAceButtonContribution {
+		return editor.getContribution<OpenWorkspAceButtonContribution>(OpenWorkspAceButtonContribution.ID);
 	}
 
-	public static readonly ID = 'editor.contrib.openWorkspaceButton';
+	public stAtic reAdonly ID = 'editor.contrib.openWorkspAceButton';
 
-	private openWorkspaceButton: FloatingClickWidget | undefined;
+	privAte openWorkspAceButton: FloAtingClickWidget | undefined;
 
 	constructor(
-		private editor: ICodeEditor,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IHostService private readonly hostService: IHostService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IFileService private readonly fileService: IFileService
+		privAte editor: ICodeEditor,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IHostService privAte reAdonly hostService: IHostService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IFileService privAte reAdonly fileService: IFileService
 	) {
 		super();
 
-		this.update();
+		this.updAte();
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this._register(this.editor.onDidChangeModel(e => this.update()));
+	privAte registerListeners(): void {
+		this._register(this.editor.onDidChAngeModel(e => this.updAte()));
 	}
 
-	private update(): void {
+	privAte updAte(): void {
 		if (!this.shouldShowButton(this.editor)) {
-			this.disposeOpenWorkspaceWidgetRenderer();
+			this.disposeOpenWorkspAceWidgetRenderer();
 			return;
 		}
 
-		this.createOpenWorkspaceWidgetRenderer();
+		this.creAteOpenWorkspAceWidgetRenderer();
 	}
 
-	private shouldShowButton(editor: ICodeEditor): boolean {
+	privAte shouldShowButton(editor: ICodeEditor): booleAn {
 		const model = editor.getModel();
 		if (!model) {
-			return false; // we need a model
+			return fAlse; // we need A model
 		}
 
-		if (!hasWorkspaceFileExtension(model.uri)) {
-			return false; // we need a workspace file
+		if (!hAsWorkspAceFileExtension(model.uri)) {
+			return fAlse; // we need A workspAce file
 		}
 
-		if (!this.fileService.canHandleResource(model.uri)) {
-			return false; // needs to be backed by a file service
+		if (!this.fileService.cAnHAndleResource(model.uri)) {
+			return fAlse; // needs to be bAcked by A file service
 		}
 
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			const workspaceConfiguration = this.contextService.getWorkspace().configuration;
-			if (workspaceConfiguration && isEqual(workspaceConfiguration, model.uri)) {
-				return false; // already inside workspace
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			const workspAceConfigurAtion = this.contextService.getWorkspAce().configurAtion;
+			if (workspAceConfigurAtion && isEquAl(workspAceConfigurAtion, model.uri)) {
+				return fAlse; // AlreAdy inside workspAce
 			}
 		}
 
 		return true;
 	}
 
-	private createOpenWorkspaceWidgetRenderer(): void {
-		if (!this.openWorkspaceButton) {
-			this.openWorkspaceButton = this.instantiationService.createInstance(FloatingClickWidget, this.editor, localize('openWorkspace', "Open Workspace"), null);
-			this._register(this.openWorkspaceButton.onClick(() => {
+	privAte creAteOpenWorkspAceWidgetRenderer(): void {
+		if (!this.openWorkspAceButton) {
+			this.openWorkspAceButton = this.instAntiAtionService.creAteInstAnce(FloAtingClickWidget, this.editor, locAlize('openWorkspAce', "Open WorkspAce"), null);
+			this._register(this.openWorkspAceButton.onClick(() => {
 				const model = this.editor.getModel();
 				if (model) {
-					this.hostService.openWindow([{ workspaceUri: model.uri }]);
+					this.hostService.openWindow([{ workspAceUri: model.uri }]);
 				}
 			}));
 
-			this.openWorkspaceButton.render();
+			this.openWorkspAceButton.render();
 		}
 	}
 
-	private disposeOpenWorkspaceWidgetRenderer(): void {
-		dispose(this.openWorkspaceButton);
-		this.openWorkspaceButton = undefined;
+	privAte disposeOpenWorkspAceWidgetRenderer(): void {
+		dispose(this.openWorkspAceButton);
+		this.openWorkspAceButton = undefined;
 	}
 
 	dispose(): void {
-		this.disposeOpenWorkspaceWidgetRenderer();
+		this.disposeOpenWorkspAceWidgetRenderer();
 
 		super.dispose();
 	}

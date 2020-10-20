@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import * as strings from 'vs/base/common/strings';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import * As strings from 'vs/bAse/common/strings';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { ApplyEditsResult, EndOfLinePreference, FindMatch, IInternalModelContentChange, ISingleEditOperationIdentifier, ITextBuffer, ITextSnapshot, ValidAnnotatedEditOperation, IValidEditOperation } from 'vs/editor/common/model';
-import { PieceTreeBase, StringBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBase';
-import { SearchData } from 'vs/editor/common/model/textModelSearch';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ApplyEditsResult, EndOfLinePreference, FindMAtch, IInternAlModelContentChAnge, ISingleEditOperAtionIdentifier, ITextBuffer, ITextSnApshot, VAlidAnnotAtedEditOperAtion, IVAlidEditOperAtion } from 'vs/editor/common/model';
+import { PieceTreeBAse, StringBuffer } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeBAse';
+import { SeArchDAtA } from 'vs/editor/common/model/textModelSeArch';
 import { countEOL, StringEOL } from 'vs/editor/common/model/tokensStore';
-import { TextChange } from 'vs/editor/common/model/textChange';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { TextChAnge } from 'vs/editor/common/model/textChAnge';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface IValidatedEditOperation {
+export interfAce IVAlidAtedEditOperAtion {
 	sortIndex: number;
-	identifier: ISingleEditOperationIdentifier | null;
-	range: Range;
-	rangeOffset: number;
-	rangeLength: number;
+	identifier: ISingleEditOperAtionIdentifier | null;
+	rAnge: RAnge;
+	rAngeOffset: number;
+	rAngeLength: number;
 	text: string;
 	eolCount: number;
 	firstLineLength: number;
-	lastLineLength: number;
-	forceMoveMarkers: boolean;
-	isAutoWhitespaceEdit: boolean;
+	lAstLineLength: number;
+	forceMoveMArkers: booleAn;
+	isAutoWhitespAceEdit: booleAn;
 }
 
-export interface IReverseSingleEditOperation extends IValidEditOperation {
+export interfAce IReverseSingleEditOperAtion extends IVAlidEditOperAtion {
 	sortIndex: number;
 }
 
-export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
-	private readonly _pieceTree: PieceTreeBase;
-	private readonly _BOM: string;
-	private _mightContainRTL: boolean;
-	private _mightContainUnusualLineTerminators: boolean;
-	private _mightContainNonBasicASCII: boolean;
+export clAss PieceTreeTextBuffer implements ITextBuffer, IDisposAble {
+	privAte reAdonly _pieceTree: PieceTreeBAse;
+	privAte reAdonly _BOM: string;
+	privAte _mightContAinRTL: booleAn;
+	privAte _mightContAinUnusuAlLineTerminAtors: booleAn;
+	privAte _mightContAinNonBAsicASCII: booleAn;
 
-	private readonly _onDidChangeContent: Emitter<void> = new Emitter<void>();
-	public readonly onDidChangeContent: Event<void> = this._onDidChangeContent.event;
+	privAte reAdonly _onDidChAngeContent: Emitter<void> = new Emitter<void>();
+	public reAdonly onDidChAngeContent: Event<void> = this._onDidChAngeContent.event;
 
-	constructor(chunks: StringBuffer[], BOM: string, eol: '\r\n' | '\n', containsRTL: boolean, containsUnusualLineTerminators: boolean, isBasicASCII: boolean, eolNormalized: boolean) {
+	constructor(chunks: StringBuffer[], BOM: string, eol: '\r\n' | '\n', contAinsRTL: booleAn, contAinsUnusuAlLineTerminAtors: booleAn, isBAsicASCII: booleAn, eolNormAlized: booleAn) {
 		this._BOM = BOM;
-		this._mightContainNonBasicASCII = !isBasicASCII;
-		this._mightContainRTL = containsRTL;
-		this._mightContainUnusualLineTerminators = containsUnusualLineTerminators;
-		this._pieceTree = new PieceTreeBase(chunks, eol, eolNormalized);
+		this._mightContAinNonBAsicASCII = !isBAsicASCII;
+		this._mightContAinRTL = contAinsRTL;
+		this._mightContAinUnusuAlLineTerminAtors = contAinsUnusuAlLineTerminAtors;
+		this._pieceTree = new PieceTreeBAse(chunks, eol, eolNormAlized);
 	}
 	dispose(): void {
-		this._onDidChangeContent.dispose();
+		this._onDidChAngeContent.dispose();
 	}
 
 	// #region TextBuffer
-	public equals(other: ITextBuffer): boolean {
-		if (!(other instanceof PieceTreeTextBuffer)) {
-			return false;
+	public equAls(other: ITextBuffer): booleAn {
+		if (!(other instAnceof PieceTreeTextBuffer)) {
+			return fAlse;
 		}
 		if (this._BOM !== other._BOM) {
-			return false;
+			return fAlse;
 		}
 		if (this.getEOL() !== other.getEOL()) {
-			return false;
+			return fAlse;
 		}
-		return this._pieceTree.equal(other._pieceTree);
+		return this._pieceTree.equAl(other._pieceTree);
 	}
-	public mightContainRTL(): boolean {
-		return this._mightContainRTL;
+	public mightContAinRTL(): booleAn {
+		return this._mightContAinRTL;
 	}
-	public mightContainUnusualLineTerminators(): boolean {
-		return this._mightContainUnusualLineTerminators;
+	public mightContAinUnusuAlLineTerminAtors(): booleAn {
+		return this._mightContAinUnusuAlLineTerminAtors;
 	}
-	public resetMightContainUnusualLineTerminators(): void {
-		this._mightContainUnusualLineTerminators = false;
+	public resetMightContAinUnusuAlLineTerminAtors(): void {
+		this._mightContAinUnusuAlLineTerminAtors = fAlse;
 	}
-	public mightContainNonBasicASCII(): boolean {
-		return this._mightContainNonBasicASCII;
+	public mightContAinNonBAsicASCII(): booleAn {
+		return this._mightContAinNonBAsicASCII;
 	}
 	public getBOM(): string {
 		return this._BOM;
@@ -85,8 +85,8 @@ export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
 		return this._pieceTree.getEOL();
 	}
 
-	public createSnapshot(preserveBOM: boolean): ITextSnapshot {
-		return this._pieceTree.createSnapshot(preserveBOM ? this._BOM : '');
+	public creAteSnApshot(preserveBOM: booleAn): ITextSnApshot {
+		return this._pieceTree.creAteSnApshot(preserveBOM ? this._BOM : '');
 	}
 
 	public getOffsetAt(lineNumber: number, column: number): number {
@@ -97,51 +97,51 @@ export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
 		return this._pieceTree.getPositionAt(offset);
 	}
 
-	public getRangeAt(start: number, length: number): Range {
-		let end = start + length;
-		const startPosition = this.getPositionAt(start);
+	public getRAngeAt(stArt: number, length: number): RAnge {
+		let end = stArt + length;
+		const stArtPosition = this.getPositionAt(stArt);
 		const endPosition = this.getPositionAt(end);
-		return new Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column);
+		return new RAnge(stArtPosition.lineNumber, stArtPosition.column, endPosition.lineNumber, endPosition.column);
 	}
 
-	public getValueInRange(range: Range, eol: EndOfLinePreference = EndOfLinePreference.TextDefined): string {
-		if (range.isEmpty()) {
+	public getVAlueInRAnge(rAnge: RAnge, eol: EndOfLinePreference = EndOfLinePreference.TextDefined): string {
+		if (rAnge.isEmpty()) {
 			return '';
 		}
 
 		const lineEnding = this._getEndOfLine(eol);
-		return this._pieceTree.getValueInRange(range, lineEnding);
+		return this._pieceTree.getVAlueInRAnge(rAnge, lineEnding);
 	}
 
-	public getValueLengthInRange(range: Range, eol: EndOfLinePreference = EndOfLinePreference.TextDefined): number {
-		if (range.isEmpty()) {
+	public getVAlueLengthInRAnge(rAnge: RAnge, eol: EndOfLinePreference = EndOfLinePreference.TextDefined): number {
+		if (rAnge.isEmpty()) {
 			return 0;
 		}
 
-		if (range.startLineNumber === range.endLineNumber) {
-			return (range.endColumn - range.startColumn);
+		if (rAnge.stArtLineNumber === rAnge.endLineNumber) {
+			return (rAnge.endColumn - rAnge.stArtColumn);
 		}
 
-		let startOffset = this.getOffsetAt(range.startLineNumber, range.startColumn);
-		let endOffset = this.getOffsetAt(range.endLineNumber, range.endColumn);
-		return endOffset - startOffset;
+		let stArtOffset = this.getOffsetAt(rAnge.stArtLineNumber, rAnge.stArtColumn);
+		let endOffset = this.getOffsetAt(rAnge.endLineNumber, rAnge.endColumn);
+		return endOffset - stArtOffset;
 	}
 
-	public getCharacterCountInRange(range: Range, eol: EndOfLinePreference = EndOfLinePreference.TextDefined): number {
-		if (this._mightContainNonBasicASCII) {
-			// we must count by iterating
+	public getChArActerCountInRAnge(rAnge: RAnge, eol: EndOfLinePreference = EndOfLinePreference.TextDefined): number {
+		if (this._mightContAinNonBAsicASCII) {
+			// we must count by iterAting
 
 			let result = 0;
 
-			const fromLineNumber = range.startLineNumber;
-			const toLineNumber = range.endLineNumber;
+			const fromLineNumber = rAnge.stArtLineNumber;
+			const toLineNumber = rAnge.endLineNumber;
 			for (let lineNumber = fromLineNumber; lineNumber <= toLineNumber; lineNumber++) {
 				const lineContent = this.getLineContent(lineNumber);
-				const fromOffset = (lineNumber === fromLineNumber ? range.startColumn - 1 : 0);
-				const toOffset = (lineNumber === toLineNumber ? range.endColumn - 1 : lineContent.length);
+				const fromOffset = (lineNumber === fromLineNumber ? rAnge.stArtColumn - 1 : 0);
+				const toOffset = (lineNumber === toLineNumber ? rAnge.endColumn - 1 : lineContent.length);
 
 				for (let offset = fromOffset; offset < toOffset; offset++) {
-					if (strings.isHighSurrogate(lineContent.charCodeAt(offset))) {
+					if (strings.isHighSurrogAte(lineContent.chArCodeAt(offset))) {
 						result = result + 1;
 						offset = offset + 1;
 					} else {
@@ -155,7 +155,7 @@ export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
 			return result;
 		}
 
-		return this.getValueLengthInRange(range, eol);
+		return this.getVAlueLengthInRAnge(rAnge, eol);
 	}
 
 	public getLength(): number {
@@ -174,12 +174,12 @@ export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
 		return this._pieceTree.getLineContent(lineNumber);
 	}
 
-	public getLineCharCode(lineNumber: number, index: number): number {
-		return this._pieceTree.getLineCharCode(lineNumber, index);
+	public getLineChArCode(lineNumber: number, index: number): number {
+		return this._pieceTree.getLineChArCode(lineNumber, index);
 	}
 
-	public getCharCode(offset: number): number {
-		return this._pieceTree.getCharCode(offset);
+	public getChArCode(offset: number): number {
+		return this._pieceTree.getChArCode(offset);
 	}
 
 	public getLineLength(lineNumber: number): number {
@@ -190,35 +190,35 @@ export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
 		return 1;
 	}
 
-	public getLineMaxColumn(lineNumber: number): number {
+	public getLineMAxColumn(lineNumber: number): number {
 		return this.getLineLength(lineNumber) + 1;
 	}
 
-	public getLineFirstNonWhitespaceColumn(lineNumber: number): number {
-		const result = strings.firstNonWhitespaceIndex(this.getLineContent(lineNumber));
+	public getLineFirstNonWhitespAceColumn(lineNumber: number): number {
+		const result = strings.firstNonWhitespAceIndex(this.getLineContent(lineNumber));
 		if (result === -1) {
 			return 0;
 		}
 		return result + 1;
 	}
 
-	public getLineLastNonWhitespaceColumn(lineNumber: number): number {
-		const result = strings.lastNonWhitespaceIndex(this.getLineContent(lineNumber));
+	public getLineLAstNonWhitespAceColumn(lineNumber: number): number {
+		const result = strings.lAstNonWhitespAceIndex(this.getLineContent(lineNumber));
 		if (result === -1) {
 			return 0;
 		}
 		return result + 2;
 	}
 
-	private _getEndOfLine(eol: EndOfLinePreference): string {
+	privAte _getEndOfLine(eol: EndOfLinePreference): string {
 		switch (eol) {
-			case EndOfLinePreference.LF:
+			cAse EndOfLinePreference.LF:
 				return '\n';
-			case EndOfLinePreference.CRLF:
+			cAse EndOfLinePreference.CRLF:
 				return '\r\n';
-			case EndOfLinePreference.TextDefined:
+			cAse EndOfLinePreference.TextDefined:
 				return this.getEOL();
-			default:
+			defAult:
 				throw new Error('Unknown EOL preference');
 		}
 	}
@@ -227,388 +227,388 @@ export class PieceTreeTextBuffer implements ITextBuffer, IDisposable {
 		this._pieceTree.setEOL(newEOL);
 	}
 
-	public applyEdits(rawOperations: ValidAnnotatedEditOperation[], recordTrimAutoWhitespace: boolean, computeUndoEdits: boolean): ApplyEditsResult {
-		let mightContainRTL = this._mightContainRTL;
-		let mightContainUnusualLineTerminators = this._mightContainUnusualLineTerminators;
-		let mightContainNonBasicASCII = this._mightContainNonBasicASCII;
-		let canReduceOperations = true;
+	public ApplyEdits(rAwOperAtions: VAlidAnnotAtedEditOperAtion[], recordTrimAutoWhitespAce: booleAn, computeUndoEdits: booleAn): ApplyEditsResult {
+		let mightContAinRTL = this._mightContAinRTL;
+		let mightContAinUnusuAlLineTerminAtors = this._mightContAinUnusuAlLineTerminAtors;
+		let mightContAinNonBAsicASCII = this._mightContAinNonBAsicASCII;
+		let cAnReduceOperAtions = true;
 
-		let operations: IValidatedEditOperation[] = [];
-		for (let i = 0; i < rawOperations.length; i++) {
-			let op = rawOperations[i];
-			if (canReduceOperations && op._isTracked) {
-				canReduceOperations = false;
+		let operAtions: IVAlidAtedEditOperAtion[] = [];
+		for (let i = 0; i < rAwOperAtions.length; i++) {
+			let op = rAwOperAtions[i];
+			if (cAnReduceOperAtions && op._isTrAcked) {
+				cAnReduceOperAtions = fAlse;
 			}
-			let validatedRange = op.range;
+			let vAlidAtedRAnge = op.rAnge;
 			if (op.text) {
-				let textMightContainNonBasicASCII = true;
-				if (!mightContainNonBasicASCII) {
-					textMightContainNonBasicASCII = !strings.isBasicASCII(op.text);
-					mightContainNonBasicASCII = textMightContainNonBasicASCII;
+				let textMightContAinNonBAsicASCII = true;
+				if (!mightContAinNonBAsicASCII) {
+					textMightContAinNonBAsicASCII = !strings.isBAsicASCII(op.text);
+					mightContAinNonBAsicASCII = textMightContAinNonBAsicASCII;
 				}
-				if (!mightContainRTL && textMightContainNonBasicASCII) {
-					// check if the new inserted text contains RTL
-					mightContainRTL = strings.containsRTL(op.text);
+				if (!mightContAinRTL && textMightContAinNonBAsicASCII) {
+					// check if the new inserted text contAins RTL
+					mightContAinRTL = strings.contAinsRTL(op.text);
 				}
-				if (!mightContainUnusualLineTerminators && textMightContainNonBasicASCII) {
-					// check if the new inserted text contains unusual line terminators
-					mightContainUnusualLineTerminators = strings.containsUnusualLineTerminators(op.text);
+				if (!mightContAinUnusuAlLineTerminAtors && textMightContAinNonBAsicASCII) {
+					// check if the new inserted text contAins unusuAl line terminAtors
+					mightContAinUnusuAlLineTerminAtors = strings.contAinsUnusuAlLineTerminAtors(op.text);
 				}
 			}
 
-			let validText = '';
+			let vAlidText = '';
 			let eolCount = 0;
 			let firstLineLength = 0;
-			let lastLineLength = 0;
+			let lAstLineLength = 0;
 			if (op.text) {
 				let strEOL: StringEOL;
-				[eolCount, firstLineLength, lastLineLength, strEOL] = countEOL(op.text);
+				[eolCount, firstLineLength, lAstLineLength, strEOL] = countEOL(op.text);
 
 				const bufferEOL = this.getEOL();
 				const expectedStrEOL = (bufferEOL === '\r\n' ? StringEOL.CRLF : StringEOL.LF);
 				if (strEOL === StringEOL.Unknown || strEOL === expectedStrEOL) {
-					validText = op.text;
+					vAlidText = op.text;
 				} else {
-					validText = op.text.replace(/\r\n|\r|\n/g, bufferEOL);
+					vAlidText = op.text.replAce(/\r\n|\r|\n/g, bufferEOL);
 				}
 			}
 
-			operations[i] = {
+			operAtions[i] = {
 				sortIndex: i,
 				identifier: op.identifier || null,
-				range: validatedRange,
-				rangeOffset: this.getOffsetAt(validatedRange.startLineNumber, validatedRange.startColumn),
-				rangeLength: this.getValueLengthInRange(validatedRange),
-				text: validText,
+				rAnge: vAlidAtedRAnge,
+				rAngeOffset: this.getOffsetAt(vAlidAtedRAnge.stArtLineNumber, vAlidAtedRAnge.stArtColumn),
+				rAngeLength: this.getVAlueLengthInRAnge(vAlidAtedRAnge),
+				text: vAlidText,
 				eolCount: eolCount,
 				firstLineLength: firstLineLength,
-				lastLineLength: lastLineLength,
-				forceMoveMarkers: Boolean(op.forceMoveMarkers),
-				isAutoWhitespaceEdit: op.isAutoWhitespaceEdit || false
+				lAstLineLength: lAstLineLength,
+				forceMoveMArkers: BooleAn(op.forceMoveMArkers),
+				isAutoWhitespAceEdit: op.isAutoWhitespAceEdit || fAlse
 			};
 		}
 
-		// Sort operations ascending
-		operations.sort(PieceTreeTextBuffer._sortOpsAscending);
+		// Sort operAtions Ascending
+		operAtions.sort(PieceTreeTextBuffer._sortOpsAscending);
 
-		let hasTouchingRanges = false;
-		for (let i = 0, count = operations.length - 1; i < count; i++) {
-			let rangeEnd = operations[i].range.getEndPosition();
-			let nextRangeStart = operations[i + 1].range.getStartPosition();
+		let hAsTouchingRAnges = fAlse;
+		for (let i = 0, count = operAtions.length - 1; i < count; i++) {
+			let rAngeEnd = operAtions[i].rAnge.getEndPosition();
+			let nextRAngeStArt = operAtions[i + 1].rAnge.getStArtPosition();
 
-			if (nextRangeStart.isBeforeOrEqual(rangeEnd)) {
-				if (nextRangeStart.isBefore(rangeEnd)) {
-					// overlapping ranges
-					throw new Error('Overlapping ranges are not allowed!');
+			if (nextRAngeStArt.isBeforeOrEquAl(rAngeEnd)) {
+				if (nextRAngeStArt.isBefore(rAngeEnd)) {
+					// overlApping rAnges
+					throw new Error('OverlApping rAnges Are not Allowed!');
 				}
-				hasTouchingRanges = true;
+				hAsTouchingRAnges = true;
 			}
 		}
 
-		if (canReduceOperations) {
-			operations = this._reduceOperations(operations);
+		if (cAnReduceOperAtions) {
+			operAtions = this._reduceOperAtions(operAtions);
 		}
 
-		// Delta encode operations
-		let reverseRanges = (computeUndoEdits || recordTrimAutoWhitespace ? PieceTreeTextBuffer._getInverseEditRanges(operations) : []);
-		let newTrimAutoWhitespaceCandidates: { lineNumber: number, oldContent: string }[] = [];
-		if (recordTrimAutoWhitespace) {
-			for (let i = 0; i < operations.length; i++) {
-				let op = operations[i];
-				let reverseRange = reverseRanges[i];
+		// DeltA encode operAtions
+		let reverseRAnges = (computeUndoEdits || recordTrimAutoWhitespAce ? PieceTreeTextBuffer._getInverseEditRAnges(operAtions) : []);
+		let newTrimAutoWhitespAceCAndidAtes: { lineNumber: number, oldContent: string }[] = [];
+		if (recordTrimAutoWhitespAce) {
+			for (let i = 0; i < operAtions.length; i++) {
+				let op = operAtions[i];
+				let reverseRAnge = reverseRAnges[i];
 
-				if (op.isAutoWhitespaceEdit && op.range.isEmpty()) {
-					// Record already the future line numbers that might be auto whitespace removal candidates on next edit
-					for (let lineNumber = reverseRange.startLineNumber; lineNumber <= reverseRange.endLineNumber; lineNumber++) {
+				if (op.isAutoWhitespAceEdit && op.rAnge.isEmpty()) {
+					// Record AlreAdy the future line numbers thAt might be Auto whitespAce removAl cAndidAtes on next edit
+					for (let lineNumber = reverseRAnge.stArtLineNumber; lineNumber <= reverseRAnge.endLineNumber; lineNumber++) {
 						let currentLineContent = '';
-						if (lineNumber === reverseRange.startLineNumber) {
-							currentLineContent = this.getLineContent(op.range.startLineNumber);
-							if (strings.firstNonWhitespaceIndex(currentLineContent) !== -1) {
+						if (lineNumber === reverseRAnge.stArtLineNumber) {
+							currentLineContent = this.getLineContent(op.rAnge.stArtLineNumber);
+							if (strings.firstNonWhitespAceIndex(currentLineContent) !== -1) {
 								continue;
 							}
 						}
-						newTrimAutoWhitespaceCandidates.push({ lineNumber: lineNumber, oldContent: currentLineContent });
+						newTrimAutoWhitespAceCAndidAtes.push({ lineNumber: lineNumber, oldContent: currentLineContent });
 					}
 				}
 			}
 		}
 
-		let reverseOperations: IReverseSingleEditOperation[] | null = null;
+		let reverseOperAtions: IReverseSingleEditOperAtion[] | null = null;
 		if (computeUndoEdits) {
 
-			let reverseRangeDeltaOffset = 0;
-			reverseOperations = [];
-			for (let i = 0; i < operations.length; i++) {
-				const op = operations[i];
-				const reverseRange = reverseRanges[i];
-				const bufferText = this.getValueInRange(op.range);
-				const reverseRangeOffset = op.rangeOffset + reverseRangeDeltaOffset;
-				reverseRangeDeltaOffset += (op.text.length - bufferText.length);
+			let reverseRAngeDeltAOffset = 0;
+			reverseOperAtions = [];
+			for (let i = 0; i < operAtions.length; i++) {
+				const op = operAtions[i];
+				const reverseRAnge = reverseRAnges[i];
+				const bufferText = this.getVAlueInRAnge(op.rAnge);
+				const reverseRAngeOffset = op.rAngeOffset + reverseRAngeDeltAOffset;
+				reverseRAngeDeltAOffset += (op.text.length - bufferText.length);
 
-				reverseOperations[i] = {
+				reverseOperAtions[i] = {
 					sortIndex: op.sortIndex,
 					identifier: op.identifier,
-					range: reverseRange,
+					rAnge: reverseRAnge,
 					text: bufferText,
-					textChange: new TextChange(op.rangeOffset, bufferText, reverseRangeOffset, op.text)
+					textChAnge: new TextChAnge(op.rAngeOffset, bufferText, reverseRAngeOffset, op.text)
 				};
 			}
 
-			// Can only sort reverse operations when the order is not significant
-			if (!hasTouchingRanges) {
-				reverseOperations.sort((a, b) => a.sortIndex - b.sortIndex);
+			// CAn only sort reverse operAtions when the order is not significAnt
+			if (!hAsTouchingRAnges) {
+				reverseOperAtions.sort((A, b) => A.sortIndex - b.sortIndex);
 			}
 		}
 
 
-		this._mightContainRTL = mightContainRTL;
-		this._mightContainUnusualLineTerminators = mightContainUnusualLineTerminators;
-		this._mightContainNonBasicASCII = mightContainNonBasicASCII;
+		this._mightContAinRTL = mightContAinRTL;
+		this._mightContAinUnusuAlLineTerminAtors = mightContAinUnusuAlLineTerminAtors;
+		this._mightContAinNonBAsicASCII = mightContAinNonBAsicASCII;
 
-		const contentChanges = this._doApplyEdits(operations);
+		const contentChAnges = this._doApplyEdits(operAtions);
 
-		let trimAutoWhitespaceLineNumbers: number[] | null = null;
-		if (recordTrimAutoWhitespace && newTrimAutoWhitespaceCandidates.length > 0) {
-			// sort line numbers auto whitespace removal candidates for next edit descending
-			newTrimAutoWhitespaceCandidates.sort((a, b) => b.lineNumber - a.lineNumber);
+		let trimAutoWhitespAceLineNumbers: number[] | null = null;
+		if (recordTrimAutoWhitespAce && newTrimAutoWhitespAceCAndidAtes.length > 0) {
+			// sort line numbers Auto whitespAce removAl cAndidAtes for next edit descending
+			newTrimAutoWhitespAceCAndidAtes.sort((A, b) => b.lineNumber - A.lineNumber);
 
-			trimAutoWhitespaceLineNumbers = [];
-			for (let i = 0, len = newTrimAutoWhitespaceCandidates.length; i < len; i++) {
-				let lineNumber = newTrimAutoWhitespaceCandidates[i].lineNumber;
-				if (i > 0 && newTrimAutoWhitespaceCandidates[i - 1].lineNumber === lineNumber) {
-					// Do not have the same line number twice
+			trimAutoWhitespAceLineNumbers = [];
+			for (let i = 0, len = newTrimAutoWhitespAceCAndidAtes.length; i < len; i++) {
+				let lineNumber = newTrimAutoWhitespAceCAndidAtes[i].lineNumber;
+				if (i > 0 && newTrimAutoWhitespAceCAndidAtes[i - 1].lineNumber === lineNumber) {
+					// Do not hAve the sAme line number twice
 					continue;
 				}
 
-				let prevContent = newTrimAutoWhitespaceCandidates[i].oldContent;
+				let prevContent = newTrimAutoWhitespAceCAndidAtes[i].oldContent;
 				let lineContent = this.getLineContent(lineNumber);
 
-				if (lineContent.length === 0 || lineContent === prevContent || strings.firstNonWhitespaceIndex(lineContent) !== -1) {
+				if (lineContent.length === 0 || lineContent === prevContent || strings.firstNonWhitespAceIndex(lineContent) !== -1) {
 					continue;
 				}
 
-				trimAutoWhitespaceLineNumbers.push(lineNumber);
+				trimAutoWhitespAceLineNumbers.push(lineNumber);
 			}
 		}
 
-		this._onDidChangeContent.fire();
+		this._onDidChAngeContent.fire();
 
 		return new ApplyEditsResult(
-			reverseOperations,
-			contentChanges,
-			trimAutoWhitespaceLineNumbers
+			reverseOperAtions,
+			contentChAnges,
+			trimAutoWhitespAceLineNumbers
 		);
 	}
 
 	/**
-	 * Transform operations such that they represent the same logic edit,
-	 * but that they also do not cause OOM crashes.
+	 * TrAnsform operAtions such thAt they represent the sAme logic edit,
+	 * but thAt they Also do not cAuse OOM crAshes.
 	 */
-	private _reduceOperations(operations: IValidatedEditOperation[]): IValidatedEditOperation[] {
-		if (operations.length < 1000) {
-			// We know from empirical testing that a thousand edits work fine regardless of their shape.
-			return operations;
+	privAte _reduceOperAtions(operAtions: IVAlidAtedEditOperAtion[]): IVAlidAtedEditOperAtion[] {
+		if (operAtions.length < 1000) {
+			// We know from empiricAl testing thAt A thousAnd edits work fine regArdless of their shApe.
+			return operAtions;
 		}
 
-		// At one point, due to how events are emitted and how each operation is handled,
-		// some operations can trigger a high amount of temporary string allocations,
-		// that will immediately get edited again.
-		// e.g. a formatter inserting ridiculous ammounts of \n on a model with a single line
-		// Therefore, the strategy is to collapse all the operations into a huge single edit operation
-		return [this._toSingleEditOperation(operations)];
+		// At one point, due to how events Are emitted And how eAch operAtion is hAndled,
+		// some operAtions cAn trigger A high Amount of temporAry string AllocAtions,
+		// thAt will immediAtely get edited AgAin.
+		// e.g. A formAtter inserting ridiculous Ammounts of \n on A model with A single line
+		// Therefore, the strAtegy is to collApse All the operAtions into A huge single edit operAtion
+		return [this._toSingleEditOperAtion(operAtions)];
 	}
 
-	_toSingleEditOperation(operations: IValidatedEditOperation[]): IValidatedEditOperation {
-		let forceMoveMarkers = false;
-		const firstEditRange = operations[0].range;
-		const lastEditRange = operations[operations.length - 1].range;
-		const entireEditRange = new Range(firstEditRange.startLineNumber, firstEditRange.startColumn, lastEditRange.endLineNumber, lastEditRange.endColumn);
-		let lastEndLineNumber = firstEditRange.startLineNumber;
-		let lastEndColumn = firstEditRange.startColumn;
+	_toSingleEditOperAtion(operAtions: IVAlidAtedEditOperAtion[]): IVAlidAtedEditOperAtion {
+		let forceMoveMArkers = fAlse;
+		const firstEditRAnge = operAtions[0].rAnge;
+		const lAstEditRAnge = operAtions[operAtions.length - 1].rAnge;
+		const entireEditRAnge = new RAnge(firstEditRAnge.stArtLineNumber, firstEditRAnge.stArtColumn, lAstEditRAnge.endLineNumber, lAstEditRAnge.endColumn);
+		let lAstEndLineNumber = firstEditRAnge.stArtLineNumber;
+		let lAstEndColumn = firstEditRAnge.stArtColumn;
 		const result: string[] = [];
 
-		for (let i = 0, len = operations.length; i < len; i++) {
-			const operation = operations[i];
-			const range = operation.range;
+		for (let i = 0, len = operAtions.length; i < len; i++) {
+			const operAtion = operAtions[i];
+			const rAnge = operAtion.rAnge;
 
-			forceMoveMarkers = forceMoveMarkers || operation.forceMoveMarkers;
+			forceMoveMArkers = forceMoveMArkers || operAtion.forceMoveMArkers;
 
 			// (1) -- Push old text
-			result.push(this.getValueInRange(new Range(lastEndLineNumber, lastEndColumn, range.startLineNumber, range.startColumn)));
+			result.push(this.getVAlueInRAnge(new RAnge(lAstEndLineNumber, lAstEndColumn, rAnge.stArtLineNumber, rAnge.stArtColumn)));
 
 			// (2) -- Push new text
-			if (operation.text.length > 0) {
-				result.push(operation.text);
+			if (operAtion.text.length > 0) {
+				result.push(operAtion.text);
 			}
 
-			lastEndLineNumber = range.endLineNumber;
-			lastEndColumn = range.endColumn;
+			lAstEndLineNumber = rAnge.endLineNumber;
+			lAstEndColumn = rAnge.endColumn;
 		}
 
 		const text = result.join('');
-		const [eolCount, firstLineLength, lastLineLength] = countEOL(text);
+		const [eolCount, firstLineLength, lAstLineLength] = countEOL(text);
 
 		return {
 			sortIndex: 0,
-			identifier: operations[0].identifier,
-			range: entireEditRange,
-			rangeOffset: this.getOffsetAt(entireEditRange.startLineNumber, entireEditRange.startColumn),
-			rangeLength: this.getValueLengthInRange(entireEditRange, EndOfLinePreference.TextDefined),
+			identifier: operAtions[0].identifier,
+			rAnge: entireEditRAnge,
+			rAngeOffset: this.getOffsetAt(entireEditRAnge.stArtLineNumber, entireEditRAnge.stArtColumn),
+			rAngeLength: this.getVAlueLengthInRAnge(entireEditRAnge, EndOfLinePreference.TextDefined),
 			text: text,
 			eolCount: eolCount,
 			firstLineLength: firstLineLength,
-			lastLineLength: lastLineLength,
-			forceMoveMarkers: forceMoveMarkers,
-			isAutoWhitespaceEdit: false
+			lAstLineLength: lAstLineLength,
+			forceMoveMArkers: forceMoveMArkers,
+			isAutoWhitespAceEdit: fAlse
 		};
 	}
 
-	private _doApplyEdits(operations: IValidatedEditOperation[]): IInternalModelContentChange[] {
-		operations.sort(PieceTreeTextBuffer._sortOpsDescending);
+	privAte _doApplyEdits(operAtions: IVAlidAtedEditOperAtion[]): IInternAlModelContentChAnge[] {
+		operAtions.sort(PieceTreeTextBuffer._sortOpsDescending);
 
-		let contentChanges: IInternalModelContentChange[] = [];
+		let contentChAnges: IInternAlModelContentChAnge[] = [];
 
-		// operations are from bottom to top
-		for (let i = 0; i < operations.length; i++) {
-			let op = operations[i];
+		// operAtions Are from bottom to top
+		for (let i = 0; i < operAtions.length; i++) {
+			let op = operAtions[i];
 
-			const startLineNumber = op.range.startLineNumber;
-			const startColumn = op.range.startColumn;
-			const endLineNumber = op.range.endLineNumber;
-			const endColumn = op.range.endColumn;
+			const stArtLineNumber = op.rAnge.stArtLineNumber;
+			const stArtColumn = op.rAnge.stArtColumn;
+			const endLineNumber = op.rAnge.endLineNumber;
+			const endColumn = op.rAnge.endColumn;
 
-			if (startLineNumber === endLineNumber && startColumn === endColumn && op.text.length === 0) {
+			if (stArtLineNumber === endLineNumber && stArtColumn === endColumn && op.text.length === 0) {
 				// no-op
 				continue;
 			}
 
 			if (op.text) {
-				// replacement
-				this._pieceTree.delete(op.rangeOffset, op.rangeLength);
-				this._pieceTree.insert(op.rangeOffset, op.text, true);
+				// replAcement
+				this._pieceTree.delete(op.rAngeOffset, op.rAngeLength);
+				this._pieceTree.insert(op.rAngeOffset, op.text, true);
 
 			} else {
 				// deletion
-				this._pieceTree.delete(op.rangeOffset, op.rangeLength);
+				this._pieceTree.delete(op.rAngeOffset, op.rAngeLength);
 			}
 
-			const contentChangeRange = new Range(startLineNumber, startColumn, endLineNumber, endColumn);
-			contentChanges.push({
-				range: contentChangeRange,
-				rangeLength: op.rangeLength,
+			const contentChAngeRAnge = new RAnge(stArtLineNumber, stArtColumn, endLineNumber, endColumn);
+			contentChAnges.push({
+				rAnge: contentChAngeRAnge,
+				rAngeLength: op.rAngeLength,
 				text: op.text,
-				rangeOffset: op.rangeOffset,
-				forceMoveMarkers: op.forceMoveMarkers
+				rAngeOffset: op.rAngeOffset,
+				forceMoveMArkers: op.forceMoveMArkers
 			});
 		}
-		return contentChanges;
+		return contentChAnges;
 	}
 
-	findMatchesLineByLine(searchRange: Range, searchData: SearchData, captureMatches: boolean, limitResultCount: number): FindMatch[] {
-		return this._pieceTree.findMatchesLineByLine(searchRange, searchData, captureMatches, limitResultCount);
+	findMAtchesLineByLine(seArchRAnge: RAnge, seArchDAtA: SeArchDAtA, cAptureMAtches: booleAn, limitResultCount: number): FindMAtch[] {
+		return this._pieceTree.findMAtchesLineByLine(seArchRAnge, seArchDAtA, cAptureMAtches, limitResultCount);
 	}
 
 	// #endregion
 
 	// #region helper
 	// testing purpose.
-	public getPieceTree(): PieceTreeBase {
+	public getPieceTree(): PieceTreeBAse {
 		return this._pieceTree;
 	}
 
-	public static _getInverseEditRange(range: Range, text: string) {
-		let startLineNumber = range.startLineNumber;
-		let startColumn = range.startColumn;
-		const [eolCount, firstLineLength, lastLineLength] = countEOL(text);
-		let resultRange: Range;
+	public stAtic _getInverseEditRAnge(rAnge: RAnge, text: string) {
+		let stArtLineNumber = rAnge.stArtLineNumber;
+		let stArtColumn = rAnge.stArtColumn;
+		const [eolCount, firstLineLength, lAstLineLength] = countEOL(text);
+		let resultRAnge: RAnge;
 
 		if (text.length > 0) {
-			// the operation inserts something
+			// the operAtion inserts something
 			const lineCount = eolCount + 1;
 
 			if (lineCount === 1) {
 				// single line insert
-				resultRange = new Range(startLineNumber, startColumn, startLineNumber, startColumn + firstLineLength);
+				resultRAnge = new RAnge(stArtLineNumber, stArtColumn, stArtLineNumber, stArtColumn + firstLineLength);
 			} else {
 				// multi line insert
-				resultRange = new Range(startLineNumber, startColumn, startLineNumber + lineCount - 1, lastLineLength + 1);
+				resultRAnge = new RAnge(stArtLineNumber, stArtColumn, stArtLineNumber + lineCount - 1, lAstLineLength + 1);
 			}
 		} else {
 			// There is nothing to insert
-			resultRange = new Range(startLineNumber, startColumn, startLineNumber, startColumn);
+			resultRAnge = new RAnge(stArtLineNumber, stArtColumn, stArtLineNumber, stArtColumn);
 		}
 
-		return resultRange;
+		return resultRAnge;
 	}
 
 	/**
-	 * Assumes `operations` are validated and sorted ascending
+	 * Assumes `operAtions` Are vAlidAted And sorted Ascending
 	 */
-	public static _getInverseEditRanges(operations: IValidatedEditOperation[]): Range[] {
-		let result: Range[] = [];
+	public stAtic _getInverseEditRAnges(operAtions: IVAlidAtedEditOperAtion[]): RAnge[] {
+		let result: RAnge[] = [];
 
 		let prevOpEndLineNumber: number = 0;
 		let prevOpEndColumn: number = 0;
-		let prevOp: IValidatedEditOperation | null = null;
-		for (let i = 0, len = operations.length; i < len; i++) {
-			let op = operations[i];
+		let prevOp: IVAlidAtedEditOperAtion | null = null;
+		for (let i = 0, len = operAtions.length; i < len; i++) {
+			let op = operAtions[i];
 
-			let startLineNumber: number;
-			let startColumn: number;
+			let stArtLineNumber: number;
+			let stArtColumn: number;
 
 			if (prevOp) {
-				if (prevOp.range.endLineNumber === op.range.startLineNumber) {
-					startLineNumber = prevOpEndLineNumber;
-					startColumn = prevOpEndColumn + (op.range.startColumn - prevOp.range.endColumn);
+				if (prevOp.rAnge.endLineNumber === op.rAnge.stArtLineNumber) {
+					stArtLineNumber = prevOpEndLineNumber;
+					stArtColumn = prevOpEndColumn + (op.rAnge.stArtColumn - prevOp.rAnge.endColumn);
 				} else {
-					startLineNumber = prevOpEndLineNumber + (op.range.startLineNumber - prevOp.range.endLineNumber);
-					startColumn = op.range.startColumn;
+					stArtLineNumber = prevOpEndLineNumber + (op.rAnge.stArtLineNumber - prevOp.rAnge.endLineNumber);
+					stArtColumn = op.rAnge.stArtColumn;
 				}
 			} else {
-				startLineNumber = op.range.startLineNumber;
-				startColumn = op.range.startColumn;
+				stArtLineNumber = op.rAnge.stArtLineNumber;
+				stArtColumn = op.rAnge.stArtColumn;
 			}
 
-			let resultRange: Range;
+			let resultRAnge: RAnge;
 
 			if (op.text.length > 0) {
-				// the operation inserts something
+				// the operAtion inserts something
 				const lineCount = op.eolCount + 1;
 
 				if (lineCount === 1) {
 					// single line insert
-					resultRange = new Range(startLineNumber, startColumn, startLineNumber, startColumn + op.firstLineLength);
+					resultRAnge = new RAnge(stArtLineNumber, stArtColumn, stArtLineNumber, stArtColumn + op.firstLineLength);
 				} else {
 					// multi line insert
-					resultRange = new Range(startLineNumber, startColumn, startLineNumber + lineCount - 1, op.lastLineLength + 1);
+					resultRAnge = new RAnge(stArtLineNumber, stArtColumn, stArtLineNumber + lineCount - 1, op.lAstLineLength + 1);
 				}
 			} else {
 				// There is nothing to insert
-				resultRange = new Range(startLineNumber, startColumn, startLineNumber, startColumn);
+				resultRAnge = new RAnge(stArtLineNumber, stArtColumn, stArtLineNumber, stArtColumn);
 			}
 
-			prevOpEndLineNumber = resultRange.endLineNumber;
-			prevOpEndColumn = resultRange.endColumn;
+			prevOpEndLineNumber = resultRAnge.endLineNumber;
+			prevOpEndColumn = resultRAnge.endColumn;
 
-			result.push(resultRange);
+			result.push(resultRAnge);
 			prevOp = op;
 		}
 
 		return result;
 	}
 
-	private static _sortOpsAscending(a: IValidatedEditOperation, b: IValidatedEditOperation): number {
-		let r = Range.compareRangesUsingEnds(a.range, b.range);
+	privAte stAtic _sortOpsAscending(A: IVAlidAtedEditOperAtion, b: IVAlidAtedEditOperAtion): number {
+		let r = RAnge.compAreRAngesUsingEnds(A.rAnge, b.rAnge);
 		if (r === 0) {
-			return a.sortIndex - b.sortIndex;
+			return A.sortIndex - b.sortIndex;
 		}
 		return r;
 	}
 
-	private static _sortOpsDescending(a: IValidatedEditOperation, b: IValidatedEditOperation): number {
-		let r = Range.compareRangesUsingEnds(a.range, b.range);
+	privAte stAtic _sortOpsDescending(A: IVAlidAtedEditOperAtion, b: IVAlidAtedEditOperAtion): number {
+		let r = RAnge.compAreRAngesUsingEnds(A.rAnge, b.rAnge);
 		if (r === 0) {
-			return b.sortIndex - a.sortIndex;
+			return b.sortIndex - A.sortIndex;
 		}
 		return -r;
 	}

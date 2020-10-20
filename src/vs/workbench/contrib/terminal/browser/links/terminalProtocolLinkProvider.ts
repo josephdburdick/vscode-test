@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type { Terminal, IViewportRange, IBufferLine } from 'xterm';
-import { ILinkComputerTarget, LinkComputer } from 'vs/editor/common/modes/linkComputer';
-import { getXtermLineContent, convertLinkRangeToBuffer } from 'vs/workbench/contrib/terminal/browser/links/terminalLinkHelpers';
-import { TerminalLink, OPEN_FILE_LABEL } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { TerminalBaseLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalBaseLinkProvider';
-import { Schemas } from 'vs/base/common/network';
+import type { TerminAl, IViewportRAnge, IBufferLine } from 'xterm';
+import { ILinkComputerTArget, LinkComputer } from 'vs/editor/common/modes/linkComputer';
+import { getXtermLineContent, convertLinkRAngeToBuffer } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLinkHelpers';
+import { TerminAlLink, OPEN_FILE_LABEL } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLink';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { TerminAlBAseLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlBAseLinkProvider';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class TerminalProtocolLinkProvider extends TerminalBaseLinkProvider {
-	private _linkComputerTarget: ILinkComputerTarget | undefined;
+export clAss TerminAlProtocolLinkProvider extends TerminAlBAseLinkProvider {
+	privAte _linkComputerTArget: ILinkComputerTArget | undefined;
 
 	constructor(
-		private readonly _xterm: Terminal,
-		private readonly _activateCallback: (event: MouseEvent | undefined, uri: string) => void,
-		private readonly _tooltipCallback: (link: TerminalLink, viewportRange: IViewportRange, modifierDownCallback?: () => void, modifierUpCallback?: () => void) => void,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService
+		privAte reAdonly _xterm: TerminAl,
+		privAte reAdonly _ActivAteCAllbAck: (event: MouseEvent | undefined, uri: string) => void,
+		privAte reAdonly _tooltipCAllbAck: (link: TerminAlLink, viewportRAnge: IViewportRAnge, modifierDownCAllbAck?: () => void, modifierUpCAllbAck?: () => void) => void,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
 	}
 
-	protected _provideLinks(y: number): TerminalLink[] {
-		let startLine = y - 1;
-		let endLine = startLine;
+	protected _provideLinks(y: number): TerminAlLink[] {
+		let stArtLine = y - 1;
+		let endLine = stArtLine;
 
 		const lines: IBufferLine[] = [
-			this._xterm.buffer.active.getLine(startLine)!
+			this._xterm.buffer.Active.getLine(stArtLine)!
 		];
 
-		while (this._xterm.buffer.active.getLine(startLine)?.isWrapped) {
-			lines.unshift(this._xterm.buffer.active.getLine(startLine - 1)!);
-			startLine--;
+		while (this._xterm.buffer.Active.getLine(stArtLine)?.isWrApped) {
+			lines.unshift(this._xterm.buffer.Active.getLine(stArtLine - 1)!);
+			stArtLine--;
 		}
 
-		while (this._xterm.buffer.active.getLine(endLine + 1)?.isWrapped) {
-			lines.push(this._xterm.buffer.active.getLine(endLine + 1)!);
+		while (this._xterm.buffer.Active.getLine(endLine + 1)?.isWrApped) {
+			lines.push(this._xterm.buffer.Active.getLine(endLine + 1)!);
 			endLine++;
 		}
 
-		this._linkComputerTarget = new TerminalLinkAdapter(this._xterm, startLine, endLine);
-		const links = LinkComputer.computeLinks(this._linkComputerTarget);
+		this._linkComputerTArget = new TerminAlLinkAdApter(this._xterm, stArtLine, endLine);
+		const links = LinkComputer.computeLinks(this._linkComputerTArget);
 
-		return links.map(link => {
-			const range = convertLinkRangeToBuffer(lines, this._xterm.cols, link.range, startLine);
+		return links.mAp(link => {
+			const rAnge = convertLinkRAngeToBuffer(lines, this._xterm.cols, link.rAnge, stArtLine);
 
 			// Check if the link if within the mouse position
 			const uri = link.url
-				? (typeof link.url === 'string' ? URI.parse(link.url) : link.url)
+				? (typeof link.url === 'string' ? URI.pArse(link.url) : link.url)
 				: undefined;
-			const label = (uri?.scheme === Schemas.file) ? OPEN_FILE_LABEL : undefined;
-			return this._instantiationService.createInstance(TerminalLink, this._xterm, range, link.url?.toString() || '', this._xterm.buffer.active.viewportY, this._activateCallback, this._tooltipCallback, true, label);
+			const lAbel = (uri?.scheme === SchemAs.file) ? OPEN_FILE_LABEL : undefined;
+			return this._instAntiAtionService.creAteInstAnce(TerminAlLink, this._xterm, rAnge, link.url?.toString() || '', this._xterm.buffer.Active.viewportY, this._ActivAteCAllbAck, this._tooltipCAllbAck, true, lAbel);
 		});
 	}
 }
 
-class TerminalLinkAdapter implements ILinkComputerTarget {
+clAss TerminAlLinkAdApter implements ILinkComputerTArget {
 	constructor(
-		private _xterm: Terminal,
-		private _lineStart: number,
-		private _lineEnd: number
+		privAte _xterm: TerminAl,
+		privAte _lineStArt: number,
+		privAte _lineEnd: number
 	) { }
 
 	getLineCount(): number {
@@ -70,6 +70,6 @@ class TerminalLinkAdapter implements ILinkComputerTarget {
 	}
 
 	getLineContent(): string {
-		return getXtermLineContent(this._xterm.buffer.active, this._lineStart, this._lineEnd, this._xterm.cols);
+		return getXtermLineContent(this._xterm.buffer.Active, this._lineStArt, this._lineEnd, this._xterm.cols);
 	}
 }

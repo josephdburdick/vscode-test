@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IDiskFileChange, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
+import { Event } from 'vs/bAse/common/event';
+import { IDiskFileChAnge, ILogMessAge } from 'vs/plAtform/files/node/wAtcher/wAtcher';
 
-export interface IWatcherRequest {
-	path: string;
+export interfAce IWAtcherRequest {
+	pAth: string;
 	excludes: string[];
 }
 
-export interface IWatcherService {
+export interfAce IWAtcherService {
 
-	readonly onDidChangeFile: Event<IDiskFileChange[]>;
-	readonly onDidLogMessage: Event<ILogMessage>;
+	reAdonly onDidChAngeFile: Event<IDiskFileChAnge[]>;
+	reAdonly onDidLogMessAge: Event<ILogMessAge>;
 
-	setRoots(roots: IWatcherRequest[]): Promise<void>;
-	setVerboseLogging(enabled: boolean): Promise<void>;
+	setRoots(roots: IWAtcherRequest[]): Promise<void>;
+	setVerboseLogging(enAbled: booleAn): Promise<void>;
 
 	stop(): Promise<void>;
 }

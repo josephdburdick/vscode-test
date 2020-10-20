@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { LinkedList } from 'vs/base/common/linkedList';
-import { parse } from 'vs/base/common/marshalling';
-import { Schemas } from 'vs/base/common/network';
-import { normalizePath } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import * As dom from 'vs/bAse/browser/dom';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { LinkedList } from 'vs/bAse/common/linkedList';
+import { pArse } from 'vs/bAse/common/mArshAlling';
+import { SchemAs } from 'vs/bAse/common/network';
+import { normAlizePAth } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IOpener, IOpenerService, IValidator, IExternalUriResolver, OpenOptions, ResolveExternalUriOptions, IResolvedExternalUri, IExternalOpener, matchesScheme } from 'vs/platform/opener/common/opener';
-import { EditorOpenContext } from 'vs/platform/editor/common/editor';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IOpener, IOpenerService, IVAlidAtor, IExternAlUriResolver, OpenOptions, ResolveExternAlUriOptions, IResolvedExternAlUri, IExternAlOpener, mAtchesScheme } from 'vs/plAtform/opener/common/opener';
+import { EditorOpenContext } from 'vs/plAtform/editor/common/editor';
 
 
-class CommandOpener implements IOpener {
+clAss CommAndOpener implements IOpener {
 
-	constructor(@ICommandService private readonly _commandService: ICommandService) { }
+	constructor(@ICommAndService privAte reAdonly _commAndService: ICommAndService) { }
 
-	async open(target: URI | string) {
-		if (!matchesScheme(target, Schemas.command)) {
-			return false;
+	Async open(tArget: URI | string) {
+		if (!mAtchesScheme(tArget, SchemAs.commAnd)) {
+			return fAlse;
 		}
-		// run command or bail out if command isn't known
-		if (typeof target === 'string') {
-			target = URI.parse(target);
+		// run commAnd or bAil out if commAnd isn't known
+		if (typeof tArget === 'string') {
+			tArget = URI.pArse(tArget);
 		}
-		// execute as command
-		let args: any = [];
+		// execute As commAnd
+		let Args: Any = [];
 		try {
-			args = parse(decodeURIComponent(target.query));
-		} catch {
-			// ignore and retry
+			Args = pArse(decodeURIComponent(tArget.query));
+		} cAtch {
+			// ignore And retry
 			try {
-				args = parse(target.query);
-			} catch {
+				Args = pArse(tArget.query);
+			} cAtch {
 				// ignore error
 			}
 		}
-		if (!Array.isArray(args)) {
-			args = [args];
+		if (!ArrAy.isArrAy(Args)) {
+			Args = [Args];
 		}
-		await this._commandService.executeCommand(target.path, ...args);
+		AwAit this._commAndService.executeCommAnd(tArget.pAth, ...Args);
 		return true;
 	}
 }
 
-class EditorOpener implements IOpener {
+clAss EditorOpener implements IOpener {
 
-	constructor(@ICodeEditorService private readonly _editorService: ICodeEditorService) { }
+	constructor(@ICodeEditorService privAte reAdonly _editorService: ICodeEditorService) { }
 
-	async open(target: URI | string, options: OpenOptions) {
-		if (typeof target === 'string') {
-			target = URI.parse(target);
+	Async open(tArget: URI | string, options: OpenOptions) {
+		if (typeof tArget === 'string') {
+			tArget = URI.pArse(tArget);
 		}
-		let selection: { startLineNumber: number; startColumn: number; } | undefined = undefined;
-		const match = /^L?(\d+)(?:,(\d+))?/.exec(target.fragment);
-		if (match) {
+		let selection: { stArtLineNumber: number; stArtColumn: number; } | undefined = undefined;
+		const mAtch = /^L?(\d+)(?:,(\d+))?/.exec(tArget.frAgment);
+		if (mAtch) {
 			// support file:///some/file.js#73,84
 			// support file:///some/file.js#L73
 			selection = {
-				startLineNumber: parseInt(match[1]),
-				startColumn: match[2] ? parseInt(match[2]) : 1
+				stArtLineNumber: pArseInt(mAtch[1]),
+				stArtColumn: mAtch[2] ? pArseInt(mAtch[2]) : 1
 			};
-			// remove fragment
-			target = target.with({ fragment: '' });
+			// remove frAgment
+			tArget = tArget.with({ frAgment: '' });
 		}
 
-		if (target.scheme === Schemas.file) {
-			target = normalizePath(target); // workaround for non-normalized paths (https://github.com/microsoft/vscode/issues/12954)
+		if (tArget.scheme === SchemAs.file) {
+			tArget = normAlizePAth(tArget); // workAround for non-normAlized pAths (https://github.com/microsoft/vscode/issues/12954)
 		}
 
-		await this._editorService.openCodeEditor(
-			{ resource: target, options: { selection, context: options?.fromUserGesture ? EditorOpenContext.USER : EditorOpenContext.API } },
+		AwAit this._editorService.openCodeEditor(
+			{ resource: tArget, options: { selection, context: options?.fromUserGesture ? EditorOpenContext.USER : EditorOpenContext.API } },
 			this._editorService.getFocusedCodeEditor(),
 			options?.openToSide
 		);
@@ -83,93 +83,93 @@ class EditorOpener implements IOpener {
 	}
 }
 
-export class OpenerService implements IOpenerService {
+export clAss OpenerService implements IOpenerService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _openers = new LinkedList<IOpener>();
-	private readonly _validators = new LinkedList<IValidator>();
-	private readonly _resolvers = new LinkedList<IExternalUriResolver>();
+	privAte reAdonly _openers = new LinkedList<IOpener>();
+	privAte reAdonly _vAlidAtors = new LinkedList<IVAlidAtor>();
+	privAte reAdonly _resolvers = new LinkedList<IExternAlUriResolver>();
 
-	private _externalOpener: IExternalOpener;
+	privAte _externAlOpener: IExternAlOpener;
 
 	constructor(
 		@ICodeEditorService editorService: ICodeEditorService,
-		@ICommandService commandService: ICommandService,
+		@ICommAndService commAndService: ICommAndService,
 	) {
-		// Default external opener is going through window.open()
-		this._externalOpener = {
-			openExternal: href => {
+		// DefAult externAl opener is going through window.open()
+		this._externAlOpener = {
+			openExternAl: href => {
 				// ensure to open HTTP/HTTPS links into new windows
-				// to not trigger a navigation. Any other link is
-				// safe to be set as HREF to prevent a blank window
+				// to not trigger A nAvigAtion. Any other link is
+				// sAfe to be set As HREF to prevent A blAnk window
 				// from opening.
-				if (matchesScheme(href, Schemas.http) || matchesScheme(href, Schemas.https)) {
+				if (mAtchesScheme(href, SchemAs.http) || mAtchesScheme(href, SchemAs.https)) {
 					dom.windowOpenNoOpener(href);
 				} else {
-					window.location.href = href;
+					window.locAtion.href = href;
 				}
 				return Promise.resolve(true);
 			}
 		};
 
-		// Default opener: maito, http(s), command, and catch-all-editors
+		// DefAult opener: mAito, http(s), commAnd, And cAtch-All-editors
 		this._openers.push({
-			open: async (target: URI | string, options?: OpenOptions) => {
-				if (options?.openExternal || matchesScheme(target, Schemas.mailto) || matchesScheme(target, Schemas.http) || matchesScheme(target, Schemas.https)) {
-					// open externally
-					await this._doOpenExternal(target, options);
+			open: Async (tArget: URI | string, options?: OpenOptions) => {
+				if (options?.openExternAl || mAtchesScheme(tArget, SchemAs.mAilto) || mAtchesScheme(tArget, SchemAs.http) || mAtchesScheme(tArget, SchemAs.https)) {
+					// open externAlly
+					AwAit this._doOpenExternAl(tArget, options);
 					return true;
 				}
-				return false;
+				return fAlse;
 			}
 		});
-		this._openers.push(new CommandOpener(commandService));
+		this._openers.push(new CommAndOpener(commAndService));
 		this._openers.push(new EditorOpener(editorService));
 	}
 
-	registerOpener(opener: IOpener): IDisposable {
+	registerOpener(opener: IOpener): IDisposAble {
 		const remove = this._openers.unshift(opener);
 		return { dispose: remove };
 	}
 
-	registerValidator(validator: IValidator): IDisposable {
-		const remove = this._validators.push(validator);
+	registerVAlidAtor(vAlidAtor: IVAlidAtor): IDisposAble {
+		const remove = this._vAlidAtors.push(vAlidAtor);
 		return { dispose: remove };
 	}
 
-	registerExternalUriResolver(resolver: IExternalUriResolver): IDisposable {
+	registerExternAlUriResolver(resolver: IExternAlUriResolver): IDisposAble {
 		const remove = this._resolvers.push(resolver);
 		return { dispose: remove };
 	}
 
-	setExternalOpener(externalOpener: IExternalOpener): void {
-		this._externalOpener = externalOpener;
+	setExternAlOpener(externAlOpener: IExternAlOpener): void {
+		this._externAlOpener = externAlOpener;
 	}
 
-	async open(target: URI | string, options?: OpenOptions): Promise<boolean> {
+	Async open(tArget: URI | string, options?: OpenOptions): Promise<booleAn> {
 
-		// check with contributed validators
-		for (const validator of this._validators.toArray()) {
-			if (!(await validator.shouldOpen(target))) {
-				return false;
+		// check with contributed vAlidAtors
+		for (const vAlidAtor of this._vAlidAtors.toArrAy()) {
+			if (!(AwAit vAlidAtor.shouldOpen(tArget))) {
+				return fAlse;
 			}
 		}
 
 		// check with contributed openers
-		for (const opener of this._openers.toArray()) {
-			const handled = await opener.open(target, options);
-			if (handled) {
+		for (const opener of this._openers.toArrAy()) {
+			const hAndled = AwAit opener.open(tArget, options);
+			if (hAndled) {
 				return true;
 			}
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	async resolveExternalUri(resource: URI, options?: ResolveExternalUriOptions): Promise<IResolvedExternalUri> {
-		for (const resolver of this._resolvers.toArray()) {
-			const result = await resolver.resolveExternalUri(resource, options);
+	Async resolveExternAlUri(resource: URI, options?: ResolveExternAlUriOptions): Promise<IResolvedExternAlUri> {
+		for (const resolver of this._resolvers.toArrAy()) {
+			const result = AwAit resolver.resolveExternAlUri(resource, options);
 			if (result) {
 				return result;
 			}
@@ -178,22 +178,22 @@ export class OpenerService implements IOpenerService {
 		return { resolved: resource, dispose: () => { } };
 	}
 
-	private async _doOpenExternal(resource: URI | string, options: OpenOptions | undefined): Promise<boolean> {
+	privAte Async _doOpenExternAl(resource: URI | string, options: OpenOptions | undefined): Promise<booleAn> {
 
-		//todo@joh IExternalUriResolver should support `uri: URI | string`
-		const uri = typeof resource === 'string' ? URI.parse(resource) : resource;
-		const { resolved } = await this.resolveExternalUri(uri, options);
+		//todo@joh IExternAlUriResolver should support `uri: URI | string`
+		const uri = typeof resource === 'string' ? URI.pArse(resource) : resource;
+		const { resolved } = AwAit this.resolveExternAlUri(uri, options);
 
 		if (typeof resource === 'string' && uri.toString() === resolved.toString()) {
 			// open the url-string AS IS
-			return this._externalOpener.openExternal(resource);
+			return this._externAlOpener.openExternAl(resource);
 		} else {
 			// open URI using the toString(noEncode)+encodeURI-trick
-			return this._externalOpener.openExternal(encodeURI(resolved.toString(true)));
+			return this._externAlOpener.openExternAl(encodeURI(resolved.toString(true)));
 		}
 	}
 
 	dispose() {
-		this._validators.clear();
+		this._vAlidAtors.cleAr();
 	}
 }

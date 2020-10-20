@@ -1,32 +1,32 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const enum RecommendationSource {
+export const enum RecommendAtionSource {
 	FILE = 1,
 	WORKSPACE = 2,
 	EXE = 3
 }
 
-export const enum RecommendationsNotificationResult {
+export const enum RecommendAtionsNotificAtionResult {
 	Ignored = 'ignored',
-	Cancelled = 'cancelled',
-	TooMany = 'toomany',
-	Accepted = 'reacted',
+	CAncelled = 'cAncelled',
+	TooMAny = 'toomAny',
+	Accepted = 'reActed',
 }
 
-export const IExtensionRecommendationNotificationService = createDecorator<IExtensionRecommendationNotificationService>('IExtensionRecommendationNotificationService');
+export const IExtensionRecommendAtionNotificAtionService = creAteDecorAtor<IExtensionRecommendAtionNotificAtionService>('IExtensionRecommendAtionNotificAtionService');
 
-export interface IExtensionRecommendationNotificationService {
-	readonly _serviceBrand: undefined;
+export interfAce IExtensionRecommendAtionNotificAtionService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly ignoredRecommendations: string[];
-	hasToIgnoreRecommendationNotifications(): boolean;
+	reAdonly ignoredRecommendAtions: string[];
+	hAsToIgnoreRecommendAtionNotificAtions(): booleAn;
 
-	promptImportantExtensionsInstallNotification(extensionIds: string[], message: string, searchValue: string, source: RecommendationSource): Promise<RecommendationsNotificationResult>;
-	promptWorkspaceRecommendations(recommendations: string[]): Promise<void>;
+	promptImportAntExtensionsInstAllNotificAtion(extensionIds: string[], messAge: string, seArchVAlue: string, source: RecommendAtionSource): Promise<RecommendAtionsNotificAtionResult>;
+	promptWorkspAceRecommendAtions(recommendAtions: string[]): Promise<void>;
 }
 

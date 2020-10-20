@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { LanguageModes, TextDocument, Position, Range, SelectionRange } from './languageModes';
-import { insideRangeButNotSame } from '../utils/positions';
+import { LAnguAgeModes, TextDocument, Position, RAnge, SelectionRAnge } from './lAnguAgeModes';
+import { insideRAngeButNotSAme } from '../utils/positions';
 
-export async function getSelectionRanges(languageModes: LanguageModes, document: TextDocument, positions: Position[]) {
-	const htmlMode = languageModes.getMode('html');
-	return Promise.all(positions.map(async position => {
-		const htmlRange = await htmlMode!.getSelectionRange!(document, position);
-		const mode = languageModes.getModeAtPosition(document, position);
-		if (mode && mode.getSelectionRange) {
-			let range = await mode.getSelectionRange(document, position);
-			let top = range;
-			while (top.parent && insideRangeButNotSame(htmlRange.range, top.parent.range)) {
-				top = top.parent;
+export Async function getSelectionRAnges(lAnguAgeModes: LAnguAgeModes, document: TextDocument, positions: Position[]) {
+	const htmlMode = lAnguAgeModes.getMode('html');
+	return Promise.All(positions.mAp(Async position => {
+		const htmlRAnge = AwAit htmlMode!.getSelectionRAnge!(document, position);
+		const mode = lAnguAgeModes.getModeAtPosition(document, position);
+		if (mode && mode.getSelectionRAnge) {
+			let rAnge = AwAit mode.getSelectionRAnge(document, position);
+			let top = rAnge;
+			while (top.pArent && insideRAngeButNotSAme(htmlRAnge.rAnge, top.pArent.rAnge)) {
+				top = top.pArent;
 			}
-			top.parent = htmlRange;
-			return range;
+			top.pArent = htmlRAnge;
+			return rAnge;
 		}
-		return htmlRange || SelectionRange.create(Range.create(position, position));
+		return htmlRAnge || SelectionRAnge.creAte(RAnge.creAte(position, position));
 	}));
 }
 

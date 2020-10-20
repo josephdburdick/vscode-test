@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { Expression, DebugModel } from 'vs/workbench/contrib/debug/common/debugModel';
-import { createMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
+import { creAteMockDebugModel } from 'vs/workbench/contrib/debug/test/browser/mockDebug';
 
 // Expressions
 
-function assertWatchExpressions(watchExpressions: Expression[], expectedName: string) {
-	assert.equal(watchExpressions.length, 2);
-	watchExpressions.forEach(we => {
-		assert.equal(we.available, false);
-		assert.equal(we.reference, 0);
-		assert.equal(we.name, expectedName);
+function AssertWAtchExpressions(wAtchExpressions: Expression[], expectedNAme: string) {
+	Assert.equAl(wAtchExpressions.length, 2);
+	wAtchExpressions.forEAch(we => {
+		Assert.equAl(we.AvAilAble, fAlse);
+		Assert.equAl(we.reference, 0);
+		Assert.equAl(we.nAme, expectedNAme);
 	});
 }
 
-suite('Debug - Watch', () => {
+suite('Debug - WAtch', () => {
 
 	let model: DebugModel;
 
 	setup(() => {
-		model = createMockDebugModel();
+		model = creAteMockDebugModel();
 	});
 
-	test('watch expressions', () => {
-		assert.equal(model.getWatchExpressions().length, 0);
-		model.addWatchExpression('console');
-		model.addWatchExpression('console');
-		let watchExpressions = model.getWatchExpressions();
-		assertWatchExpressions(watchExpressions, 'console');
+	test('wAtch expressions', () => {
+		Assert.equAl(model.getWAtchExpressions().length, 0);
+		model.AddWAtchExpression('console');
+		model.AddWAtchExpression('console');
+		let wAtchExpressions = model.getWAtchExpressions();
+		AssertWAtchExpressions(wAtchExpressions, 'console');
 
-		model.renameWatchExpression(watchExpressions[0].getId(), 'new_name');
-		model.renameWatchExpression(watchExpressions[1].getId(), 'new_name');
-		assertWatchExpressions(model.getWatchExpressions(), 'new_name');
+		model.renAmeWAtchExpression(wAtchExpressions[0].getId(), 'new_nAme');
+		model.renAmeWAtchExpression(wAtchExpressions[1].getId(), 'new_nAme');
+		AssertWAtchExpressions(model.getWAtchExpressions(), 'new_nAme');
 
-		assertWatchExpressions(model.getWatchExpressions(), 'new_name');
+		AssertWAtchExpressions(model.getWAtchExpressions(), 'new_nAme');
 
-		model.addWatchExpression('mockExpression');
-		model.moveWatchExpression(model.getWatchExpressions()[2].getId(), 1);
-		watchExpressions = model.getWatchExpressions();
-		assert.equal(watchExpressions[0].name, 'new_name');
-		assert.equal(watchExpressions[1].name, 'mockExpression');
-		assert.equal(watchExpressions[2].name, 'new_name');
+		model.AddWAtchExpression('mockExpression');
+		model.moveWAtchExpression(model.getWAtchExpressions()[2].getId(), 1);
+		wAtchExpressions = model.getWAtchExpressions();
+		Assert.equAl(wAtchExpressions[0].nAme, 'new_nAme');
+		Assert.equAl(wAtchExpressions[1].nAme, 'mockExpression');
+		Assert.equAl(wAtchExpressions[2].nAme, 'new_nAme');
 
-		model.removeWatchExpressions();
-		assert.equal(model.getWatchExpressions().length, 0);
+		model.removeWAtchExpressions();
+		Assert.equAl(model.getWAtchExpressions().length, 0);
 	});
 });

@@ -1,114 +1,114 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { Command } from 'vs/editor/common/modes';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IAccessibilityInformation } from 'vs/platform/accessibility/common/accessibility';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { CommAnd } from 'vs/editor/common/modes';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IAccessibilityInformAtion } from 'vs/plAtform/Accessibility/common/Accessibility';
 
 export function toKey(extension: ExtensionIdentifier | string, source: string) {
 	return `${typeof extension === 'string' ? extension : ExtensionIdentifier.toKey(extension)}|${source}`;
 }
 
-export const TimelinePaneId = 'timeline';
+export const TimelinePAneId = 'timeline';
 
-export interface TimelineItem {
-	handle: string;
+export interfAce TimelineItem {
+	hAndle: string;
 	source: string;
 
 	id?: string;
-	timestamp: number;
-	label: string;
-	accessibilityInformation?: IAccessibilityInformation;
+	timestAmp: number;
+	lAbel: string;
+	AccessibilityInformAtion?: IAccessibilityInformAtion;
 	icon?: URI,
-	iconDark?: URI,
+	iconDArk?: URI,
 	themeIcon?: { id: string },
 	description?: string;
-	detail?: string;
-	command?: Command;
-	contextValue?: string;
+	detAil?: string;
+	commAnd?: CommAnd;
+	contextVAlue?: string;
 
-	relativeTime?: string;
-	hideRelativeTime?: boolean;
+	relAtiveTime?: string;
+	hideRelAtiveTime?: booleAn;
 }
 
-export interface TimelineChangeEvent {
+export interfAce TimelineChAngeEvent {
 	id: string;
 	uri: URI | undefined;
-	reset: boolean
+	reset: booleAn
 }
 
-export interface TimelineOptions {
+export interfAce TimelineOptions {
 	cursor?: string;
-	limit?: number | { timestamp: number; id?: string };
+	limit?: number | { timestAmp: number; id?: string };
 }
 
-export interface InternalTimelineOptions {
-	cacheResults: boolean;
-	resetCache: boolean;
+export interfAce InternAlTimelineOptions {
+	cAcheResults: booleAn;
+	resetCAche: booleAn;
 }
 
-export interface Timeline {
+export interfAce Timeline {
 	source: string;
 	items: TimelineItem[];
 
-	paging?: {
+	pAging?: {
 		cursor: string | undefined;
 	}
 }
 
-export interface TimelineProvider extends TimelineProviderDescriptor, IDisposable {
-	onDidChange?: Event<TimelineChangeEvent>;
+export interfAce TimelineProvider extends TimelineProviderDescriptor, IDisposAble {
+	onDidChAnge?: Event<TimelineChAngeEvent>;
 
-	provideTimeline(uri: URI, options: TimelineOptions, token: CancellationToken, internalOptions?: InternalTimelineOptions): Promise<Timeline | undefined>;
+	provideTimeline(uri: URI, options: TimelineOptions, token: CAncellAtionToken, internAlOptions?: InternAlTimelineOptions): Promise<Timeline | undefined>;
 }
 
-export interface TimelineSource {
+export interfAce TimelineSource {
 	id: string;
-	label: string;
+	lAbel: string;
 }
 
-export interface TimelineProviderDescriptor {
+export interfAce TimelineProviderDescriptor {
 	id: string;
-	label: string;
+	lAbel: string;
 	scheme: string | string[];
 }
 
-export interface TimelineProvidersChangeEvent {
-	readonly added?: string[];
-	readonly removed?: string[];
+export interfAce TimelineProvidersChAngeEvent {
+	reAdonly Added?: string[];
+	reAdonly removed?: string[];
 }
 
-export interface TimelineRequest {
-	readonly result: Promise<Timeline | undefined>;
-	readonly options: TimelineOptions;
-	readonly source: string;
-	readonly tokenSource: CancellationTokenSource;
-	readonly uri: URI;
+export interfAce TimelineRequest {
+	reAdonly result: Promise<Timeline | undefined>;
+	reAdonly options: TimelineOptions;
+	reAdonly source: string;
+	reAdonly tokenSource: CAncellAtionTokenSource;
+	reAdonly uri: URI;
 }
 
-export interface ITimelineService {
-	readonly _serviceBrand: undefined;
+export interfAce ITimelineService {
+	reAdonly _serviceBrAnd: undefined;
 
-	onDidChangeProviders: Event<TimelineProvidersChangeEvent>;
-	onDidChangeTimeline: Event<TimelineChangeEvent>;
-	onDidChangeUri: Event<URI>;
+	onDidChAngeProviders: Event<TimelineProvidersChAngeEvent>;
+	onDidChAngeTimeline: Event<TimelineChAngeEvent>;
+	onDidChAngeUri: Event<URI>;
 
-	registerTimelineProvider(provider: TimelineProvider): IDisposable;
+	registerTimelineProvider(provider: TimelineProvider): IDisposAble;
 	unregisterTimelineProvider(id: string): void;
 
 	getSources(): TimelineSource[];
 
-	getTimeline(id: string, uri: URI, options: TimelineOptions, tokenSource: CancellationTokenSource, internalOptions?: InternalTimelineOptions): TimelineRequest | undefined;
+	getTimeline(id: string, uri: URI, options: TimelineOptions, tokenSource: CAncellAtionTokenSource, internAlOptions?: InternAlTimelineOptions): TimelineRequest | undefined;
 
 	setUri(uri: URI): void;
 }
 
 const TIMELINE_SERVICE_ID = 'timeline';
-export const ITimelineService = createDecorator<ITimelineService>(TIMELINE_SERVICE_ID);
+export const ITimelineService = creAteDecorAtor<ITimelineService>(TIMELINE_SERVICE_ID);

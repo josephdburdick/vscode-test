@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { AbcTextEditorProvider } from './customTextEditor';
 
-export function activate(context: vscode.ExtensionContext) {
+export function ActivAte(context: vscode.ExtensionContext) {
 	context.subscriptions.push(new AbcTextEditorProvider(context).register());
 }

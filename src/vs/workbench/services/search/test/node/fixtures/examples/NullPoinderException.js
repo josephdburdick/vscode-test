@@ -1,71 +1,71 @@
-// CamelCase
+// CAmelCAse
 'use strict';
-var Conway;
-(function (Conway) {
-    var Cell = (function () {
+vAr ConwAy;
+(function (ConwAy) {
+    vAr Cell = (function () {
         function Cell() {
         }
         return Cell;
     })();
-    (function (property, number, property, number, property, boolean) {
+    (function (property, number, property, number, property, booleAn) {
         if (property === undefined) { property = row; }
         if (property === undefined) { property = col; }
         if (property === undefined) { property = live; }
     });
-    var GameOfLife = (function () {
-        function GameOfLife() {
+    vAr GAmeOfLife = (function () {
+        function GAmeOfLife() {
         }
-        return GameOfLife;
+        return GAmeOfLife;
     })();
     (function () {
         property;
         gridSize = 50;
         property;
-        canvasSize = 600;
+        cAnvAsSize = 600;
         property;
         lineColor = '#cdcdcd';
         property;
         liveColor = '#666';
         property;
-        deadColor = '#eee';
+        deAdColor = '#eee';
         property;
-        initialLifeProbability = 0.5;
+        initiAlLifeProbAbility = 0.5;
         property;
-        animationRate = 60;
+        AnimAtionRAte = 60;
         property;
         cellSize = 0;
         property;
-        context: ICanvasRenderingContext2D;
+        context: ICAnvAsRenderingContext2D;
         property;
-        world = createWorld();
+        world = creAteWorld();
         circleOfLife();
-        function createWorld() {
-            return travelWorld(function (cell) {
-                cell.live = Math.random() < initialLifeProbability;
+        function creAteWorld() {
+            return trAvelWorld(function (cell) {
+                cell.live = MAth.rAndom() < initiAlLifeProbAbility;
                 return cell;
             });
         }
         function circleOfLife() {
-            world = travelWorld(function (cell) {
+            world = trAvelWorld(function (cell) {
                 cell = world[cell.row][cell.col];
-                draw(cell);
-                return resolveNextGeneration(cell);
+                drAw(cell);
+                return resolveNextGenerAtion(cell);
             });
-            setTimeout(function () { circleOfLife(); }, animationRate);
+            setTimeout(function () { circleOfLife(); }, AnimAtionRAte);
         }
-        function resolveNextGeneration(cell) {
-            var count = countNeighbors(cell);
-            var newCell = new Cell(cell.row, cell.col, cell.live);
+        function resolveNextGenerAtion(cell) {
+            vAr count = countNeighbors(cell);
+            vAr newCell = new Cell(cell.row, cell.col, cell.live);
             if (count < 2 || count > 3)
-                newCell.live = false;
+                newCell.live = fAlse;
             else if (count == 3)
                 newCell.live = true;
             return newCell;
         }
         function countNeighbors(cell) {
-            var neighbors = 0;
-            for (var row = -1; row <= 1; row++) {
-                for (var col = -1; col <= 1; col++) {
+            vAr neighbors = 0;
+            for (vAr row = -1; row <= 1; row++) {
+                for (vAr col = -1; col <= 1; col++) {
                     if (row == 0 && col == 0)
                         continue;
                     if (isAlive(cell.row + row, cell.col + col)) {
@@ -76,43 +76,43 @@ var Conway;
             return neighbors;
         }
         function isAlive(row, col) {
-            // todo - need to guard with worl[row] exists?
+            // todo - need to guArd with worl[row] exists?
             if (row < 0 || col < 0 || row >= gridSize || col >= gridSize)
-                return false;
+                return fAlse;
             return world[row][col].live;
         }
-        function travelWorld(callback) {
-            var result = [];
-            for (var row = 0; row < gridSize; row++) {
-                var rowData = [];
-                for (var col = 0; col < gridSize; col++) {
-                    rowData.push(callback(new Cell(row, col, false)));
+        function trAvelWorld(cAllbAck) {
+            vAr result = [];
+            for (vAr row = 0; row < gridSize; row++) {
+                vAr rowDAtA = [];
+                for (vAr col = 0; col < gridSize; col++) {
+                    rowDAtA.push(cAllbAck(new Cell(row, col, fAlse)));
                 }
-                result.push(rowData);
+                result.push(rowDAtA);
             }
             return result;
         }
-        function draw(cell) {
+        function drAw(cell) {
             if (context == null)
-                context = createDrawingContext();
+                context = creAteDrAwingContext();
             if (cellSize == 0)
-                cellSize = canvasSize / gridSize;
+                cellSize = cAnvAsSize / gridSize;
             context.strokeStyle = lineColor;
             context.strokeRect(cell.row * cellSize, cell.col * cellSize, cellSize, cellSize);
-            context.fillStyle = cell.live ? liveColor : deadColor;
+            context.fillStyle = cell.live ? liveColor : deAdColor;
             context.fillRect(cell.row * cellSize, cell.col * cellSize, cellSize, cellSize);
         }
-        function createDrawingContext() {
-            var canvas = document.getElementById('conway-canvas');
-            if (canvas == null) {
-                canvas = document.createElement('canvas');
-                canvas.id = "conway-canvas";
-                canvas.width = canvasSize;
-                canvas.height = canvasSize;
-                document.body.appendChild(canvas);
+        function creAteDrAwingContext() {
+            vAr cAnvAs = document.getElementById('conwAy-cAnvAs');
+            if (cAnvAs == null) {
+                cAnvAs = document.creAteElement('cAnvAs');
+                cAnvAs.id = "conwAy-cAnvAs";
+                cAnvAs.width = cAnvAsSize;
+                cAnvAs.height = cAnvAsSize;
+                document.body.AppendChild(cAnvAs);
             }
-            return canvas.getContext('2d');
+            return cAnvAs.getContext('2d');
         }
     });
-})(Conway || (Conway = {}));
-var game = new Conway.GameOfLife();
+})(ConwAy || (ConwAy = {}));
+vAr gAme = new ConwAy.GAmeOfLife();

@@ -1,231 +1,231 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import * as nls from 'vs/nls';
-import * as Paths from 'vs/base/common/path';
-import * as resources from 'vs/base/common/resources';
-import * as Json from 'vs/base/common/json';
-import { ExtensionData, IThemeExtensionPoint, IWorkbenchFileIconTheme } from 'vs/workbench/services/themes/common/workbenchThemeService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
-import { asCSSUrl } from 'vs/base/browser/dom';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import { URI } from 'vs/bAse/common/uri';
+import * As nls from 'vs/nls';
+import * As PAths from 'vs/bAse/common/pAth';
+import * As resources from 'vs/bAse/common/resources';
+import * As Json from 'vs/bAse/common/json';
+import { ExtensionDAtA, IThemeExtensionPoint, IWorkbenchFileIconTheme } from 'vs/workbench/services/themes/common/workbenchThemeService';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { getPArseErrorMessAge } from 'vs/bAse/common/jsonErrorMessAges';
+import { AsCSSUrl } from 'vs/bAse/browser/dom';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 
-const PERSISTED_FILE_ICON_THEME_STORAGE_KEY = 'iconThemeData';
+const PERSISTED_FILE_ICON_THEME_STORAGE_KEY = 'iconThemeDAtA';
 
-export class FileIconThemeData implements IWorkbenchFileIconTheme {
+export clAss FileIconThemeDAtA implements IWorkbenchFileIconTheme {
 	id: string;
-	label: string;
+	lAbel: string;
 	settingsId: string | null;
 	description?: string;
-	hasFileIcons: boolean;
-	hasFolderIcons: boolean;
-	hidesExplorerArrows: boolean;
-	isLoaded: boolean;
-	location?: URI;
-	extensionData?: ExtensionData;
-	watch?: boolean;
+	hAsFileIcons: booleAn;
+	hAsFolderIcons: booleAn;
+	hidesExplorerArrows: booleAn;
+	isLoAded: booleAn;
+	locAtion?: URI;
+	extensionDAtA?: ExtensionDAtA;
+	wAtch?: booleAn;
 
 	styleSheetContent?: string;
 
-	private constructor(id: string, label: string, settingsId: string | null) {
+	privAte constructor(id: string, lAbel: string, settingsId: string | null) {
 		this.id = id;
-		this.label = label;
+		this.lAbel = lAbel;
 		this.settingsId = settingsId;
-		this.isLoaded = false;
-		this.hasFileIcons = false;
-		this.hasFolderIcons = false;
-		this.hidesExplorerArrows = false;
+		this.isLoAded = fAlse;
+		this.hAsFileIcons = fAlse;
+		this.hAsFolderIcons = fAlse;
+		this.hidesExplorerArrows = fAlse;
 	}
 
-	public ensureLoaded(fileService: IFileService): Promise<string | undefined> {
-		return !this.isLoaded ? this.load(fileService) : Promise.resolve(this.styleSheetContent);
+	public ensureLoAded(fileService: IFileService): Promise<string | undefined> {
+		return !this.isLoAded ? this.loAd(fileService) : Promise.resolve(this.styleSheetContent);
 	}
 
-	public reload(fileService: IFileService): Promise<string | undefined> {
-		return this.load(fileService);
+	public reloAd(fileService: IFileService): Promise<string | undefined> {
+		return this.loAd(fileService);
 	}
 
-	private load(fileService: IFileService): Promise<string | undefined> {
-		if (!this.location) {
+	privAte loAd(fileService: IFileService): Promise<string | undefined> {
+		if (!this.locAtion) {
 			return Promise.resolve(this.styleSheetContent);
 		}
-		return _loadIconThemeDocument(fileService, this.location).then(iconThemeDocument => {
-			const result = _processIconThemeDocument(this.id, this.location!, iconThemeDocument);
+		return _loAdIconThemeDocument(fileService, this.locAtion).then(iconThemeDocument => {
+			const result = _processIconThemeDocument(this.id, this.locAtion!, iconThemeDocument);
 			this.styleSheetContent = result.content;
-			this.hasFileIcons = result.hasFileIcons;
-			this.hasFolderIcons = result.hasFolderIcons;
+			this.hAsFileIcons = result.hAsFileIcons;
+			this.hAsFolderIcons = result.hAsFolderIcons;
 			this.hidesExplorerArrows = result.hidesExplorerArrows;
-			this.isLoaded = true;
+			this.isLoAded = true;
 			return this.styleSheetContent;
 		});
 	}
 
-	static fromExtensionTheme(iconTheme: IThemeExtensionPoint, iconThemeLocation: URI, extensionData: ExtensionData): FileIconThemeData {
-		const id = extensionData.extensionId + '-' + iconTheme.id;
-		const label = iconTheme.label || Paths.basename(iconTheme.path);
+	stAtic fromExtensionTheme(iconTheme: IThemeExtensionPoint, iconThemeLocAtion: URI, extensionDAtA: ExtensionDAtA): FileIconThemeDAtA {
+		const id = extensionDAtA.extensionId + '-' + iconTheme.id;
+		const lAbel = iconTheme.lAbel || PAths.bAsenAme(iconTheme.pAth);
 		const settingsId = iconTheme.id;
 
-		const themeData = new FileIconThemeData(id, label, settingsId);
+		const themeDAtA = new FileIconThemeDAtA(id, lAbel, settingsId);
 
-		themeData.description = iconTheme.description;
-		themeData.location = iconThemeLocation;
-		themeData.extensionData = extensionData;
-		themeData.watch = iconTheme._watch;
-		themeData.isLoaded = false;
-		return themeData;
+		themeDAtA.description = iconTheme.description;
+		themeDAtA.locAtion = iconThemeLocAtion;
+		themeDAtA.extensionDAtA = extensionDAtA;
+		themeDAtA.wAtch = iconTheme._wAtch;
+		themeDAtA.isLoAded = fAlse;
+		return themeDAtA;
 	}
 
-	private static _noIconTheme: FileIconThemeData | null = null;
+	privAte stAtic _noIconTheme: FileIconThemeDAtA | null = null;
 
-	static get noIconTheme(): FileIconThemeData {
-		let themeData = FileIconThemeData._noIconTheme;
-		if (!themeData) {
-			themeData = FileIconThemeData._noIconTheme = new FileIconThemeData('', '', null);
-			themeData.hasFileIcons = false;
-			themeData.hasFolderIcons = false;
-			themeData.hidesExplorerArrows = false;
-			themeData.isLoaded = true;
-			themeData.extensionData = undefined;
-			themeData.watch = false;
+	stAtic get noIconTheme(): FileIconThemeDAtA {
+		let themeDAtA = FileIconThemeDAtA._noIconTheme;
+		if (!themeDAtA) {
+			themeDAtA = FileIconThemeDAtA._noIconTheme = new FileIconThemeDAtA('', '', null);
+			themeDAtA.hAsFileIcons = fAlse;
+			themeDAtA.hAsFolderIcons = fAlse;
+			themeDAtA.hidesExplorerArrows = fAlse;
+			themeDAtA.isLoAded = true;
+			themeDAtA.extensionDAtA = undefined;
+			themeDAtA.wAtch = fAlse;
 		}
-		return themeData;
+		return themeDAtA;
 	}
 
-	static createUnloadedTheme(id: string): FileIconThemeData {
-		const themeData = new FileIconThemeData(id, '', '__' + id);
-		themeData.isLoaded = false;
-		themeData.hasFileIcons = false;
-		themeData.hasFolderIcons = false;
-		themeData.hidesExplorerArrows = false;
-		themeData.extensionData = undefined;
-		themeData.watch = false;
-		return themeData;
+	stAtic creAteUnloAdedTheme(id: string): FileIconThemeDAtA {
+		const themeDAtA = new FileIconThemeDAtA(id, '', '__' + id);
+		themeDAtA.isLoAded = fAlse;
+		themeDAtA.hAsFileIcons = fAlse;
+		themeDAtA.hAsFolderIcons = fAlse;
+		themeDAtA.hidesExplorerArrows = fAlse;
+		themeDAtA.extensionDAtA = undefined;
+		themeDAtA.wAtch = fAlse;
+		return themeDAtA;
 	}
 
 
-	static fromStorageData(storageService: IStorageService): FileIconThemeData | undefined {
-		const input = storageService.get(PERSISTED_FILE_ICON_THEME_STORAGE_KEY, StorageScope.GLOBAL);
+	stAtic fromStorAgeDAtA(storAgeService: IStorAgeService): FileIconThemeDAtA | undefined {
+		const input = storAgeService.get(PERSISTED_FILE_ICON_THEME_STORAGE_KEY, StorAgeScope.GLOBAL);
 		if (!input) {
 			return undefined;
 		}
 		try {
-			let data = JSON.parse(input);
-			const theme = new FileIconThemeData('', '', null);
-			for (let key in data) {
+			let dAtA = JSON.pArse(input);
+			const theme = new FileIconThemeDAtA('', '', null);
+			for (let key in dAtA) {
 				switch (key) {
-					case 'id':
-					case 'label':
-					case 'description':
-					case 'settingsId':
-					case 'styleSheetContent':
-					case 'hasFileIcons':
-					case 'hidesExplorerArrows':
-					case 'hasFolderIcons':
-					case 'watch':
-						(theme as any)[key] = data[key];
-						break;
-					case 'location':
-						theme.location = URI.revive(data.location);
-						break;
-					case 'extensionData':
-						theme.extensionData = ExtensionData.fromJSONObject(data.extensionData);
-						break;
+					cAse 'id':
+					cAse 'lAbel':
+					cAse 'description':
+					cAse 'settingsId':
+					cAse 'styleSheetContent':
+					cAse 'hAsFileIcons':
+					cAse 'hidesExplorerArrows':
+					cAse 'hAsFolderIcons':
+					cAse 'wAtch':
+						(theme As Any)[key] = dAtA[key];
+						breAk;
+					cAse 'locAtion':
+						theme.locAtion = URI.revive(dAtA.locAtion);
+						breAk;
+					cAse 'extensionDAtA':
+						theme.extensionDAtA = ExtensionDAtA.fromJSONObject(dAtA.extensionDAtA);
+						breAk;
 				}
 			}
 			return theme;
-		} catch (e) {
+		} cAtch (e) {
 			return undefined;
 		}
 	}
 
-	toStorage(storageService: IStorageService) {
-		const data = JSON.stringify({
+	toStorAge(storAgeService: IStorAgeService) {
+		const dAtA = JSON.stringify({
 			id: this.id,
-			label: this.label,
+			lAbel: this.lAbel,
 			description: this.description,
 			settingsId: this.settingsId,
-			location: this.location?.toJSON(),
+			locAtion: this.locAtion?.toJSON(),
 			styleSheetContent: this.styleSheetContent,
-			hasFileIcons: this.hasFileIcons,
-			hasFolderIcons: this.hasFolderIcons,
+			hAsFileIcons: this.hAsFileIcons,
+			hAsFolderIcons: this.hAsFolderIcons,
 			hidesExplorerArrows: this.hidesExplorerArrows,
-			extensionData: ExtensionData.toJSONObject(this.extensionData),
-			watch: this.watch
+			extensionDAtA: ExtensionDAtA.toJSONObject(this.extensionDAtA),
+			wAtch: this.wAtch
 		});
-		storageService.store(PERSISTED_FILE_ICON_THEME_STORAGE_KEY, data, StorageScope.GLOBAL);
+		storAgeService.store(PERSISTED_FILE_ICON_THEME_STORAGE_KEY, dAtA, StorAgeScope.GLOBAL);
 	}
 }
 
-interface IconDefinition {
-	iconPath: string;
+interfAce IconDefinition {
+	iconPAth: string;
 	fontColor: string;
-	fontCharacter: string;
+	fontChArActer: string;
 	fontSize: string;
 	fontId: string;
 }
 
-interface FontDefinition {
+interfAce FontDefinition {
 	id: string;
 	weight: string;
 	style: string;
 	size: string;
-	src: { path: string; format: string; }[];
+	src: { pAth: string; formAt: string; }[];
 }
 
-interface IconsAssociation {
+interfAce IconsAssociAtion {
 	folder?: string;
 	file?: string;
-	folderExpanded?: string;
+	folderExpAnded?: string;
 	rootFolder?: string;
-	rootFolderExpanded?: string;
-	folderNames?: { [folderName: string]: string; };
-	folderNamesExpanded?: { [folderName: string]: string; };
+	rootFolderExpAnded?: string;
+	folderNAmes?: { [folderNAme: string]: string; };
+	folderNAmesExpAnded?: { [folderNAme: string]: string; };
 	fileExtensions?: { [extension: string]: string; };
-	fileNames?: { [fileName: string]: string; };
-	languageIds?: { [languageId: string]: string; };
+	fileNAmes?: { [fileNAme: string]: string; };
+	lAnguAgeIds?: { [lAnguAgeId: string]: string; };
 }
 
-interface IconThemeDocument extends IconsAssociation {
+interfAce IconThemeDocument extends IconsAssociAtion {
 	iconDefinitions: { [key: string]: IconDefinition };
 	fonts: FontDefinition[];
-	light?: IconsAssociation;
-	highContrast?: IconsAssociation;
-	hidesExplorerArrows?: boolean;
+	light?: IconsAssociAtion;
+	highContrAst?: IconsAssociAtion;
+	hidesExplorerArrows?: booleAn;
 }
 
-function _loadIconThemeDocument(fileService: IFileService, location: URI): Promise<IconThemeDocument> {
-	return fileService.readFile(location).then((content) => {
-		let errors: Json.ParseError[] = [];
-		let contentValue = Json.parse(content.value.toString(), errors);
+function _loAdIconThemeDocument(fileService: IFileService, locAtion: URI): Promise<IconThemeDocument> {
+	return fileService.reAdFile(locAtion).then((content) => {
+		let errors: Json.PArseError[] = [];
+		let contentVAlue = Json.pArse(content.vAlue.toString(), errors);
 		if (errors.length > 0) {
-			return Promise.reject(new Error(nls.localize('error.cannotparseicontheme', "Problems parsing file icons file: {0}", errors.map(e => getParseErrorMessage(e.error)).join(', '))));
-		} else if (Json.getNodeType(contentValue) !== 'object') {
-			return Promise.reject(new Error(nls.localize('error.invalidformat', "Invalid format for file icons theme file: Object expected.")));
+			return Promise.reject(new Error(nls.locAlize('error.cAnnotpArseicontheme', "Problems pArsing file icons file: {0}", errors.mAp(e => getPArseErrorMessAge(e.error)).join(', '))));
+		} else if (Json.getNodeType(contentVAlue) !== 'object') {
+			return Promise.reject(new Error(nls.locAlize('error.invAlidformAt', "InvAlid formAt for file icons theme file: Object expected.")));
 		}
-		return Promise.resolve(contentValue);
+		return Promise.resolve(contentVAlue);
 	});
 }
 
-function _processIconThemeDocument(id: string, iconThemeDocumentLocation: URI, iconThemeDocument: IconThemeDocument): { content: string; hasFileIcons: boolean; hasFolderIcons: boolean; hidesExplorerArrows: boolean; } {
+function _processIconThemeDocument(id: string, iconThemeDocumentLocAtion: URI, iconThemeDocument: IconThemeDocument): { content: string; hAsFileIcons: booleAn; hAsFolderIcons: booleAn; hidesExplorerArrows: booleAn; } {
 
-	const result = { content: '', hasFileIcons: false, hasFolderIcons: false, hidesExplorerArrows: !!iconThemeDocument.hidesExplorerArrows };
+	const result = { content: '', hAsFileIcons: fAlse, hAsFolderIcons: fAlse, hidesExplorerArrows: !!iconThemeDocument.hidesExplorerArrows };
 
 	if (!iconThemeDocument.iconDefinitions) {
 		return result;
 	}
 	let selectorByDefinitionId: { [def: string]: string[] } = {};
 
-	const iconThemeDocumentLocationDirname = resources.dirname(iconThemeDocumentLocation);
-	function resolvePath(path: string) {
-		return resources.joinPath(iconThemeDocumentLocationDirname, path);
+	const iconThemeDocumentLocAtionDirnAme = resources.dirnAme(iconThemeDocumentLocAtion);
+	function resolvePAth(pAth: string) {
+		return resources.joinPAth(iconThemeDocumentLocAtionDirnAme, pAth);
 	}
 
-	function collectSelectors(associations: IconsAssociation | undefined, baseThemeClassName?: string) {
-		function addSelector(selector: string, defId: string) {
+	function collectSelectors(AssociAtions: IconsAssociAtion | undefined, bAseThemeClAssNAme?: string) {
+		function AddSelector(selector: string, defId: string) {
 			if (defId) {
 				let list = selectorByDefinitionId[defId];
 				if (!list) {
@@ -234,140 +234,140 @@ function _processIconThemeDocument(id: string, iconThemeDocumentLocation: URI, i
 				list.push(selector);
 			}
 		}
-		if (associations) {
-			let qualifier = '.show-file-icons';
-			if (baseThemeClassName) {
-				qualifier = baseThemeClassName + ' ' + qualifier;
+		if (AssociAtions) {
+			let quAlifier = '.show-file-icons';
+			if (bAseThemeClAssNAme) {
+				quAlifier = bAseThemeClAssNAme + ' ' + quAlifier;
 			}
 
-			const expanded = '.monaco-tl-twistie.collapsible:not(.collapsed) + .monaco-tl-contents';
+			const expAnded = '.monAco-tl-twistie.collApsible:not(.collApsed) + .monAco-tl-contents';
 
-			if (associations.folder) {
-				addSelector(`${qualifier} .folder-icon::before`, associations.folder);
-				result.hasFolderIcons = true;
+			if (AssociAtions.folder) {
+				AddSelector(`${quAlifier} .folder-icon::before`, AssociAtions.folder);
+				result.hAsFolderIcons = true;
 			}
 
-			if (associations.folderExpanded) {
-				addSelector(`${qualifier} ${expanded} .folder-icon::before`, associations.folderExpanded);
-				result.hasFolderIcons = true;
+			if (AssociAtions.folderExpAnded) {
+				AddSelector(`${quAlifier} ${expAnded} .folder-icon::before`, AssociAtions.folderExpAnded);
+				result.hAsFolderIcons = true;
 			}
 
-			let rootFolder = associations.rootFolder || associations.folder;
-			let rootFolderExpanded = associations.rootFolderExpanded || associations.folderExpanded;
+			let rootFolder = AssociAtions.rootFolder || AssociAtions.folder;
+			let rootFolderExpAnded = AssociAtions.rootFolderExpAnded || AssociAtions.folderExpAnded;
 
 			if (rootFolder) {
-				addSelector(`${qualifier} .rootfolder-icon::before`, rootFolder);
-				result.hasFolderIcons = true;
+				AddSelector(`${quAlifier} .rootfolder-icon::before`, rootFolder);
+				result.hAsFolderIcons = true;
 			}
 
-			if (rootFolderExpanded) {
-				addSelector(`${qualifier} ${expanded} .rootfolder-icon::before`, rootFolderExpanded);
-				result.hasFolderIcons = true;
+			if (rootFolderExpAnded) {
+				AddSelector(`${quAlifier} ${expAnded} .rootfolder-icon::before`, rootFolderExpAnded);
+				result.hAsFolderIcons = true;
 			}
 
-			if (associations.file) {
-				addSelector(`${qualifier} .file-icon::before`, associations.file);
-				result.hasFileIcons = true;
+			if (AssociAtions.file) {
+				AddSelector(`${quAlifier} .file-icon::before`, AssociAtions.file);
+				result.hAsFileIcons = true;
 			}
 
-			let folderNames = associations.folderNames;
-			if (folderNames) {
-				for (let folderName in folderNames) {
-					addSelector(`${qualifier} .${escapeCSS(folderName.toLowerCase())}-name-folder-icon.folder-icon::before`, folderNames[folderName]);
-					result.hasFolderIcons = true;
+			let folderNAmes = AssociAtions.folderNAmes;
+			if (folderNAmes) {
+				for (let folderNAme in folderNAmes) {
+					AddSelector(`${quAlifier} .${escApeCSS(folderNAme.toLowerCAse())}-nAme-folder-icon.folder-icon::before`, folderNAmes[folderNAme]);
+					result.hAsFolderIcons = true;
 				}
 			}
-			let folderNamesExpanded = associations.folderNamesExpanded;
-			if (folderNamesExpanded) {
-				for (let folderName in folderNamesExpanded) {
-					addSelector(`${qualifier} ${expanded} .${escapeCSS(folderName.toLowerCase())}-name-folder-icon.folder-icon::before`, folderNamesExpanded[folderName]);
-					result.hasFolderIcons = true;
+			let folderNAmesExpAnded = AssociAtions.folderNAmesExpAnded;
+			if (folderNAmesExpAnded) {
+				for (let folderNAme in folderNAmesExpAnded) {
+					AddSelector(`${quAlifier} ${expAnded} .${escApeCSS(folderNAme.toLowerCAse())}-nAme-folder-icon.folder-icon::before`, folderNAmesExpAnded[folderNAme]);
+					result.hAsFolderIcons = true;
 				}
 			}
 
-			let languageIds = associations.languageIds;
-			if (languageIds) {
-				if (!languageIds.jsonc && languageIds.json) {
-					languageIds.jsonc = languageIds.json;
+			let lAnguAgeIds = AssociAtions.lAnguAgeIds;
+			if (lAnguAgeIds) {
+				if (!lAnguAgeIds.jsonc && lAnguAgeIds.json) {
+					lAnguAgeIds.jsonc = lAnguAgeIds.json;
 				}
-				for (let languageId in languageIds) {
-					addSelector(`${qualifier} .${escapeCSS(languageId)}-lang-file-icon.file-icon::before`, languageIds[languageId]);
-					result.hasFileIcons = true;
+				for (let lAnguAgeId in lAnguAgeIds) {
+					AddSelector(`${quAlifier} .${escApeCSS(lAnguAgeId)}-lAng-file-icon.file-icon::before`, lAnguAgeIds[lAnguAgeId]);
+					result.hAsFileIcons = true;
 				}
 			}
-			let fileExtensions = associations.fileExtensions;
+			let fileExtensions = AssociAtions.fileExtensions;
 			if (fileExtensions) {
 				for (let fileExtension in fileExtensions) {
 					let selectors: string[] = [];
-					let segments = fileExtension.toLowerCase().split('.');
+					let segments = fileExtension.toLowerCAse().split('.');
 					if (segments.length) {
 						for (let i = 0; i < segments.length; i++) {
-							selectors.push(`.${escapeCSS(segments.slice(i).join('.'))}-ext-file-icon`);
+							selectors.push(`.${escApeCSS(segments.slice(i).join('.'))}-ext-file-icon`);
 						}
-						selectors.push('.ext-file-icon'); // extra segment to increase file-ext score
+						selectors.push('.ext-file-icon'); // extrA segment to increAse file-ext score
 					}
-					addSelector(`${qualifier} ${selectors.join('')}.file-icon::before`, fileExtensions[fileExtension]);
-					result.hasFileIcons = true;
+					AddSelector(`${quAlifier} ${selectors.join('')}.file-icon::before`, fileExtensions[fileExtension]);
+					result.hAsFileIcons = true;
 				}
 			}
-			let fileNames = associations.fileNames;
-			if (fileNames) {
-				for (let fileName in fileNames) {
+			let fileNAmes = AssociAtions.fileNAmes;
+			if (fileNAmes) {
+				for (let fileNAme in fileNAmes) {
 					let selectors: string[] = [];
-					fileName = fileName.toLowerCase();
-					selectors.push(`.${escapeCSS(fileName)}-name-file-icon`);
-					let segments = fileName.split('.');
+					fileNAme = fileNAme.toLowerCAse();
+					selectors.push(`.${escApeCSS(fileNAme)}-nAme-file-icon`);
+					let segments = fileNAme.split('.');
 					if (segments.length) {
 						for (let i = 1; i < segments.length; i++) {
-							selectors.push(`.${escapeCSS(segments.slice(i).join('.'))}-ext-file-icon`);
+							selectors.push(`.${escApeCSS(segments.slice(i).join('.'))}-ext-file-icon`);
 						}
-						selectors.push('.ext-file-icon'); // extra segment to increase file-ext score
+						selectors.push('.ext-file-icon'); // extrA segment to increAse file-ext score
 					}
-					addSelector(`${qualifier} ${selectors.join('')}.file-icon::before`, fileNames[fileName]);
-					result.hasFileIcons = true;
+					AddSelector(`${quAlifier} ${selectors.join('')}.file-icon::before`, fileNAmes[fileNAme]);
+					result.hAsFileIcons = true;
 				}
 			}
 		}
 	}
 	collectSelectors(iconThemeDocument);
 	collectSelectors(iconThemeDocument.light, '.vs');
-	collectSelectors(iconThemeDocument.highContrast, '.hc-black');
+	collectSelectors(iconThemeDocument.highContrAst, '.hc-blAck');
 
-	if (!result.hasFileIcons && !result.hasFolderIcons) {
+	if (!result.hAsFileIcons && !result.hAsFolderIcons) {
 		return result;
 	}
 
 	let cssRules: string[] = [];
 
 	let fonts = iconThemeDocument.fonts;
-	if (Array.isArray(fonts)) {
-		fonts.forEach(font => {
-			let src = font.src.map(l => `${asCSSUrl(resolvePath(l.path))} format('${l.format}')`).join(', ');
-			cssRules.push(`@font-face { src: ${src}; font-family: '${font.id}'; font-weight: ${font.weight}; font-style: ${font.style}; }`);
+	if (ArrAy.isArrAy(fonts)) {
+		fonts.forEAch(font => {
+			let src = font.src.mAp(l => `${AsCSSUrl(resolvePAth(l.pAth))} formAt('${l.formAt}')`).join(', ');
+			cssRules.push(`@font-fAce { src: ${src}; font-fAmily: '${font.id}'; font-weight: ${font.weight}; font-style: ${font.style}; }`);
 		});
-		cssRules.push(`.show-file-icons .file-icon::before, .show-file-icons .folder-icon::before, .show-file-icons .rootfolder-icon::before { font-family: '${fonts[0].id}'; font-size: ${fonts[0].size || '150%'}}`);
+		cssRules.push(`.show-file-icons .file-icon::before, .show-file-icons .folder-icon::before, .show-file-icons .rootfolder-icon::before { font-fAmily: '${fonts[0].id}'; font-size: ${fonts[0].size || '150%'}}`);
 	}
 
 	for (let defId in selectorByDefinitionId) {
 		let selectors = selectorByDefinitionId[defId];
 		let definition = iconThemeDocument.iconDefinitions[defId];
 		if (definition) {
-			if (definition.iconPath) {
-				cssRules.push(`${selectors.join(', ')} { content: ' '; background-image: ${asCSSUrl(resolvePath(definition.iconPath))}; }`);
+			if (definition.iconPAth) {
+				cssRules.push(`${selectors.join(', ')} { content: ' '; bAckground-imAge: ${AsCSSUrl(resolvePAth(definition.iconPAth))}; }`);
 			}
-			if (definition.fontCharacter || definition.fontColor) {
+			if (definition.fontChArActer || definition.fontColor) {
 				let body = '';
 				if (definition.fontColor) {
 					body += ` color: ${definition.fontColor};`;
 				}
-				if (definition.fontCharacter) {
-					body += ` content: '${definition.fontCharacter}';`;
+				if (definition.fontChArActer) {
+					body += ` content: '${definition.fontChArActer}';`;
 				}
 				if (definition.fontSize) {
 					body += ` font-size: ${definition.fontSize};`;
 				}
 				if (definition.fontId) {
-					body += ` font-family: ${definition.fontId};`;
+					body += ` font-fAmily: ${definition.fontId};`;
 				}
 				cssRules.push(`${selectors.join(', ')} { ${body} }`);
 			}
@@ -376,6 +376,6 @@ function _processIconThemeDocument(id: string, iconThemeDocumentLocation: URI, i
 	result.content = cssRules.join('\n');
 	return result;
 }
-function escapeCSS(str: string) {
-	return window.CSS.escape(str);
+function escApeCSS(str: string) {
+	return window.CSS.escApe(str);
 }

@@ -1,262 +1,262 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
-import * as resources from 'vs/base/common/resources';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { forEach } from 'vs/base/common/collections';
-import { IExtensionPointUser, ExtensionMessageCollector, ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { MenuId, MenuRegistry, ILocalizedString, IMenuItem, ICommandAction, ISubmenuItem } from 'vs/platform/actions/common/actions';
-import { URI } from 'vs/base/common/uri';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ThemeIcon } from 'vs/platform/theme/common/themeService';
-import { Iterable } from 'vs/base/common/iterator';
-import { index } from 'vs/base/common/arrays';
+import { locAlize } from 'vs/nls';
+import { isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
+import * As resources from 'vs/bAse/common/resources';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { forEAch } from 'vs/bAse/common/collections';
+import { IExtensionPointUser, ExtensionMessAgeCollector, ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { MenuId, MenuRegistry, ILocAlizedString, IMenuItem, ICommAndAction, ISubmenuItem } from 'vs/plAtform/Actions/common/Actions';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { ThemeIcon } from 'vs/plAtform/theme/common/themeService';
+import { IterAble } from 'vs/bAse/common/iterAtor';
+import { index } from 'vs/bAse/common/ArrAys';
 
-interface IAPIMenu {
-	readonly key: string;
-	readonly id: MenuId;
-	readonly description: string;
-	readonly proposed?: boolean; // defaults to false
-	readonly supportsSubmenus?: boolean; // defaults to true
+interfAce IAPIMenu {
+	reAdonly key: string;
+	reAdonly id: MenuId;
+	reAdonly description: string;
+	reAdonly proposed?: booleAn; // defAults to fAlse
+	reAdonly supportsSubmenus?: booleAn; // defAults to true
 }
 
-const apiMenus: IAPIMenu[] = [
+const ApiMenus: IAPIMenu[] = [
 	{
-		key: 'commandPalette',
-		id: MenuId.CommandPalette,
-		description: localize('menus.commandPalette', "The Command Palette"),
-		supportsSubmenus: false
+		key: 'commAndPAlette',
+		id: MenuId.CommAndPAlette,
+		description: locAlize('menus.commAndPAlette', "The CommAnd PAlette"),
+		supportsSubmenus: fAlse
 	},
 	{
-		key: 'touchBar',
-		id: MenuId.TouchBarContext,
-		description: localize('menus.touchBar', "The touch bar (macOS only)"),
-		supportsSubmenus: false
+		key: 'touchBAr',
+		id: MenuId.TouchBArContext,
+		description: locAlize('menus.touchBAr', "The touch bAr (mAcOS only)"),
+		supportsSubmenus: fAlse
 	},
 	{
 		key: 'editor/title',
 		id: MenuId.EditorTitle,
-		description: localize('menus.editorTitle', "The editor title menu")
+		description: locAlize('menus.editorTitle', "The editor title menu")
 	},
 	{
 		key: 'editor/context',
 		id: MenuId.EditorContext,
-		description: localize('menus.editorContext', "The editor context menu")
+		description: locAlize('menus.editorContext', "The editor context menu")
 	},
 	{
 		key: 'explorer/context',
 		id: MenuId.ExplorerContext,
-		description: localize('menus.explorerContext', "The file explorer context menu")
+		description: locAlize('menus.explorerContext', "The file explorer context menu")
 	},
 	{
 		key: 'editor/title/context',
 		id: MenuId.EditorTitleContext,
-		description: localize('menus.editorTabContext', "The editor tabs context menu")
+		description: locAlize('menus.editorTAbContext', "The editor tAbs context menu")
 	},
 	{
-		key: 'debug/callstack/context',
-		id: MenuId.DebugCallStackContext,
-		description: localize('menus.debugCallstackContext', "The debug callstack view context menu")
+		key: 'debug/cAllstAck/context',
+		id: MenuId.DebugCAllStAckContext,
+		description: locAlize('menus.debugCAllstAckContext', "The debug cAllstAck view context menu")
 	},
 	{
-		key: 'debug/variables/context',
-		id: MenuId.DebugVariablesContext,
-		description: localize('menus.debugVariablesContext', "The debug variables view context menu")
+		key: 'debug/vAriAbles/context',
+		id: MenuId.DebugVAriAblesContext,
+		description: locAlize('menus.debugVAriAblesContext', "The debug vAriAbles view context menu")
 	},
 	{
-		key: 'debug/toolBar',
-		id: MenuId.DebugToolBar,
-		description: localize('menus.debugToolBar', "The debug toolbar menu")
+		key: 'debug/toolBAr',
+		id: MenuId.DebugToolBAr,
+		description: locAlize('menus.debugToolBAr', "The debug toolbAr menu")
 	},
 	{
-		key: 'menuBar/webNavigation',
-		id: MenuId.MenubarWebNavigationMenu,
-		description: localize('menus.webNavigation', "The top level navigational menu (web only)"),
+		key: 'menuBAr/webNAvigAtion',
+		id: MenuId.MenubArWebNAvigAtionMenu,
+		description: locAlize('menus.webNAvigAtion', "The top level nAvigAtionAl menu (web only)"),
 		proposed: true,
-		supportsSubmenus: false
+		supportsSubmenus: fAlse
 	},
 	{
-		key: 'menuBar/file',
-		id: MenuId.MenubarFileMenu,
-		description: localize('menus.file', "The top level file menu"),
+		key: 'menuBAr/file',
+		id: MenuId.MenubArFileMenu,
+		description: locAlize('menus.file', "The top level file menu"),
 		proposed: true
 	},
 	{
 		key: 'scm/title',
 		id: MenuId.SCMTitle,
-		description: localize('menus.scmTitle', "The Source Control title menu")
+		description: locAlize('menus.scmTitle', "The Source Control title menu")
 	},
 	{
 		key: 'scm/sourceControl',
 		id: MenuId.SCMSourceControl,
-		description: localize('menus.scmSourceControl', "The Source Control menu")
+		description: locAlize('menus.scmSourceControl', "The Source Control menu")
 	},
 	{
-		key: 'scm/resourceState/context',
+		key: 'scm/resourceStAte/context',
 		id: MenuId.SCMResourceContext,
-		description: localize('menus.resourceGroupContext', "The Source Control resource group context menu")
+		description: locAlize('menus.resourceGroupContext', "The Source Control resource group context menu")
 	},
 	{
 		key: 'scm/resourceFolder/context',
 		id: MenuId.SCMResourceFolderContext,
-		description: localize('menus.resourceStateContext', "The Source Control resource state context menu")
+		description: locAlize('menus.resourceStAteContext', "The Source Control resource stAte context menu")
 	},
 	{
 		key: 'scm/resourceGroup/context',
 		id: MenuId.SCMResourceGroupContext,
-		description: localize('menus.resourceFolderContext', "The Source Control resource folder context menu")
+		description: locAlize('menus.resourceFolderContext', "The Source Control resource folder context menu")
 	},
 	{
-		key: 'scm/change/title',
-		id: MenuId.SCMChangeContext,
-		description: localize('menus.changeTitle', "The Source Control inline change menu")
+		key: 'scm/chAnge/title',
+		id: MenuId.SCMChAngeContext,
+		description: locAlize('menus.chAngeTitle', "The Source Control inline chAnge menu")
 	},
 	{
-		key: 'statusBar/windowIndicator',
-		id: MenuId.StatusBarWindowIndicatorMenu,
-		description: localize('menus.statusBarWindowIndicator', "The window indicator menu in the status bar"),
+		key: 'stAtusBAr/windowIndicAtor',
+		id: MenuId.StAtusBArWindowIndicAtorMenu,
+		description: locAlize('menus.stAtusBArWindowIndicAtor', "The window indicAtor menu in the stAtus bAr"),
 		proposed: true,
-		supportsSubmenus: false
+		supportsSubmenus: fAlse
 	},
 	{
 		key: 'view/title',
 		id: MenuId.ViewTitle,
-		description: localize('view.viewTitle', "The contributed view title menu")
+		description: locAlize('view.viewTitle', "The contributed view title menu")
 	},
 	{
 		key: 'view/item/context',
 		id: MenuId.ViewItemContext,
-		description: localize('view.itemContext', "The contributed view item context menu")
+		description: locAlize('view.itemContext', "The contributed view item context menu")
 	},
 	{
-		key: 'comments/commentThread/title',
-		id: MenuId.CommentThreadTitle,
-		description: localize('commentThread.title', "The contributed comment thread title menu")
+		key: 'comments/commentThreAd/title',
+		id: MenuId.CommentThreAdTitle,
+		description: locAlize('commentThreAd.title', "The contributed comment threAd title menu")
 	},
 	{
-		key: 'comments/commentThread/context',
-		id: MenuId.CommentThreadActions,
-		description: localize('commentThread.actions', "The contributed comment thread context menu, rendered as buttons below the comment editor"),
-		supportsSubmenus: false
+		key: 'comments/commentThreAd/context',
+		id: MenuId.CommentThreAdActions,
+		description: locAlize('commentThreAd.Actions', "The contributed comment threAd context menu, rendered As buttons below the comment editor"),
+		supportsSubmenus: fAlse
 	},
 	{
 		key: 'comments/comment/title',
 		id: MenuId.CommentTitle,
-		description: localize('comment.title', "The contributed comment title menu")
+		description: locAlize('comment.title', "The contributed comment title menu")
 	},
 	{
 		key: 'comments/comment/context',
 		id: MenuId.CommentActions,
-		description: localize('comment.actions', "The contributed comment context menu, rendered as buttons below the comment editor"),
-		supportsSubmenus: false
+		description: locAlize('comment.Actions', "The contributed comment context menu, rendered As buttons below the comment editor"),
+		supportsSubmenus: fAlse
 	},
 	{
 		key: 'notebook/cell/title',
 		id: MenuId.NotebookCellTitle,
-		description: localize('notebook.cell.title', "The contributed notebook cell title menu"),
+		description: locAlize('notebook.cell.title', "The contributed notebook cell title menu"),
 		proposed: true
 	},
 	{
 		key: 'extension/context',
 		id: MenuId.ExtensionContext,
-		description: localize('menus.extensionContext', "The extension context menu")
+		description: locAlize('menus.extensionContext', "The extension context menu")
 	},
 	{
 		key: 'timeline/title',
 		id: MenuId.TimelineTitle,
-		description: localize('view.timelineTitle', "The Timeline view title menu")
+		description: locAlize('view.timelineTitle', "The Timeline view title menu")
 	},
 	{
 		key: 'timeline/item/context',
 		id: MenuId.TimelineItemContext,
-		description: localize('view.timelineContext', "The Timeline view item context menu")
+		description: locAlize('view.timelineContext', "The Timeline view item context menu")
 	},
 ];
 
-namespace schema {
+nAmespAce schemA {
 
 	// --- menus, submenus contribution point
 
-	export interface IUserFriendlyMenuItem {
-		command: string;
-		alt?: string;
+	export interfAce IUserFriendlyMenuItem {
+		commAnd: string;
+		Alt?: string;
 		when?: string;
 		group?: string;
 	}
 
-	export interface IUserFriendlySubmenuItem {
+	export interfAce IUserFriendlySubmenuItem {
 		submenu: string;
 		when?: string;
 		group?: string;
 	}
 
-	export interface IUserFriendlySubmenu {
+	export interfAce IUserFriendlySubmenu {
 		id: string;
-		label: string;
+		lAbel: string;
 		icon?: IUserFriendlyIcon;
 	}
 
 	export function isMenuItem(item: IUserFriendlyMenuItem | IUserFriendlySubmenuItem): item is IUserFriendlyMenuItem {
-		return typeof (item as IUserFriendlyMenuItem).command === 'string';
+		return typeof (item As IUserFriendlyMenuItem).commAnd === 'string';
 	}
 
-	export function isValidMenuItem(item: IUserFriendlyMenuItem, collector: ExtensionMessageCollector): boolean {
-		if (typeof item.command !== 'string') {
-			collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'command'));
-			return false;
+	export function isVAlidMenuItem(item: IUserFriendlyMenuItem, collector: ExtensionMessAgeCollector): booleAn {
+		if (typeof item.commAnd !== 'string') {
+			collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'commAnd'));
+			return fAlse;
 		}
-		if (item.alt && typeof item.alt !== 'string') {
-			collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'alt'));
-			return false;
+		if (item.Alt && typeof item.Alt !== 'string') {
+			collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'Alt'));
+			return fAlse;
 		}
 		if (item.when && typeof item.when !== 'string') {
-			collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'when'));
-			return false;
+			collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'when'));
+			return fAlse;
 		}
 		if (item.group && typeof item.group !== 'string') {
-			collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'group'));
-			return false;
+			collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'group'));
+			return fAlse;
 		}
 
 		return true;
 	}
 
-	export function isValidSubmenuItem(item: IUserFriendlySubmenuItem, collector: ExtensionMessageCollector): boolean {
+	export function isVAlidSubmenuItem(item: IUserFriendlySubmenuItem, collector: ExtensionMessAgeCollector): booleAn {
 		if (typeof item.submenu !== 'string') {
-			collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'submenu'));
-			return false;
+			collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'submenu'));
+			return fAlse;
 		}
 		if (item.when && typeof item.when !== 'string') {
-			collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'when'));
-			return false;
+			collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'when'));
+			return fAlse;
 		}
 		if (item.group && typeof item.group !== 'string') {
-			collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'group'));
-			return false;
+			collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'group'));
+			return fAlse;
 		}
 
 		return true;
 	}
 
-	export function isValidItems(items: (IUserFriendlyMenuItem | IUserFriendlySubmenuItem)[], collector: ExtensionMessageCollector): boolean {
-		if (!Array.isArray(items)) {
-			collector.error(localize('requirearray', "submenu items must be an array"));
-			return false;
+	export function isVAlidItems(items: (IUserFriendlyMenuItem | IUserFriendlySubmenuItem)[], collector: ExtensionMessAgeCollector): booleAn {
+		if (!ArrAy.isArrAy(items)) {
+			collector.error(locAlize('requireArrAy', "submenu items must be An ArrAy"));
+			return fAlse;
 		}
 
 		for (let item of items) {
 			if (isMenuItem(item)) {
-				if (!isValidMenuItem(item, collector)) {
-					return false;
+				if (!isVAlidMenuItem(item, collector)) {
+					return fAlse;
 				}
 			} else {
-				if (!isValidSubmenuItem(item, collector)) {
-					return false;
+				if (!isVAlidSubmenuItem(item, collector)) {
+					return fAlse;
 				}
 			}
 		}
@@ -264,92 +264,92 @@ namespace schema {
 		return true;
 	}
 
-	export function isValidSubmenu(submenu: IUserFriendlySubmenu, collector: ExtensionMessageCollector): boolean {
+	export function isVAlidSubmenu(submenu: IUserFriendlySubmenu, collector: ExtensionMessAgeCollector): booleAn {
 		if (typeof submenu !== 'object') {
-			collector.error(localize('require', "submenu items must be an object"));
-			return false;
+			collector.error(locAlize('require', "submenu items must be An object"));
+			return fAlse;
 		}
 
 		if (typeof submenu.id !== 'string') {
-			collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'id'));
-			return false;
+			collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'id'));
+			return fAlse;
 		}
-		if (typeof submenu.label !== 'string') {
-			collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'label'));
-			return false;
+		if (typeof submenu.lAbel !== 'string') {
+			collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'lAbel'));
+			return fAlse;
 		}
 
 		return true;
 	}
 
-	const menuItem: IJSONSchema = {
+	const menuItem: IJSONSchemA = {
 		type: 'object',
-		required: ['command'],
+		required: ['commAnd'],
 		properties: {
-			command: {
-				description: localize('vscode.extension.contributes.menuItem.command', 'Identifier of the command to execute. The command must be declared in the \'commands\'-section'),
+			commAnd: {
+				description: locAlize('vscode.extension.contributes.menuItem.commAnd', 'Identifier of the commAnd to execute. The commAnd must be declAred in the \'commAnds\'-section'),
 				type: 'string'
 			},
-			alt: {
-				description: localize('vscode.extension.contributes.menuItem.alt', 'Identifier of an alternative command to execute. The command must be declared in the \'commands\'-section'),
+			Alt: {
+				description: locAlize('vscode.extension.contributes.menuItem.Alt', 'Identifier of An AlternAtive commAnd to execute. The commAnd must be declAred in the \'commAnds\'-section'),
 				type: 'string'
 			},
 			when: {
-				description: localize('vscode.extension.contributes.menuItem.when', 'Condition which must be true to show this item'),
+				description: locAlize('vscode.extension.contributes.menuItem.when', 'Condition which must be true to show this item'),
 				type: 'string'
 			},
 			group: {
-				description: localize('vscode.extension.contributes.menuItem.group', 'Group into which this item belongs'),
+				description: locAlize('vscode.extension.contributes.menuItem.group', 'Group into which this item belongs'),
 				type: 'string'
 			}
 		}
 	};
 
-	const submenuItem: IJSONSchema = {
+	const submenuItem: IJSONSchemA = {
 		type: 'object',
 		required: ['submenu'],
 		properties: {
 			submenu: {
-				description: localize('vscode.extension.contributes.menuItem.submenu', 'Identifier of the submenu to display in this item.'),
+				description: locAlize('vscode.extension.contributes.menuItem.submenu', 'Identifier of the submenu to displAy in this item.'),
 				type: 'string'
 			},
 			when: {
-				description: localize('vscode.extension.contributes.menuItem.when', 'Condition which must be true to show this item'),
+				description: locAlize('vscode.extension.contributes.menuItem.when', 'Condition which must be true to show this item'),
 				type: 'string'
 			},
 			group: {
-				description: localize('vscode.extension.contributes.menuItem.group', 'Group into which this item belongs'),
+				description: locAlize('vscode.extension.contributes.menuItem.group', 'Group into which this item belongs'),
 				type: 'string'
 			}
 		}
 	};
 
-	const submenu: IJSONSchema = {
+	const submenu: IJSONSchemA = {
 		type: 'object',
-		required: ['id', 'label'],
+		required: ['id', 'lAbel'],
 		properties: {
 			id: {
-				description: localize('vscode.extension.contributes.submenu.id', 'Identifier of the menu to display as a submenu.'),
+				description: locAlize('vscode.extension.contributes.submenu.id', 'Identifier of the menu to displAy As A submenu.'),
 				type: 'string'
 			},
-			label: {
-				description: localize('vscode.extension.contributes.submenu.label', 'The label of the menu item which leads to this submenu.'),
+			lAbel: {
+				description: locAlize('vscode.extension.contributes.submenu.lAbel', 'The lAbel of the menu item which leAds to this submenu.'),
 				type: 'string'
 			},
 			icon: {
-				description: localize('vscode.extension.contributes.submenu.icon', '(Optional) Icon which is used to represent the submenu in the UI. Either a file path, an object with file paths for dark and light themes, or a theme icon references, like `\\$(zap)`'),
-				anyOf: [{
+				description: locAlize('vscode.extension.contributes.submenu.icon', '(OptionAl) Icon which is used to represent the submenu in the UI. Either A file pAth, An object with file pAths for dArk And light themes, or A theme icon references, like `\\$(zAp)`'),
+				AnyOf: [{
 					type: 'string'
 				},
 				{
 					type: 'object',
 					properties: {
 						light: {
-							description: localize('vscode.extension.contributes.submenu.icon.light', 'Icon path when a light theme is used'),
+							description: locAlize('vscode.extension.contributes.submenu.icon.light', 'Icon pAth when A light theme is used'),
 							type: 'string'
 						},
-						dark: {
-							description: localize('vscode.extension.contributes.submenu.icon.dark', 'Icon path when a dark theme is used'),
+						dArk: {
+							description: locAlize('vscode.extension.contributes.submenu.icon.dArk', 'Icon pAth when A dArk theme is used'),
 							type: 'string'
 						}
 					}
@@ -358,126 +358,126 @@ namespace schema {
 		}
 	};
 
-	export const menusContribution: IJSONSchema = {
-		description: localize('vscode.extension.contributes.menus', "Contributes menu items to the editor"),
+	export const menusContribution: IJSONSchemA = {
+		description: locAlize('vscode.extension.contributes.menus', "Contributes menu items to the editor"),
 		type: 'object',
-		properties: index(apiMenus, menu => menu.key, menu => ({
-			description: menu.proposed ? `(${localize('proposed', "Proposed API")}) ${menu.description}` : menu.description,
-			type: 'array',
-			items: menu.supportsSubmenus === false ? menuItem : { oneOf: [menuItem, submenuItem] }
+		properties: index(ApiMenus, menu => menu.key, menu => ({
+			description: menu.proposed ? `(${locAlize('proposed', "Proposed API")}) ${menu.description}` : menu.description,
+			type: 'ArrAy',
+			items: menu.supportsSubmenus === fAlse ? menuItem : { oneOf: [menuItem, submenuItem] }
 		})),
-		additionalProperties: {
+		AdditionAlProperties: {
 			description: 'Submenu',
-			type: 'array',
+			type: 'ArrAy',
 			items: { oneOf: [menuItem, submenuItem] }
 		}
 	};
 
-	export const submenusContribution: IJSONSchema = {
-		description: localize('vscode.extension.contributes.submenus', "Contributes submenu items to the editor"),
-		type: 'array',
+	export const submenusContribution: IJSONSchemA = {
+		description: locAlize('vscode.extension.contributes.submenus', "Contributes submenu items to the editor"),
+		type: 'ArrAy',
 		items: submenu
 	};
 
-	// --- commands contribution point
+	// --- commAnds contribution point
 
-	export interface IUserFriendlyCommand {
-		command: string;
-		title: string | ILocalizedString;
-		enablement?: string;
-		category?: string | ILocalizedString;
+	export interfAce IUserFriendlyCommAnd {
+		commAnd: string;
+		title: string | ILocAlizedString;
+		enAblement?: string;
+		cAtegory?: string | ILocAlizedString;
 		icon?: IUserFriendlyIcon;
 	}
 
-	export type IUserFriendlyIcon = string | { light: string; dark: string; };
+	export type IUserFriendlyIcon = string | { light: string; dArk: string; };
 
-	export function isValidCommand(command: IUserFriendlyCommand, collector: ExtensionMessageCollector): boolean {
-		if (!command) {
-			collector.error(localize('nonempty', "expected non-empty value."));
-			return false;
+	export function isVAlidCommAnd(commAnd: IUserFriendlyCommAnd, collector: ExtensionMessAgeCollector): booleAn {
+		if (!commAnd) {
+			collector.error(locAlize('nonempty', "expected non-empty vAlue."));
+			return fAlse;
 		}
-		if (isFalsyOrWhitespace(command.command)) {
-			collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", 'command'));
-			return false;
+		if (isFAlsyOrWhitespAce(commAnd.commAnd)) {
+			collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", 'commAnd'));
+			return fAlse;
 		}
-		if (!isValidLocalizedString(command.title, collector, 'title')) {
-			return false;
+		if (!isVAlidLocAlizedString(commAnd.title, collector, 'title')) {
+			return fAlse;
 		}
-		if (command.enablement && typeof command.enablement !== 'string') {
-			collector.error(localize('optstring', "property `{0}` can be omitted or must be of type `string`", 'precondition'));
-			return false;
+		if (commAnd.enAblement && typeof commAnd.enAblement !== 'string') {
+			collector.error(locAlize('optstring', "property `{0}` cAn be omitted or must be of type `string`", 'precondition'));
+			return fAlse;
 		}
-		if (command.category && !isValidLocalizedString(command.category, collector, 'category')) {
-			return false;
+		if (commAnd.cAtegory && !isVAlidLocAlizedString(commAnd.cAtegory, collector, 'cAtegory')) {
+			return fAlse;
 		}
-		if (!isValidIcon(command.icon, collector)) {
-			return false;
+		if (!isVAlidIcon(commAnd.icon, collector)) {
+			return fAlse;
 		}
 		return true;
 	}
 
-	function isValidIcon(icon: IUserFriendlyIcon | undefined, collector: ExtensionMessageCollector): boolean {
+	function isVAlidIcon(icon: IUserFriendlyIcon | undefined, collector: ExtensionMessAgeCollector): booleAn {
 		if (typeof icon === 'undefined') {
 			return true;
 		}
 		if (typeof icon === 'string') {
 			return true;
-		} else if (typeof icon.dark === 'string' && typeof icon.light === 'string') {
+		} else if (typeof icon.dArk === 'string' && typeof icon.light === 'string') {
 			return true;
 		}
-		collector.error(localize('opticon', "property `icon` can be omitted or must be either a string or a literal like `{dark, light}`"));
-		return false;
+		collector.error(locAlize('opticon', "property `icon` cAn be omitted or must be either A string or A literAl like `{dArk, light}`"));
+		return fAlse;
 	}
 
-	function isValidLocalizedString(localized: string | ILocalizedString, collector: ExtensionMessageCollector, propertyName: string): boolean {
-		if (typeof localized === 'undefined') {
-			collector.error(localize('requireStringOrObject', "property `{0}` is mandatory and must be of type `string` or `object`", propertyName));
-			return false;
-		} else if (typeof localized === 'string' && isFalsyOrWhitespace(localized)) {
-			collector.error(localize('requirestring', "property `{0}` is mandatory and must be of type `string`", propertyName));
-			return false;
-		} else if (typeof localized !== 'string' && (isFalsyOrWhitespace(localized.original) || isFalsyOrWhitespace(localized.value))) {
-			collector.error(localize('requirestrings', "properties `{0}` and `{1}` are mandatory and must be of type `string`", `${propertyName}.value`, `${propertyName}.original`));
-			return false;
+	function isVAlidLocAlizedString(locAlized: string | ILocAlizedString, collector: ExtensionMessAgeCollector, propertyNAme: string): booleAn {
+		if (typeof locAlized === 'undefined') {
+			collector.error(locAlize('requireStringOrObject', "property `{0}` is mAndAtory And must be of type `string` or `object`", propertyNAme));
+			return fAlse;
+		} else if (typeof locAlized === 'string' && isFAlsyOrWhitespAce(locAlized)) {
+			collector.error(locAlize('requirestring', "property `{0}` is mAndAtory And must be of type `string`", propertyNAme));
+			return fAlse;
+		} else if (typeof locAlized !== 'string' && (isFAlsyOrWhitespAce(locAlized.originAl) || isFAlsyOrWhitespAce(locAlized.vAlue))) {
+			collector.error(locAlize('requirestrings', "properties `{0}` And `{1}` Are mAndAtory And must be of type `string`", `${propertyNAme}.vAlue`, `${propertyNAme}.originAl`));
+			return fAlse;
 		}
 
 		return true;
 	}
 
-	const commandType: IJSONSchema = {
+	const commAndType: IJSONSchemA = {
 		type: 'object',
-		required: ['command', 'title'],
+		required: ['commAnd', 'title'],
 		properties: {
-			command: {
-				description: localize('vscode.extension.contributes.commandType.command', 'Identifier of the command to execute'),
+			commAnd: {
+				description: locAlize('vscode.extension.contributes.commAndType.commAnd', 'Identifier of the commAnd to execute'),
 				type: 'string'
 			},
 			title: {
-				description: localize('vscode.extension.contributes.commandType.title', 'Title by which the command is represented in the UI'),
+				description: locAlize('vscode.extension.contributes.commAndType.title', 'Title by which the commAnd is represented in the UI'),
 				type: 'string'
 			},
-			category: {
-				description: localize('vscode.extension.contributes.commandType.category', '(Optional) Category string by the command is grouped in the UI'),
+			cAtegory: {
+				description: locAlize('vscode.extension.contributes.commAndType.cAtegory', '(OptionAl) CAtegory string by the commAnd is grouped in the UI'),
 				type: 'string'
 			},
-			enablement: {
-				description: localize('vscode.extension.contributes.commandType.precondition', '(Optional) Condition which must be true to enable the command'),
+			enAblement: {
+				description: locAlize('vscode.extension.contributes.commAndType.precondition', '(OptionAl) Condition which must be true to enAble the commAnd'),
 				type: 'string'
 			},
 			icon: {
-				description: localize('vscode.extension.contributes.commandType.icon', '(Optional) Icon which is used to represent the command in the UI. Either a file path, an object with file paths for dark and light themes, or a theme icon references, like `\\$(zap)`'),
-				anyOf: [{
+				description: locAlize('vscode.extension.contributes.commAndType.icon', '(OptionAl) Icon which is used to represent the commAnd in the UI. Either A file pAth, An object with file pAths for dArk And light themes, or A theme icon references, like `\\$(zAp)`'),
+				AnyOf: [{
 					type: 'string'
 				},
 				{
 					type: 'object',
 					properties: {
 						light: {
-							description: localize('vscode.extension.contributes.commandType.icon.light', 'Icon path when a light theme is used'),
+							description: locAlize('vscode.extension.contributes.commAndType.icon.light', 'Icon pAth when A light theme is used'),
 							type: 'string'
 						},
-						dark: {
-							description: localize('vscode.extension.contributes.commandType.icon.dark', 'Icon path when a dark theme is used'),
+						dArk: {
+							description: locAlize('vscode.extension.contributes.commAndType.icon.dArk', 'Icon pAth when A dArk theme is used'),
 							type: 'string'
 						}
 					}
@@ -486,159 +486,159 @@ namespace schema {
 		}
 	};
 
-	export const commandsContribution: IJSONSchema = {
-		description: localize('vscode.extension.contributes.commands', "Contributes commands to the command palette."),
+	export const commAndsContribution: IJSONSchemA = {
+		description: locAlize('vscode.extension.contributes.commAnds', "Contributes commAnds to the commAnd pAlette."),
 		oneOf: [
-			commandType,
+			commAndType,
 			{
-				type: 'array',
-				items: commandType
+				type: 'ArrAy',
+				items: commAndType
 			}
 		]
 	};
 }
 
-const _commandRegistrations = new DisposableStore();
+const _commAndRegistrAtions = new DisposAbleStore();
 
-export const commandsExtensionPoint = ExtensionsRegistry.registerExtensionPoint<schema.IUserFriendlyCommand | schema.IUserFriendlyCommand[]>({
-	extensionPoint: 'commands',
-	jsonSchema: schema.commandsContribution
+export const commAndsExtensionPoint = ExtensionsRegistry.registerExtensionPoint<schemA.IUserFriendlyCommAnd | schemA.IUserFriendlyCommAnd[]>({
+	extensionPoint: 'commAnds',
+	jsonSchemA: schemA.commAndsContribution
 });
 
-commandsExtensionPoint.setHandler(extensions => {
+commAndsExtensionPoint.setHAndler(extensions => {
 
-	function handleCommand(userFriendlyCommand: schema.IUserFriendlyCommand, extension: IExtensionPointUser<any>, bucket: ICommandAction[]) {
+	function hAndleCommAnd(userFriendlyCommAnd: schemA.IUserFriendlyCommAnd, extension: IExtensionPointUser<Any>, bucket: ICommAndAction[]) {
 
-		if (!schema.isValidCommand(userFriendlyCommand, extension.collector)) {
+		if (!schemA.isVAlidCommAnd(userFriendlyCommAnd, extension.collector)) {
 			return;
 		}
 
-		const { icon, enablement, category, title, command } = userFriendlyCommand;
+		const { icon, enAblement, cAtegory, title, commAnd } = userFriendlyCommAnd;
 
-		let absoluteIcon: { dark: URI; light?: URI; } | ThemeIcon | undefined;
+		let AbsoluteIcon: { dArk: URI; light?: URI; } | ThemeIcon | undefined;
 		if (icon) {
 			if (typeof icon === 'string') {
-				absoluteIcon = ThemeIcon.fromString(icon) || { dark: resources.joinPath(extension.description.extensionLocation, icon) };
+				AbsoluteIcon = ThemeIcon.fromString(icon) || { dArk: resources.joinPAth(extension.description.extensionLocAtion, icon) };
 
 			} else {
-				absoluteIcon = {
-					dark: resources.joinPath(extension.description.extensionLocation, icon.dark),
-					light: resources.joinPath(extension.description.extensionLocation, icon.light)
+				AbsoluteIcon = {
+					dArk: resources.joinPAth(extension.description.extensionLocAtion, icon.dArk),
+					light: resources.joinPAth(extension.description.extensionLocAtion, icon.light)
 				};
 			}
 		}
 
-		if (MenuRegistry.getCommand(command)) {
-			extension.collector.info(localize('dup', "Command `{0}` appears multiple times in the `commands` section.", userFriendlyCommand.command));
+		if (MenuRegistry.getCommAnd(commAnd)) {
+			extension.collector.info(locAlize('dup', "CommAnd `{0}` AppeArs multiple times in the `commAnds` section.", userFriendlyCommAnd.commAnd));
 		}
 		bucket.push({
-			id: command,
+			id: commAnd,
 			title,
-			category,
-			precondition: ContextKeyExpr.deserialize(enablement),
-			icon: absoluteIcon
+			cAtegory,
+			precondition: ContextKeyExpr.deseriAlize(enAblement),
+			icon: AbsoluteIcon
 		});
 	}
 
-	// remove all previous command registrations
-	_commandRegistrations.clear();
+	// remove All previous commAnd registrAtions
+	_commAndRegistrAtions.cleAr();
 
-	const newCommands: ICommandAction[] = [];
+	const newCommAnds: ICommAndAction[] = [];
 	for (const extension of extensions) {
-		const { value } = extension;
-		if (Array.isArray(value)) {
-			for (const command of value) {
-				handleCommand(command, extension, newCommands);
+		const { vAlue } = extension;
+		if (ArrAy.isArrAy(vAlue)) {
+			for (const commAnd of vAlue) {
+				hAndleCommAnd(commAnd, extension, newCommAnds);
 			}
 		} else {
-			handleCommand(value, extension, newCommands);
+			hAndleCommAnd(vAlue, extension, newCommAnds);
 		}
 	}
-	_commandRegistrations.add(MenuRegistry.addCommands(newCommands));
+	_commAndRegistrAtions.Add(MenuRegistry.AddCommAnds(newCommAnds));
 });
 
-interface IRegisteredSubmenu {
-	readonly id: MenuId;
-	readonly label: string;
-	readonly icon?: { dark: URI; light?: URI; } | ThemeIcon;
+interfAce IRegisteredSubmenu {
+	reAdonly id: MenuId;
+	reAdonly lAbel: string;
+	reAdonly icon?: { dArk: URI; light?: URI; } | ThemeIcon;
 }
 
-const _submenus = new Map<string, IRegisteredSubmenu>();
+const _submenus = new MAp<string, IRegisteredSubmenu>();
 
-const submenusExtensionPoint = ExtensionsRegistry.registerExtensionPoint<schema.IUserFriendlySubmenu[]>({
+const submenusExtensionPoint = ExtensionsRegistry.registerExtensionPoint<schemA.IUserFriendlySubmenu[]>({
 	extensionPoint: 'submenus',
-	jsonSchema: schema.submenusContribution
+	jsonSchemA: schemA.submenusContribution
 });
 
-submenusExtensionPoint.setHandler(extensions => {
+submenusExtensionPoint.setHAndler(extensions => {
 
-	_submenus.clear();
+	_submenus.cleAr();
 
 	for (let extension of extensions) {
-		const { value, collector } = extension;
+		const { vAlue, collector } = extension;
 
-		forEach(value, entry => {
-			if (!schema.isValidSubmenu(entry.value, collector)) {
+		forEAch(vAlue, entry => {
+			if (!schemA.isVAlidSubmenu(entry.vAlue, collector)) {
 				return;
 			}
 
-			if (!entry.value.id) {
-				collector.warn(localize('submenuId.invalid.id', "`{0}` is not a valid submenu identifier", entry.value.id));
+			if (!entry.vAlue.id) {
+				collector.wArn(locAlize('submenuId.invAlid.id', "`{0}` is not A vAlid submenu identifier", entry.vAlue.id));
 				return;
 			}
-			if (!entry.value.label) {
-				collector.warn(localize('submenuId.invalid.label', "`{0}` is not a valid submenu label", entry.value.label));
+			if (!entry.vAlue.lAbel) {
+				collector.wArn(locAlize('submenuId.invAlid.lAbel', "`{0}` is not A vAlid submenu lAbel", entry.vAlue.lAbel));
 				return;
 			}
 
-			let absoluteIcon: { dark: URI; light?: URI; } | ThemeIcon | undefined;
-			if (entry.value.icon) {
-				if (typeof entry.value.icon === 'string') {
-					absoluteIcon = ThemeIcon.fromString(entry.value.icon) || { dark: resources.joinPath(extension.description.extensionLocation, entry.value.icon) };
+			let AbsoluteIcon: { dArk: URI; light?: URI; } | ThemeIcon | undefined;
+			if (entry.vAlue.icon) {
+				if (typeof entry.vAlue.icon === 'string') {
+					AbsoluteIcon = ThemeIcon.fromString(entry.vAlue.icon) || { dArk: resources.joinPAth(extension.description.extensionLocAtion, entry.vAlue.icon) };
 				} else {
-					absoluteIcon = {
-						dark: resources.joinPath(extension.description.extensionLocation, entry.value.icon.dark),
-						light: resources.joinPath(extension.description.extensionLocation, entry.value.icon.light)
+					AbsoluteIcon = {
+						dArk: resources.joinPAth(extension.description.extensionLocAtion, entry.vAlue.icon.dArk),
+						light: resources.joinPAth(extension.description.extensionLocAtion, entry.vAlue.icon.light)
 					};
 				}
 			}
 
 			const item: IRegisteredSubmenu = {
-				id: new MenuId(`api:${entry.value.id}`),
-				label: entry.value.label,
-				icon: absoluteIcon
+				id: new MenuId(`Api:${entry.vAlue.id}`),
+				lAbel: entry.vAlue.lAbel,
+				icon: AbsoluteIcon
 			};
 
-			_submenus.set(entry.value.id, item);
+			_submenus.set(entry.vAlue.id, item);
 		});
 	}
 });
 
-const _apiMenusByKey = new Map(Iterable.map(Iterable.from(apiMenus), menu => ([menu.key, menu])));
-const _menuRegistrations = new DisposableStore();
+const _ApiMenusByKey = new MAp(IterAble.mAp(IterAble.from(ApiMenus), menu => ([menu.key, menu])));
+const _menuRegistrAtions = new DisposAbleStore();
 
-const menusExtensionPoint = ExtensionsRegistry.registerExtensionPoint<{ [loc: string]: (schema.IUserFriendlyMenuItem | schema.IUserFriendlySubmenuItem)[] }>({
+const menusExtensionPoint = ExtensionsRegistry.registerExtensionPoint<{ [loc: string]: (schemA.IUserFriendlyMenuItem | schemA.IUserFriendlySubmenuItem)[] }>({
 	extensionPoint: 'menus',
-	jsonSchema: schema.menusContribution,
+	jsonSchemA: schemA.menusContribution,
 	deps: [submenusExtensionPoint]
 });
 
-menusExtensionPoint.setHandler(extensions => {
+menusExtensionPoint.setHAndler(extensions => {
 
-	// remove all previous menu registrations
-	_menuRegistrations.clear();
+	// remove All previous menu registrAtions
+	_menuRegistrAtions.cleAr();
 
 	const items: { id: MenuId, item: IMenuItem | ISubmenuItem }[] = [];
 
 	for (let extension of extensions) {
-		const { value, collector } = extension;
+		const { vAlue, collector } = extension;
 
-		forEach(value, entry => {
-			if (!schema.isValidItems(entry.value, collector)) {
+		forEAch(vAlue, entry => {
+			if (!schemA.isVAlidItems(entry.vAlue, collector)) {
 				return;
 			}
 
-			let menu = _apiMenusByKey.get(entry.key);
+			let menu = _ApiMenusByKey.get(entry.key);
 
 			if (!menu) {
 				const submenu = _submenus.get(entry.key);
@@ -653,52 +653,52 @@ menusExtensionPoint.setHandler(extensions => {
 			}
 
 			if (!menu) {
-				collector.warn(localize('menuId.invalid', "`{0}` is not a valid menu identifier", entry.key));
+				collector.wArn(locAlize('menuId.invAlid', "`{0}` is not A vAlid menu identifier", entry.key));
 				return;
 			}
 
-			if (menu.proposed && !extension.description.enableProposedApi) {
-				collector.error(localize('proposedAPI.invalid', "{0} is a proposed menu identifier and is only available when running out of dev or with the following command line switch: --enable-proposed-api {1}", entry.key, extension.description.identifier.value));
+			if (menu.proposed && !extension.description.enAbleProposedApi) {
+				collector.error(locAlize('proposedAPI.invAlid', "{0} is A proposed menu identifier And is only AvAilAble when running out of dev or with the following commAnd line switch: --enAble-proposed-Api {1}", entry.key, extension.description.identifier.vAlue));
 				return;
 			}
 
-			for (const menuItem of entry.value) {
+			for (const menuItem of entry.vAlue) {
 				let item: IMenuItem | ISubmenuItem;
 
-				if (schema.isMenuItem(menuItem)) {
-					const command = MenuRegistry.getCommand(menuItem.command);
-					const alt = menuItem.alt && MenuRegistry.getCommand(menuItem.alt) || undefined;
+				if (schemA.isMenuItem(menuItem)) {
+					const commAnd = MenuRegistry.getCommAnd(menuItem.commAnd);
+					const Alt = menuItem.Alt && MenuRegistry.getCommAnd(menuItem.Alt) || undefined;
 
-					if (!command) {
-						collector.error(localize('missing.command', "Menu item references a command `{0}` which is not defined in the 'commands' section.", menuItem.command));
+					if (!commAnd) {
+						collector.error(locAlize('missing.commAnd', "Menu item references A commAnd `{0}` which is not defined in the 'commAnds' section.", menuItem.commAnd));
 						continue;
 					}
-					if (menuItem.alt && !alt) {
-						collector.warn(localize('missing.altCommand', "Menu item references an alt-command `{0}` which is not defined in the 'commands' section.", menuItem.alt));
+					if (menuItem.Alt && !Alt) {
+						collector.wArn(locAlize('missing.AltCommAnd', "Menu item references An Alt-commAnd `{0}` which is not defined in the 'commAnds' section.", menuItem.Alt));
 					}
-					if (menuItem.command === menuItem.alt) {
-						collector.info(localize('dupe.command', "Menu item references the same command as default and alt-command"));
+					if (menuItem.commAnd === menuItem.Alt) {
+						collector.info(locAlize('dupe.commAnd', "Menu item references the sAme commAnd As defAult And Alt-commAnd"));
 					}
 
-					item = { command, alt, group: undefined, order: undefined, when: undefined };
+					item = { commAnd, Alt, group: undefined, order: undefined, when: undefined };
 				} else {
-					if (menu.supportsSubmenus === false) {
-						collector.error(localize('unsupported.submenureference', "Menu item references a submenu for a menu which doesn't have submenu support."));
+					if (menu.supportsSubmenus === fAlse) {
+						collector.error(locAlize('unsupported.submenureference', "Menu item references A submenu for A menu which doesn't hAve submenu support."));
 						continue;
 					}
 
 					const submenu = _submenus.get(menuItem.submenu);
 
 					if (!submenu) {
-						collector.error(localize('missing.submenu', "Menu item references a submenu `{0}` which is not defined in the 'submenus' section.", menuItem.submenu));
+						collector.error(locAlize('missing.submenu', "Menu item references A submenu `{0}` which is not defined in the 'submenus' section.", menuItem.submenu));
 						continue;
 					}
 
-					item = { submenu: submenu.id, icon: submenu.icon, title: submenu.label, group: undefined, order: undefined, when: undefined };
+					item = { submenu: submenu.id, icon: submenu.icon, title: submenu.lAbel, group: undefined, order: undefined, when: undefined };
 				}
 
 				if (menuItem.group) {
-					const idx = menuItem.group.lastIndexOf('@');
+					const idx = menuItem.group.lAstIndexOf('@');
 					if (idx > 0) {
 						item.group = menuItem.group.substr(0, idx);
 						item.order = Number(menuItem.group.substr(idx + 1)) || undefined;
@@ -707,11 +707,11 @@ menusExtensionPoint.setHandler(extensions => {
 					}
 				}
 
-				item.when = ContextKeyExpr.deserialize(menuItem.when);
+				item.when = ContextKeyExpr.deseriAlize(menuItem.when);
 				items.push({ id: menu.id, item });
 			}
 		});
 	}
 
-	_menuRegistrations.add(MenuRegistry.appendMenuItems(items));
+	_menuRegistrAtions.Add(MenuRegistry.AppendMenuItems(items));
 });

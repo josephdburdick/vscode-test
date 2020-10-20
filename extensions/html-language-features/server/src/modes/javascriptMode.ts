@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { LanguageModelCache, getLanguageModelCache } from '../languageModelCache';
+import { LAnguAgeModelCAche, getLAnguAgeModelCAche } from '../lAnguAgeModelCAche';
 import {
-	SymbolInformation, SymbolKind, CompletionItem, Location, SignatureHelp, SignatureInformation, ParameterInformation,
-	Definition, TextEdit, TextDocument, Diagnostic, DiagnosticSeverity, Range, CompletionItemKind, Hover, MarkedString,
-	DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormattingOptions, FoldingRange, FoldingRangeKind, SelectionRange,
-	LanguageMode, Settings, SemanticTokenData, Workspace, DocumentContext
-} from './languageModes';
-import { getWordAtText, isWhitespaceOnly, repeat } from '../utils/strings';
+	SymbolInformAtion, SymbolKind, CompletionItem, LocAtion, SignAtureHelp, SignAtureInformAtion, PArAmeterInformAtion,
+	Definition, TextEdit, TextDocument, DiAgnostic, DiAgnosticSeverity, RAnge, CompletionItemKind, Hover, MArkedString,
+	DocumentHighlight, DocumentHighlightKind, CompletionList, Position, FormAttingOptions, FoldingRAnge, FoldingRAngeKind, SelectionRAnge,
+	LAnguAgeMode, Settings, SemAnticTokenDAtA, WorkspAce, DocumentContext
+} from './lAnguAgeModes';
+import { getWordAtText, isWhitespAceOnly, repeAt } from '../utils/strings';
 import { HTMLDocumentRegions } from './embeddedSupport';
 
-import * as ts from 'typescript';
-import { getSemanticTokens, getSemanticTokenLegend } from './javascriptSemanticTokens';
+import * As ts from 'typescript';
+import { getSemAnticTokens, getSemAnticTokenLegend } from './jAvAscriptSemAnticTokens';
 
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
 
-function getLanguageServiceHost(scriptKind: ts.ScriptKind) {
-	const compilerOptions: ts.CompilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic, experimentalDecorators: false };
+function getLAnguAgeServiceHost(scriptKind: ts.ScriptKind) {
+	const compilerOptions: ts.CompilerOptions = { AllowNonTsExtensions: true, AllowJs: true, lib: ['lib.es6.d.ts'], tArget: ts.ScriptTArget.LAtest, moduleResolution: ts.ModuleResolutionKind.ClAssic, experimentAlDecorAtors: fAlse };
 
-	let currentTextDocument = TextDocument.create('init', 'javascript', 1, '');
-	const jsLanguageService = import(/* webpackChunkName: "javascriptLibs" */ './javascriptLibs').then(libs => {
-		const host: ts.LanguageServiceHost = {
-			getCompilationSettings: () => compilerOptions,
-			getScriptFileNames: () => [currentTextDocument.uri, 'jquery'],
-			getScriptKind: (fileName) => {
-				if (fileName === currentTextDocument.uri) {
+	let currentTextDocument = TextDocument.creAte('init', 'jAvAscript', 1, '');
+	const jsLAnguAgeService = import(/* webpAckChunkNAme: "jAvAscriptLibs" */ './jAvAscriptLibs').then(libs => {
+		const host: ts.LAnguAgeServiceHost = {
+			getCompilAtionSettings: () => compilerOptions,
+			getScriptFileNAmes: () => [currentTextDocument.uri, 'jquery'],
+			getScriptKind: (fileNAme) => {
+				if (fileNAme === currentTextDocument.uri) {
 					return scriptKind;
 				}
-				return fileName.substr(fileName.length - 2) === 'ts' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+				return fileNAme.substr(fileNAme.length - 2) === 'ts' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
 			},
-			getScriptVersion: (fileName: string) => {
-				if (fileName === currentTextDocument.uri) {
+			getScriptVersion: (fileNAme: string) => {
+				if (fileNAme === currentTextDocument.uri) {
 					return String(currentTextDocument.version);
 				}
-				return '1'; // default lib an jquery.d.ts are static
+				return '1'; // defAult lib An jquery.d.ts Are stAtic
 			},
-			getScriptSnapshot: (fileName: string) => {
+			getScriptSnApshot: (fileNAme: string) => {
 				let text = '';
-				if (fileName === currentTextDocument.uri) {
+				if (fileNAme === currentTextDocument.uri) {
 					text = currentTextDocument.getText();
 				} else {
-					text = libs.loadLibrary(fileName);
+					text = libs.loAdLibrAry(fileNAme);
 				}
 				return {
-					getText: (start, end) => text.substring(start, end),
+					getText: (stArt, end) => text.substring(stArt, end),
 					getLength: () => text.length,
-					getChangeRange: () => undefined
+					getChAngeRAnge: () => undefined
 				};
 			},
 			getCurrentDirectory: () => '',
-			getDefaultLibFileName: (_options: ts.CompilerOptions) => 'es6'
+			getDefAultLibFileNAme: (_options: ts.CompilerOptions) => 'es6'
 		};
-		return ts.createLanguageService(host);
+		return ts.creAteLAnguAgeService(host);
 	});
 	return {
-		async getLanguageService(jsDocument: TextDocument): Promise<ts.LanguageService> {
+		Async getLAnguAgeService(jsDocument: TextDocument): Promise<ts.LAnguAgeService> {
 			currentTextDocument = jsDocument;
-			return jsLanguageService;
+			return jsLAnguAgeService;
 		},
-		getCompilationSettings() {
+		getCompilAtionSettings() {
 			return compilerOptions;
 		},
 		dispose() {
-			if (jsLanguageService) {
-				jsLanguageService.then(s => s.dispose());
+			if (jsLAnguAgeService) {
+				jsLAnguAgeService.then(s => s.dispose());
 			}
 		}
 	};
 }
 
 
-export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocumentRegions>, languageId: 'javascript' | 'typescript', workspace: Workspace): LanguageMode {
-	let jsDocuments = getLanguageModelCache<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument(languageId));
+export function getJAvAScriptMode(documentRegions: LAnguAgeModelCAche<HTMLDocumentRegions>, lAnguAgeId: 'jAvAscript' | 'typescript', workspAce: WorkspAce): LAnguAgeMode {
+	let jsDocuments = getLAnguAgeModelCAche<TextDocument>(10, 60, document => documentRegions.get(document).getEmbeddedDocument(lAnguAgeId));
 
-	const host = getLanguageServiceHost(languageId === 'javascript' ? ts.ScriptKind.JS : ts.ScriptKind.TS);
-	let globalSettings: Settings = {};
+	const host = getLAnguAgeServiceHost(lAnguAgeId === 'jAvAscript' ? ts.ScriptKind.JS : ts.ScriptKind.TS);
+	let globAlSettings: Settings = {};
 
 	return {
 		getId() {
-			return languageId;
+			return lAnguAgeId;
 		},
-		async doValidation(document: TextDocument, settings = workspace.settings): Promise<Diagnostic[]> {
-			host.getCompilationSettings()['experimentalDecorators'] = settings && settings.javascript && settings.javascript.implicitProjectConfig.experimentalDecorators;
+		Async doVAlidAtion(document: TextDocument, settings = workspAce.settings): Promise<DiAgnostic[]> {
+			host.getCompilAtionSettings()['experimentAlDecorAtors'] = settings && settings.jAvAscript && settings.jAvAscript.implicitProjectConfig.experimentAlDecorAtors;
 			const jsDocument = jsDocuments.get(document);
-			const languageService = await host.getLanguageService(jsDocument);
-			const syntaxDiagnostics: ts.Diagnostic[] = languageService.getSyntacticDiagnostics(jsDocument.uri);
-			const semanticDiagnostics = languageService.getSemanticDiagnostics(jsDocument.uri);
-			return syntaxDiagnostics.concat(semanticDiagnostics).map((diag: ts.Diagnostic): Diagnostic => {
+			const lAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			const syntAxDiAgnostics: ts.DiAgnostic[] = lAnguAgeService.getSyntActicDiAgnostics(jsDocument.uri);
+			const semAnticDiAgnostics = lAnguAgeService.getSemAnticDiAgnostics(jsDocument.uri);
+			return syntAxDiAgnostics.concAt(semAnticDiAgnostics).mAp((diAg: ts.DiAgnostic): DiAgnostic => {
 				return {
-					range: convertRange(jsDocument, diag),
-					severity: DiagnosticSeverity.Error,
-					source: languageId,
-					message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+					rAnge: convertRAnge(jsDocument, diAg),
+					severity: DiAgnosticSeverity.Error,
+					source: lAnguAgeId,
+					messAge: ts.flAttenDiAgnosticMessAgeText(diAg.messAgeText, '\n')
 				};
 			});
 		},
-		async doComplete(document: TextDocument, position: Position, _documentContext: DocumentContext): Promise<CompletionList> {
+		Async doComplete(document: TextDocument, position: Position, _documentContext: DocumentContext): Promise<CompletionList> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
 			let offset = jsDocument.offsetAt(position);
-			let completions = jsLanguageService.getCompletionsAtPosition(jsDocument.uri, offset, { includeExternalModuleExports: false, includeInsertTextCompletions: false });
+			let completions = jsLAnguAgeService.getCompletionsAtPosition(jsDocument.uri, offset, { includeExternAlModuleExports: fAlse, includeInsertTextCompletions: fAlse });
 			if (!completions) {
-				return { isIncomplete: false, items: [] };
+				return { isIncomplete: fAlse, items: [] };
 			}
-			let replaceRange = convertRange(jsDocument, getWordAtText(jsDocument.getText(), offset, JS_WORD_REGEX));
+			let replAceRAnge = convertRAnge(jsDocument, getWordAtText(jsDocument.getText(), offset, JS_WORD_REGEX));
 			return {
-				isIncomplete: false,
-				items: completions.entries.map(entry => {
+				isIncomplete: fAlse,
+				items: completions.entries.mAp(entry => {
 					return {
 						uri: document.uri,
 						position: position,
-						label: entry.name,
+						lAbel: entry.nAme,
 						sortText: entry.sortText,
 						kind: convertKind(entry.kind),
-						textEdit: TextEdit.replace(replaceRange, entry.name),
-						data: { // data used for resolving item details (see 'doResolve')
-							languageId,
+						textEdit: TextEdit.replAce(replAceRAnge, entry.nAme),
+						dAtA: { // dAtA used for resolving item detAils (see 'doResolve')
+							lAnguAgeId,
 							uri: document.uri,
 							offset: offset
 						}
@@ -126,224 +126,224 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 				})
 			};
 		},
-		async doResolve(document: TextDocument, item: CompletionItem): Promise<CompletionItem> {
+		Async doResolve(document: TextDocument, item: CompletionItem): Promise<CompletionItem> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let details = jsLanguageService.getCompletionEntryDetails(jsDocument.uri, item.data.offset, item.label, undefined, undefined, undefined);
-			if (details) {
-				item.detail = ts.displayPartsToString(details.displayParts);
-				item.documentation = ts.displayPartsToString(details.documentation);
-				delete item.data;
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let detAils = jsLAnguAgeService.getCompletionEntryDetAils(jsDocument.uri, item.dAtA.offset, item.lAbel, undefined, undefined, undefined);
+			if (detAils) {
+				item.detAil = ts.displAyPArtsToString(detAils.displAyPArts);
+				item.documentAtion = ts.displAyPArtsToString(detAils.documentAtion);
+				delete item.dAtA;
 			}
 			return item;
 		},
-		async doHover(document: TextDocument, position: Position): Promise<Hover | null> {
+		Async doHover(document: TextDocument, position: Position): Promise<Hover | null> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let info = jsLanguageService.getQuickInfoAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let info = jsLAnguAgeService.getQuickInfoAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
 			if (info) {
-				let contents = ts.displayPartsToString(info.displayParts);
+				let contents = ts.displAyPArtsToString(info.displAyPArts);
 				return {
-					range: convertRange(jsDocument, info.textSpan),
-					contents: MarkedString.fromPlainText(contents)
+					rAnge: convertRAnge(jsDocument, info.textSpAn),
+					contents: MArkedString.fromPlAinText(contents)
 				};
 			}
 			return null;
 		},
-		async doSignatureHelp(document: TextDocument, position: Position): Promise<SignatureHelp | null> {
+		Async doSignAtureHelp(document: TextDocument, position: Position): Promise<SignAtureHelp | null> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let signHelp = jsLanguageService.getSignatureHelpItems(jsDocument.uri, jsDocument.offsetAt(position), undefined);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let signHelp = jsLAnguAgeService.getSignAtureHelpItems(jsDocument.uri, jsDocument.offsetAt(position), undefined);
 			if (signHelp) {
-				let ret: SignatureHelp = {
-					activeSignature: signHelp.selectedItemIndex,
-					activeParameter: signHelp.argumentIndex,
-					signatures: []
+				let ret: SignAtureHelp = {
+					ActiveSignAture: signHelp.selectedItemIndex,
+					ActivePArAmeter: signHelp.ArgumentIndex,
+					signAtures: []
 				};
-				signHelp.items.forEach(item => {
+				signHelp.items.forEAch(item => {
 
-					let signature: SignatureInformation = {
-						label: '',
-						documentation: undefined,
-						parameters: []
+					let signAture: SignAtureInformAtion = {
+						lAbel: '',
+						documentAtion: undefined,
+						pArAmeters: []
 					};
 
-					signature.label += ts.displayPartsToString(item.prefixDisplayParts);
-					item.parameters.forEach((p, i, a) => {
-						let label = ts.displayPartsToString(p.displayParts);
-						let parameter: ParameterInformation = {
-							label: label,
-							documentation: ts.displayPartsToString(p.documentation)
+					signAture.lAbel += ts.displAyPArtsToString(item.prefixDisplAyPArts);
+					item.pArAmeters.forEAch((p, i, A) => {
+						let lAbel = ts.displAyPArtsToString(p.displAyPArts);
+						let pArAmeter: PArAmeterInformAtion = {
+							lAbel: lAbel,
+							documentAtion: ts.displAyPArtsToString(p.documentAtion)
 						};
-						signature.label += label;
-						signature.parameters!.push(parameter);
-						if (i < a.length - 1) {
-							signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+						signAture.lAbel += lAbel;
+						signAture.pArAmeters!.push(pArAmeter);
+						if (i < A.length - 1) {
+							signAture.lAbel += ts.displAyPArtsToString(item.sepArAtorDisplAyPArts);
 						}
 					});
-					signature.label += ts.displayPartsToString(item.suffixDisplayParts);
-					ret.signatures.push(signature);
+					signAture.lAbel += ts.displAyPArtsToString(item.suffixDisplAyPArts);
+					ret.signAtures.push(signAture);
 				});
 				return ret;
 			}
 			return null;
 		},
-		async findDocumentHighlight(document: TextDocument, position: Position): Promise<DocumentHighlight[]> {
+		Async findDocumentHighlight(document: TextDocument, position: Position): Promise<DocumentHighlight[]> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			const highlights = jsLanguageService.getDocumentHighlights(jsDocument.uri, jsDocument.offsetAt(position), [jsDocument.uri]);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			const highlights = jsLAnguAgeService.getDocumentHighlights(jsDocument.uri, jsDocument.offsetAt(position), [jsDocument.uri]);
 			const out: DocumentHighlight[] = [];
 			for (const entry of highlights || []) {
-				for (const highlight of entry.highlightSpans) {
+				for (const highlight of entry.highlightSpAns) {
 					out.push({
-						range: convertRange(jsDocument, highlight.textSpan),
+						rAnge: convertRAnge(jsDocument, highlight.textSpAn),
 						kind: highlight.kind === 'writtenReference' ? DocumentHighlightKind.Write : DocumentHighlightKind.Text
 					});
 				}
 			}
 			return out;
 		},
-		async findDocumentSymbols(document: TextDocument): Promise<SymbolInformation[]> {
+		Async findDocumentSymbols(document: TextDocument): Promise<SymbolInformAtion[]> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let items = jsLanguageService.getNavigationBarItems(jsDocument.uri);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let items = jsLAnguAgeService.getNAvigAtionBArItems(jsDocument.uri);
 			if (items) {
-				let result: SymbolInformation[] = [];
-				let existing = Object.create(null);
-				let collectSymbols = (item: ts.NavigationBarItem, containerLabel?: string) => {
-					let sig = item.text + item.kind + item.spans[0].start;
+				let result: SymbolInformAtion[] = [];
+				let existing = Object.creAte(null);
+				let collectSymbols = (item: ts.NAvigAtionBArItem, contAinerLAbel?: string) => {
+					let sig = item.text + item.kind + item.spAns[0].stArt;
 					if (item.kind !== 'script' && !existing[sig]) {
-						let symbol: SymbolInformation = {
-							name: item.text,
+						let symbol: SymbolInformAtion = {
+							nAme: item.text,
 							kind: convertSymbolKind(item.kind),
-							location: {
+							locAtion: {
 								uri: document.uri,
-								range: convertRange(jsDocument, item.spans[0])
+								rAnge: convertRAnge(jsDocument, item.spAns[0])
 							},
-							containerName: containerLabel
+							contAinerNAme: contAinerLAbel
 						};
 						existing[sig] = true;
 						result.push(symbol);
-						containerLabel = item.text;
+						contAinerLAbel = item.text;
 					}
 
 					if (item.childItems && item.childItems.length > 0) {
 						for (let child of item.childItems) {
-							collectSymbols(child, containerLabel);
+							collectSymbols(child, contAinerLAbel);
 						}
 					}
 
 				};
 
-				items.forEach(item => collectSymbols(item));
+				items.forEAch(item => collectSymbols(item));
 				return result;
 			}
 			return [];
 		},
-		async findDefinition(document: TextDocument, position: Position): Promise<Definition | null> {
+		Async findDefinition(document: TextDocument, position: Position): Promise<Definition | null> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let definition = jsLanguageService.getDefinitionAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let definition = jsLAnguAgeService.getDefinitionAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
 			if (definition) {
-				return definition.filter(d => d.fileName === jsDocument.uri).map(d => {
+				return definition.filter(d => d.fileNAme === jsDocument.uri).mAp(d => {
 					return {
 						uri: document.uri,
-						range: convertRange(jsDocument, d.textSpan)
+						rAnge: convertRAnge(jsDocument, d.textSpAn)
 					};
 				});
 			}
 			return null;
 		},
-		async findReferences(document: TextDocument, position: Position): Promise<Location[]> {
+		Async findReferences(document: TextDocument, position: Position): Promise<LocAtion[]> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let references = jsLanguageService.getReferencesAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let references = jsLAnguAgeService.getReferencesAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
 			if (references) {
-				return references.filter(d => d.fileName === jsDocument.uri).map(d => {
+				return references.filter(d => d.fileNAme === jsDocument.uri).mAp(d => {
 					return {
 						uri: document.uri,
-						range: convertRange(jsDocument, d.textSpan)
+						rAnge: convertRAnge(jsDocument, d.textSpAn)
 					};
 				});
 			}
 			return [];
 		},
-		async getSelectionRange(document: TextDocument, position: Position): Promise<SelectionRange> {
+		Async getSelectionRAnge(document: TextDocument, position: Position): Promise<SelectionRAnge> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			function convertSelectionRange(selectionRange: ts.SelectionRange): SelectionRange {
-				const parent = selectionRange.parent ? convertSelectionRange(selectionRange.parent) : undefined;
-				return SelectionRange.create(convertRange(jsDocument, selectionRange.textSpan), parent);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			function convertSelectionRAnge(selectionRAnge: ts.SelectionRAnge): SelectionRAnge {
+				const pArent = selectionRAnge.pArent ? convertSelectionRAnge(selectionRAnge.pArent) : undefined;
+				return SelectionRAnge.creAte(convertRAnge(jsDocument, selectionRAnge.textSpAn), pArent);
 			}
-			const range = jsLanguageService.getSmartSelectionRange(jsDocument.uri, jsDocument.offsetAt(position));
-			return convertSelectionRange(range);
+			const rAnge = jsLAnguAgeService.getSmArtSelectionRAnge(jsDocument.uri, jsDocument.offsetAt(position));
+			return convertSelectionRAnge(rAnge);
 		},
-		async format(document: TextDocument, range: Range, formatParams: FormattingOptions, settings: Settings = globalSettings): Promise<TextEdit[]> {
-			const jsDocument = documentRegions.get(document).getEmbeddedDocument('javascript', true);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
+		Async formAt(document: TextDocument, rAnge: RAnge, formAtPArAms: FormAttingOptions, settings: Settings = globAlSettings): Promise<TextEdit[]> {
+			const jsDocument = documentRegions.get(document).getEmbeddedDocument('jAvAscript', true);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
 
-			let formatterSettings = settings && settings.javascript && settings.javascript.format;
+			let formAtterSettings = settings && settings.jAvAscript && settings.jAvAscript.formAt;
 
-			let initialIndentLevel = computeInitialIndent(document, range, formatParams);
-			let formatSettings = convertOptions(formatParams, formatterSettings, initialIndentLevel + 1);
-			let start = jsDocument.offsetAt(range.start);
-			let end = jsDocument.offsetAt(range.end);
-			let lastLineRange = null;
-			if (range.end.line > range.start.line && (range.end.character === 0 || isWhitespaceOnly(jsDocument.getText().substr(end - range.end.character, range.end.character)))) {
-				end -= range.end.character;
-				lastLineRange = Range.create(Position.create(range.end.line, 0), range.end);
+			let initiAlIndentLevel = computeInitiAlIndent(document, rAnge, formAtPArAms);
+			let formAtSettings = convertOptions(formAtPArAms, formAtterSettings, initiAlIndentLevel + 1);
+			let stArt = jsDocument.offsetAt(rAnge.stArt);
+			let end = jsDocument.offsetAt(rAnge.end);
+			let lAstLineRAnge = null;
+			if (rAnge.end.line > rAnge.stArt.line && (rAnge.end.chArActer === 0 || isWhitespAceOnly(jsDocument.getText().substr(end - rAnge.end.chArActer, rAnge.end.chArActer)))) {
+				end -= rAnge.end.chArActer;
+				lAstLineRAnge = RAnge.creAte(Position.creAte(rAnge.end.line, 0), rAnge.end);
 			}
-			let edits = jsLanguageService.getFormattingEditsForRange(jsDocument.uri, start, end, formatSettings);
+			let edits = jsLAnguAgeService.getFormAttingEditsForRAnge(jsDocument.uri, stArt, end, formAtSettings);
 			if (edits) {
 				let result = [];
 				for (let edit of edits) {
-					if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
+					if (edit.spAn.stArt >= stArt && edit.spAn.stArt + edit.spAn.length <= end) {
 						result.push({
-							range: convertRange(jsDocument, edit.span),
+							rAnge: convertRAnge(jsDocument, edit.spAn),
 							newText: edit.newText
 						});
 					}
 				}
-				if (lastLineRange) {
+				if (lAstLineRAnge) {
 					result.push({
-						range: lastLineRange,
-						newText: generateIndent(initialIndentLevel, formatParams)
+						rAnge: lAstLineRAnge,
+						newText: generAteIndent(initiAlIndentLevel, formAtPArAms)
 					});
 				}
 				return result;
 			}
 			return [];
 		},
-		async getFoldingRanges(document: TextDocument): Promise<FoldingRange[]> {
+		Async getFoldingRAnges(document: TextDocument): Promise<FoldingRAnge[]> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			let spans = jsLanguageService.getOutliningSpans(jsDocument.uri);
-			let ranges: FoldingRange[] = [];
-			for (let span of spans) {
-				let curr = convertRange(jsDocument, span.textSpan);
-				let startLine = curr.start.line;
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			let spAns = jsLAnguAgeService.getOutliningSpAns(jsDocument.uri);
+			let rAnges: FoldingRAnge[] = [];
+			for (let spAn of spAns) {
+				let curr = convertRAnge(jsDocument, spAn.textSpAn);
+				let stArtLine = curr.stArt.line;
 				let endLine = curr.end.line;
-				if (startLine < endLine) {
-					let foldingRange: FoldingRange = { startLine, endLine };
-					let match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
-					if (match) {
-						foldingRange.kind = match[1] ? FoldingRangeKind.Region : FoldingRangeKind.Comment;
+				if (stArtLine < endLine) {
+					let foldingRAnge: FoldingRAnge = { stArtLine, endLine };
+					let mAtch = document.getText(curr).mAtch(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
+					if (mAtch) {
+						foldingRAnge.kind = mAtch[1] ? FoldingRAngeKind.Region : FoldingRAngeKind.Comment;
 					}
-					ranges.push(foldingRange);
+					rAnges.push(foldingRAnge);
 				}
 			}
-			return ranges;
+			return rAnges;
 		},
 		onDocumentRemoved(document: TextDocument) {
 			jsDocuments.onDocumentRemoved(document);
 		},
-		async getSemanticTokens(document: TextDocument): Promise<SemanticTokenData[]> {
+		Async getSemAnticTokens(document: TextDocument): Promise<SemAnticTokenDAtA[]> {
 			const jsDocument = jsDocuments.get(document);
-			const jsLanguageService = await host.getLanguageService(jsDocument);
-			return getSemanticTokens(jsLanguageService, jsDocument, jsDocument.uri);
+			const jsLAnguAgeService = AwAit host.getLAnguAgeService(jsDocument);
+			return getSemAnticTokens(jsLAnguAgeService, jsDocument, jsDocument.uri);
 		},
-		getSemanticTokenLegend(): { types: string[], modifiers: string[] } {
-			return getSemanticTokenLegend();
+		getSemAnticTokenLegend(): { types: string[], modifiers: string[] } {
+			return getSemAnticTokenLegend();
 		},
 		dispose() {
 			host.dispose();
@@ -355,43 +355,43 @@ export function getJavaScriptMode(documentRegions: LanguageModelCache<HTMLDocume
 
 
 
-function convertRange(document: TextDocument, span: { start: number | undefined, length: number | undefined }): Range {
-	if (typeof span.start === 'undefined') {
+function convertRAnge(document: TextDocument, spAn: { stArt: number | undefined, length: number | undefined }): RAnge {
+	if (typeof spAn.stArt === 'undefined') {
 		const pos = document.positionAt(0);
-		return Range.create(pos, pos);
+		return RAnge.creAte(pos, pos);
 	}
-	const startPosition = document.positionAt(span.start);
-	const endPosition = document.positionAt(span.start + (span.length || 0));
-	return Range.create(startPosition, endPosition);
+	const stArtPosition = document.positionAt(spAn.stArt);
+	const endPosition = document.positionAt(spAn.stArt + (spAn.length || 0));
+	return RAnge.creAte(stArtPosition, endPosition);
 }
 
 function convertKind(kind: string): CompletionItemKind {
 	switch (kind) {
-		case 'primitive type':
-		case 'keyword':
+		cAse 'primitive type':
+		cAse 'keyword':
 			return CompletionItemKind.Keyword;
-		case 'var':
-		case 'local var':
-			return CompletionItemKind.Variable;
-		case 'property':
-		case 'getter':
-		case 'setter':
+		cAse 'vAr':
+		cAse 'locAl vAr':
+			return CompletionItemKind.VAriAble;
+		cAse 'property':
+		cAse 'getter':
+		cAse 'setter':
 			return CompletionItemKind.Field;
-		case 'function':
-		case 'method':
-		case 'construct':
-		case 'call':
-		case 'index':
+		cAse 'function':
+		cAse 'method':
+		cAse 'construct':
+		cAse 'cAll':
+		cAse 'index':
 			return CompletionItemKind.Function;
-		case 'enum':
+		cAse 'enum':
 			return CompletionItemKind.Enum;
-		case 'module':
+		cAse 'module':
 			return CompletionItemKind.Module;
-		case 'class':
-			return CompletionItemKind.Class;
-		case 'interface':
-			return CompletionItemKind.Interface;
-		case 'warning':
+		cAse 'clAss':
+			return CompletionItemKind.ClAss;
+		cAse 'interfAce':
+			return CompletionItemKind.InterfAce;
+		cAse 'wArning':
 			return CompletionItemKind.File;
 	}
 
@@ -400,78 +400,78 @@ function convertKind(kind: string): CompletionItemKind {
 
 function convertSymbolKind(kind: string): SymbolKind {
 	switch (kind) {
-		case 'var':
-		case 'local var':
-		case 'const':
-			return SymbolKind.Variable;
-		case 'function':
-		case 'local function':
+		cAse 'vAr':
+		cAse 'locAl vAr':
+		cAse 'const':
+			return SymbolKind.VAriAble;
+		cAse 'function':
+		cAse 'locAl function':
 			return SymbolKind.Function;
-		case 'enum':
+		cAse 'enum':
 			return SymbolKind.Enum;
-		case 'module':
+		cAse 'module':
 			return SymbolKind.Module;
-		case 'class':
-			return SymbolKind.Class;
-		case 'interface':
-			return SymbolKind.Interface;
-		case 'method':
+		cAse 'clAss':
+			return SymbolKind.ClAss;
+		cAse 'interfAce':
+			return SymbolKind.InterfAce;
+		cAse 'method':
 			return SymbolKind.Method;
-		case 'property':
-		case 'getter':
-		case 'setter':
+		cAse 'property':
+		cAse 'getter':
+		cAse 'setter':
 			return SymbolKind.Property;
 	}
-	return SymbolKind.Variable;
+	return SymbolKind.VAriAble;
 }
 
-function convertOptions(options: FormattingOptions, formatSettings: any, initialIndentLevel: number): ts.FormatCodeOptions {
+function convertOptions(options: FormAttingOptions, formAtSettings: Any, initiAlIndentLevel: number): ts.FormAtCodeOptions {
 	return {
-		ConvertTabsToSpaces: options.insertSpaces,
-		TabSize: options.tabSize,
-		IndentSize: options.tabSize,
-		IndentStyle: ts.IndentStyle.Smart,
-		NewLineCharacter: '\n',
-		BaseIndentSize: options.tabSize * initialIndentLevel,
-		InsertSpaceAfterCommaDelimiter: Boolean(!formatSettings || formatSettings.insertSpaceAfterCommaDelimiter),
-		InsertSpaceAfterSemicolonInForStatements: Boolean(!formatSettings || formatSettings.insertSpaceAfterSemicolonInForStatements),
-		InsertSpaceBeforeAndAfterBinaryOperators: Boolean(!formatSettings || formatSettings.insertSpaceBeforeAndAfterBinaryOperators),
-		InsertSpaceAfterKeywordsInControlFlowStatements: Boolean(!formatSettings || formatSettings.insertSpaceAfterKeywordsInControlFlowStatements),
-		InsertSpaceAfterFunctionKeywordForAnonymousFunctions: Boolean(!formatSettings || formatSettings.insertSpaceAfterFunctionKeywordForAnonymousFunctions),
-		InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis),
-		InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets),
-		InsertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces),
-		InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: Boolean(formatSettings && formatSettings.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces),
-		PlaceOpenBraceOnNewLineForControlBlocks: Boolean(formatSettings && formatSettings.placeOpenBraceOnNewLineForFunctions),
-		PlaceOpenBraceOnNewLineForFunctions: Boolean(formatSettings && formatSettings.placeOpenBraceOnNewLineForControlBlocks)
+		ConvertTAbsToSpAces: options.insertSpAces,
+		TAbSize: options.tAbSize,
+		IndentSize: options.tAbSize,
+		IndentStyle: ts.IndentStyle.SmArt,
+		NewLineChArActer: '\n',
+		BAseIndentSize: options.tAbSize * initiAlIndentLevel,
+		InsertSpAceAfterCommADelimiter: BooleAn(!formAtSettings || formAtSettings.insertSpAceAfterCommADelimiter),
+		InsertSpAceAfterSemicolonInForStAtements: BooleAn(!formAtSettings || formAtSettings.insertSpAceAfterSemicolonInForStAtements),
+		InsertSpAceBeforeAndAfterBinAryOperAtors: BooleAn(!formAtSettings || formAtSettings.insertSpAceBeforeAndAfterBinAryOperAtors),
+		InsertSpAceAfterKeywordsInControlFlowStAtements: BooleAn(!formAtSettings || formAtSettings.insertSpAceAfterKeywordsInControlFlowStAtements),
+		InsertSpAceAfterFunctionKeywordForAnonymousFunctions: BooleAn(!formAtSettings || formAtSettings.insertSpAceAfterFunctionKeywordForAnonymousFunctions),
+		InsertSpAceAfterOpeningAndBeforeClosingNonemptyPArenthesis: BooleAn(formAtSettings && formAtSettings.insertSpAceAfterOpeningAndBeforeClosingNonemptyPArenthesis),
+		InsertSpAceAfterOpeningAndBeforeClosingNonemptyBrAckets: BooleAn(formAtSettings && formAtSettings.insertSpAceAfterOpeningAndBeforeClosingNonemptyBrAckets),
+		InsertSpAceAfterOpeningAndBeforeClosingNonemptyBrAces: BooleAn(formAtSettings && formAtSettings.insertSpAceAfterOpeningAndBeforeClosingNonemptyBrAces),
+		InsertSpAceAfterOpeningAndBeforeClosingTemplAteStringBrAces: BooleAn(formAtSettings && formAtSettings.insertSpAceAfterOpeningAndBeforeClosingTemplAteStringBrAces),
+		PlAceOpenBrAceOnNewLineForControlBlocks: BooleAn(formAtSettings && formAtSettings.plAceOpenBrAceOnNewLineForFunctions),
+		PlAceOpenBrAceOnNewLineForFunctions: BooleAn(formAtSettings && formAtSettings.plAceOpenBrAceOnNewLineForControlBlocks)
 	};
 }
 
-function computeInitialIndent(document: TextDocument, range: Range, options: FormattingOptions) {
-	let lineStart = document.offsetAt(Position.create(range.start.line, 0));
+function computeInitiAlIndent(document: TextDocument, rAnge: RAnge, options: FormAttingOptions) {
+	let lineStArt = document.offsetAt(Position.creAte(rAnge.stArt.line, 0));
 	let content = document.getText();
 
-	let i = lineStart;
-	let nChars = 0;
-	let tabSize = options.tabSize || 4;
+	let i = lineStArt;
+	let nChArs = 0;
+	let tAbSize = options.tAbSize || 4;
 	while (i < content.length) {
-		let ch = content.charAt(i);
+		let ch = content.chArAt(i);
 		if (ch === ' ') {
-			nChars++;
+			nChArs++;
 		} else if (ch === '\t') {
-			nChars += tabSize;
+			nChArs += tAbSize;
 		} else {
-			break;
+			breAk;
 		}
 		i++;
 	}
-	return Math.floor(nChars / tabSize);
+	return MAth.floor(nChArs / tAbSize);
 }
 
-function generateIndent(level: number, options: FormattingOptions) {
-	if (options.insertSpaces) {
-		return repeat(' ', level * options.tabSize);
+function generAteIndent(level: number, options: FormAttingOptions) {
+	if (options.insertSpAces) {
+		return repeAt(' ', level * options.tAbSize);
 	} else {
-		return repeat('\t', level);
+		return repeAt('\t', level);
 	}
 }

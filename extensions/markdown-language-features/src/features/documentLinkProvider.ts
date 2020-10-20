@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { OpenDocumentLinkCommand } from '../commands/openDocumentLink';
-import { getUriForLinkWithKnownExternalScheme, isOfScheme, Schemes } from '../util/links';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { OpenDocumentLinkCommAnd } from '../commAnds/openDocumentLink';
+import { getUriForLinkWithKnownExternAlScheme, isOfScheme, Schemes } from '../util/links';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-function parseLink(
+function pArseLink(
 	document: vscode.TextDocument,
 	link: string,
 ): { uri: vscode.Uri, tooltip?: string } | undefined {
-	const externalSchemeUri = getUriForLinkWithKnownExternalScheme(link);
-	if (externalSchemeUri) {
-		// Normalize VS Code links to target currently running version
+	const externAlSchemeUri = getUriForLinkWithKnownExternAlScheme(link);
+	if (externAlSchemeUri) {
+		// NormAlize VS Code links to tArget currently running version
 		if (isOfScheme(Schemes.vscode, link) || isOfScheme(Schemes['vscode-insiders'], link)) {
-			return { uri: vscode.Uri.parse(link).with({ scheme: vscode.env.uriScheme }) };
+			return { uri: vscode.Uri.pArse(link).with({ scheme: vscode.env.uriScheme }) };
 		}
-		return { uri: externalSchemeUri };
+		return { uri: externAlSchemeUri };
 	}
 
-	// Assume it must be an relative or absolute file path
-	// Use a fake scheme to avoid parse warnings
-	const tempUri = vscode.Uri.parse(`vscode-resource:${link}`);
+	// Assume it must be An relAtive or Absolute file pAth
+	// Use A fAke scheme to Avoid pArse wArnings
+	const tempUri = vscode.Uri.pArse(`vscode-resource:${link}`);
 
 	let resourceUri: vscode.Uri | undefined;
-	if (!tempUri.path) {
+	if (!tempUri.pAth) {
 		resourceUri = document.uri;
-	} else if (tempUri.path[0] === '/') {
-		const root = getWorkspaceFolder(document);
+	} else if (tempUri.pAth[0] === '/') {
+		const root = getWorkspAceFolder(document);
 		if (root) {
-			resourceUri = vscode.Uri.joinPath(root, tempUri.path);
+			resourceUri = vscode.Uri.joinPAth(root, tempUri.pAth);
 		}
 	} else {
 		if (document.uri.scheme === Schemes.untitled) {
-			const root = getWorkspaceFolder(document);
+			const root = getWorkspAceFolder(document);
 			if (root) {
-				resourceUri = vscode.Uri.joinPath(root, tempUri.path);
+				resourceUri = vscode.Uri.joinPAth(root, tempUri.pAth);
 			}
 		} else {
-			const base = document.uri.with({ path: path.dirname(document.uri.fsPath) });
-			resourceUri = vscode.Uri.joinPath(base, tempUri.path);
+			const bAse = document.uri.with({ pAth: pAth.dirnAme(document.uri.fsPAth) });
+			resourceUri = vscode.Uri.joinPAth(bAse, tempUri.pAth);
 		}
 	}
 
@@ -52,64 +52,64 @@ function parseLink(
 		return undefined;
 	}
 
-	resourceUri = resourceUri.with({ fragment: tempUri.fragment });
+	resourceUri = resourceUri.with({ frAgment: tempUri.frAgment });
 
 	return {
-		uri: OpenDocumentLinkCommand.createCommandUri(document.uri, resourceUri, tempUri.fragment),
-		tooltip: localize('documentLink.tooltip', 'Follow link')
+		uri: OpenDocumentLinkCommAnd.creAteCommAndUri(document.uri, resourceUri, tempUri.frAgment),
+		tooltip: locAlize('documentLink.tooltip', 'Follow link')
 	};
 }
 
-function getWorkspaceFolder(document: vscode.TextDocument) {
-	return vscode.workspace.getWorkspaceFolder(document.uri)?.uri
-		|| vscode.workspace.workspaceFolders?.[0]?.uri;
+function getWorkspAceFolder(document: vscode.TextDocument) {
+	return vscode.workspAce.getWorkspAceFolder(document.uri)?.uri
+		|| vscode.workspAce.workspAceFolders?.[0]?.uri;
 }
 
-function matchAll(
-	pattern: RegExp,
+function mAtchAll(
+	pAttern: RegExp,
 	text: string
-): Array<RegExpMatchArray> {
-	const out: RegExpMatchArray[] = [];
-	pattern.lastIndex = 0;
-	let match: RegExpMatchArray | null;
-	while ((match = pattern.exec(text))) {
-		out.push(match);
+): ArrAy<RegExpMAtchArrAy> {
+	const out: RegExpMAtchArrAy[] = [];
+	pAttern.lAstIndex = 0;
+	let mAtch: RegExpMAtchArrAy | null;
+	while ((mAtch = pAttern.exec(text))) {
+		out.push(mAtch);
 	}
 	return out;
 }
 
-function extractDocumentLink(
+function extrActDocumentLink(
 	document: vscode.TextDocument,
 	pre: number,
 	link: string,
-	matchIndex: number | undefined
+	mAtchIndex: number | undefined
 ): vscode.DocumentLink | undefined {
-	const offset = (matchIndex || 0) + pre;
-	const linkStart = document.positionAt(offset);
+	const offset = (mAtchIndex || 0) + pre;
+	const linkStArt = document.positionAt(offset);
 	const linkEnd = document.positionAt(offset + link.length);
 	try {
-		const linkData = parseLink(document, link);
-		if (!linkData) {
+		const linkDAtA = pArseLink(document, link);
+		if (!linkDAtA) {
 			return undefined;
 		}
 		const documentLink = new vscode.DocumentLink(
-			new vscode.Range(linkStart, linkEnd),
-			linkData.uri);
-		documentLink.tooltip = linkData.tooltip;
+			new vscode.RAnge(linkStArt, linkEnd),
+			linkDAtA.uri);
+		documentLink.tooltip = linkDAtA.tooltip;
 		return documentLink;
-	} catch (e) {
+	} cAtch (e) {
 		return undefined;
 	}
 }
 
-export default class LinkProvider implements vscode.DocumentLinkProvider {
-	private readonly linkPattern = /(\[((!\[[^\]]*?\]\(\s*)([^\s\(\)]+?)\s*\)\]|(?:\\\]|[^\]])*\])\(\s*)(([^\s\(\)]|\(\S*?\))+)\s*(".*?")?\)/g;
-	private readonly referenceLinkPattern = /(\[((?:\\\]|[^\]])+)\]\[\s*?)([^\s\]]*?)\]/g;
-	private readonly definitionPattern = /^([\t ]*\[(?!\^)((?:\\\]|[^\]])+)\]:\s*)(\S+)/gm;
+export defAult clAss LinkProvider implements vscode.DocumentLinkProvider {
+	privAte reAdonly linkPAttern = /(\[((!\[[^\]]*?\]\(\s*)([^\s\(\)]+?)\s*\)\]|(?:\\\]|[^\]])*\])\(\s*)(([^\s\(\)]|\(\S*?\))+)\s*(".*?")?\)/g;
+	privAte reAdonly referenceLinkPAttern = /(\[((?:\\\]|[^\]])+)\]\[\s*?)([^\s\]]*?)\]/g;
+	privAte reAdonly definitionPAttern = /^([\t ]*\[(?!\^)((?:\\\]|[^\]])+)\]:\s*)(\S+)/gm;
 
 	public provideDocumentLinks(
 		document: vscode.TextDocument,
-		_token: vscode.CancellationToken
+		_token: vscode.CAncellAtionToken
 	): vscode.DocumentLink[] {
 		const text = document.getText();
 
@@ -119,45 +119,45 @@ export default class LinkProvider implements vscode.DocumentLinkProvider {
 		];
 	}
 
-	private providerInlineLinks(
+	privAte providerInlineLinks(
 		text: string,
 		document: vscode.TextDocument,
 	): vscode.DocumentLink[] {
 		const results: vscode.DocumentLink[] = [];
-		for (const match of matchAll(this.linkPattern, text)) {
-			const matchImage = match[4] && extractDocumentLink(document, match[3].length + 1, match[4], match.index);
-			if (matchImage) {
-				results.push(matchImage);
+		for (const mAtch of mAtchAll(this.linkPAttern, text)) {
+			const mAtchImAge = mAtch[4] && extrActDocumentLink(document, mAtch[3].length + 1, mAtch[4], mAtch.index);
+			if (mAtchImAge) {
+				results.push(mAtchImAge);
 			}
-			const matchLink = extractDocumentLink(document, match[1].length, match[5], match.index);
-			if (matchLink) {
-				results.push(matchLink);
+			const mAtchLink = extrActDocumentLink(document, mAtch[1].length, mAtch[5], mAtch.index);
+			if (mAtchLink) {
+				results.push(mAtchLink);
 			}
 		}
 		return results;
 	}
 
-	private provideReferenceLinks(
+	privAte provideReferenceLinks(
 		text: string,
 		document: vscode.TextDocument,
 	): vscode.DocumentLink[] {
 		const results: vscode.DocumentLink[] = [];
 
 		const definitions = this.getDefinitions(text, document);
-		for (const match of matchAll(this.referenceLinkPattern, text)) {
-			let linkStart: vscode.Position;
+		for (const mAtch of mAtchAll(this.referenceLinkPAttern, text)) {
+			let linkStArt: vscode.Position;
 			let linkEnd: vscode.Position;
-			let reference = match[3];
+			let reference = mAtch[3];
 			if (reference) { // [text][ref]
-				const pre = match[1];
-				const offset = (match.index || 0) + pre.length;
-				linkStart = document.positionAt(offset);
+				const pre = mAtch[1];
+				const offset = (mAtch.index || 0) + pre.length;
+				linkStArt = document.positionAt(offset);
 				linkEnd = document.positionAt(offset + reference.length);
-			} else if (match[2]) { // [ref][]
-				reference = match[2];
-				const offset = (match.index || 0) + 1;
-				linkStart = document.positionAt(offset);
-				linkEnd = document.positionAt(offset + match[2].length);
+			} else if (mAtch[2]) { // [ref][]
+				reference = mAtch[2];
+				const offset = (mAtch.index || 0) + 1;
+				linkStArt = document.positionAt(offset);
+				linkEnd = document.positionAt(offset + mAtch[2].length);
 			} else {
 				continue;
 			}
@@ -166,21 +166,21 @@ export default class LinkProvider implements vscode.DocumentLinkProvider {
 				const link = definitions.get(reference);
 				if (link) {
 					results.push(new vscode.DocumentLink(
-						new vscode.Range(linkStart, linkEnd),
-						vscode.Uri.parse(`command:_markdown.moveCursorToPosition?${encodeURIComponent(JSON.stringify([link.linkRange.start.line, link.linkRange.start.character]))}`)));
+						new vscode.RAnge(linkStArt, linkEnd),
+						vscode.Uri.pArse(`commAnd:_mArkdown.moveCursorToPosition?${encodeURIComponent(JSON.stringify([link.linkRAnge.stArt.line, link.linkRAnge.stArt.chArActer]))}`)));
 				}
-			} catch (e) {
+			} cAtch (e) {
 				// noop
 			}
 		}
 
-		for (const definition of definitions.values()) {
+		for (const definition of definitions.vAlues()) {
 			try {
-				const linkData = parseLink(document, definition.link);
-				if (linkData) {
-					results.push(new vscode.DocumentLink(definition.linkRange, linkData.uri));
+				const linkDAtA = pArseLink(document, definition.link);
+				if (linkDAtA) {
+					results.push(new vscode.DocumentLink(definition.linkRAnge, linkDAtA.uri));
 				}
-			} catch (e) {
+			} cAtch (e) {
 				// noop
 			}
 		}
@@ -188,20 +188,20 @@ export default class LinkProvider implements vscode.DocumentLinkProvider {
 		return results;
 	}
 
-	private getDefinitions(text: string, document: vscode.TextDocument) {
-		const out = new Map<string, { link: string, linkRange: vscode.Range }>();
-		for (const match of matchAll(this.definitionPattern, text)) {
-			const pre = match[1];
-			const reference = match[2];
-			const link = match[3].trim();
+	privAte getDefinitions(text: string, document: vscode.TextDocument) {
+		const out = new MAp<string, { link: string, linkRAnge: vscode.RAnge }>();
+		for (const mAtch of mAtchAll(this.definitionPAttern, text)) {
+			const pre = mAtch[1];
+			const reference = mAtch[2];
+			const link = mAtch[3].trim();
 
-			const offset = (match.index || 0) + pre.length;
-			const linkStart = document.positionAt(offset);
+			const offset = (mAtch.index || 0) + pre.length;
+			const linkStArt = document.positionAt(offset);
 			const linkEnd = document.positionAt(offset + link.length);
 
 			out.set(reference, {
 				link: link,
-				linkRange: new vscode.Range(linkStart, linkEnd)
+				linkRAnge: new vscode.RAnge(linkStArt, linkEnd)
 			});
 		}
 		return out;

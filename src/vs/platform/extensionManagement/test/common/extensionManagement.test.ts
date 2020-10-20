@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { EXTENSION_IDENTIFIER_PATTERN } from 'vs/platform/extensionManagement/common/extensionManagement';
+import * As Assert from 'Assert';
+import { EXTENSION_IDENTIFIER_PATTERN } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
 
-suite('Extension Identifier Pattern', () => {
+suite('Extension Identifier PAttern', () => {
 
-	test('extension identifier pattern', () => {
+	test('extension identifier pAttern', () => {
 		const regEx = new RegExp(EXTENSION_IDENTIFIER_PATTERN);
-		assert.equal(true, regEx.test('publisher.name'));
-		assert.equal(true, regEx.test('publiSher.name'));
-		assert.equal(true, regEx.test('publisher.Name'));
-		assert.equal(true, regEx.test('PUBLISHER.NAME'));
-		assert.equal(true, regEx.test('PUBLISHEr.NAMe'));
-		assert.equal(true, regEx.test('PUBLISHEr.N-AMe'));
-		assert.equal(true, regEx.test('PUB-LISHEr.NAMe'));
-		assert.equal(true, regEx.test('PUB-LISHEr.N-AMe'));
-		assert.equal(true, regEx.test('PUBLISH12Er90.N-A54Me123'));
-		assert.equal(true, regEx.test('111PUBLISH12Er90.N-1111A54Me123'));
-		assert.equal(false, regEx.test('publishername'));
-		assert.equal(false, regEx.test('-publisher.name'));
-		assert.equal(false, regEx.test('publisher.-name'));
-		assert.equal(false, regEx.test('-publisher.-name'));
-		assert.equal(false, regEx.test('publ_isher.name'));
-		assert.equal(false, regEx.test('publisher._name'));
+		Assert.equAl(true, regEx.test('publisher.nAme'));
+		Assert.equAl(true, regEx.test('publiSher.nAme'));
+		Assert.equAl(true, regEx.test('publisher.NAme'));
+		Assert.equAl(true, regEx.test('PUBLISHER.NAME'));
+		Assert.equAl(true, regEx.test('PUBLISHEr.NAMe'));
+		Assert.equAl(true, regEx.test('PUBLISHEr.N-AMe'));
+		Assert.equAl(true, regEx.test('PUB-LISHEr.NAMe'));
+		Assert.equAl(true, regEx.test('PUB-LISHEr.N-AMe'));
+		Assert.equAl(true, regEx.test('PUBLISH12Er90.N-A54Me123'));
+		Assert.equAl(true, regEx.test('111PUBLISH12Er90.N-1111A54Me123'));
+		Assert.equAl(fAlse, regEx.test('publishernAme'));
+		Assert.equAl(fAlse, regEx.test('-publisher.nAme'));
+		Assert.equAl(fAlse, regEx.test('publisher.-nAme'));
+		Assert.equAl(fAlse, regEx.test('-publisher.-nAme'));
+		Assert.equAl(fAlse, regEx.test('publ_isher.nAme'));
+		Assert.equAl(fAlse, regEx.test('publisher._nAme'));
 	});
 });

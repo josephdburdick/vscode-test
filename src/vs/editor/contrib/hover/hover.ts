@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { KeyChord, KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { IDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { IEmptyContentData } from 'vs/editor/browser/controller/mouseTarget';
-import { ICodeEditor, IEditorMouseEvent, MouseTargetType } from 'vs/editor/browser/editorBrowser';
+import * As nls from 'vs/nls';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { KeyChord, KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { IDisposAble, DisposAbleStore, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { IEmptyContentDAtA } from 'vs/editor/browser/controller/mouseTArget';
+import { ICodeEditor, IEditorMouseEvent, MouseTArgetType } from 'vs/editor/browser/editorBrowser';
 import { EditorAction, ServicesAccessor, registerEditorAction, registerEditorContribution } from 'vs/editor/browser/editorExtensions';
-import { ConfigurationChangedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
-import { Range } from 'vs/editor/common/core/range';
+import { ConfigurAtionChAngedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { IEditorContribution, IScrollEvent } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { HoverStartMode } from 'vs/editor/contrib/hover/hoverOperation';
+import { HoverStArtMode } from 'vs/editor/contrib/hover/hoverOperAtion';
 import { ModesContentHoverWidget } from 'vs/editor/contrib/hover/modesContentHover';
 import { ModesGlyphHoverWidget } from 'vs/editor/contrib/hover/modesGlyphHover';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { editorHoverBackground, editorHoverBorder, editorHoverHighlight, textCodeBlockBackground, textLinkForeground, editorHoverStatusBarBackground, editorHoverForeground } from 'vs/platform/theme/common/colorRegistry';
-import { IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { IMarkerDecorationsService } from 'vs/editor/common/services/markersDecorationService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { editorHoverBAckground, editorHoverBorder, editorHoverHighlight, textCodeBlockBAckground, textLinkForeground, editorHoverStAtusBArBAckground, editorHoverForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { IThemeService, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { IMArkerDecorAtionsService } from 'vs/editor/common/services/mArkersDecorAtionService';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { AccessibilitySupport } from 'vs/plAtform/Accessibility/common/Accessibility';
 import { GotoDefinitionAtPositionEditorContribution } from 'vs/editor/contrib/gotoSymbol/link/goToDefinitionAtPosition';
-import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 
-export class ModesHoverController implements IEditorContribution {
+export clAss ModesHoverController implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.hover';
+	public stAtic reAdonly ID = 'editor.contrib.hover';
 
-	private readonly _toUnhook = new DisposableStore();
-	private readonly _didChangeConfigurationHandler: IDisposable;
+	privAte reAdonly _toUnhook = new DisposAbleStore();
+	privAte reAdonly _didChAngeConfigurAtionHAndler: IDisposAble;
 
-	private readonly _contentWidget = new MutableDisposable<ModesContentHoverWidget>();
-	private readonly _glyphWidget = new MutableDisposable<ModesGlyphHoverWidget>();
+	privAte reAdonly _contentWidget = new MutAbleDisposAble<ModesContentHoverWidget>();
+	privAte reAdonly _glyphWidget = new MutAbleDisposAble<ModesGlyphHoverWidget>();
 
 	get contentWidget(): ModesContentHoverWidget {
-		if (!this._contentWidget.value) {
-			this._createHoverWidgets();
+		if (!this._contentWidget.vAlue) {
+			this._creAteHoverWidgets();
 		}
-		return this._contentWidget.value!;
+		return this._contentWidget.vAlue!;
 	}
 
 	get glyphWidget(): ModesGlyphHoverWidget {
-		if (!this._glyphWidget.value) {
-			this._createHoverWidgets();
+		if (!this._glyphWidget.vAlue) {
+			this._creAteHoverWidgets();
 		}
-		return this._glyphWidget.value!;
+		return this._glyphWidget.vAlue!;
 	}
 
-	private _isMouseDown: boolean;
-	private _hoverClicked: boolean;
-	private _isHoverEnabled!: boolean;
-	private _isHoverSticky!: boolean;
+	privAte _isMouseDown: booleAn;
+	privAte _hoverClicked: booleAn;
+	privAte _isHoverEnAbled!: booleAn;
+	privAte _isHoverSticky!: booleAn;
 
-	private _hoverVisibleKey: IContextKey<boolean>;
+	privAte _hoverVisibleKey: IContextKey<booleAn>;
 
-	static get(editor: ICodeEditor): ModesHoverController {
+	stAtic get(editor: ICodeEditor): ModesHoverController {
 		return editor.getContribution<ModesHoverController>(ModesHoverController.ID);
 	}
 
-	constructor(private readonly _editor: ICodeEditor,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IModeService private readonly _modeService: IModeService,
-		@IMarkerDecorationsService private readonly _markerDecorationsService: IMarkerDecorationsService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
-		@IThemeService private readonly _themeService: IThemeService,
+	constructor(privAte reAdonly _editor: ICodeEditor,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@IMArkerDecorAtionsService privAte reAdonly _mArkerDecorAtionsService: IMArkerDecorAtionsService,
+		@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService,
+		@IThemeService privAte reAdonly _themeService: IThemeService,
 		@IContextKeyService _contextKeyService: IContextKeyService
 	) {
-		this._isMouseDown = false;
-		this._hoverClicked = false;
+		this._isMouseDown = fAlse;
+		this._hoverClicked = fAlse;
 
 		this._hookEvents();
 
-		this._didChangeConfigurationHandler = this._editor.onDidChangeConfiguration((e: ConfigurationChangedEvent) => {
-			if (e.hasChanged(EditorOption.hover)) {
+		this._didChAngeConfigurAtionHAndler = this._editor.onDidChAngeConfigurAtion((e: ConfigurAtionChAngedEvent) => {
+			if (e.hAsChAnged(EditorOption.hover)) {
 				this._unhookEvents();
 				this._hookEvents();
 			}
@@ -86,181 +86,181 @@ export class ModesHoverController implements IEditorContribution {
 		this._hoverVisibleKey = EditorContextKeys.hoverVisible.bindTo(_contextKeyService);
 	}
 
-	private _hookEvents(): void {
-		const hideWidgetsEventHandler = () => this._hideWidgets();
+	privAte _hookEvents(): void {
+		const hideWidgetsEventHAndler = () => this._hideWidgets();
 
 		const hoverOpts = this._editor.getOption(EditorOption.hover);
-		this._isHoverEnabled = hoverOpts.enabled;
+		this._isHoverEnAbled = hoverOpts.enAbled;
 		this._isHoverSticky = hoverOpts.sticky;
-		if (this._isHoverEnabled) {
-			this._toUnhook.add(this._editor.onMouseDown((e: IEditorMouseEvent) => this._onEditorMouseDown(e)));
-			this._toUnhook.add(this._editor.onMouseUp((e: IEditorMouseEvent) => this._onEditorMouseUp(e)));
-			this._toUnhook.add(this._editor.onMouseMove((e: IEditorMouseEvent) => this._onEditorMouseMove(e)));
-			this._toUnhook.add(this._editor.onKeyDown((e: IKeyboardEvent) => this._onKeyDown(e)));
-			this._toUnhook.add(this._editor.onDidChangeModelDecorations(() => this._onModelDecorationsChanged()));
+		if (this._isHoverEnAbled) {
+			this._toUnhook.Add(this._editor.onMouseDown((e: IEditorMouseEvent) => this._onEditorMouseDown(e)));
+			this._toUnhook.Add(this._editor.onMouseUp((e: IEditorMouseEvent) => this._onEditorMouseUp(e)));
+			this._toUnhook.Add(this._editor.onMouseMove((e: IEditorMouseEvent) => this._onEditorMouseMove(e)));
+			this._toUnhook.Add(this._editor.onKeyDown((e: IKeyboArdEvent) => this._onKeyDown(e)));
+			this._toUnhook.Add(this._editor.onDidChAngeModelDecorAtions(() => this._onModelDecorAtionsChAnged()));
 		} else {
-			this._toUnhook.add(this._editor.onMouseMove((e: IEditorMouseEvent) => this._onEditorMouseMove(e)));
-			this._toUnhook.add(this._editor.onKeyDown((e: IKeyboardEvent) => this._onKeyDown(e)));
+			this._toUnhook.Add(this._editor.onMouseMove((e: IEditorMouseEvent) => this._onEditorMouseMove(e)));
+			this._toUnhook.Add(this._editor.onKeyDown((e: IKeyboArdEvent) => this._onKeyDown(e)));
 		}
 
-		this._toUnhook.add(this._editor.onMouseLeave(hideWidgetsEventHandler));
-		this._toUnhook.add(this._editor.onDidChangeModel(hideWidgetsEventHandler));
-		this._toUnhook.add(this._editor.onDidScrollChange((e: IScrollEvent) => this._onEditorScrollChanged(e)));
+		this._toUnhook.Add(this._editor.onMouseLeAve(hideWidgetsEventHAndler));
+		this._toUnhook.Add(this._editor.onDidChAngeModel(hideWidgetsEventHAndler));
+		this._toUnhook.Add(this._editor.onDidScrollChAnge((e: IScrollEvent) => this._onEditorScrollChAnged(e)));
 	}
 
-	private _unhookEvents(): void {
-		this._toUnhook.clear();
+	privAte _unhookEvents(): void {
+		this._toUnhook.cleAr();
 	}
 
-	private _onModelDecorationsChanged(): void {
-		this.contentWidget.onModelDecorationsChanged();
-		this.glyphWidget.onModelDecorationsChanged();
+	privAte _onModelDecorAtionsChAnged(): void {
+		this.contentWidget.onModelDecorAtionsChAnged();
+		this.glyphWidget.onModelDecorAtionsChAnged();
 	}
 
-	private _onEditorScrollChanged(e: IScrollEvent): void {
-		if (e.scrollTopChanged || e.scrollLeftChanged) {
+	privAte _onEditorScrollChAnged(e: IScrollEvent): void {
+		if (e.scrollTopChAnged || e.scrollLeftChAnged) {
 			this._hideWidgets();
 		}
 	}
 
-	private _onEditorMouseDown(mouseEvent: IEditorMouseEvent): void {
+	privAte _onEditorMouseDown(mouseEvent: IEditorMouseEvent): void {
 		this._isMouseDown = true;
 
-		const targetType = mouseEvent.target.type;
+		const tArgetType = mouseEvent.tArget.type;
 
-		if (targetType === MouseTargetType.CONTENT_WIDGET && mouseEvent.target.detail === ModesContentHoverWidget.ID) {
+		if (tArgetType === MouseTArgetType.CONTENT_WIDGET && mouseEvent.tArget.detAil === ModesContentHoverWidget.ID) {
 			this._hoverClicked = true;
 			// mouse down on top of content hover widget
 			return;
 		}
 
-		if (targetType === MouseTargetType.OVERLAY_WIDGET && mouseEvent.target.detail === ModesGlyphHoverWidget.ID) {
-			// mouse down on top of overlay hover widget
+		if (tArgetType === MouseTArgetType.OVERLAY_WIDGET && mouseEvent.tArget.detAil === ModesGlyphHoverWidget.ID) {
+			// mouse down on top of overlAy hover widget
 			return;
 		}
 
-		if (targetType !== MouseTargetType.OVERLAY_WIDGET && mouseEvent.target.detail !== ModesGlyphHoverWidget.ID) {
-			this._hoverClicked = false;
+		if (tArgetType !== MouseTArgetType.OVERLAY_WIDGET && mouseEvent.tArget.detAil !== ModesGlyphHoverWidget.ID) {
+			this._hoverClicked = fAlse;
 		}
 
 		this._hideWidgets();
 	}
 
-	private _onEditorMouseUp(mouseEvent: IEditorMouseEvent): void {
-		this._isMouseDown = false;
+	privAte _onEditorMouseUp(mouseEvent: IEditorMouseEvent): void {
+		this._isMouseDown = fAlse;
 	}
 
-	private _onEditorMouseMove(mouseEvent: IEditorMouseEvent): void {
-		let targetType = mouseEvent.target.type;
+	privAte _onEditorMouseMove(mouseEvent: IEditorMouseEvent): void {
+		let tArgetType = mouseEvent.tArget.type;
 
 		if (this._isMouseDown && this._hoverClicked && this.contentWidget.isColorPickerVisible()) {
 			return;
 		}
 
-		if (this._isHoverSticky && targetType === MouseTargetType.CONTENT_WIDGET && mouseEvent.target.detail === ModesContentHoverWidget.ID) {
+		if (this._isHoverSticky && tArgetType === MouseTArgetType.CONTENT_WIDGET && mouseEvent.tArget.detAil === ModesContentHoverWidget.ID) {
 			// mouse moved on top of content hover widget
 			return;
 		}
 
-		if (this._isHoverSticky && targetType === MouseTargetType.OVERLAY_WIDGET && mouseEvent.target.detail === ModesGlyphHoverWidget.ID) {
-			// mouse moved on top of overlay hover widget
+		if (this._isHoverSticky && tArgetType === MouseTArgetType.OVERLAY_WIDGET && mouseEvent.tArget.detAil === ModesGlyphHoverWidget.ID) {
+			// mouse moved on top of overlAy hover widget
 			return;
 		}
 
-		if (targetType === MouseTargetType.CONTENT_EMPTY) {
-			const epsilon = this._editor.getOption(EditorOption.fontInfo).typicalHalfwidthCharacterWidth / 2;
-			const data = <IEmptyContentData>mouseEvent.target.detail;
-			if (data && !data.isAfterLines && typeof data.horizontalDistanceToText === 'number' && data.horizontalDistanceToText < epsilon) {
-				// Let hover kick in even when the mouse is technically in the empty area after a line, given the distance is small enough
-				targetType = MouseTargetType.CONTENT_TEXT;
+		if (tArgetType === MouseTArgetType.CONTENT_EMPTY) {
+			const epsilon = this._editor.getOption(EditorOption.fontInfo).typicAlHAlfwidthChArActerWidth / 2;
+			const dAtA = <IEmptyContentDAtA>mouseEvent.tArget.detAil;
+			if (dAtA && !dAtA.isAfterLines && typeof dAtA.horizontAlDistAnceToText === 'number' && dAtA.horizontAlDistAnceToText < epsilon) {
+				// Let hover kick in even when the mouse is technicAlly in the empty AreA After A line, given the distAnce is smAll enough
+				tArgetType = MouseTArgetType.CONTENT_TEXT;
 			}
 		}
 
-		if (targetType === MouseTargetType.CONTENT_TEXT) {
+		if (tArgetType === MouseTArgetType.CONTENT_TEXT) {
 			this.glyphWidget.hide();
 
-			if (this._isHoverEnabled && mouseEvent.target.range) {
+			if (this._isHoverEnAbled && mouseEvent.tArget.rAnge) {
 				// TODO@rebornix. This should be removed if we move Color Picker out of Hover component.
-				// Check if mouse is hovering on color decorator
-				const hoverOnColorDecorator = [...mouseEvent.target.element?.classList.values() || []].find(className => className.startsWith('ced-colorBox'))
-					&& mouseEvent.target.range.endColumn - mouseEvent.target.range.startColumn === 1;
-				if (hoverOnColorDecorator) {
-					// shift the mouse focus by one as color decorator is a `before` decoration of next character.
-					this.contentWidget.startShowingAt(new Range(mouseEvent.target.range.startLineNumber, mouseEvent.target.range.startColumn + 1, mouseEvent.target.range.endLineNumber, mouseEvent.target.range.endColumn + 1), HoverStartMode.Delayed, false);
+				// Check if mouse is hovering on color decorAtor
+				const hoverOnColorDecorAtor = [...mouseEvent.tArget.element?.clAssList.vAlues() || []].find(clAssNAme => clAssNAme.stArtsWith('ced-colorBox'))
+					&& mouseEvent.tArget.rAnge.endColumn - mouseEvent.tArget.rAnge.stArtColumn === 1;
+				if (hoverOnColorDecorAtor) {
+					// shift the mouse focus by one As color decorAtor is A `before` decorAtion of next chArActer.
+					this.contentWidget.stArtShowingAt(new RAnge(mouseEvent.tArget.rAnge.stArtLineNumber, mouseEvent.tArget.rAnge.stArtColumn + 1, mouseEvent.tArget.rAnge.endLineNumber, mouseEvent.tArget.rAnge.endColumn + 1), HoverStArtMode.DelAyed, fAlse);
 				} else {
-					this.contentWidget.startShowingAt(mouseEvent.target.range, HoverStartMode.Delayed, false);
+					this.contentWidget.stArtShowingAt(mouseEvent.tArget.rAnge, HoverStArtMode.DelAyed, fAlse);
 				}
 
 			}
-		} else if (targetType === MouseTargetType.GUTTER_GLYPH_MARGIN) {
+		} else if (tArgetType === MouseTArgetType.GUTTER_GLYPH_MARGIN) {
 			this.contentWidget.hide();
 
-			if (this._isHoverEnabled && mouseEvent.target.position) {
-				this.glyphWidget.startShowingAt(mouseEvent.target.position.lineNumber);
+			if (this._isHoverEnAbled && mouseEvent.tArget.position) {
+				this.glyphWidget.stArtShowingAt(mouseEvent.tArget.position.lineNumber);
 			}
 		} else {
 			this._hideWidgets();
 		}
 	}
 
-	private _onKeyDown(e: IKeyboardEvent): void {
-		if (e.keyCode !== KeyCode.Ctrl && e.keyCode !== KeyCode.Alt && e.keyCode !== KeyCode.Meta && e.keyCode !== KeyCode.Shift) {
-			// Do not hide hover when a modifier key is pressed
+	privAte _onKeyDown(e: IKeyboArdEvent): void {
+		if (e.keyCode !== KeyCode.Ctrl && e.keyCode !== KeyCode.Alt && e.keyCode !== KeyCode.MetA && e.keyCode !== KeyCode.Shift) {
+			// Do not hide hover when A modifier key is pressed
 			this._hideWidgets();
 		}
 	}
 
-	private _hideWidgets(): void {
-		if (!this._glyphWidget.value || !this._contentWidget.value || (this._isMouseDown && this._hoverClicked && this._contentWidget.value.isColorPickerVisible())) {
+	privAte _hideWidgets(): void {
+		if (!this._glyphWidget.vAlue || !this._contentWidget.vAlue || (this._isMouseDown && this._hoverClicked && this._contentWidget.vAlue.isColorPickerVisible())) {
 			return;
 		}
 
-		this._glyphWidget.value.hide();
-		this._contentWidget.value.hide();
+		this._glyphWidget.vAlue.hide();
+		this._contentWidget.vAlue.hide();
 	}
 
-	private _createHoverWidgets() {
-		this._contentWidget.value = new ModesContentHoverWidget(this._editor, this._hoverVisibleKey, this._markerDecorationsService, this._keybindingService, this._themeService, this._modeService, this._openerService);
-		this._glyphWidget.value = new ModesGlyphHoverWidget(this._editor, this._modeService, this._openerService);
+	privAte _creAteHoverWidgets() {
+		this._contentWidget.vAlue = new ModesContentHoverWidget(this._editor, this._hoverVisibleKey, this._mArkerDecorAtionsService, this._keybindingService, this._themeService, this._modeService, this._openerService);
+		this._glyphWidget.vAlue = new ModesGlyphHoverWidget(this._editor, this._modeService, this._openerService);
 	}
 
-	public showContentHover(range: Range, mode: HoverStartMode, focus: boolean): void {
-		this.contentWidget.startShowingAt(range, mode, focus);
+	public showContentHover(rAnge: RAnge, mode: HoverStArtMode, focus: booleAn): void {
+		this.contentWidget.stArtShowingAt(rAnge, mode, focus);
 	}
 
 	public dispose(): void {
 		this._unhookEvents();
 		this._toUnhook.dispose();
-		this._didChangeConfigurationHandler.dispose();
+		this._didChAngeConfigurAtionHAndler.dispose();
 		this._glyphWidget.dispose();
 		this._contentWidget.dispose();
 	}
 }
 
-class ShowHoverAction extends EditorAction {
+clAss ShowHoverAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.showHover',
-			label: nls.localize({
+			id: 'editor.Action.showHover',
+			lAbel: nls.locAlize({
 				key: 'showHover',
 				comment: [
-					'Label for action that will trigger the showing of a hover in the editor.',
-					'This allows for users to show the hover without using the mouse.'
+					'LAbel for Action thAt will trigger the showing of A hover in the editor.',
+					'This Allows for users to show the hover without using the mouse.'
 				]
 			}, "Show Hover"),
-			alias: 'Show Hover',
+			AliAs: 'Show Hover',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_I),
+				primAry: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_I),
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		if (!editor.hasModel()) {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
 		let controller = ModesHoverController.get(editor);
@@ -268,30 +268,30 @@ class ShowHoverAction extends EditorAction {
 			return;
 		}
 		const position = editor.getPosition();
-		const range = new Range(position.lineNumber, position.column, position.lineNumber, position.column);
-		const focus = editor.getOption(EditorOption.accessibilitySupport) === AccessibilitySupport.Enabled;
-		controller.showContentHover(range, HoverStartMode.Immediate, focus);
+		const rAnge = new RAnge(position.lineNumber, position.column, position.lineNumber, position.column);
+		const focus = editor.getOption(EditorOption.AccessibilitySupport) === AccessibilitySupport.EnAbled;
+		controller.showContentHover(rAnge, HoverStArtMode.ImmediAte, focus);
 	}
 }
 
-class ShowDefinitionPreviewHoverAction extends EditorAction {
+clAss ShowDefinitionPreviewHoverAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.showDefinitionPreviewHover',
-			label: nls.localize({
+			id: 'editor.Action.showDefinitionPreviewHover',
+			lAbel: nls.locAlize({
 				key: 'showDefinitionPreviewHover',
 				comment: [
-					'Label for action that will trigger the showing of definition preview hover in the editor.',
-					'This allows for users to show the definition preview hover without using the mouse.'
+					'LAbel for Action thAt will trigger the showing of definition preview hover in the editor.',
+					'This Allows for users to show the definition preview hover without using the mouse.'
 				]
 			}, "Show Definition Preview Hover"),
-			alias: 'Show Definition Preview Hover',
+			AliAs: 'Show Definition Preview Hover',
 			precondition: undefined
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
 		let controller = ModesHoverController.get(editor);
 		if (!controller) {
 			return;
@@ -302,15 +302,15 @@ class ShowDefinitionPreviewHoverAction extends EditorAction {
 			return;
 		}
 
-		const range = new Range(position.lineNumber, position.column, position.lineNumber, position.column);
+		const rAnge = new RAnge(position.lineNumber, position.column, position.lineNumber, position.column);
 		const goto = GotoDefinitionAtPositionEditorContribution.get(editor);
-		const promise = goto.startFindDefinitionFromCursor(position);
+		const promise = goto.stArtFindDefinitionFromCursor(position);
 		if (promise) {
 			promise.then(() => {
-				controller.showContentHover(range, HoverStartMode.Immediate, true);
+				controller.showContentHover(rAnge, HoverStArtMode.ImmediAte, true);
 			});
 		} else {
-			controller.showContentHover(range, HoverStartMode.Immediate, true);
+			controller.showContentHover(rAnge, HoverStArtMode.ImmediAte, true);
 		}
 	}
 }
@@ -320,36 +320,36 @@ registerEditorAction(ShowHoverAction);
 registerEditorAction(ShowDefinitionPreviewHoverAction);
 
 // theming
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 	const editorHoverHighlightColor = theme.getColor(editorHoverHighlight);
 	if (editorHoverHighlightColor) {
-		collector.addRule(`.monaco-editor .hoverHighlight { background-color: ${editorHoverHighlightColor}; }`);
+		collector.AddRule(`.monAco-editor .hoverHighlight { bAckground-color: ${editorHoverHighlightColor}; }`);
 	}
-	const hoverBackground = theme.getColor(editorHoverBackground);
-	if (hoverBackground) {
-		collector.addRule(`.monaco-editor .monaco-hover { background-color: ${hoverBackground}; }`);
+	const hoverBAckground = theme.getColor(editorHoverBAckground);
+	if (hoverBAckground) {
+		collector.AddRule(`.monAco-editor .monAco-hover { bAckground-color: ${hoverBAckground}; }`);
 	}
 	const hoverBorder = theme.getColor(editorHoverBorder);
 	if (hoverBorder) {
-		collector.addRule(`.monaco-editor .monaco-hover { border: 1px solid ${hoverBorder}; }`);
-		collector.addRule(`.monaco-editor .monaco-hover .hover-row:not(:first-child):not(:empty) { border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
-		collector.addRule(`.monaco-editor .monaco-hover hr { border-top: 1px solid ${hoverBorder.transparent(0.5)}; }`);
-		collector.addRule(`.monaco-editor .monaco-hover hr { border-bottom: 0px solid ${hoverBorder.transparent(0.5)}; }`);
+		collector.AddRule(`.monAco-editor .monAco-hover { border: 1px solid ${hoverBorder}; }`);
+		collector.AddRule(`.monAco-editor .monAco-hover .hover-row:not(:first-child):not(:empty) { border-top: 1px solid ${hoverBorder.trAnspArent(0.5)}; }`);
+		collector.AddRule(`.monAco-editor .monAco-hover hr { border-top: 1px solid ${hoverBorder.trAnspArent(0.5)}; }`);
+		collector.AddRule(`.monAco-editor .monAco-hover hr { border-bottom: 0px solid ${hoverBorder.trAnspArent(0.5)}; }`);
 	}
 	const link = theme.getColor(textLinkForeground);
 	if (link) {
-		collector.addRule(`.monaco-editor .monaco-hover a { color: ${link}; }`);
+		collector.AddRule(`.monAco-editor .monAco-hover A { color: ${link}; }`);
 	}
 	const hoverForeground = theme.getColor(editorHoverForeground);
 	if (hoverForeground) {
-		collector.addRule(`.monaco-editor .monaco-hover { color: ${hoverForeground}; }`);
+		collector.AddRule(`.monAco-editor .monAco-hover { color: ${hoverForeground}; }`);
 	}
-	const actionsBackground = theme.getColor(editorHoverStatusBarBackground);
-	if (actionsBackground) {
-		collector.addRule(`.monaco-editor .monaco-hover .hover-row .actions { background-color: ${actionsBackground}; }`);
+	const ActionsBAckground = theme.getColor(editorHoverStAtusBArBAckground);
+	if (ActionsBAckground) {
+		collector.AddRule(`.monAco-editor .monAco-hover .hover-row .Actions { bAckground-color: ${ActionsBAckground}; }`);
 	}
-	const codeBackground = theme.getColor(textCodeBlockBackground);
-	if (codeBackground) {
-		collector.addRule(`.monaco-editor .monaco-hover code { background-color: ${codeBackground}; }`);
+	const codeBAckground = theme.getColor(textCodeBlockBAckground);
+	if (codeBAckground) {
+		collector.AddRule(`.monAco-editor .monAco-hover code { bAckground-color: ${codeBAckground}; }`);
 	}
 });

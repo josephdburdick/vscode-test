@@ -1,263 +1,263 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import type * as vscode from 'vscode';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import * As nls from 'vs/nls';
+import type * As vscode from 'vscode';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { ExtensionActivationError, MissingDependencyError } from 'vs/workbench/services/extensions/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { ExtensionActivAtionError, MissingDependencyError } from 'vs/workbench/services/extensions/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
 const NO_OP_VOID_PROMISE = Promise.resolve<void>(undefined);
 
 /**
- * Represents the source code (module) of an extension.
+ * Represents the source code (module) of An extension.
  */
-export interface IExtensionModule {
-	activate?(ctx: vscode.ExtensionContext): Promise<IExtensionAPI>;
-	deactivate?(): void;
+export interfAce IExtensionModule {
+	ActivAte?(ctx: vscode.ExtensionContext): Promise<IExtensionAPI>;
+	deActivAte?(): void;
 }
 
 /**
- * Represents the API of an extension (return value of `activate`).
+ * Represents the API of An extension (return vAlue of `ActivAte`).
  */
-export interface IExtensionAPI {
-	// _extensionAPIBrand: any;
+export interfAce IExtensionAPI {
+	// _extensionAPIBrAnd: Any;
 }
 
-export type ExtensionActivationTimesFragment = {
-	startup?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-	codeLoadingTime?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-	activateCallTime?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
-	activateResolvedTime?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
+export type ExtensionActivAtionTimesFrAgment = {
+	stArtup?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+	codeLoAdingTime?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+	ActivAteCAllTime?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
+	ActivAteResolvedTime?: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth', isMeAsurement: true };
 };
 
-export class ExtensionActivationTimes {
+export clAss ExtensionActivAtionTimes {
 
-	public static readonly NONE = new ExtensionActivationTimes(false, -1, -1, -1);
+	public stAtic reAdonly NONE = new ExtensionActivAtionTimes(fAlse, -1, -1, -1);
 
-	public readonly startup: boolean;
-	public readonly codeLoadingTime: number;
-	public readonly activateCallTime: number;
-	public readonly activateResolvedTime: number;
+	public reAdonly stArtup: booleAn;
+	public reAdonly codeLoAdingTime: number;
+	public reAdonly ActivAteCAllTime: number;
+	public reAdonly ActivAteResolvedTime: number;
 
-	constructor(startup: boolean, codeLoadingTime: number, activateCallTime: number, activateResolvedTime: number) {
-		this.startup = startup;
-		this.codeLoadingTime = codeLoadingTime;
-		this.activateCallTime = activateCallTime;
-		this.activateResolvedTime = activateResolvedTime;
+	constructor(stArtup: booleAn, codeLoAdingTime: number, ActivAteCAllTime: number, ActivAteResolvedTime: number) {
+		this.stArtup = stArtup;
+		this.codeLoAdingTime = codeLoAdingTime;
+		this.ActivAteCAllTime = ActivAteCAllTime;
+		this.ActivAteResolvedTime = ActivAteResolvedTime;
 	}
 }
 
-export class ExtensionActivationTimesBuilder {
+export clAss ExtensionActivAtionTimesBuilder {
 
-	private readonly _startup: boolean;
-	private _codeLoadingStart: number;
-	private _codeLoadingStop: number;
-	private _activateCallStart: number;
-	private _activateCallStop: number;
-	private _activateResolveStart: number;
-	private _activateResolveStop: number;
+	privAte reAdonly _stArtup: booleAn;
+	privAte _codeLoAdingStArt: number;
+	privAte _codeLoAdingStop: number;
+	privAte _ActivAteCAllStArt: number;
+	privAte _ActivAteCAllStop: number;
+	privAte _ActivAteResolveStArt: number;
+	privAte _ActivAteResolveStop: number;
 
-	constructor(startup: boolean) {
-		this._startup = startup;
-		this._codeLoadingStart = -1;
-		this._codeLoadingStop = -1;
-		this._activateCallStart = -1;
-		this._activateCallStop = -1;
-		this._activateResolveStart = -1;
-		this._activateResolveStop = -1;
+	constructor(stArtup: booleAn) {
+		this._stArtup = stArtup;
+		this._codeLoAdingStArt = -1;
+		this._codeLoAdingStop = -1;
+		this._ActivAteCAllStArt = -1;
+		this._ActivAteCAllStop = -1;
+		this._ActivAteResolveStArt = -1;
+		this._ActivAteResolveStop = -1;
 	}
 
-	private _delta(start: number, stop: number): number {
-		if (start === -1 || stop === -1) {
+	privAte _deltA(stArt: number, stop: number): number {
+		if (stArt === -1 || stop === -1) {
 			return -1;
 		}
-		return stop - start;
+		return stop - stArt;
 	}
 
-	public build(): ExtensionActivationTimes {
-		return new ExtensionActivationTimes(
-			this._startup,
-			this._delta(this._codeLoadingStart, this._codeLoadingStop),
-			this._delta(this._activateCallStart, this._activateCallStop),
-			this._delta(this._activateResolveStart, this._activateResolveStop)
+	public build(): ExtensionActivAtionTimes {
+		return new ExtensionActivAtionTimes(
+			this._stArtup,
+			this._deltA(this._codeLoAdingStArt, this._codeLoAdingStop),
+			this._deltA(this._ActivAteCAllStArt, this._ActivAteCAllStop),
+			this._deltA(this._ActivAteResolveStArt, this._ActivAteResolveStop)
 		);
 	}
 
-	public codeLoadingStart(): void {
-		this._codeLoadingStart = Date.now();
+	public codeLoAdingStArt(): void {
+		this._codeLoAdingStArt = DAte.now();
 	}
 
-	public codeLoadingStop(): void {
-		this._codeLoadingStop = Date.now();
+	public codeLoAdingStop(): void {
+		this._codeLoAdingStop = DAte.now();
 	}
 
-	public activateCallStart(): void {
-		this._activateCallStart = Date.now();
+	public ActivAteCAllStArt(): void {
+		this._ActivAteCAllStArt = DAte.now();
 	}
 
-	public activateCallStop(): void {
-		this._activateCallStop = Date.now();
+	public ActivAteCAllStop(): void {
+		this._ActivAteCAllStop = DAte.now();
 	}
 
-	public activateResolveStart(): void {
-		this._activateResolveStart = Date.now();
+	public ActivAteResolveStArt(): void {
+		this._ActivAteResolveStArt = DAte.now();
 	}
 
-	public activateResolveStop(): void {
-		this._activateResolveStop = Date.now();
+	public ActivAteResolveStop(): void {
+		this._ActivAteResolveStop = DAte.now();
 	}
 }
 
-export class ActivatedExtension {
+export clAss ActivAtedExtension {
 
-	public readonly activationFailed: boolean;
-	public readonly activationFailedError: Error | null;
-	public readonly activationTimes: ExtensionActivationTimes;
-	public readonly module: IExtensionModule;
-	public readonly exports: IExtensionAPI | undefined;
-	public readonly subscriptions: IDisposable[];
+	public reAdonly ActivAtionFAiled: booleAn;
+	public reAdonly ActivAtionFAiledError: Error | null;
+	public reAdonly ActivAtionTimes: ExtensionActivAtionTimes;
+	public reAdonly module: IExtensionModule;
+	public reAdonly exports: IExtensionAPI | undefined;
+	public reAdonly subscriptions: IDisposAble[];
 
 	constructor(
-		activationFailed: boolean,
-		activationFailedError: Error | null,
-		activationTimes: ExtensionActivationTimes,
+		ActivAtionFAiled: booleAn,
+		ActivAtionFAiledError: Error | null,
+		ActivAtionTimes: ExtensionActivAtionTimes,
 		module: IExtensionModule,
 		exports: IExtensionAPI | undefined,
-		subscriptions: IDisposable[]
+		subscriptions: IDisposAble[]
 	) {
-		this.activationFailed = activationFailed;
-		this.activationFailedError = activationFailedError;
-		this.activationTimes = activationTimes;
+		this.ActivAtionFAiled = ActivAtionFAiled;
+		this.ActivAtionFAiledError = ActivAtionFAiledError;
+		this.ActivAtionTimes = ActivAtionTimes;
 		this.module = module;
 		this.exports = exports;
 		this.subscriptions = subscriptions;
 	}
 }
 
-export class EmptyExtension extends ActivatedExtension {
-	constructor(activationTimes: ExtensionActivationTimes) {
-		super(false, null, activationTimes, { activate: undefined, deactivate: undefined }, undefined, []);
+export clAss EmptyExtension extends ActivAtedExtension {
+	constructor(ActivAtionTimes: ExtensionActivAtionTimes) {
+		super(fAlse, null, ActivAtionTimes, { ActivAte: undefined, deActivAte: undefined }, undefined, []);
 	}
 }
 
-export class HostExtension extends ActivatedExtension {
+export clAss HostExtension extends ActivAtedExtension {
 	constructor() {
-		super(false, null, ExtensionActivationTimes.NONE, { activate: undefined, deactivate: undefined }, undefined, []);
+		super(fAlse, null, ExtensionActivAtionTimes.NONE, { ActivAte: undefined, deActivAte: undefined }, undefined, []);
 	}
 }
 
-export class FailedExtension extends ActivatedExtension {
-	constructor(activationError: Error) {
-		super(true, activationError, ExtensionActivationTimes.NONE, { activate: undefined, deactivate: undefined }, undefined, []);
+export clAss FAiledExtension extends ActivAtedExtension {
+	constructor(ActivAtionError: Error) {
+		super(true, ActivAtionError, ExtensionActivAtionTimes.NONE, { ActivAte: undefined, deActivAte: undefined }, undefined, []);
 	}
 }
 
-export interface IExtensionsActivatorHost {
-	onExtensionActivationError(extensionId: ExtensionIdentifier, error: ExtensionActivationError): void;
-	actualActivateExtension(extensionId: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<ActivatedExtension>;
+export interfAce IExtensionsActivAtorHost {
+	onExtensionActivAtionError(extensionId: ExtensionIdentifier, error: ExtensionActivAtionError): void;
+	ActuAlActivAteExtension(extensionId: ExtensionIdentifier, reAson: ExtensionActivAtionReAson): Promise<ActivAtedExtension>;
 }
 
-export interface ExtensionActivationReason {
-	readonly startup: boolean;
-	readonly extensionId: ExtensionIdentifier;
-	readonly activationEvent: string;
+export interfAce ExtensionActivAtionReAson {
+	reAdonly stArtup: booleAn;
+	reAdonly extensionId: ExtensionIdentifier;
+	reAdonly ActivAtionEvent: string;
 }
 
-type ActivationIdAndReason = { id: ExtensionIdentifier, reason: ExtensionActivationReason };
+type ActivAtionIdAndReAson = { id: ExtensionIdentifier, reAson: ExtensionActivAtionReAson };
 
-export class ExtensionsActivator {
+export clAss ExtensionsActivAtor {
 
-	private readonly _registry: ExtensionDescriptionRegistry;
-	private readonly _resolvedExtensionsSet: Set<string>;
-	private readonly _hostExtensionsMap: Map<string, ExtensionIdentifier>;
-	private readonly _host: IExtensionsActivatorHost;
-	private readonly _activatingExtensions: Map<string, Promise<void>>;
-	private readonly _activatedExtensions: Map<string, ActivatedExtension>;
+	privAte reAdonly _registry: ExtensionDescriptionRegistry;
+	privAte reAdonly _resolvedExtensionsSet: Set<string>;
+	privAte reAdonly _hostExtensionsMAp: MAp<string, ExtensionIdentifier>;
+	privAte reAdonly _host: IExtensionsActivAtorHost;
+	privAte reAdonly _ActivAtingExtensions: MAp<string, Promise<void>>;
+	privAte reAdonly _ActivAtedExtensions: MAp<string, ActivAtedExtension>;
 	/**
-	 * A map of already activated events to speed things up if the same activation event is triggered multiple times.
+	 * A mAp of AlreAdy ActivAted events to speed things up if the sAme ActivAtion event is triggered multiple times.
 	 */
-	private readonly _alreadyActivatedEvents: { [activationEvent: string]: boolean; };
+	privAte reAdonly _AlreAdyActivAtedEvents: { [ActivAtionEvent: string]: booleAn; };
 
 	constructor(
 		registry: ExtensionDescriptionRegistry,
 		resolvedExtensions: ExtensionIdentifier[],
 		hostExtensions: ExtensionIdentifier[],
-		host: IExtensionsActivatorHost,
-		@ILogService private readonly _logService: ILogService
+		host: IExtensionsActivAtorHost,
+		@ILogService privAte reAdonly _logService: ILogService
 	) {
 		this._registry = registry;
 		this._resolvedExtensionsSet = new Set<string>();
-		resolvedExtensions.forEach((extensionId) => this._resolvedExtensionsSet.add(ExtensionIdentifier.toKey(extensionId)));
-		this._hostExtensionsMap = new Map<string, ExtensionIdentifier>();
-		hostExtensions.forEach((extensionId) => this._hostExtensionsMap.set(ExtensionIdentifier.toKey(extensionId), extensionId));
+		resolvedExtensions.forEAch((extensionId) => this._resolvedExtensionsSet.Add(ExtensionIdentifier.toKey(extensionId)));
+		this._hostExtensionsMAp = new MAp<string, ExtensionIdentifier>();
+		hostExtensions.forEAch((extensionId) => this._hostExtensionsMAp.set(ExtensionIdentifier.toKey(extensionId), extensionId));
 		this._host = host;
-		this._activatingExtensions = new Map<string, Promise<void>>();
-		this._activatedExtensions = new Map<string, ActivatedExtension>();
-		this._alreadyActivatedEvents = Object.create(null);
+		this._ActivAtingExtensions = new MAp<string, Promise<void>>();
+		this._ActivAtedExtensions = new MAp<string, ActivAtedExtension>();
+		this._AlreAdyActivAtedEvents = Object.creAte(null);
 	}
 
-	public isActivated(extensionId: ExtensionIdentifier): boolean {
+	public isActivAted(extensionId: ExtensionIdentifier): booleAn {
 		const extensionKey = ExtensionIdentifier.toKey(extensionId);
 
-		return this._activatedExtensions.has(extensionKey);
+		return this._ActivAtedExtensions.hAs(extensionKey);
 	}
 
-	public getActivatedExtension(extensionId: ExtensionIdentifier): ActivatedExtension {
+	public getActivAtedExtension(extensionId: ExtensionIdentifier): ActivAtedExtension {
 		const extensionKey = ExtensionIdentifier.toKey(extensionId);
 
-		const activatedExtension = this._activatedExtensions.get(extensionKey);
-		if (!activatedExtension) {
-			throw new Error('Extension `' + extensionId.value + '` is not known or not activated');
+		const ActivAtedExtension = this._ActivAtedExtensions.get(extensionKey);
+		if (!ActivAtedExtension) {
+			throw new Error('Extension `' + extensionId.vAlue + '` is not known or not ActivAted');
 		}
-		return activatedExtension;
+		return ActivAtedExtension;
 	}
 
-	public activateByEvent(activationEvent: string, startup: boolean): Promise<void> {
-		if (this._alreadyActivatedEvents[activationEvent]) {
+	public ActivAteByEvent(ActivAtionEvent: string, stArtup: booleAn): Promise<void> {
+		if (this._AlreAdyActivAtedEvents[ActivAtionEvent]) {
 			return NO_OP_VOID_PROMISE;
 		}
-		const activateExtensions = this._registry.getExtensionDescriptionsForActivationEvent(activationEvent);
-		return this._activateExtensions(activateExtensions.map(e => ({
+		const ActivAteExtensions = this._registry.getExtensionDescriptionsForActivAtionEvent(ActivAtionEvent);
+		return this._ActivAteExtensions(ActivAteExtensions.mAp(e => ({
 			id: e.identifier,
-			reason: { startup, extensionId: e.identifier, activationEvent }
+			reAson: { stArtup, extensionId: e.identifier, ActivAtionEvent }
 		}))).then(() => {
-			this._alreadyActivatedEvents[activationEvent] = true;
+			this._AlreAdyActivAtedEvents[ActivAtionEvent] = true;
 		});
 	}
 
-	public activateById(extensionId: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<void> {
+	public ActivAteById(extensionId: ExtensionIdentifier, reAson: ExtensionActivAtionReAson): Promise<void> {
 		const desc = this._registry.getExtensionDescription(extensionId);
 		if (!desc) {
 			throw new Error('Extension `' + extensionId + '` is not known');
 		}
 
-		return this._activateExtensions([{
+		return this._ActivAteExtensions([{
 			id: desc.identifier,
-			reason
+			reAson
 		}]);
 	}
 
 	/**
-	 * Handle semantics related to dependencies for `currentExtension`.
-	 * semantics: `redExtensions` must wait for `greenExtensions`.
+	 * HAndle semAntics relAted to dependencies for `currentExtension`.
+	 * semAntics: `redExtensions` must wAit for `greenExtensions`.
 	 */
-	private _handleActivateRequest(currentActivation: ActivationIdAndReason, greenExtensions: { [id: string]: ActivationIdAndReason; }, redExtensions: ActivationIdAndReason[]): void {
-		if (this._hostExtensionsMap.has(ExtensionIdentifier.toKey(currentActivation.id))) {
-			greenExtensions[ExtensionIdentifier.toKey(currentActivation.id)] = currentActivation;
+	privAte _hAndleActivAteRequest(currentActivAtion: ActivAtionIdAndReAson, greenExtensions: { [id: string]: ActivAtionIdAndReAson; }, redExtensions: ActivAtionIdAndReAson[]): void {
+		if (this._hostExtensionsMAp.hAs(ExtensionIdentifier.toKey(currentActivAtion.id))) {
+			greenExtensions[ExtensionIdentifier.toKey(currentActivAtion.id)] = currentActivAtion;
 			return;
 		}
 
-		const currentExtension = this._registry.getExtensionDescription(currentActivation.id);
+		const currentExtension = this._registry.getExtensionDescription(currentActivAtion.id);
 		if (!currentExtension) {
 			// Error condition 0: unknown extension
-			this._host.onExtensionActivationError(currentActivation.id, new MissingDependencyError(currentActivation.id.value));
-			const error = new Error(`Unknown dependency '${currentActivation.id.value}'`);
-			this._activatedExtensions.set(ExtensionIdentifier.toKey(currentActivation.id), new FailedExtension(error));
+			this._host.onExtensionActivAtionError(currentActivAtion.id, new MissingDependencyError(currentActivAtion.id.vAlue));
+			const error = new Error(`Unknown dependency '${currentActivAtion.id.vAlue}'`);
+			this._ActivAtedExtensions.set(ExtensionIdentifier.toKey(currentActivAtion.id), new FAiledExtension(error));
 			return;
 		}
 
@@ -267,122 +267,122 @@ export class ExtensionsActivator {
 		for (let j = 0, lenJ = depIds.length; j < lenJ; j++) {
 			const depId = depIds[j];
 
-			if (this._resolvedExtensionsSet.has(ExtensionIdentifier.toKey(depId))) {
-				// This dependency is already resolved
+			if (this._resolvedExtensionsSet.hAs(ExtensionIdentifier.toKey(depId))) {
+				// This dependency is AlreAdy resolved
 				continue;
 			}
 
-			const dep = this._activatedExtensions.get(ExtensionIdentifier.toKey(depId));
-			if (dep && !dep.activationFailed) {
-				// the dependency is already activated OK
+			const dep = this._ActivAtedExtensions.get(ExtensionIdentifier.toKey(depId));
+			if (dep && !dep.ActivAtionFAiled) {
+				// the dependency is AlreAdy ActivAted OK
 				continue;
 			}
 
-			if (dep && dep.activationFailed) {
-				// Error condition 2: a dependency has already failed activation
-				this._host.onExtensionActivationError(currentExtension.identifier, nls.localize('failedDep1', "Cannot activate extension '{0}' because it depends on extension '{1}', which failed to activate.", currentExtension.displayName || currentExtension.identifier.value, depId));
-				const error = new Error(`Dependency ${depId} failed to activate`);
-				(<any>error).detail = dep.activationFailedError;
-				this._activatedExtensions.set(ExtensionIdentifier.toKey(currentExtension.identifier), new FailedExtension(error));
+			if (dep && dep.ActivAtionFAiled) {
+				// Error condition 2: A dependency hAs AlreAdy fAiled ActivAtion
+				this._host.onExtensionActivAtionError(currentExtension.identifier, nls.locAlize('fAiledDep1', "CAnnot ActivAte extension '{0}' becAuse it depends on extension '{1}', which fAiled to ActivAte.", currentExtension.displAyNAme || currentExtension.identifier.vAlue, depId));
+				const error = new Error(`Dependency ${depId} fAiled to ActivAte`);
+				(<Any>error).detAil = dep.ActivAtionFAiledError;
+				this._ActivAtedExtensions.set(ExtensionIdentifier.toKey(currentExtension.identifier), new FAiledExtension(error));
 				return;
 			}
 
-			if (this._hostExtensionsMap.has(ExtensionIdentifier.toKey(depId))) {
-				// must first wait for the dependency to activate
-				currentExtensionGetsGreenLight = false;
+			if (this._hostExtensionsMAp.hAs(ExtensionIdentifier.toKey(depId))) {
+				// must first wAit for the dependency to ActivAte
+				currentExtensionGetsGreenLight = fAlse;
 				greenExtensions[ExtensionIdentifier.toKey(depId)] = {
-					id: this._hostExtensionsMap.get(ExtensionIdentifier.toKey(depId))!,
-					reason: currentActivation.reason
+					id: this._hostExtensionsMAp.get(ExtensionIdentifier.toKey(depId))!,
+					reAson: currentActivAtion.reAson
 				};
 				continue;
 			}
 
 			const depDesc = this._registry.getExtensionDescription(depId);
 			if (depDesc) {
-				// must first wait for the dependency to activate
-				currentExtensionGetsGreenLight = false;
+				// must first wAit for the dependency to ActivAte
+				currentExtensionGetsGreenLight = fAlse;
 				greenExtensions[ExtensionIdentifier.toKey(depId)] = {
 					id: depDesc.identifier,
-					reason: currentActivation.reason
+					reAson: currentActivAtion.reAson
 				};
 				continue;
 			}
 
 			// Error condition 1: unknown dependency
-			this._host.onExtensionActivationError(currentExtension.identifier, new MissingDependencyError(depId));
+			this._host.onExtensionActivAtionError(currentExtension.identifier, new MissingDependencyError(depId));
 			const error = new Error(`Unknown dependency '${depId}'`);
-			this._activatedExtensions.set(ExtensionIdentifier.toKey(currentExtension.identifier), new FailedExtension(error));
+			this._ActivAtedExtensions.set(ExtensionIdentifier.toKey(currentExtension.identifier), new FAiledExtension(error));
 			return;
 		}
 
 		if (currentExtensionGetsGreenLight) {
-			greenExtensions[ExtensionIdentifier.toKey(currentExtension.identifier)] = currentActivation;
+			greenExtensions[ExtensionIdentifier.toKey(currentExtension.identifier)] = currentActivAtion;
 		} else {
-			redExtensions.push(currentActivation);
+			redExtensions.push(currentActivAtion);
 		}
 	}
 
-	private _activateExtensions(extensions: ActivationIdAndReason[]): Promise<void> {
+	privAte _ActivAteExtensions(extensions: ActivAtionIdAndReAson[]): Promise<void> {
 		if (extensions.length === 0) {
 			return Promise.resolve(undefined);
 		}
 
-		extensions = extensions.filter((p) => !this._activatedExtensions.has(ExtensionIdentifier.toKey(p.id)));
+		extensions = extensions.filter((p) => !this._ActivAtedExtensions.hAs(ExtensionIdentifier.toKey(p.id)));
 		if (extensions.length === 0) {
 			return Promise.resolve(undefined);
 		}
 
-		const greenMap: { [id: string]: ActivationIdAndReason; } = Object.create(null),
-			red: ActivationIdAndReason[] = [];
+		const greenMAp: { [id: string]: ActivAtionIdAndReAson; } = Object.creAte(null),
+			red: ActivAtionIdAndReAson[] = [];
 
 		for (let i = 0, len = extensions.length; i < len; i++) {
-			this._handleActivateRequest(extensions[i], greenMap, red);
+			this._hAndleActivAteRequest(extensions[i], greenMAp, red);
 		}
 
-		// Make sure no red is also green
+		// MAke sure no red is Also green
 		for (let i = 0, len = red.length; i < len; i++) {
 			const redExtensionKey = ExtensionIdentifier.toKey(red[i].id);
-			if (greenMap[redExtensionKey]) {
-				delete greenMap[redExtensionKey];
+			if (greenMAp[redExtensionKey]) {
+				delete greenMAp[redExtensionKey];
 			}
 		}
 
-		const green = Object.keys(greenMap).map(id => greenMap[id]);
+		const green = Object.keys(greenMAp).mAp(id => greenMAp[id]);
 
 		if (red.length === 0) {
-			// Finally reached only leafs!
-			return Promise.all(green.map((p) => this._activateExtension(p.id, p.reason))).then(_ => undefined);
+			// FinAlly reAched only leAfs!
+			return Promise.All(green.mAp((p) => this._ActivAteExtension(p.id, p.reAson))).then(_ => undefined);
 		}
 
-		return this._activateExtensions(green).then(_ => {
-			return this._activateExtensions(red);
+		return this._ActivAteExtensions(green).then(_ => {
+			return this._ActivAteExtensions(red);
 		});
 	}
 
-	private _activateExtension(extensionId: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<void> {
+	privAte _ActivAteExtension(extensionId: ExtensionIdentifier, reAson: ExtensionActivAtionReAson): Promise<void> {
 		const extensionKey = ExtensionIdentifier.toKey(extensionId);
 
-		if (this._activatedExtensions.has(extensionKey)) {
+		if (this._ActivAtedExtensions.hAs(extensionKey)) {
 			return Promise.resolve(undefined);
 		}
 
-		const currentlyActivatingExtension = this._activatingExtensions.get(extensionKey);
-		if (currentlyActivatingExtension) {
-			return currentlyActivatingExtension;
+		const currentlyActivAtingExtension = this._ActivAtingExtensions.get(extensionKey);
+		if (currentlyActivAtingExtension) {
+			return currentlyActivAtingExtension;
 		}
 
-		const newlyActivatingExtension = this._host.actualActivateExtension(extensionId, reason).then(undefined, (err) => {
-			this._host.onExtensionActivationError(extensionId, nls.localize('activationError', "Activating extension '{0}' failed: {1}.", extensionId.value, err.message));
-			this._logService.error(`Activating extension ${extensionId.value} failed due to an error:`);
+		const newlyActivAtingExtension = this._host.ActuAlActivAteExtension(extensionId, reAson).then(undefined, (err) => {
+			this._host.onExtensionActivAtionError(extensionId, nls.locAlize('ActivAtionError', "ActivAting extension '{0}' fAiled: {1}.", extensionId.vAlue, err.messAge));
+			this._logService.error(`ActivAting extension ${extensionId.vAlue} fAiled due to An error:`);
 			this._logService.error(err);
-			// Treat the extension as being empty
-			return new FailedExtension(err);
-		}).then((x: ActivatedExtension) => {
-			this._activatedExtensions.set(extensionKey, x);
-			this._activatingExtensions.delete(extensionKey);
+			// TreAt the extension As being empty
+			return new FAiledExtension(err);
+		}).then((x: ActivAtedExtension) => {
+			this._ActivAtedExtensions.set(extensionKey, x);
+			this._ActivAtingExtensions.delete(extensionKey);
 		});
 
-		this._activatingExtensions.set(extensionKey, newlyActivatingExtension);
-		return newlyActivatingExtension;
+		this._ActivAtingExtensions.set(extensionKey, newlyActivAtingExtension);
+		return newlyActivAtingExtension;
 	}
 }

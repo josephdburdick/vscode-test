@@ -1,171 +1,171 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./colorPicker';
-import { onDidChangeZoomLevel } from 'vs/base/browser/browser';
-import * as dom from 'vs/base/browser/dom';
-import { GlobalMouseMoveMonitor, IStandardMouseMoveEventData, standardMouseMoveMerger } from 'vs/base/browser/globalMouseMoveMonitor';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Color, HSVA, RGBA } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { onDidChAngeZoomLevel } from 'vs/bAse/browser/browser';
+import * As dom from 'vs/bAse/browser/dom';
+import { GlobAlMouseMoveMonitor, IStAndArdMouseMoveEventDAtA, stAndArdMouseMoveMerger } from 'vs/bAse/browser/globAlMouseMoveMonitor';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { Color, HSVA, RGBA } from 'vs/bAse/common/color';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { ColorPickerModel } from 'vs/editor/contrib/colorPicker/colorPickerModel';
-import { editorHoverBackground } from 'vs/platform/theme/common/colorRegistry';
-import { IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
+import { editorHoverBAckground } from 'vs/plAtform/theme/common/colorRegistry';
+import { IThemeService, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
 
 const $ = dom.$;
 
-export class ColorPickerHeader extends Disposable {
+export clAss ColorPickerHeAder extends DisposAble {
 
-	private readonly domNode: HTMLElement;
-	private readonly pickedColorNode: HTMLElement;
-	private backgroundColor: Color;
+	privAte reAdonly domNode: HTMLElement;
+	privAte reAdonly pickedColorNode: HTMLElement;
+	privAte bAckgroundColor: Color;
 
-	constructor(container: HTMLElement, private readonly model: ColorPickerModel, themeService: IThemeService) {
+	constructor(contAiner: HTMLElement, privAte reAdonly model: ColorPickerModel, themeService: IThemeService) {
 		super();
 
-		this.domNode = $('.colorpicker-header');
-		dom.append(container, this.domNode);
+		this.domNode = $('.colorpicker-heAder');
+		dom.Append(contAiner, this.domNode);
 
-		this.pickedColorNode = dom.append(this.domNode, $('.picked-color'));
+		this.pickedColorNode = dom.Append(this.domNode, $('.picked-color'));
 
-		const colorBox = dom.append(this.domNode, $('.original-color'));
-		colorBox.style.backgroundColor = Color.Format.CSS.format(this.model.originalColor) || '';
+		const colorBox = dom.Append(this.domNode, $('.originAl-color'));
+		colorBox.style.bAckgroundColor = Color.FormAt.CSS.formAt(this.model.originAlColor) || '';
 
-		this.backgroundColor = themeService.getColorTheme().getColor(editorHoverBackground) || Color.white;
-		this._register(registerThemingParticipant((theme, collector) => {
-			this.backgroundColor = theme.getColor(editorHoverBackground) || Color.white;
+		this.bAckgroundColor = themeService.getColorTheme().getColor(editorHoverBAckground) || Color.white;
+		this._register(registerThemingPArticipAnt((theme, collector) => {
+			this.bAckgroundColor = theme.getColor(editorHoverBAckground) || Color.white;
 		}));
 
-		this._register(dom.addDisposableListener(this.pickedColorNode, dom.EventType.CLICK, () => this.model.selectNextColorPresentation()));
-		this._register(dom.addDisposableListener(colorBox, dom.EventType.CLICK, () => {
-			this.model.color = this.model.originalColor;
+		this._register(dom.AddDisposAbleListener(this.pickedColorNode, dom.EventType.CLICK, () => this.model.selectNextColorPresentAtion()));
+		this._register(dom.AddDisposAbleListener(colorBox, dom.EventType.CLICK, () => {
+			this.model.color = this.model.originAlColor;
 			this.model.flushColor();
 		}));
-		this._register(model.onDidChangeColor(this.onDidChangeColor, this));
-		this._register(model.onDidChangePresentation(this.onDidChangePresentation, this));
-		this.pickedColorNode.style.backgroundColor = Color.Format.CSS.format(model.color) || '';
-		this.pickedColorNode.classList.toggle('light', model.color.rgba.a < 0.5 ? this.backgroundColor.isLighter() : model.color.isLighter());
+		this._register(model.onDidChAngeColor(this.onDidChAngeColor, this));
+		this._register(model.onDidChAngePresentAtion(this.onDidChAngePresentAtion, this));
+		this.pickedColorNode.style.bAckgroundColor = Color.FormAt.CSS.formAt(model.color) || '';
+		this.pickedColorNode.clAssList.toggle('light', model.color.rgbA.A < 0.5 ? this.bAckgroundColor.isLighter() : model.color.isLighter());
 	}
 
-	private onDidChangeColor(color: Color): void {
-		this.pickedColorNode.style.backgroundColor = Color.Format.CSS.format(color) || '';
-		this.pickedColorNode.classList.toggle('light', color.rgba.a < 0.5 ? this.backgroundColor.isLighter() : color.isLighter());
-		this.onDidChangePresentation();
+	privAte onDidChAngeColor(color: Color): void {
+		this.pickedColorNode.style.bAckgroundColor = Color.FormAt.CSS.formAt(color) || '';
+		this.pickedColorNode.clAssList.toggle('light', color.rgbA.A < 0.5 ? this.bAckgroundColor.isLighter() : color.isLighter());
+		this.onDidChAngePresentAtion();
 	}
 
-	private onDidChangePresentation(): void {
-		this.pickedColorNode.textContent = this.model.presentation ? this.model.presentation.label : '';
+	privAte onDidChAngePresentAtion(): void {
+		this.pickedColorNode.textContent = this.model.presentAtion ? this.model.presentAtion.lAbel : '';
 	}
 }
 
-export class ColorPickerBody extends Disposable {
+export clAss ColorPickerBody extends DisposAble {
 
-	private readonly domNode: HTMLElement;
-	private readonly saturationBox: SaturationBox;
-	private readonly hueStrip: Strip;
-	private readonly opacityStrip: Strip;
+	privAte reAdonly domNode: HTMLElement;
+	privAte reAdonly sAturAtionBox: SAturAtionBox;
+	privAte reAdonly hueStrip: Strip;
+	privAte reAdonly opAcityStrip: Strip;
 
-	constructor(container: HTMLElement, private readonly model: ColorPickerModel, private pixelRatio: number) {
+	constructor(contAiner: HTMLElement, privAte reAdonly model: ColorPickerModel, privAte pixelRAtio: number) {
 		super();
 
 		this.domNode = $('.colorpicker-body');
-		dom.append(container, this.domNode);
+		dom.Append(contAiner, this.domNode);
 
-		this.saturationBox = new SaturationBox(this.domNode, this.model, this.pixelRatio);
-		this._register(this.saturationBox);
-		this._register(this.saturationBox.onDidChange(this.onDidSaturationValueChange, this));
-		this._register(this.saturationBox.onColorFlushed(this.flushColor, this));
+		this.sAturAtionBox = new SAturAtionBox(this.domNode, this.model, this.pixelRAtio);
+		this._register(this.sAturAtionBox);
+		this._register(this.sAturAtionBox.onDidChAnge(this.onDidSAturAtionVAlueChAnge, this));
+		this._register(this.sAturAtionBox.onColorFlushed(this.flushColor, this));
 
-		this.opacityStrip = new OpacityStrip(this.domNode, this.model);
-		this._register(this.opacityStrip);
-		this._register(this.opacityStrip.onDidChange(this.onDidOpacityChange, this));
-		this._register(this.opacityStrip.onColorFlushed(this.flushColor, this));
+		this.opAcityStrip = new OpAcityStrip(this.domNode, this.model);
+		this._register(this.opAcityStrip);
+		this._register(this.opAcityStrip.onDidChAnge(this.onDidOpAcityChAnge, this));
+		this._register(this.opAcityStrip.onColorFlushed(this.flushColor, this));
 
 		this.hueStrip = new HueStrip(this.domNode, this.model);
 		this._register(this.hueStrip);
-		this._register(this.hueStrip.onDidChange(this.onDidHueChange, this));
+		this._register(this.hueStrip.onDidChAnge(this.onDidHueChAnge, this));
 		this._register(this.hueStrip.onColorFlushed(this.flushColor, this));
 	}
 
-	private flushColor(): void {
+	privAte flushColor(): void {
 		this.model.flushColor();
 	}
 
-	private onDidSaturationValueChange({ s, v }: { s: number, v: number }): void {
-		const hsva = this.model.color.hsva;
-		this.model.color = new Color(new HSVA(hsva.h, s, v, hsva.a));
+	privAte onDidSAturAtionVAlueChAnge({ s, v }: { s: number, v: number }): void {
+		const hsvA = this.model.color.hsvA;
+		this.model.color = new Color(new HSVA(hsvA.h, s, v, hsvA.A));
 	}
 
-	private onDidOpacityChange(a: number): void {
-		const hsva = this.model.color.hsva;
-		this.model.color = new Color(new HSVA(hsva.h, hsva.s, hsva.v, a));
+	privAte onDidOpAcityChAnge(A: number): void {
+		const hsvA = this.model.color.hsvA;
+		this.model.color = new Color(new HSVA(hsvA.h, hsvA.s, hsvA.v, A));
 	}
 
-	private onDidHueChange(value: number): void {
-		const hsva = this.model.color.hsva;
-		const h = (1 - value) * 360;
+	privAte onDidHueChAnge(vAlue: number): void {
+		const hsvA = this.model.color.hsvA;
+		const h = (1 - vAlue) * 360;
 
-		this.model.color = new Color(new HSVA(h === 360 ? 0 : h, hsva.s, hsva.v, hsva.a));
+		this.model.color = new Color(new HSVA(h === 360 ? 0 : h, hsvA.s, hsvA.v, hsvA.A));
 	}
 
-	layout(): void {
-		this.saturationBox.layout();
-		this.opacityStrip.layout();
-		this.hueStrip.layout();
+	lAyout(): void {
+		this.sAturAtionBox.lAyout();
+		this.opAcityStrip.lAyout();
+		this.hueStrip.lAyout();
 	}
 }
 
-class SaturationBox extends Disposable {
+clAss SAturAtionBox extends DisposAble {
 
-	private readonly domNode: HTMLElement;
-	private readonly selection: HTMLElement;
-	private readonly canvas: HTMLCanvasElement;
-	private width!: number;
-	private height!: number;
+	privAte reAdonly domNode: HTMLElement;
+	privAte reAdonly selection: HTMLElement;
+	privAte reAdonly cAnvAs: HTMLCAnvAsElement;
+	privAte width!: number;
+	privAte height!: number;
 
-	private monitor: GlobalMouseMoveMonitor<IStandardMouseMoveEventData> | null;
-	private readonly _onDidChange = new Emitter<{ s: number, v: number }>();
-	readonly onDidChange: Event<{ s: number, v: number }> = this._onDidChange.event;
+	privAte monitor: GlobAlMouseMoveMonitor<IStAndArdMouseMoveEventDAtA> | null;
+	privAte reAdonly _onDidChAnge = new Emitter<{ s: number, v: number }>();
+	reAdonly onDidChAnge: Event<{ s: number, v: number }> = this._onDidChAnge.event;
 
-	private readonly _onColorFlushed = new Emitter<void>();
-	readonly onColorFlushed: Event<void> = this._onColorFlushed.event;
+	privAte reAdonly _onColorFlushed = new Emitter<void>();
+	reAdonly onColorFlushed: Event<void> = this._onColorFlushed.event;
 
-	constructor(container: HTMLElement, private readonly model: ColorPickerModel, private pixelRatio: number) {
+	constructor(contAiner: HTMLElement, privAte reAdonly model: ColorPickerModel, privAte pixelRAtio: number) {
 		super();
 
-		this.domNode = $('.saturation-wrap');
-		dom.append(container, this.domNode);
+		this.domNode = $('.sAturAtion-wrAp');
+		dom.Append(contAiner, this.domNode);
 
-		// Create canvas, draw selected color
-		this.canvas = document.createElement('canvas');
-		this.canvas.className = 'saturation-box';
-		dom.append(this.domNode, this.canvas);
+		// CreAte cAnvAs, drAw selected color
+		this.cAnvAs = document.creAteElement('cAnvAs');
+		this.cAnvAs.clAssNAme = 'sAturAtion-box';
+		dom.Append(this.domNode, this.cAnvAs);
 
 		// Add selection circle
-		this.selection = $('.saturation-selection');
-		dom.append(this.domNode, this.selection);
+		this.selection = $('.sAturAtion-selection');
+		dom.Append(this.domNode, this.selection);
 
-		this.layout();
+		this.lAyout();
 
-		this._register(dom.addDisposableGenericMouseDownListner(this.domNode, e => this.onMouseDown(e)));
-		this._register(this.model.onDidChangeColor(this.onDidChangeColor, this));
+		this._register(dom.AddDisposAbleGenericMouseDownListner(this.domNode, e => this.onMouseDown(e)));
+		this._register(this.model.onDidChAngeColor(this.onDidChAngeColor, this));
 		this.monitor = null;
 	}
 
-	private onMouseDown(e: MouseEvent): void {
-		this.monitor = this._register(new GlobalMouseMoveMonitor<IStandardMouseMoveEventData>());
-		const origin = dom.getDomNodePagePosition(this.domNode);
+	privAte onMouseDown(e: MouseEvent): void {
+		this.monitor = this._register(new GlobAlMouseMoveMonitor<IStAndArdMouseMoveEventDAtA>());
+		const origin = dom.getDomNodePAgePosition(this.domNode);
 
-		if (e.target !== this.selection) {
-			this.onDidChangePosition(e.offsetX, e.offsetY);
+		if (e.tArget !== this.selection) {
+			this.onDidChAngePosition(e.offsetX, e.offsetY);
 		}
 
-		this.monitor.startMonitoring(<HTMLElement>e.target, e.buttons, standardMouseMoveMerger, event => this.onDidChangePosition(event.posx - origin.left, event.posy - origin.top), () => null);
+		this.monitor.stArtMonitoring(<HTMLElement>e.tArget, e.buttons, stAndArdMouseMoveMerger, event => this.onDidChAngePosition(event.posx - origin.left, event.posy - origin.top), () => null);
 
-		const mouseUpListener = dom.addDisposableGenericMouseUpListner(document, () => {
+		const mouseUpListener = dom.AddDisposAbleGenericMouseUpListner(document, () => {
 			this._onColorFlushed.fire();
 			mouseUpListener.dispose();
 			if (this.monitor) {
@@ -175,178 +175,178 @@ class SaturationBox extends Disposable {
 		}, true);
 	}
 
-	private onDidChangePosition(left: number, top: number): void {
-		const s = Math.max(0, Math.min(1, left / this.width));
-		const v = Math.max(0, Math.min(1, 1 - (top / this.height)));
+	privAte onDidChAngePosition(left: number, top: number): void {
+		const s = MAth.mAx(0, MAth.min(1, left / this.width));
+		const v = MAth.mAx(0, MAth.min(1, 1 - (top / this.height)));
 
-		this.paintSelection(s, v);
-		this._onDidChange.fire({ s, v });
+		this.pAintSelection(s, v);
+		this._onDidChAnge.fire({ s, v });
 	}
 
-	layout(): void {
+	lAyout(): void {
 		this.width = this.domNode.offsetWidth;
 		this.height = this.domNode.offsetHeight;
-		this.canvas.width = this.width * this.pixelRatio;
-		this.canvas.height = this.height * this.pixelRatio;
-		this.paint();
+		this.cAnvAs.width = this.width * this.pixelRAtio;
+		this.cAnvAs.height = this.height * this.pixelRAtio;
+		this.pAint();
 
-		const hsva = this.model.color.hsva;
-		this.paintSelection(hsva.s, hsva.v);
+		const hsvA = this.model.color.hsvA;
+		this.pAintSelection(hsvA.s, hsvA.v);
 	}
 
-	private paint(): void {
-		const hsva = this.model.color.hsva;
-		const saturatedColor = new Color(new HSVA(hsva.h, 1, 1, 1));
-		const ctx = this.canvas.getContext('2d')!;
+	privAte pAint(): void {
+		const hsvA = this.model.color.hsvA;
+		const sAturAtedColor = new Color(new HSVA(hsvA.h, 1, 1, 1));
+		const ctx = this.cAnvAs.getContext('2d')!;
 
-		const whiteGradient = ctx.createLinearGradient(0, 0, this.canvas.width, 0);
-		whiteGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-		whiteGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)');
-		whiteGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+		const whiteGrAdient = ctx.creAteLineArGrAdient(0, 0, this.cAnvAs.width, 0);
+		whiteGrAdient.AddColorStop(0, 'rgbA(255, 255, 255, 1)');
+		whiteGrAdient.AddColorStop(0.5, 'rgbA(255, 255, 255, 0.5)');
+		whiteGrAdient.AddColorStop(1, 'rgbA(255, 255, 255, 0)');
 
-		const blackGradient = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-		blackGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-		blackGradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+		const blAckGrAdient = ctx.creAteLineArGrAdient(0, 0, 0, this.cAnvAs.height);
+		blAckGrAdient.AddColorStop(0, 'rgbA(0, 0, 0, 0)');
+		blAckGrAdient.AddColorStop(1, 'rgbA(0, 0, 0, 1)');
 
-		ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-		ctx.fillStyle = Color.Format.CSS.format(saturatedColor)!;
+		ctx.rect(0, 0, this.cAnvAs.width, this.cAnvAs.height);
+		ctx.fillStyle = Color.FormAt.CSS.formAt(sAturAtedColor)!;
 		ctx.fill();
-		ctx.fillStyle = whiteGradient;
+		ctx.fillStyle = whiteGrAdient;
 		ctx.fill();
-		ctx.fillStyle = blackGradient;
+		ctx.fillStyle = blAckGrAdient;
 		ctx.fill();
 	}
 
-	private paintSelection(s: number, v: number): void {
+	privAte pAintSelection(s: number, v: number): void {
 		this.selection.style.left = `${s * this.width}px`;
 		this.selection.style.top = `${this.height - v * this.height}px`;
 	}
 
-	private onDidChangeColor(): void {
+	privAte onDidChAngeColor(): void {
 		if (this.monitor && this.monitor.isMonitoring()) {
 			return;
 		}
-		this.paint();
+		this.pAint();
 	}
 }
 
-abstract class Strip extends Disposable {
+AbstrAct clAss Strip extends DisposAble {
 
 	protected domNode: HTMLElement;
-	protected overlay: HTMLElement;
+	protected overlAy: HTMLElement;
 	protected slider: HTMLElement;
-	private height!: number;
+	privAte height!: number;
 
-	private readonly _onDidChange = new Emitter<number>();
-	readonly onDidChange: Event<number> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<number>();
+	reAdonly onDidChAnge: Event<number> = this._onDidChAnge.event;
 
-	private readonly _onColorFlushed = new Emitter<void>();
-	readonly onColorFlushed: Event<void> = this._onColorFlushed.event;
+	privAte reAdonly _onColorFlushed = new Emitter<void>();
+	reAdonly onColorFlushed: Event<void> = this._onColorFlushed.event;
 
-	constructor(container: HTMLElement, protected model: ColorPickerModel) {
+	constructor(contAiner: HTMLElement, protected model: ColorPickerModel) {
 		super();
-		this.domNode = dom.append(container, $('.strip'));
-		this.overlay = dom.append(this.domNode, $('.overlay'));
-		this.slider = dom.append(this.domNode, $('.slider'));
+		this.domNode = dom.Append(contAiner, $('.strip'));
+		this.overlAy = dom.Append(this.domNode, $('.overlAy'));
+		this.slider = dom.Append(this.domNode, $('.slider'));
 		this.slider.style.top = `0px`;
 
-		this._register(dom.addDisposableGenericMouseDownListner(this.domNode, e => this.onMouseDown(e)));
-		this.layout();
+		this._register(dom.AddDisposAbleGenericMouseDownListner(this.domNode, e => this.onMouseDown(e)));
+		this.lAyout();
 	}
 
-	layout(): void {
+	lAyout(): void {
 		this.height = this.domNode.offsetHeight - this.slider.offsetHeight;
 
-		const value = this.getValue(this.model.color);
-		this.updateSliderPosition(value);
+		const vAlue = this.getVAlue(this.model.color);
+		this.updAteSliderPosition(vAlue);
 	}
 
-	private onMouseDown(e: MouseEvent): void {
-		const monitor = this._register(new GlobalMouseMoveMonitor<IStandardMouseMoveEventData>());
-		const origin = dom.getDomNodePagePosition(this.domNode);
-		this.domNode.classList.add('grabbing');
+	privAte onMouseDown(e: MouseEvent): void {
+		const monitor = this._register(new GlobAlMouseMoveMonitor<IStAndArdMouseMoveEventDAtA>());
+		const origin = dom.getDomNodePAgePosition(this.domNode);
+		this.domNode.clAssList.Add('grAbbing');
 
-		if (e.target !== this.slider) {
-			this.onDidChangeTop(e.offsetY);
+		if (e.tArget !== this.slider) {
+			this.onDidChAngeTop(e.offsetY);
 		}
 
-		monitor.startMonitoring(<HTMLElement>e.target, e.buttons, standardMouseMoveMerger, event => this.onDidChangeTop(event.posy - origin.top), () => null);
+		monitor.stArtMonitoring(<HTMLElement>e.tArget, e.buttons, stAndArdMouseMoveMerger, event => this.onDidChAngeTop(event.posy - origin.top), () => null);
 
-		const mouseUpListener = dom.addDisposableGenericMouseUpListner(document, () => {
+		const mouseUpListener = dom.AddDisposAbleGenericMouseUpListner(document, () => {
 			this._onColorFlushed.fire();
 			mouseUpListener.dispose();
 			monitor.stopMonitoring(true);
-			this.domNode.classList.remove('grabbing');
+			this.domNode.clAssList.remove('grAbbing');
 		}, true);
 	}
 
-	private onDidChangeTop(top: number): void {
-		const value = Math.max(0, Math.min(1, 1 - (top / this.height)));
+	privAte onDidChAngeTop(top: number): void {
+		const vAlue = MAth.mAx(0, MAth.min(1, 1 - (top / this.height)));
 
-		this.updateSliderPosition(value);
-		this._onDidChange.fire(value);
+		this.updAteSliderPosition(vAlue);
+		this._onDidChAnge.fire(vAlue);
 	}
 
-	private updateSliderPosition(value: number): void {
-		this.slider.style.top = `${(1 - value) * this.height}px`;
+	privAte updAteSliderPosition(vAlue: number): void {
+		this.slider.style.top = `${(1 - vAlue) * this.height}px`;
 	}
 
-	protected abstract getValue(color: Color): number;
+	protected AbstrAct getVAlue(color: Color): number;
 }
 
-class OpacityStrip extends Strip {
+clAss OpAcityStrip extends Strip {
 
-	constructor(container: HTMLElement, model: ColorPickerModel) {
-		super(container, model);
-		this.domNode.classList.add('opacity-strip');
+	constructor(contAiner: HTMLElement, model: ColorPickerModel) {
+		super(contAiner, model);
+		this.domNode.clAssList.Add('opAcity-strip');
 
-		this._register(model.onDidChangeColor(this.onDidChangeColor, this));
-		this.onDidChangeColor(this.model.color);
+		this._register(model.onDidChAngeColor(this.onDidChAngeColor, this));
+		this.onDidChAngeColor(this.model.color);
 	}
 
-	private onDidChangeColor(color: Color): void {
-		const { r, g, b } = color.rgba;
-		const opaque = new Color(new RGBA(r, g, b, 1));
-		const transparent = new Color(new RGBA(r, g, b, 0));
+	privAte onDidChAngeColor(color: Color): void {
+		const { r, g, b } = color.rgbA;
+		const opAque = new Color(new RGBA(r, g, b, 1));
+		const trAnspArent = new Color(new RGBA(r, g, b, 0));
 
-		this.overlay.style.background = `linear-gradient(to bottom, ${opaque} 0%, ${transparent} 100%)`;
+		this.overlAy.style.bAckground = `lineAr-grAdient(to bottom, ${opAque} 0%, ${trAnspArent} 100%)`;
 	}
 
-	protected getValue(color: Color): number {
-		return color.hsva.a;
-	}
-}
-
-class HueStrip extends Strip {
-
-	constructor(container: HTMLElement, model: ColorPickerModel) {
-		super(container, model);
-		this.domNode.classList.add('hue-strip');
-	}
-
-	protected getValue(color: Color): number {
-		return 1 - (color.hsva.h / 360);
+	protected getVAlue(color: Color): number {
+		return color.hsvA.A;
 	}
 }
 
-export class ColorPickerWidget extends Widget {
+clAss HueStrip extends Strip {
 
-	private static readonly ID = 'editor.contrib.colorPickerWidget';
+	constructor(contAiner: HTMLElement, model: ColorPickerModel) {
+		super(contAiner, model);
+		this.domNode.clAssList.Add('hue-strip');
+	}
+
+	protected getVAlue(color: Color): number {
+		return 1 - (color.hsvA.h / 360);
+	}
+}
+
+export clAss ColorPickerWidget extends Widget {
+
+	privAte stAtic reAdonly ID = 'editor.contrib.colorPickerWidget';
 
 	body: ColorPickerBody;
 
-	constructor(container: Node, private readonly model: ColorPickerModel, private pixelRatio: number, themeService: IThemeService) {
+	constructor(contAiner: Node, privAte reAdonly model: ColorPickerModel, privAte pixelRAtio: number, themeService: IThemeService) {
 		super();
 
-		this._register(onDidChangeZoomLevel(() => this.layout()));
+		this._register(onDidChAngeZoomLevel(() => this.lAyout()));
 
 		const element = $('.colorpicker-widget');
-		container.appendChild(element);
+		contAiner.AppendChild(element);
 
-		const header = new ColorPickerHeader(element, this.model, themeService);
-		this.body = new ColorPickerBody(element, this.model, this.pixelRatio);
+		const heAder = new ColorPickerHeAder(element, this.model, themeService);
+		this.body = new ColorPickerBody(element, this.model, this.pixelRAtio);
 
-		this._register(header);
+		this._register(heAder);
 		this._register(this.body);
 	}
 
@@ -354,7 +354,7 @@ export class ColorPickerWidget extends Widget {
 		return ColorPickerWidget.ID;
 	}
 
-	layout(): void {
-		this.body.layout();
+	lAyout(): void {
+		this.body.lAyout();
 	}
 }

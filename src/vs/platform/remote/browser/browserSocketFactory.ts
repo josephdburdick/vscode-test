@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISocketFactory, IConnectCallback } from 'vs/platform/remote/common/remoteAgentConnection';
-import { ISocket } from 'vs/base/parts/ipc/common/ipc.net';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as dom from 'vs/base/browser/dom';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { RemoteAuthorityResolverError, RemoteAuthorityResolverErrorCode } from 'vs/platform/remote/common/remoteAuthorityResolver';
+import { ISocketFActory, IConnectCAllbAck } from 'vs/plAtform/remote/common/remoteAgentConnection';
+import { ISocket } from 'vs/bAse/pArts/ipc/common/ipc.net';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import * As dom from 'vs/bAse/browser/dom';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { RemoteAuthorityResolverError, RemoteAuthorityResolverErrorCode } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
 
-export interface IWebSocketFactory {
-	create(url: string): IWebSocket;
+export interfAce IWebSocketFActory {
+	creAte(url: string): IWebSocket;
 }
 
-export interface IWebSocket {
-	readonly onData: Event<ArrayBuffer>;
-	readonly onOpen: Event<void>;
-	readonly onClose: Event<void>;
-	readonly onError: Event<any>;
+export interfAce IWebSocket {
+	reAdonly onDAtA: Event<ArrAyBuffer>;
+	reAdonly onOpen: Event<void>;
+	reAdonly onClose: Event<void>;
+	reAdonly onError: Event<Any>;
 
-	send(data: ArrayBuffer | ArrayBufferView): void;
+	send(dAtA: ArrAyBuffer | ArrAyBufferView): void;
 	close(): void;
 }
 
-class BrowserWebSocket extends Disposable implements IWebSocket {
+clAss BrowserWebSocket extends DisposAble implements IWebSocket {
 
-	private readonly _onData = new Emitter<ArrayBuffer>();
-	public readonly onData = this._onData.event;
+	privAte reAdonly _onDAtA = new Emitter<ArrAyBuffer>();
+	public reAdonly onDAtA = this._onDAtA.event;
 
-	public readonly onOpen: Event<void>;
+	public reAdonly onOpen: Event<void>;
 
-	private readonly _onClose = this._register(new Emitter<void>());
-	public readonly onClose = this._onClose.event;
+	privAte reAdonly _onClose = this._register(new Emitter<void>());
+	public reAdonly onClose = this._onClose.event;
 
-	private readonly _onError = this._register(new Emitter<any>());
-	public readonly onError = this._onError.event;
+	privAte reAdonly _onError = this._register(new Emitter<Any>());
+	public reAdonly onError = this._onError.event;
 
-	private readonly _socket: WebSocket;
-	private readonly _fileReader: FileReader;
-	private readonly _queue: Blob[];
-	private _isReading: boolean;
-	private _isClosed: boolean;
+	privAte reAdonly _socket: WebSocket;
+	privAte reAdonly _fileReAder: FileReAder;
+	privAte reAdonly _queue: Blob[];
+	privAte _isReAding: booleAn;
+	privAte _isClosed: booleAn;
 
-	private readonly _socketMessageListener: (ev: MessageEvent) => void;
+	privAte reAdonly _socketMessAgeListener: (ev: MessAgeEvent) => void;
 
 	constructor(socket: WebSocket) {
 		super();
 		this._socket = socket;
-		this._fileReader = new FileReader();
+		this._fileReAder = new FileReAder();
 		this._queue = [];
-		this._isReading = false;
-		this._isClosed = false;
+		this._isReAding = fAlse;
+		this._isClosed = fAlse;
 
-		this._fileReader.onload = (event) => {
-			this._isReading = false;
-			const buff = <ArrayBuffer>(<any>event.target).result;
+		this._fileReAder.onloAd = (event) => {
+			this._isReAding = fAlse;
+			const buff = <ArrAyBuffer>(<Any>event.tArget).result;
 
-			this._onData.fire(buff);
+			this._onDAtA.fire(buff);
 
 			if (this._queue.length > 0) {
 				enqueue(this._queue.shift()!);
@@ -67,32 +67,32 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 		};
 
 		const enqueue = (blob: Blob) => {
-			if (this._isReading) {
+			if (this._isReAding) {
 				this._queue.push(blob);
 				return;
 			}
-			this._isReading = true;
-			this._fileReader.readAsArrayBuffer(blob);
+			this._isReAding = true;
+			this._fileReAder.reAdAsArrAyBuffer(blob);
 		};
 
-		this._socketMessageListener = (ev: MessageEvent) => {
-			enqueue(<Blob>ev.data);
+		this._socketMessAgeListener = (ev: MessAgeEvent) => {
+			enqueue(<Blob>ev.dAtA);
 		};
-		this._socket.addEventListener('message', this._socketMessageListener);
+		this._socket.AddEventListener('messAge', this._socketMessAgeListener);
 
 		this.onOpen = Event.fromDOMEventEmitter(this._socket, 'open');
 
-		// WebSockets emit error events that do not contain any real information
-		// Our only chance of getting to the root cause of an error is to
-		// listen to the close event which gives out some real information:
+		// WebSockets emit error events thAt do not contAin Any reAl informAtion
+		// Our only chAnce of getting to the root cAuse of An error is to
+		// listen to the close event which gives out some reAl informAtion:
 		// - https://www.w3.org/TR/websockets/#closeevent
 		// - https://tools.ietf.org/html/rfc6455#section-11.7
 		//
 		// But the error event is emitted before the close event, so we therefore
-		// delay the error event processing in the hope of receiving a close event
-		// with more information
+		// delAy the error event processing in the hope of receiving A close event
+		// with more informAtion
 
-		let pendingErrorEvent: any | null = null;
+		let pendingErrorEvent: Any | null = null;
 
 		const sendPendingErrorNow = () => {
 			const err = pendingErrorEvent;
@@ -102,34 +102,34 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 
 		const errorRunner = this._register(new RunOnceScheduler(sendPendingErrorNow, 0));
 
-		const sendErrorSoon = (err: any) => {
-			errorRunner.cancel();
+		const sendErrorSoon = (err: Any) => {
+			errorRunner.cAncel();
 			pendingErrorEvent = err;
 			errorRunner.schedule();
 		};
 
-		const sendErrorNow = (err: any) => {
-			errorRunner.cancel();
+		const sendErrorNow = (err: Any) => {
+			errorRunner.cAncel();
 			pendingErrorEvent = err;
 			sendPendingErrorNow();
 		};
 
-		this._register(dom.addDisposableListener(this._socket, 'close', (e: CloseEvent) => {
+		this._register(dom.AddDisposAbleListener(this._socket, 'close', (e: CloseEvent) => {
 			this._isClosed = true;
 
 			if (pendingErrorEvent) {
-				if (!window.navigator.onLine) {
-					// The browser is offline => this is a temporary error which might resolve itself
-					sendErrorNow(new RemoteAuthorityResolverError('Browser is offline', RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable, e));
+				if (!window.nAvigAtor.onLine) {
+					// The browser is offline => this is A temporAry error which might resolve itself
+					sendErrorNow(new RemoteAuthorityResolverError('Browser is offline', RemoteAuthorityResolverErrorCode.TemporArilyNotAvAilAble, e));
 				} else {
 					// An error event is pending
-					// The browser appears to be online...
-					if (!e.wasClean) {
-						// Let's be optimistic and hope that perhaps the server could not be reached or something
-						sendErrorNow(new RemoteAuthorityResolverError(e.reason || `WebSocket close with status code ${e.code}`, RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable, e));
+					// The browser AppeArs to be online...
+					if (!e.wAsCleAn) {
+						// Let's be optimistic And hope thAt perhAps the server could not be reAched or something
+						sendErrorNow(new RemoteAuthorityResolverError(e.reAson || `WebSocket close with stAtus code ${e.code}`, RemoteAuthorityResolverErrorCode.TemporArilyNotAvAilAble, e));
 					} else {
-						// this was a clean close => send existing error
-						errorRunner.cancel();
+						// this wAs A cleAn close => send existing error
+						errorRunner.cAncel();
 						sendPendingErrorNow();
 					}
 				}
@@ -138,33 +138,33 @@ class BrowserWebSocket extends Disposable implements IWebSocket {
 			this._onClose.fire();
 		}));
 
-		this._register(dom.addDisposableListener(this._socket, 'error', sendErrorSoon));
+		this._register(dom.AddDisposAbleListener(this._socket, 'error', sendErrorSoon));
 	}
 
-	send(data: ArrayBuffer | ArrayBufferView): void {
+	send(dAtA: ArrAyBuffer | ArrAyBufferView): void {
 		if (this._isClosed) {
-			// Refuse to write data to closed WebSocket...
+			// Refuse to write dAtA to closed WebSocket...
 			return;
 		}
-		this._socket.send(data);
+		this._socket.send(dAtA);
 	}
 
 	close(): void {
 		this._isClosed = true;
 		this._socket.close();
-		this._socket.removeEventListener('message', this._socketMessageListener);
+		this._socket.removeEventListener('messAge', this._socketMessAgeListener);
 		this.dispose();
 	}
 }
 
-export const defaultWebSocketFactory = new class implements IWebSocketFactory {
-	create(url: string): IWebSocket {
+export const defAultWebSocketFActory = new clAss implements IWebSocketFActory {
+	creAte(url: string): IWebSocket {
 		return new BrowserWebSocket(new WebSocket(url));
 	}
 };
 
-class BrowserSocket implements ISocket {
-	public readonly socket: IWebSocket;
+clAss BrowserSocket implements ISocket {
+	public reAdonly socket: IWebSocket;
 
 	constructor(socket: IWebSocket) {
 		this.socket = socket;
@@ -174,16 +174,16 @@ class BrowserSocket implements ISocket {
 		this.socket.close();
 	}
 
-	public onData(listener: (e: VSBuffer) => void): IDisposable {
-		return this.socket.onData((data) => listener(VSBuffer.wrap(new Uint8Array(data))));
+	public onDAtA(listener: (e: VSBuffer) => void): IDisposAble {
+		return this.socket.onDAtA((dAtA) => listener(VSBuffer.wrAp(new Uint8ArrAy(dAtA))));
 	}
 
-	public onClose(listener: () => void): IDisposable {
+	public onClose(listener: () => void): IDisposAble {
 		return this.socket.onClose(listener);
 	}
 
-	public onEnd(listener: () => void): IDisposable {
-		return Disposable.None;
+	public onEnd(listener: () => void): IDisposAble {
+		return DisposAble.None;
 	}
 
 	public write(buffer: VSBuffer): void {
@@ -194,25 +194,25 @@ class BrowserSocket implements ISocket {
 		this.socket.close();
 	}
 
-	public drain(): Promise<void> {
+	public drAin(): Promise<void> {
 		return Promise.resolve();
 	}
 }
 
 
-export class BrowserSocketFactory implements ISocketFactory {
-	private readonly _webSocketFactory: IWebSocketFactory;
+export clAss BrowserSocketFActory implements ISocketFActory {
+	privAte reAdonly _webSocketFActory: IWebSocketFActory;
 
-	constructor(webSocketFactory: IWebSocketFactory | null | undefined) {
-		this._webSocketFactory = webSocketFactory || defaultWebSocketFactory;
+	constructor(webSocketFActory: IWebSocketFActory | null | undefined) {
+		this._webSocketFActory = webSocketFActory || defAultWebSocketFActory;
 	}
 
-	connect(host: string, port: number, query: string, callback: IConnectCallback): void {
-		const socket = this._webSocketFactory.create(`ws://${host}:${port}/?${query}&skipWebSocketFrames=false`);
-		const errorListener = socket.onError((err) => callback(err, undefined));
+	connect(host: string, port: number, query: string, cAllbAck: IConnectCAllbAck): void {
+		const socket = this._webSocketFActory.creAte(`ws://${host}:${port}/?${query}&skipWebSocketFrAmes=fAlse`);
+		const errorListener = socket.onError((err) => cAllbAck(err, undefined));
 		socket.onOpen(() => {
 			errorListener.dispose();
-			callback(undefined, new BrowserSocket(socket));
+			cAllbAck(undefined, new BrowserSocket(socket));
 		});
 	}
 }

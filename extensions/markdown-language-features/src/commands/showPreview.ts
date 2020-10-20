@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-import { Command } from '../commandManager';
-import { MarkdownPreviewManager, DynamicPreviewSettings } from '../features/previewManager';
+import { CommAnd } from '../commAndMAnAger';
+import { MArkdownPreviewMAnAger, DynAmicPreviewSettings } from '../feAtures/previewMAnAger';
 import { TelemetryReporter } from '../telemetryReporter';
 
-interface ShowPreviewSettings {
-	readonly sideBySide?: boolean;
-	readonly locked?: boolean;
+interfAce ShowPreviewSettings {
+	reAdonly sideBySide?: booleAn;
+	reAdonly locked?: booleAn;
 }
 
-async function showPreview(
-	webviewManager: MarkdownPreviewManager,
+Async function showPreview(
+	webviewMAnAger: MArkdownPreviewMAnAger,
 	telemetryReporter: TelemetryReporter,
 	uri: vscode.Uri | undefined,
 	previewSettings: ShowPreviewSettings,
-): Promise<any> {
+): Promise<Any> {
 	let resource = uri;
-	if (!(resource instanceof vscode.Uri)) {
-		if (vscode.window.activeTextEditor) {
-			// we are relaxed and don't check for markdown files
-			resource = vscode.window.activeTextEditor.document.uri;
+	if (!(resource instAnceof vscode.Uri)) {
+		if (vscode.window.ActiveTextEditor) {
+			// we Are relAxed And don't check for mArkdown files
+			resource = vscode.window.ActiveTextEditor.document.uri;
 		}
 	}
 
-	if (!(resource instanceof vscode.Uri)) {
-		if (!vscode.window.activeTextEditor) {
+	if (!(resource instAnceof vscode.Uri)) {
+		if (!vscode.window.ActiveTextEditor) {
 			// this is most likely toggling the preview
-			return vscode.commands.executeCommand('markdown.showSource');
+			return vscode.commAnds.executeCommAnd('mArkdown.showSource');
 		}
-		// nothing found that could be shown or toggled
+		// nothing found thAt could be shown or toggled
 		return;
 	}
 
-	const resourceColumn = (vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One;
-	webviewManager.openDynamicPreview(resource, {
+	const resourceColumn = (vscode.window.ActiveTextEditor && vscode.window.ActiveTextEditor.viewColumn) || vscode.ViewColumn.One;
+	webviewMAnAger.openDynAmicPreview(resource, {
 		resourceColumn: resourceColumn,
 		previewColumn: previewSettings.sideBySide ? resourceColumn + 1 : resourceColumn,
 		locked: !!previewSettings.locked
 	});
 
 	telemetryReporter.sendTelemetryEvent('openPreview', {
-		where: previewSettings.sideBySide ? 'sideBySide' : 'inPlace',
-		how: (uri instanceof vscode.Uri) ? 'action' : 'pallete'
+		where: previewSettings.sideBySide ? 'sideBySide' : 'inPlAce',
+		how: (uri instAnceof vscode.Uri) ? 'Action' : 'pAllete'
 	});
 }
 
-export class ShowPreviewCommand implements Command {
-	public readonly id = 'markdown.showPreview';
+export clAss ShowPreviewCommAnd implements CommAnd {
+	public reAdonly id = 'mArkdown.showPreview';
 
 	public constructor(
-		private readonly webviewManager: MarkdownPreviewManager,
-		private readonly telemetryReporter: TelemetryReporter
+		privAte reAdonly webviewMAnAger: MArkdownPreviewMAnAger,
+		privAte reAdonly telemetryReporter: TelemetryReporter
 	) { }
 
-	public execute(mainUri?: vscode.Uri, allUris?: vscode.Uri[], previewSettings?: DynamicPreviewSettings) {
-		for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
-			showPreview(this.webviewManager, this.telemetryReporter, uri, {
-				sideBySide: false,
+	public execute(mAinUri?: vscode.Uri, AllUris?: vscode.Uri[], previewSettings?: DynAmicPreviewSettings) {
+		for (const uri of ArrAy.isArrAy(AllUris) ? AllUris : [mAinUri]) {
+			showPreview(this.webviewMAnAger, this.telemetryReporter, uri, {
+				sideBySide: fAlse,
 				locked: previewSettings && previewSettings.locked
 			});
 		}
 	}
 }
 
-export class ShowPreviewToSideCommand implements Command {
-	public readonly id = 'markdown.showPreviewToSide';
+export clAss ShowPreviewToSideCommAnd implements CommAnd {
+	public reAdonly id = 'mArkdown.showPreviewToSide';
 
 	public constructor(
-		private readonly webviewManager: MarkdownPreviewManager,
-		private readonly telemetryReporter: TelemetryReporter
+		privAte reAdonly webviewMAnAger: MArkdownPreviewMAnAger,
+		privAte reAdonly telemetryReporter: TelemetryReporter
 	) { }
 
-	public execute(uri?: vscode.Uri, previewSettings?: DynamicPreviewSettings) {
-		showPreview(this.webviewManager, this.telemetryReporter, uri, {
+	public execute(uri?: vscode.Uri, previewSettings?: DynAmicPreviewSettings) {
+		showPreview(this.webviewMAnAger, this.telemetryReporter, uri, {
 			sideBySide: true,
 			locked: previewSettings && previewSettings.locked
 		});
@@ -85,16 +85,16 @@ export class ShowPreviewToSideCommand implements Command {
 }
 
 
-export class ShowLockedPreviewToSideCommand implements Command {
-	public readonly id = 'markdown.showLockedPreviewToSide';
+export clAss ShowLockedPreviewToSideCommAnd implements CommAnd {
+	public reAdonly id = 'mArkdown.showLockedPreviewToSide';
 
 	public constructor(
-		private readonly webviewManager: MarkdownPreviewManager,
-		private readonly telemetryReporter: TelemetryReporter
+		privAte reAdonly webviewMAnAger: MArkdownPreviewMAnAger,
+		privAte reAdonly telemetryReporter: TelemetryReporter
 	) { }
 
 	public execute(uri?: vscode.Uri) {
-		showPreview(this.webviewManager, this.telemetryReporter, uri, {
+		showPreview(this.webviewMAnAger, this.telemetryReporter, uri, {
 			sideBySide: true,
 			locked: true
 		});

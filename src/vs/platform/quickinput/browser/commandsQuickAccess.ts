@@ -1,305 +1,305 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-import { PickerQuickAccessProvider, IPickerQuickAccessItem, IPickerQuickAccessProviderOptions } from 'vs/platform/quickinput/browser/pickerQuickAccess';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { DisposableStore, Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { or, matchesPrefix, matchesWords, matchesContiguousSubString } from 'vs/base/common/filters';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { LRUCache } from 'vs/base/common/map';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
+import { locAlize } from 'vs/nls';
+import { IQuickPickSepArAtor } from 'vs/plAtform/quickinput/common/quickInput';
+import { PickerQuickAccessProvider, IPickerQuickAccessItem, IPickerQuickAccessProviderOptions } from 'vs/plAtform/quickinput/browser/pickerQuickAccess';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { DisposAbleStore, DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { or, mAtchesPrefix, mAtchesWords, mAtchesContiguousSubString } from 'vs/bAse/common/filters';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { LRUCAche } from 'vs/bAse/common/mAp';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion } from 'vs/bAse/common/Actions';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
 
-export interface ICommandQuickPick extends IPickerQuickAccessItem {
-	commandId: string;
-	commandAlias?: string;
+export interfAce ICommAndQuickPick extends IPickerQuickAccessItem {
+	commAndId: string;
+	commAndAliAs?: string;
 }
 
-export interface ICommandsQuickAccessOptions extends IPickerQuickAccessProviderOptions<ICommandQuickPick> {
-	showAlias: boolean;
+export interfAce ICommAndsQuickAccessOptions extends IPickerQuickAccessProviderOptions<ICommAndQuickPick> {
+	showAliAs: booleAn;
 }
 
-export abstract class AbstractCommandsQuickAccessProvider extends PickerQuickAccessProvider<ICommandQuickPick> implements IDisposable {
+export AbstrAct clAss AbstrActCommAndsQuickAccessProvider extends PickerQuickAccessProvider<ICommAndQuickPick> implements IDisposAble {
 
-	static PREFIX = '>';
+	stAtic PREFIX = '>';
 
-	private static WORD_FILTER = or(matchesPrefix, matchesWords, matchesContiguousSubString);
+	privAte stAtic WORD_FILTER = or(mAtchesPrefix, mAtchesWords, mAtchesContiguousSubString);
 
-	private readonly commandsHistory = this._register(this.instantiationService.createInstance(CommandsHistory));
+	privAte reAdonly commAndsHistory = this._register(this.instAntiAtionService.creAteInstAnce(CommAndsHistory));
 
 	constructor(
-		protected options: ICommandsQuickAccessOptions,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService,
-		@ICommandService private readonly commandService: ICommandService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@INotificationService private readonly notificationService: INotificationService
+		protected options: ICommAndsQuickAccessOptions,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService,
+		@ICommAndService privAte reAdonly commAndService: ICommAndService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService
 	) {
-		super(AbstractCommandsQuickAccessProvider.PREFIX, options);
+		super(AbstrActCommAndsQuickAccessProvider.PREFIX, options);
 	}
 
-	protected async getPicks(filter: string, disposables: DisposableStore, token: CancellationToken): Promise<Array<ICommandQuickPick | IQuickPickSeparator>> {
+	protected Async getPicks(filter: string, disposAbles: DisposAbleStore, token: CAncellAtionToken): Promise<ArrAy<ICommAndQuickPick | IQuickPickSepArAtor>> {
 
-		// Ask subclass for all command picks
-		const allCommandPicks = await this.getCommandPicks(disposables, token);
+		// Ask subclAss for All commAnd picks
+		const AllCommAndPicks = AwAit this.getCommAndPicks(disposAbles, token);
 
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return [];
 		}
 
 		// Filter
-		const filteredCommandPicks: ICommandQuickPick[] = [];
-		for (const commandPick of allCommandPicks) {
-			const labelHighlights = withNullAsUndefined(AbstractCommandsQuickAccessProvider.WORD_FILTER(filter, commandPick.label));
-			const aliasHighlights = commandPick.commandAlias ? withNullAsUndefined(AbstractCommandsQuickAccessProvider.WORD_FILTER(filter, commandPick.commandAlias)) : undefined;
+		const filteredCommAndPicks: ICommAndQuickPick[] = [];
+		for (const commAndPick of AllCommAndPicks) {
+			const lAbelHighlights = withNullAsUndefined(AbstrActCommAndsQuickAccessProvider.WORD_FILTER(filter, commAndPick.lAbel));
+			const AliAsHighlights = commAndPick.commAndAliAs ? withNullAsUndefined(AbstrActCommAndsQuickAccessProvider.WORD_FILTER(filter, commAndPick.commAndAliAs)) : undefined;
 
-			// Add if matching in label or alias
-			if (labelHighlights || aliasHighlights) {
-				commandPick.highlights = {
-					label: labelHighlights,
-					detail: this.options.showAlias ? aliasHighlights : undefined
+			// Add if mAtching in lAbel or AliAs
+			if (lAbelHighlights || AliAsHighlights) {
+				commAndPick.highlights = {
+					lAbel: lAbelHighlights,
+					detAil: this.options.showAliAs ? AliAsHighlights : undefined
 				};
 
-				filteredCommandPicks.push(commandPick);
+				filteredCommAndPicks.push(commAndPick);
 			}
 
-			// Also add if we have a 100% command ID match
-			else if (filter === commandPick.commandId) {
-				filteredCommandPicks.push(commandPick);
+			// Also Add if we hAve A 100% commAnd ID mAtch
+			else if (filter === commAndPick.commAndId) {
+				filteredCommAndPicks.push(commAndPick);
 			}
 		}
 
-		// Add description to commands that have duplicate labels
-		const mapLabelToCommand = new Map<string, ICommandQuickPick>();
-		for (const commandPick of filteredCommandPicks) {
-			const existingCommandForLabel = mapLabelToCommand.get(commandPick.label);
-			if (existingCommandForLabel) {
-				commandPick.description = commandPick.commandId;
-				existingCommandForLabel.description = existingCommandForLabel.commandId;
+		// Add description to commAnds thAt hAve duplicAte lAbels
+		const mApLAbelToCommAnd = new MAp<string, ICommAndQuickPick>();
+		for (const commAndPick of filteredCommAndPicks) {
+			const existingCommAndForLAbel = mApLAbelToCommAnd.get(commAndPick.lAbel);
+			if (existingCommAndForLAbel) {
+				commAndPick.description = commAndPick.commAndId;
+				existingCommAndForLAbel.description = existingCommAndForLAbel.commAndId;
 			} else {
-				mapLabelToCommand.set(commandPick.label, commandPick);
+				mApLAbelToCommAnd.set(commAndPick.lAbel, commAndPick);
 			}
 		}
 
-		// Sort by MRU order and fallback to name otherwise
-		filteredCommandPicks.sort((commandPickA, commandPickB) => {
-			const commandACounter = this.commandsHistory.peek(commandPickA.commandId);
-			const commandBCounter = this.commandsHistory.peek(commandPickB.commandId);
+		// Sort by MRU order And fAllbAck to nAme otherwise
+		filteredCommAndPicks.sort((commAndPickA, commAndPickB) => {
+			const commAndACounter = this.commAndsHistory.peek(commAndPickA.commAndId);
+			const commAndBCounter = this.commAndsHistory.peek(commAndPickB.commAndId);
 
-			if (commandACounter && commandBCounter) {
-				return commandACounter > commandBCounter ? -1 : 1; // use more recently used command before older
+			if (commAndACounter && commAndBCounter) {
+				return commAndACounter > commAndBCounter ? -1 : 1; // use more recently used commAnd before older
 			}
 
-			if (commandACounter) {
-				return -1; // first command was used, so it wins over the non used one
+			if (commAndACounter) {
+				return -1; // first commAnd wAs used, so it wins over the non used one
 			}
 
-			if (commandBCounter) {
-				return 1; // other command was used so it wins over the command
+			if (commAndBCounter) {
+				return 1; // other commAnd wAs used so it wins over the commAnd
 			}
 
-			// both commands were never used, so we sort by name
-			return commandPickA.label.localeCompare(commandPickB.label);
+			// both commAnds were never used, so we sort by nAme
+			return commAndPickA.lAbel.locAleCompAre(commAndPickB.lAbel);
 		});
 
-		const commandPicks: Array<ICommandQuickPick | IQuickPickSeparator> = [];
+		const commAndPicks: ArrAy<ICommAndQuickPick | IQuickPickSepArAtor> = [];
 
-		let addSeparator = false;
-		for (let i = 0; i < filteredCommandPicks.length; i++) {
-			const commandPick = filteredCommandPicks[i];
-			const keybinding = this.keybindingService.lookupKeybinding(commandPick.commandId);
-			const ariaLabel = keybinding ?
-				localize('commandPickAriaLabelWithKeybinding', "{0}, {1}", commandPick.label, keybinding.getAriaLabel()) :
-				commandPick.label;
+		let AddSepArAtor = fAlse;
+		for (let i = 0; i < filteredCommAndPicks.length; i++) {
+			const commAndPick = filteredCommAndPicks[i];
+			const keybinding = this.keybindingService.lookupKeybinding(commAndPick.commAndId);
+			const AriALAbel = keybinding ?
+				locAlize('commAndPickAriALAbelWithKeybinding', "{0}, {1}", commAndPick.lAbel, keybinding.getAriALAbel()) :
+				commAndPick.lAbel;
 
-			// Separator: recently used
-			if (i === 0 && this.commandsHistory.peek(commandPick.commandId)) {
-				commandPicks.push({ type: 'separator', label: localize('recentlyUsed', "recently used") });
-				addSeparator = true;
+			// SepArAtor: recently used
+			if (i === 0 && this.commAndsHistory.peek(commAndPick.commAndId)) {
+				commAndPicks.push({ type: 'sepArAtor', lAbel: locAlize('recentlyUsed', "recently used") });
+				AddSepArAtor = true;
 			}
 
-			// Separator: other commands
-			if (i !== 0 && addSeparator && !this.commandsHistory.peek(commandPick.commandId)) {
-				commandPicks.push({ type: 'separator', label: localize('morecCommands', "other commands") });
-				addSeparator = false; // only once
+			// SepArAtor: other commAnds
+			if (i !== 0 && AddSepArAtor && !this.commAndsHistory.peek(commAndPick.commAndId)) {
+				commAndPicks.push({ type: 'sepArAtor', lAbel: locAlize('morecCommAnds', "other commAnds") });
+				AddSepArAtor = fAlse; // only once
 			}
 
-			// Command
-			commandPicks.push({
-				...commandPick,
-				ariaLabel,
-				detail: this.options.showAlias && commandPick.commandAlias !== commandPick.label ? commandPick.commandAlias : undefined,
+			// CommAnd
+			commAndPicks.push({
+				...commAndPick,
+				AriALAbel,
+				detAil: this.options.showAliAs && commAndPick.commAndAliAs !== commAndPick.lAbel ? commAndPick.commAndAliAs : undefined,
 				keybinding,
-				accept: async () => {
+				Accept: Async () => {
 
 					// Add to history
-					this.commandsHistory.push(commandPick.commandId);
+					this.commAndsHistory.push(commAndPick.commAndId);
 
 					// Telementry
-					this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', {
-						id: commandPick.commandId,
+					this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClAssificAtion>('workbenchActionExecuted', {
+						id: commAndPick.commAndId,
 						from: 'quick open'
 					});
 
 					// Run
 					try {
-						await this.commandService.executeCommand(commandPick.commandId);
-					} catch (error) {
-						if (!isPromiseCanceledError(error)) {
-							this.notificationService.error(localize('canNotRun', "Command '{0}' resulted in an error ({1})", commandPick.label, toErrorMessage(error)));
+						AwAit this.commAndService.executeCommAnd(commAndPick.commAndId);
+					} cAtch (error) {
+						if (!isPromiseCAnceledError(error)) {
+							this.notificAtionService.error(locAlize('cAnNotRun', "CommAnd '{0}' resulted in An error ({1})", commAndPick.lAbel, toErrorMessAge(error)));
 						}
 					}
 				}
 			});
 		}
 
-		return commandPicks;
+		return commAndPicks;
 	}
 
 	/**
-	 * Subclasses to provide the actual command entries.
+	 * SubclAsses to provide the ActuAl commAnd entries.
 	 */
-	protected abstract getCommandPicks(disposables: DisposableStore, token: CancellationToken): Promise<Array<ICommandQuickPick>>;
+	protected AbstrAct getCommAndPicks(disposAbles: DisposAbleStore, token: CAncellAtionToken): Promise<ArrAy<ICommAndQuickPick>>;
 }
 
-interface ISerializedCommandHistory {
-	usesLRU?: boolean;
-	entries: { key: string; value: number }[];
+interfAce ISeriAlizedCommAndHistory {
+	usesLRU?: booleAn;
+	entries: { key: string; vAlue: number }[];
 }
 
-interface ICommandsQuickAccessConfiguration {
+interfAce ICommAndsQuickAccessConfigurAtion {
 	workbench: {
-		commandPalette: {
+		commAndPAlette: {
 			history: number;
-			preserveInput: boolean;
+			preserveInput: booleAn;
 		}
 	};
 }
 
-export class CommandsHistory extends Disposable {
+export clAss CommAndsHistory extends DisposAble {
 
-	static readonly DEFAULT_COMMANDS_HISTORY_LENGTH = 50;
+	stAtic reAdonly DEFAULT_COMMANDS_HISTORY_LENGTH = 50;
 
-	private static readonly PREF_KEY_CACHE = 'commandPalette.mru.cache';
-	private static readonly PREF_KEY_COUNTER = 'commandPalette.mru.counter';
+	privAte stAtic reAdonly PREF_KEY_CACHE = 'commAndPAlette.mru.cAche';
+	privAte stAtic reAdonly PREF_KEY_COUNTER = 'commAndPAlette.mru.counter';
 
-	private static cache: LRUCache<string, number> | undefined;
-	private static counter = 1;
+	privAte stAtic cAche: LRUCAche<string, number> | undefined;
+	privAte stAtic counter = 1;
 
-	private configuredCommandsHistoryLength = 0;
+	privAte configuredCommAndsHistoryLength = 0;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService
 	) {
 		super();
 
 		// opt-in to syncing
-		storageKeysSyncRegistryService.registerStorageKey({ key: CommandsHistory.PREF_KEY_CACHE, version: 1 });
-		storageKeysSyncRegistryService.registerStorageKey({ key: CommandsHistory.PREF_KEY_COUNTER, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: CommAndsHistory.PREF_KEY_CACHE, version: 1 });
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: CommAndsHistory.PREF_KEY_COUNTER, version: 1 });
 
-		this.updateConfiguration();
-		this.load();
+		this.updAteConfigurAtion();
+		this.loAd();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this._register(this.configurationService.onDidChangeConfiguration(() => this.updateConfiguration()));
+	privAte registerListeners(): void {
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(() => this.updAteConfigurAtion()));
 	}
 
-	private updateConfiguration(): void {
-		this.configuredCommandsHistoryLength = CommandsHistory.getConfiguredCommandHistoryLength(this.configurationService);
+	privAte updAteConfigurAtion(): void {
+		this.configuredCommAndsHistoryLength = CommAndsHistory.getConfiguredCommAndHistoryLength(this.configurAtionService);
 
-		if (CommandsHistory.cache && CommandsHistory.cache.limit !== this.configuredCommandsHistoryLength) {
-			CommandsHistory.cache.limit = this.configuredCommandsHistoryLength;
+		if (CommAndsHistory.cAche && CommAndsHistory.cAche.limit !== this.configuredCommAndsHistoryLength) {
+			CommAndsHistory.cAche.limit = this.configuredCommAndsHistoryLength;
 
-			CommandsHistory.saveState(this.storageService);
+			CommAndsHistory.sAveStAte(this.storAgeService);
 		}
 	}
 
-	private load(): void {
-		const raw = this.storageService.get(CommandsHistory.PREF_KEY_CACHE, StorageScope.GLOBAL);
-		let serializedCache: ISerializedCommandHistory | undefined;
-		if (raw) {
+	privAte loAd(): void {
+		const rAw = this.storAgeService.get(CommAndsHistory.PREF_KEY_CACHE, StorAgeScope.GLOBAL);
+		let seriAlizedCAche: ISeriAlizedCommAndHistory | undefined;
+		if (rAw) {
 			try {
-				serializedCache = JSON.parse(raw);
-			} catch (error) {
-				// invalid data
+				seriAlizedCAche = JSON.pArse(rAw);
+			} cAtch (error) {
+				// invAlid dAtA
 			}
 		}
 
-		const cache = CommandsHistory.cache = new LRUCache<string, number>(this.configuredCommandsHistoryLength, 1);
-		if (serializedCache) {
-			let entries: { key: string; value: number }[];
-			if (serializedCache.usesLRU) {
-				entries = serializedCache.entries;
+		const cAche = CommAndsHistory.cAche = new LRUCAche<string, number>(this.configuredCommAndsHistoryLength, 1);
+		if (seriAlizedCAche) {
+			let entries: { key: string; vAlue: number }[];
+			if (seriAlizedCAche.usesLRU) {
+				entries = seriAlizedCAche.entries;
 			} else {
-				entries = serializedCache.entries.sort((a, b) => a.value - b.value);
+				entries = seriAlizedCAche.entries.sort((A, b) => A.vAlue - b.vAlue);
 			}
-			entries.forEach(entry => cache.set(entry.key, entry.value));
+			entries.forEAch(entry => cAche.set(entry.key, entry.vAlue));
 		}
 
-		CommandsHistory.counter = this.storageService.getNumber(CommandsHistory.PREF_KEY_COUNTER, StorageScope.GLOBAL, CommandsHistory.counter);
+		CommAndsHistory.counter = this.storAgeService.getNumber(CommAndsHistory.PREF_KEY_COUNTER, StorAgeScope.GLOBAL, CommAndsHistory.counter);
 	}
 
-	push(commandId: string): void {
-		if (!CommandsHistory.cache) {
+	push(commAndId: string): void {
+		if (!CommAndsHistory.cAche) {
 			return;
 		}
 
-		CommandsHistory.cache.set(commandId, CommandsHistory.counter++); // set counter to command
+		CommAndsHistory.cAche.set(commAndId, CommAndsHistory.counter++); // set counter to commAnd
 
-		CommandsHistory.saveState(this.storageService);
+		CommAndsHistory.sAveStAte(this.storAgeService);
 	}
 
-	peek(commandId: string): number | undefined {
-		return CommandsHistory.cache?.peek(commandId);
+	peek(commAndId: string): number | undefined {
+		return CommAndsHistory.cAche?.peek(commAndId);
 	}
 
-	static saveState(storageService: IStorageService): void {
-		if (!CommandsHistory.cache) {
+	stAtic sAveStAte(storAgeService: IStorAgeService): void {
+		if (!CommAndsHistory.cAche) {
 			return;
 		}
 
-		const serializedCache: ISerializedCommandHistory = { usesLRU: true, entries: [] };
-		CommandsHistory.cache.forEach((value, key) => serializedCache.entries.push({ key, value }));
+		const seriAlizedCAche: ISeriAlizedCommAndHistory = { usesLRU: true, entries: [] };
+		CommAndsHistory.cAche.forEAch((vAlue, key) => seriAlizedCAche.entries.push({ key, vAlue }));
 
-		storageService.store(CommandsHistory.PREF_KEY_CACHE, JSON.stringify(serializedCache), StorageScope.GLOBAL);
-		storageService.store(CommandsHistory.PREF_KEY_COUNTER, CommandsHistory.counter, StorageScope.GLOBAL);
+		storAgeService.store(CommAndsHistory.PREF_KEY_CACHE, JSON.stringify(seriAlizedCAche), StorAgeScope.GLOBAL);
+		storAgeService.store(CommAndsHistory.PREF_KEY_COUNTER, CommAndsHistory.counter, StorAgeScope.GLOBAL);
 	}
 
-	static getConfiguredCommandHistoryLength(configurationService: IConfigurationService): number {
-		const config = <ICommandsQuickAccessConfiguration>configurationService.getValue();
+	stAtic getConfiguredCommAndHistoryLength(configurAtionService: IConfigurAtionService): number {
+		const config = <ICommAndsQuickAccessConfigurAtion>configurAtionService.getVAlue();
 
-		const configuredCommandHistoryLength = config.workbench?.commandPalette?.history;
-		if (typeof configuredCommandHistoryLength === 'number') {
-			return configuredCommandHistoryLength;
+		const configuredCommAndHistoryLength = config.workbench?.commAndPAlette?.history;
+		if (typeof configuredCommAndHistoryLength === 'number') {
+			return configuredCommAndHistoryLength;
 		}
 
-		return CommandsHistory.DEFAULT_COMMANDS_HISTORY_LENGTH;
+		return CommAndsHistory.DEFAULT_COMMANDS_HISTORY_LENGTH;
 	}
 
-	static clearHistory(configurationService: IConfigurationService, storageService: IStorageService): void {
-		const commandHistoryLength = CommandsHistory.getConfiguredCommandHistoryLength(configurationService);
-		CommandsHistory.cache = new LRUCache<string, number>(commandHistoryLength);
-		CommandsHistory.counter = 1;
+	stAtic cleArHistory(configurAtionService: IConfigurAtionService, storAgeService: IStorAgeService): void {
+		const commAndHistoryLength = CommAndsHistory.getConfiguredCommAndHistoryLength(configurAtionService);
+		CommAndsHistory.cAche = new LRUCAche<string, number>(commAndHistoryLength);
+		CommAndsHistory.counter = 1;
 
-		CommandsHistory.saveState(storageService);
+		CommAndsHistory.sAveStAte(storAgeService);
 	}
 }
 

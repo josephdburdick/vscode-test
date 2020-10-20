@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
 
-export const IRemoteAuthorityResolverService = createDecorator<IRemoteAuthorityResolverService>('remoteAuthorityResolverService');
+export const IRemoteAuthorityResolverService = creAteDecorAtor<IRemoteAuthorityResolverService>('remoteAuthorityResolverService');
 
-export interface ResolvedAuthority {
-	readonly authority: string;
-	readonly host: string;
-	readonly port: number;
+export interfAce ResolvedAuthority {
+	reAdonly Authority: string;
+	reAdonly host: string;
+	reAdonly port: number;
 }
 
-export interface ResolvedOptions {
-	readonly extensionHostEnv?: { [key: string]: string | null };
+export interfAce ResolvedOptions {
+	reAdonly extensionHostEnv?: { [key: string]: string | null };
 }
 
-export interface TunnelDescription {
+export interfAce TunnelDescription {
 	remoteAddress: { port: number, host: string };
-	localAddress: { port: number, host: string } | string;
+	locAlAddress: { port: number, host: string } | string;
 }
-export interface TunnelInformation {
+export interfAce TunnelInformAtion {
 	environmentTunnels?: TunnelDescription[];
 }
 
-export interface ResolverResult {
-	authority: ResolvedAuthority;
+export interfAce ResolverResult {
+	Authority: ResolvedAuthority;
 	options?: ResolvedOptions;
-	tunnelInformation?: TunnelInformation;
+	tunnelInformAtion?: TunnelInformAtion;
 }
 
-export interface IRemoteConnectionData {
+export interfAce IRemoteConnectionDAtA {
 	host: string;
 	port: number;
 	connectionToken: string | undefined;
@@ -40,59 +40,59 @@ export interface IRemoteConnectionData {
 
 export enum RemoteAuthorityResolverErrorCode {
 	Unknown = 'Unknown',
-	NotAvailable = 'NotAvailable',
-	TemporarilyNotAvailable = 'TemporarilyNotAvailable',
+	NotAvAilAble = 'NotAvAilAble',
+	TemporArilyNotAvAilAble = 'TemporArilyNotAvAilAble',
 	NoResolverFound = 'NoResolverFound'
 }
 
-export class RemoteAuthorityResolverError extends Error {
+export clAss RemoteAuthorityResolverError extends Error {
 
-	public static isTemporarilyNotAvailable(err: any): boolean {
-		return (err instanceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable;
+	public stAtic isTemporArilyNotAvAilAble(err: Any): booleAn {
+		return (err instAnceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.TemporArilyNotAvAilAble;
 	}
 
-	public static isNoResolverFound(err: any): err is RemoteAuthorityResolverError {
-		return (err instanceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.NoResolverFound;
+	public stAtic isNoResolverFound(err: Any): err is RemoteAuthorityResolverError {
+		return (err instAnceof RemoteAuthorityResolverError) && err._code === RemoteAuthorityResolverErrorCode.NoResolverFound;
 	}
 
-	public static isHandled(err: any): boolean {
-		return (err instanceof RemoteAuthorityResolverError) && err.isHandled;
+	public stAtic isHAndled(err: Any): booleAn {
+		return (err instAnceof RemoteAuthorityResolverError) && err.isHAndled;
 	}
 
-	public readonly _message: string | undefined;
-	public readonly _code: RemoteAuthorityResolverErrorCode;
-	public readonly _detail: any;
+	public reAdonly _messAge: string | undefined;
+	public reAdonly _code: RemoteAuthorityResolverErrorCode;
+	public reAdonly _detAil: Any;
 
-	public isHandled: boolean;
+	public isHAndled: booleAn;
 
-	constructor(message?: string, code: RemoteAuthorityResolverErrorCode = RemoteAuthorityResolverErrorCode.Unknown, detail?: any) {
-		super(message);
+	constructor(messAge?: string, code: RemoteAuthorityResolverErrorCode = RemoteAuthorityResolverErrorCode.Unknown, detAil?: Any) {
+		super(messAge);
 
-		this._message = message;
+		this._messAge = messAge;
 		this._code = code;
-		this._detail = detail;
+		this._detAil = detAil;
 
-		this.isHandled = (code === RemoteAuthorityResolverErrorCode.NotAvailable) && detail === true;
+		this.isHAndled = (code === RemoteAuthorityResolverErrorCode.NotAvAilAble) && detAil === true;
 
-		// workaround when extending builtin objects and when compiling to ES5, see:
-		// https://github.com/microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
-		if (typeof (<any>Object).setPrototypeOf === 'function') {
-			(<any>Object).setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
+		// workAround when extending builtin objects And when compiling to ES5, see:
+		// https://github.com/microsoft/TypeScript-wiki/blob/mAster/BreAking-ChAnges.md#extending-built-ins-like-error-ArrAy-And-mAp-mAy-no-longer-work
+		if (typeof (<Any>Object).setPrototypeOf === 'function') {
+			(<Any>Object).setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
 		}
 	}
 }
 
-export interface IRemoteAuthorityResolverService {
+export interfAce IRemoteAuthorityResolverService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidChangeConnectionData: Event<void>;
+	reAdonly onDidChAngeConnectionDAtA: Event<void>;
 
-	resolveAuthority(authority: string): Promise<ResolverResult>;
-	getConnectionData(authority: string): IRemoteConnectionData | null;
+	resolveAuthority(Authority: string): Promise<ResolverResult>;
+	getConnectionDAtA(Authority: string): IRemoteConnectionDAtA | null;
 
-	_clearResolvedAuthority(authority: string): void;
+	_cleArResolvedAuthority(Authority: string): void;
 	_setResolvedAuthority(resolvedAuthority: ResolvedAuthority, resolvedOptions?: ResolvedOptions): void;
-	_setResolvedAuthorityError(authority: string, err: any): void;
-	_setAuthorityConnectionToken(authority: string, connectionToken: string): void;
+	_setResolvedAuthorityError(Authority: string, err: Any): void;
+	_setAuthorityConnectionToken(Authority: string, connectionToken: string): void;
 }

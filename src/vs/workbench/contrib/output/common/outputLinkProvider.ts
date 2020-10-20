@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { RunOnceScheduler } from 'vs/base/common/async';
+import { URI } from 'vs/bAse/common/uri';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { LinkProviderRegistry, ILink } from 'vs/editor/common/modes';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { OUTPUT_MODE_ID, LOG_MODE_ID } from 'vs/workbench/contrib/output/common/output';
-import { MonacoWebWorker, createWebWorker } from 'vs/editor/common/services/webWorker';
-import { ICreateData, OutputLinkComputer } from 'vs/workbench/contrib/output/common/outputLinkComputer';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
+import { MonAcoWebWorker, creAteWebWorker } from 'vs/editor/common/services/webWorker';
+import { ICreAteDAtA, OutputLinkComputer } from 'vs/workbench/contrib/output/common/outputLinkComputer';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
 
-export class OutputLinkProvider {
+export clAss OutputLinkProvider {
 
-	private static readonly DISPOSE_WORKER_TIME = 3 * 60 * 1000; // dispose worker after 3 minutes of inactivity
+	privAte stAtic reAdonly DISPOSE_WORKER_TIME = 3 * 60 * 1000; // dispose worker After 3 minutes of inActivity
 
-	private worker?: MonacoWebWorker<OutputLinkComputer>;
-	private disposeWorkerScheduler: RunOnceScheduler;
-	private linkProviderRegistration: IDisposable | undefined;
+	privAte worker?: MonAcoWebWorker<OutputLinkComputer>;
+	privAte disposeWorkerScheduler: RunOnceScheduler;
+	privAte linkProviderRegistrAtion: IDisposAble | undefined;
 
 	constructor(
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IModelService private readonly modelService: IModelService
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IModelService privAte reAdonly modelService: IModelService
 	) {
 		this.disposeWorkerScheduler = new RunOnceScheduler(() => this.disposeWorker(), OutputLinkProvider.DISPOSE_WORKER_TIME);
 
 		this.registerListeners();
-		this.updateLinkProviderWorker();
+		this.updAteLinkProviderWorker();
 	}
 
-	private registerListeners(): void {
-		this.contextService.onDidChangeWorkspaceFolders(() => this.updateLinkProviderWorker());
+	privAte registerListeners(): void {
+		this.contextService.onDidChAngeWorkspAceFolders(() => this.updAteLinkProviderWorker());
 	}
 
-	private updateLinkProviderWorker(): void {
+	privAte updAteLinkProviderWorker(): void {
 
 		// Setup link provider depending on folders being opened or not
-		const folders = this.contextService.getWorkspace().folders;
+		const folders = this.contextService.getWorkspAce().folders;
 		if (folders.length > 0) {
-			if (!this.linkProviderRegistration) {
-				this.linkProviderRegistration = LinkProviderRegistry.register([{ language: OUTPUT_MODE_ID, scheme: '*' }, { language: LOG_MODE_ID, scheme: '*' }], {
-					provideLinks: async model => {
-						const links = await this.provideLinks(model.uri);
+			if (!this.linkProviderRegistrAtion) {
+				this.linkProviderRegistrAtion = LinkProviderRegistry.register([{ lAnguAge: OUTPUT_MODE_ID, scheme: '*' }, { lAnguAge: LOG_MODE_ID, scheme: '*' }], {
+					provideLinks: Async model => {
+						const links = AwAit this.provideLinks(model.uri);
 
 						return links && { links };
 					}
 				});
 			}
 		} else {
-			dispose(this.linkProviderRegistration);
-			this.linkProviderRegistration = undefined;
+			dispose(this.linkProviderRegistrAtion);
+			this.linkProviderRegistrAtion = undefined;
 		}
 
-		// Dispose worker to recreate with folders on next provideLinks request
+		// Dispose worker to recreAte with folders on next provideLinks request
 		this.disposeWorker();
-		this.disposeWorkerScheduler.cancel();
+		this.disposeWorkerScheduler.cAncel();
 	}
 
-	private getOrCreateWorker(): MonacoWebWorker<OutputLinkComputer> {
+	privAte getOrCreAteWorker(): MonAcoWebWorker<OutputLinkComputer> {
 		this.disposeWorkerScheduler.schedule();
 
 		if (!this.worker) {
-			const createData: ICreateData = {
-				workspaceFolders: this.contextService.getWorkspace().folders.map(folder => folder.uri.toString())
+			const creAteDAtA: ICreAteDAtA = {
+				workspAceFolders: this.contextService.getWorkspAce().folders.mAp(folder => folder.uri.toString())
 			};
 
-			this.worker = createWebWorker<OutputLinkComputer>(this.modelService, {
+			this.worker = creAteWebWorker<OutputLinkComputer>(this.modelService, {
 				moduleId: 'vs/workbench/contrib/output/common/outputLinkComputer',
-				createData,
-				label: 'outputLinkComputer'
+				creAteDAtA,
+				lAbel: 'outputLinkComputer'
 			});
 		}
 
 		return this.worker;
 	}
 
-	private async provideLinks(modelUri: URI): Promise<ILink[]> {
-		const linkComputer = await this.getOrCreateWorker().withSyncedResources([modelUri]);
+	privAte Async provideLinks(modelUri: URI): Promise<ILink[]> {
+		const linkComputer = AwAit this.getOrCreAteWorker().withSyncedResources([modelUri]);
 
 		return linkComputer.computeLinks(modelUri.toString());
 	}
 
-	private disposeWorker(): void {
+	privAte disposeWorker(): void {
 		if (this.worker) {
 			this.worker.dispose();
 			this.worker = undefined;

@@ -1,142 +1,142 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import * as vscode from 'vscode';
-import MDDocumentSymbolProvider from '../features/documentSymbolProvider';
-import MarkdownWorkspaceSymbolProvider, { WorkspaceMarkdownDocumentProvider } from '../features/workspaceSymbolProvider';
-import { createNewMarkdownEngine } from './engine';
+import * As Assert from 'Assert';
+import 'mochA';
+import * As vscode from 'vscode';
+import MDDocumentSymbolProvider from '../feAtures/documentSymbolProvider';
+import MArkdownWorkspAceSymbolProvider, { WorkspAceMArkdownDocumentProvider } from '../feAtures/workspAceSymbolProvider';
+import { creAteNewMArkdownEngine } from './engine';
 import { InMemoryDocument } from './inMemoryDocument';
 
 
-const symbolProvider = new MDDocumentSymbolProvider(createNewMarkdownEngine());
+const symbolProvider = new MDDocumentSymbolProvider(creAteNewMArkdownEngine());
 
-suite('markdown.WorkspaceSymbolProvider', () => {
-	test('Should not return anything for empty workspace', async () => {
-		const provider = new MarkdownWorkspaceSymbolProvider(symbolProvider, new InMemoryWorkspaceMarkdownDocumentProvider([]));
+suite('mArkdown.WorkspAceSymbolProvider', () => {
+	test('Should not return Anything for empty workspAce', Async () => {
+		const provider = new MArkdownWorkspAceSymbolProvider(symbolProvider, new InMemoryWorkspAceMArkdownDocumentProvider([]));
 
-		assert.deepEqual(await provider.provideWorkspaceSymbols(''), []);
+		Assert.deepEquAl(AwAit provider.provideWorkspAceSymbols(''), []);
 	});
 
-	test('Should return symbols from workspace with one markdown file', async () => {
-		const testFileName = vscode.Uri.file('test.md');
+	test('Should return symbols from workspAce with one mArkdown file', Async () => {
+		const testFileNAme = vscode.Uri.file('test.md');
 
-		const provider = new MarkdownWorkspaceSymbolProvider(symbolProvider, new InMemoryWorkspaceMarkdownDocumentProvider([
-			new InMemoryDocument(testFileName, `# header1\nabc\n## header2`)
+		const provider = new MArkdownWorkspAceSymbolProvider(symbolProvider, new InMemoryWorkspAceMArkdownDocumentProvider([
+			new InMemoryDocument(testFileNAme, `# heAder1\nAbc\n## heAder2`)
 		]));
 
-		const symbols = await provider.provideWorkspaceSymbols('');
-		assert.strictEqual(symbols.length, 2);
-		assert.strictEqual(symbols[0].name, '# header1');
-		assert.strictEqual(symbols[1].name, '## header2');
+		const symbols = AwAit provider.provideWorkspAceSymbols('');
+		Assert.strictEquAl(symbols.length, 2);
+		Assert.strictEquAl(symbols[0].nAme, '# heAder1');
+		Assert.strictEquAl(symbols[1].nAme, '## heAder2');
 	});
 
-	test('Should return all content  basic workspace', async () => {
-		const fileNameCount = 10;
+	test('Should return All content  bAsic workspAce', Async () => {
+		const fileNAmeCount = 10;
 		const files: vscode.TextDocument[] = [];
-		for (let i = 0; i < fileNameCount; ++i) {
-			const testFileName = vscode.Uri.file(`test${i}.md`);
-			files.push(new InMemoryDocument(testFileName, `# common\nabc\n## header${i}`));
+		for (let i = 0; i < fileNAmeCount; ++i) {
+			const testFileNAme = vscode.Uri.file(`test${i}.md`);
+			files.push(new InMemoryDocument(testFileNAme, `# common\nAbc\n## heAder${i}`));
 		}
 
-		const provider = new MarkdownWorkspaceSymbolProvider(symbolProvider, new InMemoryWorkspaceMarkdownDocumentProvider(files));
+		const provider = new MArkdownWorkspAceSymbolProvider(symbolProvider, new InMemoryWorkspAceMArkdownDocumentProvider(files));
 
-		const symbols = await provider.provideWorkspaceSymbols('');
-		assert.strictEqual(symbols.length, fileNameCount * 2);
+		const symbols = AwAit provider.provideWorkspAceSymbols('');
+		Assert.strictEquAl(symbols.length, fileNAmeCount * 2);
 	});
 
-	test('Should update results when markdown file changes symbols', async () => {
-		const testFileName = vscode.Uri.file('test.md');
+	test('Should updAte results when mArkdown file chAnges symbols', Async () => {
+		const testFileNAme = vscode.Uri.file('test.md');
 
-		const workspaceFileProvider = new InMemoryWorkspaceMarkdownDocumentProvider([
-			new InMemoryDocument(testFileName, `# header1`, 1 /* version */)
+		const workspAceFileProvider = new InMemoryWorkspAceMArkdownDocumentProvider([
+			new InMemoryDocument(testFileNAme, `# heAder1`, 1 /* version */)
 		]);
 
-		const provider = new MarkdownWorkspaceSymbolProvider(symbolProvider, workspaceFileProvider);
+		const provider = new MArkdownWorkspAceSymbolProvider(symbolProvider, workspAceFileProvider);
 
-		assert.strictEqual((await provider.provideWorkspaceSymbols('')).length, 1);
+		Assert.strictEquAl((AwAit provider.provideWorkspAceSymbols('')).length, 1);
 
-		// Update file
-		workspaceFileProvider.updateDocument(new InMemoryDocument(testFileName, `# new header\nabc\n## header2`, 2 /* version */));
-		const newSymbols = await provider.provideWorkspaceSymbols('');
-		assert.strictEqual(newSymbols.length, 2);
-		assert.strictEqual(newSymbols[0].name, '# new header');
-		assert.strictEqual(newSymbols[1].name, '## header2');
+		// UpdAte file
+		workspAceFileProvider.updAteDocument(new InMemoryDocument(testFileNAme, `# new heAder\nAbc\n## heAder2`, 2 /* version */));
+		const newSymbols = AwAit provider.provideWorkspAceSymbols('');
+		Assert.strictEquAl(newSymbols.length, 2);
+		Assert.strictEquAl(newSymbols[0].nAme, '# new heAder');
+		Assert.strictEquAl(newSymbols[1].nAme, '## heAder2');
 	});
 
-	test('Should remove results when file is deleted', async () => {
-		const testFileName = vscode.Uri.file('test.md');
+	test('Should remove results when file is deleted', Async () => {
+		const testFileNAme = vscode.Uri.file('test.md');
 
-		const workspaceFileProvider = new InMemoryWorkspaceMarkdownDocumentProvider([
-			new InMemoryDocument(testFileName, `# header1`)
+		const workspAceFileProvider = new InMemoryWorkspAceMArkdownDocumentProvider([
+			new InMemoryDocument(testFileNAme, `# heAder1`)
 		]);
 
-		const provider = new MarkdownWorkspaceSymbolProvider(symbolProvider, workspaceFileProvider);
-		assert.strictEqual((await provider.provideWorkspaceSymbols('')).length, 1);
+		const provider = new MArkdownWorkspAceSymbolProvider(symbolProvider, workspAceFileProvider);
+		Assert.strictEquAl((AwAit provider.provideWorkspAceSymbols('')).length, 1);
 
 		// delete file
-		workspaceFileProvider.deleteDocument(testFileName);
-		const newSymbols = await provider.provideWorkspaceSymbols('');
-		assert.strictEqual(newSymbols.length, 0);
+		workspAceFileProvider.deleteDocument(testFileNAme);
+		const newSymbols = AwAit provider.provideWorkspAceSymbols('');
+		Assert.strictEquAl(newSymbols.length, 0);
 	});
 
-	test('Should update results when markdown file is created', async () => {
-		const testFileName = vscode.Uri.file('test.md');
+	test('Should updAte results when mArkdown file is creAted', Async () => {
+		const testFileNAme = vscode.Uri.file('test.md');
 
-		const workspaceFileProvider = new InMemoryWorkspaceMarkdownDocumentProvider([
-			new InMemoryDocument(testFileName, `# header1`)
+		const workspAceFileProvider = new InMemoryWorkspAceMArkdownDocumentProvider([
+			new InMemoryDocument(testFileNAme, `# heAder1`)
 		]);
 
-		const provider = new MarkdownWorkspaceSymbolProvider(symbolProvider, workspaceFileProvider);
-		assert.strictEqual((await provider.provideWorkspaceSymbols('')).length, 1);
+		const provider = new MArkdownWorkspAceSymbolProvider(symbolProvider, workspAceFileProvider);
+		Assert.strictEquAl((AwAit provider.provideWorkspAceSymbols('')).length, 1);
 
-		// Creat file
-		workspaceFileProvider.createDocument(new InMemoryDocument(vscode.Uri.file('test2.md'), `# new header\nabc\n## header2`));
-		const newSymbols = await provider.provideWorkspaceSymbols('');
-		assert.strictEqual(newSymbols.length, 3);
+		// CreAt file
+		workspAceFileProvider.creAteDocument(new InMemoryDocument(vscode.Uri.file('test2.md'), `# new heAder\nAbc\n## heAder2`));
+		const newSymbols = AwAit provider.provideWorkspAceSymbols('');
+		Assert.strictEquAl(newSymbols.length, 3);
 	});
 });
 
 
-class InMemoryWorkspaceMarkdownDocumentProvider implements WorkspaceMarkdownDocumentProvider {
-	private readonly _documents = new Map<string, vscode.TextDocument>();
+clAss InMemoryWorkspAceMArkdownDocumentProvider implements WorkspAceMArkdownDocumentProvider {
+	privAte reAdonly _documents = new MAp<string, vscode.TextDocument>();
 
 	constructor(documents: vscode.TextDocument[]) {
 		for (const doc of documents) {
-			this._documents.set(doc.fileName, doc);
+			this._documents.set(doc.fileNAme, doc);
 		}
 	}
 
-	async getAllMarkdownDocuments() {
-		return Array.from(this._documents.values());
+	Async getAllMArkdownDocuments() {
+		return ArrAy.from(this._documents.vAlues());
 	}
 
-	private readonly _onDidChangeMarkdownDocumentEmitter = new vscode.EventEmitter<vscode.TextDocument>();
-	public onDidChangeMarkdownDocument = this._onDidChangeMarkdownDocumentEmitter.event;
+	privAte reAdonly _onDidChAngeMArkdownDocumentEmitter = new vscode.EventEmitter<vscode.TextDocument>();
+	public onDidChAngeMArkdownDocument = this._onDidChAngeMArkdownDocumentEmitter.event;
 
-	private readonly _onDidCreateMarkdownDocumentEmitter = new vscode.EventEmitter<vscode.TextDocument>();
-	public onDidCreateMarkdownDocument = this._onDidCreateMarkdownDocumentEmitter.event;
+	privAte reAdonly _onDidCreAteMArkdownDocumentEmitter = new vscode.EventEmitter<vscode.TextDocument>();
+	public onDidCreAteMArkdownDocument = this._onDidCreAteMArkdownDocumentEmitter.event;
 
-	private readonly _onDidDeleteMarkdownDocumentEmitter = new vscode.EventEmitter<vscode.Uri>();
-	public onDidDeleteMarkdownDocument = this._onDidDeleteMarkdownDocumentEmitter.event;
+	privAte reAdonly _onDidDeleteMArkdownDocumentEmitter = new vscode.EventEmitter<vscode.Uri>();
+	public onDidDeleteMArkdownDocument = this._onDidDeleteMArkdownDocumentEmitter.event;
 
-	public updateDocument(document: vscode.TextDocument) {
-		this._documents.set(document.fileName, document);
-		this._onDidChangeMarkdownDocumentEmitter.fire(document);
+	public updAteDocument(document: vscode.TextDocument) {
+		this._documents.set(document.fileNAme, document);
+		this._onDidChAngeMArkdownDocumentEmitter.fire(document);
 	}
 
-	public createDocument(document: vscode.TextDocument) {
-		assert.ok(!this._documents.has(document.uri.fsPath));
+	public creAteDocument(document: vscode.TextDocument) {
+		Assert.ok(!this._documents.hAs(document.uri.fsPAth));
 
-		this._documents.set(document.uri.fsPath, document);
-		this._onDidCreateMarkdownDocumentEmitter.fire(document);
+		this._documents.set(document.uri.fsPAth, document);
+		this._onDidCreAteMArkdownDocumentEmitter.fire(document);
 	}
 
 	public deleteDocument(resource: vscode.Uri) {
-		this._documents.delete(resource.fsPath);
-		this._onDidDeleteMarkdownDocumentEmitter.fire(resource);
+		this._documents.delete(resource.fsPAth);
+		this._onDidDeleteMArkdownDocumentEmitter.fire(resource);
 	}
 }

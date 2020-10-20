@@ -1,142 +1,142 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /*
- * Interface types for Monarch language definitions
- * These descriptions are really supposed to be JSON values but if using typescript
- * to describe them, these type definitions can help check the validity.
+ * InterfAce types for MonArch lAnguAge definitions
+ * These descriptions Are reAlly supposed to be JSON vAlues but if using typescript
+ * to describe them, these type definitions cAn help check the vAlidity.
  */
 
 /**
- * A Monarch language definition
+ * A MonArch lAnguAge definition
  */
-export interface IMonarchLanguage {
+export interfAce IMonArchLAnguAge {
 	/**
-	 * map from string to ILanguageRule[]
+	 * mAp from string to ILAnguAgeRule[]
 	 */
-	tokenizer: { [name: string]: IMonarchLanguageRule[] };
+	tokenizer: { [nAme: string]: IMonArchLAnguAgeRule[] };
 	/**
-	 * is the language case insensitive?
+	 * is the lAnguAge cAse insensitive?
 	 */
-	ignoreCase?: boolean;
+	ignoreCAse?: booleAn;
 	/**
-	 * is the language unicode-aware? (i.e., /\u{1D306}/)
+	 * is the lAnguAge unicode-AwAre? (i.e., /\u{1D306}/)
 	 */
-	unicode?: boolean;
+	unicode?: booleAn;
 	/**
-	 * if no match in the tokenizer assign this token class (default 'source')
+	 * if no mAtch in the tokenizer Assign this token clAss (defAult 'source')
 	 */
-	defaultToken?: string;
+	defAultToken?: string;
 	/**
-	 * for example [['{','}','delimiter.curly']]
+	 * for exAmple [['{','}','delimiter.curly']]
 	 */
-	brackets?: IMonarchLanguageBracket[];
+	brAckets?: IMonArchLAnguAgeBrAcket[];
 	/**
-	 * start symbol in the tokenizer (by default the first entry is used)
+	 * stArt symbol in the tokenizer (by defAult the first entry is used)
 	 */
-	start?: string;
+	stArt?: string;
 	/**
-	 * attach this to every token class (by default '.' + name)
+	 * AttAch this to every token clAss (by defAult '.' + nAme)
 	 */
 	tokenPostfix?: string;
 }
 
 /**
- * A rule is either a regular expression and an action
- * 		shorthands: [reg,act] == { regex: reg, action: act}
- *		and       : [reg,act,nxt] == { regex: reg, action: act{ next: nxt }}
+ * A rule is either A regulAr expression And An Action
+ * 		shorthAnds: [reg,Act] == { regex: reg, Action: Act}
+ *		And       : [reg,Act,nxt] == { regex: reg, Action: Act{ next: nxt }}
  */
-export type IShortMonarchLanguageRule1 = [string | RegExp, IMonarchLanguageAction];
+export type IShortMonArchLAnguAgeRule1 = [string | RegExp, IMonArchLAnguAgeAction];
 
-export type IShortMonarchLanguageRule2 = [string | RegExp, IMonarchLanguageAction, string];
+export type IShortMonArchLAnguAgeRule2 = [string | RegExp, IMonArchLAnguAgeAction, string];
 
-export interface IExpandedMonarchLanguageRule {
+export interfAce IExpAndedMonArchLAnguAgeRule {
 	/**
-	 * match tokens
+	 * mAtch tokens
 	 */
 	regex?: string | RegExp;
 	/**
-	 * action to take on match
+	 * Action to tAke on mAtch
 	 */
-	action?: IMonarchLanguageAction;
+	Action?: IMonArchLAnguAgeAction;
 
 	/**
-	 * or an include rule. include all rules from the included state
+	 * or An include rule. include All rules from the included stAte
 	 */
 	include?: string;
 }
 
-export type IMonarchLanguageRule = IShortMonarchLanguageRule1
-	| IShortMonarchLanguageRule2
-	| IExpandedMonarchLanguageRule;
+export type IMonArchLAnguAgeRule = IShortMonArchLAnguAgeRule1
+	| IShortMonArchLAnguAgeRule2
+	| IExpAndedMonArchLAnguAgeRule;
 
 /**
- * An action is either an array of actions...
- * ... or a case statement with guards...
- * ... or a basic action with a token value.
+ * An Action is either An ArrAy of Actions...
+ * ... or A cAse stAtement with guArds...
+ * ... or A bAsic Action with A token vAlue.
  */
-export type IShortMonarchLanguageAction = string;
+export type IShortMonArchLAnguAgeAction = string;
 
-export interface IExpandedMonarchLanguageAction {
+export interfAce IExpAndedMonArchLAnguAgeAction {
 	/**
-	 * array of actions for each parenthesized match group
+	 * ArrAy of Actions for eAch pArenthesized mAtch group
 	 */
-	group?: IMonarchLanguageAction[];
+	group?: IMonArchLAnguAgeAction[];
 	/**
-	 * map from string to ILanguageAction
+	 * mAp from string to ILAnguAgeAction
 	 */
-	cases?: Object;
+	cAses?: Object;
 	/**
-	 * token class (ie. css class) (or "@brackets" or "@rematch")
+	 * token clAss (ie. css clAss) (or "@brAckets" or "@remAtch")
 	 */
 	token?: string;
 	/**
-	 * the next state to push, or "@push", "@pop", "@popall"
+	 * the next stAte to push, or "@push", "@pop", "@popAll"
 	 */
 	next?: string;
 	/**
-	 * switch to this state
+	 * switch to this stAte
 	 */
 	switchTo?: string;
 	/**
-	 * go back n characters in the stream
+	 * go bAck n chArActers in the streAm
 	 */
-	goBack?: number;
+	goBAck?: number;
 	/**
 	 * @open or @close
 	 */
-	bracket?: string;
+	brAcket?: string;
 	/**
-	 * switch to embedded language (using the mimetype) or get out using "@pop"
+	 * switch to embedded lAnguAge (using the mimetype) or get out using "@pop"
 	 */
 	nextEmbedded?: string;
 	/**
-	 * log a message to the browser console window
+	 * log A messAge to the browser console window
 	 */
 	log?: string;
 }
 
-export type IMonarchLanguageAction = IShortMonarchLanguageAction
-	| IExpandedMonarchLanguageAction
-	| IShortMonarchLanguageAction[]
-	| IExpandedMonarchLanguageAction[];
+export type IMonArchLAnguAgeAction = IShortMonArchLAnguAgeAction
+	| IExpAndedMonArchLAnguAgeAction
+	| IShortMonArchLAnguAgeAction[]
+	| IExpAndedMonArchLAnguAgeAction[];
 
 /**
- * This interface can be shortened as an array, ie. ['{','}','delimiter.curly']
+ * This interfAce cAn be shortened As An ArrAy, ie. ['{','}','delimiter.curly']
  */
-export interface IMonarchLanguageBracket {
+export interfAce IMonArchLAnguAgeBrAcket {
 	/**
-	 * open bracket
+	 * open brAcket
 	 */
 	open: string;
 	/**
-	 * closing bracket
+	 * closing brAcket
 	 */
 	close: string;
 	/**
-	 * token class
+	 * token clAss
 	 */
 	token: string;
 }

@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as path from 'vs/base/common/path';
-import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import * as glob from 'vs/base/common/glob';
-import { URI } from 'vs/base/common/uri';
-import { deserializeSearchError, IFolderQuery, ISearchRange, ITextQuery, ITextSearchContext, ITextSearchMatch, QueryType, SearchErrorCode, ISerializedFileMatch } from 'vs/workbench/services/search/common/search';
-import { TextSearchEngineAdapter } from 'vs/workbench/services/search/node/textSearchAdapter';
+import * As Assert from 'Assert';
+import * As pAth from 'vs/bAse/common/pAth';
+import { getPAthFromAmdModule } from 'vs/bAse/common/Amd';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import * As glob from 'vs/bAse/common/glob';
+import { URI } from 'vs/bAse/common/uri';
+import { deseriAlizeSeArchError, IFolderQuery, ISeArchRAnge, ITextQuery, ITextSeArchContext, ITextSeArchMAtch, QueryType, SeArchErrorCode, ISeriAlizedFileMAtch } from 'vs/workbench/services/seArch/common/seArch';
+import { TextSeArchEngineAdApter } from 'vs/workbench/services/seArch/node/textSeArchAdApter';
 
-const TEST_FIXTURES = path.normalize(getPathFromAmdModule(require, './fixtures'));
-const EXAMPLES_FIXTURES = path.join(TEST_FIXTURES, 'examples');
-const MORE_FIXTURES = path.join(TEST_FIXTURES, 'more');
+const TEST_FIXTURES = pAth.normAlize(getPAthFromAmdModule(require, './fixtures'));
+const EXAMPLES_FIXTURES = pAth.join(TEST_FIXTURES, 'exAmples');
+const MORE_FIXTURES = pAth.join(TEST_FIXTURES, 'more');
 const TEST_ROOT_FOLDER: IFolderQuery = { folder: URI.file(TEST_FIXTURES) };
 const ROOT_FOLDER_QUERY: IFolderQuery[] = [
 	TEST_ROOT_FOLDER
@@ -25,418 +25,418 @@ const MULTIROOT_QUERIES: IFolderQuery[] = [
 	{ folder: URI.file(MORE_FIXTURES) }
 ];
 
-function doSearchTest(query: ITextQuery, expectedResultCount: number | Function): Promise<ISerializedFileMatch[]> {
-	const engine = new TextSearchEngineAdapter(query);
+function doSeArchTest(query: ITextQuery, expectedResultCount: number | Function): Promise<ISeriAlizedFileMAtch[]> {
+	const engine = new TextSeArchEngineAdApter(query);
 
 	let c = 0;
-	const results: ISerializedFileMatch[] = [];
-	return engine.search(new CancellationTokenSource().token, _results => {
+	const results: ISeriAlizedFileMAtch[] = [];
+	return engine.seArch(new CAncellAtionTokenSource().token, _results => {
 		if (_results) {
-			c += _results.reduce((acc, cur) => acc + cur.numMatches!, 0);
+			c += _results.reduce((Acc, cur) => Acc + cur.numMAtches!, 0);
 			results.push(..._results);
 		}
 	}, () => { }).then(() => {
 		if (typeof expectedResultCount === 'function') {
-			assert(expectedResultCount(c));
+			Assert(expectedResultCount(c));
 		} else {
-			assert.equal(c, expectedResultCount, `rg ${c} !== ${expectedResultCount}`);
+			Assert.equAl(c, expectedResultCount, `rg ${c} !== ${expectedResultCount}`);
 		}
 
 		return results;
 	});
 }
 
-suite('TextSearch-integration', function () {
-	this.timeout(1000 * 60); // increase timeout for this suite
+suite('TextSeArch-integrAtion', function () {
+	this.timeout(1000 * 60); // increAse timeout for this suite
 
-	test('Text: GameOfLife', () => {
+	test('Text: GAmeOfLife', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'GameOfLife' },
+			contentPAttern: { pAttern: 'GAmeOfLife' },
 		};
 
-		return doSearchTest(config, 4);
+		return doSeArchTest(config, 4);
 	});
 
-	test('Text: GameOfLife (RegExp)', () => {
+	test('Text: GAmeOfLife (RegExp)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'Game.?fL\\w?fe', isRegExp: true }
+			contentPAttern: { pAttern: 'GAme.?fL\\w?fe', isRegExp: true }
 		};
 
-		return doSearchTest(config, 4);
+		return doSeArchTest(config, 4);
 	});
 
-	test('Text: GameOfLife (unicode escape sequences)', () => {
+	test('Text: GAmeOfLife (unicode escApe sequences)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'G\\u{0061}m\\u0065OfLife', isRegExp: true }
+			contentPAttern: { pAttern: 'G\\u{0061}m\\u0065OfLife', isRegExp: true }
 		};
 
-		return doSearchTest(config, 4);
+		return doSeArchTest(config, 4);
 	});
 
-	test('Text: GameOfLife (unicode escape sequences, force PCRE2)', () => {
+	test('Text: GAmeOfLife (unicode escApe sequences, force PCRE2)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: '(?<!a)G\\u{0061}m\\u0065OfLife', isRegExp: true }
+			contentPAttern: { pAttern: '(?<!A)G\\u{0061}m\\u0065OfLife', isRegExp: true }
 		};
 
-		return doSearchTest(config, 4);
+		return doSeArchTest(config, 4);
 	});
 
-	test('Text: GameOfLife (PCRE2 RegExp)', () => {
+	test('Text: GAmeOfLife (PCRE2 RegExp)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
 			usePCRE2: true,
-			contentPattern: { pattern: 'Life(?!P)', isRegExp: true }
+			contentPAttern: { pAttern: 'Life(?!P)', isRegExp: true }
 		};
 
-		return doSearchTest(config, 8);
+		return doSeArchTest(config, 8);
 	});
 
-	test('Text: GameOfLife (RegExp to EOL)', () => {
+	test('Text: GAmeOfLife (RegExp to EOL)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'GameOfLife.*', isRegExp: true }
+			contentPAttern: { pAttern: 'GAmeOfLife.*', isRegExp: true }
 		};
 
-		return doSearchTest(config, 4);
+		return doSeArchTest(config, 4);
 	});
 
-	test('Text: GameOfLife (Word Match, Case Sensitive)', () => {
+	test('Text: GAmeOfLife (Word MAtch, CAse Sensitive)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'GameOfLife', isWordMatch: true, isCaseSensitive: true }
+			contentPAttern: { pAttern: 'GAmeOfLife', isWordMAtch: true, isCAseSensitive: true }
 		};
 
-		return doSearchTest(config, 4);
+		return doSeArchTest(config, 4);
 	});
 
-	test('Text: GameOfLife (Word Match, Spaces)', () => {
+	test('Text: GAmeOfLife (Word MAtch, SpAces)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: ' GameOfLife ', isWordMatch: true }
+			contentPAttern: { pAttern: ' GAmeOfLife ', isWordMAtch: true }
 		};
 
-		return doSearchTest(config, 1);
+		return doSeArchTest(config, 1);
 	});
 
-	test('Text: GameOfLife (Word Match, Punctuation and Spaces)', () => {
+	test('Text: GAmeOfLife (Word MAtch, PunctuAtion And SpAces)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: ', as =', isWordMatch: true }
+			contentPAttern: { pAttern: ', As =', isWordMAtch: true }
 		};
 
-		return doSearchTest(config, 1);
+		return doSeArchTest(config, 1);
 	});
 
-	test('Text: Helvetica (UTF 16)', () => {
+	test('Text: HelveticA (UTF 16)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'Helvetica' }
+			contentPAttern: { pAttern: 'HelveticA' }
 		};
 
-		return doSearchTest(config, 3);
+		return doSeArchTest(config, 3);
 	});
 
 	test('Text: e', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'e' }
+			contentPAttern: { pAttern: 'e' }
 		};
 
-		return doSearchTest(config, 788);
+		return doSeArchTest(config, 788);
 	});
 
 	test('Text: e (with excludes)', () => {
-		const config: any = {
+		const config: Any = {
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'e' },
-			excludePattern: { '**/examples': true }
+			contentPAttern: { pAttern: 'e' },
+			excludePAttern: { '**/exAmples': true }
 		};
 
-		return doSearchTest(config, 394);
+		return doSeArchTest(config, 394);
 	});
 
 	test('Text: e (with includes)', () => {
-		const config: any = {
+		const config: Any = {
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'e' },
-			includePattern: { '**/examples/**': true }
+			contentPAttern: { pAttern: 'e' },
+			includePAttern: { '**/exAmples/**': true }
 		};
 
-		return doSearchTest(config, 394);
+		return doSeArchTest(config, 394);
 	});
 
 	// TODO
-	// test('Text: e (with absolute path excludes)', () => {
-	// 	const config: any = {
+	// test('Text: e (with Absolute pAth excludes)', () => {
+	// 	const config: Any = {
 	// 		folderQueries: ROOT_FOLDER_QUERY,
-	// 		contentPattern: { pattern: 'e' },
-	// 		excludePattern: makeExpression(path.join(TEST_FIXTURES, '**/examples'))
+	// 		contentPAttern: { pAttern: 'e' },
+	// 		excludePAttern: mAkeExpression(pAth.join(TEST_FIXTURES, '**/exAmples'))
 	// 	};
 
-	// 	return doSearchTest(config, 394);
+	// 	return doSeArchTest(config, 394);
 	// });
 
-	// test('Text: e (with mixed absolute/relative path excludes)', () => {
-	// 	const config: any = {
+	// test('Text: e (with mixed Absolute/relAtive pAth excludes)', () => {
+	// 	const config: Any = {
 	// 		folderQueries: ROOT_FOLDER_QUERY,
-	// 		contentPattern: { pattern: 'e' },
-	// 		excludePattern: makeExpression(path.join(TEST_FIXTURES, '**/examples'), '*.css')
+	// 		contentPAttern: { pAttern: 'e' },
+	// 		excludePAttern: mAkeExpression(pAth.join(TEST_FIXTURES, '**/exAmples'), '*.css')
 	// 	};
 
-	// 	return doSearchTest(config, 310);
+	// 	return doSeArchTest(config, 310);
 	// });
 
 	test('Text: sibling exclude', () => {
-		const config: any = {
+		const config: Any = {
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'm' },
-			includePattern: makeExpression('**/site*'),
-			excludePattern: { '*.css': { when: '$(basename).less' } }
+			contentPAttern: { pAttern: 'm' },
+			includePAttern: mAkeExpression('**/site*'),
+			excludePAttern: { '*.css': { when: '$(bAsenAme).less' } }
 		};
 
-		return doSearchTest(config, 1);
+		return doSeArchTest(config, 1);
 	});
 
-	test('Text: e (with includes and exclude)', () => {
-		const config: any = {
+	test('Text: e (with includes And exclude)', () => {
+		const config: Any = {
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'e' },
-			includePattern: { '**/examples/**': true },
-			excludePattern: { '**/examples/small.js': true }
+			contentPAttern: { pAttern: 'e' },
+			includePAttern: { '**/exAmples/**': true },
+			excludePAttern: { '**/exAmples/smAll.js': true }
 		};
 
-		return doSearchTest(config, 371);
+		return doSeArchTest(config, 371);
 	});
 
-	test('Text: a (capped)', () => {
-		const maxResults = 520;
+	test('Text: A (cApped)', () => {
+		const mAxResults = 520;
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'a' },
-			maxResults
+			contentPAttern: { pAttern: 'A' },
+			mAxResults
 		};
 
-		return doSearchTest(config, maxResults);
+		return doSeArchTest(config, mAxResults);
 	});
 
-	test('Text: a (no results)', () => {
+	test('Text: A (no results)', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'ahsogehtdas' }
+			contentPAttern: { pAttern: 'AhsogehtdAs' }
 		};
 
-		return doSearchTest(config, 0);
+		return doSeArchTest(config, 0);
 	});
 
 	test('Text: -size', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: '-size' }
+			contentPAttern: { pAttern: '-size' }
 		};
 
-		return doSearchTest(config, 9);
+		return doSeArchTest(config, 9);
 	});
 
-	test('Multiroot: Conway', () => {
+	test('Multiroot: ConwAy', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: MULTIROOT_QUERIES,
-			contentPattern: { pattern: 'conway' }
+			contentPAttern: { pAttern: 'conwAy' }
 		};
 
-		return doSearchTest(config, 8);
+		return doSeArchTest(config, 8);
 	});
 
-	test('Multiroot: e with partial global exclude', () => {
+	test('Multiroot: e with pArtiAl globAl exclude', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: MULTIROOT_QUERIES,
-			contentPattern: { pattern: 'e' },
-			excludePattern: makeExpression('**/*.txt')
+			contentPAttern: { pAttern: 'e' },
+			excludePAttern: mAkeExpression('**/*.txt')
 		};
 
-		return doSearchTest(config, 394);
+		return doSeArchTest(config, 394);
 	});
 
-	test('Multiroot: e with global excludes', () => {
+	test('Multiroot: e with globAl excludes', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: MULTIROOT_QUERIES,
-			contentPattern: { pattern: 'e' },
-			excludePattern: makeExpression('**/*.txt', '**/*.js')
+			contentPAttern: { pAttern: 'e' },
+			excludePAttern: mAkeExpression('**/*.txt', '**/*.js')
 		};
 
-		return doSearchTest(config, 0);
+		return doSeArchTest(config, 0);
 	});
 
 	test('Multiroot: e with folder exclude', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: [
-				{ folder: URI.file(EXAMPLES_FIXTURES), excludePattern: makeExpression('**/e*.js') },
+				{ folder: URI.file(EXAMPLES_FIXTURES), excludePAttern: mAkeExpression('**/e*.js') },
 				{ folder: URI.file(MORE_FIXTURES) }
 			],
-			contentPattern: { pattern: 'e' }
+			contentPAttern: { pAttern: 'e' }
 		};
 
-		return doSearchTest(config, 298);
+		return doSeArchTest(config, 298);
 	});
 
 	test('Text: 语', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: '语' }
+			contentPAttern: { pAttern: '语' }
 		};
 
-		return doSearchTest(config, 1).then(results => {
-			const matchRange = (<ITextSearchMatch>results[0].results![0]).ranges;
-			assert.deepEqual(matchRange, [{
-				startLineNumber: 0,
-				startColumn: 1,
+		return doSeArchTest(config, 1).then(results => {
+			const mAtchRAnge = (<ITextSeArchMAtch>results[0].results![0]).rAnges;
+			Assert.deepEquAl(mAtchRAnge, [{
+				stArtLineNumber: 0,
+				stArtColumn: 1,
 				endLineNumber: 0,
 				endColumn: 2
 			}]);
 		});
 	});
 
-	test('Multiple matches on line: h\\d,', () => {
+	test('Multiple mAtches on line: h\\d,', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'h\\d,', isRegExp: true }
+			contentPAttern: { pAttern: 'h\\d,', isRegExp: true }
 		};
 
-		return doSearchTest(config, 15).then(results => {
-			assert.equal(results.length, 3);
-			assert.equal(results[0].results!.length, 1);
-			const match = <ITextSearchMatch>results[0].results![0];
-			assert.equal((<ISearchRange[]>match.ranges).length, 5);
+		return doSeArchTest(config, 15).then(results => {
+			Assert.equAl(results.length, 3);
+			Assert.equAl(results[0].results!.length, 1);
+			const mAtch = <ITextSeArchMAtch>results[0].results![0];
+			Assert.equAl((<ISeArchRAnge[]>mAtch.rAnges).length, 5);
 		});
 	});
 
-	test('Search with context matches', () => {
+	test('SeArch with context mAtches', () => {
 		const config: ITextQuery = {
 			type: QueryType.Text,
 			folderQueries: ROOT_FOLDER_QUERY,
-			contentPattern: { pattern: 'compiler.typeCheck();' },
+			contentPAttern: { pAttern: 'compiler.typeCheck();' },
 			beforeContext: 1,
-			afterContext: 2
+			AfterContext: 2
 		};
 
-		return doSearchTest(config, 4).then(results => {
-			assert.equal(results.length, 4);
-			assert.equal((<ITextSearchContext>results[0].results![0]).lineNumber, 25);
-			assert.equal((<ITextSearchContext>results[0].results![0]).text, '        compiler.addUnit(prog,"input.ts");');
-			// assert.equal((<ITextSearchMatch>results[1].results[0]).preview.text, '        compiler.typeCheck();\n'); // See https://github.com/BurntSushi/ripgrep/issues/1095
-			assert.equal((<ITextSearchContext>results[2].results![0]).lineNumber, 27);
-			assert.equal((<ITextSearchContext>results[2].results![0]).text, '        compiler.emit();');
-			assert.equal((<ITextSearchContext>results[3].results![0]).lineNumber, 28);
-			assert.equal((<ITextSearchContext>results[3].results![0]).text, '');
+		return doSeArchTest(config, 4).then(results => {
+			Assert.equAl(results.length, 4);
+			Assert.equAl((<ITextSeArchContext>results[0].results![0]).lineNumber, 25);
+			Assert.equAl((<ITextSeArchContext>results[0].results![0]).text, '        compiler.AddUnit(prog,"input.ts");');
+			// Assert.equAl((<ITextSeArchMAtch>results[1].results[0]).preview.text, '        compiler.typeCheck();\n'); // See https://github.com/BurntSushi/ripgrep/issues/1095
+			Assert.equAl((<ITextSeArchContext>results[2].results![0]).lineNumber, 27);
+			Assert.equAl((<ITextSeArchContext>results[2].results![0]).text, '        compiler.emit();');
+			Assert.equAl((<ITextSeArchContext>results[3].results![0]).lineNumber, 28);
+			Assert.equAl((<ITextSeArchContext>results[3].results![0]).text, '');
 		});
 	});
 
-	suite('error messages', () => {
-		test('invalid encoding', () => {
+	suite('error messAges', () => {
+		test('invAlid encoding', () => {
 			const config: ITextQuery = {
 				type: QueryType.Text,
 				folderQueries: [
 					{
 						...TEST_ROOT_FOLDER,
-						fileEncoding: 'invalidEncoding'
+						fileEncoding: 'invAlidEncoding'
 					}
 				],
-				contentPattern: { pattern: 'test' },
+				contentPAttern: { pAttern: 'test' },
 			};
 
-			return doSearchTest(config, 0).then(() => {
-				throw new Error('expected fail');
+			return doSeArchTest(config, 0).then(() => {
+				throw new Error('expected fAil');
 			}, err => {
-				const searchError = deserializeSearchError(err);
-				assert.equal(searchError.message, 'Unknown encoding: invalidEncoding');
-				assert.equal(searchError.code, SearchErrorCode.unknownEncoding);
+				const seArchError = deseriAlizeSeArchError(err);
+				Assert.equAl(seArchError.messAge, 'Unknown encoding: invAlidEncoding');
+				Assert.equAl(seArchError.code, SeArchErrorCode.unknownEncoding);
 			});
 		});
 
-		test('invalid regex case 1', () => {
+		test('invAlid regex cAse 1', () => {
 			const config: ITextQuery = {
 				type: QueryType.Text,
 				folderQueries: ROOT_FOLDER_QUERY,
-				contentPattern: { pattern: ')', isRegExp: true },
+				contentPAttern: { pAttern: ')', isRegExp: true },
 			};
 
-			return doSearchTest(config, 0).then(() => {
-				throw new Error('expected fail');
+			return doSeArchTest(config, 0).then(() => {
+				throw new Error('expected fAil');
 			}, err => {
-				const searchError = deserializeSearchError(err);
-				const regexParseErrorForUnclosedParenthesis = 'Regex parse error: unmatched closing parenthesis';
-				assert.equal(searchError.message, regexParseErrorForUnclosedParenthesis);
-				assert.equal(searchError.code, SearchErrorCode.regexParseError);
+				const seArchError = deseriAlizeSeArchError(err);
+				const regexPArseErrorForUnclosedPArenthesis = 'Regex pArse error: unmAtched closing pArenthesis';
+				Assert.equAl(seArchError.messAge, regexPArseErrorForUnclosedPArenthesis);
+				Assert.equAl(seArchError.code, SeArchErrorCode.regexPArseError);
 			});
 		});
 
-		test('invalid regex case 2', () => {
+		test('invAlid regex cAse 2', () => {
 			const config: ITextQuery = {
 				type: QueryType.Text,
 				folderQueries: ROOT_FOLDER_QUERY,
-				contentPattern: { pattern: '(?<!a.*)', isRegExp: true },
+				contentPAttern: { pAttern: '(?<!A.*)', isRegExp: true },
 			};
 
-			return doSearchTest(config, 0).then(() => {
-				throw new Error('expected fail');
+			return doSeArchTest(config, 0).then(() => {
+				throw new Error('expected fAil');
 			}, err => {
-				const searchError = deserializeSearchError(err);
-				const regexParseErrorForLookAround = 'Regex parse error: lookbehind assertion is not fixed length';
-				assert.equal(searchError.message, regexParseErrorForLookAround);
-				assert.equal(searchError.code, SearchErrorCode.regexParseError);
+				const seArchError = deseriAlizeSeArchError(err);
+				const regexPArseErrorForLookAround = 'Regex pArse error: lookbehind Assertion is not fixed length';
+				Assert.equAl(seArchError.messAge, regexPArseErrorForLookAround);
+				Assert.equAl(seArchError.code, SeArchErrorCode.regexPArseError);
 			});
 		});
 
 
-		test('invalid glob', () => {
+		test('invAlid glob', () => {
 			const config: ITextQuery = {
 				type: QueryType.Text,
 				folderQueries: ROOT_FOLDER_QUERY,
-				contentPattern: { pattern: 'foo' },
-				includePattern: {
+				contentPAttern: { pAttern: 'foo' },
+				includePAttern: {
 					'{{}': true
 				}
 			};
 
-			return doSearchTest(config, 0).then(() => {
-				throw new Error('expected fail');
+			return doSeArchTest(config, 0).then(() => {
+				throw new Error('expected fAil');
 			}, err => {
-				const searchError = deserializeSearchError(err);
-				assert.equal(searchError.message, 'Error parsing glob \'/{{}\': nested alternate groups are not allowed');
-				assert.equal(searchError.code, SearchErrorCode.globParseError);
+				const seArchError = deseriAlizeSeArchError(err);
+				Assert.equAl(seArchError.messAge, 'Error pArsing glob \'/{{}\': nested AlternAte groups Are not Allowed');
+				Assert.equAl(seArchError.code, SeArchErrorCode.globPArseError);
 			});
 		});
 	});
 });
 
-function makeExpression(...patterns: string[]): glob.IExpression {
-	return patterns.reduce((glob, pattern) => {
-		// glob.ts needs forward slashes
-		pattern = pattern.replace(/\\/g, '/');
-		glob[pattern] = true;
+function mAkeExpression(...pAtterns: string[]): glob.IExpression {
+	return pAtterns.reduce((glob, pAttern) => {
+		// glob.ts needs forwArd slAshes
+		pAttern = pAttern.replAce(/\\/g, '/');
+		glob[pAttern] = true;
 		return glob;
-	}, Object.create(null));
+	}, Object.creAte(null));
 }

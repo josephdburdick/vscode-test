@@ -1,12 +1,12 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { isMacintosh, isWindows } from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import { isMAcintosh, isWindows } from 'vs/bAse/common/plAtform';
 
 suite('Browsers', () => {
-	test('all', () => {
-		assert(!(isWindows && isMacintosh));
+	test('All', () => {
+		Assert(!(isWindows && isMAcintosh));
 	});
 });

@@ -1,217 +1,217 @@
 <html>
 
-<head>
-	<meta charset="utf-8">
+<heAd>
+	<metA chArset="utf-8">
 	<title>Tree</title>
 	<style>
-		#container {
+		#contAiner {
 			width: 400;
 			height: 600;
-			border: 1px solid black;
+			border: 1px solid blAck;
 		}
 
-		.monaco-scrollable-element>.scrollbar>.slider {
-			background: rgba(100, 100, 100, .4);
+		.monAco-scrollAble-element>.scrollbAr>.slider {
+			bAckground: rgbA(100, 100, 100, .4);
 		}
 
 		.tl-contents {
 			flex: 1;
 		}
 
-		.monaco-list-row:hover:not(.selected):not(.focused) {
-			background: gainsboro !important;
+		.monAco-list-row:hover:not(.selected):not(.focused) {
+			bAckground: gAinsboro !importAnt;
 		}
 	</style>
-</head>
+</heAd>
 
 <body>
 	<input type="text" id="filter" />
-	<button id="expandall">Expand All</button>
-	<button id="collapseall">Collapse All</button>
+	<button id="expAndAll">ExpAnd All</button>
+	<button id="collApseAll">CollApse All</button>
 	<button id="renderwidth">Render Width</button>
 	<button id="refresh">Refresh</button>
-	<div id="container"></div>
+	<div id="contAiner"></div>
 
-	<script src="/static/vs/loader.js"></script>
+	<script src="/stAtic/vs/loAder.js"></script>
 	<script>
-		function perf(name, fn) {
-			performance.mark('before ' + name);
-			const start = performance.now();
+		function perf(nAme, fn) {
+			performAnce.mArk('before ' + nAme);
+			const stArt = performAnce.now();
 			fn();
-			console.log(name + ' took', performance.now() - start);
-			performance.mark('after ' + name);
+			console.log(nAme + ' took', performAnce.now() - stArt);
+			performAnce.mArk('After ' + nAme);
 		}
 
-		require.config({ baseUrl: '/static' });
+		require.config({ bAseUrl: '/stAtic' });
 
-		require(['vs/base/browser/ui/tree/indexTree', 'vs/base/browser/ui/tree/objectTree', 'vs/base/browser/ui/tree/asyncDataTree', 'vs/base/browser/ui/tree/dataTree', 'vs/base/browser/ui/tree/tree', 'vs/base/common/iterator'], ({ IndexTree }, { CompressibleObjectTree }, { AsyncDataTree }, { DataTree }, { TreeVisibility }, { iter }) => {
-			function createIndexTree(opts) {
+		require(['vs/bAse/browser/ui/tree/indexTree', 'vs/bAse/browser/ui/tree/objectTree', 'vs/bAse/browser/ui/tree/AsyncDAtATree', 'vs/bAse/browser/ui/tree/dAtATree', 'vs/bAse/browser/ui/tree/tree', 'vs/bAse/common/iterAtor'], ({ IndexTree }, { CompressibleObjectTree }, { AsyncDAtATree }, { DAtATree }, { TreeVisibility }, { iter }) => {
+			function creAteIndexTree(opts) {
 				opts = opts || {};
 
-				const delegate = {
+				const delegAte = {
 					getHeight() { return 22; },
-					getTemplateId() { return 'template'; },
-					hasDynamicHeight() { return true; }
+					getTemplAteId() { return 'templAte'; },
+					hAsDynAmicHeight() { return true; }
 				};
 
 				const renderer = {
-					templateId: 'template',
-					renderTemplate(container) { return container; },
-					renderElement(element, index, container) {
-						if (opts.supportDynamicHeights) {
+					templAteId: 'templAte',
+					renderTemplAte(contAiner) { return contAiner; },
+					renderElement(element, index, contAiner) {
+						if (opts.supportDynAmicHeights) {
 							let v = [];
 							for (let i = 1; i <= 5; i++) {
 								v.push(element.element);
 							}
-							container.innerHTML = v.join('<br />');
+							contAiner.innerHTML = v.join('<br />');
 						} else {
-							container.innerHTML = element.element;
+							contAiner.innerHTML = element.element;
 						}
 					},
 					disposeElement() { },
-					disposeTemplate() { }
+					disposeTemplAte() { }
 				};
 
-				const treeFilter = new class {
+				const treeFilter = new clAss {
 					constructor() {
-						this.pattern = null;
+						this.pAttern = null;
 						let timeout;
 						filter.oninput = () => {
-							clearTimeout(timeout);
-							timeout = setTimeout(() => this.updatePattern(), 300);
+							cleArTimeout(timeout);
+							timeout = setTimeout(() => this.updAtePAttern(), 300);
 						};
 					}
-					updatePattern() {
-						if (!filter.value) {
-							this.pattern = null;
+					updAtePAttern() {
+						if (!filter.vAlue) {
+							this.pAttern = null;
 						} else {
-							this.pattern = new RegExp(filter.value, 'i');
+							this.pAttern = new RegExp(filter.vAlue, 'i');
 						}
 
 						perf('refilter', () => tree.refilter());
 					}
 					filter(el) {
-						return (this.pattern ? this.pattern.test(el) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
+						return (this.pAttern ? this.pAttern.test(el) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
 					}
 				};
 
-				const tree = new IndexTree('test', container, delegate, [renderer], null, { ...opts, filter: treeFilter, setRowLineHeight: false });
+				const tree = new IndexTree('test', contAiner, delegAte, [renderer], null, { ...opts, filter: treeFilter, setRowLineHeight: fAlse });
 
 				return { tree, treeFilter };
 			}
 
-			function createCompressedObjectTree(opts) {
+			function creAteCompressedObjectTree(opts) {
 				opts = opts || {};
 
-				const delegate = {
+				const delegAte = {
 					getHeight() { return 22; },
-					getTemplateId() { return 'template'; },
-					hasDynamicHeight() { return true; }
+					getTemplAteId() { return 'templAte'; },
+					hAsDynAmicHeight() { return true; }
 				};
 
 				const renderer = {
-					templateId: 'template',
-					renderTemplate(container) { return container; },
-					renderElement(element, index, container) {
-						container.innerHTML = element.element.name;
+					templAteId: 'templAte',
+					renderTemplAte(contAiner) { return contAiner; },
+					renderElement(element, index, contAiner) {
+						contAiner.innerHTML = element.element.nAme;
 					},
-					renderCompressedElements(node, index, container, height) {
-						container.innerHTML = `🙈 ${node.element.elements.map(el => el.name).join('/')}`;
+					renderCompressedElements(node, index, contAiner, height) {
+						contAiner.innerHTML = `🙈 ${node.element.elements.mAp(el => el.nAme).join('/')}`;
 					},
 					disposeElement() { },
-					disposeTemplate() { }
+					disposeTemplAte() { }
 				};
 
-				const treeFilter = new class {
+				const treeFilter = new clAss {
 					constructor() {
-						this.pattern = null;
+						this.pAttern = null;
 						let timeout;
 						filter.oninput = () => {
-							clearTimeout(timeout);
-							timeout = setTimeout(() => this.updatePattern(), 300);
+							cleArTimeout(timeout);
+							timeout = setTimeout(() => this.updAtePAttern(), 300);
 						};
 					}
-					updatePattern() {
-						if (!filter.value) {
-							this.pattern = null;
+					updAtePAttern() {
+						if (!filter.vAlue) {
+							this.pAttern = null;
 						} else {
-							this.pattern = new RegExp(filter.value, 'i');
+							this.pAttern = new RegExp(filter.vAlue, 'i');
 						}
 
 						perf('refilter', () => tree.refilter());
 					}
 					filter(el) {
-						return (this.pattern ? this.pattern.test(el) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
+						return (this.pAttern ? this.pAttern.test(el) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
 					}
 				};
 
-				const tree = new CompressibleObjectTree('test', container, delegate, [renderer], { ...opts, filter: treeFilter, setRowLineHeight: false, collapseByDefault: true, setRowLineHeight: true });
+				const tree = new CompressibleObjectTree('test', contAiner, delegAte, [renderer], { ...opts, filter: treeFilter, setRowLineHeight: fAlse, collApseByDefAult: true, setRowLineHeight: true });
 
 				return { tree, treeFilter };
 			}
 
-			function createAsyncDataTree() {
-				const delegate = {
+			function creAteAsyncDAtATree() {
+				const delegAte = {
 					getHeight() { return 22; },
-					getTemplateId() { return 'template'; }
+					getTemplAteId() { return 'templAte'; }
 				};
 
 				const renderer = {
-					templateId: 'template',
-					renderTemplate(container) { return container; },
-					renderElement(node, index, container) { container.textContent = node.element.element.name; },
+					templAteId: 'templAte',
+					renderTemplAte(contAiner) { return contAiner; },
+					renderElement(node, index, contAiner) { contAiner.textContent = node.element.element.nAme; },
 					disposeElement() { },
-					disposeTemplate() { }
+					disposeTemplAte() { }
 				};
 
-				const treeFilter = new class {
+				const treeFilter = new clAss {
 					constructor() {
-						this.pattern = null;
+						this.pAttern = null;
 						let timeout;
 						filter.oninput = () => {
-							clearTimeout(timeout);
-							timeout = setTimeout(() => this.updatePattern(), 300);
+							cleArTimeout(timeout);
+							timeout = setTimeout(() => this.updAtePAttern(), 300);
 						};
 					}
 
-					updatePattern() {
-						if (!filter.value) {
-							this.pattern = null;
+					updAtePAttern() {
+						if (!filter.vAlue) {
+							this.pAttern = null;
 						} else {
-							this.pattern = new RegExp(filter.value, 'i');
+							this.pAttern = new RegExp(filter.vAlue, 'i');
 						}
 
 						perf('refilter', () => tree.refilter());
 					}
 					filter(el) {
-						return (this.pattern ? this.pattern.test(el.name) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
+						return (this.pAttern ? this.pAttern.test(el.nAme) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
 					}
 				};
 
-				const sorter = new class {
-					compare(a, b) {
-						if (a.collapsible === b.collapsible) {
-							return a.name < b.name ? -1 : 1;
+				const sorter = new clAss {
+					compAre(A, b) {
+						if (A.collApsible === b.collApsible) {
+							return A.nAme < b.nAme ? -1 : 1;
 						}
 
-						return a.collapsible ? -1 : 1;
+						return A.collApsible ? -1 : 1;
 					}
 				};
 
-				const dataSource = new class {
-					hasChildren(element) {
+				const dAtASource = new clAss {
+					hAsChildren(element) {
 						return element === null || element.element.type === 'dir';
 					}
 					getChildren(element) {
 						return new Promise((c, e) => {
 							const xhr = new XMLHttpRequest();
-							xhr.open('GET', element ? `/api/readdir?path=${element.element.path}` : '/api/readdir');
+							xhr.open('GET', element ? `/Api/reAddir?pAth=${element.element.pAth}` : '/Api/reAddir');
 							xhr.send();
-							xhr.onreadystatechange = function () {
-								if (this.readyState == 4 && this.status == 200) {
-									const els = JSON.parse(this.responseText).map(element => ({
+							xhr.onreAdystAtechAnge = function () {
+								if (this.reAdyStAte == 4 && this.stAtus == 200) {
+									const els = JSON.pArse(this.responseText).mAp(element => ({
 										element,
-										collapsible: element.type === 'dir'
+										collApsible: element.type === 'dir'
 									}));
 
 									c(els);
@@ -223,54 +223,54 @@
 
 				const identityProvider = {
 					getId(node) {
-						return node.element.path;
+						return node.element.pAth;
 					}
 				};
 
-				const tree = new AsyncDataTree('test', container, delegate, [renderer], dataSource, { filter: treeFilter, sorter, identityProvider });
+				const tree = new AsyncDAtATree('test', contAiner, delegAte, [renderer], dAtASource, { filter: treeFilter, sorter, identityProvider });
 
 				return { tree, treeFilter };
 			}
 
-			function createDataTree() {
-				const delegate = {
+			function creAteDAtATree() {
+				const delegAte = {
 					getHeight() { return 22; },
-					getTemplateId() { return 'template'; }
+					getTemplAteId() { return 'templAte'; }
 				};
 
 				const renderer = {
-					templateId: 'template',
-					renderTemplate(container) { return container; },
-					renderElement(node, index, container) { container.textContent = node.element.name; },
+					templAteId: 'templAte',
+					renderTemplAte(contAiner) { return contAiner; },
+					renderElement(node, index, contAiner) { contAiner.textContent = node.element.nAme; },
 					disposeElement() { },
-					disposeTemplate() { }
+					disposeTemplAte() { }
 				};
 
-				const treeFilter = new class {
+				const treeFilter = new clAss {
 					constructor() {
-						this.pattern = null;
+						this.pAttern = null;
 						let timeout;
 						filter.oninput = () => {
-							clearTimeout(timeout);
-							timeout = setTimeout(() => this.updatePattern(), 300);
+							cleArTimeout(timeout);
+							timeout = setTimeout(() => this.updAtePAttern(), 300);
 						};
 					}
 
-					updatePattern() {
-						if (!filter.value) {
-							this.pattern = null;
+					updAtePAttern() {
+						if (!filter.vAlue) {
+							this.pAttern = null;
 						} else {
-							this.pattern = new RegExp(filter.value, 'i');
+							this.pAttern = new RegExp(filter.vAlue, 'i');
 						}
 
 						perf('refilter', () => tree.refilter());
 					}
 					filter(el) {
-						return (this.pattern ? this.pattern.test(el.name) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
+						return (this.pAttern ? this.pAttern.test(el.nAme) : true) ? TreeVisibility.Visible : TreeVisibility.Recurse;
 					}
 				};
 
-				const dataSource = new class {
+				const dAtASource = new clAss {
 					getChildren(element) {
 						return element.children || [];
 					}
@@ -278,30 +278,30 @@
 
 				const identityProvider = {
 					getId(node) {
-						return node.name;
+						return node.nAme;
 					}
 				};
 
-				const tree = new DataTree('test', container, delegate, [renderer], dataSource, { filter: treeFilter, identityProvider });
+				const tree = new DAtATree('test', contAiner, delegAte, [renderer], dAtASource, { filter: treeFilter, identityProvider });
 
 				tree.setInput({
 					children: [
-						{ name: 'A', children: [{ name: 'AA' }, { name: 'AB' }] },
-						{ name: 'B', children: [{ name: 'BA', children: [{ name: 'BAA' }] }, { name: 'BB' }] },
-						{ name: 'C' }
+						{ nAme: 'A', children: [{ nAme: 'AA' }, { nAme: 'AB' }] },
+						{ nAme: 'B', children: [{ nAme: 'BA', children: [{ nAme: 'BAA' }] }, { nAme: 'BB' }] },
+						{ nAme: 'C' }
 					]
 				});
 
 				return { tree, treeFilter };
 			}
 
-			switch (location.search) {
-				case '?problems': {
-					const { tree, treeFilter } = createIndexTree();
+			switch (locAtion.seArch) {
+				cAse '?problems': {
+					const { tree, treeFilter } = creAteIndexTree();
 
-					expandall.onclick = () => perf('expand all', () => tree.expandAll());
-					collapseall.onclick = () => perf('collapse all', () => tree.collapseAll());
-					renderwidth.onclick = () => perf('renderwidth', () => tree.layoutWidth(Math.random()));
+					expAndAll.onclick = () => perf('expAnd All', () => tree.expAndAll());
+					collApseAll.onclick = () => perf('collApse All', () => tree.collApseAll());
+					renderwidth.onclick = () => perf('renderwidth', () => tree.lAyoutWidth(MAth.rAndom()));
 
 					const files = [];
 					for (let i = 0; i < 100000; i++) {
@@ -315,83 +315,83 @@
 					}
 
 					perf('splice', () => tree.splice([0], 0, files));
-					break;
+					breAk;
 				}
-				case '?data': {
-					const { tree, treeFilter } = createAsyncDataTree();
+				cAse '?dAtA': {
+					const { tree, treeFilter } = creAteAsyncDAtATree();
 
-					expandall.onclick = () => perf('expand all', () => tree.expandAll());
-					collapseall.onclick = () => perf('collapse all', () => tree.collapseAll());
-					renderwidth.onclick = () => perf('renderwidth', () => tree.layoutWidth(Math.random()));
-					refresh.onclick = () => perf('refresh', () => tree.updateChildren());
+					expAndAll.onclick = () => perf('expAnd All', () => tree.expAndAll());
+					collApseAll.onclick = () => perf('collApse All', () => tree.collApseAll());
+					renderwidth.onclick = () => perf('renderwidth', () => tree.lAyoutWidth(MAth.rAndom()));
+					refresh.onclick = () => perf('refresh', () => tree.updAteChildren());
 
 					tree.setInput(null);
 
-					break;
+					breAk;
 				}
-				case '?objectdata': {
-					const { tree, treeFilter } = createDataTree();
+				cAse '?objectdAtA': {
+					const { tree, treeFilter } = creAteDAtATree();
 
-					expandall.onclick = () => perf('expand all', () => tree.expandAll());
-					collapseall.onclick = () => perf('collapse all', () => tree.collapseAll());
-					renderwidth.onclick = () => perf('renderwidth', () => tree.layoutWidth(Math.random()));
-					refresh.onclick = () => perf('refresh', () => tree.updateChildren());
+					expAndAll.onclick = () => perf('expAnd All', () => tree.expAndAll());
+					collApseAll.onclick = () => perf('collApse All', () => tree.collApseAll());
+					renderwidth.onclick = () => perf('renderwidth', () => tree.lAyoutWidth(MAth.rAndom()));
+					refresh.onclick = () => perf('refresh', () => tree.updAteChildren());
 
-					break;
+					breAk;
 				}
-				case '?compressed': {
-					const { tree, treeFilter } = createCompressedObjectTree();
+				cAse '?compressed': {
+					const { tree, treeFilter } = creAteCompressedObjectTree();
 
-					expandall.onclick = () => perf('expand all', () => tree.expandAll());
-					collapseall.onclick = () => perf('collapse all', () => tree.collapseAll());
+					expAndAll.onclick = () => perf('expAnd All', () => tree.expAndAll());
+					collApseAll.onclick = () => perf('collApse All', () => tree.collApseAll());
 
 					const xhr = new XMLHttpRequest();
 					xhr.open('GET', '/compressed.json');
 					xhr.send();
-					xhr.onreadystatechange = function () {
-						if (this.readyState == 4 && this.status == 200) {
-							tree.setChildren(null, JSON.parse(this.responseText));
+					xhr.onreAdystAtechAnge = function () {
+						if (this.reAdyStAte == 4 && this.stAtus == 200) {
+							tree.setChildren(null, JSON.pArse(this.responseText));
 						}
 					};
 
-					break;
+					breAk;
 				}
-				case '?height': {
-					const { tree, treeFilter } = createIndexTree({ supportDynamicHeights: true });
+				cAse '?height': {
+					const { tree, treeFilter } = creAteIndexTree({ supportDynAmicHeights: true });
 
-					expandall.onclick = () => perf('expand all', () => tree.expandAll());
-					collapseall.onclick = () => perf('collapse all', () => tree.collapseAll());
-					renderwidth.onclick = () => perf('renderwidth', () => tree.layoutWidth(Math.random()));
+					expAndAll.onclick = () => perf('expAnd All', () => tree.expAndAll());
+					collApseAll.onclick = () => perf('collApse All', () => tree.collApseAll());
+					renderwidth.onclick = () => perf('renderwidth', () => tree.lAyoutWidth(MAth.rAndom()));
 
 					const xhr = new XMLHttpRequest();
-					xhr.open('GET', '/api/ls?path=');
+					xhr.open('GET', '/Api/ls?pAth=');
 					xhr.send();
-					xhr.onreadystatechange = function () {
-						if (this.readyState == 4 && this.status == 200) {
-							perf('splice', () => tree.splice([0], 0, [JSON.parse(this.responseText)]));
-							treeFilter.updatePattern();
+					xhr.onreAdystAtechAnge = function () {
+						if (this.reAdyStAte == 4 && this.stAtus == 200) {
+							perf('splice', () => tree.splice([0], 0, [JSON.pArse(this.responseText)]));
+							treeFilter.updAtePAttern();
 						}
 					};
 
-					// container.
+					// contAiner.
 
 
-					break;
+					breAk;
 				}
-				default: {
-					const { tree, treeFilter } = createIndexTree();
+				defAult: {
+					const { tree, treeFilter } = creAteIndexTree();
 
-					expandall.onclick = () => perf('expand all', () => tree.expandAll());
-					collapseall.onclick = () => perf('collapse all', () => tree.collapseAll());
-					renderwidth.onclick = () => perf('renderwidth', () => tree.layoutWidth(Math.random()));
+					expAndAll.onclick = () => perf('expAnd All', () => tree.expAndAll());
+					collApseAll.onclick = () => perf('collApse All', () => tree.collApseAll());
+					renderwidth.onclick = () => perf('renderwidth', () => tree.lAyoutWidth(MAth.rAndom()));
 
 					const xhr = new XMLHttpRequest();
-					xhr.open('GET', '/api/ls?path=');
+					xhr.open('GET', '/Api/ls?pAth=');
 					xhr.send();
-					xhr.onreadystatechange = function () {
-						if (this.readyState == 4 && this.status == 200) {
-							perf('splice', () => tree.splice([0], 0, [JSON.parse(this.responseText)]));
-							treeFilter.updatePattern();
+					xhr.onreAdystAtechAnge = function () {
+						if (this.reAdyStAte == 4 && this.stAtus == 200) {
+							perf('splice', () => tree.splice([0], 0, [JSON.pArse(this.responseText)]));
+							treeFilter.updAtePAttern();
 						}
 					};
 				}

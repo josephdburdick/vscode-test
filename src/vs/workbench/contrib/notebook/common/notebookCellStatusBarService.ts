@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { INotebookCellStatusBarEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INotebookCellStAtusBArEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 
-export const INotebookCellStatusBarService = createDecorator<INotebookCellStatusBarService>('notebookCellStatusBarService');
+export const INotebookCellStAtusBArService = creAteDecorAtor<INotebookCellStAtusBArService>('notebookCellStAtusBArService');
 
-export interface INotebookCellStatusBarService {
-	readonly _serviceBrand: undefined;
+export interfAce INotebookCellStAtusBArService {
+	reAdonly _serviceBrAnd: undefined;
 
-	onDidChangeEntriesForCell: Event<URI>;
+	onDidChAngeEntriesForCell: Event<URI>;
 
-	addEntry(entry: INotebookCellStatusBarEntry): IDisposable;
-	getEntries(cell: URI): INotebookCellStatusBarEntry[];
+	AddEntry(entry: INotebookCellStAtusBArEntry): IDisposAble;
+	getEntries(cell: URI): INotebookCellStAtusBArEntry[];
 }

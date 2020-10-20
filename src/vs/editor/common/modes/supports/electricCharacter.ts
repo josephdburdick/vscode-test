@@ -1,82 +1,82 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ScopedLineTokens, ignoreBracketsInToken } from 'vs/editor/common/modes/supports';
-import { BracketsUtils, RichEditBrackets } from 'vs/editor/common/modes/supports/richEditBrackets';
+import { ScopedLineTokens, ignoreBrAcketsInToken } from 'vs/editor/common/modes/supports';
+import { BrAcketsUtils, RichEditBrAckets } from 'vs/editor/common/modes/supports/richEditBrAckets';
 
 /**
- * Interface used to support electric characters
- * @internal
+ * InterfAce used to support electric chArActers
+ * @internAl
  */
-export interface IElectricAction {
-	// The line will be indented at the same level of the line
-	// which contains the matching given bracket type.
-	matchOpenBracket: string;
+export interfAce IElectricAction {
+	// The line will be indented At the sAme level of the line
+	// which contAins the mAtching given brAcket type.
+	mAtchOpenBrAcket: string;
 }
 
-export class BracketElectricCharacterSupport {
+export clAss BrAcketElectricChArActerSupport {
 
-	private readonly _richEditBrackets: RichEditBrackets | null;
+	privAte reAdonly _richEditBrAckets: RichEditBrAckets | null;
 
-	constructor(richEditBrackets: RichEditBrackets | null) {
-		this._richEditBrackets = richEditBrackets;
+	constructor(richEditBrAckets: RichEditBrAckets | null) {
+		this._richEditBrAckets = richEditBrAckets;
 	}
 
-	public getElectricCharacters(): string[] {
+	public getElectricChArActers(): string[] {
 		let result: string[] = [];
 
-		if (this._richEditBrackets) {
-			for (const bracket of this._richEditBrackets.brackets) {
-				for (const close of bracket.close) {
-					const lastChar = close.charAt(close.length - 1);
-					result.push(lastChar);
+		if (this._richEditBrAckets) {
+			for (const brAcket of this._richEditBrAckets.brAckets) {
+				for (const close of brAcket.close) {
+					const lAstChAr = close.chArAt(close.length - 1);
+					result.push(lAstChAr);
 				}
 			}
 		}
 
-		// Filter duplicate entries
-		result = result.filter((item, pos, array) => {
-			return array.indexOf(item) === pos;
+		// Filter duplicAte entries
+		result = result.filter((item, pos, ArrAy) => {
+			return ArrAy.indexOf(item) === pos;
 		});
 
 		return result;
 	}
 
-	public onElectricCharacter(character: string, context: ScopedLineTokens, column: number): IElectricAction | null {
-		if (!this._richEditBrackets || this._richEditBrackets.brackets.length === 0) {
+	public onElectricChArActer(chArActer: string, context: ScopedLineTokens, column: number): IElectricAction | null {
+		if (!this._richEditBrAckets || this._richEditBrAckets.brAckets.length === 0) {
 			return null;
 		}
 
 		const tokenIndex = context.findTokenIndexAtOffset(column - 1);
-		if (ignoreBracketsInToken(context.getStandardTokenType(tokenIndex))) {
+		if (ignoreBrAcketsInToken(context.getStAndArdTokenType(tokenIndex))) {
 			return null;
 		}
 
-		const reversedBracketRegex = this._richEditBrackets.reversedRegex;
-		const text = context.getLineContent().substring(0, column - 1) + character;
+		const reversedBrAcketRegex = this._richEditBrAckets.reversedRegex;
+		const text = context.getLineContent().substring(0, column - 1) + chArActer;
 
-		const r = BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, text, 0, text.length);
+		const r = BrAcketsUtils.findPrevBrAcketInRAnge(reversedBrAcketRegex, 1, text, 0, text.length);
 		if (!r) {
 			return null;
 		}
 
-		const bracketText = text.substring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
+		const brAcketText = text.substring(r.stArtColumn - 1, r.endColumn - 1).toLowerCAse();
 
-		const isOpen = this._richEditBrackets.textIsOpenBracket[bracketText];
+		const isOpen = this._richEditBrAckets.textIsOpenBrAcket[brAcketText];
 		if (isOpen) {
 			return null;
 		}
 
-		const textBeforeBracket = context.getActualLineContentBefore(r.startColumn - 1);
-		if (!/^\s*$/.test(textBeforeBracket)) {
-			// There is other text on the line before the bracket
+		const textBeforeBrAcket = context.getActuAlLineContentBefore(r.stArtColumn - 1);
+		if (!/^\s*$/.test(textBeforeBrAcket)) {
+			// There is other text on the line before the brAcket
 			return null;
 		}
 
 		return {
-			matchOpenBracket: bracketText
+			mAtchOpenBrAcket: brAcketText
 		};
 	}
 }

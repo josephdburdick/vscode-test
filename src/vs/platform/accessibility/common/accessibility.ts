@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 
-export const IAccessibilityService = createDecorator<IAccessibilityService>('accessibilityService');
+export const IAccessibilityService = creAteDecorAtor<IAccessibilityService>('AccessibilityService');
 
-export interface IAccessibilityService {
-	readonly _serviceBrand: undefined;
+export interfAce IAccessibilityService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidChangeScreenReaderOptimized: Event<void>;
+	reAdonly onDidChAngeScreenReAderOptimized: Event<void>;
 
-	alwaysUnderlineAccessKeys(): Promise<boolean>;
-	isScreenReaderOptimized(): boolean;
+	AlwAysUnderlineAccessKeys(): Promise<booleAn>;
+	isScreenReAderOptimized(): booleAn;
 	getAccessibilitySupport(): AccessibilitySupport;
-	setAccessibilitySupport(accessibilitySupport: AccessibilitySupport): void;
+	setAccessibilitySupport(AccessibilitySupport: AccessibilitySupport): void;
 }
 
 export const enum AccessibilitySupport {
 	/**
-	 * This should be the browser case where it is not known if a screen reader is attached or no.
+	 * This should be the browser cAse where it is not known if A screen reAder is AttAched or no.
 	 */
 	Unknown = 0,
 
-	Disabled = 1,
+	DisAbled = 1,
 
-	Enabled = 2
+	EnAbled = 2
 }
 
-export const CONTEXT_ACCESSIBILITY_MODE_ENABLED = new RawContextKey<boolean>('accessibilityModeEnabled', false);
+export const CONTEXT_ACCESSIBILITY_MODE_ENABLED = new RAwContextKey<booleAn>('AccessibilityModeEnAbled', fAlse);
 
-export interface IAccessibilityInformation {
-	label: string;
+export interfAce IAccessibilityInformAtion {
+	lAbel: string;
 	role?: string;
 }

@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IEditorAction } from 'vs/editor/common/editorCommon';
-import { IContextKeyService, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
+import { IContextKeyService, ContextKeyExpression } from 'vs/plAtform/contextkey/common/contextkey';
 
-export class InternalEditorAction implements IEditorAction {
+export clAss InternAlEditorAction implements IEditorAction {
 
-	public readonly id: string;
-	public readonly label: string;
-	public readonly alias: string;
+	public reAdonly id: string;
+	public reAdonly lAbel: string;
+	public reAdonly AliAs: string;
 
-	private readonly _precondition: ContextKeyExpression | undefined;
-	private readonly _run: () => Promise<void>;
-	private readonly _contextKeyService: IContextKeyService;
+	privAte reAdonly _precondition: ContextKeyExpression | undefined;
+	privAte reAdonly _run: () => Promise<void>;
+	privAte reAdonly _contextKeyService: IContextKeyService;
 
 	constructor(
 		id: string,
-		label: string,
-		alias: string,
+		lAbel: string,
+		AliAs: string,
 		precondition: ContextKeyExpression | undefined,
 		run: () => Promise<void>,
 		contextKeyService: IContextKeyService
 	) {
 		this.id = id;
-		this.label = label;
-		this.alias = alias;
+		this.lAbel = lAbel;
+		this.AliAs = AliAs;
 		this._precondition = precondition;
 		this._run = run;
 		this._contextKeyService = contextKeyService;
 	}
 
-	public isSupported(): boolean {
-		return this._contextKeyService.contextMatchesRules(this._precondition);
+	public isSupported(): booleAn {
+		return this._contextKeyService.contextMAtchesRules(this._precondition);
 	}
 
 	public run(): Promise<void> {

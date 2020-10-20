@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import { Command, CommandManager } from '../commands/commandManager';
-import type * as Proto from '../protocol';
-import { ClientCapability, ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
-import { nulToken } from '../utils/cancellation';
-import { applyCodeActionCommands, getEditForCodeAction } from '../utils/codeAction';
-import { conditionalRegistration, requireSomeCapability } from '../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import { CommAnd, CommAndMAnAger } from '../commAnds/commAndMAnAger';
+import type * As Proto from '../protocol';
+import { ClientCApAbility, ITypeScriptServiceClient } from '../typescriptService';
+import API from '../utils/Api';
+import { nulToken } from '../utils/cAncellAtion';
+import { ApplyCodeActionCommAnds, getEditForCodeAction } from '../utils/codeAction';
+import { conditionAlRegistrAtion, requireSomeCApAbility } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as fixNames from '../utils/fixNames';
+import * As fixNAmes from '../utils/fixNAmes';
 import { memoize } from '../utils/memoize';
-import { equals } from '../utils/objects';
+import { equAls } from '../utils/objects';
 import { TelemetryReporter } from '../utils/telemetry';
-import * as typeConverters from '../utils/typeConverters';
-import { DiagnosticsManager } from './diagnostics';
-import FileConfigurationManager from './fileConfigurationManager';
+import * As typeConverters from '../utils/typeConverters';
+import { DiAgnosticsMAnAger } from './diAgnostics';
+import FileConfigurAtionMAnAger from './fileConfigurAtionMAnAger';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-class ApplyCodeActionCommand implements Command {
-	public static readonly ID = '_typescript.applyCodeActionCommand';
-	public readonly id = ApplyCodeActionCommand.ID;
+clAss ApplyCodeActionCommAnd implements CommAnd {
+	public stAtic reAdonly ID = '_typescript.ApplyCodeActionCommAnd';
+	public reAdonly id = ApplyCodeActionCommAnd.ID;
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
-		private readonly telemetryReporter: TelemetryReporter,
+		privAte reAdonly client: ITypeScriptServiceClient,
+		privAte reAdonly telemetryReporter: TelemetryReporter,
 	) { }
 
-	public async execute(
-		action: Proto.CodeFixAction
-	): Promise<boolean> {
+	public Async execute(
+		Action: Proto.CodeFixAction
+	): Promise<booleAn> {
 		/* __GDPR__
 			"quickFix.execute" : {
-				"fixName" : { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" },
+				"fixNAme" : { "clAssificAtion": "PublicNonPersonAlDAtA", "purpose": "FeAtureInsight" },
 				"${include}": [
 					"${TypeScriptCommonProperties}"
 				]
 			}
 		*/
 		this.telemetryReporter.logTelemetry('quickFix.execute', {
-			fixName: action.fixName
+			fixNAme: Action.fixNAme
 		});
 
-		return applyCodeActionCommands(this.client, action.commands, nulToken);
+		return ApplyCodeActionCommAnds(this.client, Action.commAnds, nulToken);
 	}
 }
 
 
-class ApplyFixAllCodeAction implements Command {
-	public static readonly ID = '_typescript.applyFixAllCodeAction';
-	public readonly id = ApplyFixAllCodeAction.ID;
+clAss ApplyFixAllCodeAction implements CommAnd {
+	public stAtic reAdonly ID = '_typescript.ApplyFixAllCodeAction';
+	public reAdonly id = ApplyFixAllCodeAction.ID;
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
-		private readonly telemetryReporter: TelemetryReporter,
+		privAte reAdonly client: ITypeScriptServiceClient,
+		privAte reAdonly telemetryReporter: TelemetryReporter,
 	) { }
 
-	public async execute(
+	public Async execute(
 		file: string,
 		tsAction: Proto.CodeFixAction,
 	): Promise<void> {
@@ -71,316 +71,316 @@ class ApplyFixAllCodeAction implements Command {
 
 		/* __GDPR__
 			"quickFixAll.execute" : {
-				"fixName" : { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" },
+				"fixNAme" : { "clAssificAtion": "PublicNonPersonAlDAtA", "purpose": "FeAtureInsight" },
 				"${include}": [
 					"${TypeScriptCommonProperties}"
 				]
 			}
 		*/
 		this.telemetryReporter.logTelemetry('quickFixAll.execute', {
-			fixName: tsAction.fixName
+			fixNAme: tsAction.fixNAme
 		});
 
-		const args: Proto.GetCombinedCodeFixRequestArgs = {
+		const Args: Proto.GetCombinedCodeFixRequestArgs = {
 			scope: {
 				type: 'file',
-				args: { file }
+				Args: { file }
 			},
 			fixId: tsAction.fixId,
 		};
 
-		const response = await this.client.execute('getCombinedCodeFix', args, nulToken);
+		const response = AwAit this.client.execute('getCombinedCodeFix', Args, nulToken);
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
 
-		const edit = typeConverters.WorkspaceEdit.fromFileCodeEdits(this.client, response.body.changes);
-		await vscode.workspace.applyEdit(edit);
-		await applyCodeActionCommands(this.client, response.body.commands, nulToken);
+		const edit = typeConverters.WorkspAceEdit.fromFileCodeEdits(this.client, response.body.chAnges);
+		AwAit vscode.workspAce.ApplyEdit(edit);
+		AwAit ApplyCodeActionCommAnds(this.client, response.body.commAnds, nulToken);
 	}
 }
 
 /**
- * Unique set of diagnostics keyed on diagnostic range and error code.
+ * Unique set of diAgnostics keyed on diAgnostic rAnge And error code.
  */
-class DiagnosticsSet {
-	public static from(diagnostics: vscode.Diagnostic[]) {
-		const values = new Map<string, vscode.Diagnostic>();
-		for (const diagnostic of diagnostics) {
-			values.set(DiagnosticsSet.key(diagnostic), diagnostic);
+clAss DiAgnosticsSet {
+	public stAtic from(diAgnostics: vscode.DiAgnostic[]) {
+		const vAlues = new MAp<string, vscode.DiAgnostic>();
+		for (const diAgnostic of diAgnostics) {
+			vAlues.set(DiAgnosticsSet.key(diAgnostic), diAgnostic);
 		}
-		return new DiagnosticsSet(values);
+		return new DiAgnosticsSet(vAlues);
 	}
 
-	private static key(diagnostic: vscode.Diagnostic) {
-		const { start, end } = diagnostic.range;
-		return `${diagnostic.code}-${start.line},${start.character}-${end.line},${end.character}`;
+	privAte stAtic key(diAgnostic: vscode.DiAgnostic) {
+		const { stArt, end } = diAgnostic.rAnge;
+		return `${diAgnostic.code}-${stArt.line},${stArt.chArActer}-${end.line},${end.chArActer}`;
 	}
 
-	private constructor(
-		private readonly _values: Map<string, vscode.Diagnostic>
+	privAte constructor(
+		privAte reAdonly _vAlues: MAp<string, vscode.DiAgnostic>
 	) { }
 
-	public get values(): Iterable<vscode.Diagnostic> {
-		return this._values.values();
+	public get vAlues(): IterAble<vscode.DiAgnostic> {
+		return this._vAlues.vAlues();
 	}
 
 	public get size() {
-		return this._values.size;
+		return this._vAlues.size;
 	}
 }
 
-class VsCodeCodeAction extends vscode.CodeAction {
+clAss VsCodeCodeAction extends vscode.CodeAction {
 	constructor(
-		public readonly tsAction: Proto.CodeFixAction,
+		public reAdonly tsAction: Proto.CodeFixAction,
 		title: string,
 		kind: vscode.CodeActionKind,
-		public readonly isFixAll: boolean,
+		public reAdonly isFixAll: booleAn,
 	) {
 		super(title, kind);
 	}
 }
 
-class CodeActionSet {
-	private readonly _actions = new Set<VsCodeCodeAction>();
-	private readonly _fixAllActions = new Map<{}, VsCodeCodeAction>();
+clAss CodeActionSet {
+	privAte reAdonly _Actions = new Set<VsCodeCodeAction>();
+	privAte reAdonly _fixAllActions = new MAp<{}, VsCodeCodeAction>();
 
-	public get values(): Iterable<VsCodeCodeAction> {
-		return this._actions;
+	public get vAlues(): IterAble<VsCodeCodeAction> {
+		return this._Actions;
 	}
 
-	public addAction(action: VsCodeCodeAction) {
-		for (const existing of this._actions) {
-			if (action.tsAction.fixName === existing.tsAction.fixName && equals(action.edit, existing.edit)) {
-				this._actions.delete(existing);
+	public AddAction(Action: VsCodeCodeAction) {
+		for (const existing of this._Actions) {
+			if (Action.tsAction.fixNAme === existing.tsAction.fixNAme && equAls(Action.edit, existing.edit)) {
+				this._Actions.delete(existing);
 			}
 		}
 
-		this._actions.add(action);
+		this._Actions.Add(Action);
 
-		if (action.tsAction.fixId) {
-			// If we have an existing fix all action, then make sure it follows this action
-			const existingFixAll = this._fixAllActions.get(action.tsAction.fixId);
+		if (Action.tsAction.fixId) {
+			// If we hAve An existing fix All Action, then mAke sure it follows this Action
+			const existingFixAll = this._fixAllActions.get(Action.tsAction.fixId);
 			if (existingFixAll) {
-				this._actions.delete(existingFixAll);
-				this._actions.add(existingFixAll);
+				this._Actions.delete(existingFixAll);
+				this._Actions.Add(existingFixAll);
 			}
 		}
 	}
 
-	public addFixAllAction(fixId: {}, action: VsCodeCodeAction) {
+	public AddFixAllAction(fixId: {}, Action: VsCodeCodeAction) {
 		const existing = this._fixAllActions.get(fixId);
 		if (existing) {
-			// reinsert action at back of actions list
-			this._actions.delete(existing);
+			// reinsert Action At bAck of Actions list
+			this._Actions.delete(existing);
 		}
-		this.addAction(action);
-		this._fixAllActions.set(fixId, action);
+		this.AddAction(Action);
+		this._fixAllActions.set(fixId, Action);
 	}
 
-	public hasFixAllAction(fixId: {}) {
-		return this._fixAllActions.has(fixId);
+	public hAsFixAllAction(fixId: {}) {
+		return this._fixAllActions.hAs(fixId);
 	}
 }
 
-class SupportedCodeActionProvider {
+clAss SupportedCodeActionProvider {
 	public constructor(
-		private readonly client: ITypeScriptServiceClient
+		privAte reAdonly client: ITypeScriptServiceClient
 	) { }
 
-	public async getFixableDiagnosticsForContext(context: vscode.CodeActionContext): Promise<DiagnosticsSet> {
-		const fixableCodes = await this.fixableDiagnosticCodes;
-		return DiagnosticsSet.from(
-			context.diagnostics.filter(diagnostic => typeof diagnostic.code !== 'undefined' && fixableCodes.has(diagnostic.code + '')));
+	public Async getFixAbleDiAgnosticsForContext(context: vscode.CodeActionContext): Promise<DiAgnosticsSet> {
+		const fixAbleCodes = AwAit this.fixAbleDiAgnosticCodes;
+		return DiAgnosticsSet.from(
+			context.diAgnostics.filter(diAgnostic => typeof diAgnostic.code !== 'undefined' && fixAbleCodes.hAs(diAgnostic.code + '')));
 	}
 
 	@memoize
-	private get fixableDiagnosticCodes(): Thenable<Set<string>> {
+	privAte get fixAbleDiAgnosticCodes(): ThenAble<Set<string>> {
 		return this.client.execute('getSupportedCodeFixes', null, nulToken)
 			.then(response => response.type === 'response' ? response.body || [] : [])
 			.then(codes => new Set(codes));
 	}
 }
 
-class TypeScriptQuickFixProvider implements vscode.CodeActionProvider {
+clAss TypeScriptQuickFixProvider implements vscode.CodeActionProvider {
 
-	public static readonly metadata: vscode.CodeActionProviderMetadata = {
+	public stAtic reAdonly metAdAtA: vscode.CodeActionProviderMetAdAtA = {
 		providedCodeActionKinds: [vscode.CodeActionKind.QuickFix]
 	};
 
-	private readonly supportedCodeActionProvider: SupportedCodeActionProvider;
+	privAte reAdonly supportedCodeActionProvider: SupportedCodeActionProvider;
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
-		private readonly formattingConfigurationManager: FileConfigurationManager,
-		commandManager: CommandManager,
-		private readonly diagnosticsManager: DiagnosticsManager,
+		privAte reAdonly client: ITypeScriptServiceClient,
+		privAte reAdonly formAttingConfigurAtionMAnAger: FileConfigurAtionMAnAger,
+		commAndMAnAger: CommAndMAnAger,
+		privAte reAdonly diAgnosticsMAnAger: DiAgnosticsMAnAger,
 		telemetryReporter: TelemetryReporter
 	) {
-		commandManager.register(new ApplyCodeActionCommand(client, telemetryReporter));
-		commandManager.register(new ApplyFixAllCodeAction(client, telemetryReporter));
+		commAndMAnAger.register(new ApplyCodeActionCommAnd(client, telemetryReporter));
+		commAndMAnAger.register(new ApplyFixAllCodeAction(client, telemetryReporter));
 
 		this.supportedCodeActionProvider = new SupportedCodeActionProvider(client);
 	}
 
-	public async provideCodeActions(
+	public Async provideCodeActions(
 		document: vscode.TextDocument,
-		_range: vscode.Range,
+		_rAnge: vscode.RAnge,
 		context: vscode.CodeActionContext,
-		token: vscode.CancellationToken
+		token: vscode.CAncellAtionToken
 	): Promise<vscode.CodeAction[]> {
-		const file = this.client.toOpenedFilePath(document);
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return [];
 		}
 
-		const fixableDiagnostics = await this.supportedCodeActionProvider.getFixableDiagnosticsForContext(context);
-		if (!fixableDiagnostics.size) {
+		const fixAbleDiAgnostics = AwAit this.supportedCodeActionProvider.getFixAbleDiAgnosticsForContext(context);
+		if (!fixAbleDiAgnostics.size) {
 			return [];
 		}
 
-		if (this.client.bufferSyncSupport.hasPendingDiagnostics(document.uri)) {
+		if (this.client.bufferSyncSupport.hAsPendingDiAgnostics(document.uri)) {
 			return [];
 		}
 
-		await this.formattingConfigurationManager.ensureConfigurationForDocument(document, token);
+		AwAit this.formAttingConfigurAtionMAnAger.ensureConfigurAtionForDocument(document, token);
 
 		const results = new CodeActionSet();
-		for (const diagnostic of fixableDiagnostics.values) {
-			await this.getFixesForDiagnostic(document, file, diagnostic, results, token);
+		for (const diAgnostic of fixAbleDiAgnostics.vAlues) {
+			AwAit this.getFixesForDiAgnostic(document, file, diAgnostic, results, token);
 		}
 
-		const allActions = Array.from(results.values);
-		for (const action of allActions) {
-			action.isPreferred = isPreferredFix(action, allActions);
+		const AllActions = ArrAy.from(results.vAlues);
+		for (const Action of AllActions) {
+			Action.isPreferred = isPreferredFix(Action, AllActions);
 		}
-		return allActions;
+		return AllActions;
 	}
 
-	private async getFixesForDiagnostic(
+	privAte Async getFixesForDiAgnostic(
 		document: vscode.TextDocument,
 		file: string,
-		diagnostic: vscode.Diagnostic,
+		diAgnostic: vscode.DiAgnostic,
 		results: CodeActionSet,
-		token: vscode.CancellationToken,
+		token: vscode.CAncellAtionToken,
 	): Promise<CodeActionSet> {
-		const args: Proto.CodeFixRequestArgs = {
-			...typeConverters.Range.toFileRangeRequestArgs(file, diagnostic.range),
-			errorCodes: [+(diagnostic.code!)]
+		const Args: Proto.CodeFixRequestArgs = {
+			...typeConverters.RAnge.toFileRAngeRequestArgs(file, diAgnostic.rAnge),
+			errorCodes: [+(diAgnostic.code!)]
 		};
-		const response = await this.client.execute('getCodeFixes', args, token);
+		const response = AwAit this.client.execute('getCodeFixes', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return results;
 		}
 
 		for (const tsCodeFix of response.body) {
-			this.addAllFixesForTsCodeAction(results, document, file, diagnostic, tsCodeFix as Proto.CodeFixAction);
+			this.AddAllFixesForTsCodeAction(results, document, file, diAgnostic, tsCodeFix As Proto.CodeFixAction);
 		}
 		return results;
 	}
 
-	private addAllFixesForTsCodeAction(
+	privAte AddAllFixesForTsCodeAction(
 		results: CodeActionSet,
 		document: vscode.TextDocument,
 		file: string,
-		diagnostic: vscode.Diagnostic,
+		diAgnostic: vscode.DiAgnostic,
 		tsAction: Proto.CodeFixAction
 	): CodeActionSet {
-		results.addAction(this.getSingleFixForTsCodeAction(diagnostic, tsAction));
-		this.addFixAllForTsCodeAction(results, document, file, diagnostic, tsAction as Proto.CodeFixAction);
+		results.AddAction(this.getSingleFixForTsCodeAction(diAgnostic, tsAction));
+		this.AddFixAllForTsCodeAction(results, document, file, diAgnostic, tsAction As Proto.CodeFixAction);
 		return results;
 	}
 
-	private getSingleFixForTsCodeAction(
-		diagnostic: vscode.Diagnostic,
+	privAte getSingleFixForTsCodeAction(
+		diAgnostic: vscode.DiAgnostic,
 		tsAction: Proto.CodeFixAction
 	): VsCodeCodeAction {
-		const codeAction = new VsCodeCodeAction(tsAction, tsAction.description, vscode.CodeActionKind.QuickFix, false);
+		const codeAction = new VsCodeCodeAction(tsAction, tsAction.description, vscode.CodeActionKind.QuickFix, fAlse);
 		codeAction.edit = getEditForCodeAction(this.client, tsAction);
-		codeAction.diagnostics = [diagnostic];
-		codeAction.command = {
-			command: ApplyCodeActionCommand.ID,
-			arguments: [tsAction],
+		codeAction.diAgnostics = [diAgnostic];
+		codeAction.commAnd = {
+			commAnd: ApplyCodeActionCommAnd.ID,
+			Arguments: [tsAction],
 			title: ''
 		};
 		return codeAction;
 	}
 
-	private addFixAllForTsCodeAction(
+	privAte AddFixAllForTsCodeAction(
 		results: CodeActionSet,
 		document: vscode.TextDocument,
 		file: string,
-		diagnostic: vscode.Diagnostic,
+		diAgnostic: vscode.DiAgnostic,
 		tsAction: Proto.CodeFixAction,
 	): CodeActionSet {
-		if (!tsAction.fixId || this.client.apiVersion.lt(API.v270) || results.hasFixAllAction(tsAction.fixId)) {
+		if (!tsAction.fixId || this.client.ApiVersion.lt(API.v270) || results.hAsFixAllAction(tsAction.fixId)) {
 			return results;
 		}
 
-		// Make sure there are multiple diagnostics of the same type in the file
-		if (!this.diagnosticsManager.getDiagnostics(document.uri).some(x => {
-			if (x === diagnostic) {
-				return false;
+		// MAke sure there Are multiple diAgnostics of the sAme type in the file
+		if (!this.diAgnosticsMAnAger.getDiAgnostics(document.uri).some(x => {
+			if (x === diAgnostic) {
+				return fAlse;
 			}
-			return x.code === diagnostic.code
-				|| (fixAllErrorCodes.has(x.code as number) && fixAllErrorCodes.get(x.code as number) === fixAllErrorCodes.get(diagnostic.code as number));
+			return x.code === diAgnostic.code
+				|| (fixAllErrorCodes.hAs(x.code As number) && fixAllErrorCodes.get(x.code As number) === fixAllErrorCodes.get(diAgnostic.code As number));
 		})) {
 			return results;
 		}
 
-		const action = new VsCodeCodeAction(
+		const Action = new VsCodeCodeAction(
 			tsAction,
-			tsAction.fixAllDescription || localize('fixAllInFileLabel', '{0} (Fix all in file)', tsAction.description),
+			tsAction.fixAllDescription || locAlize('fixAllInFileLAbel', '{0} (Fix All in file)', tsAction.description),
 			vscode.CodeActionKind.QuickFix, true);
-		action.diagnostics = [diagnostic];
-		action.command = {
-			command: ApplyFixAllCodeAction.ID,
-			arguments: [file, tsAction],
+		Action.diAgnostics = [diAgnostic];
+		Action.commAnd = {
+			commAnd: ApplyFixAllCodeAction.ID,
+			Arguments: [file, tsAction],
 			title: ''
 		};
-		results.addFixAllAction(tsAction.fixId, action);
+		results.AddFixAllAction(tsAction.fixId, Action);
 		return results;
 	}
 }
 
-// Some fix all actions can actually fix multiple differnt diagnostics. Make sure we still show the fix all action
-// in such cases
-const fixAllErrorCodes = new Map<number, number>([
-	// Missing async
+// Some fix All Actions cAn ActuAlly fix multiple differnt diAgnostics. MAke sure we still show the fix All Action
+// in such cAses
+const fixAllErrorCodes = new MAp<number, number>([
+	// Missing Async
 	[2339, 2339],
 	[2345, 2339],
 ]);
 
-const preferredFixes = new Map<string, { readonly value: number, readonly thereCanOnlyBeOne?: boolean }>([
-	[fixNames.annotateWithTypeFromJSDoc, { value: 1 }],
-	[fixNames.constructorForDerivedNeedSuperCall, { value: 1 }],
-	[fixNames.extendsInterfaceBecomesImplements, { value: 1 }],
-	[fixNames.awaitInSyncFunction, { value: 1 }],
-	[fixNames.classIncorrectlyImplementsInterface, { value: 3 }],
-	[fixNames.classDoesntImplementInheritedAbstractMember, { value: 3 }],
-	[fixNames.unreachableCode, { value: 1 }],
-	[fixNames.unusedIdentifier, { value: 1 }],
-	[fixNames.forgottenThisPropertyAccess, { value: 1 }],
-	[fixNames.spelling, { value: 2 }],
-	[fixNames.addMissingAwait, { value: 1 }],
-	[fixNames.fixImport, { value: 0, thereCanOnlyBeOne: true }],
+const preferredFixes = new MAp<string, { reAdonly vAlue: number, reAdonly thereCAnOnlyBeOne?: booleAn }>([
+	[fixNAmes.AnnotAteWithTypeFromJSDoc, { vAlue: 1 }],
+	[fixNAmes.constructorForDerivedNeedSuperCAll, { vAlue: 1 }],
+	[fixNAmes.extendsInterfAceBecomesImplements, { vAlue: 1 }],
+	[fixNAmes.AwAitInSyncFunction, { vAlue: 1 }],
+	[fixNAmes.clAssIncorrectlyImplementsInterfAce, { vAlue: 3 }],
+	[fixNAmes.clAssDoesntImplementInheritedAbstrActMember, { vAlue: 3 }],
+	[fixNAmes.unreAchAbleCode, { vAlue: 1 }],
+	[fixNAmes.unusedIdentifier, { vAlue: 1 }],
+	[fixNAmes.forgottenThisPropertyAccess, { vAlue: 1 }],
+	[fixNAmes.spelling, { vAlue: 2 }],
+	[fixNAmes.AddMissingAwAit, { vAlue: 1 }],
+	[fixNAmes.fixImport, { vAlue: 0, thereCAnOnlyBeOne: true }],
 ]);
 
 function isPreferredFix(
-	action: VsCodeCodeAction,
-	allActions: readonly VsCodeCodeAction[]
-): boolean {
-	if (action.isFixAll) {
-		return false;
+	Action: VsCodeCodeAction,
+	AllActions: reAdonly VsCodeCodeAction[]
+): booleAn {
+	if (Action.isFixAll) {
+		return fAlse;
 	}
 
-	const fixPriority = preferredFixes.get(action.tsAction.fixName);
+	const fixPriority = preferredFixes.get(Action.tsAction.fixNAme);
 	if (!fixPriority) {
-		return false;
+		return fAlse;
 	}
 
-	return allActions.every(otherAction => {
-		if (otherAction === action) {
+	return AllActions.every(otherAction => {
+		if (otherAction === Action) {
 			return true;
 		}
 
@@ -388,15 +388,15 @@ function isPreferredFix(
 			return true;
 		}
 
-		const otherFixPriority = preferredFixes.get(otherAction.tsAction.fixName);
-		if (!otherFixPriority || otherFixPriority.value < fixPriority.value) {
+		const otherFixPriority = preferredFixes.get(otherAction.tsAction.fixNAme);
+		if (!otherFixPriority || otherFixPriority.vAlue < fixPriority.vAlue) {
 			return true;
-		} else if (otherFixPriority.value > fixPriority.value) {
-			return false;
+		} else if (otherFixPriority.vAlue > fixPriority.vAlue) {
+			return fAlse;
 		}
 
-		if (fixPriority.thereCanOnlyBeOne && action.tsAction.fixName === otherAction.tsAction.fixName) {
-			return false;
+		if (fixPriority.thereCAnOnlyBeOne && Action.tsAction.fixNAme === otherAction.tsAction.fixNAme) {
+			return fAlse;
 		}
 
 		return true;
@@ -406,16 +406,16 @@ function isPreferredFix(
 export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
-	fileConfigurationManager: FileConfigurationManager,
-	commandManager: CommandManager,
-	diagnosticsManager: DiagnosticsManager,
+	fileConfigurAtionMAnAger: FileConfigurAtionMAnAger,
+	commAndMAnAger: CommAndMAnAger,
+	diAgnosticsMAnAger: DiAgnosticsMAnAger,
 	telemetryReporter: TelemetryReporter
 ) {
-	return conditionalRegistration([
-		requireSomeCapability(client, ClientCapability.Semantic),
+	return conditionAlRegistrAtion([
+		requireSomeCApAbility(client, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerCodeActionsProvider(selector.semantic,
-			new TypeScriptQuickFixProvider(client, fileConfigurationManager, commandManager, diagnosticsManager, telemetryReporter),
-			TypeScriptQuickFixProvider.metadata);
+		return vscode.lAnguAges.registerCodeActionsProvider(selector.semAntic,
+			new TypeScriptQuickFixProvider(client, fileConfigurAtionMAnAger, commAndMAnAger, diAgnosticsMAnAger, telemetryReporter),
+			TypeScriptQuickFixProvider.metAdAtA);
 	});
 }

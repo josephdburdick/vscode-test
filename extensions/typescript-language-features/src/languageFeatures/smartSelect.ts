@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
-import { conditionalRegistration, requireMinVersion } from '../utils/dependentRegistration';
+import API from '../utils/Api';
+import { conditionAlRegistrAtion, requireMinVersion } from '../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../utils/documentSelector';
-import * as typeConverters from '../utils/typeConverters';
+import * As typeConverters from '../utils/typeConverters';
 
-class SmartSelection implements vscode.SelectionRangeProvider {
-	public static readonly minVersion = API.v350;
+clAss SmArtSelection implements vscode.SelectionRAngeProvider {
+	public stAtic reAdonly minVersion = API.v350;
 
 	public constructor(
-		private readonly client: ITypeScriptServiceClient
+		privAte reAdonly client: ITypeScriptServiceClient
 	) { }
 
-	public async provideSelectionRanges(
+	public Async provideSelectionRAnges(
 		document: vscode.TextDocument,
 		positions: vscode.Position[],
-		token: vscode.CancellationToken,
-	): Promise<vscode.SelectionRange[] | undefined> {
-		const file = this.client.toOpenedFilePath(document);
+		token: vscode.CAncellAtionToken,
+	): Promise<vscode.SelectionRAnge[] | undefined> {
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return undefined;
 		}
 
-		const args: Proto.SelectionRangeRequestArgs = {
+		const Args: Proto.SelectionRAngeRequestArgs = {
 			file,
-			locations: positions.map(typeConverters.Position.toLocation)
+			locAtions: positions.mAp(typeConverters.Position.toLocAtion)
 		};
-		const response = await this.client.execute('selectionRange', args, token);
+		const response = AwAit this.client.execute('selectionRAnge', Args, token);
 		if (response.type !== 'response' || !response.body) {
 			return undefined;
 		}
-		return response.body.map(SmartSelection.convertSelectionRange);
+		return response.body.mAp(SmArtSelection.convertSelectionRAnge);
 	}
 
-	private static convertSelectionRange(
-		selectionRange: Proto.SelectionRange
-	): vscode.SelectionRange {
-		return new vscode.SelectionRange(
-			typeConverters.Range.fromTextSpan(selectionRange.textSpan),
-			selectionRange.parent ? SmartSelection.convertSelectionRange(selectionRange.parent) : undefined,
+	privAte stAtic convertSelectionRAnge(
+		selectionRAnge: Proto.SelectionRAnge
+	): vscode.SelectionRAnge {
+		return new vscode.SelectionRAnge(
+			typeConverters.RAnge.fromTextSpAn(selectionRAnge.textSpAn),
+			selectionRAnge.pArent ? SmArtSelection.convertSelectionRAnge(selectionRAnge.pArent) : undefined,
 		);
 	}
 }
@@ -53,9 +53,9 @@ export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
 ) {
-	return conditionalRegistration([
-		requireMinVersion(client, SmartSelection.minVersion),
+	return conditionAlRegistrAtion([
+		requireMinVersion(client, SmArtSelection.minVersion),
 	], () => {
-		return vscode.languages.registerSelectionRangeProvider(selector.syntax, new SmartSelection(client));
+		return vscode.lAnguAges.registerSelectionRAngeProvider(selector.syntAx, new SmArtSelection(client));
 	});
 }

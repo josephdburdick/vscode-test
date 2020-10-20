@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { IChannel } from 'vs/base/parts/ipc/common/ipc';
-import { IExtensionTipsService, IExecutableBasedExtensionTip, IWorkspaceTips, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { URI } from 'vs/base/common/uri';
-import { ExtensionTipsService } from 'vs/platform/extensionManagement/common/extensionTipsService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { ILogService } from 'vs/platform/log/common/log';
-import { Schemas } from 'vs/base/common/network';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IShAredProcessService } from 'vs/plAtform/ipc/electron-browser/shAredProcessService';
+import { IChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { IExtensionTipsService, IExecutAbleBAsedExtensionTip, IWorkspAceTips, IConfigBAsedExtensionTip } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { URI } from 'vs/bAse/common/uri';
+import { ExtensionTipsService } from 'vs/plAtform/extensionMAnAgement/common/extensionTipsService';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { SchemAs } from 'vs/bAse/common/network';
 
-class NativeExtensionTipsService extends ExtensionTipsService implements IExtensionTipsService {
+clAss NAtiveExtensionTipsService extends ExtensionTipsService implements IExtensionTipsService {
 
-	_serviceBrand: any;
+	_serviceBrAnd: Any;
 
-	private readonly channel: IChannel;
+	privAte reAdonly chAnnel: IChAnnel;
 
 	constructor(
 		@IFileService fileService: IFileService,
 		@IProductService productService: IProductService,
 		@IRequestService requestService: IRequestService,
 		@ILogService logService: ILogService,
-		@ISharedProcessService sharedProcessService: ISharedProcessService
+		@IShAredProcessService shAredProcessService: IShAredProcessService
 	) {
 		super(fileService, productService, requestService, logService);
-		this.channel = sharedProcessService.getChannel('extensionTipsService');
+		this.chAnnel = shAredProcessService.getChAnnel('extensionTipsService');
 	}
 
-	getConfigBasedTips(folder: URI): Promise<IConfigBasedExtensionTip[]> {
-		if (folder.scheme === Schemas.file) {
-			return this.channel.call<IConfigBasedExtensionTip[]>('getConfigBasedTips', [folder]);
+	getConfigBAsedTips(folder: URI): Promise<IConfigBAsedExtensionTip[]> {
+		if (folder.scheme === SchemAs.file) {
+			return this.chAnnel.cAll<IConfigBAsedExtensionTip[]>('getConfigBAsedTips', [folder]);
 		}
-		return super.getConfigBasedTips(folder);
+		return super.getConfigBAsedTips(folder);
 	}
 
-	getImportantExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
-		return this.channel.call<IExecutableBasedExtensionTip[]>('getImportantExecutableBasedTips');
+	getImportAntExecutAbleBAsedTips(): Promise<IExecutAbleBAsedExtensionTip[]> {
+		return this.chAnnel.cAll<IExecutAbleBAsedExtensionTip[]>('getImportAntExecutAbleBAsedTips');
 	}
 
-	getOtherExecutableBasedTips(): Promise<IExecutableBasedExtensionTip[]> {
-		return this.channel.call<IExecutableBasedExtensionTip[]>('getOtherExecutableBasedTips');
+	getOtherExecutAbleBAsedTips(): Promise<IExecutAbleBAsedExtensionTip[]> {
+		return this.chAnnel.cAll<IExecutAbleBAsedExtensionTip[]>('getOtherExecutAbleBAsedTips');
 	}
 
-	getAllWorkspacesTips(): Promise<IWorkspaceTips[]> {
-		return this.channel.call<IWorkspaceTips[]>('getAllWorkspacesTips');
+	getAllWorkspAcesTips(): Promise<IWorkspAceTips[]> {
+		return this.chAnnel.cAll<IWorkspAceTips[]>('getAllWorkspAcesTips');
 	}
 
 }
 
-registerSingleton(IExtensionTipsService, NativeExtensionTipsService);
+registerSingleton(IExtensionTipsService, NAtiveExtensionTipsService);

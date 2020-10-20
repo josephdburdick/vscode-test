@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import * as platform from 'vs/base/common/platform';
+import { URI } from 'vs/bAse/common/uri';
+import * As plAtform from 'vs/bAse/common/plAtform';
 
-export namespace Schemas {
+export nAmespAce SchemAs {
 
 	/**
-	 * A schema that is used for models that exist in memory
-	 * only and that have no correspondence on a server or such.
+	 * A schemA thAt is used for models thAt exist in memory
+	 * only And thAt hAve no correspondence on A server or such.
 	 */
 	export const inMemory = 'inmemory';
 
 	/**
-	 * A schema that is used for setting files
+	 * A schemA thAt is used for setting files
 	 */
 	export const vscode = 'vscode';
 
 	/**
-	 * A schema that is used for internal private files
+	 * A schemA thAt is used for internAl privAte files
 	 */
-	export const internal = 'private';
+	export const internAl = 'privAte';
 
 	/**
-	 * A walk-through document.
+	 * A wAlk-through document.
 	 */
-	export const walkThrough = 'walkThrough';
+	export const wAlkThrough = 'wAlkThrough';
 
 	/**
 	 * An embedded code snippet.
 	 */
-	export const walkThroughSnippet = 'walkThroughSnippet';
+	export const wAlkThroughSnippet = 'wAlkThroughSnippet';
 
 	export const http = 'http';
 
@@ -40,19 +40,19 @@ export namespace Schemas {
 
 	export const file = 'file';
 
-	export const mailto = 'mailto';
+	export const mAilto = 'mAilto';
 
 	export const untitled = 'untitled';
 
-	export const data = 'data';
+	export const dAtA = 'dAtA';
 
-	export const command = 'command';
+	export const commAnd = 'commAnd';
 
 	export const vscodeRemote = 'vscode-remote';
 
 	export const vscodeRemoteResource = 'vscode-remote-resource';
 
-	export const userData = 'vscode-userdata';
+	export const userDAtA = 'vscode-userdAtA';
 
 	export const vscodeCustomEditor = 'vscode-custom-editor';
 
@@ -62,67 +62,67 @@ export namespace Schemas {
 
 	export const vscodeSettings = 'vscode-settings';
 
-	export const webviewPanel = 'webview-panel';
+	export const webviewPAnel = 'webview-pAnel';
 
 	/**
-	 * Scheme used for loading the wrapper html and script in webviews.
+	 * Scheme used for loAding the wrApper html And script in webviews.
 	 */
 	export const vscodeWebview = 'vscode-webview';
 
 	/**
-	 * Scheme used for loading resources inside of webviews.
+	 * Scheme used for loAding resources inside of webviews.
 	 */
 	export const vscodeWebviewResource = 'vscode-webview-resource';
 
 	/**
-	 * Scheme used for extension pages
+	 * Scheme used for extension pAges
 	 */
 	export const extension = 'extension';
 }
 
-class RemoteAuthoritiesImpl {
-	private readonly _hosts: { [authority: string]: string | undefined; } = Object.create(null);
-	private readonly _ports: { [authority: string]: number | undefined; } = Object.create(null);
-	private readonly _connectionTokens: { [authority: string]: string | undefined; } = Object.create(null);
-	private _preferredWebSchema: 'http' | 'https' = 'http';
-	private _delegate: ((uri: URI) => URI) | null = null;
+clAss RemoteAuthoritiesImpl {
+	privAte reAdonly _hosts: { [Authority: string]: string | undefined; } = Object.creAte(null);
+	privAte reAdonly _ports: { [Authority: string]: number | undefined; } = Object.creAte(null);
+	privAte reAdonly _connectionTokens: { [Authority: string]: string | undefined; } = Object.creAte(null);
+	privAte _preferredWebSchemA: 'http' | 'https' = 'http';
+	privAte _delegAte: ((uri: URI) => URI) | null = null;
 
-	setPreferredWebSchema(schema: 'http' | 'https') {
-		this._preferredWebSchema = schema;
+	setPreferredWebSchemA(schemA: 'http' | 'https') {
+		this._preferredWebSchemA = schemA;
 	}
 
-	setDelegate(delegate: (uri: URI) => URI): void {
-		this._delegate = delegate;
+	setDelegAte(delegAte: (uri: URI) => URI): void {
+		this._delegAte = delegAte;
 	}
 
-	set(authority: string, host: string, port: number): void {
-		this._hosts[authority] = host;
-		this._ports[authority] = port;
+	set(Authority: string, host: string, port: number): void {
+		this._hosts[Authority] = host;
+		this._ports[Authority] = port;
 	}
 
-	setConnectionToken(authority: string, connectionToken: string): void {
-		this._connectionTokens[authority] = connectionToken;
+	setConnectionToken(Authority: string, connectionToken: string): void {
+		this._connectionTokens[Authority] = connectionToken;
 	}
 
 	rewrite(uri: URI): URI {
-		if (this._delegate) {
-			return this._delegate(uri);
+		if (this._delegAte) {
+			return this._delegAte(uri);
 		}
-		const authority = uri.authority;
-		let host = this._hosts[authority];
+		const Authority = uri.Authority;
+		let host = this._hosts[Authority];
 		if (host && host.indexOf(':') !== -1) {
 			host = `[${host}]`;
 		}
-		const port = this._ports[authority];
-		const connectionToken = this._connectionTokens[authority];
-		let query = `path=${encodeURIComponent(uri.path)}`;
+		const port = this._ports[Authority];
+		const connectionToken = this._connectionTokens[Authority];
+		let query = `pAth=${encodeURIComponent(uri.pAth)}`;
 		if (typeof connectionToken === 'string') {
 			query += `&tkn=${encodeURIComponent(connectionToken)}`;
 		}
 		return URI.from({
-			scheme: platform.isWeb ? this._preferredWebSchema : Schemas.vscodeRemoteResource,
-			authority: `${host}:${port}`,
-			path: `/vscode-remote-resource`,
+			scheme: plAtform.isWeb ? this._preferredWebSchemA : SchemAs.vscodeRemoteResource,
+			Authority: `${host}:${port}`,
+			pAth: `/vscode-remote-resource`,
 			query
 		});
 	}
@@ -130,20 +130,20 @@ class RemoteAuthoritiesImpl {
 
 export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 
-class FileAccessImpl {
+clAss FileAccessImpl {
 
 	/**
-	 * Returns a URI to use in contexts where the browser is responsible
-	 * for loading (e.g. fetch()) or when used within the DOM.
+	 * Returns A URI to use in contexts where the browser is responsible
+	 * for loAding (e.g. fetch()) or when used within the DOM.
 	 *
-	 * **Note:** use `dom.ts#asCSSUrl` whenever the URL is to be used in CSS context.
+	 * **Note:** use `dom.ts#AsCSSUrl` whenever the URL is to be used in CSS context.
 	 */
-	asBrowserUri(uri: URI): URI;
-	asBrowserUri(moduleId: string, moduleIdToUrl: { toUrl(moduleId: string): string }): URI;
-	asBrowserUri(uriOrModule: URI | string, moduleIdToUrl?: { toUrl(moduleId: string): string }): URI {
+	AsBrowserUri(uri: URI): URI;
+	AsBrowserUri(moduleId: string, moduleIdToUrl: { toUrl(moduleId: string): string }): URI;
+	AsBrowserUri(uriOrModule: URI | string, moduleIdToUrl?: { toUrl(moduleId: string): string }): URI {
 		const uri = this.toUri(uriOrModule, moduleIdToUrl);
 
-		if (uri.scheme === Schemas.vscodeRemote) {
+		if (uri.scheme === SchemAs.vscodeRemote) {
 			return RemoteAuthorities.rewrite(uri);
 		}
 
@@ -152,22 +152,22 @@ class FileAccessImpl {
 
 	/**
 	 * Returns the `file` URI to use in contexts where node.js
-	 * is responsible for loading.
+	 * is responsible for loAding.
 	 */
-	asFileUri(uri: URI): URI;
-	asFileUri(moduleId: string, moduleIdToUrl: { toUrl(moduleId: string): string }): URI;
-	asFileUri(uriOrModule: URI | string, moduleIdToUrl?: { toUrl(moduleId: string): string }): URI {
+	AsFileUri(uri: URI): URI;
+	AsFileUri(moduleId: string, moduleIdToUrl: { toUrl(moduleId: string): string }): URI;
+	AsFileUri(uriOrModule: URI | string, moduleIdToUrl?: { toUrl(moduleId: string): string }): URI {
 		const uri = this.toUri(uriOrModule, moduleIdToUrl);
 
 		return uri;
 	}
 
-	private toUri(uriOrModule: URI | string, moduleIdToUrl?: { toUrl(moduleId: string): string }): URI {
+	privAte toUri(uriOrModule: URI | string, moduleIdToUrl?: { toUrl(moduleId: string): string }): URI {
 		if (URI.isUri(uriOrModule)) {
 			return uriOrModule;
 		}
 
-		return URI.parse(moduleIdToUrl!.toUrl(uriOrModule));
+		return URI.pArse(moduleIdToUrl!.toUrl(uriOrModule));
 	}
 }
 

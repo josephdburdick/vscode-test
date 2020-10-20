@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { GroupIdentifier, IWorkbenchEditorConfiguration, EditorOptions, TextEditorOptions, IEditorInput, IEditorIdentifier, IEditorCloseEvent, IEditorPane, IEditorPartOptions, IEditorPartOptionsChangeEvent, EditorInput } from 'vs/workbench/common/editor';
+import { GroupIdentifier, IWorkbenchEditorConfigurAtion, EditorOptions, TextEditorOptions, IEditorInput, IEditorIdentifier, IEditorCloseEvent, IEditorPAne, IEditorPArtOptions, IEditorPArtOptionsChAngeEvent, EditorInput } from 'vs/workbench/common/editor';
 import { EditorGroup } from 'vs/workbench/common/editor/editorGroup';
-import { IEditorGroup, GroupDirection, IAddGroupOptions, IMergeGroupOptions, GroupsOrder, GroupsArrangement, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Dimension } from 'vs/base/browser/dom';
-import { Event } from 'vs/base/common/event';
-import { IConfigurationChangeEvent, IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ISerializableView } from 'vs/base/browser/ui/grid/grid';
+import { IEditorGroup, GroupDirection, IAddGroupOptions, IMergeGroupOptions, GroupsOrder, GroupsArrAngement, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Dimension } from 'vs/bAse/browser/dom';
+import { Event } from 'vs/bAse/common/event';
+import { IConfigurAtionChAngeEvent, IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { ISeriAlizAbleView } from 'vs/bAse/browser/ui/grid/grid';
 import { getIEditor } from 'vs/editor/browser/editorBrowser';
-import { IEditorOptions } from 'vs/platform/editor/common/editor';
+import { IEditorOptions } from 'vs/plAtform/editor/common/editor';
 import { IEditorService, IResourceEditorInputType } from 'vs/workbench/services/editor/common/editorService';
 
-export interface IEditorPartCreationOptions {
-	restorePreviousState: boolean;
+export interfAce IEditorPArtCreAtionOptions {
+	restorePreviousStAte: booleAn;
 }
 
 export const DEFAULT_EDITOR_MIN_DIMENSIONS = new Dimension(220, 70);
 export const DEFAULT_EDITOR_MAX_DIMENSIONS = new Dimension(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
 
-export const DEFAULT_EDITOR_PART_OPTIONS: IEditorPartOptions = {
-	showTabs: true,
-	highlightModifiedTabs: false,
-	tabCloseButton: 'right',
-	tabSizing: 'fit',
-	pinnedTabSizing: 'normal',
-	titleScrollbarSizing: 'default',
+export const DEFAULT_EDITOR_PART_OPTIONS: IEditorPArtOptions = {
+	showTAbs: true,
+	highlightModifiedTAbs: fAlse,
+	tAbCloseButton: 'right',
+	tAbSizing: 'fit',
+	pinnedTAbSizing: 'normAl',
+	titleScrollbArSizing: 'defAult',
 	focusRecentEditorAfterClose: true,
 	showIcons: true,
-	hasIcons: true, // 'vs-seti' is our default icon theme
-	enablePreview: true,
+	hAsIcons: true, // 'vs-seti' is our defAult icon theme
+	enAblePreview: true,
 	openPositioning: 'right',
 	openSideBySideDirection: 'right',
 	closeEmptyGroups: true,
-	labelFormat: 'default',
+	lAbelFormAt: 'defAult',
 	splitSizing: 'distribute'
 };
 
-export function impactsEditorPartOptions(event: IConfigurationChangeEvent): boolean {
-	return event.affectsConfiguration('workbench.editor') || event.affectsConfiguration('workbench.iconTheme');
+export function impActsEditorPArtOptions(event: IConfigurAtionChAngeEvent): booleAn {
+	return event.AffectsConfigurAtion('workbench.editor') || event.AffectsConfigurAtion('workbench.iconTheme');
 }
 
-export function getEditorPartOptions(configurationService: IConfigurationService, themeService: IThemeService): IEditorPartOptions {
+export function getEditorPArtOptions(configurAtionService: IConfigurAtionService, themeService: IThemeService): IEditorPArtOptions {
 	const options = {
 		...DEFAULT_EDITOR_PART_OPTIONS,
-		hasIcons: themeService.getFileIconTheme().hasFileIcons
+		hAsIcons: themeService.getFileIconTheme().hAsFileIcons
 	};
 
-	const config = configurationService.getValue<IWorkbenchEditorConfiguration>();
+	const config = configurAtionService.getVAlue<IWorkbenchEditorConfigurAtion>();
 	if (config?.workbench?.editor) {
-		Object.assign(options, config.workbench.editor);
+		Object.Assign(options, config.workbench.editor);
 	}
 
 	return options;
 }
 
-export interface IEditorOpeningEvent extends IEditorIdentifier {
+export interfAce IEditorOpeningEvent extends IEditorIdentifier {
 
 	/**
 	 * The options used when opening the editor.
@@ -67,94 +67,94 @@ export interface IEditorOpeningEvent extends IEditorIdentifier {
 	options?: IEditorOptions;
 
 	/**
-	 * Context indicates how the editor open event is initialized.
+	 * Context indicAtes how the editor open event is initiAlized.
 	 */
 	context?: OpenEditorContext;
 
 	/**
-	 * Allows to prevent the opening of an editor by providing a callback
-	 * that will be executed instead. By returning another editor promise
-	 * it is possible to override the opening with another editor. It is ok
-	 * to return a promise that resolves to `undefined` to prevent the opening
-	 * alltogether.
+	 * Allows to prevent the opening of An editor by providing A cAllbAck
+	 * thAt will be executed insteAd. By returning Another editor promise
+	 * it is possible to override the opening with Another editor. It is ok
+	 * to return A promise thAt resolves to `undefined` to prevent the opening
+	 * Alltogether.
 	 */
-	prevent(callback: () => Promise<IEditorPane | undefined> | undefined): void;
+	prevent(cAllbAck: () => Promise<IEditorPAne | undefined> | undefined): void;
 }
 
-export interface IEditorGroupsAccessor {
+export interfAce IEditorGroupsAccessor {
 
-	readonly groups: IEditorGroupView[];
-	readonly activeGroup: IEditorGroupView;
+	reAdonly groups: IEditorGroupView[];
+	reAdonly ActiveGroup: IEditorGroupView;
 
-	readonly partOptions: IEditorPartOptions;
-	readonly onDidEditorPartOptionsChange: Event<IEditorPartOptionsChangeEvent>;
+	reAdonly pArtOptions: IEditorPArtOptions;
+	reAdonly onDidEditorPArtOptionsChAnge: Event<IEditorPArtOptionsChAngeEvent>;
 
-	readonly onDidVisibilityChange: Event<boolean>;
+	reAdonly onDidVisibilityChAnge: Event<booleAn>;
 
 	getGroup(identifier: GroupIdentifier): IEditorGroupView | undefined;
 	getGroups(order: GroupsOrder): IEditorGroupView[];
 
-	activateGroup(identifier: IEditorGroupView | GroupIdentifier): IEditorGroupView;
+	ActivAteGroup(identifier: IEditorGroupView | GroupIdentifier): IEditorGroupView;
 	restoreGroup(identifier: IEditorGroupView | GroupIdentifier): IEditorGroupView;
 
-	addGroup(location: IEditorGroupView | GroupIdentifier, direction: GroupDirection, options?: IAddGroupOptions): IEditorGroupView;
-	mergeGroup(group: IEditorGroupView | GroupIdentifier, target: IEditorGroupView | GroupIdentifier, options?: IMergeGroupOptions): IEditorGroupView;
+	AddGroup(locAtion: IEditorGroupView | GroupIdentifier, direction: GroupDirection, options?: IAddGroupOptions): IEditorGroupView;
+	mergeGroup(group: IEditorGroupView | GroupIdentifier, tArget: IEditorGroupView | GroupIdentifier, options?: IMergeGroupOptions): IEditorGroupView;
 
-	moveGroup(group: IEditorGroupView | GroupIdentifier, location: IEditorGroupView | GroupIdentifier, direction: GroupDirection): IEditorGroupView;
-	copyGroup(group: IEditorGroupView | GroupIdentifier, location: IEditorGroupView | GroupIdentifier, direction: GroupDirection): IEditorGroupView;
+	moveGroup(group: IEditorGroupView | GroupIdentifier, locAtion: IEditorGroupView | GroupIdentifier, direction: GroupDirection): IEditorGroupView;
+	copyGroup(group: IEditorGroupView | GroupIdentifier, locAtion: IEditorGroupView | GroupIdentifier, direction: GroupDirection): IEditorGroupView;
 
 	removeGroup(group: IEditorGroupView | GroupIdentifier): void;
 
-	arrangeGroups(arrangement: GroupsArrangement, target?: IEditorGroupView | GroupIdentifier): void;
+	ArrAngeGroups(ArrAngement: GroupsArrAngement, tArget?: IEditorGroupView | GroupIdentifier): void;
 }
 
-export interface IEditorGroupTitleDimensions {
+export interfAce IEditorGroupTitleDimensions {
 
 	/**
-	 * The overall height of the editor group title control.
+	 * The overAll height of the editor group title control.
 	 */
 	height: number;
 
 	/**
-	 * The height offset to e.g. use when drawing drop overlays.
-	 * This number may be smaller than `height` if the title control
-	 * decides to have an `offset` that is within the title area
-	 * (e.g. when breadcrumbs are enabled).
+	 * The height offset to e.g. use when drAwing drop overlAys.
+	 * This number mAy be smAller thAn `height` if the title control
+	 * decides to hAve An `offset` thAt is within the title AreA
+	 * (e.g. when breAdcrumbs Are enAbled).
 	 */
 	offset: number;
 }
 
-export interface IEditorGroupView extends IDisposable, ISerializableView, IEditorGroup {
+export interfAce IEditorGroupView extends IDisposAble, ISeriAlizAbleView, IEditorGroup {
 
-	readonly onDidFocus: Event<void>;
-	readonly onWillDispose: Event<void>;
-	readonly onWillOpenEditor: Event<IEditorOpeningEvent>;
-	readonly onDidOpenEditorFail: Event<IEditorInput>;
-	readonly onWillCloseEditor: Event<IEditorCloseEvent>;
-	readonly onDidCloseEditor: Event<IEditorCloseEvent>;
+	reAdonly onDidFocus: Event<void>;
+	reAdonly onWillDispose: Event<void>;
+	reAdonly onWillOpenEditor: Event<IEditorOpeningEvent>;
+	reAdonly onDidOpenEditorFAil: Event<IEditorInput>;
+	reAdonly onWillCloseEditor: Event<IEditorCloseEvent>;
+	reAdonly onDidCloseEditor: Event<IEditorCloseEvent>;
 
-	readonly group: EditorGroup;
-	readonly whenRestored: Promise<void>;
+	reAdonly group: EditorGroup;
+	reAdonly whenRestored: Promise<void>;
 
-	readonly titleDimensions: IEditorGroupTitleDimensions;
+	reAdonly titleDimensions: IEditorGroupTitleDimensions;
 
-	readonly isEmpty: boolean;
-	readonly isMinimized: boolean;
+	reAdonly isEmpty: booleAn;
+	reAdonly isMinimized: booleAn;
 
-	readonly disposed: boolean;
+	reAdonly disposed: booleAn;
 
-	setActive(isActive: boolean): void;
+	setActive(isActive: booleAn): void;
 
-	notifyIndexChanged(newIndex: number): void;
+	notifyIndexChAnged(newIndex: number): void;
 
-	relayout(): void;
+	relAyout(): void;
 }
 
 export function getActiveTextEditorOptions(group: IEditorGroup, expectedActiveEditor?: IEditorInput, presetOptions?: EditorOptions): EditorOptions {
-	const activeGroupCodeEditor = group.activeEditorPane ? getIEditor(group.activeEditorPane.getControl()) : undefined;
-	if (activeGroupCodeEditor) {
-		if (!expectedActiveEditor || expectedActiveEditor.matches(group.activeEditor)) {
-			return TextEditorOptions.fromEditor(activeGroupCodeEditor, presetOptions);
+	const ActiveGroupCodeEditor = group.ActiveEditorPAne ? getIEditor(group.ActiveEditorPAne.getControl()) : undefined;
+	if (ActiveGroupCodeEditor) {
+		if (!expectedActiveEditor || expectedActiveEditor.mAtches(group.ActiveEditor)) {
+			return TextEditorOptions.fromEditor(ActiveGroupCodeEditor, presetOptions);
 		}
 	}
 
@@ -162,23 +162,23 @@ export function getActiveTextEditorOptions(group: IEditorGroup, expectedActiveEd
 }
 
 /**
- * A sub-interface of IEditorService to hide some workbench-core specific
+ * A sub-interfAce of IEditorService to hide some workbench-core specific
  * events from clients.
  */
-export interface EditorServiceImpl extends IEditorService {
+export interfAce EditorServiceImpl extends IEditorService {
 
 	/**
-	 * Emitted when an editor failed to open.
+	 * Emitted when An editor fAiled to open.
 	 */
-	readonly onDidOpenEditorFail: Event<IEditorIdentifier>;
+	reAdonly onDidOpenEditorFAil: Event<IEditorIdentifier>;
 
 	/**
-	 * Emitted when the list of most recently active editors change.
+	 * Emitted when the list of most recently Active editors chAnge.
 	 */
-	readonly onDidMostRecentlyActiveEditorsChange: Event<void>;
+	reAdonly onDidMostRecentlyActiveEditorsChAnge: Event<void>;
 
 	/**
-	 * Override to return a typed `EditorInput`.
+	 * Override to return A typed `EditorInput`.
 	 */
-	createEditorInput(input: IResourceEditorInputType): EditorInput;
+	creAteEditorInput(input: IResourceEditorInputType): EditorInput;
 }

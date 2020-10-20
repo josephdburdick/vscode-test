@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ITextEditorModel, IModeSupport } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { IReference } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IReference } from 'vs/bAse/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { ResourceEditorModel } from 'vs/workbench/common/editor/resourceEditorModel';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IFileService } from 'vs/platform/files/common/files';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { AbstractTextResourceEditorInput } from 'vs/workbench/common/editor/textResourceEditorInput';
-import { isEqual } from 'vs/base/common/resources';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IFilesConfigurAtionService } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { AbstrActTextResourceEditorInput } from 'vs/workbench/common/editor/textResourceEditorInput';
+import { isEquAl } from 'vs/bAse/common/resources';
 
 /**
- * A read-only text editor input whos contents are made of the provided resource that points to an existing
+ * A reAd-only text editor input whos contents Are mAde of the provided resource thAt points to An existing
  * code editor model.
  */
-export class ResourceEditorInput extends AbstractTextResourceEditorInput implements IModeSupport {
+export clAss ResourceEditorInput extends AbstrActTextResourceEditorInput implements IModeSupport {
 
-	static readonly ID: string = 'workbench.editors.resourceEditorInput';
+	stAtic reAdonly ID: string = 'workbench.editors.resourceEditorInput';
 
-	private cachedModel: ResourceEditorModel | undefined = undefined;
-	private modelReference: Promise<IReference<ITextEditorModel>> | undefined = undefined;
+	privAte cAchedModel: ResourceEditorModel | undefined = undefined;
+	privAte modelReference: Promise<IReference<ITextEditorModel>> | undefined = undefined;
 
 	constructor(
 		resource: URI,
-		private name: string | undefined,
-		private description: string | undefined,
-		private preferredMode: string | undefined,
-		@ITextModelService private readonly textModelResolverService: ITextModelService,
+		privAte nAme: string | undefined,
+		privAte description: string | undefined,
+		privAte preferredMode: string | undefined,
+		@ITextModelService privAte reAdonly textModelResolverService: ITextModelService,
 		@ITextFileService textFileService: ITextFileService,
 		@IEditorService editorService: IEditorService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
 		@IFileService fileService: IFileService,
-		@ILabelService labelService: ILabelService,
-		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
+		@ILAbelService lAbelService: ILAbelService,
+		@IFilesConfigurAtionService filesConfigurAtionService: IFilesConfigurAtionService
 	) {
-		super(resource, undefined, editorService, editorGroupService, textFileService, labelService, fileService, filesConfigurationService);
+		super(resource, undefined, editorService, editorGroupService, textFileService, lAbelService, fileService, filesConfigurAtionService);
 	}
 
 	getTypeId(): string {
 		return ResourceEditorInput.ID;
 	}
 
-	getName(): string {
-		return this.name || super.getName();
+	getNAme(): string {
+		return this.nAme || super.getNAme();
 	}
 
-	setName(name: string): void {
-		if (this.name !== name) {
-			this.name = name;
-			this._onDidChangeLabel.fire();
+	setNAme(nAme: string): void {
+		if (this.nAme !== nAme) {
+			this.nAme = nAme;
+			this._onDidChAngeLAbel.fire();
 		}
 	}
 
@@ -67,15 +67,15 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		if (this.description !== description) {
 			this.description = description;
 
-			this._onDidChangeLabel.fire();
+			this._onDidChAngeLAbel.fire();
 		}
 	}
 
 	setMode(mode: string): void {
 		this.setPreferredMode(mode);
 
-		if (this.cachedModel) {
-			this.cachedModel.setMode(mode);
+		if (this.cAchedModel) {
+			this.cAchedModel.setMode(mode);
 		}
 	}
 
@@ -83,25 +83,25 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		this.preferredMode = mode;
 	}
 
-	async resolve(): Promise<ITextEditorModel> {
+	Async resolve(): Promise<ITextEditorModel> {
 		if (!this.modelReference) {
-			this.modelReference = this.textModelResolverService.createModelReference(this.resource);
+			this.modelReference = this.textModelResolverService.creAteModelReference(this.resource);
 		}
 
-		const ref = await this.modelReference;
+		const ref = AwAit this.modelReference;
 
 		// Ensure the resolved model is of expected type
 		const model = ref.object;
-		if (!(model instanceof ResourceEditorModel)) {
+		if (!(model instAnceof ResourceEditorModel)) {
 			ref.dispose();
 			this.modelReference = undefined;
 
 			throw new Error(`Unexpected model for ResourcEditorInput: ${this.resource}`);
 		}
 
-		this.cachedModel = model;
+		this.cAchedModel = model;
 
-		// Set mode if we have a preferred mode configured
+		// Set mode if we hAve A preferred mode configured
 		if (this.preferredMode) {
 			model.setMode(this.preferredMode);
 		}
@@ -109,16 +109,16 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 		return model;
 	}
 
-	matches(otherInput: unknown): boolean {
+	mAtches(otherInput: unknown): booleAn {
 		if (otherInput === this) {
 			return true;
 		}
 
-		if (otherInput instanceof ResourceEditorInput) {
-			return isEqual(otherInput.resource, this.resource);
+		if (otherInput instAnceof ResourceEditorInput) {
+			return isEquAl(otherInput.resource, this.resource);
 		}
 
-		return false;
+		return fAlse;
 	}
 
 	dispose(): void {
@@ -127,7 +127,7 @@ export class ResourceEditorInput extends AbstractTextResourceEditorInput impleme
 			this.modelReference = undefined;
 		}
 
-		this.cachedModel = undefined;
+		this.cAchedModel = undefined;
 
 		super.dispose();
 	}

@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as objects from 'vs/base/common/objects';
-import { parse, JSONVisitor, visit } from 'vs/base/common/json';
-import { setProperty, withFormatting, applyEdits } from 'vs/base/common/jsonEdit';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { FormattingOptions, Edit, getEOL } from 'vs/base/common/jsonFormatter';
-import * as contentUtil from 'vs/platform/userDataSync/common/content';
-import { IConflictSetting, getDisallowedIgnoredSettings } from 'vs/platform/userDataSync/common/userDataSync';
-import { distinct } from 'vs/base/common/arrays';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import * As objects from 'vs/bAse/common/objects';
+import { pArse, JSONVisitor, visit } from 'vs/bAse/common/json';
+import { setProperty, withFormAtting, ApplyEdits } from 'vs/bAse/common/jsonEdit';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { FormAttingOptions, Edit, getEOL } from 'vs/bAse/common/jsonFormAtter';
+import * As contentUtil from 'vs/plAtform/userDAtASync/common/content';
+import { IConflictSetting, getDisAllowedIgnoredSettings } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { distinct } from 'vs/bAse/common/ArrAys';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 
-export interface IMergeResult {
-	localContent: string | null;
+export interfAce IMergeResult {
+	locAlContent: string | null;
 	remoteContent: string | null;
-	hasConflicts: boolean;
+	hAsConflicts: booleAn;
 	conflictsSettings: IConflictSetting[];
 }
 
-export function getIgnoredSettings(defaultIgnoredSettings: string[], configurationService: IConfigurationService, settingsContent?: string): string[] {
-	let value: string[] = [];
+export function getIgnoredSettings(defAultIgnoredSettings: string[], configurAtionService: IConfigurAtionService, settingsContent?: string): string[] {
+	let vAlue: string[] = [];
 	if (settingsContent) {
-		value = getIgnoredSettingsFromContent(settingsContent);
+		vAlue = getIgnoredSettingsFromContent(settingsContent);
 	} else {
-		value = getIgnoredSettingsFromConfig(configurationService);
+		vAlue = getIgnoredSettingsFromConfig(configurAtionService);
 	}
-	const added: string[] = [], removed: string[] = [...getDisallowedIgnoredSettings()];
-	if (Array.isArray(value)) {
-		for (const key of value) {
-			if (key.startsWith('-')) {
+	const Added: string[] = [], removed: string[] = [...getDisAllowedIgnoredSettings()];
+	if (ArrAy.isArrAy(vAlue)) {
+		for (const key of vAlue) {
+			if (key.stArtsWith('-')) {
 				removed.push(key.substring(1));
 			} else {
-				added.push(key);
+				Added.push(key);
 			}
 		}
 	}
-	return distinct([...defaultIgnoredSettings, ...added,].filter(setting => removed.indexOf(setting) === -1));
+	return distinct([...defAultIgnoredSettings, ...Added,].filter(setting => removed.indexOf(setting) === -1));
 }
 
-function getIgnoredSettingsFromConfig(configurationService: IConfigurationService): string[] {
-	let userValue = configurationService.inspect<string[]>('settingsSync.ignoredSettings').userValue;
-	if (userValue !== undefined) {
-		return userValue;
+function getIgnoredSettingsFromConfig(configurAtionService: IConfigurAtionService): string[] {
+	let userVAlue = configurAtionService.inspect<string[]>('settingsSync.ignoredSettings').userVAlue;
+	if (userVAlue !== undefined) {
+		return userVAlue;
 	}
-	userValue = configurationService.inspect<string[]>('sync.ignoredSettings').userValue;
-	if (userValue !== undefined) {
-		return userValue;
+	userVAlue = configurAtionService.inspect<string[]>('sync.ignoredSettings').userVAlue;
+	if (userVAlue !== undefined) {
+		return userVAlue;
 	}
-	return configurationService.getValue<string[]>('settingsSync.ignoredSettings') || [];
+	return configurAtionService.getVAlue<string[]>('settingsSync.ignoredSettings') || [];
 }
 
 function getIgnoredSettingsFromContent(settingsContent: string): string[] {
-	const parsed = parse(settingsContent);
-	return parsed ? parsed['settingsSync.ignoredSettings'] || parsed['sync.ignoredSettings'] || [] : [];
+	const pArsed = pArse(settingsContent);
+	return pArsed ? pArsed['settingsSync.ignoredSettings'] || pArsed['sync.ignoredSettings'] || [] : [];
 }
 
-export function updateIgnoredSettings(targetContent: string, sourceContent: string, ignoredSettings: string[], formattingOptions: FormattingOptions): string {
+export function updAteIgnoredSettings(tArgetContent: string, sourceContent: string, ignoredSettings: string[], formAttingOptions: FormAttingOptions): string {
 	if (ignoredSettings.length) {
-		const sourceTree = parseSettings(sourceContent);
-		const source = parse(sourceContent);
-		const target = parse(targetContent);
+		const sourceTree = pArseSettings(sourceContent);
+		const source = pArse(sourceContent);
+		const tArget = pArse(tArgetContent);
 		const settingsToAdd: INode[] = [];
 		for (const key of ignoredSettings) {
-			const sourceValue = source[key];
-			const targetValue = target[key];
+			const sourceVAlue = source[key];
+			const tArgetVAlue = tArget[key];
 
-			// Remove in target
-			if (sourceValue === undefined) {
-				targetContent = contentUtil.edit(targetContent, [key], undefined, formattingOptions);
+			// Remove in tArget
+			if (sourceVAlue === undefined) {
+				tArgetContent = contentUtil.edit(tArgetContent, [key], undefined, formAttingOptions);
 			}
 
-			// Update in target
-			else if (targetValue !== undefined) {
-				targetContent = contentUtil.edit(targetContent, [key], sourceValue, formattingOptions);
+			// UpdAte in tArget
+			else if (tArgetVAlue !== undefined) {
+				tArgetContent = contentUtil.edit(tArgetContent, [key], sourceVAlue, formAttingOptions);
 			}
 
 			else {
@@ -82,289 +82,289 @@ export function updateIgnoredSettings(targetContent: string, sourceContent: stri
 			}
 		}
 
-		settingsToAdd.sort((a, b) => a.startOffset - b.startOffset);
-		settingsToAdd.forEach(s => targetContent = addSetting(s.setting!.key, sourceContent, targetContent, formattingOptions));
+		settingsToAdd.sort((A, b) => A.stArtOffset - b.stArtOffset);
+		settingsToAdd.forEAch(s => tArgetContent = AddSetting(s.setting!.key, sourceContent, tArgetContent, formAttingOptions));
 	}
-	return targetContent;
+	return tArgetContent;
 }
 
-export function merge(originalLocalContent: string, originalRemoteContent: string, baseContent: string | null, ignoredSettings: string[], resolvedConflicts: { key: string, value: any | undefined }[], formattingOptions: FormattingOptions): IMergeResult {
+export function merge(originAlLocAlContent: string, originAlRemoteContent: string, bAseContent: string | null, ignoredSettings: string[], resolvedConflicts: { key: string, vAlue: Any | undefined }[], formAttingOptions: FormAttingOptions): IMergeResult {
 
-	const localContentWithoutIgnoredSettings = updateIgnoredSettings(originalLocalContent, originalRemoteContent, ignoredSettings, formattingOptions);
-	const localForwarded = baseContent !== localContentWithoutIgnoredSettings;
-	const remoteForwarded = baseContent !== originalRemoteContent;
+	const locAlContentWithoutIgnoredSettings = updAteIgnoredSettings(originAlLocAlContent, originAlRemoteContent, ignoredSettings, formAttingOptions);
+	const locAlForwArded = bAseContent !== locAlContentWithoutIgnoredSettings;
+	const remoteForwArded = bAseContent !== originAlRemoteContent;
 
-	/* no changes */
-	if (!localForwarded && !remoteForwarded) {
-		return { conflictsSettings: [], localContent: null, remoteContent: null, hasConflicts: false };
+	/* no chAnges */
+	if (!locAlForwArded && !remoteForwArded) {
+		return { conflictsSettings: [], locAlContent: null, remoteContent: null, hAsConflicts: fAlse };
 	}
 
-	/* local has changed and remote has not */
-	if (localForwarded && !remoteForwarded) {
-		return { conflictsSettings: [], localContent: null, remoteContent: localContentWithoutIgnoredSettings, hasConflicts: false };
+	/* locAl hAs chAnged And remote hAs not */
+	if (locAlForwArded && !remoteForwArded) {
+		return { conflictsSettings: [], locAlContent: null, remoteContent: locAlContentWithoutIgnoredSettings, hAsConflicts: fAlse };
 	}
 
-	/* remote has changed and local has not */
-	if (remoteForwarded && !localForwarded) {
-		return { conflictsSettings: [], localContent: updateIgnoredSettings(originalRemoteContent, originalLocalContent, ignoredSettings, formattingOptions), remoteContent: null, hasConflicts: false };
+	/* remote hAs chAnged And locAl hAs not */
+	if (remoteForwArded && !locAlForwArded) {
+		return { conflictsSettings: [], locAlContent: updAteIgnoredSettings(originAlRemoteContent, originAlLocAlContent, ignoredSettings, formAttingOptions), remoteContent: null, hAsConflicts: fAlse };
 	}
 
-	/* local is empty and not synced before */
-	if (baseContent === null && isEmpty(originalLocalContent)) {
-		const localContent = areSame(originalLocalContent, originalRemoteContent, ignoredSettings) ? null : updateIgnoredSettings(originalRemoteContent, originalLocalContent, ignoredSettings, formattingOptions);
-		return { conflictsSettings: [], localContent, remoteContent: null, hasConflicts: false };
+	/* locAl is empty And not synced before */
+	if (bAseContent === null && isEmpty(originAlLocAlContent)) {
+		const locAlContent = AreSAme(originAlLocAlContent, originAlRemoteContent, ignoredSettings) ? null : updAteIgnoredSettings(originAlRemoteContent, originAlLocAlContent, ignoredSettings, formAttingOptions);
+		return { conflictsSettings: [], locAlContent, remoteContent: null, hAsConflicts: fAlse };
 	}
 
-	/* remote and local has changed */
-	let localContent = originalLocalContent;
-	let remoteContent = originalRemoteContent;
-	const local = parse(originalLocalContent);
-	const remote = parse(originalRemoteContent);
-	const base = baseContent ? parse(baseContent) : null;
+	/* remote And locAl hAs chAnged */
+	let locAlContent = originAlLocAlContent;
+	let remoteContent = originAlRemoteContent;
+	const locAl = pArse(originAlLocAlContent);
+	const remote = pArse(originAlRemoteContent);
+	const bAse = bAseContent ? pArse(bAseContent) : null;
 
-	const ignored = ignoredSettings.reduce((set, key) => { set.add(key); return set; }, new Set<string>());
-	const localToRemote = compare(local, remote, ignored);
-	const baseToLocal = compare(base, local, ignored);
-	const baseToRemote = compare(base, remote, ignored);
+	const ignored = ignoredSettings.reduce((set, key) => { set.Add(key); return set; }, new Set<string>());
+	const locAlToRemote = compAre(locAl, remote, ignored);
+	const bAseToLocAl = compAre(bAse, locAl, ignored);
+	const bAseToRemote = compAre(bAse, remote, ignored);
 
-	const conflicts: Map<string, IConflictSetting> = new Map<string, IConflictSetting>();
-	const handledConflicts: Set<string> = new Set<string>();
-	const handleConflict = (conflictKey: string): void => {
-		handledConflicts.add(conflictKey);
+	const conflicts: MAp<string, IConflictSetting> = new MAp<string, IConflictSetting>();
+	const hAndledConflicts: Set<string> = new Set<string>();
+	const hAndleConflict = (conflictKey: string): void => {
+		hAndledConflicts.Add(conflictKey);
 		const resolvedConflict = resolvedConflicts.filter(({ key }) => key === conflictKey)[0];
 		if (resolvedConflict) {
-			localContent = contentUtil.edit(localContent, [conflictKey], resolvedConflict.value, formattingOptions);
-			remoteContent = contentUtil.edit(remoteContent, [conflictKey], resolvedConflict.value, formattingOptions);
+			locAlContent = contentUtil.edit(locAlContent, [conflictKey], resolvedConflict.vAlue, formAttingOptions);
+			remoteContent = contentUtil.edit(remoteContent, [conflictKey], resolvedConflict.vAlue, formAttingOptions);
 		} else {
-			conflicts.set(conflictKey, { key: conflictKey, localValue: local[conflictKey], remoteValue: remote[conflictKey] });
+			conflicts.set(conflictKey, { key: conflictKey, locAlVAlue: locAl[conflictKey], remoteVAlue: remote[conflictKey] });
 		}
 	};
 
-	// Removed settings in Local
-	for (const key of baseToLocal.removed.values()) {
-		// Conflict - Got updated in remote.
-		if (baseToRemote.updated.has(key)) {
-			handleConflict(key);
+	// Removed settings in LocAl
+	for (const key of bAseToLocAl.removed.vAlues()) {
+		// Conflict - Got updAted in remote.
+		if (bAseToRemote.updAted.hAs(key)) {
+			hAndleConflict(key);
 		}
 		// Also remove in remote
 		else {
-			remoteContent = contentUtil.edit(remoteContent, [key], undefined, formattingOptions);
+			remoteContent = contentUtil.edit(remoteContent, [key], undefined, formAttingOptions);
 		}
 	}
 
 	// Removed settings in Remote
-	for (const key of baseToRemote.removed.values()) {
-		if (handledConflicts.has(key)) {
+	for (const key of bAseToRemote.removed.vAlues()) {
+		if (hAndledConflicts.hAs(key)) {
 			continue;
 		}
-		// Conflict - Got updated in local
-		if (baseToLocal.updated.has(key)) {
-			handleConflict(key);
+		// Conflict - Got updAted in locAl
+		if (bAseToLocAl.updAted.hAs(key)) {
+			hAndleConflict(key);
 		}
-		// Also remove in locals
+		// Also remove in locAls
 		else {
-			localContent = contentUtil.edit(localContent, [key], undefined, formattingOptions);
+			locAlContent = contentUtil.edit(locAlContent, [key], undefined, formAttingOptions);
 		}
 	}
 
-	// Updated settings in Local
-	for (const key of baseToLocal.updated.values()) {
-		if (handledConflicts.has(key)) {
+	// UpdAted settings in LocAl
+	for (const key of bAseToLocAl.updAted.vAlues()) {
+		if (hAndledConflicts.hAs(key)) {
 			continue;
 		}
-		// Got updated in remote
-		if (baseToRemote.updated.has(key)) {
-			// Has different value
-			if (localToRemote.updated.has(key)) {
-				handleConflict(key);
+		// Got updAted in remote
+		if (bAseToRemote.updAted.hAs(key)) {
+			// HAs different vAlue
+			if (locAlToRemote.updAted.hAs(key)) {
+				hAndleConflict(key);
 			}
 		} else {
-			remoteContent = contentUtil.edit(remoteContent, [key], local[key], formattingOptions);
+			remoteContent = contentUtil.edit(remoteContent, [key], locAl[key], formAttingOptions);
 		}
 	}
 
-	// Updated settings in Remote
-	for (const key of baseToRemote.updated.values()) {
-		if (handledConflicts.has(key)) {
+	// UpdAted settings in Remote
+	for (const key of bAseToRemote.updAted.vAlues()) {
+		if (hAndledConflicts.hAs(key)) {
 			continue;
 		}
-		// Got updated in local
-		if (baseToLocal.updated.has(key)) {
-			// Has different value
-			if (localToRemote.updated.has(key)) {
-				handleConflict(key);
+		// Got updAted in locAl
+		if (bAseToLocAl.updAted.hAs(key)) {
+			// HAs different vAlue
+			if (locAlToRemote.updAted.hAs(key)) {
+				hAndleConflict(key);
 			}
 		} else {
-			localContent = contentUtil.edit(localContent, [key], remote[key], formattingOptions);
+			locAlContent = contentUtil.edit(locAlContent, [key], remote[key], formAttingOptions);
 		}
 	}
 
-	// Added settings in Local
-	for (const key of baseToLocal.added.values()) {
-		if (handledConflicts.has(key)) {
+	// Added settings in LocAl
+	for (const key of bAseToLocAl.Added.vAlues()) {
+		if (hAndledConflicts.hAs(key)) {
 			continue;
 		}
-		// Got added in remote
-		if (baseToRemote.added.has(key)) {
-			// Has different value
-			if (localToRemote.updated.has(key)) {
-				handleConflict(key);
+		// Got Added in remote
+		if (bAseToRemote.Added.hAs(key)) {
+			// HAs different vAlue
+			if (locAlToRemote.updAted.hAs(key)) {
+				hAndleConflict(key);
 			}
 		} else {
-			remoteContent = addSetting(key, localContent, remoteContent, formattingOptions);
+			remoteContent = AddSetting(key, locAlContent, remoteContent, formAttingOptions);
 		}
 	}
 
 	// Added settings in remote
-	for (const key of baseToRemote.added.values()) {
-		if (handledConflicts.has(key)) {
+	for (const key of bAseToRemote.Added.vAlues()) {
+		if (hAndledConflicts.hAs(key)) {
 			continue;
 		}
-		// Got added in local
-		if (baseToLocal.added.has(key)) {
-			// Has different value
-			if (localToRemote.updated.has(key)) {
-				handleConflict(key);
+		// Got Added in locAl
+		if (bAseToLocAl.Added.hAs(key)) {
+			// HAs different vAlue
+			if (locAlToRemote.updAted.hAs(key)) {
+				hAndleConflict(key);
 			}
 		} else {
-			localContent = addSetting(key, remoteContent, localContent, formattingOptions);
+			locAlContent = AddSetting(key, remoteContent, locAlContent, formAttingOptions);
 		}
 	}
 
-	const hasConflicts = conflicts.size > 0 || !areSame(localContent, remoteContent, ignoredSettings);
-	const hasLocalChanged = hasConflicts || !areSame(localContent, originalLocalContent, []);
-	const hasRemoteChanged = hasConflicts || !areSame(remoteContent, originalRemoteContent, []);
-	return { localContent: hasLocalChanged ? localContent : null, remoteContent: hasRemoteChanged ? remoteContent : null, conflictsSettings: [...conflicts.values()], hasConflicts };
+	const hAsConflicts = conflicts.size > 0 || !AreSAme(locAlContent, remoteContent, ignoredSettings);
+	const hAsLocAlChAnged = hAsConflicts || !AreSAme(locAlContent, originAlLocAlContent, []);
+	const hAsRemoteChAnged = hAsConflicts || !AreSAme(remoteContent, originAlRemoteContent, []);
+	return { locAlContent: hAsLocAlChAnged ? locAlContent : null, remoteContent: hAsRemoteChAnged ? remoteContent : null, conflictsSettings: [...conflicts.vAlues()], hAsConflicts };
 }
 
-export function areSame(localContent: string, remoteContent: string, ignoredSettings: string[]): boolean {
-	if (localContent === remoteContent) {
+export function AreSAme(locAlContent: string, remoteContent: string, ignoredSettings: string[]): booleAn {
+	if (locAlContent === remoteContent) {
 		return true;
 	}
 
-	const local = parse(localContent);
-	const remote = parse(remoteContent);
-	const ignored = ignoredSettings.reduce((set, key) => { set.add(key); return set; }, new Set<string>());
-	const localTree = parseSettings(localContent).filter(node => !(node.setting && ignored.has(node.setting.key)));
-	const remoteTree = parseSettings(remoteContent).filter(node => !(node.setting && ignored.has(node.setting.key)));
+	const locAl = pArse(locAlContent);
+	const remote = pArse(remoteContent);
+	const ignored = ignoredSettings.reduce((set, key) => { set.Add(key); return set; }, new Set<string>());
+	const locAlTree = pArseSettings(locAlContent).filter(node => !(node.setting && ignored.hAs(node.setting.key)));
+	const remoteTree = pArseSettings(remoteContent).filter(node => !(node.setting && ignored.hAs(node.setting.key)));
 
-	if (localTree.length !== remoteTree.length) {
-		return false;
+	if (locAlTree.length !== remoteTree.length) {
+		return fAlse;
 	}
 
-	for (let index = 0; index < localTree.length; index++) {
-		const localNode = localTree[index];
+	for (let index = 0; index < locAlTree.length; index++) {
+		const locAlNode = locAlTree[index];
 		const remoteNode = remoteTree[index];
-		if (localNode.setting && remoteNode.setting) {
-			if (localNode.setting.key !== remoteNode.setting.key) {
-				return false;
+		if (locAlNode.setting && remoteNode.setting) {
+			if (locAlNode.setting.key !== remoteNode.setting.key) {
+				return fAlse;
 			}
-			if (!objects.equals(local[localNode.setting.key], remote[localNode.setting.key])) {
-				return false;
+			if (!objects.equAls(locAl[locAlNode.setting.key], remote[locAlNode.setting.key])) {
+				return fAlse;
 			}
-		} else if (!localNode.setting && !remoteNode.setting) {
-			if (localNode.value !== remoteNode.value) {
-				return false;
+		} else if (!locAlNode.setting && !remoteNode.setting) {
+			if (locAlNode.vAlue !== remoteNode.vAlue) {
+				return fAlse;
 			}
 		} else {
-			return false;
+			return fAlse;
 		}
 	}
 
 	return true;
 }
 
-export function isEmpty(content: string): boolean {
+export function isEmpty(content: string): booleAn {
 	if (content) {
-		const nodes = parseSettings(content);
+		const nodes = pArseSettings(content);
 		return nodes.length === 0;
 	}
 	return true;
 }
 
-function compare(from: IStringDictionary<any> | null, to: IStringDictionary<any>, ignored: Set<string>): { added: Set<string>, removed: Set<string>, updated: Set<string> } {
-	const fromKeys = from ? Object.keys(from).filter(key => !ignored.has(key)) : [];
-	const toKeys = Object.keys(to).filter(key => !ignored.has(key));
-	const added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
-	const removed = fromKeys.filter(key => toKeys.indexOf(key) === -1).reduce((r, key) => { r.add(key); return r; }, new Set<string>());
-	const updated: Set<string> = new Set<string>();
+function compAre(from: IStringDictionAry<Any> | null, to: IStringDictionAry<Any>, ignored: Set<string>): { Added: Set<string>, removed: Set<string>, updAted: Set<string> } {
+	const fromKeys = from ? Object.keys(from).filter(key => !ignored.hAs(key)) : [];
+	const toKeys = Object.keys(to).filter(key => !ignored.hAs(key));
+	const Added = toKeys.filter(key => fromKeys.indexOf(key) === -1).reduce((r, key) => { r.Add(key); return r; }, new Set<string>());
+	const removed = fromKeys.filter(key => toKeys.indexOf(key) === -1).reduce((r, key) => { r.Add(key); return r; }, new Set<string>());
+	const updAted: Set<string> = new Set<string>();
 
 	if (from) {
 		for (const key of fromKeys) {
-			if (removed.has(key)) {
+			if (removed.hAs(key)) {
 				continue;
 			}
-			const value1 = from[key];
-			const value2 = to[key];
-			if (!objects.equals(value1, value2)) {
-				updated.add(key);
+			const vAlue1 = from[key];
+			const vAlue2 = to[key];
+			if (!objects.equAls(vAlue1, vAlue2)) {
+				updAted.Add(key);
 			}
 		}
 	}
 
-	return { added, removed, updated };
+	return { Added, removed, updAted };
 }
 
-export function addSetting(key: string, sourceContent: string, targetContent: string, formattingOptions: FormattingOptions): string {
-	const source = parse(sourceContent);
-	const sourceTree = parseSettings(sourceContent);
-	const targetTree = parseSettings(targetContent);
-	const insertLocation = getInsertLocation(key, sourceTree, targetTree);
-	return insertAtLocation(targetContent, key, source[key], insertLocation, targetTree, formattingOptions);
+export function AddSetting(key: string, sourceContent: string, tArgetContent: string, formAttingOptions: FormAttingOptions): string {
+	const source = pArse(sourceContent);
+	const sourceTree = pArseSettings(sourceContent);
+	const tArgetTree = pArseSettings(tArgetContent);
+	const insertLocAtion = getInsertLocAtion(key, sourceTree, tArgetTree);
+	return insertAtLocAtion(tArgetContent, key, source[key], insertLocAtion, tArgetTree, formAttingOptions);
 }
 
-interface InsertLocation {
+interfAce InsertLocAtion {
 	index: number,
-	insertAfter: boolean;
+	insertAfter: booleAn;
 }
 
-function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]): InsertLocation {
+function getInsertLocAtion(key: string, sourceTree: INode[], tArgetTree: INode[]): InsertLocAtion {
 
 	const sourceNodeIndex = sourceTree.findIndex(node => node.setting?.key === key);
 
 	const sourcePreviousNode: INode = sourceTree[sourceNodeIndex - 1];
 	if (sourcePreviousNode) {
 		/*
-			Previous node in source is a setting.
-			Find the same setting in the target.
-			Insert it after that setting
+			Previous node in source is A setting.
+			Find the sAme setting in the tArget.
+			Insert it After thAt setting
 		*/
 		if (sourcePreviousNode.setting) {
-			const targetPreviousSetting = findSettingNode(sourcePreviousNode.setting.key, targetTree);
-			if (targetPreviousSetting) {
-				/* Insert after target's previous setting */
-				return { index: targetTree.indexOf(targetPreviousSetting), insertAfter: true };
+			const tArgetPreviousSetting = findSettingNode(sourcePreviousNode.setting.key, tArgetTree);
+			if (tArgetPreviousSetting) {
+				/* Insert After tArget's previous setting */
+				return { index: tArgetTree.indexOf(tArgetPreviousSetting), insertAfter: true };
 			}
 		}
-		/* Previous node in source is a comment */
+		/* Previous node in source is A comment */
 		else {
 			const sourcePreviousSettingNode = findPreviousSettingNode(sourceNodeIndex, sourceTree);
 			/*
-				Source has a setting defined before the setting to be added.
-				Find the same previous setting in the target.
-				If found, insert before its next setting so that comments are retrieved.
-				Otherwise, insert at the end.
+				Source hAs A setting defined before the setting to be Added.
+				Find the sAme previous setting in the tArget.
+				If found, insert before its next setting so thAt comments Are retrieved.
+				Otherwise, insert At the end.
 			*/
 			if (sourcePreviousSettingNode) {
-				const targetPreviousSetting = findSettingNode(sourcePreviousSettingNode.setting!.key, targetTree);
-				if (targetPreviousSetting) {
-					const targetNextSetting = findNextSettingNode(targetTree.indexOf(targetPreviousSetting), targetTree);
+				const tArgetPreviousSetting = findSettingNode(sourcePreviousSettingNode.setting!.key, tArgetTree);
+				if (tArgetPreviousSetting) {
+					const tArgetNextSetting = findNextSettingNode(tArgetTree.indexOf(tArgetPreviousSetting), tArgetTree);
 					const sourceCommentNodes = findNodesBetween(sourceTree, sourcePreviousSettingNode, sourceTree[sourceNodeIndex]);
-					if (targetNextSetting) {
-						const targetCommentNodes = findNodesBetween(targetTree, targetPreviousSetting, targetNextSetting);
-						const targetCommentNode = findLastMatchingTargetCommentNode(sourceCommentNodes, targetCommentNodes);
-						if (targetCommentNode) {
-							return { index: targetTree.indexOf(targetCommentNode), insertAfter: true }; /* Insert after comment */
+					if (tArgetNextSetting) {
+						const tArgetCommentNodes = findNodesBetween(tArgetTree, tArgetPreviousSetting, tArgetNextSetting);
+						const tArgetCommentNode = findLAstMAtchingTArgetCommentNode(sourceCommentNodes, tArgetCommentNodes);
+						if (tArgetCommentNode) {
+							return { index: tArgetTree.indexOf(tArgetCommentNode), insertAfter: true }; /* Insert After comment */
 						} else {
-							return { index: targetTree.indexOf(targetNextSetting), insertAfter: false }; /* Insert before target next setting */
+							return { index: tArgetTree.indexOf(tArgetNextSetting), insertAfter: fAlse }; /* Insert before tArget next setting */
 						}
 					} else {
-						const targetCommentNodes = findNodesBetween(targetTree, targetPreviousSetting, targetTree[targetTree.length - 1]);
-						const targetCommentNode = findLastMatchingTargetCommentNode(sourceCommentNodes, targetCommentNodes);
-						if (targetCommentNode) {
-							return { index: targetTree.indexOf(targetCommentNode), insertAfter: true }; /* Insert after comment */
+						const tArgetCommentNodes = findNodesBetween(tArgetTree, tArgetPreviousSetting, tArgetTree[tArgetTree.length - 1]);
+						const tArgetCommentNode = findLAstMAtchingTArgetCommentNode(sourceCommentNodes, tArgetCommentNodes);
+						if (tArgetCommentNode) {
+							return { index: tArgetTree.indexOf(tArgetCommentNode), insertAfter: true }; /* Insert After comment */
 						} else {
-							return { index: targetTree.length - 1, insertAfter: true }; /* Insert at the end */
+							return { index: tArgetTree.length - 1, insertAfter: true }; /* Insert At the end */
 						}
 					}
 				}
@@ -374,46 +374,46 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 		const sourceNextNode = sourceTree[sourceNodeIndex + 1];
 		if (sourceNextNode) {
 			/*
-				Next node in source is a setting.
-				Find the same setting in the target.
-				Insert it before that setting
+				Next node in source is A setting.
+				Find the sAme setting in the tArget.
+				Insert it before thAt setting
 			*/
 			if (sourceNextNode.setting) {
-				const targetNextSetting = findSettingNode(sourceNextNode.setting.key, targetTree);
-				if (targetNextSetting) {
-					/* Insert before target's next setting */
-					return { index: targetTree.indexOf(targetNextSetting), insertAfter: false };
+				const tArgetNextSetting = findSettingNode(sourceNextNode.setting.key, tArgetTree);
+				if (tArgetNextSetting) {
+					/* Insert before tArget's next setting */
+					return { index: tArgetTree.indexOf(tArgetNextSetting), insertAfter: fAlse };
 				}
 			}
-			/* Next node in source is a comment */
+			/* Next node in source is A comment */
 			else {
 				const sourceNextSettingNode = findNextSettingNode(sourceNodeIndex, sourceTree);
 				/*
-					Source has a setting defined after the setting to be added.
-					Find the same next setting in the target.
-					If found, insert after its previous setting so that comments are retrieved.
-					Otherwise, insert at the beginning.
+					Source hAs A setting defined After the setting to be Added.
+					Find the sAme next setting in the tArget.
+					If found, insert After its previous setting so thAt comments Are retrieved.
+					Otherwise, insert At the beginning.
 				*/
 				if (sourceNextSettingNode) {
-					const targetNextSetting = findSettingNode(sourceNextSettingNode.setting!.key, targetTree);
-					if (targetNextSetting) {
-						const targetPreviousSetting = findPreviousSettingNode(targetTree.indexOf(targetNextSetting), targetTree);
+					const tArgetNextSetting = findSettingNode(sourceNextSettingNode.setting!.key, tArgetTree);
+					if (tArgetNextSetting) {
+						const tArgetPreviousSetting = findPreviousSettingNode(tArgetTree.indexOf(tArgetNextSetting), tArgetTree);
 						const sourceCommentNodes = findNodesBetween(sourceTree, sourceTree[sourceNodeIndex], sourceNextSettingNode);
-						if (targetPreviousSetting) {
-							const targetCommentNodes = findNodesBetween(targetTree, targetPreviousSetting, targetNextSetting);
-							const targetCommentNode = findLastMatchingTargetCommentNode(sourceCommentNodes.reverse(), targetCommentNodes.reverse());
-							if (targetCommentNode) {
-								return { index: targetTree.indexOf(targetCommentNode), insertAfter: false }; /* Insert before comment */
+						if (tArgetPreviousSetting) {
+							const tArgetCommentNodes = findNodesBetween(tArgetTree, tArgetPreviousSetting, tArgetNextSetting);
+							const tArgetCommentNode = findLAstMAtchingTArgetCommentNode(sourceCommentNodes.reverse(), tArgetCommentNodes.reverse());
+							if (tArgetCommentNode) {
+								return { index: tArgetTree.indexOf(tArgetCommentNode), insertAfter: fAlse }; /* Insert before comment */
 							} else {
-								return { index: targetTree.indexOf(targetPreviousSetting), insertAfter: true }; /* Insert after target previous setting */
+								return { index: tArgetTree.indexOf(tArgetPreviousSetting), insertAfter: true }; /* Insert After tArget previous setting */
 							}
 						} else {
-							const targetCommentNodes = findNodesBetween(targetTree, targetTree[0], targetNextSetting);
-							const targetCommentNode = findLastMatchingTargetCommentNode(sourceCommentNodes.reverse(), targetCommentNodes.reverse());
-							if (targetCommentNode) {
-								return { index: targetTree.indexOf(targetCommentNode), insertAfter: false }; /* Insert before comment */
+							const tArgetCommentNodes = findNodesBetween(tArgetTree, tArgetTree[0], tArgetNextSetting);
+							const tArgetCommentNode = findLAstMAtchingTArgetCommentNode(sourceCommentNodes.reverse(), tArgetCommentNodes.reverse());
+							if (tArgetCommentNode) {
+								return { index: tArgetTree.indexOf(tArgetCommentNode), insertAfter: fAlse }; /* Insert before comment */
 							} else {
-								return { index: 0, insertAfter: false }; /* Insert at the beginning */
+								return { index: 0, insertAfter: fAlse }; /* Insert At the beginning */
 							}
 						}
 					}
@@ -421,50 +421,50 @@ function getInsertLocation(key: string, sourceTree: INode[], targetTree: INode[]
 			}
 		}
 	}
-	/* Insert at the end */
-	return { index: targetTree.length - 1, insertAfter: true };
+	/* Insert At the end */
+	return { index: tArgetTree.length - 1, insertAfter: true };
 }
 
-function insertAtLocation(content: string, key: string, value: any, location: InsertLocation, tree: INode[], formattingOptions: FormattingOptions): string {
+function insertAtLocAtion(content: string, key: string, vAlue: Any, locAtion: InsertLocAtion, tree: INode[], formAttingOptions: FormAttingOptions): string {
 	let edits: Edit[];
-	/* Insert at the end */
-	if (location.index === -1) {
-		edits = setProperty(content, [key], value, formattingOptions);
+	/* Insert At the end */
+	if (locAtion.index === -1) {
+		edits = setProperty(content, [key], vAlue, formAttingOptions);
 	} else {
-		edits = getEditToInsertAtLocation(content, key, value, location, tree, formattingOptions).map(edit => withFormatting(content, edit, formattingOptions)[0]);
+		edits = getEditToInsertAtLocAtion(content, key, vAlue, locAtion, tree, formAttingOptions).mAp(edit => withFormAtting(content, edit, formAttingOptions)[0]);
 	}
-	return applyEdits(content, edits);
+	return ApplyEdits(content, edits);
 }
 
-function getEditToInsertAtLocation(content: string, key: string, value: any, location: InsertLocation, tree: INode[], formattingOptions: FormattingOptions): Edit[] {
-	const newProperty = `${JSON.stringify(key)}: ${JSON.stringify(value)}`;
-	const eol = getEOL(formattingOptions, content);
-	const node = tree[location.index];
+function getEditToInsertAtLocAtion(content: string, key: string, vAlue: Any, locAtion: InsertLocAtion, tree: INode[], formAttingOptions: FormAttingOptions): Edit[] {
+	const newProperty = `${JSON.stringify(key)}: ${JSON.stringify(vAlue)}`;
+	const eol = getEOL(formAttingOptions, content);
+	const node = tree[locAtion.index];
 
-	if (location.insertAfter) {
+	if (locAtion.insertAfter) {
 
 		const edits: Edit[] = [];
 
-		/* Insert after a setting */
+		/* Insert After A setting */
 		if (node.setting) {
 			edits.push({ offset: node.endOffset, length: 0, content: ',' + newProperty });
 		}
 
-		/* Insert after a comment */
+		/* Insert After A comment */
 		else {
 
-			const nextSettingNode = findNextSettingNode(location.index, tree);
-			const previousSettingNode = findPreviousSettingNode(location.index, tree);
-			const previousSettingCommaOffset = previousSettingNode?.setting?.commaOffset;
+			const nextSettingNode = findNextSettingNode(locAtion.index, tree);
+			const previousSettingNode = findPreviousSettingNode(locAtion.index, tree);
+			const previousSettingCommAOffset = previousSettingNode?.setting?.commAOffset;
 
-			/* If there is a previous setting and it does not has comma then add it */
-			if (previousSettingNode && previousSettingCommaOffset === undefined) {
+			/* If there is A previous setting And it does not hAs commA then Add it */
+			if (previousSettingNode && previousSettingCommAOffset === undefined) {
 				edits.push({ offset: previousSettingNode.endOffset, length: 0, content: ',' });
 			}
 
-			const isPreviouisSettingIncludesComment = previousSettingCommaOffset !== undefined && previousSettingCommaOffset > node.endOffset;
+			const isPreviouisSettingIncludesComment = previousSettingCommAOffset !== undefined && previousSettingCommAOffset > node.endOffset;
 			edits.push({
-				offset: isPreviouisSettingIncludesComment ? previousSettingCommaOffset! + 1 : node.endOffset,
+				offset: isPreviouisSettingIncludesComment ? previousSettingCommAOffset! + 1 : node.endOffset,
 				length: 0,
 				content: nextSettingNode ? eol + newProperty + ',' : eol + newProperty
 			});
@@ -476,17 +476,17 @@ function getEditToInsertAtLocation(content: string, key: string, value: any, loc
 
 	else {
 
-		/* Insert before a setting */
+		/* Insert before A setting */
 		if (node.setting) {
-			return [{ offset: node.startOffset, length: 0, content: newProperty + ',' }];
+			return [{ offset: node.stArtOffset, length: 0, content: newProperty + ',' }];
 		}
 
-		/* Insert before a comment */
-		const content = (tree[location.index - 1] && !tree[location.index - 1].setting /* previous node is comment */ ? eol : '')
+		/* Insert before A comment */
+		const content = (tree[locAtion.index - 1] && !tree[locAtion.index - 1].setting /* previous node is comment */ ? eol : '')
 			+ newProperty
-			+ (findNextSettingNode(location.index, tree) ? ',' : '')
+			+ (findNextSettingNode(locAtion.index, tree) ? ',' : '')
 			+ eol;
-		return [{ offset: node.startOffset, length: 0, content }];
+		return [{ offset: node.stArtOffset, length: 0, content }];
 	}
 
 }
@@ -519,109 +519,109 @@ function findNodesBetween(nodes: INode[], from: INode, till: INode): INode[] {
 	return nodes.filter((node, index) => fromIndex < index && index < tillIndex);
 }
 
-function findLastMatchingTargetCommentNode(sourceComments: INode[], targetComments: INode[]): INode | undefined {
-	if (sourceComments.length && targetComments.length) {
+function findLAstMAtchingTArgetCommentNode(sourceComments: INode[], tArgetComments: INode[]): INode | undefined {
+	if (sourceComments.length && tArgetComments.length) {
 		let index = 0;
-		for (; index < targetComments.length && index < sourceComments.length; index++) {
-			if (sourceComments[index].value !== targetComments[index].value) {
-				return targetComments[index - 1];
+		for (; index < tArgetComments.length && index < sourceComments.length; index++) {
+			if (sourceComments[index].vAlue !== tArgetComments[index].vAlue) {
+				return tArgetComments[index - 1];
 			}
 		}
-		return targetComments[index - 1];
+		return tArgetComments[index - 1];
 	}
 	return undefined;
 }
 
-interface INode {
-	readonly startOffset: number;
-	readonly endOffset: number;
-	readonly value: string;
-	readonly setting?: {
-		readonly key: string;
-		readonly commaOffset: number | undefined;
+interfAce INode {
+	reAdonly stArtOffset: number;
+	reAdonly endOffset: number;
+	reAdonly vAlue: string;
+	reAdonly setting?: {
+		reAdonly key: string;
+		reAdonly commAOffset: number | undefined;
 	};
-	readonly comment?: string;
+	reAdonly comment?: string;
 }
 
-function parseSettings(content: string): INode[] {
+function pArseSettings(content: string): INode[] {
 	const nodes: INode[] = [];
-	let hierarchyLevel = -1;
-	let startOffset: number;
+	let hierArchyLevel = -1;
+	let stArtOffset: number;
 	let key: string;
 
 	const visitor: JSONVisitor = {
 		onObjectBegin: (offset: number) => {
-			hierarchyLevel++;
+			hierArchyLevel++;
 		},
-		onObjectProperty: (name: string, offset: number, length: number) => {
-			if (hierarchyLevel === 0) {
+		onObjectProperty: (nAme: string, offset: number, length: number) => {
+			if (hierArchyLevel === 0) {
 				// this is setting key
-				startOffset = offset;
-				key = name;
+				stArtOffset = offset;
+				key = nAme;
 			}
 		},
 		onObjectEnd: (offset: number, length: number) => {
-			hierarchyLevel--;
-			if (hierarchyLevel === 0) {
+			hierArchyLevel--;
+			if (hierArchyLevel === 0) {
 				nodes.push({
-					startOffset,
+					stArtOffset,
 					endOffset: offset + length,
-					value: content.substring(startOffset, offset + length),
+					vAlue: content.substring(stArtOffset, offset + length),
 					setting: {
 						key,
-						commaOffset: undefined
+						commAOffset: undefined
 					}
 				});
 			}
 		},
-		onArrayBegin: (offset: number, length: number) => {
-			hierarchyLevel++;
+		onArrAyBegin: (offset: number, length: number) => {
+			hierArchyLevel++;
 		},
-		onArrayEnd: (offset: number, length: number) => {
-			hierarchyLevel--;
-			if (hierarchyLevel === 0) {
+		onArrAyEnd: (offset: number, length: number) => {
+			hierArchyLevel--;
+			if (hierArchyLevel === 0) {
 				nodes.push({
-					startOffset,
+					stArtOffset,
 					endOffset: offset + length,
-					value: content.substring(startOffset, offset + length),
+					vAlue: content.substring(stArtOffset, offset + length),
 					setting: {
 						key,
-						commaOffset: undefined
+						commAOffset: undefined
 					}
 				});
 			}
 		},
-		onLiteralValue: (value: any, offset: number, length: number) => {
-			if (hierarchyLevel === 0) {
+		onLiterAlVAlue: (vAlue: Any, offset: number, length: number) => {
+			if (hierArchyLevel === 0) {
 				nodes.push({
-					startOffset,
+					stArtOffset,
 					endOffset: offset + length,
-					value: content.substring(startOffset, offset + length),
+					vAlue: content.substring(stArtOffset, offset + length),
 					setting: {
 						key,
-						commaOffset: undefined
+						commAOffset: undefined
 					}
 				});
 			}
 		},
-		onSeparator: (sep: string, offset: number, length: number) => {
-			if (hierarchyLevel === 0) {
+		onSepArAtor: (sep: string, offset: number, length: number) => {
+			if (hierArchyLevel === 0) {
 				if (sep === ',') {
 					let index = nodes.length - 1;
 					for (; index >= 0; index--) {
 						if (nodes[index].setting) {
-							break;
+							breAk;
 						}
 					}
 					const node = nodes[index];
 					if (node) {
 						nodes.splice(index, 1, {
-							startOffset: node.startOffset,
+							stArtOffset: node.stArtOffset,
 							endOffset: node.endOffset,
-							value: node.value,
+							vAlue: node.vAlue,
 							setting: {
 								key: node.setting!.key,
-								commaOffset: offset
+								commAOffset: offset
 							}
 						});
 					}
@@ -629,11 +629,11 @@ function parseSettings(content: string): INode[] {
 			}
 		},
 		onComment: (offset: number, length: number) => {
-			if (hierarchyLevel === 0) {
+			if (hierArchyLevel === 0) {
 				nodes.push({
-					startOffset: offset,
+					stArtOffset: offset,
 					endOffset: offset + length,
-					value: content.substring(offset, offset + length),
+					vAlue: content.substring(offset, offset + length),
 				});
 			}
 		}

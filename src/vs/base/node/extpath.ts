@@ -1,91 +1,91 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import { rtrim } from 'vs/base/common/strings';
-import { sep, join, normalize, dirname, basename } from 'vs/base/common/path';
-import { readdirSync } from 'vs/base/node/pfs';
+import * As fs from 'fs';
+import { rtrim } from 'vs/bAse/common/strings';
+import { sep, join, normAlize, dirnAme, bAsenAme } from 'vs/bAse/common/pAth';
+import { reAddirSync } from 'vs/bAse/node/pfs';
 import { promisify } from 'util';
 
 /**
- * Copied from: https://github.com/microsoft/vscode-node-debug/blob/master/src/node/pathUtilities.ts#L83
+ * Copied from: https://github.com/microsoft/vscode-node-debug/blob/mAster/src/node/pAthUtilities.ts#L83
  *
- * Given an absolute, normalized, and existing file path 'realcase' returns the exact path that the file has on disk.
- * On a case insensitive file system, the returned path might differ from the original path by character casing.
- * On a case sensitive file system, the returned path will always be identical to the original path.
- * In case of errors, null is returned. But you cannot use this function to verify that a path exists.
- * realcaseSync does not handle '..' or '.' path segments and it does not take the locale into account.
+ * Given An Absolute, normAlized, And existing file pAth 'reAlcAse' returns the exAct pAth thAt the file hAs on disk.
+ * On A cAse insensitive file system, the returned pAth might differ from the originAl pAth by chArActer cAsing.
+ * On A cAse sensitive file system, the returned pAth will AlwAys be identicAl to the originAl pAth.
+ * In cAse of errors, null is returned. But you cAnnot use this function to verify thAt A pAth exists.
+ * reAlcAseSync does not hAndle '..' or '.' pAth segments And it does not tAke the locAle into Account.
  */
-export function realcaseSync(path: string): string | null {
-	const dir = dirname(path);
-	if (path === dir) {	// end recursion
-		return path;
+export function reAlcAseSync(pAth: string): string | null {
+	const dir = dirnAme(pAth);
+	if (pAth === dir) {	// end recursion
+		return pAth;
 	}
 
-	const name = (basename(path) /* can be '' for windows drive letters */ || path).toLowerCase();
+	const nAme = (bAsenAme(pAth) /* cAn be '' for windows drive letters */ || pAth).toLowerCAse();
 	try {
-		const entries = readdirSync(dir);
-		const found = entries.filter(e => e.toLowerCase() === name);	// use a case insensitive search
+		const entries = reAddirSync(dir);
+		const found = entries.filter(e => e.toLowerCAse() === nAme);	// use A cAse insensitive seArch
 		if (found.length === 1) {
-			// on a case sensitive filesystem we cannot determine here, whether the file exists or not, hence we need the 'file exists' precondition
-			const prefix = realcaseSync(dir);   // recurse
+			// on A cAse sensitive filesystem we cAnnot determine here, whether the file exists or not, hence we need the 'file exists' precondition
+			const prefix = reAlcAseSync(dir);   // recurse
 			if (prefix) {
 				return join(prefix, found[0]);
 			}
 		} else if (found.length > 1) {
-			// must be a case sensitive $filesystem
-			const ix = found.indexOf(name);
-			if (ix >= 0) {	// case sensitive
-				const prefix = realcaseSync(dir);   // recurse
+			// must be A cAse sensitive $filesystem
+			const ix = found.indexOf(nAme);
+			if (ix >= 0) {	// cAse sensitive
+				const prefix = reAlcAseSync(dir);   // recurse
 				if (prefix) {
 					return join(prefix, found[ix]);
 				}
 			}
 		}
-	} catch (error) {
+	} cAtch (error) {
 		// silently ignore error
 	}
 
 	return null;
 }
 
-export async function realpath(path: string): Promise<string> {
+export Async function reAlpAth(pAth: string): Promise<string> {
 	try {
-		return await promisify(fs.realpath)(path);
-	} catch (error) {
+		return AwAit promisify(fs.reAlpAth)(pAth);
+	} cAtch (error) {
 
-		// We hit an error calling fs.realpath(). Since fs.realpath() is doing some path normalization
-		// we now do a similar normalization and then try again if we can access the path with read
-		// permissions at least. If that succeeds, we return that path.
-		// fs.realpath() is resolving symlinks and that can fail in certain cases. The workaround is
-		// to not resolve links but to simply see if the path is read accessible or not.
-		const normalizedPath = normalizePath(path);
+		// We hit An error cAlling fs.reAlpAth(). Since fs.reAlpAth() is doing some pAth normAlizAtion
+		// we now do A similAr normAlizAtion And then try AgAin if we cAn Access the pAth with reAd
+		// permissions At leAst. If thAt succeeds, we return thAt pAth.
+		// fs.reAlpAth() is resolving symlinks And thAt cAn fAil in certAin cAses. The workAround is
+		// to not resolve links but to simply see if the pAth is reAd Accessible or not.
+		const normAlizedPAth = normAlizePAth(pAth);
 
-		await promisify(fs.access)(normalizedPath, fs.constants.R_OK);
+		AwAit promisify(fs.Access)(normAlizedPAth, fs.constAnts.R_OK);
 
-		return normalizedPath;
+		return normAlizedPAth;
 	}
 }
 
-export function realpathSync(path: string): string {
+export function reAlpAthSync(pAth: string): string {
 	try {
-		return fs.realpathSync(path);
-	} catch (error) {
+		return fs.reAlpAthSync(pAth);
+	} cAtch (error) {
 
-		// We hit an error calling fs.realpathSync(). Since fs.realpathSync() is doing some path normalization
-		// we now do a similar normalization and then try again if we can access the path with read
-		// permissions at least. If that succeeds, we return that path.
-		// fs.realpath() is resolving symlinks and that can fail in certain cases. The workaround is
-		// to not resolve links but to simply see if the path is read accessible or not.
-		const normalizedPath = normalizePath(path);
-		fs.accessSync(normalizedPath, fs.constants.R_OK); // throws in case of an error
+		// We hit An error cAlling fs.reAlpAthSync(). Since fs.reAlpAthSync() is doing some pAth normAlizAtion
+		// we now do A similAr normAlizAtion And then try AgAin if we cAn Access the pAth with reAd
+		// permissions At leAst. If thAt succeeds, we return thAt pAth.
+		// fs.reAlpAth() is resolving symlinks And thAt cAn fAil in certAin cAses. The workAround is
+		// to not resolve links but to simply see if the pAth is reAd Accessible or not.
+		const normAlizedPAth = normAlizePAth(pAth);
+		fs.AccessSync(normAlizedPAth, fs.constAnts.R_OK); // throws in cAse of An error
 
-		return normalizedPath;
+		return normAlizedPAth;
 	}
 }
 
-function normalizePath(path: string): string {
-	return rtrim(normalize(path), sep);
+function normAlizePAth(pAth: string): string {
+	return rtrim(normAlize(pAth), sep);
 }

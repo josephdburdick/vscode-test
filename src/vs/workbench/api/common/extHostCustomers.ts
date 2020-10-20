@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IConstructorSignature1, BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IConstructorSignAture1, BrAndedService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
 import { ProxyIdentifier } from 'vs/workbench/services/extensions/common/proxyIdentifier';
 
-export type IExtHostNamedCustomer<T extends IDisposable> = [ProxyIdentifier<T>, IExtHostCustomerCtor<T>];
+export type IExtHostNAmedCustomer<T extends IDisposAble> = [ProxyIdentifier<T>, IExtHostCustomerCtor<T>];
 
-export type IExtHostCustomerCtor<T extends IDisposable> = IConstructorSignature1<IExtHostContext, T>;
+export type IExtHostCustomerCtor<T extends IDisposAble> = IConstructorSignAture1<IExtHostContext, T>;
 
-export function extHostNamedCustomer<T extends IDisposable>(id: ProxyIdentifier<T>) {
-	return function <Services extends BrandedService[]>(ctor: { new(context: IExtHostContext, ...services: Services): T }): void {
-		ExtHostCustomersRegistryImpl.INSTANCE.registerNamedCustomer(id, ctor as IExtHostCustomerCtor<T>);
+export function extHostNAmedCustomer<T extends IDisposAble>(id: ProxyIdentifier<T>) {
+	return function <Services extends BrAndedService[]>(ctor: { new(context: IExtHostContext, ...services: Services): T }): void {
+		ExtHostCustomersRegistryImpl.INSTANCE.registerNAmedCustomer(id, ctor As IExtHostCustomerCtor<T>);
 	};
 }
 
-export function extHostCustomer<T extends IDisposable, Services extends BrandedService[]>(ctor: { new(context: IExtHostContext, ...services: Services): T }): void {
-	ExtHostCustomersRegistryImpl.INSTANCE.registerCustomer(ctor as IExtHostCustomerCtor<T>);
+export function extHostCustomer<T extends IDisposAble, Services extends BrAndedService[]>(ctor: { new(context: IExtHostContext, ...services: Services): T }): void {
+	ExtHostCustomersRegistryImpl.INSTANCE.registerCustomer(ctor As IExtHostCustomerCtor<T>);
 }
 
-export namespace ExtHostCustomersRegistry {
+export nAmespAce ExtHostCustomersRegistry {
 
-	export function getNamedCustomers(): IExtHostNamedCustomer<IDisposable>[] {
-		return ExtHostCustomersRegistryImpl.INSTANCE.getNamedCustomers();
+	export function getNAmedCustomers(): IExtHostNAmedCustomer<IDisposAble>[] {
+		return ExtHostCustomersRegistryImpl.INSTANCE.getNAmedCustomers();
 	}
 
-	export function getCustomers(): IExtHostCustomerCtor<IDisposable>[] {
+	export function getCustomers(): IExtHostCustomerCtor<IDisposAble>[] {
 		return ExtHostCustomersRegistryImpl.INSTANCE.getCustomers();
 	}
 }
 
-class ExtHostCustomersRegistryImpl {
+clAss ExtHostCustomersRegistryImpl {
 
-	public static readonly INSTANCE = new ExtHostCustomersRegistryImpl();
+	public stAtic reAdonly INSTANCE = new ExtHostCustomersRegistryImpl();
 
-	private _namedCustomers: IExtHostNamedCustomer<any>[];
-	private _customers: IExtHostCustomerCtor<any>[];
+	privAte _nAmedCustomers: IExtHostNAmedCustomer<Any>[];
+	privAte _customers: IExtHostCustomerCtor<Any>[];
 
 	constructor() {
-		this._namedCustomers = [];
+		this._nAmedCustomers = [];
 		this._customers = [];
 	}
 
-	public registerNamedCustomer<T extends IDisposable>(id: ProxyIdentifier<T>, ctor: IExtHostCustomerCtor<T>): void {
-		const entry: IExtHostNamedCustomer<T> = [id, ctor];
-		this._namedCustomers.push(entry);
+	public registerNAmedCustomer<T extends IDisposAble>(id: ProxyIdentifier<T>, ctor: IExtHostCustomerCtor<T>): void {
+		const entry: IExtHostNAmedCustomer<T> = [id, ctor];
+		this._nAmedCustomers.push(entry);
 	}
-	public getNamedCustomers(): IExtHostNamedCustomer<any>[] {
-		return this._namedCustomers;
+	public getNAmedCustomers(): IExtHostNAmedCustomer<Any>[] {
+		return this._nAmedCustomers;
 	}
 
-	public registerCustomer<T extends IDisposable>(ctor: IExtHostCustomerCtor<T>): void {
+	public registerCustomer<T extends IDisposAble>(ctor: IExtHostCustomerCtor<T>): void {
 		this._customers.push(ctor);
 	}
-	public getCustomers(): IExtHostCustomerCtor<any>[] {
+	public getCustomers(): IExtHostCustomerCtor<Any>[] {
 		return this._customers;
 	}
 }

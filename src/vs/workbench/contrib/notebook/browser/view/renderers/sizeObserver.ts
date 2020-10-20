@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * As DOM from 'vs/bAse/browser/dom';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IDimension } from 'vs/editor/common/editorCommon';
 import { ElementSizeObserver } from 'vs/editor/browser/config/elementSizeObserver';
 
-declare const ResizeObserver: any;
+declAre const ResizeObserver: Any;
 
-export interface IResizeObserver {
-	startObserving: () => void;
+export interfAce IResizeObserver {
+	stArtObserving: () => void;
 	stopObserving: () => void;
 	getWidth(): number;
 	getHeight(): number;
 	dispose(): void;
 }
 
-export class BrowserResizeObserver extends Disposable implements IResizeObserver {
-	private readonly referenceDomElement: HTMLElement | null;
+export clAss BrowserResizeObserver extends DisposAble implements IResizeObserver {
+	privAte reAdonly referenceDomElement: HTMLElement | null;
 
-	private readonly observer: any;
-	private width: number;
-	private height: number;
+	privAte reAdonly observer: Any;
+	privAte width: number;
+	privAte height: number;
 
-	constructor(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallback: () => void) {
+	constructor(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, chAngeCAllbAck: () => void) {
 		super();
 
 		this.referenceDomElement = referenceDomElement;
 		this.width = -1;
 		this.height = -1;
 
-		this.observer = new ResizeObserver((entries: any) => {
+		this.observer = new ResizeObserver((entries: Any) => {
 			for (const entry of entries) {
-				if (entry.target === referenceDomElement && entry.contentRect) {
+				if (entry.tArget === referenceDomElement && entry.contentRect) {
 					if (this.width !== entry.contentRect.width || this.height !== entry.contentRect.height) {
 						this.width = entry.contentRect.width;
 						this.height = entry.contentRect.height;
-						DOM.scheduleAtNextAnimationFrame(() => {
-							changeCallback();
+						DOM.scheduleAtNextAnimAtionFrAme(() => {
+							chAngeCAllbAck();
 						});
 					}
 				}
@@ -55,7 +55,7 @@ export class BrowserResizeObserver extends Disposable implements IResizeObserver
 		return this.height;
 	}
 
-	startObserving(): void {
+	stArtObserving(): void {
 		this.observer.observe(this.referenceDomElement!);
 	}
 
@@ -69,10 +69,10 @@ export class BrowserResizeObserver extends Disposable implements IResizeObserver
 	}
 }
 
-export function getResizesObserver(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, changeCallback: () => void): IResizeObserver {
+export function getResizesObserver(referenceDomElement: HTMLElement | null, dimension: IDimension | undefined, chAngeCAllbAck: () => void): IResizeObserver {
 	if (ResizeObserver) {
-		return new BrowserResizeObserver(referenceDomElement, dimension, changeCallback);
+		return new BrowserResizeObserver(referenceDomElement, dimension, chAngeCAllbAck);
 	} else {
-		return new ElementSizeObserver(referenceDomElement, dimension, changeCallback);
+		return new ElementSizeObserver(referenceDomElement, dimension, chAngeCAllbAck);
 	}
 }

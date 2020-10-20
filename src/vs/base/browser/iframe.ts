@@ -1,96 +1,96 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * Represents a window in a possible chain of iframes
+ * Represents A window in A possible chAin of ifrAmes
  */
-export interface IWindowChainElement {
+export interfAce IWindowChAinElement {
 	/**
 	 * The window object for it
 	 */
 	window: Window;
 	/**
-	 * The iframe element inside the window.parent corresponding to window
+	 * The ifrAme element inside the window.pArent corresponding to window
 	 */
-	iframeElement: Element | null;
+	ifrAmeElement: Element | null;
 }
 
-let hasDifferentOriginAncestorFlag: boolean = false;
-let sameOriginWindowChainCache: IWindowChainElement[] | null = null;
+let hAsDifferentOriginAncestorFlAg: booleAn = fAlse;
+let sAmeOriginWindowChAinCAche: IWindowChAinElement[] | null = null;
 
-function getParentWindowIfSameOrigin(w: Window): Window | null {
-	if (!w.parent || w.parent === w) {
+function getPArentWindowIfSAmeOrigin(w: Window): Window | null {
+	if (!w.pArent || w.pArent === w) {
 		return null;
 	}
 
-	// Cannot really tell if we have access to the parent window unless we try to access something in it
+	// CAnnot reAlly tell if we hAve Access to the pArent window unless we try to Access something in it
 	try {
-		let location = w.location;
-		let parentLocation = w.parent.location;
-		if (location.origin !== 'null' && parentLocation.origin !== 'null') {
-			if (location.protocol !== parentLocation.protocol || location.hostname !== parentLocation.hostname || location.port !== parentLocation.port) {
-				hasDifferentOriginAncestorFlag = true;
+		let locAtion = w.locAtion;
+		let pArentLocAtion = w.pArent.locAtion;
+		if (locAtion.origin !== 'null' && pArentLocAtion.origin !== 'null') {
+			if (locAtion.protocol !== pArentLocAtion.protocol || locAtion.hostnAme !== pArentLocAtion.hostnAme || locAtion.port !== pArentLocAtion.port) {
+				hAsDifferentOriginAncestorFlAg = true;
 				return null;
 			}
 		}
-	} catch (e) {
-		hasDifferentOriginAncestorFlag = true;
+	} cAtch (e) {
+		hAsDifferentOriginAncestorFlAg = true;
 		return null;
 	}
 
-	return w.parent;
+	return w.pArent;
 }
 
-export class IframeUtils {
+export clAss IfrAmeUtils {
 
 	/**
-	 * Returns a chain of embedded windows with the same origin (which can be accessed programmatically).
-	 * Having a chain of length 1 might mean that the current execution environment is running outside of an iframe or inside an iframe embedded in a window with a different origin.
-	 * To distinguish if at one point the current execution environment is running inside a window with a different origin, see hasDifferentOriginAncestor()
+	 * Returns A chAin of embedded windows with the sAme origin (which cAn be Accessed progrAmmAticAlly).
+	 * HAving A chAin of length 1 might meAn thAt the current execution environment is running outside of An ifrAme or inside An ifrAme embedded in A window with A different origin.
+	 * To distinguish if At one point the current execution environment is running inside A window with A different origin, see hAsDifferentOriginAncestor()
 	 */
-	public static getSameOriginWindowChain(): IWindowChainElement[] {
-		if (!sameOriginWindowChainCache) {
-			sameOriginWindowChainCache = [];
+	public stAtic getSAmeOriginWindowChAin(): IWindowChAinElement[] {
+		if (!sAmeOriginWindowChAinCAche) {
+			sAmeOriginWindowChAinCAche = [];
 			let w: Window | null = window;
-			let parent: Window | null;
+			let pArent: Window | null;
 			do {
-				parent = getParentWindowIfSameOrigin(w);
-				if (parent) {
-					sameOriginWindowChainCache.push({
+				pArent = getPArentWindowIfSAmeOrigin(w);
+				if (pArent) {
+					sAmeOriginWindowChAinCAche.push({
 						window: w,
-						iframeElement: w.frameElement || null
+						ifrAmeElement: w.frAmeElement || null
 					});
 				} else {
-					sameOriginWindowChainCache.push({
+					sAmeOriginWindowChAinCAche.push({
 						window: w,
-						iframeElement: null
+						ifrAmeElement: null
 					});
 				}
-				w = parent;
+				w = pArent;
 			} while (w);
 		}
-		return sameOriginWindowChainCache.slice(0);
+		return sAmeOriginWindowChAinCAche.slice(0);
 	}
 
 	/**
-	 * Returns true if the current execution environment is chained in a list of iframes which at one point ends in a window with a different origin.
-	 * Returns false if the current execution environment is not running inside an iframe or if the entire chain of iframes have the same origin.
+	 * Returns true if the current execution environment is chAined in A list of ifrAmes which At one point ends in A window with A different origin.
+	 * Returns fAlse if the current execution environment is not running inside An ifrAme or if the entire chAin of ifrAmes hAve the sAme origin.
 	 */
-	public static hasDifferentOriginAncestor(): boolean {
-		if (!sameOriginWindowChainCache) {
-			this.getSameOriginWindowChain();
+	public stAtic hAsDifferentOriginAncestor(): booleAn {
+		if (!sAmeOriginWindowChAinCAche) {
+			this.getSAmeOriginWindowChAin();
 		}
-		return hasDifferentOriginAncestorFlag;
+		return hAsDifferentOriginAncestorFlAg;
 	}
 
 	/**
-	 * Returns the position of `childWindow` relative to `ancestorWindow`
+	 * Returns the position of `childWindow` relAtive to `AncestorWindow`
 	 */
-	public static getPositionOfChildWindowRelativeToAncestorWindow(childWindow: Window, ancestorWindow: Window | null) {
+	public stAtic getPositionOfChildWindowRelAtiveToAncestorWindow(childWindow: Window, AncestorWindow: Window | null) {
 
-		if (!ancestorWindow || childWindow === ancestorWindow) {
+		if (!AncestorWindow || childWindow === AncestorWindow) {
 			return {
 				top: 0,
 				left: 0
@@ -99,22 +99,22 @@ export class IframeUtils {
 
 		let top = 0, left = 0;
 
-		let windowChain = this.getSameOriginWindowChain();
+		let windowChAin = this.getSAmeOriginWindowChAin();
 
-		for (const windowChainEl of windowChain) {
+		for (const windowChAinEl of windowChAin) {
 
-			top += windowChainEl.window.scrollY;
-			left += windowChainEl.window.scrollX;
+			top += windowChAinEl.window.scrollY;
+			left += windowChAinEl.window.scrollX;
 
-			if (windowChainEl.window === ancestorWindow) {
-				break;
+			if (windowChAinEl.window === AncestorWindow) {
+				breAk;
 			}
 
-			if (!windowChainEl.iframeElement) {
-				break;
+			if (!windowChAinEl.ifrAmeElement) {
+				breAk;
 			}
 
-			let boundingRect = windowChainEl.iframeElement.getBoundingClientRect();
+			let boundingRect = windowChAinEl.ifrAmeElement.getBoundingClientRect();
 			top += boundingRect.top;
 			left += boundingRect.left;
 		}

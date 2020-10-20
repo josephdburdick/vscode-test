@@ -1,313 +1,313 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Action } from 'vs/base/common/actions';
-import { IEditorGroupsService, GroupDirection, GroupLocation, IFindGroupScope } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
+import * As nls from 'vs/nls';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Action } from 'vs/bAse/common/Actions';
+import { IEditorGroupsService, GroupDirection, GroupLocAtion, IFindGroupScope } from 'vs/workbench/services/editor/common/editorGroupsService';
+import { IPAnelService } from 'vs/workbench/services/pAnel/common/pAnelService';
+import { IWorkbenchLAyoutService, PArts } from 'vs/workbench/services/lAyout/browser/lAyoutService';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { IViewlet } from 'vs/workbench/common/viewlet';
-import { IPanel } from 'vs/workbench/common/panel';
-import { Action2, MenuId, registerAction2, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/actions';
-import { Direction } from 'vs/base/browser/ui/grid/grid';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { IPAnel } from 'vs/workbench/common/pAnel';
+import { Action2, MenuId, registerAction2, SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { IWorkbenchActionRegistry, Extensions, CATEGORIES } from 'vs/workbench/common/Actions';
+import { Direction } from 'vs/bAse/browser/ui/grid/grid';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { isAncestor } from 'vs/base/browser/dom';
+import { isAncestor } from 'vs/bAse/browser/dom';
 
-abstract class BaseNavigationAction extends Action {
+AbstrAct clAss BAseNAvigAtionAction extends Action {
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		protected direction: Direction,
 		@IEditorGroupsService protected editorGroupService: IEditorGroupsService,
-		@IPanelService protected panelService: IPanelService,
-		@IWorkbenchLayoutService protected layoutService: IWorkbenchLayoutService,
+		@IPAnelService protected pAnelService: IPAnelService,
+		@IWorkbenchLAyoutService protected lAyoutService: IWorkbenchLAyoutService,
 		@IViewletService protected viewletService: IViewletService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<boolean | IViewlet | IPanel> {
-		const isEditorFocus = this.layoutService.hasFocus(Parts.EDITOR_PART);
-		const isPanelFocus = this.layoutService.hasFocus(Parts.PANEL_PART);
-		const isSidebarFocus = this.layoutService.hasFocus(Parts.SIDEBAR_PART);
+	Async run(): Promise<booleAn | IViewlet | IPAnel> {
+		const isEditorFocus = this.lAyoutService.hAsFocus(PArts.EDITOR_PART);
+		const isPAnelFocus = this.lAyoutService.hAsFocus(PArts.PANEL_PART);
+		const isSidebArFocus = this.lAyoutService.hAsFocus(PArts.SIDEBAR_PART);
 
-		let neighborPart: Parts | undefined;
+		let neighborPArt: PArts | undefined;
 		if (isEditorFocus) {
-			const didNavigate = this.navigateAcrossEditorGroup(this.toGroupDirection(this.direction));
-			if (didNavigate) {
+			const didNAvigAte = this.nAvigAteAcrossEditorGroup(this.toGroupDirection(this.direction));
+			if (didNAvigAte) {
 				return true;
 			}
 
-			neighborPart = this.layoutService.getVisibleNeighborPart(Parts.EDITOR_PART, this.direction);
+			neighborPArt = this.lAyoutService.getVisibleNeighborPArt(PArts.EDITOR_PART, this.direction);
 		}
 
-		if (isPanelFocus) {
-			neighborPart = this.layoutService.getVisibleNeighborPart(Parts.PANEL_PART, this.direction);
+		if (isPAnelFocus) {
+			neighborPArt = this.lAyoutService.getVisibleNeighborPArt(PArts.PANEL_PART, this.direction);
 		}
 
-		if (isSidebarFocus) {
-			neighborPart = this.layoutService.getVisibleNeighborPart(Parts.SIDEBAR_PART, this.direction);
+		if (isSidebArFocus) {
+			neighborPArt = this.lAyoutService.getVisibleNeighborPArt(PArts.SIDEBAR_PART, this.direction);
 		}
 
-		if (neighborPart === Parts.EDITOR_PART) {
-			return this.navigateToEditorGroup(this.direction === Direction.Right ? GroupLocation.FIRST : GroupLocation.LAST);
+		if (neighborPArt === PArts.EDITOR_PART) {
+			return this.nAvigAteToEditorGroup(this.direction === Direction.Right ? GroupLocAtion.FIRST : GroupLocAtion.LAST);
 		}
 
-		if (neighborPart === Parts.SIDEBAR_PART) {
-			return this.navigateToSidebar();
+		if (neighborPArt === PArts.SIDEBAR_PART) {
+			return this.nAvigAteToSidebAr();
 		}
 
-		if (neighborPart === Parts.PANEL_PART) {
-			return this.navigateToPanel();
+		if (neighborPArt === PArts.PANEL_PART) {
+			return this.nAvigAteToPAnel();
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	private async navigateToPanel(): Promise<IPanel | boolean> {
-		if (!this.layoutService.isVisible(Parts.PANEL_PART)) {
-			return false;
+	privAte Async nAvigAteToPAnel(): Promise<IPAnel | booleAn> {
+		if (!this.lAyoutService.isVisible(PArts.PANEL_PART)) {
+			return fAlse;
 		}
 
-		const activePanel = this.panelService.getActivePanel();
-		if (!activePanel) {
-			return false;
+		const ActivePAnel = this.pAnelService.getActivePAnel();
+		if (!ActivePAnel) {
+			return fAlse;
 		}
 
-		const activePanelId = activePanel.getId();
+		const ActivePAnelId = ActivePAnel.getId();
 
-		const res = await this.panelService.openPanel(activePanelId, true);
+		const res = AwAit this.pAnelService.openPAnel(ActivePAnelId, true);
 		if (!res) {
-			return false;
+			return fAlse;
 		}
 
 		return res;
 	}
 
-	private async navigateToSidebar(): Promise<IViewlet | boolean> {
-		if (!this.layoutService.isVisible(Parts.SIDEBAR_PART)) {
-			return false;
+	privAte Async nAvigAteToSidebAr(): Promise<IViewlet | booleAn> {
+		if (!this.lAyoutService.isVisible(PArts.SIDEBAR_PART)) {
+			return fAlse;
 		}
 
-		const activeViewlet = this.viewletService.getActiveViewlet();
-		if (!activeViewlet) {
-			return false;
+		const ActiveViewlet = this.viewletService.getActiveViewlet();
+		if (!ActiveViewlet) {
+			return fAlse;
 		}
-		const activeViewletId = activeViewlet.getId();
+		const ActiveViewletId = ActiveViewlet.getId();
 
-		const viewlet = await this.viewletService.openViewlet(activeViewletId, true);
+		const viewlet = AwAit this.viewletService.openViewlet(ActiveViewletId, true);
 		return !!viewlet;
 	}
 
-	private navigateAcrossEditorGroup(direction: GroupDirection): boolean {
-		return this.doNavigateToEditorGroup({ direction });
+	privAte nAvigAteAcrossEditorGroup(direction: GroupDirection): booleAn {
+		return this.doNAvigAteToEditorGroup({ direction });
 	}
 
-	private navigateToEditorGroup(location: GroupLocation): boolean {
-		return this.doNavigateToEditorGroup({ location });
+	privAte nAvigAteToEditorGroup(locAtion: GroupLocAtion): booleAn {
+		return this.doNAvigAteToEditorGroup({ locAtion });
 	}
 
-	private toGroupDirection(direction: Direction): GroupDirection {
+	privAte toGroupDirection(direction: Direction): GroupDirection {
 		switch (direction) {
-			case Direction.Down: return GroupDirection.DOWN;
-			case Direction.Left: return GroupDirection.LEFT;
-			case Direction.Right: return GroupDirection.RIGHT;
-			case Direction.Up: return GroupDirection.UP;
+			cAse Direction.Down: return GroupDirection.DOWN;
+			cAse Direction.Left: return GroupDirection.LEFT;
+			cAse Direction.Right: return GroupDirection.RIGHT;
+			cAse Direction.Up: return GroupDirection.UP;
 		}
 	}
 
-	private doNavigateToEditorGroup(scope: IFindGroupScope): boolean {
-		const targetGroup = this.editorGroupService.findGroup(scope, this.editorGroupService.activeGroup);
-		if (targetGroup) {
-			targetGroup.focus();
+	privAte doNAvigAteToEditorGroup(scope: IFindGroupScope): booleAn {
+		const tArgetGroup = this.editorGroupService.findGroup(scope, this.editorGroupService.ActiveGroup);
+		if (tArgetGroup) {
+			tArgetGroup.focus();
 
 			return true;
 		}
 
-		return false;
+		return fAlse;
 	}
 }
 
-class NavigateLeftAction extends BaseNavigationAction {
+clAss NAvigAteLeftAction extends BAseNAvigAtionAction {
 
-	static readonly ID = 'workbench.action.navigateLeft';
-	static readonly LABEL = nls.localize('navigateLeft', "Navigate to the View on the Left");
+	stAtic reAdonly ID = 'workbench.Action.nAvigAteLeft';
+	stAtic reAdonly LABEL = nls.locAlize('nAvigAteLeft', "NAvigAte to the View on the Left");
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
-		@IPanelService panelService: IPanelService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IPAnelService pAnelService: IPAnelService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@IViewletService viewletService: IViewletService
 	) {
-		super(id, label, Direction.Left, editorGroupService, panelService, layoutService, viewletService);
+		super(id, lAbel, Direction.Left, editorGroupService, pAnelService, lAyoutService, viewletService);
 	}
 }
 
-class NavigateRightAction extends BaseNavigationAction {
+clAss NAvigAteRightAction extends BAseNAvigAtionAction {
 
-	static readonly ID = 'workbench.action.navigateRight';
-	static readonly LABEL = nls.localize('navigateRight', "Navigate to the View on the Right");
+	stAtic reAdonly ID = 'workbench.Action.nAvigAteRight';
+	stAtic reAdonly LABEL = nls.locAlize('nAvigAteRight', "NAvigAte to the View on the Right");
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
-		@IPanelService panelService: IPanelService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IPAnelService pAnelService: IPAnelService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@IViewletService viewletService: IViewletService
 	) {
-		super(id, label, Direction.Right, editorGroupService, panelService, layoutService, viewletService);
+		super(id, lAbel, Direction.Right, editorGroupService, pAnelService, lAyoutService, viewletService);
 	}
 }
 
-class NavigateUpAction extends BaseNavigationAction {
+clAss NAvigAteUpAction extends BAseNAvigAtionAction {
 
-	static readonly ID = 'workbench.action.navigateUp';
-	static readonly LABEL = nls.localize('navigateUp', "Navigate to the View Above");
+	stAtic reAdonly ID = 'workbench.Action.nAvigAteUp';
+	stAtic reAdonly LABEL = nls.locAlize('nAvigAteUp', "NAvigAte to the View Above");
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
-		@IPanelService panelService: IPanelService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IPAnelService pAnelService: IPAnelService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@IViewletService viewletService: IViewletService
 	) {
-		super(id, label, Direction.Up, editorGroupService, panelService, layoutService, viewletService);
+		super(id, lAbel, Direction.Up, editorGroupService, pAnelService, lAyoutService, viewletService);
 	}
 }
 
-class NavigateDownAction extends BaseNavigationAction {
+clAss NAvigAteDownAction extends BAseNAvigAtionAction {
 
-	static readonly ID = 'workbench.action.navigateDown';
-	static readonly LABEL = nls.localize('navigateDown', "Navigate to the View Below");
+	stAtic reAdonly ID = 'workbench.Action.nAvigAteDown';
+	stAtic reAdonly LABEL = nls.locAlize('nAvigAteDown', "NAvigAte to the View Below");
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService,
-		@IPanelService panelService: IPanelService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
+		@IPAnelService pAnelService: IPAnelService,
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
 		@IViewletService viewletService: IViewletService
 	) {
-		super(id, label, Direction.Down, editorGroupService, panelService, layoutService, viewletService);
+		super(id, lAbel, Direction.Down, editorGroupService, pAnelService, lAyoutService, viewletService);
 	}
 }
 
-function findVisibleNeighbour(layoutService: IWorkbenchLayoutService, part: Parts, next: boolean): Parts {
-	const neighbour = part === Parts.EDITOR_PART ? (next ? Parts.PANEL_PART : Parts.SIDEBAR_PART) : part === Parts.PANEL_PART ? (next ? Parts.STATUSBAR_PART : Parts.EDITOR_PART) :
-		part === Parts.STATUSBAR_PART ? (next ? Parts.ACTIVITYBAR_PART : Parts.PANEL_PART) : part === Parts.ACTIVITYBAR_PART ? (next ? Parts.SIDEBAR_PART : Parts.STATUSBAR_PART) :
-			part === Parts.SIDEBAR_PART ? (next ? Parts.EDITOR_PART : Parts.ACTIVITYBAR_PART) : Parts.EDITOR_PART;
-	if (layoutService.isVisible(neighbour) || neighbour === Parts.EDITOR_PART) {
+function findVisibleNeighbour(lAyoutService: IWorkbenchLAyoutService, pArt: PArts, next: booleAn): PArts {
+	const neighbour = pArt === PArts.EDITOR_PART ? (next ? PArts.PANEL_PART : PArts.SIDEBAR_PART) : pArt === PArts.PANEL_PART ? (next ? PArts.STATUSBAR_PART : PArts.EDITOR_PART) :
+		pArt === PArts.STATUSBAR_PART ? (next ? PArts.ACTIVITYBAR_PART : PArts.PANEL_PART) : pArt === PArts.ACTIVITYBAR_PART ? (next ? PArts.SIDEBAR_PART : PArts.STATUSBAR_PART) :
+			pArt === PArts.SIDEBAR_PART ? (next ? PArts.EDITOR_PART : PArts.ACTIVITYBAR_PART) : PArts.EDITOR_PART;
+	if (lAyoutService.isVisible(neighbour) || neighbour === PArts.EDITOR_PART) {
 		return neighbour;
 	}
 
-	return findVisibleNeighbour(layoutService, neighbour, next);
+	return findVisibleNeighbour(lAyoutService, neighbour, next);
 }
 
-function focusNextOrPreviousPart(layoutService: IWorkbenchLayoutService, editorService: IEditorService, next: boolean): void {
-	const currentlyFocusedPart = isActiveElementInNotebookEditor(editorService) ? Parts.EDITOR_PART : layoutService.hasFocus(Parts.EDITOR_PART) ? Parts.EDITOR_PART : layoutService.hasFocus(Parts.ACTIVITYBAR_PART) ? Parts.ACTIVITYBAR_PART :
-		layoutService.hasFocus(Parts.STATUSBAR_PART) ? Parts.STATUSBAR_PART : layoutService.hasFocus(Parts.SIDEBAR_PART) ? Parts.SIDEBAR_PART : layoutService.hasFocus(Parts.PANEL_PART) ? Parts.PANEL_PART : undefined;
-	let partToFocus = Parts.EDITOR_PART;
-	if (currentlyFocusedPart) {
-		partToFocus = findVisibleNeighbour(layoutService, currentlyFocusedPart, next);
+function focusNextOrPreviousPArt(lAyoutService: IWorkbenchLAyoutService, editorService: IEditorService, next: booleAn): void {
+	const currentlyFocusedPArt = isActiveElementInNotebookEditor(editorService) ? PArts.EDITOR_PART : lAyoutService.hAsFocus(PArts.EDITOR_PART) ? PArts.EDITOR_PART : lAyoutService.hAsFocus(PArts.ACTIVITYBAR_PART) ? PArts.ACTIVITYBAR_PART :
+		lAyoutService.hAsFocus(PArts.STATUSBAR_PART) ? PArts.STATUSBAR_PART : lAyoutService.hAsFocus(PArts.SIDEBAR_PART) ? PArts.SIDEBAR_PART : lAyoutService.hAsFocus(PArts.PANEL_PART) ? PArts.PANEL_PART : undefined;
+	let pArtToFocus = PArts.EDITOR_PART;
+	if (currentlyFocusedPArt) {
+		pArtToFocus = findVisibleNeighbour(lAyoutService, currentlyFocusedPArt, next);
 	}
 
-	layoutService.focusPart(partToFocus);
+	lAyoutService.focusPArt(pArtToFocus);
 }
 
-function isActiveElementInNotebookEditor(editorService: IEditorService): boolean {
-	const activeEditorPane = editorService.activeEditorPane as unknown as { isNotebookEditor?: boolean } | undefined;
-	if (activeEditorPane?.isNotebookEditor) {
-		const control = editorService.activeEditorPane?.getControl() as { getDomNode(): HTMLElement; getOverflowContainerDomNode(): HTMLElement; };
-		const activeElement = document.activeElement;
-		return isAncestor(activeElement, control.getDomNode()) || isAncestor(activeElement, control.getOverflowContainerDomNode());
+function isActiveElementInNotebookEditor(editorService: IEditorService): booleAn {
+	const ActiveEditorPAne = editorService.ActiveEditorPAne As unknown As { isNotebookEditor?: booleAn } | undefined;
+	if (ActiveEditorPAne?.isNotebookEditor) {
+		const control = editorService.ActiveEditorPAne?.getControl() As { getDomNode(): HTMLElement; getOverflowContAinerDomNode(): HTMLElement; };
+		const ActiveElement = document.ActiveElement;
+		return isAncestor(ActiveElement, control.getDomNode()) || isAncestor(ActiveElement, control.getOverflowContAinerDomNode());
 	}
 
-	return false;
+	return fAlse;
 }
 
-export class FocusNextPart extends Action {
-	static readonly ID = 'workbench.action.focusNextPart';
-	static readonly LABEL = nls.localize('focusNextPart', "Focus Next Part");
+export clAss FocusNextPArt extends Action {
+	stAtic reAdonly ID = 'workbench.Action.focusNextPArt';
+	stAtic reAdonly LABEL = nls.locAlize('focusNextPArt', "Focus Next PArt");
 
 	constructor(
 		id: string,
-		label: string,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IEditorService private readonly editorService: IEditorService
+		lAbel: string,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IEditorService privAte reAdonly editorService: IEditorService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<void> {
-		focusNextOrPreviousPart(this.layoutService, this.editorService, true);
+	Async run(): Promise<void> {
+		focusNextOrPreviousPArt(this.lAyoutService, this.editorService, true);
 	}
 }
 
-export class FocusPreviousPart extends Action {
-	static readonly ID = 'workbench.action.focusPreviousPart';
-	static readonly LABEL = nls.localize('focusPreviousPart', "Focus Previous Part");
+export clAss FocusPreviousPArt extends Action {
+	stAtic reAdonly ID = 'workbench.Action.focusPreviousPArt';
+	stAtic reAdonly LABEL = nls.locAlize('focusPreviousPArt', "Focus Previous PArt");
 
 	constructor(
 		id: string,
-		label: string,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IEditorService private readonly editorService: IEditorService
+		lAbel: string,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IEditorService privAte reAdonly editorService: IEditorService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<void> {
-		focusNextOrPreviousPart(this.layoutService, this.editorService, false);
+	Async run(): Promise<void> {
+		focusNextOrPreviousPArt(this.lAyoutService, this.editorService, fAlse);
 	}
 }
 
-class GoHomeContributor implements IWorkbenchContribution {
+clAss GoHomeContributor implements IWorkbenchContribution {
 
 	constructor(
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService
 	) {
-		const homeIndicator = environmentService.options?.homeIndicator;
-		if (homeIndicator) {
-			registerAction2(class extends Action2 {
+		const homeIndicAtor = environmentService.options?.homeIndicAtor;
+		if (homeIndicAtor) {
+			registerAction2(clAss extends Action2 {
 				constructor() {
 					super({
-						id: `workbench.actions.goHome`,
-						title: nls.localize('goHome', "Go Home"),
-						menu: { id: MenuId.MenubarWebNavigationMenu }
+						id: `workbench.Actions.goHome`,
+						title: nls.locAlize('goHome', "Go Home"),
+						menu: { id: MenuId.MenubArWebNAvigAtionMenu }
 					});
 				}
-				async run(): Promise<void> {
-					window.location.href = homeIndicator.href;
+				Async run(): Promise<void> {
+					window.locAtion.href = homeIndicAtor.href;
 				}
 			});
 		}
 	}
 }
 
-// --- Actions Registration
+// --- Actions RegistrAtion
 
-const actionsRegistry = Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
+const ActionsRegistry = Registry.As<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
 
-actionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NavigateUpAction, undefined), 'View: Navigate to the View Above', CATEGORIES.View.value);
-actionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NavigateDownAction, undefined), 'View: Navigate to the View Below', CATEGORIES.View.value);
-actionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NavigateLeftAction, undefined), 'View: Navigate to the View on the Left', CATEGORIES.View.value);
-actionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NavigateRightAction, undefined), 'View: Navigate to the View on the Right', CATEGORIES.View.value);
-actionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(FocusNextPart, { primary: KeyCode.F6 }), 'View: Focus Next Part', CATEGORIES.View.value);
-actionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(FocusPreviousPart, { primary: KeyMod.Shift | KeyCode.F6 }), 'View: Focus Previous Part', CATEGORIES.View.value);
+ActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NAvigAteUpAction, undefined), 'View: NAvigAte to the View Above', CATEGORIES.View.vAlue);
+ActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NAvigAteDownAction, undefined), 'View: NAvigAte to the View Below', CATEGORIES.View.vAlue);
+ActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NAvigAteLeftAction, undefined), 'View: NAvigAte to the View on the Left', CATEGORIES.View.vAlue);
+ActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(NAvigAteRightAction, undefined), 'View: NAvigAte to the View on the Right', CATEGORIES.View.vAlue);
+ActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(FocusNextPArt, { primAry: KeyCode.F6 }), 'View: Focus Next PArt', CATEGORIES.View.vAlue);
+ActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(FocusPreviousPArt, { primAry: KeyMod.Shift | KeyCode.F6 }), 'View: Focus Previous PArt', CATEGORIES.View.vAlue);
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(GoHomeContributor, LifecyclePhase.Ready);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(GoHomeContributor, LifecyclePhAse.ReAdy);

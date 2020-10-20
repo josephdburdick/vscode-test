@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMarkerService, IMarkerData } from 'vs/platform/markers/common/markers';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { MainThreadDiagnosticsShape, MainContext, IExtHostContext, ExtHostDiagnosticsShape, ExtHostContext } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { IMArkerService, IMArkerDAtA } from 'vs/plAtform/mArkers/common/mArkers';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { MAinThreAdDiAgnosticsShApe, MAinContext, IExtHostContext, ExtHostDiAgnosticsShApe, ExtHostContext } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
-@extHostNamedCustomer(MainContext.MainThreadDiagnostics)
-export class MainThreadDiagnostics implements MainThreadDiagnosticsShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdDiAgnostics)
+export clAss MAinThreAdDiAgnostics implements MAinThreAdDiAgnosticsShApe {
 
-	private readonly _activeOwners = new Set<string>();
+	privAte reAdonly _ActiveOwners = new Set<string>();
 
-	private readonly _proxy: ExtHostDiagnosticsShape;
-	private readonly _markerListener: IDisposable;
+	privAte reAdonly _proxy: ExtHostDiAgnosticsShApe;
+	privAte reAdonly _mArkerListener: IDisposAble;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IMarkerService private readonly _markerService: IMarkerService,
-		@IUriIdentityService private readonly _uriIdentService: IUriIdentityService,
+		@IMArkerService privAte reAdonly _mArkerService: IMArkerService,
+		@IUriIdentityService privAte reAdonly _uriIdentService: IUriIdentityService,
 	) {
-		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostDiagnostics);
+		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostDiAgnostics);
 
-		this._markerListener = this._markerService.onMarkerChanged(this._forwardMarkers, this);
+		this._mArkerListener = this._mArkerService.onMArkerChAnged(this._forwArdMArkers, this);
 	}
 
 	dispose(): void {
-		this._markerListener.dispose();
-		this._activeOwners.forEach(owner => this._markerService.changeAll(owner, []));
-		this._activeOwners.clear();
+		this._mArkerListener.dispose();
+		this._ActiveOwners.forEAch(owner => this._mArkerService.chAngeAll(owner, []));
+		this._ActiveOwners.cleAr();
 	}
 
-	private _forwardMarkers(resources: readonly URI[]): void {
-		const data: [UriComponents, IMarkerData[]][] = [];
+	privAte _forwArdMArkers(resources: reAdonly URI[]): void {
+		const dAtA: [UriComponents, IMArkerDAtA[]][] = [];
 		for (const resource of resources) {
-			data.push([
+			dAtA.push([
 				resource,
-				this._markerService.read({ resource }).filter(marker => !this._activeOwners.has(marker.owner))
+				this._mArkerService.reAd({ resource }).filter(mArker => !this._ActiveOwners.hAs(mArker.owner))
 			]);
 		}
-		this._proxy.$acceptMarkersChange(data);
+		this._proxy.$AcceptMArkersChAnge(dAtA);
 	}
 
-	$changeMany(owner: string, entries: [UriComponents, IMarkerData[]][]): void {
+	$chAngeMAny(owner: string, entries: [UriComponents, IMArkerDAtA[]][]): void {
 		for (let entry of entries) {
-			let [uri, markers] = entry;
-			if (markers) {
-				for (const marker of markers) {
-					if (marker.relatedInformation) {
-						for (const relatedInformation of marker.relatedInformation) {
-							relatedInformation.resource = URI.revive(relatedInformation.resource);
+			let [uri, mArkers] = entry;
+			if (mArkers) {
+				for (const mArker of mArkers) {
+					if (mArker.relAtedInformAtion) {
+						for (const relAtedInformAtion of mArker.relAtedInformAtion) {
+							relAtedInformAtion.resource = URI.revive(relAtedInformAtion.resource);
 						}
 					}
-					if (marker.code && typeof marker.code !== 'string') {
-						marker.code.target = URI.revive(marker.code.target);
+					if (mArker.code && typeof mArker.code !== 'string') {
+						mArker.code.tArget = URI.revive(mArker.code.tArget);
 					}
 				}
 			}
-			this._markerService.changeOne(owner, this._uriIdentService.asCanonicalUri(URI.revive(uri)), markers);
+			this._mArkerService.chAngeOne(owner, this._uriIdentService.AsCAnonicAlUri(URI.revive(uri)), mArkers);
 		}
-		this._activeOwners.add(owner);
+		this._ActiveOwners.Add(owner);
 	}
 
-	$clear(owner: string): void {
-		this._markerService.changeAll(owner, []);
-		this._activeOwners.delete(owner);
+	$cleAr(owner: string): void {
+		this._mArkerService.chAngeAll(owner, []);
+		this._ActiveOwners.delete(owner);
 	}
 }

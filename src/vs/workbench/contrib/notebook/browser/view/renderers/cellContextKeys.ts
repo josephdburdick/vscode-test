@@ -1,146 +1,146 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { INotebookTextModel, NotebookCellRunState } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { BaseCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/baseCellViewModel';
-import { NOTEBOOK_CELL_TYPE, NOTEBOOK_VIEW_TYPE, NOTEBOOK_CELL_EDITABLE, NOTEBOOK_CELL_RUNNABLE, NOTEBOOK_CELL_MARKDOWN_EDIT_MODE, NOTEBOOK_CELL_RUN_STATE, NOTEBOOK_CELL_HAS_OUTPUTS, CellViewModelStateChangeEvent, CellEditState, NOTEBOOK_CELL_INPUT_COLLAPSED, NOTEBOOK_CELL_OUTPUT_COLLAPSED, NOTEBOOK_CELL_FOCUSED, INotebookEditor, NOTEBOOK_CELL_EDITOR_FOCUSED, CellFocusMode } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { IContextKey, IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { INotebookTextModel, NotebookCellRunStAte } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { BAseCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/bAseCellViewModel';
+import { NOTEBOOK_CELL_TYPE, NOTEBOOK_VIEW_TYPE, NOTEBOOK_CELL_EDITABLE, NOTEBOOK_CELL_RUNNABLE, NOTEBOOK_CELL_MARKDOWN_EDIT_MODE, NOTEBOOK_CELL_RUN_STATE, NOTEBOOK_CELL_HAS_OUTPUTS, CellViewModelStAteChAngeEvent, CellEditStAte, NOTEBOOK_CELL_INPUT_COLLAPSED, NOTEBOOK_CELL_OUTPUT_COLLAPSED, NOTEBOOK_CELL_FOCUSED, INotebookEditor, NOTEBOOK_CELL_EDITOR_FOCUSED, CellFocusMode } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
 import { CodeCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/codeCellViewModel';
-import { MarkdownCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/markdownCellViewModel';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { MArkdownCellViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/mArkdownCellViewModel';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 
-export class CellContextKeyManager extends Disposable {
+export clAss CellContextKeyMAnAger extends DisposAble {
 
-	private cellType!: IContextKey<string>;
-	private viewType!: IContextKey<string>;
-	private cellEditable!: IContextKey<boolean>;
-	private cellRunnable!: IContextKey<boolean>;
-	private cellFocused!: IContextKey<boolean>;
-	private cellEditorFocused!: IContextKey<boolean>;
-	private cellRunState!: IContextKey<string>;
-	private cellHasOutputs!: IContextKey<boolean>;
-	private cellContentCollapsed!: IContextKey<boolean>;
-	private cellOutputCollapsed!: IContextKey<boolean>;
+	privAte cellType!: IContextKey<string>;
+	privAte viewType!: IContextKey<string>;
+	privAte cellEditAble!: IContextKey<booleAn>;
+	privAte cellRunnAble!: IContextKey<booleAn>;
+	privAte cellFocused!: IContextKey<booleAn>;
+	privAte cellEditorFocused!: IContextKey<booleAn>;
+	privAte cellRunStAte!: IContextKey<string>;
+	privAte cellHAsOutputs!: IContextKey<booleAn>;
+	privAte cellContentCollApsed!: IContextKey<booleAn>;
+	privAte cellOutputCollApsed!: IContextKey<booleAn>;
 
-	private markdownEditMode!: IContextKey<boolean>;
+	privAte mArkdownEditMode!: IContextKey<booleAn>;
 
-	private elementDisposables = new DisposableStore();
+	privAte elementDisposAbles = new DisposAbleStore();
 
 	constructor(
-		private readonly contextKeyService: IContextKeyService,
-		private readonly notebookEditor: INotebookEditor,
-		private readonly notebookTextModel: INotebookTextModel,
-		private element: BaseCellViewModel
+		privAte reAdonly contextKeyService: IContextKeyService,
+		privAte reAdonly notebookEditor: INotebookEditor,
+		privAte reAdonly notebookTextModel: INotebookTextModel,
+		privAte element: BAseCellViewModel
 	) {
 		super();
 
-		this.contextKeyService.bufferChangeEvents(() => {
+		this.contextKeyService.bufferChAngeEvents(() => {
 			this.cellType = NOTEBOOK_CELL_TYPE.bindTo(this.contextKeyService);
 			this.viewType = NOTEBOOK_VIEW_TYPE.bindTo(this.contextKeyService);
-			this.cellEditable = NOTEBOOK_CELL_EDITABLE.bindTo(this.contextKeyService);
+			this.cellEditAble = NOTEBOOK_CELL_EDITABLE.bindTo(this.contextKeyService);
 			this.cellFocused = NOTEBOOK_CELL_FOCUSED.bindTo(this.contextKeyService);
 			this.cellEditorFocused = NOTEBOOK_CELL_EDITOR_FOCUSED.bindTo(this.contextKeyService);
-			this.cellRunnable = NOTEBOOK_CELL_RUNNABLE.bindTo(this.contextKeyService);
-			this.markdownEditMode = NOTEBOOK_CELL_MARKDOWN_EDIT_MODE.bindTo(this.contextKeyService);
-			this.cellRunState = NOTEBOOK_CELL_RUN_STATE.bindTo(this.contextKeyService);
-			this.cellHasOutputs = NOTEBOOK_CELL_HAS_OUTPUTS.bindTo(this.contextKeyService);
-			this.cellContentCollapsed = NOTEBOOK_CELL_INPUT_COLLAPSED.bindTo(this.contextKeyService);
-			this.cellOutputCollapsed = NOTEBOOK_CELL_OUTPUT_COLLAPSED.bindTo(this.contextKeyService);
+			this.cellRunnAble = NOTEBOOK_CELL_RUNNABLE.bindTo(this.contextKeyService);
+			this.mArkdownEditMode = NOTEBOOK_CELL_MARKDOWN_EDIT_MODE.bindTo(this.contextKeyService);
+			this.cellRunStAte = NOTEBOOK_CELL_RUN_STATE.bindTo(this.contextKeyService);
+			this.cellHAsOutputs = NOTEBOOK_CELL_HAS_OUTPUTS.bindTo(this.contextKeyService);
+			this.cellContentCollApsed = NOTEBOOK_CELL_INPUT_COLLAPSED.bindTo(this.contextKeyService);
+			this.cellOutputCollApsed = NOTEBOOK_CELL_OUTPUT_COLLAPSED.bindTo(this.contextKeyService);
 
-			this.updateForElement(element);
+			this.updAteForElement(element);
 		});
 	}
 
-	public updateForElement(element: BaseCellViewModel) {
-		this.elementDisposables.clear();
-		this.elementDisposables.add(element.onDidChangeState(e => this.onDidChangeState(e)));
+	public updAteForElement(element: BAseCellViewModel) {
+		this.elementDisposAbles.cleAr();
+		this.elementDisposAbles.Add(element.onDidChAngeStAte(e => this.onDidChAngeStAte(e)));
 
-		if (element instanceof CodeCellViewModel) {
-			this.elementDisposables.add(element.onDidChangeOutputs(() => this.updateForOutputs()));
+		if (element instAnceof CodeCellViewModel) {
+			this.elementDisposAbles.Add(element.onDidChAngeOutputs(() => this.updAteForOutputs()));
 		}
 
-		this.elementDisposables.add(element.model.onDidChangeMetadata(() => this.updateForCollapseState()));
-		this.elementDisposables.add(this.notebookEditor.onDidChangeActiveCell(() => this.updateForFocusState()));
+		this.elementDisposAbles.Add(element.model.onDidChAngeMetAdAtA(() => this.updAteForCollApseStAte()));
+		this.elementDisposAbles.Add(this.notebookEditor.onDidChAngeActiveCell(() => this.updAteForFocusStAte()));
 
 		this.element = element;
-		if (this.element instanceof MarkdownCellViewModel) {
-			this.cellType.set('markdown');
-		} else if (this.element instanceof CodeCellViewModel) {
+		if (this.element instAnceof MArkdownCellViewModel) {
+			this.cellType.set('mArkdown');
+		} else if (this.element instAnceof CodeCellViewModel) {
 			this.cellType.set('code');
 		}
 
-		this.contextKeyService.bufferChangeEvents(() => {
-			this.updateForFocusState();
-			this.updateForMetadata();
-			this.updateForEditState();
-			this.updateForCollapseState();
-			this.updateForOutputs();
+		this.contextKeyService.bufferChAngeEvents(() => {
+			this.updAteForFocusStAte();
+			this.updAteForMetAdAtA();
+			this.updAteForEditStAte();
+			this.updAteForCollApseStAte();
+			this.updAteForOutputs();
 
 			this.viewType.set(this.element.viewType);
 		});
 	}
 
-	private onDidChangeState(e: CellViewModelStateChangeEvent) {
-		this.contextKeyService.bufferChangeEvents(() => {
-			if (e.metadataChanged) {
-				this.updateForMetadata();
+	privAte onDidChAngeStAte(e: CellViewModelStAteChAngeEvent) {
+		this.contextKeyService.bufferChAngeEvents(() => {
+			if (e.metAdAtAChAnged) {
+				this.updAteForMetAdAtA();
 			}
 
-			if (e.editStateChanged) {
-				this.updateForEditState();
+			if (e.editStAteChAnged) {
+				this.updAteForEditStAte();
 			}
 
-			if (e.focusModeChanged) {
-				this.updateForFocusState();
+			if (e.focusModeChAnged) {
+				this.updAteForFocusStAte();
 			}
 
-			// if (e.collapseStateChanged) {
-			// 	this.updateForCollapseState();
+			// if (e.collApseStAteChAnged) {
+			// 	this.updAteForCollApseStAte();
 			// }
 		});
 	}
 
-	private updateForFocusState() {
-		const activeCell = this.notebookEditor.getActiveCell();
+	privAte updAteForFocusStAte() {
+		const ActiveCell = this.notebookEditor.getActiveCell();
 		this.cellFocused.set(this.notebookEditor.getActiveCell() === this.element);
 
-		if (activeCell === this.element) {
+		if (ActiveCell === this.element) {
 			this.cellEditorFocused.set(this.element.focusMode === CellFocusMode.Editor);
 		} else {
-			this.cellEditorFocused.set(false);
+			this.cellEditorFocused.set(fAlse);
 		}
 
 	}
 
-	private updateForMetadata() {
-		const metadata = this.element.getEvaluatedMetadata(this.notebookTextModel.metadata);
-		this.cellEditable.set(!!metadata.editable);
-		this.cellRunnable.set(!!metadata.runnable);
+	privAte updAteForMetAdAtA() {
+		const metAdAtA = this.element.getEvAluAtedMetAdAtA(this.notebookTextModel.metAdAtA);
+		this.cellEditAble.set(!!metAdAtA.editAble);
+		this.cellRunnAble.set(!!metAdAtA.runnAble);
 
-		const runState = metadata.runState ?? NotebookCellRunState.Idle;
-		this.cellRunState.set(NotebookCellRunState[runState]);
+		const runStAte = metAdAtA.runStAte ?? NotebookCellRunStAte.Idle;
+		this.cellRunStAte.set(NotebookCellRunStAte[runStAte]);
 	}
 
-	private updateForEditState() {
-		if (this.element instanceof MarkdownCellViewModel) {
-			this.markdownEditMode.set(this.element.editState === CellEditState.Editing);
+	privAte updAteForEditStAte() {
+		if (this.element instAnceof MArkdownCellViewModel) {
+			this.mArkdownEditMode.set(this.element.editStAte === CellEditStAte.Editing);
 		} else {
-			this.markdownEditMode.set(false);
+			this.mArkdownEditMode.set(fAlse);
 		}
 	}
 
-	private updateForCollapseState() {
-		this.cellContentCollapsed.set(!!this.element.metadata?.inputCollapsed);
-		this.cellOutputCollapsed.set(!!this.element.metadata?.outputCollapsed);
+	privAte updAteForCollApseStAte() {
+		this.cellContentCollApsed.set(!!this.element.metAdAtA?.inputCollApsed);
+		this.cellOutputCollApsed.set(!!this.element.metAdAtA?.outputCollApsed);
 	}
 
-	private updateForOutputs() {
-		if (this.element instanceof CodeCellViewModel) {
-			this.cellHasOutputs.set(this.element.outputs.length > 0);
+	privAte updAteForOutputs() {
+		if (this.element instAnceof CodeCellViewModel) {
+			this.cellHAsOutputs.set(this.element.outputs.length > 0);
 		} else {
-			this.cellHasOutputs.set(false);
+			this.cellHAsOutputs.set(fAlse);
 		}
 	}
 }

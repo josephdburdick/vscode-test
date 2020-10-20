@@ -1,218 +1,218 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { UndoRedoElementType, IUndoRedoElement, UndoRedoGroup } from 'vs/platform/undoRedo/common/undoRedo';
-import { URI } from 'vs/base/common/uri';
-import { mock } from 'vs/base/test/common/mock';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
+import * As Assert from 'Assert';
+import { UndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedoService';
+import { TestDiAlogService } from 'vs/plAtform/diAlogs/test/common/testDiAlogService';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { UndoRedoElementType, IUndoRedoElement, UndoRedoGroup } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { URI } from 'vs/bAse/common/uri';
+import { mock } from 'vs/bAse/test/common/mock';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
 
 suite('UndoRedoService', () => {
 
-	function createUndoRedoService(dialogService: IDialogService = new TestDialogService()): UndoRedoService {
-		const notificationService = new TestNotificationService();
-		return new UndoRedoService(dialogService, notificationService);
+	function creAteUndoRedoService(diAlogService: IDiAlogService = new TestDiAlogService()): UndoRedoService {
+		const notificAtionService = new TestNotificAtionService();
+		return new UndoRedoService(diAlogService, notificAtionService);
 	}
 
 	test('simple single resource elements', () => {
 		const resource = URI.file('test.txt');
-		const service = createUndoRedoService();
+		const service = creAteUndoRedoService();
 
-		assert.equal(service.canUndo(resource), false);
-		assert.equal(service.canRedo(resource), false);
-		assert.equal(service.hasElements(resource), false);
-		assert.ok(service.getLastElement(resource) === null);
+		Assert.equAl(service.cAnUndo(resource), fAlse);
+		Assert.equAl(service.cAnRedo(resource), fAlse);
+		Assert.equAl(service.hAsElements(resource), fAlse);
+		Assert.ok(service.getLAstElement(resource) === null);
 
-		let undoCall1 = 0;
-		let redoCall1 = 0;
+		let undoCAll1 = 0;
+		let redoCAll1 = 0;
 		const element1: IUndoRedoElement = {
 			type: UndoRedoElementType.Resource,
 			resource: resource,
-			label: 'typing 1',
-			undo: () => { undoCall1++; },
-			redo: () => { redoCall1++; }
+			lAbel: 'typing 1',
+			undo: () => { undoCAll1++; },
+			redo: () => { redoCAll1++; }
 		};
 		service.pushElement(element1);
 
-		assert.equal(undoCall1, 0);
-		assert.equal(redoCall1, 0);
-		assert.equal(service.canUndo(resource), true);
-		assert.equal(service.canRedo(resource), false);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === element1);
+		Assert.equAl(undoCAll1, 0);
+		Assert.equAl(redoCAll1, 0);
+		Assert.equAl(service.cAnUndo(resource), true);
+		Assert.equAl(service.cAnRedo(resource), fAlse);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === element1);
 
 		service.undo(resource);
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 0);
-		assert.equal(service.canUndo(resource), false);
-		assert.equal(service.canRedo(resource), true);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === null);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 0);
+		Assert.equAl(service.cAnUndo(resource), fAlse);
+		Assert.equAl(service.cAnRedo(resource), true);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === null);
 
 		service.redo(resource);
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 1);
-		assert.equal(service.canUndo(resource), true);
-		assert.equal(service.canRedo(resource), false);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === element1);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 1);
+		Assert.equAl(service.cAnUndo(resource), true);
+		Assert.equAl(service.cAnRedo(resource), fAlse);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === element1);
 
-		let undoCall2 = 0;
-		let redoCall2 = 0;
+		let undoCAll2 = 0;
+		let redoCAll2 = 0;
 		const element2: IUndoRedoElement = {
 			type: UndoRedoElementType.Resource,
 			resource: resource,
-			label: 'typing 2',
-			undo: () => { undoCall2++; },
-			redo: () => { redoCall2++; }
+			lAbel: 'typing 2',
+			undo: () => { undoCAll2++; },
+			redo: () => { redoCAll2++; }
 		};
 		service.pushElement(element2);
 
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 1);
-		assert.equal(undoCall2, 0);
-		assert.equal(redoCall2, 0);
-		assert.equal(service.canUndo(resource), true);
-		assert.equal(service.canRedo(resource), false);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === element2);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 1);
+		Assert.equAl(undoCAll2, 0);
+		Assert.equAl(redoCAll2, 0);
+		Assert.equAl(service.cAnUndo(resource), true);
+		Assert.equAl(service.cAnRedo(resource), fAlse);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === element2);
 
 		service.undo(resource);
 
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 1);
-		assert.equal(undoCall2, 1);
-		assert.equal(redoCall2, 0);
-		assert.equal(service.canUndo(resource), true);
-		assert.equal(service.canRedo(resource), true);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === null);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 1);
+		Assert.equAl(undoCAll2, 1);
+		Assert.equAl(redoCAll2, 0);
+		Assert.equAl(service.cAnUndo(resource), true);
+		Assert.equAl(service.cAnRedo(resource), true);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === null);
 
-		let undoCall3 = 0;
-		let redoCall3 = 0;
+		let undoCAll3 = 0;
+		let redoCAll3 = 0;
 		const element3: IUndoRedoElement = {
 			type: UndoRedoElementType.Resource,
 			resource: resource,
-			label: 'typing 2',
-			undo: () => { undoCall3++; },
-			redo: () => { redoCall3++; }
+			lAbel: 'typing 2',
+			undo: () => { undoCAll3++; },
+			redo: () => { redoCAll3++; }
 		};
 		service.pushElement(element3);
 
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 1);
-		assert.equal(undoCall2, 1);
-		assert.equal(redoCall2, 0);
-		assert.equal(undoCall3, 0);
-		assert.equal(redoCall3, 0);
-		assert.equal(service.canUndo(resource), true);
-		assert.equal(service.canRedo(resource), false);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === element3);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 1);
+		Assert.equAl(undoCAll2, 1);
+		Assert.equAl(redoCAll2, 0);
+		Assert.equAl(undoCAll3, 0);
+		Assert.equAl(redoCAll3, 0);
+		Assert.equAl(service.cAnUndo(resource), true);
+		Assert.equAl(service.cAnRedo(resource), fAlse);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === element3);
 
 		service.undo(resource);
 
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 1);
-		assert.equal(undoCall2, 1);
-		assert.equal(redoCall2, 0);
-		assert.equal(undoCall3, 1);
-		assert.equal(redoCall3, 0);
-		assert.equal(service.canUndo(resource), true);
-		assert.equal(service.canRedo(resource), true);
-		assert.equal(service.hasElements(resource), true);
-		assert.ok(service.getLastElement(resource) === null);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 1);
+		Assert.equAl(undoCAll2, 1);
+		Assert.equAl(redoCAll2, 0);
+		Assert.equAl(undoCAll3, 1);
+		Assert.equAl(redoCAll3, 0);
+		Assert.equAl(service.cAnUndo(resource), true);
+		Assert.equAl(service.cAnRedo(resource), true);
+		Assert.equAl(service.hAsElements(resource), true);
+		Assert.ok(service.getLAstElement(resource) === null);
 	});
 
-	test('multi resource elements', async () => {
+	test('multi resource elements', Async () => {
 		const resource1 = URI.file('test1.txt');
 		const resource2 = URI.file('test2.txt');
-		const service = createUndoRedoService(new class extends mock<IDialogService>() {
-			async show() {
+		const service = creAteUndoRedoService(new clAss extends mock<IDiAlogService>() {
+			Async show() {
 				return {
 					choice: 0 // confirm!
 				};
 			}
 		});
 
-		let undoCall1 = 0, undoCall11 = 0, undoCall12 = 0;
-		let redoCall1 = 0, redoCall11 = 0, redoCall12 = 0;
+		let undoCAll1 = 0, undoCAll11 = 0, undoCAll12 = 0;
+		let redoCAll1 = 0, redoCAll11 = 0, redoCAll12 = 0;
 		const element1: IUndoRedoElement = {
-			type: UndoRedoElementType.Workspace,
+			type: UndoRedoElementType.WorkspAce,
 			resources: [resource1, resource2],
-			label: 'typing 1',
-			undo: () => { undoCall1++; },
-			redo: () => { redoCall1++; },
+			lAbel: 'typing 1',
+			undo: () => { undoCAll1++; },
+			redo: () => { redoCAll1++; },
 			split: () => {
 				return [
 					{
 						type: UndoRedoElementType.Resource,
 						resource: resource1,
-						label: 'typing 1.1',
-						undo: () => { undoCall11++; },
-						redo: () => { redoCall11++; }
+						lAbel: 'typing 1.1',
+						undo: () => { undoCAll11++; },
+						redo: () => { redoCAll11++; }
 					},
 					{
 						type: UndoRedoElementType.Resource,
 						resource: resource2,
-						label: 'typing 1.2',
-						undo: () => { undoCall12++; },
-						redo: () => { redoCall12++; }
+						lAbel: 'typing 1.2',
+						undo: () => { undoCAll12++; },
+						redo: () => { redoCAll12++; }
 					}
 				];
 			}
 		};
 		service.pushElement(element1);
 
-		assert.equal(service.canUndo(resource1), true);
-		assert.equal(service.canRedo(resource1), false);
-		assert.equal(service.hasElements(resource1), true);
-		assert.ok(service.getLastElement(resource1) === element1);
-		assert.equal(service.canUndo(resource2), true);
-		assert.equal(service.canRedo(resource2), false);
-		assert.equal(service.hasElements(resource2), true);
-		assert.ok(service.getLastElement(resource2) === element1);
+		Assert.equAl(service.cAnUndo(resource1), true);
+		Assert.equAl(service.cAnRedo(resource1), fAlse);
+		Assert.equAl(service.hAsElements(resource1), true);
+		Assert.ok(service.getLAstElement(resource1) === element1);
+		Assert.equAl(service.cAnUndo(resource2), true);
+		Assert.equAl(service.cAnRedo(resource2), fAlse);
+		Assert.equAl(service.hAsElements(resource2), true);
+		Assert.ok(service.getLAstElement(resource2) === element1);
 
-		await service.undo(resource1);
+		AwAit service.undo(resource1);
 
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 0);
-		assert.equal(service.canUndo(resource1), false);
-		assert.equal(service.canRedo(resource1), true);
-		assert.equal(service.hasElements(resource1), true);
-		assert.ok(service.getLastElement(resource1) === null);
-		assert.equal(service.canUndo(resource2), false);
-		assert.equal(service.canRedo(resource2), true);
-		assert.equal(service.hasElements(resource2), true);
-		assert.ok(service.getLastElement(resource2) === null);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 0);
+		Assert.equAl(service.cAnUndo(resource1), fAlse);
+		Assert.equAl(service.cAnRedo(resource1), true);
+		Assert.equAl(service.hAsElements(resource1), true);
+		Assert.ok(service.getLAstElement(resource1) === null);
+		Assert.equAl(service.cAnUndo(resource2), fAlse);
+		Assert.equAl(service.cAnRedo(resource2), true);
+		Assert.equAl(service.hAsElements(resource2), true);
+		Assert.ok(service.getLAstElement(resource2) === null);
 
-		await service.redo(resource2);
-		assert.equal(undoCall1, 1);
-		assert.equal(redoCall1, 1);
-		assert.equal(undoCall11, 0);
-		assert.equal(redoCall11, 0);
-		assert.equal(undoCall12, 0);
-		assert.equal(redoCall12, 0);
-		assert.equal(service.canUndo(resource1), true);
-		assert.equal(service.canRedo(resource1), false);
-		assert.equal(service.hasElements(resource1), true);
-		assert.ok(service.getLastElement(resource1) === element1);
-		assert.equal(service.canUndo(resource2), true);
-		assert.equal(service.canRedo(resource2), false);
-		assert.equal(service.hasElements(resource2), true);
-		assert.ok(service.getLastElement(resource2) === element1);
+		AwAit service.redo(resource2);
+		Assert.equAl(undoCAll1, 1);
+		Assert.equAl(redoCAll1, 1);
+		Assert.equAl(undoCAll11, 0);
+		Assert.equAl(redoCAll11, 0);
+		Assert.equAl(undoCAll12, 0);
+		Assert.equAl(redoCAll12, 0);
+		Assert.equAl(service.cAnUndo(resource1), true);
+		Assert.equAl(service.cAnRedo(resource1), fAlse);
+		Assert.equAl(service.hAsElements(resource1), true);
+		Assert.ok(service.getLAstElement(resource1) === element1);
+		Assert.equAl(service.cAnUndo(resource2), true);
+		Assert.equAl(service.cAnRedo(resource2), fAlse);
+		Assert.equAl(service.hAsElements(resource2), true);
+		Assert.ok(service.getLAstElement(resource2) === element1);
 
 	});
 
 	test('UndoRedoGroup.None uses id 0', () => {
-		assert.equal(UndoRedoGroup.None.id, 0);
-		assert.equal(UndoRedoGroup.None.nextOrder(), 0);
-		assert.equal(UndoRedoGroup.None.nextOrder(), 0);
+		Assert.equAl(UndoRedoGroup.None.id, 0);
+		Assert.equAl(UndoRedoGroup.None.nextOrder(), 0);
+		Assert.equAl(UndoRedoGroup.None.nextOrder(), 0);
 	});
 
 });

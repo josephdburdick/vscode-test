@@ -1,464 +1,464 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Registry } from 'vs/platform/registry/common/platform';
-import * as nls from 'vs/nls';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { isMacintosh, isWindows, isLinux, isWeb, isNative } from 'vs/base/common/platform';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
-import { isStandalone } from 'vs/base/browser/browser';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import * As nls from 'vs/nls';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions, ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { isMAcintosh, isWindows, isLinux, isWeb, isNAtive } from 'vs/bAse/common/plAtform';
+import { workbenchConfigurAtionNodeBAse } from 'vs/workbench/common/configurAtion';
+import { isStAndAlone } from 'vs/bAse/browser/browser';
 
-// Configuration
-(function registerConfiguration(): void {
-	const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
+// ConfigurAtion
+(function registerConfigurAtion(): void {
+	const registry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
 
 	// Workbench
-	registry.registerConfiguration({
-		...workbenchConfigurationNodeBase,
+	registry.registerConfigurAtion({
+		...workbenchConfigurAtionNodeBAse,
 		'properties': {
-			'workbench.editor.titleScrollbarSizing': {
+			'workbench.editor.titleScrollbArSizing': {
 				type: 'string',
-				enum: ['default', 'large'],
+				enum: ['defAult', 'lArge'],
 				enumDescriptions: [
-					nls.localize('workbench.editor.titleScrollbarSizing.default', "The default size."),
-					nls.localize('workbench.editor.titleScrollbarSizing.large', "Increases the size, so it can be grabbed more easily with the mouse")
+					nls.locAlize('workbench.editor.titleScrollbArSizing.defAult', "The defAult size."),
+					nls.locAlize('workbench.editor.titleScrollbArSizing.lArge', "IncreAses the size, so it cAn be grAbbed more eAsily with the mouse")
 				],
-				description: nls.localize('tabScrollbarHeight', "Controls the height of the scrollbars used for tabs and breadcrumbs in the editor title area."),
-				default: 'default',
+				description: nls.locAlize('tAbScrollbArHeight', "Controls the height of the scrollbArs used for tAbs And breAdcrumbs in the editor title AreA."),
+				defAult: 'defAult',
 			},
-			'workbench.editor.showTabs': {
-				'type': 'boolean',
-				'description': nls.localize('showEditorTabs', "Controls whether opened editors should show in tabs or not."),
-				'default': true
+			'workbench.editor.showTAbs': {
+				'type': 'booleAn',
+				'description': nls.locAlize('showEditorTAbs', "Controls whether opened editors should show in tAbs or not."),
+				'defAult': true
 			},
-			'workbench.editor.scrollToSwitchTabs': {
-				'type': 'boolean',
-				'markdownDescription': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'scrollToSwitchTabs' }, "Controls whether scrolling over tabs will open them or not. By default tabs will only reveal upon scrolling, but not open. You can press and hold the Shift-key while scrolling to change this behaviour for that duration. This value is ignored when `#workbench.editor.showTabs#` is `false`."),
-				'default': false
+			'workbench.editor.scrollToSwitchTAbs': {
+				'type': 'booleAn',
+				'mArkdownDescription': nls.locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'scrollToSwitchTAbs' }, "Controls whether scrolling over tAbs will open them or not. By defAult tAbs will only reveAl upon scrolling, but not open. You cAn press And hold the Shift-key while scrolling to chAnge this behAviour for thAt durAtion. This vAlue is ignored when `#workbench.editor.showTAbs#` is `fAlse`."),
+				'defAult': fAlse
 			},
-			'workbench.editor.highlightModifiedTabs': {
-				'type': 'boolean',
-				'markdownDescription': nls.localize('highlightModifiedTabs', "Controls whether a top border is drawn on modified (dirty) editor tabs or not. This value is ignored when `#workbench.editor.showTabs#` is `false`."),
-				'default': false
+			'workbench.editor.highlightModifiedTAbs': {
+				'type': 'booleAn',
+				'mArkdownDescription': nls.locAlize('highlightModifiedTAbs', "Controls whether A top border is drAwn on modified (dirty) editor tAbs or not. This vAlue is ignored when `#workbench.editor.showTAbs#` is `fAlse`."),
+				'defAult': fAlse
 			},
-			'workbench.editor.labelFormat': {
+			'workbench.editor.lAbelFormAt': {
 				'type': 'string',
-				'enum': ['default', 'short', 'medium', 'long'],
+				'enum': ['defAult', 'short', 'medium', 'long'],
 				'enumDescriptions': [
-					nls.localize('workbench.editor.labelFormat.default', "Show the name of the file. When tabs are enabled and two files have the same name in one group the distinguishing sections of each file's path are added. When tabs are disabled, the path relative to the workspace folder is shown if the editor is active."),
-					nls.localize('workbench.editor.labelFormat.short', "Show the name of the file followed by its directory name."),
-					nls.localize('workbench.editor.labelFormat.medium', "Show the name of the file followed by its path relative to the workspace folder."),
-					nls.localize('workbench.editor.labelFormat.long', "Show the name of the file followed by its absolute path.")
+					nls.locAlize('workbench.editor.lAbelFormAt.defAult', "Show the nAme of the file. When tAbs Are enAbled And two files hAve the sAme nAme in one group the distinguishing sections of eAch file's pAth Are Added. When tAbs Are disAbled, the pAth relAtive to the workspAce folder is shown if the editor is Active."),
+					nls.locAlize('workbench.editor.lAbelFormAt.short', "Show the nAme of the file followed by its directory nAme."),
+					nls.locAlize('workbench.editor.lAbelFormAt.medium', "Show the nAme of the file followed by its pAth relAtive to the workspAce folder."),
+					nls.locAlize('workbench.editor.lAbelFormAt.long', "Show the nAme of the file followed by its Absolute pAth.")
 				],
-				'default': 'default',
-				'description': nls.localize({
-					comment: ['This is the description for a setting. Values surrounded by parenthesis are not to be translated.'],
-					key: 'tabDescription'
-				}, "Controls the format of the label for an editor."),
+				'defAult': 'defAult',
+				'description': nls.locAlize({
+					comment: ['This is the description for A setting. VAlues surrounded by pArenthesis Are not to be trAnslAted.'],
+					key: 'tAbDescription'
+				}, "Controls the formAt of the lAbel for An editor."),
 			},
-			'workbench.editor.untitled.labelFormat': {
+			'workbench.editor.untitled.lAbelFormAt': {
 				'type': 'string',
-				'enum': ['content', 'name'],
+				'enum': ['content', 'nAme'],
 				'enumDescriptions': [
-					nls.localize('workbench.editor.untitled.labelFormat.content', "The name of the untitled file is derived from the contents of its first line unless it has an associated file path. It will fallback to the name in case the line is empty or contains no word characters."),
-					nls.localize('workbench.editor.untitled.labelFormat.name', "The name of the untitled file is not derived from the contents of the file."),
+					nls.locAlize('workbench.editor.untitled.lAbelFormAt.content', "The nAme of the untitled file is derived from the contents of its first line unless it hAs An AssociAted file pAth. It will fAllbAck to the nAme in cAse the line is empty or contAins no word chArActers."),
+					nls.locAlize('workbench.editor.untitled.lAbelFormAt.nAme', "The nAme of the untitled file is not derived from the contents of the file."),
 				],
-				'default': 'content',
-				'description': nls.localize({
-					comment: ['This is the description for a setting. Values surrounded by parenthesis are not to be translated.'],
-					key: 'untitledLabelFormat'
-				}, "Controls the format of the label for an untitled editor."),
+				'defAult': 'content',
+				'description': nls.locAlize({
+					comment: ['This is the description for A setting. VAlues surrounded by pArenthesis Are not to be trAnslAted.'],
+					key: 'untitledLAbelFormAt'
+				}, "Controls the formAt of the lAbel for An untitled editor."),
 			},
-			'workbench.editor.tabCloseButton': {
+			'workbench.editor.tAbCloseButton': {
 				'type': 'string',
 				'enum': ['left', 'right', 'off'],
-				'default': 'right',
-				'markdownDescription': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'editorTabCloseButton' }, "Controls the position of the editor's tabs close buttons, or disables them when set to 'off'. This value is ignored when `#workbench.editor.showTabs#` is `false`.")
+				'defAult': 'right',
+				'mArkdownDescription': nls.locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'editorTAbCloseButton' }, "Controls the position of the editor's tAbs close buttons, or disAbles them when set to 'off'. This vAlue is ignored when `#workbench.editor.showTAbs#` is `fAlse`.")
 			},
-			'workbench.editor.tabSizing': {
+			'workbench.editor.tAbSizing': {
 				'type': 'string',
 				'enum': ['fit', 'shrink'],
-				'default': 'fit',
+				'defAult': 'fit',
 				'enumDescriptions': [
-					nls.localize('workbench.editor.tabSizing.fit', "Always keep tabs large enough to show the full editor label."),
-					nls.localize('workbench.editor.tabSizing.shrink', "Allow tabs to get smaller when the available space is not enough to show all tabs at once.")
+					nls.locAlize('workbench.editor.tAbSizing.fit', "AlwAys keep tAbs lArge enough to show the full editor lAbel."),
+					nls.locAlize('workbench.editor.tAbSizing.shrink', "Allow tAbs to get smAller when the AvAilAble spAce is not enough to show All tAbs At once.")
 				],
-				'markdownDescription': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'tabSizing' }, "Controls the sizing of editor tabs. This value is ignored when `#workbench.editor.showTabs#` is `false`.")
+				'mArkdownDescription': nls.locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'tAbSizing' }, "Controls the sizing of editor tAbs. This vAlue is ignored when `#workbench.editor.showTAbs#` is `fAlse`.")
 			},
-			'workbench.editor.pinnedTabSizing': {
+			'workbench.editor.pinnedTAbSizing': {
 				'type': 'string',
-				'enum': ['normal', 'compact', 'shrink'],
-				'default': 'normal',
+				'enum': ['normAl', 'compAct', 'shrink'],
+				'defAult': 'normAl',
 				'enumDescriptions': [
-					nls.localize('workbench.editor.pinnedTabSizing.normal', "A pinned tab inherits the look of non pinned tabs."),
-					nls.localize('workbench.editor.pinnedTabSizing.compact', "A pinned tab will show in a compact form with only icon or first letter of the editor name."),
-					nls.localize('workbench.editor.pinnedTabSizing.shrink', "A pinned tab shrinks to a compact fixed size showing parts of the editor name.")
+					nls.locAlize('workbench.editor.pinnedTAbSizing.normAl', "A pinned tAb inherits the look of non pinned tAbs."),
+					nls.locAlize('workbench.editor.pinnedTAbSizing.compAct', "A pinned tAb will show in A compAct form with only icon or first letter of the editor nAme."),
+					nls.locAlize('workbench.editor.pinnedTAbSizing.shrink', "A pinned tAb shrinks to A compAct fixed size showing pArts of the editor nAme.")
 				],
-				'markdownDescription': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'pinnedTabSizing' }, "Controls the sizing of pinned editor tabs. Pinned tabs are sorted to the begining of all opened tabs and typically do not close until unpinned. This value is ignored when `#workbench.editor.showTabs#` is `false`.")
+				'mArkdownDescription': nls.locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'pinnedTAbSizing' }, "Controls the sizing of pinned editor tAbs. Pinned tAbs Are sorted to the begining of All opened tAbs And typicAlly do not close until unpinned. This vAlue is ignored when `#workbench.editor.showTAbs#` is `fAlse`.")
 			},
 			'workbench.editor.splitSizing': {
 				'type': 'string',
 				'enum': ['distribute', 'split'],
-				'default': 'distribute',
+				'defAult': 'distribute',
 				'enumDescriptions': [
-					nls.localize('workbench.editor.splitSizingDistribute', "Splits all the editor groups to equal parts."),
-					nls.localize('workbench.editor.splitSizingSplit', "Splits the active editor group to equal parts.")
+					nls.locAlize('workbench.editor.splitSizingDistribute', "Splits All the editor groups to equAl pArts."),
+					nls.locAlize('workbench.editor.splitSizingSplit', "Splits the Active editor group to equAl pArts.")
 				],
-				'description': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'splitSizing' }, "Controls the sizing of editor groups when splitting them.")
+				'description': nls.locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'splitSizing' }, "Controls the sizing of editor groups when splitting them.")
 			},
 			'workbench.editor.focusRecentEditorAfterClose': {
-				'type': 'boolean',
-				'description': nls.localize('focusRecentEditorAfterClose', "Controls whether tabs are closed in most recently used order or from left to right."),
-				'default': true
+				'type': 'booleAn',
+				'description': nls.locAlize('focusRecentEditorAfterClose', "Controls whether tAbs Are closed in most recently used order or from left to right."),
+				'defAult': true
 			},
 			'workbench.editor.showIcons': {
-				'type': 'boolean',
-				'description': nls.localize('showIcons', "Controls whether opened editors should show with an icon or not. This requires a file icon theme to be enabled as well."),
-				'default': true
+				'type': 'booleAn',
+				'description': nls.locAlize('showIcons', "Controls whether opened editors should show with An icon or not. This requires A file icon theme to be enAbled As well."),
+				'defAult': true
 			},
-			'workbench.editor.enablePreview': {
-				'type': 'boolean',
-				'description': nls.localize('enablePreview', "Controls whether opened editors show as preview. Preview editors are reused until they are explicitly set to be kept open (e.g. via double click or editing) and show up with an italic font style."),
-				'default': true
+			'workbench.editor.enAblePreview': {
+				'type': 'booleAn',
+				'description': nls.locAlize('enAblePreview', "Controls whether opened editors show As preview. Preview editors Are reused until they Are explicitly set to be kept open (e.g. viA double click or editing) And show up with An itAlic font style."),
+				'defAult': true
 			},
-			'workbench.editor.enablePreviewFromQuickOpen': {
-				'type': 'boolean',
-				'description': nls.localize('enablePreviewFromQuickOpen', "Controls whether editors opened from Quick Open show as preview. Preview editors are reused until they are explicitly set to be kept open (e.g. via double click or editing)."),
-				'default': true
+			'workbench.editor.enAblePreviewFromQuickOpen': {
+				'type': 'booleAn',
+				'description': nls.locAlize('enAblePreviewFromQuickOpen', "Controls whether editors opened from Quick Open show As preview. Preview editors Are reused until they Are explicitly set to be kept open (e.g. viA double click or editing)."),
+				'defAult': true
 			},
 			'workbench.editor.closeOnFileDelete': {
-				'type': 'boolean',
-				'description': nls.localize('closeOnFileDelete', "Controls whether editors showing a file that was opened during the session should close automatically when getting deleted or renamed by some other process. Disabling this will keep the editor open  on such an event. Note that deleting from within the application will always close the editor and that dirty files will never close to preserve your data."),
-				'default': false
+				'type': 'booleAn',
+				'description': nls.locAlize('closeOnFileDelete', "Controls whether editors showing A file thAt wAs opened during the session should close AutomAticAlly when getting deleted or renAmed by some other process. DisAbling this will keep the editor open  on such An event. Note thAt deleting from within the ApplicAtion will AlwAys close the editor And thAt dirty files will never close to preserve your dAtA."),
+				'defAult': fAlse
 			},
 			'workbench.editor.openPositioning': {
 				'type': 'string',
-				'enum': ['left', 'right', 'first', 'last'],
-				'default': 'right',
-				'markdownDescription': nls.localize({ comment: ['This is the description for a setting. Values surrounded by single quotes are not to be translated.'], key: 'editorOpenPositioning' }, "Controls where editors open. Select `left` or `right` to open editors to the left or right of the currently active one. Select `first` or `last` to open editors independently from the currently active one.")
+				'enum': ['left', 'right', 'first', 'lAst'],
+				'defAult': 'right',
+				'mArkdownDescription': nls.locAlize({ comment: ['This is the description for A setting. VAlues surrounded by single quotes Are not to be trAnslAted.'], key: 'editorOpenPositioning' }, "Controls where editors open. Select `left` or `right` to open editors to the left or right of the currently Active one. Select `first` or `lAst` to open editors independently from the currently Active one.")
 			},
 			'workbench.editor.openSideBySideDirection': {
 				'type': 'string',
 				'enum': ['right', 'down'],
-				'default': 'right',
-				'markdownDescription': nls.localize('sideBySideDirection', "Controls the default direction of editors that are opened side by side (e.g. from the explorer). By default, editors will open on the right hand side of the currently active one. If changed to `down`, the editors will open below the currently active one.")
+				'defAult': 'right',
+				'mArkdownDescription': nls.locAlize('sideBySideDirection', "Controls the defAult direction of editors thAt Are opened side by side (e.g. from the explorer). By defAult, editors will open on the right hAnd side of the currently Active one. If chAnged to `down`, the editors will open below the currently Active one.")
 			},
 			'workbench.editor.closeEmptyGroups': {
-				'type': 'boolean',
-				'description': nls.localize('closeEmptyGroups', "Controls the behavior of empty editor groups when the last tab in the group is closed. When enabled, empty groups will automatically close. When disabled, empty groups will remain part of the grid."),
-				'default': true
+				'type': 'booleAn',
+				'description': nls.locAlize('closeEmptyGroups', "Controls the behAvior of empty editor groups when the lAst tAb in the group is closed. When enAbled, empty groups will AutomAticAlly close. When disAbled, empty groups will remAin pArt of the grid."),
+				'defAult': true
 			},
-			'workbench.editor.revealIfOpen': {
-				'type': 'boolean',
-				'description': nls.localize('revealIfOpen', "Controls whether an editor is revealed in any of the visible groups if opened. If disabled, an editor will prefer to open in the currently active editor group. If enabled, an already opened editor will be revealed instead of opened again in the currently active editor group. Note that there are some cases where this setting is ignored, e.g. when forcing an editor to open in a specific group or to the side of the currently active group."),
-				'default': false
+			'workbench.editor.reveAlIfOpen': {
+				'type': 'booleAn',
+				'description': nls.locAlize('reveAlIfOpen', "Controls whether An editor is reveAled in Any of the visible groups if opened. If disAbled, An editor will prefer to open in the currently Active editor group. If enAbled, An AlreAdy opened editor will be reveAled insteAd of opened AgAin in the currently Active editor group. Note thAt there Are some cAses where this setting is ignored, e.g. when forcing An editor to open in A specific group or to the side of the currently Active group."),
+				'defAult': fAlse
 			},
-			'workbench.editor.mouseBackForwardToNavigate': {
-				'type': 'boolean',
-				'description': nls.localize('mouseBackForwardToNavigate', "Navigate between open files using mouse buttons four and five if provided."),
-				'default': true
+			'workbench.editor.mouseBAckForwArdToNAvigAte': {
+				'type': 'booleAn',
+				'description': nls.locAlize('mouseBAckForwArdToNAvigAte', "NAvigAte between open files using mouse buttons four And five if provided."),
+				'defAult': true
 			},
-			'workbench.editor.restoreViewState': {
-				'type': 'boolean',
-				'description': nls.localize('restoreViewState', "Restores the last view state (e.g. scroll position) when re-opening textual editors after they have been closed."),
-				'default': true,
-				'scope': ConfigurationScope.LANGUAGE_OVERRIDABLE
+			'workbench.editor.restoreViewStAte': {
+				'type': 'booleAn',
+				'description': nls.locAlize('restoreViewStAte', "Restores the lAst view stAte (e.g. scroll position) when re-opening textuAl editors After they hAve been closed."),
+				'defAult': true,
+				'scope': ConfigurAtionScope.LANGUAGE_OVERRIDABLE
 			},
-			'workbench.editor.centeredLayoutAutoResize': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('centeredLayoutAutoResize', "Controls if the centered layout should automatically resize to maximum width when more than one group is open. Once only one group is open it will resize back to the original centered width.")
+			'workbench.editor.centeredLAyoutAutoResize': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('centeredLAyoutAutoResize', "Controls if the centered lAyout should AutomAticAlly resize to mAximum width when more thAn one group is open. Once only one group is open it will resize bAck to the originAl centered width.")
 			},
-			'workbench.editor.limit.enabled': {
-				'type': 'boolean',
-				'default': false,
-				'description': nls.localize('limitEditorsEnablement', "Controls if the number of opened editors should be limited or not. When enabled, less recently used editors that are not dirty will close to make space for newly opening editors.")
+			'workbench.editor.limit.enAbled': {
+				'type': 'booleAn',
+				'defAult': fAlse,
+				'description': nls.locAlize('limitEditorsEnAblement', "Controls if the number of opened editors should be limited or not. When enAbled, less recently used editors thAt Are not dirty will close to mAke spAce for newly opening editors.")
 			},
-			'workbench.editor.limit.value': {
+			'workbench.editor.limit.vAlue': {
 				'type': 'number',
-				'default': 10,
+				'defAult': 10,
 				'exclusiveMinimum': 0,
-				'markdownDescription': nls.localize('limitEditorsMaximum', "Controls the maximum number of opened editors. Use the `#workbench.editor.limit.perEditorGroup#` setting to control this limit per editor group or across all groups.")
+				'mArkdownDescription': nls.locAlize('limitEditorsMAximum', "Controls the mAximum number of opened editors. Use the `#workbench.editor.limit.perEditorGroup#` setting to control this limit per editor group or Across All groups.")
 			},
 			'workbench.editor.limit.perEditorGroup': {
-				'type': 'boolean',
-				'default': false,
-				'description': nls.localize('perEditorGroup', "Controls if the limit of maximum opened editors should apply per editor group or across all editor groups.")
+				'type': 'booleAn',
+				'defAult': fAlse,
+				'description': nls.locAlize('perEditorGroup', "Controls if the limit of mAximum opened editors should Apply per editor group or Across All editor groups.")
 			},
-			'workbench.commandPalette.history': {
+			'workbench.commAndPAlette.history': {
 				'type': 'number',
-				'description': nls.localize('commandHistory', "Controls the number of recently used commands to keep in history for the command palette. Set to 0 to disable command history."),
-				'default': 50
+				'description': nls.locAlize('commAndHistory', "Controls the number of recently used commAnds to keep in history for the commAnd pAlette. Set to 0 to disAble commAnd history."),
+				'defAult': 50
 			},
-			'workbench.commandPalette.preserveInput': {
-				'type': 'boolean',
-				'description': nls.localize('preserveInput', "Controls whether the last typed input to the command palette should be restored when opening it the next time."),
-				'default': false
+			'workbench.commAndPAlette.preserveInput': {
+				'type': 'booleAn',
+				'description': nls.locAlize('preserveInput', "Controls whether the lAst typed input to the commAnd pAlette should be restored when opening it the next time."),
+				'defAult': fAlse
 			},
 			'workbench.quickOpen.closeOnFocusLost': {
-				'type': 'boolean',
-				'description': nls.localize('closeOnFocusLost', "Controls whether Quick Open should close automatically once it loses focus."),
-				'default': true
+				'type': 'booleAn',
+				'description': nls.locAlize('closeOnFocusLost', "Controls whether Quick Open should close AutomAticAlly once it loses focus."),
+				'defAult': true
 			},
 			'workbench.quickOpen.preserveInput': {
-				'type': 'boolean',
-				'description': nls.localize('workbench.quickOpen.preserveInput', "Controls whether the last typed input to Quick Open should be restored when opening it the next time."),
-				'default': false
+				'type': 'booleAn',
+				'description': nls.locAlize('workbench.quickOpen.preserveInput', "Controls whether the lAst typed input to Quick Open should be restored when opening it the next time."),
+				'defAult': fAlse
 			},
-			'workbench.settings.openDefaultSettings': {
-				'type': 'boolean',
-				'description': nls.localize('openDefaultSettings', "Controls whether opening settings also opens an editor showing all default settings."),
-				'default': false
+			'workbench.settings.openDefAultSettings': {
+				'type': 'booleAn',
+				'description': nls.locAlize('openDefAultSettings', "Controls whether opening settings Also opens An editor showing All defAult settings."),
+				'defAult': fAlse
 			},
 			'workbench.settings.useSplitJSON': {
-				'type': 'boolean',
-				'markdownDescription': nls.localize('useSplitJSON', "Controls whether to use the split JSON editor when editing settings as JSON."),
-				'default': false
+				'type': 'booleAn',
+				'mArkdownDescription': nls.locAlize('useSplitJSON', "Controls whether to use the split JSON editor when editing settings As JSON."),
+				'defAult': fAlse
 			},
-			'workbench.settings.openDefaultKeybindings': {
-				'type': 'boolean',
-				'description': nls.localize('openDefaultKeybindings', "Controls whether opening keybinding settings also opens an editor showing all default keybindings."),
-				'default': false
+			'workbench.settings.openDefAultKeybindings': {
+				'type': 'booleAn',
+				'description': nls.locAlize('openDefAultKeybindings', "Controls whether opening keybinding settings Also opens An editor showing All defAult keybindings."),
+				'defAult': fAlse
 			},
-			'workbench.sideBar.location': {
+			'workbench.sideBAr.locAtion': {
 				'type': 'string',
 				'enum': ['left', 'right'],
-				'default': 'left',
-				'description': nls.localize('sideBarLocation', "Controls the location of the sidebar and activity bar. They can either show on the left or right of the workbench.")
+				'defAult': 'left',
+				'description': nls.locAlize('sideBArLocAtion', "Controls the locAtion of the sidebAr And Activity bAr. They cAn either show on the left or right of the workbench.")
 			},
-			'workbench.panel.defaultLocation': {
+			'workbench.pAnel.defAultLocAtion': {
 				'type': 'string',
 				'enum': ['left', 'bottom', 'right'],
-				'default': 'bottom',
-				'description': nls.localize('panelDefaultLocation', "Controls the default location of the panel (terminal, debug console, output, problems). It can either show at the bottom, right, or left of the workbench.")
+				'defAult': 'bottom',
+				'description': nls.locAlize('pAnelDefAultLocAtion', "Controls the defAult locAtion of the pAnel (terminAl, debug console, output, problems). It cAn either show At the bottom, right, or left of the workbench.")
 			},
-			'workbench.panel.opensMaximized': {
+			'workbench.pAnel.opensMAximized': {
 				'type': 'string',
-				'enum': ['always', 'never', 'preserve'],
-				'default': 'preserve',
-				'description': nls.localize('panelOpensMaximized', "Controls whether the panel opens maximized. It can either always open maximized, never open maximized, or open to the last state it was in before being closed."),
+				'enum': ['AlwAys', 'never', 'preserve'],
+				'defAult': 'preserve',
+				'description': nls.locAlize('pAnelOpensMAximized', "Controls whether the pAnel opens mAximized. It cAn either AlwAys open mAximized, never open mAximized, or open to the lAst stAte it wAs in before being closed."),
 				'enumDescriptions': [
-					nls.localize('workbench.panel.opensMaximized.always', "Always maximize the panel when opening it."),
-					nls.localize('workbench.panel.opensMaximized.never', "Never maximize the panel when opening it. The panel will open un-maximized."),
-					nls.localize('workbench.panel.opensMaximized.preserve', "Open the panel to the state that it was in, before it was closed.")
+					nls.locAlize('workbench.pAnel.opensMAximized.AlwAys', "AlwAys mAximize the pAnel when opening it."),
+					nls.locAlize('workbench.pAnel.opensMAximized.never', "Never mAximize the pAnel when opening it. The pAnel will open un-mAximized."),
+					nls.locAlize('workbench.pAnel.opensMAximized.preserve', "Open the pAnel to the stAte thAt it wAs in, before it wAs closed.")
 				]
 			},
-			'workbench.statusBar.visible': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('statusBarVisibility', "Controls the visibility of the status bar at the bottom of the workbench.")
+			'workbench.stAtusBAr.visible': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('stAtusBArVisibility', "Controls the visibility of the stAtus bAr At the bottom of the workbench.")
 			},
-			'workbench.activityBar.visible': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('activityBarVisibility', "Controls the visibility of the activity bar in the workbench.")
+			'workbench.ActivityBAr.visible': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('ActivityBArVisibility', "Controls the visibility of the Activity bAr in the workbench.")
 			},
-			'workbench.activityBar.iconClickBehavior': {
+			'workbench.ActivityBAr.iconClickBehAvior': {
 				'type': 'string',
 				'enum': ['toggle', 'focus'],
-				'default': 'toggle',
-				'description': nls.localize('activityBarIconClickBehavior', "Controls the behavior of clicking an activity bar icon in the workbench."),
+				'defAult': 'toggle',
+				'description': nls.locAlize('ActivityBArIconClickBehAvior', "Controls the behAvior of clicking An Activity bAr icon in the workbench."),
 				'enumDescriptions': [
-					nls.localize('workbench.activityBar.iconClickBehavior.toggle', "Hide the side bar if the clicked item is already visible."),
-					nls.localize('workbench.activityBar.iconClickBehavior.focus', "Focus side bar if the clicked item is already visible.")
+					nls.locAlize('workbench.ActivityBAr.iconClickBehAvior.toggle', "Hide the side bAr if the clicked item is AlreAdy visible."),
+					nls.locAlize('workbench.ActivityBAr.iconClickBehAvior.focus', "Focus side bAr if the clicked item is AlreAdy visible.")
 				]
 			},
-			'workbench.view.alwaysShowHeaderActions': {
-				'type': 'boolean',
-				'default': false,
-				'description': nls.localize('viewVisibility', "Controls the visibility of view header actions. View header actions may either be always visible, or only visible when that view is focused or hovered over.")
+			'workbench.view.AlwAysShowHeAderActions': {
+				'type': 'booleAn',
+				'defAult': fAlse,
+				'description': nls.locAlize('viewVisibility', "Controls the visibility of view heAder Actions. View heAder Actions mAy either be AlwAys visible, or only visible when thAt view is focused or hovered over.")
 			},
-			'workbench.fontAliasing': {
+			'workbench.fontAliAsing': {
 				'type': 'string',
-				'enum': ['default', 'antialiased', 'none', 'auto'],
-				'default': 'default',
+				'enum': ['defAult', 'AntiAliAsed', 'none', 'Auto'],
+				'defAult': 'defAult',
 				'description':
-					nls.localize('fontAliasing', "Controls font aliasing method in the workbench."),
+					nls.locAlize('fontAliAsing', "Controls font AliAsing method in the workbench."),
 				'enumDescriptions': [
-					nls.localize('workbench.fontAliasing.default', "Sub-pixel font smoothing. On most non-retina displays this will give the sharpest text."),
-					nls.localize('workbench.fontAliasing.antialiased', "Smooth the font on the level of the pixel, as opposed to the subpixel. Can make the font appear lighter overall."),
-					nls.localize('workbench.fontAliasing.none', "Disables font smoothing. Text will show with jagged sharp edges."),
-					nls.localize('workbench.fontAliasing.auto', "Applies `default` or `antialiased` automatically based on the DPI of displays.")
+					nls.locAlize('workbench.fontAliAsing.defAult', "Sub-pixel font smoothing. On most non-retinA displAys this will give the shArpest text."),
+					nls.locAlize('workbench.fontAliAsing.AntiAliAsed', "Smooth the font on the level of the pixel, As opposed to the subpixel. CAn mAke the font AppeAr lighter overAll."),
+					nls.locAlize('workbench.fontAliAsing.none', "DisAbles font smoothing. Text will show with jAgged shArp edges."),
+					nls.locAlize('workbench.fontAliAsing.Auto', "Applies `defAult` or `AntiAliAsed` AutomAticAlly bAsed on the DPI of displAys.")
 				],
-				'included': isMacintosh
+				'included': isMAcintosh
 			},
 			'workbench.settings.editor': {
 				'type': 'string',
 				'enum': ['ui', 'json'],
 				'enumDescriptions': [
-					nls.localize('settings.editor.ui', "Use the settings UI editor."),
-					nls.localize('settings.editor.json', "Use the JSON file editor."),
+					nls.locAlize('settings.editor.ui', "Use the settings UI editor."),
+					nls.locAlize('settings.editor.json', "Use the JSON file editor."),
 				],
-				'description': nls.localize('settings.editor.desc', "Determines which settings editor to use by default."),
-				'default': 'ui',
-				'scope': ConfigurationScope.WINDOW
+				'description': nls.locAlize('settings.editor.desc', "Determines which settings editor to use by defAult."),
+				'defAult': 'ui',
+				'scope': ConfigurAtionScope.WINDOW
 			}
 		}
 	});
 
 	// Window
 
-	let windowTitleDescription = nls.localize('windowTitle', "Controls the window title based on the active editor. Variables are substituted based on the context:");
+	let windowTitleDescription = nls.locAlize('windowTitle', "Controls the window title bAsed on the Active editor. VAriAbles Are substituted bAsed on the context:");
 	windowTitleDescription += '\n- ' + [
-		nls.localize('activeEditorShort', "`\${activeEditorShort}`: the file name (e.g. myFile.txt)."),
-		nls.localize('activeEditorMedium', "`\${activeEditorMedium}`: the path of the file relative to the workspace folder (e.g. myFolder/myFileFolder/myFile.txt)."),
-		nls.localize('activeEditorLong', "`\${activeEditorLong}`: the full path of the file (e.g. /Users/Development/myFolder/myFileFolder/myFile.txt)."),
-		nls.localize('activeFolderShort', "`\${activeFolderShort}`: the name of the folder the file is contained in (e.g. myFileFolder)."),
-		nls.localize('activeFolderMedium', "`\${activeFolderMedium}`: the path of the folder the file is contained in, relative to the workspace folder (e.g. myFolder/myFileFolder)."),
-		nls.localize('activeFolderLong', "`\${activeFolderLong}`: the full path of the folder the file is contained in (e.g. /Users/Development/myFolder/myFileFolder)."),
-		nls.localize('folderName', "`\${folderName}`: name of the workspace folder the file is contained in (e.g. myFolder)."),
-		nls.localize('folderPath', "`\${folderPath}`: file path of the workspace folder the file is contained in (e.g. /Users/Development/myFolder)."),
-		nls.localize('rootName', "`\${rootName}`: name of the workspace (e.g. myFolder or myWorkspace)."),
-		nls.localize('rootPath', "`\${rootPath}`: file path of the workspace (e.g. /Users/Development/myWorkspace)."),
-		nls.localize('appName', "`\${appName}`: e.g. VS Code."),
-		nls.localize('remoteName', "`\${remoteName}`: e.g. SSH"),
-		nls.localize('dirty', "`\${dirty}`: a dirty indicator if the active editor is dirty."),
-		nls.localize('separator', "`\${separator}`: a conditional separator (\" - \") that only shows when surrounded by variables with values or static text.")
-	].join('\n- '); // intentionally concatenated to not produce a string that is too long for translations
+		nls.locAlize('ActiveEditorShort', "`\${ActiveEditorShort}`: the file nAme (e.g. myFile.txt)."),
+		nls.locAlize('ActiveEditorMedium', "`\${ActiveEditorMedium}`: the pAth of the file relAtive to the workspAce folder (e.g. myFolder/myFileFolder/myFile.txt)."),
+		nls.locAlize('ActiveEditorLong', "`\${ActiveEditorLong}`: the full pAth of the file (e.g. /Users/Development/myFolder/myFileFolder/myFile.txt)."),
+		nls.locAlize('ActiveFolderShort', "`\${ActiveFolderShort}`: the nAme of the folder the file is contAined in (e.g. myFileFolder)."),
+		nls.locAlize('ActiveFolderMedium', "`\${ActiveFolderMedium}`: the pAth of the folder the file is contAined in, relAtive to the workspAce folder (e.g. myFolder/myFileFolder)."),
+		nls.locAlize('ActiveFolderLong', "`\${ActiveFolderLong}`: the full pAth of the folder the file is contAined in (e.g. /Users/Development/myFolder/myFileFolder)."),
+		nls.locAlize('folderNAme', "`\${folderNAme}`: nAme of the workspAce folder the file is contAined in (e.g. myFolder)."),
+		nls.locAlize('folderPAth', "`\${folderPAth}`: file pAth of the workspAce folder the file is contAined in (e.g. /Users/Development/myFolder)."),
+		nls.locAlize('rootNAme', "`\${rootNAme}`: nAme of the workspAce (e.g. myFolder or myWorkspAce)."),
+		nls.locAlize('rootPAth', "`\${rootPAth}`: file pAth of the workspAce (e.g. /Users/Development/myWorkspAce)."),
+		nls.locAlize('AppNAme', "`\${AppNAme}`: e.g. VS Code."),
+		nls.locAlize('remoteNAme', "`\${remoteNAme}`: e.g. SSH"),
+		nls.locAlize('dirty', "`\${dirty}`: A dirty indicAtor if the Active editor is dirty."),
+		nls.locAlize('sepArAtor', "`\${sepArAtor}`: A conditionAl sepArAtor (\" - \") thAt only shows when surrounded by vAriAbles with vAlues or stAtic text.")
+	].join('\n- '); // intentionAlly concAtenAted to not produce A string thAt is too long for trAnslAtions
 
-	registry.registerConfiguration({
+	registry.registerConfigurAtion({
 		'id': 'window',
 		'order': 8,
-		'title': nls.localize('windowConfigurationTitle', "Window"),
+		'title': nls.locAlize('windowConfigurAtionTitle', "Window"),
 		'type': 'object',
 		'properties': {
 			'window.title': {
 				'type': 'string',
-				'default': (() => {
-					if (isMacintosh && isNative) {
-						return '${activeEditorShort}${separator}${rootName}'; // macOS has native dirty indicator
+				'defAult': (() => {
+					if (isMAcintosh && isNAtive) {
+						return '${ActiveEditorShort}${sepArAtor}${rootNAme}'; // mAcOS hAs nAtive dirty indicAtor
 					}
 
-					const base = '${dirty}${activeEditorShort}${separator}${rootName}${separator}${appName}';
+					const bAse = '${dirty}${ActiveEditorShort}${sepArAtor}${rootNAme}${sepArAtor}${AppNAme}';
 					if (isWeb) {
-						return base + '${separator}${remoteName}'; // Web: always show remote name
+						return bAse + '${sepArAtor}${remoteNAme}'; // Web: AlwAys show remote nAme
 					}
 
-					return base;
+					return bAse;
 				})(),
-				'markdownDescription': windowTitleDescription
+				'mArkdownDescription': windowTitleDescription
 			},
-			'window.titleSeparator': {
+			'window.titleSepArAtor': {
 				'type': 'string',
-				'default': isMacintosh ? ' — ' : ' - ',
-				'markdownDescription': nls.localize("window.titleSeparator", "Separator used by `window.title`.")
+				'defAult': isMAcintosh ? ' — ' : ' - ',
+				'mArkdownDescription': nls.locAlize("window.titleSepArAtor", "SepArAtor used by `window.title`.")
 			},
-			'window.menuBarVisibility': {
+			'window.menuBArVisibility': {
 				'type': 'string',
-				'enum': ['default', 'visible', 'toggle', 'hidden', 'compact'],
+				'enum': ['defAult', 'visible', 'toggle', 'hidden', 'compAct'],
 				'enumDescriptions': [
-					nls.localize('window.menuBarVisibility.default', "Menu is only hidden in full screen mode."),
-					nls.localize('window.menuBarVisibility.visible', "Menu is always visible even in full screen mode."),
-					nls.localize('window.menuBarVisibility.toggle', "Menu is hidden but can be displayed via Alt key."),
-					nls.localize('window.menuBarVisibility.hidden', "Menu is always hidden."),
-					nls.localize('window.menuBarVisibility.compact', "Menu is displayed as a compact button in the sidebar. This value is ignored when `#window.titleBarStyle#` is `native`.")
+					nls.locAlize('window.menuBArVisibility.defAult', "Menu is only hidden in full screen mode."),
+					nls.locAlize('window.menuBArVisibility.visible', "Menu is AlwAys visible even in full screen mode."),
+					nls.locAlize('window.menuBArVisibility.toggle', "Menu is hidden but cAn be displAyed viA Alt key."),
+					nls.locAlize('window.menuBArVisibility.hidden', "Menu is AlwAys hidden."),
+					nls.locAlize('window.menuBArVisibility.compAct', "Menu is displAyed As A compAct button in the sidebAr. This vAlue is ignored when `#window.titleBArStyle#` is `nAtive`.")
 				],
-				'default': isWeb ? 'compact' : 'default',
-				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('menuBarVisibility', "Control the visibility of the menu bar. A setting of 'toggle' means that the menu bar is hidden and a single press of the Alt key will show it. By default, the menu bar will be visible, unless the window is full screen."),
+				'defAult': isWeb ? 'compAct' : 'defAult',
+				'scope': ConfigurAtionScope.APPLICATION,
+				'description': nls.locAlize('menuBArVisibility', "Control the visibility of the menu bAr. A setting of 'toggle' meAns thAt the menu bAr is hidden And A single press of the Alt key will show it. By defAult, the menu bAr will be visible, unless the window is full screen."),
 				'included': isWindows || isLinux || isWeb
 			},
-			'window.enableMenuBarMnemonics': {
-				'type': 'boolean',
-				'default': !isMacintosh,
-				'scope': ConfigurationScope.APPLICATION,
-				'description': nls.localize('enableMenuBarMnemonics', "Controls whether the main menus can be opened via Alt-key shortcuts. Disabling mnemonics allows to bind these Alt-key shortcuts to editor commands instead."),
+			'window.enAbleMenuBArMnemonics': {
+				'type': 'booleAn',
+				'defAult': !isMAcintosh,
+				'scope': ConfigurAtionScope.APPLICATION,
+				'description': nls.locAlize('enAbleMenuBArMnemonics', "Controls whether the mAin menus cAn be opened viA Alt-key shortcuts. DisAbling mnemonics Allows to bind these Alt-key shortcuts to editor commAnds insteAd."),
 				'included': isWindows || isLinux || isWeb
 			},
-			'window.customMenuBarAltFocus': {
-				'type': 'boolean',
-				'default': !isMacintosh,
-				'scope': ConfigurationScope.APPLICATION,
-				'markdownDescription': nls.localize('customMenuBarAltFocus', "Controls whether the menu bar will be focused by pressing the Alt-key. This setting has no effect on toggling the menu bar with the Alt-key."),
+			'window.customMenuBArAltFocus': {
+				'type': 'booleAn',
+				'defAult': !isMAcintosh,
+				'scope': ConfigurAtionScope.APPLICATION,
+				'mArkdownDescription': nls.locAlize('customMenuBArAltFocus', "Controls whether the menu bAr will be focused by pressing the Alt-key. This setting hAs no effect on toggling the menu bAr with the Alt-key."),
 				'included': isWindows || isLinux || isWeb
 			},
 			'window.openFilesInNewWindow': {
 				'type': 'string',
-				'enum': ['on', 'off', 'default'],
+				'enum': ['on', 'off', 'defAult'],
 				'enumDescriptions': [
-					nls.localize('window.openFilesInNewWindow.on', "Files will open in a new window."),
-					nls.localize('window.openFilesInNewWindow.off', "Files will open in the window with the files' folder open or the last active window."),
-					isMacintosh ?
-						nls.localize('window.openFilesInNewWindow.defaultMac', "Files will open in the window with the files' folder open or the last active window unless opened via the Dock or from Finder.") :
-						nls.localize('window.openFilesInNewWindow.default', "Files will open in a new window unless picked from within the application (e.g. via the File menu).")
+					nls.locAlize('window.openFilesInNewWindow.on', "Files will open in A new window."),
+					nls.locAlize('window.openFilesInNewWindow.off', "Files will open in the window with the files' folder open or the lAst Active window."),
+					isMAcintosh ?
+						nls.locAlize('window.openFilesInNewWindow.defAultMAc', "Files will open in the window with the files' folder open or the lAst Active window unless opened viA the Dock or from Finder.") :
+						nls.locAlize('window.openFilesInNewWindow.defAult', "Files will open in A new window unless picked from within the ApplicAtion (e.g. viA the File menu).")
 				],
-				'default': 'off',
-				'scope': ConfigurationScope.APPLICATION,
-				'markdownDescription':
-					isMacintosh ?
-						nls.localize('openFilesInNewWindowMac', "Controls whether files should open in a new window. \nNote that there can still be cases where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` command line option).") :
-						nls.localize('openFilesInNewWindow', "Controls whether files should open in a new window.\nNote that there can still be cases where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` command line option).")
+				'defAult': 'off',
+				'scope': ConfigurAtionScope.APPLICATION,
+				'mArkdownDescription':
+					isMAcintosh ?
+						nls.locAlize('openFilesInNewWindowMAc', "Controls whether files should open in A new window. \nNote thAt there cAn still be cAses where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` commAnd line option).") :
+						nls.locAlize('openFilesInNewWindow', "Controls whether files should open in A new window.\nNote thAt there cAn still be cAses where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` commAnd line option).")
 			},
 			'window.openFoldersInNewWindow': {
 				'type': 'string',
-				'enum': ['on', 'off', 'default'],
+				'enum': ['on', 'off', 'defAult'],
 				'enumDescriptions': [
-					nls.localize('window.openFoldersInNewWindow.on', "Folders will open in a new window."),
-					nls.localize('window.openFoldersInNewWindow.off', "Folders will replace the last active window."),
-					nls.localize('window.openFoldersInNewWindow.default', "Folders will open in a new window unless a folder is picked from within the application (e.g. via the File menu).")
+					nls.locAlize('window.openFoldersInNewWindow.on', "Folders will open in A new window."),
+					nls.locAlize('window.openFoldersInNewWindow.off', "Folders will replAce the lAst Active window."),
+					nls.locAlize('window.openFoldersInNewWindow.defAult', "Folders will open in A new window unless A folder is picked from within the ApplicAtion (e.g. viA the File menu).")
 				],
-				'default': 'default',
-				'scope': ConfigurationScope.APPLICATION,
-				'markdownDescription': nls.localize('openFoldersInNewWindow', "Controls whether folders should open in a new window or replace the last active window.\nNote that there can still be cases where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` command line option).")
+				'defAult': 'defAult',
+				'scope': ConfigurAtionScope.APPLICATION,
+				'mArkdownDescription': nls.locAlize('openFoldersInNewWindow', "Controls whether folders should open in A new window or replAce the lAst Active window.\nNote thAt there cAn still be cAses where this setting is ignored (e.g. when using the `--new-window` or `--reuse-window` commAnd line option).")
 			},
 			'window.confirmBeforeClose': {
-				'type': 'boolean',
-				'default': isWeb && !isStandalone, // on by default in web, unless PWA
-				'description': nls.localize('confirmBeforeCloseWeb', "Controls whether to ask for confirmation before closing the browser tab or window."),
-				'scope': ConfigurationScope.APPLICATION,
+				'type': 'booleAn',
+				'defAult': isWeb && !isStAndAlone, // on by defAult in web, unless PWA
+				'description': nls.locAlize('confirmBeforeCloseWeb', "Controls whether to Ask for confirmAtion before closing the browser tAb or window."),
+				'scope': ConfigurAtionScope.APPLICATION,
 				'included': isWeb
 			}
 		}
 	});
 
 	// Zen Mode
-	registry.registerConfiguration({
+	registry.registerConfigurAtion({
 		'id': 'zenMode',
 		'order': 9,
-		'title': nls.localize('zenModeConfigurationTitle', "Zen Mode"),
+		'title': nls.locAlize('zenModeConfigurAtionTitle', "Zen Mode"),
 		'type': 'object',
 		'properties': {
 			'zenMode.fullScreen': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.fullScreen', "Controls whether turning on Zen Mode also puts the workbench into full screen mode.")
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.fullScreen', "Controls whether turning on Zen Mode Also puts the workbench into full screen mode.")
 			},
-			'zenMode.centerLayout': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.centerLayout', "Controls whether turning on Zen Mode also centers the layout.")
+			'zenMode.centerLAyout': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.centerLAyout', "Controls whether turning on Zen Mode Also centers the lAyout.")
 			},
-			'zenMode.hideTabs': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.hideTabs', "Controls whether turning on Zen Mode also hides workbench tabs.")
+			'zenMode.hideTAbs': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.hideTAbs', "Controls whether turning on Zen Mode Also hides workbench tAbs.")
 			},
-			'zenMode.hideStatusBar': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.hideStatusBar', "Controls whether turning on Zen Mode also hides the status bar at the bottom of the workbench.")
+			'zenMode.hideStAtusBAr': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.hideStAtusBAr', "Controls whether turning on Zen Mode Also hides the stAtus bAr At the bottom of the workbench.")
 			},
-			'zenMode.hideActivityBar': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.hideActivityBar', "Controls whether turning on Zen Mode also hides the activity bar either at the left or right of the workbench.")
+			'zenMode.hideActivityBAr': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.hideActivityBAr', "Controls whether turning on Zen Mode Also hides the Activity bAr either At the left or right of the workbench.")
 			},
 			'zenMode.hideLineNumbers': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.hideLineNumbers', "Controls whether turning on Zen Mode also hides the editor line numbers.")
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.hideLineNumbers', "Controls whether turning on Zen Mode Also hides the editor line numbers.")
 			},
 			'zenMode.restore': {
-				'type': 'boolean',
-				'default': false,
-				'description': nls.localize('zenMode.restore', "Controls whether a window should restore to zen mode if it was exited in zen mode.")
+				'type': 'booleAn',
+				'defAult': fAlse,
+				'description': nls.locAlize('zenMode.restore', "Controls whether A window should restore to zen mode if it wAs exited in zen mode.")
 			},
-			'zenMode.silentNotifications': {
-				'type': 'boolean',
-				'default': true,
-				'description': nls.localize('zenMode.silentNotifications', "Controls whether notifications are shown while in zen mode. If true, only error notifications will pop out.")
+			'zenMode.silentNotificAtions': {
+				'type': 'booleAn',
+				'defAult': true,
+				'description': nls.locAlize('zenMode.silentNotificAtions', "Controls whether notificAtions Are shown while in zen mode. If true, only error notificAtions will pop out.")
 			}
 		}
 	});

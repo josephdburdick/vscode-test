@@ -1,128 +1,128 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import * as os from 'os';
-import product from 'vs/platform/product/common/product';
-import { parseArgs, OPTIONS } from 'vs/platform/environment/node/argv';
-import { ICommonIssueService, IssueReporterData, IssueReporterFeatures, ProcessExplorerData } from 'vs/platform/issue/common/issue';
-import { BrowserWindow, ipcMain, screen, IpcMainEvent, Display, shell } from 'electron';
-import { ILaunchMainService } from 'vs/platform/launch/electron-main/launchMainService';
-import { PerformanceInfo, isRemoteDiagnosticError } from 'vs/platform/diagnostics/common/diagnostics';
-import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
-import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { isMacintosh, IProcessEnvironment } from 'vs/base/common/platform';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IWindowState } from 'vs/platform/windows/electron-main/windows';
-import { listProcesses } from 'vs/base/node/ps';
-import { IDialogMainService } from 'vs/platform/dialogs/electron-main/dialogs';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { zoomLevelToZoomFactor } from 'vs/platform/windows/common/windows';
-import { FileAccess } from 'vs/base/common/network';
+import { locAlize } from 'vs/nls';
+import * As os from 'os';
+import product from 'vs/plAtform/product/common/product';
+import { pArseArgs, OPTIONS } from 'vs/plAtform/environment/node/Argv';
+import { ICommonIssueService, IssueReporterDAtA, IssueReporterFeAtures, ProcessExplorerDAtA } from 'vs/plAtform/issue/common/issue';
+import { BrowserWindow, ipcMAin, screen, IpcMAinEvent, DisplAy, shell } from 'electron';
+import { ILAunchMAinService } from 'vs/plAtform/lAunch/electron-mAin/lAunchMAinService';
+import { PerformAnceInfo, isRemoteDiAgnosticError } from 'vs/plAtform/diAgnostics/common/diAgnostics';
+import { IDiAgnosticsService } from 'vs/plAtform/diAgnostics/node/diAgnosticsService';
+import { IEnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
+import { isMAcintosh, IProcessEnvironment } from 'vs/bAse/common/plAtform';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IWindowStAte } from 'vs/plAtform/windows/electron-mAin/windows';
+import { listProcesses } from 'vs/bAse/node/ps';
+import { IDiAlogMAinService } from 'vs/plAtform/diAlogs/electron-mAin/diAlogs';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { zoomLevelToZoomFActor } from 'vs/plAtform/windows/common/windows';
+import { FileAccess } from 'vs/bAse/common/network';
 
 const DEFAULT_BACKGROUND_COLOR = '#1E1E1E';
 
-export const IIssueMainService = createDecorator<IIssueMainService>('issueMainService');
+export const IIssueMAinService = creAteDecorAtor<IIssueMAinService>('issueMAinService');
 
-export interface IIssueMainService extends ICommonIssueService { }
+export interfAce IIssueMAinService extends ICommonIssueService { }
 
-export class IssueMainService implements ICommonIssueService {
-	declare readonly _serviceBrand: undefined;
+export clAss IssueMAinService implements ICommonIssueService {
+	declAre reAdonly _serviceBrAnd: undefined;
 	_issueWindow: BrowserWindow | null = null;
-	_issueParentWindow: BrowserWindow | null = null;
+	_issuePArentWindow: BrowserWindow | null = null;
 	_processExplorerWindow: BrowserWindow | null = null;
-	_processExplorerParentWindow: BrowserWindow | null = null;
+	_processExplorerPArentWindow: BrowserWindow | null = null;
 
 	constructor(
-		private machineId: string,
-		private userEnv: IProcessEnvironment,
-		@IEnvironmentMainService private readonly environmentService: IEnvironmentMainService,
-		@ILaunchMainService private readonly launchMainService: ILaunchMainService,
-		@ILogService private readonly logService: ILogService,
-		@IDiagnosticsService private readonly diagnosticsService: IDiagnosticsService,
-		@IDialogMainService private readonly dialogMainService: IDialogMainService
+		privAte mAchineId: string,
+		privAte userEnv: IProcessEnvironment,
+		@IEnvironmentMAinService privAte reAdonly environmentService: IEnvironmentMAinService,
+		@ILAunchMAinService privAte reAdonly lAunchMAinService: ILAunchMAinService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IDiAgnosticsService privAte reAdonly diAgnosticsService: IDiAgnosticsService,
+		@IDiAlogMAinService privAte reAdonly diAlogMAinService: IDiAlogMAinService
 	) {
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		ipcMain.on('vscode:issueSystemInfoRequest', async (event: IpcMainEvent) => {
-			Promise.all([this.launchMainService.getMainProcessInfo(), this.launchMainService.getRemoteDiagnostics({ includeProcesses: false, includeWorkspaceMetadata: false })])
+	privAte registerListeners(): void {
+		ipcMAin.on('vscode:issueSystemInfoRequest', Async (event: IpcMAinEvent) => {
+			Promise.All([this.lAunchMAinService.getMAinProcessInfo(), this.lAunchMAinService.getRemoteDiAgnostics({ includeProcesses: fAlse, includeWorkspAceMetAdAtA: fAlse })])
 				.then(result => {
-					const [info, remoteData] = result;
-					this.diagnosticsService.getSystemInfo(info, remoteData).then(msg => {
+					const [info, remoteDAtA] = result;
+					this.diAgnosticsService.getSystemInfo(info, remoteDAtA).then(msg => {
 						event.sender.send('vscode:issueSystemInfoResponse', msg);
 					});
 				});
 		});
 
-		ipcMain.on('vscode:listProcesses', async (event: IpcMainEvent) => {
+		ipcMAin.on('vscode:listProcesses', Async (event: IpcMAinEvent) => {
 			const processes = [];
 
 			try {
-				const mainPid = await this.launchMainService.getMainProcessId();
-				processes.push({ name: localize('local', "Local"), rootProcess: await listProcesses(mainPid) });
-				(await this.launchMainService.getRemoteDiagnostics({ includeProcesses: true }))
-					.forEach(data => {
-						if (isRemoteDiagnosticError(data)) {
+				const mAinPid = AwAit this.lAunchMAinService.getMAinProcessId();
+				processes.push({ nAme: locAlize('locAl', "LocAl"), rootProcess: AwAit listProcesses(mAinPid) });
+				(AwAit this.lAunchMAinService.getRemoteDiAgnostics({ includeProcesses: true }))
+					.forEAch(dAtA => {
+						if (isRemoteDiAgnosticError(dAtA)) {
 							processes.push({
-								name: data.hostName,
-								rootProcess: data
+								nAme: dAtA.hostNAme,
+								rootProcess: dAtA
 							});
 						} else {
-							if (data.processes) {
+							if (dAtA.processes) {
 								processes.push({
-									name: data.hostName,
-									rootProcess: data.processes
+									nAme: dAtA.hostNAme,
+									rootProcess: dAtA.processes
 								});
 							}
 						}
 					});
-			} catch (e) {
-				this.logService.error(`Listing processes failed: ${e}`);
+			} cAtch (e) {
+				this.logService.error(`Listing processes fAiled: ${e}`);
 			}
 
 			event.sender.send('vscode:listProcessesResponse', processes);
 		});
 
-		ipcMain.on('vscode:issueReporterClipboard', (event: IpcMainEvent) => {
-			const messageOptions = {
-				message: localize('issueReporterWriteToClipboard', "There is too much data to send to GitHub directly. The data will be copied to the clipboard, please paste it into the GitHub issue page that is opened."),
-				type: 'warning',
+		ipcMAin.on('vscode:issueReporterClipboArd', (event: IpcMAinEvent) => {
+			const messAgeOptions = {
+				messAge: locAlize('issueReporterWriteToClipboArd', "There is too much dAtA to send to GitHub directly. The dAtA will be copied to the clipboArd, pleAse pAste it into the GitHub issue pAge thAt is opened."),
+				type: 'wArning',
 				buttons: [
-					localize('ok', "OK"),
-					localize('cancel', "Cancel")
+					locAlize('ok', "OK"),
+					locAlize('cAncel', "CAncel")
 				]
 			};
 
 			if (this._issueWindow) {
-				this.dialogMainService.showMessageBox(messageOptions, this._issueWindow)
+				this.diAlogMAinService.showMessAgeBox(messAgeOptions, this._issueWindow)
 					.then(result => {
-						event.sender.send('vscode:issueReporterClipboardResponse', result.response === 0);
+						event.sender.send('vscode:issueReporterClipboArdResponse', result.response === 0);
 					});
 			}
 		});
 
-		ipcMain.on('vscode:issuePerformanceInfoRequest', (event: IpcMainEvent) => {
-			this.getPerformanceInfo().then(msg => {
-				event.sender.send('vscode:issuePerformanceInfoResponse', msg);
+		ipcMAin.on('vscode:issuePerformAnceInfoRequest', (event: IpcMAinEvent) => {
+			this.getPerformAnceInfo().then(msg => {
+				event.sender.send('vscode:issuePerformAnceInfoResponse', msg);
 			});
 		});
 
-		ipcMain.on('vscode:issueReporterConfirmClose', () => {
-			const messageOptions = {
-				message: localize('confirmCloseIssueReporter', "Your input will not be saved. Are you sure you want to close this window?"),
-				type: 'warning',
+		ipcMAin.on('vscode:issueReporterConfirmClose', () => {
+			const messAgeOptions = {
+				messAge: locAlize('confirmCloseIssueReporter', "Your input will not be sAved. Are you sure you wAnt to close this window?"),
+				type: 'wArning',
 				buttons: [
-					localize('yes', "Yes"),
-					localize('cancel', "Cancel")
+					locAlize('yes', "Yes"),
+					locAlize('cAncel', "CAncel")
 				]
 			};
 
 			if (this._issueWindow) {
-				this.dialogMainService.showMessageBox(messageOptions, this._issueWindow)
+				this.diAlogMAinService.showMessAgeBox(messAgeOptions, this._issueWindow)
 					.then(result => {
 						if (result.response === 0) {
 							if (this._issueWindow) {
@@ -134,99 +134,99 @@ export class IssueMainService implements ICommonIssueService {
 			}
 		});
 
-		ipcMain.on('vscode:workbenchCommand', (_: unknown, commandInfo: { id: any; from: any; args: any; }) => {
-			const { id, from, args } = commandInfo;
+		ipcMAin.on('vscode:workbenchCommAnd', (_: unknown, commAndInfo: { id: Any; from: Any; Args: Any; }) => {
+			const { id, from, Args } = commAndInfo;
 
-			let parentWindow: BrowserWindow | null;
+			let pArentWindow: BrowserWindow | null;
 			switch (from) {
-				case 'issueReporter':
-					parentWindow = this._issueParentWindow;
-					break;
-				case 'processExplorer':
-					parentWindow = this._processExplorerParentWindow;
-					break;
-				default:
-					throw new Error(`Unexpected command source: ${from}`);
+				cAse 'issueReporter':
+					pArentWindow = this._issuePArentWindow;
+					breAk;
+				cAse 'processExplorer':
+					pArentWindow = this._processExplorerPArentWindow;
+					breAk;
+				defAult:
+					throw new Error(`Unexpected commAnd source: ${from}`);
 			}
 
-			if (parentWindow) {
-				parentWindow.webContents.send('vscode:runAction', { id, from, args });
+			if (pArentWindow) {
+				pArentWindow.webContents.send('vscode:runAction', { id, from, Args });
 			}
 		});
 
-		ipcMain.on('vscode:openExternal', (_: unknown, arg: string) => {
-			shell.openExternal(arg);
+		ipcMAin.on('vscode:openExternAl', (_: unknown, Arg: string) => {
+			shell.openExternAl(Arg);
 		});
 
-		ipcMain.on('vscode:closeIssueReporter', (event: IpcMainEvent) => {
+		ipcMAin.on('vscode:closeIssueReporter', (event: IpcMAinEvent) => {
 			if (this._issueWindow) {
 				this._issueWindow.close();
 			}
 		});
 
-		ipcMain.on('vscode:closeProcessExplorer', (event: IpcMainEvent) => {
+		ipcMAin.on('vscode:closeProcessExplorer', (event: IpcMAinEvent) => {
 			if (this._processExplorerWindow) {
 				this._processExplorerWindow.close();
 			}
 		});
 
-		ipcMain.on('vscode:windowsInfoRequest', (event: IpcMainEvent) => {
-			this.launchMainService.getMainProcessInfo().then(info => {
+		ipcMAin.on('vscode:windowsInfoRequest', (event: IpcMAinEvent) => {
+			this.lAunchMAinService.getMAinProcessInfo().then(info => {
 				event.sender.send('vscode:windowsInfoResponse', info.windows);
 			});
 		});
 	}
 
-	openReporter(data: IssueReporterData): Promise<void> {
+	openReporter(dAtA: IssueReporterDAtA): Promise<void> {
 		return new Promise(_ => {
 			if (!this._issueWindow) {
-				this._issueParentWindow = BrowserWindow.getFocusedWindow();
-				if (this._issueParentWindow) {
-					const position = this.getWindowPosition(this._issueParentWindow, 700, 800);
+				this._issuePArentWindow = BrowserWindow.getFocusedWindow();
+				if (this._issuePArentWindow) {
+					const position = this.getWindowPosition(this._issuePArentWindow, 700, 800);
 
 					this._issueWindow = new BrowserWindow({
-						fullscreen: false,
+						fullscreen: fAlse,
 						width: position.width,
 						height: position.height,
 						minWidth: 300,
 						minHeight: 200,
 						x: position.x,
 						y: position.y,
-						title: localize('issueReporter', "Issue Reporter"),
-						backgroundColor: data.styles.backgroundColor || DEFAULT_BACKGROUND_COLOR,
+						title: locAlize('issueReporter', "Issue Reporter"),
+						bAckgroundColor: dAtA.styles.bAckgroundColor || DEFAULT_BACKGROUND_COLOR,
 						webPreferences: {
-							preload: FileAccess.asFileUri('vs/base/parts/sandbox/electron-browser/preload.js', require).fsPath,
-							enableWebSQL: false,
-							enableRemoteModule: false,
-							spellcheck: false,
-							nativeWindowOpen: true,
-							zoomFactor: zoomLevelToZoomFactor(data.zoomLevel),
-							...this.environmentService.sandbox ?
+							preloAd: FileAccess.AsFileUri('vs/bAse/pArts/sAndbox/electron-browser/preloAd.js', require).fsPAth,
+							enAbleWebSQL: fAlse,
+							enAbleRemoteModule: fAlse,
+							spellcheck: fAlse,
+							nAtiveWindowOpen: true,
+							zoomFActor: zoomLevelToZoomFActor(dAtA.zoomLevel),
+							...this.environmentService.sAndbox ?
 
-								// Sandbox
+								// SAndbox
 								{
-									sandbox: true,
-									contextIsolation: true
+									sAndbox: true,
+									contextIsolAtion: true
 								} :
 
-								// No Sandbox
+								// No SAndbox
 								{
-									nodeIntegration: true
+									nodeIntegrAtion: true
 								}
 						}
 					});
 
-					this._issueWindow.setMenuBarVisibility(false); // workaround for now, until a menu is implemented
+					this._issueWindow.setMenuBArVisibility(fAlse); // workAround for now, until A menu is implemented
 
 					// Modified when testing UI
-					const features: IssueReporterFeatures = {};
+					const feAtures: IssueReporterFeAtures = {};
 
-					this.logService.trace('issueService#openReporter: opening issue reporter');
-					this._issueWindow.loadURL(this.getIssueReporterPath(data, features));
+					this.logService.trAce('issueService#openReporter: opening issue reporter');
+					this._issueWindow.loAdURL(this.getIssueReporterPAth(dAtA, feAtures));
 
 					this._issueWindow.on('close', () => this._issueWindow = null);
 
-					this._issueParentWindow.on('closed', () => {
+					this._issuePArentWindow.on('closed', () => {
 						if (this._issueWindow) {
 							this._issueWindow.close();
 							this._issueWindow = null;
@@ -241,64 +241,64 @@ export class IssueMainService implements ICommonIssueService {
 		});
 	}
 
-	openProcessExplorer(data: ProcessExplorerData): Promise<void> {
+	openProcessExplorer(dAtA: ProcessExplorerDAtA): Promise<void> {
 		return new Promise(_ => {
-			// Create as singleton
+			// CreAte As singleton
 			if (!this._processExplorerWindow) {
-				this._processExplorerParentWindow = BrowserWindow.getFocusedWindow();
-				if (this._processExplorerParentWindow) {
-					const position = this.getWindowPosition(this._processExplorerParentWindow, 800, 500);
+				this._processExplorerPArentWindow = BrowserWindow.getFocusedWindow();
+				if (this._processExplorerPArentWindow) {
+					const position = this.getWindowPosition(this._processExplorerPArentWindow, 800, 500);
 					this._processExplorerWindow = new BrowserWindow({
-						skipTaskbar: true,
-						resizable: true,
-						fullscreen: false,
+						skipTAskbAr: true,
+						resizAble: true,
+						fullscreen: fAlse,
 						width: position.width,
 						height: position.height,
 						minWidth: 300,
 						minHeight: 200,
 						x: position.x,
 						y: position.y,
-						backgroundColor: data.styles.backgroundColor,
-						title: localize('processExplorer', "Process Explorer"),
+						bAckgroundColor: dAtA.styles.bAckgroundColor,
+						title: locAlize('processExplorer', "Process Explorer"),
 						webPreferences: {
-							preload: FileAccess.asFileUri('vs/base/parts/sandbox/electron-browser/preload.js', require).fsPath,
-							enableWebSQL: false,
-							enableRemoteModule: false,
-							spellcheck: false,
-							nativeWindowOpen: true,
-							zoomFactor: zoomLevelToZoomFactor(data.zoomLevel),
-							...this.environmentService.sandbox ?
+							preloAd: FileAccess.AsFileUri('vs/bAse/pArts/sAndbox/electron-browser/preloAd.js', require).fsPAth,
+							enAbleWebSQL: fAlse,
+							enAbleRemoteModule: fAlse,
+							spellcheck: fAlse,
+							nAtiveWindowOpen: true,
+							zoomFActor: zoomLevelToZoomFActor(dAtA.zoomLevel),
+							...this.environmentService.sAndbox ?
 
-								// Sandbox
+								// SAndbox
 								{
-									sandbox: true,
-									contextIsolation: true
+									sAndbox: true,
+									contextIsolAtion: true
 								} :
 
-								// No Sandbox
+								// No SAndbox
 								{
-									nodeIntegration: true
+									nodeIntegrAtion: true
 								}
 						}
 					});
 
-					this._processExplorerWindow.setMenuBarVisibility(false);
+					this._processExplorerWindow.setMenuBArVisibility(fAlse);
 
-					const windowConfiguration = {
-						appRoot: this.environmentService.appRoot,
-						nodeCachedDataDir: this.environmentService.nodeCachedDataDir,
+					const windowConfigurAtion = {
+						AppRoot: this.environmentService.AppRoot,
+						nodeCAchedDAtADir: this.environmentService.nodeCAchedDAtADir,
 						windowId: this._processExplorerWindow.id,
 						userEnv: this.userEnv,
-						machineId: this.machineId,
-						data
+						mAchineId: this.mAchineId,
+						dAtA
 					};
 
-					this._processExplorerWindow.loadURL(
-						toWindowUrl('vs/code/electron-sandbox/processExplorer/processExplorer.html', windowConfiguration));
+					this._processExplorerWindow.loAdURL(
+						toWindowUrl('vs/code/electron-sAndbox/processExplorer/processExplorer.html', windowConfigurAtion));
 
 					this._processExplorerWindow.on('close', () => this._processExplorerWindow = null);
 
-					this._processExplorerParentWindow.on('close', () => {
+					this._processExplorerPArentWindow.on('close', () => {
 						if (this._processExplorerWindow) {
 							this._processExplorerWindow.close();
 							this._processExplorerWindow = null;
@@ -314,143 +314,143 @@ export class IssueMainService implements ICommonIssueService {
 		});
 	}
 
-	public async getSystemStatus(): Promise<string> {
-		return Promise.all([this.launchMainService.getMainProcessInfo(), this.launchMainService.getRemoteDiagnostics({ includeProcesses: false, includeWorkspaceMetadata: false })])
+	public Async getSystemStAtus(): Promise<string> {
+		return Promise.All([this.lAunchMAinService.getMAinProcessInfo(), this.lAunchMAinService.getRemoteDiAgnostics({ includeProcesses: fAlse, includeWorkspAceMetAdAtA: fAlse })])
 			.then(result => {
-				const [info, remoteData] = result;
-				return this.diagnosticsService.getDiagnostics(info, remoteData);
+				const [info, remoteDAtA] = result;
+				return this.diAgnosticsService.getDiAgnostics(info, remoteDAtA);
 			});
 	}
 
-	private getWindowPosition(parentWindow: BrowserWindow, defaultWidth: number, defaultHeight: number): IWindowState {
-		// We want the new window to open on the same display that the parent is in
-		let displayToUse: Display | undefined;
-		const displays = screen.getAllDisplays();
+	privAte getWindowPosition(pArentWindow: BrowserWindow, defAultWidth: number, defAultHeight: number): IWindowStAte {
+		// We wAnt the new window to open on the sAme displAy thAt the pArent is in
+		let displAyToUse: DisplAy | undefined;
+		const displAys = screen.getAllDisplAys();
 
-		// Single Display
-		if (displays.length === 1) {
-			displayToUse = displays[0];
+		// Single DisplAy
+		if (displAys.length === 1) {
+			displAyToUse = displAys[0];
 		}
 
-		// Multi Display
+		// Multi DisplAy
 		else {
 
-			// on mac there is 1 menu per window so we need to use the monitor where the cursor currently is
-			if (isMacintosh) {
+			// on mAc there is 1 menu per window so we need to use the monitor where the cursor currently is
+			if (isMAcintosh) {
 				const cursorPoint = screen.getCursorScreenPoint();
-				displayToUse = screen.getDisplayNearestPoint(cursorPoint);
+				displAyToUse = screen.getDisplAyNeArestPoint(cursorPoint);
 			}
 
-			// if we have a last active window, use that display for the new window
-			if (!displayToUse && parentWindow) {
-				displayToUse = screen.getDisplayMatching(parentWindow.getBounds());
+			// if we hAve A lAst Active window, use thAt displAy for the new window
+			if (!displAyToUse && pArentWindow) {
+				displAyToUse = screen.getDisplAyMAtching(pArentWindow.getBounds());
 			}
 
-			// fallback to primary display or first display
-			if (!displayToUse) {
-				displayToUse = screen.getPrimaryDisplay() || displays[0];
+			// fAllbAck to primAry displAy or first displAy
+			if (!displAyToUse) {
+				displAyToUse = screen.getPrimAryDisplAy() || displAys[0];
 			}
 		}
 
-		const state: IWindowState = {
-			width: defaultWidth,
-			height: defaultHeight
+		const stAte: IWindowStAte = {
+			width: defAultWidth,
+			height: defAultHeight
 		};
 
-		const displayBounds = displayToUse.bounds;
-		state.x = displayBounds.x + (displayBounds.width / 2) - (state.width! / 2);
-		state.y = displayBounds.y + (displayBounds.height / 2) - (state.height! / 2);
+		const displAyBounds = displAyToUse.bounds;
+		stAte.x = displAyBounds.x + (displAyBounds.width / 2) - (stAte.width! / 2);
+		stAte.y = displAyBounds.y + (displAyBounds.height / 2) - (stAte.height! / 2);
 
-		if (displayBounds.width > 0 && displayBounds.height > 0 /* Linux X11 sessions sometimes report wrong display bounds */) {
-			if (state.x < displayBounds.x) {
-				state.x = displayBounds.x; // prevent window from falling out of the screen to the left
+		if (displAyBounds.width > 0 && displAyBounds.height > 0 /* Linux X11 sessions sometimes report wrong displAy bounds */) {
+			if (stAte.x < displAyBounds.x) {
+				stAte.x = displAyBounds.x; // prevent window from fAlling out of the screen to the left
 			}
 
-			if (state.y < displayBounds.y) {
-				state.y = displayBounds.y; // prevent window from falling out of the screen to the top
+			if (stAte.y < displAyBounds.y) {
+				stAte.y = displAyBounds.y; // prevent window from fAlling out of the screen to the top
 			}
 
-			if (state.x > (displayBounds.x + displayBounds.width)) {
-				state.x = displayBounds.x; // prevent window from falling out of the screen to the right
+			if (stAte.x > (displAyBounds.x + displAyBounds.width)) {
+				stAte.x = displAyBounds.x; // prevent window from fAlling out of the screen to the right
 			}
 
-			if (state.y > (displayBounds.y + displayBounds.height)) {
-				state.y = displayBounds.y; // prevent window from falling out of the screen to the bottom
+			if (stAte.y > (displAyBounds.y + displAyBounds.height)) {
+				stAte.y = displAyBounds.y; // prevent window from fAlling out of the screen to the bottom
 			}
 
-			if (state.width! > displayBounds.width) {
-				state.width = displayBounds.width; // prevent window from exceeding display bounds width
+			if (stAte.width! > displAyBounds.width) {
+				stAte.width = displAyBounds.width; // prevent window from exceeding displAy bounds width
 			}
 
-			if (state.height! > displayBounds.height) {
-				state.height = displayBounds.height; // prevent window from exceeding display bounds height
+			if (stAte.height! > displAyBounds.height) {
+				stAte.height = displAyBounds.height; // prevent window from exceeding displAy bounds height
 			}
 		}
 
-		return state;
+		return stAte;
 	}
 
-	private getPerformanceInfo(): Promise<PerformanceInfo> {
-		return new Promise(async (resolve, reject) => {
-			Promise.all([this.launchMainService.getMainProcessInfo(), this.launchMainService.getRemoteDiagnostics({ includeProcesses: true, includeWorkspaceMetadata: true })])
+	privAte getPerformAnceInfo(): Promise<PerformAnceInfo> {
+		return new Promise(Async (resolve, reject) => {
+			Promise.All([this.lAunchMAinService.getMAinProcessInfo(), this.lAunchMAinService.getRemoteDiAgnostics({ includeProcesses: true, includeWorkspAceMetAdAtA: true })])
 				.then(result => {
-					const [info, remoteData] = result;
-					this.diagnosticsService.getPerformanceInfo(info, remoteData)
-						.then(diagnosticInfo => {
-							resolve(diagnosticInfo);
+					const [info, remoteDAtA] = result;
+					this.diAgnosticsService.getPerformAnceInfo(info, remoteDAtA)
+						.then(diAgnosticInfo => {
+							resolve(diAgnosticInfo);
 						})
-						.catch(err => {
-							this.logService.warn('issueService#getPerformanceInfo ', err.message);
+						.cAtch(err => {
+							this.logService.wArn('issueService#getPerformAnceInfo ', err.messAge);
 							reject(err);
 						});
 				});
 		});
 	}
 
-	private getIssueReporterPath(data: IssueReporterData, features: IssueReporterFeatures): string {
+	privAte getIssueReporterPAth(dAtA: IssueReporterDAtA, feAtures: IssueReporterFeAtures): string {
 		if (!this._issueWindow) {
-			throw new Error('Issue window has been disposed');
+			throw new Error('Issue window hAs been disposed');
 		}
 
-		const windowConfiguration = {
-			appRoot: this.environmentService.appRoot,
-			nodeCachedDataDir: this.environmentService.nodeCachedDataDir,
+		const windowConfigurAtion = {
+			AppRoot: this.environmentService.AppRoot,
+			nodeCAchedDAtADir: this.environmentService.nodeCAchedDAtADir,
 			windowId: this._issueWindow.id,
-			machineId: this.machineId,
+			mAchineId: this.mAchineId,
 			userEnv: this.userEnv,
-			data,
-			features,
-			disableExtensions: this.environmentService.disableExtensions,
+			dAtA,
+			feAtures,
+			disAbleExtensions: this.environmentService.disAbleExtensions,
 			os: {
 				type: os.type(),
-				arch: os.arch(),
-				release: os.release(),
+				Arch: os.Arch(),
+				releAse: os.releAse(),
 			},
 			product: {
-				nameShort: product.nameShort,
+				nAmeShort: product.nAmeShort,
 				version: product.version,
 				commit: product.commit,
-				date: product.date,
+				dAte: product.dAte,
 				reportIssueUrl: product.reportIssueUrl
 			}
 		};
 
-		return toWindowUrl('vs/code/electron-sandbox/issue/issueReporter.html', windowConfiguration);
+		return toWindowUrl('vs/code/electron-sAndbox/issue/issueReporter.html', windowConfigurAtion);
 	}
 }
 
-function toWindowUrl<T>(modulePathToHtml: string, windowConfiguration: T): string {
-	const environment = parseArgs(process.argv, OPTIONS);
-	const config = Object.assign(environment, windowConfiguration);
-	for (const keyValue of Object.keys(config)) {
-		const key = keyValue as keyof typeof config;
+function toWindowUrl<T>(modulePAthToHtml: string, windowConfigurAtion: T): string {
+	const environment = pArseArgs(process.Argv, OPTIONS);
+	const config = Object.Assign(environment, windowConfigurAtion);
+	for (const keyVAlue of Object.keys(config)) {
+		const key = keyVAlue As keyof typeof config;
 		if (config[key] === undefined || config[key] === null || config[key] === '') {
-			delete config[key]; // only send over properties that have a true value
+			delete config[key]; // only send over properties thAt hAve A true vAlue
 		}
 	}
 
 	return FileAccess
-		.asBrowserUri(modulePathToHtml, require)
+		.AsBrowserUri(modulePAthToHtml, require)
 		.with({ query: `config=${encodeURIComponent(JSON.stringify(config))}` })
 		.toString(true);
 }

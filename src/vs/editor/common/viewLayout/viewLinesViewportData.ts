@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { IViewModel, IViewWhitespaceViewportData, ViewLineRenderingData, ViewModelDecoration } from 'vs/editor/common/viewModel/viewModel';
+import { IViewModel, IViewWhitespAceViewportDAtA, ViewLineRenderingDAtA, ViewModelDecorAtion } from 'vs/editor/common/viewModel/viewModel';
 
-export interface IPartialViewLinesViewportData {
+export interfAce IPArtiAlViewLinesViewportDAtA {
 	/**
-	 * Value to be substracted from `scrollTop` (in order to vertical offset numbers < 1MM)
+	 * VAlue to be substrActed from `scrollTop` (in order to verticAl offset numbers < 1MM)
 	 */
-	readonly bigNumbersDelta: number;
+	reAdonly bigNumbersDeltA: number;
 	/**
-	 * The first (partially) visible line number.
+	 * The first (pArtiAlly) visible line number.
 	 */
-	readonly startLineNumber: number;
+	reAdonly stArtLineNumber: number;
 	/**
-	 * The last (partially) visible line number.
+	 * The lAst (pArtiAlly) visible line number.
 	 */
-	readonly endLineNumber: number;
+	reAdonly endLineNumber: number;
 	/**
-	 * relativeVerticalOffset[i] is the `top` position for line at `i` + `startLineNumber`.
+	 * relAtiveVerticAlOffset[i] is the `top` position for line At `i` + `stArtLineNumber`.
 	 */
-	readonly relativeVerticalOffset: number[];
+	reAdonly relAtiveVerticAlOffset: number[];
 	/**
 	 * The centered line in the viewport.
 	 */
-	readonly centeredLineNumber: number;
+	reAdonly centeredLineNumber: number;
 	/**
 	 * The first completely visible line number.
 	 */
-	readonly completelyVisibleStartLineNumber: number;
+	reAdonly completelyVisibleStArtLineNumber: number;
 	/**
-	 * The last completely visible line number.
+	 * The lAst completely visible line number.
 	 */
-	readonly completelyVisibleEndLineNumber: number;
+	reAdonly completelyVisibleEndLineNumber: number;
 }
 
 /**
- * Contains all data needed to render at a specific viewport.
+ * ContAins All dAtA needed to render At A specific viewport.
  */
-export class ViewportData {
+export clAss ViewportDAtA {
 
-	public readonly selections: Selection[];
-
-	/**
-	 * The line number at which to start rendering (inclusive).
-	 */
-	public readonly startLineNumber: number;
+	public reAdonly selections: Selection[];
 
 	/**
-	 * The line number at which to end rendering (inclusive).
+	 * The line number At which to stArt rendering (inclusive).
 	 */
-	public readonly endLineNumber: number;
+	public reAdonly stArtLineNumber: number;
 
 	/**
-	 * relativeVerticalOffset[i] is the `top` position for line at `i` + `startLineNumber`.
+	 * The line number At which to end rendering (inclusive).
 	 */
-	public readonly relativeVerticalOffset: number[];
+	public reAdonly endLineNumber: number;
 
 	/**
-	 * The viewport as a range (startLineNumber,1) -> (endLineNumber,maxColumn(endLineNumber)).
+	 * relAtiveVerticAlOffset[i] is the `top` position for line At `i` + `stArtLineNumber`.
 	 */
-	public readonly visibleRange: Range;
+	public reAdonly relAtiveVerticAlOffset: number[];
 
 	/**
-	 * Value to be substracted from `scrollTop` (in order to vertical offset numbers < 1MM)
+	 * The viewport As A rAnge (stArtLineNumber,1) -> (endLineNumber,mAxColumn(endLineNumber)).
 	 */
-	public readonly bigNumbersDelta: number;
+	public reAdonly visibleRAnge: RAnge;
 
 	/**
-	 * Positioning information about gaps whitespace.
+	 * VAlue to be substrActed from `scrollTop` (in order to verticAl offset numbers < 1MM)
 	 */
-	public readonly whitespaceViewportData: IViewWhitespaceViewportData[];
+	public reAdonly bigNumbersDeltA: number;
 
-	private readonly _model: IViewModel;
+	/**
+	 * Positioning informAtion About gAps whitespAce.
+	 */
+	public reAdonly whitespAceViewportDAtA: IViewWhitespAceViewportDAtA[];
+
+	privAte reAdonly _model: IViewModel;
 
 	constructor(
 		selections: Selection[],
-		partialData: IPartialViewLinesViewportData,
-		whitespaceViewportData: IViewWhitespaceViewportData[],
+		pArtiAlDAtA: IPArtiAlViewLinesViewportDAtA,
+		whitespAceViewportDAtA: IViewWhitespAceViewportDAtA[],
 		model: IViewModel
 	) {
 		this.selections = selections;
-		this.startLineNumber = partialData.startLineNumber | 0;
-		this.endLineNumber = partialData.endLineNumber | 0;
-		this.relativeVerticalOffset = partialData.relativeVerticalOffset;
-		this.bigNumbersDelta = partialData.bigNumbersDelta | 0;
-		this.whitespaceViewportData = whitespaceViewportData;
+		this.stArtLineNumber = pArtiAlDAtA.stArtLineNumber | 0;
+		this.endLineNumber = pArtiAlDAtA.endLineNumber | 0;
+		this.relAtiveVerticAlOffset = pArtiAlDAtA.relAtiveVerticAlOffset;
+		this.bigNumbersDeltA = pArtiAlDAtA.bigNumbersDeltA | 0;
+		this.whitespAceViewportDAtA = whitespAceViewportDAtA;
 
 		this._model = model;
 
-		this.visibleRange = new Range(
-			partialData.startLineNumber,
-			this._model.getLineMinColumn(partialData.startLineNumber),
-			partialData.endLineNumber,
-			this._model.getLineMaxColumn(partialData.endLineNumber)
+		this.visibleRAnge = new RAnge(
+			pArtiAlDAtA.stArtLineNumber,
+			this._model.getLineMinColumn(pArtiAlDAtA.stArtLineNumber),
+			pArtiAlDAtA.endLineNumber,
+			this._model.getLineMAxColumn(pArtiAlDAtA.endLineNumber)
 		);
 	}
 
-	public getViewLineRenderingData(lineNumber: number): ViewLineRenderingData {
-		return this._model.getViewLineRenderingData(this.visibleRange, lineNumber);
+	public getViewLineRenderingDAtA(lineNumber: number): ViewLineRenderingDAtA {
+		return this._model.getViewLineRenderingDAtA(this.visibleRAnge, lineNumber);
 	}
 
-	public getDecorationsInViewport(): ViewModelDecoration[] {
-		return this._model.getDecorationsInViewport(this.visibleRange);
+	public getDecorAtionsInViewport(): ViewModelDecorAtion[] {
+		return this._model.getDecorAtionsInViewport(this.visibleRAnge);
 	}
 }

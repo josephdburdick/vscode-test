@@ -1,229 +1,229 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { IInstAntiAtionService, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IWorkbenchThemeService, IWorkbenchColorTheme } from 'vs/workbench/services/themes/common/workbenchThemeService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { EditorResourceAccessor } from 'vs/workbench/common/editor';
-import { ITextMateService } from 'vs/workbench/services/textMate/common/textMateService';
-import { IGrammar, StackElement } from 'vscode-textmate';
-import { TokenizationRegistry, TokenMetadata } from 'vs/editor/common/modes';
-import { ThemeRule, findMatchingThemeRule } from 'vs/workbench/services/textMate/common/TMHelper';
-import { Color } from 'vs/base/common/color';
-import { IFileService } from 'vs/platform/files/common/files';
-import { basename } from 'vs/base/common/resources';
-import { Schemas } from 'vs/base/common/network';
+import { ITextMAteService } from 'vs/workbench/services/textMAte/common/textMAteService';
+import { IGrAmmAr, StAckElement } from 'vscode-textmAte';
+import { TokenizAtionRegistry, TokenMetAdAtA } from 'vs/editor/common/modes';
+import { ThemeRule, findMAtchingThemeRule } from 'vs/workbench/services/textMAte/common/TMHelper';
+import { Color } from 'vs/bAse/common/color';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { bAsenAme } from 'vs/bAse/common/resources';
+import { SchemAs } from 'vs/bAse/common/network';
 
-interface IToken {
+interfAce IToken {
 	c: string;
 	t: string;
-	r: { [themeName: string]: string | undefined; };
+	r: { [themeNAme: string]: string | undefined; };
 }
 
-interface IThemedToken {
+interfAce IThemedToken {
 	text: string;
 	color: Color;
 }
 
-interface IThemesResult {
-	[themeName: string]: {
+interfAce IThemesResult {
+	[themeNAme: string]: {
 		document: ThemeDocument;
 		tokens: IThemedToken[];
 	};
 }
 
-class ThemeDocument {
-	private readonly _theme: IWorkbenchColorTheme;
-	private readonly _cache: { [scopes: string]: ThemeRule; };
-	private readonly _defaultColor: string;
+clAss ThemeDocument {
+	privAte reAdonly _theme: IWorkbenchColorTheme;
+	privAte reAdonly _cAche: { [scopes: string]: ThemeRule; };
+	privAte reAdonly _defAultColor: string;
 
 	constructor(theme: IWorkbenchColorTheme) {
 		this._theme = theme;
-		this._cache = Object.create(null);
-		this._defaultColor = '#000000';
+		this._cAche = Object.creAte(null);
+		this._defAultColor = '#000000';
 		for (let i = 0, len = this._theme.tokenColors.length; i < len; i++) {
 			let rule = this._theme.tokenColors[i];
 			if (!rule.scope) {
-				this._defaultColor = rule.settings.foreground!;
+				this._defAultColor = rule.settings.foreground!;
 			}
 		}
 	}
 
-	private _generateExplanation(selector: string, color: Color): string {
-		return `${selector}: ${Color.Format.CSS.formatHexA(color, true).toUpperCase()}`;
+	privAte _generAteExplAnAtion(selector: string, color: Color): string {
+		return `${selector}: ${Color.FormAt.CSS.formAtHexA(color, true).toUpperCAse()}`;
 	}
 
-	public explainTokenColor(scopes: string, color: Color): string {
+	public explAinTokenColor(scopes: string, color: Color): string {
 
-		let matchingRule = this._findMatchingThemeRule(scopes);
-		if (!matchingRule) {
-			let expected = Color.fromHex(this._defaultColor);
-			// No matching rule
-			if (!color.equals(expected)) {
-				throw new Error(`[${this._theme.label}]: Unexpected color ${Color.Format.CSS.formatHexA(color)} for ${scopes}. Expected default ${Color.Format.CSS.formatHexA(expected)}`);
+		let mAtchingRule = this._findMAtchingThemeRule(scopes);
+		if (!mAtchingRule) {
+			let expected = Color.fromHex(this._defAultColor);
+			// No mAtching rule
+			if (!color.equAls(expected)) {
+				throw new Error(`[${this._theme.lAbel}]: Unexpected color ${Color.FormAt.CSS.formAtHexA(color)} for ${scopes}. Expected defAult ${Color.FormAt.CSS.formAtHexA(expected)}`);
 			}
-			return this._generateExplanation('default', color);
+			return this._generAteExplAnAtion('defAult', color);
 		}
 
-		let expected = Color.fromHex(matchingRule.settings.foreground!);
-		if (!color.equals(expected)) {
-			throw new Error(`[${this._theme.label}]: Unexpected color ${Color.Format.CSS.formatHexA(color)} for ${scopes}. Expected ${Color.Format.CSS.formatHexA(expected)} coming in from ${matchingRule.rawSelector}`);
+		let expected = Color.fromHex(mAtchingRule.settings.foreground!);
+		if (!color.equAls(expected)) {
+			throw new Error(`[${this._theme.lAbel}]: Unexpected color ${Color.FormAt.CSS.formAtHexA(color)} for ${scopes}. Expected ${Color.FormAt.CSS.formAtHexA(expected)} coming in from ${mAtchingRule.rAwSelector}`);
 		}
-		return this._generateExplanation(matchingRule.rawSelector, color);
+		return this._generAteExplAnAtion(mAtchingRule.rAwSelector, color);
 	}
 
-	private _findMatchingThemeRule(scopes: string): ThemeRule {
-		if (!this._cache[scopes]) {
-			this._cache[scopes] = findMatchingThemeRule(this._theme, scopes.split(' '))!;
+	privAte _findMAtchingThemeRule(scopes: string): ThemeRule {
+		if (!this._cAche[scopes]) {
+			this._cAche[scopes] = findMAtchingThemeRule(this._theme, scopes.split(' '))!;
 		}
-		return this._cache[scopes];
+		return this._cAche[scopes];
 	}
 }
 
-class Snapper {
+clAss SnApper {
 
 	constructor(
-		@IModeService private readonly modeService: IModeService,
-		@IWorkbenchThemeService private readonly themeService: IWorkbenchThemeService,
-		@ITextMateService private readonly textMateService: ITextMateService
+		@IModeService privAte reAdonly modeService: IModeService,
+		@IWorkbenchThemeService privAte reAdonly themeService: IWorkbenchThemeService,
+		@ITextMAteService privAte reAdonly textMAteService: ITextMAteService
 	) {
 	}
 
-	private _themedTokenize(grammar: IGrammar, lines: string[]): IThemedToken[] {
-		let colorMap = TokenizationRegistry.getColorMap();
-		let state: StackElement | null = null;
+	privAte _themedTokenize(grAmmAr: IGrAmmAr, lines: string[]): IThemedToken[] {
+		let colorMAp = TokenizAtionRegistry.getColorMAp();
+		let stAte: StAckElement | null = null;
 		let result: IThemedToken[] = [], resultLen = 0;
 		for (let i = 0, len = lines.length; i < len; i++) {
 			let line = lines[i];
 
-			let tokenizationResult = grammar.tokenizeLine2(line, state);
+			let tokenizAtionResult = grAmmAr.tokenizeLine2(line, stAte);
 
-			for (let j = 0, lenJ = tokenizationResult.tokens.length >>> 1; j < lenJ; j++) {
-				let startOffset = tokenizationResult.tokens[(j << 1)];
-				let metadata = tokenizationResult.tokens[(j << 1) + 1];
-				let endOffset = j + 1 < lenJ ? tokenizationResult.tokens[((j + 1) << 1)] : line.length;
-				let tokenText = line.substring(startOffset, endOffset);
+			for (let j = 0, lenJ = tokenizAtionResult.tokens.length >>> 1; j < lenJ; j++) {
+				let stArtOffset = tokenizAtionResult.tokens[(j << 1)];
+				let metAdAtA = tokenizAtionResult.tokens[(j << 1) + 1];
+				let endOffset = j + 1 < lenJ ? tokenizAtionResult.tokens[((j + 1) << 1)] : line.length;
+				let tokenText = line.substring(stArtOffset, endOffset);
 
-				let color = TokenMetadata.getForeground(metadata);
+				let color = TokenMetAdAtA.getForeground(metAdAtA);
 
 				result[resultLen++] = {
 					text: tokenText,
-					color: colorMap![color]
+					color: colorMAp![color]
 				};
 			}
 
-			state = tokenizationResult.ruleStack;
+			stAte = tokenizAtionResult.ruleStAck;
 		}
 
 		return result;
 	}
 
-	private _tokenize(grammar: IGrammar, lines: string[]): IToken[] {
-		let state: StackElement | null = null;
+	privAte _tokenize(grAmmAr: IGrAmmAr, lines: string[]): IToken[] {
+		let stAte: StAckElement | null = null;
 		let result: IToken[] = [];
 		let resultLen = 0;
 		for (let i = 0, len = lines.length; i < len; i++) {
 			let line = lines[i];
 
-			let tokenizationResult = grammar.tokenizeLine(line, state);
-			let lastScopes: string | null = null;
+			let tokenizAtionResult = grAmmAr.tokenizeLine(line, stAte);
+			let lAstScopes: string | null = null;
 
-			for (let j = 0, lenJ = tokenizationResult.tokens.length; j < lenJ; j++) {
-				let token = tokenizationResult.tokens[j];
-				let tokenText = line.substring(token.startIndex, token.endIndex);
+			for (let j = 0, lenJ = tokenizAtionResult.tokens.length; j < lenJ; j++) {
+				let token = tokenizAtionResult.tokens[j];
+				let tokenText = line.substring(token.stArtIndex, token.endIndex);
 				let tokenScopes = token.scopes.join(' ');
 
-				if (lastScopes === tokenScopes) {
+				if (lAstScopes === tokenScopes) {
 					result[resultLen - 1].c += tokenText;
 				} else {
-					lastScopes = tokenScopes;
+					lAstScopes = tokenScopes;
 					result[resultLen++] = {
 						c: tokenText,
 						t: tokenScopes,
 						r: {
-							dark_plus: undefined,
+							dArk_plus: undefined,
 							light_plus: undefined,
-							dark_vs: undefined,
+							dArk_vs: undefined,
 							light_vs: undefined,
-							hc_black: undefined,
+							hc_blAck: undefined,
 						}
 					};
 				}
 			}
 
-			state = tokenizationResult.ruleStack;
+			stAte = tokenizAtionResult.ruleStAck;
 		}
 		return result;
 	}
 
-	private async _getThemesResult(grammar: IGrammar, lines: string[]): Promise<IThemesResult> {
+	privAte Async _getThemesResult(grAmmAr: IGrAmmAr, lines: string[]): Promise<IThemesResult> {
 		let currentTheme = this.themeService.getColorTheme();
 
-		let getThemeName = (id: string) => {
-			let part = 'vscode-theme-defaults-themes-';
-			let startIdx = id.indexOf(part);
-			if (startIdx !== -1) {
-				return id.substring(startIdx + part.length, id.length - 5);
+		let getThemeNAme = (id: string) => {
+			let pArt = 'vscode-theme-defAults-themes-';
+			let stArtIdx = id.indexOf(pArt);
+			if (stArtIdx !== -1) {
+				return id.substring(stArtIdx + pArt.length, id.length - 5);
 			}
 			return undefined;
 		};
 
 		let result: IThemesResult = {};
 
-		let themeDatas = await this.themeService.getColorThemes();
-		let defaultThemes = themeDatas.filter(themeData => !!getThemeName(themeData.id));
-		for (let defaultTheme of defaultThemes) {
-			let themeId = defaultTheme.id;
-			let success = await this.themeService.setColorTheme(themeId, undefined);
+		let themeDAtAs = AwAit this.themeService.getColorThemes();
+		let defAultThemes = themeDAtAs.filter(themeDAtA => !!getThemeNAme(themeDAtA.id));
+		for (let defAultTheme of defAultThemes) {
+			let themeId = defAultTheme.id;
+			let success = AwAit this.themeService.setColorTheme(themeId, undefined);
 			if (success) {
-				let themeName = getThemeName(themeId);
-				result[themeName!] = {
+				let themeNAme = getThemeNAme(themeId);
+				result[themeNAme!] = {
 					document: new ThemeDocument(this.themeService.getColorTheme()),
-					tokens: this._themedTokenize(grammar, lines)
+					tokens: this._themedTokenize(grAmmAr, lines)
 				};
 			}
 		}
-		await this.themeService.setColorTheme(currentTheme.id, undefined);
+		AwAit this.themeService.setColorTheme(currentTheme.id, undefined);
 		return result;
 	}
 
-	private _enrichResult(result: IToken[], themesResult: IThemesResult): void {
-		let index: { [themeName: string]: number; } = {};
-		let themeNames = Object.keys(themesResult);
-		for (const themeName of themeNames) {
-			index[themeName] = 0;
+	privAte _enrichResult(result: IToken[], themesResult: IThemesResult): void {
+		let index: { [themeNAme: string]: number; } = {};
+		let themeNAmes = Object.keys(themesResult);
+		for (const themeNAme of themeNAmes) {
+			index[themeNAme] = 0;
 		}
 
 		for (let i = 0, len = result.length; i < len; i++) {
 			let token = result[i];
 
-			for (const themeName of themeNames) {
-				let themedToken = themesResult[themeName].tokens[index[themeName]];
+			for (const themeNAme of themeNAmes) {
+				let themedToken = themesResult[themeNAme].tokens[index[themeNAme]];
 
 				themedToken.text = themedToken.text.substr(token.c.length);
-				token.r[themeName] = themesResult[themeName].document.explainTokenColor(token.t, themedToken.color);
+				token.r[themeNAme] = themesResult[themeNAme].document.explAinTokenColor(token.t, themedToken.color);
 				if (themedToken.text.length === 0) {
-					index[themeName]++;
+					index[themeNAme]++;
 				}
 			}
 		}
 	}
 
-	public captureSyntaxTokens(fileName: string, content: string): Promise<IToken[]> {
-		const modeId = this.modeService.getModeIdByFilepathOrFirstLine(URI.file(fileName));
-		return this.textMateService.createGrammar(modeId!).then((grammar) => {
-			if (!grammar) {
+	public cAptureSyntAxTokens(fileNAme: string, content: string): Promise<IToken[]> {
+		const modeId = this.modeService.getModeIdByFilepAthOrFirstLine(URI.file(fileNAme));
+		return this.textMAteService.creAteGrAmmAr(modeId!).then((grAmmAr) => {
+			if (!grAmmAr) {
 				return [];
 			}
 			let lines = content.split(/\r\n|\r|\n/);
 
-			let result = this._tokenize(grammar, lines);
-			return this._getThemesResult(grammar, lines).then((themesResult) => {
+			let result = this._tokenize(grAmmAr, lines);
+			return this._getThemesResult(grAmmAr, lines).then((themesResult) => {
 				this._enrichResult(result, themesResult);
 				return result.filter(t => t.c.length > 0);
 			});
@@ -231,27 +231,27 @@ class Snapper {
 	}
 }
 
-CommandsRegistry.registerCommand('_workbench.captureSyntaxTokens', function (accessor: ServicesAccessor, resource: URI) {
+CommAndsRegistry.registerCommAnd('_workbench.cAptureSyntAxTokens', function (Accessor: ServicesAccessor, resource: URI) {
 
 	let process = (resource: URI) => {
-		let fileService = accessor.get(IFileService);
-		let fileName = basename(resource);
-		let snapper = accessor.get(IInstantiationService).createInstance(Snapper);
+		let fileService = Accessor.get(IFileService);
+		let fileNAme = bAsenAme(resource);
+		let snApper = Accessor.get(IInstAntiAtionService).creAteInstAnce(SnApper);
 
-		return fileService.readFile(resource).then(content => {
-			return snapper.captureSyntaxTokens(fileName, content.value.toString());
+		return fileService.reAdFile(resource).then(content => {
+			return snApper.cAptureSyntAxTokens(fileNAme, content.vAlue.toString());
 		});
 	};
 
 	if (!resource) {
-		const editorService = accessor.get(IEditorService);
-		const file = editorService.activeEditor ? EditorResourceAccessor.getCanonicalUri(editorService.activeEditor, { filterByScheme: Schemas.file }) : null;
+		const editorService = Accessor.get(IEditorService);
+		const file = editorService.ActiveEditor ? EditorResourceAccessor.getCAnonicAlUri(editorService.ActiveEditor, { filterByScheme: SchemAs.file }) : null;
 		if (file) {
 			process(file).then(result => {
 				console.log(result);
 			});
 		} else {
-			console.log('No file editor active');
+			console.log('No file editor Active');
 		}
 	} else {
 		return process(resource);

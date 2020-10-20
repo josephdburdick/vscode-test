@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
+import { Event } from 'vs/bAse/common/event';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IWindowOpenable, IOpenWindowOptions, isFolderToOpen, isWorkspaceToOpen, IOpenEmptyWindowOptions } from 'vs/platform/windows/common/windows';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { IWindowOpenAble, IOpenWindowOptions, isFolderToOpen, isWorkspAceToOpen, IOpenEmptyWindowOptions } from 'vs/plAtform/windows/common/windows';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-export class NativeHostService extends Disposable implements IHostService {
+export clAss NAtiveHostService extends DisposAble implements IHostService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 	}
 
 	//#region Focus
 
-	get onDidChangeFocus(): Event<boolean> { return this._onDidChangeFocus; }
-	private _onDidChangeFocus: Event<boolean> = Event.latch(Event.any(
-		Event.map(Event.filter(this.nativeHostService.onDidFocusWindow, id => id === this.nativeHostService.windowId), () => this.hasFocus),
-		Event.map(Event.filter(this.nativeHostService.onDidBlurWindow, id => id === this.nativeHostService.windowId), () => this.hasFocus)
+	get onDidChAngeFocus(): Event<booleAn> { return this._onDidChAngeFocus; }
+	privAte _onDidChAngeFocus: Event<booleAn> = Event.lAtch(Event.Any(
+		Event.mAp(Event.filter(this.nAtiveHostService.onDidFocusWindow, id => id === this.nAtiveHostService.windowId), () => this.hAsFocus),
+		Event.mAp(Event.filter(this.nAtiveHostService.onDidBlurWindow, id => id === this.nAtiveHostService.windowId), () => this.hAsFocus)
 	));
 
-	get hasFocus(): boolean {
-		return document.hasFocus();
+	get hAsFocus(): booleAn {
+		return document.hAsFocus();
 	}
 
-	async hadLastFocus(): Promise<boolean> {
-		const activeWindowId = await this.nativeHostService.getActiveWindowId();
+	Async hAdLAstFocus(): Promise<booleAn> {
+		const ActiveWindowId = AwAit this.nAtiveHostService.getActiveWindowId();
 
-		if (typeof activeWindowId === 'undefined') {
-			return false;
+		if (typeof ActiveWindowId === 'undefined') {
+			return fAlse;
 		}
 
-		return activeWindowId === this.nativeHostService.windowId;
+		return ActiveWindowId === this.nAtiveHostService.windowId;
 	}
 
 	//#endregion
@@ -52,41 +52,41 @@ export class NativeHostService extends Disposable implements IHostService {
 	//#region Window
 
 	openWindow(options?: IOpenEmptyWindowOptions): Promise<void>;
-	openWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void>;
-	openWindow(arg1?: IOpenEmptyWindowOptions | IWindowOpenable[], arg2?: IOpenWindowOptions): Promise<void> {
-		if (Array.isArray(arg1)) {
-			return this.doOpenWindow(arg1, arg2);
+	openWindow(toOpen: IWindowOpenAble[], options?: IOpenWindowOptions): Promise<void>;
+	openWindow(Arg1?: IOpenEmptyWindowOptions | IWindowOpenAble[], Arg2?: IOpenWindowOptions): Promise<void> {
+		if (ArrAy.isArrAy(Arg1)) {
+			return this.doOpenWindow(Arg1, Arg2);
 		}
 
-		return this.doOpenEmptyWindow(arg1);
+		return this.doOpenEmptyWindow(Arg1);
 	}
 
-	private doOpenWindow(toOpen: IWindowOpenable[], options?: IOpenWindowOptions): Promise<void> {
+	privAte doOpenWindow(toOpen: IWindowOpenAble[], options?: IOpenWindowOptions): Promise<void> {
 		if (!!this.environmentService.remoteAuthority) {
-			toOpen.forEach(openable => openable.label = openable.label || this.getRecentLabel(openable));
+			toOpen.forEAch(openAble => openAble.lAbel = openAble.lAbel || this.getRecentLAbel(openAble));
 		}
 
-		return this.nativeHostService.openWindow(toOpen, options);
+		return this.nAtiveHostService.openWindow(toOpen, options);
 	}
 
-	private getRecentLabel(openable: IWindowOpenable): string {
-		if (isFolderToOpen(openable)) {
-			return this.labelService.getWorkspaceLabel(openable.folderUri, { verbose: true });
+	privAte getRecentLAbel(openAble: IWindowOpenAble): string {
+		if (isFolderToOpen(openAble)) {
+			return this.lAbelService.getWorkspAceLAbel(openAble.folderUri, { verbose: true });
 		}
 
-		if (isWorkspaceToOpen(openable)) {
-			return this.labelService.getWorkspaceLabel({ id: '', configPath: openable.workspaceUri }, { verbose: true });
+		if (isWorkspAceToOpen(openAble)) {
+			return this.lAbelService.getWorkspAceLAbel({ id: '', configPAth: openAble.workspAceUri }, { verbose: true });
 		}
 
-		return this.labelService.getUriLabel(openable.fileUri);
+		return this.lAbelService.getUriLAbel(openAble.fileUri);
 	}
 
-	private doOpenEmptyWindow(options?: IOpenEmptyWindowOptions): Promise<void> {
-		return this.nativeHostService.openWindow(options);
+	privAte doOpenEmptyWindow(options?: IOpenEmptyWindowOptions): Promise<void> {
+		return this.nAtiveHostService.openWindow(options);
 	}
 
 	toggleFullScreen(): Promise<void> {
-		return this.nativeHostService.toggleFullScreen();
+		return this.nAtiveHostService.toggleFullScreen();
 	}
 
 	//#endregion
@@ -94,19 +94,19 @@ export class NativeHostService extends Disposable implements IHostService {
 
 	//#region Lifecycle
 
-	focus(options?: { force: boolean }): Promise<void> {
-		return this.nativeHostService.focusWindow(options);
+	focus(options?: { force: booleAn }): Promise<void> {
+		return this.nAtiveHostService.focusWindow(options);
 	}
 
-	restart(): Promise<void> {
-		return this.nativeHostService.relaunch();
+	restArt(): Promise<void> {
+		return this.nAtiveHostService.relAunch();
 	}
 
-	reload(): Promise<void> {
-		return this.nativeHostService.reload();
+	reloAd(): Promise<void> {
+		return this.nAtiveHostService.reloAd();
 	}
 
 	//#endregion
 }
 
-registerSingleton(IHostService, NativeHostService, true);
+registerSingleton(IHostService, NAtiveHostService, true);

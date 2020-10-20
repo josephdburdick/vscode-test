@@ -1,98 +1,98 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import * as nls from 'vs/nls';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
+import { Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import * As nls from 'vs/nls';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
 import { Memento } from 'vs/workbench/common/memento';
 import { CustomEditorDescriptor, CustomEditorInfo, CustomEditorPriority } from 'vs/workbench/contrib/customEditor/common/customEditor';
 import { customEditorsExtensionPoint, ICustomEditorsExtensionPoint } from 'vs/workbench/contrib/customEditor/common/extensionPoint';
 import { IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 import { DEFAULT_EDITOR_ID } from 'vs/workbench/services/editor/common/editorOpenWith';
 
-const builtinProviderDisplayName = nls.localize('builtinProviderDisplayName', "Built-in");
+const builtinProviderDisplAyNAme = nls.locAlize('builtinProviderDisplAyNAme', "Built-in");
 
-export const defaultCustomEditor = new CustomEditorInfo({
+export const defAultCustomEditor = new CustomEditorInfo({
 	id: DEFAULT_EDITOR_ID,
-	displayName: nls.localize('promptOpenWith.defaultEditor.displayName', "Text Editor"),
-	providerDisplayName: builtinProviderDisplayName,
+	displAyNAme: nls.locAlize('promptOpenWith.defAultEditor.displAyNAme', "Text Editor"),
+	providerDisplAyNAme: builtinProviderDisplAyNAme,
 	selector: [
-		{ filenamePattern: '*' }
+		{ filenAmePAttern: '*' }
 	],
-	priority: CustomEditorPriority.default,
+	priority: CustomEditorPriority.defAult,
 });
 
-export class ContributedCustomEditors extends Disposable {
+export clAss ContributedCustomEditors extends DisposAble {
 
-	private static readonly CUSTOM_EDITORS_STORAGE_ID = 'customEditors';
-	private static readonly CUSTOM_EDITORS_ENTRY_ID = 'editors';
+	privAte stAtic reAdonly CUSTOM_EDITORS_STORAGE_ID = 'customEditors';
+	privAte stAtic reAdonly CUSTOM_EDITORS_ENTRY_ID = 'editors';
 
-	private readonly _editors = new Map<string, CustomEditorInfo>();
-	private readonly _memento: Memento;
+	privAte reAdonly _editors = new MAp<string, CustomEditorInfo>();
+	privAte reAdonly _memento: Memento;
 
-	constructor(storageService: IStorageService) {
+	constructor(storAgeService: IStorAgeService) {
 		super();
 
-		this._memento = new Memento(ContributedCustomEditors.CUSTOM_EDITORS_STORAGE_ID, storageService);
+		this._memento = new Memento(ContributedCustomEditors.CUSTOM_EDITORS_STORAGE_ID, storAgeService);
 
-		const mementoObject = this._memento.getMemento(StorageScope.GLOBAL);
-		for (const info of (mementoObject[ContributedCustomEditors.CUSTOM_EDITORS_ENTRY_ID] || []) as CustomEditorDescriptor[]) {
-			this.add(new CustomEditorInfo(info));
+		const mementoObject = this._memento.getMemento(StorAgeScope.GLOBAL);
+		for (const info of (mementoObject[ContributedCustomEditors.CUSTOM_EDITORS_ENTRY_ID] || []) As CustomEditorDescriptor[]) {
+			this.Add(new CustomEditorInfo(info));
 		}
 
-		customEditorsExtensionPoint.setHandler(extensions => {
-			this.update(extensions);
+		customEditorsExtensionPoint.setHAndler(extensions => {
+			this.updAte(extensions);
 		});
 	}
 
-	private readonly _onChange = this._register(new Emitter<void>());
-	public readonly onChange = this._onChange.event;
+	privAte reAdonly _onChAnge = this._register(new Emitter<void>());
+	public reAdonly onChAnge = this._onChAnge.event;
 
-	private update(extensions: readonly IExtensionPointUser<ICustomEditorsExtensionPoint[]>[]) {
-		this._editors.clear();
+	privAte updAte(extensions: reAdonly IExtensionPointUser<ICustomEditorsExtensionPoint[]>[]) {
+		this._editors.cleAr();
 
 		for (const extension of extensions) {
-			for (const webviewEditorContribution of extension.value) {
-				this.add(new CustomEditorInfo({
+			for (const webviewEditorContribution of extension.vAlue) {
+				this.Add(new CustomEditorInfo({
 					id: webviewEditorContribution.viewType,
-					displayName: webviewEditorContribution.displayName,
-					providerDisplayName: extension.description.isBuiltin ? builtinProviderDisplayName : extension.description.displayName || extension.description.identifier.value,
+					displAyNAme: webviewEditorContribution.displAyNAme,
+					providerDisplAyNAme: extension.description.isBuiltin ? builtinProviderDisplAyNAme : extension.description.displAyNAme || extension.description.identifier.vAlue,
 					selector: webviewEditorContribution.selector || [],
 					priority: getPriorityFromContribution(webviewEditorContribution, extension.description),
 				}));
 			}
 		}
 
-		const mementoObject = this._memento.getMemento(StorageScope.GLOBAL);
-		mementoObject[ContributedCustomEditors.CUSTOM_EDITORS_ENTRY_ID] = Array.from(this._editors.values());
-		this._memento.saveMemento();
+		const mementoObject = this._memento.getMemento(StorAgeScope.GLOBAL);
+		mementoObject[ContributedCustomEditors.CUSTOM_EDITORS_ENTRY_ID] = ArrAy.from(this._editors.vAlues());
+		this._memento.sAveMemento();
 
-		this._onChange.fire();
+		this._onChAnge.fire();
 	}
 
-	public [Symbol.iterator](): Iterator<CustomEditorInfo> {
-		return this._editors.values();
+	public [Symbol.iterAtor](): IterAtor<CustomEditorInfo> {
+		return this._editors.vAlues();
 	}
 
 	public get(viewType: string): CustomEditorInfo | undefined {
-		return viewType === defaultCustomEditor.id
-			? defaultCustomEditor
+		return viewType === defAultCustomEditor.id
+			? defAultCustomEditor
 			: this._editors.get(viewType);
 	}
 
-	public getContributedEditors(resource: URI): readonly CustomEditorInfo[] {
-		return Array.from(this._editors.values())
-			.filter(customEditor => customEditor.matches(resource));
+	public getContributedEditors(resource: URI): reAdonly CustomEditorInfo[] {
+		return ArrAy.from(this._editors.vAlues())
+			.filter(customEditor => customEditor.mAtches(resource));
 	}
 
-	private add(info: CustomEditorInfo): void {
-		if (info.id === defaultCustomEditor.id || this._editors.has(info.id)) {
-			console.error(`Custom editor with id '${info.id}' already registered`);
+	privAte Add(info: CustomEditorInfo): void {
+		if (info.id === defAultCustomEditor.id || this._editors.hAs(info.id)) {
+			console.error(`Custom editor with id '${info.id}' AlreAdy registered`);
 			return;
 		}
 		this._editors.set(info.id, info);
@@ -104,15 +104,15 @@ function getPriorityFromContribution(
 	extension: IExtensionDescription,
 ): CustomEditorPriority {
 	switch (contribution.priority) {
-		case CustomEditorPriority.default:
-		case CustomEditorPriority.option:
+		cAse CustomEditorPriority.defAult:
+		cAse CustomEditorPriority.option:
 			return contribution.priority;
 
-		case CustomEditorPriority.builtin:
-			// Builtin is only valid for builtin extensions
-			return extension.isBuiltin ? CustomEditorPriority.builtin : CustomEditorPriority.default;
+		cAse CustomEditorPriority.builtin:
+			// Builtin is only vAlid for builtin extensions
+			return extension.isBuiltin ? CustomEditorPriority.builtin : CustomEditorPriority.defAult;
 
-		default:
-			return CustomEditorPriority.default;
+		defAult:
+			return CustomEditorPriority.defAult;
 	}
 }

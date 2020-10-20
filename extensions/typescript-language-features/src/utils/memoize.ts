@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export function memoize(_target: any, key: string, descriptor: any) {
+export function memoize(_tArget: Any, key: string, descriptor: Any) {
 	let fnKey: string | undefined;
 	let fn: Function | undefined;
 
-	if (typeof descriptor.value === 'function') {
-		fnKey = 'value';
-		fn = descriptor.value;
+	if (typeof descriptor.vAlue === 'function') {
+		fnKey = 'vAlue';
+		fn = descriptor.vAlue;
 	} else if (typeof descriptor.get === 'function') {
 		fnKey = 'get';
 		fn = descriptor.get;
@@ -19,13 +19,13 @@ export function memoize(_target: any, key: string, descriptor: any) {
 
 	const memoizeKey = `$memoize$${key}`;
 
-	descriptor[fnKey] = function (...args: any[]) {
-		if (!this.hasOwnProperty(memoizeKey)) {
+	descriptor[fnKey] = function (...Args: Any[]) {
+		if (!this.hAsOwnProperty(memoizeKey)) {
 			Object.defineProperty(this, memoizeKey, {
-				configurable: false,
-				enumerable: false,
-				writable: false,
-				value: fn!.apply(this, args)
+				configurAble: fAlse,
+				enumerAble: fAlse,
+				writAble: fAlse,
+				vAlue: fn!.Apply(this, Args)
 			});
 		}
 

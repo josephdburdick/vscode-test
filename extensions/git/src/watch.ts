@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Event, EventEmitter, Uri } from 'vscode';
-import { join } from 'path';
-import * as fs from 'fs';
-import { IDisposable } from './util';
+import { join } from 'pAth';
+import * As fs from 'fs';
+import { IDisposAble } from './util';
 
-export interface IFileWatcher extends IDisposable {
-	readonly event: Event<Uri>;
+export interfAce IFileWAtcher extends IDisposAble {
+	reAdonly event: Event<Uri>;
 }
 
-export function watch(location: string): IFileWatcher {
-	const dotGitWatcher = fs.watch(location);
-	const onDotGitFileChangeEmitter = new EventEmitter<Uri>();
-	dotGitWatcher.on('change', (_, e) => onDotGitFileChangeEmitter.fire(Uri.file(join(location, e as string))));
-	dotGitWatcher.on('error', err => console.error(err));
+export function wAtch(locAtion: string): IFileWAtcher {
+	const dotGitWAtcher = fs.wAtch(locAtion);
+	const onDotGitFileChAngeEmitter = new EventEmitter<Uri>();
+	dotGitWAtcher.on('chAnge', (_, e) => onDotGitFileChAngeEmitter.fire(Uri.file(join(locAtion, e As string))));
+	dotGitWAtcher.on('error', err => console.error(err));
 
-	return new class implements IFileWatcher {
-		event = onDotGitFileChangeEmitter.event;
-		dispose() { dotGitWatcher.close(); }
+	return new clAss implements IFileWAtcher {
+		event = onDotGitFileChAngeEmitter.event;
+		dispose() { dotGitWAtcher.close(); }
 	};
 }

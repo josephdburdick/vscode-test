@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { IIdentifiedSingleEditOperAtion } from 'vs/editor/common/model';
 
-export class EditOperation {
+export clAss EditOperAtion {
 
-	public static insert(position: Position, text: string): IIdentifiedSingleEditOperation {
+	public stAtic insert(position: Position, text: string): IIdentifiedSingleEditOperAtion {
 		return {
-			range: new Range(position.lineNumber, position.column, position.lineNumber, position.column),
+			rAnge: new RAnge(position.lineNumber, position.column, position.lineNumber, position.column),
 			text: text,
-			forceMoveMarkers: true
+			forceMoveMArkers: true
 		};
 	}
 
-	public static delete(range: Range): IIdentifiedSingleEditOperation {
+	public stAtic delete(rAnge: RAnge): IIdentifiedSingleEditOperAtion {
 		return {
-			range: range,
+			rAnge: rAnge,
 			text: null
 		};
 	}
 
-	public static replace(range: Range, text: string | null): IIdentifiedSingleEditOperation {
+	public stAtic replAce(rAnge: RAnge, text: string | null): IIdentifiedSingleEditOperAtion {
 		return {
-			range: range,
+			rAnge: rAnge,
 			text: text
 		};
 	}
 
-	public static replaceMove(range: Range, text: string | null): IIdentifiedSingleEditOperation {
+	public stAtic replAceMove(rAnge: RAnge, text: string | null): IIdentifiedSingleEditOperAtion {
 		return {
-			range: range,
+			rAnge: rAnge,
 			text: text,
-			forceMoveMarkers: true
+			forceMoveMArkers: true
 		};
 	}
 }

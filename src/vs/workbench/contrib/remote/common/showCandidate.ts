@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { IRemoteExplorerService } from 'vs/workbench/services/remote/common/remoteExplorerService';
 
-export class ShowCandidateContribution extends Disposable implements IWorkbenchContribution {
+export clAss ShowCAndidAteContribution extends DisposAble implements IWorkbenchContribution {
 	constructor(
 		@IRemoteExplorerService remoteExplorerService: IRemoteExplorerService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 	) {
 		super();
-		const showPortCandidate = environmentService.options?.tunnelProvider?.showPortCandidate;
-		if (showPortCandidate) {
-			this._register(remoteExplorerService.setCandidateFilter(async (candidates: { host: string, port: number, detail: string }[]): Promise<{ host: string, port: number, detail: string }[]> => {
-				const filters: boolean[] = await Promise.all(candidates.map(candidate => showPortCandidate(candidate.host, candidate.port, candidate.detail)));
-				const filteredCandidates: { host: string, port: number, detail: string }[] = [];
-				if (filters.length !== candidates.length) {
-					return candidates;
+		const showPortCAndidAte = environmentService.options?.tunnelProvider?.showPortCAndidAte;
+		if (showPortCAndidAte) {
+			this._register(remoteExplorerService.setCAndidAteFilter(Async (cAndidAtes: { host: string, port: number, detAil: string }[]): Promise<{ host: string, port: number, detAil: string }[]> => {
+				const filters: booleAn[] = AwAit Promise.All(cAndidAtes.mAp(cAndidAte => showPortCAndidAte(cAndidAte.host, cAndidAte.port, cAndidAte.detAil)));
+				const filteredCAndidAtes: { host: string, port: number, detAil: string }[] = [];
+				if (filters.length !== cAndidAtes.length) {
+					return cAndidAtes;
 				}
-				for (let i = 0; i < candidates.length; i++) {
+				for (let i = 0; i < cAndidAtes.length; i++) {
 					if (filters[i]) {
-						filteredCandidates.push(candidates[i]);
+						filteredCAndidAtes.push(cAndidAtes[i]);
 					}
 				}
-				return filteredCandidates;
+				return filteredCAndidAtes;
 			}));
 		}
 	}

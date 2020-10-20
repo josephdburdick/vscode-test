@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
+import * As nls from 'vs/nls';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
 import 'vs/workbench/contrib/comments/browser/commentsEditorContribution';
 import { ICommentService, CommentService } from 'vs/workbench/contrib/comments/browser/commentService';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
 
-export interface ICommentsConfiguration {
-	openPanel: 'neverOpen' | 'openOnSessionStart' | 'openOnSessionStartWithComments';
+export interfAce ICommentsConfigurAtion {
+	openPAnel: 'neverOpen' | 'openOnSessionStArt' | 'openOnSessionStArtWithComments';
 }
 
-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
+Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion).registerConfigurAtion({
 	id: 'comments',
 	order: 20,
-	title: nls.localize('commentsConfigurationTitle', "Comments"),
+	title: nls.locAlize('commentsConfigurAtionTitle', "Comments"),
 	type: 'object',
 	properties: {
-		'comments.openPanel': {
-			enum: ['neverOpen', 'openOnSessionStart', 'openOnSessionStartWithComments'],
-			default: 'openOnSessionStartWithComments',
-			description: nls.localize('openComments', "Controls when the comments panel should open.")
+		'comments.openPAnel': {
+			enum: ['neverOpen', 'openOnSessionStArt', 'openOnSessionStArtWithComments'],
+			defAult: 'openOnSessionStArtWithComments',
+			description: nls.locAlize('openComments', "Controls when the comments pAnel should open.")
 		}
 	}
 });

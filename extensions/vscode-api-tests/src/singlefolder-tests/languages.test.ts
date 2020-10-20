@@ -1,190 +1,190 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { join } from 'path';
-import * as vscode from 'vscode';
-import { createRandomFile, testFs } from '../utils';
+import * As Assert from 'Assert';
+import { join } from 'pAth';
+import * As vscode from 'vscode';
+import { creAteRAndomFile, testFs } from '../utils';
 
-suite('vscode API - languages', () => {
+suite('vscode API - lAnguAges', () => {
 
-	const isWindows = process.platform === 'win32';
+	const isWindows = process.plAtform === 'win32';
 
 	function positionToString(p: vscode.Position) {
-		return `[${p.character}/${p.line}]`;
+		return `[${p.chArActer}/${p.line}]`;
 	}
 
-	function rangeToString(r: vscode.Range) {
-		return `[${positionToString(r.start)}/${positionToString(r.end)}]`;
+	function rAngeToString(r: vscode.RAnge) {
+		return `[${positionToString(r.stArt)}/${positionToString(r.end)}]`;
 	}
 
-	function assertEqualRange(actual: vscode.Range, expected: vscode.Range, message?: string) {
-		assert.equal(rangeToString(actual), rangeToString(expected), message);
+	function AssertEquAlRAnge(ActuAl: vscode.RAnge, expected: vscode.RAnge, messAge?: string) {
+		Assert.equAl(rAngeToString(ActuAl), rAngeToString(expected), messAge);
 	}
 
-	test('setTextDocumentLanguage -> close/open event', async function () {
-		const file = await createRandomFile('foo\nbar\nbar');
-		const doc = await vscode.workspace.openTextDocument(file);
-		const langIdNow = doc.languageId;
+	test('setTextDocumentLAnguAge -> close/open event', Async function () {
+		const file = AwAit creAteRAndomFile('foo\nbAr\nbAr');
+		const doc = AwAit vscode.workspAce.openTextDocument(file);
+		const lAngIdNow = doc.lAnguAgeId;
 		let clock = 0;
-		const disposables: vscode.Disposable[] = [];
+		const disposAbles: vscode.DisposAble[] = [];
 
 		let close = new Promise<void>(resolve => {
-			disposables.push(vscode.workspace.onDidCloseTextDocument(e => {
+			disposAbles.push(vscode.workspAce.onDidCloseTextDocument(e => {
 				if (e === doc) {
-					assert.equal(doc.languageId, langIdNow);
-					assert.equal(clock, 0);
+					Assert.equAl(doc.lAnguAgeId, lAngIdNow);
+					Assert.equAl(clock, 0);
 					clock += 1;
 					resolve();
 				}
 			}));
 		});
 		let open = new Promise<void>(resolve => {
-			disposables.push(vscode.workspace.onDidOpenTextDocument(e => {
-				if (e === doc) { // same instance!
-					assert.equal(doc.languageId, 'json');
-					assert.equal(clock, 1);
+			disposAbles.push(vscode.workspAce.onDidOpenTextDocument(e => {
+				if (e === doc) { // sAme instAnce!
+					Assert.equAl(doc.lAnguAgeId, 'json');
+					Assert.equAl(clock, 1);
 					clock += 1;
 					resolve();
 				}
 			}));
 		});
-		let change = vscode.languages.setTextDocumentLanguage(doc, 'json');
-		await Promise.all([change, close, open]);
-		assert.equal(clock, 2);
-		assert.equal(doc.languageId, 'json');
-		disposables.forEach(disposable => disposable.dispose());
-		disposables.length = 0;
+		let chAnge = vscode.lAnguAges.setTextDocumentLAnguAge(doc, 'json');
+		AwAit Promise.All([chAnge, close, open]);
+		Assert.equAl(clock, 2);
+		Assert.equAl(doc.lAnguAgeId, 'json');
+		disposAbles.forEAch(disposAble => disposAble.dispose());
+		disposAbles.length = 0;
 	});
 
-	test('setTextDocumentLanguage -> error when language does not exist', async function () {
-		const file = await createRandomFile('foo\nbar\nbar');
-		const doc = await vscode.workspace.openTextDocument(file);
+	test('setTextDocumentLAnguAge -> error when lAnguAge does not exist', Async function () {
+		const file = AwAit creAteRAndomFile('foo\nbAr\nbAr');
+		const doc = AwAit vscode.workspAce.openTextDocument(file);
 
 		try {
-			await vscode.languages.setTextDocumentLanguage(doc, 'fooLangDoesNotExist');
-			assert.ok(false);
-		} catch (err) {
-			assert.ok(err);
+			AwAit vscode.lAnguAges.setTextDocumentLAnguAge(doc, 'fooLAngDoesNotExist');
+			Assert.ok(fAlse);
+		} cAtch (err) {
+			Assert.ok(err);
 		}
 	});
 
-	test('diagnostics, read & event', function () {
-		let uri = vscode.Uri.file('/foo/bar.txt');
-		let col1 = vscode.languages.createDiagnosticCollection('foo1');
-		col1.set(uri, [new vscode.Diagnostic(new vscode.Range(0, 0, 0, 12), 'error1')]);
+	test('diAgnostics, reAd & event', function () {
+		let uri = vscode.Uri.file('/foo/bAr.txt');
+		let col1 = vscode.lAnguAges.creAteDiAgnosticCollection('foo1');
+		col1.set(uri, [new vscode.DiAgnostic(new vscode.RAnge(0, 0, 0, 12), 'error1')]);
 
-		let col2 = vscode.languages.createDiagnosticCollection('foo2');
-		col2.set(uri, [new vscode.Diagnostic(new vscode.Range(0, 0, 0, 12), 'error1')]);
+		let col2 = vscode.lAnguAges.creAteDiAgnosticCollection('foo2');
+		col2.set(uri, [new vscode.DiAgnostic(new vscode.RAnge(0, 0, 0, 12), 'error1')]);
 
-		let diag = vscode.languages.getDiagnostics(uri);
-		assert.equal(diag.length, 2);
+		let diAg = vscode.lAnguAges.getDiAgnostics(uri);
+		Assert.equAl(diAg.length, 2);
 
-		let tuples = vscode.languages.getDiagnostics();
-		let found = false;
+		let tuples = vscode.lAnguAges.getDiAgnostics();
+		let found = fAlse;
 		for (let [thisUri,] of tuples) {
 			if (thisUri.toString() === uri.toString()) {
 				found = true;
-				break;
+				breAk;
 			}
 		}
-		assert.ok(tuples.length >= 1);
-		assert.ok(found);
+		Assert.ok(tuples.length >= 1);
+		Assert.ok(found);
 	});
 
-	test('link detector', async function () {
-		const uri = await createRandomFile('class A { // http://a.com }', undefined, '.java');
-		const doc = await vscode.workspace.openTextDocument(uri);
+	test('link detector', Async function () {
+		const uri = AwAit creAteRAndomFile('clAss A { // http://A.com }', undefined, '.jAvA');
+		const doc = AwAit vscode.workspAce.openTextDocument(uri);
 
-		const target = vscode.Uri.file(isWindows ? 'c:\\foo\\bar' : '/foo/bar');
-		const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 5));
+		const tArget = vscode.Uri.file(isWindows ? 'c:\\foo\\bAr' : '/foo/bAr');
+		const rAnge = new vscode.RAnge(new vscode.Position(0, 0), new vscode.Position(0, 5));
 
 		const linkProvider: vscode.DocumentLinkProvider = {
 			provideDocumentLinks: _doc => {
-				return [new vscode.DocumentLink(range, target)];
+				return [new vscode.DocumentLink(rAnge, tArget)];
 			}
 		};
-		vscode.languages.registerDocumentLinkProvider({ language: 'java', scheme: testFs.scheme }, linkProvider);
+		vscode.lAnguAges.registerDocumentLinkProvider({ lAnguAge: 'jAvA', scheme: testFs.scheme }, linkProvider);
 
-		const links = await vscode.commands.executeCommand<vscode.DocumentLink[]>('vscode.executeLinkProvider', doc.uri);
-		assert.equal(2, links && links.length);
-		let [link1, link2] = links!.sort((l1, l2) => l1.range.start.compareTo(l2.range.start));
+		const links = AwAit vscode.commAnds.executeCommAnd<vscode.DocumentLink[]>('vscode.executeLinkProvider', doc.uri);
+		Assert.equAl(2, links && links.length);
+		let [link1, link2] = links!.sort((l1, l2) => l1.rAnge.stArt.compAreTo(l2.rAnge.stArt));
 
-		assert.equal(target.toString(), link1.target && link1.target.toString());
-		assertEqualRange(range, link1.range);
+		Assert.equAl(tArget.toString(), link1.tArget && link1.tArget.toString());
+		AssertEquAlRAnge(rAnge, link1.rAnge);
 
-		assert.equal('http://a.com/', link2.target && link2.target.toString());
-		assertEqualRange(new vscode.Range(new vscode.Position(0, 13), new vscode.Position(0, 25)), link2.range);
+		Assert.equAl('http://A.com/', link2.tArget && link2.tArget.toString());
+		AssertEquAlRAnge(new vscode.RAnge(new vscode.Position(0, 13), new vscode.Position(0, 25)), link2.rAnge);
 	});
 
-	test('diagnostics & CodeActionProvider', async function () {
+	test('diAgnostics & CodeActionProvider', Async function () {
 
-		class D2 extends vscode.Diagnostic {
+		clAss D2 extends vscode.DiAgnostic {
 			customProp = { complex() { } };
 			constructor() {
-				super(new vscode.Range(0, 2, 0, 7), 'sonntag');
+				super(new vscode.RAnge(0, 2, 0, 7), 'sonntAg');
 			}
 		}
 
-		let diag1 = new vscode.Diagnostic(new vscode.Range(0, 0, 0, 5), 'montag');
-		let diag2 = new D2();
+		let diAg1 = new vscode.DiAgnostic(new vscode.RAnge(0, 0, 0, 5), 'montAg');
+		let diAg2 = new D2();
 
-		let ran = false;
-		let uri = vscode.Uri.parse('ttt:path.far');
+		let rAn = fAlse;
+		let uri = vscode.Uri.pArse('ttt:pAth.fAr');
 
-		let r1 = vscode.languages.registerCodeActionsProvider({ pattern: '*.far', scheme: 'ttt' }, {
-			provideCodeActions(_document, _range, ctx): vscode.Command[] {
+		let r1 = vscode.lAnguAges.registerCodeActionsProvider({ pAttern: '*.fAr', scheme: 'ttt' }, {
+			provideCodeActions(_document, _rAnge, ctx): vscode.CommAnd[] {
 
-				assert.equal(ctx.diagnostics.length, 2);
-				let [first, second] = ctx.diagnostics;
-				assert.ok(first === diag1);
-				assert.ok(second === diag2);
-				assert.ok(diag2 instanceof D2);
-				ran = true;
+				Assert.equAl(ctx.diAgnostics.length, 2);
+				let [first, second] = ctx.diAgnostics;
+				Assert.ok(first === diAg1);
+				Assert.ok(second === diAg2);
+				Assert.ok(diAg2 instAnceof D2);
+				rAn = true;
 				return [];
 			}
 		});
 
-		let r2 = vscode.workspace.registerTextDocumentContentProvider('ttt', {
+		let r2 = vscode.workspAce.registerTextDocumentContentProvider('ttt', {
 			provideTextDocumentContent() {
 				return 'this is some text';
 			}
 		});
 
-		let r3 = vscode.languages.createDiagnosticCollection();
-		r3.set(uri, [diag1]);
+		let r3 = vscode.lAnguAges.creAteDiAgnosticCollection();
+		r3.set(uri, [diAg1]);
 
-		let r4 = vscode.languages.createDiagnosticCollection();
-		r4.set(uri, [diag2]);
+		let r4 = vscode.lAnguAges.creAteDiAgnosticCollection();
+		r4.set(uri, [diAg2]);
 
-		await vscode.workspace.openTextDocument(uri);
-		await vscode.commands.executeCommand('vscode.executeCodeActionProvider', uri, new vscode.Range(0, 0, 0, 10));
-		assert.ok(ran);
-		vscode.Disposable.from(r1, r2, r3, r4).dispose();
+		AwAit vscode.workspAce.openTextDocument(uri);
+		AwAit vscode.commAnds.executeCommAnd('vscode.executeCodeActionProvider', uri, new vscode.RAnge(0, 0, 0, 10));
+		Assert.ok(rAn);
+		vscode.DisposAble.from(r1, r2, r3, r4).dispose();
 	});
 
-	test('completions with document filters', async function () {
-		let ran = false;
-		let uri = vscode.Uri.file(join(vscode.workspace.rootPath || '', './bower.json'));
+	test('completions with document filters', Async function () {
+		let rAn = fAlse;
+		let uri = vscode.Uri.file(join(vscode.workspAce.rootPAth || '', './bower.json'));
 
-		let jsonDocumentFilter = [{ language: 'json', pattern: '**/package.json' }, { language: 'json', pattern: '**/bower.json' }, { language: 'json', pattern: '**/.bower.json' }];
+		let jsonDocumentFilter = [{ lAnguAge: 'json', pAttern: '**/pAckAge.json' }, { lAnguAge: 'json', pAttern: '**/bower.json' }, { lAnguAge: 'json', pAttern: '**/.bower.json' }];
 
-		let r1 = vscode.languages.registerCompletionItemProvider(jsonDocumentFilter, {
-			provideCompletionItems: (_document: vscode.TextDocument, _position: vscode.Position, _token: vscode.CancellationToken): vscode.CompletionItem[] => {
-				let proposal = new vscode.CompletionItem('foo');
-				proposal.kind = vscode.CompletionItemKind.Property;
-				ran = true;
-				return [proposal];
+		let r1 = vscode.lAnguAges.registerCompletionItemProvider(jsonDocumentFilter, {
+			provideCompletionItems: (_document: vscode.TextDocument, _position: vscode.Position, _token: vscode.CAncellAtionToken): vscode.CompletionItem[] => {
+				let proposAl = new vscode.CompletionItem('foo');
+				proposAl.kind = vscode.CompletionItemKind.Property;
+				rAn = true;
+				return [proposAl];
 			}
 		});
 
-		await vscode.workspace.openTextDocument(uri);
-		const result = await vscode.commands.executeCommand<vscode.CompletionList>('vscode.executeCompletionItemProvider', uri, new vscode.Position(1, 0));
+		AwAit vscode.workspAce.openTextDocument(uri);
+		const result = AwAit vscode.commAnds.executeCommAnd<vscode.CompletionList>('vscode.executeCompletionItemProvider', uri, new vscode.Position(1, 0));
 		r1.dispose();
-		assert.ok(ran, 'Provider has not been invoked');
-		assert.ok(result!.items.some(i => i.label === 'foo'), 'Results do not include "foo"');
+		Assert.ok(rAn, 'Provider hAs not been invoked');
+		Assert.ok(result!.items.some(i => i.lAbel === 'foo'), 'Results do not include "foo"');
 	});
 
 });

@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { rtrim } from 'vs/base/common/strings';
+import { rtrim } from 'vs/bAse/common/strings';
 
-export function normalizeGitHubUrl(url: string): string {
-	// If the url has a .git suffix, remove it
+export function normAlizeGitHubUrl(url: string): string {
+	// If the url hAs A .git suffix, remove it
 	if (url.endsWith('.git')) {
 		url = url.substr(0, url.length - 4);
 	}
 
-	// Remove trailing slash
+	// Remove trAiling slAsh
 	url = rtrim(url, '/');
 
 	if (url.endsWith('/new')) {

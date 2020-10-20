@@ -1,144 +1,144 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStringDictionary, INumberDictionary } from 'vs/base/common/collections';
-import { URI } from 'vs/base/common/uri';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { IStringDictionAry, INumberDictionAry } from 'vs/bAse/common/collections';
+import { URI } from 'vs/bAse/common/uri';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 
 import { IModelService } from 'vs/editor/common/services/modelService';
 
-import { ILineMatcher, createLineMatcher, ProblemMatcher, ProblemMatch, ApplyToKind, WatchingPattern, getResource } from 'vs/workbench/contrib/tasks/common/problemMatcher';
-import { IMarkerService, IMarkerData, MarkerSeverity } from 'vs/platform/markers/common/markers';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IFileService } from 'vs/platform/files/common/files';
+import { ILineMAtcher, creAteLineMAtcher, ProblemMAtcher, ProblemMAtch, ApplyToKind, WAtchingPAttern, getResource } from 'vs/workbench/contrib/tAsks/common/problemMAtcher';
+import { IMArkerService, IMArkerDAtA, MArkerSeverity } from 'vs/plAtform/mArkers/common/mArkers';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { IFileService } from 'vs/plAtform/files/common/files';
 
 export const enum ProblemCollectorEventKind {
-	BackgroundProcessingBegins = 'backgroundProcessingBegins',
-	BackgroundProcessingEnds = 'backgroundProcessingEnds'
+	BAckgroundProcessingBegins = 'bAckgroundProcessingBegins',
+	BAckgroundProcessingEnds = 'bAckgroundProcessingEnds'
 }
 
-export interface ProblemCollectorEvent {
+export interfAce ProblemCollectorEvent {
 	kind: ProblemCollectorEventKind;
 }
 
-namespace ProblemCollectorEvent {
-	export function create(kind: ProblemCollectorEventKind) {
+nAmespAce ProblemCollectorEvent {
+	export function creAte(kind: ProblemCollectorEventKind) {
 		return Object.freeze({ kind });
 	}
 }
 
-export interface IProblemMatcher {
+export interfAce IProblemMAtcher {
 	processLine(line: string): void;
 }
 
-export abstract class AbstractProblemCollector implements IDisposable {
+export AbstrAct clAss AbstrActProblemCollector implements IDisposAble {
 
-	private matchers: INumberDictionary<ILineMatcher[]>;
-	private activeMatcher: ILineMatcher | null;
-	private _numberOfMatches: number;
-	private _maxMarkerSeverity?: MarkerSeverity;
-	private buffer: string[];
-	private bufferLength: number;
-	private openModels: IStringDictionary<boolean>;
-	private readonly modelListeners = new DisposableStore();
-	private tail: Promise<void> | undefined;
+	privAte mAtchers: INumberDictionAry<ILineMAtcher[]>;
+	privAte ActiveMAtcher: ILineMAtcher | null;
+	privAte _numberOfMAtches: number;
+	privAte _mAxMArkerSeverity?: MArkerSeverity;
+	privAte buffer: string[];
+	privAte bufferLength: number;
+	privAte openModels: IStringDictionAry<booleAn>;
+	privAte reAdonly modelListeners = new DisposAbleStore();
+	privAte tAil: Promise<void> | undefined;
 
 	// [owner] -> ApplyToKind
-	protected applyToByOwner: Map<string, ApplyToKind>;
+	protected ApplyToByOwner: MAp<string, ApplyToKind>;
 	// [owner] -> [resource] -> URI
-	private resourcesToClean: Map<string, Map<string, URI>>;
-	// [owner] -> [resource] -> [markerkey] -> markerData
-	private markers: Map<string, Map<string, Map<string, IMarkerData>>>;
+	privAte resourcesToCleAn: MAp<string, MAp<string, URI>>;
+	// [owner] -> [resource] -> [mArkerkey] -> mArkerDAtA
+	privAte mArkers: MAp<string, MAp<string, MAp<string, IMArkerDAtA>>>;
 	// [owner] -> [resource] -> number;
-	private deliveredMarkers: Map<string, Map<string, number>>;
+	privAte deliveredMArkers: MAp<string, MAp<string, number>>;
 
-	protected _onDidStateChange: Emitter<ProblemCollectorEvent>;
+	protected _onDidStAteChAnge: Emitter<ProblemCollectorEvent>;
 
-	constructor(problemMatchers: ProblemMatcher[], protected markerService: IMarkerService, private modelService: IModelService, fileService?: IFileService) {
-		this.matchers = Object.create(null);
+	constructor(problemMAtchers: ProblemMAtcher[], protected mArkerService: IMArkerService, privAte modelService: IModelService, fileService?: IFileService) {
+		this.mAtchers = Object.creAte(null);
 		this.bufferLength = 1;
-		problemMatchers.map(elem => createLineMatcher(elem, fileService)).forEach((matcher) => {
-			let length = matcher.matchLength;
+		problemMAtchers.mAp(elem => creAteLineMAtcher(elem, fileService)).forEAch((mAtcher) => {
+			let length = mAtcher.mAtchLength;
 			if (length > this.bufferLength) {
 				this.bufferLength = length;
 			}
-			let value = this.matchers[length];
-			if (!value) {
-				value = [];
-				this.matchers[length] = value;
+			let vAlue = this.mAtchers[length];
+			if (!vAlue) {
+				vAlue = [];
+				this.mAtchers[length] = vAlue;
 			}
-			value.push(matcher);
+			vAlue.push(mAtcher);
 		});
 		this.buffer = [];
-		this.activeMatcher = null;
-		this._numberOfMatches = 0;
-		this._maxMarkerSeverity = undefined;
-		this.openModels = Object.create(null);
-		this.applyToByOwner = new Map<string, ApplyToKind>();
-		for (let problemMatcher of problemMatchers) {
-			let current = this.applyToByOwner.get(problemMatcher.owner);
+		this.ActiveMAtcher = null;
+		this._numberOfMAtches = 0;
+		this._mAxMArkerSeverity = undefined;
+		this.openModels = Object.creAte(null);
+		this.ApplyToByOwner = new MAp<string, ApplyToKind>();
+		for (let problemMAtcher of problemMAtchers) {
+			let current = this.ApplyToByOwner.get(problemMAtcher.owner);
 			if (current === undefined) {
-				this.applyToByOwner.set(problemMatcher.owner, problemMatcher.applyTo);
+				this.ApplyToByOwner.set(problemMAtcher.owner, problemMAtcher.ApplyTo);
 			} else {
-				this.applyToByOwner.set(problemMatcher.owner, this.mergeApplyTo(current, problemMatcher.applyTo));
+				this.ApplyToByOwner.set(problemMAtcher.owner, this.mergeApplyTo(current, problemMAtcher.ApplyTo));
 			}
 		}
-		this.resourcesToClean = new Map<string, Map<string, URI>>();
-		this.markers = new Map<string, Map<string, Map<string, IMarkerData>>>();
-		this.deliveredMarkers = new Map<string, Map<string, number>>();
+		this.resourcesToCleAn = new MAp<string, MAp<string, URI>>();
+		this.mArkers = new MAp<string, MAp<string, MAp<string, IMArkerDAtA>>>();
+		this.deliveredMArkers = new MAp<string, MAp<string, number>>();
 		this.modelService.onModelAdded((model) => {
 			this.openModels[model.uri.toString()] = true;
 		}, this, this.modelListeners);
 		this.modelService.onModelRemoved((model) => {
 			delete this.openModels[model.uri.toString()];
 		}, this, this.modelListeners);
-		this.modelService.getModels().forEach(model => this.openModels[model.uri.toString()] = true);
+		this.modelService.getModels().forEAch(model => this.openModels[model.uri.toString()] = true);
 
-		this._onDidStateChange = new Emitter();
+		this._onDidStAteChAnge = new Emitter();
 	}
 
-	public get onDidStateChange(): Event<ProblemCollectorEvent> {
-		return this._onDidStateChange.event;
+	public get onDidStAteChAnge(): Event<ProblemCollectorEvent> {
+		return this._onDidStAteChAnge.event;
 	}
 
 	public processLine(line: string) {
-		if (this.tail) {
-			const oldTail = this.tail;
-			this.tail = oldTail.then(() => {
-				return this.processLineInternal(line);
+		if (this.tAil) {
+			const oldTAil = this.tAil;
+			this.tAil = oldTAil.then(() => {
+				return this.processLineInternAl(line);
 			});
 		} else {
-			this.tail = this.processLineInternal(line);
+			this.tAil = this.processLineInternAl(line);
 		}
 	}
 
-	protected abstract processLineInternal(line: string): Promise<void>;
+	protected AbstrAct processLineInternAl(line: string): Promise<void>;
 
 	public dispose() {
 		this.modelListeners.dispose();
 	}
 
-	public get numberOfMatches(): number {
-		return this._numberOfMatches;
+	public get numberOfMAtches(): number {
+		return this._numberOfMAtches;
 	}
 
-	public get maxMarkerSeverity(): MarkerSeverity | undefined {
-		return this._maxMarkerSeverity;
+	public get mAxMArkerSeverity(): MArkerSeverity | undefined {
+		return this._mAxMArkerSeverity;
 	}
 
-	protected tryFindMarker(line: string): ProblemMatch | null {
-		let result: ProblemMatch | null = null;
-		if (this.activeMatcher) {
-			result = this.activeMatcher.next(line);
+	protected tryFindMArker(line: string): ProblemMAtch | null {
+		let result: ProblemMAtch | null = null;
+		if (this.ActiveMAtcher) {
+			result = this.ActiveMAtcher.next(line);
 			if (result) {
-				this.captureMatch(result);
+				this.cAptureMAtch(result);
 				return result;
 			}
-			this.clearBuffer();
-			this.activeMatcher = null;
+			this.cleArBuffer();
+			this.ActiveMAtcher = null;
 		}
 		if (this.buffer.length < this.bufferLength) {
 			this.buffer.push(line);
@@ -150,234 +150,234 @@ export abstract class AbstractProblemCollector implements IDisposable {
 			this.buffer[end] = line;
 		}
 
-		result = this.tryMatchers();
+		result = this.tryMAtchers();
 		if (result) {
-			this.clearBuffer();
+			this.cleArBuffer();
 		}
 		return result;
 	}
 
-	protected async shouldApplyMatch(result: ProblemMatch): Promise<boolean> {
-		switch (result.description.applyTo) {
-			case ApplyToKind.allDocuments:
+	protected Async shouldApplyMAtch(result: ProblemMAtch): Promise<booleAn> {
+		switch (result.description.ApplyTo) {
+			cAse ApplyToKind.AllDocuments:
 				return true;
-			case ApplyToKind.openDocuments:
-				return !!this.openModels[(await result.resource).toString()];
-			case ApplyToKind.closedDocuments:
-				return !this.openModels[(await result.resource).toString()];
-			default:
+			cAse ApplyToKind.openDocuments:
+				return !!this.openModels[(AwAit result.resource).toString()];
+			cAse ApplyToKind.closedDocuments:
+				return !this.openModels[(AwAit result.resource).toString()];
+			defAult:
 				return true;
 		}
 	}
 
-	private mergeApplyTo(current: ApplyToKind, value: ApplyToKind): ApplyToKind {
-		if (current === value || current === ApplyToKind.allDocuments) {
+	privAte mergeApplyTo(current: ApplyToKind, vAlue: ApplyToKind): ApplyToKind {
+		if (current === vAlue || current === ApplyToKind.AllDocuments) {
 			return current;
 		}
-		return ApplyToKind.allDocuments;
+		return ApplyToKind.AllDocuments;
 	}
 
-	private tryMatchers(): ProblemMatch | null {
-		this.activeMatcher = null;
+	privAte tryMAtchers(): ProblemMAtch | null {
+		this.ActiveMAtcher = null;
 		let length = this.buffer.length;
-		for (let startIndex = 0; startIndex < length; startIndex++) {
-			let candidates = this.matchers[length - startIndex];
-			if (!candidates) {
+		for (let stArtIndex = 0; stArtIndex < length; stArtIndex++) {
+			let cAndidAtes = this.mAtchers[length - stArtIndex];
+			if (!cAndidAtes) {
 				continue;
 			}
-			for (const matcher of candidates) {
-				let result = matcher.handle(this.buffer, startIndex);
-				if (result.match) {
-					this.captureMatch(result.match);
+			for (const mAtcher of cAndidAtes) {
+				let result = mAtcher.hAndle(this.buffer, stArtIndex);
+				if (result.mAtch) {
+					this.cAptureMAtch(result.mAtch);
 					if (result.continue) {
-						this.activeMatcher = matcher;
+						this.ActiveMAtcher = mAtcher;
 					}
-					return result.match;
+					return result.mAtch;
 				}
 			}
 		}
 		return null;
 	}
 
-	private captureMatch(match: ProblemMatch): void {
-		this._numberOfMatches++;
-		if (this._maxMarkerSeverity === undefined || match.marker.severity > this._maxMarkerSeverity) {
-			this._maxMarkerSeverity = match.marker.severity;
+	privAte cAptureMAtch(mAtch: ProblemMAtch): void {
+		this._numberOfMAtches++;
+		if (this._mAxMArkerSeverity === undefined || mAtch.mArker.severity > this._mAxMArkerSeverity) {
+			this._mAxMArkerSeverity = mAtch.mArker.severity;
 		}
 	}
 
-	private clearBuffer(): void {
+	privAte cleArBuffer(): void {
 		if (this.buffer.length > 0) {
 			this.buffer = [];
 		}
 	}
 
-	protected recordResourcesToClean(owner: string): void {
-		let resourceSetToClean = this.getResourceSetToClean(owner);
-		this.markerService.read({ owner: owner }).forEach(marker => resourceSetToClean.set(marker.resource.toString(), marker.resource));
+	protected recordResourcesToCleAn(owner: string): void {
+		let resourceSetToCleAn = this.getResourceSetToCleAn(owner);
+		this.mArkerService.reAd({ owner: owner }).forEAch(mArker => resourceSetToCleAn.set(mArker.resource.toString(), mArker.resource));
 	}
 
-	protected recordResourceToClean(owner: string, resource: URI): void {
-		this.getResourceSetToClean(owner).set(resource.toString(), resource);
+	protected recordResourceToCleAn(owner: string, resource: URI): void {
+		this.getResourceSetToCleAn(owner).set(resource.toString(), resource);
 	}
 
-	protected removeResourceToClean(owner: string, resource: string): void {
-		let resourceSet = this.resourcesToClean.get(owner);
+	protected removeResourceToCleAn(owner: string, resource: string): void {
+		let resourceSet = this.resourcesToCleAn.get(owner);
 		if (resourceSet) {
 			resourceSet.delete(resource);
 		}
 	}
 
-	private getResourceSetToClean(owner: string): Map<string, URI> {
-		let result = this.resourcesToClean.get(owner);
+	privAte getResourceSetToCleAn(owner: string): MAp<string, URI> {
+		let result = this.resourcesToCleAn.get(owner);
 		if (!result) {
-			result = new Map<string, URI>();
-			this.resourcesToClean.set(owner, result);
+			result = new MAp<string, URI>();
+			this.resourcesToCleAn.set(owner, result);
 		}
 		return result;
 	}
 
-	protected cleanAllMarkers(): void {
-		this.resourcesToClean.forEach((value, owner) => {
-			this._cleanMarkers(owner, value);
+	protected cleAnAllMArkers(): void {
+		this.resourcesToCleAn.forEAch((vAlue, owner) => {
+			this._cleAnMArkers(owner, vAlue);
 		});
-		this.resourcesToClean = new Map<string, Map<string, URI>>();
+		this.resourcesToCleAn = new MAp<string, MAp<string, URI>>();
 	}
 
-	protected cleanMarkers(owner: string): void {
-		let toClean = this.resourcesToClean.get(owner);
-		if (toClean) {
-			this._cleanMarkers(owner, toClean);
-			this.resourcesToClean.delete(owner);
+	protected cleAnMArkers(owner: string): void {
+		let toCleAn = this.resourcesToCleAn.get(owner);
+		if (toCleAn) {
+			this._cleAnMArkers(owner, toCleAn);
+			this.resourcesToCleAn.delete(owner);
 		}
 	}
 
-	private _cleanMarkers(owner: string, toClean: Map<string, URI>): void {
+	privAte _cleAnMArkers(owner: string, toCleAn: MAp<string, URI>): void {
 		let uris: URI[] = [];
-		let applyTo = this.applyToByOwner.get(owner);
-		toClean.forEach((uri, uriAsString) => {
+		let ApplyTo = this.ApplyToByOwner.get(owner);
+		toCleAn.forEAch((uri, uriAsString) => {
 			if (
-				applyTo === ApplyToKind.allDocuments ||
-				(applyTo === ApplyToKind.openDocuments && this.openModels[uriAsString]) ||
-				(applyTo === ApplyToKind.closedDocuments && !this.openModels[uriAsString])
+				ApplyTo === ApplyToKind.AllDocuments ||
+				(ApplyTo === ApplyToKind.openDocuments && this.openModels[uriAsString]) ||
+				(ApplyTo === ApplyToKind.closedDocuments && !this.openModels[uriAsString])
 			) {
 				uris.push(uri);
 			}
 		});
-		this.markerService.remove(owner, uris);
+		this.mArkerService.remove(owner, uris);
 	}
 
-	protected recordMarker(marker: IMarkerData, owner: string, resourceAsString: string): void {
-		let markersPerOwner = this.markers.get(owner);
-		if (!markersPerOwner) {
-			markersPerOwner = new Map<string, Map<string, IMarkerData>>();
-			this.markers.set(owner, markersPerOwner);
+	protected recordMArker(mArker: IMArkerDAtA, owner: string, resourceAsString: string): void {
+		let mArkersPerOwner = this.mArkers.get(owner);
+		if (!mArkersPerOwner) {
+			mArkersPerOwner = new MAp<string, MAp<string, IMArkerDAtA>>();
+			this.mArkers.set(owner, mArkersPerOwner);
 		}
-		let markersPerResource = markersPerOwner.get(resourceAsString);
-		if (!markersPerResource) {
-			markersPerResource = new Map<string, IMarkerData>();
-			markersPerOwner.set(resourceAsString, markersPerResource);
+		let mArkersPerResource = mArkersPerOwner.get(resourceAsString);
+		if (!mArkersPerResource) {
+			mArkersPerResource = new MAp<string, IMArkerDAtA>();
+			mArkersPerOwner.set(resourceAsString, mArkersPerResource);
 		}
-		let key = IMarkerData.makeKeyOptionalMessage(marker, false);
-		let existingMarker;
-		if (!markersPerResource.has(key)) {
-			markersPerResource.set(key, marker);
-		} else if (((existingMarker = markersPerResource.get(key)) !== undefined) && existingMarker.message.length < marker.message.length) {
+		let key = IMArkerDAtA.mAkeKeyOptionAlMessAge(mArker, fAlse);
+		let existingMArker;
+		if (!mArkersPerResource.hAs(key)) {
+			mArkersPerResource.set(key, mArker);
+		} else if (((existingMArker = mArkersPerResource.get(key)) !== undefined) && existingMArker.messAge.length < mArker.messAge.length) {
 			// Most likely https://github.com/microsoft/vscode/issues/77475
-			// Heuristic dictates that when the key is the same and message is smaller, we have hit this limitation.
-			markersPerResource.set(key, marker);
+			// Heuristic dictAtes thAt when the key is the sAme And messAge is smAller, we hAve hit this limitAtion.
+			mArkersPerResource.set(key, mArker);
 		}
 	}
 
-	protected reportMarkers(): void {
-		this.markers.forEach((markersPerOwner, owner) => {
-			let deliveredMarkersPerOwner = this.getDeliveredMarkersPerOwner(owner);
-			markersPerOwner.forEach((markers, resource) => {
-				this.deliverMarkersPerOwnerAndResourceResolved(owner, resource, markers, deliveredMarkersPerOwner);
+	protected reportMArkers(): void {
+		this.mArkers.forEAch((mArkersPerOwner, owner) => {
+			let deliveredMArkersPerOwner = this.getDeliveredMArkersPerOwner(owner);
+			mArkersPerOwner.forEAch((mArkers, resource) => {
+				this.deliverMArkersPerOwnerAndResourceResolved(owner, resource, mArkers, deliveredMArkersPerOwner);
 			});
 		});
 	}
 
-	protected deliverMarkersPerOwnerAndResource(owner: string, resource: string): void {
-		let markersPerOwner = this.markers.get(owner);
-		if (!markersPerOwner) {
+	protected deliverMArkersPerOwnerAndResource(owner: string, resource: string): void {
+		let mArkersPerOwner = this.mArkers.get(owner);
+		if (!mArkersPerOwner) {
 			return;
 		}
-		let deliveredMarkersPerOwner = this.getDeliveredMarkersPerOwner(owner);
-		let markersPerResource = markersPerOwner.get(resource);
-		if (!markersPerResource) {
+		let deliveredMArkersPerOwner = this.getDeliveredMArkersPerOwner(owner);
+		let mArkersPerResource = mArkersPerOwner.get(resource);
+		if (!mArkersPerResource) {
 			return;
 		}
-		this.deliverMarkersPerOwnerAndResourceResolved(owner, resource, markersPerResource, deliveredMarkersPerOwner);
+		this.deliverMArkersPerOwnerAndResourceResolved(owner, resource, mArkersPerResource, deliveredMArkersPerOwner);
 	}
 
-	private deliverMarkersPerOwnerAndResourceResolved(owner: string, resource: string, markers: Map<string, IMarkerData>, reported: Map<string, number>): void {
-		if (markers.size !== reported.get(resource)) {
-			let toSet: IMarkerData[] = [];
-			markers.forEach(value => toSet.push(value));
-			this.markerService.changeOne(owner, URI.parse(resource), toSet);
-			reported.set(resource, markers.size);
+	privAte deliverMArkersPerOwnerAndResourceResolved(owner: string, resource: string, mArkers: MAp<string, IMArkerDAtA>, reported: MAp<string, number>): void {
+		if (mArkers.size !== reported.get(resource)) {
+			let toSet: IMArkerDAtA[] = [];
+			mArkers.forEAch(vAlue => toSet.push(vAlue));
+			this.mArkerService.chAngeOne(owner, URI.pArse(resource), toSet);
+			reported.set(resource, mArkers.size);
 		}
 	}
 
-	private getDeliveredMarkersPerOwner(owner: string): Map<string, number> {
-		let result = this.deliveredMarkers.get(owner);
+	privAte getDeliveredMArkersPerOwner(owner: string): MAp<string, number> {
+		let result = this.deliveredMArkers.get(owner);
 		if (!result) {
-			result = new Map<string, number>();
-			this.deliveredMarkers.set(owner, result);
+			result = new MAp<string, number>();
+			this.deliveredMArkers.set(owner, result);
 		}
 		return result;
 	}
 
-	protected cleanMarkerCaches(): void {
-		this._numberOfMatches = 0;
-		this._maxMarkerSeverity = undefined;
-		this.markers.clear();
-		this.deliveredMarkers.clear();
+	protected cleAnMArkerCAches(): void {
+		this._numberOfMAtches = 0;
+		this._mAxMArkerSeverity = undefined;
+		this.mArkers.cleAr();
+		this.deliveredMArkers.cleAr();
 	}
 
 	public done(): void {
-		this.reportMarkers();
-		this.cleanAllMarkers();
+		this.reportMArkers();
+		this.cleAnAllMArkers();
 	}
 }
 
-export const enum ProblemHandlingStrategy {
-	Clean
+export const enum ProblemHAndlingStrAtegy {
+	CleAn
 }
 
-export class StartStopProblemCollector extends AbstractProblemCollector implements IProblemMatcher {
-	private owners: string[];
+export clAss StArtStopProblemCollector extends AbstrActProblemCollector implements IProblemMAtcher {
+	privAte owners: string[];
 
-	private currentOwner: string | undefined;
-	private currentResource: string | undefined;
+	privAte currentOwner: string | undefined;
+	privAte currentResource: string | undefined;
 
-	constructor(problemMatchers: ProblemMatcher[], markerService: IMarkerService, modelService: IModelService, _strategy: ProblemHandlingStrategy = ProblemHandlingStrategy.Clean, fileService?: IFileService) {
-		super(problemMatchers, markerService, modelService, fileService);
-		let ownerSet: { [key: string]: boolean; } = Object.create(null);
-		problemMatchers.forEach(description => ownerSet[description.owner] = true);
+	constructor(problemMAtchers: ProblemMAtcher[], mArkerService: IMArkerService, modelService: IModelService, _strAtegy: ProblemHAndlingStrAtegy = ProblemHAndlingStrAtegy.CleAn, fileService?: IFileService) {
+		super(problemMAtchers, mArkerService, modelService, fileService);
+		let ownerSet: { [key: string]: booleAn; } = Object.creAte(null);
+		problemMAtchers.forEAch(description => ownerSet[description.owner] = true);
 		this.owners = Object.keys(ownerSet);
-		this.owners.forEach((owner) => {
-			this.recordResourcesToClean(owner);
+		this.owners.forEAch((owner) => {
+			this.recordResourcesToCleAn(owner);
 		});
 	}
 
-	protected async processLineInternal(line: string): Promise<void> {
-		let markerMatch = this.tryFindMarker(line);
-		if (!markerMatch) {
+	protected Async processLineInternAl(line: string): Promise<void> {
+		let mArkerMAtch = this.tryFindMArker(line);
+		if (!mArkerMAtch) {
 			return;
 		}
 
-		let owner = markerMatch.description.owner;
-		let resource = await markerMatch.resource;
+		let owner = mArkerMAtch.description.owner;
+		let resource = AwAit mArkerMAtch.resource;
 		let resourceAsString = resource.toString();
-		this.removeResourceToClean(owner, resourceAsString);
-		let shouldApplyMatch = await this.shouldApplyMatch(markerMatch);
-		if (shouldApplyMatch) {
-			this.recordMarker(markerMatch.marker, owner, resourceAsString);
+		this.removeResourceToCleAn(owner, resourceAsString);
+		let shouldApplyMAtch = AwAit this.shouldApplyMAtch(mArkerMAtch);
+		if (shouldApplyMAtch) {
+			this.recordMArker(mArkerMAtch.mArker, owner, resourceAsString);
 			if (this.currentOwner !== owner || this.currentResource !== resourceAsString) {
 				if (this.currentOwner && this.currentResource) {
-					this.deliverMarkersPerOwnerAndResource(this.currentOwner, this.currentResource);
+					this.deliverMArkersPerOwnerAndResource(this.currentOwner, this.currentResource);
 				}
 				this.currentOwner = owner;
 				this.currentResource = resourceAsString;
@@ -386,71 +386,71 @@ export class StartStopProblemCollector extends AbstractProblemCollector implemen
 	}
 }
 
-interface BackgroundPatterns {
+interfAce BAckgroundPAtterns {
 	key: string;
-	matcher: ProblemMatcher;
-	begin: WatchingPattern;
-	end: WatchingPattern;
+	mAtcher: ProblemMAtcher;
+	begin: WAtchingPAttern;
+	end: WAtchingPAttern;
 }
 
-export class WatchingProblemCollector extends AbstractProblemCollector implements IProblemMatcher {
+export clAss WAtchingProblemCollector extends AbstrActProblemCollector implements IProblemMAtcher {
 
-	private problemMatchers: ProblemMatcher[];
-	private backgroundPatterns: BackgroundPatterns[];
+	privAte problemMAtchers: ProblemMAtcher[];
+	privAte bAckgroundPAtterns: BAckgroundPAtterns[];
 
-	// workaround for https://github.com/microsoft/vscode/issues/44018
-	private _activeBackgroundMatchers: Set<string>;
+	// workAround for https://github.com/microsoft/vscode/issues/44018
+	privAte _ActiveBAckgroundMAtchers: Set<string>;
 
-	// Current State
-	private currentOwner: string | undefined;
-	private currentResource: string | undefined;
+	// Current StAte
+	privAte currentOwner: string | undefined;
+	privAte currentResource: string | undefined;
 
-	constructor(problemMatchers: ProblemMatcher[], markerService: IMarkerService, modelService: IModelService, fileService?: IFileService) {
-		super(problemMatchers, markerService, modelService, fileService);
-		this.problemMatchers = problemMatchers;
+	constructor(problemMAtchers: ProblemMAtcher[], mArkerService: IMArkerService, modelService: IModelService, fileService?: IFileService) {
+		super(problemMAtchers, mArkerService, modelService, fileService);
+		this.problemMAtchers = problemMAtchers;
 		this.resetCurrentResource();
-		this.backgroundPatterns = [];
-		this._activeBackgroundMatchers = new Set<string>();
-		this.problemMatchers.forEach(matcher => {
-			if (matcher.watching) {
-				const key: string = generateUuid();
-				this.backgroundPatterns.push({
+		this.bAckgroundPAtterns = [];
+		this._ActiveBAckgroundMAtchers = new Set<string>();
+		this.problemMAtchers.forEAch(mAtcher => {
+			if (mAtcher.wAtching) {
+				const key: string = generAteUuid();
+				this.bAckgroundPAtterns.push({
 					key,
-					matcher: matcher,
-					begin: matcher.watching.beginsPattern,
-					end: matcher.watching.endsPattern
+					mAtcher: mAtcher,
+					begin: mAtcher.wAtching.beginsPAttern,
+					end: mAtcher.wAtching.endsPAttern
 				});
 			}
 		});
 	}
 
-	public aboutToStart(): void {
-		for (let background of this.backgroundPatterns) {
-			if (background.matcher.watching && background.matcher.watching.activeOnStart) {
-				this._activeBackgroundMatchers.add(background.key);
-				this._onDidStateChange.fire(ProblemCollectorEvent.create(ProblemCollectorEventKind.BackgroundProcessingBegins));
-				this.recordResourcesToClean(background.matcher.owner);
+	public AboutToStArt(): void {
+		for (let bAckground of this.bAckgroundPAtterns) {
+			if (bAckground.mAtcher.wAtching && bAckground.mAtcher.wAtching.ActiveOnStArt) {
+				this._ActiveBAckgroundMAtchers.Add(bAckground.key);
+				this._onDidStAteChAnge.fire(ProblemCollectorEvent.creAte(ProblemCollectorEventKind.BAckgroundProcessingBegins));
+				this.recordResourcesToCleAn(bAckground.mAtcher.owner);
 			}
 		}
 	}
 
-	protected async processLineInternal(line: string): Promise<void> {
-		if (await this.tryBegin(line) || this.tryFinish(line)) {
+	protected Async processLineInternAl(line: string): Promise<void> {
+		if (AwAit this.tryBegin(line) || this.tryFinish(line)) {
 			return;
 		}
-		let markerMatch = this.tryFindMarker(line);
-		if (!markerMatch) {
+		let mArkerMAtch = this.tryFindMArker(line);
+		if (!mArkerMAtch) {
 			return;
 		}
-		let resource = await markerMatch.resource;
-		let owner = markerMatch.description.owner;
+		let resource = AwAit mArkerMAtch.resource;
+		let owner = mArkerMAtch.description.owner;
 		let resourceAsString = resource.toString();
-		this.removeResourceToClean(owner, resourceAsString);
-		let shouldApplyMatch = await this.shouldApplyMatch(markerMatch);
-		if (shouldApplyMatch) {
-			this.recordMarker(markerMatch.marker, owner, resourceAsString);
+		this.removeResourceToCleAn(owner, resourceAsString);
+		let shouldApplyMAtch = AwAit this.shouldApplyMAtch(mArkerMAtch);
+		if (shouldApplyMAtch) {
+			this.recordMArker(mArkerMAtch.mArker, owner, resourceAsString);
 			if (this.currentOwner !== owner || this.currentResource !== resourceAsString) {
-				this.reportMarkersForCurrentResource();
+				this.reportMArkersForCurrentResource();
 				this.currentOwner = owner;
 				this.currentResource = resourceAsString;
 			}
@@ -458,74 +458,74 @@ export class WatchingProblemCollector extends AbstractProblemCollector implement
 	}
 
 	public forceDelivery(): void {
-		this.reportMarkersForCurrentResource();
+		this.reportMArkersForCurrentResource();
 	}
 
-	private async tryBegin(line: string): Promise<boolean> {
-		let result = false;
-		for (const background of this.backgroundPatterns) {
-			let matches = background.begin.regexp.exec(line);
-			if (matches) {
-				if (this._activeBackgroundMatchers.has(background.key)) {
+	privAte Async tryBegin(line: string): Promise<booleAn> {
+		let result = fAlse;
+		for (const bAckground of this.bAckgroundPAtterns) {
+			let mAtches = bAckground.begin.regexp.exec(line);
+			if (mAtches) {
+				if (this._ActiveBAckgroundMAtchers.hAs(bAckground.key)) {
 					continue;
 				}
-				this._activeBackgroundMatchers.add(background.key);
+				this._ActiveBAckgroundMAtchers.Add(bAckground.key);
 				result = true;
-				this._onDidStateChange.fire(ProblemCollectorEvent.create(ProblemCollectorEventKind.BackgroundProcessingBegins));
-				this.cleanMarkerCaches();
+				this._onDidStAteChAnge.fire(ProblemCollectorEvent.creAte(ProblemCollectorEventKind.BAckgroundProcessingBegins));
+				this.cleAnMArkerCAches();
 				this.resetCurrentResource();
-				let owner = background.matcher.owner;
-				let file = matches[background.begin.file!];
+				let owner = bAckground.mAtcher.owner;
+				let file = mAtches[bAckground.begin.file!];
 				if (file) {
-					let resource = getResource(file, background.matcher);
-					this.recordResourceToClean(owner, await resource);
+					let resource = getResource(file, bAckground.mAtcher);
+					this.recordResourceToCleAn(owner, AwAit resource);
 				} else {
-					this.recordResourcesToClean(owner);
+					this.recordResourcesToCleAn(owner);
 				}
 			}
 		}
 		return result;
 	}
 
-	private tryFinish(line: string): boolean {
-		let result = false;
-		for (const background of this.backgroundPatterns) {
-			let matches = background.end.regexp.exec(line);
-			if (matches) {
-				if (this._activeBackgroundMatchers.has(background.key)) {
-					this._activeBackgroundMatchers.delete(background.key);
+	privAte tryFinish(line: string): booleAn {
+		let result = fAlse;
+		for (const bAckground of this.bAckgroundPAtterns) {
+			let mAtches = bAckground.end.regexp.exec(line);
+			if (mAtches) {
+				if (this._ActiveBAckgroundMAtchers.hAs(bAckground.key)) {
+					this._ActiveBAckgroundMAtchers.delete(bAckground.key);
 					this.resetCurrentResource();
-					this._onDidStateChange.fire(ProblemCollectorEvent.create(ProblemCollectorEventKind.BackgroundProcessingEnds));
+					this._onDidStAteChAnge.fire(ProblemCollectorEvent.creAte(ProblemCollectorEventKind.BAckgroundProcessingEnds));
 					result = true;
-					let owner = background.matcher.owner;
-					this.cleanMarkers(owner);
-					this.cleanMarkerCaches();
+					let owner = bAckground.mAtcher.owner;
+					this.cleAnMArkers(owner);
+					this.cleAnMArkerCAches();
 				}
 			}
 		}
 		return result;
 	}
 
-	private resetCurrentResource(): void {
-		this.reportMarkersForCurrentResource();
+	privAte resetCurrentResource(): void {
+		this.reportMArkersForCurrentResource();
 		this.currentOwner = undefined;
 		this.currentResource = undefined;
 	}
 
-	private reportMarkersForCurrentResource(): void {
+	privAte reportMArkersForCurrentResource(): void {
 		if (this.currentOwner && this.currentResource) {
-			this.deliverMarkersPerOwnerAndResource(this.currentOwner, this.currentResource);
+			this.deliverMArkersPerOwnerAndResource(this.currentOwner, this.currentResource);
 		}
 	}
 
 	public done(): void {
-		[...this.applyToByOwner.keys()].forEach(owner => {
-			this.recordResourcesToClean(owner);
+		[...this.ApplyToByOwner.keys()].forEAch(owner => {
+			this.recordResourcesToCleAn(owner);
 		});
 		super.done();
 	}
 
-	public isWatching(): boolean {
-		return this.backgroundPatterns.length > 0;
+	public isWAtching(): booleAn {
+		return this.bAckgroundPAtterns.length > 0;
 	}
 }

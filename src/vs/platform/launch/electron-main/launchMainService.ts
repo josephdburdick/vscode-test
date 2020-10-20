@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILogService } from 'vs/platform/log/common/log';
-import { IURLService } from 'vs/platform/url/common/url';
-import { IProcessEnvironment, isMacintosh } from 'vs/base/common/platform';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWindowSettings } from 'vs/platform/windows/common/windows';
-import { OpenContext } from 'vs/platform/windows/node/window';
-import { IWindowsMainService, ICodeWindow } from 'vs/platform/windows/electron-main/windows';
-import { whenDeleted } from 'vs/base/node/pfs';
-import { IWorkspacesMainService } from 'vs/platform/workspaces/electron-main/workspacesMainService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
-import { BrowserWindow, ipcMain, Event as IpcEvent, app } from 'electron';
-import { coalesce } from 'vs/base/common/arrays';
-import { IDiagnosticInfoOptions, IDiagnosticInfo, IRemoteDiagnosticInfo, IRemoteDiagnosticError } from 'vs/platform/diagnostics/common/diagnostics';
-import { IMainProcessInfo, IWindowInfo } from 'vs/platform/launch/node/launch';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IURLService } from 'vs/plAtform/url/common/url';
+import { IProcessEnvironment, isMAcintosh } from 'vs/bAse/common/plAtform';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWindowSettings } from 'vs/plAtform/windows/common/windows';
+import { OpenContext } from 'vs/plAtform/windows/node/window';
+import { IWindowsMAinService, ICodeWindow } from 'vs/plAtform/windows/electron-mAin/windows';
+import { whenDeleted } from 'vs/bAse/node/pfs';
+import { IWorkspAcesMAinService } from 'vs/plAtform/workspAces/electron-mAin/workspAcesMAinService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { BrowserWindow, ipcMAin, Event As IpcEvent, App } from 'electron';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { IDiAgnosticInfoOptions, IDiAgnosticInfo, IRemoteDiAgnosticInfo, IRemoteDiAgnosticError } from 'vs/plAtform/diAgnostics/common/diAgnostics';
+import { IMAinProcessInfo, IWindowInfo } from 'vs/plAtform/lAunch/node/lAunch';
 
-export const ID = 'launchMainService';
-export const ILaunchMainService = createDecorator<ILaunchMainService>(ID);
+export const ID = 'lAunchMAinService';
+export const ILAunchMAinService = creAteDecorAtor<ILAunchMAinService>(ID);
 
-export interface IStartArguments {
-	args: NativeParsedArgs;
+export interfAce IStArtArguments {
+	Args: NAtivePArsedArgs;
 	userEnv: IProcessEnvironment;
 }
 
-export interface IRemoteDiagnosticOptions {
-	includeProcesses?: boolean;
-	includeWorkspaceMetadata?: boolean;
+export interfAce IRemoteDiAgnosticOptions {
+	includeProcesses?: booleAn;
+	includeWorkspAceMetAdAtA?: booleAn;
 }
 
-function parseOpenUrl(args: NativeParsedArgs): URI[] {
-	if (args['open-url'] && args._urls && args._urls.length > 0) {
-		// --open-url must contain -- followed by the url(s)
-		// process.argv is used over args._ as args._ are resolved to file paths at this point
-		return coalesce(args._urls
-			.map(url => {
+function pArseOpenUrl(Args: NAtivePArsedArgs): URI[] {
+	if (Args['open-url'] && Args._urls && Args._urls.length > 0) {
+		// --open-url must contAin -- followed by the url(s)
+		// process.Argv is used over Args._ As Args._ Are resolved to file pAths At this point
+		return coAlesce(Args._urls
+			.mAp(url => {
 				try {
-					return URI.parse(url);
-				} catch (err) {
+					return URI.pArse(url);
+				} cAtch (err) {
 					return null;
 				}
 			}));
@@ -50,175 +50,175 @@ function parseOpenUrl(args: NativeParsedArgs): URI[] {
 	return [];
 }
 
-export interface ILaunchMainService {
-	readonly _serviceBrand: undefined;
-	start(args: NativeParsedArgs, userEnv: IProcessEnvironment): Promise<void>;
-	getMainProcessId(): Promise<number>;
-	getMainProcessInfo(): Promise<IMainProcessInfo>;
-	getRemoteDiagnostics(options: IRemoteDiagnosticOptions): Promise<(IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]>;
+export interfAce ILAunchMAinService {
+	reAdonly _serviceBrAnd: undefined;
+	stArt(Args: NAtivePArsedArgs, userEnv: IProcessEnvironment): Promise<void>;
+	getMAinProcessId(): Promise<number>;
+	getMAinProcessInfo(): Promise<IMAinProcessInfo>;
+	getRemoteDiAgnostics(options: IRemoteDiAgnosticOptions): Promise<(IRemoteDiAgnosticInfo | IRemoteDiAgnosticError)[]>;
 }
 
-export class LaunchMainService implements ILaunchMainService {
+export clAss LAunchMAinService implements ILAunchMAinService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@ILogService private readonly logService: ILogService,
-		@IWindowsMainService private readonly windowsMainService: IWindowsMainService,
-		@IURLService private readonly urlService: IURLService,
-		@IWorkspacesMainService private readonly workspacesMainService: IWorkspacesMainService,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		@ILogService privAte reAdonly logService: ILogService,
+		@IWindowsMAinService privAte reAdonly windowsMAinService: IWindowsMAinService,
+		@IURLService privAte reAdonly urlService: IURLService,
+		@IWorkspAcesMAinService privAte reAdonly workspAcesMAinService: IWorkspAcesMAinService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) { }
 
-	async start(args: NativeParsedArgs, userEnv: IProcessEnvironment): Promise<void> {
-		this.logService.trace('Received data from other instance: ', args, userEnv);
+	Async stArt(Args: NAtivePArsedArgs, userEnv: IProcessEnvironment): Promise<void> {
+		this.logService.trAce('Received dAtA from other instAnce: ', Args, userEnv);
 
-		// macOS: Electron > 7.x changed its behaviour to not
-		// bring the application to the foreground when a window
-		// is focused programmatically. Only via `app.focus` and
-		// the option `steal: true` can you get the previous
-		// behaviour back. The only reason to use this option is
-		// when a window is getting focused while the application
-		// is not in the foreground and since we got instructed
-		// to open a new window from another instance, we ensure
-		// that the app has focus.
-		if (isMacintosh) {
-			app.focus({ steal: true });
+		// mAcOS: Electron > 7.x chAnged its behAviour to not
+		// bring the ApplicAtion to the foreground when A window
+		// is focused progrAmmAticAlly. Only viA `App.focus` And
+		// the option `steAl: true` cAn you get the previous
+		// behAviour bAck. The only reAson to use this option is
+		// when A window is getting focused while the ApplicAtion
+		// is not in the foreground And since we got instructed
+		// to open A new window from Another instAnce, we ensure
+		// thAt the App hAs focus.
+		if (isMAcintosh) {
+			App.focus({ steAl: true });
 		}
 
-		// Check early for open-url which is handled in URL service
-		const urlsToOpen = parseOpenUrl(args);
+		// Check eArly for open-url which is hAndled in URL service
+		const urlsToOpen = pArseOpenUrl(Args);
 		if (urlsToOpen.length) {
-			let whenWindowReady: Promise<unknown> = Promise.resolve();
+			let whenWindowReAdy: Promise<unknown> = Promise.resolve();
 
-			// Create a window if there is none
-			if (this.windowsMainService.getWindowCount() === 0) {
-				const window = this.windowsMainService.openEmptyWindow({ context: OpenContext.DESKTOP })[0];
-				whenWindowReady = window.ready();
+			// CreAte A window if there is none
+			if (this.windowsMAinService.getWindowCount() === 0) {
+				const window = this.windowsMAinService.openEmptyWindow({ context: OpenContext.DESKTOP })[0];
+				whenWindowReAdy = window.reAdy();
 			}
 
-			// Make sure a window is open, ready to receive the url event
-			whenWindowReady.then(() => {
+			// MAke sure A window is open, reAdy to receive the url event
+			whenWindowReAdy.then(() => {
 				for (const url of urlsToOpen) {
 					this.urlService.open(url);
 				}
 			});
 		}
 
-		// Otherwise handle in windows service
+		// Otherwise hAndle in windows service
 		else {
-			return this.startOpenWindow(args, userEnv);
+			return this.stArtOpenWindow(Args, userEnv);
 		}
 	}
 
-	private startOpenWindow(args: NativeParsedArgs, userEnv: IProcessEnvironment): Promise<void> {
+	privAte stArtOpenWindow(Args: NAtivePArsedArgs, userEnv: IProcessEnvironment): Promise<void> {
 		const context = !!userEnv['VSCODE_CLI'] ? OpenContext.CLI : OpenContext.DESKTOP;
 		let usedWindows: ICodeWindow[] = [];
 
-		const waitMarkerFileURI = args.wait && args.waitMarkerFilePath ? URI.file(args.waitMarkerFilePath) : undefined;
+		const wAitMArkerFileURI = Args.wAit && Args.wAitMArkerFilePAth ? URI.file(Args.wAitMArkerFilePAth) : undefined;
 
-		// Special case extension development
-		if (!!args.extensionDevelopmentPath) {
-			this.windowsMainService.openExtensionDevelopmentHostWindow(args.extensionDevelopmentPath, { context, cli: args, userEnv, waitMarkerFileURI });
+		// SpeciAl cAse extension development
+		if (!!Args.extensionDevelopmentPAth) {
+			this.windowsMAinService.openExtensionDevelopmentHostWindow(Args.extensionDevelopmentPAth, { context, cli: Args, userEnv, wAitMArkerFileURI });
 		}
 
-		// Start without file/folder arguments
-		else if (!args._.length && !args['folder-uri'] && !args['file-uri']) {
-			let openNewWindow = false;
+		// StArt without file/folder Arguments
+		else if (!Args._.length && !Args['folder-uri'] && !Args['file-uri']) {
+			let openNewWindow = fAlse;
 
 			// Force new window
-			if (args['new-window'] || args['unity-launch']) {
+			if (Args['new-window'] || Args['unity-lAunch']) {
 				openNewWindow = true;
 			}
 
 			// Force reuse window
-			else if (args['reuse-window']) {
-				openNewWindow = false;
+			else if (Args['reuse-window']) {
+				openNewWindow = fAlse;
 			}
 
 			// Otherwise check for settings
 			else {
-				const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-				const openWithoutArgumentsInNewWindowConfig = windowConfig?.openWithoutArgumentsInNewWindow || 'default' /* default */;
+				const windowConfig = this.configurAtionService.getVAlue<IWindowSettings>('window');
+				const openWithoutArgumentsInNewWindowConfig = windowConfig?.openWithoutArgumentsInNewWindow || 'defAult' /* defAult */;
 				switch (openWithoutArgumentsInNewWindowConfig) {
-					case 'on':
+					cAse 'on':
 						openNewWindow = true;
-						break;
-					case 'off':
-						openNewWindow = false;
-						break;
-					default:
-						openNewWindow = !isMacintosh; // prefer to restore running instance on macOS
+						breAk;
+					cAse 'off':
+						openNewWindow = fAlse;
+						breAk;
+					defAult:
+						openNewWindow = !isMAcintosh; // prefer to restore running instAnce on mAcOS
 				}
 			}
 
 			// Open new Window
 			if (openNewWindow) {
-				usedWindows = this.windowsMainService.open({
+				usedWindows = this.windowsMAinService.open({
 					context,
-					cli: args,
+					cli: Args,
 					userEnv,
 					forceNewWindow: true,
 					forceEmpty: true,
-					waitMarkerFileURI
+					wAitMArkerFileURI
 				});
 			}
 
 			// Focus existing window or open if none opened
 			else {
-				const lastActive = this.windowsMainService.getLastActiveWindow();
-				if (lastActive) {
-					lastActive.focus();
+				const lAstActive = this.windowsMAinService.getLAstActiveWindow();
+				if (lAstActive) {
+					lAstActive.focus();
 
-					usedWindows = [lastActive];
+					usedWindows = [lAstActive];
 				} else {
-					usedWindows = this.windowsMainService.open({ context, cli: args, forceEmpty: true });
+					usedWindows = this.windowsMAinService.open({ context, cli: Args, forceEmpty: true });
 				}
 			}
 		}
 
-		// Start with file/folder arguments
+		// StArt with file/folder Arguments
 		else {
-			usedWindows = this.windowsMainService.open({
+			usedWindows = this.windowsMAinService.open({
 				context,
-				cli: args,
+				cli: Args,
 				userEnv,
-				forceNewWindow: args['new-window'],
-				preferNewWindow: !args['reuse-window'] && !args.wait,
-				forceReuseWindow: args['reuse-window'],
-				diffMode: args.diff,
-				addMode: args.add,
-				noRecentEntry: !!args['skip-add-to-recently-opened'],
-				waitMarkerFileURI,
-				gotoLineMode: args.goto
+				forceNewWindow: Args['new-window'],
+				preferNewWindow: !Args['reuse-window'] && !Args.wAit,
+				forceReuseWindow: Args['reuse-window'],
+				diffMode: Args.diff,
+				AddMode: Args.Add,
+				noRecentEntry: !!Args['skip-Add-to-recently-opened'],
+				wAitMArkerFileURI,
+				gotoLineMode: Args.goto
 			});
 		}
 
-		// If the other instance is waiting to be killed, we hook up a window listener if one window
-		// is being used and only then resolve the startup promise which will kill this second instance.
-		// In addition, we poll for the wait marker file to be deleted to return.
-		if (waitMarkerFileURI && usedWindows.length === 1 && usedWindows[0]) {
-			return Promise.race([
-				usedWindows[0].whenClosedOrLoaded,
-				whenDeleted(waitMarkerFileURI.fsPath)
+		// If the other instAnce is wAiting to be killed, we hook up A window listener if one window
+		// is being used And only then resolve the stArtup promise which will kill this second instAnce.
+		// In Addition, we poll for the wAit mArker file to be deleted to return.
+		if (wAitMArkerFileURI && usedWindows.length === 1 && usedWindows[0]) {
+			return Promise.rAce([
+				usedWindows[0].whenClosedOrLoAded,
+				whenDeleted(wAitMArkerFileURI.fsPAth)
 			]).then(() => undefined, () => undefined);
 		}
 
 		return Promise.resolve(undefined);
 	}
 
-	getMainProcessId(): Promise<number> {
-		this.logService.trace('Received request for process ID from other instance.');
+	getMAinProcessId(): Promise<number> {
+		this.logService.trAce('Received request for process ID from other instAnce.');
 
 		return Promise.resolve(process.pid);
 	}
 
-	getMainProcessInfo(): Promise<IMainProcessInfo> {
-		this.logService.trace('Received request for main process info from other instance.');
+	getMAinProcessInfo(): Promise<IMAinProcessInfo> {
+		this.logService.trAce('Received request for mAin process info from other instAnce.');
 
 		const windows: IWindowInfo[] = [];
-		BrowserWindow.getAllWindows().forEach(window => {
-			const codeWindow = this.windowsMainService.getWindowById(window.id);
+		BrowserWindow.getAllWindows().forEAch(window => {
+			const codeWindow = this.windowsMAinService.getWindowById(window.id);
 			if (codeWindow) {
 				windows.push(this.codeWindowToInfo(codeWindow));
 			} else {
@@ -227,39 +227,39 @@ export class LaunchMainService implements ILaunchMainService {
 		});
 
 		return Promise.resolve({
-			mainPID: process.pid,
-			mainArguments: process.argv.slice(1),
+			mAinPID: process.pid,
+			mAinArguments: process.Argv.slice(1),
 			windows,
-			screenReader: !!app.accessibilitySupportEnabled,
-			gpuFeatureStatus: app.getGPUFeatureStatus()
+			screenReAder: !!App.AccessibilitySupportEnAbled,
+			gpuFeAtureStAtus: App.getGPUFeAtureStAtus()
 		});
 	}
 
-	getRemoteDiagnostics(options: IRemoteDiagnosticOptions): Promise<(IRemoteDiagnosticInfo | IRemoteDiagnosticError)[]> {
-		const windows = this.windowsMainService.getWindows();
-		const promises: Promise<IDiagnosticInfo | IRemoteDiagnosticError | undefined>[] = windows.map(window => {
-			return new Promise<IDiagnosticInfo | IRemoteDiagnosticError | undefined>((resolve) => {
+	getRemoteDiAgnostics(options: IRemoteDiAgnosticOptions): Promise<(IRemoteDiAgnosticInfo | IRemoteDiAgnosticError)[]> {
+		const windows = this.windowsMAinService.getWindows();
+		const promises: Promise<IDiAgnosticInfo | IRemoteDiAgnosticError | undefined>[] = windows.mAp(window => {
+			return new Promise<IDiAgnosticInfo | IRemoteDiAgnosticError | undefined>((resolve) => {
 				const remoteAuthority = window.remoteAuthority;
 				if (remoteAuthority) {
-					const replyChannel = `vscode:getDiagnosticInfoResponse${window.id}`;
-					const args: IDiagnosticInfoOptions = {
+					const replyChAnnel = `vscode:getDiAgnosticInfoResponse${window.id}`;
+					const Args: IDiAgnosticInfoOptions = {
 						includeProcesses: options.includeProcesses,
-						folders: options.includeWorkspaceMetadata ? this.getFolderURIs(window) : undefined
+						folders: options.includeWorkspAceMetAdAtA ? this.getFolderURIs(window) : undefined
 					};
 
-					window.sendWhenReady('vscode:getDiagnosticInfo', { replyChannel, args });
+					window.sendWhenReAdy('vscode:getDiAgnosticInfo', { replyChAnnel, Args });
 
-					ipcMain.once(replyChannel, (_: IpcEvent, data: IRemoteDiagnosticInfo) => {
-						// No data is returned if getting the connection fails.
-						if (!data) {
-							resolve({ hostName: remoteAuthority, errorMessage: `Unable to resolve connection to '${remoteAuthority}'.` });
+					ipcMAin.once(replyChAnnel, (_: IpcEvent, dAtA: IRemoteDiAgnosticInfo) => {
+						// No dAtA is returned if getting the connection fAils.
+						if (!dAtA) {
+							resolve({ hostNAme: remoteAuthority, errorMessAge: `UnAble to resolve connection to '${remoteAuthority}'.` });
 						}
 
-						resolve(data);
+						resolve(dAtA);
 					});
 
 					setTimeout(() => {
-						resolve({ hostName: remoteAuthority, errorMessage: `Fetching remote diagnostics for '${remoteAuthority}' timed out.` });
+						resolve({ hostNAme: remoteAuthority, errorMessAge: `Fetching remote diAgnostics for '${remoteAuthority}' timed out.` });
 					}, 5000);
 				} else {
 					resolve(undefined);
@@ -267,37 +267,37 @@ export class LaunchMainService implements ILaunchMainService {
 			});
 		});
 
-		return Promise.all(promises).then(diagnostics => diagnostics.filter((x): x is IRemoteDiagnosticInfo | IRemoteDiagnosticError => !!x));
+		return Promise.All(promises).then(diAgnostics => diAgnostics.filter((x): x is IRemoteDiAgnosticInfo | IRemoteDiAgnosticError => !!x));
 	}
 
-	private getFolderURIs(window: ICodeWindow): URI[] {
+	privAte getFolderURIs(window: ICodeWindow): URI[] {
 		const folderURIs: URI[] = [];
 
 		if (window.openedFolderUri) {
 			folderURIs.push(window.openedFolderUri);
-		} else if (window.openedWorkspace) {
-			// workspace folders can only be shown for local workspaces
-			const workspaceConfigPath = window.openedWorkspace.configPath;
-			const resolvedWorkspace = this.workspacesMainService.resolveLocalWorkspaceSync(workspaceConfigPath);
-			if (resolvedWorkspace) {
-				const rootFolders = resolvedWorkspace.folders;
-				rootFolders.forEach(root => {
+		} else if (window.openedWorkspAce) {
+			// workspAce folders cAn only be shown for locAl workspAces
+			const workspAceConfigPAth = window.openedWorkspAce.configPAth;
+			const resolvedWorkspAce = this.workspAcesMAinService.resolveLocAlWorkspAceSync(workspAceConfigPAth);
+			if (resolvedWorkspAce) {
+				const rootFolders = resolvedWorkspAce.folders;
+				rootFolders.forEAch(root => {
 					folderURIs.push(root.uri);
 				});
 			} else {
-				//TODO: can we add the workspace file here?
+				//TODO: cAn we Add the workspAce file here?
 			}
 		}
 
 		return folderURIs;
 	}
 
-	private codeWindowToInfo(window: ICodeWindow): IWindowInfo {
+	privAte codeWindowToInfo(window: ICodeWindow): IWindowInfo {
 		const folderURIs = this.getFolderURIs(window);
 		return this.browserWindowToInfo(window.win, folderURIs, window.remoteAuthority);
 	}
 
-	private browserWindowToInfo(win: BrowserWindow, folderURIs: URI[] = [], remoteAuthority?: string): IWindowInfo {
+	privAte browserWindowToInfo(win: BrowserWindow, folderURIs: URI[] = [], remoteAuthority?: string): IWindowInfo {
 		return {
 			pid: win.webContents.getOSProcessId(),
 			title: win.getTitle(),

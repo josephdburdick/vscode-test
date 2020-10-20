@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Event } from 'vs/base/common/event';
-import { IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceIdentifier, ISingleFolderWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
+import { URI } from 'vs/bAse/common/uri';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Event } from 'vs/bAse/common/event';
+import { IWorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWorkspAceIdentifier, ISingleFolderWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
 
-export const ILabelService = createDecorator<ILabelService>('labelService');
+export const ILAbelService = creAteDecorAtor<ILAbelService>('lAbelService');
 
-export interface ILabelService {
+export interfAce ILAbelService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Gets the human readable label for a uri.
-	 * If relative is passed returns a label relative to the workspace root that the uri belongs to.
-	 * If noPrefix is passed does not tildify the label and also does not prepand the root name for relative labels in a multi root scenario.
+	 * Gets the humAn reAdAble lAbel for A uri.
+	 * If relAtive is pAssed returns A lAbel relAtive to the workspAce root thAt the uri belongs to.
+	 * If noPrefix is pAssed does not tildify the lAbel And Also does not prepAnd the root nAme for relAtive lAbels in A multi root scenArio.
 	 */
-	getUriLabel(resource: URI, options?: { relative?: boolean, noPrefix?: boolean, endWithSeparator?: boolean }): string;
-	getUriBasenameLabel(resource: URI): string;
-	getWorkspaceLabel(workspace: (IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier | IWorkspace), options?: { verbose: boolean }): string;
-	getHostLabel(scheme: string, authority?: string): string;
-	getSeparator(scheme: string, authority?: string): '/' | '\\';
+	getUriLAbel(resource: URI, options?: { relAtive?: booleAn, noPrefix?: booleAn, endWithSepArAtor?: booleAn }): string;
+	getUriBAsenAmeLAbel(resource: URI): string;
+	getWorkspAceLAbel(workspAce: (IWorkspAceIdentifier | ISingleFolderWorkspAceIdentifier | IWorkspAce), options?: { verbose: booleAn }): string;
+	getHostLAbel(scheme: string, Authority?: string): string;
+	getSepArAtor(scheme: string, Authority?: string): '/' | '\\';
 
-	registerFormatter(formatter: ResourceLabelFormatter): IDisposable;
-	onDidChangeFormatters: Event<IFormatterChangeEvent>;
+	registerFormAtter(formAtter: ResourceLAbelFormAtter): IDisposAble;
+	onDidChAngeFormAtters: Event<IFormAtterChAngeEvent>;
 }
 
-export interface IFormatterChangeEvent {
+export interfAce IFormAtterChAngeEvent {
 	scheme: string;
 }
 
-export interface ResourceLabelFormatter {
+export interfAce ResourceLAbelFormAtter {
 	scheme: string;
-	authority?: string;
-	priority?: boolean;
-	formatting: ResourceLabelFormatting;
+	Authority?: string;
+	priority?: booleAn;
+	formAtting: ResourceLAbelFormAtting;
 }
 
-export interface ResourceLabelFormatting {
-	label: string; // myLabel:/${path}
-	separator: '/' | '\\' | '';
-	tildify?: boolean;
-	normalizeDriveLetter?: boolean;
-	workspaceSuffix?: string;
-	authorityPrefix?: string;
-	stripPathStartingSeparator?: boolean;
+export interfAce ResourceLAbelFormAtting {
+	lAbel: string; // myLAbel:/${pAth}
+	sepArAtor: '/' | '\\' | '';
+	tildify?: booleAn;
+	normAlizeDriveLetter?: booleAn;
+	workspAceSuffix?: string;
+	AuthorityPrefix?: string;
+	stripPAthStArtingSepArAtor?: booleAn;
 }

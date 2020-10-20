@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import * as platform from 'vs/base/common/platform';
-import * as extpath from 'vs/base/common/extpath';
-import { IWorkspaceIdentifier, IResolvedWorkspace, ISingleFolderWorkspaceIdentifier, isSingleFolderWorkspaceIdentifier, isWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
-import { extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As extpAth from 'vs/bAse/common/extpAth';
+import { IWorkspAceIdentifier, IResolvedWorkspAce, ISingleFolderWorkspAceIdentifier, isSingleFolderWorkspAceIdentifier, isWorkspAceIdentifier } from 'vs/plAtform/workspAces/common/workspAces';
+import { extUriBiAsedIgnorePAthCAse } from 'vs/bAse/common/resources';
 
 export const enum OpenContext {
 
-	// opening when running from the command line
+	// opening when running from the commAnd line
 	CLI,
 
-	// macOS only: opening from the dock (also when opening files to a running instance from desktop)
+	// mAcOS only: opening from the dock (Also when opening files to A running instAnce from desktop)
 	DOCK,
 
-	// opening from the main application window
+	// opening from the mAin ApplicAtion window
 	MENU,
 
-	// opening from a file or folder dialog
+	// opening from A file or folder diAlog
 	DIALOG,
 
 	// opening from the OS's UI
@@ -30,83 +30,83 @@ export const enum OpenContext {
 	API
 }
 
-export interface IWindowContext {
-	openedWorkspace?: IWorkspaceIdentifier;
+export interfAce IWindowContext {
+	openedWorkspAce?: IWorkspAceIdentifier;
 	openedFolderUri?: URI;
 
-	extensionDevelopmentPath?: string[];
-	lastFocusTime: number;
+	extensionDevelopmentPAth?: string[];
+	lAstFocusTime: number;
 }
 
-export interface IBestWindowOrFolderOptions<W extends IWindowContext> {
+export interfAce IBestWindowOrFolderOptions<W extends IWindowContext> {
 	windows: W[];
-	newWindow: boolean;
+	newWindow: booleAn;
 	context: OpenContext;
 	fileUri?: URI;
 	codeSettingsFolder?: string;
-	localWorkspaceResolver: (workspace: IWorkspaceIdentifier) => IResolvedWorkspace | null;
+	locAlWorkspAceResolver: (workspAce: IWorkspAceIdentifier) => IResolvedWorkspAce | null;
 }
 
-export function findBestWindowOrFolderForFile<W extends IWindowContext>({ windows, newWindow, context, fileUri, localWorkspaceResolver: workspaceResolver }: IBestWindowOrFolderOptions<W>): W | undefined {
+export function findBestWindowOrFolderForFile<W extends IWindowContext>({ windows, newWindow, context, fileUri, locAlWorkspAceResolver: workspAceResolver }: IBestWindowOrFolderOptions<W>): W | undefined {
 	if (!newWindow && fileUri && (context === OpenContext.DESKTOP || context === OpenContext.CLI || context === OpenContext.DOCK)) {
-		const windowOnFilePath = findWindowOnFilePath(windows, fileUri, workspaceResolver);
-		if (windowOnFilePath) {
-			return windowOnFilePath;
+		const windowOnFilePAth = findWindowOnFilePAth(windows, fileUri, workspAceResolver);
+		if (windowOnFilePAth) {
+			return windowOnFilePAth;
 		}
 	}
-	return !newWindow ? getLastActiveWindow(windows) : undefined;
+	return !newWindow ? getLAstActiveWindow(windows) : undefined;
 }
 
-function findWindowOnFilePath<W extends IWindowContext>(windows: W[], fileUri: URI, localWorkspaceResolver: (workspace: IWorkspaceIdentifier) => IResolvedWorkspace | null): W | null {
+function findWindowOnFilePAth<W extends IWindowContext>(windows: W[], fileUri: URI, locAlWorkspAceResolver: (workspAce: IWorkspAceIdentifier) => IResolvedWorkspAce | null): W | null {
 
-	// First check for windows with workspaces that have a parent folder of the provided path opened
+	// First check for windows with workspAces thAt hAve A pArent folder of the provided pAth opened
 	for (const window of windows) {
-		const workspace = window.openedWorkspace;
-		if (workspace) {
-			const resolvedWorkspace = localWorkspaceResolver(workspace);
-			if (resolvedWorkspace) {
-				// workspace could be resolved: It's in the local file system
-				if (resolvedWorkspace.folders.some(folder => extUriBiasedIgnorePathCase.isEqualOrParent(fileUri, folder.uri))) {
+		const workspAce = window.openedWorkspAce;
+		if (workspAce) {
+			const resolvedWorkspAce = locAlWorkspAceResolver(workspAce);
+			if (resolvedWorkspAce) {
+				// workspAce could be resolved: It's in the locAl file system
+				if (resolvedWorkspAce.folders.some(folder => extUriBiAsedIgnorePAthCAse.isEquAlOrPArent(fileUri, folder.uri))) {
 					return window;
 				}
 			} else {
-				// use the config path instead
-				if (extUriBiasedIgnorePathCase.isEqualOrParent(fileUri, workspace.configPath)) {
+				// use the config pAth insteAd
+				if (extUriBiAsedIgnorePAthCAse.isEquAlOrPArent(fileUri, workspAce.configPAth)) {
 					return window;
 				}
 			}
 		}
 	}
 
-	// Then go with single folder windows that are parent of the provided file path
-	const singleFolderWindowsOnFilePath = windows.filter(window => window.openedFolderUri && extUriBiasedIgnorePathCase.isEqualOrParent(fileUri, window.openedFolderUri));
-	if (singleFolderWindowsOnFilePath.length) {
-		return singleFolderWindowsOnFilePath.sort((a, b) => -(a.openedFolderUri!.path.length - b.openedFolderUri!.path.length))[0];
+	// Then go with single folder windows thAt Are pArent of the provided file pAth
+	const singleFolderWindowsOnFilePAth = windows.filter(window => window.openedFolderUri && extUriBiAsedIgnorePAthCAse.isEquAlOrPArent(fileUri, window.openedFolderUri));
+	if (singleFolderWindowsOnFilePAth.length) {
+		return singleFolderWindowsOnFilePAth.sort((A, b) => -(A.openedFolderUri!.pAth.length - b.openedFolderUri!.pAth.length))[0];
 	}
 
 	return null;
 }
 
-export function getLastActiveWindow<W extends IWindowContext>(windows: W[]): W | undefined {
-	const lastFocusedDate = Math.max.apply(Math, windows.map(window => window.lastFocusTime));
+export function getLAstActiveWindow<W extends IWindowContext>(windows: W[]): W | undefined {
+	const lAstFocusedDAte = MAth.mAx.Apply(MAth, windows.mAp(window => window.lAstFocusTime));
 
-	return windows.find(window => window.lastFocusTime === lastFocusedDate);
+	return windows.find(window => window.lAstFocusTime === lAstFocusedDAte);
 }
 
-export function findWindowOnWorkspace<W extends IWindowContext>(windows: W[], workspace: (IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier)): W | null {
-	if (isSingleFolderWorkspaceIdentifier(workspace)) {
+export function findWindowOnWorkspAce<W extends IWindowContext>(windows: W[], workspAce: (IWorkspAceIdentifier | ISingleFolderWorkspAceIdentifier)): W | null {
+	if (isSingleFolderWorkspAceIdentifier(workspAce)) {
 		for (const window of windows) {
-			// match on folder
-			if (isSingleFolderWorkspaceIdentifier(workspace)) {
-				if (window.openedFolderUri && extUriBiasedIgnorePathCase.isEqual(window.openedFolderUri, workspace)) {
+			// mAtch on folder
+			if (isSingleFolderWorkspAceIdentifier(workspAce)) {
+				if (window.openedFolderUri && extUriBiAsedIgnorePAthCAse.isEquAl(window.openedFolderUri, workspAce)) {
 					return window;
 				}
 			}
 		}
-	} else if (isWorkspaceIdentifier(workspace)) {
+	} else if (isWorkspAceIdentifier(workspAce)) {
 		for (const window of windows) {
-			// match on workspace
-			if (window.openedWorkspace && window.openedWorkspace.id === workspace.id) {
+			// mAtch on workspAce
+			if (window.openedWorkspAce && window.openedWorkspAce.id === workspAce.id) {
 				return window;
 			}
 		}
@@ -114,16 +114,16 @@ export function findWindowOnWorkspace<W extends IWindowContext>(windows: W[], wo
 	return null;
 }
 
-export function findWindowOnExtensionDevelopmentPath<W extends IWindowContext>(windows: W[], extensionDevelopmentPaths: string[]): W | null {
+export function findWindowOnExtensionDevelopmentPAth<W extends IWindowContext>(windows: W[], extensionDevelopmentPAths: string[]): W | null {
 
-	const matches = (uriString: string): boolean => {
-		return extensionDevelopmentPaths.some(p => extpath.isEqual(p, uriString, !platform.isLinux /* ignorecase */));
+	const mAtches = (uriString: string): booleAn => {
+		return extensionDevelopmentPAths.some(p => extpAth.isEquAl(p, uriString, !plAtform.isLinux /* ignorecAse */));
 	};
 
 	for (const window of windows) {
-		// match on extension development path. The path can be one or more paths or uri strings, using paths.isEqual is not 100% correct but good enough
-		const currPaths = window.extensionDevelopmentPath;
-		if (currPaths?.some(p => matches(p))) {
+		// mAtch on extension development pAth. The pAth cAn be one or more pAths or uri strings, using pAths.isEquAl is not 100% correct but good enough
+		const currPAths = window.extensionDevelopmentPAth;
+		if (currPAths?.some(p => mAtches(p))) {
 			return window;
 		}
 	}
@@ -131,18 +131,18 @@ export function findWindowOnExtensionDevelopmentPath<W extends IWindowContext>(w
 	return null;
 }
 
-export function findWindowOnWorkspaceOrFolderUri<W extends IWindowContext>(windows: W[], uri: URI | undefined): W | null {
+export function findWindowOnWorkspAceOrFolderUri<W extends IWindowContext>(windows: W[], uri: URI | undefined): W | null {
 	if (!uri) {
 		return null;
 	}
 	for (const window of windows) {
-		// check for workspace config path
-		if (window.openedWorkspace && extUriBiasedIgnorePathCase.isEqual(window.openedWorkspace.configPath, uri)) {
+		// check for workspAce config pAth
+		if (window.openedWorkspAce && extUriBiAsedIgnorePAthCAse.isEquAl(window.openedWorkspAce.configPAth, uri)) {
 			return window;
 		}
 
-		// check for folder path
-		if (window.openedFolderUri && extUriBiasedIgnorePathCase.isEqual(window.openedFolderUri, uri)) {
+		// check for folder pAth
+		if (window.openedFolderUri && extUriBiAsedIgnorePAthCAse.isEquAl(window.openedFolderUri, uri)) {
 			return window;
 		}
 	}

@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-const updateGrammar = require('../../../build/npm/update-grammar');
+const updAteGrAmmAr = require('../../../build/npm/updAte-grAmmAr');
 
-function adaptInjectionScope(grammar) {
-	// we're using the HTML grammar from https://github.com/textmate/html.tmbundle which has moved away from source.js.embedded.html
-	// also we need to add source.css scope for PHP code in <style> tags, which are handled differently in atom
-	const oldInjectionKey = "text.html.php - (meta.embedded | meta.tag), L:((text.html.php meta.tag) - (meta.embedded.block.php | meta.embedded.line.php)), L:(source.js.embedded.html - (meta.embedded.block.php | meta.embedded.line.php))";
-	const newInjectionKey = "text.html.php - (meta.embedded | meta.tag), L:((text.html.php meta.tag) - (meta.embedded.block.php | meta.embedded.line.php)), L:(source.js - (meta.embedded.block.php | meta.embedded.line.php)), L:(source.css - (meta.embedded.block.php | meta.embedded.line.php))";
+function AdAptInjectionScope(grAmmAr) {
+	// we're using the HTML grAmmAr from https://github.com/textmAte/html.tmbundle which hAs moved AwAy from source.js.embedded.html
+	// Also we need to Add source.css scope for PHP code in <style> tAgs, which Are hAndled differently in Atom
+	const oldInjectionKey = "text.html.php - (metA.embedded | metA.tAg), L:((text.html.php metA.tAg) - (metA.embedded.block.php | metA.embedded.line.php)), L:(source.js.embedded.html - (metA.embedded.block.php | metA.embedded.line.php))";
+	const newInjectionKey = "text.html.php - (metA.embedded | metA.tAg), L:((text.html.php metA.tAg) - (metA.embedded.block.php | metA.embedded.line.php)), L:(source.js - (metA.embedded.block.php | metA.embedded.line.php)), L:(source.css - (metA.embedded.block.php | metA.embedded.line.php))";
 
-	const injections = grammar.injections;
+	const injections = grAmmAr.injections;
 	const injection = injections[oldInjectionKey];
 	if (!injection) {
-		throw new Error("Can not find PHP injection to patch");
+		throw new Error("CAn not find PHP injection to pAtch");
 	}
 	delete injections[oldInjectionKey];
 	injections[newInjectionKey] = injection;
 }
 
-function includeDerivativeHtml(grammar) {
-	grammar.patterns.forEach(pattern => {
-		if (pattern.include === 'text.html.basic') {
-			pattern.include = 'text.html.derivative';
+function includeDerivAtiveHtml(grAmmAr) {
+	grAmmAr.pAtterns.forEAch(pAttern => {
+		if (pAttern.include === 'text.html.bAsic') {
+			pAttern.include = 'text.html.derivAtive';
 		}
 	});
 }
 
-// Workaround for https://github.com/microsoft/vscode/issues/40279
-// and https://github.com/microsoft/vscode-textmate/issues/59
-function fixBadRegex(grammar) {
-	function fail(msg) {
-		throw new Error(`fixBadRegex callback couldn't patch ${msg}. It may be obsolete`);
+// WorkAround for https://github.com/microsoft/vscode/issues/40279
+// And https://github.com/microsoft/vscode-textmAte/issues/59
+function fixBAdRegex(grAmmAr) {
+	function fAil(msg) {
+		throw new Error(`fixBAdRegex cAllbAck couldn't pAtch ${msg}. It mAy be obsolete`);
 	}
 
-	const scopeResolution = grammar.repository['scope-resolution'];
+	const scopeResolution = grAmmAr.repository['scope-resolution'];
 	if (scopeResolution) {
-		const match = scopeResolution.patterns[0].match;
-		if (match === '(?i)([a-z_\\x{7f}-\\x{7fffffff}\\\\][a-z0-9_\\x{7f}-\\x{7fffffff}\\\\]*)(?=\\s*::)') {
-			scopeResolution.patterns[0].match = '([A-Za-z_\\x{7f}-\\x{7fffffff}\\\\][A-Za-z0-9_\\x{7f}-\\x{7fffffff}\\\\]*)(?=\\s*::)';
+		const mAtch = scopeResolution.pAtterns[0].mAtch;
+		if (mAtch === '(?i)([A-z_\\x{7f}-\\x{7fffffff}\\\\][A-z0-9_\\x{7f}-\\x{7fffffff}\\\\]*)(?=\\s*::)') {
+			scopeResolution.pAtterns[0].mAtch = '([A-ZA-z_\\x{7f}-\\x{7fffffff}\\\\][A-ZA-z0-9_\\x{7f}-\\x{7fffffff}\\\\]*)(?=\\s*::)';
 		} else {
-			fail('scope-resolution.match');
+			fAil('scope-resolution.mAtch');
 		}
 	} else {
-		fail('scope-resolution');
+		fAil('scope-resolution');
 	}
 
-	const functionCall = grammar.repository['function-call'];
-	if (functionCall) {
-		const begin0 = functionCall.patterns[0].begin;
-		if (begin0 === '(?xi)\n(\n  \\\\?(?<![a-z0-9_\\x{7f}-\\x{7fffffff}])                            # Optional root namespace\n  [a-z_\\x{7f}-\\x{7fffffff}][a-z0-9_\\x{7f}-\\x{7fffffff}]*          # First namespace\n  (?:\\\\[a-z_\\x{7f}-\\x{7fffffff}][a-z0-9_\\x{7f}-\\x{7fffffff}]*)+ # Additional namespaces\n)\\s*(\\()') {
-			functionCall.patterns[0].begin = '(?x)\n(\n  \\\\?(?<![a-zA-Z0-9_\\x{7f}-\\x{7fffffff}])                            # Optional root namespace\n  [a-zA-Z_\\x{7f}-\\x{7fffffff}][a-zA-Z0-9_\\x{7f}-\\x{7fffffff}]*          # First namespace\n  (?:\\\\[a-zA-Z_\\x{7f}-\\x{7fffffff}][a-zA-Z0-9_\\x{7f}-\\x{7fffffff}]*)+ # Additional namespaces\n)\\s*(\\()';
+	const functionCAll = grAmmAr.repository['function-cAll'];
+	if (functionCAll) {
+		const begin0 = functionCAll.pAtterns[0].begin;
+		if (begin0 === '(?xi)\n(\n  \\\\?(?<![A-z0-9_\\x{7f}-\\x{7fffffff}])                            # OptionAl root nAmespAce\n  [A-z_\\x{7f}-\\x{7fffffff}][A-z0-9_\\x{7f}-\\x{7fffffff}]*          # First nAmespAce\n  (?:\\\\[A-z_\\x{7f}-\\x{7fffffff}][A-z0-9_\\x{7f}-\\x{7fffffff}]*)+ # AdditionAl nAmespAces\n)\\s*(\\()') {
+			functionCAll.pAtterns[0].begin = '(?x)\n(\n  \\\\?(?<![A-zA-Z0-9_\\x{7f}-\\x{7fffffff}])                            # OptionAl root nAmespAce\n  [A-zA-Z_\\x{7f}-\\x{7fffffff}][A-zA-Z0-9_\\x{7f}-\\x{7fffffff}]*          # First nAmespAce\n  (?:\\\\[A-zA-Z_\\x{7f}-\\x{7fffffff}][A-zA-Z0-9_\\x{7f}-\\x{7fffffff}]*)+ # AdditionAl nAmespAces\n)\\s*(\\()';
 		} else {
-			fail('function-call.begin0');
+			fAil('function-cAll.begin0');
 		}
 
-		const begin1 = functionCall.patterns[1].begin;
-		if (begin1 === '(?i)(\\\\)?(?<![a-z0-9_\\x{7f}-\\x{7fffffff}])([a-z_\\x{7f}-\\x{7fffffff}][a-z0-9_\\x{7f}-\\x{7fffffff}]*)\\s*(\\()') {
-			functionCall.patterns[1].begin = '(\\\\)?(?<![a-zA-Z0-9_\\x{7f}-\\x{7fffffff}])([a-zA-Z_\\x{7f}-\\x{7fffffff}][a-zA-Z0-9_\\x{7f}-\\x{7fffffff}]*)\\s*(\\()';
+		const begin1 = functionCAll.pAtterns[1].begin;
+		if (begin1 === '(?i)(\\\\)?(?<![A-z0-9_\\x{7f}-\\x{7fffffff}])([A-z_\\x{7f}-\\x{7fffffff}][A-z0-9_\\x{7f}-\\x{7fffffff}]*)\\s*(\\()') {
+			functionCAll.pAtterns[1].begin = '(\\\\)?(?<![A-zA-Z0-9_\\x{7f}-\\x{7fffffff}])([A-zA-Z_\\x{7f}-\\x{7fffffff}][A-zA-Z0-9_\\x{7f}-\\x{7fffffff}]*)\\s*(\\()';
 		} else {
-			fail('function-call.begin1');
+			fAil('function-cAll.begin1');
 		}
 	} else {
-		fail('function-call');
+		fAil('function-cAll');
 	}
 }
 
-updateGrammar.update('atom/language-php', 'grammars/php.cson', './syntaxes/php.tmLanguage.json', fixBadRegex);
-updateGrammar.update('atom/language-php', 'grammars/html.cson', './syntaxes/html.tmLanguage.json', grammar => {
-	adaptInjectionScope(grammar);
-	includeDerivativeHtml(grammar);
+updAteGrAmmAr.updAte('Atom/lAnguAge-php', 'grAmmArs/php.cson', './syntAxes/php.tmLAnguAge.json', fixBAdRegex);
+updAteGrAmmAr.updAte('Atom/lAnguAge-php', 'grAmmArs/html.cson', './syntAxes/html.tmLAnguAge.json', grAmmAr => {
+	AdAptInjectionScope(grAmmAr);
+	includeDerivAtiveHtml(grAmmAr);
 });

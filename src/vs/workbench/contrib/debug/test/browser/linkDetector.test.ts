@@ -1,168 +1,168 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { workbenchInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
+import * As Assert from 'Assert';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { workbenchInstAntiAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
-import { isWindows } from 'vs/base/common/platform';
-import { WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { WorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { URI } from 'vs/bAse/common/uri';
 
 suite('Debug - Link Detector', () => {
 
 	let linkDetector: LinkDetector;
 
 	/**
-	 * Instantiate a {@link LinkDetector} for use by the functions being tested.
+	 * InstAntiAte A {@link LinkDetector} for use by the functions being tested.
 	 */
 	setup(() => {
-		const instantiationService: TestInstantiationService = <TestInstantiationService>workbenchInstantiationService();
-		linkDetector = instantiationService.createInstance(LinkDetector);
+		const instAntiAtionService: TestInstAntiAtionService = <TestInstAntiAtionService>workbenchInstAntiAtionService();
+		linkDetector = instAntiAtionService.creAteInstAnce(LinkDetector);
 	});
 
 	/**
-	 * Assert that a given Element is an anchor element.
+	 * Assert thAt A given Element is An Anchor element.
 	 *
-	 * @param element The Element to verify.
+	 * @pArAm element The Element to verify.
 	 */
-	function assertElementIsLink(element: Element) {
-		assert(element instanceof HTMLAnchorElement);
+	function AssertElementIsLink(element: Element) {
+		Assert(element instAnceof HTMLAnchorElement);
 	}
 
 	test('noLinks', () => {
-		const input = 'I am a string';
-		const expectedOutput = '<span>I am a string</span>';
+		const input = 'I Am A string';
+		const expectedOutput = '<spAn>I Am A string</spAn>';
 		const output = linkDetector.linkify(input);
 
-		assert.equal(0, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal(expectedOutput, output.outerHTML);
+		Assert.equAl(0, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl(expectedOutput, output.outerHTML);
 	});
 
-	test('trailingNewline', () => {
-		const input = 'I am a string\n';
-		const expectedOutput = '<span>I am a string\n</span>';
+	test('trAilingNewline', () => {
+		const input = 'I Am A string\n';
+		const expectedOutput = '<spAn>I Am A string\n</spAn>';
 		const output = linkDetector.linkify(input);
 
-		assert.equal(0, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal(expectedOutput, output.outerHTML);
+		Assert.equAl(0, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl(expectedOutput, output.outerHTML);
 	});
 
-	test('trailingNewlineSplit', () => {
-		const input = 'I am a string\n';
-		const expectedOutput = '<span>I am a string\n</span>';
+	test('trAilingNewlineSplit', () => {
+		const input = 'I Am A string\n';
+		const expectedOutput = '<spAn>I Am A string\n</spAn>';
 		const output = linkDetector.linkify(input, true);
 
-		assert.equal(0, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal(expectedOutput, output.outerHTML);
+		Assert.equAl(0, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl(expectedOutput, output.outerHTML);
 	});
 
 	test('singleLineLink', () => {
-		const input = isWindows ? 'C:\\foo\\bar.js:12:34' : '/Users/foo/bar.js:12:34';
-		const expectedOutput = isWindows ? '<span><a>C:\\foo\\bar.js:12:34<\/a><\/span>' : '<span><a>/Users/foo/bar.js:12:34<\/a><\/span>';
+		const input = isWindows ? 'C:\\foo\\bAr.js:12:34' : '/Users/foo/bAr.js:12:34';
+		const expectedOutput = isWindows ? '<spAn><A>C:\\foo\\bAr.js:12:34<\/A><\/spAn>' : '<spAn><A>/Users/foo/bAr.js:12:34<\/A><\/spAn>';
 		const output = linkDetector.linkify(input);
 
-		assert.equal(1, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal('A', output.firstElementChild!.tagName);
-		assert.equal(expectedOutput, output.outerHTML);
-		assertElementIsLink(output.firstElementChild!);
-		assert.equal(isWindows ? 'C:\\foo\\bar.js:12:34' : '/Users/foo/bar.js:12:34', output.firstElementChild!.textContent);
+		Assert.equAl(1, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl('A', output.firstElementChild!.tAgNAme);
+		Assert.equAl(expectedOutput, output.outerHTML);
+		AssertElementIsLink(output.firstElementChild!);
+		Assert.equAl(isWindows ? 'C:\\foo\\bAr.js:12:34' : '/Users/foo/bAr.js:12:34', output.firstElementChild!.textContent);
 	});
 
-	test('relativeLink', () => {
-		const input = '\./foo/bar.js';
-		const expectedOutput = '<span>\./foo/bar.js</span>';
+	test('relAtiveLink', () => {
+		const input = '\./foo/bAr.js';
+		const expectedOutput = '<spAn>\./foo/bAr.js</spAn>';
 		const output = linkDetector.linkify(input);
 
-		assert.equal(0, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal(expectedOutput, output.outerHTML);
+		Assert.equAl(0, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl(expectedOutput, output.outerHTML);
 	});
 
-	test('relativeLinkWithWorkspace', () => {
-		const input = '\./foo/bar.js';
-		const expectedOutput = /^<span><a class="link" title=".*">\.\/foo\/bar\.js<\/a><\/span>$/;
-		const output = linkDetector.linkify(input, false, new WorkspaceFolder({ uri: URI.file('/path/to/workspace'), name: 'ws', index: 0 }));
+	test('relAtiveLinkWithWorkspAce', () => {
+		const input = '\./foo/bAr.js';
+		const expectedOutput = /^<spAn><A clAss="link" title=".*">\.\/foo\/bAr\.js<\/A><\/spAn>$/;
+		const output = linkDetector.linkify(input, fAlse, new WorkspAceFolder({ uri: URI.file('/pAth/to/workspAce'), nAme: 'ws', index: 0 }));
 
-		assert.equal('SPAN', output.tagName);
-		assert(expectedOutput.test(output.outerHTML));
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert(expectedOutput.test(output.outerHTML));
 	});
 
 	test('singleLineLinkAndText', function () {
-		const input = isWindows ? 'The link: C:/foo/bar.js:12:34' : 'The link: /Users/foo/bar.js:12:34';
-		const expectedOutput = /^<span>The link: <a>.*\/foo\/bar.js:12:34<\/a><\/span>$/;
+		const input = isWindows ? 'The link: C:/foo/bAr.js:12:34' : 'The link: /Users/foo/bAr.js:12:34';
+		const expectedOutput = /^<spAn>The link: <A>.*\/foo\/bAr.js:12:34<\/A><\/spAn>$/;
 		const output = linkDetector.linkify(input);
 
-		assert.equal(1, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal('A', output.children[0].tagName);
-		assert(expectedOutput.test(output.outerHTML));
-		assertElementIsLink(output.children[0]);
-		assert.equal(isWindows ? 'C:/foo/bar.js:12:34' : '/Users/foo/bar.js:12:34', output.children[0].textContent);
+		Assert.equAl(1, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl('A', output.children[0].tAgNAme);
+		Assert(expectedOutput.test(output.outerHTML));
+		AssertElementIsLink(output.children[0]);
+		Assert.equAl(isWindows ? 'C:/foo/bAr.js:12:34' : '/Users/foo/bAr.js:12:34', output.children[0].textContent);
 	});
 
 	test('singleLineMultipleLinks', () => {
-		const input = isWindows ? 'Here is a link C:/foo/bar.js:12:34 and here is another D:/boo/far.js:56:78' :
-			'Here is a link /Users/foo/bar.js:12:34 and here is another /Users/boo/far.js:56:78';
-		const expectedOutput = /^<span>Here is a link <a>.*\/foo\/bar.js:12:34<\/a> and here is another <a>.*\/boo\/far.js:56:78<\/a><\/span>$/;
+		const input = isWindows ? 'Here is A link C:/foo/bAr.js:12:34 And here is Another D:/boo/fAr.js:56:78' :
+			'Here is A link /Users/foo/bAr.js:12:34 And here is Another /Users/boo/fAr.js:56:78';
+		const expectedOutput = /^<spAn>Here is A link <A>.*\/foo\/bAr.js:12:34<\/A> And here is Another <A>.*\/boo\/fAr.js:56:78<\/A><\/spAn>$/;
 		const output = linkDetector.linkify(input);
 
-		assert.equal(2, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal('A', output.children[0].tagName);
-		assert.equal('A', output.children[1].tagName);
-		assert(expectedOutput.test(output.outerHTML));
-		assertElementIsLink(output.children[0]);
-		assertElementIsLink(output.children[1]);
-		assert.equal(isWindows ? 'C:/foo/bar.js:12:34' : '/Users/foo/bar.js:12:34', output.children[0].textContent);
-		assert.equal(isWindows ? 'D:/boo/far.js:56:78' : '/Users/boo/far.js:56:78', output.children[1].textContent);
+		Assert.equAl(2, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl('A', output.children[0].tAgNAme);
+		Assert.equAl('A', output.children[1].tAgNAme);
+		Assert(expectedOutput.test(output.outerHTML));
+		AssertElementIsLink(output.children[0]);
+		AssertElementIsLink(output.children[1]);
+		Assert.equAl(isWindows ? 'C:/foo/bAr.js:12:34' : '/Users/foo/bAr.js:12:34', output.children[0].textContent);
+		Assert.equAl(isWindows ? 'D:/boo/fAr.js:56:78' : '/Users/boo/fAr.js:56:78', output.children[1].textContent);
 	});
 
 	test('multilineNoLinks', () => {
 		const input = 'Line one\nLine two\nLine three';
-		const expectedOutput = /^<span><span>Line one\n<\/span><span>Line two\n<\/span><span>Line three<\/span><\/span>$/;
+		const expectedOutput = /^<spAn><spAn>Line one\n<\/spAn><spAn>Line two\n<\/spAn><spAn>Line three<\/spAn><\/spAn>$/;
 		const output = linkDetector.linkify(input, true);
 
-		assert.equal(3, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal('SPAN', output.children[0].tagName);
-		assert.equal('SPAN', output.children[1].tagName);
-		assert.equal('SPAN', output.children[2].tagName);
-		assert(expectedOutput.test(output.outerHTML));
+		Assert.equAl(3, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl('SPAN', output.children[0].tAgNAme);
+		Assert.equAl('SPAN', output.children[1].tAgNAme);
+		Assert.equAl('SPAN', output.children[2].tAgNAme);
+		Assert(expectedOutput.test(output.outerHTML));
 	});
 
-	test('multilineTrailingNewline', () => {
-		const input = 'I am a string\nAnd I am another\n';
-		const expectedOutput = '<span><span>I am a string\n<\/span><span>And I am another\n<\/span><\/span>';
+	test('multilineTrAilingNewline', () => {
+		const input = 'I Am A string\nAnd I Am Another\n';
+		const expectedOutput = '<spAn><spAn>I Am A string\n<\/spAn><spAn>And I Am Another\n<\/spAn><\/spAn>';
 		const output = linkDetector.linkify(input, true);
 
-		assert.equal(2, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal('SPAN', output.children[0].tagName);
-		assert.equal('SPAN', output.children[1].tagName);
-		assert.equal(expectedOutput, output.outerHTML);
+		Assert.equAl(2, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl('SPAN', output.children[0].tAgNAme);
+		Assert.equAl('SPAN', output.children[1].tAgNAme);
+		Assert.equAl(expectedOutput, output.outerHTML);
 	});
 
 	test('multilineWithLinks', () => {
-		const input = isWindows ? 'I have a link for you\nHere it is: C:/foo/bar.js:12:34\nCool, huh?' :
-			'I have a link for you\nHere it is: /Users/foo/bar.js:12:34\nCool, huh?';
-		const expectedOutput = /^<span><span>I have a link for you\n<\/span><span>Here it is: <a>.*\/foo\/bar.js:12:34<\/a>\n<\/span><span>Cool, huh\?<\/span><\/span>$/;
+		const input = isWindows ? 'I hAve A link for you\nHere it is: C:/foo/bAr.js:12:34\nCool, huh?' :
+			'I hAve A link for you\nHere it is: /Users/foo/bAr.js:12:34\nCool, huh?';
+		const expectedOutput = /^<spAn><spAn>I hAve A link for you\n<\/spAn><spAn>Here it is: <A>.*\/foo\/bAr.js:12:34<\/A>\n<\/spAn><spAn>Cool, huh\?<\/spAn><\/spAn>$/;
 		const output = linkDetector.linkify(input, true);
 
-		assert.equal(3, output.children.length);
-		assert.equal('SPAN', output.tagName);
-		assert.equal('SPAN', output.children[0].tagName);
-		assert.equal('SPAN', output.children[1].tagName);
-		assert.equal('SPAN', output.children[2].tagName);
-		assert.equal('A', output.children[1].children[0].tagName);
-		assert(expectedOutput.test(output.outerHTML));
-		assertElementIsLink(output.children[1].children[0]);
-		assert.equal(isWindows ? 'C:/foo/bar.js:12:34' : '/Users/foo/bar.js:12:34', output.children[1].children[0].textContent);
+		Assert.equAl(3, output.children.length);
+		Assert.equAl('SPAN', output.tAgNAme);
+		Assert.equAl('SPAN', output.children[0].tAgNAme);
+		Assert.equAl('SPAN', output.children[1].tAgNAme);
+		Assert.equAl('SPAN', output.children[2].tAgNAme);
+		Assert.equAl('A', output.children[1].children[0].tAgNAme);
+		Assert(expectedOutput.test(output.outerHTML));
+		AssertElementIsLink(output.children[1].children[0]);
+		Assert.equAl(isWindows ? 'C:/foo/bAr.js:12:34' : '/Users/foo/bAr.js:12:34', output.children[1].children[0].textContent);
 	});
 });

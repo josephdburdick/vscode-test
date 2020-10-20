@@ -1,205 +1,205 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
-import { IConfigurationService, getMigratedSettingValue } from 'vs/platform/configuration/common/configuration';
-import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
-import product from 'vs/platform/product/common/product';
-import { IUpdateService, State, StateType, AvailableForDownload, UpdateType } from 'vs/platform/update/common/update';
-import { IEnvironmentMainService } from 'vs/platform/environment/electron-main/environmentMainService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { timeout } from 'vs/bAse/common/Async';
+import { IConfigurAtionService, getMigrAtedSettingVAlue } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ILifecycleMAinService } from 'vs/plAtform/lifecycle/electron-mAin/lifecycleMAinService';
+import product from 'vs/plAtform/product/common/product';
+import { IUpdAteService, StAte, StAteType, AvAilAbleForDownloAd, UpdAteType } from 'vs/plAtform/updAte/common/updAte';
+import { IEnvironmentMAinService } from 'vs/plAtform/environment/electron-mAin/environmentMAinService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export function createUpdateURL(platform: string, quality: string): string {
-	return `${product.updateUrl}/api/update/${platform}/${quality}/${product.commit}`;
+export function creAteUpdAteURL(plAtform: string, quAlity: string): string {
+	return `${product.updAteUrl}/Api/updAte/${plAtform}/${quAlity}/${product.commit}`;
 }
 
-export type UpdateNotAvailableClassification = {
-	explicit: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+export type UpdAteNotAvAilAbleClAssificAtion = {
+	explicit: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight', isMeAsurement: true };
 };
 
-export abstract class AbstractUpdateService implements IUpdateService {
+export AbstrAct clAss AbstrActUpdAteService implements IUpdAteService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	protected url: string | undefined;
 
-	private _state: State = State.Uninitialized;
+	privAte _stAte: StAte = StAte.UninitiAlized;
 
-	private readonly _onStateChange = new Emitter<State>();
-	readonly onStateChange: Event<State> = this._onStateChange.event;
+	privAte reAdonly _onStAteChAnge = new Emitter<StAte>();
+	reAdonly onStAteChAnge: Event<StAte> = this._onStAteChAnge.event;
 
-	get state(): State {
-		return this._state;
+	get stAte(): StAte {
+		return this._stAte;
 	}
 
-	protected setState(state: State): void {
-		this.logService.info('update#setState', state.type);
-		this._state = state;
-		this._onStateChange.fire(state);
+	protected setStAte(stAte: StAte): void {
+		this.logService.info('updAte#setStAte', stAte.type);
+		this._stAte = stAte;
+		this._onStAteChAnge.fire(stAte);
 	}
 
 	constructor(
-		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
-		@IConfigurationService protected configurationService: IConfigurationService,
-		@IEnvironmentMainService private readonly environmentService: IEnvironmentMainService,
+		@ILifecycleMAinService privAte reAdonly lifecycleMAinService: ILifecycleMAinService,
+		@IConfigurAtionService protected configurAtionService: IConfigurAtionService,
+		@IEnvironmentMAinService privAte reAdonly environmentService: IEnvironmentMAinService,
 		@IRequestService protected requestService: IRequestService,
 		@ILogService protected logService: ILogService,
 	) { }
 
 	/**
-	 * This must be called before any other call. This is a performance
-	 * optimization, to avoid using extra CPU cycles before first window open.
+	 * This must be cAlled before Any other cAll. This is A performAnce
+	 * optimizAtion, to Avoid using extrA CPU cycles before first window open.
 	 * https://github.com/microsoft/vscode/issues/89784
 	 */
-	initialize(): void {
+	initiAlize(): void {
 		if (!this.environmentService.isBuilt) {
-			return; // updates are never enabled when running out of sources
+			return; // updAtes Are never enAbled when running out of sources
 		}
 
-		if (this.environmentService.disableUpdates) {
-			this.logService.info('update#ctor - updates are disabled by the environment');
+		if (this.environmentService.disAbleUpdAtes) {
+			this.logService.info('updAte#ctor - updAtes Are disAbled by the environment');
 			return;
 		}
 
-		if (!product.updateUrl || !product.commit) {
-			this.logService.info('update#ctor - updates are disabled as there is no update URL');
+		if (!product.updAteUrl || !product.commit) {
+			this.logService.info('updAte#ctor - updAtes Are disAbled As there is no updAte URL');
 			return;
 		}
 
-		const updateMode = getMigratedSettingValue<string>(this.configurationService, 'update.mode', 'update.channel');
-		const quality = this.getProductQuality(updateMode);
+		const updAteMode = getMigrAtedSettingVAlue<string>(this.configurAtionService, 'updAte.mode', 'updAte.chAnnel');
+		const quAlity = this.getProductQuAlity(updAteMode);
 
-		if (!quality) {
-			this.logService.info('update#ctor - updates are disabled by user preference');
+		if (!quAlity) {
+			this.logService.info('updAte#ctor - updAtes Are disAbled by user preference');
 			return;
 		}
 
-		this.url = this.buildUpdateFeedUrl(quality);
+		this.url = this.buildUpdAteFeedUrl(quAlity);
 		if (!this.url) {
-			this.logService.info('update#ctor - updates are disabled as the update URL is badly formed');
+			this.logService.info('updAte#ctor - updAtes Are disAbled As the updAte URL is bAdly formed');
 			return;
 		}
 
-		this.setState(State.Idle(this.getUpdateType()));
+		this.setStAte(StAte.Idle(this.getUpdAteType()));
 
-		if (updateMode === 'manual') {
-			this.logService.info('update#ctor - manual checks only; automatic updates are disabled by user preference');
+		if (updAteMode === 'mAnuAl') {
+			this.logService.info('updAte#ctor - mAnuAl checks only; AutomAtic updAtes Are disAbled by user preference');
 			return;
 		}
 
-		if (updateMode === 'start') {
-			this.logService.info('update#ctor - startup checks only; automatic updates are disabled by user preference');
+		if (updAteMode === 'stArt') {
+			this.logService.info('updAte#ctor - stArtup checks only; AutomAtic updAtes Are disAbled by user preference');
 
-			// Check for updates only once after 30 seconds
-			setTimeout(() => this.checkForUpdates(null), 30 * 1000);
+			// Check for updAtes only once After 30 seconds
+			setTimeout(() => this.checkForUpdAtes(null), 30 * 1000);
 		} else {
-			// Start checking for updates after 30 seconds
-			this.scheduleCheckForUpdates(30 * 1000).then(undefined, err => this.logService.error(err));
+			// StArt checking for updAtes After 30 seconds
+			this.scheduleCheckForUpdAtes(30 * 1000).then(undefined, err => this.logService.error(err));
 		}
 	}
 
-	private getProductQuality(updateMode: string): string | undefined {
-		return updateMode === 'none' ? undefined : product.quality;
+	privAte getProductQuAlity(updAteMode: string): string | undefined {
+		return updAteMode === 'none' ? undefined : product.quAlity;
 	}
 
-	private scheduleCheckForUpdates(delay = 60 * 60 * 1000): Promise<void> {
-		return timeout(delay)
-			.then(() => this.checkForUpdates(null))
+	privAte scheduleCheckForUpdAtes(delAy = 60 * 60 * 1000): Promise<void> {
+		return timeout(delAy)
+			.then(() => this.checkForUpdAtes(null))
 			.then(() => {
-				// Check again after 1 hour
-				return this.scheduleCheckForUpdates(60 * 60 * 1000);
+				// Check AgAin After 1 hour
+				return this.scheduleCheckForUpdAtes(60 * 60 * 1000);
 			});
 	}
 
-	async checkForUpdates(context: any): Promise<void> {
-		this.logService.trace('update#checkForUpdates, state = ', this.state.type);
+	Async checkForUpdAtes(context: Any): Promise<void> {
+		this.logService.trAce('updAte#checkForUpdAtes, stAte = ', this.stAte.type);
 
-		if (this.state.type !== StateType.Idle) {
+		if (this.stAte.type !== StAteType.Idle) {
 			return;
 		}
 
-		this.doCheckForUpdates(context);
+		this.doCheckForUpdAtes(context);
 	}
 
-	async downloadUpdate(): Promise<void> {
-		this.logService.trace('update#downloadUpdate, state = ', this.state.type);
+	Async downloAdUpdAte(): Promise<void> {
+		this.logService.trAce('updAte#downloAdUpdAte, stAte = ', this.stAte.type);
 
-		if (this.state.type !== StateType.AvailableForDownload) {
+		if (this.stAte.type !== StAteType.AvAilAbleForDownloAd) {
 			return;
 		}
 
-		await this.doDownloadUpdate(this.state);
+		AwAit this.doDownloAdUpdAte(this.stAte);
 	}
 
-	protected async doDownloadUpdate(state: AvailableForDownload): Promise<void> {
+	protected Async doDownloAdUpdAte(stAte: AvAilAbleForDownloAd): Promise<void> {
 		// noop
 	}
 
-	async applyUpdate(): Promise<void> {
-		this.logService.trace('update#applyUpdate, state = ', this.state.type);
+	Async ApplyUpdAte(): Promise<void> {
+		this.logService.trAce('updAte#ApplyUpdAte, stAte = ', this.stAte.type);
 
-		if (this.state.type !== StateType.Downloaded) {
+		if (this.stAte.type !== StAteType.DownloAded) {
 			return;
 		}
 
-		await this.doApplyUpdate();
+		AwAit this.doApplyUpdAte();
 	}
 
-	protected async doApplyUpdate(): Promise<void> {
+	protected Async doApplyUpdAte(): Promise<void> {
 		// noop
 	}
 
-	quitAndInstall(): Promise<void> {
-		this.logService.trace('update#quitAndInstall, state = ', this.state.type);
+	quitAndInstAll(): Promise<void> {
+		this.logService.trAce('updAte#quitAndInstAll, stAte = ', this.stAte.type);
 
-		if (this.state.type !== StateType.Ready) {
+		if (this.stAte.type !== StAteType.ReAdy) {
 			return Promise.resolve(undefined);
 		}
 
-		this.logService.trace('update#quitAndInstall(): before lifecycle quit()');
+		this.logService.trAce('updAte#quitAndInstAll(): before lifecycle quit()');
 
-		this.lifecycleMainService.quit(true /* from update */).then(vetod => {
-			this.logService.trace(`update#quitAndInstall(): after lifecycle quit() with veto: ${vetod}`);
+		this.lifecycleMAinService.quit(true /* from updAte */).then(vetod => {
+			this.logService.trAce(`updAte#quitAndInstAll(): After lifecycle quit() with veto: ${vetod}`);
 			if (vetod) {
 				return;
 			}
 
-			this.logService.trace('update#quitAndInstall(): running raw#quitAndInstall()');
-			this.doQuitAndInstall();
+			this.logService.trAce('updAte#quitAndInstAll(): running rAw#quitAndInstAll()');
+			this.doQuitAndInstAll();
 		});
 
 		return Promise.resolve(undefined);
 	}
 
-	isLatestVersion(): Promise<boolean | undefined> {
+	isLAtestVersion(): Promise<booleAn | undefined> {
 		if (!this.url) {
 			return Promise.resolve(undefined);
 		}
 
-		return this.requestService.request({ url: this.url }, CancellationToken.None).then(context => {
-			// The update server replies with 204 (No Content) when no
-			// update is available - that's all we want to know.
-			if (context.res.statusCode === 204) {
+		return this.requestService.request({ url: this.url }, CAncellAtionToken.None).then(context => {
+			// The updAte server replies with 204 (No Content) when no
+			// updAte is AvAilAble - thAt's All we wAnt to know.
+			if (context.res.stAtusCode === 204) {
 				return true;
 			} else {
-				return false;
+				return fAlse;
 			}
 		});
 	}
 
-	protected getUpdateType(): UpdateType {
-		return UpdateType.Archive;
+	protected getUpdAteType(): UpdAteType {
+		return UpdAteType.Archive;
 	}
 
-	protected doQuitAndInstall(): void {
+	protected doQuitAndInstAll(): void {
 		// noop
 	}
 
-	protected abstract buildUpdateFeedUrl(quality: string): string | undefined;
-	protected abstract doCheckForUpdates(context: any): void;
+	protected AbstrAct buildUpdAteFeedUrl(quAlity: string): string | undefined;
+	protected AbstrAct doCheckForUpdAtes(context: Any): void;
 }

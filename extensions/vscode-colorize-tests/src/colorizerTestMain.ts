@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as jsoncParser from 'jsonc-parser';
+import * As vscode from 'vscode';
+import * As jsoncPArser from 'jsonc-pArser';
 
-export function activate(context: vscode.ExtensionContext): any {
+export function ActivAte(context: vscode.ExtensionContext): Any {
 
-	const tokenTypes = ['type', 'struct', 'class', 'interface', 'enum', 'parameterType', 'function', 'variable', 'testToken'];
-	const tokenModifiers = ['static', 'abstract', 'deprecated', 'declaration', 'documentation', 'member', 'async', 'testModifier'];
+	const tokenTypes = ['type', 'struct', 'clAss', 'interfAce', 'enum', 'pArAmeterType', 'function', 'vAriAble', 'testToken'];
+	const tokenModifiers = ['stAtic', 'AbstrAct', 'deprecAted', 'declArAtion', 'documentAtion', 'member', 'Async', 'testModifier'];
 
-	const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
+	const legend = new vscode.SemAnticTokensLegend(tokenTypes, tokenModifiers);
 
-	const outputChannel = vscode.window.createOutputChannel('Semantic Tokens Test');
+	const outputChAnnel = vscode.window.creAteOutputChAnnel('SemAntic Tokens Test');
 
-	const documentSemanticHighlightProvider: vscode.DocumentSemanticTokensProvider = {
-		provideDocumentSemanticTokens(document: vscode.TextDocument): vscode.ProviderResult<vscode.SemanticTokens> {
-			const builder = new vscode.SemanticTokensBuilder();
+	const documentSemAnticHighlightProvider: vscode.DocumentSemAnticTokensProvider = {
+		provideDocumentSemAnticTokens(document: vscode.TextDocument): vscode.ProviderResult<vscode.SemAnticTokens> {
+			const builder = new vscode.SemAnticTokensBuilder();
 
-			function addToken(value: string, startLine: number, startCharacter: number, length: number) {
-				const [type, ...modifiers] = value.split('.');
+			function AddToken(vAlue: string, stArtLine: number, stArtChArActer: number, length: number) {
+				const [type, ...modifiers] = vAlue.split('.');
 
 				const selectedModifiers = [];
 
@@ -44,30 +44,30 @@ export function activate(context: vscode.ExtensionContext): any {
 						selectedModifiers.push(modifier);
 					}
 				}
-				builder.push(startLine, startCharacter, length, tokenType, tokenModifiers);
+				builder.push(stArtLine, stArtChArActer, length, tokenType, tokenModifiers);
 
-				outputChannel.appendLine(`line: ${startLine}, character: ${startCharacter}, length ${length}, ${type} (${tokenType}), ${selectedModifiers} ${tokenModifiers.toString(2)}`);
+				outputChAnnel.AppendLine(`line: ${stArtLine}, chArActer: ${stArtChArActer}, length ${length}, ${type} (${tokenType}), ${selectedModifiers} ${tokenModifiers.toString(2)}`);
 			}
 
-			outputChannel.appendLine('---');
+			outputChAnnel.AppendLine('---');
 
-			const visitor: jsoncParser.JSONVisitor = {
-				onObjectProperty: (property: string, _offset: number, _length: number, startLine: number, startCharacter: number) => {
-					addToken(property, startLine, startCharacter, property.length + 2);
+			const visitor: jsoncPArser.JSONVisitor = {
+				onObjectProperty: (property: string, _offset: number, _length: number, stArtLine: number, stArtChArActer: number) => {
+					AddToken(property, stArtLine, stArtChArActer, property.length + 2);
 				},
-				onLiteralValue: (value: any, _offset: number, length: number, startLine: number, startCharacter: number) => {
-					if (typeof value === 'string') {
-						addToken(value, startLine, startCharacter, length);
+				onLiterAlVAlue: (vAlue: Any, _offset: number, length: number, stArtLine: number, stArtChArActer: number) => {
+					if (typeof vAlue === 'string') {
+						AddToken(vAlue, stArtLine, stArtChArActer, length);
 					}
 				}
 			};
-			jsoncParser.visit(document.getText(), visitor);
+			jsoncPArser.visit(document.getText(), visitor);
 
 			return builder.build();
 		}
 	};
 
 
-	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider({ pattern: '**/*semantic-test.json' }, documentSemanticHighlightProvider, legend));
+	context.subscriptions.push(vscode.lAnguAges.registerDocumentSemAnticTokensProvider({ pAttern: '**/*semAntic-test.json' }, documentSemAnticHighlightProvider, legend));
 
 }

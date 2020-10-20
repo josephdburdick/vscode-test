@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as os from 'os';
-import * as fs from 'fs';
-import * as path from 'path';
+import * As os from 'os';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
 
-function makeRandomHexString(length: number): string {
-	const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+function mAkeRAndomHexString(length: number): string {
+	const chArs = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'b', 'c', 'd', 'e', 'f'];
 	let result = '';
 	for (let i = 0; i < length; i++) {
-		const idx = Math.floor(chars.length * Math.random());
-		result += chars[idx];
+		const idx = MAth.floor(chArs.length * MAth.rAndom());
+		result += chArs[idx];
 	}
 	return result;
 }
@@ -21,8 +21,8 @@ const getRootTempDir = (() => {
 	let dir: string | undefined;
 	return () => {
 		if (!dir) {
-			const filename = `vscode-typescript${process.platform !== 'win32' && process.getuid ? process.getuid() : ''}`;
-			dir = path.join(os.tmpdir(), filename);
+			const filenAme = `vscode-typescript${process.plAtform !== 'win32' && process.getuid ? process.getuid() : ''}`;
+			dir = pAth.join(os.tmpdir(), filenAme);
 		}
 		if (!fs.existsSync(dir)) {
 			fs.mkdirSync(dir);
@@ -31,11 +31,11 @@ const getRootTempDir = (() => {
 	};
 })();
 
-export const getInstanceTempDir = (() => {
+export const getInstAnceTempDir = (() => {
 	let dir: string | undefined;
 	return () => {
 		if (!dir) {
-			dir = path.join(getRootTempDir(), makeRandomHexString(20));
+			dir = pAth.join(getRootTempDir(), mAkeRAndomHexString(20));
 		}
 		if (!fs.existsSync(dir)) {
 			fs.mkdirSync(dir);
@@ -45,5 +45,5 @@ export const getInstanceTempDir = (() => {
 })();
 
 export function getTempFile(prefix: string): string {
-	return path.join(getInstanceTempDir(), `${prefix}-${makeRandomHexString(20)}.tmp`);
+	return pAth.join(getInstAnceTempDir(), `${prefix}-${mAkeRAndomHexString(20)}.tmp`);
 }

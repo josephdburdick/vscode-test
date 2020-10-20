@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Viewlet } from './viewlet';
 import { Code } from './code';
 
-const SEARCH_BOX = 'div.extensions-viewlet[id="workbench.view.extensions"] .monaco-editor textarea';
+const SEARCH_BOX = 'div.extensions-viewlet[id="workbench.view.extensions"] .monAco-editor textAreA';
 
-export class Extensions extends Viewlet {
+export clAss Extensions extends Viewlet {
 
 	constructor(code: Code) {
 		super(code);
 	}
 
-	async openExtensionsViewlet(): Promise<any> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+shift+x');
+	Async openExtensionsViewlet(): Promise<Any> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+shift+x');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+shift+x');
+			AwAit this.code.dispAtchKeybinding('ctrl+shift+x');
 		}
 
-		await this.code.waitForActiveElement(SEARCH_BOX);
+		AwAit this.code.wAitForActiveElement(SEARCH_BOX);
 	}
 
-	async waitForExtensionsViewlet(): Promise<any> {
-		await this.code.waitForElement(SEARCH_BOX);
+	Async wAitForExtensionsViewlet(): Promise<Any> {
+		AwAit this.code.wAitForElement(SEARCH_BOX);
 	}
 
-	async searchForExtension(id: string): Promise<any> {
-		await this.code.waitAndClick(SEARCH_BOX);
-		await this.code.waitForActiveElement(SEARCH_BOX);
-		await this.code.waitForTypeInEditor(SEARCH_BOX, `@id:${id}`);
+	Async seArchForExtension(id: string): Promise<Any> {
+		AwAit this.code.wAitAndClick(SEARCH_BOX);
+		AwAit this.code.wAitForActiveElement(SEARCH_BOX);
+		AwAit this.code.wAitForTypeInEditor(SEARCH_BOX, `@id:${id}`);
 	}
 
-	async installExtension(id: string): Promise<void> {
-		await this.searchForExtension(id);
-		await this.code.waitAndClick(`div.extensions-viewlet[id="workbench.view.extensions"] .monaco-list-row[data-extension-id="${id}"] .extension-list-item li[class='action-item'] .extension-action.install`);
-		await this.code.waitForElement(`.extension-editor .monaco-action-bar .action-item:not(.disabled) .extension-action.uninstall`);
+	Async instAllExtension(id: string): Promise<void> {
+		AwAit this.seArchForExtension(id);
+		AwAit this.code.wAitAndClick(`div.extensions-viewlet[id="workbench.view.extensions"] .monAco-list-row[dAtA-extension-id="${id}"] .extension-list-item li[clAss='Action-item'] .extension-Action.instAll`);
+		AwAit this.code.wAitForElement(`.extension-editor .monAco-Action-bAr .Action-item:not(.disAbled) .extension-Action.uninstAll`);
 	}
 }

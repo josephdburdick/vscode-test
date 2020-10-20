@@ -1,52 +1,52 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IProcessEnvironment } from 'vs/base/common/platform';
+import { IProcessEnvironment } from 'vs/bAse/common/plAtform';
 
 /**
- * Options to be passed to the external program or shell.
+ * Options to be pAssed to the externAl progrAm or shell.
  */
-export interface CommandOptions {
+export interfAce CommAndOptions {
 	/**
-	 * The current working directory of the executed program or shell.
-	 * If omitted VSCode's current workspace root is used.
+	 * The current working directory of the executed progrAm or shell.
+	 * If omitted VSCode's current workspAce root is used.
 	 */
 	cwd?: string;
 
 	/**
-	 * The environment of the executed program or shell. If omitted
-	 * the parent process' environment is used.
+	 * The environment of the executed progrAm or shell. If omitted
+	 * the pArent process' environment is used.
 	 */
 	env?: { [key: string]: string; };
 }
 
-export interface Executable {
+export interfAce ExecutAble {
 	/**
-	 * The command to be executed. Can be an external program or a shell
-	 * command.
+	 * The commAnd to be executed. CAn be An externAl progrAm or A shell
+	 * commAnd.
 	 */
-	command: string;
+	commAnd: string;
 
 	/**
-	 * Specifies whether the command is a shell command and therefore must
-	 * be executed in a shell interpreter (e.g. cmd.exe, bash, ...).
+	 * Specifies whether the commAnd is A shell commAnd And therefore must
+	 * be executed in A shell interpreter (e.g. cmd.exe, bAsh, ...).
 	 */
-	isShellCommand: boolean;
+	isShellCommAnd: booleAn;
 
 	/**
-	 * The arguments passed to the command.
+	 * The Arguments pAssed to the commAnd.
 	 */
-	args: string[];
+	Args: string[];
 
 	/**
-	 * The command options used when the command is executed. Can be omitted.
+	 * The commAnd options used when the commAnd is executed. CAn be omitted.
 	 */
-	options?: CommandOptions;
+	options?: CommAndOptions;
 }
 
-export interface ForkOptions extends CommandOptions {
+export interfAce ForkOptions extends CommAndOptions {
 	execArgv?: string[];
 }
 
@@ -56,56 +56,56 @@ export const enum Source {
 }
 
 /**
- * The data send via a success callback
+ * The dAtA send viA A success cAllbAck
  */
-export interface SuccessData {
+export interfAce SuccessDAtA {
 	error?: Error;
 	cmdCode?: number;
-	terminated?: boolean;
+	terminAted?: booleAn;
 }
 
 /**
- * The data send via a error callback
+ * The dAtA send viA A error cAllbAck
  */
-export interface ErrorData {
+export interfAce ErrorDAtA {
 	error?: Error;
-	terminated?: boolean;
+	terminAted?: booleAn;
 	stdout?: string;
 	stderr?: string;
 }
 
-export interface TerminateResponse {
-	success: boolean;
-	code?: TerminateResponseCode;
-	error?: any;
+export interfAce TerminAteResponse {
+	success: booleAn;
+	code?: TerminAteResponseCode;
+	error?: Any;
 }
 
-export const enum TerminateResponseCode {
+export const enum TerminAteResponseCode {
 	Success = 0,
 	Unknown = 1,
 	AccessDenied = 2,
 	ProcessNotFound = 3,
 }
 
-export interface ProcessItem {
-	name: string;
+export interfAce ProcessItem {
+	nAme: string;
 	cmd: string;
 	pid: number;
 	ppid: number;
-	load: number;
+	loAd: number;
 	mem: number;
 
 	children?: ProcessItem[];
 }
 
 /**
- * Sanitizes a VS Code process environment by removing all Electron/VS Code-related values.
+ * SAnitizes A VS Code process environment by removing All Electron/VS Code-relAted vAlues.
  */
-export function sanitizeProcessEnvironment(env: IProcessEnvironment, ...preserve: string[]): void {
+export function sAnitizeProcessEnvironment(env: IProcessEnvironment, ...preserve: string[]): void {
 	const set = preserve.reduce((set, key) => {
 		set[key] = true;
 		return set;
-	}, {} as Record<string, boolean>);
+	}, {} As Record<string, booleAn>);
 	const keysToRemove = [
 		/^ELECTRON_.+$/,
 		/^GOOGLE_API_KEY$/,
@@ -115,11 +115,11 @@ export function sanitizeProcessEnvironment(env: IProcessEnvironment, ...preserve
 	const envKeys = Object.keys(env);
 	envKeys
 		.filter(key => !set[key])
-		.forEach(envKey => {
+		.forEAch(envKey => {
 			for (let i = 0; i < keysToRemove.length; i++) {
-				if (envKey.search(keysToRemove[i]) !== -1) {
+				if (envKey.seArch(keysToRemove[i]) !== -1) {
 					delete env[envKey];
-					break;
+					breAk;
 				}
 			}
 		});

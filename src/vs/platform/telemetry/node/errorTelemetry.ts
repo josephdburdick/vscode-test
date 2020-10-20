@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError, setUnexpectedErrorHandler } from 'vs/base/common/errors';
-import BaseErrorTelemetry from '../common/errorTelemetry';
+import { onUnexpectedError, setUnexpectedErrorHAndler } from 'vs/bAse/common/errors';
+import BAseErrorTelemetry from '../common/errorTelemetry';
 
-export default class ErrorTelemetry extends BaseErrorTelemetry {
-	protected installErrorListeners(): void {
-		setUnexpectedErrorHandler(err => console.error(err));
+export defAult clAss ErrorTelemetry extends BAseErrorTelemetry {
+	protected instAllErrorListeners(): void {
+		setUnexpectedErrorHAndler(err => console.error(err));
 
-		// Print a console message when rejection isn't handled within N seconds. For details:
-		// see https://nodejs.org/api/process.html#process_event_unhandledrejection
-		// and https://nodejs.org/api/process.html#process_event_rejectionhandled
-		const unhandledPromises: Promise<any>[] = [];
-		process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
-			unhandledPromises.push(promise);
+		// Print A console messAge when rejection isn't hAndled within N seconds. For detAils:
+		// see https://nodejs.org/Api/process.html#process_event_unhAndledrejection
+		// And https://nodejs.org/Api/process.html#process_event_rejectionhAndled
+		const unhAndledPromises: Promise<Any>[] = [];
+		process.on('unhAndledRejection', (reAson: Any, promise: Promise<Any>) => {
+			unhAndledPromises.push(promise);
 			setTimeout(() => {
-				const idx = unhandledPromises.indexOf(promise);
+				const idx = unhAndledPromises.indexOf(promise);
 				if (idx >= 0) {
-					promise.catch(e => {
-						unhandledPromises.splice(idx, 1);
-						console.warn(`rejected promise not handled within 1 second: ${e}`);
-						if (e.stack) {
-							console.warn(`stack trace: ${e.stack}`);
+					promise.cAtch(e => {
+						unhAndledPromises.splice(idx, 1);
+						console.wArn(`rejected promise not hAndled within 1 second: ${e}`);
+						if (e.stAck) {
+							console.wArn(`stAck trAce: ${e.stAck}`);
 						}
-						onUnexpectedError(reason);
+						onUnexpectedError(reAson);
 					});
 				}
 			}, 1000);
 		});
 
-		process.on('rejectionHandled', (promise: Promise<any>) => {
-			const idx = unhandledPromises.indexOf(promise);
+		process.on('rejectionHAndled', (promise: Promise<Any>) => {
+			const idx = unhAndledPromises.indexOf(promise);
 			if (idx >= 0) {
-				unhandledPromises.splice(idx, 1);
+				unhAndledPromises.splice(idx, 1);
 			}
 		});
 
-		// Print a console message when an exception isn't handled.
-		process.on('uncaughtException', (err: Error) => {
+		// Print A console messAge when An exception isn't hAndled.
+		process.on('uncAughtException', (err: Error) => {
 			onUnexpectedError(err);
 		});
 	}

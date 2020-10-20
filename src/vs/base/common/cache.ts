@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface CacheResult<T> extends IDisposable {
+export interfAce CAcheResult<T> extends IDisposAble {
 	promise: Promise<T>;
 }
 
-export class Cache<T> {
+export clAss CAche<T> {
 
-	private result: CacheResult<T> | null = null;
-	constructor(private task: (ct: CancellationToken) => Promise<T>) { }
+	privAte result: CAcheResult<T> | null = null;
+	constructor(privAte tAsk: (ct: CAncellAtionToken) => Promise<T>) { }
 
-	get(): CacheResult<T> {
+	get(): CAcheResult<T> {
 		if (this.result) {
 			return this.result;
 		}
 
-		const cts = new CancellationTokenSource();
-		const promise = this.task(cts.token);
+		const cts = new CAncellAtionTokenSource();
+		const promise = this.tAsk(cts.token);
 
 		this.result = {
 			promise,
 			dispose: () => {
 				this.result = null;
-				cts.cancel();
+				cts.cAncel();
 				cts.dispose();
 			}
 		};

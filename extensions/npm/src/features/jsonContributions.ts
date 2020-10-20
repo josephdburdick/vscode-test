@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Location, getLocation, createScanner, SyntaxKind, ScanError, JSONScanner } from 'jsonc-parser';
-import { basename } from 'path';
+import { LocAtion, getLocAtion, creAteScAnner, SyntAxKind, ScAnError, JSONScAnner } from 'jsonc-pArser';
+import { bAsenAme } from 'pAth';
 import { BowerJSONContribution } from './bowerJSONContribution';
-import { PackageJSONContribution } from './packageJSONContribution';
+import { PAckAgeJSONContribution } from './pAckAgeJSONContribution';
 import { XHRRequest } from 'request-light';
 
 import {
 	CompletionItem, CompletionItemProvider, CompletionList, TextDocument, Position, Hover, HoverProvider,
-	CancellationToken, Range, MarkedString, DocumentSelector, languages, Disposable
+	CAncellAtionToken, RAnge, MArkedString, DocumentSelector, lAnguAges, DisposAble
 } from 'vscode';
 
-export interface ISuggestionsCollector {
-	add(suggestion: CompletionItem): void;
-	error(message: string): void;
-	log(message: string): void;
+export interfAce ISuggestionsCollector {
+	Add(suggestion: CompletionItem): void;
+	error(messAge: string): void;
+	log(messAge: string): void;
 	setAsIncomplete(): void;
 }
 
-export interface IJSONContribution {
+export interfAce IJSONContribution {
 	getDocumentSelector(): DocumentSelector;
-	getInfoContribution(fileName: string, location: Location): Thenable<MarkedString[] | null> | null;
-	collectPropertySuggestions(fileName: string, location: Location, currentWord: string, addValue: boolean, isLast: boolean, result: ISuggestionsCollector): Thenable<any> | null;
-	collectValueSuggestions(fileName: string, location: Location, result: ISuggestionsCollector): Thenable<any> | null;
-	collectDefaultSuggestions(fileName: string, result: ISuggestionsCollector): Thenable<any>;
-	resolveSuggestion?(item: CompletionItem): Thenable<CompletionItem | null> | null;
+	getInfoContribution(fileNAme: string, locAtion: LocAtion): ThenAble<MArkedString[] | null> | null;
+	collectPropertySuggestions(fileNAme: string, locAtion: LocAtion, currentWord: string, AddVAlue: booleAn, isLAst: booleAn, result: ISuggestionsCollector): ThenAble<Any> | null;
+	collectVAlueSuggestions(fileNAme: string, locAtion: LocAtion, result: ISuggestionsCollector): ThenAble<Any> | null;
+	collectDefAultSuggestions(fileNAme: string, result: ISuggestionsCollector): ThenAble<Any>;
+	resolveSuggestion?(item: CompletionItem): ThenAble<CompletionItem | null> | null;
 }
 
-export function addJSONProviders(xhr: XHRRequest, canRunNPM: boolean): Disposable {
-	const contributions = [new PackageJSONContribution(xhr, canRunNPM), new BowerJSONContribution(xhr)];
-	const subscriptions: Disposable[] = [];
-	contributions.forEach(contribution => {
+export function AddJSONProviders(xhr: XHRRequest, cAnRunNPM: booleAn): DisposAble {
+	const contributions = [new PAckAgeJSONContribution(xhr, cAnRunNPM), new BowerJSONContribution(xhr)];
+	const subscriptions: DisposAble[] = [];
+	contributions.forEAch(contribution => {
 		const selector = contribution.getDocumentSelector();
-		subscriptions.push(languages.registerCompletionItemProvider(selector, new JSONCompletionItemProvider(contribution), '"', ':'));
-		subscriptions.push(languages.registerHoverProvider(selector, new JSONHoverProvider(contribution)));
+		subscriptions.push(lAnguAges.registerCompletionItemProvider(selector, new JSONCompletionItemProvider(contribution), '"', ':'));
+		subscriptions.push(lAnguAges.registerHoverProvider(selector, new JSONHoverProvider(contribution)));
 	});
-	return Disposable.from(...subscriptions);
+	return DisposAble.from(...subscriptions);
 }
 
-export class JSONHoverProvider implements HoverProvider {
+export clAss JSONHoverProvider implements HoverProvider {
 
-	constructor(private jsonContribution: IJSONContribution) {
+	constructor(privAte jsonContribution: IJSONContribution) {
 	}
 
-	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): Thenable<Hover> | null {
-		const fileName = basename(document.fileName);
+	public provideHover(document: TextDocument, position: Position, _token: CAncellAtionToken): ThenAble<Hover> | null {
+		const fileNAme = bAsenAme(document.fileNAme);
 		const offset = document.offsetAt(position);
-		const location = getLocation(document.getText(), offset);
-		if (!location.previousNode) {
+		const locAtion = getLocAtion(document.getText(), offset);
+		if (!locAtion.previousNode) {
 			return null;
 		}
-		const node = location.previousNode;
+		const node = locAtion.previousNode;
 		if (node && node.offset <= offset && offset <= node.offset + node.length) {
-			const promise = this.jsonContribution.getInfoContribution(fileName, location);
+			const promise = this.jsonContribution.getInfoContribution(fileNAme, locAtion);
 			if (promise) {
 				return promise.then(htmlContent => {
-					const range = new Range(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
+					const rAnge = new RAnge(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
 					const result: Hover = {
 						contents: htmlContent || [],
-						range: range
+						rAnge: rAnge
 					};
 					return result;
 				});
@@ -71,12 +71,12 @@ export class JSONHoverProvider implements HoverProvider {
 	}
 }
 
-export class JSONCompletionItemProvider implements CompletionItemProvider {
+export clAss JSONCompletionItemProvider implements CompletionItemProvider {
 
-	constructor(private jsonContribution: IJSONContribution) {
+	constructor(privAte jsonContribution: IJSONContribution) {
 	}
 
-	public resolveCompletionItem(item: CompletionItem, _token: CancellationToken): Thenable<CompletionItem | null> {
+	public resolveCompletionItem(item: CompletionItem, _token: CAncellAtionToken): ThenAble<CompletionItem | null> {
 		if (this.jsonContribution.resolveSuggestion) {
 			const resolver = this.jsonContribution.resolveSuggestion(item);
 			if (resolver) {
@@ -86,52 +86,52 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 		return Promise.resolve(item);
 	}
 
-	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken): Thenable<CompletionList | null> | null {
+	public provideCompletionItems(document: TextDocument, position: Position, _token: CAncellAtionToken): ThenAble<CompletionList | null> | null {
 
-		const fileName = basename(document.fileName);
+		const fileNAme = bAsenAme(document.fileNAme);
 
 		const currentWord = this.getCurrentWord(document, position);
-		let overwriteRange: Range;
+		let overwriteRAnge: RAnge;
 
 		const items: CompletionItem[] = [];
-		let isIncomplete = false;
+		let isIncomplete = fAlse;
 
 		const offset = document.offsetAt(position);
-		const location = getLocation(document.getText(), offset);
+		const locAtion = getLocAtion(document.getText(), offset);
 
-		const node = location.previousNode;
-		if (node && node.offset <= offset && offset <= node.offset + node.length && (node.type === 'property' || node.type === 'string' || node.type === 'number' || node.type === 'boolean' || node.type === 'null')) {
-			overwriteRange = new Range(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
+		const node = locAtion.previousNode;
+		if (node && node.offset <= offset && offset <= node.offset + node.length && (node.type === 'property' || node.type === 'string' || node.type === 'number' || node.type === 'booleAn' || node.type === 'null')) {
+			overwriteRAnge = new RAnge(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
 		} else {
-			overwriteRange = new Range(document.positionAt(offset - currentWord.length), position);
+			overwriteRAnge = new RAnge(document.positionAt(offset - currentWord.length), position);
 		}
 
-		const proposed: { [key: string]: boolean } = {};
+		const proposed: { [key: string]: booleAn } = {};
 		const collector: ISuggestionsCollector = {
-			add: (suggestion: CompletionItem) => {
-				if (!proposed[suggestion.label]) {
-					proposed[suggestion.label] = true;
-					suggestion.range = { replacing: overwriteRange, inserting: new Range(overwriteRange.start, overwriteRange.start) };
+			Add: (suggestion: CompletionItem) => {
+				if (!proposed[suggestion.lAbel]) {
+					proposed[suggestion.lAbel] = true;
+					suggestion.rAnge = { replAcing: overwriteRAnge, inserting: new RAnge(overwriteRAnge.stArt, overwriteRAnge.stArt) };
 					items.push(suggestion);
 				}
 			},
 			setAsIncomplete: () => isIncomplete = true,
-			error: (message: string) => console.error(message),
-			log: (message: string) => console.log(message)
+			error: (messAge: string) => console.error(messAge),
+			log: (messAge: string) => console.log(messAge)
 		};
 
-		let collectPromise: Thenable<any> | null = null;
+		let collectPromise: ThenAble<Any> | null = null;
 
-		if (location.isAtPropertyKey) {
-			const scanner = createScanner(document.getText(), true);
-			const addValue = !location.previousNode || !this.hasColonAfter(scanner, location.previousNode.offset + location.previousNode.length);
-			const isLast = this.isLast(scanner, document.offsetAt(position));
-			collectPromise = this.jsonContribution.collectPropertySuggestions(fileName, location, currentWord, addValue, isLast, collector);
+		if (locAtion.isAtPropertyKey) {
+			const scAnner = creAteScAnner(document.getText(), true);
+			const AddVAlue = !locAtion.previousNode || !this.hAsColonAfter(scAnner, locAtion.previousNode.offset + locAtion.previousNode.length);
+			const isLAst = this.isLAst(scAnner, document.offsetAt(position));
+			collectPromise = this.jsonContribution.collectPropertySuggestions(fileNAme, locAtion, currentWord, AddVAlue, isLAst, collector);
 		} else {
-			if (location.path.length === 0) {
-				collectPromise = this.jsonContribution.collectDefaultSuggestions(fileName, collector);
+			if (locAtion.pAth.length === 0) {
+				collectPromise = this.jsonContribution.collectDefAultSuggestions(fileNAme, collector);
 			} else {
-				collectPromise = this.jsonContribution.collectValueSuggestions(fileName, location, collector);
+				collectPromise = this.jsonContribution.collectVAlueSuggestions(fileNAme, locAtion, collector);
 			}
 		}
 		if (collectPromise) {
@@ -145,28 +145,28 @@ export class JSONCompletionItemProvider implements CompletionItemProvider {
 		return null;
 	}
 
-	private getCurrentWord(document: TextDocument, position: Position) {
-		let i = position.character - 1;
+	privAte getCurrentWord(document: TextDocument, position: Position) {
+		let i = position.chArActer - 1;
 		const text = document.lineAt(position.line).text;
-		while (i >= 0 && ' \t\n\r\v":{[,'.indexOf(text.charAt(i)) === -1) {
+		while (i >= 0 && ' \t\n\r\v":{[,'.indexOf(text.chArAt(i)) === -1) {
 			i--;
 		}
-		return text.substring(i + 1, position.character);
+		return text.substring(i + 1, position.chArActer);
 	}
 
-	private isLast(scanner: JSONScanner, offset: number): boolean {
-		scanner.setPosition(offset);
-		let nextToken = scanner.scan();
-		if (nextToken === SyntaxKind.StringLiteral && scanner.getTokenError() === ScanError.UnexpectedEndOfString) {
-			nextToken = scanner.scan();
+	privAte isLAst(scAnner: JSONScAnner, offset: number): booleAn {
+		scAnner.setPosition(offset);
+		let nextToken = scAnner.scAn();
+		if (nextToken === SyntAxKind.StringLiterAl && scAnner.getTokenError() === ScAnError.UnexpectedEndOfString) {
+			nextToken = scAnner.scAn();
 		}
-		return nextToken === SyntaxKind.CloseBraceToken || nextToken === SyntaxKind.EOF;
+		return nextToken === SyntAxKind.CloseBrAceToken || nextToken === SyntAxKind.EOF;
 	}
-	private hasColonAfter(scanner: JSONScanner, offset: number): boolean {
-		scanner.setPosition(offset);
-		return scanner.scan() === SyntaxKind.ColonToken;
+	privAte hAsColonAfter(scAnner: JSONScAnner, offset: number): booleAn {
+		scAnner.setPosition(offset);
+		return scAnner.scAn() === SyntAxKind.ColonToken;
 	}
 
 }
 
-export const xhrDisabled = () => Promise.reject({ responseText: 'Use of online resources is disabled.' });
+export const xhrDisAbled = () => Promise.reject({ responseText: 'Use of online resources is disAbled.' });

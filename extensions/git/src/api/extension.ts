@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Model } from '../model';
 import { GitExtension, Repository, API } from './git';
-import { ApiRepository, ApiImpl } from './api1';
+import { ApiRepository, ApiImpl } from './Api1';
 import { Event, EventEmitter } from 'vscode';
 
-export function deprecated(_target: any, key: string, descriptor: any): void {
-	if (typeof descriptor.value !== 'function') {
+export function deprecAted(_tArget: Any, key: string, descriptor: Any): void {
+	if (typeof descriptor.vAlue !== 'function') {
 		throw new Error('not supported');
 	}
 
-	const fn = descriptor.value;
-	descriptor.value = function () {
-		console.warn(`Git extension API method '${key}' is deprecated.`);
-		return fn.apply(this, arguments);
+	const fn = descriptor.vAlue;
+	descriptor.vAlue = function () {
+		console.wArn(`Git extension API method '${key}' is deprecAted.`);
+		return fn.Apply(this, Arguments);
 	};
 }
 
-export class GitExtensionImpl implements GitExtension {
+export clAss GitExtensionImpl implements GitExtension {
 
-	enabled: boolean = false;
+	enAbled: booleAn = fAlse;
 
-	private _onDidChangeEnablement = new EventEmitter<boolean>();
-	readonly onDidChangeEnablement: Event<boolean> = this._onDidChangeEnablement.event;
+	privAte _onDidChAngeEnAblement = new EventEmitter<booleAn>();
+	reAdonly onDidChAngeEnAblement: Event<booleAn> = this._onDidChAngeEnAblement.event;
 
-	private _model: Model | undefined = undefined;
+	privAte _model: Model | undefined = undefined;
 
 	set model(model: Model | undefined) {
 		this._model = model;
 
-		const enabled = !!model;
+		const enAbled = !!model;
 
-		if (this.enabled === enabled) {
+		if (this.enAbled === enAbled) {
 			return;
 		}
 
-		this.enabled = enabled;
-		this._onDidChangeEnablement.fire(this.enabled);
+		this.enAbled = enAbled;
+		this._onDidChAngeEnAblement.fire(this.enAbled);
 	}
 
 	get model(): Model | undefined {
@@ -48,27 +48,27 @@ export class GitExtensionImpl implements GitExtension {
 
 	constructor(model?: Model) {
 		if (model) {
-			this.enabled = true;
+			this.enAbled = true;
 			this._model = model;
 		}
 	}
 
-	@deprecated
-	async getGitPath(): Promise<string> {
+	@deprecAted
+	Async getGitPAth(): Promise<string> {
 		if (!this._model) {
 			throw new Error('Git model not found');
 		}
 
-		return this._model.git.path;
+		return this._model.git.pAth;
 	}
 
-	@deprecated
-	async getRepositories(): Promise<Repository[]> {
+	@deprecAted
+	Async getRepositories(): Promise<Repository[]> {
 		if (!this._model) {
 			throw new Error('Git model not found');
 		}
 
-		return this._model.repositories.map(repository => new ApiRepository(repository));
+		return this._model.repositories.mAp(repository => new ApiRepository(repository));
 	}
 
 	getAPI(version: number): API {

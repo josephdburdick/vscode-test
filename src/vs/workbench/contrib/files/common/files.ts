@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { IWorkbenchEditorConfiguration, IEditorIdentifier, IEditorInput, EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
-import { IFilesConfiguration as PlatformIFilesConfiguration, FileChangeType, IFileService } from 'vs/platform/files/common/files';
-import { ContextKeyExpr, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { IWorkbenchEditorConfigurAtion, IEditorIdentifier, IEditorInput, EditorResourceAccessor, SideBySideEditor } from 'vs/workbench/common/editor';
+import { IFilesConfigurAtion As PlAtformIFilesConfigurAtion, FileChAngeType, IFileService } from 'vs/plAtform/files/common/files';
+import { ContextKeyExpr, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
-import { Disposable, MutableDisposable } from 'vs/base/common/lifecycle';
+import { DisposAble, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { IModeService, ILanguageSelection } from 'vs/editor/common/services/modeService';
+import { IModeService, ILAnguAgeSelection } from 'vs/editor/common/services/modeService';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { InputFocusedContextKey } from 'vs/platform/contextkey/common/contextkeys';
-import { IEditableData } from 'vs/workbench/common/views';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { InputFocusedContextKey } from 'vs/plAtform/contextkey/common/contextkeys';
+import { IEditAbleDAtA } from 'vs/workbench/common/views';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
-import { once } from 'vs/base/common/functional';
-import { ITextEditorOptions } from 'vs/platform/editor/common/editor';
+import { once } from 'vs/bAse/common/functionAl';
+import { ITextEditorOptions } from 'vs/plAtform/editor/common/editor';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 
 /**
@@ -33,69 +33,69 @@ export const VIEWLET_ID = 'workbench.view.explorer';
  */
 export const VIEW_ID = 'workbench.explorer.fileView';
 
-export interface IExplorerService {
-	readonly _serviceBrand: undefined;
-	readonly roots: ExplorerItem[];
-	readonly sortOrder: SortOrder;
+export interfAce IExplorerService {
+	reAdonly _serviceBrAnd: undefined;
+	reAdonly roots: ExplorerItem[];
+	reAdonly sortOrder: SortOrder;
 
-	getContext(respectMultiSelection: boolean): ExplorerItem[];
-	setEditable(stat: ExplorerItem, data: IEditableData | null): Promise<void>;
-	getEditable(): { stat: ExplorerItem, data: IEditableData } | undefined;
-	getEditableData(stat: ExplorerItem): IEditableData | undefined;
-	// If undefined is passed checks if any element is currently being edited.
-	isEditable(stat: ExplorerItem | undefined): boolean;
+	getContext(respectMultiSelection: booleAn): ExplorerItem[];
+	setEditAble(stAt: ExplorerItem, dAtA: IEditAbleDAtA | null): Promise<void>;
+	getEditAble(): { stAt: ExplorerItem, dAtA: IEditAbleDAtA } | undefined;
+	getEditAbleDAtA(stAt: ExplorerItem): IEditAbleDAtA | undefined;
+	// If undefined is pAssed checks if Any element is currently being edited.
+	isEditAble(stAt: ExplorerItem | undefined): booleAn;
 	findClosest(resource: URI): ExplorerItem | null;
 	refresh(): Promise<void>;
-	setToCopy(stats: ExplorerItem[], cut: boolean): Promise<void>;
-	isCut(stat: ExplorerItem): boolean;
+	setToCopy(stAts: ExplorerItem[], cut: booleAn): Promise<void>;
+	isCut(stAt: ExplorerItem): booleAn;
 
 	/**
-	 * Selects and reveal the file element provided by the given resource if its found in the explorer.
-	 * Will try to resolve the path in case the explorer is not yet expanded to the file yet.
+	 * Selects And reveAl the file element provided by the given resource if its found in the explorer.
+	 * Will try to resolve the pAth in cAse the explorer is not yet expAnded to the file yet.
 	 */
-	select(resource: URI, reveal?: boolean | string): Promise<void>;
+	select(resource: URI, reveAl?: booleAn | string): Promise<void>;
 
 	registerView(contextAndRefreshProvider: IExplorerView): void;
 }
 
-export interface IExplorerView {
-	getContext(respectMultiSelection: boolean): ExplorerItem[];
-	refresh(recursive: boolean, item?: ExplorerItem): Promise<void>;
-	selectResource(resource: URI | undefined, reveal?: boolean | string): Promise<void>;
+export interfAce IExplorerView {
+	getContext(respectMultiSelection: booleAn): ExplorerItem[];
+	refresh(recursive: booleAn, item?: ExplorerItem): Promise<void>;
+	selectResource(resource: URI | undefined, reveAl?: booleAn | string): Promise<void>;
 	setTreeInput(): Promise<void>;
-	itemsCopied(tats: ExplorerItem[], cut: boolean, previousCut: ExplorerItem[] | undefined): void;
-	setEditable(stat: ExplorerItem, isEditing: boolean): Promise<void>;
+	itemsCopied(tAts: ExplorerItem[], cut: booleAn, previousCut: ExplorerItem[] | undefined): void;
+	setEditAble(stAt: ExplorerItem, isEditing: booleAn): Promise<void>;
 	focusNeighbourIfItemFocused(item: ExplorerItem): void;
 }
 
-export const IExplorerService = createDecorator<IExplorerService>('explorerService');
+export const IExplorerService = creAteDecorAtor<IExplorerService>('explorerService');
 
 /**
- * Context Keys to use with keybindings for the Explorer and Open Editors view
+ * Context Keys to use with keybindings for the Explorer And Open Editors view
  */
-export const ExplorerViewletVisibleContext = new RawContextKey<boolean>('explorerViewletVisible', true);
-export const ExplorerFolderContext = new RawContextKey<boolean>('explorerResourceIsFolder', false);
-export const ExplorerResourceReadonlyContext = new RawContextKey<boolean>('explorerResourceReadonly', false);
-export const ExplorerResourceNotReadonlyContext = ExplorerResourceReadonlyContext.toNegated();
+export const ExplorerViewletVisibleContext = new RAwContextKey<booleAn>('explorerViewletVisible', true);
+export const ExplorerFolderContext = new RAwContextKey<booleAn>('explorerResourceIsFolder', fAlse);
+export const ExplorerResourceReAdonlyContext = new RAwContextKey<booleAn>('explorerResourceReAdonly', fAlse);
+export const ExplorerResourceNotReAdonlyContext = ExplorerResourceReAdonlyContext.toNegAted();
 /**
- * Comma separated list of editor ids that can be used for the selected explorer resource.
+ * CommA sepArAted list of editor ids thAt cAn be used for the selected explorer resource.
  */
-export const ExplorerResourceAvailableEditorIdsContext = new RawContextKey<string>('explorerResourceAvailableEditorIds', '');
-export const ExplorerRootContext = new RawContextKey<boolean>('explorerResourceIsRoot', false);
-export const ExplorerResourceCut = new RawContextKey<boolean>('explorerResourceCut', false);
-export const ExplorerResourceMoveableToTrash = new RawContextKey<boolean>('explorerResourceMoveableToTrash', false);
-export const FilesExplorerFocusedContext = new RawContextKey<boolean>('filesExplorerFocus', true);
-export const OpenEditorsVisibleContext = new RawContextKey<boolean>('openEditorsVisible', false);
-export const OpenEditorsFocusedContext = new RawContextKey<boolean>('openEditorsFocus', true);
-export const ExplorerFocusedContext = new RawContextKey<boolean>('explorerViewletFocus', true);
+export const ExplorerResourceAvAilAbleEditorIdsContext = new RAwContextKey<string>('explorerResourceAvAilAbleEditorIds', '');
+export const ExplorerRootContext = new RAwContextKey<booleAn>('explorerResourceIsRoot', fAlse);
+export const ExplorerResourceCut = new RAwContextKey<booleAn>('explorerResourceCut', fAlse);
+export const ExplorerResourceMoveAbleToTrAsh = new RAwContextKey<booleAn>('explorerResourceMoveAbleToTrAsh', fAlse);
+export const FilesExplorerFocusedContext = new RAwContextKey<booleAn>('filesExplorerFocus', true);
+export const OpenEditorsVisibleContext = new RAwContextKey<booleAn>('openEditorsVisible', fAlse);
+export const OpenEditorsFocusedContext = new RAwContextKey<booleAn>('openEditorsFocus', true);
+export const ExplorerFocusedContext = new RAwContextKey<booleAn>('explorerViewletFocus', true);
 
 // compressed nodes
-export const ExplorerCompressedFocusContext = new RawContextKey<boolean>('explorerViewletCompressedFocus', true);
-export const ExplorerCompressedFirstFocusContext = new RawContextKey<boolean>('explorerViewletCompressedFirstFocus', true);
-export const ExplorerCompressedLastFocusContext = new RawContextKey<boolean>('explorerViewletCompressedLastFocus', true);
+export const ExplorerCompressedFocusContext = new RAwContextKey<booleAn>('explorerViewletCompressedFocus', true);
+export const ExplorerCompressedFirstFocusContext = new RAwContextKey<booleAn>('explorerViewletCompressedFirstFocus', true);
+export const ExplorerCompressedLAstFocusContext = new RAwContextKey<booleAn>('explorerViewletCompressedLAstFocus', true);
 
-export const FilesExplorerFocusCondition = ContextKeyExpr.and(ExplorerViewletVisibleContext, FilesExplorerFocusedContext, ContextKeyExpr.not(InputFocusedContextKey));
-export const ExplorerFocusCondition = ContextKeyExpr.and(ExplorerViewletVisibleContext, ExplorerFocusedContext, ContextKeyExpr.not(InputFocusedContextKey));
+export const FilesExplorerFocusCondition = ContextKeyExpr.And(ExplorerViewletVisibleContext, FilesExplorerFocusedContext, ContextKeyExpr.not(InputFocusedContextKey));
+export const ExplorerFocusCondition = ContextKeyExpr.And(ExplorerViewletVisibleContext, ExplorerFocusedContext, ContextKeyExpr.not(InputFocusedContextKey));
 
 /**
  * Text file editor id.
@@ -108,129 +108,129 @@ export const TEXT_FILE_EDITOR_ID = 'workbench.editors.files.textFileEditor';
 export const FILE_EDITOR_INPUT_ID = 'workbench.editors.files.fileEditorInput';
 
 /**
- * Binary file editor id.
+ * BinAry file editor id.
  */
-export const BINARY_FILE_EDITOR_ID = 'workbench.editors.files.binaryFileEditor';
+export const BINARY_FILE_EDITOR_ID = 'workbench.editors.files.binAryFileEditor';
 
-export interface IFilesConfiguration extends PlatformIFilesConfiguration, IWorkbenchEditorConfiguration {
+export interfAce IFilesConfigurAtion extends PlAtformIFilesConfigurAtion, IWorkbenchEditorConfigurAtion {
 	explorer: {
 		openEditors: {
 			visible: number;
 		};
-		autoReveal: boolean | 'focusNoScroll';
-		enableDragAndDrop: boolean;
-		confirmDelete: boolean;
+		AutoReveAl: booleAn | 'focusNoScroll';
+		enAbleDrAgAndDrop: booleAn;
+		confirmDelete: booleAn;
 		sortOrder: SortOrder;
-		decorations: {
-			colors: boolean;
-			badges: boolean;
+		decorAtions: {
+			colors: booleAn;
+			bAdges: booleAn;
 		};
-		incrementalNaming: 'simple' | 'smart';
+		incrementAlNAming: 'simple' | 'smArt';
 	};
 	editor: IEditorOptions;
 }
 
-export interface IFileResource {
+export interfAce IFileResource {
 	resource: URI;
-	isDirectory?: boolean;
+	isDirectory?: booleAn;
 }
 
 export const enum SortOrder {
-	Default = 'default',
+	DefAult = 'defAult',
 	Mixed = 'mixed',
 	FilesFirst = 'filesFirst',
 	Type = 'type',
 	Modified = 'modified'
 }
 
-export class TextFileContentProvider extends Disposable implements ITextModelContentProvider {
-	private readonly fileWatcherDisposable = this._register(new MutableDisposable());
+export clAss TextFileContentProvider extends DisposAble implements ITextModelContentProvider {
+	privAte reAdonly fileWAtcherDisposAble = this._register(new MutAbleDisposAble());
 
 	constructor(
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@IFileService private readonly fileService: IFileService,
-		@IModeService private readonly modeService: IModeService,
-		@IModelService private readonly modelService: IModelService
+		@ITextFileService privAte reAdonly textFileService: ITextFileService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IModeService privAte reAdonly modeService: IModeService,
+		@IModelService privAte reAdonly modelService: IModelService
 	) {
 		super();
 	}
 
-	static async open(resource: URI, scheme: string, label: string, editorService: IEditorService, options?: ITextEditorOptions): Promise<void> {
-		await editorService.openEditor({
+	stAtic Async open(resource: URI, scheme: string, lAbel: string, editorService: IEditorService, options?: ITextEditorOptions): Promise<void> {
+		AwAit editorService.openEditor({
 			leftResource: TextFileContentProvider.resourceToTextFile(scheme, resource),
 			rightResource: resource,
-			label,
+			lAbel,
 			options
 		});
 	}
 
-	private static resourceToTextFile(scheme: string, resource: URI): URI {
+	privAte stAtic resourceToTextFile(scheme: string, resource: URI): URI {
 		return resource.with({ scheme, query: JSON.stringify({ scheme: resource.scheme, query: resource.query }) });
 	}
 
-	private static textFileToResource(resource: URI): URI {
-		const { scheme, query } = JSON.parse(resource.query);
+	privAte stAtic textFileToResource(resource: URI): URI {
+		const { scheme, query } = JSON.pArse(resource.query);
 		return resource.with({ scheme, query });
 	}
 
-	async provideTextContent(resource: URI): Promise<ITextModel | null> {
+	Async provideTextContent(resource: URI): Promise<ITextModel | null> {
 		if (!resource.query) {
-			// We require the URI to use the `query` to transport the original scheme and query
-			// as done by `resourceToTextFile`
+			// We require the URI to use the `query` to trAnsport the originAl scheme And query
+			// As done by `resourceToTextFile`
 			return null;
 		}
 
-		const savedFileResource = TextFileContentProvider.textFileToResource(resource);
+		const sAvedFileResource = TextFileContentProvider.textFileToResource(resource);
 
-		// Make sure our text file is resolved up to date
-		const codeEditorModel = await this.resolveEditorModel(resource);
+		// MAke sure our text file is resolved up to dAte
+		const codeEditorModel = AwAit this.resolveEditorModel(resource);
 
-		// Make sure to keep contents up to date when it changes
-		if (!this.fileWatcherDisposable.value) {
-			this.fileWatcherDisposable.value = this.fileService.onDidFilesChange(changes => {
-				if (changes.contains(savedFileResource, FileChangeType.UPDATED)) {
-					this.resolveEditorModel(resource, false /* do not create if missing */); // update model when resource changes
+		// MAke sure to keep contents up to dAte when it chAnges
+		if (!this.fileWAtcherDisposAble.vAlue) {
+			this.fileWAtcherDisposAble.vAlue = this.fileService.onDidFilesChAnge(chAnges => {
+				if (chAnges.contAins(sAvedFileResource, FileChAngeType.UPDATED)) {
+					this.resolveEditorModel(resource, fAlse /* do not creAte if missing */); // updAte model when resource chAnges
 				}
 			});
 
 			if (codeEditorModel) {
-				once(codeEditorModel.onWillDispose)(() => this.fileWatcherDisposable.clear());
+				once(codeEditorModel.onWillDispose)(() => this.fileWAtcherDisposAble.cleAr());
 			}
 		}
 
 		return codeEditorModel;
 	}
 
-	private resolveEditorModel(resource: URI, createAsNeeded?: true): Promise<ITextModel>;
-	private resolveEditorModel(resource: URI, createAsNeeded?: boolean): Promise<ITextModel | null>;
-	private async resolveEditorModel(resource: URI, createAsNeeded: boolean = true): Promise<ITextModel | null> {
-		const savedFileResource = TextFileContentProvider.textFileToResource(resource);
+	privAte resolveEditorModel(resource: URI, creAteAsNeeded?: true): Promise<ITextModel>;
+	privAte resolveEditorModel(resource: URI, creAteAsNeeded?: booleAn): Promise<ITextModel | null>;
+	privAte Async resolveEditorModel(resource: URI, creAteAsNeeded: booleAn = true): Promise<ITextModel | null> {
+		const sAvedFileResource = TextFileContentProvider.textFileToResource(resource);
 
-		const content = await this.textFileService.readStream(savedFileResource);
+		const content = AwAit this.textFileService.reAdStreAm(sAvedFileResource);
 
 		let codeEditorModel = this.modelService.getModel(resource);
 		if (codeEditorModel) {
-			this.modelService.updateModel(codeEditorModel, content.value);
-		} else if (createAsNeeded) {
-			const textFileModel = this.modelService.getModel(savedFileResource);
+			this.modelService.updAteModel(codeEditorModel, content.vAlue);
+		} else if (creAteAsNeeded) {
+			const textFileModel = this.modelService.getModel(sAvedFileResource);
 
-			let languageSelector: ILanguageSelection;
+			let lAnguAgeSelector: ILAnguAgeSelection;
 			if (textFileModel) {
-				languageSelector = this.modeService.create(textFileModel.getModeId());
+				lAnguAgeSelector = this.modeService.creAte(textFileModel.getModeId());
 			} else {
-				languageSelector = this.modeService.createByFilepathOrFirstLine(savedFileResource);
+				lAnguAgeSelector = this.modeService.creAteByFilepAthOrFirstLine(sAvedFileResource);
 			}
 
-			codeEditorModel = this.modelService.createModel(content.value, languageSelector, resource);
+			codeEditorModel = this.modelService.creAteModel(content.vAlue, lAnguAgeSelector, resource);
 		}
 
 		return codeEditorModel;
 	}
 }
 
-export class OpenEditor implements IEditorIdentifier {
+export clAss OpenEditor implements IEditorIdentifier {
 
-	constructor(private _editor: IEditorInput, private _group: IEditorGroup) {
+	constructor(privAte _editor: IEditorInput, privAte _group: IEditorGroup) {
 		// noop
 	}
 
@@ -251,18 +251,18 @@ export class OpenEditor implements IEditorIdentifier {
 	}
 
 	getId(): string {
-		return `openeditor:${this.groupId}:${this.editorIndex}:${this.editor.getName()}:${this.editor.getDescription()}`;
+		return `openeditor:${this.groupId}:${this.editorIndex}:${this.editor.getNAme()}:${this.editor.getDescription()}`;
 	}
 
-	isPreview(): boolean {
+	isPreview(): booleAn {
 		return this._group.previewEditor === this.editor;
 	}
 
-	isSticky(): boolean {
+	isSticky(): booleAn {
 		return this._group.isSticky(this.editor);
 	}
 
 	getResource(): URI | undefined {
-		return EditorResourceAccessor.getOriginalUri(this.editor, { supportSideBySide: SideBySideEditor.PRIMARY });
+		return EditorResourceAccessor.getOriginAlUri(this.editor, { supportSideBySide: SideBySideEditor.PRIMARY });
 	}
 }

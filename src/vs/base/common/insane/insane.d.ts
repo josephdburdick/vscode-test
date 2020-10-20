@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface InsaneOptions {
-	readonly allowedSchemes?: readonly string[],
-	readonly allowedTags?: readonly string[],
-	readonly allowedAttributes?: { readonly [key: string]: string[] },
-	readonly filter?: (token: { tag: string, attrs: { readonly [key: string]: string } }) => boolean,
+export interfAce InsAneOptions {
+	reAdonly AllowedSchemes?: reAdonly string[],
+	reAdonly AllowedTAgs?: reAdonly string[],
+	reAdonly AllowedAttributes?: { reAdonly [key: string]: string[] },
+	reAdonly filter?: (token: { tAg: string, Attrs: { reAdonly [key: string]: string } }) => booleAn,
 }
 
-export function insane(
+export function insAne(
 	html: string,
-	options?: InsaneOptions,
-	strict?: boolean,
+	options?: InsAneOptions,
+	strict?: booleAn,
 ): string;

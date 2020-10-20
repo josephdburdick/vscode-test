@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { done } from './util';
 
-function decorate(decorator: (fn: Function, key: string) => Function): Function {
-	return (_target: any, key: string, descriptor: any) => {
+function decorAte(decorAtor: (fn: Function, key: string) => Function): Function {
+	return (_tArget: Any, key: string, descriptor: Any) => {
 		let fnKey: string | null = null;
 		let fn: Function | null = null;
 
-		if (typeof descriptor.value === 'function') {
-			fnKey = 'value';
-			fn = descriptor.value;
+		if (typeof descriptor.vAlue === 'function') {
+			fnKey = 'vAlue';
+			fn = descriptor.vAlue;
 		} else if (typeof descriptor.get === 'function') {
 			fnKey = 'get';
 			fn = descriptor.get;
@@ -22,20 +22,20 @@ function decorate(decorator: (fn: Function, key: string) => Function): Function 
 			throw new Error('not supported');
 		}
 
-		descriptor[fnKey] = decorator(fn, key);
+		descriptor[fnKey] = decorAtor(fn, key);
 	};
 }
 
 function _memoize(fn: Function, key: string): Function {
 	const memoizeKey = `$memoize$${key}`;
 
-	return function (this: any, ...args: any[]) {
-		if (!this.hasOwnProperty(memoizeKey)) {
+	return function (this: Any, ...Args: Any[]) {
+		if (!this.hAsOwnProperty(memoizeKey)) {
 			Object.defineProperty(this, memoizeKey, {
-				configurable: false,
-				enumerable: false,
-				writable: false,
-				value: fn.apply(this, args)
+				configurAble: fAlse,
+				enumerAble: fAlse,
+				writAble: fAlse,
+				vAlue: fn.Apply(this, Args)
 			});
 		}
 
@@ -43,13 +43,13 @@ function _memoize(fn: Function, key: string): Function {
 	};
 }
 
-export const memoize = decorate(_memoize);
+export const memoize = decorAte(_memoize);
 
 function _throttle<T>(fn: Function, key: string): Function {
 	const currentKey = `$throttle$current$${key}`;
 	const nextKey = `$throttle$next$${key}`;
 
-	const trigger = function (this: any, ...args: any[]) {
+	const trigger = function (this: Any, ...Args: Any[]) {
 		if (this[nextKey]) {
 			return this[nextKey];
 		}
@@ -57,16 +57,16 @@ function _throttle<T>(fn: Function, key: string): Function {
 		if (this[currentKey]) {
 			this[nextKey] = done(this[currentKey]).then(() => {
 				this[nextKey] = undefined;
-				return trigger.apply(this, args);
+				return trigger.Apply(this, Args);
 			});
 
 			return this[nextKey];
 		}
 
-		this[currentKey] = fn.apply(this, args) as Promise<T>;
+		this[currentKey] = fn.Apply(this, Args) As Promise<T>;
 
-		const clear = () => this[currentKey] = undefined;
-		done(this[currentKey]).then(clear, clear);
+		const cleAr = () => this[currentKey] = undefined;
+		done(this[currentKey]).then(cleAr, cleAr);
 
 		return this[currentKey];
 	};
@@ -74,28 +74,28 @@ function _throttle<T>(fn: Function, key: string): Function {
 	return trigger;
 }
 
-export const throttle = decorate(_throttle);
+export const throttle = decorAte(_throttle);
 
-function _sequentialize(fn: Function, key: string): Function {
+function _sequentiAlize(fn: Function, key: string): Function {
 	const currentKey = `__$sequence$${key}`;
 
-	return function (this: any, ...args: any[]) {
-		const currentPromise = this[currentKey] as Promise<any> || Promise.resolve(null);
-		const run = async () => await fn.apply(this, args);
+	return function (this: Any, ...Args: Any[]) {
+		const currentPromise = this[currentKey] As Promise<Any> || Promise.resolve(null);
+		const run = Async () => AwAit fn.Apply(this, Args);
 		this[currentKey] = currentPromise.then(run, run);
 		return this[currentKey];
 	};
 }
 
-export const sequentialize = decorate(_sequentialize);
+export const sequentiAlize = decorAte(_sequentiAlize);
 
-export function debounce(delay: number): Function {
-	return decorate((fn, key) => {
+export function debounce(delAy: number): Function {
+	return decorAte((fn, key) => {
 		const timerKey = `$debounce$${key}`;
 
-		return function (this: any, ...args: any[]) {
-			clearTimeout(this[timerKey]);
-			this[timerKey] = setTimeout(() => fn.apply(this, args), delay);
+		return function (this: Any, ...Args: Any[]) {
+			cleArTimeout(this[timerKey]);
+			this[timerKey] = setTimeout(() => fn.Apply(this, Args), delAy);
 		};
 	});
 }

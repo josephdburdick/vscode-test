@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 // @ts-check
 'use strict';
 
-var updateGrammar = require('../../../build/npm/update-grammar');
+vAr updAteGrAmmAr = require('../../../build/npm/updAte-grAmmAr');
 
-function patchGrammar(grammar) {
-	let patchCount = 0;
+function pAtchGrAmmAr(grAmmAr) {
+	let pAtchCount = 0;
 
-	let visit = function (rule, parent) {
-		if (rule.name === 'source.js' || rule.name === 'source.css') {
-			if (parent.parent && parent.parent.property === 'endCaptures') {
-				rule.name = rule.name + '-ignored-vscode';
-				patchCount++;
+	let visit = function (rule, pArent) {
+		if (rule.nAme === 'source.js' || rule.nAme === 'source.css') {
+			if (pArent.pArent && pArent.pArent.property === 'endCAptures') {
+				rule.nAme = rule.nAme + '-ignored-vscode';
+				pAtchCount++;
 			}
 		}
 		for (let property in rule) {
-			let value = rule[property];
-			if (typeof value === 'object') {
-				visit(value, { node: rule, property: property, parent: parent });
+			let vAlue = rule[property];
+			if (typeof vAlue === 'object') {
+				visit(vAlue, { node: rule, property: property, pArent: pArent });
 			}
 		}
 	};
 
-	let repository = grammar.repository;
+	let repository = grAmmAr.repository;
 	for (let key in repository) {
-		visit(repository[key], { node: repository, property: key, parent: undefined });
+		visit(repository[key], { node: repository, property: key, pArent: undefined });
 	}
-	if (patchCount !== 6) {
-		console.warn(`Expected to patch 6 occurrences of source.js & source.css: Was ${patchCount}`);
+	if (pAtchCount !== 6) {
+		console.wArn(`Expected to pAtch 6 occurrences of source.js & source.css: WAs ${pAtchCount}`);
 	}
 
 
-	return grammar;
+	return grAmmAr;
 }
 
-const tsGrammarRepo = 'textmate/html.tmbundle';
-const grammarPath = 'Syntaxes/HTML.plist';
-updateGrammar.update(tsGrammarRepo, grammarPath, './syntaxes/html.tmLanguage.json', grammar => patchGrammar(grammar));
+const tsGrAmmArRepo = 'textmAte/html.tmbundle';
+const grAmmArPAth = 'SyntAxes/HTML.plist';
+updAteGrAmmAr.updAte(tsGrAmmArRepo, grAmmArPAth, './syntAxes/html.tmLAnguAge.json', grAmmAr => pAtchGrAmmAr(grAmmAr));
 
 

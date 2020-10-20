@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { PluginManager } from '../utils/plugins';
-import { Command } from './commandManager';
+import { PluginMAnAger } from '../utils/plugins';
+import { CommAnd } from './commAndMAnAger';
 
-export class ConfigurePluginCommand implements Command {
-	public readonly id = '_typescript.configurePlugin';
+export clAss ConfigurePluginCommAnd implements CommAnd {
+	public reAdonly id = '_typescript.configurePlugin';
 
 	public constructor(
-		private readonly pluginManager: PluginManager,
+		privAte reAdonly pluginMAnAger: PluginMAnAger,
 	) { }
 
-	public execute(pluginId: string, configuration: any) {
-		this.pluginManager.setConfiguration(pluginId, configuration);
+	public execute(pluginId: string, configurAtion: Any) {
+		this.pluginMAnAger.setConfigurAtion(pluginId, configurAtion);
 	}
 }

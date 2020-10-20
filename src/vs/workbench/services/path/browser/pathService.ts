@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { IPathService, AbstractPathService } from 'vs/workbench/services/path/common/pathService';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import { IPAthService, AbstrActPAthService } from 'vs/workbench/services/pAth/common/pAthService';
+import { URI } from 'vs/bAse/common/uri';
+import { SchemAs } from 'vs/bAse/common/network';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 
-export class BrowserPathService extends AbstractPathService {
+export clAss BrowserPAthService extends AbstrActPAthService {
 
-	readonly defaultUriScheme = defaultUriScheme(this.environmentService, this.contextService);
+	reAdonly defAultUriScheme = defAultUriScheme(this.environmentService, this.contextService);
 
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService
 	) {
-		super(URI.from({ scheme: defaultUriScheme(environmentService, contextService), authority: environmentService.remoteAuthority, path: '/' }), remoteAgentService);
+		super(URI.from({ scheme: defAultUriScheme(environmentService, contextService), Authority: environmentService.remoteAuthority, pAth: '/' }), remoteAgentService);
 	}
 }
 
-function defaultUriScheme(environmentService: IWorkbenchEnvironmentService, contextService: IWorkspaceContextService): string {
+function defAultUriScheme(environmentService: IWorkbenchEnvironmentService, contextService: IWorkspAceContextService): string {
 	if (environmentService.remoteAuthority) {
-		return Schemas.vscodeRemote;
+		return SchemAs.vscodeRemote;
 	}
 
-	const firstFolder = contextService.getWorkspace().folders[0];
+	const firstFolder = contextService.getWorkspAce().folders[0];
 	if (!firstFolder) {
-		throw new Error('Empty workspace is not supported in browser when there is no remote connection.');
+		throw new Error('Empty workspAce is not supported in browser when there is no remote connection.');
 	}
 
 	return firstFolder.uri.scheme;
 }
 
-registerSingleton(IPathService, BrowserPathService, true);
+registerSingleton(IPAthService, BrowserPAthService, true);

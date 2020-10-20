@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { Action } from 'vs/base/common/actions';
-import * as platform from 'vs/base/common/platform';
-import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKey, IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Extensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import * As nls from 'vs/nls';
+import { Action } from 'vs/bAse/common/Actions';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import { ConfigurAtionTArget, IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKey, IContextKeyService, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Extensions, IWorkbenchActionRegistry } from 'vs/workbench/common/Actions';
+import { Extensions As WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
 
-export class ToggleMultiCursorModifierAction extends Action {
+export clAss ToggleMultiCursorModifierAction extends Action {
 
-	public static readonly ID = 'workbench.action.toggleMultiCursorModifier';
-	public static readonly LABEL = nls.localize('toggleLocation', "Toggle Multi-Cursor Modifier");
+	public stAtic reAdonly ID = 'workbench.Action.toggleMultiCursorModifier';
+	public stAtic reAdonly LABEL = nls.locAlize('toggleLocAtion', "Toggle Multi-Cursor Modifier");
 
-	private static readonly multiCursorModifierConfigurationKey = 'editor.multiCursorModifier';
+	privAte stAtic reAdonly multiCursorModifierConfigurAtionKey = 'editor.multiCursorModifier';
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	public run(): Promise<any> {
-		const editorConf = this.configurationService.getValue<{ multiCursorModifier: 'ctrlCmd' | 'alt' }>('editor');
-		const newValue: 'ctrlCmd' | 'alt' = (editorConf.multiCursorModifier === 'ctrlCmd' ? 'alt' : 'ctrlCmd');
+	public run(): Promise<Any> {
+		const editorConf = this.configurAtionService.getVAlue<{ multiCursorModifier: 'ctrlCmd' | 'Alt' }>('editor');
+		const newVAlue: 'ctrlCmd' | 'Alt' = (editorConf.multiCursorModifier === 'ctrlCmd' ? 'Alt' : 'ctrlCmd');
 
-		return this.configurationService.updateValue(ToggleMultiCursorModifierAction.multiCursorModifierConfigurationKey, newValue, ConfigurationTarget.USER);
+		return this.configurAtionService.updAteVAlue(ToggleMultiCursorModifierAction.multiCursorModifierConfigurAtionKey, newVAlue, ConfigurAtionTArget.USER);
 	}
 }
 
-const multiCursorModifier = new RawContextKey<string>('multiCursorModifier', 'altKey');
+const multiCursorModifier = new RAwContextKey<string>('multiCursorModifier', 'AltKey');
 
-class MultiCursorModifierContextKeyController implements IWorkbenchContribution {
+clAss MultiCursorModifierContextKeyController implements IWorkbenchContribution {
 
-	private readonly _multiCursorModifier: IContextKey<string>;
+	privAte reAdonly _multiCursorModifier: IContextKey<string>;
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		this._multiCursorModifier = multiCursorModifier.bindTo(contextKeyService);
 
-		this._update();
-		configurationService.onDidChangeConfiguration((e) => {
-			if (e.affectsConfiguration('editor.multiCursorModifier')) {
-				this._update();
+		this._updAte();
+		configurAtionService.onDidChAngeConfigurAtion((e) => {
+			if (e.AffectsConfigurAtion('editor.multiCursorModifier')) {
+				this._updAte();
 			}
 		});
 	}
 
-	private _update(): void {
-		const editorConf = this.configurationService.getValue<{ multiCursorModifier: 'ctrlCmd' | 'alt' }>('editor');
-		const value = (editorConf.multiCursorModifier === 'ctrlCmd' ? 'ctrlCmd' : 'altKey');
-		this._multiCursorModifier.set(value);
+	privAte _updAte(): void {
+		const editorConf = this.configurAtionService.getVAlue<{ multiCursorModifier: 'ctrlCmd' | 'Alt' }>('editor');
+		const vAlue = (editorConf.multiCursorModifier === 'ctrlCmd' ? 'ctrlCmd' : 'AltKey');
+		this._multiCursorModifier.set(vAlue);
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(MultiCursorModifierContextKeyController, LifecyclePhase.Restored);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(MultiCursorModifierContextKeyController, LifecyclePhAse.Restored);
 
 
-const registry = Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
+const registry = Registry.As<IWorkbenchActionRegistry>(Extensions.WorkbenchActions);
 registry.registerWorkbenchAction(SyncActionDescriptor.from(ToggleMultiCursorModifierAction), 'Toggle Multi-Cursor Modifier');
-MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArSelectionMenu, {
 	group: '4_config',
-	command: {
+	commAnd: {
 		id: ToggleMultiCursorModifierAction.ID,
-		title: nls.localize('miMultiCursorAlt', "Switch to Alt+Click for Multi-Cursor")
+		title: nls.locAlize('miMultiCursorAlt', "Switch to Alt+Click for Multi-Cursor")
 	},
-	when: multiCursorModifier.isEqualTo('ctrlCmd'),
+	when: multiCursorModifier.isEquAlTo('ctrlCmd'),
 	order: 1
 });
-MenuRegistry.appendMenuItem(MenuId.MenubarSelectionMenu, {
+MenuRegistry.AppendMenuItem(MenuId.MenubArSelectionMenu, {
 	group: '4_config',
-	command: {
+	commAnd: {
 		id: ToggleMultiCursorModifierAction.ID,
 		title: (
-			platform.isMacintosh
-				? nls.localize('miMultiCursorCmd', "Switch to Cmd+Click for Multi-Cursor")
-				: nls.localize('miMultiCursorCtrl', "Switch to Ctrl+Click for Multi-Cursor")
+			plAtform.isMAcintosh
+				? nls.locAlize('miMultiCursorCmd', "Switch to Cmd+Click for Multi-Cursor")
+				: nls.locAlize('miMultiCursorCtrl', "Switch to Ctrl+Click for Multi-Cursor")
 		)
 	},
-	when: multiCursorModifier.isEqualTo('altKey'),
+	when: multiCursorModifier.isEquAlTo('AltKey'),
 	order: 1
 });

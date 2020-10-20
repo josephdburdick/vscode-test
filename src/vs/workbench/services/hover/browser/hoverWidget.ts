@@ -1,137 +1,137 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import * as dom from 'vs/base/browser/dom';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IHoverTarget, IHoverOptions } from 'vs/workbench/services/hover/browser/hover';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import * As dom from 'vs/bAse/browser/dom';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IHoverTArget, IHoverOptions } from 'vs/workbench/services/hover/browser/hover';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { EDITOR_FONT_DEFAULTS, IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { HoverWidget as BaseHoverWidget, renderHoverAction } from 'vs/base/browser/ui/hover/hoverWidget';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { AnchorPosition } from 'vs/base/browser/ui/contextview/contextview';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { MarkdownRenderer } from 'vs/editor/browser/core/markdownRenderer';
+import { HoverWidget As BAseHoverWidget, renderHoverAction } from 'vs/bAse/browser/ui/hover/hoverWidget';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { AnchorPosition } from 'vs/bAse/browser/ui/contextview/contextview';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { MArkdownString } from 'vs/bAse/common/htmlContent';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { MArkdownRenderer } from 'vs/editor/browser/core/mArkdownRenderer';
 
 const $ = dom.$;
 
-export class HoverWidget extends Widget {
-	private readonly _messageListeners = new DisposableStore();
-	private readonly _mouseTracker: CompositeMouseTracker;
+export clAss HoverWidget extends Widget {
+	privAte reAdonly _messAgeListeners = new DisposAbleStore();
+	privAte reAdonly _mouseTrAcker: CompositeMouseTrAcker;
 
-	private readonly _hover: BaseHoverWidget;
-	private readonly _target: IHoverTarget;
-	private readonly _linkHandler: (url: string) => any;
+	privAte reAdonly _hover: BAseHoverWidget;
+	privAte reAdonly _tArget: IHoverTArget;
+	privAte reAdonly _linkHAndler: (url: string) => Any;
 
-	private _isDisposed: boolean = false;
-	private _anchor: AnchorPosition;
-	private _x: number = 0;
-	private _y: number = 0;
+	privAte _isDisposed: booleAn = fAlse;
+	privAte _Anchor: AnchorPosition;
+	privAte _x: number = 0;
+	privAte _y: number = 0;
 
-	get isDisposed(): boolean { return this._isDisposed; }
-	get domNode(): HTMLElement { return this._hover.containerDomNode; }
+	get isDisposed(): booleAn { return this._isDisposed; }
+	get domNode(): HTMLElement { return this._hover.contAinerDomNode; }
 
-	private readonly _onDispose = this._register(new Emitter<void>());
+	privAte reAdonly _onDispose = this._register(new Emitter<void>());
 	get onDispose(): Event<void> { return this._onDispose.event; }
-	private readonly _onRequestLayout = this._register(new Emitter<void>());
-	get onRequestLayout(): Event<void> { return this._onRequestLayout.event; }
+	privAte reAdonly _onRequestLAyout = this._register(new Emitter<void>());
+	get onRequestLAyout(): Event<void> { return this._onRequestLAyout.event; }
 
-	get anchor(): AnchorPosition { return this._anchor; }
+	get Anchor(): AnchorPosition { return this._Anchor; }
 	get x(): number { return this._x; }
 	get y(): number { return this._y; }
 
 	constructor(
 		options: IHoverOptions,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@IOpenerService private readonly _openerService: IOpenerService,
-		@IWorkbenchLayoutService private readonly _workbenchLayoutService: IWorkbenchLayoutService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
+		@IOpenerService privAte reAdonly _openerService: IOpenerService,
+		@IWorkbenchLAyoutService privAte reAdonly _workbenchLAyoutService: IWorkbenchLAyoutService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
 	) {
 		super();
 
-		this._linkHandler = options.linkHandler || this._openerService.open;
+		this._linkHAndler = options.linkHAndler || this._openerService.open;
 
-		this._target = 'targetElements' in options.target ? options.target : new ElementHoverTarget(options.target);
+		this._tArget = 'tArgetElements' in options.tArget ? options.tArget : new ElementHoverTArget(options.tArget);
 
-		this._hover = this._register(new BaseHoverWidget());
-		this._hover.containerDomNode.classList.add('workbench-hover', 'fadeIn');
-		if (options.additionalClasses) {
-			this._hover.containerDomNode.classList.add(...options.additionalClasses);
+		this._hover = this._register(new BAseHoverWidget());
+		this._hover.contAinerDomNode.clAssList.Add('workbench-hover', 'fAdeIn');
+		if (options.AdditionAlClAsses) {
+			this._hover.contAinerDomNode.clAssList.Add(...options.AdditionAlClAsses);
 		}
 
-		this._anchor = options.anchorPosition ?? AnchorPosition.ABOVE;
+		this._Anchor = options.AnchorPosition ?? AnchorPosition.ABOVE;
 
-		// Don't allow mousedown out of the widget, otherwise preventDefault will call and text will
+		// Don't Allow mousedown out of the widget, otherwise preventDefAult will cAll And text will
 		// not be selected.
-		this.onmousedown(this._hover.containerDomNode, e => e.stopPropagation());
+		this.onmousedown(this._hover.contAinerDomNode, e => e.stopPropAgAtion());
 
-		// Hide hover on escape
-		this.onkeydown(this._hover.containerDomNode, e => {
-			if (e.equals(KeyCode.Escape)) {
+		// Hide hover on escApe
+		this.onkeydown(this._hover.contAinerDomNode, e => {
+			if (e.equAls(KeyCode.EscApe)) {
 				this.dispose();
 			}
 		});
 
-		const rowElement = $('div.hover-row.markdown-hover');
+		const rowElement = $('div.hover-row.mArkdown-hover');
 		const contentsElement = $('div.hover-contents');
-		const markdown = typeof options.text === 'string' ? new MarkdownString().appendText(options.text) : options.text;
+		const mArkdown = typeof options.text === 'string' ? new MArkdownString().AppendText(options.text) : options.text;
 
-		const mdRenderer = this._instantiationService.createInstance(
-			MarkdownRenderer,
-			{ codeBlockFontFamily: this._configurationService.getValue<IEditorOptions>('editor').fontFamily || EDITOR_FONT_DEFAULTS.fontFamily }
+		const mdRenderer = this._instAntiAtionService.creAteInstAnce(
+			MArkdownRenderer,
+			{ codeBlockFontFAmily: this._configurAtionService.getVAlue<IEditorOptions>('editor').fontFAmily || EDITOR_FONT_DEFAULTS.fontFAmily }
 		);
 
-		const { element } = mdRenderer.render(markdown, {
-			actionHandler: {
-				callback: (content) => this._linkHandler(content),
-				disposeables: this._messageListeners
+		const { element } = mdRenderer.render(mArkdown, {
+			ActionHAndler: {
+				cAllbAck: (content) => this._linkHAndler(content),
+				disposeAbles: this._messAgeListeners
 			},
-			codeBlockRenderCallback: () => {
-				contentsElement.classList.add('code-hover-contents');
-				// This changes the dimensions of the hover so trigger a layout
-				this._onRequestLayout.fire();
+			codeBlockRenderCAllbAck: () => {
+				contentsElement.clAssList.Add('code-hover-contents');
+				// This chAnges the dimensions of the hover so trigger A lAyout
+				this._onRequestLAyout.fire();
 			}
 		});
-		contentsElement.appendChild(element);
-		rowElement.appendChild(contentsElement);
-		this._hover.contentsDomNode.appendChild(rowElement);
+		contentsElement.AppendChild(element);
+		rowElement.AppendChild(contentsElement);
+		this._hover.contentsDomNode.AppendChild(rowElement);
 
-		if (options.actions && options.actions.length > 0) {
-			const statusBarElement = $('div.hover-row.status-bar');
-			const actionsElement = $('div.actions');
-			options.actions.forEach(action => {
-				const keybinding = this._keybindingService.lookupKeybinding(action.commandId);
-				const keybindingLabel = keybinding ? keybinding.getLabel() : null;
-				renderHoverAction(actionsElement, {
-					label: action.label,
-					commandId: action.commandId,
+		if (options.Actions && options.Actions.length > 0) {
+			const stAtusBArElement = $('div.hover-row.stAtus-bAr');
+			const ActionsElement = $('div.Actions');
+			options.Actions.forEAch(Action => {
+				const keybinding = this._keybindingService.lookupKeybinding(Action.commAndId);
+				const keybindingLAbel = keybinding ? keybinding.getLAbel() : null;
+				renderHoverAction(ActionsElement, {
+					lAbel: Action.lAbel,
+					commAndId: Action.commAndId,
 					run: e => {
-						action.run(e);
+						Action.run(e);
 						this.dispose();
 					},
-					iconClass: action.iconClass
-				}, keybindingLabel);
+					iconClAss: Action.iconClAss
+				}, keybindingLAbel);
 			});
-			statusBarElement.appendChild(actionsElement);
-			this._hover.containerDomNode.appendChild(statusBarElement);
+			stAtusBArElement.AppendChild(ActionsElement);
+			this._hover.contAinerDomNode.AppendChild(stAtusBArElement);
 		}
 
-		const mouseTrackerTargets = [...this._target.targetElements];
-		let hideOnHover: boolean;
+		const mouseTrAckerTArgets = [...this._tArget.tArgetElements];
+		let hideOnHover: booleAn;
 		if (options.hideOnHover === undefined) {
-			if (options.actions && options.actions.length > 0) {
-				// If there are actions, require hover so they can be accessed
-				hideOnHover = false;
+			if (options.Actions && options.Actions.length > 0) {
+				// If there Are Actions, require hover so they cAn be Accessed
+				hideOnHover = fAlse;
 			} else {
-				// Defaults to true when string, false when markdown as it may contain links
+				// DefAults to true when string, fAlse when mArkdown As it mAy contAin links
 				hideOnHover = typeof options.text === 'string';
 			}
 		} else {
@@ -139,63 +139,63 @@ export class HoverWidget extends Widget {
 			hideOnHover = options.hideOnHover;
 		}
 		if (!hideOnHover) {
-			mouseTrackerTargets.push(this._hover.containerDomNode);
+			mouseTrAckerTArgets.push(this._hover.contAinerDomNode);
 		}
-		this._mouseTracker = new CompositeMouseTracker(mouseTrackerTargets);
-		this._register(this._mouseTracker.onMouseOut(() => this.dispose()));
-		this._register(this._mouseTracker);
+		this._mouseTrAcker = new CompositeMouseTrAcker(mouseTrAckerTArgets);
+		this._register(this._mouseTrAcker.onMouseOut(() => this.dispose()));
+		this._register(this._mouseTrAcker);
 	}
 
-	public render(container?: HTMLElement): void {
-		if (this._hover.containerDomNode.parentElement !== container) {
-			container?.appendChild(this._hover.containerDomNode);
+	public render(contAiner?: HTMLElement): void {
+		if (this._hover.contAinerDomNode.pArentElement !== contAiner) {
+			contAiner?.AppendChild(this._hover.contAinerDomNode);
 		}
 
-		this.layout();
+		this.lAyout();
 	}
 
-	public layout() {
-		this._hover.containerDomNode.classList.remove('right-aligned');
-		this._hover.contentsDomNode.style.maxHeight = '';
+	public lAyout() {
+		this._hover.contAinerDomNode.clAssList.remove('right-Aligned');
+		this._hover.contentsDomNode.style.mAxHeight = '';
 
-		const targetBounds = this._target.targetElements.map(e => e.getBoundingClientRect());
+		const tArgetBounds = this._tArget.tArgetElements.mAp(e => e.getBoundingClientRect());
 
-		// Get horizontal alignment and position
-		let targetLeft = this._target.x !== undefined ? this._target.x : Math.min(...targetBounds.map(e => e.left));
-		if (targetLeft + this._hover.containerDomNode.clientWidth >= document.documentElement.clientWidth) {
-			this._x = document.documentElement.clientWidth - this._workbenchLayoutService.getWindowBorderWidth() - 1;
-			this._hover.containerDomNode.classList.add('right-aligned');
+		// Get horizontAl Alignment And position
+		let tArgetLeft = this._tArget.x !== undefined ? this._tArget.x : MAth.min(...tArgetBounds.mAp(e => e.left));
+		if (tArgetLeft + this._hover.contAinerDomNode.clientWidth >= document.documentElement.clientWidth) {
+			this._x = document.documentElement.clientWidth - this._workbenchLAyoutService.getWindowBorderWidth() - 1;
+			this._hover.contAinerDomNode.clAssList.Add('right-Aligned');
 		} else {
-			this._x = targetLeft;
+			this._x = tArgetLeft;
 		}
 
-		// Get vertical alignment and position
-		if (this._anchor === AnchorPosition.ABOVE) {
-			const targetTop = Math.min(...targetBounds.map(e => e.top));
-			if (targetTop - this._hover.containerDomNode.clientHeight < 0) {
-				const targetBottom = Math.max(...targetBounds.map(e => e.bottom));
-				this._anchor = AnchorPosition.BELOW;
-				this._y = targetBottom - 2;
+		// Get verticAl Alignment And position
+		if (this._Anchor === AnchorPosition.ABOVE) {
+			const tArgetTop = MAth.min(...tArgetBounds.mAp(e => e.top));
+			if (tArgetTop - this._hover.contAinerDomNode.clientHeight < 0) {
+				const tArgetBottom = MAth.mAx(...tArgetBounds.mAp(e => e.bottom));
+				this._Anchor = AnchorPosition.BELOW;
+				this._y = tArgetBottom - 2;
 			} else {
-				this._y = targetTop;
+				this._y = tArgetTop;
 			}
 		} else {
-			const targetBottom = Math.max(...targetBounds.map(e => e.bottom));
-			if (targetBottom + this._hover.containerDomNode.clientHeight > window.innerHeight) {
-				console.log(targetBottom, this._hover.containerDomNode.clientHeight, window.innerHeight);
-				const targetTop = Math.min(...targetBounds.map(e => e.top));
-				this._anchor = AnchorPosition.ABOVE;
-				this._y = targetTop;
+			const tArgetBottom = MAth.mAx(...tArgetBounds.mAp(e => e.bottom));
+			if (tArgetBottom + this._hover.contAinerDomNode.clientHeight > window.innerHeight) {
+				console.log(tArgetBottom, this._hover.contAinerDomNode.clientHeight, window.innerHeight);
+				const tArgetTop = MAth.min(...tArgetBounds.mAp(e => e.top));
+				this._Anchor = AnchorPosition.ABOVE;
+				this._y = tArgetTop;
 			} else {
-				this._y = targetBottom - 2;
+				this._y = tArgetBottom - 2;
 			}
 		}
 
-		this._hover.onContentsChanged();
+		this._hover.onContentsChAnged();
 	}
 
 	public focus() {
-		this._hover.containerDomNode.focus();
+		this._hover.contAinerDomNode.focus();
 	}
 
 	public hide(): void {
@@ -205,68 +205,68 @@ export class HoverWidget extends Widget {
 	public dispose(): void {
 		if (!this._isDisposed) {
 			this._onDispose.fire();
-			this._hover.containerDomNode.parentElement?.removeChild(this.domNode);
-			this._messageListeners.dispose();
-			this._target.dispose();
+			this._hover.contAinerDomNode.pArentElement?.removeChild(this.domNode);
+			this._messAgeListeners.dispose();
+			this._tArget.dispose();
 			super.dispose();
 		}
 		this._isDisposed = true;
 	}
 }
 
-class CompositeMouseTracker extends Widget {
-	private _isMouseIn: boolean = false;
-	private _mouseTimeout: number | undefined;
+clAss CompositeMouseTrAcker extends Widget {
+	privAte _isMouseIn: booleAn = fAlse;
+	privAte _mouseTimeout: number | undefined;
 
-	private readonly _onMouseOut = new Emitter<void>();
+	privAte reAdonly _onMouseOut = new Emitter<void>();
 	get onMouseOut(): Event<void> { return this._onMouseOut.event; }
 
 	constructor(
-		private _elements: HTMLElement[]
+		privAte _elements: HTMLElement[]
 	) {
 		super();
-		this._elements.forEach(n => this.onmouseover(n, () => this._onTargetMouseOver()));
-		this._elements.forEach(n => this.onnonbubblingmouseout(n, () => this._onTargetMouseOut()));
+		this._elements.forEAch(n => this.onmouseover(n, () => this._onTArgetMouseOver()));
+		this._elements.forEAch(n => this.onnonbubblingmouseout(n, () => this._onTArgetMouseOut()));
 	}
 
-	private _onTargetMouseOver(): void {
+	privAte _onTArgetMouseOver(): void {
 		this._isMouseIn = true;
-		this._clearEvaluateMouseStateTimeout();
+		this._cleArEvAluAteMouseStAteTimeout();
 	}
 
-	private _onTargetMouseOut(): void {
-		this._isMouseIn = false;
-		this._evaluateMouseState();
+	privAte _onTArgetMouseOut(): void {
+		this._isMouseIn = fAlse;
+		this._evAluAteMouseStAte();
 	}
 
-	private _evaluateMouseState(): void {
-		this._clearEvaluateMouseStateTimeout();
-		// Evaluate whether the mouse is still outside asynchronously such that other mouse targets
-		// have the opportunity to first their mouse in event.
+	privAte _evAluAteMouseStAte(): void {
+		this._cleArEvAluAteMouseStAteTimeout();
+		// EvAluAte whether the mouse is still outside Asynchronously such thAt other mouse tArgets
+		// hAve the opportunity to first their mouse in event.
 		this._mouseTimeout = window.setTimeout(() => this._fireIfMouseOutside(), 0);
 	}
 
-	private _clearEvaluateMouseStateTimeout(): void {
+	privAte _cleArEvAluAteMouseStAteTimeout(): void {
 		if (this._mouseTimeout) {
-			clearTimeout(this._mouseTimeout);
+			cleArTimeout(this._mouseTimeout);
 			this._mouseTimeout = undefined;
 		}
 	}
 
-	private _fireIfMouseOutside(): void {
+	privAte _fireIfMouseOutside(): void {
 		if (!this._isMouseIn) {
 			this._onMouseOut.fire();
 		}
 	}
 }
 
-class ElementHoverTarget implements IHoverTarget {
-	readonly targetElements: readonly HTMLElement[];
+clAss ElementHoverTArget implements IHoverTArget {
+	reAdonly tArgetElements: reAdonly HTMLElement[];
 
 	constructor(
-		private _element: HTMLElement
+		privAte _element: HTMLElement
 	) {
-		this.targetElements = [this._element];
+		this.tArgetElements = [this._element];
 	}
 
 	dispose(): void {

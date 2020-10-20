@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { FeedbackDropdown, IFeedback, IFeedbackDelegate } from 'vs/workbench/contrib/feedback/browser/feedback';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { FeedbAckDropdown, IFeedbAck, IFeedbAckDelegAte } from 'vs/workbench/contrib/feedbAck/browser/feedbAck';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import { IStatusbarService, StatusbarAlignment, IStatusbarEntry, IStatusbarEntryAccessor } from 'vs/workbench/services/statusbar/common/statusbar';
-import { localize } from 'vs/nls';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { MenuRegistry, MenuId } from 'vs/platform/actions/common/actions';
-import { CATEGORIES } from 'vs/workbench/common/actions';
+import { IStAtusbArService, StAtusbArAlignment, IStAtusbArEntry, IStAtusbArEntryAccessor } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
+import { locAlize } from 'vs/nls';
+import { CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { URI } from 'vs/bAse/common/uri';
+import { MenuRegistry, MenuId } from 'vs/plAtform/Actions/common/Actions';
+import { CATEGORIES } from 'vs/workbench/common/Actions';
 
-class TwitterFeedbackService implements IFeedbackDelegate {
+clAss TwitterFeedbAckService implements IFeedbAckDelegAte {
 
-	private static TWITTER_URL: string = 'https://twitter.com/intent/tweet';
-	private static VIA_NAME: string = 'code';
-	private static HASHTAGS: string[] = ['HappyCoding'];
+	privAte stAtic TWITTER_URL: string = 'https://twitter.com/intent/tweet';
+	privAte stAtic VIA_NAME: string = 'code';
+	privAte stAtic HASHTAGS: string[] = ['HAppyCoding'];
 
-	private combineHashTagsAsString(): string {
-		return TwitterFeedbackService.HASHTAGS.join(',');
+	privAte combineHAshTAgsAsString(): string {
+		return TwitterFeedbAckService.HASHTAGS.join(',');
 	}
 
-	submitFeedback(feedback: IFeedback, openerService: IOpenerService): void {
-		const queryString = `?${feedback.sentiment === 1 ? `hashtags=${this.combineHashTagsAsString()}&` : null}ref_src=twsrc%5Etfw&related=twitterapi%2Ctwitter&text=${encodeURIComponent(feedback.feedback)}&tw_p=tweetbutton&via=${TwitterFeedbackService.VIA_NAME}`;
-		const url = TwitterFeedbackService.TWITTER_URL + queryString;
+	submitFeedbAck(feedbAck: IFeedbAck, openerService: IOpenerService): void {
+		const queryString = `?${feedbAck.sentiment === 1 ? `hAshtAgs=${this.combineHAshTAgsAsString()}&` : null}ref_src=twsrc%5Etfw&relAted=twitterApi%2Ctwitter&text=${encodeURIComponent(feedbAck.feedbAck)}&tw_p=tweetbutton&viA=${TwitterFeedbAckService.VIA_NAME}`;
+		const url = TwitterFeedbAckService.TWITTER_URL + queryString;
 
-		openerService.open(URI.parse(url));
+		openerService.open(URI.pArse(url));
 	}
 
-	getCharacterLimit(sentiment: number): number {
+	getChArActerLimit(sentiment: number): number {
 		let length: number = 0;
 		if (sentiment === 1) {
-			TwitterFeedbackService.HASHTAGS.forEach(element => {
+			TwitterFeedbAckService.HASHTAGS.forEAch(element => {
 				length += element.length + 2;
 			});
 		}
 
-		if (TwitterFeedbackService.VIA_NAME) {
-			length += ` via @${TwitterFeedbackService.VIA_NAME}`.length;
+		if (TwitterFeedbAckService.VIA_NAME) {
+			length += ` viA @${TwitterFeedbAckService.VIA_NAME}`.length;
 		}
 
 		return 280 - length;
 	}
 }
 
-export class FeedbackStatusbarConribution extends Disposable implements IWorkbenchContribution {
-	private dropdown: FeedbackDropdown | undefined;
-	private entry: IStatusbarEntryAccessor | undefined;
+export clAss FeedbAckStAtusbArConribution extends DisposAble implements IWorkbenchContribution {
+	privAte dropdown: FeedbAckDropdown | undefined;
+	privAte entry: IStAtusbArEntryAccessor | undefined;
 
 	constructor(
-		@IStatusbarService statusbarService: IStatusbarService,
+		@IStAtusbArService stAtusbArService: IStAtusbArService,
 		@IProductService productService: IProductService,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@IContextViewService private contextViewService: IContextViewService
+		@IInstAntiAtionService privAte instAntiAtionService: IInstAntiAtionService,
+		@IContextViewService privAte contextViewService: IContextViewService
 	) {
 		super();
 
 		if (productService.sendASmile) {
-			this.entry = this._register(statusbarService.addEntry(this.getStatusEntry(), 'status.feedback', localize('status.feedback', "Tweet Feedback"), StatusbarAlignment.RIGHT, -100 /* towards the end of the right hand side */));
+			this.entry = this._register(stAtusbArService.AddEntry(this.getStAtusEntry(), 'stAtus.feedbAck', locAlize('stAtus.feedbAck', "Tweet FeedbAck"), StAtusbArAlignment.RIGHT, -100 /* towArds the end of the right hAnd side */));
 
-			CommandsRegistry.registerCommand('help.tweetFeedback', () => this.toggleFeedback());
-			MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
-				command: {
-					id: 'help.tweetFeedback',
-					category: CATEGORIES.Help,
-					title: localize('status.feedback', "Tweet Feedback")
+			CommAndsRegistry.registerCommAnd('help.tweetFeedbAck', () => this.toggleFeedbAck());
+			MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, {
+				commAnd: {
+					id: 'help.tweetFeedbAck',
+					cAtegory: CATEGORIES.Help,
+					title: locAlize('stAtus.feedbAck', "Tweet FeedbAck")
 				}
 			});
 		}
 	}
 
-	private toggleFeedback(): void {
+	privAte toggleFeedbAck(): void {
 		if (!this.dropdown) {
-			const statusContainr = document.getElementById('status.feedback');
-			if (statusContainr) {
-				const icon = statusContainr.getElementsByClassName('codicon').item(0) as HTMLElement | null;
+			const stAtusContAinr = document.getElementById('stAtus.feedbAck');
+			if (stAtusContAinr) {
+				const icon = stAtusContAinr.getElementsByClAssNAme('codicon').item(0) As HTMLElement | null;
 				if (!icon) {
 					throw new Error('Could not find icon');
 				}
-				this.dropdown = this._register(this.instantiationService.createInstance(FeedbackDropdown, icon, {
+				this.dropdown = this._register(this.instAntiAtionService.creAteInstAnce(FeedbAckDropdown, icon, {
 					contextViewProvider: this.contextViewService,
-					feedbackService: this.instantiationService.createInstance(TwitterFeedbackService),
-					onFeedbackVisibilityChange: visible => this.entry!.update(this.getStatusEntry(visible))
+					feedbAckService: this.instAntiAtionService.creAteInstAnce(TwitterFeedbAckService),
+					onFeedbAckVisibilityChAnge: visible => this.entry!.updAte(this.getStAtusEntry(visible))
 				}));
 			}
 		}
@@ -101,13 +101,13 @@ export class FeedbackStatusbarConribution extends Disposable implements IWorkben
 		}
 	}
 
-	private getStatusEntry(showBeak?: boolean): IStatusbarEntry {
+	privAte getStAtusEntry(showBeAk?: booleAn): IStAtusbArEntry {
 		return {
-			text: '$(feedback)',
-			ariaLabel: localize('status.feedback', "Tweet Feedback"),
-			tooltip: localize('status.feedback', "Tweet Feedback"),
-			command: 'help.tweetFeedback',
-			showBeak
+			text: '$(feedbAck)',
+			AriALAbel: locAlize('stAtus.feedbAck', "Tweet FeedbAck"),
+			tooltip: locAlize('stAtus.feedbAck', "Tweet FeedbAck"),
+			commAnd: 'help.tweetFeedbAck',
+			showBeAk
 		};
 	}
 }

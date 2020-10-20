@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Viewlet } from './viewlet';
-import { Commands } from './workbench';
+import { CommAnds } from './workbench';
 import { Code, findElement } from './code';
 import { Editors } from './editors';
 import { Editor } from './editor';
@@ -12,142 +12,142 @@ import { IElement } from '../src/driver';
 
 const VIEWLET = 'div[id="workbench.view.debug"]';
 const DEBUG_VIEW = `${VIEWLET}`;
-const CONFIGURE = `div[id="workbench.parts.sidebar"] .actions-container .codicon-gear`;
-const STOP = `.debug-toolbar .action-label[title*="Stop"]`;
-const STEP_OVER = `.debug-toolbar .action-label[title*="Step Over"]`;
-const STEP_IN = `.debug-toolbar .action-label[title*="Step Into"]`;
-const STEP_OUT = `.debug-toolbar .action-label[title*="Step Out"]`;
-const CONTINUE = `.debug-toolbar .action-label[title*="Continue"]`;
-const GLYPH_AREA = '.margin-view-overlays>:nth-child';
-const BREAKPOINT_GLYPH = '.codicon-debug-breakpoint';
-const PAUSE = `.debug-toolbar .action-label[title*="Pause"]`;
-const DEBUG_STATUS_BAR = `.statusbar.debugging`;
-const NOT_DEBUG_STATUS_BAR = `.statusbar:not(debugging)`;
-const TOOLBAR_HIDDEN = `.debug-toolbar[aria-hidden="true"]`;
-const STACK_FRAME = `${VIEWLET} .monaco-list-row .stack-frame`;
-const SPECIFIC_STACK_FRAME = (filename: string) => `${STACK_FRAME} .file[title*="${filename}"]`;
-const VARIABLE = `${VIEWLET} .debug-variables .monaco-list-row .expression`;
-const CONSOLE_OUTPUT = `.repl .output.expression .value`;
-const CONSOLE_EVALUATION_RESULT = `.repl .evaluation-result.expression .value`;
-const CONSOLE_LINK = `.repl .value a.link`;
+const CONFIGURE = `div[id="workbench.pArts.sidebAr"] .Actions-contAiner .codicon-geAr`;
+const STOP = `.debug-toolbAr .Action-lAbel[title*="Stop"]`;
+const STEP_OVER = `.debug-toolbAr .Action-lAbel[title*="Step Over"]`;
+const STEP_IN = `.debug-toolbAr .Action-lAbel[title*="Step Into"]`;
+const STEP_OUT = `.debug-toolbAr .Action-lAbel[title*="Step Out"]`;
+const CONTINUE = `.debug-toolbAr .Action-lAbel[title*="Continue"]`;
+const GLYPH_AREA = '.mArgin-view-overlAys>:nth-child';
+const BREAKPOINT_GLYPH = '.codicon-debug-breAkpoint';
+const PAUSE = `.debug-toolbAr .Action-lAbel[title*="PAuse"]`;
+const DEBUG_STATUS_BAR = `.stAtusbAr.debugging`;
+const NOT_DEBUG_STATUS_BAR = `.stAtusbAr:not(debugging)`;
+const TOOLBAR_HIDDEN = `.debug-toolbAr[AriA-hidden="true"]`;
+const STACK_FRAME = `${VIEWLET} .monAco-list-row .stAck-frAme`;
+const SPECIFIC_STACK_FRAME = (filenAme: string) => `${STACK_FRAME} .file[title*="${filenAme}"]`;
+const VARIABLE = `${VIEWLET} .debug-vAriAbles .monAco-list-row .expression`;
+const CONSOLE_OUTPUT = `.repl .output.expression .vAlue`;
+const CONSOLE_EVALUATION_RESULT = `.repl .evAluAtion-result.expression .vAlue`;
+const CONSOLE_LINK = `.repl .vAlue A.link`;
 
-const REPL_FOCUSED = '.repl-input-wrapper .monaco-editor textarea';
+const REPL_FOCUSED = '.repl-input-wrApper .monAco-editor textAreA';
 
-export interface IStackFrame {
-	name: string;
+export interfAce IStAckFrAme {
+	nAme: string;
 	lineNumber: number;
 }
 
-function toStackFrame(element: IElement): IStackFrame {
-	const name = findElement(element, e => /\bfile-name\b/.test(e.className))!;
-	const line = findElement(element, e => /\bline-number\b/.test(e.className))!;
-	const lineNumber = line.textContent ? parseInt(line.textContent.split(':').shift() || '0') : 0;
+function toStAckFrAme(element: IElement): IStAckFrAme {
+	const nAme = findElement(element, e => /\bfile-nAme\b/.test(e.clAssNAme))!;
+	const line = findElement(element, e => /\bline-number\b/.test(e.clAssNAme))!;
+	const lineNumber = line.textContent ? pArseInt(line.textContent.split(':').shift() || '0') : 0;
 
 	return {
-		name: name.textContent || '',
+		nAme: nAme.textContent || '',
 		lineNumber
 	};
 }
 
-export class Debug extends Viewlet {
+export clAss Debug extends Viewlet {
 
-	constructor(code: Code, private commands: Commands, private editors: Editors, private editor: Editor) {
+	constructor(code: Code, privAte commAnds: CommAnds, privAte editors: Editors, privAte editor: Editor) {
 		super(code);
 	}
 
-	async openDebugViewlet(): Promise<any> {
-		if (process.platform === 'darwin') {
-			await this.code.dispatchKeybinding('cmd+shift+d');
+	Async openDebugViewlet(): Promise<Any> {
+		if (process.plAtform === 'dArwin') {
+			AwAit this.code.dispAtchKeybinding('cmd+shift+d');
 		} else {
-			await this.code.dispatchKeybinding('ctrl+shift+d');
+			AwAit this.code.dispAtchKeybinding('ctrl+shift+d');
 		}
 
-		await this.code.waitForElement(DEBUG_VIEW);
+		AwAit this.code.wAitForElement(DEBUG_VIEW);
 	}
 
-	async configure(): Promise<any> {
-		await this.code.waitAndClick(CONFIGURE);
-		await this.editors.waitForEditorFocus('launch.json');
+	Async configure(): Promise<Any> {
+		AwAit this.code.wAitAndClick(CONFIGURE);
+		AwAit this.editors.wAitForEditorFocus('lAunch.json');
 	}
 
-	async setBreakpointOnLine(lineNumber: number): Promise<any> {
-		await this.code.waitForElement(`${GLYPH_AREA}(${lineNumber})`);
-		await this.code.waitAndClick(`${GLYPH_AREA}(${lineNumber})`, 5, 5);
-		await this.code.waitForElement(BREAKPOINT_GLYPH);
+	Async setBreAkpointOnLine(lineNumber: number): Promise<Any> {
+		AwAit this.code.wAitForElement(`${GLYPH_AREA}(${lineNumber})`);
+		AwAit this.code.wAitAndClick(`${GLYPH_AREA}(${lineNumber})`, 5, 5);
+		AwAit this.code.wAitForElement(BREAKPOINT_GLYPH);
 	}
 
-	async startDebugging(): Promise<number> {
-		await this.code.dispatchKeybinding('f5');
-		await this.code.waitForElement(PAUSE);
-		await this.code.waitForElement(DEBUG_STATUS_BAR);
+	Async stArtDebugging(): Promise<number> {
+		AwAit this.code.dispAtchKeybinding('f5');
+		AwAit this.code.wAitForElement(PAUSE);
+		AwAit this.code.wAitForElement(DEBUG_STATUS_BAR);
 		const portPrefix = 'Port: ';
 
-		const output = await this.waitForOutput(output => output.some(line => line.indexOf(portPrefix) >= 0));
-		const lastOutput = output.filter(line => line.indexOf(portPrefix) >= 0)[0];
+		const output = AwAit this.wAitForOutput(output => output.some(line => line.indexOf(portPrefix) >= 0));
+		const lAstOutput = output.filter(line => line.indexOf(portPrefix) >= 0)[0];
 
-		return lastOutput ? parseInt(lastOutput.substr(portPrefix.length)) : 3000;
+		return lAstOutput ? pArseInt(lAstOutput.substr(portPrefix.length)) : 3000;
 	}
 
-	async stepOver(): Promise<any> {
-		await this.code.waitAndClick(STEP_OVER);
+	Async stepOver(): Promise<Any> {
+		AwAit this.code.wAitAndClick(STEP_OVER);
 	}
 
-	async stepIn(): Promise<any> {
-		await this.code.waitAndClick(STEP_IN);
+	Async stepIn(): Promise<Any> {
+		AwAit this.code.wAitAndClick(STEP_IN);
 	}
 
-	async stepOut(): Promise<any> {
-		await this.code.waitAndClick(STEP_OUT);
+	Async stepOut(): Promise<Any> {
+		AwAit this.code.wAitAndClick(STEP_OUT);
 	}
 
-	async continue(): Promise<any> {
-		await this.code.waitAndClick(CONTINUE);
-		await this.waitForStackFrameLength(0);
+	Async continue(): Promise<Any> {
+		AwAit this.code.wAitAndClick(CONTINUE);
+		AwAit this.wAitForStAckFrAmeLength(0);
 	}
 
-	async stopDebugging(): Promise<any> {
-		await this.code.waitAndClick(STOP);
-		await this.code.waitForElement(TOOLBAR_HIDDEN);
-		await this.code.waitForElement(NOT_DEBUG_STATUS_BAR);
+	Async stopDebugging(): Promise<Any> {
+		AwAit this.code.wAitAndClick(STOP);
+		AwAit this.code.wAitForElement(TOOLBAR_HIDDEN);
+		AwAit this.code.wAitForElement(NOT_DEBUG_STATUS_BAR);
 	}
 
-	async waitForStackFrame(func: (stackFrame: IStackFrame) => boolean, message: string): Promise<IStackFrame> {
-		const elements = await this.code.waitForElements(STACK_FRAME, true, elements => elements.some(e => func(toStackFrame(e))));
-		return elements.map(toStackFrame).filter(s => func(s))[0];
+	Async wAitForStAckFrAme(func: (stAckFrAme: IStAckFrAme) => booleAn, messAge: string): Promise<IStAckFrAme> {
+		const elements = AwAit this.code.wAitForElements(STACK_FRAME, true, elements => elements.some(e => func(toStAckFrAme(e))));
+		return elements.mAp(toStAckFrAme).filter(s => func(s))[0];
 	}
 
-	async waitForStackFrameLength(length: number): Promise<any> {
-		await this.code.waitForElements(STACK_FRAME, false, result => result.length === length);
+	Async wAitForStAckFrAmeLength(length: number): Promise<Any> {
+		AwAit this.code.wAitForElements(STACK_FRAME, fAlse, result => result.length === length);
 	}
 
-	async focusStackFrame(name: string, message: string): Promise<any> {
-		await this.code.waitAndClick(SPECIFIC_STACK_FRAME(name), 0, 0);
-		await this.editors.waitForTab(name);
+	Async focusStAckFrAme(nAme: string, messAge: string): Promise<Any> {
+		AwAit this.code.wAitAndClick(SPECIFIC_STACK_FRAME(nAme), 0, 0);
+		AwAit this.editors.wAitForTAb(nAme);
 	}
 
-	async waitForReplCommand(text: string, accept: (result: string) => boolean): Promise<void> {
-		await this.commands.runCommand('Debug: Focus on Debug Console View');
-		await this.code.waitForActiveElement(REPL_FOCUSED);
-		await this.code.waitForSetValue(REPL_FOCUSED, text);
+	Async wAitForReplCommAnd(text: string, Accept: (result: string) => booleAn): Promise<void> {
+		AwAit this.commAnds.runCommAnd('Debug: Focus on Debug Console View');
+		AwAit this.code.wAitForActiveElement(REPL_FOCUSED);
+		AwAit this.code.wAitForSetVAlue(REPL_FOCUSED, text);
 
-		// Wait for the keys to be picked up by the editor model such that repl evalutes what just got typed
-		await this.editor.waitForEditorContents('debug:replinput', s => s.indexOf(text) >= 0);
-		await this.code.dispatchKeybinding('enter');
-		await this.code.waitForElements(CONSOLE_EVALUATION_RESULT, false,
-			elements => !!elements.length && accept(elements[elements.length - 1].textContent));
+		// WAit for the keys to be picked up by the editor model such thAt repl evAlutes whAt just got typed
+		AwAit this.editor.wAitForEditorContents('debug:replinput', s => s.indexOf(text) >= 0);
+		AwAit this.code.dispAtchKeybinding('enter');
+		AwAit this.code.wAitForElements(CONSOLE_EVALUATION_RESULT, fAlse,
+			elements => !!elements.length && Accept(elements[elements.length - 1].textContent));
 	}
 
-	// Different node versions give different number of variables. As a workaround be more relaxed when checking for variable count
-	async waitForVariableCount(count: number, alternativeCount: number): Promise<void> {
-		await this.code.waitForElements(VARIABLE, false, els => els.length === count || els.length === alternativeCount);
+	// Different node versions give different number of vAriAbles. As A workAround be more relAxed when checking for vAriAble count
+	Async wAitForVAriAbleCount(count: number, AlternAtiveCount: number): Promise<void> {
+		AwAit this.code.wAitForElements(VARIABLE, fAlse, els => els.length === count || els.length === AlternAtiveCount);
 	}
 
-	async waitForLink(): Promise<void> {
-		await this.code.waitForElement(CONSOLE_LINK);
+	Async wAitForLink(): Promise<void> {
+		AwAit this.code.wAitForElement(CONSOLE_LINK);
 	}
 
-	private async waitForOutput(fn: (output: string[]) => boolean): Promise<string[]> {
-		const elements = await this.code.waitForElements(CONSOLE_OUTPUT, false, elements => fn(elements.map(e => e.textContent)));
-		return elements.map(e => e.textContent);
+	privAte Async wAitForOutput(fn: (output: string[]) => booleAn): Promise<string[]> {
+		const elements = AwAit this.code.wAitForElements(CONSOLE_OUTPUT, fAlse, elements => fn(elements.mAp(e => e.textContent)));
+		return elements.mAp(e => e.textContent);
 	}
 }

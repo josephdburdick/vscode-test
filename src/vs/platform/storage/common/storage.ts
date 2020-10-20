@@ -1,289 +1,289 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { isUndefinedOrNull } from 'vs/base/common/types';
-import { IWorkspaceInitializationPayload } from 'vs/platform/workspaces/common/workspaces';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { isUndefinedOrNull } from 'vs/bAse/common/types';
+import { IWorkspAceInitiAlizAtionPAyloAd } from 'vs/plAtform/workspAces/common/workspAces';
 
-export const IS_NEW_KEY = '__$__isNewStorageMarker';
+export const IS_NEW_KEY = '__$__isNewStorAgeMArker';
 
-export const IStorageService = createDecorator<IStorageService>('storageService');
+export const IStorAgeService = creAteDecorAtor<IStorAgeService>('storAgeService');
 
-export enum WillSaveStateReason {
+export enum WillSAveStAteReAson {
 	NONE = 0,
 	SHUTDOWN = 1
 }
 
-export interface IWillSaveStateEvent {
-	reason: WillSaveStateReason;
+export interfAce IWillSAveStAteEvent {
+	reAson: WillSAveStAteReAson;
 }
 
-export interface IStorageService {
+export interfAce IStorAgeService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Emitted whenever data is updated or deleted.
+	 * Emitted whenever dAtA is updAted or deleted.
 	 */
-	readonly onDidChangeStorage: Event<IWorkspaceStorageChangeEvent>;
+	reAdonly onDidChAngeStorAge: Event<IWorkspAceStorAgeChAngeEvent>;
 
 	/**
-	 * Emitted when the storage is about to persist. This is the right time
-	 * to persist data to ensure it is stored before the application shuts
+	 * Emitted when the storAge is About to persist. This is the right time
+	 * to persist dAtA to ensure it is stored before the ApplicAtion shuts
 	 * down.
 	 *
-	 * The will save state event allows to optionally ask for the reason of
-	 * saving the state, e.g. to find out if the state is saved due to a
+	 * The will sAve stAte event Allows to optionAlly Ask for the reAson of
+	 * sAving the stAte, e.g. to find out if the stAte is sAved due to A
 	 * shutdown.
 	 *
-	 * Note: this event may be fired many times, not only on shutdown to prevent
-	 * loss of state in situations where the shutdown is not sufficient to
-	 * persist the data properly.
+	 * Note: this event mAy be fired mAny times, not only on shutdown to prevent
+	 * loss of stAte in situAtions where the shutdown is not sufficient to
+	 * persist the dAtA properly.
 	 */
-	readonly onWillSaveState: Event<IWillSaveStateEvent>;
+	reAdonly onWillSAveStAte: Event<IWillSAveStAteEvent>;
 
 	/**
-	 * Retrieve an element stored with the given key from storage. Use
-	 * the provided defaultValue if the element is null or undefined.
+	 * Retrieve An element stored with the given key from storAge. Use
+	 * the provided defAultVAlue if the element is null or undefined.
 	 *
-	 * The scope argument allows to define the scope of the storage
-	 * operation to either the current workspace only or all workspaces.
+	 * The scope Argument Allows to define the scope of the storAge
+	 * operAtion to either the current workspAce only or All workspAces.
 	 */
-	get(key: string, scope: StorageScope, fallbackValue: string): string;
-	get(key: string, scope: StorageScope, fallbackValue?: string): string | undefined;
+	get(key: string, scope: StorAgeScope, fAllbAckVAlue: string): string;
+	get(key: string, scope: StorAgeScope, fAllbAckVAlue?: string): string | undefined;
 
 	/**
-	 * Retrieve an element stored with the given key from storage. Use
-	 * the provided defaultValue if the element is null or undefined. The element
-	 * will be converted to a boolean.
+	 * Retrieve An element stored with the given key from storAge. Use
+	 * the provided defAultVAlue if the element is null or undefined. The element
+	 * will be converted to A booleAn.
 	 *
-	 * The scope argument allows to define the scope of the storage
-	 * operation to either the current workspace only or all workspaces.
+	 * The scope Argument Allows to define the scope of the storAge
+	 * operAtion to either the current workspAce only or All workspAces.
 	 */
-	getBoolean(key: string, scope: StorageScope, fallbackValue: boolean): boolean;
-	getBoolean(key: string, scope: StorageScope, fallbackValue?: boolean): boolean | undefined;
+	getBooleAn(key: string, scope: StorAgeScope, fAllbAckVAlue: booleAn): booleAn;
+	getBooleAn(key: string, scope: StorAgeScope, fAllbAckVAlue?: booleAn): booleAn | undefined;
 
 	/**
-	 * Retrieve an element stored with the given key from storage. Use
-	 * the provided defaultValue if the element is null or undefined. The element
-	 * will be converted to a number using parseInt with a base of 10.
+	 * Retrieve An element stored with the given key from storAge. Use
+	 * the provided defAultVAlue if the element is null or undefined. The element
+	 * will be converted to A number using pArseInt with A bAse of 10.
 	 *
-	 * The scope argument allows to define the scope of the storage
-	 * operation to either the current workspace only or all workspaces.
+	 * The scope Argument Allows to define the scope of the storAge
+	 * operAtion to either the current workspAce only or All workspAces.
 	 */
-	getNumber(key: string, scope: StorageScope, fallbackValue: number): number;
-	getNumber(key: string, scope: StorageScope, fallbackValue?: number): number | undefined;
+	getNumber(key: string, scope: StorAgeScope, fAllbAckVAlue: number): number;
+	getNumber(key: string, scope: StorAgeScope, fAllbAckVAlue?: number): number | undefined;
 
 	/**
-	 * Store a value under the given key to storage. The value will be converted to a string.
+	 * Store A vAlue under the given key to storAge. The vAlue will be converted to A string.
 	 * Storing either undefined or null will remove the entry under the key.
 	 *
-	 * The scope argument allows to define the scope of the storage
-	 * operation to either the current workspace only or all workspaces.
+	 * The scope Argument Allows to define the scope of the storAge
+	 * operAtion to either the current workspAce only or All workspAces.
 	 */
-	store(key: string, value: string | boolean | number | undefined | null, scope: StorageScope): void;
+	store(key: string, vAlue: string | booleAn | number | undefined | null, scope: StorAgeScope): void;
 
 	/**
-	 * Delete an element stored under the provided key from storage.
+	 * Delete An element stored under the provided key from storAge.
 	 *
-	 * The scope argument allows to define the scope of the storage
-	 * operation to either the current workspace only or all workspaces.
+	 * The scope Argument Allows to define the scope of the storAge
+	 * operAtion to either the current workspAce only or All workspAces.
 	 */
-	remove(key: string, scope: StorageScope): void;
+	remove(key: string, scope: StorAgeScope): void;
 
 	/**
-	 * Log the contents of the storage to the console.
+	 * Log the contents of the storAge to the console.
 	 */
-	logStorage(): void;
+	logStorAge(): void;
 
 	/**
-	 * Migrate the storage contents to another workspace.
+	 * MigrAte the storAge contents to Another workspAce.
 	 */
-	migrate(toWorkspace: IWorkspaceInitializationPayload): Promise<void>;
+	migrAte(toWorkspAce: IWorkspAceInitiAlizAtionPAyloAd): Promise<void>;
 
 	/**
-	 * Whether the storage for the given scope was created during this session or
+	 * Whether the storAge for the given scope wAs creAted during this session or
 	 * existed before.
 	 *
 	 */
-	isNew(scope: StorageScope): boolean;
+	isNew(scope: StorAgeScope): booleAn;
 
 	/**
-	 * Allows to flush state, e.g. in cases where a shutdown is
-	 * imminent. This will send out the onWillSaveState to ask
-	 * everyone for latest state.
+	 * Allows to flush stAte, e.g. in cAses where A shutdown is
+	 * imminent. This will send out the onWillSAveStAte to Ask
+	 * everyone for lAtest stAte.
 	 */
 	flush(): void;
 }
 
-export const enum StorageScope {
+export const enum StorAgeScope {
 
 	/**
-	 * The stored data will be scoped to all workspaces.
+	 * The stored dAtA will be scoped to All workspAces.
 	 */
 	GLOBAL,
 
 	/**
-	 * The stored data will be scoped to the current workspace.
+	 * The stored dAtA will be scoped to the current workspAce.
 	 */
 	WORKSPACE
 }
 
-export interface IWorkspaceStorageChangeEvent {
-	readonly key: string;
-	readonly scope: StorageScope;
+export interfAce IWorkspAceStorAgeChAngeEvent {
+	reAdonly key: string;
+	reAdonly scope: StorAgeScope;
 }
 
-export class InMemoryStorageService extends Disposable implements IStorageService {
+export clAss InMemoryStorAgeService extends DisposAble implements IStorAgeService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onDidChangeStorage = this._register(new Emitter<IWorkspaceStorageChangeEvent>());
-	readonly onDidChangeStorage = this._onDidChangeStorage.event;
+	privAte reAdonly _onDidChAngeStorAge = this._register(new Emitter<IWorkspAceStorAgeChAngeEvent>());
+	reAdonly onDidChAngeStorAge = this._onDidChAngeStorAge.event;
 
-	protected readonly _onWillSaveState = this._register(new Emitter<IWillSaveStateEvent>());
-	readonly onWillSaveState = this._onWillSaveState.event;
+	protected reAdonly _onWillSAveStAte = this._register(new Emitter<IWillSAveStAteEvent>());
+	reAdonly onWillSAveStAte = this._onWillSAveStAte.event;
 
-	private readonly globalCache = new Map<string, string>();
-	private readonly workspaceCache = new Map<string, string>();
+	privAte reAdonly globAlCAche = new MAp<string, string>();
+	privAte reAdonly workspAceCAche = new MAp<string, string>();
 
-	private getCache(scope: StorageScope): Map<string, string> {
-		return scope === StorageScope.GLOBAL ? this.globalCache : this.workspaceCache;
+	privAte getCAche(scope: StorAgeScope): MAp<string, string> {
+		return scope === StorAgeScope.GLOBAL ? this.globAlCAche : this.workspAceCAche;
 	}
 
-	get(key: string, scope: StorageScope, fallbackValue: string): string;
-	get(key: string, scope: StorageScope, fallbackValue?: string): string | undefined {
-		const value = this.getCache(scope).get(key);
+	get(key: string, scope: StorAgeScope, fAllbAckVAlue: string): string;
+	get(key: string, scope: StorAgeScope, fAllbAckVAlue?: string): string | undefined {
+		const vAlue = this.getCAche(scope).get(key);
 
-		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+		if (isUndefinedOrNull(vAlue)) {
+			return fAllbAckVAlue;
 		}
 
-		return value;
+		return vAlue;
 	}
 
-	getBoolean(key: string, scope: StorageScope, fallbackValue: boolean): boolean;
-	getBoolean(key: string, scope: StorageScope, fallbackValue?: boolean): boolean | undefined {
-		const value = this.getCache(scope).get(key);
+	getBooleAn(key: string, scope: StorAgeScope, fAllbAckVAlue: booleAn): booleAn;
+	getBooleAn(key: string, scope: StorAgeScope, fAllbAckVAlue?: booleAn): booleAn | undefined {
+		const vAlue = this.getCAche(scope).get(key);
 
-		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+		if (isUndefinedOrNull(vAlue)) {
+			return fAllbAckVAlue;
 		}
 
-		return value === 'true';
+		return vAlue === 'true';
 	}
 
-	getNumber(key: string, scope: StorageScope, fallbackValue: number): number;
-	getNumber(key: string, scope: StorageScope, fallbackValue?: number): number | undefined {
-		const value = this.getCache(scope).get(key);
+	getNumber(key: string, scope: StorAgeScope, fAllbAckVAlue: number): number;
+	getNumber(key: string, scope: StorAgeScope, fAllbAckVAlue?: number): number | undefined {
+		const vAlue = this.getCAche(scope).get(key);
 
-		if (isUndefinedOrNull(value)) {
-			return fallbackValue;
+		if (isUndefinedOrNull(vAlue)) {
+			return fAllbAckVAlue;
 		}
 
-		return parseInt(value, 10);
+		return pArseInt(vAlue, 10);
 	}
 
-	store(key: string, value: string | boolean | number | undefined | null, scope: StorageScope): Promise<void> {
+	store(key: string, vAlue: string | booleAn | number | undefined | null, scope: StorAgeScope): Promise<void> {
 
-		// We remove the key for undefined/null values
-		if (isUndefinedOrNull(value)) {
+		// We remove the key for undefined/null vAlues
+		if (isUndefinedOrNull(vAlue)) {
 			return this.remove(key, scope);
 		}
 
-		// Otherwise, convert to String and store
-		const valueStr = String(value);
+		// Otherwise, convert to String And store
+		const vAlueStr = String(vAlue);
 
-		// Return early if value already set
-		const currentValue = this.getCache(scope).get(key);
-		if (currentValue === valueStr) {
+		// Return eArly if vAlue AlreAdy set
+		const currentVAlue = this.getCAche(scope).get(key);
+		if (currentVAlue === vAlueStr) {
 			return Promise.resolve();
 		}
 
-		// Update in cache
-		this.getCache(scope).set(key, valueStr);
+		// UpdAte in cAche
+		this.getCAche(scope).set(key, vAlueStr);
 
 		// Events
-		this._onDidChangeStorage.fire({ scope, key });
+		this._onDidChAngeStorAge.fire({ scope, key });
 
 		return Promise.resolve();
 	}
 
-	remove(key: string, scope: StorageScope): Promise<void> {
-		const wasDeleted = this.getCache(scope).delete(key);
-		if (!wasDeleted) {
-			return Promise.resolve(); // Return early if value already deleted
+	remove(key: string, scope: StorAgeScope): Promise<void> {
+		const wAsDeleted = this.getCAche(scope).delete(key);
+		if (!wAsDeleted) {
+			return Promise.resolve(); // Return eArly if vAlue AlreAdy deleted
 		}
 
 		// Events
-		this._onDidChangeStorage.fire({ scope, key });
+		this._onDidChAngeStorAge.fire({ scope, key });
 
 		return Promise.resolve();
 	}
 
-	logStorage(): void {
-		logStorage(this.globalCache, this.workspaceCache, 'inMemory', 'inMemory');
+	logStorAge(): void {
+		logStorAge(this.globAlCAche, this.workspAceCAche, 'inMemory', 'inMemory');
 	}
 
-	async migrate(toWorkspace: IWorkspaceInitializationPayload): Promise<void> {
+	Async migrAte(toWorkspAce: IWorkspAceInitiAlizAtionPAyloAd): Promise<void> {
 		// not supported
 	}
 
 	flush(): void {
-		this._onWillSaveState.fire({ reason: WillSaveStateReason.NONE });
+		this._onWillSAveStAte.fire({ reAson: WillSAveStAteReAson.NONE });
 	}
 
-	isNew(): boolean {
-		return true; // always new when in-memory
+	isNew(): booleAn {
+		return true; // AlwAys new when in-memory
 	}
 
-	async close(): Promise<void> { }
+	Async close(): Promise<void> { }
 }
 
-export async function logStorage(global: Map<string, string>, workspace: Map<string, string>, globalPath: string, workspacePath: string): Promise<void> {
-	const safeParse = (value: string) => {
+export Async function logStorAge(globAl: MAp<string, string>, workspAce: MAp<string, string>, globAlPAth: string, workspAcePAth: string): Promise<void> {
+	const sAfePArse = (vAlue: string) => {
 		try {
-			return JSON.parse(value);
-		} catch (error) {
-			return value;
+			return JSON.pArse(vAlue);
+		} cAtch (error) {
+			return vAlue;
 		}
 	};
 
-	const globalItems = new Map<string, string>();
-	const globalItemsParsed = new Map<string, string>();
-	global.forEach((value, key) => {
-		globalItems.set(key, value);
-		globalItemsParsed.set(key, safeParse(value));
+	const globAlItems = new MAp<string, string>();
+	const globAlItemsPArsed = new MAp<string, string>();
+	globAl.forEAch((vAlue, key) => {
+		globAlItems.set(key, vAlue);
+		globAlItemsPArsed.set(key, sAfePArse(vAlue));
 	});
 
-	const workspaceItems = new Map<string, string>();
-	const workspaceItemsParsed = new Map<string, string>();
-	workspace.forEach((value, key) => {
-		workspaceItems.set(key, value);
-		workspaceItemsParsed.set(key, safeParse(value));
+	const workspAceItems = new MAp<string, string>();
+	const workspAceItemsPArsed = new MAp<string, string>();
+	workspAce.forEAch((vAlue, key) => {
+		workspAceItems.set(key, vAlue);
+		workspAceItemsPArsed.set(key, sAfePArse(vAlue));
 	});
 
-	console.group(`Storage: Global (path: ${globalPath})`);
-	let globalValues: { key: string, value: string }[] = [];
-	globalItems.forEach((value, key) => {
-		globalValues.push({ key, value });
+	console.group(`StorAge: GlobAl (pAth: ${globAlPAth})`);
+	let globAlVAlues: { key: string, vAlue: string }[] = [];
+	globAlItems.forEAch((vAlue, key) => {
+		globAlVAlues.push({ key, vAlue });
 	});
-	console.table(globalValues);
+	console.tAble(globAlVAlues);
 	console.groupEnd();
 
-	console.log(globalItemsParsed);
+	console.log(globAlItemsPArsed);
 
-	console.group(`Storage: Workspace (path: ${workspacePath})`);
-	let workspaceValues: { key: string, value: string }[] = [];
-	workspaceItems.forEach((value, key) => {
-		workspaceValues.push({ key, value });
+	console.group(`StorAge: WorkspAce (pAth: ${workspAcePAth})`);
+	let workspAceVAlues: { key: string, vAlue: string }[] = [];
+	workspAceItems.forEAch((vAlue, key) => {
+		workspAceVAlues.push({ key, vAlue });
 	});
-	console.table(workspaceValues);
+	console.tAble(workspAceVAlues);
 	console.groupEnd();
 
-	console.log(workspaceItemsParsed);
+	console.log(workspAceItemsPArsed);
 }

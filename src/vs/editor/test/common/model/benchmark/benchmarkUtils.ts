@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DefaultEndOfLine, ITextBuffer, ITextBufferBuilder, ITextBufferFactory } from 'vs/editor/common/model';
+import { DefAultEndOfLine, ITextBuffer, ITextBufferBuilder, ITextBufferFActory } from 'vs/editor/common/model';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
 
-export function doBenchmark<T>(id: string, ts: T[], fn: (t: T) => void) {
+export function doBenchmArk<T>(id: string, ts: T[], fn: (t: T) => void) {
 	let columns: string[] = [id];
 	for (const t of ts) {
-		let start = process.hrtime();
+		let stArt = process.hrtime();
 		fn(t);
-		let diff = process.hrtime(start);
+		let diff = process.hrtime(stArt);
 		columns.push(`${(diff[0] * 1000 + diff[1] / 1000000).toFixed(3)} ms`);
 	}
 	console.log('|' + columns.join('\t|') + '|');
 }
 
-export interface IBenchmark {
-	name: string;
+export interfAce IBenchmArk {
+	nAme: string;
 	/**
-	 * Before each cycle, this function will be called to create TextBufferFactory
+	 * Before eAch cycle, this function will be cAlled to creAte TextBufferFActory
 	 */
-	buildBuffer: (textBufferBuilder: ITextBufferBuilder) => ITextBufferFactory;
+	buildBuffer: (textBufferBuilder: ITextBufferBuilder) => ITextBufferFActory;
 	/**
-	 * Before each cycle, this function will be called to do pre-work for text buffer.
-	 * This will be called onece `buildBuffer` is finished.
+	 * Before eAch cycle, this function will be cAlled to do pre-work for text buffer.
+	 * This will be cAlled onece `buildBuffer` is finished.
 	 */
 	preCycle: (textBuffer: ITextBuffer) => void;
 	/**
-	 * The function we are benchmarking
+	 * The function we Are benchmArking
 	 */
 	fn: (textBuffer: ITextBuffer) => void;
 }
 
-export class BenchmarkSuite {
-	name: string;
-	iterations: number;
-	benchmarks: IBenchmark[];
+export clAss BenchmArkSuite {
+	nAme: string;
+	iterAtions: number;
+	benchmArks: IBenchmArk[];
 
-	constructor(suiteOptions: { name: string, iterations: number }) {
-		this.name = suiteOptions.name;
-		this.iterations = suiteOptions.iterations;
-		this.benchmarks = [];
+	constructor(suiteOptions: { nAme: string, iterAtions: number }) {
+		this.nAme = suiteOptions.nAme;
+		this.iterAtions = suiteOptions.iterAtions;
+		this.benchmArks = [];
 	}
 
-	add(benchmark: IBenchmark) {
-		this.benchmarks.push(benchmark);
+	Add(benchmArk: IBenchmArk) {
+		this.benchmArks.push(benchmArk);
 	}
 
 	run() {
-		console.log(`|${this.name}\t|line buffer\t|piece table\t|edcore\t`);
+		console.log(`|${this.nAme}\t|line buffer\t|piece tAble\t|edcore\t`);
 		console.log('|---|---|---|---|');
-		for (const benchmark of this.benchmarks) {
-			let columns: string[] = [benchmark.name];
-			[new PieceTreeTextBufferBuilder()].forEach((builder: ITextBufferBuilder) => {
-				let timeDiffTotal = 0;
-				for (let j = 0; j < this.iterations; j++) {
-					let factory = benchmark.buildBuffer(builder);
-					let buffer = factory.create(DefaultEndOfLine.LF);
-					benchmark.preCycle(buffer);
-					let start = process.hrtime();
-					benchmark.fn(buffer);
-					let diff = process.hrtime(start);
-					timeDiffTotal += (diff[0] * 1000 * 1000 + diff[1] / 1000);
+		for (const benchmArk of this.benchmArks) {
+			let columns: string[] = [benchmArk.nAme];
+			[new PieceTreeTextBufferBuilder()].forEAch((builder: ITextBufferBuilder) => {
+				let timeDiffTotAl = 0;
+				for (let j = 0; j < this.iterAtions; j++) {
+					let fActory = benchmArk.buildBuffer(builder);
+					let buffer = fActory.creAte(DefAultEndOfLine.LF);
+					benchmArk.preCycle(buffer);
+					let stArt = process.hrtime();
+					benchmArk.fn(buffer);
+					let diff = process.hrtime(stArt);
+					timeDiffTotAl += (diff[0] * 1000 * 1000 + diff[1] / 1000);
 				}
-				columns.push(`${(timeDiffTotal / 1000 / this.iterations).toFixed(3)} ms`);
+				columns.push(`${(timeDiffTotAl / 1000 / this.iterAtions).toFixed(3)} ms`);
 			});
 			console.log('|' + columns.join('\t|') + '|');
 		}

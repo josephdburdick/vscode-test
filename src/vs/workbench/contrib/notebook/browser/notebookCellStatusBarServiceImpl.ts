@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { ResourceMap } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { INotebookCellStatusBarService } from 'vs/workbench/contrib/notebook/common/notebookCellStatusBarService';
-import { INotebookCellStatusBarEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { URI } from 'vs/bAse/common/uri';
+import { INotebookCellStAtusBArService } from 'vs/workbench/contrib/notebook/common/notebookCellStAtusBArService';
+import { INotebookCellStAtusBArEntry } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 
-export class NotebookCellStatusBarService extends Disposable implements INotebookCellStatusBarService {
+export clAss NotebookCellStAtusBArService extends DisposAble implements INotebookCellStAtusBArService {
 
-	private _onDidChangeEntriesForCell = new Emitter<URI>();
-	readonly onDidChangeEntriesForCell: Event<URI> = this._onDidChangeEntriesForCell.event;
+	privAte _onDidChAngeEntriesForCell = new Emitter<URI>();
+	reAdonly onDidChAngeEntriesForCell: Event<URI> = this._onDidChAngeEntriesForCell.event;
 
-	private _entries = new ResourceMap<Set<INotebookCellStatusBarEntry>>();
+	privAte _entries = new ResourceMAp<Set<INotebookCellStAtusBArEntry>>();
 
-	private removeEntry(entry: INotebookCellStatusBarEntry) {
+	privAte removeEntry(entry: INotebookCellStAtusBArEntry) {
 		const existingEntries = this._entries.get(entry.cellResource);
 		if (existingEntries) {
 			existingEntries.delete(entry);
@@ -26,15 +26,15 @@ export class NotebookCellStatusBarService extends Disposable implements INoteboo
 			}
 		}
 
-		this._onDidChangeEntriesForCell.fire(entry.cellResource);
+		this._onDidChAngeEntriesForCell.fire(entry.cellResource);
 	}
 
-	addEntry(entry: INotebookCellStatusBarEntry): IDisposable {
+	AddEntry(entry: INotebookCellStAtusBArEntry): IDisposAble {
 		const existingEntries = this._entries.get(entry.cellResource) ?? new Set();
-		existingEntries.add(entry);
+		existingEntries.Add(entry);
 		this._entries.set(entry.cellResource, existingEntries);
 
-		this._onDidChangeEntriesForCell.fire(entry.cellResource);
+		this._onDidChAngeEntriesForCell.fire(entry.cellResource);
 
 		return {
 			dispose: () => {
@@ -43,12 +43,12 @@ export class NotebookCellStatusBarService extends Disposable implements INoteboo
 		};
 	}
 
-	getEntries(cell: URI): INotebookCellStatusBarEntry[] {
+	getEntries(cell: URI): INotebookCellStAtusBArEntry[] {
 		const existingEntries = this._entries.get(cell);
 		return existingEntries ?
-			Array.from(existingEntries.values()) :
+			ArrAy.from(existingEntries.vAlues()) :
 			[];
 	}
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 }

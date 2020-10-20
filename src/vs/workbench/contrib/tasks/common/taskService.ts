@@ -1,102 +1,102 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action } from 'vs/base/common/actions';
-import { Event } from 'vs/base/common/event';
-import { LinkedMap } from 'vs/base/common/map';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { Action } from 'vs/bAse/common/Actions';
+import { Event } from 'vs/bAse/common/event';
+import { LinkedMAp } from 'vs/bAse/common/mAp';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-import { IWorkspaceFolder, IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { Task, ContributedTask, CustomTask, TaskSet, TaskSorter, TaskEvent, TaskIdentifier, ConfiguringTask, TaskRunSource } from 'vs/workbench/contrib/tasks/common/tasks';
-import { ITaskSummary, TaskTerminateResponse, TaskSystemInfo } from 'vs/workbench/contrib/tasks/common/taskSystem';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { IWorkspAceFolder, IWorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { TAsk, ContributedTAsk, CustomTAsk, TAskSet, TAskSorter, TAskEvent, TAskIdentifier, ConfiguringTAsk, TAskRunSource } from 'vs/workbench/contrib/tAsks/common/tAsks';
+import { ITAskSummAry, TAskTerminAteResponse, TAskSystemInfo } from 'vs/workbench/contrib/tAsks/common/tAskSystem';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 
-export { ITaskSummary, Task, TaskTerminateResponse };
+export { ITAskSummAry, TAsk, TAskTerminAteResponse };
 
-export const CustomExecutionSupportedContext = new RawContextKey<boolean>('customExecutionSupported', true);
-export const ShellExecutionSupportedContext = new RawContextKey<boolean>('shellExecutionSupported', false);
-export const ProcessExecutionSupportedContext = new RawContextKey<boolean>('processExecutionSupported', false);
+export const CustomExecutionSupportedContext = new RAwContextKey<booleAn>('customExecutionSupported', true);
+export const ShellExecutionSupportedContext = new RAwContextKey<booleAn>('shellExecutionSupported', fAlse);
+export const ProcessExecutionSupportedContext = new RAwContextKey<booleAn>('processExecutionSupported', fAlse);
 
-export const ITaskService = createDecorator<ITaskService>('taskService');
+export const ITAskService = creAteDecorAtor<ITAskService>('tAskService');
 
-export interface ITaskProvider {
-	provideTasks(validTypes: IStringDictionary<boolean>): Promise<TaskSet>;
-	resolveTask(task: ConfiguringTask): Promise<ContributedTask | undefined>;
+export interfAce ITAskProvider {
+	provideTAsks(vAlidTypes: IStringDictionAry<booleAn>): Promise<TAskSet>;
+	resolveTAsk(tAsk: ConfiguringTAsk): Promise<ContributedTAsk | undefined>;
 }
 
-export interface ProblemMatcherRunOptions {
-	attachProblemMatcher?: boolean;
+export interfAce ProblemMAtcherRunOptions {
+	AttAchProblemMAtcher?: booleAn;
 }
 
-export interface CustomizationProperties {
-	group?: string | { kind?: string; isDefault?: boolean; };
-	problemMatcher?: string | string[];
-	isBackground?: boolean;
+export interfAce CustomizAtionProperties {
+	group?: string | { kind?: string; isDefAult?: booleAn; };
+	problemMAtcher?: string | string[];
+	isBAckground?: booleAn;
 }
 
-export interface TaskFilter {
+export interfAce TAskFilter {
 	version?: string;
 	type?: string;
 }
 
-interface WorkspaceTaskResult {
-	set: TaskSet | undefined;
-	configurations: {
-		byIdentifier: IStringDictionary<ConfiguringTask>;
+interfAce WorkspAceTAskResult {
+	set: TAskSet | undefined;
+	configurAtions: {
+		byIdentifier: IStringDictionAry<ConfiguringTAsk>;
 	} | undefined;
-	hasErrors: boolean;
+	hAsErrors: booleAn;
 }
 
-export interface WorkspaceFolderTaskResult extends WorkspaceTaskResult {
-	workspaceFolder: IWorkspaceFolder;
+export interfAce WorkspAceFolderTAskResult extends WorkspAceTAskResult {
+	workspAceFolder: IWorkspAceFolder;
 }
 
 export const USER_TASKS_GROUP_KEY = 'settings';
 
-export interface ITaskService {
-	readonly _serviceBrand: undefined;
-	onDidStateChange: Event<TaskEvent>;
-	supportsMultipleTaskExecutions: boolean;
+export interfAce ITAskService {
+	reAdonly _serviceBrAnd: undefined;
+	onDidStAteChAnge: Event<TAskEvent>;
+	supportsMultipleTAskExecutions: booleAn;
 
 	configureAction(): Action;
-	build(): Promise<ITaskSummary>;
-	runTest(): Promise<ITaskSummary>;
-	run(task: Task | undefined, options?: ProblemMatcherRunOptions): Promise<ITaskSummary | undefined>;
-	inTerminal(): boolean;
-	isActive(): Promise<boolean>;
-	getActiveTasks(): Promise<Task[]>;
-	getBusyTasks(): Promise<Task[]>;
-	restart(task: Task): void;
-	terminate(task: Task): Promise<TaskTerminateResponse>;
-	terminateAll(): Promise<TaskTerminateResponse[]>;
-	tasks(filter?: TaskFilter): Promise<Task[]>;
-	taskTypes(): string[];
-	getWorkspaceTasks(runSource?: TaskRunSource): Promise<Map<string, WorkspaceFolderTaskResult>>;
-	readRecentTasks(): Promise<(Task | ConfiguringTask)[]>;
+	build(): Promise<ITAskSummAry>;
+	runTest(): Promise<ITAskSummAry>;
+	run(tAsk: TAsk | undefined, options?: ProblemMAtcherRunOptions): Promise<ITAskSummAry | undefined>;
+	inTerminAl(): booleAn;
+	isActive(): Promise<booleAn>;
+	getActiveTAsks(): Promise<TAsk[]>;
+	getBusyTAsks(): Promise<TAsk[]>;
+	restArt(tAsk: TAsk): void;
+	terminAte(tAsk: TAsk): Promise<TAskTerminAteResponse>;
+	terminAteAll(): Promise<TAskTerminAteResponse[]>;
+	tAsks(filter?: TAskFilter): Promise<TAsk[]>;
+	tAskTypes(): string[];
+	getWorkspAceTAsks(runSource?: TAskRunSource): Promise<MAp<string, WorkspAceFolderTAskResult>>;
+	reAdRecentTAsks(): Promise<(TAsk | ConfiguringTAsk)[]>;
 	/**
-	 * @param alias The task's name, label or defined identifier.
+	 * @pArAm AliAs The tAsk's nAme, lAbel or defined identifier.
 	 */
-	getTask(workspaceFolder: IWorkspace | IWorkspaceFolder | string, alias: string | TaskIdentifier, compareId?: boolean): Promise<Task | undefined>;
-	tryResolveTask(configuringTask: ConfiguringTask): Promise<Task | undefined>;
-	getTasksForGroup(group: string): Promise<Task[]>;
-	getRecentlyUsedTasks(): LinkedMap<string, string>;
-	migrateRecentTasks(tasks: Task[]): Promise<void>;
-	createSorter(): TaskSorter;
+	getTAsk(workspAceFolder: IWorkspAce | IWorkspAceFolder | string, AliAs: string | TAskIdentifier, compAreId?: booleAn): Promise<TAsk | undefined>;
+	tryResolveTAsk(configuringTAsk: ConfiguringTAsk): Promise<TAsk | undefined>;
+	getTAsksForGroup(group: string): Promise<TAsk[]>;
+	getRecentlyUsedTAsks(): LinkedMAp<string, string>;
+	migrAteRecentTAsks(tAsks: TAsk[]): Promise<void>;
+	creAteSorter(): TAskSorter;
 
-	getTaskDescription(task: Task | ConfiguringTask): string | undefined;
-	canCustomize(task: ContributedTask | CustomTask): boolean;
-	customize(task: ContributedTask | CustomTask | ConfiguringTask, properties?: {}, openConfig?: boolean): Promise<void>;
-	openConfig(task: CustomTask | ConfiguringTask | undefined): Promise<boolean>;
+	getTAskDescription(tAsk: TAsk | ConfiguringTAsk): string | undefined;
+	cAnCustomize(tAsk: ContributedTAsk | CustomTAsk): booleAn;
+	customize(tAsk: ContributedTAsk | CustomTAsk | ConfiguringTAsk, properties?: {}, openConfig?: booleAn): Promise<void>;
+	openConfig(tAsk: CustomTAsk | ConfiguringTAsk | undefined): Promise<booleAn>;
 
-	registerTaskProvider(taskProvider: ITaskProvider, type: string): IDisposable;
+	registerTAskProvider(tAskProvider: ITAskProvider, type: string): IDisposAble;
 
-	registerTaskSystem(scheme: string, taskSystemInfo: TaskSystemInfo): void;
-	registerSupportedExecutions(custom?: boolean, shell?: boolean, process?: boolean): void;
-	setJsonTasksSupported(areSuppored: Promise<boolean>): void;
+	registerTAskSystem(scheme: string, tAskSystemInfo: TAskSystemInfo): void;
+	registerSupportedExecutions(custom?: booleAn, shell?: booleAn, process?: booleAn): void;
+	setJsonTAsksSupported(AreSuppored: Promise<booleAn>): void;
 
-	extensionCallbackTaskComplete(task: Task, result: number | undefined): Promise<void>;
+	extensionCAllbAckTAskComplete(tAsk: TAsk, result: number | undefined): Promise<void>;
 }

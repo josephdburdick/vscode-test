@@ -1,157 +1,157 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ITextModelContentProvider, ITextModelService } from 'vs/editor/common/services/resolverService';
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { createTextBufferFactoryFromSnapshot } from 'vs/editor/common/model/textModel';
-import { WorkspaceEditMetadata } from 'vs/editor/common/modes';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { mergeSort, coalesceInPlace } from 'vs/base/common/arrays';
-import { Range } from 'vs/editor/common/core/range';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
-import { ServicesAccessor, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IFileService } from 'vs/platform/files/common/files';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
+import { creAteTextBufferFActoryFromSnApshot } from 'vs/editor/common/model/textModel';
+import { WorkspAceEditMetAdAtA } from 'vs/editor/common/modes';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { mergeSort, coAlesceInPlAce } from 'vs/bAse/common/ArrAys';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
+import { ServicesAccessor, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IIdentifiedSingleEditOperAtion } from 'vs/editor/common/model';
 import { ConflictDetector } from 'vs/workbench/contrib/bulkEdit/browser/conflicts';
-import { ResourceMap } from 'vs/base/common/map';
-import { localize } from 'vs/nls';
-import { extUri } from 'vs/base/common/resources';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { locAlize } from 'vs/nls';
+import { extUri } from 'vs/bAse/common/resources';
 import { ResourceEdit, ResourceFileEdit, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
 
-export class CheckedStates<T extends object> {
+export clAss CheckedStAtes<T extends object> {
 
-	private readonly _states = new WeakMap<T, boolean>();
-	private _checkedCount: number = 0;
+	privAte reAdonly _stAtes = new WeAkMAp<T, booleAn>();
+	privAte _checkedCount: number = 0;
 
-	private readonly _onDidChange = new Emitter<T>();
-	readonly onDidChange: Event<T> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge = new Emitter<T>();
+	reAdonly onDidChAnge: Event<T> = this._onDidChAnge.event;
 
 	dispose(): void {
-		this._onDidChange.dispose();
+		this._onDidChAnge.dispose();
 	}
 
 	get checkedCount() {
 		return this._checkedCount;
 	}
 
-	isChecked(obj: T): boolean {
-		return this._states.get(obj) ?? false;
+	isChecked(obj: T): booleAn {
+		return this._stAtes.get(obj) ?? fAlse;
 	}
 
-	updateChecked(obj: T, value: boolean): void {
-		const valueNow = this._states.get(obj);
-		if (valueNow === value) {
+	updAteChecked(obj: T, vAlue: booleAn): void {
+		const vAlueNow = this._stAtes.get(obj);
+		if (vAlueNow === vAlue) {
 			return;
 		}
-		if (valueNow === undefined) {
-			if (value) {
+		if (vAlueNow === undefined) {
+			if (vAlue) {
 				this._checkedCount += 1;
 			}
 		} else {
-			if (value) {
+			if (vAlue) {
 				this._checkedCount += 1;
 			} else {
 				this._checkedCount -= 1;
 			}
 		}
-		this._states.set(obj, value);
-		this._onDidChange.fire(obj);
+		this._stAtes.set(obj, vAlue);
+		this._onDidChAnge.fire(obj);
 	}
 }
 
-export class BulkTextEdit {
+export clAss BulkTextEdit {
 
 	constructor(
-		readonly parent: BulkFileOperation,
-		readonly textEdit: ResourceTextEdit
+		reAdonly pArent: BulkFileOperAtion,
+		reAdonly textEdit: ResourceTextEdit
 	) { }
 }
 
-export const enum BulkFileOperationType {
+export const enum BulkFileOperAtionType {
 	TextEdit = 1,
-	Create = 2,
+	CreAte = 2,
 	Delete = 4,
-	Rename = 8,
+	RenAme = 8,
 }
 
-export class BulkFileOperation {
+export clAss BulkFileOperAtion {
 
-	type: BulkFileOperationType = 0;
+	type: BulkFileOperAtionType = 0;
 	textEdits: BulkTextEdit[] = [];
-	originalEdits = new Map<number, ResourceTextEdit | ResourceFileEdit>();
+	originAlEdits = new MAp<number, ResourceTextEdit | ResourceFileEdit>();
 	newUri?: URI;
 
 	constructor(
-		readonly uri: URI,
-		readonly parent: BulkFileOperations
+		reAdonly uri: URI,
+		reAdonly pArent: BulkFileOperAtions
 	) { }
 
-	addEdit(index: number, type: BulkFileOperationType, edit: ResourceTextEdit | ResourceFileEdit) {
+	AddEdit(index: number, type: BulkFileOperAtionType, edit: ResourceTextEdit | ResourceFileEdit) {
 		this.type |= type;
-		this.originalEdits.set(index, edit);
-		if (edit instanceof ResourceTextEdit) {
+		this.originAlEdits.set(index, edit);
+		if (edit instAnceof ResourceTextEdit) {
 			this.textEdits.push(new BulkTextEdit(this, edit));
 
-		} else if (type === BulkFileOperationType.Rename) {
+		} else if (type === BulkFileOperAtionType.RenAme) {
 			this.newUri = edit.newResource;
 		}
 	}
 
-	needsConfirmation(): boolean {
-		for (let [, edit] of this.originalEdits) {
-			if (!this.parent.checked.isChecked(edit)) {
+	needsConfirmAtion(): booleAn {
+		for (let [, edit] of this.originAlEdits) {
+			if (!this.pArent.checked.isChecked(edit)) {
 				return true;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 }
 
-export class BulkCategory {
+export clAss BulkCAtegory {
 
-	private static readonly _defaultMetadata = Object.freeze({
-		label: localize('default', "Other"),
+	privAte stAtic reAdonly _defAultMetAdAtA = Object.freeze({
+		lAbel: locAlize('defAult', "Other"),
 		icon: { id: 'codicon/symbol-file' },
-		needsConfirmation: false
+		needsConfirmAtion: fAlse
 	});
 
-	static keyOf(metadata?: WorkspaceEditMetadata) {
-		return metadata?.label || '<default>';
+	stAtic keyOf(metAdAtA?: WorkspAceEditMetAdAtA) {
+		return metAdAtA?.lAbel || '<defAult>';
 	}
 
-	readonly operationByResource = new Map<string, BulkFileOperation>();
+	reAdonly operAtionByResource = new MAp<string, BulkFileOperAtion>();
 
-	constructor(readonly metadata: WorkspaceEditMetadata = BulkCategory._defaultMetadata) { }
+	constructor(reAdonly metAdAtA: WorkspAceEditMetAdAtA = BulkCAtegory._defAultMetAdAtA) { }
 
-	get fileOperations(): IterableIterator<BulkFileOperation> {
-		return this.operationByResource.values();
+	get fileOperAtions(): IterAbleIterAtor<BulkFileOperAtion> {
+		return this.operAtionByResource.vAlues();
 	}
 }
 
-export class BulkFileOperations {
+export clAss BulkFileOperAtions {
 
-	static async create(accessor: ServicesAccessor, bulkEdit: ResourceEdit[]): Promise<BulkFileOperations> {
-		const result = accessor.get(IInstantiationService).createInstance(BulkFileOperations, bulkEdit);
-		return await result._init();
+	stAtic Async creAte(Accessor: ServicesAccessor, bulkEdit: ResourceEdit[]): Promise<BulkFileOperAtions> {
+		const result = Accessor.get(IInstAntiAtionService).creAteInstAnce(BulkFileOperAtions, bulkEdit);
+		return AwAit result._init();
 	}
 
-	readonly checked = new CheckedStates<ResourceEdit>();
+	reAdonly checked = new CheckedStAtes<ResourceEdit>();
 
-	readonly fileOperations: BulkFileOperation[] = [];
-	readonly categories: BulkCategory[] = [];
-	readonly conflicts: ConflictDetector;
+	reAdonly fileOperAtions: BulkFileOperAtion[] = [];
+	reAdonly cAtegories: BulkCAtegory[] = [];
+	reAdonly conflicts: ConflictDetector;
 
 	constructor(
-		private readonly _bulkEdit: ResourceEdit[],
-		@IFileService private readonly _fileService: IFileService,
-		@IInstantiationService instaService: IInstantiationService,
+		privAte reAdonly _bulkEdit: ResourceEdit[],
+		@IFileService privAte reAdonly _fileService: IFileService,
+		@IInstAntiAtionService instAService: IInstAntiAtionService,
 	) {
-		this.conflicts = instaService.createInstance(ConflictDetector, _bulkEdit);
+		this.conflicts = instAService.creAteInstAnce(ConflictDetector, _bulkEdit);
 	}
 
 	dispose(): void {
@@ -159,55 +159,55 @@ export class BulkFileOperations {
 		this.conflicts.dispose();
 	}
 
-	async _init() {
-		const operationByResource = new Map<string, BulkFileOperation>();
-		const operationByCategory = new Map<string, BulkCategory>();
+	Async _init() {
+		const operAtionByResource = new MAp<string, BulkFileOperAtion>();
+		const operAtionByCAtegory = new MAp<string, BulkCAtegory>();
 
-		const newToOldUri = new ResourceMap<URI>();
+		const newToOldUri = new ResourceMAp<URI>();
 
 		for (let idx = 0; idx < this._bulkEdit.length; idx++) {
 			const edit = this._bulkEdit[idx];
 
 			let uri: URI;
-			let type: BulkFileOperationType;
+			let type: BulkFileOperAtionType;
 
-			// store inital checked state
-			this.checked.updateChecked(edit, !edit.metadata?.needsConfirmation);
+			// store initAl checked stAte
+			this.checked.updAteChecked(edit, !edit.metAdAtA?.needsConfirmAtion);
 
-			if (edit instanceof ResourceTextEdit) {
-				type = BulkFileOperationType.TextEdit;
+			if (edit instAnceof ResourceTextEdit) {
+				type = BulkFileOperAtionType.TextEdit;
 				uri = edit.resource;
 
-			} else if (edit instanceof ResourceFileEdit) {
+			} else if (edit instAnceof ResourceFileEdit) {
 				if (edit.newResource && edit.oldResource) {
-					type = BulkFileOperationType.Rename;
+					type = BulkFileOperAtionType.RenAme;
 					uri = edit.oldResource;
-					if (edit.options?.overwrite === undefined && edit.options?.ignoreIfExists && await this._fileService.exists(uri)) {
-						// noop -> "soft" rename to something that already exists
+					if (edit.options?.overwrite === undefined && edit.options?.ignoreIfExists && AwAit this._fileService.exists(uri)) {
+						// noop -> "soft" renAme to something thAt AlreAdy exists
 						continue;
 					}
-					// map newResource onto oldResource so that text-edit appear for
-					// the same file element
+					// mAp newResource onto oldResource so thAt text-edit AppeAr for
+					// the sAme file element
 					newToOldUri.set(edit.newResource, uri);
 
 				} else if (edit.oldResource) {
-					type = BulkFileOperationType.Delete;
+					type = BulkFileOperAtionType.Delete;
 					uri = edit.oldResource;
-					if (edit.options?.ignoreIfNotExists && !await this._fileService.exists(uri)) {
-						// noop -> "soft" delete something that doesn't exist
+					if (edit.options?.ignoreIfNotExists && !AwAit this._fileService.exists(uri)) {
+						// noop -> "soft" delete something thAt doesn't exist
 						continue;
 					}
 
 				} else if (edit.newResource) {
-					type = BulkFileOperationType.Create;
+					type = BulkFileOperAtionType.CreAte;
 					uri = edit.newResource;
-					if (edit.options?.overwrite === undefined && edit.options?.ignoreIfExists && await this._fileService.exists(uri)) {
-						// noop -> "soft" create something that already exists
+					if (edit.options?.overwrite === undefined && edit.options?.ignoreIfExists && AwAit this._fileService.exists(uri)) {
+						// noop -> "soft" creAte something thAt AlreAdy exists
 						continue;
 					}
 
 				} else {
-					// invalid edit -> skip
+					// invAlid edit -> skip
 					continue;
 				}
 
@@ -216,63 +216,63 @@ export class BulkFileOperations {
 				continue;
 			}
 
-			const insert = (uri: URI, map: Map<string, BulkFileOperation>) => {
-				let key = extUri.getComparisonKey(uri, true);
-				let operation = map.get(key);
+			const insert = (uri: URI, mAp: MAp<string, BulkFileOperAtion>) => {
+				let key = extUri.getCompArisonKey(uri, true);
+				let operAtion = mAp.get(key);
 
-				// rename
-				if (!operation && newToOldUri.has(uri)) {
+				// renAme
+				if (!operAtion && newToOldUri.hAs(uri)) {
 					uri = newToOldUri.get(uri)!;
-					key = extUri.getComparisonKey(uri, true);
-					operation = map.get(key);
+					key = extUri.getCompArisonKey(uri, true);
+					operAtion = mAp.get(key);
 				}
 
-				if (!operation) {
-					operation = new BulkFileOperation(uri, this);
-					map.set(key, operation);
+				if (!operAtion) {
+					operAtion = new BulkFileOperAtion(uri, this);
+					mAp.set(key, operAtion);
 				}
-				operation.addEdit(idx, type, edit);
+				operAtion.AddEdit(idx, type, edit);
 			};
 
-			insert(uri, operationByResource);
+			insert(uri, operAtionByResource);
 
-			// insert into "this" category
-			let key = BulkCategory.keyOf(edit.metadata);
-			let category = operationByCategory.get(key);
-			if (!category) {
-				category = new BulkCategory(edit.metadata);
-				operationByCategory.set(key, category);
+			// insert into "this" cAtegory
+			let key = BulkCAtegory.keyOf(edit.metAdAtA);
+			let cAtegory = operAtionByCAtegory.get(key);
+			if (!cAtegory) {
+				cAtegory = new BulkCAtegory(edit.metAdAtA);
+				operAtionByCAtegory.set(key, cAtegory);
 			}
-			insert(uri, category.operationByResource);
+			insert(uri, cAtegory.operAtionByResource);
 		}
 
-		operationByResource.forEach(value => this.fileOperations.push(value));
-		operationByCategory.forEach(value => this.categories.push(value));
+		operAtionByResource.forEAch(vAlue => this.fileOperAtions.push(vAlue));
+		operAtionByCAtegory.forEAch(vAlue => this.cAtegories.push(vAlue));
 
-		// "correct" invalid parent-check child states that is
-		// unchecked file edits (rename, create, delete) uncheck
-		// all edits for a file, e.g no text change without rename
-		for (let file of this.fileOperations) {
-			if (file.type !== BulkFileOperationType.TextEdit) {
+		// "correct" invAlid pArent-check child stAtes thAt is
+		// unchecked file edits (renAme, creAte, delete) uncheck
+		// All edits for A file, e.g no text chAnge without renAme
+		for (let file of this.fileOperAtions) {
+			if (file.type !== BulkFileOperAtionType.TextEdit) {
 				let checked = true;
-				for (const edit of file.originalEdits.values()) {
-					if (edit instanceof ResourceFileEdit) {
+				for (const edit of file.originAlEdits.vAlues()) {
+					if (edit instAnceof ResourceFileEdit) {
 						checked = checked && this.checked.isChecked(edit);
 					}
 				}
 				if (!checked) {
-					for (const edit of file.originalEdits.values()) {
-						this.checked.updateChecked(edit, checked);
+					for (const edit of file.originAlEdits.vAlues()) {
+						this.checked.updAteChecked(edit, checked);
 					}
 				}
 			}
 		}
 
-		// sort (once) categories atop which have unconfirmed edits
-		this.categories.sort((a, b) => {
-			if (a.metadata.needsConfirmation === b.metadata.needsConfirmation) {
-				return a.metadata.label.localeCompare(b.metadata.label);
-			} else if (a.metadata.needsConfirmation) {
+		// sort (once) cAtegories Atop which hAve unconfirmed edits
+		this.cAtegories.sort((A, b) => {
+			if (A.metAdAtA.needsConfirmAtion === b.metAdAtA.needsConfirmAtion) {
+				return A.metAdAtA.lAbel.locAleCompAre(b.metAdAtA.lAbel);
+			} else if (A.metAdAtA.needsConfirmAtion) {
 				return -1;
 			} else {
 				return 1;
@@ -282,9 +282,9 @@ export class BulkFileOperations {
 		return this;
 	}
 
-	getWorkspaceEdit(): ResourceEdit[] {
+	getWorkspAceEdit(): ResourceEdit[] {
 		const result: ResourceEdit[] = [];
-		let allAccepted = true;
+		let AllAccepted = true;
 
 		for (let i = 0; i < this._bulkEdit.length; i++) {
 			const edit = this._bulkEdit[i];
@@ -292,34 +292,34 @@ export class BulkFileOperations {
 				result[i] = edit;
 				continue;
 			}
-			allAccepted = false;
+			AllAccepted = fAlse;
 		}
 
-		if (allAccepted) {
+		if (AllAccepted) {
 			return this._bulkEdit;
 		}
 
-		// not all edits have been accepted
-		coalesceInPlace(result);
+		// not All edits hAve been Accepted
+		coAlesceInPlAce(result);
 		return result;
 	}
 
-	getFileEdits(uri: URI): IIdentifiedSingleEditOperation[] {
+	getFileEdits(uri: URI): IIdentifiedSingleEditOperAtion[] {
 
-		for (let file of this.fileOperations) {
+		for (let file of this.fileOperAtions) {
 			if (file.uri.toString() === uri.toString()) {
 
-				const result: IIdentifiedSingleEditOperation[] = [];
-				let ignoreAll = false;
+				const result: IIdentifiedSingleEditOperAtion[] = [];
+				let ignoreAll = fAlse;
 
-				for (const edit of file.originalEdits.values()) {
-					if (edit instanceof ResourceTextEdit) {
+				for (const edit of file.originAlEdits.vAlues()) {
+					if (edit instAnceof ResourceTextEdit) {
 						if (this.checked.isChecked(edit)) {
-							result.push(EditOperation.replaceMove(Range.lift(edit.textEdit.range), edit.textEdit.text));
+							result.push(EditOperAtion.replAceMove(RAnge.lift(edit.textEdit.rAnge), edit.textEdit.text));
 						}
 
 					} else if (!this.checked.isChecked(edit)) {
-						// UNCHECKED WorkspaceFileEdit disables all text edits
+						// UNCHECKED WorkspAceFileEdit disAbles All text edits
 						ignoreAll = true;
 					}
 				}
@@ -330,7 +330,7 @@ export class BulkFileOperations {
 
 				return mergeSort(
 					result,
-					(a, b) => Range.compareRangesUsingStarts(a.range, b.range)
+					(A, b) => RAnge.compAreRAngesUsingStArts(A.rAnge, b.rAnge)
 				);
 			}
 		}
@@ -338,109 +338,109 @@ export class BulkFileOperations {
 	}
 
 	getUriOfEdit(edit: ResourceEdit): URI {
-		for (let file of this.fileOperations) {
-			for (const value of file.originalEdits.values()) {
-				if (value === edit) {
+		for (let file of this.fileOperAtions) {
+			for (const vAlue of file.originAlEdits.vAlues()) {
+				if (vAlue === edit) {
 					return file.uri;
 				}
 			}
 		}
-		throw new Error('invalid edit');
+		throw new Error('invAlid edit');
 	}
 }
 
-export class BulkEditPreviewProvider implements ITextModelContentProvider {
+export clAss BulkEditPreviewProvider implements ITextModelContentProvider {
 
-	static readonly Schema = 'vscode-bulkeditpreview';
+	stAtic reAdonly SchemA = 'vscode-bulkeditpreview';
 
-	static emptyPreview = URI.from({ scheme: BulkEditPreviewProvider.Schema, fragment: 'empty' });
+	stAtic emptyPreview = URI.from({ scheme: BulkEditPreviewProvider.SchemA, frAgment: 'empty' });
 
-	static asPreviewUri(uri: URI): URI {
-		return URI.from({ scheme: BulkEditPreviewProvider.Schema, path: uri.path, query: uri.toString() });
+	stAtic AsPreviewUri(uri: URI): URI {
+		return URI.from({ scheme: BulkEditPreviewProvider.SchemA, pAth: uri.pAth, query: uri.toString() });
 	}
 
-	static fromPreviewUri(uri: URI): URI {
-		return URI.parse(uri.query);
+	stAtic fromPreviewUri(uri: URI): URI {
+		return URI.pArse(uri.query);
 	}
 
-	private readonly _disposables = new DisposableStore();
-	private readonly _ready: Promise<any>;
-	private readonly _modelPreviewEdits = new Map<string, IIdentifiedSingleEditOperation[]>();
+	privAte reAdonly _disposAbles = new DisposAbleStore();
+	privAte reAdonly _reAdy: Promise<Any>;
+	privAte reAdonly _modelPreviewEdits = new MAp<string, IIdentifiedSingleEditOperAtion[]>();
 
 	constructor(
-		private readonly _operations: BulkFileOperations,
-		@IModeService private readonly _modeService: IModeService,
-		@IModelService private readonly _modelService: IModelService,
-		@ITextModelService private readonly _textModelResolverService: ITextModelService
+		privAte reAdonly _operAtions: BulkFileOperAtions,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@ITextModelService privAte reAdonly _textModelResolverService: ITextModelService
 	) {
-		this._disposables.add(this._textModelResolverService.registerTextModelContentProvider(BulkEditPreviewProvider.Schema, this));
-		this._ready = this._init();
+		this._disposAbles.Add(this._textModelResolverService.registerTextModelContentProvider(BulkEditPreviewProvider.SchemA, this));
+		this._reAdy = this._init();
 	}
 
 	dispose(): void {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 	}
 
-	private async _init() {
-		for (let operation of this._operations.fileOperations) {
-			await this._applyTextEditsToPreviewModel(operation.uri);
+	privAte Async _init() {
+		for (let operAtion of this._operAtions.fileOperAtions) {
+			AwAit this._ApplyTextEditsToPreviewModel(operAtion.uri);
 		}
-		this._disposables.add(this._operations.checked.onDidChange(e => {
-			const uri = this._operations.getUriOfEdit(e);
-			this._applyTextEditsToPreviewModel(uri);
+		this._disposAbles.Add(this._operAtions.checked.onDidChAnge(e => {
+			const uri = this._operAtions.getUriOfEdit(e);
+			this._ApplyTextEditsToPreviewModel(uri);
 		}));
 	}
 
-	private async _applyTextEditsToPreviewModel(uri: URI) {
-		const model = await this._getOrCreatePreviewModel(uri);
+	privAte Async _ApplyTextEditsToPreviewModel(uri: URI) {
+		const model = AwAit this._getOrCreAtePreviewModel(uri);
 
-		// undo edits that have been done before
+		// undo edits thAt hAve been done before
 		let undoEdits = this._modelPreviewEdits.get(model.id);
 		if (undoEdits) {
-			model.applyEdits(undoEdits);
+			model.ApplyEdits(undoEdits);
 		}
-		// apply new edits and keep (future) undo edits
-		const newEdits = this._operations.getFileEdits(uri);
-		const newUndoEdits = model.applyEdits(newEdits, true);
+		// Apply new edits And keep (future) undo edits
+		const newEdits = this._operAtions.getFileEdits(uri);
+		const newUndoEdits = model.ApplyEdits(newEdits, true);
 		this._modelPreviewEdits.set(model.id, newUndoEdits);
 	}
 
-	private async _getOrCreatePreviewModel(uri: URI) {
-		const previewUri = BulkEditPreviewProvider.asPreviewUri(uri);
+	privAte Async _getOrCreAtePreviewModel(uri: URI) {
+		const previewUri = BulkEditPreviewProvider.AsPreviewUri(uri);
 		let model = this._modelService.getModel(previewUri);
 		if (!model) {
 			try {
 				// try: copy existing
-				const ref = await this._textModelResolverService.createModelReference(uri);
+				const ref = AwAit this._textModelResolverService.creAteModelReference(uri);
 				const sourceModel = ref.object.textEditorModel;
-				model = this._modelService.createModel(
-					createTextBufferFactoryFromSnapshot(sourceModel.createSnapshot()),
-					this._modeService.create(sourceModel.getLanguageIdentifier().language),
+				model = this._modelService.creAteModel(
+					creAteTextBufferFActoryFromSnApshot(sourceModel.creAteSnApshot()),
+					this._modeService.creAte(sourceModel.getLAnguAgeIdentifier().lAnguAge),
 					previewUri
 				);
 				ref.dispose();
 
-			} catch {
-				// create NEW model
-				model = this._modelService.createModel(
+			} cAtch {
+				// creAte NEW model
+				model = this._modelService.creAteModel(
 					'',
-					this._modeService.createByFilepathOrFirstLine(previewUri),
+					this._modeService.creAteByFilepAthOrFirstLine(previewUri),
 					previewUri
 				);
 			}
-			// this is a little weird but otherwise editors and other cusomers
+			// this is A little weird but otherwise editors And other cusomers
 			// will dispose my models before they should be disposed...
-			// And all of this is off the eventloop to prevent endless recursion
-			new Promise(async () => this._disposables.add(await this._textModelResolverService.createModelReference(model!.uri)));
+			// And All of this is off the eventloop to prevent endless recursion
+			new Promise(Async () => this._disposAbles.Add(AwAit this._textModelResolverService.creAteModelReference(model!.uri)));
 		}
 		return model;
 	}
 
-	async provideTextContent(previewUri: URI) {
+	Async provideTextContent(previewUri: URI) {
 		if (previewUri.toString() === BulkEditPreviewProvider.emptyPreview.toString()) {
-			return this._modelService.createModel('', null, previewUri);
+			return this._modelService.creAteModel('', null, previewUri);
 		}
-		await this._ready;
+		AwAit this._reAdy;
 		return this._modelService.getModel(previewUri);
 	}
 }

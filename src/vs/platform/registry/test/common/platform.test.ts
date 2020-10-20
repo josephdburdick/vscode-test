@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as Platform from 'vs/platform/registry/common/platform';
-import * as Types from 'vs/base/common/types';
+import * As Assert from 'Assert';
+import * As PlAtform from 'vs/plAtform/registry/common/plAtform';
+import * As Types from 'vs/bAse/common/types';
 
-suite('Platform / Registry', () => {
+suite('PlAtform / Registry', () => {
 
-	test('registry - api', function () {
-		assert.ok(Types.isFunction(Platform.Registry.add));
-		assert.ok(Types.isFunction(Platform.Registry.as));
-		assert.ok(Types.isFunction(Platform.Registry.knows));
+	test('registry - Api', function () {
+		Assert.ok(Types.isFunction(PlAtform.Registry.Add));
+		Assert.ok(Types.isFunction(PlAtform.Registry.As));
+		Assert.ok(Types.isFunction(PlAtform.Registry.knows));
 	});
 
 	test('registry - mixin', function () {
 
-		Platform.Registry.add('foo', { bar: true });
+		PlAtform.Registry.Add('foo', { bAr: true });
 
-		assert.ok(Platform.Registry.knows('foo'));
-		assert.ok(Platform.Registry.as<any>('foo').bar);
-		assert.equal(Platform.Registry.as<any>('foo').bar, true);
+		Assert.ok(PlAtform.Registry.knows('foo'));
+		Assert.ok(PlAtform.Registry.As<Any>('foo').bAr);
+		Assert.equAl(PlAtform.Registry.As<Any>('foo').bAr, true);
 	});
 
-	test('registry - knows, as', function () {
+	test('registry - knows, As', function () {
 
 		let ext = {};
 
-		Platform.Registry.add('knows,as', ext);
+		PlAtform.Registry.Add('knows,As', ext);
 
-		assert.ok(Platform.Registry.knows('knows,as'));
-		assert.ok(!Platform.Registry.knows('knows,as1234'));
+		Assert.ok(PlAtform.Registry.knows('knows,As'));
+		Assert.ok(!PlAtform.Registry.knows('knows,As1234'));
 
-		assert.ok(Platform.Registry.as('knows,as') === ext);
-		assert.ok(Platform.Registry.as('knows,as1234') === null);
+		Assert.ok(PlAtform.Registry.As('knows,As') === ext);
+		Assert.ok(PlAtform.Registry.As('knows,As1234') === null);
 	});
 
-	test('registry - mixin, fails on duplicate ids', function () {
+	test('registry - mixin, fAils on duplicAte ids', function () {
 
-		Platform.Registry.add('foo-dup', { bar: true });
+		PlAtform.Registry.Add('foo-dup', { bAr: true });
 
 		try {
-			Platform.Registry.add('foo-dup', { bar: false });
-			assert.ok(false);
-		} catch (e) {
-			assert.ok(true);
+			PlAtform.Registry.Add('foo-dup', { bAr: fAlse });
+			Assert.ok(fAlse);
+		} cAtch (e) {
+			Assert.ok(true);
 		}
 	});
 });

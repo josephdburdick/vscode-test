@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { LRUMemory, NoMemory, PrefixMemory, Memory } from 'vs/editor/contrib/suggest/suggestMemory';
 import { ITextModel } from 'vs/editor/common/model';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { createSuggestItem } from 'vs/editor/contrib/suggest/test/completionModel.test';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { creAteSuggestItem } from 'vs/editor/contrib/suggest/test/completionModel.test';
 import { IPosition } from 'vs/editor/common/core/position';
 import { CompletionItem } from 'vs/editor/contrib/suggest/suggest';
 
@@ -19,16 +19,16 @@ suite('SuggestMemories', function () {
 
 	setup(function () {
 		pos = { lineNumber: 1, column: 1 };
-		buffer = createTextModel('This is some text.\nthis.\nfoo: ,');
+		buffer = creAteTextModel('This is some text.\nthis.\nfoo: ,');
 		items = [
-			createSuggestItem('foo', 0),
-			createSuggestItem('bar', 0)
+			creAteSuggestItem('foo', 0),
+			creAteSuggestItem('bAr', 0)
 		];
 	});
 
-	test('AbstractMemory, select', function () {
+	test('AbstrActMemory, select', function () {
 
-		const mem = new class extends Memory {
+		const mem = new clAss extends Memory {
 			constructor() {
 				super('first');
 			}
@@ -37,44 +37,44 @@ suite('SuggestMemories', function () {
 			} toJSON(): object {
 				throw new Error('Method not implemented.');
 			}
-			fromJSON(data: object): void {
+			fromJSON(dAtA: object): void {
 				throw new Error('Method not implemented.');
 			}
 		};
 
-		let item1 = createSuggestItem('fazz', 0);
-		let item2 = createSuggestItem('bazz', 0);
-		let item3 = createSuggestItem('bazz', 0);
-		let item4 = createSuggestItem('bazz', 0);
-		item1.completion.preselect = false;
+		let item1 = creAteSuggestItem('fAzz', 0);
+		let item2 = creAteSuggestItem('bAzz', 0);
+		let item3 = creAteSuggestItem('bAzz', 0);
+		let item4 = creAteSuggestItem('bAzz', 0);
+		item1.completion.preselect = fAlse;
 		item2.completion.preselect = true;
 		item3.completion.preselect = true;
 
-		assert.equal(mem.select(buffer, pos, [item1, item2, item3, item4]), 1);
+		Assert.equAl(mem.select(buffer, pos, [item1, item2, item3, item4]), 1);
 	});
 
 	test('[No|Prefix|LRU]Memory honor selection boost', function () {
-		let item1 = createSuggestItem('fazz', 0);
-		let item2 = createSuggestItem('bazz', 0);
-		let item3 = createSuggestItem('bazz', 0);
-		let item4 = createSuggestItem('bazz', 0);
-		item1.completion.preselect = false;
+		let item1 = creAteSuggestItem('fAzz', 0);
+		let item2 = creAteSuggestItem('bAzz', 0);
+		let item3 = creAteSuggestItem('bAzz', 0);
+		let item4 = creAteSuggestItem('bAzz', 0);
+		item1.completion.preselect = fAlse;
 		item2.completion.preselect = true;
 		item3.completion.preselect = true;
 		let items = [item1, item2, item3, item4];
 
 
-		assert.equal(new NoMemory().select(buffer, pos, items), 1);
-		assert.equal(new LRUMemory().select(buffer, pos, items), 1);
-		assert.equal(new PrefixMemory().select(buffer, pos, items), 1);
+		Assert.equAl(new NoMemory().select(buffer, pos, items), 1);
+		Assert.equAl(new LRUMemory().select(buffer, pos, items), 1);
+		Assert.equAl(new PrefixMemory().select(buffer, pos, items), 1);
 	});
 
 	test('NoMemory', () => {
 
 		const mem = new NoMemory();
 
-		assert.equal(mem.select(buffer, pos, items), 0);
-		assert.equal(mem.select(buffer, pos, []), 0);
+		Assert.equAl(mem.select(buffer, pos, items), 0);
+		Assert.equAl(mem.select(buffer, pos, []), 0);
 
 		mem.memorize(buffer, pos, items[0]);
 		mem.memorize(buffer, pos, null!);
@@ -87,78 +87,78 @@ suite('SuggestMemories', function () {
 		const mem = new LRUMemory();
 		mem.memorize(buffer, pos, items[1]);
 
-		assert.equal(mem.select(buffer, pos, items), 1);
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 3 }, items), 0);
+		Assert.equAl(mem.select(buffer, pos, items), 1);
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 3 }, items), 0);
 
 		mem.memorize(buffer, pos, items[0]);
-		assert.equal(mem.select(buffer, pos, items), 0);
+		Assert.equAl(mem.select(buffer, pos, items), 0);
 
-		assert.equal(mem.select(buffer, pos, [
-			createSuggestItem('new', 0),
-			createSuggestItem('bar', 0)
+		Assert.equAl(mem.select(buffer, pos, [
+			creAteSuggestItem('new', 0),
+			creAteSuggestItem('bAr', 0)
 		]), 1);
 
-		assert.equal(mem.select(buffer, pos, [
-			createSuggestItem('new1', 0),
-			createSuggestItem('new2', 0)
+		Assert.equAl(mem.select(buffer, pos, [
+			creAteSuggestItem('new1', 0),
+			creAteSuggestItem('new2', 0)
 		]), 0);
 	});
 
-	test('`"editor.suggestSelection": "recentlyUsed"` should be a little more sticky #78571', function () {
+	test('`"editor.suggestSelection": "recentlyUsed"` should be A little more sticky #78571', function () {
 
-		let item1 = createSuggestItem('gamma', 0);
-		let item2 = createSuggestItem('game', 0);
+		let item1 = creAteSuggestItem('gAmmA', 0);
+		let item2 = creAteSuggestItem('gAme', 0);
 		items = [item1, item2];
 
 		let mem = new LRUMemory();
-		buffer.setValue('    foo.');
+		buffer.setVAlue('    foo.');
 		mem.memorize(buffer, { lineNumber: 1, column: 1 }, item2);
 
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 2 }, items), 0); // leading whitespace -> ignore recent items
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 2 }, items), 0); // leAding whitespAce -> ignore recent items
 
 		mem.memorize(buffer, { lineNumber: 1, column: 9 }, item2);
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 9 }, items), 1); // foo.
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 9 }, items), 1); // foo.
 
-		buffer.setValue('    foo.g');
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 10 }, items), 1); // foo.g, 'gamma' and 'game' have the same score
+		buffer.setVAlue('    foo.g');
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 10 }, items), 1); // foo.g, 'gAmmA' And 'gAme' hAve the sAme score
 
 		item1.score = [10, 0, 0];
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 10 }, items), 0); // foo.g, 'gamma' has higher score
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 10 }, items), 0); // foo.g, 'gAmmA' hAs higher score
 
 	});
 
 	test('intellisense is not showing top options first #43429', function () {
-		// ensure we don't memorize for whitespace prefixes
+		// ensure we don't memorize for whitespAce prefixes
 
 		pos = { lineNumber: 2, column: 6 };
 		const mem = new LRUMemory();
 
 		mem.memorize(buffer, pos, items[1]);
-		assert.equal(mem.select(buffer, pos, items), 1);
+		Assert.equAl(mem.select(buffer, pos, items), 1);
 
-		assert.equal(mem.select(buffer, { lineNumber: 3, column: 5 }, items), 0); // foo: |,
-		assert.equal(mem.select(buffer, { lineNumber: 3, column: 6 }, items), 1); // foo: ,|
+		Assert.equAl(mem.select(buffer, { lineNumber: 3, column: 5 }, items), 0); // foo: |,
+		Assert.equAl(mem.select(buffer, { lineNumber: 3, column: 6 }, items), 1); // foo: ,|
 	});
 
 	test('PrefixMemory', () => {
 
 		const mem = new PrefixMemory();
-		buffer.setValue('constructor');
-		const item0 = createSuggestItem('console', 0);
-		const item1 = createSuggestItem('const', 0);
-		const item2 = createSuggestItem('constructor', 0);
-		const item3 = createSuggestItem('constant', 0);
+		buffer.setVAlue('constructor');
+		const item0 = creAteSuggestItem('console', 0);
+		const item1 = creAteSuggestItem('const', 0);
+		const item2 = creAteSuggestItem('constructor', 0);
+		const item3 = creAteSuggestItem('constAnt', 0);
 		const items = [item0, item1, item2, item3];
 
 		mem.memorize(buffer, { lineNumber: 1, column: 2 }, item1); // c -> const
 		mem.memorize(buffer, { lineNumber: 1, column: 3 }, item0); // co -> console
 		mem.memorize(buffer, { lineNumber: 1, column: 4 }, item2); // con -> constructor
 
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 1 }, items), 0);
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 2 }, items), 1);
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 3 }, items), 0);
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 4 }, items), 2);
-		assert.equal(mem.select(buffer, { lineNumber: 1, column: 7 }, items), 2); // find substr
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 1 }, items), 0);
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 2 }, items), 1);
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 3 }, items), 0);
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 4 }, items), 2);
+		Assert.equAl(mem.select(buffer, { lineNumber: 1, column: 7 }, items), 2); // find substr
 	});
 
 });

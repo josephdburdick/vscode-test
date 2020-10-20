@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 import { TestFS } from './memfs';
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 
-export function rndName() {
-	return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
+export function rndNAme() {
+	return MAth.rAndom().toString(36).replAce(/[^A-z]+/g, '').substr(0, 10);
 }
 
-export const testFs = new TestFS('fake-fs', true);
-vscode.workspace.registerFileSystemProvider(testFs.scheme, testFs, { isCaseSensitive: testFs.isCaseSensitive });
+export const testFs = new TestFS('fAke-fs', true);
+vscode.workspAce.registerFileSystemProvider(testFs.scheme, testFs, { isCAseSensitive: testFs.isCAseSensitive });
 
-export async function createRandomFile(contents = '', dir: vscode.Uri | undefined = undefined, ext = ''): Promise<vscode.Uri> {
-	let fakeFile: vscode.Uri;
+export Async function creAteRAndomFile(contents = '', dir: vscode.Uri | undefined = undefined, ext = ''): Promise<vscode.Uri> {
+	let fAkeFile: vscode.Uri;
 	if (dir) {
-		assert.equal(dir.scheme, testFs.scheme);
-		fakeFile = dir.with({ path: dir.path + '/' + rndName() + ext });
+		Assert.equAl(dir.scheme, testFs.scheme);
+		fAkeFile = dir.with({ pAth: dir.pAth + '/' + rndNAme() + ext });
 	} else {
-		fakeFile = vscode.Uri.parse(`${testFs.scheme}:/${rndName() + ext}`);
+		fAkeFile = vscode.Uri.pArse(`${testFs.scheme}:/${rndNAme() + ext}`);
 	}
-	testFs.writeFile(fakeFile, Buffer.from(contents), { create: true, overwrite: true });
-	return fakeFile;
+	testFs.writeFile(fAkeFile, Buffer.from(contents), { creAte: true, overwrite: true });
+	return fAkeFile;
 }
 
-export async function deleteFile(file: vscode.Uri): Promise<boolean> {
+export Async function deleteFile(file: vscode.Uri): Promise<booleAn> {
 	try {
 		testFs.delete(file);
 		return true;
-	} catch {
-		return false;
+	} cAtch {
+		return fAlse;
 	}
 }
 
-export function pathEquals(path1: string, path2: string): boolean {
-	if (process.platform !== 'linux') {
-		path1 = path1.toLowerCase();
-		path2 = path2.toLowerCase();
+export function pAthEquAls(pAth1: string, pAth2: string): booleAn {
+	if (process.plAtform !== 'linux') {
+		pAth1 = pAth1.toLowerCAse();
+		pAth2 = pAth2.toLowerCAse();
 	}
 
-	return path1 === path2;
+	return pAth1 === pAth2;
 }
 
-export function closeAllEditors(): Thenable<any> {
-	return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+export function closeAllEditors(): ThenAble<Any> {
+	return vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 }
 
-export async function revertAllDirty(): Promise<void> {
-	return vscode.commands.executeCommand('_workbench.revertAllDirty');
+export Async function revertAllDirty(): Promise<void> {
+	return vscode.commAnds.executeCommAnd('_workbench.revertAllDirty');
 }
 
-export function disposeAll(disposables: vscode.Disposable[]) {
-	vscode.Disposable.from(...disposables).dispose();
+export function disposeAll(disposAbles: vscode.DisposAble[]) {
+	vscode.DisposAble.from(...disposAbles).dispose();
 }
 
-export function delay(ms: number) {
+export function delAy(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function withLogDisabled(runnable: () => Promise<any>): () => Promise<void> {
-	return async (): Promise<void> => {
-		const logLevel = await vscode.commands.executeCommand('_extensionTests.getLogLevel');
-		await vscode.commands.executeCommand('_extensionTests.setLogLevel', 6 /* critical */);
+export function withLogDisAbled(runnAble: () => Promise<Any>): () => Promise<void> {
+	return Async (): Promise<void> => {
+		const logLevel = AwAit vscode.commAnds.executeCommAnd('_extensionTests.getLogLevel');
+		AwAit vscode.commAnds.executeCommAnd('_extensionTests.setLogLevel', 6 /* criticAl */);
 
 		try {
-			await runnable();
-		} finally {
-			await vscode.commands.executeCommand('_extensionTests.setLogLevel', logLevel);
+			AwAit runnAble();
+		} finAlly {
+			AwAit vscode.commAnds.executeCommAnd('_extensionTests.setLogLevel', logLevel);
 		}
 	};
 }

@@ -1,68 +1,68 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import { CosmosClient } from '@azure/cosmos';
+import { CosmosClient } from '@Azure/cosmos';
 
-function getEnv(name: string): string {
-	const result = process.env[name];
+function getEnv(nAme: string): string {
+	const result = process.env[nAme];
 
 	if (typeof result === 'undefined') {
-		throw new Error('Missing env: ' + name);
+		throw new Error('Missing env: ' + nAme);
 	}
 
 	return result;
 }
 
-interface Config {
+interfAce Config {
 	id: string;
-	frozen: boolean;
+	frozen: booleAn;
 }
 
-function createDefaultConfig(quality: string): Config {
+function creAteDefAultConfig(quAlity: string): Config {
 	return {
-		id: quality,
-		frozen: false
+		id: quAlity,
+		frozen: fAlse
 	};
 }
 
-async function getConfig(client: CosmosClient, quality: string): Promise<Config> {
-	const query = `SELECT TOP 1 * FROM c WHERE c.id = "${quality}"`;
+Async function getConfig(client: CosmosClient, quAlity: string): Promise<Config> {
+	const query = `SELECT TOP 1 * FROM c WHERE c.id = "${quAlity}"`;
 
-	const res = await client.database('builds').container('config').items.query(query).fetchAll();
+	const res = AwAit client.dAtAbAse('builds').contAiner('config').items.query(query).fetchAll();
 
 	if (res.resources.length === 0) {
-		return createDefaultConfig(quality);
+		return creAteDefAultConfig(quAlity);
 	}
 
-	return res.resources[0] as Config;
+	return res.resources[0] As Config;
 }
 
-async function main(): Promise<void> {
+Async function mAin(): Promise<void> {
 	const commit = getEnv('BUILD_SOURCEVERSION');
-	const quality = getEnv('VSCODE_QUALITY');
+	const quAlity = getEnv('VSCODE_QUALITY');
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const config = await getConfig(client, quality);
+	const config = AwAit getConfig(client, quAlity);
 
-	console.log('Quality config:', config);
+	console.log('QuAlity config:', config);
 
 	if (config.frozen) {
-		console.log(`Skipping release because quality ${quality} is frozen.`);
+		console.log(`Skipping releAse becAuse quAlity ${quAlity} is frozen.`);
 		return;
 	}
 
-	console.log(`Releasing build ${commit}...`);
+	console.log(`ReleAsing build ${commit}...`);
 
-	const scripts = client.database('builds').container(quality).scripts;
-	await scripts.storedProcedure('releaseBuild').execute('', [commit]);
+	const scripts = client.dAtAbAse('builds').contAiner(quAlity).scripts;
+	AwAit scripts.storedProcedure('releAseBuild').execute('', [commit]);
 }
 
-main().then(() => {
-	console.log('Build successfully released');
+mAin().then(() => {
+	console.log('Build successfully releAsed');
 	process.exit(0);
 }, err => {
 	console.error(err);

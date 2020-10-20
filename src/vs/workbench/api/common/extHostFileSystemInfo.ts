@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostFileSystemInfoShape } from 'vs/workbench/api/common/extHost.protocol';
+import { SchemAs } from 'vs/bAse/common/network';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ExtHostFileSystemInfoShApe } from 'vs/workbench/Api/common/extHost.protocol';
 
-export class ExtHostFileSystemInfo implements ExtHostFileSystemInfoShape {
+export clAss ExtHostFileSystemInfo implements ExtHostFileSystemInfoShApe {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _systemSchemes = new Set(Object.keys(Schemas));
-	private readonly _providerInfo = new Map<string, number>();
+	privAte reAdonly _systemSchemes = new Set(Object.keys(SchemAs));
+	privAte reAdonly _providerInfo = new MAp<string, number>();
 
-	$acceptProviderInfos(scheme: string, capabilities: number | null): void {
-		if (capabilities === null) {
+	$AcceptProviderInfos(scheme: string, cApAbilities: number | null): void {
+		if (cApAbilities === null) {
 			this._providerInfo.delete(scheme);
 		} else {
-			this._providerInfo.set(scheme, capabilities);
+			this._providerInfo.set(scheme, cApAbilities);
 		}
 	}
 
-	isFreeScheme(scheme: string): boolean {
-		return !this._providerInfo.has(scheme) && !this._systemSchemes.has(scheme);
+	isFreeScheme(scheme: string): booleAn {
+		return !this._providerInfo.hAs(scheme) && !this._systemSchemes.hAs(scheme);
 	}
 
-	getCapabilities(scheme: string): number | undefined {
+	getCApAbilities(scheme: string): number | undefined {
 		return this._providerInfo.get(scheme);
 	}
 }
 
-export interface IExtHostFileSystemInfo extends ExtHostFileSystemInfo { }
-export const IExtHostFileSystemInfo = createDecorator<IExtHostFileSystemInfo>('IExtHostFileSystemInfo');
+export interfAce IExtHostFileSystemInfo extends ExtHostFileSystemInfo { }
+export const IExtHostFileSystemInfo = creAteDecorAtor<IExtHostFileSystemInfo>('IExtHostFileSystemInfo');

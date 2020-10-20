@@ -1,18 +1,18 @@
 
 
-declare module "gulp-tsb" {
+declAre module "gulp-tsb" {
 
-	export interface ICancellationToken {
-		isCancellationRequested(): boolean;
+	export interfAce ICAncellAtionToken {
+		isCAncellAtionRequested(): booleAn;
 	}
 
-	export interface IncrementalCompiler {
-		(token?: ICancellationToken): NodeJS.ReadWriteStream;
+	export interfAce IncrementAlCompiler {
+		(token?: ICAncellAtionToken): NodeJS.ReAdWriteStreAm;
 		src(opts?: {
 			cwd?: string;
-			base?: string;
-		}): NodeJS.ReadStream;
+			bAse?: string;
+		}): NodeJS.ReAdStreAm;
 	}
-	export function create(projectPath: string, existingOptions: any, verbose?: boolean, onError?: (message: any) => void): IncrementalCompiler;
+	export function creAte(projectPAth: string, existingOptions: Any, verbose?: booleAn, onError?: (messAge: Any) => void): IncrementAlCompiler;
 
 }

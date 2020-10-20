@@ -1,182 +1,182 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
-import * as path from 'path';
-import * as vscode from 'vscode';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
 
-class File implements vscode.FileStat {
+clAss File implements vscode.FileStAt {
 
 	type: vscode.FileType;
 	ctime: number;
 	mtime: number;
 	size: number;
 
-	name: string;
-	data?: Uint8Array;
+	nAme: string;
+	dAtA?: Uint8ArrAy;
 
-	constructor(name: string) {
+	constructor(nAme: string) {
 		this.type = vscode.FileType.File;
-		this.ctime = Date.now();
-		this.mtime = Date.now();
+		this.ctime = DAte.now();
+		this.mtime = DAte.now();
 		this.size = 0;
-		this.name = name;
+		this.nAme = nAme;
 	}
 }
 
-class Directory implements vscode.FileStat {
+clAss Directory implements vscode.FileStAt {
 
 	type: vscode.FileType;
 	ctime: number;
 	mtime: number;
 	size: number;
 
-	name: string;
-	entries: Map<string, File | Directory>;
+	nAme: string;
+	entries: MAp<string, File | Directory>;
 
-	constructor(name: string) {
+	constructor(nAme: string) {
 		this.type = vscode.FileType.Directory;
-		this.ctime = Date.now();
-		this.mtime = Date.now();
+		this.ctime = DAte.now();
+		this.mtime = DAte.now();
 		this.size = 0;
-		this.name = name;
-		this.entries = new Map();
+		this.nAme = nAme;
+		this.entries = new MAp();
 	}
 }
 
 export type Entry = File | Directory;
 
-export class TestFS implements vscode.FileSystemProvider {
+export clAss TestFS implements vscode.FileSystemProvider {
 
 	constructor(
-		readonly scheme: string,
-		readonly isCaseSensitive: boolean
+		reAdonly scheme: string,
+		reAdonly isCAseSensitive: booleAn
 	) { }
 
-	readonly root = new Directory('');
+	reAdonly root = new Directory('');
 
-	// --- manage file metadata
+	// --- mAnAge file metAdAtA
 
-	stat(uri: vscode.Uri): vscode.FileStat {
-		return this._lookup(uri, false);
+	stAt(uri: vscode.Uri): vscode.FileStAt {
+		return this._lookup(uri, fAlse);
 	}
 
-	readDirectory(uri: vscode.Uri): [string, vscode.FileType][] {
-		const entry = this._lookupAsDirectory(uri, false);
+	reAdDirectory(uri: vscode.Uri): [string, vscode.FileType][] {
+		const entry = this._lookupAsDirectory(uri, fAlse);
 		let result: [string, vscode.FileType][] = [];
-		for (const [name, child] of entry.entries) {
-			result.push([name, child.type]);
+		for (const [nAme, child] of entry.entries) {
+			result.push([nAme, child.type]);
 		}
 		return result;
 	}
 
-	// --- manage file contents
+	// --- mAnAge file contents
 
-	readFile(uri: vscode.Uri): Uint8Array {
-		const data = this._lookupAsFile(uri, false).data;
-		if (data) {
-			return data;
+	reAdFile(uri: vscode.Uri): Uint8ArrAy {
+		const dAtA = this._lookupAsFile(uri, fAlse).dAtA;
+		if (dAtA) {
+			return dAtA;
 		}
 		throw vscode.FileSystemError.FileNotFound();
 	}
 
-	writeFile(uri: vscode.Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean }): void {
-		let basename = path.posix.basename(uri.path);
-		let parent = this._lookupParentDirectory(uri);
-		let entry = parent.entries.get(basename);
-		if (entry instanceof Directory) {
+	writeFile(uri: vscode.Uri, content: Uint8ArrAy, options: { creAte: booleAn, overwrite: booleAn }): void {
+		let bAsenAme = pAth.posix.bAsenAme(uri.pAth);
+		let pArent = this._lookupPArentDirectory(uri);
+		let entry = pArent.entries.get(bAsenAme);
+		if (entry instAnceof Directory) {
 			throw vscode.FileSystemError.FileIsADirectory(uri);
 		}
-		if (!entry && !options.create) {
+		if (!entry && !options.creAte) {
 			throw vscode.FileSystemError.FileNotFound(uri);
 		}
-		if (entry && options.create && !options.overwrite) {
+		if (entry && options.creAte && !options.overwrite) {
 			throw vscode.FileSystemError.FileExists(uri);
 		}
 		if (!entry) {
-			entry = new File(basename);
-			parent.entries.set(basename, entry);
-			this._fireSoon({ type: vscode.FileChangeType.Created, uri });
+			entry = new File(bAsenAme);
+			pArent.entries.set(bAsenAme, entry);
+			this._fireSoon({ type: vscode.FileChAngeType.CreAted, uri });
 		}
-		entry.mtime = Date.now();
+		entry.mtime = DAte.now();
 		entry.size = content.byteLength;
-		entry.data = content;
+		entry.dAtA = content;
 
-		this._fireSoon({ type: vscode.FileChangeType.Changed, uri });
+		this._fireSoon({ type: vscode.FileChAngeType.ChAnged, uri });
 	}
 
-	// --- manage files/folders
+	// --- mAnAge files/folders
 
-	rename(oldUri: vscode.Uri, newUri: vscode.Uri, options: { overwrite: boolean }): void {
+	renAme(oldUri: vscode.Uri, newUri: vscode.Uri, options: { overwrite: booleAn }): void {
 
 		if (!options.overwrite && this._lookup(newUri, true)) {
 			throw vscode.FileSystemError.FileExists(newUri);
 		}
 
-		let entry = this._lookup(oldUri, false);
-		let oldParent = this._lookupParentDirectory(oldUri);
+		let entry = this._lookup(oldUri, fAlse);
+		let oldPArent = this._lookupPArentDirectory(oldUri);
 
-		let newParent = this._lookupParentDirectory(newUri);
-		let newName = path.posix.basename(newUri.path);
+		let newPArent = this._lookupPArentDirectory(newUri);
+		let newNAme = pAth.posix.bAsenAme(newUri.pAth);
 
-		oldParent.entries.delete(entry.name);
-		entry.name = newName;
-		newParent.entries.set(newName, entry);
+		oldPArent.entries.delete(entry.nAme);
+		entry.nAme = newNAme;
+		newPArent.entries.set(newNAme, entry);
 
 		this._fireSoon(
-			{ type: vscode.FileChangeType.Deleted, uri: oldUri },
-			{ type: vscode.FileChangeType.Created, uri: newUri }
+			{ type: vscode.FileChAngeType.Deleted, uri: oldUri },
+			{ type: vscode.FileChAngeType.CreAted, uri: newUri }
 		);
 	}
 
 	delete(uri: vscode.Uri): void {
-		let dirname = uri.with({ path: path.posix.dirname(uri.path) });
-		let basename = path.posix.basename(uri.path);
-		let parent = this._lookupAsDirectory(dirname, false);
-		if (!parent.entries.has(basename)) {
+		let dirnAme = uri.with({ pAth: pAth.posix.dirnAme(uri.pAth) });
+		let bAsenAme = pAth.posix.bAsenAme(uri.pAth);
+		let pArent = this._lookupAsDirectory(dirnAme, fAlse);
+		if (!pArent.entries.hAs(bAsenAme)) {
 			throw vscode.FileSystemError.FileNotFound(uri);
 		}
-		parent.entries.delete(basename);
-		parent.mtime = Date.now();
-		parent.size -= 1;
-		this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { uri, type: vscode.FileChangeType.Deleted });
+		pArent.entries.delete(bAsenAme);
+		pArent.mtime = DAte.now();
+		pArent.size -= 1;
+		this._fireSoon({ type: vscode.FileChAngeType.ChAnged, uri: dirnAme }, { uri, type: vscode.FileChAngeType.Deleted });
 	}
 
-	createDirectory(uri: vscode.Uri): void {
-		let basename = path.posix.basename(uri.path);
-		let dirname = uri.with({ path: path.posix.dirname(uri.path) });
-		let parent = this._lookupAsDirectory(dirname, false);
+	creAteDirectory(uri: vscode.Uri): void {
+		let bAsenAme = pAth.posix.bAsenAme(uri.pAth);
+		let dirnAme = uri.with({ pAth: pAth.posix.dirnAme(uri.pAth) });
+		let pArent = this._lookupAsDirectory(dirnAme, fAlse);
 
-		let entry = new Directory(basename);
-		parent.entries.set(entry.name, entry);
-		parent.mtime = Date.now();
-		parent.size += 1;
-		this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { type: vscode.FileChangeType.Created, uri });
+		let entry = new Directory(bAsenAme);
+		pArent.entries.set(entry.nAme, entry);
+		pArent.mtime = DAte.now();
+		pArent.size += 1;
+		this._fireSoon({ type: vscode.FileChAngeType.ChAnged, uri: dirnAme }, { type: vscode.FileChAngeType.CreAted, uri });
 	}
 
 	// --- lookup
 
-	private _lookup(uri: vscode.Uri, silent: false): Entry;
-	private _lookup(uri: vscode.Uri, silent: boolean): Entry | undefined;
-	private _lookup(uri: vscode.Uri, silent: boolean): Entry | undefined {
-		let parts = uri.path.split('/');
+	privAte _lookup(uri: vscode.Uri, silent: fAlse): Entry;
+	privAte _lookup(uri: vscode.Uri, silent: booleAn): Entry | undefined;
+	privAte _lookup(uri: vscode.Uri, silent: booleAn): Entry | undefined {
+		let pArts = uri.pAth.split('/');
 		let entry: Entry = this.root;
-		for (const part of parts) {
-			const partLow = part.toLowerCase();
-			if (!part) {
+		for (const pArt of pArts) {
+			const pArtLow = pArt.toLowerCAse();
+			if (!pArt) {
 				continue;
 			}
 			let child: Entry | undefined;
-			if (entry instanceof Directory) {
-				if (this.isCaseSensitive) {
-					child = entry.entries.get(part);
+			if (entry instAnceof Directory) {
+				if (this.isCAseSensitive) {
+					child = entry.entries.get(pArt);
 				} else {
-					for (let [key, value] of entry.entries) {
-						if (key.toLowerCase() === partLow) {
-							child = value;
-							break;
+					for (let [key, vAlue] of entry.entries) {
+						if (key.toLowerCAse() === pArtLow) {
+							child = vAlue;
+							breAk;
 						}
 					}
 				}
@@ -193,48 +193,48 @@ export class TestFS implements vscode.FileSystemProvider {
 		return entry;
 	}
 
-	private _lookupAsDirectory(uri: vscode.Uri, silent: boolean): Directory {
+	privAte _lookupAsDirectory(uri: vscode.Uri, silent: booleAn): Directory {
 		let entry = this._lookup(uri, silent);
-		if (entry instanceof Directory) {
+		if (entry instAnceof Directory) {
 			return entry;
 		}
 		throw vscode.FileSystemError.FileNotADirectory(uri);
 	}
 
-	private _lookupAsFile(uri: vscode.Uri, silent: boolean): File {
+	privAte _lookupAsFile(uri: vscode.Uri, silent: booleAn): File {
 		let entry = this._lookup(uri, silent);
-		if (entry instanceof File) {
+		if (entry instAnceof File) {
 			return entry;
 		}
 		throw vscode.FileSystemError.FileIsADirectory(uri);
 	}
 
-	private _lookupParentDirectory(uri: vscode.Uri): Directory {
-		const dirname = uri.with({ path: path.posix.dirname(uri.path) });
-		return this._lookupAsDirectory(dirname, false);
+	privAte _lookupPArentDirectory(uri: vscode.Uri): Directory {
+		const dirnAme = uri.with({ pAth: pAth.posix.dirnAme(uri.pAth) });
+		return this._lookupAsDirectory(dirnAme, fAlse);
 	}
 
-	// --- manage file events
+	// --- mAnAge file events
 
-	private _emitter = new vscode.EventEmitter<vscode.FileChangeEvent[]>();
-	private _bufferedEvents: vscode.FileChangeEvent[] = [];
-	private _fireSoonHandle?: NodeJS.Timer;
+	privAte _emitter = new vscode.EventEmitter<vscode.FileChAngeEvent[]>();
+	privAte _bufferedEvents: vscode.FileChAngeEvent[] = [];
+	privAte _fireSoonHAndle?: NodeJS.Timer;
 
-	readonly onDidChangeFile: vscode.Event<vscode.FileChangeEvent[]> = this._emitter.event;
+	reAdonly onDidChAngeFile: vscode.Event<vscode.FileChAngeEvent[]> = this._emitter.event;
 
-	watch(_resource: vscode.Uri): vscode.Disposable {
-		// ignore, fires for all changes...
-		return new vscode.Disposable(() => { });
+	wAtch(_resource: vscode.Uri): vscode.DisposAble {
+		// ignore, fires for All chAnges...
+		return new vscode.DisposAble(() => { });
 	}
 
-	private _fireSoon(...events: vscode.FileChangeEvent[]): void {
+	privAte _fireSoon(...events: vscode.FileChAngeEvent[]): void {
 		this._bufferedEvents.push(...events);
 
-		if (this._fireSoonHandle) {
-			clearTimeout(this._fireSoonHandle);
+		if (this._fireSoonHAndle) {
+			cleArTimeout(this._fireSoonHAndle);
 		}
 
-		this._fireSoonHandle = setTimeout(() => {
+		this._fireSoonHAndle = setTimeout(() => {
 			this._emitter.fire(this._bufferedEvents);
 			this._bufferedEvents.length = 0;
 		}, 5);

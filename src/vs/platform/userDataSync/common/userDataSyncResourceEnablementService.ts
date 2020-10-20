@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IUserDataSyncResourceEnablementService, ALL_SYNC_RESOURCES, SyncResource } from 'vs/platform/userDataSync/common/userDataSync';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IStorageService, IWorkspaceStorageChangeEvent, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { IUserDAtASyncResourceEnAblementService, ALL_SYNC_RESOURCES, SyncResource } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IStorAgeService, IWorkspAceStorAgeChAngeEvent, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 
-type SyncEnablementClassification = {
-	enabled?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
+type SyncEnAblementClAssificAtion = {
+	enAbled?: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight', isMeAsurement: true };
 };
 
-const enablementKey = 'sync.enable';
-function getEnablementKey(resource: SyncResource) { return `${enablementKey}.${resource}`; }
+const enAblementKey = 'sync.enAble';
+function getEnAblementKey(resource: SyncResource) { return `${enAblementKey}.${resource}`; }
 
-export class UserDataSyncResourceEnablementService extends Disposable implements IUserDataSyncResourceEnablementService {
+export clAss UserDAtASyncResourceEnAblementService extends DisposAble implements IUserDAtASyncResourceEnAblementService {
 
-	_serviceBrand: any;
+	_serviceBrAnd: Any;
 
-	private _onDidChangeResourceEnablement = new Emitter<[SyncResource, boolean]>();
-	readonly onDidChangeResourceEnablement: Event<[SyncResource, boolean]> = this._onDidChangeResourceEnablement.event;
+	privAte _onDidChAngeResourceEnAblement = new Emitter<[SyncResource, booleAn]>();
+	reAdonly onDidChAngeResourceEnAblement: Event<[SyncResource, booleAn]> = this._onDidChAngeResourceEnAblement.event;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
 	) {
 		super();
-		this._register(storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));
+		this._register(storAgeService.onDidChAngeStorAge(e => this.onDidStorAgeChAnge(e)));
 	}
 
-	isResourceEnabled(resource: SyncResource): boolean {
-		return this.storageService.getBoolean(getEnablementKey(resource), StorageScope.GLOBAL, true);
+	isResourceEnAbled(resource: SyncResource): booleAn {
+		return this.storAgeService.getBooleAn(getEnAblementKey(resource), StorAgeScope.GLOBAL, true);
 	}
 
-	setResourceEnablement(resource: SyncResource, enabled: boolean): void {
-		if (this.isResourceEnabled(resource) !== enabled) {
-			const resourceEnablementKey = getEnablementKey(resource);
-			this.telemetryService.publicLog2<{ enabled: boolean }, SyncEnablementClassification>(resourceEnablementKey, { enabled });
-			this.storageService.store(resourceEnablementKey, enabled, StorageScope.GLOBAL);
+	setResourceEnAblement(resource: SyncResource, enAbled: booleAn): void {
+		if (this.isResourceEnAbled(resource) !== enAbled) {
+			const resourceEnAblementKey = getEnAblementKey(resource);
+			this.telemetryService.publicLog2<{ enAbled: booleAn }, SyncEnAblementClAssificAtion>(resourceEnAblementKey, { enAbled });
+			this.storAgeService.store(resourceEnAblementKey, enAbled, StorAgeScope.GLOBAL);
 		}
 	}
 
-	private onDidStorageChange(workspaceStorageChangeEvent: IWorkspaceStorageChangeEvent): void {
-		if (workspaceStorageChangeEvent.scope === StorageScope.GLOBAL) {
-			const resourceKey = ALL_SYNC_RESOURCES.filter(resourceKey => getEnablementKey(resourceKey) === workspaceStorageChangeEvent.key)[0];
+	privAte onDidStorAgeChAnge(workspAceStorAgeChAngeEvent: IWorkspAceStorAgeChAngeEvent): void {
+		if (workspAceStorAgeChAngeEvent.scope === StorAgeScope.GLOBAL) {
+			const resourceKey = ALL_SYNC_RESOURCES.filter(resourceKey => getEnAblementKey(resourceKey) === workspAceStorAgeChAngeEvent.key)[0];
 			if (resourceKey) {
-				this._onDidChangeResourceEnablement.fire([resourceKey, this.isResourceEnabled(resourceKey)]);
+				this._onDidChAngeResourceEnAblement.fire([resourceKey, this.isResourceEnAbled(resourceKey)]);
 				return;
 			}
 		}

@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as resources from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { StandardTokenType, LanguageId } from 'vs/editor/common/modes';
+import * As resources from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { StAndArdTokenType, LAnguAgeId } from 'vs/editor/common/modes';
 
-export interface IValidGrammarDefinition {
-	location: URI;
-	language?: LanguageId;
-	scopeName: string;
-	embeddedLanguages: IValidEmbeddedLanguagesMap;
-	tokenTypes: IValidTokenTypeMap;
+export interfAce IVAlidGrAmmArDefinition {
+	locAtion: URI;
+	lAnguAge?: LAnguAgeId;
+	scopeNAme: string;
+	embeddedLAnguAges: IVAlidEmbeddedLAnguAgesMAp;
+	tokenTypes: IVAlidTokenTypeMAp;
 	injectTo?: string[];
 }
 
-export interface IValidTokenTypeMap {
-	[selector: string]: StandardTokenType;
+export interfAce IVAlidTokenTypeMAp {
+	[selector: string]: StAndArdTokenType;
 }
 
-export interface IValidEmbeddedLanguagesMap {
-	[scopeName: string]: LanguageId;
+export interfAce IVAlidEmbeddedLAnguAgesMAp {
+	[scopeNAme: string]: LAnguAgeId;
 }
 
-export class TMScopeRegistry extends Disposable {
+export clAss TMScopeRegistry extends DisposAble {
 
-	private _scopeNameToLanguageRegistration: { [scopeName: string]: IValidGrammarDefinition; };
+	privAte _scopeNAmeToLAnguAgeRegistrAtion: { [scopeNAme: string]: IVAlidGrAmmArDefinition; };
 
 	constructor() {
 		super();
-		this._scopeNameToLanguageRegistration = Object.create(null);
+		this._scopeNAmeToLAnguAgeRegistrAtion = Object.creAte(null);
 	}
 
 	public reset(): void {
-		this._scopeNameToLanguageRegistration = Object.create(null);
+		this._scopeNAmeToLAnguAgeRegistrAtion = Object.creAte(null);
 	}
 
-	public register(def: IValidGrammarDefinition): void {
-		if (this._scopeNameToLanguageRegistration[def.scopeName]) {
-			const existingRegistration = this._scopeNameToLanguageRegistration[def.scopeName];
-			if (!resources.isEqual(existingRegistration.location, def.location)) {
-				console.warn(
-					`Overwriting grammar scope name to file mapping for scope ${def.scopeName}.\n` +
-					`Old grammar file: ${existingRegistration.location.toString()}.\n` +
-					`New grammar file: ${def.location.toString()}`
+	public register(def: IVAlidGrAmmArDefinition): void {
+		if (this._scopeNAmeToLAnguAgeRegistrAtion[def.scopeNAme]) {
+			const existingRegistrAtion = this._scopeNAmeToLAnguAgeRegistrAtion[def.scopeNAme];
+			if (!resources.isEquAl(existingRegistrAtion.locAtion, def.locAtion)) {
+				console.wArn(
+					`Overwriting grAmmAr scope nAme to file mApping for scope ${def.scopeNAme}.\n` +
+					`Old grAmmAr file: ${existingRegistrAtion.locAtion.toString()}.\n` +
+					`New grAmmAr file: ${def.locAtion.toString()}`
 				);
 			}
 		}
-		this._scopeNameToLanguageRegistration[def.scopeName] = def;
+		this._scopeNAmeToLAnguAgeRegistrAtion[def.scopeNAme] = def;
 	}
 
-	public getGrammarDefinition(scopeName: string): IValidGrammarDefinition | null {
-		return this._scopeNameToLanguageRegistration[scopeName] || null;
+	public getGrAmmArDefinition(scopeNAme: string): IVAlidGrAmmArDefinition | null {
+		return this._scopeNAmeToLAnguAgeRegistrAtion[scopeNAme] || null;
 	}
 }

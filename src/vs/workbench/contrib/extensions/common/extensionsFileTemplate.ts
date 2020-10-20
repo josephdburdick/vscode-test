@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { EXTENSION_IDENTIFIER_PATTERN } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { locAlize } from 'vs/nls';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { EXTENSION_IDENTIFIER_PATTERN } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
 
-export const ExtensionsConfigurationSchemaId = 'vscode://schemas/extensions';
-export const ExtensionsConfigurationSchema: IJSONSchema = {
-	id: ExtensionsConfigurationSchemaId,
-	allowComments: true,
-	allowTrailingCommas: true,
+export const ExtensionsConfigurAtionSchemAId = 'vscode://schemAs/extensions';
+export const ExtensionsConfigurAtionSchemA: IJSONSchemA = {
+	id: ExtensionsConfigurAtionSchemAId,
+	AllowComments: true,
+	AllowTrAilingCommAs: true,
 	type: 'object',
-	title: localize('app.extensions.json.title', "Extensions"),
-	additionalProperties: false,
+	title: locAlize('App.extensions.json.title', "Extensions"),
+	AdditionAlProperties: fAlse,
 	properties: {
-		recommendations: {
-			type: 'array',
-			description: localize('app.extensions.json.recommendations', "List of extensions which should be recommended for users of this workspace. The identifier of an extension is always '${publisher}.${name}'. For example: 'vscode.csharp'."),
+		recommendAtions: {
+			type: 'ArrAy',
+			description: locAlize('App.extensions.json.recommendAtions', "List of extensions which should be recommended for users of this workspAce. The identifier of An extension is AlwAys '${publisher}.${nAme}'. For exAmple: 'vscode.cshArp'."),
 			items: {
 				type: 'string',
-				pattern: EXTENSION_IDENTIFIER_PATTERN,
-				errorMessage: localize('app.extension.identifier.errorMessage', "Expected format '${publisher}.${name}'. Example: 'vscode.csharp'.")
+				pAttern: EXTENSION_IDENTIFIER_PATTERN,
+				errorMessAge: locAlize('App.extension.identifier.errorMessAge', "Expected formAt '${publisher}.${nAme}'. ExAmple: 'vscode.cshArp'.")
 			},
 		},
-		unwantedRecommendations: {
-			type: 'array',
-			description: localize('app.extensions.json.unwantedRecommendations', "List of extensions recommended by VS Code that should not be recommended for users of this workspace. The identifier of an extension is always '${publisher}.${name}'. For example: 'vscode.csharp'."),
+		unwAntedRecommendAtions: {
+			type: 'ArrAy',
+			description: locAlize('App.extensions.json.unwAntedRecommendAtions', "List of extensions recommended by VS Code thAt should not be recommended for users of this workspAce. The identifier of An extension is AlwAys '${publisher}.${nAme}'. For exAmple: 'vscode.cshArp'."),
 			items: {
 				type: 'string',
-				pattern: EXTENSION_IDENTIFIER_PATTERN,
-				errorMessage: localize('app.extension.identifier.errorMessage', "Expected format '${publisher}.${name}'. Example: 'vscode.csharp'.")
+				pAttern: EXTENSION_IDENTIFIER_PATTERN,
+				errorMessAge: locAlize('App.extension.identifier.errorMessAge', "Expected formAt '${publisher}.${nAme}'. ExAmple: 'vscode.cshArp'.")
 			},
 		},
 	}
 };
 
-export const ExtensionsConfigurationInitialContent: string = [
+export const ExtensionsConfigurAtionInitiAlContent: string = [
 	'{',
-	'\t// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.',
-	'\t// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp',
+	'\t// See https://go.microsoft.com/fwlink/?LinkId=827846 to leArn About workspAce recommendAtions.',
+	'\t// Extension identifier formAt: ${publisher}.${nAme}. ExAmple: vscode.cshArp',
 	'',
-	'\t// List of extensions which should be recommended for users of this workspace.',
-	'\t"recommendations": [',
+	'\t// List of extensions which should be recommended for users of this workspAce.',
+	'\t"recommendAtions": [',
 	'\t\t',
 	'\t],',
-	'\t// List of extensions recommended by VS Code that should not be recommended for users of this workspace.',
-	'\t"unwantedRecommendations": [',
+	'\t// List of extensions recommended by VS Code thAt should not be recommended for users of this workspAce.',
+	'\t"unwAntedRecommendAtions": [',
 	'\t\t',
 	'\t]',
 	'}'

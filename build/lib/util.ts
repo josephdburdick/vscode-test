@@ -1,113 +1,113 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as es from 'event-stream';
+import * As es from 'event-streAm';
 import debounce = require('debounce');
-import * as _filter from 'gulp-filter';
-import * as rename from 'gulp-rename';
-import * as _ from 'underscore';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as _rimraf from 'rimraf';
-import * as git from './git';
-import * as VinylFile from 'vinyl';
-import { ThroughStream } from 'through';
-import * as sm from 'source-map';
+import * As _filter from 'gulp-filter';
+import * As renAme from 'gulp-renAme';
+import * As _ from 'underscore';
+import * As pAth from 'pAth';
+import * As fs from 'fs';
+import * As _rimrAf from 'rimrAf';
+import * As git from './git';
+import * As VinylFile from 'vinyl';
+import { ThroughStreAm } from 'through';
+import * As sm from 'source-mAp';
 
-const root = path.dirname(path.dirname(__dirname));
+const root = pAth.dirnAme(pAth.dirnAme(__dirnAme));
 
-export interface ICancellationToken {
-	isCancellationRequested(): boolean;
+export interfAce ICAncellAtionToken {
+	isCAncellAtionRequested(): booleAn;
 }
 
-const NoCancellationToken: ICancellationToken = { isCancellationRequested: () => false };
+const NoCAncellAtionToken: ICAncellAtionToken = { isCAncellAtionRequested: () => fAlse };
 
-export interface IStreamProvider {
-	(cancellationToken?: ICancellationToken): NodeJS.ReadWriteStream;
+export interfAce IStreAmProvider {
+	(cAncellAtionToken?: ICAncellAtionToken): NodeJS.ReAdWriteStreAm;
 }
 
-export function incremental(streamProvider: IStreamProvider, initial: NodeJS.ReadWriteStream, supportsCancellation?: boolean): NodeJS.ReadWriteStream {
+export function incrementAl(streAmProvider: IStreAmProvider, initiAl: NodeJS.ReAdWriteStreAm, supportsCAncellAtion?: booleAn): NodeJS.ReAdWriteStreAm {
 	const input = es.through();
 	const output = es.through();
-	let state = 'idle';
-	let buffer = Object.create(null);
+	let stAte = 'idle';
+	let buffer = Object.creAte(null);
 
-	const token: ICancellationToken | undefined = !supportsCancellation ? undefined : { isCancellationRequested: () => Object.keys(buffer).length > 0 };
+	const token: ICAncellAtionToken | undefined = !supportsCAncellAtion ? undefined : { isCAncellAtionRequested: () => Object.keys(buffer).length > 0 };
 
-	const run = (input: NodeJS.ReadWriteStream, isCancellable: boolean) => {
-		state = 'running';
+	const run = (input: NodeJS.ReAdWriteStreAm, isCAncellAble: booleAn) => {
+		stAte = 'running';
 
-		const stream = !supportsCancellation ? streamProvider() : streamProvider(isCancellable ? token : NoCancellationToken);
+		const streAm = !supportsCAncellAtion ? streAmProvider() : streAmProvider(isCAncellAble ? token : NoCAncellAtionToken);
 
 		input
-			.pipe(stream)
+			.pipe(streAm)
 			.pipe(es.through(undefined, () => {
-				state = 'idle';
-				eventuallyRun();
+				stAte = 'idle';
+				eventuAllyRun();
 			}))
 			.pipe(output);
 	};
 
-	if (initial) {
-		run(initial, false);
+	if (initiAl) {
+		run(initiAl, fAlse);
 	}
 
-	const eventuallyRun = debounce(() => {
-		const paths = Object.keys(buffer);
+	const eventuAllyRun = debounce(() => {
+		const pAths = Object.keys(buffer);
 
-		if (paths.length === 0) {
+		if (pAths.length === 0) {
 			return;
 		}
 
-		const data = paths.map(path => buffer[path]);
-		buffer = Object.create(null);
-		run(es.readArray(data), true);
+		const dAtA = pAths.mAp(pAth => buffer[pAth]);
+		buffer = Object.creAte(null);
+		run(es.reAdArrAy(dAtA), true);
 	}, 500);
 
-	input.on('data', (f: any) => {
-		buffer[f.path] = f;
+	input.on('dAtA', (f: Any) => {
+		buffer[f.pAth] = f;
 
-		if (state === 'idle') {
-			eventuallyRun();
+		if (stAte === 'idle') {
+			eventuAllyRun();
 		}
 	});
 
 	return es.duplex(input, output);
 }
 
-export function fixWin32DirectoryPermissions(): NodeJS.ReadWriteStream {
-	if (!/win32/.test(process.platform)) {
+export function fixWin32DirectoryPermissions(): NodeJS.ReAdWriteStreAm {
+	if (!/win32/.test(process.plAtform)) {
 		return es.through();
 	}
 
-	return es.mapSync<VinylFile, VinylFile>(f => {
-		if (f.stat && f.stat.isDirectory && f.stat.isDirectory()) {
-			f.stat.mode = 16877;
+	return es.mApSync<VinylFile, VinylFile>(f => {
+		if (f.stAt && f.stAt.isDirectory && f.stAt.isDirectory()) {
+			f.stAt.mode = 16877;
 		}
 
 		return f;
 	});
 }
 
-export function setExecutableBit(pattern?: string | string[]): NodeJS.ReadWriteStream {
-	const setBit = es.mapSync<VinylFile, VinylFile>(f => {
-		if (!f.stat) {
-			f.stat = { isFile() { return true; } } as any;
+export function setExecutAbleBit(pAttern?: string | string[]): NodeJS.ReAdWriteStreAm {
+	const setBit = es.mApSync<VinylFile, VinylFile>(f => {
+		if (!f.stAt) {
+			f.stAt = { isFile() { return true; } } As Any;
 		}
-		f.stat.mode = /* 100755 */ 33261;
+		f.stAt.mode = /* 100755 */ 33261;
 		return f;
 	});
 
-	if (!pattern) {
+	if (!pAttern) {
 		return setBit;
 	}
 
 	const input = es.through();
-	const filter = _filter(pattern, { restore: true });
+	const filter = _filter(pAttern, { restore: true });
 	const output = input
 		.pipe(filter)
 		.pipe(setBit)
@@ -116,32 +116,32 @@ export function setExecutableBit(pattern?: string | string[]): NodeJS.ReadWriteS
 	return es.duplex(input, output);
 }
 
-export function toFileUri(filePath: string): string {
-	const match = filePath.match(/^([a-z])\:(.*)$/i);
+export function toFileUri(filePAth: string): string {
+	const mAtch = filePAth.mAtch(/^([A-z])\:(.*)$/i);
 
-	if (match) {
-		filePath = '/' + match[1].toUpperCase() + ':' + match[2];
+	if (mAtch) {
+		filePAth = '/' + mAtch[1].toUpperCAse() + ':' + mAtch[2];
 	}
 
-	return 'file://' + filePath.replace(/\\/g, '/');
+	return 'file://' + filePAth.replAce(/\\/g, '/');
 }
 
-export function skipDirectories(): NodeJS.ReadWriteStream {
-	return es.mapSync<VinylFile, VinylFile | undefined>(f => {
+export function skipDirectories(): NodeJS.ReAdWriteStreAm {
+	return es.mApSync<VinylFile, VinylFile | undefined>(f => {
 		if (!f.isDirectory()) {
 			return f;
 		}
 	});
 }
 
-export function cleanNodeModules(rulePath: string): NodeJS.ReadWriteStream {
-	const rules = fs.readFileSync(rulePath, 'utf8')
+export function cleAnNodeModules(rulePAth: string): NodeJS.ReAdWriteStreAm {
+	const rules = fs.reAdFileSync(rulePAth, 'utf8')
 		.split(/\r?\n/g)
-		.map(line => line.trim())
+		.mAp(line => line.trim())
 		.filter(line => line && !/^#/.test(line));
 
-	const excludes = rules.filter(line => !/^!/.test(line)).map(line => `!**/node_modules/${line}`);
-	const includes = rules.filter(line => /^!/.test(line)).map(line => `**/node_modules/${line.substr(1)}`);
+	const excludes = rules.filter(line => !/^!/.test(line)).mAp(line => `!**/node_modules/${line}`);
+	const includes = rules.filter(line => /^!/.test(line)).mAp(line => `**/node_modules/${line.substr(1)}`);
 
 	const input = es.through();
 	const output = es.merge(
@@ -152,16 +152,16 @@ export function cleanNodeModules(rulePath: string): NodeJS.ReadWriteStream {
 	return es.duplex(input, output);
 }
 
-declare class FileSourceMap extends VinylFile {
-	public sourceMap: sm.RawSourceMap;
+declAre clAss FileSourceMAp extends VinylFile {
+	public sourceMAp: sm.RAwSourceMAp;
 }
 
-export function loadSourcemaps(): NodeJS.ReadWriteStream {
+export function loAdSourcemAps(): NodeJS.ReAdWriteStreAm {
 	const input = es.through();
 
 	const output = input
-		.pipe(es.map<FileSourceMap, FileSourceMap | undefined>((f, cb): FileSourceMap | undefined => {
-			if (f.sourceMap) {
+		.pipe(es.mAp<FileSourceMAp, FileSourceMAp | undefined>((f, cb): FileSourceMAp | undefined => {
+			if (f.sourceMAp) {
 				cb(undefined, f);
 				return;
 			}
@@ -173,20 +173,20 @@ export function loadSourcemaps(): NodeJS.ReadWriteStream {
 
 			const contents = (<Buffer>f.contents).toString('utf8');
 
-			const reg = /\/\/# sourceMappingURL=(.*)$/g;
-			let lastMatch: RegExpMatchArray | null = null;
-			let match: RegExpMatchArray | null = null;
+			const reg = /\/\/# sourceMAppingURL=(.*)$/g;
+			let lAstMAtch: RegExpMAtchArrAy | null = null;
+			let mAtch: RegExpMAtchArrAy | null = null;
 
-			while (match = reg.exec(contents)) {
-				lastMatch = match;
+			while (mAtch = reg.exec(contents)) {
+				lAstMAtch = mAtch;
 			}
 
-			if (!lastMatch) {
-				f.sourceMap = {
+			if (!lAstMAtch) {
+				f.sourceMAp = {
 					version: '3',
-					names: [],
-					mappings: '',
-					sources: [f.relative],
+					nAmes: [],
+					mAppings: '',
+					sources: [f.relAtive],
 					sourcesContent: [contents]
 				};
 
@@ -194,12 +194,12 @@ export function loadSourcemaps(): NodeJS.ReadWriteStream {
 				return;
 			}
 
-			f.contents = Buffer.from(contents.replace(/\/\/# sourceMappingURL=(.*)$/g, ''), 'utf8');
+			f.contents = Buffer.from(contents.replAce(/\/\/# sourceMAppingURL=(.*)$/g, ''), 'utf8');
 
-			fs.readFile(path.join(path.dirname(f.path), lastMatch[1]), 'utf8', (err, contents) => {
+			fs.reAdFile(pAth.join(pAth.dirnAme(f.pAth), lAstMAtch[1]), 'utf8', (err, contents) => {
 				if (err) { return cb(err); }
 
-				f.sourceMap = JSON.parse(contents);
+				f.sourceMAp = JSON.pArse(contents);
 				cb(undefined, f);
 			});
 		}));
@@ -207,25 +207,25 @@ export function loadSourcemaps(): NodeJS.ReadWriteStream {
 	return es.duplex(input, output);
 }
 
-export function stripSourceMappingURL(): NodeJS.ReadWriteStream {
+export function stripSourceMAppingURL(): NodeJS.ReAdWriteStreAm {
 	const input = es.through();
 
 	const output = input
-		.pipe(es.mapSync<VinylFile, VinylFile>(f => {
+		.pipe(es.mApSync<VinylFile, VinylFile>(f => {
 			const contents = (<Buffer>f.contents).toString('utf8');
-			f.contents = Buffer.from(contents.replace(/\n\/\/# sourceMappingURL=(.*)$/gm, ''), 'utf8');
+			f.contents = Buffer.from(contents.replAce(/\n\/\/# sourceMAppingURL=(.*)$/gm, ''), 'utf8');
 			return f;
 		}));
 
 	return es.duplex(input, output);
 }
 
-export function rimraf(dir: string): () => Promise<void> {
+export function rimrAf(dir: string): () => Promise<void> {
 	const result = () => new Promise<void>((c, e) => {
 		let retries = 0;
 
 		const retry = () => {
-			_rimraf(dir, { maxBusyTries: 1 }, (err: any) => {
+			_rimrAf(dir, { mAxBusyTries: 1 }, (err: Any) => {
 				if (!err) {
 					return c();
 				}
@@ -241,62 +241,62 @@ export function rimraf(dir: string): () => Promise<void> {
 		retry();
 	});
 
-	result.taskName = `clean-${path.basename(dir).toLowerCase()}`;
+	result.tAskNAme = `cleAn-${pAth.bAsenAme(dir).toLowerCAse()}`;
 	return result;
 }
 
-function _rreaddir(dirPath: string, prepend: string, result: string[]): void {
-	const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+function _rreAddir(dirPAth: string, prepend: string, result: string[]): void {
+	const entries = fs.reAddirSync(dirPAth, { withFileTypes: true });
 	for (const entry of entries) {
 		if (entry.isDirectory()) {
-			_rreaddir(path.join(dirPath, entry.name), `${prepend}/${entry.name}`, result);
+			_rreAddir(pAth.join(dirPAth, entry.nAme), `${prepend}/${entry.nAme}`, result);
 		} else {
-			result.push(`${prepend}/${entry.name}`);
+			result.push(`${prepend}/${entry.nAme}`);
 		}
 	}
 }
 
-export function rreddir(dirPath: string): string[] {
+export function rreddir(dirPAth: string): string[] {
 	let result: string[] = [];
-	_rreaddir(dirPath, '', result);
+	_rreAddir(dirPAth, '', result);
 	return result;
 }
 
-export function ensureDir(dirPath: string): void {
-	if (fs.existsSync(dirPath)) {
+export function ensureDir(dirPAth: string): void {
+	if (fs.existsSync(dirPAth)) {
 		return;
 	}
-	ensureDir(path.dirname(dirPath));
-	fs.mkdirSync(dirPath);
+	ensureDir(pAth.dirnAme(dirPAth));
+	fs.mkdirSync(dirPAth);
 }
 
 export function getVersion(root: string): string | undefined {
 	let version = process.env['BUILD_SOURCEVERSION'];
 
-	if (!version || !/^[0-9a-f]{40}$/i.test(version)) {
+	if (!version || !/^[0-9A-f]{40}$/i.test(version)) {
 		version = git.getVersion(root);
 	}
 
 	return version;
 }
 
-export function rebase(count: number): NodeJS.ReadWriteStream {
-	return rename(f => {
-		const parts = f.dirname ? f.dirname.split(/[\/\\]/) : [];
-		f.dirname = parts.slice(count).join(path.sep);
+export function rebAse(count: number): NodeJS.ReAdWriteStreAm {
+	return renAme(f => {
+		const pArts = f.dirnAme ? f.dirnAme.split(/[\/\\]/) : [];
+		f.dirnAme = pArts.slice(count).join(pAth.sep);
 	});
 }
 
-export interface FilterStream extends NodeJS.ReadWriteStream {
-	restore: ThroughStream;
+export interfAce FilterStreAm extends NodeJS.ReAdWriteStreAm {
+	restore: ThroughStreAm;
 }
 
-export function filter(fn: (data: any) => boolean): FilterStream {
-	const result = <FilterStream><any>es.through(function (data) {
-		if (fn(data)) {
-			this.emit('data', data);
+export function filter(fn: (dAtA: Any) => booleAn): FilterStreAm {
+	const result = <FilterStreAm><Any>es.through(function (dAtA) {
+		if (fn(dAtA)) {
+			this.emit('dAtA', dAtA);
 		} else {
-			result.restore.push(data);
+			result.restore.push(dAtA);
 		}
 	});
 
@@ -306,23 +306,23 @@ export function filter(fn: (data: any) => boolean): FilterStream {
 
 export function versionStringToNumber(versionStr: string) {
 	const semverRegex = /(\d+)\.(\d+)\.(\d+)/;
-	const match = versionStr.match(semverRegex);
-	if (!match) {
-		throw new Error('Version string is not properly formatted: ' + versionStr);
+	const mAtch = versionStr.mAtch(semverRegex);
+	if (!mAtch) {
+		throw new Error('Version string is not properly formAtted: ' + versionStr);
 	}
 
-	return parseInt(match[1], 10) * 1e4 + parseInt(match[2], 10) * 1e2 + parseInt(match[3], 10);
+	return pArseInt(mAtch[1], 10) * 1e4 + pArseInt(mAtch[2], 10) * 1e2 + pArseInt(mAtch[3], 10);
 }
 
-export function streamToPromise(stream: NodeJS.ReadWriteStream): Promise<void> {
+export function streAmToPromise(streAm: NodeJS.ReAdWriteStreAm): Promise<void> {
 	return new Promise((c, e) => {
-		stream.on('error', err => e(err));
-		stream.on('end', () => c());
+		streAm.on('error', err => e(err));
+		streAm.on('end', () => c());
 	});
 }
 
 export function getElectronVersion(): string {
-	const yarnrc = fs.readFileSync(path.join(root, '.yarnrc'), 'utf8');
-	const target = /^target "(.*)"$/m.exec(yarnrc)![1];
-	return target;
+	const yArnrc = fs.reAdFileSync(pAth.join(root, '.yArnrc'), 'utf8');
+	const tArget = /^tArget "(.*)"$/m.exec(yArnrc)![1];
+	return tArget;
 }

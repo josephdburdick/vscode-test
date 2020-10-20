@@ -1,131 +1,131 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as fs from 'fs';
-import { Readable } from 'stream';
-import * as crypto from 'crypto';
-import * as azure from 'azure-storage';
-import * as mime from 'mime';
-import { CosmosClient } from '@azure/cosmos';
+import * As fs from 'fs';
+import { ReAdAble } from 'streAm';
+import * As crypto from 'crypto';
+import * As Azure from 'Azure-storAge';
+import * As mime from 'mime';
+import { CosmosClient } from '@Azure/cosmos';
 
-interface Asset {
-	platform: string;
+interfAce Asset {
+	plAtform: string;
 	type: string;
 	url: string;
-	mooncakeUrl?: string;
-	hash: string;
-	sha256hash: string;
+	mooncAkeUrl?: string;
+	hAsh: string;
+	shA256hAsh: string;
 	size: number;
-	supportsFastUpdate?: boolean;
+	supportsFAstUpdAte?: booleAn;
 }
 
-if (process.argv.length !== 6) {
-	console.error('Usage: node createAsset.js PLATFORM TYPE NAME FILE');
+if (process.Argv.length !== 6) {
+	console.error('UsAge: node creAteAsset.js PLATFORM TYPE NAME FILE');
 	process.exit(-1);
 }
 
-function hashStream(hashName: string, stream: Readable): Promise<string> {
+function hAshStreAm(hAshNAme: string, streAm: ReAdAble): Promise<string> {
 	return new Promise<string>((c, e) => {
-		const shasum = crypto.createHash(hashName);
+		const shAsum = crypto.creAteHAsh(hAshNAme);
 
-		stream
-			.on('data', shasum.update.bind(shasum))
+		streAm
+			.on('dAtA', shAsum.updAte.bind(shAsum))
 			.on('error', e)
-			.on('close', () => c(shasum.digest('hex')));
+			.on('close', () => c(shAsum.digest('hex')));
 	});
 }
 
-async function doesAssetExist(blobService: azure.BlobService, quality: string, blobName: string): Promise<boolean | undefined> {
-	const existsResult = await new Promise<azure.BlobService.BlobResult>((c, e) => blobService.doesBlobExist(quality, blobName, (err, r) => err ? e(err) : c(r)));
+Async function doesAssetExist(blobService: Azure.BlobService, quAlity: string, blobNAme: string): Promise<booleAn | undefined> {
+	const existsResult = AwAit new Promise<Azure.BlobService.BlobResult>((c, e) => blobService.doesBlobExist(quAlity, blobNAme, (err, r) => err ? e(err) : c(r)));
 	return existsResult.exists;
 }
 
-async function uploadBlob(blobService: azure.BlobService, quality: string, blobName: string, filePath: string, fileName: string): Promise<void> {
-	const blobOptions: azure.BlobService.CreateBlockBlobRequestOptions = {
+Async function uploAdBlob(blobService: Azure.BlobService, quAlity: string, blobNAme: string, filePAth: string, fileNAme: string): Promise<void> {
+	const blobOptions: Azure.BlobService.CreAteBlockBlobRequestOptions = {
 		contentSettings: {
-			contentType: mime.lookup(filePath),
-			contentDisposition: `attachment; filename="${fileName}"`,
-			cacheControl: 'max-age=31536000, public'
+			contentType: mime.lookup(filePAth),
+			contentDisposition: `AttAchment; filenAme="${fileNAme}"`,
+			cAcheControl: 'mAx-Age=31536000, public'
 		}
 	};
 
-	await new Promise<void>((c, e) => blobService.createBlockBlobFromLocalFile(quality, blobName, filePath, blobOptions, err => err ? e(err) : c()));
+	AwAit new Promise<void>((c, e) => blobService.creAteBlockBlobFromLocAlFile(quAlity, blobNAme, filePAth, blobOptions, err => err ? e(err) : c()));
 }
 
-function getEnv(name: string): string {
-	const result = process.env[name];
+function getEnv(nAme: string): string {
+	const result = process.env[nAme];
 
 	if (typeof result === 'undefined') {
-		throw new Error('Missing env: ' + name);
+		throw new Error('Missing env: ' + nAme);
 	}
 
 	return result;
 }
 
-async function main(): Promise<void> {
-	const [, , platform, type, fileName, filePath] = process.argv;
-	const quality = getEnv('VSCODE_QUALITY');
+Async function mAin(): Promise<void> {
+	const [, , plAtform, type, fileNAme, filePAth] = process.Argv;
+	const quAlity = getEnv('VSCODE_QUALITY');
 	const commit = getEnv('BUILD_SOURCEVERSION');
 
-	console.log('Creating asset...');
+	console.log('CreAting Asset...');
 
-	const stat = await new Promise<fs.Stats>((c, e) => fs.stat(filePath, (err, stat) => err ? e(err) : c(stat)));
-	const size = stat.size;
+	const stAt = AwAit new Promise<fs.StAts>((c, e) => fs.stAt(filePAth, (err, stAt) => err ? e(err) : c(stAt)));
+	const size = stAt.size;
 
 	console.log('Size:', size);
 
-	const stream = fs.createReadStream(filePath);
-	const [sha1hash, sha256hash] = await Promise.all([hashStream('sha1', stream), hashStream('sha256', stream)]);
+	const streAm = fs.creAteReAdStreAm(filePAth);
+	const [shA1hAsh, shA256hAsh] = AwAit Promise.All([hAshStreAm('shA1', streAm), hAshStreAm('shA256', streAm)]);
 
-	console.log('SHA1:', sha1hash);
-	console.log('SHA256:', sha256hash);
+	console.log('SHA1:', shA1hAsh);
+	console.log('SHA256:', shA256hAsh);
 
-	const blobName = commit + '/' + fileName;
-	const storageAccount = process.env['AZURE_STORAGE_ACCOUNT_2']!;
+	const blobNAme = commit + '/' + fileNAme;
+	const storAgeAccount = process.env['AZURE_STORAGE_ACCOUNT_2']!;
 
-	const blobService = azure.createBlobService(storageAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
-		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
+	const blobService = Azure.creAteBlobService(storAgeAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
+		.withFilter(new Azure.ExponentiAlRetryPolicyFilter(20));
 
-	const blobExists = await doesAssetExist(blobService, quality, blobName);
+	const blobExists = AwAit doesAssetExist(blobService, quAlity, blobNAme);
 
 	if (blobExists) {
-		console.log(`Blob ${quality}, ${blobName} already exists, not publishing again.`);
+		console.log(`Blob ${quAlity}, ${blobNAme} AlreAdy exists, not publishing AgAin.`);
 		return;
 	}
 
-	console.log('Uploading blobs to Azure storage...');
+	console.log('UploAding blobs to Azure storAge...');
 
-	await uploadBlob(blobService, quality, blobName, filePath, fileName);
+	AwAit uploAdBlob(blobService, quAlity, blobNAme, filePAth, fileNAme);
 
-	console.log('Blobs successfully uploaded.');
+	console.log('Blobs successfully uploAded.');
 
-	const asset: Asset = {
-		platform,
+	const Asset: Asset = {
+		plAtform,
 		type,
-		url: `${process.env['AZURE_CDN_URL']}/${quality}/${blobName}`,
-		hash: sha1hash,
-		sha256hash,
+		url: `${process.env['AZURE_CDN_URL']}/${quAlity}/${blobNAme}`,
+		hAsh: shA1hAsh,
+		shA256hAsh,
 		size
 	};
 
-	// Remove this if we ever need to rollback fast updates for windows
-	if (/win32/.test(platform)) {
-		asset.supportsFastUpdate = true;
+	// Remove this if we ever need to rollbAck fAst updAtes for windows
+	if (/win32/.test(plAtform)) {
+		Asset.supportsFAstUpdAte = true;
 	}
 
-	console.log('Asset:', JSON.stringify(asset, null, '  '));
+	console.log('Asset:', JSON.stringify(Asset, null, '  '));
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const scripts = client.database('builds').container(quality).scripts;
-	await scripts.storedProcedure('createAsset').execute('', [commit, asset, true]);
+	const scripts = client.dAtAbAse('builds').contAiner(quAlity).scripts;
+	AwAit scripts.storedProcedure('creAteAsset').execute('', [commit, Asset, true]);
 }
 
-main().then(() => {
-	console.log('Asset successfully created');
+mAin().then(() => {
+	console.log('Asset successfully creAted');
 	process.exit(0);
 }, err => {
 	console.error(err);

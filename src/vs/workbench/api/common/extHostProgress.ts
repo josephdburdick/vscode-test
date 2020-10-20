@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ProgressOptions } from 'vscode';
-import { MainThreadProgressShape, ExtHostProgressShape } from './extHost.protocol';
-import { ProgressLocation } from './extHostTypeConverters';
-import { Progress, IProgressStep } from 'vs/platform/progress/common/progress';
-import { localize } from 'vs/nls';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { throttle } from 'vs/base/common/decorators';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import { MAinThreAdProgressShApe, ExtHostProgressShApe } from './extHost.protocol';
+import { ProgressLocAtion } from './extHostTypeConverters';
+import { Progress, IProgressStep } from 'vs/plAtform/progress/common/progress';
+import { locAlize } from 'vs/nls';
+import { CAncellAtionTokenSource, CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { throttle } from 'vs/bAse/common/decorAtors';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
 
-export class ExtHostProgress implements ExtHostProgressShape {
+export clAss ExtHostProgress implements ExtHostProgressShApe {
 
-	private _proxy: MainThreadProgressShape;
-	private _handles: number = 0;
-	private _mapHandleToCancellationSource: Map<number, CancellationTokenSource> = new Map();
+	privAte _proxy: MAinThreAdProgressShApe;
+	privAte _hAndles: number = 0;
+	privAte _mApHAndleToCAncellAtionSource: MAp<number, CAncellAtionTokenSource> = new MAp();
 
-	constructor(proxy: MainThreadProgressShape) {
+	constructor(proxy: MAinThreAdProgressShApe) {
 		this._proxy = proxy;
 	}
 
-	withProgress<R>(extension: IExtensionDescription, options: ProgressOptions, task: (progress: Progress<IProgressStep>, token: CancellationToken) => Thenable<R>): Thenable<R> {
-		const handle = this._handles++;
-		const { title, location, cancellable } = options;
-		const source = localize('extensionSource', "{0} (Extension)", extension.displayName || extension.name);
+	withProgress<R>(extension: IExtensionDescription, options: ProgressOptions, tAsk: (progress: Progress<IProgressStep>, token: CAncellAtionToken) => ThenAble<R>): ThenAble<R> {
+		const hAndle = this._hAndles++;
+		const { title, locAtion, cAncellAble } = options;
+		const source = locAlize('extensionSource', "{0} (Extension)", extension.displAyNAme || extension.nAme);
 
-		this._proxy.$startProgress(handle, { location: ProgressLocation.from(location), title, source, cancellable }, extension);
-		return this._withProgress(handle, task, !!cancellable);
+		this._proxy.$stArtProgress(hAndle, { locAtion: ProgressLocAtion.from(locAtion), title, source, cAncellAble }, extension);
+		return this._withProgress(hAndle, tAsk, !!cAncellAble);
 	}
 
-	private _withProgress<R>(handle: number, task: (progress: Progress<IProgressStep>, token: CancellationToken) => Thenable<R>, cancellable: boolean): Thenable<R> {
-		let source: CancellationTokenSource | undefined;
-		if (cancellable) {
-			source = new CancellationTokenSource();
-			this._mapHandleToCancellationSource.set(handle, source);
+	privAte _withProgress<R>(hAndle: number, tAsk: (progress: Progress<IProgressStep>, token: CAncellAtionToken) => ThenAble<R>, cAncellAble: booleAn): ThenAble<R> {
+		let source: CAncellAtionTokenSource | undefined;
+		if (cAncellAble) {
+			source = new CAncellAtionTokenSource();
+			this._mApHAndleToCAncellAtionSource.set(hAndle, source);
 		}
 
-		const progressEnd = (handle: number): void => {
-			this._proxy.$progressEnd(handle);
-			this._mapHandleToCancellationSource.delete(handle);
+		const progressEnd = (hAndle: number): void => {
+			this._proxy.$progressEnd(hAndle);
+			this._mApHAndleToCAncellAtionSource.delete(hAndle);
 			if (source) {
 				source.dispose();
 			}
 		};
 
-		let p: Thenable<R>;
+		let p: ThenAble<R>;
 
 		try {
-			p = task(new ProgressCallback(this._proxy, handle), cancellable && source ? source.token : CancellationToken.None);
-		} catch (err) {
-			progressEnd(handle);
+			p = tAsk(new ProgressCAllbAck(this._proxy, hAndle), cAncellAble && source ? source.token : CAncellAtionToken.None);
+		} cAtch (err) {
+			progressEnd(hAndle);
 			throw err;
 		}
 
-		p.then(result => progressEnd(handle), err => progressEnd(handle));
+		p.then(result => progressEnd(hAndle), err => progressEnd(hAndle));
 		return p;
 	}
 
-	public $acceptProgressCanceled(handle: number): void {
-		const source = this._mapHandleToCancellationSource.get(handle);
+	public $AcceptProgressCAnceled(hAndle: number): void {
+		const source = this._mApHAndleToCAncellAtionSource.get(hAndle);
 		if (source) {
-			source.cancel();
-			this._mapHandleToCancellationSource.delete(handle);
+			source.cAncel();
+			this._mApHAndleToCAncellAtionSource.delete(hAndle);
 		}
 	}
 }
 
-function mergeProgress(result: IProgressStep, currentValue: IProgressStep): IProgressStep {
-	result.message = currentValue.message;
-	if (typeof currentValue.increment === 'number') {
+function mergeProgress(result: IProgressStep, currentVAlue: IProgressStep): IProgressStep {
+	result.messAge = currentVAlue.messAge;
+	if (typeof currentVAlue.increment === 'number') {
 		if (typeof result.increment === 'number') {
-			result.increment += currentValue.increment;
+			result.increment += currentVAlue.increment;
 		} else {
-			result.increment = currentValue.increment;
+			result.increment = currentVAlue.increment;
 		}
 	}
 
 	return result;
 }
 
-class ProgressCallback extends Progress<IProgressStep> {
-	constructor(private _proxy: MainThreadProgressShape, private _handle: number) {
+clAss ProgressCAllbAck extends Progress<IProgressStep> {
+	constructor(privAte _proxy: MAinThreAdProgressShApe, privAte _hAndle: number) {
 		super(p => this.throttledReport(p));
 	}
 
-	@throttle(100, (result: IProgressStep, currentValue: IProgressStep) => mergeProgress(result, currentValue), () => Object.create(null))
+	@throttle(100, (result: IProgressStep, currentVAlue: IProgressStep) => mergeProgress(result, currentVAlue), () => Object.creAte(null))
 	throttledReport(p: IProgressStep): void {
-		this._proxy.$progressReport(this._handle, p);
+		this._proxy.$progressReport(this._hAndle, p);
 	}
 }

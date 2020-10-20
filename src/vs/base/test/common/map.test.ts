@@ -1,854 +1,854 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ResourceMap, TernarySearchTree, PathIterator, StringIterator, LinkedMap, Touch, LRUCache, UriIterator } from 'vs/base/common/map';
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { extUriIgnorePathCase } from 'vs/base/common/resources';
+import { ResourceMAp, TernArySeArchTree, PAthIterAtor, StringIterAtor, LinkedMAp, Touch, LRUCAche, UriIterAtor } from 'vs/bAse/common/mAp';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { extUriIgnorePAthCAse } from 'vs/bAse/common/resources';
 
-suite('Map', () => {
+suite('MAp', () => {
 
-	test('LinkedMap - Simple', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('bk', 'bv');
-		assert.deepStrictEqual([...map.keys()], ['ak', 'bk']);
-		assert.deepStrictEqual([...map.values()], ['av', 'bv']);
-		assert.equal(map.first, 'av');
-		assert.equal(map.last, 'bv');
+	test('LinkedMAp - Simple', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('bk', 'bv');
+		Assert.deepStrictEquAl([...mAp.keys()], ['Ak', 'bk']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['Av', 'bv']);
+		Assert.equAl(mAp.first, 'Av');
+		Assert.equAl(mAp.lAst, 'bv');
 	});
 
-	test('LinkedMap - Touch Old one', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('ak', 'av', Touch.AsOld);
-		assert.deepStrictEqual([...map.keys()], ['ak']);
-		assert.deepStrictEqual([...map.values()], ['av']);
+	test('LinkedMAp - Touch Old one', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('Ak', 'Av', Touch.AsOld);
+		Assert.deepStrictEquAl([...mAp.keys()], ['Ak']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['Av']);
 	});
 
-	test('LinkedMap - Touch New one', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('ak', 'av', Touch.AsNew);
-		assert.deepStrictEqual([...map.keys()], ['ak']);
-		assert.deepStrictEqual([...map.values()], ['av']);
+	test('LinkedMAp - Touch New one', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('Ak', 'Av', Touch.AsNew);
+		Assert.deepStrictEquAl([...mAp.keys()], ['Ak']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['Av']);
 	});
 
-	test('LinkedMap - Touch Old two', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('bk', 'bv');
-		map.set('bk', 'bv', Touch.AsOld);
-		assert.deepStrictEqual([...map.keys()], ['bk', 'ak']);
-		assert.deepStrictEqual([...map.values()], ['bv', 'av']);
+	test('LinkedMAp - Touch Old two', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('bk', 'bv');
+		mAp.set('bk', 'bv', Touch.AsOld);
+		Assert.deepStrictEquAl([...mAp.keys()], ['bk', 'Ak']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['bv', 'Av']);
 	});
 
-	test('LinkedMap - Touch New two', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('bk', 'bv');
-		map.set('ak', 'av', Touch.AsNew);
-		assert.deepStrictEqual([...map.keys()], ['bk', 'ak']);
-		assert.deepStrictEqual([...map.values()], ['bv', 'av']);
+	test('LinkedMAp - Touch New two', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('bk', 'bv');
+		mAp.set('Ak', 'Av', Touch.AsNew);
+		Assert.deepStrictEquAl([...mAp.keys()], ['bk', 'Ak']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['bv', 'Av']);
 	});
 
-	test('LinkedMap - Touch Old from middle', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('bk', 'bv');
-		map.set('ck', 'cv');
-		map.set('bk', 'bv', Touch.AsOld);
-		assert.deepStrictEqual([...map.keys()], ['bk', 'ak', 'ck']);
-		assert.deepStrictEqual([...map.values()], ['bv', 'av', 'cv']);
+	test('LinkedMAp - Touch Old from middle', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('bk', 'bv');
+		mAp.set('ck', 'cv');
+		mAp.set('bk', 'bv', Touch.AsOld);
+		Assert.deepStrictEquAl([...mAp.keys()], ['bk', 'Ak', 'ck']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['bv', 'Av', 'cv']);
 	});
 
-	test('LinkedMap - Touch New from middle', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('bk', 'bv');
-		map.set('ck', 'cv');
-		map.set('bk', 'bv', Touch.AsNew);
-		assert.deepStrictEqual([...map.keys()], ['ak', 'ck', 'bk']);
-		assert.deepStrictEqual([...map.values()], ['av', 'cv', 'bv']);
+	test('LinkedMAp - Touch New from middle', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('bk', 'bv');
+		mAp.set('ck', 'cv');
+		mAp.set('bk', 'bv', Touch.AsNew);
+		Assert.deepStrictEquAl([...mAp.keys()], ['Ak', 'ck', 'bk']);
+		Assert.deepStrictEquAl([...mAp.vAlues()], ['Av', 'cv', 'bv']);
 	});
 
-	test('LinkedMap - basics', function () {
-		const map = new LinkedMap<string, any>();
+	test('LinkedMAp - bAsics', function () {
+		const mAp = new LinkedMAp<string, Any>();
 
-		assert.equal(map.size, 0);
+		Assert.equAl(mAp.size, 0);
 
-		map.set('1', 1);
-		map.set('2', '2');
-		map.set('3', true);
+		mAp.set('1', 1);
+		mAp.set('2', '2');
+		mAp.set('3', true);
 
-		const obj = Object.create(null);
-		map.set('4', obj);
+		const obj = Object.creAte(null);
+		mAp.set('4', obj);
 
-		const date = Date.now();
-		map.set('5', date);
+		const dAte = DAte.now();
+		mAp.set('5', dAte);
 
-		assert.equal(map.size, 5);
-		assert.equal(map.get('1'), 1);
-		assert.equal(map.get('2'), '2');
-		assert.equal(map.get('3'), true);
-		assert.equal(map.get('4'), obj);
-		assert.equal(map.get('5'), date);
-		assert.ok(!map.get('6'));
+		Assert.equAl(mAp.size, 5);
+		Assert.equAl(mAp.get('1'), 1);
+		Assert.equAl(mAp.get('2'), '2');
+		Assert.equAl(mAp.get('3'), true);
+		Assert.equAl(mAp.get('4'), obj);
+		Assert.equAl(mAp.get('5'), dAte);
+		Assert.ok(!mAp.get('6'));
 
-		map.delete('6');
-		assert.equal(map.size, 5);
-		assert.equal(map.delete('1'), true);
-		assert.equal(map.delete('2'), true);
-		assert.equal(map.delete('3'), true);
-		assert.equal(map.delete('4'), true);
-		assert.equal(map.delete('5'), true);
+		mAp.delete('6');
+		Assert.equAl(mAp.size, 5);
+		Assert.equAl(mAp.delete('1'), true);
+		Assert.equAl(mAp.delete('2'), true);
+		Assert.equAl(mAp.delete('3'), true);
+		Assert.equAl(mAp.delete('4'), true);
+		Assert.equAl(mAp.delete('5'), true);
 
-		assert.equal(map.size, 0);
-		assert.ok(!map.get('5'));
-		assert.ok(!map.get('4'));
-		assert.ok(!map.get('3'));
-		assert.ok(!map.get('2'));
-		assert.ok(!map.get('1'));
+		Assert.equAl(mAp.size, 0);
+		Assert.ok(!mAp.get('5'));
+		Assert.ok(!mAp.get('4'));
+		Assert.ok(!mAp.get('3'));
+		Assert.ok(!mAp.get('2'));
+		Assert.ok(!mAp.get('1'));
 
-		map.set('1', 1);
-		map.set('2', '2');
-		map.set('3', true);
+		mAp.set('1', 1);
+		mAp.set('2', '2');
+		mAp.set('3', true);
 
-		assert.ok(map.has('1'));
-		assert.equal(map.get('1'), 1);
-		assert.equal(map.get('2'), '2');
-		assert.equal(map.get('3'), true);
+		Assert.ok(mAp.hAs('1'));
+		Assert.equAl(mAp.get('1'), 1);
+		Assert.equAl(mAp.get('2'), '2');
+		Assert.equAl(mAp.get('3'), true);
 
-		map.clear();
+		mAp.cleAr();
 
-		assert.equal(map.size, 0);
-		assert.ok(!map.get('1'));
-		assert.ok(!map.get('2'));
-		assert.ok(!map.get('3'));
-		assert.ok(!map.has('1'));
+		Assert.equAl(mAp.size, 0);
+		Assert.ok(!mAp.get('1'));
+		Assert.ok(!mAp.get('2'));
+		Assert.ok(!mAp.get('3'));
+		Assert.ok(!mAp.hAs('1'));
 	});
 
-	test('LinkedMap - Iterators', () => {
-		const map = new LinkedMap<number, any>();
-		map.set(1, 1);
-		map.set(2, 2);
-		map.set(3, 3);
+	test('LinkedMAp - IterAtors', () => {
+		const mAp = new LinkedMAp<number, Any>();
+		mAp.set(1, 1);
+		mAp.set(2, 2);
+		mAp.set(3, 3);
 
-		for (const elem of map.keys()) {
-			assert.ok(elem);
+		for (const elem of mAp.keys()) {
+			Assert.ok(elem);
 		}
 
-		for (const elem of map.values()) {
-			assert.ok(elem);
+		for (const elem of mAp.vAlues()) {
+			Assert.ok(elem);
 		}
 
-		for (const elem of map.entries()) {
-			assert.ok(elem);
+		for (const elem of mAp.entries()) {
+			Assert.ok(elem);
 		}
 
 		{
-			const keys = map.keys();
-			const values = map.values();
-			const entries = map.entries();
-			map.get(1);
+			const keys = mAp.keys();
+			const vAlues = mAp.vAlues();
+			const entries = mAp.entries();
+			mAp.get(1);
 			keys.next();
-			values.next();
+			vAlues.next();
 			entries.next();
 		}
 
 		{
-			const keys = map.keys();
-			const values = map.values();
-			const entries = map.entries();
-			map.get(1, Touch.AsNew);
+			const keys = mAp.keys();
+			const vAlues = mAp.vAlues();
+			const entries = mAp.entries();
+			mAp.get(1, Touch.AsNew);
 
 			let exceptions: number = 0;
 			try {
 				keys.next();
-			} catch (err) {
+			} cAtch (err) {
 				exceptions++;
 			}
 			try {
-				values.next();
-			} catch (err) {
+				vAlues.next();
+			} cAtch (err) {
 				exceptions++;
 			}
 			try {
 				entries.next();
-			} catch (err) {
+			} cAtch (err) {
 				exceptions++;
 			}
 
-			assert.strictEqual(exceptions, 3);
+			Assert.strictEquAl(exceptions, 3);
 		}
 	});
 
-	test('LinkedMap - LRU Cache simple', () => {
-		const cache = new LRUCache<number, number>(5);
+	test('LinkedMAp - LRU CAche simple', () => {
+		const cAche = new LRUCAche<number, number>(5);
 
-		[1, 2, 3, 4, 5].forEach(value => cache.set(value, value));
-		assert.strictEqual(cache.size, 5);
-		cache.set(6, 6);
-		assert.strictEqual(cache.size, 5);
-		assert.deepStrictEqual([...cache.keys()], [2, 3, 4, 5, 6]);
-		cache.set(7, 7);
-		assert.strictEqual(cache.size, 5);
-		assert.deepStrictEqual([...cache.keys()], [3, 4, 5, 6, 7]);
-		let values: number[] = [];
-		[3, 4, 5, 6, 7].forEach(key => values.push(cache.get(key)!));
-		assert.deepStrictEqual(values, [3, 4, 5, 6, 7]);
+		[1, 2, 3, 4, 5].forEAch(vAlue => cAche.set(vAlue, vAlue));
+		Assert.strictEquAl(cAche.size, 5);
+		cAche.set(6, 6);
+		Assert.strictEquAl(cAche.size, 5);
+		Assert.deepStrictEquAl([...cAche.keys()], [2, 3, 4, 5, 6]);
+		cAche.set(7, 7);
+		Assert.strictEquAl(cAche.size, 5);
+		Assert.deepStrictEquAl([...cAche.keys()], [3, 4, 5, 6, 7]);
+		let vAlues: number[] = [];
+		[3, 4, 5, 6, 7].forEAch(key => vAlues.push(cAche.get(key)!));
+		Assert.deepStrictEquAl(vAlues, [3, 4, 5, 6, 7]);
 	});
 
-	test('LinkedMap - LRU Cache get', () => {
-		const cache = new LRUCache<number, number>(5);
+	test('LinkedMAp - LRU CAche get', () => {
+		const cAche = new LRUCAche<number, number>(5);
 
-		[1, 2, 3, 4, 5].forEach(value => cache.set(value, value));
-		assert.strictEqual(cache.size, 5);
-		assert.deepStrictEqual([...cache.keys()], [1, 2, 3, 4, 5]);
-		cache.get(3);
-		assert.deepStrictEqual([...cache.keys()], [1, 2, 4, 5, 3]);
-		cache.peek(4);
-		assert.deepStrictEqual([...cache.keys()], [1, 2, 4, 5, 3]);
-		let values: number[] = [];
-		[1, 2, 3, 4, 5].forEach(key => values.push(cache.get(key)!));
-		assert.deepStrictEqual(values, [1, 2, 3, 4, 5]);
+		[1, 2, 3, 4, 5].forEAch(vAlue => cAche.set(vAlue, vAlue));
+		Assert.strictEquAl(cAche.size, 5);
+		Assert.deepStrictEquAl([...cAche.keys()], [1, 2, 3, 4, 5]);
+		cAche.get(3);
+		Assert.deepStrictEquAl([...cAche.keys()], [1, 2, 4, 5, 3]);
+		cAche.peek(4);
+		Assert.deepStrictEquAl([...cAche.keys()], [1, 2, 4, 5, 3]);
+		let vAlues: number[] = [];
+		[1, 2, 3, 4, 5].forEAch(key => vAlues.push(cAche.get(key)!));
+		Assert.deepStrictEquAl(vAlues, [1, 2, 3, 4, 5]);
 	});
 
-	test('LinkedMap - LRU Cache limit', () => {
-		const cache = new LRUCache<number, number>(10);
+	test('LinkedMAp - LRU CAche limit', () => {
+		const cAche = new LRUCAche<number, number>(10);
 
 		for (let i = 1; i <= 10; i++) {
-			cache.set(i, i);
+			cAche.set(i, i);
 		}
-		assert.strictEqual(cache.size, 10);
-		cache.limit = 5;
-		assert.strictEqual(cache.size, 5);
-		assert.deepStrictEqual([...cache.keys()], [6, 7, 8, 9, 10]);
-		cache.limit = 20;
-		assert.strictEqual(cache.size, 5);
+		Assert.strictEquAl(cAche.size, 10);
+		cAche.limit = 5;
+		Assert.strictEquAl(cAche.size, 5);
+		Assert.deepStrictEquAl([...cAche.keys()], [6, 7, 8, 9, 10]);
+		cAche.limit = 20;
+		Assert.strictEquAl(cAche.size, 5);
 		for (let i = 11; i <= 20; i++) {
-			cache.set(i, i);
+			cAche.set(i, i);
 		}
-		assert.deepEqual(cache.size, 15);
-		let values: number[] = [];
+		Assert.deepEquAl(cAche.size, 15);
+		let vAlues: number[] = [];
 		for (let i = 6; i <= 20; i++) {
-			values.push(cache.get(i)!);
-			assert.strictEqual(cache.get(i), i);
+			vAlues.push(cAche.get(i)!);
+			Assert.strictEquAl(cAche.get(i), i);
 		}
-		assert.deepStrictEqual([...cache.values()], values);
+		Assert.deepStrictEquAl([...cAche.vAlues()], vAlues);
 	});
 
-	test('LinkedMap - LRU Cache limit with ratio', () => {
-		const cache = new LRUCache<number, number>(10, 0.5);
+	test('LinkedMAp - LRU CAche limit with rAtio', () => {
+		const cAche = new LRUCAche<number, number>(10, 0.5);
 
 		for (let i = 1; i <= 10; i++) {
-			cache.set(i, i);
+			cAche.set(i, i);
 		}
-		assert.strictEqual(cache.size, 10);
-		cache.set(11, 11);
-		assert.strictEqual(cache.size, 5);
-		assert.deepStrictEqual([...cache.keys()], [7, 8, 9, 10, 11]);
-		let values: number[] = [];
-		[...cache.keys()].forEach(key => values.push(cache.get(key)!));
-		assert.deepStrictEqual(values, [7, 8, 9, 10, 11]);
-		assert.deepStrictEqual([...cache.values()], values);
+		Assert.strictEquAl(cAche.size, 10);
+		cAche.set(11, 11);
+		Assert.strictEquAl(cAche.size, 5);
+		Assert.deepStrictEquAl([...cAche.keys()], [7, 8, 9, 10, 11]);
+		let vAlues: number[] = [];
+		[...cAche.keys()].forEAch(key => vAlues.push(cAche.get(key)!));
+		Assert.deepStrictEquAl(vAlues, [7, 8, 9, 10, 11]);
+		Assert.deepStrictEquAl([...cAche.vAlues()], vAlues);
 	});
 
-	test('LinkedMap - toJSON / fromJSON', () => {
-		let map = new LinkedMap<string, string>();
-		map.set('ak', 'av');
-		map.set('bk', 'bv');
-		map.set('ck', 'cv');
+	test('LinkedMAp - toJSON / fromJSON', () => {
+		let mAp = new LinkedMAp<string, string>();
+		mAp.set('Ak', 'Av');
+		mAp.set('bk', 'bv');
+		mAp.set('ck', 'cv');
 
-		const json = map.toJSON();
-		map = new LinkedMap<string, string>();
-		map.fromJSON(json);
+		const json = mAp.toJSON();
+		mAp = new LinkedMAp<string, string>();
+		mAp.fromJSON(json);
 
 		let i = 0;
-		map.forEach((value, key) => {
+		mAp.forEAch((vAlue, key) => {
 			if (i === 0) {
-				assert.equal(key, 'ak');
-				assert.equal(value, 'av');
+				Assert.equAl(key, 'Ak');
+				Assert.equAl(vAlue, 'Av');
 			} else if (i === 1) {
-				assert.equal(key, 'bk');
-				assert.equal(value, 'bv');
+				Assert.equAl(key, 'bk');
+				Assert.equAl(vAlue, 'bv');
 			} else if (i === 2) {
-				assert.equal(key, 'ck');
-				assert.equal(value, 'cv');
+				Assert.equAl(key, 'ck');
+				Assert.equAl(vAlue, 'cv');
 			}
 			i++;
 		});
 	});
 
-	test('LinkedMap - delete Head and Tail', function () {
-		const map = new LinkedMap<string, number>();
+	test('LinkedMAp - delete HeAd And TAil', function () {
+		const mAp = new LinkedMAp<string, number>();
 
-		assert.equal(map.size, 0);
+		Assert.equAl(mAp.size, 0);
 
-		map.set('1', 1);
-		assert.equal(map.size, 1);
-		map.delete('1');
-		assert.equal(map.get('1'), undefined);
-		assert.equal(map.size, 0);
-		assert.equal([...map.keys()].length, 0);
+		mAp.set('1', 1);
+		Assert.equAl(mAp.size, 1);
+		mAp.delete('1');
+		Assert.equAl(mAp.get('1'), undefined);
+		Assert.equAl(mAp.size, 0);
+		Assert.equAl([...mAp.keys()].length, 0);
 	});
 
-	test('LinkedMap - delete Head', function () {
-		const map = new LinkedMap<string, number>();
+	test('LinkedMAp - delete HeAd', function () {
+		const mAp = new LinkedMAp<string, number>();
 
-		assert.equal(map.size, 0);
+		Assert.equAl(mAp.size, 0);
 
-		map.set('1', 1);
-		map.set('2', 2);
-		assert.equal(map.size, 2);
-		map.delete('1');
-		assert.equal(map.get('2'), 2);
-		assert.equal(map.size, 1);
-		assert.equal([...map.keys()].length, 1);
-		assert.equal([...map.keys()][0], 2);
+		mAp.set('1', 1);
+		mAp.set('2', 2);
+		Assert.equAl(mAp.size, 2);
+		mAp.delete('1');
+		Assert.equAl(mAp.get('2'), 2);
+		Assert.equAl(mAp.size, 1);
+		Assert.equAl([...mAp.keys()].length, 1);
+		Assert.equAl([...mAp.keys()][0], 2);
 	});
 
-	test('LinkedMap - delete Tail', function () {
-		const map = new LinkedMap<string, number>();
+	test('LinkedMAp - delete TAil', function () {
+		const mAp = new LinkedMAp<string, number>();
 
-		assert.equal(map.size, 0);
+		Assert.equAl(mAp.size, 0);
 
-		map.set('1', 1);
-		map.set('2', 2);
-		assert.equal(map.size, 2);
-		map.delete('2');
-		assert.equal(map.get('1'), 1);
-		assert.equal(map.size, 1);
-		assert.equal([...map.keys()].length, 1);
-		assert.equal([...map.keys()][0], 1);
+		mAp.set('1', 1);
+		mAp.set('2', 2);
+		Assert.equAl(mAp.size, 2);
+		mAp.delete('2');
+		Assert.equAl(mAp.get('1'), 1);
+		Assert.equAl(mAp.size, 1);
+		Assert.equAl([...mAp.keys()].length, 1);
+		Assert.equAl([...mAp.keys()][0], 1);
 	});
 
 
-	test('PathIterator', () => {
-		const iter = new PathIterator();
+	test('PAthIterAtor', () => {
+		const iter = new PAthIterAtor();
 		iter.reset('file:///usr/bin/file.txt');
 
-		assert.equal(iter.value(), 'file:');
-		assert.equal(iter.hasNext(), true);
-		assert.equal(iter.cmp('file:'), 0);
-		assert.ok(iter.cmp('a') < 0);
-		assert.ok(iter.cmp('aile:') < 0);
-		assert.ok(iter.cmp('z') > 0);
-		assert.ok(iter.cmp('zile:') > 0);
+		Assert.equAl(iter.vAlue(), 'file:');
+		Assert.equAl(iter.hAsNext(), true);
+		Assert.equAl(iter.cmp('file:'), 0);
+		Assert.ok(iter.cmp('A') < 0);
+		Assert.ok(iter.cmp('Aile:') < 0);
+		Assert.ok(iter.cmp('z') > 0);
+		Assert.ok(iter.cmp('zile:') > 0);
 
 		iter.next();
-		assert.equal(iter.value(), 'usr');
-		assert.equal(iter.hasNext(), true);
+		Assert.equAl(iter.vAlue(), 'usr');
+		Assert.equAl(iter.hAsNext(), true);
 
 		iter.next();
-		assert.equal(iter.value(), 'bin');
-		assert.equal(iter.hasNext(), true);
+		Assert.equAl(iter.vAlue(), 'bin');
+		Assert.equAl(iter.hAsNext(), true);
 
 		iter.next();
-		assert.equal(iter.value(), 'file.txt');
-		assert.equal(iter.hasNext(), false);
+		Assert.equAl(iter.vAlue(), 'file.txt');
+		Assert.equAl(iter.hAsNext(), fAlse);
 
 		iter.next();
-		assert.equal(iter.value(), '');
-		assert.equal(iter.hasNext(), false);
+		Assert.equAl(iter.vAlue(), '');
+		Assert.equAl(iter.hAsNext(), fAlse);
 		iter.next();
-		assert.equal(iter.value(), '');
-		assert.equal(iter.hasNext(), false);
+		Assert.equAl(iter.vAlue(), '');
+		Assert.equAl(iter.hAsNext(), fAlse);
 
 		//
-		iter.reset('/foo/bar/');
-		assert.equal(iter.value(), 'foo');
-		assert.equal(iter.hasNext(), true);
+		iter.reset('/foo/bAr/');
+		Assert.equAl(iter.vAlue(), 'foo');
+		Assert.equAl(iter.hAsNext(), true);
 
 		iter.next();
-		assert.equal(iter.value(), 'bar');
-		assert.equal(iter.hasNext(), false);
+		Assert.equAl(iter.vAlue(), 'bAr');
+		Assert.equAl(iter.hAsNext(), fAlse);
 	});
 
-	test('URIIterator', function () {
-		const iter = new UriIterator(false);
-		iter.reset(URI.parse('file:///usr/bin/file.txt'));
+	test('URIIterAtor', function () {
+		const iter = new UriIterAtor(fAlse);
+		iter.reset(URI.pArse('file:///usr/bin/file.txt'));
 
-		assert.equal(iter.value(), 'file');
-		// assert.equal(iter.cmp('FILE'), 0);
-		assert.equal(iter.cmp('file'), 0);
-		assert.equal(iter.hasNext(), true);
+		Assert.equAl(iter.vAlue(), 'file');
+		// Assert.equAl(iter.cmp('FILE'), 0);
+		Assert.equAl(iter.cmp('file'), 0);
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		assert.equal(iter.value(), 'usr');
-		assert.equal(iter.hasNext(), true);
+		Assert.equAl(iter.vAlue(), 'usr');
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		assert.equal(iter.value(), 'bin');
-		assert.equal(iter.hasNext(), true);
+		Assert.equAl(iter.vAlue(), 'bin');
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		assert.equal(iter.value(), 'file.txt');
-		assert.equal(iter.hasNext(), false);
+		Assert.equAl(iter.vAlue(), 'file.txt');
+		Assert.equAl(iter.hAsNext(), fAlse);
 
 
-		iter.reset(URI.parse('file://share/usr/bin/file.txt?foo'));
+		iter.reset(URI.pArse('file://shAre/usr/bin/file.txt?foo'));
 
 		// scheme
-		assert.equal(iter.value(), 'file');
-		// assert.equal(iter.cmp('FILE'), 0);
-		assert.equal(iter.cmp('file'), 0);
-		assert.equal(iter.hasNext(), true);
+		Assert.equAl(iter.vAlue(), 'file');
+		// Assert.equAl(iter.cmp('FILE'), 0);
+		Assert.equAl(iter.cmp('file'), 0);
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		// authority
-		assert.equal(iter.value(), 'share');
-		assert.equal(iter.cmp('SHARe'), 0);
-		assert.equal(iter.hasNext(), true);
+		// Authority
+		Assert.equAl(iter.vAlue(), 'shAre');
+		Assert.equAl(iter.cmp('SHARe'), 0);
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		// path
-		assert.equal(iter.value(), 'usr');
-		assert.equal(iter.hasNext(), true);
+		// pAth
+		Assert.equAl(iter.vAlue(), 'usr');
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		// path
-		assert.equal(iter.value(), 'bin');
-		assert.equal(iter.hasNext(), true);
+		// pAth
+		Assert.equAl(iter.vAlue(), 'bin');
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
-		// path
-		assert.equal(iter.value(), 'file.txt');
-		assert.equal(iter.hasNext(), true);
+		// pAth
+		Assert.equAl(iter.vAlue(), 'file.txt');
+		Assert.equAl(iter.hAsNext(), true);
 		iter.next();
 
 		// query
-		assert.equal(iter.value(), 'foo');
-		assert.equal(iter.cmp('z') > 0, true);
-		assert.equal(iter.cmp('a') < 0, true);
-		assert.equal(iter.hasNext(), false);
+		Assert.equAl(iter.vAlue(), 'foo');
+		Assert.equAl(iter.cmp('z') > 0, true);
+		Assert.equAl(iter.cmp('A') < 0, true);
+		Assert.equAl(iter.hAsNext(), fAlse);
 	});
 
-	function assertTernarySearchTree<E>(trie: TernarySearchTree<string, E>, ...elements: [string, E][]) {
-		const map = new Map<string, E>();
-		for (const [key, value] of elements) {
-			map.set(key, value);
+	function AssertTernArySeArchTree<E>(trie: TernArySeArchTree<string, E>, ...elements: [string, E][]) {
+		const mAp = new MAp<string, E>();
+		for (const [key, vAlue] of elements) {
+			mAp.set(key, vAlue);
 		}
-		map.forEach((value, key) => {
-			assert.equal(trie.get(key), value);
+		mAp.forEAch((vAlue, key) => {
+			Assert.equAl(trie.get(key), vAlue);
 		});
 
-		// forEach
-		let forEachCount = 0;
-		trie.forEach((element, key) => {
-			assert.equal(element, map.get(key));
-			forEachCount++;
+		// forEAch
+		let forEAchCount = 0;
+		trie.forEAch((element, key) => {
+			Assert.equAl(element, mAp.get(key));
+			forEAchCount++;
 		});
-		assert.equal(map.size, forEachCount);
+		Assert.equAl(mAp.size, forEAchCount);
 
-		// iterator
+		// iterAtor
 		let iterCount = 0;
-		for (let [key, value] of trie) {
-			assert.equal(value, map.get(key));
+		for (let [key, vAlue] of trie) {
+			Assert.equAl(vAlue, mAp.get(key));
 			iterCount++;
 		}
-		assert.equal(map.size, iterCount);
+		Assert.equAl(mAp.size, iterCount);
 	}
 
-	test('TernarySearchTree - set', function () {
+	test('TernArySeArchTree - set', function () {
 
-		let trie = TernarySearchTree.forStrings<number>();
-		trie.set('foobar', 1);
-		trie.set('foobaz', 2);
+		let trie = TernArySeArchTree.forStrings<number>();
+		trie.set('foobAr', 1);
+		trie.set('foobAz', 2);
 
-		assertTernarySearchTree(trie, ['foobar', 1], ['foobaz', 2]); // longer
+		AssertTernArySeArchTree(trie, ['foobAr', 1], ['foobAz', 2]); // longer
 
-		trie = TernarySearchTree.forStrings<number>();
-		trie.set('foobar', 1);
-		trie.set('fooba', 2);
-		assertTernarySearchTree(trie, ['foobar', 1], ['fooba', 2]); // shorter
+		trie = TernArySeArchTree.forStrings<number>();
+		trie.set('foobAr', 1);
+		trie.set('foobA', 2);
+		AssertTernArySeArchTree(trie, ['foobAr', 1], ['foobA', 2]); // shorter
 
-		trie = TernarySearchTree.forStrings<number>();
+		trie = TernArySeArchTree.forStrings<number>();
 		trie.set('foo', 1);
 		trie.set('foo', 2);
-		assertTernarySearchTree(trie, ['foo', 2]);
+		AssertTernArySeArchTree(trie, ['foo', 2]);
 
-		trie = TernarySearchTree.forStrings<number>();
+		trie = TernArySeArchTree.forStrings<number>();
 		trie.set('foo', 1);
-		trie.set('foobar', 2);
-		trie.set('bar', 3);
+		trie.set('foobAr', 2);
+		trie.set('bAr', 3);
 		trie.set('foob', 4);
-		trie.set('bazz', 5);
+		trie.set('bAzz', 5);
 
-		assertTernarySearchTree(trie,
+		AssertTernArySeArchTree(trie,
 			['foo', 1],
-			['foobar', 2],
-			['bar', 3],
+			['foobAr', 2],
+			['bAr', 3],
 			['foob', 4],
-			['bazz', 5]
+			['bAzz', 5]
 		);
 	});
 
-	test('TernarySearchTree - findLongestMatch', function () {
+	test('TernArySeArchTree - findLongestMAtch', function () {
 
-		let trie = TernarySearchTree.forStrings<number>();
+		let trie = TernArySeArchTree.forStrings<number>();
 		trie.set('foo', 1);
-		trie.set('foobar', 2);
-		trie.set('foobaz', 3);
+		trie.set('foobAr', 2);
+		trie.set('foobAz', 3);
 
-		assert.equal(trie.findSubstr('f'), undefined);
-		assert.equal(trie.findSubstr('z'), undefined);
-		assert.equal(trie.findSubstr('foo'), 1);
-		assert.equal(trie.findSubstr('fooö'), 1);
-		assert.equal(trie.findSubstr('fooba'), 1);
-		assert.equal(trie.findSubstr('foobarr'), 2);
-		assert.equal(trie.findSubstr('foobazrr'), 3);
+		Assert.equAl(trie.findSubstr('f'), undefined);
+		Assert.equAl(trie.findSubstr('z'), undefined);
+		Assert.equAl(trie.findSubstr('foo'), 1);
+		Assert.equAl(trie.findSubstr('fooö'), 1);
+		Assert.equAl(trie.findSubstr('foobA'), 1);
+		Assert.equAl(trie.findSubstr('foobArr'), 2);
+		Assert.equAl(trie.findSubstr('foobAzrr'), 3);
 	});
 
-	test('TernarySearchTree - basics', function () {
-		let trie = new TernarySearchTree<string, number>(new StringIterator());
+	test('TernArySeArchTree - bAsics', function () {
+		let trie = new TernArySeArchTree<string, number>(new StringIterAtor());
 
 		trie.set('foo', 1);
-		trie.set('bar', 2);
-		trie.set('foobar', 3);
+		trie.set('bAr', 2);
+		trie.set('foobAr', 3);
 
-		assert.equal(trie.get('foo'), 1);
-		assert.equal(trie.get('bar'), 2);
-		assert.equal(trie.get('foobar'), 3);
-		assert.equal(trie.get('foobaz'), undefined);
-		assert.equal(trie.get('foobarr'), undefined);
+		Assert.equAl(trie.get('foo'), 1);
+		Assert.equAl(trie.get('bAr'), 2);
+		Assert.equAl(trie.get('foobAr'), 3);
+		Assert.equAl(trie.get('foobAz'), undefined);
+		Assert.equAl(trie.get('foobArr'), undefined);
 
-		assert.equal(trie.findSubstr('fo'), undefined);
-		assert.equal(trie.findSubstr('foo'), 1);
-		assert.equal(trie.findSubstr('foooo'), 1);
+		Assert.equAl(trie.findSubstr('fo'), undefined);
+		Assert.equAl(trie.findSubstr('foo'), 1);
+		Assert.equAl(trie.findSubstr('foooo'), 1);
 
 
-		trie.delete('foobar');
-		trie.delete('bar');
-		assert.equal(trie.get('foobar'), undefined);
-		assert.equal(trie.get('bar'), undefined);
+		trie.delete('foobAr');
+		trie.delete('bAr');
+		Assert.equAl(trie.get('foobAr'), undefined);
+		Assert.equAl(trie.get('bAr'), undefined);
 
-		trie.set('foobar', 17);
-		trie.set('barr', 18);
-		assert.equal(trie.get('foobar'), 17);
-		assert.equal(trie.get('barr'), 18);
-		assert.equal(trie.get('bar'), undefined);
+		trie.set('foobAr', 17);
+		trie.set('bArr', 18);
+		Assert.equAl(trie.get('foobAr'), 17);
+		Assert.equAl(trie.get('bArr'), 18);
+		Assert.equAl(trie.get('bAr'), undefined);
 	});
 
-	test('TernarySearchTree - delete & cleanup', function () {
-		let trie = new TernarySearchTree<string, number>(new StringIterator());
+	test('TernArySeArchTree - delete & cleAnup', function () {
+		let trie = new TernArySeArchTree<string, number>(new StringIterAtor());
 		trie.set('foo', 1);
-		trie.set('foobar', 2);
-		trie.set('bar', 3);
+		trie.set('foobAr', 2);
+		trie.set('bAr', 3);
 
 		trie.delete('foo');
-		trie.delete('foobar');
+		trie.delete('foobAr');
 	});
 
-	test('TernarySearchTree (PathSegments) - basics', function () {
-		let trie = new TernarySearchTree<string, number>(new PathIterator());
+	test('TernArySeArchTree (PAthSegments) - bAsics', function () {
+		let trie = new TernArySeArchTree<string, number>(new PAthIterAtor());
 
-		trie.set('/user/foo/bar', 1);
+		trie.set('/user/foo/bAr', 1);
 		trie.set('/user/foo', 2);
 		trie.set('/user/foo/flip/flop', 3);
 
-		assert.equal(trie.get('/user/foo/bar'), 1);
-		assert.equal(trie.get('/user/foo'), 2);
-		assert.equal(trie.get('/user//foo'), 2);
-		assert.equal(trie.get('/user\\foo'), 2);
-		assert.equal(trie.get('/user/foo/flip/flop'), 3);
+		Assert.equAl(trie.get('/user/foo/bAr'), 1);
+		Assert.equAl(trie.get('/user/foo'), 2);
+		Assert.equAl(trie.get('/user//foo'), 2);
+		Assert.equAl(trie.get('/user\\foo'), 2);
+		Assert.equAl(trie.get('/user/foo/flip/flop'), 3);
 
-		assert.equal(trie.findSubstr('/user/bar'), undefined);
-		assert.equal(trie.findSubstr('/user/foo'), 2);
-		assert.equal(trie.findSubstr('\\user\\foo'), 2);
-		assert.equal(trie.findSubstr('/user//foo'), 2);
-		assert.equal(trie.findSubstr('/user/foo/ba'), 2);
-		assert.equal(trie.findSubstr('/user/foo/far/boo'), 2);
-		assert.equal(trie.findSubstr('/user/foo/bar'), 1);
-		assert.equal(trie.findSubstr('/user/foo/bar/far/boo'), 1);
+		Assert.equAl(trie.findSubstr('/user/bAr'), undefined);
+		Assert.equAl(trie.findSubstr('/user/foo'), 2);
+		Assert.equAl(trie.findSubstr('\\user\\foo'), 2);
+		Assert.equAl(trie.findSubstr('/user//foo'), 2);
+		Assert.equAl(trie.findSubstr('/user/foo/bA'), 2);
+		Assert.equAl(trie.findSubstr('/user/foo/fAr/boo'), 2);
+		Assert.equAl(trie.findSubstr('/user/foo/bAr'), 1);
+		Assert.equAl(trie.findSubstr('/user/foo/bAr/fAr/boo'), 1);
 	});
 
-	test('TernarySearchTree (PathSegments) - lookup', function () {
+	test('TernArySeArchTree (PAthSegments) - lookup', function () {
 
-		const map = new TernarySearchTree<string, number>(new PathIterator());
-		map.set('/user/foo/bar', 1);
-		map.set('/user/foo', 2);
-		map.set('/user/foo/flip/flop', 3);
+		const mAp = new TernArySeArchTree<string, number>(new PAthIterAtor());
+		mAp.set('/user/foo/bAr', 1);
+		mAp.set('/user/foo', 2);
+		mAp.set('/user/foo/flip/flop', 3);
 
-		assert.equal(map.get('/foo'), undefined);
-		assert.equal(map.get('/user'), undefined);
-		assert.equal(map.get('/user/foo'), 2);
-		assert.equal(map.get('/user/foo/bar'), 1);
-		assert.equal(map.get('/user/foo/bar/boo'), undefined);
+		Assert.equAl(mAp.get('/foo'), undefined);
+		Assert.equAl(mAp.get('/user'), undefined);
+		Assert.equAl(mAp.get('/user/foo'), 2);
+		Assert.equAl(mAp.get('/user/foo/bAr'), 1);
+		Assert.equAl(mAp.get('/user/foo/bAr/boo'), undefined);
 	});
 
-	test('TernarySearchTree (PathSegments) - superstr', function () {
+	test('TernArySeArchTree (PAthSegments) - superstr', function () {
 
-		const map = new TernarySearchTree<string, number>(new PathIterator());
-		map.set('/user/foo/bar', 1);
-		map.set('/user/foo', 2);
-		map.set('/user/foo/flip/flop', 3);
-		map.set('/usr/foo', 4);
+		const mAp = new TernArySeArchTree<string, number>(new PAthIterAtor());
+		mAp.set('/user/foo/bAr', 1);
+		mAp.set('/user/foo', 2);
+		mAp.set('/user/foo/flip/flop', 3);
+		mAp.set('/usr/foo', 4);
 
-		let item: IteratorResult<number>;
-		let iter = map.findSuperstr('/user');
-
-		item = iter!.next();
-		assert.equal(item.value, 2);
-		assert.equal(item.done, false);
-		item = iter!.next();
-		assert.equal(item.value, 1);
-		assert.equal(item.done, false);
-		item = iter!.next();
-		assert.equal(item.value, 3);
-		assert.equal(item.done, false);
-		item = iter!.next();
-		assert.equal(item.value, undefined);
-		assert.equal(item.done, true);
-
-		iter = map.findSuperstr('/usr');
-		item = iter!.next();
-		assert.equal(item.value, 4);
-		assert.equal(item.done, false);
+		let item: IterAtorResult<number>;
+		let iter = mAp.findSuperstr('/user');
 
 		item = iter!.next();
-		assert.equal(item.value, undefined);
-		assert.equal(item.done, true);
+		Assert.equAl(item.vAlue, 2);
+		Assert.equAl(item.done, fAlse);
+		item = iter!.next();
+		Assert.equAl(item.vAlue, 1);
+		Assert.equAl(item.done, fAlse);
+		item = iter!.next();
+		Assert.equAl(item.vAlue, 3);
+		Assert.equAl(item.done, fAlse);
+		item = iter!.next();
+		Assert.equAl(item.vAlue, undefined);
+		Assert.equAl(item.done, true);
 
-		assert.equal(map.findSuperstr('/not'), undefined);
-		assert.equal(map.findSuperstr('/us'), undefined);
-		assert.equal(map.findSuperstr('/usrr'), undefined);
-		assert.equal(map.findSuperstr('/userr'), undefined);
+		iter = mAp.findSuperstr('/usr');
+		item = iter!.next();
+		Assert.equAl(item.vAlue, 4);
+		Assert.equAl(item.done, fAlse);
+
+		item = iter!.next();
+		Assert.equAl(item.vAlue, undefined);
+		Assert.equAl(item.done, true);
+
+		Assert.equAl(mAp.findSuperstr('/not'), undefined);
+		Assert.equAl(mAp.findSuperstr('/us'), undefined);
+		Assert.equAl(mAp.findSuperstr('/usrr'), undefined);
+		Assert.equAl(mAp.findSuperstr('/userr'), undefined);
 	});
 
 
-	test('TernarySearchTree (URI) - basics', function () {
-		let trie = new TernarySearchTree<URI, number>(new UriIterator(false));
+	test('TernArySeArchTree (URI) - bAsics', function () {
+		let trie = new TernArySeArchTree<URI, number>(new UriIterAtor(fAlse));
 
-		trie.set(URI.file('/user/foo/bar'), 1);
+		trie.set(URI.file('/user/foo/bAr'), 1);
 		trie.set(URI.file('/user/foo'), 2);
 		trie.set(URI.file('/user/foo/flip/flop'), 3);
 
-		assert.equal(trie.get(URI.file('/user/foo/bar')), 1);
-		assert.equal(trie.get(URI.file('/user/foo')), 2);
-		assert.equal(trie.get(URI.file('/user/foo/flip/flop')), 3);
+		Assert.equAl(trie.get(URI.file('/user/foo/bAr')), 1);
+		Assert.equAl(trie.get(URI.file('/user/foo')), 2);
+		Assert.equAl(trie.get(URI.file('/user/foo/flip/flop')), 3);
 
-		assert.equal(trie.findSubstr(URI.file('/user/bar')), undefined);
-		assert.equal(trie.findSubstr(URI.file('/user/foo')), 2);
-		assert.equal(trie.findSubstr(URI.file('/user/foo/ba')), 2);
-		assert.equal(trie.findSubstr(URI.file('/user/foo/far/boo')), 2);
-		assert.equal(trie.findSubstr(URI.file('/user/foo/bar')), 1);
-		assert.equal(trie.findSubstr(URI.file('/user/foo/bar/far/boo')), 1);
+		Assert.equAl(trie.findSubstr(URI.file('/user/bAr')), undefined);
+		Assert.equAl(trie.findSubstr(URI.file('/user/foo')), 2);
+		Assert.equAl(trie.findSubstr(URI.file('/user/foo/bA')), 2);
+		Assert.equAl(trie.findSubstr(URI.file('/user/foo/fAr/boo')), 2);
+		Assert.equAl(trie.findSubstr(URI.file('/user/foo/bAr')), 1);
+		Assert.equAl(trie.findSubstr(URI.file('/user/foo/bAr/fAr/boo')), 1);
 	});
 
-	test('TernarySearchTree (URI) - lookup', function () {
+	test('TernArySeArchTree (URI) - lookup', function () {
 
-		const map = new TernarySearchTree<URI, number>(new UriIterator(false));
-		map.set(URI.parse('http://foo.bar/user/foo/bar'), 1);
-		map.set(URI.parse('http://foo.bar/user/foo?query'), 2);
-		map.set(URI.parse('http://foo.bar/user/foo?QUERY'), 3);
-		map.set(URI.parse('http://foo.bar/user/foo/flip/flop'), 3);
+		const mAp = new TernArySeArchTree<URI, number>(new UriIterAtor(fAlse));
+		mAp.set(URI.pArse('http://foo.bAr/user/foo/bAr'), 1);
+		mAp.set(URI.pArse('http://foo.bAr/user/foo?query'), 2);
+		mAp.set(URI.pArse('http://foo.bAr/user/foo?QUERY'), 3);
+		mAp.set(URI.pArse('http://foo.bAr/user/foo/flip/flop'), 3);
 
-		assert.equal(map.get(URI.parse('http://foo.bar/foo')), undefined);
-		assert.equal(map.get(URI.parse('http://foo.bar/user')), undefined);
-		assert.equal(map.get(URI.parse('http://foo.bar/user/foo/bar')), 1);
-		assert.equal(map.get(URI.parse('http://foo.bar/user/foo?query')), 2);
-		assert.equal(map.get(URI.parse('http://foo.bar/user/foo?Query')), undefined);
-		assert.equal(map.get(URI.parse('http://foo.bar/user/foo?QUERY')), 3);
-		assert.equal(map.get(URI.parse('http://foo.bar/user/foo/bar/boo')), undefined);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/foo')), undefined);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/user')), undefined);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/user/foo/bAr')), 1);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/user/foo?query')), 2);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/user/foo?Query')), undefined);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/user/foo?QUERY')), 3);
+		Assert.equAl(mAp.get(URI.pArse('http://foo.bAr/user/foo/bAr/boo')), undefined);
 	});
 
-	test('TernarySearchTree (PathSegments) - superstr', function () {
+	test('TernArySeArchTree (PAthSegments) - superstr', function () {
 
-		const map = new TernarySearchTree<URI, number>(new UriIterator(false));
-		map.set(URI.file('/user/foo/bar'), 1);
-		map.set(URI.file('/user/foo'), 2);
-		map.set(URI.file('/user/foo/flip/flop'), 3);
-		map.set(URI.file('/usr/foo'), 4);
+		const mAp = new TernArySeArchTree<URI, number>(new UriIterAtor(fAlse));
+		mAp.set(URI.file('/user/foo/bAr'), 1);
+		mAp.set(URI.file('/user/foo'), 2);
+		mAp.set(URI.file('/user/foo/flip/flop'), 3);
+		mAp.set(URI.file('/usr/foo'), 4);
 
-		let item: IteratorResult<number>;
-		let iter = map.findSuperstr(URI.file('/user'))!;
-
-		item = iter.next();
-		assert.equal(item.value, 2);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, 1);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, 3);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, undefined);
-		assert.equal(item.done, true);
-
-		iter = map.findSuperstr(URI.file('/usr'))!;
-		item = iter.next();
-		assert.equal(item.value, 4);
-		assert.equal(item.done, false);
+		let item: IterAtorResult<number>;
+		let iter = mAp.findSuperstr(URI.file('/user'))!;
 
 		item = iter.next();
-		assert.equal(item.value, undefined);
-		assert.equal(item.done, true);
+		Assert.equAl(item.vAlue, 2);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, 1);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, 3);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, undefined);
+		Assert.equAl(item.done, true);
 
-		iter = map.findSuperstr(URI.file('/'))!;
+		iter = mAp.findSuperstr(URI.file('/usr'))!;
 		item = iter.next();
-		assert.equal(item.value, 2);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, 1);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, 3);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, 4);
-		assert.equal(item.done, false);
-		item = iter.next();
-		assert.equal(item.value, undefined);
-		assert.equal(item.done, true);
+		Assert.equAl(item.vAlue, 4);
+		Assert.equAl(item.done, fAlse);
 
-		assert.equal(map.findSuperstr(URI.file('/not')), undefined);
-		assert.equal(map.findSuperstr(URI.file('/us')), undefined);
-		assert.equal(map.findSuperstr(URI.file('/usrr')), undefined);
-		assert.equal(map.findSuperstr(URI.file('/userr')), undefined);
+		item = iter.next();
+		Assert.equAl(item.vAlue, undefined);
+		Assert.equAl(item.done, true);
+
+		iter = mAp.findSuperstr(URI.file('/'))!;
+		item = iter.next();
+		Assert.equAl(item.vAlue, 2);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, 1);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, 3);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, 4);
+		Assert.equAl(item.done, fAlse);
+		item = iter.next();
+		Assert.equAl(item.vAlue, undefined);
+		Assert.equAl(item.done, true);
+
+		Assert.equAl(mAp.findSuperstr(URI.file('/not')), undefined);
+		Assert.equAl(mAp.findSuperstr(URI.file('/us')), undefined);
+		Assert.equAl(mAp.findSuperstr(URI.file('/usrr')), undefined);
+		Assert.equAl(mAp.findSuperstr(URI.file('/userr')), undefined);
 	});
 
 
-	test('ResourceMap - basics', function () {
-		const map = new ResourceMap<any>();
+	test('ResourceMAp - bAsics', function () {
+		const mAp = new ResourceMAp<Any>();
 
-		const resource1 = URI.parse('some://1');
-		const resource2 = URI.parse('some://2');
-		const resource3 = URI.parse('some://3');
-		const resource4 = URI.parse('some://4');
-		const resource5 = URI.parse('some://5');
-		const resource6 = URI.parse('some://6');
+		const resource1 = URI.pArse('some://1');
+		const resource2 = URI.pArse('some://2');
+		const resource3 = URI.pArse('some://3');
+		const resource4 = URI.pArse('some://4');
+		const resource5 = URI.pArse('some://5');
+		const resource6 = URI.pArse('some://6');
 
-		assert.equal(map.size, 0);
+		Assert.equAl(mAp.size, 0);
 
-		let res = map.set(resource1, 1);
-		assert.ok(res === map);
-		map.set(resource2, '2');
-		map.set(resource3, true);
+		let res = mAp.set(resource1, 1);
+		Assert.ok(res === mAp);
+		mAp.set(resource2, '2');
+		mAp.set(resource3, true);
 
-		const values = [...map.values()];
-		assert.equal(values[0], 1);
-		assert.equal(values[1], '2');
-		assert.equal(values[2], true);
+		const vAlues = [...mAp.vAlues()];
+		Assert.equAl(vAlues[0], 1);
+		Assert.equAl(vAlues[1], '2');
+		Assert.equAl(vAlues[2], true);
 
 		let counter = 0;
-		map.forEach((value, key, mapObj) => {
-			assert.equal(value, values[counter++]);
-			assert.ok(URI.isUri(key));
-			assert.ok(map === mapObj);
+		mAp.forEAch((vAlue, key, mApObj) => {
+			Assert.equAl(vAlue, vAlues[counter++]);
+			Assert.ok(URI.isUri(key));
+			Assert.ok(mAp === mApObj);
 		});
 
-		const obj = Object.create(null);
-		map.set(resource4, obj);
+		const obj = Object.creAte(null);
+		mAp.set(resource4, obj);
 
-		const date = Date.now();
-		map.set(resource5, date);
+		const dAte = DAte.now();
+		mAp.set(resource5, dAte);
 
-		assert.equal(map.size, 5);
-		assert.equal(map.get(resource1), 1);
-		assert.equal(map.get(resource2), '2');
-		assert.equal(map.get(resource3), true);
-		assert.equal(map.get(resource4), obj);
-		assert.equal(map.get(resource5), date);
-		assert.ok(!map.get(resource6));
+		Assert.equAl(mAp.size, 5);
+		Assert.equAl(mAp.get(resource1), 1);
+		Assert.equAl(mAp.get(resource2), '2');
+		Assert.equAl(mAp.get(resource3), true);
+		Assert.equAl(mAp.get(resource4), obj);
+		Assert.equAl(mAp.get(resource5), dAte);
+		Assert.ok(!mAp.get(resource6));
 
-		map.delete(resource6);
-		assert.equal(map.size, 5);
-		assert.ok(map.delete(resource1));
-		assert.ok(map.delete(resource2));
-		assert.ok(map.delete(resource3));
-		assert.ok(map.delete(resource4));
-		assert.ok(map.delete(resource5));
+		mAp.delete(resource6);
+		Assert.equAl(mAp.size, 5);
+		Assert.ok(mAp.delete(resource1));
+		Assert.ok(mAp.delete(resource2));
+		Assert.ok(mAp.delete(resource3));
+		Assert.ok(mAp.delete(resource4));
+		Assert.ok(mAp.delete(resource5));
 
-		assert.equal(map.size, 0);
-		assert.ok(!map.get(resource5));
-		assert.ok(!map.get(resource4));
-		assert.ok(!map.get(resource3));
-		assert.ok(!map.get(resource2));
-		assert.ok(!map.get(resource1));
+		Assert.equAl(mAp.size, 0);
+		Assert.ok(!mAp.get(resource5));
+		Assert.ok(!mAp.get(resource4));
+		Assert.ok(!mAp.get(resource3));
+		Assert.ok(!mAp.get(resource2));
+		Assert.ok(!mAp.get(resource1));
 
-		map.set(resource1, 1);
-		map.set(resource2, '2');
-		map.set(resource3, true);
+		mAp.set(resource1, 1);
+		mAp.set(resource2, '2');
+		mAp.set(resource3, true);
 
-		assert.ok(map.has(resource1));
-		assert.equal(map.get(resource1), 1);
-		assert.equal(map.get(resource2), '2');
-		assert.equal(map.get(resource3), true);
+		Assert.ok(mAp.hAs(resource1));
+		Assert.equAl(mAp.get(resource1), 1);
+		Assert.equAl(mAp.get(resource2), '2');
+		Assert.equAl(mAp.get(resource3), true);
 
-		map.clear();
+		mAp.cleAr();
 
-		assert.equal(map.size, 0);
-		assert.ok(!map.get(resource1));
-		assert.ok(!map.get(resource2));
-		assert.ok(!map.get(resource3));
-		assert.ok(!map.has(resource1));
+		Assert.equAl(mAp.size, 0);
+		Assert.ok(!mAp.get(resource1));
+		Assert.ok(!mAp.get(resource2));
+		Assert.ok(!mAp.get(resource3));
+		Assert.ok(!mAp.hAs(resource1));
 
-		map.set(resource1, false);
-		map.set(resource2, 0);
+		mAp.set(resource1, fAlse);
+		mAp.set(resource2, 0);
 
-		assert.ok(map.has(resource1));
-		assert.ok(map.has(resource2));
+		Assert.ok(mAp.hAs(resource1));
+		Assert.ok(mAp.hAs(resource2));
 	});
 
-	test('ResourceMap - files (do NOT ignorecase)', function () {
-		const map = new ResourceMap<any>();
+	test('ResourceMAp - files (do NOT ignorecAse)', function () {
+		const mAp = new ResourceMAp<Any>();
 
-		const fileA = URI.parse('file://some/filea');
-		const fileB = URI.parse('some://some/other/fileb');
-		const fileAUpper = URI.parse('file://SOME/FILEA');
+		const fileA = URI.pArse('file://some/fileA');
+		const fileB = URI.pArse('some://some/other/fileb');
+		const fileAUpper = URI.pArse('file://SOME/FILEA');
 
-		map.set(fileA, 'true');
-		assert.equal(map.get(fileA), 'true');
+		mAp.set(fileA, 'true');
+		Assert.equAl(mAp.get(fileA), 'true');
 
-		assert.ok(!map.get(fileAUpper));
+		Assert.ok(!mAp.get(fileAUpper));
 
-		assert.ok(!map.get(fileB));
+		Assert.ok(!mAp.get(fileB));
 
-		map.set(fileAUpper, 'false');
-		assert.equal(map.get(fileAUpper), 'false');
+		mAp.set(fileAUpper, 'fAlse');
+		Assert.equAl(mAp.get(fileAUpper), 'fAlse');
 
-		assert.equal(map.get(fileA), 'true');
+		Assert.equAl(mAp.get(fileA), 'true');
 
 		const windowsFile = URI.file('c:\\test with %25\\c#code');
-		const uncFile = URI.file('\\\\shäres\\path\\c#\\plugin.json');
+		const uncFile = URI.file('\\\\shäres\\pAth\\c#\\plugin.json');
 
-		map.set(windowsFile, 'true');
-		map.set(uncFile, 'true');
+		mAp.set(windowsFile, 'true');
+		mAp.set(uncFile, 'true');
 
-		assert.equal(map.get(windowsFile), 'true');
-		assert.equal(map.get(uncFile), 'true');
+		Assert.equAl(mAp.get(windowsFile), 'true');
+		Assert.equAl(mAp.get(uncFile), 'true');
 	});
 
-	test('ResourceMap - files (ignorecase)', function () {
-		const map = new ResourceMap<any>(uri => extUriIgnorePathCase.getComparisonKey(uri));
+	test('ResourceMAp - files (ignorecAse)', function () {
+		const mAp = new ResourceMAp<Any>(uri => extUriIgnorePAthCAse.getCompArisonKey(uri));
 
-		const fileA = URI.parse('file://some/filea');
-		const fileB = URI.parse('some://some/other/fileb');
-		const fileAUpper = URI.parse('file://SOME/FILEA');
+		const fileA = URI.pArse('file://some/fileA');
+		const fileB = URI.pArse('some://some/other/fileb');
+		const fileAUpper = URI.pArse('file://SOME/FILEA');
 
-		map.set(fileA, 'true');
-		assert.equal(map.get(fileA), 'true');
+		mAp.set(fileA, 'true');
+		Assert.equAl(mAp.get(fileA), 'true');
 
-		assert.equal(map.get(fileAUpper), 'true');
+		Assert.equAl(mAp.get(fileAUpper), 'true');
 
-		assert.ok(!map.get(fileB));
+		Assert.ok(!mAp.get(fileB));
 
-		map.set(fileAUpper, 'false');
-		assert.equal(map.get(fileAUpper), 'false');
+		mAp.set(fileAUpper, 'fAlse');
+		Assert.equAl(mAp.get(fileAUpper), 'fAlse');
 
-		assert.equal(map.get(fileA), 'false');
+		Assert.equAl(mAp.get(fileA), 'fAlse');
 
 		const windowsFile = URI.file('c:\\test with %25\\c#code');
-		const uncFile = URI.file('\\\\shäres\\path\\c#\\plugin.json');
+		const uncFile = URI.file('\\\\shäres\\pAth\\c#\\plugin.json');
 
-		map.set(windowsFile, 'true');
-		map.set(uncFile, 'true');
+		mAp.set(windowsFile, 'true');
+		mAp.set(uncFile, 'true');
 
-		assert.equal(map.get(windowsFile), 'true');
-		assert.equal(map.get(uncFile), 'true');
+		Assert.equAl(mAp.get(windowsFile), 'true');
+		Assert.equAl(mAp.get(uncFile), 'true');
 	});
 });

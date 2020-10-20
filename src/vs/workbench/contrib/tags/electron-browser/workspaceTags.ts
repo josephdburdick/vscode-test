@@ -1,234 +1,234 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as crypto from 'crypto';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { URI } from 'vs/base/common/uri';
-import { IFileService, IFileStat } from 'vs/platform/files/common/files';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import * As crypto from 'crypto';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService, IFileStAt } from 'vs/plAtform/files/common/files';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { ITextFileService, } from 'vs/workbench/services/textfile/common/textfiles';
-import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
-import { IWorkspaceInformation } from 'vs/platform/diagnostics/common/diagnostics';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { isWindows } from 'vs/base/common/platform';
-import { getRemotes, AllowedSecondLevelDomains, getDomainsOfRemotes } from 'vs/platform/extensionManagement/common/configRemotes';
-import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsService';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IWorkspAceTAgsService, TAgs } from 'vs/workbench/contrib/tAgs/common/workspAceTAgs';
+import { IWorkspAceInformAtion } from 'vs/plAtform/diAgnostics/common/diAgnostics';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { getRemotes, AllowedSecondLevelDomAins, getDomAinsOfRemotes } from 'vs/plAtform/extensionMAnAgement/common/configRemotes';
+import { IDiAgnosticsService } from 'vs/plAtform/diAgnostics/node/diAgnosticsService';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-export function getHashedRemotesFromConfig(text: string, stripEndingDotGit: boolean = false): string[] {
-	return getRemotes(text, stripEndingDotGit).map(r => {
-		return crypto.createHash('sha1').update(r).digest('hex');
+export function getHAshedRemotesFromConfig(text: string, stripEndingDotGit: booleAn = fAlse): string[] {
+	return getRemotes(text, stripEndingDotGit).mAp(r => {
+		return crypto.creAteHAsh('shA1').updAte(r).digest('hex');
 	});
 }
 
-export class WorkspaceTags implements IWorkbenchContribution {
+export clAss WorkspAceTAgs implements IWorkbenchContribution {
 
 	constructor(
-		@IFileService private readonly fileService: IFileService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IRequestService private readonly requestService: IRequestService,
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@IWorkspaceTagsService private readonly workspaceTagsService: IWorkspaceTagsService,
-		@IDiagnosticsService private readonly diagnosticsService: IDiagnosticsService,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IRequestService privAte reAdonly requestService: IRequestService,
+		@ITextFileService privAte reAdonly textFileService: ITextFileService,
+		@IWorkspAceTAgsService privAte reAdonly workspAceTAgsService: IWorkspAceTAgsService,
+		@IDiAgnosticsService privAte reAdonly diAgnosticsService: IDiAgnosticsService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
 		if (this.telemetryService.isOptedIn) {
 			this.report();
 		}
 	}
 
-	private async report(): Promise<void> {
+	privAte Async report(): Promise<void> {
 		// Windows-only Edition Event
 		this.reportWindowsEdition();
 
-		// Workspace Tags
-		this.workspaceTagsService.getTags()
-			.then(tags => this.reportWorkspaceTags(tags), error => onUnexpectedError(error));
+		// WorkspAce TAgs
+		this.workspAceTAgsService.getTAgs()
+			.then(tAgs => this.reportWorkspAceTAgs(tAgs), error => onUnexpectedError(error));
 
-		// Cloud Stats
-		this.reportCloudStats();
+		// Cloud StAts
+		this.reportCloudStAts();
 
-		this.reportProxyStats();
+		this.reportProxyStAts();
 
-		this.getWorkspaceInformation().then(stats => this.diagnosticsService.reportWorkspaceStats(stats));
+		this.getWorkspAceInformAtion().then(stAts => this.diAgnosticsService.reportWorkspAceStAts(stAts));
 	}
 
-	private async reportWindowsEdition(): Promise<void> {
+	privAte Async reportWindowsEdition(): Promise<void> {
 		if (!isWindows) {
 			return;
 		}
 
-		let value = await this.nativeHostService.windowsGetStringRegKey('HKEY_LOCAL_MACHINE', 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion', 'EditionID');
-		if (value === undefined) {
-			value = 'Unknown';
+		let vAlue = AwAit this.nAtiveHostService.windowsGetStringRegKey('HKEY_LOCAL_MACHINE', 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion', 'EditionID');
+		if (vAlue === undefined) {
+			vAlue = 'Unknown';
 		}
 
-		this.telemetryService.publicLog2<{ edition: string }, { edition: { classification: 'SystemMetaData', purpose: 'BusinessInsight' } }>('windowsEdition', { edition: value });
+		this.telemetryService.publicLog2<{ edition: string }, { edition: { clAssificAtion: 'SystemMetADAtA', purpose: 'BusinessInsight' } }>('windowsEdition', { edition: vAlue });
 	}
 
-	private async getWorkspaceInformation(): Promise<IWorkspaceInformation> {
-		const workspace = this.contextService.getWorkspace();
-		const state = this.contextService.getWorkbenchState();
-		const telemetryId = this.workspaceTagsService.getTelemetryWorkspaceId(workspace, state);
+	privAte Async getWorkspAceInformAtion(): Promise<IWorkspAceInformAtion> {
+		const workspAce = this.contextService.getWorkspAce();
+		const stAte = this.contextService.getWorkbenchStAte();
+		const telemetryId = this.workspAceTAgsService.getTelemetryWorkspAceId(workspAce, stAte);
 		return this.telemetryService.getTelemetryInfo().then(info => {
 			return {
-				id: workspace.id,
+				id: workspAce.id,
 				telemetryId,
 				rendererSessionId: info.sessionId,
-				folders: workspace.folders,
-				configuration: workspace.configuration
+				folders: workspAce.folders,
+				configurAtion: workspAce.configurAtion
 			};
 		});
 	}
 
-	private reportWorkspaceTags(tags: Tags): void {
+	privAte reportWorkspAceTAgs(tAgs: TAgs): void {
 		/* __GDPR__
-			"workspce.tags" : {
+			"workspce.tAgs" : {
 				"${include}": [
-					"${WorkspaceTags}"
+					"${WorkspAceTAgs}"
 				]
 			}
 		*/
-		this.telemetryService.publicLog('workspce.tags', tags);
+		this.telemetryService.publicLog('workspce.tAgs', tAgs);
 	}
 
-	private reportRemoteDomains(workspaceUris: URI[]): void {
-		Promise.all<string[]>(workspaceUris.map(workspaceUri => {
-			const path = workspaceUri.path;
-			const uri = workspaceUri.with({ path: `${path !== '/' ? path : ''}/.git/config` });
+	privAte reportRemoteDomAins(workspAceUris: URI[]): void {
+		Promise.All<string[]>(workspAceUris.mAp(workspAceUri => {
+			const pAth = workspAceUri.pAth;
+			const uri = workspAceUri.with({ pAth: `${pAth !== '/' ? pAth : ''}/.git/config` });
 			return this.fileService.exists(uri).then(exists => {
 				if (!exists) {
 					return [];
 				}
-				return this.textFileService.read(uri, { acceptTextOnly: true }).then(
-					content => getDomainsOfRemotes(content.value, AllowedSecondLevelDomains),
-					err => [] // ignore missing or binary file
+				return this.textFileService.reAd(uri, { AcceptTextOnly: true }).then(
+					content => getDomAinsOfRemotes(content.vAlue, AllowedSecondLevelDomAins),
+					err => [] // ignore missing or binAry file
 				);
 			});
-		})).then(domains => {
-			const set = domains.reduce((set, list) => list.reduce((set, item) => set.add(item), set), new Set<string>());
+		})).then(domAins => {
+			const set = domAins.reduce((set, list) => list.reduce((set, item) => set.Add(item), set), new Set<string>());
 			const list: string[] = [];
-			set.forEach(item => list.push(item));
+			set.forEAch(item => list.push(item));
 			/* __GDPR__
-				"workspace.remotes" : {
-					"domains" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+				"workspAce.remotes" : {
+					"domAins" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog('workspace.remotes', { domains: list.sort() });
+			this.telemetryService.publicLog('workspAce.remotes', { domAins: list.sort() });
 		}, onUnexpectedError);
 	}
 
-	private reportRemotes(workspaceUris: URI[]): void {
-		Promise.all<string[]>(workspaceUris.map(workspaceUri => {
-			return this.workspaceTagsService.getHashedRemotesFromUri(workspaceUri, true);
-		})).then(hashedRemotes => {
+	privAte reportRemotes(workspAceUris: URI[]): void {
+		Promise.All<string[]>(workspAceUris.mAp(workspAceUri => {
+			return this.workspAceTAgsService.getHAshedRemotesFromUri(workspAceUri, true);
+		})).then(hAshedRemotes => {
 			/* __GDPR__
-					"workspace.hashedRemotes" : {
-						"remotes" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+					"workspAce.hAshedRemotes" : {
+						"remotes" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 					}
 				*/
-			this.telemetryService.publicLog('workspace.hashedRemotes', { remotes: hashedRemotes });
+			this.telemetryService.publicLog('workspAce.hAshedRemotes', { remotes: hAshedRemotes });
 		}, onUnexpectedError);
 	}
 
 	/* __GDPR__FRAGMENT__
-		"AzureTags" : {
-			"node" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
+		"AzureTAgs" : {
+			"node" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
 		}
 	*/
-	private reportAzureNode(workspaceUris: URI[], tags: Tags): Promise<Tags> {
-		// TODO: should also work for `node_modules` folders several levels down
-		const uris = workspaceUris.map(workspaceUri => {
-			const path = workspaceUri.path;
-			return workspaceUri.with({ path: `${path !== '/' ? path : ''}/node_modules` });
+	privAte reportAzureNode(workspAceUris: URI[], tAgs: TAgs): Promise<TAgs> {
+		// TODO: should Also work for `node_modules` folders severAl levels down
+		const uris = workspAceUris.mAp(workspAceUri => {
+			const pAth = workspAceUri.pAth;
+			return workspAceUri.with({ pAth: `${pAth !== '/' ? pAth : ''}/node_modules` });
 		});
-		return this.fileService.resolveAll(uris.map(resource => ({ resource }))).then(
+		return this.fileService.resolveAll(uris.mAp(resource => ({ resource }))).then(
 			results => {
-				const names = (<IFileStat[]>[]).concat(...results.map(result => result.success ? (result.stat!.children || []) : [])).map(c => c.name);
-				const referencesAzure = WorkspaceTags.searchArray(names, /azure/i);
+				const nAmes = (<IFileStAt[]>[]).concAt(...results.mAp(result => result.success ? (result.stAt!.children || []) : [])).mAp(c => c.nAme);
+				const referencesAzure = WorkspAceTAgs.seArchArrAy(nAmes, /Azure/i);
 				if (referencesAzure) {
-					tags['node'] = true;
+					tAgs['node'] = true;
 				}
-				return tags;
+				return tAgs;
 			},
 			err => {
-				return tags;
+				return tAgs;
 			});
 	}
 
-	private static searchArray(arr: string[], regEx: RegExp): boolean | undefined {
-		return arr.some(v => v.search(regEx) > -1) || undefined;
+	privAte stAtic seArchArrAy(Arr: string[], regEx: RegExp): booleAn | undefined {
+		return Arr.some(v => v.seArch(regEx) > -1) || undefined;
 	}
 
 	/* __GDPR__FRAGMENT__
-		"AzureTags" : {
-			"java" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
+		"AzureTAgs" : {
+			"jAvA" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight", "isMeAsurement": true }
 		}
 	*/
-	private reportAzureJava(workspaceUris: URI[], tags: Tags): Promise<Tags> {
-		return Promise.all(workspaceUris.map(workspaceUri => {
-			const path = workspaceUri.path;
-			const uri = workspaceUri.with({ path: `${path !== '/' ? path : ''}/pom.xml` });
+	privAte reportAzureJAvA(workspAceUris: URI[], tAgs: TAgs): Promise<TAgs> {
+		return Promise.All(workspAceUris.mAp(workspAceUri => {
+			const pAth = workspAceUri.pAth;
+			const uri = workspAceUri.with({ pAth: `${pAth !== '/' ? pAth : ''}/pom.xml` });
 			return this.fileService.exists(uri).then(exists => {
 				if (!exists) {
-					return false;
+					return fAlse;
 				}
-				return this.textFileService.read(uri, { acceptTextOnly: true }).then(
-					content => !!content.value.match(/azure/i),
-					err => false
+				return this.textFileService.reAd(uri, { AcceptTextOnly: true }).then(
+					content => !!content.vAlue.mAtch(/Azure/i),
+					err => fAlse
 				);
 			});
-		})).then(javas => {
-			if (javas.indexOf(true) !== -1) {
-				tags['java'] = true;
+		})).then(jAvAs => {
+			if (jAvAs.indexOf(true) !== -1) {
+				tAgs['jAvA'] = true;
 			}
-			return tags;
+			return tAgs;
 		});
 	}
 
-	private reportAzure(uris: URI[]) {
-		const tags: Tags = Object.create(null);
-		this.reportAzureNode(uris, tags).then((tags) => {
-			return this.reportAzureJava(uris, tags);
-		}).then((tags) => {
-			if (Object.keys(tags).length) {
+	privAte reportAzure(uris: URI[]) {
+		const tAgs: TAgs = Object.creAte(null);
+		this.reportAzureNode(uris, tAgs).then((tAgs) => {
+			return this.reportAzureJAvA(uris, tAgs);
+		}).then((tAgs) => {
+			if (Object.keys(tAgs).length) {
 				/* __GDPR__
-					"workspace.azure" : {
+					"workspAce.Azure" : {
 						"${include}": [
-							"${AzureTags}"
+							"${AzureTAgs}"
 						]
 					}
 				*/
-				this.telemetryService.publicLog('workspace.azure', tags);
+				this.telemetryService.publicLog('workspAce.Azure', tAgs);
 			}
 		}).then(undefined, onUnexpectedError);
 	}
 
-	private reportCloudStats(): void {
-		const uris = this.contextService.getWorkspace().folders.map(folder => folder.uri);
+	privAte reportCloudStAts(): void {
+		const uris = this.contextService.getWorkspAce().folders.mAp(folder => folder.uri);
 		if (uris.length && this.fileService) {
-			this.reportRemoteDomains(uris);
+			this.reportRemoteDomAins(uris);
 			this.reportRemotes(uris);
 			this.reportAzure(uris);
 		}
 	}
 
-	private reportProxyStats() {
-		this.requestService.resolveProxy('https://www.example.com/')
+	privAte reportProxyStAts() {
+		this.requestService.resolveProxy('https://www.exAmple.com/')
 			.then(proxy => {
 				let type = proxy ? String(proxy).trim().split(/\s+/, 1)[0] : 'EMPTY';
 				if (['DIRECT', 'PROXY', 'HTTPS', 'SOCKS', 'EMPTY'].indexOf(type) === -1) {
 					type = 'UNKNOWN';
 				}
-				type ResolveProxyStatsClassification = {
-					type: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
+				type ResolveProxyStAtsClAssificAtion = {
+					type: { clAssificAtion: 'SystemMetADAtA', purpose: 'PerformAnceAndHeAlth' };
 				};
-				this.telemetryService.publicLog2<{ type: String }, ResolveProxyStatsClassification>('resolveProxy.stats', { type });
+				this.telemetryService.publicLog2<{ type: String }, ResolveProxyStAtsClAssificAtion>('resolveProxy.stAts', { type });
 			}).then(undefined, onUnexpectedError);
 	}
 }

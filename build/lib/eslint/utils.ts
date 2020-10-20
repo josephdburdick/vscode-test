@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { TSESTree } from '@typescript-eslint/experimental-utils';
+import * As eslint from 'eslint';
+import { TSESTree } from '@typescript-eslint/experimentAl-utils';
 
-export function createImportRuleListener(validateImport: (node: TSESTree.Literal, value: string) => any): eslint.Rule.RuleListener {
+export function creAteImportRuleListener(vAlidAteImport: (node: TSESTree.LiterAl, vAlue: string) => Any): eslint.Rule.RuleListener {
 
 	function _checkImport(node: TSESTree.Node | null) {
-		if (node && node.type === 'Literal' && typeof node.value === 'string') {
-			validateImport(node, node.value);
+		if (node && node.type === 'LiterAl' && typeof node.vAlue === 'string') {
+			vAlidAteImport(node, node.vAlue);
 		}
 	}
 
 	return {
 		// import ??? from 'module'
-		ImportDeclaration: (node: any) => {
-			_checkImport((<TSESTree.ImportDeclaration>node).source);
+		ImportDeclArAtion: (node: Any) => {
+			_checkImport((<TSESTree.ImportDeclArAtion>node).source);
 		},
-		// import('module').then(...) OR await import('module')
-		['CallExpression[callee.type="Import"][arguments.length=1] > Literal']: (node: any) => {
+		// import('module').then(...) OR AwAit import('module')
+		['CAllExpression[cAllee.type="Import"][Arguments.length=1] > LiterAl']: (node: Any) => {
 			_checkImport(node);
 		},
 		// import foo = ...
-		['TSImportEqualsDeclaration > TSExternalModuleReference > Literal']: (node: any) => {
+		['TSImportEquAlsDeclArAtion > TSExternAlModuleReference > LiterAl']: (node: Any) => {
 			_checkImport(node);
 		},
 		// export ?? from 'module'
-		ExportAllDeclaration: (node: any) => {
-			_checkImport((<TSESTree.ExportAllDeclaration>node).source);
+		ExportAllDeclArAtion: (node: Any) => {
+			_checkImport((<TSESTree.ExportAllDeclArAtion>node).source);
 		},
 		// export {foo} from 'module'
-		ExportNamedDeclaration: (node: any) => {
-			_checkImport((<TSESTree.ExportNamedDeclaration>node).source);
+		ExportNAmedDeclArAtion: (node: Any) => {
+			_checkImport((<TSESTree.ExportNAmedDeclArAtion>node).source);
 		},
 
 	};

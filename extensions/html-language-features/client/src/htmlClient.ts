@@ -1,208 +1,208 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vscode-nls';
-const localize = nls.loadMessageBundle();
+import * As nls from 'vscode-nls';
+const locAlize = nls.loAdMessAgeBundle();
 
 import {
-	languages, ExtensionContext, IndentAction, Position, TextDocument, Range, CompletionItem, CompletionItemKind, SnippetString, workspace, extensions,
-	Disposable, FormattingOptions, CancellationToken, ProviderResult, TextEdit, CompletionContext, CompletionList, SemanticTokensLegend,
-	DocumentSemanticTokensProvider, DocumentRangeSemanticTokensProvider, SemanticTokens, window, commands
+	lAnguAges, ExtensionContext, IndentAction, Position, TextDocument, RAnge, CompletionItem, CompletionItemKind, SnippetString, workspAce, extensions,
+	DisposAble, FormAttingOptions, CAncellAtionToken, ProviderResult, TextEdit, CompletionContext, CompletionList, SemAnticTokensLegend,
+	DocumentSemAnticTokensProvider, DocumentRAngeSemAnticTokensProvider, SemAnticTokens, window, commAnds
 } from 'vscode';
 import {
-	LanguageClientOptions, RequestType, TextDocumentPositionParams, DocumentRangeFormattingParams,
-	DocumentRangeFormattingRequest, ProvideCompletionItemsSignature, TextDocumentIdentifier, RequestType0, Range as LspRange, NotificationType, CommonLanguageClient
-} from 'vscode-languageclient';
-import { EMPTY_ELEMENTS } from './htmlEmptyTagsShared';
-import { activateTagClosing } from './tagClosing';
+	LAnguAgeClientOptions, RequestType, TextDocumentPositionPArAms, DocumentRAngeFormAttingPArAms,
+	DocumentRAngeFormAttingRequest, ProvideCompletionItemsSignAture, TextDocumentIdentifier, RequestType0, RAnge As LspRAnge, NotificAtionType, CommonLAnguAgeClient
+} from 'vscode-lAnguAgeclient';
+import { EMPTY_ELEMENTS } from './htmlEmptyTAgsShAred';
+import { ActivAteTAgClosing } from './tAgClosing';
 import { RequestService } from './requests';
-import { getCustomDataSource } from './customData';
+import { getCustomDAtASource } from './customDAtA';
 
-namespace CustomDataChangedNotification {
-	export const type: NotificationType<string[]> = new NotificationType('html/customDataChanged');
+nAmespAce CustomDAtAChAngedNotificAtion {
+	export const type: NotificAtionType<string[]> = new NotificAtionType('html/customDAtAChAnged');
 }
 
-namespace TagCloseRequest {
-	export const type: RequestType<TextDocumentPositionParams, string, any, any> = new RequestType('html/tag');
+nAmespAce TAgCloseRequest {
+	export const type: RequestType<TextDocumentPositionPArAms, string, Any, Any> = new RequestType('html/tAg');
 }
-namespace OnTypeRenameRequest {
-	export const type: RequestType<TextDocumentPositionParams, LspRange[] | null, any, any> = new RequestType('html/onTypeRename');
+nAmespAce OnTypeRenAmeRequest {
+	export const type: RequestType<TextDocumentPositionPArAms, LspRAnge[] | null, Any, Any> = new RequestType('html/onTypeRenAme');
 }
 
-// experimental: semantic tokens
-interface SemanticTokenParams {
+// experimentAl: semAntic tokens
+interfAce SemAnticTokenPArAms {
 	textDocument: TextDocumentIdentifier;
-	ranges?: LspRange[];
+	rAnges?: LspRAnge[];
 }
-namespace SemanticTokenRequest {
-	export const type: RequestType<SemanticTokenParams, number[] | null, any, any> = new RequestType('html/semanticTokens');
+nAmespAce SemAnticTokenRequest {
+	export const type: RequestType<SemAnticTokenPArAms, number[] | null, Any, Any> = new RequestType('html/semAnticTokens');
 }
-namespace SemanticTokenLegendRequest {
-	export const type: RequestType0<{ types: string[]; modifiers: string[] } | null, any, any> = new RequestType0('html/semanticTokenLegend');
-}
-
-namespace SettingIds {
-	export const renameOnType = 'editor.renameOnType';
-	export const formatEnable = 'html.format.enable';
-
+nAmespAce SemAnticTokenLegendRequest {
+	export const type: RequestType0<{ types: string[]; modifiers: string[] } | null, Any, Any> = new RequestType0('html/semAnticTokenLegend');
 }
 
-export interface TelemetryReporter {
-	sendTelemetryEvent(eventName: string, properties?: {
+nAmespAce SettingIds {
+	export const renAmeOnType = 'editor.renAmeOnType';
+	export const formAtEnAble = 'html.formAt.enAble';
+
+}
+
+export interfAce TelemetryReporter {
+	sendTelemetryEvent(eventNAme: string, properties?: {
 		[key: string]: string;
-	}, measurements?: {
+	}, meAsurements?: {
 		[key: string]: number;
 	}): void;
 }
 
-export type LanguageClientConstructor = (name: string, description: string, clientOptions: LanguageClientOptions) => CommonLanguageClient;
+export type LAnguAgeClientConstructor = (nAme: string, description: string, clientOptions: LAnguAgeClientOptions) => CommonLAnguAgeClient;
 
-export interface Runtime {
-	TextDecoder: { new(encoding?: string): { decode(buffer: ArrayBuffer): string; } };
+export interfAce Runtime {
+	TextDecoder: { new(encoding?: string): { decode(buffer: ArrAyBuffer): string; } };
 	fs?: RequestService;
 	telemetry?: TelemetryReporter;
 }
 
-export function startClient(context: ExtensionContext, newLanguageClient: LanguageClientConstructor, runtime: Runtime) {
+export function stArtClient(context: ExtensionContext, newLAnguAgeClient: LAnguAgeClientConstructor, runtime: Runtime) {
 
 	let toDispose = context.subscriptions;
 
 
-	let documentSelector = ['html', 'handlebars'];
-	let embeddedLanguages = { css: true, javascript: true };
+	let documentSelector = ['html', 'hAndlebArs'];
+	let embeddedLAnguAges = { css: true, jAvAscript: true };
 
-	let rangeFormatting: Disposable | undefined = undefined;
+	let rAngeFormAtting: DisposAble | undefined = undefined;
 
-	const customDataSource = getCustomDataSource(context.subscriptions);
+	const customDAtASource = getCustomDAtASource(context.subscriptions);
 
-	// Options to control the language client
-	let clientOptions: LanguageClientOptions = {
+	// Options to control the lAnguAge client
+	let clientOptions: LAnguAgeClientOptions = {
 		documentSelector,
 		synchronize: {
-			configurationSection: ['html', 'css', 'javascript'], // the settings to synchronize
+			configurAtionSection: ['html', 'css', 'jAvAscript'], // the settings to synchronize
 		},
-		initializationOptions: {
-			embeddedLanguages,
-			handledSchemas: ['file'],
-			provideFormatter: false, // tell the server to not provide formatting capability and ignore the `html.format.enable` setting.
+		initiAlizAtionOptions: {
+			embeddedLAnguAges,
+			hAndledSchemAs: ['file'],
+			provideFormAtter: fAlse, // tell the server to not provide formAtting cApAbility And ignore the `html.formAt.enAble` setting.
 		},
-		middleware: {
-			// testing the replace / insert mode
-			provideCompletionItem(document: TextDocument, position: Position, context: CompletionContext, token: CancellationToken, next: ProvideCompletionItemsSignature): ProviderResult<CompletionItem[] | CompletionList> {
-				function updateRanges(item: CompletionItem) {
-					const range = item.range;
-					if (range instanceof Range && range.end.isAfter(position) && range.start.isBeforeOrEqual(position)) {
-						item.range = { inserting: new Range(range.start, position), replacing: range };
+		middlewAre: {
+			// testing the replAce / insert mode
+			provideCompletionItem(document: TextDocument, position: Position, context: CompletionContext, token: CAncellAtionToken, next: ProvideCompletionItemsSignAture): ProviderResult<CompletionItem[] | CompletionList> {
+				function updAteRAnges(item: CompletionItem) {
+					const rAnge = item.rAnge;
+					if (rAnge instAnceof RAnge && rAnge.end.isAfter(position) && rAnge.stArt.isBeforeOrEquAl(position)) {
+						item.rAnge = { inserting: new RAnge(rAnge.stArt, position), replAcing: rAnge };
 					}
 				}
-				function updateProposals(r: CompletionItem[] | CompletionList | null | undefined): CompletionItem[] | CompletionList | null | undefined {
+				function updAteProposAls(r: CompletionItem[] | CompletionList | null | undefined): CompletionItem[] | CompletionList | null | undefined {
 					if (r) {
-						(Array.isArray(r) ? r : r.items).forEach(updateRanges);
+						(ArrAy.isArrAy(r) ? r : r.items).forEAch(updAteRAnges);
 					}
 					return r;
 				}
-				const isThenable = <T>(obj: ProviderResult<T>): obj is Thenable<T> => obj && (<any>obj)['then'];
+				const isThenAble = <T>(obj: ProviderResult<T>): obj is ThenAble<T> => obj && (<Any>obj)['then'];
 
 				const r = next(document, position, context, token);
-				if (isThenable<CompletionItem[] | CompletionList | null | undefined>(r)) {
-					return r.then(updateProposals);
+				if (isThenAble<CompletionItem[] | CompletionList | null | undefined>(r)) {
+					return r.then(updAteProposAls);
 				}
-				return updateProposals(r);
+				return updAteProposAls(r);
 			}
 		}
 	};
 
-	// Create the language client and start the client.
-	let client = newLanguageClient('html', localize('htmlserver.name', 'HTML Language Server'), clientOptions);
-	client.registerProposedFeatures();
+	// CreAte the lAnguAge client And stArt the client.
+	let client = newLAnguAgeClient('html', locAlize('htmlserver.nAme', 'HTML LAnguAge Server'), clientOptions);
+	client.registerProposedFeAtures();
 
-	let disposable = client.start();
-	toDispose.push(disposable);
-	client.onReady().then(() => {
+	let disposAble = client.stArt();
+	toDispose.push(disposAble);
+	client.onReAdy().then(() => {
 
-		client.sendNotification(CustomDataChangedNotification.type, customDataSource.uris);
-		customDataSource.onDidChange(() => {
-			client.sendNotification(CustomDataChangedNotification.type, customDataSource.uris);
+		client.sendNotificAtion(CustomDAtAChAngedNotificAtion.type, customDAtASource.uris);
+		customDAtASource.onDidChAnge(() => {
+			client.sendNotificAtion(CustomDAtAChAngedNotificAtion.type, customDAtASource.uris);
 		});
 
-		let tagRequestor = (document: TextDocument, position: Position) => {
-			let param = client.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
-			return client.sendRequest(TagCloseRequest.type, param);
+		let tAgRequestor = (document: TextDocument, position: Position) => {
+			let pArAm = client.code2ProtocolConverter.AsTextDocumentPositionPArAms(document, position);
+			return client.sendRequest(TAgCloseRequest.type, pArAm);
 		};
-		disposable = activateTagClosing(tagRequestor, { html: true, handlebars: true }, 'html.autoClosingTags');
-		toDispose.push(disposable);
+		disposAble = ActivAteTAgClosing(tAgRequestor, { html: true, hAndlebArs: true }, 'html.AutoClosingTAgs');
+		toDispose.push(disposAble);
 
-		disposable = client.onTelemetry(e => {
-			runtime.telemetry?.sendTelemetryEvent(e.key, e.data);
+		disposAble = client.onTelemetry(e => {
+			runtime.telemetry?.sendTelemetryEvent(e.key, e.dAtA);
 		});
-		toDispose.push(disposable);
+		toDispose.push(disposAble);
 
-		// manually register / deregister format provider based on the `html.format.enable` setting avoiding issues with late registration. See #71652.
-		updateFormatterRegistration();
-		toDispose.push({ dispose: () => rangeFormatting && rangeFormatting.dispose() });
-		toDispose.push(workspace.onDidChangeConfiguration(e => e.affectsConfiguration(SettingIds.formatEnable) && updateFormatterRegistration()));
+		// mAnuAlly register / deregister formAt provider bAsed on the `html.formAt.enAble` setting Avoiding issues with lAte registrAtion. See #71652.
+		updAteFormAtterRegistrAtion();
+		toDispose.push({ dispose: () => rAngeFormAtting && rAngeFormAtting.dispose() });
+		toDispose.push(workspAce.onDidChAngeConfigurAtion(e => e.AffectsConfigurAtion(SettingIds.formAtEnAble) && updAteFormAtterRegistrAtion()));
 
-		client.sendRequest(SemanticTokenLegendRequest.type).then(legend => {
+		client.sendRequest(SemAnticTokenLegendRequest.type).then(legend => {
 			if (legend) {
-				const provider: DocumentSemanticTokensProvider & DocumentRangeSemanticTokensProvider = {
-					provideDocumentSemanticTokens(doc) {
-						const params: SemanticTokenParams = {
-							textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(doc),
+				const provider: DocumentSemAnticTokensProvider & DocumentRAngeSemAnticTokensProvider = {
+					provideDocumentSemAnticTokens(doc) {
+						const pArAms: SemAnticTokenPArAms = {
+							textDocument: client.code2ProtocolConverter.AsTextDocumentIdentifier(doc),
 						};
-						return client.sendRequest(SemanticTokenRequest.type, params).then(data => {
-							return data && new SemanticTokens(new Uint32Array(data));
+						return client.sendRequest(SemAnticTokenRequest.type, pArAms).then(dAtA => {
+							return dAtA && new SemAnticTokens(new Uint32ArrAy(dAtA));
 						});
 					},
-					provideDocumentRangeSemanticTokens(doc, range) {
-						const params: SemanticTokenParams = {
-							textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(doc),
-							ranges: [client.code2ProtocolConverter.asRange(range)]
+					provideDocumentRAngeSemAnticTokens(doc, rAnge) {
+						const pArAms: SemAnticTokenPArAms = {
+							textDocument: client.code2ProtocolConverter.AsTextDocumentIdentifier(doc),
+							rAnges: [client.code2ProtocolConverter.AsRAnge(rAnge)]
 						};
-						return client.sendRequest(SemanticTokenRequest.type, params).then(data => {
-							return data && new SemanticTokens(new Uint32Array(data));
+						return client.sendRequest(SemAnticTokenRequest.type, pArAms).then(dAtA => {
+							return dAtA && new SemAnticTokens(new Uint32ArrAy(dAtA));
 						});
 					}
 				};
-				toDispose.push(languages.registerDocumentSemanticTokensProvider(documentSelector, provider, new SemanticTokensLegend(legend.types, legend.modifiers)));
+				toDispose.push(lAnguAges.registerDocumentSemAnticTokensProvider(documentSelector, provider, new SemAnticTokensLegend(legend.types, legend.modifiers)));
 			}
 		});
 
-		disposable = languages.registerOnTypeRenameProvider(documentSelector, {
-			async provideOnTypeRenameRanges(document, position) {
-				const param = client.code2ProtocolConverter.asTextDocumentPositionParams(document, position);
-				return client.sendRequest(OnTypeRenameRequest.type, param).then(response => {
+		disposAble = lAnguAges.registerOnTypeRenAmeProvider(documentSelector, {
+			Async provideOnTypeRenAmeRAnges(document, position) {
+				const pArAm = client.code2ProtocolConverter.AsTextDocumentPositionPArAms(document, position);
+				return client.sendRequest(OnTypeRenAmeRequest.type, pArAm).then(response => {
 					if (response) {
 						return {
-							ranges: response.map(r => client.protocol2CodeConverter.asRange(r))
+							rAnges: response.mAp(r => client.protocol2CodeConverter.AsRAnge(r))
 						};
 					}
 					return undefined;
 				});
 			}
 		});
-		toDispose.push(disposable);
+		toDispose.push(disposAble);
 
 	});
 
-	function updateFormatterRegistration() {
-		const formatEnabled = workspace.getConfiguration().get(SettingIds.formatEnable);
-		if (!formatEnabled && rangeFormatting) {
-			rangeFormatting.dispose();
-			rangeFormatting = undefined;
-		} else if (formatEnabled && !rangeFormatting) {
-			rangeFormatting = languages.registerDocumentRangeFormattingEditProvider(documentSelector, {
-				provideDocumentRangeFormattingEdits(document: TextDocument, range: Range, options: FormattingOptions, token: CancellationToken): ProviderResult<TextEdit[]> {
-					let params: DocumentRangeFormattingParams = {
-						textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-						range: client.code2ProtocolConverter.asRange(range),
-						options: client.code2ProtocolConverter.asFormattingOptions(options)
+	function updAteFormAtterRegistrAtion() {
+		const formAtEnAbled = workspAce.getConfigurAtion().get(SettingIds.formAtEnAble);
+		if (!formAtEnAbled && rAngeFormAtting) {
+			rAngeFormAtting.dispose();
+			rAngeFormAtting = undefined;
+		} else if (formAtEnAbled && !rAngeFormAtting) {
+			rAngeFormAtting = lAnguAges.registerDocumentRAngeFormAttingEditProvider(documentSelector, {
+				provideDocumentRAngeFormAttingEdits(document: TextDocument, rAnge: RAnge, options: FormAttingOptions, token: CAncellAtionToken): ProviderResult<TextEdit[]> {
+					let pArAms: DocumentRAngeFormAttingPArAms = {
+						textDocument: client.code2ProtocolConverter.AsTextDocumentIdentifier(document),
+						rAnge: client.code2ProtocolConverter.AsRAnge(rAnge),
+						options: client.code2ProtocolConverter.AsFormAttingOptions(options)
 					};
-					return client.sendRequest(DocumentRangeFormattingRequest.type, params, token).then(
-						client.protocol2CodeConverter.asTextEdits,
+					return client.sendRequest(DocumentRAngeFormAttingRequest.type, pArAms, token).then(
+						client.protocol2CodeConverter.AsTextEdits,
 						(error) => {
-							client.handleFailedRequest(DocumentRangeFormattingRequest.type, error, []);
+							client.hAndleFAiledRequest(DocumentRAngeFormAttingRequest.type, error, []);
 							return Promise.resolve([]);
 						}
 					);
@@ -211,111 +211,111 @@ export function startClient(context: ExtensionContext, newLanguageClient: Langua
 		}
 	}
 
-	languages.setLanguageConfiguration('html', {
-		indentationRules: {
-			increaseIndentPattern: /<(?!\?|(?:area|base|br|col|frame|hr|html|img|input|link|meta|param)\b|[^>]*\/>)([-_\.A-Za-z0-9]+)(?=\s|>)\b[^>]*>(?!.*<\/\1>)|<!--(?!.*-->)|\{[^}"']*$/,
-			decreaseIndentPattern: /^\s*(<\/(?!html)[-_\.A-Za-z0-9]+\b[^>]*>|-->|\})/
+	lAnguAges.setLAnguAgeConfigurAtion('html', {
+		indentAtionRules: {
+			increAseIndentPAttern: /<(?!\?|(?:AreA|bAse|br|col|frAme|hr|html|img|input|link|metA|pArAm)\b|[^>]*\/>)([-_\.A-ZA-z0-9]+)(?=\s|>)\b[^>]*>(?!.*<\/\1>)|<!--(?!.*-->)|\{[^}"']*$/,
+			decreAseIndentPAttern: /^\s*(<\/(?!html)[-_\.A-ZA-z0-9]+\b[^>]*>|-->|\})/
 		},
-		wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+		wordPAttern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 		onEnterRules: [
 			{
 				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-				afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
-				action: { indentAction: IndentAction.IndentOutdent }
+				AfterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
+				Action: { indentAction: IndentAction.IndentOutdent }
 			},
 			{
 				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-				action: { indentAction: IndentAction.Indent }
+				Action: { indentAction: IndentAction.Indent }
 			}
 		],
 	});
 
-	languages.setLanguageConfiguration('handlebars', {
-		wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+	lAnguAges.setLAnguAgeConfigurAtion('hAndlebArs', {
+		wordPAttern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 		onEnterRules: [
 			{
 				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-				afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
-				action: { indentAction: IndentAction.IndentOutdent }
+				AfterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
+				Action: { indentAction: IndentAction.IndentOutdent }
 			},
 			{
 				beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-				action: { indentAction: IndentAction.Indent }
+				Action: { indentAction: IndentAction.Indent }
 			}
 		],
 	});
 
 	const regionCompletionRegExpr = /^(\s*)(<(!(-(-\s*(#\w*)?)?)?)?)?$/;
 	const htmlSnippetCompletionRegExpr = /^(\s*)(<(h(t(m(l)?)?)?)?)?$/;
-	languages.registerCompletionItemProvider(documentSelector, {
+	lAnguAges.registerCompletionItemProvider(documentSelector, {
 		provideCompletionItems(doc, pos) {
 			const results: CompletionItem[] = [];
-			let lineUntilPos = doc.getText(new Range(new Position(pos.line, 0), pos));
-			let match = lineUntilPos.match(regionCompletionRegExpr);
-			if (match) {
-				let range = new Range(new Position(pos.line, match[1].length), pos);
-				let beginProposal = new CompletionItem('#region', CompletionItemKind.Snippet);
-				beginProposal.range = range;
-				beginProposal.insertText = new SnippetString('<!-- #region $1-->');
-				beginProposal.documentation = localize('folding.start', 'Folding Region Start');
-				beginProposal.filterText = match[2];
-				beginProposal.sortText = 'za';
-				results.push(beginProposal);
-				let endProposal = new CompletionItem('#endregion', CompletionItemKind.Snippet);
-				endProposal.range = range;
-				endProposal.insertText = new SnippetString('<!-- #endregion -->');
-				endProposal.documentation = localize('folding.end', 'Folding Region End');
-				endProposal.filterText = match[2];
-				endProposal.sortText = 'zb';
-				results.push(endProposal);
+			let lineUntilPos = doc.getText(new RAnge(new Position(pos.line, 0), pos));
+			let mAtch = lineUntilPos.mAtch(regionCompletionRegExpr);
+			if (mAtch) {
+				let rAnge = new RAnge(new Position(pos.line, mAtch[1].length), pos);
+				let beginProposAl = new CompletionItem('#region', CompletionItemKind.Snippet);
+				beginProposAl.rAnge = rAnge;
+				beginProposAl.insertText = new SnippetString('<!-- #region $1-->');
+				beginProposAl.documentAtion = locAlize('folding.stArt', 'Folding Region StArt');
+				beginProposAl.filterText = mAtch[2];
+				beginProposAl.sortText = 'zA';
+				results.push(beginProposAl);
+				let endProposAl = new CompletionItem('#endregion', CompletionItemKind.Snippet);
+				endProposAl.rAnge = rAnge;
+				endProposAl.insertText = new SnippetString('<!-- #endregion -->');
+				endProposAl.documentAtion = locAlize('folding.end', 'Folding Region End');
+				endProposAl.filterText = mAtch[2];
+				endProposAl.sortText = 'zb';
+				results.push(endProposAl);
 			}
-			let match2 = lineUntilPos.match(htmlSnippetCompletionRegExpr);
-			if (match2 && doc.getText(new Range(new Position(0, 0), pos)).match(htmlSnippetCompletionRegExpr)) {
-				let range = new Range(new Position(pos.line, match2[1].length), pos);
-				let snippetProposal = new CompletionItem('HTML sample', CompletionItemKind.Snippet);
-				snippetProposal.range = range;
+			let mAtch2 = lineUntilPos.mAtch(htmlSnippetCompletionRegExpr);
+			if (mAtch2 && doc.getText(new RAnge(new Position(0, 0), pos)).mAtch(htmlSnippetCompletionRegExpr)) {
+				let rAnge = new RAnge(new Position(pos.line, mAtch2[1].length), pos);
+				let snippetProposAl = new CompletionItem('HTML sAmple', CompletionItemKind.Snippet);
+				snippetProposAl.rAnge = rAnge;
 				const content = ['<!DOCTYPE html>',
 					'<html>',
-					'<head>',
-					'\t<meta charset=\'utf-8\'>',
-					'\t<meta http-equiv=\'X-UA-Compatible\' content=\'IE=edge\'>',
-					'\t<title>${1:Page Title}</title>',
-					'\t<meta name=\'viewport\' content=\'width=device-width, initial-scale=1\'>',
-					'\t<link rel=\'stylesheet\' type=\'text/css\' media=\'screen\' href=\'${2:main.css}\'>',
-					'\t<script src=\'${3:main.js}\'></script>',
-					'</head>',
+					'<heAd>',
+					'\t<metA chArset=\'utf-8\'>',
+					'\t<metA http-equiv=\'X-UA-CompAtible\' content=\'IE=edge\'>',
+					'\t<title>${1:PAge Title}</title>',
+					'\t<metA nAme=\'viewport\' content=\'width=device-width, initiAl-scAle=1\'>',
+					'\t<link rel=\'stylesheet\' type=\'text/css\' mediA=\'screen\' href=\'${2:mAin.css}\'>',
+					'\t<script src=\'${3:mAin.js}\'></script>',
+					'</heAd>',
 					'<body>',
 					'\t$0',
 					'</body>',
 					'</html>'].join('\n');
-				snippetProposal.insertText = new SnippetString(content);
-				snippetProposal.documentation = localize('folding.html', 'Simple HTML5 starting point');
-				snippetProposal.filterText = match2[2];
-				snippetProposal.sortText = 'za';
-				results.push(snippetProposal);
+				snippetProposAl.insertText = new SnippetString(content);
+				snippetProposAl.documentAtion = locAlize('folding.html', 'Simple HTML5 stArting point');
+				snippetProposAl.filterText = mAtch2[2];
+				snippetProposAl.sortText = 'zA';
+				results.push(snippetProposAl);
 			}
 			return results;
 		}
 	});
 
-	const promptForTypeOnRenameKey = 'html.promptForTypeOnRename';
-	const promptForTypeOnRename = extensions.getExtension('formulahendry.auto-rename-tag') !== undefined &&
-		(context.globalState.get(promptForTypeOnRenameKey) !== false) &&
-		!workspace.getConfiguration('editor', { languageId: 'html' }).get('renameOnType');
+	const promptForTypeOnRenAmeKey = 'html.promptForTypeOnRenAme';
+	const promptForTypeOnRenAme = extensions.getExtension('formulAhendry.Auto-renAme-tAg') !== undefined &&
+		(context.globAlStAte.get(promptForTypeOnRenAmeKey) !== fAlse) &&
+		!workspAce.getConfigurAtion('editor', { lAnguAgeId: 'html' }).get('renAmeOnType');
 
-	if (promptForTypeOnRename) {
-		const activeEditorListener = window.onDidChangeActiveTextEditor(async e => {
-			if (e && documentSelector.indexOf(e.document.languageId) !== -1) {
-				context.globalState.update(promptForTypeOnRenameKey, false);
-				activeEditorListener.dispose();
-				const configure = localize('configureButton', 'Configure');
-				const res = await window.showInformationMessage(localize('renameOnTypeQuestion', 'VS Code now has built-in support for auto-renaming tags. Do you want to enable it?'), configure);
+	if (promptForTypeOnRenAme) {
+		const ActiveEditorListener = window.onDidChAngeActiveTextEditor(Async e => {
+			if (e && documentSelector.indexOf(e.document.lAnguAgeId) !== -1) {
+				context.globAlStAte.updAte(promptForTypeOnRenAmeKey, fAlse);
+				ActiveEditorListener.dispose();
+				const configure = locAlize('configureButton', 'Configure');
+				const res = AwAit window.showInformAtionMessAge(locAlize('renAmeOnTypeQuestion', 'VS Code now hAs built-in support for Auto-renAming tAgs. Do you wAnt to enAble it?'), configure);
 				if (res === configure) {
-					commands.executeCommand('workbench.action.openSettings', SettingIds.renameOnType);
+					commAnds.executeCommAnd('workbench.Action.openSettings', SettingIds.renAmeOnType);
 				}
 			}
 		});
-		toDispose.push(activeEditorListener);
+		toDispose.push(ActiveEditorListener);
 	}
 
 	toDispose.push();

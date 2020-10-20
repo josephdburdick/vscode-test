@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
-*  Copyright (c) Microsoft Corporation. All rights reserved.
-*  Licensed under the MIT License. See License.txt in the project root for license information.
+*  Copyright (c) Microsoft CorporAtion. All rights reserved.
+*  Licensed under the MIT License. See License.txt in the project root for license informAtion.
 *--------------------------------------------------------------------------------------------*/
 
-declare module '@emmetio/css-parser' {
-	import { BufferStream, Stylesheet } from 'EmmetNode';
+declAre module '@emmetio/css-pArser' {
+	import { BufferStreAm, Stylesheet } from 'EmmetNode';
 
-	function parseStylesheet(stream: BufferStream): Stylesheet;
+	function pArseStylesheet(streAm: BufferStreAm): Stylesheet;
 
-	export default parseStylesheet;
+	export defAult pArseStylesheet;
 }
 

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import * as vscode from 'vscode';
+import 'mochA';
+import * As Assert from 'Assert';
+import * As vscode from 'vscode';
 import { disposeAll } from '../utils/dispose';
-import { createTestEditor, wait, joinLines } from './testUtils';
+import { creAteTestEditor, wAit, joinLines } from './testUtils';
 
-const testDocumentUri = vscode.Uri.parse('untitled:test.ts');
+const testDocumentUri = vscode.Uri.pArse('untitled:test.ts');
 
-const emptyRange = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
+const emptyRAnge = new vscode.RAnge(new vscode.Position(0, 0), new vscode.Position(0, 0));
 
 suite('TypeScript Fix All', () => {
 
-	const _disposables: vscode.Disposable[] = [];
+	const _disposAbles: vscode.DisposAble[] = [];
 
-	teardown(async () => {
-		disposeAll(_disposables);
+	teArdown(Async () => {
+		disposeAll(_disposAbles);
 
-		await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+		AwAit vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 	});
 
-	test('Fix all should remove unreachable code', async () => {
-		const editor = await createTestEditor(testDocumentUri,
+	test('Fix All should remove unreAchAble code', Async () => {
+		const editor = AwAit creAteTestEditor(testDocumentUri,
 			`function foo() {`,
 			`    return 1;`,
 			`    return 2;`,
@@ -35,17 +35,17 @@ suite('TypeScript Fix All', () => {
 			`};`,
 		);
 
-		await wait(2000);
+		AwAit wAit(2000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			emptyRange,
+			emptyRAnge,
 			vscode.CodeActionKind.SourceFixAll
 		);
 
-		await vscode.workspace.applyEdit(fixes![0].edit!);
+		AwAit vscode.workspAce.ApplyEdit(fixes![0].edit!);
 
-		assert.strictEqual(editor.document.getText(), joinLines(
+		Assert.strictEquAl(editor.document.getText(), joinLines(
 			`function foo() {`,
 			`    return 1;`,
 			`};`,
@@ -56,59 +56,59 @@ suite('TypeScript Fix All', () => {
 
 	});
 
-	test('Fix all should implement interfaces', async () => {
-		const editor = await createTestEditor(testDocumentUri,
-			`interface I {`,
+	test('Fix All should implement interfAces', Async () => {
+		const editor = AwAit creAteTestEditor(testDocumentUri,
+			`interfAce I {`,
 			`    x: number;`,
 			`}`,
-			`class A implements I {}`,
-			`class B implements I {}`,
+			`clAss A implements I {}`,
+			`clAss B implements I {}`,
 		);
 
-		await wait(2000);
+		AwAit wAit(2000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			emptyRange,
+			emptyRAnge,
 			vscode.CodeActionKind.SourceFixAll
 		);
 
-		await vscode.workspace.applyEdit(fixes![0].edit!);
-		assert.strictEqual(editor.document.getText(), joinLines(
-			`interface I {`,
+		AwAit vscode.workspAce.ApplyEdit(fixes![0].edit!);
+		Assert.strictEquAl(editor.document.getText(), joinLines(
+			`interfAce I {`,
 			`    x: number;`,
 			`}`,
-			`class A implements I {`,
+			`clAss A implements I {`,
 			`    x: number;`,
 			`}`,
-			`class B implements I {`,
+			`clAss B implements I {`,
 			`    x: number;`,
 			`}`,
 		));
 	});
 
-	test('Remove unused should handle nested ununused', async () => {
-		const editor = await createTestEditor(testDocumentUri,
+	test('Remove unused should hAndle nested ununused', Async () => {
+		const editor = AwAit creAteTestEditor(testDocumentUri,
 			`export const _ = 1;`,
 			`function unused() {`,
-			`    const a = 1;`,
+			`    const A = 1;`,
 			`}`,
 			`function used() {`,
-			`    const a = 1;`,
+			`    const A = 1;`,
 			`}`,
 			`used();`
 		);
 
-		await wait(2000);
+		AwAit wAit(2000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			emptyRange,
-			vscode.CodeActionKind.Source.append('removeUnused')
+			emptyRAnge,
+			vscode.CodeActionKind.Source.Append('removeUnused')
 		);
 
-		await vscode.workspace.applyEdit(fixes![0].edit!);
-		assert.strictEqual(editor.document.getText(), joinLines(
+		AwAit vscode.workspAce.ApplyEdit(fixes![0].edit!);
+		Assert.strictEquAl(editor.document.getText(), joinLines(
 			`export const _ = 1;`,
 			`function used() {`,
 			`}`,
@@ -116,22 +116,22 @@ suite('TypeScript Fix All', () => {
 		));
 	});
 
-	test('Remove unused should remove unused interfaces', async () => {
-		const editor = await createTestEditor(testDocumentUri,
+	test('Remove unused should remove unused interfAces', Async () => {
+		const editor = AwAit creAteTestEditor(testDocumentUri,
 			`export const _ = 1;`,
-			`interface Foo {}`
+			`interfAce Foo {}`
 		);
 
-		await wait(2000);
+		AwAit wAit(2000);
 
-		const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
+		const fixes = AwAit vscode.commAnds.executeCommAnd<vscode.CodeAction[]>('vscode.executeCodeActionProvider',
 			testDocumentUri,
-			emptyRange,
-			vscode.CodeActionKind.Source.append('removeUnused')
+			emptyRAnge,
+			vscode.CodeActionKind.Source.Append('removeUnused')
 		);
 
-		await vscode.workspace.applyEdit(fixes![0].edit!);
-		assert.strictEqual(editor.document.getText(), joinLines(
+		AwAit vscode.workspAce.ApplyEdit(fixes![0].edit!);
+		Assert.strictEquAl(editor.document.getText(), joinLines(
 			`export const _ = 1;`,
 			``
 		));

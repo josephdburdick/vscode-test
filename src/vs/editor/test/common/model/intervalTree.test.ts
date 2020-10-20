@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { TrackedRangeStickiness } from 'vs/editor/common/model';
-import { IntervalNode, IntervalTree, NodeColor, SENTINEL, getNodeColor, intervalCompare, nodeAcceptEdit, setNodeStickiness } from 'vs/editor/common/model/intervalTree';
+import * As Assert from 'Assert';
+import { TrAckedRAngeStickiness } from 'vs/editor/common/model';
+import { IntervAlNode, IntervAlTree, NodeColor, SENTINEL, getNodeColor, intervAlCompAre, nodeAcceptEdit, setNodeStickiness } from 'vs/editor/common/model/intervAlTree';
 
-const GENERATE_TESTS = false;
+const GENERATE_TESTS = fAlse;
 let TEST_COUNT = GENERATE_TESTS ? 10000 : 0;
-let PRINT_TREE = false;
+let PRINT_TREE = fAlse;
 const MIN_INTERVAL_START = 1;
 const MAX_INTERVAL_END = 100;
 const MIN_INSERTS = 1;
@@ -17,52 +17,52 @@ const MAX_INSERTS = 30;
 const MIN_CHANGE_CNT = 10;
 const MAX_CHANGE_CNT = 20;
 
-suite('IntervalTree', () => {
+suite('IntervAlTree', () => {
 
-	class Interval {
-		_intervalBrand: void;
+	clAss IntervAl {
+		_intervAlBrAnd: void;
 
-		public start: number;
+		public stArt: number;
 		public end: number;
 
-		constructor(start: number, end: number) {
-			this.start = start;
+		constructor(stArt: number, end: number) {
+			this.stArt = stArt;
 			this.end = end;
 		}
 	}
 
-	class Oracle {
-		public intervals: Interval[];
+	clAss OrAcle {
+		public intervAls: IntervAl[];
 
 		constructor() {
-			this.intervals = [];
+			this.intervAls = [];
 		}
 
-		public insert(interval: Interval): Interval {
-			this.intervals.push(interval);
-			this.intervals.sort((a, b) => {
-				if (a.start === b.start) {
-					return a.end - b.end;
+		public insert(intervAl: IntervAl): IntervAl {
+			this.intervAls.push(intervAl);
+			this.intervAls.sort((A, b) => {
+				if (A.stArt === b.stArt) {
+					return A.end - b.end;
 				}
-				return a.start - b.start;
+				return A.stArt - b.stArt;
 			});
-			return interval;
+			return intervAl;
 		}
 
-		public delete(interval: Interval): void {
-			for (let i = 0, len = this.intervals.length; i < len; i++) {
-				if (this.intervals[i] === interval) {
-					this.intervals.splice(i, 1);
+		public delete(intervAl: IntervAl): void {
+			for (let i = 0, len = this.intervAls.length; i < len; i++) {
+				if (this.intervAls[i] === intervAl) {
+					this.intervAls.splice(i, 1);
 					return;
 				}
 			}
 		}
 
-		public search(interval: Interval): Interval[] {
-			let result: Interval[] = [];
-			for (let i = 0, len = this.intervals.length; i < len; i++) {
-				let int = this.intervals[i];
-				if (int.start <= interval.end && int.end >= interval.start) {
+		public seArch(intervAl: IntervAl): IntervAl[] {
+			let result: IntervAl[] = [];
+			for (let i = 0, len = this.intervAls.length; i < len; i++) {
+				let int = this.intervAls[i];
+				if (int.stArt <= intervAl.end && int.end >= intervAl.stArt) {
 					result.push(int);
 				}
 			}
@@ -70,48 +70,48 @@ suite('IntervalTree', () => {
 		}
 	}
 
-	class TestState {
-		private _oracle: Oracle = new Oracle();
-		private _tree: IntervalTree = new IntervalTree();
-		private _lastNodeId = -1;
-		private _treeNodes: Array<IntervalNode | null> = [];
-		private _oracleNodes: Array<Interval | null> = [];
+	clAss TestStAte {
+		privAte _orAcle: OrAcle = new OrAcle();
+		privAte _tree: IntervAlTree = new IntervAlTree();
+		privAte _lAstNodeId = -1;
+		privAte _treeNodes: ArrAy<IntervAlNode | null> = [];
+		privAte _orAcleNodes: ArrAy<IntervAl | null> = [];
 
-		public acceptOp(op: IOperation): void {
+		public AcceptOp(op: IOperAtion): void {
 
 			if (op.type === 'insert') {
 				if (PRINT_TREE) {
-					console.log(`insert: {${JSON.stringify(new Interval(op.begin, op.end))}}`);
+					console.log(`insert: {${JSON.stringify(new IntervAl(op.begin, op.end))}}`);
 				}
-				let nodeId = (++this._lastNodeId);
-				this._treeNodes[nodeId] = new IntervalNode(null!, op.begin, op.end);
+				let nodeId = (++this._lAstNodeId);
+				this._treeNodes[nodeId] = new IntervAlNode(null!, op.begin, op.end);
 				this._tree.insert(this._treeNodes[nodeId]!);
-				this._oracleNodes[nodeId] = this._oracle.insert(new Interval(op.begin, op.end));
+				this._orAcleNodes[nodeId] = this._orAcle.insert(new IntervAl(op.begin, op.end));
 			} else if (op.type === 'delete') {
 				if (PRINT_TREE) {
-					console.log(`delete: {${JSON.stringify(this._oracleNodes[op.id])}}`);
+					console.log(`delete: {${JSON.stringify(this._orAcleNodes[op.id])}}`);
 				}
 				this._tree.delete(this._treeNodes[op.id]!);
-				this._oracle.delete(this._oracleNodes[op.id]!);
+				this._orAcle.delete(this._orAcleNodes[op.id]!);
 
 				this._treeNodes[op.id] = null;
-				this._oracleNodes[op.id] = null;
-			} else if (op.type === 'change') {
+				this._orAcleNodes[op.id] = null;
+			} else if (op.type === 'chAnge') {
 
 				this._tree.delete(this._treeNodes[op.id]!);
 				this._treeNodes[op.id]!.reset(0, op.begin, op.end, null!);
 				this._tree.insert(this._treeNodes[op.id]!);
 
-				this._oracle.delete(this._oracleNodes[op.id]!);
-				this._oracleNodes[op.id]!.start = op.begin;
-				this._oracleNodes[op.id]!.end = op.end;
-				this._oracle.insert(this._oracleNodes[op.id]!);
+				this._orAcle.delete(this._orAcleNodes[op.id]!);
+				this._orAcleNodes[op.id]!.stArt = op.begin;
+				this._orAcleNodes[op.id]!.end = op.end;
+				this._orAcle.insert(this._orAcleNodes[op.id]!);
 
 			} else {
-				let actualNodes = this._tree.intervalSearch(op.begin, op.end, 0, false, 0);
-				let actual = actualNodes.map(n => new Interval(n.cachedAbsoluteStart, n.cachedAbsoluteEnd));
-				let expected = this._oracle.search(new Interval(op.begin, op.end));
-				assert.deepEqual(actual, expected);
+				let ActuAlNodes = this._tree.intervAlSeArch(op.begin, op.end, 0, fAlse, 0);
+				let ActuAl = ActuAlNodes.mAp(n => new IntervAl(n.cAchedAbsoluteStArt, n.cAchedAbsoluteEnd));
+				let expected = this._orAcle.seArch(new IntervAl(op.begin, op.end));
+				Assert.deepEquAl(ActuAl, expected);
 				return;
 			}
 
@@ -119,11 +119,11 @@ suite('IntervalTree', () => {
 				printTree(this._tree);
 			}
 
-			assertTreeInvariants(this._tree);
+			AssertTreeInvAriAnts(this._tree);
 
-			let actual = this._tree.getAllInOrder().map(n => new Interval(n.cachedAbsoluteStart, n.cachedAbsoluteEnd));
-			let expected = this._oracle.intervals;
-			assert.deepEqual(actual, expected);
+			let ActuAl = this._tree.getAllInOrder().mAp(n => new IntervAl(n.cAchedAbsoluteStArt, n.cAchedAbsoluteEnd));
+			let expected = this._orAcle.intervAls;
+			Assert.deepEquAl(ActuAl, expected);
 		}
 
 		public getExistingNodeId(index: number): number {
@@ -141,135 +141,135 @@ suite('IntervalTree', () => {
 		}
 	}
 
-	interface IInsertOperation {
+	interfAce IInsertOperAtion {
 		type: 'insert';
 		begin: number;
 		end: number;
 	}
 
-	interface IDeleteOperation {
+	interfAce IDeleteOperAtion {
 		type: 'delete';
 		id: number;
 	}
 
-	interface IChangeOperation {
-		type: 'change';
+	interfAce IChAngeOperAtion {
+		type: 'chAnge';
 		id: number;
 		begin: number;
 		end: number;
 	}
 
-	interface ISearchOperation {
-		type: 'search';
+	interfAce ISeArchOperAtion {
+		type: 'seArch';
 		begin: number;
 		end: number;
 	}
 
-	type IOperation = IInsertOperation | IDeleteOperation | IChangeOperation | ISearchOperation;
+	type IOperAtion = IInsertOperAtion | IDeleteOperAtion | IChAngeOperAtion | ISeArchOperAtion;
 
-	function testIntervalTree(ops: IOperation[]): void {
-		let state = new TestState();
+	function testIntervAlTree(ops: IOperAtion[]): void {
+		let stAte = new TestStAte();
 		for (let i = 0; i < ops.length; i++) {
-			state.acceptOp(ops[i]);
+			stAte.AcceptOp(ops[i]);
 		}
 	}
 
-	function getRandomInt(min: number, max: number): number {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
+	function getRAndomInt(min: number, mAx: number): number {
+		return MAth.floor(MAth.rAndom() * (mAx - min + 1)) + min;
 	}
 
-	function getRandomRange(min: number, max: number): [number, number] {
-		let begin = getRandomInt(min, max);
+	function getRAndomRAnge(min: number, mAx: number): [number, number] {
+		let begin = getRAndomInt(min, mAx);
 		let length: number;
-		if (getRandomInt(1, 10) <= 2) {
-			// large range
-			length = getRandomInt(0, max - begin);
+		if (getRAndomInt(1, 10) <= 2) {
+			// lArge rAnge
+			length = getRAndomInt(0, mAx - begin);
 		} else {
-			// small range
-			length = getRandomInt(0, Math.min(max - begin, 10));
+			// smAll rAnge
+			length = getRAndomInt(0, MAth.min(mAx - begin, 10));
 		}
 		return [begin, begin + length];
 	}
 
-	class AutoTest {
-		private _ops: IOperation[] = [];
-		private _state: TestState = new TestState();
-		private _insertCnt: number;
-		private _deleteCnt: number;
-		private _changeCnt: number;
+	clAss AutoTest {
+		privAte _ops: IOperAtion[] = [];
+		privAte _stAte: TestStAte = new TestStAte();
+		privAte _insertCnt: number;
+		privAte _deleteCnt: number;
+		privAte _chAngeCnt: number;
 
 		constructor() {
-			this._insertCnt = getRandomInt(MIN_INSERTS, MAX_INSERTS);
-			this._changeCnt = getRandomInt(MIN_CHANGE_CNT, MAX_CHANGE_CNT);
+			this._insertCnt = getRAndomInt(MIN_INSERTS, MAX_INSERTS);
+			this._chAngeCnt = getRAndomInt(MIN_CHANGE_CNT, MAX_CHANGE_CNT);
 			this._deleteCnt = 0;
 		}
 
-		private _doRandomInsert(): void {
-			let range = getRandomRange(MIN_INTERVAL_START, MAX_INTERVAL_END);
+		privAte _doRAndomInsert(): void {
+			let rAnge = getRAndomRAnge(MIN_INTERVAL_START, MAX_INTERVAL_END);
 			this._run({
 				type: 'insert',
-				begin: range[0],
-				end: range[1]
+				begin: rAnge[0],
+				end: rAnge[1]
 			});
 		}
 
-		private _doRandomDelete(): void {
-			let idx = getRandomInt(Math.floor(this._deleteCnt / 2), this._deleteCnt - 1);
+		privAte _doRAndomDelete(): void {
+			let idx = getRAndomInt(MAth.floor(this._deleteCnt / 2), this._deleteCnt - 1);
 			this._run({
 				type: 'delete',
-				id: this._state.getExistingNodeId(idx)
+				id: this._stAte.getExistingNodeId(idx)
 			});
 		}
 
-		private _doRandomChange(): void {
-			let idx = getRandomInt(0, this._deleteCnt - 1);
-			let range = getRandomRange(MIN_INTERVAL_START, MAX_INTERVAL_END);
+		privAte _doRAndomChAnge(): void {
+			let idx = getRAndomInt(0, this._deleteCnt - 1);
+			let rAnge = getRAndomRAnge(MIN_INTERVAL_START, MAX_INTERVAL_END);
 			this._run({
-				type: 'change',
-				id: this._state.getExistingNodeId(idx),
-				begin: range[0],
-				end: range[1]
+				type: 'chAnge',
+				id: this._stAte.getExistingNodeId(idx),
+				begin: rAnge[0],
+				end: rAnge[1]
 			});
 		}
 
 		public run() {
-			while (this._insertCnt > 0 || this._deleteCnt > 0 || this._changeCnt > 0) {
+			while (this._insertCnt > 0 || this._deleteCnt > 0 || this._chAngeCnt > 0) {
 				if (this._insertCnt > 0) {
-					this._doRandomInsert();
+					this._doRAndomInsert();
 					this._insertCnt--;
 					this._deleteCnt++;
-				} else if (this._changeCnt > 0) {
-					this._doRandomChange();
-					this._changeCnt--;
+				} else if (this._chAngeCnt > 0) {
+					this._doRAndomChAnge();
+					this._chAngeCnt--;
 				} else {
-					this._doRandomDelete();
+					this._doRAndomDelete();
 					this._deleteCnt--;
 				}
 
-				// Let's also search for something...
-				let searchRange = getRandomRange(MIN_INTERVAL_START, MAX_INTERVAL_END);
+				// Let's Also seArch for something...
+				let seArchRAnge = getRAndomRAnge(MIN_INTERVAL_START, MAX_INTERVAL_END);
 				this._run({
-					type: 'search',
-					begin: searchRange[0],
-					end: searchRange[1]
+					type: 'seArch',
+					begin: seArchRAnge[0],
+					end: seArchRAnge[1]
 				});
 			}
 		}
 
-		private _run(op: IOperation): void {
+		privAte _run(op: IOperAtion): void {
 			this._ops.push(op);
-			this._state.acceptOp(op);
+			this._stAte.AcceptOp(op);
 		}
 
 		public print(): void {
-			console.log(`testIntervalTree(${JSON.stringify(this._ops)})`);
+			console.log(`testIntervAlTree(${JSON.stringify(this._ops)})`);
 		}
 
 	}
 
-	suite('generated', () => {
+	suite('generAted', () => {
 		test('gen01', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 28, end: 35 },
 				{ type: 'insert', begin: 52, end: 54 },
 				{ type: 'insert', begin: 63, end: 69 }
@@ -277,7 +277,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen02', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 80, end: 89 },
 				{ type: 'insert', begin: 92, end: 100 },
 				{ type: 'insert', begin: 99, end: 99 }
@@ -285,7 +285,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen03', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 89, end: 96 },
 				{ type: 'insert', begin: 71, end: 74 },
 				{ type: 'delete', id: 1 }
@@ -293,7 +293,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen04', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 44, end: 46 },
 				{ type: 'insert', begin: 85, end: 88 },
 				{ type: 'delete', id: 0 }
@@ -301,7 +301,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen05', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 82, end: 90 },
 				{ type: 'insert', begin: 69, end: 73 },
 				{ type: 'delete', id: 0 },
@@ -310,7 +310,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen06', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 41, end: 63 },
 				{ type: 'insert', begin: 98, end: 98 },
 				{ type: 'insert', begin: 47, end: 51 },
@@ -319,7 +319,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen07', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 24, end: 26 },
 				{ type: 'insert', begin: 11, end: 28 },
 				{ type: 'insert', begin: 27, end: 30 },
@@ -329,14 +329,14 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen08', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 100, end: 100 },
 				{ type: 'insert', begin: 100, end: 100 }
 			]);
 		});
 
 		test('gen09', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 58, end: 65 },
 				{ type: 'insert', begin: 82, end: 96 },
 				{ type: 'insert', begin: 58, end: 65 }
@@ -344,7 +344,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen10', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 32, end: 40 },
 				{ type: 'insert', begin: 25, end: 29 },
 				{ type: 'insert', begin: 24, end: 32 }
@@ -352,7 +352,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen11', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 25, end: 70 },
 				{ type: 'insert', begin: 99, end: 100 },
 				{ type: 'insert', begin: 46, end: 51 },
@@ -362,7 +362,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen12', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 20, end: 26 },
 				{ type: 'insert', begin: 10, end: 18 },
 				{ type: 'insert', begin: 99, end: 99 },
@@ -372,7 +372,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen13', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 3, end: 91 },
 				{ type: 'insert', begin: 57, end: 57 },
 				{ type: 'insert', begin: 35, end: 44 },
@@ -382,7 +382,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen14', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 58, end: 61 },
 				{ type: 'insert', begin: 34, end: 35 },
 				{ type: 'insert', begin: 56, end: 62 },
@@ -392,7 +392,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen15', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 63, end: 69 },
 				{ type: 'insert', begin: 17, end: 24 },
 				{ type: 'insert', begin: 3, end: 13 },
@@ -404,7 +404,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen16', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 27, end: 27 },
 				{ type: 'insert', begin: 42, end: 87 },
 				{ type: 'insert', begin: 42, end: 49 },
@@ -417,7 +417,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen17', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 21, end: 23 },
 				{ type: 'insert', begin: 83, end: 87 },
 				{ type: 'insert', begin: 56, end: 58 },
@@ -432,18 +432,18 @@ suite('IntervalTree', () => {
 		});
 
 		test('gen18', () => {
-			testIntervalTree([
+			testIntervAlTree([
 				{ type: 'insert', begin: 25, end: 25 },
 				{ type: 'insert', begin: 67, end: 79 },
 				{ type: 'delete', id: 0 },
-				{ type: 'search', begin: 65, end: 75 }
+				{ type: 'seArch', begin: 65, end: 75 }
 			]);
 		});
 
-		test('force delta overflow', () => {
-			// Search the IntervalNode ctor for FORCE_OVERFLOWING_TEST
-			// to force that this test leads to a delta normalization
-			testIntervalTree([
+		test('force deltA overflow', () => {
+			// SeArch the IntervAlNode ctor for FORCE_OVERFLOWING_TEST
+			// to force thAt this test leAds to A deltA normAlizAtion
+			testIntervAlTree([
 				{ type: 'insert', begin: 686081138593427, end: 733009856502260 },
 				{ type: 'insert', begin: 591031326181669, end: 591031326181672 },
 				{ type: 'insert', begin: 940037682731896, end: 940037682731903 },
@@ -465,18 +465,18 @@ suite('IntervalTree', () => {
 
 		try {
 			test.run();
-		} catch (err) {
+		} cAtch (err) {
 			console.log(err);
 			test.print();
 			return;
 		}
 	}
 
-	suite('searching', () => {
+	suite('seArching', () => {
 
-		function createCormenTree(): IntervalTree {
-			let r = new IntervalTree();
-			let data: [number, number][] = [
+		function creAteCormenTree(): IntervAlTree {
+			let r = new IntervAlTree();
+			let dAtA: [number, number][] = [
 				[16, 21],
 				[8, 9],
 				[25, 30],
@@ -488,23 +488,23 @@ suite('IntervalTree', () => {
 				[6, 10],
 				[19, 20]
 			];
-			data.forEach((int) => {
-				let node = new IntervalNode(null!, int[0], int[1]);
+			dAtA.forEAch((int) => {
+				let node = new IntervAlNode(null!, int[0], int[1]);
 				r.insert(node);
 			});
 			return r;
 		}
 
-		const T = createCormenTree();
+		const T = creAteCormenTree();
 
-		function assertIntervalSearch(start: number, end: number, expected: [number, number][]): void {
-			let actualNodes = T.intervalSearch(start, end, 0, false, 0);
-			let actual = actualNodes.map((n) => <[number, number]>[n.cachedAbsoluteStart, n.cachedAbsoluteEnd]);
-			assert.deepEqual(actual, expected);
+		function AssertIntervAlSeArch(stArt: number, end: number, expected: [number, number][]): void {
+			let ActuAlNodes = T.intervAlSeArch(stArt, end, 0, fAlse, 0);
+			let ActuAl = ActuAlNodes.mAp((n) => <[number, number]>[n.cAchedAbsoluteStArt, n.cAchedAbsoluteEnd]);
+			Assert.deepEquAl(ActuAl, expected);
 		}
 
 		test('cormen 1->2', () => {
-			assertIntervalSearch(
+			AssertIntervAlSeArch(
 				1, 2,
 				[
 					[0, 3],
@@ -513,7 +513,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('cormen 4->8', () => {
-			assertIntervalSearch(
+			AssertIntervAlSeArch(
 				4, 8,
 				[
 					[5, 8],
@@ -524,7 +524,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('cormen 10->15', () => {
-			assertIntervalSearch(
+			AssertIntervAlSeArch(
 				10, 15,
 				[
 					[6, 10],
@@ -534,7 +534,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('cormen 21->25', () => {
-			assertIntervalSearch(
+			AssertIntervAlSeArch(
 				21, 25,
 				[
 					[15, 23],
@@ -545,7 +545,7 @@ suite('IntervalTree', () => {
 		});
 
 		test('cormen 24->24', () => {
-			assertIntervalSearch(
+			AssertIntervAlSeArch(
 				24, 24,
 				[
 				]
@@ -554,274 +554,274 @@ suite('IntervalTree', () => {
 	});
 });
 
-suite('IntervalTree', () => {
-	function assertNodeAcceptEdit(msg: string, nodeStart: number, nodeEnd: number, nodeStickiness: TrackedRangeStickiness, start: number, end: number, textLength: number, forceMoveMarkers: boolean, expectedNodeStart: number, expectedNodeEnd: number): void {
-		let node = new IntervalNode('', nodeStart, nodeEnd);
+suite('IntervAlTree', () => {
+	function AssertNodeAcceptEdit(msg: string, nodeStArt: number, nodeEnd: number, nodeStickiness: TrAckedRAngeStickiness, stArt: number, end: number, textLength: number, forceMoveMArkers: booleAn, expectedNodeStArt: number, expectedNodeEnd: number): void {
+		let node = new IntervAlNode('', nodeStArt, nodeEnd);
 		setNodeStickiness(node, nodeStickiness);
-		nodeAcceptEdit(node, start, end, textLength, forceMoveMarkers);
-		assert.deepEqual([node.start, node.end], [expectedNodeStart, expectedNodeEnd], msg);
+		nodeAcceptEdit(node, stArt, end, textLength, forceMoveMArkers);
+		Assert.deepEquAl([node.stArt, node.end], [expectedNodeStArt, expectedNodeEnd], msg);
 	}
 
 	test('nodeAcceptEdit', () => {
-		// A. collapsed decoration
+		// A. collApsed decorAtion
 		{
 			// no-op
-			assertNodeAcceptEdit('A.000', 0, 0, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 0, false, 0, 0);
-			assertNodeAcceptEdit('A.001', 0, 0, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, false, 0, 0);
-			assertNodeAcceptEdit('A.002', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, false, 0, 0);
-			assertNodeAcceptEdit('A.003', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, false, 0, 0);
-			assertNodeAcceptEdit('A.004', 0, 0, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 0);
-			assertNodeAcceptEdit('A.005', 0, 0, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 0);
-			assertNodeAcceptEdit('A.006', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, true, 0, 0);
-			assertNodeAcceptEdit('A.007', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, true, 0, 0);
+			AssertNodeAcceptEdit('A.000', 0, 0, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 0, fAlse, 0, 0);
+			AssertNodeAcceptEdit('A.001', 0, 0, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, fAlse, 0, 0);
+			AssertNodeAcceptEdit('A.002', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, fAlse, 0, 0);
+			AssertNodeAcceptEdit('A.003', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, fAlse, 0, 0);
+			AssertNodeAcceptEdit('A.004', 0, 0, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 0);
+			AssertNodeAcceptEdit('A.005', 0, 0, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 0);
+			AssertNodeAcceptEdit('A.006', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, true, 0, 0);
+			AssertNodeAcceptEdit('A.007', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, true, 0, 0);
 			// insertion
-			assertNodeAcceptEdit('A.008', 0, 0, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 1, false, 0, 1);
-			assertNodeAcceptEdit('A.009', 0, 0, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, false, 1, 1);
-			assertNodeAcceptEdit('A.010', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, false, 0, 0);
-			assertNodeAcceptEdit('A.011', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, false, 1, 1);
-			assertNodeAcceptEdit('A.012', 0, 0, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 1);
-			assertNodeAcceptEdit('A.013', 0, 0, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 1);
-			assertNodeAcceptEdit('A.014', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, true, 1, 1);
-			assertNodeAcceptEdit('A.015', 0, 0, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, true, 1, 1);
+			AssertNodeAcceptEdit('A.008', 0, 0, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 1, fAlse, 0, 1);
+			AssertNodeAcceptEdit('A.009', 0, 0, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, fAlse, 1, 1);
+			AssertNodeAcceptEdit('A.010', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, fAlse, 0, 0);
+			AssertNodeAcceptEdit('A.011', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, fAlse, 1, 1);
+			AssertNodeAcceptEdit('A.012', 0, 0, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 1);
+			AssertNodeAcceptEdit('A.013', 0, 0, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 1);
+			AssertNodeAcceptEdit('A.014', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, true, 1, 1);
+			AssertNodeAcceptEdit('A.015', 0, 0, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, true, 1, 1);
 		}
 
-		// B. non collapsed decoration
+		// B. non collApsed decorAtion
 		{
 			// no-op
-			assertNodeAcceptEdit('B.000', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 0, false, 0, 5);
-			assertNodeAcceptEdit('B.001', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, false, 0, 5);
-			assertNodeAcceptEdit('B.002', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, false, 0, 5);
-			assertNodeAcceptEdit('B.003', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, false, 0, 5);
-			assertNodeAcceptEdit('B.004', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 5);
-			assertNodeAcceptEdit('B.005', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 5);
-			assertNodeAcceptEdit('B.006', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, true, 0, 5);
-			assertNodeAcceptEdit('B.007', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, true, 0, 5);
-			// insertion at start
-			assertNodeAcceptEdit('B.008', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.009', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, false, 1, 6);
-			assertNodeAcceptEdit('B.010', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.011', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, false, 1, 6);
-			assertNodeAcceptEdit('B.012', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 6);
-			assertNodeAcceptEdit('B.013', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 6);
-			assertNodeAcceptEdit('B.014', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, true, 1, 6);
-			assertNodeAcceptEdit('B.015', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, true, 1, 6);
+			AssertNodeAcceptEdit('B.000', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 0, fAlse, 0, 5);
+			AssertNodeAcceptEdit('B.001', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, fAlse, 0, 5);
+			AssertNodeAcceptEdit('B.002', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, fAlse, 0, 5);
+			AssertNodeAcceptEdit('B.003', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, fAlse, 0, 5);
+			AssertNodeAcceptEdit('B.004', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 5);
+			AssertNodeAcceptEdit('B.005', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 0, true, 0, 5);
+			AssertNodeAcceptEdit('B.006', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 0, true, 0, 5);
+			AssertNodeAcceptEdit('B.007', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 0, true, 0, 5);
+			// insertion At stArt
+			AssertNodeAcceptEdit('B.008', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.009', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, fAlse, 1, 6);
+			AssertNodeAcceptEdit('B.010', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.011', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, fAlse, 1, 6);
+			AssertNodeAcceptEdit('B.012', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 6);
+			AssertNodeAcceptEdit('B.013', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 0, 0, 1, true, 1, 6);
+			AssertNodeAcceptEdit('B.014', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 0, 0, 1, true, 1, 6);
+			AssertNodeAcceptEdit('B.015', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 0, 0, 1, true, 1, 6);
 			// insertion in middle
-			assertNodeAcceptEdit('B.016', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 2, 2, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.017', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 2, 2, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.018', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 2, 2, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.019', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 2, 2, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.020', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 2, 2, 1, true, 0, 6);
-			assertNodeAcceptEdit('B.021', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 2, 2, 1, true, 0, 6);
-			assertNodeAcceptEdit('B.022', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 2, 2, 1, true, 0, 6);
-			assertNodeAcceptEdit('B.023', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 2, 2, 1, true, 0, 6);
-			// insertion at end
-			assertNodeAcceptEdit('B.024', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 5, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.025', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 5, 1, false, 0, 5);
-			assertNodeAcceptEdit('B.026', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 5, 1, false, 0, 5);
-			assertNodeAcceptEdit('B.027', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 5, 1, false, 0, 6);
-			assertNodeAcceptEdit('B.028', 0, 5, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 5, 1, true, 0, 6);
-			assertNodeAcceptEdit('B.029', 0, 5, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 5, 1, true, 0, 6);
-			assertNodeAcceptEdit('B.030', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 5, 1, true, 0, 6);
-			assertNodeAcceptEdit('B.031', 0, 5, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 5, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.016', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 2, 2, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.017', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 2, 2, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.018', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 2, 2, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.019', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 2, 2, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.020', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 2, 2, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.021', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 2, 2, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.022', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 2, 2, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.023', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 2, 2, 1, true, 0, 6);
+			// insertion At end
+			AssertNodeAcceptEdit('B.024', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 5, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.025', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 5, 1, fAlse, 0, 5);
+			AssertNodeAcceptEdit('B.026', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 5, 1, fAlse, 0, 5);
+			AssertNodeAcceptEdit('B.027', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 5, 1, fAlse, 0, 6);
+			AssertNodeAcceptEdit('B.028', 0, 5, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 5, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.029', 0, 5, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 5, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.030', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 5, 1, true, 0, 6);
+			AssertNodeAcceptEdit('B.031', 0, 5, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 5, 1, true, 0, 6);
 
-			// replace with larger text until start
-			assertNodeAcceptEdit('B.032', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 5, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.033', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 2, false, 6, 11);
-			assertNodeAcceptEdit('B.034', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.035', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 2, false, 6, 11);
-			assertNodeAcceptEdit('B.036', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 5, 2, true, 6, 11);
-			assertNodeAcceptEdit('B.037', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 2, true, 6, 11);
-			assertNodeAcceptEdit('B.038', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 2, true, 6, 11);
-			assertNodeAcceptEdit('B.039', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 2, true, 6, 11);
-			// replace with smaller text until start
-			assertNodeAcceptEdit('B.040', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 3, 5, 1, false, 4, 9);
-			assertNodeAcceptEdit('B.041', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 3, 5, 1, false, 4, 9);
-			assertNodeAcceptEdit('B.042', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 3, 5, 1, false, 4, 9);
-			assertNodeAcceptEdit('B.043', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 3, 5, 1, false, 4, 9);
-			assertNodeAcceptEdit('B.044', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 3, 5, 1, true, 4, 9);
-			assertNodeAcceptEdit('B.045', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 3, 5, 1, true, 4, 9);
-			assertNodeAcceptEdit('B.046', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 3, 5, 1, true, 4, 9);
-			assertNodeAcceptEdit('B.047', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 3, 5, 1, true, 4, 9);
+			// replAce with lArger text until stArt
+			AssertNodeAcceptEdit('B.032', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 5, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.033', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 2, fAlse, 6, 11);
+			AssertNodeAcceptEdit('B.034', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.035', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 2, fAlse, 6, 11);
+			AssertNodeAcceptEdit('B.036', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 5, 2, true, 6, 11);
+			AssertNodeAcceptEdit('B.037', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 2, true, 6, 11);
+			AssertNodeAcceptEdit('B.038', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 2, true, 6, 11);
+			AssertNodeAcceptEdit('B.039', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 2, true, 6, 11);
+			// replAce with smAller text until stArt
+			AssertNodeAcceptEdit('B.040', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 3, 5, 1, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.041', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 3, 5, 1, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.042', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 3, 5, 1, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.043', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 3, 5, 1, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.044', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 3, 5, 1, true, 4, 9);
+			AssertNodeAcceptEdit('B.045', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 3, 5, 1, true, 4, 9);
+			AssertNodeAcceptEdit('B.046', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 3, 5, 1, true, 4, 9);
+			AssertNodeAcceptEdit('B.047', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 3, 5, 1, true, 4, 9);
 
-			// replace with larger text select start
-			assertNodeAcceptEdit('B.048', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 6, 3, false, 5, 11);
-			assertNodeAcceptEdit('B.049', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 3, false, 5, 11);
-			assertNodeAcceptEdit('B.050', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 3, false, 5, 11);
-			assertNodeAcceptEdit('B.051', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 3, false, 5, 11);
-			assertNodeAcceptEdit('B.052', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 6, 3, true, 7, 11);
-			assertNodeAcceptEdit('B.053', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 3, true, 7, 11);
-			assertNodeAcceptEdit('B.054', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 3, true, 7, 11);
-			assertNodeAcceptEdit('B.055', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 3, true, 7, 11);
-			// replace with smaller text select start
-			assertNodeAcceptEdit('B.056', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 6, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.057', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.058', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.059', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.060', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 6, 1, true, 5, 9);
-			assertNodeAcceptEdit('B.061', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 1, true, 5, 9);
-			assertNodeAcceptEdit('B.062', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 1, true, 5, 9);
-			assertNodeAcceptEdit('B.063', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 1, true, 5, 9);
+			// replAce with lArger text select stArt
+			AssertNodeAcceptEdit('B.048', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 6, 3, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.049', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 3, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.050', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 3, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.051', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 3, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.052', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 6, 3, true, 7, 11);
+			AssertNodeAcceptEdit('B.053', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 3, true, 7, 11);
+			AssertNodeAcceptEdit('B.054', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 3, true, 7, 11);
+			AssertNodeAcceptEdit('B.055', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 3, true, 7, 11);
+			// replAce with smAller text select stArt
+			AssertNodeAcceptEdit('B.056', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 6, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.057', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.058', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.059', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.060', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 6, 1, true, 5, 9);
+			AssertNodeAcceptEdit('B.061', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 1, true, 5, 9);
+			AssertNodeAcceptEdit('B.062', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 1, true, 5, 9);
+			AssertNodeAcceptEdit('B.063', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 1, true, 5, 9);
 
-			// replace with larger text from start
-			assertNodeAcceptEdit('B.064', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 6, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.065', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.066', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.067', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.068', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 6, 2, true, 7, 11);
-			assertNodeAcceptEdit('B.069', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 2, true, 7, 11);
-			assertNodeAcceptEdit('B.070', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 2, true, 7, 11);
-			assertNodeAcceptEdit('B.071', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 2, true, 7, 11);
-			// replace with smaller text from start
-			assertNodeAcceptEdit('B.072', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 7, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.073', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 7, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.074', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 7, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.075', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 7, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.076', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 7, 1, true, 6, 9);
-			assertNodeAcceptEdit('B.077', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 7, 1, true, 6, 9);
-			assertNodeAcceptEdit('B.078', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 7, 1, true, 6, 9);
-			assertNodeAcceptEdit('B.079', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 7, 1, true, 6, 9);
+			// replAce with lArger text from stArt
+			AssertNodeAcceptEdit('B.064', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 6, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.065', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.066', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.067', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.068', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 6, 2, true, 7, 11);
+			AssertNodeAcceptEdit('B.069', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 2, true, 7, 11);
+			AssertNodeAcceptEdit('B.070', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 2, true, 7, 11);
+			AssertNodeAcceptEdit('B.071', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 2, true, 7, 11);
+			// replAce with smAller text from stArt
+			AssertNodeAcceptEdit('B.072', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 7, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.073', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 7, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.074', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 7, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.075', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 7, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.076', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 7, 1, true, 6, 9);
+			AssertNodeAcceptEdit('B.077', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 7, 1, true, 6, 9);
+			AssertNodeAcceptEdit('B.078', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 7, 1, true, 6, 9);
+			AssertNodeAcceptEdit('B.079', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 7, 1, true, 6, 9);
 
-			// replace with larger text to end
-			assertNodeAcceptEdit('B.080', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 10, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.081', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 2, false, 5, 10);
-			assertNodeAcceptEdit('B.082', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 2, false, 5, 10);
-			assertNodeAcceptEdit('B.083', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 2, false, 5, 11);
-			assertNodeAcceptEdit('B.084', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 10, 2, true, 5, 11);
-			assertNodeAcceptEdit('B.085', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 2, true, 5, 11);
-			assertNodeAcceptEdit('B.086', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 2, true, 5, 11);
-			assertNodeAcceptEdit('B.087', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 2, true, 5, 11);
-			// replace with smaller text to end
-			assertNodeAcceptEdit('B.088', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 8, 10, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.089', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 8, 10, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.090', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 8, 10, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.091', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 8, 10, 1, false, 5, 9);
-			assertNodeAcceptEdit('B.092', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 8, 10, 1, true, 5, 9);
-			assertNodeAcceptEdit('B.093', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 8, 10, 1, true, 5, 9);
-			assertNodeAcceptEdit('B.094', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 8, 10, 1, true, 5, 9);
-			assertNodeAcceptEdit('B.095', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 8, 10, 1, true, 5, 9);
+			// replAce with lArger text to end
+			AssertNodeAcceptEdit('B.080', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 10, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.081', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 2, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.082', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 2, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.083', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 2, fAlse, 5, 11);
+			AssertNodeAcceptEdit('B.084', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 10, 2, true, 5, 11);
+			AssertNodeAcceptEdit('B.085', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 2, true, 5, 11);
+			AssertNodeAcceptEdit('B.086', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 2, true, 5, 11);
+			AssertNodeAcceptEdit('B.087', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 2, true, 5, 11);
+			// replAce with smAller text to end
+			AssertNodeAcceptEdit('B.088', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 8, 10, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.089', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 8, 10, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.090', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 8, 10, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.091', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 8, 10, 1, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.092', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 8, 10, 1, true, 5, 9);
+			AssertNodeAcceptEdit('B.093', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 8, 10, 1, true, 5, 9);
+			AssertNodeAcceptEdit('B.094', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 8, 10, 1, true, 5, 9);
+			AssertNodeAcceptEdit('B.095', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 8, 10, 1, true, 5, 9);
 
-			// replace with larger text select end
-			assertNodeAcceptEdit('B.096', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.097', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.098', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.099', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.100', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 11, 3, true, 5, 12);
-			assertNodeAcceptEdit('B.101', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 3, true, 5, 12);
-			assertNodeAcceptEdit('B.102', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 3, true, 5, 12);
-			assertNodeAcceptEdit('B.103', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 3, true, 5, 12);
-			// replace with smaller text select end
-			assertNodeAcceptEdit('B.104', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 11, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.105', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.106', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.107', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.108', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 11, 1, true, 5, 10);
-			assertNodeAcceptEdit('B.109', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 1, true, 5, 10);
-			assertNodeAcceptEdit('B.110', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 1, true, 5, 10);
-			assertNodeAcceptEdit('B.111', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 1, true, 5, 10);
+			// replAce with lArger text select end
+			AssertNodeAcceptEdit('B.096', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.097', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.098', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.099', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.100', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 11, 3, true, 5, 12);
+			AssertNodeAcceptEdit('B.101', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 3, true, 5, 12);
+			AssertNodeAcceptEdit('B.102', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 3, true, 5, 12);
+			AssertNodeAcceptEdit('B.103', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 3, true, 5, 12);
+			// replAce with smAller text select end
+			AssertNodeAcceptEdit('B.104', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 11, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.105', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.106', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.107', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.108', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 11, 1, true, 5, 10);
+			AssertNodeAcceptEdit('B.109', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 1, true, 5, 10);
+			AssertNodeAcceptEdit('B.110', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 1, true, 5, 10);
+			AssertNodeAcceptEdit('B.111', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 1, true, 5, 10);
 
-			// replace with larger text from end
-			assertNodeAcceptEdit('B.112', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 10, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.113', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.114', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.115', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 3, false, 5, 10);
-			assertNodeAcceptEdit('B.116', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 10, 11, 3, true, 5, 13);
-			assertNodeAcceptEdit('B.117', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 3, true, 5, 13);
-			assertNodeAcceptEdit('B.118', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 3, true, 5, 13);
-			assertNodeAcceptEdit('B.119', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 3, true, 5, 13);
-			// replace with smaller text from end
-			assertNodeAcceptEdit('B.120', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 10, 12, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.121', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 10, 12, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.122', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 10, 12, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.123', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 10, 12, 1, false, 5, 10);
-			assertNodeAcceptEdit('B.124', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 10, 12, 1, true, 5, 11);
-			assertNodeAcceptEdit('B.125', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 10, 12, 1, true, 5, 11);
-			assertNodeAcceptEdit('B.126', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 10, 12, 1, true, 5, 11);
-			assertNodeAcceptEdit('B.127', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 10, 12, 1, true, 5, 11);
+			// replAce with lArger text from end
+			AssertNodeAcceptEdit('B.112', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 10, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.113', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.114', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.115', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 3, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.116', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 10, 11, 3, true, 5, 13);
+			AssertNodeAcceptEdit('B.117', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 3, true, 5, 13);
+			AssertNodeAcceptEdit('B.118', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 3, true, 5, 13);
+			AssertNodeAcceptEdit('B.119', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 3, true, 5, 13);
+			// replAce with smAller text from end
+			AssertNodeAcceptEdit('B.120', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 10, 12, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.121', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 10, 12, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.122', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 10, 12, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.123', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 10, 12, 1, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.124', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 10, 12, 1, true, 5, 11);
+			AssertNodeAcceptEdit('B.125', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 10, 12, 1, true, 5, 11);
+			AssertNodeAcceptEdit('B.126', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 10, 12, 1, true, 5, 11);
+			AssertNodeAcceptEdit('B.127', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 10, 12, 1, true, 5, 11);
 
-			// delete until start
-			assertNodeAcceptEdit('B.128', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 5, 0, false, 4, 9);
-			assertNodeAcceptEdit('B.129', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 0, false, 4, 9);
-			assertNodeAcceptEdit('B.130', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 0, false, 4, 9);
-			assertNodeAcceptEdit('B.131', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 0, false, 4, 9);
-			assertNodeAcceptEdit('B.132', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 5, 0, true, 4, 9);
-			assertNodeAcceptEdit('B.133', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 0, true, 4, 9);
-			assertNodeAcceptEdit('B.134', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 0, true, 4, 9);
-			assertNodeAcceptEdit('B.135', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 0, true, 4, 9);
+			// delete until stArt
+			AssertNodeAcceptEdit('B.128', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 5, 0, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.129', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 0, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.130', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 0, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.131', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 0, fAlse, 4, 9);
+			AssertNodeAcceptEdit('B.132', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 5, 0, true, 4, 9);
+			AssertNodeAcceptEdit('B.133', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 5, 0, true, 4, 9);
+			AssertNodeAcceptEdit('B.134', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 5, 0, true, 4, 9);
+			AssertNodeAcceptEdit('B.135', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 5, 0, true, 4, 9);
 
-			// delete select start
-			assertNodeAcceptEdit('B.136', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 6, 0, false, 4, 8);
-			assertNodeAcceptEdit('B.137', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 0, false, 4, 8);
-			assertNodeAcceptEdit('B.138', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 0, false, 4, 8);
-			assertNodeAcceptEdit('B.139', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 0, false, 4, 8);
-			assertNodeAcceptEdit('B.140', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 4, 6, 0, true, 4, 8);
-			assertNodeAcceptEdit('B.141', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 0, true, 4, 8);
-			assertNodeAcceptEdit('B.142', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 0, true, 4, 8);
-			assertNodeAcceptEdit('B.143', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 0, true, 4, 8);
+			// delete select stArt
+			AssertNodeAcceptEdit('B.136', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 6, 0, fAlse, 4, 8);
+			AssertNodeAcceptEdit('B.137', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 0, fAlse, 4, 8);
+			AssertNodeAcceptEdit('B.138', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 0, fAlse, 4, 8);
+			AssertNodeAcceptEdit('B.139', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 0, fAlse, 4, 8);
+			AssertNodeAcceptEdit('B.140', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 4, 6, 0, true, 4, 8);
+			AssertNodeAcceptEdit('B.141', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 4, 6, 0, true, 4, 8);
+			AssertNodeAcceptEdit('B.142', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 4, 6, 0, true, 4, 8);
+			AssertNodeAcceptEdit('B.143', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 4, 6, 0, true, 4, 8);
 
-			// delete from start
-			assertNodeAcceptEdit('B.144', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 6, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.145', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.146', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.147', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.148', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 6, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.149', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.150', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.151', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 0, true, 5, 9);
+			// delete from stArt
+			AssertNodeAcceptEdit('B.144', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 6, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.145', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.146', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.147', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.148', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 6, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.149', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 6, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.150', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 6, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.151', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 6, 0, true, 5, 9);
 
 			// delete to end
-			assertNodeAcceptEdit('B.152', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 10, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.153', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.154', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.155', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.156', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 10, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.157', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.158', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.159', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.152', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 10, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.153', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.154', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.155', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.156', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 10, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.157', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 10, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.158', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 10, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.159', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 10, 0, true, 5, 9);
 
 			// delete select end
-			assertNodeAcceptEdit('B.160', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 11, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.161', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.162', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.163', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 0, false, 5, 9);
-			assertNodeAcceptEdit('B.164', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 9, 11, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.165', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.166', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 0, true, 5, 9);
-			assertNodeAcceptEdit('B.167', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.160', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 11, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.161', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.162', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.163', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 0, fAlse, 5, 9);
+			AssertNodeAcceptEdit('B.164', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 9, 11, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.165', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 9, 11, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.166', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 9, 11, 0, true, 5, 9);
+			AssertNodeAcceptEdit('B.167', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 9, 11, 0, true, 5, 9);
 
 			// delete from end
-			assertNodeAcceptEdit('B.168', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 10, 11, 0, false, 5, 10);
-			assertNodeAcceptEdit('B.169', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 0, false, 5, 10);
-			assertNodeAcceptEdit('B.170', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 0, false, 5, 10);
-			assertNodeAcceptEdit('B.171', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 0, false, 5, 10);
-			assertNodeAcceptEdit('B.172', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 10, 11, 0, true, 5, 10);
-			assertNodeAcceptEdit('B.173', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 0, true, 5, 10);
-			assertNodeAcceptEdit('B.174', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 0, true, 5, 10);
-			assertNodeAcceptEdit('B.175', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 0, true, 5, 10);
+			AssertNodeAcceptEdit('B.168', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 10, 11, 0, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.169', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 0, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.170', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 0, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.171', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 0, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.172', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 10, 11, 0, true, 5, 10);
+			AssertNodeAcceptEdit('B.173', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 10, 11, 0, true, 5, 10);
+			AssertNodeAcceptEdit('B.174', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 10, 11, 0, true, 5, 10);
+			AssertNodeAcceptEdit('B.175', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 10, 11, 0, true, 5, 10);
 
-			// replace with larger text entire
-			assertNodeAcceptEdit('B.176', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 10, 3, false, 5, 8);
-			assertNodeAcceptEdit('B.177', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 3, false, 5, 8);
-			assertNodeAcceptEdit('B.178', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 3, false, 5, 8);
-			assertNodeAcceptEdit('B.179', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 3, false, 5, 8);
-			assertNodeAcceptEdit('B.180', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 10, 3, true, 8, 8);
-			assertNodeAcceptEdit('B.181', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 3, true, 8, 8);
-			assertNodeAcceptEdit('B.182', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 3, true, 8, 8);
-			assertNodeAcceptEdit('B.183', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 3, true, 8, 8);
-			// replace with smaller text entire
-			assertNodeAcceptEdit('B.184', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 10, 7, false, 5, 12);
-			assertNodeAcceptEdit('B.185', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 7, false, 5, 10);
-			assertNodeAcceptEdit('B.186', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 7, false, 5, 10);
-			assertNodeAcceptEdit('B.187', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 7, false, 5, 12);
-			assertNodeAcceptEdit('B.188', 5, 10, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges, 5, 10, 7, true, 12, 12);
-			assertNodeAcceptEdit('B.189', 5, 10, TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 7, true, 12, 12);
-			assertNodeAcceptEdit('B.190', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 7, true, 12, 12);
-			assertNodeAcceptEdit('B.191', 5, 10, TrackedRangeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 7, true, 12, 12);
+			// replAce with lArger text entire
+			AssertNodeAcceptEdit('B.176', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 10, 3, fAlse, 5, 8);
+			AssertNodeAcceptEdit('B.177', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 3, fAlse, 5, 8);
+			AssertNodeAcceptEdit('B.178', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 3, fAlse, 5, 8);
+			AssertNodeAcceptEdit('B.179', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 3, fAlse, 5, 8);
+			AssertNodeAcceptEdit('B.180', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 10, 3, true, 8, 8);
+			AssertNodeAcceptEdit('B.181', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 3, true, 8, 8);
+			AssertNodeAcceptEdit('B.182', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 3, true, 8, 8);
+			AssertNodeAcceptEdit('B.183', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 3, true, 8, 8);
+			// replAce with smAller text entire
+			AssertNodeAcceptEdit('B.184', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 10, 7, fAlse, 5, 12);
+			AssertNodeAcceptEdit('B.185', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 7, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.186', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 7, fAlse, 5, 10);
+			AssertNodeAcceptEdit('B.187', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 7, fAlse, 5, 12);
+			AssertNodeAcceptEdit('B.188', 5, 10, TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges, 5, 10, 7, true, 12, 12);
+			AssertNodeAcceptEdit('B.189', 5, 10, TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges, 5, 10, 7, true, 12, 12);
+			AssertNodeAcceptEdit('B.190', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingBefore, 5, 10, 7, true, 12, 12);
+			AssertNodeAcceptEdit('B.191', 5, 10, TrAckedRAngeStickiness.GrowsOnlyWhenTypingAfter, 5, 10, 7, true, 12, 12);
 
 		}
 	});
 });
 
-function printTree(T: IntervalTree): void {
+function printTree(T: IntervAlTree): void {
 	if (T.root === SENTINEL) {
 		console.log(`~~ empty`);
 		return;
@@ -831,15 +831,15 @@ function printTree(T: IntervalTree): void {
 	console.log(out.join(''));
 }
 
-function _printTree(T: IntervalTree, n: IntervalNode, indent: string, delta: number, out: string[]): void {
-	out.push(`${indent}[${getNodeColor(n) === NodeColor.Red ? 'R' : 'B'},${n.delta}, ${n.start}->${n.end}, ${n.maxEnd}] : {${delta + n.start}->${delta + n.end}}, maxEnd: ${n.maxEnd + delta}\n`);
+function _printTree(T: IntervAlTree, n: IntervAlNode, indent: string, deltA: number, out: string[]): void {
+	out.push(`${indent}[${getNodeColor(n) === NodeColor.Red ? 'R' : 'B'},${n.deltA}, ${n.stArt}->${n.end}, ${n.mAxEnd}] : {${deltA + n.stArt}->${deltA + n.end}}, mAxEnd: ${n.mAxEnd + deltA}\n`);
 	if (n.left !== SENTINEL) {
-		_printTree(T, n.left, indent + '    ', delta, out);
+		_printTree(T, n.left, indent + '    ', deltA, out);
 	} else {
 		out.push(`${indent}    NIL\n`);
 	}
 	if (n.right !== SENTINEL) {
-		_printTree(T, n.right, indent + '    ', delta + n.delta, out);
+		_printTree(T, n.right, indent + '    ', deltA + n.deltA, out);
 	} else {
 		out.push(`${indent}    NIL\n`);
 	}
@@ -847,28 +847,28 @@ function _printTree(T: IntervalTree, n: IntervalNode, indent: string, delta: num
 
 //#region Assertion
 
-function assertTreeInvariants(T: IntervalTree): void {
-	assert(getNodeColor(SENTINEL) === NodeColor.Black);
-	assert(SENTINEL.parent === SENTINEL);
-	assert(SENTINEL.left === SENTINEL);
-	assert(SENTINEL.right === SENTINEL);
-	assert(SENTINEL.start === 0);
-	assert(SENTINEL.end === 0);
-	assert(SENTINEL.delta === 0);
-	assert(T.root.parent === SENTINEL);
-	assertValidTree(T);
+function AssertTreeInvAriAnts(T: IntervAlTree): void {
+	Assert(getNodeColor(SENTINEL) === NodeColor.BlAck);
+	Assert(SENTINEL.pArent === SENTINEL);
+	Assert(SENTINEL.left === SENTINEL);
+	Assert(SENTINEL.right === SENTINEL);
+	Assert(SENTINEL.stArt === 0);
+	Assert(SENTINEL.end === 0);
+	Assert(SENTINEL.deltA === 0);
+	Assert(T.root.pArent === SENTINEL);
+	AssertVAlidTree(T);
 }
 
-function depth(n: IntervalNode): number {
+function depth(n: IntervAlNode): number {
 	if (n === SENTINEL) {
-		// The leafs are black
+		// The leAfs Are blAck
 		return 1;
 	}
-	assert(depth(n.left) === depth(n.right));
-	return (getNodeColor(n) === NodeColor.Black ? 1 : 0) + depth(n.left);
+	Assert(depth(n.left) === depth(n.right));
+	return (getNodeColor(n) === NodeColor.BlAck ? 1 : 0) + depth(n.left);
 }
 
-function assertValidNode(n: IntervalNode, delta: number): void {
+function AssertVAlidNode(n: IntervAlNode, deltA: number): void {
 	if (n === SENTINEL) {
 		return;
 	}
@@ -877,32 +877,32 @@ function assertValidNode(n: IntervalNode, delta: number): void {
 	let r = n.right;
 
 	if (getNodeColor(n) === NodeColor.Red) {
-		assert(getNodeColor(l) === NodeColor.Black);
-		assert(getNodeColor(r) === NodeColor.Black);
+		Assert(getNodeColor(l) === NodeColor.BlAck);
+		Assert(getNodeColor(r) === NodeColor.BlAck);
 	}
 
-	let expectedMaxEnd = n.end;
+	let expectedMAxEnd = n.end;
 	if (l !== SENTINEL) {
-		assert(intervalCompare(l.start + delta, l.end + delta, n.start + delta, n.end + delta) <= 0);
-		expectedMaxEnd = Math.max(expectedMaxEnd, l.maxEnd);
+		Assert(intervAlCompAre(l.stArt + deltA, l.end + deltA, n.stArt + deltA, n.end + deltA) <= 0);
+		expectedMAxEnd = MAth.mAx(expectedMAxEnd, l.mAxEnd);
 	}
 	if (r !== SENTINEL) {
-		assert(intervalCompare(n.start + delta, n.end + delta, r.start + delta + n.delta, r.end + delta + n.delta) <= 0);
-		expectedMaxEnd = Math.max(expectedMaxEnd, r.maxEnd + n.delta);
+		Assert(intervAlCompAre(n.stArt + deltA, n.end + deltA, r.stArt + deltA + n.deltA, r.end + deltA + n.deltA) <= 0);
+		expectedMAxEnd = MAth.mAx(expectedMAxEnd, r.mAxEnd + n.deltA);
 	}
-	assert(n.maxEnd === expectedMaxEnd);
+	Assert(n.mAxEnd === expectedMAxEnd);
 
-	assertValidNode(l, delta);
-	assertValidNode(r, delta + n.delta);
+	AssertVAlidNode(l, deltA);
+	AssertVAlidNode(r, deltA + n.deltA);
 }
 
-function assertValidTree(T: IntervalTree): void {
+function AssertVAlidTree(T: IntervAlTree): void {
 	if (T.root === SENTINEL) {
 		return;
 	}
-	assert(getNodeColor(T.root) === NodeColor.Black);
-	assert(depth(T.root.left) === depth(T.root.right));
-	assertValidNode(T.root, 0);
+	Assert(getNodeColor(T.root) === NodeColor.BlAck);
+	Assert(depth(T.root.left) === depth(T.root.right));
+	AssertVAlidNode(T.root, 0);
 }
 
 //#endregion

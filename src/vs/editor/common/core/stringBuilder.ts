@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import * as platform from 'vs/base/common/platform';
-import * as buffer from 'vs/base/common/buffer';
+import * As strings from 'vs/bAse/common/strings';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As buffer from 'vs/bAse/common/buffer';
 
-declare const TextDecoder: {
+declAre const TextDecoder: {
 	prototype: TextDecoder;
-	new(label?: string): TextDecoder;
+	new(lAbel?: string): TextDecoder;
 };
-interface TextDecoder {
-	decode(view: Uint16Array): string;
+interfAce TextDecoder {
+	decode(view: Uint16ArrAy): string;
 }
 
-export interface IStringBuilder {
+export interfAce IStringBuilder {
 	build(): string;
 	reset(): void;
-	write1(charCode: number): void;
-	appendASCII(charCode: number): void;
-	appendASCIIString(str: string): void;
+	write1(chArCode: number): void;
+	AppendASCII(chArCode: number): void;
+	AppendASCIIString(str: string): void;
 }
 
-let _platformTextDecoder: TextDecoder | null;
-export function getPlatformTextDecoder(): TextDecoder {
-	if (!_platformTextDecoder) {
-		_platformTextDecoder = new TextDecoder(platform.isLittleEndian() ? 'UTF-16LE' : 'UTF-16BE');
+let _plAtformTextDecoder: TextDecoder | null;
+export function getPlAtformTextDecoder(): TextDecoder {
+	if (!_plAtformTextDecoder) {
+		_plAtformTextDecoder = new TextDecoder(plAtform.isLittleEndiAn() ? 'UTF-16LE' : 'UTF-16BE');
 	}
-	return _platformTextDecoder;
+	return _plAtformTextDecoder;
 }
 
-export const hasTextDecoder = (typeof TextDecoder !== 'undefined');
-export let createStringBuilder: (capacity: number) => IStringBuilder;
-export let decodeUTF16LE: (source: Uint8Array, offset: number, len: number) => string;
+export const hAsTextDecoder = (typeof TextDecoder !== 'undefined');
+export let creAteStringBuilder: (cApAcity: number) => IStringBuilder;
+export let decodeUTF16LE: (source: Uint8ArrAy, offset: number, len: number) => string;
 
-if (hasTextDecoder) {
-	createStringBuilder = (capacity) => new StringBuilder(capacity);
-	decodeUTF16LE = standardDecodeUTF16LE;
+if (hAsTextDecoder) {
+	creAteStringBuilder = (cApAcity) => new StringBuilder(cApAcity);
+	decodeUTF16LE = stAndArdDecodeUTF16LE;
 } else {
-	createStringBuilder = (capacity) => new CompatStringBuilder();
-	decodeUTF16LE = compatDecodeUTF16LE;
+	creAteStringBuilder = (cApAcity) => new CompAtStringBuilder();
+	decodeUTF16LE = compAtDecodeUTF16LE;
 }
 
-function standardDecodeUTF16LE(source: Uint8Array, offset: number, len: number): string {
-	const view = new Uint16Array(source.buffer, offset, len);
-	return getPlatformTextDecoder().decode(view);
+function stAndArdDecodeUTF16LE(source: Uint8ArrAy, offset: number, len: number): string {
+	const view = new Uint16ArrAy(source.buffer, offset, len);
+	return getPlAtformTextDecoder().decode(view);
 }
 
-function compatDecodeUTF16LE(source: Uint8Array, offset: number, len: number): string {
+function compAtDecodeUTF16LE(source: Uint8ArrAy, offset: number, len: number): string {
 	let result: string[] = [];
 	let resultLen = 0;
 	for (let i = 0; i < len; i++) {
-		const charCode = buffer.readUInt16LE(source, offset); offset += 2;
-		result[resultLen++] = String.fromCharCode(charCode);
+		const chArCode = buffer.reAdUInt16LE(source, offset); offset += 2;
+		result[resultLen++] = String.fromChArCode(chArCode);
 	}
 	return result.join('');
 }
 
-class StringBuilder implements IStringBuilder {
+clAss StringBuilder implements IStringBuilder {
 
-	private readonly _capacity: number;
-	private readonly _buffer: Uint16Array;
+	privAte reAdonly _cApAcity: number;
+	privAte reAdonly _buffer: Uint16ArrAy;
 
-	private _completedStrings: string[] | null;
-	private _bufferLength: number;
+	privAte _completedStrings: string[] | null;
+	privAte _bufferLength: number;
 
-	constructor(capacity: number) {
-		this._capacity = capacity | 0;
-		this._buffer = new Uint16Array(this._capacity);
+	constructor(cApAcity: number) {
+		this._cApAcity = cApAcity | 0;
+		this._buffer = new Uint16ArrAy(this._cApAcity);
 
 		this._completedStrings = null;
 		this._bufferLength = 0;
@@ -87,16 +87,16 @@ class StringBuilder implements IStringBuilder {
 		return this._buildBuffer();
 	}
 
-	private _buildBuffer(): string {
+	privAte _buildBuffer(): string {
 		if (this._bufferLength === 0) {
 			return '';
 		}
 
-		const view = new Uint16Array(this._buffer.buffer, 0, this._bufferLength);
-		return getPlatformTextDecoder().decode(view);
+		const view = new Uint16ArrAy(this._buffer.buffer, 0, this._bufferLength);
+		return getPlAtformTextDecoder().decode(view);
 	}
 
-	private _flushBuffer(): void {
+	privAte _flushBuffer(): void {
 		const bufferString = this._buildBuffer();
 		this._bufferLength = 0;
 
@@ -107,31 +107,31 @@ class StringBuilder implements IStringBuilder {
 		}
 	}
 
-	public write1(charCode: number): void {
-		const remainingSpace = this._capacity - this._bufferLength;
+	public write1(chArCode: number): void {
+		const remAiningSpAce = this._cApAcity - this._bufferLength;
 
-		if (remainingSpace <= 1) {
-			if (remainingSpace === 0 || strings.isHighSurrogate(charCode)) {
+		if (remAiningSpAce <= 1) {
+			if (remAiningSpAce === 0 || strings.isHighSurrogAte(chArCode)) {
 				this._flushBuffer();
 			}
 		}
 
-		this._buffer[this._bufferLength++] = charCode;
+		this._buffer[this._bufferLength++] = chArCode;
 	}
 
-	public appendASCII(charCode: number): void {
-		if (this._bufferLength === this._capacity) {
+	public AppendASCII(chArCode: number): void {
+		if (this._bufferLength === this._cApAcity) {
 			// buffer is full
 			this._flushBuffer();
 		}
-		this._buffer[this._bufferLength++] = charCode;
+		this._buffer[this._bufferLength++] = chArCode;
 	}
 
-	public appendASCIIString(str: string): void {
+	public AppendASCIIString(str: string): void {
 		const strLen = str.length;
 
-		if (this._bufferLength + strLen >= this._capacity) {
-			// This string does not fit in the remaining buffer space
+		if (this._bufferLength + strLen >= this._cApAcity) {
+			// This string does not fit in the remAining buffer spAce
 
 			this._flushBuffer();
 			this._completedStrings![this._completedStrings!.length] = str;
@@ -139,15 +139,15 @@ class StringBuilder implements IStringBuilder {
 		}
 
 		for (let i = 0; i < strLen; i++) {
-			this._buffer[this._bufferLength++] = str.charCodeAt(i);
+			this._buffer[this._bufferLength++] = str.chArCodeAt(i);
 		}
 	}
 }
 
-class CompatStringBuilder implements IStringBuilder {
+clAss CompAtStringBuilder implements IStringBuilder {
 
-	private _pieces: string[];
-	private _piecesLen: number;
+	privAte _pieces: string[];
+	privAte _piecesLen: number;
 
 	constructor() {
 		this._pieces = [];
@@ -163,15 +163,15 @@ class CompatStringBuilder implements IStringBuilder {
 		return this._pieces.join('');
 	}
 
-	public write1(charCode: number): void {
-		this._pieces[this._piecesLen++] = String.fromCharCode(charCode);
+	public write1(chArCode: number): void {
+		this._pieces[this._piecesLen++] = String.fromChArCode(chArCode);
 	}
 
-	public appendASCII(charCode: number): void {
-		this._pieces[this._piecesLen++] = String.fromCharCode(charCode);
+	public AppendASCII(chArCode: number): void {
+		this._pieces[this._piecesLen++] = String.fromChArCode(chArCode);
 	}
 
-	public appendASCIIString(str: string): void {
+	public AppendASCIIString(str: string): void {
 		this._pieces[this._piecesLen++] = str;
 	}
 }

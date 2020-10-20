@@ -1,74 +1,74 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { IDebugService, State, IDebugConfiguration } from 'vs/workbench/contrib/debug/common/debug';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IStatusbarEntry, IStatusbarService, StatusbarAlignment, IStatusbarEntryAccessor } from 'vs/workbench/services/statusbar/common/statusbar';
+import * As nls from 'vs/nls';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { IDebugService, StAte, IDebugConfigurAtion } from 'vs/workbench/contrib/debug/common/debug';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IStAtusbArEntry, IStAtusbArService, StAtusbArAlignment, IStAtusbArEntryAccessor } from 'vs/workbench/services/stAtusbAr/common/stAtusbAr';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 
-export class DebugStatusContribution implements IWorkbenchContribution {
+export clAss DebugStAtusContribution implements IWorkbenchContribution {
 
-	private showInStatusBar!: 'never' | 'always' | 'onFirstSessionStart';
-	private toDispose: IDisposable[] = [];
-	private entryAccessor: IStatusbarEntryAccessor | undefined;
+	privAte showInStAtusBAr!: 'never' | 'AlwAys' | 'onFirstSessionStArt';
+	privAte toDispose: IDisposAble[] = [];
+	privAte entryAccessor: IStAtusbArEntryAccessor | undefined;
 
 	constructor(
-		@IStatusbarService private readonly statusBarService: IStatusbarService,
-		@IDebugService readonly debugService: IDebugService,
-		@IConfigurationService readonly configurationService: IConfigurationService
+		@IStAtusbArService privAte reAdonly stAtusBArService: IStAtusbArService,
+		@IDebugService reAdonly debugService: IDebugService,
+		@IConfigurAtionService reAdonly configurAtionService: IConfigurAtionService
 	) {
 
-		const addStatusBarEntry = () => {
-			this.entryAccessor = this.statusBarService.addEntry(this.entry, 'status.debug', nls.localize('status.debug', "Debug"), StatusbarAlignment.LEFT, 30 /* Low Priority */);
+		const AddStAtusBArEntry = () => {
+			this.entryAccessor = this.stAtusBArService.AddEntry(this.entry, 'stAtus.debug', nls.locAlize('stAtus.debug', "Debug"), StAtusbArAlignment.LEFT, 30 /* Low Priority */);
 		};
 
-		const setShowInStatusBar = () => {
-			this.showInStatusBar = configurationService.getValue<IDebugConfiguration>('debug').showInStatusBar;
-			if (this.showInStatusBar === 'always' && !this.entryAccessor) {
-				addStatusBarEntry();
+		const setShowInStAtusBAr = () => {
+			this.showInStAtusBAr = configurAtionService.getVAlue<IDebugConfigurAtion>('debug').showInStAtusBAr;
+			if (this.showInStAtusBAr === 'AlwAys' && !this.entryAccessor) {
+				AddStAtusBArEntry();
 			}
 		};
-		setShowInStatusBar();
+		setShowInStAtusBAr();
 
-		this.toDispose.push(this.debugService.onDidChangeState(state => {
-			if (state !== State.Inactive && this.showInStatusBar === 'onFirstSessionStart' && !this.entryAccessor) {
-				addStatusBarEntry();
+		this.toDispose.push(this.debugService.onDidChAngeStAte(stAte => {
+			if (stAte !== StAte.InActive && this.showInStAtusBAr === 'onFirstSessionStArt' && !this.entryAccessor) {
+				AddStAtusBArEntry();
 			}
 		}));
-		this.toDispose.push(configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('debug.showInStatusBar')) {
-				setShowInStatusBar();
-				if (this.entryAccessor && this.showInStatusBar === 'never') {
+		this.toDispose.push(configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (e.AffectsConfigurAtion('debug.showInStAtusBAr')) {
+				setShowInStAtusBAr();
+				if (this.entryAccessor && this.showInStAtusBAr === 'never') {
 					this.entryAccessor.dispose();
 					this.entryAccessor = undefined;
 				}
 			}
 		}));
-		this.toDispose.push(this.debugService.getConfigurationManager().onDidSelectConfiguration(e => {
+		this.toDispose.push(this.debugService.getConfigurAtionMAnAger().onDidSelectConfigurAtion(e => {
 			if (this.entryAccessor) {
-				this.entryAccessor.update(this.entry);
+				this.entryAccessor.updAte(this.entry);
 			}
 		}));
 	}
 
-	private get entry(): IStatusbarEntry {
+	privAte get entry(): IStAtusbArEntry {
 		let text = '';
-		const manager = this.debugService.getConfigurationManager();
-		const name = manager.selectedConfiguration.name || '';
-		const nameAndLaunchPresent = name && manager.selectedConfiguration.launch;
-		if (nameAndLaunchPresent) {
-			text = (manager.getLaunches().length > 1 ? `${name} (${manager.selectedConfiguration.launch!.name})` : name);
+		const mAnAger = this.debugService.getConfigurAtionMAnAger();
+		const nAme = mAnAger.selectedConfigurAtion.nAme || '';
+		const nAmeAndLAunchPresent = nAme && mAnAger.selectedConfigurAtion.lAunch;
+		if (nAmeAndLAunchPresent) {
+			text = (mAnAger.getLAunches().length > 1 ? `${nAme} (${mAnAger.selectedConfigurAtion.lAunch!.nAme})` : nAme);
 		}
 
 		return {
-			text: '$(debug-alt-small) ' + text,
-			ariaLabel: nls.localize('debugTarget', "Debug: {0}", text),
-			tooltip: nls.localize('selectAndStartDebug', "Select and start debug configuration"),
-			command: 'workbench.action.debug.selectandstart'
+			text: '$(debug-Alt-smAll) ' + text,
+			AriALAbel: nls.locAlize('debugTArget', "Debug: {0}", text),
+			tooltip: nls.locAlize('selectAndStArtDebug', "Select And stArt debug configurAtion"),
+			commAnd: 'workbench.Action.debug.selectAndstArt'
 		};
 	}
 

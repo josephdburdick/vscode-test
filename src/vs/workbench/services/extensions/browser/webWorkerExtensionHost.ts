@@ -1,272 +1,272 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { getWorkerBootstrapUrl } from 'vs/base/worker/defaultWorkerFactory';
-import { Emitter, Event } from 'vs/base/common/event';
-import { toDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
-import { VSBuffer } from 'vs/base/common/buffer';
-import { createMessageOfType, MessageType, isMessageOfType } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
-import { IInitData, UIKind } from 'vs/workbench/api/common/extHost.protocol';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import * as platform from 'vs/base/common/platform';
-import * as browser from 'vs/base/browser/browser';
-import * as dom from 'vs/base/browser/dom';
-import { URI } from 'vs/base/common/uri';
-import { IExtensionHost, ExtensionHostLogFileName, ExtensionHostKind } from 'vs/workbench/services/extensions/common/extensions';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { getWorkerBootstrApUrl } from 'vs/bAse/worker/defAultWorkerFActory';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { toDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { IMessAgePAssingProtocol } from 'vs/bAse/pArts/ipc/common/ipc';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { creAteMessAgeOfType, MessAgeType, isMessAgeOfType } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
+import { IInitDAtA, UIKind } from 'vs/workbench/Api/common/extHost.protocol';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import * As browser from 'vs/bAse/browser/browser';
+import * As dom from 'vs/bAse/browser/dom';
+import { URI } from 'vs/bAse/common/uri';
+import { IExtensionHost, ExtensionHostLogFileNAme, ExtensionHostKind } from 'vs/workbench/services/extensions/common/extensions';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { joinPath } from 'vs/base/common/resources';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IOutputChannelRegistry, Extensions } from 'vs/workbench/services/output/common/output';
-import { localize } from 'vs/nls';
-import { generateUuid } from 'vs/base/common/uuid';
-import { canceled, onUnexpectedError } from 'vs/base/common/errors';
-import { WEB_WORKER_IFRAME } from 'vs/workbench/services/extensions/common/webWorkerIframe';
-import { Barrier } from 'vs/base/common/async';
-import { FileAccess } from 'vs/base/common/network';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IOutputChAnnelRegistry, Extensions } from 'vs/workbench/services/output/common/output';
+import { locAlize } from 'vs/nls';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { cAnceled, onUnexpectedError } from 'vs/bAse/common/errors';
+import { WEB_WORKER_IFRAME } from 'vs/workbench/services/extensions/common/webWorkerIfrAme';
+import { BArrier } from 'vs/bAse/common/Async';
+import { FileAccess } from 'vs/bAse/common/network';
 
-export interface IWebWorkerExtensionHostInitData {
-	readonly autoStart: boolean;
-	readonly extensions: IExtensionDescription[];
+export interfAce IWebWorkerExtensionHostInitDAtA {
+	reAdonly AutoStArt: booleAn;
+	reAdonly extensions: IExtensionDescription[];
 }
 
-export interface IWebWorkerExtensionHostDataProvider {
-	getInitData(): Promise<IWebWorkerExtensionHostInitData>;
+export interfAce IWebWorkerExtensionHostDAtAProvider {
+	getInitDAtA(): Promise<IWebWorkerExtensionHostInitDAtA>;
 }
 
-export class WebWorkerExtensionHost extends Disposable implements IExtensionHost {
+export clAss WebWorkerExtensionHost extends DisposAble implements IExtensionHost {
 
-	public readonly kind = ExtensionHostKind.LocalWebWorker;
-	public readonly remoteAuthority = null;
+	public reAdonly kind = ExtensionHostKind.LocAlWebWorker;
+	public reAdonly remoteAuthority = null;
 
-	private readonly _onDidExit = this._register(new Emitter<[number, string | null]>());
-	public readonly onExit: Event<[number, string | null]> = this._onDidExit.event;
+	privAte reAdonly _onDidExit = this._register(new Emitter<[number, string | null]>());
+	public reAdonly onExit: Event<[number, string | null]> = this._onDidExit.event;
 
-	private _isTerminating: boolean;
-	private _protocolPromise: Promise<IMessagePassingProtocol> | null;
-	private _protocol: IMessagePassingProtocol | null;
+	privAte _isTerminAting: booleAn;
+	privAte _protocolPromise: Promise<IMessAgePAssingProtocol> | null;
+	privAte _protocol: IMessAgePAssingProtocol | null;
 
-	private readonly _extensionHostLogsLocation: URI;
-	private readonly _extensionHostLogFile: URI;
+	privAte reAdonly _extensionHostLogsLocAtion: URI;
+	privAte reAdonly _extensionHostLogFile: URI;
 
 	constructor(
-		private readonly _initDataProvider: IWebWorkerExtensionHostDataProvider,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
-		@IWorkspaceContextService private readonly _contextService: IWorkspaceContextService,
-		@ILabelService private readonly _labelService: ILabelService,
-		@ILogService private readonly _logService: ILogService,
-		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
-		@IProductService private readonly _productService: IProductService,
+		privAte reAdonly _initDAtAProvider: IWebWorkerExtensionHostDAtAProvider,
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService,
+		@IWorkspAceContextService privAte reAdonly _contextService: IWorkspAceContextService,
+		@ILAbelService privAte reAdonly _lAbelService: ILAbelService,
+		@ILogService privAte reAdonly _logService: ILogService,
+		@IWorkbenchEnvironmentService privAte reAdonly _environmentService: IWorkbenchEnvironmentService,
+		@IProductService privAte reAdonly _productService: IProductService,
 	) {
 		super();
-		this._isTerminating = false;
+		this._isTerminAting = fAlse;
 		this._protocolPromise = null;
 		this._protocol = null;
-		this._extensionHostLogsLocation = joinPath(this._environmentService.extHostLogsPath, 'webWorker');
-		this._extensionHostLogFile = joinPath(this._extensionHostLogsLocation, `${ExtensionHostLogFileName}.log`);
+		this._extensionHostLogsLocAtion = joinPAth(this._environmentService.extHostLogsPAth, 'webWorker');
+		this._extensionHostLogFile = joinPAth(this._extensionHostLogsLocAtion, `${ExtensionHostLogFileNAme}.log`);
 	}
 
-	private _wrapInIframe(): boolean {
-		if (this._environmentService.options && typeof this._environmentService.options._wrapWebWorkerExtHostInIframe === 'boolean') {
-			return this._environmentService.options._wrapWebWorkerExtHostInIframe;
+	privAte _wrApInIfrAme(): booleAn {
+		if (this._environmentService.options && typeof this._environmentService.options._wrApWebWorkerExtHostInIfrAme === 'booleAn') {
+			return this._environmentService.options._wrApWebWorkerExtHostInIfrAme;
 		}
-		// wrap in <iframe> by default
+		// wrAp in <ifrAme> by defAult
 		return true;
 	}
 
-	public async start(): Promise<IMessagePassingProtocol> {
+	public Async stArt(): Promise<IMessAgePAssingProtocol> {
 		if (!this._protocolPromise) {
-			if (platform.isWeb && !browser.isSafari && this._wrapInIframe()) {
-				this._protocolPromise = this._startInsideIframe();
+			if (plAtform.isWeb && !browser.isSAfAri && this._wrApInIfrAme()) {
+				this._protocolPromise = this._stArtInsideIfrAme();
 			} else {
-				this._protocolPromise = this._startOutsideIframe();
+				this._protocolPromise = this._stArtOutsideIfrAme();
 			}
 			this._protocolPromise.then(protocol => this._protocol = protocol);
 		}
 		return this._protocolPromise;
 	}
 
-	private async _startInsideIframe(): Promise<IMessagePassingProtocol> {
+	privAte Async _stArtInsideIfrAme(): Promise<IMessAgePAssingProtocol> {
 		const emitter = this._register(new Emitter<VSBuffer>());
 
-		const iframe = document.createElement('iframe');
-		iframe.setAttribute('class', 'web-worker-ext-host-iframe');
-		iframe.setAttribute('sandbox', 'allow-scripts');
-		iframe.style.display = 'none';
+		const ifrAme = document.creAteElement('ifrAme');
+		ifrAme.setAttribute('clAss', 'web-worker-ext-host-ifrAme');
+		ifrAme.setAttribute('sAndbox', 'Allow-scripts');
+		ifrAme.style.displAy = 'none';
 
-		const vscodeWebWorkerExtHostId = generateUuid();
-		const workerUrl = FileAccess.asBrowserUri('../worker/extensionHostWorkerMain.js', require).toString(true);
-		const workerSrc = getWorkerBootstrapUrl(workerUrl, 'WorkerExtensionHost', true);
-		const escapeAttribute = (value: string): string => {
-			return value.replace(/"/g, '&quot;');
+		const vscodeWebWorkerExtHostId = generAteUuid();
+		const workerUrl = FileAccess.AsBrowserUri('../worker/extensionHostWorkerMAin.js', require).toString(true);
+		const workerSrc = getWorkerBootstrApUrl(workerUrl, 'WorkerExtensionHost', true);
+		const escApeAttribute = (vAlue: string): string => {
+			return vAlue.replAce(/"/g, '&quot;');
 		};
-		const forceHTTPS = (location.protocol === 'https:');
+		const forceHTTPS = (locAtion.protocol === 'https:');
 		const html = `<!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-eval' '${WEB_WORKER_IFRAME.sha}' ${forceHTTPS ? 'https:' : 'http: https:'}; worker-src data:; connect-src ${forceHTTPS ? 'https:' : 'http: https:'}" />
-		<meta id="vscode-worker-src" data-value="${escapeAttribute(workerSrc)}" />
-		<meta id="vscode-web-worker-ext-host-id" data-value="${escapeAttribute(vscodeWebWorkerExtHostId)}" />
-	</head>
+	<heAd>
+		<metA http-equiv="Content-Security-Policy" content="defAult-src 'none'; script-src 'unsAfe-evAl' '${WEB_WORKER_IFRAME.shA}' ${forceHTTPS ? 'https:' : 'http: https:'}; worker-src dAtA:; connect-src ${forceHTTPS ? 'https:' : 'http: https:'}" />
+		<metA id="vscode-worker-src" dAtA-vAlue="${escApeAttribute(workerSrc)}" />
+		<metA id="vscode-web-worker-ext-host-id" dAtA-vAlue="${escApeAttribute(vscodeWebWorkerExtHostId)}" />
+	</heAd>
 	<body>
 	<script>${WEB_WORKER_IFRAME.js}</script>
 	</body>
 </html>`;
-		const iframeContent = `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
-		iframe.setAttribute('src', iframeContent);
+		const ifrAmeContent = `dAtA:text/html;chArset=utf-8,${encodeURIComponent(html)}`;
+		ifrAme.setAttribute('src', ifrAmeContent);
 
-		const barrier = new Barrier();
-		let port!: MessagePort;
+		const bArrier = new BArrier();
+		let port!: MessAgePort;
 
-		this._register(dom.addDisposableListener(window, 'message', (event) => {
-			if (event.source !== iframe.contentWindow) {
+		this._register(dom.AddDisposAbleListener(window, 'messAge', (event) => {
+			if (event.source !== ifrAme.contentWindow) {
 				return;
 			}
-			if (event.data.vscodeWebWorkerExtHostId !== vscodeWebWorkerExtHostId) {
+			if (event.dAtA.vscodeWebWorkerExtHostId !== vscodeWebWorkerExtHostId) {
 				return;
 			}
-			if (event.data.error) {
-				const { name, message, stack } = event.data.error;
+			if (event.dAtA.error) {
+				const { nAme, messAge, stAck } = event.dAtA.error;
 				const err = new Error();
-				err.message = message;
-				err.name = name;
-				err.stack = stack;
+				err.messAge = messAge;
+				err.nAme = nAme;
+				err.stAck = stAck;
 				onUnexpectedError(err);
-				this._onDidExit.fire([18, err.message]);
+				this._onDidExit.fire([18, err.messAge]);
 				return;
 			}
-			const { data } = event.data;
-			if (barrier.isOpen() || !(data instanceof MessagePort)) {
-				console.warn('UNEXPECTED message', event);
-				this._onDidExit.fire([81, 'UNEXPECTED message']);
+			const { dAtA } = event.dAtA;
+			if (bArrier.isOpen() || !(dAtA instAnceof MessAgePort)) {
+				console.wArn('UNEXPECTED messAge', event);
+				this._onDidExit.fire([81, 'UNEXPECTED messAge']);
 				return;
 			}
-			port = data;
-			barrier.open();
+			port = dAtA;
+			bArrier.open();
 		}));
 
-		document.body.appendChild(iframe);
-		this._register(toDisposable(() => iframe.remove()));
+		document.body.AppendChild(ifrAme);
+		this._register(toDisposAble(() => ifrAme.remove()));
 
-		// await MessagePort and use it to directly communicate
+		// AwAit MessAgePort And use it to directly communicAte
 		// with the worker extension host
-		await barrier.wait();
+		AwAit bArrier.wAit();
 
-		port.onmessage = (event) => {
-			const { data } = event;
-			if (!(data instanceof ArrayBuffer)) {
-				console.warn('UNKNOWN data received', data);
-				this._onDidExit.fire([77, 'UNKNOWN data received']);
+		port.onmessAge = (event) => {
+			const { dAtA } = event;
+			if (!(dAtA instAnceof ArrAyBuffer)) {
+				console.wArn('UNKNOWN dAtA received', dAtA);
+				this._onDidExit.fire([77, 'UNKNOWN dAtA received']);
 				return;
 			}
-			emitter.fire(VSBuffer.wrap(new Uint8Array(data, 0, data.byteLength)));
+			emitter.fire(VSBuffer.wrAp(new Uint8ArrAy(dAtA, 0, dAtA.byteLength)));
 		};
 
-		const protocol: IMessagePassingProtocol = {
-			onMessage: emitter.event,
+		const protocol: IMessAgePAssingProtocol = {
+			onMessAge: emitter.event,
 			send: vsbuf => {
-				const data = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
-				port.postMessage(data, [data]);
+				const dAtA = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
+				port.postMessAge(dAtA, [dAtA]);
 			}
 		};
 
-		return this._performHandshake(protocol);
+		return this._performHAndshAke(protocol);
 	}
 
-	private async _startOutsideIframe(): Promise<IMessagePassingProtocol> {
+	privAte Async _stArtOutsideIfrAme(): Promise<IMessAgePAssingProtocol> {
 		const emitter = new Emitter<VSBuffer>();
 
-		const url = getWorkerBootstrapUrl(FileAccess.asBrowserUri('../worker/extensionHostWorkerMain.js', require).toString(true), 'WorkerExtensionHost');
-		const worker = new Worker(url, { name: 'WorkerExtensionHost' });
+		const url = getWorkerBootstrApUrl(FileAccess.AsBrowserUri('../worker/extensionHostWorkerMAin.js', require).toString(true), 'WorkerExtensionHost');
+		const worker = new Worker(url, { nAme: 'WorkerExtensionHost' });
 
-		const barrier = new Barrier();
-		let port!: MessagePort;
+		const bArrier = new BArrier();
+		let port!: MessAgePort;
 
-		worker.onmessage = (event) => {
-			const { data } = event;
-			if (barrier.isOpen() || !(data instanceof MessagePort)) {
-				console.warn('UNEXPECTED message', event);
-				this._onDidExit.fire([81, 'UNEXPECTED message']);
+		worker.onmessAge = (event) => {
+			const { dAtA } = event;
+			if (bArrier.isOpen() || !(dAtA instAnceof MessAgePort)) {
+				console.wArn('UNEXPECTED messAge', event);
+				this._onDidExit.fire([81, 'UNEXPECTED messAge']);
 				return;
 			}
-			port = data;
-			barrier.open();
+			port = dAtA;
+			bArrier.open();
 		};
 
-		// await MessagePort and use it to directly communicate
+		// AwAit MessAgePort And use it to directly communicAte
 		// with the worker extension host
-		await barrier.wait();
+		AwAit bArrier.wAit();
 
-		port.onmessage = (event) => {
-			const { data } = event;
-			if (!(data instanceof ArrayBuffer)) {
-				console.warn('UNKNOWN data received', data);
-				this._onDidExit.fire([77, 'UNKNOWN data received']);
+		port.onmessAge = (event) => {
+			const { dAtA } = event;
+			if (!(dAtA instAnceof ArrAyBuffer)) {
+				console.wArn('UNKNOWN dAtA received', dAtA);
+				this._onDidExit.fire([77, 'UNKNOWN dAtA received']);
 				return;
 			}
 
-			emitter.fire(VSBuffer.wrap(new Uint8Array(data, 0, data.byteLength)));
+			emitter.fire(VSBuffer.wrAp(new Uint8ArrAy(dAtA, 0, dAtA.byteLength)));
 		};
 
 		worker.onerror = (event) => {
-			console.error(event.message, event.error);
-			this._onDidExit.fire([81, event.message || event.error]);
+			console.error(event.messAge, event.error);
+			this._onDidExit.fire([81, event.messAge || event.error]);
 		};
 
-		// keep for cleanup
+		// keep for cleAnup
 		this._register(emitter);
-		this._register(toDisposable(() => worker.terminate()));
+		this._register(toDisposAble(() => worker.terminAte()));
 
-		const protocol: IMessagePassingProtocol = {
-			onMessage: emitter.event,
+		const protocol: IMessAgePAssingProtocol = {
+			onMessAge: emitter.event,
 			send: vsbuf => {
-				const data = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
-				port.postMessage(data, [data]);
+				const dAtA = vsbuf.buffer.buffer.slice(vsbuf.buffer.byteOffset, vsbuf.buffer.byteOffset + vsbuf.buffer.byteLength);
+				port.postMessAge(dAtA, [dAtA]);
 			}
 		};
 
-		return this._performHandshake(protocol);
+		return this._performHAndshAke(protocol);
 	}
 
-	private async _performHandshake(protocol: IMessagePassingProtocol): Promise<IMessagePassingProtocol> {
-		// extension host handshake happens below
-		// (1) <== wait for: Ready
-		// (2) ==> send: init data
-		// (3) <== wait for: Initialized
+	privAte Async _performHAndshAke(protocol: IMessAgePAssingProtocol): Promise<IMessAgePAssingProtocol> {
+		// extension host hAndshAke hAppens below
+		// (1) <== wAit for: ReAdy
+		// (2) ==> send: init dAtA
+		// (3) <== wAit for: InitiAlized
 
-		await Event.toPromise(Event.filter(protocol.onMessage, msg => isMessageOfType(msg, MessageType.Ready)));
-		if (this._isTerminating) {
-			throw canceled();
+		AwAit Event.toPromise(Event.filter(protocol.onMessAge, msg => isMessAgeOfType(msg, MessAgeType.ReAdy)));
+		if (this._isTerminAting) {
+			throw cAnceled();
 		}
-		protocol.send(VSBuffer.fromString(JSON.stringify(await this._createExtHostInitData())));
-		if (this._isTerminating) {
-			throw canceled();
+		protocol.send(VSBuffer.fromString(JSON.stringify(AwAit this._creAteExtHostInitDAtA())));
+		if (this._isTerminAting) {
+			throw cAnceled();
 		}
-		await Event.toPromise(Event.filter(protocol.onMessage, msg => isMessageOfType(msg, MessageType.Initialized)));
-		if (this._isTerminating) {
-			throw canceled();
+		AwAit Event.toPromise(Event.filter(protocol.onMessAge, msg => isMessAgeOfType(msg, MessAgeType.InitiAlized)));
+		if (this._isTerminAting) {
+			throw cAnceled();
 		}
 
-		// Register log channel for web worker exthost log
-		Registry.as<IOutputChannelRegistry>(Extensions.OutputChannels).registerChannel({ id: 'webWorkerExtHostLog', label: localize('name', "Worker Extension Host"), file: this._extensionHostLogFile, log: true });
+		// Register log chAnnel for web worker exthost log
+		Registry.As<IOutputChAnnelRegistry>(Extensions.OutputChAnnels).registerChAnnel({ id: 'webWorkerExtHostLog', lAbel: locAlize('nAme', "Worker Extension Host"), file: this._extensionHostLogFile, log: true });
 
 		return protocol;
 	}
 
 	public dispose(): void {
-		if (this._isTerminating) {
+		if (this._isTerminAting) {
 			return;
 		}
-		this._isTerminating = true;
+		this._isTerminAting = true;
 		if (this._protocol) {
-			this._protocol.send(createMessageOfType(MessageType.Terminate));
+			this._protocol.send(creAteMessAgeOfType(MessAgeType.TerminAte));
 		}
 		super.dispose();
 	}
@@ -275,48 +275,48 @@ export class WebWorkerExtensionHost extends Disposable implements IExtensionHost
 		return undefined;
 	}
 
-	enableInspectPort(): Promise<boolean> {
-		return Promise.resolve(false);
+	enAbleInspectPort(): Promise<booleAn> {
+		return Promise.resolve(fAlse);
 	}
 
-	private async _createExtHostInitData(): Promise<IInitData> {
-		const [telemetryInfo, initData] = await Promise.all([this._telemetryService.getTelemetryInfo(), this._initDataProvider.getInitData()]);
-		const workspace = this._contextService.getWorkspace();
+	privAte Async _creAteExtHostInitDAtA(): Promise<IInitDAtA> {
+		const [telemetryInfo, initDAtA] = AwAit Promise.All([this._telemetryService.getTelemetryInfo(), this._initDAtAProvider.getInitDAtA()]);
+		const workspAce = this._contextService.getWorkspAce();
 		return {
 			commit: this._productService.commit,
 			version: this._productService.version,
-			parentPid: -1,
+			pArentPid: -1,
 			environment: {
 				isExtensionDevelopmentDebug: this._environmentService.debugRenderer,
-				appName: this._productService.nameLong,
-				appUriScheme: this._productService.urlProtocol,
-				appLanguage: platform.language,
-				extensionDevelopmentLocationURI: this._environmentService.extensionDevelopmentLocationURI,
-				extensionTestsLocationURI: this._environmentService.extensionTestsLocationURI,
-				globalStorageHome: this._environmentService.globalStorageHome,
-				workspaceStorageHome: this._environmentService.workspaceStorageHome,
+				AppNAme: this._productService.nAmeLong,
+				AppUriScheme: this._productService.urlProtocol,
+				AppLAnguAge: plAtform.lAnguAge,
+				extensionDevelopmentLocAtionURI: this._environmentService.extensionDevelopmentLocAtionURI,
+				extensionTestsLocAtionURI: this._environmentService.extensionTestsLocAtionURI,
+				globAlStorAgeHome: this._environmentService.globAlStorAgeHome,
+				workspAceStorAgeHome: this._environmentService.workspAceStorAgeHome,
 				webviewResourceRoot: this._environmentService.webviewResourceRoot,
 				webviewCspSource: this._environmentService.webviewCspSource,
 			},
-			workspace: this._contextService.getWorkbenchState() === WorkbenchState.EMPTY ? undefined : {
-				configuration: workspace.configuration || undefined,
-				id: workspace.id,
-				name: this._labelService.getWorkspaceLabel(workspace)
+			workspAce: this._contextService.getWorkbenchStAte() === WorkbenchStAte.EMPTY ? undefined : {
+				configurAtion: workspAce.configurAtion || undefined,
+				id: workspAce.id,
+				nAme: this._lAbelService.getWorkspAceLAbel(workspAce)
 			},
 			resolvedExtensions: [],
 			hostExtensions: [],
-			extensions: initData.extensions,
+			extensions: initDAtA.extensions,
 			telemetryInfo,
 			logLevel: this._logService.getLevel(),
-			logsLocation: this._extensionHostLogsLocation,
+			logsLocAtion: this._extensionHostLogsLocAtion,
 			logFile: this._extensionHostLogFile,
-			autoStart: initData.autoStart,
+			AutoStArt: initDAtA.AutoStArt,
 			remote: {
-				authority: this._environmentService.remoteAuthority,
-				connectionData: null,
-				isRemote: false
+				Authority: this._environmentService.remoteAuthority,
+				connectionDAtA: null,
+				isRemote: fAlse
 			},
-			uiKind: platform.isWeb ? UIKind.Web : UIKind.Desktop
+			uiKind: plAtform.isWeb ? UIKind.Web : UIKind.Desktop
 		};
 	}
 }

@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
 import { ResourceEditorInput } from 'vs/workbench/common/editor/resourceEditorInput';
 import { ResourceEditorModel } from 'vs/workbench/common/editor/resourceEditorModel';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { workbenchInstantiationService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
-import { snapshotToString } from 'vs/workbench/services/textfile/common/textfiles';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { workbenchInstAntiAtionService, TestServiceAccessor } from 'vs/workbench/test/browser/workbenchTestServices';
+import { snApshotToString } from 'vs/workbench/services/textfile/common/textfiles';
 import { ModesRegistry, PLAINTEXT_MODE_ID } from 'vs/editor/common/modes/modesRegistry';
 
 suite('Resource text editors', () => {
 
-	let instantiationService: IInstantiationService;
-	let accessor: TestServiceAccessor;
+	let instAntiAtionService: IInstAntiAtionService;
+	let Accessor: TestServiceAccessor;
 
 	setup(() => {
-		instantiationService = workbenchInstantiationService();
-		accessor = instantiationService.createInstance(TestServiceAccessor);
+		instAntiAtionService = workbenchInstAntiAtionService();
+		Accessor = instAntiAtionService.creAteInstAnce(TestServiceAccessor);
 	});
 
-	test('basics', async () => {
-		const resource = URI.from({ scheme: 'inmemory', authority: null!, path: 'thePath' });
-		accessor.modelService.createModel('function test() {}', accessor.modeService.create('text'), resource);
+	test('bAsics', Async () => {
+		const resource = URI.from({ scheme: 'inmemory', Authority: null!, pAth: 'thePAth' });
+		Accessor.modelService.creAteModel('function test() {}', Accessor.modeService.creAte('text'), resource);
 
-		const input: ResourceEditorInput = instantiationService.createInstance(ResourceEditorInput, resource, 'The Name', 'The Description', undefined);
+		const input: ResourceEditorInput = instAntiAtionService.creAteInstAnce(ResourceEditorInput, resource, 'The NAme', 'The Description', undefined);
 
-		const model = await input.resolve();
+		const model = AwAit input.resolve();
 
-		assert.ok(model);
-		assert.equal(snapshotToString(((model as ResourceEditorModel).createSnapshot()!)), 'function test() {}');
+		Assert.ok(model);
+		Assert.equAl(snApshotToString(((model As ResourceEditorModel).creAteSnApshot()!)), 'function test() {}');
 	});
 
-	test('custom mode', async () => {
-		ModesRegistry.registerLanguage({
+	test('custom mode', Async () => {
+		ModesRegistry.registerLAnguAge({
 			id: 'resource-input-test',
 		});
 
-		const resource = URI.from({ scheme: 'inmemory', authority: null!, path: 'thePath' });
-		accessor.modelService.createModel('function test() {}', accessor.modeService.create('text'), resource);
+		const resource = URI.from({ scheme: 'inmemory', Authority: null!, pAth: 'thePAth' });
+		Accessor.modelService.creAteModel('function test() {}', Accessor.modeService.creAte('text'), resource);
 
-		const input: ResourceEditorInput = instantiationService.createInstance(ResourceEditorInput, resource, 'The Name', 'The Description', 'resource-input-test');
+		const input: ResourceEditorInput = instAntiAtionService.creAteInstAnce(ResourceEditorInput, resource, 'The NAme', 'The Description', 'resource-input-test');
 
-		const model = await input.resolve();
-		assert.ok(model);
-		assert.equal(model.textEditorModel.getModeId(), 'resource-input-test');
+		const model = AwAit input.resolve();
+		Assert.ok(model);
+		Assert.equAl(model.textEditorModel.getModeId(), 'resource-input-test');
 
 		input.setMode('text');
-		assert.equal(model.textEditorModel.getModeId(), PLAINTEXT_MODE_ID);
+		Assert.equAl(model.textEditorModel.getModeId(), PLAINTEXT_MODE_ID);
 	});
 });

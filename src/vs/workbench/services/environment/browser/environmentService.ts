@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { joinPath } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
-import { generateUuid } from 'vs/base/common/uuid';
-import { IExtensionHostDebugParams } from 'vs/platform/environment/common/environment';
-import { IColorScheme, IPath, IWindowConfiguration } from 'vs/platform/windows/common/windows';
+import { SchemAs } from 'vs/bAse/common/network';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { IExtensionHostDebugPArAms } from 'vs/plAtform/environment/common/environment';
+import { IColorScheme, IPAth, IWindowConfigurAtion } from 'vs/plAtform/windows/common/windows';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import type { IWorkbenchConstructionOptions as IWorkbenchOptions } from 'vs/workbench/workbench.web.api';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { memoize } from 'vs/base/common/decorators';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { parseLineAndColumnAware } from 'vs/base/common/extpath';
+import type { IWorkbenchConstructionOptions As IWorkbenchOptions } from 'vs/workbench/workbench.web.Api';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { pArseLineAndColumnAwAre } from 'vs/bAse/common/extpAth';
 
-class BrowserWorkbenchConfiguration implements IWindowConfiguration {
+clAss BrowserWorkbenchConfigurAtion implements IWindowConfigurAtion {
 
 	constructor(
-		private readonly options: IBrowserWorkbenchOptions,
-		private readonly payload: Map<string, string> | undefined
+		privAte reAdonly options: IBrowserWorkbenchOptions,
+		privAte reAdonly pAyloAd: MAp<string, string> | undefined
 	) { }
 
 	@memoize
-	get sessionId(): string { return generateUuid(); }
+	get sessionId(): string { return generAteUuid(); }
 
 	@memoize
 	get remoteAuthority(): string | undefined { return this.options.remoteAuthority; }
 
 	@memoize
-	get filesToOpenOrCreate(): IPath[] | undefined {
-		if (this.payload) {
-			const fileToOpen = this.payload.get('openFile');
+	get filesToOpenOrCreAte(): IPAth[] | undefined {
+		if (this.pAyloAd) {
+			const fileToOpen = this.pAyloAd.get('openFile');
 			if (fileToOpen) {
-				const fileUri = URI.parse(fileToOpen);
+				const fileUri = URI.pArse(fileToOpen);
 
-				// Support: --goto parameter to open on line/col
-				if (this.payload.has('gotoLineMode')) {
-					const pathColumnAware = parseLineAndColumnAware(fileUri.path);
+				// Support: --goto pArAmeter to open on line/col
+				if (this.pAyloAd.hAs('gotoLineMode')) {
+					const pAthColumnAwAre = pArseLineAndColumnAwAre(fileUri.pAth);
 
 					return [{
-						fileUri: fileUri.with({ path: pathColumnAware.path }),
-						lineNumber: pathColumnAware.line,
-						columnNumber: pathColumnAware.column
+						fileUri: fileUri.with({ pAth: pAthColumnAwAre.pAth }),
+						lineNumber: pAthColumnAwAre.line,
+						columnNumber: pAthColumnAwAre.column
 					}];
 				}
 
@@ -55,14 +55,14 @@ class BrowserWorkbenchConfiguration implements IWindowConfiguration {
 	}
 
 	@memoize
-	get filesToDiff(): IPath[] | undefined {
-		if (this.payload) {
-			const fileToDiffPrimary = this.payload.get('diffFilePrimary');
-			const fileToDiffSecondary = this.payload.get('diffFileSecondary');
-			if (fileToDiffPrimary && fileToDiffSecondary) {
+	get filesToDiff(): IPAth[] | undefined {
+		if (this.pAyloAd) {
+			const fileToDiffPrimAry = this.pAyloAd.get('diffFilePrimAry');
+			const fileToDiffSecondAry = this.pAyloAd.get('diffFileSecondAry');
+			if (fileToDiffPrimAry && fileToDiffSecondAry) {
 				return [
-					{ fileUri: URI.parse(fileToDiffSecondary) },
-					{ fileUri: URI.parse(fileToDiffPrimary) }
+					{ fileUri: URI.pArse(fileToDiffSecondAry) },
+					{ fileUri: URI.pArse(fileToDiffPrimAry) }
 				];
 			}
 		}
@@ -71,114 +71,114 @@ class BrowserWorkbenchConfiguration implements IWindowConfiguration {
 	}
 
 	get colorScheme(): IColorScheme {
-		return { dark: false, highContrast: false };
+		return { dArk: fAlse, highContrAst: fAlse };
 	}
 }
 
-interface IBrowserWorkbenchOptions extends IWorkbenchOptions {
-	workspaceId: string;
-	logsPath: URI;
+interfAce IBrowserWorkbenchOptions extends IWorkbenchOptions {
+	workspAceId: string;
+	logsPAth: URI;
 }
 
-interface IExtensionHostDebugEnvironment {
-	params: IExtensionHostDebugParams;
-	debugRenderer: boolean;
-	isExtensionDevelopment: boolean;
-	extensionDevelopmentLocationURI?: URI[];
-	extensionTestsLocationURI?: URI;
-	extensionEnabledProposedApi?: string[];
+interfAce IExtensionHostDebugEnvironment {
+	pArAms: IExtensionHostDebugPArAms;
+	debugRenderer: booleAn;
+	isExtensionDevelopment: booleAn;
+	extensionDevelopmentLocAtionURI?: URI[];
+	extensionTestsLocAtionURI?: URI;
+	extensionEnAbledProposedApi?: string[];
 }
 
-export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironmentService {
+export clAss BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironmentService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _configuration: IWindowConfiguration | undefined = undefined;
-	get configuration(): IWindowConfiguration {
-		if (!this._configuration) {
-			this._configuration = new BrowserWorkbenchConfiguration(this.options, this.payload);
+	privAte _configurAtion: IWindowConfigurAtion | undefined = undefined;
+	get configurAtion(): IWindowConfigurAtion {
+		if (!this._configurAtion) {
+			this._configurAtion = new BrowserWorkbenchConfigurAtion(this.options, this.pAyloAd);
 		}
 
-		return this._configuration;
+		return this._configurAtion;
 	}
 
 	@memoize
 	get remoteAuthority(): string | undefined { return this.options.remoteAuthority; }
 
 	@memoize
-	get sessionId(): string { return this.configuration.sessionId; }
+	get sessionId(): string { return this.configurAtion.sessionId; }
 
 	@memoize
-	get isBuilt(): boolean { return !!this.productService.commit; }
+	get isBuilt(): booleAn { return !!this.productService.commit; }
 
 	@memoize
-	get logsPath(): string { return this.options.logsPath.path; }
+	get logsPAth(): string { return this.options.logsPAth.pAth; }
 
-	get logLevel(): string | undefined { return this.payload?.get('logLevel'); }
-
-	@memoize
-	get logFile(): URI { return joinPath(this.options.logsPath, 'window.log'); }
+	get logLevel(): string | undefined { return this.pAyloAd?.get('logLevel'); }
 
 	@memoize
-	get userRoamingDataHome(): URI { return URI.file('/User').with({ scheme: Schemas.userData }); }
+	get logFile(): URI { return joinPAth(this.options.logsPAth, 'window.log'); }
 
 	@memoize
-	get settingsResource(): URI { return joinPath(this.userRoamingDataHome, 'settings.json'); }
+	get userRoAmingDAtAHome(): URI { return URI.file('/User').with({ scheme: SchemAs.userDAtA }); }
 
 	@memoize
-	get argvResource(): URI { return joinPath(this.userRoamingDataHome, 'argv.json'); }
+	get settingsResource(): URI { return joinPAth(this.userRoAmingDAtAHome, 'settings.json'); }
 
 	@memoize
-	get snippetsHome(): URI { return joinPath(this.userRoamingDataHome, 'snippets'); }
+	get ArgvResource(): URI { return joinPAth(this.userRoAmingDAtAHome, 'Argv.json'); }
 
 	@memoize
-	get globalStorageHome(): URI { return URI.joinPath(this.userRoamingDataHome, 'globalStorage'); }
+	get snippetsHome(): URI { return joinPAth(this.userRoAmingDAtAHome, 'snippets'); }
 
 	@memoize
-	get workspaceStorageHome(): URI { return URI.joinPath(this.userRoamingDataHome, 'workspaceStorage'); }
+	get globAlStorAgeHome(): URI { return URI.joinPAth(this.userRoAmingDAtAHome, 'globAlStorAge'); }
+
+	@memoize
+	get workspAceStorAgeHome(): URI { return URI.joinPAth(this.userRoAmingDAtAHome, 'workspAceStorAge'); }
 
 	/*
-	 * In Web every workspace can potentially have scoped user-data and/or extensions and if Sync state is shared then it can make
-	 * Sync error prone - say removing extensions from another workspace. Hence scope Sync state per workspace.
-	 * Sync scoped to a workspace is capable of handling opening same workspace in multiple windows.
+	 * In Web every workspAce cAn potentiAlly hAve scoped user-dAtA And/or extensions And if Sync stAte is shAred then it cAn mAke
+	 * Sync error prone - sAy removing extensions from Another workspAce. Hence scope Sync stAte per workspAce.
+	 * Sync scoped to A workspAce is cApAble of hAndling opening sAme workspAce in multiple windows.
 	 */
 	@memoize
-	get userDataSyncHome(): URI { return joinPath(this.userRoamingDataHome, 'sync', this.options.workspaceId); }
+	get userDAtASyncHome(): URI { return joinPAth(this.userRoAmingDAtAHome, 'sync', this.options.workspAceId); }
 
 	@memoize
-	get userDataSyncLogResource(): URI { return joinPath(this.options.logsPath, 'userDataSync.log'); }
+	get userDAtASyncLogResource(): URI { return joinPAth(this.options.logsPAth, 'userDAtASync.log'); }
 
 	@memoize
 	get sync(): 'on' | 'off' | undefined { return undefined; }
 
 	@memoize
-	get keybindingsResource(): URI { return joinPath(this.userRoamingDataHome, 'keybindings.json'); }
+	get keybindingsResource(): URI { return joinPAth(this.userRoAmingDAtAHome, 'keybindings.json'); }
 
 	@memoize
-	get keyboardLayoutResource(): URI { return joinPath(this.userRoamingDataHome, 'keyboardLayout.json'); }
+	get keyboArdLAyoutResource(): URI { return joinPAth(this.userRoAmingDAtAHome, 'keyboArdLAyout.json'); }
 
 	@memoize
-	get backupWorkspaceHome(): URI { return joinPath(this.userRoamingDataHome, 'Backups', this.options.workspaceId); }
+	get bAckupWorkspAceHome(): URI { return joinPAth(this.userRoAmingDAtAHome, 'BAckups', this.options.workspAceId); }
 
 	@memoize
-	get untitledWorkspacesHome(): URI { return joinPath(this.userRoamingDataHome, 'Workspaces'); }
+	get untitledWorkspAcesHome(): URI { return joinPAth(this.userRoAmingDAtAHome, 'WorkspAces'); }
 
 	@memoize
-	get serviceMachineIdResource(): URI { return joinPath(this.userRoamingDataHome, 'machineid'); }
+	get serviceMAchineIdResource(): URI { return joinPAth(this.userRoAmingDAtAHome, 'mAchineid'); }
 
 	@memoize
-	get extHostLogsPath(): URI { return joinPath(this.options.logsPath, 'exthost'); }
+	get extHostLogsPAth(): URI { return joinPAth(this.options.logsPAth, 'exthost'); }
 
-	private _extensionHostDebugEnvironment: IExtensionHostDebugEnvironment | undefined = undefined;
-	get debugExtensionHost(): IExtensionHostDebugParams {
+	privAte _extensionHostDebugEnvironment: IExtensionHostDebugEnvironment | undefined = undefined;
+	get debugExtensionHost(): IExtensionHostDebugPArAms {
 		if (!this._extensionHostDebugEnvironment) {
 			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
 		}
 
-		return this._extensionHostDebugEnvironment.params;
+		return this._extensionHostDebugEnvironment.pArAms;
 	}
 
-	get isExtensionDevelopment(): boolean {
+	get isExtensionDevelopment(): booleAn {
 		if (!this._extensionHostDebugEnvironment) {
 			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
 		}
@@ -186,31 +186,31 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 		return this._extensionHostDebugEnvironment.isExtensionDevelopment;
 	}
 
-	get extensionDevelopmentLocationURI(): URI[] | undefined {
+	get extensionDevelopmentLocAtionURI(): URI[] | undefined {
 		if (!this._extensionHostDebugEnvironment) {
 			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
 		}
 
-		return this._extensionHostDebugEnvironment.extensionDevelopmentLocationURI;
+		return this._extensionHostDebugEnvironment.extensionDevelopmentLocAtionURI;
 	}
 
-	get extensionTestsLocationURI(): URI | undefined {
+	get extensionTestsLocAtionURI(): URI | undefined {
 		if (!this._extensionHostDebugEnvironment) {
 			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
 		}
 
-		return this._extensionHostDebugEnvironment.extensionTestsLocationURI;
+		return this._extensionHostDebugEnvironment.extensionTestsLocAtionURI;
 	}
 
-	get extensionEnabledProposedApi(): string[] | undefined {
+	get extensionEnAbledProposedApi(): string[] | undefined {
 		if (!this._extensionHostDebugEnvironment) {
 			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
 		}
 
-		return this._extensionHostDebugEnvironment.extensionEnabledProposedApi;
+		return this._extensionHostDebugEnvironment.extensionEnAbledProposedApi;
 	}
 
-	get debugRenderer(): boolean {
+	get debugRenderer(): booleAn {
 		if (!this._extensionHostDebugEnvironment) {
 			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
 		}
@@ -218,91 +218,91 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 		return this._extensionHostDebugEnvironment.debugRenderer;
 	}
 
-	get disableExtensions() { return this.payload?.get('disableExtensions') === 'true'; }
+	get disAbleExtensions() { return this.pAyloAd?.get('disAbleExtensions') === 'true'; }
 
-	private get webviewEndpoint(): string {
-		// TODO@matt: get fallback from product service
+	privAte get webviewEndpoint(): string {
+		// TODO@mAtt: get fAllbAck from product service
 		return this.options.webviewEndpoint || 'https://{{uuid}}.vscode-webview-test.com/{{commit}}';
 	}
 
 	@memoize
-	get webviewExternalEndpoint(): string {
-		return (this.webviewEndpoint).replace('{{commit}}', this.productService.commit || '0d728c31ebdf03869d2687d9be0b017667c9ff37');
+	get webviewExternAlEndpoint(): string {
+		return (this.webviewEndpoint).replAce('{{commit}}', this.productService.commit || '0d728c31ebdf03869d2687d9be0b017667c9ff37');
 	}
 
 	@memoize
 	get webviewResourceRoot(): string {
-		return `${this.webviewExternalEndpoint}/vscode-resource/{{resource}}`;
+		return `${this.webviewExternAlEndpoint}/vscode-resource/{{resource}}`;
 	}
 
 	@memoize
 	get webviewCspSource(): string {
-		const uri = URI.parse(this.webviewEndpoint.replace('{{uuid}}', '*'));
-		return `${uri.scheme}://${uri.authority}`;
+		const uri = URI.pArse(this.webviewEndpoint.replAce('{{uuid}}', '*'));
+		return `${uri.scheme}://${uri.Authority}`;
 	}
 
 	@memoize
-	get telemetryLogResource(): URI { return joinPath(this.options.logsPath, 'telemetry.log'); }
-	get disableTelemetry(): boolean { return false; }
+	get telemetryLogResource(): URI { return joinPAth(this.options.logsPAth, 'telemetry.log'); }
+	get disAbleTelemetry(): booleAn { return fAlse; }
 
-	get verbose(): boolean { return this.payload?.get('verbose') === 'true'; }
-	get logExtensionHostCommunication(): boolean { return this.payload?.get('logExtensionHostCommunication') === 'true'; }
+	get verbose(): booleAn { return this.pAyloAd?.get('verbose') === 'true'; }
+	get logExtensionHostCommunicAtion(): booleAn { return this.pAyloAd?.get('logExtensionHostCommunicAtion') === 'true'; }
 
-	get skipReleaseNotes(): boolean { return false; }
+	get skipReleAseNotes(): booleAn { return fAlse; }
 
-	private payload: Map<string, string> | undefined;
+	privAte pAyloAd: MAp<string, string> | undefined;
 
 	constructor(
-		readonly options: IBrowserWorkbenchOptions,
-		private readonly productService: IProductService
+		reAdonly options: IBrowserWorkbenchOptions,
+		privAte reAdonly productService: IProductService
 	) {
-		if (options.workspaceProvider && Array.isArray(options.workspaceProvider.payload)) {
+		if (options.workspAceProvider && ArrAy.isArrAy(options.workspAceProvider.pAyloAd)) {
 			try {
-				this.payload = new Map(options.workspaceProvider.payload);
-			} catch (error) {
-				onUnexpectedError(error); // possible invalid payload for map
+				this.pAyloAd = new MAp(options.workspAceProvider.pAyloAd);
+			} cAtch (error) {
+				onUnexpectedError(error); // possible invAlid pAyloAd for mAp
 			}
 		}
 	}
 
-	private resolveExtensionHostDebugEnvironment(): IExtensionHostDebugEnvironment {
+	privAte resolveExtensionHostDebugEnvironment(): IExtensionHostDebugEnvironment {
 		const extensionHostDebugEnvironment: IExtensionHostDebugEnvironment = {
-			params: {
+			pArAms: {
 				port: null,
-				break: false
+				breAk: fAlse
 			},
-			debugRenderer: false,
-			isExtensionDevelopment: false,
-			extensionDevelopmentLocationURI: undefined
+			debugRenderer: fAlse,
+			isExtensionDevelopment: fAlse,
+			extensionDevelopmentLocAtionURI: undefined
 		};
 
-		// Fill in selected extra environmental properties
-		if (this.payload) {
-			for (const [key, value] of this.payload) {
+		// Fill in selected extrA environmentAl properties
+		if (this.pAyloAd) {
+			for (const [key, vAlue] of this.pAyloAd) {
 				switch (key) {
-					case 'extensionDevelopmentPath':
-						extensionHostDebugEnvironment.extensionDevelopmentLocationURI = [URI.parse(value)];
+					cAse 'extensionDevelopmentPAth':
+						extensionHostDebugEnvironment.extensionDevelopmentLocAtionURI = [URI.pArse(vAlue)];
 						extensionHostDebugEnvironment.isExtensionDevelopment = true;
-						break;
-					case 'extensionTestsPath':
-						extensionHostDebugEnvironment.extensionTestsLocationURI = URI.parse(value);
-						break;
-					case 'debugRenderer':
-						extensionHostDebugEnvironment.debugRenderer = value === 'true';
-						break;
-					case 'debugId':
-						extensionHostDebugEnvironment.params.debugId = value;
-						break;
-					case 'inspect-brk-extensions':
-						extensionHostDebugEnvironment.params.port = parseInt(value);
-						extensionHostDebugEnvironment.params.break = true;
-						break;
-					case 'inspect-extensions':
-						extensionHostDebugEnvironment.params.port = parseInt(value);
-						break;
-					case 'enableProposedApi':
-						extensionHostDebugEnvironment.extensionEnabledProposedApi = [];
-						break;
+						breAk;
+					cAse 'extensionTestsPAth':
+						extensionHostDebugEnvironment.extensionTestsLocAtionURI = URI.pArse(vAlue);
+						breAk;
+					cAse 'debugRenderer':
+						extensionHostDebugEnvironment.debugRenderer = vAlue === 'true';
+						breAk;
+					cAse 'debugId':
+						extensionHostDebugEnvironment.pArAms.debugId = vAlue;
+						breAk;
+					cAse 'inspect-brk-extensions':
+						extensionHostDebugEnvironment.pArAms.port = pArseInt(vAlue);
+						extensionHostDebugEnvironment.pArAms.breAk = true;
+						breAk;
+					cAse 'inspect-extensions':
+						extensionHostDebugEnvironment.pArAms.port = pArseInt(vAlue);
+						breAk;
+					cAse 'enAbleProposedApi':
+						extensionHostDebugEnvironment.extensionEnAbledProposedApi = [];
+						breAk;
 				}
 			}
 		}

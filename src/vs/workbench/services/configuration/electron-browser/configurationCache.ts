@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as pfs from 'vs/base/node/pfs';
-import { join } from 'vs/base/common/path';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IConfigurationCache, ConfigurationKey } from 'vs/workbench/services/configuration/common/configuration';
-import { URI } from 'vs/base/common/uri';
-import { Schemas } from 'vs/base/common/network';
+import * As pfs from 'vs/bAse/node/pfs';
+import { join } from 'vs/bAse/common/pAth';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { IConfigurAtionCAche, ConfigurAtionKey } from 'vs/workbench/services/configurAtion/common/configurAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class ConfigurationCache implements IConfigurationCache {
+export clAss ConfigurAtionCAche implements IConfigurAtionCAche {
 
-	private readonly cachedConfigurations: Map<string, CachedConfiguration> = new Map<string, CachedConfiguration>();
+	privAte reAdonly cAchedConfigurAtions: MAp<string, CAchedConfigurAtion> = new MAp<string, CAchedConfigurAtion>();
 
-	constructor(private readonly environmentService: INativeWorkbenchEnvironmentService) {
+	constructor(privAte reAdonly environmentService: INAtiveWorkbenchEnvironmentService) {
 	}
 
-	needsCaching(resource: URI): boolean {
-		// Cache all non native resources
-		return ![Schemas.file, Schemas.userData].includes(resource.scheme);
+	needsCAching(resource: URI): booleAn {
+		// CAche All non nAtive resources
+		return ![SchemAs.file, SchemAs.userDAtA].includes(resource.scheme);
 	}
 
-	read(key: ConfigurationKey): Promise<string> {
-		return this.getCachedConfiguration(key).read();
+	reAd(key: ConfigurAtionKey): Promise<string> {
+		return this.getCAchedConfigurAtion(key).reAd();
 	}
 
-	write(key: ConfigurationKey, content: string): Promise<void> {
-		return this.getCachedConfiguration(key).save(content);
+	write(key: ConfigurAtionKey, content: string): Promise<void> {
+		return this.getCAchedConfigurAtion(key).sAve(content);
 	}
 
-	remove(key: ConfigurationKey): Promise<void> {
-		return this.getCachedConfiguration(key).remove();
+	remove(key: ConfigurAtionKey): Promise<void> {
+		return this.getCAchedConfigurAtion(key).remove();
 	}
 
-	private getCachedConfiguration({ type, key }: ConfigurationKey): CachedConfiguration {
+	privAte getCAchedConfigurAtion({ type, key }: ConfigurAtionKey): CAchedConfigurAtion {
 		const k = `${type}:${key}`;
-		let cachedConfiguration = this.cachedConfigurations.get(k);
-		if (!cachedConfiguration) {
-			cachedConfiguration = new CachedConfiguration({ type, key }, this.environmentService);
-			this.cachedConfigurations.set(k, cachedConfiguration);
+		let cAchedConfigurAtion = this.cAchedConfigurAtions.get(k);
+		if (!cAchedConfigurAtion) {
+			cAchedConfigurAtion = new CAchedConfigurAtion({ type, key }, this.environmentService);
+			this.cAchedConfigurAtions.set(k, cAchedConfigurAtion);
 		}
-		return cachedConfiguration;
+		return cAchedConfigurAtion;
 	}
 
 }
 
 
-class CachedConfiguration {
+clAss CAchedConfigurAtion {
 
-	private cachedConfigurationFolderPath: string;
-	private cachedConfigurationFilePath: string;
+	privAte cAchedConfigurAtionFolderPAth: string;
+	privAte cAchedConfigurAtionFilePAth: string;
 
 	constructor(
-		{ type, key }: ConfigurationKey,
-		environmentService: INativeWorkbenchEnvironmentService
+		{ type, key }: ConfigurAtionKey,
+		environmentService: INAtiveWorkbenchEnvironmentService
 	) {
-		this.cachedConfigurationFolderPath = join(environmentService.userDataPath, 'CachedConfigurations', type, key);
-		this.cachedConfigurationFilePath = join(this.cachedConfigurationFolderPath, type === 'workspaces' ? 'workspace.json' : 'configuration.json');
+		this.cAchedConfigurAtionFolderPAth = join(environmentService.userDAtAPAth, 'CAchedConfigurAtions', type, key);
+		this.cAchedConfigurAtionFilePAth = join(this.cAchedConfigurAtionFolderPAth, type === 'workspAces' ? 'workspAce.json' : 'configurAtion.json');
 	}
 
-	async read(): Promise<string> {
+	Async reAd(): Promise<string> {
 		try {
-			const content = await pfs.readFile(this.cachedConfigurationFilePath);
+			const content = AwAit pfs.reAdFile(this.cAchedConfigurAtionFilePAth);
 			return content.toString();
-		} catch (e) {
+		} cAtch (e) {
 			return '';
 		}
 	}
 
-	async save(content: string): Promise<void> {
-		const created = await this.createCachedFolder();
-		if (created) {
-			await pfs.writeFile(this.cachedConfigurationFilePath, content);
+	Async sAve(content: string): Promise<void> {
+		const creAted = AwAit this.creAteCAchedFolder();
+		if (creAted) {
+			AwAit pfs.writeFile(this.cAchedConfigurAtionFilePAth, content);
 		}
 	}
 
 	remove(): Promise<void> {
-		return pfs.rimraf(this.cachedConfigurationFolderPath);
+		return pfs.rimrAf(this.cAchedConfigurAtionFolderPAth);
 	}
 
-	private createCachedFolder(): Promise<boolean> {
-		return Promise.resolve(pfs.exists(this.cachedConfigurationFolderPath))
-			.then(undefined, () => false)
-			.then(exists => exists ? exists : pfs.mkdirp(this.cachedConfigurationFolderPath).then(() => true, () => false));
+	privAte creAteCAchedFolder(): Promise<booleAn> {
+		return Promise.resolve(pfs.exists(this.cAchedConfigurAtionFolderPAth))
+			.then(undefined, () => fAlse)
+			.then(exists => exists ? exists : pfs.mkdirp(this.cAchedConfigurAtionFolderPAth).then(() => true, () => fAlse));
 	}
 }
 

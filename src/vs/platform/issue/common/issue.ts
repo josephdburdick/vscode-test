@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Since data sent through the service is serialized to JSON, functions will be lost, so Color objects
-// should not be sent as their 'toString' method will be stripped. Instead convert to strings before sending.
-export interface WindowStyles {
-	backgroundColor?: string;
+// Since dAtA sent through the service is seriAlized to JSON, functions will be lost, so Color objects
+// should not be sent As their 'toString' method will be stripped. InsteAd convert to strings before sending.
+export interfAce WindowStyles {
+	bAckgroundColor?: string;
 	color?: string;
 }
-export interface WindowData {
+export interfAce WindowDAtA {
 	styles: WindowStyles;
 	zoomLevel: number;
 }
 
 export const enum IssueType {
 	Bug,
-	PerformanceIssue,
-	FeatureRequest
+	PerformAnceIssue,
+	FeAtureRequest
 }
 
-export interface IssueReporterStyles extends WindowStyles {
+export interfAce IssueReporterStyles extends WindowStyles {
 	textLinkColor?: string;
 	textLinkActiveForeground?: string;
-	inputBackground?: string;
+	inputBAckground?: string;
 	inputForeground?: string;
 	inputBorder?: string;
 	inputErrorBorder?: string;
-	inputErrorBackground?: string;
+	inputErrorBAckground?: string;
 	inputErrorForeground?: string;
 	inputActiveBorder?: string;
-	buttonBackground?: string;
+	buttonBAckground?: string;
 	buttonForeground?: string;
-	buttonHoverBackground?: string;
-	sliderBackgroundColor?: string;
+	buttonHoverBAckground?: string;
+	sliderBAckgroundColor?: string;
 	sliderHoverColor?: string;
 	sliderActiveColor?: string;
 }
 
-export interface IssueReporterExtensionData {
-	name: string;
+export interfAce IssueReporterExtensionDAtA {
+	nAme: string;
 	publisher: string;
 	version: string;
 	id: string;
-	isTheme: boolean;
-	isBuiltin: boolean;
-	displayName: string | undefined;
+	isTheme: booleAn;
+	isBuiltin: booleAn;
+	displAyNAme: string | undefined;
 	repositoryUrl: string | undefined;
 	bugsUrl: string | undefined;
 }
 
-export interface IssueReporterData extends WindowData {
+export interfAce IssueReporterDAtA extends WindowDAtA {
 	styles: IssueReporterStyles;
-	enabledExtensions: IssueReporterExtensionData[];
+	enAbledExtensions: IssueReporterExtensionDAtA[];
 	issueType?: IssueType;
 	extensionId?: string;
-	readonly issueTitle?: string;
-	readonly issueBody?: string;
+	reAdonly issueTitle?: string;
+	reAdonly issueBody?: string;
 }
 
-export interface ISettingSearchResult {
+export interfAce ISettingSeArchResult {
 	extensionId: string;
 	key: string;
 	score: number;
 }
 
-export interface IssueReporterFeatures {
+export interfAce IssueReporterFeAtures {
 }
 
-export interface ProcessExplorerStyles extends WindowStyles {
-	hoverBackground?: string;
+export interfAce ProcessExplorerStyles extends WindowStyles {
+	hoverBAckground?: string;
 	hoverForeground?: string;
 	highlightForeground?: string;
 }
 
-export interface ProcessExplorerData extends WindowData {
+export interfAce ProcessExplorerDAtA extends WindowDAtA {
 	pid: number;
 	styles: ProcessExplorerStyles;
-	platform: 'win32' | 'darwin' | 'linux';
-	applicationName: string;
+	plAtform: 'win32' | 'dArwin' | 'linux';
+	ApplicAtionNAme: string;
 }
 
-export interface ICommonIssueService {
-	readonly _serviceBrand: undefined;
-	openReporter(data: IssueReporterData): Promise<void>;
-	openProcessExplorer(data: ProcessExplorerData): Promise<void>;
-	getSystemStatus(): Promise<string>;
+export interfAce ICommonIssueService {
+	reAdonly _serviceBrAnd: undefined;
+	openReporter(dAtA: IssueReporterDAtA): Promise<void>;
+	openProcessExplorer(dAtA: ProcessExplorerDAtA): Promise<void>;
+	getSystemStAtus(): Promise<string>;
 }

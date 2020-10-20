@@ -1,103 +1,103 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { CoreNavigationCommands } from 'vs/editor/browser/controller/coreCommands';
+import * As Assert from 'Assert';
+import { CoreNAvigAtionCommAnds } from 'vs/editor/browser/controller/coreCommAnds';
 import { ICodeEditor, IActiveCodeEditor } from 'vs/editor/browser/editorBrowser';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
 import { TextModel } from 'vs/editor/common/model/textModel';
 import { FindModelBoundToEditorModel } from 'vs/editor/contrib/find/findModel';
-import { FindReplaceState } from 'vs/editor/contrib/find/findState';
+import { FindReplAceStAte } from 'vs/editor/contrib/find/findStAte';
 import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
+import { UndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedoService';
+import { TestDiAlogService } from 'vs/plAtform/diAlogs/test/common/testDiAlogService';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
 
 suite('FindModel', () => {
 
-	function findTest(testName: string, callback: (editor: IActiveCodeEditor) => void): void {
-		test(testName, () => {
+	function findTest(testNAme: string, cAllbAck: (editor: IActiveCodeEditor) => void): void {
+		test(testNAme, () => {
 			const textArr = [
-				'// my cool header',
+				'// my cool heAder',
 				'#include "cool.h"',
-				'#include <iostream>',
+				'#include <iostreAm>',
 				'',
-				'int main() {',
+				'int mAin() {',
 				'    cout << "hello world, Hello!" << endl;',
-				'    cout << "hello world again" << endl;',
-				'    cout << "Hello world again" << endl;',
-				'    cout << "helloworld again" << endl;',
+				'    cout << "hello world AgAin" << endl;',
+				'    cout << "Hello world AgAin" << endl;',
+				'    cout << "helloworld AgAin" << endl;',
 				'}',
-				'// blablablaciao',
+				'// blAblAblAciAo',
 				''
 			];
-			withTestCodeEditor(textArr, {}, (editor) => callback(editor as IActiveCodeEditor));
+			withTestCodeEditor(textArr, {}, (editor) => cAllbAck(editor As IActiveCodeEditor));
 
 			const text = textArr.join('\n');
 			const ptBuilder = new PieceTreeTextBufferBuilder();
-			ptBuilder.acceptChunk(text.substr(0, 94));
-			ptBuilder.acceptChunk(text.substr(94, 101));
-			ptBuilder.acceptChunk(text.substr(195, 59));
-			const factory = ptBuilder.finish();
+			ptBuilder.AcceptChunk(text.substr(0, 94));
+			ptBuilder.AcceptChunk(text.substr(94, 101));
+			ptBuilder.AcceptChunk(text.substr(195, 59));
+			const fActory = ptBuilder.finish();
 			withTestCodeEditor([],
 				{
-					model: new TextModel(factory, TextModel.DEFAULT_CREATION_OPTIONS, null, null, new UndoRedoService(new TestDialogService(), new TestNotificationService()))
+					model: new TextModel(fActory, TextModel.DEFAULT_CREATION_OPTIONS, null, null, new UndoRedoService(new TestDiAlogService(), new TestNotificAtionService()))
 				},
-				(editor) => callback(editor as IActiveCodeEditor)
+				(editor) => cAllbAck(editor As IActiveCodeEditor)
 			);
 		});
 	}
 
-	function fromRange(rng: Range): number[] {
-		return [rng.startLineNumber, rng.startColumn, rng.endLineNumber, rng.endColumn];
+	function fromRAnge(rng: RAnge): number[] {
+		return [rng.stArtLineNumber, rng.stArtColumn, rng.endLineNumber, rng.endColumn];
 	}
 
-	function _getFindState(editor: ICodeEditor) {
+	function _getFindStAte(editor: ICodeEditor) {
 		let model = editor.getModel()!;
-		let currentFindMatches: Range[] = [];
-		let allFindMatches: Range[] = [];
+		let currentFindMAtches: RAnge[] = [];
+		let AllFindMAtches: RAnge[] = [];
 
-		for (let dec of model.getAllDecorations()) {
-			if (dec.options.className === 'currentFindMatch') {
-				currentFindMatches.push(dec.range);
-				allFindMatches.push(dec.range);
-			} else if (dec.options.className === 'findMatch') {
-				allFindMatches.push(dec.range);
+		for (let dec of model.getAllDecorAtions()) {
+			if (dec.options.clAssNAme === 'currentFindMAtch') {
+				currentFindMAtches.push(dec.rAnge);
+				AllFindMAtches.push(dec.rAnge);
+			} else if (dec.options.clAssNAme === 'findMAtch') {
+				AllFindMAtches.push(dec.rAnge);
 			}
 		}
 
-		currentFindMatches.sort(Range.compareRangesUsingStarts);
-		allFindMatches.sort(Range.compareRangesUsingStarts);
+		currentFindMAtches.sort(RAnge.compAreRAngesUsingStArts);
+		AllFindMAtches.sort(RAnge.compAreRAngesUsingStArts);
 
 		return {
-			highlighted: currentFindMatches.map(fromRange),
-			findDecorations: allFindMatches.map(fromRange)
+			highlighted: currentFindMAtches.mAp(fromRAnge),
+			findDecorAtions: AllFindMAtches.mAp(fromRAnge)
 		};
 	}
 
-	function assertFindState(editor: ICodeEditor, cursor: number[], highlighted: number[] | null, findDecorations: number[][]): void {
-		assert.deepEqual(fromRange(editor.getSelection()!), cursor, 'cursor');
+	function AssertFindStAte(editor: ICodeEditor, cursor: number[], highlighted: number[] | null, findDecorAtions: number[][]): void {
+		Assert.deepEquAl(fromRAnge(editor.getSelection()!), cursor, 'cursor');
 
-		let expectedState = {
+		let expectedStAte = {
 			highlighted: highlighted ? [highlighted] : [],
-			findDecorations: findDecorations
+			findDecorAtions: findDecorAtions
 		};
-		assert.deepEqual(_getFindState(editor), expectedState, 'state');
+		Assert.deepEquAl(_getFindStAte(editor), expectedStAte, 'stAte');
 	}
 
-	findTest('incremental find from beginning of file', (editor) => {
+	findTest('incrementAl find from beginning of file', (editor) => {
 		editor.setPosition({ lineNumber: 1, column: 1 });
-		let findState = new FindReplaceState();
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		// simulate typing the search string
-		findState.change({ searchString: 'H' }, true);
-		assertFindState(
+		// simulAte typing the seArch string
+		findStAte.chAnge({ seArchString: 'H' }, true);
+		AssertFindStAte(
 			editor,
 			[1, 12, 1, 13],
 			[1, 12, 1, 13],
@@ -112,9 +112,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate typing the search string
-		findState.change({ searchString: 'He' }, true);
-		assertFindState(
+		// simulAte typing the seArch string
+		findStAte.chAnge({ seArchString: 'He' }, true);
+		AssertFindStAte(
 			editor,
 			[1, 12, 1, 14],
 			[1, 12, 1, 14],
@@ -128,9 +128,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate typing the search string
-		findState.change({ searchString: 'Hello' }, true);
-		assertFindState(
+		// simulAte typing the seArch string
+		findStAte.chAnge({ seArchString: 'Hello' }, true);
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -143,9 +143,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate toggling on `matchCase`
-		findState.change({ matchCase: true }, true);
-		assertFindState(
+		// simulAte toggling on `mAtchCAse`
+		findStAte.chAnge({ mAtchCAse: true }, true);
+		AssertFindStAte(
 			editor,
 			[6, 27, 6, 32],
 			[6, 27, 6, 32],
@@ -155,9 +155,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate typing the search string
-		findState.change({ searchString: 'hello' }, true);
-		assertFindState(
+		// simulAte typing the seArch string
+		findStAte.chAnge({ seArchString: 'hello' }, true);
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -168,9 +168,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate toggling on `wholeWord`
-		findState.change({ wholeWord: true }, true);
-		assertFindState(
+		// simulAte toggling on `wholeWord`
+		findStAte.chAnge({ wholeWord: true }, true);
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -180,9 +180,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate toggling off `matchCase`
-		findState.change({ matchCase: false }, true);
-		assertFindState(
+		// simulAte toggling off `mAtchCAse`
+		findStAte.chAnge({ mAtchCAse: fAlse }, true);
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -194,9 +194,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate toggling off `wholeWord`
-		findState.change({ wholeWord: false }, true);
-		assertFindState(
+		// simulAte toggling off `wholeWord`
+		findStAte.chAnge({ wholeWord: fAlse }, true);
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -209,9 +209,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate adding a search scope
-		findState.change({ searchScope: [new Range(8, 1, 10, 1)] }, true);
-		assertFindState(
+		// simulAte Adding A seArch scope
+		findStAte.chAnge({ seArchScope: [new RAnge(8, 1, 10, 1)] }, true);
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -221,9 +221,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		// simulate removing the search scope
-		findState.change({ searchScope: null }, true);
-		assertFindState(
+		// simulAte removing the seArch scope
+		findStAte.chAnge({ seArchScope: null }, true);
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -237,16 +237,16 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('find model removes its decorations', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('find model removes its decorAtions', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assert.equal(findState.matchesCount, 5);
-		assertFindState(
+		Assert.equAl(findStAte.mAtchesCount, 5);
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -260,9 +260,9 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -270,13 +270,13 @@ suite('FindModel', () => {
 		);
 	});
 
-	findTest('find model updates state matchesCount', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('find model updAtes stAte mAtchesCount', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assert.equal(findState.matchesCount, 5);
-		assertFindState(
+		Assert.equAl(findStAte.mAtchesCount, 5);
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -289,9 +289,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		findState.change({ searchString: 'helloo' }, false);
-		assert.equal(findState.matchesCount, 0);
-		assertFindState(
+		findStAte.chAnge({ seArchString: 'helloo' }, fAlse);
+		Assert.equAl(findStAte.mAtchesCount, 0);
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -299,15 +299,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('find model reacts to position change', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('find model reActs to position chAnge', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -320,11 +320,11 @@ suite('FindModel', () => {
 			]
 		);
 
-		editor.trigger('mouse', CoreNavigationCommands.MoveTo.id, {
+		editor.trigger('mouse', CoreNAvigAtionCommAnds.MoveTo.id, {
 			position: new Position(6, 20)
 		});
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 20, 6, 20],
 			null,
@@ -337,8 +337,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findState.change({ searchString: 'Hello' }, true);
-		assertFindState(
+		findStAte.chAnge({ seArchString: 'Hello' }, true);
+		AssertFindStAte(
 			editor,
 			[6, 27, 6, 32],
 			[6, 27, 6, 32],
@@ -352,15 +352,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find model next', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -372,8 +372,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -385,8 +385,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 27, 6, 32],
 			[6, 27, 6, 32],
@@ -398,8 +398,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -411,8 +411,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -424,8 +424,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -438,15 +438,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('find model next stays in scope', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true, searchScope: [new Range(7, 1, 9, 1)] }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('find model next stAys in scope', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true, seArchScope: [new RAnge(7, 1, 9, 1)] }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -456,8 +456,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -467,8 +467,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -478,8 +478,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -490,15 +490,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('multi-selection find model next stays in scope (overlap)', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true, searchScope: [new Range(7, 1, 8, 2), new Range(8, 1, 9, 1)] }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('multi-selection find model next stAys in scope (overlAp)', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true, seArchScope: [new RAnge(7, 1, 8, 2), new RAnge(8, 1, 9, 1)] }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -508,8 +508,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -519,8 +519,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -530,8 +530,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -542,32 +542,32 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('multi-selection find model next stays in scope', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', matchCase: true, wholeWord: false, searchScope: [new Range(6, 1, 7, 38), new Range(9, 3, 9, 38)] }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('multi-selection find model next stAys in scope', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', mAtchCAse: true, wholeWord: fAlse, seArchScope: [new RAnge(6, 1, 7, 38), new RAnge(9, 3, 9, 38)] }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[
 				[6, 14, 6, 19],
-				// `matchCase: false` would
-				// find this match as well:
+				// `mAtchCAse: fAlse` would
+				// find this mAtch As well:
 				// [6, 27, 6, 32],
 				[7, 14, 7, 19],
 				// `wholeWord: true` would
-				// exclude this match:
+				// exclude this mAtch:
 				[9, 14, 9, 19],
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -578,8 +578,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -590,8 +590,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[9, 14, 9, 19],
 			[9, 14, 9, 19],
@@ -602,8 +602,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -615,15 +615,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find model prev', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -635,8 +635,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -648,8 +648,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -661,8 +661,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 27, 6, 32],
 			[6, 27, 6, 32],
@@ -674,8 +674,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -687,8 +687,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -701,15 +701,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('find model prev stays in scope', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true, searchScope: [new Range(7, 1, 9, 1)] }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('find model prev stAys in scope', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true, seArchScope: [new RAnge(7, 1, 9, 1)] }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -719,8 +719,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -730,8 +730,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -741,8 +741,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -753,31 +753,31 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('find model next/prev with no matches', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'helloo', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('find model next/prev with no mAtches', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'helloo', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -785,15 +785,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find model next/prev respects cursor position', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -805,10 +805,10 @@ suite('FindModel', () => {
 			]
 		);
 
-		editor.trigger('mouse', CoreNavigationCommands.MoveTo.id, {
+		editor.trigger('mouse', CoreNAvigAtionCommAnds.MoveTo.id, {
 			position: new Position(6, 20)
 		});
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 20, 6, 20],
 			null,
@@ -820,8 +820,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[6, 27, 6, 32],
 			[6, 27, 6, 32],
@@ -834,15 +834,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find ^', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '^', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '^', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -862,8 +862,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[2, 1, 2, 1],
 			[2, 1, 2, 1],
@@ -883,8 +883,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[3, 1, 3, 1],
 			[3, 1, 3, 1],
@@ -905,15 +905,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find $', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '$', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '$', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -933,8 +933,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[1, 18, 1, 18],
 			[1, 18, 1, 18],
@@ -954,8 +954,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[2, 18, 2, 18],
 			[2, 18, 2, 18],
@@ -975,8 +975,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[3, 20, 3, 20],
 			[3, 20, 3, 20],
@@ -997,15 +997,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find next ^$', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '^$', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '^$', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1015,8 +1015,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[4, 1, 4, 1],
 			[4, 1, 4, 1],
@@ -1026,8 +1026,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[12, 1, 12, 1],
 			[12, 1, 12, 1],
@@ -1037,8 +1037,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[4, 1, 4, 1],
 			[4, 1, 4, 1],
@@ -1049,15 +1049,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find .*', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '.*', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '.*', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1078,15 +1078,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find next ^.*$', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '^.*$', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '^.*$', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1106,8 +1106,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 18],
 			[1, 1, 1, 18],
@@ -1127,8 +1127,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[2, 1, 2, 18],
 			[2, 1, 2, 18],
@@ -1149,15 +1149,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find prev ^.*$', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '^.*$', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '^.*$', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1177,8 +1177,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[12, 1, 12, 1],
 			[12, 1, 12, 1],
@@ -1198,8 +1198,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[11, 1, 11, 17],
 			[11, 1, 11, 17],
@@ -1220,15 +1220,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
 	findTest('find prev ^$', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '^$', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '^$', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1238,8 +1238,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[12, 1, 12, 1],
 			[12, 1, 12, 1],
@@ -1249,8 +1249,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[4, 1, 4, 1],
 			[4, 1, 4, 1],
@@ -1260,8 +1260,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToPrevMatch();
-		assertFindState(
+		findModel.moveToPrevMAtch();
+		AssertFindStAte(
 			editor,
 			[12, 1, 12, 1],
 			[12, 1, 12, 1],
@@ -1272,15 +1272,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replace hello', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'hi', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAce hello', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: 'hi', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1292,10 +1292,10 @@ suite('FindModel', () => {
 			]
 		);
 
-		editor.trigger('mouse', CoreNavigationCommands.MoveTo.id, {
+		editor.trigger('mouse', CoreNAvigAtionCommAnds.MoveTo.id, {
 			position: new Position(6, 20)
 		});
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 20, 6, 20],
 			null,
@@ -1306,10 +1306,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[6, 27, 6, 32],
 			[6, 27, 6, 32],
@@ -1320,10 +1320,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -1333,10 +1333,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello world, hi!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello world, hi!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -1345,10 +1345,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hi world AgAin" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -1356,27 +1356,27 @@ suite('FindModel', () => {
 				[6, 14, 6, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "hi world AgAin" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[6, 16, 6, 16],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hi world, hi!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hi world, hi!" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replace bla', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'bla', replaceString: 'ciao' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAce blA', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'blA', replAceString: 'ciAo' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1387,8 +1387,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[11, 4, 11, 7],
 			[11, 4, 11, 7],
@@ -1398,10 +1398,10 @@ suite('FindModel', () => {
 				[11, 10, 11, 13]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// blablablaciao');
+		Assert.equAl(editor.getModel()!.getLineContent(11), '// blAblAblAciAo');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[11, 8, 11, 11],
 			[11, 8, 11, 11],
@@ -1410,10 +1410,10 @@ suite('FindModel', () => {
 				[11, 11, 11, 14]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// ciaoblablaciao');
+		Assert.equAl(editor.getModel()!.getLineContent(11), '// ciAoblAblAciAo');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[11, 12, 11, 15],
 			[11, 12, 11, 15],
@@ -1421,27 +1421,27 @@ suite('FindModel', () => {
 				[11, 12, 11, 15]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// ciaociaoblaciao');
+		Assert.equAl(editor.getModel()!.getLineContent(11), '// ciAociAoblAciAo');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[11, 16, 11, 16],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// ciaociaociaociao');
+		Assert.equAl(editor.getModel()!.getLineContent(11), '// ciAociAociAociAo');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll hello', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'hi', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll hello', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: 'hi', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1453,10 +1453,10 @@ suite('FindModel', () => {
 			]
 		);
 
-		editor.trigger('mouse', CoreNavigationCommands.MoveTo.id, {
+		editor.trigger('mouse', CoreNAvigAtionCommAnds.MoveTo.id, {
 			position: new Position(6, 20)
 		});
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 20, 6, 20],
 			null,
@@ -1467,29 +1467,29 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[6, 17, 6, 17],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hi world, hi!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hi world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hi world, hi!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hi world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "hi world AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll two spaces with one space', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '  ', replaceString: ' ' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll two spAces with one spAce', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '  ', replAceString: ' ' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1505,8 +1505,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1517,21 +1517,21 @@ suite('FindModel', () => {
 				[9, 1, 9, 3]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '  cout << "hello world, Hello!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '  cout << "hello world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '  cout << "Hello world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(9), '  cout << "helloworld again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '  cout << "hello world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '  cout << "hello world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '  cout << "Hello world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(9), '  cout << "helloworld AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll bla', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'bla', replaceString: 'ciao' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll blA', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'blA', replAceString: 'ciAo' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1542,25 +1542,25 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// ciaociaociaociao');
+		Assert.equAl(editor.getModel()!.getLineContent(11), '// ciAociAociAociAo');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll bla with \\t\\n', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'bla', replaceString: '<\\n\\t>', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll blA with \\t\\n', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'blA', replAceString: '<\\n\\t>', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1571,28 +1571,28 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(11), '// <');
-		assert.equal(editor.getModel()!.getLineContent(12), '\t><');
-		assert.equal(editor.getModel()!.getLineContent(13), '\t><');
-		assert.equal(editor.getModel()!.getLineContent(14), '\t>ciao');
+		Assert.equAl(editor.getModel()!.getLineContent(11), '// <');
+		Assert.equAl(editor.getModel()!.getLineContent(12), '\t><');
+		Assert.equAl(editor.getModel()!.getLineContent(13), '\t><');
+		Assert.equAl(editor.getModel()!.getLineContent(14), '\t>ciAo');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #3516: "replace all" moves page/cursor/focus/scroll to the place of the last replacement', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'include', replaceString: 'bar' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #3516: "replAce All" moves pAge/cursor/focus/scroll to the plAce of the lAst replAcement', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'include', replAceString: 'bAr' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1602,27 +1602,27 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
 
-		assert.equal(editor.getModel()!.getLineContent(2), '#bar "cool.h"');
-		assert.equal(editor.getModel()!.getLineContent(3), '#bar <iostream>');
+		Assert.equAl(editor.getModel()!.getLineContent(2), '#bAr "cool.h"');
+		Assert.equAl(editor.getModel()!.getLineContent(3), '#bAr <iostreAm>');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('listens to model content changes', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'hi', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('listens to model content chAnges', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: 'hi', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1634,8 +1634,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		editor!.getModel()!.setValue('hello\nhi');
-		assertFindState(
+		editor!.getModel()!.setVAlue('hello\nhi');
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1643,15 +1643,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('selectAllMatches', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'hi', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('selectAllMAtches', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: 'hi', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1663,16 +1663,16 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.selectAllMatches();
+		findModel.selectAllMAtches();
 
-		assert.deepEqual(editor!.getSelections()!.map(s => s.toString()), [
+		Assert.deepEquAl(editor!.getSelections()!.mAp(s => s.toString()), [
 			new Selection(6, 14, 6, 19),
 			new Selection(6, 27, 6, 32),
 			new Selection(7, 14, 7, 19),
 			new Selection(8, 14, 8, 19)
-		].map(s => s.toString()));
+		].mAp(s => s.toString()));
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			null,
@@ -1685,15 +1685,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #14143 selectAllMatches should maintain primary cursor if feasible', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'hi', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #14143 selectAllMAtches should mAintAin primAry cursor if feAsible', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: 'hi', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1705,20 +1705,20 @@ suite('FindModel', () => {
 			]
 		);
 
-		editor.setSelection(new Range(7, 14, 7, 19));
+		editor.setSelection(new RAnge(7, 14, 7, 19));
 
-		findModel.selectAllMatches();
+		findModel.selectAllMAtches();
 
-		assert.deepEqual(editor!.getSelections()!.map(s => s.toString()), [
+		Assert.deepEquAl(editor!.getSelections()!.mAp(s => s.toString()), [
 			new Selection(7, 14, 7, 19),
 			new Selection(6, 14, 6, 19),
 			new Selection(6, 27, 6, 32),
 			new Selection(8, 14, 8, 19)
-		].map(s => s.toString()));
+		].mAp(s => s.toString()));
 
-		assert.deepEqual(editor!.getSelection()!.toString(), new Selection(7, 14, 7, 19).toString());
+		Assert.deepEquAl(editor!.getSelection()!.toString(), new Selection(7, 14, 7, 19).toString());
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			null,
@@ -1731,15 +1731,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #1914: NPE when there is only one find match', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'cool.h' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #1914: NPE when there is only one find mAtch', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'cool.h' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1748,8 +1748,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[2, 11, 2, 17],
 			[2, 11, 2, 17],
@@ -1758,8 +1758,8 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.moveToNextMatch();
-		assertFindState(
+		findModel.moveToNextMAtch();
+		AssertFindStAte(
 			editor,
 			[2, 11, 2, 17],
 			[2, 11, 2, 17],
@@ -1769,15 +1769,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replace when search string has look ahed regex', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello(?=\\sworld)', replaceString: 'hi', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAce when seArch string hAs look Ahed regex', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello(?=\\sworld)', replAceString: 'hi', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1788,9 +1788,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replace();
+		findModel.replAce();
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -1800,10 +1800,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -1812,10 +1812,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -1823,31 +1823,31 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hi world AgAin" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[8, 16, 8, 16],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "hi world AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replace when search string has look ahed regex and cursor is at the last find match', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello(?=\\sworld)', replaceString: 'hi', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAce when seArch string hAs look Ahed regex And cursor is At the lAst find mAtch', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello(?=\\sworld)', replAceString: 'hi', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		editor.trigger('mouse', CoreNavigationCommands.MoveTo.id, {
+		editor.trigger('mouse', CoreNAvigAtionCommAnds.MoveTo.id, {
 			position: new Position(8, 14)
 		});
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 14],
 			null,
@@ -1858,9 +1858,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replace();
+		findModel.replAce();
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -1871,10 +1871,10 @@ suite('FindModel', () => {
 			]
 		);
 
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "Hello world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "Hello world AgAin" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -1883,10 +1883,10 @@ suite('FindModel', () => {
 				[7, 14, 7, 19],
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "hi world AgAin" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -1894,27 +1894,27 @@ suite('FindModel', () => {
 				[7, 14, 7, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[7, 16, 7, 16],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hi world AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll when search string has look ahed regex', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello(?=\\sworld)', replaceString: 'hi', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll when seArch string hAs look Ahed regex', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello(?=\\sworld)', replAceString: 'hi', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1925,13 +1925,13 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
+		findModel.replAceAll();
 
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hi world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "hi world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hi world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "hi world AgAin" << endl;');
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1939,15 +1939,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replace when search string has look ahed regex and replace string has capturing groups', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hel(lo)(?=\\sworld)', replaceString: 'hi$1', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAce when seArch string hAs look Ahed regex And replAce string hAs cApturing groups', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hel(lo)(?=\\sworld)', replAceString: 'hi$1', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -1958,9 +1958,9 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replace();
+		findModel.replAce();
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[6, 14, 6, 19],
 			[6, 14, 6, 19],
@@ -1970,10 +1970,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[7, 14, 7, 19],
 			[7, 14, 7, 19],
@@ -1982,10 +1982,10 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hilo world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hilo world, Hello!" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[8, 14, 8, 19],
 			[8, 14, 8, 19],
@@ -1993,27 +1993,27 @@ suite('FindModel', () => {
 				[8, 14, 8, 19]
 			]
 		);
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hilo world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hilo world AgAin" << endl;');
 
-		findModel.replace();
-		assertFindState(
+		findModel.replAce();
+		AssertFindStAte(
 			editor,
 			[8, 18, 8, 18],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "hilo world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "hilo world AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll when search string has look ahed regex and replace string has capturing groups', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'wo(rl)d(?=.*;$)', replaceString: 'gi$1', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll when seArch string hAs look Ahed regex And replAce string hAs cApturing groups', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'wo(rl)d(?=.*;$)', replAceString: 'gi$1', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2025,14 +2025,14 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
+		findModel.replAceAll();
 
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello girl, Hello!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hello girl again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "Hello girl again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(9), '    cout << "hellogirl again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello girl, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hello girl AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "Hello girl AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(9), '    cout << "hellogirl AgAin" << endl;');
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2040,15 +2040,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll when search string is multiline and has look ahed regex and replace string has capturing groups', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'wo(rl)d(.*;\\n)(?=.*hello)', replaceString: 'gi$1$2', isRegex: true, matchCase: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll when seArch string is multiline And hAs look Ahed regex And replAce string hAs cApturing groups', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'wo(rl)d(.*;\\n)(?=.*hello)', replAceString: 'gi$1$2', isRegex: true, mAtchCAse: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2058,12 +2058,12 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
+		findModel.replAceAll();
 
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hello girl, Hello!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "Hello girl again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hello girl, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "Hello girl AgAin" << endl;');
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2071,15 +2071,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('replaceAll preserving case', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: 'goodbye', isRegex: false, matchCase: false, preserveCase: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('replAceAll preserving cAse', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: 'goodbye', isRegex: fAlse, mAtchCAse: fAlse, preserveCAse: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2092,14 +2092,14 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
+		findModel.replAceAll();
 
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "goodbye world, Goodbye!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "goodbye world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << "Goodbye world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(9), '    cout << "goodbyeworld again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "goodbye world, Goodbye!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "goodbye world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << "Goodbye world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(9), '    cout << "goodbyeworld AgAin" << endl;');
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2107,15 +2107,15 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #18711 replaceAll with empty string', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', replaceString: '', wholeWord: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #18711 replAceAll with empty string', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', replAceString: '', wholeWord: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2127,50 +2127,50 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << " world, !" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << " world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(8), '    cout << " world again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << " world, !" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << " world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(8), '    cout << " world AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #32522 replaceAll with ^ on more than 1000 matches', (editor) => {
-		let initialText = '';
+	findTest('issue #32522 replAceAll with ^ on more thAn 1000 mAtches', (editor) => {
+		let initiAlText = '';
 		for (let i = 0; i < 1100; i++) {
-			initialText += 'line' + i + '\n';
+			initiAlText += 'line' + i + '\n';
 		}
-		editor!.getModel()!.setValue(initialText);
-		let findState = new FindReplaceState();
-		findState.change({ searchString: '^', replaceString: 'a ', isRegex: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+		editor!.getModel()!.setVAlue(initiAlText);
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: '^', replAceString: 'A ', isRegex: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		findModel.replaceAll();
+		findModel.replAceAll();
 
 		let expectedText = '';
 		for (let i = 0; i < 1100; i++) {
-			expectedText += 'a line' + i + '\n';
+			expectedText += 'A line' + i + '\n';
 		}
-		expectedText += 'a ';
-		assert.equal(editor!.getModel()!.getValue(), expectedText);
+		expectedText += 'A ';
+		Assert.equAl(editor!.getModel()!.getVAlue(), expectedText);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #19740 Find and replace capture group/backreference inserts `undefined` instead of empty string', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello(z)?', replaceString: 'hi$1', isRegex: true, matchCase: true }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #19740 Find And replAce cApture group/bAckreference inserts `undefined` insteAd of empty string', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello(z)?', replAceString: 'hi$1', isRegex: true, mAtchCAse: true }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2181,27 +2181,27 @@ suite('FindModel', () => {
 			]
 		);
 
-		findModel.replaceAll();
-		assertFindState(
+		findModel.replAceAll();
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
 			[]
 		);
-		assert.equal(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(7), '    cout << "hi world again" << endl;');
-		assert.equal(editor.getModel()!.getLineContent(9), '    cout << "hiworld again" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(6), '    cout << "hi world, Hello!" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(7), '    cout << "hi world AgAin" << endl;');
+		Assert.equAl(editor.getModel()!.getLineContent(9), '    cout << "hiworld AgAin" << endl;');
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #27083. search scope works even if it is a single line', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', wholeWord: true, searchScope: [new Range(7, 1, 8, 1)] }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #27083. seArch scope works even if it is A single line', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', wholeWord: true, seArchScope: [new RAnge(7, 1, 8, 1)] }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assertFindState(
+		AssertFindStAte(
 			editor,
 			[1, 1, 1, 1],
 			null,
@@ -2211,166 +2211,166 @@ suite('FindModel', () => {
 		);
 
 		findModel.dispose();
-		findState.dispose();
+		findStAte.dispose();
 	});
 
-	findTest('issue #3516: Control behavior of "Next" operations (not looping back to beginning)', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello', loop: false }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #3516: Control behAvior of "Next" operAtions (not looping bAck to beginning)', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello', loop: fAlse }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assert.equal(findState.matchesCount, 5);
+		Assert.equAl(findStAte.mAtchesCount, 5);
 
-		// Test next operations
-		assert.equal(findState.matchesPosition, 0);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		// Test next operAtions
+		Assert.equAl(findStAte.mAtchesPosition, 0);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), false);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), fAlse);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 2);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 2);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 3);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 3);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 4);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 4);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 5);
-		assert.equal(findState.canNavigateForward(), false);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 5);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), fAlse);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 5);
-		assert.equal(findState.canNavigateForward(), false);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 5);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), fAlse);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 5);
-		assert.equal(findState.canNavigateForward(), false);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 5);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), fAlse);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		// Test previous operations
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 4);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		// Test previous operAtions
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 4);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 3);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 3);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 2);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 2);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), false);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), fAlse);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), false);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), fAlse);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), false);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), fAlse);
 
 	});
 
-	findTest('issue #3516: Control behavior of "Next" operations (looping back to beginning)', (editor) => {
-		let findState = new FindReplaceState();
-		findState.change({ searchString: 'hello' }, false);
-		let findModel = new FindModelBoundToEditorModel(editor, findState);
+	findTest('issue #3516: Control behAvior of "Next" operAtions (looping bAck to beginning)', (editor) => {
+		let findStAte = new FindReplAceStAte();
+		findStAte.chAnge({ seArchString: 'hello' }, fAlse);
+		let findModel = new FindModelBoundToEditorModel(editor, findStAte);
 
-		assert.equal(findState.matchesCount, 5);
+		Assert.equAl(findStAte.mAtchesCount, 5);
 
-		// Test next operations
-		assert.equal(findState.matchesPosition, 0);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		// Test next operAtions
+		Assert.equAl(findStAte.mAtchesPosition, 0);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 2);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 2);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 3);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 3);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 4);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 4);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 5);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 5);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToNextMatch();
-		assert.equal(findState.matchesPosition, 2);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToNextMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 2);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		// Test previous operations
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		// Test previous operAtions
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 5);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 5);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 4);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 4);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 3);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 3);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 2);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 2);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
-		findModel.moveToPrevMatch();
-		assert.equal(findState.matchesPosition, 1);
-		assert.equal(findState.canNavigateForward(), true);
-		assert.equal(findState.canNavigateBack(), true);
+		findModel.moveToPrevMAtch();
+		Assert.equAl(findStAte.mAtchesPosition, 1);
+		Assert.equAl(findStAte.cAnNAvigAteForwArd(), true);
+		Assert.equAl(findStAte.cAnNAvigAteBAck(), true);
 
 	});
 

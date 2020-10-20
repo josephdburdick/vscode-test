@@ -1,231 +1,231 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { settingKeyToDisplayFormat, parseQuery, IParsedQuery } from 'vs/workbench/contrib/preferences/browser/settingsTreeModels';
+import * As Assert from 'Assert';
+import { settingKeyToDisplAyFormAt, pArseQuery, IPArsedQuery } from 'vs/workbench/contrib/preferences/browser/settingsTreeModels';
 
 suite('SettingsTree', () => {
-	test('settingKeyToDisplayFormat', () => {
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar'),
+	test('settingKeyToDisplAyFormAt', () => {
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.bAr'),
 			{
-				category: 'Foo',
-				label: 'Bar'
+				cAtegory: 'Foo',
+				lAbel: 'BAr'
 			});
 
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc'),
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.bAr.etc'),
 			{
-				category: 'Foo › Bar',
-				label: 'Etc'
+				cAtegory: 'Foo › BAr',
+				lAbel: 'Etc'
 			});
 
-		assert.deepEqual(
-			settingKeyToDisplayFormat('fooBar.etcSomething'),
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('fooBAr.etcSomething'),
 			{
-				category: 'Foo Bar',
-				label: 'Etc Something'
+				cAtegory: 'Foo BAr',
+				lAbel: 'Etc Something'
 			});
 
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo'),
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo'),
 			{
-				category: '',
-				label: 'Foo'
+				cAtegory: '',
+				lAbel: 'Foo'
 			});
 
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.1leading.number'),
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.1leAding.number'),
 			{
-				category: 'Foo › 1leading',
-				label: 'Number'
+				cAtegory: 'Foo › 1leAding',
+				lAbel: 'Number'
 			});
 
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.1Leading.number'),
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.1LeAding.number'),
 			{
-				category: 'Foo › 1 Leading',
-				label: 'Number'
-			});
-	});
-
-	test('settingKeyToDisplayFormat - with category', () => {
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar', 'foo'),
-			{
-				category: '',
-				label: 'Bar'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('disableligatures.ligatures', 'disableligatures'),
-			{
-				category: '',
-				label: 'Ligatures'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc', 'foo'),
-			{
-				category: 'Bar',
-				label: 'Etc'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('fooBar.etcSomething', 'foo'),
-			{
-				category: 'Foo Bar',
-				label: 'Etc Something'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc', 'foo/bar'),
-			{
-				category: '',
-				label: 'Etc'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('foo.bar.etc', 'something/foo'),
-			{
-				category: 'Bar',
-				label: 'Etc'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('bar.etc', 'something.bar'),
-			{
-				category: '',
-				label: 'Etc'
-			});
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('fooBar.etc', 'fooBar'),
-			{
-				category: '',
-				label: 'Etc'
-			});
-
-
-		assert.deepEqual(
-			settingKeyToDisplayFormat('fooBar.somethingElse.etc', 'fooBar'),
-			{
-				category: 'Something Else',
-				label: 'Etc'
+				cAtegory: 'Foo › 1 LeAding',
+				lAbel: 'Number'
 			});
 	});
 
-	test('settingKeyToDisplayFormat - known acronym/term', () => {
-		assert.deepEqual(
-			settingKeyToDisplayFormat('css.someCssSetting'),
+	test('settingKeyToDisplAyFormAt - with cAtegory', () => {
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.bAr', 'foo'),
 			{
-				category: 'CSS',
-				label: 'Some CSS Setting'
+				cAtegory: '',
+				lAbel: 'BAr'
 			});
 
-		assert.deepEqual(
-			settingKeyToDisplayFormat('powershell.somePowerShellSetting'),
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('disAbleligAtures.ligAtures', 'disAbleligAtures'),
 			{
-				category: 'PowerShell',
-				label: 'Some PowerShell Setting'
+				cAtegory: '',
+				lAbel: 'LigAtures'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.bAr.etc', 'foo'),
+			{
+				cAtegory: 'BAr',
+				lAbel: 'Etc'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('fooBAr.etcSomething', 'foo'),
+			{
+				cAtegory: 'Foo BAr',
+				lAbel: 'Etc Something'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.bAr.etc', 'foo/bAr'),
+			{
+				cAtegory: '',
+				lAbel: 'Etc'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('foo.bAr.etc', 'something/foo'),
+			{
+				cAtegory: 'BAr',
+				lAbel: 'Etc'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('bAr.etc', 'something.bAr'),
+			{
+				cAtegory: '',
+				lAbel: 'Etc'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('fooBAr.etc', 'fooBAr'),
+			{
+				cAtegory: '',
+				lAbel: 'Etc'
+			});
+
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('fooBAr.somethingElse.etc', 'fooBAr'),
+			{
+				cAtegory: 'Something Else',
+				lAbel: 'Etc'
 			});
 	});
 
-	test('parseQuery', () => {
-		function testParseQuery(input: string, expected: IParsedQuery) {
-			assert.deepEqual(
-				parseQuery(input),
+	test('settingKeyToDisplAyFormAt - known Acronym/term', () => {
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('css.someCssSetting'),
+			{
+				cAtegory: 'CSS',
+				lAbel: 'Some CSS Setting'
+			});
+
+		Assert.deepEquAl(
+			settingKeyToDisplAyFormAt('powershell.somePowerShellSetting'),
+			{
+				cAtegory: 'PowerShell',
+				lAbel: 'Some PowerShell Setting'
+			});
+	});
+
+	test('pArseQuery', () => {
+		function testPArseQuery(input: string, expected: IPArsedQuery) {
+			Assert.deepEquAl(
+				pArseQuery(input),
 				expected,
 				input
 			);
 		}
 
-		testParseQuery(
+		testPArseQuery(
 			'',
-			<IParsedQuery>{
-				tags: [],
+			<IPArsedQuery>{
+				tAgs: [],
 				extensionFilters: [],
 				query: ''
 			});
 
-		testParseQuery(
+		testPArseQuery(
 			'@modified',
-			<IParsedQuery>{
-				tags: ['modified'],
+			<IPArsedQuery>{
+				tAgs: ['modified'],
 				extensionFilters: [],
 				query: ''
 			});
 
-		testParseQuery(
-			'@tag:foo',
-			<IParsedQuery>{
-				tags: ['foo'],
+		testPArseQuery(
+			'@tAg:foo',
+			<IPArsedQuery>{
+				tAgs: ['foo'],
 				extensionFilters: [],
 				query: ''
 			});
 
-		testParseQuery(
+		testPArseQuery(
 			'@modified foo',
-			<IParsedQuery>{
-				tags: ['modified'],
+			<IPArsedQuery>{
+				tAgs: ['modified'],
 				extensionFilters: [],
 				query: 'foo'
 			});
 
-		testParseQuery(
-			'@tag:foo @modified',
-			<IParsedQuery>{
-				tags: ['foo', 'modified'],
+		testPArseQuery(
+			'@tAg:foo @modified',
+			<IPArsedQuery>{
+				tAgs: ['foo', 'modified'],
 				extensionFilters: [],
 				query: ''
 			});
 
-		testParseQuery(
-			'@tag:foo @modified my query',
-			<IParsedQuery>{
-				tags: ['foo', 'modified'],
+		testPArseQuery(
+			'@tAg:foo @modified my query',
+			<IPArsedQuery>{
+				tAgs: ['foo', 'modified'],
 				extensionFilters: [],
 				query: 'my query'
 			});
 
-		testParseQuery(
+		testPArseQuery(
 			'test @modified query',
-			<IParsedQuery>{
-				tags: ['modified'],
+			<IPArsedQuery>{
+				tAgs: ['modified'],
 				extensionFilters: [],
 				query: 'test  query'
 			});
 
-		testParseQuery(
+		testPArseQuery(
 			'test @modified',
-			<IParsedQuery>{
-				tags: ['modified'],
+			<IPArsedQuery>{
+				tAgs: ['modified'],
 				extensionFilters: [],
 				query: 'test'
 			});
 
-		testParseQuery(
-			'query has @ for some reason',
-			<IParsedQuery>{
-				tags: [],
+		testPArseQuery(
+			'query hAs @ for some reAson',
+			<IPArsedQuery>{
+				tAgs: [],
 				extensionFilters: [],
-				query: 'query has @ for some reason'
+				query: 'query hAs @ for some reAson'
 			});
 
-		testParseQuery(
+		testPArseQuery(
 			'@ext:github.vscode-pull-request-github',
-			<IParsedQuery>{
-				tags: [],
+			<IPArsedQuery>{
+				tAgs: [],
 				extensionFilters: ['github.vscode-pull-request-github'],
 				query: ''
 			});
 
-		testParseQuery(
+		testPArseQuery(
 			'@ext:github.vscode-pull-request-github,vscode.git',
-			<IParsedQuery>{
-				tags: [],
+			<IPArsedQuery>{
+				tAgs: [],
 				extensionFilters: ['github.vscode-pull-request-github', 'vscode.git'],
 				query: ''
 			});

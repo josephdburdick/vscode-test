@@ -1,413 +1,413 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { VSBuffer, bufferToReadable, readableToBuffer, bufferToStream, streamToBuffer, newWriteableBufferStream, bufferedStreamToBuffer } from 'vs/base/common/buffer';
-import { timeout } from 'vs/base/common/async';
-import { peekStream } from 'vs/base/common/stream';
+import * As Assert from 'Assert';
+import { VSBuffer, bufferToReAdAble, reAdAbleToBuffer, bufferToStreAm, streAmToBuffer, newWriteAbleBufferStreAm, bufferedStreAmToBuffer } from 'vs/bAse/common/buffer';
+import { timeout } from 'vs/bAse/common/Async';
+import { peekStreAm } from 'vs/bAse/common/streAm';
 
 suite('Buffer', () => {
 
 	test('issue #71993 - VSBuffer#toString returns numbers', () => {
-		const data = new Uint8Array([1, 2, 3, 'h'.charCodeAt(0), 'i'.charCodeAt(0), 4, 5]).buffer;
-		const buffer = VSBuffer.wrap(new Uint8Array(data, 3, 2));
-		assert.deepEqual(buffer.toString(), 'hi');
+		const dAtA = new Uint8ArrAy([1, 2, 3, 'h'.chArCodeAt(0), 'i'.chArCodeAt(0), 4, 5]).buffer;
+		const buffer = VSBuffer.wrAp(new Uint8ArrAy(dAtA, 3, 2));
+		Assert.deepEquAl(buffer.toString(), 'hi');
 	});
 
-	test('bufferToReadable / readableToBuffer', () => {
+	test('bufferToReAdAble / reAdAbleToBuffer', () => {
 		const content = 'Hello World';
-		const readable = bufferToReadable(VSBuffer.fromString(content));
+		const reAdAble = bufferToReAdAble(VSBuffer.fromString(content));
 
-		assert.equal(readableToBuffer(readable).toString(), content);
+		Assert.equAl(reAdAbleToBuffer(reAdAble).toString(), content);
 	});
 
-	test('bufferToStream / streamToBuffer', async () => {
+	test('bufferToStreAm / streAmToBuffer', Async () => {
 		const content = 'Hello World';
-		const stream = bufferToStream(VSBuffer.fromString(content));
+		const streAm = bufferToStreAm(VSBuffer.fromString(content));
 
-		assert.equal((await streamToBuffer(stream)).toString(), content);
+		Assert.equAl((AwAit streAmToBuffer(streAm)).toString(), content);
 	});
 
-	test('bufferedStreamToBuffer', async () => {
+	test('bufferedStreAmToBuffer', Async () => {
 		const content = 'Hello World';
-		const stream = await peekStream(bufferToStream(VSBuffer.fromString(content)), 1);
+		const streAm = AwAit peekStreAm(bufferToStreAm(VSBuffer.fromString(content)), 1);
 
-		assert.equal((await bufferedStreamToBuffer(stream)).toString(), content);
+		Assert.equAl((AwAit bufferedStreAmToBuffer(streAm)).toString(), content);
 	});
 
-	test('bufferWriteableStream - basics (no error)', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - bAsics (no error)', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
-		assert.equal(chunks.length, 2);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(chunks[1].toString(), 'World');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 0);
+		Assert.equAl(chunks.length, 2);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(chunks[1].toString(), 'World');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 0);
 	});
 
-	test('bufferWriteableStream - basics (error)', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - bAsics (error)', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(new Error());
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(new Error());
 
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 1);
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 1);
 	});
 
-	test('bufferWriteableStream - buffers data when no listener', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - buffers dAtA when no listener', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'HelloWorld');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 0);
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'HelloWorld');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 0);
 	});
 
-	test('bufferWriteableStream - buffers errors when no listener', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - buffers errors when no listener', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.error(new Error());
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.error(new Error());
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
-		stream.end();
+		streAm.end();
 
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 1);
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 1);
 	});
 
-	test('bufferWriteableStream - buffers end when no listener', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - buffers end when no listener', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'HelloWorld');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 0);
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'HelloWorld');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 0);
 	});
 
-	test('bufferWriteableStream - nothing happens after end()', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - nothing hAppens After end()', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
-		let dataCalledAfterEnd = false;
-		stream.on('data', data => {
-			dataCalledAfterEnd = true;
+		let dAtACAlledAfterEnd = fAlse;
+		streAm.on('dAtA', dAtA => {
+			dAtACAlledAfterEnd = true;
 		});
 
-		let errorCalledAfterEnd = false;
-		stream.on('error', error => {
-			errorCalledAfterEnd = true;
+		let errorCAlledAfterEnd = fAlse;
+		streAm.on('error', error => {
+			errorCAlledAfterEnd = true;
 		});
 
-		let endCalledAfterEnd = false;
-		stream.on('end', () => {
-			endCalledAfterEnd = true;
+		let endCAlledAfterEnd = fAlse;
+		streAm.on('end', () => {
+			endCAlledAfterEnd = true;
 		});
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.error(new Error());
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.error(new Error());
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
-		assert.equal(dataCalledAfterEnd, false);
-		assert.equal(errorCalledAfterEnd, false);
-		assert.equal(endCalledAfterEnd, false);
+		Assert.equAl(dAtACAlledAfterEnd, fAlse);
+		Assert.equAl(errorCAlledAfterEnd, fAlse);
+		Assert.equAl(endCAlledAfterEnd, fAlse);
 
-		assert.equal(chunks.length, 2);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(chunks[1].toString(), 'World');
+		Assert.equAl(chunks.length, 2);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(chunks[1].toString(), 'World');
 	});
 
-	test('bufferWriteableStream - pause/resume (simple)', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - pAuse/resume (simple)', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
-			ended = true;
-		});
-
-		let errors: Error[] = [];
-		stream.on('error', error => {
-			errors.push(error);
-		});
-
-		stream.pause();
-
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
-
-		assert.equal(chunks.length, 0);
-		assert.equal(errors.length, 0);
-		assert.equal(ended, false);
-
-		stream.resume();
-
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'HelloWorld');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 0);
-	});
-
-	test('bufferWriteableStream - pause/resume (pause after first write)', async () => {
-		const stream = newWriteableBufferStream();
-
-		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
-		});
-
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
+		streAm.pAuse();
 
-		stream.pause();
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		Assert.equAl(chunks.length, 0);
+		Assert.equAl(errors.length, 0);
+		Assert.equAl(ended, fAlse);
 
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(errors.length, 0);
-		assert.equal(ended, false);
+		streAm.resume();
 
-		stream.resume();
-
-		assert.equal(chunks.length, 2);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(chunks[1].toString(), 'World');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 0);
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'HelloWorld');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 0);
 	});
 
-	test('bufferWriteableStream - pause/resume (error)', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - pAuse/resume (pAuse After first write)', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		stream.pause();
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(new Error());
+		streAm.pAuse();
 
-		assert.equal(chunks.length, 0);
-		assert.equal(ended, false);
-		assert.equal(errors.length, 0);
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
 
-		stream.resume();
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(errors.length, 0);
+		Assert.equAl(ended, fAlse);
 
-		assert.equal(chunks.length, 1);
-		assert.equal(chunks[0].toString(), 'Hello');
-		assert.equal(ended, true);
-		assert.equal(errors.length, 1);
+		streAm.resume();
+
+		Assert.equAl(chunks.length, 2);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(chunks[1].toString(), 'World');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 0);
 	});
 
-	test('bufferWriteableStream - destroy', async () => {
-		const stream = newWriteableBufferStream();
+	test('bufferWriteAbleStreAm - pAuse/resume (error)', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
 
 		let chunks: VSBuffer[] = [];
-		stream.on('data', data => {
-			chunks.push(data);
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
 		});
 
-		let ended = false;
-		stream.on('end', () => {
+		let ended = fAlse;
+		streAm.on('end', () => {
 			ended = true;
 		});
 
 		let errors: Error[] = [];
-		stream.on('error', error => {
+		streAm.on('error', error => {
 			errors.push(error);
 		});
 
-		stream.destroy();
+		streAm.pAuse();
 
-		await timeout(0);
-		stream.write(VSBuffer.fromString('Hello'));
-		await timeout(0);
-		stream.end(VSBuffer.fromString('World'));
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(new Error());
 
-		assert.equal(chunks.length, 0);
-		assert.equal(ended, false);
-		assert.equal(errors.length, 0);
+		Assert.equAl(chunks.length, 0);
+		Assert.equAl(ended, fAlse);
+		Assert.equAl(errors.length, 0);
+
+		streAm.resume();
+
+		Assert.equAl(chunks.length, 1);
+		Assert.equAl(chunks[0].toString(), 'Hello');
+		Assert.equAl(ended, true);
+		Assert.equAl(errors.length, 1);
 	});
 
-	test('Performance issue with VSBuffer#slice #76076', function () {
-		// Buffer#slice creates a view
+	test('bufferWriteAbleStreAm - destroy', Async () => {
+		const streAm = newWriteAbleBufferStreAm();
+
+		let chunks: VSBuffer[] = [];
+		streAm.on('dAtA', dAtA => {
+			chunks.push(dAtA);
+		});
+
+		let ended = fAlse;
+		streAm.on('end', () => {
+			ended = true;
+		});
+
+		let errors: Error[] = [];
+		streAm.on('error', error => {
+			errors.push(error);
+		});
+
+		streAm.destroy();
+
+		AwAit timeout(0);
+		streAm.write(VSBuffer.fromString('Hello'));
+		AwAit timeout(0);
+		streAm.end(VSBuffer.fromString('World'));
+
+		Assert.equAl(chunks.length, 0);
+		Assert.equAl(ended, fAlse);
+		Assert.equAl(errors.length, 0);
+	});
+
+	test('PerformAnce issue with VSBuffer#slice #76076', function () {
+		// Buffer#slice creAtes A view
 		{
 			const buff = Buffer.from([10, 20, 30, 40]);
 			const b2 = buff.slice(1, 3);
-			assert.equal(buff[1], 20);
-			assert.equal(b2[0], 20);
+			Assert.equAl(buff[1], 20);
+			Assert.equAl(b2[0], 20);
 
 			buff[1] = 17; // modify buff AND b2
-			assert.equal(buff[1], 17);
-			assert.equal(b2[0], 17);
+			Assert.equAl(buff[1], 17);
+			Assert.equAl(b2[0], 17);
 		}
 
-		// TypedArray#slice creates a copy
+		// TypedArrAy#slice creAtes A copy
 		{
-			const unit = new Uint8Array([10, 20, 30, 40]);
+			const unit = new Uint8ArrAy([10, 20, 30, 40]);
 			const u2 = unit.slice(1, 3);
-			assert.equal(unit[1], 20);
-			assert.equal(u2[0], 20);
+			Assert.equAl(unit[1], 20);
+			Assert.equAl(u2[0], 20);
 
 			unit[1] = 17; // modify unit, NOT b2
-			assert.equal(unit[1], 17);
-			assert.equal(u2[0], 20);
+			Assert.equAl(unit[1], 17);
+			Assert.equAl(u2[0], 20);
 		}
 
-		// TypedArray#subarray creates a view
+		// TypedArrAy#subArrAy creAtes A view
 		{
-			const unit = new Uint8Array([10, 20, 30, 40]);
-			const u2 = unit.subarray(1, 3);
-			assert.equal(unit[1], 20);
-			assert.equal(u2[0], 20);
+			const unit = new Uint8ArrAy([10, 20, 30, 40]);
+			const u2 = unit.subArrAy(1, 3);
+			Assert.equAl(unit[1], 20);
+			Assert.equAl(u2[0], 20);
 
 			unit[1] = 17; // modify unit AND b2
-			assert.equal(unit[1], 17);
-			assert.equal(u2[0], 17);
+			Assert.equAl(unit[1], 17);
+			Assert.equAl(u2[0], 17);
 		}
 	});
 });

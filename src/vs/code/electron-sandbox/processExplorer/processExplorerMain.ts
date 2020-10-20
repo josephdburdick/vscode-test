@@ -1,390 +1,390 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/processExplorer';
-import 'vs/base/browser/ui/codicons/codiconStyles'; // make sure codicon css is loaded
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { NativeHostService } from 'vs/platform/native/electron-sandbox/nativeHostService';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { localize } from 'vs/nls';
-import { ProcessExplorerStyles, ProcessExplorerData } from 'vs/platform/issue/common/issue';
-import { applyZoom, zoomIn, zoomOut } from 'vs/platform/windows/electron-sandbox/window';
-import { IContextMenuItem } from 'vs/base/parts/contextmenu/common/contextmenu';
-import { popup } from 'vs/base/parts/contextmenu/electron-sandbox/contextmenu';
-import { ProcessItem } from 'vs/base/common/processes';
-import { addDisposableListener, $ } from 'vs/base/browser/dom';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { isRemoteDiagnosticError, IRemoteDiagnosticError } from 'vs/platform/diagnostics/common/diagnostics';
-import { MainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { CodiconLabel } from 'vs/base/browser/ui/codicons/codiconLabel';
+import 'vs/css!./mediA/processExplorer';
+import 'vs/bAse/browser/ui/codicons/codiconStyles'; // mAke sure codicon css is loAded
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { NAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtiveHostService';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { locAlize } from 'vs/nls';
+import { ProcessExplorerStyles, ProcessExplorerDAtA } from 'vs/plAtform/issue/common/issue';
+import { ApplyZoom, zoomIn, zoomOut } from 'vs/plAtform/windows/electron-sAndbox/window';
+import { IContextMenuItem } from 'vs/bAse/pArts/contextmenu/common/contextmenu';
+import { popup } from 'vs/bAse/pArts/contextmenu/electron-sAndbox/contextmenu';
+import { ProcessItem } from 'vs/bAse/common/processes';
+import { AddDisposAbleListener, $ } from 'vs/bAse/browser/dom';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isRemoteDiAgnosticError, IRemoteDiAgnosticError } from 'vs/plAtform/diAgnostics/common/diAgnostics';
+import { MAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { CodiconLAbel } from 'vs/bAse/browser/ui/codicons/codiconLAbel';
 
 const DEBUG_FLAGS_PATTERN = /\s--(inspect|debug)(-brk|port)?=(\d+)?/;
 const DEBUG_PORT_PATTERN = /\s--(inspect|debug)-port=(\d+)/;
 
-interface FormattedProcessItem {
+interfAce FormAttedProcessItem {
 	cpu: number;
 	memory: number;
 	pid: string;
-	name: string;
-	formattedName: string;
+	nAme: string;
+	formAttedNAme: string;
 	cmd: string;
 }
 
-class ProcessExplorer {
-	private lastRequestTime: number;
+clAss ProcessExplorer {
+	privAte lAstRequestTime: number;
 
-	private collapsedStateCache: Map<string, boolean> = new Map<string, boolean>();
+	privAte collApsedStAteCAche: MAp<string, booleAn> = new MAp<string, booleAn>();
 
-	private mapPidToWindowTitle = new Map<number, string>();
+	privAte mApPidToWindowTitle = new MAp<number, string>();
 
-	private listeners = new DisposableStore();
+	privAte listeners = new DisposAbleStore();
 
-	private nativeHostService: INativeHostService;
+	privAte nAtiveHostService: INAtiveHostService;
 
-	constructor(windowId: number, private data: ProcessExplorerData) {
-		const mainProcessService = new MainProcessService(windowId);
-		this.nativeHostService = new NativeHostService(windowId, mainProcessService) as INativeHostService;
+	constructor(windowId: number, privAte dAtA: ProcessExplorerDAtA) {
+		const mAinProcessService = new MAinProcessService(windowId);
+		this.nAtiveHostService = new NAtiveHostService(windowId, mAinProcessService) As INAtiveHostService;
 
-		this.applyStyles(data.styles);
+		this.ApplyStyles(dAtA.styles);
 
-		// Map window process pids to titles, annotate process names with this when rendering to distinguish between them
-		ipcRenderer.on('vscode:windowsInfoResponse', (event: unknown, windows: any[]) => {
-			this.mapPidToWindowTitle = new Map<number, string>();
-			windows.forEach(window => this.mapPidToWindowTitle.set(window.pid, window.title));
+		// MAp window process pids to titles, AnnotAte process nAmes with this when rendering to distinguish between them
+		ipcRenderer.on('vscode:windowsInfoResponse', (event: unknown, windows: Any[]) => {
+			this.mApPidToWindowTitle = new MAp<number, string>();
+			windows.forEAch(window => this.mApPidToWindowTitle.set(window.pid, window.title));
 		});
 
-		ipcRenderer.on('vscode:listProcessesResponse', (event: unknown, processRoots: [{ name: string, rootProcess: ProcessItem | IRemoteDiagnosticError }]) => {
-			this.updateProcessInfo(processRoots);
+		ipcRenderer.on('vscode:listProcessesResponse', (event: unknown, processRoots: [{ nAme: string, rootProcess: ProcessItem | IRemoteDiAgnosticError }]) => {
+			this.updAteProcessInfo(processRoots);
 			this.requestProcessList(0);
 		});
 
-		this.lastRequestTime = Date.now();
+		this.lAstRequestTime = DAte.now();
 		ipcRenderer.send('vscode:windowsInfoRequest');
 		ipcRenderer.send('vscode:listProcesses');
 	}
 
-	private getProcessList(rootProcess: ProcessItem, isLocal: boolean, totalMem: number): FormattedProcessItem[] {
-		const processes: FormattedProcessItem[] = [];
+	privAte getProcessList(rootProcess: ProcessItem, isLocAl: booleAn, totAlMem: number): FormAttedProcessItem[] {
+		const processes: FormAttedProcessItem[] = [];
 
 		if (rootProcess) {
-			this.getProcessItem(processes, rootProcess, 0, isLocal, totalMem);
+			this.getProcessItem(processes, rootProcess, 0, isLocAl, totAlMem);
 		}
 
 		return processes;
 	}
 
-	private getProcessItem(processes: FormattedProcessItem[], item: ProcessItem, indent: number, isLocal: boolean, totalMem: number): void {
+	privAte getProcessItem(processes: FormAttedProcessItem[], item: ProcessItem, indent: number, isLocAl: booleAn, totAlMem: number): void {
 		const isRoot = (indent === 0);
 
 		const MB = 1024 * 1024;
 
-		let name = item.name;
+		let nAme = item.nAme;
 		if (isRoot) {
-			name = isLocal ? `${this.data.applicationName} main` : 'remote agent';
+			nAme = isLocAl ? `${this.dAtA.ApplicAtionNAme} mAin` : 'remote Agent';
 		}
 
-		if (name === 'window') {
-			const windowTitle = this.mapPidToWindowTitle.get(item.pid);
-			name = windowTitle !== undefined ? `${name} (${this.mapPidToWindowTitle.get(item.pid)})` : name;
+		if (nAme === 'window') {
+			const windowTitle = this.mApPidToWindowTitle.get(item.pid);
+			nAme = windowTitle !== undefined ? `${nAme} (${this.mApPidToWindowTitle.get(item.pid)})` : nAme;
 		}
 
-		// Format name with indent
-		const formattedName = isRoot ? name : `${'    '.repeat(indent)} ${name}`;
-		const memory = this.data.platform === 'win32' ? item.mem : (totalMem * (item.mem / 100));
+		// FormAt nAme with indent
+		const formAttedNAme = isRoot ? nAme : `${'    '.repeAt(indent)} ${nAme}`;
+		const memory = this.dAtA.plAtform === 'win32' ? item.mem : (totAlMem * (item.mem / 100));
 		processes.push({
-			cpu: item.load,
+			cpu: item.loAd,
 			memory: (memory / MB),
 			pid: item.pid.toFixed(0),
-			name,
-			formattedName,
+			nAme,
+			formAttedNAme,
 			cmd: item.cmd
 		});
 
-		// Recurse into children if any
-		if (Array.isArray(item.children)) {
-			item.children.forEach(child => {
+		// Recurse into children if Any
+		if (ArrAy.isArrAy(item.children)) {
+			item.children.forEAch(child => {
 				if (child) {
-					this.getProcessItem(processes, child, indent + 1, isLocal, totalMem);
+					this.getProcessItem(processes, child, indent + 1, isLocAl, totAlMem);
 				}
 			});
 		}
 	}
 
-	private isDebuggable(cmd: string): boolean {
-		const matches = DEBUG_FLAGS_PATTERN.exec(cmd);
-		return (matches && matches.length >= 2) || cmd.indexOf('node ') >= 0 || cmd.indexOf('node.exe') >= 0;
+	privAte isDebuggAble(cmd: string): booleAn {
+		const mAtches = DEBUG_FLAGS_PATTERN.exec(cmd);
+		return (mAtches && mAtches.length >= 2) || cmd.indexOf('node ') >= 0 || cmd.indexOf('node.exe') >= 0;
 	}
 
-	private attachTo(item: FormattedProcessItem) {
-		const config: any = {
+	privAte AttAchTo(item: FormAttedProcessItem) {
+		const config: Any = {
 			type: 'node',
-			request: 'attach',
-			name: `process ${item.pid}`
+			request: 'AttAch',
+			nAme: `process ${item.pid}`
 		};
 
-		let matches = DEBUG_FLAGS_PATTERN.exec(item.cmd);
-		if (matches && matches.length >= 2) {
-			// attach via port
-			if (matches.length === 4 && matches[3]) {
-				config.port = parseInt(matches[3]);
+		let mAtches = DEBUG_FLAGS_PATTERN.exec(item.cmd);
+		if (mAtches && mAtches.length >= 2) {
+			// AttAch viA port
+			if (mAtches.length === 4 && mAtches[3]) {
+				config.port = pArseInt(mAtches[3]);
 			}
-			config.protocol = matches[1] === 'debug' ? 'legacy' : 'inspector';
+			config.protocol = mAtches[1] === 'debug' ? 'legAcy' : 'inspector';
 		} else {
-			// no port -> try to attach via pid (send SIGUSR1)
+			// no port -> try to AttAch viA pid (send SIGUSR1)
 			config.processId = String(item.pid);
 		}
 
-		// a debug-port=n or inspect-port=n overrides the port
-		matches = DEBUG_PORT_PATTERN.exec(item.cmd);
-		if (matches && matches.length === 3) {
+		// A debug-port=n or inspect-port=n overrides the port
+		mAtches = DEBUG_PORT_PATTERN.exec(item.cmd);
+		if (mAtches && mAtches.length === 3) {
 			// override port
-			config.port = parseInt(matches[2]);
+			config.port = pArseInt(mAtches[2]);
 		}
 
-		ipcRenderer.send('vscode:workbenchCommand', { id: 'debug.startFromConfig', from: 'processExplorer', args: [config] });
+		ipcRenderer.send('vscode:workbenchCommAnd', { id: 'debug.stArtFromConfig', from: 'processExplorer', Args: [config] });
 	}
 
-	private getProcessIdWithHighestProperty(processList: any[], propertyName: string) {
-		let max = 0;
-		let maxProcessId;
-		processList.forEach(process => {
-			if (process[propertyName] > max) {
-				max = process[propertyName];
-				maxProcessId = process.pid;
+	privAte getProcessIdWithHighestProperty(processList: Any[], propertyNAme: string) {
+		let mAx = 0;
+		let mAxProcessId;
+		processList.forEAch(process => {
+			if (process[propertyNAme] > mAx) {
+				mAx = process[propertyNAme];
+				mAxProcessId = process.pid;
 			}
 		});
 
-		return maxProcessId;
+		return mAxProcessId;
 	}
 
-	private updateSectionCollapsedState(shouldExpand: boolean, body: HTMLElement, twistie: CodiconLabel, sectionName: string) {
-		if (shouldExpand) {
-			body.classList.remove('hidden');
-			this.collapsedStateCache.set(sectionName, false);
+	privAte updAteSectionCollApsedStAte(shouldExpAnd: booleAn, body: HTMLElement, twistie: CodiconLAbel, sectionNAme: string) {
+		if (shouldExpAnd) {
+			body.clAssList.remove('hidden');
+			this.collApsedStAteCAche.set(sectionNAme, fAlse);
 			twistie.text = '$(chevron-down)';
 		} else {
-			body.classList.add('hidden');
-			this.collapsedStateCache.set(sectionName, true);
+			body.clAssList.Add('hidden');
+			this.collApsedStAteCAche.set(sectionNAme, true);
 			twistie.text = '$(chevron-right)';
 		}
 	}
 
-	private renderProcessFetchError(sectionName: string, errorMessage: string) {
-		const container = document.getElementById('process-list');
-		if (!container) {
+	privAte renderProcessFetchError(sectionNAme: string, errorMessAge: string) {
+		const contAiner = document.getElementById('process-list');
+		if (!contAiner) {
 			return;
 		}
 
-		const body = document.createElement('tbody');
+		const body = document.creAteElement('tbody');
 
-		this.renderProcessGroupHeader(sectionName, body, container);
+		this.renderProcessGroupHeAder(sectionNAme, body, contAiner);
 
-		const errorRow = document.createElement('tr');
-		const data = document.createElement('td');
-		data.textContent = errorMessage;
-		data.className = 'error';
-		data.colSpan = 4;
-		errorRow.appendChild(data);
+		const errorRow = document.creAteElement('tr');
+		const dAtA = document.creAteElement('td');
+		dAtA.textContent = errorMessAge;
+		dAtA.clAssNAme = 'error';
+		dAtA.colSpAn = 4;
+		errorRow.AppendChild(dAtA);
 
-		body.appendChild(errorRow);
-		container.appendChild(body);
+		body.AppendChild(errorRow);
+		contAiner.AppendChild(body);
 	}
 
-	private renderProcessGroupHeader(sectionName: string, body: HTMLElement, container: HTMLElement) {
-		const headerRow = document.createElement('tr');
+	privAte renderProcessGroupHeAder(sectionNAme: string, body: HTMLElement, contAiner: HTMLElement) {
+		const heAderRow = document.creAteElement('tr');
 
-		const headerData = document.createElement('td');
-		headerData.colSpan = 4;
-		headerRow.appendChild(headerData);
+		const heAderDAtA = document.creAteElement('td');
+		heAderDAtA.colSpAn = 4;
+		heAderRow.AppendChild(heAderDAtA);
 
-		const headerContainer = document.createElement('div');
-		headerContainer.className = 'header';
-		headerData.appendChild(headerContainer);
+		const heAderContAiner = document.creAteElement('div');
+		heAderContAiner.clAssNAme = 'heAder';
+		heAderDAtA.AppendChild(heAderContAiner);
 
-		const twistieContainer = document.createElement('div');
-		const twistieCodicon = new CodiconLabel(twistieContainer);
-		this.updateSectionCollapsedState(!this.collapsedStateCache.get(sectionName), body, twistieCodicon, sectionName);
-		headerContainer.appendChild(twistieContainer);
+		const twistieContAiner = document.creAteElement('div');
+		const twistieCodicon = new CodiconLAbel(twistieContAiner);
+		this.updAteSectionCollApsedStAte(!this.collApsedStAteCAche.get(sectionNAme), body, twistieCodicon, sectionNAme);
+		heAderContAiner.AppendChild(twistieContAiner);
 
-		const headerLabel = document.createElement('span');
-		headerLabel.textContent = sectionName;
-		headerContainer.appendChild(headerLabel);
+		const heAderLAbel = document.creAteElement('spAn');
+		heAderLAbel.textContent = sectionNAme;
+		heAderContAiner.AppendChild(heAderLAbel);
 
-		this.listeners.add(addDisposableListener(headerData, 'click', (e) => {
-			const isHidden = body.classList.contains('hidden');
-			this.updateSectionCollapsedState(isHidden, body, twistieCodicon, sectionName);
+		this.listeners.Add(AddDisposAbleListener(heAderDAtA, 'click', (e) => {
+			const isHidden = body.clAssList.contAins('hidden');
+			this.updAteSectionCollApsedStAte(isHidden, body, twistieCodicon, sectionNAme);
 		}));
 
-		container.appendChild(headerRow);
+		contAiner.AppendChild(heAderRow);
 	}
 
-	private renderTableSection(sectionName: string, processList: FormattedProcessItem[], renderManySections: boolean, sectionIsLocal: boolean): void {
-		const container = document.getElementById('process-list');
-		if (!container) {
+	privAte renderTAbleSection(sectionNAme: string, processList: FormAttedProcessItem[], renderMAnySections: booleAn, sectionIsLocAl: booleAn): void {
+		const contAiner = document.getElementById('process-list');
+		if (!contAiner) {
 			return;
 		}
 
 		const highestCPUProcess = this.getProcessIdWithHighestProperty(processList, 'cpu');
 		const highestMemoryProcess = this.getProcessIdWithHighestProperty(processList, 'memory');
 
-		const body = document.createElement('tbody');
+		const body = document.creAteElement('tbody');
 
-		if (renderManySections) {
-			this.renderProcessGroupHeader(sectionName, body, container);
+		if (renderMAnySections) {
+			this.renderProcessGroupHeAder(sectionNAme, body, contAiner);
 		}
 
-		processList.forEach(p => {
-			const row = document.createElement('tr');
+		processList.forEAch(p => {
+			const row = document.creAteElement('tr');
 			row.id = p.pid.toString();
 
-			const cpu = document.createElement('td');
+			const cpu = document.creAteElement('td');
 			p.pid === highestCPUProcess
-				? cpu.classList.add('centered', 'highest')
-				: cpu.classList.add('centered');
+				? cpu.clAssList.Add('centered', 'highest')
+				: cpu.clAssList.Add('centered');
 			cpu.textContent = p.cpu.toFixed(0);
 
-			const memory = document.createElement('td');
+			const memory = document.creAteElement('td');
 			p.pid === highestMemoryProcess
-				? memory.classList.add('centered', 'highest')
-				: memory.classList.add('centered');
+				? memory.clAssList.Add('centered', 'highest')
+				: memory.clAssList.Add('centered');
 			memory.textContent = p.memory.toFixed(0);
 
-			const pid = document.createElement('td');
-			pid.classList.add('centered');
+			const pid = document.creAteElement('td');
+			pid.clAssList.Add('centered');
 			pid.textContent = p.pid;
 
-			const name = document.createElement('th');
-			name.scope = 'row';
-			name.classList.add('data');
-			name.title = p.cmd;
-			name.textContent = p.formattedName;
+			const nAme = document.creAteElement('th');
+			nAme.scope = 'row';
+			nAme.clAssList.Add('dAtA');
+			nAme.title = p.cmd;
+			nAme.textContent = p.formAttedNAme;
 
-			row.append(cpu, memory, pid, name);
+			row.Append(cpu, memory, pid, nAme);
 
-			this.listeners.add(addDisposableListener(row, 'contextmenu', (e) => {
-				this.showContextMenu(e, p, sectionIsLocal);
+			this.listeners.Add(AddDisposAbleListener(row, 'contextmenu', (e) => {
+				this.showContextMenu(e, p, sectionIsLocAl);
 			}));
 
-			body.appendChild(row);
+			body.AppendChild(row);
 		});
 
-		container.appendChild(body);
+		contAiner.AppendChild(body);
 	}
 
-	private async updateProcessInfo(processLists: [{ name: string, rootProcess: ProcessItem | IRemoteDiagnosticError }]): Promise<void> {
-		const container = document.getElementById('process-list');
-		if (!container) {
+	privAte Async updAteProcessInfo(processLists: [{ nAme: string, rootProcess: ProcessItem | IRemoteDiAgnosticError }]): Promise<void> {
+		const contAiner = document.getElementById('process-list');
+		if (!contAiner) {
 			return;
 		}
 
-		container.innerText = '';
-		this.listeners.clear();
+		contAiner.innerText = '';
+		this.listeners.cleAr();
 
-		const tableHead = $('thead', undefined);
+		const tAbleHeAd = $('theAd', undefined);
 		const row = $('tr');
-		tableHead.append(row);
+		tAbleHeAd.Append(row);
 
-		row.append($('th.cpu', { scope: 'col' }, localize('cpu', "CPU %")));
-		row.append($('th.memory', { scope: 'col' }, localize('memory', "Memory (MB)")));
-		row.append($('th.pid', { scope: 'col' }, localize('pid', "PID")));
-		row.append($('th.nameLabel', { scope: 'col' }, localize('name', "Name")));
+		row.Append($('th.cpu', { scope: 'col' }, locAlize('cpu', "CPU %")));
+		row.Append($('th.memory', { scope: 'col' }, locAlize('memory', "Memory (MB)")));
+		row.Append($('th.pid', { scope: 'col' }, locAlize('pid', "PID")));
+		row.Append($('th.nAmeLAbel', { scope: 'col' }, locAlize('nAme', "NAme")));
 
-		container.append(tableHead);
+		contAiner.Append(tAbleHeAd);
 
-		const hasMultipleMachines = Object.keys(processLists).length > 1;
-		const { totalmem } = await this.nativeHostService.getOSStatistics();
-		processLists.forEach((remote, i) => {
-			const isLocal = i === 0;
-			if (isRemoteDiagnosticError(remote.rootProcess)) {
-				this.renderProcessFetchError(remote.name, remote.rootProcess.errorMessage);
+		const hAsMultipleMAchines = Object.keys(processLists).length > 1;
+		const { totAlmem } = AwAit this.nAtiveHostService.getOSStAtistics();
+		processLists.forEAch((remote, i) => {
+			const isLocAl = i === 0;
+			if (isRemoteDiAgnosticError(remote.rootProcess)) {
+				this.renderProcessFetchError(remote.nAme, remote.rootProcess.errorMessAge);
 			} else {
-				this.renderTableSection(remote.name, this.getProcessList(remote.rootProcess, isLocal, totalmem), hasMultipleMachines, isLocal);
+				this.renderTAbleSection(remote.nAme, this.getProcessList(remote.rootProcess, isLocAl, totAlmem), hAsMultipleMAchines, isLocAl);
 			}
 		});
 	}
 
-	private applyStyles(styles: ProcessExplorerStyles): void {
-		const styleTag = document.createElement('style');
+	privAte ApplyStyles(styles: ProcessExplorerStyles): void {
+		const styleTAg = document.creAteElement('style');
 		const content: string[] = [];
 
-		if (styles.hoverBackground) {
-			content.push(`tbody > tr:hover, table > tr:hover  { background-color: ${styles.hoverBackground}; }`);
+		if (styles.hoverBAckground) {
+			content.push(`tbody > tr:hover, tAble > tr:hover  { bAckground-color: ${styles.hoverBAckground}; }`);
 		}
 
 		if (styles.hoverForeground) {
-			content.push(`tbody > tr:hover, table > tr:hover { color: ${styles.hoverForeground}; }`);
+			content.push(`tbody > tr:hover, tAble > tr:hover { color: ${styles.hoverForeground}; }`);
 		}
 
 		if (styles.highlightForeground) {
 			content.push(`.highest { color: ${styles.highlightForeground}; }`);
 		}
 
-		styleTag.textContent = content.join('\n');
-		if (document.head) {
-			document.head.appendChild(styleTag);
+		styleTAg.textContent = content.join('\n');
+		if (document.heAd) {
+			document.heAd.AppendChild(styleTAg);
 		}
 		if (styles.color) {
 			document.body.style.color = styles.color;
 		}
 	}
 
-	private showContextMenu(e: MouseEvent, item: FormattedProcessItem, isLocal: boolean) {
-		e.preventDefault();
+	privAte showContextMenu(e: MouseEvent, item: FormAttedProcessItem, isLocAl: booleAn) {
+		e.preventDefAult();
 
 		const items: IContextMenuItem[] = [];
 		const pid = Number(item.pid);
 
-		if (isLocal) {
+		if (isLocAl) {
 			items.push({
-				label: localize('killProcess', "Kill Process"),
+				lAbel: locAlize('killProcess', "Kill Process"),
 				click: () => {
-					this.nativeHostService.killProcess(pid, 'SIGTERM');
+					this.nAtiveHostService.killProcess(pid, 'SIGTERM');
 				}
 			});
 
 			items.push({
-				label: localize('forceKillProcess', "Force Kill Process"),
+				lAbel: locAlize('forceKillProcess', "Force Kill Process"),
 				click: () => {
-					this.nativeHostService.killProcess(pid, 'SIGKILL');
+					this.nAtiveHostService.killProcess(pid, 'SIGKILL');
 				}
 			});
 
 			items.push({
-				type: 'separator'
+				type: 'sepArAtor'
 			});
 		}
 
 		items.push({
-			label: localize('copy', "Copy"),
+			lAbel: locAlize('copy', "Copy"),
 			click: () => {
 				const row = document.getElementById(pid.toString());
 				if (row) {
-					this.nativeHostService.writeClipboardText(row.innerText);
+					this.nAtiveHostService.writeClipboArdText(row.innerText);
 				}
 			}
 		});
 
 		items.push({
-			label: localize('copyAll', "Copy All"),
+			lAbel: locAlize('copyAll', "Copy All"),
 			click: () => {
 				const processList = document.getElementById('process-list');
 				if (processList) {
-					this.nativeHostService.writeClipboardText(processList.innerText);
+					this.nAtiveHostService.writeClipboArdText(processList.innerText);
 				}
 			}
 		});
 
-		if (item && isLocal && this.isDebuggable(item.cmd)) {
+		if (item && isLocAl && this.isDebuggAble(item.cmd)) {
 			items.push({
-				type: 'separator'
+				type: 'sepArAtor'
 			});
 
 			items.push({
-				label: localize('debug', "Debug"),
+				lAbel: locAlize('debug', "Debug"),
 				click: () => {
-					this.attachTo(item);
+					this.AttAchTo(item);
 				}
 			});
 		}
@@ -392,18 +392,18 @@ class ProcessExplorer {
 		popup(items);
 	}
 
-	private requestProcessList(totalWaitTime: number): void {
+	privAte requestProcessList(totAlWAitTime: number): void {
 		setTimeout(() => {
-			const nextRequestTime = Date.now();
-			const waited = totalWaitTime + nextRequestTime - this.lastRequestTime;
-			this.lastRequestTime = nextRequestTime;
+			const nextRequestTime = DAte.now();
+			const wAited = totAlWAitTime + nextRequestTime - this.lAstRequestTime;
+			this.lAstRequestTime = nextRequestTime;
 
-			// Wait at least a second between requests.
-			if (waited > 1000) {
+			// WAit At leAst A second between requests.
+			if (wAited > 1000) {
 				ipcRenderer.send('vscode:windowsInfoRequest');
 				ipcRenderer.send('vscode:listProcesses');
 			} else {
-				this.requestProcessList(waited);
+				this.requestProcessList(wAited);
 			}
 		}, 200);
 	}
@@ -415,20 +415,20 @@ class ProcessExplorer {
 
 
 
-export function startup(windowId: number, data: ProcessExplorerData): void {
-	const platformClass = data.platform === 'win32' ? 'windows' : data.platform === 'linux' ? 'linux' : 'mac';
-	document.body.classList.add(platformClass); // used by our fonts
-	applyZoom(data.zoomLevel);
+export function stArtup(windowId: number, dAtA: ProcessExplorerDAtA): void {
+	const plAtformClAss = dAtA.plAtform === 'win32' ? 'windows' : dAtA.plAtform === 'linux' ? 'linux' : 'mAc';
+	document.body.clAssList.Add(plAtformClAss); // used by our fonts
+	ApplyZoom(dAtA.zoomLevel);
 
-	const processExplorer = new ProcessExplorer(windowId, data);
+	const processExplorer = new ProcessExplorer(windowId, dAtA);
 
-	document.onkeydown = (e: KeyboardEvent) => {
-		const cmdOrCtrlKey = data.platform === 'darwin' ? e.metaKey : e.ctrlKey;
+	document.onkeydown = (e: KeyboArdEvent) => {
+		const cmdOrCtrlKey = dAtA.plAtform === 'dArwin' ? e.metAKey : e.ctrlKey;
 
 		// Cmd/Ctrl + w closes issue window
 		if (cmdOrCtrlKey && e.keyCode === 87) {
-			e.stopPropagation();
-			e.preventDefault();
+			e.stopPropAgAtion();
+			e.preventDefAult();
 
 			processExplorer.dispose();
 			ipcRenderer.send('vscode:closeProcessExplorer');

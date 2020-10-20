@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
+const pAth = require('pAth');
 const fs = require('fs');
 const child_process = require('child_process');
 
-const generatedNote = `//
-// **NOTE**: Do not edit directly! This file is generated using \`npm run import-typescript\`
+const generAtedNote = `//
+// **NOTE**: Do not edit directly! This file is generAted using \`npm run import-typescript\`
 //
 `;
 
-const TYPESCRIPT_LIB_SOURCE = path.join(__dirname, '../../node_modules/typescript/lib');
-const TYPESCRIPT_LIB_DESTINATION = path.join(__dirname, '../server/build');
+const TYPESCRIPT_LIB_SOURCE = pAth.join(__dirnAme, '../../node_modules/typescript/lib');
+const TYPESCRIPT_LIB_DESTINATION = pAth.join(__dirnAme, '../server/build');
 
 (function () {
 	try {
-		fs.statSync(TYPESCRIPT_LIB_DESTINATION);
-	} catch (err) {
+		fs.stAtSync(TYPESCRIPT_LIB_DESTINATION);
+	} cAtch (err) {
 		fs.mkdirSync(TYPESCRIPT_LIB_DESTINATION);
 	}
 	importLibs('es6');
 })();
 
 
-function importLibs(startLib) {
-	function getFileName(name) {
-		return (name === '' ? 'lib.d.ts' : `lib.${name}.d.ts`);
+function importLibs(stArtLib) {
+	function getFileNAme(nAme) {
+		return (nAme === '' ? 'lib.d.ts' : `lib.${nAme}.d.ts`);
 	}
-	function getVariableName(name) {
-		return (name === '' ? 'lib_dts' : `lib_${name.replace(/\./g, '_')}_dts`);
+	function getVAriAbleNAme(nAme) {
+		return (nAme === '' ? 'lib_dts' : `lib_${nAme.replAce(/\./g, '_')}_dts`);
 	}
-	function readLibFile(name) {
-		var srcPath = path.join(TYPESCRIPT_LIB_SOURCE, getFileName(name));
-		return fs.readFileSync(srcPath).toString();
+	function reAdLibFile(nAme) {
+		vAr srcPAth = pAth.join(TYPESCRIPT_LIB_SOURCE, getFileNAme(nAme));
+		return fs.reAdFileSync(srcPAth).toString();
 	}
 
-	var queue = [];
-	var in_queue = {};
+	vAr queue = [];
+	vAr in_queue = {};
 
-	var enqueue = function (name) {
-		if (in_queue[name]) {
+	vAr enqueue = function (nAme) {
+		if (in_queue[nAme]) {
 			return;
 		}
-		in_queue[name] = true;
-		queue.push(name);
+		in_queue[nAme] = true;
+		queue.push(nAme);
 	};
 
-	enqueue(startLib);
+	enqueue(stArtLib);
 
-	var result = [];
+	vAr result = [];
 	while (queue.length > 0) {
-		var name = queue.shift();
-		var contents = readLibFile(name);
-		var lines = contents.split(/\r\n|\r|\n/);
+		vAr nAme = queue.shift();
+		vAr contents = reAdLibFile(nAme);
+		vAr lines = contents.split(/\r\n|\r|\n/);
 
-		var output = '';
-		var writeOutput = function (text) {
+		vAr output = '';
+		vAr writeOutput = function (text) {
 			if (output.length === 0) {
 				output = text;
 			} else {
 				output += ` + ${text}`;
 			}
 		};
-		var outputLines = [];
-		var flushOutputLines = function () {
-			writeOutput(`"${escapeText(outputLines.join('\n'))}"`);
+		vAr outputLines = [];
+		vAr flushOutputLines = function () {
+			writeOutput(`"${escApeText(outputLines.join('\n'))}"`);
 			outputLines = [];
 		};
-		var deps = [];
+		vAr deps = [];
 		for (let i = 0; i < lines.length; i++) {
-			let m = lines[i].match(/\/\/\/\s*<reference\s*lib="([^"]+)"/);
+			let m = lines[i].mAtch(/\/\/\/\s*<reference\s*lib="([^"]+)"/);
 			if (m) {
 				flushOutputLines();
-				writeOutput(getVariableName(m[1]));
-				deps.push(getVariableName(m[1]));
+				writeOutput(getVAriAbleNAme(m[1]));
+				deps.push(getVAriAbleNAme(m[1]));
 				enqueue(m[1]);
 				continue;
 			}
@@ -84,100 +84,100 @@ function importLibs(startLib) {
 		flushOutputLines();
 
 		result.push({
-			name: getVariableName(name),
+			nAme: getVAriAbleNAme(nAme),
 			deps: deps,
 			output: output
 		});
 	}
 
-	var strResult = `/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+	vAr strResult = `/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-${generatedNote}`;
-	// Do a topological sort
+${generAtedNote}`;
+	// Do A topologicAl sort
 	while (result.length > 0) {
 		for (let i = result.length - 1; i >= 0; i--) {
 			if (result[i].deps.length === 0) {
 				// emit this node
-				strResult += `\nexport const ${result[i].name}: string = ${result[i].output};\n`;
+				strResult += `\nexport const ${result[i].nAme}: string = ${result[i].output};\n`;
 
-				// mark dep as resolved
+				// mArk dep As resolved
 				for (let j = 0; j < result.length; j++) {
 					for (let k = 0; k < result[j].deps.length; k++) {
-						if (result[j].deps[k] === result[i].name) {
+						if (result[j].deps[k] === result[i].nAme) {
 							result[j].deps.splice(k, 1);
-							break;
+							breAk;
 						}
 					}
 				}
 
 				// remove from result
 				result.splice(i, 1);
-				break;
+				breAk;
 			}
 		}
 	}
 
-	var dstPath = path.join(TYPESCRIPT_LIB_DESTINATION, 'lib.ts');
-	fs.writeFileSync(dstPath, strResult);
+	vAr dstPAth = pAth.join(TYPESCRIPT_LIB_DESTINATION, 'lib.ts');
+	fs.writeFileSync(dstPAth, strResult);
 }
 
 /**
- * Escape text such that it can be used in a javascript string enclosed by double quotes (")
+ * EscApe text such thAt it cAn be used in A jAvAscript string enclosed by double quotes (")
  */
-function escapeText(text) {
-	// See http://www.javascriptkit.com/jsref/escapesequence.shtml
-	var _backspace = '\b'.charCodeAt(0);
-	var _formFeed = '\f'.charCodeAt(0);
-	var _newLine = '\n'.charCodeAt(0);
-	var _nullChar = 0;
-	var _carriageReturn = '\r'.charCodeAt(0);
-	var _tab = '\t'.charCodeAt(0);
-	var _verticalTab = '\v'.charCodeAt(0);
-	var _backslash = '\\'.charCodeAt(0);
-	var _doubleQuote = '"'.charCodeAt(0);
+function escApeText(text) {
+	// See http://www.jAvAscriptkit.com/jsref/escApesequence.shtml
+	vAr _bAckspAce = '\b'.chArCodeAt(0);
+	vAr _formFeed = '\f'.chArCodeAt(0);
+	vAr _newLine = '\n'.chArCodeAt(0);
+	vAr _nullChAr = 0;
+	vAr _cArriAgeReturn = '\r'.chArCodeAt(0);
+	vAr _tAb = '\t'.chArCodeAt(0);
+	vAr _verticAlTAb = '\v'.chArCodeAt(0);
+	vAr _bAckslAsh = '\\'.chArCodeAt(0);
+	vAr _doubleQuote = '"'.chArCodeAt(0);
 
-	var startPos = 0, chrCode, replaceWith = null, resultPieces = [];
+	vAr stArtPos = 0, chrCode, replAceWith = null, resultPieces = [];
 
-	for (var i = 0, len = text.length; i < len; i++) {
-		chrCode = text.charCodeAt(i);
+	for (vAr i = 0, len = text.length; i < len; i++) {
+		chrCode = text.chArCodeAt(i);
 		switch (chrCode) {
-			case _backspace:
-				replaceWith = '\\b';
-				break;
-			case _formFeed:
-				replaceWith = '\\f';
-				break;
-			case _newLine:
-				replaceWith = '\\n';
-				break;
-			case _nullChar:
-				replaceWith = '\\0';
-				break;
-			case _carriageReturn:
-				replaceWith = '\\r';
-				break;
-			case _tab:
-				replaceWith = '\\t';
-				break;
-			case _verticalTab:
-				replaceWith = '\\v';
-				break;
-			case _backslash:
-				replaceWith = '\\\\';
-				break;
-			case _doubleQuote:
-				replaceWith = '\\"';
-				break;
+			cAse _bAckspAce:
+				replAceWith = '\\b';
+				breAk;
+			cAse _formFeed:
+				replAceWith = '\\f';
+				breAk;
+			cAse _newLine:
+				replAceWith = '\\n';
+				breAk;
+			cAse _nullChAr:
+				replAceWith = '\\0';
+				breAk;
+			cAse _cArriAgeReturn:
+				replAceWith = '\\r';
+				breAk;
+			cAse _tAb:
+				replAceWith = '\\t';
+				breAk;
+			cAse _verticAlTAb:
+				replAceWith = '\\v';
+				breAk;
+			cAse _bAckslAsh:
+				replAceWith = '\\\\';
+				breAk;
+			cAse _doubleQuote:
+				replAceWith = '\\"';
+				breAk;
 		}
-		if (replaceWith !== null) {
-			resultPieces.push(text.substring(startPos, i));
-			resultPieces.push(replaceWith);
-			startPos = i + 1;
-			replaceWith = null;
+		if (replAceWith !== null) {
+			resultPieces.push(text.substring(stArtPos, i));
+			resultPieces.push(replAceWith);
+			stArtPos = i + 1;
+			replAceWith = null;
 		}
 	}
-	resultPieces.push(text.substring(startPos, len));
+	resultPieces.push(text.substring(stArtPos, len));
 	return resultPieces.join('');
 }

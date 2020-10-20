@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import type * as Proto from '../protocol';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import type * As Proto from '../protocol';
 import { ITypeScriptServiceClient, ServerResponse } from '../typescriptService';
-import { nulToken } from '../utils/cancellation';
-import { TypeScriptServiceConfiguration } from './configuration';
+import { nulToken } from '../utils/cAncellAtion';
+import { TypeScriptServiceConfigurAtion } from './configurAtion';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
 export const enum ProjectType {
 	TypeScript,
-	JavaScript,
+	JAvAScript,
 }
 
-export function isImplicitProjectConfigFile(configFileName: string) {
-	return configFileName.startsWith('/dev/null/');
+export function isImplicitProjectConfigFile(configFileNAme: string) {
+	return configFileNAme.stArtsWith('/dev/null/');
 }
 
 export function inferredProjectCompilerOptions(
 	projectType: ProjectType,
-	serviceConfig: TypeScriptServiceConfiguration,
-): Proto.ExternalProjectCompilerOptions {
-	const projectConfig: Proto.ExternalProjectCompilerOptions = {
-		module: 'commonjs' as Proto.ModuleKind,
-		target: 'es2016' as Proto.ScriptTarget,
-		jsx: 'preserve' as Proto.JsxEmit,
+	serviceConfig: TypeScriptServiceConfigurAtion,
+): Proto.ExternAlProjectCompilerOptions {
+	const projectConfig: Proto.ExternAlProjectCompilerOptions = {
+		module: 'commonjs' As Proto.ModuleKind,
+		tArget: 'es2016' As Proto.ScriptTArget,
+		jsx: 'preserve' As Proto.JsxEmit,
 	};
 
 	if (serviceConfig.checkJs) {
 		projectConfig.checkJs = true;
 		if (projectType === ProjectType.TypeScript) {
-			projectConfig.allowJs = true;
+			projectConfig.AllowJs = true;
 		}
 	}
 
-	if (serviceConfig.experimentalDecorators) {
-		projectConfig.experimentalDecorators = true;
+	if (serviceConfig.experimentAlDecorAtors) {
+		projectConfig.experimentAlDecorAtors = true;
 	}
 
 	if (projectType === ProjectType.TypeScript) {
-		projectConfig.sourceMap = true;
+		projectConfig.sourceMAp = true;
 	}
 
 	return projectConfig;
@@ -52,10 +52,10 @@ export function inferredProjectCompilerOptions(
 
 function inferredProjectConfigSnippet(
 	projectType: ProjectType,
-	config: TypeScriptServiceConfiguration
+	config: TypeScriptServiceConfigurAtion
 ) {
-	const baseConfig = inferredProjectCompilerOptions(projectType, config);
-	const compilerOptions = Object.keys(baseConfig).map(key => `"${key}": ${JSON.stringify(baseConfig[key])}`);
+	const bAseConfig = inferredProjectCompilerOptions(projectType, config);
+	const compilerOptions = Object.keys(bAseConfig).mAp(key => `"${key}": ${JSON.stringify(bAseConfig[key])}`);
 	return new vscode.SnippetString(`{
 	"compilerOptions": {
 		${compilerOptions.join(',\n\t\t')}$0
@@ -67,93 +67,93 @@ function inferredProjectConfigSnippet(
 }`);
 }
 
-export async function openOrCreateConfig(
+export Async function openOrCreAteConfig(
 	projectType: ProjectType,
-	rootPath: string,
-	configuration: TypeScriptServiceConfiguration,
+	rootPAth: string,
+	configurAtion: TypeScriptServiceConfigurAtion,
 ): Promise<vscode.TextEditor | null> {
-	const configFile = vscode.Uri.file(path.join(rootPath, projectType === ProjectType.TypeScript ? 'tsconfig.json' : 'jsconfig.json'));
-	const col = vscode.window.activeTextEditor?.viewColumn;
+	const configFile = vscode.Uri.file(pAth.join(rootPAth, projectType === ProjectType.TypeScript ? 'tsconfig.json' : 'jsconfig.json'));
+	const col = vscode.window.ActiveTextEditor?.viewColumn;
 	try {
-		const doc = await vscode.workspace.openTextDocument(configFile);
+		const doc = AwAit vscode.workspAce.openTextDocument(configFile);
 		return vscode.window.showTextDocument(doc, col);
-	} catch {
-		const doc = await vscode.workspace.openTextDocument(configFile.with({ scheme: 'untitled' }));
-		const editor = await vscode.window.showTextDocument(doc, col);
+	} cAtch {
+		const doc = AwAit vscode.workspAce.openTextDocument(configFile.with({ scheme: 'untitled' }));
+		const editor = AwAit vscode.window.showTextDocument(doc, col);
 		if (editor.document.getText().length === 0) {
-			await editor.insertSnippet(inferredProjectConfigSnippet(projectType, configuration));
+			AwAit editor.insertSnippet(inferredProjectConfigSnippet(projectType, configurAtion));
 		}
 		return editor;
 	}
 }
 
-export async function openProjectConfigOrPromptToCreate(
+export Async function openProjectConfigOrPromptToCreAte(
 	projectType: ProjectType,
 	client: ITypeScriptServiceClient,
-	rootPath: string,
-	configFileName: string,
+	rootPAth: string,
+	configFileNAme: string,
 ): Promise<void> {
-	if (!isImplicitProjectConfigFile(configFileName)) {
-		const doc = await vscode.workspace.openTextDocument(configFileName);
-		vscode.window.showTextDocument(doc, vscode.window.activeTextEditor?.viewColumn);
+	if (!isImplicitProjectConfigFile(configFileNAme)) {
+		const doc = AwAit vscode.workspAce.openTextDocument(configFileNAme);
+		vscode.window.showTextDocument(doc, vscode.window.ActiveTextEditor?.viewColumn);
 		return;
 	}
 
-	const CreateConfigItem: vscode.MessageItem = {
+	const CreAteConfigItem: vscode.MessAgeItem = {
 		title: projectType === ProjectType.TypeScript
-			? localize('typescript.configureTsconfigQuickPick', 'Configure tsconfig.json')
-			: localize('typescript.configureJsconfigQuickPick', 'Configure jsconfig.json'),
+			? locAlize('typescript.configureTsconfigQuickPick', 'Configure tsconfig.json')
+			: locAlize('typescript.configureJsconfigQuickPick', 'Configure jsconfig.json'),
 	};
 
-	const selected = await vscode.window.showInformationMessage(
+	const selected = AwAit vscode.window.showInformAtionMessAge(
 		(projectType === ProjectType.TypeScript
-			? localize('typescript.noTypeScriptProjectConfig', 'File is not part of a TypeScript project. Click [here]({0}) to learn more.', 'https://go.microsoft.com/fwlink/?linkid=841896')
-			: localize('typescript.noJavaScriptProjectConfig', 'File is not part of a JavaScript project Click [here]({0}) to learn more.', 'https://go.microsoft.com/fwlink/?linkid=759670')
+			? locAlize('typescript.noTypeScriptProjectConfig', 'File is not pArt of A TypeScript project. Click [here]({0}) to leArn more.', 'https://go.microsoft.com/fwlink/?linkid=841896')
+			: locAlize('typescript.noJAvAScriptProjectConfig', 'File is not pArt of A JAvAScript project Click [here]({0}) to leArn more.', 'https://go.microsoft.com/fwlink/?linkid=759670')
 		),
-		CreateConfigItem);
+		CreAteConfigItem);
 
 	switch (selected) {
-		case CreateConfigItem:
-			openOrCreateConfig(projectType, rootPath, client.configuration);
+		cAse CreAteConfigItem:
+			openOrCreAteConfig(projectType, rootPAth, client.configurAtion);
 			return;
 	}
 }
 
-export async function openProjectConfigForFile(
+export Async function openProjectConfigForFile(
 	projectType: ProjectType,
 	client: ITypeScriptServiceClient,
 	resource: vscode.Uri,
 ): Promise<void> {
-	const rootPath = client.getWorkspaceRootForResource(resource);
-	if (!rootPath) {
-		vscode.window.showInformationMessage(
-			localize(
-				'typescript.projectConfigNoWorkspace',
-				'Please open a folder in VS Code to use a TypeScript or JavaScript project'));
+	const rootPAth = client.getWorkspAceRootForResource(resource);
+	if (!rootPAth) {
+		vscode.window.showInformAtionMessAge(
+			locAlize(
+				'typescript.projectConfigNoWorkspAce',
+				'PleAse open A folder in VS Code to use A TypeScript or JAvAScript project'));
 		return;
 	}
 
-	const file = client.toPath(resource);
-	// TSServer errors when 'projectInfo' is invoked on a non js/ts file
-	if (!file || !await client.toPath(resource)) {
-		vscode.window.showWarningMessage(
-			localize(
+	const file = client.toPAth(resource);
+	// TSServer errors when 'projectInfo' is invoked on A non js/ts file
+	if (!file || !AwAit client.toPAth(resource)) {
+		vscode.window.showWArningMessAge(
+			locAlize(
 				'typescript.projectConfigUnsupportedFile',
-				'Could not determine TypeScript or JavaScript project. Unsupported file type'));
+				'Could not determine TypeScript or JAvAScript project. Unsupported file type'));
 		return;
 	}
 
 	let res: ServerResponse.Response<protocol.ProjectInfoResponse> | undefined;
 	try {
-		res = await client.execute('projectInfo', { file, needFileNameList: false }, nulToken);
-	} catch {
+		res = AwAit client.execute('projectInfo', { file, needFileNAmeList: fAlse }, nulToken);
+	} cAtch {
 		// noop
 	}
 
 	if (res?.type !== 'response' || !res.body) {
-		vscode.window.showWarningMessage(localize('typescript.projectConfigCouldNotGetInfo', 'Could not determine TypeScript or JavaScript project'));
+		vscode.window.showWArningMessAge(locAlize('typescript.projectConfigCouldNotGetInfo', 'Could not determine TypeScript or JAvAScript project'));
 		return;
 	}
-	return openProjectConfigOrPromptToCreate(projectType, client, rootPath, res.body.configFileName);
+	return openProjectConfigOrPromptToCreAte(projectType, client, rootPAth, res.body.configFileNAme);
 }
 

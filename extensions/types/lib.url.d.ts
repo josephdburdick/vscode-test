@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Define Url global for both browser and node runtimes
+// Define Url globAl for both browser And node runtimes
 //
 // Copied from https://github.com/DefinitelyTyped/DefinitelyTyped/issues/34960
 
-declare const URL: typeof import('url').URL;
+declAre const URL: typeof import('url').URL;

@@ -1,92 +1,92 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { equal } from 'assert';
-import { FileStorageDatabase } from 'vs/platform/storage/browser/storageService';
-import { generateUuid } from 'vs/base/common/uuid';
-import { join } from 'vs/base/common/path';
+import { equAl } from 'Assert';
+import { FileStorAgeDAtAbAse } from 'vs/plAtform/storAge/browser/storAgeService';
+import { generAteUuid } from 'vs/bAse/common/uuid';
+import { join } from 'vs/bAse/common/pAth';
 import { tmpdir } from 'os';
-import { rimraf, RimRafMode } from 'vs/base/node/pfs';
-import { NullLogService } from 'vs/platform/log/common/log';
-import { Storage } from 'vs/base/parts/storage/common/storage';
-import { URI } from 'vs/base/common/uri';
-import { FileService } from 'vs/platform/files/common/fileService';
-import { getRandomTestPath } from 'vs/base/test/node/testUtils';
-import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
+import { rimrAf, RimRAfMode } from 'vs/bAse/node/pfs';
+import { NullLogService } from 'vs/plAtform/log/common/log';
+import { StorAge } from 'vs/bAse/pArts/storAge/common/storAge';
+import { URI } from 'vs/bAse/common/uri';
+import { FileService } from 'vs/plAtform/files/common/fileService';
+import { getRAndomTestPAth } from 'vs/bAse/test/node/testUtils';
+import { DiskFileSystemProvider } from 'vs/plAtform/files/node/diskFileSystemProvider';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { SchemAs } from 'vs/bAse/common/network';
 
-suite('Storage', () => {
+suite('StorAge', () => {
 
-	const parentDir = getRandomTestPath(tmpdir(), 'vsctests', 'storageservice');
+	const pArentDir = getRAndomTestPAth(tmpdir(), 'vsctests', 'storAgeservice');
 
 	let fileService: FileService;
 	let fileProvider: DiskFileSystemProvider;
 	let testDir: string;
 
-	const disposables = new DisposableStore();
+	const disposAbles = new DisposAbleStore();
 
-	setup(async () => {
+	setup(Async () => {
 		const logService = new NullLogService();
 
 		fileService = new FileService(logService);
-		disposables.add(fileService);
+		disposAbles.Add(fileService);
 
 		fileProvider = new DiskFileSystemProvider(logService);
-		disposables.add(fileService.registerProvider(Schemas.file, fileProvider));
-		disposables.add(fileProvider);
+		disposAbles.Add(fileService.registerProvider(SchemAs.file, fileProvider));
+		disposAbles.Add(fileProvider);
 
-		const id = generateUuid();
-		testDir = join(parentDir, id);
+		const id = generAteUuid();
+		testDir = join(pArentDir, id);
 	});
 
-	teardown(async () => {
-		disposables.clear();
+	teArdown(Async () => {
+		disposAbles.cleAr();
 
-		await rimraf(parentDir, RimRafMode.MOVE);
+		AwAit rimrAf(pArentDir, RimRAfMode.MOVE);
 	});
 
-	test('File Based Storage', async () => {
-		let storage = new Storage(new FileStorageDatabase(URI.file(join(testDir, 'storage.json')), false, fileService));
+	test('File BAsed StorAge', Async () => {
+		let storAge = new StorAge(new FileStorAgeDAtAbAse(URI.file(join(testDir, 'storAge.json')), fAlse, fileService));
 
-		await storage.init();
+		AwAit storAge.init();
 
-		storage.set('bar', 'foo');
-		storage.set('barNumber', 55);
-		storage.set('barBoolean', true);
+		storAge.set('bAr', 'foo');
+		storAge.set('bArNumber', 55);
+		storAge.set('bArBooleAn', true);
 
-		equal(storage.get('bar'), 'foo');
-		equal(storage.get('barNumber'), '55');
-		equal(storage.get('barBoolean'), 'true');
+		equAl(storAge.get('bAr'), 'foo');
+		equAl(storAge.get('bArNumber'), '55');
+		equAl(storAge.get('bArBooleAn'), 'true');
 
-		await storage.close();
+		AwAit storAge.close();
 
-		storage = new Storage(new FileStorageDatabase(URI.file(join(testDir, 'storage.json')), false, fileService));
+		storAge = new StorAge(new FileStorAgeDAtAbAse(URI.file(join(testDir, 'storAge.json')), fAlse, fileService));
 
-		await storage.init();
+		AwAit storAge.init();
 
-		equal(storage.get('bar'), 'foo');
-		equal(storage.get('barNumber'), '55');
-		equal(storage.get('barBoolean'), 'true');
+		equAl(storAge.get('bAr'), 'foo');
+		equAl(storAge.get('bArNumber'), '55');
+		equAl(storAge.get('bArBooleAn'), 'true');
 
-		storage.delete('bar');
-		storage.delete('barNumber');
-		storage.delete('barBoolean');
+		storAge.delete('bAr');
+		storAge.delete('bArNumber');
+		storAge.delete('bArBooleAn');
 
-		equal(storage.get('bar', 'undefined'), 'undefined');
-		equal(storage.get('barNumber', 'undefinedNumber'), 'undefinedNumber');
-		equal(storage.get('barBoolean', 'undefinedBoolean'), 'undefinedBoolean');
+		equAl(storAge.get('bAr', 'undefined'), 'undefined');
+		equAl(storAge.get('bArNumber', 'undefinedNumber'), 'undefinedNumber');
+		equAl(storAge.get('bArBooleAn', 'undefinedBooleAn'), 'undefinedBooleAn');
 
-		await storage.close();
+		AwAit storAge.close();
 
-		storage = new Storage(new FileStorageDatabase(URI.file(join(testDir, 'storage.json')), false, fileService));
+		storAge = new StorAge(new FileStorAgeDAtAbAse(URI.file(join(testDir, 'storAge.json')), fAlse, fileService));
 
-		await storage.init();
+		AwAit storAge.init();
 
-		equal(storage.get('bar', 'undefined'), 'undefined');
-		equal(storage.get('barNumber', 'undefinedNumber'), 'undefinedNumber');
-		equal(storage.get('barBoolean', 'undefinedBoolean'), 'undefinedBoolean');
+		equAl(storAge.get('bAr', 'undefined'), 'undefined');
+		equAl(storAge.get('bArNumber', 'undefinedNumber'), 'undefinedNumber');
+		equAl(storAge.get('bArBooleAn', 'undefinedBooleAn'), 'undefinedBooleAn');
 	});
 });

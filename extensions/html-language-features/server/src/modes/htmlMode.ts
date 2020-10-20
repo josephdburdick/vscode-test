@@ -1,88 +1,88 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { getLanguageModelCache } from '../languageModelCache';
+import { getLAnguAgeModelCAche } from '../lAnguAgeModelCAche';
 import {
-	LanguageService as HTMLLanguageService, HTMLDocument, DocumentContext, FormattingOptions,
-	HTMLFormatConfiguration, SelectionRange,
-	TextDocument, Position, Range, FoldingRange,
-	LanguageMode, Workspace
-} from './languageModes';
+	LAnguAgeService As HTMLLAnguAgeService, HTMLDocument, DocumentContext, FormAttingOptions,
+	HTMLFormAtConfigurAtion, SelectionRAnge,
+	TextDocument, Position, RAnge, FoldingRAnge,
+	LAnguAgeMode, WorkspAce
+} from './lAnguAgeModes';
 
-export function getHTMLMode(htmlLanguageService: HTMLLanguageService, workspace: Workspace): LanguageMode {
-	let htmlDocuments = getLanguageModelCache<HTMLDocument>(10, 60, document => htmlLanguageService.parseHTMLDocument(document));
+export function getHTMLMode(htmlLAnguAgeService: HTMLLAnguAgeService, workspAce: WorkspAce): LAnguAgeMode {
+	let htmlDocuments = getLAnguAgeModelCAche<HTMLDocument>(10, 60, document => htmlLAnguAgeService.pArseHTMLDocument(document));
 	return {
 		getId() {
 			return 'html';
 		},
-		async getSelectionRange(document: TextDocument, position: Position): Promise<SelectionRange> {
-			return htmlLanguageService.getSelectionRanges(document, [position])[0];
+		Async getSelectionRAnge(document: TextDocument, position: Position): Promise<SelectionRAnge> {
+			return htmlLAnguAgeService.getSelectionRAnges(document, [position])[0];
 		},
-		doComplete(document: TextDocument, position: Position, documentContext: DocumentContext, settings = workspace.settings) {
+		doComplete(document: TextDocument, position: Position, documentContext: DocumentContext, settings = workspAce.settings) {
 			let options = settings && settings.html && settings.html.suggest;
-			let doAutoComplete = settings && settings.html && settings.html.autoClosingTags;
+			let doAutoComplete = settings && settings.html && settings.html.AutoClosingTAgs;
 			if (doAutoComplete) {
-				options.hideAutoCompleteProposals = true;
+				options.hideAutoCompleteProposAls = true;
 			}
 
 			const htmlDocument = htmlDocuments.get(document);
-			let completionList = htmlLanguageService.doComplete2(document, position, htmlDocument, documentContext, options);
+			let completionList = htmlLAnguAgeService.doComplete2(document, position, htmlDocument, documentContext, options);
 			return completionList;
 		},
-		async doHover(document: TextDocument, position: Position) {
-			return htmlLanguageService.doHover(document, position, htmlDocuments.get(document));
+		Async doHover(document: TextDocument, position: Position) {
+			return htmlLAnguAgeService.doHover(document, position, htmlDocuments.get(document));
 		},
-		async findDocumentHighlight(document: TextDocument, position: Position) {
-			return htmlLanguageService.findDocumentHighlights(document, position, htmlDocuments.get(document));
+		Async findDocumentHighlight(document: TextDocument, position: Position) {
+			return htmlLAnguAgeService.findDocumentHighlights(document, position, htmlDocuments.get(document));
 		},
-		async findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
-			return htmlLanguageService.findDocumentLinks(document, documentContext);
+		Async findDocumentLinks(document: TextDocument, documentContext: DocumentContext) {
+			return htmlLAnguAgeService.findDocumentLinks(document, documentContext);
 		},
-		async findDocumentSymbols(document: TextDocument) {
-			return htmlLanguageService.findDocumentSymbols(document, htmlDocuments.get(document));
+		Async findDocumentSymbols(document: TextDocument) {
+			return htmlLAnguAgeService.findDocumentSymbols(document, htmlDocuments.get(document));
 		},
-		async format(document: TextDocument, range: Range, formatParams: FormattingOptions, settings = workspace.settings) {
-			let formatSettings: HTMLFormatConfiguration = settings && settings.html && settings.html.format;
-			if (formatSettings) {
-				formatSettings = merge(formatSettings, {});
+		Async formAt(document: TextDocument, rAnge: RAnge, formAtPArAms: FormAttingOptions, settings = workspAce.settings) {
+			let formAtSettings: HTMLFormAtConfigurAtion = settings && settings.html && settings.html.formAt;
+			if (formAtSettings) {
+				formAtSettings = merge(formAtSettings, {});
 			} else {
-				formatSettings = {};
+				formAtSettings = {};
 			}
-			if (formatSettings.contentUnformatted) {
-				formatSettings.contentUnformatted = formatSettings.contentUnformatted + ',script';
+			if (formAtSettings.contentUnformAtted) {
+				formAtSettings.contentUnformAtted = formAtSettings.contentUnformAtted + ',script';
 			} else {
-				formatSettings.contentUnformatted = 'script';
+				formAtSettings.contentUnformAtted = 'script';
 			}
-			formatSettings = merge(formatParams, formatSettings);
-			return htmlLanguageService.format(document, range, formatSettings);
+			formAtSettings = merge(formAtPArAms, formAtSettings);
+			return htmlLAnguAgeService.formAt(document, rAnge, formAtSettings);
 		},
-		async getFoldingRanges(document: TextDocument): Promise<FoldingRange[]> {
-			return htmlLanguageService.getFoldingRanges(document);
+		Async getFoldingRAnges(document: TextDocument): Promise<FoldingRAnge[]> {
+			return htmlLAnguAgeService.getFoldingRAnges(document);
 		},
-		async doAutoClose(document: TextDocument, position: Position) {
+		Async doAutoClose(document: TextDocument, position: Position) {
 			let offset = document.offsetAt(position);
 			let text = document.getText();
-			if (offset > 0 && text.charAt(offset - 1).match(/[>\/]/g)) {
-				return htmlLanguageService.doTagComplete(document, position, htmlDocuments.get(document));
+			if (offset > 0 && text.chArAt(offset - 1).mAtch(/[>\/]/g)) {
+				return htmlLAnguAgeService.doTAgComplete(document, position, htmlDocuments.get(document));
 			}
 			return null;
 		},
-		async doRename(document: TextDocument, position: Position, newName: string) {
+		Async doRenAme(document: TextDocument, position: Position, newNAme: string) {
 			const htmlDocument = htmlDocuments.get(document);
-			return htmlLanguageService.doRename(document, position, newName, htmlDocument);
+			return htmlLAnguAgeService.doRenAme(document, position, newNAme, htmlDocument);
 		},
-		async onDocumentRemoved(document: TextDocument) {
+		Async onDocumentRemoved(document: TextDocument) {
 			htmlDocuments.onDocumentRemoved(document);
 		},
-		async findMatchingTagPosition(document: TextDocument, position: Position) {
+		Async findMAtchingTAgPosition(document: TextDocument, position: Position) {
 			const htmlDocument = htmlDocuments.get(document);
-			return htmlLanguageService.findMatchingTagPosition(document, position, htmlDocument);
+			return htmlLAnguAgeService.findMAtchingTAgPosition(document, position, htmlDocument);
 		},
-		async doOnTypeRename(document: TextDocument, position: Position) {
+		Async doOnTypeRenAme(document: TextDocument, position: Position) {
 			const htmlDocument = htmlDocuments.get(document);
-			return htmlLanguageService.findOnTypeRenameRanges(document, position, htmlDocument);
+			return htmlLAnguAgeService.findOnTypeRenAmeRAnges(document, position, htmlDocument);
 		},
 		dispose() {
 			htmlDocuments.dispose();
@@ -90,9 +90,9 @@ export function getHTMLMode(htmlLanguageService: HTMLLanguageService, workspace:
 	};
 }
 
-function merge(src: any, dst: any): any {
+function merge(src: Any, dst: Any): Any {
 	for (const key in src) {
-		if (src.hasOwnProperty(key)) {
+		if (src.hAsOwnProperty(key)) {
 			dst[key] = src[key];
 		}
 	}

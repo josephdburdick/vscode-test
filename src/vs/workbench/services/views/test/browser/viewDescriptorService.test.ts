@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { IViewsRegistry, IViewDescriptor, IViewContainersRegistry, Extensions as ViewContainerExtensions, IViewDescriptorService, ViewContainerLocation, ViewContainer } from 'vs/workbench/common/views';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { workbenchInstantiationService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import * As Assert from 'Assert';
+import { IViewsRegistry, IViewDescriptor, IViewContAinersRegistry, Extensions As ViewContAinerExtensions, IViewDescriptorService, ViewContAinerLocAtion, ViewContAiner } from 'vs/workbench/common/views';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { workbenchInstAntiAtionService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
 import { ViewDescriptorService } from 'vs/workbench/services/views/browser/viewDescriptorService';
-import { assertIsDefined } from 'vs/base/common/types';
-import { ContextKeyService } from 'vs/platform/contextkey/browser/contextKeyService';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
+import { AssertIsDefined } from 'vs/bAse/common/types';
+import { ContextKeyService } from 'vs/plAtform/contextkey/browser/contextKeyService';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
 
-const ViewsRegistry = Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry);
-const sidebarContainer = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry).registerViewContainer({ id: 'testSidebar', name: 'test', ctorDescriptor: new SyncDescriptor(<any>{}) }, ViewContainerLocation.Sidebar);
-const panelContainer = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry).registerViewContainer({ id: 'testPanel', name: 'test', ctorDescriptor: new SyncDescriptor(<any>{}) }, ViewContainerLocation.Panel);
+const ViewsRegistry = Registry.As<IViewsRegistry>(ViewContAinerExtensions.ViewsRegistry);
+const sidebArContAiner = Registry.As<IViewContAinersRegistry>(ViewContAinerExtensions.ViewContAinersRegistry).registerViewContAiner({ id: 'testSidebAr', nAme: 'test', ctorDescriptor: new SyncDescriptor(<Any>{}) }, ViewContAinerLocAtion.SidebAr);
+const pAnelContAiner = Registry.As<IViewContAinersRegistry>(ViewContAinerExtensions.ViewContAinersRegistry).registerViewContAiner({ id: 'testPAnel', nAme: 'test', ctorDescriptor: new SyncDescriptor(<Any>{}) }, ViewContAinerLocAtion.PAnel);
 
 suite('ViewDescriptorService', () => {
 
 	let viewDescriptorService: IViewDescriptorService;
 
 	setup(() => {
-		const instantiationService: TestInstantiationService = <TestInstantiationService>workbenchInstantiationService();
-		instantiationService.stub(IContextKeyService, instantiationService.createInstance(ContextKeyService));
-		viewDescriptorService = instantiationService.createInstance(ViewDescriptorService);
+		const instAntiAtionService: TestInstAntiAtionService = <TestInstAntiAtionService>workbenchInstAntiAtionService();
+		instAntiAtionService.stub(IContextKeyService, instAntiAtionService.creAteInstAnce(ContextKeyService));
+		viewDescriptorService = instAntiAtionService.creAteInstAnce(ViewDescriptorService);
 	});
 
-	teardown(() => {
-		ViewsRegistry.deregisterViews(ViewsRegistry.getViews(sidebarContainer), sidebarContainer);
-		ViewsRegistry.deregisterViews(ViewsRegistry.getViews(panelContainer), panelContainer);
+	teArdown(() => {
+		ViewsRegistry.deregisterViews(ViewsRegistry.getViews(sidebArContAiner), sidebArContAiner);
+		ViewsRegistry.deregisterViews(ViewsRegistry.getViews(pAnelContAiner), pAnelContAiner);
 	});
 
-	test('Empty Containers', function () {
-		const sidebarViews = viewDescriptorService.getViewContainerModel(sidebarContainer);
-		const panelViews = viewDescriptorService.getViewContainerModel(panelContainer);
-		assert.equal(sidebarViews.allViewDescriptors.length, 0, 'The sidebar container should have no views yet.');
-		assert.equal(panelViews.allViewDescriptors.length, 0, 'The panel container should have no views yet.');
+	test('Empty ContAiners', function () {
+		const sidebArViews = viewDescriptorService.getViewContAinerModel(sidebArContAiner);
+		const pAnelViews = viewDescriptorService.getViewContAinerModel(pAnelContAiner);
+		Assert.equAl(sidebArViews.AllViewDescriptors.length, 0, 'The sidebAr contAiner should hAve no views yet.');
+		Assert.equAl(pAnelViews.AllViewDescriptors.length, 0, 'The pAnel contAiner should hAve no views yet.');
 	});
 
 	test('Register/Deregister', () => {
@@ -45,224 +45,224 @@ suite('ViewDescriptorService', () => {
 			{
 				id: 'view1',
 				ctorDescriptor: null!,
-				name: 'Test View 1',
-				canMoveView: true
+				nAme: 'Test View 1',
+				cAnMoveView: true
 			},
 			{
 				id: 'view2',
 				ctorDescriptor: null!,
-				name: 'Test View 2',
-				canMoveView: true
+				nAme: 'Test View 2',
+				cAnMoveView: true
 			},
 			{
 				id: 'view3',
 				ctorDescriptor: null!,
-				name: 'Test View 3',
-				canMoveView: true
+				nAme: 'Test View 3',
+				cAnMoveView: true
 			}
 		];
 
 
-		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebarContainer);
-		ViewsRegistry.registerViews(viewDescriptors.slice(2), panelContainer);
+		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebArContAiner);
+		ViewsRegistry.registerViews(viewDescriptors.slice(2), pAnelContAiner);
 
 
-		let sidebarViews = viewDescriptorService.getViewContainerModel(sidebarContainer);
-		let panelViews = viewDescriptorService.getViewContainerModel(panelContainer);
+		let sidebArViews = viewDescriptorService.getViewContAinerModel(sidebArContAiner);
+		let pAnelViews = viewDescriptorService.getViewContAinerModel(pAnelContAiner);
 
-		assert.equal(sidebarViews.activeViewDescriptors.length, 2, 'Sidebar should have 2 views');
-		assert.equal(panelViews.activeViewDescriptors.length, 1, 'Panel should have 1 view');
+		Assert.equAl(sidebArViews.ActiveViewDescriptors.length, 2, 'SidebAr should hAve 2 views');
+		Assert.equAl(pAnelViews.ActiveViewDescriptors.length, 1, 'PAnel should hAve 1 view');
 
-		ViewsRegistry.deregisterViews(viewDescriptors.slice(0, 2), sidebarContainer);
-		ViewsRegistry.deregisterViews(viewDescriptors.slice(2), panelContainer);
+		ViewsRegistry.deregisterViews(viewDescriptors.slice(0, 2), sidebArContAiner);
+		ViewsRegistry.deregisterViews(viewDescriptors.slice(2), pAnelContAiner);
 
 
-		sidebarViews = viewDescriptorService.getViewContainerModel(sidebarContainer);
-		panelViews = viewDescriptorService.getViewContainerModel(panelContainer);
+		sidebArViews = viewDescriptorService.getViewContAinerModel(sidebArContAiner);
+		pAnelViews = viewDescriptorService.getViewContAinerModel(pAnelContAiner);
 
-		assert.equal(sidebarViews.activeViewDescriptors.length, 0, 'Sidebar should have no views');
-		assert.equal(panelViews.activeViewDescriptors.length, 0, 'Panel should have no views');
+		Assert.equAl(sidebArViews.ActiveViewDescriptors.length, 0, 'SidebAr should hAve no views');
+		Assert.equAl(pAnelViews.ActiveViewDescriptors.length, 0, 'PAnel should hAve no views');
 	});
 
-	test('move views to existing containers', async function () {
+	test('move views to existing contAiners', Async function () {
 		const viewDescriptors: IViewDescriptor[] = [
 			{
 				id: 'view1',
 				ctorDescriptor: null!,
-				name: 'Test View 1',
-				canMoveView: true
+				nAme: 'Test View 1',
+				cAnMoveView: true
 			},
 			{
 				id: 'view2',
 				ctorDescriptor: null!,
-				name: 'Test View 2',
-				canMoveView: true
+				nAme: 'Test View 2',
+				cAnMoveView: true
 			},
 			{
 				id: 'view3',
 				ctorDescriptor: null!,
-				name: 'Test View 3',
-				canMoveView: true
+				nAme: 'Test View 3',
+				cAnMoveView: true
 			}
 		];
 
-		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebarContainer);
-		ViewsRegistry.registerViews(viewDescriptors.slice(2), panelContainer);
+		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebArContAiner);
+		ViewsRegistry.registerViews(viewDescriptors.slice(2), pAnelContAiner);
 
-		viewDescriptorService.moveViewsToContainer(viewDescriptors.slice(2), sidebarContainer);
-		viewDescriptorService.moveViewsToContainer(viewDescriptors.slice(0, 2), panelContainer);
+		viewDescriptorService.moveViewsToContAiner(viewDescriptors.slice(2), sidebArContAiner);
+		viewDescriptorService.moveViewsToContAiner(viewDescriptors.slice(0, 2), pAnelContAiner);
 
-		let sidebarViews = viewDescriptorService.getViewContainerModel(sidebarContainer);
-		let panelViews = viewDescriptorService.getViewContainerModel(panelContainer);
+		let sidebArViews = viewDescriptorService.getViewContAinerModel(sidebArContAiner);
+		let pAnelViews = viewDescriptorService.getViewContAinerModel(pAnelContAiner);
 
-		assert.equal(sidebarViews.activeViewDescriptors.length, 1, 'Sidebar should have 2 views');
-		assert.equal(panelViews.activeViewDescriptors.length, 2, 'Panel should have 1 view');
+		Assert.equAl(sidebArViews.ActiveViewDescriptors.length, 1, 'SidebAr should hAve 2 views');
+		Assert.equAl(pAnelViews.ActiveViewDescriptors.length, 2, 'PAnel should hAve 1 view');
 
-		assert.notEqual(sidebarViews.activeViewDescriptors.indexOf(viewDescriptors[2]), -1, `Sidebar should have ${viewDescriptors[2].name}`);
-		assert.notEqual(panelViews.activeViewDescriptors.indexOf(viewDescriptors[0]), -1, `Panel should have ${viewDescriptors[0].name}`);
-		assert.notEqual(panelViews.activeViewDescriptors.indexOf(viewDescriptors[1]), -1, `Panel should have ${viewDescriptors[1].name}`);
+		Assert.notEquAl(sidebArViews.ActiveViewDescriptors.indexOf(viewDescriptors[2]), -1, `SidebAr should hAve ${viewDescriptors[2].nAme}`);
+		Assert.notEquAl(pAnelViews.ActiveViewDescriptors.indexOf(viewDescriptors[0]), -1, `PAnel should hAve ${viewDescriptors[0].nAme}`);
+		Assert.notEquAl(pAnelViews.ActiveViewDescriptors.indexOf(viewDescriptors[1]), -1, `PAnel should hAve ${viewDescriptors[1].nAme}`);
 	});
 
-	test('move views to generated containers', async function () {
+	test('move views to generAted contAiners', Async function () {
 		const viewDescriptors: IViewDescriptor[] = [
 			{
 				id: 'view1',
 				ctorDescriptor: null!,
-				name: 'Test View 1',
-				canMoveView: true
+				nAme: 'Test View 1',
+				cAnMoveView: true
 			},
 			{
 				id: 'view2',
 				ctorDescriptor: null!,
-				name: 'Test View 2',
-				canMoveView: true
+				nAme: 'Test View 2',
+				cAnMoveView: true
 			},
 			{
 				id: 'view3',
 				ctorDescriptor: null!,
-				name: 'Test View 3',
-				canMoveView: true
+				nAme: 'Test View 3',
+				cAnMoveView: true
 			}
 		];
 
-		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebarContainer);
-		ViewsRegistry.registerViews(viewDescriptors.slice(2), panelContainer);
+		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebArContAiner);
+		ViewsRegistry.registerViews(viewDescriptors.slice(2), pAnelContAiner);
 
-		viewDescriptorService.moveViewToLocation(viewDescriptors[0], ViewContainerLocation.Panel);
-		viewDescriptorService.moveViewToLocation(viewDescriptors[2], ViewContainerLocation.Sidebar);
+		viewDescriptorService.moveViewToLocAtion(viewDescriptors[0], ViewContAinerLocAtion.PAnel);
+		viewDescriptorService.moveViewToLocAtion(viewDescriptors[2], ViewContAinerLocAtion.SidebAr);
 
-		let sidebarViews = viewDescriptorService.getViewContainerModel(sidebarContainer);
-		let panelViews = viewDescriptorService.getViewContainerModel(panelContainer);
+		let sidebArViews = viewDescriptorService.getViewContAinerModel(sidebArContAiner);
+		let pAnelViews = viewDescriptorService.getViewContAinerModel(pAnelContAiner);
 
-		assert.equal(sidebarViews.activeViewDescriptors.length, 1, 'Sidebar container should have 1 view');
-		assert.equal(panelViews.activeViewDescriptors.length, 0, 'Panel container should have no views');
+		Assert.equAl(sidebArViews.ActiveViewDescriptors.length, 1, 'SidebAr contAiner should hAve 1 view');
+		Assert.equAl(pAnelViews.ActiveViewDescriptors.length, 0, 'PAnel contAiner should hAve no views');
 
-		const generatedPanel = assertIsDefined(viewDescriptorService.getViewContainerByViewId(viewDescriptors[0].id));
-		const generatedSidebar = assertIsDefined(viewDescriptorService.getViewContainerByViewId(viewDescriptors[2].id));
+		const generAtedPAnel = AssertIsDefined(viewDescriptorService.getViewContAinerByViewId(viewDescriptors[0].id));
+		const generAtedSidebAr = AssertIsDefined(viewDescriptorService.getViewContAinerByViewId(viewDescriptors[2].id));
 
-		assert.equal(viewDescriptorService.getViewContainerLocation(generatedPanel), ViewContainerLocation.Panel, 'Generated Panel should be in located in the panel');
-		assert.equal(viewDescriptorService.getViewContainerLocation(generatedSidebar), ViewContainerLocation.Sidebar, 'Generated Sidebar should be in located in the sidebar');
+		Assert.equAl(viewDescriptorService.getViewContAinerLocAtion(generAtedPAnel), ViewContAinerLocAtion.PAnel, 'GenerAted PAnel should be in locAted in the pAnel');
+		Assert.equAl(viewDescriptorService.getViewContAinerLocAtion(generAtedSidebAr), ViewContAinerLocAtion.SidebAr, 'GenerAted SidebAr should be in locAted in the sidebAr');
 
-		assert.equal(viewDescriptorService.getViewContainerLocation(generatedPanel), viewDescriptorService.getViewLocationById(viewDescriptors[0].id), 'Panel view location and container location should match');
-		assert.equal(viewDescriptorService.getViewContainerLocation(generatedSidebar), viewDescriptorService.getViewLocationById(viewDescriptors[2].id), 'Sidebar view location and container location should match');
+		Assert.equAl(viewDescriptorService.getViewContAinerLocAtion(generAtedPAnel), viewDescriptorService.getViewLocAtionById(viewDescriptors[0].id), 'PAnel view locAtion And contAiner locAtion should mAtch');
+		Assert.equAl(viewDescriptorService.getViewContAinerLocAtion(generAtedSidebAr), viewDescriptorService.getViewLocAtionById(viewDescriptors[2].id), 'SidebAr view locAtion And contAiner locAtion should mAtch');
 
-		assert.equal(viewDescriptorService.getDefaultContainerById(viewDescriptors[2].id), panelContainer, `${viewDescriptors[2].name} has wrong default container`);
-		assert.equal(viewDescriptorService.getDefaultContainerById(viewDescriptors[0].id), sidebarContainer, `${viewDescriptors[0].name} has wrong default container`);
+		Assert.equAl(viewDescriptorService.getDefAultContAinerById(viewDescriptors[2].id), pAnelContAiner, `${viewDescriptors[2].nAme} hAs wrong defAult contAiner`);
+		Assert.equAl(viewDescriptorService.getDefAultContAinerById(viewDescriptors[0].id), sidebArContAiner, `${viewDescriptors[0].nAme} hAs wrong defAult contAiner`);
 
-		viewDescriptorService.moveViewToLocation(viewDescriptors[0], ViewContainerLocation.Sidebar);
-		viewDescriptorService.moveViewToLocation(viewDescriptors[2], ViewContainerLocation.Panel);
+		viewDescriptorService.moveViewToLocAtion(viewDescriptors[0], ViewContAinerLocAtion.SidebAr);
+		viewDescriptorService.moveViewToLocAtion(viewDescriptors[2], ViewContAinerLocAtion.PAnel);
 
-		sidebarViews = viewDescriptorService.getViewContainerModel(sidebarContainer);
-		panelViews = viewDescriptorService.getViewContainerModel(panelContainer);
+		sidebArViews = viewDescriptorService.getViewContAinerModel(sidebArContAiner);
+		pAnelViews = viewDescriptorService.getViewContAinerModel(pAnelContAiner);
 
-		assert.equal(sidebarViews.activeViewDescriptors.length, 1, 'Sidebar should have 2 views');
-		assert.equal(panelViews.activeViewDescriptors.length, 0, 'Panel should have 1 view');
+		Assert.equAl(sidebArViews.ActiveViewDescriptors.length, 1, 'SidebAr should hAve 2 views');
+		Assert.equAl(pAnelViews.ActiveViewDescriptors.length, 0, 'PAnel should hAve 1 view');
 
-		assert.equal(viewDescriptorService.getViewLocationById(viewDescriptors[0].id), ViewContainerLocation.Sidebar, 'View should be located in the sidebar');
-		assert.equal(viewDescriptorService.getViewLocationById(viewDescriptors[2].id), ViewContainerLocation.Panel, 'View should be located in the panel');
+		Assert.equAl(viewDescriptorService.getViewLocAtionById(viewDescriptors[0].id), ViewContAinerLocAtion.SidebAr, 'View should be locAted in the sidebAr');
+		Assert.equAl(viewDescriptorService.getViewLocAtionById(viewDescriptors[2].id), ViewContAinerLocAtion.PAnel, 'View should be locAted in the pAnel');
 	});
 
-	test('move view events', async function () {
+	test('move view events', Async function () {
 		const viewDescriptors: IViewDescriptor[] = [
 			{
 				id: 'view1',
 				ctorDescriptor: null!,
-				name: 'Test View 1',
-				canMoveView: true
+				nAme: 'Test View 1',
+				cAnMoveView: true
 			},
 			{
 				id: 'view2',
 				ctorDescriptor: null!,
-				name: 'Test View 2',
-				canMoveView: true
+				nAme: 'Test View 2',
+				cAnMoveView: true
 			},
 			{
 				id: 'view3',
 				ctorDescriptor: null!,
-				name: 'Test View 3',
-				canMoveView: true
+				nAme: 'Test View 3',
+				cAnMoveView: true
 			}
 		];
 
 
 		let expectedSequence = '';
-		let actualSequence = '';
-		const disposables = [];
+		let ActuAlSequence = '';
+		const disposAbles = [];
 
-		const containerMoveString = (view: IViewDescriptor, from: ViewContainer, to: ViewContainer) => {
+		const contAinerMoveString = (view: IViewDescriptor, from: ViewContAiner, to: ViewContAiner) => {
 			return `Moved ${view.id} from ${from.id} to ${to.id}\n`;
 		};
 
-		const locationMoveString = (view: IViewDescriptor, from: ViewContainerLocation, to: ViewContainerLocation) => {
-			return `Moved ${view.id} from ${from === ViewContainerLocation.Sidebar ? 'Sidebar' : 'Panel'} to ${to === ViewContainerLocation.Sidebar ? 'Sidebar' : 'Panel'}\n`;
+		const locAtionMoveString = (view: IViewDescriptor, from: ViewContAinerLocAtion, to: ViewContAinerLocAtion) => {
+			return `Moved ${view.id} from ${from === ViewContAinerLocAtion.SidebAr ? 'SidebAr' : 'PAnel'} to ${to === ViewContAinerLocAtion.SidebAr ? 'SidebAr' : 'PAnel'}\n`;
 		};
-		disposables.push(viewDescriptorService.onDidChangeContainer(({ views, from, to }) => {
-			views.forEach(view => {
-				actualSequence += containerMoveString(view, from, to);
+		disposAbles.push(viewDescriptorService.onDidChAngeContAiner(({ views, from, to }) => {
+			views.forEAch(view => {
+				ActuAlSequence += contAinerMoveString(view, from, to);
 			});
 		}));
 
-		disposables.push(viewDescriptorService.onDidChangeLocation(({ views, from, to }) => {
-			views.forEach(view => {
-				actualSequence += locationMoveString(view, from, to);
+		disposAbles.push(viewDescriptorService.onDidChAngeLocAtion(({ views, from, to }) => {
+			views.forEAch(view => {
+				ActuAlSequence += locAtionMoveString(view, from, to);
 			});
 		}));
 
-		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebarContainer);
-		ViewsRegistry.registerViews(viewDescriptors.slice(2), panelContainer);
+		ViewsRegistry.registerViews(viewDescriptors.slice(0, 2), sidebArContAiner);
+		ViewsRegistry.registerViews(viewDescriptors.slice(2), pAnelContAiner);
 
-		expectedSequence += locationMoveString(viewDescriptors[0], ViewContainerLocation.Sidebar, ViewContainerLocation.Panel);
-		viewDescriptorService.moveViewToLocation(viewDescriptors[0], ViewContainerLocation.Panel);
-		expectedSequence += containerMoveString(viewDescriptors[0], sidebarContainer, viewDescriptorService.getViewContainerByViewId(viewDescriptors[0].id)!);
+		expectedSequence += locAtionMoveString(viewDescriptors[0], ViewContAinerLocAtion.SidebAr, ViewContAinerLocAtion.PAnel);
+		viewDescriptorService.moveViewToLocAtion(viewDescriptors[0], ViewContAinerLocAtion.PAnel);
+		expectedSequence += contAinerMoveString(viewDescriptors[0], sidebArContAiner, viewDescriptorService.getViewContAinerByViewId(viewDescriptors[0].id)!);
 
-		expectedSequence += locationMoveString(viewDescriptors[2], ViewContainerLocation.Panel, ViewContainerLocation.Sidebar);
-		viewDescriptorService.moveViewToLocation(viewDescriptors[2], ViewContainerLocation.Sidebar);
-		expectedSequence += containerMoveString(viewDescriptors[2], panelContainer, viewDescriptorService.getViewContainerByViewId(viewDescriptors[2].id)!);
+		expectedSequence += locAtionMoveString(viewDescriptors[2], ViewContAinerLocAtion.PAnel, ViewContAinerLocAtion.SidebAr);
+		viewDescriptorService.moveViewToLocAtion(viewDescriptors[2], ViewContAinerLocAtion.SidebAr);
+		expectedSequence += contAinerMoveString(viewDescriptors[2], pAnelContAiner, viewDescriptorService.getViewContAinerByViewId(viewDescriptors[2].id)!);
 
 
-		expectedSequence += locationMoveString(viewDescriptors[0], ViewContainerLocation.Panel, ViewContainerLocation.Sidebar);
-		expectedSequence += containerMoveString(viewDescriptors[0], viewDescriptorService.getViewContainerByViewId(viewDescriptors[0].id)!, sidebarContainer);
-		viewDescriptorService.moveViewsToContainer([viewDescriptors[0]], sidebarContainer);
+		expectedSequence += locAtionMoveString(viewDescriptors[0], ViewContAinerLocAtion.PAnel, ViewContAinerLocAtion.SidebAr);
+		expectedSequence += contAinerMoveString(viewDescriptors[0], viewDescriptorService.getViewContAinerByViewId(viewDescriptors[0].id)!, sidebArContAiner);
+		viewDescriptorService.moveViewsToContAiner([viewDescriptors[0]], sidebArContAiner);
 
-		expectedSequence += locationMoveString(viewDescriptors[2], ViewContainerLocation.Sidebar, ViewContainerLocation.Panel);
-		expectedSequence += containerMoveString(viewDescriptors[2], viewDescriptorService.getViewContainerByViewId(viewDescriptors[2].id)!, panelContainer);
-		viewDescriptorService.moveViewsToContainer([viewDescriptors[2]], panelContainer);
+		expectedSequence += locAtionMoveString(viewDescriptors[2], ViewContAinerLocAtion.SidebAr, ViewContAinerLocAtion.PAnel);
+		expectedSequence += contAinerMoveString(viewDescriptors[2], viewDescriptorService.getViewContAinerByViewId(viewDescriptors[2].id)!, pAnelContAiner);
+		viewDescriptorService.moveViewsToContAiner([viewDescriptors[2]], pAnelContAiner);
 
-		expectedSequence += locationMoveString(viewDescriptors[0], ViewContainerLocation.Sidebar, ViewContainerLocation.Panel);
-		expectedSequence += containerMoveString(viewDescriptors[0], sidebarContainer, panelContainer);
-		viewDescriptorService.moveViewsToContainer([viewDescriptors[0]], panelContainer);
+		expectedSequence += locAtionMoveString(viewDescriptors[0], ViewContAinerLocAtion.SidebAr, ViewContAinerLocAtion.PAnel);
+		expectedSequence += contAinerMoveString(viewDescriptors[0], sidebArContAiner, pAnelContAiner);
+		viewDescriptorService.moveViewsToContAiner([viewDescriptors[0]], pAnelContAiner);
 
-		expectedSequence += locationMoveString(viewDescriptors[2], ViewContainerLocation.Panel, ViewContainerLocation.Sidebar);
-		expectedSequence += containerMoveString(viewDescriptors[2], panelContainer, sidebarContainer);
-		viewDescriptorService.moveViewsToContainer([viewDescriptors[2]], sidebarContainer);
+		expectedSequence += locAtionMoveString(viewDescriptors[2], ViewContAinerLocAtion.PAnel, ViewContAinerLocAtion.SidebAr);
+		expectedSequence += contAinerMoveString(viewDescriptors[2], pAnelContAiner, sidebArContAiner);
+		viewDescriptorService.moveViewsToContAiner([viewDescriptors[2]], sidebArContAiner);
 
-		expectedSequence += locationMoveString(viewDescriptors[1], ViewContainerLocation.Sidebar, ViewContainerLocation.Panel);
-		expectedSequence += locationMoveString(viewDescriptors[2], ViewContainerLocation.Sidebar, ViewContainerLocation.Panel);
-		expectedSequence += containerMoveString(viewDescriptors[1], sidebarContainer, panelContainer);
-		expectedSequence += containerMoveString(viewDescriptors[2], sidebarContainer, panelContainer);
-		viewDescriptorService.moveViewsToContainer([viewDescriptors[1], viewDescriptors[2]], panelContainer);
+		expectedSequence += locAtionMoveString(viewDescriptors[1], ViewContAinerLocAtion.SidebAr, ViewContAinerLocAtion.PAnel);
+		expectedSequence += locAtionMoveString(viewDescriptors[2], ViewContAinerLocAtion.SidebAr, ViewContAinerLocAtion.PAnel);
+		expectedSequence += contAinerMoveString(viewDescriptors[1], sidebArContAiner, pAnelContAiner);
+		expectedSequence += contAinerMoveString(viewDescriptors[2], sidebArContAiner, pAnelContAiner);
+		viewDescriptorService.moveViewsToContAiner([viewDescriptors[1], viewDescriptors[2]], pAnelContAiner);
 
-		assert.equal(actualSequence, expectedSequence, 'Event sequence not matching expected sequence');
+		Assert.equAl(ActuAlSequence, expectedSequence, 'Event sequence not mAtching expected sequence');
 	});
 
 });

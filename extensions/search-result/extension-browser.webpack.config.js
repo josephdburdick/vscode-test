@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 //@ts-check
 
 'use strict';
 
-const withBrowserDefaults = require('../shared.webpack.config').browser;
-const path = require('path');
+const withBrowserDefAults = require('../shAred.webpAck.config').browser;
+const pAth = require('pAth');
 
-module.exports = withBrowserDefaults({
-	context: __dirname,
+module.exports = withBrowserDefAults({
+	context: __dirnAme,
 	entry: {
 		extension: './src/extension.ts'
 	},
 	output: {
-		filename: 'extension.js',
-		path: path.join(__dirname, 'dist')
+		filenAme: 'extension.js',
+		pAth: pAth.join(__dirnAme, 'dist')
 	}
 });

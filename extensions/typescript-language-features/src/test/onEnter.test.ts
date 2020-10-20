@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
-import * as vscode from 'vscode';
-import { CURSOR, withRandomFileEditor, wait, joinLines } from './testUtils';
+import * As Assert from 'Assert';
+import 'mochA';
+import * As vscode from 'vscode';
+import { CURSOR, withRAndomFileEditor, wAit, joinLines } from './testUtils';
 
-const onDocumentChange = (doc: vscode.TextDocument): Promise<vscode.TextDocument> => {
+const onDocumentChAnge = (doc: vscode.TextDocument): Promise<vscode.TextDocument> => {
 	return new Promise<vscode.TextDocument>(resolve => {
-		const sub = vscode.workspace.onDidChangeTextDocument(e => {
+		const sub = vscode.workspAce.onDidChAngeTextDocument(e => {
 			if (e.document !== doc) {
 				return;
 			}
@@ -20,18 +20,18 @@ const onDocumentChange = (doc: vscode.TextDocument): Promise<vscode.TextDocument
 	});
 };
 
-const type = async (document: vscode.TextDocument, text: string): Promise<vscode.TextDocument> => {
-	const onChange = onDocumentChange(document);
-	await vscode.commands.executeCommand('type', { text });
-	await onChange;
+const type = Async (document: vscode.TextDocument, text: string): Promise<vscode.TextDocument> => {
+	const onChAnge = onDocumentChAnge(document);
+	AwAit vscode.commAnds.executeCommAnd('type', { text });
+	AwAit onChAnge;
 	return document;
 };
 
 suite('OnEnter', () => {
-	test('should indent after if block with braces', () => {
-		return withRandomFileEditor(`if (true) {${CURSOR}`, 'js', async (_editor, document) => {
-			await type(document, '\nx');
-			assert.strictEqual(
+	test('should indent After if block with brAces', () => {
+		return withRAndomFileEditor(`if (true) {${CURSOR}`, 'js', Async (_editor, document) => {
+			AwAit type(document, '\nx');
+			Assert.strictEquAl(
 				document.getText(),
 				joinLines(
 					`if (true) {`,
@@ -39,12 +39,12 @@ suite('OnEnter', () => {
 		});
 	});
 
-	test('should indent within empty object literal', () => {
-		return withRandomFileEditor(`({${CURSOR}})`, 'js', async (_editor, document) => {
-			await type(document, '\nx');
-			await wait(500);
+	test('should indent within empty object literAl', () => {
+		return withRAndomFileEditor(`({${CURSOR}})`, 'js', Async (_editor, document) => {
+			AwAit type(document, '\nx');
+			AwAit wAit(500);
 
-			assert.strictEqual(
+			Assert.strictEquAl(
 				document.getText(),
 				joinLines(`({`,
 					`    x`,

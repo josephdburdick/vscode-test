@@ -1,133 +1,133 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { BoundModelReferenceCollection } from 'vs/workbench/api/browser/mainThreadDocuments';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
-import { timeout } from 'vs/base/common/async';
-import { URI } from 'vs/base/common/uri';
-import { extUri } from 'vs/base/common/resources';
+import * As Assert from 'Assert';
+import { BoundModelReferenceCollection } from 'vs/workbench/Api/browser/mAinThreAdDocuments';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { timeout } from 'vs/bAse/common/Async';
+import { URI } from 'vs/bAse/common/uri';
+import { extUri } from 'vs/bAse/common/resources';
 
 suite('BoundModelReferenceCollection', () => {
 
 	let col = new BoundModelReferenceCollection(extUri, 15, 75);
 
-	teardown(() => {
+	teArdown(() => {
 		col.dispose();
 	});
 
-	test('max age', async () => {
+	test('mAx Age', Async () => {
 
-		let didDispose = false;
+		let didDispose = fAlse;
 
-		col.add(
-			URI.parse('test://farboo'),
+		col.Add(
+			URI.pArse('test://fArboo'),
 			{
-				object: <any>{ textEditorModel: createTextModel('farboo') },
+				object: <Any>{ textEditorModel: creAteTextModel('fArboo') },
 				dispose() {
 					didDispose = true;
 				}
 			});
 
-		await timeout(30);
-		assert.equal(didDispose, true);
+		AwAit timeout(30);
+		Assert.equAl(didDispose, true);
 	});
 
-	test('max size', () => {
+	test('mAx size', () => {
 
 		let disposed: number[] = [];
 
-		col.add(
-			URI.parse('test://farboo'),
+		col.Add(
+			URI.pArse('test://fArboo'),
 			{
-				object: <any>{ textEditorModel: createTextModel('farboo') },
+				object: <Any>{ textEditorModel: creAteTextModel('fArboo') },
 				dispose() {
 					disposed.push(0);
 				}
 			});
 
-		col.add(
-			URI.parse('test://boofar'),
+		col.Add(
+			URI.pArse('test://boofAr'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boofar') },
+				object: <Any>{ textEditorModel: creAteTextModel('boofAr') },
 				dispose() {
 					disposed.push(1);
 				}
 			});
 
-		col.add(
-			URI.parse('test://xxxxxxx'),
+		col.Add(
+			URI.pArse('test://xxxxxxx'),
 			{
-				object: <any>{ textEditorModel: createTextModel(new Array(71).join('x')) },
+				object: <Any>{ textEditorModel: creAteTextModel(new ArrAy(71).join('x')) },
 				dispose() {
 					disposed.push(2);
 				}
 			});
 
-		assert.deepEqual(disposed, [0, 1]);
+		Assert.deepEquAl(disposed, [0, 1]);
 	});
 
 	test('dispose uri', () => {
 
 		let disposed: number[] = [];
 
-		col.add(
-			URI.parse('test:///farboo'),
+		col.Add(
+			URI.pArse('test:///fArboo'),
 			{
-				object: <any>{ textEditorModel: createTextModel('farboo') },
+				object: <Any>{ textEditorModel: creAteTextModel('fArboo') },
 				dispose() {
 					disposed.push(0);
 				}
 			});
 
-		col.add(
-			URI.parse('test:///boofar'),
+		col.Add(
+			URI.pArse('test:///boofAr'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boofar') },
+				object: <Any>{ textEditorModel: creAteTextModel('boofAr') },
 				dispose() {
 					disposed.push(1);
 				}
 			});
 
-		col.add(
-			URI.parse('test:///boo/far1'),
+		col.Add(
+			URI.pArse('test:///boo/fAr1'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boo/far1') },
+				object: <Any>{ textEditorModel: creAteTextModel('boo/fAr1') },
 				dispose() {
 					disposed.push(2);
 				}
 			});
 
-		col.add(
-			URI.parse('test:///boo/far2'),
+		col.Add(
+			URI.pArse('test:///boo/fAr2'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boo/far2') },
+				object: <Any>{ textEditorModel: creAteTextModel('boo/fAr2') },
 				dispose() {
 					disposed.push(3);
 				}
 			});
 
-		col.add(
-			URI.parse('test:///boo1/far'),
+		col.Add(
+			URI.pArse('test:///boo1/fAr'),
 			{
-				object: <any>{ textEditorModel: createTextModel('boo1/far') },
+				object: <Any>{ textEditorModel: creAteTextModel('boo1/fAr') },
 				dispose() {
 					disposed.push(4);
 				}
 			});
 
-		col.remove(URI.parse('test:///unknown'));
-		assert.equal(disposed.length, 0);
+		col.remove(URI.pArse('test:///unknown'));
+		Assert.equAl(disposed.length, 0);
 
-		col.remove(URI.parse('test:///farboo'));
-		assert.deepEqual(disposed, [0]);
+		col.remove(URI.pArse('test:///fArboo'));
+		Assert.deepEquAl(disposed, [0]);
 
 		disposed = [];
 
-		col.remove(URI.parse('test:///boo'));
-		assert.deepEqual(disposed, [2, 3]);
+		col.remove(URI.pArse('test:///boo'));
+		Assert.deepEquAl(disposed, [2, 3]);
 	});
 
 });

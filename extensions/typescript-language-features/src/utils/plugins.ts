@@ -1,91 +1,91 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as arrays from './arrays';
-import { Disposable } from './dispose';
+import * As vscode from 'vscode';
+import * As ArrAys from './ArrAys';
+import { DisposAble } from './dispose';
 
-export interface TypeScriptServerPlugin {
-	readonly path: string;
-	readonly name: string;
-	readonly enableForWorkspaceTypeScriptVersions: boolean;
-	readonly languages: ReadonlyArray<string>;
-	readonly configNamespace?: string
+export interfAce TypeScriptServerPlugin {
+	reAdonly pAth: string;
+	reAdonly nAme: string;
+	reAdonly enAbleForWorkspAceTypeScriptVersions: booleAn;
+	reAdonly lAnguAges: ReAdonlyArrAy<string>;
+	reAdonly configNAmespAce?: string
 }
 
-namespace TypeScriptServerPlugin {
-	export function equals(a: TypeScriptServerPlugin, b: TypeScriptServerPlugin): boolean {
-		return a.path === b.path
-			&& a.name === b.name
-			&& a.enableForWorkspaceTypeScriptVersions === b.enableForWorkspaceTypeScriptVersions
-			&& arrays.equals(a.languages, b.languages);
+nAmespAce TypeScriptServerPlugin {
+	export function equAls(A: TypeScriptServerPlugin, b: TypeScriptServerPlugin): booleAn {
+		return A.pAth === b.pAth
+			&& A.nAme === b.nAme
+			&& A.enAbleForWorkspAceTypeScriptVersions === b.enAbleForWorkspAceTypeScriptVersions
+			&& ArrAys.equAls(A.lAnguAges, b.lAnguAges);
 	}
 }
 
-export class PluginManager extends Disposable {
-	private readonly _pluginConfigurations = new Map<string, {}>();
+export clAss PluginMAnAger extends DisposAble {
+	privAte reAdonly _pluginConfigurAtions = new MAp<string, {}>();
 
-	private _plugins: Map<string, ReadonlyArray<TypeScriptServerPlugin>> | undefined;
+	privAte _plugins: MAp<string, ReAdonlyArrAy<TypeScriptServerPlugin>> | undefined;
 
 	constructor() {
 		super();
 
-		vscode.extensions.onDidChange(() => {
+		vscode.extensions.onDidChAnge(() => {
 			if (!this._plugins) {
 				return;
 			}
-			const newPlugins = this.readPlugins();
-			if (!arrays.equals(arrays.flatten(Array.from(this._plugins.values())), arrays.flatten(Array.from(newPlugins.values())), TypeScriptServerPlugin.equals)) {
+			const newPlugins = this.reAdPlugins();
+			if (!ArrAys.equAls(ArrAys.flAtten(ArrAy.from(this._plugins.vAlues())), ArrAys.flAtten(ArrAy.from(newPlugins.vAlues())), TypeScriptServerPlugin.equAls)) {
 				this._plugins = newPlugins;
-				this._onDidUpdatePlugins.fire(this);
+				this._onDidUpdAtePlugins.fire(this);
 			}
-		}, undefined, this._disposables);
+		}, undefined, this._disposAbles);
 	}
 
-	public get plugins(): ReadonlyArray<TypeScriptServerPlugin> {
+	public get plugins(): ReAdonlyArrAy<TypeScriptServerPlugin> {
 		if (!this._plugins) {
-			this._plugins = this.readPlugins();
+			this._plugins = this.reAdPlugins();
 		}
-		return arrays.flatten(Array.from(this._plugins.values()));
+		return ArrAys.flAtten(ArrAy.from(this._plugins.vAlues()));
 	}
 
-	private readonly _onDidUpdatePlugins = this._register(new vscode.EventEmitter<this>());
-	public readonly onDidChangePlugins = this._onDidUpdatePlugins.event;
+	privAte reAdonly _onDidUpdAtePlugins = this._register(new vscode.EventEmitter<this>());
+	public reAdonly onDidChAngePlugins = this._onDidUpdAtePlugins.event;
 
-	private readonly _onDidUpdateConfig = this._register(new vscode.EventEmitter<{ pluginId: string, config: {} }>());
-	public readonly onDidUpdateConfig = this._onDidUpdateConfig.event;
+	privAte reAdonly _onDidUpdAteConfig = this._register(new vscode.EventEmitter<{ pluginId: string, config: {} }>());
+	public reAdonly onDidUpdAteConfig = this._onDidUpdAteConfig.event;
 
-	public setConfiguration(pluginId: string, config: {}) {
-		this._pluginConfigurations.set(pluginId, config);
-		this._onDidUpdateConfig.fire({ pluginId, config });
+	public setConfigurAtion(pluginId: string, config: {}) {
+		this._pluginConfigurAtions.set(pluginId, config);
+		this._onDidUpdAteConfig.fire({ pluginId, config });
 	}
 
-	public configurations(): IterableIterator<[string, {}]> {
-		return this._pluginConfigurations.entries();
+	public configurAtions(): IterAbleIterAtor<[string, {}]> {
+		return this._pluginConfigurAtions.entries();
 	}
 
-	private readPlugins() {
-		const pluginMap = new Map<string, ReadonlyArray<TypeScriptServerPlugin>>();
-		for (const extension of vscode.extensions.all) {
-			const pack = extension.packageJSON;
-			if (pack.contributes && Array.isArray(pack.contributes.typescriptServerPlugins)) {
+	privAte reAdPlugins() {
+		const pluginMAp = new MAp<string, ReAdonlyArrAy<TypeScriptServerPlugin>>();
+		for (const extension of vscode.extensions.All) {
+			const pAck = extension.pAckAgeJSON;
+			if (pAck.contributes && ArrAy.isArrAy(pAck.contributes.typescriptServerPlugins)) {
 				const plugins: TypeScriptServerPlugin[] = [];
-				for (const plugin of pack.contributes.typescriptServerPlugins) {
+				for (const plugin of pAck.contributes.typescriptServerPlugins) {
 					plugins.push({
-						name: plugin.name,
-						enableForWorkspaceTypeScriptVersions: !!plugin.enableForWorkspaceTypeScriptVersions,
-						path: extension.extensionPath,
-						languages: Array.isArray(plugin.languages) ? plugin.languages : [],
-						configNamespace: plugin.configNamespace,
+						nAme: plugin.nAme,
+						enAbleForWorkspAceTypeScriptVersions: !!plugin.enAbleForWorkspAceTypeScriptVersions,
+						pAth: extension.extensionPAth,
+						lAnguAges: ArrAy.isArrAy(plugin.lAnguAges) ? plugin.lAnguAges : [],
+						configNAmespAce: plugin.configNAmespAce,
 					});
 				}
 				if (plugins.length) {
-					pluginMap.set(extension.id, plugins);
+					pluginMAp.set(extension.id, plugins);
 				}
 			}
 		}
-		return pluginMap;
+		return pluginMAp;
 	}
 }

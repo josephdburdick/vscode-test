@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { MainContext, MainThreadKeytarShape, IExtHostContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ICredentialsService } from 'vs/workbench/services/credentials/common/credentials';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { MAinContext, MAinThreAdKeytArShApe, IExtHostContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { ICredentiAlsService } from 'vs/workbench/services/credentiAls/common/credentiAls';
 
-@extHostNamedCustomer(MainContext.MainThreadKeytar)
-export class MainThreadKeytar implements MainThreadKeytarShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdKeytAr)
+export clAss MAinThreAdKeytAr implements MAinThreAdKeytArShApe {
 
 	constructor(
 		_extHostContext: IExtHostContext,
-		@ICredentialsService private readonly _credentialsService: ICredentialsService,
+		@ICredentiAlsService privAte reAdonly _credentiAlsService: ICredentiAlsService,
 	) { }
 
-	async $getPassword(service: string, account: string): Promise<string | null> {
-		return this._credentialsService.getPassword(service, account);
+	Async $getPAssword(service: string, Account: string): Promise<string | null> {
+		return this._credentiAlsService.getPAssword(service, Account);
 	}
 
-	async $setPassword(service: string, account: string, password: string): Promise<void> {
-		return this._credentialsService.setPassword(service, account, password);
+	Async $setPAssword(service: string, Account: string, pAssword: string): Promise<void> {
+		return this._credentiAlsService.setPAssword(service, Account, pAssword);
 	}
 
-	async $deletePassword(service: string, account: string): Promise<boolean> {
-		return this._credentialsService.deletePassword(service, account);
+	Async $deletePAssword(service: string, Account: string): Promise<booleAn> {
+		return this._credentiAlsService.deletePAssword(service, Account);
 	}
 
-	async $findPassword(service: string): Promise<string | null> {
-		return this._credentialsService.findPassword(service);
+	Async $findPAssword(service: string): Promise<string | null> {
+		return this._credentiAlsService.findPAssword(service);
 	}
 
-	async $findCredentials(service: string): Promise<Array<{ account: string, password: string }>> {
-		return this._credentialsService.findCredentials(service);
+	Async $findCredentiAls(service: string): Promise<ArrAy<{ Account: string, pAssword: string }>> {
+		return this._credentiAlsService.findCredentiAls(service);
 	}
 
 	dispose(): void {

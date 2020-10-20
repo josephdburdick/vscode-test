@@ -1,101 +1,101 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { TrimTrailingWhitespaceCommand, trimTrailingWhitespace } from 'vs/editor/common/commands/trimTrailingWhitespaceCommand';
+import * As Assert from 'Assert';
+import { TrimTrAilingWhitespAceCommAnd, trimTrAilingWhitespAce } from 'vs/editor/common/commAnds/trimTrAilingWhitespAceCommAnd';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
-import { getEditOperation } from 'vs/editor/test/browser/testCommand';
+import { IIdentifiedSingleEditOperAtion } from 'vs/editor/common/model';
+import { getEditOperAtion } from 'vs/editor/test/browser/testCommAnd';
 import { withEditorModel } from 'vs/editor/test/common/editorTestUtils';
 
 /**
- * Create single edit operation
+ * CreAte single edit operAtion
  */
-function createInsertDeleteSingleEditOp(text: string | null, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+function creAteInsertDeleteSingleEditOp(text: string | null, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperAtion {
 	return {
-		range: new Range(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
+		rAnge: new RAnge(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
 		text: text
 	};
 }
 
 /**
- * Create single edit operation
+ * CreAte single edit operAtion
  */
-export function createSingleEditOp(text: string | null, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
+export function creAteSingleEditOp(text: string | null, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperAtion {
 	return {
-		range: new Range(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
+		rAnge: new RAnge(selectionLineNumber, selectionColumn, positionLineNumber, positionColumn),
 		text: text,
-		forceMoveMarkers: false
+		forceMoveMArkers: fAlse
 	};
 }
 
-function assertTrimTrailingWhitespaceCommand(text: string[], expected: IIdentifiedSingleEditOperation[]): void {
+function AssertTrimTrAilingWhitespAceCommAnd(text: string[], expected: IIdentifiedSingleEditOperAtion[]): void {
 	return withEditorModel(text, (model) => {
-		let op = new TrimTrailingWhitespaceCommand(new Selection(1, 1, 1, 1), []);
-		let actual = getEditOperation(model, op);
-		assert.deepEqual(actual, expected);
+		let op = new TrimTrAilingWhitespAceCommAnd(new Selection(1, 1, 1, 1), []);
+		let ActuAl = getEditOperAtion(model, op);
+		Assert.deepEquAl(ActuAl, expected);
 	});
 }
 
-function assertTrimTrailingWhitespace(text: string[], cursors: Position[], expected: IIdentifiedSingleEditOperation[]): void {
+function AssertTrimTrAilingWhitespAce(text: string[], cursors: Position[], expected: IIdentifiedSingleEditOperAtion[]): void {
 	return withEditorModel(text, (model) => {
-		let actual = trimTrailingWhitespace(model, cursors);
-		assert.deepEqual(actual, expected);
+		let ActuAl = trimTrAilingWhitespAce(model, cursors);
+		Assert.deepEquAl(ActuAl, expected);
 	});
 }
 
-suite('Editor Commands - Trim Trailing Whitespace Command', () => {
+suite('Editor CommAnds - Trim TrAiling WhitespAce CommAnd', () => {
 
-	test('remove trailing whitespace', function () {
-		assertTrimTrailingWhitespaceCommand([''], []);
-		assertTrimTrailingWhitespaceCommand(['text'], []);
-		assertTrimTrailingWhitespaceCommand(['text   '], [createSingleEditOp(null, 1, 5, 1, 8)]);
-		assertTrimTrailingWhitespaceCommand(['text\t   '], [createSingleEditOp(null, 1, 5, 1, 9)]);
-		assertTrimTrailingWhitespaceCommand(['\t   '], [createSingleEditOp(null, 1, 1, 1, 5)]);
-		assertTrimTrailingWhitespaceCommand(['text\t'], [createSingleEditOp(null, 1, 5, 1, 6)]);
-		assertTrimTrailingWhitespaceCommand([
+	test('remove trAiling whitespAce', function () {
+		AssertTrimTrAilingWhitespAceCommAnd([''], []);
+		AssertTrimTrAilingWhitespAceCommAnd(['text'], []);
+		AssertTrimTrAilingWhitespAceCommAnd(['text   '], [creAteSingleEditOp(null, 1, 5, 1, 8)]);
+		AssertTrimTrAilingWhitespAceCommAnd(['text\t   '], [creAteSingleEditOp(null, 1, 5, 1, 9)]);
+		AssertTrimTrAilingWhitespAceCommAnd(['\t   '], [creAteSingleEditOp(null, 1, 1, 1, 5)]);
+		AssertTrimTrAilingWhitespAceCommAnd(['text\t'], [creAteSingleEditOp(null, 1, 5, 1, 6)]);
+		AssertTrimTrAilingWhitespAceCommAnd([
 			'some text\t',
 			'some more text',
 			'\t  ',
 			'even more text  ',
-			'and some mixed\t   \t'
+			'And some mixed\t   \t'
 		], [
-			createSingleEditOp(null, 1, 10, 1, 11),
-			createSingleEditOp(null, 3, 1, 3, 4),
-			createSingleEditOp(null, 4, 15, 4, 17),
-			createSingleEditOp(null, 5, 15, 5, 20)
+			creAteSingleEditOp(null, 1, 10, 1, 11),
+			creAteSingleEditOp(null, 3, 1, 3, 4),
+			creAteSingleEditOp(null, 4, 15, 4, 17),
+			creAteSingleEditOp(null, 5, 15, 5, 20)
 		]);
 
 
-		assertTrimTrailingWhitespace(['text   '], [new Position(1, 1), new Position(1, 2), new Position(1, 3)], [createInsertDeleteSingleEditOp(null, 1, 5, 1, 8)]);
-		assertTrimTrailingWhitespace(['text   '], [new Position(1, 1), new Position(1, 5)], [createInsertDeleteSingleEditOp(null, 1, 5, 1, 8)]);
-		assertTrimTrailingWhitespace(['text   '], [new Position(1, 1), new Position(1, 5), new Position(1, 6)], [createInsertDeleteSingleEditOp(null, 1, 6, 1, 8)]);
-		assertTrimTrailingWhitespace([
+		AssertTrimTrAilingWhitespAce(['text   '], [new Position(1, 1), new Position(1, 2), new Position(1, 3)], [creAteInsertDeleteSingleEditOp(null, 1, 5, 1, 8)]);
+		AssertTrimTrAilingWhitespAce(['text   '], [new Position(1, 1), new Position(1, 5)], [creAteInsertDeleteSingleEditOp(null, 1, 5, 1, 8)]);
+		AssertTrimTrAilingWhitespAce(['text   '], [new Position(1, 1), new Position(1, 5), new Position(1, 6)], [creAteInsertDeleteSingleEditOp(null, 1, 6, 1, 8)]);
+		AssertTrimTrAilingWhitespAce([
 			'some text\t',
 			'some more text',
 			'\t  ',
 			'even more text  ',
-			'and some mixed\t   \t'
+			'And some mixed\t   \t'
 		], [], [
-			createInsertDeleteSingleEditOp(null, 1, 10, 1, 11),
-			createInsertDeleteSingleEditOp(null, 3, 1, 3, 4),
-			createInsertDeleteSingleEditOp(null, 4, 15, 4, 17),
-			createInsertDeleteSingleEditOp(null, 5, 15, 5, 20)
+			creAteInsertDeleteSingleEditOp(null, 1, 10, 1, 11),
+			creAteInsertDeleteSingleEditOp(null, 3, 1, 3, 4),
+			creAteInsertDeleteSingleEditOp(null, 4, 15, 4, 17),
+			creAteInsertDeleteSingleEditOp(null, 5, 15, 5, 20)
 		]);
-		assertTrimTrailingWhitespace([
+		AssertTrimTrAilingWhitespAce([
 			'some text\t',
 			'some more text',
 			'\t  ',
 			'even more text  ',
-			'and some mixed\t   \t'
+			'And some mixed\t   \t'
 		], [new Position(1, 11), new Position(3, 2), new Position(5, 1), new Position(4, 1), new Position(5, 10)], [
-			createInsertDeleteSingleEditOp(null, 3, 2, 3, 4),
-			createInsertDeleteSingleEditOp(null, 4, 15, 4, 17),
-			createInsertDeleteSingleEditOp(null, 5, 15, 5, 20)
+			creAteInsertDeleteSingleEditOp(null, 3, 2, 3, 4),
+			creAteInsertDeleteSingleEditOp(null, 4, 15, 4, 17),
+			creAteInsertDeleteSingleEditOp(null, 5, 15, 5, 20)
 		]);
 	});
 

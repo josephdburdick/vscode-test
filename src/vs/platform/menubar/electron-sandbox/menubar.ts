@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ICommonMenubarService } from 'vs/platform/menubar/common/menubar';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICommonMenubArService } from 'vs/plAtform/menubAr/common/menubAr';
 
-export const IMenubarService = createDecorator<IMenubarService>('menubarService');
+export const IMenubArService = creAteDecorAtor<IMenubArService>('menubArService');
 
-export interface IMenubarService extends ICommonMenubarService {
-	readonly _serviceBrand: undefined;
+export interfAce IMenubArService extends ICommonMenubArService {
+	reAdonly _serviceBrAnd: undefined;
 }

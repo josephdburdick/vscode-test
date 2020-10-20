@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { getMachineId } from 'vs/base/node/id';
-import { getMac } from 'vs/base/node/macAddress';
+import * As Assert from 'Assert';
+import { getMAchineId } from 'vs/bAse/node/id';
+import { getMAc } from 'vs/bAse/node/mAcAddress';
 
 suite('ID', () => {
 
-	test('getMachineId', function () {
+	test('getMAchineId', function () {
 		this.timeout(20000);
-		return getMachineId().then(id => {
-			assert.ok(id);
+		return getMAchineId().then(id => {
+			Assert.ok(id);
 		});
 	});
 
-	test('getMac', () => {
-		return getMac().then(macAddress => {
-			assert.ok(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(macAddress), `Expected a MAC address, got: ${macAddress}`);
+	test('getMAc', () => {
+		return getMAc().then(mAcAddress => {
+			Assert.ok(/^([0-9A-FA-f]{2}[:-]){5}([0-9A-FA-f]{2})$/.test(mAcAddress), `Expected A MAC Address, got: ${mAcAddress}`);
 		});
 	});
 });

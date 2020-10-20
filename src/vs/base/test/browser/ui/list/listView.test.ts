@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ListView } from 'vs/base/browser/ui/list/listView';
-import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
-import { range } from 'vs/base/common/arrays';
+import * As Assert from 'Assert';
+import { ListView } from 'vs/bAse/browser/ui/list/listView';
+import { IListVirtuAlDelegAte, IListRenderer } from 'vs/bAse/browser/ui/list/list';
+import { rAnge } from 'vs/bAse/common/ArrAys';
 
 suite('ListView', function () {
-	test('all rows get disposed', function () {
-		const element = document.createElement('div');
+	test('All rows get disposed', function () {
+		const element = document.creAteElement('div');
 		element.style.height = '200px';
 		element.style.width = '200px';
 
-		const delegate: IListVirtualDelegate<number> = {
+		const delegAte: IListVirtuAlDelegAte<number> = {
 			getHeight() { return 20; },
-			getTemplateId() { return 'template'; }
+			getTemplAteId() { return 'templAte'; }
 		};
 
-		let templatesCount = 0;
+		let templAtesCount = 0;
 
 		const renderer: IListRenderer<number, void> = {
-			templateId: 'template',
-			renderTemplate() { templatesCount++; },
+			templAteId: 'templAte',
+			renderTemplAte() { templAtesCount++; },
 			renderElement() { },
-			disposeTemplate() { templatesCount--; }
+			disposeTemplAte() { templAtesCount--; }
 		};
 
-		const listView = new ListView<number>(element, delegate, [renderer]);
-		listView.layout(200);
+		const listView = new ListView<number>(element, delegAte, [renderer]);
+		listView.lAyout(200);
 
-		assert.equal(templatesCount, 0, 'no templates have been allocated');
-		listView.splice(0, 0, range(100));
-		assert.equal(templatesCount, 10, 'some templates have been allocated');
+		Assert.equAl(templAtesCount, 0, 'no templAtes hAve been AllocAted');
+		listView.splice(0, 0, rAnge(100));
+		Assert.equAl(templAtesCount, 10, 'some templAtes hAve been AllocAted');
 		listView.dispose();
-		assert.equal(templatesCount, 0, 'all templates have been disposed');
+		Assert.equAl(templAtesCount, 0, 'All templAtes hAve been disposed');
 	});
 });

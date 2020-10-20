@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { IContentWidget, ICodeEditor, IContentWidgetPosition, ContentWidgetPositionPreference, IOverlayWidget, IOverlayWidgetPosition } from 'vs/editor/browser/editorBrowser';
-import { ConfigurationChangedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { IContentWidget, ICodeEditor, IContentWidgetPosition, ContentWidgetPositionPreference, IOverlAyWidget, IOverlAyWidgetPosition } from 'vs/editor/browser/editorBrowser';
+import { ConfigurAtionChAngedEvent, EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
-import { renderHoverAction, HoverWidget } from 'vs/base/browser/ui/hover/hoverWidget';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { renderHoverAction, HoverWidget } from 'vs/bAse/browser/ui/hover/hoverWidget';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 
-export class ContentHoverWidget extends Widget implements IContentWidget {
+export clAss ContentHoverWidget extends Widget implements IContentWidget {
 
-	protected readonly _hover: HoverWidget;
-	private readonly _id: string;
+	protected reAdonly _hover: HoverWidget;
+	privAte reAdonly _id: string;
 	protected _editor: ICodeEditor;
-	private _isVisible: boolean;
+	privAte _isVisible: booleAn;
 	protected _showAtPosition: Position | null;
-	protected _showAtRange: Range | null;
-	private _stoleFocus: boolean;
+	protected _showAtRAnge: RAnge | null;
+	privAte _stoleFocus: booleAn;
 
-	// Editor.IContentWidget.allowEditorOverflow
-	public allowEditorOverflow = true;
+	// Editor.IContentWidget.AllowEditorOverflow
+	public AllowEditorOverflow = true;
 
-	protected get isVisible(): boolean {
+	protected get isVisible(): booleAn {
 		return this._isVisible;
 	}
 
-	protected set isVisible(value: boolean) {
-		this._isVisible = value;
-		this._hover.containerDomNode.classList.toggle('hidden', !this._isVisible);
+	protected set isVisible(vAlue: booleAn) {
+		this._isVisible = vAlue;
+		this._hover.contAinerDomNode.clAssList.toggle('hidden', !this._isVisible);
 	}
 
 	constructor(
 		id: string,
 		editor: ICodeEditor,
-		private readonly _hoverVisibleKey: IContextKey<boolean>,
-		private readonly _keybindingService: IKeybindingService
+		privAte reAdonly _hoverVisibleKey: IContextKey<booleAn>,
+		privAte reAdonly _keybindingService: IKeybindingService
 	) {
 		super();
 
 		this._hover = this._register(new HoverWidget());
 		this._id = id;
 		this._editor = editor;
-		this._isVisible = false;
-		this._stoleFocus = false;
+		this._isVisible = fAlse;
+		this._stoleFocus = fAlse;
 
-		this.onkeydown(this._hover.containerDomNode, (e: IKeyboardEvent) => {
-			if (e.equals(KeyCode.Escape)) {
+		this.onkeydown(this._hover.contAinerDomNode, (e: IKeyboArdEvent) => {
+			if (e.equAls(KeyCode.EscApe)) {
 				this.hide();
 			}
 		});
 
-		this._register(this._editor.onDidChangeConfiguration((e: ConfigurationChangedEvent) => {
-			if (e.hasChanged(EditorOption.fontInfo)) {
-				this.updateFont();
+		this._register(this._editor.onDidChAngeConfigurAtion((e: ConfigurAtionChAngedEvent) => {
+			if (e.hAsChAnged(EditorOption.fontInfo)) {
+				this.updAteFont();
 			}
 		}));
 
-		this._editor.onDidLayoutChange(e => this.layout());
+		this._editor.onDidLAyoutChAnge(e => this.lAyout());
 
-		this.layout();
-		this._editor.addContentWidget(this);
+		this.lAyout();
+		this._editor.AddContentWidget(this);
 		this._showAtPosition = null;
-		this._showAtRange = null;
-		this._stoleFocus = false;
+		this._showAtRAnge = null;
+		this._stoleFocus = fAlse;
 	}
 
 	public getId(): string {
@@ -77,23 +77,23 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 	}
 
 	public getDomNode(): HTMLElement {
-		return this._hover.containerDomNode;
+		return this._hover.contAinerDomNode;
 	}
 
-	public showAt(position: Position, range: Range | null, focus: boolean): void {
-		// Position has changed
+	public showAt(position: Position, rAnge: RAnge | null, focus: booleAn): void {
+		// Position hAs chAnged
 		this._showAtPosition = position;
-		this._showAtRange = range;
+		this._showAtRAnge = rAnge;
 		this._hoverVisibleKey.set(true);
 		this.isVisible = true;
 
-		this._editor.layoutContentWidget(this);
-		// Simply force a synchronous render on the editor
-		// such that the widget does not really render with left = '0px'
+		this._editor.lAyoutContentWidget(this);
+		// Simply force A synchronous render on the editor
+		// such thAt the widget does not reAlly render with left = '0px'
 		this._editor.render();
 		this._stoleFocus = focus;
 		if (focus) {
-			this._hover.containerDomNode.focus();
+			this._hover.contAinerDomNode.focus();
 		}
 	}
 
@@ -103,14 +103,14 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		}
 
 		setTimeout(() => {
-			// Give commands a chance to see the key
+			// Give commAnds A chAnce to see the key
 			if (!this.isVisible) {
-				this._hoverVisibleKey.set(false);
+				this._hoverVisibleKey.set(fAlse);
 			}
 		}, 0);
-		this.isVisible = false;
+		this.isVisible = fAlse;
 
-		this._editor.layoutContentWidget(this);
+		this._editor.lAyoutContentWidget(this);
 		if (this._stoleFocus) {
 			this._editor.focus();
 		}
@@ -120,7 +120,7 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		if (this.isVisible) {
 			return {
 				position: this._showAtPosition,
-				range: this._showAtRange,
+				rAnge: this._showAtRAnge,
 				preference: [
 					ContentWidgetPositionPreference.ABOVE,
 					ContentWidgetPositionPreference.BELOW
@@ -135,74 +135,74 @@ export class ContentHoverWidget extends Widget implements IContentWidget {
 		super.dispose();
 	}
 
-	private updateFont(): void {
-		const codeClasses: HTMLElement[] = Array.prototype.slice.call(this._hover.contentsDomNode.getElementsByClassName('code'));
-		codeClasses.forEach(node => this._editor.applyFontInfo(node));
+	privAte updAteFont(): void {
+		const codeClAsses: HTMLElement[] = ArrAy.prototype.slice.cAll(this._hover.contentsDomNode.getElementsByClAssNAme('code'));
+		codeClAsses.forEAch(node => this._editor.ApplyFontInfo(node));
 	}
 
-	protected updateContents(node: Node): void {
+	protected updAteContents(node: Node): void {
 		this._hover.contentsDomNode.textContent = '';
-		this._hover.contentsDomNode.appendChild(node);
-		this.updateFont();
+		this._hover.contentsDomNode.AppendChild(node);
+		this.updAteFont();
 
-		this._editor.layoutContentWidget(this);
-		this._hover.onContentsChanged();
+		this._editor.lAyoutContentWidget(this);
+		this._hover.onContentsChAnged();
 	}
 
-	protected _renderAction(parent: HTMLElement, actionOptions: { label: string, iconClass?: string, run: (target: HTMLElement) => void, commandId: string }): IDisposable {
-		const keybinding = this._keybindingService.lookupKeybinding(actionOptions.commandId);
-		const keybindingLabel = keybinding ? keybinding.getLabel() : null;
-		return renderHoverAction(parent, actionOptions, keybindingLabel);
+	protected _renderAction(pArent: HTMLElement, ActionOptions: { lAbel: string, iconClAss?: string, run: (tArget: HTMLElement) => void, commAndId: string }): IDisposAble {
+		const keybinding = this._keybindingService.lookupKeybinding(ActionOptions.commAndId);
+		const keybindingLAbel = keybinding ? keybinding.getLAbel() : null;
+		return renderHoverAction(pArent, ActionOptions, keybindingLAbel);
 	}
 
-	private layout(): void {
-		const height = Math.max(this._editor.getLayoutInfo().height / 4, 250);
+	privAte lAyout(): void {
+		const height = MAth.mAx(this._editor.getLAyoutInfo().height / 4, 250);
 		const { fontSize, lineHeight } = this._editor.getOption(EditorOption.fontInfo);
 
 		this._hover.contentsDomNode.style.fontSize = `${fontSize}px`;
 		this._hover.contentsDomNode.style.lineHeight = `${lineHeight}px`;
-		this._hover.contentsDomNode.style.maxHeight = `${height}px`;
-		this._hover.contentsDomNode.style.maxWidth = `${Math.max(this._editor.getLayoutInfo().width * 0.66, 500)}px`;
+		this._hover.contentsDomNode.style.mAxHeight = `${height}px`;
+		this._hover.contentsDomNode.style.mAxWidth = `${MAth.mAx(this._editor.getLAyoutInfo().width * 0.66, 500)}px`;
 	}
 }
 
-export class GlyphHoverWidget extends Widget implements IOverlayWidget {
+export clAss GlyphHoverWidget extends Widget implements IOverlAyWidget {
 
-	private readonly _id: string;
+	privAte reAdonly _id: string;
 	protected _editor: ICodeEditor;
-	private _isVisible: boolean;
-	private readonly _domNode: HTMLElement;
+	privAte _isVisible: booleAn;
+	privAte reAdonly _domNode: HTMLElement;
 	protected _showAtLineNumber: number;
 
 	constructor(id: string, editor: ICodeEditor) {
 		super();
 		this._id = id;
 		this._editor = editor;
-		this._isVisible = false;
+		this._isVisible = fAlse;
 
-		this._domNode = document.createElement('div');
-		this._domNode.className = 'monaco-hover hidden';
-		this._domNode.setAttribute('aria-hidden', 'true');
+		this._domNode = document.creAteElement('div');
+		this._domNode.clAssNAme = 'monAco-hover hidden';
+		this._domNode.setAttribute('AriA-hidden', 'true');
 		this._domNode.setAttribute('role', 'tooltip');
 
 		this._showAtLineNumber = -1;
 
-		this._register(this._editor.onDidChangeConfiguration((e: ConfigurationChangedEvent) => {
-			if (e.hasChanged(EditorOption.fontInfo)) {
-				this.updateFont();
+		this._register(this._editor.onDidChAngeConfigurAtion((e: ConfigurAtionChAngedEvent) => {
+			if (e.hAsChAnged(EditorOption.fontInfo)) {
+				this.updAteFont();
 			}
 		}));
 
-		this._editor.addOverlayWidget(this);
+		this._editor.AddOverlAyWidget(this);
 	}
 
-	protected get isVisible(): boolean {
+	protected get isVisible(): booleAn {
 		return this._isVisible;
 	}
 
-	protected set isVisible(value: boolean) {
-		this._isVisible = value;
-		this._domNode.classList.toggle('hidden', !this._isVisible);
+	protected set isVisible(vAlue: booleAn) {
+		this._isVisible = vAlue;
+		this._domNode.clAssList.toggle('hidden', !this._isVisible);
 	}
 
 	public getId(): string {
@@ -220,43 +220,43 @@ export class GlyphHoverWidget extends Widget implements IOverlayWidget {
 			this.isVisible = true;
 		}
 
-		const editorLayout = this._editor.getLayoutInfo();
+		const editorLAyout = this._editor.getLAyoutInfo();
 		const topForLineNumber = this._editor.getTopForLineNumber(this._showAtLineNumber);
 		const editorScrollTop = this._editor.getScrollTop();
 		const lineHeight = this._editor.getOption(EditorOption.lineHeight);
 		const nodeHeight = this._domNode.clientHeight;
 		const top = topForLineNumber - editorScrollTop - ((nodeHeight - lineHeight) / 2);
 
-		this._domNode.style.left = `${editorLayout.glyphMarginLeft + editorLayout.glyphMarginWidth}px`;
-		this._domNode.style.top = `${Math.max(Math.round(top), 0)}px`;
+		this._domNode.style.left = `${editorLAyout.glyphMArginLeft + editorLAyout.glyphMArginWidth}px`;
+		this._domNode.style.top = `${MAth.mAx(MAth.round(top), 0)}px`;
 	}
 
 	public hide(): void {
 		if (!this.isVisible) {
 			return;
 		}
-		this.isVisible = false;
+		this.isVisible = fAlse;
 	}
 
-	public getPosition(): IOverlayWidgetPosition | null {
+	public getPosition(): IOverlAyWidgetPosition | null {
 		return null;
 	}
 
 	public dispose(): void {
-		this._editor.removeOverlayWidget(this);
+		this._editor.removeOverlAyWidget(this);
 		super.dispose();
 	}
 
-	private updateFont(): void {
-		const codeTags: HTMLElement[] = Array.prototype.slice.call(this._domNode.getElementsByTagName('code'));
-		const codeClasses: HTMLElement[] = Array.prototype.slice.call(this._domNode.getElementsByClassName('code'));
+	privAte updAteFont(): void {
+		const codeTAgs: HTMLElement[] = ArrAy.prototype.slice.cAll(this._domNode.getElementsByTAgNAme('code'));
+		const codeClAsses: HTMLElement[] = ArrAy.prototype.slice.cAll(this._domNode.getElementsByClAssNAme('code'));
 
-		[...codeTags, ...codeClasses].forEach(node => this._editor.applyFontInfo(node));
+		[...codeTAgs, ...codeClAsses].forEAch(node => this._editor.ApplyFontInfo(node));
 	}
 
-	protected updateContents(node: Node): void {
+	protected updAteContents(node: Node): void {
 		this._domNode.textContent = '';
-		this._domNode.appendChild(node);
-		this.updateFont();
+		this._domNode.AppendChild(node);
+		this.updAteFont();
 	}
 }

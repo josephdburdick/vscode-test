@@ -1,273 +1,273 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { isLinux, isWindows } from 'vs/base/common/platform';
-import { URI } from 'vs/base/common/uri';
-import { join } from 'vs/base/common/path';
-import { validateFileName } from 'vs/workbench/contrib/files/browser/fileActions';
+import * As Assert from 'Assert';
+import { isLinux, isWindows } from 'vs/bAse/common/plAtform';
+import { URI } from 'vs/bAse/common/uri';
+import { join } from 'vs/bAse/common/pAth';
+import { vAlidAteFileNAme } from 'vs/workbench/contrib/files/browser/fileActions';
 import { ExplorerItem } from 'vs/workbench/contrib/files/common/explorerModel';
-import { toResource } from 'vs/base/test/common/utils';
+import { toResource } from 'vs/bAse/test/common/utils';
 import { TestFileService } from 'vs/workbench/test/browser/workbenchTestServices';
 
 const fileService = new TestFileService();
-function createStat(this: any, path: string, name: string, isFolder: boolean, hasChildren: boolean, size: number, mtime: number): ExplorerItem {
-	return new ExplorerItem(toResource.call(this, path), fileService, undefined, isFolder, false, name, mtime);
+function creAteStAt(this: Any, pAth: string, nAme: string, isFolder: booleAn, hAsChildren: booleAn, size: number, mtime: number): ExplorerItem {
+	return new ExplorerItem(toResource.cAll(this, pAth), fileService, undefined, isFolder, fAlse, nAme, mtime);
 }
 
 suite('Files - View Model', function () {
 
 	test('Properties', function () {
-		const d = new Date().getTime();
-		let s = createStat.call(this, '/path/to/stat', 'sName', true, true, 8096, d);
+		const d = new DAte().getTime();
+		let s = creAteStAt.cAll(this, '/pAth/to/stAt', 'sNAme', true, true, 8096, d);
 
-		assert.strictEqual(s.isDirectoryResolved, false);
-		assert.strictEqual(s.resource.fsPath, toResource.call(this, '/path/to/stat').fsPath);
-		assert.strictEqual(s.name, 'sName');
-		assert.strictEqual(s.isDirectory, true);
-		assert.strictEqual(s.mtime, new Date(d).getTime());
+		Assert.strictEquAl(s.isDirectoryResolved, fAlse);
+		Assert.strictEquAl(s.resource.fsPAth, toResource.cAll(this, '/pAth/to/stAt').fsPAth);
+		Assert.strictEquAl(s.nAme, 'sNAme');
+		Assert.strictEquAl(s.isDirectory, true);
+		Assert.strictEquAl(s.mtime, new DAte(d).getTime());
 
-		s = createStat.call(this, '/path/to/stat', 'sName', false, false, 8096, d);
+		s = creAteStAt.cAll(this, '/pAth/to/stAt', 'sNAme', fAlse, fAlse, 8096, d);
 	});
 
-	test('Add and Remove Child, check for hasChild', function () {
-		const d = new Date().getTime();
-		const s = createStat.call(this, '/path/to/stat', 'sName', true, false, 8096, d);
+	test('Add And Remove Child, check for hAsChild', function () {
+		const d = new DAte().getTime();
+		const s = creAteStAt.cAll(this, '/pAth/to/stAt', 'sNAme', true, fAlse, 8096, d);
 
-		const child1 = createStat.call(this, '/path/to/stat/foo', 'foo', true, false, 8096, d);
-		const child4 = createStat.call(this, '/otherpath/to/other/otherbar.html', 'otherbar.html', false, false, 8096, d);
+		const child1 = creAteStAt.cAll(this, '/pAth/to/stAt/foo', 'foo', true, fAlse, 8096, d);
+		const child4 = creAteStAt.cAll(this, '/otherpAth/to/other/otherbAr.html', 'otherbAr.html', fAlse, fAlse, 8096, d);
 
-		s.addChild(child1);
+		s.AddChild(child1);
 
-		assert(!!s.getChild(child1.name));
-
-		s.removeChild(child1);
-		s.addChild(child1);
-		assert(!!s.getChild(child1.name));
+		Assert(!!s.getChild(child1.nAme));
 
 		s.removeChild(child1);
-		assert(!s.getChild(child1.name));
+		s.AddChild(child1);
+		Assert(!!s.getChild(child1.nAme));
 
-		// Assert that adding a child updates its path properly
-		s.addChild(child4);
-		assert.strictEqual(child4.resource.fsPath, toResource.call(this, '/path/to/stat/' + child4.name).fsPath);
+		s.removeChild(child1);
+		Assert(!s.getChild(child1.nAme));
+
+		// Assert thAt Adding A child updAtes its pAth properly
+		s.AddChild(child4);
+		Assert.strictEquAl(child4.resource.fsPAth, toResource.cAll(this, '/pAth/to/stAt/' + child4.nAme).fsPAth);
 	});
 
 	test('Move', function () {
-		const d = new Date().getTime();
+		const d = new DAte().getTime();
 
-		const s1 = createStat.call(this, '/', '/', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s4 = createStat.call(this, '/path/to/stat', 'stat', false, false, 8096, d);
+		const s1 = creAteStAt.cAll(this, '/', '/', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s4 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', fAlse, fAlse, 8096, d);
 
-		s1.addChild(s2);
-		s2.addChild(s3);
-		s3.addChild(s4);
+		s1.AddChild(s2);
+		s2.AddChild(s3);
+		s3.AddChild(s4);
 
 		s4.move(s1);
 
-		// Assert the new path of the moved element
-		assert.strictEqual(s4.resource.fsPath, toResource.call(this, '/' + s4.name).fsPath);
+		// Assert the new pAth of the moved element
+		Assert.strictEquAl(s4.resource.fsPAth, toResource.cAll(this, '/' + s4.nAme).fsPAth);
 
-		// Move a subtree with children
-		const leaf = createStat.call(this, '/leaf', 'leaf', true, false, 8096, d);
-		const leafC1 = createStat.call(this, '/leaf/folder', 'folder', true, false, 8096, d);
-		const leafCC2 = createStat.call(this, '/leaf/folder/index.html', 'index.html', true, false, 8096, d);
+		// Move A subtree with children
+		const leAf = creAteStAt.cAll(this, '/leAf', 'leAf', true, fAlse, 8096, d);
+		const leAfC1 = creAteStAt.cAll(this, '/leAf/folder', 'folder', true, fAlse, 8096, d);
+		const leAfCC2 = creAteStAt.cAll(this, '/leAf/folder/index.html', 'index.html', true, fAlse, 8096, d);
 
-		leaf.addChild(leafC1);
-		leafC1.addChild(leafCC2);
-		s1.addChild(leaf);
+		leAf.AddChild(leAfC1);
+		leAfC1.AddChild(leAfCC2);
+		s1.AddChild(leAf);
 
-		leafC1.move(s3);
-		assert.strictEqual(leafC1.resource.fsPath, URI.file(s3.resource.fsPath + '/' + leafC1.name).fsPath);
-		assert.strictEqual(leafCC2.resource.fsPath, URI.file(leafC1.resource.fsPath + '/' + leafCC2.name).fsPath);
+		leAfC1.move(s3);
+		Assert.strictEquAl(leAfC1.resource.fsPAth, URI.file(s3.resource.fsPAth + '/' + leAfC1.nAme).fsPAth);
+		Assert.strictEquAl(leAfCC2.resource.fsPAth, URI.file(leAfC1.resource.fsPAth + '/' + leAfCC2.nAme).fsPAth);
 	});
 
-	test('Rename', function () {
-		const d = new Date().getTime();
+	test('RenAme', function () {
+		const d = new DAte().getTime();
 
-		const s1 = createStat.call(this, '/', '/', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s4 = createStat.call(this, '/path/to/stat', 'stat', true, false, 8096, d);
+		const s1 = creAteStAt.cAll(this, '/', '/', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s4 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', true, fAlse, 8096, d);
 
-		s1.addChild(s2);
-		s2.addChild(s3);
-		s3.addChild(s4);
+		s1.AddChild(s2);
+		s2.AddChild(s3);
+		s3.AddChild(s4);
 
-		assert.strictEqual(s1.getChild(s2.name), s2);
-		const s2renamed = createStat.call(this, '/otherpath', 'otherpath', true, true, 8096, d);
-		s2.rename(s2renamed);
-		assert.strictEqual(s1.getChild(s2.name), s2);
+		Assert.strictEquAl(s1.getChild(s2.nAme), s2);
+		const s2renAmed = creAteStAt.cAll(this, '/otherpAth', 'otherpAth', true, true, 8096, d);
+		s2.renAme(s2renAmed);
+		Assert.strictEquAl(s1.getChild(s2.nAme), s2);
 
-		// Verify the paths have changed including children
-		assert.strictEqual(s2.name, s2renamed.name);
-		assert.strictEqual(s2.resource.fsPath, s2renamed.resource.fsPath);
-		assert.strictEqual(s3.resource.fsPath, toResource.call(this, '/otherpath/to').fsPath);
-		assert.strictEqual(s4.resource.fsPath, toResource.call(this, '/otherpath/to/stat').fsPath);
+		// Verify the pAths hAve chAnged including children
+		Assert.strictEquAl(s2.nAme, s2renAmed.nAme);
+		Assert.strictEquAl(s2.resource.fsPAth, s2renAmed.resource.fsPAth);
+		Assert.strictEquAl(s3.resource.fsPAth, toResource.cAll(this, '/otherpAth/to').fsPAth);
+		Assert.strictEquAl(s4.resource.fsPAth, toResource.cAll(this, '/otherpAth/to/stAt').fsPAth);
 
-		const s4renamed = createStat.call(this, '/otherpath/to/statother.js', 'statother.js', true, false, 8096, d);
-		s4.rename(s4renamed);
-		assert.strictEqual(s3.getChild(s4.name), s4);
-		assert.strictEqual(s4.name, s4renamed.name);
-		assert.strictEqual(s4.resource.fsPath, s4renamed.resource.fsPath);
+		const s4renAmed = creAteStAt.cAll(this, '/otherpAth/to/stAtother.js', 'stAtother.js', true, fAlse, 8096, d);
+		s4.renAme(s4renAmed);
+		Assert.strictEquAl(s3.getChild(s4.nAme), s4);
+		Assert.strictEquAl(s4.nAme, s4renAmed.nAme);
+		Assert.strictEquAl(s4.resource.fsPAth, s4renAmed.resource.fsPAth);
 	});
 
 	test('Find', function () {
-		const d = new Date().getTime();
+		const d = new DAte().getTime();
 
-		const s1 = createStat.call(this, '/', '/', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s4 = createStat.call(this, '/path/to/stat', 'stat', true, false, 8096, d);
-		const s4Upper = createStat.call(this, '/path/to/STAT', 'stat', true, false, 8096, d);
+		const s1 = creAteStAt.cAll(this, '/', '/', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s4 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', true, fAlse, 8096, d);
+		const s4Upper = creAteStAt.cAll(this, '/pAth/to/STAT', 'stAt', true, fAlse, 8096, d);
 
-		const child1 = createStat.call(this, '/path/to/stat/foo', 'foo', true, false, 8096, d);
-		const child2 = createStat.call(this, '/path/to/stat/foo/bar.html', 'bar.html', false, false, 8096, d);
+		const child1 = creAteStAt.cAll(this, '/pAth/to/stAt/foo', 'foo', true, fAlse, 8096, d);
+		const child2 = creAteStAt.cAll(this, '/pAth/to/stAt/foo/bAr.html', 'bAr.html', fAlse, fAlse, 8096, d);
 
-		s1.addChild(s2);
-		s2.addChild(s3);
-		s3.addChild(s4);
-		s4.addChild(child1);
-		child1.addChild(child2);
+		s1.AddChild(s2);
+		s2.AddChild(s3);
+		s3.AddChild(s4);
+		s4.AddChild(child1);
+		child1.AddChild(child2);
 
-		assert.strictEqual(s1.find(child2.resource), child2);
-		assert.strictEqual(s1.find(child1.resource), child1);
-		assert.strictEqual(s1.find(s4.resource), s4);
-		assert.strictEqual(s1.find(s3.resource), s3);
-		assert.strictEqual(s1.find(s2.resource), s2);
+		Assert.strictEquAl(s1.find(child2.resource), child2);
+		Assert.strictEquAl(s1.find(child1.resource), child1);
+		Assert.strictEquAl(s1.find(s4.resource), s4);
+		Assert.strictEquAl(s1.find(s3.resource), s3);
+		Assert.strictEquAl(s1.find(s2.resource), s2);
 
 		if (isLinux) {
-			assert.ok(!s1.find(s4Upper.resource));
+			Assert.ok(!s1.find(s4Upper.resource));
 		} else {
-			assert.strictEqual(s1.find(s4Upper.resource), s4);
+			Assert.strictEquAl(s1.find(s4Upper.resource), s4);
 		}
 
-		assert.strictEqual(s1.find(toResource.call(this, 'foobar')), null);
+		Assert.strictEquAl(s1.find(toResource.cAll(this, 'foobAr')), null);
 
-		assert.strictEqual(s1.find(toResource.call(this, '/')), s1);
+		Assert.strictEquAl(s1.find(toResource.cAll(this, '/')), s1);
 	});
 
-	test('Find with mixed case', function () {
-		const d = new Date().getTime();
+	test('Find with mixed cAse', function () {
+		const d = new DAte().getTime();
 
-		const s1 = createStat.call(this, '/', '/', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s4 = createStat.call(this, '/path/to/stat', 'stat', true, false, 8096, d);
+		const s1 = creAteStAt.cAll(this, '/', '/', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s4 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', true, fAlse, 8096, d);
 
-		const child1 = createStat.call(this, '/path/to/stat/foo', 'foo', true, false, 8096, d);
-		const child2 = createStat.call(this, '/path/to/stat/foo/bar.html', 'bar.html', false, false, 8096, d);
+		const child1 = creAteStAt.cAll(this, '/pAth/to/stAt/foo', 'foo', true, fAlse, 8096, d);
+		const child2 = creAteStAt.cAll(this, '/pAth/to/stAt/foo/bAr.html', 'bAr.html', fAlse, fAlse, 8096, d);
 
-		s1.addChild(s2);
-		s2.addChild(s3);
-		s3.addChild(s4);
-		s4.addChild(child1);
-		child1.addChild(child2);
+		s1.AddChild(s2);
+		s2.AddChild(s3);
+		s3.AddChild(s4);
+		s4.AddChild(child1);
+		child1.AddChild(child2);
 
-		if (isLinux) { // linux is case sensitive
-			assert.ok(!s1.find(toResource.call(this, '/path/to/stat/Foo')));
-			assert.ok(!s1.find(toResource.call(this, '/Path/to/stat/foo/bar.html')));
+		if (isLinux) { // linux is cAse sensitive
+			Assert.ok(!s1.find(toResource.cAll(this, '/pAth/to/stAt/Foo')));
+			Assert.ok(!s1.find(toResource.cAll(this, '/PAth/to/stAt/foo/bAr.html')));
 		} else {
-			assert.ok(s1.find(toResource.call(this, '/path/to/stat/Foo')));
-			assert.ok(s1.find(toResource.call(this, '/Path/to/stat/foo/bar.html')));
+			Assert.ok(s1.find(toResource.cAll(this, '/pAth/to/stAt/Foo')));
+			Assert.ok(s1.find(toResource.cAll(this, '/PAth/to/stAt/foo/bAr.html')));
 		}
 	});
 
-	test('Validate File Name (For Create)', function () {
-		const d = new Date().getTime();
-		const s = createStat.call(this, '/path/to/stat', 'sName', true, true, 8096, d);
-		const sChild = createStat.call(this, '/path/to/stat/alles.klar', 'alles.klar', true, true, 8096, d);
-		s.addChild(sChild);
+	test('VAlidAte File NAme (For CreAte)', function () {
+		const d = new DAte().getTime();
+		const s = creAteStAt.cAll(this, '/pAth/to/stAt', 'sNAme', true, true, 8096, d);
+		const sChild = creAteStAt.cAll(this, '/pAth/to/stAt/Alles.klAr', 'Alles.klAr', true, true, 8096, d);
+		s.AddChild(sChild);
 
-		assert(validateFileName(s, null!) !== null);
-		assert(validateFileName(s, '') !== null);
-		assert(validateFileName(s, '  ') !== null);
-		assert(validateFileName(s, 'Read Me') === null, 'name containing space');
+		Assert(vAlidAteFileNAme(s, null!) !== null);
+		Assert(vAlidAteFileNAme(s, '') !== null);
+		Assert(vAlidAteFileNAme(s, '  ') !== null);
+		Assert(vAlidAteFileNAme(s, 'ReAd Me') === null, 'nAme contAining spAce');
 
 		if (isWindows) {
-			assert(validateFileName(s, 'foo:bar') !== null);
-			assert(validateFileName(s, 'foo*bar') !== null);
-			assert(validateFileName(s, 'foo?bar') !== null);
-			assert(validateFileName(s, 'foo<bar') !== null);
-			assert(validateFileName(s, 'foo>bar') !== null);
-			assert(validateFileName(s, 'foo|bar') !== null);
+			Assert(vAlidAteFileNAme(s, 'foo:bAr') !== null);
+			Assert(vAlidAteFileNAme(s, 'foo*bAr') !== null);
+			Assert(vAlidAteFileNAme(s, 'foo?bAr') !== null);
+			Assert(vAlidAteFileNAme(s, 'foo<bAr') !== null);
+			Assert(vAlidAteFileNAme(s, 'foo>bAr') !== null);
+			Assert(vAlidAteFileNAme(s, 'foo|bAr') !== null);
 		}
-		assert(validateFileName(s, 'alles.klar') === null);
-		assert(validateFileName(s, '.foo') === null);
-		assert(validateFileName(s, 'foo.bar') === null);
-		assert(validateFileName(s, 'foo') === null);
+		Assert(vAlidAteFileNAme(s, 'Alles.klAr') === null);
+		Assert(vAlidAteFileNAme(s, '.foo') === null);
+		Assert(vAlidAteFileNAme(s, 'foo.bAr') === null);
+		Assert(vAlidAteFileNAme(s, 'foo') === null);
 	});
 
-	test('Validate File Name (For Rename)', function () {
-		const d = new Date().getTime();
-		const s = createStat.call(this, '/path/to/stat', 'sName', true, true, 8096, d);
-		const sChild = createStat.call(this, '/path/to/stat/alles.klar', 'alles.klar', true, true, 8096, d);
-		s.addChild(sChild);
+	test('VAlidAte File NAme (For RenAme)', function () {
+		const d = new DAte().getTime();
+		const s = creAteStAt.cAll(this, '/pAth/to/stAt', 'sNAme', true, true, 8096, d);
+		const sChild = creAteStAt.cAll(this, '/pAth/to/stAt/Alles.klAr', 'Alles.klAr', true, true, 8096, d);
+		s.AddChild(sChild);
 
-		assert(validateFileName(s, 'alles.klar') === null);
+		Assert(vAlidAteFileNAme(s, 'Alles.klAr') === null);
 
-		assert(validateFileName(s, 'Alles.klar') === null);
-		assert(validateFileName(s, 'Alles.Klar') === null);
+		Assert(vAlidAteFileNAme(s, 'Alles.klAr') === null);
+		Assert(vAlidAteFileNAme(s, 'Alles.KlAr') === null);
 
-		assert(validateFileName(s, '.foo') === null);
-		assert(validateFileName(s, 'foo.bar') === null);
-		assert(validateFileName(s, 'foo') === null);
+		Assert(vAlidAteFileNAme(s, '.foo') === null);
+		Assert(vAlidAteFileNAme(s, 'foo.bAr') === null);
+		Assert(vAlidAteFileNAme(s, 'foo') === null);
 	});
 
-	test('Validate Multi-Path File Names', function () {
-		const d = new Date().getTime();
-		const wsFolder = createStat.call(this, '/', 'workspaceFolder', true, false, 8096, d);
+	test('VAlidAte Multi-PAth File NAmes', function () {
+		const d = new DAte().getTime();
+		const wsFolder = creAteStAt.cAll(this, '/', 'workspAceFolder', true, fAlse, 8096, d);
 
-		assert(validateFileName(wsFolder, 'foo/bar') === null);
-		assert(validateFileName(wsFolder, 'foo\\bar') === null);
-		assert(validateFileName(wsFolder, 'all/slashes/are/same') === null);
-		assert(validateFileName(wsFolder, 'theres/one/different\\slash') === null);
-		assert(validateFileName(wsFolder, '/slashAtBeginning') !== null);
+		Assert(vAlidAteFileNAme(wsFolder, 'foo/bAr') === null);
+		Assert(vAlidAteFileNAme(wsFolder, 'foo\\bAr') === null);
+		Assert(vAlidAteFileNAme(wsFolder, 'All/slAshes/Are/sAme') === null);
+		Assert(vAlidAteFileNAme(wsFolder, 'theres/one/different\\slAsh') === null);
+		Assert(vAlidAteFileNAme(wsFolder, '/slAshAtBeginning') !== null);
 
-		// attempting to add a child to a deeply nested file
-		const s1 = createStat.call(this, '/path', 'path', true, false, 8096, d);
-		const s2 = createStat.call(this, '/path/to', 'to', true, false, 8096, d);
-		const s3 = createStat.call(this, '/path/to/stat', 'stat', true, false, 8096, d);
-		wsFolder.addChild(s1);
-		s1.addChild(s2);
-		s2.addChild(s3);
-		const fileDeeplyNested = createStat.call(this, '/path/to/stat/fileNested', 'fileNested', false, false, 8096, d);
-		s3.addChild(fileDeeplyNested);
-		assert(validateFileName(wsFolder, '/path/to/stat/fileNested/aChild') !== null);
+		// Attempting to Add A child to A deeply nested file
+		const s1 = creAteStAt.cAll(this, '/pAth', 'pAth', true, fAlse, 8096, d);
+		const s2 = creAteStAt.cAll(this, '/pAth/to', 'to', true, fAlse, 8096, d);
+		const s3 = creAteStAt.cAll(this, '/pAth/to/stAt', 'stAt', true, fAlse, 8096, d);
+		wsFolder.AddChild(s1);
+		s1.AddChild(s2);
+		s2.AddChild(s3);
+		const fileDeeplyNested = creAteStAt.cAll(this, '/pAth/to/stAt/fileNested', 'fileNested', fAlse, fAlse, 8096, d);
+		s3.AddChild(fileDeeplyNested);
+		Assert(vAlidAteFileNAme(wsFolder, '/pAth/to/stAt/fileNested/AChild') !== null);
 
-		// detect if path already exists
-		assert(validateFileName(wsFolder, '/path/to/stat/fileNested') !== null);
-		assert(validateFileName(wsFolder, '/path/to/stat/') !== null);
+		// detect if pAth AlreAdy exists
+		Assert(vAlidAteFileNAme(wsFolder, '/pAth/to/stAt/fileNested') !== null);
+		Assert(vAlidAteFileNAme(wsFolder, '/pAth/to/stAt/') !== null);
 	});
 
-	test('Merge Local with Disk', function () {
-		const merge1 = new ExplorerItem(URI.file(join('C:\\', '/path/to')), fileService, undefined, true, false, 'to', Date.now());
-		const merge2 = new ExplorerItem(URI.file(join('C:\\', '/path/to')), fileService, undefined, true, false, 'to', Date.now());
+	test('Merge LocAl with Disk', function () {
+		const merge1 = new ExplorerItem(URI.file(join('C:\\', '/pAth/to')), fileService, undefined, true, fAlse, 'to', DAte.now());
+		const merge2 = new ExplorerItem(URI.file(join('C:\\', '/pAth/to')), fileService, undefined, true, fAlse, 'to', DAte.now());
 
 		// Merge Properties
-		ExplorerItem.mergeLocalWithDisk(merge2, merge1);
-		assert.strictEqual(merge1.mtime, merge2.mtime);
+		ExplorerItem.mergeLocAlWithDisk(merge2, merge1);
+		Assert.strictEquAl(merge1.mtime, merge2.mtime);
 
-		// Merge Child when isDirectoryResolved=false is a no-op
-		merge2.addChild(new ExplorerItem(URI.file(join('C:\\', '/path/to/foo.html')), fileService, undefined, true, false, 'foo.html', Date.now()));
-		ExplorerItem.mergeLocalWithDisk(merge2, merge1);
+		// Merge Child when isDirectoryResolved=fAlse is A no-op
+		merge2.AddChild(new ExplorerItem(URI.file(join('C:\\', '/pAth/to/foo.html')), fileService, undefined, true, fAlse, 'foo.html', DAte.now()));
+		ExplorerItem.mergeLocAlWithDisk(merge2, merge1);
 
 		// Merge Child with isDirectoryResolved=true
-		const child = new ExplorerItem(URI.file(join('C:\\', '/path/to/foo.html')), fileService, undefined, true, false, 'foo.html', Date.now());
+		const child = new ExplorerItem(URI.file(join('C:\\', '/pAth/to/foo.html')), fileService, undefined, true, fAlse, 'foo.html', DAte.now());
 		merge2.removeChild(child);
-		merge2.addChild(child);
-		(<any>merge2)._isDirectoryResolved = true;
-		ExplorerItem.mergeLocalWithDisk(merge2, merge1);
-		assert.strictEqual(merge1.getChild('foo.html')!.name, 'foo.html');
-		assert.deepEqual(merge1.getChild('foo.html')!.parent, merge1, 'Check parent');
+		merge2.AddChild(child);
+		(<Any>merge2)._isDirectoryResolved = true;
+		ExplorerItem.mergeLocAlWithDisk(merge2, merge1);
+		Assert.strictEquAl(merge1.getChild('foo.html')!.nAme, 'foo.html');
+		Assert.deepEquAl(merge1.getChild('foo.html')!.pArent, merge1, 'Check pArent');
 
-		// Verify that merge does not replace existing children, but updates properties in that case
+		// Verify thAt merge does not replAce existing children, but updAtes properties in thAt cAse
 		const existingChild = merge1.getChild('foo.html');
-		ExplorerItem.mergeLocalWithDisk(merge2, merge1);
-		assert.ok(existingChild === merge1.getChild(existingChild!.name));
+		ExplorerItem.mergeLocAlWithDisk(merge2, merge1);
+		Assert.ok(existingChild === merge1.getChild(existingChild!.nAme));
 	});
 });

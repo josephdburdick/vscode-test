@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ReferencesModel, FileReferences, OneReference } from '../referencesModel';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { ITreeRenderer, ITreeNode, IAsyncDataSource } from 'vs/base/browser/ui/tree/tree';
-import { IconLabel } from 'vs/base/browser/ui/iconLabel/iconLabel';
-import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { attachBadgeStyler } from 'vs/platform/theme/common/styler';
-import * as dom from 'vs/base/browser/dom';
-import { localize } from 'vs/nls';
-import { getBaseLabel } from 'vs/base/common/labels';
-import { dirname, basename } from 'vs/base/common/resources';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
-import { IListVirtualDelegate, IKeyboardNavigationLabelProvider, IIdentityProvider } from 'vs/base/browser/ui/list/list';
-import { IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { FuzzyScore, createMatches, IMatch } from 'vs/base/common/filters';
-import { HighlightedLabel } from 'vs/base/browser/ui/highlightedlabel/highlightedLabel';
+import { ITreeRenderer, ITreeNode, IAsyncDAtASource } from 'vs/bAse/browser/ui/tree/tree';
+import { IconLAbel } from 'vs/bAse/browser/ui/iconLAbel/iconLAbel';
+import { CountBAdge } from 'vs/bAse/browser/ui/countBAdge/countBAdge';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { AttAchBAdgeStyler } from 'vs/plAtform/theme/common/styler';
+import * As dom from 'vs/bAse/browser/dom';
+import { locAlize } from 'vs/nls';
+import { getBAseLAbel } from 'vs/bAse/common/lAbels';
+import { dirnAme, bAsenAme } from 'vs/bAse/common/resources';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IListAccessibilityProvider } from 'vs/bAse/browser/ui/list/listWidget';
+import { IListVirtuAlDelegAte, IKeyboArdNAvigAtionLAbelProvider, IIdentityProvider } from 'vs/bAse/browser/ui/list/list';
+import { IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { FuzzyScore, creAteMAtches, IMAtch } from 'vs/bAse/common/filters';
+import { HighlightedLAbel } from 'vs/bAse/browser/ui/highlightedlAbel/highlightedLAbel';
 
-//#region data source
+//#region dAtA source
 
 export type TreeElement = FileReferences | OneReference;
 
-export class DataSource implements IAsyncDataSource<ReferencesModel | FileReferences, TreeElement> {
+export clAss DAtASource implements IAsyncDAtASource<ReferencesModel | FileReferences, TreeElement> {
 
-	constructor(@ITextModelService private readonly _resolverService: ITextModelService) { }
+	constructor(@ITextModelService privAte reAdonly _resolverService: ITextModelService) { }
 
-	hasChildren(element: ReferencesModel | FileReferences | TreeElement): boolean {
-		if (element instanceof ReferencesModel) {
+	hAsChildren(element: ReferencesModel | FileReferences | TreeElement): booleAn {
+		if (element instAnceof ReferencesModel) {
 			return true;
 		}
-		if (element instanceof FileReferences) {
+		if (element instAnceof FileReferences) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
 	getChildren(element: ReferencesModel | FileReferences | TreeElement): TreeElement[] | Promise<TreeElement[]> {
-		if (element instanceof ReferencesModel) {
+		if (element instAnceof ReferencesModel) {
 			return element.groups;
 		}
 
-		if (element instanceof FileReferences) {
-			return element.resolve(this._resolverService).then(val => {
-				// if (element.failure) {
-				// 	// refresh the element on failure so that
-				// 	// we can update its rendering
-				// 	return tree.refresh(element).then(() => val.children);
+		if (element instAnceof FileReferences) {
+			return element.resolve(this._resolverService).then(vAl => {
+				// if (element.fAilure) {
+				// 	// refresh the element on fAilure so thAt
+				// 	// we cAn updAte its rendering
+				// 	return tree.refresh(element).then(() => vAl.children);
 				// }
-				return val.children;
+				return vAl.children;
 			});
 		}
 
-		throw new Error('bad tree');
+		throw new Error('bAd tree');
 	}
 }
 
 //#endregion
 
-export class Delegate implements IListVirtualDelegate<TreeElement> {
+export clAss DelegAte implements IListVirtuAlDelegAte<TreeElement> {
 	getHeight(): number {
 		return 23;
 	}
-	getTemplateId(element: FileReferences | OneReference): string {
-		if (element instanceof FileReferences) {
+	getTemplAteId(element: FileReferences | OneReference): string {
+		if (element instAnceof FileReferences) {
 			return FileReferencesRenderer.id;
 		} else {
 			return OneReferenceRenderer.id;
@@ -77,145 +77,145 @@ export class Delegate implements IListVirtualDelegate<TreeElement> {
 	}
 }
 
-export class StringRepresentationProvider implements IKeyboardNavigationLabelProvider<TreeElement> {
+export clAss StringRepresentAtionProvider implements IKeyboArdNAvigAtionLAbelProvider<TreeElement> {
 
-	constructor(@IKeybindingService private readonly _keybindingService: IKeybindingService) { }
+	constructor(@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService) { }
 
-	getKeyboardNavigationLabel(element: TreeElement): { toString(): string; } {
-		if (element instanceof OneReference) {
-			const parts = element.parent.getPreview(element)?.preview(element.range);
-			if (parts) {
-				return parts.value;
+	getKeyboArdNAvigAtionLAbel(element: TreeElement): { toString(): string; } {
+		if (element instAnceof OneReference) {
+			const pArts = element.pArent.getPreview(element)?.preview(element.rAnge);
+			if (pArts) {
+				return pArts.vAlue;
 			}
 		}
 		// FileReferences or unresolved OneReference
-		return basename(element.uri);
+		return bAsenAme(element.uri);
 	}
 
-	mightProducePrintableCharacter(event: IKeyboardEvent): boolean {
-		return this._keybindingService.mightProducePrintableCharacter(event);
+	mightProducePrintAbleChArActer(event: IKeyboArdEvent): booleAn {
+		return this._keybindingService.mightProducePrintAbleChArActer(event);
 	}
 }
 
-export class IdentityProvider implements IIdentityProvider<TreeElement> {
+export clAss IdentityProvider implements IIdentityProvider<TreeElement> {
 
 	getId(element: TreeElement): { toString(): string; } {
-		return element instanceof OneReference ? element.id : element.uri;
+		return element instAnceof OneReference ? element.id : element.uri;
 	}
 }
 
 //#region render: File
 
-class FileReferencesTemplate extends Disposable {
+clAss FileReferencesTemplAte extends DisposAble {
 
-	readonly file: IconLabel;
-	readonly badge: CountBadge;
+	reAdonly file: IconLAbel;
+	reAdonly bAdge: CountBAdge;
 
 	constructor(
-		container: HTMLElement,
-		@ILabelService private readonly _uriLabel: ILabelService,
+		contAiner: HTMLElement,
+		@ILAbelService privAte reAdonly _uriLAbel: ILAbelService,
 		@IThemeService themeService: IThemeService,
 	) {
 		super();
-		const parent = document.createElement('div');
-		parent.classList.add('reference-file');
-		this.file = this._register(new IconLabel(parent, { supportHighlights: true }));
+		const pArent = document.creAteElement('div');
+		pArent.clAssList.Add('reference-file');
+		this.file = this._register(new IconLAbel(pArent, { supportHighlights: true }));
 
-		this.badge = new CountBadge(dom.append(parent, dom.$('.count')));
-		this._register(attachBadgeStyler(this.badge, themeService));
+		this.bAdge = new CountBAdge(dom.Append(pArent, dom.$('.count')));
+		this._register(AttAchBAdgeStyler(this.bAdge, themeService));
 
-		container.appendChild(parent);
+		contAiner.AppendChild(pArent);
 	}
 
-	set(element: FileReferences, matches: IMatch[]) {
-		let parent = dirname(element.uri);
-		this.file.setLabel(getBaseLabel(element.uri), this._uriLabel.getUriLabel(parent, { relative: true }), { title: this._uriLabel.getUriLabel(element.uri), matches });
+	set(element: FileReferences, mAtches: IMAtch[]) {
+		let pArent = dirnAme(element.uri);
+		this.file.setLAbel(getBAseLAbel(element.uri), this._uriLAbel.getUriLAbel(pArent, { relAtive: true }), { title: this._uriLAbel.getUriLAbel(element.uri), mAtches });
 		const len = element.children.length;
-		this.badge.setCount(len);
+		this.bAdge.setCount(len);
 		if (len > 1) {
-			this.badge.setTitleFormat(localize('referencesCount', "{0} references", len));
+			this.bAdge.setTitleFormAt(locAlize('referencesCount', "{0} references", len));
 		} else {
-			this.badge.setTitleFormat(localize('referenceCount', "{0} reference", len));
+			this.bAdge.setTitleFormAt(locAlize('referenceCount', "{0} reference", len));
 		}
 	}
 }
 
-export class FileReferencesRenderer implements ITreeRenderer<FileReferences, FuzzyScore, FileReferencesTemplate> {
+export clAss FileReferencesRenderer implements ITreeRenderer<FileReferences, FuzzyScore, FileReferencesTemplAte> {
 
-	static readonly id = 'FileReferencesRenderer';
+	stAtic reAdonly id = 'FileReferencesRenderer';
 
-	readonly templateId: string = FileReferencesRenderer.id;
+	reAdonly templAteId: string = FileReferencesRenderer.id;
 
-	constructor(@IInstantiationService private readonly _instantiationService: IInstantiationService) { }
+	constructor(@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService) { }
 
-	renderTemplate(container: HTMLElement): FileReferencesTemplate {
-		return this._instantiationService.createInstance(FileReferencesTemplate, container);
+	renderTemplAte(contAiner: HTMLElement): FileReferencesTemplAte {
+		return this._instAntiAtionService.creAteInstAnce(FileReferencesTemplAte, contAiner);
 	}
-	renderElement(node: ITreeNode<FileReferences, FuzzyScore>, index: number, template: FileReferencesTemplate): void {
-		template.set(node.element, createMatches(node.filterData));
+	renderElement(node: ITreeNode<FileReferences, FuzzyScore>, index: number, templAte: FileReferencesTemplAte): void {
+		templAte.set(node.element, creAteMAtches(node.filterDAtA));
 	}
-	disposeTemplate(templateData: FileReferencesTemplate): void {
-		templateData.dispose();
+	disposeTemplAte(templAteDAtA: FileReferencesTemplAte): void {
+		templAteDAtA.dispose();
 	}
 }
 
 //#endregion
 
 //#region render: Reference
-class OneReferenceTemplate {
+clAss OneReferenceTemplAte {
 
-	readonly label: HighlightedLabel;
+	reAdonly lAbel: HighlightedLAbel;
 
-	constructor(container: HTMLElement) {
-		this.label = new HighlightedLabel(container, false);
+	constructor(contAiner: HTMLElement) {
+		this.lAbel = new HighlightedLAbel(contAiner, fAlse);
 	}
 
 	set(element: OneReference, score?: FuzzyScore): void {
-		const preview = element.parent.getPreview(element)?.preview(element.range);
-		if (!preview || !preview.value) {
-			// this means we FAILED to resolve the document or the value is the empty string
-			this.label.set(`${basename(element.uri)}:${element.range.startLineNumber + 1}:${element.range.startColumn + 1}`);
+		const preview = element.pArent.getPreview(element)?.preview(element.rAnge);
+		if (!preview || !preview.vAlue) {
+			// this meAns we FAILED to resolve the document or the vAlue is the empty string
+			this.lAbel.set(`${bAsenAme(element.uri)}:${element.rAnge.stArtLineNumber + 1}:${element.rAnge.stArtColumn + 1}`);
 		} else {
-			// render search match as highlight unless
-			// we have score, then render the score
-			const { value, highlight } = preview;
-			if (score && !FuzzyScore.isDefault(score)) {
-				this.label.element.classList.toggle('referenceMatch', false);
-				this.label.set(value, createMatches(score));
+			// render seArch mAtch As highlight unless
+			// we hAve score, then render the score
+			const { vAlue, highlight } = preview;
+			if (score && !FuzzyScore.isDefAult(score)) {
+				this.lAbel.element.clAssList.toggle('referenceMAtch', fAlse);
+				this.lAbel.set(vAlue, creAteMAtches(score));
 			} else {
-				this.label.element.classList.toggle('referenceMatch', true);
-				this.label.set(value, [highlight]);
+				this.lAbel.element.clAssList.toggle('referenceMAtch', true);
+				this.lAbel.set(vAlue, [highlight]);
 			}
 		}
 	}
 }
 
-export class OneReferenceRenderer implements ITreeRenderer<OneReference, FuzzyScore, OneReferenceTemplate> {
+export clAss OneReferenceRenderer implements ITreeRenderer<OneReference, FuzzyScore, OneReferenceTemplAte> {
 
-	static readonly id = 'OneReferenceRenderer';
+	stAtic reAdonly id = 'OneReferenceRenderer';
 
-	readonly templateId: string = OneReferenceRenderer.id;
+	reAdonly templAteId: string = OneReferenceRenderer.id;
 
-	renderTemplate(container: HTMLElement): OneReferenceTemplate {
-		return new OneReferenceTemplate(container);
+	renderTemplAte(contAiner: HTMLElement): OneReferenceTemplAte {
+		return new OneReferenceTemplAte(contAiner);
 	}
-	renderElement(node: ITreeNode<OneReference, FuzzyScore>, index: number, templateData: OneReferenceTemplate): void {
-		templateData.set(node.element, node.filterData);
+	renderElement(node: ITreeNode<OneReference, FuzzyScore>, index: number, templAteDAtA: OneReferenceTemplAte): void {
+		templAteDAtA.set(node.element, node.filterDAtA);
 	}
-	disposeTemplate(): void {
+	disposeTemplAte(): void {
 	}
 }
 
 //#endregion
 
 
-export class AccessibilityProvider implements IListAccessibilityProvider<FileReferences | OneReference> {
+export clAss AccessibilityProvider implements IListAccessibilityProvider<FileReferences | OneReference> {
 
-	getWidgetAriaLabel(): string {
-		return localize('treeAriaLabel', "References");
+	getWidgetAriALAbel(): string {
+		return locAlize('treeAriALAbel', "References");
 	}
 
-	getAriaLabel(element: FileReferences | OneReference): string | null {
-		return element.ariaMessage;
+	getAriALAbel(element: FileReferences | OneReference): string | null {
+		return element.AriAMessAge;
 	}
 }

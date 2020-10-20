@@ -1,90 +1,90 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as crypto from 'crypto';
-import * as net from 'net';
-import * as platform from 'vs/base/common/platform';
+import * As Assert from 'Assert';
+import * As crypto from 'crypto';
+import * As net from 'net';
+import * As plAtform from 'vs/bAse/common/plAtform';
 import { tmpdir } from 'os';
-import { join } from 'vs/base/common/path';
-import { SocketDebugAdapter, NamedPipeDebugAdapter, StreamDebugAdapter } from 'vs/workbench/contrib/debug/node/debugAdapter';
+import { join } from 'vs/bAse/common/pAth';
+import { SocketDebugAdApter, NAmedPipeDebugAdApter, StreAmDebugAdApter } from 'vs/workbench/contrib/debug/node/debugAdApter';
 
 function rndPort(): number {
 	const min = 8000;
-	const max = 9000;
-	return Math.floor(Math.random() * (max - min) + min);
+	const mAx = 9000;
+	return MAth.floor(MAth.rAndom() * (mAx - min) + min);
 }
 
-function sendInitializeRequest(debugAdapter: StreamDebugAdapter): Promise<DebugProtocol.Response> {
+function sendInitiAlizeRequest(debugAdApter: StreAmDebugAdApter): Promise<DebugProtocol.Response> {
 	return new Promise((resolve, reject) => {
-		debugAdapter.sendRequest('initialize', { adapterID: 'test' }, (result) => {
+		debugAdApter.sendRequest('initiAlize', { AdApterID: 'test' }, (result) => {
 			resolve(result);
 		});
 	});
 }
 
 function serverConnection(socket: net.Socket) {
-	socket.on('data', (data: Buffer) => {
-		const str = data.toString().split('\r\n')[2];
-		const request = JSON.parse(str);
-		const response: any = {
+	socket.on('dAtA', (dAtA: Buffer) => {
+		const str = dAtA.toString().split('\r\n')[2];
+		const request = JSON.pArse(str);
+		const response: Any = {
 			seq: request.seq,
 			request_seq: request.seq,
 			type: 'response',
-			command: request.command
+			commAnd: request.commAnd
 		};
-		if (request.arguments.adapterID === 'test') {
+		if (request.Arguments.AdApterID === 'test') {
 			response.success = true;
 		} else {
-			response.success = false;
-			response.message = 'failed';
+			response.success = fAlse;
+			response.messAge = 'fAiled';
 		}
 
-		const responsePayload = JSON.stringify(response);
-		socket.write(`Content-Length: ${responsePayload.length}\r\n\r\n${responsePayload}`);
+		const responsePAyloAd = JSON.stringify(response);
+		socket.write(`Content-Length: ${responsePAyloAd.length}\r\n\r\n${responsePAyloAd}`);
 	});
 }
 
-suite('Debug - StreamDebugAdapter', () => {
+suite('Debug - StreAmDebugAdApter', () => {
 	const port = rndPort();
-	const pipeName = crypto.randomBytes(10).toString('hex');
-	const pipePath = platform.isWindows ? join('\\\\.\\pipe\\', pipeName) : join(tmpdir(), pipeName);
+	const pipeNAme = crypto.rAndomBytes(10).toString('hex');
+	const pipePAth = plAtform.isWindows ? join('\\\\.\\pipe\\', pipeNAme) : join(tmpdir(), pipeNAme);
 
-	const testCases: { testName: string, debugAdapter: StreamDebugAdapter, connectionDetail: string | number }[] = [
+	const testCAses: { testNAme: string, debugAdApter: StreAmDebugAdApter, connectionDetAil: string | number }[] = [
 		{
-			testName: 'NamedPipeDebugAdapter',
-			debugAdapter: new NamedPipeDebugAdapter({
+			testNAme: 'NAmedPipeDebugAdApter',
+			debugAdApter: new NAmedPipeDebugAdApter({
 				type: 'pipeServer',
-				path: pipePath
+				pAth: pipePAth
 			}),
-			connectionDetail: pipePath
+			connectionDetAil: pipePAth
 		},
 		{
-			testName: 'SocketDebugAdapter',
-			debugAdapter: new SocketDebugAdapter({
+			testNAme: 'SocketDebugAdApter',
+			debugAdApter: new SocketDebugAdApter({
 				type: 'server',
 				port
 			}),
-			connectionDetail: port
+			connectionDetAil: port
 		}
 	];
 
-	for (const testCase of testCases) {
-		test(`StreamDebugAdapter (${testCase.testName}) can initialize a connection`, async () => {
-			const server = net.createServer(serverConnection).listen(testCase.connectionDetail);
-			const debugAdapter = testCase.debugAdapter;
+	for (const testCAse of testCAses) {
+		test(`StreAmDebugAdApter (${testCAse.testNAme}) cAn initiAlize A connection`, Async () => {
+			const server = net.creAteServer(serverConnection).listen(testCAse.connectionDetAil);
+			const debugAdApter = testCAse.debugAdApter;
 			try {
-				await debugAdapter.startSession();
-				const response: DebugProtocol.Response = await sendInitializeRequest(debugAdapter);
-				assert.strictEqual(response.command, 'initialize');
-				assert.strictEqual(response.request_seq, 1);
-				assert.strictEqual(response.success, true, response.message);
-			} finally {
-				await debugAdapter.stopSession();
+				AwAit debugAdApter.stArtSession();
+				const response: DebugProtocol.Response = AwAit sendInitiAlizeRequest(debugAdApter);
+				Assert.strictEquAl(response.commAnd, 'initiAlize');
+				Assert.strictEquAl(response.request_seq, 1);
+				Assert.strictEquAl(response.success, true, response.messAge);
+			} finAlly {
+				AwAit debugAdApter.stopSession();
 				server.close();
-				debugAdapter.dispose();
+				debugAdApter.dispose();
 			}
 		});
 	}

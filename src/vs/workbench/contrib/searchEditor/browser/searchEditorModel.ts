@@ -1,64 +1,64 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { ITextModel } from 'vs/editor/common/model';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { parseSavedSearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditorSerialization';
-import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
-import { SearchConfiguration } from './searchEditorInput';
-import { assertIsDefined } from 'vs/base/common/types';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { pArseSAvedSeArchEditor } from 'vs/workbench/contrib/seArchEditor/browser/seArchEditorSeriAlizAtion';
+import { IBAckupFileService } from 'vs/workbench/services/bAckup/common/bAckup';
+import { SeArchConfigurAtion } from './seArchEditorInput';
+import { AssertIsDefined } from 'vs/bAse/common/types';
 
 
-export class SearchEditorModel {
-	private cachedContentsModel: ITextModel | undefined = undefined;
-	private resolveContents!: (model: ITextModel) => void;
+export clAss SeArchEditorModel {
+	privAte cAchedContentsModel: ITextModel | undefined = undefined;
+	privAte resolveContents!: (model: ITextModel) => void;
 	public onModelResolved: Promise<ITextModel>;
 
-	private ongoingResolve = Promise.resolve<any>(undefined);
+	privAte ongoingResolve = Promise.resolve<Any>(undefined);
 
 	constructor(
-		private modelUri: URI,
-		public config: SearchConfiguration,
-		private existingData: ({ config: Partial<SearchConfiguration>; backingUri?: URI; } &
+		privAte modelUri: URI,
+		public config: SeArchConfigurAtion,
+		privAte existingDAtA: ({ config: PArtiAl<SeArchConfigurAtion>; bAckingUri?: URI; } &
 			({ modelUri: URI; text?: never; } |
 			{ text: string; modelUri?: never; } |
-			{ backingUri: URI; text?: never; modelUri?: never; })),
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IBackupFileService readonly backupService: IBackupFileService,
-		@IModelService private readonly modelService: IModelService,
-		@IModeService private readonly modeService: IModeService) {
+			{ bAckingUri: URI; text?: never; modelUri?: never; })),
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IBAckupFileService reAdonly bAckupService: IBAckupFileService,
+		@IModelService privAte reAdonly modelService: IModelService,
+		@IModeService privAte reAdonly modeService: IModeService) {
 		this.onModelResolved = new Promise<ITextModel>(resolve => this.resolveContents = resolve);
-		this.onModelResolved.then(model => this.cachedContentsModel = model);
-		this.ongoingResolve = backupService.resolve(modelUri)
-			.then(backup => modelService.getModel(modelUri) ?? (backup ? modelService.createModel(backup.value, modeService.create('search-result'), modelUri) : undefined))
+		this.onModelResolved.then(model => this.cAchedContentsModel = model);
+		this.ongoingResolve = bAckupService.resolve(modelUri)
+			.then(bAckup => modelService.getModel(modelUri) ?? (bAckup ? modelService.creAteModel(bAckup.vAlue, modeService.creAte('seArch-result'), modelUri) : undefined))
 			.then(model => { if (model) { this.resolveContents(model); } });
 	}
 
-	async resolve(): Promise<ITextModel> {
-		await (this.ongoingResolve = this.ongoingResolve.then(() => this.cachedContentsModel || this.createModel()));
-		return assertIsDefined(this.cachedContentsModel);
+	Async resolve(): Promise<ITextModel> {
+		AwAit (this.ongoingResolve = this.ongoingResolve.then(() => this.cAchedContentsModel || this.creAteModel()));
+		return AssertIsDefined(this.cAchedContentsModel);
 	}
 
-	private async createModel() {
-		const getContents = async () => {
-			if (this.existingData.text !== undefined) {
-				return this.existingData.text;
+	privAte Async creAteModel() {
+		const getContents = Async () => {
+			if (this.existingDAtA.text !== undefined) {
+				return this.existingDAtA.text;
 			}
-			else if (this.existingData.backingUri !== undefined) {
-				return (await this.instantiationService.invokeFunction(parseSavedSearchEditor, this.existingData.backingUri)).text;
+			else if (this.existingDAtA.bAckingUri !== undefined) {
+				return (AwAit this.instAntiAtionService.invokeFunction(pArseSAvedSeArchEditor, this.existingDAtA.bAckingUri)).text;
 			}
 			else {
 				return '';
 			}
 		};
 
-		const contents = await getContents();
-		const model = this.modelService.getModel(this.modelUri) ?? this.modelService.createModel(contents, this.modeService.create('search-result'), this.modelUri);
+		const contents = AwAit getContents();
+		const model = this.modelService.getModel(this.modelUri) ?? this.modelService.creAteModel(contents, this.modeService.creAte('seArch-result'), this.modelUri);
 		this.resolveContents(model);
 		return model;
 	}

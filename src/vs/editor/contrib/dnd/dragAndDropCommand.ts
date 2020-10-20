@@ -1,108 +1,108 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICommand, IEditOperationBuilder, ICursorStateComputerData } from 'vs/editor/common/editorCommon';
+import { ICommAnd, IEditOperAtionBuilder, ICursorStAteComputerDAtA } from 'vs/editor/common/editorCommon';
 import { Selection } from 'vs/editor/common/core/selection';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
 
 
-export class DragAndDropCommand implements ICommand {
+export clAss DrAgAndDropCommAnd implements ICommAnd {
 
-	private readonly selection: Selection;
-	private readonly targetPosition: Position;
-	private targetSelection: Selection | null;
-	private readonly copy: boolean;
+	privAte reAdonly selection: Selection;
+	privAte reAdonly tArgetPosition: Position;
+	privAte tArgetSelection: Selection | null;
+	privAte reAdonly copy: booleAn;
 
-	constructor(selection: Selection, targetPosition: Position, copy: boolean) {
+	constructor(selection: Selection, tArgetPosition: Position, copy: booleAn) {
 		this.selection = selection;
-		this.targetPosition = targetPosition;
+		this.tArgetPosition = tArgetPosition;
 		this.copy = copy;
-		this.targetSelection = null;
+		this.tArgetSelection = null;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		let text = model.getValueInRange(this.selection);
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
+		let text = model.getVAlueInRAnge(this.selection);
 		if (!this.copy) {
-			builder.addEditOperation(this.selection, null);
+			builder.AddEditOperAtion(this.selection, null);
 		}
-		builder.addEditOperation(new Range(this.targetPosition.lineNumber, this.targetPosition.column, this.targetPosition.lineNumber, this.targetPosition.column), text);
+		builder.AddEditOperAtion(new RAnge(this.tArgetPosition.lineNumber, this.tArgetPosition.column, this.tArgetPosition.lineNumber, this.tArgetPosition.column), text);
 
-		if (this.selection.containsPosition(this.targetPosition) && !(
+		if (this.selection.contAinsPosition(this.tArgetPosition) && !(
 			this.copy && (
-				this.selection.getEndPosition().equals(this.targetPosition) || this.selection.getStartPosition().equals(this.targetPosition)
-			) // we allow users to paste content beside the selection
+				this.selection.getEndPosition().equAls(this.tArgetPosition) || this.selection.getStArtPosition().equAls(this.tArgetPosition)
+			) // we Allow users to pAste content beside the selection
 		)) {
-			this.targetSelection = this.selection;
+			this.tArgetSelection = this.selection;
 			return;
 		}
 
 		if (this.copy) {
-			this.targetSelection = new Selection(
-				this.targetPosition.lineNumber,
-				this.targetPosition.column,
-				this.selection.endLineNumber - this.selection.startLineNumber + this.targetPosition.lineNumber,
-				this.selection.startLineNumber === this.selection.endLineNumber ?
-					this.targetPosition.column + this.selection.endColumn - this.selection.startColumn :
+			this.tArgetSelection = new Selection(
+				this.tArgetPosition.lineNumber,
+				this.tArgetPosition.column,
+				this.selection.endLineNumber - this.selection.stArtLineNumber + this.tArgetPosition.lineNumber,
+				this.selection.stArtLineNumber === this.selection.endLineNumber ?
+					this.tArgetPosition.column + this.selection.endColumn - this.selection.stArtColumn :
 					this.selection.endColumn
 			);
 			return;
 		}
 
-		if (this.targetPosition.lineNumber > this.selection.endLineNumber) {
-			// Drag the selection downwards
-			this.targetSelection = new Selection(
-				this.targetPosition.lineNumber - this.selection.endLineNumber + this.selection.startLineNumber,
-				this.targetPosition.column,
-				this.targetPosition.lineNumber,
-				this.selection.startLineNumber === this.selection.endLineNumber ?
-					this.targetPosition.column + this.selection.endColumn - this.selection.startColumn :
+		if (this.tArgetPosition.lineNumber > this.selection.endLineNumber) {
+			// DrAg the selection downwArds
+			this.tArgetSelection = new Selection(
+				this.tArgetPosition.lineNumber - this.selection.endLineNumber + this.selection.stArtLineNumber,
+				this.tArgetPosition.column,
+				this.tArgetPosition.lineNumber,
+				this.selection.stArtLineNumber === this.selection.endLineNumber ?
+					this.tArgetPosition.column + this.selection.endColumn - this.selection.stArtColumn :
 					this.selection.endColumn
 			);
 			return;
 		}
 
-		if (this.targetPosition.lineNumber < this.selection.endLineNumber) {
-			// Drag the selection upwards
-			this.targetSelection = new Selection(
-				this.targetPosition.lineNumber,
-				this.targetPosition.column,
-				this.targetPosition.lineNumber + this.selection.endLineNumber - this.selection.startLineNumber,
-				this.selection.startLineNumber === this.selection.endLineNumber ?
-					this.targetPosition.column + this.selection.endColumn - this.selection.startColumn :
+		if (this.tArgetPosition.lineNumber < this.selection.endLineNumber) {
+			// DrAg the selection upwArds
+			this.tArgetSelection = new Selection(
+				this.tArgetPosition.lineNumber,
+				this.tArgetPosition.column,
+				this.tArgetPosition.lineNumber + this.selection.endLineNumber - this.selection.stArtLineNumber,
+				this.selection.stArtLineNumber === this.selection.endLineNumber ?
+					this.tArgetPosition.column + this.selection.endColumn - this.selection.stArtColumn :
 					this.selection.endColumn
 			);
 			return;
 		}
 
-		// The target position is at the same line as the selection's end position.
-		if (this.selection.endColumn <= this.targetPosition.column) {
-			// The target position is after the selection's end position
-			this.targetSelection = new Selection(
-				this.targetPosition.lineNumber - this.selection.endLineNumber + this.selection.startLineNumber,
-				this.selection.startLineNumber === this.selection.endLineNumber ?
-					this.targetPosition.column - this.selection.endColumn + this.selection.startColumn :
-					this.targetPosition.column - this.selection.endColumn + this.selection.startColumn,
-				this.targetPosition.lineNumber,
-				this.selection.startLineNumber === this.selection.endLineNumber ?
-					this.targetPosition.column :
+		// The tArget position is At the sAme line As the selection's end position.
+		if (this.selection.endColumn <= this.tArgetPosition.column) {
+			// The tArget position is After the selection's end position
+			this.tArgetSelection = new Selection(
+				this.tArgetPosition.lineNumber - this.selection.endLineNumber + this.selection.stArtLineNumber,
+				this.selection.stArtLineNumber === this.selection.endLineNumber ?
+					this.tArgetPosition.column - this.selection.endColumn + this.selection.stArtColumn :
+					this.tArgetPosition.column - this.selection.endColumn + this.selection.stArtColumn,
+				this.tArgetPosition.lineNumber,
+				this.selection.stArtLineNumber === this.selection.endLineNumber ?
+					this.tArgetPosition.column :
 					this.selection.endColumn
 			);
 		} else {
-			// The target position is before the selection's end position. Since the selection doesn't contain the target position, the selection is one-line and target position is before this selection.
-			this.targetSelection = new Selection(
-				this.targetPosition.lineNumber - this.selection.endLineNumber + this.selection.startLineNumber,
-				this.targetPosition.column,
-				this.targetPosition.lineNumber,
-				this.targetPosition.column + this.selection.endColumn - this.selection.startColumn
+			// The tArget position is before the selection's end position. Since the selection doesn't contAin the tArget position, the selection is one-line And tArget position is before this selection.
+			this.tArgetSelection = new Selection(
+				this.tArgetPosition.lineNumber - this.selection.endLineNumber + this.selection.stArtLineNumber,
+				this.tArgetPosition.column,
+				this.tArgetPosition.lineNumber,
+				this.tArgetPosition.column + this.selection.endColumn - this.selection.stArtColumn
 			);
 		}
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
-		return this.targetSelection!;
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
+		return this.tArgetSelection!;
 	}
 }

@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export interface IMergeRegion {
-	name: string;
-	header: vscode.Range;
-	content: vscode.Range;
-	decoratorContent: vscode.Range;
+export interfAce IMergeRegion {
+	nAme: string;
+	heAder: vscode.RAnge;
+	content: vscode.RAnge;
+	decorAtorContent: vscode.RAnge;
 }
 
 export const enum CommitType {
@@ -17,32 +17,32 @@ export const enum CommitType {
 	Both
 }
 
-export interface IExtensionConfiguration {
-	enableCodeLens: boolean;
-	enableDecorations: boolean;
-	enableEditorOverview: boolean;
+export interfAce IExtensionConfigurAtion {
+	enAbleCodeLens: booleAn;
+	enAbleDecorAtions: booleAn;
+	enAbleEditorOverview: booleAn;
 }
 
-export interface IDocumentMergeConflict extends IDocumentMergeConflictDescriptor {
-	commitEdit(type: CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): Thenable<boolean>;
-	applyEdit(type: CommitType, document: vscode.TextDocument, edit: { replace(range: vscode.Range, newText: string): void; }): void;
+export interfAce IDocumentMergeConflict extends IDocumentMergeConflictDescriptor {
+	commitEdit(type: CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): ThenAble<booleAn>;
+	ApplyEdit(type: CommitType, document: vscode.TextDocument, edit: { replAce(rAnge: vscode.RAnge, newText: string): void; }): void;
 }
 
-export interface IDocumentMergeConflictDescriptor {
-	range: vscode.Range;
+export interfAce IDocumentMergeConflictDescriptor {
+	rAnge: vscode.RAnge;
 	current: IMergeRegion;
 	incoming: IMergeRegion;
 	commonAncestors: IMergeRegion[];
-	splitter: vscode.Range;
+	splitter: vscode.RAnge;
 }
 
-export interface IDocumentMergeConflictTracker {
+export interfAce IDocumentMergeConflictTrAcker {
 	getConflicts(document: vscode.TextDocument): PromiseLike<IDocumentMergeConflict[]>;
-	isPending(document: vscode.TextDocument): boolean;
+	isPending(document: vscode.TextDocument): booleAn;
 	forget(document: vscode.TextDocument): void;
 }
 
-export interface IDocumentMergeConflictTrackerService {
-	createTracker(origin: string): IDocumentMergeConflictTracker;
+export interfAce IDocumentMergeConflictTrAckerService {
+	creAteTrAcker(origin: string): IDocumentMergeConflictTrAcker;
 	forget(document: vscode.TextDocument): void;
 }

@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAccessibilityService, AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
-import { isWindows, isLinux } from 'vs/base/common/platform';
-import { INativeWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sandbox/environmentService';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { AccessibilityService } from 'vs/platform/accessibility/common/accessibilityService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IJSONEditingService } from 'vs/workbench/services/configuration/common/jsonEditing';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { IAccessibilityService, AccessibilitySupport } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { isWindows, isLinux } from 'vs/bAse/common/plAtform';
+import { INAtiveWorkbenchEnvironmentService } from 'vs/workbench/services/environment/electron-sAndbox/environmentService';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { AccessibilityService } from 'vs/plAtform/Accessibility/common/AccessibilityService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IJSONEditingService } from 'vs/workbench/services/configurAtion/common/jsonEditing';
+import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-interface AccessibilityMetrics {
-	enabled: boolean;
+interfAce AccessibilityMetrics {
+	enAbled: booleAn;
 }
-type AccessibilityMetricsClassification = {
-	enabled: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
+type AccessibilityMetricsClAssificAtion = {
+	enAbled: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
 };
 
-export class NativeAccessibilityService extends AccessibilityService implements IAccessibilityService {
+export clAss NAtiveAccessibilityService extends AccessibilityService implements IAccessibilityService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private didSendTelemetry = false;
-	private shouldAlwaysUnderlineAccessKeys: boolean | undefined = undefined;
+	privAte didSendTelemetry = fAlse;
+	privAte shouldAlwAysUnderlineAccessKeys: booleAn | undefined = undefined;
 
 	constructor(
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService,
+		@INAtiveWorkbenchEnvironmentService environmentService: INAtiveWorkbenchEnvironmentService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@ITelemetryService privAte reAdonly _telemetryService: ITelemetryService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(contextKeyService, configurationService);
-		this.setAccessibilitySupport(environmentService.configuration.accessibilitySupport ? AccessibilitySupport.Enabled : AccessibilitySupport.Disabled);
+		super(contextKeyService, configurAtionService);
+		this.setAccessibilitySupport(environmentService.configurAtion.AccessibilitySupport ? AccessibilitySupport.EnAbled : AccessibilitySupport.DisAbled);
 	}
 
-	async alwaysUnderlineAccessKeys(): Promise<boolean> {
+	Async AlwAysUnderlineAccessKeys(): Promise<booleAn> {
 		if (!isWindows) {
-			return false;
+			return fAlse;
 		}
 
-		if (typeof this.shouldAlwaysUnderlineAccessKeys !== 'boolean') {
-			const windowsKeyboardAccessibility = await this.nativeHostService.windowsGetStringRegKey('HKEY_CURRENT_USER', 'Control Panel\\Accessibility\\Keyboard Preference', 'On');
-			this.shouldAlwaysUnderlineAccessKeys = (windowsKeyboardAccessibility === '1');
+		if (typeof this.shouldAlwAysUnderlineAccessKeys !== 'booleAn') {
+			const windowsKeyboArdAccessibility = AwAit this.nAtiveHostService.windowsGetStringRegKey('HKEY_CURRENT_USER', 'Control PAnel\\Accessibility\\KeyboArd Preference', 'On');
+			this.shouldAlwAysUnderlineAccessKeys = (windowsKeyboArdAccessibility === '1');
 		}
 
-		return this.shouldAlwaysUnderlineAccessKeys;
+		return this.shouldAlwAysUnderlineAccessKeys;
 	}
 
-	setAccessibilitySupport(accessibilitySupport: AccessibilitySupport): void {
-		super.setAccessibilitySupport(accessibilitySupport);
+	setAccessibilitySupport(AccessibilitySupport: AccessibilitySupport): void {
+		super.setAccessibilitySupport(AccessibilitySupport);
 
-		if (!this.didSendTelemetry && accessibilitySupport === AccessibilitySupport.Enabled) {
-			this._telemetryService.publicLog2<AccessibilityMetrics, AccessibilityMetricsClassification>('accessibility', { enabled: true });
+		if (!this.didSendTelemetry && AccessibilitySupport === AccessibilitySupport.EnAbled) {
+			this._telemetryService.publicLog2<AccessibilityMetrics, AccessibilityMetricsClAssificAtion>('Accessibility', { enAbled: true });
 			this.didSendTelemetry = true;
 		}
 	}
 }
 
-registerSingleton(IAccessibilityService, NativeAccessibilityService, true);
+registerSingleton(IAccessibilityService, NAtiveAccessibilityService, true);
 
-// On linux we do not automatically detect that a screen reader is detected, thus we have to implicitly notify the renderer to enable accessibility when user configures it in settings
-class LinuxAccessibilityContribution implements IWorkbenchContribution {
+// On linux we do not AutomAticAlly detect thAt A screen reAder is detected, thus we hAve to implicitly notify the renderer to enAble Accessibility when user configures it in settings
+clAss LinuxAccessibilityContribution implements IWorkbenchContribution {
 	constructor(
 		@IJSONEditingService jsonEditingService: IJSONEditingService,
-		@IAccessibilityService accessibilityService: IAccessibilityService,
-		@INativeWorkbenchEnvironmentService environmentService: INativeWorkbenchEnvironmentService
+		@IAccessibilityService AccessibilityService: IAccessibilityService,
+		@INAtiveWorkbenchEnvironmentService environmentService: INAtiveWorkbenchEnvironmentService
 	) {
 		const forceRendererAccessibility = () => {
-			if (accessibilityService.isScreenReaderOptimized()) {
-				jsonEditingService.write(environmentService.argvResource, [{ path: ['force-renderer-accessibility'], value: true }], true);
+			if (AccessibilityService.isScreenReAderOptimized()) {
+				jsonEditingService.write(environmentService.ArgvResource, [{ pAth: ['force-renderer-Accessibility'], vAlue: true }], true);
 			}
 		};
 		forceRendererAccessibility();
-		accessibilityService.onDidChangeScreenReaderOptimized(forceRendererAccessibility);
+		AccessibilityService.onDidChAngeScreenReAderOptimized(forceRendererAccessibility);
 	}
 }
 
 if (isLinux) {
-	Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(LinuxAccessibilityContribution, LifecyclePhase.Ready);
+	Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(LinuxAccessibilityContribution, LifecyclePhAse.ReAdy);
 }

@@ -1,358 +1,358 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { isLocalhost, ITunnelService, RemoteTunnel } from 'vs/platform/remote/common/tunnel';
-import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
-import { IEditableData } from 'vs/workbench/common/views';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TunnelInformation, TunnelDescription, IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { isLocAlhost, ITunnelService, RemoteTunnel } from 'vs/plAtform/remote/common/tunnel';
+import { DisposAble, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IEditAbleDAtA } from 'vs/workbench/common/views';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TunnelInformAtion, TunnelDescription, IRemoteAuthorityResolverService } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { IAddressProvider } from 'vs/platform/remote/common/remoteAgentConnection';
+import { IAddressProvider } from 'vs/plAtform/remote/common/remoteAgentConnection';
 
-export const IRemoteExplorerService = createDecorator<IRemoteExplorerService>('remoteExplorerService');
+export const IRemoteExplorerService = creAteDecorAtor<IRemoteExplorerService>('remoteExplorerService');
 export const REMOTE_EXPLORER_TYPE_KEY: string = 'remote.explorerType';
 const TUNNELS_TO_RESTORE = 'remote.tunnels.toRestore';
-export const TUNNEL_VIEW_ID = '~remote.forwardedPorts';
+export const TUNNEL_VIEW_ID = '~remote.forwArdedPorts';
 
 export enum TunnelType {
-	Candidate = 'Candidate',
+	CAndidAte = 'CAndidAte',
 	Detected = 'Detected',
-	Forwarded = 'Forwarded',
+	ForwArded = 'ForwArded',
 	Add = 'Add'
 }
 
-export interface ITunnelItem {
+export interfAce ITunnelItem {
 	tunnelType: TunnelType;
 	remoteHost: string;
 	remotePort: number;
-	localAddress?: string;
-	localPort?: number;
-	name?: string;
-	closeable?: boolean;
+	locAlAddress?: string;
+	locAlPort?: number;
+	nAme?: string;
+	closeAble?: booleAn;
 	description?: string;
-	readonly label: string;
+	reAdonly lAbel: string;
 }
 
-export interface Tunnel {
+export interfAce Tunnel {
 	remoteHost: string;
 	remotePort: number;
-	localAddress: string;
-	localPort?: number;
-	name?: string;
+	locAlAddress: string;
+	locAlPort?: number;
+	nAme?: string;
 	description?: string;
-	closeable?: boolean;
+	closeAble?: booleAn;
 }
 
-export function MakeAddress(host: string, port: number): string {
+export function MAkeAddress(host: string, port: number): string {
 	return host + ':' + port;
 }
 
-export function mapHasTunnel(map: Map<string, Tunnel>, host: string, port: number): boolean {
-	if (!isLocalhost(host)) {
-		return map.has(MakeAddress(host, port));
+export function mApHAsTunnel(mAp: MAp<string, Tunnel>, host: string, port: number): booleAn {
+	if (!isLocAlhost(host)) {
+		return mAp.hAs(MAkeAddress(host, port));
 	}
 
-	const stringAddress = MakeAddress('localhost', port);
-	if (map.has(stringAddress)) {
+	const stringAddress = MAkeAddress('locAlhost', port);
+	if (mAp.hAs(stringAddress)) {
 		return true;
 	}
-	const numberAddress = MakeAddress('127.0.0.1', port);
-	if (map.has(numberAddress)) {
+	const numberAddress = MAkeAddress('127.0.0.1', port);
+	if (mAp.hAs(numberAddress)) {
 		return true;
 	}
-	return false;
+	return fAlse;
 }
 
-export function mapHasTunnelLocalhostOrAllInterfaces(map: Map<string, Tunnel>, host: string, port: number): boolean {
-	if (!mapHasTunnel(map, host, port)) {
-		const otherHost = host === '0.0.0.0' ? 'localhost' : (host === 'localhost' ? '0.0.0.0' : undefined);
+export function mApHAsTunnelLocAlhostOrAllInterfAces(mAp: MAp<string, Tunnel>, host: string, port: number): booleAn {
+	if (!mApHAsTunnel(mAp, host, port)) {
+		const otherHost = host === '0.0.0.0' ? 'locAlhost' : (host === 'locAlhost' ? '0.0.0.0' : undefined);
 		if (otherHost) {
-			return mapHasTunnel(map, otherHost, port);
+			return mApHAsTunnel(mAp, otherHost, port);
 		}
-		return false;
+		return fAlse;
 	}
 	return true;
 }
 
-export class TunnelModel extends Disposable {
-	readonly forwarded: Map<string, Tunnel>;
-	readonly detected: Map<string, Tunnel>;
-	private _onForwardPort: Emitter<Tunnel> = new Emitter();
-	public onForwardPort: Event<Tunnel> = this._onForwardPort.event;
-	private _onClosePort: Emitter<{ host: string, port: number }> = new Emitter();
+export clAss TunnelModel extends DisposAble {
+	reAdonly forwArded: MAp<string, Tunnel>;
+	reAdonly detected: MAp<string, Tunnel>;
+	privAte _onForwArdPort: Emitter<Tunnel> = new Emitter();
+	public onForwArdPort: Event<Tunnel> = this._onForwArdPort.event;
+	privAte _onClosePort: Emitter<{ host: string, port: number }> = new Emitter();
 	public onClosePort: Event<{ host: string, port: number }> = this._onClosePort.event;
-	private _onPortName: Emitter<{ host: string, port: number }> = new Emitter();
-	public onPortName: Event<{ host: string, port: number }> = this._onPortName.event;
-	private _candidates: { host: string, port: number, detail: string }[] = [];
-	private _candidateFinder: (() => Promise<{ host: string, port: number, detail: string }[]>) | undefined;
-	private _onCandidatesChanged: Emitter<void> = new Emitter();
-	public onCandidatesChanged: Event<void> = this._onCandidatesChanged.event;
-	private _candidateFilter: ((candidates: { host: string, port: number, detail: string }[]) => Promise<{ host: string, port: number, detail: string }[]>) | undefined;
+	privAte _onPortNAme: Emitter<{ host: string, port: number }> = new Emitter();
+	public onPortNAme: Event<{ host: string, port: number }> = this._onPortNAme.event;
+	privAte _cAndidAtes: { host: string, port: number, detAil: string }[] = [];
+	privAte _cAndidAteFinder: (() => Promise<{ host: string, port: number, detAil: string }[]>) | undefined;
+	privAte _onCAndidAtesChAnged: Emitter<void> = new Emitter();
+	public onCAndidAtesChAnged: Event<void> = this._onCAndidAtesChAnged.event;
+	privAte _cAndidAteFilter: ((cAndidAtes: { host: string, port: number, detAil: string }[]) => Promise<{ host: string, port: number, detAil: string }[]>) | undefined;
 
 	constructor(
-		@ITunnelService private readonly tunnelService: ITunnelService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@IRemoteAuthorityResolverService private readonly remoteAuthorityResolverService: IRemoteAuthorityResolverService,
+		@ITunnelService privAte reAdonly tunnelService: ITunnelService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@IRemoteAuthorityResolverService privAte reAdonly remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 	) {
 		super();
-		this.forwarded = new Map();
+		this.forwArded = new MAp();
 		this.tunnelService.tunnels.then(tunnels => {
-			tunnels.forEach(tunnel => {
-				if (tunnel.localAddress) {
-					this.forwarded.set(MakeAddress(tunnel.tunnelRemoteHost, tunnel.tunnelRemotePort), {
+			tunnels.forEAch(tunnel => {
+				if (tunnel.locAlAddress) {
+					this.forwArded.set(MAkeAddress(tunnel.tunnelRemoteHost, tunnel.tunnelRemotePort), {
 						remotePort: tunnel.tunnelRemotePort,
 						remoteHost: tunnel.tunnelRemoteHost,
-						localAddress: tunnel.localAddress,
-						localPort: tunnel.tunnelLocalPort
+						locAlAddress: tunnel.locAlAddress,
+						locAlPort: tunnel.tunnelLocAlPort
 					});
 				}
 			});
 		});
 
-		this.detected = new Map();
+		this.detected = new MAp();
 		this._register(this.tunnelService.onTunnelOpened(tunnel => {
-			const key = MakeAddress(tunnel.tunnelRemoteHost, tunnel.tunnelRemotePort);
-			if ((!this.forwarded.has(key)) && tunnel.localAddress) {
-				this.forwarded.set(key, {
+			const key = MAkeAddress(tunnel.tunnelRemoteHost, tunnel.tunnelRemotePort);
+			if ((!this.forwArded.hAs(key)) && tunnel.locAlAddress) {
+				this.forwArded.set(key, {
 					remoteHost: tunnel.tunnelRemoteHost,
 					remotePort: tunnel.tunnelRemotePort,
-					localAddress: tunnel.localAddress,
-					localPort: tunnel.tunnelLocalPort,
-					closeable: true
+					locAlAddress: tunnel.locAlAddress,
+					locAlPort: tunnel.tunnelLocAlPort,
+					closeAble: true
 				});
-				this.storeForwarded();
+				this.storeForwArded();
 			}
-			this._onForwardPort.fire(this.forwarded.get(key)!);
+			this._onForwArdPort.fire(this.forwArded.get(key)!);
 		}));
-		this._register(this.tunnelService.onTunnelClosed(address => {
-			const key = MakeAddress(address.host, address.port);
-			if (this.forwarded.has(key)) {
-				this.forwarded.delete(key);
-				this.storeForwarded();
-				this._onClosePort.fire(address);
+		this._register(this.tunnelService.onTunnelClosed(Address => {
+			const key = MAkeAddress(Address.host, Address.port);
+			if (this.forwArded.hAs(key)) {
+				this.forwArded.delete(key);
+				this.storeForwArded();
+				this._onClosePort.fire(Address);
 			}
 		}));
 	}
 
-	async restoreForwarded() {
-		if (this.configurationService.getValue('remote.restoreForwardedPorts')) {
-			const tunnelsString = this.storageService.get(TUNNELS_TO_RESTORE, StorageScope.WORKSPACE);
+	Async restoreForwArded() {
+		if (this.configurAtionService.getVAlue('remote.restoreForwArdedPorts')) {
+			const tunnelsString = this.storAgeService.get(TUNNELS_TO_RESTORE, StorAgeScope.WORKSPACE);
 			if (tunnelsString) {
-				(<Tunnel[] | undefined>JSON.parse(tunnelsString))?.forEach(tunnel => {
-					this.forward({ host: tunnel.remoteHost, port: tunnel.remotePort }, tunnel.localPort, tunnel.name);
+				(<Tunnel[] | undefined>JSON.pArse(tunnelsString))?.forEAch(tunnel => {
+					this.forwArd({ host: tunnel.remoteHost, port: tunnel.remotePort }, tunnel.locAlPort, tunnel.nAme);
 				});
 			}
 		}
 	}
 
-	private storeForwarded() {
-		if (this.configurationService.getValue('remote.restoreForwardedPorts')) {
-			this.storageService.store(TUNNELS_TO_RESTORE, JSON.stringify(Array.from(this.forwarded.values())), StorageScope.WORKSPACE);
+	privAte storeForwArded() {
+		if (this.configurAtionService.getVAlue('remote.restoreForwArdedPorts')) {
+			this.storAgeService.store(TUNNELS_TO_RESTORE, JSON.stringify(ArrAy.from(this.forwArded.vAlues())), StorAgeScope.WORKSPACE);
 		}
 	}
 
-	async forward(remote: { host: string, port: number }, local?: number, name?: string): Promise<RemoteTunnel | void> {
-		const key = MakeAddress(remote.host, remote.port);
-		if (!this.forwarded.has(key)) {
-			const authority = this.environmentService.remoteAuthority;
-			const addressProvider: IAddressProvider | undefined = authority ? {
-				getAddress: async () => { return (await this.remoteAuthorityResolverService.resolveAuthority(authority)).authority; }
+	Async forwArd(remote: { host: string, port: number }, locAl?: number, nAme?: string): Promise<RemoteTunnel | void> {
+		const key = MAkeAddress(remote.host, remote.port);
+		if (!this.forwArded.hAs(key)) {
+			const Authority = this.environmentService.remoteAuthority;
+			const AddressProvider: IAddressProvider | undefined = Authority ? {
+				getAddress: Async () => { return (AwAit this.remoteAuthorityResolverService.resolveAuthority(Authority)).Authority; }
 			} : undefined;
 
-			const tunnel = await this.tunnelService.openTunnel(addressProvider, remote.host, remote.port, local);
-			if (tunnel && tunnel.localAddress) {
-				const newForward: Tunnel = {
+			const tunnel = AwAit this.tunnelService.openTunnel(AddressProvider, remote.host, remote.port, locAl);
+			if (tunnel && tunnel.locAlAddress) {
+				const newForwArd: Tunnel = {
 					remoteHost: tunnel.tunnelRemoteHost,
 					remotePort: tunnel.tunnelRemotePort,
-					localPort: tunnel.tunnelLocalPort,
-					name: name,
-					closeable: true,
-					localAddress: tunnel.localAddress
+					locAlPort: tunnel.tunnelLocAlPort,
+					nAme: nAme,
+					closeAble: true,
+					locAlAddress: tunnel.locAlAddress
 				};
-				this.forwarded.set(key, newForward);
-				this._onForwardPort.fire(newForward);
+				this.forwArded.set(key, newForwArd);
+				this._onForwArdPort.fire(newForwArd);
 				return tunnel;
 			}
 		}
 	}
 
-	name(host: string, port: number, name: string) {
-		const key = MakeAddress(host, port);
-		if (this.forwarded.has(key)) {
-			this.forwarded.get(key)!.name = name;
-			this.storeForwarded();
-			this._onPortName.fire({ host, port });
-		} else if (this.detected.has(key)) {
-			this.detected.get(key)!.name = name;
-			this._onPortName.fire({ host, port });
+	nAme(host: string, port: number, nAme: string) {
+		const key = MAkeAddress(host, port);
+		if (this.forwArded.hAs(key)) {
+			this.forwArded.get(key)!.nAme = nAme;
+			this.storeForwArded();
+			this._onPortNAme.fire({ host, port });
+		} else if (this.detected.hAs(key)) {
+			this.detected.get(key)!.nAme = nAme;
+			this._onPortNAme.fire({ host, port });
 		}
 	}
 
-	async close(host: string, port: number): Promise<void> {
+	Async close(host: string, port: number): Promise<void> {
 		return this.tunnelService.closeTunnel(host, port);
 	}
 
-	address(host: string, port: number): string | undefined {
-		const key = MakeAddress(host, port);
-		return (this.forwarded.get(key) || this.detected.get(key))?.localAddress;
+	Address(host: string, port: number): string | undefined {
+		const key = MAkeAddress(host, port);
+		return (this.forwArded.get(key) || this.detected.get(key))?.locAlAddress;
 	}
 
-	addEnvironmentTunnels(tunnels: TunnelDescription[]): void {
-		tunnels.forEach(tunnel => {
-			this.detected.set(MakeAddress(tunnel.remoteAddress.host, tunnel.remoteAddress.port), {
+	AddEnvironmentTunnels(tunnels: TunnelDescription[]): void {
+		tunnels.forEAch(tunnel => {
+			this.detected.set(MAkeAddress(tunnel.remoteAddress.host, tunnel.remoteAddress.port), {
 				remoteHost: tunnel.remoteAddress.host,
 				remotePort: tunnel.remoteAddress.port,
-				localAddress: typeof tunnel.localAddress === 'string' ? tunnel.localAddress : MakeAddress(tunnel.localAddress.host, tunnel.localAddress.port),
-				closeable: false
+				locAlAddress: typeof tunnel.locAlAddress === 'string' ? tunnel.locAlAddress : MAkeAddress(tunnel.locAlAddress.host, tunnel.locAlAddress.port),
+				closeAble: fAlse
 			});
 		});
 	}
 
-	registerCandidateFinder(finder: () => Promise<{ host: string, port: number, detail: string }[]>): void {
-		this._candidateFinder = finder;
-		this._onCandidatesChanged.fire();
+	registerCAndidAteFinder(finder: () => Promise<{ host: string, port: number, detAil: string }[]>): void {
+		this._cAndidAteFinder = finder;
+		this._onCAndidAtesChAnged.fire();
 	}
 
-	setCandidateFilter(filter: ((candidates: { host: string, port: number, detail: string }[]) => Promise<{ host: string, port: number, detail: string }[]>) | undefined): void {
-		this._candidateFilter = filter;
+	setCAndidAteFilter(filter: ((cAndidAtes: { host: string, port: number, detAil: string }[]) => Promise<{ host: string, port: number, detAil: string }[]>) | undefined): void {
+		this._cAndidAteFilter = filter;
 	}
 
-	get candidates(): Promise<{ host: string, port: number, detail: string }[]> {
-		return this.updateCandidates().then(() => this._candidates);
+	get cAndidAtes(): Promise<{ host: string, port: number, detAil: string }[]> {
+		return this.updAteCAndidAtes().then(() => this._cAndidAtes);
 	}
 
-	private async updateCandidates(): Promise<void> {
-		if (this._candidateFinder) {
-			let candidates = await this._candidateFinder();
-			if (this._candidateFilter && (candidates.length > 0)) {
-				candidates = await this._candidateFilter(candidates);
+	privAte Async updAteCAndidAtes(): Promise<void> {
+		if (this._cAndidAteFinder) {
+			let cAndidAtes = AwAit this._cAndidAteFinder();
+			if (this._cAndidAteFilter && (cAndidAtes.length > 0)) {
+				cAndidAtes = AwAit this._cAndidAteFilter(cAndidAtes);
 			}
-			this._candidates = candidates.map(value => {
-				const nullIndex = value.detail.indexOf('\0');
-				const detail = value.detail.substr(0, nullIndex > 0 ? nullIndex : value.detail.length).trim();
+			this._cAndidAtes = cAndidAtes.mAp(vAlue => {
+				const nullIndex = vAlue.detAil.indexOf('\0');
+				const detAil = vAlue.detAil.substr(0, nullIndex > 0 ? nullIndex : vAlue.detAil.length).trim();
 				return {
-					host: value.host,
-					port: value.port,
-					detail
+					host: vAlue.host,
+					port: vAlue.port,
+					detAil
 				};
 			});
 		}
 	}
 
-	async refresh(): Promise<void> {
-		await this.updateCandidates();
-		this._onCandidatesChanged.fire();
+	Async refresh(): Promise<void> {
+		AwAit this.updAteCAndidAtes();
+		this._onCAndidAtesChAnged.fire();
 	}
 }
 
-export interface IRemoteExplorerService {
-	readonly _serviceBrand: undefined;
-	onDidChangeTargetType: Event<string[]>;
-	targetType: string[];
-	readonly tunnelModel: TunnelModel;
-	onDidChangeEditable: Event<ITunnelItem | undefined>;
-	setEditable(tunnelItem: ITunnelItem | undefined, data: IEditableData | null): void;
-	getEditableData(tunnelItem: ITunnelItem | undefined): IEditableData | undefined;
-	forward(remote: { host: string, port: number }, localPort?: number, name?: string): Promise<RemoteTunnel | void>;
+export interfAce IRemoteExplorerService {
+	reAdonly _serviceBrAnd: undefined;
+	onDidChAngeTArgetType: Event<string[]>;
+	tArgetType: string[];
+	reAdonly tunnelModel: TunnelModel;
+	onDidChAngeEditAble: Event<ITunnelItem | undefined>;
+	setEditAble(tunnelItem: ITunnelItem | undefined, dAtA: IEditAbleDAtA | null): void;
+	getEditAbleDAtA(tunnelItem: ITunnelItem | undefined): IEditAbleDAtA | undefined;
+	forwArd(remote: { host: string, port: number }, locAlPort?: number, nAme?: string): Promise<RemoteTunnel | void>;
 	close(remote: { host: string, port: number }): Promise<void>;
-	setTunnelInformation(tunnelInformation: TunnelInformation | undefined): void;
-	registerCandidateFinder(finder: () => Promise<{ host: string, port: number, detail: string }[]>): void;
-	setCandidateFilter(filter: ((candidates: { host: string, port: number, detail: string }[]) => Promise<{ host: string, port: number, detail: string }[]>) | undefined): IDisposable;
+	setTunnelInformAtion(tunnelInformAtion: TunnelInformAtion | undefined): void;
+	registerCAndidAteFinder(finder: () => Promise<{ host: string, port: number, detAil: string }[]>): void;
+	setCAndidAteFilter(filter: ((cAndidAtes: { host: string, port: number, detAil: string }[]) => Promise<{ host: string, port: number, detAil: string }[]>) | undefined): IDisposAble;
 	refresh(): Promise<void>;
 	restore(): Promise<void>;
 }
 
-class RemoteExplorerService implements IRemoteExplorerService {
-	public _serviceBrand: undefined;
-	private _targetType: string[] = [];
-	private readonly _onDidChangeTargetType: Emitter<string[]> = new Emitter<string[]>();
-	public readonly onDidChangeTargetType: Event<string[]> = this._onDidChangeTargetType.event;
-	private _tunnelModel: TunnelModel;
-	private _editable: { tunnelItem: ITunnelItem | undefined, data: IEditableData } | undefined;
-	private readonly _onDidChangeEditable: Emitter<ITunnelItem | undefined> = new Emitter();
-	public readonly onDidChangeEditable: Event<ITunnelItem | undefined> = this._onDidChangeEditable.event;
+clAss RemoteExplorerService implements IRemoteExplorerService {
+	public _serviceBrAnd: undefined;
+	privAte _tArgetType: string[] = [];
+	privAte reAdonly _onDidChAngeTArgetType: Emitter<string[]> = new Emitter<string[]>();
+	public reAdonly onDidChAngeTArgetType: Event<string[]> = this._onDidChAngeTArgetType.event;
+	privAte _tunnelModel: TunnelModel;
+	privAte _editAble: { tunnelItem: ITunnelItem | undefined, dAtA: IEditAbleDAtA } | undefined;
+	privAte reAdonly _onDidChAngeEditAble: Emitter<ITunnelItem | undefined> = new Emitter();
+	public reAdonly onDidChAngeEditAble: Event<ITunnelItem | undefined> = this._onDidChAngeEditAble.event;
 
 	constructor(
-		@IStorageService private readonly storageService: IStorageService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
 		@ITunnelService tunnelService: ITunnelService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IRemoteAuthorityResolverService remoteAuthorityResolverService: IRemoteAuthorityResolverService,
 	) {
-		this._tunnelModel = new TunnelModel(tunnelService, storageService, configurationService, environmentService, remoteAuthorityResolverService);
+		this._tunnelModel = new TunnelModel(tunnelService, storAgeService, configurAtionService, environmentService, remoteAuthorityResolverService);
 	}
 
-	set targetType(name: string[]) {
-		// Can just compare the first element of the array since there are no target overlaps
-		const current: string = this._targetType.length > 0 ? this._targetType[0] : '';
-		const newName: string = name.length > 0 ? name[0] : '';
-		if (current !== newName) {
-			this._targetType = name;
-			this.storageService.store(REMOTE_EXPLORER_TYPE_KEY, this._targetType.toString(), StorageScope.WORKSPACE);
-			this.storageService.store(REMOTE_EXPLORER_TYPE_KEY, this._targetType.toString(), StorageScope.GLOBAL);
-			this._onDidChangeTargetType.fire(this._targetType);
+	set tArgetType(nAme: string[]) {
+		// CAn just compAre the first element of the ArrAy since there Are no tArget overlAps
+		const current: string = this._tArgetType.length > 0 ? this._tArgetType[0] : '';
+		const newNAme: string = nAme.length > 0 ? nAme[0] : '';
+		if (current !== newNAme) {
+			this._tArgetType = nAme;
+			this.storAgeService.store(REMOTE_EXPLORER_TYPE_KEY, this._tArgetType.toString(), StorAgeScope.WORKSPACE);
+			this.storAgeService.store(REMOTE_EXPLORER_TYPE_KEY, this._tArgetType.toString(), StorAgeScope.GLOBAL);
+			this._onDidChAngeTArgetType.fire(this._tArgetType);
 		}
 	}
-	get targetType(): string[] {
-		return this._targetType;
+	get tArgetType(): string[] {
+		return this._tArgetType;
 	}
 
 	get tunnelModel(): TunnelModel {
 		return this._tunnelModel;
 	}
 
-	forward(remote: { host: string, port: number }, local?: number, name?: string): Promise<RemoteTunnel | void> {
-		return this.tunnelModel.forward(remote, local, name);
+	forwArd(remote: { host: string, port: number }, locAl?: number, nAme?: string): Promise<RemoteTunnel | void> {
+		return this.tunnelModel.forwArd(remote, locAl, nAme);
 	}
 
 	close(remote: { host: string, port: number }): Promise<void> {
 		return this.tunnelModel.close(remote.host, remote.port);
 	}
 
-	setTunnelInformation(tunnelInformation: TunnelInformation | undefined): void {
-		if (tunnelInformation && tunnelInformation.environmentTunnels) {
-			this.tunnelModel.addEnvironmentTunnels(tunnelInformation.environmentTunnels);
+	setTunnelInformAtion(tunnelInformAtion: TunnelInformAtion | undefined): void {
+		if (tunnelInformAtion && tunnelInformAtion.environmentTunnels) {
+			this.tunnelModel.AddEnvironmentTunnels(tunnelInformAtion.environmentTunnels);
 		}
 	}
 
-	setEditable(tunnelItem: ITunnelItem | undefined, data: IEditableData | null): void {
-		if (!data) {
-			this._editable = undefined;
+	setEditAble(tunnelItem: ITunnelItem | undefined, dAtA: IEditAbleDAtA | null): void {
+		if (!dAtA) {
+			this._editAble = undefined;
 		} else {
-			this._editable = { tunnelItem, data };
+			this._editAble = { tunnelItem, dAtA };
 		}
-		this._onDidChangeEditable.fire(tunnelItem);
+		this._onDidChAngeEditAble.fire(tunnelItem);
 	}
 
-	getEditableData(tunnelItem: ITunnelItem | undefined): IEditableData | undefined {
-		return (this._editable &&
-			((!tunnelItem && (tunnelItem === this._editable.tunnelItem)) ||
-				(tunnelItem && (this._editable.tunnelItem?.remotePort === tunnelItem.remotePort) && (this._editable.tunnelItem.remoteHost === tunnelItem.remoteHost)))) ?
-			this._editable.data : undefined;
+	getEditAbleDAtA(tunnelItem: ITunnelItem | undefined): IEditAbleDAtA | undefined {
+		return (this._editAble &&
+			((!tunnelItem && (tunnelItem === this._editAble.tunnelItem)) ||
+				(tunnelItem && (this._editAble.tunnelItem?.remotePort === tunnelItem.remotePort) && (this._editAble.tunnelItem.remoteHost === tunnelItem.remoteHost)))) ?
+			this._editAble.dAtA : undefined;
 	}
 
-	registerCandidateFinder(finder: () => Promise<{ host: string, port: number, detail: string }[]>): void {
-		this.tunnelModel.registerCandidateFinder(finder);
+	registerCAndidAteFinder(finder: () => Promise<{ host: string, port: number, detAil: string }[]>): void {
+		this.tunnelModel.registerCAndidAteFinder(finder);
 	}
 
-	setCandidateFilter(filter: (candidates: { host: string, port: number, detail: string }[]) => Promise<{ host: string, port: number, detail: string }[]>): IDisposable {
+	setCAndidAteFilter(filter: (cAndidAtes: { host: string, port: number, detAil: string }[]) => Promise<{ host: string, port: number, detAil: string }[]>): IDisposAble {
 		if (!filter) {
 			return {
 				dispose: () => { }
 			};
 		}
-		this.tunnelModel.setCandidateFilter(filter);
+		this.tunnelModel.setCAndidAteFilter(filter);
 		return {
 			dispose: () => {
-				this.tunnelModel.setCandidateFilter(undefined);
+				this.tunnelModel.setCAndidAteFilter(undefined);
 			}
 		};
 	}
@@ -362,7 +362,7 @@ class RemoteExplorerService implements IRemoteExplorerService {
 	}
 
 	restore(): Promise<void> {
-		return this.tunnelModel.restoreForwarded();
+		return this.tunnelModel.restoreForwArded();
 	}
 }
 

@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import * as fs from 'fs';
-import * as cp from 'child_process';
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-const localize = nls.loadMessageBundle();
+import * As pAth from 'pAth';
+import * As fs from 'fs';
+import * As cp from 'child_process';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+const locAlize = nls.loAdMessAgeBundle();
 
 type AutoDetect = 'on' | 'off';
 
-function exists(file: string): Promise<boolean> {
-	return new Promise<boolean>((resolve, _reject) => {
-		fs.exists(file, (value) => {
-			resolve(value);
+function exists(file: string): Promise<booleAn> {
+	return new Promise<booleAn>((resolve, _reject) => {
+		fs.exists(file, (vAlue) => {
+			resolve(vAlue);
 		});
 	});
 }
 
-function exec(command: string, options: cp.ExecOptions): Promise<{ stdout: string; stderr: string }> {
+function exec(commAnd: string, options: cp.ExecOptions): Promise<{ stdout: string; stderr: string }> {
 	return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
-		cp.exec(command, options, (error, stdout, stderr) => {
+		cp.exec(commAnd, options, (error, stdout, stderr) => {
 			if (error) {
 				reject({ error, stdout, stderr });
 			}
@@ -31,89 +31,89 @@ function exec(command: string, options: cp.ExecOptions): Promise<{ stdout: strin
 	});
 }
 
-const buildNames: string[] = ['build', 'compile', 'watch'];
-function isBuildTask(name: string): boolean {
-	for (let buildName of buildNames) {
-		if (name.indexOf(buildName) !== -1) {
+const buildNAmes: string[] = ['build', 'compile', 'wAtch'];
+function isBuildTAsk(nAme: string): booleAn {
+	for (let buildNAme of buildNAmes) {
+		if (nAme.indexOf(buildNAme) !== -1) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-const testNames: string[] = ['test'];
-function isTestTask(name: string): boolean {
-	for (let testName of testNames) {
-		if (name.indexOf(testName) !== -1) {
+const testNAmes: string[] = ['test'];
+function isTestTAsk(nAme: string): booleAn {
+	for (let testNAme of testNAmes) {
+		if (nAme.indexOf(testNAme) !== -1) {
 			return true;
 		}
 	}
-	return false;
+	return fAlse;
 }
 
-let _channel: vscode.OutputChannel;
-function getOutputChannel(): vscode.OutputChannel {
-	if (!_channel) {
-		_channel = vscode.window.createOutputChannel('Grunt Auto Detection');
+let _chAnnel: vscode.OutputChAnnel;
+function getOutputChAnnel(): vscode.OutputChAnnel {
+	if (!_chAnnel) {
+		_chAnnel = vscode.window.creAteOutputChAnnel('Grunt Auto Detection');
 	}
-	return _channel;
+	return _chAnnel;
 }
 
 function showError() {
-	vscode.window.showWarningMessage(localize('gruntTaskDetectError', 'Problem finding grunt tasks. See the output for more information.'),
-		localize('gruntShowOutput', 'Go to output')).then(() => {
-			getOutputChannel().show(true);
+	vscode.window.showWArningMessAge(locAlize('gruntTAskDetectError', 'Problem finding grunt tAsks. See the output for more informAtion.'),
+		locAlize('gruntShowOutput', 'Go to output')).then(() => {
+			getOutputChAnnel().show(true);
 		});
 }
-interface GruntTaskDefinition extends vscode.TaskDefinition {
-	task: string;
-	args?: string[];
+interfAce GruntTAskDefinition extends vscode.TAskDefinition {
+	tAsk: string;
+	Args?: string[];
 	file?: string;
 }
 
-async function findGruntCommand(rootPath: string): Promise<string> {
-	let command: string;
-	let platform = process.platform;
-	if (platform === 'win32' && await exists(path.join(rootPath!, 'node_modules', '.bin', 'grunt.cmd'))) {
-		command = path.join('.', 'node_modules', '.bin', 'grunt.cmd');
-	} else if ((platform === 'linux' || platform === 'darwin') && await exists(path.join(rootPath!, 'node_modules', '.bin', 'grunt'))) {
-		command = path.join('.', 'node_modules', '.bin', 'grunt');
+Async function findGruntCommAnd(rootPAth: string): Promise<string> {
+	let commAnd: string;
+	let plAtform = process.plAtform;
+	if (plAtform === 'win32' && AwAit exists(pAth.join(rootPAth!, 'node_modules', '.bin', 'grunt.cmd'))) {
+		commAnd = pAth.join('.', 'node_modules', '.bin', 'grunt.cmd');
+	} else if ((plAtform === 'linux' || plAtform === 'dArwin') && AwAit exists(pAth.join(rootPAth!, 'node_modules', '.bin', 'grunt'))) {
+		commAnd = pAth.join('.', 'node_modules', '.bin', 'grunt');
 	} else {
-		command = 'grunt';
+		commAnd = 'grunt';
 	}
-	return command;
+	return commAnd;
 }
 
-class FolderDetector {
+clAss FolderDetector {
 
-	private fileWatcher: vscode.FileSystemWatcher | undefined;
-	private promise: Thenable<vscode.Task[]> | undefined;
+	privAte fileWAtcher: vscode.FileSystemWAtcher | undefined;
+	privAte promise: ThenAble<vscode.TAsk[]> | undefined;
 
 	constructor(
-		private _workspaceFolder: vscode.WorkspaceFolder,
-		private _gruntCommand: Promise<string>) {
+		privAte _workspAceFolder: vscode.WorkspAceFolder,
+		privAte _gruntCommAnd: Promise<string>) {
 	}
 
-	public get workspaceFolder(): vscode.WorkspaceFolder {
-		return this._workspaceFolder;
+	public get workspAceFolder(): vscode.WorkspAceFolder {
+		return this._workspAceFolder;
 	}
 
-	public isEnabled(): boolean {
-		return vscode.workspace.getConfiguration('grunt', this._workspaceFolder.uri).get<AutoDetect>('autoDetect') === 'on';
+	public isEnAbled(): booleAn {
+		return vscode.workspAce.getConfigurAtion('grunt', this._workspAceFolder.uri).get<AutoDetect>('AutoDetect') === 'on';
 	}
 
-	public start(): void {
-		let pattern = path.join(this._workspaceFolder.uri.fsPath, '{node_modules,[Gg]runtfile.js}');
-		this.fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
-		this.fileWatcher.onDidChange(() => this.promise = undefined);
-		this.fileWatcher.onDidCreate(() => this.promise = undefined);
-		this.fileWatcher.onDidDelete(() => this.promise = undefined);
+	public stArt(): void {
+		let pAttern = pAth.join(this._workspAceFolder.uri.fsPAth, '{node_modules,[Gg]runtfile.js}');
+		this.fileWAtcher = vscode.workspAce.creAteFileSystemWAtcher(pAttern);
+		this.fileWAtcher.onDidChAnge(() => this.promise = undefined);
+		this.fileWAtcher.onDidCreAte(() => this.promise = undefined);
+		this.fileWAtcher.onDidDelete(() => this.promise = undefined);
 	}
 
-	public async getTasks(): Promise<vscode.Task[]> {
-		if (this.isEnabled()) {
+	public Async getTAsks(): Promise<vscode.TAsk[]> {
+		if (this.isEnAbled()) {
 			if (!this.promise) {
-				this.promise = this.computeTasks();
+				this.promise = this.computeTAsks();
 			}
 			return this.promise;
 		} else {
@@ -121,85 +121,85 @@ class FolderDetector {
 		}
 	}
 
-	public async getTask(_task: vscode.Task): Promise<vscode.Task | undefined> {
-		const taskDefinition = <any>_task.definition;
-		const gruntTask = taskDefinition.task;
-		if (gruntTask) {
-			let options: vscode.ShellExecutionOptions = { cwd: this.workspaceFolder.uri.fsPath };
+	public Async getTAsk(_tAsk: vscode.TAsk): Promise<vscode.TAsk | undefined> {
+		const tAskDefinition = <Any>_tAsk.definition;
+		const gruntTAsk = tAskDefinition.tAsk;
+		if (gruntTAsk) {
+			let options: vscode.ShellExecutionOptions = { cwd: this.workspAceFolder.uri.fsPAth };
 			let source = 'grunt';
-			let task = gruntTask.indexOf(' ') === -1
-				? new vscode.Task(taskDefinition, this.workspaceFolder, gruntTask, source, new vscode.ShellExecution(`${await this._gruntCommand}`, [gruntTask, ...taskDefinition.args], options))
-				: new vscode.Task(taskDefinition, this.workspaceFolder, gruntTask, source, new vscode.ShellExecution(`${await this._gruntCommand}`, [`"${gruntTask}"`, ...taskDefinition.args], options));
-			return task;
+			let tAsk = gruntTAsk.indexOf(' ') === -1
+				? new vscode.TAsk(tAskDefinition, this.workspAceFolder, gruntTAsk, source, new vscode.ShellExecution(`${AwAit this._gruntCommAnd}`, [gruntTAsk, ...tAskDefinition.Args], options))
+				: new vscode.TAsk(tAskDefinition, this.workspAceFolder, gruntTAsk, source, new vscode.ShellExecution(`${AwAit this._gruntCommAnd}`, [`"${gruntTAsk}"`, ...tAskDefinition.Args], options));
+			return tAsk;
 		}
 		return undefined;
 	}
 
-	private async computeTasks(): Promise<vscode.Task[]> {
-		let rootPath = this._workspaceFolder.uri.scheme === 'file' ? this._workspaceFolder.uri.fsPath : undefined;
-		let emptyTasks: vscode.Task[] = [];
-		if (!rootPath) {
-			return emptyTasks;
+	privAte Async computeTAsks(): Promise<vscode.TAsk[]> {
+		let rootPAth = this._workspAceFolder.uri.scheme === 'file' ? this._workspAceFolder.uri.fsPAth : undefined;
+		let emptyTAsks: vscode.TAsk[] = [];
+		if (!rootPAth) {
+			return emptyTAsks;
 		}
-		if (!await exists(path.join(rootPath, 'gruntfile.js')) && !await exists(path.join(rootPath, 'Gruntfile.js'))) {
-			return emptyTasks;
+		if (!AwAit exists(pAth.join(rootPAth, 'gruntfile.js')) && !AwAit exists(pAth.join(rootPAth, 'Gruntfile.js'))) {
+			return emptyTAsks;
 		}
 
-		let commandLine = `${await this._gruntCommand} --help --no-color`;
+		let commAndLine = `${AwAit this._gruntCommAnd} --help --no-color`;
 		try {
-			let { stdout, stderr } = await exec(commandLine, { cwd: rootPath });
+			let { stdout, stderr } = AwAit exec(commAndLine, { cwd: rootPAth });
 			if (stderr) {
-				getOutputChannel().appendLine(stderr);
+				getOutputChAnnel().AppendLine(stderr);
 				showError();
 			}
-			let result: vscode.Task[] = [];
+			let result: vscode.TAsk[] = [];
 			if (stdout) {
-				// grunt lists tasks as follows (description is wrapped into a new line if too long):
+				// grunt lists tAsks As follows (description is wrApped into A new line if too long):
 				// ...
-				// Available tasks
+				// AvAilAble tAsks
 				//         uglify  Minify files with UglifyJS. *
-				//         jshint  Validate files with JSHint. *
-				//           test  Alias for "jshint", "qunit" tasks.
-				//        default  Alias for "jshint", "qunit", "concat", "uglify" tasks.
-				//           long  Alias for "eslint", "qunit", "browserify", "sass",
-				//                 "autoprefixer", "uglify", tasks.
+				//         jshint  VAlidAte files with JSHint. *
+				//           test  AliAs for "jshint", "qunit" tAsks.
+				//        defAult  AliAs for "jshint", "qunit", "concAt", "uglify" tAsks.
+				//           long  AliAs for "eslint", "qunit", "browserify", "sAss",
+				//                 "Autoprefixer", "uglify", tAsks.
 				//
-				// Tasks run in the order specified
+				// TAsks run in the order specified
 
 				let lines = stdout.split(/\r{0,1}\n/);
-				let tasksStart = false;
-				let tasksEnd = false;
+				let tAsksStArt = fAlse;
+				let tAsksEnd = fAlse;
 				for (let line of lines) {
 					if (line.length === 0) {
 						continue;
 					}
-					if (!tasksStart && !tasksEnd) {
-						if (line.indexOf('Available tasks') === 0) {
-							tasksStart = true;
+					if (!tAsksStArt && !tAsksEnd) {
+						if (line.indexOf('AvAilAble tAsks') === 0) {
+							tAsksStArt = true;
 						}
-					} else if (tasksStart && !tasksEnd) {
-						if (line.indexOf('Tasks run in the order specified') === 0) {
-							tasksEnd = true;
+					} else if (tAsksStArt && !tAsksEnd) {
+						if (line.indexOf('TAsks run in the order specified') === 0) {
+							tAsksEnd = true;
 						} else {
 							let regExp = /^\s*(\S.*\S)  \S/g;
-							let matches = regExp.exec(line);
-							if (matches && matches.length === 2) {
-								let name = matches[1];
-								let kind: GruntTaskDefinition = {
+							let mAtches = regExp.exec(line);
+							if (mAtches && mAtches.length === 2) {
+								let nAme = mAtches[1];
+								let kind: GruntTAskDefinition = {
 									type: 'grunt',
-									task: name
+									tAsk: nAme
 								};
 								let source = 'grunt';
-								let options: vscode.ShellExecutionOptions = { cwd: this.workspaceFolder.uri.fsPath };
-								let task = name.indexOf(' ') === -1
-									? new vscode.Task(kind, this.workspaceFolder, name, source, new vscode.ShellExecution(`${await this._gruntCommand} ${name}`, options))
-									: new vscode.Task(kind, this.workspaceFolder, name, source, new vscode.ShellExecution(`${await this._gruntCommand} "${name}"`, options));
-								result.push(task);
-								let lowerCaseTaskName = name.toLowerCase();
-								if (isBuildTask(lowerCaseTaskName)) {
-									task.group = vscode.TaskGroup.Build;
-								} else if (isTestTask(lowerCaseTaskName)) {
-									task.group = vscode.TaskGroup.Test;
+								let options: vscode.ShellExecutionOptions = { cwd: this.workspAceFolder.uri.fsPAth };
+								let tAsk = nAme.indexOf(' ') === -1
+									? new vscode.TAsk(kind, this.workspAceFolder, nAme, source, new vscode.ShellExecution(`${AwAit this._gruntCommAnd} ${nAme}`, options))
+									: new vscode.TAsk(kind, this.workspAceFolder, nAme, source, new vscode.ShellExecution(`${AwAit this._gruntCommAnd} "${nAme}"`, options));
+								result.push(tAsk);
+								let lowerCAseTAskNAme = nAme.toLowerCAse();
+								if (isBuildTAsk(lowerCAseTAskNAme)) {
+									tAsk.group = vscode.TAskGroup.Build;
+								} else if (isTestTAsk(lowerCAseTAskNAme)) {
+									tAsk.group = vscode.TAskGroup.Test;
 								}
 							}
 						}
@@ -207,54 +207,54 @@ class FolderDetector {
 				}
 			}
 			return result;
-		} catch (err) {
-			let channel = getOutputChannel();
+		} cAtch (err) {
+			let chAnnel = getOutputChAnnel();
 			if (err.stderr) {
-				channel.appendLine(err.stderr);
+				chAnnel.AppendLine(err.stderr);
 			}
 			if (err.stdout) {
-				channel.appendLine(err.stdout);
+				chAnnel.AppendLine(err.stdout);
 			}
-			channel.appendLine(localize('execFailed', 'Auto detecting Grunt for folder {0} failed with error: {1}', this.workspaceFolder.name, err.error ? err.error.toString() : 'unknown'));
+			chAnnel.AppendLine(locAlize('execFAiled', 'Auto detecting Grunt for folder {0} fAiled with error: {1}', this.workspAceFolder.nAme, err.error ? err.error.toString() : 'unknown'));
 			showError();
-			return emptyTasks;
+			return emptyTAsks;
 		}
 	}
 
 	public dispose() {
 		this.promise = undefined;
-		if (this.fileWatcher) {
-			this.fileWatcher.dispose();
+		if (this.fileWAtcher) {
+			this.fileWAtcher.dispose();
 		}
 	}
 }
 
-class TaskDetector {
+clAss TAskDetector {
 
-	private taskProvider: vscode.Disposable | undefined;
-	private detectors: Map<string, FolderDetector> = new Map();
+	privAte tAskProvider: vscode.DisposAble | undefined;
+	privAte detectors: MAp<string, FolderDetector> = new MAp();
 
 	constructor() {
 	}
 
-	public start(): void {
-		let folders = vscode.workspace.workspaceFolders;
+	public stArt(): void {
+		let folders = vscode.workspAce.workspAceFolders;
 		if (folders) {
-			this.updateWorkspaceFolders(folders, []);
+			this.updAteWorkspAceFolders(folders, []);
 		}
-		vscode.workspace.onDidChangeWorkspaceFolders((event) => this.updateWorkspaceFolders(event.added, event.removed));
-		vscode.workspace.onDidChangeConfiguration(this.updateConfiguration, this);
+		vscode.workspAce.onDidChAngeWorkspAceFolders((event) => this.updAteWorkspAceFolders(event.Added, event.removed));
+		vscode.workspAce.onDidChAngeConfigurAtion(this.updAteConfigurAtion, this);
 	}
 
 	public dispose(): void {
-		if (this.taskProvider) {
-			this.taskProvider.dispose();
-			this.taskProvider = undefined;
+		if (this.tAskProvider) {
+			this.tAskProvider.dispose();
+			this.tAskProvider = undefined;
 		}
-		this.detectors.clear();
+		this.detectors.cleAr();
 	}
 
-	private updateWorkspaceFolders(added: readonly vscode.WorkspaceFolder[], removed: readonly vscode.WorkspaceFolder[]): void {
+	privAte updAteWorkspAceFolders(Added: reAdonly vscode.WorkspAceFolder[], removed: reAdonly vscode.WorkspAceFolder[]): void {
 		for (let remove of removed) {
 			let detector = this.detectors.get(remove.uri.toString());
 			if (detector) {
@@ -262,73 +262,73 @@ class TaskDetector {
 				this.detectors.delete(remove.uri.toString());
 			}
 		}
-		for (let add of added) {
-			let detector = new FolderDetector(add, findGruntCommand(add.uri.fsPath));
-			this.detectors.set(add.uri.toString(), detector);
-			if (detector.isEnabled()) {
-				detector.start();
+		for (let Add of Added) {
+			let detector = new FolderDetector(Add, findGruntCommAnd(Add.uri.fsPAth));
+			this.detectors.set(Add.uri.toString(), detector);
+			if (detector.isEnAbled()) {
+				detector.stArt();
 			}
 		}
-		this.updateProvider();
+		this.updAteProvider();
 	}
 
-	private updateConfiguration(): void {
-		for (let detector of this.detectors.values()) {
+	privAte updAteConfigurAtion(): void {
+		for (let detector of this.detectors.vAlues()) {
 			detector.dispose();
-			this.detectors.delete(detector.workspaceFolder.uri.toString());
+			this.detectors.delete(detector.workspAceFolder.uri.toString());
 		}
-		let folders = vscode.workspace.workspaceFolders;
+		let folders = vscode.workspAce.workspAceFolders;
 		if (folders) {
 			for (let folder of folders) {
-				if (!this.detectors.has(folder.uri.toString())) {
-					let detector = new FolderDetector(folder, findGruntCommand(folder.uri.fsPath));
+				if (!this.detectors.hAs(folder.uri.toString())) {
+					let detector = new FolderDetector(folder, findGruntCommAnd(folder.uri.fsPAth));
 					this.detectors.set(folder.uri.toString(), detector);
-					if (detector.isEnabled()) {
-						detector.start();
+					if (detector.isEnAbled()) {
+						detector.stArt();
 					}
 				}
 			}
 		}
-		this.updateProvider();
+		this.updAteProvider();
 	}
 
-	private updateProvider(): void {
-		if (!this.taskProvider && this.detectors.size > 0) {
-			const thisCapture = this;
-			this.taskProvider = vscode.tasks.registerTaskProvider('grunt', {
-				provideTasks: (): Promise<vscode.Task[]> => {
-					return thisCapture.getTasks();
+	privAte updAteProvider(): void {
+		if (!this.tAskProvider && this.detectors.size > 0) {
+			const thisCApture = this;
+			this.tAskProvider = vscode.tAsks.registerTAskProvider('grunt', {
+				provideTAsks: (): Promise<vscode.TAsk[]> => {
+					return thisCApture.getTAsks();
 				},
-				resolveTask(_task: vscode.Task): Promise<vscode.Task | undefined> {
-					return thisCapture.getTask(_task);
+				resolveTAsk(_tAsk: vscode.TAsk): Promise<vscode.TAsk | undefined> {
+					return thisCApture.getTAsk(_tAsk);
 				}
 			});
 		}
-		else if (this.taskProvider && this.detectors.size === 0) {
-			this.taskProvider.dispose();
-			this.taskProvider = undefined;
+		else if (this.tAskProvider && this.detectors.size === 0) {
+			this.tAskProvider.dispose();
+			this.tAskProvider = undefined;
 		}
 	}
 
-	public getTasks(): Promise<vscode.Task[]> {
-		return this.computeTasks();
+	public getTAsks(): Promise<vscode.TAsk[]> {
+		return this.computeTAsks();
 	}
 
-	private computeTasks(): Promise<vscode.Task[]> {
+	privAte computeTAsks(): Promise<vscode.TAsk[]> {
 		if (this.detectors.size === 0) {
 			return Promise.resolve([]);
 		} else if (this.detectors.size === 1) {
-			return this.detectors.values().next().value.getTasks();
+			return this.detectors.vAlues().next().vAlue.getTAsks();
 		} else {
-			let promises: Promise<vscode.Task[]>[] = [];
-			for (let detector of this.detectors.values()) {
-				promises.push(detector.getTasks().then((value) => value, () => []));
+			let promises: Promise<vscode.TAsk[]>[] = [];
+			for (let detector of this.detectors.vAlues()) {
+				promises.push(detector.getTAsks().then((vAlue) => vAlue, () => []));
 			}
-			return Promise.all(promises).then((values) => {
-				let result: vscode.Task[] = [];
-				for (let tasks of values) {
-					if (tasks && tasks.length > 0) {
-						result.push(...tasks);
+			return Promise.All(promises).then((vAlues) => {
+				let result: vscode.TAsk[] = [];
+				for (let tAsks of vAlues) {
+					if (tAsks && tAsks.length > 0) {
+						result.push(...tAsks);
 					}
 				}
 				return result;
@@ -336,18 +336,18 @@ class TaskDetector {
 		}
 	}
 
-	public async getTask(task: vscode.Task): Promise<vscode.Task | undefined> {
+	public Async getTAsk(tAsk: vscode.TAsk): Promise<vscode.TAsk | undefined> {
 		if (this.detectors.size === 0) {
 			return undefined;
 		} else if (this.detectors.size === 1) {
-			return this.detectors.values().next().value.getTask(task);
+			return this.detectors.vAlues().next().vAlue.getTAsk(tAsk);
 		} else {
-			if ((task.scope === vscode.TaskScope.Workspace) || (task.scope === vscode.TaskScope.Global)) {
+			if ((tAsk.scope === vscode.TAskScope.WorkspAce) || (tAsk.scope === vscode.TAskScope.GlobAl)) {
 				return undefined;
-			} else if (task.scope) {
-				const detector = this.detectors.get(task.scope.uri.toString());
+			} else if (tAsk.scope) {
+				const detector = this.detectors.get(tAsk.scope.uri.toString());
 				if (detector) {
-					return detector.getTask(task);
+					return detector.getTAsk(tAsk);
 				}
 			}
 			return undefined;
@@ -355,12 +355,12 @@ class TaskDetector {
 	}
 }
 
-let detector: TaskDetector;
-export function activate(_context: vscode.ExtensionContext): void {
-	detector = new TaskDetector();
-	detector.start();
+let detector: TAskDetector;
+export function ActivAte(_context: vscode.ExtensionContext): void {
+	detector = new TAskDetector();
+	detector.stArt();
 }
 
-export function deactivate(): void {
+export function deActivAte(): void {
 	detector.dispose();
 }

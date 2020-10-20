@@ -1,165 +1,165 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ExtensionKind } from 'vs/platform/extensions/common/extensions';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ExtensionKind } from 'vs/plAtform/extensions/common/extensions';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
 
-export const IProductService = createDecorator<IProductService>('productService');
+export const IProductService = creAteDecorAtor<IProductService>('productService');
 
-export interface IProductService extends Readonly<IProductConfiguration> {
+export interfAce IProductService extends ReAdonly<IProductConfigurAtion> {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 }
 
-export interface IBuiltInExtension {
-	readonly name: string;
-	readonly version: string;
-	readonly repo: string;
-	readonly metadata: any;
+export interfAce IBuiltInExtension {
+	reAdonly nAme: string;
+	reAdonly version: string;
+	reAdonly repo: string;
+	reAdonly metAdAtA: Any;
 }
 
-export type ConfigurationSyncStore = {
-	web?: Partial<Omit<ConfigurationSyncStore, 'web'>>,
+export type ConfigurAtionSyncStore = {
+	web?: PArtiAl<Omit<ConfigurAtionSyncStore, 'web'>>,
 	url: string,
 	insidersUrl: string,
-	stableUrl: string,
-	canSwitch: boolean,
-	authenticationProviders: IStringDictionary<{ scopes: string[] }>
+	stAbleUrl: string,
+	cAnSwitch: booleAn,
+	AuthenticAtionProviders: IStringDictionAry<{ scopes: string[] }>
 };
 
-export interface IProductConfiguration {
-	readonly version: string;
-	readonly date?: string;
-	readonly quality?: string;
-	readonly commit?: string;
+export interfAce IProductConfigurAtion {
+	reAdonly version: string;
+	reAdonly dAte?: string;
+	reAdonly quAlity?: string;
+	reAdonly commit?: string;
 
-	readonly nameShort: string;
-	readonly nameLong: string;
+	reAdonly nAmeShort: string;
+	reAdonly nAmeLong: string;
 
-	readonly win32AppUserModelId?: string;
-	readonly win32MutexName?: string;
-	readonly applicationName: string;
+	reAdonly win32AppUserModelId?: string;
+	reAdonly win32MutexNAme?: string;
+	reAdonly ApplicAtionNAme: string;
 
-	readonly urlProtocol: string;
-	readonly dataFolderName: string;
+	reAdonly urlProtocol: string;
+	reAdonly dAtAFolderNAme: string;
 
-	readonly builtInExtensions?: IBuiltInExtension[];
+	reAdonly builtInExtensions?: IBuiltInExtension[];
 
-	readonly downloadUrl?: string;
-	readonly updateUrl?: string;
-	readonly target?: string;
+	reAdonly downloAdUrl?: string;
+	reAdonly updAteUrl?: string;
+	reAdonly tArget?: string;
 
-	readonly settingsSearchBuildId?: number;
-	readonly settingsSearchUrl?: string;
+	reAdonly settingsSeArchBuildId?: number;
+	reAdonly settingsSeArchUrl?: string;
 
-	readonly tasConfig?: {
+	reAdonly tAsConfig?: {
 		endpoint: string;
-		telemetryEventName: string;
-		featuresTelemetryPropertyName: string;
-		assignmentContextTelemetryPropertyName: string;
+		telemetryEventNAme: string;
+		feAturesTelemetryPropertyNAme: string;
+		AssignmentContextTelemetryPropertyNAme: string;
 	};
 
-	readonly experimentsUrl?: string;
+	reAdonly experimentsUrl?: string;
 
-	readonly extensionsGallery?: {
-		readonly serviceUrl: string;
-		readonly itemUrl: string;
-		readonly controlUrl: string;
-		readonly recommendationsUrl: string;
+	reAdonly extensionsGAllery?: {
+		reAdonly serviceUrl: string;
+		reAdonly itemUrl: string;
+		reAdonly controlUrl: string;
+		reAdonly recommendAtionsUrl: string;
 	};
 
-	readonly extensionTips?: { [id: string]: string; };
-	readonly extensionImportantTips?: IStringDictionary<ImportantExtensionTip>;
-	readonly configBasedExtensionTips?: { [id: string]: IConfigBasedExtensionTip; };
-	readonly exeBasedExtensionTips?: { [id: string]: IExeBasedExtensionTip; };
-	readonly remoteExtensionTips?: { [remoteName: string]: IRemoteExtensionTip; };
-	readonly extensionKeywords?: { [extension: string]: readonly string[]; };
-	readonly keymapExtensionTips?: readonly string[];
+	reAdonly extensionTips?: { [id: string]: string; };
+	reAdonly extensionImportAntTips?: IStringDictionAry<ImportAntExtensionTip>;
+	reAdonly configBAsedExtensionTips?: { [id: string]: IConfigBAsedExtensionTip; };
+	reAdonly exeBAsedExtensionTips?: { [id: string]: IExeBAsedExtensionTip; };
+	reAdonly remoteExtensionTips?: { [remoteNAme: string]: IRemoteExtensionTip; };
+	reAdonly extensionKeywords?: { [extension: string]: reAdonly string[]; };
+	reAdonly keymApExtensionTips?: reAdonly string[];
 
-	readonly crashReporter?: {
-		readonly companyName: string;
-		readonly productName: string;
+	reAdonly crAshReporter?: {
+		reAdonly compAnyNAme: string;
+		reAdonly productNAme: string;
 	};
 
-	readonly enableTelemetry?: boolean;
-	readonly aiConfig?: {
-		readonly asimovKey: string;
+	reAdonly enAbleTelemetry?: booleAn;
+	reAdonly AiConfig?: {
+		reAdonly AsimovKey: string;
 	};
 
-	readonly sendASmile?: {
-		readonly reportIssueUrl: string,
-		readonly requestFeatureUrl: string
+	reAdonly sendASmile?: {
+		reAdonly reportIssueUrl: string,
+		reAdonly requestFeAtureUrl: string
 	};
 
-	readonly documentationUrl?: string;
-	readonly releaseNotesUrl?: string;
-	readonly keyboardShortcutsUrlMac?: string;
-	readonly keyboardShortcutsUrlLinux?: string;
-	readonly keyboardShortcutsUrlWin?: string;
-	readonly introductoryVideosUrl?: string;
-	readonly tipsAndTricksUrl?: string;
-	readonly newsletterSignupUrl?: string;
-	readonly twitterUrl?: string;
-	readonly requestFeatureUrl?: string;
-	readonly reportIssueUrl?: string;
-	readonly licenseUrl?: string;
-	readonly privacyStatementUrl?: string;
-	readonly telemetryOptOutUrl?: string;
+	reAdonly documentAtionUrl?: string;
+	reAdonly releAseNotesUrl?: string;
+	reAdonly keyboArdShortcutsUrlMAc?: string;
+	reAdonly keyboArdShortcutsUrlLinux?: string;
+	reAdonly keyboArdShortcutsUrlWin?: string;
+	reAdonly introductoryVideosUrl?: string;
+	reAdonly tipsAndTricksUrl?: string;
+	reAdonly newsletterSignupUrl?: string;
+	reAdonly twitterUrl?: string;
+	reAdonly requestFeAtureUrl?: string;
+	reAdonly reportIssueUrl?: string;
+	reAdonly licenseUrl?: string;
+	reAdonly privAcyStAtementUrl?: string;
+	reAdonly telemetryOptOutUrl?: string;
 
-	readonly npsSurveyUrl?: string;
-	readonly surveys?: readonly ISurveyData[];
+	reAdonly npsSurveyUrl?: string;
+	reAdonly surveys?: reAdonly ISurveyDAtA[];
 
-	readonly checksums?: { [path: string]: string; };
-	readonly checksumFailMoreInfoUrl?: string;
+	reAdonly checksums?: { [pAth: string]: string; };
+	reAdonly checksumFAilMoreInfoUrl?: string;
 
-	readonly appCenter?: IAppCenterConfiguration;
+	reAdonly AppCenter?: IAppCenterConfigurAtion;
 
-	readonly portable?: string;
+	reAdonly portAble?: string;
 
-	readonly extensionKind?: { readonly [extensionId: string]: ExtensionKind[]; };
-	readonly extensionAllowedProposedApi?: readonly string[];
+	reAdonly extensionKind?: { reAdonly [extensionId: string]: ExtensionKind[]; };
+	reAdonly extensionAllowedProposedApi?: reAdonly string[];
 
-	readonly msftInternalDomains?: string[];
-	readonly linkProtectionTrustedDomains?: readonly string[];
+	reAdonly msftInternAlDomAins?: string[];
+	reAdonly linkProtectionTrustedDomAins?: reAdonly string[];
 
-	readonly 'configurationSync.store'?: ConfigurationSyncStore;
+	reAdonly 'configurAtionSync.store'?: ConfigurAtionSyncStore;
 }
 
-export type ImportantExtensionTip = { name: string; languages?: string[]; pattern?: string; isExtensionPack?: boolean };
+export type ImportAntExtensionTip = { nAme: string; lAnguAges?: string[]; pAttern?: string; isExtensionPAck?: booleAn };
 
-export interface IAppCenterConfiguration {
-	readonly 'win32-ia32': string;
-	readonly 'win32-x64': string;
-	readonly 'linux-x64': string;
-	readonly 'darwin': string;
+export interfAce IAppCenterConfigurAtion {
+	reAdonly 'win32-iA32': string;
+	reAdonly 'win32-x64': string;
+	reAdonly 'linux-x64': string;
+	reAdonly 'dArwin': string;
 }
 
-export interface IConfigBasedExtensionTip {
-	configPath: string;
-	configName: string;
-	recommendations: IStringDictionary<{ name: string, remotes?: string[], important?: boolean, isExtensionPack?: boolean }>;
+export interfAce IConfigBAsedExtensionTip {
+	configPAth: string;
+	configNAme: string;
+	recommendAtions: IStringDictionAry<{ nAme: string, remotes?: string[], importAnt?: booleAn, isExtensionPAck?: booleAn }>;
 }
 
-export interface IExeBasedExtensionTip {
-	friendlyName: string;
-	windowsPath?: string;
-	important?: boolean;
-	recommendations: IStringDictionary<{ name: string, important?: boolean, isExtensionPack?: boolean }>;
+export interfAce IExeBAsedExtensionTip {
+	friendlyNAme: string;
+	windowsPAth?: string;
+	importAnt?: booleAn;
+	recommendAtions: IStringDictionAry<{ nAme: string, importAnt?: booleAn, isExtensionPAck?: booleAn }>;
 }
 
-export interface IRemoteExtensionTip {
-	friendlyName: string;
+export interfAce IRemoteExtensionTip {
+	friendlyNAme: string;
 	extensionId: string;
 }
 
-export interface ISurveyData {
+export interfAce ISurveyDAtA {
 	surveyId: string;
 	surveyUrl: string;
-	languageId: string;
+	lAnguAgeId: string;
 	editCount: number;
-	userProbability: number;
+	userProbAbility: number;
 }

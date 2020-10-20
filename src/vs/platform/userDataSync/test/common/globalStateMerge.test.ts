@@ -1,380 +1,380 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { merge } from 'vs/platform/userDataSync/common/globalStateMerge';
-import { NullLogService } from 'vs/platform/log/common/log';
+import * As Assert from 'Assert';
+import { merge } from 'vs/plAtform/userDAtASync/common/globAlStAteMerge';
+import { NullLogService } from 'vs/plAtform/log/common/log';
 
-suite('GlobalStateMerge', () => {
+suite('GlobAlStAteMerge', () => {
 
-	test('merge when local and remote are same with one value', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'a': { version: 1, value: 'a' } };
+	test('merge when locAl And remote Are sAme with one vAlue', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when local and remote are same with multiple entries', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
+	test('merge when locAl And remote Are sAme with multiple entries', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when local and remote are same with multiple entries in different order', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when locAl And remote Are sAme with multiple entries in different order', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when local and remote are same with different base content', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
-		const base = { 'b': { version: 1, value: 'a' } };
+	test('merge when locAl And remote Are sAme with different bAse content', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
+		const bAse = { 'b': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a new entry is added to remote', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A new entry is Added to remote', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, { 'b': { version: 1, value: 'b' } });
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, { 'b': { version: 1, vAlue: 'b' } });
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when multiple new entries are added to remote', async () => {
-		const local = {};
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when multiple new entries Are Added to remote', Async () => {
+		const locAl = {};
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } });
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } });
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when new entry is added to remote from base and local has not changed', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when new entry is Added to remote from bAse And locAl hAs not chAnged', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, local, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, { 'b': { version: 1, value: 'b' } });
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, { 'b': { version: 1, vAlue: 'b' } });
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when an entry is removed from remote from base and local has not changed', async () => {
-		const local = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
-		const remote = { 'a': { version: 1, value: 'a' } };
+	test('merge when An entry is removed from remote from bAse And locAl hAs not chAnged', Async () => {
+		const locAl = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, local, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, ['b']);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, ['b']);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when all entries are removed from base and local has not changed', async () => {
-		const local = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when All entries Are removed from bAse And locAl hAs not chAnged', Async () => {
+		const locAl = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 		const remote = {};
 
-		const actual = merge(local, remote, local, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, ['b', 'a']);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, ['b', 'A']);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when an entry is updated in remote from base and local has not changed', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'a': { version: 1, value: 'b' } };
+	test('merge when An entry is updAted in remote from bAse And locAl hAs not chAnged', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'A': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, local, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, { 'a': { version: 1, value: 'b' } });
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, { 'A': { version: 1, vAlue: 'b' } });
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when remote has moved forwarded with multiple changes and local stays with base', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'a': { version: 1, value: 'd' }, 'c': { version: 1, value: 'c' } };
+	test('merge when remote hAs moved forwArded with multiple chAnges And locAl stAys with bAse', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'A': { version: 1, vAlue: 'd' }, 'c': { version: 1, vAlue: 'c' } };
 
-		const actual = merge(local, remote, local, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, { 'c': { version: 1, value: 'c' } });
-		assert.deepEqual(actual.local.updated, { 'a': { version: 1, value: 'd' } });
-		assert.deepEqual(actual.local.removed, ['b']);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, { 'c': { version: 1, vAlue: 'c' } });
+		Assert.deepEquAl(ActuAl.locAl.updAted, { 'A': { version: 1, vAlue: 'd' } });
+		Assert.deepEquAl(ActuAl.locAl.removed, ['b']);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when new entries are added to local', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'a': { version: 1, value: 'a' } };
+	test('merge when new entries Are Added to locAl', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when multiple new entries are added to local from base and remote is not changed', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' }, 'c': { version: 1, value: 'c' } };
-		const remote = { 'a': { version: 1, value: 'a' } };
+	test('merge when multiple new entries Are Added to locAl from bAse And remote is not chAnged', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' }, 'c': { version: 1, vAlue: 'c' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, remote, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, remote, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when an entry is removed from local from base and remote has not changed', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
+	test('merge when An entry is removed from locAl from bAse And remote hAs not chAnged', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, remote, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, remote, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when an entry is updated in local from base and remote has not changed', async () => {
-		const local = { 'a': { version: 1, value: 'b' } };
-		const remote = { 'a': { version: 1, value: 'a' } };
+	test('merge when An entry is updAted in locAl from bAse And remote hAs not chAnged', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'b' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, remote, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, remote, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when local has moved forwarded with multiple changes and remote stays with base', async () => {
-		const local = { 'a': { version: 1, value: 'd' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'a': { version: 1, value: 'a' }, 'c': { version: 1, value: 'c' } };
+	test('merge when locAl hAs moved forwArded with multiple chAnges And remote stAys with bAse', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'd' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' }, 'c': { version: 1, vAlue: 'c' } };
 
-		const actual = merge(local, remote, remote, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, remote, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when local and remote with one entry but different value', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'a': { version: 1, value: 'b' } };
+	test('merge when locAl And remote with one entry but different vAlue', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'A': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, { 'a': { version: 1, value: 'b' } });
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, { 'A': { version: 1, vAlue: 'b' } });
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when the entry is removed in remote but updated in local and a new entry is added in remote', async () => {
-		const base = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'd' } };
-		const remote = { 'a': { version: 1, value: 'a' }, 'c': { version: 1, value: 'c' } };
+	test('merge when the entry is removed in remote but updAted in locAl And A new entry is Added in remote', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'd' } };
+		const remote = { 'A': { version: 1, vAlue: 'A' }, 'c': { version: 1, vAlue: 'c' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, { 'c': { version: 1, value: 'c' } });
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, ['b']);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, { 'c': { version: 1, vAlue: 'c' } });
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, ['b']);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge with single entry and local is empty', async () => {
-		const base = { 'a': { version: 1, value: 'a' } };
-		const local = {};
-		const remote = { 'a': { version: 1, value: 'b' } };
+	test('merge with single entry And locAl is empty', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' } };
+		const locAl = {};
+		const remote = { 'A': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, { 'a': { version: 1, value: 'b' } });
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, { 'A': { version: 1, vAlue: 'b' } });
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when local and remote has moved forwareded with conflicts', async () => {
-		const base = { 'a': { version: 1, value: 'a' } };
-		const local = { 'a': { version: 1, value: 'd' } };
-		const remote = { 'a': { version: 1, value: 'b' } };
+	test('merge when locAl And remote hAs moved forwAreded with conflicts', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' } };
+		const locAl = { 'A': { version: 1, vAlue: 'd' } };
+		const remote = { 'A': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }, { key: 'c', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, { 'a': { version: 1, value: 'b' } });
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, { 'A': { version: 1, vAlue: 'b' } });
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a new entry is added to remote but not a registered key', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A new entry is Added to remote but not A registered key', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a new entry is added to remote but different version', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 2, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A new entry is Added to remote but different version', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 2, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, null, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, null, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when an entry is updated to remote but not a registered key', async () => {
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'a': { version: 1, value: 'b' } };
+	test('merge when An entry is updAted to remote but not A registered key', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'A': { version: 1, vAlue: 'b' } };
 
-		const actual = merge(local, remote, local, [], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a new entry is updated to remote but different version', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const remote = { 'b': { version: 2, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A new entry is updAted to remote but different version', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const remote = { 'b': { version: 2, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, local, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, locAl, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a local value is update with lower version', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'c' } };
-		const remote = { 'b': { version: 2, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A locAl vAlue is updAte with lower version', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'c' } };
+		const remote = { 'b': { version: 2, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, remote, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, remote, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a local value is update with higher version', async () => {
-		const local = { 'a': { version: 1, value: 'a' }, 'b': { version: 2, value: 'c' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A locAl vAlue is updAte with higher version', Async () => {
+		const locAl = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 2, vAlue: 'c' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, remote, [{ key: 'a', version: 1 }, { key: 'b', version: 2 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, remote, [{ key: 'A', version: 1 }, { key: 'b', version: 2 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when a local value is removed but not registered', async () => {
-		const base = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 2, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A locAl vAlue is removed but not registered', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 2, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a local value is removed with lower version', async () => {
-		const base = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 2, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A locAl vAlue is removed with lower version', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 2, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }, { key: 'b', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
-	test('merge when a local value is removed with higher version', async () => {
-		const base = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A locAl vAlue is removed with higher version', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }, { key: 'b', version: 2 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }, { key: 'b', version: 2 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, local);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, locAl);
 	});
 
-	test('merge when a local value is not yet registered', async () => {
-		const base = { 'a': { version: 1, value: 'a' }, 'b': { version: 1, value: 'b' } };
-		const local = { 'a': { version: 1, value: 'a' } };
-		const remote = { 'b': { version: 1, value: 'b' }, 'a': { version: 1, value: 'a' } };
+	test('merge when A locAl vAlue is not yet registered', Async () => {
+		const bAse = { 'A': { version: 1, vAlue: 'A' }, 'b': { version: 1, vAlue: 'b' } };
+		const locAl = { 'A': { version: 1, vAlue: 'A' } };
+		const remote = { 'b': { version: 1, vAlue: 'b' }, 'A': { version: 1, vAlue: 'A' } };
 
-		const actual = merge(local, remote, base, [{ key: 'a', version: 1 }], [], new NullLogService());
+		const ActuAl = merge(locAl, remote, bAse, [{ key: 'A', version: 1 }], [], new NullLogService());
 
-		assert.deepEqual(actual.local.added, {});
-		assert.deepEqual(actual.local.updated, {});
-		assert.deepEqual(actual.local.removed, []);
-		assert.deepEqual(actual.remote, null);
+		Assert.deepEquAl(ActuAl.locAl.Added, {});
+		Assert.deepEquAl(ActuAl.locAl.updAted, {});
+		Assert.deepEquAl(ActuAl.locAl.removed, []);
+		Assert.deepEquAl(ActuAl.remote, null);
 	});
 
 });

@@ -1,168 +1,168 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { protocol, session } from 'electron';
-import { Readable } from 'stream';
-import { bufferToStream, VSBuffer, VSBufferReadableStream } from 'vs/base/common/buffer';
-import { Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { FileAccess, Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { FileOperationError, FileOperationResult, IFileService } from 'vs/platform/files/common/files';
-import { IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IRequestService } from 'vs/platform/request/common/request';
-import { loadLocalResource, webviewPartitionId, WebviewResourceResponse } from 'vs/platform/webview/common/resourceLoader';
-import { IWindowsMainService } from 'vs/platform/windows/electron-main/windows';
+import { ReAdAble } from 'streAm';
+import { bufferToStreAm, VSBuffer, VSBufferReAdAbleStreAm } from 'vs/bAse/common/buffer';
+import { DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { FileAccess, SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { FileOperAtionError, FileOperAtionResult, IFileService } from 'vs/plAtform/files/common/files';
+import { IRemoteConnectionDAtA } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { IRequestService } from 'vs/plAtform/request/common/request';
+import { loAdLocAlResource, webviewPArtitionId, WebviewResourceResponse } from 'vs/plAtform/webview/common/resourceLoAder';
+import { IWindowsMAinService } from 'vs/plAtform/windows/electron-mAin/windows';
 
-interface WebviewMetadata {
-	readonly windowId: number;
-	readonly extensionLocation: URI | undefined;
-	readonly localResourceRoots: readonly URI[];
-	readonly remoteConnectionData: IRemoteConnectionData | null;
+interfAce WebviewMetAdAtA {
+	reAdonly windowId: number;
+	reAdonly extensionLocAtion: URI | undefined;
+	reAdonly locAlResourceRoots: reAdonly URI[];
+	reAdonly remoteConnectionDAtA: IRemoteConnectionDAtA | null;
 }
 
-export class WebviewProtocolProvider extends Disposable {
+export clAss WebviewProtocolProvider extends DisposAble {
 
-	private static validWebviewFilePaths = new Map([
+	privAte stAtic vAlidWebviewFilePAths = new MAp([
 		['/index.html', 'index.html'],
 		['/electron-browser/index.html', 'index.html'],
-		['/main.js', 'main.js'],
+		['/mAin.js', 'mAin.js'],
 		['/host.js', 'host.js'],
 	]);
 
-	private readonly webviewMetadata = new Map<string, WebviewMetadata>();
+	privAte reAdonly webviewMetAdAtA = new MAp<string, WebviewMetAdAtA>();
 
-	private requestIdPool = 1;
-	private readonly pendingResourceReads = new Map<number, { resolve: (content: VSBuffer | undefined) => void }>();
+	privAte requestIdPool = 1;
+	privAte reAdonly pendingResourceReAds = new MAp<number, { resolve: (content: VSBuffer | undefined) => void }>();
 
 	constructor(
-		@IFileService private readonly fileService: IFileService,
-		@IRequestService private readonly requestService: IRequestService,
-		@IWindowsMainService readonly windowsMainService: IWindowsMainService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IRequestService privAte reAdonly requestService: IRequestService,
+		@IWindowsMAinService reAdonly windowsMAinService: IWindowsMAinService,
 	) {
 		super();
 
-		const sess = session.fromPartition(webviewPartitionId);
+		const sess = session.fromPArtition(webviewPArtitionId);
 
-		// Register the protocol loading webview html
-		const webviewHandler = this.handleWebviewRequest.bind(this);
-		protocol.registerFileProtocol(Schemas.vscodeWebview, webviewHandler);
-		sess.protocol.registerFileProtocol(Schemas.vscodeWebview, webviewHandler);
+		// Register the protocol loAding webview html
+		const webviewHAndler = this.hAndleWebviewRequest.bind(this);
+		protocol.registerFileProtocol(SchemAs.vscodeWebview, webviewHAndler);
+		sess.protocol.registerFileProtocol(SchemAs.vscodeWebview, webviewHAndler);
 
-		// Register the protocol loading webview resources both inside the webview and at the top level
-		const webviewResourceHandler = this.handleWebviewResourceRequest.bind(this);
-		protocol.registerStreamProtocol(Schemas.vscodeWebviewResource, webviewResourceHandler);
-		sess.protocol.registerStreamProtocol(Schemas.vscodeWebviewResource, webviewResourceHandler);
+		// Register the protocol loAding webview resources both inside the webview And At the top level
+		const webviewResourceHAndler = this.hAndleWebviewResourceRequest.bind(this);
+		protocol.registerStreAmProtocol(SchemAs.vscodeWebviewResource, webviewResourceHAndler);
+		sess.protocol.registerStreAmProtocol(SchemAs.vscodeWebviewResource, webviewResourceHAndler);
 
-		this._register(toDisposable(() => {
-			protocol.unregisterProtocol(Schemas.vscodeWebviewResource);
-			sess.protocol.unregisterProtocol(Schemas.vscodeWebviewResource);
-			protocol.unregisterProtocol(Schemas.vscodeWebview);
-			sess.protocol.unregisterProtocol(Schemas.vscodeWebview);
+		this._register(toDisposAble(() => {
+			protocol.unregisterProtocol(SchemAs.vscodeWebviewResource);
+			sess.protocol.unregisterProtocol(SchemAs.vscodeWebviewResource);
+			protocol.unregisterProtocol(SchemAs.vscodeWebview);
+			sess.protocol.unregisterProtocol(SchemAs.vscodeWebview);
 		}));
 	}
 
-	private streamToNodeReadable(stream: VSBufferReadableStream): Readable {
-		return new class extends Readable {
-			private listening = false;
+	privAte streAmToNodeReAdAble(streAm: VSBufferReAdAbleStreAm): ReAdAble {
+		return new clAss extends ReAdAble {
+			privAte listening = fAlse;
 
-			_read(size?: number): void {
+			_reAd(size?: number): void {
 				if (!this.listening) {
 					this.listening = true;
 
-					// Data
-					stream.on('data', data => {
+					// DAtA
+					streAm.on('dAtA', dAtA => {
 						try {
-							if (!this.push(data.buffer)) {
-								stream.pause(); // pause the stream if we should not push anymore
+							if (!this.push(dAtA.buffer)) {
+								streAm.pAuse(); // pAuse the streAm if we should not push Anymore
 							}
-						} catch (error) {
+						} cAtch (error) {
 							this.emit(error);
 						}
 					});
 
 					// End
-					stream.on('end', () => {
+					streAm.on('end', () => {
 						try {
-							this.push(null); // signal EOS
-						} catch (error) {
+							this.push(null); // signAl EOS
+						} cAtch (error) {
 							this.emit(error);
 						}
 					});
 
 					// Error
-					stream.on('error', error => this.emit('error', error));
+					streAm.on('error', error => this.emit('error', error));
 				}
 
-				// ensure the stream is flowing
-				stream.resume();
+				// ensure the streAm is flowing
+				streAm.resume();
 			}
 
-			_destroy(error: Error | null, callback: (error: Error | null) => void): void {
-				stream.destroy();
+			_destroy(error: Error | null, cAllbAck: (error: Error | null) => void): void {
+				streAm.destroy();
 
-				callback(null);
+				cAllbAck(null);
 			}
 		};
 	}
 
-	public async registerWebview(id: string, metadata: WebviewMetadata): Promise<void> {
-		this.webviewMetadata.set(id, metadata);
+	public Async registerWebview(id: string, metAdAtA: WebviewMetAdAtA): Promise<void> {
+		this.webviewMetAdAtA.set(id, metAdAtA);
 	}
 
 	public unregisterWebview(id: string): void {
-		this.webviewMetadata.delete(id);
+		this.webviewMetAdAtA.delete(id);
 	}
 
-	public async updateWebviewMetadata(id: string, metadataDelta: Partial<WebviewMetadata>): Promise<void> {
-		const entry = this.webviewMetadata.get(id);
+	public Async updAteWebviewMetAdAtA(id: string, metAdAtADeltA: PArtiAl<WebviewMetAdAtA>): Promise<void> {
+		const entry = this.webviewMetAdAtA.get(id);
 		if (entry) {
-			this.webviewMetadata.set(id, {
+			this.webviewMetAdAtA.set(id, {
 				...entry,
-				...metadataDelta,
+				...metAdAtADeltA,
 			});
 		}
 	}
 
-	private async handleWebviewRequest(request: Electron.Request, callback: any) {
+	privAte Async hAndleWebviewRequest(request: Electron.Request, cAllbAck: Any) {
 		try {
-			const uri = URI.parse(request.url);
-			const entry = WebviewProtocolProvider.validWebviewFilePaths.get(uri.path);
+			const uri = URI.pArse(request.url);
+			const entry = WebviewProtocolProvider.vAlidWebviewFilePAths.get(uri.pAth);
 			if (typeof entry === 'string') {
-				const relativeResourcePath = uri.path.startsWith('/electron-browser')
+				const relAtiveResourcePAth = uri.pAth.stArtsWith('/electron-browser')
 					? `vs/workbench/contrib/webview/electron-browser/pre/${entry}`
 					: `vs/workbench/contrib/webview/browser/pre/${entry}`;
 
-				const url = FileAccess.asFileUri(relativeResourcePath, require);
-				return callback(decodeURIComponent(url.fsPath));
+				const url = FileAccess.AsFileUri(relAtiveResourcePAth, require);
+				return cAllbAck(decodeURIComponent(url.fsPAth));
 			}
-		} catch {
+		} cAtch {
 			// noop
 		}
-		callback({ error: -10 /* ACCESS_DENIED - https://cs.chromium.org/chromium/src/net/base/net_error_list.h?l=32 */ });
+		cAllbAck({ error: -10 /* ACCESS_DENIED - https://cs.chromium.org/chromium/src/net/bAse/net_error_list.h?l=32 */ });
 	}
 
-	private async handleWebviewResourceRequest(
+	privAte Async hAndleWebviewResourceRequest(
 		request: Electron.Request,
-		callback: (stream?: NodeJS.ReadableStream | Electron.StreamProtocolResponse | undefined) => void
+		cAllbAck: (streAm?: NodeJS.ReAdAbleStreAm | Electron.StreAmProtocolResponse | undefined) => void
 	) {
 		try {
-			const uri = URI.parse(request.url);
+			const uri = URI.pArse(request.url);
 
-			const id = uri.authority;
-			const metadata = this.webviewMetadata.get(id);
-			if (metadata) {
+			const id = uri.Authority;
+			const metAdAtA = this.webviewMetAdAtA.get(id);
+			if (metAdAtA) {
 
-				// Try to further rewrite remote uris so that they go to the resolved server on the main thread
+				// Try to further rewrite remote uris so thAt they go to the resolved server on the mAin threAd
 				let rewriteUri: undefined | ((uri: URI) => URI);
-				if (metadata.remoteConnectionData) {
+				if (metAdAtA.remoteConnectionDAtA) {
 					rewriteUri = (uri) => {
-						if (metadata.remoteConnectionData) {
-							if (uri.scheme === Schemas.vscodeRemote || (metadata.extensionLocation?.scheme === Schemas.vscodeRemote)) {
-								return URI.parse(`http://${metadata.remoteConnectionData.host}:${metadata.remoteConnectionData.port}`).with({
-									path: '/vscode-remote-resource',
-									query: `tkn=${metadata.remoteConnectionData.connectionToken}&path=${encodeURIComponent(uri.path)}`,
+						if (metAdAtA.remoteConnectionDAtA) {
+							if (uri.scheme === SchemAs.vscodeRemote || (metAdAtA.extensionLocAtion?.scheme === SchemAs.vscodeRemote)) {
+								return URI.pArse(`http://${metAdAtA.remoteConnectionDAtA.host}:${metAdAtA.remoteConnectionDAtA.port}`).with({
+									pAth: '/vscode-remote-resource',
+									query: `tkn=${metAdAtA.remoteConnectionDAtA.connectionToken}&pAth=${encodeURIComponent(uri.pAth)}`,
 								});
 							}
 						}
@@ -171,47 +171,47 @@ export class WebviewProtocolProvider extends Disposable {
 				}
 
 				const fileService = {
-					readFileStream: async (resource: URI): Promise<VSBufferReadableStream> => {
-						if (resource.scheme === Schemas.file) {
-							return (await this.fileService.readFileStream(resource)).value;
+					reAdFileStreAm: Async (resource: URI): Promise<VSBufferReAdAbleStreAm> => {
+						if (resource.scheme === SchemAs.file) {
+							return (AwAit this.fileService.reAdFileStreAm(resource)).vAlue;
 						}
 
-						// Unknown uri scheme. Try delegating the file read back to the renderer
-						// process which should have a file system provider registered for the uri.
+						// Unknown uri scheme. Try delegAting the file reAd bAck to the renderer
+						// process which should hAve A file system provider registered for the uri.
 
-						const window = this.windowsMainService.getWindowById(metadata.windowId);
+						const window = this.windowsMAinService.getWindowById(metAdAtA.windowId);
 						if (!window) {
-							throw new FileOperationError('Could not find window for resource', FileOperationResult.FILE_NOT_FOUND);
+							throw new FileOperAtionError('Could not find window for resource', FileOperAtionResult.FILE_NOT_FOUND);
 						}
 
 						const requestId = this.requestIdPool++;
 						const p = new Promise<VSBuffer | undefined>(resolve => {
-							this.pendingResourceReads.set(requestId, { resolve });
+							this.pendingResourceReAds.set(requestId, { resolve });
 						});
 
-						window.send(`vscode:loadWebviewResource-${id}`, requestId, uri);
+						window.send(`vscode:loAdWebviewResource-${id}`, requestId, uri);
 
-						const result = await p;
+						const result = AwAit p;
 						if (!result) {
-							throw new FileOperationError('Could not read file', FileOperationResult.FILE_NOT_FOUND);
+							throw new FileOperAtionError('Could not reAd file', FileOperAtionResult.FILE_NOT_FOUND);
 						}
 
-						return bufferToStream(result);
+						return bufferToStreAm(result);
 					}
 				};
 
-				const result = await loadLocalResource(uri, {
-					extensionLocation: metadata.extensionLocation,
-					roots: metadata.localResourceRoots,
-					remoteConnectionData: metadata.remoteConnectionData,
+				const result = AwAit loAdLocAlResource(uri, {
+					extensionLocAtion: metAdAtA.extensionLocAtion,
+					roots: metAdAtA.locAlResourceRoots,
+					remoteConnectionDAtA: metAdAtA.remoteConnectionDAtA,
 					rewriteUri,
 				}, fileService, this.requestService);
 
 				if (result.type === WebviewResourceResponse.Type.Success) {
-					return callback({
-						statusCode: 200,
-						data: this.streamToNodeReadable(result.stream),
-						headers: {
+					return cAllbAck({
+						stAtusCode: 200,
+						dAtA: this.streAmToNodeReAdAble(result.streAm),
+						heAders: {
 							'Content-Type': result.mimeType,
 							'Access-Control-Allow-Origin': '*',
 						}
@@ -219,23 +219,23 @@ export class WebviewProtocolProvider extends Disposable {
 				}
 
 				if (result.type === WebviewResourceResponse.Type.AccessDenied) {
-					console.error('Webview: Cannot load resource outside of protocol root');
-					return callback({ data: null, statusCode: 401 });
+					console.error('Webview: CAnnot loAd resource outside of protocol root');
+					return cAllbAck({ dAtA: null, stAtusCode: 401 });
 				}
 			}
-		} catch {
+		} cAtch {
 			// noop
 		}
 
-		return callback({ data: null, statusCode: 404 });
+		return cAllbAck({ dAtA: null, stAtusCode: 404 });
 	}
 
-	public didLoadResource(requestId: number, content: VSBuffer | undefined) {
-		const pendingRead = this.pendingResourceReads.get(requestId);
-		if (!pendingRead) {
+	public didLoAdResource(requestId: number, content: VSBuffer | undefined) {
+		const pendingReAd = this.pendingResourceReAds.get(requestId);
+		if (!pendingReAd) {
 			throw new Error('Unknown request');
 		}
-		this.pendingResourceReads.delete(requestId);
-		pendingRead.resolve(content);
+		this.pendingResourceReAds.delete(requestId);
+		pendingReAd.resolve(content);
 	}
 }

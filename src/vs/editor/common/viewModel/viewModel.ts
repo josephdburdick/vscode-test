@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IScrollPosition, Scrollable } from 'vs/base/common/scrollable';
-import * as strings from 'vs/base/common/strings';
+import { IScrollPosition, ScrollAble } from 'vs/bAse/common/scrollAble';
+import * As strings from 'vs/bAse/common/strings';
 import { IViewLineTokens } from 'vs/editor/common/core/lineTokens';
 import { IPosition, Position } from 'vs/editor/common/core/position';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { INewScrollPosition, ScrollType } from 'vs/editor/common/editorCommon';
-import { EndOfLinePreference, IActiveIndentGuideInfo, IModelDecorationOptions, TextModelResolvedOptions, ITextModel } from 'vs/editor/common/model';
-import { VerticalRevealType } from 'vs/editor/common/view/viewEvents';
-import { IPartialViewLinesViewportData } from 'vs/editor/common/viewLayout/viewLinesViewportData';
-import { IEditorWhitespace, IWhitespaceChangeAccessor } from 'vs/editor/common/viewLayout/linesLayout';
+import { EndOfLinePreference, IActiveIndentGuideInfo, IModelDecorAtionOptions, TextModelResolvedOptions, ITextModel } from 'vs/editor/common/model';
+import { VerticAlReveAlType } from 'vs/editor/common/view/viewEvents';
+import { IPArtiAlViewLinesViewportDAtA } from 'vs/editor/common/viewLAyout/viewLinesViewportDAtA';
+import { IEditorWhitespAce, IWhitespAceChAngeAccessor } from 'vs/editor/common/viewLAyout/linesLAyout';
 import { EditorTheme } from 'vs/editor/common/view/viewContext';
-import { ICursorSimpleModel, PartialCursorState, CursorState, IColumnSelectData, EditOperationType, CursorConfiguration } from 'vs/editor/common/controller/cursorCommon';
-import { CursorChangeReason } from 'vs/editor/common/controller/cursorEvents';
-import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
+import { ICursorSimpleModel, PArtiAlCursorStAte, CursorStAte, IColumnSelectDAtA, EditOperAtionType, CursorConfigurAtion } from 'vs/editor/common/controller/cursorCommon';
+import { CursorChAngeReAson } from 'vs/editor/common/controller/cursorEvents';
+import { ViewEventHAndler } from 'vs/editor/common/viewModel/viewEventHAndler';
 
-export interface IViewWhitespaceViewportData {
-	readonly id: string;
-	readonly afterLineNumber: number;
-	readonly verticalOffset: number;
-	readonly height: number;
+export interfAce IViewWhitespAceViewportDAtA {
+	reAdonly id: string;
+	reAdonly AfterLineNumber: number;
+	reAdonly verticAlOffset: number;
+	reAdonly height: number;
 }
 
-export class Viewport {
-	readonly _viewportBrand: void;
+export clAss Viewport {
+	reAdonly _viewportBrAnd: void;
 
-	readonly top: number;
-	readonly left: number;
-	readonly width: number;
-	readonly height: number;
+	reAdonly top: number;
+	reAdonly left: number;
+	reAdonly width: number;
+	reAdonly height: number;
 
 	constructor(top: number, left: number, width: number, height: number) {
 		this.top = top | 0;
@@ -41,9 +41,9 @@ export class Viewport {
 	}
 }
 
-export interface IViewLayout {
+export interfAce IViewLAyout {
 
-	getScrollable(): Scrollable;
+	getScrollAble(): ScrollAble;
 
 	getScrollWidth(): number;
 	getScrollHeight(): number;
@@ -54,296 +54,296 @@ export interface IViewLayout {
 
 	getFutureViewport(): Viewport;
 
-	validateScrollPosition(scrollPosition: INewScrollPosition): IScrollPosition;
+	vAlidAteScrollPosition(scrollPosition: INewScrollPosition): IScrollPosition;
 
-	getLinesViewportData(): IPartialViewLinesViewportData;
-	getLinesViewportDataAtScrollTop(scrollTop: number): IPartialViewLinesViewportData;
-	getWhitespaces(): IEditorWhitespace[];
+	getLinesViewportDAtA(): IPArtiAlViewLinesViewportDAtA;
+	getLinesViewportDAtAAtScrollTop(scrollTop: number): IPArtiAlViewLinesViewportDAtA;
+	getWhitespAces(): IEditorWhitespAce[];
 
-	isAfterLines(verticalOffset: number): boolean;
-	getLineNumberAtVerticalOffset(verticalOffset: number): number;
-	getVerticalOffsetForLineNumber(lineNumber: number): number;
-	getWhitespaceAtVerticalOffset(verticalOffset: number): IViewWhitespaceViewportData | null;
+	isAfterLines(verticAlOffset: number): booleAn;
+	getLineNumberAtVerticAlOffset(verticAlOffset: number): number;
+	getVerticAlOffsetForLineNumber(lineNumber: number): number;
+	getWhitespAceAtVerticAlOffset(verticAlOffset: number): IViewWhitespAceViewportDAtA | null;
 
 	/**
-	 * Get the layout information for whitespaces currently in the viewport
+	 * Get the lAyout informAtion for whitespAces currently in the viewport
 	 */
-	getWhitespaceViewportData(): IViewWhitespaceViewportData[];
+	getWhitespAceViewportDAtA(): IViewWhitespAceViewportDAtA[];
 }
 
-export interface ICoordinatesConverter {
-	// View -> Model conversion and related methods
+export interfAce ICoordinAtesConverter {
+	// View -> Model conversion And relAted methods
 	convertViewPositionToModelPosition(viewPosition: Position): Position;
-	convertViewRangeToModelRange(viewRange: Range): Range;
-	validateViewPosition(viewPosition: Position, expectedModelPosition: Position): Position;
-	validateViewRange(viewRange: Range, expectedModelRange: Range): Range;
+	convertViewRAngeToModelRAnge(viewRAnge: RAnge): RAnge;
+	vAlidAteViewPosition(viewPosition: Position, expectedModelPosition: Position): Position;
+	vAlidAteViewRAnge(viewRAnge: RAnge, expectedModelRAnge: RAnge): RAnge;
 
-	// Model -> View conversion and related methods
+	// Model -> View conversion And relAted methods
 	convertModelPositionToViewPosition(modelPosition: Position): Position;
-	convertModelRangeToViewRange(modelRange: Range): Range;
-	modelPositionIsVisible(modelPosition: Position): boolean;
+	convertModelRAngeToViewRAnge(modelRAnge: RAnge): RAnge;
+	modelPositionIsVisible(modelPosition: Position): booleAn;
 }
 
-export interface IViewModel extends ICursorSimpleModel {
+export interfAce IViewModel extends ICursorSimpleModel {
 
-	readonly model: ITextModel;
+	reAdonly model: ITextModel;
 
-	readonly coordinatesConverter: ICoordinatesConverter;
+	reAdonly coordinAtesConverter: ICoordinAtesConverter;
 
-	readonly viewLayout: IViewLayout;
+	reAdonly viewLAyout: IViewLAyout;
 
-	readonly cursorConfig: CursorConfiguration;
+	reAdonly cursorConfig: CursorConfigurAtion;
 
-	addViewEventHandler(eventHandler: ViewEventHandler): void;
-	removeViewEventHandler(eventHandler: ViewEventHandler): void;
+	AddViewEventHAndler(eventHAndler: ViewEventHAndler): void;
+	removeViewEventHAndler(eventHAndler: ViewEventHAndler): void;
 
 	/**
-	 * Gives a hint that a lot of requests are about to come in for these line numbers.
+	 * Gives A hint thAt A lot of requests Are About to come in for these line numbers.
 	 */
-	setViewport(startLineNumber: number, endLineNumber: number, centeredLineNumber: number): void;
+	setViewport(stArtLineNumber: number, endLineNumber: number, centeredLineNumber: number): void;
 	tokenizeViewport(): void;
-	setHasFocus(hasFocus: boolean): void;
-	onDidColorThemeChange(): void;
+	setHAsFocus(hAsFocus: booleAn): void;
+	onDidColorThemeChAnge(): void;
 
-	getDecorationsInViewport(visibleRange: Range): ViewModelDecoration[];
-	getViewLineRenderingData(visibleRange: Range, lineNumber: number): ViewLineRenderingData;
-	getViewLineData(lineNumber: number): ViewLineData;
-	getMinimapLinesRenderingData(startLineNumber: number, endLineNumber: number, needed: boolean[]): MinimapLinesRenderingData;
-	getCompletelyVisibleViewRange(): Range;
-	getCompletelyVisibleViewRangeAtScrollTop(scrollTop: number): Range;
+	getDecorAtionsInViewport(visibleRAnge: RAnge): ViewModelDecorAtion[];
+	getViewLineRenderingDAtA(visibleRAnge: RAnge, lineNumber: number): ViewLineRenderingDAtA;
+	getViewLineDAtA(lineNumber: number): ViewLineDAtA;
+	getMinimApLinesRenderingDAtA(stArtLineNumber: number, endLineNumber: number, needed: booleAn[]): MinimApLinesRenderingDAtA;
+	getCompletelyVisibleViewRAnge(): RAnge;
+	getCompletelyVisibleViewRAngeAtScrollTop(scrollTop: number): RAnge;
 
 	getTextModelOptions(): TextModelResolvedOptions;
 	getLineCount(): number;
 	getLineContent(lineNumber: number): string;
 	getLineLength(lineNumber: number): number;
-	getActiveIndentGuide(lineNumber: number, minLineNumber: number, maxLineNumber: number): IActiveIndentGuideInfo;
-	getLinesIndentGuides(startLineNumber: number, endLineNumber: number): number[];
+	getActiveIndentGuide(lineNumber: number, minLineNumber: number, mAxLineNumber: number): IActiveIndentGuideInfo;
+	getLinesIndentGuides(stArtLineNumber: number, endLineNumber: number): number[];
 	getLineMinColumn(lineNumber: number): number;
-	getLineMaxColumn(lineNumber: number): number;
-	getLineFirstNonWhitespaceColumn(lineNumber: number): number;
-	getLineLastNonWhitespaceColumn(lineNumber: number): number;
-	getAllOverviewRulerDecorations(theme: EditorTheme): IOverviewRulerDecorations;
-	invalidateOverviewRulerColorCache(): void;
-	invalidateMinimapColorCache(): void;
-	getValueInRange(range: Range, eol: EndOfLinePreference): string;
+	getLineMAxColumn(lineNumber: number): number;
+	getLineFirstNonWhitespAceColumn(lineNumber: number): number;
+	getLineLAstNonWhitespAceColumn(lineNumber: number): number;
+	getAllOverviewRulerDecorAtions(theme: EditorTheme): IOverviewRulerDecorAtions;
+	invAlidAteOverviewRulerColorCAche(): void;
+	invAlidAteMinimApColorCAche(): void;
+	getVAlueInRAnge(rAnge: RAnge, eol: EndOfLinePreference): string;
 
-	getModelLineMaxColumn(modelLineNumber: number): number;
-	validateModelPosition(modelPosition: IPosition): Position;
-	validateModelRange(range: IRange): Range;
+	getModelLineMAxColumn(modelLineNumber: number): number;
+	vAlidAteModelPosition(modelPosition: IPosition): Position;
+	vAlidAteModelRAnge(rAnge: IRAnge): RAnge;
 
-	deduceModelPositionRelativeToViewPosition(viewAnchorPosition: Position, deltaOffset: number, lineFeedCnt: number): Position;
+	deduceModelPositionRelAtiveToViewPosition(viewAnchorPosition: Position, deltAOffset: number, lineFeedCnt: number): Position;
 	getEOL(): string;
-	getPlainTextToCopy(modelRanges: Range[], emptySelectionClipboard: boolean, forceCRLF: boolean): string | string[];
-	getRichTextToCopy(modelRanges: Range[], emptySelectionClipboard: boolean): { html: string, mode: string } | null;
+	getPlAinTextToCopy(modelRAnges: RAnge[], emptySelectionClipboArd: booleAn, forceCRLF: booleAn): string | string[];
+	getRichTextToCopy(modelRAnges: RAnge[], emptySelectionClipboArd: booleAn): { html: string, mode: string } | null;
 
 	//#region model
 
-	pushStackElement(): void;
+	pushStAckElement(): void;
 
 	//#endregion
 
 
 	//#region cursor
-	getPrimaryCursorState(): CursorState;
-	getLastAddedCursorIndex(): number;
-	getCursorStates(): CursorState[];
-	setCursorStates(source: string | null | undefined, reason: CursorChangeReason, states: PartialCursorState[] | null): void;
-	getCursorColumnSelectData(): IColumnSelectData;
-	setCursorColumnSelectData(columnSelectData: IColumnSelectData): void;
-	getPrevEditOperationType(): EditOperationType;
-	setPrevEditOperationType(type: EditOperationType): void;
-	revealPrimaryCursor(source: string | null | undefined, revealHorizontal: boolean): void;
-	revealTopMostCursor(source: string | null | undefined): void;
-	revealBottomMostCursor(source: string | null | undefined): void;
-	revealRange(source: string | null | undefined, revealHorizontal: boolean, viewRange: Range, verticalType: VerticalRevealType, scrollType: ScrollType): void;
+	getPrimAryCursorStAte(): CursorStAte;
+	getLAstAddedCursorIndex(): number;
+	getCursorStAtes(): CursorStAte[];
+	setCursorStAtes(source: string | null | undefined, reAson: CursorChAngeReAson, stAtes: PArtiAlCursorStAte[] | null): void;
+	getCursorColumnSelectDAtA(): IColumnSelectDAtA;
+	setCursorColumnSelectDAtA(columnSelectDAtA: IColumnSelectDAtA): void;
+	getPrevEditOperAtionType(): EditOperAtionType;
+	setPrevEditOperAtionType(type: EditOperAtionType): void;
+	reveAlPrimAryCursor(source: string | null | undefined, reveAlHorizontAl: booleAn): void;
+	reveAlTopMostCursor(source: string | null | undefined): void;
+	reveAlBottomMostCursor(source: string | null | undefined): void;
+	reveAlRAnge(source: string | null | undefined, reveAlHorizontAl: booleAn, viewRAnge: RAnge, verticAlType: VerticAlReveAlType, scrollType: ScrollType): void;
 	//#endregion
 
-	//#region viewLayout
-	getVerticalOffsetForLineNumber(viewLineNumber: number): number;
+	//#region viewLAyout
+	getVerticAlOffsetForLineNumber(viewLineNumber: number): number;
 	getScrollTop(): number;
 	setScrollTop(newScrollTop: number, scrollType: ScrollType): void;
 	setScrollPosition(position: INewScrollPosition, type: ScrollType): void;
-	deltaScrollNow(deltaScrollLeft: number, deltaScrollTop: number): void;
-	changeWhitespace(callback: (accessor: IWhitespaceChangeAccessor) => void): void;
-	setMaxLineWidth(maxLineWidth: number): void;
+	deltAScrollNow(deltAScrollLeft: number, deltAScrollTop: number): void;
+	chAngeWhitespAce(cAllbAck: (Accessor: IWhitespAceChAngeAccessor) => void): void;
+	setMAxLineWidth(mAxLineWidth: number): void;
 	//#endregion
 }
 
-export class MinimapLinesRenderingData {
-	public readonly tabSize: number;
-	public readonly data: Array<ViewLineData | null>;
+export clAss MinimApLinesRenderingDAtA {
+	public reAdonly tAbSize: number;
+	public reAdonly dAtA: ArrAy<ViewLineDAtA | null>;
 
 	constructor(
-		tabSize: number,
-		data: Array<ViewLineData | null>
+		tAbSize: number,
+		dAtA: ArrAy<ViewLineDAtA | null>
 	) {
-		this.tabSize = tabSize;
-		this.data = data;
+		this.tAbSize = tAbSize;
+		this.dAtA = dAtA;
 	}
 }
 
-export class ViewLineData {
-	_viewLineDataBrand: void;
+export clAss ViewLineDAtA {
+	_viewLineDAtABrAnd: void;
 
 	/**
-	 * The content at this view line.
+	 * The content At this view line.
 	 */
-	public readonly content: string;
+	public reAdonly content: string;
 	/**
-	 * Does this line continue with a wrapped line?
+	 * Does this line continue with A wrApped line?
 	 */
-	public readonly continuesWithWrappedLine: boolean;
+	public reAdonly continuesWithWrAppedLine: booleAn;
 	/**
-	 * The minimum allowed column at this view line.
+	 * The minimum Allowed column At this view line.
 	 */
-	public readonly minColumn: number;
+	public reAdonly minColumn: number;
 	/**
-	 * The maximum allowed column at this view line.
+	 * The mAximum Allowed column At this view line.
 	 */
-	public readonly maxColumn: number;
+	public reAdonly mAxColumn: number;
 	/**
-	 * The visible column at the start of the line (after the fauxIndent).
+	 * The visible column At the stArt of the line (After the fAuxIndent).
 	 */
-	public readonly startVisibleColumn: number;
+	public reAdonly stArtVisibleColumn: number;
 	/**
-	 * The tokens at this view line.
+	 * The tokens At this view line.
 	 */
-	public readonly tokens: IViewLineTokens;
+	public reAdonly tokens: IViewLineTokens;
 
 	constructor(
 		content: string,
-		continuesWithWrappedLine: boolean,
+		continuesWithWrAppedLine: booleAn,
 		minColumn: number,
-		maxColumn: number,
-		startVisibleColumn: number,
+		mAxColumn: number,
+		stArtVisibleColumn: number,
 		tokens: IViewLineTokens
 	) {
 		this.content = content;
-		this.continuesWithWrappedLine = continuesWithWrappedLine;
+		this.continuesWithWrAppedLine = continuesWithWrAppedLine;
 		this.minColumn = minColumn;
-		this.maxColumn = maxColumn;
-		this.startVisibleColumn = startVisibleColumn;
+		this.mAxColumn = mAxColumn;
+		this.stArtVisibleColumn = stArtVisibleColumn;
 		this.tokens = tokens;
 	}
 }
 
-export class ViewLineRenderingData {
+export clAss ViewLineRenderingDAtA {
 	/**
-	 * The minimum allowed column at this view line.
+	 * The minimum Allowed column At this view line.
 	 */
-	public readonly minColumn: number;
+	public reAdonly minColumn: number;
 	/**
-	 * The maximum allowed column at this view line.
+	 * The mAximum Allowed column At this view line.
 	 */
-	public readonly maxColumn: number;
+	public reAdonly mAxColumn: number;
 	/**
-	 * The content at this view line.
+	 * The content At this view line.
 	 */
-	public readonly content: string;
+	public reAdonly content: string;
 	/**
-	 * Does this line continue with a wrapped line?
+	 * Does this line continue with A wrApped line?
 	 */
-	public readonly continuesWithWrappedLine: boolean;
+	public reAdonly continuesWithWrAppedLine: booleAn;
 	/**
-	 * Describes if `content` contains RTL characters.
+	 * Describes if `content` contAins RTL chArActers.
 	 */
-	public readonly containsRTL: boolean;
+	public reAdonly contAinsRTL: booleAn;
 	/**
-	 * Describes if `content` contains non basic ASCII chars.
+	 * Describes if `content` contAins non bAsic ASCII chArs.
 	 */
-	public readonly isBasicASCII: boolean;
+	public reAdonly isBAsicASCII: booleAn;
 	/**
-	 * The tokens at this view line.
+	 * The tokens At this view line.
 	 */
-	public readonly tokens: IViewLineTokens;
+	public reAdonly tokens: IViewLineTokens;
 	/**
-	 * Inline decorations at this view line.
+	 * Inline decorAtions At this view line.
 	 */
-	public readonly inlineDecorations: InlineDecoration[];
+	public reAdonly inlineDecorAtions: InlineDecorAtion[];
 	/**
-	 * The tab size for this view model.
+	 * The tAb size for this view model.
 	 */
-	public readonly tabSize: number;
+	public reAdonly tAbSize: number;
 	/**
-	 * The visible column at the start of the line (after the fauxIndent)
+	 * The visible column At the stArt of the line (After the fAuxIndent)
 	 */
-	public readonly startVisibleColumn: number;
+	public reAdonly stArtVisibleColumn: number;
 
 	constructor(
 		minColumn: number,
-		maxColumn: number,
+		mAxColumn: number,
 		content: string,
-		continuesWithWrappedLine: boolean,
-		mightContainRTL: boolean,
-		mightContainNonBasicASCII: boolean,
+		continuesWithWrAppedLine: booleAn,
+		mightContAinRTL: booleAn,
+		mightContAinNonBAsicASCII: booleAn,
 		tokens: IViewLineTokens,
-		inlineDecorations: InlineDecoration[],
-		tabSize: number,
-		startVisibleColumn: number
+		inlineDecorAtions: InlineDecorAtion[],
+		tAbSize: number,
+		stArtVisibleColumn: number
 	) {
 		this.minColumn = minColumn;
-		this.maxColumn = maxColumn;
+		this.mAxColumn = mAxColumn;
 		this.content = content;
-		this.continuesWithWrappedLine = continuesWithWrappedLine;
+		this.continuesWithWrAppedLine = continuesWithWrAppedLine;
 
-		this.isBasicASCII = ViewLineRenderingData.isBasicASCII(content, mightContainNonBasicASCII);
-		this.containsRTL = ViewLineRenderingData.containsRTL(content, this.isBasicASCII, mightContainRTL);
+		this.isBAsicASCII = ViewLineRenderingDAtA.isBAsicASCII(content, mightContAinNonBAsicASCII);
+		this.contAinsRTL = ViewLineRenderingDAtA.contAinsRTL(content, this.isBAsicASCII, mightContAinRTL);
 
 		this.tokens = tokens;
-		this.inlineDecorations = inlineDecorations;
-		this.tabSize = tabSize;
-		this.startVisibleColumn = startVisibleColumn;
+		this.inlineDecorAtions = inlineDecorAtions;
+		this.tAbSize = tAbSize;
+		this.stArtVisibleColumn = stArtVisibleColumn;
 	}
 
-	public static isBasicASCII(lineContent: string, mightContainNonBasicASCII: boolean): boolean {
-		if (mightContainNonBasicASCII) {
-			return strings.isBasicASCII(lineContent);
+	public stAtic isBAsicASCII(lineContent: string, mightContAinNonBAsicASCII: booleAn): booleAn {
+		if (mightContAinNonBAsicASCII) {
+			return strings.isBAsicASCII(lineContent);
 		}
 		return true;
 	}
 
-	public static containsRTL(lineContent: string, isBasicASCII: boolean, mightContainRTL: boolean): boolean {
-		if (!isBasicASCII && mightContainRTL) {
-			return strings.containsRTL(lineContent);
+	public stAtic contAinsRTL(lineContent: string, isBAsicASCII: booleAn, mightContAinRTL: booleAn): booleAn {
+		if (!isBAsicASCII && mightContAinRTL) {
+			return strings.contAinsRTL(lineContent);
 		}
-		return false;
+		return fAlse;
 	}
 }
 
-export const enum InlineDecorationType {
-	Regular = 0,
+export const enum InlineDecorAtionType {
+	RegulAr = 0,
 	Before = 1,
 	After = 2,
-	RegularAffectingLetterSpacing = 3
+	RegulArAffectingLetterSpAcing = 3
 }
 
-export class InlineDecoration {
+export clAss InlineDecorAtion {
 	constructor(
-		public readonly range: Range,
-		public readonly inlineClassName: string,
-		public readonly type: InlineDecorationType
+		public reAdonly rAnge: RAnge,
+		public reAdonly inlineClAssNAme: string,
+		public reAdonly type: InlineDecorAtionType
 	) {
 	}
 }
 
-export class ViewModelDecoration {
-	_viewModelDecorationBrand: void;
+export clAss ViewModelDecorAtion {
+	_viewModelDecorAtionBrAnd: void;
 
-	public readonly range: Range;
-	public readonly options: IModelDecorationOptions;
+	public reAdonly rAnge: RAnge;
+	public reAdonly options: IModelDecorAtionOptions;
 
-	constructor(range: Range, options: IModelDecorationOptions) {
-		this.range = range;
+	constructor(rAnge: RAnge, options: IModelDecorAtionOptions) {
+		this.rAnge = rAnge;
 		this.options = options;
 	}
 }
 
 /**
- * Decorations are encoded in a number array using the following scheme:
- *  - 3*i = lane
- *  - 3*i+1 = startLineNumber
+ * DecorAtions Are encoded in A number ArrAy using the following scheme:
+ *  - 3*i = lAne
+ *  - 3*i+1 = stArtLineNumber
  *  - 3*i+2 = endLineNumber
  */
-export interface IOverviewRulerDecorations {
+export interfAce IOverviewRulerDecorAtions {
 	[color: string]: number[];
 }

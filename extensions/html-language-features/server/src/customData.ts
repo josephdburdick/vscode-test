@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IHTMLDataProvider, newHTMLDataProvider } from 'vscode-html-languageservice';
+import { IHTMLDAtAProvider, newHTMLDAtAProvider } from 'vscode-html-lAnguAgeservice';
 import { RequestService } from './requests';
 
-export function fetchHTMLDataProviders(dataPaths: string[], requestService: RequestService): Promise<IHTMLDataProvider[]> {
-	const providers = dataPaths.map(async p => {
+export function fetchHTMLDAtAProviders(dAtAPAths: string[], requestService: RequestService): Promise<IHTMLDAtAProvider[]> {
+	const providers = dAtAPAths.mAp(Async p => {
 		try {
-			const content = await requestService.getContent(p);
-			return parseHTMLData(p, content);
-		} catch (e) {
-			return newHTMLDataProvider(p, { version: 1 });
+			const content = AwAit requestService.getContent(p);
+			return pArseHTMLDAtA(p, content);
+		} cAtch (e) {
+			return newHTMLDAtAProvider(p, { version: 1 });
 		}
 	});
 
-	return Promise.all(providers);
+	return Promise.All(providers);
 }
 
-function parseHTMLData(id: string, source: string): IHTMLDataProvider {
-	let rawData: any;
+function pArseHTMLDAtA(id: string, source: string): IHTMLDAtAProvider {
+	let rAwDAtA: Any;
 
 	try {
-		rawData = JSON.parse(source);
-	} catch (err) {
-		return newHTMLDataProvider(id, { version: 1 });
+		rAwDAtA = JSON.pArse(source);
+	} cAtch (err) {
+		return newHTMLDAtAProvider(id, { version: 1 });
 	}
 
-	return newHTMLDataProvider(id, {
-		version: rawData.version || 1,
-		tags: rawData.tags || [],
-		globalAttributes: rawData.globalAttributes || [],
-		valueSets: rawData.valueSets || []
+	return newHTMLDAtAProvider(id, {
+		version: rAwDAtA.version || 1,
+		tAgs: rAwDAtA.tAgs || [],
+		globAlAttributes: rAwDAtA.globAlAttributes || [],
+		vAlueSets: rAwDAtA.vAlueSets || []
 	});
 }
 

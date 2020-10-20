@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
 export const typescript = 'typescript';
-export const typescriptreact = 'typescriptreact';
-export const javascript = 'javascript';
-export const javascriptreact = 'javascriptreact';
-export const jsxTags = 'jsx-tags';
+export const typescriptreAct = 'typescriptreAct';
+export const jAvAscript = 'jAvAscript';
+export const jAvAscriptreAct = 'jAvAscriptreAct';
+export const jsxTAgs = 'jsx-tAgs';
 
 
-export function isSupportedLanguageMode(doc: vscode.TextDocument) {
-	return vscode.languages.match([typescript, typescriptreact, javascript, javascriptreact], doc) > 0;
+export function isSupportedLAnguAgeMode(doc: vscode.TextDocument) {
+	return vscode.lAnguAges.mAtch([typescript, typescriptreAct, jAvAscript, jAvAscriptreAct], doc) > 0;
 }
 
 export function isTypeScriptDocument(doc: vscode.TextDocument) {
-	return vscode.languages.match([typescript, typescriptreact], doc) > 0;
+	return vscode.lAnguAges.mAtch([typescript, typescriptreAct], doc) > 0;
 }

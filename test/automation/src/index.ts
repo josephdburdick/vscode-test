@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export * from './activityBar';
-export * from './application';
+export * from './ActivityBAr';
+export * from './ApplicAtion';
 export * from './code';
 export * from './debug';
 export * from './editor';
@@ -16,12 +16,12 @@ export * from './logger';
 export * from './peek';
 export * from './problems';
 export * from './quickinput';
-export * from './quickaccess';
+export * from './quickAccess';
 export * from './scm';
-export * from './search';
+export * from './seArch';
 export * from './settings';
-export * from './statusbar';
-export * from './terminal';
+export * from './stAtusbAr';
+export * from './terminAl';
 export * from './viewlet';
 export * from './workbench';
 export * from './driver';

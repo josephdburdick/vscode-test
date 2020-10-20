@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'vs/base/common/assert';
-import * as vscode from 'vscode';
-import { Emitter, Event } from 'vs/base/common/event';
-import { dispose } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostDocumentsAndEditorsShape, IDocumentsAndEditorsDelta, IModelAddedData, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentData } from 'vs/workbench/api/common/extHostDocumentData';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ExtHostTextEditor } from 'vs/workbench/api/common/extHostTextEditor';
-import * as typeConverters from 'vs/workbench/api/common/extHostTypeConverters';
-import { ILogService } from 'vs/platform/log/common/log';
-import { ResourceMap } from 'vs/base/common/map';
-import { Schemas } from 'vs/base/common/network';
-import { Iterable } from 'vs/base/common/iterator';
+import * As Assert from 'vs/bAse/common/Assert';
+import * As vscode from 'vscode';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { dispose } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ExtHostDocumentsAndEditorsShApe, IDocumentsAndEditorsDeltA, IModelAddedDAtA, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostDocumentDAtA } from 'vs/workbench/Api/common/extHostDocumentDAtA';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { ExtHostTextEditor } from 'vs/workbench/Api/common/extHostTextEditor';
+import * As typeConverters from 'vs/workbench/Api/common/extHostTypeConverters';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IterAble } from 'vs/bAse/common/iterAtor';
 
-class Reference<T> {
-	private _count = 0;
-	constructor(readonly value: T) { }
+clAss Reference<T> {
+	privAte _count = 0;
+	constructor(reAdonly vAlue: T) { }
 	ref() {
 		this._count++;
 	}
@@ -30,92 +30,92 @@ class Reference<T> {
 	}
 }
 
-export interface IExtHostModelAddedData extends IModelAddedData {
+export interfAce IExtHostModelAddedDAtA extends IModelAddedDAtA {
 	notebook?: vscode.NotebookDocument;
 }
 
-export interface IExtHostDocumentsAndEditorsDelta extends IDocumentsAndEditorsDelta {
-	addedDocuments?: IExtHostModelAddedData[];
+export interfAce IExtHostDocumentsAndEditorsDeltA extends IDocumentsAndEditorsDeltA {
+	AddedDocuments?: IExtHostModelAddedDAtA[];
 }
 
-export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsShape {
+export clAss ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsShApe {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private _activeEditorId: string | null = null;
+	privAte _ActiveEditorId: string | null = null;
 
-	private readonly _editors = new Map<string, ExtHostTextEditor>();
-	private readonly _documents = new ResourceMap<Reference<ExtHostDocumentData>>();
+	privAte reAdonly _editors = new MAp<string, ExtHostTextEditor>();
+	privAte reAdonly _documents = new ResourceMAp<Reference<ExtHostDocumentDAtA>>();
 
-	private readonly _onDidAddDocuments = new Emitter<ExtHostDocumentData[]>();
-	private readonly _onDidRemoveDocuments = new Emitter<ExtHostDocumentData[]>();
-	private readonly _onDidChangeVisibleTextEditors = new Emitter<ExtHostTextEditor[]>();
-	private readonly _onDidChangeActiveTextEditor = new Emitter<ExtHostTextEditor | undefined>();
+	privAte reAdonly _onDidAddDocuments = new Emitter<ExtHostDocumentDAtA[]>();
+	privAte reAdonly _onDidRemoveDocuments = new Emitter<ExtHostDocumentDAtA[]>();
+	privAte reAdonly _onDidChAngeVisibleTextEditors = new Emitter<ExtHostTextEditor[]>();
+	privAte reAdonly _onDidChAngeActiveTextEditor = new Emitter<ExtHostTextEditor | undefined>();
 
-	readonly onDidAddDocuments: Event<ExtHostDocumentData[]> = this._onDidAddDocuments.event;
-	readonly onDidRemoveDocuments: Event<ExtHostDocumentData[]> = this._onDidRemoveDocuments.event;
-	readonly onDidChangeVisibleTextEditors: Event<ExtHostTextEditor[]> = this._onDidChangeVisibleTextEditors.event;
-	readonly onDidChangeActiveTextEditor: Event<ExtHostTextEditor | undefined> = this._onDidChangeActiveTextEditor.event;
+	reAdonly onDidAddDocuments: Event<ExtHostDocumentDAtA[]> = this._onDidAddDocuments.event;
+	reAdonly onDidRemoveDocuments: Event<ExtHostDocumentDAtA[]> = this._onDidRemoveDocuments.event;
+	reAdonly onDidChAngeVisibleTextEditors: Event<ExtHostTextEditor[]> = this._onDidChAngeVisibleTextEditors.event;
+	reAdonly onDidChAngeActiveTextEditor: Event<ExtHostTextEditor | undefined> = this._onDidChAngeActiveTextEditor.event;
 
 	constructor(
-		@IExtHostRpcService private readonly _extHostRpc: IExtHostRpcService,
-		@ILogService private readonly _logService: ILogService
+		@IExtHostRpcService privAte reAdonly _extHostRpc: IExtHostRpcService,
+		@ILogService privAte reAdonly _logService: ILogService
 	) { }
 
-	$acceptDocumentsAndEditorsDelta(delta: IDocumentsAndEditorsDelta): void {
-		this.acceptDocumentsAndEditorsDelta(delta);
+	$AcceptDocumentsAndEditorsDeltA(deltA: IDocumentsAndEditorsDeltA): void {
+		this.AcceptDocumentsAndEditorsDeltA(deltA);
 	}
 
-	acceptDocumentsAndEditorsDelta(delta: IExtHostDocumentsAndEditorsDelta): void {
+	AcceptDocumentsAndEditorsDeltA(deltA: IExtHostDocumentsAndEditorsDeltA): void {
 
-		const removedDocuments: ExtHostDocumentData[] = [];
-		const addedDocuments: ExtHostDocumentData[] = [];
+		const removedDocuments: ExtHostDocumentDAtA[] = [];
+		const AddedDocuments: ExtHostDocumentDAtA[] = [];
 		const removedEditors: ExtHostTextEditor[] = [];
 
-		if (delta.removedDocuments) {
-			for (const uriComponent of delta.removedDocuments) {
+		if (deltA.removedDocuments) {
+			for (const uriComponent of deltA.removedDocuments) {
 				const uri = URI.revive(uriComponent);
-				const data = this._documents.get(uri);
-				if (data?.unref()) {
+				const dAtA = this._documents.get(uri);
+				if (dAtA?.unref()) {
 					this._documents.delete(uri);
-					removedDocuments.push(data.value);
+					removedDocuments.push(dAtA.vAlue);
 				}
 			}
 		}
 
-		if (delta.addedDocuments) {
-			for (const data of delta.addedDocuments) {
-				const resource = URI.revive(data.uri);
+		if (deltA.AddedDocuments) {
+			for (const dAtA of deltA.AddedDocuments) {
+				const resource = URI.revive(dAtA.uri);
 				let ref = this._documents.get(resource);
 
 				// double check -> only notebook cell documents should be
-				// referenced/opened more than once...
+				// referenced/opened more thAn once...
 				if (ref) {
-					if (resource.scheme !== Schemas.vscodeNotebookCell) {
-						throw new Error(`document '${resource} already exists!'`);
+					if (resource.scheme !== SchemAs.vscodeNotebookCell) {
+						throw new Error(`document '${resource} AlreAdy exists!'`);
 					}
 				}
 				if (!ref) {
-					ref = new Reference(new ExtHostDocumentData(
-						this._extHostRpc.getProxy(MainContext.MainThreadDocuments),
+					ref = new Reference(new ExtHostDocumentDAtA(
+						this._extHostRpc.getProxy(MAinContext.MAinThreAdDocuments),
 						resource,
-						data.lines,
-						data.EOL,
-						data.versionId,
-						data.modeId,
-						data.isDirty,
-						data.notebook
+						dAtA.lines,
+						dAtA.EOL,
+						dAtA.versionId,
+						dAtA.modeId,
+						dAtA.isDirty,
+						dAtA.notebook
 					));
 					this._documents.set(resource, ref);
-					addedDocuments.push(ref.value);
+					AddedDocuments.push(ref.vAlue);
 				}
 
 				ref.ref();
 			}
 		}
 
-		if (delta.removedEditors) {
-			for (const id of delta.removedEditors) {
+		if (deltA.removedEditors) {
+			for (const id of deltA.removedEditors) {
 				const editor = this._editors.get(id);
 				this._editors.delete(id);
 				if (editor) {
@@ -124,75 +124,75 @@ export class ExtHostDocumentsAndEditors implements ExtHostDocumentsAndEditorsSha
 			}
 		}
 
-		if (delta.addedEditors) {
-			for (const data of delta.addedEditors) {
-				const resource = URI.revive(data.documentUri);
-				assert.ok(this._documents.has(resource), `document '${resource}' does not exist`);
-				assert.ok(!this._editors.has(data.id), `editor '${data.id}' already exists!`);
+		if (deltA.AddedEditors) {
+			for (const dAtA of deltA.AddedEditors) {
+				const resource = URI.revive(dAtA.documentUri);
+				Assert.ok(this._documents.hAs(resource), `document '${resource}' does not exist`);
+				Assert.ok(!this._editors.hAs(dAtA.id), `editor '${dAtA.id}' AlreAdy exists!`);
 
-				const documentData = this._documents.get(resource)!.value;
+				const documentDAtA = this._documents.get(resource)!.vAlue;
 				const editor = new ExtHostTextEditor(
-					data.id,
-					this._extHostRpc.getProxy(MainContext.MainThreadTextEditors),
+					dAtA.id,
+					this._extHostRpc.getProxy(MAinContext.MAinThreAdTextEditors),
 					this._logService,
-					documentData,
-					data.selections.map(typeConverters.Selection.to),
-					data.options,
-					data.visibleRanges.map(range => typeConverters.Range.to(range)),
-					typeof data.editorPosition === 'number' ? typeConverters.ViewColumn.to(data.editorPosition) : undefined
+					documentDAtA,
+					dAtA.selections.mAp(typeConverters.Selection.to),
+					dAtA.options,
+					dAtA.visibleRAnges.mAp(rAnge => typeConverters.RAnge.to(rAnge)),
+					typeof dAtA.editorPosition === 'number' ? typeConverters.ViewColumn.to(dAtA.editorPosition) : undefined
 				);
-				this._editors.set(data.id, editor);
+				this._editors.set(dAtA.id, editor);
 			}
 		}
 
-		if (delta.newActiveEditor !== undefined) {
-			assert.ok(delta.newActiveEditor === null || this._editors.has(delta.newActiveEditor), `active editor '${delta.newActiveEditor}' does not exist`);
-			this._activeEditorId = delta.newActiveEditor;
+		if (deltA.newActiveEditor !== undefined) {
+			Assert.ok(deltA.newActiveEditor === null || this._editors.hAs(deltA.newActiveEditor), `Active editor '${deltA.newActiveEditor}' does not exist`);
+			this._ActiveEditorId = deltA.newActiveEditor;
 		}
 
 		dispose(removedDocuments);
 		dispose(removedEditors);
 
-		// now that the internal state is complete, fire events
-		if (delta.removedDocuments) {
+		// now thAt the internAl stAte is complete, fire events
+		if (deltA.removedDocuments) {
 			this._onDidRemoveDocuments.fire(removedDocuments);
 		}
-		if (delta.addedDocuments) {
-			this._onDidAddDocuments.fire(addedDocuments);
+		if (deltA.AddedDocuments) {
+			this._onDidAddDocuments.fire(AddedDocuments);
 		}
 
-		if (delta.removedEditors || delta.addedEditors) {
-			this._onDidChangeVisibleTextEditors.fire(this.allEditors());
+		if (deltA.removedEditors || deltA.AddedEditors) {
+			this._onDidChAngeVisibleTextEditors.fire(this.AllEditors());
 		}
-		if (delta.newActiveEditor !== undefined) {
-			this._onDidChangeActiveTextEditor.fire(this.activeEditor());
+		if (deltA.newActiveEditor !== undefined) {
+			this._onDidChAngeActiveTextEditor.fire(this.ActiveEditor());
 		}
 	}
 
-	getDocument(uri: URI): ExtHostDocumentData | undefined {
-		return this._documents.get(uri)?.value;
+	getDocument(uri: URI): ExtHostDocumentDAtA | undefined {
+		return this._documents.get(uri)?.vAlue;
 	}
 
-	allDocuments(): Iterable<ExtHostDocumentData> {
-		return Iterable.map(this._documents.values(), ref => ref.value);
+	AllDocuments(): IterAble<ExtHostDocumentDAtA> {
+		return IterAble.mAp(this._documents.vAlues(), ref => ref.vAlue);
 	}
 
 	getEditor(id: string): ExtHostTextEditor | undefined {
 		return this._editors.get(id);
 	}
 
-	activeEditor(): ExtHostTextEditor | undefined {
-		if (!this._activeEditorId) {
+	ActiveEditor(): ExtHostTextEditor | undefined {
+		if (!this._ActiveEditorId) {
 			return undefined;
 		} else {
-			return this._editors.get(this._activeEditorId);
+			return this._editors.get(this._ActiveEditorId);
 		}
 	}
 
-	allEditors(): ExtHostTextEditor[] {
-		return [...this._editors.values()];
+	AllEditors(): ExtHostTextEditor[] {
+		return [...this._editors.vAlues()];
 	}
 }
 
-export interface IExtHostDocumentsAndEditors extends ExtHostDocumentsAndEditors { }
-export const IExtHostDocumentsAndEditors = createDecorator<IExtHostDocumentsAndEditors>('IExtHostDocumentsAndEditors');
+export interfAce IExtHostDocumentsAndEditors extends ExtHostDocumentsAndEditors { }
+export const IExtHostDocumentsAndEditors = creAteDecorAtor<IExtHostDocumentsAndEditors>('IExtHostDocumentsAndEditors');

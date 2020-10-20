@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as uuid from 'vs/base/common/uuid';
-import * as pfs from 'vs/base/node/pfs';
-import { realcaseSync, realpath, realpathSync } from 'vs/base/node/extpath';
+import * As Assert from 'Assert';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As uuid from 'vs/bAse/common/uuid';
+import * As pfs from 'vs/bAse/node/pfs';
+import { reAlcAseSync, reAlpAth, reAlpAthSync } from 'vs/bAse/node/extpAth';
 
-suite('Extpath', () => {
+suite('ExtpAth', () => {
 
-	test('realcase', async () => {
-		const id = uuid.generateUuid();
-		const parentDir = path.join(os.tmpdir(), 'vsctests', id);
-		const newDir = path.join(parentDir, 'extpath', id);
+	test('reAlcAse', Async () => {
+		const id = uuid.generAteUuid();
+		const pArentDir = pAth.join(os.tmpdir(), 'vsctests', id);
+		const newDir = pAth.join(pArentDir, 'extpAth', id);
 
-		await pfs.mkdirp(newDir, 493);
+		AwAit pfs.mkdirp(newDir, 493);
 
-		// assume case insensitive file system
-		if (process.platform === 'win32' || process.platform === 'darwin') {
-			const upper = newDir.toUpperCase();
-			const real = realcaseSync(upper);
+		// Assume cAse insensitive file system
+		if (process.plAtform === 'win32' || process.plAtform === 'dArwin') {
+			const upper = newDir.toUpperCAse();
+			const reAl = reAlcAseSync(upper);
 
-			if (real) { // can be null in case of permission errors
-				assert.notEqual(real, upper);
-				assert.equal(real.toUpperCase(), upper);
-				assert.equal(real, newDir);
+			if (reAl) { // cAn be null in cAse of permission errors
+				Assert.notEquAl(reAl, upper);
+				Assert.equAl(reAl.toUpperCAse(), upper);
+				Assert.equAl(reAl, newDir);
 			}
 		}
 
-		// linux, unix, etc. -> assume case sensitive file system
+		// linux, unix, etc. -> Assume cAse sensitive file system
 		else {
-			const real = realcaseSync(newDir);
-			assert.equal(real, newDir);
+			const reAl = reAlcAseSync(newDir);
+			Assert.equAl(reAl, newDir);
 		}
 
-		await pfs.rimraf(parentDir, pfs.RimRafMode.MOVE);
+		AwAit pfs.rimrAf(pArentDir, pfs.RimRAfMode.MOVE);
 	});
 
-	test('realpath', async () => {
-		const id = uuid.generateUuid();
-		const parentDir = path.join(os.tmpdir(), 'vsctests', id);
-		const newDir = path.join(parentDir, 'extpath', id);
+	test('reAlpAth', Async () => {
+		const id = uuid.generAteUuid();
+		const pArentDir = pAth.join(os.tmpdir(), 'vsctests', id);
+		const newDir = pAth.join(pArentDir, 'extpAth', id);
 
-		await pfs.mkdirp(newDir, 493);
+		AwAit pfs.mkdirp(newDir, 493);
 
-		const realpathVal = await realpath(newDir);
-		assert.ok(realpathVal);
+		const reAlpAthVAl = AwAit reAlpAth(newDir);
+		Assert.ok(reAlpAthVAl);
 
-		await pfs.rimraf(parentDir, pfs.RimRafMode.MOVE);
+		AwAit pfs.rimrAf(pArentDir, pfs.RimRAfMode.MOVE);
 	});
 
-	test('realpathSync', async () => {
-		const id = uuid.generateUuid();
-		const parentDir = path.join(os.tmpdir(), 'vsctests', id);
-		const newDir = path.join(parentDir, 'extpath', id);
+	test('reAlpAthSync', Async () => {
+		const id = uuid.generAteUuid();
+		const pArentDir = pAth.join(os.tmpdir(), 'vsctests', id);
+		const newDir = pAth.join(pArentDir, 'extpAth', id);
 
-		await pfs.mkdirp(newDir, 493);
+		AwAit pfs.mkdirp(newDir, 493);
 
-		let realpath!: string;
+		let reAlpAth!: string;
 		try {
-			realpath = realpathSync(newDir);
-		} catch (error) {
-			assert.ok(!error);
+			reAlpAth = reAlpAthSync(newDir);
+		} cAtch (error) {
+			Assert.ok(!error);
 		}
-		assert.ok(realpath!);
+		Assert.ok(reAlpAth!);
 
-		await pfs.rimraf(parentDir, pfs.RimRafMode.MOVE);
+		AwAit pfs.rimrAf(pArentDir, pfs.RimRAfMode.MOVE);
 	});
 });

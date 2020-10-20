@@ -1,117 +1,117 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { parse as jsonParse, getNodeType } from 'vs/base/common/json';
-import { forEach } from 'vs/base/common/collections';
-import { localize } from 'vs/nls';
-import { extname, basename } from 'vs/base/common/path';
-import { SnippetParser, Variable, Placeholder, Text } from 'vs/editor/contrib/snippet/snippetParser';
-import { KnownSnippetVariableNames } from 'vs/editor/contrib/snippet/snippetVariables';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
-import { IFileService } from 'vs/platform/files/common/files';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { IdleValue } from 'vs/base/common/async';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { pArse As jsonPArse, getNodeType } from 'vs/bAse/common/json';
+import { forEAch } from 'vs/bAse/common/collections';
+import { locAlize } from 'vs/nls';
+import { extnAme, bAsenAme } from 'vs/bAse/common/pAth';
+import { SnippetPArser, VAriAble, PlAceholder, Text } from 'vs/editor/contrib/snippet/snippetPArser';
+import { KnownSnippetVAriAbleNAmes } from 'vs/editor/contrib/snippet/snippetVAriAbles';
+import { isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { IdleVAlue } from 'vs/bAse/common/Async';
+import { IExtensionResourceLoAderService } from 'vs/workbench/services/extensionResourceLoAder/common/extensionResourceLoAder';
 
-class SnippetBodyInsights {
+clAss SnippetBodyInsights {
 
-	readonly codeSnippet: string;
-	readonly isBogous: boolean;
-	readonly needsClipboard: boolean;
+	reAdonly codeSnippet: string;
+	reAdonly isBogous: booleAn;
+	reAdonly needsClipboArd: booleAn;
 
 	constructor(body: string) {
 
-		// init with defaults
-		this.isBogous = false;
-		this.needsClipboard = false;
+		// init with defAults
+		this.isBogous = fAlse;
+		this.needsClipboArd = fAlse;
 		this.codeSnippet = body;
 
 		// check snippet...
-		const textmateSnippet = new SnippetParser().parse(body, false);
+		const textmAteSnippet = new SnippetPArser().pArse(body, fAlse);
 
-		let placeholders = new Map<string, number>();
-		let placeholderMax = 0;
-		for (const placeholder of textmateSnippet.placeholders) {
-			placeholderMax = Math.max(placeholderMax, placeholder.index);
+		let plAceholders = new MAp<string, number>();
+		let plAceholderMAx = 0;
+		for (const plAceholder of textmAteSnippet.plAceholders) {
+			plAceholderMAx = MAth.mAx(plAceholderMAx, plAceholder.index);
 		}
 
-		let stack = [...textmateSnippet.children];
-		while (stack.length > 0) {
-			const marker = stack.shift()!;
-			if (marker instanceof Variable) {
+		let stAck = [...textmAteSnippet.children];
+		while (stAck.length > 0) {
+			const mArker = stAck.shift()!;
+			if (mArker instAnceof VAriAble) {
 
-				if (marker.children.length === 0 && !KnownSnippetVariableNames[marker.name]) {
-					// a 'variable' without a default value and not being one of our supported
-					// variables is automatically turned into a placeholder. This is to restore
-					// a bug we had before. So `${foo}` becomes `${N:foo}`
-					const index = placeholders.has(marker.name) ? placeholders.get(marker.name)! : ++placeholderMax;
-					placeholders.set(marker.name, index);
+				if (mArker.children.length === 0 && !KnownSnippetVAriAbleNAmes[mArker.nAme]) {
+					// A 'vAriAble' without A defAult vAlue And not being one of our supported
+					// vAriAbles is AutomAticAlly turned into A plAceholder. This is to restore
+					// A bug we hAd before. So `${foo}` becomes `${N:foo}`
+					const index = plAceholders.hAs(mArker.nAme) ? plAceholders.get(mArker.nAme)! : ++plAceholderMAx;
+					plAceholders.set(mArker.nAme, index);
 
-					const synthetic = new Placeholder(index).appendChild(new Text(marker.name));
-					textmateSnippet.replace(marker, [synthetic]);
+					const synthetic = new PlAceholder(index).AppendChild(new Text(mArker.nAme));
+					textmAteSnippet.replAce(mArker, [synthetic]);
 					this.isBogous = true;
 				}
 
-				if (marker.name === 'CLIPBOARD') {
-					this.needsClipboard = true;
+				if (mArker.nAme === 'CLIPBOARD') {
+					this.needsClipboArd = true;
 				}
 
 			} else {
 				// recurse
-				stack.push(...marker.children);
+				stAck.push(...mArker.children);
 			}
 		}
 
 		if (this.isBogous) {
-			this.codeSnippet = textmateSnippet.toTextmateString();
+			this.codeSnippet = textmAteSnippet.toTextmAteString();
 		}
 
 	}
 }
 
-export class Snippet {
+export clAss Snippet {
 
-	private readonly _bodyInsights: IdleValue<SnippetBodyInsights>;
+	privAte reAdonly _bodyInsights: IdleVAlue<SnippetBodyInsights>;
 
-	readonly prefixLow: string;
+	reAdonly prefixLow: string;
 
 	constructor(
-		readonly scopes: string[],
-		readonly name: string,
-		readonly prefix: string,
-		readonly description: string,
-		readonly body: string,
-		readonly source: string,
-		readonly snippetSource: SnippetSource,
+		reAdonly scopes: string[],
+		reAdonly nAme: string,
+		reAdonly prefix: string,
+		reAdonly description: string,
+		reAdonly body: string,
+		reAdonly source: string,
+		reAdonly snippetSource: SnippetSource,
 	) {
 		//
-		this.prefixLow = prefix ? prefix.toLowerCase() : prefix;
-		this._bodyInsights = new IdleValue(() => new SnippetBodyInsights(this.body));
+		this.prefixLow = prefix ? prefix.toLowerCAse() : prefix;
+		this._bodyInsights = new IdleVAlue(() => new SnippetBodyInsights(this.body));
 	}
 
 	get codeSnippet(): string {
-		return this._bodyInsights.value.codeSnippet;
+		return this._bodyInsights.vAlue.codeSnippet;
 	}
 
-	get isBogous(): boolean {
-		return this._bodyInsights.value.isBogous;
+	get isBogous(): booleAn {
+		return this._bodyInsights.vAlue.isBogous;
 	}
 
-	get needsClipboard(): boolean {
-		return this._bodyInsights.value.needsClipboard;
+	get needsClipboArd(): booleAn {
+		return this._bodyInsights.vAlue.needsClipboArd;
 	}
 
-	static compare(a: Snippet, b: Snippet): number {
-		if (a.snippetSource < b.snippetSource) {
+	stAtic compAre(A: Snippet, b: Snippet): number {
+		if (A.snippetSource < b.snippetSource) {
 			return -1;
-		} else if (a.snippetSource > b.snippetSource) {
+		} else if (A.snippetSource > b.snippetSource) {
 			return 1;
-		} else if (a.name > b.name) {
+		} else if (A.nAme > b.nAme) {
 			return 1;
-		} else if (a.name < b.name) {
+		} else if (A.nAme < b.nAme) {
 			return -1;
 		} else {
 			return 0;
@@ -120,109 +120,109 @@ export class Snippet {
 }
 
 
-interface JsonSerializedSnippet {
+interfAce JsonSeriAlizedSnippet {
 	body: string;
 	scope: string;
 	prefix: string | string[];
 	description: string;
 }
 
-function isJsonSerializedSnippet(thing: any): thing is JsonSerializedSnippet {
-	return Boolean((<JsonSerializedSnippet>thing).body) && Boolean((<JsonSerializedSnippet>thing).prefix);
+function isJsonSeriAlizedSnippet(thing: Any): thing is JsonSeriAlizedSnippet {
+	return BooleAn((<JsonSeriAlizedSnippet>thing).body) && BooleAn((<JsonSeriAlizedSnippet>thing).prefix);
 }
 
-interface JsonSerializedSnippets {
-	[name: string]: JsonSerializedSnippet | { [name: string]: JsonSerializedSnippet };
+interfAce JsonSeriAlizedSnippets {
+	[nAme: string]: JsonSeriAlizedSnippet | { [nAme: string]: JsonSeriAlizedSnippet };
 }
 
 export const enum SnippetSource {
 	User = 1,
-	Workspace = 2,
+	WorkspAce = 2,
 	Extension = 3,
 }
 
-export class SnippetFile {
+export clAss SnippetFile {
 
-	readonly data: Snippet[] = [];
-	readonly isGlobalSnippets: boolean;
-	readonly isUserSnippets: boolean;
+	reAdonly dAtA: Snippet[] = [];
+	reAdonly isGlobAlSnippets: booleAn;
+	reAdonly isUserSnippets: booleAn;
 
-	private _loadPromise?: Promise<this>;
+	privAte _loAdPromise?: Promise<this>;
 
 	constructor(
-		readonly source: SnippetSource,
-		readonly location: URI,
-		public defaultScopes: string[] | undefined,
-		private readonly _extension: IExtensionDescription | undefined,
-		private readonly _fileService: IFileService,
-		private readonly _extensionResourceLoaderService: IExtensionResourceLoaderService
+		reAdonly source: SnippetSource,
+		reAdonly locAtion: URI,
+		public defAultScopes: string[] | undefined,
+		privAte reAdonly _extension: IExtensionDescription | undefined,
+		privAte reAdonly _fileService: IFileService,
+		privAte reAdonly _extensionResourceLoAderService: IExtensionResourceLoAderService
 	) {
-		this.isGlobalSnippets = extname(location.path) === '.code-snippets';
+		this.isGlobAlSnippets = extnAme(locAtion.pAth) === '.code-snippets';
 		this.isUserSnippets = !this._extension;
 	}
 
 	select(selector: string, bucket: Snippet[]): void {
-		if (this.isGlobalSnippets || !this.isUserSnippets) {
+		if (this.isGlobAlSnippets || !this.isUserSnippets) {
 			this._scopeSelect(selector, bucket);
 		} else {
-			this._filepathSelect(selector, bucket);
+			this._filepAthSelect(selector, bucket);
 		}
 	}
 
-	private _filepathSelect(selector: string, bucket: Snippet[]): void {
-		// for `fooLang.json` files all snippets are accepted
-		if (selector + '.json' === basename(this.location.path)) {
-			bucket.push(...this.data);
+	privAte _filepAthSelect(selector: string, bucket: Snippet[]): void {
+		// for `fooLAng.json` files All snippets Are Accepted
+		if (selector + '.json' === bAsenAme(this.locAtion.pAth)) {
+			bucket.push(...this.dAtA);
 		}
 	}
 
-	private _scopeSelect(selector: string, bucket: Snippet[]): void {
-		// for `my.code-snippets` files we need to look at each snippet
-		for (const snippet of this.data) {
+	privAte _scopeSelect(selector: string, bucket: Snippet[]): void {
+		// for `my.code-snippets` files we need to look At eAch snippet
+		for (const snippet of this.dAtA) {
 			const len = snippet.scopes.length;
 			if (len === 0) {
-				// always accept
+				// AlwAys Accept
 				bucket.push(snippet);
 
 			} else {
 				for (let i = 0; i < len; i++) {
-					// match
+					// mAtch
 					if (snippet.scopes[i] === selector) {
 						bucket.push(snippet);
-						break; // match only once!
+						breAk; // mAtch only once!
 					}
 				}
 			}
 		}
 
-		let idx = selector.lastIndexOf('.');
+		let idx = selector.lAstIndexOf('.');
 		if (idx >= 0) {
 			this._scopeSelect(selector.substring(0, idx), bucket);
 		}
 	}
 
-	private async _load(): Promise<string> {
+	privAte Async _loAd(): Promise<string> {
 		if (this._extension) {
-			return this._extensionResourceLoaderService.readExtensionResource(this.location);
+			return this._extensionResourceLoAderService.reAdExtensionResource(this.locAtion);
 		} else {
-			const content = await this._fileService.readFile(this.location);
-			return content.value.toString();
+			const content = AwAit this._fileService.reAdFile(this.locAtion);
+			return content.vAlue.toString();
 		}
 	}
 
-	load(): Promise<this> {
-		if (!this._loadPromise) {
-			this._loadPromise = Promise.resolve(this._load()).then(content => {
-				const data = <JsonSerializedSnippets>jsonParse(content);
-				if (getNodeType(data) === 'object') {
-					forEach(data, entry => {
-						const { key: name, value: scopeOrTemplate } = entry;
-						if (isJsonSerializedSnippet(scopeOrTemplate)) {
-							this._parseSnippet(name, scopeOrTemplate, this.data);
+	loAd(): Promise<this> {
+		if (!this._loAdPromise) {
+			this._loAdPromise = Promise.resolve(this._loAd()).then(content => {
+				const dAtA = <JsonSeriAlizedSnippets>jsonPArse(content);
+				if (getNodeType(dAtA) === 'object') {
+					forEAch(dAtA, entry => {
+						const { key: nAme, vAlue: scopeOrTemplAte } = entry;
+						if (isJsonSeriAlizedSnippet(scopeOrTemplAte)) {
+							this._pArseSnippet(nAme, scopeOrTemplAte, this.dAtA);
 						} else {
-							forEach(scopeOrTemplate, entry => {
-								const { key: name, value: template } = entry;
-								this._parseSnippet(name, template, this.data);
+							forEAch(scopeOrTemplAte, entry => {
+								const { key: nAme, vAlue: templAte } = entry;
+								this._pArseSnippet(nAme, templAte, this.dAtA);
 							});
 						}
 					});
@@ -230,61 +230,61 @@ export class SnippetFile {
 				return this;
 			});
 		}
-		return this._loadPromise;
+		return this._loAdPromise;
 	}
 
 	reset(): void {
-		this._loadPromise = undefined;
-		this.data.length = 0;
+		this._loAdPromise = undefined;
+		this.dAtA.length = 0;
 	}
 
-	private _parseSnippet(name: string, snippet: JsonSerializedSnippet, bucket: Snippet[]): void {
+	privAte _pArseSnippet(nAme: string, snippet: JsonSeriAlizedSnippet, bucket: Snippet[]): void {
 
 		let { prefix, body, description } = snippet;
 
-		if (Array.isArray(body)) {
+		if (ArrAy.isArrAy(body)) {
 			body = body.join('\n');
 		}
 
-		if (Array.isArray(description)) {
+		if (ArrAy.isArrAy(description)) {
 			description = description.join('\n');
 		}
 
-		if ((typeof prefix !== 'string' && !Array.isArray(prefix)) || typeof body !== 'string') {
+		if ((typeof prefix !== 'string' && !ArrAy.isArrAy(prefix)) || typeof body !== 'string') {
 			return;
 		}
 
 		let scopes: string[];
-		if (this.defaultScopes) {
-			scopes = this.defaultScopes;
+		if (this.defAultScopes) {
+			scopes = this.defAultScopes;
 		} else if (typeof snippet.scope === 'string') {
-			scopes = snippet.scope.split(',').map(s => s.trim()).filter(s => !isFalsyOrWhitespace(s));
+			scopes = snippet.scope.split(',').mAp(s => s.trim()).filter(s => !isFAlsyOrWhitespAce(s));
 		} else {
 			scopes = [];
 		}
 
 		let source: string;
 		if (this._extension) {
-			// extension snippet -> show the name of the extension
-			source = this._extension.displayName || this._extension.name;
+			// extension snippet -> show the nAme of the extension
+			source = this._extension.displAyNAme || this._extension.nAme;
 
-		} else if (this.source === SnippetSource.Workspace) {
-			// workspace -> only *.code-snippets files
-			source = localize('source.workspaceSnippetGlobal', "Workspace Snippet");
+		} else if (this.source === SnippetSource.WorkspAce) {
+			// workspAce -> only *.code-snippets files
+			source = locAlize('source.workspAceSnippetGlobAl', "WorkspAce Snippet");
 		} else {
-			// user -> global (*.code-snippets) and language snippets
-			if (this.isGlobalSnippets) {
-				source = localize('source.userSnippetGlobal', "Global User Snippet");
+			// user -> globAl (*.code-snippets) And lAnguAge snippets
+			if (this.isGlobAlSnippets) {
+				source = locAlize('source.userSnippetGlobAl', "GlobAl User Snippet");
 			} else {
-				source = localize('source.userSnippet', "User Snippet");
+				source = locAlize('source.userSnippet', "User Snippet");
 			}
 		}
 
-		let prefixes = Array.isArray(prefix) ? prefix : [prefix];
-		prefixes.forEach(p => {
+		let prefixes = ArrAy.isArrAy(prefix) ? prefix : [prefix];
+		prefixes.forEAch(p => {
 			bucket.push(new Snippet(
 				scopes,
-				name,
+				nAme,
 				p,
 				description,
 				body,

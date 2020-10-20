@@ -1,278 +1,278 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { ITextModel, ISingleEditOperation } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
-import * as search from 'vs/workbench/contrib/search/common/search';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Position as EditorPosition } from 'vs/editor/common/core/position';
-import { Range as EditorRange, IRange } from 'vs/editor/common/core/range';
-import { ExtHostContext, MainThreadLanguageFeaturesShape, ExtHostLanguageFeaturesShape, MainContext, IExtHostContext, ILanguageConfigurationDto, IRegExpDto, IIndentationRuleDto, IOnEnterRuleDto, ILocationDto, IWorkspaceSymbolDto, reviveWorkspaceEditDto, IDocumentFilterDto, IDefinitionLinkDto, ISignatureHelpProviderMetadataDto, ILinkDto, ICallHierarchyItemDto, ISuggestDataDto, ICodeActionDto, ISuggestDataDtoField, ISuggestResultDtoField, ICodeActionProviderMetadataDto, ILanguageWordDefinitionDto } from '../common/extHost.protocol';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
-import { LanguageConfiguration, IndentationRule, OnEnterRule } from 'vs/editor/common/modes/languageConfiguration';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { ITextModel, ISingleEditOperAtion } from 'vs/editor/common/model';
+import * As modes from 'vs/editor/common/modes';
+import * As seArch from 'vs/workbench/contrib/seArch/common/seArch';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Position As EditorPosition } from 'vs/editor/common/core/position';
+import { RAnge As EditorRAnge, IRAnge } from 'vs/editor/common/core/rAnge';
+import { ExtHostContext, MAinThreAdLAnguAgeFeAturesShApe, ExtHostLAnguAgeFeAturesShApe, MAinContext, IExtHostContext, ILAnguAgeConfigurAtionDto, IRegExpDto, IIndentAtionRuleDto, IOnEnterRuleDto, ILocAtionDto, IWorkspAceSymbolDto, reviveWorkspAceEditDto, IDocumentFilterDto, IDefinitionLinkDto, ISignAtureHelpProviderMetAdAtADto, ILinkDto, ICAllHierArchyItemDto, ISuggestDAtADto, ICodeActionDto, ISuggestDAtADtoField, ISuggestResultDtoField, ICodeActionProviderMetAdAtADto, ILAnguAgeWordDefinitionDto } from '../common/extHost.protocol';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
+import { LAnguAgeConfigurAtion, IndentAtionRule, OnEnterRule } from 'vs/editor/common/modes/lAnguAgeConfigurAtion';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { URI } from 'vs/base/common/uri';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { URI } from 'vs/bAse/common/uri';
 import { Selection } from 'vs/editor/common/core/selection';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import * as callh from 'vs/workbench/contrib/callHierarchy/common/callHierarchy';
-import { mixin } from 'vs/base/common/objects';
-import { decodeSemanticTokensDto } from 'vs/workbench/api/common/shared/semanticTokensDto';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import * As cAllh from 'vs/workbench/contrib/cAllHierArchy/common/cAllHierArchy';
+import { mixin } from 'vs/bAse/common/objects';
+import { decodeSemAnticTokensDto } from 'vs/workbench/Api/common/shAred/semAnticTokensDto';
 
-@extHostNamedCustomer(MainContext.MainThreadLanguageFeatures)
-export class MainThreadLanguageFeatures implements MainThreadLanguageFeaturesShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdLAnguAgeFeAtures)
+export clAss MAinThreAdLAnguAgeFeAtures implements MAinThreAdLAnguAgeFeAturesShApe {
 
-	private readonly _proxy: ExtHostLanguageFeaturesShape;
-	private readonly _modeService: IModeService;
-	private readonly _registrations = new Map<number, IDisposable>();
+	privAte reAdonly _proxy: ExtHostLAnguAgeFeAturesShApe;
+	privAte reAdonly _modeService: IModeService;
+	privAte reAdonly _registrAtions = new MAp<number, IDisposAble>();
 
 	constructor(
 		extHostContext: IExtHostContext,
 		@IModeService modeService: IModeService,
 	) {
-		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostLanguageFeatures);
+		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostLAnguAgeFeAtures);
 		this._modeService = modeService;
 
 		if (this._modeService) {
-			const updateAllWordDefinitions = () => {
-				const langWordPairs = LanguageConfigurationRegistry.getWordDefinitions();
-				let wordDefinitionDtos: ILanguageWordDefinitionDto[] = [];
-				for (const [languageId, wordDefinition] of langWordPairs) {
-					const language = this._modeService.getLanguageIdentifier(languageId);
-					if (!language) {
+			const updAteAllWordDefinitions = () => {
+				const lAngWordPAirs = LAnguAgeConfigurAtionRegistry.getWordDefinitions();
+				let wordDefinitionDtos: ILAnguAgeWordDefinitionDto[] = [];
+				for (const [lAnguAgeId, wordDefinition] of lAngWordPAirs) {
+					const lAnguAge = this._modeService.getLAnguAgeIdentifier(lAnguAgeId);
+					if (!lAnguAge) {
 						continue;
 					}
 					wordDefinitionDtos.push({
-						languageId: language.language,
+						lAnguAgeId: lAnguAge.lAnguAge,
 						regexSource: wordDefinition.source,
-						regexFlags: wordDefinition.flags
+						regexFlAgs: wordDefinition.flAgs
 					});
 				}
 				this._proxy.$setWordDefinitions(wordDefinitionDtos);
 			};
-			LanguageConfigurationRegistry.onDidChange((e) => {
-				const wordDefinition = LanguageConfigurationRegistry.getWordDefinition(e.languageIdentifier.id);
+			LAnguAgeConfigurAtionRegistry.onDidChAnge((e) => {
+				const wordDefinition = LAnguAgeConfigurAtionRegistry.getWordDefinition(e.lAnguAgeIdentifier.id);
 				this._proxy.$setWordDefinitions([{
-					languageId: e.languageIdentifier.language,
+					lAnguAgeId: e.lAnguAgeIdentifier.lAnguAge,
 					regexSource: wordDefinition.source,
-					regexFlags: wordDefinition.flags
+					regexFlAgs: wordDefinition.flAgs
 				}]);
 			});
-			updateAllWordDefinitions();
+			updAteAllWordDefinitions();
 		}
 	}
 
 	dispose(): void {
-		for (const registration of this._registrations.values()) {
-			registration.dispose();
+		for (const registrAtion of this._registrAtions.vAlues()) {
+			registrAtion.dispose();
 		}
-		this._registrations.clear();
+		this._registrAtions.cleAr();
 	}
 
-	$unregister(handle: number): void {
-		const registration = this._registrations.get(handle);
-		if (registration) {
-			registration.dispose();
-			this._registrations.delete(handle);
+	$unregister(hAndle: number): void {
+		const registrAtion = this._registrAtions.get(hAndle);
+		if (registrAtion) {
+			registrAtion.dispose();
+			this._registrAtions.delete(hAndle);
 		}
 	}
 
 	//#region --- revive functions
 
-	private static _reviveLocationDto(data?: ILocationDto): modes.Location;
-	private static _reviveLocationDto(data?: ILocationDto[]): modes.Location[];
-	private static _reviveLocationDto(data: ILocationDto | ILocationDto[] | undefined): modes.Location | modes.Location[] | undefined {
-		if (!data) {
-			return data;
-		} else if (Array.isArray(data)) {
-			data.forEach(l => MainThreadLanguageFeatures._reviveLocationDto(l));
-			return <modes.Location[]>data;
+	privAte stAtic _reviveLocAtionDto(dAtA?: ILocAtionDto): modes.LocAtion;
+	privAte stAtic _reviveLocAtionDto(dAtA?: ILocAtionDto[]): modes.LocAtion[];
+	privAte stAtic _reviveLocAtionDto(dAtA: ILocAtionDto | ILocAtionDto[] | undefined): modes.LocAtion | modes.LocAtion[] | undefined {
+		if (!dAtA) {
+			return dAtA;
+		} else if (ArrAy.isArrAy(dAtA)) {
+			dAtA.forEAch(l => MAinThreAdLAnguAgeFeAtures._reviveLocAtionDto(l));
+			return <modes.LocAtion[]>dAtA;
 		} else {
-			data.uri = URI.revive(data.uri);
-			return <modes.Location>data;
+			dAtA.uri = URI.revive(dAtA.uri);
+			return <modes.LocAtion>dAtA;
 		}
 	}
 
-	private static _reviveLocationLinkDto(data: IDefinitionLinkDto): modes.LocationLink;
-	private static _reviveLocationLinkDto(data: IDefinitionLinkDto[]): modes.LocationLink[];
-	private static _reviveLocationLinkDto(data: IDefinitionLinkDto | IDefinitionLinkDto[]): modes.LocationLink | modes.LocationLink[] {
-		if (!data) {
-			return <modes.LocationLink>data;
-		} else if (Array.isArray(data)) {
-			data.forEach(l => MainThreadLanguageFeatures._reviveLocationLinkDto(l));
-			return <modes.LocationLink[]>data;
+	privAte stAtic _reviveLocAtionLinkDto(dAtA: IDefinitionLinkDto): modes.LocAtionLink;
+	privAte stAtic _reviveLocAtionLinkDto(dAtA: IDefinitionLinkDto[]): modes.LocAtionLink[];
+	privAte stAtic _reviveLocAtionLinkDto(dAtA: IDefinitionLinkDto | IDefinitionLinkDto[]): modes.LocAtionLink | modes.LocAtionLink[] {
+		if (!dAtA) {
+			return <modes.LocAtionLink>dAtA;
+		} else if (ArrAy.isArrAy(dAtA)) {
+			dAtA.forEAch(l => MAinThreAdLAnguAgeFeAtures._reviveLocAtionLinkDto(l));
+			return <modes.LocAtionLink[]>dAtA;
 		} else {
-			data.uri = URI.revive(data.uri);
-			return <modes.LocationLink>data;
+			dAtA.uri = URI.revive(dAtA.uri);
+			return <modes.LocAtionLink>dAtA;
 		}
 	}
 
-	private static _reviveWorkspaceSymbolDto(data: IWorkspaceSymbolDto): search.IWorkspaceSymbol;
-	private static _reviveWorkspaceSymbolDto(data: IWorkspaceSymbolDto[]): search.IWorkspaceSymbol[];
-	private static _reviveWorkspaceSymbolDto(data: undefined): undefined;
-	private static _reviveWorkspaceSymbolDto(data: IWorkspaceSymbolDto | IWorkspaceSymbolDto[] | undefined): search.IWorkspaceSymbol | search.IWorkspaceSymbol[] | undefined {
-		if (!data) {
-			return <undefined>data;
-		} else if (Array.isArray(data)) {
-			data.forEach(MainThreadLanguageFeatures._reviveWorkspaceSymbolDto);
-			return <search.IWorkspaceSymbol[]>data;
+	privAte stAtic _reviveWorkspAceSymbolDto(dAtA: IWorkspAceSymbolDto): seArch.IWorkspAceSymbol;
+	privAte stAtic _reviveWorkspAceSymbolDto(dAtA: IWorkspAceSymbolDto[]): seArch.IWorkspAceSymbol[];
+	privAte stAtic _reviveWorkspAceSymbolDto(dAtA: undefined): undefined;
+	privAte stAtic _reviveWorkspAceSymbolDto(dAtA: IWorkspAceSymbolDto | IWorkspAceSymbolDto[] | undefined): seArch.IWorkspAceSymbol | seArch.IWorkspAceSymbol[] | undefined {
+		if (!dAtA) {
+			return <undefined>dAtA;
+		} else if (ArrAy.isArrAy(dAtA)) {
+			dAtA.forEAch(MAinThreAdLAnguAgeFeAtures._reviveWorkspAceSymbolDto);
+			return <seArch.IWorkspAceSymbol[]>dAtA;
 		} else {
-			data.location = MainThreadLanguageFeatures._reviveLocationDto(data.location);
-			return <search.IWorkspaceSymbol>data;
+			dAtA.locAtion = MAinThreAdLAnguAgeFeAtures._reviveLocAtionDto(dAtA.locAtion);
+			return <seArch.IWorkspAceSymbol>dAtA;
 		}
 	}
 
-	private static _reviveCodeActionDto(data: ReadonlyArray<ICodeActionDto>): modes.CodeAction[] {
-		if (data) {
-			data.forEach(code => reviveWorkspaceEditDto(code.edit));
+	privAte stAtic _reviveCodeActionDto(dAtA: ReAdonlyArrAy<ICodeActionDto>): modes.CodeAction[] {
+		if (dAtA) {
+			dAtA.forEAch(code => reviveWorkspAceEditDto(code.edit));
 		}
-		return <modes.CodeAction[]>data;
+		return <modes.CodeAction[]>dAtA;
 	}
 
-	private static _reviveLinkDTO(data: ILinkDto): modes.ILink {
-		if (data.url && typeof data.url !== 'string') {
-			data.url = URI.revive(data.url);
+	privAte stAtic _reviveLinkDTO(dAtA: ILinkDto): modes.ILink {
+		if (dAtA.url && typeof dAtA.url !== 'string') {
+			dAtA.url = URI.revive(dAtA.url);
 		}
-		return <modes.ILink>data;
+		return <modes.ILink>dAtA;
 	}
 
-	private static _reviveCallHierarchyItemDto(data: ICallHierarchyItemDto | undefined): callh.CallHierarchyItem {
-		if (data) {
-			data.uri = URI.revive(data.uri);
+	privAte stAtic _reviveCAllHierArchyItemDto(dAtA: ICAllHierArchyItemDto | undefined): cAllh.CAllHierArchyItem {
+		if (dAtA) {
+			dAtA.uri = URI.revive(dAtA.uri);
 		}
-		return data as callh.CallHierarchyItem;
+		return dAtA As cAllh.CAllHierArchyItem;
 	}
 
 	//#endregion
 
 	// --- outline
 
-	$registerDocumentSymbolProvider(handle: number, selector: IDocumentFilterDto[], displayName: string): void {
-		this._registrations.set(handle, modes.DocumentSymbolProviderRegistry.register(selector, <modes.DocumentSymbolProvider>{
-			displayName,
-			provideDocumentSymbols: (model: ITextModel, token: CancellationToken): Promise<modes.DocumentSymbol[] | undefined> => {
-				return this._proxy.$provideDocumentSymbols(handle, model.uri, token);
+	$registerDocumentSymbolProvider(hAndle: number, selector: IDocumentFilterDto[], displAyNAme: string): void {
+		this._registrAtions.set(hAndle, modes.DocumentSymbolProviderRegistry.register(selector, <modes.DocumentSymbolProvider>{
+			displAyNAme,
+			provideDocumentSymbols: (model: ITextModel, token: CAncellAtionToken): Promise<modes.DocumentSymbol[] | undefined> => {
+				return this._proxy.$provideDocumentSymbols(hAndle, model.uri, token);
 			}
 		}));
 	}
 
 	// --- code lens
 
-	$registerCodeLensSupport(handle: number, selector: IDocumentFilterDto[], eventHandle: number | undefined): void {
+	$registerCodeLensSupport(hAndle: number, selector: IDocumentFilterDto[], eventHAndle: number | undefined): void {
 
 		const provider = <modes.CodeLensProvider>{
-			provideCodeLenses: (model: ITextModel, token: CancellationToken): Promise<modes.CodeLensList | undefined> => {
-				return this._proxy.$provideCodeLenses(handle, model.uri, token).then(listDto => {
+			provideCodeLenses: (model: ITextModel, token: CAncellAtionToken): Promise<modes.CodeLensList | undefined> => {
+				return this._proxy.$provideCodeLenses(hAndle, model.uri, token).then(listDto => {
 					if (!listDto) {
 						return undefined;
 					}
 					return {
 						lenses: listDto.lenses,
-						dispose: () => listDto.cacheId && this._proxy.$releaseCodeLenses(handle, listDto.cacheId)
+						dispose: () => listDto.cAcheId && this._proxy.$releAseCodeLenses(hAndle, listDto.cAcheId)
 					};
 				});
 			},
-			resolveCodeLens: (_model: ITextModel, codeLens: modes.CodeLens, token: CancellationToken): Promise<modes.CodeLens | undefined> => {
-				return this._proxy.$resolveCodeLens(handle, codeLens, token);
+			resolveCodeLens: (_model: ITextModel, codeLens: modes.CodeLens, token: CAncellAtionToken): Promise<modes.CodeLens | undefined> => {
+				return this._proxy.$resolveCodeLens(hAndle, codeLens, token);
 			}
 		};
 
-		if (typeof eventHandle === 'number') {
+		if (typeof eventHAndle === 'number') {
 			const emitter = new Emitter<modes.CodeLensProvider>();
-			this._registrations.set(eventHandle, emitter);
-			provider.onDidChange = emitter.event;
+			this._registrAtions.set(eventHAndle, emitter);
+			provider.onDidChAnge = emitter.event;
 		}
 
-		this._registrations.set(handle, modes.CodeLensProviderRegistry.register(selector, provider));
+		this._registrAtions.set(hAndle, modes.CodeLensProviderRegistry.register(selector, provider));
 	}
 
-	$emitCodeLensEvent(eventHandle: number, event?: any): void {
-		const obj = this._registrations.get(eventHandle);
-		if (obj instanceof Emitter) {
+	$emitCodeLensEvent(eventHAndle: number, event?: Any): void {
+		const obj = this._registrAtions.get(eventHAndle);
+		if (obj instAnceof Emitter) {
 			obj.fire(event);
 		}
 	}
 
-	// --- declaration
+	// --- declArAtion
 
-	$registerDefinitionSupport(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.DefinitionProviderRegistry.register(selector, <modes.DefinitionProvider>{
-			provideDefinition: (model, position, token): Promise<modes.LocationLink[]> => {
-				return this._proxy.$provideDefinition(handle, model.uri, position, token).then(MainThreadLanguageFeatures._reviveLocationLinkDto);
+	$registerDefinitionSupport(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.DefinitionProviderRegistry.register(selector, <modes.DefinitionProvider>{
+			provideDefinition: (model, position, token): Promise<modes.LocAtionLink[]> => {
+				return this._proxy.$provideDefinition(hAndle, model.uri, position, token).then(MAinThreAdLAnguAgeFeAtures._reviveLocAtionLinkDto);
 			}
 		}));
 	}
 
-	$registerDeclarationSupport(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.DeclarationProviderRegistry.register(selector, <modes.DeclarationProvider>{
-			provideDeclaration: (model, position, token) => {
-				return this._proxy.$provideDeclaration(handle, model.uri, position, token).then(MainThreadLanguageFeatures._reviveLocationLinkDto);
+	$registerDeclArAtionSupport(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.DeclArAtionProviderRegistry.register(selector, <modes.DeclArAtionProvider>{
+			provideDeclArAtion: (model, position, token) => {
+				return this._proxy.$provideDeclArAtion(hAndle, model.uri, position, token).then(MAinThreAdLAnguAgeFeAtures._reviveLocAtionLinkDto);
 			}
 		}));
 	}
 
-	$registerImplementationSupport(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.ImplementationProviderRegistry.register(selector, <modes.ImplementationProvider>{
-			provideImplementation: (model, position, token): Promise<modes.LocationLink[]> => {
-				return this._proxy.$provideImplementation(handle, model.uri, position, token).then(MainThreadLanguageFeatures._reviveLocationLinkDto);
+	$registerImplementAtionSupport(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.ImplementAtionProviderRegistry.register(selector, <modes.ImplementAtionProvider>{
+			provideImplementAtion: (model, position, token): Promise<modes.LocAtionLink[]> => {
+				return this._proxy.$provideImplementAtion(hAndle, model.uri, position, token).then(MAinThreAdLAnguAgeFeAtures._reviveLocAtionLinkDto);
 			}
 		}));
 	}
 
-	$registerTypeDefinitionSupport(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.TypeDefinitionProviderRegistry.register(selector, <modes.TypeDefinitionProvider>{
-			provideTypeDefinition: (model, position, token): Promise<modes.LocationLink[]> => {
-				return this._proxy.$provideTypeDefinition(handle, model.uri, position, token).then(MainThreadLanguageFeatures._reviveLocationLinkDto);
+	$registerTypeDefinitionSupport(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.TypeDefinitionProviderRegistry.register(selector, <modes.TypeDefinitionProvider>{
+			provideTypeDefinition: (model, position, token): Promise<modes.LocAtionLink[]> => {
+				return this._proxy.$provideTypeDefinition(hAndle, model.uri, position, token).then(MAinThreAdLAnguAgeFeAtures._reviveLocAtionLinkDto);
 			}
 		}));
 	}
 
-	// --- extra info
+	// --- extrA info
 
-	$registerHoverProvider(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.HoverProviderRegistry.register(selector, <modes.HoverProvider>{
-			provideHover: (model: ITextModel, position: EditorPosition, token: CancellationToken): Promise<modes.Hover | undefined> => {
-				return this._proxy.$provideHover(handle, model.uri, position, token);
+	$registerHoverProvider(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.HoverProviderRegistry.register(selector, <modes.HoverProvider>{
+			provideHover: (model: ITextModel, position: EditorPosition, token: CAncellAtionToken): Promise<modes.Hover | undefined> => {
+				return this._proxy.$provideHover(hAndle, model.uri, position, token);
 			}
 		}));
 	}
 
 	// --- debug hover
 
-	$registerEvaluatableExpressionProvider(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.EvaluatableExpressionProviderRegistry.register(selector, <modes.EvaluatableExpressionProvider>{
-			provideEvaluatableExpression: (model: ITextModel, position: EditorPosition, token: CancellationToken): Promise<modes.EvaluatableExpression | undefined> => {
-				return this._proxy.$provideEvaluatableExpression(handle, model.uri, position, token);
+	$registerEvAluAtAbleExpressionProvider(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.EvAluAtAbleExpressionProviderRegistry.register(selector, <modes.EvAluAtAbleExpressionProvider>{
+			provideEvAluAtAbleExpression: (model: ITextModel, position: EditorPosition, token: CAncellAtionToken): Promise<modes.EvAluAtAbleExpression | undefined> => {
+				return this._proxy.$provideEvAluAtAbleExpression(hAndle, model.uri, position, token);
 			}
 		}));
 	}
 
 	// --- occurrences
 
-	$registerDocumentHighlightProvider(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.DocumentHighlightProviderRegistry.register(selector, <modes.DocumentHighlightProvider>{
-			provideDocumentHighlights: (model: ITextModel, position: EditorPosition, token: CancellationToken): Promise<modes.DocumentHighlight[] | undefined> => {
-				return this._proxy.$provideDocumentHighlights(handle, model.uri, position, token);
+	$registerDocumentHighlightProvider(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.DocumentHighlightProviderRegistry.register(selector, <modes.DocumentHighlightProvider>{
+			provideDocumentHighlights: (model: ITextModel, position: EditorPosition, token: CAncellAtionToken): Promise<modes.DocumentHighlight[] | undefined> => {
+				return this._proxy.$provideDocumentHighlights(hAndle, model.uri, position, token);
 			}
 		}));
 	}
 
-	// --- on type rename
+	// --- on type renAme
 
-	$registerOnTypeRenameProvider(handle: number, selector: IDocumentFilterDto[], wordPattern?: IRegExpDto): void {
-		const revivedWordPattern = wordPattern ? MainThreadLanguageFeatures._reviveRegExp(wordPattern) : undefined;
-		this._registrations.set(handle, modes.OnTypeRenameProviderRegistry.register(selector, <modes.OnTypeRenameProvider>{
-			wordPattern: revivedWordPattern,
-			provideOnTypeRenameRanges: async (model: ITextModel, position: EditorPosition, token: CancellationToken): Promise<{ ranges: IRange[]; wordPattern?: RegExp; } | undefined> => {
-				const res = await this._proxy.$provideOnTypeRenameRanges(handle, model.uri, position, token);
+	$registerOnTypeRenAmeProvider(hAndle: number, selector: IDocumentFilterDto[], wordPAttern?: IRegExpDto): void {
+		const revivedWordPAttern = wordPAttern ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(wordPAttern) : undefined;
+		this._registrAtions.set(hAndle, modes.OnTypeRenAmeProviderRegistry.register(selector, <modes.OnTypeRenAmeProvider>{
+			wordPAttern: revivedWordPAttern,
+			provideOnTypeRenAmeRAnges: Async (model: ITextModel, position: EditorPosition, token: CAncellAtionToken): Promise<{ rAnges: IRAnge[]; wordPAttern?: RegExp; } | undefined> => {
+				const res = AwAit this._proxy.$provideOnTypeRenAmeRAnges(hAndle, model.uri, position, token);
 				if (res) {
 					return {
-						ranges: res.ranges,
-						wordPattern: res.wordPattern ? MainThreadLanguageFeatures._reviveRegExp(res.wordPattern) : undefined
+						rAnges: res.rAnges,
+						wordPAttern: res.wordPAttern ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(res.wordPAttern) : undefined
 					};
 				}
 				return undefined;
@@ -282,98 +282,98 @@ export class MainThreadLanguageFeatures implements MainThreadLanguageFeaturesSha
 
 	// --- references
 
-	$registerReferenceSupport(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.ReferenceProviderRegistry.register(selector, <modes.ReferenceProvider>{
-			provideReferences: (model: ITextModel, position: EditorPosition, context: modes.ReferenceContext, token: CancellationToken): Promise<modes.Location[]> => {
-				return this._proxy.$provideReferences(handle, model.uri, position, context, token).then(MainThreadLanguageFeatures._reviveLocationDto);
+	$registerReferenceSupport(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.ReferenceProviderRegistry.register(selector, <modes.ReferenceProvider>{
+			provideReferences: (model: ITextModel, position: EditorPosition, context: modes.ReferenceContext, token: CAncellAtionToken): Promise<modes.LocAtion[]> => {
+				return this._proxy.$provideReferences(hAndle, model.uri, position, context, token).then(MAinThreAdLAnguAgeFeAtures._reviveLocAtionDto);
 			}
 		}));
 	}
 
 	// --- quick fix
 
-	$registerQuickFixSupport(handle: number, selector: IDocumentFilterDto[], metadata: ICodeActionProviderMetadataDto, displayName: string, supportsResolve: boolean): void {
+	$registerQuickFixSupport(hAndle: number, selector: IDocumentFilterDto[], metAdAtA: ICodeActionProviderMetAdAtADto, displAyNAme: string, supportsResolve: booleAn): void {
 		const provider: modes.CodeActionProvider = {
-			provideCodeActions: async (model: ITextModel, rangeOrSelection: EditorRange | Selection, context: modes.CodeActionContext, token: CancellationToken): Promise<modes.CodeActionList | undefined> => {
-				const listDto = await this._proxy.$provideCodeActions(handle, model.uri, rangeOrSelection, context, token);
+			provideCodeActions: Async (model: ITextModel, rAngeOrSelection: EditorRAnge | Selection, context: modes.CodeActionContext, token: CAncellAtionToken): Promise<modes.CodeActionList | undefined> => {
+				const listDto = AwAit this._proxy.$provideCodeActions(hAndle, model.uri, rAngeOrSelection, context, token);
 				if (!listDto) {
 					return undefined;
 				}
 				return <modes.CodeActionList>{
-					actions: MainThreadLanguageFeatures._reviveCodeActionDto(listDto.actions),
+					Actions: MAinThreAdLAnguAgeFeAtures._reviveCodeActionDto(listDto.Actions),
 					dispose: () => {
-						if (typeof listDto.cacheId === 'number') {
-							this._proxy.$releaseCodeActions(handle, listDto.cacheId);
+						if (typeof listDto.cAcheId === 'number') {
+							this._proxy.$releAseCodeActions(hAndle, listDto.cAcheId);
 						}
 					}
 				};
 			},
-			providedCodeActionKinds: metadata.providedKinds,
-			documentation: metadata.documentation,
-			displayName
+			providedCodeActionKinds: metAdAtA.providedKinds,
+			documentAtion: metAdAtA.documentAtion,
+			displAyNAme
 		};
 
 		if (supportsResolve) {
-			provider.resolveCodeAction = async (codeAction: modes.CodeAction, token: CancellationToken): Promise<modes.CodeAction> => {
-				const data = await this._proxy.$resolveCodeAction(handle, (<ICodeActionDto>codeAction).cacheId!, token);
-				codeAction.edit = reviveWorkspaceEditDto(data);
+			provider.resolveCodeAction = Async (codeAction: modes.CodeAction, token: CAncellAtionToken): Promise<modes.CodeAction> => {
+				const dAtA = AwAit this._proxy.$resolveCodeAction(hAndle, (<ICodeActionDto>codeAction).cAcheId!, token);
+				codeAction.edit = reviveWorkspAceEditDto(dAtA);
 				return codeAction;
 			};
 		}
 
-		this._registrations.set(handle, modes.CodeActionProviderRegistry.register(selector, provider));
+		this._registrAtions.set(hAndle, modes.CodeActionProviderRegistry.register(selector, provider));
 	}
 
-	// --- formatting
+	// --- formAtting
 
-	$registerDocumentFormattingSupport(handle: number, selector: IDocumentFilterDto[], extensionId: ExtensionIdentifier, displayName: string): void {
-		this._registrations.set(handle, modes.DocumentFormattingEditProviderRegistry.register(selector, <modes.DocumentFormattingEditProvider>{
+	$registerDocumentFormAttingSupport(hAndle: number, selector: IDocumentFilterDto[], extensionId: ExtensionIdentifier, displAyNAme: string): void {
+		this._registrAtions.set(hAndle, modes.DocumentFormAttingEditProviderRegistry.register(selector, <modes.DocumentFormAttingEditProvider>{
 			extensionId,
-			displayName,
-			provideDocumentFormattingEdits: (model: ITextModel, options: modes.FormattingOptions, token: CancellationToken): Promise<ISingleEditOperation[] | undefined> => {
-				return this._proxy.$provideDocumentFormattingEdits(handle, model.uri, options, token);
+			displAyNAme,
+			provideDocumentFormAttingEdits: (model: ITextModel, options: modes.FormAttingOptions, token: CAncellAtionToken): Promise<ISingleEditOperAtion[] | undefined> => {
+				return this._proxy.$provideDocumentFormAttingEdits(hAndle, model.uri, options, token);
 			}
 		}));
 	}
 
-	$registerRangeFormattingSupport(handle: number, selector: IDocumentFilterDto[], extensionId: ExtensionIdentifier, displayName: string): void {
-		this._registrations.set(handle, modes.DocumentRangeFormattingEditProviderRegistry.register(selector, <modes.DocumentRangeFormattingEditProvider>{
+	$registerRAngeFormAttingSupport(hAndle: number, selector: IDocumentFilterDto[], extensionId: ExtensionIdentifier, displAyNAme: string): void {
+		this._registrAtions.set(hAndle, modes.DocumentRAngeFormAttingEditProviderRegistry.register(selector, <modes.DocumentRAngeFormAttingEditProvider>{
 			extensionId,
-			displayName,
-			provideDocumentRangeFormattingEdits: (model: ITextModel, range: EditorRange, options: modes.FormattingOptions, token: CancellationToken): Promise<ISingleEditOperation[] | undefined> => {
-				return this._proxy.$provideDocumentRangeFormattingEdits(handle, model.uri, range, options, token);
+			displAyNAme,
+			provideDocumentRAngeFormAttingEdits: (model: ITextModel, rAnge: EditorRAnge, options: modes.FormAttingOptions, token: CAncellAtionToken): Promise<ISingleEditOperAtion[] | undefined> => {
+				return this._proxy.$provideDocumentRAngeFormAttingEdits(hAndle, model.uri, rAnge, options, token);
 			}
 		}));
 	}
 
-	$registerOnTypeFormattingSupport(handle: number, selector: IDocumentFilterDto[], autoFormatTriggerCharacters: string[], extensionId: ExtensionIdentifier): void {
-		this._registrations.set(handle, modes.OnTypeFormattingEditProviderRegistry.register(selector, <modes.OnTypeFormattingEditProvider>{
+	$registerOnTypeFormAttingSupport(hAndle: number, selector: IDocumentFilterDto[], AutoFormAtTriggerChArActers: string[], extensionId: ExtensionIdentifier): void {
+		this._registrAtions.set(hAndle, modes.OnTypeFormAttingEditProviderRegistry.register(selector, <modes.OnTypeFormAttingEditProvider>{
 			extensionId,
-			autoFormatTriggerCharacters,
-			provideOnTypeFormattingEdits: (model: ITextModel, position: EditorPosition, ch: string, options: modes.FormattingOptions, token: CancellationToken): Promise<ISingleEditOperation[] | undefined> => {
-				return this._proxy.$provideOnTypeFormattingEdits(handle, model.uri, position, ch, options, token);
+			AutoFormAtTriggerChArActers,
+			provideOnTypeFormAttingEdits: (model: ITextModel, position: EditorPosition, ch: string, options: modes.FormAttingOptions, token: CAncellAtionToken): Promise<ISingleEditOperAtion[] | undefined> => {
+				return this._proxy.$provideOnTypeFormAttingEdits(hAndle, model.uri, position, ch, options, token);
 			}
 		}));
 	}
 
-	// --- navigate type
+	// --- nAvigAte type
 
-	$registerNavigateTypeSupport(handle: number): void {
-		let lastResultId: number | undefined;
-		this._registrations.set(handle, search.WorkspaceSymbolProviderRegistry.register(<search.IWorkspaceSymbolProvider>{
-			provideWorkspaceSymbols: (search: string, token: CancellationToken): Promise<search.IWorkspaceSymbol[]> => {
-				return this._proxy.$provideWorkspaceSymbols(handle, search, token).then(result => {
-					if (lastResultId !== undefined) {
-						this._proxy.$releaseWorkspaceSymbols(handle, lastResultId);
+	$registerNAvigAteTypeSupport(hAndle: number): void {
+		let lAstResultId: number | undefined;
+		this._registrAtions.set(hAndle, seArch.WorkspAceSymbolProviderRegistry.register(<seArch.IWorkspAceSymbolProvider>{
+			provideWorkspAceSymbols: (seArch: string, token: CAncellAtionToken): Promise<seArch.IWorkspAceSymbol[]> => {
+				return this._proxy.$provideWorkspAceSymbols(hAndle, seArch, token).then(result => {
+					if (lAstResultId !== undefined) {
+						this._proxy.$releAseWorkspAceSymbols(hAndle, lAstResultId);
 					}
-					lastResultId = result._id;
-					return MainThreadLanguageFeatures._reviveWorkspaceSymbolDto(result.symbols);
+					lAstResultId = result._id;
+					return MAinThreAdLAnguAgeFeAtures._reviveWorkspAceSymbolDto(result.symbols);
 				});
 			},
-			resolveWorkspaceSymbol: (item: search.IWorkspaceSymbol, token: CancellationToken): Promise<search.IWorkspaceSymbol | undefined> => {
-				return this._proxy.$resolveWorkspaceSymbol(handle, item, token).then(i => {
+			resolveWorkspAceSymbol: (item: seArch.IWorkspAceSymbol, token: CAncellAtionToken): Promise<seArch.IWorkspAceSymbol | undefined> => {
+				return this._proxy.$resolveWorkspAceSymbol(hAndle, item, token).then(i => {
 					if (i) {
-						return MainThreadLanguageFeatures._reviveWorkspaceSymbolDto(i);
+						return MAinThreAdLAnguAgeFeAtures._reviveWorkspAceSymbolDto(i);
 					}
 					return undefined;
 				});
@@ -381,120 +381,120 @@ export class MainThreadLanguageFeatures implements MainThreadLanguageFeaturesSha
 		}));
 	}
 
-	// --- rename
+	// --- renAme
 
-	$registerRenameSupport(handle: number, selector: IDocumentFilterDto[], supportResolveLocation: boolean): void {
-		this._registrations.set(handle, modes.RenameProviderRegistry.register(selector, <modes.RenameProvider>{
-			provideRenameEdits: (model: ITextModel, position: EditorPosition, newName: string, token: CancellationToken) => {
-				return this._proxy.$provideRenameEdits(handle, model.uri, position, newName, token).then(reviveWorkspaceEditDto);
+	$registerRenAmeSupport(hAndle: number, selector: IDocumentFilterDto[], supportResolveLocAtion: booleAn): void {
+		this._registrAtions.set(hAndle, modes.RenAmeProviderRegistry.register(selector, <modes.RenAmeProvider>{
+			provideRenAmeEdits: (model: ITextModel, position: EditorPosition, newNAme: string, token: CAncellAtionToken) => {
+				return this._proxy.$provideRenAmeEdits(hAndle, model.uri, position, newNAme, token).then(reviveWorkspAceEditDto);
 			},
-			resolveRenameLocation: supportResolveLocation
-				? (model: ITextModel, position: EditorPosition, token: CancellationToken): Promise<modes.RenameLocation | undefined> => this._proxy.$resolveRenameLocation(handle, model.uri, position, token)
+			resolveRenAmeLocAtion: supportResolveLocAtion
+				? (model: ITextModel, position: EditorPosition, token: CAncellAtionToken): Promise<modes.RenAmeLocAtion | undefined> => this._proxy.$resolveRenAmeLocAtion(hAndle, model.uri, position, token)
 				: undefined
 		}));
 	}
 
-	// --- semantic tokens
+	// --- semAntic tokens
 
-	$registerDocumentSemanticTokensProvider(handle: number, selector: IDocumentFilterDto[], legend: modes.SemanticTokensLegend, eventHandle: number | undefined): void {
+	$registerDocumentSemAnticTokensProvider(hAndle: number, selector: IDocumentFilterDto[], legend: modes.SemAnticTokensLegend, eventHAndle: number | undefined): void {
 		let event: Event<void> | undefined = undefined;
-		if (typeof eventHandle === 'number') {
+		if (typeof eventHAndle === 'number') {
 			const emitter = new Emitter<void>();
-			this._registrations.set(eventHandle, emitter);
+			this._registrAtions.set(eventHAndle, emitter);
 			event = emitter.event;
 		}
-		this._registrations.set(handle, modes.DocumentSemanticTokensProviderRegistry.register(selector, new MainThreadDocumentSemanticTokensProvider(this._proxy, handle, legend, event)));
+		this._registrAtions.set(hAndle, modes.DocumentSemAnticTokensProviderRegistry.register(selector, new MAinThreAdDocumentSemAnticTokensProvider(this._proxy, hAndle, legend, event)));
 	}
 
-	$emitDocumentSemanticTokensEvent(eventHandle: number): void {
-		const obj = this._registrations.get(eventHandle);
-		if (obj instanceof Emitter) {
+	$emitDocumentSemAnticTokensEvent(eventHAndle: number): void {
+		const obj = this._registrAtions.get(eventHAndle);
+		if (obj instAnceof Emitter) {
 			obj.fire(undefined);
 		}
 	}
 
-	$registerDocumentRangeSemanticTokensProvider(handle: number, selector: IDocumentFilterDto[], legend: modes.SemanticTokensLegend): void {
-		this._registrations.set(handle, modes.DocumentRangeSemanticTokensProviderRegistry.register(selector, new MainThreadDocumentRangeSemanticTokensProvider(this._proxy, handle, legend)));
+	$registerDocumentRAngeSemAnticTokensProvider(hAndle: number, selector: IDocumentFilterDto[], legend: modes.SemAnticTokensLegend): void {
+		this._registrAtions.set(hAndle, modes.DocumentRAngeSemAnticTokensProviderRegistry.register(selector, new MAinThreAdDocumentRAngeSemAnticTokensProvider(this._proxy, hAndle, legend)));
 	}
 
 	// --- suggest
 
-	private static _inflateSuggestDto(defaultRange: IRange | { insert: IRange, replace: IRange }, data: ISuggestDataDto): modes.CompletionItem {
+	privAte stAtic _inflAteSuggestDto(defAultRAnge: IRAnge | { insert: IRAnge, replAce: IRAnge }, dAtA: ISuggestDAtADto): modes.CompletionItem {
 
 		return {
-			label: data[ISuggestDataDtoField.label2] ?? data[ISuggestDataDtoField.label],
-			kind: data[ISuggestDataDtoField.kind] ?? modes.CompletionItemKind.Property,
-			tags: data[ISuggestDataDtoField.kindModifier],
-			detail: data[ISuggestDataDtoField.detail],
-			documentation: data[ISuggestDataDtoField.documentation],
-			sortText: data[ISuggestDataDtoField.sortText],
-			filterText: data[ISuggestDataDtoField.filterText],
-			preselect: data[ISuggestDataDtoField.preselect],
-			insertText: typeof data.h === 'undefined' ? data[ISuggestDataDtoField.label] : data.h,
-			range: data[ISuggestDataDtoField.range] ?? defaultRange,
-			insertTextRules: data[ISuggestDataDtoField.insertTextRules],
-			commitCharacters: data[ISuggestDataDtoField.commitCharacters],
-			additionalTextEdits: data[ISuggestDataDtoField.additionalTextEdits],
-			command: data[ISuggestDataDtoField.command],
-			// not-standard
-			_id: data.x,
+			lAbel: dAtA[ISuggestDAtADtoField.lAbel2] ?? dAtA[ISuggestDAtADtoField.lAbel],
+			kind: dAtA[ISuggestDAtADtoField.kind] ?? modes.CompletionItemKind.Property,
+			tAgs: dAtA[ISuggestDAtADtoField.kindModifier],
+			detAil: dAtA[ISuggestDAtADtoField.detAil],
+			documentAtion: dAtA[ISuggestDAtADtoField.documentAtion],
+			sortText: dAtA[ISuggestDAtADtoField.sortText],
+			filterText: dAtA[ISuggestDAtADtoField.filterText],
+			preselect: dAtA[ISuggestDAtADtoField.preselect],
+			insertText: typeof dAtA.h === 'undefined' ? dAtA[ISuggestDAtADtoField.lAbel] : dAtA.h,
+			rAnge: dAtA[ISuggestDAtADtoField.rAnge] ?? defAultRAnge,
+			insertTextRules: dAtA[ISuggestDAtADtoField.insertTextRules],
+			commitChArActers: dAtA[ISuggestDAtADtoField.commitChArActers],
+			AdditionAlTextEdits: dAtA[ISuggestDAtADtoField.AdditionAlTextEdits],
+			commAnd: dAtA[ISuggestDAtADtoField.commAnd],
+			// not-stAndArd
+			_id: dAtA.x,
 		};
 	}
 
-	$registerSuggestSupport(handle: number, selector: IDocumentFilterDto[], triggerCharacters: string[], supportsResolveDetails: boolean, extensionId: ExtensionIdentifier): void {
+	$registerSuggestSupport(hAndle: number, selector: IDocumentFilterDto[], triggerChArActers: string[], supportsResolveDetAils: booleAn, extensionId: ExtensionIdentifier): void {
 		const provider: modes.CompletionItemProvider = {
-			triggerCharacters,
-			_debugDisplayName: extensionId.value,
-			provideCompletionItems: (model: ITextModel, position: EditorPosition, context: modes.CompletionContext, token: CancellationToken): Promise<modes.CompletionList | undefined> => {
-				return this._proxy.$provideCompletionItems(handle, model.uri, position, context, token).then(result => {
+			triggerChArActers,
+			_debugDisplAyNAme: extensionId.vAlue,
+			provideCompletionItems: (model: ITextModel, position: EditorPosition, context: modes.CompletionContext, token: CAncellAtionToken): Promise<modes.CompletionList | undefined> => {
+				return this._proxy.$provideCompletionItems(hAndle, model.uri, position, context, token).then(result => {
 					if (!result) {
 						return result;
 					}
 
 					return {
-						suggestions: result[ISuggestResultDtoField.completions].map(d => MainThreadLanguageFeatures._inflateSuggestDto(result[ISuggestResultDtoField.defaultRanges], d)),
-						incomplete: result[ISuggestResultDtoField.isIncomplete] || false,
+						suggestions: result[ISuggestResultDtoField.completions].mAp(d => MAinThreAdLAnguAgeFeAtures._inflAteSuggestDto(result[ISuggestResultDtoField.defAultRAnges], d)),
+						incomplete: result[ISuggestResultDtoField.isIncomplete] || fAlse,
 						dispose: () => {
 							if (typeof result.x === 'number') {
-								this._proxy.$releaseCompletionItems(handle, result.x);
+								this._proxy.$releAseCompletionItems(hAndle, result.x);
 							}
 						}
 					};
 				});
 			}
 		};
-		if (supportsResolveDetails) {
+		if (supportsResolveDetAils) {
 			provider.resolveCompletionItem = (suggestion, token) => {
-				return this._proxy.$resolveCompletionItem(handle, suggestion._id!, token).then(result => {
+				return this._proxy.$resolveCompletionItem(hAndle, suggestion._id!, token).then(result => {
 					if (!result) {
 						return suggestion;
 					}
 
-					let newSuggestion = MainThreadLanguageFeatures._inflateSuggestDto(suggestion.range, result);
+					let newSuggestion = MAinThreAdLAnguAgeFeAtures._inflAteSuggestDto(suggestion.rAnge, result);
 					return mixin(suggestion, newSuggestion, true);
 				});
 			};
 		}
-		this._registrations.set(handle, modes.CompletionProviderRegistry.register(selector, provider));
+		this._registrAtions.set(hAndle, modes.CompletionProviderRegistry.register(selector, provider));
 	}
 
-	// --- parameter hints
+	// --- pArAmeter hints
 
-	$registerSignatureHelpProvider(handle: number, selector: IDocumentFilterDto[], metadata: ISignatureHelpProviderMetadataDto): void {
-		this._registrations.set(handle, modes.SignatureHelpProviderRegistry.register(selector, <modes.SignatureHelpProvider>{
+	$registerSignAtureHelpProvider(hAndle: number, selector: IDocumentFilterDto[], metAdAtA: ISignAtureHelpProviderMetAdAtADto): void {
+		this._registrAtions.set(hAndle, modes.SignAtureHelpProviderRegistry.register(selector, <modes.SignAtureHelpProvider>{
 
-			signatureHelpTriggerCharacters: metadata.triggerCharacters,
-			signatureHelpRetriggerCharacters: metadata.retriggerCharacters,
+			signAtureHelpTriggerChArActers: metAdAtA.triggerChArActers,
+			signAtureHelpRetriggerChArActers: metAdAtA.retriggerChArActers,
 
-			provideSignatureHelp: async (model: ITextModel, position: EditorPosition, token: CancellationToken, context: modes.SignatureHelpContext): Promise<modes.SignatureHelpResult | undefined> => {
-				const result = await this._proxy.$provideSignatureHelp(handle, model.uri, position, context, token);
+			provideSignAtureHelp: Async (model: ITextModel, position: EditorPosition, token: CAncellAtionToken, context: modes.SignAtureHelpContext): Promise<modes.SignAtureHelpResult | undefined> => {
+				const result = AwAit this._proxy.$provideSignAtureHelp(hAndle, model.uri, position, context, token);
 				if (!result) {
 					return undefined;
 				}
 				return {
-					value: result,
+					vAlue: result,
 					dispose: () => {
-						this._proxy.$releaseSignatureHelp(handle, result.id);
+						this._proxy.$releAseSignAtureHelp(hAndle, result.id);
 					}
 				};
 			}
@@ -503,18 +503,18 @@ export class MainThreadLanguageFeatures implements MainThreadLanguageFeaturesSha
 
 	// --- links
 
-	$registerDocumentLinkProvider(handle: number, selector: IDocumentFilterDto[], supportsResolve: boolean): void {
+	$registerDocumentLinkProvider(hAndle: number, selector: IDocumentFilterDto[], supportsResolve: booleAn): void {
 		const provider: modes.LinkProvider = {
 			provideLinks: (model, token) => {
-				return this._proxy.$provideDocumentLinks(handle, model.uri, token).then(dto => {
+				return this._proxy.$provideDocumentLinks(hAndle, model.uri, token).then(dto => {
 					if (!dto) {
 						return undefined;
 					}
 					return {
-						links: dto.links.map(MainThreadLanguageFeatures._reviveLinkDTO),
+						links: dto.links.mAp(MAinThreAdLAnguAgeFeAtures._reviveLinkDTO),
 						dispose: () => {
 							if (typeof dto.id === 'number') {
-								this._proxy.$releaseDocumentLinks(handle, dto.id);
+								this._proxy.$releAseDocumentLinks(hAndle, dto.id);
 							}
 						}
 					};
@@ -524,46 +524,46 @@ export class MainThreadLanguageFeatures implements MainThreadLanguageFeaturesSha
 		if (supportsResolve) {
 			provider.resolveLink = (link, token) => {
 				const dto: ILinkDto = link;
-				if (!dto.cacheId) {
+				if (!dto.cAcheId) {
 					return link;
 				}
-				return this._proxy.$resolveDocumentLink(handle, dto.cacheId, token).then(obj => {
-					return obj && MainThreadLanguageFeatures._reviveLinkDTO(obj);
+				return this._proxy.$resolveDocumentLink(hAndle, dto.cAcheId, token).then(obj => {
+					return obj && MAinThreAdLAnguAgeFeAtures._reviveLinkDTO(obj);
 				});
 			};
 		}
-		this._registrations.set(handle, modes.LinkProviderRegistry.register(selector, provider));
+		this._registrAtions.set(hAndle, modes.LinkProviderRegistry.register(selector, provider));
 	}
 
 	// --- colors
 
-	$registerDocumentColorProvider(handle: number, selector: IDocumentFilterDto[]): void {
+	$registerDocumentColorProvider(hAndle: number, selector: IDocumentFilterDto[]): void {
 		const proxy = this._proxy;
-		this._registrations.set(handle, modes.ColorProviderRegistry.register(selector, <modes.DocumentColorProvider>{
+		this._registrAtions.set(hAndle, modes.ColorProviderRegistry.register(selector, <modes.DocumentColorProvider>{
 			provideDocumentColors: (model, token) => {
-				return proxy.$provideDocumentColors(handle, model.uri, token)
+				return proxy.$provideDocumentColors(hAndle, model.uri, token)
 					.then(documentColors => {
-						return documentColors.map(documentColor => {
-							const [red, green, blue, alpha] = documentColor.color;
+						return documentColors.mAp(documentColor => {
+							const [red, green, blue, AlphA] = documentColor.color;
 							const color = {
 								red: red,
 								green: green,
 								blue: blue,
-								alpha
+								AlphA
 							};
 
 							return {
 								color,
-								range: documentColor.range
+								rAnge: documentColor.rAnge
 							};
 						});
 					});
 			},
 
-			provideColorPresentations: (model, colorInfo, token) => {
-				return proxy.$provideColorPresentations(handle, model.uri, {
-					color: [colorInfo.color.red, colorInfo.color.green, colorInfo.color.blue, colorInfo.color.alpha],
-					range: colorInfo.range
+			provideColorPresentAtions: (model, colorInfo, token) => {
+				return proxy.$provideColorPresentAtions(hAndle, model.uri, {
+					color: [colorInfo.color.red, colorInfo.color.green, colorInfo.color.blue, colorInfo.color.AlphA],
+					rAnge: colorInfo.rAnge
 				}, token);
 			}
 		}));
@@ -571,215 +571,215 @@ export class MainThreadLanguageFeatures implements MainThreadLanguageFeaturesSha
 
 	// --- folding
 
-	$registerFoldingRangeProvider(handle: number, selector: IDocumentFilterDto[], eventHandle: number | undefined): void {
-		const provider = <modes.FoldingRangeProvider>{
-			provideFoldingRanges: (model, context, token) => {
-				return this._proxy.$provideFoldingRanges(handle, model.uri, context, token);
+	$registerFoldingRAngeProvider(hAndle: number, selector: IDocumentFilterDto[], eventHAndle: number | undefined): void {
+		const provider = <modes.FoldingRAngeProvider>{
+			provideFoldingRAnges: (model, context, token) => {
+				return this._proxy.$provideFoldingRAnges(hAndle, model.uri, context, token);
 			}
 		};
 
-		if (typeof eventHandle === 'number') {
-			const emitter = new Emitter<modes.FoldingRangeProvider>();
-			this._registrations.set(eventHandle, emitter);
-			provider.onDidChange = emitter.event;
+		if (typeof eventHAndle === 'number') {
+			const emitter = new Emitter<modes.FoldingRAngeProvider>();
+			this._registrAtions.set(eventHAndle, emitter);
+			provider.onDidChAnge = emitter.event;
 		}
 
-		this._registrations.set(handle, modes.FoldingRangeProviderRegistry.register(selector, provider));
+		this._registrAtions.set(hAndle, modes.FoldingRAngeProviderRegistry.register(selector, provider));
 	}
 
-	$emitFoldingRangeEvent(eventHandle: number, event?: any): void {
-		const obj = this._registrations.get(eventHandle);
-		if (obj instanceof Emitter) {
+	$emitFoldingRAngeEvent(eventHAndle: number, event?: Any): void {
+		const obj = this._registrAtions.get(eventHAndle);
+		if (obj instAnceof Emitter) {
 			obj.fire(event);
 		}
 	}
 
-	// -- smart select
+	// -- smArt select
 
-	$registerSelectionRangeProvider(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, modes.SelectionRangeRegistry.register(selector, {
-			provideSelectionRanges: (model, positions, token) => {
-				return this._proxy.$provideSelectionRanges(handle, model.uri, positions, token);
+	$registerSelectionRAngeProvider(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, modes.SelectionRAngeRegistry.register(selector, {
+			provideSelectionRAnges: (model, positions, token) => {
+				return this._proxy.$provideSelectionRAnges(hAndle, model.uri, positions, token);
 			}
 		}));
 	}
 
-	// --- call hierarchy
+	// --- cAll hierArchy
 
-	$registerCallHierarchyProvider(handle: number, selector: IDocumentFilterDto[]): void {
-		this._registrations.set(handle, callh.CallHierarchyProviderRegistry.register(selector, {
+	$registerCAllHierArchyProvider(hAndle: number, selector: IDocumentFilterDto[]): void {
+		this._registrAtions.set(hAndle, cAllh.CAllHierArchyProviderRegistry.register(selector, {
 
-			prepareCallHierarchy: async (document, position, token) => {
-				const items = await this._proxy.$prepareCallHierarchy(handle, document.uri, position, token);
+			prepAreCAllHierArchy: Async (document, position, token) => {
+				const items = AwAit this._proxy.$prepAreCAllHierArchy(hAndle, document.uri, position, token);
 				if (!items) {
 					return undefined;
 				}
 				return {
 					dispose: () => {
 						for (const item of items) {
-							this._proxy.$releaseCallHierarchy(handle, item._sessionId);
+							this._proxy.$releAseCAllHierArchy(hAndle, item._sessionId);
 						}
 					},
-					roots: items.map(MainThreadLanguageFeatures._reviveCallHierarchyItemDto)
+					roots: items.mAp(MAinThreAdLAnguAgeFeAtures._reviveCAllHierArchyItemDto)
 				};
 			},
 
-			provideOutgoingCalls: async (item, token) => {
-				const outgoing = await this._proxy.$provideCallHierarchyOutgoingCalls(handle, item._sessionId, item._itemId, token);
+			provideOutgoingCAlls: Async (item, token) => {
+				const outgoing = AwAit this._proxy.$provideCAllHierArchyOutgoingCAlls(hAndle, item._sessionId, item._itemId, token);
 				if (!outgoing) {
 					return outgoing;
 				}
-				outgoing.forEach(value => {
-					value.to = MainThreadLanguageFeatures._reviveCallHierarchyItemDto(value.to);
+				outgoing.forEAch(vAlue => {
+					vAlue.to = MAinThreAdLAnguAgeFeAtures._reviveCAllHierArchyItemDto(vAlue.to);
 				});
-				return <any>outgoing;
+				return <Any>outgoing;
 			},
-			provideIncomingCalls: async (item, token) => {
-				const incoming = await this._proxy.$provideCallHierarchyIncomingCalls(handle, item._sessionId, item._itemId, token);
+			provideIncomingCAlls: Async (item, token) => {
+				const incoming = AwAit this._proxy.$provideCAllHierArchyIncomingCAlls(hAndle, item._sessionId, item._itemId, token);
 				if (!incoming) {
 					return incoming;
 				}
-				incoming.forEach(value => {
-					value.from = MainThreadLanguageFeatures._reviveCallHierarchyItemDto(value.from);
+				incoming.forEAch(vAlue => {
+					vAlue.from = MAinThreAdLAnguAgeFeAtures._reviveCAllHierArchyItemDto(vAlue.from);
 				});
-				return <any>incoming;
+				return <Any>incoming;
 			}
 		}));
 	}
 
-	// --- configuration
+	// --- configurAtion
 
-	private static _reviveRegExp(regExp: IRegExpDto): RegExp {
-		return new RegExp(regExp.pattern, regExp.flags);
+	privAte stAtic _reviveRegExp(regExp: IRegExpDto): RegExp {
+		return new RegExp(regExp.pAttern, regExp.flAgs);
 	}
 
-	private static _reviveIndentationRule(indentationRule: IIndentationRuleDto): IndentationRule {
+	privAte stAtic _reviveIndentAtionRule(indentAtionRule: IIndentAtionRuleDto): IndentAtionRule {
 		return {
-			decreaseIndentPattern: MainThreadLanguageFeatures._reviveRegExp(indentationRule.decreaseIndentPattern),
-			increaseIndentPattern: MainThreadLanguageFeatures._reviveRegExp(indentationRule.increaseIndentPattern),
-			indentNextLinePattern: indentationRule.indentNextLinePattern ? MainThreadLanguageFeatures._reviveRegExp(indentationRule.indentNextLinePattern) : undefined,
-			unIndentedLinePattern: indentationRule.unIndentedLinePattern ? MainThreadLanguageFeatures._reviveRegExp(indentationRule.unIndentedLinePattern) : undefined,
+			decreAseIndentPAttern: MAinThreAdLAnguAgeFeAtures._reviveRegExp(indentAtionRule.decreAseIndentPAttern),
+			increAseIndentPAttern: MAinThreAdLAnguAgeFeAtures._reviveRegExp(indentAtionRule.increAseIndentPAttern),
+			indentNextLinePAttern: indentAtionRule.indentNextLinePAttern ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(indentAtionRule.indentNextLinePAttern) : undefined,
+			unIndentedLinePAttern: indentAtionRule.unIndentedLinePAttern ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(indentAtionRule.unIndentedLinePAttern) : undefined,
 		};
 	}
 
-	private static _reviveOnEnterRule(onEnterRule: IOnEnterRuleDto): OnEnterRule {
+	privAte stAtic _reviveOnEnterRule(onEnterRule: IOnEnterRuleDto): OnEnterRule {
 		return {
-			beforeText: MainThreadLanguageFeatures._reviveRegExp(onEnterRule.beforeText),
-			afterText: onEnterRule.afterText ? MainThreadLanguageFeatures._reviveRegExp(onEnterRule.afterText) : undefined,
-			oneLineAboveText: onEnterRule.oneLineAboveText ? MainThreadLanguageFeatures._reviveRegExp(onEnterRule.oneLineAboveText) : undefined,
-			action: onEnterRule.action
+			beforeText: MAinThreAdLAnguAgeFeAtures._reviveRegExp(onEnterRule.beforeText),
+			AfterText: onEnterRule.AfterText ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(onEnterRule.AfterText) : undefined,
+			oneLineAboveText: onEnterRule.oneLineAboveText ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(onEnterRule.oneLineAboveText) : undefined,
+			Action: onEnterRule.Action
 		};
 	}
 
-	private static _reviveOnEnterRules(onEnterRules: IOnEnterRuleDto[]): OnEnterRule[] {
-		return onEnterRules.map(MainThreadLanguageFeatures._reviveOnEnterRule);
+	privAte stAtic _reviveOnEnterRules(onEnterRules: IOnEnterRuleDto[]): OnEnterRule[] {
+		return onEnterRules.mAp(MAinThreAdLAnguAgeFeAtures._reviveOnEnterRule);
 	}
 
-	$setLanguageConfiguration(handle: number, languageId: string, _configuration: ILanguageConfigurationDto): void {
+	$setLAnguAgeConfigurAtion(hAndle: number, lAnguAgeId: string, _configurAtion: ILAnguAgeConfigurAtionDto): void {
 
-		const configuration: LanguageConfiguration = {
-			comments: _configuration.comments,
-			brackets: _configuration.brackets,
-			wordPattern: _configuration.wordPattern ? MainThreadLanguageFeatures._reviveRegExp(_configuration.wordPattern) : undefined,
-			indentationRules: _configuration.indentationRules ? MainThreadLanguageFeatures._reviveIndentationRule(_configuration.indentationRules) : undefined,
-			onEnterRules: _configuration.onEnterRules ? MainThreadLanguageFeatures._reviveOnEnterRules(_configuration.onEnterRules) : undefined,
+		const configurAtion: LAnguAgeConfigurAtion = {
+			comments: _configurAtion.comments,
+			brAckets: _configurAtion.brAckets,
+			wordPAttern: _configurAtion.wordPAttern ? MAinThreAdLAnguAgeFeAtures._reviveRegExp(_configurAtion.wordPAttern) : undefined,
+			indentAtionRules: _configurAtion.indentAtionRules ? MAinThreAdLAnguAgeFeAtures._reviveIndentAtionRule(_configurAtion.indentAtionRules) : undefined,
+			onEnterRules: _configurAtion.onEnterRules ? MAinThreAdLAnguAgeFeAtures._reviveOnEnterRules(_configurAtion.onEnterRules) : undefined,
 
-			autoClosingPairs: undefined,
-			surroundingPairs: undefined,
-			__electricCharacterSupport: undefined
+			AutoClosingPAirs: undefined,
+			surroundingPAirs: undefined,
+			__electricChArActerSupport: undefined
 		};
 
-		if (_configuration.__characterPairSupport) {
-			// backwards compatibility
-			configuration.autoClosingPairs = _configuration.__characterPairSupport.autoClosingPairs;
+		if (_configurAtion.__chArActerPAirSupport) {
+			// bAckwArds compAtibility
+			configurAtion.AutoClosingPAirs = _configurAtion.__chArActerPAirSupport.AutoClosingPAirs;
 		}
 
-		if (_configuration.__electricCharacterSupport && _configuration.__electricCharacterSupport.docComment) {
-			configuration.__electricCharacterSupport = {
+		if (_configurAtion.__electricChArActerSupport && _configurAtion.__electricChArActerSupport.docComment) {
+			configurAtion.__electricChArActerSupport = {
 				docComment: {
-					open: _configuration.__electricCharacterSupport.docComment.open,
-					close: _configuration.__electricCharacterSupport.docComment.close
+					open: _configurAtion.__electricChArActerSupport.docComment.open,
+					close: _configurAtion.__electricChArActerSupport.docComment.close
 				}
 			};
 		}
 
-		const languageIdentifier = this._modeService.getLanguageIdentifier(languageId);
-		if (languageIdentifier) {
-			this._registrations.set(handle, LanguageConfigurationRegistry.register(languageIdentifier, configuration));
+		const lAnguAgeIdentifier = this._modeService.getLAnguAgeIdentifier(lAnguAgeId);
+		if (lAnguAgeIdentifier) {
+			this._registrAtions.set(hAndle, LAnguAgeConfigurAtionRegistry.register(lAnguAgeIdentifier, configurAtion));
 		}
 	}
 
 }
 
-export class MainThreadDocumentSemanticTokensProvider implements modes.DocumentSemanticTokensProvider {
+export clAss MAinThreAdDocumentSemAnticTokensProvider implements modes.DocumentSemAnticTokensProvider {
 
 	constructor(
-		private readonly _proxy: ExtHostLanguageFeaturesShape,
-		private readonly _handle: number,
-		private readonly _legend: modes.SemanticTokensLegend,
-		public readonly onDidChange: Event<void> | undefined,
+		privAte reAdonly _proxy: ExtHostLAnguAgeFeAturesShApe,
+		privAte reAdonly _hAndle: number,
+		privAte reAdonly _legend: modes.SemAnticTokensLegend,
+		public reAdonly onDidChAnge: Event<void> | undefined,
 	) {
 	}
 
-	public releaseDocumentSemanticTokens(resultId: string | undefined): void {
+	public releAseDocumentSemAnticTokens(resultId: string | undefined): void {
 		if (resultId) {
-			this._proxy.$releaseDocumentSemanticTokens(this._handle, parseInt(resultId, 10));
+			this._proxy.$releAseDocumentSemAnticTokens(this._hAndle, pArseInt(resultId, 10));
 		}
 	}
 
-	public getLegend(): modes.SemanticTokensLegend {
+	public getLegend(): modes.SemAnticTokensLegend {
 		return this._legend;
 	}
 
-	async provideDocumentSemanticTokens(model: ITextModel, lastResultId: string | null, token: CancellationToken): Promise<modes.SemanticTokens | modes.SemanticTokensEdits | null> {
-		const nLastResultId = lastResultId ? parseInt(lastResultId, 10) : 0;
-		const encodedDto = await this._proxy.$provideDocumentSemanticTokens(this._handle, model.uri, nLastResultId, token);
+	Async provideDocumentSemAnticTokens(model: ITextModel, lAstResultId: string | null, token: CAncellAtionToken): Promise<modes.SemAnticTokens | modes.SemAnticTokensEdits | null> {
+		const nLAstResultId = lAstResultId ? pArseInt(lAstResultId, 10) : 0;
+		const encodedDto = AwAit this._proxy.$provideDocumentSemAnticTokens(this._hAndle, model.uri, nLAstResultId, token);
 		if (!encodedDto) {
 			return null;
 		}
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return null;
 		}
-		const dto = decodeSemanticTokensDto(encodedDto);
+		const dto = decodeSemAnticTokensDto(encodedDto);
 		if (dto.type === 'full') {
 			return {
 				resultId: String(dto.id),
-				data: dto.data
+				dAtA: dto.dAtA
 			};
 		}
 		return {
 			resultId: String(dto.id),
-			edits: dto.deltas
+			edits: dto.deltAs
 		};
 	}
 }
 
-export class MainThreadDocumentRangeSemanticTokensProvider implements modes.DocumentRangeSemanticTokensProvider {
+export clAss MAinThreAdDocumentRAngeSemAnticTokensProvider implements modes.DocumentRAngeSemAnticTokensProvider {
 
 	constructor(
-		private readonly _proxy: ExtHostLanguageFeaturesShape,
-		private readonly _handle: number,
-		private readonly _legend: modes.SemanticTokensLegend,
+		privAte reAdonly _proxy: ExtHostLAnguAgeFeAturesShApe,
+		privAte reAdonly _hAndle: number,
+		privAte reAdonly _legend: modes.SemAnticTokensLegend,
 	) {
 	}
 
-	public getLegend(): modes.SemanticTokensLegend {
+	public getLegend(): modes.SemAnticTokensLegend {
 		return this._legend;
 	}
 
-	async provideDocumentRangeSemanticTokens(model: ITextModel, range: EditorRange, token: CancellationToken): Promise<modes.SemanticTokens | null> {
-		const encodedDto = await this._proxy.$provideDocumentRangeSemanticTokens(this._handle, model.uri, range, token);
+	Async provideDocumentRAngeSemAnticTokens(model: ITextModel, rAnge: EditorRAnge, token: CAncellAtionToken): Promise<modes.SemAnticTokens | null> {
+		const encodedDto = AwAit this._proxy.$provideDocumentRAngeSemAnticTokens(this._hAndle, model.uri, rAnge, token);
 		if (!encodedDto) {
 			return null;
 		}
-		if (token.isCancellationRequested) {
+		if (token.isCAncellAtionRequested) {
 			return null;
 		}
-		const dto = decodeSemanticTokensDto(encodedDto);
+		const dto = decodeSemAnticTokensDto(encodedDto);
 		if (dto.type === 'full') {
 			return {
 				resultId: String(dto.id),
-				data: dto.data
+				dAtA: dto.dAtA
 			};
 		}
 		throw new Error(`Unexpected`);

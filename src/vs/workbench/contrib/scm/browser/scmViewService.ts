@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
-import { ISCMViewService, ISCMRepository, ISCMService, ISCMViewVisibleRepositoryChangeEvent, ISCMMenus } from 'vs/workbench/contrib/scm/common/scm';
-import { Iterable } from 'vs/base/common/iterator';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { ISCMViewService, ISCMRepository, ISCMService, ISCMViewVisibleRepositoryChAngeEvent, ISCMMenus } from 'vs/workbench/contrib/scm/common/scm';
+import { IterAble } from 'vs/bAse/common/iterAtor';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { SCMMenus } from 'vs/workbench/contrib/scm/browser/menus';
 
-export class SCMViewService implements ISCMViewService {
+export clAss SCMViewService implements ISCMViewService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	readonly menus: ISCMMenus;
+	reAdonly menus: ISCMMenus;
 
-	private disposables = new DisposableStore();
+	privAte disposAbles = new DisposAbleStore();
 
-	private _visibleRepositoriesSet = new Set<ISCMRepository>();
-	private _visibleRepositories: ISCMRepository[] = [];
+	privAte _visibleRepositoriesSet = new Set<ISCMRepository>();
+	privAte _visibleRepositories: ISCMRepository[] = [];
 
 	get visibleRepositories(): ISCMRepository[] {
 		return this._visibleRepositories;
@@ -27,74 +27,74 @@ export class SCMViewService implements ISCMViewService {
 
 	set visibleRepositories(visibleRepositories: ISCMRepository[]) {
 		const set = new Set(visibleRepositories);
-		const added = new Set<ISCMRepository>();
+		const Added = new Set<ISCMRepository>();
 		const removed = new Set<ISCMRepository>();
 
 		for (const repository of visibleRepositories) {
-			if (!this._visibleRepositoriesSet.has(repository)) {
-				added.add(repository);
+			if (!this._visibleRepositoriesSet.hAs(repository)) {
+				Added.Add(repository);
 			}
 		}
 
 		for (const repository of this._visibleRepositories) {
-			if (!set.has(repository)) {
-				removed.add(repository);
+			if (!set.hAs(repository)) {
+				removed.Add(repository);
 			}
 		}
 
-		if (added.size === 0 && removed.size === 0) {
+		if (Added.size === 0 && removed.size === 0) {
 			return;
 		}
 
 		this._visibleRepositories = visibleRepositories;
 		this._visibleRepositoriesSet = set;
-		this._onDidSetVisibleRepositories.fire({ added, removed });
+		this._onDidSetVisibleRepositories.fire({ Added, removed });
 	}
 
-	private _onDidChangeRepositories = new Emitter<ISCMViewVisibleRepositoryChangeEvent>();
-	private _onDidSetVisibleRepositories = new Emitter<ISCMViewVisibleRepositoryChangeEvent>();
-	readonly onDidChangeVisibleRepositories = Event.any(
+	privAte _onDidChAngeRepositories = new Emitter<ISCMViewVisibleRepositoryChAngeEvent>();
+	privAte _onDidSetVisibleRepositories = new Emitter<ISCMViewVisibleRepositoryChAngeEvent>();
+	reAdonly onDidChAngeVisibleRepositories = Event.Any(
 		this._onDidSetVisibleRepositories.event,
 		Event.debounce(
-			this._onDidChangeRepositories.event,
-			(last, e) => {
-				if (!last) {
+			this._onDidChAngeRepositories.event,
+			(lAst, e) => {
+				if (!lAst) {
 					return e;
 				}
 
 				return {
-					added: Iterable.concat(last.added, e.added),
-					removed: Iterable.concat(last.removed, e.removed),
+					Added: IterAble.concAt(lAst.Added, e.Added),
+					removed: IterAble.concAt(lAst.removed, e.removed),
 				};
 			}, 0)
 	);
 
 	constructor(
-		@ISCMService private readonly scmService: ISCMService,
-		@IInstantiationService instantiationService: IInstantiationService
+		@ISCMService privAte reAdonly scmService: ISCMService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService
 	) {
-		this.menus = instantiationService.createInstance(SCMMenus);
+		this.menus = instAntiAtionService.creAteInstAnce(SCMMenus);
 
-		scmService.onDidAddRepository(this.onDidAddRepository, this, this.disposables);
-		scmService.onDidRemoveRepository(this.onDidRemoveRepository, this, this.disposables);
+		scmService.onDidAddRepository(this.onDidAddRepository, this, this.disposAbles);
+		scmService.onDidRemoveRepository(this.onDidRemoveRepository, this, this.disposAbles);
 
 		for (const repository of scmService.repositories) {
 			this.onDidAddRepository(repository);
 		}
 	}
 
-	private onDidAddRepository(repository: ISCMRepository): void {
+	privAte onDidAddRepository(repository: ISCMRepository): void {
 		this._visibleRepositories.push(repository);
-		this._visibleRepositoriesSet.add(repository);
+		this._visibleRepositoriesSet.Add(repository);
 
-		this._onDidChangeRepositories.fire({ added: [repository], removed: Iterable.empty() });
+		this._onDidChAngeRepositories.fire({ Added: [repository], removed: IterAble.empty() });
 	}
 
-	private onDidRemoveRepository(repository: ISCMRepository): void {
+	privAte onDidRemoveRepository(repository: ISCMRepository): void {
 		const index = this._visibleRepositories.indexOf(repository);
 
 		if (index > -1) {
-			let added: Iterable<ISCMRepository> = Iterable.empty();
+			let Added: IterAble<ISCMRepository> = IterAble.empty();
 
 			this._visibleRepositories.splice(index, 1);
 			this._visibleRepositoriesSet.delete(repository);
@@ -103,19 +103,19 @@ export class SCMViewService implements ISCMViewService {
 				const first = this.scmService.repositories[0];
 
 				this._visibleRepositories.push(first);
-				this._visibleRepositoriesSet.add(first);
-				added = [first];
+				this._visibleRepositoriesSet.Add(first);
+				Added = [first];
 			}
 
-			this._onDidChangeRepositories.fire({ added, removed: [repository] });
+			this._onDidChAngeRepositories.fire({ Added, removed: [repository] });
 		}
 	}
 
-	isVisible(repository: ISCMRepository): boolean {
-		return this._visibleRepositoriesSet.has(repository);
+	isVisible(repository: ISCMRepository): booleAn {
+		return this._visibleRepositoriesSet.hAs(repository);
 	}
 
-	toggleVisibility(repository: ISCMRepository, visible?: boolean): void {
+	toggleVisibility(repository: ISCMRepository, visible?: booleAn): void {
 		if (typeof visible === 'undefined') {
 			visible = !this.isVisible(repository);
 		} else if (this.isVisible(repository) === visible) {
@@ -137,8 +137,8 @@ export class SCMViewService implements ISCMViewService {
 	}
 
 	dispose(): void {
-		this.disposables.dispose();
-		this._onDidChangeRepositories.dispose();
+		this.disposAbles.dispose();
+		this._onDidChAngeRepositories.dispose();
 		this._onDidSetVisibleRepositories.dispose();
 	}
 }

@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
-import { ICell, IProcessedOutput, NotebookCellOutputsSplice, CellKind, NotebookCellMetadata, NotebookDocumentMetadata, TransientOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { ICell, IProcessedOutput, NotebookCellOutputsSplice, CellKind, NotebookCellMetAdAtA, NotebookDocumentMetAdAtA, TrAnsientOptions } from 'vs/workbench/contrib/notebook/common/notebookCommon';
 import { PieceTreeTextBufferBuilder } from 'vs/editor/common/model/pieceTreeTextBuffer/pieceTreeTextBufferBuilder';
-import { URI } from 'vs/base/common/uri';
-import * as model from 'vs/editor/common/model';
-import { Range } from 'vs/editor/common/core/range';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import * As model from 'vs/editor/common/model';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { hash } from 'vs/base/common/hash';
+import { hAsh } from 'vs/bAse/common/hAsh';
 
-export class NotebookCellTextModel extends Disposable implements ICell {
-	private _onDidChangeOutputs = new Emitter<NotebookCellOutputsSplice[]>();
-	onDidChangeOutputs: Event<NotebookCellOutputsSplice[]> = this._onDidChangeOutputs.event;
+export clAss NotebookCellTextModel extends DisposAble implements ICell {
+	privAte _onDidChAngeOutputs = new Emitter<NotebookCellOutputsSplice[]>();
+	onDidChAngeOutputs: Event<NotebookCellOutputsSplice[]> = this._onDidChAngeOutputs.event;
 
-	private _onDidChangeContent = new Emitter<void>();
-	onDidChangeContent: Event<void> = this._onDidChangeContent.event;
+	privAte _onDidChAngeContent = new Emitter<void>();
+	onDidChAngeContent: Event<void> = this._onDidChAngeContent.event;
 
-	private _onDidChangeMetadata = new Emitter<void>();
-	onDidChangeMetadata: Event<void> = this._onDidChangeMetadata.event;
+	privAte _onDidChAngeMetAdAtA = new Emitter<void>();
+	onDidChAngeMetAdAtA: Event<void> = this._onDidChAngeMetAdAtA.event;
 
-	private _onDidChangeLanguage = new Emitter<string>();
-	onDidChangeLanguage: Event<string> = this._onDidChangeLanguage.event;
+	privAte _onDidChAngeLAnguAge = new Emitter<string>();
+	onDidChAngeLAnguAge: Event<string> = this._onDidChAngeLAnguAge.event;
 
-	private _outputs: IProcessedOutput[];
+	privAte _outputs: IProcessedOutput[];
 
 	get outputs(): IProcessedOutput[] {
 		return this._outputs;
 	}
 
-	private _metadata: NotebookCellMetadata;
+	privAte _metAdAtA: NotebookCellMetAdAtA;
 
-	get metadata() {
-		return this._metadata;
+	get metAdAtA() {
+		return this._metAdAtA;
 	}
 
-	set metadata(newMetadata: NotebookCellMetadata) {
-		this._metadata = newMetadata;
-		this._hash = null;
-		this._onDidChangeMetadata.fire();
+	set metAdAtA(newMetAdAtA: NotebookCellMetAdAtA) {
+		this._metAdAtA = newMetAdAtA;
+		this._hAsh = null;
+		this._onDidChAngeMetAdAtA.fire();
 	}
 
-	get language() {
-		return this._language;
+	get lAnguAge() {
+		return this._lAnguAge;
 	}
 
-	set language(newLanguage: string) {
-		this._language = newLanguage;
-		this._hash = null;
-		this._onDidChangeLanguage.fire(newLanguage);
+	set lAnguAge(newLAnguAge: string) {
+		this._lAnguAge = newLAnguAge;
+		this._hAsh = null;
+		this._onDidChAngeLAnguAge.fire(newLAnguAge);
 	}
 
-	private _textBuffer!: model.IReadonlyTextBuffer;
+	privAte _textBuffer!: model.IReAdonlyTextBuffer;
 
 	get textBuffer() {
 		if (this._textBuffer) {
@@ -62,111 +62,111 @@ export class NotebookCellTextModel extends Disposable implements ICell {
 		}
 
 		const builder = new PieceTreeTextBufferBuilder();
-		builder.acceptChunk(this._source);
-		const bufferFactory = builder.finish(true);
-		this._textBuffer = bufferFactory.create(model.DefaultEndOfLine.LF);
+		builder.AcceptChunk(this._source);
+		const bufferFActory = builder.finish(true);
+		this._textBuffer = bufferFActory.creAte(model.DefAultEndOfLine.LF);
 
-		this._register(this._textBuffer.onDidChangeContent(() => {
-			this._hash = null;
-			this._onDidChangeContent.fire();
+		this._register(this._textBuffer.onDidChAngeContent(() => {
+			this._hAsh = null;
+			this._onDidChAngeContent.fire();
 		}));
 
 		return this._textBuffer;
 	}
 
-	private _hash: number | null = null;
+	privAte _hAsh: number | null = null;
 
 
 	constructor(
-		readonly uri: URI,
-		public handle: number,
-		private _source: string,
-		private _language: string,
+		reAdonly uri: URI,
+		public hAndle: number,
+		privAte _source: string,
+		privAte _lAnguAge: string,
 		public cellKind: CellKind,
 		outputs: IProcessedOutput[],
-		metadata: NotebookCellMetadata | undefined,
-		public readonly transientOptions: TransientOptions,
-		private readonly _modelService: ITextModelService
+		metAdAtA: NotebookCellMetAdAtA | undefined,
+		public reAdonly trAnsientOptions: TrAnsientOptions,
+		privAte reAdonly _modelService: ITextModelService
 	) {
 		super();
 		this._outputs = outputs;
-		this._metadata = metadata || {};
+		this._metAdAtA = metAdAtA || {};
 	}
 
-	getValue(): string {
-		const fullRange = this.getFullModelRange();
+	getVAlue(): string {
+		const fullRAnge = this.getFullModelRAnge();
 		const eol = this.textBuffer.getEOL();
 		if (eol === '\n') {
-			return this.textBuffer.getValueInRange(fullRange, model.EndOfLinePreference.LF);
+			return this.textBuffer.getVAlueInRAnge(fullRAnge, model.EndOfLinePreference.LF);
 		} else {
-			return this.textBuffer.getValueInRange(fullRange, model.EndOfLinePreference.CRLF);
+			return this.textBuffer.getVAlueInRAnge(fullRAnge, model.EndOfLinePreference.CRLF);
 		}
 	}
 
-	getHashValue(): number {
-		if (this._hash !== null) {
-			return this._hash;
+	getHAshVAlue(): number {
+		if (this._hAsh !== null) {
+			return this._hAsh;
 		}
 
-		// TODO@rebornix, raw outputs
-		this._hash = hash([hash(this.language), hash(this.getValue()), this._getPersisentMetadata, this.transientOptions.transientOutputs ? [] : this._outputs]);
-		return this._hash;
+		// TODO@rebornix, rAw outputs
+		this._hAsh = hAsh([hAsh(this.lAnguAge), hAsh(this.getVAlue()), this._getPersisentMetAdAtA, this.trAnsientOptions.trAnsientOutputs ? [] : this._outputs]);
+		return this._hAsh;
 	}
 
-	private _getPersisentMetadata() {
-		let filteredMetadata: { [key: string]: any } = {};
-		const transientMetadata = this.transientOptions.transientMetadata;
+	privAte _getPersisentMetAdAtA() {
+		let filteredMetAdAtA: { [key: string]: Any } = {};
+		const trAnsientMetAdAtA = this.trAnsientOptions.trAnsientMetAdAtA;
 
-		const keys = new Set([...Object.keys(this.metadata)]);
+		const keys = new Set([...Object.keys(this.metAdAtA)]);
 		for (let key of keys) {
-			if (!(transientMetadata[key as keyof NotebookCellMetadata])
+			if (!(trAnsientMetAdAtA[key As keyof NotebookCellMetAdAtA])
 			) {
-				filteredMetadata[key] = this.metadata[key as keyof NotebookCellMetadata];
+				filteredMetAdAtA[key] = this.metAdAtA[key As keyof NotebookCellMetAdAtA];
 			}
 		}
 
-		return filteredMetadata;
+		return filteredMetAdAtA;
 	}
 
 	getTextLength(): number {
 		return this.textBuffer.getLength();
 	}
 
-	getFullModelRange() {
+	getFullModelRAnge() {
 		const lineCount = this.textBuffer.getLineCount();
-		return new Range(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
+		return new RAnge(1, 1, lineCount, this.textBuffer.getLineLength(lineCount) + 1);
 	}
 
 	spliceNotebookCellOutputs(splices: NotebookCellOutputsSplice[]): void {
-		splices.reverse().forEach(splice => {
+		splices.reverse().forEAch(splice => {
 			this.outputs.splice(splice[0], splice[1], ...splice[2]);
 		});
 
-		this._onDidChangeOutputs.fire(splices);
+		this._onDidChAngeOutputs.fire(splices);
 	}
 
-	getEvaluatedMetadata(documentMetadata: NotebookDocumentMetadata): NotebookCellMetadata {
-		const editable = this.metadata?.editable ??
-			documentMetadata.cellEditable;
+	getEvAluAtedMetAdAtA(documentMetAdAtA: NotebookDocumentMetAdAtA): NotebookCellMetAdAtA {
+		const editAble = this.metAdAtA?.editAble ??
+			documentMetAdAtA.cellEditAble;
 
-		const runnable = this.metadata?.runnable ??
-			documentMetadata.cellRunnable;
+		const runnAble = this.metAdAtA?.runnAble ??
+			documentMetAdAtA.cellRunnAble;
 
-		const hasExecutionOrder = this.metadata?.hasExecutionOrder ??
-			documentMetadata.cellHasExecutionOrder;
+		const hAsExecutionOrder = this.metAdAtA?.hAsExecutionOrder ??
+			documentMetAdAtA.cellHAsExecutionOrder;
 
 		return {
-			...(this.metadata || {}),
+			...(this.metAdAtA || {}),
 			...{
-				editable,
-				runnable,
-				hasExecutionOrder
+				editAble,
+				runnAble,
+				hAsExecutionOrder
 			}
 		};
 	}
 
-	async resolveTextModelRef() {
-		const ref = await this._modelService.createModelReference(this.uri);
+	Async resolveTextModelRef() {
+		const ref = AwAit this._modelService.creAteModelReference(this.uri);
 		return ref;
 	}
 

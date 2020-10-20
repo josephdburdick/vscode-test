@@ -1,97 +1,97 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import { EditorInput, IEditorInput, GroupIdentifier, ISaveOptions, IMoveResult, IRevertOptions } from 'vs/workbench/common/editor';
+import * As glob from 'vs/bAse/common/glob';
+import { EditorInput, IEditorInput, GroupIdentifier, ISAveOptions, IMoveResult, IRevertOptions } from 'vs/workbench/common/editor';
 import { INotebookService } from 'vs/workbench/contrib/notebook/common/notebookService';
-import { URI } from 'vs/base/common/uri';
-import { isEqual, basename, joinPath } from 'vs/base/common/resources';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IFilesConfigurationService, AutoSaveMode } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
-import { IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
+import { URI } from 'vs/bAse/common/uri';
+import { isEquAl, bAsenAme, joinPAth } from 'vs/bAse/common/resources';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IFilesConfigurAtionService, AutoSAveMode } from 'vs/workbench/services/filesConfigurAtion/common/filesConfigurAtionService';
+import { IFileDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
 import { INotebookEditorModelResolverService } from 'vs/workbench/contrib/notebook/common/notebookEditorModelResolverService';
-import { IReference } from 'vs/base/common/lifecycle';
+import { IReference } from 'vs/bAse/common/lifecycle';
 import { INotebookEditorModel } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 
-interface NotebookEditorInputOptions {
-	startDirty?: boolean;
+interfAce NotebookEditorInputOptions {
+	stArtDirty?: booleAn;
 }
 
-export class NotebookEditorInput extends EditorInput {
-	static create(instantiationService: IInstantiationService, resource: URI, name: string, viewType: string | undefined, options: NotebookEditorInputOptions = {}) {
-		return instantiationService.createInstance(NotebookEditorInput, resource, name, viewType, options);
+export clAss NotebookEditorInput extends EditorInput {
+	stAtic creAte(instAntiAtionService: IInstAntiAtionService, resource: URI, nAme: string, viewType: string | undefined, options: NotebookEditorInputOptions = {}) {
+		return instAntiAtionService.creAteInstAnce(NotebookEditorInput, resource, nAme, viewType, options);
 	}
 
-	static readonly ID: string = 'workbench.input.notebook';
+	stAtic reAdonly ID: string = 'workbench.input.notebook';
 
-	private _textModel: IReference<INotebookEditorModel> | null = null;
-	private _defaultDirtyState: boolean = false;
+	privAte _textModel: IReference<INotebookEditorModel> | null = null;
+	privAte _defAultDirtyStAte: booleAn = fAlse;
 
 	constructor(
-		public readonly resource: URI,
-		public readonly name: string,
-		public readonly viewType: string | undefined,
-		public readonly options: NotebookEditorInputOptions,
-		@INotebookService private readonly _notebookService: INotebookService,
-		@INotebookEditorModelResolverService private readonly _notebookModelResolverService: INotebookEditorModelResolverService,
-		@IFilesConfigurationService private readonly _filesConfigurationService: IFilesConfigurationService,
-		@IFileDialogService private readonly _fileDialogService: IFileDialogService,
-		@IPathService private readonly _pathService: IPathService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService
+		public reAdonly resource: URI,
+		public reAdonly nAme: string,
+		public reAdonly viewType: string | undefined,
+		public reAdonly options: NotebookEditorInputOptions,
+		@INotebookService privAte reAdonly _notebookService: INotebookService,
+		@INotebookEditorModelResolverService privAte reAdonly _notebookModelResolverService: INotebookEditorModelResolverService,
+		@IFilesConfigurAtionService privAte reAdonly _filesConfigurAtionService: IFilesConfigurAtionService,
+		@IFileDiAlogService privAte reAdonly _fileDiAlogService: IFileDiAlogService,
+		@IPAthService privAte reAdonly _pAthService: IPAthService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
-		this._defaultDirtyState = !!options.startDirty;
+		this._defAultDirtyStAte = !!options.stArtDirty;
 	}
 
 	getTypeId(): string {
 		return NotebookEditorInput.ID;
 	}
 
-	getName(): string {
-		return this.name;
+	getNAme(): string {
+		return this.nAme;
 	}
 
 	isDirty() {
 		if (!this._textModel) {
-			return !!this._defaultDirtyState;
+			return !!this._defAultDirtyStAte;
 		}
 		return this._textModel.object.isDirty();
 	}
 
-	isUntitled(): boolean {
-		return this._textModel?.object.isUntitled() || false;
+	isUntitled(): booleAn {
+		return this._textModel?.object.isUntitled() || fAlse;
 	}
 
-	isReadonly() {
-		return false;
+	isReAdonly() {
+		return fAlse;
 	}
 
-	isSaving(): boolean {
+	isSAving(): booleAn {
 		if (this.isUntitled()) {
-			return false; // untitled is never saving automatically
+			return fAlse; // untitled is never sAving AutomAticAlly
 		}
 
 		if (!this.isDirty()) {
-			return false; // the editor needs to be dirty for being saved
+			return fAlse; // the editor needs to be dirty for being sAved
 		}
 
-		if (this._filesConfigurationService.getAutoSaveMode() === AutoSaveMode.AFTER_SHORT_DELAY) {
-			return true; // a short auto save is configured, treat this as being saved
+		if (this._filesConfigurAtionService.getAutoSAveMode() === AutoSAveMode.AFTER_SHORT_DELAY) {
+			return true; // A short Auto sAve is configured, treAt this As being sAved
 		}
 
-		return false;
+		return fAlse;
 	}
 
-	async save(group: GroupIdentifier, options?: ISaveOptions): Promise<IEditorInput | undefined> {
+	Async sAve(group: GroupIdentifier, options?: ISAveOptions): Promise<IEditorInput | undefined> {
 		if (this._textModel) {
 
 			if (this.isUntitled()) {
-				return this.saveAs(group, options);
+				return this.sAveAs(group, options);
 			} else {
-				await this._textModel.object.save();
+				AwAit this._textModel.object.sAve();
 			}
 
 			return this;
@@ -100,7 +100,7 @@ export class NotebookEditorInput extends EditorInput {
 		return undefined;
 	}
 
-	async saveAs(group: GroupIdentifier, options?: ISaveOptions): Promise<IEditorInput | undefined> {
+	Async sAveAs(group: GroupIdentifier, options?: ISAveOptions): Promise<IEditorInput | undefined> {
 		if (!this._textModel || !this.viewType) {
 			return undefined;
 		}
@@ -111,97 +111,97 @@ export class NotebookEditorInput extends EditorInput {
 			return undefined;
 		}
 
-		const dialogPath = this.isUntitled() ? await this.suggestName(this.name) : this._textModel.object.resource;
+		const diAlogPAth = this.isUntitled() ? AwAit this.suggestNAme(this.nAme) : this._textModel.object.resource;
 
-		const target = await this._fileDialogService.pickFileToSave(dialogPath, options?.availableFileSystems);
-		if (!target) {
-			return undefined; // save cancelled
+		const tArget = AwAit this._fileDiAlogService.pickFileToSAve(diAlogPAth, options?.AvAilAbleFileSystems);
+		if (!tArget) {
+			return undefined; // sAve cAncelled
 		}
 
-		if (!provider.matches(target)) {
-			const patterns = provider.selectors.map(pattern => {
-				if (typeof pattern === 'string') {
-					return pattern;
+		if (!provider.mAtches(tArget)) {
+			const pAtterns = provider.selectors.mAp(pAttern => {
+				if (typeof pAttern === 'string') {
+					return pAttern;
 				}
 
-				if (glob.isRelativePattern(pattern)) {
-					return `${pattern} (base ${pattern.base})`;
+				if (glob.isRelAtivePAttern(pAttern)) {
+					return `${pAttern} (bAse ${pAttern.bAse})`;
 				}
 
-				return `${pattern.include} (exclude: ${pattern.exclude})`;
+				return `${pAttern.include} (exclude: ${pAttern.exclude})`;
 			}).join(', ');
-			throw new Error(`File name ${target} is not supported by ${provider.providerDisplayName}.
+			throw new Error(`File nAme ${tArget} is not supported by ${provider.providerDisplAyNAme}.
 
-Please make sure the file name matches following patterns:
-${patterns}
+PleAse mAke sure the file nAme mAtches following pAtterns:
+${pAtterns}
 `);
 		}
 
-		if (!await this._textModel.object.saveAs(target)) {
+		if (!AwAit this._textModel.object.sAveAs(tArget)) {
 			return undefined;
 		}
 
-		return this._move(group, target)?.editor;
+		return this._move(group, tArget)?.editor;
 	}
 
-	async suggestName(suggestedFilename: string) {
-		return joinPath(this._fileDialogService.defaultFilePath() || (await this._pathService.userHome()), suggestedFilename);
+	Async suggestNAme(suggestedFilenAme: string) {
+		return joinPAth(this._fileDiAlogService.defAultFilePAth() || (AwAit this._pAthService.userHome()), suggestedFilenAme);
 	}
 
-	// called when users rename a notebook document
-	rename(group: GroupIdentifier, target: URI): IMoveResult | undefined {
+	// cAlled when users renAme A notebook document
+	renAme(group: GroupIdentifier, tArget: URI): IMoveResult | undefined {
 		if (this._textModel) {
-			const contributedNotebookProviders = this._notebookService.getContributedNotebookProviders(target);
+			const contributedNotebookProviders = this._notebookService.getContributedNotebookProviders(tArget);
 
 			if (contributedNotebookProviders.find(provider => provider.id === this._textModel!.object.viewType)) {
-				return this._move(group, target);
+				return this._move(group, tArget);
 			}
 		}
 		return undefined;
 	}
 
-	private _move(group: GroupIdentifier, newResource: URI): { editor: IEditorInput } | undefined {
-		const editorInput = NotebookEditorInput.create(this._instantiationService, newResource, basename(newResource), this.viewType);
+	privAte _move(group: GroupIdentifier, newResource: URI): { editor: IEditorInput } | undefined {
+		const editorInput = NotebookEditorInput.creAte(this._instAntiAtionService, newResource, bAsenAme(newResource), this.viewType);
 		return { editor: editorInput };
 	}
 
-	async revert(group: GroupIdentifier, options?: IRevertOptions): Promise<void> {
+	Async revert(group: GroupIdentifier, options?: IRevertOptions): Promise<void> {
 		if (this._textModel && this._textModel.object.isDirty()) {
-			await this._textModel.object.revert(options);
+			AwAit this._textModel.object.revert(options);
 		}
 
 		return;
 	}
 
-	async resolve(): Promise<INotebookEditorModel | null> {
-		if (!await this._notebookService.canResolve(this.viewType!)) {
+	Async resolve(): Promise<INotebookEditorModel | null> {
+		if (!AwAit this._notebookService.cAnResolve(this.viewType!)) {
 			return null;
 		}
 
 		if (!this._textModel) {
-			this._textModel = await this._notebookModelResolverService.resolve(this.resource, this.viewType!);
+			this._textModel = AwAit this._notebookModelResolverService.resolve(this.resource, this.viewType!);
 
-			this._register(this._textModel.object.onDidChangeDirty(() => {
-				this._onDidChangeDirty.fire();
+			this._register(this._textModel.object.onDidChAngeDirty(() => {
+				this._onDidChAngeDirty.fire();
 			}));
 
 			if (this._textModel.object.isDirty()) {
-				this._onDidChangeDirty.fire();
+				this._onDidChAngeDirty.fire();
 			}
 		}
 
 		return this._textModel.object;
 	}
 
-	matches(otherInput: unknown): boolean {
+	mAtches(otherInput: unknown): booleAn {
 		if (this === otherInput) {
 			return true;
 		}
-		if (otherInput instanceof NotebookEditorInput) {
+		if (otherInput instAnceof NotebookEditorInput) {
 			return this.viewType === otherInput.viewType
-				&& isEqual(this.resource, otherInput.resource);
+				&& isEquAl(this.resource, otherInput.resource);
 		}
-		return false;
+		return fAlse;
 	}
 
 	dispose() {

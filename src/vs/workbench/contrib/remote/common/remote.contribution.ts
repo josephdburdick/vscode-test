@@ -1,138 +1,138 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { ILabelService, ResourceLabelFormatting } from 'vs/platform/label/common/label';
-import { OperatingSystem, isWeb } from 'vs/base/common/platform';
-import { Schemas } from 'vs/base/common/network';
-import { IRemoteAgentService, RemoteExtensionLogFileName } from 'vs/workbench/services/remote/common/remoteAgentService';
-import { ILogService } from 'vs/platform/log/common/log';
-import { LoggerChannelClient } from 'vs/platform/log/common/logIpc';
-import { IOutputChannelRegistry, Extensions as OutputExt, } from 'vs/workbench/services/output/common/output';
-import { localize } from 'vs/nls';
-import { joinPath } from 'vs/base/common/resources';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { TunnelFactoryContribution } from 'vs/workbench/contrib/remote/common/tunnelFactory';
-import { ShowCandidateContribution } from 'vs/workbench/contrib/remote/common/showCandidate';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
+import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { ILAbelService, ResourceLAbelFormAtting } from 'vs/plAtform/lAbel/common/lAbel';
+import { OperAtingSystem, isWeb } from 'vs/bAse/common/plAtform';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IRemoteAgentService, RemoteExtensionLogFileNAme } from 'vs/workbench/services/remote/common/remoteAgentService';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { LoggerChAnnelClient } from 'vs/plAtform/log/common/logIpc';
+import { IOutputChAnnelRegistry, Extensions As OutputExt, } from 'vs/workbench/services/output/common/output';
+import { locAlize } from 'vs/nls';
+import { joinPAth } from 'vs/bAse/common/resources';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { TunnelFActoryContribution } from 'vs/workbench/contrib/remote/common/tunnelFActory';
+import { ShowCAndidAteContribution } from 'vs/workbench/contrib/remote/common/showCAndidAte';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
 
-export class LabelContribution implements IWorkbenchContribution {
+export clAss LAbelContribution implements IWorkbenchContribution {
 	constructor(
-		@ILabelService private readonly labelService: ILabelService,
-		@IRemoteAgentService private readonly remoteAgentService: IRemoteAgentService) {
-		this.registerFormatters();
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IRemoteAgentService privAte reAdonly remoteAgentService: IRemoteAgentService) {
+		this.registerFormAtters();
 	}
 
-	private registerFormatters(): void {
+	privAte registerFormAtters(): void {
 		this.remoteAgentService.getEnvironment().then(remoteEnvironment => {
 			if (remoteEnvironment) {
-				const formatting: ResourceLabelFormatting = {
-					label: '${path}',
-					separator: remoteEnvironment.os === OperatingSystem.Windows ? '\\' : '/',
-					tildify: remoteEnvironment.os !== OperatingSystem.Windows,
-					normalizeDriveLetter: remoteEnvironment.os === OperatingSystem.Windows,
-					workspaceSuffix: isWeb ? undefined : Schemas.vscodeRemote
+				const formAtting: ResourceLAbelFormAtting = {
+					lAbel: '${pAth}',
+					sepArAtor: remoteEnvironment.os === OperAtingSystem.Windows ? '\\' : '/',
+					tildify: remoteEnvironment.os !== OperAtingSystem.Windows,
+					normAlizeDriveLetter: remoteEnvironment.os === OperAtingSystem.Windows,
+					workspAceSuffix: isWeb ? undefined : SchemAs.vscodeRemote
 				};
-				this.labelService.registerFormatter({
-					scheme: Schemas.vscodeRemote,
-					formatting
+				this.lAbelService.registerFormAtter({
+					scheme: SchemAs.vscodeRemote,
+					formAtting
 				});
-				this.labelService.registerFormatter({
-					scheme: Schemas.userData,
-					formatting
+				this.lAbelService.registerFormAtter({
+					scheme: SchemAs.userDAtA,
+					formAtting
 				});
 			}
 		});
 	}
 }
 
-class RemoteChannelsContribution extends Disposable implements IWorkbenchContribution {
+clAss RemoteChAnnelsContribution extends DisposAble implements IWorkbenchContribution {
 
 	constructor(
 		@ILogService logService: ILogService,
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService,
 	) {
 		super();
-		const updateRemoteLogLevel = () => {
+		const updAteRemoteLogLevel = () => {
 			const connection = remoteAgentService.getConnection();
 			if (!connection) {
 				return;
 			}
-			connection.withChannel('logger', (channel) => LoggerChannelClient.setLevel(channel, logService.getLevel()));
+			connection.withChAnnel('logger', (chAnnel) => LoggerChAnnelClient.setLevel(chAnnel, logService.getLevel()));
 		};
-		updateRemoteLogLevel();
-		this._register(logService.onDidChangeLogLevel(updateRemoteLogLevel));
+		updAteRemoteLogLevel();
+		this._register(logService.onDidChAngeLogLevel(updAteRemoteLogLevel));
 	}
 }
 
-class RemoteLogOutputChannels implements IWorkbenchContribution {
+clAss RemoteLogOutputChAnnels implements IWorkbenchContribution {
 
 	constructor(
 		@IRemoteAgentService remoteAgentService: IRemoteAgentService
 	) {
 		remoteAgentService.getEnvironment().then(remoteEnv => {
 			if (remoteEnv) {
-				const outputChannelRegistry = Registry.as<IOutputChannelRegistry>(OutputExt.OutputChannels);
-				outputChannelRegistry.registerChannel({ id: 'remoteExtensionLog', label: localize('remoteExtensionLog', "Remote Server"), file: joinPath(remoteEnv.logsPath, `${RemoteExtensionLogFileName}.log`), log: true });
+				const outputChAnnelRegistry = Registry.As<IOutputChAnnelRegistry>(OutputExt.OutputChAnnels);
+				outputChAnnelRegistry.registerChAnnel({ id: 'remoteExtensionLog', lAbel: locAlize('remoteExtensionLog', "Remote Server"), file: joinPAth(remoteEnv.logsPAth, `${RemoteExtensionLogFileNAme}.log`), log: true });
 			}
 		});
 	}
 }
 
-const workbenchContributionsRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchContributionsRegistry.registerWorkbenchContribution(LabelContribution, LifecyclePhase.Starting);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteChannelsContribution, LifecyclePhase.Starting);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteLogOutputChannels, LifecyclePhase.Restored);
-workbenchContributionsRegistry.registerWorkbenchContribution(TunnelFactoryContribution, LifecyclePhase.Ready);
-workbenchContributionsRegistry.registerWorkbenchContribution(ShowCandidateContribution, LifecyclePhase.Ready);
+const workbenchContributionsRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchContributionsRegistry.registerWorkbenchContribution(LAbelContribution, LifecyclePhAse.StArting);
+workbenchContributionsRegistry.registerWorkbenchContribution(RemoteChAnnelsContribution, LifecyclePhAse.StArting);
+workbenchContributionsRegistry.registerWorkbenchContribution(RemoteLogOutputChAnnels, LifecyclePhAse.Restored);
+workbenchContributionsRegistry.registerWorkbenchContribution(TunnelFActoryContribution, LifecyclePhAse.ReAdy);
+workbenchContributionsRegistry.registerWorkbenchContribution(ShowCAndidAteContribution, LifecyclePhAse.ReAdy);
 
-const extensionKindSchema: IJSONSchema = {
+const extensionKindSchemA: IJSONSchemA = {
 	type: 'string',
 	enum: [
 		'ui',
-		'workspace',
+		'workspAce',
 		'web'
 	],
 	enumDescriptions: [
-		localize('ui', "UI extension kind. In a remote window, such extensions are enabled only when available on the local machine."),
-		localize('workspace', "Workspace extension kind. In a remote window, such extensions are enabled only when available on the remote."),
-		localize('web', "Web worker extension kind. Such an extension can execute in a web worker extension host.")
+		locAlize('ui', "UI extension kind. In A remote window, such extensions Are enAbled only when AvAilAble on the locAl mAchine."),
+		locAlize('workspAce', "WorkspAce extension kind. In A remote window, such extensions Are enAbled only when AvAilAble on the remote."),
+		locAlize('web', "Web worker extension kind. Such An extension cAn execute in A web worker extension host.")
 	],
 };
 
-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
-	.registerConfiguration({
+Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion)
+	.registerConfigurAtion({
 		id: 'remote',
-		title: localize('remote', "Remote"),
+		title: locAlize('remote', "Remote"),
 		type: 'object',
 		properties: {
 			'remote.extensionKind': {
 				type: 'object',
-				markdownDescription: localize('remote.extensionKind', "Override the kind of an extension. `ui` extensions are installed and run on the local machine while `workspace` extensions are run on the remote. By overriding an extension's default kind using this setting, you specify if that extension should be installed and enabled locally or remotely."),
-				patternProperties: {
-					'([a-z0-9A-Z][a-z0-9\-A-Z]*)\\.([a-z0-9A-Z][a-z0-9\-A-Z]*)$': {
-						oneOf: [{ type: 'array', items: extensionKindSchema }, extensionKindSchema],
-						default: ['ui'],
+				mArkdownDescription: locAlize('remote.extensionKind', "Override the kind of An extension. `ui` extensions Are instAlled And run on the locAl mAchine while `workspAce` extensions Are run on the remote. By overriding An extension's defAult kind using this setting, you specify if thAt extension should be instAlled And enAbled locAlly or remotely."),
+				pAtternProperties: {
+					'([A-z0-9A-Z][A-z0-9\-A-Z]*)\\.([A-z0-9A-Z][A-z0-9\-A-Z]*)$': {
+						oneOf: [{ type: 'ArrAy', items: extensionKindSchemA }, extensionKindSchemA],
+						defAult: ['ui'],
 					},
 				},
-				default: {
-					'pub.name': ['ui']
+				defAult: {
+					'pub.nAme': ['ui']
 				}
 			},
-			'remote.restoreForwardedPorts': {
-				type: 'boolean',
-				markdownDescription: localize('remote.restoreForwardedPorts', "Restores the ports you forwarded in a workspace."),
-				default: false
+			'remote.restoreForwArdedPorts': {
+				type: 'booleAn',
+				mArkdownDescription: locAlize('remote.restoreForwArdedPorts', "Restores the ports you forwArded in A workspAce."),
+				defAult: fAlse
 			},
-			'remote.autoForwardPorts': {
-				type: 'boolean',
-				markdownDescription: localize('remote.autoForwardPorts', "When enabled, URLs with ports (ex. `http://127.0.0.1:3000`) that are printed to your terminals are automatically forwarded."),
-				default: true
+			'remote.AutoForwArdPorts': {
+				type: 'booleAn',
+				mArkdownDescription: locAlize('remote.AutoForwArdPorts', "When enAbled, URLs with ports (ex. `http://127.0.0.1:3000`) thAt Are printed to your terminAls Are AutomAticAlly forwArded."),
+				defAult: true
 			}
 		}
 	});

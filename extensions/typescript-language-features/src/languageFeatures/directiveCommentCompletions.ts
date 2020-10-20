@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import API from '../utils/api';
+import API from '../utils/Api';
 import { DocumentSelector } from '../utils/documentSelector';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-interface Directive {
-	readonly value: string;
-	readonly description: string;
+interfAce Directive {
+	reAdonly vAlue: string;
+	reAdonly description: string;
 }
 
 const tsDirectives: Directive[] = [
 	{
-		value: '@ts-check',
-		description: localize(
+		vAlue: '@ts-check',
+		description: locAlize(
 			'ts-check',
-			"Enables semantic checking in a JavaScript file. Must be at the top of a file.")
+			"EnAbles semAntic checking in A JAvAScript file. Must be At the top of A file.")
 	}, {
-		value: '@ts-nocheck',
-		description: localize(
+		vAlue: '@ts-nocheck',
+		description: locAlize(
 			'ts-nocheck',
-			"Disables semantic checking in a JavaScript file. Must be at the top of a file.")
+			"DisAbles semAntic checking in A JAvAScript file. Must be At the top of A file.")
 	}, {
-		value: '@ts-ignore',
-		description: localize(
+		vAlue: '@ts-ignore',
+		description: locAlize(
 			'ts-ignore',
-			"Suppresses @ts-check errors on the next line of a file.")
+			"Suppresses @ts-check errors on the next line of A file.")
 	}
 ];
 
 const tsDirectives390: Directive[] = [
 	...tsDirectives,
 	{
-		value: '@ts-expect-error',
-		description: localize(
+		vAlue: '@ts-expect-error',
+		description: locAlize(
 			'ts-expect-error',
-			"Suppresses @ts-check errors on the next line of a file, expecting at least one to exist.")
+			"Suppresses @ts-check errors on the next line of A file, expecting At leAst one to exist.")
 	}
 ];
 
-class DirectiveCommentCompletionProvider implements vscode.CompletionItemProvider {
+clAss DirectiveCommentCompletionProvider implements vscode.CompletionItemProvider {
 
 	constructor(
-		private readonly client: ITypeScriptServiceClient,
+		privAte reAdonly client: ITypeScriptServiceClient,
 	) { }
 
 	public provideCompletionItems(
 		document: vscode.TextDocument,
 		position: vscode.Position,
-		_token: vscode.CancellationToken
+		_token: vscode.CAncellAtionToken
 	): vscode.CompletionItem[] {
-		const file = this.client.toOpenedFilePath(document);
+		const file = this.client.toOpenedFilePAth(document);
 		if (!file) {
 			return [];
 		}
 
 		const line = document.lineAt(position.line).text;
-		const prefix = line.slice(0, position.character);
-		const match = prefix.match(/^\s*\/\/+\s?(@[a-zA-Z\-]*)?$/);
-		if (match) {
-			const directives = this.client.apiVersion.gte(API.v390)
+		const prefix = line.slice(0, position.chArActer);
+		const mAtch = prefix.mAtch(/^\s*\/\/+\s?(@[A-zA-Z\-]*)?$/);
+		if (mAtch) {
+			const directives = this.client.ApiVersion.gte(API.v390)
 				? tsDirectives390
 				: tsDirectives;
 
-			return directives.map(directive => {
-				const item = new vscode.CompletionItem(directive.value, vscode.CompletionItemKind.Snippet);
-				item.detail = directive.description;
-				item.range = new vscode.Range(position.line, Math.max(0, position.character - (match[1] ? match[1].length : 0)), position.line, position.character);
+			return directives.mAp(directive => {
+				const item = new vscode.CompletionItem(directive.vAlue, vscode.CompletionItemKind.Snippet);
+				item.detAil = directive.description;
+				item.rAnge = new vscode.RAnge(position.line, MAth.mAx(0, position.chArActer - (mAtch[1] ? mAtch[1].length : 0)), position.line, position.chArActer);
 				return item;
 			});
 		}
@@ -84,7 +84,7 @@ export function register(
 	selector: DocumentSelector,
 	client: ITypeScriptServiceClient,
 ) {
-	return vscode.languages.registerCompletionItemProvider(selector.syntax,
+	return vscode.lAnguAges.registerCompletionItemProvider(selector.syntAx,
 		new DirectiveCommentCompletionProvider(client),
 		'@');
 }

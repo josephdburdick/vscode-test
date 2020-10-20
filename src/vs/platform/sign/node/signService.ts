@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ISignService } from 'vs/platform/sign/common/sign';
+import { ISignService } from 'vs/plAtform/sign/common/sign';
 
-declare module vsda {
-	// the signer is a native module that for historical reasons uses a lower case class name
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	export class signer {
-		sign(arg: any): any;
+declAre module vsdA {
+	// the signer is A nAtive module thAt for historicAl reAsons uses A lower cAse clAss nAme
+	// eslint-disAble-next-line @typescript-eslint/nAming-convention
+	export clAss signer {
+		sign(Arg: Any): Any;
 	}
 }
 
-export class SignService implements ISignService {
-	declare readonly _serviceBrand: undefined;
+export clAss SignService implements ISignService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private vsda(): Promise<typeof vsda> {
-		return new Promise((resolve, reject) => require(['vsda'], resolve, reject));
+	privAte vsdA(): Promise<typeof vsdA> {
+		return new Promise((resolve, reject) => require(['vsdA'], resolve, reject));
 	}
 
-	async sign(value: string): Promise<string> {
+	Async sign(vAlue: string): Promise<string> {
 		try {
-			const vsda = await this.vsda();
-			const signer = new vsda.signer();
+			const vsdA = AwAit this.vsdA();
+			const signer = new vsdA.signer();
 			if (signer) {
-				return signer.sign(value);
+				return signer.sign(vAlue);
 			}
-		} catch (e) {
+		} cAtch (e) {
 			// ignore errors silently
 		}
-		return value;
+		return vAlue;
 	}
 }

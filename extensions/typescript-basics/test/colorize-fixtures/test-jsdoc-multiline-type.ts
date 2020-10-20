@@ -4,19 +4,19 @@
  *   fn: !Function,
  *   context: (!Object|undefined)
  * }}
- * @private
+ * @privAte
  */
-goog.dom.animationFrame.Task_;
+goog.dom.AnimAtionFrAme.TAsk_;
 
 
 /**
  * @typedef {{
- *   measureTask: goog.dom.animationFrame.Task_,
- *   mutateTask: goog.dom.animationFrame.Task_,
- *   state: (!Object|undefined),
- *   args: (!Array|undefined),
- *   isScheduled: boolean
+ *   meAsureTAsk: goog.dom.AnimAtionFrAme.TAsk_,
+ *   mutAteTAsk: goog.dom.AnimAtionFrAme.TAsk_,
+ *   stAte: (!Object|undefined),
+ *   Args: (!ArrAy|undefined),
+ *   isScheduled: booleAn
  * }}
- * @private
+ * @privAte
  */
-goog.dom.animationFrame.TaskSet_;
+goog.dom.AnimAtionFrAme.TAskSet_;

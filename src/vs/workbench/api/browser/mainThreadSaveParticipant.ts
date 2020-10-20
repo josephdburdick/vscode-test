@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 import { shouldSynchronizeModel } from 'vs/editor/common/services/modelService';
-import { localize } from 'vs/nls';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IProgressStep, IProgress } from 'vs/platform/progress/common/progress';
-import { extHostCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ITextFileSaveParticipant, ITextFileService, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { ExtHostContext, ExtHostDocumentSaveParticipantShape, IExtHostContext } from '../common/extHost.protocol';
-import { canceled } from 'vs/base/common/errors';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { locAlize } from 'vs/nls';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IProgressStep, IProgress } from 'vs/plAtform/progress/common/progress';
+import { extHostCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ITextFileSAvePArticipAnt, ITextFileService, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
+import { SAveReAson } from 'vs/workbench/common/editor';
+import { ExtHostContext, ExtHostDocumentSAvePArticipAntShApe, IExtHostContext } from '../common/extHost.protocol';
+import { cAnceled } from 'vs/bAse/common/errors';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-class ExtHostSaveParticipant implements ITextFileSaveParticipant {
+clAss ExtHostSAvePArticipAnt implements ITextFileSAvePArticipAnt {
 
-	private readonly _proxy: ExtHostDocumentSaveParticipantShape;
+	privAte reAdonly _proxy: ExtHostDocumentSAvePArticipAntShApe;
 
 	constructor(extHostContext: IExtHostContext) {
-		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostDocumentSaveParticipant);
+		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostDocumentSAvePArticipAnt);
 	}
 
-	async participate(editorModel: ITextFileEditorModel, env: { reason: SaveReason; }, _progress: IProgress<IProgressStep>, token: CancellationToken): Promise<void> {
+	Async pArticipAte(editorModel: ITextFileEditorModel, env: { reAson: SAveReAson; }, _progress: IProgress<IProgressStep>, token: CAncellAtionToken): Promise<void> {
 
 		if (!editorModel.textEditorModel || !shouldSynchronizeModel(editorModel.textEditorModel)) {
-			// the model never made it to the extension
-			// host meaning we cannot participate in its save
+			// the model never mAde it to the extension
+			// host meAning we cAnnot pArticipAte in its sAve
 			return undefined;
 		}
 
-		return new Promise<any>((resolve, reject) => {
+		return new Promise<Any>((resolve, reject) => {
 
-			token.onCancellationRequested(() => reject(canceled()));
+			token.onCAncellAtionRequested(() => reject(cAnceled()));
 
 			setTimeout(
-				() => reject(new Error(localize('timeout.onWillSave', "Aborted onWillSaveTextDocument-event after 1750ms"))),
+				() => reject(new Error(locAlize('timeout.onWillSAve', "Aborted onWillSAveTextDocument-event After 1750ms"))),
 				1750
 			);
-			this._proxy.$participateInSave(editorModel.resource, env.reason).then(values => {
-				if (!values.every(success => success)) {
-					return Promise.reject(new Error('listener failed'));
+			this._proxy.$pArticipAteInSAve(editorModel.resource, env.reAson).then(vAlues => {
+				if (!vAlues.every(success => success)) {
+					return Promise.reject(new Error('listener fAiled'));
 				}
 				return undefined;
 			}).then(resolve, reject);
@@ -49,21 +49,21 @@ class ExtHostSaveParticipant implements ITextFileSaveParticipant {
 	}
 }
 
-// The save participant can change a model before its saved to support various scenarios like trimming trailing whitespace
+// The sAve pArticipAnt cAn chAnge A model before its sAved to support vArious scenArios like trimming trAiling whitespAce
 @extHostCustomer
-export class SaveParticipant {
+export clAss SAvePArticipAnt {
 
-	private _saveParticipantDisposable: IDisposable;
+	privAte _sAvePArticipAntDisposAble: IDisposAble;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IInstantiationService instantiationService: IInstantiationService,
-		@ITextFileService private readonly _textFileService: ITextFileService
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
+		@ITextFileService privAte reAdonly _textFileService: ITextFileService
 	) {
-		this._saveParticipantDisposable = this._textFileService.files.addSaveParticipant(instantiationService.createInstance(ExtHostSaveParticipant, extHostContext));
+		this._sAvePArticipAntDisposAble = this._textFileService.files.AddSAvePArticipAnt(instAntiAtionService.creAteInstAnce(ExtHostSAvePArticipAnt, extHostContext));
 	}
 
 	dispose(): void {
-		this._saveParticipantDisposable.dispose();
+		this._sAvePArticipAntDisposAble.dispose();
 	}
 }

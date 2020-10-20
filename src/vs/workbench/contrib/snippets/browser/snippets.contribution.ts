@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
-import { Registry } from 'vs/platform/registry/common/platform';
-import * as JSONContributionRegistry from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
-import * as nls from 'vs/nls';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { LanguageId } from 'vs/editor/common/modes';
+import { IJSONSchemA, IJSONSchemAMAp } from 'vs/bAse/common/jsonSchemA';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import * As JSONContributionRegistry from 'vs/plAtform/jsonschemAs/common/jsonContributionRegistry';
+import * As nls from 'vs/nls';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { LAnguAgeId } from 'vs/editor/common/modes';
 import { SnippetFile, Snippet } from 'vs/workbench/contrib/snippets/browser/snippetsFile';
 
-export const ISnippetsService = createDecorator<ISnippetsService>('snippetService');
+export const ISnippetsService = creAteDecorAtor<ISnippetsService>('snippetService');
 
-export interface ISnippetsService {
+export interfAce ISnippetsService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	getSnippetFiles(): Promise<Iterable<SnippetFile>>;
+	getSnippetFiles(): Promise<IterAble<SnippetFile>>;
 
-	getSnippets(languageId: LanguageId): Promise<Snippet[]>;
+	getSnippets(lAnguAgeId: LAnguAgeId): Promise<Snippet[]>;
 
-	getSnippetsSync(languageId: LanguageId): Snippet[];
+	getSnippetsSync(lAnguAgeId: LAnguAgeId): Snippet[];
 }
 
-const languageScopeSchemaId = 'vscode://schemas/snippets';
+const lAnguAgeScopeSchemAId = 'vscode://schemAs/snippets';
 
-const snippetSchemaProperties: IJSONSchemaMap = {
+const snippetSchemAProperties: IJSONSchemAMAp = {
 	prefix: {
-		description: nls.localize('snippetSchema.json.prefix', 'The prefix to use when selecting the snippet in intellisense'),
-		type: ['string', 'array']
+		description: nls.locAlize('snippetSchemA.json.prefix', 'The prefix to use when selecting the snippet in intellisense'),
+		type: ['string', 'ArrAy']
 	},
 	body: {
-		markdownDescription: nls.localize('snippetSchema.json.body', 'The snippet content. Use `$1`, `${1:defaultText}` to define cursor positions, use `$0` for the final cursor position. Insert variable values with `${varName}` and `${varName:defaultText}`, e.g. `This is file: $TM_FILENAME`.'),
-		type: ['string', 'array'],
+		mArkdownDescription: nls.locAlize('snippetSchemA.json.body', 'The snippet content. Use `$1`, `${1:defAultText}` to define cursor positions, use `$0` for the finAl cursor position. Insert vAriAble vAlues with `${vArNAme}` And `${vArNAme:defAultText}`, e.g. `This is file: $TM_FILENAME`.'),
+		type: ['string', 'ArrAy'],
 		items: {
 			type: 'string'
 		}
 	},
 	description: {
-		description: nls.localize('snippetSchema.json.description', 'The snippet description.'),
-		type: ['string', 'array']
+		description: nls.locAlize('snippetSchemA.json.description', 'The snippet description.'),
+		type: ['string', 'ArrAy']
 	}
 };
 
-const languageScopeSchema: IJSONSchema = {
-	id: languageScopeSchemaId,
-	allowComments: true,
-	allowTrailingCommas: true,
-	defaultSnippets: [{
-		label: nls.localize('snippetSchema.json.default', "Empty snippet"),
-		body: { '${1:snippetName}': { 'prefix': '${2:prefix}', 'body': '${3:snippet}', 'description': '${4:description}' } }
+const lAnguAgeScopeSchemA: IJSONSchemA = {
+	id: lAnguAgeScopeSchemAId,
+	AllowComments: true,
+	AllowTrAilingCommAs: true,
+	defAultSnippets: [{
+		lAbel: nls.locAlize('snippetSchemA.json.defAult', "Empty snippet"),
+		body: { '${1:snippetNAme}': { 'prefix': '${2:prefix}', 'body': '${3:snippet}', 'description': '${4:description}' } }
 	}],
 	type: 'object',
-	description: nls.localize('snippetSchema.json', 'User snippet configuration'),
-	additionalProperties: {
+	description: nls.locAlize('snippetSchemA.json', 'User snippet configurAtion'),
+	AdditionAlProperties: {
 		type: 'object',
 		required: ['prefix', 'body'],
-		properties: snippetSchemaProperties,
-		additionalProperties: false
+		properties: snippetSchemAProperties,
+		AdditionAlProperties: fAlse
 	}
 };
 
 
-const globalSchemaId = 'vscode://schemas/global-snippets';
-const globalSchema: IJSONSchema = {
-	id: globalSchemaId,
-	allowComments: true,
-	allowTrailingCommas: true,
-	defaultSnippets: [{
-		label: nls.localize('snippetSchema.json.default', "Empty snippet"),
-		body: { '${1:snippetName}': { 'scope': '${2:scope}', 'prefix': '${3:prefix}', 'body': '${4:snippet}', 'description': '${5:description}' } }
+const globAlSchemAId = 'vscode://schemAs/globAl-snippets';
+const globAlSchemA: IJSONSchemA = {
+	id: globAlSchemAId,
+	AllowComments: true,
+	AllowTrAilingCommAs: true,
+	defAultSnippets: [{
+		lAbel: nls.locAlize('snippetSchemA.json.defAult', "Empty snippet"),
+		body: { '${1:snippetNAme}': { 'scope': '${2:scope}', 'prefix': '${3:prefix}', 'body': '${4:snippet}', 'description': '${5:description}' } }
 	}],
 	type: 'object',
-	description: nls.localize('snippetSchema.json', 'User snippet configuration'),
-	additionalProperties: {
+	description: nls.locAlize('snippetSchemA.json', 'User snippet configurAtion'),
+	AdditionAlProperties: {
 		type: 'object',
 		required: ['prefix', 'body'],
 		properties: {
-			...snippetSchemaProperties,
+			...snippetSchemAProperties,
 			scope: {
-				description: nls.localize('snippetSchema.json.scope', "A list of language names to which this snippet applies, e.g. 'typescript,javascript'."),
+				description: nls.locAlize('snippetSchemA.json.scope', "A list of lAnguAge nAmes to which this snippet Applies, e.g. 'typescript,jAvAscript'."),
 				type: 'string'
 			}
 		},
-		additionalProperties: false
+		AdditionAlProperties: fAlse
 	}
 };
 
-const reg = Registry.as<JSONContributionRegistry.IJSONContributionRegistry>(JSONContributionRegistry.Extensions.JSONContribution);
-reg.registerSchema(languageScopeSchemaId, languageScopeSchema);
-reg.registerSchema(globalSchemaId, globalSchema);
+const reg = Registry.As<JSONContributionRegistry.IJSONContributionRegistry>(JSONContributionRegistry.Extensions.JSONContribution);
+reg.registerSchemA(lAnguAgeScopeSchemAId, lAnguAgeScopeSchemA);
+reg.registerSchemA(globAlSchemAId, globAlSchemA);

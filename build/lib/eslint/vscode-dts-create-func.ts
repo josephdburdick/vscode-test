@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as eslint from 'eslint';
-import { TSESTree, AST_NODE_TYPES } from '@typescript-eslint/experimental-utils';
+import * As eslint from 'eslint';
+import { TSESTree, AST_NODE_TYPES } from '@typescript-eslint/experimentAl-utils';
 
-export = new class ApiLiteralOrTypes implements eslint.Rule.RuleModule {
+export = new clAss ApiLiterAlOrTypes implements eslint.Rule.RuleModule {
 
-	readonly meta: eslint.Rule.RuleMetaData = {
-		docs: { url: 'https://github.com/microsoft/vscode/wiki/Extension-API-guidelines#creating-objects' },
-		messages: { sync: '`createXYZ`-functions are constructor-replacements and therefore must return sync', }
+	reAdonly metA: eslint.Rule.RuleMetADAtA = {
+		docs: { url: 'https://github.com/microsoft/vscode/wiki/Extension-API-guidelines#creAting-objects' },
+		messAges: { sync: '`creAteXYZ`-functions Are constructor-replAcements And therefore must return sync', }
 	};
 
-	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
+	creAte(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 
 		return {
-			['TSDeclareFunction Identifier[name=/create.*/]']: (node: any) => {
+			['TSDeclAreFunction Identifier[nAme=/creAte.*/]']: (node: Any) => {
 
-				const decl = <TSESTree.FunctionDeclaration>(<TSESTree.Identifier>node).parent;
+				const decl = <TSESTree.FunctionDeclArAtion>(<TSESTree.Identifier>node).pArent;
 
-				if (decl.returnType?.typeAnnotation.type !== AST_NODE_TYPES.TSTypeReference) {
+				if (decl.returnType?.typeAnnotAtion.type !== AST_NODE_TYPES.TSTypeReference) {
 					return;
 				}
-				if (decl.returnType.typeAnnotation.typeName.type !== AST_NODE_TYPES.Identifier) {
+				if (decl.returnType.typeAnnotAtion.typeNAme.type !== AST_NODE_TYPES.Identifier) {
 					return;
 				}
 
-				const ident = decl.returnType.typeAnnotation.typeName.name;
-				if (ident === 'Promise' || ident === 'Thenable') {
+				const ident = decl.returnType.typeAnnotAtion.typeNAme.nAme;
+				if (ident === 'Promise' || ident === 'ThenAble') {
 					context.report({
 						node,
-						messageId: 'sync'
+						messAgeId: 'sync'
 					});
 				}
 			}

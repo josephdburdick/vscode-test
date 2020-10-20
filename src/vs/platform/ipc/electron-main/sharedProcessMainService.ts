@@ -1,36 +1,36 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const ISharedProcessMainService = createDecorator<ISharedProcessMainService>('sharedProcessMainService');
+export const IShAredProcessMAinService = creAteDecorAtor<IShAredProcessMAinService>('shAredProcessMAinService');
 
-export interface ISharedProcessMainService {
+export interfAce IShAredProcessMAinService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	whenSharedProcessReady(): Promise<void>;
-	toggleSharedProcessWindow(): Promise<void>;
+	whenShAredProcessReAdy(): Promise<void>;
+	toggleShAredProcessWindow(): Promise<void>;
 }
 
-export interface ISharedProcess {
-	whenReady(): Promise<void>;
+export interfAce IShAredProcess {
+	whenReAdy(): Promise<void>;
 	toggle(): void;
 }
 
-export class SharedProcessMainService implements ISharedProcessMainService {
+export clAss ShAredProcessMAinService implements IShAredProcessMAinService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(private sharedProcess: ISharedProcess) { }
+	constructor(privAte shAredProcess: IShAredProcess) { }
 
-	whenSharedProcessReady(): Promise<void> {
-		return this.sharedProcess.whenReady();
+	whenShAredProcessReAdy(): Promise<void> {
+		return this.shAredProcess.whenReAdy();
 	}
 
-	async toggleSharedProcessWindow(): Promise<void> {
-		return this.sharedProcess.toggle();
+	Async toggleShAredProcessWindow(): Promise<void> {
+		return this.shAredProcess.toggle();
 	}
 }

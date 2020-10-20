@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter } from 'vs/base/common/event';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import * as dom from 'vs/base/browser/dom';
-import * as arrays from 'vs/base/common/arrays';
-import { ISelectBoxDelegate, ISelectOptionItem, ISelectBoxOptions, ISelectBoxStyles, ISelectData } from 'vs/base/browser/ui/selectBox/selectBox';
-import { isMacintosh } from 'vs/base/common/platform';
-import { Gesture, EventType } from 'vs/base/browser/touch';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import * As dom from 'vs/bAse/browser/dom';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { ISelectBoxDelegAte, ISelectOptionItem, ISelectBoxOptions, ISelectBoxStyles, ISelectDAtA } from 'vs/bAse/browser/ui/selectBox/selectBox';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { Gesture, EventType } from 'vs/bAse/browser/touch';
 
-export class SelectBoxNative extends Disposable implements ISelectBoxDelegate {
+export clAss SelectBoxNAtive extends DisposAble implements ISelectBoxDelegAte {
 
-	private selectElement: HTMLSelectElement;
-	private selectBoxOptions: ISelectBoxOptions;
-	private options: ISelectOptionItem[];
-	private selected = 0;
-	private readonly _onDidSelect: Emitter<ISelectData>;
-	private styles: ISelectBoxStyles;
+	privAte selectElement: HTMLSelectElement;
+	privAte selectBoxOptions: ISelectBoxOptions;
+	privAte options: ISelectOptionItem[];
+	privAte selected = 0;
+	privAte reAdonly _onDidSelect: Emitter<ISelectDAtA>;
+	privAte styles: ISelectBoxStyles;
 
 	constructor(options: ISelectOptionItem[], selected: number, styles: ISelectBoxStyles, selectBoxOptions?: ISelectBoxOptions) {
 		super();
-		this.selectBoxOptions = selectBoxOptions || Object.create(null);
+		this.selectBoxOptions = selectBoxOptions || Object.creAte(null);
 
 		this.options = [];
 
-		this.selectElement = document.createElement('select');
+		this.selectElement = document.creAteElement('select');
 
-		this.selectElement.className = 'monaco-select-box';
+		this.selectElement.clAssNAme = 'monAco-select-box';
 
-		if (typeof this.selectBoxOptions.ariaLabel === 'string') {
-			this.selectElement.setAttribute('aria-label', this.selectBoxOptions.ariaLabel);
+		if (typeof this.selectBoxOptions.AriALAbel === 'string') {
+			this.selectElement.setAttribute('AriA-lAbel', this.selectBoxOptions.AriALAbel);
 		}
 
-		this._onDidSelect = this._register(new Emitter<ISelectData>());
+		this._onDidSelect = this._register(new Emitter<ISelectDAtA>());
 
 		this.styles = styles;
 
@@ -43,58 +43,58 @@ export class SelectBoxNative extends Disposable implements ISelectBoxDelegate {
 		this.setOptions(options, selected);
 	}
 
-	private registerListeners() {
-		this._register(Gesture.addTarget(this.selectElement));
-		[EventType.Tap].forEach(eventType => {
-			this._register(dom.addDisposableListener(this.selectElement, eventType, (e) => {
+	privAte registerListeners() {
+		this._register(Gesture.AddTArget(this.selectElement));
+		[EventType.TAp].forEAch(eventType => {
+			this._register(dom.AddDisposAbleListener(this.selectElement, eventType, (e) => {
 				this.selectElement.focus();
 			}));
 		});
 
-		this._register(dom.addStandardDisposableListener(this.selectElement, 'click', (e) => {
+		this._register(dom.AddStAndArdDisposAbleListener(this.selectElement, 'click', (e) => {
 			dom.EventHelper.stop(e, true);
 		}));
 
-		this._register(dom.addStandardDisposableListener(this.selectElement, 'change', (e) => {
-			this.selectElement.title = e.target.value;
+		this._register(dom.AddStAndArdDisposAbleListener(this.selectElement, 'chAnge', (e) => {
+			this.selectElement.title = e.tArget.vAlue;
 			this._onDidSelect.fire({
-				index: e.target.selectedIndex,
-				selected: e.target.value
+				index: e.tArget.selectedIndex,
+				selected: e.tArget.vAlue
 			});
 		}));
 
-		this._register(dom.addStandardDisposableListener(this.selectElement, 'keydown', (e) => {
-			let showSelect = false;
+		this._register(dom.AddStAndArdDisposAbleListener(this.selectElement, 'keydown', (e) => {
+			let showSelect = fAlse;
 
-			if (isMacintosh) {
-				if (e.keyCode === KeyCode.DownArrow || e.keyCode === KeyCode.UpArrow || e.keyCode === KeyCode.Space) {
+			if (isMAcintosh) {
+				if (e.keyCode === KeyCode.DownArrow || e.keyCode === KeyCode.UpArrow || e.keyCode === KeyCode.SpAce) {
 					showSelect = true;
 				}
 			} else {
-				if (e.keyCode === KeyCode.DownArrow && e.altKey || e.keyCode === KeyCode.Space || e.keyCode === KeyCode.Enter) {
+				if (e.keyCode === KeyCode.DownArrow && e.AltKey || e.keyCode === KeyCode.SpAce || e.keyCode === KeyCode.Enter) {
 					showSelect = true;
 				}
 			}
 
 			if (showSelect) {
-				// Space, Enter, is used to expand select box, do not propagate it (prevent action bar action run)
-				e.stopPropagation();
+				// SpAce, Enter, is used to expAnd select box, do not propAgAte it (prevent Action bAr Action run)
+				e.stopPropAgAtion();
 			}
 		}));
 	}
 
-	public get onDidSelect(): Event<ISelectData> {
+	public get onDidSelect(): Event<ISelectDAtA> {
 		return this._onDidSelect.event;
 	}
 
 	public setOptions(options: ISelectOptionItem[], selected?: number): void {
 
-		if (!this.options || !arrays.equals(this.options, options)) {
+		if (!this.options || !ArrAys.equAls(this.options, options)) {
 			this.options = options;
 			this.selectElement.options.length = 0;
 
-			this.options.forEach((option, index) => {
-				this.selectElement.add(this.createOption(option.text, index, option.isDisabled));
+			this.options.forEAch((option, index) => {
+				this.selectElement.Add(this.creAteOption(option.text, index, option.isDisAbled));
 			});
 
 		}
@@ -111,7 +111,7 @@ export class SelectBoxNative extends Disposable implements ISelectBoxDelegate {
 			this.selected = index;
 		} else if (index > this.options.length - 1) {
 			// Adjust index to end of list
-			// This could make client out of sync with the select
+			// This could mAke client out of sync with the select
 			this.select(this.options.length - 1);
 		} else if (this.selected < 0) {
 			this.selected = 0;
@@ -125,9 +125,9 @@ export class SelectBoxNative extends Disposable implements ISelectBoxDelegate {
 		}
 	}
 
-	public setAriaLabel(label: string): void {
-		this.selectBoxOptions.ariaLabel = label;
-		this.selectElement.setAttribute('aria-label', label);
+	public setAriALAbel(lAbel: string): void {
+		this.selectBoxOptions.AriALAbel = lAbel;
+		this.selectElement.setAttribute('AriA-lAbel', lAbel);
 	}
 
 	public focus(): void {
@@ -142,38 +142,38 @@ export class SelectBoxNative extends Disposable implements ISelectBoxDelegate {
 		}
 	}
 
-	public render(container: HTMLElement): void {
-		container.classList.add('select-container');
-		container.appendChild(this.selectElement);
+	public render(contAiner: HTMLElement): void {
+		contAiner.clAssList.Add('select-contAiner');
+		contAiner.AppendChild(this.selectElement);
 		this.setOptions(this.options, this.selected);
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
 	public style(styles: ISelectBoxStyles): void {
 		this.styles = styles;
-		this.applyStyles();
+		this.ApplyStyles();
 	}
 
-	public applyStyles(): void {
+	public ApplyStyles(): void {
 
-		// Style native select
+		// Style nAtive select
 		if (this.selectElement) {
-			const background = this.styles.selectBackground ? this.styles.selectBackground.toString() : '';
+			const bAckground = this.styles.selectBAckground ? this.styles.selectBAckground.toString() : '';
 			const foreground = this.styles.selectForeground ? this.styles.selectForeground.toString() : '';
 			const border = this.styles.selectBorder ? this.styles.selectBorder.toString() : '';
 
-			this.selectElement.style.backgroundColor = background;
+			this.selectElement.style.bAckgroundColor = bAckground;
 			this.selectElement.style.color = foreground;
 			this.selectElement.style.borderColor = border;
 		}
 
 	}
 
-	private createOption(value: string, index: number, disabled?: boolean): HTMLOptionElement {
-		const option = document.createElement('option');
-		option.value = value;
-		option.text = value;
-		option.disabled = !!disabled;
+	privAte creAteOption(vAlue: string, index: number, disAbled?: booleAn): HTMLOptionElement {
+		const option = document.creAteElement('option');
+		option.vAlue = vAlue;
+		option.text = vAlue;
+		option.disAbled = !!disAbled;
 
 		return option;
 	}

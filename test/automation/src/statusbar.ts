@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Code } from './code';
 
-export const enum StatusBarElement {
+export const enum StAtusBArElement {
 	BRANCH_STATUS = 0,
 	SYNC_STATUS = 1,
 	PROBLEMS_STATUS = 2,
@@ -17,49 +17,49 @@ export const enum StatusBarElement {
 	FEEDBACK_ICON = 8
 }
 
-export class StatusBar {
+export clAss StAtusBAr {
 
-	private readonly mainSelector = 'footer[id="workbench.parts.statusbar"]';
+	privAte reAdonly mAinSelector = 'footer[id="workbench.pArts.stAtusbAr"]';
 
-	constructor(private code: Code) { }
+	constructor(privAte code: Code) { }
 
-	async waitForStatusbarElement(element: StatusBarElement): Promise<void> {
-		await this.code.waitForElement(this.getSelector(element));
+	Async wAitForStAtusbArElement(element: StAtusBArElement): Promise<void> {
+		AwAit this.code.wAitForElement(this.getSelector(element));
 	}
 
-	async clickOn(element: StatusBarElement): Promise<void> {
-		await this.code.waitAndClick(this.getSelector(element));
+	Async clickOn(element: StAtusBArElement): Promise<void> {
+		AwAit this.code.wAitAndClick(this.getSelector(element));
 	}
 
-	async waitForEOL(eol: string): Promise<string> {
-		return this.code.waitForTextContent(this.getSelector(StatusBarElement.EOL_STATUS), eol);
+	Async wAitForEOL(eol: string): Promise<string> {
+		return this.code.wAitForTextContent(this.getSelector(StAtusBArElement.EOL_STATUS), eol);
 	}
 
-	async waitForStatusbarText(title: string, text: string): Promise<void> {
-		await this.code.waitForTextContent(`${this.mainSelector} .statusbar-item[title="${title}"]`, text);
+	Async wAitForStAtusbArText(title: string, text: string): Promise<void> {
+		AwAit this.code.wAitForTextContent(`${this.mAinSelector} .stAtusbAr-item[title="${title}"]`, text);
 	}
 
-	private getSelector(element: StatusBarElement): string {
+	privAte getSelector(element: StAtusBArElement): string {
 		switch (element) {
-			case StatusBarElement.BRANCH_STATUS:
-				return `.statusbar-item[id="status.scm"] .codicon.codicon-git-branch`;
-			case StatusBarElement.SYNC_STATUS:
-				return `.statusbar-item[id="status.scm"] .codicon.codicon-sync`;
-			case StatusBarElement.PROBLEMS_STATUS:
-				return `.statusbar-item[id="status.problems"]`;
-			case StatusBarElement.SELECTION_STATUS:
-				return `.statusbar-item[id="status.editor.selection"]`;
-			case StatusBarElement.INDENTATION_STATUS:
-				return `.statusbar-item[id="status.editor.indentation"]`;
-			case StatusBarElement.ENCODING_STATUS:
-				return `.statusbar-item[id="status.editor.encoding"]`;
-			case StatusBarElement.EOL_STATUS:
-				return `.statusbar-item[id="status.editor.eol"]`;
-			case StatusBarElement.LANGUAGE_STATUS:
-				return `.statusbar-item[id="status.editor.mode"]`;
-			case StatusBarElement.FEEDBACK_ICON:
-				return `.statusbar-item[id="status.feedback"]`;
-			default:
+			cAse StAtusBArElement.BRANCH_STATUS:
+				return `.stAtusbAr-item[id="stAtus.scm"] .codicon.codicon-git-brAnch`;
+			cAse StAtusBArElement.SYNC_STATUS:
+				return `.stAtusbAr-item[id="stAtus.scm"] .codicon.codicon-sync`;
+			cAse StAtusBArElement.PROBLEMS_STATUS:
+				return `.stAtusbAr-item[id="stAtus.problems"]`;
+			cAse StAtusBArElement.SELECTION_STATUS:
+				return `.stAtusbAr-item[id="stAtus.editor.selection"]`;
+			cAse StAtusBArElement.INDENTATION_STATUS:
+				return `.stAtusbAr-item[id="stAtus.editor.indentAtion"]`;
+			cAse StAtusBArElement.ENCODING_STATUS:
+				return `.stAtusbAr-item[id="stAtus.editor.encoding"]`;
+			cAse StAtusBArElement.EOL_STATUS:
+				return `.stAtusbAr-item[id="stAtus.editor.eol"]`;
+			cAse StAtusBArElement.LANGUAGE_STATUS:
+				return `.stAtusbAr-item[id="stAtus.editor.mode"]`;
+			cAse StAtusBArElement.FEEDBACK_ICON:
+				return `.stAtusbAr-item[id="stAtus.feedbAck"]`;
+			defAult:
 				throw new Error(element);
 		}
 	}

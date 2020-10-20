@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IColorPresentation } from 'vs/editor/common/modes';
+import { Color } from 'vs/bAse/common/color';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IColorPresentAtion } from 'vs/editor/common/modes';
 
-export class ColorPickerModel {
+export clAss ColorPickerModel {
 
-	readonly originalColor: Color;
-	private _color: Color;
+	reAdonly originAlColor: Color;
+	privAte _color: Color;
 
 	get color(): Color {
 		return this._color;
 	}
 
 	set color(color: Color) {
-		if (this._color.equals(color)) {
+		if (this._color.equAls(color)) {
 			return;
 		}
 
 		this._color = color;
-		this._onDidChangeColor.fire(color);
+		this._onDidChAngeColor.fire(color);
 	}
 
-	get presentation(): IColorPresentation { return this.colorPresentations[this.presentationIndex]; }
+	get presentAtion(): IColorPresentAtion { return this.colorPresentAtions[this.presentAtionIndex]; }
 
-	private _colorPresentations: IColorPresentation[];
+	privAte _colorPresentAtions: IColorPresentAtion[];
 
-	get colorPresentations(): IColorPresentation[] {
-		return this._colorPresentations;
+	get colorPresentAtions(): IColorPresentAtion[] {
+		return this._colorPresentAtions;
 	}
 
-	set colorPresentations(colorPresentations: IColorPresentation[]) {
-		this._colorPresentations = colorPresentations;
-		if (this.presentationIndex > colorPresentations.length - 1) {
-			this.presentationIndex = 0;
+	set colorPresentAtions(colorPresentAtions: IColorPresentAtion[]) {
+		this._colorPresentAtions = colorPresentAtions;
+		if (this.presentAtionIndex > colorPresentAtions.length - 1) {
+			this.presentAtionIndex = 0;
 		}
-		this._onDidChangePresentation.fire(this.presentation);
+		this._onDidChAngePresentAtion.fire(this.presentAtion);
 	}
 
-	private readonly _onColorFlushed = new Emitter<Color>();
-	readonly onColorFlushed: Event<Color> = this._onColorFlushed.event;
+	privAte reAdonly _onColorFlushed = new Emitter<Color>();
+	reAdonly onColorFlushed: Event<Color> = this._onColorFlushed.event;
 
-	private readonly _onDidChangeColor = new Emitter<Color>();
-	readonly onDidChangeColor: Event<Color> = this._onDidChangeColor.event;
+	privAte reAdonly _onDidChAngeColor = new Emitter<Color>();
+	reAdonly onDidChAngeColor: Event<Color> = this._onDidChAngeColor.event;
 
-	private readonly _onDidChangePresentation = new Emitter<IColorPresentation>();
-	readonly onDidChangePresentation: Event<IColorPresentation> = this._onDidChangePresentation.event;
+	privAte reAdonly _onDidChAngePresentAtion = new Emitter<IColorPresentAtion>();
+	reAdonly onDidChAngePresentAtion: Event<IColorPresentAtion> = this._onDidChAngePresentAtion.event;
 
-	constructor(color: Color, availableColorPresentations: IColorPresentation[], private presentationIndex: number) {
-		this.originalColor = color;
+	constructor(color: Color, AvAilAbleColorPresentAtions: IColorPresentAtion[], privAte presentAtionIndex: number) {
+		this.originAlColor = color;
 		this._color = color;
-		this._colorPresentations = availableColorPresentations;
+		this._colorPresentAtions = AvAilAbleColorPresentAtions;
 	}
 
-	selectNextColorPresentation(): void {
-		this.presentationIndex = (this.presentationIndex + 1) % this.colorPresentations.length;
+	selectNextColorPresentAtion(): void {
+		this.presentAtionIndex = (this.presentAtionIndex + 1) % this.colorPresentAtions.length;
 		this.flushColor();
-		this._onDidChangePresentation.fire(this.presentation);
+		this._onDidChAngePresentAtion.fire(this.presentAtion);
 	}
 
-	guessColorPresentation(color: Color, originalText: string): void {
-		for (let i = 0; i < this.colorPresentations.length; i++) {
-			if (originalText.toLowerCase() === this.colorPresentations[i].label) {
-				this.presentationIndex = i;
-				this._onDidChangePresentation.fire(this.presentation);
-				break;
+	guessColorPresentAtion(color: Color, originAlText: string): void {
+		for (let i = 0; i < this.colorPresentAtions.length; i++) {
+			if (originAlText.toLowerCAse() === this.colorPresentAtions[i].lAbel) {
+				this.presentAtionIndex = i;
+				this._onDidChAngePresentAtion.fire(this.presentAtion);
+				breAk;
 			}
 		}
 	}

@@ -1,115 +1,115 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as chokidar from 'chokidar';
-import * as fs from 'fs';
-import * as gracefulFs from 'graceful-fs';
-gracefulFs.gracefulify(fs);
-import * as extpath from 'vs/base/common/extpath';
-import * as glob from 'vs/base/common/glob';
-import { FileChangeType } from 'vs/platform/files/common/files';
-import { ThrottledDelayer } from 'vs/base/common/async';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { realcaseSync } from 'vs/base/node/extpath';
-import { isMacintosh, isLinux } from 'vs/base/common/platform';
-import { IDiskFileChange, normalizeFileChanges, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
-import { IWatcherRequest, IWatcherService, IWatcherOptions } from 'vs/platform/files/node/watcher/unix/watcher';
-import { Emitter, Event } from 'vs/base/common/event';
-import { equals } from 'vs/base/common/arrays';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * As chokidAr from 'chokidAr';
+import * As fs from 'fs';
+import * As grAcefulFs from 'grAceful-fs';
+grAcefulFs.grAcefulify(fs);
+import * As extpAth from 'vs/bAse/common/extpAth';
+import * As glob from 'vs/bAse/common/glob';
+import { FileChAngeType } from 'vs/plAtform/files/common/files';
+import { ThrottledDelAyer } from 'vs/bAse/common/Async';
+import { normAlizeNFC } from 'vs/bAse/common/normAlizAtion';
+import { reAlcAseSync } from 'vs/bAse/node/extpAth';
+import { isMAcintosh, isLinux } from 'vs/bAse/common/plAtform';
+import { IDiskFileChAnge, normAlizeFileChAnges, ILogMessAge } from 'vs/plAtform/files/node/wAtcher/wAtcher';
+import { IWAtcherRequest, IWAtcherService, IWAtcherOptions } from 'vs/plAtform/files/node/wAtcher/unix/wAtcher';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { equAls } from 'vs/bAse/common/ArrAys';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-process.noAsar = true; // disable ASAR support in watcher process
+process.noAsAr = true; // disAble ASAR support in wAtcher process
 
-interface IWatcher {
-	requests: ExtendedWatcherRequest[];
+interfAce IWAtcher {
+	requests: ExtendedWAtcherRequest[];
 	stop(): Promise<void>;
 }
 
-interface ExtendedWatcherRequest extends IWatcherRequest {
-	parsedPattern?: glob.ParsedPattern;
+interfAce ExtendedWAtcherRequest extends IWAtcherRequest {
+	pArsedPAttern?: glob.PArsedPAttern;
 }
 
-export class ChokidarWatcherService extends Disposable implements IWatcherService {
+export clAss ChokidArWAtcherService extends DisposAble implements IWAtcherService {
 
-	private static readonly FS_EVENT_DELAY = 50; // aggregate and only emit events when changes have stopped for this duration (in ms)
-	private static readonly EVENT_SPAM_WARNING_THRESHOLD = 60 * 1000; // warn after certain time span of event spam
+	privAte stAtic reAdonly FS_EVENT_DELAY = 50; // AggregAte And only emit events when chAnges hAve stopped for this durAtion (in ms)
+	privAte stAtic reAdonly EVENT_SPAM_WARNING_THRESHOLD = 60 * 1000; // wArn After certAin time spAn of event spAm
 
-	private readonly _onDidChangeFile = this._register(new Emitter<IDiskFileChange[]>());
-	readonly onDidChangeFile = this._onDidChangeFile.event;
+	privAte reAdonly _onDidChAngeFile = this._register(new Emitter<IDiskFileChAnge[]>());
+	reAdonly onDidChAngeFile = this._onDidChAngeFile.event;
 
-	private readonly _onDidLogMessage = this._register(new Emitter<ILogMessage>());
-	readonly onDidLogMessage: Event<ILogMessage> = this._onDidLogMessage.event;
+	privAte reAdonly _onDidLogMessAge = this._register(new Emitter<ILogMessAge>());
+	reAdonly onDidLogMessAge: Event<ILogMessAge> = this._onDidLogMessAge.event;
 
-	private watchers = new Map<string, IWatcher>();
+	privAte wAtchers = new MAp<string, IWAtcher>();
 
-	private _watcherCount = 0;
-	get wacherCount() { return this._watcherCount; }
+	privAte _wAtcherCount = 0;
+	get wAcherCount() { return this._wAtcherCount; }
 
-	private pollingInterval?: number;
-	private usePolling?: boolean;
-	private verboseLogging: boolean | undefined;
+	privAte pollingIntervAl?: number;
+	privAte usePolling?: booleAn;
+	privAte verboseLogging: booleAn | undefined;
 
-	private spamCheckStartTime: number | undefined;
-	private spamWarningLogged: boolean | undefined;
-	private enospcErrorLogged: boolean | undefined;
+	privAte spAmCheckStArtTime: number | undefined;
+	privAte spAmWArningLogged: booleAn | undefined;
+	privAte enospcErrorLogged: booleAn | undefined;
 
-	async init(options: IWatcherOptions): Promise<void> {
-		this.pollingInterval = options.pollingInterval;
+	Async init(options: IWAtcherOptions): Promise<void> {
+		this.pollingIntervAl = options.pollingIntervAl;
 		this.usePolling = options.usePolling;
-		this.watchers.clear();
-		this._watcherCount = 0;
+		this.wAtchers.cleAr();
+		this._wAtcherCount = 0;
 		this.verboseLogging = options.verboseLogging;
 	}
 
-	async setVerboseLogging(enabled: boolean): Promise<void> {
-		this.verboseLogging = enabled;
+	Async setVerboseLogging(enAbled: booleAn): Promise<void> {
+		this.verboseLogging = enAbled;
 	}
 
-	async setRoots(requests: IWatcherRequest[]): Promise<void> {
-		const watchers = new Map<string, IWatcher>();
+	Async setRoots(requests: IWAtcherRequest[]): Promise<void> {
+		const wAtchers = new MAp<string, IWAtcher>();
 		const newRequests: string[] = [];
 
-		const requestsByBasePath = normalizeRoots(requests);
+		const requestsByBAsePAth = normAlizeRoots(requests);
 
-		// evaluate new & remaining watchers
-		for (const basePath in requestsByBasePath) {
-			const watcher = this.watchers.get(basePath);
-			if (watcher && isEqualRequests(watcher.requests, requestsByBasePath[basePath])) {
-				watchers.set(basePath, watcher);
-				this.watchers.delete(basePath);
+		// evAluAte new & remAining wAtchers
+		for (const bAsePAth in requestsByBAsePAth) {
+			const wAtcher = this.wAtchers.get(bAsePAth);
+			if (wAtcher && isEquAlRequests(wAtcher.requests, requestsByBAsePAth[bAsePAth])) {
+				wAtchers.set(bAsePAth, wAtcher);
+				this.wAtchers.delete(bAsePAth);
 			} else {
-				newRequests.push(basePath);
+				newRequests.push(bAsePAth);
 			}
 		}
 
-		// stop all old watchers
-		for (const [, watcher] of this.watchers) {
-			await watcher.stop();
+		// stop All old wAtchers
+		for (const [, wAtcher] of this.wAtchers) {
+			AwAit wAtcher.stop();
 		}
 
-		// start all new watchers
-		for (const basePath of newRequests) {
-			const requests = requestsByBasePath[basePath];
-			watchers.set(basePath, this.watch(basePath, requests));
+		// stArt All new wAtchers
+		for (const bAsePAth of newRequests) {
+			const requests = requestsByBAsePAth[bAsePAth];
+			wAtchers.set(bAsePAth, this.wAtch(bAsePAth, requests));
 		}
 
-		this.watchers = watchers;
+		this.wAtchers = wAtchers;
 	}
 
-	private watch(basePath: string, requests: IWatcherRequest[]): IWatcher {
-		const pollingInterval = this.pollingInterval || 5000;
+	privAte wAtch(bAsePAth: string, requests: IWAtcherRequest[]): IWAtcher {
+		const pollingIntervAl = this.pollingIntervAl || 5000;
 		const usePolling = this.usePolling;
 
-		const watcherOpts: chokidar.WatchOptions = {
-			ignoreInitial: true,
+		const wAtcherOpts: chokidAr.WAtchOptions = {
+			ignoreInitiAl: true,
 			ignorePermissionErrors: true,
-			followSymlinks: true, // this is the default of chokidar and supports file events through symlinks
-			interval: pollingInterval, // while not used in normal cases, if any error causes chokidar to fallback to polling, increase its intervals
-			binaryInterval: pollingInterval,
+			followSymlinks: true, // this is the defAult of chokidAr And supports file events through symlinks
+			intervAl: pollingIntervAl, // while not used in normAl cAses, if Any error cAuses chokidAr to fAllbAck to polling, increAse its intervAls
+			binAryIntervAl: pollingIntervAl,
 			usePolling: usePolling,
-			disableGlobbing: true // fix https://github.com/microsoft/vscode/issues/4586
+			disAbleGlobbing: true // fix https://github.com/microsoft/vscode/issues/4586
 		};
 
 		const excludes: string[] = [];
@@ -119,141 +119,141 @@ export class ChokidarWatcherService extends Disposable implements IWatcherServic
 			excludes.push(...requests[0].excludes); // if there's only one request, use the built-in ignore-filterering
 		}
 
-		if ((isMacintosh || isLinux) && (basePath.length === 0 || basePath === '/')) {
+		if ((isMAcintosh || isLinux) && (bAsePAth.length === 0 || bAsePAth === '/')) {
 			excludes.push('/dev/**');
 			if (isLinux) {
 				excludes.push('/proc/**', '/sys/**');
 			}
 		}
 
-		excludes.push('**/*.asar'); // Ensure we never recurse into ASAR archives
+		excludes.push('**/*.AsAr'); // Ensure we never recurse into ASAR Archives
 
-		watcherOpts.ignored = excludes;
+		wAtcherOpts.ignored = excludes;
 
-		// Chokidar fails when the basePath does not match case-identical to the path on disk
-		// so we have to find the real casing of the path and do some path massaging to fix this
-		// see https://github.com/paulmillr/chokidar/issues/418
-		const realBasePath = isMacintosh ? (realcaseSync(basePath) || basePath) : basePath;
-		const realBasePathLength = realBasePath.length;
-		const realBasePathDiffers = (basePath !== realBasePath);
+		// ChokidAr fAils when the bAsePAth does not mAtch cAse-identicAl to the pAth on disk
+		// so we hAve to find the reAl cAsing of the pAth And do some pAth mAssAging to fix this
+		// see https://github.com/pAulmillr/chokidAr/issues/418
+		const reAlBAsePAth = isMAcintosh ? (reAlcAseSync(bAsePAth) || bAsePAth) : bAsePAth;
+		const reAlBAsePAthLength = reAlBAsePAth.length;
+		const reAlBAsePAthDiffers = (bAsePAth !== reAlBAsePAth);
 
-		if (realBasePathDiffers) {
-			this.warn(`Watcher basePath does not match version on disk and was corrected (original: ${basePath}, real: ${realBasePath})`);
+		if (reAlBAsePAthDiffers) {
+			this.wArn(`WAtcher bAsePAth does not mAtch version on disk And wAs corrected (originAl: ${bAsePAth}, reAl: ${reAlBAsePAth})`);
 		}
 
 		if (this.verboseLogging) {
-			this.log(`Start watching with chockidar: ${realBasePath}, excludes: ${excludes.join(',')}, usePolling: ${usePolling ? 'true, interval ' + pollingInterval : 'false'}`);
+			this.log(`StArt wAtching with chockidAr: ${reAlBAsePAth}, excludes: ${excludes.join(',')}, usePolling: ${usePolling ? 'true, intervAl ' + pollingIntervAl : 'fAlse'}`);
 		}
 
-		let chokidarWatcher: chokidar.FSWatcher | null = chokidar.watch(realBasePath, watcherOpts);
-		this._watcherCount++;
+		let chokidArWAtcher: chokidAr.FSWAtcher | null = chokidAr.wAtch(reAlBAsePAth, wAtcherOpts);
+		this._wAtcherCount++;
 
-		// Detect if for some reason the native watcher library fails to load
-		if (isMacintosh && chokidarWatcher.options && !chokidarWatcher.options.useFsEvents) {
-			this.warn('Watcher is not using native fsevents library and is falling back to unefficient polling.');
+		// Detect if for some reAson the nAtive wAtcher librAry fAils to loAd
+		if (isMAcintosh && chokidArWAtcher.options && !chokidArWAtcher.options.useFsEvents) {
+			this.wArn('WAtcher is not using nAtive fsevents librAry And is fAlling bAck to unefficient polling.');
 		}
 
-		let undeliveredFileEvents: IDiskFileChange[] = [];
-		let fileEventDelayer: ThrottledDelayer<undefined> | null = new ThrottledDelayer(ChokidarWatcherService.FS_EVENT_DELAY);
+		let undeliveredFileEvents: IDiskFileChAnge[] = [];
+		let fileEventDelAyer: ThrottledDelAyer<undefined> | null = new ThrottledDelAyer(ChokidArWAtcherService.FS_EVENT_DELAY);
 
-		const watcher: IWatcher = {
+		const wAtcher: IWAtcher = {
 			requests,
-			stop: async () => {
+			stop: Async () => {
 				try {
 					if (this.verboseLogging) {
-						this.log(`Stop watching: ${basePath}]`);
+						this.log(`Stop wAtching: ${bAsePAth}]`);
 					}
-					if (chokidarWatcher) {
-						await chokidarWatcher.close();
-						this._watcherCount--;
-						chokidarWatcher = null;
+					if (chokidArWAtcher) {
+						AwAit chokidArWAtcher.close();
+						this._wAtcherCount--;
+						chokidArWAtcher = null;
 					}
-					if (fileEventDelayer) {
-						fileEventDelayer.cancel();
-						fileEventDelayer = null;
+					if (fileEventDelAyer) {
+						fileEventDelAyer.cAncel();
+						fileEventDelAyer = null;
 					}
-				} catch (error) {
-					this.warn('Error while stopping watcher: ' + error.toString());
+				} cAtch (error) {
+					this.wArn('Error while stopping wAtcher: ' + error.toString());
 				}
 			}
 		};
 
-		chokidarWatcher.on('all', (type: string, path: string) => {
-			if (isMacintosh) {
-				// Mac: uses NFD unicode form on disk, but we want NFC
-				// See also https://github.com/nodejs/node/issues/2165
-				path = normalizeNFC(path);
+		chokidArWAtcher.on('All', (type: string, pAth: string) => {
+			if (isMAcintosh) {
+				// MAc: uses NFD unicode form on disk, but we wAnt NFC
+				// See Also https://github.com/nodejs/node/issues/2165
+				pAth = normAlizeNFC(pAth);
 			}
 
-			if (path.indexOf(realBasePath) < 0) {
-				return; // we really only care about absolute paths here in our basepath context here
+			if (pAth.indexOf(reAlBAsePAth) < 0) {
+				return; // we reAlly only cAre About Absolute pAths here in our bAsepAth context here
 			}
 
-			// Make sure to convert the path back to its original basePath form if the realpath is different
-			if (realBasePathDiffers) {
-				path = basePath + path.substr(realBasePathLength);
+			// MAke sure to convert the pAth bAck to its originAl bAsePAth form if the reAlpAth is different
+			if (reAlBAsePAthDiffers) {
+				pAth = bAsePAth + pAth.substr(reAlBAsePAthLength);
 			}
 
-			let eventType: FileChangeType;
+			let eventType: FileChAngeType;
 			switch (type) {
-				case 'change':
-					eventType = FileChangeType.UPDATED;
-					break;
-				case 'add':
-				case 'addDir':
-					eventType = FileChangeType.ADDED;
-					break;
-				case 'unlink':
-				case 'unlinkDir':
-					eventType = FileChangeType.DELETED;
-					break;
-				default:
+				cAse 'chAnge':
+					eventType = FileChAngeType.UPDATED;
+					breAk;
+				cAse 'Add':
+				cAse 'AddDir':
+					eventType = FileChAngeType.ADDED;
+					breAk;
+				cAse 'unlink':
+				cAse 'unlinkDir':
+					eventType = FileChAngeType.DELETED;
+					breAk;
+				defAult:
 					return;
 			}
 
-			// if there's more than one request we need to do
-			// extra filtering due to potentially overlapping roots
+			// if there's more thAn one request we need to do
+			// extrA filtering due to potentiAlly overlApping roots
 			if (!isSingleFolder) {
-				if (isIgnored(path, watcher.requests)) {
+				if (isIgnored(pAth, wAtcher.requests)) {
 					return;
 				}
 			}
 
-			const event = { type: eventType, path };
+			const event = { type: eventType, pAth };
 
 			// Logging
 			if (this.verboseLogging) {
-				this.log(`${eventType === FileChangeType.ADDED ? '[ADDED]' : eventType === FileChangeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${path}`);
+				this.log(`${eventType === FileChAngeType.ADDED ? '[ADDED]' : eventType === FileChAngeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${pAth}`);
 			}
 
-			// Check for spam
-			const now = Date.now();
+			// Check for spAm
+			const now = DAte.now();
 			if (undeliveredFileEvents.length === 0) {
-				this.spamWarningLogged = false;
-				this.spamCheckStartTime = now;
-			} else if (!this.spamWarningLogged && typeof this.spamCheckStartTime === 'number' && this.spamCheckStartTime + ChokidarWatcherService.EVENT_SPAM_WARNING_THRESHOLD < now) {
-				this.spamWarningLogged = true;
-				this.warn(`Watcher is busy catching up with ${undeliveredFileEvents.length} file changes in 60 seconds. Latest changed path is "${event.path}"`);
+				this.spAmWArningLogged = fAlse;
+				this.spAmCheckStArtTime = now;
+			} else if (!this.spAmWArningLogged && typeof this.spAmCheckStArtTime === 'number' && this.spAmCheckStArtTime + ChokidArWAtcherService.EVENT_SPAM_WARNING_THRESHOLD < now) {
+				this.spAmWArningLogged = true;
+				this.wArn(`WAtcher is busy cAtching up with ${undeliveredFileEvents.length} file chAnges in 60 seconds. LAtest chAnged pAth is "${event.pAth}"`);
 			}
 
 			// Add to buffer
 			undeliveredFileEvents.push(event);
 
-			if (fileEventDelayer) {
+			if (fileEventDelAyer) {
 
-				// Delay and send buffer
-				fileEventDelayer.trigger(async () => {
+				// DelAy And send buffer
+				fileEventDelAyer.trigger(Async () => {
 					const events = undeliveredFileEvents;
 					undeliveredFileEvents = [];
 
-					// Broadcast to clients normalized
-					const res = normalizeFileChanges(events);
-					this._onDidChangeFile.fire(res);
+					// BroAdcAst to clients normAlized
+					const res = normAlizeFileChAnges(events);
+					this._onDidChAngeFile.fire(res);
 
 					// Logging
 					if (this.verboseLogging) {
-						res.forEach(r => {
-							this.log(` >> normalized  ${r.type === FileChangeType.ADDED ? '[ADDED]' : r.type === FileChangeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${r.path}`);
+						res.forEAch(r => {
+							this.log(` >> normAlized  ${r.type === FileChAngeType.ADDED ? '[ADDED]' : r.type === FileChAngeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${r.pAth}`);
 						});
 					}
 
@@ -262,68 +262,68 @@ export class ChokidarWatcherService extends Disposable implements IWatcherServic
 			}
 		});
 
-		chokidarWatcher.on('error', (error: NodeJS.ErrnoException) => {
+		chokidArWAtcher.on('error', (error: NodeJS.ErrnoException) => {
 			if (error) {
 
-				// Specially handle ENOSPC errors that can happen when
-				// the watcher consumes so many file descriptors that
-				// we are running into a limit. We only want to warn
-				// once in this case to avoid log spam.
+				// SpeciAlly hAndle ENOSPC errors thAt cAn hAppen when
+				// the wAtcher consumes so mAny file descriptors thAt
+				// we Are running into A limit. We only wAnt to wArn
+				// once in this cAse to Avoid log spAm.
 				// See https://github.com/microsoft/vscode/issues/7950
 				if (error.code === 'ENOSPC') {
 					if (!this.enospcErrorLogged) {
 						this.enospcErrorLogged = true;
 						this.stop();
-						this.error('Inotify limit reached (ENOSPC)');
+						this.error('Inotify limit reAched (ENOSPC)');
 					}
 				} else {
-					this.warn(error.toString());
+					this.wArn(error.toString());
 				}
 			}
 		});
-		return watcher;
+		return wAtcher;
 	}
 
-	async stop(): Promise<void> {
-		for (const [, watcher] of this.watchers) {
-			await watcher.stop();
+	Async stop(): Promise<void> {
+		for (const [, wAtcher] of this.wAtchers) {
+			AwAit wAtcher.stop();
 		}
 
-		this.watchers.clear();
+		this.wAtchers.cleAr();
 	}
 
-	private log(message: string) {
-		this._onDidLogMessage.fire({ type: 'trace', message: `[File Watcher (chokidar)] ` + message });
+	privAte log(messAge: string) {
+		this._onDidLogMessAge.fire({ type: 'trAce', messAge: `[File WAtcher (chokidAr)] ` + messAge });
 	}
 
-	private warn(message: string) {
-		this._onDidLogMessage.fire({ type: 'warn', message: `[File Watcher (chokidar)] ` + message });
+	privAte wArn(messAge: string) {
+		this._onDidLogMessAge.fire({ type: 'wArn', messAge: `[File WAtcher (chokidAr)] ` + messAge });
 	}
 
-	private error(message: string) {
-		this._onDidLogMessage.fire({ type: 'error', message: `[File Watcher (chokidar)] ` + message });
+	privAte error(messAge: string) {
+		this._onDidLogMessAge.fire({ type: 'error', messAge: `[File WAtcher (chokidAr)] ` + messAge });
 	}
 }
 
-function isIgnored(path: string, requests: ExtendedWatcherRequest[]): boolean {
+function isIgnored(pAth: string, requests: ExtendedWAtcherRequest[]): booleAn {
 	for (const request of requests) {
-		if (request.path === path) {
-			return false;
+		if (request.pAth === pAth) {
+			return fAlse;
 		}
 
-		if (extpath.isEqualOrParent(path, request.path)) {
-			if (!request.parsedPattern) {
+		if (extpAth.isEquAlOrPArent(pAth, request.pAth)) {
+			if (!request.pArsedPAttern) {
 				if (request.excludes && request.excludes.length > 0) {
-					const pattern = `{${request.excludes.join(',')}}`;
-					request.parsedPattern = glob.parse(pattern);
+					const pAttern = `{${request.excludes.join(',')}}`;
+					request.pArsedPAttern = glob.pArse(pAttern);
 				} else {
-					request.parsedPattern = () => false;
+					request.pArsedPAttern = () => fAlse;
 				}
 			}
 
-			const relPath = path.substr(request.path.length + 1);
-			if (!request.parsedPattern(relPath)) {
-				return false;
+			const relPAth = pAth.substr(request.pAth.length + 1);
+			if (!request.pArsedPAttern(relPAth)) {
+				return fAlse;
 			}
 		}
 	}
@@ -332,34 +332,34 @@ function isIgnored(path: string, requests: ExtendedWatcherRequest[]): boolean {
 }
 
 /**
- * Normalizes a set of root paths by grouping by the most parent root path.
- * equests with Sub paths are skipped if they have the same ignored set as the parent.
+ * NormAlizes A set of root pAths by grouping by the most pArent root pAth.
+ * equests with Sub pAths Are skipped if they hAve the sAme ignored set As the pArent.
  */
-export function normalizeRoots(requests: IWatcherRequest[]): { [basePath: string]: IWatcherRequest[] } {
-	requests = requests.sort((r1, r2) => r1.path.localeCompare(r2.path));
+export function normAlizeRoots(requests: IWAtcherRequest[]): { [bAsePAth: string]: IWAtcherRequest[] } {
+	requests = requests.sort((r1, r2) => r1.pAth.locAleCompAre(r2.pAth));
 
-	let prevRequest: IWatcherRequest | null = null;
-	const result: { [basePath: string]: IWatcherRequest[] } = Object.create(null);
+	let prevRequest: IWAtcherRequest | null = null;
+	const result: { [bAsePAth: string]: IWAtcherRequest[] } = Object.creAte(null);
 	for (const request of requests) {
-		const basePath = request.path;
+		const bAsePAth = request.pAth;
 		const ignored = (request.excludes || []).sort();
-		if (prevRequest && (extpath.isEqualOrParent(basePath, prevRequest.path))) {
-			if (!isEqualIgnore(ignored, prevRequest.excludes)) {
-				result[prevRequest.path].push({ path: basePath, excludes: ignored });
+		if (prevRequest && (extpAth.isEquAlOrPArent(bAsePAth, prevRequest.pAth))) {
+			if (!isEquAlIgnore(ignored, prevRequest.excludes)) {
+				result[prevRequest.pAth].push({ pAth: bAsePAth, excludes: ignored });
 			}
 		} else {
-			prevRequest = { path: basePath, excludes: ignored };
-			result[basePath] = [prevRequest];
+			prevRequest = { pAth: bAsePAth, excludes: ignored };
+			result[bAsePAth] = [prevRequest];
 		}
 	}
 
 	return result;
 }
 
-function isEqualRequests(r1: readonly IWatcherRequest[], r2: readonly IWatcherRequest[]) {
-	return equals(r1, r2, (a, b) => a.path === b.path && isEqualIgnore(a.excludes, b.excludes));
+function isEquAlRequests(r1: reAdonly IWAtcherRequest[], r2: reAdonly IWAtcherRequest[]) {
+	return equAls(r1, r2, (A, b) => A.pAth === b.pAth && isEquAlIgnore(A.excludes, b.excludes));
 }
 
-function isEqualIgnore(i1: readonly string[], i2: readonly string[]) {
-	return equals(i1, i2);
+function isEquAlIgnore(i1: reAdonly string[], i2: reAdonly string[]) {
+	return equAls(i1, i2);
 }

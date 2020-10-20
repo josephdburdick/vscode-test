@@ -1,153 +1,153 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/objects';
-import { toValuesTree, IConfigurationModel, IConfigurationOverrides, IConfigurationValue, IConfigurationChange } from 'vs/platform/configuration/common/configuration';
-import { Configuration as BaseConfiguration, ConfigurationModelParser, ConfigurationModel } from 'vs/platform/configuration/common/configurationModels';
-import { IStoredWorkspaceFolder } from 'vs/platform/workspaces/common/workspaces';
-import { Workspace } from 'vs/platform/workspace/common/workspace';
-import { ResourceMap } from 'vs/base/common/map';
-import { URI } from 'vs/base/common/uri';
-import { WORKSPACE_SCOPES } from 'vs/workbench/services/configuration/common/configuration';
-import { OVERRIDE_PROPERTY_PATTERN, overrideIdentifierFromKey } from 'vs/platform/configuration/common/configurationRegistry';
+import { equAls } from 'vs/bAse/common/objects';
+import { toVAluesTree, IConfigurAtionModel, IConfigurAtionOverrides, IConfigurAtionVAlue, IConfigurAtionChAnge } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { ConfigurAtion As BAseConfigurAtion, ConfigurAtionModelPArser, ConfigurAtionModel } from 'vs/plAtform/configurAtion/common/configurAtionModels';
+import { IStoredWorkspAceFolder } from 'vs/plAtform/workspAces/common/workspAces';
+import { WorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { URI } from 'vs/bAse/common/uri';
+import { WORKSPACE_SCOPES } from 'vs/workbench/services/configurAtion/common/configurAtion';
+import { OVERRIDE_PROPERTY_PATTERN, overrideIdentifierFromKey } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
 
-export class WorkspaceConfigurationModelParser extends ConfigurationModelParser {
+export clAss WorkspAceConfigurAtionModelPArser extends ConfigurAtionModelPArser {
 
-	private _folders: IStoredWorkspaceFolder[] = [];
-	private _settingsModelParser: ConfigurationModelParser;
-	private _launchModel: ConfigurationModel;
-	private _tasksModel: ConfigurationModel;
+	privAte _folders: IStoredWorkspAceFolder[] = [];
+	privAte _settingsModelPArser: ConfigurAtionModelPArser;
+	privAte _lAunchModel: ConfigurAtionModel;
+	privAte _tAsksModel: ConfigurAtionModel;
 
-	constructor(name: string) {
-		super(name);
-		this._settingsModelParser = new ConfigurationModelParser(name, WORKSPACE_SCOPES);
-		this._launchModel = new ConfigurationModel();
-		this._tasksModel = new ConfigurationModel();
+	constructor(nAme: string) {
+		super(nAme);
+		this._settingsModelPArser = new ConfigurAtionModelPArser(nAme, WORKSPACE_SCOPES);
+		this._lAunchModel = new ConfigurAtionModel();
+		this._tAsksModel = new ConfigurAtionModel();
 	}
 
-	get folders(): IStoredWorkspaceFolder[] {
+	get folders(): IStoredWorkspAceFolder[] {
 		return this._folders;
 	}
 
-	get settingsModel(): ConfigurationModel {
-		return this._settingsModelParser.configurationModel;
+	get settingsModel(): ConfigurAtionModel {
+		return this._settingsModelPArser.configurAtionModel;
 	}
 
-	get launchModel(): ConfigurationModel {
-		return this._launchModel;
+	get lAunchModel(): ConfigurAtionModel {
+		return this._lAunchModel;
 	}
 
-	get tasksModel(): ConfigurationModel {
-		return this._tasksModel;
+	get tAsksModel(): ConfigurAtionModel {
+		return this._tAsksModel;
 	}
 
-	reprocessWorkspaceSettings(): void {
-		this._settingsModelParser.parse();
+	reprocessWorkspAceSettings(): void {
+		this._settingsModelPArser.pArse();
 	}
 
-	protected doParseRaw(raw: any): IConfigurationModel {
-		this._folders = (raw['folders'] || []) as IStoredWorkspaceFolder[];
-		this._settingsModelParser.parseRaw(raw['settings']);
-		this._launchModel = this.createConfigurationModelFrom(raw, 'launch');
-		this._tasksModel = this.createConfigurationModelFrom(raw, 'tasks');
-		return super.doParseRaw(raw);
+	protected doPArseRAw(rAw: Any): IConfigurAtionModel {
+		this._folders = (rAw['folders'] || []) As IStoredWorkspAceFolder[];
+		this._settingsModelPArser.pArseRAw(rAw['settings']);
+		this._lAunchModel = this.creAteConfigurAtionModelFrom(rAw, 'lAunch');
+		this._tAsksModel = this.creAteConfigurAtionModelFrom(rAw, 'tAsks');
+		return super.doPArseRAw(rAw);
 	}
 
-	private createConfigurationModelFrom(raw: any, key: string): ConfigurationModel {
-		const data = raw[key];
-		if (data) {
-			const contents = toValuesTree(data, message => console.error(`Conflict in settings file ${this._name}: ${message}`));
-			const scopedContents = Object.create(null);
+	privAte creAteConfigurAtionModelFrom(rAw: Any, key: string): ConfigurAtionModel {
+		const dAtA = rAw[key];
+		if (dAtA) {
+			const contents = toVAluesTree(dAtA, messAge => console.error(`Conflict in settings file ${this._nAme}: ${messAge}`));
+			const scopedContents = Object.creAte(null);
 			scopedContents[key] = contents;
-			const keys = Object.keys(data).map(k => `${key}.${k}`);
-			return new ConfigurationModel(scopedContents, keys, []);
+			const keys = Object.keys(dAtA).mAp(k => `${key}.${k}`);
+			return new ConfigurAtionModel(scopedContents, keys, []);
 		}
-		return new ConfigurationModel();
+		return new ConfigurAtionModel();
 	}
 }
 
-export class StandaloneConfigurationModelParser extends ConfigurationModelParser {
+export clAss StAndAloneConfigurAtionModelPArser extends ConfigurAtionModelPArser {
 
-	constructor(name: string, private readonly scope: string) {
-		super(name);
+	constructor(nAme: string, privAte reAdonly scope: string) {
+		super(nAme);
 	}
 
-	protected doParseRaw(raw: any): IConfigurationModel {
-		const contents = toValuesTree(raw, message => console.error(`Conflict in settings file ${this._name}: ${message}`));
-		const scopedContents = Object.create(null);
+	protected doPArseRAw(rAw: Any): IConfigurAtionModel {
+		const contents = toVAluesTree(rAw, messAge => console.error(`Conflict in settings file ${this._nAme}: ${messAge}`));
+		const scopedContents = Object.creAte(null);
 		scopedContents[this.scope] = contents;
-		const keys = Object.keys(raw).map(key => `${this.scope}.${key}`);
+		const keys = Object.keys(rAw).mAp(key => `${this.scope}.${key}`);
 		return { contents: scopedContents, keys, overrides: [] };
 	}
 
 }
 
-export class Configuration extends BaseConfiguration {
+export clAss ConfigurAtion extends BAseConfigurAtion {
 
 	constructor(
-		defaults: ConfigurationModel,
-		localUser: ConfigurationModel,
-		remoteUser: ConfigurationModel,
-		workspaceConfiguration: ConfigurationModel,
-		folders: ResourceMap<ConfigurationModel>,
-		memoryConfiguration: ConfigurationModel,
-		memoryConfigurationByResource: ResourceMap<ConfigurationModel>,
-		private readonly _workspace?: Workspace) {
-		super(defaults, localUser, remoteUser, workspaceConfiguration, folders, memoryConfiguration, memoryConfigurationByResource);
+		defAults: ConfigurAtionModel,
+		locAlUser: ConfigurAtionModel,
+		remoteUser: ConfigurAtionModel,
+		workspAceConfigurAtion: ConfigurAtionModel,
+		folders: ResourceMAp<ConfigurAtionModel>,
+		memoryConfigurAtion: ConfigurAtionModel,
+		memoryConfigurAtionByResource: ResourceMAp<ConfigurAtionModel>,
+		privAte reAdonly _workspAce?: WorkspAce) {
+		super(defAults, locAlUser, remoteUser, workspAceConfigurAtion, folders, memoryConfigurAtion, memoryConfigurAtionByResource);
 	}
 
-	getValue(key: string | undefined, overrides: IConfigurationOverrides = {}): any {
-		return super.getValue(key, overrides, this._workspace);
+	getVAlue(key: string | undefined, overrides: IConfigurAtionOverrides = {}): Any {
+		return super.getVAlue(key, overrides, this._workspAce);
 	}
 
-	inspect<C>(key: string, overrides: IConfigurationOverrides = {}): IConfigurationValue<C> {
-		return super.inspect(key, overrides, this._workspace);
+	inspect<C>(key: string, overrides: IConfigurAtionOverrides = {}): IConfigurAtionVAlue<C> {
+		return super.inspect(key, overrides, this._workspAce);
 	}
 
 	keys(): {
-		default: string[];
+		defAult: string[];
 		user: string[];
-		workspace: string[];
-		workspaceFolder: string[];
+		workspAce: string[];
+		workspAceFolder: string[];
 	} {
-		return super.keys(this._workspace);
+		return super.keys(this._workspAce);
 	}
 
-	compareAndDeleteFolderConfiguration(folder: URI): IConfigurationChange {
-		if (this._workspace && this._workspace.folders.length > 0 && this._workspace.folders[0].uri.toString() === folder.toString()) {
-			// Do not remove workspace configuration
+	compAreAndDeleteFolderConfigurAtion(folder: URI): IConfigurAtionChAnge {
+		if (this._workspAce && this._workspAce.folders.length > 0 && this._workspAce.folders[0].uri.toString() === folder.toString()) {
+			// Do not remove workspAce configurAtion
 			return { keys: [], overrides: [] };
 		}
-		return super.compareAndDeleteFolderConfiguration(folder);
+		return super.compAreAndDeleteFolderConfigurAtion(folder);
 	}
 
-	compare(other: Configuration): IConfigurationChange {
-		const compare = (fromKeys: string[], toKeys: string[], overrideIdentifier?: string): string[] => {
+	compAre(other: ConfigurAtion): IConfigurAtionChAnge {
+		const compAre = (fromKeys: string[], toKeys: string[], overrideIdentifier?: string): string[] => {
 			const keys: string[] = [];
 			keys.push(...toKeys.filter(key => fromKeys.indexOf(key) === -1));
 			keys.push(...fromKeys.filter(key => toKeys.indexOf(key) === -1));
 			keys.push(...fromKeys.filter(key => {
 				// Ignore if the key does not exist in both models
 				if (toKeys.indexOf(key) === -1) {
-					return false;
+					return fAlse;
 				}
-				// Compare workspace value
-				if (!equals(this.getValue(key, { overrideIdentifier }), other.getValue(key, { overrideIdentifier }))) {
+				// CompAre workspAce vAlue
+				if (!equAls(this.getVAlue(key, { overrideIdentifier }), other.getVAlue(key, { overrideIdentifier }))) {
 					return true;
 				}
-				// Compare workspace folder value
-				return this._workspace && this._workspace.folders.some(folder => !equals(this.getValue(key, { resource: folder.uri, overrideIdentifier }), other.getValue(key, { resource: folder.uri, overrideIdentifier })));
+				// CompAre workspAce folder vAlue
+				return this._workspAce && this._workspAce.folders.some(folder => !equAls(this.getVAlue(key, { resource: folder.uri, overrideIdentifier }), other.getVAlue(key, { resource: folder.uri, overrideIdentifier })));
 			}));
 			return keys;
 		};
-		const keys = compare(this.allKeys(), other.allKeys());
+		const keys = compAre(this.AllKeys(), other.AllKeys());
 		const overrides: [string, string[]][] = [];
 		for (const key of keys) {
 			if (OVERRIDE_PROPERTY_PATTERN.test(key)) {
 				const overrideIdentifier = overrideIdentifierFromKey(key);
-				overrides.push([overrideIdentifier, compare(this.getAllKeysForOverrideIdentifier(overrideIdentifier), other.getAllKeysForOverrideIdentifier(overrideIdentifier), overrideIdentifier)]);
+				overrides.push([overrideIdentifier, compAre(this.getAllKeysForOverrideIdentifier(overrideIdentifier), other.getAllKeysForOverrideIdentifier(overrideIdentifier), overrideIdentifier)]);
 			}
 		}
 		return { keys, overrides };

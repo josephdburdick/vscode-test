@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { IBulkEditService, ResourceTextEdit } from 'vs/editor/browser/services/bulkEditService';
-import { localize } from 'vs/nls';
-import { Action2, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { viewColumnToEditorGroup } from 'vs/workbench/api/common/shared/editor';
+import { locAlize } from 'vs/nls';
+import { Action2, MenuId, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { viewColumnToEditorGroup } from 'vs/workbench/Api/common/shAred/editor';
 import { ActiveEditorContext } from 'vs/workbench/common/editor';
 import { CellDiffViewModel } from 'vs/workbench/contrib/notebook/browser/diff/celllDiffViewModel';
 import { NotebookTextDiffEditor } from 'vs/workbench/contrib/notebook/browser/diff/notebookTextDiffEditor';
@@ -15,131 +15,131 @@ import { NotebookDiffEditorInput } from 'vs/workbench/contrib/notebook/browser/n
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 
-// ActiveEditorContext.isEqualTo(SearchEditorConstants.SearchEditorID)
+// ActiveEditorContext.isEquAlTo(SeArchEditorConstAnts.SeArchEditorID)
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super({
 			id: 'notebook.diff.switchToText',
 			icon: { id: 'codicon/file-code' },
-			title: { value: localize('notebook.diff.switchToText', "Open Text Diff Editor"), original: 'Open Text Diff Editor' },
-			precondition: ActiveEditorContext.isEqualTo(NotebookTextDiffEditor.ID),
+			title: { vAlue: locAlize('notebook.diff.switchToText', "Open Text Diff Editor"), originAl: 'Open Text Diff Editor' },
+			precondition: ActiveEditorContext.isEquAlTo(NotebookTextDiffEditor.ID),
 			menu: [{
 				id: MenuId.EditorTitle,
-				group: 'navigation',
-				when: ActiveEditorContext.isEqualTo(NotebookTextDiffEditor.ID)
+				group: 'nAvigAtion',
+				when: ActiveEditorContext.isEquAlTo(NotebookTextDiffEditor.ID)
 			}]
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const editorService = accessor.get(IEditorService);
-		const editorGroupService = accessor.get(IEditorGroupsService);
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const editorService = Accessor.get(IEditorService);
+		const editorGroupService = Accessor.get(IEditorGroupsService);
 
-		const activeEditor = editorService.activeEditorPane;
-		if (activeEditor && activeEditor instanceof NotebookTextDiffEditor) {
-			const diffEditorInput = activeEditor.input as NotebookDiffEditorInput;
-			const leftResource = diffEditorInput.originalResource;
+		const ActiveEditor = editorService.ActiveEditorPAne;
+		if (ActiveEditor && ActiveEditor instAnceof NotebookTextDiffEditor) {
+			const diffEditorInput = ActiveEditor.input As NotebookDiffEditorInput;
+			const leftResource = diffEditorInput.originAlResource;
 			const rightResource = diffEditorInput.resource;
 			const options = {
-				preserveFocus: false
+				preserveFocus: fAlse
 			};
 
-			const label = diffEditorInput.textDiffName;
-			await editorService.openEditor({ leftResource, rightResource, label, options }, viewColumnToEditorGroup(editorGroupService, undefined));
+			const lAbel = diffEditorInput.textDiffNAme;
+			AwAit editorService.openEditor({ leftResource, rightResource, lAbel, options }, viewColumnToEditorGroup(editorGroupService, undefined));
 		}
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super(
 			{
-				id: 'notebook.diff.cell.revertMetadata',
-				title: localize('notebook.diff.cell.revertMetadata', "Revert Metadata"),
-				icon: { id: 'codicon/discard' },
-				f1: false,
+				id: 'notebook.diff.cell.revertMetAdAtA',
+				title: locAlize('notebook.diff.cell.revertMetAdAtA', "Revert MetAdAtA"),
+				icon: { id: 'codicon/discArd' },
+				f1: fAlse,
 				menu: {
-					id: MenuId.NotebookDiffCellMetadataTitle
+					id: MenuId.NotebookDiffCellMetAdAtATitle
 				}
 			}
 		);
 	}
-	run(accessor: ServicesAccessor, context?: { cell: CellDiffViewModel }) {
+	run(Accessor: ServicesAccessor, context?: { cell: CellDiffViewModel }) {
 		if (!context) {
 			return;
 		}
 
-		const original = context.cell.original;
+		const originAl = context.cell.originAl;
 		const modified = context.cell.modified;
 
-		if (!original || !modified) {
+		if (!originAl || !modified) {
 			return;
 		}
 
-		modified.metadata = original.metadata;
+		modified.metAdAtA = originAl.metAdAtA;
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super(
 			{
 				id: 'notebook.diff.cell.revertOutputs',
-				title: localize('notebook.diff.cell.revertOutputs', "Revert Outputs"),
-				icon: { id: 'codicon/discard' },
-				f1: false,
+				title: locAlize('notebook.diff.cell.revertOutputs', "Revert Outputs"),
+				icon: { id: 'codicon/discArd' },
+				f1: fAlse,
 				menu: {
 					id: MenuId.NotebookDiffCellOutputsTitle
 				}
 			}
 		);
 	}
-	run(accessor: ServicesAccessor, context?: { cell: CellDiffViewModel }) {
+	run(Accessor: ServicesAccessor, context?: { cell: CellDiffViewModel }) {
 		if (!context) {
 			return;
 		}
 
-		const original = context.cell.original;
+		const originAl = context.cell.originAl;
 		const modified = context.cell.modified;
 
-		if (!original || !modified) {
+		if (!originAl || !modified) {
 			return;
 		}
 
-		modified.spliceNotebookCellOutputs([[0, modified.outputs.length, original.outputs]]);
+		modified.spliceNotebookCellOutputs([[0, modified.outputs.length, originAl.outputs]]);
 	}
 });
 
-registerAction2(class extends Action2 {
+registerAction2(clAss extends Action2 {
 	constructor() {
 		super(
 			{
 				id: 'notebook.diff.cell.revertInput',
-				title: localize('notebook.diff.cell.revertInput', "Revert Input"),
-				icon: { id: 'codicon/discard' },
-				f1: false,
+				title: locAlize('notebook.diff.cell.revertInput', "Revert Input"),
+				icon: { id: 'codicon/discArd' },
+				f1: fAlse,
 				menu: {
 					id: MenuId.NotebookDiffCellInputTitle
 				}
 			}
 		);
 	}
-	run(accessor: ServicesAccessor, context?: { cell: CellDiffViewModel }) {
+	run(Accessor: ServicesAccessor, context?: { cell: CellDiffViewModel }) {
 		if (!context) {
 			return;
 		}
 
-		const original = context.cell.original;
+		const originAl = context.cell.originAl;
 		const modified = context.cell.modified;
 
-		if (!original || !modified) {
+		if (!originAl || !modified) {
 			return;
 		}
 
-		const bulkEditService = accessor.get(IBulkEditService);
-		return bulkEditService.apply([
-			new ResourceTextEdit(modified.uri, { range: modified.getFullModelRange(), text: original.getValue() }),
-		], { quotableLabel: 'Split Notebook Cell' });
+		const bulkEditService = Accessor.get(IBulkEditService);
+		return bulkEditService.Apply([
+			new ResourceTextEdit(modified.uri, { rAnge: modified.getFullModelRAnge(), text: originAl.getVAlue() }),
+		], { quotAbleLAbel: 'Split Notebook Cell' });
 	}
 });

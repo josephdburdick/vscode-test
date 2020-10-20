@@ -1,274 +1,274 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/actions';
+import 'vs/css!./mediA/Actions';
 
-import { URI } from 'vs/base/common/uri';
-import { Action } from 'vs/base/common/actions';
-import * as nls from 'vs/nls';
-import { applyZoom } from 'vs/platform/windows/electron-sandbox/window';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { getZoomLevel } from 'vs/base/browser/browser';
-import { FileKind } from 'vs/platform/files/common/files';
+import { URI } from 'vs/bAse/common/uri';
+import { Action } from 'vs/bAse/common/Actions';
+import * As nls from 'vs/nls';
+import { ApplyZoom } from 'vs/plAtform/windows/electron-sAndbox/window';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { getZoomLevel } from 'vs/bAse/browser/browser';
+import { FileKind } from 'vs/plAtform/files/common/files';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { IQuickInputService, IQuickInputButton } from 'vs/platform/quickinput/common/quickInput';
-import { getIconClasses } from 'vs/editor/common/services/getIconClasses';
-import { ICommandHandler } from 'vs/platform/commands/common/commands';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { Codicon } from 'vs/base/common/codicons';
+import { IQuickInputService, IQuickInputButton } from 'vs/plAtform/quickinput/common/quickInput';
+import { getIconClAsses } from 'vs/editor/common/services/getIconClAsses';
+import { ICommAndHAndler } from 'vs/plAtform/commAnds/common/commAnds';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { Codicon } from 'vs/bAse/common/codicons';
 
-export class CloseCurrentWindowAction extends Action {
+export clAss CloseCurrentWindowAction extends Action {
 
-	static readonly ID = 'workbench.action.closeWindow';
-	static readonly LABEL = nls.localize('closeWindow', "Close Window");
+	stAtic reAdonly ID = 'workbench.Action.closeWindow';
+	stAtic reAdonly LABEL = nls.locAlize('closeWindow', "Close Window");
 
 	constructor(
 		id: string,
-		label: string,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		lAbel: string,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<void> {
-		this.nativeHostService.closeWindow();
+	Async run(): Promise<void> {
+		this.nAtiveHostService.closeWindow();
 	}
 }
 
-export abstract class BaseZoomAction extends Action {
+export AbstrAct clAss BAseZoomAction extends Action {
 
-	private static readonly SETTING_KEY = 'window.zoomLevel';
+	privAte stAtic reAdonly SETTING_KEY = 'window.zoomLevel';
 
-	private static readonly MAX_ZOOM_LEVEL = 9;
-	private static readonly MIN_ZOOM_LEVEL = -8;
+	privAte stAtic reAdonly MAX_ZOOM_LEVEL = 9;
+	privAte stAtic reAdonly MIN_ZOOM_LEVEL = -8;
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService private readonly configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	protected async setConfiguredZoomLevel(level: number): Promise<void> {
-		level = Math.round(level); // when reaching smallest zoom, prevent fractional zoom levels
+	protected Async setConfiguredZoomLevel(level: number): Promise<void> {
+		level = MAth.round(level); // when reAching smAllest zoom, prevent frActionAl zoom levels
 
-		if (level > BaseZoomAction.MAX_ZOOM_LEVEL || level < BaseZoomAction.MIN_ZOOM_LEVEL) {
+		if (level > BAseZoomAction.MAX_ZOOM_LEVEL || level < BAseZoomAction.MIN_ZOOM_LEVEL) {
 			return; // https://github.com/microsoft/vscode/issues/48357
 		}
 
-		await this.configurationService.updateValue(BaseZoomAction.SETTING_KEY, level);
+		AwAit this.configurAtionService.updAteVAlue(BAseZoomAction.SETTING_KEY, level);
 
-		applyZoom(level);
+		ApplyZoom(level);
 	}
 }
 
-export class ZoomInAction extends BaseZoomAction {
+export clAss ZoomInAction extends BAseZoomAction {
 
-	static readonly ID = 'workbench.action.zoomIn';
-	static readonly LABEL = nls.localize('zoomIn', "Zoom In");
+	stAtic reAdonly ID = 'workbench.Action.zoomIn';
+	stAtic reAdonly LABEL = nls.locAlize('zoomIn', "Zoom In");
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService
 	) {
-		super(id, label, configurationService);
+		super(id, lAbel, configurAtionService);
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 		this.setConfiguredZoomLevel(getZoomLevel() + 1);
 	}
 }
 
-export class ZoomOutAction extends BaseZoomAction {
+export clAss ZoomOutAction extends BAseZoomAction {
 
-	static readonly ID = 'workbench.action.zoomOut';
-	static readonly LABEL = nls.localize('zoomOut', "Zoom Out");
+	stAtic reAdonly ID = 'workbench.Action.zoomOut';
+	stAtic reAdonly LABEL = nls.locAlize('zoomOut', "Zoom Out");
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService
 	) {
-		super(id, label, configurationService);
+		super(id, lAbel, configurAtionService);
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 		this.setConfiguredZoomLevel(getZoomLevel() - 1);
 	}
 }
 
-export class ZoomResetAction extends BaseZoomAction {
+export clAss ZoomResetAction extends BAseZoomAction {
 
-	static readonly ID = 'workbench.action.zoomReset';
-	static readonly LABEL = nls.localize('zoomReset', "Reset Zoom");
+	stAtic reAdonly ID = 'workbench.Action.zoomReset';
+	stAtic reAdonly LABEL = nls.locAlize('zoomReset', "Reset Zoom");
 
 	constructor(
 		id: string,
-		label: string,
-		@IConfigurationService configurationService: IConfigurationService
+		lAbel: string,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService
 	) {
-		super(id, label, configurationService);
+		super(id, lAbel, configurAtionService);
 	}
 
-	async run(): Promise<void> {
+	Async run(): Promise<void> {
 		this.setConfiguredZoomLevel(0);
 	}
 }
 
-export class ReloadWindowWithExtensionsDisabledAction extends Action {
+export clAss ReloAdWindowWithExtensionsDisAbledAction extends Action {
 
-	static readonly ID = 'workbench.action.reloadWindowWithExtensionsDisabled';
-	static readonly LABEL = nls.localize('reloadWindowWithExtensionsDisabled', "Reload With Extensions Disabled");
+	stAtic reAdonly ID = 'workbench.Action.reloAdWindowWithExtensionsDisAbled';
+	stAtic reAdonly LABEL = nls.locAlize('reloAdWindowWithExtensionsDisAbled', "ReloAd With Extensions DisAbled");
 
 	constructor(
 		id: string,
-		label: string,
-		@INativeHostService private readonly nativeHostService: INativeHostService
+		lAbel: string,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run(): Promise<boolean> {
-		await this.nativeHostService.reload({ disableExtensions: true });
+	Async run(): Promise<booleAn> {
+		AwAit this.nAtiveHostService.reloAd({ disAbleExtensions: true });
 
 		return true;
 	}
 }
 
-export abstract class BaseSwitchWindow extends Action {
+export AbstrAct clAss BAseSwitchWindow extends Action {
 
-	private readonly closeWindowAction: IQuickInputButton = {
-		iconClass: Codicon.removeClose.classNames,
-		tooltip: nls.localize('close', "Close Window")
+	privAte reAdonly closeWindowAction: IQuickInputButton = {
+		iconClAss: Codicon.removeClose.clAssNAmes,
+		tooltip: nls.locAlize('close', "Close Window")
 	};
 
-	private readonly closeDirtyWindowAction: IQuickInputButton = {
-		iconClass: 'dirty-window ' + Codicon.closeDirty,
-		tooltip: nls.localize('close', "Close Window"),
-		alwaysVisible: true
+	privAte reAdonly closeDirtyWindowAction: IQuickInputButton = {
+		iconClAss: 'dirty-window ' + Codicon.closeDirty,
+		tooltip: nls.locAlize('close', "Close Window"),
+		AlwAysVisible: true
 	};
 
 	constructor(
 		id: string,
-		label: string,
-		private readonly quickInputService: IQuickInputService,
-		private readonly keybindingService: IKeybindingService,
-		private readonly modelService: IModelService,
-		private readonly modeService: IModeService,
-		private readonly nativeHostService: INativeHostService
+		lAbel: string,
+		privAte reAdonly quickInputService: IQuickInputService,
+		privAte reAdonly keybindingService: IKeybindingService,
+		privAte reAdonly modelService: IModelService,
+		privAte reAdonly modeService: IModeService,
+		privAte reAdonly nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	protected abstract isQuickNavigate(): boolean;
+	protected AbstrAct isQuickNAvigAte(): booleAn;
 
-	async run(): Promise<void> {
-		const currentWindowId = this.nativeHostService.windowId;
+	Async run(): Promise<void> {
+		const currentWindowId = this.nAtiveHostService.windowId;
 
-		const windows = await this.nativeHostService.getWindows();
-		const placeHolder = nls.localize('switchWindowPlaceHolder', "Select a window to switch to");
-		const picks = windows.map(win => {
-			const resource = win.filename ? URI.file(win.filename) : win.folderUri ? win.folderUri : win.workspace ? win.workspace.configPath : undefined;
-			const fileKind = win.filename ? FileKind.FILE : win.workspace ? FileKind.ROOT_FOLDER : win.folderUri ? FileKind.FOLDER : FileKind.FILE;
+		const windows = AwAit this.nAtiveHostService.getWindows();
+		const plAceHolder = nls.locAlize('switchWindowPlAceHolder', "Select A window to switch to");
+		const picks = windows.mAp(win => {
+			const resource = win.filenAme ? URI.file(win.filenAme) : win.folderUri ? win.folderUri : win.workspAce ? win.workspAce.configPAth : undefined;
+			const fileKind = win.filenAme ? FileKind.FILE : win.workspAce ? FileKind.ROOT_FOLDER : win.folderUri ? FileKind.FOLDER : FileKind.FILE;
 			return {
-				payload: win.id,
-				label: win.title,
-				ariaLabel: win.dirty ? nls.localize('windowDirtyAriaLabel', "{0}, dirty window", win.title) : win.title,
-				iconClasses: getIconClasses(this.modelService, this.modeService, resource, fileKind),
-				description: (currentWindowId === win.id) ? nls.localize('current', "Current Window") : undefined,
+				pAyloAd: win.id,
+				lAbel: win.title,
+				AriALAbel: win.dirty ? nls.locAlize('windowDirtyAriALAbel', "{0}, dirty window", win.title) : win.title,
+				iconClAsses: getIconClAsses(this.modelService, this.modeService, resource, fileKind),
+				description: (currentWindowId === win.id) ? nls.locAlize('current', "Current Window") : undefined,
 				buttons: currentWindowId !== win.id ? win.dirty ? [this.closeDirtyWindowAction] : [this.closeWindowAction] : undefined
 			};
 		});
-		const autoFocusIndex = (picks.indexOf(picks.filter(pick => pick.payload === currentWindowId)[0]) + 1) % picks.length;
+		const AutoFocusIndex = (picks.indexOf(picks.filter(pick => pick.pAyloAd === currentWindowId)[0]) + 1) % picks.length;
 
-		const pick = await this.quickInputService.pick(picks, {
+		const pick = AwAit this.quickInputService.pick(picks, {
 			contextKey: 'inWindowsPicker',
-			activeItem: picks[autoFocusIndex],
-			placeHolder,
-			quickNavigate: this.isQuickNavigate() ? { keybindings: this.keybindingService.lookupKeybindings(this.id) } : undefined,
-			onDidTriggerItemButton: async context => {
-				await this.nativeHostService.closeWindowById(context.item.payload);
+			ActiveItem: picks[AutoFocusIndex],
+			plAceHolder,
+			quickNAvigAte: this.isQuickNAvigAte() ? { keybindings: this.keybindingService.lookupKeybindings(this.id) } : undefined,
+			onDidTriggerItemButton: Async context => {
+				AwAit this.nAtiveHostService.closeWindowById(context.item.pAyloAd);
 				context.removeItem();
 			}
 		});
 
 		if (pick) {
-			this.nativeHostService.focusWindow({ windowId: pick.payload });
+			this.nAtiveHostService.focusWindow({ windowId: pick.pAyloAd });
 		}
 	}
 }
 
-export class SwitchWindow extends BaseSwitchWindow {
+export clAss SwitchWindow extends BAseSwitchWindow {
 
-	static readonly ID = 'workbench.action.switchWindow';
-	static readonly LABEL = nls.localize('switchWindow', "Switch Window...");
+	stAtic reAdonly ID = 'workbench.Action.switchWindow';
+	stAtic reAdonly LABEL = nls.locAlize('switchWindow', "Switch Window...");
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		@IQuickInputService quickInputService: IQuickInputService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IModelService modelService: IModelService,
 		@IModeService modeService: IModeService,
-		@INativeHostService nativeHostService: INativeHostService
+		@INAtiveHostService nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label, quickInputService, keybindingService, modelService, modeService, nativeHostService);
+		super(id, lAbel, quickInputService, keybindingService, modelService, modeService, nAtiveHostService);
 	}
 
-	protected isQuickNavigate(): boolean {
-		return false;
+	protected isQuickNAvigAte(): booleAn {
+		return fAlse;
 	}
 }
 
-export class QuickSwitchWindow extends BaseSwitchWindow {
+export clAss QuickSwitchWindow extends BAseSwitchWindow {
 
-	static readonly ID = 'workbench.action.quickSwitchWindow';
-	static readonly LABEL = nls.localize('quickSwitchWindow', "Quick Switch Window...");
+	stAtic reAdonly ID = 'workbench.Action.quickSwitchWindow';
+	stAtic reAdonly LABEL = nls.locAlize('quickSwitchWindow', "Quick Switch Window...");
 
 	constructor(
 		id: string,
-		label: string,
+		lAbel: string,
 		@IQuickInputService quickInputService: IQuickInputService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IModelService modelService: IModelService,
 		@IModeService modeService: IModeService,
-		@INativeHostService nativeHostService: INativeHostService
+		@INAtiveHostService nAtiveHostService: INAtiveHostService
 	) {
-		super(id, label, quickInputService, keybindingService, modelService, modeService, nativeHostService);
+		super(id, lAbel, quickInputService, keybindingService, modelService, modeService, nAtiveHostService);
 	}
 
-	protected isQuickNavigate(): boolean {
+	protected isQuickNAvigAte(): booleAn {
 		return true;
 	}
 }
 
-export const NewWindowTabHandler: ICommandHandler = function (accessor: ServicesAccessor) {
-	return accessor.get(INativeHostService).newWindowTab();
+export const NewWindowTAbHAndler: ICommAndHAndler = function (Accessor: ServicesAccessor) {
+	return Accessor.get(INAtiveHostService).newWindowTAb();
 };
 
-export const ShowPreviousWindowTabHandler: ICommandHandler = function (accessor: ServicesAccessor) {
-	return accessor.get(INativeHostService).showPreviousWindowTab();
+export const ShowPreviousWindowTAbHAndler: ICommAndHAndler = function (Accessor: ServicesAccessor) {
+	return Accessor.get(INAtiveHostService).showPreviousWindowTAb();
 };
 
-export const ShowNextWindowTabHandler: ICommandHandler = function (accessor: ServicesAccessor) {
-	return accessor.get(INativeHostService).showNextWindowTab();
+export const ShowNextWindowTAbHAndler: ICommAndHAndler = function (Accessor: ServicesAccessor) {
+	return Accessor.get(INAtiveHostService).showNextWindowTAb();
 };
 
-export const MoveWindowTabToNewWindowHandler: ICommandHandler = function (accessor: ServicesAccessor) {
-	return accessor.get(INativeHostService).moveWindowTabToNewWindow();
+export const MoveWindowTAbToNewWindowHAndler: ICommAndHAndler = function (Accessor: ServicesAccessor) {
+	return Accessor.get(INAtiveHostService).moveWindowTAbToNewWindow();
 };
 
-export const MergeWindowTabsHandlerHandler: ICommandHandler = function (accessor: ServicesAccessor) {
-	return accessor.get(INativeHostService).mergeAllWindowTabs();
+export const MergeWindowTAbsHAndlerHAndler: ICommAndHAndler = function (Accessor: ServicesAccessor) {
+	return Accessor.get(INAtiveHostService).mergeAllWindowTAbs();
 };
 
-export const ToggleWindowTabsBarHandler: ICommandHandler = function (accessor: ServicesAccessor) {
-	return accessor.get(INativeHostService).toggleWindowTabsBar();
+export const ToggleWindowTAbsBArHAndler: ICommAndHAndler = function (Accessor: ServicesAccessor) {
+	return Accessor.get(INAtiveHostService).toggleWindowTAbsBAr();
 };

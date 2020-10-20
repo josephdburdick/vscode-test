@@ -1,87 +1,87 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { TextEdit, WorkspaceEdit, WorkspaceEditMetadata, WorkspaceFileEdit, WorkspaceFileEditOptions, WorkspaceTextEdit } from 'vs/editor/common/modes';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { isObject } from 'vs/base/common/types';
+import { TextEdit, WorkspAceEdit, WorkspAceEditMetAdAtA, WorkspAceFileEdit, WorkspAceFileEditOptions, WorkspAceTextEdit } from 'vs/editor/common/modes';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IProgress, IProgressStep } from 'vs/plAtform/progress/common/progress';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { isObject } from 'vs/bAse/common/types';
 
-export const IBulkEditService = createDecorator<IBulkEditService>('IWorkspaceEditService');
+export const IBulkEditService = creAteDecorAtor<IBulkEditService>('IWorkspAceEditService');
 
-function isWorkspaceFileEdit(thing: any): thing is WorkspaceFileEdit {
-	return isObject(thing) && (Boolean((<WorkspaceFileEdit>thing).newUri) || Boolean((<WorkspaceFileEdit>thing).oldUri));
+function isWorkspAceFileEdit(thing: Any): thing is WorkspAceFileEdit {
+	return isObject(thing) && (BooleAn((<WorkspAceFileEdit>thing).newUri) || BooleAn((<WorkspAceFileEdit>thing).oldUri));
 }
 
-function isWorkspaceTextEdit(thing: any): thing is WorkspaceTextEdit {
-	return isObject(thing) && URI.isUri((<WorkspaceTextEdit>thing).resource) && isObject((<WorkspaceTextEdit>thing).edit);
+function isWorkspAceTextEdit(thing: Any): thing is WorkspAceTextEdit {
+	return isObject(thing) && URI.isUri((<WorkspAceTextEdit>thing).resource) && isObject((<WorkspAceTextEdit>thing).edit);
 }
 
-export class ResourceEdit {
+export clAss ResourceEdit {
 
-	protected constructor(readonly metadata?: WorkspaceEditMetadata) { }
+	protected constructor(reAdonly metAdAtA?: WorkspAceEditMetAdAtA) { }
 
-	static convert(edit: WorkspaceEdit): ResourceEdit[] {
+	stAtic convert(edit: WorkspAceEdit): ResourceEdit[] {
 
 
-		return edit.edits.map(edit => {
-			if (isWorkspaceTextEdit(edit)) {
-				return new ResourceTextEdit(edit.resource, edit.edit, edit.modelVersionId, edit.metadata);
+		return edit.edits.mAp(edit => {
+			if (isWorkspAceTextEdit(edit)) {
+				return new ResourceTextEdit(edit.resource, edit.edit, edit.modelVersionId, edit.metAdAtA);
 			}
-			if (isWorkspaceFileEdit(edit)) {
-				return new ResourceFileEdit(edit.oldUri, edit.newUri, edit.options, edit.metadata);
+			if (isWorkspAceFileEdit(edit)) {
+				return new ResourceFileEdit(edit.oldUri, edit.newUri, edit.options, edit.metAdAtA);
 			}
 			throw new Error('Unsupported edit');
 		});
 	}
 }
 
-export class ResourceTextEdit extends ResourceEdit {
+export clAss ResourceTextEdit extends ResourceEdit {
 	constructor(
-		readonly resource: URI,
-		readonly textEdit: TextEdit,
-		readonly versionId?: number,
-		readonly metadata?: WorkspaceEditMetadata
+		reAdonly resource: URI,
+		reAdonly textEdit: TextEdit,
+		reAdonly versionId?: number,
+		reAdonly metAdAtA?: WorkspAceEditMetAdAtA
 	) {
-		super(metadata);
+		super(metAdAtA);
 	}
 }
 
-export class ResourceFileEdit extends ResourceEdit {
+export clAss ResourceFileEdit extends ResourceEdit {
 	constructor(
-		readonly oldResource: URI | undefined,
-		readonly newResource: URI | undefined,
-		readonly options?: WorkspaceFileEditOptions,
-		readonly metadata?: WorkspaceEditMetadata
+		reAdonly oldResource: URI | undefined,
+		reAdonly newResource: URI | undefined,
+		reAdonly options?: WorkspAceFileEditOptions,
+		reAdonly metAdAtA?: WorkspAceEditMetAdAtA
 	) {
-		super(metadata);
+		super(metAdAtA);
 	}
 }
 
-export interface IBulkEditOptions {
+export interfAce IBulkEditOptions {
 	editor?: ICodeEditor;
 	progress?: IProgress<IProgressStep>;
-	showPreview?: boolean;
-	label?: string;
-	quotableLabel?: string;
+	showPreview?: booleAn;
+	lAbel?: string;
+	quotAbleLAbel?: string;
 }
 
-export interface IBulkEditResult {
-	ariaSummary: string;
+export interfAce IBulkEditResult {
+	AriASummAry: string;
 }
 
-export type IBulkEditPreviewHandler = (edits: ResourceEdit[], options?: IBulkEditOptions) => Promise<ResourceEdit[]>;
+export type IBulkEditPreviewHAndler = (edits: ResourceEdit[], options?: IBulkEditOptions) => Promise<ResourceEdit[]>;
 
-export interface IBulkEditService {
-	readonly _serviceBrand: undefined;
+export interfAce IBulkEditService {
+	reAdonly _serviceBrAnd: undefined;
 
-	hasPreviewHandler(): boolean;
+	hAsPreviewHAndler(): booleAn;
 
-	setPreviewHandler(handler: IBulkEditPreviewHandler): IDisposable;
+	setPreviewHAndler(hAndler: IBulkEditPreviewHAndler): IDisposAble;
 
-	apply(edit: ResourceEdit[], options?: IBulkEditOptions): Promise<IBulkEditResult>;
+	Apply(edit: ResourceEdit[], options?: IBulkEditOptions): Promise<IBulkEditResult>;
 }

@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { UriComponents } from 'vs/base/common/uri';
+import { UriComponents } from 'vs/bAse/common/uri';
 
-export interface IWindowInfo {
+export interfAce IWindowInfo {
 	pid: number;
 	title: string;
 	folderURIs: UriComponents[];
 	remoteAuthority?: string;
 }
 
-export interface IMainProcessInfo {
-	mainPID: number;
-	// All arguments after argv[0], the exec path
-	mainArguments: string[];
+export interfAce IMAinProcessInfo {
+	mAinPID: number;
+	// All Arguments After Argv[0], the exec pAth
+	mAinArguments: string[];
 	windows: IWindowInfo[];
-	screenReader: boolean;
-	gpuFeatureStatus: any;
+	screenReAder: booleAn;
+	gpuFeAtureStAtus: Any;
 }

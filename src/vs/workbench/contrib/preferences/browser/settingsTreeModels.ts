@@ -1,66 +1,66 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as arrays from 'vs/base/common/arrays';
-import { isFalsyOrWhitespace } from 'vs/base/common/strings';
-import { isArray, withUndefinedAsNull, isUndefinedOrNull } from 'vs/base/common/types';
-import { URI } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
-import { ConfigurationTarget, IConfigurationService, IConfigurationValue } from 'vs/platform/configuration/common/configuration';
-import { SettingsTarget } from 'vs/workbench/contrib/preferences/browser/preferencesWidgets';
-import { ITOCEntry, knownAcronyms, knownTermMappings } from 'vs/workbench/contrib/preferences/browser/settingsLayout';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
+import { isFAlsyOrWhitespAce } from 'vs/bAse/common/strings';
+import { isArrAy, withUndefinedAsNull, isUndefinedOrNull } from 'vs/bAse/common/types';
+import { URI } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
+import { ConfigurAtionTArget, IConfigurAtionService, IConfigurAtionVAlue } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { SettingsTArget } from 'vs/workbench/contrib/preferences/browser/preferencesWidgets';
+import { ITOCEntry, knownAcronyms, knownTermMAppings } from 'vs/workbench/contrib/preferences/browser/settingsLAyout';
 import { MODIFIED_SETTING_TAG } from 'vs/workbench/contrib/preferences/common/preferences';
-import { IExtensionSetting, ISearchResult, ISetting, SettingValueType } from 'vs/workbench/services/preferences/common/preferences';
+import { IExtensionSetting, ISeArchResult, ISetting, SettingVAlueType } from 'vs/workbench/services/preferences/common/preferences';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { FOLDER_SCOPES, WORKSPACE_SCOPES, REMOTE_MACHINE_SCOPES, LOCAL_MACHINE_SCOPES } from 'vs/workbench/services/configuration/common/configuration';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { Emitter } from 'vs/base/common/event';
+import { FOLDER_SCOPES, WORKSPACE_SCOPES, REMOTE_MACHINE_SCOPES, LOCAL_MACHINE_SCOPES } from 'vs/workbench/services/configurAtion/common/configurAtion';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter } from 'vs/bAse/common/event';
 
 export const ONLINE_SERVICES_SETTING_TAG = 'usesOnlineServices';
 
-export interface ISettingsEditorViewState {
-	settingsTarget: SettingsTarget;
-	tagFilters?: Set<string>;
+export interfAce ISettingsEditorViewStAte {
+	settingsTArget: SettingsTArget;
+	tAgFilters?: Set<string>;
 	extensionFilters?: Set<string>;
-	filterToCategory?: SettingsTreeGroupElement;
+	filterToCAtegory?: SettingsTreeGroupElement;
 }
 
-export abstract class SettingsTreeElement extends Disposable {
+export AbstrAct clAss SettingsTreeElement extends DisposAble {
 	id: string;
-	parent?: SettingsTreeGroupElement;
+	pArent?: SettingsTreeGroupElement;
 
-	private _tabbable = false;
-	protected readonly _onDidChangeTabbable = new Emitter<void>();
-	readonly onDidChangeTabbable = this._onDidChangeTabbable.event;
+	privAte _tAbbAble = fAlse;
+	protected reAdonly _onDidChAngeTAbbAble = new Emitter<void>();
+	reAdonly onDidChAngeTAbbAble = this._onDidChAngeTAbbAble.event;
 
 	constructor(_id: string) {
 		super();
 		this.id = _id;
 	}
 
-	get tabbable(): boolean {
-		return this._tabbable;
+	get tAbbAble(): booleAn {
+		return this._tAbbAble;
 	}
 
-	set tabbable(value: boolean) {
-		this._tabbable = value;
-		this._onDidChangeTabbable.fire();
+	set tAbbAble(vAlue: booleAn) {
+		this._tAbbAble = vAlue;
+		this._onDidChAngeTAbbAble.fire();
 	}
 }
 
 export type SettingsTreeGroupChild = (SettingsTreeGroupElement | SettingsTreeSettingElement | SettingsTreeNewExtensionsElement);
 
-export class SettingsTreeGroupElement extends SettingsTreeElement {
+export clAss SettingsTreeGroupElement extends SettingsTreeElement {
 	count?: number;
-	label: string;
+	lAbel: string;
 	level: number;
-	isFirstGroup: boolean;
+	isFirstGroup: booleAn;
 
-	private _childSettingKeys: Set<string> = new Set();
-	private _children: SettingsTreeGroupChild[] = [];
+	privAte _childSettingKeys: Set<string> = new Set();
+	privAte _children: SettingsTreeGroupChild[] = [];
 
 	get children(): SettingsTreeGroupChild[] {
 		return this._children;
@@ -70,245 +70,245 @@ export class SettingsTreeGroupElement extends SettingsTreeElement {
 		this._children = newChildren;
 
 		this._childSettingKeys = new Set();
-		this._children.forEach(child => {
-			if (child instanceof SettingsTreeSettingElement) {
-				this._childSettingKeys.add(child.setting.key);
+		this._children.forEAch(child => {
+			if (child instAnceof SettingsTreeSettingElement) {
+				this._childSettingKeys.Add(child.setting.key);
 			}
 		});
 	}
 
-	constructor(_id: string, count: number | undefined, label: string, level: number, isFirstGroup: boolean) {
+	constructor(_id: string, count: number | undefined, lAbel: string, level: number, isFirstGroup: booleAn) {
 		super(_id);
 
 		this.count = count;
-		this.label = label;
+		this.lAbel = lAbel;
 		this.level = level;
 		this.isFirstGroup = isFirstGroup;
 	}
 
 	/**
-	 * Returns whether this group contains the given child key (to a depth of 1 only)
+	 * Returns whether this group contAins the given child key (to A depth of 1 only)
 	 */
-	containsSetting(key: string): boolean {
-		return this._childSettingKeys.has(key);
+	contAinsSetting(key: string): booleAn {
+		return this._childSettingKeys.hAs(key);
 	}
 }
 
-export class SettingsTreeNewExtensionsElement extends SettingsTreeElement {
-	constructor(_id: string, public readonly extensionIds: string[]) {
+export clAss SettingsTreeNewExtensionsElement extends SettingsTreeElement {
+	constructor(_id: string, public reAdonly extensionIds: string[]) {
 		super(_id);
 	}
 }
 
-export class SettingsTreeSettingElement extends SettingsTreeElement {
-	private static readonly MAX_DESC_LINES = 20;
+export clAss SettingsTreeSettingElement extends SettingsTreeElement {
+	privAte stAtic reAdonly MAX_DESC_LINES = 20;
 
 	setting: ISetting;
 
-	private _displayCategory: string | null = null;
-	private _displayLabel: string | null = null;
+	privAte _displAyCAtegory: string | null = null;
+	privAte _displAyLAbel: string | null = null;
 
 	/**
-	 * scopeValue || defaultValue, for rendering convenience.
+	 * scopeVAlue || defAultVAlue, for rendering convenience.
 	 */
-	value: any;
+	vAlue: Any;
 
 	/**
-	 * The value in the current settings scope.
+	 * The vAlue in the current settings scope.
 	 */
-	scopeValue: any;
+	scopeVAlue: Any;
 
 	/**
-	 * The default value
+	 * The defAult vAlue
 	 */
-	defaultValue?: any;
+	defAultVAlue?: Any;
 
 	/**
 	 * Whether the setting is configured in the selected scope.
 	 */
-	isConfigured = false;
+	isConfigured = fAlse;
 
-	tags?: Set<string>;
+	tAgs?: Set<string>;
 	overriddenScopeList: string[] = [];
 	description!: string;
-	valueType!: SettingValueType;
+	vAlueType!: SettingVAlueType;
 
-	constructor(setting: ISetting, parent: SettingsTreeGroupElement, inspectResult: IInspectResult) {
-		super(sanitizeId(parent.id + '_' + setting.key));
+	constructor(setting: ISetting, pArent: SettingsTreeGroupElement, inspectResult: IInspectResult) {
+		super(sAnitizeId(pArent.id + '_' + setting.key));
 		this.setting = setting;
-		this.parent = parent;
+		this.pArent = pArent;
 
-		this.update(inspectResult);
+		this.updAte(inspectResult);
 	}
 
-	get displayCategory(): string {
-		if (!this._displayCategory) {
-			this.initLabel();
+	get displAyCAtegory(): string {
+		if (!this._displAyCAtegory) {
+			this.initLAbel();
 		}
 
-		return this._displayCategory!;
+		return this._displAyCAtegory!;
 	}
 
-	get displayLabel(): string {
-		if (!this._displayLabel) {
-			this.initLabel();
+	get displAyLAbel(): string {
+		if (!this._displAyLAbel) {
+			this.initLAbel();
 		}
 
-		return this._displayLabel!;
+		return this._displAyLAbel!;
 	}
 
-	private initLabel(): void {
-		const displayKeyFormat = settingKeyToDisplayFormat(this.setting.key, this.parent!.id);
-		this._displayLabel = displayKeyFormat.label;
-		this._displayCategory = displayKeyFormat.category;
+	privAte initLAbel(): void {
+		const displAyKeyFormAt = settingKeyToDisplAyFormAt(this.setting.key, this.pArent!.id);
+		this._displAyLAbel = displAyKeyFormAt.lAbel;
+		this._displAyCAtegory = displAyKeyFormAt.cAtegory;
 	}
 
-	update(inspectResult: IInspectResult): void {
-		const { isConfigured, inspected, targetSelector } = inspectResult;
+	updAte(inspectResult: IInspectResult): void {
+		const { isConfigured, inspected, tArgetSelector } = inspectResult;
 
-		const displayValue = isConfigured ? inspected[targetSelector] : inspected.defaultValue;
+		const displAyVAlue = isConfigured ? inspected[tArgetSelector] : inspected.defAultVAlue;
 		const overriddenScopeList: string[] = [];
-		if (targetSelector !== 'workspaceValue' && typeof inspected.workspaceValue !== 'undefined') {
-			overriddenScopeList.push(localize('workspace', "Workspace"));
+		if (tArgetSelector !== 'workspAceVAlue' && typeof inspected.workspAceVAlue !== 'undefined') {
+			overriddenScopeList.push(locAlize('workspAce', "WorkspAce"));
 		}
 
-		if (targetSelector !== 'userRemoteValue' && typeof inspected.userRemoteValue !== 'undefined') {
-			overriddenScopeList.push(localize('remote', "Remote"));
+		if (tArgetSelector !== 'userRemoteVAlue' && typeof inspected.userRemoteVAlue !== 'undefined') {
+			overriddenScopeList.push(locAlize('remote', "Remote"));
 		}
 
-		if (targetSelector !== 'userLocalValue' && typeof inspected.userLocalValue !== 'undefined') {
-			overriddenScopeList.push(localize('user', "User"));
+		if (tArgetSelector !== 'userLocAlVAlue' && typeof inspected.userLocAlVAlue !== 'undefined') {
+			overriddenScopeList.push(locAlize('user', "User"));
 		}
 
-		this.value = displayValue;
-		this.scopeValue = isConfigured && inspected[targetSelector];
-		this.defaultValue = inspected.defaultValue;
+		this.vAlue = displAyVAlue;
+		this.scopeVAlue = isConfigured && inspected[tArgetSelector];
+		this.defAultVAlue = inspected.defAultVAlue;
 
 		this.isConfigured = isConfigured;
-		if (isConfigured || this.setting.tags || this.tags) {
-			// Don't create an empty Set for all 1000 settings, only if needed
-			this.tags = new Set<string>();
+		if (isConfigured || this.setting.tAgs || this.tAgs) {
+			// Don't creAte An empty Set for All 1000 settings, only if needed
+			this.tAgs = new Set<string>();
 			if (isConfigured) {
-				this.tags.add(MODIFIED_SETTING_TAG);
+				this.tAgs.Add(MODIFIED_SETTING_TAG);
 			}
 
-			if (this.setting.tags) {
-				this.setting.tags.forEach(tag => this.tags!.add(tag));
+			if (this.setting.tAgs) {
+				this.setting.tAgs.forEAch(tAg => this.tAgs!.Add(tAg));
 			}
 		}
 
 		this.overriddenScopeList = overriddenScopeList;
 		if (this.setting.description.length > SettingsTreeSettingElement.MAX_DESC_LINES) {
-			const truncatedDescLines = this.setting.description.slice(0, SettingsTreeSettingElement.MAX_DESC_LINES);
-			truncatedDescLines.push('[...]');
-			this.description = truncatedDescLines.join('\n');
+			const truncAtedDescLines = this.setting.description.slice(0, SettingsTreeSettingElement.MAX_DESC_LINES);
+			truncAtedDescLines.push('[...]');
+			this.description = truncAtedDescLines.join('\n');
 		} else {
 			this.description = this.setting.description.join('\n');
 		}
 
-		if (this.setting.enum && (!this.setting.type || settingTypeEnumRenderable(this.setting.type))) {
-			this.valueType = SettingValueType.Enum;
+		if (this.setting.enum && (!this.setting.type || settingTypeEnumRenderAble(this.setting.type))) {
+			this.vAlueType = SettingVAlueType.Enum;
 		} else if (this.setting.type === 'string') {
-			this.valueType = SettingValueType.String;
+			this.vAlueType = SettingVAlueType.String;
 		} else if (isExcludeSetting(this.setting)) {
-			this.valueType = SettingValueType.Exclude;
+			this.vAlueType = SettingVAlueType.Exclude;
 		} else if (this.setting.type === 'integer') {
-			this.valueType = SettingValueType.Integer;
+			this.vAlueType = SettingVAlueType.Integer;
 		} else if (this.setting.type === 'number') {
-			this.valueType = SettingValueType.Number;
-		} else if (this.setting.type === 'boolean') {
-			this.valueType = SettingValueType.Boolean;
-		} else if (this.setting.type === 'array' && this.setting.arrayItemType === 'string') {
-			this.valueType = SettingValueType.ArrayOfString;
-		} else if (isArray(this.setting.type) && this.setting.type.indexOf(SettingValueType.Null) > -1 && this.setting.type.length === 2) {
-			if (this.setting.type.indexOf(SettingValueType.Integer) > -1) {
-				this.valueType = SettingValueType.NullableInteger;
-			} else if (this.setting.type.indexOf(SettingValueType.Number) > -1) {
-				this.valueType = SettingValueType.NullableNumber;
+			this.vAlueType = SettingVAlueType.Number;
+		} else if (this.setting.type === 'booleAn') {
+			this.vAlueType = SettingVAlueType.BooleAn;
+		} else if (this.setting.type === 'ArrAy' && this.setting.ArrAyItemType === 'string') {
+			this.vAlueType = SettingVAlueType.ArrAyOfString;
+		} else if (isArrAy(this.setting.type) && this.setting.type.indexOf(SettingVAlueType.Null) > -1 && this.setting.type.length === 2) {
+			if (this.setting.type.indexOf(SettingVAlueType.Integer) > -1) {
+				this.vAlueType = SettingVAlueType.NullAbleInteger;
+			} else if (this.setting.type.indexOf(SettingVAlueType.Number) > -1) {
+				this.vAlueType = SettingVAlueType.NullAbleNumber;
 			} else {
-				this.valueType = SettingValueType.Complex;
+				this.vAlueType = SettingVAlueType.Complex;
 			}
 		} else if (isObjectSetting(this.setting)) {
-			this.valueType = SettingValueType.Object;
+			this.vAlueType = SettingVAlueType.Object;
 		} else {
-			this.valueType = SettingValueType.Complex;
+			this.vAlueType = SettingVAlueType.Complex;
 		}
 	}
 
-	matchesAllTags(tagFilters?: Set<string>): boolean {
-		if (!tagFilters || !tagFilters.size) {
+	mAtchesAllTAgs(tAgFilters?: Set<string>): booleAn {
+		if (!tAgFilters || !tAgFilters.size) {
 			return true;
 		}
 
-		if (this.tags) {
-			let hasFilteredTag = true;
-			tagFilters.forEach(tag => {
-				hasFilteredTag = hasFilteredTag && this.tags!.has(tag);
+		if (this.tAgs) {
+			let hAsFilteredTAg = true;
+			tAgFilters.forEAch(tAg => {
+				hAsFilteredTAg = hAsFilteredTAg && this.tAgs!.hAs(tAg);
 			});
-			return hasFilteredTag;
+			return hAsFilteredTAg;
 		} else {
-			return false;
+			return fAlse;
 		}
 	}
 
-	matchesScope(scope: SettingsTarget, isRemote: boolean): boolean {
-		const configTarget = URI.isUri(scope) ? ConfigurationTarget.WORKSPACE_FOLDER : scope;
+	mAtchesScope(scope: SettingsTArget, isRemote: booleAn): booleAn {
+		const configTArget = URI.isUri(scope) ? ConfigurAtionTArget.WORKSPACE_FOLDER : scope;
 
 		if (!this.setting.scope) {
 			return true;
 		}
 
-		if (configTarget === ConfigurationTarget.WORKSPACE_FOLDER) {
+		if (configTArget === ConfigurAtionTArget.WORKSPACE_FOLDER) {
 			return FOLDER_SCOPES.indexOf(this.setting.scope) !== -1;
 		}
 
-		if (configTarget === ConfigurationTarget.WORKSPACE) {
+		if (configTArget === ConfigurAtionTArget.WORKSPACE) {
 			return WORKSPACE_SCOPES.indexOf(this.setting.scope) !== -1;
 		}
 
-		if (configTarget === ConfigurationTarget.USER_REMOTE) {
+		if (configTArget === ConfigurAtionTArget.USER_REMOTE) {
 			return REMOTE_MACHINE_SCOPES.indexOf(this.setting.scope) !== -1;
 		}
 
-		if (configTarget === ConfigurationTarget.USER_LOCAL && isRemote) {
+		if (configTArget === ConfigurAtionTArget.USER_LOCAL && isRemote) {
 			return LOCAL_MACHINE_SCOPES.indexOf(this.setting.scope) !== -1;
 		}
 
 		return true;
 	}
 
-	matchesAnyExtension(extensionFilters?: Set<string>): boolean {
+	mAtchesAnyExtension(extensionFilters?: Set<string>): booleAn {
 		if (!extensionFilters || !extensionFilters.size) {
 			return true;
 		}
 
 		if (!this.setting.extensionInfo) {
-			return false;
+			return fAlse;
 		}
 
-		return Array.from(extensionFilters).some(extensionId => extensionId.toLowerCase() === this.setting.extensionInfo!.id.toLowerCase());
+		return ArrAy.from(extensionFilters).some(extensionId => extensionId.toLowerCAse() === this.setting.extensionInfo!.id.toLowerCAse());
 	}
 }
 
-export class SettingsTreeModel {
+export clAss SettingsTreeModel {
 	protected _root!: SettingsTreeGroupElement;
-	private _treeElementsBySettingName = new Map<string, SettingsTreeSettingElement[]>();
-	private _tocRoot!: ITOCEntry;
+	privAte _treeElementsBySettingNAme = new MAp<string, SettingsTreeSettingElement[]>();
+	privAte _tocRoot!: ITOCEntry;
 
 	constructor(
-		protected _viewState: ISettingsEditorViewState,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		protected _viewStAte: ISettingsEditorViewStAte,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService
 	) { }
 
 	get root(): SettingsTreeGroupElement {
 		return this._root;
 	}
 
-	update(newTocRoot = this._tocRoot): void {
-		this._treeElementsBySettingName.clear();
+	updAte(newTocRoot = this._tocRoot): void {
+		this._treeElementsBySettingNAme.cleAr();
 
-		const newRoot = this.createSettingsTreeGroupElement(newTocRoot);
-		if (newRoot.children[0] instanceof SettingsTreeGroupElement) {
+		const newRoot = this.creAteSettingsTreeGroupElement(newTocRoot);
+		if (newRoot.children[0] instAnceof SettingsTreeGroupElement) {
 			(<SettingsTreeGroupElement>newRoot.children[0]).isFirstGroup = true;
 		}
 
@@ -320,49 +320,49 @@ export class SettingsTreeModel {
 		}
 	}
 
-	private disposeChildren(children: SettingsTreeGroupChild[]) {
+	privAte disposeChildren(children: SettingsTreeGroupChild[]) {
 		for (let child of children) {
 			this.recursiveDispose(child);
 		}
 	}
 
-	private recursiveDispose(element: SettingsTreeElement) {
-		if (element instanceof SettingsTreeGroupElement) {
+	privAte recursiveDispose(element: SettingsTreeElement) {
+		if (element instAnceof SettingsTreeGroupElement) {
 			this.disposeChildren(element.children);
 		}
 
 		element.dispose();
 	}
 
-	getElementsByName(name: string): SettingsTreeSettingElement[] | null {
-		return withUndefinedAsNull(this._treeElementsBySettingName.get(name));
+	getElementsByNAme(nAme: string): SettingsTreeSettingElement[] | null {
+		return withUndefinedAsNull(this._treeElementsBySettingNAme.get(nAme));
 	}
 
-	updateElementsByName(name: string): void {
-		if (!this._treeElementsBySettingName.has(name)) {
+	updAteElementsByNAme(nAme: string): void {
+		if (!this._treeElementsBySettingNAme.hAs(nAme)) {
 			return;
 		}
 
-		this._treeElementsBySettingName.get(name)!.forEach(element => {
-			const inspectResult = inspectSetting(element.setting.key, this._viewState.settingsTarget, this._configurationService);
-			element.update(inspectResult);
+		this._treeElementsBySettingNAme.get(nAme)!.forEAch(element => {
+			const inspectResult = inspectSetting(element.setting.key, this._viewStAte.settingsTArget, this._configurAtionService);
+			element.updAte(inspectResult);
 		});
 	}
 
-	private createSettingsTreeGroupElement(tocEntry: ITOCEntry, parent?: SettingsTreeGroupElement): SettingsTreeGroupElement {
+	privAte creAteSettingsTreeGroupElement(tocEntry: ITOCEntry, pArent?: SettingsTreeGroupElement): SettingsTreeGroupElement {
 
-		const depth = parent ? this.getDepth(parent) + 1 : 0;
-		const element = new SettingsTreeGroupElement(tocEntry.id, undefined, tocEntry.label, depth, false);
+		const depth = pArent ? this.getDepth(pArent) + 1 : 0;
+		const element = new SettingsTreeGroupElement(tocEntry.id, undefined, tocEntry.lAbel, depth, fAlse);
 
 		const children: SettingsTreeGroupChild[] = [];
 		if (tocEntry.settings) {
-			const settingChildren = tocEntry.settings.map(s => this.createSettingsTreeSettingElement(<ISetting>s, element))
-				.filter(el => el.setting.deprecationMessage ? el.isConfigured : true);
+			const settingChildren = tocEntry.settings.mAp(s => this.creAteSettingsTreeSettingElement(<ISetting>s, element))
+				.filter(el => el.setting.deprecAtionMessAge ? el.isConfigured : true);
 			children.push(...settingChildren);
 		}
 
 		if (tocEntry.children) {
-			const groupChildren = tocEntry.children.map(child => this.createSettingsTreeGroupElement(child, element));
+			const groupChildren = tocEntry.children.mAp(child => this.creAteSettingsTreeGroupElement(child, element));
 			children.push(...groupChildren);
 		}
 
@@ -371,94 +371,94 @@ export class SettingsTreeModel {
 		return element;
 	}
 
-	private getDepth(element: SettingsTreeElement): number {
-		if (element.parent) {
-			return 1 + this.getDepth(element.parent);
+	privAte getDepth(element: SettingsTreeElement): number {
+		if (element.pArent) {
+			return 1 + this.getDepth(element.pArent);
 		} else {
 			return 0;
 		}
 	}
 
-	private createSettingsTreeSettingElement(setting: ISetting, parent: SettingsTreeGroupElement): SettingsTreeSettingElement {
-		const inspectResult = inspectSetting(setting.key, this._viewState.settingsTarget, this._configurationService);
-		const element = new SettingsTreeSettingElement(setting, parent, inspectResult);
+	privAte creAteSettingsTreeSettingElement(setting: ISetting, pArent: SettingsTreeGroupElement): SettingsTreeSettingElement {
+		const inspectResult = inspectSetting(setting.key, this._viewStAte.settingsTArget, this._configurAtionService);
+		const element = new SettingsTreeSettingElement(setting, pArent, inspectResult);
 
-		const nameElements = this._treeElementsBySettingName.get(setting.key) || [];
-		nameElements.push(element);
-		this._treeElementsBySettingName.set(setting.key, nameElements);
+		const nAmeElements = this._treeElementsBySettingNAme.get(setting.key) || [];
+		nAmeElements.push(element);
+		this._treeElementsBySettingNAme.set(setting.key, nAmeElements);
 		return element;
 	}
 }
 
-interface IInspectResult {
-	isConfigured: boolean;
-	inspected: IConfigurationValue<any>;
-	targetSelector: 'userLocalValue' | 'userRemoteValue' | 'workspaceValue' | 'workspaceFolderValue';
+interfAce IInspectResult {
+	isConfigured: booleAn;
+	inspected: IConfigurAtionVAlue<Any>;
+	tArgetSelector: 'userLocAlVAlue' | 'userRemoteVAlue' | 'workspAceVAlue' | 'workspAceFolderVAlue';
 }
 
-function inspectSetting(key: string, target: SettingsTarget, configurationService: IConfigurationService): IInspectResult {
-	const inspectOverrides = URI.isUri(target) ? { resource: target } : undefined;
-	const inspected = configurationService.inspect(key, inspectOverrides);
-	const targetSelector = target === ConfigurationTarget.USER_LOCAL ? 'userLocalValue' :
-		target === ConfigurationTarget.USER_REMOTE ? 'userRemoteValue' :
-			target === ConfigurationTarget.WORKSPACE ? 'workspaceValue' :
-				'workspaceFolderValue';
-	const isConfigured = typeof inspected[targetSelector] !== 'undefined';
+function inspectSetting(key: string, tArget: SettingsTArget, configurAtionService: IConfigurAtionService): IInspectResult {
+	const inspectOverrides = URI.isUri(tArget) ? { resource: tArget } : undefined;
+	const inspected = configurAtionService.inspect(key, inspectOverrides);
+	const tArgetSelector = tArget === ConfigurAtionTArget.USER_LOCAL ? 'userLocAlVAlue' :
+		tArget === ConfigurAtionTArget.USER_REMOTE ? 'userRemoteVAlue' :
+			tArget === ConfigurAtionTArget.WORKSPACE ? 'workspAceVAlue' :
+				'workspAceFolderVAlue';
+	const isConfigured = typeof inspected[tArgetSelector] !== 'undefined';
 
-	return { isConfigured, inspected, targetSelector };
+	return { isConfigured, inspected, tArgetSelector };
 }
 
-function sanitizeId(id: string): string {
-	return id.replace(/[\.\/]/, '_');
+function sAnitizeId(id: string): string {
+	return id.replAce(/[\.\/]/, '_');
 }
 
-export function settingKeyToDisplayFormat(key: string, groupId = ''): { category: string, label: string; } {
-	const lastDotIdx = key.lastIndexOf('.');
-	let category = '';
-	if (lastDotIdx >= 0) {
-		category = key.substr(0, lastDotIdx);
-		key = key.substr(lastDotIdx + 1);
+export function settingKeyToDisplAyFormAt(key: string, groupId = ''): { cAtegory: string, lAbel: string; } {
+	const lAstDotIdx = key.lAstIndexOf('.');
+	let cAtegory = '';
+	if (lAstDotIdx >= 0) {
+		cAtegory = key.substr(0, lAstDotIdx);
+		key = key.substr(lAstDotIdx + 1);
 	}
 
-	groupId = groupId.replace(/\//g, '.');
-	category = trimCategoryForGroup(category, groupId);
-	category = wordifyKey(category);
+	groupId = groupId.replAce(/\//g, '.');
+	cAtegory = trimCAtegoryForGroup(cAtegory, groupId);
+	cAtegory = wordifyKey(cAtegory);
 
-	const label = wordifyKey(key);
-	return { category, label };
+	const lAbel = wordifyKey(key);
+	return { cAtegory, lAbel };
 }
 
 function wordifyKey(key: string): string {
 	key = key
-		.replace(/\.([a-z0-9])/g, (_, p1) => ` › ${p1.toUpperCase()}`) // Replace dot with spaced '>'
-		.replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Camel case to spacing, fooBar => foo Bar
-		.replace(/^[a-z]/g, match => match.toUpperCase()) // Upper casing all first letters, foo => Foo
-		.replace(/\b\w+\b/g, match => { // Upper casing known acronyms
-			return knownAcronyms.has(match.toLowerCase()) ?
-				match.toUpperCase() :
-				match;
+		.replAce(/\.([A-z0-9])/g, (_, p1) => ` › ${p1.toUpperCAse()}`) // ReplAce dot with spAced '>'
+		.replAce(/([A-z0-9])([A-Z])/g, '$1 $2') // CAmel cAse to spAcing, fooBAr => foo BAr
+		.replAce(/^[A-z]/g, mAtch => mAtch.toUpperCAse()) // Upper cAsing All first letters, foo => Foo
+		.replAce(/\b\w+\b/g, mAtch => { // Upper cAsing known Acronyms
+			return knownAcronyms.hAs(mAtch.toLowerCAse()) ?
+				mAtch.toUpperCAse() :
+				mAtch;
 		});
 
-	for (const [k, v] of knownTermMappings) {
-		key = key.replace(new RegExp(`\\b${k}\\b`, 'gi'), v);
+	for (const [k, v] of knownTermMAppings) {
+		key = key.replAce(new RegExp(`\\b${k}\\b`, 'gi'), v);
 	}
 
 	return key;
 }
 
-function trimCategoryForGroup(category: string, groupId: string): string {
-	const doTrim = (forward: boolean) => {
-		const parts = groupId.split('.');
-		while (parts.length) {
-			const reg = new RegExp(`^${parts.join('\\.')}(\\.|$)`, 'i');
-			if (reg.test(category)) {
-				return category.replace(reg, '');
+function trimCAtegoryForGroup(cAtegory: string, groupId: string): string {
+	const doTrim = (forwArd: booleAn) => {
+		const pArts = groupId.split('.');
+		while (pArts.length) {
+			const reg = new RegExp(`^${pArts.join('\\.')}(\\.|$)`, 'i');
+			if (reg.test(cAtegory)) {
+				return cAtegory.replAce(reg, '');
 			}
 
-			if (forward) {
-				parts.pop();
+			if (forwArd) {
+				pArts.pop();
 			} else {
-				parts.shift();
+				pArts.shift();
 			}
 		}
 
@@ -467,199 +467,199 @@ function trimCategoryForGroup(category: string, groupId: string): string {
 
 	let trimmed = doTrim(true);
 	if (trimmed === null) {
-		trimmed = doTrim(false);
+		trimmed = doTrim(fAlse);
 	}
 
 	if (trimmed === null) {
-		trimmed = category;
+		trimmed = cAtegory;
 	}
 
 	return trimmed;
 }
 
-export function isExcludeSetting(setting: ISetting): boolean {
+export function isExcludeSetting(setting: ISetting): booleAn {
 	return setting.key === 'files.exclude' ||
-		setting.key === 'search.exclude' ||
-		setting.key === 'files.watcherExclude';
+		setting.key === 'seArch.exclude' ||
+		setting.key === 'files.wAtcherExclude';
 }
 
-function isObjectRenderableSchema({ type }: IJSONSchema): boolean {
-	return type === 'string' || type === 'boolean';
+function isObjectRenderAbleSchemA({ type }: IJSONSchemA): booleAn {
+	return type === 'string' || type === 'booleAn';
 }
 
 function isObjectSetting({
 	type,
 	objectProperties,
-	objectPatternProperties,
-	objectAdditionalProperties
-}: ISetting): boolean {
+	objectPAtternProperties,
+	objectAdditionAlProperties
+}: ISetting): booleAn {
 	if (type !== 'object') {
-		return false;
+		return fAlse;
 	}
 
-	// object can have any shape
+	// object cAn hAve Any shApe
 	if (
 		isUndefinedOrNull(objectProperties) &&
-		isUndefinedOrNull(objectPatternProperties) &&
-		isUndefinedOrNull(objectAdditionalProperties)
+		isUndefinedOrNull(objectPAtternProperties) &&
+		isUndefinedOrNull(objectAdditionAlProperties)
 	) {
-		return false;
+		return fAlse;
 	}
 
-	// object additional properties allow it to have any shape
-	if (objectAdditionalProperties === true) {
-		return false;
+	// object AdditionAl properties Allow it to hAve Any shApe
+	if (objectAdditionAlProperties === true) {
+		return fAlse;
 	}
 
-	const schemas = [...Object.values(objectProperties ?? {}), ...Object.values(objectPatternProperties ?? {})];
+	const schemAs = [...Object.vAlues(objectProperties ?? {}), ...Object.vAlues(objectPAtternProperties ?? {})];
 
-	if (typeof objectAdditionalProperties === 'object') {
-		schemas.push(objectAdditionalProperties);
+	if (typeof objectAdditionAlProperties === 'object') {
+		schemAs.push(objectAdditionAlProperties);
 	}
 
-	// This should not render boolean only objects
-	return schemas.every(isObjectRenderableSchema) && schemas.some(({ type }) => type === 'string');
+	// This should not render booleAn only objects
+	return schemAs.every(isObjectRenderAbleSchemA) && schemAs.some(({ type }) => type === 'string');
 }
 
-function settingTypeEnumRenderable(_type: string | string[]) {
-	const enumRenderableSettingTypes = ['string', 'boolean', 'null', 'integer', 'number'];
-	const type = isArray(_type) ? _type : [_type];
-	return type.every(type => enumRenderableSettingTypes.indexOf(type) > -1);
+function settingTypeEnumRenderAble(_type: string | string[]) {
+	const enumRenderAbleSettingTypes = ['string', 'booleAn', 'null', 'integer', 'number'];
+	const type = isArrAy(_type) ? _type : [_type];
+	return type.every(type => enumRenderAbleSettingTypes.indexOf(type) > -1);
 }
 
-export const enum SearchResultIdx {
-	Local = 0,
+export const enum SeArchResultIdx {
+	LocAl = 0,
 	Remote = 1,
 	NewExtensions = 2
 }
 
-export class SearchResultModel extends SettingsTreeModel {
-	private rawSearchResults: ISearchResult[] | null = null;
-	private cachedUniqueSearchResults: ISearchResult[] | null = null;
-	private newExtensionSearchResults: ISearchResult | null = null;
+export clAss SeArchResultModel extends SettingsTreeModel {
+	privAte rAwSeArchResults: ISeArchResult[] | null = null;
+	privAte cAchedUniqueSeArchResults: ISeArchResult[] | null = null;
+	privAte newExtensionSeArchResults: ISeArchResult | null = null;
 
-	readonly id = 'searchResultModel';
+	reAdonly id = 'seArchResultModel';
 
 	constructor(
-		viewState: ISettingsEditorViewState,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IWorkbenchEnvironmentService private environmentService: IWorkbenchEnvironmentService,
+		viewStAte: ISettingsEditorViewStAte,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
+		@IWorkbenchEnvironmentService privAte environmentService: IWorkbenchEnvironmentService,
 	) {
-		super(viewState, configurationService);
-		this.update({ id: 'searchResultModel', label: '' });
+		super(viewStAte, configurAtionService);
+		this.updAte({ id: 'seArchResultModel', lAbel: '' });
 	}
 
-	getUniqueResults(): ISearchResult[] {
-		if (this.cachedUniqueSearchResults) {
-			return this.cachedUniqueSearchResults;
+	getUniqueResults(): ISeArchResult[] {
+		if (this.cAchedUniqueSeArchResults) {
+			return this.cAchedUniqueSeArchResults;
 		}
 
-		if (!this.rawSearchResults) {
+		if (!this.rAwSeArchResults) {
 			return [];
 		}
 
-		const localMatchKeys = new Set();
-		const localResult = this.rawSearchResults[SearchResultIdx.Local];
-		if (localResult) {
-			localResult.filterMatches.forEach(m => localMatchKeys.add(m.setting.key));
+		const locAlMAtchKeys = new Set();
+		const locAlResult = this.rAwSeArchResults[SeArchResultIdx.LocAl];
+		if (locAlResult) {
+			locAlResult.filterMAtches.forEAch(m => locAlMAtchKeys.Add(m.setting.key));
 		}
 
-		const remoteResult = this.rawSearchResults[SearchResultIdx.Remote];
+		const remoteResult = this.rAwSeArchResults[SeArchResultIdx.Remote];
 		if (remoteResult) {
-			remoteResult.filterMatches = remoteResult.filterMatches.filter(m => !localMatchKeys.has(m.setting.key));
+			remoteResult.filterMAtches = remoteResult.filterMAtches.filter(m => !locAlMAtchKeys.hAs(m.setting.key));
 		}
 
 		if (remoteResult) {
-			this.newExtensionSearchResults = this.rawSearchResults[SearchResultIdx.NewExtensions];
+			this.newExtensionSeArchResults = this.rAwSeArchResults[SeArchResultIdx.NewExtensions];
 		}
 
-		this.cachedUniqueSearchResults = [localResult, remoteResult];
-		return this.cachedUniqueSearchResults;
+		this.cAchedUniqueSeArchResults = [locAlResult, remoteResult];
+		return this.cAchedUniqueSeArchResults;
 	}
 
-	getRawResults(): ISearchResult[] {
-		return this.rawSearchResults || [];
+	getRAwResults(): ISeArchResult[] {
+		return this.rAwSeArchResults || [];
 	}
 
-	setResult(order: SearchResultIdx, result: ISearchResult | null): void {
-		this.cachedUniqueSearchResults = null;
-		this.newExtensionSearchResults = null;
+	setResult(order: SeArchResultIdx, result: ISeArchResult | null): void {
+		this.cAchedUniqueSeArchResults = null;
+		this.newExtensionSeArchResults = null;
 
-		this.rawSearchResults = this.rawSearchResults || [];
+		this.rAwSeArchResults = this.rAwSeArchResults || [];
 		if (!result) {
-			delete this.rawSearchResults[order];
+			delete this.rAwSeArchResults[order];
 			return;
 		}
 
-		if (result.exactMatch) {
-			this.rawSearchResults = [];
+		if (result.exActMAtch) {
+			this.rAwSeArchResults = [];
 		}
 
-		this.rawSearchResults[order] = result;
-		this.updateChildren();
+		this.rAwSeArchResults[order] = result;
+		this.updAteChildren();
 	}
 
-	updateChildren(): void {
-		this.update({
-			id: 'searchResultModel',
-			label: 'searchResultModel',
-			settings: this.getFlatSettings()
+	updAteChildren(): void {
+		this.updAte({
+			id: 'seArchResultModel',
+			lAbel: 'seArchResultModel',
+			settings: this.getFlAtSettings()
 		});
 
-		// Save time, filter children in the search model instead of relying on the tree filter, which still requires heights to be calculated.
+		// SAve time, filter children in the seArch model insteAd of relying on the tree filter, which still requires heights to be cAlculAted.
 		const isRemote = !!this.environmentService.remoteAuthority;
 		this.root.children = this.root.children
-			.filter(child => child instanceof SettingsTreeSettingElement && child.matchesAllTags(this._viewState.tagFilters) && child.matchesScope(this._viewState.settingsTarget, isRemote) && child.matchesAnyExtension(this._viewState.extensionFilters));
+			.filter(child => child instAnceof SettingsTreeSettingElement && child.mAtchesAllTAgs(this._viewStAte.tAgFilters) && child.mAtchesScope(this._viewStAte.settingsTArget, isRemote) && child.mAtchesAnyExtension(this._viewStAte.extensionFilters));
 
-		if (this.newExtensionSearchResults && this.newExtensionSearchResults.filterMatches.length) {
-			const resultExtensionIds = this.newExtensionSearchResults.filterMatches
-				.map(result => (<IExtensionSetting>result.setting))
-				.filter(setting => setting.extensionName && setting.extensionPublisher)
-				.map(setting => `${setting.extensionPublisher}.${setting.extensionName}`);
+		if (this.newExtensionSeArchResults && this.newExtensionSeArchResults.filterMAtches.length) {
+			const resultExtensionIds = this.newExtensionSeArchResults.filterMAtches
+				.mAp(result => (<IExtensionSetting>result.setting))
+				.filter(setting => setting.extensionNAme && setting.extensionPublisher)
+				.mAp(setting => `${setting.extensionPublisher}.${setting.extensionNAme}`);
 
-			const newExtElement = new SettingsTreeNewExtensionsElement('newExtensions', arrays.distinct(resultExtensionIds));
-			newExtElement.parent = this._root;
+			const newExtElement = new SettingsTreeNewExtensionsElement('newExtensions', ArrAys.distinct(resultExtensionIds));
+			newExtElement.pArent = this._root;
 			this._root.children.push(newExtElement);
 		}
 	}
 
-	private getFlatSettings(): ISetting[] {
-		const flatSettings: ISetting[] = [];
-		arrays.coalesce(this.getUniqueResults())
-			.forEach(r => {
-				flatSettings.push(
-					...r.filterMatches.map(m => m.setting));
+	privAte getFlAtSettings(): ISetting[] {
+		const flAtSettings: ISetting[] = [];
+		ArrAys.coAlesce(this.getUniqueResults())
+			.forEAch(r => {
+				flAtSettings.push(
+					...r.filterMAtches.mAp(m => m.setting));
 			});
 
-		return flatSettings;
+		return flAtSettings;
 	}
 }
 
-export interface IParsedQuery {
-	tags: string[];
+export interfAce IPArsedQuery {
+	tAgs: string[];
 	query: string;
 	extensionFilters: string[];
 }
 
-const tagRegex = /(^|\s)@tag:("([^"]*)"|[^"]\S*)/g;
+const tAgRegex = /(^|\s)@tAg:("([^"]*)"|[^"]\S*)/g;
 const extensionRegex = /(^|\s)@ext:("([^"]*)"|[^"]\S*)?/g;
-export function parseQuery(query: string): IParsedQuery {
-	const tags: string[] = [];
+export function pArseQuery(query: string): IPArsedQuery {
+	const tAgs: string[] = [];
 	const extensions: string[] = [];
-	query = query.replace(tagRegex, (_, __, quotedTag, tag) => {
-		tags.push(tag || quotedTag);
+	query = query.replAce(tAgRegex, (_, __, quotedTAg, tAg) => {
+		tAgs.push(tAg || quotedTAg);
 		return '';
 	});
 
-	query = query.replace(`@${MODIFIED_SETTING_TAG}`, () => {
-		tags.push(MODIFIED_SETTING_TAG);
+	query = query.replAce(`@${MODIFIED_SETTING_TAG}`, () => {
+		tAgs.push(MODIFIED_SETTING_TAG);
 		return '';
 	});
 
-	query = query.replace(extensionRegex, (_, __, quotedExtensionId, extensionId) => {
+	query = query.replAce(extensionRegex, (_, __, quotedExtensionId, extensionId) => {
 		const extensionIdQuery: string = extensionId || quotedExtensionId;
 		if (extensionIdQuery) {
-			extensions.push(...extensionIdQuery.split(',').map(s => s.trim()).filter(s => !isFalsyOrWhitespace(s)));
+			extensions.push(...extensionIdQuery.split(',').mAp(s => s.trim()).filter(s => !isFAlsyOrWhitespAce(s)));
 		}
 		return '';
 	});
@@ -667,7 +667,7 @@ export function parseQuery(query: string): IParsedQuery {
 	query = query.trim();
 
 	return {
-		tags,
+		tAgs,
 		extensionFilters: extensions,
 		query
 	};

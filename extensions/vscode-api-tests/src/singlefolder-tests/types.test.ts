@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import * as vscode from 'vscode';
+import 'mochA';
+import * As Assert from 'Assert';
+import * As vscode from 'vscode';
 
 suite('vscode API - types', () => {
 
-	test('static properties, es5 compat class', function () {
-		assert.ok(vscode.ThemeIcon.File instanceof vscode.ThemeIcon);
-		assert.ok(vscode.ThemeIcon.Folder instanceof vscode.ThemeIcon);
-		assert.ok(vscode.CodeActionKind.Empty instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.QuickFix instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.Refactor instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.RefactorExtract instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.RefactorInline instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.RefactorRewrite instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.Source instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.SourceOrganizeImports instanceof vscode.CodeActionKind);
-		assert.ok(vscode.CodeActionKind.SourceFixAll instanceof vscode.CodeActionKind);
-		// assert.ok(vscode.QuickInputButtons.Back instanceof vscode.QuickInputButtons); never was an instance
+	test('stAtic properties, es5 compAt clAss', function () {
+		Assert.ok(vscode.ThemeIcon.File instAnceof vscode.ThemeIcon);
+		Assert.ok(vscode.ThemeIcon.Folder instAnceof vscode.ThemeIcon);
+		Assert.ok(vscode.CodeActionKind.Empty instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.QuickFix instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.RefActor instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.RefActorExtrAct instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.RefActorInline instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.RefActorRewrite instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.Source instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.SourceOrgAnizeImports instAnceof vscode.CodeActionKind);
+		Assert.ok(vscode.CodeActionKind.SourceFixAll instAnceof vscode.CodeActionKind);
+		// Assert.ok(vscode.QuickInputButtons.BAck instAnceof vscode.QuickInputButtons); never wAs An instAnce
 
 	});
 });

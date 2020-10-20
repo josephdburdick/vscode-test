@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
+import * As nls from 'vs/nls';
 import { registerEditorAction, ServicesAccessor, EditorAction } from 'vs/editor/browser/editorExtensions';
 import { IModeService } from 'vs/editor/common/services/modeService';
-import { LanguageId } from 'vs/editor/common/modes';
-import { ICommandService, CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { LAnguAgeId } from 'vs/editor/common/modes';
+import { ICommAndService, CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
 import { ISnippetsService } from 'vs/workbench/contrib/snippets/browser/snippets.contribution';
 import { SnippetController2 } from 'vs/editor/contrib/snippet/snippetController2';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { Snippet, SnippetSource } from 'vs/workbench/contrib/snippets/browser/snippetsFile';
-import { IQuickPickItem, IQuickInputService, QuickPickInput } from 'vs/platform/quickinput/common/quickInput';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { IQuickPickItem, IQuickInputService, QuickPickInput } from 'vs/plAtform/quickinput/common/quickInput';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
 
-interface ISnippetPick extends IQuickPickItem {
+interfAce ISnippetPick extends IQuickPickItem {
 	snippet: Snippet;
 }
 
-class Args {
+clAss Args {
 
-	static fromUser(arg: any): Args {
-		if (!arg || typeof arg !== 'object') {
+	stAtic fromUser(Arg: Any): Args {
+		if (!Arg || typeof Arg !== 'object') {
 			return Args._empty;
 		}
-		let { snippet, name, langId } = arg;
+		let { snippet, nAme, lAngId } = Arg;
 		if (typeof snippet !== 'string') {
 			snippet = undefined;
 		}
-		if (typeof name !== 'string') {
-			name = undefined;
+		if (typeof nAme !== 'string') {
+			nAme = undefined;
 		}
-		if (typeof langId !== 'string') {
-			langId = undefined;
+		if (typeof lAngId !== 'string') {
+			lAngId = undefined;
 		}
-		return new Args(snippet, name, langId);
+		return new Args(snippet, nAme, lAngId);
 	}
 
-	private static readonly _empty = new Args(undefined, undefined, undefined);
+	privAte stAtic reAdonly _empty = new Args(undefined, undefined, undefined);
 
-	private constructor(
-		public readonly snippet: string | undefined,
-		public readonly name: string | undefined,
-		public readonly langId: string | undefined
+	privAte constructor(
+		public reAdonly snippet: string | undefined,
+		public reAdonly nAme: string | undefined,
+		public reAdonly lAngId: string | undefined
 	) { }
 }
 
-class InsertSnippetAction extends EditorAction {
+clAss InsertSnippetAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.insertSnippet',
-			label: nls.localize('snippet.suggestions.label', "Insert Snippet"),
-			alias: 'Insert Snippet',
-			precondition: EditorContextKeys.writable,
+			id: 'editor.Action.insertSnippet',
+			lAbel: nls.locAlize('snippet.suggestions.lAbel', "Insert Snippet"),
+			AliAs: 'Insert Snippet',
+			precondition: EditorContextKeys.writAble,
 			description: {
 				description: `Insert Snippet`,
-				args: [{
-					name: 'args',
-					schema: {
+				Args: [{
+					nAme: 'Args',
+					schemA: {
 						'type': 'object',
 						'properties': {
 							'snippet': {
 								'type': 'string'
 							},
-							'langId': {
+							'lAngId': {
 								'type': 'string',
 
 							},
-							'name': {
+							'nAme': {
 								'type': 'string'
 							}
 						},
@@ -80,21 +80,21 @@ class InsertSnippetAction extends EditorAction {
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor, arg: any): Promise<void> {
-		const modeService = accessor.get(IModeService);
-		const snippetService = accessor.get(ISnippetsService);
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor, Arg: Any): Promise<void> {
+		const modeService = Accessor.get(IModeService);
+		const snippetService = Accessor.get(ISnippetsService);
 
-		if (!editor.hasModel()) {
+		if (!editor.hAsModel()) {
 			return;
 		}
 
-		const clipboardService = accessor.get(IClipboardService);
-		const quickInputService = accessor.get(IQuickInputService);
+		const clipboArdService = Accessor.get(IClipboArdService);
+		const quickInputService = Accessor.get(IQuickInputService);
 
-		const snippet = await new Promise<Snippet | undefined>(async (resolve, reject) => {
+		const snippet = AwAit new Promise<Snippet | undefined>(Async (resolve, reject) => {
 
 			const { lineNumber, column } = editor.getPosition();
-			let { snippet, name, langId } = Args.fromUser(arg);
+			let { snippet, nAme, lAngId } = Args.fromUser(Arg);
 
 			if (snippet) {
 				return resolve(new Snippet(
@@ -108,82 +108,82 @@ class InsertSnippetAction extends EditorAction {
 				));
 			}
 
-			let languageId = LanguageId.Null;
-			if (langId) {
-				const otherLangId = modeService.getLanguageIdentifier(langId);
-				if (otherLangId) {
-					languageId = otherLangId.id;
+			let lAnguAgeId = LAnguAgeId.Null;
+			if (lAngId) {
+				const otherLAngId = modeService.getLAnguAgeIdentifier(lAngId);
+				if (otherLAngId) {
+					lAnguAgeId = otherLAngId.id;
 				}
 			} else {
-				editor.getModel().tokenizeIfCheap(lineNumber);
-				languageId = editor.getModel().getLanguageIdAtPosition(lineNumber, column);
+				editor.getModel().tokenizeIfCheAp(lineNumber);
+				lAnguAgeId = editor.getModel().getLAnguAgeIdAtPosition(lineNumber, column);
 
-				// validate the `languageId` to ensure this is a user
-				// facing language with a name and the chance to have
-				// snippets, else fall back to the outer language
-				const otherLangId = modeService.getLanguageIdentifier(languageId);
-				if (otherLangId && !modeService.getLanguageName(otherLangId.language)) {
-					languageId = editor.getModel().getLanguageIdentifier().id;
+				// vAlidAte the `lAnguAgeId` to ensure this is A user
+				// fAcing lAnguAge with A nAme And the chAnce to hAve
+				// snippets, else fAll bAck to the outer lAnguAge
+				const otherLAngId = modeService.getLAnguAgeIdentifier(lAnguAgeId);
+				if (otherLAngId && !modeService.getLAnguAgeNAme(otherLAngId.lAnguAge)) {
+					lAnguAgeId = editor.getModel().getLAnguAgeIdentifier().id;
 				}
 			}
 
-			if (name) {
-				// take selected snippet
-				(await snippetService.getSnippets(languageId)).every(snippet => {
-					if (snippet.name !== name) {
+			if (nAme) {
+				// tAke selected snippet
+				(AwAit snippetService.getSnippets(lAnguAgeId)).every(snippet => {
+					if (snippet.nAme !== nAme) {
 						return true;
 					}
 					resolve(snippet);
-					return false;
+					return fAlse;
 				});
 			} else {
-				// let user pick a snippet
-				const snippets = (await snippetService.getSnippets(languageId)).sort(Snippet.compare);
+				// let user pick A snippet
+				const snippets = (AwAit snippetService.getSnippets(lAnguAgeId)).sort(Snippet.compAre);
 				const picks: QuickPickInput<ISnippetPick>[] = [];
 				let prevSnippet: Snippet | undefined;
 				for (const snippet of snippets) {
 					const pick: ISnippetPick = {
-						label: snippet.prefix,
-						detail: snippet.description,
+						lAbel: snippet.prefix,
+						detAil: snippet.description,
 						snippet
 					};
 					if (!prevSnippet || prevSnippet.snippetSource !== snippet.snippetSource) {
-						let label = '';
+						let lAbel = '';
 						switch (snippet.snippetSource) {
-							case SnippetSource.User:
-								label = nls.localize('sep.userSnippet', "User Snippets");
-								break;
-							case SnippetSource.Extension:
-								label = nls.localize('sep.extSnippet', "Extension Snippets");
-								break;
-							case SnippetSource.Workspace:
-								label = nls.localize('sep.workspaceSnippet', "Workspace Snippets");
-								break;
+							cAse SnippetSource.User:
+								lAbel = nls.locAlize('sep.userSnippet', "User Snippets");
+								breAk;
+							cAse SnippetSource.Extension:
+								lAbel = nls.locAlize('sep.extSnippet', "Extension Snippets");
+								breAk;
+							cAse SnippetSource.WorkspAce:
+								lAbel = nls.locAlize('sep.workspAceSnippet', "WorkspAce Snippets");
+								breAk;
 						}
-						picks.push({ type: 'separator', label });
+						picks.push({ type: 'sepArAtor', lAbel });
 
 					}
 					picks.push(pick);
 					prevSnippet = snippet;
 				}
-				return quickInputService.pick(picks, { matchOnDetail: true }).then(pick => resolve(pick && pick.snippet), reject);
+				return quickInputService.pick(picks, { mAtchOnDetAil: true }).then(pick => resolve(pick && pick.snippet), reject);
 			}
 		});
 
 		if (!snippet) {
 			return;
 		}
-		let clipboardText: string | undefined;
-		if (snippet.needsClipboard) {
-			clipboardText = await clipboardService.readText();
+		let clipboArdText: string | undefined;
+		if (snippet.needsClipboArd) {
+			clipboArdText = AwAit clipboArdService.reAdText();
 		}
-		SnippetController2.get(editor).insert(snippet.codeSnippet, { clipboardText });
+		SnippetController2.get(editor).insert(snippet.codeSnippet, { clipboArdText });
 	}
 }
 
 registerEditorAction(InsertSnippetAction);
 
-// compatibility command to make sure old keybinding are still working
-CommandsRegistry.registerCommand('editor.action.showSnippets', accessor => {
-	return accessor.get(ICommandService).executeCommand('editor.action.insertSnippet');
+// compAtibility commAnd to mAke sure old keybinding Are still working
+CommAndsRegistry.registerCommAnd('editor.Action.showSnippets', Accessor => {
+	return Accessor.get(ICommAndService).executeCommAnd('editor.Action.insertSnippet');
 });

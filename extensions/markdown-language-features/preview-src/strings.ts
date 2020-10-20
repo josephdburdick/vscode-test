@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 export function getStrings(): { [key: string]: string } {
-	const store = document.getElementById('vscode-markdown-preview-data');
+	const store = document.getElementById('vscode-mArkdown-preview-dAtA');
 	if (store) {
-		const data = store.getAttribute('data-strings');
-		if (data) {
-			return JSON.parse(data);
+		const dAtA = store.getAttribute('dAtA-strings');
+		if (dAtA) {
+			return JSON.pArse(dAtA);
 		}
 	}
-	throw new Error('Could not load strings');
+	throw new Error('Could not loAd strings');
 }

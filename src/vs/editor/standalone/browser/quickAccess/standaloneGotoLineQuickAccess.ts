@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { AbstractGotoLineQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoLineQuickAccess';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IQuickAccessRegistry, Extensions } from 'vs/platform/quickinput/common/quickAccess';
+import { AbstrActGotoLineQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoLineQuickAccess';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IQuickAccessRegistry, Extensions } from 'vs/plAtform/quickinput/common/quickAccess';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { GoToLineNLS } from 'vs/editor/common/standaloneStrings';
-import { Event } from 'vs/base/common/event';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { GoToLineNLS } from 'vs/editor/common/stAndAloneStrings';
+import { Event } from 'vs/bAse/common/event';
 import { EditorAction, registerEditorAction, ServicesAccessor } from 'vs/editor/browser/editorExtensions';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { IQuickInputService } from 'vs/plAtform/quickinput/common/quickInput';
 
-export class StandaloneGotoLineQuickAccessProvider extends AbstractGotoLineQuickAccessProvider {
+export clAss StAndAloneGotoLineQuickAccessProvider extends AbstrActGotoLineQuickAccessProvider {
 
-	protected readonly onDidActiveTextEditorControlChange = Event.None;
+	protected reAdonly onDidActiveTextEditorControlChAnge = Event.None;
 
-	constructor(@ICodeEditorService private readonly editorService: ICodeEditorService) {
+	constructor(@ICodeEditorService privAte reAdonly editorService: ICodeEditorService) {
 		super();
 	}
 
-	protected get activeTextEditorControl() {
+	protected get ActiveTextEditorControl() {
 		return withNullAsUndefined(this.editorService.getFocusedCodeEditor());
 	}
 }
 
-Registry.as<IQuickAccessRegistry>(Extensions.Quickaccess).registerQuickAccessProvider({
-	ctor: StandaloneGotoLineQuickAccessProvider,
-	prefix: StandaloneGotoLineQuickAccessProvider.PREFIX,
-	helpEntries: [{ description: GoToLineNLS.gotoLineActionLabel, needsEditor: true }]
+Registry.As<IQuickAccessRegistry>(Extensions.QuickAccess).registerQuickAccessProvider({
+	ctor: StAndAloneGotoLineQuickAccessProvider,
+	prefix: StAndAloneGotoLineQuickAccessProvider.PREFIX,
+	helpEntries: [{ description: GoToLineNLS.gotoLineActionLAbel, needsEditor: true }]
 });
 
-export class GotoLineAction extends EditorAction {
+export clAss GotoLineAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.action.gotoLine',
-			label: GoToLineNLS.gotoLineActionLabel,
-			alias: 'Go to Line/Column...',
+			id: 'editor.Action.gotoLine',
+			lAbel: GoToLineNLS.gotoLineActionLAbel,
+			AliAs: 'Go to Line/Column...',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.focus,
-				primary: KeyMod.CtrlCmd | KeyCode.KEY_G,
-				mac: { primary: KeyMod.WinCtrl | KeyCode.KEY_G },
+				primAry: KeyMod.CtrlCmd | KeyCode.KEY_G,
+				mAc: { primAry: KeyMod.WinCtrl | KeyCode.KEY_G },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	run(accessor: ServicesAccessor): void {
-		accessor.get(IQuickInputService).quickAccess.show(StandaloneGotoLineQuickAccessProvider.PREFIX);
+	run(Accessor: ServicesAccessor): void {
+		Accessor.get(IQuickInputService).quickAccess.show(StAndAloneGotoLineQuickAccessProvider.PREFIX);
 	}
 }
 

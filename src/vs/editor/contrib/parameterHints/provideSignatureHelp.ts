@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { first } from 'vs/base/common/async';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
-import { registerDefaultLanguageCommand } from 'vs/editor/browser/editorExtensions';
+import { first } from 'vs/bAse/common/Async';
+import { onUnexpectedExternAlError } from 'vs/bAse/common/errors';
+import { registerDefAultLAnguAgeCommAnd } from 'vs/editor/browser/editorExtensions';
 import { Position } from 'vs/editor/common/core/position';
 import { ITextModel } from 'vs/editor/common/model';
-import * as modes from 'vs/editor/common/modes';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import * As modes from 'vs/editor/common/modes';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
 export const Context = {
-	Visible: new RawContextKey<boolean>('parameterHintsVisible', false),
-	MultipleSignatures: new RawContextKey<boolean>('parameterHintsMultipleSignatures', false),
+	Visible: new RAwContextKey<booleAn>('pArAmeterHintsVisible', fAlse),
+	MultipleSignAtures: new RAwContextKey<booleAn>('pArAmeterHintsMultipleSignAtures', fAlse),
 };
 
-export function provideSignatureHelp(
+export function provideSignAtureHelp(
 	model: ITextModel,
 	position: Position,
-	context: modes.SignatureHelpContext,
-	token: CancellationToken
-): Promise<modes.SignatureHelpResult | null | undefined> {
+	context: modes.SignAtureHelpContext,
+	token: CAncellAtionToken
+): Promise<modes.SignAtureHelpResult | null | undefined> {
 
-	const supports = modes.SignatureHelpProviderRegistry.ordered(model);
+	const supports = modes.SignAtureHelpProviderRegistry.ordered(model);
 
-	return first(supports.map(support => () => {
-		return Promise.resolve(support.provideSignatureHelp(model, position, token, context))
-			.catch<modes.SignatureHelpResult | undefined>(e => onUnexpectedExternalError(e));
+	return first(supports.mAp(support => () => {
+		return Promise.resolve(support.provideSignAtureHelp(model, position, token, context))
+			.cAtch<modes.SignAtureHelpResult | undefined>(e => onUnexpectedExternAlError(e));
 	}));
 }
 
-registerDefaultLanguageCommand('_executeSignatureHelpProvider', async (model, position, args) => {
-	const result = await provideSignatureHelp(model, position, {
-		triggerKind: modes.SignatureHelpTriggerKind.Invoke,
-		isRetrigger: false,
-		triggerCharacter: args['triggerCharacter']
-	}, CancellationToken.None);
+registerDefAultLAnguAgeCommAnd('_executeSignAtureHelpProvider', Async (model, position, Args) => {
+	const result = AwAit provideSignAtureHelp(model, position, {
+		triggerKind: modes.SignAtureHelpTriggerKind.Invoke,
+		isRetrigger: fAlse,
+		triggerChArActer: Args['triggerChArActer']
+	}, CAncellAtionToken.None);
 
 	if (!result) {
 		return undefined;
 	}
 
 	setTimeout(() => result.dispose(), 0);
-	return result.value;
+	return result.vAlue;
 });

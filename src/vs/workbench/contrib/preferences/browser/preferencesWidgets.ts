@@ -1,56 +1,56 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as DOM from 'vs/base/browser/dom';
-import { IKeyboardEvent, StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { ActionBar, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
-import { IInputOptions, InputBox } from 'vs/base/browser/ui/inputbox/inputBox';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Action, IAction } from 'vs/base/common/actions';
-import { Emitter, Event } from 'vs/base/common/event';
-import { MarkdownString } from 'vs/base/common/htmlContent';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IMarginData } from 'vs/editor/browser/controller/mouseTarget';
-import { ICodeEditor, IEditorMouseEvent, IViewZone, MouseTargetType } from 'vs/editor/browser/editorBrowser';
-import { ICursorPositionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
+import * As DOM from 'vs/bAse/browser/dom';
+import { IKeyboArdEvent, StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { ActionBAr, ActionsOrientAtion } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { IInputOptions, InputBox } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { Action, IAction } from 'vs/bAse/common/Actions';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { MArkdownString } from 'vs/bAse/common/htmlContent';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IMArginDAtA } from 'vs/editor/browser/controller/mouseTArget';
+import { ICodeEditor, IEditorMouseEvent, IViewZone, MouseTArgetType } from 'vs/editor/browser/editorBrowser';
+import { ICursorPositionChAngedEvent } from 'vs/editor/common/controller/cursorEvents';
 import { Position } from 'vs/editor/common/core/position';
-import { IModelDeltaDecoration, TrackedRangeStickiness } from 'vs/editor/common/model';
-import { localize } from 'vs/nls';
-import { ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IContextMenuService, IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { Schemas } from 'vs/base/common/network';
-import { activeContrastBorder, badgeBackground, badgeForeground, contrastBorder, focusBorder } from 'vs/platform/theme/common/colorRegistry';
-import { attachInputBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { ICssStyleCollector, IColorTheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { IWorkspaceContextService, IWorkspaceFolder, WorkbenchState } from 'vs/platform/workspace/common/workspace';
+import { IModelDeltADecorAtion, TrAckedRAngeStickiness } from 'vs/editor/common/model';
+import { locAlize } from 'vs/nls';
+import { ConfigurAtionTArget } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextMenuService, IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { SchemAs } from 'vs/bAse/common/network';
+import { ActiveContrAstBorder, bAdgeBAckground, bAdgeForeground, contrAstBorder, focusBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { AttAchInputBoxStyler, AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { ICssStyleCollector, IColorTheme, IThemeService, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { IWorkspAceContextService, IWorkspAceFolder, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
 import { PANEL_ACTIVE_TITLE_BORDER, PANEL_ACTIVE_TITLE_FOREGROUND, PANEL_INACTIVE_TITLE_FOREGROUND } from 'vs/workbench/common/theme';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { ISettingsGroup, IPreferencesService } from 'vs/workbench/services/preferences/common/preferences';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
-import { isEqual } from 'vs/base/common/resources';
-import { registerIcon, Codicon } from 'vs/base/common/codicons';
-import { BaseActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
+import { isEquAl } from 'vs/bAse/common/resources';
+import { registerIcon, Codicon } from 'vs/bAse/common/codicons';
+import { BAseActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
 
-export class SettingsHeaderWidget extends Widget implements IViewZone {
+export clAss SettingsHeAderWidget extends Widget implements IViewZone {
 
-	private id!: string;
-	private _domNode!: HTMLElement;
+	privAte id!: string;
+	privAte _domNode!: HTMLElement;
 
-	protected titleContainer!: HTMLElement;
-	private messageElement!: HTMLElement;
+	protected titleContAiner!: HTMLElement;
+	privAte messAgeElement!: HTMLElement;
 
-	constructor(protected editor: ICodeEditor, private title: string) {
+	constructor(protected editor: ICodeEditor, privAte title: string) {
 		super();
-		this.create();
-		this._register(this.editor.onDidChangeConfiguration(() => this.layout()));
-		this._register(this.editor.onDidLayoutChange(() => this.layout()));
+		this.creAte();
+		this._register(this.editor.onDidChAngeConfigurAtion(() => this.lAyout()));
+		this._register(this.editor.onDidLAyoutChAnge(() => this.lAyout()));
 	}
 
 	get domNode(): HTMLElement {
@@ -61,90 +61,90 @@ export class SettingsHeaderWidget extends Widget implements IViewZone {
 		return 1;
 	}
 
-	get afterLineNumber(): number {
+	get AfterLineNumber(): number {
 		return 0;
 	}
 
-	protected create() {
-		this._domNode = DOM.$('.settings-header-widget');
+	protected creAte() {
+		this._domNode = DOM.$('.settings-heAder-widget');
 
-		this.titleContainer = DOM.append(this._domNode, DOM.$('.title-container'));
+		this.titleContAiner = DOM.Append(this._domNode, DOM.$('.title-contAiner'));
 		if (this.title) {
-			DOM.append(this.titleContainer, DOM.$('.title')).textContent = this.title;
+			DOM.Append(this.titleContAiner, DOM.$('.title')).textContent = this.title;
 		}
-		this.messageElement = DOM.append(this.titleContainer, DOM.$('.message'));
+		this.messAgeElement = DOM.Append(this.titleContAiner, DOM.$('.messAge'));
 		if (this.title) {
-			this.messageElement.style.paddingLeft = '12px';
+			this.messAgeElement.style.pAddingLeft = '12px';
 		}
 
-		this.editor.changeViewZones(accessor => {
-			this.id = accessor.addZone(this);
-			this.layout();
+		this.editor.chAngeViewZones(Accessor => {
+			this.id = Accessor.AddZone(this);
+			this.lAyout();
 		});
 	}
 
-	setMessage(message: string): void {
-		this.messageElement.textContent = message;
+	setMessAge(messAge: string): void {
+		this.messAgeElement.textContent = messAge;
 	}
 
-	private layout(): void {
+	privAte lAyout(): void {
 		const options = this.editor.getOptions();
 		const fontInfo = options.get(EditorOption.fontInfo);
-		this.titleContainer.style.fontSize = fontInfo.fontSize + 'px';
+		this.titleContAiner.style.fontSize = fontInfo.fontSize + 'px';
 		if (!options.get(EditorOption.folding)) {
-			this.titleContainer.style.paddingLeft = '6px';
+			this.titleContAiner.style.pAddingLeft = '6px';
 		}
 	}
 
 	dispose() {
-		this.editor.changeViewZones(accessor => {
-			accessor.removeZone(this.id);
+		this.editor.chAngeViewZones(Accessor => {
+			Accessor.removeZone(this.id);
 		});
 		super.dispose();
 	}
 }
 
-export class DefaultSettingsHeaderWidget extends SettingsHeaderWidget {
+export clAss DefAultSettingsHeAderWidget extends SettingsHeAderWidget {
 
-	private _onClick = this._register(new Emitter<void>());
-	readonly onClick: Event<void> = this._onClick.event;
+	privAte _onClick = this._register(new Emitter<void>());
+	reAdonly onClick: Event<void> = this._onClick.event;
 
-	protected create() {
-		super.create();
+	protected creAte() {
+		super.creAte();
 
-		this.toggleMessage(true);
+		this.toggleMessAge(true);
 	}
 
-	toggleMessage(hasSettings: boolean): void {
-		if (hasSettings) {
-			this.setMessage(localize('defaultSettings', "Place your settings in the right hand side editor to override."));
+	toggleMessAge(hAsSettings: booleAn): void {
+		if (hAsSettings) {
+			this.setMessAge(locAlize('defAultSettings', "PlAce your settings in the right hAnd side editor to override."));
 		} else {
-			this.setMessage(localize('noSettingsFound', "No Settings Found."));
+			this.setMessAge(locAlize('noSettingsFound', "No Settings Found."));
 		}
 	}
 }
 
-export class SettingsGroupTitleWidget extends Widget implements IViewZone {
+export clAss SettingsGroupTitleWidget extends Widget implements IViewZone {
 
-	private id!: string;
-	private _afterLineNumber!: number;
-	private _domNode!: HTMLElement;
+	privAte id!: string;
+	privAte _AfterLineNumber!: number;
+	privAte _domNode!: HTMLElement;
 
-	private titleContainer!: HTMLElement;
-	private icon!: HTMLElement;
-	private title!: HTMLElement;
+	privAte titleContAiner!: HTMLElement;
+	privAte icon!: HTMLElement;
+	privAte title!: HTMLElement;
 
-	private _onToggled = this._register(new Emitter<boolean>());
-	readonly onToggled: Event<boolean> = this._onToggled.event;
+	privAte _onToggled = this._register(new Emitter<booleAn>());
+	reAdonly onToggled: Event<booleAn> = this._onToggled.event;
 
-	private previousPosition: Position | null = null;
+	privAte previousPosition: Position | null = null;
 
-	constructor(private editor: ICodeEditor, public settingsGroup: ISettingsGroup) {
+	constructor(privAte editor: ICodeEditor, public settingsGroup: ISettingsGroup) {
 		super();
-		this.create();
-		this._register(this.editor.onDidChangeConfiguration(() => this.layout()));
-		this._register(this.editor.onDidLayoutChange(() => this.layout()));
-		this._register(this.editor.onDidChangeCursorPosition((e) => this.onCursorChange(e)));
+		this.creAte();
+		this._register(this.editor.onDidChAngeConfigurAtion(() => this.lAyout()));
+		this._register(this.editor.onDidLAyoutChAnge(() => this.lAyout()));
+		this._register(this.editor.onDidChAngeCursorPosition((e) => this.onCursorChAnge(e)));
 	}
 
 	get domNode(): HTMLElement {
@@ -155,216 +155,216 @@ export class SettingsGroupTitleWidget extends Widget implements IViewZone {
 		return 1.5;
 	}
 
-	get afterLineNumber(): number {
-		return this._afterLineNumber;
+	get AfterLineNumber(): number {
+		return this._AfterLineNumber;
 	}
 
-	private create() {
+	privAte creAte() {
 		this._domNode = DOM.$('.settings-group-title-widget');
 
-		this.titleContainer = DOM.append(this._domNode, DOM.$('.title-container'));
-		this.titleContainer.tabIndex = 0;
-		this.onclick(this.titleContainer, () => this.toggle());
-		this.onkeydown(this.titleContainer, (e) => this.onKeyDown(e));
-		const focusTracker = this._register(DOM.trackFocus(this.titleContainer));
+		this.titleContAiner = DOM.Append(this._domNode, DOM.$('.title-contAiner'));
+		this.titleContAiner.tAbIndex = 0;
+		this.onclick(this.titleContAiner, () => this.toggle());
+		this.onkeydown(this.titleContAiner, (e) => this.onKeyDown(e));
+		const focusTrAcker = this._register(DOM.trAckFocus(this.titleContAiner));
 
-		this._register(focusTracker.onDidFocus(() => this.toggleFocus(true)));
-		this._register(focusTracker.onDidBlur(() => this.toggleFocus(false)));
+		this._register(focusTrAcker.onDidFocus(() => this.toggleFocus(true)));
+		this._register(focusTrAcker.onDidBlur(() => this.toggleFocus(fAlse)));
 
-		this.icon = DOM.append(this.titleContainer, DOM.$('.codicon.codicon-chevron-down'));
-		this.title = DOM.append(this.titleContainer, DOM.$('.title'));
+		this.icon = DOM.Append(this.titleContAiner, DOM.$('.codicon.codicon-chevron-down'));
+		this.title = DOM.Append(this.titleContAiner, DOM.$('.title'));
 		this.title.textContent = this.settingsGroup.title + ` (${this.settingsGroup.sections.reduce((count, section) => count + section.settings.length, 0)})`;
 
-		this.layout();
+		this.lAyout();
 	}
 
 	render() {
-		if (!this.settingsGroup.range) {
+		if (!this.settingsGroup.rAnge) {
 			// #61352
 			return;
 		}
 
-		this._afterLineNumber = this.settingsGroup.range.startLineNumber - 2;
-		this.editor.changeViewZones(accessor => {
-			this.id = accessor.addZone(this);
-			this.layout();
+		this._AfterLineNumber = this.settingsGroup.rAnge.stArtLineNumber - 2;
+		this.editor.chAngeViewZones(Accessor => {
+			this.id = Accessor.AddZone(this);
+			this.lAyout();
 		});
 	}
 
-	toggleCollapse(collapse: boolean) {
-		this.titleContainer.classList.toggle('collapsed', collapse);
+	toggleCollApse(collApse: booleAn) {
+		this.titleContAiner.clAssList.toggle('collApsed', collApse);
 	}
 
-	toggleFocus(focus: boolean): void {
-		this.titleContainer.classList.toggle('focused', focus);
+	toggleFocus(focus: booleAn): void {
+		this.titleContAiner.clAssList.toggle('focused', focus);
 	}
 
-	isCollapsed(): boolean {
-		return this.titleContainer.classList.contains('collapsed');
+	isCollApsed(): booleAn {
+		return this.titleContAiner.clAssList.contAins('collApsed');
 	}
 
-	private layout(): void {
+	privAte lAyout(): void {
 		const options = this.editor.getOptions();
 		const fontInfo = options.get(EditorOption.fontInfo);
-		const layoutInfo = this.editor.getLayoutInfo();
-		this._domNode.style.width = layoutInfo.contentWidth - layoutInfo.verticalScrollbarWidth + 'px';
-		this.titleContainer.style.lineHeight = options.get(EditorOption.lineHeight) + 3 + 'px';
-		this.titleContainer.style.height = options.get(EditorOption.lineHeight) + 3 + 'px';
-		this.titleContainer.style.fontSize = fontInfo.fontSize + 'px';
+		const lAyoutInfo = this.editor.getLAyoutInfo();
+		this._domNode.style.width = lAyoutInfo.contentWidth - lAyoutInfo.verticAlScrollbArWidth + 'px';
+		this.titleContAiner.style.lineHeight = options.get(EditorOption.lineHeight) + 3 + 'px';
+		this.titleContAiner.style.height = options.get(EditorOption.lineHeight) + 3 + 'px';
+		this.titleContAiner.style.fontSize = fontInfo.fontSize + 'px';
 		this.icon.style.minWidth = `${this.getIconSize(16)}px`;
 	}
 
-	private getIconSize(minSize: number): number {
+	privAte getIconSize(minSize: number): number {
 		const fontSize = this.editor.getOption(EditorOption.fontInfo).fontSize;
-		return fontSize > 8 ? Math.max(fontSize, minSize) : 12;
+		return fontSize > 8 ? MAth.mAx(fontSize, minSize) : 12;
 	}
 
-	private onKeyDown(keyboardEvent: IKeyboardEvent): void {
-		switch (keyboardEvent.keyCode) {
-			case KeyCode.Enter:
-			case KeyCode.Space:
+	privAte onKeyDown(keyboArdEvent: IKeyboArdEvent): void {
+		switch (keyboArdEvent.keyCode) {
+			cAse KeyCode.Enter:
+			cAse KeyCode.SpAce:
 				this.toggle();
-				break;
-			case KeyCode.LeftArrow:
-				this.collapse(true);
-				break;
-			case KeyCode.RightArrow:
-				this.collapse(false);
-				break;
-			case KeyCode.UpArrow:
-				if (this.settingsGroup.range.startLineNumber - 3 !== 1) {
+				breAk;
+			cAse KeyCode.LeftArrow:
+				this.collApse(true);
+				breAk;
+			cAse KeyCode.RightArrow:
+				this.collApse(fAlse);
+				breAk;
+			cAse KeyCode.UpArrow:
+				if (this.settingsGroup.rAnge.stArtLineNumber - 3 !== 1) {
 					this.editor.focus();
-					const lineNumber = this.settingsGroup.range.startLineNumber - 2;
-					if (this.editor.hasModel()) {
+					const lineNumber = this.settingsGroup.rAnge.stArtLineNumber - 2;
+					if (this.editor.hAsModel()) {
 						this.editor.setPosition({ lineNumber, column: this.editor.getModel().getLineMinColumn(lineNumber) });
 					}
 				}
-				break;
-			case KeyCode.DownArrow:
-				const lineNumber = this.isCollapsed() ? this.settingsGroup.range.startLineNumber : this.settingsGroup.range.startLineNumber - 1;
+				breAk;
+			cAse KeyCode.DownArrow:
+				const lineNumber = this.isCollApsed() ? this.settingsGroup.rAnge.stArtLineNumber : this.settingsGroup.rAnge.stArtLineNumber - 1;
 				this.editor.focus();
-				if (this.editor.hasModel()) {
+				if (this.editor.hAsModel()) {
 					this.editor.setPosition({ lineNumber, column: this.editor.getModel().getLineMinColumn(lineNumber) });
 				}
-				break;
+				breAk;
 		}
 	}
 
-	private toggle() {
-		this.collapse(!this.isCollapsed());
+	privAte toggle() {
+		this.collApse(!this.isCollApsed());
 	}
 
-	private collapse(collapse: boolean) {
-		if (collapse !== this.isCollapsed()) {
-			this.titleContainer.classList.toggle('collapsed', collapse);
-			this._onToggled.fire(collapse);
+	privAte collApse(collApse: booleAn) {
+		if (collApse !== this.isCollApsed()) {
+			this.titleContAiner.clAssList.toggle('collApsed', collApse);
+			this._onToggled.fire(collApse);
 		}
 	}
 
-	private onCursorChange(e: ICursorPositionChangedEvent): void {
+	privAte onCursorChAnge(e: ICursorPositionChAngedEvent): void {
 		if (e.source !== 'mouse' && this.focusTitle(e.position)) {
-			this.titleContainer.focus();
+			this.titleContAiner.focus();
 		}
 	}
 
-	private focusTitle(currentPosition: Position): boolean {
+	privAte focusTitle(currentPosition: Position): booleAn {
 		const previousPosition = this.previousPosition;
 		this.previousPosition = currentPosition;
 		if (!previousPosition) {
-			return false;
+			return fAlse;
 		}
 		if (previousPosition.lineNumber === currentPosition.lineNumber) {
-			return false;
+			return fAlse;
 		}
-		if (!this.settingsGroup.range) {
+		if (!this.settingsGroup.rAnge) {
 			// #60460?
-			return false;
+			return fAlse;
 		}
-		if (currentPosition.lineNumber === this.settingsGroup.range.startLineNumber - 1 || currentPosition.lineNumber === this.settingsGroup.range.startLineNumber - 2) {
+		if (currentPosition.lineNumber === this.settingsGroup.rAnge.stArtLineNumber - 1 || currentPosition.lineNumber === this.settingsGroup.rAnge.stArtLineNumber - 2) {
 			return true;
 		}
-		if (this.isCollapsed() && currentPosition.lineNumber === this.settingsGroup.range.endLineNumber) {
+		if (this.isCollApsed() && currentPosition.lineNumber === this.settingsGroup.rAnge.endLineNumber) {
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
 	dispose() {
-		this.editor.changeViewZones(accessor => {
-			accessor.removeZone(this.id);
+		this.editor.chAngeViewZones(Accessor => {
+			Accessor.removeZone(this.id);
 		});
 		super.dispose();
 	}
 }
 
-export class FolderSettingsActionViewItem extends BaseActionViewItem {
+export clAss FolderSettingsActionViewItem extends BAseActionViewItem {
 
-	private _folder: IWorkspaceFolder | null;
-	private _folderSettingCounts = new Map<string, number>();
+	privAte _folder: IWorkspAceFolder | null;
+	privAte _folderSettingCounts = new MAp<string, number>();
 
-	private container!: HTMLElement;
-	private anchorElement!: HTMLElement;
-	private labelElement!: HTMLElement;
-	private detailsElement!: HTMLElement;
-	private dropDownElement!: HTMLElement;
+	privAte contAiner!: HTMLElement;
+	privAte AnchorElement!: HTMLElement;
+	privAte lAbelElement!: HTMLElement;
+	privAte detAilsElement!: HTMLElement;
+	privAte dropDownElement!: HTMLElement;
 
 	constructor(
-		action: IAction,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IPreferencesService private readonly preferencesService: IPreferencesService,
+		Action: IAction,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IContextMenuService privAte reAdonly contextMenuService: IContextMenuService,
+		@IPreferencesService privAte reAdonly preferencesService: IPreferencesService,
 	) {
-		super(null, action);
-		const workspace = this.contextService.getWorkspace();
-		this._folder = workspace.folders.length === 1 ? workspace.folders[0] : null;
-		this._register(this.contextService.onDidChangeWorkspaceFolders(() => this.onWorkspaceFoldersChanged()));
+		super(null, Action);
+		const workspAce = this.contextService.getWorkspAce();
+		this._folder = workspAce.folders.length === 1 ? workspAce.folders[0] : null;
+		this._register(this.contextService.onDidChAngeWorkspAceFolders(() => this.onWorkspAceFoldersChAnged()));
 	}
 
-	get folder(): IWorkspaceFolder | null {
+	get folder(): IWorkspAceFolder | null {
 		return this._folder;
 	}
 
-	set folder(folder: IWorkspaceFolder | null) {
+	set folder(folder: IWorkspAceFolder | null) {
 		this._folder = folder;
-		this.update();
+		this.updAte();
 	}
 
-	setCount(settingsTarget: URI, count: number): void {
-		const workspaceFolder = this.contextService.getWorkspaceFolder(settingsTarget);
-		if (!workspaceFolder) {
+	setCount(settingsTArget: URI, count: number): void {
+		const workspAceFolder = this.contextService.getWorkspAceFolder(settingsTArget);
+		if (!workspAceFolder) {
 			throw new Error('unknown folder');
 		}
-		const folder = workspaceFolder.uri;
+		const folder = workspAceFolder.uri;
 		this._folderSettingCounts.set(folder.toString(), count);
-		this.update();
+		this.updAte();
 	}
 
-	render(container: HTMLElement): void {
-		this.element = container;
+	render(contAiner: HTMLElement): void {
+		this.element = contAiner;
 
-		this.container = container;
-		this.labelElement = DOM.$('.action-title');
-		this.detailsElement = DOM.$('.action-details');
-		this.dropDownElement = DOM.$('.dropdown-icon.codicon.codicon-triangle-down.hide');
-		this.anchorElement = DOM.$('a.action-label.folder-settings', {
+		this.contAiner = contAiner;
+		this.lAbelElement = DOM.$('.Action-title');
+		this.detAilsElement = DOM.$('.Action-detAils');
+		this.dropDownElement = DOM.$('.dropdown-icon.codicon.codicon-triAngle-down.hide');
+		this.AnchorElement = DOM.$('A.Action-lAbel.folder-settings', {
 			role: 'button',
-			'aria-haspopup': 'true',
-			'tabindex': '0'
-		}, this.labelElement, this.detailsElement, this.dropDownElement);
-		this._register(DOM.addDisposableListener(this.anchorElement, DOM.EventType.MOUSE_DOWN, e => DOM.EventHelper.stop(e)));
-		this._register(DOM.addDisposableListener(this.anchorElement, DOM.EventType.CLICK, e => this.onClick(e)));
-		this._register(DOM.addDisposableListener(this.anchorElement, DOM.EventType.KEY_UP, e => this.onKeyUp(e)));
+			'AriA-hAspopup': 'true',
+			'tAbindex': '0'
+		}, this.lAbelElement, this.detAilsElement, this.dropDownElement);
+		this._register(DOM.AddDisposAbleListener(this.AnchorElement, DOM.EventType.MOUSE_DOWN, e => DOM.EventHelper.stop(e)));
+		this._register(DOM.AddDisposAbleListener(this.AnchorElement, DOM.EventType.CLICK, e => this.onClick(e)));
+		this._register(DOM.AddDisposAbleListener(this.AnchorElement, DOM.EventType.KEY_UP, e => this.onKeyUp(e)));
 
-		DOM.append(this.container, this.anchorElement);
+		DOM.Append(this.contAiner, this.AnchorElement);
 
-		this.update();
+		this.updAte();
 	}
 
-	private onKeyUp(event: any): void {
-		const keyboardEvent = new StandardKeyboardEvent(event);
-		switch (keyboardEvent.keyCode) {
-			case KeyCode.Enter:
-			case KeyCode.Space:
+	privAte onKeyUp(event: Any): void {
+		const keyboArdEvent = new StAndArdKeyboArdEvent(event);
+		switch (keyboArdEvent.keyCode) {
+			cAse KeyCode.Enter:
+			cAse KeyCode.SpAce:
 				this.onClick(event);
 				return;
 		}
@@ -372,399 +372,399 @@ export class FolderSettingsActionViewItem extends BaseActionViewItem {
 
 	onClick(event: DOM.EventLike): void {
 		DOM.EventHelper.stop(event, true);
-		if (!this.folder || this._action.checked) {
+		if (!this.folder || this._Action.checked) {
 			this.showMenu();
 		} else {
-			this._action.run(this._folder);
+			this._Action.run(this._folder);
 		}
 	}
 
-	protected updateEnabled(): void {
-		this.update();
+	protected updAteEnAbled(): void {
+		this.updAte();
 	}
 
-	protected updateChecked(): void {
-		this.update();
+	protected updAteChecked(): void {
+		this.updAte();
 	}
 
-	private onWorkspaceFoldersChanged(): void {
+	privAte onWorkspAceFoldersChAnged(): void {
 		const oldFolder = this._folder;
-		const workspace = this.contextService.getWorkspace();
+		const workspAce = this.contextService.getWorkspAce();
 		if (oldFolder) {
-			this._folder = workspace.folders.filter(folder => isEqual(folder.uri, oldFolder.uri))[0] || workspace.folders[0];
+			this._folder = workspAce.folders.filter(folder => isEquAl(folder.uri, oldFolder.uri))[0] || workspAce.folders[0];
 		}
-		this._folder = this._folder ? this._folder : workspace.folders.length === 1 ? workspace.folders[0] : null;
+		this._folder = this._folder ? this._folder : workspAce.folders.length === 1 ? workspAce.folders[0] : null;
 
-		this.update();
+		this.updAte();
 
-		if (this._action.checked) {
-			this._action.run(this._folder);
+		if (this._Action.checked) {
+			this._Action.run(this._folder);
 		}
 	}
 
-	private async update(): Promise<void> {
-		let total = 0;
-		this._folderSettingCounts.forEach(n => total += n);
+	privAte Async updAte(): Promise<void> {
+		let totAl = 0;
+		this._folderSettingCounts.forEAch(n => totAl += n);
 
-		const workspace = this.contextService.getWorkspace();
+		const workspAce = this.contextService.getWorkspAce();
 		if (this._folder) {
-			this.labelElement.textContent = this._folder.name;
-			this.anchorElement.title = (await this.preferencesService.getEditableSettingsURI(ConfigurationTarget.WORKSPACE_FOLDER, this._folder.uri))?.fsPath || '';
-			const detailsText = this.labelWithCount(this._action.label, total);
-			this.detailsElement.textContent = detailsText;
-			this.dropDownElement.classList.toggle('hide', workspace.folders.length === 1 || !this._action.checked);
+			this.lAbelElement.textContent = this._folder.nAme;
+			this.AnchorElement.title = (AwAit this.preferencesService.getEditAbleSettingsURI(ConfigurAtionTArget.WORKSPACE_FOLDER, this._folder.uri))?.fsPAth || '';
+			const detAilsText = this.lAbelWithCount(this._Action.lAbel, totAl);
+			this.detAilsElement.textContent = detAilsText;
+			this.dropDownElement.clAssList.toggle('hide', workspAce.folders.length === 1 || !this._Action.checked);
 		} else {
-			const labelText = this.labelWithCount(this._action.label, total);
-			this.labelElement.textContent = labelText;
-			this.detailsElement.textContent = '';
-			this.anchorElement.title = this._action.label;
-			this.dropDownElement.classList.remove('hide');
+			const lAbelText = this.lAbelWithCount(this._Action.lAbel, totAl);
+			this.lAbelElement.textContent = lAbelText;
+			this.detAilsElement.textContent = '';
+			this.AnchorElement.title = this._Action.lAbel;
+			this.dropDownElement.clAssList.remove('hide');
 		}
 
-		this.anchorElement.classList.toggle('checked', this._action.checked);
-		this.container.classList.toggle('disabled', !this._action.enabled);
+		this.AnchorElement.clAssList.toggle('checked', this._Action.checked);
+		this.contAiner.clAssList.toggle('disAbled', !this._Action.enAbled);
 	}
 
-	private showMenu(): void {
+	privAte showMenu(): void {
 		this.contextMenuService.showContextMenu({
-			getAnchor: () => this.container,
+			getAnchor: () => this.contAiner,
 			getActions: () => this.getDropdownMenuActions(),
 			getActionViewItem: () => undefined,
 			onHide: () => {
-				this.anchorElement.blur();
+				this.AnchorElement.blur();
 			}
 		});
 	}
 
-	private getDropdownMenuActions(): IAction[] {
-		const actions: IAction[] = [];
-		const workspaceFolders = this.contextService.getWorkspace().folders;
-		if (this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE && workspaceFolders.length > 0) {
-			actions.push(...workspaceFolders.map((folder, index) => {
+	privAte getDropdownMenuActions(): IAction[] {
+		const Actions: IAction[] = [];
+		const workspAceFolders = this.contextService.getWorkspAce().folders;
+		if (this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE && workspAceFolders.length > 0) {
+			Actions.push(...workspAceFolders.mAp((folder, index) => {
 				const folderCount = this._folderSettingCounts.get(folder.uri.toString());
 				return <IAction>{
-					id: 'folderSettingsTarget' + index,
-					label: this.labelWithCount(folder.name, folderCount),
-					checked: this.folder && isEqual(this.folder.uri, folder.uri),
-					enabled: true,
-					run: () => this._action.run(folder)
+					id: 'folderSettingsTArget' + index,
+					lAbel: this.lAbelWithCount(folder.nAme, folderCount),
+					checked: this.folder && isEquAl(this.folder.uri, folder.uri),
+					enAbled: true,
+					run: () => this._Action.run(folder)
 				};
 			}));
 		}
-		return actions;
+		return Actions;
 	}
 
-	private labelWithCount(label: string, count: number | undefined): string {
-		// Append the count if it's >0 and not undefined
+	privAte lAbelWithCount(lAbel: string, count: number | undefined): string {
+		// Append the count if it's >0 And not undefined
 		if (count) {
-			label += ` (${count})`;
+			lAbel += ` (${count})`;
 		}
 
-		return label;
+		return lAbel;
 	}
 }
 
-export type SettingsTarget = ConfigurationTarget.USER_LOCAL | ConfigurationTarget.USER_REMOTE | ConfigurationTarget.WORKSPACE | URI;
+export type SettingsTArget = ConfigurAtionTArget.USER_LOCAL | ConfigurAtionTArget.USER_REMOTE | ConfigurAtionTArget.WORKSPACE | URI;
 
-export interface ISettingsTargetsWidgetOptions {
-	enableRemoteSettings?: boolean;
+export interfAce ISettingsTArgetsWidgetOptions {
+	enAbleRemoteSettings?: booleAn;
 }
 
-export class SettingsTargetsWidget extends Widget {
+export clAss SettingsTArgetsWidget extends Widget {
 
-	private settingsSwitcherBar!: ActionBar;
-	private userLocalSettings!: Action;
-	private userRemoteSettings!: Action;
-	private workspaceSettings!: Action;
-	private folderSettings!: FolderSettingsActionViewItem;
-	private options: ISettingsTargetsWidgetOptions;
+	privAte settingsSwitcherBAr!: ActionBAr;
+	privAte userLocAlSettings!: Action;
+	privAte userRemoteSettings!: Action;
+	privAte workspAceSettings!: Action;
+	privAte folderSettings!: FolderSettingsActionViewItem;
+	privAte options: ISettingsTArgetsWidgetOptions;
 
-	private _settingsTarget: SettingsTarget | null = null;
+	privAte _settingsTArget: SettingsTArget | null = null;
 
-	private readonly _onDidTargetChange = this._register(new Emitter<SettingsTarget>());
-	readonly onDidTargetChange: Event<SettingsTarget> = this._onDidTargetChange.event;
+	privAte reAdonly _onDidTArgetChAnge = this._register(new Emitter<SettingsTArget>());
+	reAdonly onDidTArgetChAnge: Event<SettingsTArget> = this._onDidTArgetChAnge.event;
 
 	constructor(
-		parent: HTMLElement,
-		options: ISettingsTargetsWidgetOptions | undefined,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IPreferencesService private readonly preferencesService: IPreferencesService,
+		pArent: HTMLElement,
+		options: ISettingsTArgetsWidgetOptions | undefined,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IPreferencesService privAte reAdonly preferencesService: IPreferencesService,
 	) {
 		super();
 		this.options = options || {};
-		this.create(parent);
-		this._register(this.contextService.onDidChangeWorkbenchState(() => this.onWorkbenchStateChanged()));
-		this._register(this.contextService.onDidChangeWorkspaceFolders(() => this.update()));
+		this.creAte(pArent);
+		this._register(this.contextService.onDidChAngeWorkbenchStAte(() => this.onWorkbenchStAteChAnged()));
+		this._register(this.contextService.onDidChAngeWorkspAceFolders(() => this.updAte()));
 	}
 
-	private create(parent: HTMLElement): void {
-		const settingsTabsWidget = DOM.append(parent, DOM.$('.settings-tabs-widget'));
-		this.settingsSwitcherBar = this._register(new ActionBar(settingsTabsWidget, {
-			orientation: ActionsOrientation.HORIZONTAL,
-			ariaLabel: localize('settingsSwitcherBarAriaLabel', "Settings Switcher"),
-			animated: false,
-			actionViewItemProvider: (action: IAction) => action.id === 'folderSettings' ? this.folderSettings : undefined
+	privAte creAte(pArent: HTMLElement): void {
+		const settingsTAbsWidget = DOM.Append(pArent, DOM.$('.settings-tAbs-widget'));
+		this.settingsSwitcherBAr = this._register(new ActionBAr(settingsTAbsWidget, {
+			orientAtion: ActionsOrientAtion.HORIZONTAL,
+			AriALAbel: locAlize('settingsSwitcherBArAriALAbel', "Settings Switcher"),
+			AnimAted: fAlse,
+			ActionViewItemProvider: (Action: IAction) => Action.id === 'folderSettings' ? this.folderSettings : undefined
 		}));
 
-		this.userLocalSettings = new Action('userSettings', localize('userSettings', "User"), '.settings-tab', true, () => this.updateTarget(ConfigurationTarget.USER_LOCAL));
-		this.preferencesService.getEditableSettingsURI(ConfigurationTarget.USER_LOCAL).then(uri => {
-			// Don't wait to create UI on resolving remote
-			this.userLocalSettings.tooltip = uri?.fsPath || '';
+		this.userLocAlSettings = new Action('userSettings', locAlize('userSettings', "User"), '.settings-tAb', true, () => this.updAteTArget(ConfigurAtionTArget.USER_LOCAL));
+		this.preferencesService.getEditAbleSettingsURI(ConfigurAtionTArget.USER_LOCAL).then(uri => {
+			// Don't wAit to creAte UI on resolving remote
+			this.userLocAlSettings.tooltip = uri?.fsPAth || '';
 		});
 
 		const remoteAuthority = this.environmentService.remoteAuthority;
-		const hostLabel = remoteAuthority && this.labelService.getHostLabel(Schemas.vscodeRemote, remoteAuthority);
-		const remoteSettingsLabel = localize('userSettingsRemote', "Remote") +
-			(hostLabel ? ` [${hostLabel}]` : '');
-		this.userRemoteSettings = new Action('userSettingsRemote', remoteSettingsLabel, '.settings-tab', true, () => this.updateTarget(ConfigurationTarget.USER_REMOTE));
-		this.preferencesService.getEditableSettingsURI(ConfigurationTarget.USER_REMOTE).then(uri => {
-			this.userRemoteSettings.tooltip = uri?.fsPath || '';
+		const hostLAbel = remoteAuthority && this.lAbelService.getHostLAbel(SchemAs.vscodeRemote, remoteAuthority);
+		const remoteSettingsLAbel = locAlize('userSettingsRemote', "Remote") +
+			(hostLAbel ? ` [${hostLAbel}]` : '');
+		this.userRemoteSettings = new Action('userSettingsRemote', remoteSettingsLAbel, '.settings-tAb', true, () => this.updAteTArget(ConfigurAtionTArget.USER_REMOTE));
+		this.preferencesService.getEditAbleSettingsURI(ConfigurAtionTArget.USER_REMOTE).then(uri => {
+			this.userRemoteSettings.tooltip = uri?.fsPAth || '';
 		});
 
-		this.workspaceSettings = new Action('workspaceSettings', localize('workspaceSettings', "Workspace"), '.settings-tab', false, () => this.updateTarget(ConfigurationTarget.WORKSPACE));
+		this.workspAceSettings = new Action('workspAceSettings', locAlize('workspAceSettings', "WorkspAce"), '.settings-tAb', fAlse, () => this.updAteTArget(ConfigurAtionTArget.WORKSPACE));
 
-		const folderSettingsAction = new Action('folderSettings', localize('folderSettings', "Folder"), '.settings-tab', false,
-			(folder: IWorkspaceFolder | null) => this.updateTarget(folder ? folder.uri : ConfigurationTarget.USER_LOCAL));
-		this.folderSettings = this.instantiationService.createInstance(FolderSettingsActionViewItem, folderSettingsAction);
+		const folderSettingsAction = new Action('folderSettings', locAlize('folderSettings', "Folder"), '.settings-tAb', fAlse,
+			(folder: IWorkspAceFolder | null) => this.updAteTArget(folder ? folder.uri : ConfigurAtionTArget.USER_LOCAL));
+		this.folderSettings = this.instAntiAtionService.creAteInstAnce(FolderSettingsActionViewItem, folderSettingsAction);
 
-		this.update();
+		this.updAte();
 
-		this.settingsSwitcherBar.push([this.userLocalSettings, this.userRemoteSettings, this.workspaceSettings, folderSettingsAction]);
+		this.settingsSwitcherBAr.push([this.userLocAlSettings, this.userRemoteSettings, this.workspAceSettings, folderSettingsAction]);
 	}
 
-	get settingsTarget(): SettingsTarget | null {
-		return this._settingsTarget;
+	get settingsTArget(): SettingsTArget | null {
+		return this._settingsTArget;
 	}
 
-	set settingsTarget(settingsTarget: SettingsTarget | null) {
-		this._settingsTarget = settingsTarget;
-		this.userLocalSettings.checked = ConfigurationTarget.USER_LOCAL === this.settingsTarget;
-		this.userRemoteSettings.checked = ConfigurationTarget.USER_REMOTE === this.settingsTarget;
-		this.workspaceSettings.checked = ConfigurationTarget.WORKSPACE === this.settingsTarget;
-		if (this.settingsTarget instanceof URI) {
+	set settingsTArget(settingsTArget: SettingsTArget | null) {
+		this._settingsTArget = settingsTArget;
+		this.userLocAlSettings.checked = ConfigurAtionTArget.USER_LOCAL === this.settingsTArget;
+		this.userRemoteSettings.checked = ConfigurAtionTArget.USER_REMOTE === this.settingsTArget;
+		this.workspAceSettings.checked = ConfigurAtionTArget.WORKSPACE === this.settingsTArget;
+		if (this.settingsTArget instAnceof URI) {
 			this.folderSettings.getAction().checked = true;
-			this.folderSettings.folder = this.contextService.getWorkspaceFolder(this.settingsTarget as URI);
+			this.folderSettings.folder = this.contextService.getWorkspAceFolder(this.settingsTArget As URI);
 		} else {
-			this.folderSettings.getAction().checked = false;
+			this.folderSettings.getAction().checked = fAlse;
 		}
 	}
 
-	setResultCount(settingsTarget: SettingsTarget, count: number): void {
-		if (settingsTarget === ConfigurationTarget.WORKSPACE) {
-			let label = localize('workspaceSettings', "Workspace");
+	setResultCount(settingsTArget: SettingsTArget, count: number): void {
+		if (settingsTArget === ConfigurAtionTArget.WORKSPACE) {
+			let lAbel = locAlize('workspAceSettings', "WorkspAce");
 			if (count) {
-				label += ` (${count})`;
+				lAbel += ` (${count})`;
 			}
 
-			this.workspaceSettings.label = label;
-		} else if (settingsTarget === ConfigurationTarget.USER_LOCAL) {
-			let label = localize('userSettings', "User");
+			this.workspAceSettings.lAbel = lAbel;
+		} else if (settingsTArget === ConfigurAtionTArget.USER_LOCAL) {
+			let lAbel = locAlize('userSettings', "User");
 			if (count) {
-				label += ` (${count})`;
+				lAbel += ` (${count})`;
 			}
 
-			this.userLocalSettings.label = label;
-		} else if (settingsTarget instanceof URI) {
-			this.folderSettings.setCount(settingsTarget, count);
+			this.userLocAlSettings.lAbel = lAbel;
+		} else if (settingsTArget instAnceof URI) {
+			this.folderSettings.setCount(settingsTArget, count);
 		}
 	}
 
-	private onWorkbenchStateChanged(): void {
+	privAte onWorkbenchStAteChAnged(): void {
 		this.folderSettings.folder = null;
-		this.update();
-		if (this.settingsTarget === ConfigurationTarget.WORKSPACE && this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			this.updateTarget(ConfigurationTarget.USER_LOCAL);
+		this.updAte();
+		if (this.settingsTArget === ConfigurAtionTArget.WORKSPACE && this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			this.updAteTArget(ConfigurAtionTArget.USER_LOCAL);
 		}
 	}
 
-	updateTarget(settingsTarget: SettingsTarget): Promise<void> {
-		const isSameTarget = this.settingsTarget === settingsTarget ||
-			settingsTarget instanceof URI &&
-			this.settingsTarget instanceof URI &&
-			isEqual(this.settingsTarget, settingsTarget);
+	updAteTArget(settingsTArget: SettingsTArget): Promise<void> {
+		const isSAmeTArget = this.settingsTArget === settingsTArget ||
+			settingsTArget instAnceof URI &&
+			this.settingsTArget instAnceof URI &&
+			isEquAl(this.settingsTArget, settingsTArget);
 
-		if (!isSameTarget) {
-			this.settingsTarget = settingsTarget;
-			this._onDidTargetChange.fire(this.settingsTarget);
+		if (!isSAmeTArget) {
+			this.settingsTArget = settingsTArget;
+			this._onDidTArgetChAnge.fire(this.settingsTArget);
 		}
 
 		return Promise.resolve(undefined);
 	}
 
-	private async update(): Promise<void> {
-		this.settingsSwitcherBar.domNode.classList.toggle('empty-workbench', this.contextService.getWorkbenchState() === WorkbenchState.EMPTY);
-		this.userRemoteSettings.enabled = !!(this.options.enableRemoteSettings && this.environmentService.remoteAuthority);
-		this.workspaceSettings.enabled = this.contextService.getWorkbenchState() !== WorkbenchState.EMPTY;
-		this.folderSettings.getAction().enabled = this.contextService.getWorkbenchState() === WorkbenchState.WORKSPACE && this.contextService.getWorkspace().folders.length > 0;
+	privAte Async updAte(): Promise<void> {
+		this.settingsSwitcherBAr.domNode.clAssList.toggle('empty-workbench', this.contextService.getWorkbenchStAte() === WorkbenchStAte.EMPTY);
+		this.userRemoteSettings.enAbled = !!(this.options.enAbleRemoteSettings && this.environmentService.remoteAuthority);
+		this.workspAceSettings.enAbled = this.contextService.getWorkbenchStAte() !== WorkbenchStAte.EMPTY;
+		this.folderSettings.getAction().enAbled = this.contextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE && this.contextService.getWorkspAce().folders.length > 0;
 
-		this.workspaceSettings.tooltip = (await this.preferencesService.getEditableSettingsURI(ConfigurationTarget.WORKSPACE))?.fsPath || '';
+		this.workspAceSettings.tooltip = (AwAit this.preferencesService.getEditAbleSettingsURI(ConfigurAtionTArget.WORKSPACE))?.fsPAth || '';
 	}
 }
 
-export interface SearchOptions extends IInputOptions {
-	focusKey?: IContextKey<boolean>;
-	showResultCount?: boolean;
-	ariaLive?: string;
-	ariaLabelledBy?: string;
+export interfAce SeArchOptions extends IInputOptions {
+	focusKey?: IContextKey<booleAn>;
+	showResultCount?: booleAn;
+	AriALive?: string;
+	AriALAbelledBy?: string;
 }
 
-export class SearchWidget extends Widget {
+export clAss SeArchWidget extends Widget {
 
 	domNode!: HTMLElement;
 
-	private countElement!: HTMLElement;
-	private searchContainer!: HTMLElement;
+	privAte countElement!: HTMLElement;
+	privAte seArchContAiner!: HTMLElement;
 	inputBox!: InputBox;
-	private controlsDiv!: HTMLElement;
+	privAte controlsDiv!: HTMLElement;
 
-	private readonly _onDidChange: Emitter<string> = this._register(new Emitter<string>());
-	readonly onDidChange: Event<string> = this._onDidChange.event;
+	privAte reAdonly _onDidChAnge: Emitter<string> = this._register(new Emitter<string>());
+	reAdonly onDidChAnge: Event<string> = this._onDidChAnge.event;
 
-	private readonly _onFocus: Emitter<void> = this._register(new Emitter<void>());
-	readonly onFocus: Event<void> = this._onFocus.event;
+	privAte reAdonly _onFocus: Emitter<void> = this._register(new Emitter<void>());
+	reAdonly onFocus: Event<void> = this._onFocus.event;
 
-	constructor(parent: HTMLElement, protected options: SearchOptions,
-		@IContextViewService private readonly contextViewService: IContextViewService,
-		@IInstantiationService protected instantiationService: IInstantiationService,
-		@IThemeService private readonly themeService: IThemeService
+	constructor(pArent: HTMLElement, protected options: SeArchOptions,
+		@IContextViewService privAte reAdonly contextViewService: IContextViewService,
+		@IInstAntiAtionService protected instAntiAtionService: IInstAntiAtionService,
+		@IThemeService privAte reAdonly themeService: IThemeService
 	) {
 		super();
-		this.create(parent);
+		this.creAte(pArent);
 	}
 
-	private create(parent: HTMLElement) {
-		this.domNode = DOM.append(parent, DOM.$('div.settings-header-widget'));
-		this.createSearchContainer(DOM.append(this.domNode, DOM.$('div.settings-search-container')));
-		this.controlsDiv = DOM.append(this.domNode, DOM.$('div.settings-search-controls'));
+	privAte creAte(pArent: HTMLElement) {
+		this.domNode = DOM.Append(pArent, DOM.$('div.settings-heAder-widget'));
+		this.creAteSeArchContAiner(DOM.Append(this.domNode, DOM.$('div.settings-seArch-contAiner')));
+		this.controlsDiv = DOM.Append(this.domNode, DOM.$('div.settings-seArch-controls'));
 
 		if (this.options.showResultCount) {
-			this.countElement = DOM.append(this.controlsDiv, DOM.$('.settings-count-widget'));
-			this._register(attachStylerCallback(this.themeService, { badgeBackground, contrastBorder }, colors => {
-				const background = colors.badgeBackground ? colors.badgeBackground.toString() : '';
-				const border = colors.contrastBorder ? colors.contrastBorder.toString() : '';
+			this.countElement = DOM.Append(this.controlsDiv, DOM.$('.settings-count-widget'));
+			this._register(AttAchStylerCAllbAck(this.themeService, { bAdgeBAckground, contrAstBorder }, colors => {
+				const bAckground = colors.bAdgeBAckground ? colors.bAdgeBAckground.toString() : '';
+				const border = colors.contrAstBorder ? colors.contrAstBorder.toString() : '';
 
-				this.countElement.style.backgroundColor = background;
+				this.countElement.style.bAckgroundColor = bAckground;
 
 				this.countElement.style.borderWidth = border ? '1px' : '';
 				this.countElement.style.borderStyle = border ? 'solid' : '';
 				this.countElement.style.borderColor = border;
 
-				const color = this.themeService.getColorTheme().getColor(badgeForeground);
+				const color = this.themeService.getColorTheme().getColor(bAdgeForeground);
 				this.countElement.style.color = color ? color.toString() : '';
 			}));
 		}
 
-		this.inputBox.inputElement.setAttribute('aria-live', this.options.ariaLive || 'off');
-		if (this.options.ariaLabelledBy) {
-			this.inputBox.inputElement.setAttribute('aria-labelledBy', this.options.ariaLabelledBy);
+		this.inputBox.inputElement.setAttribute('AriA-live', this.options.AriALive || 'off');
+		if (this.options.AriALAbelledBy) {
+			this.inputBox.inputElement.setAttribute('AriA-lAbelledBy', this.options.AriALAbelledBy);
 		}
-		const focusTracker = this._register(DOM.trackFocus(this.inputBox.inputElement));
-		this._register(focusTracker.onDidFocus(() => this._onFocus.fire()));
+		const focusTrAcker = this._register(DOM.trAckFocus(this.inputBox.inputElement));
+		this._register(focusTrAcker.onDidFocus(() => this._onFocus.fire()));
 
 		const focusKey = this.options.focusKey;
 		if (focusKey) {
-			this._register(focusTracker.onDidFocus(() => focusKey.set(true)));
-			this._register(focusTracker.onDidBlur(() => focusKey.set(false)));
+			this._register(focusTrAcker.onDidFocus(() => focusKey.set(true)));
+			this._register(focusTrAcker.onDidBlur(() => focusKey.set(fAlse)));
 		}
 	}
 
-	private createSearchContainer(searchContainer: HTMLElement) {
-		this.searchContainer = searchContainer;
-		const searchInput = DOM.append(this.searchContainer, DOM.$('div.settings-search-input'));
-		this.inputBox = this._register(this.createInputBox(searchInput));
-		this._register(this.inputBox.onDidChange(value => this._onDidChange.fire(value)));
+	privAte creAteSeArchContAiner(seArchContAiner: HTMLElement) {
+		this.seArchContAiner = seArchContAiner;
+		const seArchInput = DOM.Append(this.seArchContAiner, DOM.$('div.settings-seArch-input'));
+		this.inputBox = this._register(this.creAteInputBox(seArchInput));
+		this._register(this.inputBox.onDidChAnge(vAlue => this._onDidChAnge.fire(vAlue)));
 	}
 
-	protected createInputBox(parent: HTMLElement): InputBox {
-		const box = this._register(new InputBox(parent, this.contextViewService, this.options));
-		this._register(attachInputBoxStyler(box, this.themeService));
+	protected creAteInputBox(pArent: HTMLElement): InputBox {
+		const box = this._register(new InputBox(pArent, this.contextViewService, this.options));
+		this._register(AttAchInputBoxStyler(box, this.themeService));
 
 		return box;
 	}
 
-	showMessage(message: string): void {
-		// Avoid setting the aria-label unnecessarily, the screenreader will read the count every time it's set, since it's aria-live:assertive. #50968
-		if (this.countElement && message !== this.countElement.textContent) {
-			this.countElement.textContent = message;
-			this.inputBox.inputElement.setAttribute('aria-label', message);
-			this.inputBox.inputElement.style.paddingRight = this.getControlsWidth() + 'px';
+	showMessAge(messAge: string): void {
+		// Avoid setting the AriA-lAbel unnecessArily, the screenreAder will reAd the count every time it's set, since it's AriA-live:Assertive. #50968
+		if (this.countElement && messAge !== this.countElement.textContent) {
+			this.countElement.textContent = messAge;
+			this.inputBox.inputElement.setAttribute('AriA-lAbel', messAge);
+			this.inputBox.inputElement.style.pAddingRight = this.getControlsWidth() + 'px';
 		}
 	}
 
-	layout(dimension: DOM.Dimension) {
+	lAyout(dimension: DOM.Dimension) {
 		if (dimension.width < 400) {
 			if (this.countElement) {
-				this.countElement.classList.add('hide');
+				this.countElement.clAssList.Add('hide');
 			}
 
-			this.inputBox.inputElement.style.paddingRight = '0px';
+			this.inputBox.inputElement.style.pAddingRight = '0px';
 		} else {
 			if (this.countElement) {
-				this.countElement.classList.remove('hide');
+				this.countElement.clAssList.remove('hide');
 			}
 
-			this.inputBox.inputElement.style.paddingRight = this.getControlsWidth() + 'px';
+			this.inputBox.inputElement.style.pAddingRight = this.getControlsWidth() + 'px';
 		}
 	}
 
-	private getControlsWidth(): number {
-		const countWidth = this.countElement ? DOM.getTotalWidth(this.countElement) : 0;
+	privAte getControlsWidth(): number {
+		const countWidth = this.countElement ? DOM.getTotAlWidth(this.countElement) : 0;
 		return countWidth + 20;
 	}
 
 	focus() {
 		this.inputBox.focus();
-		if (this.getValue()) {
+		if (this.getVAlue()) {
 			this.inputBox.select();
 		}
 	}
 
-	hasFocus(): boolean {
-		return this.inputBox.hasFocus();
+	hAsFocus(): booleAn {
+		return this.inputBox.hAsFocus();
 	}
 
-	clear() {
-		this.inputBox.value = '';
+	cleAr() {
+		this.inputBox.vAlue = '';
 	}
 
-	getValue(): string {
-		return this.inputBox.value;
+	getVAlue(): string {
+		return this.inputBox.vAlue;
 	}
 
-	setValue(value: string): string {
-		return this.inputBox.value = value;
+	setVAlue(vAlue: string): string {
+		return this.inputBox.vAlue = vAlue;
 	}
 
 	dispose(): void {
 		if (this.options.focusKey) {
-			this.options.focusKey.set(false);
+			this.options.focusKey.set(fAlse);
 		}
 		super.dispose();
 	}
 }
 
-export const preferencesEditIcon = registerIcon('preferences-edit', Codicon.edit, localize('preferencesEditIcon', 'Icon for the edit action in preferences.'));
+export const preferencesEditIcon = registerIcon('preferences-edit', Codicon.edit, locAlize('preferencesEditIcon', 'Icon for the edit Action in preferences.'));
 
-export class EditPreferenceWidget<T> extends Disposable {
+export clAss EditPreferenceWidget<T> extends DisposAble {
 
-	private _line: number = -1;
-	private _preferences: T[] = [];
+	privAte _line: number = -1;
+	privAte _preferences: T[] = [];
 
-	private _editPreferenceDecoration: string[];
+	privAte _editPreferenceDecorAtion: string[];
 
-	private readonly _onClick = this._register(new Emitter<IEditorMouseEvent>());
-	readonly onClick: Event<IEditorMouseEvent> = this._onClick.event;
+	privAte reAdonly _onClick = this._register(new Emitter<IEditorMouseEvent>());
+	reAdonly onClick: Event<IEditorMouseEvent> = this._onClick.event;
 
-	constructor(private editor: ICodeEditor
+	constructor(privAte editor: ICodeEditor
 	) {
 		super();
-		this._editPreferenceDecoration = [];
+		this._editPreferenceDecorAtion = [];
 		this._register(this.editor.onMouseDown((e: IEditorMouseEvent) => {
-			const data = e.target.detail as IMarginData;
-			if (e.target.type !== MouseTargetType.GUTTER_GLYPH_MARGIN || data.isAfterLines || !this.isVisible()) {
+			const dAtA = e.tArget.detAil As IMArginDAtA;
+			if (e.tArget.type !== MouseTArgetType.GUTTER_GLYPH_MARGIN || dAtA.isAfterLines || !this.isVisible()) {
 				return;
 			}
 			this._onClick.fire(e);
@@ -779,32 +779,32 @@ export class EditPreferenceWidget<T> extends Disposable {
 		return this._line;
 	}
 
-	show(line: number, hoverMessage: string, preferences: T[]): void {
+	show(line: number, hoverMessAge: string, preferences: T[]): void {
 		this._preferences = preferences;
-		const newDecoration: IModelDeltaDecoration[] = [];
+		const newDecorAtion: IModelDeltADecorAtion[] = [];
 		this._line = line;
-		newDecoration.push({
+		newDecorAtion.push({
 			options: {
-				glyphMarginClassName: preferencesEditIcon.classNames,
-				glyphMarginHoverMessage: new MarkdownString().appendText(hoverMessage),
-				stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+				glyphMArginClAssNAme: preferencesEditIcon.clAssNAmes,
+				glyphMArginHoverMessAge: new MArkdownString().AppendText(hoverMessAge),
+				stickiness: TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges,
 			},
-			range: {
-				startLineNumber: line,
-				startColumn: 1,
+			rAnge: {
+				stArtLineNumber: line,
+				stArtColumn: 1,
 				endLineNumber: line,
 				endColumn: 1
 			}
 		});
-		this._editPreferenceDecoration = this.editor.deltaDecorations(this._editPreferenceDecoration, newDecoration);
+		this._editPreferenceDecorAtion = this.editor.deltADecorAtions(this._editPreferenceDecorAtion, newDecorAtion);
 	}
 
 	hide(): void {
-		this._editPreferenceDecoration = this.editor.deltaDecorations(this._editPreferenceDecoration, []);
+		this._editPreferenceDecorAtion = this.editor.deltADecorAtions(this._editPreferenceDecorAtion, []);
 	}
 
-	isVisible(): boolean {
-		return this._editPreferenceDecoration.length > 0;
+	isVisible(): booleAn {
+		return this._editPreferenceDecorAtion.length > 0;
 	}
 
 	dispose(): void {
@@ -813,11 +813,11 @@ export class EditPreferenceWidget<T> extends Disposable {
 	}
 }
 
-registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
+registerThemingPArticipAnt((theme: IColorTheme, collector: ICssStyleCollector) => {
 
-	collector.addRule(`
-		.settings-tabs-widget > .monaco-action-bar .action-item .action-label:focus,
-		.settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked {
+	collector.AddRule(`
+		.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel:focus,
+		.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel.checked {
 			border-bottom: 1px solid;
 		}
 	`);
@@ -825,21 +825,21 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	const titleActive = theme.getColor(PANEL_ACTIVE_TITLE_FOREGROUND);
 	const titleActiveBorder = theme.getColor(PANEL_ACTIVE_TITLE_BORDER);
 	if (titleActive || titleActiveBorder) {
-		collector.addRule(`
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label:hover,
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked {
+		collector.AddRule(`
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel:hover,
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel.checked {
 				color: ${titleActive};
 				border-bottom-color: ${titleActiveBorder};
 			}
 		`);
 	}
 
-	// Title Inactive
-	const titleInactive = theme.getColor(PANEL_INACTIVE_TITLE_FOREGROUND);
-	if (titleInactive) {
-		collector.addRule(`
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label {
-				color: ${titleInactive};
+	// Title InActive
+	const titleInActive = theme.getColor(PANEL_INACTIVE_TITLE_FOREGROUND);
+	if (titleInActive) {
+		collector.AddRule(`
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel {
+				color: ${titleInActive};
 			}
 		`);
 	}
@@ -847,36 +847,36 @@ registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) =
 	// Title focus
 	const focusBorderColor = theme.getColor(focusBorder);
 	if (focusBorderColor) {
-		collector.addRule(`
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label:focus {
-				border-bottom-color: ${focusBorderColor} !important;
+		collector.AddRule(`
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel:focus {
+				border-bottom-color: ${focusBorderColor} !importAnt;
 			}
 			`);
-		collector.addRule(`
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label:focus {
+		collector.AddRule(`
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel:focus {
 				outline: none;
 			}
 			`);
 	}
 
-	// Styling with Outline color (e.g. high contrast theme)
-	const outline = theme.getColor(activeContrastBorder);
+	// Styling with Outline color (e.g. high contrAst theme)
+	const outline = theme.getColor(ActiveContrAstBorder);
 	if (outline) {
-		const outline = theme.getColor(activeContrastBorder);
+		const outline = theme.getColor(ActiveContrAstBorder);
 
-		collector.addRule(`
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked,
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label:hover {
+		collector.AddRule(`
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel.checked,
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel:hover {
 				outline-color: ${outline};
 				outline-width: 1px;
 				outline-style: solid;
 				border-bottom: none;
-				padding-bottom: 0;
+				pAdding-bottom: 0;
 				outline-offset: -1px;
 			}
 
-			.settings-tabs-widget > .monaco-action-bar .action-item .action-label:not(.checked):hover {
-				outline-style: dashed;
+			.settings-tAbs-widget > .monAco-Action-bAr .Action-item .Action-lAbel:not(.checked):hover {
+				outline-style: dAshed;
 			}
 		`);
 	}

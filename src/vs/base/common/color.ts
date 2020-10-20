@@ -1,120 +1,120 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { CharCode } from 'vs/base/common/charCode';
+import { ChArCode } from 'vs/bAse/common/chArCode';
 
-function roundFloat(number: number, decimalPoints: number): number {
-	const decimal = Math.pow(10, decimalPoints);
-	return Math.round(number * decimal) / decimal;
+function roundFloAt(number: number, decimAlPoints: number): number {
+	const decimAl = MAth.pow(10, decimAlPoints);
+	return MAth.round(number * decimAl) / decimAl;
 }
 
-export class RGBA {
-	_rgbaBrand: void;
+export clAss RGBA {
+	_rgbABrAnd: void;
 
 	/**
 	 * Red: integer in [0-255]
 	 */
-	readonly r: number;
+	reAdonly r: number;
 
 	/**
 	 * Green: integer in [0-255]
 	 */
-	readonly g: number;
+	reAdonly g: number;
 
 	/**
 	 * Blue: integer in [0-255]
 	 */
-	readonly b: number;
+	reAdonly b: number;
 
 	/**
-	 * Alpha: float in [0-1]
+	 * AlphA: floAt in [0-1]
 	 */
-	readonly a: number;
+	reAdonly A: number;
 
-	constructor(r: number, g: number, b: number, a: number = 1) {
-		this.r = Math.min(255, Math.max(0, r)) | 0;
-		this.g = Math.min(255, Math.max(0, g)) | 0;
-		this.b = Math.min(255, Math.max(0, b)) | 0;
-		this.a = roundFloat(Math.max(Math.min(1, a), 0), 3);
+	constructor(r: number, g: number, b: number, A: number = 1) {
+		this.r = MAth.min(255, MAth.mAx(0, r)) | 0;
+		this.g = MAth.min(255, MAth.mAx(0, g)) | 0;
+		this.b = MAth.min(255, MAth.mAx(0, b)) | 0;
+		this.A = roundFloAt(MAth.mAx(MAth.min(1, A), 0), 3);
 	}
 
-	static equals(a: RGBA, b: RGBA): boolean {
-		return a.r === b.r && a.g === b.g && a.b === b.b && a.a === b.a;
+	stAtic equAls(A: RGBA, b: RGBA): booleAn {
+		return A.r === b.r && A.g === b.g && A.b === b.b && A.A === b.A;
 	}
 }
 
-export class HSLA {
+export clAss HSLA {
 
-	_hslaBrand: void;
+	_hslABrAnd: void;
 
 	/**
 	 * Hue: integer in [0, 360]
 	 */
-	readonly h: number;
+	reAdonly h: number;
 
 	/**
-	 * Saturation: float in [0, 1]
+	 * SAturAtion: floAt in [0, 1]
 	 */
-	readonly s: number;
+	reAdonly s: number;
 
 	/**
-	 * Luminosity: float in [0, 1]
+	 * Luminosity: floAt in [0, 1]
 	 */
-	readonly l: number;
+	reAdonly l: number;
 
 	/**
-	 * Alpha: float in [0, 1]
+	 * AlphA: floAt in [0, 1]
 	 */
-	readonly a: number;
+	reAdonly A: number;
 
-	constructor(h: number, s: number, l: number, a: number) {
-		this.h = Math.max(Math.min(360, h), 0) | 0;
-		this.s = roundFloat(Math.max(Math.min(1, s), 0), 3);
-		this.l = roundFloat(Math.max(Math.min(1, l), 0), 3);
-		this.a = roundFloat(Math.max(Math.min(1, a), 0), 3);
+	constructor(h: number, s: number, l: number, A: number) {
+		this.h = MAth.mAx(MAth.min(360, h), 0) | 0;
+		this.s = roundFloAt(MAth.mAx(MAth.min(1, s), 0), 3);
+		this.l = roundFloAt(MAth.mAx(MAth.min(1, l), 0), 3);
+		this.A = roundFloAt(MAth.mAx(MAth.min(1, A), 0), 3);
 	}
 
-	static equals(a: HSLA, b: HSLA): boolean {
-		return a.h === b.h && a.s === b.s && a.l === b.l && a.a === b.a;
+	stAtic equAls(A: HSLA, b: HSLA): booleAn {
+		return A.h === b.h && A.s === b.s && A.l === b.l && A.A === b.A;
 	}
 
 	/**
-	 * Converts an RGB color value to HSL. Conversion formula
-	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-	 * Assumes r, g, and b are contained in the set [0, 255] and
-	 * returns h in the set [0, 360], s, and l in the set [0, 1].
+	 * Converts An RGB color vAlue to HSL. Conversion formulA
+	 * AdApted from http://en.wikipediA.org/wiki/HSL_color_spAce.
+	 * Assumes r, g, And b Are contAined in the set [0, 255] And
+	 * returns h in the set [0, 360], s, And l in the set [0, 1].
 	 */
-	static fromRGBA(rgba: RGBA): HSLA {
-		const r = rgba.r / 255;
-		const g = rgba.g / 255;
-		const b = rgba.b / 255;
-		const a = rgba.a;
+	stAtic fromRGBA(rgbA: RGBA): HSLA {
+		const r = rgbA.r / 255;
+		const g = rgbA.g / 255;
+		const b = rgbA.b / 255;
+		const A = rgbA.A;
 
-		const max = Math.max(r, g, b);
-		const min = Math.min(r, g, b);
+		const mAx = MAth.mAx(r, g, b);
+		const min = MAth.min(r, g, b);
 		let h = 0;
 		let s = 0;
-		const l = (min + max) / 2;
-		const chroma = max - min;
+		const l = (min + mAx) / 2;
+		const chromA = mAx - min;
 
-		if (chroma > 0) {
-			s = Math.min((l <= 0.5 ? chroma / (2 * l) : chroma / (2 - (2 * l))), 1);
+		if (chromA > 0) {
+			s = MAth.min((l <= 0.5 ? chromA / (2 * l) : chromA / (2 - (2 * l))), 1);
 
-			switch (max) {
-				case r: h = (g - b) / chroma + (g < b ? 6 : 0); break;
-				case g: h = (b - r) / chroma + 2; break;
-				case b: h = (r - g) / chroma + 4; break;
+			switch (mAx) {
+				cAse r: h = (g - b) / chromA + (g < b ? 6 : 0); breAk;
+				cAse g: h = (b - r) / chromA + 2; breAk;
+				cAse b: h = (r - g) / chromA + 4; breAk;
 			}
 
 			h *= 60;
-			h = Math.round(h);
+			h = MAth.round(h);
 		}
-		return new HSLA(h, s, l, a);
+		return new HSLA(h, s, l, A);
 	}
 
-	private static _hue2rgb(p: number, q: number, t: number): number {
+	privAte stAtic _hue2rgb(p: number, q: number, t: number): number {
 		if (t < 0) {
 			t += 1;
 		}
@@ -134,18 +134,18 @@ export class HSLA {
 	}
 
 	/**
-	 * Converts an HSL color value to RGB. Conversion formula
-	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-	 * Assumes h in the set [0, 360] s, and l are contained in the set [0, 1] and
-	 * returns r, g, and b in the set [0, 255].
+	 * Converts An HSL color vAlue to RGB. Conversion formulA
+	 * AdApted from http://en.wikipediA.org/wiki/HSL_color_spAce.
+	 * Assumes h in the set [0, 360] s, And l Are contAined in the set [0, 1] And
+	 * returns r, g, And b in the set [0, 255].
 	 */
-	static toRGBA(hsla: HSLA): RGBA {
-		const h = hsla.h / 360;
-		const { s, l, a } = hsla;
+	stAtic toRGBA(hslA: HSLA): RGBA {
+		const h = hslA.h / 360;
+		const { s, l, A } = hslA;
 		let r: number, g: number, b: number;
 
 		if (s === 0) {
-			r = g = b = l; // achromatic
+			r = g = b = l; // AchromAtic
 		} else {
 			const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 			const p = 2 * l - q;
@@ -154,74 +154,74 @@ export class HSLA {
 			b = HSLA._hue2rgb(p, q, h - 1 / 3);
 		}
 
-		return new RGBA(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a);
+		return new RGBA(MAth.round(r * 255), MAth.round(g * 255), MAth.round(b * 255), A);
 	}
 }
 
-export class HSVA {
+export clAss HSVA {
 
-	_hsvaBrand: void;
+	_hsvABrAnd: void;
 
 	/**
 	 * Hue: integer in [0, 360]
 	 */
-	readonly h: number;
+	reAdonly h: number;
 
 	/**
-	 * Saturation: float in [0, 1]
+	 * SAturAtion: floAt in [0, 1]
 	 */
-	readonly s: number;
+	reAdonly s: number;
 
 	/**
-	 * Value: float in [0, 1]
+	 * VAlue: floAt in [0, 1]
 	 */
-	readonly v: number;
+	reAdonly v: number;
 
 	/**
-	 * Alpha: float in [0, 1]
+	 * AlphA: floAt in [0, 1]
 	 */
-	readonly a: number;
+	reAdonly A: number;
 
-	constructor(h: number, s: number, v: number, a: number) {
-		this.h = Math.max(Math.min(360, h), 0) | 0;
-		this.s = roundFloat(Math.max(Math.min(1, s), 0), 3);
-		this.v = roundFloat(Math.max(Math.min(1, v), 0), 3);
-		this.a = roundFloat(Math.max(Math.min(1, a), 0), 3);
+	constructor(h: number, s: number, v: number, A: number) {
+		this.h = MAth.mAx(MAth.min(360, h), 0) | 0;
+		this.s = roundFloAt(MAth.mAx(MAth.min(1, s), 0), 3);
+		this.v = roundFloAt(MAth.mAx(MAth.min(1, v), 0), 3);
+		this.A = roundFloAt(MAth.mAx(MAth.min(1, A), 0), 3);
 	}
 
-	static equals(a: HSVA, b: HSVA): boolean {
-		return a.h === b.h && a.s === b.s && a.v === b.v && a.a === b.a;
+	stAtic equAls(A: HSVA, b: HSVA): booleAn {
+		return A.h === b.h && A.s === b.s && A.v === b.v && A.A === b.A;
 	}
 
-	// from http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
-	static fromRGBA(rgba: RGBA): HSVA {
-		const r = rgba.r / 255;
-		const g = rgba.g / 255;
-		const b = rgba.b / 255;
-		const cmax = Math.max(r, g, b);
-		const cmin = Math.min(r, g, b);
-		const delta = cmax - cmin;
-		const s = cmax === 0 ? 0 : (delta / cmax);
+	// from http://www.rApidtAbles.com/convert/color/rgb-to-hsv.htm
+	stAtic fromRGBA(rgbA: RGBA): HSVA {
+		const r = rgbA.r / 255;
+		const g = rgbA.g / 255;
+		const b = rgbA.b / 255;
+		const cmAx = MAth.mAx(r, g, b);
+		const cmin = MAth.min(r, g, b);
+		const deltA = cmAx - cmin;
+		const s = cmAx === 0 ? 0 : (deltA / cmAx);
 		let m: number;
 
-		if (delta === 0) {
+		if (deltA === 0) {
 			m = 0;
-		} else if (cmax === r) {
-			m = ((((g - b) / delta) % 6) + 6) % 6;
-		} else if (cmax === g) {
-			m = ((b - r) / delta) + 2;
+		} else if (cmAx === r) {
+			m = ((((g - b) / deltA) % 6) + 6) % 6;
+		} else if (cmAx === g) {
+			m = ((b - r) / deltA) + 2;
 		} else {
-			m = ((r - g) / delta) + 4;
+			m = ((r - g) / deltA) + 4;
 		}
 
-		return new HSVA(Math.round(m * 60), s, cmax, rgba.a);
+		return new HSVA(MAth.round(m * 60), s, cmAx, rgbA.A);
 	}
 
-	// from http://www.rapidtables.com/convert/color/hsv-to-rgb.htm
-	static toRGBA(hsva: HSVA): RGBA {
-		const { h, s, v, a } = hsva;
+	// from http://www.rApidtAbles.com/convert/color/hsv-to-rgb.htm
+	stAtic toRGBA(hsvA: HSVA): RGBA {
+		const { h, s, v, A } = hsvA;
 		const c = v * s;
-		const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+		const x = c * (1 - MAth.Abs((h / 60) % 2 - 1));
 		const m = v - c;
 		let [r, g, b] = [0, 0, 0];
 
@@ -245,255 +245,255 @@ export class HSVA {
 			b = x;
 		}
 
-		r = Math.round((r + m) * 255);
-		g = Math.round((g + m) * 255);
-		b = Math.round((b + m) * 255);
+		r = MAth.round((r + m) * 255);
+		g = MAth.round((g + m) * 255);
+		b = MAth.round((b + m) * 255);
 
-		return new RGBA(r, g, b, a);
+		return new RGBA(r, g, b, A);
 	}
 }
 
-export class Color {
+export clAss Color {
 
-	static fromHex(hex: string): Color {
-		return Color.Format.CSS.parseHex(hex) || Color.red;
+	stAtic fromHex(hex: string): Color {
+		return Color.FormAt.CSS.pArseHex(hex) || Color.red;
 	}
 
-	readonly rgba: RGBA;
-	private _hsla?: HSLA;
-	get hsla(): HSLA {
-		if (this._hsla) {
-			return this._hsla;
+	reAdonly rgbA: RGBA;
+	privAte _hslA?: HSLA;
+	get hslA(): HSLA {
+		if (this._hslA) {
+			return this._hslA;
 		} else {
-			return HSLA.fromRGBA(this.rgba);
+			return HSLA.fromRGBA(this.rgbA);
 		}
 	}
 
-	private _hsva?: HSVA;
-	get hsva(): HSVA {
-		if (this._hsva) {
-			return this._hsva;
+	privAte _hsvA?: HSVA;
+	get hsvA(): HSVA {
+		if (this._hsvA) {
+			return this._hsvA;
 		}
-		return HSVA.fromRGBA(this.rgba);
+		return HSVA.fromRGBA(this.rgbA);
 	}
 
-	constructor(arg: RGBA | HSLA | HSVA) {
-		if (!arg) {
-			throw new Error('Color needs a value');
-		} else if (arg instanceof RGBA) {
-			this.rgba = arg;
-		} else if (arg instanceof HSLA) {
-			this._hsla = arg;
-			this.rgba = HSLA.toRGBA(arg);
-		} else if (arg instanceof HSVA) {
-			this._hsva = arg;
-			this.rgba = HSVA.toRGBA(arg);
+	constructor(Arg: RGBA | HSLA | HSVA) {
+		if (!Arg) {
+			throw new Error('Color needs A vAlue');
+		} else if (Arg instAnceof RGBA) {
+			this.rgbA = Arg;
+		} else if (Arg instAnceof HSLA) {
+			this._hslA = Arg;
+			this.rgbA = HSLA.toRGBA(Arg);
+		} else if (Arg instAnceof HSVA) {
+			this._hsvA = Arg;
+			this.rgbA = HSVA.toRGBA(Arg);
 		} else {
-			throw new Error('Invalid color ctor argument');
+			throw new Error('InvAlid color ctor Argument');
 		}
 	}
 
-	equals(other: Color | null): boolean {
-		return !!other && RGBA.equals(this.rgba, other.rgba) && HSLA.equals(this.hsla, other.hsla) && HSVA.equals(this.hsva, other.hsva);
+	equAls(other: Color | null): booleAn {
+		return !!other && RGBA.equAls(this.rgbA, other.rgbA) && HSLA.equAls(this.hslA, other.hslA) && HSVA.equAls(this.hsvA, other.hsvA);
 	}
 
 	/**
-	 * http://www.w3.org/TR/WCAG20/#relativeluminancedef
-	 * Returns the number in the set [0, 1]. O => Darkest Black. 1 => Lightest white.
+	 * http://www.w3.org/TR/WCAG20/#relAtiveluminAncedef
+	 * Returns the number in the set [0, 1]. O => DArkest BlAck. 1 => Lightest white.
 	 */
-	getRelativeLuminance(): number {
-		const R = Color._relativeLuminanceForComponent(this.rgba.r);
-		const G = Color._relativeLuminanceForComponent(this.rgba.g);
-		const B = Color._relativeLuminanceForComponent(this.rgba.b);
-		const luminance = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+	getRelAtiveLuminAnce(): number {
+		const R = Color._relAtiveLuminAnceForComponent(this.rgbA.r);
+		const G = Color._relAtiveLuminAnceForComponent(this.rgbA.g);
+		const B = Color._relAtiveLuminAnceForComponent(this.rgbA.b);
+		const luminAnce = 0.2126 * R + 0.7152 * G + 0.0722 * B;
 
-		return roundFloat(luminance, 4);
+		return roundFloAt(luminAnce, 4);
 	}
 
-	private static _relativeLuminanceForComponent(color: number): number {
+	privAte stAtic _relAtiveLuminAnceForComponent(color: number): number {
 		const c = color / 255;
-		return (c <= 0.03928) ? c / 12.92 : Math.pow(((c + 0.055) / 1.055), 2.4);
+		return (c <= 0.03928) ? c / 12.92 : MAth.pow(((c + 0.055) / 1.055), 2.4);
 	}
 
 	/**
-	 * http://www.w3.org/TR/WCAG20/#contrast-ratiodef
-	 * Returns the contrast ration number in the set [1, 21].
+	 * http://www.w3.org/TR/WCAG20/#contrAst-rAtiodef
+	 * Returns the contrAst rAtion number in the set [1, 21].
 	 */
-	getContrastRatio(another: Color): number {
-		const lum1 = this.getRelativeLuminance();
-		const lum2 = another.getRelativeLuminance();
+	getContrAstRAtio(Another: Color): number {
+		const lum1 = this.getRelAtiveLuminAnce();
+		const lum2 = Another.getRelAtiveLuminAnce();
 		return lum1 > lum2 ? (lum1 + 0.05) / (lum2 + 0.05) : (lum2 + 0.05) / (lum1 + 0.05);
 	}
 
 	/**
-	 *	http://24ways.org/2010/calculating-color-contrast
-	 *  Return 'true' if darker color otherwise 'false'
+	 *	http://24wAys.org/2010/cAlculAting-color-contrAst
+	 *  Return 'true' if dArker color otherwise 'fAlse'
 	 */
-	isDarker(): boolean {
-		const yiq = (this.rgba.r * 299 + this.rgba.g * 587 + this.rgba.b * 114) / 1000;
+	isDArker(): booleAn {
+		const yiq = (this.rgbA.r * 299 + this.rgbA.g * 587 + this.rgbA.b * 114) / 1000;
 		return yiq < 128;
 	}
 
 	/**
-	 *	http://24ways.org/2010/calculating-color-contrast
-	 *  Return 'true' if lighter color otherwise 'false'
+	 *	http://24wAys.org/2010/cAlculAting-color-contrAst
+	 *  Return 'true' if lighter color otherwise 'fAlse'
 	 */
-	isLighter(): boolean {
-		const yiq = (this.rgba.r * 299 + this.rgba.g * 587 + this.rgba.b * 114) / 1000;
+	isLighter(): booleAn {
+		const yiq = (this.rgbA.r * 299 + this.rgbA.g * 587 + this.rgbA.b * 114) / 1000;
 		return yiq >= 128;
 	}
 
-	isLighterThan(another: Color): boolean {
-		const lum1 = this.getRelativeLuminance();
-		const lum2 = another.getRelativeLuminance();
+	isLighterThAn(Another: Color): booleAn {
+		const lum1 = this.getRelAtiveLuminAnce();
+		const lum2 = Another.getRelAtiveLuminAnce();
 		return lum1 > lum2;
 	}
 
-	isDarkerThan(another: Color): boolean {
-		const lum1 = this.getRelativeLuminance();
-		const lum2 = another.getRelativeLuminance();
+	isDArkerThAn(Another: Color): booleAn {
+		const lum1 = this.getRelAtiveLuminAnce();
+		const lum2 = Another.getRelAtiveLuminAnce();
 		return lum1 < lum2;
 	}
 
-	lighten(factor: number): Color {
-		return new Color(new HSLA(this.hsla.h, this.hsla.s, this.hsla.l + this.hsla.l * factor, this.hsla.a));
+	lighten(fActor: number): Color {
+		return new Color(new HSLA(this.hslA.h, this.hslA.s, this.hslA.l + this.hslA.l * fActor, this.hslA.A));
 	}
 
-	darken(factor: number): Color {
-		return new Color(new HSLA(this.hsla.h, this.hsla.s, this.hsla.l - this.hsla.l * factor, this.hsla.a));
+	dArken(fActor: number): Color {
+		return new Color(new HSLA(this.hslA.h, this.hslA.s, this.hslA.l - this.hslA.l * fActor, this.hslA.A));
 	}
 
-	transparent(factor: number): Color {
-		const { r, g, b, a } = this.rgba;
-		return new Color(new RGBA(r, g, b, a * factor));
+	trAnspArent(fActor: number): Color {
+		const { r, g, b, A } = this.rgbA;
+		return new Color(new RGBA(r, g, b, A * fActor));
 	}
 
-	isTransparent(): boolean {
-		return this.rgba.a === 0;
+	isTrAnspArent(): booleAn {
+		return this.rgbA.A === 0;
 	}
 
-	isOpaque(): boolean {
-		return this.rgba.a === 1;
+	isOpAque(): booleAn {
+		return this.rgbA.A === 1;
 	}
 
 	opposite(): Color {
-		return new Color(new RGBA(255 - this.rgba.r, 255 - this.rgba.g, 255 - this.rgba.b, this.rgba.a));
+		return new Color(new RGBA(255 - this.rgbA.r, 255 - this.rgbA.g, 255 - this.rgbA.b, this.rgbA.A));
 	}
 
 	blend(c: Color): Color {
-		const rgba = c.rgba;
+		const rgbA = c.rgbA;
 
-		// Convert to 0..1 opacity
-		const thisA = this.rgba.a;
-		const colorA = rgba.a;
+		// Convert to 0..1 opAcity
+		const thisA = this.rgbA.A;
+		const colorA = rgbA.A;
 
-		const a = thisA + colorA * (1 - thisA);
-		if (a < 1e-6) {
-			return Color.transparent;
+		const A = thisA + colorA * (1 - thisA);
+		if (A < 1e-6) {
+			return Color.trAnspArent;
 		}
 
-		const r = this.rgba.r * thisA / a + rgba.r * colorA * (1 - thisA) / a;
-		const g = this.rgba.g * thisA / a + rgba.g * colorA * (1 - thisA) / a;
-		const b = this.rgba.b * thisA / a + rgba.b * colorA * (1 - thisA) / a;
+		const r = this.rgbA.r * thisA / A + rgbA.r * colorA * (1 - thisA) / A;
+		const g = this.rgbA.g * thisA / A + rgbA.g * colorA * (1 - thisA) / A;
+		const b = this.rgbA.b * thisA / A + rgbA.b * colorA * (1 - thisA) / A;
 
-		return new Color(new RGBA(r, g, b, a));
+		return new Color(new RGBA(r, g, b, A));
 	}
 
-	makeOpaque(opaqueBackground: Color): Color {
-		if (this.isOpaque() || opaqueBackground.rgba.a !== 1) {
-			// only allow to blend onto a non-opaque color onto a opaque color
+	mAkeOpAque(opAqueBAckground: Color): Color {
+		if (this.isOpAque() || opAqueBAckground.rgbA.A !== 1) {
+			// only Allow to blend onto A non-opAque color onto A opAque color
 			return this;
 		}
 
-		const { r, g, b, a } = this.rgba;
+		const { r, g, b, A } = this.rgbA;
 
-		// https://stackoverflow.com/questions/12228548/finding-equivalent-color-with-opacity
+		// https://stAckoverflow.com/questions/12228548/finding-equivAlent-color-with-opAcity
 		return new Color(new RGBA(
-			opaqueBackground.rgba.r - a * (opaqueBackground.rgba.r - r),
-			opaqueBackground.rgba.g - a * (opaqueBackground.rgba.g - g),
-			opaqueBackground.rgba.b - a * (opaqueBackground.rgba.b - b),
+			opAqueBAckground.rgbA.r - A * (opAqueBAckground.rgbA.r - r),
+			opAqueBAckground.rgbA.g - A * (opAqueBAckground.rgbA.g - g),
+			opAqueBAckground.rgbA.b - A * (opAqueBAckground.rgbA.b - b),
 			1
 		));
 	}
 
-	flatten(...backgrounds: Color[]): Color {
-		const background = backgrounds.reduceRight((accumulator, color) => {
-			return Color._flatten(color, accumulator);
+	flAtten(...bAckgrounds: Color[]): Color {
+		const bAckground = bAckgrounds.reduceRight((AccumulAtor, color) => {
+			return Color._flAtten(color, AccumulAtor);
 		});
-		return Color._flatten(this, background);
+		return Color._flAtten(this, bAckground);
 	}
 
-	private static _flatten(foreground: Color, background: Color) {
-		const backgroundAlpha = 1 - foreground.rgba.a;
+	privAte stAtic _flAtten(foreground: Color, bAckground: Color) {
+		const bAckgroundAlphA = 1 - foreground.rgbA.A;
 		return new Color(new RGBA(
-			backgroundAlpha * background.rgba.r + foreground.rgba.a * foreground.rgba.r,
-			backgroundAlpha * background.rgba.g + foreground.rgba.a * foreground.rgba.g,
-			backgroundAlpha * background.rgba.b + foreground.rgba.a * foreground.rgba.b
+			bAckgroundAlphA * bAckground.rgbA.r + foreground.rgbA.A * foreground.rgbA.r,
+			bAckgroundAlphA * bAckground.rgbA.g + foreground.rgbA.A * foreground.rgbA.g,
+			bAckgroundAlphA * bAckground.rgbA.b + foreground.rgbA.A * foreground.rgbA.b
 		));
 	}
 
 	toString(): string {
-		return '' + Color.Format.CSS.format(this);
+		return '' + Color.FormAt.CSS.formAt(this);
 	}
 
-	static getLighterColor(of: Color, relative: Color, factor?: number): Color {
-		if (of.isLighterThan(relative)) {
+	stAtic getLighterColor(of: Color, relAtive: Color, fActor?: number): Color {
+		if (of.isLighterThAn(relAtive)) {
 			return of;
 		}
-		factor = factor ? factor : 0.5;
-		const lum1 = of.getRelativeLuminance();
-		const lum2 = relative.getRelativeLuminance();
-		factor = factor * (lum2 - lum1) / lum2;
-		return of.lighten(factor);
+		fActor = fActor ? fActor : 0.5;
+		const lum1 = of.getRelAtiveLuminAnce();
+		const lum2 = relAtive.getRelAtiveLuminAnce();
+		fActor = fActor * (lum2 - lum1) / lum2;
+		return of.lighten(fActor);
 	}
 
-	static getDarkerColor(of: Color, relative: Color, factor?: number): Color {
-		if (of.isDarkerThan(relative)) {
+	stAtic getDArkerColor(of: Color, relAtive: Color, fActor?: number): Color {
+		if (of.isDArkerThAn(relAtive)) {
 			return of;
 		}
-		factor = factor ? factor : 0.5;
-		const lum1 = of.getRelativeLuminance();
-		const lum2 = relative.getRelativeLuminance();
-		factor = factor * (lum1 - lum2) / lum1;
-		return of.darken(factor);
+		fActor = fActor ? fActor : 0.5;
+		const lum1 = of.getRelAtiveLuminAnce();
+		const lum2 = relAtive.getRelAtiveLuminAnce();
+		fActor = fActor * (lum1 - lum2) / lum1;
+		return of.dArken(fActor);
 	}
 
-	static readonly white = new Color(new RGBA(255, 255, 255, 1));
-	static readonly black = new Color(new RGBA(0, 0, 0, 1));
-	static readonly red = new Color(new RGBA(255, 0, 0, 1));
-	static readonly blue = new Color(new RGBA(0, 0, 255, 1));
-	static readonly green = new Color(new RGBA(0, 255, 0, 1));
-	static readonly cyan = new Color(new RGBA(0, 255, 255, 1));
-	static readonly lightgrey = new Color(new RGBA(211, 211, 211, 1));
-	static readonly transparent = new Color(new RGBA(0, 0, 0, 0));
+	stAtic reAdonly white = new Color(new RGBA(255, 255, 255, 1));
+	stAtic reAdonly blAck = new Color(new RGBA(0, 0, 0, 1));
+	stAtic reAdonly red = new Color(new RGBA(255, 0, 0, 1));
+	stAtic reAdonly blue = new Color(new RGBA(0, 0, 255, 1));
+	stAtic reAdonly green = new Color(new RGBA(0, 255, 0, 1));
+	stAtic reAdonly cyAn = new Color(new RGBA(0, 255, 255, 1));
+	stAtic reAdonly lightgrey = new Color(new RGBA(211, 211, 211, 1));
+	stAtic reAdonly trAnspArent = new Color(new RGBA(0, 0, 0, 0));
 }
 
-export namespace Color {
-	export namespace Format {
-		export namespace CSS {
+export nAmespAce Color {
+	export nAmespAce FormAt {
+		export nAmespAce CSS {
 
-			export function formatRGB(color: Color): string {
-				if (color.rgba.a === 1) {
-					return `rgb(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b})`;
+			export function formAtRGB(color: Color): string {
+				if (color.rgbA.A === 1) {
+					return `rgb(${color.rgbA.r}, ${color.rgbA.g}, ${color.rgbA.b})`;
 				}
 
-				return Color.Format.CSS.formatRGBA(color);
+				return Color.FormAt.CSS.formAtRGBA(color);
 			}
 
-			export function formatRGBA(color: Color): string {
-				return `rgba(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${+(color.rgba.a).toFixed(2)})`;
+			export function formAtRGBA(color: Color): string {
+				return `rgbA(${color.rgbA.r}, ${color.rgbA.g}, ${color.rgbA.b}, ${+(color.rgbA.A).toFixed(2)})`;
 			}
 
-			export function formatHSL(color: Color): string {
-				if (color.hsla.a === 1) {
-					return `hsl(${color.hsla.h}, ${(color.hsla.s * 100).toFixed(2)}%, ${(color.hsla.l * 100).toFixed(2)}%)`;
+			export function formAtHSL(color: Color): string {
+				if (color.hslA.A === 1) {
+					return `hsl(${color.hslA.h}, ${(color.hslA.s * 100).toFixed(2)}%, ${(color.hslA.l * 100).toFixed(2)}%)`;
 				}
 
-				return Color.Format.CSS.formatHSLA(color);
+				return Color.FormAt.CSS.formAtHSLA(color);
 			}
 
-			export function formatHSLA(color: Color): string {
-				return `hsla(${color.hsla.h}, ${(color.hsla.s * 100).toFixed(2)}%, ${(color.hsla.l * 100).toFixed(2)}%, ${color.hsla.a.toFixed(2)})`;
+			export function formAtHSLA(color: Color): string {
+				return `hslA(${color.hslA.h}, ${(color.hslA.s * 100).toFixed(2)}%, ${(color.hslA.l * 100).toFixed(2)}%, ${color.hslA.A.toFixed(2)})`;
 			}
 
 			function _toTwoDigitHex(n: number): string {
@@ -502,115 +502,115 @@ export namespace Color {
 			}
 
 			/**
-			 * Formats the color as #RRGGBB
+			 * FormAts the color As #RRGGBB
 			 */
-			export function formatHex(color: Color): string {
-				return `#${_toTwoDigitHex(color.rgba.r)}${_toTwoDigitHex(color.rgba.g)}${_toTwoDigitHex(color.rgba.b)}`;
+			export function formAtHex(color: Color): string {
+				return `#${_toTwoDigitHex(color.rgbA.r)}${_toTwoDigitHex(color.rgbA.g)}${_toTwoDigitHex(color.rgbA.b)}`;
 			}
 
 			/**
-			 * Formats the color as #RRGGBBAA
-			 * If 'compact' is set, colors without transparancy will be printed as #RRGGBB
+			 * FormAts the color As #RRGGBBAA
+			 * If 'compAct' is set, colors without trAnspArAncy will be printed As #RRGGBB
 			 */
-			export function formatHexA(color: Color, compact = false): string {
-				if (compact && color.rgba.a === 1) {
-					return Color.Format.CSS.formatHex(color);
+			export function formAtHexA(color: Color, compAct = fAlse): string {
+				if (compAct && color.rgbA.A === 1) {
+					return Color.FormAt.CSS.formAtHex(color);
 				}
 
-				return `#${_toTwoDigitHex(color.rgba.r)}${_toTwoDigitHex(color.rgba.g)}${_toTwoDigitHex(color.rgba.b)}${_toTwoDigitHex(Math.round(color.rgba.a * 255))}`;
+				return `#${_toTwoDigitHex(color.rgbA.r)}${_toTwoDigitHex(color.rgbA.g)}${_toTwoDigitHex(color.rgbA.b)}${_toTwoDigitHex(MAth.round(color.rgbA.A * 255))}`;
 			}
 
 			/**
-			 * The default format will use HEX if opaque and RGBA otherwise.
+			 * The defAult formAt will use HEX if opAque And RGBA otherwise.
 			 */
-			export function format(color: Color): string | null {
-				if (color.isOpaque()) {
-					return Color.Format.CSS.formatHex(color);
+			export function formAt(color: Color): string | null {
+				if (color.isOpAque()) {
+					return Color.FormAt.CSS.formAtHex(color);
 				}
 
-				return Color.Format.CSS.formatRGBA(color);
+				return Color.FormAt.CSS.formAtRGBA(color);
 			}
 
 			/**
-			 * Converts an Hex color value to a Color.
-			 * returns r, g, and b are contained in the set [0, 255]
-			 * @param hex string (#RGB, #RGBA, #RRGGBB or #RRGGBBAA).
+			 * Converts An Hex color vAlue to A Color.
+			 * returns r, g, And b Are contAined in the set [0, 255]
+			 * @pArAm hex string (#RGB, #RGBA, #RRGGBB or #RRGGBBAA).
 			 */
-			export function parseHex(hex: string): Color | null {
+			export function pArseHex(hex: string): Color | null {
 				const length = hex.length;
 
 				if (length === 0) {
-					// Invalid color
+					// InvAlid color
 					return null;
 				}
 
-				if (hex.charCodeAt(0) !== CharCode.Hash) {
-					// Does not begin with a #
+				if (hex.chArCodeAt(0) !== ChArCode.HAsh) {
+					// Does not begin with A #
 					return null;
 				}
 
 				if (length === 7) {
-					// #RRGGBB format
-					const r = 16 * _parseHexDigit(hex.charCodeAt(1)) + _parseHexDigit(hex.charCodeAt(2));
-					const g = 16 * _parseHexDigit(hex.charCodeAt(3)) + _parseHexDigit(hex.charCodeAt(4));
-					const b = 16 * _parseHexDigit(hex.charCodeAt(5)) + _parseHexDigit(hex.charCodeAt(6));
+					// #RRGGBB formAt
+					const r = 16 * _pArseHexDigit(hex.chArCodeAt(1)) + _pArseHexDigit(hex.chArCodeAt(2));
+					const g = 16 * _pArseHexDigit(hex.chArCodeAt(3)) + _pArseHexDigit(hex.chArCodeAt(4));
+					const b = 16 * _pArseHexDigit(hex.chArCodeAt(5)) + _pArseHexDigit(hex.chArCodeAt(6));
 					return new Color(new RGBA(r, g, b, 1));
 				}
 
 				if (length === 9) {
-					// #RRGGBBAA format
-					const r = 16 * _parseHexDigit(hex.charCodeAt(1)) + _parseHexDigit(hex.charCodeAt(2));
-					const g = 16 * _parseHexDigit(hex.charCodeAt(3)) + _parseHexDigit(hex.charCodeAt(4));
-					const b = 16 * _parseHexDigit(hex.charCodeAt(5)) + _parseHexDigit(hex.charCodeAt(6));
-					const a = 16 * _parseHexDigit(hex.charCodeAt(7)) + _parseHexDigit(hex.charCodeAt(8));
-					return new Color(new RGBA(r, g, b, a / 255));
+					// #RRGGBBAA formAt
+					const r = 16 * _pArseHexDigit(hex.chArCodeAt(1)) + _pArseHexDigit(hex.chArCodeAt(2));
+					const g = 16 * _pArseHexDigit(hex.chArCodeAt(3)) + _pArseHexDigit(hex.chArCodeAt(4));
+					const b = 16 * _pArseHexDigit(hex.chArCodeAt(5)) + _pArseHexDigit(hex.chArCodeAt(6));
+					const A = 16 * _pArseHexDigit(hex.chArCodeAt(7)) + _pArseHexDigit(hex.chArCodeAt(8));
+					return new Color(new RGBA(r, g, b, A / 255));
 				}
 
 				if (length === 4) {
-					// #RGB format
-					const r = _parseHexDigit(hex.charCodeAt(1));
-					const g = _parseHexDigit(hex.charCodeAt(2));
-					const b = _parseHexDigit(hex.charCodeAt(3));
+					// #RGB formAt
+					const r = _pArseHexDigit(hex.chArCodeAt(1));
+					const g = _pArseHexDigit(hex.chArCodeAt(2));
+					const b = _pArseHexDigit(hex.chArCodeAt(3));
 					return new Color(new RGBA(16 * r + r, 16 * g + g, 16 * b + b));
 				}
 
 				if (length === 5) {
-					// #RGBA format
-					const r = _parseHexDigit(hex.charCodeAt(1));
-					const g = _parseHexDigit(hex.charCodeAt(2));
-					const b = _parseHexDigit(hex.charCodeAt(3));
-					const a = _parseHexDigit(hex.charCodeAt(4));
-					return new Color(new RGBA(16 * r + r, 16 * g + g, 16 * b + b, (16 * a + a) / 255));
+					// #RGBA formAt
+					const r = _pArseHexDigit(hex.chArCodeAt(1));
+					const g = _pArseHexDigit(hex.chArCodeAt(2));
+					const b = _pArseHexDigit(hex.chArCodeAt(3));
+					const A = _pArseHexDigit(hex.chArCodeAt(4));
+					return new Color(new RGBA(16 * r + r, 16 * g + g, 16 * b + b, (16 * A + A) / 255));
 				}
 
-				// Invalid color
+				// InvAlid color
 				return null;
 			}
 
-			function _parseHexDigit(charCode: CharCode): number {
-				switch (charCode) {
-					case CharCode.Digit0: return 0;
-					case CharCode.Digit1: return 1;
-					case CharCode.Digit2: return 2;
-					case CharCode.Digit3: return 3;
-					case CharCode.Digit4: return 4;
-					case CharCode.Digit5: return 5;
-					case CharCode.Digit6: return 6;
-					case CharCode.Digit7: return 7;
-					case CharCode.Digit8: return 8;
-					case CharCode.Digit9: return 9;
-					case CharCode.a: return 10;
-					case CharCode.A: return 10;
-					case CharCode.b: return 11;
-					case CharCode.B: return 11;
-					case CharCode.c: return 12;
-					case CharCode.C: return 12;
-					case CharCode.d: return 13;
-					case CharCode.D: return 13;
-					case CharCode.e: return 14;
-					case CharCode.E: return 14;
-					case CharCode.f: return 15;
-					case CharCode.F: return 15;
+			function _pArseHexDigit(chArCode: ChArCode): number {
+				switch (chArCode) {
+					cAse ChArCode.Digit0: return 0;
+					cAse ChArCode.Digit1: return 1;
+					cAse ChArCode.Digit2: return 2;
+					cAse ChArCode.Digit3: return 3;
+					cAse ChArCode.Digit4: return 4;
+					cAse ChArCode.Digit5: return 5;
+					cAse ChArCode.Digit6: return 6;
+					cAse ChArCode.Digit7: return 7;
+					cAse ChArCode.Digit8: return 8;
+					cAse ChArCode.Digit9: return 9;
+					cAse ChArCode.A: return 10;
+					cAse ChArCode.A: return 10;
+					cAse ChArCode.b: return 11;
+					cAse ChArCode.B: return 11;
+					cAse ChArCode.c: return 12;
+					cAse ChArCode.C: return 12;
+					cAse ChArCode.d: return 13;
+					cAse ChArCode.D: return 13;
+					cAse ChArCode.e: return 14;
+					cAse ChArCode.E: return 14;
+					cAse ChArCode.f: return 15;
+					cAse ChArCode.F: return 15;
 				}
 				return 0;
 			}

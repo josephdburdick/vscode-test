@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * As Assert from 'Assert';
 import { Selection } from 'vs/editor/common/core/selection';
-import { CopyLinesCommand } from 'vs/editor/contrib/linesOperations/copyLinesCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { CopyLinesCommAnd } from 'vs/editor/contrib/linesOperAtions/copyLinesCommAnd';
+import { testCommAnd } from 'vs/editor/test/browser/testCommAnd';
 import { withTestCodeEditor } from 'vs/editor/test/browser/testCodeEditor';
-import { DuplicateSelectionAction } from 'vs/editor/contrib/linesOperations/linesOperations';
+import { DuplicAteSelectionAction } from 'vs/editor/contrib/linesOperAtions/linesOperAtions';
 
-function testCopyLinesDownCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new CopyLinesCommand(sel, true), expectedLines, expectedSelection);
+function testCopyLinesDownCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	testCommAnd(lines, null, selection, (sel) => new CopyLinesCommAnd(sel, true), expectedLines, expectedSelection);
 }
 
-function testCopyLinesUpCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
-	testCommand(lines, null, selection, (sel) => new CopyLinesCommand(sel, false), expectedLines, expectedSelection);
+function testCopyLinesUpCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	testCommAnd(lines, null, selection, (sel) => new CopyLinesCommAnd(sel, fAlse), expectedLines, expectedSelection);
 }
 
-suite('Editor Contrib - Copy Lines Command', () => {
+suite('Editor Contrib - Copy Lines CommAnd', () => {
 
 	test('copy first line down', function () {
-		testCopyLinesDownCommand(
+		testCopyLinesDownCommAnd(
 			[
 				'first',
 				'second line',
@@ -43,7 +43,7 @@ suite('Editor Contrib - Copy Lines Command', () => {
 	});
 
 	test('copy first line up', function () {
-		testCopyLinesUpCommand(
+		testCopyLinesUpCommAnd(
 			[
 				'first',
 				'second line',
@@ -64,8 +64,8 @@ suite('Editor Contrib - Copy Lines Command', () => {
 		);
 	});
 
-	test('copy last line down', function () {
-		testCopyLinesDownCommand(
+	test('copy lAst line down', function () {
+		testCopyLinesDownCommAnd(
 			[
 				'first',
 				'second line',
@@ -86,8 +86,8 @@ suite('Editor Contrib - Copy Lines Command', () => {
 		);
 	});
 
-	test('copy last line up', function () {
-		testCopyLinesUpCommand(
+	test('copy lAst line up', function () {
+		testCopyLinesUpCommAnd(
 			[
 				'first',
 				'second line',
@@ -109,7 +109,7 @@ suite('Editor Contrib - Copy Lines Command', () => {
 	});
 
 	test('issue #1322: copy line up', function () {
-		testCopyLinesUpCommand(
+		testCopyLinesUpCommAnd(
 			[
 				'first',
 				'second line',
@@ -130,8 +130,8 @@ suite('Editor Contrib - Copy Lines Command', () => {
 		);
 	});
 
-	test('issue #1322: copy last line up', function () {
-		testCopyLinesUpCommand(
+	test('issue #1322: copy lAst line up', function () {
+		testCopyLinesUpCommAnd(
 			[
 				'first',
 				'second line',
@@ -152,8 +152,8 @@ suite('Editor Contrib - Copy Lines Command', () => {
 		);
 	});
 
-	test('copy many lines up', function () {
-		testCopyLinesUpCommand(
+	test('copy mAny lines up', function () {
+		testCopyLinesUpCommAnd(
 			[
 				'first',
 				'second line',
@@ -177,7 +177,7 @@ suite('Editor Contrib - Copy Lines Command', () => {
 	});
 
 	test('ignore empty selection', function () {
-		testCopyLinesUpCommand(
+		testCopyLinesUpCommAnd(
 			[
 				'first',
 				'second line',
@@ -199,21 +199,21 @@ suite('Editor Contrib - Copy Lines Command', () => {
 	});
 });
 
-suite('Editor Contrib - Duplicate Selection', () => {
+suite('Editor Contrib - DuplicAte Selection', () => {
 
-	const duplicateSelectionAction = new DuplicateSelectionAction();
+	const duplicAteSelectionAction = new DuplicAteSelectionAction();
 
-	function testDuplicateSelectionAction(lines: string[], selections: Selection[], expectedLines: string[], expectedSelections: Selection[]): void {
+	function testDuplicAteSelectionAction(lines: string[], selections: Selection[], expectedLines: string[], expectedSelections: Selection[]): void {
 		withTestCodeEditor(lines.join('\n'), {}, (editor) => {
 			editor.setSelections(selections);
-			duplicateSelectionAction.run(null!, editor, {});
-			assert.deepEqual(editor.getValue(), expectedLines.join('\n'));
-			assert.deepEqual(editor.getSelections()!.map(s => s.toString()), expectedSelections.map(s => s.toString()));
+			duplicAteSelectionAction.run(null!, editor, {});
+			Assert.deepEquAl(editor.getVAlue(), expectedLines.join('\n'));
+			Assert.deepEquAl(editor.getSelections()!.mAp(s => s.toString()), expectedSelections.mAp(s => s.toString()));
 		});
 	}
 
 	test('empty selection', function () {
-		testDuplicateSelectionAction(
+		testDuplicAteSelectionAction(
 			[
 				'first',
 				'second line',
@@ -236,7 +236,7 @@ suite('Editor Contrib - Duplicate Selection', () => {
 	});
 
 	test('with selection', function () {
-		testDuplicateSelectionAction(
+		testDuplicAteSelectionAction(
 			[
 				'first',
 				'second line',

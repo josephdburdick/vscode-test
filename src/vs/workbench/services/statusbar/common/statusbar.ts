@@ -1,126 +1,126 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ThemeColor } from 'vs/platform/theme/common/themeService';
-import { Event } from 'vs/base/common/event';
-import { Command } from 'vs/editor/common/modes';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ThemeColor } from 'vs/plAtform/theme/common/themeService';
+import { Event } from 'vs/bAse/common/event';
+import { CommAnd } from 'vs/editor/common/modes';
 
-export const IStatusbarService = createDecorator<IStatusbarService>('statusbarService');
+export const IStAtusbArService = creAteDecorAtor<IStAtusbArService>('stAtusbArService');
 
-export const enum StatusbarAlignment {
+export const enum StAtusbArAlignment {
 	LEFT,
 	RIGHT
 }
 
 /**
- * A declarative way of describing a status bar entry
+ * A declArAtive wAy of describing A stAtus bAr entry
  */
-export interface IStatusbarEntry {
+export interfAce IStAtusbArEntry {
 
 	/**
-	 * The text to show for the entry. You can embed icons in the text by leveraging the syntax:
+	 * The text to show for the entry. You cAn embed icons in the text by leverAging the syntAx:
 	 *
-	 * `My text ${icon name} contains icons like ${icon name} this one.`
+	 * `My text ${icon nAme} contAins icons like ${icon nAme} this one.`
 	 */
-	readonly text: string;
+	reAdonly text: string;
 
 	/**
-	 * Text to be read out by the screen reader.
+	 * Text to be reAd out by the screen reAder.
 	 */
-	readonly ariaLabel: string;
+	reAdonly AriALAbel: string;
 
 	/**
-	 * Role of the status bar entry which defines how a screen reader interacts with it.
-	 * Default is 'button'.
+	 * Role of the stAtus bAr entry which defines how A screen reAder interActs with it.
+	 * DefAult is 'button'.
 	 */
-	readonly role?: string;
+	reAdonly role?: string;
 
 	/**
-	 * An optional tooltip text to show when you hover over the entry
+	 * An optionAl tooltip text to show when you hover over the entry
 	 */
-	readonly tooltip?: string;
+	reAdonly tooltip?: string;
 
 	/**
-	 * An optional color to use for the entry
+	 * An optionAl color to use for the entry
 	 */
-	readonly color?: string | ThemeColor;
+	reAdonly color?: string | ThemeColor;
 
 	/**
-	 * An optional background color to use for the entry
+	 * An optionAl bAckground color to use for the entry
 	 */
-	readonly backgroundColor?: string | ThemeColor;
+	reAdonly bAckgroundColor?: string | ThemeColor;
 
 	/**
-	 * An optional id of a command that is known to the workbench to execute on click
+	 * An optionAl id of A commAnd thAt is known to the workbench to execute on click
 	 */
-	readonly command?: string | Command;
+	reAdonly commAnd?: string | CommAnd;
 
 	/**
-	 * Whether to show a beak above the status bar entry.
+	 * Whether to show A beAk Above the stAtus bAr entry.
 	 */
-	readonly showBeak?: boolean;
+	reAdonly showBeAk?: booleAn;
 
 	/**
-	 * Will enable a spinning icon in front of the text to indicate progress.
+	 * Will enAble A spinning icon in front of the text to indicAte progress.
 	 */
-	readonly showProgress?: boolean;
+	reAdonly showProgress?: booleAn;
 }
 
-export interface IStatusbarService {
+export interfAce IStAtusbArService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Adds an entry to the statusbar with the given alignment and priority. Use the returned accessor
-	 * to update or remove the statusbar entry.
+	 * Adds An entry to the stAtusbAr with the given Alignment And priority. Use the returned Accessor
+	 * to updAte or remove the stAtusbAr entry.
 	 *
-	 * @param id  identifier of the entry is needed to allow users to hide entries via settings
-	 * @param name human readable name the entry is about
-	 * @param alignment either LEFT or RIGHT
-	 * @param priority items get arranged from highest priority to lowest priority from left to right
-	 * in their respective alignment slot
+	 * @pArAm id  identifier of the entry is needed to Allow users to hide entries viA settings
+	 * @pArAm nAme humAn reAdAble nAme the entry is About
+	 * @pArAm Alignment either LEFT or RIGHT
+	 * @pArAm priority items get ArrAnged from highest priority to lowest priority from left to right
+	 * in their respective Alignment slot
 	 */
-	addEntry(entry: IStatusbarEntry, id: string, name: string, alignment: StatusbarAlignment, priority?: number): IStatusbarEntryAccessor;
+	AddEntry(entry: IStAtusbArEntry, id: string, nAme: string, Alignment: StAtusbArAlignment, priority?: number): IStAtusbArEntryAccessor;
 
 	/**
-	 * An event that is triggered when an entry's visibility is changed.
+	 * An event thAt is triggered when An entry's visibility is chAnged.
 	 */
-	readonly onDidChangeEntryVisibility: Event<{ id: string, visible: boolean }>;
+	reAdonly onDidChAngeEntryVisibility: Event<{ id: string, visible: booleAn }>;
 
 	/**
-	 * Return if an entry is visible or not.
+	 * Return if An entry is visible or not.
 	 */
-	isEntryVisible(id: string): boolean;
+	isEntryVisible(id: string): booleAn;
 
 	/**
-	 * Allows to update an entry's visibility with the provided ID.
+	 * Allows to updAte An entry's visibility with the provided ID.
 	 */
-	updateEntryVisibility(id: string, visible: boolean): void;
+	updAteEntryVisibility(id: string, visible: booleAn): void;
 
 	/**
-	 * Focused the status bar. If one of the status bar entries was focused, focuses it directly.
+	 * Focused the stAtus bAr. If one of the stAtus bAr entries wAs focused, focuses it directly.
 	 */
-	focus(preserveEntryFocus?: boolean): void;
+	focus(preserveEntryFocus?: booleAn): void;
 
 	/**
-	 * Focuses the next status bar entry. If none focused, focuses the first.
+	 * Focuses the next stAtus bAr entry. If none focused, focuses the first.
 	 */
 	focusNextEntry(): void;
 
 	/**
-	 * Focuses the previous status bar entry. If none focused, focuses the last.
+	 * Focuses the previous stAtus bAr entry. If none focused, focuses the lAst.
 	 */
 	focusPreviousEntry(): void;
 }
 
-export interface IStatusbarEntryAccessor extends IDisposable {
+export interfAce IStAtusbArEntryAccessor extends IDisposAble {
 
 	/**
-	 * Allows to update an existing status bar entry.
+	 * Allows to updAte An existing stAtus bAr entry.
 	 */
-	update(properties: IStatusbarEntry): void;
+	updAte(properties: IStAtusbArEntry): void;
 }

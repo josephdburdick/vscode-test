@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IFileService } from 'vs/platform/files/common/files';
-import { StorageScope } from 'vs/platform/storage/common/storage';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { isUUID, generateUuid } from 'vs/base/common/uuid';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { isUUID, generAteUuid } from 'vs/bAse/common/uuid';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 
-export async function getServiceMachineId(environmentService: IEnvironmentService, fileService: IFileService, storageService: {
-	get: (key: string, scope: StorageScope, fallbackValue?: string | undefined) => string | undefined,
-	store: (key: string, value: string, scope: StorageScope) => void
+export Async function getServiceMAchineId(environmentService: IEnvironmentService, fileService: IFileService, storAgeService: {
+	get: (key: string, scope: StorAgeScope, fAllbAckVAlue?: string | undefined) => string | undefined,
+	store: (key: string, vAlue: string, scope: StorAgeScope) => void
 } | undefined): Promise<string> {
-	let uuid: string | null = storageService ? storageService.get('storage.serviceMachineId', StorageScope.GLOBAL) || null : null;
+	let uuid: string | null = storAgeService ? storAgeService.get('storAge.serviceMAchineId', StorAgeScope.GLOBAL) || null : null;
 	if (uuid) {
 		return uuid;
 	}
 	try {
-		const contents = await fileService.readFile(environmentService.serviceMachineIdResource);
-		const value = contents.value.toString();
-		uuid = isUUID(value) ? value : null;
-	} catch (e) {
+		const contents = AwAit fileService.reAdFile(environmentService.serviceMAchineIdResource);
+		const vAlue = contents.vAlue.toString();
+		uuid = isUUID(vAlue) ? vAlue : null;
+	} cAtch (e) {
 		uuid = null;
 	}
 
 	if (!uuid) {
-		uuid = generateUuid();
+		uuid = generAteUuid();
 		try {
-			await fileService.writeFile(environmentService.serviceMachineIdResource, VSBuffer.fromString(uuid));
-		} catch (error) {
+			AwAit fileService.writeFile(environmentService.serviceMAchineIdResource, VSBuffer.fromString(uuid));
+		} cAtch (error) {
 			//noop
 		}
 	}
-	if (storageService) {
-		storageService.store('storage.serviceMachineId', uuid, StorageScope.GLOBAL);
+	if (storAgeService) {
+		storAgeService.store('storAge.serviceMAchineId', uuid, StorAgeScope.GLOBAL);
 	}
 	return uuid;
 }

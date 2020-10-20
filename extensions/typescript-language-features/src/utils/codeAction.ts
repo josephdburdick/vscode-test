@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import type * as Proto from '../protocol';
+import * As vscode from 'vscode';
+import type * As Proto from '../protocol';
 import { ITypeScriptServiceClient } from '../typescriptService';
-import * as typeConverters from './typeConverters';
+import * As typeConverters from './typeConverters';
 
 export function getEditForCodeAction(
 	client: ITypeScriptServiceClient,
-	action: Proto.CodeAction
-): vscode.WorkspaceEdit | undefined {
-	return action.changes && action.changes.length
-		? typeConverters.WorkspaceEdit.fromFileCodeEdits(client, action.changes)
+	Action: Proto.CodeAction
+): vscode.WorkspAceEdit | undefined {
+	return Action.chAnges && Action.chAnges.length
+		? typeConverters.WorkspAceEdit.fromFileCodeEdits(client, Action.chAnges)
 		: undefined;
 }
 
-export async function applyCodeAction(
+export Async function ApplyCodeAction(
 	client: ITypeScriptServiceClient,
-	action: Proto.CodeAction,
-	token: vscode.CancellationToken
-): Promise<boolean> {
-	const workspaceEdit = getEditForCodeAction(client, action);
-	if (workspaceEdit) {
-		if (!(await vscode.workspace.applyEdit(workspaceEdit))) {
-			return false;
+	Action: Proto.CodeAction,
+	token: vscode.CAncellAtionToken
+): Promise<booleAn> {
+	const workspAceEdit = getEditForCodeAction(client, Action);
+	if (workspAceEdit) {
+		if (!(AwAit vscode.workspAce.ApplyEdit(workspAceEdit))) {
+			return fAlse;
 		}
 	}
-	return applyCodeActionCommands(client, action.commands, token);
+	return ApplyCodeActionCommAnds(client, Action.commAnds, token);
 }
 
-export async function applyCodeActionCommands(
+export Async function ApplyCodeActionCommAnds(
 	client: ITypeScriptServiceClient,
-	commands: ReadonlyArray<{}> | undefined,
-	token: vscode.CancellationToken,
-): Promise<boolean> {
-	if (commands && commands.length) {
-		for (const command of commands) {
-			await client.execute('applyCodeActionCommand', { command }, token);
+	commAnds: ReAdonlyArrAy<{}> | undefined,
+	token: vscode.CAncellAtionToken,
+): Promise<booleAn> {
+	if (commAnds && commAnds.length) {
+		for (const commAnd of commAnds) {
+			AwAit client.execute('ApplyCodeActionCommAnd', { commAnd }, token);
 		}
 	}
 	return true;

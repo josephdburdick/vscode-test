@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { getLocation, Location } from 'jsonc-parser';
-import * as nls from 'vscode-nls';
+import * As vscode from 'vscode';
+import { getLocAtion, LocAtion } from 'jsonc-pArser';
+import * As nls from 'vscode-nls';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-export class PackageDocument {
+export clAss PAckAgeDocument {
 
-	constructor(private document: vscode.TextDocument) { }
+	constructor(privAte document: vscode.TextDocument) { }
 
-	public provideCompletionItems(position: vscode.Position, _token: vscode.CancellationToken): vscode.ProviderResult<vscode.CompletionItem[]> {
-		const location = getLocation(this.document.getText(), this.document.offsetAt(position));
+	public provideCompletionItems(position: vscode.Position, _token: vscode.CAncellAtionToken): vscode.ProviderResult<vscode.CompletionItem[]> {
+		const locAtion = getLocAtion(this.document.getText(), this.document.offsetAt(position));
 
-		if (location.path.length >= 2 && location.path[1] === 'configurationDefaults') {
-			return this.provideLanguageOverridesCompletionItems(location, position);
+		if (locAtion.pAth.length >= 2 && locAtion.pAth[1] === 'configurAtionDefAults') {
+			return this.provideLAnguAgeOverridesCompletionItems(locAtion, position);
 		}
 
 		return undefined;
 	}
 
-	private provideLanguageOverridesCompletionItems(location: Location, position: vscode.Position): vscode.ProviderResult<vscode.CompletionItem[]> {
-		let range = this.document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
-		const text = this.document.getText(range);
+	privAte provideLAnguAgeOverridesCompletionItems(locAtion: LocAtion, position: vscode.Position): vscode.ProviderResult<vscode.CompletionItem[]> {
+		let rAnge = this.document.getWordRAngeAtPosition(position) || new vscode.RAnge(position, position);
+		const text = this.document.getText(rAnge);
 
-		if (location.path.length === 2) {
+		if (locAtion.pAth.length === 2) {
 
-			let snippet = '"[${1:language}]": {\n\t"$0"\n}';
+			let snippet = '"[${1:lAnguAge}]": {\n\t"$0"\n}';
 
-			// Suggestion model word matching includes quotes,
-			// hence exclude the starting quote from the snippet and the range
-			// ending quote gets replaced
-			if (text && text.startsWith('"')) {
-				range = new vscode.Range(new vscode.Position(range.start.line, range.start.character + 1), range.end);
+			// Suggestion model word mAtching includes quotes,
+			// hence exclude the stArting quote from the snippet And the rAnge
+			// ending quote gets replAced
+			if (text && text.stArtsWith('"')) {
+				rAnge = new vscode.RAnge(new vscode.Position(rAnge.stArt.line, rAnge.stArt.chArActer + 1), rAnge.end);
 				snippet = snippet.substring(1);
 			}
 
 			return Promise.resolve([this.newSnippetCompletionItem({
-				label: localize('languageSpecificEditorSettings', "Language specific editor settings"),
-				documentation: localize('languageSpecificEditorSettingsDescription', "Override editor settings for language"),
+				lAbel: locAlize('lAnguAgeSpecificEditorSettings', "LAnguAge specific editor settings"),
+				documentAtion: locAlize('lAnguAgeSpecificEditorSettingsDescription', "Override editor settings for lAnguAge"),
 				snippet,
-				range
+				rAnge
 			})]);
 		}
 
-		if (location.path.length === 3 && location.previousNode && typeof location.previousNode.value === 'string' && location.previousNode.value.startsWith('[')) {
+		if (locAtion.pAth.length === 3 && locAtion.previousNode && typeof locAtion.previousNode.vAlue === 'string' && locAtion.previousNode.vAlue.stArtsWith('[')) {
 
-			// Suggestion model word matching includes starting quote and open sqaure bracket
-			// Hence exclude them from the proposal range
-			range = new vscode.Range(new vscode.Position(range.start.line, range.start.character + 2), range.end);
+			// Suggestion model word mAtching includes stArting quote And open sqAure brAcket
+			// Hence exclude them from the proposAl rAnge
+			rAnge = new vscode.RAnge(new vscode.Position(rAnge.stArt.line, rAnge.stArt.chArActer + 2), rAnge.end);
 
-			return vscode.languages.getLanguages().then(languages => {
-				return languages.map(l => {
+			return vscode.lAnguAges.getLAnguAges().then(lAnguAges => {
+				return lAnguAges.mAp(l => {
 
-					// Suggestion model word matching includes closed sqaure bracket and ending quote
-					// Hence include them in the proposal to replace
-					return this.newSimpleCompletionItem(l, range, '', l + ']"');
+					// Suggestion model word mAtching includes closed sqAure brAcket And ending quote
+					// Hence include them in the proposAl to replAce
+					return this.newSimpleCompletionItem(l, rAnge, '', l + ']"');
 				});
 			});
 		}
 		return Promise.resolve([]);
 	}
 
-	private newSimpleCompletionItem(text: string, range: vscode.Range, description?: string, insertText?: string): vscode.CompletionItem {
+	privAte newSimpleCompletionItem(text: string, rAnge: vscode.RAnge, description?: string, insertText?: string): vscode.CompletionItem {
 		const item = new vscode.CompletionItem(text);
-		item.kind = vscode.CompletionItemKind.Value;
-		item.detail = description;
+		item.kind = vscode.CompletionItemKind.VAlue;
+		item.detAil = description;
 		item.insertText = insertText ? insertText : text;
-		item.range = range;
+		item.rAnge = rAnge;
 		return item;
 	}
 
-	private newSnippetCompletionItem(o: { label: string; documentation?: string; snippet: string; range: vscode.Range; }): vscode.CompletionItem {
-		const item = new vscode.CompletionItem(o.label);
-		item.kind = vscode.CompletionItemKind.Value;
-		item.documentation = o.documentation;
+	privAte newSnippetCompletionItem(o: { lAbel: string; documentAtion?: string; snippet: string; rAnge: vscode.RAnge; }): vscode.CompletionItem {
+		const item = new vscode.CompletionItem(o.lAbel);
+		item.kind = vscode.CompletionItemKind.VAlue;
+		item.documentAtion = o.documentAtion;
 		item.insertText = new vscode.SnippetString(o.snippet);
-		item.range = o.range;
+		item.rAnge = o.rAnge;
 		return item;
 	}
 }

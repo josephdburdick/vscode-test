@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as path from 'path';
-import * as vscode from 'vscode';
-import { TypeScriptServiceConfiguration } from './configuration';
-import { RelativeWorkspacePathResolver } from './relativePathResolver';
+import * As pAth from 'pAth';
+import * As vscode from 'vscode';
+import { TypeScriptServiceConfigurAtion } from './configurAtion';
+import { RelAtiveWorkspAcePAthResolver } from './relAtivePAthResolver';
 
 
-export class TypeScriptPluginPathsProvider {
+export clAss TypeScriptPluginPAthsProvider {
 
 	public constructor(
-		private configuration: TypeScriptServiceConfiguration
+		privAte configurAtion: TypeScriptServiceConfigurAtion
 	) { }
 
-	public updateConfiguration(configuration: TypeScriptServiceConfiguration): void {
-		this.configuration = configuration;
+	public updAteConfigurAtion(configurAtion: TypeScriptServiceConfigurAtion): void {
+		this.configurAtion = configurAtion;
 	}
 
-	public getPluginPaths(): string[] {
-		const pluginPaths = [];
-		for (const pluginPath of this.configuration.tsServerPluginPaths) {
-			pluginPaths.push(...this.resolvePluginPath(pluginPath));
+	public getPluginPAths(): string[] {
+		const pluginPAths = [];
+		for (const pluginPAth of this.configurAtion.tsServerPluginPAths) {
+			pluginPAths.push(...this.resolvePluginPAth(pluginPAth));
 		}
-		return pluginPaths;
+		return pluginPAths;
 	}
 
-	private resolvePluginPath(pluginPath: string): string[] {
-		if (path.isAbsolute(pluginPath)) {
-			return [pluginPath];
+	privAte resolvePluginPAth(pluginPAth: string): string[] {
+		if (pAth.isAbsolute(pluginPAth)) {
+			return [pluginPAth];
 		}
 
-		const workspacePath = RelativeWorkspacePathResolver.asAbsoluteWorkspacePath(pluginPath);
-		if (workspacePath !== undefined) {
-			return [workspacePath];
+		const workspAcePAth = RelAtiveWorkspAcePAthResolver.AsAbsoluteWorkspAcePAth(pluginPAth);
+		if (workspAcePAth !== undefined) {
+			return [workspAcePAth];
 		}
 
-		return (vscode.workspace.workspaceFolders || [])
-			.map(workspaceFolder => path.join(workspaceFolder.uri.fsPath, pluginPath));
+		return (vscode.workspAce.workspAceFolders || [])
+			.mAp(workspAceFolder => pAth.join(workspAceFolder.uri.fsPAth, pluginPAth));
 	}
 }

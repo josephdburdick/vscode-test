@@ -1,43 +1,43 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Application, ProblemSeverity, Problems } from '../../../../automation/out';
+import { ApplicAtion, ProblemSeverity, Problems } from '../../../../AutomAtion/out';
 
 export function setup() {
-	describe('Language Features', () => {
-		it('verifies quick outline', async function () {
-			const app = this.app as Application;
-			await app.workbench.quickaccess.openFile('style.css');
+	describe('LAnguAge FeAtures', () => {
+		it('verifies quick outline', Async function () {
+			const App = this.App As ApplicAtion;
+			AwAit App.workbench.quickAccess.openFile('style.css');
 
-			await app.workbench.quickaccess.openQuickOutline();
-			await app.workbench.quickinput.waitForQuickInputElements(names => names.length === 2);
+			AwAit App.workbench.quickAccess.openQuickOutline();
+			AwAit App.workbench.quickinput.wAitForQuickInputElements(nAmes => nAmes.length === 2);
 		});
 
-		it('verifies problems view', async function () {
-			const app = this.app as Application;
-			await app.workbench.quickaccess.openFile('style.css');
-			await app.workbench.editor.waitForTypeInEditor('style.css', '.foo{}');
+		it('verifies problems view', Async function () {
+			const App = this.App As ApplicAtion;
+			AwAit App.workbench.quickAccess.openFile('style.css');
+			AwAit App.workbench.editor.wAitForTypeInEditor('style.css', '.foo{}');
 
-			await app.code.waitForElement(Problems.getSelectorInEditor(ProblemSeverity.WARNING));
+			AwAit App.code.wAitForElement(Problems.getSelectorInEditor(ProblemSeverity.WARNING));
 
-			await app.workbench.problems.showProblemsView();
-			await app.code.waitForElement(Problems.getSelectorInProblemsView(ProblemSeverity.WARNING));
-			await app.workbench.problems.hideProblemsView();
+			AwAit App.workbench.problems.showProblemsView();
+			AwAit App.code.wAitForElement(Problems.getSelectorInProblemsView(ProblemSeverity.WARNING));
+			AwAit App.workbench.problems.hideProblemsView();
 		});
 
-		it('verifies settings', async function () {
-			const app = this.app as Application;
-			await app.workbench.settingsEditor.addUserSetting('css.lint.emptyRules', '"error"');
-			await app.workbench.quickaccess.openFile('style.css');
+		it('verifies settings', Async function () {
+			const App = this.App As ApplicAtion;
+			AwAit App.workbench.settingsEditor.AddUserSetting('css.lint.emptyRules', '"error"');
+			AwAit App.workbench.quickAccess.openFile('style.css');
 
-			await app.code.waitForElement(Problems.getSelectorInEditor(ProblemSeverity.ERROR));
+			AwAit App.code.wAitForElement(Problems.getSelectorInEditor(ProblemSeverity.ERROR));
 
-			const problems = new Problems(app.code);
-			await problems.showProblemsView();
-			await app.code.waitForElement(Problems.getSelectorInProblemsView(ProblemSeverity.ERROR));
-			await problems.hideProblemsView();
+			const problems = new Problems(App.code);
+			AwAit problems.showProblemsView();
+			AwAit App.code.wAitForElement(Problems.getSelectorInProblemsView(ProblemSeverity.ERROR));
+			AwAit problems.hideProblemsView();
 		});
 	});
 }

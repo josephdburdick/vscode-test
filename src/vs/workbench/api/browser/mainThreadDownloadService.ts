@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { MainContext, IExtHostContext, MainThreadDownloadServiceShape } from 'vs/workbench/api/common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDownloadService } from 'vs/platform/download/common/download';
-import { UriComponents, URI } from 'vs/base/common/uri';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { MAinContext, IExtHostContext, MAinThreAdDownloAdServiceShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { IDownloAdService } from 'vs/plAtform/downloAd/common/downloAd';
+import { UriComponents, URI } from 'vs/bAse/common/uri';
 
-@extHostNamedCustomer(MainContext.MainThreadDownloadService)
-export class MainThreadDownloadService extends Disposable implements MainThreadDownloadServiceShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdDownloAdService)
+export clAss MAinThreAdDownloAdService extends DisposAble implements MAinThreAdDownloAdServiceShApe {
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IDownloadService private readonly downloadService: IDownloadService
+		@IDownloAdService privAte reAdonly downloAdService: IDownloAdService
 	) {
 		super();
 	}
 
-	$download(uri: UriComponents, to: UriComponents): Promise<void> {
-		return this.downloadService.download(URI.revive(uri), URI.revive(to));
+	$downloAd(uri: UriComponents, to: UriComponents): Promise<void> {
+		return this.downloAdService.downloAd(URI.revive(uri), URI.revive(to));
 	}
 
 }

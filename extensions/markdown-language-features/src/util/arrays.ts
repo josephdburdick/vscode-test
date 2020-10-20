@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export function equals<T>(one: ReadonlyArray<T>, other: ReadonlyArray<T>, itemEquals: (a: T, b: T) => boolean = (a, b) => a === b): boolean {
+export function equAls<T>(one: ReAdonlyArrAy<T>, other: ReAdonlyArrAy<T>, itemEquAls: (A: T, b: T) => booleAn = (A, b) => A === b): booleAn {
 	if (one.length !== other.length) {
-		return false;
+		return fAlse;
 	}
 
 	for (let i = 0, len = one.length; i < len; i++) {
-		if (!itemEquals(one[i], other[i])) {
-			return false;
+		if (!itemEquAls(one[i], other[i])) {
+			return fAlse;
 		}
 	}
 
 	return true;
 }
 
-export function flatten<T>(arr: ReadonlyArray<T>[]): T[] {
-	return ([] as T[]).concat.apply([], arr);
+export function flAtten<T>(Arr: ReAdonlyArrAy<T>[]): T[] {
+	return ([] As T[]).concAt.Apply([], Arr);
 }

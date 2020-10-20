@@ -1,99 +1,99 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/exceptionWidget';
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
+import 'vs/css!./mediA/exceptionWidget';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
 import { ZoneWidget } from 'vs/editor/contrib/zoneWidget/zoneWidget';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IExceptionInfo, IDebugSession } from 'vs/workbench/contrib/debug/common/debug';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
-import { registerColor } from 'vs/platform/theme/common/colorRegistry';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { IThemeService, IColorTheme } from 'vs/plAtform/theme/common/themeService';
+import { Color } from 'vs/bAse/common/color';
+import { registerColor } from 'vs/plAtform/theme/common/colorRegistry';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { LinkDetector } from 'vs/workbench/contrib/debug/browser/linkDetector';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 const $ = dom.$;
 
 // theming
 
-export const debugExceptionWidgetBorder = registerColor('debugExceptionWidget.border', { dark: '#a31515', light: '#a31515', hc: '#a31515' }, nls.localize('debugExceptionWidgetBorder', 'Exception widget border color.'));
-export const debugExceptionWidgetBackground = registerColor('debugExceptionWidget.background', { dark: '#420b0d', light: '#f1dfde', hc: '#420b0d' }, nls.localize('debugExceptionWidgetBackground', 'Exception widget background color.'));
+export const debugExceptionWidgetBorder = registerColor('debugExceptionWidget.border', { dArk: '#A31515', light: '#A31515', hc: '#A31515' }, nls.locAlize('debugExceptionWidgetBorder', 'Exception widget border color.'));
+export const debugExceptionWidgetBAckground = registerColor('debugExceptionWidget.bAckground', { dArk: '#420b0d', light: '#f1dfde', hc: '#420b0d' }, nls.locAlize('debugExceptionWidgetBAckground', 'Exception widget bAckground color.'));
 
-export class ExceptionWidget extends ZoneWidget {
+export clAss ExceptionWidget extends ZoneWidget {
 
-	private _backgroundColor?: Color;
+	privAte _bAckgroundColor?: Color;
 
-	constructor(editor: ICodeEditor, private exceptionInfo: IExceptionInfo, private debugSession: IDebugSession | undefined,
+	constructor(editor: ICodeEditor, privAte exceptionInfo: IExceptionInfo, privAte debugSession: IDebugSession | undefined,
 		@IThemeService themeService: IThemeService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
-		super(editor, { showFrame: true, showArrow: true, frameWidth: 1, className: 'exception-widget-container' });
+		super(editor, { showFrAme: true, showArrow: true, frAmeWidth: 1, clAssNAme: 'exception-widget-contAiner' });
 
-		this._backgroundColor = Color.white;
+		this._bAckgroundColor = Color.white;
 
-		this._applyTheme(themeService.getColorTheme());
-		this._disposables.add(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
+		this._ApplyTheme(themeService.getColorTheme());
+		this._disposAbles.Add(themeService.onDidColorThemeChAnge(this._ApplyTheme.bind(this)));
 
-		this.create();
-		const onDidLayoutChangeScheduler = new RunOnceScheduler(() => this._doLayout(undefined, undefined), 50);
-		this._disposables.add(this.editor.onDidLayoutChange(() => onDidLayoutChangeScheduler.schedule()));
-		this._disposables.add(onDidLayoutChangeScheduler);
+		this.creAte();
+		const onDidLAyoutChAngeScheduler = new RunOnceScheduler(() => this._doLAyout(undefined, undefined), 50);
+		this._disposAbles.Add(this.editor.onDidLAyoutChAnge(() => onDidLAyoutChAngeScheduler.schedule()));
+		this._disposAbles.Add(onDidLAyoutChAngeScheduler);
 	}
 
-	private _applyTheme(theme: IColorTheme): void {
-		this._backgroundColor = theme.getColor(debugExceptionWidgetBackground);
-		const frameColor = theme.getColor(debugExceptionWidgetBorder);
+	privAte _ApplyTheme(theme: IColorTheme): void {
+		this._bAckgroundColor = theme.getColor(debugExceptionWidgetBAckground);
+		const frAmeColor = theme.getColor(debugExceptionWidgetBorder);
 		this.style({
-			arrowColor: frameColor,
-			frameColor: frameColor
-		}); // style() will trigger _applyStyles
+			ArrowColor: frAmeColor,
+			frAmeColor: frAmeColor
+		}); // style() will trigger _ApplyStyles
 	}
 
-	protected _applyStyles(): void {
-		if (this.container) {
-			this.container.style.backgroundColor = this._backgroundColor ? this._backgroundColor.toString() : '';
+	protected _ApplyStyles(): void {
+		if (this.contAiner) {
+			this.contAiner.style.bAckgroundColor = this._bAckgroundColor ? this._bAckgroundColor.toString() : '';
 		}
-		super._applyStyles();
+		super._ApplyStyles();
 	}
 
-	protected _fillContainer(container: HTMLElement): void {
-		this.setCssClass('exception-widget');
-		// Set the font size and line height to the one from the editor configuration.
+	protected _fillContAiner(contAiner: HTMLElement): void {
+		this.setCssClAss('exception-widget');
+		// Set the font size And line height to the one from the editor configurAtion.
 		const fontInfo = this.editor.getOption(EditorOption.fontInfo);
-		container.style.fontSize = `${fontInfo.fontSize}px`;
-		container.style.lineHeight = `${fontInfo.lineHeight}px`;
+		contAiner.style.fontSize = `${fontInfo.fontSize}px`;
+		contAiner.style.lineHeight = `${fontInfo.lineHeight}px`;
 
 		let title = $('.title');
-		title.textContent = this.exceptionInfo.id ? nls.localize('exceptionThrownWithId', 'Exception has occurred: {0}', this.exceptionInfo.id) : nls.localize('exceptionThrown', 'Exception has occurred.');
-		dom.append(container, title);
+		title.textContent = this.exceptionInfo.id ? nls.locAlize('exceptionThrownWithId', 'Exception hAs occurred: {0}', this.exceptionInfo.id) : nls.locAlize('exceptionThrown', 'Exception hAs occurred.');
+		dom.Append(contAiner, title);
 
 		if (this.exceptionInfo.description) {
 			let description = $('.description');
 			description.textContent = this.exceptionInfo.description;
-			dom.append(container, description);
+			dom.Append(contAiner, description);
 		}
 
-		if (this.exceptionInfo.details && this.exceptionInfo.details.stackTrace) {
-			let stackTrace = $('.stack-trace');
-			const linkDetector = this.instantiationService.createInstance(LinkDetector);
-			const linkedStackTrace = linkDetector.linkify(this.exceptionInfo.details.stackTrace, true, this.debugSession ? this.debugSession.root : undefined);
-			stackTrace.appendChild(linkedStackTrace);
-			dom.append(container, stackTrace);
+		if (this.exceptionInfo.detAils && this.exceptionInfo.detAils.stAckTrAce) {
+			let stAckTrAce = $('.stAck-trAce');
+			const linkDetector = this.instAntiAtionService.creAteInstAnce(LinkDetector);
+			const linkedStAckTrAce = linkDetector.linkify(this.exceptionInfo.detAils.stAckTrAce, true, this.debugSession ? this.debugSession.root : undefined);
+			stAckTrAce.AppendChild(linkedStAckTrAce);
+			dom.Append(contAiner, stAckTrAce);
 		}
 	}
 
-	protected _doLayout(_heightInPixel: number | undefined, _widthInPixel: number | undefined): void {
-		// Reload the height with respect to the exception text content and relayout it to match the line count.
-		this.container!.style.height = 'initial';
+	protected _doLAyout(_heightInPixel: number | undefined, _widthInPixel: number | undefined): void {
+		// ReloAd the height with respect to the exception text content And relAyout it to mAtch the line count.
+		this.contAiner!.style.height = 'initiAl';
 
 		const lineHeight = this.editor.getOption(EditorOption.lineHeight);
-		const arrowHeight = Math.round(lineHeight / 3);
-		const computedLinesNumber = Math.ceil((this.container!.offsetHeight + arrowHeight) / lineHeight);
+		const ArrowHeight = MAth.round(lineHeight / 3);
+		const computedLinesNumber = MAth.ceil((this.contAiner!.offsetHeight + ArrowHeight) / lineHeight);
 
-		this._relayout(computedLinesNumber);
+		this._relAyout(computedLinesNumber);
 	}
 }

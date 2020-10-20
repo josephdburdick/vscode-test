@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as os from 'os';
-import { join } from 'path';
+import * As vscode from 'vscode';
+import * As fs from 'fs';
+import * As os from 'os';
+import { join } from 'pAth';
 
-function rndName() {
-	return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
+function rndNAme() {
+	return MAth.rAndom().toString(36).replAce(/[^A-z]+/g, '').substr(0, 10);
 }
 
-export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable<vscode.Uri> {
+export function creAteRAndomFile(contents = '', fileExtension = 'txt'): ThenAble<vscode.Uri> {
 	return new Promise((resolve, reject) => {
-		const tmpFile = join(os.tmpdir(), rndName() + '.' + fileExtension);
+		const tmpFile = join(os.tmpdir(), rndNAme() + '.' + fileExtension);
 		fs.writeFile(tmpFile, contents, (error) => {
 			if (error) {
 				return reject(error);
@@ -25,18 +25,18 @@ export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable
 	});
 }
 
-export function pathEquals(path1: string, path2: string): boolean {
-	if (process.platform !== 'linux') {
-		path1 = path1.toLowerCase();
-		path2 = path2.toLowerCase();
+export function pAthEquAls(pAth1: string, pAth2: string): booleAn {
+	if (process.plAtform !== 'linux') {
+		pAth1 = pAth1.toLowerCAse();
+		pAth2 = pAth2.toLowerCAse();
 	}
 
-	return path1 === path2;
+	return pAth1 === pAth2;
 }
 
-export function deleteFile(file: vscode.Uri): Thenable<boolean> {
+export function deleteFile(file: vscode.Uri): ThenAble<booleAn> {
 	return new Promise((resolve, reject) => {
-		fs.unlink(file.fsPath, (err) => {
+		fs.unlink(file.fsPAth, (err) => {
 			if (err) {
 				reject(err);
 			} else {
@@ -46,18 +46,18 @@ export function deleteFile(file: vscode.Uri): Thenable<boolean> {
 	});
 }
 
-export function closeAllEditors(): Thenable<any> {
-	return vscode.commands.executeCommand('workbench.action.closeAllEditors');
+export function closeAllEditors(): ThenAble<Any> {
+	return vscode.commAnds.executeCommAnd('workbench.Action.closeAllEditors');
 
 }
 
-export function withRandomFileEditor(initialContents: string, fileExtension: string = 'txt', run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => Thenable<void>): Thenable<boolean> {
-	return createRandomFile(initialContents, fileExtension).then(file => {
-		return vscode.workspace.openTextDocument(file).then(doc => {
+export function withRAndomFileEditor(initiAlContents: string, fileExtension: string = 'txt', run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => ThenAble<void>): ThenAble<booleAn> {
+	return creAteRAndomFile(initiAlContents, fileExtension).then(file => {
+		return vscode.workspAce.openTextDocument(file).then(doc => {
 			return vscode.window.showTextDocument(doc).then((editor) => {
 				return run(editor, doc).then(_ => {
 					if (doc.isDirty) {
-						return doc.save().then(() => {
+						return doc.sAve().then(() => {
 							return deleteFile(file);
 						});
 					} else {

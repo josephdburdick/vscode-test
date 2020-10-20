@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface NLSConfiguration {
-	locale: string;
-	availableLanguages: {
+export interfAce NLSConfigurAtion {
+	locAle: string;
+	AvAilAbleLAnguAges: {
 		[key: string]: string;
 	};
-	pseudo?: boolean;
-	_languagePackSupport?: boolean;
+	pseudo?: booleAn;
+	_lAnguAgePAckSupport?: booleAn;
 }
 
-export interface InternalNLSConfiguration extends NLSConfiguration {
-	_languagePackId: string;
-	_translationsConfigFile: string;
-	_cacheRoot: string;
-	_resolvedLanguagePackCoreLocation: string;
+export interfAce InternAlNLSConfigurAtion extends NLSConfigurAtion {
+	_lAnguAgePAckId: string;
+	_trAnslAtionsConfigFile: string;
+	_cAcheRoot: string;
+	_resolvedLAnguAgePAckCoreLocAtion: string;
 	_corruptedFile: string;
-	_languagePackSupport?: boolean;
+	_lAnguAgePAckSupport?: booleAn;
 }
 
-export function getNLSConfiguration(commit: string, userDataPath: string, metaDataFile: string, locale: string): Promise<NLSConfiguration>;
+export function getNLSConfigurAtion(commit: string, userDAtAPAth: string, metADAtAFile: string, locAle: string): Promise<NLSConfigurAtion>;

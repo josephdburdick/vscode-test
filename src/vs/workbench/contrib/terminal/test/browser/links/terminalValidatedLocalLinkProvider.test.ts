@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { TerminalValidatedLocalLinkProvider } from 'vs/workbench/contrib/terminal/browser/links/terminalValidatedLocalLinkProvider';
-import { Terminal, ILink } from 'xterm';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { format } from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
+import * As Assert from 'Assert';
+import { TerminAlVAlidAtedLocAlLinkProvider } from 'vs/workbench/contrib/terminAl/browser/links/terminAlVAlidAtedLocAlLinkProvider';
+import { TerminAl, ILink } from 'xterm';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { formAt } from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
 
 const unixLinks = [
 	'/foo',
 	'~/foo',
 	'./foo',
 	'../foo',
-	'/foo/bar',
-	'/foo/bar+more',
-	'foo/bar',
-	'foo/bar+more',
+	'/foo/bAr',
+	'/foo/bAr+more',
+	'foo/bAr',
+	'foo/bAr+more',
 ];
 
 const windowsLinks = [
@@ -33,131 +33,131 @@ const windowsLinks = [
 	'..\\foo',
 	'~\\foo',
 	'~/foo',
-	'c:/foo/bar',
-	'c:\\foo\\bar',
-	'c:\\foo\\bar+more',
-	'c:\\foo/bar\\baz',
-	'foo/bar',
-	'foo/bar',
-	'foo\\bar',
-	'foo\\bar+more',
+	'c:/foo/bAr',
+	'c:\\foo\\bAr',
+	'c:\\foo\\bAr+more',
+	'c:\\foo/bAr\\bAz',
+	'foo/bAr',
+	'foo/bAr',
+	'foo\\bAr',
+	'foo\\bAr+more',
 ];
 
-interface LinkFormatInfo {
-	urlFormat: string;
+interfAce LinkFormAtInfo {
+	urlFormAt: string;
 	line?: string;
 	column?: string;
 }
 
-const supportedLinkFormats: LinkFormatInfo[] = [
-	{ urlFormat: '{0}' },
-	{ urlFormat: '{0} on line {1}', line: '5' },
-	{ urlFormat: '{0} on line {1}, column {2}', line: '5', column: '3' },
-	{ urlFormat: '{0}:line {1}', line: '5' },
-	{ urlFormat: '{0}:line {1}, column {2}', line: '5', column: '3' },
-	{ urlFormat: '{0}({1})', line: '5' },
-	{ urlFormat: '{0} ({1})', line: '5' },
-	{ urlFormat: '{0}({1},{2})', line: '5', column: '3' },
-	{ urlFormat: '{0} ({1},{2})', line: '5', column: '3' },
-	{ urlFormat: '{0}({1}, {2})', line: '5', column: '3' },
-	{ urlFormat: '{0} ({1}, {2})', line: '5', column: '3' },
-	{ urlFormat: '{0}:{1}', line: '5' },
-	{ urlFormat: '{0}:{1}:{2}', line: '5', column: '3' },
-	{ urlFormat: '{0}[{1}]', line: '5' },
-	{ urlFormat: '{0} [{1}]', line: '5' },
-	{ urlFormat: '{0}[{1},{2}]', line: '5', column: '3' },
-	{ urlFormat: '{0} [{1},{2}]', line: '5', column: '3' },
-	{ urlFormat: '{0}[{1}, {2}]', line: '5', column: '3' },
-	{ urlFormat: '{0} [{1}, {2}]', line: '5', column: '3' },
-	{ urlFormat: '{0}",{1}', line: '5' }
+const supportedLinkFormAts: LinkFormAtInfo[] = [
+	{ urlFormAt: '{0}' },
+	{ urlFormAt: '{0} on line {1}', line: '5' },
+	{ urlFormAt: '{0} on line {1}, column {2}', line: '5', column: '3' },
+	{ urlFormAt: '{0}:line {1}', line: '5' },
+	{ urlFormAt: '{0}:line {1}, column {2}', line: '5', column: '3' },
+	{ urlFormAt: '{0}({1})', line: '5' },
+	{ urlFormAt: '{0} ({1})', line: '5' },
+	{ urlFormAt: '{0}({1},{2})', line: '5', column: '3' },
+	{ urlFormAt: '{0} ({1},{2})', line: '5', column: '3' },
+	{ urlFormAt: '{0}({1}, {2})', line: '5', column: '3' },
+	{ urlFormAt: '{0} ({1}, {2})', line: '5', column: '3' },
+	{ urlFormAt: '{0}:{1}', line: '5' },
+	{ urlFormAt: '{0}:{1}:{2}', line: '5', column: '3' },
+	{ urlFormAt: '{0}[{1}]', line: '5' },
+	{ urlFormAt: '{0} [{1}]', line: '5' },
+	{ urlFormAt: '{0}[{1},{2}]', line: '5', column: '3' },
+	{ urlFormAt: '{0} [{1},{2}]', line: '5', column: '3' },
+	{ urlFormAt: '{0}[{1}, {2}]', line: '5', column: '3' },
+	{ urlFormAt: '{0} [{1}, {2}]', line: '5', column: '3' },
+	{ urlFormAt: '{0}",{1}', line: '5' }
 ];
 
-suite('Workbench - TerminalValidatedLocalLinkProvider', () => {
-	let instantiationService: TestInstantiationService;
+suite('Workbench - TerminAlVAlidAtedLocAlLinkProvider', () => {
+	let instAntiAtionService: TestInstAntiAtionService;
 
 	setup(() => {
-		instantiationService = new TestInstantiationService();
-		instantiationService.stub(IConfigurationService, TestConfigurationService);
+		instAntiAtionService = new TestInstAntiAtionService();
+		instAntiAtionService.stub(IConfigurAtionService, TestConfigurAtionService);
 	});
 
-	async function assertLink(text: string, os: OperatingSystem, expected: { text: string, range: [number, number][] }[]) {
-		const xterm = new Terminal();
-		const provider = instantiationService.createInstance(TerminalValidatedLocalLinkProvider, xterm, os, () => { }, () => { }, () => { }, (_: string, cb: (result: { uri: URI, isDirectory: boolean } | undefined) => void) => { cb({ uri: URI.file('/'), isDirectory: false }); });
+	Async function AssertLink(text: string, os: OperAtingSystem, expected: { text: string, rAnge: [number, number][] }[]) {
+		const xterm = new TerminAl();
+		const provider = instAntiAtionService.creAteInstAnce(TerminAlVAlidAtedLocAlLinkProvider, xterm, os, () => { }, () => { }, () => { }, (_: string, cb: (result: { uri: URI, isDirectory: booleAn } | undefined) => void) => { cb({ uri: URI.file('/'), isDirectory: fAlse }); });
 
-		// Write the text and wait for the parser to finish
-		await new Promise<void>(r => xterm.write(text, r));
+		// Write the text And wAit for the pArser to finish
+		AwAit new Promise<void>(r => xterm.write(text, r));
 
-		// Ensure all links are provided
-		const links = (await new Promise<ILink[] | undefined>(r => provider.provideLinks(1, r)))!;
-		assert.equal(links.length, expected.length);
-		const actual = links.map(e => ({
+		// Ensure All links Are provided
+		const links = (AwAit new Promise<ILink[] | undefined>(r => provider.provideLinks(1, r)))!;
+		Assert.equAl(links.length, expected.length);
+		const ActuAl = links.mAp(e => ({
 			text: e.text,
-			range: e.range
+			rAnge: e.rAnge
 		}));
-		const expectedVerbose = expected.map(e => ({
+		const expectedVerbose = expected.mAp(e => ({
 			text: e.text,
-			range: {
-				start: { x: e.range[0][0], y: e.range[0][1] },
-				end: { x: e.range[1][0], y: e.range[1][1] },
+			rAnge: {
+				stArt: { x: e.rAnge[0][0], y: e.rAnge[0][1] },
+				end: { x: e.rAnge[1][0], y: e.rAnge[1][1] },
 			}
 		}));
-		assert.deepEqual(actual, expectedVerbose);
+		Assert.deepEquAl(ActuAl, expectedVerbose);
 	}
 
-	suite('Linux/macOS', () => {
-		unixLinks.forEach(baseLink => {
-			suite(`Link: ${baseLink}`, () => {
-				for (let i = 0; i < supportedLinkFormats.length; i++) {
-					const linkFormat = supportedLinkFormats[i];
-					test(`Format: ${linkFormat.urlFormat}`, async () => {
-						const formattedLink = format(linkFormat.urlFormat, baseLink, linkFormat.line, linkFormat.column);
-						await assertLink(formattedLink, OperatingSystem.Linux, [{ text: formattedLink, range: [[1, 1], [formattedLink.length, 1]] }]);
-						await assertLink(` ${formattedLink} `, OperatingSystem.Linux, [{ text: formattedLink, range: [[2, 1], [formattedLink.length + 1, 1]] }]);
-						await assertLink(`(${formattedLink})`, OperatingSystem.Linux, [{ text: formattedLink, range: [[2, 1], [formattedLink.length + 1, 1]] }]);
-						await assertLink(`[${formattedLink}]`, OperatingSystem.Linux, [{ text: formattedLink, range: [[2, 1], [formattedLink.length + 1, 1]] }]);
+	suite('Linux/mAcOS', () => {
+		unixLinks.forEAch(bAseLink => {
+			suite(`Link: ${bAseLink}`, () => {
+				for (let i = 0; i < supportedLinkFormAts.length; i++) {
+					const linkFormAt = supportedLinkFormAts[i];
+					test(`FormAt: ${linkFormAt.urlFormAt}`, Async () => {
+						const formAttedLink = formAt(linkFormAt.urlFormAt, bAseLink, linkFormAt.line, linkFormAt.column);
+						AwAit AssertLink(formAttedLink, OperAtingSystem.Linux, [{ text: formAttedLink, rAnge: [[1, 1], [formAttedLink.length, 1]] }]);
+						AwAit AssertLink(` ${formAttedLink} `, OperAtingSystem.Linux, [{ text: formAttedLink, rAnge: [[2, 1], [formAttedLink.length + 1, 1]] }]);
+						AwAit AssertLink(`(${formAttedLink})`, OperAtingSystem.Linux, [{ text: formAttedLink, rAnge: [[2, 1], [formAttedLink.length + 1, 1]] }]);
+						AwAit AssertLink(`[${formAttedLink}]`, OperAtingSystem.Linux, [{ text: formAttedLink, rAnge: [[2, 1], [formAttedLink.length + 1, 1]] }]);
 					});
 				}
 			});
 		});
-		test('Git diff links', async () => {
-			await assertLink(`diff --git a/foo/bar b/foo/bar`, OperatingSystem.Linux, [
-				{ text: 'foo/bar', range: [[14, 1], [20, 1]] },
-				{ text: 'foo/bar', range: [[24, 1], [30, 1]] }
+		test('Git diff links', Async () => {
+			AwAit AssertLink(`diff --git A/foo/bAr b/foo/bAr`, OperAtingSystem.Linux, [
+				{ text: 'foo/bAr', rAnge: [[14, 1], [20, 1]] },
+				{ text: 'foo/bAr', rAnge: [[24, 1], [30, 1]] }
 			]);
-			await assertLink(`--- a/foo/bar`, OperatingSystem.Linux, [{ text: 'foo/bar', range: [[7, 1], [13, 1]] }]);
-			await assertLink(`+++ b/foo/bar`, OperatingSystem.Linux, [{ text: 'foo/bar', range: [[7, 1], [13, 1]] }]);
+			AwAit AssertLink(`--- A/foo/bAr`, OperAtingSystem.Linux, [{ text: 'foo/bAr', rAnge: [[7, 1], [13, 1]] }]);
+			AwAit AssertLink(`+++ b/foo/bAr`, OperAtingSystem.Linux, [{ text: 'foo/bAr', rAnge: [[7, 1], [13, 1]] }]);
 		});
 	});
 
 	suite('Windows', () => {
-		windowsLinks.forEach(baseLink => {
-			suite(`Link "${baseLink}"`, () => {
-				for (let i = 0; i < supportedLinkFormats.length; i++) {
-					const linkFormat = supportedLinkFormats[i];
-					test(`Format: ${linkFormat.urlFormat}`, async () => {
-						const formattedLink = format(linkFormat.urlFormat, baseLink, linkFormat.line, linkFormat.column);
-						await assertLink(formattedLink, OperatingSystem.Windows, [{ text: formattedLink, range: [[1, 1], [formattedLink.length, 1]] }]);
-						await assertLink(` ${formattedLink} `, OperatingSystem.Windows, [{ text: formattedLink, range: [[2, 1], [formattedLink.length + 1, 1]] }]);
-						await assertLink(`(${formattedLink})`, OperatingSystem.Windows, [{ text: formattedLink, range: [[2, 1], [formattedLink.length + 1, 1]] }]);
-						await assertLink(`[${formattedLink}]`, OperatingSystem.Windows, [{ text: formattedLink, range: [[2, 1], [formattedLink.length + 1, 1]] }]);
+		windowsLinks.forEAch(bAseLink => {
+			suite(`Link "${bAseLink}"`, () => {
+				for (let i = 0; i < supportedLinkFormAts.length; i++) {
+					const linkFormAt = supportedLinkFormAts[i];
+					test(`FormAt: ${linkFormAt.urlFormAt}`, Async () => {
+						const formAttedLink = formAt(linkFormAt.urlFormAt, bAseLink, linkFormAt.line, linkFormAt.column);
+						AwAit AssertLink(formAttedLink, OperAtingSystem.Windows, [{ text: formAttedLink, rAnge: [[1, 1], [formAttedLink.length, 1]] }]);
+						AwAit AssertLink(` ${formAttedLink} `, OperAtingSystem.Windows, [{ text: formAttedLink, rAnge: [[2, 1], [formAttedLink.length + 1, 1]] }]);
+						AwAit AssertLink(`(${formAttedLink})`, OperAtingSystem.Windows, [{ text: formAttedLink, rAnge: [[2, 1], [formAttedLink.length + 1, 1]] }]);
+						AwAit AssertLink(`[${formAttedLink}]`, OperAtingSystem.Windows, [{ text: formAttedLink, rAnge: [[2, 1], [formAttedLink.length + 1, 1]] }]);
 					});
 				}
 			});
 		});
-		test('Git diff links', async () => {
-			await assertLink(`diff --git a/foo/bar b/foo/bar`, OperatingSystem.Linux, [
-				{ text: 'foo/bar', range: [[14, 1], [20, 1]] },
-				{ text: 'foo/bar', range: [[24, 1], [30, 1]] }
+		test('Git diff links', Async () => {
+			AwAit AssertLink(`diff --git A/foo/bAr b/foo/bAr`, OperAtingSystem.Linux, [
+				{ text: 'foo/bAr', rAnge: [[14, 1], [20, 1]] },
+				{ text: 'foo/bAr', rAnge: [[24, 1], [30, 1]] }
 			]);
-			await assertLink(`--- a/foo/bar`, OperatingSystem.Linux, [{ text: 'foo/bar', range: [[7, 1], [13, 1]] }]);
-			await assertLink(`+++ b/foo/bar`, OperatingSystem.Linux, [{ text: 'foo/bar', range: [[7, 1], [13, 1]] }]);
+			AwAit AssertLink(`--- A/foo/bAr`, OperAtingSystem.Linux, [{ text: 'foo/bAr', rAnge: [[7, 1], [13, 1]] }]);
+			AwAit AssertLink(`+++ b/foo/bAr`, OperAtingSystem.Linux, [{ text: 'foo/bAr', rAnge: [[7, 1], [13, 1]] }]);
 		});
 	});
 
-	test('should support multiple link results', async () => {
-		await assertLink('./foo ./bar', OperatingSystem.Linux, [
-			{ range: [[1, 1], [5, 1]], text: './foo' },
-			{ range: [[7, 1], [11, 1]], text: './bar' }
+	test('should support multiple link results', Async () => {
+		AwAit AssertLink('./foo ./bAr', OperAtingSystem.Linux, [
+			{ rAnge: [[1, 1], [5, 1]], text: './foo' },
+			{ rAnge: [[7, 1], [11, 1]], text: './bAr' }
 		]);
 	});
 });

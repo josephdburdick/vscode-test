@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as Platform from 'vs/platform/registry/common/platform';
+import * As Assert from 'Assert';
+import * As PlAtform from 'vs/plAtform/registry/common/plAtform';
 import { ViewletDescriptor, Extensions, Viewlet, ViewletRegistry } from 'vs/workbench/browser/viewlet';
-import * as Types from 'vs/base/common/types';
+import * As Types from 'vs/bAse/common/types';
 
 suite('Viewlets', () => {
 
-	class TestViewlet extends Viewlet {
+	clAss TestViewlet extends Viewlet {
 
 		constructor() {
 			super('id', null!, null!, null!, null!, null!, null!, null!, null!, null!, null!);
 		}
 
-		layout(dimension: any): void {
+		lAyout(dimension: Any): void {
 			throw new Error('Method not implemented.');
 		}
 	}
 
 	test('ViewletDescriptor API', function () {
-		let d = ViewletDescriptor.create(TestViewlet, 'id', 'name', 'class', 5);
-		assert.strictEqual(d.id, 'id');
-		assert.strictEqual(d.name, 'name');
-		assert.strictEqual(d.cssClass, 'class');
-		assert.strictEqual(d.order, 5);
+		let d = ViewletDescriptor.creAte(TestViewlet, 'id', 'nAme', 'clAss', 5);
+		Assert.strictEquAl(d.id, 'id');
+		Assert.strictEquAl(d.nAme, 'nAme');
+		Assert.strictEquAl(d.cssClAss, 'clAss');
+		Assert.strictEquAl(d.order, 5);
 	});
 
-	test('Editor Aware ViewletDescriptor API', function () {
-		let d = ViewletDescriptor.create(TestViewlet, 'id', 'name', 'class', 5);
-		assert.strictEqual(d.id, 'id');
-		assert.strictEqual(d.name, 'name');
+	test('Editor AwAre ViewletDescriptor API', function () {
+		let d = ViewletDescriptor.creAte(TestViewlet, 'id', 'nAme', 'clAss', 5);
+		Assert.strictEquAl(d.id, 'id');
+		Assert.strictEquAl(d.nAme, 'nAme');
 
-		d = ViewletDescriptor.create(TestViewlet, 'id', 'name', 'class', 5);
-		assert.strictEqual(d.id, 'id');
-		assert.strictEqual(d.name, 'name');
+		d = ViewletDescriptor.creAte(TestViewlet, 'id', 'nAme', 'clAss', 5);
+		Assert.strictEquAl(d.id, 'id');
+		Assert.strictEquAl(d.nAme, 'nAme');
 	});
 
-	test('Viewlet extension point and registration', function () {
-		assert(Types.isFunction(Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).registerViewlet));
-		assert(Types.isFunction(Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).getViewlet));
-		assert(Types.isFunction(Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).getViewlets));
+	test('Viewlet extension point And registrAtion', function () {
+		Assert(Types.isFunction(PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).registerViewlet));
+		Assert(Types.isFunction(PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).getViewlet));
+		Assert(Types.isFunction(PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).getViewlets));
 
-		let oldCount = Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).getViewlets().length;
-		let d = ViewletDescriptor.create(TestViewlet, 'reg-test-id', 'name');
-		Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).registerViewlet(d);
+		let oldCount = PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).getViewlets().length;
+		let d = ViewletDescriptor.creAte(TestViewlet, 'reg-test-id', 'nAme');
+		PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).registerViewlet(d);
 
-		assert(d === Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).getViewlet('reg-test-id'));
-		assert.equal(oldCount + 1, Platform.Registry.as<ViewletRegistry>(Extensions.Viewlets).getViewlets().length);
+		Assert(d === PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).getViewlet('reg-test-id'));
+		Assert.equAl(oldCount + 1, PlAtform.Registry.As<ViewletRegistry>(Extensions.Viewlets).getViewlets().length);
 	});
 });

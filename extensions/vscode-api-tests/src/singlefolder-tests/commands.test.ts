@@ -1,116 +1,116 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import { join } from 'path';
-import { commands, workspace, window, Uri, Range, Position, ViewColumn } from 'vscode';
+import 'mochA';
+import * As Assert from 'Assert';
+import { join } from 'pAth';
+import { commAnds, workspAce, window, Uri, RAnge, Position, ViewColumn } from 'vscode';
 
-suite('vscode API - commands', () => {
+suite('vscode API - commAnds', () => {
 
-	test('getCommands', function (done) {
+	test('getCommAnds', function (done) {
 
-		let p1 = commands.getCommands().then(commands => {
-			let hasOneWithUnderscore = false;
-			for (let command of commands) {
-				if (command[0] === '_') {
-					hasOneWithUnderscore = true;
-					break;
+		let p1 = commAnds.getCommAnds().then(commAnds => {
+			let hAsOneWithUnderscore = fAlse;
+			for (let commAnd of commAnds) {
+				if (commAnd[0] === '_') {
+					hAsOneWithUnderscore = true;
+					breAk;
 				}
 			}
-			assert.ok(hasOneWithUnderscore);
+			Assert.ok(hAsOneWithUnderscore);
 		}, done);
 
-		let p2 = commands.getCommands(true).then(commands => {
-			let hasOneWithUnderscore = false;
-			for (let command of commands) {
-				if (command[0] === '_') {
-					hasOneWithUnderscore = true;
-					break;
+		let p2 = commAnds.getCommAnds(true).then(commAnds => {
+			let hAsOneWithUnderscore = fAlse;
+			for (let commAnd of commAnds) {
+				if (commAnd[0] === '_') {
+					hAsOneWithUnderscore = true;
+					breAk;
 				}
 			}
-			assert.ok(!hasOneWithUnderscore);
+			Assert.ok(!hAsOneWithUnderscore);
 		}, done);
 
-		Promise.all([p1, p2]).then(() => {
+		Promise.All([p1, p2]).then(() => {
 			done();
 		}, done);
 	});
 
-	test('command with args', async function () {
+	test('commAnd with Args', Async function () {
 
-		let args: IArguments;
-		let registration = commands.registerCommand('t1', function () {
-			args = arguments;
+		let Args: IArguments;
+		let registrAtion = commAnds.registerCommAnd('t1', function () {
+			Args = Arguments;
 		});
 
-		await commands.executeCommand('t1', 'start');
-		registration.dispose();
-		assert.ok(args!);
-		assert.equal(args!.length, 1);
-		assert.equal(args![0], 'start');
+		AwAit commAnds.executeCommAnd('t1', 'stArt');
+		registrAtion.dispose();
+		Assert.ok(Args!);
+		Assert.equAl(Args!.length, 1);
+		Assert.equAl(Args![0], 'stArt');
 	});
 
-	test('editorCommand with extra args', function () {
+	test('editorCommAnd with extrA Args', function () {
 
-		let args: IArguments;
-		let registration = commands.registerTextEditorCommand('t1', function () {
-			args = arguments;
+		let Args: IArguments;
+		let registrAtion = commAnds.registerTextEditorCommAnd('t1', function () {
+			Args = Arguments;
 		});
 
-		return workspace.openTextDocument(join(workspace.rootPath || '', './far.js')).then(doc => {
+		return workspAce.openTextDocument(join(workspAce.rootPAth || '', './fAr.js')).then(doc => {
 			return window.showTextDocument(doc).then(_editor => {
-				return commands.executeCommand('t1', 12345, commands);
+				return commAnds.executeCommAnd('t1', 12345, commAnds);
 			}).then(() => {
-				assert.ok(args);
-				assert.equal(args.length, 4);
-				assert.ok(args[2] === 12345);
-				assert.ok(args[3] === commands);
-				registration.dispose();
+				Assert.ok(Args);
+				Assert.equAl(Args.length, 4);
+				Assert.ok(Args[2] === 12345);
+				Assert.ok(Args[3] === commAnds);
+				registrAtion.dispose();
 			});
 		});
 
 	});
 
-	test('api-command: vscode.diff', function () {
+	test('Api-commAnd: vscode.diff', function () {
 
-		let registration = workspace.registerTextDocumentContentProvider('sc', {
+		let registrAtion = workspAce.registerTextDocumentContentProvider('sc', {
 			provideTextDocumentContent(uri) {
-				return `content of URI <b>${uri.toString()}</b>#${Math.random()}`;
+				return `content of URI <b>${uri.toString()}</b>#${MAth.rAndom()}`;
 			}
 		});
 
 
-		let a = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:b'), 'DIFF').then(value => {
-			assert.ok(value === undefined);
-			registration.dispose();
+		let A = commAnds.executeCommAnd('vscode.diff', Uri.pArse('sc:A'), Uri.pArse('sc:b'), 'DIFF').then(vAlue => {
+			Assert.ok(vAlue === undefined);
+			registrAtion.dispose();
 		});
 
-		let b = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:b')).then(value => {
-			assert.ok(value === undefined);
-			registration.dispose();
+		let b = commAnds.executeCommAnd('vscode.diff', Uri.pArse('sc:A'), Uri.pArse('sc:b')).then(vAlue => {
+			Assert.ok(vAlue === undefined);
+			registrAtion.dispose();
 		});
 
-		let c = commands.executeCommand('vscode.diff', Uri.parse('sc:a'), Uri.parse('sc:b'), 'Title', { selection: new Range(new Position(1, 1), new Position(1, 2)) }).then(value => {
-			assert.ok(value === undefined);
-			registration.dispose();
+		let c = commAnds.executeCommAnd('vscode.diff', Uri.pArse('sc:A'), Uri.pArse('sc:b'), 'Title', { selection: new RAnge(new Position(1, 1), new Position(1, 2)) }).then(vAlue => {
+			Assert.ok(vAlue === undefined);
+			registrAtion.dispose();
 		});
 
-		let d = commands.executeCommand('vscode.diff').then(() => assert.ok(false), () => assert.ok(true));
-		let e = commands.executeCommand('vscode.diff', 1, 2, 3).then(() => assert.ok(false), () => assert.ok(true));
+		let d = commAnds.executeCommAnd('vscode.diff').then(() => Assert.ok(fAlse), () => Assert.ok(true));
+		let e = commAnds.executeCommAnd('vscode.diff', 1, 2, 3).then(() => Assert.ok(fAlse), () => Assert.ok(true));
 
-		return Promise.all([a, b, c, d, e]);
+		return Promise.All([A, b, c, d, e]);
 	});
 
-	test('api-command: vscode.open', function () {
-		let uri = Uri.parse(workspace.workspaceFolders![0].uri.toString() + '/far.js');
-		let a = commands.executeCommand('vscode.open', uri).then(() => assert.ok(true), () => assert.ok(false));
-		let b = commands.executeCommand('vscode.open', uri, ViewColumn.Two).then(() => assert.ok(true), () => assert.ok(false));
-		let c = commands.executeCommand('vscode.open').then(() => assert.ok(false), () => assert.ok(true));
-		let d = commands.executeCommand('vscode.open', uri, true).then(() => assert.ok(false), () => assert.ok(true));
+	test('Api-commAnd: vscode.open', function () {
+		let uri = Uri.pArse(workspAce.workspAceFolders![0].uri.toString() + '/fAr.js');
+		let A = commAnds.executeCommAnd('vscode.open', uri).then(() => Assert.ok(true), () => Assert.ok(fAlse));
+		let b = commAnds.executeCommAnd('vscode.open', uri, ViewColumn.Two).then(() => Assert.ok(true), () => Assert.ok(fAlse));
+		let c = commAnds.executeCommAnd('vscode.open').then(() => Assert.ok(fAlse), () => Assert.ok(true));
+		let d = commAnds.executeCommAnd('vscode.open', uri, true).then(() => Assert.ok(fAlse), () => Assert.ok(true));
 
-		return Promise.all([a, b, c, d]);
+		return Promise.All([A, b, c, d]);
 	});
 });

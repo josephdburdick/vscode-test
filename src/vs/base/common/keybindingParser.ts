@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ChordKeybinding, KeyCodeUtils, Keybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { ScanCodeBinding, ScanCodeUtils } from 'vs/base/common/scanCode';
+import { ChordKeybinding, KeyCodeUtils, Keybinding, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { ScAnCodeBinding, ScAnCodeUtils } from 'vs/bAse/common/scAnCode';
 
-export class KeybindingParser {
+export clAss KeybindingPArser {
 
-	private static _readModifiers(input: string) {
-		input = input.toLowerCase().trim();
+	privAte stAtic _reAdModifiers(input: string) {
+		input = input.toLowerCAse().trim();
 
-		let ctrl = false;
-		let shift = false;
-		let alt = false;
-		let meta = false;
+		let ctrl = fAlse;
+		let shift = fAlse;
+		let Alt = fAlse;
+		let metA = fAlse;
 
-		let matchedModifier: boolean;
+		let mAtchedModifier: booleAn;
 
 		do {
-			matchedModifier = false;
+			mAtchedModifier = fAlse;
 			if (/^ctrl(\+|\-)/.test(input)) {
 				ctrl = true;
 				input = input.substr('ctrl-'.length);
-				matchedModifier = true;
+				mAtchedModifier = true;
 			}
 			if (/^shift(\+|\-)/.test(input)) {
 				shift = true;
 				input = input.substr('shift-'.length);
-				matchedModifier = true;
+				mAtchedModifier = true;
 			}
-			if (/^alt(\+|\-)/.test(input)) {
-				alt = true;
-				input = input.substr('alt-'.length);
-				matchedModifier = true;
+			if (/^Alt(\+|\-)/.test(input)) {
+				Alt = true;
+				input = input.substr('Alt-'.length);
+				mAtchedModifier = true;
 			}
-			if (/^meta(\+|\-)/.test(input)) {
-				meta = true;
-				input = input.substr('meta-'.length);
-				matchedModifier = true;
+			if (/^metA(\+|\-)/.test(input)) {
+				metA = true;
+				input = input.substr('metA-'.length);
+				mAtchedModifier = true;
 			}
 			if (/^win(\+|\-)/.test(input)) {
-				meta = true;
+				metA = true;
 				input = input.substr('win-'.length);
-				matchedModifier = true;
+				mAtchedModifier = true;
 			}
 			if (/^cmd(\+|\-)/.test(input)) {
-				meta = true;
+				metA = true;
 				input = input.substr('cmd-'.length);
-				matchedModifier = true;
+				mAtchedModifier = true;
 			}
-		} while (matchedModifier);
+		} while (mAtchedModifier);
 
 		let key: string;
 
-		const firstSpaceIdx = input.indexOf(' ');
-		if (firstSpaceIdx > 0) {
-			key = input.substring(0, firstSpaceIdx);
-			input = input.substring(firstSpaceIdx);
+		const firstSpAceIdx = input.indexOf(' ');
+		if (firstSpAceIdx > 0) {
+			key = input.substring(0, firstSpAceIdx);
+			input = input.substring(firstSpAceIdx);
 		} else {
 			key = input;
 			input = '';
 		}
 
 		return {
-			remains: input,
+			remAins: input,
 			ctrl,
 			shift,
-			alt,
-			meta,
+			Alt,
+			metA,
 			key
 		};
 	}
 
-	private static parseSimpleKeybinding(input: string): [SimpleKeybinding, string] {
-		const mods = this._readModifiers(input);
+	privAte stAtic pArseSimpleKeybinding(input: string): [SimpleKeybinding, string] {
+		const mods = this._reAdModifiers(input);
 		const keyCode = KeyCodeUtils.fromUserSettings(mods.key);
-		return [new SimpleKeybinding(mods.ctrl, mods.shift, mods.alt, mods.meta, keyCode), mods.remains];
+		return [new SimpleKeybinding(mods.ctrl, mods.shift, mods.Alt, mods.metA, keyCode), mods.remAins];
 	}
 
-	public static parseKeybinding(input: string, OS: OperatingSystem): Keybinding | null {
+	public stAtic pArseKeybinding(input: string, OS: OperAtingSystem): Keybinding | null {
 		if (!input) {
 			return null;
 		}
 
-		const parts: SimpleKeybinding[] = [];
-		let part: SimpleKeybinding;
+		const pArts: SimpleKeybinding[] = [];
+		let pArt: SimpleKeybinding;
 
 		do {
-			[part, input] = this.parseSimpleKeybinding(input);
-			parts.push(part);
+			[pArt, input] = this.pArseSimpleKeybinding(input);
+			pArts.push(pArt);
 		} while (input.length > 0);
-		return new ChordKeybinding(parts);
+		return new ChordKeybinding(pArts);
 	}
 
-	private static parseSimpleUserBinding(input: string): [SimpleKeybinding | ScanCodeBinding, string] {
-		const mods = this._readModifiers(input);
-		const scanCodeMatch = mods.key.match(/^\[([^\]]+)\]$/);
-		if (scanCodeMatch) {
-			const strScanCode = scanCodeMatch[1];
-			const scanCode = ScanCodeUtils.lowerCaseToEnum(strScanCode);
-			return [new ScanCodeBinding(mods.ctrl, mods.shift, mods.alt, mods.meta, scanCode), mods.remains];
+	privAte stAtic pArseSimpleUserBinding(input: string): [SimpleKeybinding | ScAnCodeBinding, string] {
+		const mods = this._reAdModifiers(input);
+		const scAnCodeMAtch = mods.key.mAtch(/^\[([^\]]+)\]$/);
+		if (scAnCodeMAtch) {
+			const strScAnCode = scAnCodeMAtch[1];
+			const scAnCode = ScAnCodeUtils.lowerCAseToEnum(strScAnCode);
+			return [new ScAnCodeBinding(mods.ctrl, mods.shift, mods.Alt, mods.metA, scAnCode), mods.remAins];
 		}
 		const keyCode = KeyCodeUtils.fromUserSettings(mods.key);
-		return [new SimpleKeybinding(mods.ctrl, mods.shift, mods.alt, mods.meta, keyCode), mods.remains];
+		return [new SimpleKeybinding(mods.ctrl, mods.shift, mods.Alt, mods.metA, keyCode), mods.remAins];
 	}
 
-	static parseUserBinding(input: string): (SimpleKeybinding | ScanCodeBinding)[] {
+	stAtic pArseUserBinding(input: string): (SimpleKeybinding | ScAnCodeBinding)[] {
 		if (!input) {
 			return [];
 		}
 
-		const parts: (SimpleKeybinding | ScanCodeBinding)[] = [];
-		let part: SimpleKeybinding | ScanCodeBinding;
+		const pArts: (SimpleKeybinding | ScAnCodeBinding)[] = [];
+		let pArt: SimpleKeybinding | ScAnCodeBinding;
 
 		while (input.length > 0) {
-			[part, input] = this.parseSimpleUserBinding(input);
-			parts.push(part);
+			[pArt, input] = this.pArseSimpleUserBinding(input);
+			pArts.push(pArt);
 		}
-		return parts;
+		return pArts;
 	}
 }

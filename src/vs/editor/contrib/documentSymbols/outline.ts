@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 
 export const OutlineViewId = 'outline';
 
-export const OutlineViewFiltered = new RawContextKey('outlineFiltered', false);
-export const OutlineViewFocused = new RawContextKey('outlineFocused', false);
+export const OutlineViewFiltered = new RAwContextKey('outlineFiltered', fAlse);
+export const OutlineViewFocused = new RAwContextKey('outlineFocused', fAlse);
 
 export const enum OutlineConfigKeys {
 	'icons' = 'outline.icons',
-	'problemsEnabled' = 'outline.problems.enabled',
+	'problemsEnAbled' = 'outline.problems.enAbled',
 	'problemsColors' = 'outline.problems.colors',
-	'problemsBadges' = 'outline.problems.badges'
+	'problemsBAdges' = 'outline.problems.bAdges'
 }

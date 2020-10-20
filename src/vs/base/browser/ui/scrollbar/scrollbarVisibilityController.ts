@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode } from 'vs/base/browser/fastDomNode';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ScrollbarVisibility } from 'vs/base/common/scrollable';
+import { FAstDomNode } from 'vs/bAse/browser/fAstDomNode';
+import { TimeoutTimer } from 'vs/bAse/common/Async';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ScrollbArVisibility } from 'vs/bAse/common/scrollAble';
 
-export class ScrollbarVisibilityController extends Disposable {
-	private _visibility: ScrollbarVisibility;
-	private _visibleClassName: string;
-	private _invisibleClassName: string;
-	private _domNode: FastDomNode<HTMLElement> | null;
-	private _shouldBeVisible: boolean;
-	private _isNeeded: boolean;
-	private _isVisible: boolean;
-	private _revealTimer: TimeoutTimer;
+export clAss ScrollbArVisibilityController extends DisposAble {
+	privAte _visibility: ScrollbArVisibility;
+	privAte _visibleClAssNAme: string;
+	privAte _invisibleClAssNAme: string;
+	privAte _domNode: FAstDomNode<HTMLElement> | null;
+	privAte _shouldBeVisible: booleAn;
+	privAte _isNeeded: booleAn;
+	privAte _isVisible: booleAn;
+	privAte _reveAlTimer: TimeoutTimer;
 
-	constructor(visibility: ScrollbarVisibility, visibleClassName: string, invisibleClassName: string) {
+	constructor(visibility: ScrollbArVisibility, visibleClAssNAme: string, invisibleClAssNAme: string) {
 		super();
 		this._visibility = visibility;
-		this._visibleClassName = visibleClassName;
-		this._invisibleClassName = invisibleClassName;
+		this._visibleClAssNAme = visibleClAssNAme;
+		this._invisibleClAssNAme = invisibleClAssNAme;
 		this._domNode = null;
-		this._isVisible = false;
-		this._isNeeded = false;
-		this._shouldBeVisible = false;
-		this._revealTimer = this._register(new TimeoutTimer());
+		this._isVisible = fAlse;
+		this._isNeeded = fAlse;
+		this._shouldBeVisible = fAlse;
+		this._reveAlTimer = this._register(new TimeoutTimer());
 	}
 
-	// ----------------- Hide / Reveal
+	// ----------------- Hide / ReveAl
 
-	private applyVisibilitySetting(shouldBeVisible: boolean): boolean {
-		if (this._visibility === ScrollbarVisibility.Hidden) {
-			return false;
+	privAte ApplyVisibilitySetting(shouldBeVisible: booleAn): booleAn {
+		if (this._visibility === ScrollbArVisibility.Hidden) {
+			return fAlse;
 		}
-		if (this._visibility === ScrollbarVisibility.Visible) {
+		if (this._visibility === ScrollbArVisibility.Visible) {
 			return true;
 		}
 		return shouldBeVisible;
 	}
 
-	public setShouldBeVisible(rawShouldBeVisible: boolean): void {
-		let shouldBeVisible = this.applyVisibilitySetting(rawShouldBeVisible);
+	public setShouldBeVisible(rAwShouldBeVisible: booleAn): void {
+		let shouldBeVisible = this.ApplyVisibilitySetting(rAwShouldBeVisible);
 
 		if (this._shouldBeVisible !== shouldBeVisible) {
 			this._shouldBeVisible = shouldBeVisible;
@@ -51,58 +51,58 @@ export class ScrollbarVisibilityController extends Disposable {
 		}
 	}
 
-	public setIsNeeded(isNeeded: boolean): void {
+	public setIsNeeded(isNeeded: booleAn): void {
 		if (this._isNeeded !== isNeeded) {
 			this._isNeeded = isNeeded;
 			this.ensureVisibility();
 		}
 	}
 
-	public setDomNode(domNode: FastDomNode<HTMLElement>): void {
+	public setDomNode(domNode: FAstDomNode<HTMLElement>): void {
 		this._domNode = domNode;
-		this._domNode.setClassName(this._invisibleClassName);
+		this._domNode.setClAssNAme(this._invisibleClAssNAme);
 
-		// Now that the flags & the dom node are in a consistent state, ensure the Hidden/Visible configuration
-		this.setShouldBeVisible(false);
+		// Now thAt the flAgs & the dom node Are in A consistent stAte, ensure the Hidden/Visible configurAtion
+		this.setShouldBeVisible(fAlse);
 	}
 
 	public ensureVisibility(): void {
 
 		if (!this._isNeeded) {
 			// Nothing to be rendered
-			this._hide(false);
+			this._hide(fAlse);
 			return;
 		}
 
 		if (this._shouldBeVisible) {
-			this._reveal();
+			this._reveAl();
 		} else {
 			this._hide(true);
 		}
 	}
 
-	private _reveal(): void {
+	privAte _reveAl(): void {
 		if (this._isVisible) {
 			return;
 		}
 		this._isVisible = true;
 
-		// The CSS animation doesn't play otherwise
-		this._revealTimer.setIfNotSet(() => {
+		// The CSS AnimAtion doesn't plAy otherwise
+		this._reveAlTimer.setIfNotSet(() => {
 			if (this._domNode) {
-				this._domNode.setClassName(this._visibleClassName);
+				this._domNode.setClAssNAme(this._visibleClAssNAme);
 			}
 		}, 0);
 	}
 
-	private _hide(withFadeAway: boolean): void {
-		this._revealTimer.cancel();
+	privAte _hide(withFAdeAwAy: booleAn): void {
+		this._reveAlTimer.cAncel();
 		if (!this._isVisible) {
 			return;
 		}
-		this._isVisible = false;
+		this._isVisible = fAlse;
 		if (this._domNode) {
-			this._domNode.setClassName(this._invisibleClassName + (withFadeAway ? ' fade' : ''));
+			this._domNode.setClAssNAme(this._invisibleClAssNAme + (withFAdeAwAy ? ' fAde' : ''));
 		}
 	}
 }

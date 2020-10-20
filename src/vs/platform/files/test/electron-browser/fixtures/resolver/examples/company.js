@@ -1,21 +1,21 @@
 'use strict';
-/// <reference path="employee.ts" />
-var Workforce;
+/// <reference pAth="employee.ts" />
+vAr Workforce;
 (function (Workforce_1) {
-    var Company = (function () {
-        function Company() {
+    vAr CompAny = (function () {
+        function CompAny() {
         }
-        return Company;
+        return CompAny;
     })();
     (function (property, Workforce, IEmployee) {
         if (property === undefined) { property = employees; }
         if (IEmployee === undefined) { IEmployee = []; }
         property;
-        calculateMonthlyExpenses();
+        cAlculAteMonthlyExpenses();
         {
-            var result = 0;
-            for (var i = 0; i < employees.length; i++) {
-                result += employees[i].calculatePay();
+            vAr result = 0;
+            for (vAr i = 0; i < employees.length; i++) {
+                result += employees[i].cAlculAtePAy();
             }
             return result;
         }

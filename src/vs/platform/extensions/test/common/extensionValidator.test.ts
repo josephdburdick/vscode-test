@@ -1,394 +1,394 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { INormalizedVersion, IParsedVersion, IReducedExtensionDescription, isValidExtensionVersion, isValidVersion, isValidVersionStr, normalizeVersion, parseVersion } from 'vs/platform/extensions/common/extensionValidator';
+import * As Assert from 'Assert';
+import { INormAlizedVersion, IPArsedVersion, IReducedExtensionDescription, isVAlidExtensionVersion, isVAlidVersion, isVAlidVersionStr, normAlizeVersion, pArseVersion } from 'vs/plAtform/extensions/common/extensionVAlidAtor';
 
-suite('Extension Version Validator', () => {
+suite('Extension Version VAlidAtor', () => {
 
-	test('isValidVersionStr', () => {
-		assert.equal(isValidVersionStr('0.10.0-dev'), true);
-		assert.equal(isValidVersionStr('0.10.0'), true);
-		assert.equal(isValidVersionStr('0.10.1'), true);
-		assert.equal(isValidVersionStr('0.10.100'), true);
-		assert.equal(isValidVersionStr('0.11.0'), true);
+	test('isVAlidVersionStr', () => {
+		Assert.equAl(isVAlidVersionStr('0.10.0-dev'), true);
+		Assert.equAl(isVAlidVersionStr('0.10.0'), true);
+		Assert.equAl(isVAlidVersionStr('0.10.1'), true);
+		Assert.equAl(isVAlidVersionStr('0.10.100'), true);
+		Assert.equAl(isVAlidVersionStr('0.11.0'), true);
 
-		assert.equal(isValidVersionStr('x.x.x'), true);
-		assert.equal(isValidVersionStr('0.x.x'), true);
-		assert.equal(isValidVersionStr('0.10.0'), true);
-		assert.equal(isValidVersionStr('0.10.x'), true);
-		assert.equal(isValidVersionStr('^0.10.0'), true);
-		assert.equal(isValidVersionStr('*'), true);
+		Assert.equAl(isVAlidVersionStr('x.x.x'), true);
+		Assert.equAl(isVAlidVersionStr('0.x.x'), true);
+		Assert.equAl(isVAlidVersionStr('0.10.0'), true);
+		Assert.equAl(isVAlidVersionStr('0.10.x'), true);
+		Assert.equAl(isVAlidVersionStr('^0.10.0'), true);
+		Assert.equAl(isVAlidVersionStr('*'), true);
 
-		assert.equal(isValidVersionStr('0.x.x.x'), false);
-		assert.equal(isValidVersionStr('0.10'), false);
-		assert.equal(isValidVersionStr('0.10.'), false);
+		Assert.equAl(isVAlidVersionStr('0.x.x.x'), fAlse);
+		Assert.equAl(isVAlidVersionStr('0.10'), fAlse);
+		Assert.equAl(isVAlidVersionStr('0.10.'), fAlse);
 	});
 
-	test('parseVersion', () => {
-		function assertParseVersion(version: string, hasCaret: boolean, hasGreaterEquals: boolean, majorBase: number, majorMustEqual: boolean, minorBase: number, minorMustEqual: boolean, patchBase: number, patchMustEqual: boolean, preRelease: string | null): void {
-			const actual = parseVersion(version);
-			const expected: IParsedVersion = { hasCaret, hasGreaterEquals, majorBase, majorMustEqual, minorBase, minorMustEqual, patchBase, patchMustEqual, preRelease };
+	test('pArseVersion', () => {
+		function AssertPArseVersion(version: string, hAsCAret: booleAn, hAsGreAterEquAls: booleAn, mAjorBAse: number, mAjorMustEquAl: booleAn, minorBAse: number, minorMustEquAl: booleAn, pAtchBAse: number, pAtchMustEquAl: booleAn, preReleAse: string | null): void {
+			const ActuAl = pArseVersion(version);
+			const expected: IPArsedVersion = { hAsCAret, hAsGreAterEquAls, mAjorBAse, mAjorMustEquAl, minorBAse, minorMustEquAl, pAtchBAse, pAtchMustEquAl, preReleAse };
 
-			assert.deepEqual(actual, expected, 'parseVersion for ' + version);
+			Assert.deepEquAl(ActuAl, expected, 'pArseVersion for ' + version);
 		}
 
-		assertParseVersion('0.10.0-dev', false, false, 0, true, 10, true, 0, true, '-dev');
-		assertParseVersion('0.10.0', false, false, 0, true, 10, true, 0, true, null);
-		assertParseVersion('0.10.1', false, false, 0, true, 10, true, 1, true, null);
-		assertParseVersion('0.10.100', false, false, 0, true, 10, true, 100, true, null);
-		assertParseVersion('0.11.0', false, false, 0, true, 11, true, 0, true, null);
+		AssertPArseVersion('0.10.0-dev', fAlse, fAlse, 0, true, 10, true, 0, true, '-dev');
+		AssertPArseVersion('0.10.0', fAlse, fAlse, 0, true, 10, true, 0, true, null);
+		AssertPArseVersion('0.10.1', fAlse, fAlse, 0, true, 10, true, 1, true, null);
+		AssertPArseVersion('0.10.100', fAlse, fAlse, 0, true, 10, true, 100, true, null);
+		AssertPArseVersion('0.11.0', fAlse, fAlse, 0, true, 11, true, 0, true, null);
 
-		assertParseVersion('x.x.x', false, false, 0, false, 0, false, 0, false, null);
-		assertParseVersion('0.x.x', false, false, 0, true, 0, false, 0, false, null);
-		assertParseVersion('0.10.x', false, false, 0, true, 10, true, 0, false, null);
-		assertParseVersion('^0.10.0', true, false, 0, true, 10, true, 0, true, null);
-		assertParseVersion('^0.10.2', true, false, 0, true, 10, true, 2, true, null);
-		assertParseVersion('^1.10.2', true, false, 1, true, 10, true, 2, true, null);
-		assertParseVersion('*', false, false, 0, false, 0, false, 0, false, null);
+		AssertPArseVersion('x.x.x', fAlse, fAlse, 0, fAlse, 0, fAlse, 0, fAlse, null);
+		AssertPArseVersion('0.x.x', fAlse, fAlse, 0, true, 0, fAlse, 0, fAlse, null);
+		AssertPArseVersion('0.10.x', fAlse, fAlse, 0, true, 10, true, 0, fAlse, null);
+		AssertPArseVersion('^0.10.0', true, fAlse, 0, true, 10, true, 0, true, null);
+		AssertPArseVersion('^0.10.2', true, fAlse, 0, true, 10, true, 2, true, null);
+		AssertPArseVersion('^1.10.2', true, fAlse, 1, true, 10, true, 2, true, null);
+		AssertPArseVersion('*', fAlse, fAlse, 0, fAlse, 0, fAlse, 0, fAlse, null);
 
-		assertParseVersion('>=0.0.1', false, true, 0, true, 0, true, 1, true, null);
-		assertParseVersion('>=2.4.3', false, true, 2, true, 4, true, 3, true, null);
+		AssertPArseVersion('>=0.0.1', fAlse, true, 0, true, 0, true, 1, true, null);
+		AssertPArseVersion('>=2.4.3', fAlse, true, 2, true, 4, true, 3, true, null);
 	});
 
-	test('normalizeVersion', () => {
-		function assertNormalizeVersion(version: string, majorBase: number, majorMustEqual: boolean, minorBase: number, minorMustEqual: boolean, patchBase: number, patchMustEqual: boolean, isMinimum: boolean): void {
-			const actual = normalizeVersion(parseVersion(version));
-			const expected: INormalizedVersion = { majorBase, majorMustEqual, minorBase, minorMustEqual, patchBase, patchMustEqual, isMinimum };
-			assert.deepEqual(actual, expected, 'parseVersion for ' + version);
+	test('normAlizeVersion', () => {
+		function AssertNormAlizeVersion(version: string, mAjorBAse: number, mAjorMustEquAl: booleAn, minorBAse: number, minorMustEquAl: booleAn, pAtchBAse: number, pAtchMustEquAl: booleAn, isMinimum: booleAn): void {
+			const ActuAl = normAlizeVersion(pArseVersion(version));
+			const expected: INormAlizedVersion = { mAjorBAse, mAjorMustEquAl, minorBAse, minorMustEquAl, pAtchBAse, pAtchMustEquAl, isMinimum };
+			Assert.deepEquAl(ActuAl, expected, 'pArseVersion for ' + version);
 		}
 
-		assertNormalizeVersion('0.10.0-dev', 0, true, 10, true, 0, true, false);
-		assertNormalizeVersion('0.10.0', 0, true, 10, true, 0, true, false);
-		assertNormalizeVersion('0.10.1', 0, true, 10, true, 1, true, false);
-		assertNormalizeVersion('0.10.100', 0, true, 10, true, 100, true, false);
-		assertNormalizeVersion('0.11.0', 0, true, 11, true, 0, true, false);
+		AssertNormAlizeVersion('0.10.0-dev', 0, true, 10, true, 0, true, fAlse);
+		AssertNormAlizeVersion('0.10.0', 0, true, 10, true, 0, true, fAlse);
+		AssertNormAlizeVersion('0.10.1', 0, true, 10, true, 1, true, fAlse);
+		AssertNormAlizeVersion('0.10.100', 0, true, 10, true, 100, true, fAlse);
+		AssertNormAlizeVersion('0.11.0', 0, true, 11, true, 0, true, fAlse);
 
-		assertNormalizeVersion('x.x.x', 0, false, 0, false, 0, false, false);
-		assertNormalizeVersion('0.x.x', 0, true, 0, false, 0, false, false);
-		assertNormalizeVersion('0.10.x', 0, true, 10, true, 0, false, false);
-		assertNormalizeVersion('^0.10.0', 0, true, 10, true, 0, false, false);
-		assertNormalizeVersion('^0.10.2', 0, true, 10, true, 2, false, false);
-		assertNormalizeVersion('^1.10.2', 1, true, 10, false, 2, false, false);
-		assertNormalizeVersion('*', 0, false, 0, false, 0, false, false);
+		AssertNormAlizeVersion('x.x.x', 0, fAlse, 0, fAlse, 0, fAlse, fAlse);
+		AssertNormAlizeVersion('0.x.x', 0, true, 0, fAlse, 0, fAlse, fAlse);
+		AssertNormAlizeVersion('0.10.x', 0, true, 10, true, 0, fAlse, fAlse);
+		AssertNormAlizeVersion('^0.10.0', 0, true, 10, true, 0, fAlse, fAlse);
+		AssertNormAlizeVersion('^0.10.2', 0, true, 10, true, 2, fAlse, fAlse);
+		AssertNormAlizeVersion('^1.10.2', 1, true, 10, fAlse, 2, fAlse, fAlse);
+		AssertNormAlizeVersion('*', 0, fAlse, 0, fAlse, 0, fAlse, fAlse);
 
-		assertNormalizeVersion('>=0.0.1', 0, true, 0, true, 1, true, true);
-		assertNormalizeVersion('>=2.4.3', 2, true, 4, true, 3, true, true);
+		AssertNormAlizeVersion('>=0.0.1', 0, true, 0, true, 1, true, true);
+		AssertNormAlizeVersion('>=2.4.3', 2, true, 4, true, 3, true, true);
 	});
 
-	test('isValidVersion', () => {
-		function testIsValidVersion(version: string, desiredVersion: string, expectedResult: boolean): void {
-			let actual = isValidVersion(version, desiredVersion);
-			assert.equal(actual, expectedResult, 'extension - vscode: ' + version + ', desiredVersion: ' + desiredVersion + ' should be ' + expectedResult);
+	test('isVAlidVersion', () => {
+		function testIsVAlidVersion(version: string, desiredVersion: string, expectedResult: booleAn): void {
+			let ActuAl = isVAlidVersion(version, desiredVersion);
+			Assert.equAl(ActuAl, expectedResult, 'extension - vscode: ' + version + ', desiredVersion: ' + desiredVersion + ' should be ' + expectedResult);
 		}
 
-		testIsValidVersion('0.10.0-dev', 'x.x.x', true);
-		testIsValidVersion('0.10.0-dev', '0.x.x', true);
-		testIsValidVersion('0.10.0-dev', '0.10.0', true);
-		testIsValidVersion('0.10.0-dev', '0.10.2', false);
-		testIsValidVersion('0.10.0-dev', '^0.10.2', false);
-		testIsValidVersion('0.10.0-dev', '0.10.x', true);
-		testIsValidVersion('0.10.0-dev', '^0.10.0', true);
-		testIsValidVersion('0.10.0-dev', '*', true);
-		testIsValidVersion('0.10.0-dev', '>=0.0.1', true);
-		testIsValidVersion('0.10.0-dev', '>=0.0.10', true);
-		testIsValidVersion('0.10.0-dev', '>=0.10.0', true);
-		testIsValidVersion('0.10.0-dev', '>=0.10.1', false);
-		testIsValidVersion('0.10.0-dev', '>=1.0.0', false);
+		testIsVAlidVersion('0.10.0-dev', 'x.x.x', true);
+		testIsVAlidVersion('0.10.0-dev', '0.x.x', true);
+		testIsVAlidVersion('0.10.0-dev', '0.10.0', true);
+		testIsVAlidVersion('0.10.0-dev', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0-dev', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0-dev', '0.10.x', true);
+		testIsVAlidVersion('0.10.0-dev', '^0.10.0', true);
+		testIsVAlidVersion('0.10.0-dev', '*', true);
+		testIsVAlidVersion('0.10.0-dev', '>=0.0.1', true);
+		testIsVAlidVersion('0.10.0-dev', '>=0.0.10', true);
+		testIsVAlidVersion('0.10.0-dev', '>=0.10.0', true);
+		testIsVAlidVersion('0.10.0-dev', '>=0.10.1', fAlse);
+		testIsVAlidVersion('0.10.0-dev', '>=1.0.0', fAlse);
 
-		testIsValidVersion('0.10.0', 'x.x.x', true);
-		testIsValidVersion('0.10.0', '0.x.x', true);
-		testIsValidVersion('0.10.0', '0.10.0', true);
-		testIsValidVersion('0.10.0', '0.10.2', false);
-		testIsValidVersion('0.10.0', '^0.10.2', false);
-		testIsValidVersion('0.10.0', '0.10.x', true);
-		testIsValidVersion('0.10.0', '^0.10.0', true);
-		testIsValidVersion('0.10.0', '*', true);
+		testIsVAlidVersion('0.10.0', 'x.x.x', true);
+		testIsVAlidVersion('0.10.0', '0.x.x', true);
+		testIsVAlidVersion('0.10.0', '0.10.0', true);
+		testIsVAlidVersion('0.10.0', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0', '0.10.x', true);
+		testIsVAlidVersion('0.10.0', '^0.10.0', true);
+		testIsVAlidVersion('0.10.0', '*', true);
 
-		testIsValidVersion('0.10.1', 'x.x.x', true);
-		testIsValidVersion('0.10.1', '0.x.x', true);
-		testIsValidVersion('0.10.1', '0.10.0', false);
-		testIsValidVersion('0.10.1', '0.10.2', false);
-		testIsValidVersion('0.10.1', '^0.10.2', false);
-		testIsValidVersion('0.10.1', '0.10.x', true);
-		testIsValidVersion('0.10.1', '^0.10.0', true);
-		testIsValidVersion('0.10.1', '*', true);
+		testIsVAlidVersion('0.10.1', 'x.x.x', true);
+		testIsVAlidVersion('0.10.1', '0.x.x', true);
+		testIsVAlidVersion('0.10.1', '0.10.0', fAlse);
+		testIsVAlidVersion('0.10.1', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.1', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.10.1', '0.10.x', true);
+		testIsVAlidVersion('0.10.1', '^0.10.0', true);
+		testIsVAlidVersion('0.10.1', '*', true);
 
-		testIsValidVersion('0.10.100', 'x.x.x', true);
-		testIsValidVersion('0.10.100', '0.x.x', true);
-		testIsValidVersion('0.10.100', '0.10.0', false);
-		testIsValidVersion('0.10.100', '0.10.2', false);
-		testIsValidVersion('0.10.100', '^0.10.2', true);
-		testIsValidVersion('0.10.100', '0.10.x', true);
-		testIsValidVersion('0.10.100', '^0.10.0', true);
-		testIsValidVersion('0.10.100', '*', true);
+		testIsVAlidVersion('0.10.100', 'x.x.x', true);
+		testIsVAlidVersion('0.10.100', '0.x.x', true);
+		testIsVAlidVersion('0.10.100', '0.10.0', fAlse);
+		testIsVAlidVersion('0.10.100', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.100', '^0.10.2', true);
+		testIsVAlidVersion('0.10.100', '0.10.x', true);
+		testIsVAlidVersion('0.10.100', '^0.10.0', true);
+		testIsVAlidVersion('0.10.100', '*', true);
 
-		testIsValidVersion('0.11.0', 'x.x.x', true);
-		testIsValidVersion('0.11.0', '0.x.x', true);
-		testIsValidVersion('0.11.0', '0.10.0', false);
-		testIsValidVersion('0.11.0', '0.10.2', false);
-		testIsValidVersion('0.11.0', '^0.10.2', false);
-		testIsValidVersion('0.11.0', '0.10.x', false);
-		testIsValidVersion('0.11.0', '^0.10.0', false);
-		testIsValidVersion('0.11.0', '*', true);
+		testIsVAlidVersion('0.11.0', 'x.x.x', true);
+		testIsVAlidVersion('0.11.0', '0.x.x', true);
+		testIsVAlidVersion('0.11.0', '0.10.0', fAlse);
+		testIsVAlidVersion('0.11.0', '0.10.2', fAlse);
+		testIsVAlidVersion('0.11.0', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.11.0', '0.10.x', fAlse);
+		testIsVAlidVersion('0.11.0', '^0.10.0', fAlse);
+		testIsVAlidVersion('0.11.0', '*', true);
 
-		// Anything < 1.0.0 is compatible
+		// Anything < 1.0.0 is compAtible
 
-		testIsValidVersion('1.0.0', 'x.x.x', true);
-		testIsValidVersion('1.0.0', '0.x.x', true);
-		testIsValidVersion('1.0.0', '0.10.0', false);
-		testIsValidVersion('1.0.0', '0.10.2', false);
-		testIsValidVersion('1.0.0', '^0.10.2', true);
-		testIsValidVersion('1.0.0', '0.10.x', true);
-		testIsValidVersion('1.0.0', '^0.10.0', true);
-		testIsValidVersion('1.0.0', '1.0.0', true);
-		testIsValidVersion('1.0.0', '^1.0.0', true);
-		testIsValidVersion('1.0.0', '^2.0.0', false);
-		testIsValidVersion('1.0.0', '*', true);
-		testIsValidVersion('1.0.0', '>=0.0.1', true);
-		testIsValidVersion('1.0.0', '>=0.0.10', true);
-		testIsValidVersion('1.0.0', '>=0.10.0', true);
-		testIsValidVersion('1.0.0', '>=0.10.1', true);
-		testIsValidVersion('1.0.0', '>=1.0.0', true);
-		testIsValidVersion('1.0.0', '>=1.1.0', false);
-		testIsValidVersion('1.0.0', '>=1.0.1', false);
-		testIsValidVersion('1.0.0', '>=2.0.0', false);
+		testIsVAlidVersion('1.0.0', 'x.x.x', true);
+		testIsVAlidVersion('1.0.0', '0.x.x', true);
+		testIsVAlidVersion('1.0.0', '0.10.0', fAlse);
+		testIsVAlidVersion('1.0.0', '0.10.2', fAlse);
+		testIsVAlidVersion('1.0.0', '^0.10.2', true);
+		testIsVAlidVersion('1.0.0', '0.10.x', true);
+		testIsVAlidVersion('1.0.0', '^0.10.0', true);
+		testIsVAlidVersion('1.0.0', '1.0.0', true);
+		testIsVAlidVersion('1.0.0', '^1.0.0', true);
+		testIsVAlidVersion('1.0.0', '^2.0.0', fAlse);
+		testIsVAlidVersion('1.0.0', '*', true);
+		testIsVAlidVersion('1.0.0', '>=0.0.1', true);
+		testIsVAlidVersion('1.0.0', '>=0.0.10', true);
+		testIsVAlidVersion('1.0.0', '>=0.10.0', true);
+		testIsVAlidVersion('1.0.0', '>=0.10.1', true);
+		testIsVAlidVersion('1.0.0', '>=1.0.0', true);
+		testIsVAlidVersion('1.0.0', '>=1.1.0', fAlse);
+		testIsVAlidVersion('1.0.0', '>=1.0.1', fAlse);
+		testIsVAlidVersion('1.0.0', '>=2.0.0', fAlse);
 
-		testIsValidVersion('1.0.100', 'x.x.x', true);
-		testIsValidVersion('1.0.100', '0.x.x', true);
-		testIsValidVersion('1.0.100', '0.10.0', false);
-		testIsValidVersion('1.0.100', '0.10.2', false);
-		testIsValidVersion('1.0.100', '^0.10.2', true);
-		testIsValidVersion('1.0.100', '0.10.x', true);
-		testIsValidVersion('1.0.100', '^0.10.0', true);
-		testIsValidVersion('1.0.100', '1.0.0', false);
-		testIsValidVersion('1.0.100', '^1.0.0', true);
-		testIsValidVersion('1.0.100', '^1.0.1', true);
-		testIsValidVersion('1.0.100', '^2.0.0', false);
-		testIsValidVersion('1.0.100', '*', true);
+		testIsVAlidVersion('1.0.100', 'x.x.x', true);
+		testIsVAlidVersion('1.0.100', '0.x.x', true);
+		testIsVAlidVersion('1.0.100', '0.10.0', fAlse);
+		testIsVAlidVersion('1.0.100', '0.10.2', fAlse);
+		testIsVAlidVersion('1.0.100', '^0.10.2', true);
+		testIsVAlidVersion('1.0.100', '0.10.x', true);
+		testIsVAlidVersion('1.0.100', '^0.10.0', true);
+		testIsVAlidVersion('1.0.100', '1.0.0', fAlse);
+		testIsVAlidVersion('1.0.100', '^1.0.0', true);
+		testIsVAlidVersion('1.0.100', '^1.0.1', true);
+		testIsVAlidVersion('1.0.100', '^2.0.0', fAlse);
+		testIsVAlidVersion('1.0.100', '*', true);
 
-		testIsValidVersion('1.100.0', 'x.x.x', true);
-		testIsValidVersion('1.100.0', '0.x.x', true);
-		testIsValidVersion('1.100.0', '0.10.0', false);
-		testIsValidVersion('1.100.0', '0.10.2', false);
-		testIsValidVersion('1.100.0', '^0.10.2', true);
-		testIsValidVersion('1.100.0', '0.10.x', true);
-		testIsValidVersion('1.100.0', '^0.10.0', true);
-		testIsValidVersion('1.100.0', '1.0.0', false);
-		testIsValidVersion('1.100.0', '^1.0.0', true);
-		testIsValidVersion('1.100.0', '^1.1.0', true);
-		testIsValidVersion('1.100.0', '^1.100.0', true);
-		testIsValidVersion('1.100.0', '^2.0.0', false);
-		testIsValidVersion('1.100.0', '*', true);
-		testIsValidVersion('1.100.0', '>=1.99.0', true);
-		testIsValidVersion('1.100.0', '>=1.100.0', true);
-		testIsValidVersion('1.100.0', '>=1.101.0', false);
+		testIsVAlidVersion('1.100.0', 'x.x.x', true);
+		testIsVAlidVersion('1.100.0', '0.x.x', true);
+		testIsVAlidVersion('1.100.0', '0.10.0', fAlse);
+		testIsVAlidVersion('1.100.0', '0.10.2', fAlse);
+		testIsVAlidVersion('1.100.0', '^0.10.2', true);
+		testIsVAlidVersion('1.100.0', '0.10.x', true);
+		testIsVAlidVersion('1.100.0', '^0.10.0', true);
+		testIsVAlidVersion('1.100.0', '1.0.0', fAlse);
+		testIsVAlidVersion('1.100.0', '^1.0.0', true);
+		testIsVAlidVersion('1.100.0', '^1.1.0', true);
+		testIsVAlidVersion('1.100.0', '^1.100.0', true);
+		testIsVAlidVersion('1.100.0', '^2.0.0', fAlse);
+		testIsVAlidVersion('1.100.0', '*', true);
+		testIsVAlidVersion('1.100.0', '>=1.99.0', true);
+		testIsVAlidVersion('1.100.0', '>=1.100.0', true);
+		testIsVAlidVersion('1.100.0', '>=1.101.0', fAlse);
 
-		testIsValidVersion('2.0.0', 'x.x.x', true);
-		testIsValidVersion('2.0.0', '0.x.x', false);
-		testIsValidVersion('2.0.0', '0.10.0', false);
-		testIsValidVersion('2.0.0', '0.10.2', false);
-		testIsValidVersion('2.0.0', '^0.10.2', false);
-		testIsValidVersion('2.0.0', '0.10.x', false);
-		testIsValidVersion('2.0.0', '^0.10.0', false);
-		testIsValidVersion('2.0.0', '1.0.0', false);
-		testIsValidVersion('2.0.0', '^1.0.0', false);
-		testIsValidVersion('2.0.0', '^1.1.0', false);
-		testIsValidVersion('2.0.0', '^1.100.0', false);
-		testIsValidVersion('2.0.0', '^2.0.0', true);
-		testIsValidVersion('2.0.0', '*', true);
+		testIsVAlidVersion('2.0.0', 'x.x.x', true);
+		testIsVAlidVersion('2.0.0', '0.x.x', fAlse);
+		testIsVAlidVersion('2.0.0', '0.10.0', fAlse);
+		testIsVAlidVersion('2.0.0', '0.10.2', fAlse);
+		testIsVAlidVersion('2.0.0', '^0.10.2', fAlse);
+		testIsVAlidVersion('2.0.0', '0.10.x', fAlse);
+		testIsVAlidVersion('2.0.0', '^0.10.0', fAlse);
+		testIsVAlidVersion('2.0.0', '1.0.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^1.0.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^1.1.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^1.100.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^2.0.0', true);
+		testIsVAlidVersion('2.0.0', '*', true);
 	});
 
-	test('isValidExtensionVersion', () => {
+	test('isVAlidExtensionVersion', () => {
 
-		function testExtensionVersion(version: string, desiredVersion: string, isBuiltin: boolean, hasMain: boolean, expectedResult: boolean): void {
+		function testExtensionVersion(version: string, desiredVersion: string, isBuiltin: booleAn, hAsMAin: booleAn, expectedResult: booleAn): void {
 			let desc: IReducedExtensionDescription = {
 				isBuiltin: isBuiltin,
 				engines: {
 					vscode: desiredVersion
 				},
-				main: hasMain ? 'something' : undefined
+				mAin: hAsMAin ? 'something' : undefined
 			};
-			let reasons: string[] = [];
-			let actual = isValidExtensionVersion(version, desc, reasons);
+			let reAsons: string[] = [];
+			let ActuAl = isVAlidExtensionVersion(version, desc, reAsons);
 
-			assert.equal(actual, expectedResult, 'version: ' + version + ', desiredVersion: ' + desiredVersion + ', desc: ' + JSON.stringify(desc) + ', reasons: ' + JSON.stringify(reasons));
+			Assert.equAl(ActuAl, expectedResult, 'version: ' + version + ', desiredVersion: ' + desiredVersion + ', desc: ' + JSON.stringify(desc) + ', reAsons: ' + JSON.stringify(reAsons));
 		}
 
-		function testIsInvalidExtensionVersion(version: string, desiredVersion: string, isBuiltin: boolean, hasMain: boolean): void {
-			testExtensionVersion(version, desiredVersion, isBuiltin, hasMain, false);
+		function testIsInvAlidExtensionVersion(version: string, desiredVersion: string, isBuiltin: booleAn, hAsMAin: booleAn): void {
+			testExtensionVersion(version, desiredVersion, isBuiltin, hAsMAin, fAlse);
 		}
 
-		function testIsValidExtensionVersion(version: string, desiredVersion: string, isBuiltin: boolean, hasMain: boolean): void {
-			testExtensionVersion(version, desiredVersion, isBuiltin, hasMain, true);
+		function testIsVAlidExtensionVersion(version: string, desiredVersion: string, isBuiltin: booleAn, hAsMAin: booleAn): void {
+			testExtensionVersion(version, desiredVersion, isBuiltin, hAsMAin, true);
 		}
 
-		function testIsValidVersion(version: string, desiredVersion: string, expectedResult: boolean): void {
-			testExtensionVersion(version, desiredVersion, false, true, expectedResult);
+		function testIsVAlidVersion(version: string, desiredVersion: string, expectedResult: booleAn): void {
+			testExtensionVersion(version, desiredVersion, fAlse, true, expectedResult);
 		}
 
-		// builtin are allowed to use * or x.x.x
-		testIsValidExtensionVersion('0.10.0-dev', '*', true, true);
-		testIsValidExtensionVersion('0.10.0-dev', 'x.x.x', true, true);
-		testIsValidExtensionVersion('0.10.0-dev', '0.x.x', true, true);
-		testIsValidExtensionVersion('0.10.0-dev', '0.10.x', true, true);
-		testIsValidExtensionVersion('1.10.0-dev', '1.x.x', true, true);
-		testIsValidExtensionVersion('1.10.0-dev', '1.10.x', true, true);
-		testIsValidExtensionVersion('0.10.0-dev', '*', true, false);
-		testIsValidExtensionVersion('0.10.0-dev', 'x.x.x', true, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.x.x', true, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.10.x', true, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.x.x', true, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.10.x', true, false);
+		// builtin Are Allowed to use * or x.x.x
+		testIsVAlidExtensionVersion('0.10.0-dev', '*', true, true);
+		testIsVAlidExtensionVersion('0.10.0-dev', 'x.x.x', true, true);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.x.x', true, true);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.10.x', true, true);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.x.x', true, true);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.10.x', true, true);
+		testIsVAlidExtensionVersion('0.10.0-dev', '*', true, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', 'x.x.x', true, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.x.x', true, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.10.x', true, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.x.x', true, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.10.x', true, fAlse);
 
-		// normal extensions are allowed to use * or x.x.x only if they have no main
-		testIsInvalidExtensionVersion('0.10.0-dev', '*', false, true);
-		testIsInvalidExtensionVersion('0.10.0-dev', 'x.x.x', false, true);
-		testIsInvalidExtensionVersion('0.10.0-dev', '0.x.x', false, true);
-		testIsValidExtensionVersion('0.10.0-dev', '0.10.x', false, true);
-		testIsValidExtensionVersion('1.10.0-dev', '1.x.x', false, true);
-		testIsValidExtensionVersion('1.10.0-dev', '1.10.x', false, true);
-		testIsValidExtensionVersion('0.10.0-dev', '*', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', 'x.x.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.x.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.10.x', false, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.x.x', false, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.10.x', false, false);
+		// normAl extensions Are Allowed to use * or x.x.x only if they hAve no mAin
+		testIsInvAlidExtensionVersion('0.10.0-dev', '*', fAlse, true);
+		testIsInvAlidExtensionVersion('0.10.0-dev', 'x.x.x', fAlse, true);
+		testIsInvAlidExtensionVersion('0.10.0-dev', '0.x.x', fAlse, true);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.10.x', fAlse, true);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.x.x', fAlse, true);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.10.x', fAlse, true);
+		testIsVAlidExtensionVersion('0.10.0-dev', '*', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', 'x.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.10.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.10.x', fAlse, fAlse);
 
-		// extensions without "main" get no version check
-		testIsValidExtensionVersion('0.10.0-dev', '>=0.9.1-pre.1', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '*', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', 'x.x.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.x.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.10.x', false, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.x.x', false, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.10.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '*', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', 'x.x.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.x.x', false, false);
-		testIsValidExtensionVersion('0.10.0-dev', '0.10.x', false, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.x.x', false, false);
-		testIsValidExtensionVersion('1.10.0-dev', '1.10.x', false, false);
+		// extensions without "mAin" get no version check
+		testIsVAlidExtensionVersion('0.10.0-dev', '>=0.9.1-pre.1', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '*', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', 'x.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.10.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.10.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '*', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', 'x.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('0.10.0-dev', '0.10.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.x.x', fAlse, fAlse);
+		testIsVAlidExtensionVersion('1.10.0-dev', '1.10.x', fAlse, fAlse);
 
-		// normal extensions with code
-		testIsValidVersion('0.10.0-dev', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.0-dev', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.0-dev', '0.10.0', true);
-		testIsValidVersion('0.10.0-dev', '0.10.2', false);
-		testIsValidVersion('0.10.0-dev', '^0.10.2', false);
-		testIsValidVersion('0.10.0-dev', '0.10.x', true);
-		testIsValidVersion('0.10.0-dev', '^0.10.0', true);
-		testIsValidVersion('0.10.0-dev', '*', false); // fails due to lack of specificity
+		// normAl extensions with code
+		testIsVAlidVersion('0.10.0-dev', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.0-dev', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.0-dev', '0.10.0', true);
+		testIsVAlidVersion('0.10.0-dev', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0-dev', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0-dev', '0.10.x', true);
+		testIsVAlidVersion('0.10.0-dev', '^0.10.0', true);
+		testIsVAlidVersion('0.10.0-dev', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('0.10.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.0', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.0', '0.10.0', true);
-		testIsValidVersion('0.10.0', '0.10.2', false);
-		testIsValidVersion('0.10.0', '^0.10.2', false);
-		testIsValidVersion('0.10.0', '0.10.x', true);
-		testIsValidVersion('0.10.0', '^0.10.0', true);
-		testIsValidVersion('0.10.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('0.10.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.0', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.0', '0.10.0', true);
+		testIsVAlidVersion('0.10.0', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.10.0', '0.10.x', true);
+		testIsVAlidVersion('0.10.0', '^0.10.0', true);
+		testIsVAlidVersion('0.10.0', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('0.10.1', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.1', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.1', '0.10.0', false);
-		testIsValidVersion('0.10.1', '0.10.2', false);
-		testIsValidVersion('0.10.1', '^0.10.2', false);
-		testIsValidVersion('0.10.1', '0.10.x', true);
-		testIsValidVersion('0.10.1', '^0.10.0', true);
-		testIsValidVersion('0.10.1', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('0.10.1', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.1', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.1', '0.10.0', fAlse);
+		testIsVAlidVersion('0.10.1', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.1', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.10.1', '0.10.x', true);
+		testIsVAlidVersion('0.10.1', '^0.10.0', true);
+		testIsVAlidVersion('0.10.1', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('0.10.100', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.100', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.10.100', '0.10.0', false);
-		testIsValidVersion('0.10.100', '0.10.2', false);
-		testIsValidVersion('0.10.100', '^0.10.2', true);
-		testIsValidVersion('0.10.100', '0.10.x', true);
-		testIsValidVersion('0.10.100', '^0.10.0', true);
-		testIsValidVersion('0.10.100', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('0.10.100', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.100', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.10.100', '0.10.0', fAlse);
+		testIsVAlidVersion('0.10.100', '0.10.2', fAlse);
+		testIsVAlidVersion('0.10.100', '^0.10.2', true);
+		testIsVAlidVersion('0.10.100', '0.10.x', true);
+		testIsVAlidVersion('0.10.100', '^0.10.0', true);
+		testIsVAlidVersion('0.10.100', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('0.11.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.11.0', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('0.11.0', '0.10.0', false);
-		testIsValidVersion('0.11.0', '0.10.2', false);
-		testIsValidVersion('0.11.0', '^0.10.2', false);
-		testIsValidVersion('0.11.0', '0.10.x', false);
-		testIsValidVersion('0.11.0', '^0.10.0', false);
-		testIsValidVersion('0.11.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('0.11.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.11.0', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('0.11.0', '0.10.0', fAlse);
+		testIsVAlidVersion('0.11.0', '0.10.2', fAlse);
+		testIsVAlidVersion('0.11.0', '^0.10.2', fAlse);
+		testIsVAlidVersion('0.11.0', '0.10.x', fAlse);
+		testIsVAlidVersion('0.11.0', '^0.10.0', fAlse);
+		testIsVAlidVersion('0.11.0', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('1.0.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.0.0', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.0.0', '0.10.0', false);
-		testIsValidVersion('1.0.0', '0.10.2', false);
-		testIsValidVersion('1.0.0', '^0.10.2', true);
-		testIsValidVersion('1.0.0', '0.10.x', true);
-		testIsValidVersion('1.0.0', '^0.10.0', true);
-		testIsValidVersion('1.0.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('1.0.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.0.0', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.0.0', '0.10.0', fAlse);
+		testIsVAlidVersion('1.0.0', '0.10.2', fAlse);
+		testIsVAlidVersion('1.0.0', '^0.10.2', true);
+		testIsVAlidVersion('1.0.0', '0.10.x', true);
+		testIsVAlidVersion('1.0.0', '^0.10.0', true);
+		testIsVAlidVersion('1.0.0', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('1.10.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.10.0', '1.x.x', true);
-		testIsValidVersion('1.10.0', '1.10.0', true);
-		testIsValidVersion('1.10.0', '1.10.2', false);
-		testIsValidVersion('1.10.0', '^1.10.2', false);
-		testIsValidVersion('1.10.0', '1.10.x', true);
-		testIsValidVersion('1.10.0', '^1.10.0', true);
-		testIsValidVersion('1.10.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('1.10.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.10.0', '1.x.x', true);
+		testIsVAlidVersion('1.10.0', '1.10.0', true);
+		testIsVAlidVersion('1.10.0', '1.10.2', fAlse);
+		testIsVAlidVersion('1.10.0', '^1.10.2', fAlse);
+		testIsVAlidVersion('1.10.0', '1.10.x', true);
+		testIsVAlidVersion('1.10.0', '^1.10.0', true);
+		testIsVAlidVersion('1.10.0', '*', fAlse); // fAils due to lAck of specificity
 
 
-		// Anything < 1.0.0 is compatible
+		// Anything < 1.0.0 is compAtible
 
-		testIsValidVersion('1.0.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.0.0', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.0.0', '0.10.0', false);
-		testIsValidVersion('1.0.0', '0.10.2', false);
-		testIsValidVersion('1.0.0', '^0.10.2', true);
-		testIsValidVersion('1.0.0', '0.10.x', true);
-		testIsValidVersion('1.0.0', '^0.10.0', true);
-		testIsValidVersion('1.0.0', '1.0.0', true);
-		testIsValidVersion('1.0.0', '^1.0.0', true);
-		testIsValidVersion('1.0.0', '^2.0.0', false);
-		testIsValidVersion('1.0.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('1.0.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.0.0', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.0.0', '0.10.0', fAlse);
+		testIsVAlidVersion('1.0.0', '0.10.2', fAlse);
+		testIsVAlidVersion('1.0.0', '^0.10.2', true);
+		testIsVAlidVersion('1.0.0', '0.10.x', true);
+		testIsVAlidVersion('1.0.0', '^0.10.0', true);
+		testIsVAlidVersion('1.0.0', '1.0.0', true);
+		testIsVAlidVersion('1.0.0', '^1.0.0', true);
+		testIsVAlidVersion('1.0.0', '^2.0.0', fAlse);
+		testIsVAlidVersion('1.0.0', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('1.0.100', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.0.100', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.0.100', '0.10.0', false);
-		testIsValidVersion('1.0.100', '0.10.2', false);
-		testIsValidVersion('1.0.100', '^0.10.2', true);
-		testIsValidVersion('1.0.100', '0.10.x', true);
-		testIsValidVersion('1.0.100', '^0.10.0', true);
-		testIsValidVersion('1.0.100', '1.0.0', false);
-		testIsValidVersion('1.0.100', '^1.0.0', true);
-		testIsValidVersion('1.0.100', '^1.0.1', true);
-		testIsValidVersion('1.0.100', '^2.0.0', false);
-		testIsValidVersion('1.0.100', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('1.0.100', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.0.100', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.0.100', '0.10.0', fAlse);
+		testIsVAlidVersion('1.0.100', '0.10.2', fAlse);
+		testIsVAlidVersion('1.0.100', '^0.10.2', true);
+		testIsVAlidVersion('1.0.100', '0.10.x', true);
+		testIsVAlidVersion('1.0.100', '^0.10.0', true);
+		testIsVAlidVersion('1.0.100', '1.0.0', fAlse);
+		testIsVAlidVersion('1.0.100', '^1.0.0', true);
+		testIsVAlidVersion('1.0.100', '^1.0.1', true);
+		testIsVAlidVersion('1.0.100', '^2.0.0', fAlse);
+		testIsVAlidVersion('1.0.100', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('1.100.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.100.0', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('1.100.0', '0.10.0', false);
-		testIsValidVersion('1.100.0', '0.10.2', false);
-		testIsValidVersion('1.100.0', '^0.10.2', true);
-		testIsValidVersion('1.100.0', '0.10.x', true);
-		testIsValidVersion('1.100.0', '^0.10.0', true);
-		testIsValidVersion('1.100.0', '1.0.0', false);
-		testIsValidVersion('1.100.0', '^1.0.0', true);
-		testIsValidVersion('1.100.0', '^1.1.0', true);
-		testIsValidVersion('1.100.0', '^1.100.0', true);
-		testIsValidVersion('1.100.0', '^2.0.0', false);
-		testIsValidVersion('1.100.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('1.100.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.100.0', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('1.100.0', '0.10.0', fAlse);
+		testIsVAlidVersion('1.100.0', '0.10.2', fAlse);
+		testIsVAlidVersion('1.100.0', '^0.10.2', true);
+		testIsVAlidVersion('1.100.0', '0.10.x', true);
+		testIsVAlidVersion('1.100.0', '^0.10.0', true);
+		testIsVAlidVersion('1.100.0', '1.0.0', fAlse);
+		testIsVAlidVersion('1.100.0', '^1.0.0', true);
+		testIsVAlidVersion('1.100.0', '^1.1.0', true);
+		testIsVAlidVersion('1.100.0', '^1.100.0', true);
+		testIsVAlidVersion('1.100.0', '^2.0.0', fAlse);
+		testIsVAlidVersion('1.100.0', '*', fAlse); // fAils due to lAck of specificity
 
-		testIsValidVersion('2.0.0', 'x.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('2.0.0', '0.x.x', false); // fails due to lack of specificity
-		testIsValidVersion('2.0.0', '0.10.0', false);
-		testIsValidVersion('2.0.0', '0.10.2', false);
-		testIsValidVersion('2.0.0', '^0.10.2', false);
-		testIsValidVersion('2.0.0', '0.10.x', false);
-		testIsValidVersion('2.0.0', '^0.10.0', false);
-		testIsValidVersion('2.0.0', '1.0.0', false);
-		testIsValidVersion('2.0.0', '^1.0.0', false);
-		testIsValidVersion('2.0.0', '^1.1.0', false);
-		testIsValidVersion('2.0.0', '^1.100.0', false);
-		testIsValidVersion('2.0.0', '^2.0.0', true);
-		testIsValidVersion('2.0.0', '*', false); // fails due to lack of specificity
+		testIsVAlidVersion('2.0.0', 'x.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('2.0.0', '0.x.x', fAlse); // fAils due to lAck of specificity
+		testIsVAlidVersion('2.0.0', '0.10.0', fAlse);
+		testIsVAlidVersion('2.0.0', '0.10.2', fAlse);
+		testIsVAlidVersion('2.0.0', '^0.10.2', fAlse);
+		testIsVAlidVersion('2.0.0', '0.10.x', fAlse);
+		testIsVAlidVersion('2.0.0', '^0.10.0', fAlse);
+		testIsVAlidVersion('2.0.0', '1.0.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^1.0.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^1.1.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^1.100.0', fAlse);
+		testIsVAlidVersion('2.0.0', '^2.0.0', true);
+		testIsVAlidVersion('2.0.0', '*', fAlse); // fAils due to lAck of specificity
 	});
 });

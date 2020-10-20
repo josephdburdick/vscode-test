@@ -1,238 +1,238 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { MainThreadDocumentsAndEditors } from 'vs/workbench/api/browser/mainThreadDocumentsAndEditors';
+import * As Assert from 'Assert';
+import { MAinThreAdDocumentsAndEditors } from 'vs/workbench/Api/browser/mAinThreAdDocumentsAndEditors';
 import { SingleProxyRPCProtocol, TestRPCProtocol } from './testRPCProtocol';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { TestCodeEditorService } from 'vs/editor/test/browser/editorTestServices';
 import { ITextFileService } from 'vs/workbench/services/textfile/common/textfiles';
-import { ExtHostDocumentsAndEditorsShape, ExtHostContext, ExtHostDocumentsShape, IWorkspaceTextEditDto, WorkspaceEditType } from 'vs/workbench/api/common/extHost.protocol';
-import { mock } from 'vs/base/test/common/mock';
-import { Event } from 'vs/base/common/event';
-import { MainThreadTextEditors } from 'vs/workbench/api/browser/mainThreadEditors';
-import { URI } from 'vs/base/common/uri';
-import { Range } from 'vs/editor/common/core/range';
+import { ExtHostDocumentsAndEditorsShApe, ExtHostContext, ExtHostDocumentsShApe, IWorkspAceTextEditDto, WorkspAceEditType } from 'vs/workbench/Api/common/extHost.protocol';
+import { mock } from 'vs/bAse/test/common/mock';
+import { Event } from 'vs/bAse/common/event';
+import { MAinThreAdTextEditors } from 'vs/workbench/Api/browser/mAinThreAdEditors';
+import { URI } from 'vs/bAse/common/uri';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Position } from 'vs/editor/common/core/position';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
 import { TestFileService, TestEditorService, TestEditorGroupsService, TestEnvironmentService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { BulkEditService } from 'vs/workbench/contrib/bulkEdit/browser/bulkEditService';
-import { NullLogService, ILogService } from 'vs/platform/log/common/log';
+import { NullLogService, ILogService } from 'vs/plAtform/log/common/log';
 import { ITextModelService, IResolvedTextEditorModel } from 'vs/editor/common/services/resolverService';
-import { IReference, ImmortalReference } from 'vs/base/common/lifecycle';
-import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
-import { LabelService } from 'vs/workbench/services/label/common/labelService';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
+import { IReference, ImmortAlReference } from 'vs/bAse/common/lifecycle';
+import { IPAnelService } from 'vs/workbench/services/pAnel/common/pAnelService';
+import { LAbelService } from 'vs/workbench/services/lAbel/common/lAbelService';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { IFileService } from 'vs/platform/files/common/files';
+import { IFileService } from 'vs/plAtform/files/common/files';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
 import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { ILabelService } from 'vs/platform/label/common/label';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
 import { IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
-import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { UndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedoService';
+import { TestDiAlogService } from 'vs/plAtform/diAlogs/test/common/testDiAlogService';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IUndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { TestTextResourcePropertiesService, TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
-import { extUri } from 'vs/base/common/resources';
+import { extUri } from 'vs/bAse/common/resources';
 
-suite('MainThreadEditors', () => {
+suite('MAinThreAdEditors', () => {
 
-	const resource = URI.parse('foo:bar');
+	const resource = URI.pArse('foo:bAr');
 
 	let modelService: IModelService;
-	let editors: MainThreadTextEditors;
+	let editors: MAinThreAdTextEditors;
 
-	const movedResources = new Map<URI, URI>();
-	const copiedResources = new Map<URI, URI>();
-	const createdResources = new Set<URI>();
+	const movedResources = new MAp<URI, URI>();
+	const copiedResources = new MAp<URI, URI>();
+	const creAtedResources = new Set<URI>();
 	const deletedResources = new Set<URI>();
 
 	setup(() => {
 
-		movedResources.clear();
-		copiedResources.clear();
-		createdResources.clear();
-		deletedResources.clear();
+		movedResources.cleAr();
+		copiedResources.cleAr();
+		creAtedResources.cleAr();
+		deletedResources.cleAr();
 
 
-		const configService = new TestConfigurationService();
-		const dialogService = new TestDialogService();
-		const notificationService = new TestNotificationService();
-		const undoRedoService = new UndoRedoService(dialogService, notificationService);
+		const configService = new TestConfigurAtionService();
+		const diAlogService = new TestDiAlogService();
+		const notificAtionService = new TestNotificAtionService();
+		const undoRedoService = new UndoRedoService(diAlogService, notificAtionService);
 		modelService = new ModelServiceImpl(configService, new TestTextResourcePropertiesService(configService), new TestThemeService(), new NullLogService(), undoRedoService);
 
 
 		const services = new ServiceCollection();
 		services.set(IBulkEditService, new SyncDescriptor(BulkEditService));
-		services.set(ILabelService, new SyncDescriptor(LabelService));
+		services.set(ILAbelService, new SyncDescriptor(LAbelService));
 		services.set(ILogService, new NullLogService());
-		services.set(IWorkspaceContextService, new TestContextService());
+		services.set(IWorkspAceContextService, new TestContextService());
 		services.set(IWorkbenchEnvironmentService, TestEnvironmentService);
-		services.set(IConfigurationService, configService);
-		services.set(IDialogService, dialogService);
-		services.set(INotificationService, notificationService);
+		services.set(IConfigurAtionService, configService);
+		services.set(IDiAlogService, diAlogService);
+		services.set(INotificAtionService, notificAtionService);
 		services.set(IUndoRedoService, undoRedoService);
 		services.set(IModelService, modelService);
 		services.set(ICodeEditorService, new TestCodeEditorService());
 		services.set(IFileService, new TestFileService());
 		services.set(IEditorService, new TestEditorService());
 		services.set(IEditorGroupsService, new TestEditorGroupsService());
-		services.set(ITextFileService, new class extends mock<ITextFileService>() {
-			isDirty() { return false; }
-			files = <any>{
-				onDidSave: Event.None,
+		services.set(ITextFileService, new clAss extends mock<ITextFileService>() {
+			isDirty() { return fAlse; }
+			files = <Any>{
+				onDidSAve: Event.None,
 				onDidRevert: Event.None,
-				onDidChangeDirty: Event.None
+				onDidChAngeDirty: Event.None
 			};
 		});
-		services.set(IWorkingCopyFileService, new class extends mock<IWorkingCopyFileService>() {
-			onDidRunWorkingCopyFileOperation = Event.None;
-			create(resource: URI) {
-				createdResources.add(resource);
-				return Promise.resolve(Object.create(null));
+		services.set(IWorkingCopyFileService, new clAss extends mock<IWorkingCopyFileService>() {
+			onDidRunWorkingCopyFileOperAtion = Event.None;
+			creAte(resource: URI) {
+				creAtedResources.Add(resource);
+				return Promise.resolve(Object.creAte(null));
 			}
-			move(files: { source: URI, target: URI }[]) {
-				const { source, target } = files[0];
-				movedResources.set(source, target);
-				return Promise.resolve(Object.create(null));
+			move(files: { source: URI, tArget: URI }[]) {
+				const { source, tArget } = files[0];
+				movedResources.set(source, tArget);
+				return Promise.resolve(Object.creAte(null));
 			}
-			copy(files: { source: URI, target: URI }[]) {
-				const { source, target } = files[0];
-				copiedResources.set(source, target);
-				return Promise.resolve(Object.create(null));
+			copy(files: { source: URI, tArget: URI }[]) {
+				const { source, tArget } = files[0];
+				copiedResources.set(source, tArget);
+				return Promise.resolve(Object.creAte(null));
 			}
 			delete(resources: URI[]) {
 				for (const resource of resources) {
-					deletedResources.add(resource);
+					deletedResources.Add(resource);
 				}
 				return Promise.resolve(undefined);
 			}
 		});
-		services.set(ITextModelService, new class extends mock<ITextModelService>() {
-			createModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>> {
-				const textEditorModel = new class extends mock<IResolvedTextEditorModel>() {
+		services.set(ITextModelService, new clAss extends mock<ITextModelService>() {
+			creAteModelReference(resource: URI): Promise<IReference<IResolvedTextEditorModel>> {
+				const textEditorModel = new clAss extends mock<IResolvedTextEditorModel>() {
 					textEditorModel = modelService.getModel(resource)!;
 				};
-				textEditorModel.isReadonly = () => false;
-				return Promise.resolve(new ImmortalReference(textEditorModel));
+				textEditorModel.isReAdonly = () => fAlse;
+				return Promise.resolve(new ImmortAlReference(textEditorModel));
 			}
 		});
-		services.set(IEditorWorkerService, new class extends mock<IEditorWorkerService>() {
+		services.set(IEditorWorkerService, new clAss extends mock<IEditorWorkerService>() {
 
 		});
-		services.set(IPanelService, new class extends mock<IPanelService>() implements IPanelService {
-			declare readonly _serviceBrand: undefined;
-			onDidPanelOpen = Event.None;
-			onDidPanelClose = Event.None;
-			getActivePanel() {
+		services.set(IPAnelService, new clAss extends mock<IPAnelService>() implements IPAnelService {
+			declAre reAdonly _serviceBrAnd: undefined;
+			onDidPAnelOpen = Event.None;
+			onDidPAnelClose = Event.None;
+			getActivePAnel() {
 				return undefined;
 			}
 		});
-		services.set(IUriIdentityService, new class extends mock<IUriIdentityService>() {
+		services.set(IUriIdentityService, new clAss extends mock<IUriIdentityService>() {
 			get extUri() { return extUri; }
 		});
 
-		const instaService = new InstantiationService(services);
+		const instAService = new InstAntiAtionService(services);
 
 		const rpcProtocol = new TestRPCProtocol();
-		rpcProtocol.set(ExtHostContext.ExtHostDocuments, new class extends mock<ExtHostDocumentsShape>() {
-			$acceptModelChanged(): void {
+		rpcProtocol.set(ExtHostContext.ExtHostDocuments, new clAss extends mock<ExtHostDocumentsShApe>() {
+			$AcceptModelChAnged(): void {
 			}
 		});
-		rpcProtocol.set(ExtHostContext.ExtHostDocumentsAndEditors, new class extends mock<ExtHostDocumentsAndEditorsShape>() {
-			$acceptDocumentsAndEditorsDelta(): void {
+		rpcProtocol.set(ExtHostContext.ExtHostDocumentsAndEditors, new clAss extends mock<ExtHostDocumentsAndEditorsShApe>() {
+			$AcceptDocumentsAndEditorsDeltA(): void {
 			}
 		});
 
-		const documentAndEditor = instaService.createInstance(MainThreadDocumentsAndEditors, rpcProtocol);
+		const documentAndEditor = instAService.creAteInstAnce(MAinThreAdDocumentsAndEditors, rpcProtocol);
 
-		editors = instaService.createInstance(MainThreadTextEditors, documentAndEditor, SingleProxyRPCProtocol(null));
+		editors = instAService.creAteInstAnce(MAinThreAdTextEditors, documentAndEditor, SingleProxyRPCProtocol(null));
 	});
 
-	test(`applyWorkspaceEdit returns false if model is changed by user`, () => {
+	test(`ApplyWorkspAceEdit returns fAlse if model is chAnged by user`, () => {
 
-		let model = modelService.createModel('something', null, resource);
+		let model = modelService.creAteModel('something', null, resource);
 
-		let workspaceResourceEdit: IWorkspaceTextEditDto = {
-			_type: WorkspaceEditType.Text,
+		let workspAceResourceEdit: IWorkspAceTextEditDto = {
+			_type: WorkspAceEditType.Text,
 			resource: resource,
 			modelVersionId: model.getVersionId(),
 			edit: {
-				text: 'asdfg',
-				range: new Range(1, 1, 1, 1)
+				text: 'Asdfg',
+				rAnge: new RAnge(1, 1, 1, 1)
 			}
 		};
 
-		// Act as if the user edited the model
-		model.applyEdits([EditOperation.insert(new Position(0, 0), 'something')]);
+		// Act As if the user edited the model
+		model.ApplyEdits([EditOperAtion.insert(new Position(0, 0), 'something')]);
 
-		return editors.$tryApplyWorkspaceEdit({ edits: [workspaceResourceEdit] }).then((result) => {
-			assert.equal(result, false);
+		return editors.$tryApplyWorkspAceEdit({ edits: [workspAceResourceEdit] }).then((result) => {
+			Assert.equAl(result, fAlse);
 		});
 	});
 
-	test(`issue #54773: applyWorkspaceEdit checks model version in race situation`, () => {
+	test(`issue #54773: ApplyWorkspAceEdit checks model version in rAce situAtion`, () => {
 
-		let model = modelService.createModel('something', null, resource);
+		let model = modelService.creAteModel('something', null, resource);
 
-		let workspaceResourceEdit1: IWorkspaceTextEditDto = {
-			_type: WorkspaceEditType.Text,
+		let workspAceResourceEdit1: IWorkspAceTextEditDto = {
+			_type: WorkspAceEditType.Text,
 			resource: resource,
 			modelVersionId: model.getVersionId(),
 			edit: {
-				text: 'asdfg',
-				range: new Range(1, 1, 1, 1)
+				text: 'Asdfg',
+				rAnge: new RAnge(1, 1, 1, 1)
 			}
 		};
-		let workspaceResourceEdit2: IWorkspaceTextEditDto = {
-			_type: WorkspaceEditType.Text,
+		let workspAceResourceEdit2: IWorkspAceTextEditDto = {
+			_type: WorkspAceEditType.Text,
 			resource: resource,
 			modelVersionId: model.getVersionId(),
 			edit: {
-				text: 'asdfg',
-				range: new Range(1, 1, 1, 1)
+				text: 'Asdfg',
+				rAnge: new RAnge(1, 1, 1, 1)
 			}
 		};
 
-		let p1 = editors.$tryApplyWorkspaceEdit({ edits: [workspaceResourceEdit1] }).then((result) => {
+		let p1 = editors.$tryApplyWorkspAceEdit({ edits: [workspAceResourceEdit1] }).then((result) => {
 			// first edit request succeeds
-			assert.equal(result, true);
+			Assert.equAl(result, true);
 		});
-		let p2 = editors.$tryApplyWorkspaceEdit({ edits: [workspaceResourceEdit2] }).then((result) => {
-			// second edit request fails
-			assert.equal(result, false);
+		let p2 = editors.$tryApplyWorkspAceEdit({ edits: [workspAceResourceEdit2] }).then((result) => {
+			// second edit request fAils
+			Assert.equAl(result, fAlse);
 		});
-		return Promise.all([p1, p2]);
+		return Promise.All([p1, p2]);
 	});
 
-	test(`applyWorkspaceEdit with only resource edit`, () => {
-		return editors.$tryApplyWorkspaceEdit({
+	test(`ApplyWorkspAceEdit with only resource edit`, () => {
+		return editors.$tryApplyWorkspAceEdit({
 			edits: [
-				{ _type: WorkspaceEditType.File, oldUri: resource, newUri: resource, options: undefined },
-				{ _type: WorkspaceEditType.File, oldUri: undefined, newUri: resource, options: undefined },
-				{ _type: WorkspaceEditType.File, oldUri: resource, newUri: undefined, options: undefined }
+				{ _type: WorkspAceEditType.File, oldUri: resource, newUri: resource, options: undefined },
+				{ _type: WorkspAceEditType.File, oldUri: undefined, newUri: resource, options: undefined },
+				{ _type: WorkspAceEditType.File, oldUri: resource, newUri: undefined, options: undefined }
 			]
 		}).then((result) => {
-			assert.equal(result, true);
-			assert.equal(movedResources.get(resource), resource);
-			assert.equal(createdResources.has(resource), true);
-			assert.equal(deletedResources.has(resource), true);
+			Assert.equAl(result, true);
+			Assert.equAl(movedResources.get(resource), resource);
+			Assert.equAl(creAtedResources.hAs(resource), true);
+			Assert.equAl(deletedResources.hAs(resource), true);
 		});
 	});
 });

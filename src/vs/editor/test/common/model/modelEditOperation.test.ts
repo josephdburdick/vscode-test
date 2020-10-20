@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { Range } from 'vs/editor/common/core/range';
-import { IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
+import * As Assert from 'Assert';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { IIdentifiedSingleEditOperAtion } from 'vs/editor/common/model';
 import { TextModel } from 'vs/editor/common/model/textModel';
-import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
+import { creAteTextModel } from 'vs/editor/test/common/editorTestUtils';
 
-suite('Editor Model - Model Edit Operation', () => {
+suite('Editor Model - Model Edit OperAtion', () => {
 	const LINE1 = 'My First Line';
 	const LINE2 = '\t\tMy Second Line';
 	const LINE3 = '    Third Line';
@@ -24,15 +24,15 @@ suite('Editor Model - Model Edit Operation', () => {
 			LINE3 + '\n' +
 			LINE4 + '\r\n' +
 			LINE5;
-		model = createTextModel(text);
+		model = creAteTextModel(text);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		model.dispose();
 	});
 
-	function createSingleEditOp(text: string, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperation {
-		let range = new Range(
+	function creAteSingleEditOp(text: string, positionLineNumber: number, positionColumn: number, selectionLineNumber: number = positionLineNumber, selectionColumn: number = positionColumn): IIdentifiedSingleEditOperAtion {
+		let rAnge = new RAnge(
 			selectionLineNumber,
 			selectionColumn,
 			positionLineNumber,
@@ -41,48 +41,48 @@ suite('Editor Model - Model Edit Operation', () => {
 
 		return {
 			identifier: null,
-			range: range,
+			rAnge: rAnge,
 			text: text,
-			forceMoveMarkers: false
+			forceMoveMArkers: fAlse
 		};
 	}
 
-	function assertSingleEditOp(singleEditOp: IIdentifiedSingleEditOperation, editedLines: string[]) {
+	function AssertSingleEditOp(singleEditOp: IIdentifiedSingleEditOperAtion, editedLines: string[]) {
 		let editOp = [singleEditOp];
 
-		let inverseEditOp = model.applyEdits(editOp, true);
+		let inverseEditOp = model.ApplyEdits(editOp, true);
 
-		assert.equal(model.getLineCount(), editedLines.length);
+		Assert.equAl(model.getLineCount(), editedLines.length);
 		for (let i = 0; i < editedLines.length; i++) {
-			assert.equal(model.getLineContent(i + 1), editedLines[i]);
+			Assert.equAl(model.getLineContent(i + 1), editedLines[i]);
 		}
 
-		let originalOp = model.applyEdits(inverseEditOp, true);
+		let originAlOp = model.ApplyEdits(inverseEditOp, true);
 
-		assert.equal(model.getLineCount(), 5);
-		assert.equal(model.getLineContent(1), LINE1);
-		assert.equal(model.getLineContent(2), LINE2);
-		assert.equal(model.getLineContent(3), LINE3);
-		assert.equal(model.getLineContent(4), LINE4);
-		assert.equal(model.getLineContent(5), LINE5);
+		Assert.equAl(model.getLineCount(), 5);
+		Assert.equAl(model.getLineContent(1), LINE1);
+		Assert.equAl(model.getLineContent(2), LINE2);
+		Assert.equAl(model.getLineContent(3), LINE3);
+		Assert.equAl(model.getLineContent(4), LINE4);
+		Assert.equAl(model.getLineContent(5), LINE5);
 
-		const simplifyEdit = (edit: IIdentifiedSingleEditOperation) => {
+		const simplifyEdit = (edit: IIdentifiedSingleEditOperAtion) => {
 			return {
 				identifier: edit.identifier,
-				range: edit.range,
+				rAnge: edit.rAnge,
 				text: edit.text,
-				forceMoveMarkers: edit.forceMoveMarkers || false,
-				isAutoWhitespaceEdit: edit.isAutoWhitespaceEdit || false
+				forceMoveMArkers: edit.forceMoveMArkers || fAlse,
+				isAutoWhitespAceEdit: edit.isAutoWhitespAceEdit || fAlse
 			};
 		};
-		assert.deepEqual(originalOp.map(simplifyEdit), editOp.map(simplifyEdit));
+		Assert.deepEquAl(originAlOp.mAp(simplifyEdit), editOp.mAp(simplifyEdit));
 	}
 
 	test('Insert inline', () => {
-		assertSingleEditOp(
-			createSingleEditOp('a', 1, 1),
+		AssertSingleEditOp(
+			creAteSingleEditOp('A', 1, 1),
 			[
-				'aMy First Line',
+				'AMy First Line',
 				LINE2,
 				LINE3,
 				LINE4,
@@ -91,11 +91,11 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace inline/inline 1', () => {
-		assertSingleEditOp(
-			createSingleEditOp(' incredibly awesome', 1, 3),
+	test('ReplAce inline/inline 1', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp(' incredibly Awesome', 1, 3),
 			[
-				'My incredibly awesome First Line',
+				'My incredibly Awesome First Line',
 				LINE2,
 				LINE3,
 				LINE4,
@@ -104,11 +104,11 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace inline/inline 2', () => {
-		assertSingleEditOp(
-			createSingleEditOp(' with text at the end.', 1, 14),
+	test('ReplAce inline/inline 2', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp(' with text At the end.', 1, 14),
 			[
-				'My First Line with text at the end.',
+				'My First Line with text At the end.',
 				LINE2,
 				LINE3,
 				LINE4,
@@ -117,9 +117,9 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace inline/inline 3', () => {
-		assertSingleEditOp(
-			createSingleEditOp('My new First Line.', 1, 1, 1, 14),
+	test('ReplAce inline/inline 3', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp('My new First Line.', 1, 1, 1, 14),
 			[
 				'My new First Line.',
 				LINE2,
@@ -130,9 +130,9 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace inline/multi line 1', () => {
-		assertSingleEditOp(
-			createSingleEditOp('My new First Line.', 1, 1, 3, 15),
+	test('ReplAce inline/multi line 1', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp('My new First Line.', 1, 1, 3, 15),
 			[
 				'My new First Line.',
 				LINE4,
@@ -141,9 +141,9 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace inline/multi line 2', () => {
-		assertSingleEditOp(
-			createSingleEditOp('My new First Line.', 1, 2, 3, 15),
+	test('ReplAce inline/multi line 2', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp('My new First Line.', 1, 2, 3, 15),
 			[
 				'MMy new First Line.',
 				LINE4,
@@ -152,9 +152,9 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace inline/multi line 3', () => {
-		assertSingleEditOp(
-			createSingleEditOp('My new First Line.', 1, 2, 3, 2),
+	test('ReplAce inline/multi line 3', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp('My new First Line.', 1, 2, 3, 2),
 			[
 				'MMy new First Line.   Third Line',
 				LINE4,
@@ -163,9 +163,9 @@ suite('Editor Model - Model Edit Operation', () => {
 		);
 	});
 
-	test('Replace muli line/multi line', () => {
-		assertSingleEditOp(
-			createSingleEditOp('1\n2\n3\n4\n', 1, 1),
+	test('ReplAce muli line/multi line', () => {
+		AssertSingleEditOp(
+			creAteSingleEditOp('1\n2\n3\n4\n', 1, 1),
 			[
 				'1',
 				'2',

@@ -1,1044 +1,1044 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
 define({
 	"Sleep": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"WakeUp": {
-		"value": "",
+	"WAkeUp": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"KeyA": {
-		"value": "a",
+		"vAlue": "A",
 		"withShift": "A",
 		"withAltGr": "æ",
 		"withShiftAltGr": "Æ"
 	},
 	"KeyB": {
-		"value": "b",
+		"vAlue": "b",
 		"withShift": "B",
 		"withAltGr": "”",
 		"withShiftAltGr": "’"
 	},
 	"KeyC": {
-		"value": "c",
+		"vAlue": "c",
 		"withShift": "C",
 		"withAltGr": "¢",
 		"withShiftAltGr": "©"
 	},
 	"KeyD": {
-		"value": "d",
+		"vAlue": "d",
 		"withShift": "D",
 		"withAltGr": "ð",
 		"withShiftAltGr": "Ð"
 	},
 	"KeyE": {
-		"value": "e",
+		"vAlue": "e",
 		"withShift": "E",
 		"withAltGr": "e",
 		"withShiftAltGr": "E"
 	},
 	"KeyF": {
-		"value": "f",
+		"vAlue": "f",
 		"withShift": "F",
 		"withAltGr": "đ",
 		"withShiftAltGr": "ª"
 	},
 	"KeyG": {
-		"value": "g",
+		"vAlue": "g",
 		"withShift": "G",
 		"withAltGr": "ŋ",
 		"withShiftAltGr": "Ŋ"
 	},
 	"KeyH": {
-		"value": "h",
+		"vAlue": "h",
 		"withShift": "H",
 		"withAltGr": "ħ",
 		"withShiftAltGr": "Ħ"
 	},
 	"KeyI": {
-		"value": "i",
+		"vAlue": "i",
 		"withShift": "I",
 		"withAltGr": "→",
 		"withShiftAltGr": "ı"
 	},
 	"KeyJ": {
-		"value": "j",
+		"vAlue": "j",
 		"withShift": "J",
 		"withAltGr": "̉",
 		"withShiftAltGr": "̛"
 	},
 	"KeyK": {
-		"value": "k",
+		"vAlue": "k",
 		"withShift": "K",
 		"withAltGr": "ĸ",
 		"withShiftAltGr": "&"
 	},
 	"KeyL": {
-		"value": "l",
+		"vAlue": "l",
 		"withShift": "L",
 		"withAltGr": "ł",
 		"withShiftAltGr": "Ł"
 	},
 	"KeyM": {
-		"value": "m",
+		"vAlue": "m",
 		"withShift": "M",
 		"withAltGr": "µ",
 		"withShiftAltGr": "º"
 	},
 	"KeyN": {
-		"value": "n",
+		"vAlue": "n",
 		"withShift": "N",
 		"withAltGr": "n",
 		"withShiftAltGr": "N"
 	},
 	"KeyO": {
-		"value": "o",
+		"vAlue": "o",
 		"withShift": "O",
 		"withAltGr": "ø",
 		"withShiftAltGr": "Ø"
 	},
 	"KeyP": {
-		"value": "p",
+		"vAlue": "p",
 		"withShift": "P",
 		"withAltGr": "þ",
 		"withShiftAltGr": "Þ"
 	},
 	"KeyQ": {
-		"value": "q",
+		"vAlue": "q",
 		"withShift": "Q",
 		"withAltGr": "@",
 		"withShiftAltGr": "Ω"
 	},
 	"KeyR": {
-		"value": "r",
+		"vAlue": "r",
 		"withShift": "R",
 		"withAltGr": "¶",
 		"withShiftAltGr": "®"
 	},
 	"KeyS": {
-		"value": "s",
+		"vAlue": "s",
 		"withShift": "S",
 		"withAltGr": "ß",
 		"withShiftAltGr": "§"
 	},
 	"KeyT": {
-		"value": "t",
+		"vAlue": "t",
 		"withShift": "T",
 		"withAltGr": "ŧ",
 		"withShiftAltGr": "Ŧ"
 	},
 	"KeyU": {
-		"value": "u",
+		"vAlue": "u",
 		"withShift": "U",
 		"withAltGr": "↓",
 		"withShiftAltGr": "↑"
 	},
 	"KeyV": {
-		"value": "v",
+		"vAlue": "v",
 		"withShift": "V",
 		"withAltGr": "“",
 		"withShiftAltGr": "‘"
 	},
 	"KeyW": {
-		"value": "w",
+		"vAlue": "w",
 		"withShift": "W",
 		"withAltGr": "ł",
 		"withShiftAltGr": "Ł"
 	},
 	"KeyX": {
-		"value": "x",
+		"vAlue": "x",
 		"withShift": "X",
 		"withAltGr": "»",
 		"withShiftAltGr": ">"
 	},
 	"KeyY": {
-		"value": "y",
+		"vAlue": "y",
 		"withShift": "Y",
 		"withAltGr": "←",
 		"withShiftAltGr": "¥"
 	},
 	"KeyZ": {
-		"value": "z",
+		"vAlue": "z",
 		"withShift": "Z",
 		"withAltGr": "«",
 		"withShiftAltGr": "<"
 	},
 	"Digit1": {
-		"value": "1",
+		"vAlue": "1",
 		"withShift": "!",
 		"withAltGr": "¹",
 		"withShiftAltGr": "¡"
 	},
 	"Digit2": {
-		"value": "2",
+		"vAlue": "2",
 		"withShift": "\"",
 		"withAltGr": "²",
 		"withShiftAltGr": "⅛"
 	},
 	"Digit3": {
-		"value": "3",
+		"vAlue": "3",
 		"withShift": "£",
 		"withAltGr": "³",
 		"withShiftAltGr": "£"
 	},
 	"Digit4": {
-		"value": "4",
+		"vAlue": "4",
 		"withShift": "$",
 		"withAltGr": "€",
 		"withShiftAltGr": "¼"
 	},
 	"Digit5": {
-		"value": "5",
+		"vAlue": "5",
 		"withShift": "%",
 		"withAltGr": "½",
 		"withShiftAltGr": "⅜"
 	},
 	"Digit6": {
-		"value": "6",
+		"vAlue": "6",
 		"withShift": "^",
 		"withAltGr": "¾",
 		"withShiftAltGr": "⅝"
 	},
 	"Digit7": {
-		"value": "7",
+		"vAlue": "7",
 		"withShift": "&",
 		"withAltGr": "{",
 		"withShiftAltGr": "⅞"
 	},
 	"Digit8": {
-		"value": "8",
+		"vAlue": "8",
 		"withShift": "*",
 		"withAltGr": "[",
 		"withShiftAltGr": "™"
 	},
 	"Digit9": {
-		"value": "9",
+		"vAlue": "9",
 		"withShift": "(",
 		"withAltGr": "]",
 		"withShiftAltGr": "±"
 	},
 	"Digit0": {
-		"value": "0",
+		"vAlue": "0",
 		"withShift": ")",
 		"withAltGr": "}",
 		"withShiftAltGr": "°"
 	},
 	"Enter": {
-		"value": "\r",
+		"vAlue": "\r",
 		"withShift": "\r",
 		"withAltGr": "\r",
 		"withShiftAltGr": "\r"
 	},
-	"Escape": {
-		"value": "\u001b",
+	"EscApe": {
+		"vAlue": "\u001b",
 		"withShift": "\u001b",
 		"withAltGr": "\u001b",
 		"withShiftAltGr": "\u001b"
 	},
-	"Backspace": {
-		"value": "\b",
+	"BAckspAce": {
+		"vAlue": "\b",
 		"withShift": "\b",
 		"withAltGr": "\b",
 		"withShiftAltGr": "\b"
 	},
-	"Tab": {
-		"value": "\t",
+	"TAb": {
+		"vAlue": "\t",
 		"withShift": "",
 		"withAltGr": "\t",
 		"withShiftAltGr": ""
 	},
-	"Space": {
-		"value": " ",
+	"SpAce": {
+		"vAlue": " ",
 		"withShift": " ",
 		"withAltGr": " ",
 		"withShiftAltGr": " "
 	},
 	"Minus": {
-		"value": "-",
+		"vAlue": "-",
 		"withShift": "_",
 		"withAltGr": "\\",
 		"withShiftAltGr": "¿"
 	},
-	"Equal": {
-		"value": "=",
+	"EquAl": {
+		"vAlue": "=",
 		"withShift": "+",
 		"withAltGr": "̧",
 		"withShiftAltGr": "̨"
 	},
-	"BracketLeft": {
-		"value": "[",
+	"BrAcketLeft": {
+		"vAlue": "[",
 		"withShift": "{",
 		"withAltGr": "̈",
 		"withShiftAltGr": "̊"
 	},
-	"BracketRight": {
-		"value": "]",
+	"BrAcketRight": {
+		"vAlue": "]",
 		"withShift": "}",
 		"withAltGr": "̃",
 		"withShiftAltGr": "̄"
 	},
-	"Backslash": {
-		"value": "#",
+	"BAckslAsh": {
+		"vAlue": "#",
 		"withShift": "~",
 		"withAltGr": "̀",
 		"withShiftAltGr": "̆"
 	},
 	"Semicolon": {
-		"value": ";",
+		"vAlue": ";",
 		"withShift": ":",
 		"withAltGr": "́",
 		"withShiftAltGr": "̋"
 	},
 	"Quote": {
-		"value": "'",
+		"vAlue": "'",
 		"withShift": "@",
 		"withAltGr": "̂",
 		"withShiftAltGr": "̌"
 	},
-	"Backquote": {
-		"value": "`",
+	"BAckquote": {
+		"vAlue": "`",
 		"withShift": "¬",
 		"withAltGr": "|",
 		"withShiftAltGr": "|"
 	},
-	"Comma": {
-		"value": ",",
+	"CommA": {
+		"vAlue": ",",
 		"withShift": "<",
 		"withAltGr": "─",
 		"withShiftAltGr": "×"
 	},
 	"Period": {
-		"value": ".",
+		"vAlue": ".",
 		"withShift": ">",
 		"withAltGr": "·",
 		"withShiftAltGr": "÷"
 	},
-	"Slash": {
-		"value": "/",
+	"SlAsh": {
+		"vAlue": "/",
 		"withShift": "?",
 		"withAltGr": "̣",
 		"withShiftAltGr": "̇"
 	},
-	"CapsLock": {
-		"value": "",
+	"CApsLock": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F1": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F2": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F3": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F4": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F5": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F6": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F7": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F8": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F9": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F10": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F11": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F12": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"PrintScreen": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ScrollLock": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Pause": {
-		"value": "",
+	"PAuse": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Insert": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Home": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"PageUp": {
-		"value": "",
+	"PAgeUp": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Delete": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"End": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"PageDown": {
-		"value": "",
+	"PAgeDown": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ArrowRight": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ArrowLeft": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ArrowDown": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ArrowUp": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"NumLock": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"NumpadDivide": {
-		"value": "/",
+	"NumpAdDivide": {
+		"vAlue": "/",
 		"withShift": "/",
 		"withAltGr": "/",
 		"withShiftAltGr": "/"
 	},
-	"NumpadMultiply": {
-		"value": "*",
+	"NumpAdMultiply": {
+		"vAlue": "*",
 		"withShift": "*",
 		"withAltGr": "*",
 		"withShiftAltGr": "*"
 	},
-	"NumpadSubtract": {
-		"value": "-",
+	"NumpAdSubtrAct": {
+		"vAlue": "-",
 		"withShift": "-",
 		"withAltGr": "-",
 		"withShiftAltGr": "-"
 	},
-	"NumpadAdd": {
-		"value": "+",
+	"NumpAdAdd": {
+		"vAlue": "+",
 		"withShift": "+",
 		"withAltGr": "+",
 		"withShiftAltGr": "+"
 	},
-	"NumpadEnter": {
-		"value": "\r",
+	"NumpAdEnter": {
+		"vAlue": "\r",
 		"withShift": "\r",
 		"withAltGr": "\r",
 		"withShiftAltGr": "\r"
 	},
-	"Numpad1": {
-		"value": "",
+	"NumpAd1": {
+		"vAlue": "",
 		"withShift": "1",
 		"withAltGr": "",
 		"withShiftAltGr": "1"
 	},
-	"Numpad2": {
-		"value": "",
+	"NumpAd2": {
+		"vAlue": "",
 		"withShift": "2",
 		"withAltGr": "",
 		"withShiftAltGr": "2"
 	},
-	"Numpad3": {
-		"value": "",
+	"NumpAd3": {
+		"vAlue": "",
 		"withShift": "3",
 		"withAltGr": "",
 		"withShiftAltGr": "3"
 	},
-	"Numpad4": {
-		"value": "",
+	"NumpAd4": {
+		"vAlue": "",
 		"withShift": "4",
 		"withAltGr": "",
 		"withShiftAltGr": "4"
 	},
-	"Numpad5": {
-		"value": "",
+	"NumpAd5": {
+		"vAlue": "",
 		"withShift": "5",
 		"withAltGr": "",
 		"withShiftAltGr": "5"
 	},
-	"Numpad6": {
-		"value": "",
+	"NumpAd6": {
+		"vAlue": "",
 		"withShift": "6",
 		"withAltGr": "",
 		"withShiftAltGr": "6"
 	},
-	"Numpad7": {
-		"value": "",
+	"NumpAd7": {
+		"vAlue": "",
 		"withShift": "7",
 		"withAltGr": "",
 		"withShiftAltGr": "7"
 	},
-	"Numpad8": {
-		"value": "",
+	"NumpAd8": {
+		"vAlue": "",
 		"withShift": "8",
 		"withAltGr": "",
 		"withShiftAltGr": "8"
 	},
-	"Numpad9": {
-		"value": "",
+	"NumpAd9": {
+		"vAlue": "",
 		"withShift": "9",
 		"withAltGr": "",
 		"withShiftAltGr": "9"
 	},
-	"Numpad0": {
-		"value": "",
+	"NumpAd0": {
+		"vAlue": "",
 		"withShift": "0",
 		"withAltGr": "",
 		"withShiftAltGr": "0"
 	},
-	"NumpadDecimal": {
-		"value": "",
+	"NumpAdDecimAl": {
+		"vAlue": "",
 		"withShift": ".",
 		"withAltGr": "",
 		"withShiftAltGr": "."
 	},
-	"IntlBackslash": {
-		"value": "\\",
+	"IntlBAckslAsh": {
+		"vAlue": "\\",
 		"withShift": "|",
 		"withAltGr": "|",
 		"withShiftAltGr": "¦"
 	},
 	"ContextMenu": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Power": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"NumpadEqual": {
-		"value": "=",
+	"NumpAdEquAl": {
+		"vAlue": "=",
 		"withShift": "=",
 		"withAltGr": "=",
 		"withShiftAltGr": "="
 	},
 	"F13": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F14": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F15": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F16": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F17": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F18": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F19": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F20": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F21": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F22": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F23": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"F24": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Open": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Help": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Select": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Again": {
-		"value": "",
+	"AgAin": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Undo": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Cut": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Copy": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Paste": {
-		"value": "",
+	"PAste": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Find": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"AudioVolumeMute": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"AudioVolumeUp": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"AudioVolumeDown": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"NumpadComma": {
-		"value": ".",
+	"NumpAdCommA": {
+		"vAlue": ".",
 		"withShift": ".",
 		"withAltGr": ".",
 		"withShiftAltGr": "."
 	},
 	"IntlRo": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"KanaMode": {
-		"value": "",
+	"KAnAMode": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"IntlYen": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Convert": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"NonConvert": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Lang1": {
-		"value": "",
+	"LAng1": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Lang2": {
-		"value": "",
+	"LAng2": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Lang3": {
-		"value": "",
+	"LAng3": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Lang4": {
-		"value": "",
+	"LAng4": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"Lang5": {
-		"value": "",
+	"LAng5": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"NumpadParenLeft": {
-		"value": "(",
+	"NumpAdPArenLeft": {
+		"vAlue": "(",
 		"withShift": "(",
 		"withAltGr": "(",
 		"withShiftAltGr": "("
 	},
-	"NumpadParenRight": {
-		"value": ")",
+	"NumpAdPArenRight": {
+		"vAlue": ")",
 		"withShift": ")",
 		"withAltGr": ")",
 		"withShiftAltGr": ")"
 	},
 	"ControlLeft": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ShiftLeft": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"AltLeft": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MetaLeft": {
-		"value": "",
+	"MetALeft": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ControlRight": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"ShiftRight": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"AltRight": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MetaRight": {
-		"value": "",
+	"MetARight": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"BrightnessUp": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"BrightnessDown": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaPlay": {
-		"value": "",
+	"MediAPlAy": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaRecord": {
-		"value": "",
+	"MediARecord": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaFastForward": {
-		"value": "",
+	"MediAFAstForwArd": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaRewind": {
-		"value": "",
+	"MediARewind": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaTrackNext": {
-		"value": "",
+	"MediATrAckNext": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaTrackPrevious": {
-		"value": "",
+	"MediATrAckPrevious": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaStop": {
-		"value": "",
+	"MediAStop": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"Eject": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaPlayPause": {
-		"value": "",
+	"MediAPlAyPAuse": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MediaSelect": {
-		"value": "",
+	"MediASelect": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"LaunchMail": {
-		"value": "",
+	"LAunchMAil": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"LaunchApp2": {
-		"value": "",
+	"LAunchApp2": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"LaunchApp1": {
-		"value": "",
+	"LAunchApp1": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"SelectTask": {
-		"value": "",
+	"SelectTAsk": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"LaunchScreenSaver": {
-		"value": "",
+	"LAunchScreenSAver": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"BrowserSearch": {
-		"value": "",
+	"BrowserSeArch": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"BrowserHome": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"BrowserBack": {
-		"value": "",
+	"BrowserBAck": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"BrowserForward": {
-		"value": "",
+	"BrowserForwArd": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"BrowserStop": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
 	"BrowserRefresh": {
-		"value": "",
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"BrowserFavorites": {
-		"value": "",
+	"BrowserFAvorites": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MailReply": {
-		"value": "",
+	"MAilReply": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MailForward": {
-		"value": "",
+	"MAilForwArd": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""
 	},
-	"MailSend": {
-		"value": "",
+	"MAilSend": {
+		"vAlue": "",
 		"withShift": "",
 		"withAltGr": "",
 		"withShiftAltGr": ""

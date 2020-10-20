@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { Selection } from 'vs/editor/common/core/selection';
-import { ICommand, IEditOperationBuilder, ICursorStateComputerData } from 'vs/editor/common/editorCommon';
-import { Range } from 'vs/editor/common/core/range';
+import { ICommAnd, IEditOperAtionBuilder, ICursorStAteComputerDAtA } from 'vs/editor/common/editorCommon';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
 
-export class InPlaceReplaceCommand implements ICommand {
+export clAss InPlAceReplAceCommAnd implements ICommAnd {
 
-	private readonly _editRange: Range;
-	private readonly _originalSelection: Selection;
-	private readonly _text: string;
+	privAte reAdonly _editRAnge: RAnge;
+	privAte reAdonly _originAlSelection: Selection;
+	privAte reAdonly _text: string;
 
-	constructor(editRange: Range, originalSelection: Selection, text: string) {
-		this._editRange = editRange;
-		this._originalSelection = originalSelection;
+	constructor(editRAnge: RAnge, originAlSelection: Selection, text: string) {
+		this._editRAnge = editRAnge;
+		this._originAlSelection = originAlSelection;
 		this._text = text;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		builder.addTrackedEditOperation(this._editRange, this._text);
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
+		builder.AddTrAckedEditOperAtion(this._editRAnge, this._text);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
-		const inverseEditOperations = helper.getInverseEditOperations();
-		const srcRange = inverseEditOperations[0].range;
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
+		const inverseEditOperAtions = helper.getInverseEditOperAtions();
+		const srcRAnge = inverseEditOperAtions[0].rAnge;
 
-		if (!this._originalSelection.isEmpty()) {
-			// Preserve selection and extends to typed text
+		if (!this._originAlSelection.isEmpty()) {
+			// Preserve selection And extends to typed text
 			return new Selection(
-				srcRange.endLineNumber,
-				srcRange.endColumn - this._text.length,
-				srcRange.endLineNumber,
-				srcRange.endColumn
+				srcRAnge.endLineNumber,
+				srcRAnge.endColumn - this._text.length,
+				srcRAnge.endLineNumber,
+				srcRAnge.endColumn
 			);
 		}
 
 		return new Selection(
-			srcRange.endLineNumber,
-			Math.min(this._originalSelection.positionColumn, srcRange.endColumn),
-			srcRange.endLineNumber,
-			Math.min(this._originalSelection.positionColumn, srcRange.endColumn)
+			srcRAnge.endLineNumber,
+			MAth.min(this._originAlSelection.positionColumn, srcRAnge.endColumn),
+			srcRAnge.endLineNumber,
+			MAth.min(this._originAlSelection.positionColumn, srcRAnge.endColumn)
 		);
 	}
 }

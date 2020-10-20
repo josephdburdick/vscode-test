@@ -1,71 +1,71 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/onTypeRename';
-import * as nls from 'vs/nls';
-import { registerEditorContribution, registerModelAndPositionCommand, EditorAction, EditorCommand, ServicesAccessor, registerEditorAction, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
-import * as arrays from 'vs/base/common/arrays';
+import 'vs/css!./mediA/onTypeRenAme';
+import * As nls from 'vs/nls';
+import { registerEditorContribution, registerModelAndPositionCommAnd, EditorAction, EditorCommAnd, ServicesAccessor, registerEditorAction, registerEditorCommAnd } from 'vs/editor/browser/editorExtensions';
+import * As ArrAys from 'vs/bAse/common/ArrAys';
 import { IEditorContribution } from 'vs/editor/common/editorCommon';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EditorOption } from 'vs/editor/common/config/editorOptions';
 import { Position, IPosition } from 'vs/editor/common/core/position';
-import { ITextModel, IModelDeltaDecoration, TrackedRangeStickiness, IIdentifiedSingleEditOperation } from 'vs/editor/common/model';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IRange, Range } from 'vs/editor/common/core/range';
-import { OnTypeRenameProviderRegistry } from 'vs/editor/common/modes';
-import { first, createCancelablePromise, CancelablePromise, Delayer } from 'vs/base/common/async';
-import { ModelDecorationOptions } from 'vs/editor/common/model/textModel';
-import { ContextKeyExpr, RawContextKey, IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
+import { ITextModel, IModelDeltADecorAtion, TrAckedRAngeStickiness, IIdentifiedSingleEditOperAtion } from 'vs/editor/common/model';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
+import { OnTypeRenAmeProviderRegistry } from 'vs/editor/common/modes';
+import { first, creAteCAncelAblePromise, CAncelAblePromise, DelAyer } from 'vs/bAse/common/Async';
+import { ModelDecorAtionOptions } from 'vs/editor/common/model/textModel';
+import { ContextKeyExpr, RAwContextKey, IContextKeyService, IContextKey } from 'vs/plAtform/contextkey/common/contextkey';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { URI } from 'vs/base/common/uri';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { isPromiseCanceledError, onUnexpectedError, onUnexpectedExternalError } from 'vs/base/common/errors';
-import * as strings from 'vs/base/common/strings';
-import { registerColor } from 'vs/platform/theme/common/colorRegistry';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
+import { isPromiseCAnceledError, onUnexpectedError, onUnexpectedExternAlError } from 'vs/bAse/common/errors';
+import * As strings from 'vs/bAse/common/strings';
+import { registerColor } from 'vs/plAtform/theme/common/colorRegistry';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { Color } from 'vs/bAse/common/color';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
 
-export const CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE = new RawContextKey<boolean>('onTypeRenameInputVisible', false);
+export const CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE = new RAwContextKey<booleAn>('onTypeRenAmeInputVisible', fAlse);
 
-export class OnTypeRenameContribution extends Disposable implements IEditorContribution {
+export clAss OnTypeRenAmeContribution extends DisposAble implements IEditorContribution {
 
-	public static readonly ID = 'editor.contrib.onTypeRename';
+	public stAtic reAdonly ID = 'editor.contrib.onTypeRenAme';
 
-	private static readonly DECORATION = ModelDecorationOptions.register({
-		stickiness: TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-		className: 'on-type-rename-decoration'
+	privAte stAtic reAdonly DECORATION = ModelDecorAtionOptions.register({
+		stickiness: TrAckedRAngeStickiness.AlwAysGrowsWhenTypingAtEdges,
+		clAssNAme: 'on-type-renAme-decorAtion'
 	});
 
-	static get(editor: ICodeEditor): OnTypeRenameContribution {
-		return editor.getContribution<OnTypeRenameContribution>(OnTypeRenameContribution.ID);
+	stAtic get(editor: ICodeEditor): OnTypeRenAmeContribution {
+		return editor.getContribution<OnTypeRenAmeContribution>(OnTypeRenAmeContribution.ID);
 	}
 
-	private _debounceDuration = 200;
+	privAte _debounceDurAtion = 200;
 
-	private readonly _editor: ICodeEditor;
-	private _enabled: boolean;
+	privAte reAdonly _editor: ICodeEditor;
+	privAte _enAbled: booleAn;
 
-	private readonly _visibleContextKey: IContextKey<boolean>;
+	privAte reAdonly _visibleContextKey: IContextKey<booleAn>;
 
-	private _rangeUpdateTriggerPromise: Promise<any> | null;
-	private _rangeSyncTriggerPromise: Promise<any> | null;
+	privAte _rAngeUpdAteTriggerPromise: Promise<Any> | null;
+	privAte _rAngeSyncTriggerPromise: Promise<Any> | null;
 
-	private _currentRequest: CancelablePromise<any> | null;
-	private _currentRequestPosition: Position | null;
-	private _currentRequestModelVersion: number | null;
+	privAte _currentRequest: CAncelAblePromise<Any> | null;
+	privAte _currentRequestPosition: Position | null;
+	privAte _currentRequestModelVersion: number | null;
 
-	private _currentDecorations: string[]; // The one at index 0 is the reference one
-	private _languageWordPattern: RegExp | null;
-	private _currentWordPattern: RegExp | null;
-	private _ignoreChangeEvent: boolean;
+	privAte _currentDecorAtions: string[]; // The one At index 0 is the reference one
+	privAte _lAnguAgeWordPAttern: RegExp | null;
+	privAte _currentWordPAttern: RegExp | null;
+	privAte _ignoreChAngeEvent: booleAn;
 
-	private readonly _localToDispose = this._register(new DisposableStore());
+	privAte reAdonly _locAlToDispose = this._register(new DisposAbleStore());
 
 	constructor(
 		editor: ICodeEditor,
@@ -73,142 +73,142 @@ export class OnTypeRenameContribution extends Disposable implements IEditorContr
 	) {
 		super();
 		this._editor = editor;
-		this._enabled = false;
+		this._enAbled = fAlse;
 		this._visibleContextKey = CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE.bindTo(contextKeyService);
 
-		this._currentDecorations = [];
-		this._languageWordPattern = null;
-		this._currentWordPattern = null;
-		this._ignoreChangeEvent = false;
-		this._localToDispose = this._register(new DisposableStore());
+		this._currentDecorAtions = [];
+		this._lAnguAgeWordPAttern = null;
+		this._currentWordPAttern = null;
+		this._ignoreChAngeEvent = fAlse;
+		this._locAlToDispose = this._register(new DisposAbleStore());
 
-		this._rangeUpdateTriggerPromise = null;
-		this._rangeSyncTriggerPromise = null;
+		this._rAngeUpdAteTriggerPromise = null;
+		this._rAngeSyncTriggerPromise = null;
 
 		this._currentRequest = null;
 		this._currentRequestPosition = null;
 		this._currentRequestModelVersion = null;
 
-		this._register(this._editor.onDidChangeModel(() => this.reinitialize()));
+		this._register(this._editor.onDidChAngeModel(() => this.reinitiAlize()));
 
-		this._register(this._editor.onDidChangeConfiguration(e => {
-			if (e.hasChanged(EditorOption.renameOnType)) {
-				this.reinitialize();
+		this._register(this._editor.onDidChAngeConfigurAtion(e => {
+			if (e.hAsChAnged(EditorOption.renAmeOnType)) {
+				this.reinitiAlize();
 			}
 		}));
-		this._register(OnTypeRenameProviderRegistry.onDidChange(() => this.reinitialize()));
-		this._register(this._editor.onDidChangeModelLanguage(() => this.reinitialize()));
+		this._register(OnTypeRenAmeProviderRegistry.onDidChAnge(() => this.reinitiAlize()));
+		this._register(this._editor.onDidChAngeModelLAnguAge(() => this.reinitiAlize()));
 
-		this.reinitialize();
+		this.reinitiAlize();
 	}
 
-	private reinitialize() {
+	privAte reinitiAlize() {
 		const model = this._editor.getModel();
-		const isEnabled = model !== null && this._editor.getOption(EditorOption.renameOnType) && OnTypeRenameProviderRegistry.has(model);
-		if (isEnabled === this._enabled) {
+		const isEnAbled = model !== null && this._editor.getOption(EditorOption.renAmeOnType) && OnTypeRenAmeProviderRegistry.hAs(model);
+		if (isEnAbled === this._enAbled) {
 			return;
 		}
 
-		this._enabled = isEnabled;
+		this._enAbled = isEnAbled;
 
-		this.clearRanges();
-		this._localToDispose.clear();
+		this.cleArRAnges();
+		this._locAlToDispose.cleAr();
 
-		if (!isEnabled || model === null) {
+		if (!isEnAbled || model === null) {
 			return;
 		}
 
-		this._languageWordPattern = LanguageConfigurationRegistry.getWordDefinition(model.getLanguageIdentifier().id);
-		this._localToDispose.add(model.onDidChangeLanguageConfiguration(() => {
-			this._languageWordPattern = LanguageConfigurationRegistry.getWordDefinition(model.getLanguageIdentifier().id);
+		this._lAnguAgeWordPAttern = LAnguAgeConfigurAtionRegistry.getWordDefinition(model.getLAnguAgeIdentifier().id);
+		this._locAlToDispose.Add(model.onDidChAngeLAnguAgeConfigurAtion(() => {
+			this._lAnguAgeWordPAttern = LAnguAgeConfigurAtionRegistry.getWordDefinition(model.getLAnguAgeIdentifier().id);
 		}));
 
-		const rangeUpdateScheduler = new Delayer(this._debounceDuration);
-		const triggerRangeUpdate = () => {
-			this._rangeUpdateTriggerPromise = rangeUpdateScheduler.trigger(() => this.updateRanges(), this._debounceDuration);
+		const rAngeUpdAteScheduler = new DelAyer(this._debounceDurAtion);
+		const triggerRAngeUpdAte = () => {
+			this._rAngeUpdAteTriggerPromise = rAngeUpdAteScheduler.trigger(() => this.updAteRAnges(), this._debounceDurAtion);
 		};
-		const rangeSyncScheduler = new Delayer(0);
-		const triggerRangeSync = (decorations: string[]) => {
-			this._rangeSyncTriggerPromise = rangeSyncScheduler.trigger(() => this._syncRanges(decorations));
+		const rAngeSyncScheduler = new DelAyer(0);
+		const triggerRAngeSync = (decorAtions: string[]) => {
+			this._rAngeSyncTriggerPromise = rAngeSyncScheduler.trigger(() => this._syncRAnges(decorAtions));
 		};
-		this._localToDispose.add(this._editor.onDidChangeCursorPosition(() => {
-			triggerRangeUpdate();
+		this._locAlToDispose.Add(this._editor.onDidChAngeCursorPosition(() => {
+			triggerRAngeUpdAte();
 		}));
-		this._localToDispose.add(this._editor.onDidChangeModelContent((e) => {
-			if (!this._ignoreChangeEvent) {
-				if (this._currentDecorations.length > 0) {
-					const referenceRange = model.getDecorationRange(this._currentDecorations[0]);
-					if (referenceRange && e.changes.every(c => referenceRange.intersectRanges(c.range))) {
-						triggerRangeSync(this._currentDecorations);
+		this._locAlToDispose.Add(this._editor.onDidChAngeModelContent((e) => {
+			if (!this._ignoreChAngeEvent) {
+				if (this._currentDecorAtions.length > 0) {
+					const referenceRAnge = model.getDecorAtionRAnge(this._currentDecorAtions[0]);
+					if (referenceRAnge && e.chAnges.every(c => referenceRAnge.intersectRAnges(c.rAnge))) {
+						triggerRAngeSync(this._currentDecorAtions);
 						return;
 					}
 				}
 			}
-			triggerRangeUpdate();
+			triggerRAngeUpdAte();
 		}));
-		this._localToDispose.add({
+		this._locAlToDispose.Add({
 			dispose: () => {
-				rangeUpdateScheduler.cancel();
-				rangeSyncScheduler.cancel();
+				rAngeUpdAteScheduler.cAncel();
+				rAngeSyncScheduler.cAncel();
 			}
 		});
-		this.updateRanges();
+		this.updAteRAnges();
 	}
 
-	private _syncRanges(decorations: string[]): void {
-		// dalayed invocation, make sure we're still on
-		if (!this._editor.hasModel() || decorations !== this._currentDecorations || decorations.length === 0) {
+	privAte _syncRAnges(decorAtions: string[]): void {
+		// dAlAyed invocAtion, mAke sure we're still on
+		if (!this._editor.hAsModel() || decorAtions !== this._currentDecorAtions || decorAtions.length === 0) {
 			// nothing to do
 			return;
 		}
 
 		const model = this._editor.getModel();
-		const referenceRange = model.getDecorationRange(decorations[0]);
+		const referenceRAnge = model.getDecorAtionRAnge(decorAtions[0]);
 
-		if (!referenceRange || referenceRange.startLineNumber !== referenceRange.endLineNumber) {
-			return this.clearRanges();
+		if (!referenceRAnge || referenceRAnge.stArtLineNumber !== referenceRAnge.endLineNumber) {
+			return this.cleArRAnges();
 		}
 
-		const referenceValue = model.getValueInRange(referenceRange);
-		if (this._currentWordPattern) {
-			const match = referenceValue.match(this._currentWordPattern);
-			const matchLength = match ? match[0].length : 0;
-			if (matchLength !== referenceValue.length) {
-				return this.clearRanges();
+		const referenceVAlue = model.getVAlueInRAnge(referenceRAnge);
+		if (this._currentWordPAttern) {
+			const mAtch = referenceVAlue.mAtch(this._currentWordPAttern);
+			const mAtchLength = mAtch ? mAtch[0].length : 0;
+			if (mAtchLength !== referenceVAlue.length) {
+				return this.cleArRAnges();
 			}
 		}
 
-		let edits: IIdentifiedSingleEditOperation[] = [];
-		for (let i = 1, len = decorations.length; i < len; i++) {
-			const mirrorRange = model.getDecorationRange(decorations[i]);
-			if (!mirrorRange) {
+		let edits: IIdentifiedSingleEditOperAtion[] = [];
+		for (let i = 1, len = decorAtions.length; i < len; i++) {
+			const mirrorRAnge = model.getDecorAtionRAnge(decorAtions[i]);
+			if (!mirrorRAnge) {
 				continue;
 			}
-			if (mirrorRange.startLineNumber !== mirrorRange.endLineNumber) {
+			if (mirrorRAnge.stArtLineNumber !== mirrorRAnge.endLineNumber) {
 				edits.push({
-					range: mirrorRange,
-					text: referenceValue
+					rAnge: mirrorRAnge,
+					text: referenceVAlue
 				});
 			} else {
-				let oldValue = model.getValueInRange(mirrorRange);
-				let newValue = referenceValue;
-				let rangeStartColumn = mirrorRange.startColumn;
-				let rangeEndColumn = mirrorRange.endColumn;
+				let oldVAlue = model.getVAlueInRAnge(mirrorRAnge);
+				let newVAlue = referenceVAlue;
+				let rAngeStArtColumn = mirrorRAnge.stArtColumn;
+				let rAngeEndColumn = mirrorRAnge.endColumn;
 
-				const commonPrefixLength = strings.commonPrefixLength(oldValue, newValue);
-				rangeStartColumn += commonPrefixLength;
-				oldValue = oldValue.substr(commonPrefixLength);
-				newValue = newValue.substr(commonPrefixLength);
+				const commonPrefixLength = strings.commonPrefixLength(oldVAlue, newVAlue);
+				rAngeStArtColumn += commonPrefixLength;
+				oldVAlue = oldVAlue.substr(commonPrefixLength);
+				newVAlue = newVAlue.substr(commonPrefixLength);
 
-				const commonSuffixLength = strings.commonSuffixLength(oldValue, newValue);
-				rangeEndColumn -= commonSuffixLength;
-				oldValue = oldValue.substr(0, oldValue.length - commonSuffixLength);
-				newValue = newValue.substr(0, newValue.length - commonSuffixLength);
+				const commonSuffixLength = strings.commonSuffixLength(oldVAlue, newVAlue);
+				rAngeEndColumn -= commonSuffixLength;
+				oldVAlue = oldVAlue.substr(0, oldVAlue.length - commonSuffixLength);
+				newVAlue = newVAlue.substr(0, newVAlue.length - commonSuffixLength);
 
-				if (rangeStartColumn !== rangeEndColumn || newValue.length !== 0) {
+				if (rAngeStArtColumn !== rAngeEndColumn || newVAlue.length !== 0) {
 					edits.push({
-						range: new Range(mirrorRange.startLineNumber, rangeStartColumn, mirrorRange.endLineNumber, rangeEndColumn),
-						text: newValue
+						rAnge: new RAnge(mirrorRAnge.stArtLineNumber, rAngeStArtColumn, mirrorRAnge.endLineNumber, rAngeEndColumn),
+						text: newVAlue
 					});
 				}
 			}
@@ -219,70 +219,70 @@ export class OnTypeRenameContribution extends Disposable implements IEditorContr
 		}
 
 		try {
-			this._ignoreChangeEvent = true;
-			const prevEditOperationType = this._editor._getViewModel().getPrevEditOperationType();
-			this._editor.executeEdits('onTypeRename', edits);
-			this._editor._getViewModel().setPrevEditOperationType(prevEditOperationType);
-		} finally {
-			this._ignoreChangeEvent = false;
+			this._ignoreChAngeEvent = true;
+			const prevEditOperAtionType = this._editor._getViewModel().getPrevEditOperAtionType();
+			this._editor.executeEdits('onTypeRenAme', edits);
+			this._editor._getViewModel().setPrevEditOperAtionType(prevEditOperAtionType);
+		} finAlly {
+			this._ignoreChAngeEvent = fAlse;
 		}
 	}
 
 	public dispose(): void {
-		this.clearRanges();
+		this.cleArRAnges();
 		super.dispose();
 	}
 
-	public clearRanges(): void {
-		this._visibleContextKey.set(false);
-		this._currentDecorations = this._editor.deltaDecorations(this._currentDecorations, []);
+	public cleArRAnges(): void {
+		this._visibleContextKey.set(fAlse);
+		this._currentDecorAtions = this._editor.deltADecorAtions(this._currentDecorAtions, []);
 		if (this._currentRequest) {
-			this._currentRequest.cancel();
+			this._currentRequest.cAncel();
 			this._currentRequest = null;
 			this._currentRequestPosition = null;
 		}
 	}
 
-	public get currentUpdateTriggerPromise(): Promise<any> {
-		return this._rangeUpdateTriggerPromise || Promise.resolve();
+	public get currentUpdAteTriggerPromise(): Promise<Any> {
+		return this._rAngeUpdAteTriggerPromise || Promise.resolve();
 	}
 
-	public get currentSyncTriggerPromise(): Promise<any> {
-		return this._rangeSyncTriggerPromise || Promise.resolve();
+	public get currentSyncTriggerPromise(): Promise<Any> {
+		return this._rAngeSyncTriggerPromise || Promise.resolve();
 	}
 
-	public async updateRanges(force = false): Promise<void> {
-		if (!this._editor.hasModel()) {
-			this.clearRanges();
+	public Async updAteRAnges(force = fAlse): Promise<void> {
+		if (!this._editor.hAsModel()) {
+			this.cleArRAnges();
 			return;
 		}
 
 		const position = this._editor.getPosition();
-		if (!this._enabled && !force || this._editor.getSelections().length > 1) {
-			// disabled or multicursor
-			this.clearRanges();
+		if (!this._enAbled && !force || this._editor.getSelections().length > 1) {
+			// disAbled or multicursor
+			this.cleArRAnges();
 			return;
 		}
 
 		const model = this._editor.getModel();
 		const modelVersionId = model.getVersionId();
 		if (this._currentRequestPosition && this._currentRequestModelVersion === modelVersionId) {
-			if (position.equals(this._currentRequestPosition)) {
-				return; // same position
+			if (position.equAls(this._currentRequestPosition)) {
+				return; // sAme position
 			}
-			if (this._currentDecorations && this._currentDecorations.length > 0) {
-				const range = model.getDecorationRange(this._currentDecorations[0]);
-				if (range && range.containsPosition(position)) {
-					return; // just moving inside the existing primary range
+			if (this._currentDecorAtions && this._currentDecorAtions.length > 0) {
+				const rAnge = model.getDecorAtionRAnge(this._currentDecorAtions[0]);
+				if (rAnge && rAnge.contAinsPosition(position)) {
+					return; // just moving inside the existing primAry rAnge
 				}
 			}
 		}
 
 		this._currentRequestPosition = position;
 		this._currentRequestModelVersion = modelVersionId;
-		const request = createCancelablePromise(async token => {
+		const request = creAteCAncelAblePromise(Async token => {
 			try {
-				const response = await getOnTypeRenameRanges(model, position, token);
+				const response = AwAit getOnTypeRenAmeRAnges(model, position, token);
 				if (request !== this._currentRequest) {
 					return;
 				}
@@ -291,42 +291,42 @@ export class OnTypeRenameContribution extends Disposable implements IEditorContr
 					return;
 				}
 
-				let ranges: IRange[] = [];
-				if (response?.ranges) {
-					ranges = response.ranges;
+				let rAnges: IRAnge[] = [];
+				if (response?.rAnges) {
+					rAnges = response.rAnges;
 				}
 
-				this._currentWordPattern = response?.wordPattern || this._languageWordPattern;
+				this._currentWordPAttern = response?.wordPAttern || this._lAnguAgeWordPAttern;
 
-				let foundReferenceRange = false;
-				for (let i = 0, len = ranges.length; i < len; i++) {
-					if (Range.containsPosition(ranges[i], position)) {
-						foundReferenceRange = true;
+				let foundReferenceRAnge = fAlse;
+				for (let i = 0, len = rAnges.length; i < len; i++) {
+					if (RAnge.contAinsPosition(rAnges[i], position)) {
+						foundReferenceRAnge = true;
 						if (i !== 0) {
-							const referenceRange = ranges[i];
-							ranges.splice(i, 1);
-							ranges.unshift(referenceRange);
+							const referenceRAnge = rAnges[i];
+							rAnges.splice(i, 1);
+							rAnges.unshift(referenceRAnge);
 						}
-						break;
+						breAk;
 					}
 				}
 
-				if (!foundReferenceRange) {
-					// Cannot do on type rename if the ranges are not where the cursor is...
-					this.clearRanges();
+				if (!foundReferenceRAnge) {
+					// CAnnot do on type renAme if the rAnges Are not where the cursor is...
+					this.cleArRAnges();
 					return;
 				}
 
-				const decorations: IModelDeltaDecoration[] = ranges.map(range => ({ range: range, options: OnTypeRenameContribution.DECORATION }));
+				const decorAtions: IModelDeltADecorAtion[] = rAnges.mAp(rAnge => ({ rAnge: rAnge, options: OnTypeRenAmeContribution.DECORATION }));
 				this._visibleContextKey.set(true);
-				this._currentDecorations = this._editor.deltaDecorations(this._currentDecorations, decorations);
-			} catch (err) {
-				if (!isPromiseCanceledError(err)) {
+				this._currentDecorAtions = this._editor.deltADecorAtions(this._currentDecorAtions, decorAtions);
+			} cAtch (err) {
+				if (!isPromiseCAnceledError(err)) {
 					onUnexpectedError(err);
 				}
 				if (this._currentRequest === request || !this._currentRequest) {
-					// stop if we are still the latest request
-					this.clearRanges();
+					// stop if we Are still the lAtest request
+					this.cleArRAnges();
 				}
 			}
 		});
@@ -335,50 +335,50 @@ export class OnTypeRenameContribution extends Disposable implements IEditorContr
 	}
 
 	// for testing
-	public setDebounceDuration(timeInMS: number) {
-		this._debounceDuration = timeInMS;
+	public setDebounceDurAtion(timeInMS: number) {
+		this._debounceDurAtion = timeInMS;
 	}
 
-	// private printDecorators(model: ITextModel) {
-	// 	return this._currentDecorations.map(d => {
-	// 		const range = model.getDecorationRange(d);
-	// 		if (range) {
-	// 			return this.printRange(range);
+	// privAte printDecorAtors(model: ITextModel) {
+	// 	return this._currentDecorAtions.mAp(d => {
+	// 		const rAnge = model.getDecorAtionRAnge(d);
+	// 		if (rAnge) {
+	// 			return this.printRAnge(rAnge);
 	// 		}
-	// 		return 'invalid';
+	// 		return 'invAlid';
 	// 	}).join(',');
 	// }
 
-	// private printChanges(changes: IModelContentChange[]) {
-	// 	return changes.map(c => {
-	// 		return `${this.printRange(c.range)} - ${c.text}`;
+	// privAte printChAnges(chAnges: IModelContentChAnge[]) {
+	// 	return chAnges.mAp(c => {
+	// 		return `${this.printRAnge(c.rAnge)} - ${c.text}`;
 	// 	}
 	// 	).join(',');
 	// }
 
-	// private printRange(range: IRange) {
-	// 	return `${range.startLineNumber},${range.startColumn}/${range.endLineNumber},${range.endColumn}`;
+	// privAte printRAnge(rAnge: IRAnge) {
+	// 	return `${rAnge.stArtLineNumber},${rAnge.stArtColumn}/${rAnge.endLineNumber},${rAnge.endColumn}`;
 	// }
 }
 
-export class OnTypeRenameAction extends EditorAction {
+export clAss OnTypeRenAmeAction extends EditorAction {
 	constructor() {
 		super({
-			id: 'editor.action.onTypeRename',
-			label: nls.localize('onTypeRename.label', "On Type Rename Symbol"),
-			alias: 'On Type Rename Symbol',
-			precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasRenameProvider),
+			id: 'editor.Action.onTypeRenAme',
+			lAbel: nls.locAlize('onTypeRenAme.lAbel', "On Type RenAme Symbol"),
+			AliAs: 'On Type RenAme Symbol',
+			precondition: ContextKeyExpr.And(EditorContextKeys.writAble, EditorContextKeys.hAsRenAmeProvider),
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.F2,
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.F2,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	runCommand(accessor: ServicesAccessor, args: [URI, IPosition]): void | Promise<void> {
-		const editorService = accessor.get(ICodeEditorService);
-		const [uri, pos] = Array.isArray(args) && args || [undefined, undefined];
+	runCommAnd(Accessor: ServicesAccessor, Args: [URI, IPosition]): void | Promise<void> {
+		const editorService = Accessor.get(ICodeEditorService);
+		const [uri, pos] = ArrAy.isArrAy(Args) && Args || [undefined, undefined];
 
 		if (URI.isUri(uri) && Position.isIPosition(pos)) {
 			return editorService.openCodeEditor({ resource: uri }, editorService.getActiveCodeEditor()).then(editor => {
@@ -386,78 +386,78 @@ export class OnTypeRenameAction extends EditorAction {
 					return;
 				}
 				editor.setPosition(pos);
-				editor.invokeWithinContext(accessor => {
-					this.reportTelemetry(accessor, editor);
-					return this.run(accessor, editor);
+				editor.invokeWithinContext(Accessor => {
+					this.reportTelemetry(Accessor, editor);
+					return this.run(Accessor, editor);
 				});
 			}, onUnexpectedError);
 		}
 
-		return super.runCommand(accessor, args);
+		return super.runCommAnd(Accessor, Args);
 	}
 
-	run(_accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const controller = OnTypeRenameContribution.get(editor);
+	run(_Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const controller = OnTypeRenAmeContribution.get(editor);
 		if (controller) {
-			return Promise.resolve(controller.updateRanges(true));
+			return Promise.resolve(controller.updAteRAnges(true));
 		}
 		return Promise.resolve();
 	}
 }
 
-const OnTypeRenameCommand = EditorCommand.bindToContribution<OnTypeRenameContribution>(OnTypeRenameContribution.get);
-registerEditorCommand(new OnTypeRenameCommand({
-	id: 'cancelOnTypeRenameInput',
+const OnTypeRenAmeCommAnd = EditorCommAnd.bindToContribution<OnTypeRenAmeContribution>(OnTypeRenAmeContribution.get);
+registerEditorCommAnd(new OnTypeRenAmeCommAnd({
+	id: 'cAncelOnTypeRenAmeInput',
 	precondition: CONTEXT_ONTYPE_RENAME_INPUT_VISIBLE,
-	handler: x => x.clearRanges(),
+	hAndler: x => x.cleArRAnges(),
 	kbOpts: {
 		kbExpr: EditorContextKeys.editorTextFocus,
 		weight: KeybindingWeight.EditorContrib + 99,
-		primary: KeyCode.Escape,
-		secondary: [KeyMod.Shift | KeyCode.Escape]
+		primAry: KeyCode.EscApe,
+		secondAry: [KeyMod.Shift | KeyCode.EscApe]
 	}
 }));
 
 
-export function getOnTypeRenameRanges(model: ITextModel, position: Position, token: CancellationToken): Promise<{
-	ranges: IRange[],
-	wordPattern?: RegExp
+export function getOnTypeRenAmeRAnges(model: ITextModel, position: Position, token: CAncellAtionToken): Promise<{
+	rAnges: IRAnge[],
+	wordPAttern?: RegExp
 } | undefined | null> {
-	const orderedByScore = OnTypeRenameProviderRegistry.ordered(model);
+	const orderedByScore = OnTypeRenAmeProviderRegistry.ordered(model);
 
-	// in order of score ask the occurrences provider
-	// until someone response with a good result
-	// (good = none empty array)
+	// in order of score Ask the occurrences provider
+	// until someone response with A good result
+	// (good = none empty ArrAy)
 	return first<{
-		ranges: IRange[],
-		wordPattern?: RegExp
-	} | undefined>(orderedByScore.map(provider => () => {
-		return Promise.resolve(provider.provideOnTypeRenameRanges(model, position, token)).then((res) => {
+		rAnges: IRAnge[],
+		wordPAttern?: RegExp
+	} | undefined>(orderedByScore.mAp(provider => () => {
+		return Promise.resolve(provider.provideOnTypeRenAmeRAnges(model, position, token)).then((res) => {
 			if (!res) {
 				return undefined;
 			}
 
 			return {
-				ranges: res.ranges,
-				wordPattern: res.wordPattern || provider.wordPattern
+				rAnges: res.rAnges,
+				wordPAttern: res.wordPAttern || provider.wordPAttern
 			};
 		}, (err) => {
-			onUnexpectedExternalError(err);
+			onUnexpectedExternAlError(err);
 			return undefined;
 		});
 
-	}), result => !!result && arrays.isNonEmptyArray(result?.ranges));
+	}), result => !!result && ArrAys.isNonEmptyArrAy(result?.rAnges));
 }
 
-export const editorOnTypeRenameBackground = registerColor('editor.onTypeRenameBackground', { dark: Color.fromHex('#f00').transparent(0.3), light: Color.fromHex('#f00').transparent(0.3), hc: Color.fromHex('#f00').transparent(0.3) }, nls.localize('editorOnTypeRenameBackground', 'Background color when the editor auto renames on type.'));
-registerThemingParticipant((theme, collector) => {
-	const editorOnTypeRenameBackgroundColor = theme.getColor(editorOnTypeRenameBackground);
-	if (editorOnTypeRenameBackgroundColor) {
-		collector.addRule(`.monaco-editor .on-type-rename-decoration { background: ${editorOnTypeRenameBackgroundColor}; border-left-color: ${editorOnTypeRenameBackgroundColor}; }`);
+export const editorOnTypeRenAmeBAckground = registerColor('editor.onTypeRenAmeBAckground', { dArk: Color.fromHex('#f00').trAnspArent(0.3), light: Color.fromHex('#f00').trAnspArent(0.3), hc: Color.fromHex('#f00').trAnspArent(0.3) }, nls.locAlize('editorOnTypeRenAmeBAckground', 'BAckground color when the editor Auto renAmes on type.'));
+registerThemingPArticipAnt((theme, collector) => {
+	const editorOnTypeRenAmeBAckgroundColor = theme.getColor(editorOnTypeRenAmeBAckground);
+	if (editorOnTypeRenAmeBAckgroundColor) {
+		collector.AddRule(`.monAco-editor .on-type-renAme-decorAtion { bAckground: ${editorOnTypeRenAmeBAckgroundColor}; border-left-color: ${editorOnTypeRenAmeBAckgroundColor}; }`);
 	}
 });
 
-registerModelAndPositionCommand('_executeRenameOnTypeProvider', (model, position) => getOnTypeRenameRanges(model, position, CancellationToken.None));
+registerModelAndPositionCommAnd('_executeRenAmeOnTypeProvider', (model, position) => getOnTypeRenAmeRAnges(model, position, CAncellAtionToken.None));
 
-registerEditorContribution(OnTypeRenameContribution.ID, OnTypeRenameContribution);
-registerEditorAction(OnTypeRenameAction);
+registerEditorContribution(OnTypeRenAmeContribution.ID, OnTypeRenAmeContribution);
+registerEditorAction(OnTypeRenAmeAction);

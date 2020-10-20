@@ -1,161 +1,161 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IDisposable, toDisposable, combinedDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IExtensionGalleryService, IExtensionIdentifier, IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService, EnablementState } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { createDecorator, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { IURLHandler, IURLService, IOpenURLOptions } from 'vs/platform/url/common/url';
+import { locAlize } from 'vs/nls';
+import { IDisposAble, toDisposAble, combinedDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IExtensionGAlleryService, IExtensionIdentifier, IExtensionMAnAgementService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { IWorkbenchExtensionEnAblementService, EnAblementStAte } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { creAteDecorAtor, ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INotificAtionService, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { IURLHAndler, IURLService, IOpenURLOptions } from 'vs/plAtform/url/common/url';
 import { IHostService } from 'vs/workbench/services/host/browser/host';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IWorkbenchContribution, Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { Action2, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
-import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { IsWebContext } from 'vs/platform/contextkey/common/contextkeys';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IWorkbenchContribution, Extensions As WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { Action2, MenuId, registerAction2 } from 'vs/plAtform/Actions/common/Actions';
+import { IQuickInputService, IQuickPickItem } from 'vs/plAtform/quickinput/common/quickInput';
+import { IProgressService, ProgressLocAtion } from 'vs/plAtform/progress/common/progress';
+import { IsWebContext } from 'vs/plAtform/contextkey/common/contextkeys';
 
 const FIVE_MINUTES = 5 * 60 * 1000;
 const THIRTY_SECONDS = 30 * 1000;
-const URL_TO_HANDLE = 'extensionUrlHandler.urlToHandle';
-const CONFIRMED_EXTENSIONS_CONFIGURATION_KEY = 'extensions.confirmedUriHandlerExtensionIds';
-const CONFIRMED_EXTENSIONS_STORAGE_KEY = 'extensionUrlHandler.confirmedExtensions';
+const URL_TO_HANDLE = 'extensionUrlHAndler.urlToHAndle';
+const CONFIRMED_EXTENSIONS_CONFIGURATION_KEY = 'extensions.confirmedUriHAndlerExtensionIds';
+const CONFIRMED_EXTENSIONS_STORAGE_KEY = 'extensionUrlHAndler.confirmedExtensions';
 
-function isExtensionId(value: string): boolean {
-	return /^[a-z0-9][a-z0-9\-]*\.[a-z0-9][a-z0-9\-]*$/i.test(value);
+function isExtensionId(vAlue: string): booleAn {
+	return /^[A-z0-9][A-z0-9\-]*\.[A-z0-9][A-z0-9\-]*$/i.test(vAlue);
 }
 
-class ConfirmedExtensionIdStorage {
+clAss ConfirmedExtensionIdStorAge {
 
 	get extensions(): string[] {
-		const confirmedExtensionIdsJson = this.storageService.get(CONFIRMED_EXTENSIONS_STORAGE_KEY, StorageScope.GLOBAL, '[]');
+		const confirmedExtensionIdsJson = this.storAgeService.get(CONFIRMED_EXTENSIONS_STORAGE_KEY, StorAgeScope.GLOBAL, '[]');
 
 		try {
-			return JSON.parse(confirmedExtensionIdsJson);
-		} catch {
+			return JSON.pArse(confirmedExtensionIdsJson);
+		} cAtch {
 			return [];
 		}
 	}
 
-	constructor(private storageService: IStorageService) { }
+	constructor(privAte storAgeService: IStorAgeService) { }
 
-	has(id: string): boolean {
+	hAs(id: string): booleAn {
 		return this.extensions.indexOf(id) > -1;
 	}
 
-	add(id: string): void {
+	Add(id: string): void {
 		this.set([...this.extensions, id]);
 	}
 
 	set(ids: string[]): void {
-		this.storageService.store(CONFIRMED_EXTENSIONS_STORAGE_KEY, JSON.stringify(ids), StorageScope.GLOBAL);
+		this.storAgeService.store(CONFIRMED_EXTENSIONS_STORAGE_KEY, JSON.stringify(ids), StorAgeScope.GLOBAL);
 	}
 }
 
-export const IExtensionUrlHandler = createDecorator<IExtensionUrlHandler>('extensionUrlHandler');
+export const IExtensionUrlHAndler = creAteDecorAtor<IExtensionUrlHAndler>('extensionUrlHAndler');
 
-export interface IExtensionUrlHandler {
-	readonly _serviceBrand: undefined;
-	registerExtensionHandler(extensionId: ExtensionIdentifier, handler: IURLHandler): void;
-	unregisterExtensionHandler(extensionId: ExtensionIdentifier): void;
+export interfAce IExtensionUrlHAndler {
+	reAdonly _serviceBrAnd: undefined;
+	registerExtensionHAndler(extensionId: ExtensionIdentifier, hAndler: IURLHAndler): void;
+	unregisterExtensionHAndler(extensionId: ExtensionIdentifier): void;
 }
 
 /**
- * This class handles URLs which are directed towards extensions.
- * If a URL is directed towards an inactive extension, it buffers it,
- * activates the extension and re-opens the URL once the extension registers
- * a URL handler. If the extension never registers a URL handler, the urls
- * will eventually be garbage collected.
+ * This clAss hAndles URLs which Are directed towArds extensions.
+ * If A URL is directed towArds An inActive extension, it buffers it,
+ * ActivAtes the extension And re-opens the URL once the extension registers
+ * A URL hAndler. If the extension never registers A URL hAndler, the urls
+ * will eventuAlly be gArbAge collected.
  *
- * It also makes sure the user confirms opening URLs directed towards extensions.
+ * It Also mAkes sure the user confirms opening URLs directed towArds extensions.
  */
-class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
+clAss ExtensionUrlHAndler implements IExtensionUrlHAndler, IURLHAndler {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private extensionHandlers = new Map<string, IURLHandler>();
-	private uriBuffer = new Map<string, { timestamp: number, uri: URI }[]>();
-	private storage: ConfirmedExtensionIdStorage;
-	private disposable: IDisposable;
+	privAte extensionHAndlers = new MAp<string, IURLHAndler>();
+	privAte uriBuffer = new MAp<string, { timestAmp: number, uri: URI }[]>();
+	privAte storAge: ConfirmedExtensionIdStorAge;
+	privAte disposAble: IDisposAble;
 
 	constructor(
 		@IURLService urlService: IURLService,
-		@IExtensionService private readonly extensionService: IExtensionService,
-		@IDialogService private readonly dialogService: IDialogService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
-		@IHostService private readonly hostService: IHostService,
-		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IProgressService private readonly progressService: IProgressService
+		@IExtensionService privAte reAdonly extensionService: IExtensionService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IExtensionMAnAgementService privAte reAdonly extensionMAnAgementService: IExtensionMAnAgementService,
+		@IWorkbenchExtensionEnAblementService privAte reAdonly extensionEnAblementService: IWorkbenchExtensionEnAblementService,
+		@IHostService privAte reAdonly hostService: IHostService,
+		@IExtensionGAlleryService privAte reAdonly gAlleryService: IExtensionGAlleryService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IProgressService privAte reAdonly progressService: IProgressService
 	) {
-		this.storage = new ConfirmedExtensionIdStorage(storageService);
+		this.storAge = new ConfirmedExtensionIdStorAge(storAgeService);
 
-		const interval = setInterval(() => this.garbageCollect(), THIRTY_SECONDS);
-		const urlToHandleValue = this.storageService.get(URL_TO_HANDLE, StorageScope.WORKSPACE);
-		if (urlToHandleValue) {
-			this.storageService.remove(URL_TO_HANDLE, StorageScope.WORKSPACE);
-			this.handleURL(URI.revive(JSON.parse(urlToHandleValue)), { trusted: true });
+		const intervAl = setIntervAl(() => this.gArbAgeCollect(), THIRTY_SECONDS);
+		const urlToHAndleVAlue = this.storAgeService.get(URL_TO_HANDLE, StorAgeScope.WORKSPACE);
+		if (urlToHAndleVAlue) {
+			this.storAgeService.remove(URL_TO_HANDLE, StorAgeScope.WORKSPACE);
+			this.hAndleURL(URI.revive(JSON.pArse(urlToHAndleVAlue)), { trusted: true });
 		}
 
-		this.disposable = combinedDisposable(
-			urlService.registerHandler(this),
-			toDisposable(() => clearInterval(interval))
+		this.disposAble = combinedDisposAble(
+			urlService.registerHAndler(this),
+			toDisposAble(() => cleArIntervAl(intervAl))
 		);
 
-		const cache = ExtensionUrlBootstrapHandler.cache;
-		setTimeout(() => cache.forEach(uri => this.handleURL(uri)));
+		const cAche = ExtensionUrlBootstrApHAndler.cAche;
+		setTimeout(() => cAche.forEAch(uri => this.hAndleURL(uri)));
 	}
 
-	async handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean> {
-		if (!isExtensionId(uri.authority)) {
-			return false;
+	Async hAndleURL(uri: URI, options?: IOpenURLOptions): Promise<booleAn> {
+		if (!isExtensionId(uri.Authority)) {
+			return fAlse;
 		}
 
-		const extensionId = uri.authority;
-		const wasHandlerAvailable = this.extensionHandlers.has(ExtensionIdentifier.toKey(extensionId));
-		const extension = await this.extensionService.getExtension(extensionId);
+		const extensionId = uri.Authority;
+		const wAsHAndlerAvAilAble = this.extensionHAndlers.hAs(ExtensionIdentifier.toKey(extensionId));
+		const extension = AwAit this.extensionService.getExtension(extensionId);
 
 		if (!extension) {
-			await this.handleUnhandledURL(uri, { id: extensionId });
+			AwAit this.hAndleUnhAndledURL(uri, { id: extensionId });
 			return true;
 		}
 
-		let showConfirm: boolean;
+		let showConfirm: booleAn;
 		if (options && options.trusted) {
-			showConfirm = false;
+			showConfirm = fAlse;
 		} else {
 			showConfirm = !this.isConfirmed(ExtensionIdentifier.toKey(extensionId));
 		}
 
 		if (showConfirm) {
-			let uriString = uri.toString(false);
+			let uriString = uri.toString(fAlse);
 
 			if (uriString.length > 40) {
 				uriString = `${uriString.substring(0, 30)}...${uriString.substring(uriString.length - 5)}`;
 			}
 
-			const result = await this.dialogService.confirm({
-				message: localize('confirmUrl', "Allow an extension to open this URI?", extensionId),
+			const result = AwAit this.diAlogService.confirm({
+				messAge: locAlize('confirmUrl', "Allow An extension to open this URI?", extensionId),
 				checkbox: {
-					label: localize('rememberConfirmUrl', "Don't ask again for this extension."),
+					lAbel: locAlize('rememberConfirmUrl', "Don't Ask AgAin for this extension."),
 				},
-				detail: `${extension.displayName || extension.name} (${extensionId}) wants to open a URI:\n\n${uriString}`,
-				primaryButton: localize('open', "&&Open"),
+				detAil: `${extension.displAyNAme || extension.nAme} (${extensionId}) wAnts to open A URI:\n\n${uriString}`,
+				primAryButton: locAlize('open', "&&Open"),
 				type: 'question'
 			});
 
@@ -164,24 +164,24 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 			}
 
 			if (result.checkboxChecked) {
-				this.storage.add(ExtensionIdentifier.toKey(extensionId));
+				this.storAge.Add(ExtensionIdentifier.toKey(extensionId));
 			}
 		}
 
-		const handler = this.extensionHandlers.get(ExtensionIdentifier.toKey(extensionId));
+		const hAndler = this.extensionHAndlers.get(ExtensionIdentifier.toKey(extensionId));
 
-		if (handler) {
-			if (!wasHandlerAvailable) {
-				// forward it directly
-				return await handler.handleURL(uri, options);
+		if (hAndler) {
+			if (!wAsHAndlerAvAilAble) {
+				// forwArd it directly
+				return AwAit hAndler.hAndleURL(uri, options);
 			}
 
-			// let the ExtensionUrlHandler instance handle this
-			return false;
+			// let the ExtensionUrlHAndler instAnce hAndle this
+			return fAlse;
 		}
 
-		// collect URI for eventual extension activation
-		const timestamp = new Date().getTime();
+		// collect URI for eventuAl extension ActivAtion
+		const timestAmp = new DAte().getTime();
 		let uris = this.uriBuffer.get(ExtensionIdentifier.toKey(extensionId));
 
 		if (!uris) {
@@ -189,43 +189,43 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 			this.uriBuffer.set(ExtensionIdentifier.toKey(extensionId), uris);
 		}
 
-		uris.push({ timestamp, uri });
+		uris.push({ timestAmp, uri });
 
-		// activate the extension
-		await this.extensionService.activateByEvent(`onUri:${ExtensionIdentifier.toKey(extensionId)}`);
+		// ActivAte the extension
+		AwAit this.extensionService.ActivAteByEvent(`onUri:${ExtensionIdentifier.toKey(extensionId)}`);
 		return true;
 	}
 
-	registerExtensionHandler(extensionId: ExtensionIdentifier, handler: IURLHandler): void {
-		this.extensionHandlers.set(ExtensionIdentifier.toKey(extensionId), handler);
+	registerExtensionHAndler(extensionId: ExtensionIdentifier, hAndler: IURLHAndler): void {
+		this.extensionHAndlers.set(ExtensionIdentifier.toKey(extensionId), hAndler);
 
 		const uris = this.uriBuffer.get(ExtensionIdentifier.toKey(extensionId)) || [];
 
 		for (const { uri } of uris) {
-			handler.handleURL(uri);
+			hAndler.hAndleURL(uri);
 		}
 
 		this.uriBuffer.delete(ExtensionIdentifier.toKey(extensionId));
 	}
 
-	unregisterExtensionHandler(extensionId: ExtensionIdentifier): void {
-		this.extensionHandlers.delete(ExtensionIdentifier.toKey(extensionId));
+	unregisterExtensionHAndler(extensionId: ExtensionIdentifier): void {
+		this.extensionHAndlers.delete(ExtensionIdentifier.toKey(extensionId));
 	}
 
-	private async handleUnhandledURL(uri: URI, extensionIdentifier: IExtensionIdentifier): Promise<void> {
-		const installedExtensions = await this.extensionManagementService.getInstalled();
-		const extension = installedExtensions.filter(e => areSameExtensions(e.identifier, extensionIdentifier))[0];
+	privAte Async hAndleUnhAndledURL(uri: URI, extensionIdentifier: IExtensionIdentifier): Promise<void> {
+		const instAlledExtensions = AwAit this.extensionMAnAgementService.getInstAlled();
+		const extension = instAlledExtensions.filter(e => AreSAmeExtensions(e.identifier, extensionIdentifier))[0];
 
-		// Extension is installed
+		// Extension is instAlled
 		if (extension) {
-			const enabled = this.extensionEnablementService.isEnabled(extension);
+			const enAbled = this.extensionEnAblementService.isEnAbled(extension);
 
-			// Extension is not running. Reload the window to handle.
-			if (enabled) {
-				const result = await this.dialogService.confirm({
-					message: localize('reloadAndHandle', "Extension '{0}' is not loaded. Would you like to reload the window to load the extension and open the URL?", extension.manifest.displayName || extension.manifest.name),
-					detail: `${extension.manifest.displayName || extension.manifest.name} (${extensionIdentifier.id}) wants to open a URL:\n\n${uri.toString()}`,
-					primaryButton: localize('reloadAndOpen', "&&Reload Window and Open"),
+			// Extension is not running. ReloAd the window to hAndle.
+			if (enAbled) {
+				const result = AwAit this.diAlogService.confirm({
+					messAge: locAlize('reloAdAndHAndle', "Extension '{0}' is not loAded. Would you like to reloAd the window to loAd the extension And open the URL?", extension.mAnifest.displAyNAme || extension.mAnifest.nAme),
+					detAil: `${extension.mAnifest.displAyNAme || extension.mAnifest.nAme} (${extensionIdentifier.id}) wAnts to open A URL:\n\n${uri.toString()}`,
+					primAryButton: locAlize('reloAdAndOpen', "&&ReloAd Window And Open"),
 					type: 'question'
 				});
 
@@ -233,15 +233,15 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 					return;
 				}
 
-				await this.reloadAndHandle(uri);
+				AwAit this.reloAdAndHAndle(uri);
 			}
 
-			// Extension is disabled. Enable the extension and reload the window to handle.
+			// Extension is disAbled. EnAble the extension And reloAd the window to hAndle.
 			else {
-				const result = await this.dialogService.confirm({
-					message: localize('enableAndHandle', "Extension '{0}' is disabled. Would you like to enable the extension and reload the window to open the URL?", extension.manifest.displayName || extension.manifest.name),
-					detail: `${extension.manifest.displayName || extension.manifest.name} (${extensionIdentifier.id}) wants to open a URL:\n\n${uri.toString()}`,
-					primaryButton: localize('enableAndReload', "&&Enable and Open"),
+				const result = AwAit this.diAlogService.confirm({
+					messAge: locAlize('enAbleAndHAndle', "Extension '{0}' is disAbled. Would you like to enAble the extension And reloAd the window to open the URL?", extension.mAnifest.displAyNAme || extension.mAnifest.nAme),
+					detAil: `${extension.mAnifest.displAyNAme || extension.mAnifest.nAme} (${extensionIdentifier.id}) wAnts to open A URL:\n\n${uri.toString()}`,
+					primAryButton: locAlize('enAbleAndReloAd', "&&EnAble And Open"),
 					type: 'question'
 				});
 
@@ -249,24 +249,24 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 					return;
 				}
 
-				await this.extensionEnablementService.setEnablement([extension], EnablementState.EnabledGlobally);
-				await this.reloadAndHandle(uri);
+				AwAit this.extensionEnAblementService.setEnAblement([extension], EnAblementStAte.EnAbledGlobAlly);
+				AwAit this.reloAdAndHAndle(uri);
 			}
 		}
 
-		// Extension is not installed
+		// Extension is not instAlled
 		else {
-			const galleryExtension = await this.galleryService.getCompatibleExtension(extensionIdentifier);
+			const gAlleryExtension = AwAit this.gAlleryService.getCompAtibleExtension(extensionIdentifier);
 
-			if (!galleryExtension) {
+			if (!gAlleryExtension) {
 				return;
 			}
 
-			// Install the Extension and reload the window to handle.
-			const result = await this.dialogService.confirm({
-				message: localize('installAndHandle', "Extension '{0}' is not installed. Would you like to install the extension and reload the window to open this URL?", galleryExtension.displayName || galleryExtension.name),
-				detail: `${galleryExtension.displayName || galleryExtension.name} (${extensionIdentifier.id}) wants to open a URL:\n\n${uri.toString()}`,
-				primaryButton: localize('install', "&&Install"),
+			// InstAll the Extension And reloAd the window to hAndle.
+			const result = AwAit this.diAlogService.confirm({
+				messAge: locAlize('instAllAndHAndle', "Extension '{0}' is not instAlled. Would you like to instAll the extension And reloAd the window to open this URL?", gAlleryExtension.displAyNAme || gAlleryExtension.nAme),
+				detAil: `${gAlleryExtension.displAyNAme || gAlleryExtension.nAme} (${extensionIdentifier.id}) wAnts to open A URL:\n\n${uri.toString()}`,
+				primAryButton: locAlize('instAll', "&&InstAll"),
 				type: 'question'
 			});
 
@@ -275,35 +275,35 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 			}
 
 			try {
-				await this.progressService.withProgress({
-					location: ProgressLocation.Notification,
-					title: localize('Installing', "Installing Extension '{0}'...", galleryExtension.displayName || galleryExtension.name)
-				}, () => this.extensionManagementService.installFromGallery(galleryExtension));
+				AwAit this.progressService.withProgress({
+					locAtion: ProgressLocAtion.NotificAtion,
+					title: locAlize('InstAlling', "InstAlling Extension '{0}'...", gAlleryExtension.displAyNAme || gAlleryExtension.nAme)
+				}, () => this.extensionMAnAgementService.instAllFromGAllery(gAlleryExtension));
 
-				this.notificationService.prompt(
+				this.notificAtionService.prompt(
 					Severity.Info,
-					localize('reload', "Would you like to reload the window and open the URL '{0}'?", uri.toString()),
-					[{ label: localize('Reload', "Reload Window and Open"), run: () => this.reloadAndHandle(uri) }],
+					locAlize('reloAd', "Would you like to reloAd the window And open the URL '{0}'?", uri.toString()),
+					[{ lAbel: locAlize('ReloAd', "ReloAd Window And Open"), run: () => this.reloAdAndHAndle(uri) }],
 					{ sticky: true }
 				);
-			} catch (error) {
-				this.notificationService.error(error);
+			} cAtch (error) {
+				this.notificAtionService.error(error);
 			}
 		}
 	}
 
-	private async reloadAndHandle(url: URI): Promise<void> {
-		this.storageService.store(URL_TO_HANDLE, JSON.stringify(url.toJSON()), StorageScope.WORKSPACE);
-		await this.hostService.reload();
+	privAte Async reloAdAndHAndle(url: URI): Promise<void> {
+		this.storAgeService.store(URL_TO_HANDLE, JSON.stringify(url.toJSON()), StorAgeScope.WORKSPACE);
+		AwAit this.hostService.reloAd();
 	}
 
-	// forget about all uris buffered more than 5 minutes ago
-	private garbageCollect(): void {
-		const now = new Date().getTime();
-		const uriBuffer = new Map<string, { timestamp: number, uri: URI }[]>();
+	// forget About All uris buffered more thAn 5 minutes Ago
+	privAte gArbAgeCollect(): void {
+		const now = new DAte().getTime();
+		const uriBuffer = new MAp<string, { timestAmp: number, uri: URI }[]>();
 
-		this.uriBuffer.forEach((uris, extensionId) => {
-			uris = uris.filter(({ timestamp }) => now - timestamp < FIVE_MINUTES);
+		this.uriBuffer.forEAch((uris, extensionId) => {
+			uris = uris.filter(({ timestAmp }) => now - timestAmp < FIVE_MINUTES);
 
 			if (uris.length > 0) {
 				uriBuffer.set(extensionId, uris);
@@ -313,18 +313,18 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 		this.uriBuffer = uriBuffer;
 	}
 
-	private isConfirmed(id: string): boolean {
-		if (this.storage.has(id)) {
+	privAte isConfirmed(id: string): booleAn {
+		if (this.storAge.hAs(id)) {
 			return true;
 		}
 
-		return this.getConfirmedExtensionIdsFromConfiguration().indexOf(id) > -1;
+		return this.getConfirmedExtensionIdsFromConfigurAtion().indexOf(id) > -1;
 	}
 
-	private getConfirmedExtensionIdsFromConfiguration(): Array<string> {
-		const confirmedExtensionIds = this.configurationService.getValue<Array<string>>(CONFIRMED_EXTENSIONS_CONFIGURATION_KEY);
+	privAte getConfirmedExtensionIdsFromConfigurAtion(): ArrAy<string> {
+		const confirmedExtensionIds = this.configurAtionService.getVAlue<ArrAy<string>>(CONFIRMED_EXTENSIONS_CONFIGURATION_KEY);
 
-		if (!Array.isArray(confirmedExtensionIds)) {
+		if (!ArrAy.isArrAy(confirmedExtensionIds)) {
 			return [];
 		}
 
@@ -332,81 +332,81 @@ class ExtensionUrlHandler implements IExtensionUrlHandler, IURLHandler {
 	}
 
 	dispose(): void {
-		this.disposable.dispose();
-		this.extensionHandlers.clear();
-		this.uriBuffer.clear();
+		this.disposAble.dispose();
+		this.extensionHAndlers.cleAr();
+		this.uriBuffer.cleAr();
 	}
 }
 
-registerSingleton(IExtensionUrlHandler, ExtensionUrlHandler);
+registerSingleton(IExtensionUrlHAndler, ExtensionUrlHAndler);
 
 /**
- * This class handles URLs before `ExtensionUrlHandler` is instantiated.
+ * This clAss hAndles URLs before `ExtensionUrlHAndler` is instAntiAted.
  * More info: https://github.com/microsoft/vscode/issues/73101
  */
-class ExtensionUrlBootstrapHandler implements IWorkbenchContribution, IURLHandler {
+clAss ExtensionUrlBootstrApHAndler implements IWorkbenchContribution, IURLHAndler {
 
-	private static _cache: URI[] = [];
-	private static disposable: IDisposable;
+	privAte stAtic _cAche: URI[] = [];
+	privAte stAtic disposAble: IDisposAble;
 
-	static get cache(): URI[] {
-		ExtensionUrlBootstrapHandler.disposable.dispose();
+	stAtic get cAche(): URI[] {
+		ExtensionUrlBootstrApHAndler.disposAble.dispose();
 
-		const result = ExtensionUrlBootstrapHandler._cache;
-		ExtensionUrlBootstrapHandler._cache = [];
+		const result = ExtensionUrlBootstrApHAndler._cAche;
+		ExtensionUrlBootstrApHAndler._cAche = [];
 		return result;
 	}
 
 	constructor(@IURLService urlService: IURLService) {
-		ExtensionUrlBootstrapHandler.disposable = urlService.registerHandler(this);
+		ExtensionUrlBootstrApHAndler.disposAble = urlService.registerHAndler(this);
 	}
 
-	async handleURL(uri: URI): Promise<boolean> {
-		if (!isExtensionId(uri.authority)) {
-			return false;
+	Async hAndleURL(uri: URI): Promise<booleAn> {
+		if (!isExtensionId(uri.Authority)) {
+			return fAlse;
 		}
 
-		ExtensionUrlBootstrapHandler._cache.push(uri);
+		ExtensionUrlBootstrApHAndler._cAche.push(uri);
 		return true;
 	}
 }
 
-const workbenchRegistry = Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
-workbenchRegistry.registerWorkbenchContribution(ExtensionUrlBootstrapHandler, LifecyclePhase.Ready);
+const workbenchRegistry = Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench);
+workbenchRegistry.registerWorkbenchContribution(ExtensionUrlBootstrApHAndler, LifecyclePhAse.ReAdy);
 
-class ManageAuthorizedExtensionURIsAction extends Action2 {
+clAss MAnAgeAuthorizedExtensionURIsAction extends Action2 {
 
 	constructor() {
 		super({
-			id: 'workbench.extensions.action.manageAuthorizedExtensionURIs',
-			title: { value: localize('manage', "Manage Authorized Extension URIs..."), original: 'Manage Authorized Extension URIs...' },
-			category: { value: localize('extensions', "Extensions"), original: 'Extensions' },
+			id: 'workbench.extensions.Action.mAnAgeAuthorizedExtensionURIs',
+			title: { vAlue: locAlize('mAnAge', "MAnAge Authorized Extension URIs..."), originAl: 'MAnAge Authorized Extension URIs...' },
+			cAtegory: { vAlue: locAlize('extensions', "Extensions"), originAl: 'Extensions' },
 			menu: {
-				id: MenuId.CommandPalette,
-				when: IsWebContext.toNegated()
+				id: MenuId.CommAndPAlette,
+				when: IsWebContext.toNegAted()
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const storageService = accessor.get(IStorageService);
-		const quickInputService = accessor.get(IQuickInputService);
-		const storage = new ConfirmedExtensionIdStorage(storageService);
-		const items = storage.extensions.map(label => ({ label, picked: true } as IQuickPickItem));
+	Async run(Accessor: ServicesAccessor): Promise<void> {
+		const storAgeService = Accessor.get(IStorAgeService);
+		const quickInputService = Accessor.get(IQuickInputService);
+		const storAge = new ConfirmedExtensionIdStorAge(storAgeService);
+		const items = storAge.extensions.mAp(lAbel => ({ lAbel, picked: true } As IQuickPickItem));
 
 		if (items.length === 0) {
-			await quickInputService.pick([{ label: localize('no', 'There are currently no authorized extension URIs.') }]);
+			AwAit quickInputService.pick([{ lAbel: locAlize('no', 'There Are currently no Authorized extension URIs.') }]);
 			return;
 		}
 
-		const result = await quickInputService.pick(items, { canPickMany: true });
+		const result = AwAit quickInputService.pick(items, { cAnPickMAny: true });
 
 		if (!result) {
 			return;
 		}
 
-		storage.set(result.map(item => item.label));
+		storAge.set(result.mAp(item => item.lAbel));
 	}
 }
 
-registerAction2(ManageAuthorizedExtensionURIsAction);
+registerAction2(MAnAgeAuthorizedExtensionURIsAction);

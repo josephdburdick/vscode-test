@@ -1,99 +1,99 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, Action, Separator } from 'vs/base/common/actions';
-import { localize } from 'vs/nls';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { EventHelper } from 'vs/base/browser/dom';
-import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { isNative } from 'vs/base/common/platform';
-import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
+import { IAction, Action, SepArAtor } from 'vs/bAse/common/Actions';
+import { locAlize } from 'vs/nls';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { EventHelper } from 'vs/bAse/browser/dom';
+import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions As WorkbenchExtensions } from 'vs/workbench/common/contributions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { isNAtive } from 'vs/bAse/common/plAtform';
+import { IClipboArdService } from 'vs/plAtform/clipboArd/common/clipboArdService';
 
-export class TextInputActionsProvider extends Disposable implements IWorkbenchContribution {
+export clAss TextInputActionsProvider extends DisposAble implements IWorkbenchContribution {
 
-	private textInputActions: IAction[] = [];
+	privAte textInputActions: IAction[] = [];
 
 	constructor(
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IClipboardService private readonly clipboardService: IClipboardService
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IContextMenuService privAte reAdonly contextMenuService: IContextMenuService,
+		@IClipboArdService privAte reAdonly clipboArdService: IClipboArdService
 	) {
 		super();
 
-		this.createActions();
+		this.creAteActions();
 
 		this.registerListeners();
 	}
 
-	private createActions(): void {
+	privAte creAteActions(): void {
 		this.textInputActions.push(
 
 			// Undo/Redo
-			new Action('undo', localize('undo', "Undo"), undefined, true, async () => document.execCommand('undo')),
-			new Action('redo', localize('redo', "Redo"), undefined, true, async () => document.execCommand('redo')),
-			new Separator(),
+			new Action('undo', locAlize('undo', "Undo"), undefined, true, Async () => document.execCommAnd('undo')),
+			new Action('redo', locAlize('redo', "Redo"), undefined, true, Async () => document.execCommAnd('redo')),
+			new SepArAtor(),
 
-			// Cut / Copy / Paste
-			new Action('editor.action.clipboardCutAction', localize('cut', "Cut"), undefined, true, async () => document.execCommand('cut')),
-			new Action('editor.action.clipboardCopyAction', localize('copy', "Copy"), undefined, true, async () => document.execCommand('copy')),
-			new Action('editor.action.clipboardPasteAction', localize('paste', "Paste"), undefined, true, async (element: HTMLInputElement | HTMLTextAreaElement) => {
+			// Cut / Copy / PAste
+			new Action('editor.Action.clipboArdCutAction', locAlize('cut', "Cut"), undefined, true, Async () => document.execCommAnd('cut')),
+			new Action('editor.Action.clipboArdCopyAction', locAlize('copy', "Copy"), undefined, true, Async () => document.execCommAnd('copy')),
+			new Action('editor.Action.clipboArdPAsteAction', locAlize('pAste', "PAste"), undefined, true, Async (element: HTMLInputElement | HTMLTextAreAElement) => {
 
-				// Native: paste is supported
-				if (isNative) {
-					document.execCommand('paste');
+				// NAtive: pAste is supported
+				if (isNAtive) {
+					document.execCommAnd('pAste');
 				}
 
-				// Web: paste is not supported due to security reasons
+				// Web: pAste is not supported due to security reAsons
 				else {
-					const clipboardText = await this.clipboardService.readText();
+					const clipboArdText = AwAit this.clipboArdService.reAdText();
 					if (
-						element instanceof HTMLTextAreaElement ||
-						element instanceof HTMLInputElement
+						element instAnceof HTMLTextAreAElement ||
+						element instAnceof HTMLInputElement
 					) {
-						const selectionStart = element.selectionStart || 0;
+						const selectionStArt = element.selectionStArt || 0;
 						const selectionEnd = element.selectionEnd || 0;
 
-						element.value = `${element.value.substring(0, selectionStart)}${clipboardText}${element.value.substring(selectionEnd, element.value.length)}`;
-						element.selectionStart = selectionStart + clipboardText.length;
-						element.selectionEnd = element.selectionStart;
+						element.vAlue = `${element.vAlue.substring(0, selectionStArt)}${clipboArdText}${element.vAlue.substring(selectionEnd, element.vAlue.length)}`;
+						element.selectionStArt = selectionStArt + clipboArdText.length;
+						element.selectionEnd = element.selectionStArt;
 					}
 				}
 			}),
-			new Separator(),
+			new SepArAtor(),
 
 			// Select All
-			new Action('editor.action.selectAll', localize('selectAll', "Select All"), undefined, true, async () => document.execCommand('selectAll'))
+			new Action('editor.Action.selectAll', locAlize('selectAll', "Select All"), undefined, true, Async () => document.execCommAnd('selectAll'))
 		);
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
-		// Context menu support in input/textarea
-		this.layoutService.container.addEventListener('contextmenu', e => this.onContextMenu(e));
+		// Context menu support in input/textAreA
+		this.lAyoutService.contAiner.AddEventListener('contextmenu', e => this.onContextMenu(e));
 
 	}
 
-	private onContextMenu(e: MouseEvent): void {
-		if (e.target instanceof HTMLElement) {
-			const target = <HTMLElement>e.target;
-			if (target.nodeName && (target.nodeName.toLowerCase() === 'input' || target.nodeName.toLowerCase() === 'textarea')) {
+	privAte onContextMenu(e: MouseEvent): void {
+		if (e.tArget instAnceof HTMLElement) {
+			const tArget = <HTMLElement>e.tArget;
+			if (tArget.nodeNAme && (tArget.nodeNAme.toLowerCAse() === 'input' || tArget.nodeNAme.toLowerCAse() === 'textAreA')) {
 				EventHelper.stop(e, true);
 
 				this.contextMenuService.showContextMenu({
 					getAnchor: () => e,
 					getActions: () => this.textInputActions,
-					getActionsContext: () => target,
-					onHide: () => target.focus() // fixes https://github.com/microsoft/vscode/issues/52948
+					getActionsContext: () => tArget,
+					onHide: () => tArget.focus() // fixes https://github.com/microsoft/vscode/issues/52948
 				});
 			}
 		}
 	}
 }
 
-Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(TextInputActionsProvider, LifecyclePhase.Ready);
+Registry.As<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(TextInputActionsProvider, LifecyclePhAse.ReAdy);

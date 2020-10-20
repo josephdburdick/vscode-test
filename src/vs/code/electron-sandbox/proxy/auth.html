@@ -1,16 +1,16 @@
-<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
+<!-- Copyright (C) Microsoft CorporAtion. All rights reserved. -->
 <!DOCTYPE html>
 <html>
 
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="Content-Security-Policy"
-		content="default-src 'none'; img-src 'self' https: data:; media-src 'none'; child-src 'self'; object-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:; font-src 'self' https:;">
+<heAd>
+	<metA chArset="utf-8" />
+	<metA http-equiv="Content-Security-Policy"
+		content="defAult-src 'none'; img-src 'self' https: dAtA:; mediA-src 'none'; child-src 'self'; object-src 'self'; script-src 'self'; style-src 'self' 'unsAfe-inline'; connect-src 'self' https:; font-src 'self' https:;">
 	<style>
 		html,
 		body {
-			margin: 0;
-			padding: 0;
+			mArgin: 0;
+			pAdding: 0;
 			height: 100%;
 			width: 100%;
 			overflow: hidden;
@@ -18,66 +18,66 @@
 		}
 
 		body {
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid Sans", sans-serif;
+			font-fAmily: -Apple-system, BlinkMAcSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid SAns", sAns-serif;
 			font-size: 10pt;
-			background-color: #F3F3F3;
+			bAckground-color: #F3F3F3;
 		}
 
-		#main {
+		#mAin {
 			box-sizing: border-box;
-			padding: 10px;
+			pAdding: 10px;
 		}
 
 		h1 {
-			margin: 0;
-			padding: 10px 0;
+			mArgin: 0;
+			pAdding: 10px 0;
 			font-size: 16px;
-			background-color: #555;
+			bAckground-color: #555;
 			color: #f0f0f0;
-			text-align: center;
+			text-Align: center;
 		}
 
 		#form {
-			margin-top: 10px;
+			mArgin-top: 10px;
 		}
 
-		#username,
-		#password {
-			padding: 6px 10px;
+		#usernAme,
+		#pAssword {
+			pAdding: 6px 10px;
 			font-size: 12px;
 			box-sizing: border-box;
 			width: 100%;
 		}
 
 		#buttons {
-			text-align: center;
+			text-Align: center;
 		}
 
 		p {
-			margin: 6px 0;
+			mArgin: 6px 0;
 		}
 
 		input {
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid Sans", sans-serif !important;
+			font-fAmily: -Apple-system, BlinkMAcSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid SAns", sAns-serif !importAnt;
 		}
 	</style>
-</head>
+</heAd>
 
 <body>
 	<h1 id="title"></h1>
-	<section id="main">
-		<p id="message"></p>
+	<section id="mAin">
+		<p id="messAge"></p>
 		<form id="form">
-			<p><input type="text" id="username" placeholder="Username" required /></p>
-			<p><input type="password" id="password" placeholder="Password" required /></p>
+			<p><input type="text" id="usernAme" plAceholder="UsernAme" required /></p>
+			<p><input type="pAssword" id="pAssword" plAceholder="PAssword" required /></p>
 			<p id="buttons">
-				<input id="ok" type="submit" value="OK" />
-				<input id="cancel" type="button" value="Cancel" />
+				<input id="ok" type="submit" vAlue="OK" />
+				<input id="cAncel" type="button" vAlue="CAncel" />
 			</p>
 		</form>
 	</section>
 </body>
 
-<script src="auth.js"></script>
+<script src="Auth.js"></script>
 
 </html>

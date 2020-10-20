@@ -1,24 +1,24 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export function dispose(arg: vscode.Disposable | Iterable<vscode.Disposable>): void {
-	if (arg instanceof vscode.Disposable) {
-		arg.dispose();
+export function dispose(Arg: vscode.DisposAble | IterAble<vscode.DisposAble>): void {
+	if (Arg instAnceof vscode.DisposAble) {
+		Arg.dispose();
 	} else {
-		for (const disposable of arg) {
-			disposable.dispose();
+		for (const disposAble of Arg) {
+			disposAble.dispose();
 		}
 	}
 }
 
-export function combinedDisposable(disposables: Iterable<vscode.Disposable>): vscode.Disposable {
+export function combinedDisposAble(disposAbles: IterAble<vscode.DisposAble>): vscode.DisposAble {
 	return {
 		dispose() {
-			dispose(disposables);
+			dispose(disposAbles);
 		}
 	};
 }

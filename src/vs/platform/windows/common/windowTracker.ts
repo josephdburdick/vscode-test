@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { CancelablePromise, createCancelablePromise } from 'vs/base/common/async';
+import { Event } from 'vs/bAse/common/event';
+import { DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { CAncelAblePromise, creAteCAncelAblePromise } from 'vs/bAse/common/Async';
 
-export class ActiveWindowManager extends Disposable {
+export clAss ActiveWindowMAnAger extends DisposAble {
 
-	private readonly disposables = this._register(new DisposableStore());
-	private firstActiveWindowIdPromise: CancelablePromise<number | undefined> | undefined;
+	privAte reAdonly disposAbles = this._register(new DisposAbleStore());
+	privAte firstActiveWindowIdPromise: CAncelAblePromise<number | undefined> | undefined;
 
-	private activeWindowId: number | undefined;
+	privAte ActiveWindowId: number | undefined;
 
 	constructor({ onDidOpenWindow, onDidFocusWindow, getActiveWindowId }: {
 		onDidOpenWindow: Event<number>,
@@ -21,35 +21,35 @@ export class ActiveWindowManager extends Disposable {
 	}) {
 		super();
 
-		// remember last active window id upon events
-		const onActiveWindowChange = Event.latch(Event.any(onDidOpenWindow, onDidFocusWindow));
-		onActiveWindowChange(this.setActiveWindow, this, this.disposables);
+		// remember lAst Active window id upon events
+		const onActiveWindowChAnge = Event.lAtch(Event.Any(onDidOpenWindow, onDidFocusWindow));
+		onActiveWindowChAnge(this.setActiveWindow, this, this.disposAbles);
 
-		// resolve current active window
-		this.firstActiveWindowIdPromise = createCancelablePromise(() => getActiveWindowId());
-		(async () => {
+		// resolve current Active window
+		this.firstActiveWindowIdPromise = creAteCAncelAblePromise(() => getActiveWindowId());
+		(Async () => {
 			try {
-				const windowId = await this.firstActiveWindowIdPromise;
-				this.activeWindowId = (typeof this.activeWindowId === 'number') ? this.activeWindowId : windowId;
-			} catch (error) {
+				const windowId = AwAit this.firstActiveWindowIdPromise;
+				this.ActiveWindowId = (typeof this.ActiveWindowId === 'number') ? this.ActiveWindowId : windowId;
+			} cAtch (error) {
 				// ignore
-			} finally {
+			} finAlly {
 				this.firstActiveWindowIdPromise = undefined;
 			}
 		})();
 	}
 
-	private setActiveWindow(windowId: number | undefined) {
+	privAte setActiveWindow(windowId: number | undefined) {
 		if (this.firstActiveWindowIdPromise) {
-			this.firstActiveWindowIdPromise.cancel();
+			this.firstActiveWindowIdPromise.cAncel();
 			this.firstActiveWindowIdPromise = undefined;
 		}
 
-		this.activeWindowId = windowId;
+		this.ActiveWindowId = windowId;
 	}
 
-	async getActiveClientId(): Promise<string | undefined> {
-		const id = this.firstActiveWindowIdPromise ? (await this.firstActiveWindowIdPromise) : this.activeWindowId;
+	Async getActiveClientId(): Promise<string | undefined> {
+		const id = this.firstActiveWindowIdPromise ? (AwAit this.firstActiveWindowIdPromise) : this.ActiveWindowId;
 
 		return `window:${id}`;
 	}

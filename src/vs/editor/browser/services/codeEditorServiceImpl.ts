@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import * as strings from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
+import * As dom from 'vs/bAse/browser/dom';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import * As strings from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { AbstractCodeEditorService } from 'vs/editor/browser/services/abstractCodeEditorService';
-import { IContentDecorationRenderOptions, IDecorationRenderOptions, IThemeDecorationRenderOptions, isThemeColor } from 'vs/editor/common/editorCommon';
-import { IModelDecorationOptions, IModelDecorationOverviewRulerOptions, OverviewRulerLane, TrackedRangeStickiness } from 'vs/editor/common/model';
-import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
-import { IColorTheme, IThemeService, ThemeColor } from 'vs/platform/theme/common/themeService';
+import { AbstrActCodeEditorService } from 'vs/editor/browser/services/AbstrActCodeEditorService';
+import { IContentDecorAtionRenderOptions, IDecorAtionRenderOptions, IThemeDecorAtionRenderOptions, isThemeColor } from 'vs/editor/common/editorCommon';
+import { IModelDecorAtionOptions, IModelDecorAtionOverviewRulerOptions, OverviewRulerLAne, TrAckedRAngeStickiness } from 'vs/editor/common/model';
+import { IResourceEditorInput } from 'vs/plAtform/editor/common/editor';
+import { IColorTheme, IThemeService, ThemeColor } from 'vs/plAtform/theme/common/themeService';
 
-export class RefCountedStyleSheet {
+export clAss RefCountedStyleSheet {
 
-	private readonly _parent: CodeEditorServiceImpl;
-	private readonly _editorId: string;
-	private readonly _styleSheet: HTMLStyleElement;
-	private _refCount: number;
+	privAte reAdonly _pArent: CodeEditorServiceImpl;
+	privAte reAdonly _editorId: string;
+	privAte reAdonly _styleSheet: HTMLStyleElement;
+	privAte _refCount: number;
 
-	constructor(parent: CodeEditorServiceImpl, editorId: string, styleSheet: HTMLStyleElement) {
-		this._parent = parent;
+	constructor(pArent: CodeEditorServiceImpl, editorId: string, styleSheet: HTMLStyleElement) {
+		this._pArent = pArent;
 		this._editorId = editorId;
 		this._styleSheet = styleSheet;
 		this._refCount = 0;
@@ -35,8 +35,8 @@ export class RefCountedStyleSheet {
 	public unref(): void {
 		this._refCount--;
 		if (this._refCount === 0) {
-			this._styleSheet.parentNode?.removeChild(this._styleSheet);
-			this._parent._removeEditorStyleSheets(this._editorId);
+			this._styleSheet.pArentNode?.removeChild(this._styleSheet);
+			this._pArent._removeEditorStyleSheets(this._editorId);
 		}
 	}
 
@@ -45,13 +45,13 @@ export class RefCountedStyleSheet {
 		sheet.insertRule(rule, index);
 	}
 
-	public removeRulesContainingSelector(ruleName: string): void {
-		dom.removeCSSRulesContainingSelector(ruleName, this._styleSheet);
+	public removeRulesContAiningSelector(ruleNAme: string): void {
+		dom.removeCSSRulesContAiningSelector(ruleNAme, this._styleSheet);
 	}
 }
 
-export class GlobalStyleSheet {
-	private readonly _styleSheet: HTMLStyleElement;
+export clAss GlobAlStyleSheet {
+	privAte reAdonly _styleSheet: HTMLStyleElement;
 
 	constructor(styleSheet: HTMLStyleElement) {
 		this._styleSheet = styleSheet;
@@ -68,42 +68,42 @@ export class GlobalStyleSheet {
 		sheet.insertRule(rule, index);
 	}
 
-	public removeRulesContainingSelector(ruleName: string): void {
-		dom.removeCSSRulesContainingSelector(ruleName, this._styleSheet);
+	public removeRulesContAiningSelector(ruleNAme: string): void {
+		dom.removeCSSRulesContAiningSelector(ruleNAme, this._styleSheet);
 	}
 }
 
-export abstract class CodeEditorServiceImpl extends AbstractCodeEditorService {
+export AbstrAct clAss CodeEditorServiceImpl extends AbstrActCodeEditorService {
 
-	private _globalStyleSheet: GlobalStyleSheet | null;
-	private readonly _decorationOptionProviders = new Map<string, IModelDecorationOptionsProvider>();
-	private readonly _editorStyleSheets = new Map<string, RefCountedStyleSheet>();
-	private readonly _themeService: IThemeService;
+	privAte _globAlStyleSheet: GlobAlStyleSheet | null;
+	privAte reAdonly _decorAtionOptionProviders = new MAp<string, IModelDecorAtionOptionsProvider>();
+	privAte reAdonly _editorStyleSheets = new MAp<string, RefCountedStyleSheet>();
+	privAte reAdonly _themeService: IThemeService;
 
-	constructor(@IThemeService themeService: IThemeService, styleSheet: GlobalStyleSheet | null = null) {
+	constructor(@IThemeService themeService: IThemeService, styleSheet: GlobAlStyleSheet | null = null) {
 		super();
-		this._globalStyleSheet = styleSheet ? styleSheet : null;
+		this._globAlStyleSheet = styleSheet ? styleSheet : null;
 		this._themeService = themeService;
 	}
 
-	private _getOrCreateGlobalStyleSheet(): GlobalStyleSheet {
-		if (!this._globalStyleSheet) {
-			this._globalStyleSheet = new GlobalStyleSheet(dom.createStyleSheet());
+	privAte _getOrCreAteGlobAlStyleSheet(): GlobAlStyleSheet {
+		if (!this._globAlStyleSheet) {
+			this._globAlStyleSheet = new GlobAlStyleSheet(dom.creAteStyleSheet());
 		}
-		return this._globalStyleSheet;
+		return this._globAlStyleSheet;
 	}
 
-	private _getOrCreateStyleSheet(editor: ICodeEditor | undefined): GlobalStyleSheet | RefCountedStyleSheet {
+	privAte _getOrCreAteStyleSheet(editor: ICodeEditor | undefined): GlobAlStyleSheet | RefCountedStyleSheet {
 		if (!editor) {
-			return this._getOrCreateGlobalStyleSheet();
+			return this._getOrCreAteGlobAlStyleSheet();
 		}
-		const domNode = editor.getContainerDomNode();
-		if (!dom.isInShadowDOM(domNode)) {
-			return this._getOrCreateGlobalStyleSheet();
+		const domNode = editor.getContAinerDomNode();
+		if (!dom.isInShAdowDOM(domNode)) {
+			return this._getOrCreAteGlobAlStyleSheet();
 		}
 		const editorId = editor.getId();
-		if (!this._editorStyleSheets.has(editorId)) {
-			const refCountedStyleSheet = new RefCountedStyleSheet(this, editorId, dom.createStyleSheet(domNode));
+		if (!this._editorStyleSheets.hAs(editorId)) {
+			const refCountedStyleSheet = new RefCountedStyleSheet(this, editorId, dom.creAteStyleSheet(domNode));
 			this._editorStyleSheets.set(editorId, refCountedStyleSheet);
 		}
 		return this._editorStyleSheets.get(editorId)!;
@@ -113,81 +113,81 @@ export abstract class CodeEditorServiceImpl extends AbstractCodeEditorService {
 		this._editorStyleSheets.delete(editorId);
 	}
 
-	public registerDecorationType(key: string, options: IDecorationRenderOptions, parentTypeKey?: string, editor?: ICodeEditor): void {
-		let provider = this._decorationOptionProviders.get(key);
+	public registerDecorAtionType(key: string, options: IDecorAtionRenderOptions, pArentTypeKey?: string, editor?: ICodeEditor): void {
+		let provider = this._decorAtionOptionProviders.get(key);
 		if (!provider) {
-			const styleSheet = this._getOrCreateStyleSheet(editor);
+			const styleSheet = this._getOrCreAteStyleSheet(editor);
 			const providerArgs: ProviderArguments = {
 				styleSheet: styleSheet,
 				key: key,
-				parentTypeKey: parentTypeKey,
-				options: options || Object.create(null)
+				pArentTypeKey: pArentTypeKey,
+				options: options || Object.creAte(null)
 			};
-			if (!parentTypeKey) {
-				provider = new DecorationTypeOptionsProvider(this._themeService, styleSheet, providerArgs);
+			if (!pArentTypeKey) {
+				provider = new DecorAtionTypeOptionsProvider(this._themeService, styleSheet, providerArgs);
 			} else {
-				provider = new DecorationSubTypeOptionsProvider(this._themeService, styleSheet, providerArgs);
+				provider = new DecorAtionSubTypeOptionsProvider(this._themeService, styleSheet, providerArgs);
 			}
-			this._decorationOptionProviders.set(key, provider);
+			this._decorAtionOptionProviders.set(key, provider);
 		}
 		provider.refCount++;
 	}
 
-	public removeDecorationType(key: string): void {
-		const provider = this._decorationOptionProviders.get(key);
+	public removeDecorAtionType(key: string): void {
+		const provider = this._decorAtionOptionProviders.get(key);
 		if (provider) {
 			provider.refCount--;
 			if (provider.refCount <= 0) {
-				this._decorationOptionProviders.delete(key);
+				this._decorAtionOptionProviders.delete(key);
 				provider.dispose();
-				this.listCodeEditors().forEach((ed) => ed.removeDecorations(key));
+				this.listCodeEditors().forEAch((ed) => ed.removeDecorAtions(key));
 			}
 		}
 	}
 
-	public resolveDecorationOptions(decorationTypeKey: string, writable: boolean): IModelDecorationOptions {
-		const provider = this._decorationOptionProviders.get(decorationTypeKey);
+	public resolveDecorAtionOptions(decorAtionTypeKey: string, writAble: booleAn): IModelDecorAtionOptions {
+		const provider = this._decorAtionOptionProviders.get(decorAtionTypeKey);
 		if (!provider) {
-			throw new Error('Unknown decoration type key: ' + decorationTypeKey);
+			throw new Error('Unknown decorAtion type key: ' + decorAtionTypeKey);
 		}
-		return provider.getOptions(this, writable);
+		return provider.getOptions(this, writAble);
 	}
 
-	abstract getActiveCodeEditor(): ICodeEditor | null;
-	abstract openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: boolean): Promise<ICodeEditor | null>;
+	AbstrAct getActiveCodeEditor(): ICodeEditor | null;
+	AbstrAct openCodeEditor(input: IResourceEditorInput, source: ICodeEditor | null, sideBySide?: booleAn): Promise<ICodeEditor | null>;
 }
 
-interface IModelDecorationOptionsProvider extends IDisposable {
+interfAce IModelDecorAtionOptionsProvider extends IDisposAble {
 	refCount: number;
-	getOptions(codeEditorService: AbstractCodeEditorService, writable: boolean): IModelDecorationOptions;
+	getOptions(codeEditorService: AbstrActCodeEditorService, writAble: booleAn): IModelDecorAtionOptions;
 }
 
-class DecorationSubTypeOptionsProvider implements IModelDecorationOptionsProvider {
+clAss DecorAtionSubTypeOptionsProvider implements IModelDecorAtionOptionsProvider {
 
-	private readonly _styleSheet: GlobalStyleSheet | RefCountedStyleSheet;
+	privAte reAdonly _styleSheet: GlobAlStyleSheet | RefCountedStyleSheet;
 	public refCount: number;
 
-	private readonly _parentTypeKey: string | undefined;
-	private _beforeContentRules: DecorationCSSRules | null;
-	private _afterContentRules: DecorationCSSRules | null;
+	privAte reAdonly _pArentTypeKey: string | undefined;
+	privAte _beforeContentRules: DecorAtionCSSRules | null;
+	privAte _AfterContentRules: DecorAtionCSSRules | null;
 
-	constructor(themeService: IThemeService, styleSheet: GlobalStyleSheet | RefCountedStyleSheet, providerArgs: ProviderArguments) {
+	constructor(themeService: IThemeService, styleSheet: GlobAlStyleSheet | RefCountedStyleSheet, providerArgs: ProviderArguments) {
 		this._styleSheet = styleSheet;
 		this._styleSheet.ref();
-		this._parentTypeKey = providerArgs.parentTypeKey;
+		this._pArentTypeKey = providerArgs.pArentTypeKey;
 		this.refCount = 0;
 
-		this._beforeContentRules = new DecorationCSSRules(ModelDecorationCSSRuleType.BeforeContentClassName, providerArgs, themeService);
-		this._afterContentRules = new DecorationCSSRules(ModelDecorationCSSRuleType.AfterContentClassName, providerArgs, themeService);
+		this._beforeContentRules = new DecorAtionCSSRules(ModelDecorAtionCSSRuleType.BeforeContentClAssNAme, providerArgs, themeService);
+		this._AfterContentRules = new DecorAtionCSSRules(ModelDecorAtionCSSRuleType.AfterContentClAssNAme, providerArgs, themeService);
 	}
 
-	public getOptions(codeEditorService: AbstractCodeEditorService, writable: boolean): IModelDecorationOptions {
-		const options = codeEditorService.resolveDecorationOptions(this._parentTypeKey, true);
+	public getOptions(codeEditorService: AbstrActCodeEditorService, writAble: booleAn): IModelDecorAtionOptions {
+		const options = codeEditorService.resolveDecorAtionOptions(this._pArentTypeKey, true);
 		if (this._beforeContentRules) {
-			options.beforeContentClassName = this._beforeContentRules.className;
+			options.beforeContentClAssNAme = this._beforeContentRules.clAssNAme;
 		}
-		if (this._afterContentRules) {
-			options.afterContentClassName = this._afterContentRules.className;
+		if (this._AfterContentRules) {
+			options.AfterContentClAssNAme = this._AfterContentRules.clAssNAme;
 		}
 		return options;
 	}
@@ -197,98 +197,98 @@ class DecorationSubTypeOptionsProvider implements IModelDecorationOptionsProvide
 			this._beforeContentRules.dispose();
 			this._beforeContentRules = null;
 		}
-		if (this._afterContentRules) {
-			this._afterContentRules.dispose();
-			this._afterContentRules = null;
+		if (this._AfterContentRules) {
+			this._AfterContentRules.dispose();
+			this._AfterContentRules = null;
 		}
 		this._styleSheet.unref();
 	}
 }
 
-interface ProviderArguments {
-	styleSheet: GlobalStyleSheet | RefCountedStyleSheet;
+interfAce ProviderArguments {
+	styleSheet: GlobAlStyleSheet | RefCountedStyleSheet;
 	key: string;
-	parentTypeKey?: string;
-	options: IDecorationRenderOptions;
+	pArentTypeKey?: string;
+	options: IDecorAtionRenderOptions;
 }
 
 
-class DecorationTypeOptionsProvider implements IModelDecorationOptionsProvider {
+clAss DecorAtionTypeOptionsProvider implements IModelDecorAtionOptionsProvider {
 
-	private readonly _disposables = new DisposableStore();
-	private readonly _styleSheet: GlobalStyleSheet | RefCountedStyleSheet;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
+	privAte reAdonly _styleSheet: GlobAlStyleSheet | RefCountedStyleSheet;
 	public refCount: number;
 
-	public className: string | undefined;
-	public inlineClassName: string | undefined;
-	public inlineClassNameAffectsLetterSpacing: boolean | undefined;
-	public beforeContentClassName: string | undefined;
-	public afterContentClassName: string | undefined;
-	public glyphMarginClassName: string | undefined;
-	public isWholeLine: boolean;
-	public overviewRuler: IModelDecorationOverviewRulerOptions | undefined;
-	public stickiness: TrackedRangeStickiness | undefined;
+	public clAssNAme: string | undefined;
+	public inlineClAssNAme: string | undefined;
+	public inlineClAssNAmeAffectsLetterSpAcing: booleAn | undefined;
+	public beforeContentClAssNAme: string | undefined;
+	public AfterContentClAssNAme: string | undefined;
+	public glyphMArginClAssNAme: string | undefined;
+	public isWholeLine: booleAn;
+	public overviewRuler: IModelDecorAtionOverviewRulerOptions | undefined;
+	public stickiness: TrAckedRAngeStickiness | undefined;
 
-	constructor(themeService: IThemeService, styleSheet: GlobalStyleSheet | RefCountedStyleSheet, providerArgs: ProviderArguments) {
+	constructor(themeService: IThemeService, styleSheet: GlobAlStyleSheet | RefCountedStyleSheet, providerArgs: ProviderArguments) {
 		this._styleSheet = styleSheet;
 		this._styleSheet.ref();
 		this.refCount = 0;
 
-		const createCSSRules = (type: ModelDecorationCSSRuleType) => {
-			const rules = new DecorationCSSRules(type, providerArgs, themeService);
-			this._disposables.add(rules);
-			if (rules.hasContent) {
-				return rules.className;
+		const creAteCSSRules = (type: ModelDecorAtionCSSRuleType) => {
+			const rules = new DecorAtionCSSRules(type, providerArgs, themeService);
+			this._disposAbles.Add(rules);
+			if (rules.hAsContent) {
+				return rules.clAssNAme;
 			}
 			return undefined;
 		};
-		const createInlineCSSRules = (type: ModelDecorationCSSRuleType) => {
-			const rules = new DecorationCSSRules(type, providerArgs, themeService);
-			this._disposables.add(rules);
-			if (rules.hasContent) {
-				return { className: rules.className, hasLetterSpacing: rules.hasLetterSpacing };
+		const creAteInlineCSSRules = (type: ModelDecorAtionCSSRuleType) => {
+			const rules = new DecorAtionCSSRules(type, providerArgs, themeService);
+			this._disposAbles.Add(rules);
+			if (rules.hAsContent) {
+				return { clAssNAme: rules.clAssNAme, hAsLetterSpAcing: rules.hAsLetterSpAcing };
 			}
 			return null;
 		};
 
-		this.className = createCSSRules(ModelDecorationCSSRuleType.ClassName);
-		const inlineData = createInlineCSSRules(ModelDecorationCSSRuleType.InlineClassName);
-		if (inlineData) {
-			this.inlineClassName = inlineData.className;
-			this.inlineClassNameAffectsLetterSpacing = inlineData.hasLetterSpacing;
+		this.clAssNAme = creAteCSSRules(ModelDecorAtionCSSRuleType.ClAssNAme);
+		const inlineDAtA = creAteInlineCSSRules(ModelDecorAtionCSSRuleType.InlineClAssNAme);
+		if (inlineDAtA) {
+			this.inlineClAssNAme = inlineDAtA.clAssNAme;
+			this.inlineClAssNAmeAffectsLetterSpAcing = inlineDAtA.hAsLetterSpAcing;
 		}
-		this.beforeContentClassName = createCSSRules(ModelDecorationCSSRuleType.BeforeContentClassName);
-		this.afterContentClassName = createCSSRules(ModelDecorationCSSRuleType.AfterContentClassName);
-		this.glyphMarginClassName = createCSSRules(ModelDecorationCSSRuleType.GlyphMarginClassName);
+		this.beforeContentClAssNAme = creAteCSSRules(ModelDecorAtionCSSRuleType.BeforeContentClAssNAme);
+		this.AfterContentClAssNAme = creAteCSSRules(ModelDecorAtionCSSRuleType.AfterContentClAssNAme);
+		this.glyphMArginClAssNAme = creAteCSSRules(ModelDecorAtionCSSRuleType.GlyphMArginClAssNAme);
 
 		const options = providerArgs.options;
-		this.isWholeLine = Boolean(options.isWholeLine);
-		this.stickiness = options.rangeBehavior;
+		this.isWholeLine = BooleAn(options.isWholeLine);
+		this.stickiness = options.rAngeBehAvior;
 
 		const lightOverviewRulerColor = options.light && options.light.overviewRulerColor || options.overviewRulerColor;
-		const darkOverviewRulerColor = options.dark && options.dark.overviewRulerColor || options.overviewRulerColor;
+		const dArkOverviewRulerColor = options.dArk && options.dArk.overviewRulerColor || options.overviewRulerColor;
 		if (
 			typeof lightOverviewRulerColor !== 'undefined'
-			|| typeof darkOverviewRulerColor !== 'undefined'
+			|| typeof dArkOverviewRulerColor !== 'undefined'
 		) {
 			this.overviewRuler = {
-				color: lightOverviewRulerColor || darkOverviewRulerColor,
-				darkColor: darkOverviewRulerColor || lightOverviewRulerColor,
-				position: options.overviewRulerLane || OverviewRulerLane.Center
+				color: lightOverviewRulerColor || dArkOverviewRulerColor,
+				dArkColor: dArkOverviewRulerColor || lightOverviewRulerColor,
+				position: options.overviewRulerLAne || OverviewRulerLAne.Center
 			};
 		}
 	}
 
-	public getOptions(codeEditorService: AbstractCodeEditorService, writable: boolean): IModelDecorationOptions {
-		if (!writable) {
+	public getOptions(codeEditorService: AbstrActCodeEditorService, writAble: booleAn): IModelDecorAtionOptions {
+		if (!writAble) {
 			return this;
 		}
 		return {
-			inlineClassName: this.inlineClassName,
-			beforeContentClassName: this.beforeContentClassName,
-			afterContentClassName: this.afterContentClassName,
-			className: this.className,
-			glyphMarginClassName: this.glyphMarginClassName,
+			inlineClAssNAme: this.inlineClAssNAme,
+			beforeContentClAssNAme: this.beforeContentClAssNAme,
+			AfterContentClAssNAme: this.AfterContentClAssNAme,
+			clAssNAme: this.clAssNAme,
+			glyphMArginClAssNAme: this.glyphMArginClAssNAme,
 			isWholeLine: this.isWholeLine,
 			overviewRuler: this.overviewRuler,
 			stickiness: this.stickiness
@@ -296,16 +296,16 @@ class DecorationTypeOptionsProvider implements IModelDecorationOptionsProvider {
 	}
 
 	public dispose(): void {
-		this._disposables.dispose();
+		this._disposAbles.dispose();
 		this._styleSheet.unref();
 	}
 }
 
 
 const _CSS_MAP: { [prop: string]: string; } = {
-	color: 'color:{0} !important;',
-	opacity: 'opacity:{0};',
-	backgroundColor: 'background-color:{0};',
+	color: 'color:{0} !importAnt;',
+	opAcity: 'opAcity:{0};',
+	bAckgroundColor: 'bAckground-color:{0};',
 
 	outline: 'outline:{0};',
 	outlineColor: 'outline-color:{0};',
@@ -314,60 +314,60 @@ const _CSS_MAP: { [prop: string]: string; } = {
 
 	border: 'border:{0};',
 	borderColor: 'border-color:{0};',
-	borderRadius: 'border-radius:{0};',
-	borderSpacing: 'border-spacing:{0};',
+	borderRAdius: 'border-rAdius:{0};',
+	borderSpAcing: 'border-spAcing:{0};',
 	borderStyle: 'border-style:{0};',
 	borderWidth: 'border-width:{0};',
 
 	fontStyle: 'font-style:{0};',
 	fontWeight: 'font-weight:{0};',
-	textDecoration: 'text-decoration:{0};',
+	textDecorAtion: 'text-decorAtion:{0};',
 	cursor: 'cursor:{0};',
-	letterSpacing: 'letter-spacing:{0};',
+	letterSpAcing: 'letter-spAcing:{0};',
 
-	gutterIconPath: 'background:{0} center center no-repeat;',
-	gutterIconSize: 'background-size:{0};',
+	gutterIconPAth: 'bAckground:{0} center center no-repeAt;',
+	gutterIconSize: 'bAckground-size:{0};',
 
 	contentText: 'content:\'{0}\';',
-	contentIconPath: 'content:{0};',
-	margin: 'margin:{0};',
+	contentIconPAth: 'content:{0};',
+	mArgin: 'mArgin:{0};',
 	width: 'width:{0};',
 	height: 'height:{0};'
 };
 
 
-class DecorationCSSRules {
+clAss DecorAtionCSSRules {
 
-	private _theme: IColorTheme;
-	private readonly _className: string;
-	private readonly _unThemedSelector: string;
-	private _hasContent: boolean;
-	private _hasLetterSpacing: boolean;
-	private readonly _ruleType: ModelDecorationCSSRuleType;
-	private _themeListener: IDisposable | null;
-	private readonly _providerArgs: ProviderArguments;
-	private _usesThemeColors: boolean;
+	privAte _theme: IColorTheme;
+	privAte reAdonly _clAssNAme: string;
+	privAte reAdonly _unThemedSelector: string;
+	privAte _hAsContent: booleAn;
+	privAte _hAsLetterSpAcing: booleAn;
+	privAte reAdonly _ruleType: ModelDecorAtionCSSRuleType;
+	privAte _themeListener: IDisposAble | null;
+	privAte reAdonly _providerArgs: ProviderArguments;
+	privAte _usesThemeColors: booleAn;
 
-	constructor(ruleType: ModelDecorationCSSRuleType, providerArgs: ProviderArguments, themeService: IThemeService) {
+	constructor(ruleType: ModelDecorAtionCSSRuleType, providerArgs: ProviderArguments, themeService: IThemeService) {
 		this._theme = themeService.getColorTheme();
 		this._ruleType = ruleType;
 		this._providerArgs = providerArgs;
-		this._usesThemeColors = false;
-		this._hasContent = false;
-		this._hasLetterSpacing = false;
+		this._usesThemeColors = fAlse;
+		this._hAsContent = fAlse;
+		this._hAsLetterSpAcing = fAlse;
 
-		let className = CSSNameHelper.getClassName(this._providerArgs.key, ruleType);
-		if (this._providerArgs.parentTypeKey) {
-			className = className + ' ' + CSSNameHelper.getClassName(this._providerArgs.parentTypeKey, ruleType);
+		let clAssNAme = CSSNAmeHelper.getClAssNAme(this._providerArgs.key, ruleType);
+		if (this._providerArgs.pArentTypeKey) {
+			clAssNAme = clAssNAme + ' ' + CSSNAmeHelper.getClAssNAme(this._providerArgs.pArentTypeKey, ruleType);
 		}
-		this._className = className;
+		this._clAssNAme = clAssNAme;
 
-		this._unThemedSelector = CSSNameHelper.getSelector(this._providerArgs.key, this._providerArgs.parentTypeKey, ruleType);
+		this._unThemedSelector = CSSNAmeHelper.getSelector(this._providerArgs.key, this._providerArgs.pArentTypeKey, ruleType);
 
 		this._buildCSS();
 
 		if (this._usesThemeColors) {
-			this._themeListener = themeService.onDidColorThemeChange(theme => {
+			this._themeListener = themeService.onDidColorThemeChAnge(theme => {
 				this._theme = themeService.getColorTheme();
 				this._removeCSS();
 				this._buildCSS();
@@ -378,9 +378,9 @@ class DecorationCSSRules {
 	}
 
 	public dispose() {
-		if (this._hasContent) {
+		if (this._hAsContent) {
 			this._removeCSS();
-			this._hasContent = false;
+			this._hAsContent = fAlse;
 		}
 		if (this._themeListener) {
 			this._themeListener.dispose();
@@ -388,105 +388,105 @@ class DecorationCSSRules {
 		}
 	}
 
-	public get hasContent(): boolean {
-		return this._hasContent;
+	public get hAsContent(): booleAn {
+		return this._hAsContent;
 	}
 
-	public get hasLetterSpacing(): boolean {
-		return this._hasLetterSpacing;
+	public get hAsLetterSpAcing(): booleAn {
+		return this._hAsLetterSpAcing;
 	}
 
-	public get className(): string {
-		return this._className;
+	public get clAssNAme(): string {
+		return this._clAssNAme;
 	}
 
-	private _buildCSS(): void {
+	privAte _buildCSS(): void {
 		const options = this._providerArgs.options;
-		let unthemedCSS: string, lightCSS: string, darkCSS: string;
+		let unthemedCSS: string, lightCSS: string, dArkCSS: string;
 		switch (this._ruleType) {
-			case ModelDecorationCSSRuleType.ClassName:
-				unthemedCSS = this.getCSSTextForModelDecorationClassName(options);
-				lightCSS = this.getCSSTextForModelDecorationClassName(options.light);
-				darkCSS = this.getCSSTextForModelDecorationClassName(options.dark);
-				break;
-			case ModelDecorationCSSRuleType.InlineClassName:
-				unthemedCSS = this.getCSSTextForModelDecorationInlineClassName(options);
-				lightCSS = this.getCSSTextForModelDecorationInlineClassName(options.light);
-				darkCSS = this.getCSSTextForModelDecorationInlineClassName(options.dark);
-				break;
-			case ModelDecorationCSSRuleType.GlyphMarginClassName:
-				unthemedCSS = this.getCSSTextForModelDecorationGlyphMarginClassName(options);
-				lightCSS = this.getCSSTextForModelDecorationGlyphMarginClassName(options.light);
-				darkCSS = this.getCSSTextForModelDecorationGlyphMarginClassName(options.dark);
-				break;
-			case ModelDecorationCSSRuleType.BeforeContentClassName:
-				unthemedCSS = this.getCSSTextForModelDecorationContentClassName(options.before);
-				lightCSS = this.getCSSTextForModelDecorationContentClassName(options.light && options.light.before);
-				darkCSS = this.getCSSTextForModelDecorationContentClassName(options.dark && options.dark.before);
-				break;
-			case ModelDecorationCSSRuleType.AfterContentClassName:
-				unthemedCSS = this.getCSSTextForModelDecorationContentClassName(options.after);
-				lightCSS = this.getCSSTextForModelDecorationContentClassName(options.light && options.light.after);
-				darkCSS = this.getCSSTextForModelDecorationContentClassName(options.dark && options.dark.after);
-				break;
-			default:
+			cAse ModelDecorAtionCSSRuleType.ClAssNAme:
+				unthemedCSS = this.getCSSTextForModelDecorAtionClAssNAme(options);
+				lightCSS = this.getCSSTextForModelDecorAtionClAssNAme(options.light);
+				dArkCSS = this.getCSSTextForModelDecorAtionClAssNAme(options.dArk);
+				breAk;
+			cAse ModelDecorAtionCSSRuleType.InlineClAssNAme:
+				unthemedCSS = this.getCSSTextForModelDecorAtionInlineClAssNAme(options);
+				lightCSS = this.getCSSTextForModelDecorAtionInlineClAssNAme(options.light);
+				dArkCSS = this.getCSSTextForModelDecorAtionInlineClAssNAme(options.dArk);
+				breAk;
+			cAse ModelDecorAtionCSSRuleType.GlyphMArginClAssNAme:
+				unthemedCSS = this.getCSSTextForModelDecorAtionGlyphMArginClAssNAme(options);
+				lightCSS = this.getCSSTextForModelDecorAtionGlyphMArginClAssNAme(options.light);
+				dArkCSS = this.getCSSTextForModelDecorAtionGlyphMArginClAssNAme(options.dArk);
+				breAk;
+			cAse ModelDecorAtionCSSRuleType.BeforeContentClAssNAme:
+				unthemedCSS = this.getCSSTextForModelDecorAtionContentClAssNAme(options.before);
+				lightCSS = this.getCSSTextForModelDecorAtionContentClAssNAme(options.light && options.light.before);
+				dArkCSS = this.getCSSTextForModelDecorAtionContentClAssNAme(options.dArk && options.dArk.before);
+				breAk;
+			cAse ModelDecorAtionCSSRuleType.AfterContentClAssNAme:
+				unthemedCSS = this.getCSSTextForModelDecorAtionContentClAssNAme(options.After);
+				lightCSS = this.getCSSTextForModelDecorAtionContentClAssNAme(options.light && options.light.After);
+				dArkCSS = this.getCSSTextForModelDecorAtionContentClAssNAme(options.dArk && options.dArk.After);
+				breAk;
+			defAult:
 				throw new Error('Unknown rule type: ' + this._ruleType);
 		}
 		const sheet = this._providerArgs.styleSheet;
 
-		let hasContent = false;
+		let hAsContent = fAlse;
 		if (unthemedCSS.length > 0) {
 			sheet.insertRule(`${this._unThemedSelector} {${unthemedCSS}}`, 0);
-			hasContent = true;
+			hAsContent = true;
 		}
 		if (lightCSS.length > 0) {
 			sheet.insertRule(`.vs${this._unThemedSelector} {${lightCSS}}`, 0);
-			hasContent = true;
+			hAsContent = true;
 		}
-		if (darkCSS.length > 0) {
-			sheet.insertRule(`.vs-dark${this._unThemedSelector}, .hc-black${this._unThemedSelector} {${darkCSS}}`, 0);
-			hasContent = true;
+		if (dArkCSS.length > 0) {
+			sheet.insertRule(`.vs-dArk${this._unThemedSelector}, .hc-blAck${this._unThemedSelector} {${dArkCSS}}`, 0);
+			hAsContent = true;
 		}
-		this._hasContent = hasContent;
+		this._hAsContent = hAsContent;
 	}
 
-	private _removeCSS(): void {
-		this._providerArgs.styleSheet.removeRulesContainingSelector(this._unThemedSelector);
+	privAte _removeCSS(): void {
+		this._providerArgs.styleSheet.removeRulesContAiningSelector(this._unThemedSelector);
 	}
 
 	/**
-	 * Build the CSS for decorations styled via `className`.
+	 * Build the CSS for decorAtions styled viA `clAssNAme`.
 	 */
-	private getCSSTextForModelDecorationClassName(opts: IThemeDecorationRenderOptions | undefined): string {
+	privAte getCSSTextForModelDecorAtionClAssNAme(opts: IThemeDecorAtionRenderOptions | undefined): string {
 		if (!opts) {
 			return '';
 		}
 		const cssTextArr: string[] = [];
-		this.collectCSSText(opts, ['backgroundColor'], cssTextArr);
+		this.collectCSSText(opts, ['bAckgroundColor'], cssTextArr);
 		this.collectCSSText(opts, ['outline', 'outlineColor', 'outlineStyle', 'outlineWidth'], cssTextArr);
 		this.collectBorderSettingsCSSText(opts, cssTextArr);
 		return cssTextArr.join('');
 	}
 
 	/**
-	 * Build the CSS for decorations styled via `inlineClassName`.
+	 * Build the CSS for decorAtions styled viA `inlineClAssNAme`.
 	 */
-	private getCSSTextForModelDecorationInlineClassName(opts: IThemeDecorationRenderOptions | undefined): string {
+	privAte getCSSTextForModelDecorAtionInlineClAssNAme(opts: IThemeDecorAtionRenderOptions | undefined): string {
 		if (!opts) {
 			return '';
 		}
 		const cssTextArr: string[] = [];
-		this.collectCSSText(opts, ['fontStyle', 'fontWeight', 'textDecoration', 'cursor', 'color', 'opacity', 'letterSpacing'], cssTextArr);
-		if (opts.letterSpacing) {
-			this._hasLetterSpacing = true;
+		this.collectCSSText(opts, ['fontStyle', 'fontWeight', 'textDecorAtion', 'cursor', 'color', 'opAcity', 'letterSpAcing'], cssTextArr);
+		if (opts.letterSpAcing) {
+			this._hAsLetterSpAcing = true;
 		}
 		return cssTextArr.join('');
 	}
 
 	/**
-	 * Build the CSS for decorations styled before or after content.
+	 * Build the CSS for decorAtions styled before or After content.
 	 */
-	private getCSSTextForModelDecorationContentClassName(opts: IContentDecorationRenderOptions | undefined): string {
+	privAte getCSSTextForModelDecorAtionContentClAssNAme(opts: IContentDecorAtionRenderOptions | undefined): string {
 		if (!opts) {
 			return '';
 		}
@@ -494,18 +494,18 @@ class DecorationCSSRules {
 
 		if (typeof opts !== 'undefined') {
 			this.collectBorderSettingsCSSText(opts, cssTextArr);
-			if (typeof opts.contentIconPath !== 'undefined') {
-				cssTextArr.push(strings.format(_CSS_MAP.contentIconPath, dom.asCSSUrl(URI.revive(opts.contentIconPath))));
+			if (typeof opts.contentIconPAth !== 'undefined') {
+				cssTextArr.push(strings.formAt(_CSS_MAP.contentIconPAth, dom.AsCSSUrl(URI.revive(opts.contentIconPAth))));
 			}
 			if (typeof opts.contentText === 'string') {
-				const truncated = opts.contentText.match(/^.*$/m)![0]; // only take first line
-				const escaped = truncated.replace(/['\\]/g, '\\$&');
+				const truncAted = opts.contentText.mAtch(/^.*$/m)![0]; // only tAke first line
+				const escAped = truncAted.replAce(/['\\]/g, '\\$&');
 
-				cssTextArr.push(strings.format(_CSS_MAP.contentText, escaped));
+				cssTextArr.push(strings.formAt(_CSS_MAP.contentText, escAped));
 			}
-			this.collectCSSText(opts, ['fontStyle', 'fontWeight', 'textDecoration', 'color', 'opacity', 'backgroundColor', 'margin'], cssTextArr);
+			this.collectCSSText(opts, ['fontStyle', 'fontWeight', 'textDecorAtion', 'color', 'opAcity', 'bAckgroundColor', 'mArgin'], cssTextArr);
 			if (this.collectCSSText(opts, ['width', 'height'], cssTextArr)) {
-				cssTextArr.push('display:inline-block;');
+				cssTextArr.push('displAy:inline-block;');
 			}
 		}
 
@@ -513,79 +513,79 @@ class DecorationCSSRules {
 	}
 
 	/**
-	 * Build the CSS for decorations styled via `glpyhMarginClassName`.
+	 * Build the CSS for decorAtions styled viA `glpyhMArginClAssNAme`.
 	 */
-	private getCSSTextForModelDecorationGlyphMarginClassName(opts: IThemeDecorationRenderOptions | undefined): string {
+	privAte getCSSTextForModelDecorAtionGlyphMArginClAssNAme(opts: IThemeDecorAtionRenderOptions | undefined): string {
 		if (!opts) {
 			return '';
 		}
 		const cssTextArr: string[] = [];
 
-		if (typeof opts.gutterIconPath !== 'undefined') {
-			cssTextArr.push(strings.format(_CSS_MAP.gutterIconPath, dom.asCSSUrl(URI.revive(opts.gutterIconPath))));
+		if (typeof opts.gutterIconPAth !== 'undefined') {
+			cssTextArr.push(strings.formAt(_CSS_MAP.gutterIconPAth, dom.AsCSSUrl(URI.revive(opts.gutterIconPAth))));
 			if (typeof opts.gutterIconSize !== 'undefined') {
-				cssTextArr.push(strings.format(_CSS_MAP.gutterIconSize, opts.gutterIconSize));
+				cssTextArr.push(strings.formAt(_CSS_MAP.gutterIconSize, opts.gutterIconSize));
 			}
 		}
 
 		return cssTextArr.join('');
 	}
 
-	private collectBorderSettingsCSSText(opts: any, cssTextArr: string[]): boolean {
-		if (this.collectCSSText(opts, ['border', 'borderColor', 'borderRadius', 'borderSpacing', 'borderStyle', 'borderWidth'], cssTextArr)) {
-			cssTextArr.push(strings.format('box-sizing: border-box;'));
+	privAte collectBorderSettingsCSSText(opts: Any, cssTextArr: string[]): booleAn {
+		if (this.collectCSSText(opts, ['border', 'borderColor', 'borderRAdius', 'borderSpAcing', 'borderStyle', 'borderWidth'], cssTextArr)) {
+			cssTextArr.push(strings.formAt('box-sizing: border-box;'));
 			return true;
 		}
-		return false;
+		return fAlse;
 	}
 
-	private collectCSSText(opts: any, properties: string[], cssTextArr: string[]): boolean {
+	privAte collectCSSText(opts: Any, properties: string[], cssTextArr: string[]): booleAn {
 		const lenBefore = cssTextArr.length;
 		for (let property of properties) {
-			const value = this.resolveValue(opts[property]);
-			if (typeof value === 'string') {
-				cssTextArr.push(strings.format(_CSS_MAP[property], value));
+			const vAlue = this.resolveVAlue(opts[property]);
+			if (typeof vAlue === 'string') {
+				cssTextArr.push(strings.formAt(_CSS_MAP[property], vAlue));
 			}
 		}
 		return cssTextArr.length !== lenBefore;
 	}
 
-	private resolveValue(value: string | ThemeColor): string {
-		if (isThemeColor(value)) {
+	privAte resolveVAlue(vAlue: string | ThemeColor): string {
+		if (isThemeColor(vAlue)) {
 			this._usesThemeColors = true;
-			const color = this._theme.getColor(value.id);
+			const color = this._theme.getColor(vAlue.id);
 			if (color) {
 				return color.toString();
 			}
-			return 'transparent';
+			return 'trAnspArent';
 		}
-		return value;
+		return vAlue;
 	}
 }
 
-const enum ModelDecorationCSSRuleType {
-	ClassName = 0,
-	InlineClassName = 1,
-	GlyphMarginClassName = 2,
-	BeforeContentClassName = 3,
-	AfterContentClassName = 4
+const enum ModelDecorAtionCSSRuleType {
+	ClAssNAme = 0,
+	InlineClAssNAme = 1,
+	GlyphMArginClAssNAme = 2,
+	BeforeContentClAssNAme = 3,
+	AfterContentClAssNAme = 4
 }
 
-class CSSNameHelper {
+clAss CSSNAmeHelper {
 
-	public static getClassName(key: string, type: ModelDecorationCSSRuleType): string {
+	public stAtic getClAssNAme(key: string, type: ModelDecorAtionCSSRuleType): string {
 		return 'ced-' + key + '-' + type;
 	}
 
-	public static getSelector(key: string, parentKey: string | undefined, ruleType: ModelDecorationCSSRuleType): string {
-		let selector = '.monaco-editor .' + this.getClassName(key, ruleType);
-		if (parentKey) {
-			selector = selector + '.' + this.getClassName(parentKey, ruleType);
+	public stAtic getSelector(key: string, pArentKey: string | undefined, ruleType: ModelDecorAtionCSSRuleType): string {
+		let selector = '.monAco-editor .' + this.getClAssNAme(key, ruleType);
+		if (pArentKey) {
+			selector = selector + '.' + this.getClAssNAme(pArentKey, ruleType);
 		}
-		if (ruleType === ModelDecorationCSSRuleType.BeforeContentClassName) {
+		if (ruleType === ModelDecorAtionCSSRuleType.BeforeContentClAssNAme) {
 			selector += '::before';
-		} else if (ruleType === ModelDecorationCSSRuleType.AfterContentClassName) {
-			selector += '::after';
+		} else if (ruleType === ModelDecorAtionCSSRuleType.AfterContentClAssNAme) {
+			selector += '::After';
 		}
 		return selector;
 	}

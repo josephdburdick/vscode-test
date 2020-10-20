@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export interface ICommonContextMenuItem {
-	label?: string;
+export interfAce ICommonContextMenuItem {
+	lAbel?: string;
 
-	type?: 'normal' | 'separator' | 'submenu' | 'checkbox' | 'radio';
+	type?: 'normAl' | 'sepArAtor' | 'submenu' | 'checkbox' | 'rAdio';
 
-	accelerator?: string;
+	AccelerAtor?: string;
 
-	enabled?: boolean;
-	visible?: boolean;
-	checked?: boolean;
+	enAbled?: booleAn;
+	visible?: booleAn;
+	checked?: booleAn;
 }
 
-export interface ISerializableContextMenuItem extends ICommonContextMenuItem {
+export interfAce ISeriAlizAbleContextMenuItem extends ICommonContextMenuItem {
 	id: number;
-	submenu?: ISerializableContextMenuItem[];
+	submenu?: ISeriAlizAbleContextMenuItem[];
 }
 
-export interface IContextMenuItem extends ICommonContextMenuItem {
+export interfAce IContextMenuItem extends ICommonContextMenuItem {
 	click?: (event: IContextMenuEvent) => void;
 	submenu?: IContextMenuItem[];
 }
 
-export interface IContextMenuEvent {
-	shiftKey?: boolean;
-	ctrlKey?: boolean;
-	altKey?: boolean;
-	metaKey?: boolean;
+export interfAce IContextMenuEvent {
+	shiftKey?: booleAn;
+	ctrlKey?: booleAn;
+	AltKey?: booleAn;
+	metAKey?: booleAn;
 }
 
-export interface IPopupOptions {
+export interfAce IPopupOptions {
 	x?: number;
 	y?: number;
 	positioningItem?: number;

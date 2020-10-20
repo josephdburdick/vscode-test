@@ -1,180 +1,180 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { UriComponents, URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ExtHostTimelineShape, MainThreadTimelineShape, IMainContext, MainContext } from 'vs/workbench/api/common/extHost.protocol';
-import { Timeline, TimelineItem, TimelineOptions, TimelineProvider, InternalTimelineOptions } from 'vs/workbench/contrib/timeline/common/timeline';
-import { IDisposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { CommandsConverter, ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { ThemeIcon } from 'vs/workbench/api/common/extHostTypes';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import * As vscode from 'vscode';
+import { UriComponents, URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ExtHostTimelineShApe, MAinThreAdTimelineShApe, IMAinContext, MAinContext } from 'vs/workbench/Api/common/extHost.protocol';
+import { Timeline, TimelineItem, TimelineOptions, TimelineProvider, InternAlTimelineOptions } from 'vs/workbench/contrib/timeline/common/timeline';
+import { IDisposAble, toDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { CommAndsConverter, ExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { ThemeIcon } from 'vs/workbench/Api/common/extHostTypes';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
 
-export interface IExtHostTimeline extends ExtHostTimelineShape {
-	readonly _serviceBrand: undefined;
-	$getTimeline(id: string, uri: UriComponents, options: vscode.TimelineOptions, token: vscode.CancellationToken, internalOptions?: InternalTimelineOptions): Promise<Timeline | undefined>;
+export interfAce IExtHostTimeline extends ExtHostTimelineShApe {
+	reAdonly _serviceBrAnd: undefined;
+	$getTimeline(id: string, uri: UriComponents, options: vscode.TimelineOptions, token: vscode.CAncellAtionToken, internAlOptions?: InternAlTimelineOptions): Promise<Timeline | undefined>;
 }
 
-export const IExtHostTimeline = createDecorator<IExtHostTimeline>('IExtHostTimeline');
+export const IExtHostTimeline = creAteDecorAtor<IExtHostTimeline>('IExtHostTimeline');
 
-export class ExtHostTimeline implements IExtHostTimeline {
-	declare readonly _serviceBrand: undefined;
+export clAss ExtHostTimeline implements IExtHostTimeline {
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _proxy: MainThreadTimelineShape;
+	privAte _proxy: MAinThreAdTimelineShApe;
 
-	private _providers = new Map<string, TimelineProvider>();
+	privAte _providers = new MAp<string, TimelineProvider>();
 
-	private _itemsBySourceAndUriMap = new Map<string, Map<string | undefined, Map<string, vscode.TimelineItem>>>();
+	privAte _itemsBySourceAndUriMAp = new MAp<string, MAp<string | undefined, MAp<string, vscode.TimelineItem>>>();
 
 	constructor(
-		mainContext: IMainContext,
-		commands: ExtHostCommands,
+		mAinContext: IMAinContext,
+		commAnds: ExtHostCommAnds,
 	) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadTimeline);
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdTimeline);
 
-		commands.registerArgumentProcessor({
-			processArgument: arg => {
-				if (arg && arg.$mid === 11) {
-					const uri = arg.uri === undefined ? undefined : URI.revive(arg.uri);
-					return this._itemsBySourceAndUriMap.get(arg.source)?.get(getUriKey(uri))?.get(arg.handle);
+		commAnds.registerArgumentProcessor({
+			processArgument: Arg => {
+				if (Arg && Arg.$mid === 11) {
+					const uri = Arg.uri === undefined ? undefined : URI.revive(Arg.uri);
+					return this._itemsBySourceAndUriMAp.get(Arg.source)?.get(getUriKey(uri))?.get(Arg.hAndle);
 				}
 
-				return arg;
+				return Arg;
 			}
 		});
 	}
 
-	async $getTimeline(id: string, uri: UriComponents, options: vscode.TimelineOptions, token: vscode.CancellationToken, internalOptions?: InternalTimelineOptions): Promise<Timeline | undefined> {
+	Async $getTimeline(id: string, uri: UriComponents, options: vscode.TimelineOptions, token: vscode.CAncellAtionToken, internAlOptions?: InternAlTimelineOptions): Promise<Timeline | undefined> {
 		const provider = this._providers.get(id);
-		return provider?.provideTimeline(URI.revive(uri), options, token, internalOptions);
+		return provider?.provideTimeline(URI.revive(uri), options, token, internAlOptions);
 	}
 
-	registerTimelineProvider(scheme: string | string[], provider: vscode.TimelineProvider, _extensionId: ExtensionIdentifier, commandConverter: CommandsConverter): IDisposable {
-		const timelineDisposables = new DisposableStore();
+	registerTimelineProvider(scheme: string | string[], provider: vscode.TimelineProvider, _extensionId: ExtensionIdentifier, commAndConverter: CommAndsConverter): IDisposAble {
+		const timelineDisposAbles = new DisposAbleStore();
 
-		const convertTimelineItem = this.convertTimelineItem(provider.id, commandConverter, timelineDisposables).bind(this);
+		const convertTimelineItem = this.convertTimelineItem(provider.id, commAndConverter, timelineDisposAbles).bind(this);
 
-		let disposable: IDisposable | undefined;
-		if (provider.onDidChange) {
-			disposable = provider.onDidChange(e => this._proxy.$emitTimelineChangeEvent({ uri: undefined, reset: true, ...e, id: provider.id }), this);
+		let disposAble: IDisposAble | undefined;
+		if (provider.onDidChAnge) {
+			disposAble = provider.onDidChAnge(e => this._proxy.$emitTimelineChAngeEvent({ uri: undefined, reset: true, ...e, id: provider.id }), this);
 		}
 
-		const itemsBySourceAndUriMap = this._itemsBySourceAndUriMap;
+		const itemsBySourceAndUriMAp = this._itemsBySourceAndUriMAp;
 		return this.registerTimelineProviderCore({
 			...provider,
 			scheme: scheme,
-			onDidChange: undefined,
-			async provideTimeline(uri: URI, options: TimelineOptions, token: CancellationToken, internalOptions?: InternalTimelineOptions) {
-				if (internalOptions?.resetCache) {
-					timelineDisposables.clear();
+			onDidChAnge: undefined,
+			Async provideTimeline(uri: URI, options: TimelineOptions, token: CAncellAtionToken, internAlOptions?: InternAlTimelineOptions) {
+				if (internAlOptions?.resetCAche) {
+					timelineDisposAbles.cleAr();
 
-					// For now, only allow the caching of a single Uri
-					// itemsBySourceAndUriMap.get(provider.id)?.get(getUriKey(uri))?.clear();
-					itemsBySourceAndUriMap.get(provider.id)?.clear();
+					// For now, only Allow the cAching of A single Uri
+					// itemsBySourceAndUriMAp.get(provider.id)?.get(getUriKey(uri))?.cleAr();
+					itemsBySourceAndUriMAp.get(provider.id)?.cleAr();
 				}
 
-				const result = await provider.provideTimeline(uri, options, token);
+				const result = AwAit provider.provideTimeline(uri, options, token);
 				if (result === undefined || result === null) {
 					return undefined;
 				}
 
-				// TODO: Should we bother converting all the data if we aren't caching? Meaning it is being requested by an extension?
+				// TODO: Should we bother converting All the dAtA if we Aren't cAching? MeAning it is being requested by An extension?
 
-				const convertItem = convertTimelineItem(uri, internalOptions);
+				const convertItem = convertTimelineItem(uri, internAlOptions);
 				return {
 					...result,
 					source: provider.id,
-					items: result.items.map(convertItem)
+					items: result.items.mAp(convertItem)
 				};
 			},
 			dispose() {
-				for (const sourceMap of itemsBySourceAndUriMap.values()) {
-					sourceMap.get(provider.id)?.clear();
+				for (const sourceMAp of itemsBySourceAndUriMAp.vAlues()) {
+					sourceMAp.get(provider.id)?.cleAr();
 				}
 
-				disposable?.dispose();
-				timelineDisposables.dispose();
+				disposAble?.dispose();
+				timelineDisposAbles.dispose();
 			}
 		});
 	}
 
-	private convertTimelineItem(source: string, commandConverter: CommandsConverter, disposables: DisposableStore) {
-		return (uri: URI, options?: InternalTimelineOptions) => {
-			let items: Map<string, vscode.TimelineItem> | undefined;
-			if (options?.cacheResults) {
-				let itemsByUri = this._itemsBySourceAndUriMap.get(source);
+	privAte convertTimelineItem(source: string, commAndConverter: CommAndsConverter, disposAbles: DisposAbleStore) {
+		return (uri: URI, options?: InternAlTimelineOptions) => {
+			let items: MAp<string, vscode.TimelineItem> | undefined;
+			if (options?.cAcheResults) {
+				let itemsByUri = this._itemsBySourceAndUriMAp.get(source);
 				if (itemsByUri === undefined) {
-					itemsByUri = new Map();
-					this._itemsBySourceAndUriMap.set(source, itemsByUri);
+					itemsByUri = new MAp();
+					this._itemsBySourceAndUriMAp.set(source, itemsByUri);
 				}
 
 				const uriKey = getUriKey(uri);
 				items = itemsByUri.get(uriKey);
 				if (items === undefined) {
-					items = new Map();
+					items = new MAp();
 					itemsByUri.set(uriKey, items);
 				}
 			}
 
 			return (item: vscode.TimelineItem): TimelineItem => {
-				const { iconPath, ...props } = item;
+				const { iconPAth, ...props } = item;
 
-				const handle = `${source}|${item.id ?? item.timestamp}`;
-				items?.set(handle, item);
+				const hAndle = `${source}|${item.id ?? item.timestAmp}`;
+				items?.set(hAndle, item);
 
 				let icon;
-				let iconDark;
+				let iconDArk;
 				let themeIcon;
-				if (item.iconPath) {
-					if (iconPath instanceof ThemeIcon) {
-						themeIcon = { id: iconPath.id };
+				if (item.iconPAth) {
+					if (iconPAth instAnceof ThemeIcon) {
+						themeIcon = { id: iconPAth.id };
 					}
-					else if (URI.isUri(iconPath)) {
-						icon = iconPath;
-						iconDark = iconPath;
+					else if (URI.isUri(iconPAth)) {
+						icon = iconPAth;
+						iconDArk = iconPAth;
 					}
 					else {
-						({ light: icon, dark: iconDark } = iconPath as { light: URI; dark: URI });
+						({ light: icon, dArk: iconDArk } = iconPAth As { light: URI; dArk: URI });
 					}
 				}
 
 				return {
 					...props,
 					id: props.id ?? undefined,
-					handle: handle,
+					hAndle: hAndle,
 					source: source,
-					command: item.command ? commandConverter.toInternal(item.command, disposables) : undefined,
+					commAnd: item.commAnd ? commAndConverter.toInternAl(item.commAnd, disposAbles) : undefined,
 					icon: icon,
-					iconDark: iconDark,
+					iconDArk: iconDArk,
 					themeIcon: themeIcon,
-					accessibilityInformation: item.accessibilityInformation
+					AccessibilityInformAtion: item.AccessibilityInformAtion
 				};
 			};
 		};
 	}
 
-	private registerTimelineProviderCore(provider: TimelineProvider): IDisposable {
+	privAte registerTimelineProviderCore(provider: TimelineProvider): IDisposAble {
 		// console.log(`ExtHostTimeline#registerTimelineProvider: id=${provider.id}`);
 
 		const existing = this._providers.get(provider.id);
 		if (existing) {
-			throw new Error(`Timeline Provider ${provider.id} already exists.`);
+			throw new Error(`Timeline Provider ${provider.id} AlreAdy exists.`);
 		}
 
 		this._proxy.$registerTimelineProvider({
 			id: provider.id,
-			label: provider.label,
+			lAbel: provider.lAbel,
 			scheme: provider.scheme
 		});
 		this._providers.set(provider.id, provider);
 
-		return toDisposable(() => {
-			for (const sourceMap of this._itemsBySourceAndUriMap.values()) {
-				sourceMap.get(provider.id)?.clear();
+		return toDisposAble(() => {
+			for (const sourceMAp of this._itemsBySourceAndUriMAp.vAlues()) {
+				sourceMAp.get(provider.id)?.cleAr();
 			}
 
 			this._providers.delete(provider.id);

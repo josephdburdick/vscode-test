@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import Tracer from '../utils/tracer';
+import TrAcer from '../utils/trAcer';
 
-export interface OngoingRequestCanceller {
-	readonly cancellationPipeName: string | undefined;
-	tryCancelOngoingRequest(seq: number): boolean;
+export interfAce OngoingRequestCAnceller {
+	reAdonly cAncellAtionPipeNAme: string | undefined;
+	tryCAncelOngoingRequest(seq: number): booleAn;
 }
 
-export interface OngoingRequestCancellerFactory {
-	create(serverId: string, tracer: Tracer): OngoingRequestCanceller;
+export interfAce OngoingRequestCAncellerFActory {
+	creAte(serverId: string, trAcer: TrAcer): OngoingRequestCAnceller;
 }
 
-const noopRequestCanceller = new class implements OngoingRequestCanceller {
-	public readonly cancellationPipeName = undefined;
+const noopRequestCAnceller = new clAss implements OngoingRequestCAnceller {
+	public reAdonly cAncellAtionPipeNAme = undefined;
 
-	public tryCancelOngoingRequest(_seq: number): boolean {
-		return false;
+	public tryCAncelOngoingRequest(_seq: number): booleAn {
+		return fAlse;
 	}
 };
 
-export const noopRequestCancellerFactory = new class implements OngoingRequestCancellerFactory {
-	create(_serverId: string, _tracer: Tracer): OngoingRequestCanceller {
-		return noopRequestCanceller;
+export const noopRequestCAncellerFActory = new clAss implements OngoingRequestCAncellerFActory {
+	creAte(_serverId: string, _trAcer: TrAcer): OngoingRequestCAnceller {
+		return noopRequestCAnceller;
 	}
 };

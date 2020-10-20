@@ -1,188 +1,188 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { registerColor, foreground, editorInfoForeground, editorWarningForeground, errorForeground, badgeBackground, badgeForeground, listDeemphasizedForeground, contrastBorder, inputBorder } from 'vs/platform/theme/common/colorRegistry';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
+import { registerColor, foreground, editorInfoForeground, editorWArningForeground, errorForeground, bAdgeBAckground, bAdgeForeground, listDeemphAsizedForeground, contrAstBorder, inputBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import { Color } from 'vs/bAse/common/color';
 
 export function registerColors() {
 
-	const debugTokenExpressionName = registerColor('debugTokenExpression.name', { dark: '#c586c0', light: '#9b46b0', hc: foreground }, 'Foreground color for the token names shown in the debug views (ie. the Variables or Watch view).');
-	const debugTokenExpressionValue = registerColor('debugTokenExpression.value', { dark: '#cccccc99', light: '#6c6c6ccc', hc: foreground }, 'Foreground color for the token values shown in the debug views (ie. the Variables or Watch view).');
-	const debugTokenExpressionString = registerColor('debugTokenExpression.string', { dark: '#ce9178', light: '#a31515', hc: '#f48771' }, 'Foreground color for strings in the debug views (ie. the Variables or Watch view).');
-	const debugTokenExpressionBoolean = registerColor('debugTokenExpression.boolean', { dark: '#4e94ce', light: '#0000ff', hc: '#75bdfe' }, 'Foreground color for booleans in the debug views (ie. the Variables or Watch view).');
-	const debugTokenExpressionNumber = registerColor('debugTokenExpression.number', { dark: '#b5cea8', light: '#098658', hc: '#89d185' }, 'Foreground color for numbers in the debug views (ie. the Variables or Watch view).');
-	const debugTokenExpressionError = registerColor('debugTokenExpression.error', { dark: '#f48771', light: '#e51400', hc: '#f48771' }, 'Foreground color for expression errors in the debug views (ie. the Variables or Watch view) and for error logs shown in the debug console.');
+	const debugTokenExpressionNAme = registerColor('debugTokenExpression.nAme', { dArk: '#c586c0', light: '#9b46b0', hc: foreground }, 'Foreground color for the token nAmes shown in the debug views (ie. the VAriAbles or WAtch view).');
+	const debugTokenExpressionVAlue = registerColor('debugTokenExpression.vAlue', { dArk: '#cccccc99', light: '#6c6c6ccc', hc: foreground }, 'Foreground color for the token vAlues shown in the debug views (ie. the VAriAbles or WAtch view).');
+	const debugTokenExpressionString = registerColor('debugTokenExpression.string', { dArk: '#ce9178', light: '#A31515', hc: '#f48771' }, 'Foreground color for strings in the debug views (ie. the VAriAbles or WAtch view).');
+	const debugTokenExpressionBooleAn = registerColor('debugTokenExpression.booleAn', { dArk: '#4e94ce', light: '#0000ff', hc: '#75bdfe' }, 'Foreground color for booleAns in the debug views (ie. the VAriAbles or WAtch view).');
+	const debugTokenExpressionNumber = registerColor('debugTokenExpression.number', { dArk: '#b5ceA8', light: '#098658', hc: '#89d185' }, 'Foreground color for numbers in the debug views (ie. the VAriAbles or WAtch view).');
+	const debugTokenExpressionError = registerColor('debugTokenExpression.error', { dArk: '#f48771', light: '#e51400', hc: '#f48771' }, 'Foreground color for expression errors in the debug views (ie. the VAriAbles or WAtch view) And for error logs shown in the debug console.');
 
-	const debugViewExceptionLabelForeground = registerColor('debugView.exceptionLabelForeground', { dark: foreground, light: '#FFF', hc: foreground }, 'Foreground color for a label shown in the CALL STACK view when the debugger breaks on an exception.');
-	const debugViewExceptionLabelBackground = registerColor('debugView.exceptionLabelBackground', { dark: '#6C2022', light: '#A31515', hc: '#6C2022' }, 'Background color for a label shown in the CALL STACK view when the debugger breaks on an exception.');
-	const debugViewStateLabelForeground = registerColor('debugView.stateLabelForeground', { dark: foreground, light: foreground, hc: foreground }, 'Foreground color for a label in the CALL STACK view showing the current session\'s or thread\'s state.');
-	const debugViewStateLabelBackground = registerColor('debugView.stateLabelBackground', { dark: '#88888844', light: '#88888844', hc: '#88888844' }, 'Background color for a label in the CALL STACK view showing the current session\'s or thread\'s state.');
-	const debugViewValueChangedHighlight = registerColor('debugView.valueChangedHighlight', { dark: '#569CD6', light: '#569CD6', hc: '#569CD6' }, 'Color used to highlight value changes in the debug views (ie. in the Variables view).');
+	const debugViewExceptionLAbelForeground = registerColor('debugView.exceptionLAbelForeground', { dArk: foreground, light: '#FFF', hc: foreground }, 'Foreground color for A lAbel shown in the CALL STACK view when the debugger breAks on An exception.');
+	const debugViewExceptionLAbelBAckground = registerColor('debugView.exceptionLAbelBAckground', { dArk: '#6C2022', light: '#A31515', hc: '#6C2022' }, 'BAckground color for A lAbel shown in the CALL STACK view when the debugger breAks on An exception.');
+	const debugViewStAteLAbelForeground = registerColor('debugView.stAteLAbelForeground', { dArk: foreground, light: foreground, hc: foreground }, 'Foreground color for A lAbel in the CALL STACK view showing the current session\'s or threAd\'s stAte.');
+	const debugViewStAteLAbelBAckground = registerColor('debugView.stAteLAbelBAckground', { dArk: '#88888844', light: '#88888844', hc: '#88888844' }, 'BAckground color for A lAbel in the CALL STACK view showing the current session\'s or threAd\'s stAte.');
+	const debugViewVAlueChAngedHighlight = registerColor('debugView.vAlueChAngedHighlight', { dArk: '#569CD6', light: '#569CD6', hc: '#569CD6' }, 'Color used to highlight vAlue chAnges in the debug views (ie. in the VAriAbles view).');
 
-	const debugConsoleInfoForeground = registerColor('debugConsole.infoForeground', { dark: editorInfoForeground, light: editorInfoForeground, hc: foreground }, 'Foreground color for info messages in debug REPL console.');
-	const debugConsoleWarningForeground = registerColor('debugConsole.warningForeground', { dark: editorWarningForeground, light: editorWarningForeground, hc: '#008000' }, 'Foreground color for warning messages in debug REPL console.');
-	const debugConsoleErrorForeground = registerColor('debugConsole.errorForeground', { dark: errorForeground, light: errorForeground, hc: errorForeground }, 'Foreground color for error messages in debug REPL console.');
-	const debugConsoleSourceForeground = registerColor('debugConsole.sourceForeground', { dark: foreground, light: foreground, hc: foreground }, 'Foreground color for source filenames in debug REPL console.');
-	const debugConsoleInputIconForeground = registerColor('debugConsoleInputIcon.foreground', { dark: foreground, light: foreground, hc: foreground }, 'Foreground color for debug console input marker icon.');
+	const debugConsoleInfoForeground = registerColor('debugConsole.infoForeground', { dArk: editorInfoForeground, light: editorInfoForeground, hc: foreground }, 'Foreground color for info messAges in debug REPL console.');
+	const debugConsoleWArningForeground = registerColor('debugConsole.wArningForeground', { dArk: editorWArningForeground, light: editorWArningForeground, hc: '#008000' }, 'Foreground color for wArning messAges in debug REPL console.');
+	const debugConsoleErrorForeground = registerColor('debugConsole.errorForeground', { dArk: errorForeground, light: errorForeground, hc: errorForeground }, 'Foreground color for error messAges in debug REPL console.');
+	const debugConsoleSourceForeground = registerColor('debugConsole.sourceForeground', { dArk: foreground, light: foreground, hc: foreground }, 'Foreground color for source filenAmes in debug REPL console.');
+	const debugConsoleInputIconForeground = registerColor('debugConsoleInputIcon.foreground', { dArk: foreground, light: foreground, hc: foreground }, 'Foreground color for debug console input mArker icon.');
 
-	registerThemingParticipant((theme, collector) => {
-		// All these colours provide a default value so they will never be undefined, hence the `!`
-		const badgeBackgroundColor = theme.getColor(badgeBackground)!;
-		const badgeForegroundColor = theme.getColor(badgeForeground)!;
-		const listDeemphasizedForegroundColor = theme.getColor(listDeemphasizedForeground)!;
-		const debugViewExceptionLabelForegroundColor = theme.getColor(debugViewExceptionLabelForeground)!;
-		const debugViewExceptionLabelBackgroundColor = theme.getColor(debugViewExceptionLabelBackground)!;
-		const debugViewStateLabelForegroundColor = theme.getColor(debugViewStateLabelForeground)!;
-		const debugViewStateLabelBackgroundColor = theme.getColor(debugViewStateLabelBackground)!;
-		const debugViewValueChangedHighlightColor = theme.getColor(debugViewValueChangedHighlight)!;
+	registerThemingPArticipAnt((theme, collector) => {
+		// All these colours provide A defAult vAlue so they will never be undefined, hence the `!`
+		const bAdgeBAckgroundColor = theme.getColor(bAdgeBAckground)!;
+		const bAdgeForegroundColor = theme.getColor(bAdgeForeground)!;
+		const listDeemphAsizedForegroundColor = theme.getColor(listDeemphAsizedForeground)!;
+		const debugViewExceptionLAbelForegroundColor = theme.getColor(debugViewExceptionLAbelForeground)!;
+		const debugViewExceptionLAbelBAckgroundColor = theme.getColor(debugViewExceptionLAbelBAckground)!;
+		const debugViewStAteLAbelForegroundColor = theme.getColor(debugViewStAteLAbelForeground)!;
+		const debugViewStAteLAbelBAckgroundColor = theme.getColor(debugViewStAteLAbelBAckground)!;
+		const debugViewVAlueChAngedHighlightColor = theme.getColor(debugViewVAlueChAngedHighlight)!;
 
-		collector.addRule(`
-			/* Text colour of the call stack row's filename */
-			.debug-pane .debug-call-stack .monaco-list-row:not(.selected) .stack-frame > .file .file-name {
-				color: ${listDeemphasizedForegroundColor}
+		collector.AddRule(`
+			/* Text colour of the cAll stAck row's filenAme */
+			.debug-pAne .debug-cAll-stAck .monAco-list-row:not(.selected) .stAck-frAme > .file .file-nAme {
+				color: ${listDeemphAsizedForegroundColor}
 			}
 
-			/* Line & column number "badge" for selected call stack row */
-			.debug-pane .monaco-list-row.selected .line-number {
-				background-color: ${badgeBackgroundColor};
-				color: ${badgeForegroundColor};
+			/* Line & column number "bAdge" for selected cAll stAck row */
+			.debug-pAne .monAco-list-row.selected .line-number {
+				bAckground-color: ${bAdgeBAckgroundColor};
+				color: ${bAdgeForegroundColor};
 			}
 
-			/* Line & column number "badge" for unselected call stack row (basically all other rows) */
-			.debug-pane .line-number {
-				background-color: ${badgeBackgroundColor.transparent(0.6)};
-				color: ${badgeForegroundColor.transparent(0.6)};
+			/* Line & column number "bAdge" for unselected cAll stAck row (bAsicAlly All other rows) */
+			.debug-pAne .line-number {
+				bAckground-color: ${bAdgeBAckgroundColor.trAnspArent(0.6)};
+				color: ${bAdgeForegroundColor.trAnspArent(0.6)};
 			}
 
-			/* State "badge" displaying the active session's current state.
-			* Only visible when there are more active debug sessions/threads running.
+			/* StAte "bAdge" displAying the Active session's current stAte.
+			* Only visible when there Are more Active debug sessions/threAds running.
 			*/
-			.debug-pane .debug-call-stack .thread > .state.label,
-			.debug-pane .debug-call-stack .session > .state.label,
-			.debug-pane .monaco-list-row.selected .thread > .state.label,
-			.debug-pane .monaco-list-row.selected .session > .state.label {
-				background-color: ${debugViewStateLabelBackgroundColor};
-				color: ${debugViewStateLabelForegroundColor};
+			.debug-pAne .debug-cAll-stAck .threAd > .stAte.lAbel,
+			.debug-pAne .debug-cAll-stAck .session > .stAte.lAbel,
+			.debug-pAne .monAco-list-row.selected .threAd > .stAte.lAbel,
+			.debug-pAne .monAco-list-row.selected .session > .stAte.lAbel {
+				bAckground-color: ${debugViewStAteLAbelBAckgroundColor};
+				color: ${debugViewStAteLAbelForegroundColor};
 			}
 
-			/* Info "badge" shown when the debugger pauses due to a thrown exception. */
-			.debug-pane .debug-call-stack-title > .pause-message > .label.exception {
-				background-color: ${debugViewExceptionLabelBackgroundColor};
-				color: ${debugViewExceptionLabelForegroundColor};
+			/* Info "bAdge" shown when the debugger pAuses due to A thrown exception. */
+			.debug-pAne .debug-cAll-stAck-title > .pAuse-messAge > .lAbel.exception {
+				bAckground-color: ${debugViewExceptionLAbelBAckgroundColor};
+				color: ${debugViewExceptionLAbelForegroundColor};
 			}
 
-			/* Animation of changed values in Debug viewlet */
-			@keyframes debugViewletValueChanged {
-				0%   { background-color: ${debugViewValueChangedHighlightColor.transparent(0)} }
-				5%   { background-color: ${debugViewValueChangedHighlightColor.transparent(0.9)} }
-				100% { background-color: ${debugViewValueChangedHighlightColor.transparent(0.3)} }
+			/* AnimAtion of chAnged vAlues in Debug viewlet */
+			@keyfrAmes debugViewletVAlueChAnged {
+				0%   { bAckground-color: ${debugViewVAlueChAngedHighlightColor.trAnspArent(0)} }
+				5%   { bAckground-color: ${debugViewVAlueChAngedHighlightColor.trAnspArent(0.9)} }
+				100% { bAckground-color: ${debugViewVAlueChAngedHighlightColor.trAnspArent(0.3)} }
 			}
 
-			.debug-pane .monaco-list-row .expression .value.changed {
-				background-color: ${debugViewValueChangedHighlightColor.transparent(0.3)};
-				animation-name: debugViewletValueChanged;
-				animation-duration: 1s;
-				animation-fill-mode: forwards;
+			.debug-pAne .monAco-list-row .expression .vAlue.chAnged {
+				bAckground-color: ${debugViewVAlueChAngedHighlightColor.trAnspArent(0.3)};
+				AnimAtion-nAme: debugViewletVAlueChAnged;
+				AnimAtion-durAtion: 1s;
+				AnimAtion-fill-mode: forwArds;
 			}
 		`);
 
-		const contrastBorderColor = theme.getColor(contrastBorder);
+		const contrAstBorderColor = theme.getColor(contrAstBorder);
 
-		if (contrastBorderColor) {
-			collector.addRule(`
-			.debug-pane .line-number {
-				border: 1px solid ${contrastBorderColor};
+		if (contrAstBorderColor) {
+			collector.AddRule(`
+			.debug-pAne .line-number {
+				border: 1px solid ${contrAstBorderColor};
 			}
 			`);
 		}
 
-		const tokenNameColor = theme.getColor(debugTokenExpressionName)!;
-		const tokenValueColor = theme.getColor(debugTokenExpressionValue)!;
+		const tokenNAmeColor = theme.getColor(debugTokenExpressionNAme)!;
+		const tokenVAlueColor = theme.getColor(debugTokenExpressionVAlue)!;
 		const tokenStringColor = theme.getColor(debugTokenExpressionString)!;
-		const tokenBooleanColor = theme.getColor(debugTokenExpressionBoolean)!;
+		const tokenBooleAnColor = theme.getColor(debugTokenExpressionBooleAn)!;
 		const tokenErrorColor = theme.getColor(debugTokenExpressionError)!;
 		const tokenNumberColor = theme.getColor(debugTokenExpressionNumber)!;
 
-		collector.addRule(`
-			.monaco-workbench .monaco-list-row .expression .name {
-				color: ${tokenNameColor};
+		collector.AddRule(`
+			.monAco-workbench .monAco-list-row .expression .nAme {
+				color: ${tokenNAmeColor};
 			}
 
-			.monaco-workbench .monaco-list-row .expression .value,
-			.monaco-workbench .debug-hover-widget .value {
-				color: ${tokenValueColor};
+			.monAco-workbench .monAco-list-row .expression .vAlue,
+			.monAco-workbench .debug-hover-widget .vAlue {
+				color: ${tokenVAlueColor};
 			}
 
-			.monaco-workbench .monaco-list-row .expression .value.string,
-			.monaco-workbench .debug-hover-widget .value.string {
+			.monAco-workbench .monAco-list-row .expression .vAlue.string,
+			.monAco-workbench .debug-hover-widget .vAlue.string {
 				color: ${tokenStringColor};
 			}
 
-			.monaco-workbench .monaco-list-row .expression .value.boolean,
-			.monaco-workbench .debug-hover-widget .value.boolean {
-				color: ${tokenBooleanColor};
+			.monAco-workbench .monAco-list-row .expression .vAlue.booleAn,
+			.monAco-workbench .debug-hover-widget .vAlue.booleAn {
+				color: ${tokenBooleAnColor};
 			}
 
-			.monaco-workbench .monaco-list-row .expression .error,
-			.monaco-workbench .debug-hover-widget .error,
-			.monaco-workbench .debug-pane .debug-variables .scope .error {
+			.monAco-workbench .monAco-list-row .expression .error,
+			.monAco-workbench .debug-hover-widget .error,
+			.monAco-workbench .debug-pAne .debug-vAriAbles .scope .error {
 				color: ${tokenErrorColor};
 			}
 
-			.monaco-workbench .monaco-list-row .expression .value.number,
-			.monaco-workbench .debug-hover-widget .value.number {
+			.monAco-workbench .monAco-list-row .expression .vAlue.number,
+			.monAco-workbench .debug-hover-widget .vAlue.number {
 				color: ${tokenNumberColor};
 			}
 		`);
 
 		const debugConsoleInputBorderColor = theme.getColor(inputBorder) || Color.fromHex('#80808060');
 		const debugConsoleInfoForegroundColor = theme.getColor(debugConsoleInfoForeground)!;
-		const debugConsoleWarningForegroundColor = theme.getColor(debugConsoleWarningForeground)!;
+		const debugConsoleWArningForegroundColor = theme.getColor(debugConsoleWArningForeground)!;
 		const debugConsoleErrorForegroundColor = theme.getColor(debugConsoleErrorForeground)!;
 		const debugConsoleSourceForegroundColor = theme.getColor(debugConsoleSourceForeground)!;
 		const debugConsoleInputIconForegroundColor = theme.getColor(debugConsoleInputIconForeground)!;
 
-		collector.addRule(`
-			.repl .repl-input-wrapper {
+		collector.AddRule(`
+			.repl .repl-input-wrApper {
 				border-top: 1px solid ${debugConsoleInputBorderColor};
 			}
 
-			.monaco-workbench .repl .repl-tree .output .expression .value.info {
+			.monAco-workbench .repl .repl-tree .output .expression .vAlue.info {
 				color: ${debugConsoleInfoForegroundColor};
 			}
 
-			.monaco-workbench .repl .repl-tree .output .expression .value.warn {
-				color: ${debugConsoleWarningForegroundColor};
+			.monAco-workbench .repl .repl-tree .output .expression .vAlue.wArn {
+				color: ${debugConsoleWArningForegroundColor};
 			}
 
-			.monaco-workbench .repl .repl-tree .output .expression .value.error {
+			.monAco-workbench .repl .repl-tree .output .expression .vAlue.error {
 				color: ${debugConsoleErrorForegroundColor};
 			}
 
-			.monaco-workbench .repl .repl-tree .output .expression .source {
+			.monAco-workbench .repl .repl-tree .output .expression .source {
 				color: ${debugConsoleSourceForegroundColor};
 			}
 
-			.monaco-workbench .repl .repl-tree .monaco-tl-contents .arrow {
+			.monAco-workbench .repl .repl-tree .monAco-tl-contents .Arrow {
 				color: ${debugConsoleInputIconForegroundColor};
 			}
 		`);
 
 		if (!theme.defines(debugConsoleInputIconForeground)) {
-			collector.addRule(`
-				.monaco-workbench.vs .repl .repl-tree .monaco-tl-contents .arrow {
-					opacity: 0.25;
+			collector.AddRule(`
+				.monAco-workbench.vs .repl .repl-tree .monAco-tl-contents .Arrow {
+					opAcity: 0.25;
 				}
 
-				.monaco-workbench.vs-dark .repl .repl-tree .monaco-tl-contents .arrow {
-					opacity: 0.4;
+				.monAco-workbench.vs-dArk .repl .repl-tree .monAco-tl-contents .Arrow {
+					opAcity: 0.4;
 				}
 
-				.monaco-workbench.hc-black .repl .repl-tree .monaco-tl-contents .arrow {
-					opacity: 1;
+				.monAco-workbench.hc-blAck .repl .repl-tree .monAco-tl-contents .Arrow {
+					opAcity: 1;
 				}
 			`);
 		}

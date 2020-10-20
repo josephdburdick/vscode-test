@@ -1,26 +1,26 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const path = require('path');
+const pAth = require('pAth');
 const testRunner = require('vscode/lib/testrunner');
 
-const suite = 'Integration Colorize Tests';
+const suite = 'IntegrAtion Colorize Tests';
 
-const options: any = {
+const options: Any = {
 	ui: 'tdd',
-	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.platform !== 'win32'),
+	useColors: (!process.env.BUILD_ARTIFACTSTAGINGDIRECTORY && process.plAtform !== 'win32'),
 	timeout: 60000
 };
 
 if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
-	options.reporter = 'mocha-multi-reporters';
+	options.reporter = 'mochA-multi-reporters';
 	options.reporterOptions = {
-		reporterEnabled: 'spec, mocha-junit-reporter',
-		mochaJunitReporterReporterOptions: {
-			testsuitesTitle: `${suite} ${process.platform}`,
-			mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${process.arch}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)
+		reporterEnAbled: 'spec, mochA-junit-reporter',
+		mochAJunitReporterReporterOptions: {
+			testsuitesTitle: `${suite} ${process.plAtform}`,
+			mochAFile: pAth.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.plAtform}-${process.Arch}-${suite.toLowerCAse().replAce(/[^\w]/g, '-')}-results.xml`)
 		}
 	};
 }

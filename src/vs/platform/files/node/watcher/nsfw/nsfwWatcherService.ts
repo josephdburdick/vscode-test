@@ -1,252 +1,252 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as glob from 'vs/base/common/glob';
-import * as extpath from 'vs/base/common/extpath';
-import * as path from 'vs/base/common/path';
-import * as platform from 'vs/base/common/platform';
-import { IDiskFileChange, normalizeFileChanges, ILogMessage } from 'vs/platform/files/node/watcher/watcher';
-import * as nsfw from 'vscode-nsfw';
-import { IWatcherService, IWatcherRequest } from 'vs/platform/files/node/watcher/nsfw/watcher';
-import { ThrottledDelayer } from 'vs/base/common/async';
-import { FileChangeType } from 'vs/platform/files/common/files';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { Event, Emitter } from 'vs/base/common/event';
-import { realcaseSync, realpathSync } from 'vs/base/node/extpath';
-import { Disposable } from 'vs/base/common/lifecycle';
+import * As glob from 'vs/bAse/common/glob';
+import * As extpAth from 'vs/bAse/common/extpAth';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { IDiskFileChAnge, normAlizeFileChAnges, ILogMessAge } from 'vs/plAtform/files/node/wAtcher/wAtcher';
+import * As nsfw from 'vscode-nsfw';
+import { IWAtcherService, IWAtcherRequest } from 'vs/plAtform/files/node/wAtcher/nsfw/wAtcher';
+import { ThrottledDelAyer } from 'vs/bAse/common/Async';
+import { FileChAngeType } from 'vs/plAtform/files/common/files';
+import { normAlizeNFC } from 'vs/bAse/common/normAlizAtion';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { reAlcAseSync, reAlpAthSync } from 'vs/bAse/node/extpAth';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 
-const nsfwActionToRawChangeType: { [key: number]: number } = [];
-nsfwActionToRawChangeType[nsfw.actions.CREATED] = FileChangeType.ADDED;
-nsfwActionToRawChangeType[nsfw.actions.MODIFIED] = FileChangeType.UPDATED;
-nsfwActionToRawChangeType[nsfw.actions.DELETED] = FileChangeType.DELETED;
+const nsfwActionToRAwChAngeType: { [key: number]: number } = [];
+nsfwActionToRAwChAngeType[nsfw.Actions.CREATED] = FileChAngeType.ADDED;
+nsfwActionToRAwChAngeType[nsfw.Actions.MODIFIED] = FileChAngeType.UPDATED;
+nsfwActionToRAwChAngeType[nsfw.Actions.DELETED] = FileChAngeType.DELETED;
 
-interface IWatcherObjet {
-	start(): void;
+interfAce IWAtcherObjet {
+	stArt(): void;
 	stop(): void;
 }
 
-interface IPathWatcher {
-	ready: Promise<IWatcherObjet>;
-	watcher?: IWatcherObjet;
-	ignored: glob.ParsedPattern[];
+interfAce IPAthWAtcher {
+	reAdy: Promise<IWAtcherObjet>;
+	wAtcher?: IWAtcherObjet;
+	ignored: glob.PArsedPAttern[];
 }
 
-export class NsfwWatcherService extends Disposable implements IWatcherService {
+export clAss NsfwWAtcherService extends DisposAble implements IWAtcherService {
 
-	private static readonly FS_EVENT_DELAY = 50; // aggregate and only emit events when changes have stopped for this duration (in ms)
+	privAte stAtic reAdonly FS_EVENT_DELAY = 50; // AggregAte And only emit events when chAnges hAve stopped for this durAtion (in ms)
 
-	private readonly _onDidChangeFile = this._register(new Emitter<IDiskFileChange[]>());
-	readonly onDidChangeFile = this._onDidChangeFile.event;
+	privAte reAdonly _onDidChAngeFile = this._register(new Emitter<IDiskFileChAnge[]>());
+	reAdonly onDidChAngeFile = this._onDidChAngeFile.event;
 
-	private readonly _onDidLogMessage = this._register(new Emitter<ILogMessage>());
-	readonly onDidLogMessage: Event<ILogMessage> = this._onDidLogMessage.event;
+	privAte reAdonly _onDidLogMessAge = this._register(new Emitter<ILogMessAge>());
+	reAdonly onDidLogMessAge: Event<ILogMessAge> = this._onDidLogMessAge.event;
 
-	private pathWatchers: { [watchPath: string]: IPathWatcher } = {};
-	private verboseLogging: boolean | undefined;
-	private enospcErrorLogged: boolean | undefined;
+	privAte pAthWAtchers: { [wAtchPAth: string]: IPAthWAtcher } = {};
+	privAte verboseLogging: booleAn | undefined;
+	privAte enospcErrorLogged: booleAn | undefined;
 
-	async setRoots(roots: IWatcherRequest[]): Promise<void> {
-		const normalizedRoots = this._normalizeRoots(roots);
+	Async setRoots(roots: IWAtcherRequest[]): Promise<void> {
+		const normAlizedRoots = this._normAlizeRoots(roots);
 
-		// Gather roots that are not currently being watched
-		const rootsToStartWatching = normalizedRoots.filter(r => {
-			return !(r.path in this.pathWatchers);
+		// GAther roots thAt Are not currently being wAtched
+		const rootsToStArtWAtching = normAlizedRoots.filter(r => {
+			return !(r.pAth in this.pAthWAtchers);
 		});
 
-		// Gather current roots that don't exist in the new roots array
-		const rootsToStopWatching = Object.keys(this.pathWatchers).filter(r => {
-			return normalizedRoots.every(normalizedRoot => normalizedRoot.path !== r);
+		// GAther current roots thAt don't exist in the new roots ArrAy
+		const rootsToStopWAtching = Object.keys(this.pAthWAtchers).filter(r => {
+			return normAlizedRoots.every(normAlizedRoot => normAlizedRoot.pAth !== r);
 		});
 
 		// Logging
 		if (this.verboseLogging) {
-			this.log(`Start watching: [${rootsToStartWatching.map(r => r.path).join(',')}]\nStop watching: [${rootsToStopWatching.join(',')}]`);
+			this.log(`StArt wAtching: [${rootsToStArtWAtching.mAp(r => r.pAth).join(',')}]\nStop wAtching: [${rootsToStopWAtching.join(',')}]`);
 		}
 
-		// Stop watching some roots
-		rootsToStopWatching.forEach(root => {
-			this.pathWatchers[root].ready.then(watcher => watcher.stop());
-			delete this.pathWatchers[root];
+		// Stop wAtching some roots
+		rootsToStopWAtching.forEAch(root => {
+			this.pAthWAtchers[root].reAdy.then(wAtcher => wAtcher.stop());
+			delete this.pAthWAtchers[root];
 		});
 
-		// Start watching some roots
-		rootsToStartWatching.forEach(root => this.doWatch(root));
+		// StArt wAtching some roots
+		rootsToStArtWAtching.forEAch(root => this.doWAtch(root));
 
-		// Refresh ignored arrays in case they changed
-		roots.forEach(root => {
-			if (root.path in this.pathWatchers) {
-				this.pathWatchers[root.path].ignored = Array.isArray(root.excludes) ? root.excludes.map(ignored => glob.parse(ignored)) : [];
+		// Refresh ignored ArrAys in cAse they chAnged
+		roots.forEAch(root => {
+			if (root.pAth in this.pAthWAtchers) {
+				this.pAthWAtchers[root.pAth].ignored = ArrAy.isArrAy(root.excludes) ? root.excludes.mAp(ignored => glob.pArse(ignored)) : [];
 			}
 		});
 	}
 
-	private doWatch(request: IWatcherRequest): void {
-		let undeliveredFileEvents: IDiskFileChange[] = [];
-		const fileEventDelayer = new ThrottledDelayer<void>(NsfwWatcherService.FS_EVENT_DELAY);
+	privAte doWAtch(request: IWAtcherRequest): void {
+		let undeliveredFileEvents: IDiskFileChAnge[] = [];
+		const fileEventDelAyer = new ThrottledDelAyer<void>(NsfwWAtcherService.FS_EVENT_DELAY);
 
-		let readyPromiseResolve: (watcher: IWatcherObjet) => void;
-		this.pathWatchers[request.path] = {
-			ready: new Promise<IWatcherObjet>(resolve => readyPromiseResolve = resolve),
-			ignored: Array.isArray(request.excludes) ? request.excludes.map(ignored => glob.parse(ignored)) : []
+		let reAdyPromiseResolve: (wAtcher: IWAtcherObjet) => void;
+		this.pAthWAtchers[request.pAth] = {
+			reAdy: new Promise<IWAtcherObjet>(resolve => reAdyPromiseResolve = resolve),
+			ignored: ArrAy.isArrAy(request.excludes) ? request.excludes.mAp(ignored => glob.pArse(ignored)) : []
 		};
 
-		process.on('uncaughtException', (e: Error | string) => {
+		process.on('uncAughtException', (e: Error | string) => {
 
-			// Specially handle ENOSPC errors that can happen when
-			// the watcher consumes so many file descriptors that
-			// we are running into a limit. We only want to warn
-			// once in this case to avoid log spam.
+			// SpeciAlly hAndle ENOSPC errors thAt cAn hAppen when
+			// the wAtcher consumes so mAny file descriptors thAt
+			// we Are running into A limit. We only wAnt to wArn
+			// once in this cAse to Avoid log spAm.
 			// See https://github.com/microsoft/vscode/issues/7950
-			if (e === 'Inotify limit reached' && !this.enospcErrorLogged) {
+			if (e === 'Inotify limit reAched' && !this.enospcErrorLogged) {
 				this.enospcErrorLogged = true;
-				this.error('Inotify limit reached (ENOSPC)');
+				this.error('Inotify limit reAched (ENOSPC)');
 			}
 		});
 
-		// NSFW does not report file changes in the path provided on macOS if
-		// - the path uses wrong casing
-		// - the path is a symbolic link
-		// We have to detect this case and massage the events to correct this.
-		let realBasePathDiffers = false;
-		let realBasePathLength = request.path.length;
-		if (platform.isMacintosh) {
+		// NSFW does not report file chAnges in the pAth provided on mAcOS if
+		// - the pAth uses wrong cAsing
+		// - the pAth is A symbolic link
+		// We hAve to detect this cAse And mAssAge the events to correct this.
+		let reAlBAsePAthDiffers = fAlse;
+		let reAlBAsePAthLength = request.pAth.length;
+		if (plAtform.isMAcintosh) {
 			try {
 
 				// First check for symbolic link
-				let realBasePath = realpathSync(request.path);
+				let reAlBAsePAth = reAlpAthSync(request.pAth);
 
-				// Second check for casing difference
-				if (request.path === realBasePath) {
-					realBasePath = (realcaseSync(request.path) || request.path);
+				// Second check for cAsing difference
+				if (request.pAth === reAlBAsePAth) {
+					reAlBAsePAth = (reAlcAseSync(request.pAth) || request.pAth);
 				}
 
-				if (request.path !== realBasePath) {
-					realBasePathLength = realBasePath.length;
-					realBasePathDiffers = true;
+				if (request.pAth !== reAlBAsePAth) {
+					reAlBAsePAthLength = reAlBAsePAth.length;
+					reAlBAsePAthDiffers = true;
 
-					this.warn(`Watcher basePath does not match version on disk and will be corrected (original: ${request.path}, real: ${realBasePath})`);
+					this.wArn(`WAtcher bAsePAth does not mAtch version on disk And will be corrected (originAl: ${request.pAth}, reAl: ${reAlBAsePAth})`);
 				}
-			} catch (error) {
+			} cAtch (error) {
 				// ignore
 			}
 		}
 
 		if (this.verboseLogging) {
-			this.log(`Start watching with nsfw: ${request.path}`);
+			this.log(`StArt wAtching with nsfw: ${request.pAth}`);
 		}
 
-		nsfw(request.path, events => {
+		nsfw(request.pAth, events => {
 			for (const e of events) {
 				// Logging
 				if (this.verboseLogging) {
-					const logPath = e.action === nsfw.actions.RENAMED ? path.join(e.directory, e.oldFile || '') + ' -> ' + e.newFile : path.join(e.directory, e.file || '');
-					this.log(`${e.action === nsfw.actions.CREATED ? '[CREATED]' : e.action === nsfw.actions.DELETED ? '[DELETED]' : e.action === nsfw.actions.MODIFIED ? '[CHANGED]' : '[RENAMED]'} ${logPath}`);
+					const logPAth = e.Action === nsfw.Actions.RENAMED ? pAth.join(e.directory, e.oldFile || '') + ' -> ' + e.newFile : pAth.join(e.directory, e.file || '');
+					this.log(`${e.Action === nsfw.Actions.CREATED ? '[CREATED]' : e.Action === nsfw.Actions.DELETED ? '[DELETED]' : e.Action === nsfw.Actions.MODIFIED ? '[CHANGED]' : '[RENAMED]'} ${logPAth}`);
 				}
 
-				// Convert nsfw event to IRawFileChange and add to queue
-				let absolutePath: string;
-				if (e.action === nsfw.actions.RENAMED) {
-					// Rename fires when a file's name changes within a single directory
-					absolutePath = path.join(e.directory, e.oldFile || '');
-					if (!this.isPathIgnored(absolutePath, this.pathWatchers[request.path].ignored)) {
-						undeliveredFileEvents.push({ type: FileChangeType.DELETED, path: absolutePath });
+				// Convert nsfw event to IRAwFileChAnge And Add to queue
+				let AbsolutePAth: string;
+				if (e.Action === nsfw.Actions.RENAMED) {
+					// RenAme fires when A file's nAme chAnges within A single directory
+					AbsolutePAth = pAth.join(e.directory, e.oldFile || '');
+					if (!this.isPAthIgnored(AbsolutePAth, this.pAthWAtchers[request.pAth].ignored)) {
+						undeliveredFileEvents.push({ type: FileChAngeType.DELETED, pAth: AbsolutePAth });
 					} else if (this.verboseLogging) {
-						this.log(` >> ignored ${absolutePath}`);
+						this.log(` >> ignored ${AbsolutePAth}`);
 					}
-					absolutePath = path.join(e.newDirectory || e.directory, e.newFile || '');
-					if (!this.isPathIgnored(absolutePath, this.pathWatchers[request.path].ignored)) {
-						undeliveredFileEvents.push({ type: FileChangeType.ADDED, path: absolutePath });
+					AbsolutePAth = pAth.join(e.newDirectory || e.directory, e.newFile || '');
+					if (!this.isPAthIgnored(AbsolutePAth, this.pAthWAtchers[request.pAth].ignored)) {
+						undeliveredFileEvents.push({ type: FileChAngeType.ADDED, pAth: AbsolutePAth });
 					} else if (this.verboseLogging) {
-						this.log(` >> ignored ${absolutePath}`);
+						this.log(` >> ignored ${AbsolutePAth}`);
 					}
 				} else {
-					absolutePath = path.join(e.directory, e.file || '');
-					if (!this.isPathIgnored(absolutePath, this.pathWatchers[request.path].ignored)) {
+					AbsolutePAth = pAth.join(e.directory, e.file || '');
+					if (!this.isPAthIgnored(AbsolutePAth, this.pAthWAtchers[request.pAth].ignored)) {
 						undeliveredFileEvents.push({
-							type: nsfwActionToRawChangeType[e.action],
-							path: absolutePath
+							type: nsfwActionToRAwChAngeType[e.Action],
+							pAth: AbsolutePAth
 						});
 					} else if (this.verboseLogging) {
-						this.log(` >> ignored ${absolutePath}`);
+						this.log(` >> ignored ${AbsolutePAth}`);
 					}
 				}
 			}
 
-			// Delay and send buffer
-			fileEventDelayer.trigger(async () => {
+			// DelAy And send buffer
+			fileEventDelAyer.trigger(Async () => {
 				const events = undeliveredFileEvents;
 				undeliveredFileEvents = [];
 
-				if (platform.isMacintosh) {
-					events.forEach(e => {
+				if (plAtform.isMAcintosh) {
+					events.forEAch(e => {
 
-						// Mac uses NFD unicode form on disk, but we want NFC
-						e.path = normalizeNFC(e.path);
+						// MAc uses NFD unicode form on disk, but we wAnt NFC
+						e.pAth = normAlizeNFC(e.pAth);
 
-						// Convert paths back to original form in case it differs
-						if (realBasePathDiffers) {
-							e.path = request.path + e.path.substr(realBasePathLength);
+						// Convert pAths bAck to originAl form in cAse it differs
+						if (reAlBAsePAthDiffers) {
+							e.pAth = request.pAth + e.pAth.substr(reAlBAsePAthLength);
 						}
 					});
 				}
 
-				// Broadcast to clients normalized
-				const res = normalizeFileChanges(events);
-				this._onDidChangeFile.fire(res);
+				// BroAdcAst to clients normAlized
+				const res = normAlizeFileChAnges(events);
+				this._onDidChAngeFile.fire(res);
 
 				// Logging
 				if (this.verboseLogging) {
-					res.forEach(r => {
-						this.log(` >> normalized ${r.type === FileChangeType.ADDED ? '[ADDED]' : r.type === FileChangeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${r.path}`);
+					res.forEAch(r => {
+						this.log(` >> normAlized ${r.type === FileChAngeType.ADDED ? '[ADDED]' : r.type === FileChAngeType.DELETED ? '[DELETED]' : '[CHANGED]'} ${r.pAth}`);
 					});
 				}
 			});
-		}).then(watcher => {
-			this.pathWatchers[request.path].watcher = watcher;
-			const startPromise = watcher.start();
-			startPromise.then(() => readyPromiseResolve(watcher));
+		}).then(wAtcher => {
+			this.pAthWAtchers[request.pAth].wAtcher = wAtcher;
+			const stArtPromise = wAtcher.stArt();
+			stArtPromise.then(() => reAdyPromiseResolve(wAtcher));
 
-			return startPromise;
+			return stArtPromise;
 		});
 	}
 
-	async setVerboseLogging(enabled: boolean): Promise<void> {
-		this.verboseLogging = enabled;
+	Async setVerboseLogging(enAbled: booleAn): Promise<void> {
+		this.verboseLogging = enAbled;
 	}
 
-	async stop(): Promise<void> {
-		for (let path in this.pathWatchers) {
-			let watcher = this.pathWatchers[path];
-			watcher.ready.then(watcher => watcher.stop());
-			delete this.pathWatchers[path];
+	Async stop(): Promise<void> {
+		for (let pAth in this.pAthWAtchers) {
+			let wAtcher = this.pAthWAtchers[pAth];
+			wAtcher.reAdy.then(wAtcher => wAtcher.stop());
+			delete this.pAthWAtchers[pAth];
 		}
 
-		this.pathWatchers = Object.create(null);
+		this.pAthWAtchers = Object.creAte(null);
 	}
 
-	protected _normalizeRoots(roots: IWatcherRequest[]): IWatcherRequest[] {
-		// Normalizes a set of root paths by removing any root paths that are
-		// sub-paths of other roots.
+	protected _normAlizeRoots(roots: IWAtcherRequest[]): IWAtcherRequest[] {
+		// NormAlizes A set of root pAths by removing Any root pAths thAt Are
+		// sub-pAths of other roots.
 		return roots.filter(r => roots.every(other => {
-			return !(r.path.length > other.path.length && extpath.isEqualOrParent(r.path, other.path));
+			return !(r.pAth.length > other.pAth.length && extpAth.isEquAlOrPArent(r.pAth, other.pAth));
 		}));
 	}
 
-	private isPathIgnored(absolutePath: string, ignored: glob.ParsedPattern[]): boolean {
-		return ignored && ignored.some(i => i(absolutePath));
+	privAte isPAthIgnored(AbsolutePAth: string, ignored: glob.PArsedPAttern[]): booleAn {
+		return ignored && ignored.some(i => i(AbsolutePAth));
 	}
 
-	private log(message: string) {
-		this._onDidLogMessage.fire({ type: 'trace', message: `[File Watcher (nsfw)] ` + message });
+	privAte log(messAge: string) {
+		this._onDidLogMessAge.fire({ type: 'trAce', messAge: `[File WAtcher (nsfw)] ` + messAge });
 	}
 
-	private warn(message: string) {
-		this._onDidLogMessage.fire({ type: 'warn', message: `[File Watcher (nsfw)] ` + message });
+	privAte wArn(messAge: string) {
+		this._onDidLogMessAge.fire({ type: 'wArn', messAge: `[File WAtcher (nsfw)] ` + messAge });
 	}
 
-	private error(message: string) {
-		this._onDidLogMessage.fire({ type: 'error', message: `[File Watcher (nsfw)] ` + message });
+	privAte error(messAge: string) {
+		this._onDidLogMessAge.fire({ type: 'error', messAge: `[File WAtcher (nsfw)] ` + messAge });
 	}
 }

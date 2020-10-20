@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { deepStrictEqual } from 'assert';
-import { deserializeEnvironmentVariableCollection, serializeEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariableShared';
-import { EnvironmentVariableMutatorType, IEnvironmentVariableMutator } from 'vs/workbench/contrib/terminal/common/environmentVariable';
+import { deepStrictEquAl } from 'Assert';
+import { deseriAlizeEnvironmentVAriAbleCollection, seriAlizeEnvironmentVAriAbleCollection } from 'vs/workbench/contrib/terminAl/common/environmentVAriAbleShAred';
+import { EnvironmentVAriAbleMutAtorType, IEnvironmentVAriAbleMutAtor } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
 
-suite('EnvironmentVariable - deserializeEnvironmentVariableCollection', () => {
-	test('should construct correctly with 3 arguments', () => {
-		const c = deserializeEnvironmentVariableCollection([
-			['A', { value: 'a', type: EnvironmentVariableMutatorType.Replace }],
-			['B', { value: 'b', type: EnvironmentVariableMutatorType.Append }],
-			['C', { value: 'c', type: EnvironmentVariableMutatorType.Prepend }]
+suite('EnvironmentVAriAble - deseriAlizeEnvironmentVAriAbleCollection', () => {
+	test('should construct correctly with 3 Arguments', () => {
+		const c = deseriAlizeEnvironmentVAriAbleCollection([
+			['A', { vAlue: 'A', type: EnvironmentVAriAbleMutAtorType.ReplAce }],
+			['B', { vAlue: 'b', type: EnvironmentVAriAbleMutAtorType.Append }],
+			['C', { vAlue: 'c', type: EnvironmentVAriAbleMutAtorType.Prepend }]
 		]);
 		const keys = [...c.keys()];
-		deepStrictEqual(keys, ['A', 'B', 'C']);
-		deepStrictEqual(c.get('A'), { value: 'a', type: EnvironmentVariableMutatorType.Replace });
-		deepStrictEqual(c.get('B'), { value: 'b', type: EnvironmentVariableMutatorType.Append });
-		deepStrictEqual(c.get('C'), { value: 'c', type: EnvironmentVariableMutatorType.Prepend });
+		deepStrictEquAl(keys, ['A', 'B', 'C']);
+		deepStrictEquAl(c.get('A'), { vAlue: 'A', type: EnvironmentVAriAbleMutAtorType.ReplAce });
+		deepStrictEquAl(c.get('B'), { vAlue: 'b', type: EnvironmentVAriAbleMutAtorType.Append });
+		deepStrictEquAl(c.get('C'), { vAlue: 'c', type: EnvironmentVAriAbleMutAtorType.Prepend });
 	});
 });
 
-suite('EnvironmentVariable - serializeEnvironmentVariableCollection', () => {
-	test('should correctly serialize the object', () => {
-		const collection = new Map<string, IEnvironmentVariableMutator>();
-		deepStrictEqual(serializeEnvironmentVariableCollection(collection), []);
-		collection.set('A', { value: 'a', type: EnvironmentVariableMutatorType.Replace });
-		collection.set('B', { value: 'b', type: EnvironmentVariableMutatorType.Append });
-		collection.set('C', { value: 'c', type: EnvironmentVariableMutatorType.Prepend });
-		deepStrictEqual(serializeEnvironmentVariableCollection(collection), [
-			['A', { value: 'a', type: EnvironmentVariableMutatorType.Replace }],
-			['B', { value: 'b', type: EnvironmentVariableMutatorType.Append }],
-			['C', { value: 'c', type: EnvironmentVariableMutatorType.Prepend }]
+suite('EnvironmentVAriAble - seriAlizeEnvironmentVAriAbleCollection', () => {
+	test('should correctly seriAlize the object', () => {
+		const collection = new MAp<string, IEnvironmentVAriAbleMutAtor>();
+		deepStrictEquAl(seriAlizeEnvironmentVAriAbleCollection(collection), []);
+		collection.set('A', { vAlue: 'A', type: EnvironmentVAriAbleMutAtorType.ReplAce });
+		collection.set('B', { vAlue: 'b', type: EnvironmentVAriAbleMutAtorType.Append });
+		collection.set('C', { vAlue: 'c', type: EnvironmentVAriAbleMutAtorType.Prepend });
+		deepStrictEquAl(seriAlizeEnvironmentVAriAbleCollection(collection), [
+			['A', { vAlue: 'A', type: EnvironmentVAriAbleMutAtorType.ReplAce }],
+			['B', { vAlue: 'b', type: EnvironmentVAriAbleMutAtorType.Append }],
+			['C', { vAlue: 'c', type: EnvironmentVAriAbleMutAtorType.Prepend }]
 		]);
 	});
 });

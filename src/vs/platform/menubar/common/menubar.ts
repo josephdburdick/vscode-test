@@ -1,67 +1,67 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 
-export interface ICommonMenubarService {
-	updateMenubar(windowId: number, menuData: IMenubarData): Promise<void>;
+export interfAce ICommonMenubArService {
+	updAteMenubAr(windowId: number, menuDAtA: IMenubArDAtA): Promise<void>;
 }
 
-export interface IMenubarData {
-	menus: { [id: string]: IMenubarMenu };
-	keybindings: { [id: string]: IMenubarKeybinding };
+export interfAce IMenubArDAtA {
+	menus: { [id: string]: IMenubArMenu };
+	keybindings: { [id: string]: IMenubArKeybinding };
 }
 
-export interface IMenubarMenu {
-	items: Array<MenubarMenuItem>;
+export interfAce IMenubArMenu {
+	items: ArrAy<MenubArMenuItem>;
 }
 
-export interface IMenubarKeybinding {
-	label: string;
-	userSettingsLabel?: string;
-	isNative?: boolean; // Assumed true if missing
+export interfAce IMenubArKeybinding {
+	lAbel: string;
+	userSettingsLAbel?: string;
+	isNAtive?: booleAn; // Assumed true if missing
 }
 
-export interface IMenubarMenuItemAction {
+export interfAce IMenubArMenuItemAction {
 	id: string;
-	label: string;
-	checked?: boolean; // Assumed false if missing
-	enabled?: boolean; // Assumed true if missing
+	lAbel: string;
+	checked?: booleAn; // Assumed fAlse if missing
+	enAbled?: booleAn; // Assumed true if missing
 }
 
-export interface IMenubarMenuUriItemAction {
+export interfAce IMenubArMenuUriItemAction {
 	id: string;
-	label: string;
+	lAbel: string;
 	uri: URI;
-	enabled?: boolean;
+	enAbled?: booleAn;
 }
 
-export interface IMenubarMenuItemSubmenu {
+export interfAce IMenubArMenuItemSubmenu {
 	id: string;
-	label: string;
-	submenu: IMenubarMenu;
+	lAbel: string;
+	submenu: IMenubArMenu;
 }
 
-export interface IMenubarMenuItemSeparator {
-	id: 'vscode.menubar.separator';
+export interfAce IMenubArMenuItemSepArAtor {
+	id: 'vscode.menubAr.sepArAtor';
 }
 
-export type MenubarMenuItem = IMenubarMenuItemAction | IMenubarMenuItemSubmenu | IMenubarMenuItemSeparator | IMenubarMenuUriItemAction;
+export type MenubArMenuItem = IMenubArMenuItemAction | IMenubArMenuItemSubmenu | IMenubArMenuItemSepArAtor | IMenubArMenuUriItemAction;
 
-export function isMenubarMenuItemSubmenu(menuItem: MenubarMenuItem): menuItem is IMenubarMenuItemSubmenu {
-	return (<IMenubarMenuItemSubmenu>menuItem).submenu !== undefined;
+export function isMenubArMenuItemSubmenu(menuItem: MenubArMenuItem): menuItem is IMenubArMenuItemSubmenu {
+	return (<IMenubArMenuItemSubmenu>menuItem).submenu !== undefined;
 }
 
-export function isMenubarMenuItemSeparator(menuItem: MenubarMenuItem): menuItem is IMenubarMenuItemSeparator {
-	return (<IMenubarMenuItemSeparator>menuItem).id === 'vscode.menubar.separator';
+export function isMenubArMenuItemSepArAtor(menuItem: MenubArMenuItem): menuItem is IMenubArMenuItemSepArAtor {
+	return (<IMenubArMenuItemSepArAtor>menuItem).id === 'vscode.menubAr.sepArAtor';
 }
 
-export function isMenubarMenuItemUriAction(menuItem: MenubarMenuItem): menuItem is IMenubarMenuUriItemAction {
-	return (<IMenubarMenuUriItemAction>menuItem).uri !== undefined;
+export function isMenubArMenuItemUriAction(menuItem: MenubArMenuItem): menuItem is IMenubArMenuUriItemAction {
+	return (<IMenubArMenuUriItemAction>menuItem).uri !== undefined;
 }
 
-export function isMenubarMenuItemAction(menuItem: MenubarMenuItem): menuItem is IMenubarMenuItemAction {
-	return !isMenubarMenuItemSubmenu(menuItem) && !isMenubarMenuItemSeparator(menuItem) && !isMenubarMenuItemUriAction(menuItem);
+export function isMenubArMenuItemAction(menuItem: MenubArMenuItem): menuItem is IMenubArMenuItemAction {
+	return !isMenubArMenuItemSubmenu(menuItem) && !isMenubArMenuItemSepArAtor(menuItem) && !isMenubArMenuItemUriAction(menuItem);
 }

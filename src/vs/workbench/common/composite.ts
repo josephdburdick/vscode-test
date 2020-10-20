@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, IActionViewItem } from 'vs/base/common/actions';
-import { Event } from 'vs/base/common/event';
+import { IAction, IActionViewItem } from 'vs/bAse/common/Actions';
+import { Event } from 'vs/bAse/common/event';
 
-export interface IComposite {
+export interfAce IComposite {
 
 	/**
-	 * An event when the composite gained focus.
+	 * An event when the composite gAined focus.
 	 */
-	readonly onDidFocus: Event<void>;
+	reAdonly onDidFocus: Event<void>;
 
 	/**
 	 * An event when the composite lost focus.
 	 */
-	readonly onDidBlur: Event<void>;
+	reAdonly onDidBlur: Event<void>;
 
 	/**
 	 * Returns the unique identifier of this composite.
@@ -24,29 +24,29 @@ export interface IComposite {
 	getId(): string;
 
 	/**
-	 * Returns the name of this composite to show in the title area.
+	 * Returns the nAme of this composite to show in the title AreA.
 	 */
 	getTitle(): string | undefined;
 
 	/**
-	 * Returns the primary actions of the composite.
+	 * Returns the primAry Actions of the composite.
 	 */
-	getActions(): ReadonlyArray<IAction>;
+	getActions(): ReAdonlyArrAy<IAction>;
 
 	/**
-	 * Returns the secondary actions of the composite.
+	 * Returns the secondAry Actions of the composite.
 	 */
-	getSecondaryActions(): ReadonlyArray<IAction>;
+	getSecondAryActions(): ReAdonlyArrAy<IAction>;
 
 	/**
-	 * Returns an array of actions to show in the context menu of the composite
+	 * Returns An ArrAy of Actions to show in the context menu of the composite
 	 */
-	getContextMenuActions(): ReadonlyArray<IAction>;
+	getContextMenuActions(): ReAdonlyArrAy<IAction>;
 
 	/**
-	 * Returns the action item for a specific action.
+	 * Returns the Action item for A specific Action.
 	 */
-	getActionViewItem(action: IAction): IActionViewItem | undefined;
+	getActionViewItem(Action: IAction): IActionViewItem | undefined;
 
 	/**
 	 * Returns the underlying control of this composite.
@@ -60,6 +60,6 @@ export interface IComposite {
 }
 
 /**
- * Marker interface for the composite control
+ * MArker interfAce for the composite control
  */
-export interface ICompositeControl { }
+export interfAce ICompositeControl { }

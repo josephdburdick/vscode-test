@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainContext, MainThreadStorageShape, ExtHostStorageShape } from './extHost.protocol';
-import { Emitter } from 'vs/base/common/event';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { MAinContext, MAinThreAdStorAgeShApe, ExtHostStorAgeShApe } from './extHost.protocol';
+import { Emitter } from 'vs/bAse/common/event';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export interface IStorageChangeEvent {
-	shared: boolean;
+export interfAce IStorAgeChAngeEvent {
+	shAred: booleAn;
 	key: string;
-	value: object;
+	vAlue: object;
 }
 
-export class ExtHostStorage implements ExtHostStorageShape {
+export clAss ExtHostStorAge implements ExtHostStorAgeShApe {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private _proxy: MainThreadStorageShape;
+	privAte _proxy: MAinThreAdStorAgeShApe;
 
-	private readonly _onDidChangeStorage = new Emitter<IStorageChangeEvent>();
-	readonly onDidChangeStorage = this._onDidChangeStorage.event;
+	privAte reAdonly _onDidChAngeStorAge = new Emitter<IStorAgeChAngeEvent>();
+	reAdonly onDidChAngeStorAge = this._onDidChAngeStorAge.event;
 
-	constructor(mainContext: IExtHostRpcService) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadStorage);
+	constructor(mAinContext: IExtHostRpcService) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdStorAge);
 	}
 
-	getValue<T>(shared: boolean, key: string, defaultValue?: T): Promise<T | undefined> {
-		return this._proxy.$getValue<T>(shared, key).then(value => value || defaultValue);
+	getVAlue<T>(shAred: booleAn, key: string, defAultVAlue?: T): Promise<T | undefined> {
+		return this._proxy.$getVAlue<T>(shAred, key).then(vAlue => vAlue || defAultVAlue);
 	}
 
-	setValue(shared: boolean, key: string, value: object): Promise<void> {
-		return this._proxy.$setValue(shared, key, value);
+	setVAlue(shAred: booleAn, key: string, vAlue: object): Promise<void> {
+		return this._proxy.$setVAlue(shAred, key, vAlue);
 	}
 
-	$acceptValue(shared: boolean, key: string, value: object): void {
-		this._onDidChangeStorage.fire({ shared, key, value });
+	$AcceptVAlue(shAred: booleAn, key: string, vAlue: object): void {
+		this._onDidChAngeStorAge.fire({ shAred, key, vAlue });
 	}
 }
 
-export interface IExtHostStorage extends ExtHostStorage { }
-export const IExtHostStorage = createDecorator<IExtHostStorage>('IExtHostStorage');
+export interfAce IExtHostStorAge extends ExtHostStorAge { }
+export const IExtHostStorAge = creAteDecorAtor<IExtHostStorAge>('IExtHostStorAge');

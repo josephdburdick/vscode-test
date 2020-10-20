@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { localize } from 'vs/nls';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { locAlize } from 'vs/nls';
 import { EditorInput } from 'vs/workbench/common/editor';
 import { IExtension } from 'vs/workbench/contrib/extensions/common/extensions';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
 
-export class ExtensionsInput extends EditorInput {
+export clAss ExtensionsInput extends EditorInput {
 
-	static readonly ID = 'workbench.extensions.input2';
+	stAtic reAdonly ID = 'workbench.extensions.input2';
 
 	get resource() {
 		return URI.from({
-			scheme: Schemas.extension,
-			path: this.extension.identifier.id
+			scheme: SchemAs.extension,
+			pAth: this.extension.identifier.id
 		});
 	}
 
 	constructor(
-		public readonly extension: IExtension
+		public reAdonly extension: IExtension
 	) {
 		super();
 	}
@@ -31,19 +31,19 @@ export class ExtensionsInput extends EditorInput {
 		return ExtensionsInput.ID;
 	}
 
-	getName(): string {
-		return localize('extensionsInputName', "Extension: {0}", this.extension.displayName);
+	getNAme(): string {
+		return locAlize('extensionsInputNAme', "Extension: {0}", this.extension.displAyNAme);
 	}
 
-	supportsSplitEditor(): boolean {
-		return false;
+	supportsSplitEditor(): booleAn {
+		return fAlse;
 	}
 
-	matches(other: unknown): boolean {
-		if (super.matches(other)) {
+	mAtches(other: unknown): booleAn {
+		if (super.mAtches(other)) {
 			return true;
 		}
 
-		return other instanceof ExtensionsInput && areSameExtensions(this.extension.identifier, other.extension.identifier);
+		return other instAnceof ExtensionsInput && AreSAmeExtensions(this.extension.identifier, other.extension.identifier);
 	}
 }

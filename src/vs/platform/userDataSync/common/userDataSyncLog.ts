@@ -1,47 +1,47 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IUserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSync';
-import { AbstractLogService, ILoggerService, ILogger } from 'vs/platform/log/common/log';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { IUserDAtASyncLogService } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { AbstrActLogService, ILoggerService, ILogger } from 'vs/plAtform/log/common/log';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 
-export class UserDataSyncLogService extends AbstractLogService implements IUserDataSyncLogService {
+export clAss UserDAtASyncLogService extends AbstrActLogService implements IUserDAtASyncLogService {
 
-	declare readonly _serviceBrand: undefined;
-	private readonly logger: ILogger;
+	declAre reAdonly _serviceBrAnd: undefined;
+	privAte reAdonly logger: ILogger;
 
 	constructor(
 		@ILoggerService loggerService: ILoggerService,
 		@IEnvironmentService environmentService: IEnvironmentService
 	) {
 		super();
-		this.logger = this._register(loggerService.getLogger(environmentService.userDataSyncLogResource));
+		this.logger = this._register(loggerService.getLogger(environmentService.userDAtASyncLogResource));
 	}
 
-	trace(message: string, ...args: any[]): void {
-		this.logger.trace(message, ...args);
+	trAce(messAge: string, ...Args: Any[]): void {
+		this.logger.trAce(messAge, ...Args);
 	}
 
-	debug(message: string, ...args: any[]): void {
-		this.logger.debug(message, ...args);
+	debug(messAge: string, ...Args: Any[]): void {
+		this.logger.debug(messAge, ...Args);
 	}
 
-	info(message: string, ...args: any[]): void {
-		this.logger.info(message, ...args);
+	info(messAge: string, ...Args: Any[]): void {
+		this.logger.info(messAge, ...Args);
 	}
 
-	warn(message: string, ...args: any[]): void {
-		this.logger.warn(message, ...args);
+	wArn(messAge: string, ...Args: Any[]): void {
+		this.logger.wArn(messAge, ...Args);
 	}
 
-	error(message: string | Error, ...args: any[]): void {
-		this.logger.error(message, ...args);
+	error(messAge: string | Error, ...Args: Any[]): void {
+		this.logger.error(messAge, ...Args);
 	}
 
-	critical(message: string | Error, ...args: any[]): void {
-		this.logger.critical(message, ...args);
+	criticAl(messAge: string | Error, ...Args: Any[]): void {
+		this.logger.criticAl(messAge, ...Args);
 	}
 
 	flush(): void {

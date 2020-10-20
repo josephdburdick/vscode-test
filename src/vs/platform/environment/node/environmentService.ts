@@ -1,125 +1,125 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDebugParams, IExtensionHostDebugParams, INativeEnvironmentService } from 'vs/platform/environment/common/environment';
-import { NativeParsedArgs } from 'vs/platform/environment/common/argv';
-import * as paths from 'vs/base/node/paths';
-import * as os from 'os';
-import * as path from 'vs/base/common/path';
-import * as resources from 'vs/base/common/resources';
-import { memoize } from 'vs/base/common/decorators';
-import product from 'vs/platform/product/common/product';
-import { toLocalISOString } from 'vs/base/common/date';
-import { FileAccess } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { createStaticIPCHandle } from 'vs/base/parts/ipc/node/ipc.net';
+import { IDebugPArAms, IExtensionHostDebugPArAms, INAtiveEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { NAtivePArsedArgs } from 'vs/plAtform/environment/common/Argv';
+import * As pAths from 'vs/bAse/node/pAths';
+import * As os from 'os';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As resources from 'vs/bAse/common/resources';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import product from 'vs/plAtform/product/common/product';
+import { toLocAlISOString } from 'vs/bAse/common/dAte';
+import { FileAccess } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteStAticIPCHAndle } from 'vs/bAse/pArts/ipc/node/ipc.net';
 
-export class NativeEnvironmentService implements INativeEnvironmentService {
+export clAss NAtiveEnvironmentService implements INAtiveEnvironmentService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	get args(): NativeParsedArgs { return this._args; }
+	get Args(): NAtivePArsedArgs { return this._Args; }
 
 	@memoize
-	get appRoot(): string { return path.dirname(FileAccess.asFileUri('', require).fsPath); }
+	get AppRoot(): string { return pAth.dirnAme(FileAccess.AsFileUri('', require).fsPAth); }
 
-	readonly logsPath: string;
+	reAdonly logsPAth: string;
 
 	@memoize
 	get userHome(): URI { return URI.file(os.homedir()); }
 
 	@memoize
-	get userDataPath(): string {
-		const vscodePortable = process.env['VSCODE_PORTABLE'];
-		if (vscodePortable) {
-			return path.join(vscodePortable, 'user-data');
+	get userDAtAPAth(): string {
+		const vscodePortAble = process.env['VSCODE_PORTABLE'];
+		if (vscodePortAble) {
+			return pAth.join(vscodePortAble, 'user-dAtA');
 		}
 
-		return parseUserDataDir(this._args, process);
+		return pArseUserDAtADir(this._Args, process);
 	}
 
 	@memoize
-	get appSettingsHome(): URI { return URI.file(path.join(this.userDataPath, 'User')); }
+	get AppSettingsHome(): URI { return URI.file(pAth.join(this.userDAtAPAth, 'User')); }
 
 	@memoize
 	get tmpDir(): URI { return URI.file(os.tmpdir()); }
 
 	@memoize
-	get userRoamingDataHome(): URI { return this.appSettingsHome; }
+	get userRoAmingDAtAHome(): URI { return this.AppSettingsHome; }
 
 	@memoize
-	get settingsResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'settings.json'); }
+	get settingsResource(): URI { return resources.joinPAth(this.userRoAmingDAtAHome, 'settings.json'); }
 
 	@memoize
-	get userDataSyncHome(): URI { return resources.joinPath(this.userRoamingDataHome, 'sync'); }
+	get userDAtASyncHome(): URI { return resources.joinPAth(this.userRoAmingDAtAHome, 'sync'); }
 
 	@memoize
-	get userDataSyncLogResource(): URI { return URI.file(path.join(this.logsPath, 'userDataSync.log')); }
+	get userDAtASyncLogResource(): URI { return URI.file(pAth.join(this.logsPAth, 'userDAtASync.log')); }
 
 	@memoize
-	get sync(): 'on' | 'off' | undefined { return this.args.sync; }
+	get sync(): 'on' | 'off' | undefined { return this.Args.sync; }
 
 	@memoize
-	get machineSettingsResource(): URI { return resources.joinPath(URI.file(path.join(this.userDataPath, 'Machine')), 'settings.json'); }
+	get mAchineSettingsResource(): URI { return resources.joinPAth(URI.file(pAth.join(this.userDAtAPAth, 'MAchine')), 'settings.json'); }
 
 	@memoize
-	get globalStorageHome(): URI { return URI.joinPath(this.appSettingsHome, 'globalStorage'); }
+	get globAlStorAgeHome(): URI { return URI.joinPAth(this.AppSettingsHome, 'globAlStorAge'); }
 
 	@memoize
-	get workspaceStorageHome(): URI { return URI.joinPath(this.appSettingsHome, 'workspaceStorage'); }
+	get workspAceStorAgeHome(): URI { return URI.joinPAth(this.AppSettingsHome, 'workspAceStorAge'); }
 
 	@memoize
-	get keybindingsResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'keybindings.json'); }
+	get keybindingsResource(): URI { return resources.joinPAth(this.userRoAmingDAtAHome, 'keybindings.json'); }
 
 	@memoize
-	get keyboardLayoutResource(): URI { return resources.joinPath(this.userRoamingDataHome, 'keyboardLayout.json'); }
+	get keyboArdLAyoutResource(): URI { return resources.joinPAth(this.userRoAmingDAtAHome, 'keyboArdLAyout.json'); }
 
 	@memoize
-	get argvResource(): URI {
-		const vscodePortable = process.env['VSCODE_PORTABLE'];
-		if (vscodePortable) {
-			return URI.file(path.join(vscodePortable, 'argv.json'));
+	get ArgvResource(): URI {
+		const vscodePortAble = process.env['VSCODE_PORTABLE'];
+		if (vscodePortAble) {
+			return URI.file(pAth.join(vscodePortAble, 'Argv.json'));
 		}
 
-		return resources.joinPath(this.userHome, product.dataFolderName, 'argv.json');
+		return resources.joinPAth(this.userHome, product.dAtAFolderNAme, 'Argv.json');
 	}
 
 	@memoize
-	get snippetsHome(): URI { return resources.joinPath(this.userRoamingDataHome, 'snippets'); }
+	get snippetsHome(): URI { return resources.joinPAth(this.userRoAmingDAtAHome, 'snippets'); }
 
 	@memoize
-	get isExtensionDevelopment(): boolean { return !!this._args.extensionDevelopmentPath; }
+	get isExtensionDevelopment(): booleAn { return !!this._Args.extensionDevelopmentPAth; }
 
 	@memoize
-	get untitledWorkspacesHome(): URI { return URI.file(path.join(this.userDataPath, 'Workspaces')); }
+	get untitledWorkspAcesHome(): URI { return URI.file(pAth.join(this.userDAtAPAth, 'WorkspAces')); }
 
 	@memoize
-	get installSourcePath(): string { return path.join(this.userDataPath, 'installSource'); }
+	get instAllSourcePAth(): string { return pAth.join(this.userDAtAPAth, 'instAllSource'); }
 
 	@memoize
-	get builtinExtensionsPath(): string {
-		const fromArgs = parsePathArg(this._args['builtin-extensions-dir'], process);
+	get builtinExtensionsPAth(): string {
+		const fromArgs = pArsePAthArg(this._Args['builtin-extensions-dir'], process);
 		if (fromArgs) {
 			return fromArgs;
 		} else {
-			return path.normalize(path.join(FileAccess.asFileUri('', require).fsPath, '..', 'extensions'));
+			return pAth.normAlize(pAth.join(FileAccess.AsFileUri('', require).fsPAth, '..', 'extensions'));
 		}
 	}
 
-	get extensionsDownloadPath(): string {
-		const fromArgs = parsePathArg(this._args['extensions-download-dir'], process);
+	get extensionsDownloAdPAth(): string {
+		const fromArgs = pArsePAthArg(this._Args['extensions-downloAd-dir'], process);
 		if (fromArgs) {
 			return fromArgs;
 		} else {
-			return path.join(this.userDataPath, 'CachedExtensionVSIXs');
+			return pAth.join(this.userDAtAPAth, 'CAchedExtensionVSIXs');
 		}
 	}
 
 	@memoize
-	get extensionsPath(): string {
-		const fromArgs = parsePathArg(this._args['extensions-dir'], process);
+	get extensionsPAth(): string {
+		const fromArgs = pArsePAthArg(this._Args['extensions-dir'], process);
 
 		if (fromArgs) {
 			return fromArgs;
@@ -130,121 +130,121 @@ export class NativeEnvironmentService implements INativeEnvironmentService {
 			return vscodeExtensions;
 		}
 
-		const vscodePortable = process.env['VSCODE_PORTABLE'];
-		if (vscodePortable) {
-			return path.join(vscodePortable, 'extensions');
+		const vscodePortAble = process.env['VSCODE_PORTABLE'];
+		if (vscodePortAble) {
+			return pAth.join(vscodePortAble, 'extensions');
 		}
 
-		return resources.joinPath(this.userHome, product.dataFolderName, 'extensions').fsPath;
+		return resources.joinPAth(this.userHome, product.dAtAFolderNAme, 'extensions').fsPAth;
 	}
 
 	@memoize
-	get extensionDevelopmentLocationURI(): URI[] | undefined {
-		const s = this._args.extensionDevelopmentPath;
-		if (Array.isArray(s)) {
-			return s.map(p => {
+	get extensionDevelopmentLocAtionURI(): URI[] | undefined {
+		const s = this._Args.extensionDevelopmentPAth;
+		if (ArrAy.isArrAy(s)) {
+			return s.mAp(p => {
 				if (/^[^:/?#]+?:\/\//.test(p)) {
-					return URI.parse(p);
+					return URI.pArse(p);
 				}
-				return URI.file(path.normalize(p));
+				return URI.file(pAth.normAlize(p));
 			});
 		}
 		return undefined;
 	}
 
 	@memoize
-	get extensionTestsLocationURI(): URI | undefined {
-		const s = this._args.extensionTestsPath;
+	get extensionTestsLocAtionURI(): URI | undefined {
+		const s = this._Args.extensionTestsPAth;
 		if (s) {
 			if (/^[^:/?#]+?:\/\//.test(s)) {
-				return URI.parse(s);
+				return URI.pArse(s);
 			}
-			return URI.file(path.normalize(s));
+			return URI.file(pAth.normAlize(s));
 		}
 		return undefined;
 	}
 
-	get disableExtensions(): boolean | string[] {
-		if (this._args['disable-extensions']) {
+	get disAbleExtensions(): booleAn | string[] {
+		if (this._Args['disAble-extensions']) {
 			return true;
 		}
-		const disableExtensions = this._args['disable-extension'];
-		if (disableExtensions) {
-			if (typeof disableExtensions === 'string') {
-				return [disableExtensions];
+		const disAbleExtensions = this._Args['disAble-extension'];
+		if (disAbleExtensions) {
+			if (typeof disAbleExtensions === 'string') {
+				return [disAbleExtensions];
 			}
-			if (Array.isArray(disableExtensions) && disableExtensions.length > 0) {
-				return disableExtensions;
+			if (ArrAy.isArrAy(disAbleExtensions) && disAbleExtensions.length > 0) {
+				return disAbleExtensions;
 			}
 		}
-		return false;
+		return fAlse;
 	}
 
 	@memoize
-	get debugExtensionHost(): IExtensionHostDebugParams { return parseExtensionHostPort(this._args, this.isBuilt); }
-	get debugRenderer(): boolean { return !!this._args.debugRenderer; }
+	get debugExtensionHost(): IExtensionHostDebugPArAms { return pArseExtensionHostPort(this._Args, this.isBuilt); }
+	get debugRenderer(): booleAn { return !!this._Args.debugRenderer; }
 
-	get isBuilt(): boolean { return !process.env['VSCODE_DEV']; }
-	get verbose(): boolean { return !!this._args.verbose; }
-	get logLevel(): string | undefined { return this._args.log; }
-
-	@memoize
-	get sharedIPCHandle(): string { return createStaticIPCHandle(this.userDataPath, 'shared', product.version); }
+	get isBuilt(): booleAn { return !process.env['VSCODE_DEV']; }
+	get verbose(): booleAn { return !!this._Args.verbose; }
+	get logLevel(): string | undefined { return this._Args.log; }
 
 	@memoize
-	get serviceMachineIdResource(): URI { return resources.joinPath(URI.file(this.userDataPath), 'machineid'); }
-
-	get crashReporterId(): string | undefined { return this._args['crash-reporter-id']; }
-	get crashReporterDirectory(): string | undefined { return this._args['crash-reporter-directory']; }
-
-	get driverHandle(): string | undefined { return this._args['driver']; }
+	get shAredIPCHAndle(): string { return creAteStAticIPCHAndle(this.userDAtAPAth, 'shAred', product.version); }
 
 	@memoize
-	get telemetryLogResource(): URI { return URI.file(path.join(this.logsPath, 'telemetry.log')); }
-	get disableTelemetry(): boolean { return !!this._args['disable-telemetry']; }
+	get serviceMAchineIdResource(): URI { return resources.joinPAth(URI.file(this.userDAtAPAth), 'mAchineid'); }
 
-	constructor(protected _args: NativeParsedArgs) {
+	get crAshReporterId(): string | undefined { return this._Args['crAsh-reporter-id']; }
+	get crAshReporterDirectory(): string | undefined { return this._Args['crAsh-reporter-directory']; }
+
+	get driverHAndle(): string | undefined { return this._Args['driver']; }
+
+	@memoize
+	get telemetryLogResource(): URI { return URI.file(pAth.join(this.logsPAth, 'telemetry.log')); }
+	get disAbleTelemetry(): booleAn { return !!this._Args['disAble-telemetry']; }
+
+	constructor(protected _Args: NAtivePArsedArgs) {
 		if (!process.env['VSCODE_LOGS']) {
-			const key = toLocalISOString(new Date()).replace(/-|:|\.\d+Z$/g, '');
-			process.env['VSCODE_LOGS'] = path.join(this.userDataPath, 'logs', key);
+			const key = toLocAlISOString(new DAte()).replAce(/-|:|\.\d+Z$/g, '');
+			process.env['VSCODE_LOGS'] = pAth.join(this.userDAtAPAth, 'logs', key);
 		}
 
-		this.logsPath = process.env['VSCODE_LOGS']!;
+		this.logsPAth = process.env['VSCODE_LOGS']!;
 	}
 }
 
-export function parseExtensionHostPort(args: NativeParsedArgs, isBuild: boolean): IExtensionHostDebugParams {
-	return parseDebugPort(args['inspect-extensions'], args['inspect-brk-extensions'], 5870, isBuild, args.debugId);
+export function pArseExtensionHostPort(Args: NAtivePArsedArgs, isBuild: booleAn): IExtensionHostDebugPArAms {
+	return pArseDebugPort(Args['inspect-extensions'], Args['inspect-brk-extensions'], 5870, isBuild, Args.debugId);
 }
 
-export function parseSearchPort(args: NativeParsedArgs, isBuild: boolean): IDebugParams {
-	return parseDebugPort(args['inspect-search'], args['inspect-brk-search'], 5876, isBuild);
+export function pArseSeArchPort(Args: NAtivePArsedArgs, isBuild: booleAn): IDebugPArAms {
+	return pArseDebugPort(Args['inspect-seArch'], Args['inspect-brk-seArch'], 5876, isBuild);
 }
 
-function parseDebugPort(debugArg: string | undefined, debugBrkArg: string | undefined, defaultBuildPort: number, isBuild: boolean, debugId?: string): IExtensionHostDebugParams {
+function pArseDebugPort(debugArg: string | undefined, debugBrkArg: string | undefined, defAultBuildPort: number, isBuild: booleAn, debugId?: string): IExtensionHostDebugPArAms {
 	const portStr = debugBrkArg || debugArg;
-	const port = Number(portStr) || (!isBuild ? defaultBuildPort : null);
-	const brk = port ? Boolean(!!debugBrkArg) : false;
+	const port = Number(portStr) || (!isBuild ? defAultBuildPort : null);
+	const brk = port ? BooleAn(!!debugBrkArg) : fAlse;
 
-	return { port, break: brk, debugId };
+	return { port, breAk: brk, debugId };
 }
 
-export function parsePathArg(arg: string | undefined, process: NodeJS.Process): string | undefined {
-	if (!arg) {
+export function pArsePAthArg(Arg: string | undefined, process: NodeJS.Process): string | undefined {
+	if (!Arg) {
 		return undefined;
 	}
 
-	// Determine if the arg is relative or absolute, if relative use the original CWD
-	// (VSCODE_CWD), not the potentially overridden one (process.cwd()).
-	const resolved = path.resolve(arg);
+	// Determine if the Arg is relAtive or Absolute, if relAtive use the originAl CWD
+	// (VSCODE_CWD), not the potentiAlly overridden one (process.cwd()).
+	const resolved = pAth.resolve(Arg);
 
-	if (path.normalize(arg) === resolved) {
+	if (pAth.normAlize(Arg) === resolved) {
 		return resolved;
 	}
 
-	return path.resolve(process.env['VSCODE_CWD'] || process.cwd(), arg);
+	return pAth.resolve(process.env['VSCODE_CWD'] || process.cwd(), Arg);
 }
 
-export function parseUserDataDir(args: NativeParsedArgs, process: NodeJS.Process): string {
-	return parsePathArg(args['user-data-dir'], process) || path.resolve(paths.getDefaultUserDataPath(process.platform));
+export function pArseUserDAtADir(Args: NAtivePArsedArgs, process: NodeJS.Process): string {
+	return pArsePAthArg(Args['user-dAtA-dir'], process) || pAth.resolve(pAths.getDefAultUserDAtAPAth(process.plAtform));
 }

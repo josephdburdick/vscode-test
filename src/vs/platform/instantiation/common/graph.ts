@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export class Node<T> {
+export clAss Node<T> {
 
-	readonly data: T;
-	readonly incoming = new Map<string, Node<T>>();
-	readonly outgoing = new Map<string, Node<T>>();
+	reAdonly dAtA: T;
+	reAdonly incoming = new MAp<string, Node<T>>();
+	reAdonly outgoing = new MAp<string, Node<T>>();
 
-	constructor(data: T) {
-		this.data = data;
+	constructor(dAtA: T) {
+		this.dAtA = dAtA;
 	}
 }
 
-export class Graph<T> {
+export clAss GrAph<T> {
 
-	private readonly _nodes = new Map<string, Node<T>>();
+	privAte reAdonly _nodes = new MAp<string, Node<T>>();
 
-	constructor(private readonly _hashFn: (element: T) => string) {
+	constructor(privAte reAdonly _hAshFn: (element: T) => string) {
 		// empty
 	}
 
 	roots(): Node<T>[] {
 		const ret: Node<T>[] = [];
-		for (let node of this._nodes.values()) {
+		for (let node of this._nodes.vAlues()) {
 			if (node.outgoing.size === 0) {
 				ret.push(node);
 			}
@@ -36,45 +36,45 @@ export class Graph<T> {
 		const fromNode = this.lookupOrInsertNode(from);
 		const toNode = this.lookupOrInsertNode(to);
 
-		fromNode.outgoing.set(this._hashFn(to), toNode);
-		toNode.incoming.set(this._hashFn(from), fromNode);
+		fromNode.outgoing.set(this._hAshFn(to), toNode);
+		toNode.incoming.set(this._hAshFn(from), fromNode);
 	}
 
-	removeNode(data: T): void {
-		const key = this._hashFn(data);
+	removeNode(dAtA: T): void {
+		const key = this._hAshFn(dAtA);
 		this._nodes.delete(key);
-		for (let node of this._nodes.values()) {
+		for (let node of this._nodes.vAlues()) {
 			node.outgoing.delete(key);
 			node.incoming.delete(key);
 		}
 	}
 
-	lookupOrInsertNode(data: T): Node<T> {
-		const key = this._hashFn(data);
+	lookupOrInsertNode(dAtA: T): Node<T> {
+		const key = this._hAshFn(dAtA);
 		let node = this._nodes.get(key);
 
 		if (!node) {
-			node = new Node(data);
+			node = new Node(dAtA);
 			this._nodes.set(key, node);
 		}
 
 		return node;
 	}
 
-	lookup(data: T): Node<T> | undefined {
-		return this._nodes.get(this._hashFn(data));
+	lookup(dAtA: T): Node<T> | undefined {
+		return this._nodes.get(this._hAshFn(dAtA));
 	}
 
-	isEmpty(): boolean {
+	isEmpty(): booleAn {
 		return this._nodes.size === 0;
 	}
 
 	toString(): string {
-		let data: string[] = [];
-		for (let [key, value] of this._nodes) {
-			data.push(`${key}, (incoming)[${[...value.incoming.keys()].join(', ')}], (outgoing)[${[...value.outgoing.keys()].join(',')}]`);
+		let dAtA: string[] = [];
+		for (let [key, vAlue] of this._nodes) {
+			dAtA.push(`${key}, (incoming)[${[...vAlue.incoming.keys()].join(', ')}], (outgoing)[${[...vAlue.outgoing.keys()].join(',')}]`);
 
 		}
-		return data.join('\n');
+		return dAtA.join('\n');
 	}
 }

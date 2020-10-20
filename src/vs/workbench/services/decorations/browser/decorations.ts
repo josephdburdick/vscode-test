@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
-import { ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { ColorIdentifier } from 'vs/plAtform/theme/common/colorRegistry';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export const IDecorationsService = createDecorator<IDecorationsService>('IFileDecorationsService');
+export const IDecorAtionsService = creAteDecorAtor<IDecorAtionsService>('IFileDecorAtionsService');
 
-export interface IDecorationData {
-	readonly weight?: number;
-	readonly color?: ColorIdentifier;
-	readonly letter?: string;
-	readonly tooltip?: string;
-	readonly bubble?: boolean;
+export interfAce IDecorAtionDAtA {
+	reAdonly weight?: number;
+	reAdonly color?: ColorIdentifier;
+	reAdonly letter?: string;
+	reAdonly tooltip?: string;
+	reAdonly bubble?: booleAn;
 }
 
-export interface IDecoration extends IDisposable {
-	readonly tooltip: string;
-	readonly labelClassName: string;
-	readonly badgeClassName: string;
+export interfAce IDecorAtion extends IDisposAble {
+	reAdonly tooltip: string;
+	reAdonly lAbelClAssNAme: string;
+	reAdonly bAdgeClAssNAme: string;
 }
 
-export interface IDecorationsProvider {
-	readonly label: string;
-	readonly onDidChange: Event<readonly URI[]>;
-	provideDecorations(uri: URI, token: CancellationToken): IDecorationData | Promise<IDecorationData | undefined> | undefined;
+export interfAce IDecorAtionsProvider {
+	reAdonly lAbel: string;
+	reAdonly onDidChAnge: Event<reAdonly URI[]>;
+	provideDecorAtions(uri: URI, token: CAncellAtionToken): IDecorAtionDAtA | Promise<IDecorAtionDAtA | undefined> | undefined;
 }
 
-export interface IResourceDecorationChangeEvent {
-	affectsResource(uri: URI): boolean;
+export interfAce IResourceDecorAtionChAngeEvent {
+	AffectsResource(uri: URI): booleAn;
 }
 
-export interface IDecorationsService {
+export interfAce IDecorAtionsService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly onDidChangeDecorations: Event<IResourceDecorationChangeEvent>;
+	reAdonly onDidChAngeDecorAtions: Event<IResourceDecorAtionChAngeEvent>;
 
-	registerDecorationsProvider(provider: IDecorationsProvider): IDisposable;
+	registerDecorAtionsProvider(provider: IDecorAtionsProvider): IDisposAble;
 
-	getDecoration(uri: URI, includeChildren: boolean): IDecoration | undefined;
+	getDecorAtion(uri: URI, includeChildren: booleAn): IDecorAtion | undefined;
 }

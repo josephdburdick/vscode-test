@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as strings from 'vs/base/common/strings';
-import { IActionRunner, IAction, SubmenuAction, Separator, IActionViewItemProvider } from 'vs/base/common/actions';
-import { ActionBar, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
-import { ResolvedKeybinding, KeyCode } from 'vs/base/common/keyCodes';
-import { EventType, EventHelper, EventLike, removeTabIndexAndUpdateFocus, isAncestor, addDisposableListener, append, $, clearNode, createStyleSheet, isInShadowDOM, getActiveElement, Dimension, IDomNodePagePosition } from 'vs/base/browser/dom';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { RunOnceScheduler } from 'vs/base/common/async';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { Color } from 'vs/base/common/color';
-import { DomScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
-import { ScrollbarVisibility, ScrollEvent } from 'vs/base/common/scrollable';
-import { Event } from 'vs/base/common/event';
-import { AnchorAlignment, layout, LayoutAnchorPosition } from 'vs/base/browser/ui/contextview/contextview';
-import { isLinux, isMacintosh } from 'vs/base/common/platform';
-import { Codicon, registerIcon, stripCodicons } from 'vs/base/common/codicons';
-import { BaseActionViewItem, ActionViewItem, IActionViewItemOptions } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { formatRule } from 'vs/base/browser/ui/codicons/codiconStyles';
-import { isFirefox } from 'vs/base/browser/browser';
-import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
+import * As nls from 'vs/nls';
+import * As strings from 'vs/bAse/common/strings';
+import { IActionRunner, IAction, SubmenuAction, SepArAtor, IActionViewItemProvider } from 'vs/bAse/common/Actions';
+import { ActionBAr, ActionsOrientAtion } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { ResolvedKeybinding, KeyCode } from 'vs/bAse/common/keyCodes';
+import { EventType, EventHelper, EventLike, removeTAbIndexAndUpdAteFocus, isAncestor, AddDisposAbleListener, Append, $, cleArNode, creAteStyleSheet, isInShAdowDOM, getActiveElement, Dimension, IDomNodePAgePosition } from 'vs/bAse/browser/dom';
+import { StAndArdKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { RunOnceScheduler } from 'vs/bAse/common/Async';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { Color } from 'vs/bAse/common/color';
+import { DomScrollAbleElement } from 'vs/bAse/browser/ui/scrollbAr/scrollAbleElement';
+import { ScrollbArVisibility, ScrollEvent } from 'vs/bAse/common/scrollAble';
+import { Event } from 'vs/bAse/common/event';
+import { AnchorAlignment, lAyout, LAyoutAnchorPosition } from 'vs/bAse/browser/ui/contextview/contextview';
+import { isLinux, isMAcintosh } from 'vs/bAse/common/plAtform';
+import { Codicon, registerIcon, stripCodicons } from 'vs/bAse/common/codicons';
+import { BAseActionViewItem, ActionViewItem, IActionViewItemOptions } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { formAtRule } from 'vs/bAse/browser/ui/codicons/codiconStyles';
+import { isFirefox } from 'vs/bAse/browser/browser';
+import { StAndArdMouseEvent } from 'vs/bAse/browser/mouseEvent';
 
 export const MENU_MNEMONIC_REGEX = /\(&([^\s&])\)|(^|[^&])&([^\s&])/;
-export const MENU_ESCAPED_MNEMONIC_REGEX = /(&amp;)?(&amp;)([^\s&])/g;
+export const MENU_ESCAPED_MNEMONIC_REGEX = /(&Amp;)?(&Amp;)([^\s&])/g;
 
 const menuSelectionIcon = registerIcon('menu-selection', Codicon.check);
 const menuSubmenuIcon = registerIcon('menu-submenu', Codicon.chevronRight);
@@ -35,115 +35,115 @@ export enum Direction {
 	Left
 }
 
-export interface IMenuOptions {
-	context?: any;
-	actionViewItemProvider?: IActionViewItemProvider;
-	actionRunner?: IActionRunner;
-	getKeyBinding?: (action: IAction) => ResolvedKeybinding | undefined;
-	ariaLabel?: string;
-	enableMnemonics?: boolean;
-	anchorAlignment?: AnchorAlignment;
-	expandDirection?: Direction;
-	useEventAsContext?: boolean;
+export interfAce IMenuOptions {
+	context?: Any;
+	ActionViewItemProvider?: IActionViewItemProvider;
+	ActionRunner?: IActionRunner;
+	getKeyBinding?: (Action: IAction) => ResolvedKeybinding | undefined;
+	AriALAbel?: string;
+	enAbleMnemonics?: booleAn;
+	AnchorAlignment?: AnchorAlignment;
+	expAndDirection?: Direction;
+	useEventAsContext?: booleAn;
 	submenuIds?: Set<string>;
 }
 
-export interface IMenuStyles {
-	shadowColor?: Color;
+export interfAce IMenuStyles {
+	shAdowColor?: Color;
 	borderColor?: Color;
 	foregroundColor?: Color;
-	backgroundColor?: Color;
+	bAckgroundColor?: Color;
 	selectionForegroundColor?: Color;
-	selectionBackgroundColor?: Color;
+	selectionBAckgroundColor?: Color;
 	selectionBorderColor?: Color;
-	separatorColor?: Color;
+	sepArAtorColor?: Color;
 }
 
-interface ISubMenuData {
-	parent: Menu;
+interfAce ISubMenuDAtA {
+	pArent: Menu;
 	submenu?: Menu;
 }
 
-export class Menu extends ActionBar {
-	private mnemonics: Map<string, Array<BaseMenuActionViewItem>>;
-	private readonly menuDisposables: DisposableStore;
-	private scrollableElement: DomScrollableElement;
-	private menuElement: HTMLElement;
-	static globalStyleSheet: HTMLStyleElement;
+export clAss Menu extends ActionBAr {
+	privAte mnemonics: MAp<string, ArrAy<BAseMenuActionViewItem>>;
+	privAte reAdonly menuDisposAbles: DisposAbleStore;
+	privAte scrollAbleElement: DomScrollAbleElement;
+	privAte menuElement: HTMLElement;
+	stAtic globAlStyleSheet: HTMLStyleElement;
 	protected styleSheet: HTMLStyleElement | undefined;
 
-	constructor(container: HTMLElement, actions: ReadonlyArray<IAction>, options: IMenuOptions = {}) {
-		container.classList.add('monaco-menu-container');
-		container.setAttribute('role', 'presentation');
-		const menuElement = document.createElement('div');
-		menuElement.classList.add('monaco-menu');
-		menuElement.setAttribute('role', 'presentation');
+	constructor(contAiner: HTMLElement, Actions: ReAdonlyArrAy<IAction>, options: IMenuOptions = {}) {
+		contAiner.clAssList.Add('monAco-menu-contAiner');
+		contAiner.setAttribute('role', 'presentAtion');
+		const menuElement = document.creAteElement('div');
+		menuElement.clAssList.Add('monAco-menu');
+		menuElement.setAttribute('role', 'presentAtion');
 
 		super(menuElement, {
-			orientation: ActionsOrientation.VERTICAL,
-			actionViewItemProvider: action => this.doGetActionViewItem(action, options, parentData),
+			orientAtion: ActionsOrientAtion.VERTICAL,
+			ActionViewItemProvider: Action => this.doGetActionViewItem(Action, options, pArentDAtA),
 			context: options.context,
-			actionRunner: options.actionRunner,
-			ariaLabel: options.ariaLabel,
-			triggerKeys: { keys: [KeyCode.Enter, ...(isMacintosh || isLinux ? [KeyCode.Space] : [])], keyDown: true }
+			ActionRunner: options.ActionRunner,
+			AriALAbel: options.AriALAbel,
+			triggerKeys: { keys: [KeyCode.Enter, ...(isMAcintosh || isLinux ? [KeyCode.SpAce] : [])], keyDown: true }
 		});
 
 		this.menuElement = menuElement;
 
-		this.actionsList.setAttribute('role', 'menu');
+		this.ActionsList.setAttribute('role', 'menu');
 
-		this.actionsList.tabIndex = 0;
+		this.ActionsList.tAbIndex = 0;
 
-		this.menuDisposables = this._register(new DisposableStore());
+		this.menuDisposAbles = this._register(new DisposAbleStore());
 
-		this.initializeStyleSheet(container);
+		this.initiAlizeStyleSheet(contAiner);
 
-		addDisposableListener(menuElement, EventType.KEY_DOWN, (e) => {
-			const event = new StandardKeyboardEvent(e);
+		AddDisposAbleListener(menuElement, EventType.KEY_DOWN, (e) => {
+			const event = new StAndArdKeyboArdEvent(e);
 
-			// Stop tab navigation of menus
-			if (event.equals(KeyCode.Tab)) {
-				e.preventDefault();
+			// Stop tAb nAvigAtion of menus
+			if (event.equAls(KeyCode.TAb)) {
+				e.preventDefAult();
 			}
 		});
 
-		if (options.enableMnemonics) {
-			this.menuDisposables.add(addDisposableListener(menuElement, EventType.KEY_DOWN, (e) => {
-				const key = e.key.toLocaleLowerCase();
-				if (this.mnemonics.has(key)) {
+		if (options.enAbleMnemonics) {
+			this.menuDisposAbles.Add(AddDisposAbleListener(menuElement, EventType.KEY_DOWN, (e) => {
+				const key = e.key.toLocAleLowerCAse();
+				if (this.mnemonics.hAs(key)) {
 					EventHelper.stop(e, true);
-					const actions = this.mnemonics.get(key)!;
+					const Actions = this.mnemonics.get(key)!;
 
-					if (actions.length === 1) {
-						if (actions[0] instanceof SubmenuMenuActionViewItem && actions[0].container) {
-							this.focusItemByElement(actions[0].container);
+					if (Actions.length === 1) {
+						if (Actions[0] instAnceof SubmenuMenuActionViewItem && Actions[0].contAiner) {
+							this.focusItemByElement(Actions[0].contAiner);
 						}
 
-						actions[0].onClick(e);
+						Actions[0].onClick(e);
 					}
 
-					if (actions.length > 1) {
-						const action = actions.shift();
-						if (action && action.container) {
-							this.focusItemByElement(action.container);
-							actions.push(action);
+					if (Actions.length > 1) {
+						const Action = Actions.shift();
+						if (Action && Action.contAiner) {
+							this.focusItemByElement(Action.contAiner);
+							Actions.push(Action);
 						}
 
-						this.mnemonics.set(key, actions);
+						this.mnemonics.set(key, Actions);
 					}
 				}
 			}));
 		}
 
 		if (isLinux) {
-			this._register(addDisposableListener(menuElement, EventType.KEY_DOWN, e => {
-				const event = new StandardKeyboardEvent(e);
+			this._register(AddDisposAbleListener(menuElement, EventType.KEY_DOWN, e => {
+				const event = new StAndArdKeyboArdEvent(e);
 
-				if (event.equals(KeyCode.Home) || event.equals(KeyCode.PageUp)) {
+				if (event.equAls(KeyCode.Home) || event.equAls(KeyCode.PAgeUp)) {
 					this.focusedItem = this.viewItems.length - 1;
 					this.focusNext();
 					EventHelper.stop(e, true);
-				} else if (event.equals(KeyCode.End) || event.equals(KeyCode.PageDown)) {
+				} else if (event.equAls(KeyCode.End) || event.equAls(KeyCode.PAgeDown)) {
 					this.focusedItem = 0;
 					this.focusPrevious();
 					EventHelper.stop(e, true);
@@ -151,123 +151,123 @@ export class Menu extends ActionBar {
 			}));
 		}
 
-		this._register(addDisposableListener(this.domNode, EventType.MOUSE_OUT, e => {
-			let relatedTarget = e.relatedTarget as HTMLElement;
-			if (!isAncestor(relatedTarget, this.domNode)) {
+		this._register(AddDisposAbleListener(this.domNode, EventType.MOUSE_OUT, e => {
+			let relAtedTArget = e.relAtedTArget As HTMLElement;
+			if (!isAncestor(relAtedTArget, this.domNode)) {
 				this.focusedItem = undefined;
-				this.updateFocus();
-				e.stopPropagation();
+				this.updAteFocus();
+				e.stopPropAgAtion();
 			}
 		}));
 
-		this._register(addDisposableListener(this.actionsList, EventType.MOUSE_OVER, e => {
-			let target = e.target as HTMLElement;
-			if (!target || !isAncestor(target, this.actionsList) || target === this.actionsList) {
+		this._register(AddDisposAbleListener(this.ActionsList, EventType.MOUSE_OVER, e => {
+			let tArget = e.tArget As HTMLElement;
+			if (!tArget || !isAncestor(tArget, this.ActionsList) || tArget === this.ActionsList) {
 				return;
 			}
 
-			while (target.parentElement !== this.actionsList && target.parentElement !== null) {
-				target = target.parentElement;
+			while (tArget.pArentElement !== this.ActionsList && tArget.pArentElement !== null) {
+				tArget = tArget.pArentElement;
 			}
 
-			if (target.classList.contains('action-item')) {
-				const lastFocusedItem = this.focusedItem;
-				this.setFocusedItem(target);
+			if (tArget.clAssList.contAins('Action-item')) {
+				const lAstFocusedItem = this.focusedItem;
+				this.setFocusedItem(tArget);
 
-				if (lastFocusedItem !== this.focusedItem) {
-					this.updateFocus();
+				if (lAstFocusedItem !== this.focusedItem) {
+					this.updAteFocus();
 				}
 			}
 		}));
 
-		let parentData: ISubMenuData = {
-			parent: this
+		let pArentDAtA: ISubMenuDAtA = {
+			pArent: this
 		};
 
-		this.mnemonics = new Map<string, Array<BaseMenuActionViewItem>>();
+		this.mnemonics = new MAp<string, ArrAy<BAseMenuActionViewItem>>();
 
 		// Scroll Logic
-		this.scrollableElement = this._register(new DomScrollableElement(menuElement, {
-			alwaysConsumeMouseWheel: true,
-			horizontal: ScrollbarVisibility.Hidden,
-			vertical: ScrollbarVisibility.Visible,
-			verticalScrollbarSize: 7,
-			handleMouseWheel: true,
-			useShadows: true
+		this.scrollAbleElement = this._register(new DomScrollAbleElement(menuElement, {
+			AlwAysConsumeMouseWheel: true,
+			horizontAl: ScrollbArVisibility.Hidden,
+			verticAl: ScrollbArVisibility.Visible,
+			verticAlScrollbArSize: 7,
+			hAndleMouseWheel: true,
+			useShAdows: true
 		}));
 
-		const scrollElement = this.scrollableElement.getDomNode();
+		const scrollElement = this.scrollAbleElement.getDomNode();
 		scrollElement.style.position = '';
 
-		this._register(addDisposableListener(scrollElement, EventType.MOUSE_UP, e => {
-			// Absorb clicks in menu dead space https://github.com/microsoft/vscode/issues/63575
-			// We do this on the scroll element so the scroll bar doesn't dismiss the menu either
-			e.preventDefault();
+		this._register(AddDisposAbleListener(scrollElement, EventType.MOUSE_UP, e => {
+			// Absorb clicks in menu deAd spAce https://github.com/microsoft/vscode/issues/63575
+			// We do this on the scroll element so the scroll bAr doesn't dismiss the menu either
+			e.preventDefAult();
 		}));
 
-		menuElement.style.maxHeight = `${Math.max(10, window.innerHeight - container.getBoundingClientRect().top - 35)}px`;
+		menuElement.style.mAxHeight = `${MAth.mAx(10, window.innerHeight - contAiner.getBoundingClientRect().top - 35)}px`;
 
-		actions = actions.filter(a => {
-			if (options.submenuIds?.has(a.id)) {
-				console.warn(`Found submenu cycle: ${a.id}`);
-				return false;
+		Actions = Actions.filter(A => {
+			if (options.submenuIds?.hAs(A.id)) {
+				console.wArn(`Found submenu cycle: ${A.id}`);
+				return fAlse;
 			}
 
 			return true;
 		});
 
-		this.push(actions, { icon: true, label: true, isMenu: true });
+		this.push(Actions, { icon: true, lAbel: true, isMenu: true });
 
-		container.appendChild(this.scrollableElement.getDomNode());
-		this.scrollableElement.scanDomNode();
+		contAiner.AppendChild(this.scrollAbleElement.getDomNode());
+		this.scrollAbleElement.scAnDomNode();
 
-		this.viewItems.filter(item => !(item instanceof MenuSeparatorActionViewItem)).forEach((item, index, array) => {
-			(item as BaseMenuActionViewItem).updatePositionInSet(index + 1, array.length);
+		this.viewItems.filter(item => !(item instAnceof MenuSepArAtorActionViewItem)).forEAch((item, index, ArrAy) => {
+			(item As BAseMenuActionViewItem).updAtePositionInSet(index + 1, ArrAy.length);
 		});
 	}
 
-	private initializeStyleSheet(container: HTMLElement): void {
-		if (isInShadowDOM(container)) {
-			this.styleSheet = createStyleSheet(container);
+	privAte initiAlizeStyleSheet(contAiner: HTMLElement): void {
+		if (isInShAdowDOM(contAiner)) {
+			this.styleSheet = creAteStyleSheet(contAiner);
 			this.styleSheet.textContent = MENU_WIDGET_CSS;
 		} else {
-			if (!Menu.globalStyleSheet) {
-				Menu.globalStyleSheet = createStyleSheet();
-				Menu.globalStyleSheet.textContent = MENU_WIDGET_CSS;
+			if (!Menu.globAlStyleSheet) {
+				Menu.globAlStyleSheet = creAteStyleSheet();
+				Menu.globAlStyleSheet.textContent = MENU_WIDGET_CSS;
 			}
 
-			this.styleSheet = Menu.globalStyleSheet;
+			this.styleSheet = Menu.globAlStyleSheet;
 		}
 	}
 
 	style(style: IMenuStyles): void {
-		const container = this.getContainer();
+		const contAiner = this.getContAiner();
 
 		const fgColor = style.foregroundColor ? `${style.foregroundColor}` : '';
-		const bgColor = style.backgroundColor ? `${style.backgroundColor}` : '';
+		const bgColor = style.bAckgroundColor ? `${style.bAckgroundColor}` : '';
 		const border = style.borderColor ? `1px solid ${style.borderColor}` : '';
-		const shadow = style.shadowColor ? `0 2px 4px ${style.shadowColor}` : '';
+		const shAdow = style.shAdowColor ? `0 2px 4px ${style.shAdowColor}` : '';
 
-		container.style.border = border;
+		contAiner.style.border = border;
 		this.domNode.style.color = fgColor;
-		this.domNode.style.backgroundColor = bgColor;
-		container.style.boxShadow = shadow;
+		this.domNode.style.bAckgroundColor = bgColor;
+		contAiner.style.boxShAdow = shAdow;
 
 		if (this.viewItems) {
-			this.viewItems.forEach(item => {
-				if (item instanceof BaseMenuActionViewItem || item instanceof MenuSeparatorActionViewItem) {
+			this.viewItems.forEAch(item => {
+				if (item instAnceof BAseMenuActionViewItem || item instAnceof MenuSepArAtorActionViewItem) {
 					item.style(style);
 				}
 			});
 		}
 	}
 
-	getContainer(): HTMLElement {
-		return this.scrollableElement.getDomNode();
+	getContAiner(): HTMLElement {
+		return this.scrollAbleElement.getDomNode();
 	}
 
 	get onScroll(): Event<ScrollEvent> {
-		return this.scrollableElement.onScroll;
+		return this.scrollAbleElement.onScroll;
 	}
 
 	get scrollOffset(): number {
@@ -277,96 +277,96 @@ export class Menu extends ActionBar {
 	trigger(index: number): void {
 		if (index <= this.viewItems.length && index >= 0) {
 			const item = this.viewItems[index];
-			if (item instanceof SubmenuMenuActionViewItem) {
+			if (item instAnceof SubmenuMenuActionViewItem) {
 				super.focus(index);
 				item.open(true);
-			} else if (item instanceof BaseMenuActionViewItem) {
-				super.run(item._action, item._context);
+			} else if (item instAnceof BAseMenuActionViewItem) {
+				super.run(item._Action, item._context);
 			} else {
 				return;
 			}
 		}
 	}
 
-	private focusItemByElement(element: HTMLElement) {
-		const lastFocusedItem = this.focusedItem;
+	privAte focusItemByElement(element: HTMLElement) {
+		const lAstFocusedItem = this.focusedItem;
 		this.setFocusedItem(element);
 
-		if (lastFocusedItem !== this.focusedItem) {
-			this.updateFocus();
+		if (lAstFocusedItem !== this.focusedItem) {
+			this.updAteFocus();
 		}
 	}
 
-	private setFocusedItem(element: HTMLElement): void {
-		for (let i = 0; i < this.actionsList.children.length; i++) {
-			let elem = this.actionsList.children[i];
+	privAte setFocusedItem(element: HTMLElement): void {
+		for (let i = 0; i < this.ActionsList.children.length; i++) {
+			let elem = this.ActionsList.children[i];
 			if (element === elem) {
 				this.focusedItem = i;
-				break;
+				breAk;
 			}
 		}
 	}
 
-	protected updateFocus(fromRight?: boolean): void {
-		super.updateFocus(fromRight, true);
+	protected updAteFocus(fromRight?: booleAn): void {
+		super.updAteFocus(fromRight, true);
 
 		if (typeof this.focusedItem !== 'undefined') {
-			// Workaround for #80047 caused by an issue in chromium
-			// https://bugs.chromium.org/p/chromium/issues/detail?id=414283
-			// When that's fixed, just call this.scrollableElement.scanDomNode()
-			this.scrollableElement.setScrollPosition({
-				scrollTop: Math.round(this.menuElement.scrollTop)
+			// WorkAround for #80047 cAused by An issue in chromium
+			// https://bugs.chromium.org/p/chromium/issues/detAil?id=414283
+			// When thAt's fixed, just cAll this.scrollAbleElement.scAnDomNode()
+			this.scrollAbleElement.setScrollPosition({
+				scrollTop: MAth.round(this.menuElement.scrollTop)
 			});
 		}
 	}
 
-	private doGetActionViewItem(action: IAction, options: IMenuOptions, parentData: ISubMenuData): BaseActionViewItem {
-		if (action instanceof Separator) {
-			return new MenuSeparatorActionViewItem(options.context, action, { icon: true });
-		} else if (action instanceof SubmenuAction) {
-			const menuActionViewItem = new SubmenuMenuActionViewItem(action, action.actions, parentData, { ...options, submenuIds: new Set([...(options.submenuIds || []), action.id]) });
+	privAte doGetActionViewItem(Action: IAction, options: IMenuOptions, pArentDAtA: ISubMenuDAtA): BAseActionViewItem {
+		if (Action instAnceof SepArAtor) {
+			return new MenuSepArAtorActionViewItem(options.context, Action, { icon: true });
+		} else if (Action instAnceof SubmenuAction) {
+			const menuActionViewItem = new SubmenuMenuActionViewItem(Action, Action.Actions, pArentDAtA, { ...options, submenuIds: new Set([...(options.submenuIds || []), Action.id]) });
 
-			if (options.enableMnemonics) {
+			if (options.enAbleMnemonics) {
 				const mnemonic = menuActionViewItem.getMnemonic();
-				if (mnemonic && menuActionViewItem.isEnabled()) {
-					let actionViewItems: BaseMenuActionViewItem[] = [];
-					if (this.mnemonics.has(mnemonic)) {
-						actionViewItems = this.mnemonics.get(mnemonic)!;
+				if (mnemonic && menuActionViewItem.isEnAbled()) {
+					let ActionViewItems: BAseMenuActionViewItem[] = [];
+					if (this.mnemonics.hAs(mnemonic)) {
+						ActionViewItems = this.mnemonics.get(mnemonic)!;
 					}
 
-					actionViewItems.push(menuActionViewItem);
+					ActionViewItems.push(menuActionViewItem);
 
-					this.mnemonics.set(mnemonic, actionViewItems);
+					this.mnemonics.set(mnemonic, ActionViewItems);
 				}
 			}
 
 			return menuActionViewItem;
 		} else {
-			const menuItemOptions: IMenuItemOptions = { enableMnemonics: options.enableMnemonics, useEventAsContext: options.useEventAsContext };
+			const menuItemOptions: IMenuItemOptions = { enAbleMnemonics: options.enAbleMnemonics, useEventAsContext: options.useEventAsContext };
 			if (options.getKeyBinding) {
-				const keybinding = options.getKeyBinding(action);
+				const keybinding = options.getKeyBinding(Action);
 				if (keybinding) {
-					const keybindingLabel = keybinding.getLabel();
+					const keybindingLAbel = keybinding.getLAbel();
 
-					if (keybindingLabel) {
-						menuItemOptions.keybinding = keybindingLabel;
+					if (keybindingLAbel) {
+						menuItemOptions.keybinding = keybindingLAbel;
 					}
 				}
 			}
 
-			const menuActionViewItem = new BaseMenuActionViewItem(options.context, action, menuItemOptions);
+			const menuActionViewItem = new BAseMenuActionViewItem(options.context, Action, menuItemOptions);
 
-			if (options.enableMnemonics) {
+			if (options.enAbleMnemonics) {
 				const mnemonic = menuActionViewItem.getMnemonic();
-				if (mnemonic && menuActionViewItem.isEnabled()) {
-					let actionViewItems: BaseMenuActionViewItem[] = [];
-					if (this.mnemonics.has(mnemonic)) {
-						actionViewItems = this.mnemonics.get(mnemonic)!;
+				if (mnemonic && menuActionViewItem.isEnAbled()) {
+					let ActionViewItems: BAseMenuActionViewItem[] = [];
+					if (this.mnemonics.hAs(mnemonic)) {
+						ActionViewItems = this.mnemonics.get(mnemonic)!;
 					}
 
-					actionViewItems.push(menuActionViewItem);
+					ActionViewItems.push(menuActionViewItem);
 
-					this.mnemonics.set(mnemonic, actionViewItems);
+					this.mnemonics.set(mnemonic, ActionViewItems);
 				}
 			}
 
@@ -375,69 +375,69 @@ export class Menu extends ActionBar {
 	}
 }
 
-interface IMenuItemOptions extends IActionViewItemOptions {
-	enableMnemonics?: boolean;
+interfAce IMenuItemOptions extends IActionViewItemOptions {
+	enAbleMnemonics?: booleAn;
 }
 
-class BaseMenuActionViewItem extends BaseActionViewItem {
+clAss BAseMenuActionViewItem extends BAseActionViewItem {
 
-	public container: HTMLElement | undefined;
+	public contAiner: HTMLElement | undefined;
 
 	protected options: IMenuItemOptions;
 	protected item: HTMLElement | undefined;
 
-	private runOnceToEnableMouseUp: RunOnceScheduler;
-	private label: HTMLElement | undefined;
-	private check: HTMLElement | undefined;
-	private mnemonic: string | undefined;
-	private cssClass: string;
+	privAte runOnceToEnAbleMouseUp: RunOnceScheduler;
+	privAte lAbel: HTMLElement | undefined;
+	privAte check: HTMLElement | undefined;
+	privAte mnemonic: string | undefined;
+	privAte cssClAss: string;
 	protected menuStyle: IMenuStyles | undefined;
 
-	constructor(ctx: unknown, action: IAction, options: IMenuItemOptions = {}) {
+	constructor(ctx: unknown, Action: IAction, options: IMenuItemOptions = {}) {
 		options.isMenu = true;
-		super(action, action, options);
+		super(Action, Action, options);
 
 		this.options = options;
-		this.options.icon = options.icon !== undefined ? options.icon : false;
-		this.options.label = options.label !== undefined ? options.label : true;
-		this.cssClass = '';
+		this.options.icon = options.icon !== undefined ? options.icon : fAlse;
+		this.options.lAbel = options.lAbel !== undefined ? options.lAbel : true;
+		this.cssClAss = '';
 
 		// Set mnemonic
-		if (this.options.label && options.enableMnemonics) {
-			let label = this.getAction().label;
-			if (label) {
-				let matches = MENU_MNEMONIC_REGEX.exec(label);
-				if (matches) {
-					this.mnemonic = (!!matches[1] ? matches[1] : matches[3]).toLocaleLowerCase();
+		if (this.options.lAbel && options.enAbleMnemonics) {
+			let lAbel = this.getAction().lAbel;
+			if (lAbel) {
+				let mAtches = MENU_MNEMONIC_REGEX.exec(lAbel);
+				if (mAtches) {
+					this.mnemonic = (!!mAtches[1] ? mAtches[1] : mAtches[3]).toLocAleLowerCAse();
 				}
 			}
 		}
 
-		// Add mouse up listener later to avoid accidental clicks
-		this.runOnceToEnableMouseUp = new RunOnceScheduler(() => {
+		// Add mouse up listener lAter to Avoid AccidentAl clicks
+		this.runOnceToEnAbleMouseUp = new RunOnceScheduler(() => {
 			if (!this.element) {
 				return;
 			}
 
-			this._register(addDisposableListener(this.element, EventType.MOUSE_UP, e => {
-				// removed default prevention as it conflicts
-				// with BaseActionViewItem #101537
-				// add back if issues arise and link new issue
+			this._register(AddDisposAbleListener(this.element, EventType.MOUSE_UP, e => {
+				// removed defAult prevention As it conflicts
+				// with BAseActionViewItem #101537
+				// Add bAck if issues Arise And link new issue
 				EventHelper.stop(e, true);
 
-				// See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Interact_with_the_clipboard
-				// > Writing to the clipboard
-				// > You can use the "cut" and "copy" commands without any special
-				// permission if you are using them in a short-lived event handler
-				// for a user action (for example, a click handler).
+				// See https://developer.mozillA.org/en-US/Add-ons/WebExtensions/InterAct_with_the_clipboArd
+				// > Writing to the clipboArd
+				// > You cAn use the "cut" And "copy" commAnds without Any speciAl
+				// permission if you Are using them in A short-lived event hAndler
+				// for A user Action (for exAmple, A click hAndler).
 
-				// => to get the Copy and Paste context menu actions working on Firefox,
+				// => to get the Copy And PAste context menu Actions working on Firefox,
 				// there should be no timeout here
 				if (isFirefox) {
-					const mouseEvent = new StandardMouseEvent(e);
+					const mouseEvent = new StAndArdMouseEvent(e);
 
-					// Allowing right click to trigger the event causes the issue described below,
-					// but since the solution below does not work in FF, we must disable right click
+					// Allowing right click to trigger the event cAuses the issue described below,
+					// but since the solution below does not work in FF, we must disAble right click
 					if (mouseEvent.rightButton) {
 						return;
 					}
@@ -445,64 +445,64 @@ class BaseMenuActionViewItem extends BaseActionViewItem {
 					this.onClick(e);
 				}
 
-				// In all other cases, set timout to allow context menu cancellation to trigger
-				// otherwise the action will destroy the menu and a second context menu
+				// In All other cAses, set timout to Allow context menu cAncellAtion to trigger
+				// otherwise the Action will destroy the menu And A second context menu
 				// will still trigger for right click.
 				setTimeout(() => {
 					this.onClick(e);
 				}, 0);
 			}));
 
-			this._register(addDisposableListener(this.element, EventType.CONTEXT_MENU, e => {
+			this._register(AddDisposAbleListener(this.element, EventType.CONTEXT_MENU, e => {
 				EventHelper.stop(e, true);
 			}));
 		}, 100);
 
-		this._register(this.runOnceToEnableMouseUp);
+		this._register(this.runOnceToEnAbleMouseUp);
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
 
 		if (!this.element) {
 			return;
 		}
 
-		this.container = container;
+		this.contAiner = contAiner;
 
-		this.item = append(this.element, $('a.action-menu-item'));
-		if (this._action.id === Separator.ID) {
-			// A separator is a presentation item
-			this.item.setAttribute('role', 'presentation');
+		this.item = Append(this.element, $('A.Action-menu-item'));
+		if (this._Action.id === SepArAtor.ID) {
+			// A sepArAtor is A presentAtion item
+			this.item.setAttribute('role', 'presentAtion');
 		} else {
 			this.item.setAttribute('role', 'menuitem');
 			if (this.mnemonic) {
-				this.item.setAttribute('aria-keyshortcuts', `${this.mnemonic}`);
+				this.item.setAttribute('AriA-keyshortcuts', `${this.mnemonic}`);
 			}
 		}
 
-		this.check = append(this.item, $('span.menu-item-check' + menuSelectionIcon.cssSelector));
+		this.check = Append(this.item, $('spAn.menu-item-check' + menuSelectionIcon.cssSelector));
 		this.check.setAttribute('role', 'none');
 
-		this.label = append(this.item, $('span.action-label'));
+		this.lAbel = Append(this.item, $('spAn.Action-lAbel'));
 
-		if (this.options.label && this.options.keybinding) {
-			append(this.item, $('span.keybinding')).textContent = this.options.keybinding;
+		if (this.options.lAbel && this.options.keybinding) {
+			Append(this.item, $('spAn.keybinding')).textContent = this.options.keybinding;
 		}
 
-		// Adds mouse up listener to actually run the action
-		this.runOnceToEnableMouseUp.schedule();
+		// Adds mouse up listener to ActuAlly run the Action
+		this.runOnceToEnAbleMouseUp.schedule();
 
-		this.updateClass();
-		this.updateLabel();
-		this.updateTooltip();
-		this.updateEnabled();
-		this.updateChecked();
+		this.updAteClAss();
+		this.updAteLAbel();
+		this.updAteTooltip();
+		this.updAteEnAbled();
+		this.updAteChecked();
 	}
 
 	blur(): void {
 		super.blur();
-		this.applyStyle();
+		this.ApplyStyle();
 	}
 
 	focus(): void {
@@ -512,80 +512,80 @@ class BaseMenuActionViewItem extends BaseActionViewItem {
 			this.item.focus();
 		}
 
-		this.applyStyle();
+		this.ApplyStyle();
 	}
 
-	updatePositionInSet(pos: number, setSize: number): void {
+	updAtePositionInSet(pos: number, setSize: number): void {
 		if (this.item) {
-			this.item.setAttribute('aria-posinset', `${pos}`);
-			this.item.setAttribute('aria-setsize', `${setSize}`);
+			this.item.setAttribute('AriA-posinset', `${pos}`);
+			this.item.setAttribute('AriA-setsize', `${setSize}`);
 		}
 	}
 
-	updateLabel(): void {
-		if (!this.label) {
+	updAteLAbel(): void {
+		if (!this.lAbel) {
 			return;
 		}
 
-		if (this.options.label) {
-			clearNode(this.label);
+		if (this.options.lAbel) {
+			cleArNode(this.lAbel);
 
-			let label = stripCodicons(this.getAction().label);
-			if (label) {
-				const cleanLabel = cleanMnemonic(label);
-				if (!this.options.enableMnemonics) {
-					label = cleanLabel;
+			let lAbel = stripCodicons(this.getAction().lAbel);
+			if (lAbel) {
+				const cleAnLAbel = cleAnMnemonic(lAbel);
+				if (!this.options.enAbleMnemonics) {
+					lAbel = cleAnLAbel;
 				}
 
-				this.label.setAttribute('aria-label', cleanLabel.replace(/&&/g, '&'));
+				this.lAbel.setAttribute('AriA-lAbel', cleAnLAbel.replAce(/&&/g, '&'));
 
-				const matches = MENU_MNEMONIC_REGEX.exec(label);
+				const mAtches = MENU_MNEMONIC_REGEX.exec(lAbel);
 
-				if (matches) {
-					label = strings.escape(label);
+				if (mAtches) {
+					lAbel = strings.escApe(lAbel);
 
-					// This is global, reset it
-					MENU_ESCAPED_MNEMONIC_REGEX.lastIndex = 0;
-					let escMatch = MENU_ESCAPED_MNEMONIC_REGEX.exec(label);
+					// This is globAl, reset it
+					MENU_ESCAPED_MNEMONIC_REGEX.lAstIndex = 0;
+					let escMAtch = MENU_ESCAPED_MNEMONIC_REGEX.exec(lAbel);
 
-					// We can't use negative lookbehind so if we match our negative and skip
-					while (escMatch && escMatch[1]) {
-						escMatch = MENU_ESCAPED_MNEMONIC_REGEX.exec(label);
+					// We cAn't use negAtive lookbehind so if we mAtch our negAtive And skip
+					while (escMAtch && escMAtch[1]) {
+						escMAtch = MENU_ESCAPED_MNEMONIC_REGEX.exec(lAbel);
 					}
 
-					const replaceDoubleEscapes = (str: string) => str.replace(/&amp;&amp;/g, '&amp;');
+					const replAceDoubleEscApes = (str: string) => str.replAce(/&Amp;&Amp;/g, '&Amp;');
 
-					if (escMatch) {
-						this.label.append(
-							strings.ltrim(replaceDoubleEscapes(label.substr(0, escMatch.index)), ' '),
-							$('u', { 'aria-hidden': 'true' },
-								escMatch[3]),
-							strings.rtrim(replaceDoubleEscapes(label.substr(escMatch.index + escMatch[0].length)), ' '));
+					if (escMAtch) {
+						this.lAbel.Append(
+							strings.ltrim(replAceDoubleEscApes(lAbel.substr(0, escMAtch.index)), ' '),
+							$('u', { 'AriA-hidden': 'true' },
+								escMAtch[3]),
+							strings.rtrim(replAceDoubleEscApes(lAbel.substr(escMAtch.index + escMAtch[0].length)), ' '));
 					} else {
-						this.label.innerText = replaceDoubleEscapes(label).trim();
+						this.lAbel.innerText = replAceDoubleEscApes(lAbel).trim();
 					}
 
 					if (this.item) {
-						this.item.setAttribute('aria-keyshortcuts', (!!matches[1] ? matches[1] : matches[3]).toLocaleLowerCase());
+						this.item.setAttribute('AriA-keyshortcuts', (!!mAtches[1] ? mAtches[1] : mAtches[3]).toLocAleLowerCAse());
 					}
 				} else {
-					this.label.innerText = label.replace(/&&/g, '&').trim();
+					this.lAbel.innerText = lAbel.replAce(/&&/g, '&').trim();
 				}
 			}
 		}
 	}
 
-	updateTooltip(): void {
+	updAteTooltip(): void {
 		let title: string | null = null;
 
 		if (this.getAction().tooltip) {
 			title = this.getAction().tooltip;
 
-		} else if (!this.options.label && this.getAction().label && this.options.icon) {
-			title = this.getAction().label;
+		} else if (!this.options.lAbel && this.getAction().lAbel && this.options.icon) {
+			title = this.getAction().lAbel;
 
 			if (this.options.keybinding) {
-				title = nls.localize({ key: 'titleLabel', comment: ['action title', 'action keybinding'] }, "{0} ({1})", title, this.options.keybinding);
+				title = nls.locAlize({ key: 'titleLAbel', comment: ['Action title', 'Action keybinding'] }, "{0} ({1})", title, this.options.keybinding);
 			}
 		}
 
@@ -594,57 +594,57 @@ class BaseMenuActionViewItem extends BaseActionViewItem {
 		}
 	}
 
-	updateClass(): void {
-		if (this.cssClass && this.item) {
-			this.item.classList.remove(...this.cssClass.split(' '));
+	updAteClAss(): void {
+		if (this.cssClAss && this.item) {
+			this.item.clAssList.remove(...this.cssClAss.split(' '));
 		}
-		if (this.options.icon && this.label) {
-			this.cssClass = this.getAction().class || '';
-			this.label.classList.add('icon');
-			if (this.cssClass) {
-				this.label.classList.add(...this.cssClass.split(' '));
+		if (this.options.icon && this.lAbel) {
+			this.cssClAss = this.getAction().clAss || '';
+			this.lAbel.clAssList.Add('icon');
+			if (this.cssClAss) {
+				this.lAbel.clAssList.Add(...this.cssClAss.split(' '));
 			}
-			this.updateEnabled();
-		} else if (this.label) {
-			this.label.classList.remove('icon');
+			this.updAteEnAbled();
+		} else if (this.lAbel) {
+			this.lAbel.clAssList.remove('icon');
 		}
 	}
 
-	updateEnabled(): void {
-		if (this.getAction().enabled) {
+	updAteEnAbled(): void {
+		if (this.getAction().enAbled) {
 			if (this.element) {
-				this.element.classList.remove('disabled');
+				this.element.clAssList.remove('disAbled');
 			}
 
 			if (this.item) {
-				this.item.classList.remove('disabled');
-				this.item.tabIndex = 0;
+				this.item.clAssList.remove('disAbled');
+				this.item.tAbIndex = 0;
 			}
 		} else {
 			if (this.element) {
-				this.element.classList.add('disabled');
+				this.element.clAssList.Add('disAbled');
 			}
 
 			if (this.item) {
-				this.item.classList.add('disabled');
-				removeTabIndexAndUpdateFocus(this.item);
+				this.item.clAssList.Add('disAbled');
+				removeTAbIndexAndUpdAteFocus(this.item);
 			}
 		}
 	}
 
-	updateChecked(): void {
+	updAteChecked(): void {
 		if (!this.item) {
 			return;
 		}
 
 		if (this.getAction().checked) {
-			this.item.classList.add('checked');
+			this.item.clAssList.Add('checked');
 			this.item.setAttribute('role', 'menuitemcheckbox');
-			this.item.setAttribute('aria-checked', 'true');
+			this.item.setAttribute('AriA-checked', 'true');
 		} else {
-			this.item.classList.remove('checked');
+			this.item.clAssList.remove('checked');
 			this.item.setAttribute('role', 'menuitem');
-			this.item.setAttribute('aria-checked', 'false');
+			this.item.setAttribute('AriA-checked', 'fAlse');
 		}
 	}
 
@@ -652,106 +652,106 @@ class BaseMenuActionViewItem extends BaseActionViewItem {
 		return this.mnemonic;
 	}
 
-	protected applyStyle(): void {
+	protected ApplyStyle(): void {
 		if (!this.menuStyle) {
 			return;
 		}
 
-		const isSelected = this.element && this.element.classList.contains('focused');
+		const isSelected = this.element && this.element.clAssList.contAins('focused');
 		const fgColor = isSelected && this.menuStyle.selectionForegroundColor ? this.menuStyle.selectionForegroundColor : this.menuStyle.foregroundColor;
-		const bgColor = isSelected && this.menuStyle.selectionBackgroundColor ? this.menuStyle.selectionBackgroundColor : undefined;
+		const bgColor = isSelected && this.menuStyle.selectionBAckgroundColor ? this.menuStyle.selectionBAckgroundColor : undefined;
 		const border = isSelected && this.menuStyle.selectionBorderColor ? `thin solid ${this.menuStyle.selectionBorderColor}` : '';
 
 		if (this.item) {
 			this.item.style.color = fgColor ? fgColor.toString() : '';
-			this.item.style.backgroundColor = bgColor ? bgColor.toString() : '';
+			this.item.style.bAckgroundColor = bgColor ? bgColor.toString() : '';
 		}
 
 		if (this.check) {
 			this.check.style.color = fgColor ? fgColor.toString() : '';
 		}
 
-		if (this.container) {
-			this.container.style.border = border;
+		if (this.contAiner) {
+			this.contAiner.style.border = border;
 		}
 	}
 
 	style(style: IMenuStyles): void {
 		this.menuStyle = style;
-		this.applyStyle();
+		this.ApplyStyle();
 	}
 }
 
-class SubmenuMenuActionViewItem extends BaseMenuActionViewItem {
-	private mysubmenu: Menu | null = null;
-	private submenuContainer: HTMLElement | undefined;
-	private submenuIndicator: HTMLElement | undefined;
-	private readonly submenuDisposables = this._register(new DisposableStore());
-	private mouseOver: boolean = false;
-	private showScheduler: RunOnceScheduler;
-	private hideScheduler: RunOnceScheduler;
-	private expandDirection: Direction;
+clAss SubmenuMenuActionViewItem extends BAseMenuActionViewItem {
+	privAte mysubmenu: Menu | null = null;
+	privAte submenuContAiner: HTMLElement | undefined;
+	privAte submenuIndicAtor: HTMLElement | undefined;
+	privAte reAdonly submenuDisposAbles = this._register(new DisposAbleStore());
+	privAte mouseOver: booleAn = fAlse;
+	privAte showScheduler: RunOnceScheduler;
+	privAte hideScheduler: RunOnceScheduler;
+	privAte expAndDirection: Direction;
 
 	constructor(
-		action: IAction,
-		private submenuActions: ReadonlyArray<IAction>,
-		private parentData: ISubMenuData,
-		private submenuOptions?: IMenuOptions
+		Action: IAction,
+		privAte submenuActions: ReAdonlyArrAy<IAction>,
+		privAte pArentDAtA: ISubMenuDAtA,
+		privAte submenuOptions?: IMenuOptions
 	) {
-		super(action, action, submenuOptions);
+		super(Action, Action, submenuOptions);
 
-		this.expandDirection = submenuOptions && submenuOptions.expandDirection !== undefined ? submenuOptions.expandDirection : Direction.Right;
+		this.expAndDirection = submenuOptions && submenuOptions.expAndDirection !== undefined ? submenuOptions.expAndDirection : Direction.Right;
 
 		this.showScheduler = new RunOnceScheduler(() => {
 			if (this.mouseOver) {
-				this.cleanupExistingSubmenu(false);
-				this.createSubmenu(false);
+				this.cleAnupExistingSubmenu(fAlse);
+				this.creAteSubmenu(fAlse);
 			}
 		}, 250);
 
 		this.hideScheduler = new RunOnceScheduler(() => {
-			if (this.element && (!isAncestor(getActiveElement(), this.element) && this.parentData.submenu === this.mysubmenu)) {
-				this.parentData.parent.focus(false);
-				this.cleanupExistingSubmenu(true);
+			if (this.element && (!isAncestor(getActiveElement(), this.element) && this.pArentDAtA.submenu === this.mysubmenu)) {
+				this.pArentDAtA.pArent.focus(fAlse);
+				this.cleAnupExistingSubmenu(true);
 			}
 		}, 750);
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
 
 		if (!this.element) {
 			return;
 		}
 
 		if (this.item) {
-			this.item.classList.add('monaco-submenu-item');
-			this.item.setAttribute('aria-haspopup', 'true');
-			this.updateAriaExpanded('false');
-			this.submenuIndicator = append(this.item, $('span.submenu-indicator' + menuSubmenuIcon.cssSelector));
-			this.submenuIndicator.setAttribute('aria-hidden', 'true');
+			this.item.clAssList.Add('monAco-submenu-item');
+			this.item.setAttribute('AriA-hAspopup', 'true');
+			this.updAteAriAExpAnded('fAlse');
+			this.submenuIndicAtor = Append(this.item, $('spAn.submenu-indicAtor' + menuSubmenuIcon.cssSelector));
+			this.submenuIndicAtor.setAttribute('AriA-hidden', 'true');
 		}
 
-		this._register(addDisposableListener(this.element, EventType.KEY_UP, e => {
-			let event = new StandardKeyboardEvent(e);
-			if (event.equals(KeyCode.RightArrow) || event.equals(KeyCode.Enter)) {
+		this._register(AddDisposAbleListener(this.element, EventType.KEY_UP, e => {
+			let event = new StAndArdKeyboArdEvent(e);
+			if (event.equAls(KeyCode.RightArrow) || event.equAls(KeyCode.Enter)) {
 				EventHelper.stop(e, true);
 
-				this.createSubmenu(true);
+				this.creAteSubmenu(true);
 			}
 		}));
 
-		this._register(addDisposableListener(this.element, EventType.KEY_DOWN, e => {
-			let event = new StandardKeyboardEvent(e);
+		this._register(AddDisposAbleListener(this.element, EventType.KEY_DOWN, e => {
+			let event = new StAndArdKeyboArdEvent(e);
 
 			if (getActiveElement() === this.item) {
-				if (event.equals(KeyCode.RightArrow) || event.equals(KeyCode.Enter)) {
+				if (event.equAls(KeyCode.RightArrow) || event.equAls(KeyCode.Enter)) {
 					EventHelper.stop(e, true);
 				}
 			}
 		}));
 
-		this._register(addDisposableListener(this.element, EventType.MOUSE_OVER, e => {
+		this._register(AddDisposAbleListener(this.element, EventType.MOUSE_OVER, e => {
 			if (!this.mouseOver) {
 				this.mouseOver = true;
 
@@ -759,59 +759,59 @@ class SubmenuMenuActionViewItem extends BaseMenuActionViewItem {
 			}
 		}));
 
-		this._register(addDisposableListener(this.element, EventType.MOUSE_LEAVE, e => {
-			this.mouseOver = false;
+		this._register(AddDisposAbleListener(this.element, EventType.MOUSE_LEAVE, e => {
+			this.mouseOver = fAlse;
 		}));
 
-		this._register(addDisposableListener(this.element, EventType.FOCUS_OUT, e => {
+		this._register(AddDisposAbleListener(this.element, EventType.FOCUS_OUT, e => {
 			if (this.element && !isAncestor(getActiveElement(), this.element)) {
 				this.hideScheduler.schedule();
 			}
 		}));
 
-		this._register(this.parentData.parent.onScroll(() => {
-			this.parentData.parent.focus(false);
-			this.cleanupExistingSubmenu(false);
+		this._register(this.pArentDAtA.pArent.onScroll(() => {
+			this.pArentDAtA.pArent.focus(fAlse);
+			this.cleAnupExistingSubmenu(fAlse);
 		}));
 	}
 
-	open(selectFirst?: boolean): void {
-		this.cleanupExistingSubmenu(false);
-		this.createSubmenu(selectFirst);
+	open(selectFirst?: booleAn): void {
+		this.cleAnupExistingSubmenu(fAlse);
+		this.creAteSubmenu(selectFirst);
 	}
 
 	onClick(e: EventLike): void {
-		// stop clicking from trying to run an action
+		// stop clicking from trying to run An Action
 		EventHelper.stop(e, true);
 
-		this.cleanupExistingSubmenu(false);
-		this.createSubmenu(true);
+		this.cleAnupExistingSubmenu(fAlse);
+		this.creAteSubmenu(true);
 	}
 
-	private cleanupExistingSubmenu(force: boolean): void {
-		if (this.parentData.submenu && (force || (this.parentData.submenu !== this.mysubmenu))) {
+	privAte cleAnupExistingSubmenu(force: booleAn): void {
+		if (this.pArentDAtA.submenu && (force || (this.pArentDAtA.submenu !== this.mysubmenu))) {
 
-			// disposal may throw if the submenu has already been removed
+			// disposAl mAy throw if the submenu hAs AlreAdy been removed
 			try {
-				this.parentData.submenu.dispose();
-			} catch { }
+				this.pArentDAtA.submenu.dispose();
+			} cAtch { }
 
-			this.parentData.submenu = undefined;
-			this.updateAriaExpanded('false');
-			if (this.submenuContainer) {
-				this.submenuDisposables.clear();
-				this.submenuContainer = undefined;
+			this.pArentDAtA.submenu = undefined;
+			this.updAteAriAExpAnded('fAlse');
+			if (this.submenuContAiner) {
+				this.submenuDisposAbles.cleAr();
+				this.submenuContAiner = undefined;
 			}
 		}
 	}
 
-	private calculateSubmenuMenuLayout(windowDimensions: Dimension, submenu: Dimension, entry: IDomNodePagePosition, expandDirection: Direction): { top: number, left: number } {
+	privAte cAlculAteSubmenuMenuLAyout(windowDimensions: Dimension, submenu: Dimension, entry: IDomNodePAgePosition, expAndDirection: Direction): { top: number, left: number } {
 		const ret = { top: 0, left: 0 };
 
-		// Start with horizontal
-		ret.left = layout(windowDimensions.width, submenu.width, { position: expandDirection === Direction.Right ? LayoutAnchorPosition.Before : LayoutAnchorPosition.After, offset: entry.left, size: entry.width });
+		// StArt with horizontAl
+		ret.left = lAyout(windowDimensions.width, submenu.width, { position: expAndDirection === Direction.Right ? LAyoutAnchorPosition.Before : LAyoutAnchorPosition.After, offset: entry.left, size: entry.width });
 
-		// We don't have enough room to layout the menu fully, so we are overlapping the menu
+		// We don't hAve enough room to lAyout the menu fully, so we Are overlApping the menu
 		if (ret.left >= entry.left && ret.left < entry.left + entry.width) {
 			if (entry.left + 10 + submenu.width <= windowDimensions.width) {
 				ret.left = entry.left + 10;
@@ -821,10 +821,10 @@ class SubmenuMenuActionViewItem extends BaseMenuActionViewItem {
 			entry.height = 0;
 		}
 
-		// Now that we have a horizontal position, try layout vertically
-		ret.top = layout(windowDimensions.height, submenu.height, { position: LayoutAnchorPosition.Before, offset: entry.top, size: 0 });
+		// Now thAt we hAve A horizontAl position, try lAyout verticAlly
+		ret.top = lAyout(windowDimensions.height, submenu.height, { position: LAyoutAnchorPosition.Before, offset: entry.top, size: 0 });
 
-		// We didn't have enough room below, but we did above, so we shift down to align the menu
+		// We didn't hAve enough room below, but we did Above, so we shift down to Align the menu
 		if (ret.top + submenu.height === entry.top && ret.top + entry.height + submenu.height <= windowDimensions.height) {
 			ret.top += entry.height;
 		}
@@ -832,101 +832,101 @@ class SubmenuMenuActionViewItem extends BaseMenuActionViewItem {
 		return ret;
 	}
 
-	private createSubmenu(selectFirstItem = true): void {
+	privAte creAteSubmenu(selectFirstItem = true): void {
 		if (!this.element) {
 			return;
 		}
 
-		if (!this.parentData.submenu) {
-			this.updateAriaExpanded('true');
-			this.submenuContainer = append(this.element, $('div.monaco-submenu'));
-			this.submenuContainer.classList.add('menubar-menu-items-holder', 'context-view');
+		if (!this.pArentDAtA.submenu) {
+			this.updAteAriAExpAnded('true');
+			this.submenuContAiner = Append(this.element, $('div.monAco-submenu'));
+			this.submenuContAiner.clAssList.Add('menubAr-menu-items-holder', 'context-view');
 
-			// Set the top value of the menu container before construction
-			// This allows the menu constructor to calculate the proper max height
-			const computedStyles = getComputedStyle(this.parentData.parent.domNode);
-			const paddingTop = parseFloat(computedStyles.paddingTop || '0') || 0;
-			// this.submenuContainer.style.top = `${this.element.offsetTop - this.parentData.parent.scrollOffset - paddingTop}px`;
-			this.submenuContainer.style.zIndex = '1';
-			this.submenuContainer.style.position = 'fixed';
-			this.submenuContainer.style.top = '0';
-			this.submenuContainer.style.left = '0';
+			// Set the top vAlue of the menu contAiner before construction
+			// This Allows the menu constructor to cAlculAte the proper mAx height
+			const computedStyles = getComputedStyle(this.pArentDAtA.pArent.domNode);
+			const pAddingTop = pArseFloAt(computedStyles.pAddingTop || '0') || 0;
+			// this.submenuContAiner.style.top = `${this.element.offsetTop - this.pArentDAtA.pArent.scrollOffset - pAddingTop}px`;
+			this.submenuContAiner.style.zIndex = '1';
+			this.submenuContAiner.style.position = 'fixed';
+			this.submenuContAiner.style.top = '0';
+			this.submenuContAiner.style.left = '0';
 
-			this.parentData.submenu = new Menu(this.submenuContainer, this.submenuActions, this.submenuOptions);
+			this.pArentDAtA.submenu = new Menu(this.submenuContAiner, this.submenuActions, this.submenuOptions);
 			if (this.menuStyle) {
-				this.parentData.submenu.style(this.menuStyle);
+				this.pArentDAtA.submenu.style(this.menuStyle);
 			}
 
-			// layout submenu
+			// lAyout submenu
 			const entryBox = this.element.getBoundingClientRect();
-			const entryBoxUpdated = {
-				top: entryBox.top - paddingTop,
+			const entryBoxUpdAted = {
+				top: entryBox.top - pAddingTop,
 				left: entryBox.left,
-				height: entryBox.height + 2 * paddingTop,
+				height: entryBox.height + 2 * pAddingTop,
 				width: entryBox.width
 			};
 
-			const viewBox = this.submenuContainer.getBoundingClientRect();
+			const viewBox = this.submenuContAiner.getBoundingClientRect();
 
-			const { top, left } = this.calculateSubmenuMenuLayout({ height: window.innerHeight, width: window.innerWidth }, viewBox, entryBoxUpdated, this.expandDirection);
-			this.submenuContainer.style.left = `${left}px`;
-			this.submenuContainer.style.top = `${top}px`;
+			const { top, left } = this.cAlculAteSubmenuMenuLAyout({ height: window.innerHeight, width: window.innerWidth }, viewBox, entryBoxUpdAted, this.expAndDirection);
+			this.submenuContAiner.style.left = `${left}px`;
+			this.submenuContAiner.style.top = `${top}px`;
 
-			this.submenuDisposables.add(addDisposableListener(this.submenuContainer, EventType.KEY_UP, e => {
-				let event = new StandardKeyboardEvent(e);
-				if (event.equals(KeyCode.LeftArrow)) {
+			this.submenuDisposAbles.Add(AddDisposAbleListener(this.submenuContAiner, EventType.KEY_UP, e => {
+				let event = new StAndArdKeyboArdEvent(e);
+				if (event.equAls(KeyCode.LeftArrow)) {
 					EventHelper.stop(e, true);
 
-					this.parentData.parent.focus();
+					this.pArentDAtA.pArent.focus();
 
-					this.cleanupExistingSubmenu(true);
+					this.cleAnupExistingSubmenu(true);
 				}
 			}));
 
-			this.submenuDisposables.add(addDisposableListener(this.submenuContainer, EventType.KEY_DOWN, e => {
-				let event = new StandardKeyboardEvent(e);
-				if (event.equals(KeyCode.LeftArrow)) {
+			this.submenuDisposAbles.Add(AddDisposAbleListener(this.submenuContAiner, EventType.KEY_DOWN, e => {
+				let event = new StAndArdKeyboArdEvent(e);
+				if (event.equAls(KeyCode.LeftArrow)) {
 					EventHelper.stop(e, true);
 				}
 			}));
 
 
-			this.submenuDisposables.add(this.parentData.submenu.onDidCancel(() => {
-				this.parentData.parent.focus();
+			this.submenuDisposAbles.Add(this.pArentDAtA.submenu.onDidCAncel(() => {
+				this.pArentDAtA.pArent.focus();
 
-				this.cleanupExistingSubmenu(true);
+				this.cleAnupExistingSubmenu(true);
 			}));
 
-			this.parentData.submenu.focus(selectFirstItem);
+			this.pArentDAtA.submenu.focus(selectFirstItem);
 
-			this.mysubmenu = this.parentData.submenu;
+			this.mysubmenu = this.pArentDAtA.submenu;
 		} else {
-			this.parentData.submenu.focus(false);
+			this.pArentDAtA.submenu.focus(fAlse);
 		}
 	}
 
-	private updateAriaExpanded(value: string): void {
+	privAte updAteAriAExpAnded(vAlue: string): void {
 		if (this.item) {
-			this.item?.setAttribute('aria-expanded', value);
+			this.item?.setAttribute('AriA-expAnded', vAlue);
 		}
 	}
 
-	protected applyStyle(): void {
-		super.applyStyle();
+	protected ApplyStyle(): void {
+		super.ApplyStyle();
 
 		if (!this.menuStyle) {
 			return;
 		}
 
-		const isSelected = this.element && this.element.classList.contains('focused');
+		const isSelected = this.element && this.element.clAssList.contAins('focused');
 		const fgColor = isSelected && this.menuStyle.selectionForegroundColor ? this.menuStyle.selectionForegroundColor : this.menuStyle.foregroundColor;
 
-		if (this.submenuIndicator) {
-			this.submenuIndicator.style.color = fgColor ? `${fgColor}` : '';
+		if (this.submenuIndicAtor) {
+			this.submenuIndicAtor.style.color = fgColor ? `${fgColor}` : '';
 		}
 
-		if (this.parentData.submenu) {
-			this.parentData.submenu.style(this.menuStyle);
+		if (this.pArentDAtA.submenu) {
+			this.pArentDAtA.submenu.style(this.menuStyle);
 		}
 	}
 
@@ -940,426 +940,426 @@ class SubmenuMenuActionViewItem extends BaseMenuActionViewItem {
 			this.mysubmenu = null;
 		}
 
-		if (this.submenuContainer) {
-			this.submenuContainer = undefined;
+		if (this.submenuContAiner) {
+			this.submenuContAiner = undefined;
 		}
 	}
 }
 
-class MenuSeparatorActionViewItem extends ActionViewItem {
+clAss MenuSepArAtorActionViewItem extends ActionViewItem {
 	style(style: IMenuStyles): void {
-		if (this.label) {
-			this.label.style.borderBottomColor = style.separatorColor ? `${style.separatorColor}` : '';
+		if (this.lAbel) {
+			this.lAbel.style.borderBottomColor = style.sepArAtorColor ? `${style.sepArAtorColor}` : '';
 		}
 	}
 }
 
-export function cleanMnemonic(label: string): string {
+export function cleAnMnemonic(lAbel: string): string {
 	const regex = MENU_MNEMONIC_REGEX;
 
-	const matches = regex.exec(label);
-	if (!matches) {
-		return label;
+	const mAtches = regex.exec(lAbel);
+	if (!mAtches) {
+		return lAbel;
 	}
 
-	const mnemonicInText = !matches[1];
+	const mnemonicInText = !mAtches[1];
 
-	return label.replace(regex, mnemonicInText ? '$2$3' : '').trim();
+	return lAbel.replAce(regex, mnemonicInText ? '$2$3' : '').trim();
 }
 
 let MENU_WIDGET_CSS: string = /* css */`
-.monaco-menu {
+.monAco-menu {
 	font-size: 13px;
 
 }
 
-${formatRule(menuSelectionIcon)}
-${formatRule(menuSubmenuIcon)}
+${formAtRule(menuSelectionIcon)}
+${formAtRule(menuSubmenuIcon)}
 
-.monaco-menu .monaco-action-bar {
-	text-align: right;
+.monAco-menu .monAco-Action-bAr {
+	text-Align: right;
 	overflow: hidden;
-	white-space: nowrap;
+	white-spAce: nowrAp;
 }
 
-.monaco-menu .monaco-action-bar .actions-container {
-	display: flex;
-	margin: 0 auto;
-	padding: 0;
+.monAco-menu .monAco-Action-bAr .Actions-contAiner {
+	displAy: flex;
+	mArgin: 0 Auto;
+	pAdding: 0;
 	width: 100%;
 	justify-content: flex-end;
 }
 
-.monaco-menu .monaco-action-bar.vertical .actions-container {
-	display: inline-block;
+.monAco-menu .monAco-Action-bAr.verticAl .Actions-contAiner {
+	displAy: inline-block;
 }
 
-.monaco-menu .monaco-action-bar.reverse .actions-container {
+.monAco-menu .monAco-Action-bAr.reverse .Actions-contAiner {
 	flex-direction: row-reverse;
 }
 
-.monaco-menu .monaco-action-bar .action-item {
+.monAco-menu .monAco-Action-bAr .Action-item {
 	cursor: pointer;
-	display: inline-block;
-	transition: transform 50ms ease;
-	position: relative;  /* DO NOT REMOVE - this is the key to preventing the ghosting icon bug in Chrome 42 */
+	displAy: inline-block;
+	trAnsition: trAnsform 50ms eAse;
+	position: relAtive;  /* DO NOT REMOVE - this is the key to preventing the ghosting icon bug in Chrome 42 */
 }
 
-.monaco-menu .monaco-action-bar .action-item.disabled {
-	cursor: default;
+.monAco-menu .monAco-Action-bAr .Action-item.disAbled {
+	cursor: defAult;
 }
 
-.monaco-menu .monaco-action-bar.animated .action-item.active {
-	transform: scale(1.272019649, 1.272019649); /* 1.272019649 = √φ */
+.monAco-menu .monAco-Action-bAr.AnimAted .Action-item.Active {
+	trAnsform: scAle(1.272019649, 1.272019649); /* 1.272019649 = √φ */
 }
 
-.monaco-menu .monaco-action-bar .action-item .icon,
-.monaco-menu .monaco-action-bar .action-item .codicon {
-	display: inline-block;
+.monAco-menu .monAco-Action-bAr .Action-item .icon,
+.monAco-menu .monAco-Action-bAr .Action-item .codicon {
+	displAy: inline-block;
 }
 
-.monaco-menu .monaco-action-bar .action-item .codicon {
-	display: flex;
-	align-items: center;
+.monAco-menu .monAco-Action-bAr .Action-item .codicon {
+	displAy: flex;
+	Align-items: center;
 }
 
-.monaco-menu .monaco-action-bar .action-label {
+.monAco-menu .monAco-Action-bAr .Action-lAbel {
 	font-size: 11px;
-	margin-right: 4px;
+	mArgin-right: 4px;
 }
 
-.monaco-menu .monaco-action-bar .action-item.disabled .action-label,
-.monaco-menu .monaco-action-bar .action-item.disabled .action-label:hover {
-	opacity: 0.4;
+.monAco-menu .monAco-Action-bAr .Action-item.disAbled .Action-lAbel,
+.monAco-menu .monAco-Action-bAr .Action-item.disAbled .Action-lAbel:hover {
+	opAcity: 0.4;
 }
 
-/* Vertical actions */
+/* VerticAl Actions */
 
-.monaco-menu .monaco-action-bar.vertical {
-	text-align: left;
+.monAco-menu .monAco-Action-bAr.verticAl {
+	text-Align: left;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item {
-	display: block;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item {
+	displAy: block;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label.separator {
-	display: block;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel.sepArAtor {
+	displAy: block;
 	border-bottom: 1px solid #bbb;
-	padding-top: 1px;
-	margin-left: .8em;
-	margin-right: .8em;
+	pAdding-top: 1px;
+	mArgin-left: .8em;
+	mArgin-right: .8em;
 }
 
-.monaco-menu .secondary-actions .monaco-action-bar .action-label {
-	margin-left: 6px;
+.monAco-menu .secondAry-Actions .monAco-Action-bAr .Action-lAbel {
+	mArgin-left: 6px;
 }
 
 /* Action Items */
-.monaco-menu .monaco-action-bar .action-item.select-container {
-	overflow: hidden; /* somehow the dropdown overflows its container, we prevent it here to not push */
+.monAco-menu .monAco-Action-bAr .Action-item.select-contAiner {
+	overflow: hidden; /* somehow the dropdown overflows its contAiner, we prevent it here to not push */
 	flex: 1;
-	max-width: 170px;
+	mAx-width: 170px;
 	min-width: 60px;
-	display: flex;
-	align-items: center;
+	displAy: flex;
+	Align-items: center;
 	justify-content: center;
-	margin-right: 10px;
+	mArgin-right: 10px;
 }
 
-.monaco-menu .monaco-action-bar.vertical {
-	margin-left: 0;
+.monAco-menu .monAco-Action-bAr.verticAl {
+	mArgin-left: 0;
 	overflow: visible;
 }
 
-.monaco-menu .monaco-action-bar.vertical .actions-container {
-	display: block;
+.monAco-menu .monAco-Action-bAr.verticAl .Actions-contAiner {
+	displAy: block;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item {
-	padding: 0;
-	transform: none;
-	display: flex;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item {
+	pAdding: 0;
+	trAnsform: none;
+	displAy: flex;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item.active {
-	transform: none;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item.Active {
+	trAnsform: none;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-menu-item {
-	flex: 1 1 auto;
-	display: flex;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-menu-item {
+	flex: 1 1 Auto;
+	displAy: flex;
 	height: 2em;
-	align-items: center;
-	position: relative;
+	Align-items: center;
+	position: relAtive;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label {
-	flex: 1 1 auto;
-	text-decoration: none;
-	padding: 0 1em;
-	background: none;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel {
+	flex: 1 1 Auto;
+	text-decorAtion: none;
+	pAdding: 0 1em;
+	bAckground: none;
 	font-size: 12px;
 	line-height: 1;
 }
 
-.monaco-menu .monaco-action-bar.vertical .keybinding,
-.monaco-menu .monaco-action-bar.vertical .submenu-indicator {
-	display: inline-block;
-	flex: 2 1 auto;
-	padding: 0 1em;
-	text-align: right;
+.monAco-menu .monAco-Action-bAr.verticAl .keybinding,
+.monAco-menu .monAco-Action-bAr.verticAl .submenu-indicAtor {
+	displAy: inline-block;
+	flex: 2 1 Auto;
+	pAdding: 0 1em;
+	text-Align: right;
 	font-size: 12px;
 	line-height: 1;
 }
 
-.monaco-menu .monaco-action-bar.vertical .submenu-indicator {
+.monAco-menu .monAco-Action-bAr.verticAl .submenu-indicAtor {
 	height: 100%;
 }
 
-.monaco-menu .monaco-action-bar.vertical .submenu-indicator.codicon {
-	font-size: 16px !important;
-	display: flex;
-	align-items: center;
+.monAco-menu .monAco-Action-bAr.verticAl .submenu-indicAtor.codicon {
+	font-size: 16px !importAnt;
+	displAy: flex;
+	Align-items: center;
 }
 
-.monaco-menu .monaco-action-bar.vertical .submenu-indicator.codicon::before {
-	margin-left: auto;
-	margin-right: -20px;
+.monAco-menu .monAco-Action-bAr.verticAl .submenu-indicAtor.codicon::before {
+	mArgin-left: Auto;
+	mArgin-right: -20px;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item.disabled .keybinding,
-.monaco-menu .monaco-action-bar.vertical .action-item.disabled .submenu-indicator {
-	opacity: 0.4;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item.disAbled .keybinding,
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item.disAbled .submenu-indicAtor {
+	opAcity: 0.4;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label:not(.separator) {
-	display: inline-block;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel:not(.sepArAtor) {
+	displAy: inline-block;
 	box-sizing: border-box;
-	margin: 0;
+	mArgin: 0;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item {
-	position: static;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item {
+	position: stAtic;
 	overflow: visible;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item .monaco-submenu {
-	position: absolute;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item .monAco-submenu {
+	position: Absolute;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label.separator {
-	padding: 0.5em 0 0 0;
-	margin-bottom: 0.5em;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel.sepArAtor {
+	pAdding: 0.5em 0 0 0;
+	mArgin-bottom: 0.5em;
 	width: 100%;
-	height: 0px !important;
-	margin-left: .8em !important;
-	margin-right: .8em !important;
+	height: 0px !importAnt;
+	mArgin-left: .8em !importAnt;
+	mArgin-right: .8em !importAnt;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label.separator.text {
-	padding: 0.7em 1em 0.1em 1em;
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel.sepArAtor.text {
+	pAdding: 0.7em 1em 0.1em 1em;
 	font-weight: bold;
-	opacity: 1;
+	opAcity: 1;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label:hover {
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel:hover {
 	color: inherit;
 }
 
-.monaco-menu .monaco-action-bar.vertical .menu-item-check {
-	position: absolute;
+.monAco-menu .monAco-Action-bAr.verticAl .menu-item-check {
+	position: Absolute;
 	visibility: hidden;
 	width: 1em;
 	height: 100%;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-menu-item.checked .menu-item-check {
+.monAco-menu .monAco-Action-bAr.verticAl .Action-menu-item.checked .menu-item-check {
 	visibility: visible;
-	display: flex;
-	align-items: center;
+	displAy: flex;
+	Align-items: center;
 	justify-content: center;
 }
 
 /* Context Menu */
 
-.context-view.monaco-menu-container {
+.context-view.monAco-menu-contAiner {
 	outline: 0;
 	border: none;
-	animation: fadeIn 0.083s linear;
+	AnimAtion: fAdeIn 0.083s lineAr;
 }
 
-.context-view.monaco-menu-container :focus,
-.context-view.monaco-menu-container .monaco-action-bar.vertical:focus,
-.context-view.monaco-menu-container .monaco-action-bar.vertical :focus {
+.context-view.monAco-menu-contAiner :focus,
+.context-view.monAco-menu-contAiner .monAco-Action-bAr.verticAl:focus,
+.context-view.monAco-menu-contAiner .monAco-Action-bAr.verticAl :focus {
 	outline: 0;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-item {
-	border: thin solid transparent; /* prevents jumping behaviour on hover or focus */
+.monAco-menu .monAco-Action-bAr.verticAl .Action-item {
+	border: thin solid trAnspArent; /* prevents jumping behAviour on hover or focus */
 }
 
 
-/* High Contrast Theming */
-:host-context(.hc-black) .context-view.monaco-menu-container {
-	box-shadow: none;
+/* High ContrAst Theming */
+:host-context(.hc-blAck) .context-view.monAco-menu-contAiner {
+	box-shAdow: none;
 }
 
-:host-context(.hc-black) .monaco-menu .monaco-action-bar.vertical .action-item.focused {
-	background: none;
+:host-context(.hc-blAck) .monAco-menu .monAco-Action-bAr.verticAl .Action-item.focused {
+	bAckground: none;
 }
 
-/* Vertical Action Bar Styles */
+/* VerticAl Action BAr Styles */
 
-.monaco-menu .monaco-action-bar.vertical {
-	padding: .5em 0;
+.monAco-menu .monAco-Action-bAr.verticAl {
+	pAdding: .5em 0;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-menu-item {
+.monAco-menu .monAco-Action-bAr.verticAl .Action-menu-item {
 	height: 1.8em;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label:not(.separator),
-.monaco-menu .monaco-action-bar.vertical .keybinding {
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel:not(.sepArAtor),
+.monAco-menu .monAco-Action-bAr.verticAl .keybinding {
 	font-size: inherit;
-	padding: 0 2em;
+	pAdding: 0 2em;
 }
 
-.monaco-menu .monaco-action-bar.vertical .menu-item-check {
+.monAco-menu .monAco-Action-bAr.verticAl .menu-item-check {
 	font-size: inherit;
 	width: 2em;
 }
 
-.monaco-menu .monaco-action-bar.vertical .action-label.separator {
+.monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel.sepArAtor {
 	font-size: inherit;
-	padding: 0.2em 0 0 0;
-	margin-bottom: 0.2em;
+	pAdding: 0.2em 0 0 0;
+	mArgin-bottom: 0.2em;
 }
 
-:host-context(.linux) .monaco-menu .monaco-action-bar.vertical .action-label.separator {
-	margin-left: 0;
-	margin-right: 0;
+:host-context(.linux) .monAco-menu .monAco-Action-bAr.verticAl .Action-lAbel.sepArAtor {
+	mArgin-left: 0;
+	mArgin-right: 0;
 }
 
-.monaco-menu .monaco-action-bar.vertical .submenu-indicator {
+.monAco-menu .monAco-Action-bAr.verticAl .submenu-indicAtor {
 	font-size: 60%;
-	padding: 0 1.8em;
+	pAdding: 0 1.8em;
 }
 
-:host-context(.linux) .monaco-menu .monaco-action-bar.vertical .submenu-indicator {
+:host-context(.linux) .monAco-menu .monAco-Action-bAr.verticAl .submenu-indicAtor {
 	height: 100%;
-	mask-size: 10px 10px;
-	-webkit-mask-size: 10px 10px;
+	mAsk-size: 10px 10px;
+	-webkit-mAsk-size: 10px 10px;
 }
 
-.monaco-menu .action-item {
-	cursor: default;
+.monAco-menu .Action-item {
+	cursor: defAult;
 }
 
 /* Arrows */
-.monaco-scrollable-element > .scrollbar > .scra {
+.monAco-scrollAble-element > .scrollbAr > .scrA {
 	cursor: pointer;
-	font-size: 11px !important;
+	font-size: 11px !importAnt;
 }
 
-.monaco-scrollable-element > .visible {
-	opacity: 1;
+.monAco-scrollAble-element > .visible {
+	opAcity: 1;
 
-	/* Background rule added for IE9 - to allow clicks on dom node */
-	background:rgba(0,0,0,0);
+	/* BAckground rule Added for IE9 - to Allow clicks on dom node */
+	bAckground:rgbA(0,0,0,0);
 
-	transition: opacity 100ms linear;
+	trAnsition: opAcity 100ms lineAr;
 }
-.monaco-scrollable-element > .invisible {
-	opacity: 0;
+.monAco-scrollAble-element > .invisible {
+	opAcity: 0;
 	pointer-events: none;
 }
-.monaco-scrollable-element > .invisible.fade {
-	transition: opacity 800ms linear;
+.monAco-scrollAble-element > .invisible.fAde {
+	trAnsition: opAcity 800ms lineAr;
 }
 
-/* Scrollable Content Inset Shadow */
-.monaco-scrollable-element > .shadow {
-	position: absolute;
-	display: none;
+/* ScrollAble Content Inset ShAdow */
+.monAco-scrollAble-element > .shAdow {
+	position: Absolute;
+	displAy: none;
 }
-.monaco-scrollable-element > .shadow.top {
-	display: block;
+.monAco-scrollAble-element > .shAdow.top {
+	displAy: block;
 	top: 0;
 	left: 3px;
 	height: 3px;
 	width: 100%;
-	box-shadow: #DDD 0 6px 6px -6px inset;
+	box-shAdow: #DDD 0 6px 6px -6px inset;
 }
-.monaco-scrollable-element > .shadow.left {
-	display: block;
+.monAco-scrollAble-element > .shAdow.left {
+	displAy: block;
 	top: 3px;
 	left: 0;
 	height: 100%;
 	width: 3px;
-	box-shadow: #DDD 6px 0 6px -6px inset;
+	box-shAdow: #DDD 6px 0 6px -6px inset;
 }
-.monaco-scrollable-element > .shadow.top-left-corner {
-	display: block;
+.monAco-scrollAble-element > .shAdow.top-left-corner {
+	displAy: block;
 	top: 0;
 	left: 0;
 	height: 3px;
 	width: 3px;
 }
-.monaco-scrollable-element > .shadow.top.left {
-	box-shadow: #DDD 6px 6px 6px -6px inset;
+.monAco-scrollAble-element > .shAdow.top.left {
+	box-shAdow: #DDD 6px 6px 6px -6px inset;
 }
 
-/* ---------- Default Style ---------- */
+/* ---------- DefAult Style ---------- */
 
-:host-context(.vs) .monaco-scrollable-element > .scrollbar > .slider {
-	background: rgba(100, 100, 100, .4);
+:host-context(.vs) .monAco-scrollAble-element > .scrollbAr > .slider {
+	bAckground: rgbA(100, 100, 100, .4);
 }
-:host-context(.vs-dark) .monaco-scrollable-element > .scrollbar > .slider {
-	background: rgba(121, 121, 121, .4);
+:host-context(.vs-dArk) .monAco-scrollAble-element > .scrollbAr > .slider {
+	bAckground: rgbA(121, 121, 121, .4);
 }
-:host-context(.hc-black) .monaco-scrollable-element > .scrollbar > .slider {
-	background: rgba(111, 195, 223, .6);
-}
-
-.monaco-scrollable-element > .scrollbar > .slider:hover {
-	background: rgba(100, 100, 100, .7);
-}
-:host-context(.hc-black) .monaco-scrollable-element > .scrollbar > .slider:hover {
-	background: rgba(111, 195, 223, .8);
+:host-context(.hc-blAck) .monAco-scrollAble-element > .scrollbAr > .slider {
+	bAckground: rgbA(111, 195, 223, .6);
 }
 
-.monaco-scrollable-element > .scrollbar > .slider.active {
-	background: rgba(0, 0, 0, .6);
+.monAco-scrollAble-element > .scrollbAr > .slider:hover {
+	bAckground: rgbA(100, 100, 100, .7);
 }
-:host-context(.vs-dark) .monaco-scrollable-element > .scrollbar > .slider.active {
-	background: rgba(191, 191, 191, .4);
-}
-:host-context(.hc-black) .monaco-scrollable-element > .scrollbar > .slider.active {
-	background: rgba(111, 195, 223, 1);
+:host-context(.hc-blAck) .monAco-scrollAble-element > .scrollbAr > .slider:hover {
+	bAckground: rgbA(111, 195, 223, .8);
 }
 
-:host-context(.vs-dark) .monaco-scrollable-element .shadow.top {
-	box-shadow: none;
+.monAco-scrollAble-element > .scrollbAr > .slider.Active {
+	bAckground: rgbA(0, 0, 0, .6);
+}
+:host-context(.vs-dArk) .monAco-scrollAble-element > .scrollbAr > .slider.Active {
+	bAckground: rgbA(191, 191, 191, .4);
+}
+:host-context(.hc-blAck) .monAco-scrollAble-element > .scrollbAr > .slider.Active {
+	bAckground: rgbA(111, 195, 223, 1);
 }
 
-:host-context(.vs-dark) .monaco-scrollable-element .shadow.left {
-	box-shadow: #000 6px 0 6px -6px inset;
+:host-context(.vs-dArk) .monAco-scrollAble-element .shAdow.top {
+	box-shAdow: none;
 }
 
-:host-context(.vs-dark) .monaco-scrollable-element .shadow.top.left {
-	box-shadow: #000 6px 6px 6px -6px inset;
+:host-context(.vs-dArk) .monAco-scrollAble-element .shAdow.left {
+	box-shAdow: #000 6px 0 6px -6px inset;
 }
 
-:host-context(.hc-black) .monaco-scrollable-element .shadow.top {
-	box-shadow: none;
+:host-context(.vs-dArk) .monAco-scrollAble-element .shAdow.top.left {
+	box-shAdow: #000 6px 6px 6px -6px inset;
 }
 
-:host-context(.hc-black) .monaco-scrollable-element .shadow.left {
-	box-shadow: none;
+:host-context(.hc-blAck) .monAco-scrollAble-element .shAdow.top {
+	box-shAdow: none;
 }
 
-:host-context(.hc-black) .monaco-scrollable-element .shadow.top.left {
-	box-shadow: none;
+:host-context(.hc-blAck) .monAco-scrollAble-element .shAdow.left {
+	box-shAdow: none;
+}
+
+:host-context(.hc-blAck) .monAco-scrollAble-element .shAdow.top.left {
+	box-shAdow: none;
 }
 `;

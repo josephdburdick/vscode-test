@@ -1,330 +1,330 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./simpleFindReplaceWidget';
-import * as nls from 'vs/nls';
-import * as dom from 'vs/base/browser/dom';
-import { FindInput, IFindInputStyles } from 'vs/base/browser/ui/findinput/findInput';
-import { Widget } from 'vs/base/browser/ui/widget';
-import { Delayer } from 'vs/base/common/async';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { FindReplaceState, FindReplaceStateChangedEvent } from 'vs/editor/contrib/find/findState';
-import { IMessage as InputBoxMessage } from 'vs/base/browser/ui/inputbox/inputBox';
-import { SimpleButton, findCloseIcon, findNextMatchIcon, findPreviousMatchIcon, findReplaceIcon, findReplaceAllIcon } from 'vs/editor/contrib/find/findWidget';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { editorWidgetBackground, inputActiveOptionBorder, inputActiveOptionBackground, inputActiveOptionForeground, inputBackground, inputBorder, inputForeground, inputValidationErrorBackground, inputValidationErrorBorder, inputValidationErrorForeground, inputValidationInfoBackground, inputValidationInfoBorder, inputValidationInfoForeground, inputValidationWarningBackground, inputValidationWarningBorder, inputValidationWarningForeground, widgetShadow, editorWidgetForeground } from 'vs/platform/theme/common/colorRegistry';
-import { IColorTheme, registerThemingParticipant, IThemeService } from 'vs/platform/theme/common/themeService';
-import { ContextScopedFindInput, ContextScopedReplaceInput } from 'vs/platform/browser/contextScopedHistoryWidget';
-import { ReplaceInput, IReplaceInputStyles } from 'vs/base/browser/ui/findinput/replaceInput';
-import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
-import { attachProgressBarStyler } from 'vs/platform/theme/common/styler';
+import 'vs/css!./simpleFindReplAceWidget';
+import * As nls from 'vs/nls';
+import * As dom from 'vs/bAse/browser/dom';
+import { FindInput, IFindInputStyles } from 'vs/bAse/browser/ui/findinput/findInput';
+import { Widget } from 'vs/bAse/browser/ui/widget';
+import { DelAyer } from 'vs/bAse/common/Async';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { FindReplAceStAte, FindReplAceStAteChAngedEvent } from 'vs/editor/contrib/find/findStAte';
+import { IMessAge As InputBoxMessAge } from 'vs/bAse/browser/ui/inputbox/inputBox';
+import { SimpleButton, findCloseIcon, findNextMAtchIcon, findPreviousMAtchIcon, findReplAceIcon, findReplAceAllIcon } from 'vs/editor/contrib/find/findWidget';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { editorWidgetBAckground, inputActiveOptionBorder, inputActiveOptionBAckground, inputActiveOptionForeground, inputBAckground, inputBorder, inputForeground, inputVAlidAtionErrorBAckground, inputVAlidAtionErrorBorder, inputVAlidAtionErrorForeground, inputVAlidAtionInfoBAckground, inputVAlidAtionInfoBorder, inputVAlidAtionInfoForeground, inputVAlidAtionWArningBAckground, inputVAlidAtionWArningBorder, inputVAlidAtionWArningForeground, widgetShAdow, editorWidgetForeground } from 'vs/plAtform/theme/common/colorRegistry';
+import { IColorTheme, registerThemingPArticipAnt, IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { ContextScopedFindInput, ContextScopedReplAceInput } from 'vs/plAtform/browser/contextScopedHistoryWidget';
+import { ReplAceInput, IReplAceInputStyles } from 'vs/bAse/browser/ui/findinput/replAceInput';
+import { ProgressBAr } from 'vs/bAse/browser/ui/progressbAr/progressbAr';
+import { AttAchProgressBArStyler } from 'vs/plAtform/theme/common/styler';
 
-const NLS_FIND_INPUT_LABEL = nls.localize('label.find', "Find");
-const NLS_FIND_INPUT_PLACEHOLDER = nls.localize('placeholder.find', "Find");
-const NLS_PREVIOUS_MATCH_BTN_LABEL = nls.localize('label.previousMatchButton', "Previous match");
-const NLS_NEXT_MATCH_BTN_LABEL = nls.localize('label.nextMatchButton', "Next match");
-const NLS_CLOSE_BTN_LABEL = nls.localize('label.closeButton', "Close");
-const NLS_TOGGLE_REPLACE_MODE_BTN_LABEL = nls.localize('label.toggleReplaceButton', "Toggle Replace mode");
-const NLS_REPLACE_INPUT_LABEL = nls.localize('label.replace', "Replace");
-const NLS_REPLACE_INPUT_PLACEHOLDER = nls.localize('placeholder.replace', "Replace");
-const NLS_REPLACE_BTN_LABEL = nls.localize('label.replaceButton', "Replace");
-const NLS_REPLACE_ALL_BTN_LABEL = nls.localize('label.replaceAllButton', "Replace All");
+const NLS_FIND_INPUT_LABEL = nls.locAlize('lAbel.find', "Find");
+const NLS_FIND_INPUT_PLACEHOLDER = nls.locAlize('plAceholder.find', "Find");
+const NLS_PREVIOUS_MATCH_BTN_LABEL = nls.locAlize('lAbel.previousMAtchButton', "Previous mAtch");
+const NLS_NEXT_MATCH_BTN_LABEL = nls.locAlize('lAbel.nextMAtchButton', "Next mAtch");
+const NLS_CLOSE_BTN_LABEL = nls.locAlize('lAbel.closeButton', "Close");
+const NLS_TOGGLE_REPLACE_MODE_BTN_LABEL = nls.locAlize('lAbel.toggleReplAceButton', "Toggle ReplAce mode");
+const NLS_REPLACE_INPUT_LABEL = nls.locAlize('lAbel.replAce', "ReplAce");
+const NLS_REPLACE_INPUT_PLACEHOLDER = nls.locAlize('plAceholder.replAce', "ReplAce");
+const NLS_REPLACE_BTN_LABEL = nls.locAlize('lAbel.replAceButton', "ReplAce");
+const NLS_REPLACE_ALL_BTN_LABEL = nls.locAlize('lAbel.replAceAllButton', "ReplAce All");
 
-export abstract class SimpleFindReplaceWidget extends Widget {
-	protected readonly _findInput: FindInput;
-	private readonly _domNode: HTMLElement;
-	private readonly _innerFindDomNode: HTMLElement;
-	private readonly _focusTracker: dom.IFocusTracker;
-	private readonly _findInputFocusTracker: dom.IFocusTracker;
-	private readonly _updateHistoryDelayer: Delayer<void>;
-	private readonly prevBtn: SimpleButton;
-	private readonly nextBtn: SimpleButton;
+export AbstrAct clAss SimpleFindReplAceWidget extends Widget {
+	protected reAdonly _findInput: FindInput;
+	privAte reAdonly _domNode: HTMLElement;
+	privAte reAdonly _innerFindDomNode: HTMLElement;
+	privAte reAdonly _focusTrAcker: dom.IFocusTrAcker;
+	privAte reAdonly _findInputFocusTrAcker: dom.IFocusTrAcker;
+	privAte reAdonly _updAteHistoryDelAyer: DelAyer<void>;
+	privAte reAdonly prevBtn: SimpleButton;
+	privAte reAdonly nextBtn: SimpleButton;
 
-	protected readonly _replaceInput!: ReplaceInput;
-	private readonly _innerReplaceDomNode!: HTMLElement;
-	private _toggleReplaceBtn!: SimpleButton;
-	private readonly _replaceInputFocusTracker!: dom.IFocusTracker;
-	private _replaceBtn!: SimpleButton;
-	private _replaceAllBtn!: SimpleButton;
+	protected reAdonly _replAceInput!: ReplAceInput;
+	privAte reAdonly _innerReplAceDomNode!: HTMLElement;
+	privAte _toggleReplAceBtn!: SimpleButton;
+	privAte reAdonly _replAceInputFocusTrAcker!: dom.IFocusTrAcker;
+	privAte _replAceBtn!: SimpleButton;
+	privAte _replAceAllBtn!: SimpleButton;
 
 
-	private _isVisible: boolean = false;
-	private _isReplaceVisible: boolean = false;
-	private foundMatch: boolean = false;
+	privAte _isVisible: booleAn = fAlse;
+	privAte _isReplAceVisible: booleAn = fAlse;
+	privAte foundMAtch: booleAn = fAlse;
 
-	protected _progressBar!: ProgressBar;
+	protected _progressBAr!: ProgressBAr;
 
 
 	constructor(
-		@IContextViewService private readonly _contextViewService: IContextViewService,
+		@IContextViewService privAte reAdonly _contextViewService: IContextViewService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IThemeService private readonly _themeService: IThemeService,
-		protected readonly _state: FindReplaceState = new FindReplaceState(),
-		showOptionButtons?: boolean
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		protected reAdonly _stAte: FindReplAceStAte = new FindReplAceStAte(),
+		showOptionButtons?: booleAn
 	) {
 		super();
 
-		this._domNode = document.createElement('div');
-		this._domNode.classList.add('simple-fr-find-part-wrapper');
-		this._register(this._state.onFindReplaceStateChange((e) => this._onStateChanged(e)));
+		this._domNode = document.creAteElement('div');
+		this._domNode.clAssList.Add('simple-fr-find-pArt-wrApper');
+		this._register(this._stAte.onFindReplAceStAteChAnge((e) => this._onStAteChAnged(e)));
 
-		let progressContainer = dom.$('.find-replace-progress');
-		this._progressBar = new ProgressBar(progressContainer);
-		this._register(attachProgressBarStyler(this._progressBar, this._themeService));
-		this._domNode.appendChild(progressContainer);
+		let progressContAiner = dom.$('.find-replAce-progress');
+		this._progressBAr = new ProgressBAr(progressContAiner);
+		this._register(AttAchProgressBArStyler(this._progressBAr, this._themeService));
+		this._domNode.AppendChild(progressContAiner);
 
-		// Toggle replace button
-		this._toggleReplaceBtn = this._register(new SimpleButton({
-			label: NLS_TOGGLE_REPLACE_MODE_BTN_LABEL,
-			className: 'codicon toggle left',
+		// Toggle replAce button
+		this._toggleReplAceBtn = this._register(new SimpleButton({
+			lAbel: NLS_TOGGLE_REPLACE_MODE_BTN_LABEL,
+			clAssNAme: 'codicon toggle left',
 			onTrigger: () => {
-				this._isReplaceVisible = !this._isReplaceVisible;
-				this._state.change({ isReplaceRevealed: this._isReplaceVisible }, false);
-				if (this._isReplaceVisible) {
-					this._innerReplaceDomNode.style.display = 'flex';
+				this._isReplAceVisible = !this._isReplAceVisible;
+				this._stAte.chAnge({ isReplAceReveAled: this._isReplAceVisible }, fAlse);
+				if (this._isReplAceVisible) {
+					this._innerReplAceDomNode.style.displAy = 'flex';
 				} else {
-					this._innerReplaceDomNode.style.display = 'none';
+					this._innerReplAceDomNode.style.displAy = 'none';
 				}
 			}
 		}));
-		this._toggleReplaceBtn.setExpanded(this._isReplaceVisible);
-		this._domNode.appendChild(this._toggleReplaceBtn.domNode);
+		this._toggleReplAceBtn.setExpAnded(this._isReplAceVisible);
+		this._domNode.AppendChild(this._toggleReplAceBtn.domNode);
 
 
-		this._innerFindDomNode = document.createElement('div');
-		this._innerFindDomNode.classList.add('simple-fr-find-part');
+		this._innerFindDomNode = document.creAteElement('div');
+		this._innerFindDomNode.clAssList.Add('simple-fr-find-pArt');
 
 		this._findInput = this._register(new ContextScopedFindInput(null, this._contextViewService, {
-			label: NLS_FIND_INPUT_LABEL,
-			placeholder: NLS_FIND_INPUT_PLACEHOLDER,
-			validation: (value: string): InputBoxMessage | null => {
-				if (value.length === 0 || !this._findInput.getRegex()) {
+			lAbel: NLS_FIND_INPUT_LABEL,
+			plAceholder: NLS_FIND_INPUT_PLACEHOLDER,
+			vAlidAtion: (vAlue: string): InputBoxMessAge | null => {
+				if (vAlue.length === 0 || !this._findInput.getRegex()) {
 					return null;
 				}
 				try {
-					new RegExp(value);
+					new RegExp(vAlue);
 					return null;
-				} catch (e) {
-					this.foundMatch = false;
-					this.updateButtons(this.foundMatch);
-					return { content: e.message };
+				} cAtch (e) {
+					this.foundMAtch = fAlse;
+					this.updAteButtons(this.foundMAtch);
+					return { content: e.messAge };
 				}
 			}
 		}, contextKeyService, showOptionButtons));
 
-		// Find History with update delayer
-		this._updateHistoryDelayer = new Delayer<void>(500);
+		// Find History with updAte delAyer
+		this._updAteHistoryDelAyer = new DelAyer<void>(500);
 
 		this.oninput(this._findInput.domNode, (e) => {
-			this.foundMatch = this.onInputChanged();
-			this.updateButtons(this.foundMatch);
-			this._delayedUpdateHistory();
+			this.foundMAtch = this.onInputChAnged();
+			this.updAteButtons(this.foundMAtch);
+			this._delAyedUpdAteHistory();
 		});
 
-		this._findInput.setRegex(!!this._state.isRegex);
-		this._findInput.setCaseSensitive(!!this._state.matchCase);
-		this._findInput.setWholeWords(!!this._state.wholeWord);
+		this._findInput.setRegex(!!this._stAte.isRegex);
+		this._findInput.setCAseSensitive(!!this._stAte.mAtchCAse);
+		this._findInput.setWholeWords(!!this._stAte.wholeWord);
 
-		this._register(this._findInput.onDidOptionChange(() => {
-			this._state.change({
+		this._register(this._findInput.onDidOptionChAnge(() => {
+			this._stAte.chAnge({
 				isRegex: this._findInput.getRegex(),
 				wholeWord: this._findInput.getWholeWords(),
-				matchCase: this._findInput.getCaseSensitive()
+				mAtchCAse: this._findInput.getCAseSensitive()
 			}, true);
 		}));
 
-		this._register(this._state.onFindReplaceStateChange(() => {
-			this._findInput.setRegex(this._state.isRegex);
-			this._findInput.setWholeWords(this._state.wholeWord);
-			this._findInput.setCaseSensitive(this._state.matchCase);
-			this._replaceInput.setPreserveCase(this._state.preserveCase);
+		this._register(this._stAte.onFindReplAceStAteChAnge(() => {
+			this._findInput.setRegex(this._stAte.isRegex);
+			this._findInput.setWholeWords(this._stAte.wholeWord);
+			this._findInput.setCAseSensitive(this._stAte.mAtchCAse);
+			this._replAceInput.setPreserveCAse(this._stAte.preserveCAse);
 			this.findFirst();
 		}));
 
 		this.prevBtn = this._register(new SimpleButton({
-			label: NLS_PREVIOUS_MATCH_BTN_LABEL,
-			className: findPreviousMatchIcon.classNames,
+			lAbel: NLS_PREVIOUS_MATCH_BTN_LABEL,
+			clAssNAme: findPreviousMAtchIcon.clAssNAmes,
 			onTrigger: () => {
 				this.find(true);
 			}
 		}));
 
 		this.nextBtn = this._register(new SimpleButton({
-			label: NLS_NEXT_MATCH_BTN_LABEL,
-			className: findNextMatchIcon.classNames,
+			lAbel: NLS_NEXT_MATCH_BTN_LABEL,
+			clAssNAme: findNextMAtchIcon.clAssNAmes,
 			onTrigger: () => {
-				this.find(false);
+				this.find(fAlse);
 			}
 		}));
 
 		const closeBtn = this._register(new SimpleButton({
-			label: NLS_CLOSE_BTN_LABEL,
-			className: findCloseIcon.classNames,
+			lAbel: NLS_CLOSE_BTN_LABEL,
+			clAssNAme: findCloseIcon.clAssNAmes,
 			onTrigger: () => {
 				this.hide();
 			}
 		}));
 
-		this._innerFindDomNode.appendChild(this._findInput.domNode);
-		this._innerFindDomNode.appendChild(this.prevBtn.domNode);
-		this._innerFindDomNode.appendChild(this.nextBtn.domNode);
-		this._innerFindDomNode.appendChild(closeBtn.domNode);
+		this._innerFindDomNode.AppendChild(this._findInput.domNode);
+		this._innerFindDomNode.AppendChild(this.prevBtn.domNode);
+		this._innerFindDomNode.AppendChild(this.nextBtn.domNode);
+		this._innerFindDomNode.AppendChild(closeBtn.domNode);
 
-		// _domNode wraps _innerDomNode, ensuring that
-		this._domNode.appendChild(this._innerFindDomNode);
+		// _domNode wrAps _innerDomNode, ensuring thAt
+		this._domNode.AppendChild(this._innerFindDomNode);
 
 		this.onkeyup(this._innerFindDomNode, e => {
-			if (e.equals(KeyCode.Escape)) {
+			if (e.equAls(KeyCode.EscApe)) {
 				this.hide();
-				e.preventDefault();
+				e.preventDefAult();
 				return;
 			}
 		});
 
-		this._focusTracker = this._register(dom.trackFocus(this._innerFindDomNode));
-		this._register(this._focusTracker.onDidFocus(this.onFocusTrackerFocus.bind(this)));
-		this._register(this._focusTracker.onDidBlur(this.onFocusTrackerBlur.bind(this)));
+		this._focusTrAcker = this._register(dom.trAckFocus(this._innerFindDomNode));
+		this._register(this._focusTrAcker.onDidFocus(this.onFocusTrAckerFocus.bind(this)));
+		this._register(this._focusTrAcker.onDidBlur(this.onFocusTrAckerBlur.bind(this)));
 
-		this._findInputFocusTracker = this._register(dom.trackFocus(this._findInput.domNode));
-		this._register(this._findInputFocusTracker.onDidFocus(this.onFindInputFocusTrackerFocus.bind(this)));
-		this._register(this._findInputFocusTracker.onDidBlur(this.onFindInputFocusTrackerBlur.bind(this)));
+		this._findInputFocusTrAcker = this._register(dom.trAckFocus(this._findInput.domNode));
+		this._register(this._findInputFocusTrAcker.onDidFocus(this.onFindInputFocusTrAckerFocus.bind(this)));
+		this._register(this._findInputFocusTrAcker.onDidBlur(this.onFindInputFocusTrAckerBlur.bind(this)));
 
-		this._register(dom.addDisposableListener(this._innerFindDomNode, 'click', (event) => {
-			event.stopPropagation();
+		this._register(dom.AddDisposAbleListener(this._innerFindDomNode, 'click', (event) => {
+			event.stopPropAgAtion();
 		}));
 
-		// Replace
-		this._innerReplaceDomNode = document.createElement('div');
-		this._innerReplaceDomNode.classList.add('simple-fr-replace-part');
+		// ReplAce
+		this._innerReplAceDomNode = document.creAteElement('div');
+		this._innerReplAceDomNode.clAssList.Add('simple-fr-replAce-pArt');
 
-		this._replaceInput = this._register(new ContextScopedReplaceInput(null, undefined, {
-			label: NLS_REPLACE_INPUT_LABEL,
-			placeholder: NLS_REPLACE_INPUT_PLACEHOLDER,
+		this._replAceInput = this._register(new ContextScopedReplAceInput(null, undefined, {
+			lAbel: NLS_REPLACE_INPUT_LABEL,
+			plAceholder: NLS_REPLACE_INPUT_PLACEHOLDER,
 			history: []
-		}, contextKeyService, false));
-		this._innerReplaceDomNode.appendChild(this._replaceInput.domNode);
-		this._replaceInputFocusTracker = this._register(dom.trackFocus(this._replaceInput.domNode));
-		this._register(this._replaceInputFocusTracker.onDidFocus(this.onReplaceInputFocusTrackerFocus.bind(this)));
-		this._register(this._replaceInputFocusTracker.onDidBlur(this.onReplaceInputFocusTrackerBlur.bind(this)));
+		}, contextKeyService, fAlse));
+		this._innerReplAceDomNode.AppendChild(this._replAceInput.domNode);
+		this._replAceInputFocusTrAcker = this._register(dom.trAckFocus(this._replAceInput.domNode));
+		this._register(this._replAceInputFocusTrAcker.onDidFocus(this.onReplAceInputFocusTrAckerFocus.bind(this)));
+		this._register(this._replAceInputFocusTrAcker.onDidBlur(this.onReplAceInputFocusTrAckerBlur.bind(this)));
 
-		this._domNode.appendChild(this._innerReplaceDomNode);
+		this._domNode.AppendChild(this._innerReplAceDomNode);
 
-		if (this._isReplaceVisible) {
-			this._innerReplaceDomNode.style.display = 'flex';
+		if (this._isReplAceVisible) {
+			this._innerReplAceDomNode.style.displAy = 'flex';
 		} else {
-			this._innerReplaceDomNode.style.display = 'none';
+			this._innerReplAceDomNode.style.displAy = 'none';
 		}
 
-		this._replaceBtn = this._register(new SimpleButton({
-			label: NLS_REPLACE_BTN_LABEL,
-			className: findReplaceIcon.classNames,
+		this._replAceBtn = this._register(new SimpleButton({
+			lAbel: NLS_REPLACE_BTN_LABEL,
+			clAssNAme: findReplAceIcon.clAssNAmes,
 			onTrigger: () => {
-				this.replaceOne();
+				this.replAceOne();
 			}
 		}));
 
-		// Replace all button
-		this._replaceAllBtn = this._register(new SimpleButton({
-			label: NLS_REPLACE_ALL_BTN_LABEL,
-			className: findReplaceAllIcon.classNames,
+		// ReplAce All button
+		this._replAceAllBtn = this._register(new SimpleButton({
+			lAbel: NLS_REPLACE_ALL_BTN_LABEL,
+			clAssNAme: findReplAceAllIcon.clAssNAmes,
 			onTrigger: () => {
-				this.replaceAll();
+				this.replAceAll();
 			}
 		}));
 
-		this._innerReplaceDomNode.appendChild(this._replaceBtn.domNode);
-		this._innerReplaceDomNode.appendChild(this._replaceAllBtn.domNode);
+		this._innerReplAceDomNode.AppendChild(this._replAceBtn.domNode);
+		this._innerReplAceDomNode.AppendChild(this._replAceAllBtn.domNode);
 
 
 	}
 
-	protected abstract onInputChanged(): boolean;
-	protected abstract find(previous: boolean): void;
-	protected abstract findFirst(): void;
-	protected abstract replaceOne(): void;
-	protected abstract replaceAll(): void;
-	protected abstract onFocusTrackerFocus(): void;
-	protected abstract onFocusTrackerBlur(): void;
-	protected abstract onFindInputFocusTrackerFocus(): void;
-	protected abstract onFindInputFocusTrackerBlur(): void;
-	protected abstract onReplaceInputFocusTrackerFocus(): void;
-	protected abstract onReplaceInputFocusTrackerBlur(): void;
+	protected AbstrAct onInputChAnged(): booleAn;
+	protected AbstrAct find(previous: booleAn): void;
+	protected AbstrAct findFirst(): void;
+	protected AbstrAct replAceOne(): void;
+	protected AbstrAct replAceAll(): void;
+	protected AbstrAct onFocusTrAckerFocus(): void;
+	protected AbstrAct onFocusTrAckerBlur(): void;
+	protected AbstrAct onFindInputFocusTrAckerFocus(): void;
+	protected AbstrAct onFindInputFocusTrAckerBlur(): void;
+	protected AbstrAct onReplAceInputFocusTrAckerFocus(): void;
+	protected AbstrAct onReplAceInputFocusTrAckerBlur(): void;
 
-	protected get inputValue() {
-		return this._findInput.getValue();
+	protected get inputVAlue() {
+		return this._findInput.getVAlue();
 	}
 
-	protected get replaceValue() {
-		return this._replaceInput.getValue();
+	protected get replAceVAlue() {
+		return this._replAceInput.getVAlue();
 	}
 
-	public get focusTracker(): dom.IFocusTracker {
-		return this._focusTracker;
+	public get focusTrAcker(): dom.IFocusTrAcker {
+		return this._focusTrAcker;
 	}
 
-	public updateTheme(theme: IColorTheme): void {
+	public updAteTheme(theme: IColorTheme): void {
 		const inputStyles: IFindInputStyles = {
 			inputActiveOptionBorder: theme.getColor(inputActiveOptionBorder),
 			inputActiveOptionForeground: theme.getColor(inputActiveOptionForeground),
-			inputActiveOptionBackground: theme.getColor(inputActiveOptionBackground),
-			inputBackground: theme.getColor(inputBackground),
+			inputActiveOptionBAckground: theme.getColor(inputActiveOptionBAckground),
+			inputBAckground: theme.getColor(inputBAckground),
 			inputForeground: theme.getColor(inputForeground),
 			inputBorder: theme.getColor(inputBorder),
-			inputValidationInfoBackground: theme.getColor(inputValidationInfoBackground),
-			inputValidationInfoForeground: theme.getColor(inputValidationInfoForeground),
-			inputValidationInfoBorder: theme.getColor(inputValidationInfoBorder),
-			inputValidationWarningBackground: theme.getColor(inputValidationWarningBackground),
-			inputValidationWarningForeground: theme.getColor(inputValidationWarningForeground),
-			inputValidationWarningBorder: theme.getColor(inputValidationWarningBorder),
-			inputValidationErrorBackground: theme.getColor(inputValidationErrorBackground),
-			inputValidationErrorForeground: theme.getColor(inputValidationErrorForeground),
-			inputValidationErrorBorder: theme.getColor(inputValidationErrorBorder),
+			inputVAlidAtionInfoBAckground: theme.getColor(inputVAlidAtionInfoBAckground),
+			inputVAlidAtionInfoForeground: theme.getColor(inputVAlidAtionInfoForeground),
+			inputVAlidAtionInfoBorder: theme.getColor(inputVAlidAtionInfoBorder),
+			inputVAlidAtionWArningBAckground: theme.getColor(inputVAlidAtionWArningBAckground),
+			inputVAlidAtionWArningForeground: theme.getColor(inputVAlidAtionWArningForeground),
+			inputVAlidAtionWArningBorder: theme.getColor(inputVAlidAtionWArningBorder),
+			inputVAlidAtionErrorBAckground: theme.getColor(inputVAlidAtionErrorBAckground),
+			inputVAlidAtionErrorForeground: theme.getColor(inputVAlidAtionErrorForeground),
+			inputVAlidAtionErrorBorder: theme.getColor(inputVAlidAtionErrorBorder),
 		};
 		this._findInput.style(inputStyles);
-		const replaceStyles: IReplaceInputStyles = {
+		const replAceStyles: IReplAceInputStyles = {
 			inputActiveOptionBorder: theme.getColor(inputActiveOptionBorder),
 			inputActiveOptionForeground: theme.getColor(inputActiveOptionForeground),
-			inputActiveOptionBackground: theme.getColor(inputActiveOptionBackground),
-			inputBackground: theme.getColor(inputBackground),
+			inputActiveOptionBAckground: theme.getColor(inputActiveOptionBAckground),
+			inputBAckground: theme.getColor(inputBAckground),
 			inputForeground: theme.getColor(inputForeground),
 			inputBorder: theme.getColor(inputBorder),
-			inputValidationInfoBackground: theme.getColor(inputValidationInfoBackground),
-			inputValidationInfoForeground: theme.getColor(inputValidationInfoForeground),
-			inputValidationInfoBorder: theme.getColor(inputValidationInfoBorder),
-			inputValidationWarningBackground: theme.getColor(inputValidationWarningBackground),
-			inputValidationWarningForeground: theme.getColor(inputValidationWarningForeground),
-			inputValidationWarningBorder: theme.getColor(inputValidationWarningBorder),
-			inputValidationErrorBackground: theme.getColor(inputValidationErrorBackground),
-			inputValidationErrorForeground: theme.getColor(inputValidationErrorForeground),
-			inputValidationErrorBorder: theme.getColor(inputValidationErrorBorder),
+			inputVAlidAtionInfoBAckground: theme.getColor(inputVAlidAtionInfoBAckground),
+			inputVAlidAtionInfoForeground: theme.getColor(inputVAlidAtionInfoForeground),
+			inputVAlidAtionInfoBorder: theme.getColor(inputVAlidAtionInfoBorder),
+			inputVAlidAtionWArningBAckground: theme.getColor(inputVAlidAtionWArningBAckground),
+			inputVAlidAtionWArningForeground: theme.getColor(inputVAlidAtionWArningForeground),
+			inputVAlidAtionWArningBorder: theme.getColor(inputVAlidAtionWArningBorder),
+			inputVAlidAtionErrorBAckground: theme.getColor(inputVAlidAtionErrorBAckground),
+			inputVAlidAtionErrorForeground: theme.getColor(inputVAlidAtionErrorForeground),
+			inputVAlidAtionErrorBorder: theme.getColor(inputVAlidAtionErrorBorder),
 		};
-		this._replaceInput.style(replaceStyles);
+		this._replAceInput.style(replAceStyles);
 	}
 
-	private _onStateChanged(e: FindReplaceStateChangedEvent): void {
-		this._updateButtons();
+	privAte _onStAteChAnged(e: FindReplAceStAteChAngedEvent): void {
+		this._updAteButtons();
 	}
 
-	private _updateButtons(): void {
-		this._findInput.setEnabled(this._isVisible);
-		this._replaceInput.setEnabled(this._isVisible && this._isReplaceVisible);
-		let findInputIsNonEmpty = (this._state.searchString.length > 0);
-		this._replaceBtn.setEnabled(this._isVisible && this._isReplaceVisible && findInputIsNonEmpty);
-		this._replaceAllBtn.setEnabled(this._isVisible && this._isReplaceVisible && findInputIsNonEmpty);
+	privAte _updAteButtons(): void {
+		this._findInput.setEnAbled(this._isVisible);
+		this._replAceInput.setEnAbled(this._isVisible && this._isReplAceVisible);
+		let findInputIsNonEmpty = (this._stAte.seArchString.length > 0);
+		this._replAceBtn.setEnAbled(this._isVisible && this._isReplAceVisible && findInputIsNonEmpty);
+		this._replAceAllBtn.setEnAbled(this._isVisible && this._isReplAceVisible && findInputIsNonEmpty);
 
-		this._domNode.classList.toggle('replaceToggled', this._isReplaceVisible);
-		this._toggleReplaceBtn.setExpanded(this._isReplaceVisible);
+		this._domNode.clAssList.toggle('replAceToggled', this._isReplAceVisible);
+		this._toggleReplAceBtn.setExpAnded(this._isReplAceVisible);
 	}
 
 
 	dispose() {
 		super.dispose();
 
-		if (this._domNode && this._domNode.parentElement) {
-			this._domNode.parentElement.removeChild(this._domNode);
+		if (this._domNode && this._domNode.pArentElement) {
+			this._domNode.pArentElement.removeChild(this._domNode);
 		}
 	}
 
@@ -332,9 +332,9 @@ export abstract class SimpleFindReplaceWidget extends Widget {
 		return this._domNode;
 	}
 
-	public reveal(initialInput?: string): void {
-		if (initialInput) {
-			this._findInput.setValue(initialInput);
+	public reveAl(initiAlInput?: string): void {
+		if (initiAlInput) {
+			this._findInput.setVAlue(initiAlInput);
 		}
 
 		if (this._isVisible) {
@@ -343,11 +343,11 @@ export abstract class SimpleFindReplaceWidget extends Widget {
 		}
 
 		this._isVisible = true;
-		this.updateButtons(this.foundMatch);
+		this.updAteButtons(this.foundMAtch);
 
 		setTimeout(() => {
-			this._domNode.classList.add('visible', 'visible-transition');
-			this._domNode.setAttribute('aria-hidden', 'false');
+			this._domNode.clAssList.Add('visible', 'visible-trAnsition');
+			this._domNode.setAttribute('AriA-hidden', 'fAlse');
 			this._findInput.select();
 		}, 0);
 	}
@@ -356,102 +356,102 @@ export abstract class SimpleFindReplaceWidget extends Widget {
 		this._findInput.focus();
 	}
 
-	public show(initialInput?: string): void {
-		if (initialInput && !this._isVisible) {
-			this._findInput.setValue(initialInput);
+	public show(initiAlInput?: string): void {
+		if (initiAlInput && !this._isVisible) {
+			this._findInput.setVAlue(initiAlInput);
 		}
 
 		this._isVisible = true;
 
 		setTimeout(() => {
-			this._domNode.classList.add('visible', 'visible-transition');
-			this._domNode.setAttribute('aria-hidden', 'false');
+			this._domNode.clAssList.Add('visible', 'visible-trAnsition');
+			this._domNode.setAttribute('AriA-hidden', 'fAlse');
 
 			this.focus();
 		}, 0);
 	}
 
-	public showWithReplace(initialInput?: string, replaceInput?: string): void {
-		if (initialInput && !this._isVisible) {
-			this._findInput.setValue(initialInput);
+	public showWithReplAce(initiAlInput?: string, replAceInput?: string): void {
+		if (initiAlInput && !this._isVisible) {
+			this._findInput.setVAlue(initiAlInput);
 		}
 
-		if (replaceInput && !this._isVisible) {
-			this._replaceInput.setValue(replaceInput);
+		if (replAceInput && !this._isVisible) {
+			this._replAceInput.setVAlue(replAceInput);
 		}
 
 		this._isVisible = true;
-		this._isReplaceVisible = true;
-		this._state.change({ isReplaceRevealed: this._isReplaceVisible }, false);
-		if (this._isReplaceVisible) {
-			this._innerReplaceDomNode.style.display = 'flex';
+		this._isReplAceVisible = true;
+		this._stAte.chAnge({ isReplAceReveAled: this._isReplAceVisible }, fAlse);
+		if (this._isReplAceVisible) {
+			this._innerReplAceDomNode.style.displAy = 'flex';
 		} else {
-			this._innerReplaceDomNode.style.display = 'none';
+			this._innerReplAceDomNode.style.displAy = 'none';
 		}
 
 		setTimeout(() => {
-			this._domNode.classList.add('visible', 'visible-transition');
-			this._domNode.setAttribute('aria-hidden', 'false');
-			this._updateButtons();
+			this._domNode.clAssList.Add('visible', 'visible-trAnsition');
+			this._domNode.setAttribute('AriA-hidden', 'fAlse');
+			this._updAteButtons();
 
-			this._replaceInput.focus();
+			this._replAceInput.focus();
 		}, 0);
 	}
 
 	public hide(): void {
 		if (this._isVisible) {
-			this._domNode.classList.remove('visible-transition');
-			this._domNode.setAttribute('aria-hidden', 'true');
-			// Need to delay toggling visibility until after Transition, then visibility hidden - removes from tabIndex list
+			this._domNode.clAssList.remove('visible-trAnsition');
+			this._domNode.setAttribute('AriA-hidden', 'true');
+			// Need to delAy toggling visibility until After TrAnsition, then visibility hidden - removes from tAbIndex list
 			setTimeout(() => {
-				this._isVisible = false;
-				this.updateButtons(this.foundMatch);
-				this._domNode.classList.remove('visible');
+				this._isVisible = fAlse;
+				this.updAteButtons(this.foundMAtch);
+				this._domNode.clAssList.remove('visible');
 			}, 200);
 		}
 	}
 
-	protected _delayedUpdateHistory() {
-		this._updateHistoryDelayer.trigger(this._updateHistory.bind(this));
+	protected _delAyedUpdAteHistory() {
+		this._updAteHistoryDelAyer.trigger(this._updAteHistory.bind(this));
 	}
 
-	protected _updateHistory() {
-		this._findInput.inputBox.addToHistory();
+	protected _updAteHistory() {
+		this._findInput.inputBox.AddToHistory();
 	}
 
-	protected _getRegexValue(): boolean {
+	protected _getRegexVAlue(): booleAn {
 		return this._findInput.getRegex();
 	}
 
-	protected _getWholeWordValue(): boolean {
+	protected _getWholeWordVAlue(): booleAn {
 		return this._findInput.getWholeWords();
 	}
 
-	protected _getCaseSensitiveValue(): boolean {
-		return this._findInput.getCaseSensitive();
+	protected _getCAseSensitiveVAlue(): booleAn {
+		return this._findInput.getCAseSensitive();
 	}
 
-	protected updateButtons(foundMatch: boolean) {
-		const hasInput = this.inputValue.length > 0;
-		this.prevBtn.setEnabled(this._isVisible && hasInput && foundMatch);
-		this.nextBtn.setEnabled(this._isVisible && hasInput && foundMatch);
+	protected updAteButtons(foundMAtch: booleAn) {
+		const hAsInput = this.inputVAlue.length > 0;
+		this.prevBtn.setEnAbled(this._isVisible && hAsInput && foundMAtch);
+		this.nextBtn.setEnAbled(this._isVisible && hAsInput && foundMAtch);
 	}
 }
 
 // theming
-registerThemingParticipant((theme, collector) => {
-	const findWidgetBGColor = theme.getColor(editorWidgetBackground);
+registerThemingPArticipAnt((theme, collector) => {
+	const findWidgetBGColor = theme.getColor(editorWidgetBAckground);
 	if (findWidgetBGColor) {
-		collector.addRule(`.monaco-workbench .simple-fr-find-part-wrapper { background-color: ${findWidgetBGColor} !important; }`);
+		collector.AddRule(`.monAco-workbench .simple-fr-find-pArt-wrApper { bAckground-color: ${findWidgetBGColor} !importAnt; }`);
 	}
 
 	const widgetForeground = theme.getColor(editorWidgetForeground);
 	if (widgetForeground) {
-		collector.addRule(`.monaco-workbench .simple-fr-find-part-wrapper { color: ${widgetForeground}; }`);
+		collector.AddRule(`.monAco-workbench .simple-fr-find-pArt-wrApper { color: ${widgetForeground}; }`);
 	}
 
-	const widgetShadowColor = theme.getColor(widgetShadow);
-	if (widgetShadowColor) {
-		collector.addRule(`.monaco-workbench .simple-fr-find-part-wrapper { box-shadow: 0 2px 8px ${widgetShadowColor}; }`);
+	const widgetShAdowColor = theme.getColor(widgetShAdow);
+	if (widgetShAdowColor) {
+		collector.AddRule(`.monAco-workbench .simple-fr-find-pArt-wrApper { box-shAdow: 0 2px 8px ${widgetShAdowColor}; }`);
 	}
 });

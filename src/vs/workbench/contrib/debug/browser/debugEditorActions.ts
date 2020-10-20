@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { KeyMod, KeyChord, KeyCode } from 'vs/base/common/keyCodes';
-import { Range } from 'vs/editor/common/core/range';
+import * As nls from 'vs/nls';
+import { KeyMod, KeyChord, KeyCode } from 'vs/bAse/common/keyCodes';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ServicesAccessor, registerEditorAction, EditorAction, IActionOptions } from 'vs/editor/browser/editorExtensions';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IDebugService, CONTEXT_IN_DEBUG_MODE, CONTEXT_DEBUG_STATE, State, IDebugEditorContribution, EDITOR_CONTRIBUTION_ID, BreakpointWidgetContext, IBreakpoint, BREAKPOINT_EDITOR_CONTRIBUTION_ID, IBreakpointEditorContribution, REPL_VIEW_ID, CONTEXT_STEP_INTO_TARGETS_SUPPORTED, WATCH_VIEW_ID, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workbench/contrib/debug/common/debug';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { IDebugService, CONTEXT_IN_DEBUG_MODE, CONTEXT_DEBUG_STATE, StAte, IDebugEditorContribution, EDITOR_CONTRIBUTION_ID, BreAkpointWidgetContext, IBreAkpoint, BREAKPOINT_EDITOR_CONTRIBUTION_ID, IBreAkpointEditorContribution, REPL_VIEW_ID, CONTEXT_STEP_INTO_TARGETS_SUPPORTED, WATCH_VIEW_ID, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workbench/contrib/debug/common/debug';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { openBreakpointSource } from 'vs/workbench/contrib/debug/browser/breakpointsView';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { PanelFocusContext } from 'vs/workbench/common/panel';
+import { openBreAkpointSource } from 'vs/workbench/contrib/debug/browser/breAkpointsView';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { PAnelFocusContext } from 'vs/workbench/common/pAnel';
 import { IViewsService } from 'vs/workbench/common/views';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { Action } from 'vs/base/common/actions';
-import { getDomNodePagePosition } from 'vs/base/browser/dom';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { Action } from 'vs/bAse/common/Actions';
+import { getDomNodePAgePosition } from 'vs/bAse/browser/dom';
 
-export const TOGGLE_BREAKPOINT_ID = 'editor.debug.action.toggleBreakpoint';
-class ToggleBreakpointAction extends EditorAction {
+export const TOGGLE_BREAKPOINT_ID = 'editor.debug.Action.toggleBreAkpoint';
+clAss ToggleBreAkpointAction extends EditorAction {
 	constructor() {
 		super({
 			id: TOGGLE_BREAKPOINT_ID,
-			label: nls.localize('toggleBreakpointAction', "Debug: Toggle Breakpoint"),
-			alias: 'Debug: Toggle Breakpoint',
+			lAbel: nls.locAlize('toggleBreAkpointAction', "Debug: Toggle BreAkpoint"),
+			AliAs: 'Debug: Toggle BreAkpoint',
 			precondition: CONTEXT_DEBUGGERS_AVAILABLE,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyCode.F9,
+				primAry: KeyCode.F9,
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<any> {
-		if (editor.hasModel()) {
-			const debugService = accessor.get(IDebugService);
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<Any> {
+		if (editor.hAsModel()) {
+			const debugService = Accessor.get(IDebugService);
 			const modelUri = editor.getModel().uri;
-			const canSet = debugService.getConfigurationManager().canSetBreakpointsIn(editor.getModel());
-			// Does not account for multi line selections, Set to remove multiple cursor on the same line
-			const lineNumbers = [...new Set(editor.getSelections().map(s => s.getPosition().lineNumber))];
+			const cAnSet = debugService.getConfigurAtionMAnAger().cAnSetBreAkpointsIn(editor.getModel());
+			// Does not Account for multi line selections, Set to remove multiple cursor on the sAme line
+			const lineNumbers = [...new Set(editor.getSelections().mAp(s => s.getPosition().lineNumber))];
 
-			return Promise.all(lineNumbers.map(line => {
-				const bps = debugService.getModel().getBreakpoints({ lineNumber: line, uri: modelUri });
+			return Promise.All(lineNumbers.mAp(line => {
+				const bps = debugService.getModel().getBreAkpoints({ lineNumber: line, uri: modelUri });
 				if (bps.length) {
-					return Promise.all(bps.map(bp => debugService.removeBreakpoints(bp.getId())));
-				} else if (canSet) {
-					return (debugService.addBreakpoints(modelUri, [{ lineNumber: line }]));
+					return Promise.All(bps.mAp(bp => debugService.removeBreAkpoints(bp.getId())));
+				} else if (cAnSet) {
+					return (debugService.AddBreAkpoints(modelUri, [{ lineNumber: line }]));
 				} else {
 					return [];
 				}
@@ -58,61 +58,61 @@ class ToggleBreakpointAction extends EditorAction {
 	}
 }
 
-export const TOGGLE_CONDITIONAL_BREAKPOINT_ID = 'editor.debug.action.conditionalBreakpoint';
-class ConditionalBreakpointAction extends EditorAction {
+export const TOGGLE_CONDITIONAL_BREAKPOINT_ID = 'editor.debug.Action.conditionAlBreAkpoint';
+clAss ConditionAlBreAkpointAction extends EditorAction {
 
 	constructor() {
 		super({
 			id: TOGGLE_CONDITIONAL_BREAKPOINT_ID,
-			label: nls.localize('conditionalBreakpointEditorAction', "Debug: Add Conditional Breakpoint..."),
-			alias: 'Debug: Add Conditional Breakpoint...',
+			lAbel: nls.locAlize('conditionAlBreAkpointEditorAction', "Debug: Add ConditionAl BreAkpoint..."),
+			AliAs: 'Debug: Add ConditionAl BreAkpoint...',
 			precondition: CONTEXT_DEBUGGERS_AVAILABLE
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		const debugService = accessor.get(IDebugService);
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		const debugService = Accessor.get(IDebugService);
 
 		const position = editor.getPosition();
-		if (position && editor.hasModel() && debugService.getConfigurationManager().canSetBreakpointsIn(editor.getModel())) {
-			editor.getContribution<IBreakpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID).showBreakpointWidget(position.lineNumber, undefined, BreakpointWidgetContext.CONDITION);
+		if (position && editor.hAsModel() && debugService.getConfigurAtionMAnAger().cAnSetBreAkpointsIn(editor.getModel())) {
+			editor.getContribution<IBreAkpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID).showBreAkpointWidget(position.lineNumber, undefined, BreAkpointWidgetContext.CONDITION);
 		}
 	}
 }
 
-export const ADD_LOG_POINT_ID = 'editor.debug.action.addLogPoint';
-class LogPointAction extends EditorAction {
+export const ADD_LOG_POINT_ID = 'editor.debug.Action.AddLogPoint';
+clAss LogPointAction extends EditorAction {
 
 	constructor() {
 		super({
 			id: ADD_LOG_POINT_ID,
-			label: nls.localize('logPointEditorAction', "Debug: Add Logpoint..."),
-			alias: 'Debug: Add Logpoint...',
+			lAbel: nls.locAlize('logPointEditorAction', "Debug: Add Logpoint..."),
+			AliAs: 'Debug: Add Logpoint...',
 			precondition: CONTEXT_DEBUGGERS_AVAILABLE
 		});
 	}
 
-	public run(accessor: ServicesAccessor, editor: ICodeEditor): void {
-		const debugService = accessor.get(IDebugService);
+	public run(Accessor: ServicesAccessor, editor: ICodeEditor): void {
+		const debugService = Accessor.get(IDebugService);
 
 		const position = editor.getPosition();
-		if (position && editor.hasModel() && debugService.getConfigurationManager().canSetBreakpointsIn(editor.getModel())) {
-			editor.getContribution<IBreakpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID).showBreakpointWidget(position.lineNumber, position.column, BreakpointWidgetContext.LOG_MESSAGE);
+		if (position && editor.hAsModel() && debugService.getConfigurAtionMAnAger().cAnSetBreAkpointsIn(editor.getModel())) {
+			editor.getContribution<IBreAkpointEditorContribution>(BREAKPOINT_EDITOR_CONTRIBUTION_ID).showBreAkpointWidget(position.lineNumber, position.column, BreAkpointWidgetContext.LOG_MESSAGE);
 		}
 	}
 }
 
-export class RunToCursorAction extends EditorAction {
+export clAss RunToCursorAction extends EditorAction {
 
-	public static readonly ID = 'editor.debug.action.runToCursor';
-	public static readonly LABEL = nls.localize('runToCursor', "Run to Cursor");
+	public stAtic reAdonly ID = 'editor.debug.Action.runToCursor';
+	public stAtic reAdonly LABEL = nls.locAlize('runToCursor', "Run to Cursor");
 
 	constructor() {
 		super({
 			id: RunToCursorAction.ID,
-			label: RunToCursorAction.LABEL,
-			alias: 'Debug: Run to Cursor',
-			precondition: ContextKeyExpr.and(CONTEXT_IN_DEBUG_MODE, PanelFocusContext.toNegated(), CONTEXT_DEBUG_STATE.isEqualTo('stopped'), EditorContextKeys.editorTextFocus),
+			lAbel: RunToCursorAction.LABEL,
+			AliAs: 'Debug: Run to Cursor',
+			precondition: ContextKeyExpr.And(CONTEXT_IN_DEBUG_MODE, PAnelFocusContext.toNegAted(), CONTEXT_DEBUG_STATE.isEquAlTo('stopped'), EditorContextKeys.editorTextFocus),
 			contextMenuOpts: {
 				group: 'debug',
 				order: 2
@@ -120,56 +120,56 @@ export class RunToCursorAction extends EditorAction {
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const debugService = accessor.get(IDebugService);
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const debugService = Accessor.get(IDebugService);
 		const focusedSession = debugService.getViewModel().focusedSession;
-		if (debugService.state !== State.Stopped || !focusedSession) {
+		if (debugService.stAte !== StAte.Stopped || !focusedSession) {
 			return;
 		}
 
-		let breakpointToRemove: IBreakpoint;
-		const oneTimeListener = focusedSession.onDidChangeState(() => {
-			const state = focusedSession.state;
-			if (state === State.Stopped || state === State.Inactive) {
-				if (breakpointToRemove) {
-					debugService.removeBreakpoints(breakpointToRemove.getId());
+		let breAkpointToRemove: IBreAkpoint;
+		const oneTimeListener = focusedSession.onDidChAngeStAte(() => {
+			const stAte = focusedSession.stAte;
+			if (stAte === StAte.Stopped || stAte === StAte.InActive) {
+				if (breAkpointToRemove) {
+					debugService.removeBreAkpoints(breAkpointToRemove.getId());
 				}
 				oneTimeListener.dispose();
 			}
 		});
 
 		const position = editor.getPosition();
-		if (editor.hasModel() && position) {
+		if (editor.hAsModel() && position) {
 			const uri = editor.getModel().uri;
-			const bpExists = !!(debugService.getModel().getBreakpoints({ column: position.column, lineNumber: position.lineNumber, uri }).length);
+			const bpExists = !!(debugService.getModel().getBreAkpoints({ column: position.column, lineNumber: position.lineNumber, uri }).length);
 			if (!bpExists) {
 				let column = 0;
-				const focusedStackFrame = debugService.getViewModel().focusedStackFrame;
-				if (focusedStackFrame && focusedStackFrame.source.uri.toString() === uri.toString() && focusedStackFrame.range.startLineNumber === position.lineNumber) {
-					// If the cursor is on a line different than the one the debugger is currently paused on, then send the breakpoint at column 0 on the line
-					// otherwise set it at the precise column #102199
+				const focusedStAckFrAme = debugService.getViewModel().focusedStAckFrAme;
+				if (focusedStAckFrAme && focusedStAckFrAme.source.uri.toString() === uri.toString() && focusedStAckFrAme.rAnge.stArtLineNumber === position.lineNumber) {
+					// If the cursor is on A line different thAn the one the debugger is currently pAused on, then send the breAkpoint At column 0 on the line
+					// otherwise set it At the precise column #102199
 					column = position.column;
 				}
 
-				const breakpoints = await debugService.addBreakpoints(uri, [{ lineNumber: position.lineNumber, column }], false);
-				if (breakpoints && breakpoints.length) {
-					breakpointToRemove = breakpoints[0];
+				const breAkpoints = AwAit debugService.AddBreAkpoints(uri, [{ lineNumber: position.lineNumber, column }], fAlse);
+				if (breAkpoints && breAkpoints.length) {
+					breAkpointToRemove = breAkpoints[0];
 				}
 			}
 
-			await debugService.getViewModel().focusedThread!.continue();
+			AwAit debugService.getViewModel().focusedThreAd!.continue();
 		}
 	}
 }
 
-class SelectionToReplAction extends EditorAction {
+clAss SelectionToReplAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.debug.action.selectionToRepl',
-			label: nls.localize('evaluateInDebugConsole', "Evaluate in Debug Console"),
-			alias: 'Evaluate',
-			precondition: ContextKeyExpr.and(EditorContextKeys.hasNonEmptySelection, CONTEXT_IN_DEBUG_MODE, EditorContextKeys.editorTextFocus),
+			id: 'editor.debug.Action.selectionToRepl',
+			lAbel: nls.locAlize('evAluAteInDebugConsole', "EvAluAte in Debug Console"),
+			AliAs: 'EvAluAte',
+			precondition: ContextKeyExpr.And(EditorContextKeys.hAsNonEmptySelection, CONTEXT_IN_DEBUG_MODE, EditorContextKeys.editorTextFocus),
 			contextMenuOpts: {
 				group: 'debug',
 				order: 0
@@ -177,29 +177,29 @@ class SelectionToReplAction extends EditorAction {
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const debugService = accessor.get(IDebugService);
-		const viewsService = accessor.get(IViewsService);
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const debugService = Accessor.get(IDebugService);
+		const viewsService = Accessor.get(IViewsService);
 		const viewModel = debugService.getViewModel();
 		const session = viewModel.focusedSession;
-		if (!editor.hasModel() || !session) {
+		if (!editor.hAsModel() || !session) {
 			return;
 		}
 
-		const text = editor.getModel().getValueInRange(editor.getSelection());
-		await session.addReplExpression(viewModel.focusedStackFrame!, text);
-		await viewsService.openView(REPL_VIEW_ID, false);
+		const text = editor.getModel().getVAlueInRAnge(editor.getSelection());
+		AwAit session.AddReplExpression(viewModel.focusedStAckFrAme!, text);
+		AwAit viewsService.openView(REPL_VIEW_ID, fAlse);
 	}
 }
 
-class SelectionToWatchExpressionsAction extends EditorAction {
+clAss SelectionToWAtchExpressionsAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.debug.action.selectionToWatch',
-			label: nls.localize('addToWatch', "Add to Watch"),
-			alias: 'Add to Watch',
-			precondition: ContextKeyExpr.and(EditorContextKeys.hasNonEmptySelection, CONTEXT_IN_DEBUG_MODE, EditorContextKeys.editorTextFocus),
+			id: 'editor.debug.Action.selectionToWAtch',
+			lAbel: nls.locAlize('AddToWAtch', "Add to WAtch"),
+			AliAs: 'Add to WAtch',
+			precondition: ContextKeyExpr.And(EditorContextKeys.hAsNonEmptySelection, CONTEXT_IN_DEBUG_MODE, EditorContextKeys.editorTextFocus),
 			contextMenuOpts: {
 				group: 'debug',
 				order: 1
@@ -207,38 +207,38 @@ class SelectionToWatchExpressionsAction extends EditorAction {
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const debugService = accessor.get(IDebugService);
-		const viewsService = accessor.get(IViewsService);
-		if (!editor.hasModel()) {
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const debugService = Accessor.get(IDebugService);
+		const viewsService = Accessor.get(IViewsService);
+		if (!editor.hAsModel()) {
 			return;
 		}
 
-		const text = editor.getModel().getValueInRange(editor.getSelection());
-		await viewsService.openView(WATCH_VIEW_ID);
-		debugService.addWatchExpression(text);
+		const text = editor.getModel().getVAlueInRAnge(editor.getSelection());
+		AwAit viewsService.openView(WATCH_VIEW_ID);
+		debugService.AddWAtchExpression(text);
 	}
 }
 
-class ShowDebugHoverAction extends EditorAction {
+clAss ShowDebugHoverAction extends EditorAction {
 
 	constructor() {
 		super({
-			id: 'editor.debug.action.showDebugHover',
-			label: nls.localize('showDebugHover', "Debug: Show Hover"),
-			alias: 'Debug: Show Hover',
+			id: 'editor.debug.Action.showDebugHover',
+			lAbel: nls.locAlize('showDebugHover', "Debug: Show Hover"),
+			AliAs: 'Debug: Show Hover',
 			precondition: CONTEXT_IN_DEBUG_MODE,
 			kbOpts: {
 				kbExpr: EditorContextKeys.editorTextFocus,
-				primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_I),
+				primAry: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_I),
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
 		const position = editor.getPosition();
-		if (!position || !editor.hasModel()) {
+		if (!position || !editor.hAsModel()) {
 			return;
 		}
 		const word = editor.getModel().getWordAtPosition(position);
@@ -246,22 +246,22 @@ class ShowDebugHoverAction extends EditorAction {
 			return;
 		}
 
-		const range = new Range(position.lineNumber, position.column, position.lineNumber, word.endColumn);
-		return editor.getContribution<IDebugEditorContribution>(EDITOR_CONTRIBUTION_ID).showHover(range, true);
+		const rAnge = new RAnge(position.lineNumber, position.column, position.lineNumber, word.endColumn);
+		return editor.getContribution<IDebugEditorContribution>(EDITOR_CONTRIBUTION_ID).showHover(rAnge, true);
 	}
 }
 
-class StepIntoTargetsAction extends EditorAction {
+clAss StepIntoTArgetsAction extends EditorAction {
 
-	public static readonly ID = 'editor.debug.action.stepIntoTargets';
-	public static readonly LABEL = nls.localize({ key: 'stepIntoTargets', comment: ['Step Into Targets lets the user step into an exact function he or she is interested in.'] }, "Step Into Targets...");
+	public stAtic reAdonly ID = 'editor.debug.Action.stepIntoTArgets';
+	public stAtic reAdonly LABEL = nls.locAlize({ key: 'stepIntoTArgets', comment: ['Step Into TArgets lets the user step into An exAct function he or she is interested in.'] }, "Step Into TArgets...");
 
 	constructor() {
 		super({
-			id: StepIntoTargetsAction.ID,
-			label: StepIntoTargetsAction.LABEL,
-			alias: 'Debug: Step Into Targets...',
-			precondition: ContextKeyExpr.and(CONTEXT_STEP_INTO_TARGETS_SUPPORTED, CONTEXT_IN_DEBUG_MODE, CONTEXT_DEBUG_STATE.isEqualTo('stopped'), EditorContextKeys.editorTextFocus),
+			id: StepIntoTArgetsAction.ID,
+			lAbel: StepIntoTArgetsAction.LABEL,
+			AliAs: 'Debug: Step Into TArgets...',
+			precondition: ContextKeyExpr.And(CONTEXT_STEP_INTO_TARGETS_SUPPORTED, CONTEXT_IN_DEBUG_MODE, CONTEXT_DEBUG_STATE.isEquAlTo('stopped'), EditorContextKeys.editorTextFocus),
 			contextMenuOpts: {
 				group: 'debug',
 				order: 1.5
@@ -269,105 +269,105 @@ class StepIntoTargetsAction extends EditorAction {
 		});
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
-		const debugService = accessor.get(IDebugService);
-		const contextMenuService = accessor.get(IContextMenuService);
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<void> {
+		const debugService = Accessor.get(IDebugService);
+		const contextMenuService = Accessor.get(IContextMenuService);
 		const session = debugService.getViewModel().focusedSession;
-		const frame = debugService.getViewModel().focusedStackFrame;
+		const frAme = debugService.getViewModel().focusedStAckFrAme;
 
-		if (session && frame && editor.hasModel() && editor.getModel().uri.toString() === frame.source.uri.toString()) {
-			const targets = await session.stepInTargets(frame.frameId);
-			if (!targets) {
+		if (session && frAme && editor.hAsModel() && editor.getModel().uri.toString() === frAme.source.uri.toString()) {
+			const tArgets = AwAit session.stepInTArgets(frAme.frAmeId);
+			if (!tArgets) {
 				return;
 			}
 
-			editor.revealLineInCenterIfOutsideViewport(frame.range.startLineNumber);
-			const cursorCoords = editor.getScrolledVisiblePosition({ lineNumber: frame.range.startLineNumber, column: frame.range.startColumn });
-			const editorCoords = getDomNodePagePosition(editor.getDomNode());
+			editor.reveAlLineInCenterIfOutsideViewport(frAme.rAnge.stArtLineNumber);
+			const cursorCoords = editor.getScrolledVisiblePosition({ lineNumber: frAme.rAnge.stArtLineNumber, column: frAme.rAnge.stArtColumn });
+			const editorCoords = getDomNodePAgePosition(editor.getDomNode());
 			const x = editorCoords.left + cursorCoords.left;
 			const y = editorCoords.top + cursorCoords.top + cursorCoords.height;
 
 			contextMenuService.showContextMenu({
 				getAnchor: () => ({ x, y }),
 				getActions: () => {
-					return targets.map(t => new Action(`stepIntoTarget:${t.id}`, t.label, undefined, true, () => session.stepIn(frame.thread.threadId, t.id)));
+					return tArgets.mAp(t => new Action(`stepIntoTArget:${t.id}`, t.lAbel, undefined, true, () => session.stepIn(frAme.threAd.threAdId, t.id)));
 				}
 			});
 		}
 	}
 }
 
-class GoToBreakpointAction extends EditorAction {
-	constructor(private isNext: boolean, opts: IActionOptions) {
+clAss GoToBreAkpointAction extends EditorAction {
+	constructor(privAte isNext: booleAn, opts: IActionOptions) {
 		super(opts);
 	}
 
-	async run(accessor: ServicesAccessor, editor: ICodeEditor): Promise<any> {
-		const debugService = accessor.get(IDebugService);
-		const editorService = accessor.get(IEditorService);
-		if (editor.hasModel()) {
+	Async run(Accessor: ServicesAccessor, editor: ICodeEditor): Promise<Any> {
+		const debugService = Accessor.get(IDebugService);
+		const editorService = Accessor.get(IEditorService);
+		if (editor.hAsModel()) {
 			const currentUri = editor.getModel().uri;
 			const currentLine = editor.getPosition().lineNumber;
-			//Breakpoints returned from `getBreakpoints` are already sorted.
-			const allEnabledBreakpoints = debugService.getModel().getBreakpoints({ enabledOnly: true });
+			//BreAkpoints returned from `getBreAkpoints` Are AlreAdy sorted.
+			const AllEnAbledBreAkpoints = debugService.getModel().getBreAkpoints({ enAbledOnly: true });
 
-			//Try to find breakpoint in current file
-			let moveBreakpoint =
+			//Try to find breAkpoint in current file
+			let moveBreAkpoint =
 				this.isNext
-					? allEnabledBreakpoints.filter(bp => bp.uri.toString() === currentUri.toString() && bp.lineNumber > currentLine).shift()
-					: allEnabledBreakpoints.filter(bp => bp.uri.toString() === currentUri.toString() && bp.lineNumber < currentLine).pop();
+					? AllEnAbledBreAkpoints.filter(bp => bp.uri.toString() === currentUri.toString() && bp.lineNumber > currentLine).shift()
+					: AllEnAbledBreAkpoints.filter(bp => bp.uri.toString() === currentUri.toString() && bp.lineNumber < currentLine).pop();
 
-			//Try to find breakpoints in following files
-			if (!moveBreakpoint) {
-				moveBreakpoint =
+			//Try to find breAkpoints in following files
+			if (!moveBreAkpoint) {
+				moveBreAkpoint =
 					this.isNext
-						? allEnabledBreakpoints.filter(bp => bp.uri.toString() > currentUri.toString()).shift()
-						: allEnabledBreakpoints.filter(bp => bp.uri.toString() < currentUri.toString()).pop();
+						? AllEnAbledBreAkpoints.filter(bp => bp.uri.toString() > currentUri.toString()).shift()
+						: AllEnAbledBreAkpoints.filter(bp => bp.uri.toString() < currentUri.toString()).pop();
 			}
 
-			//Move to first or last possible breakpoint
-			if (!moveBreakpoint && allEnabledBreakpoints.length) {
-				moveBreakpoint = this.isNext ? allEnabledBreakpoints[0] : allEnabledBreakpoints[allEnabledBreakpoints.length - 1];
+			//Move to first or lAst possible breAkpoint
+			if (!moveBreAkpoint && AllEnAbledBreAkpoints.length) {
+				moveBreAkpoint = this.isNext ? AllEnAbledBreAkpoints[0] : AllEnAbledBreAkpoints[AllEnAbledBreAkpoints.length - 1];
 			}
 
-			if (moveBreakpoint) {
-				return openBreakpointSource(moveBreakpoint, false, true, debugService, editorService);
+			if (moveBreAkpoint) {
+				return openBreAkpointSource(moveBreAkpoint, fAlse, true, debugService, editorService);
 			}
 		}
 	}
 }
 
-class GoToNextBreakpointAction extends GoToBreakpointAction {
+clAss GoToNextBreAkpointAction extends GoToBreAkpointAction {
 	constructor() {
 		super(true, {
-			id: 'editor.debug.action.goToNextBreakpoint',
-			label: nls.localize('goToNextBreakpoint', "Debug: Go To Next Breakpoint"),
-			alias: 'Debug: Go To Next Breakpoint',
+			id: 'editor.debug.Action.goToNextBreAkpoint',
+			lAbel: nls.locAlize('goToNextBreAkpoint', "Debug: Go To Next BreAkpoint"),
+			AliAs: 'Debug: Go To Next BreAkpoint',
 			precondition: CONTEXT_DEBUGGERS_AVAILABLE
 		});
 	}
 }
 
-class GoToPreviousBreakpointAction extends GoToBreakpointAction {
+clAss GoToPreviousBreAkpointAction extends GoToBreAkpointAction {
 	constructor() {
-		super(false, {
-			id: 'editor.debug.action.goToPreviousBreakpoint',
-			label: nls.localize('goToPreviousBreakpoint', "Debug: Go To Previous Breakpoint"),
-			alias: 'Debug: Go To Previous Breakpoint',
+		super(fAlse, {
+			id: 'editor.debug.Action.goToPreviousBreAkpoint',
+			lAbel: nls.locAlize('goToPreviousBreAkpoint', "Debug: Go To Previous BreAkpoint"),
+			AliAs: 'Debug: Go To Previous BreAkpoint',
 			precondition: CONTEXT_DEBUGGERS_AVAILABLE
 		});
 	}
 }
 
 export function registerEditorActions(): void {
-	registerEditorAction(ToggleBreakpointAction);
-	registerEditorAction(ConditionalBreakpointAction);
+	registerEditorAction(ToggleBreAkpointAction);
+	registerEditorAction(ConditionAlBreAkpointAction);
 	registerEditorAction(LogPointAction);
 	registerEditorAction(RunToCursorAction);
-	registerEditorAction(StepIntoTargetsAction);
+	registerEditorAction(StepIntoTArgetsAction);
 	registerEditorAction(SelectionToReplAction);
-	registerEditorAction(SelectionToWatchExpressionsAction);
+	registerEditorAction(SelectionToWAtchExpressionsAction);
 	registerEditorAction(ShowDebugHoverAction);
-	registerEditorAction(GoToNextBreakpointAction);
-	registerEditorAction(GoToPreviousBreakpointAction);
+	registerEditorAction(GoToNextBreAkpointAction);
+	registerEditorAction(GoToPreviousBreAkpointAction);
 }

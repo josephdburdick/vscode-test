@@ -1,127 +1,127 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import { workspace, commands, window, Uri, WorkspaceEdit, Range, TextDocument, extensions } from 'vscode';
-import * as cp from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
-import { GitExtension, API, Repository, Status } from '../api/git';
+import 'mochA';
+import * As Assert from 'Assert';
+import { workspAce, commAnds, window, Uri, WorkspAceEdit, RAnge, TextDocument, extensions } from 'vscode';
+import * As cp from 'child_process';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
+import { GitExtension, API, Repository, StAtus } from '../Api/git';
 import { eventToPromise } from '../util';
 
 suite('git smoke test', function () {
-	const cwd = fs.realpathSync(workspace.workspaceFolders![0].uri.fsPath);
+	const cwd = fs.reAlpAthSync(workspAce.workspAceFolders![0].uri.fsPAth);
 
-	function file(relativePath: string) {
-		return path.join(cwd, relativePath);
+	function file(relAtivePAth: string) {
+		return pAth.join(cwd, relAtivePAth);
 	}
 
-	function uri(relativePath: string) {
-		return Uri.file(file(relativePath));
+	function uri(relAtivePAth: string) {
+		return Uri.file(file(relAtivePAth));
 	}
 
-	async function open(relativePath: string) {
-		const doc = await workspace.openTextDocument(uri(relativePath));
-		await window.showTextDocument(doc);
+	Async function open(relAtivePAth: string) {
+		const doc = AwAit workspAce.openTextDocument(uri(relAtivePAth));
+		AwAit window.showTextDocument(doc);
 		return doc;
 	}
 
-	async function type(doc: TextDocument, text: string) {
-		const edit = new WorkspaceEdit();
-		const end = doc.lineAt(doc.lineCount - 1).range.end;
-		edit.replace(doc.uri, new Range(end, end), text);
-		await workspace.applyEdit(edit);
+	Async function type(doc: TextDocument, text: string) {
+		const edit = new WorkspAceEdit();
+		const end = doc.lineAt(doc.lineCount - 1).rAnge.end;
+		edit.replAce(doc.uri, new RAnge(end, end), text);
+		AwAit workspAce.ApplyEdit(edit);
 	}
 
 	let git: API;
 	let repository: Repository;
 
-	suiteSetup(async function () {
-		fs.writeFileSync(file('app.js'), 'hello', 'utf8');
+	suiteSetup(Async function () {
+		fs.writeFileSync(file('App.js'), 'hello', 'utf8');
 		fs.writeFileSync(file('index.pug'), 'hello', 'utf8');
 		cp.execSync('git init', { cwd });
-		cp.execSync('git config user.name testuser', { cwd });
-		cp.execSync('git config user.email monacotools@microsoft.com', { cwd });
-		cp.execSync('git add .', { cwd });
-		cp.execSync('git commit -m "initial commit"', { cwd });
+		cp.execSync('git config user.nAme testuser', { cwd });
+		cp.execSync('git config user.emAil monAcotools@microsoft.com', { cwd });
+		cp.execSync('git Add .', { cwd });
+		cp.execSync('git commit -m "initiAl commit"', { cwd });
 
-		// make sure git is activated
+		// mAke sure git is ActivAted
 		const ext = extensions.getExtension<GitExtension>('vscode.git');
-		await ext?.activate();
+		AwAit ext?.ActivAte();
 		git = ext!.exports.getAPI(1);
 
 		if (git.repositories.length === 0) {
-			await eventToPromise(git.onDidOpenRepository);
+			AwAit eventToPromise(git.onDidOpenRepository);
 		}
 
-		assert.equal(git.repositories.length, 1);
-		assert.equal(fs.realpathSync(git.repositories[0].rootUri.fsPath), cwd);
+		Assert.equAl(git.repositories.length, 1);
+		Assert.equAl(fs.reAlpAthSync(git.repositories[0].rootUri.fsPAth), cwd);
 
 		repository = git.repositories[0];
 	});
 
-	test('reflects working tree changes', async function () {
-		await commands.executeCommand('workbench.view.scm');
+	test('reflects working tree chAnges', Async function () {
+		AwAit commAnds.executeCommAnd('workbench.view.scm');
 
-		const appjs = await open('app.js');
-		await type(appjs, ' world');
-		await appjs.save();
-		await repository.status();
-		assert.equal(repository.state.workingTreeChanges.length, 1);
-		repository.state.workingTreeChanges.some(r => r.uri.path === appjs.uri.path && r.status === Status.MODIFIED);
+		const Appjs = AwAit open('App.js');
+		AwAit type(Appjs, ' world');
+		AwAit Appjs.sAve();
+		AwAit repository.stAtus();
+		Assert.equAl(repository.stAte.workingTreeChAnges.length, 1);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === Appjs.uri.pAth && r.stAtus === StAtus.MODIFIED);
 
 		fs.writeFileSync(file('newfile.txt'), '');
-		const newfile = await open('newfile.txt');
-		await type(newfile, 'hey there');
-		await newfile.save();
-		await repository.status();
-		assert.equal(repository.state.workingTreeChanges.length, 2);
-		repository.state.workingTreeChanges.some(r => r.uri.path === appjs.uri.path && r.status === Status.MODIFIED);
-		repository.state.workingTreeChanges.some(r => r.uri.path === newfile.uri.path && r.status === Status.UNTRACKED);
+		const newfile = AwAit open('newfile.txt');
+		AwAit type(newfile, 'hey there');
+		AwAit newfile.sAve();
+		AwAit repository.stAtus();
+		Assert.equAl(repository.stAte.workingTreeChAnges.length, 2);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === Appjs.uri.pAth && r.stAtus === StAtus.MODIFIED);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === newfile.uri.pAth && r.stAtus === StAtus.UNTRACKED);
 	});
 
-	test('opens diff editor', async function () {
-		const appjs = uri('app.js');
-		await commands.executeCommand('git.openChange', appjs);
+	test('opens diff editor', Async function () {
+		const Appjs = uri('App.js');
+		AwAit commAnds.executeCommAnd('git.openChAnge', Appjs);
 
-		assert(window.activeTextEditor);
-		assert.equal(window.activeTextEditor!.document.uri.path, appjs.path);
+		Assert(window.ActiveTextEditor);
+		Assert.equAl(window.ActiveTextEditor!.document.uri.pAth, Appjs.pAth);
 
-		// TODO: how do we really know this is a diff editor?
+		// TODO: how do we reAlly know this is A diff editor?
 	});
 
-	test('stages correctly', async function () {
-		const appjs = uri('app.js');
+	test('stAges correctly', Async function () {
+		const Appjs = uri('App.js');
 		const newfile = uri('newfile.txt');
 
-		await commands.executeCommand('git.stage', appjs);
-		assert.equal(repository.state.workingTreeChanges.length, 1);
-		repository.state.workingTreeChanges.some(r => r.uri.path === newfile.path && r.status === Status.UNTRACKED);
-		assert.equal(repository.state.indexChanges.length, 1);
-		repository.state.indexChanges.some(r => r.uri.path === appjs.path && r.status === Status.INDEX_MODIFIED);
+		AwAit commAnds.executeCommAnd('git.stAge', Appjs);
+		Assert.equAl(repository.stAte.workingTreeChAnges.length, 1);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === newfile.pAth && r.stAtus === StAtus.UNTRACKED);
+		Assert.equAl(repository.stAte.indexChAnges.length, 1);
+		repository.stAte.indexChAnges.some(r => r.uri.pAth === Appjs.pAth && r.stAtus === StAtus.INDEX_MODIFIED);
 
-		await commands.executeCommand('git.unstage', appjs);
-		assert.equal(repository.state.workingTreeChanges.length, 2);
-		repository.state.workingTreeChanges.some(r => r.uri.path === appjs.path && r.status === Status.MODIFIED);
-		repository.state.workingTreeChanges.some(r => r.uri.path === newfile.path && r.status === Status.UNTRACKED);
+		AwAit commAnds.executeCommAnd('git.unstAge', Appjs);
+		Assert.equAl(repository.stAte.workingTreeChAnges.length, 2);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === Appjs.pAth && r.stAtus === StAtus.MODIFIED);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === newfile.pAth && r.stAtus === StAtus.UNTRACKED);
 	});
 
-	test('stages, commits changes and verifies outgoing change', async function () {
-		const appjs = uri('app.js');
+	test('stAges, commits chAnges And verifies outgoing chAnge', Async function () {
+		const Appjs = uri('App.js');
 		const newfile = uri('newfile.txt');
 
-		await commands.executeCommand('git.stage', appjs);
-		await repository.commit('second commit');
-		assert.equal(repository.state.workingTreeChanges.length, 1);
-		repository.state.workingTreeChanges.some(r => r.uri.path === newfile.path && r.status === Status.UNTRACKED);
-		assert.equal(repository.state.indexChanges.length, 0);
+		AwAit commAnds.executeCommAnd('git.stAge', Appjs);
+		AwAit repository.commit('second commit');
+		Assert.equAl(repository.stAte.workingTreeChAnges.length, 1);
+		repository.stAte.workingTreeChAnges.some(r => r.uri.pAth === newfile.pAth && r.stAtus === StAtus.UNTRACKED);
+		Assert.equAl(repository.stAte.indexChAnges.length, 0);
 
-		await commands.executeCommand('git.stageAll', appjs);
-		await repository.commit('third commit');
-		assert.equal(repository.state.workingTreeChanges.length, 0);
-		assert.equal(repository.state.indexChanges.length, 0);
+		AwAit commAnds.executeCommAnd('git.stAgeAll', Appjs);
+		AwAit repository.commit('third commit');
+		Assert.equAl(repository.stAte.workingTreeChAnges.length, 0);
+		Assert.equAl(repository.stAte.indexChAnges.length, 0);
 	});
 });

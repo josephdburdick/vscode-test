@@ -1,54 +1,54 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import assert = require('assert');
+import Assert = require('Assert');
 import i18n = require('../i18n');
 
-suite('XLF Parser Tests', () => {
-	const sampleXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2"><file original="vs/base/common/keybinding" source-language="en" datatype="plaintext"><body><trans-unit id="key1"><source xml:lang="en">Key #1</source></trans-unit><trans-unit id="key2"><source xml:lang="en">Key #2 &amp;</source></trans-unit></body></file></xliff>';
-	const sampleTranslatedXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2"><file original="vs/base/common/keybinding" source-language="en" target-language="ru" datatype="plaintext"><body><trans-unit id="key1"><source xml:lang="en">Key #1</source><target>Кнопка #1</target></trans-unit><trans-unit id="key2"><source xml:lang="en">Key #2 &amp;</source><target>Кнопка #2 &amp;</target></trans-unit></body></file></xliff>';
-	const originalFilePath = 'vs/base/common/keybinding';
+suite('XLF PArser Tests', () => {
+	const sAmpleXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oAsis:nAmes:tc:xliff:document:1.2"><file originAl="vs/bAse/common/keybinding" source-lAnguAge="en" dAtAtype="plAintext"><body><trAns-unit id="key1"><source xml:lAng="en">Key #1</source></trAns-unit><trAns-unit id="key2"><source xml:lAng="en">Key #2 &Amp;</source></trAns-unit></body></file></xliff>';
+	const sAmpleTrAnslAtedXlf = '<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oAsis:nAmes:tc:xliff:document:1.2"><file originAl="vs/bAse/common/keybinding" source-lAnguAge="en" tArget-lAnguAge="ru" dAtAtype="plAintext"><body><trAns-unit id="key1"><source xml:lAng="en">Key #1</source><tArget>Кнопка #1</tArget></trAns-unit><trAns-unit id="key2"><source xml:lAng="en">Key #2 &Amp;</source><tArget>Кнопка #2 &Amp;</tArget></trAns-unit></body></file></xliff>';
+	const originAlFilePAth = 'vs/bAse/common/keybinding';
 	const keys = ['key1', 'key2'];
-	const messages = ['Key #1', 'Key #2 &'];
-	const translatedMessages = { key1: 'Кнопка #1', key2: 'Кнопка #2 &' };
+	const messAges = ['Key #1', 'Key #2 &'];
+	const trAnslAtedMessAges = { key1: 'Кнопка #1', key2: 'Кнопка #2 &' };
 
-	test('Keys & messages to XLF conversion', () => {
+	test('Keys & messAges to XLF conversion', () => {
 		const xlf = new i18n.XLF('vscode-workbench');
-		xlf.addFile(originalFilePath, keys, messages);
+		xlf.AddFile(originAlFilePAth, keys, messAges);
 		const xlfString = xlf.toString();
 
-		assert.strictEqual(xlfString.replace(/\s{2,}/g, ''), sampleXlf);
+		Assert.strictEquAl(xlfString.replAce(/\s{2,}/g, ''), sAmpleXlf);
 	});
 
-	test('XLF to keys & messages conversion', () => {
-		i18n.XLF.parse(sampleTranslatedXlf).then(function(resolvedFiles) {
-			assert.deepEqual(resolvedFiles[0].messages, translatedMessages);
-			assert.strictEqual(resolvedFiles[0].originalFilePath, originalFilePath);
+	test('XLF to keys & messAges conversion', () => {
+		i18n.XLF.pArse(sAmpleTrAnslAtedXlf).then(function(resolvedFiles) {
+			Assert.deepEquAl(resolvedFiles[0].messAges, trAnslAtedMessAges);
+			Assert.strictEquAl(resolvedFiles[0].originAlFilePAth, originAlFilePAth);
 		});
 	});
 
-	test('JSON file source path to Transifex resource match', () => {
+	test('JSON file source pAth to TrAnsifex resource mAtch', () => {
 		const editorProject: string = 'vscode-editor',
 			workbenchProject: string = 'vscode-workbench';
 
-		const platform: i18n.Resource = { name: 'vs/platform', project: editorProject },
-			editorContrib = { name: 'vs/editor/contrib', project: editorProject },
-			editor = { name: 'vs/editor', project: editorProject },
-			base = { name: 'vs/base', project: editorProject },
-			code = { name: 'vs/code', project: workbenchProject },
-			workbenchParts = { name: 'vs/workbench/contrib/html', project: workbenchProject },
-			workbenchServices = { name: 'vs/workbench/services/textfile', project: workbenchProject },
-			workbench = { name: 'vs/workbench', project: workbenchProject};
+		const plAtform: i18n.Resource = { nAme: 'vs/plAtform', project: editorProject },
+			editorContrib = { nAme: 'vs/editor/contrib', project: editorProject },
+			editor = { nAme: 'vs/editor', project: editorProject },
+			bAse = { nAme: 'vs/bAse', project: editorProject },
+			code = { nAme: 'vs/code', project: workbenchProject },
+			workbenchPArts = { nAme: 'vs/workbench/contrib/html', project: workbenchProject },
+			workbenchServices = { nAme: 'vs/workbench/services/textfile', project: workbenchProject },
+			workbench = { nAme: 'vs/workbench', project: workbenchProject};
 
-		assert.deepEqual(i18n.getResource('vs/platform/actions/browser/menusExtensionPoint'), platform);
-		assert.deepEqual(i18n.getResource('vs/editor/contrib/clipboard/browser/clipboard'), editorContrib);
-		assert.deepEqual(i18n.getResource('vs/editor/common/modes/modesRegistry'), editor);
-		assert.deepEqual(i18n.getResource('vs/base/common/errorMessage'), base);
-		assert.deepEqual(i18n.getResource('vs/code/electron-main/window'), code);
-		assert.deepEqual(i18n.getResource('vs/workbench/contrib/html/browser/webview'), workbenchParts);
-		assert.deepEqual(i18n.getResource('vs/workbench/services/textfile/node/testFileService'), workbenchServices);
-		assert.deepEqual(i18n.getResource('vs/workbench/browser/parts/panel/panelActions'), workbench);
+		Assert.deepEquAl(i18n.getResource('vs/plAtform/Actions/browser/menusExtensionPoint'), plAtform);
+		Assert.deepEquAl(i18n.getResource('vs/editor/contrib/clipboArd/browser/clipboArd'), editorContrib);
+		Assert.deepEquAl(i18n.getResource('vs/editor/common/modes/modesRegistry'), editor);
+		Assert.deepEquAl(i18n.getResource('vs/bAse/common/errorMessAge'), bAse);
+		Assert.deepEquAl(i18n.getResource('vs/code/electron-mAin/window'), code);
+		Assert.deepEquAl(i18n.getResource('vs/workbench/contrib/html/browser/webview'), workbenchPArts);
+		Assert.deepEquAl(i18n.getResource('vs/workbench/services/textfile/node/testFileService'), workbenchServices);
+		Assert.deepEquAl(i18n.getResource('vs/workbench/browser/pArts/pAnel/pAnelActions'), workbench);
 	});
 });

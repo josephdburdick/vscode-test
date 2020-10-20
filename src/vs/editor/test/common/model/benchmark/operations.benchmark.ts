@@ -1,134 +1,134 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { EndOfLinePreference, ITextBufferBuilder } from 'vs/editor/common/model';
-import { BenchmarkSuite } from 'vs/editor/test/common/model/benchmark/benchmarkUtils';
-import { generateRandomChunkWithLF, generateRandomEdits, generateSequentialInserts, getRandomInt } from 'vs/editor/test/common/model/linesTextBuffer/textBufferAutoTestUtils';
+import { BenchmArkSuite } from 'vs/editor/test/common/model/benchmArk/benchmArkUtils';
+import { generAteRAndomChunkWithLF, generAteRAndomEdits, generAteSequentiAlInserts, getRAndomInt } from 'vs/editor/test/common/model/linesTextBuffer/textBufferAutoTestUtils';
 
 let fileSizes = [1, 1000, 64 * 1000, 32 * 1000 * 1000];
 let editTypes = [
 	{
-		id: 'random edits',
-		generateEdits: generateRandomEdits
+		id: 'rAndom edits',
+		generAteEdits: generAteRAndomEdits
 	},
 	{
-		id: 'sequential inserts',
-		generateEdits: generateSequentialInserts
+		id: 'sequentiAl inserts',
+		generAteEdits: generAteSequentiAlInserts
 	}
 ];
 
 for (let fileSize of fileSizes) {
 	let chunks: string[] = [];
 
-	let chunkCnt = Math.floor(fileSize / (64 * 1000));
+	let chunkCnt = MAth.floor(fileSize / (64 * 1000));
 	if (chunkCnt === 0) {
-		chunks.push(generateRandomChunkWithLF(fileSize, fileSize));
+		chunks.push(generAteRAndomChunkWithLF(fileSize, fileSize));
 	} else {
-		let chunk = generateRandomChunkWithLF(64 * 1000, 64 * 1000);
-		// try to avoid OOM
+		let chunk = generAteRAndomChunkWithLF(64 * 1000, 64 * 1000);
+		// try to Avoid OOM
 		for (let j = 0; j < chunkCnt; j++) {
 			chunks.push(Buffer.from(chunk + j).toString());
 		}
 	}
 
 	for (let editType of editTypes) {
-		const edits = editType.generateEdits(chunks, 1000);
+		const edits = editType.generAteEdits(chunks, 1000);
 
-		let editsSuite = new BenchmarkSuite({
-			name: `File Size: ${fileSize}Byte, ${editType.id}`,
-			iterations: 10
+		let editsSuite = new BenchmArkSuite({
+			nAme: `File Size: ${fileSize}Byte, ${editType.id}`,
+			iterAtions: 10
 		});
 
-		editsSuite.add({
-			name: `apply 1000 edits`,
+		editsSuite.Add({
+			nAme: `Apply 1000 edits`,
 			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
-				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
+				chunks.forEAch(ck => textBufferBuilder.AcceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
 			preCycle: (textBuffer) => {
 				return textBuffer;
 			},
 			fn: (textBuffer) => {
-				// for line model, this loop doesn't reflect the real situation.
+				// for line model, this loop doesn't reflect the reAl situAtion.
 				for (const edit of edits) {
-					textBuffer.applyEdits([edit], false, false);
+					textBuffer.ApplyEdits([edit], fAlse, fAlse);
 				}
 			}
 		});
 
-		editsSuite.add({
-			name: `Read all lines after 1000 edits`,
+		editsSuite.Add({
+			nAme: `ReAd All lines After 1000 edits`,
 			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
-				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
+				chunks.forEAch(ck => textBufferBuilder.AcceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
 			preCycle: (textBuffer) => {
 				for (const edit of edits) {
-					textBuffer.applyEdits([edit], false, false);
+					textBuffer.ApplyEdits([edit], fAlse, fAlse);
 				}
 				return textBuffer;
 			},
 			fn: (textBuffer) => {
 				for (let j = 0, len = textBuffer.getLineCount(); j < len; j++) {
 					let str = textBuffer.getLineContent(j + 1);
-					let firstChar = str.charCodeAt(0);
-					let lastChar = str.charCodeAt(str.length - 1);
-					firstChar = firstChar - lastChar;
-					lastChar = firstChar + lastChar;
-					firstChar = lastChar - firstChar;
+					let firstChAr = str.chArCodeAt(0);
+					let lAstChAr = str.chArCodeAt(str.length - 1);
+					firstChAr = firstChAr - lAstChAr;
+					lAstChAr = firstChAr + lAstChAr;
+					firstChAr = lAstChAr - firstChAr;
 				}
 			}
 		});
 
-		editsSuite.add({
-			name: `Read 10 random windows after 1000 edits`,
+		editsSuite.Add({
+			nAme: `ReAd 10 rAndom windows After 1000 edits`,
 			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
-				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
+				chunks.forEAch(ck => textBufferBuilder.AcceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
 			preCycle: (textBuffer) => {
 				for (const edit of edits) {
-					textBuffer.applyEdits([edit], false, false);
+					textBuffer.ApplyEdits([edit], fAlse, fAlse);
 				}
 				return textBuffer;
 			},
 			fn: (textBuffer) => {
 				for (let i = 0; i < 10; i++) {
 					let minLine = 1;
-					let maxLine = textBuffer.getLineCount();
-					let startLine = getRandomInt(minLine, Math.max(minLine, maxLine - 100));
-					let endLine = Math.min(maxLine, startLine + 100);
-					for (let j = startLine; j < endLine; j++) {
+					let mAxLine = textBuffer.getLineCount();
+					let stArtLine = getRAndomInt(minLine, MAth.mAx(minLine, mAxLine - 100));
+					let endLine = MAth.min(mAxLine, stArtLine + 100);
+					for (let j = stArtLine; j < endLine; j++) {
 						let str = textBuffer.getLineContent(j + 1);
-						let firstChar = str.charCodeAt(0);
-						let lastChar = str.charCodeAt(str.length - 1);
-						firstChar = firstChar - lastChar;
-						lastChar = firstChar + lastChar;
-						firstChar = lastChar - firstChar;
+						let firstChAr = str.chArCodeAt(0);
+						let lAstChAr = str.chArCodeAt(str.length - 1);
+						firstChAr = firstChAr - lAstChAr;
+						lAstChAr = firstChAr + lAstChAr;
+						firstChAr = lAstChAr - firstChAr;
 					}
 				}
 			}
 		});
 
-		editsSuite.add({
-			name: `save file after 1000 edits`,
+		editsSuite.Add({
+			nAme: `sAve file After 1000 edits`,
 			buildBuffer: (textBufferBuilder: ITextBufferBuilder) => {
-				chunks.forEach(ck => textBufferBuilder.acceptChunk(ck));
+				chunks.forEAch(ck => textBufferBuilder.AcceptChunk(ck));
 				return textBufferBuilder.finish();
 			},
 			preCycle: (textBuffer) => {
 				for (const edit of edits) {
-					textBuffer.applyEdits([edit], false, false);
+					textBuffer.ApplyEdits([edit], fAlse, fAlse);
 				}
 				return textBuffer;
 			},
 			fn: (textBuffer) => {
 				const lineCount = textBuffer.getLineCount();
-				const fullModelRange = new Range(1, 1, lineCount, textBuffer.getLineLength(lineCount) + 1);
-				textBuffer.getValueInRange(fullModelRange, EndOfLinePreference.LF);
+				const fullModelRAnge = new RAnge(1, 1, lineCount, textBuffer.getLineLength(lineCount) + 1);
+				textBuffer.getVAlueInRAnge(fullModelRAnge, EndOfLinePreference.LF);
 			}
 		});
 

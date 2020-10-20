@@ -1,22 +1,22 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 import { Selection } from 'vs/editor/common/core/selection';
-import { BlockCommentCommand } from 'vs/editor/contrib/comment/blockCommentCommand';
-import { testCommand } from 'vs/editor/test/browser/testCommand';
+import { BlockCommentCommAnd } from 'vs/editor/contrib/comment/blockCommentCommAnd';
+import { testCommAnd } from 'vs/editor/test/browser/testCommAnd';
 import { CommentMode } from 'vs/editor/test/common/commentMode';
 
-function testBlockCommentCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+function testBlockCommentCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 	let mode = new CommentMode({ lineComment: '!@#', blockComment: ['<0', '0>'] });
-	testCommand(lines, mode.getLanguageIdentifier(), selection, (sel) => new BlockCommentCommand(sel, true), expectedLines, expectedSelection);
+	testCommAnd(lines, mode.getLAnguAgeIdentifier(), selection, (sel) => new BlockCommentCommAnd(sel, true), expectedLines, expectedSelection);
 	mode.dispose();
 }
 
-suite('Editor Contrib - Block Comment Command', () => {
+suite('Editor Contrib - Block Comment CommAnd', () => {
 
-	test('empty selection wraps itself', function () {
-		testBlockCommentCommand(
+	test('empty selection wrAps itself', function () {
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -37,7 +37,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('invisible selection ignored', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -58,7 +58,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('bug9511', () => {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -77,7 +77,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 4, 1, 9)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0first0>',
 				'\tsecond line',
@@ -98,7 +98,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('one line selection', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -119,7 +119,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('one line selection toggle', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -138,7 +138,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 6, 1, 9)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'fi<0rst0>',
 				'\tsecond line',
@@ -157,7 +157,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 3, 1, 6)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0 first 0>',
 				'\tsecond line',
@@ -176,7 +176,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 1, 1, 6)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0 first0>',
 				'\tsecond line',
@@ -195,7 +195,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 1, 1, 6)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0first 0>',
 				'\tsecond line',
@@ -214,7 +214,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 1, 1, 6)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'fi<0rst0>',
 				'\tsecond line',
@@ -235,7 +235,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('multi line selection', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -256,7 +256,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('multi line selection toggle', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'first',
 				'\tsecond line',
@@ -275,7 +275,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 4, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0first',
 				'\tse0>cond line',
@@ -294,7 +294,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 1, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0 first',
 				'\tse0>cond line',
@@ -313,7 +313,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 1, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0first',
 				'\tse 0>cond line',
@@ -332,7 +332,7 @@ suite('Editor Contrib - Block Comment Command', () => {
 			new Selection(1, 1, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0 first',
 				'\tse 0>cond line',
@@ -353,111 +353,111 @@ suite('Editor Contrib - Block Comment Command', () => {
 	});
 
 	test('fuzzy removes', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'asd <0 qwe',
-				'asd 0> qwe'
+				'Asd <0 qwe',
+				'Asd 0> qwe'
 			],
 			new Selection(2, 5, 1, 7),
 			[
-				'asd qwe',
-				'asd qwe'
+				'Asd qwe',
+				'Asd qwe'
 			],
 			new Selection(1, 5, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'asd <0 qwe',
-				'asd 0> qwe'
+				'Asd <0 qwe',
+				'Asd 0> qwe'
 			],
 			new Selection(2, 5, 1, 6),
 			[
-				'asd qwe',
-				'asd qwe'
+				'Asd qwe',
+				'Asd qwe'
 			],
 			new Selection(1, 5, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'asd <0 qwe',
-				'asd 0> qwe'
+				'Asd <0 qwe',
+				'Asd 0> qwe'
 			],
 			new Selection(2, 5, 1, 5),
 			[
-				'asd qwe',
-				'asd qwe'
+				'Asd qwe',
+				'Asd qwe'
 			],
 			new Selection(1, 5, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'asd <0 qwe',
-				'asd 0> qwe'
+				'Asd <0 qwe',
+				'Asd 0> qwe'
 			],
 			new Selection(2, 5, 1, 11),
 			[
-				'asd qwe',
-				'asd qwe'
+				'Asd qwe',
+				'Asd qwe'
 			],
 			new Selection(1, 5, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'asd <0 qwe',
-				'asd 0> qwe'
+				'Asd <0 qwe',
+				'Asd 0> qwe'
 			],
 			new Selection(2, 1, 1, 11),
 			[
-				'asd qwe',
-				'asd qwe'
+				'Asd qwe',
+				'Asd qwe'
 			],
 			new Selection(1, 5, 2, 4)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'asd <0 qwe',
-				'asd 0> qwe'
+				'Asd <0 qwe',
+				'Asd 0> qwe'
 			],
 			new Selection(2, 7, 1, 11),
 			[
-				'asd qwe',
-				'asd qwe'
+				'Asd qwe',
+				'Asd qwe'
 			],
 			new Selection(1, 5, 2, 4)
 		);
 	});
 
 	test('bug #30358', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'<0 start 0> middle end',
+				'<0 stArt 0> middle end',
 			],
 			new Selection(1, 20, 1, 23),
 			[
-				'<0 start 0> middle <0 end 0>'
+				'<0 stArt 0> middle <0 end 0>'
 			],
 			new Selection(1, 23, 1, 26)
 		);
 
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
-				'<0 start 0> middle <0 end 0>'
+				'<0 stArt 0> middle <0 end 0>'
 			],
 			new Selection(1, 13, 1, 19),
 			[
-				'<0 start 0> <0 middle 0> <0 end 0>'
+				'<0 stArt 0> <0 middle 0> <0 end 0>'
 			],
 			new Selection(1, 16, 1, 22)
 		);
 	});
 
 	test('issue #34618', function () {
-		testBlockCommentCommand(
+		testBlockCommentCommAnd(
 			[
 				'<0  0> middle end',
 			],
@@ -472,14 +472,14 @@ suite('Editor Contrib - Block Comment Command', () => {
 	test('', () => {
 	});
 
-	test('insertSpace false', () => {
-		function testLineCommentCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	test('insertSpAce fAlse', () => {
+		function testLineCommentCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 			let mode = new CommentMode({ lineComment: '!@#', blockComment: ['<0', '0>'] });
-			testCommand(lines, mode.getLanguageIdentifier(), selection, (sel) => new BlockCommentCommand(sel, false), expectedLines, expectedSelection);
+			testCommAnd(lines, mode.getLAnguAgeIdentifier(), selection, (sel) => new BlockCommentCommAnd(sel, fAlse), expectedLines, expectedSelection);
 			mode.dispose();
 		}
 
-		testLineCommentCommand(
+		testLineCommentCommAnd(
 			[
 				'some text'
 			],
@@ -491,14 +491,14 @@ suite('Editor Contrib - Block Comment Command', () => {
 		);
 	});
 
-	test('insertSpace false does not remove space', () => {
-		function testLineCommentCommand(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
+	test('insertSpAce fAlse does not remove spAce', () => {
+		function testLineCommentCommAnd(lines: string[], selection: Selection, expectedLines: string[], expectedSelection: Selection): void {
 			let mode = new CommentMode({ lineComment: '!@#', blockComment: ['<0', '0>'] });
-			testCommand(lines, mode.getLanguageIdentifier(), selection, (sel) => new BlockCommentCommand(sel, false), expectedLines, expectedSelection);
+			testCommAnd(lines, mode.getLAnguAgeIdentifier(), selection, (sel) => new BlockCommentCommAnd(sel, fAlse), expectedLines, expectedSelection);
 			mode.dispose();
 		}
 
-		testLineCommentCommand(
+		testLineCommentCommAnd(
 			[
 				'<0 some 0> text'
 			],

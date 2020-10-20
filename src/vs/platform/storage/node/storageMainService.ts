@@ -1,191 +1,191 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event, Emitter } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { ILogService, LogLevel } from 'vs/platform/log/common/log';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { SQLiteStorageDatabase, ISQLiteStorageDatabaseLoggingOptions } from 'vs/base/parts/storage/node/storage';
-import { Storage, IStorage, InMemoryStorageDatabase } from 'vs/base/parts/storage/common/storage';
-import { join } from 'vs/base/common/path';
-import { IS_NEW_KEY } from 'vs/platform/storage/common/storage';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { ILogService, LogLevel } from 'vs/plAtform/log/common/log';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { SQLiteStorAgeDAtAbAse, ISQLiteStorAgeDAtAbAseLoggingOptions } from 'vs/bAse/pArts/storAge/node/storAge';
+import { StorAge, IStorAge, InMemoryStorAgeDAtAbAse } from 'vs/bAse/pArts/storAge/common/storAge';
+import { join } from 'vs/bAse/common/pAth';
+import { IS_NEW_KEY } from 'vs/plAtform/storAge/common/storAge';
 
-export const IStorageMainService = createDecorator<IStorageMainService>('storageMainService');
+export const IStorAgeMAinService = creAteDecorAtor<IStorAgeMAinService>('storAgeMAinService');
 
-export interface IStorageMainService {
+export interfAce IStorAgeMAinService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Emitted whenever data is updated or deleted.
+	 * Emitted whenever dAtA is updAted or deleted.
 	 */
-	readonly onDidChangeStorage: Event<IStorageChangeEvent>;
+	reAdonly onDidChAngeStorAge: Event<IStorAgeChAngeEvent>;
 
 	/**
-	 * Emitted when the storage is about to persist. This is the right time
-	 * to persist data to ensure it is stored before the application shuts
+	 * Emitted when the storAge is About to persist. This is the right time
+	 * to persist dAtA to ensure it is stored before the ApplicAtion shuts
 	 * down.
 	 *
-	 * Note: this event may be fired many times, not only on shutdown to prevent
-	 * loss of state in situations where the shutdown is not sufficient to
-	 * persist the data properly.
+	 * Note: this event mAy be fired mAny times, not only on shutdown to prevent
+	 * loss of stAte in situAtions where the shutdown is not sufficient to
+	 * persist the dAtA properly.
 	 */
-	readonly onWillSaveState: Event<void>;
+	reAdonly onWillSAveStAte: Event<void>;
 
 	/**
-	 * Access to all cached items of this storage service.
+	 * Access to All cAched items of this storAge service.
 	 */
-	readonly items: Map<string, string>;
+	reAdonly items: MAp<string, string>;
 
 	/**
-	 * Required call to ensure the service can be used.
+	 * Required cAll to ensure the service cAn be used.
 	 */
-	initialize(): Promise<void>;
+	initiAlize(): Promise<void>;
 
 	/**
-	 * Retrieve an element stored with the given key from storage. Use
-	 * the provided defaultValue if the element is null or undefined.
+	 * Retrieve An element stored with the given key from storAge. Use
+	 * the provided defAultVAlue if the element is null or undefined.
 	 */
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
+	get(key: string, fAllbAckVAlue: string): string;
+	get(key: string, fAllbAckVAlue?: string): string | undefined;
 
 	/**
-	 * Retrieve an element stored with the given key from storage. Use
-	 * the provided defaultValue if the element is null or undefined. The element
-	 * will be converted to a boolean.
+	 * Retrieve An element stored with the given key from storAge. Use
+	 * the provided defAultVAlue if the element is null or undefined. The element
+	 * will be converted to A booleAn.
 	 */
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
+	getBooleAn(key: string, fAllbAckVAlue: booleAn): booleAn;
+	getBooleAn(key: string, fAllbAckVAlue?: booleAn): booleAn | undefined;
 
 	/**
-	 * Retrieve an element stored with the given key from storage. Use
-	 * the provided defaultValue if the element is null or undefined. The element
-	 * will be converted to a number using parseInt with a base of 10.
+	 * Retrieve An element stored with the given key from storAge. Use
+	 * the provided defAultVAlue if the element is null or undefined. The element
+	 * will be converted to A number using pArseInt with A bAse of 10.
 	 */
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
+	getNumber(key: string, fAllbAckVAlue: number): number;
+	getNumber(key: string, fAllbAckVAlue?: number): number | undefined;
 
 	/**
-	 * Store a string value under the given key to storage. The value will
-	 * be converted to a string.
+	 * Store A string vAlue under the given key to storAge. The vAlue will
+	 * be converted to A string.
 	 */
-	store(key: string, value: string | boolean | number | undefined | null): void;
+	store(key: string, vAlue: string | booleAn | number | undefined | null): void;
 
 	/**
-	 * Delete an element stored under the provided key from storage.
+	 * Delete An element stored under the provided key from storAge.
 	 */
 	remove(key: string): void;
 }
 
-export interface IStorageChangeEvent {
+export interfAce IStorAgeChAngeEvent {
 	key: string;
 }
 
-export class StorageMainService extends Disposable implements IStorageMainService {
+export clAss StorAgeMAinService extends DisposAble implements IStorAgeMAinService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private static readonly STORAGE_NAME = 'state.vscdb';
+	privAte stAtic reAdonly STORAGE_NAME = 'stAte.vscdb';
 
-	private readonly _onDidChangeStorage = this._register(new Emitter<IStorageChangeEvent>());
-	readonly onDidChangeStorage = this._onDidChangeStorage.event;
+	privAte reAdonly _onDidChAngeStorAge = this._register(new Emitter<IStorAgeChAngeEvent>());
+	reAdonly onDidChAngeStorAge = this._onDidChAngeStorAge.event;
 
-	private readonly _onWillSaveState = this._register(new Emitter<void>());
-	readonly onWillSaveState = this._onWillSaveState.event;
+	privAte reAdonly _onWillSAveStAte = this._register(new Emitter<void>());
+	reAdonly onWillSAveStAte = this._onWillSAveStAte.event;
 
-	get items(): Map<string, string> { return this.storage.items; }
+	get items(): MAp<string, string> { return this.storAge.items; }
 
-	private storage: IStorage;
+	privAte storAge: IStorAge;
 
-	private initializePromise: Promise<void> | undefined;
+	privAte initiAlizePromise: Promise<void> | undefined;
 
 	constructor(
-		@ILogService private readonly logService: ILogService,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService
+		@ILogService privAte reAdonly logService: ILogService,
+		@IEnvironmentService privAte reAdonly environmentService: IEnvironmentService
 	) {
 		super();
 
-		// Until the storage has been initialized, it can only be in memory
-		this.storage = new Storage(new InMemoryStorageDatabase());
+		// Until the storAge hAs been initiAlized, it cAn only be in memory
+		this.storAge = new StorAge(new InMemoryStorAgeDAtAbAse());
 	}
 
-	private get storagePath(): string {
-		if (!!this.environmentService.extensionTestsLocationURI) {
-			return SQLiteStorageDatabase.IN_MEMORY_PATH; // no storage during extension tests!
+	privAte get storAgePAth(): string {
+		if (!!this.environmentService.extensionTestsLocAtionURI) {
+			return SQLiteStorAgeDAtAbAse.IN_MEMORY_PATH; // no storAge during extension tests!
 		}
 
-		return join(this.environmentService.globalStorageHome.fsPath, StorageMainService.STORAGE_NAME);
+		return join(this.environmentService.globAlStorAgeHome.fsPAth, StorAgeMAinService.STORAGE_NAME);
 	}
 
-	private createLogginOptions(): ISQLiteStorageDatabaseLoggingOptions {
+	privAte creAteLogginOptions(): ISQLiteStorAgeDAtAbAseLoggingOptions {
 		return {
-			logTrace: (this.logService.getLevel() === LogLevel.Trace) ? msg => this.logService.trace(msg) : undefined,
+			logTrAce: (this.logService.getLevel() === LogLevel.TrAce) ? msg => this.logService.trAce(msg) : undefined,
 			logError: error => this.logService.error(error)
 		};
 	}
 
-	initialize(): Promise<void> {
-		if (!this.initializePromise) {
-			this.initializePromise = this.doInitialize();
+	initiAlize(): Promise<void> {
+		if (!this.initiAlizePromise) {
+			this.initiAlizePromise = this.doInitiAlize();
 		}
 
-		return this.initializePromise;
+		return this.initiAlizePromise;
 	}
 
-	private async doInitialize(): Promise<void> {
-		this.storage.dispose();
-		this.storage = new Storage(new SQLiteStorageDatabase(this.storagePath, {
-			logging: this.createLogginOptions()
+	privAte Async doInitiAlize(): Promise<void> {
+		this.storAge.dispose();
+		this.storAge = new StorAge(new SQLiteStorAgeDAtAbAse(this.storAgePAth, {
+			logging: this.creAteLogginOptions()
 		}));
 
-		this._register(this.storage.onDidChangeStorage(key => this._onDidChangeStorage.fire({ key })));
+		this._register(this.storAge.onDidChAngeStorAge(key => this._onDidChAngeStorAge.fire({ key })));
 
-		await this.storage.init();
+		AwAit this.storAge.init();
 
-		// Check to see if this is the first time we are "opening" the application
-		const firstOpen = this.storage.getBoolean(IS_NEW_KEY);
+		// Check to see if this is the first time we Are "opening" the ApplicAtion
+		const firstOpen = this.storAge.getBooleAn(IS_NEW_KEY);
 		if (firstOpen === undefined) {
-			this.storage.set(IS_NEW_KEY, true);
+			this.storAge.set(IS_NEW_KEY, true);
 		} else if (firstOpen) {
-			this.storage.set(IS_NEW_KEY, false);
+			this.storAge.set(IS_NEW_KEY, fAlse);
 		}
 	}
 
-	get(key: string, fallbackValue: string): string;
-	get(key: string, fallbackValue?: string): string | undefined;
-	get(key: string, fallbackValue?: string): string | undefined {
-		return this.storage.get(key, fallbackValue);
+	get(key: string, fAllbAckVAlue: string): string;
+	get(key: string, fAllbAckVAlue?: string): string | undefined;
+	get(key: string, fAllbAckVAlue?: string): string | undefined {
+		return this.storAge.get(key, fAllbAckVAlue);
 	}
 
-	getBoolean(key: string, fallbackValue: boolean): boolean;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined;
-	getBoolean(key: string, fallbackValue?: boolean): boolean | undefined {
-		return this.storage.getBoolean(key, fallbackValue);
+	getBooleAn(key: string, fAllbAckVAlue: booleAn): booleAn;
+	getBooleAn(key: string, fAllbAckVAlue?: booleAn): booleAn | undefined;
+	getBooleAn(key: string, fAllbAckVAlue?: booleAn): booleAn | undefined {
+		return this.storAge.getBooleAn(key, fAllbAckVAlue);
 	}
 
-	getNumber(key: string, fallbackValue: number): number;
-	getNumber(key: string, fallbackValue?: number): number | undefined;
-	getNumber(key: string, fallbackValue?: number): number | undefined {
-		return this.storage.getNumber(key, fallbackValue);
+	getNumber(key: string, fAllbAckVAlue: number): number;
+	getNumber(key: string, fAllbAckVAlue?: number): number | undefined;
+	getNumber(key: string, fAllbAckVAlue?: number): number | undefined {
+		return this.storAge.getNumber(key, fAllbAckVAlue);
 	}
 
-	store(key: string, value: string | boolean | number | undefined | null): Promise<void> {
-		return this.storage.set(key, value);
+	store(key: string, vAlue: string | booleAn | number | undefined | null): Promise<void> {
+		return this.storAge.set(key, vAlue);
 	}
 
 	remove(key: string): Promise<void> {
-		return this.storage.delete(key);
+		return this.storAge.delete(key);
 	}
 
 	close(): Promise<void> {
 
-		// Signal as event so that clients can still store data
-		this._onWillSaveState.fire();
+		// SignAl As event so thAt clients cAn still store dAtA
+		this._onWillSAveStAte.fire();
 
 		// Do it
-		return this.storage.close();
+		return this.storAge.close();
 	}
 }

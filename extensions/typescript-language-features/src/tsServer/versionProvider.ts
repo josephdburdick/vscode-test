@@ -1,70 +1,70 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vscode-nls';
-import API from '../utils/api';
-import { TypeScriptServiceConfiguration } from '../utils/configuration';
+import * As nls from 'vscode-nls';
+import API from '../utils/Api';
+import { TypeScriptServiceConfigurAtion } from '../utils/configurAtion';
 
-export const localize = nls.loadMessageBundle();
+export const locAlize = nls.loAdMessAgeBundle();
 
 export const enum TypeScriptVersionSource {
 	Bundled = 'bundled',
 	TsNightlyExtension = 'ts-nightly-extension',
 	NodeModules = 'node-modules',
 	UserSetting = 'user-setting',
-	WorkspaceSetting = 'workspace-setting',
+	WorkspAceSetting = 'workspAce-setting',
 }
 
-export class TypeScriptVersion {
+export clAss TypeScriptVersion {
 
 	constructor(
-		public readonly source: TypeScriptVersionSource,
-		public readonly path: string,
-		public readonly apiVersion: API | undefined,
-		private readonly _pathLabel?: string,
+		public reAdonly source: TypeScriptVersionSource,
+		public reAdonly pAth: string,
+		public reAdonly ApiVersion: API | undefined,
+		privAte reAdonly _pAthLAbel?: string,
 	) { }
 
-	public get tsServerPath(): string {
-		return this.path;
+	public get tsServerPAth(): string {
+		return this.pAth;
 	}
 
-	public get pathLabel(): string {
-		return this._pathLabel ?? this.path;
+	public get pAthLAbel(): string {
+		return this._pAthLAbel ?? this.pAth;
 	}
 
-	public get isValid(): boolean {
-		return this.apiVersion !== undefined;
+	public get isVAlid(): booleAn {
+		return this.ApiVersion !== undefined;
 	}
 
-	public eq(other: TypeScriptVersion): boolean {
-		if (this.path !== other.path) {
-			return false;
+	public eq(other: TypeScriptVersion): booleAn {
+		if (this.pAth !== other.pAth) {
+			return fAlse;
 		}
 
-		if (this.apiVersion === other.apiVersion) {
+		if (this.ApiVersion === other.ApiVersion) {
 			return true;
 		}
-		if (!this.apiVersion || !other.apiVersion) {
-			return false;
+		if (!this.ApiVersion || !other.ApiVersion) {
+			return fAlse;
 		}
-		return this.apiVersion.eq(other.apiVersion);
+		return this.ApiVersion.eq(other.ApiVersion);
 	}
 
-	public get displayName(): string {
-		const version = this.apiVersion;
-		return version ? version.displayName : localize(
-			'couldNotLoadTsVersion', 'Could not load the TypeScript version at this path');
+	public get displAyNAme(): string {
+		const version = this.ApiVersion;
+		return version ? version.displAyNAme : locAlize(
+			'couldNotLoAdTsVersion', 'Could not loAd the TypeScript version At this pAth');
 	}
 }
 
-export interface ITypeScriptVersionProvider {
-	updateConfiguration(configuration: TypeScriptServiceConfiguration): void;
+export interfAce ITypeScriptVersionProvider {
+	updAteConfigurAtion(configurAtion: TypeScriptServiceConfigurAtion): void;
 
-	readonly defaultVersion: TypeScriptVersion;
-	readonly globalVersion: TypeScriptVersion | undefined;
-	readonly localVersion: TypeScriptVersion | undefined;
-	readonly localVersions: readonly TypeScriptVersion[];
-	readonly bundledVersion: TypeScriptVersion;
+	reAdonly defAultVersion: TypeScriptVersion;
+	reAdonly globAlVersion: TypeScriptVersion | undefined;
+	reAdonly locAlVersion: TypeScriptVersion | undefined;
+	reAdonly locAlVersions: reAdonly TypeScriptVersion[];
+	reAdonly bundledVersion: TypeScriptVersion;
 }

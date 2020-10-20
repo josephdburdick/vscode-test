@@ -1,185 +1,185 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { StandaloneConfigurationModelParser, Configuration } from 'vs/workbench/services/configuration/common/configurationModels';
-import { ConfigurationModelParser, ConfigurationModel } from 'vs/platform/configuration/common/configurationModels';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
-import { ResourceMap } from 'vs/base/common/map';
-import { Workspace, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
+import * As Assert from 'Assert';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { StAndAloneConfigurAtionModelPArser, ConfigurAtion } from 'vs/workbench/services/configurAtion/common/configurAtionModels';
+import { ConfigurAtionModelPArser, ConfigurAtionModel } from 'vs/plAtform/configurAtion/common/configurAtionModels';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions, ConfigurAtionScope } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { ResourceMAp } from 'vs/bAse/common/mAp';
+import { WorkspAce, WorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { URI } from 'vs/bAse/common/uri';
 
-suite('FolderSettingsModelParser', () => {
+suite('FolderSettingsModelPArser', () => {
 
 	suiteSetup(() => {
-		const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
-		configurationRegistry.registerConfiguration({
-			'id': 'FolderSettingsModelParser_1',
+		const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
+		configurAtionRegistry.registerConfigurAtion({
+			'id': 'FolderSettingsModelPArser_1',
 			'type': 'object',
 			'properties': {
-				'FolderSettingsModelParser.window': {
+				'FolderSettingsModelPArser.window': {
 					'type': 'string',
-					'default': 'isSet'
+					'defAult': 'isSet'
 				},
-				'FolderSettingsModelParser.resource': {
+				'FolderSettingsModelPArser.resource': {
 					'type': 'string',
-					'default': 'isSet',
-					scope: ConfigurationScope.RESOURCE,
+					'defAult': 'isSet',
+					scope: ConfigurAtionScope.RESOURCE,
 				},
-				'FolderSettingsModelParser.resourceLanguage': {
+				'FolderSettingsModelPArser.resourceLAnguAge': {
 					'type': 'string',
-					'default': 'isSet',
-					scope: ConfigurationScope.LANGUAGE_OVERRIDABLE,
+					'defAult': 'isSet',
+					scope: ConfigurAtionScope.LANGUAGE_OVERRIDABLE,
 				},
-				'FolderSettingsModelParser.application': {
+				'FolderSettingsModelPArser.ApplicAtion': {
 					'type': 'string',
-					'default': 'isSet',
-					scope: ConfigurationScope.APPLICATION
+					'defAult': 'isSet',
+					scope: ConfigurAtionScope.APPLICATION
 				},
-				'FolderSettingsModelParser.machine': {
+				'FolderSettingsModelPArser.mAchine': {
 					'type': 'string',
-					'default': 'isSet',
-					scope: ConfigurationScope.MACHINE
+					'defAult': 'isSet',
+					scope: ConfigurAtionScope.MACHINE
 				}
 			}
 		});
 	});
 
-	test('parse all folder settings', () => {
-		const testObject = new ConfigurationModelParser('settings', [ConfigurationScope.RESOURCE, ConfigurationScope.WINDOW]);
+	test('pArse All folder settings', () => {
+		const testObject = new ConfigurAtionModelPArser('settings', [ConfigurAtionScope.RESOURCE, ConfigurAtionScope.WINDOW]);
 
-		testObject.parseContent(JSON.stringify({ 'FolderSettingsModelParser.window': 'window', 'FolderSettingsModelParser.resource': 'resource', 'FolderSettingsModelParser.application': 'application', 'FolderSettingsModelParser.machine': 'executable' }));
+		testObject.pArseContent(JSON.stringify({ 'FolderSettingsModelPArser.window': 'window', 'FolderSettingsModelPArser.resource': 'resource', 'FolderSettingsModelPArser.ApplicAtion': 'ApplicAtion', 'FolderSettingsModelPArser.mAchine': 'executAble' }));
 
-		assert.deepEqual(testObject.configurationModel.contents, { 'FolderSettingsModelParser': { 'window': 'window', 'resource': 'resource' } });
+		Assert.deepEquAl(testObject.configurAtionModel.contents, { 'FolderSettingsModelPArser': { 'window': 'window', 'resource': 'resource' } });
 	});
 
-	test('parse resource folder settings', () => {
-		const testObject = new ConfigurationModelParser('settings', [ConfigurationScope.RESOURCE]);
+	test('pArse resource folder settings', () => {
+		const testObject = new ConfigurAtionModelPArser('settings', [ConfigurAtionScope.RESOURCE]);
 
-		testObject.parseContent(JSON.stringify({ 'FolderSettingsModelParser.window': 'window', 'FolderSettingsModelParser.resource': 'resource', 'FolderSettingsModelParser.application': 'application', 'FolderSettingsModelParser.machine': 'executable' }));
+		testObject.pArseContent(JSON.stringify({ 'FolderSettingsModelPArser.window': 'window', 'FolderSettingsModelPArser.resource': 'resource', 'FolderSettingsModelPArser.ApplicAtion': 'ApplicAtion', 'FolderSettingsModelPArser.mAchine': 'executAble' }));
 
-		assert.deepEqual(testObject.configurationModel.contents, { 'FolderSettingsModelParser': { 'resource': 'resource' } });
+		Assert.deepEquAl(testObject.configurAtionModel.contents, { 'FolderSettingsModelPArser': { 'resource': 'resource' } });
 	});
 
-	test('parse resource and resource language settings', () => {
-		const testObject = new ConfigurationModelParser('settings', [ConfigurationScope.RESOURCE, ConfigurationScope.LANGUAGE_OVERRIDABLE]);
+	test('pArse resource And resource lAnguAge settings', () => {
+		const testObject = new ConfigurAtionModelPArser('settings', [ConfigurAtionScope.RESOURCE, ConfigurAtionScope.LANGUAGE_OVERRIDABLE]);
 
-		testObject.parseContent(JSON.stringify({ '[json]': { 'FolderSettingsModelParser.window': 'window', 'FolderSettingsModelParser.resource': 'resource', 'FolderSettingsModelParser.resourceLanguage': 'resourceLanguage', 'FolderSettingsModelParser.application': 'application', 'FolderSettingsModelParser.machine': 'executable' } }));
+		testObject.pArseContent(JSON.stringify({ '[json]': { 'FolderSettingsModelPArser.window': 'window', 'FolderSettingsModelPArser.resource': 'resource', 'FolderSettingsModelPArser.resourceLAnguAge': 'resourceLAnguAge', 'FolderSettingsModelPArser.ApplicAtion': 'ApplicAtion', 'FolderSettingsModelPArser.mAchine': 'executAble' } }));
 
-		assert.deepEqual(testObject.configurationModel.overrides, [{ 'contents': { 'FolderSettingsModelParser': { 'resource': 'resource', 'resourceLanguage': 'resourceLanguage' } }, 'identifiers': ['json'], 'keys': ['FolderSettingsModelParser.resource', 'FolderSettingsModelParser.resourceLanguage'] }]);
+		Assert.deepEquAl(testObject.configurAtionModel.overrides, [{ 'contents': { 'FolderSettingsModelPArser': { 'resource': 'resource', 'resourceLAnguAge': 'resourceLAnguAge' } }, 'identifiers': ['json'], 'keys': ['FolderSettingsModelPArser.resource', 'FolderSettingsModelPArser.resourceLAnguAge'] }]);
 	});
 
-	test('reprocess folder settings excludes application and machine setting', () => {
-		const testObject = new ConfigurationModelParser('settings', [ConfigurationScope.RESOURCE, ConfigurationScope.WINDOW]);
+	test('reprocess folder settings excludes ApplicAtion And mAchine setting', () => {
+		const testObject = new ConfigurAtionModelPArser('settings', [ConfigurAtionScope.RESOURCE, ConfigurAtionScope.WINDOW]);
 
-		testObject.parseContent(JSON.stringify({ 'FolderSettingsModelParser.resource': 'resource', 'FolderSettingsModelParser.anotherApplicationSetting': 'executable' }));
+		testObject.pArseContent(JSON.stringify({ 'FolderSettingsModelPArser.resource': 'resource', 'FolderSettingsModelPArser.AnotherApplicAtionSetting': 'executAble' }));
 
-		assert.deepEqual(testObject.configurationModel.contents, { 'FolderSettingsModelParser': { 'resource': 'resource', 'anotherApplicationSetting': 'executable' } });
+		Assert.deepEquAl(testObject.configurAtionModel.contents, { 'FolderSettingsModelPArser': { 'resource': 'resource', 'AnotherApplicAtionSetting': 'executAble' } });
 
-		const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
-		configurationRegistry.registerConfiguration({
-			'id': 'FolderSettingsModelParser_2',
+		const configurAtionRegistry = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion);
+		configurAtionRegistry.registerConfigurAtion({
+			'id': 'FolderSettingsModelPArser_2',
 			'type': 'object',
 			'properties': {
-				'FolderSettingsModelParser.anotherApplicationSetting': {
+				'FolderSettingsModelPArser.AnotherApplicAtionSetting': {
 					'type': 'string',
-					'default': 'isSet',
-					scope: ConfigurationScope.APPLICATION
+					'defAult': 'isSet',
+					scope: ConfigurAtionScope.APPLICATION
 				},
-				'FolderSettingsModelParser.anotherMachineSetting': {
+				'FolderSettingsModelPArser.AnotherMAchineSetting': {
 					'type': 'string',
-					'default': 'isSet',
-					scope: ConfigurationScope.MACHINE
+					'defAult': 'isSet',
+					scope: ConfigurAtionScope.MACHINE
 				}
 			}
 		});
 
-		testObject.parse();
-		assert.deepEqual(testObject.configurationModel.contents, { 'FolderSettingsModelParser': { 'resource': 'resource' } });
+		testObject.pArse();
+		Assert.deepEquAl(testObject.configurAtionModel.contents, { 'FolderSettingsModelPArser': { 'resource': 'resource' } });
 	});
 
 });
 
-suite('StandaloneConfigurationModelParser', () => {
+suite('StAndAloneConfigurAtionModelPArser', () => {
 
-	test('parse tasks stand alone configuration model', () => {
-		const testObject = new StandaloneConfigurationModelParser('tasks', 'tasks');
+	test('pArse tAsks stAnd Alone configurAtion model', () => {
+		const testObject = new StAndAloneConfigurAtionModelPArser('tAsks', 'tAsks');
 
-		testObject.parseContent(JSON.stringify({ 'version': '1.1.1', 'tasks': [] }));
+		testObject.pArseContent(JSON.stringify({ 'version': '1.1.1', 'tAsks': [] }));
 
-		assert.deepEqual(testObject.configurationModel.contents, { 'tasks': { 'version': '1.1.1', 'tasks': [] } });
+		Assert.deepEquAl(testObject.configurAtionModel.contents, { 'tAsks': { 'version': '1.1.1', 'tAsks': [] } });
 	});
 
 });
 
-suite('Workspace Configuration', () => {
+suite('WorkspAce ConfigurAtion', () => {
 
-	const defaultConfigurationModel = toConfigurationModel({
+	const defAultConfigurAtionModel = toConfigurAtionModel({
 		'editor.lineNumbers': 'on',
 		'editor.fontSize': 12,
 		'window.zoomLevel': 1,
-		'[markdown]': {
-			'editor.wordWrap': 'off'
+		'[mArkdown]': {
+			'editor.wordWrAp': 'off'
 		},
 		'window.title': 'custom',
-		'workbench.enableTabs': false,
-		'editor.insertSpaces': true
+		'workbench.enAbleTAbs': fAlse,
+		'editor.insertSpAces': true
 	});
 
-	test('Test compare same configurations', () => {
-		const workspace = new Workspace('a', [new WorkspaceFolder({ index: 0, name: 'a', uri: URI.file('folder1') }), new WorkspaceFolder({ index: 1, name: 'b', uri: URI.file('folder2') }), new WorkspaceFolder({ index: 2, name: 'c', uri: URI.file('folder3') })]);
-		const configuration1 = new Configuration(new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), workspace);
-		configuration1.updateDefaultConfiguration(defaultConfigurationModel);
-		configuration1.updateLocalUserConfiguration(toConfigurationModel({ 'window.title': 'native', '[typescript]': { 'editor.insertSpaces': false } }));
-		configuration1.updateWorkspaceConfiguration(toConfigurationModel({ 'editor.lineNumbers': 'on' }));
-		configuration1.updateFolderConfiguration(URI.file('folder1'), toConfigurationModel({ 'editor.fontSize': 14 }));
-		configuration1.updateFolderConfiguration(URI.file('folder2'), toConfigurationModel({ 'editor.wordWrap': 'on' }));
+	test('Test compAre sAme configurAtions', () => {
+		const workspAce = new WorkspAce('A', [new WorkspAceFolder({ index: 0, nAme: 'A', uri: URI.file('folder1') }), new WorkspAceFolder({ index: 1, nAme: 'b', uri: URI.file('folder2') }), new WorkspAceFolder({ index: 2, nAme: 'c', uri: URI.file('folder3') })]);
+		const configurAtion1 = new ConfigurAtion(new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), workspAce);
+		configurAtion1.updAteDefAultConfigurAtion(defAultConfigurAtionModel);
+		configurAtion1.updAteLocAlUserConfigurAtion(toConfigurAtionModel({ 'window.title': 'nAtive', '[typescript]': { 'editor.insertSpAces': fAlse } }));
+		configurAtion1.updAteWorkspAceConfigurAtion(toConfigurAtionModel({ 'editor.lineNumbers': 'on' }));
+		configurAtion1.updAteFolderConfigurAtion(URI.file('folder1'), toConfigurAtionModel({ 'editor.fontSize': 14 }));
+		configurAtion1.updAteFolderConfigurAtion(URI.file('folder2'), toConfigurAtionModel({ 'editor.wordWrAp': 'on' }));
 
-		const configuration2 = new Configuration(new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), workspace);
-		configuration2.updateDefaultConfiguration(defaultConfigurationModel);
-		configuration2.updateLocalUserConfiguration(toConfigurationModel({ 'window.title': 'native', '[typescript]': { 'editor.insertSpaces': false } }));
-		configuration2.updateWorkspaceConfiguration(toConfigurationModel({ 'editor.lineNumbers': 'on' }));
-		configuration2.updateFolderConfiguration(URI.file('folder1'), toConfigurationModel({ 'editor.fontSize': 14 }));
-		configuration2.updateFolderConfiguration(URI.file('folder2'), toConfigurationModel({ 'editor.wordWrap': 'on' }));
+		const configurAtion2 = new ConfigurAtion(new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), workspAce);
+		configurAtion2.updAteDefAultConfigurAtion(defAultConfigurAtionModel);
+		configurAtion2.updAteLocAlUserConfigurAtion(toConfigurAtionModel({ 'window.title': 'nAtive', '[typescript]': { 'editor.insertSpAces': fAlse } }));
+		configurAtion2.updAteWorkspAceConfigurAtion(toConfigurAtionModel({ 'editor.lineNumbers': 'on' }));
+		configurAtion2.updAteFolderConfigurAtion(URI.file('folder1'), toConfigurAtionModel({ 'editor.fontSize': 14 }));
+		configurAtion2.updAteFolderConfigurAtion(URI.file('folder2'), toConfigurAtionModel({ 'editor.wordWrAp': 'on' }));
 
-		const actual = configuration2.compare(configuration1);
+		const ActuAl = configurAtion2.compAre(configurAtion1);
 
-		assert.deepEqual(actual, { keys: [], overrides: [] });
+		Assert.deepEquAl(ActuAl, { keys: [], overrides: [] });
 	});
 
-	test('Test compare different configurations', () => {
-		const workspace = new Workspace('a', [new WorkspaceFolder({ index: 0, name: 'a', uri: URI.file('folder1') }), new WorkspaceFolder({ index: 1, name: 'b', uri: URI.file('folder2') }), new WorkspaceFolder({ index: 2, name: 'c', uri: URI.file('folder3') })]);
-		const configuration1 = new Configuration(new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), workspace);
-		configuration1.updateDefaultConfiguration(defaultConfigurationModel);
-		configuration1.updateLocalUserConfiguration(toConfigurationModel({ 'window.title': 'native', '[typescript]': { 'editor.insertSpaces': false } }));
-		configuration1.updateWorkspaceConfiguration(toConfigurationModel({ 'editor.lineNumbers': 'on' }));
-		configuration1.updateFolderConfiguration(URI.file('folder1'), toConfigurationModel({ 'editor.fontSize': 14 }));
-		configuration1.updateFolderConfiguration(URI.file('folder2'), toConfigurationModel({ 'editor.wordWrap': 'on' }));
+	test('Test compAre different configurAtions', () => {
+		const workspAce = new WorkspAce('A', [new WorkspAceFolder({ index: 0, nAme: 'A', uri: URI.file('folder1') }), new WorkspAceFolder({ index: 1, nAme: 'b', uri: URI.file('folder2') }), new WorkspAceFolder({ index: 2, nAme: 'c', uri: URI.file('folder3') })]);
+		const configurAtion1 = new ConfigurAtion(new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), workspAce);
+		configurAtion1.updAteDefAultConfigurAtion(defAultConfigurAtionModel);
+		configurAtion1.updAteLocAlUserConfigurAtion(toConfigurAtionModel({ 'window.title': 'nAtive', '[typescript]': { 'editor.insertSpAces': fAlse } }));
+		configurAtion1.updAteWorkspAceConfigurAtion(toConfigurAtionModel({ 'editor.lineNumbers': 'on' }));
+		configurAtion1.updAteFolderConfigurAtion(URI.file('folder1'), toConfigurAtionModel({ 'editor.fontSize': 14 }));
+		configurAtion1.updAteFolderConfigurAtion(URI.file('folder2'), toConfigurAtionModel({ 'editor.wordWrAp': 'on' }));
 
-		const configuration2 = new Configuration(new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), new ConfigurationModel(), new ResourceMap<ConfigurationModel>(), workspace);
-		configuration2.updateDefaultConfiguration(defaultConfigurationModel);
-		configuration2.updateLocalUserConfiguration(toConfigurationModel({ 'workbench.enableTabs': true, '[typescript]': { 'editor.insertSpaces': true } }));
-		configuration2.updateWorkspaceConfiguration(toConfigurationModel({ 'editor.fontSize': 11 }));
-		configuration2.updateFolderConfiguration(URI.file('folder1'), toConfigurationModel({ 'editor.insertSpaces': true }));
-		configuration2.updateFolderConfiguration(URI.file('folder2'), toConfigurationModel({
-			'[markdown]': {
-				'editor.wordWrap': 'on',
-				'editor.lineNumbers': 'relative'
+		const configurAtion2 = new ConfigurAtion(new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), new ConfigurAtionModel(), new ResourceMAp<ConfigurAtionModel>(), workspAce);
+		configurAtion2.updAteDefAultConfigurAtion(defAultConfigurAtionModel);
+		configurAtion2.updAteLocAlUserConfigurAtion(toConfigurAtionModel({ 'workbench.enAbleTAbs': true, '[typescript]': { 'editor.insertSpAces': true } }));
+		configurAtion2.updAteWorkspAceConfigurAtion(toConfigurAtionModel({ 'editor.fontSize': 11 }));
+		configurAtion2.updAteFolderConfigurAtion(URI.file('folder1'), toConfigurAtionModel({ 'editor.insertSpAces': true }));
+		configurAtion2.updAteFolderConfigurAtion(URI.file('folder2'), toConfigurAtionModel({
+			'[mArkdown]': {
+				'editor.wordWrAp': 'on',
+				'editor.lineNumbers': 'relAtive'
 			},
 		}));
 
-		const actual = configuration2.compare(configuration1);
+		const ActuAl = configurAtion2.compAre(configurAtion1);
 
-		assert.deepEqual(actual, { keys: ['editor.wordWrap', 'editor.fontSize', '[markdown]', 'window.title', 'workbench.enableTabs', '[typescript]'], overrides: [['markdown', ['editor.lineNumbers', 'editor.wordWrap']], ['typescript', ['editor.insertSpaces']]] });
+		Assert.deepEquAl(ActuAl, { keys: ['editor.wordWrAp', 'editor.fontSize', '[mArkdown]', 'window.title', 'workbench.enAbleTAbs', '[typescript]'], overrides: [['mArkdown', ['editor.lineNumbers', 'editor.wordWrAp']], ['typescript', ['editor.insertSpAces']]] });
 	});
 
 
 });
 
-function toConfigurationModel(obj: any): ConfigurationModel {
-	const parser = new ConfigurationModelParser('test');
-	parser.parseContent(JSON.stringify(obj));
-	return parser.configurationModel;
+function toConfigurAtionModel(obj: Any): ConfigurAtionModel {
+	const pArser = new ConfigurAtionModelPArser('test');
+	pArser.pArseContent(JSON.stringify(obj));
+	return pArser.configurAtionModel;
 }

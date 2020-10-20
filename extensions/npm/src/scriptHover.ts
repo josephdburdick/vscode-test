@@ -1,119 +1,119 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import {
-	ExtensionContext, TextDocument, commands, ProviderResult, CancellationToken,
-	workspace, tasks, Range, HoverProvider, Hover, Position, MarkdownString, Uri
+	ExtensionContext, TextDocument, commAnds, ProviderResult, CAncellAtionToken,
+	workspAce, tAsks, RAnge, HoverProvider, Hover, Position, MArkdownString, Uri
 } from 'vscode';
 import {
-	createTask, startDebugging, findAllScriptRanges
-} from './tasks';
-import * as nls from 'vscode-nls';
-import { dirname } from 'path';
+	creAteTAsk, stArtDebugging, findAllScriptRAnges
+} from './tAsks';
+import * As nls from 'vscode-nls';
+import { dirnAme } from 'pAth';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-let cachedDocument: Uri | undefined = undefined;
-let cachedScriptsMap: Map<string, [number, number, string]> | undefined = undefined;
+let cAchedDocument: Uri | undefined = undefined;
+let cAchedScriptsMAp: MAp<string, [number, number, string]> | undefined = undefined;
 
-export function invalidateHoverScriptsCache(document?: TextDocument) {
+export function invAlidAteHoverScriptsCAche(document?: TextDocument) {
 	if (!document) {
-		cachedDocument = undefined;
+		cAchedDocument = undefined;
 		return;
 	}
-	if (document.uri === cachedDocument) {
-		cachedDocument = undefined;
+	if (document.uri === cAchedDocument) {
+		cAchedDocument = undefined;
 	}
 }
 
-export class NpmScriptHoverProvider implements HoverProvider {
+export clAss NpmScriptHoverProvider implements HoverProvider {
 
 	constructor(context: ExtensionContext) {
-		context.subscriptions.push(commands.registerCommand('npm.runScriptFromHover', this.runScriptFromHover, this));
-		context.subscriptions.push(commands.registerCommand('npm.debugScriptFromHover', this.debugScriptFromHover, this));
-		context.subscriptions.push(workspace.onDidChangeTextDocument((e) => {
-			invalidateHoverScriptsCache(e.document);
+		context.subscriptions.push(commAnds.registerCommAnd('npm.runScriptFromHover', this.runScriptFromHover, this));
+		context.subscriptions.push(commAnds.registerCommAnd('npm.debugScriptFromHover', this.debugScriptFromHover, this));
+		context.subscriptions.push(workspAce.onDidChAngeTextDocument((e) => {
+			invAlidAteHoverScriptsCAche(e.document);
 		}));
 	}
 
-	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): ProviderResult<Hover> {
+	public provideHover(document: TextDocument, position: Position, _token: CAncellAtionToken): ProviderResult<Hover> {
 		let hover: Hover | undefined = undefined;
 
-		if (!cachedDocument || cachedDocument.fsPath !== document.uri.fsPath) {
-			cachedScriptsMap = findAllScriptRanges(document.getText());
-			cachedDocument = document.uri;
+		if (!cAchedDocument || cAchedDocument.fsPAth !== document.uri.fsPAth) {
+			cAchedScriptsMAp = findAllScriptRAnges(document.getText());
+			cAchedDocument = document.uri;
 		}
 
-		cachedScriptsMap!.forEach((value, key) => {
-			let start = document.positionAt(value[0]);
-			let end = document.positionAt(value[0] + value[1]);
-			let range = new Range(start, end);
+		cAchedScriptsMAp!.forEAch((vAlue, key) => {
+			let stArt = document.positionAt(vAlue[0]);
+			let end = document.positionAt(vAlue[0] + vAlue[1]);
+			let rAnge = new RAnge(stArt, end);
 
-			if (range.contains(position)) {
-				let contents: MarkdownString = new MarkdownString();
+			if (rAnge.contAins(position)) {
+				let contents: MArkdownString = new MArkdownString();
 				contents.isTrusted = true;
-				contents.appendMarkdown(this.createRunScriptMarkdown(key, document.uri));
-				contents.appendMarkdown(this.createDebugScriptMarkdown(key, document.uri));
+				contents.AppendMArkdown(this.creAteRunScriptMArkdown(key, document.uri));
+				contents.AppendMArkdown(this.creAteDebugScriptMArkdown(key, document.uri));
 				hover = new Hover(contents);
 			}
 		});
 		return hover;
 	}
 
-	private createRunScriptMarkdown(script: string, documentUri: Uri): string {
-		let args = {
+	privAte creAteRunScriptMArkdown(script: string, documentUri: Uri): string {
+		let Args = {
 			documentUri: documentUri,
 			script: script,
 		};
-		return this.createMarkdownLink(
-			localize('runScript', 'Run Script'),
+		return this.creAteMArkdownLink(
+			locAlize('runScript', 'Run Script'),
 			'npm.runScriptFromHover',
-			args,
-			localize('runScript.tooltip', 'Run the script as a task')
+			Args,
+			locAlize('runScript.tooltip', 'Run the script As A tAsk')
 		);
 	}
 
-	private createDebugScriptMarkdown(script: string, documentUri: Uri): string {
-		const args = {
+	privAte creAteDebugScriptMArkdown(script: string, documentUri: Uri): string {
+		const Args = {
 			documentUri: documentUri,
 			script: script,
 		};
-		return this.createMarkdownLink(
-			localize('debugScript', 'Debug Script'),
+		return this.creAteMArkdownLink(
+			locAlize('debugScript', 'Debug Script'),
 			'npm.debugScriptFromHover',
-			args,
-			localize('debugScript.tooltip', 'Runs the script under the debugger'),
+			Args,
+			locAlize('debugScript.tooltip', 'Runs the script under the debugger'),
 			'|'
 		);
 	}
 
-	private createMarkdownLink(label: string, cmd: string, args: any, tooltip: string, separator?: string): string {
-		let encodedArgs = encodeURIComponent(JSON.stringify(args));
+	privAte creAteMArkdownLink(lAbel: string, cmd: string, Args: Any, tooltip: string, sepArAtor?: string): string {
+		let encodedArgs = encodeURIComponent(JSON.stringify(Args));
 		let prefix = '';
-		if (separator) {
-			prefix = ` ${separator} `;
+		if (sepArAtor) {
+			prefix = ` ${sepArAtor} `;
 		}
-		return `${prefix}[${label}](command:${cmd}?${encodedArgs} "${tooltip}")`;
+		return `${prefix}[${lAbel}](commAnd:${cmd}?${encodedArgs} "${tooltip}")`;
 	}
 
-	public async runScriptFromHover(args: any) {
-		let script = args.script;
-		let documentUri = args.documentUri;
-		let folder = workspace.getWorkspaceFolder(documentUri);
+	public Async runScriptFromHover(Args: Any) {
+		let script = Args.script;
+		let documentUri = Args.documentUri;
+		let folder = workspAce.getWorkspAceFolder(documentUri);
 		if (folder) {
-			let task = await createTask(script, `run ${script}`, folder, documentUri);
-			await tasks.executeTask(task);
+			let tAsk = AwAit creAteTAsk(script, `run ${script}`, folder, documentUri);
+			AwAit tAsks.executeTAsk(tAsk);
 		}
 	}
 
-	public debugScriptFromHover(args: { script: string; documentUri: Uri }) {
-		let script = args.script;
-		let documentUri = args.documentUri;
-		let folder = workspace.getWorkspaceFolder(documentUri);
+	public debugScriptFromHover(Args: { script: string; documentUri: Uri }) {
+		let script = Args.script;
+		let documentUri = Args.documentUri;
+		let folder = workspAce.getWorkspAceFolder(documentUri);
 		if (folder) {
-			startDebugging(script, dirname(documentUri.fsPath), folder);
+			stArtDebugging(script, dirnAme(documentUri.fsPAth), folder);
 		}
 	}
 }

@@ -1,116 +1,116 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as crypto from 'crypto';
-import * as fs from 'fs';
-import Severity from 'vs/base/common/severity';
-import { URI } from 'vs/base/common/uri';
-import { ChecksumPair, IIntegrityService, IntegrityTestResult } from 'vs/workbench/services/integrity/common/integrity';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IProductService } from 'vs/platform/product/common/productService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { FileAccess } from 'vs/base/common/network';
+import * As nls from 'vs/nls';
+import * As crypto from 'crypto';
+import * As fs from 'fs';
+import Severity from 'vs/bAse/common/severity';
+import { URI } from 'vs/bAse/common/uri';
+import { ChecksumPAir, IIntegrityService, IntegrityTestResult } from 'vs/workbench/services/integrity/common/integrity';
+import { ILifecycleService, LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IProductService } from 'vs/plAtform/product/common/productService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { FileAccess } from 'vs/bAse/common/network';
 
-interface IStorageData {
-	dontShowPrompt: boolean;
+interfAce IStorAgeDAtA {
+	dontShowPrompt: booleAn;
 	commit: string | undefined;
 }
 
-class IntegrityStorage {
-	private static readonly KEY = 'integrityService';
+clAss IntegrityStorAge {
+	privAte stAtic reAdonly KEY = 'integrityService';
 
-	private storageService: IStorageService;
-	private value: IStorageData | null;
+	privAte storAgeService: IStorAgeService;
+	privAte vAlue: IStorAgeDAtA | null;
 
-	constructor(storageService: IStorageService) {
-		this.storageService = storageService;
-		this.value = this._read();
+	constructor(storAgeService: IStorAgeService) {
+		this.storAgeService = storAgeService;
+		this.vAlue = this._reAd();
 	}
 
-	private _read(): IStorageData | null {
-		let jsonValue = this.storageService.get(IntegrityStorage.KEY, StorageScope.GLOBAL);
-		if (!jsonValue) {
+	privAte _reAd(): IStorAgeDAtA | null {
+		let jsonVAlue = this.storAgeService.get(IntegrityStorAge.KEY, StorAgeScope.GLOBAL);
+		if (!jsonVAlue) {
 			return null;
 		}
 		try {
-			return JSON.parse(jsonValue);
-		} catch (err) {
+			return JSON.pArse(jsonVAlue);
+		} cAtch (err) {
 			return null;
 		}
 	}
 
-	get(): IStorageData | null {
-		return this.value;
+	get(): IStorAgeDAtA | null {
+		return this.vAlue;
 	}
 
-	set(data: IStorageData | null): void {
-		this.value = data;
-		this.storageService.store(IntegrityStorage.KEY, JSON.stringify(this.value), StorageScope.GLOBAL);
+	set(dAtA: IStorAgeDAtA | null): void {
+		this.vAlue = dAtA;
+		this.storAgeService.store(IntegrityStorAge.KEY, JSON.stringify(this.vAlue), StorAgeScope.GLOBAL);
 	}
 }
 
-export class IntegrityServiceImpl implements IIntegrityService {
+export clAss IntegrityServiceImpl implements IIntegrityService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private _storage: IntegrityStorage;
-	private _isPurePromise: Promise<IntegrityTestResult>;
+	privAte _storAge: IntegrityStorAge;
+	privAte _isPurePromise: Promise<IntegrityTestResult>;
 
 	constructor(
-		@INotificationService private readonly notificationService: INotificationService,
-		@IStorageService storageService: IStorageService,
-		@ILifecycleService private readonly lifecycleService: ILifecycleService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IProductService private readonly productService: IProductService
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IStorAgeService storAgeService: IStorAgeService,
+		@ILifecycleService privAte reAdonly lifecycleService: ILifecycleService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IProductService privAte reAdonly productService: IProductService
 	) {
-		this._storage = new IntegrityStorage(storageService);
+		this._storAge = new IntegrityStorAge(storAgeService);
 
 		this._isPurePromise = this._isPure();
 
 		this.isPure().then(r => {
 			if (r.isPure) {
-				return; // all is good
+				return; // All is good
 			}
 
 			this._prompt();
 		});
 	}
 
-	private _prompt(): void {
-		const storedData = this._storage.get();
-		if (storedData?.dontShowPrompt && storedData.commit === this.productService.commit) {
+	privAte _prompt(): void {
+		const storedDAtA = this._storAge.get();
+		if (storedDAtA?.dontShowPrompt && storedDAtA.commit === this.productService.commit) {
 			return; // Do not prompt
 		}
 
-		const checksumFailMoreInfoUrl = this.productService.checksumFailMoreInfoUrl;
-		const message = nls.localize('integrity.prompt', "Your {0} installation appears to be corrupt. Please reinstall.", this.productService.nameShort);
-		if (checksumFailMoreInfoUrl) {
-			this.notificationService.prompt(
-				Severity.Warning,
-				message,
+		const checksumFAilMoreInfoUrl = this.productService.checksumFAilMoreInfoUrl;
+		const messAge = nls.locAlize('integrity.prompt', "Your {0} instAllAtion AppeArs to be corrupt. PleAse reinstAll.", this.productService.nAmeShort);
+		if (checksumFAilMoreInfoUrl) {
+			this.notificAtionService.prompt(
+				Severity.WArning,
+				messAge,
 				[
 					{
-						label: nls.localize('integrity.moreInformation', "More Information"),
-						run: () => this.openerService.open(URI.parse(checksumFailMoreInfoUrl))
+						lAbel: nls.locAlize('integrity.moreInformAtion', "More InformAtion"),
+						run: () => this.openerService.open(URI.pArse(checksumFAilMoreInfoUrl))
 					},
 					{
-						label: nls.localize('integrity.dontShowAgain', "Don't Show Again"),
-						isSecondary: true,
-						run: () => this._storage.set({ dontShowPrompt: true, commit: this.productService.commit })
+						lAbel: nls.locAlize('integrity.dontShowAgAin', "Don't Show AgAin"),
+						isSecondAry: true,
+						run: () => this._storAge.set({ dontShowPrompt: true, commit: this.productService.commit })
 					}
 				],
 				{ sticky: true }
 			);
 		} else {
-			this.notificationService.notify({
-				severity: Severity.Warning,
-				message,
+			this.notificAtionService.notify({
+				severity: Severity.WArning,
+				messAge,
 				sticky: true
 			});
 		}
@@ -120,55 +120,55 @@ export class IntegrityServiceImpl implements IIntegrityService {
 		return this._isPurePromise;
 	}
 
-	private async _isPure(): Promise<IntegrityTestResult> {
+	privAte Async _isPure(): Promise<IntegrityTestResult> {
 		const expectedChecksums = this.productService.checksums || {};
 
-		await this.lifecycleService.when(LifecyclePhase.Eventually);
+		AwAit this.lifecycleService.when(LifecyclePhAse.EventuAlly);
 
-		const allResults = await Promise.all(Object.keys(expectedChecksums).map(filename => this._resolve(filename, expectedChecksums[filename])));
+		const AllResults = AwAit Promise.All(Object.keys(expectedChecksums).mAp(filenAme => this._resolve(filenAme, expectedChecksums[filenAme])));
 
 		let isPure = true;
-		for (let i = 0, len = allResults.length; i < len; i++) {
-			if (!allResults[i].isPure) {
-				isPure = false;
-				break;
+		for (let i = 0, len = AllResults.length; i < len; i++) {
+			if (!AllResults[i].isPure) {
+				isPure = fAlse;
+				breAk;
 			}
 		}
 
 		return {
 			isPure: isPure,
-			proof: allResults
+			proof: AllResults
 		};
 	}
 
-	private _resolve(filename: string, expected: string): Promise<ChecksumPair> {
-		const fileUri = FileAccess.asFileUri(filename, require);
-		return new Promise<ChecksumPair>((resolve, reject) => {
-			fs.readFile(fileUri.fsPath, (err, buff) => {
+	privAte _resolve(filenAme: string, expected: string): Promise<ChecksumPAir> {
+		const fileUri = FileAccess.AsFileUri(filenAme, require);
+		return new Promise<ChecksumPAir>((resolve, reject) => {
+			fs.reAdFile(fileUri.fsPAth, (err, buff) => {
 				if (err) {
-					return resolve(IntegrityServiceImpl._createChecksumPair(fileUri, '', expected));
+					return resolve(IntegrityServiceImpl._creAteChecksumPAir(fileUri, '', expected));
 				}
-				resolve(IntegrityServiceImpl._createChecksumPair(fileUri, this._computeChecksum(buff), expected));
+				resolve(IntegrityServiceImpl._creAteChecksumPAir(fileUri, this._computeChecksum(buff), expected));
 			});
 		});
 	}
 
-	private _computeChecksum(buff: Buffer): string {
-		let hash = crypto
-			.createHash('md5')
-			.update(buff)
-			.digest('base64')
-			.replace(/=+$/, '');
+	privAte _computeChecksum(buff: Buffer): string {
+		let hAsh = crypto
+			.creAteHAsh('md5')
+			.updAte(buff)
+			.digest('bAse64')
+			.replAce(/=+$/, '');
 
-		return hash;
+		return hAsh;
 	}
 
-	private static _createChecksumPair(uri: URI, actual: string, expected: string): ChecksumPair {
+	privAte stAtic _creAteChecksumPAir(uri: URI, ActuAl: string, expected: string): ChecksumPAir {
 		return {
 			uri: uri,
-			actual: actual,
+			ActuAl: ActuAl,
 			expected: expected,
-			isPure: (actual === expected)
+			isPure: (ActuAl === expected)
 		};
 	}
 }

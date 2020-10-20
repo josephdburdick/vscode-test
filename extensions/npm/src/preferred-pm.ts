@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { findWorkspaceRoot } from 'find-yarn-workspace-root2';
+import { findWorkspAceRoot } from 'find-yArn-workspAce-root2';
 import findUp = require('find-up');
-import * as path from 'path';
+import * As pAth from 'pAth';
 import whichPM = require('which-pm');
-import { Uri, workspace } from 'vscode';
+import { Uri, workspAce } from 'vscode';
 
-async function pathExists(filePath: string) {
+Async function pAthExists(filePAth: string) {
 	try {
-		await workspace.fs.stat(Uri.file(filePath));
-	} catch {
-		return false;
+		AwAit workspAce.fs.stAt(Uri.file(filePAth));
+	} cAtch {
+		return fAlse;
 	}
 	return true;
 }
 
-async function isPNPMPreferred(pkgPath: string) {
-	if (await pathExists(path.join(pkgPath, 'pnpm-lock.yaml'))) {
+Async function isPNPMPreferred(pkgPAth: string) {
+	if (AwAit pAthExists(pAth.join(pkgPAth, 'pnpm-lock.yAml'))) {
 		return true;
 	}
-	if (await pathExists(path.join(pkgPath, 'shrinkwrap.yaml'))) {
+	if (AwAit pAthExists(pAth.join(pkgPAth, 'shrinkwrAp.yAml'))) {
 		return true;
 	}
-	if (await findUp('pnpm-lock.yaml', { cwd: pkgPath })) {
+	if (AwAit findUp('pnpm-lock.yAml', { cwd: pkgPAth })) {
 		return true;
 	}
 
-	return false;
+	return fAlse;
 }
 
-async function isYarnPreferred(pkgPath: string) {
-	if (await pathExists(path.join(pkgPath, 'yarn.lock'))) {
+Async function isYArnPreferred(pkgPAth: string) {
+	if (AwAit pAthExists(pAth.join(pkgPAth, 'yArn.lock'))) {
 		return true;
 	}
 
 	try {
-		if (typeof findWorkspaceRoot(pkgPath) === 'string') {
+		if (typeof findWorkspAceRoot(pkgPAth) === 'string') {
 			return true;
 		}
-	} catch (err) { }
+	} cAtch (err) { }
 
-	return false;
+	return fAlse;
 }
 
-const isNPMPreferred = (pkgPath: string) => {
-	return pathExists(path.join(pkgPath, 'package-lock.json'));
+const isNPMPreferred = (pkgPAth: string) => {
+	return pAthExists(pAth.join(pkgPAth, 'pAckAge-lock.json'));
 };
 
-export async function findPreferredPM(pkgPath: string): Promise<{ name: string, multiplePMDetected: boolean }> {
-	const detectedPackageManagers: string[] = [];
+export Async function findPreferredPM(pkgPAth: string): Promise<{ nAme: string, multiplePMDetected: booleAn }> {
+	const detectedPAckAgeMAnAgers: string[] = [];
 
-	if (await isNPMPreferred(pkgPath)) {
-		detectedPackageManagers.push('npm');
+	if (AwAit isNPMPreferred(pkgPAth)) {
+		detectedPAckAgeMAnAgers.push('npm');
 	}
 
-	if (await isYarnPreferred(pkgPath)) {
-		detectedPackageManagers.push('yarn');
+	if (AwAit isYArnPreferred(pkgPAth)) {
+		detectedPAckAgeMAnAgers.push('yArn');
 	}
 
-	if (await isPNPMPreferred(pkgPath)) {
-		detectedPackageManagers.push('pnpm');
+	if (AwAit isPNPMPreferred(pkgPAth)) {
+		detectedPAckAgeMAnAgers.push('pnpm');
 	}
 
-	const pmUsedForInstallation: { name: string } | null = await whichPM(pkgPath);
+	const pmUsedForInstAllAtion: { nAme: string } | null = AwAit whichPM(pkgPAth);
 
-	if (pmUsedForInstallation && !detectedPackageManagers.includes(pmUsedForInstallation.name)) {
-		detectedPackageManagers.push(pmUsedForInstallation.name);
+	if (pmUsedForInstAllAtion && !detectedPAckAgeMAnAgers.includes(pmUsedForInstAllAtion.nAme)) {
+		detectedPAckAgeMAnAgers.push(pmUsedForInstAllAtion.nAme);
 	}
 
-	const multiplePMDetected = detectedPackageManagers.length > 1;
+	const multiplePMDetected = detectedPAckAgeMAnAgers.length > 1;
 
 	return {
-		name: detectedPackageManagers[0] || 'npm',
+		nAme: detectedPAckAgeMAnAgers[0] || 'npm',
 		multiplePMDetected
 	};
 }

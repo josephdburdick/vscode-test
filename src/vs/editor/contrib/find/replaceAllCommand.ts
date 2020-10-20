@@ -1,55 +1,55 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
-import { ICommand, IEditOperationBuilder, ICursorStateComputerData } from 'vs/editor/common/editorCommon';
+import { ICommAnd, IEditOperAtionBuilder, ICursorStAteComputerDAtA } from 'vs/editor/common/editorCommon';
 import { ITextModel } from 'vs/editor/common/model';
 
-interface IEditOperation {
-	range: Range;
+interfAce IEditOperAtion {
+	rAnge: RAnge;
 	text: string;
 }
 
-export class ReplaceAllCommand implements ICommand {
+export clAss ReplAceAllCommAnd implements ICommAnd {
 
-	private readonly _editorSelection: Selection;
-	private _trackedEditorSelectionId: string | null;
-	private readonly _ranges: Range[];
-	private readonly _replaceStrings: string[];
+	privAte reAdonly _editorSelection: Selection;
+	privAte _trAckedEditorSelectionId: string | null;
+	privAte reAdonly _rAnges: RAnge[];
+	privAte reAdonly _replAceStrings: string[];
 
-	constructor(editorSelection: Selection, ranges: Range[], replaceStrings: string[]) {
+	constructor(editorSelection: Selection, rAnges: RAnge[], replAceStrings: string[]) {
 		this._editorSelection = editorSelection;
-		this._ranges = ranges;
-		this._replaceStrings = replaceStrings;
-		this._trackedEditorSelectionId = null;
+		this._rAnges = rAnges;
+		this._replAceStrings = replAceStrings;
+		this._trAckedEditorSelectionId = null;
 	}
 
-	public getEditOperations(model: ITextModel, builder: IEditOperationBuilder): void {
-		if (this._ranges.length > 0) {
-			// Collect all edit operations
-			let ops: IEditOperation[] = [];
-			for (let i = 0; i < this._ranges.length; i++) {
+	public getEditOperAtions(model: ITextModel, builder: IEditOperAtionBuilder): void {
+		if (this._rAnges.length > 0) {
+			// Collect All edit operAtions
+			let ops: IEditOperAtion[] = [];
+			for (let i = 0; i < this._rAnges.length; i++) {
 				ops.push({
-					range: this._ranges[i],
-					text: this._replaceStrings[i]
+					rAnge: this._rAnges[i],
+					text: this._replAceStrings[i]
 				});
 			}
 
-			// Sort them in ascending order by range starts
+			// Sort them in Ascending order by rAnge stArts
 			ops.sort((o1, o2) => {
-				return Range.compareRangesUsingStarts(o1.range, o2.range);
+				return RAnge.compAreRAngesUsingStArts(o1.rAnge, o2.rAnge);
 			});
 
-			// Merge operations that touch each other
-			let resultOps: IEditOperation[] = [];
+			// Merge operAtions thAt touch eAch other
+			let resultOps: IEditOperAtion[] = [];
 			let previousOp = ops[0];
 			for (let i = 1; i < ops.length; i++) {
-				if (previousOp.range.endLineNumber === ops[i].range.startLineNumber && previousOp.range.endColumn === ops[i].range.startColumn) {
-					// These operations are one after another and can be merged
-					previousOp.range = previousOp.range.plusRange(ops[i].range);
+				if (previousOp.rAnge.endLineNumber === ops[i].rAnge.stArtLineNumber && previousOp.rAnge.endColumn === ops[i].rAnge.stArtColumn) {
+					// These operAtions Are one After Another And cAn be merged
+					previousOp.rAnge = previousOp.rAnge.plusRAnge(ops[i].rAnge);
 					previousOp.text = previousOp.text + ops[i].text;
 				} else {
 					resultOps.push(previousOp);
@@ -59,14 +59,14 @@ export class ReplaceAllCommand implements ICommand {
 			resultOps.push(previousOp);
 
 			for (const op of resultOps) {
-				builder.addEditOperation(op.range, op.text);
+				builder.AddEditOperAtion(op.rAnge, op.text);
 			}
 		}
 
-		this._trackedEditorSelectionId = builder.trackSelection(this._editorSelection);
+		this._trAckedEditorSelectionId = builder.trAckSelection(this._editorSelection);
 	}
 
-	public computeCursorState(model: ITextModel, helper: ICursorStateComputerData): Selection {
-		return helper.getTrackedSelection(this._trackedEditorSelectionId!);
+	public computeCursorStAte(model: ITextModel, helper: ICursorStAteComputerDAtA): Selection {
+		return helper.getTrAckedSelection(this._trAckedEditorSelectionId!);
 	}
 }

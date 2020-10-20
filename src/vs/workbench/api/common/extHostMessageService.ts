@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import Severity from 'vs/base/common/severity';
-import type * as vscode from 'vscode';
-import { MainContext, MainThreadMessageServiceShape, MainThreadMessageOptions, IMainContext } from './extHost.protocol';
-import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { ILogService } from 'vs/platform/log/common/log';
+import Severity from 'vs/bAse/common/severity';
+import type * As vscode from 'vscode';
+import { MAinContext, MAinThreAdMessAgeServiceShApe, MAinThreAdMessAgeOptions, IMAinContext } from './extHost.protocol';
+import { IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
-function isMessageItem(item: any): item is vscode.MessageItem {
+function isMessAgeItem(item: Any): item is vscode.MessAgeItem {
 	return item && item.title;
 }
 
-export class ExtHostMessageService {
+export clAss ExtHostMessAgeService {
 
-	private _proxy: MainThreadMessageServiceShape;
+	privAte _proxy: MAinThreAdMessAgeServiceShApe;
 
 	constructor(
-		mainContext: IMainContext,
-		@ILogService private readonly _logService: ILogService
+		mAinContext: IMAinContext,
+		@ILogService privAte reAdonly _logService: ILogService
 	) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadMessageService);
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdMessAgeService);
 	}
 
 
-	showMessage(extension: IExtensionDescription, severity: Severity, message: string, optionsOrFirstItem: vscode.MessageOptions | string | undefined, rest: string[]): Promise<string | undefined>;
-	showMessage(extension: IExtensionDescription, severity: Severity, message: string, optionsOrFirstItem: vscode.MessageOptions | vscode.MessageItem | undefined, rest: vscode.MessageItem[]): Promise<vscode.MessageItem | undefined>;
-	showMessage(extension: IExtensionDescription, severity: Severity, message: string, optionsOrFirstItem: vscode.MessageOptions | vscode.MessageItem | string | undefined, rest: Array<vscode.MessageItem | string>): Promise<string | vscode.MessageItem | undefined>;
-	showMessage(extension: IExtensionDescription, severity: Severity, message: string, optionsOrFirstItem: vscode.MessageOptions | string | vscode.MessageItem | undefined, rest: Array<string | vscode.MessageItem>): Promise<string | vscode.MessageItem | undefined> {
+	showMessAge(extension: IExtensionDescription, severity: Severity, messAge: string, optionsOrFirstItem: vscode.MessAgeOptions | string | undefined, rest: string[]): Promise<string | undefined>;
+	showMessAge(extension: IExtensionDescription, severity: Severity, messAge: string, optionsOrFirstItem: vscode.MessAgeOptions | vscode.MessAgeItem | undefined, rest: vscode.MessAgeItem[]): Promise<vscode.MessAgeItem | undefined>;
+	showMessAge(extension: IExtensionDescription, severity: Severity, messAge: string, optionsOrFirstItem: vscode.MessAgeOptions | vscode.MessAgeItem | string | undefined, rest: ArrAy<vscode.MessAgeItem | string>): Promise<string | vscode.MessAgeItem | undefined>;
+	showMessAge(extension: IExtensionDescription, severity: Severity, messAge: string, optionsOrFirstItem: vscode.MessAgeOptions | string | vscode.MessAgeItem | undefined, rest: ArrAy<string | vscode.MessAgeItem>): Promise<string | vscode.MessAgeItem | undefined> {
 
-		const options: MainThreadMessageOptions = { extension };
-		let items: (string | vscode.MessageItem)[];
+		const options: MAinThreAdMessAgeOptions = { extension };
+		let items: (string | vscode.MessAgeItem)[];
 
-		if (typeof optionsOrFirstItem === 'string' || isMessageItem(optionsOrFirstItem)) {
+		if (typeof optionsOrFirstItem === 'string' || isMessAgeItem(optionsOrFirstItem)) {
 			items = [optionsOrFirstItem, ...rest];
 		} else {
-			options.modal = optionsOrFirstItem && optionsOrFirstItem.modal;
+			options.modAl = optionsOrFirstItem && optionsOrFirstItem.modAl;
 			items = rest;
 		}
 
-		const commands: { title: string; isCloseAffordance: boolean; handle: number; }[] = [];
+		const commAnds: { title: string; isCloseAffordAnce: booleAn; hAndle: number; }[] = [];
 
-		for (let handle = 0; handle < items.length; handle++) {
-			const command = items[handle];
-			if (typeof command === 'string') {
-				commands.push({ title: command, handle, isCloseAffordance: false });
-			} else if (typeof command === 'object') {
-				let { title, isCloseAffordance } = command;
-				commands.push({ title, isCloseAffordance: !!isCloseAffordance, handle });
+		for (let hAndle = 0; hAndle < items.length; hAndle++) {
+			const commAnd = items[hAndle];
+			if (typeof commAnd === 'string') {
+				commAnds.push({ title: commAnd, hAndle, isCloseAffordAnce: fAlse });
+			} else if (typeof commAnd === 'object') {
+				let { title, isCloseAffordAnce } = commAnd;
+				commAnds.push({ title, isCloseAffordAnce: !!isCloseAffordAnce, hAndle });
 			} else {
-				this._logService.warn('Invalid message item:', command);
+				this._logService.wArn('InvAlid messAge item:', commAnd);
 			}
 		}
 
-		return this._proxy.$showMessage(severity, message, options, commands).then(handle => {
-			if (typeof handle === 'number') {
-				return items[handle];
+		return this._proxy.$showMessAge(severity, messAge, options, commAnds).then(hAndle => {
+			if (typeof hAndle === 'number') {
+				return items[hAndle];
 			}
 			return undefined;
 		});

@@ -1,86 +1,86 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'vs/base/common/assert';
-import { Emitter, Event } from 'vs/base/common/event';
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as objects from 'vs/base/common/objects';
+import * As Assert from 'vs/bAse/common/Assert';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import * As objects from 'vs/bAse/common/objects';
 import { IDiffEditor } from 'vs/editor/browser/editorBrowser';
-import { ICursorPositionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
-import { Range } from 'vs/editor/common/core/range';
-import { ILineChange, ScrollType } from 'vs/editor/common/editorCommon';
+import { ICursorPositionChAngedEvent } from 'vs/editor/common/controller/cursorEvents';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { ILineChAnge, ScrollType } from 'vs/editor/common/editorCommon';
 
 
-interface IDiffRange {
-	rhs: boolean;
-	range: Range;
+interfAce IDiffRAnge {
+	rhs: booleAn;
+	rAnge: RAnge;
 }
 
-export interface Options {
-	followsCaret?: boolean;
-	ignoreCharChanges?: boolean;
-	alwaysRevealFirst?: boolean;
+export interfAce Options {
+	followsCAret?: booleAn;
+	ignoreChArChAnges?: booleAn;
+	AlwAysReveAlFirst?: booleAn;
 }
 
-const defaultOptions: Options = {
-	followsCaret: true,
-	ignoreCharChanges: true,
-	alwaysRevealFirst: true
+const defAultOptions: Options = {
+	followsCAret: true,
+	ignoreChArChAnges: true,
+	AlwAysReveAlFirst: true
 };
 
-export interface IDiffNavigator {
-	canNavigate(): boolean;
+export interfAce IDiffNAvigAtor {
+	cAnNAvigAte(): booleAn;
 	next(): void;
 	previous(): void;
 	dispose(): void;
 }
 
 /**
- * Create a new diff navigator for the provided diff editor.
+ * CreAte A new diff nAvigAtor for the provided diff editor.
  */
-export class DiffNavigator extends Disposable implements IDiffNavigator {
+export clAss DiffNAvigAtor extends DisposAble implements IDiffNAvigAtor {
 
-	private readonly _editor: IDiffEditor;
-	private readonly _options: Options;
-	private readonly _onDidUpdate = this._register(new Emitter<this>());
+	privAte reAdonly _editor: IDiffEditor;
+	privAte reAdonly _options: Options;
+	privAte reAdonly _onDidUpdAte = this._register(new Emitter<this>());
 
-	readonly onDidUpdate: Event<this> = this._onDidUpdate.event;
+	reAdonly onDidUpdAte: Event<this> = this._onDidUpdAte.event;
 
-	private disposed: boolean;
-	private revealFirst: boolean;
-	private nextIdx: number;
-	private ranges: IDiffRange[];
-	private ignoreSelectionChange: boolean;
+	privAte disposed: booleAn;
+	privAte reveAlFirst: booleAn;
+	privAte nextIdx: number;
+	privAte rAnges: IDiffRAnge[];
+	privAte ignoreSelectionChAnge: booleAn;
 
 	constructor(editor: IDiffEditor, options: Options = {}) {
 		super();
 		this._editor = editor;
-		this._options = objects.mixin(options, defaultOptions, false);
+		this._options = objects.mixin(options, defAultOptions, fAlse);
 
-		this.disposed = false;
+		this.disposed = fAlse;
 
 		this.nextIdx = -1;
-		this.ranges = [];
-		this.ignoreSelectionChange = false;
-		this.revealFirst = Boolean(this._options.alwaysRevealFirst);
+		this.rAnges = [];
+		this.ignoreSelectionChAnge = fAlse;
+		this.reveAlFirst = BooleAn(this._options.AlwAysReveAlFirst);
 
-		// hook up to diff editor for diff, disposal, and caret move
+		// hook up to diff editor for diff, disposAl, And cAret move
 		this._register(this._editor.onDidDispose(() => this.dispose()));
-		this._register(this._editor.onDidUpdateDiff(() => this._onDiffUpdated()));
+		this._register(this._editor.onDidUpdAteDiff(() => this._onDiffUpdAted()));
 
-		if (this._options.followsCaret) {
-			this._register(this._editor.getModifiedEditor().onDidChangeCursorPosition((e: ICursorPositionChangedEvent) => {
-				if (this.ignoreSelectionChange) {
+		if (this._options.followsCAret) {
+			this._register(this._editor.getModifiedEditor().onDidChAngeCursorPosition((e: ICursorPositionChAngedEvent) => {
+				if (this.ignoreSelectionChAnge) {
 					return;
 				}
 				this.nextIdx = -1;
 			}));
 		}
-		if (this._options.alwaysRevealFirst) {
-			this._register(this._editor.getModifiedEditor().onDidChangeModel((e) => {
-				this.revealFirst = true;
+		if (this._options.AlwAysReveAlFirst) {
+			this._register(this._editor.getModifiedEditor().onDidChAngeModel((e) => {
+				this.reveAlFirst = true;
 			}));
 		}
 
@@ -88,98 +88,98 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 		this._init();
 	}
 
-	private _init(): void {
-		let changes = this._editor.getLineChanges();
-		if (!changes) {
+	privAte _init(): void {
+		let chAnges = this._editor.getLineChAnges();
+		if (!chAnges) {
 			return;
 		}
 	}
 
-	private _onDiffUpdated(): void {
+	privAte _onDiffUpdAted(): void {
 		this._init();
 
-		this._compute(this._editor.getLineChanges());
-		if (this.revealFirst) {
-			// Only reveal first on first non-null changes
-			if (this._editor.getLineChanges() !== null) {
-				this.revealFirst = false;
+		this._compute(this._editor.getLineChAnges());
+		if (this.reveAlFirst) {
+			// Only reveAl first on first non-null chAnges
+			if (this._editor.getLineChAnges() !== null) {
+				this.reveAlFirst = fAlse;
 				this.nextIdx = -1;
-				this.next(ScrollType.Immediate);
+				this.next(ScrollType.ImmediAte);
 			}
 		}
 	}
 
-	private _compute(lineChanges: ILineChange[] | null): void {
+	privAte _compute(lineChAnges: ILineChAnge[] | null): void {
 
-		// new ranges
-		this.ranges = [];
+		// new rAnges
+		this.rAnges = [];
 
-		if (lineChanges) {
-			// create ranges from changes
-			lineChanges.forEach((lineChange) => {
+		if (lineChAnges) {
+			// creAte rAnges from chAnges
+			lineChAnges.forEAch((lineChAnge) => {
 
-				if (!this._options.ignoreCharChanges && lineChange.charChanges) {
+				if (!this._options.ignoreChArChAnges && lineChAnge.chArChAnges) {
 
-					lineChange.charChanges.forEach((charChange) => {
-						this.ranges.push({
+					lineChAnge.chArChAnges.forEAch((chArChAnge) => {
+						this.rAnges.push({
 							rhs: true,
-							range: new Range(
-								charChange.modifiedStartLineNumber,
-								charChange.modifiedStartColumn,
-								charChange.modifiedEndLineNumber,
-								charChange.modifiedEndColumn)
+							rAnge: new RAnge(
+								chArChAnge.modifiedStArtLineNumber,
+								chArChAnge.modifiedStArtColumn,
+								chArChAnge.modifiedEndLineNumber,
+								chArChAnge.modifiedEndColumn)
 						});
 					});
 
 				} else {
-					this.ranges.push({
+					this.rAnges.push({
 						rhs: true,
-						range: new Range(lineChange.modifiedStartLineNumber, 1, lineChange.modifiedStartLineNumber, 1)
+						rAnge: new RAnge(lineChAnge.modifiedStArtLineNumber, 1, lineChAnge.modifiedStArtLineNumber, 1)
 					});
 				}
 			});
 		}
 
 		// sort
-		this.ranges.sort((left, right) => {
-			if (left.range.getStartPosition().isBeforeOrEqual(right.range.getStartPosition())) {
+		this.rAnges.sort((left, right) => {
+			if (left.rAnge.getStArtPosition().isBeforeOrEquAl(right.rAnge.getStArtPosition())) {
 				return -1;
-			} else if (right.range.getStartPosition().isBeforeOrEqual(left.range.getStartPosition())) {
+			} else if (right.rAnge.getStArtPosition().isBeforeOrEquAl(left.rAnge.getStArtPosition())) {
 				return 1;
 			} else {
 				return 0;
 			}
 		});
-		this._onDidUpdate.fire(this);
+		this._onDidUpdAte.fire(this);
 	}
 
-	private _initIdx(fwd: boolean): void {
-		let found = false;
+	privAte _initIdx(fwd: booleAn): void {
+		let found = fAlse;
 		let position = this._editor.getPosition();
 		if (!position) {
 			this.nextIdx = 0;
 			return;
 		}
-		for (let i = 0, len = this.ranges.length; i < len && !found; i++) {
-			let range = this.ranges[i].range;
-			if (position.isBeforeOrEqual(range.getStartPosition())) {
+		for (let i = 0, len = this.rAnges.length; i < len && !found; i++) {
+			let rAnge = this.rAnges[i].rAnge;
+			if (position.isBeforeOrEquAl(rAnge.getStArtPosition())) {
 				this.nextIdx = i + (fwd ? 0 : -1);
 				found = true;
 			}
 		}
 		if (!found) {
-			// after the last change
-			this.nextIdx = fwd ? 0 : this.ranges.length - 1;
+			// After the lAst chAnge
+			this.nextIdx = fwd ? 0 : this.rAnges.length - 1;
 		}
 		if (this.nextIdx < 0) {
-			this.nextIdx = this.ranges.length - 1;
+			this.nextIdx = this.rAnges.length - 1;
 		}
 	}
 
-	private _move(fwd: boolean, scrollType: ScrollType): void {
-		assert.ok(!this.disposed, 'Illegal State - diff navigator has been disposed');
+	privAte _move(fwd: booleAn, scrollType: ScrollType): void {
+		Assert.ok(!this.disposed, 'IllegAl StAte - diff nAvigAtor hAs been disposed');
 
-		if (!this.canNavigate()) {
+		if (!this.cAnNAvigAte()) {
 			return;
 		}
 
@@ -188,29 +188,29 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 
 		} else if (fwd) {
 			this.nextIdx += 1;
-			if (this.nextIdx >= this.ranges.length) {
+			if (this.nextIdx >= this.rAnges.length) {
 				this.nextIdx = 0;
 			}
 		} else {
 			this.nextIdx -= 1;
 			if (this.nextIdx < 0) {
-				this.nextIdx = this.ranges.length - 1;
+				this.nextIdx = this.rAnges.length - 1;
 			}
 		}
 
-		let info = this.ranges[this.nextIdx];
-		this.ignoreSelectionChange = true;
+		let info = this.rAnges[this.nextIdx];
+		this.ignoreSelectionChAnge = true;
 		try {
-			let pos = info.range.getStartPosition();
+			let pos = info.rAnge.getStArtPosition();
 			this._editor.setPosition(pos);
-			this._editor.revealPositionInCenter(pos, scrollType);
-		} finally {
-			this.ignoreSelectionChange = false;
+			this._editor.reveAlPositionInCenter(pos, scrollType);
+		} finAlly {
+			this.ignoreSelectionChAnge = fAlse;
 		}
 	}
 
-	canNavigate(): boolean {
-		return this.ranges && this.ranges.length > 0;
+	cAnNAvigAte(): booleAn {
+		return this.rAnges && this.rAnges.length > 0;
 	}
 
 	next(scrollType: ScrollType = ScrollType.Smooth): void {
@@ -218,12 +218,12 @@ export class DiffNavigator extends Disposable implements IDiffNavigator {
 	}
 
 	previous(scrollType: ScrollType = ScrollType.Smooth): void {
-		this._move(false, scrollType);
+		this._move(fAlse, scrollType);
 	}
 
 	dispose(): void {
 		super.dispose();
-		this.ranges = [];
+		this.rAnges = [];
 		this.disposed = true;
 	}
 }

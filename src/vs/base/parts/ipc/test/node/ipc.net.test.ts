@@ -1,46 +1,46 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { createServer, Socket } from 'net';
+import * As Assert from 'Assert';
+import { creAteServer, Socket } from 'net';
 import { EventEmitter } from 'events';
-import { Protocol, PersistentProtocol } from 'vs/base/parts/ipc/common/ipc.net';
-import { createRandomIPCHandle, createStaticIPCHandle, NodeSocket } from 'vs/base/parts/ipc/node/ipc.net';
-import { VSBuffer } from 'vs/base/common/buffer';
+import { Protocol, PersistentProtocol } from 'vs/bAse/pArts/ipc/common/ipc.net';
+import { creAteRAndomIPCHAndle, creAteStAticIPCHAndle, NodeSocket } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import { VSBuffer } from 'vs/bAse/common/buffer';
 import { tmpdir } from 'os';
-import product from 'vs/platform/product/common/product';
+import product from 'vs/plAtform/product/common/product';
 
-class MessageStream {
+clAss MessAgeStreAm {
 
-	private _currentComplete: ((data: VSBuffer) => void) | null;
-	private _messages: VSBuffer[];
+	privAte _currentComplete: ((dAtA: VSBuffer) => void) | null;
+	privAte _messAges: VSBuffer[];
 
 	constructor(x: Protocol | PersistentProtocol) {
 		this._currentComplete = null;
-		this._messages = [];
-		x.onMessage(data => {
-			this._messages.push(data);
+		this._messAges = [];
+		x.onMessAge(dAtA => {
+			this._messAges.push(dAtA);
 			this._trigger();
 		});
 	}
 
-	private _trigger(): void {
+	privAte _trigger(): void {
 		if (!this._currentComplete) {
 			return;
 		}
-		if (this._messages.length === 0) {
+		if (this._messAges.length === 0) {
 			return;
 		}
 		const complete = this._currentComplete;
-		const msg = this._messages.shift()!;
+		const msg = this._messAges.shift()!;
 
 		this._currentComplete = null;
 		complete(msg);
 	}
 
-	public waitForOne(): Promise<VSBuffer> {
+	public wAitForOne(): Promise<VSBuffer> {
 		return new Promise<VSBuffer>((complete) => {
 			this._currentComplete = complete;
 			this._trigger();
@@ -48,71 +48,71 @@ class MessageStream {
 	}
 }
 
-class EtherStream extends EventEmitter {
+clAss EtherStreAm extends EventEmitter {
 	constructor(
-		private readonly _ether: Ether,
-		private readonly _name: 'a' | 'b'
+		privAte reAdonly _ether: Ether,
+		privAte reAdonly _nAme: 'A' | 'b'
 	) {
 		super();
 	}
 
-	write(data: Buffer, cb?: Function): boolean {
-		if (!Buffer.isBuffer(data)) {
-			throw new Error(`Invalid data`);
+	write(dAtA: Buffer, cb?: Function): booleAn {
+		if (!Buffer.isBuffer(dAtA)) {
+			throw new Error(`InvAlid dAtA`);
 		}
-		this._ether.write(this._name, data);
+		this._ether.write(this._nAme, dAtA);
 		return true;
 	}
 }
 
-class Ether {
+clAss Ether {
 
-	private readonly _a: EtherStream;
-	private readonly _b: EtherStream;
+	privAte reAdonly _A: EtherStreAm;
+	privAte reAdonly _b: EtherStreAm;
 
-	private _ab: Buffer[];
-	private _ba: Buffer[];
+	privAte _Ab: Buffer[];
+	privAte _bA: Buffer[];
 
-	public get a(): Socket {
-		return <any>this._a;
+	public get A(): Socket {
+		return <Any>this._A;
 	}
 
 	public get b(): Socket {
-		return <any>this._b;
+		return <Any>this._b;
 	}
 
 	constructor() {
-		this._a = new EtherStream(this, 'a');
-		this._b = new EtherStream(this, 'b');
-		this._ab = [];
-		this._ba = [];
+		this._A = new EtherStreAm(this, 'A');
+		this._b = new EtherStreAm(this, 'b');
+		this._Ab = [];
+		this._bA = [];
 	}
 
-	public write(from: 'a' | 'b', data: Buffer): void {
-		if (from === 'a') {
-			this._ab.push(data);
+	public write(from: 'A' | 'b', dAtA: Buffer): void {
+		if (from === 'A') {
+			this._Ab.push(dAtA);
 		} else {
-			this._ba.push(data);
+			this._bA.push(dAtA);
 		}
 
-		setImmediate(() => this._deliver());
+		setImmediAte(() => this._deliver());
 	}
 
-	private _deliver(): void {
+	privAte _deliver(): void {
 
-		if (this._ab.length > 0) {
-			const data = Buffer.concat(this._ab);
-			this._ab.length = 0;
-			this._b.emit('data', data);
-			setImmediate(() => this._deliver());
+		if (this._Ab.length > 0) {
+			const dAtA = Buffer.concAt(this._Ab);
+			this._Ab.length = 0;
+			this._b.emit('dAtA', dAtA);
+			setImmediAte(() => this._deliver());
 			return;
 		}
 
-		if (this._ba.length > 0) {
-			const data = Buffer.concat(this._ba);
-			this._ba.length = 0;
-			this._a.emit('data', data);
-			setImmediate(() => this._deliver());
+		if (this._bA.length > 0) {
+			const dAtA = Buffer.concAt(this._bA);
+			this._bA.length = 0;
+			this._A.emit('dAtA', dAtA);
+			setImmediAte(() => this._deliver());
 			return;
 		}
 
@@ -127,40 +127,40 @@ suite('IPC, Socket Protocol', () => {
 		ether = new Ether();
 	});
 
-	test('read/write', async () => {
+	test('reAd/write', Async () => {
 
-		const a = new Protocol(new NodeSocket(ether.a));
+		const A = new Protocol(new NodeSocket(ether.A));
 		const b = new Protocol(new NodeSocket(ether.b));
-		const bMessages = new MessageStream(b);
+		const bMessAges = new MessAgeStreAm(b);
 
-		a.send(VSBuffer.fromString('foobarfarboo'));
-		const msg1 = await bMessages.waitForOne();
-		assert.equal(msg1.toString(), 'foobarfarboo');
+		A.send(VSBuffer.fromString('foobArfArboo'));
+		const msg1 = AwAit bMessAges.wAitForOne();
+		Assert.equAl(msg1.toString(), 'foobArfArboo');
 
-		const buffer = VSBuffer.alloc(1);
+		const buffer = VSBuffer.Alloc(1);
 		buffer.writeUInt8(123, 0);
-		a.send(buffer);
-		const msg2 = await bMessages.waitForOne();
-		assert.equal(msg2.readUInt8(0), 123);
+		A.send(buffer);
+		const msg2 = AwAit bMessAges.wAitForOne();
+		Assert.equAl(msg2.reAdUInt8(0), 123);
 	});
 
 
-	test('read/write, object data', async () => {
+	test('reAd/write, object dAtA', Async () => {
 
-		const a = new Protocol(new NodeSocket(ether.a));
+		const A = new Protocol(new NodeSocket(ether.A));
 		const b = new Protocol(new NodeSocket(ether.b));
-		const bMessages = new MessageStream(b);
+		const bMessAges = new MessAgeStreAm(b);
 
-		const data = {
-			pi: Math.PI,
-			foo: 'bar',
+		const dAtA = {
+			pi: MAth.PI,
+			foo: 'bAr',
 			more: true,
-			data: 'Hello World'.split('')
+			dAtA: 'Hello World'.split('')
 		};
 
-		a.send(VSBuffer.fromString(JSON.stringify(data)));
-		const msg = await bMessages.waitForOne();
-		assert.deepEqual(JSON.parse(msg.toString()), data);
+		A.send(VSBuffer.fromString(JSON.stringify(dAtA)));
+		const msg = AwAit bMessAges.wAitForOne();
+		Assert.deepEquAl(JSON.pArse(msg.toString()), dAtA);
 	});
 
 });
@@ -172,80 +172,80 @@ suite('PersistentProtocol reconnection', () => {
 		ether = new Ether();
 	});
 
-	test('acks get piggybacked with messages', async () => {
-		const a = new PersistentProtocol(new NodeSocket(ether.a));
-		const aMessages = new MessageStream(a);
+	test('Acks get piggybAcked with messAges', Async () => {
+		const A = new PersistentProtocol(new NodeSocket(ether.A));
+		const AMessAges = new MessAgeStreAm(A);
 		const b = new PersistentProtocol(new NodeSocket(ether.b));
-		const bMessages = new MessageStream(b);
+		const bMessAges = new MessAgeStreAm(b);
 
-		a.send(VSBuffer.fromString('a1'));
-		assert.equal(a.unacknowledgedCount, 1);
-		assert.equal(b.unacknowledgedCount, 0);
+		A.send(VSBuffer.fromString('A1'));
+		Assert.equAl(A.unAcknowledgedCount, 1);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 
-		a.send(VSBuffer.fromString('a2'));
-		assert.equal(a.unacknowledgedCount, 2);
-		assert.equal(b.unacknowledgedCount, 0);
+		A.send(VSBuffer.fromString('A2'));
+		Assert.equAl(A.unAcknowledgedCount, 2);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 
-		a.send(VSBuffer.fromString('a3'));
-		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		A.send(VSBuffer.fromString('A3'));
+		Assert.equAl(A.unAcknowledgedCount, 3);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 
-		const a1 = await bMessages.waitForOne();
-		assert.equal(a1.toString(), 'a1');
-		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		const A1 = AwAit bMessAges.wAitForOne();
+		Assert.equAl(A1.toString(), 'A1');
+		Assert.equAl(A.unAcknowledgedCount, 3);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 
-		const a2 = await bMessages.waitForOne();
-		assert.equal(a2.toString(), 'a2');
-		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		const A2 = AwAit bMessAges.wAitForOne();
+		Assert.equAl(A2.toString(), 'A2');
+		Assert.equAl(A.unAcknowledgedCount, 3);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 
-		const a3 = await bMessages.waitForOne();
-		assert.equal(a3.toString(), 'a3');
-		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 0);
+		const A3 = AwAit bMessAges.wAitForOne();
+		Assert.equAl(A3.toString(), 'A3');
+		Assert.equAl(A.unAcknowledgedCount, 3);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 
 		b.send(VSBuffer.fromString('b1'));
-		assert.equal(a.unacknowledgedCount, 3);
-		assert.equal(b.unacknowledgedCount, 1);
+		Assert.equAl(A.unAcknowledgedCount, 3);
+		Assert.equAl(b.unAcknowledgedCount, 1);
 
-		const b1 = await aMessages.waitForOne();
-		assert.equal(b1.toString(), 'b1');
-		assert.equal(a.unacknowledgedCount, 0);
-		assert.equal(b.unacknowledgedCount, 1);
+		const b1 = AwAit AMessAges.wAitForOne();
+		Assert.equAl(b1.toString(), 'b1');
+		Assert.equAl(A.unAcknowledgedCount, 0);
+		Assert.equAl(b.unAcknowledgedCount, 1);
 
-		a.send(VSBuffer.fromString('a4'));
-		assert.equal(a.unacknowledgedCount, 1);
-		assert.equal(b.unacknowledgedCount, 1);
+		A.send(VSBuffer.fromString('A4'));
+		Assert.equAl(A.unAcknowledgedCount, 1);
+		Assert.equAl(b.unAcknowledgedCount, 1);
 
-		const b2 = await bMessages.waitForOne();
-		assert.equal(b2.toString(), 'a4');
-		assert.equal(a.unacknowledgedCount, 1);
-		assert.equal(b.unacknowledgedCount, 0);
+		const b2 = AwAit bMessAges.wAitForOne();
+		Assert.equAl(b2.toString(), 'A4');
+		Assert.equAl(A.unAcknowledgedCount, 1);
+		Assert.equAl(b.unAcknowledgedCount, 0);
 	});
 });
 
-suite('IPC, create handle', () => {
+suite('IPC, creAte hAndle', () => {
 
-	test('createRandomIPCHandle', async () => {
-		return testIPCHandle(createRandomIPCHandle());
+	test('creAteRAndomIPCHAndle', Async () => {
+		return testIPCHAndle(creAteRAndomIPCHAndle());
 	});
 
-	test('createStaticIPCHandle', async () => {
-		return testIPCHandle(createStaticIPCHandle(tmpdir(), 'test', product.version));
+	test('creAteStAticIPCHAndle', Async () => {
+		return testIPCHAndle(creAteStAticIPCHAndle(tmpdir(), 'test', product.version));
 	});
 
-	function testIPCHandle(handle: string): Promise<void> {
+	function testIPCHAndle(hAndle: string): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			const pipeName = createRandomIPCHandle();
+			const pipeNAme = creAteRAndomIPCHAndle();
 
-			const server = createServer();
+			const server = creAteServer();
 
 			server.on('error', () => {
 				return new Promise(() => server.close(() => reject()));
 			});
 
-			server.listen(pipeName, () => {
+			server.listen(pipeNAme, () => {
 				server.removeListener('error', reject);
 
 				return new Promise(() => {

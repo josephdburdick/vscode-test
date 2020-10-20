@@ -1,93 +1,93 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { isWindows } from 'vs/base/common/platform';
-import { startsWithIgnoreCase, equalsIgnoreCase, rtrim } from 'vs/base/common/strings';
-import { CharCode } from 'vs/base/common/charCode';
-import { sep, posix, isAbsolute, join, normalize } from 'vs/base/common/path';
-import { isNumber } from 'vs/base/common/types';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { stArtsWithIgnoreCAse, equAlsIgnoreCAse, rtrim } from 'vs/bAse/common/strings';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { sep, posix, isAbsolute, join, normAlize } from 'vs/bAse/common/pAth';
+import { isNumber } from 'vs/bAse/common/types';
 
-export function isPathSeparator(code: number) {
-	return code === CharCode.Slash || code === CharCode.Backslash;
+export function isPAthSepArAtor(code: number) {
+	return code === ChArCode.SlAsh || code === ChArCode.BAckslAsh;
 }
 
 /**
- * Takes a Windows OS path and changes backward slashes to forward slashes.
- * This should only be done for OS paths from Windows (or user provided paths potentially from Windows).
- * Using it on a Linux or MaxOS path might change it.
+ * TAkes A Windows OS pAth And chAnges bAckwArd slAshes to forwArd slAshes.
+ * This should only be done for OS pAths from Windows (or user provided pAths potentiAlly from Windows).
+ * Using it on A Linux or MAxOS pAth might chAnge it.
  */
-export function toSlashes(osPath: string) {
-	return osPath.replace(/[\\/]/g, posix.sep);
+export function toSlAshes(osPAth: string) {
+	return osPAth.replAce(/[\\/]/g, posix.sep);
 }
 
 /**
- * Computes the _root_ this path, like `getRoot('c:\files') === c:\`,
- * `getRoot('files:///files/path') === files:///`,
- * or `getRoot('\\server\shares\path') === \\server\shares\`
+ * Computes the _root_ this pAth, like `getRoot('c:\files') === c:\`,
+ * `getRoot('files:///files/pAth') === files:///`,
+ * or `getRoot('\\server\shAres\pAth') === \\server\shAres\`
  */
-export function getRoot(path: string, sep: string = posix.sep): string {
+export function getRoot(pAth: string, sep: string = posix.sep): string {
 
-	if (!path) {
+	if (!pAth) {
 		return '';
 	}
 
-	const len = path.length;
-	const firstLetter = path.charCodeAt(0);
-	if (isPathSeparator(firstLetter)) {
-		if (isPathSeparator(path.charCodeAt(1))) {
-			// UNC candidate \\localhost\shares\ddd
+	const len = pAth.length;
+	const firstLetter = pAth.chArCodeAt(0);
+	if (isPAthSepArAtor(firstLetter)) {
+		if (isPAthSepArAtor(pAth.chArCodeAt(1))) {
+			// UNC cAndidAte \\locAlhost\shAres\ddd
 			//               ^^^^^^^^^^^^^^^^^^^
-			if (!isPathSeparator(path.charCodeAt(2))) {
+			if (!isPAthSepArAtor(pAth.chArCodeAt(2))) {
 				let pos = 3;
-				const start = pos;
+				const stArt = pos;
 				for (; pos < len; pos++) {
-					if (isPathSeparator(path.charCodeAt(pos))) {
-						break;
+					if (isPAthSepArAtor(pAth.chArCodeAt(pos))) {
+						breAk;
 					}
 				}
-				if (start !== pos && !isPathSeparator(path.charCodeAt(pos + 1))) {
+				if (stArt !== pos && !isPAthSepArAtor(pAth.chArCodeAt(pos + 1))) {
 					pos += 1;
 					for (; pos < len; pos++) {
-						if (isPathSeparator(path.charCodeAt(pos))) {
-							return path.slice(0, pos + 1) // consume this separator
-								.replace(/[\\/]/g, sep);
+						if (isPAthSepArAtor(pAth.chArCodeAt(pos))) {
+							return pAth.slice(0, pos + 1) // consume this sepArAtor
+								.replAce(/[\\/]/g, sep);
 						}
 					}
 				}
 			}
 		}
 
-		// /user/far
+		// /user/fAr
 		// ^
 		return sep;
 
 	} else if (isWindowsDriveLetter(firstLetter)) {
 		// check for windows drive letter c:\ or c:
 
-		if (path.charCodeAt(1) === CharCode.Colon) {
-			if (isPathSeparator(path.charCodeAt(2))) {
+		if (pAth.chArCodeAt(1) === ChArCode.Colon) {
+			if (isPAthSepArAtor(pAth.chArCodeAt(2))) {
 				// C:\fff
 				// ^^^
-				return path.slice(0, 2) + sep;
+				return pAth.slice(0, 2) + sep;
 			} else {
 				// C:
 				// ^^
-				return path.slice(0, 2);
+				return pAth.slice(0, 2);
 			}
 		}
 	}
 
 	// check for URI
-	// scheme://authority/path
+	// scheme://Authority/pAth
 	// ^^^^^^^^^^^^^^^^^^^
-	let pos = path.indexOf('://');
+	let pos = pAth.indexOf('://');
 	if (pos !== -1) {
 		pos += 3; // 3 -> "://".length
 		for (; pos < len; pos++) {
-			if (isPathSeparator(path.charCodeAt(pos))) {
-				return path.slice(0, pos + 1); // consume this separator
+			if (isPAthSepArAtor(pAth.chArCodeAt(pos))) {
+				return pAth.slice(0, pos + 1); // consume this sepArAtor
 			}
 		}
 	}
@@ -96,229 +96,229 @@ export function getRoot(path: string, sep: string = posix.sep): string {
 }
 
 /**
- * Check if the path follows this pattern: `\\hostname\sharename`.
+ * Check if the pAth follows this pAttern: `\\hostnAme\shArenAme`.
  *
- * @see https://msdn.microsoft.com/en-us/library/gg465305.aspx
- * @return A boolean indication if the path is a UNC path, on none-windows
- * always false.
+ * @see https://msdn.microsoft.com/en-us/librAry/gg465305.Aspx
+ * @return A booleAn indicAtion if the pAth is A UNC pAth, on none-windows
+ * AlwAys fAlse.
  */
-export function isUNC(path: string): boolean {
+export function isUNC(pAth: string): booleAn {
 	if (!isWindows) {
-		// UNC is a windows concept
-		return false;
+		// UNC is A windows concept
+		return fAlse;
 	}
 
-	if (!path || path.length < 5) {
-		// at least \\a\b
-		return false;
+	if (!pAth || pAth.length < 5) {
+		// At leAst \\A\b
+		return fAlse;
 	}
 
-	let code = path.charCodeAt(0);
-	if (code !== CharCode.Backslash) {
-		return false;
+	let code = pAth.chArCodeAt(0);
+	if (code !== ChArCode.BAckslAsh) {
+		return fAlse;
 	}
-	code = path.charCodeAt(1);
-	if (code !== CharCode.Backslash) {
-		return false;
+	code = pAth.chArCodeAt(1);
+	if (code !== ChArCode.BAckslAsh) {
+		return fAlse;
 	}
 	let pos = 2;
-	const start = pos;
-	for (; pos < path.length; pos++) {
-		code = path.charCodeAt(pos);
-		if (code === CharCode.Backslash) {
-			break;
+	const stArt = pos;
+	for (; pos < pAth.length; pos++) {
+		code = pAth.chArCodeAt(pos);
+		if (code === ChArCode.BAckslAsh) {
+			breAk;
 		}
 	}
-	if (start === pos) {
-		return false;
+	if (stArt === pos) {
+		return fAlse;
 	}
-	code = path.charCodeAt(pos + 1);
-	if (isNaN(code) || code === CharCode.Backslash) {
-		return false;
+	code = pAth.chArCodeAt(pos + 1);
+	if (isNAN(code) || code === ChArCode.BAckslAsh) {
+		return fAlse;
 	}
 	return true;
 }
 
-// Reference: https://en.wikipedia.org/wiki/Filename
+// Reference: https://en.wikipediA.org/wiki/FilenAme
 const WINDOWS_INVALID_FILE_CHARS = /[\\/:\*\?"<>\|]/g;
 const UNIX_INVALID_FILE_CHARS = /[\\/]/g;
-const WINDOWS_FORBIDDEN_NAMES = /^(con|prn|aux|clock\$|nul|lpt[0-9]|com[0-9])(\.(.*?))?$/i;
-export function isValidBasename(name: string | null | undefined, isWindowsOS: boolean = isWindows): boolean {
-	const invalidFileChars = isWindowsOS ? WINDOWS_INVALID_FILE_CHARS : UNIX_INVALID_FILE_CHARS;
+const WINDOWS_FORBIDDEN_NAMES = /^(con|prn|Aux|clock\$|nul|lpt[0-9]|com[0-9])(\.(.*?))?$/i;
+export function isVAlidBAsenAme(nAme: string | null | undefined, isWindowsOS: booleAn = isWindows): booleAn {
+	const invAlidFileChArs = isWindowsOS ? WINDOWS_INVALID_FILE_CHARS : UNIX_INVALID_FILE_CHARS;
 
-	if (!name || name.length === 0 || /^\s+$/.test(name)) {
-		return false; // require a name that is not just whitespace
+	if (!nAme || nAme.length === 0 || /^\s+$/.test(nAme)) {
+		return fAlse; // require A nAme thAt is not just whitespAce
 	}
 
-	invalidFileChars.lastIndex = 0; // the holy grail of software development
-	if (invalidFileChars.test(name)) {
-		return false; // check for certain invalid file characters
+	invAlidFileChArs.lAstIndex = 0; // the holy grAil of softwAre development
+	if (invAlidFileChArs.test(nAme)) {
+		return fAlse; // check for certAin invAlid file chArActers
 	}
 
-	if (isWindowsOS && WINDOWS_FORBIDDEN_NAMES.test(name)) {
-		return false; // check for certain invalid file names
+	if (isWindowsOS && WINDOWS_FORBIDDEN_NAMES.test(nAme)) {
+		return fAlse; // check for certAin invAlid file nAmes
 	}
 
-	if (name === '.' || name === '..') {
-		return false; // check for reserved values
+	if (nAme === '.' || nAme === '..') {
+		return fAlse; // check for reserved vAlues
 	}
 
-	if (isWindowsOS && name[name.length - 1] === '.') {
-		return false; // Windows: file cannot end with a "."
+	if (isWindowsOS && nAme[nAme.length - 1] === '.') {
+		return fAlse; // Windows: file cAnnot end with A "."
 	}
 
-	if (isWindowsOS && name.length !== name.trim().length) {
-		return false; // Windows: file cannot end with a whitespace
+	if (isWindowsOS && nAme.length !== nAme.trim().length) {
+		return fAlse; // Windows: file cAnnot end with A whitespAce
 	}
 
-	if (name.length > 255) {
-		return false; // most file systems do not allow files > 255 length
+	if (nAme.length > 255) {
+		return fAlse; // most file systems do not Allow files > 255 length
 	}
 
 	return true;
 }
 
-export function isEqual(pathA: string, pathB: string, ignoreCase?: boolean): boolean {
-	const identityEquals = (pathA === pathB);
-	if (!ignoreCase || identityEquals) {
-		return identityEquals;
+export function isEquAl(pAthA: string, pAthB: string, ignoreCAse?: booleAn): booleAn {
+	const identityEquAls = (pAthA === pAthB);
+	if (!ignoreCAse || identityEquAls) {
+		return identityEquAls;
 	}
 
-	if (!pathA || !pathB) {
-		return false;
+	if (!pAthA || !pAthB) {
+		return fAlse;
 	}
 
-	return equalsIgnoreCase(pathA, pathB);
+	return equAlsIgnoreCAse(pAthA, pAthB);
 }
 
-export function isEqualOrParent(base: string, parentCandidate: string, ignoreCase?: boolean, separator = sep): boolean {
-	if (base === parentCandidate) {
+export function isEquAlOrPArent(bAse: string, pArentCAndidAte: string, ignoreCAse?: booleAn, sepArAtor = sep): booleAn {
+	if (bAse === pArentCAndidAte) {
 		return true;
 	}
 
-	if (!base || !parentCandidate) {
-		return false;
+	if (!bAse || !pArentCAndidAte) {
+		return fAlse;
 	}
 
-	if (parentCandidate.length > base.length) {
-		return false;
+	if (pArentCAndidAte.length > bAse.length) {
+		return fAlse;
 	}
 
-	if (ignoreCase) {
-		const beginsWith = startsWithIgnoreCase(base, parentCandidate);
+	if (ignoreCAse) {
+		const beginsWith = stArtsWithIgnoreCAse(bAse, pArentCAndidAte);
 		if (!beginsWith) {
-			return false;
+			return fAlse;
 		}
 
-		if (parentCandidate.length === base.length) {
-			return true; // same path, different casing
+		if (pArentCAndidAte.length === bAse.length) {
+			return true; // sAme pAth, different cAsing
 		}
 
-		let sepOffset = parentCandidate.length;
-		if (parentCandidate.charAt(parentCandidate.length - 1) === separator) {
-			sepOffset--; // adjust the expected sep offset in case our candidate already ends in separator character
+		let sepOffset = pArentCAndidAte.length;
+		if (pArentCAndidAte.chArAt(pArentCAndidAte.length - 1) === sepArAtor) {
+			sepOffset--; // Adjust the expected sep offset in cAse our cAndidAte AlreAdy ends in sepArAtor chArActer
 		}
 
-		return base.charAt(sepOffset) === separator;
+		return bAse.chArAt(sepOffset) === sepArAtor;
 	}
 
-	if (parentCandidate.charAt(parentCandidate.length - 1) !== separator) {
-		parentCandidate += separator;
+	if (pArentCAndidAte.chArAt(pArentCAndidAte.length - 1) !== sepArAtor) {
+		pArentCAndidAte += sepArAtor;
 	}
 
-	return base.indexOf(parentCandidate) === 0;
+	return bAse.indexOf(pArentCAndidAte) === 0;
 }
 
-export function isWindowsDriveLetter(char0: number): boolean {
-	return char0 >= CharCode.A && char0 <= CharCode.Z || char0 >= CharCode.a && char0 <= CharCode.z;
+export function isWindowsDriveLetter(chAr0: number): booleAn {
+	return chAr0 >= ChArCode.A && chAr0 <= ChArCode.Z || chAr0 >= ChArCode.A && chAr0 <= ChArCode.z;
 }
 
-export function sanitizeFilePath(candidate: string, cwd: string): string {
+export function sAnitizeFilePAth(cAndidAte: string, cwd: string): string {
 
-	// Special case: allow to open a drive letter without trailing backslash
-	if (isWindows && candidate.endsWith(':')) {
-		candidate += sep;
+	// SpeciAl cAse: Allow to open A drive letter without trAiling bAckslAsh
+	if (isWindows && cAndidAte.endsWith(':')) {
+		cAndidAte += sep;
 	}
 
-	// Ensure absolute
-	if (!isAbsolute(candidate)) {
-		candidate = join(cwd, candidate);
+	// Ensure Absolute
+	if (!isAbsolute(cAndidAte)) {
+		cAndidAte = join(cwd, cAndidAte);
 	}
 
-	// Ensure normalized
-	candidate = normalize(candidate);
+	// Ensure normAlized
+	cAndidAte = normAlize(cAndidAte);
 
-	// Ensure no trailing slash/backslash
+	// Ensure no trAiling slAsh/bAckslAsh
 	if (isWindows) {
-		candidate = rtrim(candidate, sep);
+		cAndidAte = rtrim(cAndidAte, sep);
 
-		// Special case: allow to open drive root ('C:\')
-		if (candidate.endsWith(':')) {
-			candidate += sep;
+		// SpeciAl cAse: Allow to open drive root ('C:\')
+		if (cAndidAte.endsWith(':')) {
+			cAndidAte += sep;
 		}
 
 	} else {
-		candidate = rtrim(candidate, sep);
+		cAndidAte = rtrim(cAndidAte, sep);
 
-		// Special case: allow to open root ('/')
-		if (!candidate) {
-			candidate = sep;
+		// SpeciAl cAse: Allow to open root ('/')
+		if (!cAndidAte) {
+			cAndidAte = sep;
 		}
 	}
 
-	return candidate;
+	return cAndidAte;
 }
 
-export function isRootOrDriveLetter(path: string): boolean {
-	const pathNormalized = normalize(path);
+export function isRootOrDriveLetter(pAth: string): booleAn {
+	const pAthNormAlized = normAlize(pAth);
 
 	if (isWindows) {
-		if (path.length > 3) {
-			return false;
+		if (pAth.length > 3) {
+			return fAlse;
 		}
 
-		return isWindowsDriveLetter(pathNormalized.charCodeAt(0))
-			&& pathNormalized.charCodeAt(1) === CharCode.Colon
-			&& (path.length === 2 || pathNormalized.charCodeAt(2) === CharCode.Backslash);
+		return isWindowsDriveLetter(pAthNormAlized.chArCodeAt(0))
+			&& pAthNormAlized.chArCodeAt(1) === ChArCode.Colon
+			&& (pAth.length === 2 || pAthNormAlized.chArCodeAt(2) === ChArCode.BAckslAsh);
 	}
 
-	return pathNormalized === posix.sep;
+	return pAthNormAlized === posix.sep;
 }
 
-export function indexOfPath(path: string, candidate: string, ignoreCase?: boolean): number {
-	if (candidate.length > path.length) {
+export function indexOfPAth(pAth: string, cAndidAte: string, ignoreCAse?: booleAn): number {
+	if (cAndidAte.length > pAth.length) {
 		return -1;
 	}
 
-	if (path === candidate) {
+	if (pAth === cAndidAte) {
 		return 0;
 	}
 
-	if (ignoreCase) {
-		path = path.toLowerCase();
-		candidate = candidate.toLowerCase();
+	if (ignoreCAse) {
+		pAth = pAth.toLowerCAse();
+		cAndidAte = cAndidAte.toLowerCAse();
 	}
 
-	return path.indexOf(candidate);
+	return pAth.indexOf(cAndidAte);
 }
 
-export interface IPathWithLineAndColumn {
-	path: string;
+export interfAce IPAthWithLineAndColumn {
+	pAth: string;
 	line?: number;
 	column?: number;
 }
 
-export function parseLineAndColumnAware(rawPath: string): IPathWithLineAndColumn {
-	const segments = rawPath.split(':'); // C:\file.txt:<line>:<column>
+export function pArseLineAndColumnAwAre(rAwPAth: string): IPAthWithLineAndColumn {
+	const segments = rAwPAth.split(':'); // C:\file.txt:<line>:<column>
 
-	let path: string | undefined = undefined;
+	let pAth: string | undefined = undefined;
 	let line: number | undefined = undefined;
 	let column: number | undefined = undefined;
 
-	segments.forEach(segment => {
+	segments.forEAch(segment => {
 		const segmentAsNumber = Number(segment);
 		if (!isNumber(segmentAsNumber)) {
-			path = !!path ? [path, segment].join(':') : segment; // a colon can well be part of a path (e.g. C:\...)
+			pAth = !!pAth ? [pAth, segment].join(':') : segment; // A colon cAn well be pArt of A pAth (e.g. C:\...)
 		} else if (line === undefined) {
 			line = segmentAsNumber;
 		} else if (column === undefined) {
@@ -326,13 +326,13 @@ export function parseLineAndColumnAware(rawPath: string): IPathWithLineAndColumn
 		}
 	});
 
-	if (!path) {
-		throw new Error('Format for `--goto` should be: `FILE:LINE(:COLUMN)`');
+	if (!pAth) {
+		throw new Error('FormAt for `--goto` should be: `FILE:LINE(:COLUMN)`');
 	}
 
 	return {
-		path,
+		pAth,
 		line: line !== undefined ? line : undefined,
-		column: column !== undefined ? column : line !== undefined ? 1 : undefined // if we have a line, make sure column is also set
+		column: column !== undefined ? column : line !== undefined ? 1 : undefined // if we hAve A line, mAke sure column is Also set
 	};
 }

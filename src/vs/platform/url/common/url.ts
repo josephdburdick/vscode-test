@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable } from 'vs/base/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
 
-export const IURLService = createDecorator<IURLService>('urlService');
+export const IURLService = creAteDecorAtor<IURLService>('urlService');
 
-export interface IOpenURLOptions {
+export interfAce IOpenURLOptions {
 
 	/**
-	 * If not provided or `false`, signals that the
-	 * URL to open did not originate from the product
-	 * but outside. As such, a confirmation dialog
+	 * If not provided or `fAlse`, signAls thAt the
+	 * URL to open did not originAte from the product
+	 * but outside. As such, A confirmAtion diAlog
 	 * might be shown to the user.
 	 */
-	trusted?: boolean;
+	trusted?: booleAn;
 }
 
-export interface IURLHandler {
-	handleURL(uri: URI, options?: IOpenURLOptions): Promise<boolean>;
+export interfAce IURLHAndler {
+	hAndleURL(uri: URI, options?: IOpenURLOptions): Promise<booleAn>;
 }
 
-export interface IURLService {
+export interfAce IURLService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Create a URL that can be called to trigger IURLhandlers.
-	 * The URL that gets passed to the IURLHandlers carries over
-	 * any of the provided IURLCreateOption values.
+	 * CreAte A URL thAt cAn be cAlled to trigger IURLhAndlers.
+	 * The URL thAt gets pAssed to the IURLHAndlers cArries over
+	 * Any of the provided IURLCreAteOption vAlues.
 	 */
-	create(options?: Partial<UriComponents>): URI;
+	creAte(options?: PArtiAl<UriComponents>): URI;
 
-	open(url: URI, options?: IOpenURLOptions): Promise<boolean>;
+	open(url: URI, options?: IOpenURLOptions): Promise<booleAn>;
 
-	registerHandler(handler: IURLHandler): IDisposable;
+	registerHAndler(hAndler: IURLHAndler): IDisposAble;
 }

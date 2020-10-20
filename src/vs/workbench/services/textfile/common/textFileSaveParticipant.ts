@@ -1,70 +1,70 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { raceCancellation } from 'vs/base/common/async';
-import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { ILogService } from 'vs/platform/log/common/log';
-import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
-import { ITextFileSaveParticipant, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
-import { SaveReason } from 'vs/workbench/common/editor';
-import { IDisposable, Disposable, toDisposable } from 'vs/base/common/lifecycle';
-import { insert } from 'vs/base/common/arrays';
+import { locAlize } from 'vs/nls';
+import { rAceCAncellAtion } from 'vs/bAse/common/Async';
+import { CAncellAtionTokenSource, CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { IProgressService, ProgressLocAtion } from 'vs/plAtform/progress/common/progress';
+import { ITextFileSAvePArticipAnt, ITextFileEditorModel } from 'vs/workbench/services/textfile/common/textfiles';
+import { SAveReAson } from 'vs/workbench/common/editor';
+import { IDisposAble, DisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { insert } from 'vs/bAse/common/ArrAys';
 
-export class TextFileSaveParticipant extends Disposable {
+export clAss TextFileSAvePArticipAnt extends DisposAble {
 
-	private readonly saveParticipants: ITextFileSaveParticipant[] = [];
+	privAte reAdonly sAvePArticipAnts: ITextFileSAvePArticipAnt[] = [];
 
 	constructor(
-		@IProgressService private readonly progressService: IProgressService,
-		@ILogService private readonly logService: ILogService
+		@IProgressService privAte reAdonly progressService: IProgressService,
+		@ILogService privAte reAdonly logService: ILogService
 	) {
 		super();
 	}
 
-	addSaveParticipant(participant: ITextFileSaveParticipant): IDisposable {
-		const remove = insert(this.saveParticipants, participant);
+	AddSAvePArticipAnt(pArticipAnt: ITextFileSAvePArticipAnt): IDisposAble {
+		const remove = insert(this.sAvePArticipAnts, pArticipAnt);
 
-		return toDisposable(() => remove());
+		return toDisposAble(() => remove());
 	}
 
-	participate(model: ITextFileEditorModel, context: { reason: SaveReason; }, token: CancellationToken): Promise<void> {
-		const cts = new CancellationTokenSource(token);
+	pArticipAte(model: ITextFileEditorModel, context: { reAson: SAveReAson; }, token: CAncellAtionToken): Promise<void> {
+		const cts = new CAncellAtionTokenSource(token);
 
 		return this.progressService.withProgress({
-			title: localize('saveParticipants', "Saving '{0}'", model.name),
-			location: ProgressLocation.Notification,
-			cancellable: true,
-			delay: model.isDirty() ? 3000 : 5000
-		}, async progress => {
+			title: locAlize('sAvePArticipAnts', "SAving '{0}'", model.nAme),
+			locAtion: ProgressLocAtion.NotificAtion,
+			cAncellAble: true,
+			delAy: model.isDirty() ? 3000 : 5000
+		}, Async progress => {
 
-			// undoStop before participation
-			model.textEditorModel?.pushStackElement();
+			// undoStop before pArticipAtion
+			model.textEditorModel?.pushStAckElement();
 
-			for (const saveParticipant of this.saveParticipants) {
-				if (cts.token.isCancellationRequested || !model.textEditorModel /* disposed */) {
-					break;
+			for (const sAvePArticipAnt of this.sAvePArticipAnts) {
+				if (cts.token.isCAncellAtionRequested || !model.textEditorModel /* disposed */) {
+					breAk;
 				}
 
 				try {
-					const promise = saveParticipant.participate(model, context, progress, cts.token);
-					await raceCancellation(promise, cts.token);
-				} catch (err) {
-					this.logService.warn(err);
+					const promise = sAvePArticipAnt.pArticipAte(model, context, progress, cts.token);
+					AwAit rAceCAncellAtion(promise, cts.token);
+				} cAtch (err) {
+					this.logService.wArn(err);
 				}
 			}
 
-			// undoStop after participation
-			model.textEditorModel?.pushStackElement();
+			// undoStop After pArticipAtion
+			model.textEditorModel?.pushStAckElement();
 		}, () => {
-			// user cancel
+			// user cAncel
 			cts.dispose(true);
 		});
 	}
 
 	dispose(): void {
-		this.saveParticipants.splice(0, this.saveParticipants.length);
+		this.sAvePArticipAnts.splice(0, this.sAvePArticipAnts.length);
 	}
 }

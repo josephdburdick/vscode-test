@@ -1,79 +1,79 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Range } from 'vs/editor/common/core/range';
-import { BracketsUtils } from 'vs/editor/common/modes/supports/richEditBrackets';
+import * As Assert from 'Assert';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { BrAcketsUtils } from 'vs/editor/common/modes/supports/richEditBrAckets';
 
-suite('richEditBrackets', () => {
+suite('richEditBrAckets', () => {
 
-	function findPrevBracketInRange(reversedBracketRegex: RegExp, lineText: string, currentTokenStart: number, currentTokenEnd: number): Range | null {
-		return BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, lineText, currentTokenStart, currentTokenEnd);
+	function findPrevBrAcketInRAnge(reversedBrAcketRegex: RegExp, lineText: string, currentTokenStArt: number, currentTokenEnd: number): RAnge | null {
+		return BrAcketsUtils.findPrevBrAcketInRAnge(reversedBrAcketRegex, 1, lineText, currentTokenStArt, currentTokenEnd);
 	}
 
-	function findNextBracketInRange(forwardBracketRegex: RegExp, lineText: string, currentTokenStart: number, currentTokenEnd: number): Range | null {
-		return BracketsUtils.findNextBracketInRange(forwardBracketRegex, 1, lineText, currentTokenStart, currentTokenEnd);
+	function findNextBrAcketInRAnge(forwArdBrAcketRegex: RegExp, lineText: string, currentTokenStArt: number, currentTokenEnd: number): RAnge | null {
+		return BrAcketsUtils.findNextBrAcketInRAnge(forwArdBrAcketRegex, 1, lineText, currentTokenStArt, currentTokenEnd);
 	}
 
-	test('findPrevBracketInToken one char 1', () => {
-		let result = findPrevBracketInRange(/(\{)|(\})/i, '{', 0, 1);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 2);
+	test('findPrevBrAcketInToken one chAr 1', () => {
+		let result = findPrevBrAcketInRAnge(/(\{)|(\})/i, '{', 0, 1);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 2);
 	});
 
-	test('findPrevBracketInToken one char 2', () => {
-		let result = findPrevBracketInRange(/(\{)|(\})/i, '{{', 0, 1);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 2);
+	test('findPrevBrAcketInToken one chAr 2', () => {
+		let result = findPrevBrAcketInRAnge(/(\{)|(\})/i, '{{', 0, 1);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 2);
 	});
 
-	test('findPrevBracketInToken one char 3', () => {
-		let result = findPrevBracketInRange(/(\{)|(\})/i, '{hello world!', 0, 13);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 2);
+	test('findPrevBrAcketInToken one chAr 3', () => {
+		let result = findPrevBrAcketInRAnge(/(\{)|(\})/i, '{hello world!', 0, 13);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 2);
 	});
 
-	test('findPrevBracketInToken more chars 1', () => {
-		let result = findPrevBracketInRange(/(olleh)/i, 'hello world!', 0, 12);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 6);
+	test('findPrevBrAcketInToken more chArs 1', () => {
+		let result = findPrevBrAcketInRAnge(/(olleh)/i, 'hello world!', 0, 12);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 6);
 	});
 
-	test('findPrevBracketInToken more chars 2', () => {
-		let result = findPrevBracketInRange(/(olleh)/i, 'hello world!', 0, 5);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 6);
+	test('findPrevBrAcketInToken more chArs 2', () => {
+		let result = findPrevBrAcketInRAnge(/(olleh)/i, 'hello world!', 0, 5);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 6);
 	});
 
-	test('findPrevBracketInToken more chars 3', () => {
-		let result = findPrevBracketInRange(/(olleh)/i, ' hello world!', 0, 6);
-		assert.equal(result!.startColumn, 2);
-		assert.equal(result!.endColumn, 7);
+	test('findPrevBrAcketInToken more chArs 3', () => {
+		let result = findPrevBrAcketInRAnge(/(olleh)/i, ' hello world!', 0, 6);
+		Assert.equAl(result!.stArtColumn, 2);
+		Assert.equAl(result!.endColumn, 7);
 	});
 
-	test('findNextBracketInToken one char', () => {
-		let result = findNextBracketInRange(/(\{)|(\})/i, '{', 0, 1);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 2);
+	test('findNextBrAcketInToken one chAr', () => {
+		let result = findNextBrAcketInRAnge(/(\{)|(\})/i, '{', 0, 1);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 2);
 	});
 
-	test('findNextBracketInToken more chars', () => {
-		let result = findNextBracketInRange(/(world)/i, 'hello world!', 0, 12);
-		assert.equal(result!.startColumn, 7);
-		assert.equal(result!.endColumn, 12);
+	test('findNextBrAcketInToken more chArs', () => {
+		let result = findNextBrAcketInRAnge(/(world)/i, 'hello world!', 0, 12);
+		Assert.equAl(result!.stArtColumn, 7);
+		Assert.equAl(result!.endColumn, 12);
 	});
 
-	test('findNextBracketInToken with emoty result', () => {
-		let result = findNextBracketInRange(/(\{)|(\})/i, '', 0, 0);
-		assert.equal(result, null);
+	test('findNextBrAcketInToken with emoty result', () => {
+		let result = findNextBrAcketInRAnge(/(\{)|(\})/i, '', 0, 0);
+		Assert.equAl(result, null);
 	});
 
-	test('issue #3894: [Handlebars] Curly braces edit issues', () => {
-		let result = findPrevBracketInRange(/(\-\-!<)|(>\-\-)|(\{\{)|(\}\})/i, '{{asd}}', 0, 2);
-		assert.equal(result!.startColumn, 1);
-		assert.equal(result!.endColumn, 3);
+	test('issue #3894: [HAndlebArs] Curly brAces edit issues', () => {
+		let result = findPrevBrAcketInRAnge(/(\-\-!<)|(>\-\-)|(\{\{)|(\}\})/i, '{{Asd}}', 0, 2);
+		Assert.equAl(result!.stArtColumn, 1);
+		Assert.equAl(result!.endColumn, 3);
 	});
 
 });

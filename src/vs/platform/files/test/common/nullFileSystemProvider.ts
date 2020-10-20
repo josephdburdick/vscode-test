@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { FileSystemProviderCapabilities, IFileSystemProvider, IWatchOptions, IStat, FileType, FileDeleteOptions, FileOverwriteOptions, FileWriteOptions, FileOpenOptions, IFileChange } from 'vs/platform/files/common/files';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { Emitter, Event } from 'vs/base/common/event';
+import { URI } from 'vs/bAse/common/uri';
+import { FileSystemProviderCApAbilities, IFileSystemProvider, IWAtchOptions, IStAt, FileType, FileDeleteOptions, FileOverwriteOptions, FileWriteOptions, FileOpenOptions, IFileChAnge } from 'vs/plAtform/files/common/files';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter, Event } from 'vs/bAse/common/event';
 
-export class NullFileSystemProvider implements IFileSystemProvider {
+export clAss NullFileSystemProvider implements IFileSystemProvider {
 
-	capabilities: FileSystemProviderCapabilities = FileSystemProviderCapabilities.Readonly;
+	cApAbilities: FileSystemProviderCApAbilities = FileSystemProviderCApAbilities.ReAdonly;
 
-	private readonly _onDidChangeCapabilities = new Emitter<void>();
-	readonly onDidChangeCapabilities: Event<void> = this._onDidChangeCapabilities.event;
+	privAte reAdonly _onDidChAngeCApAbilities = new Emitter<void>();
+	reAdonly onDidChAngeCApAbilities: Event<void> = this._onDidChAngeCApAbilities.event;
 
-	setCapabilities(capabilities: FileSystemProviderCapabilities): void {
-		this.capabilities = capabilities;
+	setCApAbilities(cApAbilities: FileSystemProviderCApAbilities): void {
+		this.cApAbilities = cApAbilities;
 
-		this._onDidChangeCapabilities.fire();
+		this._onDidChAngeCApAbilities.fire();
 	}
 
-	readonly onDidChangeFile: Event<readonly IFileChange[]> = Event.None;
+	reAdonly onDidChAngeFile: Event<reAdonly IFileChAnge[]> = Event.None;
 
-	constructor(private disposableFactory: () => IDisposable = () => Disposable.None) { }
+	constructor(privAte disposAbleFActory: () => IDisposAble = () => DisposAble.None) { }
 
-	watch(resource: URI, opts: IWatchOptions): IDisposable { return this.disposableFactory(); }
-	async stat(resource: URI): Promise<IStat> { return undefined!; }
-	async mkdir(resource: URI): Promise<void> { return undefined; }
-	async readdir(resource: URI): Promise<[string, FileType][]> { return undefined!; }
-	async delete(resource: URI, opts: FileDeleteOptions): Promise<void> { return undefined; }
-	async rename(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> { return undefined; }
-	async copy?(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> { return undefined; }
-	async readFile?(resource: URI): Promise<Uint8Array> { return undefined!; }
-	async writeFile?(resource: URI, content: Uint8Array, opts: FileWriteOptions): Promise<void> { return undefined; }
-	async open?(resource: URI, opts: FileOpenOptions): Promise<number> { return undefined!; }
-	async close?(fd: number): Promise<void> { return undefined; }
-	async read?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> { return undefined!; }
-	async write?(fd: number, pos: number, data: Uint8Array, offset: number, length: number): Promise<number> { return undefined!; }
+	wAtch(resource: URI, opts: IWAtchOptions): IDisposAble { return this.disposAbleFActory(); }
+	Async stAt(resource: URI): Promise<IStAt> { return undefined!; }
+	Async mkdir(resource: URI): Promise<void> { return undefined; }
+	Async reAddir(resource: URI): Promise<[string, FileType][]> { return undefined!; }
+	Async delete(resource: URI, opts: FileDeleteOptions): Promise<void> { return undefined; }
+	Async renAme(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> { return undefined; }
+	Async copy?(from: URI, to: URI, opts: FileOverwriteOptions): Promise<void> { return undefined; }
+	Async reAdFile?(resource: URI): Promise<Uint8ArrAy> { return undefined!; }
+	Async writeFile?(resource: URI, content: Uint8ArrAy, opts: FileWriteOptions): Promise<void> { return undefined; }
+	Async open?(resource: URI, opts: FileOpenOptions): Promise<number> { return undefined!; }
+	Async close?(fd: number): Promise<void> { return undefined; }
+	Async reAd?(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): Promise<number> { return undefined!; }
+	Async write?(fd: number, pos: number, dAtA: Uint8ArrAy, offset: number, length: number): Promise<number> { return undefined!; }
 }

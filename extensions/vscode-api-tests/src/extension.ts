@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export function activate(_context: vscode.ExtensionContext) {
-	// Set context as a global as some tests depend on it
-	(global as any).testExtensionContext = _context;
+export function ActivAte(_context: vscode.ExtensionContext) {
+	// Set context As A globAl As some tests depend on it
+	(globAl As Any).testExtensionContext = _context;
 }

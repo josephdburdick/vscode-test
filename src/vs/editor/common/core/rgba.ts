@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 /**
- * A very VM friendly rgba datastructure.
- * Please don't touch unless you take a look at the IR.
+ * A very VM friendly rgbA dAtAstructure.
+ * PleAse don't touch unless you tAke A look At the IR.
  */
-export class RGBA8 {
-	_rgba8Brand: void;
+export clAss RGBA8 {
+	_rgbA8BrAnd: void;
 
-	static readonly Empty = new RGBA8(0, 0, 0, 0);
+	stAtic reAdonly Empty = new RGBA8(0, 0, 0, 0);
 
 	/**
 	 * Red: integer in [0-255]
 	 */
-	public readonly r: number;
+	public reAdonly r: number;
 	/**
 	 * Green: integer in [0-255]
 	 */
-	public readonly g: number;
+	public reAdonly g: number;
 	/**
 	 * Blue: integer in [0-255]
 	 */
-	public readonly b: number;
+	public reAdonly b: number;
 	/**
-	 * Alpha: integer in [0-255]
+	 * AlphA: integer in [0-255]
 	 */
-	public readonly a: number;
+	public reAdonly A: number;
 
-	constructor(r: number, g: number, b: number, a: number) {
-		this.r = RGBA8._clamp(r);
-		this.g = RGBA8._clamp(g);
-		this.b = RGBA8._clamp(b);
-		this.a = RGBA8._clamp(a);
+	constructor(r: number, g: number, b: number, A: number) {
+		this.r = RGBA8._clAmp(r);
+		this.g = RGBA8._clAmp(g);
+		this.b = RGBA8._clAmp(b);
+		this.A = RGBA8._clAmp(A);
 	}
 
-	public equals(other: RGBA8): boolean {
+	public equAls(other: RGBA8): booleAn {
 		return (
 			this.r === other.r
 			&& this.g === other.g
 			&& this.b === other.b
-			&& this.a === other.a
+			&& this.A === other.A
 		);
 	}
 
-	private static _clamp(c: number): number {
+	privAte stAtic _clAmp(c: number): number {
 		if (c < 0) {
 			return 0;
 		}

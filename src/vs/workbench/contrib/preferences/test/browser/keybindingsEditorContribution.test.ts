@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { KeybindingEditorDecorationsRenderer } from 'vs/workbench/contrib/preferences/browser/keybindingsEditorContribution';
+import * As Assert from 'Assert';
+import { KeybindingEditorDecorAtionsRenderer } from 'vs/workbench/contrib/preferences/browser/keybindingsEditorContribution';
 
 suite('KeybindingsEditorContribution', () => {
 
-	function assertUserSettingsFuzzyEquals(a: string, b: string, expected: boolean): void {
-		const actual = KeybindingEditorDecorationsRenderer._userSettingsFuzzyEquals(a, b);
-		const message = expected ? `${a} == ${b}` : `${a} != ${b}`;
-		assert.equal(actual, expected, 'fuzzy: ' + message);
+	function AssertUserSettingsFuzzyEquAls(A: string, b: string, expected: booleAn): void {
+		const ActuAl = KeybindingEditorDecorAtionsRenderer._userSettingsFuzzyEquAls(A, b);
+		const messAge = expected ? `${A} == ${b}` : `${A} != ${b}`;
+		Assert.equAl(ActuAl, expected, 'fuzzy: ' + messAge);
 	}
 
-	function assertEqual(a: string, b: string): void {
-		assertUserSettingsFuzzyEquals(a, b, true);
+	function AssertEquAl(A: string, b: string): void {
+		AssertUserSettingsFuzzyEquAls(A, b, true);
 	}
 
-	function assertDifferent(a: string, b: string): void {
-		assertUserSettingsFuzzyEquals(a, b, false);
+	function AssertDifferent(A: string, b: string): void {
+		AssertUserSettingsFuzzyEquAls(A, b, fAlse);
 	}
 
-	test('_userSettingsFuzzyEquals', () => {
-		assertEqual('a', 'a');
-		assertEqual('a', 'A');
-		assertEqual('ctrl+a', 'CTRL+A');
-		assertEqual('ctrl+a', ' CTRL+A ');
+	test('_userSettingsFuzzyEquAls', () => {
+		AssertEquAl('A', 'A');
+		AssertEquAl('A', 'A');
+		AssertEquAl('ctrl+A', 'CTRL+A');
+		AssertEquAl('ctrl+A', ' CTRL+A ');
 
-		assertEqual('ctrl+shift+a', 'shift+ctrl+a');
-		assertEqual('ctrl+shift+a ctrl+alt+b', 'shift+ctrl+a alt+ctrl+b');
+		AssertEquAl('ctrl+shift+A', 'shift+ctrl+A');
+		AssertEquAl('ctrl+shift+A ctrl+Alt+b', 'shift+ctrl+A Alt+ctrl+b');
 
-		assertDifferent('ctrl+[KeyA]', 'ctrl+a');
+		AssertDifferent('ctrl+[KeyA]', 'ctrl+A');
 
 		// issue #23335
-		assertEqual('cmd+shift+p', 'shift+cmd+p');
-		assertEqual('cmd+shift+p', 'shift-cmd-p');
+		AssertEquAl('cmd+shift+p', 'shift+cmd+p');
+		AssertEquAl('cmd+shift+p', 'shift-cmd-p');
 	});
 });

@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import 'mocha';
-import * as assert from 'assert';
-import { joinPath, normalizePath, resolvePath, extname } from '../requests';
+import 'mochA';
+import * As Assert from 'Assert';
+import { joinPAth, normAlizePAth, resolvePAth, extnAme } from '../requests';
 
 suite('requests', () => {
-	test('join', async function () {
-		assert.equal(joinPath('foo://a/foo/bar', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(joinPath('foo://a/foo/bar/', '/x'), 'foo://a/foo/bar/x');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x/'), 'foo://a/foo/bar/x/');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x', 'y'), 'foo://a/foo/bar/x/y');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x/', '/y'), 'foo://a/foo/bar/x/y');
-		assert.equal(joinPath('foo://a/foo/bar/', '.', '/y'), 'foo://a/foo/bar/y');
-		assert.equal(joinPath('foo://a/foo/bar/', 'x/y/z', '..'), 'foo://a/foo/bar/x/y');
+	test('join', Async function () {
+		Assert.equAl(joinPAth('foo://A/foo/bAr', 'x'), 'foo://A/foo/bAr/x');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', 'x'), 'foo://A/foo/bAr/x');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', '/x'), 'foo://A/foo/bAr/x');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', 'x/'), 'foo://A/foo/bAr/x/');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', 'x', 'y'), 'foo://A/foo/bAr/x/y');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', 'x/', '/y'), 'foo://A/foo/bAr/x/y');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', '.', '/y'), 'foo://A/foo/bAr/y');
+		Assert.equAl(joinPAth('foo://A/foo/bAr/', 'x/y/z', '..'), 'foo://A/foo/bAr/x/y');
 	});
 
-	test('resolve', async function () {
-		assert.equal(resolvePath('foo://a/foo/bar', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(resolvePath('foo://a/foo/bar/', 'x'), 'foo://a/foo/bar/x');
-		assert.equal(resolvePath('foo://a/foo/bar/', '/x'), 'foo://a/x');
-		assert.equal(resolvePath('foo://a/foo/bar/', 'x/'), 'foo://a/foo/bar/x/');
+	test('resolve', Async function () {
+		Assert.equAl(resolvePAth('foo://A/foo/bAr', 'x'), 'foo://A/foo/bAr/x');
+		Assert.equAl(resolvePAth('foo://A/foo/bAr/', 'x'), 'foo://A/foo/bAr/x');
+		Assert.equAl(resolvePAth('foo://A/foo/bAr/', '/x'), 'foo://A/x');
+		Assert.equAl(resolvePAth('foo://A/foo/bAr/', 'x/'), 'foo://A/foo/bAr/x/');
 	});
 
-	test('normalize', async function () {
-		function assertNormalize(path: string, expected: string) {
-			assert.equal(normalizePath(path.split('/')), expected, path);
+	test('normAlize', Async function () {
+		function AssertNormAlize(pAth: string, expected: string) {
+			Assert.equAl(normAlizePAth(pAth.split('/')), expected, pAth);
 		}
-		assertNormalize('a', 'a');
-		assertNormalize('/a', '/a');
-		assertNormalize('a/', 'a/');
-		assertNormalize('a/b', 'a/b');
-		assertNormalize('/a/foo/bar/x', '/a/foo/bar/x');
-		assertNormalize('/a/foo/bar//x', '/a/foo/bar/x');
-		assertNormalize('/a/foo/bar///x', '/a/foo/bar/x');
-		assertNormalize('/a/foo/bar/x/', '/a/foo/bar/x/');
-		assertNormalize('a/foo/bar/x/', 'a/foo/bar/x/');
-		assertNormalize('a/foo/bar/x//', 'a/foo/bar/x/');
-		assertNormalize('//a/foo/bar/x//', '/a/foo/bar/x/');
-		assertNormalize('a/.', 'a');
-		assertNormalize('a/./b', 'a/b');
-		assertNormalize('a/././b', 'a/b');
-		assertNormalize('a/n/../b', 'a/b');
-		assertNormalize('a/n/../', 'a/');
-		assertNormalize('a/n/../', 'a/');
-		assertNormalize('/a/n/../..', '/');
-		assertNormalize('..', '');
-		assertNormalize('/..', '/');
+		AssertNormAlize('A', 'A');
+		AssertNormAlize('/A', '/A');
+		AssertNormAlize('A/', 'A/');
+		AssertNormAlize('A/b', 'A/b');
+		AssertNormAlize('/A/foo/bAr/x', '/A/foo/bAr/x');
+		AssertNormAlize('/A/foo/bAr//x', '/A/foo/bAr/x');
+		AssertNormAlize('/A/foo/bAr///x', '/A/foo/bAr/x');
+		AssertNormAlize('/A/foo/bAr/x/', '/A/foo/bAr/x/');
+		AssertNormAlize('A/foo/bAr/x/', 'A/foo/bAr/x/');
+		AssertNormAlize('A/foo/bAr/x//', 'A/foo/bAr/x/');
+		AssertNormAlize('//A/foo/bAr/x//', '/A/foo/bAr/x/');
+		AssertNormAlize('A/.', 'A');
+		AssertNormAlize('A/./b', 'A/b');
+		AssertNormAlize('A/././b', 'A/b');
+		AssertNormAlize('A/n/../b', 'A/b');
+		AssertNormAlize('A/n/../', 'A/');
+		AssertNormAlize('A/n/../', 'A/');
+		AssertNormAlize('/A/n/../..', '/');
+		AssertNormAlize('..', '');
+		AssertNormAlize('/..', '/');
 	});
 
-	test('extname', async function () {
-		function assertExtName(input: string, expected: string) {
-			assert.equal(extname(input), expected, input);
+	test('extnAme', Async function () {
+		function AssertExtNAme(input: string, expected: string) {
+			Assert.equAl(extnAme(input), expected, input);
 		}
-		assertExtName('foo://a/foo/bar', '');
-		assertExtName('foo://a/foo/bar.foo', '.foo');
-		assertExtName('foo://a/foo/.foo', '');
+		AssertExtNAme('foo://A/foo/bAr', '');
+		AssertExtNAme('foo://A/foo/bAr.foo', '.foo');
+		AssertExtNAme('foo://A/foo/.foo', '');
 	});
 });

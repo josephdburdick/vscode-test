@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 
 /**
- * @deprecated use `FileAccess.asFileUri(relativePath, requireFn).fsPath`
+ * @deprecAted use `FileAccess.AsFileUri(relAtivePAth, requireFn).fsPAth`
  */
-export function getPathFromAmdModule(requirefn: typeof require, relativePath: string): string {
-	return getUriFromAmdModule(requirefn, relativePath).fsPath;
+export function getPAthFromAmdModule(requirefn: typeof require, relAtivePAth: string): string {
+	return getUriFromAmdModule(requirefn, relAtivePAth).fsPAth;
 }
 
 /**
- * @deprecated use `FileAccess.asFileUri()` for node.js contexts or `FileAccess.asBrowserUri` for browser contexts.
+ * @deprecAted use `FileAccess.AsFileUri()` for node.js contexts or `FileAccess.AsBrowserUri` for browser contexts.
  */
-export function getUriFromAmdModule(requirefn: typeof require, relativePath: string): URI {
-	return URI.parse(requirefn.toUrl(relativePath));
+export function getUriFromAmdModule(requirefn: typeof require, relAtivePAth: string): URI {
+	return URI.pArse(requirefn.toUrl(relAtivePAth));
 }

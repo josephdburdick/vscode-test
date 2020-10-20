@@ -1,124 +1,124 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as vscode from 'vscode';
-import * as interfaces from './interfaces';
-import { loadMessageBundle } from 'vscode-nls';
-const localize = loadMessageBundle();
+import * As vscode from 'vscode';
+import * As interfAces from './interfAces';
+import { loAdMessAgeBundle } from 'vscode-nls';
+const locAlize = loAdMessAgeBundle();
 
-export default class MergeDecorator implements vscode.Disposable {
+export defAult clAss MergeDecorAtor implements vscode.DisposAble {
 
-	private decorations: { [key: string]: vscode.TextEditorDecorationType } = {};
+	privAte decorAtions: { [key: string]: vscode.TextEditorDecorAtionType } = {};
 
-	private decorationUsesWholeLine: boolean = true; // Useful for debugging, set to false to see exact match ranges
+	privAte decorAtionUsesWholeLine: booleAn = true; // Useful for debugging, set to fAlse to see exAct mAtch rAnges
 
-	private config?: interfaces.IExtensionConfiguration;
-	private tracker: interfaces.IDocumentMergeConflictTracker;
-	private updating = new Map<vscode.TextEditor, boolean>();
+	privAte config?: interfAces.IExtensionConfigurAtion;
+	privAte trAcker: interfAces.IDocumentMergeConflictTrAcker;
+	privAte updAting = new MAp<vscode.TextEditor, booleAn>();
 
-	constructor(private context: vscode.ExtensionContext, trackerService: interfaces.IDocumentMergeConflictTrackerService) {
-		this.tracker = trackerService.createTracker('decorator');
+	constructor(privAte context: vscode.ExtensionContext, trAckerService: interfAces.IDocumentMergeConflictTrAckerService) {
+		this.trAcker = trAckerService.creAteTrAcker('decorAtor');
 	}
 
-	begin(config: interfaces.IExtensionConfiguration) {
+	begin(config: interfAces.IExtensionConfigurAtion) {
 		this.config = config;
-		this.registerDecorationTypes(config);
+		this.registerDecorAtionTypes(config);
 
-		// Check if we already have a set of active windows, attempt to track these.
-		vscode.window.visibleTextEditors.forEach(e => this.applyDecorations(e));
+		// Check if we AlreAdy hAve A set of Active windows, Attempt to trAck these.
+		vscode.window.visibleTextEditors.forEAch(e => this.ApplyDecorAtions(e));
 
-		vscode.workspace.onDidOpenTextDocument(event => {
-			this.applyDecorationsFromEvent(event);
+		vscode.workspAce.onDidOpenTextDocument(event => {
+			this.ApplyDecorAtionsFromEvent(event);
 		}, null, this.context.subscriptions);
 
-		vscode.workspace.onDidChangeTextDocument(event => {
-			this.applyDecorationsFromEvent(event.document);
+		vscode.workspAce.onDidChAngeTextDocument(event => {
+			this.ApplyDecorAtionsFromEvent(event.document);
 		}, null, this.context.subscriptions);
 
-		vscode.window.onDidChangeVisibleTextEditors((e) => {
-			// Any of which could be new (not just the active one).
-			e.forEach(e => this.applyDecorations(e));
+		vscode.window.onDidChAngeVisibleTextEditors((e) => {
+			// Any of which could be new (not just the Active one).
+			e.forEAch(e => this.ApplyDecorAtions(e));
 		}, null, this.context.subscriptions);
 	}
 
-	configurationUpdated(config: interfaces.IExtensionConfiguration) {
+	configurAtionUpdAted(config: interfAces.IExtensionConfigurAtion) {
 		this.config = config;
-		this.registerDecorationTypes(config);
+		this.registerDecorAtionTypes(config);
 
-		// Re-apply the decoration
-		vscode.window.visibleTextEditors.forEach(e => {
-			this.removeDecorations(e);
-			this.applyDecorations(e);
+		// Re-Apply the decorAtion
+		vscode.window.visibleTextEditors.forEAch(e => {
+			this.removeDecorAtions(e);
+			this.ApplyDecorAtions(e);
 		});
 	}
 
-	private registerDecorationTypes(config: interfaces.IExtensionConfiguration) {
+	privAte registerDecorAtionTypes(config: interfAces.IExtensionConfigurAtion) {
 
-		// Dispose of existing decorations
-		Object.keys(this.decorations).forEach(k => this.decorations[k].dispose());
-		this.decorations = {};
+		// Dispose of existing decorAtions
+		Object.keys(this.decorAtions).forEAch(k => this.decorAtions[k].dispose());
+		this.decorAtions = {};
 
-		// None of our features are enabled
-		if (!config.enableDecorations || !config.enableEditorOverview) {
+		// None of our feAtures Are enAbled
+		if (!config.enAbleDecorAtions || !config.enAbleEditorOverview) {
 			return;
 		}
 
-		// Create decorators
-		if (config.enableDecorations || config.enableEditorOverview) {
-			this.decorations['current.content'] = vscode.window.createTextEditorDecorationType(
-				this.generateBlockRenderOptions('merge.currentContentBackground', 'editorOverviewRuler.currentContentForeground', config)
+		// CreAte decorAtors
+		if (config.enAbleDecorAtions || config.enAbleEditorOverview) {
+			this.decorAtions['current.content'] = vscode.window.creAteTextEditorDecorAtionType(
+				this.generAteBlockRenderOptions('merge.currentContentBAckground', 'editorOverviewRuler.currentContentForeground', config)
 			);
 
-			this.decorations['incoming.content'] = vscode.window.createTextEditorDecorationType(
-				this.generateBlockRenderOptions('merge.incomingContentBackground', 'editorOverviewRuler.incomingContentForeground', config)
+			this.decorAtions['incoming.content'] = vscode.window.creAteTextEditorDecorAtionType(
+				this.generAteBlockRenderOptions('merge.incomingContentBAckground', 'editorOverviewRuler.incomingContentForeground', config)
 			);
 
-			this.decorations['commonAncestors.content'] = vscode.window.createTextEditorDecorationType(
-				this.generateBlockRenderOptions('merge.commonContentBackground', 'editorOverviewRuler.commonContentForeground', config)
+			this.decorAtions['commonAncestors.content'] = vscode.window.creAteTextEditorDecorAtionType(
+				this.generAteBlockRenderOptions('merge.commonContentBAckground', 'editorOverviewRuler.commonContentForeground', config)
 			);
 		}
 
-		if (config.enableDecorations) {
-			this.decorations['current.header'] = vscode.window.createTextEditorDecorationType({
-				isWholeLine: this.decorationUsesWholeLine,
-				backgroundColor: new vscode.ThemeColor('merge.currentHeaderBackground'),
+		if (config.enAbleDecorAtions) {
+			this.decorAtions['current.heAder'] = vscode.window.creAteTextEditorDecorAtionType({
+				isWholeLine: this.decorAtionUsesWholeLine,
+				bAckgroundColor: new vscode.ThemeColor('merge.currentHeAderBAckground'),
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
 				outlineColor: new vscode.ThemeColor('merge.border'),
-				after: {
-					contentText: ' ' + localize('currentChange', '(Current Change)'),
+				After: {
+					contentText: ' ' + locAlize('currentChAnge', '(Current ChAnge)'),
 					color: new vscode.ThemeColor('descriptionForeground')
 				}
 			});
 
-			this.decorations['commonAncestors.header'] = vscode.window.createTextEditorDecorationType({
-				isWholeLine: this.decorationUsesWholeLine,
-				backgroundColor: new vscode.ThemeColor('merge.commonHeaderBackground'),
+			this.decorAtions['commonAncestors.heAder'] = vscode.window.creAteTextEditorDecorAtionType({
+				isWholeLine: this.decorAtionUsesWholeLine,
+				bAckgroundColor: new vscode.ThemeColor('merge.commonHeAderBAckground'),
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
 				outlineColor: new vscode.ThemeColor('merge.border')
 			});
 
-			this.decorations['splitter'] = vscode.window.createTextEditorDecorationType({
+			this.decorAtions['splitter'] = vscode.window.creAteTextEditorDecorAtionType({
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
 				outlineColor: new vscode.ThemeColor('merge.border'),
-				isWholeLine: this.decorationUsesWholeLine,
+				isWholeLine: this.decorAtionUsesWholeLine,
 			});
 
-			this.decorations['incoming.header'] = vscode.window.createTextEditorDecorationType({
-				backgroundColor: new vscode.ThemeColor('merge.incomingHeaderBackground'),
+			this.decorAtions['incoming.heAder'] = vscode.window.creAteTextEditorDecorAtionType({
+				bAckgroundColor: new vscode.ThemeColor('merge.incomingHeAderBAckground'),
 				color: new vscode.ThemeColor('editor.foreground'),
 				outlineStyle: 'solid',
 				outlineWidth: '1pt',
 				outlineColor: new vscode.ThemeColor('merge.border'),
-				isWholeLine: this.decorationUsesWholeLine,
-				after: {
-					contentText: ' ' + localize('incomingChange', '(Incoming Change)'),
+				isWholeLine: this.decorAtionUsesWholeLine,
+				After: {
+					contentText: ' ' + locAlize('incomingChAnge', '(Incoming ChAnge)'),
 					color: new vscode.ThemeColor('descriptionForeground')
 				}
 			});
@@ -127,125 +127,125 @@ export default class MergeDecorator implements vscode.Disposable {
 
 	dispose() {
 
-		// TODO: Replace with Map<string, T>
-		Object.keys(this.decorations).forEach(name => {
-			this.decorations[name].dispose();
+		// TODO: ReplAce with MAp<string, T>
+		Object.keys(this.decorAtions).forEAch(nAme => {
+			this.decorAtions[nAme].dispose();
 		});
 
-		this.decorations = {};
+		this.decorAtions = {};
 	}
 
-	private generateBlockRenderOptions(backgroundColor: string, overviewRulerColor: string, config: interfaces.IExtensionConfiguration): vscode.DecorationRenderOptions {
+	privAte generAteBlockRenderOptions(bAckgroundColor: string, overviewRulerColor: string, config: interfAces.IExtensionConfigurAtion): vscode.DecorAtionRenderOptions {
 
-		let renderOptions: vscode.DecorationRenderOptions = {};
+		let renderOptions: vscode.DecorAtionRenderOptions = {};
 
-		if (config.enableDecorations) {
-			renderOptions.backgroundColor = new vscode.ThemeColor(backgroundColor);
-			renderOptions.isWholeLine = this.decorationUsesWholeLine;
+		if (config.enAbleDecorAtions) {
+			renderOptions.bAckgroundColor = new vscode.ThemeColor(bAckgroundColor);
+			renderOptions.isWholeLine = this.decorAtionUsesWholeLine;
 		}
 
-		if (config.enableEditorOverview) {
+		if (config.enAbleEditorOverview) {
 			renderOptions.overviewRulerColor = new vscode.ThemeColor(overviewRulerColor);
-			renderOptions.overviewRulerLane = vscode.OverviewRulerLane.Full;
+			renderOptions.overviewRulerLAne = vscode.OverviewRulerLAne.Full;
 		}
 
 		return renderOptions;
 	}
 
-	private applyDecorationsFromEvent(eventDocument: vscode.TextDocument) {
+	privAte ApplyDecorAtionsFromEvent(eventDocument: vscode.TextDocument) {
 		for (const editor of vscode.window.visibleTextEditors) {
 			if (editor.document === eventDocument) {
-				// Attempt to apply
-				this.applyDecorations(editor);
+				// Attempt to Apply
+				this.ApplyDecorAtions(editor);
 			}
 		}
 	}
 
-	private async applyDecorations(editor: vscode.TextEditor) {
+	privAte Async ApplyDecorAtions(editor: vscode.TextEditor) {
 		if (!editor || !editor.document) { return; }
 
-		if (!this.config || (!this.config.enableDecorations && !this.config.enableEditorOverview)) {
+		if (!this.config || (!this.config.enAbleDecorAtions && !this.config.enAbleEditorOverview)) {
 			return;
 		}
 
-		// If we have a pending scan from the same origin, exit early. (Cannot use this.tracker.isPending() because decorations are per editor.)
-		if (this.updating.get(editor)) {
+		// If we hAve A pending scAn from the sAme origin, exit eArly. (CAnnot use this.trAcker.isPending() becAuse decorAtions Are per editor.)
+		if (this.updAting.get(editor)) {
 			return;
 		}
 
 		try {
-			this.updating.set(editor, true);
+			this.updAting.set(editor, true);
 
-			let conflicts = await this.tracker.getConflicts(editor.document);
+			let conflicts = AwAit this.trAcker.getConflicts(editor.document);
 			if (vscode.window.visibleTextEditors.indexOf(editor) === -1) {
 				return;
 			}
 
 			if (conflicts.length === 0) {
-				this.removeDecorations(editor);
+				this.removeDecorAtions(editor);
 				return;
 			}
 
-			// Store decorations keyed by the type of decoration, set decoration wants a "style"
-			// to go with it, which will match this key (see constructor);
-			let matchDecorations: { [key: string]: vscode.Range[] } = {};
+			// Store decorAtions keyed by the type of decorAtion, set decorAtion wAnts A "style"
+			// to go with it, which will mAtch this key (see constructor);
+			let mAtchDecorAtions: { [key: string]: vscode.RAnge[] } = {};
 
-			let pushDecoration = (key: string, d: vscode.Range) => {
-				matchDecorations[key] = matchDecorations[key] || [];
-				matchDecorations[key].push(d);
+			let pushDecorAtion = (key: string, d: vscode.RAnge) => {
+				mAtchDecorAtions[key] = mAtchDecorAtions[key] || [];
+				mAtchDecorAtions[key].push(d);
 			};
 
-			conflicts.forEach(conflict => {
-				// TODO, this could be more effective, just call getMatchPositions once with a map of decoration to position
-				if (!conflict.current.decoratorContent.isEmpty) {
-					pushDecoration('current.content', conflict.current.decoratorContent);
+			conflicts.forEAch(conflict => {
+				// TODO, this could be more effective, just cAll getMAtchPositions once with A mAp of decorAtion to position
+				if (!conflict.current.decorAtorContent.isEmpty) {
+					pushDecorAtion('current.content', conflict.current.decorAtorContent);
 				}
-				if (!conflict.incoming.decoratorContent.isEmpty) {
-					pushDecoration('incoming.content', conflict.incoming.decoratorContent);
+				if (!conflict.incoming.decorAtorContent.isEmpty) {
+					pushDecorAtion('incoming.content', conflict.incoming.decorAtorContent);
 				}
 
-				conflict.commonAncestors.forEach(commonAncestorsRegion => {
-					if (!commonAncestorsRegion.decoratorContent.isEmpty) {
-						pushDecoration('commonAncestors.content', commonAncestorsRegion.decoratorContent);
+				conflict.commonAncestors.forEAch(commonAncestorsRegion => {
+					if (!commonAncestorsRegion.decorAtorContent.isEmpty) {
+						pushDecorAtion('commonAncestors.content', commonAncestorsRegion.decorAtorContent);
 					}
 				});
 
-				if (this.config!.enableDecorations) {
-					pushDecoration('current.header', conflict.current.header);
-					pushDecoration('splitter', conflict.splitter);
-					pushDecoration('incoming.header', conflict.incoming.header);
+				if (this.config!.enAbleDecorAtions) {
+					pushDecorAtion('current.heAder', conflict.current.heAder);
+					pushDecorAtion('splitter', conflict.splitter);
+					pushDecorAtion('incoming.heAder', conflict.incoming.heAder);
 
-					conflict.commonAncestors.forEach(commonAncestorsRegion => {
-						pushDecoration('commonAncestors.header', commonAncestorsRegion.header);
+					conflict.commonAncestors.forEAch(commonAncestorsRegion => {
+						pushDecorAtion('commonAncestors.heAder', commonAncestorsRegion.heAder);
 					});
 				}
 			});
 
-			// For each match we've generated, apply the generated decoration with the matching decoration type to the
-			// editor instance. Keys in both matches and decorations should match.
-			Object.keys(matchDecorations).forEach(decorationKey => {
-				let decorationType = this.decorations[decorationKey];
+			// For eAch mAtch we've generAted, Apply the generAted decorAtion with the mAtching decorAtion type to the
+			// editor instAnce. Keys in both mAtches And decorAtions should mAtch.
+			Object.keys(mAtchDecorAtions).forEAch(decorAtionKey => {
+				let decorAtionType = this.decorAtions[decorAtionKey];
 
-				if (decorationType) {
-					editor.setDecorations(decorationType, matchDecorations[decorationKey]);
+				if (decorAtionType) {
+					editor.setDecorAtions(decorAtionType, mAtchDecorAtions[decorAtionKey]);
 				}
 			});
 
-		} finally {
-			this.updating.delete(editor);
+		} finAlly {
+			this.updAting.delete(editor);
 		}
 	}
 
-	private removeDecorations(editor: vscode.TextEditor) {
-		// Remove all decorations, there might be none
-		Object.keys(this.decorations).forEach(decorationKey => {
+	privAte removeDecorAtions(editor: vscode.TextEditor) {
+		// Remove All decorAtions, there might be none
+		Object.keys(this.decorAtions).forEAch(decorAtionKey => {
 
-			// Race condition, while editing the settings, it's possible to
-			// generate regions before the configuration has been refreshed
-			let decorationType = this.decorations[decorationKey];
+			// RAce condition, while editing the settings, it's possible to
+			// generAte regions before the configurAtion hAs been refreshed
+			let decorAtionType = this.decorAtions[decorAtionKey];
 
-			if (decorationType) {
-				editor.setDecorations(decorationType, []);
+			if (decorAtionType) {
+				editor.setDecorAtions(decorAtionType, []);
 			}
 		});
 	}

@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI, UriComponents } from 'vs/base/common/uri';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { ITextEditorOptions, IResourceEditorInput, TextEditorSelectionRevealType, IEditorOptions } from 'vs/platform/editor/common/editor';
-import { IEditorInput, IEditorPane, Extensions as EditorExtensions, EditorInput, IEditorCloseEvent, IEditorInputFactoryRegistry, EditorResourceAccessor, IEditorIdentifier, GroupIdentifier, EditorsOrder, SideBySideEditor } from 'vs/workbench/common/editor';
+import { ITextEditorOptions, IResourceEditorInput, TextEditorSelectionReveAlType, IEditorOptions } from 'vs/plAtform/editor/common/editor';
+import { IEditorInput, IEditorPAne, Extensions As EditorExtensions, EditorInput, IEditorCloseEvent, IEditorInputFActoryRegistry, EditorResourceAccessor, IEditorIdentifier, GroupIdentifier, EditorsOrder, SideBySideEditor } from 'vs/workbench/common/editor';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { FileChangesEvent, IFileService, FileChangeType, FILES_EXCLUDE_CONFIG } from 'vs/platform/files/common/files';
+import { FileChAngesEvent, IFileService, FileChAngeType, FILES_EXCLUDE_CONFIG } from 'vs/plAtform/files/common/files';
 import { Selection } from 'vs/editor/common/core/selection';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { dispose, Disposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { Event } from 'vs/base/common/event';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { dispose, DisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { Event } from 'vs/bAse/common/event';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { getCodeEditor, ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { getExcludes, ISearchConfiguration, SEARCH_EXCLUDE_CONFIG } from 'vs/workbench/services/search/common/search';
-import { ICursorPositionChangedEvent } from 'vs/editor/common/controller/cursorEvents';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { EditorServiceImpl } from 'vs/workbench/browser/parts/editor/editor';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { IContextKeyService, RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { coalesce, remove } from 'vs/base/common/arrays';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { addDisposableListener, EventType, EventHelper } from 'vs/base/browser/dom';
-import { IWorkspacesService } from 'vs/platform/workspaces/common/workspaces';
-import { Schemas } from 'vs/base/common/network';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IdleValue } from 'vs/base/common/async';
-import { ResourceGlobMatcher } from 'vs/workbench/common/resources';
-import { IPathService } from 'vs/workbench/services/path/common/pathService';
+import { getExcludes, ISeArchConfigurAtion, SEARCH_EXCLUDE_CONFIG } from 'vs/workbench/services/seArch/common/seArch';
+import { ICursorPositionChAngedEvent } from 'vs/editor/common/controller/cursorEvents';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { EditorServiceImpl } from 'vs/workbench/browser/pArts/editor/editor';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { IContextKeyService, RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { coAlesce, remove } from 'vs/bAse/common/ArrAys';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { AddDisposAbleListener, EventType, EventHelper } from 'vs/bAse/browser/dom';
+import { IWorkspAcesService } from 'vs/plAtform/workspAces/common/workspAces';
+import { SchemAs } from 'vs/bAse/common/network';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { IdleVAlue } from 'vs/bAse/common/Async';
+import { ResourceGlobMAtcher } from 'vs/workbench/common/resources';
+import { IPAthService } from 'vs/workbench/services/pAth/common/pAthService';
 import { IUriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentity';
 
 /**
- * Stores the selection & view state of an editor and allows to compare it to other selection states.
+ * Stores the selection & view stAte of An editor And Allows to compAre it to other selection stAtes.
  */
-export class TextEditorState {
+export clAss TextEditorStAte {
 
-	private static readonly EDITOR_SELECTION_THRESHOLD = 10; // number of lines to move in editor to justify for new state
+	privAte stAtic reAdonly EDITOR_SELECTION_THRESHOLD = 10; // number of lines to move in editor to justify for new stAte
 
-	constructor(private _editorInput: IEditorInput, private _selection: Selection | null) { }
+	constructor(privAte _editorInput: IEditorInput, privAte _selection: Selection | null) { }
 
 	get editorInput(): IEditorInput {
 		return this._editorInput;
@@ -54,12 +54,12 @@ export class TextEditorState {
 		return withNullAsUndefined(this._selection);
 	}
 
-	justifiesNewPushState(other: TextEditorState, event?: ICursorPositionChangedEvent): boolean {
-		if (event?.source === 'api') {
-			return true; // always let API source win (e.g. "Go to definition" should add a history entry)
+	justifiesNewPushStAte(other: TextEditorStAte, event?: ICursorPositionChAngedEvent): booleAn {
+		if (event?.source === 'Api') {
+			return true; // AlwAys let API source win (e.g. "Go to definition" should Add A history entry)
 		}
 
-		if (!this._editorInput.matches(other._editorInput)) {
+		if (!this._editorInput.mAtches(other._editorInput)) {
 			return true; // different editor inputs
 		}
 
@@ -67,592 +67,592 @@ export class TextEditorState {
 			return true; // unknown selections
 		}
 
-		const thisLineNumber = Math.min(this._selection.selectionStartLineNumber, this._selection.positionLineNumber);
-		const otherLineNumber = Math.min(other._selection.selectionStartLineNumber, other._selection.positionLineNumber);
+		const thisLineNumber = MAth.min(this._selection.selectionStArtLineNumber, this._selection.positionLineNumber);
+		const otherLineNumber = MAth.min(other._selection.selectionStArtLineNumber, other._selection.positionLineNumber);
 
-		if (Math.abs(thisLineNumber - otherLineNumber) < TextEditorState.EDITOR_SELECTION_THRESHOLD) {
-			return false; // ignore selection changes in the range of EditorState.EDITOR_SELECTION_THRESHOLD lines
+		if (MAth.Abs(thisLineNumber - otherLineNumber) < TextEditorStAte.EDITOR_SELECTION_THRESHOLD) {
+			return fAlse; // ignore selection chAnges in the rAnge of EditorStAte.EDITOR_SELECTION_THRESHOLD lines
 		}
 
 		return true;
 	}
 }
 
-interface ISerializedEditorHistoryEntry {
+interfAce ISeriAlizedEditorHistoryEntry {
 	resourceJSON?: object;
-	editorInputJSON?: { typeId: string; deserialized: string; };
+	editorInputJSON?: { typeId: string; deseriAlized: string; };
 }
 
-interface IStackEntry {
+interfAce IStAckEntry {
 	input: IEditorInput | IResourceEditorInput;
 	selection?: Selection;
 }
 
-interface IRecentlyClosedEditor {
+interfAce IRecentlyClosedEditor {
 	resource: URI | undefined;
-	associatedResources: URI[];
-	serialized: { typeId: string, value: string };
+	AssociAtedResources: URI[];
+	seriAlized: { typeId: string, vAlue: string };
 	index: number;
-	sticky: boolean;
+	sticky: booleAn;
 }
 
-export class HistoryService extends Disposable implements IHistoryService {
+export clAss HistoryService extends DisposAble implements IHistoryService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly activeEditorListeners = this._register(new DisposableStore());
-	private lastActiveEditor?: IEditorIdentifier;
+	privAte reAdonly ActiveEditorListeners = this._register(new DisposAbleStore());
+	privAte lAstActiveEditor?: IEditorIdentifier;
 
-	private readonly editorHistoryListeners = new Map();
-	private readonly editorStackListeners = new Map();
+	privAte reAdonly editorHistoryListeners = new MAp();
+	privAte reAdonly editorStAckListeners = new MAp();
 
-	private readonly editorInputFactory = Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories);
+	privAte reAdonly editorInputFActory = Registry.As<IEditorInputFActoryRegistry>(EditorExtensions.EditorInputFActories);
 
 	constructor(
-		@IEditorService private readonly editorService: EditorServiceImpl,
-		@IEditorGroupsService private readonly editorGroupService: IEditorGroupsService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IStorageService private readonly storageService: IStorageService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IFileService private readonly fileService: IFileService,
-		@IWorkspacesService private readonly workspacesService: IWorkspacesService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IPathService private readonly pathService: IPathService,
-		@IUriIdentityService private readonly uriIdentityService: IUriIdentityService
+		@IEditorService privAte reAdonly editorService: EditorServiceImpl,
+		@IEditorGroupsService privAte reAdonly editorGroupService: IEditorGroupsService,
+		@IWorkspAceContextService privAte reAdonly contextService: IWorkspAceContextService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IFileService privAte reAdonly fileService: IFileService,
+		@IWorkspAcesService privAte reAdonly workspAcesService: IWorkspAcesService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IPAthService privAte reAdonly pAthService: IPAthService,
+		@IUriIdentityService privAte reAdonly uriIdentityService: IUriIdentityService
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this._register(this.editorService.onDidActiveEditorChange(() => this.onActiveEditorChanged()));
-		this._register(this.editorService.onDidOpenEditorFail(event => this.remove(event.editor)));
+	privAte registerListeners(): void {
+		this._register(this.editorService.onDidActiveEditorChAnge(() => this.onActiveEditorChAnged()));
+		this._register(this.editorService.onDidOpenEditorFAil(event => this.remove(event.editor)));
 		this._register(this.editorService.onDidCloseEditor(event => this.onEditorClosed(event)));
-		this._register(this.storageService.onWillSaveState(() => this.saveState()));
-		this._register(this.fileService.onDidFilesChange(event => this.onDidFilesChange(event)));
-		this._register(this.editorService.onDidMostRecentlyActiveEditorsChange(() => this.handleEditorEventInRecentEditorsStack()));
+		this._register(this.storAgeService.onWillSAveStAte(() => this.sAveStAte()));
+		this._register(this.fileService.onDidFilesChAnge(event => this.onDidFilesChAnge(event)));
+		this._register(this.editorService.onDidMostRecentlyActiveEditorsChAnge(() => this.hAndleEditorEventInRecentEditorsStAck()));
 
-		// if the service is created late enough that an editor is already opened
-		// make sure to trigger the onActiveEditorChanged() to track the editor
+		// if the service is creAted lAte enough thAt An editor is AlreAdy opened
+		// mAke sure to trigger the onActiveEditorChAnged() to trAck the editor
 		// properly (fixes https://github.com/microsoft/vscode/issues/59908)
-		if (this.editorService.activeEditorPane) {
-			this.onActiveEditorChanged();
+		if (this.editorService.ActiveEditorPAne) {
+			this.onActiveEditorChAnged();
 		}
 
-		// Mouse back/forward support
-		const mouseBackForwardSupportListener = this._register(new DisposableStore());
-		const handleMouseBackForwardSupport = () => {
-			mouseBackForwardSupportListener.clear();
+		// Mouse bAck/forwArd support
+		const mouseBAckForwArdSupportListener = this._register(new DisposAbleStore());
+		const hAndleMouseBAckForwArdSupport = () => {
+			mouseBAckForwArdSupportListener.cleAr();
 
-			if (this.configurationService.getValue('workbench.editor.mouseBackForwardToNavigate')) {
-				mouseBackForwardSupportListener.add(addDisposableListener(this.layoutService.container, EventType.MOUSE_DOWN, e => this.onMouseDown(e)));
+			if (this.configurAtionService.getVAlue('workbench.editor.mouseBAckForwArdToNAvigAte')) {
+				mouseBAckForwArdSupportListener.Add(AddDisposAbleListener(this.lAyoutService.contAiner, EventType.MOUSE_DOWN, e => this.onMouseDown(e)));
 			}
 		};
 
-		this._register(this.configurationService.onDidChangeConfiguration(event => {
-			if (event.affectsConfiguration('workbench.editor.mouseBackForwardToNavigate')) {
-				handleMouseBackForwardSupport();
+		this._register(this.configurAtionService.onDidChAngeConfigurAtion(event => {
+			if (event.AffectsConfigurAtion('workbench.editor.mouseBAckForwArdToNAvigAte')) {
+				hAndleMouseBAckForwArdSupport();
 			}
 		}));
 
-		handleMouseBackForwardSupport();
+		hAndleMouseBAckForwArdSupport();
 	}
 
-	private onMouseDown(e: MouseEvent): void {
+	privAte onMouseDown(e: MouseEvent): void {
 
-		// Support to navigate in history when mouse buttons 4/5 are pressed
+		// Support to nAvigAte in history when mouse buttons 4/5 Are pressed
 		switch (e.button) {
-			case 3:
+			cAse 3:
 				EventHelper.stop(e);
-				this.back();
-				break;
-			case 4:
+				this.bAck();
+				breAk;
+			cAse 4:
 				EventHelper.stop(e);
-				this.forward();
-				break;
+				this.forwArd();
+				breAk;
 		}
 	}
 
-	private onActiveEditorChanged(): void {
-		const activeEditorPane = this.editorService.activeEditorPane;
-		if (this.lastActiveEditor && this.matchesEditor(this.lastActiveEditor, activeEditorPane)) {
-			return; // return if the active editor is still the same
+	privAte onActiveEditorChAnged(): void {
+		const ActiveEditorPAne = this.editorService.ActiveEditorPAne;
+		if (this.lAstActiveEditor && this.mAtchesEditor(this.lAstActiveEditor, ActiveEditorPAne)) {
+			return; // return if the Active editor is still the sAme
 		}
 
-		// Remember as last active editor (can be undefined if none opened)
-		this.lastActiveEditor = activeEditorPane?.input && activeEditorPane.group ? { editor: activeEditorPane.input, groupId: activeEditorPane.group.id } : undefined;
+		// Remember As lAst Active editor (cAn be undefined if none opened)
+		this.lAstActiveEditor = ActiveEditorPAne?.input && ActiveEditorPAne.group ? { editor: ActiveEditorPAne.input, groupId: ActiveEditorPAne.group.id } : undefined;
 
 		// Dispose old listeners
-		this.activeEditorListeners.clear();
+		this.ActiveEditorListeners.cleAr();
 
-		// Propagate to history
-		this.handleActiveEditorChange(activeEditorPane);
+		// PropAgAte to history
+		this.hAndleActiveEditorChAnge(ActiveEditorPAne);
 
-		// Apply listener for selection changes if this is a text editor
-		const activeTextEditorControl = getCodeEditor(this.editorService.activeTextEditorControl);
-		const activeEditor = this.editorService.activeEditor;
-		if (activeTextEditorControl) {
+		// Apply listener for selection chAnges if this is A text editor
+		const ActiveTextEditorControl = getCodeEditor(this.editorService.ActiveTextEditorControl);
+		const ActiveEditor = this.editorService.ActiveEditor;
+		if (ActiveTextEditorControl) {
 
-			// Debounce the event with a timeout of 0ms so that multiple calls to
-			// editor.setSelection() are folded into one. We do not want to record
-			// subsequent history navigations for such API calls.
-			this.activeEditorListeners.add(Event.debounce(activeTextEditorControl.onDidChangeCursorPosition, (last, event) => event, 0)((event => {
-				this.handleEditorSelectionChangeEvent(activeEditorPane, event);
+			// Debounce the event with A timeout of 0ms so thAt multiple cAlls to
+			// editor.setSelection() Are folded into one. We do not wAnt to record
+			// subsequent history nAvigAtions for such API cAlls.
+			this.ActiveEditorListeners.Add(Event.debounce(ActiveTextEditorControl.onDidChAngeCursorPosition, (lAst, event) => event, 0)((event => {
+				this.hAndleEditorSelectionChAngeEvent(ActiveEditorPAne, event);
 			})));
 
-			// Track the last edit location by tracking model content change events
-			// Use a debouncer to make sure to capture the correct cursor position
-			// after the model content has changed.
-			this.activeEditorListeners.add(Event.debounce(activeTextEditorControl.onDidChangeModelContent, (last, event) => event, 0)((event => {
-				if (activeEditor) {
-					this.rememberLastEditLocation(activeEditor, activeTextEditorControl);
+			// TrAck the lAst edit locAtion by trAcking model content chAnge events
+			// Use A debouncer to mAke sure to cApture the correct cursor position
+			// After the model content hAs chAnged.
+			this.ActiveEditorListeners.Add(Event.debounce(ActiveTextEditorControl.onDidChAngeModelContent, (lAst, event) => event, 0)((event => {
+				if (ActiveEditor) {
+					this.rememberLAstEditLocAtion(ActiveEditor, ActiveTextEditorControl);
 				}
 			})));
 		}
 	}
 
-	private matchesEditor(identifier: IEditorIdentifier, editor?: IEditorPane): boolean {
+	privAte mAtchesEditor(identifier: IEditorIdentifier, editor?: IEditorPAne): booleAn {
 		if (!editor || !editor.group) {
-			return false;
+			return fAlse;
 		}
 
 		if (identifier.groupId !== editor.group.id) {
-			return false;
+			return fAlse;
 		}
 
-		return identifier.editor.matches(editor.input);
+		return identifier.editor.mAtches(editor.input);
 	}
 
-	private onDidFilesChange(e: FileChangesEvent): void {
+	privAte onDidFilesChAnge(e: FileChAngesEvent): void {
 		if (e.gotDeleted()) {
-			this.remove(e); // remove from history files that got deleted or moved
+			this.remove(e); // remove from history files thAt got deleted or moved
 		}
 	}
 
-	private handleEditorSelectionChangeEvent(editor?: IEditorPane, event?: ICursorPositionChangedEvent): void {
-		this.handleEditorEventInNavigationStack(editor, event);
+	privAte hAndleEditorSelectionChAngeEvent(editor?: IEditorPAne, event?: ICursorPositionChAngedEvent): void {
+		this.hAndleEditorEventInNAvigAtionStAck(editor, event);
 	}
 
-	private handleActiveEditorChange(editor?: IEditorPane): void {
-		this.handleEditorEventInHistory(editor);
-		this.handleEditorEventInNavigationStack(editor);
+	privAte hAndleActiveEditorChAnge(editor?: IEditorPAne): void {
+		this.hAndleEditorEventInHistory(editor);
+		this.hAndleEditorEventInNAvigAtionStAck(editor);
 	}
 
-	private onEditorDispose(editor: EditorInput, listener: Function, mapEditorToDispose: Map<EditorInput, DisposableStore>): void {
+	privAte onEditorDispose(editor: EditorInput, listener: Function, mApEditorToDispose: MAp<EditorInput, DisposAbleStore>): void {
 		const toDispose = Event.once(editor.onDispose)(() => listener());
 
-		let disposables = mapEditorToDispose.get(editor);
-		if (!disposables) {
-			disposables = new DisposableStore();
-			mapEditorToDispose.set(editor, disposables);
+		let disposAbles = mApEditorToDispose.get(editor);
+		if (!disposAbles) {
+			disposAbles = new DisposAbleStore();
+			mApEditorToDispose.set(editor, disposAbles);
 		}
 
-		disposables.add(toDispose);
+		disposAbles.Add(toDispose);
 	}
 
-	private clearOnEditorDispose(editor: IEditorInput | IResourceEditorInput | FileChangesEvent, mapEditorToDispose: Map<EditorInput, DisposableStore>): void {
-		if (editor instanceof EditorInput) {
-			const disposables = mapEditorToDispose.get(editor);
-			if (disposables) {
-				dispose(disposables);
-				mapEditorToDispose.delete(editor);
+	privAte cleArOnEditorDispose(editor: IEditorInput | IResourceEditorInput | FileChAngesEvent, mApEditorToDispose: MAp<EditorInput, DisposAbleStore>): void {
+		if (editor instAnceof EditorInput) {
+			const disposAbles = mApEditorToDispose.get(editor);
+			if (disposAbles) {
+				dispose(disposAbles);
+				mApEditorToDispose.delete(editor);
 			}
 		}
 	}
 
 	remove(input: IEditorInput | IResourceEditorInput): void;
-	remove(input: FileChangesEvent): void;
-	remove(arg1: IEditorInput | IResourceEditorInput | FileChangesEvent): void {
-		this.removeFromHistory(arg1);
-		this.removeFromNavigationStack(arg1);
-		this.removeFromRecentlyClosedEditors(arg1);
-		this.removeFromRecentlyOpened(arg1);
+	remove(input: FileChAngesEvent): void;
+	remove(Arg1: IEditorInput | IResourceEditorInput | FileChAngesEvent): void {
+		this.removeFromHistory(Arg1);
+		this.removeFromNAvigAtionStAck(Arg1);
+		this.removeFromRecentlyClosedEditors(Arg1);
+		this.removeFromRecentlyOpened(Arg1);
 	}
 
-	private removeFromRecentlyOpened(arg1: IEditorInput | IResourceEditorInput | FileChangesEvent): void {
-		if (arg1 instanceof EditorInput || arg1 instanceof FileChangesEvent) {
-			return; // for now do not delete from file events since recently open are likely out of workspace files for which there are no delete events
+	privAte removeFromRecentlyOpened(Arg1: IEditorInput | IResourceEditorInput | FileChAngesEvent): void {
+		if (Arg1 instAnceof EditorInput || Arg1 instAnceof FileChAngesEvent) {
+			return; // for now do not delete from file events since recently open Are likely out of workspAce files for which there Are no delete events
 		}
 
-		const input = arg1 as IResourceEditorInput;
+		const input = Arg1 As IResourceEditorInput;
 
-		this.workspacesService.removeRecentlyOpened([input.resource]);
+		this.workspAcesService.removeRecentlyOpened([input.resource]);
 	}
 
-	clear(): void {
+	cleAr(): void {
 
 		// History
-		this.clearRecentlyOpened();
+		this.cleArRecentlyOpened();
 
-		// Navigation (next, previous)
-		this.navigationStackIndex = -1;
-		this.lastNavigationStackIndex = -1;
-		this.navigationStack.splice(0);
-		this.editorStackListeners.forEach(listeners => dispose(listeners));
-		this.editorStackListeners.clear();
+		// NAvigAtion (next, previous)
+		this.nAvigAtionStAckIndex = -1;
+		this.lAstNAvigAtionStAckIndex = -1;
+		this.nAvigAtionStAck.splice(0);
+		this.editorStAckListeners.forEAch(listeners => dispose(listeners));
+		this.editorStAckListeners.cleAr();
 
 		// Recently closed editors
 		this.recentlyClosedEditors = [];
 
 		// Context Keys
-		this.updateContextKeys();
+		this.updAteContextKeys();
 	}
 
-	//#region Navigation (Go Forward, Go Backward)
+	//#region NAvigAtion (Go ForwArd, Go BAckwArd)
 
-	private static readonly MAX_NAVIGATION_STACK_ITEMS = 50;
+	privAte stAtic reAdonly MAX_NAVIGATION_STACK_ITEMS = 50;
 
-	private navigationStack: IStackEntry[] = [];
-	private navigationStackIndex = -1;
-	private lastNavigationStackIndex = -1;
+	privAte nAvigAtionStAck: IStAckEntry[] = [];
+	privAte nAvigAtionStAckIndex = -1;
+	privAte lAstNAvigAtionStAckIndex = -1;
 
-	private navigatingInStack = false;
+	privAte nAvigAtingInStAck = fAlse;
 
-	private currentTextEditorState: TextEditorState | null = null;
+	privAte currentTextEditorStAte: TextEditorStAte | null = null;
 
-	forward(): void {
-		if (this.navigationStack.length > this.navigationStackIndex + 1) {
-			this.setIndex(this.navigationStackIndex + 1);
-			this.navigate();
+	forwArd(): void {
+		if (this.nAvigAtionStAck.length > this.nAvigAtionStAckIndex + 1) {
+			this.setIndex(this.nAvigAtionStAckIndex + 1);
+			this.nAvigAte();
 		}
 	}
 
-	back(): void {
-		if (this.navigationStackIndex > 0) {
-			this.setIndex(this.navigationStackIndex - 1);
-			this.navigate();
+	bAck(): void {
+		if (this.nAvigAtionStAckIndex > 0) {
+			this.setIndex(this.nAvigAtionStAckIndex - 1);
+			this.nAvigAte();
 		}
 	}
 
-	last(): void {
-		if (this.lastNavigationStackIndex === -1) {
-			this.back();
+	lAst(): void {
+		if (this.lAstNAvigAtionStAckIndex === -1) {
+			this.bAck();
 		} else {
-			this.setIndex(this.lastNavigationStackIndex);
-			this.navigate();
+			this.setIndex(this.lAstNAvigAtionStAckIndex);
+			this.nAvigAte();
 		}
 	}
 
-	private setIndex(value: number): void {
-		this.lastNavigationStackIndex = this.navigationStackIndex;
-		this.navigationStackIndex = value;
+	privAte setIndex(vAlue: number): void {
+		this.lAstNAvigAtionStAckIndex = this.nAvigAtionStAckIndex;
+		this.nAvigAtionStAckIndex = vAlue;
 
 		// Context Keys
-		this.updateContextKeys();
+		this.updAteContextKeys();
 	}
 
-	private navigate(): void {
-		this.navigatingInStack = true;
+	privAte nAvigAte(): void {
+		this.nAvigAtingInStAck = true;
 
-		const navigateToStackEntry = this.navigationStack[this.navigationStackIndex];
+		const nAvigAteToStAckEntry = this.nAvigAtionStAck[this.nAvigAtionStAckIndex];
 
-		this.doNavigate(navigateToStackEntry).finally(() => { this.navigatingInStack = false; });
+		this.doNAvigAte(nAvigAteToStAckEntry).finAlly(() => { this.nAvigAtingInStAck = fAlse; });
 	}
 
-	private doNavigate(location: IStackEntry): Promise<IEditorPane | undefined> {
+	privAte doNAvigAte(locAtion: IStAckEntry): Promise<IEditorPAne | undefined> {
 		const options: ITextEditorOptions = {
-			revealIfOpened: true, // support to navigate across editor groups,
-			selection: location.selection,
-			selectionRevealType: TextEditorSelectionRevealType.CenterIfOutsideViewport
+			reveAlIfOpened: true, // support to nAvigAte Across editor groups,
+			selection: locAtion.selection,
+			selectionReveAlType: TextEditorSelectionReveAlType.CenterIfOutsideViewport
 		};
 
-		if (location.input instanceof EditorInput) {
-			return this.editorService.openEditor(location.input, options);
+		if (locAtion.input instAnceof EditorInput) {
+			return this.editorService.openEditor(locAtion.input, options);
 		}
 
-		return this.editorService.openEditor({ resource: (location.input as IResourceEditorInput).resource, options });
+		return this.editorService.openEditor({ resource: (locAtion.input As IResourceEditorInput).resource, options });
 	}
 
-	private handleEditorEventInNavigationStack(control: IEditorPane | undefined, event?: ICursorPositionChangedEvent): void {
+	privAte hAndleEditorEventInNAvigAtionStAck(control: IEditorPAne | undefined, event?: ICursorPositionChAngedEvent): void {
 		const codeEditor = control ? getCodeEditor(control.getControl()) : undefined;
 
-		// treat editor changes that happen as part of stack navigation specially
-		// we do not want to add a new stack entry as a matter of navigating the
-		// stack but we need to keep our currentTextEditorState up to date with
-		// the navigtion that occurs.
-		if (this.navigatingInStack) {
+		// treAt editor chAnges thAt hAppen As pArt of stAck nAvigAtion speciAlly
+		// we do not wAnt to Add A new stAck entry As A mAtter of nAvigAting the
+		// stAck but we need to keep our currentTextEditorStAte up to dAte with
+		// the nAvigtion thAt occurs.
+		if (this.nAvigAtingInStAck) {
 			if (codeEditor && control?.input && !control.input.isDisposed()) {
-				this.currentTextEditorState = new TextEditorState(control.input, codeEditor.getSelection());
+				this.currentTextEditorStAte = new TextEditorStAte(control.input, codeEditor.getSelection());
 			} else {
-				this.currentTextEditorState = null; // we navigated to a non text or disposed editor
+				this.currentTextEditorStAte = null; // we nAvigAted to A non text or disposed editor
 			}
 		}
 
-		// normal navigation not part of history navigation
+		// normAl nAvigAtion not pArt of history nAvigAtion
 		else {
 
-			// navigation inside text editor
+			// nAvigAtion inside text editor
 			if (codeEditor && control?.input && !control.input.isDisposed()) {
-				this.handleTextEditorEventInNavigationStack(control, codeEditor, event);
+				this.hAndleTextEditorEventInNAvigAtionStAck(control, codeEditor, event);
 			}
 
-			// navigation to non-text disposed editor
+			// nAvigAtion to non-text disposed editor
 			else {
-				this.currentTextEditorState = null; // at this time we have no active text editor view state
+				this.currentTextEditorStAte = null; // At this time we hAve no Active text editor view stAte
 
 				if (control?.input && !control.input.isDisposed()) {
-					this.handleNonTextEditorEventInNavigationStack(control);
+					this.hAndleNonTextEditorEventInNAvigAtionStAck(control);
 				}
 			}
 		}
 	}
 
-	private handleTextEditorEventInNavigationStack(editor: IEditorPane, editorControl: IEditor, event?: ICursorPositionChangedEvent): void {
+	privAte hAndleTextEditorEventInNAvigAtionStAck(editor: IEditorPAne, editorControl: IEditor, event?: ICursorPositionChAngedEvent): void {
 		if (!editor.input) {
 			return;
 		}
 
-		const stateCandidate = new TextEditorState(editor.input, editorControl.getSelection());
+		const stAteCAndidAte = new TextEditorStAte(editor.input, editorControl.getSelection());
 
-		// Add to stack if we dont have a current state or this new state justifies a push
-		if (!this.currentTextEditorState || this.currentTextEditorState.justifiesNewPushState(stateCandidate, event)) {
-			this.addToNavigationStack(editor.input, stateCandidate.selection);
+		// Add to stAck if we dont hAve A current stAte or this new stAte justifies A push
+		if (!this.currentTextEditorStAte || this.currentTextEditorStAte.justifiesNewPushStAte(stAteCAndidAte, event)) {
+			this.AddToNAvigAtionStAck(editor.input, stAteCAndidAte.selection);
 		}
 
-		// Otherwise we replace the current stack entry with this one
+		// Otherwise we replAce the current stAck entry with this one
 		else {
-			this.replaceInNavigationStack(editor.input, stateCandidate.selection);
+			this.replAceInNAvigAtionStAck(editor.input, stAteCAndidAte.selection);
 		}
 
-		// Update our current text editor state
-		this.currentTextEditorState = stateCandidate;
+		// UpdAte our current text editor stAte
+		this.currentTextEditorStAte = stAteCAndidAte;
 	}
 
-	private handleNonTextEditorEventInNavigationStack(editor: IEditorPane): void {
+	privAte hAndleNonTextEditorEventInNAvigAtionStAck(editor: IEditorPAne): void {
 		if (!editor.input) {
 			return;
 		}
 
-		const currentStack = this.navigationStack[this.navigationStackIndex];
-		if (currentStack && this.matches(editor.input, currentStack.input)) {
-			return; // do not push same editor input again
+		const currentStAck = this.nAvigAtionStAck[this.nAvigAtionStAckIndex];
+		if (currentStAck && this.mAtches(editor.input, currentStAck.input)) {
+			return; // do not push sAme editor input AgAin
 		}
 
-		this.addToNavigationStack(editor.input);
+		this.AddToNAvigAtionStAck(editor.input);
 	}
 
-	private addToNavigationStack(input: IEditorInput, selection?: Selection): void {
-		if (!this.navigatingInStack) {
-			this.doAddOrReplaceInNavigationStack(input, selection);
-		}
-	}
-
-	private replaceInNavigationStack(input: IEditorInput, selection?: Selection): void {
-		if (!this.navigatingInStack) {
-			this.doAddOrReplaceInNavigationStack(input, selection, true /* force replace */);
+	privAte AddToNAvigAtionStAck(input: IEditorInput, selection?: Selection): void {
+		if (!this.nAvigAtingInStAck) {
+			this.doAddOrReplAceInNAvigAtionStAck(input, selection);
 		}
 	}
 
-	private doAddOrReplaceInNavigationStack(input: IEditorInput, selection?: Selection, forceReplace?: boolean): void {
+	privAte replAceInNAvigAtionStAck(input: IEditorInput, selection?: Selection): void {
+		if (!this.nAvigAtingInStAck) {
+			this.doAddOrReplAceInNAvigAtionStAck(input, selection, true /* force replAce */);
+		}
+	}
 
-		// Overwrite an entry in the stack if we have a matching input that comes
-		// with editor options to indicate that this entry is more specific. Also
-		// prevent entries that have the exact same options. Finally, Overwrite
-		// entries if we detect that the change came in very fast which indicates
-		// that it was not coming in from a user change but rather rapid programmatic
-		// changes. We just take the last of the changes to not cause too many entries
-		// on the stack.
-		// We can also be instructed to force replace the last entry.
-		let replace = false;
-		const currentEntry = this.navigationStack[this.navigationStackIndex];
+	privAte doAddOrReplAceInNAvigAtionStAck(input: IEditorInput, selection?: Selection, forceReplAce?: booleAn): void {
+
+		// Overwrite An entry in the stAck if we hAve A mAtching input thAt comes
+		// with editor options to indicAte thAt this entry is more specific. Also
+		// prevent entries thAt hAve the exAct sAme options. FinAlly, Overwrite
+		// entries if we detect thAt the chAnge cAme in very fAst which indicAtes
+		// thAt it wAs not coming in from A user chAnge but rAther rApid progrAmmAtic
+		// chAnges. We just tAke the lAst of the chAnges to not cAuse too mAny entries
+		// on the stAck.
+		// We cAn Also be instructed to force replAce the lAst entry.
+		let replAce = fAlse;
+		const currentEntry = this.nAvigAtionStAck[this.nAvigAtionStAckIndex];
 		if (currentEntry) {
-			if (forceReplace) {
-				replace = true; // replace if we are forced to
-			} else if (this.matches(input, currentEntry.input) && this.sameSelection(currentEntry.selection, selection)) {
-				replace = true; // replace if the input is the same as the current one and the selection as well
+			if (forceReplAce) {
+				replAce = true; // replAce if we Are forced to
+			} else if (this.mAtches(input, currentEntry.input) && this.sAmeSelection(currentEntry.selection, selection)) {
+				replAce = true; // replAce if the input is the sAme As the current one And the selection As well
 			}
 		}
 
-		const stackEditorInput = this.preferResourceEditorInput(input);
-		const entry = { input: stackEditorInput, selection };
+		const stAckEditorInput = this.preferResourceEditorInput(input);
+		const entry = { input: stAckEditorInput, selection };
 
-		// Replace at current position
-		let removedEntries: IStackEntry[] = [];
-		if (replace) {
-			removedEntries.push(this.navigationStack[this.navigationStackIndex]);
-			this.navigationStack[this.navigationStackIndex] = entry;
+		// ReplAce At current position
+		let removedEntries: IStAckEntry[] = [];
+		if (replAce) {
+			removedEntries.push(this.nAvigAtionStAck[this.nAvigAtionStAckIndex]);
+			this.nAvigAtionStAck[this.nAvigAtionStAckIndex] = entry;
 		}
 
-		// Add to stack at current position
+		// Add to stAck At current position
 		else {
 
-			// If we are not at the end of history, we remove anything after
-			if (this.navigationStack.length > this.navigationStackIndex + 1) {
-				for (let i = this.navigationStackIndex + 1; i < this.navigationStack.length; i++) {
-					removedEntries.push(this.navigationStack[i]);
+			// If we Are not At the end of history, we remove Anything After
+			if (this.nAvigAtionStAck.length > this.nAvigAtionStAckIndex + 1) {
+				for (let i = this.nAvigAtionStAckIndex + 1; i < this.nAvigAtionStAck.length; i++) {
+					removedEntries.push(this.nAvigAtionStAck[i]);
 				}
 
-				this.navigationStack = this.navigationStack.slice(0, this.navigationStackIndex + 1);
+				this.nAvigAtionStAck = this.nAvigAtionStAck.slice(0, this.nAvigAtionStAckIndex + 1);
 			}
 
-			// Insert entry at index
-			this.navigationStack.splice(this.navigationStackIndex + 1, 0, entry);
+			// Insert entry At index
+			this.nAvigAtionStAck.splice(this.nAvigAtionStAckIndex + 1, 0, entry);
 
 			// Check for limit
-			if (this.navigationStack.length > HistoryService.MAX_NAVIGATION_STACK_ITEMS) {
-				removedEntries.push(this.navigationStack.shift()!); // remove first
-				if (this.lastNavigationStackIndex >= 0) {
-					this.lastNavigationStackIndex--;
+			if (this.nAvigAtionStAck.length > HistoryService.MAX_NAVIGATION_STACK_ITEMS) {
+				removedEntries.push(this.nAvigAtionStAck.shift()!); // remove first
+				if (this.lAstNAvigAtionStAckIndex >= 0) {
+					this.lAstNAvigAtionStAckIndex--;
 				}
 			} else {
-				this.setIndex(this.navigationStackIndex + 1);
+				this.setIndex(this.nAvigAtionStAckIndex + 1);
 			}
 		}
 
-		// Clear editor listeners from removed entries
-		removedEntries.forEach(removedEntry => this.clearOnEditorDispose(removedEntry.input, this.editorStackListeners));
+		// CleAr editor listeners from removed entries
+		removedEntries.forEAch(removedEntry => this.cleArOnEditorDispose(removedEntry.input, this.editorStAckListeners));
 
-		// Remove this from the stack unless the stack input is a resource
-		// that can easily be restored even when the input gets disposed
-		if (stackEditorInput instanceof EditorInput) {
-			this.onEditorDispose(stackEditorInput, () => this.removeFromNavigationStack(stackEditorInput), this.editorStackListeners);
+		// Remove this from the stAck unless the stAck input is A resource
+		// thAt cAn eAsily be restored even when the input gets disposed
+		if (stAckEditorInput instAnceof EditorInput) {
+			this.onEditorDispose(stAckEditorInput, () => this.removeFromNAvigAtionStAck(stAckEditorInput), this.editorStAckListeners);
 		}
 
 		// Context Keys
-		this.updateContextKeys();
+		this.updAteContextKeys();
 	}
 
-	private preferResourceEditorInput(input: IEditorInput): IEditorInput | IResourceEditorInput {
-		const resource = EditorResourceAccessor.getOriginalUri(input);
-		if (resource && (resource.scheme === Schemas.file || resource.scheme === Schemas.vscodeRemote || resource.scheme === Schemas.userData || resource.scheme === this.pathService.defaultUriScheme)) {
-			// for now, only prefer well known schemes that we control to prevent
-			// issues such as https://github.com/microsoft/vscode/issues/85204
+	privAte preferResourceEditorInput(input: IEditorInput): IEditorInput | IResourceEditorInput {
+		const resource = EditorResourceAccessor.getOriginAlUri(input);
+		if (resource && (resource.scheme === SchemAs.file || resource.scheme === SchemAs.vscodeRemote || resource.scheme === SchemAs.userDAtA || resource.scheme === this.pAthService.defAultUriScheme)) {
+			// for now, only prefer well known schemes thAt we control to prevent
+			// issues such As https://github.com/microsoft/vscode/issues/85204
 			return { resource };
 		}
 
 		return input;
 	}
 
-	private sameSelection(selectionA?: Selection, selectionB?: Selection): boolean {
+	privAte sAmeSelection(selectionA?: Selection, selectionB?: Selection): booleAn {
 		if (!selectionA && !selectionB) {
 			return true;
 		}
 
 		if (!selectionA || !selectionB) {
-			return false;
+			return fAlse;
 		}
 
-		return selectionA.startLineNumber === selectionB.startLineNumber; // we consider the history entry same if we are on the same line
+		return selectionA.stArtLineNumber === selectionB.stArtLineNumber; // we consider the history entry sAme if we Are on the sAme line
 	}
 
-	private removeFromNavigationStack(arg1: IEditorInput | IResourceEditorInput | FileChangesEvent): void {
-		this.navigationStack = this.navigationStack.filter(e => {
-			const matches = this.matches(arg1, e.input);
+	privAte removeFromNAvigAtionStAck(Arg1: IEditorInput | IResourceEditorInput | FileChAngesEvent): void {
+		this.nAvigAtionStAck = this.nAvigAtionStAck.filter(e => {
+			const mAtches = this.mAtches(Arg1, e.input);
 
-			// Cleanup any listeners associated with the input when removing
-			if (matches) {
-				this.clearOnEditorDispose(arg1, this.editorStackListeners);
+			// CleAnup Any listeners AssociAted with the input when removing
+			if (mAtches) {
+				this.cleArOnEditorDispose(Arg1, this.editorStAckListeners);
 			}
 
-			return !matches;
+			return !mAtches;
 		});
-		this.navigationStackIndex = this.navigationStack.length - 1; // reset index
-		this.lastNavigationStackIndex = -1;
+		this.nAvigAtionStAckIndex = this.nAvigAtionStAck.length - 1; // reset index
+		this.lAstNAvigAtionStAckIndex = -1;
 
 		// Context Keys
-		this.updateContextKeys();
+		this.updAteContextKeys();
 	}
 
-	private matches(arg1: IEditorInput | IResourceEditorInput | FileChangesEvent, inputB: IEditorInput | IResourceEditorInput): boolean {
-		if (arg1 instanceof FileChangesEvent) {
-			if (inputB instanceof EditorInput) {
-				return false; // we only support this for IResourceEditorInput
+	privAte mAtches(Arg1: IEditorInput | IResourceEditorInput | FileChAngesEvent, inputB: IEditorInput | IResourceEditorInput): booleAn {
+		if (Arg1 instAnceof FileChAngesEvent) {
+			if (inputB instAnceof EditorInput) {
+				return fAlse; // we only support this for IResourceEditorInput
 			}
 
-			const resourceEditorInputB = inputB as IResourceEditorInput;
+			const resourceEditorInputB = inputB As IResourceEditorInput;
 
-			return arg1.contains(resourceEditorInputB.resource, FileChangeType.DELETED);
+			return Arg1.contAins(resourceEditorInputB.resource, FileChAngeType.DELETED);
 		}
 
-		if (arg1 instanceof EditorInput && inputB instanceof EditorInput) {
-			return arg1.matches(inputB);
+		if (Arg1 instAnceof EditorInput && inputB instAnceof EditorInput) {
+			return Arg1.mAtches(inputB);
 		}
 
-		if (arg1 instanceof EditorInput) {
-			return this.matchesFile((inputB as IResourceEditorInput).resource, arg1);
+		if (Arg1 instAnceof EditorInput) {
+			return this.mAtchesFile((inputB As IResourceEditorInput).resource, Arg1);
 		}
 
-		if (inputB instanceof EditorInput) {
-			return this.matchesFile((arg1 as IResourceEditorInput).resource, inputB);
+		if (inputB instAnceof EditorInput) {
+			return this.mAtchesFile((Arg1 As IResourceEditorInput).resource, inputB);
 		}
 
-		const resourceEditorInputA = arg1 as IResourceEditorInput;
-		const resourceEditorInputB = inputB as IResourceEditorInput;
+		const resourceEditorInputA = Arg1 As IResourceEditorInput;
+		const resourceEditorInputB = inputB As IResourceEditorInput;
 
-		return resourceEditorInputA && resourceEditorInputB && this.uriIdentityService.extUri.isEqual(resourceEditorInputA.resource, resourceEditorInputB.resource);
+		return resourceEditorInputA && resourceEditorInputB && this.uriIdentityService.extUri.isEquAl(resourceEditorInputA.resource, resourceEditorInputB.resource);
 	}
 
-	private matchesFile(resource: URI, arg2: IEditorInput | IResourceEditorInput | FileChangesEvent): boolean {
-		if (arg2 instanceof FileChangesEvent) {
-			return arg2.contains(resource, FileChangeType.DELETED);
+	privAte mAtchesFile(resource: URI, Arg2: IEditorInput | IResourceEditorInput | FileChAngesEvent): booleAn {
+		if (Arg2 instAnceof FileChAngesEvent) {
+			return Arg2.contAins(resource, FileChAngeType.DELETED);
 		}
 
-		if (arg2 instanceof EditorInput) {
-			const inputResource = arg2.resource;
+		if (Arg2 instAnceof EditorInput) {
+			const inputResource = Arg2.resource;
 			if (!inputResource) {
-				return false;
+				return fAlse;
 			}
 
-			if (this.layoutService.isRestored() && !this.fileService.canHandleResource(inputResource)) {
-				return false; // make sure to only check this when workbench has restored (for https://github.com/microsoft/vscode/issues/48275)
+			if (this.lAyoutService.isRestored() && !this.fileService.cAnHAndleResource(inputResource)) {
+				return fAlse; // mAke sure to only check this when workbench hAs restored (for https://github.com/microsoft/vscode/issues/48275)
 			}
 
-			return this.uriIdentityService.extUri.isEqual(inputResource, resource);
+			return this.uriIdentityService.extUri.isEquAl(inputResource, resource);
 		}
 
-		const resourceEditorInput = arg2 as IResourceEditorInput;
+		const resourceEditorInput = Arg2 As IResourceEditorInput;
 
-		return this.uriIdentityService.extUri.isEqual(resourceEditorInput?.resource, resource);
+		return this.uriIdentityService.extUri.isEquAl(resourceEditorInput?.resource, resource);
 	}
 
 	//#endregion
 
 	//#region Recently Closed Editors
 
-	private static readonly MAX_RECENTLY_CLOSED_EDITORS = 20;
+	privAte stAtic reAdonly MAX_RECENTLY_CLOSED_EDITORS = 20;
 
-	private recentlyClosedEditors: IRecentlyClosedEditor[] = [];
-	private ignoreEditorCloseEvent = false;
+	privAte recentlyClosedEditors: IRecentlyClosedEditor[] = [];
+	privAte ignoreEditorCloseEvent = fAlse;
 
-	private onEditorClosed(event: IEditorCloseEvent): void {
+	privAte onEditorClosed(event: IEditorCloseEvent): void {
 		if (this.ignoreEditorCloseEvent) {
 			return; // blocked
 		}
 
-		const { editor, replaced } = event;
-		if (replaced) {
-			return; // ignore if editor was replaced
+		const { editor, replAced } = event;
+		if (replAced) {
+			return; // ignore if editor wAs replAced
 		}
 
-		const factory = this.editorInputFactory.getEditorInputFactory(editor.getTypeId());
-		if (!factory || !factory.canSerialize(editor)) {
-			return; // we need a factory from this point that can serialize this editor
+		const fActory = this.editorInputFActory.getEditorInputFActory(editor.getTypeId());
+		if (!fActory || !fActory.cAnSeriAlize(editor)) {
+			return; // we need A fActory from this point thAt cAn seriAlize this editor
 		}
 
-		const serialized = factory.serialize(editor);
-		if (typeof serialized !== 'string') {
-			return; // we need something to deserialize from
+		const seriAlized = fActory.seriAlize(editor);
+		if (typeof seriAlized !== 'string') {
+			return; // we need something to deseriAlize from
 		}
 
-		const associatedResources: URI[] = [];
-		const editorResource = EditorResourceAccessor.getOriginalUri(editor, { supportSideBySide: SideBySideEditor.BOTH });
+		const AssociAtedResources: URI[] = [];
+		const editorResource = EditorResourceAccessor.getOriginAlUri(editor, { supportSideBySide: SideBySideEditor.BOTH });
 		if (URI.isUri(editorResource)) {
-			associatedResources.push(editorResource);
+			AssociAtedResources.push(editorResource);
 		} else if (editorResource) {
-			associatedResources.push(...coalesce([editorResource.primary, editorResource.secondary]));
+			AssociAtedResources.push(...coAlesce([editorResource.primAry, editorResource.secondAry]));
 		}
 
 		// Remove from list of recently closed before...
 		this.removeFromRecentlyClosedEditors(editor);
 
-		// ...adding it as last recently closed
+		// ...Adding it As lAst recently closed
 		this.recentlyClosedEditors.push({
-			resource: EditorResourceAccessor.getOriginalUri(editor),
-			associatedResources,
-			serialized: { typeId: editor.getTypeId(), value: serialized },
+			resource: EditorResourceAccessor.getOriginAlUri(editor),
+			AssociAtedResources,
+			seriAlized: { typeId: editor.getTypeId(), vAlue: seriAlized },
 			index: event.index,
 			sticky: event.sticky
 		});
@@ -663,105 +663,105 @@ export class HistoryService extends Disposable implements IHistoryService {
 		}
 
 		// Context
-		this.canReopenClosedEditorContextKey.set(true);
+		this.cAnReopenClosedEditorContextKey.set(true);
 	}
 
-	reopenLastClosedEditor(): void {
+	reopenLAstClosedEditor(): void {
 
-		// Open editor if we have one
-		const lastClosedEditor = this.recentlyClosedEditors.pop();
-		if (lastClosedEditor) {
-			this.doReopenLastClosedEditor(lastClosedEditor);
+		// Open editor if we hAve one
+		const lAstClosedEditor = this.recentlyClosedEditors.pop();
+		if (lAstClosedEditor) {
+			this.doReopenLAstClosedEditor(lAstClosedEditor);
 		}
 
-		// Update context
-		this.canReopenClosedEditorContextKey.set(this.recentlyClosedEditors.length > 0);
+		// UpdAte context
+		this.cAnReopenClosedEditorContextKey.set(this.recentlyClosedEditors.length > 0);
 	}
 
-	private async doReopenLastClosedEditor(lastClosedEditor: IRecentlyClosedEditor): Promise<void> {
+	privAte Async doReopenLAstClosedEditor(lAstClosedEditor: IRecentlyClosedEditor): Promise<void> {
 
 		// Determine editor options
 		let options: IEditorOptions;
-		if (lastClosedEditor.sticky) {
-			// Sticky: in case the target index is outside of the range of
-			// sticky editors, we make sure to not provide the index as
-			// option. Otherwise the index will cause the sticky flag to
+		if (lAstClosedEditor.sticky) {
+			// Sticky: in cAse the tArget index is outside of the rAnge of
+			// sticky editors, we mAke sure to not provide the index As
+			// option. Otherwise the index will cAuse the sticky flAg to
 			// be ignored.
-			if (!this.editorGroupService.activeGroup.isSticky(lastClosedEditor.index)) {
+			if (!this.editorGroupService.ActiveGroup.isSticky(lAstClosedEditor.index)) {
 				options = { pinned: true, sticky: true, ignoreError: true };
 			} else {
-				options = { pinned: true, sticky: true, index: lastClosedEditor.index, ignoreError: true };
+				options = { pinned: true, sticky: true, index: lAstClosedEditor.index, ignoreError: true };
 			}
 		} else {
-			options = { pinned: true, index: lastClosedEditor.index, ignoreError: true };
+			options = { pinned: true, index: lAstClosedEditor.index, ignoreError: true };
 		}
 
-		// Deserialize and open editor unless already opened
-		const restoredEditor = this.editorInputFactory.getEditorInputFactory(lastClosedEditor.serialized.typeId)?.deserialize(this.instantiationService, lastClosedEditor.serialized.value);
-		let editorPane: IEditorPane | undefined = undefined;
-		if (restoredEditor && !this.editorGroupService.activeGroup.isOpened(restoredEditor)) {
+		// DeseriAlize And open editor unless AlreAdy opened
+		const restoredEditor = this.editorInputFActory.getEditorInputFActory(lAstClosedEditor.seriAlized.typeId)?.deseriAlize(this.instAntiAtionService, lAstClosedEditor.seriAlized.vAlue);
+		let editorPAne: IEditorPAne | undefined = undefined;
+		if (restoredEditor && !this.editorGroupService.ActiveGroup.isOpened(restoredEditor)) {
 			// Fix for https://github.com/microsoft/vscode/issues/107850
-			// If opening an editor fails, it is possible that we get
-			// another editor-close event as a result. But we really do
-			// want to ignore that in our list of recently closed editors
+			// If opening An editor fAils, it is possible thAt we get
+			// Another editor-close event As A result. But we reAlly do
+			// wAnt to ignore thAt in our list of recently closed editors
 			//  to prevent endless loops.
 			this.ignoreEditorCloseEvent = true;
 			try {
-				editorPane = await this.editorService.openEditor(restoredEditor, options);
-			} finally {
-				this.ignoreEditorCloseEvent = false;
+				editorPAne = AwAit this.editorService.openEditor(restoredEditor, options);
+			} finAlly {
+				this.ignoreEditorCloseEvent = fAlse;
 			}
 		}
 
-		// If no editor was opened, try with the next one
-		if (!editorPane) {
+		// If no editor wAs opened, try with the next one
+		if (!editorPAne) {
 			// Fix for https://github.com/microsoft/vscode/issues/67882
-			// If opening of the editor fails, make sure to try the next one
-			// but make sure to remove this one from the list to prevent
+			// If opening of the editor fAils, mAke sure to try the next one
+			// but mAke sure to remove this one from the list to prevent
 			// endless loops.
-			remove(this.recentlyClosedEditors, lastClosedEditor);
+			remove(this.recentlyClosedEditors, lAstClosedEditor);
 
 			// Try with next one
-			this.reopenLastClosedEditor();
+			this.reopenLAstClosedEditor();
 		}
 	}
 
-	private removeFromRecentlyClosedEditors(arg1: IEditorInput | IResourceEditorInput | FileChangesEvent): void {
+	privAte removeFromRecentlyClosedEditors(Arg1: IEditorInput | IResourceEditorInput | FileChAngesEvent): void {
 		this.recentlyClosedEditors = this.recentlyClosedEditors.filter(recentlyClosedEditor => {
-			if (recentlyClosedEditor.resource && this.matchesFile(recentlyClosedEditor.resource, arg1)) {
-				return false; // editor matches directly
+			if (recentlyClosedEditor.resource && this.mAtchesFile(recentlyClosedEditor.resource, Arg1)) {
+				return fAlse; // editor mAtches directly
 			}
 
-			if (recentlyClosedEditor.associatedResources.some(associatedResource => this.matchesFile(associatedResource, arg1))) {
-				return false; // an associated resource matches
+			if (recentlyClosedEditor.AssociAtedResources.some(AssociAtedResource => this.mAtchesFile(AssociAtedResource, Arg1))) {
+				return fAlse; // An AssociAted resource mAtches
 			}
 
 			return true;
 		});
 
-		// Update context
-		this.canReopenClosedEditorContextKey.set(this.recentlyClosedEditors.length > 0);
+		// UpdAte context
+		this.cAnReopenClosedEditorContextKey.set(this.recentlyClosedEditors.length > 0);
 	}
 
 	//#endregion
 
-	//#region Last Edit Location
+	//#region LAst Edit LocAtion
 
-	private lastEditLocation: IStackEntry | undefined;
+	privAte lAstEditLocAtion: IStAckEntry | undefined;
 
-	private rememberLastEditLocation(activeEditor: IEditorInput, activeTextEditorControl: ICodeEditor): void {
-		this.lastEditLocation = { input: activeEditor };
-		this.canNavigateToLastEditLocationContextKey.set(true);
+	privAte rememberLAstEditLocAtion(ActiveEditor: IEditorInput, ActiveTextEditorControl: ICodeEditor): void {
+		this.lAstEditLocAtion = { input: ActiveEditor };
+		this.cAnNAvigAteToLAstEditLocAtionContextKey.set(true);
 
-		const position = activeTextEditorControl.getPosition();
+		const position = ActiveTextEditorControl.getPosition();
 		if (position) {
-			this.lastEditLocation.selection = new Selection(position.lineNumber, position.column, position.lineNumber, position.column);
+			this.lAstEditLocAtion.selection = new Selection(position.lineNumber, position.column, position.lineNumber, position.column);
 		}
 	}
 
-	openLastEditLocation(): void {
-		if (this.lastEditLocation) {
-			this.doNavigate(this.lastEditLocation);
+	openLAstEditLocAtion(): void {
+		if (this.lAstEditLocAtion) {
+			this.doNAvigAte(this.lAstEditLocAtion);
 		}
 	}
 
@@ -769,17 +769,17 @@ export class HistoryService extends Disposable implements IHistoryService {
 
 	//#region Context Keys
 
-	private readonly canNavigateBackContextKey = (new RawContextKey<boolean>('canNavigateBack', false)).bindTo(this.contextKeyService);
-	private readonly canNavigateForwardContextKey = (new RawContextKey<boolean>('canNavigateForward', false)).bindTo(this.contextKeyService);
-	private readonly canNavigateToLastEditLocationContextKey = (new RawContextKey<boolean>('canNavigateToLastEditLocation', false)).bindTo(this.contextKeyService);
-	private readonly canReopenClosedEditorContextKey = (new RawContextKey<boolean>('canReopenClosedEditor', false)).bindTo(this.contextKeyService);
+	privAte reAdonly cAnNAvigAteBAckContextKey = (new RAwContextKey<booleAn>('cAnNAvigAteBAck', fAlse)).bindTo(this.contextKeyService);
+	privAte reAdonly cAnNAvigAteForwArdContextKey = (new RAwContextKey<booleAn>('cAnNAvigAteForwArd', fAlse)).bindTo(this.contextKeyService);
+	privAte reAdonly cAnNAvigAteToLAstEditLocAtionContextKey = (new RAwContextKey<booleAn>('cAnNAvigAteToLAstEditLocAtion', fAlse)).bindTo(this.contextKeyService);
+	privAte reAdonly cAnReopenClosedEditorContextKey = (new RAwContextKey<booleAn>('cAnReopenClosedEditor', fAlse)).bindTo(this.contextKeyService);
 
-	private updateContextKeys(): void {
-		this.contextKeyService.bufferChangeEvents(() => {
-			this.canNavigateBackContextKey.set(this.navigationStack.length > 0 && this.navigationStackIndex > 0);
-			this.canNavigateForwardContextKey.set(this.navigationStack.length > 0 && this.navigationStackIndex < this.navigationStack.length - 1);
-			this.canNavigateToLastEditLocationContextKey.set(!!this.lastEditLocation);
-			this.canReopenClosedEditorContextKey.set(this.recentlyClosedEditors.length > 0);
+	privAte updAteContextKeys(): void {
+		this.contextKeyService.bufferChAngeEvents(() => {
+			this.cAnNAvigAteBAckContextKey.set(this.nAvigAtionStAck.length > 0 && this.nAvigAtionStAckIndex > 0);
+			this.cAnNAvigAteForwArdContextKey.set(this.nAvigAtionStAck.length > 0 && this.nAvigAtionStAckIndex < this.nAvigAtionStAck.length - 1);
+			this.cAnNAvigAteToLAstEditLocAtionContextKey.set(!!this.lAstEditLocAtion);
+			this.cAnReopenClosedEditorContextKey.set(this.recentlyClosedEditors.length > 0);
 		});
 	}
 
@@ -787,26 +787,26 @@ export class HistoryService extends Disposable implements IHistoryService {
 
 	//#region History
 
-	private static readonly MAX_HISTORY_ITEMS = 200;
-	private static readonly HISTORY_STORAGE_KEY = 'history.entries';
+	privAte stAtic reAdonly MAX_HISTORY_ITEMS = 200;
+	privAte stAtic reAdonly HISTORY_STORAGE_KEY = 'history.entries';
 
-	private history: Array<IEditorInput | IResourceEditorInput> | undefined = undefined;
+	privAte history: ArrAy<IEditorInput | IResourceEditorInput> | undefined = undefined;
 
-	private readonly resourceExcludeMatcher = this._register(new IdleValue(() => {
-		const matcher = this._register(this.instantiationService.createInstance(
-			ResourceGlobMatcher,
-			root => getExcludes(root ? this.configurationService.getValue<ISearchConfiguration>({ resource: root }) : this.configurationService.getValue<ISearchConfiguration>()) || Object.create(null),
-			event => event.affectsConfiguration(FILES_EXCLUDE_CONFIG) || event.affectsConfiguration(SEARCH_EXCLUDE_CONFIG)
+	privAte reAdonly resourceExcludeMAtcher = this._register(new IdleVAlue(() => {
+		const mAtcher = this._register(this.instAntiAtionService.creAteInstAnce(
+			ResourceGlobMAtcher,
+			root => getExcludes(root ? this.configurAtionService.getVAlue<ISeArchConfigurAtion>({ resource: root }) : this.configurAtionService.getVAlue<ISeArchConfigurAtion>()) || Object.creAte(null),
+			event => event.AffectsConfigurAtion(FILES_EXCLUDE_CONFIG) || event.AffectsConfigurAtion(SEARCH_EXCLUDE_CONFIG)
 		));
 
-		this._register(matcher.onExpressionChange(() => this.removeExcludedFromHistory()));
+		this._register(mAtcher.onExpressionChAnge(() => this.removeExcludedFromHistory()));
 
-		return matcher;
+		return mAtcher;
 	}));
 
-	private handleEditorEventInHistory(editor?: IEditorPane): void {
+	privAte hAndleEditorEventInHistory(editor?: IEditorPAne): void {
 
-		// Ensure we have not configured to exclude input and don't track invalid inputs
+		// Ensure we hAve not configured to exclude input And don't trAck invAlid inputs
 		const input = editor?.input;
 		if (!input || input.isDisposed() || !this.include(input)) {
 			return;
@@ -814,117 +814,117 @@ export class HistoryService extends Disposable implements IHistoryService {
 
 		const historyInput = this.preferResourceEditorInput(input);
 
-		// Remove any existing entry and add to the beginning
-		this.ensureHistoryLoaded(this.history);
+		// Remove Any existing entry And Add to the beginning
+		this.ensureHistoryLoAded(this.history);
 		this.removeFromHistory(input);
 		this.history.unshift(historyInput);
 
-		// Respect max entries setting
+		// Respect mAx entries setting
 		if (this.history.length > HistoryService.MAX_HISTORY_ITEMS) {
-			this.clearOnEditorDispose(this.history.pop()!, this.editorHistoryListeners);
+			this.cleArOnEditorDispose(this.history.pop()!, this.editorHistoryListeners);
 		}
 
-		// Remove this from the history unless the history input is a resource
-		// that can easily be restored even when the input gets disposed
-		if (historyInput instanceof EditorInput) {
+		// Remove this from the history unless the history input is A resource
+		// thAt cAn eAsily be restored even when the input gets disposed
+		if (historyInput instAnceof EditorInput) {
 			this.onEditorDispose(historyInput, () => this.removeFromHistory(historyInput), this.editorHistoryListeners);
 		}
 	}
 
-	private include(input: IEditorInput | IResourceEditorInput): boolean {
-		if (input instanceof EditorInput) {
-			return true; // include any non files
+	privAte include(input: IEditorInput | IResourceEditorInput): booleAn {
+		if (input instAnceof EditorInput) {
+			return true; // include Any non files
 		}
 
-		const resourceEditorInput = input as IResourceEditorInput;
+		const resourceEditorInput = input As IResourceEditorInput;
 
-		return !this.resourceExcludeMatcher.value.matches(resourceEditorInput.resource);
+		return !this.resourceExcludeMAtcher.vAlue.mAtches(resourceEditorInput.resource);
 	}
 
-	private removeExcludedFromHistory(): void {
-		this.ensureHistoryLoaded(this.history);
+	privAte removeExcludedFromHistory(): void {
+		this.ensureHistoryLoAded(this.history);
 
 		this.history = this.history.filter(e => {
 			const include = this.include(e);
 
-			// Cleanup any listeners associated with the input when removing from history
+			// CleAnup Any listeners AssociAted with the input when removing from history
 			if (!include) {
-				this.clearOnEditorDispose(e, this.editorHistoryListeners);
+				this.cleArOnEditorDispose(e, this.editorHistoryListeners);
 			}
 
 			return include;
 		});
 	}
 
-	private removeFromHistory(arg1: IEditorInput | IResourceEditorInput | FileChangesEvent): void {
-		this.ensureHistoryLoaded(this.history);
+	privAte removeFromHistory(Arg1: IEditorInput | IResourceEditorInput | FileChAngesEvent): void {
+		this.ensureHistoryLoAded(this.history);
 
 		this.history = this.history.filter(e => {
-			const matches = this.matches(arg1, e);
+			const mAtches = this.mAtches(Arg1, e);
 
-			// Cleanup any listeners associated with the input when removing from history
-			if (matches) {
-				this.clearOnEditorDispose(arg1, this.editorHistoryListeners);
+			// CleAnup Any listeners AssociAted with the input when removing from history
+			if (mAtches) {
+				this.cleArOnEditorDispose(Arg1, this.editorHistoryListeners);
 			}
 
-			return !matches;
+			return !mAtches;
 		});
 	}
 
-	clearRecentlyOpened(): void {
+	cleArRecentlyOpened(): void {
 		this.history = [];
 
-		this.editorHistoryListeners.forEach(listeners => dispose(listeners));
-		this.editorHistoryListeners.clear();
+		this.editorHistoryListeners.forEAch(listeners => dispose(listeners));
+		this.editorHistoryListeners.cleAr();
 	}
 
-	getHistory(): ReadonlyArray<IEditorInput | IResourceEditorInput> {
-		this.ensureHistoryLoaded(this.history);
+	getHistory(): ReAdonlyArrAy<IEditorInput | IResourceEditorInput> {
+		this.ensureHistoryLoAded(this.history);
 
 		return this.history.slice(0);
 	}
 
-	private ensureHistoryLoaded(history: Array<IEditorInput | IResourceEditorInput> | undefined): asserts history {
+	privAte ensureHistoryLoAded(history: ArrAy<IEditorInput | IResourceEditorInput> | undefined): Asserts history {
 		if (!this.history) {
-			this.history = this.loadHistory();
+			this.history = this.loAdHistory();
 		}
 	}
 
-	private loadHistory(): Array<IEditorInput | IResourceEditorInput> {
-		let entries: ISerializedEditorHistoryEntry[] = [];
+	privAte loAdHistory(): ArrAy<IEditorInput | IResourceEditorInput> {
+		let entries: ISeriAlizedEditorHistoryEntry[] = [];
 
-		const entriesRaw = this.storageService.get(HistoryService.HISTORY_STORAGE_KEY, StorageScope.WORKSPACE);
-		if (entriesRaw) {
+		const entriesRAw = this.storAgeService.get(HistoryService.HISTORY_STORAGE_KEY, StorAgeScope.WORKSPACE);
+		if (entriesRAw) {
 			try {
-				entries = coalesce(JSON.parse(entriesRaw));
-			} catch (error) {
+				entries = coAlesce(JSON.pArse(entriesRAw));
+			} cAtch (error) {
 				onUnexpectedError(error); // https://github.com/microsoft/vscode/issues/99075
 			}
 		}
 
-		return coalesce(entries.map(entry => {
+		return coAlesce(entries.mAp(entry => {
 			try {
-				return this.safeLoadHistoryEntry(entry);
-			} catch (error) {
+				return this.sAfeLoAdHistoryEntry(entry);
+			} cAtch (error) {
 				return undefined; // https://github.com/microsoft/vscode/issues/60960
 			}
 		}));
 	}
 
-	private safeLoadHistoryEntry(entry: ISerializedEditorHistoryEntry): IEditorInput | IResourceEditorInput | undefined {
-		const serializedEditorHistoryEntry = entry;
+	privAte sAfeLoAdHistoryEntry(entry: ISeriAlizedEditorHistoryEntry): IEditorInput | IResourceEditorInput | undefined {
+		const seriAlizedEditorHistoryEntry = entry;
 
-		// File resource: via URI.revive()
-		if (serializedEditorHistoryEntry.resourceJSON) {
-			return { resource: URI.revive(<UriComponents>serializedEditorHistoryEntry.resourceJSON) };
+		// File resource: viA URI.revive()
+		if (seriAlizedEditorHistoryEntry.resourceJSON) {
+			return { resource: URI.revive(<UriComponents>seriAlizedEditorHistoryEntry.resourceJSON) };
 		}
 
-		// Editor input: via factory
-		const { editorInputJSON } = serializedEditorHistoryEntry;
-		if (editorInputJSON?.deserialized) {
-			const factory = this.editorInputFactory.getEditorInputFactory(editorInputJSON.typeId);
-			if (factory) {
-				const input = factory.deserialize(this.instantiationService, editorInputJSON.deserialized);
+		// Editor input: viA fActory
+		const { editorInputJSON } = seriAlizedEditorHistoryEntry;
+		if (editorInputJSON?.deseriAlized) {
+			const fActory = this.editorInputFActory.getEditorInputFActory(editorInputJSON.typeId);
+			if (fActory) {
+				const input = fActory.deseriAlize(this.instAntiAtionService, editorInputJSON.deseriAlized);
 				if (input) {
 					this.onEditorDispose(input, () => this.removeFromHistory(input), this.editorHistoryListeners);
 				}
@@ -936,48 +936,48 @@ export class HistoryService extends Disposable implements IHistoryService {
 		return undefined;
 	}
 
-	private saveState(): void {
+	privAte sAveStAte(): void {
 		if (!this.history) {
-			return; // nothing to save because history was not used
+			return; // nothing to sAve becAuse history wAs not used
 		}
 
-		const entries: ISerializedEditorHistoryEntry[] = coalesce(this.history.map((input): ISerializedEditorHistoryEntry | undefined => {
+		const entries: ISeriAlizedEditorHistoryEntry[] = coAlesce(this.history.mAp((input): ISeriAlizedEditorHistoryEntry | undefined => {
 
-			// Editor input: try via factory
-			if (input instanceof EditorInput) {
-				const factory = this.editorInputFactory.getEditorInputFactory(input.getTypeId());
-				if (factory) {
-					const deserialized = factory.serialize(input);
-					if (deserialized) {
-						return { editorInputJSON: { typeId: input.getTypeId(), deserialized } };
+			// Editor input: try viA fActory
+			if (input instAnceof EditorInput) {
+				const fActory = this.editorInputFActory.getEditorInputFActory(input.getTypeId());
+				if (fActory) {
+					const deseriAlized = fActory.seriAlize(input);
+					if (deseriAlized) {
+						return { editorInputJSON: { typeId: input.getTypeId(), deseriAlized } };
 					}
 				}
 			}
 
-			// File resource: via URI.toJSON()
+			// File resource: viA URI.toJSON()
 			else {
-				return { resourceJSON: (input as IResourceEditorInput).resource.toJSON() };
+				return { resourceJSON: (input As IResourceEditorInput).resource.toJSON() };
 			}
 
 			return undefined;
 		}));
 
-		this.storageService.store(HistoryService.HISTORY_STORAGE_KEY, JSON.stringify(entries), StorageScope.WORKSPACE);
+		this.storAgeService.store(HistoryService.HISTORY_STORAGE_KEY, JSON.stringify(entries), StorAgeScope.WORKSPACE);
 	}
 
 	//#endregion
 
-	//#region Last Active Workspace/File
+	//#region LAst Active WorkspAce/File
 
-	getLastActiveWorkspaceRoot(schemeFilter?: string): URI | undefined {
+	getLAstActiveWorkspAceRoot(schemeFilter?: string): URI | undefined {
 
-		// No Folder: return early
-		const folders = this.contextService.getWorkspace().folders;
+		// No Folder: return eArly
+		const folders = this.contextService.getWorkspAce().folders;
 		if (folders.length === 0) {
 			return undefined;
 		}
 
-		// Single Folder: return early
+		// Single Folder: return eArly
 		if (folders.length === 1) {
 			const resource = folders[0].uri;
 			if (!schemeFilter || resource.scheme === schemeFilter) {
@@ -987,24 +987,24 @@ export class HistoryService extends Disposable implements IHistoryService {
 			return undefined;
 		}
 
-		// Multiple folders: find the last active one
+		// Multiple folders: find the lAst Active one
 		for (const input of this.getHistory()) {
-			if (input instanceof EditorInput) {
+			if (input instAnceof EditorInput) {
 				continue;
 			}
 
-			const resourceEditorInput = input as IResourceEditorInput;
+			const resourceEditorInput = input As IResourceEditorInput;
 			if (schemeFilter && resourceEditorInput.resource.scheme !== schemeFilter) {
 				continue;
 			}
 
-			const resourceWorkspace = this.contextService.getWorkspaceFolder(resourceEditorInput.resource);
-			if (resourceWorkspace) {
-				return resourceWorkspace.uri;
+			const resourceWorkspAce = this.contextService.getWorkspAceFolder(resourceEditorInput.resource);
+			if (resourceWorkspAce) {
+				return resourceWorkspAce.uri;
 			}
 		}
 
-		// fallback to first workspace matching scheme filter if any
+		// fAllbAck to first workspAce mAtching scheme filter if Any
 		for (const folder of folders) {
 			const resource = folder.uri;
 			if (!schemeFilter || resource.scheme === schemeFilter) {
@@ -1015,13 +1015,13 @@ export class HistoryService extends Disposable implements IHistoryService {
 		return undefined;
 	}
 
-	getLastActiveFile(filterByScheme: string): URI | undefined {
+	getLAstActiveFile(filterByScheme: string): URI | undefined {
 		for (const input of this.getHistory()) {
 			let resource: URI | undefined;
-			if (input instanceof EditorInput) {
-				resource = EditorResourceAccessor.getOriginalUri(input, { filterByScheme });
+			if (input instAnceof EditorInput) {
+				resource = EditorResourceAccessor.getOriginAlUri(input, { filterByScheme });
 			} else {
-				resource = (input as IResourceEditorInput).resource;
+				resource = (input As IResourceEditorInput).resource;
 			}
 
 			if (resource?.scheme === filterByScheme) {
@@ -1036,63 +1036,63 @@ export class HistoryService extends Disposable implements IHistoryService {
 
 	//#region Editor Most Recently Used History
 
-	private recentlyUsedEditorsStack: ReadonlyArray<IEditorIdentifier> | undefined = undefined;
-	private recentlyUsedEditorsStackIndex = 0;
+	privAte recentlyUsedEditorsStAck: ReAdonlyArrAy<IEditorIdentifier> | undefined = undefined;
+	privAte recentlyUsedEditorsStAckIndex = 0;
 
-	private recentlyUsedEditorsInGroupStack: ReadonlyArray<IEditorIdentifier> | undefined = undefined;
-	private recentlyUsedEditorsInGroupStackIndex = 0;
+	privAte recentlyUsedEditorsInGroupStAck: ReAdonlyArrAy<IEditorIdentifier> | undefined = undefined;
+	privAte recentlyUsedEditorsInGroupStAckIndex = 0;
 
-	private navigatingInRecentlyUsedEditorsStack = false;
-	private navigatingInRecentlyUsedEditorsInGroupStack = false;
+	privAte nAvigAtingInRecentlyUsedEditorsStAck = fAlse;
+	privAte nAvigAtingInRecentlyUsedEditorsInGroupStAck = fAlse;
 
 	openNextRecentlyUsedEditor(groupId?: GroupIdentifier): void {
-		const [stack, index] = this.ensureRecentlyUsedStack(index => index - 1, groupId);
+		const [stAck, index] = this.ensureRecentlyUsedStAck(index => index - 1, groupId);
 
-		this.doNavigateInRecentlyUsedEditorsStack(stack[index], groupId);
+		this.doNAvigAteInRecentlyUsedEditorsStAck(stAck[index], groupId);
 	}
 
 	openPreviouslyUsedEditor(groupId?: GroupIdentifier): void {
-		const [stack, index] = this.ensureRecentlyUsedStack(index => index + 1, groupId);
+		const [stAck, index] = this.ensureRecentlyUsedStAck(index => index + 1, groupId);
 
-		this.doNavigateInRecentlyUsedEditorsStack(stack[index], groupId);
+		this.doNAvigAteInRecentlyUsedEditorsStAck(stAck[index], groupId);
 	}
 
-	private doNavigateInRecentlyUsedEditorsStack(editorIdentifier: IEditorIdentifier | undefined, groupId?: GroupIdentifier): void {
+	privAte doNAvigAteInRecentlyUsedEditorsStAck(editorIdentifier: IEditorIdentifier | undefined, groupId?: GroupIdentifier): void {
 		if (editorIdentifier) {
-			const acrossGroups = typeof groupId !== 'number' || !this.editorGroupService.getGroup(groupId);
+			const AcrossGroups = typeof groupId !== 'number' || !this.editorGroupService.getGroup(groupId);
 
-			if (acrossGroups) {
-				this.navigatingInRecentlyUsedEditorsStack = true;
+			if (AcrossGroups) {
+				this.nAvigAtingInRecentlyUsedEditorsStAck = true;
 			} else {
-				this.navigatingInRecentlyUsedEditorsInGroupStack = true;
+				this.nAvigAtingInRecentlyUsedEditorsInGroupStAck = true;
 			}
 
-			this.editorService.openEditor(editorIdentifier.editor, undefined, editorIdentifier.groupId).finally(() => {
-				if (acrossGroups) {
-					this.navigatingInRecentlyUsedEditorsStack = false;
+			this.editorService.openEditor(editorIdentifier.editor, undefined, editorIdentifier.groupId).finAlly(() => {
+				if (AcrossGroups) {
+					this.nAvigAtingInRecentlyUsedEditorsStAck = fAlse;
 				} else {
-					this.navigatingInRecentlyUsedEditorsInGroupStack = false;
+					this.nAvigAtingInRecentlyUsedEditorsInGroupStAck = fAlse;
 				}
 			});
 		}
 	}
 
-	private ensureRecentlyUsedStack(indexModifier: (index: number) => number, groupId?: GroupIdentifier): [ReadonlyArray<IEditorIdentifier>, number] {
-		let editors: ReadonlyArray<IEditorIdentifier>;
+	privAte ensureRecentlyUsedStAck(indexModifier: (index: number) => number, groupId?: GroupIdentifier): [ReAdonlyArrAy<IEditorIdentifier>, number] {
+		let editors: ReAdonlyArrAy<IEditorIdentifier>;
 		let index: number;
 
 		const group = typeof groupId === 'number' ? this.editorGroupService.getGroup(groupId) : undefined;
 
 		// Across groups
 		if (!group) {
-			editors = this.recentlyUsedEditorsStack || this.editorService.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE);
-			index = this.recentlyUsedEditorsStackIndex;
+			editors = this.recentlyUsedEditorsStAck || this.editorService.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE);
+			index = this.recentlyUsedEditorsStAckIndex;
 		}
 
 		// Within group
 		else {
-			editors = this.recentlyUsedEditorsInGroupStack || group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).map(editor => ({ groupId: group.id, editor }));
-			index = this.recentlyUsedEditorsInGroupStackIndex;
+			editors = this.recentlyUsedEditorsInGroupStAck || group.getEditors(EditorsOrder.MOST_RECENTLY_ACTIVE).mAp(editor => ({ groupId: group.id, editor }));
+			index = this.recentlyUsedEditorsInGroupStAckIndex;
 		}
 
 		// Adjust index
@@ -1103,30 +1103,30 @@ export class HistoryService extends Disposable implements IHistoryService {
 			newIndex = editors.length - 1;
 		}
 
-		// Remember index and editors
+		// Remember index And editors
 		if (!group) {
-			this.recentlyUsedEditorsStack = editors;
-			this.recentlyUsedEditorsStackIndex = newIndex;
+			this.recentlyUsedEditorsStAck = editors;
+			this.recentlyUsedEditorsStAckIndex = newIndex;
 		} else {
-			this.recentlyUsedEditorsInGroupStack = editors;
-			this.recentlyUsedEditorsInGroupStackIndex = newIndex;
+			this.recentlyUsedEditorsInGroupStAck = editors;
+			this.recentlyUsedEditorsInGroupStAckIndex = newIndex;
 		}
 
 		return [editors, newIndex];
 	}
 
-	private handleEditorEventInRecentEditorsStack(): void {
+	privAte hAndleEditorEventInRecentEditorsStAck(): void {
 
-		// Drop all-editors stack unless navigating in all editors
-		if (!this.navigatingInRecentlyUsedEditorsStack) {
-			this.recentlyUsedEditorsStack = undefined;
-			this.recentlyUsedEditorsStackIndex = 0;
+		// Drop All-editors stAck unless nAvigAting in All editors
+		if (!this.nAvigAtingInRecentlyUsedEditorsStAck) {
+			this.recentlyUsedEditorsStAck = undefined;
+			this.recentlyUsedEditorsStAckIndex = 0;
 		}
 
-		// Drop in-group-editors stack unless navigating in group
-		if (!this.navigatingInRecentlyUsedEditorsInGroupStack) {
-			this.recentlyUsedEditorsInGroupStack = undefined;
-			this.recentlyUsedEditorsInGroupStackIndex = 0;
+		// Drop in-group-editors stAck unless nAvigAting in group
+		if (!this.nAvigAtingInRecentlyUsedEditorsInGroupStAck) {
+			this.recentlyUsedEditorsInGroupStAck = undefined;
+			this.recentlyUsedEditorsInGroupStAckIndex = 0;
 		}
 	}
 

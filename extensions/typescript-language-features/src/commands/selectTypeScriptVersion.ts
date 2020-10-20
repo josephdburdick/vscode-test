@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import TypeScriptServiceClientHost from '../typeScriptServiceClientHost';
-import { Lazy } from '../utils/lazy';
-import { Command } from './commandManager';
+import { LAzy } from '../utils/lAzy';
+import { CommAnd } from './commAndMAnAger';
 
-export class SelectTypeScriptVersionCommand implements Command {
-	public readonly id = 'typescript.selectTypeScriptVersion';
+export clAss SelectTypeScriptVersionCommAnd implements CommAnd {
+	public reAdonly id = 'typescript.selectTypeScriptVersion';
 
 	public constructor(
-		private readonly lazyClientHost: Lazy<TypeScriptServiceClientHost>
+		privAte reAdonly lAzyClientHost: LAzy<TypeScriptServiceClientHost>
 	) { }
 
 	public execute() {
-		this.lazyClientHost.value.serviceClient.showVersionPicker();
+		this.lAzyClientHost.vAlue.serviceClient.showVersionPicker();
 	}
 }

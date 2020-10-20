@@ -1,321 +1,321 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/notificationsCenter';
-import 'vs/css!./media/notificationsActions';
+import 'vs/css!./mediA/notificAtionsCenter';
+import 'vs/css!./mediA/notificAtionsActions';
 import { NOTIFICATIONS_BORDER, NOTIFICATIONS_CENTER_HEADER_FOREGROUND, NOTIFICATIONS_CENTER_HEADER_BACKGROUND, NOTIFICATIONS_CENTER_BORDER } from 'vs/workbench/common/theme';
-import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector, Themable } from 'vs/platform/theme/common/themeService';
-import { INotificationsModel, INotificationChangeEvent, NotificationChangeType, NotificationViewItemContentChangeKind } from 'vs/workbench/common/notifications';
-import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
-import { Emitter } from 'vs/base/common/event';
-import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
-import { NotificationsCenterVisibleContext, INotificationsCenterController } from 'vs/workbench/browser/parts/notifications/notificationsCommands';
-import { NotificationsList } from 'vs/workbench/browser/parts/notifications/notificationsList';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { isAncestor, Dimension } from 'vs/base/browser/dom';
-import { widgetShadow } from 'vs/platform/theme/common/colorRegistry';
+import { IThemeService, registerThemingPArticipAnt, IColorTheme, ICssStyleCollector, ThemAble } from 'vs/plAtform/theme/common/themeService';
+import { INotificAtionsModel, INotificAtionChAngeEvent, NotificAtionChAngeType, NotificAtionViewItemContentChAngeKind } from 'vs/workbench/common/notificAtions';
+import { IWorkbenchLAyoutService, PArts } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { Emitter } from 'vs/bAse/common/event';
+import { IContextKeyService } from 'vs/plAtform/contextkey/common/contextkey';
+import { NotificAtionsCenterVisibleContext, INotificAtionsCenterController } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsCommAnds';
+import { NotificAtionsList } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsList';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { isAncestor, Dimension } from 'vs/bAse/browser/dom';
+import { widgetShAdow } from 'vs/plAtform/theme/common/colorRegistry';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { localize } from 'vs/nls';
-import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { ClearAllNotificationsAction, HideNotificationsCenterAction, NotificationActionRunner } from 'vs/workbench/browser/parts/notifications/notificationsActions';
-import { IAction } from 'vs/base/common/actions';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { assertAllDefined, assertIsDefined } from 'vs/base/common/types';
+import { locAlize } from 'vs/nls';
+import { ActionBAr } from 'vs/bAse/browser/ui/ActionbAr/ActionbAr';
+import { CleArAllNotificAtionsAction, HideNotificAtionsCenterAction, NotificAtionActionRunner } from 'vs/workbench/browser/pArts/notificAtions/notificAtionsActions';
+import { IAction } from 'vs/bAse/common/Actions';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { AssertAllDefined, AssertIsDefined } from 'vs/bAse/common/types';
 
-export class NotificationsCenter extends Themable implements INotificationsCenterController {
+export clAss NotificAtionsCenter extends ThemAble implements INotificAtionsCenterController {
 
-	private static readonly MAX_DIMENSIONS = new Dimension(450, 400);
+	privAte stAtic reAdonly MAX_DIMENSIONS = new Dimension(450, 400);
 
-	private readonly _onDidChangeVisibility = this._register(new Emitter<void>());
-	readonly onDidChangeVisibility = this._onDidChangeVisibility.event;
+	privAte reAdonly _onDidChAngeVisibility = this._register(new Emitter<void>());
+	reAdonly onDidChAngeVisibility = this._onDidChAngeVisibility.event;
 
-	private notificationsCenterContainer: HTMLElement | undefined;
-	private notificationsCenterHeader: HTMLElement | undefined;
-	private notificationsCenterTitle: HTMLSpanElement | undefined;
-	private notificationsList: NotificationsList | undefined;
-	private _isVisible: boolean | undefined;
-	private workbenchDimensions: Dimension | undefined;
-	private readonly notificationsCenterVisibleContextKey = NotificationsCenterVisibleContext.bindTo(this.contextKeyService);
-	private clearAllAction: ClearAllNotificationsAction | undefined;
+	privAte notificAtionsCenterContAiner: HTMLElement | undefined;
+	privAte notificAtionsCenterHeAder: HTMLElement | undefined;
+	privAte notificAtionsCenterTitle: HTMLSpAnElement | undefined;
+	privAte notificAtionsList: NotificAtionsList | undefined;
+	privAte _isVisible: booleAn | undefined;
+	privAte workbenchDimensions: Dimension | undefined;
+	privAte reAdonly notificAtionsCenterVisibleContextKey = NotificAtionsCenterVisibleContext.bindTo(this.contextKeyService);
+	privAte cleArAllAction: CleArAllNotificAtionsAction | undefined;
 
 	constructor(
-		private readonly container: HTMLElement,
-		private readonly model: INotificationsModel,
+		privAte reAdonly contAiner: HTMLElement,
+		privAte reAdonly model: INotificAtionsModel,
 		@IThemeService themeService: IThemeService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IWorkbenchLayoutService private readonly layoutService: IWorkbenchLayoutService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
-		@IEditorGroupsService private readonly editorGroupService: IEditorGroupsService,
-		@IKeybindingService private readonly keybindingService: IKeybindingService
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IWorkbenchLAyoutService privAte reAdonly lAyoutService: IWorkbenchLAyoutService,
+		@IContextKeyService privAte reAdonly contextKeyService: IContextKeyService,
+		@IEditorGroupsService privAte reAdonly editorGroupService: IEditorGroupsService,
+		@IKeybindingService privAte reAdonly keybindingService: IKeybindingService
 	) {
 		super(themeService);
 
-		this.notificationsCenterVisibleContextKey = NotificationsCenterVisibleContext.bindTo(contextKeyService);
+		this.notificAtionsCenterVisibleContextKey = NotificAtionsCenterVisibleContext.bindTo(contextKeyService);
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
-		this._register(this.model.onDidChangeNotification(e => this.onDidChangeNotification(e)));
-		this._register(this.layoutService.onLayout(dimension => this.layout(dimension)));
+	privAte registerListeners(): void {
+		this._register(this.model.onDidChAngeNotificAtion(e => this.onDidChAngeNotificAtion(e)));
+		this._register(this.lAyoutService.onLAyout(dimension => this.lAyout(dimension)));
 	}
 
-	get isVisible(): boolean {
+	get isVisible(): booleAn {
 		return !!this._isVisible;
 	}
 
 	show(): void {
 		if (this._isVisible) {
-			const notificationsList = assertIsDefined(this.notificationsList);
-			notificationsList.show(true /* focus */);
+			const notificAtionsList = AssertIsDefined(this.notificAtionsList);
+			notificAtionsList.show(true /* focus */);
 
-			return; // already visible
+			return; // AlreAdy visible
 		}
 
-		// Lazily create if showing for the first time
-		if (!this.notificationsCenterContainer) {
-			this.create();
+		// LAzily creAte if showing for the first time
+		if (!this.notificAtionsCenterContAiner) {
+			this.creAte();
 		}
 
 		// Title
-		this.updateTitle();
+		this.updAteTitle();
 
-		// Make visible
-		const [notificationsList, notificationsCenterContainer] = assertAllDefined(this.notificationsList, this.notificationsCenterContainer);
+		// MAke visible
+		const [notificAtionsList, notificAtionsCenterContAiner] = AssertAllDefined(this.notificAtionsList, this.notificAtionsCenterContAiner);
 		this._isVisible = true;
-		notificationsCenterContainer.classList.add('visible');
-		notificationsList.show();
+		notificAtionsCenterContAiner.clAssList.Add('visible');
+		notificAtionsList.show();
 
-		// Layout
-		this.layout(this.workbenchDimensions);
+		// LAyout
+		this.lAyout(this.workbenchDimensions);
 
-		// Show all notifications that are present now
-		notificationsList.updateNotificationsList(0, 0, this.model.notifications);
+		// Show All notificAtions thAt Are present now
+		notificAtionsList.updAteNotificAtionsList(0, 0, this.model.notificAtions);
 
 		// Focus first
-		notificationsList.focusFirst();
+		notificAtionsList.focusFirst();
 
 		// Theming
-		this.updateStyles();
+		this.updAteStyles();
 
-		// Mark as visible
-		this.model.notifications.forEach(notification => notification.updateVisibility(true));
+		// MArk As visible
+		this.model.notificAtions.forEAch(notificAtion => notificAtion.updAteVisibility(true));
 
 		// Context Key
-		this.notificationsCenterVisibleContextKey.set(true);
+		this.notificAtionsCenterVisibleContextKey.set(true);
 
 		// Event
-		this._onDidChangeVisibility.fire();
+		this._onDidChAngeVisibility.fire();
 	}
 
-	private updateTitle(): void {
-		const [notificationsCenterTitle, clearAllAction] = assertAllDefined(this.notificationsCenterTitle, this.clearAllAction);
+	privAte updAteTitle(): void {
+		const [notificAtionsCenterTitle, cleArAllAction] = AssertAllDefined(this.notificAtionsCenterTitle, this.cleArAllAction);
 
-		if (this.model.notifications.length === 0) {
-			notificationsCenterTitle.textContent = localize('notificationsEmpty', "No new notifications");
-			clearAllAction.enabled = false;
+		if (this.model.notificAtions.length === 0) {
+			notificAtionsCenterTitle.textContent = locAlize('notificAtionsEmpty', "No new notificAtions");
+			cleArAllAction.enAbled = fAlse;
 		} else {
-			notificationsCenterTitle.textContent = localize('notifications', "Notifications");
-			clearAllAction.enabled = this.model.notifications.some(notification => !notification.hasProgress);
+			notificAtionsCenterTitle.textContent = locAlize('notificAtions', "NotificAtions");
+			cleArAllAction.enAbled = this.model.notificAtions.some(notificAtion => !notificAtion.hAsProgress);
 		}
 	}
 
-	private create(): void {
+	privAte creAte(): void {
 
-		// Container
-		this.notificationsCenterContainer = document.createElement('div');
-		this.notificationsCenterContainer.classList.add('notifications-center');
+		// ContAiner
+		this.notificAtionsCenterContAiner = document.creAteElement('div');
+		this.notificAtionsCenterContAiner.clAssList.Add('notificAtions-center');
 
-		// Header
-		this.notificationsCenterHeader = document.createElement('div');
-		this.notificationsCenterHeader.classList.add('notifications-center-header');
-		this.notificationsCenterContainer.appendChild(this.notificationsCenterHeader);
+		// HeAder
+		this.notificAtionsCenterHeAder = document.creAteElement('div');
+		this.notificAtionsCenterHeAder.clAssList.Add('notificAtions-center-heAder');
+		this.notificAtionsCenterContAiner.AppendChild(this.notificAtionsCenterHeAder);
 
-		// Header Title
-		this.notificationsCenterTitle = document.createElement('span');
-		this.notificationsCenterTitle.classList.add('notifications-center-header-title');
-		this.notificationsCenterHeader.appendChild(this.notificationsCenterTitle);
+		// HeAder Title
+		this.notificAtionsCenterTitle = document.creAteElement('spAn');
+		this.notificAtionsCenterTitle.clAssList.Add('notificAtions-center-heAder-title');
+		this.notificAtionsCenterHeAder.AppendChild(this.notificAtionsCenterTitle);
 
-		// Header Toolbar
-		const toolbarContainer = document.createElement('div');
-		toolbarContainer.classList.add('notifications-center-header-toolbar');
-		this.notificationsCenterHeader.appendChild(toolbarContainer);
+		// HeAder ToolbAr
+		const toolbArContAiner = document.creAteElement('div');
+		toolbArContAiner.clAssList.Add('notificAtions-center-heAder-toolbAr');
+		this.notificAtionsCenterHeAder.AppendChild(toolbArContAiner);
 
-		const actionRunner = this._register(this.instantiationService.createInstance(NotificationActionRunner));
+		const ActionRunner = this._register(this.instAntiAtionService.creAteInstAnce(NotificAtionActionRunner));
 
-		const notificationsToolBar = this._register(new ActionBar(toolbarContainer, {
-			ariaLabel: localize('notificationsToolbar', "Notification Center Actions"),
-			actionRunner
+		const notificAtionsToolBAr = this._register(new ActionBAr(toolbArContAiner, {
+			AriALAbel: locAlize('notificAtionsToolbAr', "NotificAtion Center Actions"),
+			ActionRunner
 		}));
 
-		this.clearAllAction = this._register(this.instantiationService.createInstance(ClearAllNotificationsAction, ClearAllNotificationsAction.ID, ClearAllNotificationsAction.LABEL));
-		notificationsToolBar.push(this.clearAllAction, { icon: true, label: false, keybinding: this.getKeybindingLabel(this.clearAllAction) });
+		this.cleArAllAction = this._register(this.instAntiAtionService.creAteInstAnce(CleArAllNotificAtionsAction, CleArAllNotificAtionsAction.ID, CleArAllNotificAtionsAction.LABEL));
+		notificAtionsToolBAr.push(this.cleArAllAction, { icon: true, lAbel: fAlse, keybinding: this.getKeybindingLAbel(this.cleArAllAction) });
 
-		const hideAllAction = this._register(this.instantiationService.createInstance(HideNotificationsCenterAction, HideNotificationsCenterAction.ID, HideNotificationsCenterAction.LABEL));
-		notificationsToolBar.push(hideAllAction, { icon: true, label: false, keybinding: this.getKeybindingLabel(hideAllAction) });
+		const hideAllAction = this._register(this.instAntiAtionService.creAteInstAnce(HideNotificAtionsCenterAction, HideNotificAtionsCenterAction.ID, HideNotificAtionsCenterAction.LABEL));
+		notificAtionsToolBAr.push(hideAllAction, { icon: true, lAbel: fAlse, keybinding: this.getKeybindingLAbel(hideAllAction) });
 
-		// Notifications List
-		this.notificationsList = this.instantiationService.createInstance(NotificationsList, this.notificationsCenterContainer, {});
-		this.container.appendChild(this.notificationsCenterContainer);
+		// NotificAtions List
+		this.notificAtionsList = this.instAntiAtionService.creAteInstAnce(NotificAtionsList, this.notificAtionsCenterContAiner, {});
+		this.contAiner.AppendChild(this.notificAtionsCenterContAiner);
 	}
 
-	private getKeybindingLabel(action: IAction): string | null {
-		const keybinding = this.keybindingService.lookupKeybinding(action.id);
+	privAte getKeybindingLAbel(Action: IAction): string | null {
+		const keybinding = this.keybindingService.lookupKeybinding(Action.id);
 
-		return keybinding ? keybinding.getLabel() : null;
+		return keybinding ? keybinding.getLAbel() : null;
 	}
 
-	private onDidChangeNotification(e: INotificationChangeEvent): void {
+	privAte onDidChAngeNotificAtion(e: INotificAtionChAngeEvent): void {
 		if (!this._isVisible) {
 			return; // only if visible
 		}
 
-		let focusEditor = false;
+		let focusEditor = fAlse;
 
-		// Update notifications list based on event kind
-		const [notificationsList, notificationsCenterContainer] = assertAllDefined(this.notificationsList, this.notificationsCenterContainer);
+		// UpdAte notificAtions list bAsed on event kind
+		const [notificAtionsList, notificAtionsCenterContAiner] = AssertAllDefined(this.notificAtionsList, this.notificAtionsCenterContAiner);
 		switch (e.kind) {
-			case NotificationChangeType.ADD:
-				notificationsList.updateNotificationsList(e.index, 0, [e.item]);
-				e.item.updateVisibility(true);
-				break;
-			case NotificationChangeType.CHANGE:
-				// Handle content changes
-				// - actions: re-draw to properly show them
-				// - message: update notification height unless collapsed
-				switch (e.detail) {
-					case NotificationViewItemContentChangeKind.ACTIONS:
-						notificationsList.updateNotificationsList(e.index, 1, [e.item]);
-						break;
-					case NotificationViewItemContentChangeKind.MESSAGE:
-						if (e.item.expanded) {
-							notificationsList.updateNotificationHeight(e.item);
+			cAse NotificAtionChAngeType.ADD:
+				notificAtionsList.updAteNotificAtionsList(e.index, 0, [e.item]);
+				e.item.updAteVisibility(true);
+				breAk;
+			cAse NotificAtionChAngeType.CHANGE:
+				// HAndle content chAnges
+				// - Actions: re-drAw to properly show them
+				// - messAge: updAte notificAtion height unless collApsed
+				switch (e.detAil) {
+					cAse NotificAtionViewItemContentChAngeKind.ACTIONS:
+						notificAtionsList.updAteNotificAtionsList(e.index, 1, [e.item]);
+						breAk;
+					cAse NotificAtionViewItemContentChAngeKind.MESSAGE:
+						if (e.item.expAnded) {
+							notificAtionsList.updAteNotificAtionHeight(e.item);
 						}
-						break;
+						breAk;
 				}
-				break;
-			case NotificationChangeType.EXPAND_COLLAPSE:
-				// Re-draw entire item when expansion changes to reveal or hide details
-				notificationsList.updateNotificationsList(e.index, 1, [e.item]);
-				break;
-			case NotificationChangeType.REMOVE:
-				focusEditor = isAncestor(document.activeElement, notificationsCenterContainer);
-				notificationsList.updateNotificationsList(e.index, 1);
-				e.item.updateVisibility(false);
-				break;
+				breAk;
+			cAse NotificAtionChAngeType.EXPAND_COLLAPSE:
+				// Re-drAw entire item when expAnsion chAnges to reveAl or hide detAils
+				notificAtionsList.updAteNotificAtionsList(e.index, 1, [e.item]);
+				breAk;
+			cAse NotificAtionChAngeType.REMOVE:
+				focusEditor = isAncestor(document.ActiveElement, notificAtionsCenterContAiner);
+				notificAtionsList.updAteNotificAtionsList(e.index, 1);
+				e.item.updAteVisibility(fAlse);
+				breAk;
 		}
 
-		// Update title
-		this.updateTitle();
+		// UpdAte title
+		this.updAteTitle();
 
-		// Hide if no more notifications to show
-		if (this.model.notifications.length === 0) {
+		// Hide if no more notificAtions to show
+		if (this.model.notificAtions.length === 0) {
 			this.hide();
 
-			// Restore focus to editor group if we had focus
+			// Restore focus to editor group if we hAd focus
 			if (focusEditor) {
-				this.editorGroupService.activeGroup.focus();
+				this.editorGroupService.ActiveGroup.focus();
 			}
 		}
 	}
 
 	hide(): void {
-		if (!this._isVisible || !this.notificationsCenterContainer || !this.notificationsList) {
-			return; // already hidden
+		if (!this._isVisible || !this.notificAtionsCenterContAiner || !this.notificAtionsList) {
+			return; // AlreAdy hidden
 		}
 
-		const focusEditor = isAncestor(document.activeElement, this.notificationsCenterContainer);
+		const focusEditor = isAncestor(document.ActiveElement, this.notificAtionsCenterContAiner);
 
 		// Hide
-		this._isVisible = false;
-		this.notificationsCenterContainer.classList.remove('visible');
-		this.notificationsList.hide();
+		this._isVisible = fAlse;
+		this.notificAtionsCenterContAiner.clAssList.remove('visible');
+		this.notificAtionsList.hide();
 
-		// Mark as hidden
-		this.model.notifications.forEach(notification => notification.updateVisibility(false));
+		// MArk As hidden
+		this.model.notificAtions.forEAch(notificAtion => notificAtion.updAteVisibility(fAlse));
 
 		// Context Key
-		this.notificationsCenterVisibleContextKey.set(false);
+		this.notificAtionsCenterVisibleContextKey.set(fAlse);
 
 		// Event
-		this._onDidChangeVisibility.fire();
+		this._onDidChAngeVisibility.fire();
 
-		// Restore focus to editor group if we had focus
+		// Restore focus to editor group if we hAd focus
 		if (focusEditor) {
-			this.editorGroupService.activeGroup.focus();
+			this.editorGroupService.ActiveGroup.focus();
 		}
 	}
 
-	protected updateStyles(): void {
-		if (this.notificationsCenterContainer && this.notificationsCenterHeader) {
-			const widgetShadowColor = this.getColor(widgetShadow);
-			this.notificationsCenterContainer.style.boxShadow = widgetShadowColor ? `0 0px 8px ${widgetShadowColor}` : '';
+	protected updAteStyles(): void {
+		if (this.notificAtionsCenterContAiner && this.notificAtionsCenterHeAder) {
+			const widgetShAdowColor = this.getColor(widgetShAdow);
+			this.notificAtionsCenterContAiner.style.boxShAdow = widgetShAdowColor ? `0 0px 8px ${widgetShAdowColor}` : '';
 
 			const borderColor = this.getColor(NOTIFICATIONS_CENTER_BORDER);
-			this.notificationsCenterContainer.style.border = borderColor ? `1px solid ${borderColor}` : '';
+			this.notificAtionsCenterContAiner.style.border = borderColor ? `1px solid ${borderColor}` : '';
 
-			const headerForeground = this.getColor(NOTIFICATIONS_CENTER_HEADER_FOREGROUND);
-			this.notificationsCenterHeader.style.color = headerForeground ? headerForeground.toString() : '';
+			const heAderForeground = this.getColor(NOTIFICATIONS_CENTER_HEADER_FOREGROUND);
+			this.notificAtionsCenterHeAder.style.color = heAderForeground ? heAderForeground.toString() : '';
 
-			const headerBackground = this.getColor(NOTIFICATIONS_CENTER_HEADER_BACKGROUND);
-			this.notificationsCenterHeader.style.background = headerBackground ? headerBackground.toString() : '';
+			const heAderBAckground = this.getColor(NOTIFICATIONS_CENTER_HEADER_BACKGROUND);
+			this.notificAtionsCenterHeAder.style.bAckground = heAderBAckground ? heAderBAckground.toString() : '';
 		}
 	}
 
-	layout(dimension: Dimension | undefined): void {
+	lAyout(dimension: Dimension | undefined): void {
 		this.workbenchDimensions = dimension;
 
-		if (this._isVisible && this.notificationsCenterContainer) {
-			let maxWidth = NotificationsCenter.MAX_DIMENSIONS.width;
-			let maxHeight = NotificationsCenter.MAX_DIMENSIONS.height;
+		if (this._isVisible && this.notificAtionsCenterContAiner) {
+			let mAxWidth = NotificAtionsCenter.MAX_DIMENSIONS.width;
+			let mAxHeight = NotificAtionsCenter.MAX_DIMENSIONS.height;
 
-			let availableWidth = maxWidth;
-			let availableHeight = maxHeight;
+			let AvAilAbleWidth = mAxWidth;
+			let AvAilAbleHeight = mAxHeight;
 
 			if (this.workbenchDimensions) {
 
-				// Make sure notifications are not exceding available width
-				availableWidth = this.workbenchDimensions.width;
-				availableWidth -= (2 * 8); // adjust for paddings left and right
+				// MAke sure notificAtions Are not exceding AvAilAble width
+				AvAilAbleWidth = this.workbenchDimensions.width;
+				AvAilAbleWidth -= (2 * 8); // Adjust for pAddings left And right
 
-				// Make sure notifications are not exceeding available height
-				availableHeight = this.workbenchDimensions.height - 35 /* header */;
-				if (this.layoutService.isVisible(Parts.STATUSBAR_PART)) {
-					availableHeight -= 22; // adjust for status bar
+				// MAke sure notificAtions Are not exceeding AvAilAble height
+				AvAilAbleHeight = this.workbenchDimensions.height - 35 /* heAder */;
+				if (this.lAyoutService.isVisible(PArts.STATUSBAR_PART)) {
+					AvAilAbleHeight -= 22; // Adjust for stAtus bAr
 				}
 
-				if (this.layoutService.isVisible(Parts.TITLEBAR_PART)) {
-					availableHeight -= 22; // adjust for title bar
+				if (this.lAyoutService.isVisible(PArts.TITLEBAR_PART)) {
+					AvAilAbleHeight -= 22; // Adjust for title bAr
 				}
 
-				availableHeight -= (2 * 12); // adjust for paddings top and bottom
+				AvAilAbleHeight -= (2 * 12); // Adjust for pAddings top And bottom
 			}
 
 			// Apply to list
-			const notificationsList = assertIsDefined(this.notificationsList);
-			notificationsList.layout(Math.min(maxWidth, availableWidth), Math.min(maxHeight, availableHeight));
+			const notificAtionsList = AssertIsDefined(this.notificAtionsList);
+			notificAtionsList.lAyout(MAth.min(mAxWidth, AvAilAbleWidth), MAth.min(mAxHeight, AvAilAbleHeight));
 		}
 	}
 
-	clearAll(): void {
+	cleArAll(): void {
 
-		// Hide notifications center first
+		// Hide notificAtions center first
 		this.hide();
 
-		// Close all
-		for (const notification of [...this.model.notifications] /* copy array since we modify it from closing */) {
-			if (!notification.hasProgress) {
-				notification.close();
+		// Close All
+		for (const notificAtion of [...this.model.notificAtions] /* copy ArrAy since we modify it from closing */) {
+			if (!notificAtion.hAsProgress) {
+				notificAtion.close();
 			}
 		}
 	}
 }
 
-registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
-	const notificationBorderColor = theme.getColor(NOTIFICATIONS_BORDER);
-	if (notificationBorderColor) {
-		collector.addRule(`.monaco-workbench > .notifications-center .notifications-list-container .monaco-list-row[data-last-element="false"] > .notification-list-item { border-bottom: 1px solid ${notificationBorderColor}; }`);
+registerThemingPArticipAnt((theme: IColorTheme, collector: ICssStyleCollector) => {
+	const notificAtionBorderColor = theme.getColor(NOTIFICATIONS_BORDER);
+	if (notificAtionBorderColor) {
+		collector.AddRule(`.monAco-workbench > .notificAtions-center .notificAtions-list-contAiner .monAco-list-row[dAtA-lAst-element="fAlse"] > .notificAtion-list-item { border-bottom: 1px solid ${notificAtionBorderColor}; }`);
 	}
 });

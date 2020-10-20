@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { IConfigurationNode, IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { workbenchConfigurationNodeBase } from 'vs/workbench/common/configuration';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ICustomEditorInfo, IEditorService, IOpenEditorOverrideHandler, IOpenEditorOverrideEntry } from 'vs/workbench/services/editor/common/editorService';
-import { IEditorInput, IEditorPane, IEditorInputFactoryRegistry, Extensions as EditorExtensions, EditorResourceAccessor } from 'vs/workbench/common/editor';
-import { ITextEditorOptions, IEditorOptions } from 'vs/platform/editor/common/editor';
+import * As nls from 'vs/nls';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { IConfigurAtionNode, IConfigurAtionRegistry, Extensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { workbenchConfigurAtionNodeBAse } from 'vs/workbench/common/configurAtion';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ICustomEditorInfo, IEditorService, IOpenEditorOverrideHAndler, IOpenEditorOverrideEntry } from 'vs/workbench/services/editor/common/editorService';
+import { IEditorInput, IEditorPAne, IEditorInputFActoryRegistry, Extensions As EditorExtensions, EditorResourceAccessor } from 'vs/workbench/common/editor';
+import { ITextEditorOptions, IEditorOptions } from 'vs/plAtform/editor/common/editor';
 import { IEditorGroup, OpenEditorContext } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { URI } from 'vs/base/common/uri';
-import { extname, basename, isEqual } from 'vs/base/common/resources';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IQuickInputService, IQuickPickItem } from 'vs/plAtform/quickinput/common/quickInput';
+import { URI } from 'vs/bAse/common/uri';
+import { extnAme, bAsenAme, isEquAl } from 'vs/bAse/common/resources';
 
 /**
- * Id of the default editor for open with.
+ * Id of the defAult editor for open with.
  */
-export const DEFAULT_EDITOR_ID = 'default';
+export const DEFAULT_EDITOR_ID = 'defAult';
 
 /**
- * Try to open an resource with a given editor.
+ * Try to open An resource with A given editor.
  *
- * @param input Resource to open.
- * @param id Id of the editor to use. If not provided, the user is prompted for which editor to use.
+ * @pArAm input Resource to open.
+ * @pArAm id Id of the editor to use. If not provided, the user is prompted for which editor to use.
  */
-export async function openEditorWith(
+export Async function openEditorWith(
 	input: IEditorInput,
 	id: string | undefined,
 	options: IEditorOptions | ITextEditorOptions | undefined,
 	group: IEditorGroup,
 	editorService: IEditorService,
-	configurationService: IConfigurationService,
+	configurAtionService: IConfigurAtionService,
 	quickInputService: IQuickInputService,
-): Promise<IEditorPane | undefined> {
+): Promise<IEditorPAne | undefined> {
 	const resource = input.resource;
 	if (!resource) {
 		return;
@@ -44,47 +44,47 @@ export async function openEditorWith(
 
 	const overrideOptions = { ...options, override: id };
 
-	const allEditorOverrides = getAllAvailableEditors(resource, id, overrideOptions, group, editorService);
-	if (!allEditorOverrides.length) {
+	const AllEditorOverrides = getAllAvAilAbleEditors(resource, id, overrideOptions, group, editorService);
+	if (!AllEditorOverrides.length) {
 		return;
 	}
 
 	let overrideToUse;
 	if (typeof id === 'string') {
-		overrideToUse = allEditorOverrides.find(([_, entry]) => entry.id === id);
-	} else if (allEditorOverrides.length === 1) {
-		overrideToUse = allEditorOverrides[0];
+		overrideToUse = AllEditorOverrides.find(([_, entry]) => entry.id === id);
+	} else if (AllEditorOverrides.length === 1) {
+		overrideToUse = AllEditorOverrides[0];
 	}
 	if (overrideToUse) {
 		return overrideToUse[0].open(input, overrideOptions, group, OpenEditorContext.NEW_EDITOR)?.override;
 	}
 
 	// Prompt
-	const originalResource = EditorResourceAccessor.getOriginalUri(input) || resource;
-	const resourceExt = extname(originalResource);
+	const originAlResource = EditorResourceAccessor.getOriginAlUri(input) || resource;
+	const resourceExt = extnAme(originAlResource);
 
-	const items: (IQuickPickItem & { handler: IOpenEditorOverrideHandler })[] = allEditorOverrides.map(([handler, entry]) => {
+	const items: (IQuickPickItem & { hAndler: IOpenEditorOverrideHAndler })[] = AllEditorOverrides.mAp(([hAndler, entry]) => {
 		return {
-			handler: handler,
+			hAndler: hAndler,
 			id: entry.id,
-			label: entry.label,
-			description: entry.active ? nls.localize('promptOpenWith.currentlyActive', 'Currently Active') : undefined,
-			detail: entry.detail,
+			lAbel: entry.lAbel,
+			description: entry.Active ? nls.locAlize('promptOpenWith.currentlyActive', 'Currently Active') : undefined,
+			detAil: entry.detAil,
 			buttons: resourceExt ? [{
-				iconClass: 'codicon-settings-gear',
-				tooltip: nls.localize('promptOpenWith.setDefaultTooltip', "Set as default editor for '{0}' files", resourceExt)
+				iconClAss: 'codicon-settings-geAr',
+				tooltip: nls.locAlize('promptOpenWith.setDefAultTooltip', "Set As defAult editor for '{0}' files", resourceExt)
 			}] : undefined
 		};
 	});
 
-	const picker = quickInputService.createQuickPick<(IQuickPickItem & { handler: IOpenEditorOverrideHandler })>();
+	const picker = quickInputService.creAteQuickPick<(IQuickPickItem & { hAndler: IOpenEditorOverrideHAndler })>();
 	picker.items = items;
 	if (items.length) {
 		picker.selectedItems = [items[0]];
 	}
-	picker.placeholder = nls.localize('promptOpenWith.placeHolder', "Select editor for '{0}'", basename(originalResource));
+	picker.plAceholder = nls.locAlize('promptOpenWith.plAceHolder', "Select editor for '{0}'", bAsenAme(originAlResource));
 
-	const pickedItem = await new Promise<(IQuickPickItem & { handler: IOpenEditorOverrideHandler }) | undefined>(resolve => {
+	const pickedItem = AwAit new Promise<(IQuickPickItem & { hAndler: IOpenEditorOverrideHAndler }) | undefined>(resolve => {
 		picker.onDidAccept(() => {
 			resolve(picker.selectedItems.length === 1 ? picker.selectedItems[0] : undefined);
 			picker.dispose();
@@ -98,115 +98,115 @@ export async function openEditorWith(
 
 			// And persist the setting
 			if (pick && id) {
-				const newAssociation: CustomEditorAssociation = { viewType: id, filenamePattern: '*' + resourceExt };
-				const currentAssociations = [...configurationService.getValue<CustomEditorsAssociations>(customEditorsAssociationsSettingId)];
+				const newAssociAtion: CustomEditorAssociAtion = { viewType: id, filenAmePAttern: '*' + resourceExt };
+				const currentAssociAtions = [...configurAtionService.getVAlue<CustomEditorsAssociAtions>(customEditorsAssociAtionsSettingId)];
 
-				// First try updating existing association
-				for (let i = 0; i < currentAssociations.length; ++i) {
-					const existing = currentAssociations[i];
-					if (existing.filenamePattern === newAssociation.filenamePattern) {
-						currentAssociations.splice(i, 1, newAssociation);
-						configurationService.updateValue(customEditorsAssociationsSettingId, currentAssociations);
+				// First try updAting existing AssociAtion
+				for (let i = 0; i < currentAssociAtions.length; ++i) {
+					const existing = currentAssociAtions[i];
+					if (existing.filenAmePAttern === newAssociAtion.filenAmePAttern) {
+						currentAssociAtions.splice(i, 1, newAssociAtion);
+						configurAtionService.updAteVAlue(customEditorsAssociAtionsSettingId, currentAssociAtions);
 						return;
 					}
 				}
 
-				// Otherwise, create a new one
-				currentAssociations.unshift(newAssociation);
-				configurationService.updateValue(customEditorsAssociationsSettingId, currentAssociations);
+				// Otherwise, creAte A new one
+				currentAssociAtions.unshift(newAssociAtion);
+				configurAtionService.updAteVAlue(customEditorsAssociAtionsSettingId, currentAssociAtions);
 			}
 		});
 
 		picker.show();
 	});
 
-	return pickedItem?.handler.open(input, { ...options, override: pickedItem.id }, group, OpenEditorContext.NEW_EDITOR)?.override;
+	return pickedItem?.hAndler.open(input, { ...options, override: pickedItem.id }, group, OpenEditorContext.NEW_EDITOR)?.override;
 }
 
-const builtinProviderDisplayName = nls.localize('builtinProviderDisplayName', "Built-in");
+const builtinProviderDisplAyNAme = nls.locAlize('builtinProviderDisplAyNAme', "Built-in");
 
-export const defaultEditorOverrideEntry = Object.freeze({
+export const defAultEditorOverrideEntry = Object.freeze({
 	id: DEFAULT_EDITOR_ID,
-	label: nls.localize('promptOpenWith.defaultEditor.displayName', "Text Editor"),
-	detail: builtinProviderDisplayName
+	lAbel: nls.locAlize('promptOpenWith.defAultEditor.displAyNAme', "Text Editor"),
+	detAil: builtinProviderDisplAyNAme
 });
 
 /**
- * Get a list of all available editors, including the default text editor.
+ * Get A list of All AvAilAble editors, including the defAult text editor.
  */
-export function getAllAvailableEditors(
+export function getAllAvAilAbleEditors(
 	resource: URI,
 	id: string | undefined,
 	options: IEditorOptions | ITextEditorOptions | undefined,
 	group: IEditorGroup,
 	editorService: IEditorService
-): Array<[IOpenEditorOverrideHandler, IOpenEditorOverrideEntry]> {
-	const fileEditorInputFactory = Registry.as<IEditorInputFactoryRegistry>(EditorExtensions.EditorInputFactories).getFileEditorInputFactory();
+): ArrAy<[IOpenEditorOverrideHAndler, IOpenEditorOverrideEntry]> {
+	const fileEditorInputFActory = Registry.As<IEditorInputFActoryRegistry>(EditorExtensions.EditorInputFActories).getFileEditorInputFActory();
 	const overrides = editorService.getEditorOverrides(resource, options, group);
 	if (!overrides.some(([_, entry]) => entry.id === DEFAULT_EDITOR_ID)) {
 		overrides.unshift([
 			{
 				open: (input: IEditorInput, options: IEditorOptions | ITextEditorOptions | undefined, group: IEditorGroup) => {
-					const resource = EditorResourceAccessor.getOriginalUri(input);
+					const resource = EditorResourceAccessor.getOriginAlUri(input);
 					if (!resource) {
 						return;
 					}
 
-					const fileEditorInput = editorService.createEditorInput({ resource, forceFile: true });
-					const textOptions: IEditorOptions | ITextEditorOptions = options ? { ...options, override: false } : { override: false };
+					const fileEditorInput = editorService.creAteEditorInput({ resource, forceFile: true });
+					const textOptions: IEditorOptions | ITextEditorOptions = options ? { ...options, override: fAlse } : { override: fAlse };
 					return { override: editorService.openEditor(fileEditorInput, textOptions, group) };
 				}
 			},
 			{
-				...defaultEditorOverrideEntry,
-				active: fileEditorInputFactory.isFileEditorInput(editorService.activeEditor) && isEqual(editorService.activeEditor.resource, resource),
+				...defAultEditorOverrideEntry,
+				Active: fileEditorInputFActory.isFileEditorInput(editorService.ActiveEditor) && isEquAl(editorService.ActiveEditor.resource, resource),
 			}]);
 	}
 
 	return overrides;
 }
 
-export const customEditorsAssociationsSettingId = 'workbench.editorAssociations';
+export const customEditorsAssociAtionsSettingId = 'workbench.editorAssociAtions';
 
-export const viewTypeSchamaAddition: IJSONSchema = {
+export const viewTypeSchAmAAddition: IJSONSchemA = {
 	type: 'string',
 	enum: []
 };
 
-export type CustomEditorAssociation = {
-	readonly viewType: string;
-	readonly filenamePattern?: string;
+export type CustomEditorAssociAtion = {
+	reAdonly viewType: string;
+	reAdonly filenAmePAttern?: string;
 };
 
-export type CustomEditorsAssociations = readonly CustomEditorAssociation[];
+export type CustomEditorsAssociAtions = reAdonly CustomEditorAssociAtion[];
 
-export const editorAssociationsConfigurationNode: IConfigurationNode = {
-	...workbenchConfigurationNodeBase,
+export const editorAssociAtionsConfigurAtionNode: IConfigurAtionNode = {
+	...workbenchConfigurAtionNodeBAse,
 	properties: {
-		[customEditorsAssociationsSettingId]: {
-			type: 'array',
-			markdownDescription: nls.localize('editor.editorAssociations', "Configure which editor to use for specific file types."),
+		[customEditorsAssociAtionsSettingId]: {
+			type: 'ArrAy',
+			mArkdownDescription: nls.locAlize('editor.editorAssociAtions', "Configure which editor to use for specific file types."),
 			items: {
 				type: 'object',
-				defaultSnippets: [{
+				defAultSnippets: [{
 					body: {
 						'viewType': '$1',
-						'filenamePattern': '$2'
+						'filenAmePAttern': '$2'
 					}
 				}],
 				properties: {
 					'viewType': {
-						anyOf: [
+						AnyOf: [
 							{
 								type: 'string',
-								description: nls.localize('editor.editorAssociations.viewType', "The unique id of the editor to use."),
+								description: nls.locAlize('editor.editorAssociAtions.viewType', "The unique id of the editor to use."),
 							},
-							viewTypeSchamaAddition
+							viewTypeSchAmAAddition
 						]
 					},
-					'filenamePattern': {
+					'filenAmePAttern': {
 						type: 'string',
-						description: nls.localize('editor.editorAssociations.filenamePattern', "Glob pattern specifying which files the editor should be used for."),
+						description: nls.locAlize('editor.editorAssociAtions.filenAmePAttern', "Glob pAttern specifying which files the editor should be used for."),
 					}
 				}
 			}
@@ -215,15 +215,15 @@ export const editorAssociationsConfigurationNode: IConfigurationNode = {
 };
 
 export const DEFAULT_CUSTOM_EDITOR: ICustomEditorInfo = {
-	id: 'default',
-	displayName: nls.localize('promptOpenWith.defaultEditor.displayName', "Text Editor"),
-	providerDisplayName: builtinProviderDisplayName
+	id: 'defAult',
+	displAyNAme: nls.locAlize('promptOpenWith.defAultEditor.displAyNAme', "Text Editor"),
+	providerDisplAyNAme: builtinProviderDisplAyNAme
 };
 
-export function updateViewTypeSchema(enumValues: string[], enumDescriptions: string[]): void {
-	viewTypeSchamaAddition.enum = enumValues;
-	viewTypeSchamaAddition.enumDescriptions = enumDescriptions;
+export function updAteViewTypeSchemA(enumVAlues: string[], enumDescriptions: string[]): void {
+	viewTypeSchAmAAddition.enum = enumVAlues;
+	viewTypeSchAmAAddition.enumDescriptions = enumDescriptions;
 
-	Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-		.notifyConfigurationSchemaUpdated(editorAssociationsConfigurationNode);
+	Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion)
+		.notifyConfigurAtionSchemAUpdAted(editorAssociAtionsConfigurAtionNode);
 }

@@ -1,41 +1,41 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction, IActionRunner, ActionRunner, IActionViewItem } from 'vs/base/common/actions';
+import { IAction, IActionRunner, ActionRunner, IActionViewItem } from 'vs/bAse/common/Actions';
 import { Component } from 'vs/workbench/common/component';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
 import { IComposite, ICompositeControl } from 'vs/workbench/common/composite';
-import { Event, Emitter } from 'vs/base/common/event';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IConstructorSignature0, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { trackFocus, Dimension } from 'vs/base/browser/dom';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { Disposable } from 'vs/base/common/lifecycle';
-import { assertIsDefined } from 'vs/base/common/types';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IConstructorSignAture0, IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { trAckFocus, Dimension } from 'vs/bAse/browser/dom';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { AssertIsDefined } from 'vs/bAse/common/types';
 
 /**
- * Composites are layed out in the sidebar and panel part of the workbench. At a time only one composite
- * can be open in the sidebar, and only one composite can be open in the panel.
+ * Composites Are lAyed out in the sidebAr And pAnel pArt of the workbench. At A time only one composite
+ * cAn be open in the sidebAr, And only one composite cAn be open in the pAnel.
  *
- * Each composite has a minimized representation that is good enough to provide some
- * information about the state of the composite data.
+ * EAch composite hAs A minimized representAtion thAt is good enough to provide some
+ * informAtion About the stAte of the composite dAtA.
  *
- * The workbench will keep a composite alive after it has been created and show/hide it based on
- * user interaction. The lifecycle of a composite goes in the order create(), setVisible(true|false),
- * layout(), focus(), dispose(). During use of the workbench, a composite will often receive a setVisible,
- * layout and focus call, but only one create and dispose call.
+ * The workbench will keep A composite Alive After it hAs been creAted And show/hide it bAsed on
+ * user interAction. The lifecycle of A composite goes in the order creAte(), setVisible(true|fAlse),
+ * lAyout(), focus(), dispose(). During use of the workbench, A composite will often receive A setVisible,
+ * lAyout And focus cAll, but only one creAte And dispose cAll.
  */
-export abstract class Composite extends Component implements IComposite {
+export AbstrAct clAss Composite extends Component implements IComposite {
 
-	private readonly _onTitleAreaUpdate = this._register(new Emitter<void>());
-	readonly onTitleAreaUpdate = this._onTitleAreaUpdate.event;
+	privAte reAdonly _onTitleAreAUpdAte = this._register(new Emitter<void>());
+	reAdonly onTitleAreAUpdAte = this._onTitleAreAUpdAte.event;
 
-	private _onDidFocus: Emitter<void> | undefined;
+	privAte _onDidFocus: Emitter<void> | undefined;
 	get onDidFocus(): Event<void> {
 		if (!this._onDidFocus) {
-			this._onDidFocus = this.registerFocusTrackEvents().onDidFocus;
+			this._onDidFocus = this.registerFocusTrAckEvents().onDidFocus;
 		}
 
 		return this._onDidFocus.event;
@@ -47,42 +47,42 @@ export abstract class Composite extends Component implements IComposite {
 		}
 	}
 
-	private _onDidBlur: Emitter<void> | undefined;
+	privAte _onDidBlur: Emitter<void> | undefined;
 	get onDidBlur(): Event<void> {
 		if (!this._onDidBlur) {
-			this._onDidBlur = this.registerFocusTrackEvents().onDidBlur;
+			this._onDidBlur = this.registerFocusTrAckEvents().onDidBlur;
 		}
 
 		return this._onDidBlur.event;
 	}
 
-	private registerFocusTrackEvents(): { onDidFocus: Emitter<void>, onDidBlur: Emitter<void> } {
-		const container = assertIsDefined(this.getContainer());
-		const focusTracker = this._register(trackFocus(container));
+	privAte registerFocusTrAckEvents(): { onDidFocus: Emitter<void>, onDidBlur: Emitter<void> } {
+		const contAiner = AssertIsDefined(this.getContAiner());
+		const focusTrAcker = this._register(trAckFocus(contAiner));
 
 		const onDidFocus = this._onDidFocus = this._register(new Emitter<void>());
-		this._register(focusTracker.onDidFocus(() => onDidFocus.fire()));
+		this._register(focusTrAcker.onDidFocus(() => onDidFocus.fire()));
 
 		const onDidBlur = this._onDidBlur = this._register(new Emitter<void>());
-		this._register(focusTracker.onDidBlur(() => onDidBlur.fire()));
+		this._register(focusTrAcker.onDidBlur(() => onDidBlur.fire()));
 
 		return { onDidFocus, onDidBlur };
 	}
 
-	protected actionRunner: IActionRunner | undefined;
+	protected ActionRunner: IActionRunner | undefined;
 
-	private visible: boolean;
-	private parent: HTMLElement | undefined;
+	privAte visible: booleAn;
+	privAte pArent: HTMLElement | undefined;
 
 	constructor(
 		id: string,
-		private _telemetryService: ITelemetryService,
+		privAte _telemetryService: ITelemetryService,
 		themeService: IThemeService,
-		storageService: IStorageService
+		storAgeService: IStorAgeService
 	) {
-		super(id, themeService, storageService);
+		super(id, themeService, storAgeService);
 
-		this.visible = false;
+		this.visible = fAlse;
 	}
 
 	getTitle(): string | undefined {
@@ -94,128 +94,128 @@ export abstract class Composite extends Component implements IComposite {
 	}
 
 	/**
-	 * Note: Clients should not call this method, the workbench calls this
-	 * method. Calling it otherwise may result in unexpected behavior.
+	 * Note: Clients should not cAll this method, the workbench cAlls this
+	 * method. CAlling it otherwise mAy result in unexpected behAvior.
 	 *
-	 * Called to create this composite on the provided parent. This method is only
-	 * called once during the lifetime of the workbench.
-	 * Note that DOM-dependent calculations should be performed from the setVisible()
-	 * call. Only then the composite will be part of the DOM.
+	 * CAlled to creAte this composite on the provided pArent. This method is only
+	 * cAlled once during the lifetime of the workbench.
+	 * Note thAt DOM-dependent cAlculAtions should be performed from the setVisible()
+	 * cAll. Only then the composite will be pArt of the DOM.
 	 */
-	create(parent: HTMLElement): void {
-		this.parent = parent;
+	creAte(pArent: HTMLElement): void {
+		this.pArent = pArent;
 	}
 
-	updateStyles(): void {
-		super.updateStyles();
-	}
-
-	/**
-	 * Returns the container this composite is being build in.
-	 */
-	getContainer(): HTMLElement | undefined {
-		return this.parent;
+	updAteStyles(): void {
+		super.updAteStyles();
 	}
 
 	/**
-	 * Note: Clients should not call this method, the workbench calls this
-	 * method. Calling it otherwise may result in unexpected behavior.
-	 *
-	 * Called to indicate that the composite has become visible or hidden. This method
-	 * is called more than once during workbench lifecycle depending on the user interaction.
-	 * The composite will be on-DOM if visible is set to true and off-DOM otherwise.
-	 *
-	 * Typically this operation should be fast though because setVisible might be called many times during a session.
-	 * If there is a long running opertaion it is fine to have it running in the background asyncly and return before.
+	 * Returns the contAiner this composite is being build in.
 	 */
-	setVisible(visible: boolean): void {
+	getContAiner(): HTMLElement | undefined {
+		return this.pArent;
+	}
+
+	/**
+	 * Note: Clients should not cAll this method, the workbench cAlls this
+	 * method. CAlling it otherwise mAy result in unexpected behAvior.
+	 *
+	 * CAlled to indicAte thAt the composite hAs become visible or hidden. This method
+	 * is cAlled more thAn once during workbench lifecycle depending on the user interAction.
+	 * The composite will be on-DOM if visible is set to true And off-DOM otherwise.
+	 *
+	 * TypicAlly this operAtion should be fAst though becAuse setVisible might be cAlled mAny times during A session.
+	 * If there is A long running opertAion it is fine to hAve it running in the bAckground Asyncly And return before.
+	 */
+	setVisible(visible: booleAn): void {
 		if (this.visible !== !!visible) {
 			this.visible = visible;
 		}
 	}
 
 	/**
-	 * Called when this composite should receive keyboard focus.
+	 * CAlled when this composite should receive keyboArd focus.
 	 */
 	focus(): void {
-		// Subclasses can implement
+		// SubclAsses cAn implement
 	}
 
 	/**
-	 * Layout the contents of this composite using the provided dimensions.
+	 * LAyout the contents of this composite using the provided dimensions.
 	 */
-	abstract layout(dimension: Dimension): void;
+	AbstrAct lAyout(dimension: Dimension): void;
 
 	/**
-	 * Returns an array of actions to show in the action bar of the composite.
+	 * Returns An ArrAy of Actions to show in the Action bAr of the composite.
 	 */
-	getActions(): ReadonlyArray<IAction> {
+	getActions(): ReAdonlyArrAy<IAction> {
 		return [];
 	}
 
 	/**
-	 * Returns an array of actions to show in the action bar of the composite
-	 * in a less prominent way then action from getActions.
+	 * Returns An ArrAy of Actions to show in the Action bAr of the composite
+	 * in A less prominent wAy then Action from getActions.
 	 */
-	getSecondaryActions(): ReadonlyArray<IAction> {
+	getSecondAryActions(): ReAdonlyArrAy<IAction> {
 		return [];
 	}
 
 	/**
-	 * Returns an array of actions to show in the context menu of the composite
+	 * Returns An ArrAy of Actions to show in the context menu of the composite
 	 */
-	getContextMenuActions(): ReadonlyArray<IAction> {
+	getContextMenuActions(): ReAdonlyArrAy<IAction> {
 		return [];
 	}
 
 	/**
-	 * For any of the actions returned by this composite, provide an IActionViewItem in
-	 * cases where the implementor of the composite wants to override the presentation
-	 * of an action. Returns undefined to indicate that the action is not rendered through
-	 * an action item.
+	 * For Any of the Actions returned by this composite, provide An IActionViewItem in
+	 * cAses where the implementor of the composite wAnts to override the presentAtion
+	 * of An Action. Returns undefined to indicAte thAt the Action is not rendered through
+	 * An Action item.
 	 */
-	getActionViewItem(action: IAction): IActionViewItem | undefined {
+	getActionViewItem(Action: IAction): IActionViewItem | undefined {
 		return undefined;
 	}
 
 	/**
-	 * Provide a context to be passed to the toolbar.
+	 * Provide A context to be pAssed to the toolbAr.
 	 */
 	getActionsContext(): unknown {
 		return null;
 	}
 
 	/**
-	 * Returns the instance of IActionRunner to use with this composite for the
-	 * composite tool bar.
+	 * Returns the instAnce of IActionRunner to use with this composite for the
+	 * composite tool bAr.
 	 */
 	getActionRunner(): IActionRunner {
-		if (!this.actionRunner) {
-			this.actionRunner = new ActionRunner();
+		if (!this.ActionRunner) {
+			this.ActionRunner = new ActionRunner();
 		}
 
-		return this.actionRunner;
+		return this.ActionRunner;
 	}
 
 	/**
-	 * Method for composite implementors to indicate to the composite container that the title or the actions
-	 * of the composite have changed. Calling this method will cause the container to ask for title (getTitle())
-	 * and actions (getActions(), getSecondaryActions()) if the composite is visible or the next time the composite
+	 * Method for composite implementors to indicAte to the composite contAiner thAt the title or the Actions
+	 * of the composite hAve chAnged. CAlling this method will cAuse the contAiner to Ask for title (getTitle())
+	 * And Actions (getActions(), getSecondAryActions()) if the composite is visible or the next time the composite
 	 * gets visible.
 	 */
-	protected updateTitleArea(): void {
-		this._onTitleAreaUpdate.fire();
+	protected updAteTitleAreA(): void {
+		this._onTitleAreAUpdAte.fire();
 	}
 
 	/**
-	 * Returns true if this composite is currently visible and false otherwise.
+	 * Returns true if this composite is currently visible And fAlse otherwise.
 	 */
-	isVisible(): boolean {
+	isVisible(): booleAn {
 		return this.visible;
 	}
 
 	/**
-	 * Returns the underlying composite control or `undefined` if it is not accessible.
+	 * Returns the underlying composite control or `undefined` if it is not Accessible.
 	 */
 	getControl(): ICompositeControl | undefined {
 		return undefined;
@@ -223,34 +223,34 @@ export abstract class Composite extends Component implements IComposite {
 }
 
 /**
- * A composite descriptor is a leightweight descriptor of a composite in the workbench.
+ * A composite descriptor is A leightweight descriptor of A composite in the workbench.
  */
-export abstract class CompositeDescriptor<T extends Composite> {
+export AbstrAct clAss CompositeDescriptor<T extends Composite> {
 
 	constructor(
-		private readonly ctor: IConstructorSignature0<T>,
-		readonly id: string,
-		readonly name: string,
-		readonly cssClass?: string,
-		readonly order?: number,
-		readonly requestedIndex?: number,
-		readonly keybindingId?: string,
+		privAte reAdonly ctor: IConstructorSignAture0<T>,
+		reAdonly id: string,
+		reAdonly nAme: string,
+		reAdonly cssClAss?: string,
+		reAdonly order?: number,
+		reAdonly requestedIndex?: number,
+		reAdonly keybindingId?: string,
 	) { }
 
-	instantiate(instantiationService: IInstantiationService): T {
-		return instantiationService.createInstance(this.ctor);
+	instAntiAte(instAntiAtionService: IInstAntiAtionService): T {
+		return instAntiAtionService.creAteInstAnce(this.ctor);
 	}
 }
 
-export abstract class CompositeRegistry<T extends Composite> extends Disposable {
+export AbstrAct clAss CompositeRegistry<T extends Composite> extends DisposAble {
 
-	private readonly _onDidRegister = this._register(new Emitter<CompositeDescriptor<T>>());
-	readonly onDidRegister = this._onDidRegister.event;
+	privAte reAdonly _onDidRegister = this._register(new Emitter<CompositeDescriptor<T>>());
+	reAdonly onDidRegister = this._onDidRegister.event;
 
-	private readonly _onDidDeregister = this._register(new Emitter<CompositeDescriptor<T>>());
-	readonly onDidDeregister = this._onDidDeregister.event;
+	privAte reAdonly _onDidDeregister = this._register(new Emitter<CompositeDescriptor<T>>());
+	reAdonly onDidDeregister = this._onDidDeregister.event;
 
-	private readonly composites: CompositeDescriptor<T>[] = [];
+	privAte reAdonly composites: CompositeDescriptor<T>[] = [];
 
 	protected registerComposite(descriptor: CompositeDescriptor<T>): void {
 		if (this.compositeById(descriptor.id)) {
@@ -279,7 +279,7 @@ export abstract class CompositeRegistry<T extends Composite> extends Disposable 
 		return this.composites.slice(0);
 	}
 
-	private compositeById(id: string): CompositeDescriptor<T> | undefined {
+	privAte compositeById(id: string): CompositeDescriptor<T> | undefined {
 		return this.composites.find(composite => composite.id === id);
 	}
 }

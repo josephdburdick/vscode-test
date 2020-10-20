@@ -1,119 +1,119 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { PushErrorHandler, GitErrorCodes, Repository, Remote } from './typings/git';
-import { window, ProgressLocation, commands, Uri } from 'vscode';
-import * as nls from 'vscode-nls';
-import { getOctokit } from './auth';
+import { PushErrorHAndler, GitErrorCodes, Repository, Remote } from './typings/git';
+import { window, ProgressLocAtion, commAnds, Uri } from 'vscode';
+import * As nls from 'vscode-nls';
+import { getOctokit } from './Auth';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-async function handlePushError(repository: Repository, remote: Remote, refspec: string, owner: string, repo: string): Promise<void> {
-	const yes = localize('create a fork', "Create Fork");
-	const no = localize('no', "No");
+Async function hAndlePushError(repository: Repository, remote: Remote, refspec: string, owner: string, repo: string): Promise<void> {
+	const yes = locAlize('creAte A fork', "CreAte Fork");
+	const no = locAlize('no', "No");
 
-	const answer = await window.showInformationMessage(localize('fork', "You don't have permissions to push to '{0}/{1}' on GitHub. Would you like to create a fork and push to it instead?", owner, repo), yes, no);
+	const Answer = AwAit window.showInformAtionMessAge(locAlize('fork', "You don't hAve permissions to push to '{0}/{1}' on GitHub. Would you like to creAte A fork And push to it insteAd?", owner, repo), yes, no);
 
-	if (answer === no) {
+	if (Answer === no) {
 		return;
 	}
 
-	const match = /^([^:]*):([^:]*)$/.exec(refspec);
-	const localName = match ? match[1] : refspec;
-	const remoteName = match ? match[2] : refspec;
+	const mAtch = /^([^:]*):([^:]*)$/.exec(refspec);
+	const locAlNAme = mAtch ? mAtch[1] : refspec;
+	const remoteNAme = mAtch ? mAtch[2] : refspec;
 
-	const [octokit, ghRepository] = await window.withProgress({ location: ProgressLocation.Notification, cancellable: false, title: localize('create fork', 'Create GitHub fork') }, async progress => {
-		progress.report({ message: localize('forking', "Forking '{0}/{1}'...", owner, repo), increment: 33 });
+	const [octokit, ghRepository] = AwAit window.withProgress({ locAtion: ProgressLocAtion.NotificAtion, cAncellAble: fAlse, title: locAlize('creAte fork', 'CreAte GitHub fork') }, Async progress => {
+		progress.report({ messAge: locAlize('forking', "Forking '{0}/{1}'...", owner, repo), increment: 33 });
 
-		const octokit = await getOctokit();
+		const octokit = AwAit getOctokit();
 
-		// Issue: what if the repo already exists?
-		const res = await octokit.repos.createFork({ owner, repo });
-		const ghRepository = res.data;
+		// Issue: whAt if the repo AlreAdy exists?
+		const res = AwAit octokit.repos.creAteFork({ owner, repo });
+		const ghRepository = res.dAtA;
 
-		progress.report({ message: localize('pushing', "Pushing changes..."), increment: 33 });
+		progress.report({ messAge: locAlize('pushing', "Pushing chAnges..."), increment: 33 });
 
-		// Issue: what if there's already an `upstream` repo?
-		await repository.renameRemote(remote.name, 'upstream');
+		// Issue: whAt if there's AlreAdy An `upstreAm` repo?
+		AwAit repository.renAmeRemote(remote.nAme, 'upstreAm');
 
-		// Issue: what if there's already another `origin` repo?
-		await repository.addRemote('origin', ghRepository.clone_url);
-		await repository.fetch('origin', remoteName);
-		await repository.setBranchUpstream(localName, `origin/${remoteName}`);
-		await repository.push('origin', localName, true);
+		// Issue: whAt if there's AlreAdy Another `origin` repo?
+		AwAit repository.AddRemote('origin', ghRepository.clone_url);
+		AwAit repository.fetch('origin', remoteNAme);
+		AwAit repository.setBrAnchUpstreAm(locAlNAme, `origin/${remoteNAme}`);
+		AwAit repository.push('origin', locAlNAme, true);
 
 		return [octokit, ghRepository];
 	});
 
 	// yield
-	(async () => {
-		const openInGitHub = localize('openingithub', "Open In GitHub");
-		const createPR = localize('createpr', "Create PR");
-		const action = await window.showInformationMessage(localize('done', "The fork '{0}' was successfully created on GitHub.", ghRepository.full_name), openInGitHub, createPR);
+	(Async () => {
+		const openInGitHub = locAlize('openingithub', "Open In GitHub");
+		const creAtePR = locAlize('creAtepr', "CreAte PR");
+		const Action = AwAit window.showInformAtionMessAge(locAlize('done', "The fork '{0}' wAs successfully creAted on GitHub.", ghRepository.full_nAme), openInGitHub, creAtePR);
 
-		if (action === openInGitHub) {
-			await commands.executeCommand('vscode.open', Uri.parse(ghRepository.html_url));
-		} else if (action === createPR) {
-			const pr = await window.withProgress({ location: ProgressLocation.Notification, cancellable: false, title: localize('createghpr', "Creating GitHub Pull Request...") }, async _ => {
-				let title = `Update ${remoteName}`;
-				const head = repository.state.HEAD?.name;
+		if (Action === openInGitHub) {
+			AwAit commAnds.executeCommAnd('vscode.open', Uri.pArse(ghRepository.html_url));
+		} else if (Action === creAtePR) {
+			const pr = AwAit window.withProgress({ locAtion: ProgressLocAtion.NotificAtion, cAncellAble: fAlse, title: locAlize('creAteghpr', "CreAting GitHub Pull Request...") }, Async _ => {
+				let title = `UpdAte ${remoteNAme}`;
+				const heAd = repository.stAte.HEAD?.nAme;
 
-				if (head) {
-					const commit = await repository.getCommit(head);
-					title = commit.message.replace(/\n.*$/m, '');
+				if (heAd) {
+					const commit = AwAit repository.getCommit(heAd);
+					title = commit.messAge.replAce(/\n.*$/m, '');
 				}
 
-				const res = await octokit.pulls.create({
+				const res = AwAit octokit.pulls.creAte({
 					owner,
 					repo,
 					title,
-					head: `${ghRepository.owner.login}:${remoteName}`,
-					base: remoteName
+					heAd: `${ghRepository.owner.login}:${remoteNAme}`,
+					bAse: remoteNAme
 				});
 
-				await repository.setConfig(`branch.${localName}.remote`, 'upstream');
-				await repository.setConfig(`branch.${localName}.merge`, `refs/heads/${remoteName}`);
-				await repository.setConfig(`branch.${localName}.github-pr-owner-number`, `${owner}#${repo}#${pr.number}`);
+				AwAit repository.setConfig(`brAnch.${locAlNAme}.remote`, 'upstreAm');
+				AwAit repository.setConfig(`brAnch.${locAlNAme}.merge`, `refs/heAds/${remoteNAme}`);
+				AwAit repository.setConfig(`brAnch.${locAlNAme}.github-pr-owner-number`, `${owner}#${repo}#${pr.number}`);
 
-				return res.data;
+				return res.dAtA;
 			});
 
-			const openPR = localize('openpr', "Open PR");
-			const action = await window.showInformationMessage(localize('donepr', "The PR '{0}/{1}#{2}' was successfully created on GitHub.", owner, repo, pr.number), openPR);
+			const openPR = locAlize('openpr', "Open PR");
+			const Action = AwAit window.showInformAtionMessAge(locAlize('donepr', "The PR '{0}/{1}#{2}' wAs successfully creAted on GitHub.", owner, repo, pr.number), openPR);
 
-			if (action === openPR) {
-				await commands.executeCommand('vscode.open', Uri.parse(pr.html_url));
+			if (Action === openPR) {
+				AwAit commAnds.executeCommAnd('vscode.open', Uri.pArse(pr.html_url));
 			}
 		}
 	})();
 }
 
-export class GithubPushErrorHandler implements PushErrorHandler {
+export clAss GithubPushErrorHAndler implements PushErrorHAndler {
 
-	async handlePushError(repository: Repository, remote: Remote, refspec: string, error: Error & { gitErrorCode: GitErrorCodes }): Promise<boolean> {
+	Async hAndlePushError(repository: Repository, remote: Remote, refspec: string, error: Error & { gitErrorCode: GitErrorCodes }): Promise<booleAn> {
 		if (error.gitErrorCode !== GitErrorCodes.PermissionDenied) {
-			return false;
+			return fAlse;
 		}
 
 		if (!remote.pushUrl) {
-			return false;
+			return fAlse;
 		}
 
-		const match = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl)
+		const mAtch = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl)
 			|| /^git@github\.com:([^/]+)\/([^/]+)\.git/i.exec(remote.pushUrl);
 
-		if (!match) {
-			return false;
+		if (!mAtch) {
+			return fAlse;
 		}
 
 		if (/^:/.test(refspec)) {
-			return false;
+			return fAlse;
 		}
 
-		const [, owner, repo] = match;
-		await handlePushError(repository, remote, refspec, owner, repo);
+		const [, owner, repo] = mAtch;
+		AwAit hAndlePushError(repository, remote, refspec, owner, repo);
 
 		return true;
 	}

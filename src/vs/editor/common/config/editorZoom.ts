@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter, Event } from 'vs/base/common/event';
+import { Emitter, Event } from 'vs/bAse/common/event';
 
-export interface IEditorZoom {
-	onDidChangeZoomLevel: Event<number>;
+export interfAce IEditorZoom {
+	onDidChAngeZoomLevel: Event<number>;
 	getZoomLevel(): number;
 	setZoomLevel(zoomLevel: number): void;
 }
 
-export const EditorZoom: IEditorZoom = new class implements IEditorZoom {
+export const EditorZoom: IEditorZoom = new clAss implements IEditorZoom {
 
-	private _zoomLevel: number = 0;
+	privAte _zoomLevel: number = 0;
 
-	private readonly _onDidChangeZoomLevel = new Emitter<number>();
-	public readonly onDidChangeZoomLevel: Event<number> = this._onDidChangeZoomLevel.event;
+	privAte reAdonly _onDidChAngeZoomLevel = new Emitter<number>();
+	public reAdonly onDidChAngeZoomLevel: Event<number> = this._onDidChAngeZoomLevel.event;
 
 	public getZoomLevel(): number {
 		return this._zoomLevel;
 	}
 
 	public setZoomLevel(zoomLevel: number): void {
-		zoomLevel = Math.min(Math.max(-5, zoomLevel), 20);
+		zoomLevel = MAth.min(MAth.mAx(-5, zoomLevel), 20);
 		if (this._zoomLevel === zoomLevel) {
 			return;
 		}
 
 		this._zoomLevel = zoomLevel;
-		this._onDidChangeZoomLevel.fire(this._zoomLevel);
+		this._onDidChAngeZoomLevel.fire(this._zoomLevel);
 	}
 };

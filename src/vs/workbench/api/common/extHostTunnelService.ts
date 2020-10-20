@@ -1,73 +1,73 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtHostTunnelServiceShape, MainContext, MainThreadTunnelServiceShape } from 'vs/workbench/api/common/extHost.protocol';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import * as vscode from 'vscode';
-import { RemoteTunnel, TunnelOptions } from 'vs/platform/remote/common/tunnel';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Emitter } from 'vs/base/common/event';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
+import { ExtHostTunnelServiceShApe, MAinContext, MAinThreAdTunnelServiceShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import * As vscode from 'vscode';
+import { RemoteTunnel, TunnelOptions } from 'vs/plAtform/remote/common/tunnel';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Emitter } from 'vs/bAse/common/event';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
 
-export interface TunnelDto {
+export interfAce TunnelDto {
 	remoteAddress: { port: number, host: string };
-	localAddress: { port: number, host: string } | string;
+	locAlAddress: { port: number, host: string } | string;
 }
 
-export namespace TunnelDto {
+export nAmespAce TunnelDto {
 	export function fromApiTunnel(tunnel: vscode.Tunnel): TunnelDto {
-		return { remoteAddress: tunnel.remoteAddress, localAddress: tunnel.localAddress };
+		return { remoteAddress: tunnel.remoteAddress, locAlAddress: tunnel.locAlAddress };
 	}
 	export function fromServiceTunnel(tunnel: RemoteTunnel): TunnelDto {
-		return { remoteAddress: { host: tunnel.tunnelRemoteHost, port: tunnel.tunnelRemotePort }, localAddress: tunnel.localAddress };
+		return { remoteAddress: { host: tunnel.tunnelRemoteHost, port: tunnel.tunnelRemotePort }, locAlAddress: tunnel.locAlAddress };
 	}
 }
 
-export interface Tunnel extends vscode.Disposable {
+export interfAce Tunnel extends vscode.DisposAble {
 	remote: { port: number, host: string };
-	localAddress: string;
+	locAlAddress: string;
 }
 
-export interface IExtHostTunnelService extends ExtHostTunnelServiceShape {
-	readonly _serviceBrand: undefined;
-	openTunnel(forward: TunnelOptions): Promise<vscode.Tunnel | undefined>;
+export interfAce IExtHostTunnelService extends ExtHostTunnelServiceShApe {
+	reAdonly _serviceBrAnd: undefined;
+	openTunnel(forwArd: TunnelOptions): Promise<vscode.Tunnel | undefined>;
 	getTunnels(): Promise<vscode.TunnelDescription[]>;
-	onDidChangeTunnels: vscode.Event<void>;
-	setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposable>;
+	onDidChAngeTunnels: vscode.Event<void>;
+	setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposAble>;
 }
 
-export const IExtHostTunnelService = createDecorator<IExtHostTunnelService>('IExtHostTunnelService');
+export const IExtHostTunnelService = creAteDecorAtor<IExtHostTunnelService>('IExtHostTunnelService');
 
-export class ExtHostTunnelService implements IExtHostTunnelService {
-	declare readonly _serviceBrand: undefined;
-	onDidChangeTunnels: vscode.Event<void> = (new Emitter<void>()).event;
-	private readonly _proxy: MainThreadTunnelServiceShape;
+export clAss ExtHostTunnelService implements IExtHostTunnelService {
+	declAre reAdonly _serviceBrAnd: undefined;
+	onDidChAngeTunnels: vscode.Event<void> = (new Emitter<void>()).event;
+	privAte reAdonly _proxy: MAinThreAdTunnelServiceShApe;
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
 	) {
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadTunnelService);
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdTunnelService);
 	}
 
-	async openTunnel(forward: TunnelOptions): Promise<vscode.Tunnel | undefined> {
+	Async openTunnel(forwArd: TunnelOptions): Promise<vscode.Tunnel | undefined> {
 		return undefined;
 	}
-	async getTunnels(): Promise<vscode.TunnelDescription[]> {
+	Async getTunnels(): Promise<vscode.TunnelDescription[]> {
 		return [];
 	}
-	async $findCandidatePorts(): Promise<{ host: string, port: number; detail: string; }[]> {
+	Async $findCAndidAtePorts(): Promise<{ host: string, port: number; detAil: string; }[]> {
 		return [];
 	}
-	async $filterCandidates(candidates: { host: string, port: number, detail: string }[]): Promise<boolean[]> {
-		return candidates.map(() => true);
+	Async $filterCAndidAtes(cAndidAtes: { host: string, port: number, detAil: string }[]): Promise<booleAn[]> {
+		return cAndidAtes.mAp(() => true);
 	}
-	async setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposable> {
-		await this._proxy.$tunnelServiceReady();
+	Async setTunnelExtensionFunctions(provider: vscode.RemoteAuthorityResolver | undefined): Promise<IDisposAble> {
+		AwAit this._proxy.$tunnelServiceReAdy();
 		return { dispose: () => { } };
 	}
-	$forwardPort(tunnelOptions: TunnelOptions): Promise<TunnelDto> | undefined { return undefined; }
-	async $closeTunnel(remote: { host: string, port: number }): Promise<void> { }
-	async $onDidTunnelsChange(): Promise<void> { }
+	$forwArdPort(tunnelOptions: TunnelOptions): Promise<TunnelDto> | undefined { return undefined; }
+	Async $closeTunnel(remote: { host: string, port: number }): Promise<void> { }
+	Async $onDidTunnelsChAnge(): Promise<void> { }
 }

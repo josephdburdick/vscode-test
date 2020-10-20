@@ -1,269 +1,269 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { WrappingIndent, EditorOptions } from 'vs/editor/common/config/editorOptions';
-import { MonospaceLineBreaksComputerFactory } from 'vs/editor/common/viewModel/monospaceLineBreaksComputer';
-import { ILineBreaksComputerFactory, LineBreakData } from 'vs/editor/common/viewModel/splitLinesCollection';
+import * As Assert from 'Assert';
+import { WrAppingIndent, EditorOptions } from 'vs/editor/common/config/editorOptions';
+import { MonospAceLineBreAksComputerFActory } from 'vs/editor/common/viewModel/monospAceLineBreAksComputer';
+import { ILineBreAksComputerFActory, LineBreAkDAtA } from 'vs/editor/common/viewModel/splitLinesCollection';
 import { FontInfo } from 'vs/editor/common/config/fontInfo';
 
-function parseAnnotatedText(annotatedText: string): { text: string; indices: number[]; } {
+function pArseAnnotAtedText(AnnotAtedText: string): { text: string; indices: number[]; } {
 	let text = '';
 	let currentLineIndex = 0;
 	let indices: number[] = [];
-	for (let i = 0, len = annotatedText.length; i < len; i++) {
-		if (annotatedText.charAt(i) === '|') {
+	for (let i = 0, len = AnnotAtedText.length; i < len; i++) {
+		if (AnnotAtedText.chArAt(i) === '|') {
 			currentLineIndex++;
 		} else {
-			text += annotatedText.charAt(i);
+			text += AnnotAtedText.chArAt(i);
 			indices[text.length - 1] = currentLineIndex;
 		}
 	}
 	return { text: text, indices: indices };
 }
 
-function toAnnotatedText(text: string, lineBreakData: LineBreakData | null): string {
-	// Insert line break markers again, according to algorithm
-	let actualAnnotatedText = '';
-	if (lineBreakData) {
+function toAnnotAtedText(text: string, lineBreAkDAtA: LineBreAkDAtA | null): string {
+	// Insert line breAk mArkers AgAin, According to Algorithm
+	let ActuAlAnnotAtedText = '';
+	if (lineBreAkDAtA) {
 		let previousLineIndex = 0;
 		for (let i = 0, len = text.length; i < len; i++) {
-			let r = LineBreakData.getOutputPositionOfInputOffset(lineBreakData.breakOffsets, i);
+			let r = LineBreAkDAtA.getOutputPositionOfInputOffset(lineBreAkDAtA.breAkOffsets, i);
 			if (previousLineIndex !== r.outputLineIndex) {
 				previousLineIndex = r.outputLineIndex;
-				actualAnnotatedText += '|';
+				ActuAlAnnotAtedText += '|';
 			}
-			actualAnnotatedText += text.charAt(i);
+			ActuAlAnnotAtedText += text.chArAt(i);
 		}
 	} else {
-		// No wrapping
-		actualAnnotatedText = text;
+		// No wrApping
+		ActuAlAnnotAtedText = text;
 	}
-	return actualAnnotatedText;
+	return ActuAlAnnotAtedText;
 }
 
-function getLineBreakData(factory: ILineBreaksComputerFactory, tabSize: number, breakAfter: number, columnsForFullWidthChar: number, wrappingIndent: WrappingIndent, text: string, previousLineBreakData: LineBreakData | null): LineBreakData | null {
+function getLineBreAkDAtA(fActory: ILineBreAksComputerFActory, tAbSize: number, breAkAfter: number, columnsForFullWidthChAr: number, wrAppingIndent: WrAppingIndent, text: string, previousLineBreAkDAtA: LineBreAkDAtA | null): LineBreAkDAtA | null {
 	const fontInfo = new FontInfo({
 		zoomLevel: 0,
-		fontFamily: 'testFontFamily',
-		fontWeight: 'normal',
+		fontFAmily: 'testFontFAmily',
+		fontWeight: 'normAl',
 		fontSize: 14,
-		fontFeatureSettings: '',
+		fontFeAtureSettings: '',
 		lineHeight: 19,
-		letterSpacing: 0,
-		isMonospace: true,
-		typicalHalfwidthCharacterWidth: 7,
-		typicalFullwidthCharacterWidth: 14,
-		canUseHalfwidthRightwardsArrow: true,
-		spaceWidth: 7,
+		letterSpAcing: 0,
+		isMonospAce: true,
+		typicAlHAlfwidthChArActerWidth: 7,
+		typicAlFullwidthChArActerWidth: 14,
+		cAnUseHAlfwidthRightwArdsArrow: true,
+		spAceWidth: 7,
 		middotWidth: 7,
 		wsmiddotWidth: 7,
-		maxDigitWidth: 7
-	}, false);
-	const lineBreaksComputer = factory.createLineBreaksComputer(fontInfo, tabSize, breakAfter, wrappingIndent);
-	const previousLineBreakDataClone = previousLineBreakData ? new LineBreakData(previousLineBreakData.breakOffsets.slice(0), previousLineBreakData.breakOffsetsVisibleColumn.slice(0), previousLineBreakData.wrappedTextIndentLength) : null;
-	lineBreaksComputer.addRequest(text, previousLineBreakDataClone);
-	return lineBreaksComputer.finalize()[0];
+		mAxDigitWidth: 7
+	}, fAlse);
+	const lineBreAksComputer = fActory.creAteLineBreAksComputer(fontInfo, tAbSize, breAkAfter, wrAppingIndent);
+	const previousLineBreAkDAtAClone = previousLineBreAkDAtA ? new LineBreAkDAtA(previousLineBreAkDAtA.breAkOffsets.slice(0), previousLineBreAkDAtA.breAkOffsetsVisibleColumn.slice(0), previousLineBreAkDAtA.wrAppedTextIndentLength) : null;
+	lineBreAksComputer.AddRequest(text, previousLineBreAkDAtAClone);
+	return lineBreAksComputer.finAlize()[0];
 }
 
-function assertLineBreaks(factory: ILineBreaksComputerFactory, tabSize: number, breakAfter: number, annotatedText: string, wrappingIndent = WrappingIndent.None): LineBreakData | null {
-	// Create version of `annotatedText` with line break markers removed
-	const text = parseAnnotatedText(annotatedText).text;
-	const lineBreakData = getLineBreakData(factory, tabSize, breakAfter, 2, wrappingIndent, text, null);
-	const actualAnnotatedText = toAnnotatedText(text, lineBreakData);
+function AssertLineBreAks(fActory: ILineBreAksComputerFActory, tAbSize: number, breAkAfter: number, AnnotAtedText: string, wrAppingIndent = WrAppingIndent.None): LineBreAkDAtA | null {
+	// CreAte version of `AnnotAtedText` with line breAk mArkers removed
+	const text = pArseAnnotAtedText(AnnotAtedText).text;
+	const lineBreAkDAtA = getLineBreAkDAtA(fActory, tAbSize, breAkAfter, 2, wrAppingIndent, text, null);
+	const ActuAlAnnotAtedText = toAnnotAtedText(text, lineBreAkDAtA);
 
-	assert.equal(actualAnnotatedText, annotatedText);
+	Assert.equAl(ActuAlAnnotAtedText, AnnotAtedText);
 
-	return lineBreakData;
+	return lineBreAkDAtA;
 }
 
-suite('Editor ViewModel - MonospaceLineBreaksComputer', () => {
-	test('MonospaceLineBreaksComputer', () => {
+suite('Editor ViewModel - MonospAceLineBreAksComputer', () => {
+	test('MonospAceLineBreAksComputer', () => {
 
-		let factory = new MonospaceLineBreaksComputerFactory('(', '\t).');
+		let fActory = new MonospAceLineBreAksComputerFActory('(', '\t).');
 
 		// Empty string
-		assertLineBreaks(factory, 4, 5, '');
+		AssertLineBreAks(fActory, 4, 5, '');
 
-		// No wrapping if not necessary
-		assertLineBreaks(factory, 4, 5, 'aaa');
-		assertLineBreaks(factory, 4, 5, 'aaaaa');
-		assertLineBreaks(factory, 4, -1, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+		// No wrApping if not necessAry
+		AssertLineBreAks(fActory, 4, 5, 'AAA');
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA');
+		AssertLineBreAks(fActory, 4, -1, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 
-		// Acts like hard wrapping if no char found
-		assertLineBreaks(factory, 4, 5, 'aaaaa|a');
+		// Acts like hArd wrApping if no chAr found
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA|A');
 
-		// Honors wrapping character
-		assertLineBreaks(factory, 4, 5, 'aaaaa|.');
-		assertLineBreaks(factory, 4, 5, 'aaaaa|a.|aaa.|aa');
-		assertLineBreaks(factory, 4, 5, 'aaaaa|a..|aaa.|aa');
-		assertLineBreaks(factory, 4, 5, 'aaaaa|a...|aaa.|aa');
-		assertLineBreaks(factory, 4, 5, 'aaaaa|a....|aaa.|aa');
+		// Honors wrApping chArActer
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA|.');
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA|A.|AAA.|AA');
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA|A..|AAA.|AA');
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA|A...|AAA.|AA');
+		AssertLineBreAks(fActory, 4, 5, 'AAAAA|A....|AAA.|AA');
 
-		// Honors tabs when computing wrapping position
-		assertLineBreaks(factory, 4, 5, '\t');
-		assertLineBreaks(factory, 4, 5, '\t|aaa');
-		assertLineBreaks(factory, 4, 5, '\t|a\t|aa');
-		assertLineBreaks(factory, 4, 5, 'aa\ta');
-		assertLineBreaks(factory, 4, 5, 'aa\t|aa');
+		// Honors tAbs when computing wrApping position
+		AssertLineBreAks(fActory, 4, 5, '\t');
+		AssertLineBreAks(fActory, 4, 5, '\t|AAA');
+		AssertLineBreAks(fActory, 4, 5, '\t|A\t|AA');
+		AssertLineBreAks(fActory, 4, 5, 'AA\tA');
+		AssertLineBreAks(fActory, 4, 5, 'AA\t|AA');
 
-		// Honors wrapping before characters (& gives it priority)
-		assertLineBreaks(factory, 4, 5, 'aaa.|aa');
-		assertLineBreaks(factory, 4, 5, 'aaa(.|aa');
+		// Honors wrApping before chArActers (& gives it priority)
+		AssertLineBreAks(fActory, 4, 5, 'AAA.|AA');
+		AssertLineBreAks(fActory, 4, 5, 'AAA(.|AA');
 
-		// Honors wrapping after characters (& gives it priority)
-		assertLineBreaks(factory, 4, 5, 'aaa))|).aaa');
-		assertLineBreaks(factory, 4, 5, 'aaa))|).|aaaa');
-		assertLineBreaks(factory, 4, 5, 'aaa)|().|aaa');
-		assertLineBreaks(factory, 4, 5, 'aaa(|().|aaa');
-		assertLineBreaks(factory, 4, 5, 'aa.(|().|aaa');
-		assertLineBreaks(factory, 4, 5, 'aa.(.|).aaa');
+		// Honors wrApping After chArActers (& gives it priority)
+		AssertLineBreAks(fActory, 4, 5, 'AAA))|).AAA');
+		AssertLineBreAks(fActory, 4, 5, 'AAA))|).|AAAA');
+		AssertLineBreAks(fActory, 4, 5, 'AAA)|().|AAA');
+		AssertLineBreAks(fActory, 4, 5, 'AAA(|().|AAA');
+		AssertLineBreAks(fActory, 4, 5, 'AA.(|().|AAA');
+		AssertLineBreAks(fActory, 4, 5, 'AA.(.|).AAA');
 	});
 
-	function assertIncrementalLineBreaks(factory: ILineBreaksComputerFactory, text: string, tabSize: number, breakAfter1: number, annotatedText1: string, breakAfter2: number, annotatedText2: string, wrappingIndent = WrappingIndent.None): void {
-		// sanity check the test
-		assert.equal(text, parseAnnotatedText(annotatedText1).text);
-		assert.equal(text, parseAnnotatedText(annotatedText2).text);
+	function AssertIncrementAlLineBreAks(fActory: ILineBreAksComputerFActory, text: string, tAbSize: number, breAkAfter1: number, AnnotAtedText1: string, breAkAfter2: number, AnnotAtedText2: string, wrAppingIndent = WrAppingIndent.None): void {
+		// sAnity check the test
+		Assert.equAl(text, pArseAnnotAtedText(AnnotAtedText1).text);
+		Assert.equAl(text, pArseAnnotAtedText(AnnotAtedText2).text);
 
-		// check that the direct mapping is ok for 1
-		const directLineBreakData1 = getLineBreakData(factory, tabSize, breakAfter1, 2, wrappingIndent, text, null);
-		assert.equal(toAnnotatedText(text, directLineBreakData1), annotatedText1);
+		// check thAt the direct mApping is ok for 1
+		const directLineBreAkDAtA1 = getLineBreAkDAtA(fActory, tAbSize, breAkAfter1, 2, wrAppingIndent, text, null);
+		Assert.equAl(toAnnotAtedText(text, directLineBreAkDAtA1), AnnotAtedText1);
 
-		// check that the direct mapping is ok for 2
-		const directLineBreakData2 = getLineBreakData(factory, tabSize, breakAfter2, 2, wrappingIndent, text, null);
-		assert.equal(toAnnotatedText(text, directLineBreakData2), annotatedText2);
+		// check thAt the direct mApping is ok for 2
+		const directLineBreAkDAtA2 = getLineBreAkDAtA(fActory, tAbSize, breAkAfter2, 2, wrAppingIndent, text, null);
+		Assert.equAl(toAnnotAtedText(text, directLineBreAkDAtA2), AnnotAtedText2);
 
-		// check that going from 1 to 2 is ok
-		const lineBreakData2from1 = getLineBreakData(factory, tabSize, breakAfter2, 2, wrappingIndent, text, directLineBreakData1);
-		assert.equal(toAnnotatedText(text, lineBreakData2from1), annotatedText2);
-		assert.deepEqual(lineBreakData2from1, directLineBreakData2);
+		// check thAt going from 1 to 2 is ok
+		const lineBreAkDAtA2from1 = getLineBreAkDAtA(fActory, tAbSize, breAkAfter2, 2, wrAppingIndent, text, directLineBreAkDAtA1);
+		Assert.equAl(toAnnotAtedText(text, lineBreAkDAtA2from1), AnnotAtedText2);
+		Assert.deepEquAl(lineBreAkDAtA2from1, directLineBreAkDAtA2);
 
-		// check that going from 2 to 1 is ok
-		const lineBreakData1from2 = getLineBreakData(factory, tabSize, breakAfter1, 2, wrappingIndent, text, directLineBreakData2);
-		assert.equal(toAnnotatedText(text, lineBreakData1from2), annotatedText1);
-		assert.deepEqual(lineBreakData1from2, directLineBreakData1);
+		// check thAt going from 2 to 1 is ok
+		const lineBreAkDAtA1from2 = getLineBreAkDAtA(fActory, tAbSize, breAkAfter1, 2, wrAppingIndent, text, directLineBreAkDAtA2);
+		Assert.equAl(toAnnotAtedText(text, lineBreAkDAtA1from2), AnnotAtedText1);
+		Assert.deepEquAl(lineBreAkDAtA1from2, directLineBreAkDAtA1);
 	}
 
-	test('MonospaceLineBreaksComputer incremental 1', () => {
+	test('MonospAceLineBreAksComputer incrementAl 1', () => {
 
-		const factory = new MonospaceLineBreaksComputerFactory(EditorOptions.wordWrapBreakBeforeCharacters.defaultValue, EditorOptions.wordWrapBreakAfterCharacters.defaultValue);
+		const fActory = new MonospAceLineBreAksComputerFActory(EditorOptions.wordWrApBreAkBeforeChArActers.defAultVAlue, EditorOptions.wordWrApBreAkAfterChArActers.defAultVAlue);
 
-		assertIncrementalLineBreaks(
-			factory, 'just some text and more', 4,
-			10, 'just some |text and |more',
-			15, 'just some text |and more'
+		AssertIncrementAlLineBreAks(
+			fActory, 'just some text And more', 4,
+			10, 'just some |text And |more',
+			15, 'just some text |And more'
 		);
 
-		assertIncrementalLineBreaks(
-			factory, 'Cu scripserit suscipiantur eos, in affert pericula contentiones sed, cetero sanctus et pro. Ius vidit magna regione te, sit ei elaboraret liberavisse. Mundi verear eu mea, eam vero scriptorem in, vix in menandri assueverit. Natum definiebas cu vim. Vim doming vocibus efficiantur id. In indoctum deseruisse voluptatum vim, ad debitis verterem sed.', 4,
-			47, 'Cu scripserit suscipiantur eos, in affert |pericula contentiones sed, cetero sanctus et |pro. Ius vidit magna regione te, sit ei |elaboraret liberavisse. Mundi verear eu mea, |eam vero scriptorem in, vix in menandri |assueverit. Natum definiebas cu vim. Vim |doming vocibus efficiantur id. In indoctum |deseruisse voluptatum vim, ad debitis verterem |sed.',
-			142, 'Cu scripserit suscipiantur eos, in affert pericula contentiones sed, cetero sanctus et pro. Ius vidit magna regione te, sit ei elaboraret |liberavisse. Mundi verear eu mea, eam vero scriptorem in, vix in menandri assueverit. Natum definiebas cu vim. Vim doming vocibus efficiantur |id. In indoctum deseruisse voluptatum vim, ad debitis verterem sed.',
+		AssertIncrementAlLineBreAks(
+			fActory, 'Cu scripserit suscipiAntur eos, in Affert periculA contentiones sed, cetero sAnctus et pro. Ius vidit mAgnA regione te, sit ei elAborAret liberAvisse. Mundi vereAr eu meA, eAm vero scriptorem in, vix in menAndri Assueverit. NAtum definiebAs cu vim. Vim doming vocibus efficiAntur id. In indoctum deseruisse voluptAtum vim, Ad debitis verterem sed.', 4,
+			47, 'Cu scripserit suscipiAntur eos, in Affert |periculA contentiones sed, cetero sAnctus et |pro. Ius vidit mAgnA regione te, sit ei |elAborAret liberAvisse. Mundi vereAr eu meA, |eAm vero scriptorem in, vix in menAndri |Assueverit. NAtum definiebAs cu vim. Vim |doming vocibus efficiAntur id. In indoctum |deseruisse voluptAtum vim, Ad debitis verterem |sed.',
+			142, 'Cu scripserit suscipiAntur eos, in Affert periculA contentiones sed, cetero sAnctus et pro. Ius vidit mAgnA regione te, sit ei elAborAret |liberAvisse. Mundi vereAr eu meA, eAm vero scriptorem in, vix in menAndri Assueverit. NAtum definiebAs cu vim. Vim doming vocibus efficiAntur |id. In indoctum deseruisse voluptAtum vim, Ad debitis verterem sed.',
 		);
 
-		assertIncrementalLineBreaks(
-			factory, 'An his legere persecuti, oblique delicata efficiantur ex vix, vel at graecis officiis maluisset. Et per impedit voluptua, usu discere maiorum at. Ut assum ornatus temporibus vis, an sea melius pericula. Ea dicunt oblique phaedrum nam, eu duo movet nobis. His melius facilis eu, vim malorum temporibus ne. Nec no sale regione, meliore civibus placerat id eam. Mea alii fabulas definitionem te, agam volutpat ad vis, et per bonorum nonumes repudiandae.', 4,
-			57, 'An his legere persecuti, oblique delicata efficiantur ex |vix, vel at graecis officiis maluisset. Et per impedit |voluptua, usu discere maiorum at. Ut assum ornatus |temporibus vis, an sea melius pericula. Ea dicunt |oblique phaedrum nam, eu duo movet nobis. His melius |facilis eu, vim malorum temporibus ne. Nec no sale |regione, meliore civibus placerat id eam. Mea alii |fabulas definitionem te, agam volutpat ad vis, et per |bonorum nonumes repudiandae.',
-			58, 'An his legere persecuti, oblique delicata efficiantur ex |vix, vel at graecis officiis maluisset. Et per impedit |voluptua, usu discere maiorum at. Ut assum ornatus |temporibus vis, an sea melius pericula. Ea dicunt oblique |phaedrum nam, eu duo movet nobis. His melius facilis eu, |vim malorum temporibus ne. Nec no sale regione, meliore |civibus placerat id eam. Mea alii fabulas definitionem |te, agam volutpat ad vis, et per bonorum nonumes |repudiandae.'
+		AssertIncrementAlLineBreAks(
+			fActory, 'An his legere persecuti, oblique delicAtA efficiAntur ex vix, vel At grAecis officiis mAluisset. Et per impedit voluptuA, usu discere mAiorum At. Ut Assum ornAtus temporibus vis, An seA melius periculA. EA dicunt oblique phAedrum nAm, eu duo movet nobis. His melius fAcilis eu, vim mAlorum temporibus ne. Nec no sAle regione, meliore civibus plAcerAt id eAm. MeA Alii fAbulAs definitionem te, AgAm volutpAt Ad vis, et per bonorum nonumes repudiAndAe.', 4,
+			57, 'An his legere persecuti, oblique delicAtA efficiAntur ex |vix, vel At grAecis officiis mAluisset. Et per impedit |voluptuA, usu discere mAiorum At. Ut Assum ornAtus |temporibus vis, An seA melius periculA. EA dicunt |oblique phAedrum nAm, eu duo movet nobis. His melius |fAcilis eu, vim mAlorum temporibus ne. Nec no sAle |regione, meliore civibus plAcerAt id eAm. MeA Alii |fAbulAs definitionem te, AgAm volutpAt Ad vis, et per |bonorum nonumes repudiAndAe.',
+			58, 'An his legere persecuti, oblique delicAtA efficiAntur ex |vix, vel At grAecis officiis mAluisset. Et per impedit |voluptuA, usu discere mAiorum At. Ut Assum ornAtus |temporibus vis, An seA melius periculA. EA dicunt oblique |phAedrum nAm, eu duo movet nobis. His melius fAcilis eu, |vim mAlorum temporibus ne. Nec no sAle regione, meliore |civibus plAcerAt id eAm. MeA Alii fAbulAs definitionem |te, AgAm volutpAt Ad vis, et per bonorum nonumes |repudiAndAe.'
 		);
 
-		assertIncrementalLineBreaks(
-			factory, '\t\t"owner": "vscode",', 4,
+		AssertIncrementAlLineBreAks(
+			fActory, '\t\t"owner": "vscode",', 4,
 			14, '\t\t"owner|": |"vscod|e",',
 			16, '\t\t"owner":| |"vscode"|,',
-			WrappingIndent.Same
+			WrAppingIndent.SAme
 		);
 
-		assertIncrementalLineBreaks(
-			factory, '🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇&👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬', 4,
+		AssertIncrementAlLineBreAks(
+			fActory, '🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇&👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬', 4,
 			51, '🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇&|👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬',
 			50, '🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇|&|👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬',
-			WrappingIndent.Same
+			WrAppingIndent.SAme
 		);
 
-		assertIncrementalLineBreaks(
-			factory, '🐇👬&🌞🌖', 4,
+		AssertIncrementAlLineBreAks(
+			fActory, '🐇👬&🌞🌖', 4,
 			5, '🐇👬&|🌞🌖',
 			4, '🐇👬|&|🌞🌖',
-			WrappingIndent.Same
+			WrAppingIndent.SAme
 		);
 
-		assertIncrementalLineBreaks(
-			factory, '\t\tfunc(\'🌞🏇🍼🌞🏇🍼🐇&👬🌖🌞👬🌖🌞🏇🍼🐇👬\', WrappingIndent.Same);', 4,
-			26, '\t\tfunc|(\'🌞🏇🍼🌞🏇🍼🐇&|👬🌖🌞👬🌖🌞🏇🍼🐇|👬\', |WrappingIndent.|Same);',
-			27, '\t\tfunc|(\'🌞🏇🍼🌞🏇🍼🐇&|👬🌖🌞👬🌖🌞🏇🍼🐇|👬\', |WrappingIndent.|Same);',
-			WrappingIndent.Same
+		AssertIncrementAlLineBreAks(
+			fActory, '\t\tfunc(\'🌞🏇🍼🌞🏇🍼🐇&👬🌖🌞👬🌖🌞🏇🍼🐇👬\', WrAppingIndent.SAme);', 4,
+			26, '\t\tfunc|(\'🌞🏇🍼🌞🏇🍼🐇&|👬🌖🌞👬🌖🌞🏇🍼🐇|👬\', |WrAppingIndent.|SAme);',
+			27, '\t\tfunc|(\'🌞🏇🍼🌞🏇🍼🐇&|👬🌖🌞👬🌖🌞🏇🍼🐇|👬\', |WrAppingIndent.|SAme);',
+			WrAppingIndent.SAme
 		);
 
-		assertIncrementalLineBreaks(
-			factory, 'factory, "xtxtfunc(x"🌞🏇🍼🌞🏇🍼🐇&👬🌖🌞👬🌖🌞🏇🍼🐇👬x"', 4,
-			16, 'factory, |"xtxtfunc|(x"🌞🏇🍼🌞🏇🍼|🐇&|👬🌖🌞👬🌖🌞🏇🍼|🐇👬x"',
-			17, 'factory, |"xtxtfunc|(x"🌞🏇🍼🌞🏇🍼🐇|&👬🌖🌞👬🌖🌞🏇🍼|🐇👬x"',
-			WrappingIndent.Same
+		AssertIncrementAlLineBreAks(
+			fActory, 'fActory, "xtxtfunc(x"🌞🏇🍼🌞🏇🍼🐇&👬🌖🌞👬🌖🌞🏇🍼🐇👬x"', 4,
+			16, 'fActory, |"xtxtfunc|(x"🌞🏇🍼🌞🏇🍼|🐇&|👬🌖🌞👬🌖🌞🏇🍼|🐇👬x"',
+			17, 'fActory, |"xtxtfunc|(x"🌞🏇🍼🌞🏇🍼🐇|&👬🌖🌞👬🌖🌞🏇🍼|🐇👬x"',
+			WrAppingIndent.SAme
 		);
 	});
 
-	test('issue #95686: CRITICAL: loop forever on the monospaceLineBreaksComputer', () => {
-		const factory = new MonospaceLineBreaksComputerFactory(EditorOptions.wordWrapBreakBeforeCharacters.defaultValue, EditorOptions.wordWrapBreakAfterCharacters.defaultValue);
-		assertIncrementalLineBreaks(
-			factory,
-			'						<tr dmx-class:table-danger="(alt <= 50)" dmx-class:table-warning="(alt <= 200)" dmx-class:table-primary="(alt <= 400)" dmx-class:table-info="(alt <= 800)" dmx-class:table-success="(alt >= 400)">',
+	test('issue #95686: CRITICAL: loop forever on the monospAceLineBreAksComputer', () => {
+		const fActory = new MonospAceLineBreAksComputerFActory(EditorOptions.wordWrApBreAkBeforeChArActers.defAultVAlue, EditorOptions.wordWrApBreAkAfterChArActers.defAultVAlue);
+		AssertIncrementAlLineBreAks(
+			fActory,
+			'						<tr dmx-clAss:tAble-dAnger="(Alt <= 50)" dmx-clAss:tAble-wArning="(Alt <= 200)" dmx-clAss:tAble-primAry="(Alt <= 400)" dmx-clAss:tAble-info="(Alt <= 800)" dmx-clAss:tAble-success="(Alt >= 400)">',
 			4,
-			179, '						<tr dmx-class:table-danger="(alt <= 50)" dmx-class:table-warning="(alt <= 200)" dmx-class:table-primary="(alt <= 400)" dmx-class:table-info="(alt <= 800)" |dmx-class:table-success="(alt >= 400)">',
-			1, '	|	|	|	|	|	|<|t|r| |d|m|x|-|c|l|a|s|s|:|t|a|b|l|e|-|d|a|n|g|e|r|=|"|(|a|l|t| |<|=| |5|0|)|"| |d|m|x|-|c|l|a|s|s|:|t|a|b|l|e|-|w|a|r|n|i|n|g|=|"|(|a|l|t| |<|=| |2|0|0|)|"| |d|m|x|-|c|l|a|s|s|:|t|a|b|l|e|-|p|r|i|m|a|r|y|=|"|(|a|l|t| |<|=| |4|0|0|)|"| |d|m|x|-|c|l|a|s|s|:|t|a|b|l|e|-|i|n|f|o|=|"|(|a|l|t| |<|=| |8|0|0|)|"| |d|m|x|-|c|l|a|s|s|:|t|a|b|l|e|-|s|u|c|c|e|s|s|=|"|(|a|l|t| |>|=| |4|0|0|)|"|>',
-			WrappingIndent.Same
+			179, '						<tr dmx-clAss:tAble-dAnger="(Alt <= 50)" dmx-clAss:tAble-wArning="(Alt <= 200)" dmx-clAss:tAble-primAry="(Alt <= 400)" dmx-clAss:tAble-info="(Alt <= 800)" |dmx-clAss:tAble-success="(Alt >= 400)">',
+			1, '	|	|	|	|	|	|<|t|r| |d|m|x|-|c|l|A|s|s|:|t|A|b|l|e|-|d|A|n|g|e|r|=|"|(|A|l|t| |<|=| |5|0|)|"| |d|m|x|-|c|l|A|s|s|:|t|A|b|l|e|-|w|A|r|n|i|n|g|=|"|(|A|l|t| |<|=| |2|0|0|)|"| |d|m|x|-|c|l|A|s|s|:|t|A|b|l|e|-|p|r|i|m|A|r|y|=|"|(|A|l|t| |<|=| |4|0|0|)|"| |d|m|x|-|c|l|A|s|s|:|t|A|b|l|e|-|i|n|f|o|=|"|(|A|l|t| |<|=| |8|0|0|)|"| |d|m|x|-|c|l|A|s|s|:|t|A|b|l|e|-|s|u|c|c|e|s|s|=|"|(|A|l|t| |>|=| |4|0|0|)|"|>',
+			WrAppingIndent.SAme
 		);
 	});
 
-	test('MonospaceLineBreaksComputer - CJK and Kinsoku Shori', () => {
-		let factory = new MonospaceLineBreaksComputerFactory('(', '\t)');
-		assertLineBreaks(factory, 4, 5, 'aa \u5b89|\u5b89');
-		assertLineBreaks(factory, 4, 5, '\u3042 \u5b89|\u5b89');
-		assertLineBreaks(factory, 4, 5, '\u3042\u3042|\u5b89\u5b89');
-		assertLineBreaks(factory, 4, 5, 'aa |\u5b89)\u5b89|\u5b89');
-		assertLineBreaks(factory, 4, 5, 'aa \u3042|\u5b89\u3042)|\u5b89');
-		assertLineBreaks(factory, 4, 5, 'aa |(\u5b89aa|\u5b89');
+	test('MonospAceLineBreAksComputer - CJK And Kinsoku Shori', () => {
+		let fActory = new MonospAceLineBreAksComputerFActory('(', '\t)');
+		AssertLineBreAks(fActory, 4, 5, 'AA \u5b89|\u5b89');
+		AssertLineBreAks(fActory, 4, 5, '\u3042 \u5b89|\u5b89');
+		AssertLineBreAks(fActory, 4, 5, '\u3042\u3042|\u5b89\u5b89');
+		AssertLineBreAks(fActory, 4, 5, 'AA |\u5b89)\u5b89|\u5b89');
+		AssertLineBreAks(fActory, 4, 5, 'AA \u3042|\u5b89\u3042)|\u5b89');
+		AssertLineBreAks(fActory, 4, 5, 'AA |(\u5b89AA|\u5b89');
 	});
 
-	test('MonospaceLineBreaksComputer - WrappingIndent.Same', () => {
-		let factory = new MonospaceLineBreaksComputerFactory('', '\t ');
-		assertLineBreaks(factory, 4, 38, ' *123456789012345678901234567890123456|7890', WrappingIndent.Same);
+	test('MonospAceLineBreAksComputer - WrAppingIndent.SAme', () => {
+		let fActory = new MonospAceLineBreAksComputerFActory('', '\t ');
+		AssertLineBreAks(fActory, 4, 38, ' *123456789012345678901234567890123456|7890', WrAppingIndent.SAme);
 	});
 
-	test('issue #16332: Scroll bar overlaying on top of text', () => {
-		let factory = new MonospaceLineBreaksComputerFactory('', '\t ');
-		assertLineBreaks(factory, 4, 24, 'a/ very/long/line/of/tex|t/that/expands/beyon|d/your/typical/line/|of/code/', WrappingIndent.Indent);
+	test('issue #16332: Scroll bAr overlAying on top of text', () => {
+		let fActory = new MonospAceLineBreAksComputerFActory('', '\t ');
+		AssertLineBreAks(fActory, 4, 24, 'A/ very/long/line/of/tex|t/thAt/expAnds/beyon|d/your/typicAl/line/|of/code/', WrAppingIndent.Indent);
 	});
 
-	test('issue #35162: wrappingIndent not consistently working', () => {
-		let factory = new MonospaceLineBreaksComputerFactory('', '\t ');
-		let mapper = assertLineBreaks(factory, 4, 24, '                t h i s |i s |a l |o n |g l |i n |e', WrappingIndent.Indent);
-		assert.equal(mapper!.wrappedTextIndentLength, '                    '.length);
+	test('issue #35162: wrAppingIndent not consistently working', () => {
+		let fActory = new MonospAceLineBreAksComputerFActory('', '\t ');
+		let mApper = AssertLineBreAks(fActory, 4, 24, '                t h i s |i s |A l |o n |g l |i n |e', WrAppingIndent.Indent);
+		Assert.equAl(mApper!.wrAppedTextIndentLength, '                    '.length);
 	});
 
-	test('issue #75494: surrogate pairs', () => {
-		let factory = new MonospaceLineBreaksComputerFactory('\t', ' ');
-		assertLineBreaks(factory, 4, 49, '🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼|🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼|🐇👬', WrappingIndent.Same);
+	test('issue #75494: surrogAte pAirs', () => {
+		let fActory = new MonospAceLineBreAksComputerFActory('\t', ' ');
+		AssertLineBreAks(fActory, 4, 49, '🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼|🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼🐇👬🌖🌞🏇🍼|🐇👬', WrAppingIndent.SAme);
 	});
 
-	test('issue #75494: surrogate pairs overrun 1', () => {
-		const factory = new MonospaceLineBreaksComputerFactory(EditorOptions.wordWrapBreakBeforeCharacters.defaultValue, EditorOptions.wordWrapBreakAfterCharacters.defaultValue);
-		assertLineBreaks(factory, 4, 4, '🐇👬|&|🌞🌖', WrappingIndent.Same);
+	test('issue #75494: surrogAte pAirs overrun 1', () => {
+		const fActory = new MonospAceLineBreAksComputerFActory(EditorOptions.wordWrApBreAkBeforeChArActers.defAultVAlue, EditorOptions.wordWrApBreAkAfterChArActers.defAultVAlue);
+		AssertLineBreAks(fActory, 4, 4, '🐇👬|&|🌞🌖', WrAppingIndent.SAme);
 	});
 
-	test('issue #75494: surrogate pairs overrun 2', () => {
-		const factory = new MonospaceLineBreaksComputerFactory(EditorOptions.wordWrapBreakBeforeCharacters.defaultValue, EditorOptions.wordWrapBreakAfterCharacters.defaultValue);
-		assertLineBreaks(factory, 4, 17, 'factory, |"xtxtfunc|(x"🌞🏇🍼🌞🏇🍼🐇|&👬🌖🌞👬🌖🌞🏇🍼|🐇👬x"', WrappingIndent.Same);
+	test('issue #75494: surrogAte pAirs overrun 2', () => {
+		const fActory = new MonospAceLineBreAksComputerFActory(EditorOptions.wordWrApBreAkBeforeChArActers.defAultVAlue, EditorOptions.wordWrApBreAkAfterChArActers.defAultVAlue);
+		AssertLineBreAks(fActory, 4, 17, 'fActory, |"xtxtfunc|(x"🌞🏇🍼🌞🏇🍼🐇|&👬🌖🌞👬🌖🌞🏇🍼|🐇👬x"', WrAppingIndent.SAme);
 	});
 
-	test('MonospaceLineBreaksComputer - WrappingIndent.DeepIndent', () => {
-		let factory = new MonospaceLineBreaksComputerFactory('', '\t ');
-		let mapper = assertLineBreaks(factory, 4, 26, '        W e A r e T e s t |i n g D e |e p I n d |e n t a t |i o n', WrappingIndent.DeepIndent);
-		assert.equal(mapper!.wrappedTextIndentLength, '                '.length);
+	test('MonospAceLineBreAksComputer - WrAppingIndent.DeepIndent', () => {
+		let fActory = new MonospAceLineBreAksComputerFActory('', '\t ');
+		let mApper = AssertLineBreAks(fActory, 4, 26, '        W e A r e T e s t |i n g D e |e p I n d |e n t A t |i o n', WrAppingIndent.DeepIndent);
+		Assert.equAl(mApper!.wrAppedTextIndentLength, '                '.length);
 	});
 
-	test('issue #33366: Word wrap algorithm behaves differently around punctuation', () => {
-		const factory = new MonospaceLineBreaksComputerFactory(EditorOptions.wordWrapBreakBeforeCharacters.defaultValue, EditorOptions.wordWrapBreakAfterCharacters.defaultValue);
-		assertLineBreaks(factory, 4, 23, 'this is a line of |text, text that sits |on a line', WrappingIndent.Same);
+	test('issue #33366: Word wrAp Algorithm behAves differently Around punctuAtion', () => {
+		const fActory = new MonospAceLineBreAksComputerFActory(EditorOptions.wordWrApBreAkBeforeChArActers.defAultVAlue, EditorOptions.wordWrApBreAkAfterChArActers.defAultVAlue);
+		AssertLineBreAks(fActory, 4, 23, 'this is A line of |text, text thAt sits |on A line', WrAppingIndent.SAme);
 	});
 });

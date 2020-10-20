@@ -1,31 +1,31 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { VSBuffer } from 'vs/base/common/buffer';
-import { UriComponents } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IRemoteConnectionData } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { IWebviewPortMapping } from 'vs/platform/webview/common/webviewPortMapping';
+import { VSBuffer } from 'vs/bAse/common/buffer';
+import { UriComponents } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IRemoteConnectionDAtA } from 'vs/plAtform/remote/common/remoteAuthorityResolver';
+import { IWebviewPortMApping } from 'vs/plAtform/webview/common/webviewPortMApping';
 
-export const IWebviewManagerService = createDecorator<IWebviewManagerService>('webviewManagerService');
+export const IWebviewMAnAgerService = creAteDecorAtor<IWebviewMAnAgerService>('webviewMAnAgerService');
 
-export interface IWebviewManagerService {
-	_serviceBrand: unknown;
+export interfAce IWebviewMAnAgerService {
+	_serviceBrAnd: unknown;
 
-	registerWebview(id: string, windowId: number, metadata: RegisterWebviewMetadata): Promise<void>;
+	registerWebview(id: string, windowId: number, metAdAtA: RegisterWebviewMetAdAtA): Promise<void>;
 	unregisterWebview(id: string): Promise<void>;
-	updateWebviewMetadata(id: string, metadataDelta: Partial<RegisterWebviewMetadata>): Promise<void>;
+	updAteWebviewMetAdAtA(id: string, metAdAtADeltA: PArtiAl<RegisterWebviewMetAdAtA>): Promise<void>;
 
-	didLoadResource(requestId: number, content: VSBuffer | undefined): void;
+	didLoAdResource(requestId: number, content: VSBuffer | undefined): void;
 
-	setIgnoreMenuShortcuts(webContentsId: number, enabled: boolean): Promise<void>;
+	setIgnoreMenuShortcuts(webContentsId: number, enAbled: booleAn): Promise<void>;
 }
 
-export interface RegisterWebviewMetadata {
-	readonly extensionLocation: UriComponents | undefined;
-	readonly localResourceRoots: readonly UriComponents[];
-	readonly remoteConnectionData: IRemoteConnectionData | null;
-	readonly portMappings: readonly IWebviewPortMapping[];
+export interfAce RegisterWebviewMetAdAtA {
+	reAdonly extensionLocAtion: UriComponents | undefined;
+	reAdonly locAlResourceRoots: reAdonly UriComponents[];
+	reAdonly remoteConnectionDAtA: IRemoteConnectionDAtA | null;
+	reAdonly portMAppings: reAdonly IWebviewPortMApping[];
 }

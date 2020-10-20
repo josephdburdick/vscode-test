@@ -1,57 +1,57 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Dimension } from 'vs/base/browser/dom';
-import { Event } from 'vs/base/common/event';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { URI } from 'vs/base/common/uri';
-import * as modes from 'vs/editor/common/modes';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IMouseWheelEvent } from 'vs/base/browser/mouseEvent';
+import { Dimension } from 'vs/bAse/browser/dom';
+import { Event } from 'vs/bAse/common/event';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import * As modes from 'vs/editor/common/modes';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IMouseWheelEvent } from 'vs/bAse/browser/mouseEvent';
 
 /**
- * Set when the find widget in a webview is visible.
+ * Set when the find widget in A webview is visible.
  */
-export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_VISIBLE = new RawContextKey<boolean>('webviewFindWidgetVisible', false);
-export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_FOCUSED = new RawContextKey<boolean>('webviewFindWidgetFocused', false);
+export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_VISIBLE = new RAwContextKey<booleAn>('webviewFindWidgetVisible', fAlse);
+export const KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_FOCUSED = new RAwContextKey<booleAn>('webviewFindWidgetFocused', fAlse);
 
-export const webviewHasOwnEditFunctionsContextKey = 'webviewHasOwnEditFunctions';
-export const webviewHasOwnEditFunctionsContext = new RawContextKey<boolean>(webviewHasOwnEditFunctionsContextKey, false);
+export const webviewHAsOwnEditFunctionsContextKey = 'webviewHAsOwnEditFunctions';
+export const webviewHAsOwnEditFunctionsContext = new RAwContextKey<booleAn>(webviewHAsOwnEditFunctionsContextKey, fAlse);
 
-export const IWebviewService = createDecorator<IWebviewService>('webviewService');
+export const IWebviewService = creAteDecorAtor<IWebviewService>('webviewService');
 
-export interface WebviewIcons {
-	readonly light: URI;
-	readonly dark: URI;
+export interfAce WebviewIcons {
+	reAdonly light: URI;
+	reAdonly dArk: URI;
 }
 
 /**
- * Handles the creation of webview elements.
+ * HAndles the creAtion of webview elements.
  */
-export interface IWebviewService {
-	readonly _serviceBrand: undefined;
+export interfAce IWebviewService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly activeWebview: Webview | undefined;
+	reAdonly ActiveWebview: Webview | undefined;
 
-	createWebviewElement(
+	creAteWebviewElement(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
 	): WebviewElement;
 
-	createWebviewOverlay(
+	creAteWebviewOverlAy(
 		id: string,
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		extension: WebviewExtensionDescription | undefined,
-	): WebviewOverlay;
+	): WebviewOverlAy;
 
-	setIcons(id: string, value: WebviewIcons | undefined): void;
+	setIcons(id: string, vAlue: WebviewIcons | undefined): void;
 }
 
 export const enum WebviewContentPurpose {
@@ -59,96 +59,96 @@ export const enum WebviewContentPurpose {
 	CustomEditor = 'customEditor',
 }
 
-export interface WebviewOptions {
+export interfAce WebviewOptions {
 	// The purpose of the webview; this is (currently) only used for filtering in js-debug
-	readonly purpose?: WebviewContentPurpose;
-	readonly customClasses?: string;
-	readonly enableFindWidget?: boolean;
-	readonly tryRestoreScrollPosition?: boolean;
-	readonly retainContextWhenHidden?: boolean;
+	reAdonly purpose?: WebviewContentPurpose;
+	reAdonly customClAsses?: string;
+	reAdonly enAbleFindWidget?: booleAn;
+	reAdonly tryRestoreScrollPosition?: booleAn;
+	reAdonly retAinContextWhenHidden?: booleAn;
 }
 
-export interface WebviewContentOptions {
-	readonly allowMultipleAPIAcquire?: boolean;
-	readonly allowScripts?: boolean;
-	readonly localResourceRoots?: ReadonlyArray<URI>;
-	readonly portMapping?: ReadonlyArray<modes.IWebviewPortMapping>;
-	readonly enableCommandUris?: boolean;
+export interfAce WebviewContentOptions {
+	reAdonly AllowMultipleAPIAcquire?: booleAn;
+	reAdonly AllowScripts?: booleAn;
+	reAdonly locAlResourceRoots?: ReAdonlyArrAy<URI>;
+	reAdonly portMApping?: ReAdonlyArrAy<modes.IWebviewPortMApping>;
+	reAdonly enAbleCommAndUris?: booleAn;
 }
 
-export interface WebviewExtensionDescription {
-	readonly location: URI;
-	readonly id: ExtensionIdentifier;
+export interfAce WebviewExtensionDescription {
+	reAdonly locAtion: URI;
+	reAdonly id: ExtensionIdentifier;
 }
 
-export interface IDataLinkClickEvent {
-	dataURL: string;
-	downloadName?: string;
+export interfAce IDAtALinkClickEvent {
+	dAtAURL: string;
+	downloAdNAme?: string;
 }
 
-export interface Webview extends IDisposable {
+export interfAce Webview extends IDisposAble {
 
-	readonly id: string;
+	reAdonly id: string;
 
 	html: string;
 	contentOptions: WebviewContentOptions;
-	localResourcesRoot: URI[];
+	locAlResourcesRoot: URI[];
 	extension: WebviewExtensionDescription | undefined;
-	initialScrollProgress: number;
-	state: string | undefined;
+	initiAlScrollProgress: number;
+	stAte: string | undefined;
 
-	readonly isFocused: boolean;
+	reAdonly isFocused: booleAn;
 
-	readonly onDidFocus: Event<void>;
-	readonly onDidBlur: Event<void>;
-	readonly onDidDispose: Event<void>;
+	reAdonly onDidFocus: Event<void>;
+	reAdonly onDidBlur: Event<void>;
+	reAdonly onDidDispose: Event<void>;
 
-	readonly onDidClickLink: Event<string>;
-	readonly onDidScroll: Event<{ scrollYPercentage: number }>;
-	readonly onDidWheel: Event<IMouseWheelEvent>;
-	readonly onDidUpdateState: Event<string | undefined>;
-	readonly onDidReload: Event<void>;
-	readonly onMessage: Event<any>;
-	readonly onMissingCsp: Event<ExtensionIdentifier>;
+	reAdonly onDidClickLink: Event<string>;
+	reAdonly onDidScroll: Event<{ scrollYPercentAge: number }>;
+	reAdonly onDidWheel: Event<IMouseWheelEvent>;
+	reAdonly onDidUpdAteStAte: Event<string | undefined>;
+	reAdonly onDidReloAd: Event<void>;
+	reAdonly onMessAge: Event<Any>;
+	reAdonly onMissingCsp: Event<ExtensionIdentifier>;
 
-	postMessage(data: any): void;
+	postMessAge(dAtA: Any): void;
 
 	focus(): void;
-	reload(): void;
+	reloAd(): void;
 
 	showFind(): void;
 	hideFind(): void;
-	runFindAction(previous: boolean): void;
+	runFindAction(previous: booleAn): void;
 
 	selectAll(): void;
 	copy(): void;
-	paste(): void;
+	pAste(): void;
 	cut(): void;
 	undo(): void;
 	redo(): void;
 
-	windowDidDragStart(): void;
-	windowDidDragEnd(): void;
+	windowDidDrAgStArt(): void;
+	windowDidDrAgEnd(): void;
 }
 
 /**
- * Basic webview rendered in the dom
+ * BAsic webview rendered in the dom
  */
-export interface WebviewElement extends Webview {
-	mountTo(parent: HTMLElement): void;
+export interfAce WebviewElement extends Webview {
+	mountTo(pArent: HTMLElement): void;
 }
 
 /**
- * Dynamically created webview drawn over another element.
+ * DynAmicAlly creAted webview drAwn over Another element.
  */
-export interface WebviewOverlay extends Webview {
-	readonly container: HTMLElement;
+export interfAce WebviewOverlAy extends Webview {
+	reAdonly contAiner: HTMLElement;
 	options: WebviewOptions;
 
-	claim(owner: any): void;
-	release(owner: any): void;
+	clAim(owner: Any): void;
+	releAse(owner: Any): void;
 
 	getInnerWebview(): Webview | undefined;
 
-	layoutWebviewOverElement(element: HTMLElement, dimension?: Dimension): void;
+	lAyoutWebviewOverElement(element: HTMLElement, dimension?: Dimension): void;
 }

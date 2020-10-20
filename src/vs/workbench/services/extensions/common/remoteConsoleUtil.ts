@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IRemoteConsoleLog, parse } from 'vs/base/common/console';
-import { ILogService } from 'vs/platform/log/common/log';
+import { IRemoteConsoleLog, pArse } from 'vs/bAse/common/console';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
 export function logRemoteEntry(logService: ILogService, entry: IRemoteConsoleLog): void {
-	const args = parse(entry).args;
-	const firstArg = args.shift();
+	const Args = pArse(entry).Args;
+	const firstArg = Args.shift();
 	if (typeof firstArg !== 'string') {
 		return;
 	}
@@ -18,15 +18,15 @@ export function logRemoteEntry(logService: ILogService, entry: IRemoteConsoleLog
 	}
 
 	switch (entry.severity) {
-		case 'log':
-		case 'info':
-			logService.info(firstArg, ...args);
-			break;
-		case 'warn':
-			logService.warn(firstArg, ...args);
-			break;
-		case 'error':
-			logService.error(firstArg, ...args);
-			break;
+		cAse 'log':
+		cAse 'info':
+			logService.info(firstArg, ...Args);
+			breAk;
+		cAse 'wArn':
+			logService.wArn(firstArg, ...Args);
+			breAk;
+		cAse 'error':
+			logService.error(firstArg, ...Args);
+			breAk;
 	}
 }

@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-require('../../../../../../bootstrap-amd').load('vs/editor/test/common/model/benchmark/entry');
+require('../../../../../../bootstrAp-Amd').loAd('vs/editor/test/common/model/benchmArk/entry');

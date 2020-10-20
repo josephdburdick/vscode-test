@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { ICommandHandler, CommandsRegistry } from 'vs/platform/commands/common/commands';
-import { SyncActionDescriptor, MenuRegistry, MenuId, ICommandAction } from 'vs/platform/actions/common/actions';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ILifecycleService, LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ContextKeyExpr, ContextKeyExpression } from 'vs/platform/contextkey/common/contextkey';
+import { locAlize } from 'vs/nls';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { KeybindingsRegistry, KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { ICommAndHAndler, CommAndsRegistry } from 'vs/plAtform/commAnds/common/commAnds';
+import { SyncActionDescriptor, MenuRegistry, MenuId, ICommAndAction } from 'vs/plAtform/Actions/common/Actions';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { ILifecycleService, LifecyclePhAse } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ContextKeyExpr, ContextKeyExpression } from 'vs/plAtform/contextkey/common/contextkey';
 
 export const Extensions = {
-	WorkbenchActions: 'workbench.contributions.actions'
+	WorkbenchActions: 'workbench.contributions.Actions'
 };
 
-export interface IWorkbenchActionRegistry {
+export interfAce IWorkbenchActionRegistry {
 
 	/**
-	 * Registers a workbench action to the platform. Workbench actions are not
-	 * visible by default and can only be invoked through a keybinding if provided.
-	 * @deprecated Register directly with KeybindingsRegistry and MenuRegistry or use registerAction2 instead.
+	 * Registers A workbench Action to the plAtform. Workbench Actions Are not
+	 * visible by defAult And cAn only be invoked through A keybinding if provided.
+	 * @deprecAted Register directly with KeybindingsRegistry And MenuRegistry or use registerAction2 insteAd.
 	 */
-	registerWorkbenchAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpr): IDisposable;
+	registerWorkbenchAction(descriptor: SyncActionDescriptor, AliAs: string, cAtegory?: string, when?: ContextKeyExpr): IDisposAble;
 }
 
-Registry.add(Extensions.WorkbenchActions, new class implements IWorkbenchActionRegistry {
+Registry.Add(Extensions.WorkbenchActions, new clAss implements IWorkbenchActionRegistry {
 
-	registerWorkbenchAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpression): IDisposable {
-		return this.registerWorkbenchCommandFromAction(descriptor, alias, category, when);
+	registerWorkbenchAction(descriptor: SyncActionDescriptor, AliAs: string, cAtegory?: string, when?: ContextKeyExpression): IDisposAble {
+		return this.registerWorkbenchCommAndFromAction(descriptor, AliAs, cAtegory, when);
 	}
 
-	private registerWorkbenchCommandFromAction(descriptor: SyncActionDescriptor, alias: string, category?: string, when?: ContextKeyExpression): IDisposable {
-		const registrations = new DisposableStore();
+	privAte registerWorkbenchCommAndFromAction(descriptor: SyncActionDescriptor, AliAs: string, cAtegory?: string, when?: ContextKeyExpression): IDisposAble {
+		const registrAtions = new DisposAbleStore();
 
-		// command
-		registrations.add(CommandsRegistry.registerCommand(descriptor.id, this.createCommandHandler(descriptor)));
+		// commAnd
+		registrAtions.Add(CommAndsRegistry.registerCommAnd(descriptor.id, this.creAteCommAndHAndler(descriptor)));
 
 		// keybinding
 		const weight = (typeof descriptor.keybindingWeight === 'undefined' ? KeybindingWeight.WorkbenchContrib : descriptor.keybindingWeight);
@@ -48,85 +48,85 @@ Registry.add(Extensions.WorkbenchActions, new class implements IWorkbenchActionR
 			weight: weight,
 			when:
 				descriptor.keybindingContext && when
-					? ContextKeyExpr.and(descriptor.keybindingContext, when)
+					? ContextKeyExpr.And(descriptor.keybindingContext, when)
 					: descriptor.keybindingContext || when || null,
-			primary: keybindings ? keybindings.primary : 0,
-			secondary: keybindings?.secondary,
+			primAry: keybindings ? keybindings.primAry : 0,
+			secondAry: keybindings?.secondAry,
 			win: keybindings?.win,
-			mac: keybindings?.mac,
+			mAc: keybindings?.mAc,
 			linux: keybindings?.linux
 		});
 
 		// menu item
-		// TODO@Rob slightly weird if-check required because of
-		// https://github.com/microsoft/vscode/blob/master/src/vs/workbench/contrib/search/electron-browser/search.contribution.ts#L266
-		if (descriptor.label) {
+		// TODO@Rob slightly weird if-check required becAuse of
+		// https://github.com/microsoft/vscode/blob/mAster/src/vs/workbench/contrib/seArch/electron-browser/seArch.contribution.ts#L266
+		if (descriptor.lAbel) {
 
-			let idx = alias.indexOf(': ');
-			let categoryOriginal = '';
+			let idx = AliAs.indexOf(': ');
+			let cAtegoryOriginAl = '';
 			if (idx > 0) {
-				categoryOriginal = alias.substr(0, idx);
-				alias = alias.substr(idx + 2);
+				cAtegoryOriginAl = AliAs.substr(0, idx);
+				AliAs = AliAs.substr(idx + 2);
 			}
 
-			const command: ICommandAction = {
+			const commAnd: ICommAndAction = {
 				id: descriptor.id,
-				title: { value: descriptor.label, original: alias },
-				category: category ? { value: category, original: categoryOriginal } : undefined
+				title: { vAlue: descriptor.lAbel, originAl: AliAs },
+				cAtegory: cAtegory ? { vAlue: cAtegory, originAl: cAtegoryOriginAl } : undefined
 			};
 
-			MenuRegistry.addCommand(command);
+			MenuRegistry.AddCommAnd(commAnd);
 
-			registrations.add(MenuRegistry.appendMenuItem(MenuId.CommandPalette, { command, when }));
+			registrAtions.Add(MenuRegistry.AppendMenuItem(MenuId.CommAndPAlette, { commAnd, when }));
 		}
 
-		// TODO@alex,joh
-		// support removal of keybinding rule
-		// support removal of command-ui
-		return registrations;
+		// TODO@Alex,joh
+		// support removAl of keybinding rule
+		// support removAl of commAnd-ui
+		return registrAtions;
 	}
 
-	private createCommandHandler(descriptor: SyncActionDescriptor): ICommandHandler {
-		return async (accessor, args) => {
-			const notificationService = accessor.get(INotificationService);
-			const instantiationService = accessor.get(IInstantiationService);
-			const lifecycleService = accessor.get(ILifecycleService);
+	privAte creAteCommAndHAndler(descriptor: SyncActionDescriptor): ICommAndHAndler {
+		return Async (Accessor, Args) => {
+			const notificAtionService = Accessor.get(INotificAtionService);
+			const instAntiAtionService = Accessor.get(IInstAntiAtionService);
+			const lifecycleService = Accessor.get(ILifecycleService);
 
 			try {
-				await this.triggerAndDisposeAction(instantiationService, lifecycleService, descriptor, args);
-			} catch (error) {
-				notificationService.error(error);
+				AwAit this.triggerAndDisposeAction(instAntiAtionService, lifecycleService, descriptor, Args);
+			} cAtch (error) {
+				notificAtionService.error(error);
 			}
 		};
 	}
 
-	private async triggerAndDisposeAction(instantiationService: IInstantiationService, lifecycleService: ILifecycleService, descriptor: SyncActionDescriptor, args: unknown): Promise<void> {
+	privAte Async triggerAndDisposeAction(instAntiAtionService: IInstAntiAtionService, lifecycleService: ILifecycleService, descriptor: SyncActionDescriptor, Args: unknown): Promise<void> {
 
-		// run action when workbench is created
-		await lifecycleService.when(LifecyclePhase.Ready);
+		// run Action when workbench is creAted
+		AwAit lifecycleService.when(LifecyclePhAse.ReAdy);
 
-		const actionInstance = instantiationService.createInstance(descriptor.syncDescriptor);
-		actionInstance.label = descriptor.label || actionInstance.label;
+		const ActionInstAnce = instAntiAtionService.creAteInstAnce(descriptor.syncDescriptor);
+		ActionInstAnce.lAbel = descriptor.lAbel || ActionInstAnce.lAbel;
 
-		// don't run the action when not enabled
-		if (!actionInstance.enabled) {
-			actionInstance.dispose();
+		// don't run the Action when not enAbled
+		if (!ActionInstAnce.enAbled) {
+			ActionInstAnce.dispose();
 
 			return;
 		}
 
-		// otherwise run and dispose
+		// otherwise run And dispose
 		try {
-			const from = (args as any)?.from || 'keybinding';
-			await actionInstance.run(undefined, { from });
-		} finally {
-			actionInstance.dispose();
+			const from = (Args As Any)?.from || 'keybinding';
+			AwAit ActionInstAnce.run(undefined, { from });
+		} finAlly {
+			ActionInstAnce.dispose();
 		}
 	}
 });
 
 export const CATEGORIES = {
-	View: { value: localize('view', "View"), original: 'View' },
-	Help: { value: localize('help', "Help"), original: 'Help' },
-	Developer: { value: localize({ key: 'developer', comment: ['A developer on Code itself or someone diagnosing issues in Code'] }, "Developer"), original: 'Developer' }
+	View: { vAlue: locAlize('view', "View"), originAl: 'View' },
+	Help: { vAlue: locAlize('help', "Help"), originAl: 'Help' },
+	Developer: { vAlue: locAlize({ key: 'developer', comment: ['A developer on Code itself or someone diAgnosing issues in Code'] }, "Developer"), originAl: 'Developer' }
 };

@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import type { ILinkProvider, ILink } from 'xterm';
-import { TerminalLink } from 'vs/workbench/contrib/terminal/browser/links/terminalLink';
+import { TerminAlLink } from 'vs/workbench/contrib/terminAl/browser/links/terminAlLink';
 
-export abstract class TerminalBaseLinkProvider implements ILinkProvider {
-	private _activeLinks: TerminalLink[] | undefined;
+export AbstrAct clAss TerminAlBAseLinkProvider implements ILinkProvider {
+	privAte _ActiveLinks: TerminAlLink[] | undefined;
 
-	async provideLinks(bufferLineNumber: number, callback: (links: ILink[] | undefined) => void): Promise<void> {
-		this._activeLinks?.forEach(l => l.dispose);
-		this._activeLinks = await this._provideLinks(bufferLineNumber);
-		callback(this._activeLinks);
+	Async provideLinks(bufferLineNumber: number, cAllbAck: (links: ILink[] | undefined) => void): Promise<void> {
+		this._ActiveLinks?.forEAch(l => l.dispose);
+		this._ActiveLinks = AwAit this._provideLinks(bufferLineNumber);
+		cAllbAck(this._ActiveLinks);
 	}
 
-	protected abstract _provideLinks(bufferLineNumber: number): Promise<TerminalLink[]> | TerminalLink[];
+	protected AbstrAct _provideLinks(bufferLineNumber: number): Promise<TerminAlLink[]> | TerminAlLink[];
 }

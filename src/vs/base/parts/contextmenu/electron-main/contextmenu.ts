@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Menu, MenuItem, BrowserWindow, ipcMain, IpcMainEvent } from 'electron';
-import { ISerializableContextMenuItem, CONTEXT_MENU_CLOSE_CHANNEL, CONTEXT_MENU_CHANNEL, IPopupOptions } from 'vs/base/parts/contextmenu/common/contextmenu';
-import { withNullAsUndefined } from 'vs/base/common/types';
+import { Menu, MenuItem, BrowserWindow, ipcMAin, IpcMAinEvent } from 'electron';
+import { ISeriAlizAbleContextMenuItem, CONTEXT_MENU_CLOSE_CHANNEL, CONTEXT_MENU_CHANNEL, IPopupOptions } from 'vs/bAse/pArts/contextmenu/common/contextmenu';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
 
 export function registerContextMenuListener(): void {
-	ipcMain.on(CONTEXT_MENU_CHANNEL, (event: IpcMainEvent, contextMenuId: number, items: ISerializableContextMenuItem[], onClickChannel: string, options?: IPopupOptions) => {
-		const menu = createMenu(event, onClickChannel, items);
+	ipcMAin.on(CONTEXT_MENU_CHANNEL, (event: IpcMAinEvent, contextMenuId: number, items: ISeriAlizAbleContextMenuItem[], onClickChAnnel: string, options?: IPopupOptions) => {
+		const menu = creAteMenu(event, onClickChAnnel, items);
 
 		menu.popup({
 			window: withNullAsUndefined(BrowserWindow.fromWebContents(event.sender)),
 			x: options ? options.x : undefined,
 			y: options ? options.y : undefined,
 			positioningItem: options ? options.positioningItem : undefined,
-			callback: () => {
-				// Workaround for https://github.com/microsoft/vscode/issues/72447
-				// It turns out that the menu gets GC'ed if not referenced anymore
-				// As such we drag it into this scope so that it is not being GC'ed
+			cAllbAck: () => {
+				// WorkAround for https://github.com/microsoft/vscode/issues/72447
+				// It turns out thAt the menu gets GC'ed if not referenced Anymore
+				// As such we drAg it into this scope so thAt it is not being GC'ed
 				if (menu) {
 					event.sender.send(CONTEXT_MENU_CLOSE_CHANNEL, contextMenuId);
 				}
@@ -28,41 +28,41 @@ export function registerContextMenuListener(): void {
 	});
 }
 
-function createMenu(event: IpcMainEvent, onClickChannel: string, items: ISerializableContextMenuItem[]): Menu {
+function creAteMenu(event: IpcMAinEvent, onClickChAnnel: string, items: ISeriAlizAbleContextMenuItem[]): Menu {
 	const menu = new Menu();
 
-	items.forEach(item => {
+	items.forEAch(item => {
 		let menuitem: MenuItem;
 
-		// Separator
-		if (item.type === 'separator') {
+		// SepArAtor
+		if (item.type === 'sepArAtor') {
 			menuitem = new MenuItem({
 				type: item.type,
 			});
 		}
 
 		// Sub Menu
-		else if (Array.isArray(item.submenu)) {
+		else if (ArrAy.isArrAy(item.submenu)) {
 			menuitem = new MenuItem({
-				submenu: createMenu(event, onClickChannel, item.submenu),
-				label: item.label
+				submenu: creAteMenu(event, onClickChAnnel, item.submenu),
+				lAbel: item.lAbel
 			});
 		}
 
-		// Normal Menu Item
+		// NormAl Menu Item
 		else {
 			menuitem = new MenuItem({
-				label: item.label,
+				lAbel: item.lAbel,
 				type: item.type,
-				accelerator: item.accelerator,
+				AccelerAtor: item.AccelerAtor,
 				checked: item.checked,
-				enabled: item.enabled,
+				enAbled: item.enAbled,
 				visible: item.visible,
-				click: (menuItem, win, contextmenuEvent) => event.sender.send(onClickChannel, item.id, contextmenuEvent)
+				click: (menuItem, win, contextmenuEvent) => event.sender.send(onClickChAnnel, item.id, contextmenuEvent)
 			});
 		}
 
-		menu.append(menuitem);
+		menu.Append(menuitem);
 	});
 
 	return menu;

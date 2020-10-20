@@ -1,108 +1,108 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IConfigurationRegistry, Extensions } from 'vs/platform/configuration/common/configurationRegistry';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { streamToBuffer } from 'vs/base/common/buffer';
-import { IRequestOptions, IRequestContext } from 'vs/base/parts/request/common/request';
+import { locAlize } from 'vs/nls';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IConfigurAtionRegistry, Extensions } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { streAmToBuffer } from 'vs/bAse/common/buffer';
+import { IRequestOptions, IRequestContext } from 'vs/bAse/pArts/request/common/request';
 
-export const IRequestService = createDecorator<IRequestService>('requestService');
+export const IRequestService = creAteDecorAtor<IRequestService>('requestService');
 
-export interface IRequestService {
-	readonly _serviceBrand: undefined;
+export interfAce IRequestService {
+	reAdonly _serviceBrAnd: undefined;
 
-	request(options: IRequestOptions, token: CancellationToken): Promise<IRequestContext>;
+	request(options: IRequestOptions, token: CAncellAtionToken): Promise<IRequestContext>;
 
 	resolveProxy(url: string): Promise<string | undefined>;
 }
 
-export function isSuccess(context: IRequestContext): boolean {
-	return (context.res.statusCode && context.res.statusCode >= 200 && context.res.statusCode < 300) || context.res.statusCode === 1223;
+export function isSuccess(context: IRequestContext): booleAn {
+	return (context.res.stAtusCode && context.res.stAtusCode >= 200 && context.res.stAtusCode < 300) || context.res.stAtusCode === 1223;
 }
 
-function hasNoContent(context: IRequestContext): boolean {
-	return context.res.statusCode === 204;
+function hAsNoContent(context: IRequestContext): booleAn {
+	return context.res.stAtusCode === 204;
 }
 
-export async function asText(context: IRequestContext): Promise<string | null> {
+export Async function AsText(context: IRequestContext): Promise<string | null> {
 	if (!isSuccess(context)) {
-		throw new Error('Server returned ' + context.res.statusCode);
+		throw new Error('Server returned ' + context.res.stAtusCode);
 	}
-	if (hasNoContent(context)) {
+	if (hAsNoContent(context)) {
 		return null;
 	}
-	const buffer = await streamToBuffer(context.stream);
+	const buffer = AwAit streAmToBuffer(context.streAm);
 	return buffer.toString();
 }
 
-export async function asJson<T = {}>(context: IRequestContext): Promise<T | null> {
+export Async function AsJson<T = {}>(context: IRequestContext): Promise<T | null> {
 	if (!isSuccess(context)) {
-		throw new Error('Server returned ' + context.res.statusCode);
+		throw new Error('Server returned ' + context.res.stAtusCode);
 	}
-	if (hasNoContent(context)) {
+	if (hAsNoContent(context)) {
 		return null;
 	}
-	const buffer = await streamToBuffer(context.stream);
+	const buffer = AwAit streAmToBuffer(context.streAm);
 	const str = buffer.toString();
 	try {
-		return JSON.parse(str);
-	} catch (err) {
-		err.message += ':\n' + str;
+		return JSON.pArse(str);
+	} cAtch (err) {
+		err.messAge += ':\n' + str;
 		throw err;
 	}
 }
 
 
-export interface IHTTPConfiguration {
+export interfAce IHTTPConfigurAtion {
 	http?: {
 		proxy?: string;
-		proxyStrictSSL?: boolean;
-		proxyAuthorization?: string;
+		proxyStrictSSL?: booleAn;
+		proxyAuthorizAtion?: string;
 	};
 }
 
-Registry.as<IConfigurationRegistry>(Extensions.Configuration)
-	.registerConfiguration({
+Registry.As<IConfigurAtionRegistry>(Extensions.ConfigurAtion)
+	.registerConfigurAtion({
 		id: 'http',
 		order: 15,
-		title: localize('httpConfigurationTitle', "HTTP"),
+		title: locAlize('httpConfigurAtionTitle', "HTTP"),
 		type: 'object',
 		properties: {
 			'http.proxy': {
 				type: 'string',
-				pattern: '^https?://([^:]*(:[^@]*)?@)?([^:]+|\\[[:0-9a-fA-F]+\\])(:\\d+)?/?$|^$',
-				markdownDescription: localize('proxy', "The proxy setting to use. If not set, will be inherited from the `http_proxy` and `https_proxy` environment variables.")
+				pAttern: '^https?://([^:]*(:[^@]*)?@)?([^:]+|\\[[:0-9A-fA-F]+\\])(:\\d+)?/?$|^$',
+				mArkdownDescription: locAlize('proxy', "The proxy setting to use. If not set, will be inherited from the `http_proxy` And `https_proxy` environment vAriAbles.")
 			},
 			'http.proxyStrictSSL': {
-				type: 'boolean',
-				default: true,
-				description: localize('strictSSL', "Controls whether the proxy server certificate should be verified against the list of supplied CAs.")
+				type: 'booleAn',
+				defAult: true,
+				description: locAlize('strictSSL', "Controls whether the proxy server certificAte should be verified AgAinst the list of supplied CAs.")
 			},
-			'http.proxyAuthorization': {
+			'http.proxyAuthorizAtion': {
 				type: ['null', 'string'],
-				default: null,
-				markdownDescription: localize('proxyAuthorization', "The value to send as the `Proxy-Authorization` header for every network request.")
+				defAult: null,
+				mArkdownDescription: locAlize('proxyAuthorizAtion', "The vAlue to send As the `Proxy-AuthorizAtion` heAder for every network request.")
 			},
 			'http.proxySupport': {
 				type: 'string',
 				enum: ['off', 'on', 'override'],
 				enumDescriptions: [
-					localize('proxySupportOff', "Disable proxy support for extensions."),
-					localize('proxySupportOn', "Enable proxy support for extensions."),
-					localize('proxySupportOverride', "Enable proxy support for extensions, override request options."),
+					locAlize('proxySupportOff', "DisAble proxy support for extensions."),
+					locAlize('proxySupportOn', "EnAble proxy support for extensions."),
+					locAlize('proxySupportOverride', "EnAble proxy support for extensions, override request options."),
 				],
-				default: 'override',
-				description: localize('proxySupport', "Use the proxy support for extensions.")
+				defAult: 'override',
+				description: locAlize('proxySupport', "Use the proxy support for extensions.")
 			},
-			'http.systemCertificates': {
-				type: 'boolean',
-				default: true,
-				description: localize('systemCertificates', "Controls whether CA certificates should be loaded from the OS. (On Windows and macOS a reload of the window is required after turning this off.)")
+			'http.systemCertificAtes': {
+				type: 'booleAn',
+				defAult: true,
+				description: locAlize('systemCertificAtes', "Controls whether CA certificAtes should be loAded from the OS. (On Windows And mAcOS A reloAd of the window is required After turning this off.)")
 			}
 		}
 	});

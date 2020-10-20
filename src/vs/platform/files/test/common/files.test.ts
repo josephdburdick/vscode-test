@@ -1,256 +1,256 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { isEqual, isEqualOrParent } from 'vs/base/common/extpath';
-import { FileChangeType, FileChangesEvent, isParent } from 'vs/platform/files/common/files';
-import { isLinux, isMacintosh, isWindows } from 'vs/base/common/platform';
-import { toResource } from 'vs/base/test/common/utils';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { isEquAl, isEquAlOrPArent } from 'vs/bAse/common/extpAth';
+import { FileChAngeType, FileChAngesEvent, isPArent } from 'vs/plAtform/files/common/files';
+import { isLinux, isMAcintosh, isWindows } from 'vs/bAse/common/plAtform';
+import { toResource } from 'vs/bAse/test/common/utils';
 
 suite('Files', () => {
 
-	test('FileChangesEvent - basics', function () {
-		const changes = [
-			{ resource: toResource.call(this, '/foo/updated.txt'), type: FileChangeType.UPDATED },
-			{ resource: toResource.call(this, '/foo/otherupdated.txt'), type: FileChangeType.UPDATED },
-			{ resource: toResource.call(this, '/added.txt'), type: FileChangeType.ADDED },
-			{ resource: toResource.call(this, '/bar/deleted.txt'), type: FileChangeType.DELETED },
-			{ resource: toResource.call(this, '/bar/folder'), type: FileChangeType.DELETED },
-			{ resource: toResource.call(this, '/BAR/FOLDER'), type: FileChangeType.DELETED }
+	test('FileChAngesEvent - bAsics', function () {
+		const chAnges = [
+			{ resource: toResource.cAll(this, '/foo/updAted.txt'), type: FileChAngeType.UPDATED },
+			{ resource: toResource.cAll(this, '/foo/otherupdAted.txt'), type: FileChAngeType.UPDATED },
+			{ resource: toResource.cAll(this, '/Added.txt'), type: FileChAngeType.ADDED },
+			{ resource: toResource.cAll(this, '/bAr/deleted.txt'), type: FileChAngeType.DELETED },
+			{ resource: toResource.cAll(this, '/bAr/folder'), type: FileChAngeType.DELETED },
+			{ resource: toResource.cAll(this, '/BAR/FOLDER'), type: FileChAngeType.DELETED }
 		];
 
-		for (const ignorePathCasing of [false, true]) {
-			const event = new FileChangesEvent(changes, ignorePathCasing);
+		for (const ignorePAthCAsing of [fAlse, true]) {
+			const event = new FileChAngesEvent(chAnges, ignorePAthCAsing);
 
-			assert(!event.contains(toResource.call(this, '/foo'), FileChangeType.UPDATED));
-			assert(event.affects(toResource.call(this, '/foo'), FileChangeType.UPDATED));
-			assert(event.contains(toResource.call(this, '/foo/updated.txt'), FileChangeType.UPDATED));
-			assert(event.affects(toResource.call(this, '/foo/updated.txt'), FileChangeType.UPDATED));
-			assert(event.contains(toResource.call(this, '/foo/updated.txt'), FileChangeType.UPDATED, FileChangeType.ADDED));
-			assert(event.affects(toResource.call(this, '/foo/updated.txt'), FileChangeType.UPDATED, FileChangeType.ADDED));
-			assert(event.contains(toResource.call(this, '/foo/updated.txt'), FileChangeType.UPDATED, FileChangeType.ADDED, FileChangeType.DELETED));
-			assert(!event.contains(toResource.call(this, '/foo/updated.txt'), FileChangeType.ADDED, FileChangeType.DELETED));
-			assert(!event.contains(toResource.call(this, '/foo/updated.txt'), FileChangeType.ADDED));
-			assert(!event.contains(toResource.call(this, '/foo/updated.txt'), FileChangeType.DELETED));
-			assert(!event.affects(toResource.call(this, '/foo/updated.txt'), FileChangeType.DELETED));
+			Assert(!event.contAins(toResource.cAll(this, '/foo'), FileChAngeType.UPDATED));
+			Assert(event.Affects(toResource.cAll(this, '/foo'), FileChAngeType.UPDATED));
+			Assert(event.contAins(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.UPDATED));
+			Assert(event.Affects(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.UPDATED));
+			Assert(event.contAins(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.UPDATED, FileChAngeType.ADDED));
+			Assert(event.Affects(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.UPDATED, FileChAngeType.ADDED));
+			Assert(event.contAins(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.UPDATED, FileChAngeType.ADDED, FileChAngeType.DELETED));
+			Assert(!event.contAins(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.ADDED, FileChAngeType.DELETED));
+			Assert(!event.contAins(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.ADDED));
+			Assert(!event.contAins(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.DELETED));
+			Assert(!event.Affects(toResource.cAll(this, '/foo/updAted.txt'), FileChAngeType.DELETED));
 
-			assert(event.contains(toResource.call(this, '/bar/folder'), FileChangeType.DELETED));
-			assert(event.contains(toResource.call(this, '/BAR/FOLDER'), FileChangeType.DELETED));
-			assert(event.affects(toResource.call(this, '/BAR'), FileChangeType.DELETED));
-			if (ignorePathCasing) {
-				assert(event.contains(toResource.call(this, '/BAR/folder'), FileChangeType.DELETED));
-				assert(event.affects(toResource.call(this, '/bar'), FileChangeType.DELETED));
+			Assert(event.contAins(toResource.cAll(this, '/bAr/folder'), FileChAngeType.DELETED));
+			Assert(event.contAins(toResource.cAll(this, '/BAR/FOLDER'), FileChAngeType.DELETED));
+			Assert(event.Affects(toResource.cAll(this, '/BAR'), FileChAngeType.DELETED));
+			if (ignorePAthCAsing) {
+				Assert(event.contAins(toResource.cAll(this, '/BAR/folder'), FileChAngeType.DELETED));
+				Assert(event.Affects(toResource.cAll(this, '/bAr'), FileChAngeType.DELETED));
 			} else {
-				assert(!event.contains(toResource.call(this, '/BAR/folder'), FileChangeType.DELETED));
-				assert(event.affects(toResource.call(this, '/bar'), FileChangeType.DELETED));
+				Assert(!event.contAins(toResource.cAll(this, '/BAR/folder'), FileChAngeType.DELETED));
+				Assert(event.Affects(toResource.cAll(this, '/bAr'), FileChAngeType.DELETED));
 			}
-			assert(event.contains(toResource.call(this, '/bar/folder/somefile'), FileChangeType.DELETED));
-			assert(event.contains(toResource.call(this, '/bar/folder/somefile/test.txt'), FileChangeType.DELETED));
-			assert(event.contains(toResource.call(this, '/BAR/FOLDER/somefile/test.txt'), FileChangeType.DELETED));
-			if (ignorePathCasing) {
-				assert(event.contains(toResource.call(this, '/BAR/folder/somefile/test.txt'), FileChangeType.DELETED));
+			Assert(event.contAins(toResource.cAll(this, '/bAr/folder/somefile'), FileChAngeType.DELETED));
+			Assert(event.contAins(toResource.cAll(this, '/bAr/folder/somefile/test.txt'), FileChAngeType.DELETED));
+			Assert(event.contAins(toResource.cAll(this, '/BAR/FOLDER/somefile/test.txt'), FileChAngeType.DELETED));
+			if (ignorePAthCAsing) {
+				Assert(event.contAins(toResource.cAll(this, '/BAR/folder/somefile/test.txt'), FileChAngeType.DELETED));
 			} else {
-				assert(!event.contains(toResource.call(this, '/BAR/folder/somefile/test.txt'), FileChangeType.DELETED));
+				Assert(!event.contAins(toResource.cAll(this, '/BAR/folder/somefile/test.txt'), FileChAngeType.DELETED));
 			}
-			assert(!event.contains(toResource.call(this, '/bar/folder2/somefile'), FileChangeType.DELETED));
+			Assert(!event.contAins(toResource.cAll(this, '/bAr/folder2/somefile'), FileChAngeType.DELETED));
 
-			assert.strictEqual(6, event.changes.length);
-			assert.strictEqual(1, event.getAdded().length);
-			assert.strictEqual(true, event.gotAdded());
-			assert.strictEqual(2, event.getUpdated().length);
-			assert.strictEqual(true, event.gotUpdated());
-			assert.strictEqual(ignorePathCasing ? 2 : 3, event.getDeleted().length);
-			assert.strictEqual(true, event.gotDeleted());
+			Assert.strictEquAl(6, event.chAnges.length);
+			Assert.strictEquAl(1, event.getAdded().length);
+			Assert.strictEquAl(true, event.gotAdded());
+			Assert.strictEquAl(2, event.getUpdAted().length);
+			Assert.strictEquAl(true, event.gotUpdAted());
+			Assert.strictEquAl(ignorePAthCAsing ? 2 : 3, event.getDeleted().length);
+			Assert.strictEquAl(true, event.gotDeleted());
 		}
 	});
 
-	test('FileChangesEvent - supports multiple changes on file tree', function () {
-		for (const type of [FileChangeType.ADDED, FileChangeType.UPDATED, FileChangeType.DELETED]) {
-			const changes = [
-				{ resource: toResource.call(this, '/foo/bar/updated.txt'), type },
-				{ resource: toResource.call(this, '/foo/bar/otherupdated.txt'), type },
-				{ resource: toResource.call(this, '/foo/bar'), type },
-				{ resource: toResource.call(this, '/foo'), type },
-				{ resource: toResource.call(this, '/bar'), type },
-				{ resource: toResource.call(this, '/bar/foo'), type },
-				{ resource: toResource.call(this, '/bar/foo/updated.txt'), type },
-				{ resource: toResource.call(this, '/bar/foo/otherupdated.txt'), type }
+	test('FileChAngesEvent - supports multiple chAnges on file tree', function () {
+		for (const type of [FileChAngeType.ADDED, FileChAngeType.UPDATED, FileChAngeType.DELETED]) {
+			const chAnges = [
+				{ resource: toResource.cAll(this, '/foo/bAr/updAted.txt'), type },
+				{ resource: toResource.cAll(this, '/foo/bAr/otherupdAted.txt'), type },
+				{ resource: toResource.cAll(this, '/foo/bAr'), type },
+				{ resource: toResource.cAll(this, '/foo'), type },
+				{ resource: toResource.cAll(this, '/bAr'), type },
+				{ resource: toResource.cAll(this, '/bAr/foo'), type },
+				{ resource: toResource.cAll(this, '/bAr/foo/updAted.txt'), type },
+				{ resource: toResource.cAll(this, '/bAr/foo/otherupdAted.txt'), type }
 			];
 
-			for (const ignorePathCasing of [false, true]) {
-				const event = new FileChangesEvent(changes, ignorePathCasing);
+			for (const ignorePAthCAsing of [fAlse, true]) {
+				const event = new FileChAngesEvent(chAnges, ignorePAthCAsing);
 
-				for (const change of changes) {
-					assert(event.contains(change.resource, type));
-					assert(event.affects(change.resource, type));
+				for (const chAnge of chAnges) {
+					Assert(event.contAins(chAnge.resource, type));
+					Assert(event.Affects(chAnge.resource, type));
 				}
 
-				assert(event.affects(toResource.call(this, '/foo'), type));
-				assert(event.affects(toResource.call(this, '/bar'), type));
-				assert(event.affects(toResource.call(this, '/'), type));
-				assert(!event.affects(toResource.call(this, '/foobar'), type));
+				Assert(event.Affects(toResource.cAll(this, '/foo'), type));
+				Assert(event.Affects(toResource.cAll(this, '/bAr'), type));
+				Assert(event.Affects(toResource.cAll(this, '/'), type));
+				Assert(!event.Affects(toResource.cAll(this, '/foobAr'), type));
 
-				assert(!event.contains(toResource.call(this, '/some/foo/bar'), type));
-				assert(!event.affects(toResource.call(this, '/some/foo/bar'), type));
-				assert(!event.contains(toResource.call(this, '/some/bar'), type));
-				assert(!event.affects(toResource.call(this, '/some/bar'), type));
+				Assert(!event.contAins(toResource.cAll(this, '/some/foo/bAr'), type));
+				Assert(!event.Affects(toResource.cAll(this, '/some/foo/bAr'), type));
+				Assert(!event.contAins(toResource.cAll(this, '/some/bAr'), type));
+				Assert(!event.Affects(toResource.cAll(this, '/some/bAr'), type));
 
 				switch (type) {
-					case FileChangeType.ADDED:
-						assert.strictEqual(8, event.getAdded().length);
-						break;
-					case FileChangeType.UPDATED:
-						assert.strictEqual(8, event.getUpdated().length);
-						break;
-					case FileChangeType.DELETED:
-						assert.strictEqual(8, event.getDeleted().length);
-						break;
+					cAse FileChAngeType.ADDED:
+						Assert.strictEquAl(8, event.getAdded().length);
+						breAk;
+					cAse FileChAngeType.UPDATED:
+						Assert.strictEquAl(8, event.getUpdAted().length);
+						breAk;
+					cAse FileChAngeType.DELETED:
+						Assert.strictEquAl(8, event.getDeleted().length);
+						breAk;
 				}
 			}
 		}
 	});
 
-	function testIsEqual(testMethod: (pA: string, pB: string, ignoreCase: boolean) => boolean): void {
+	function testIsEquAl(testMethod: (pA: string, pB: string, ignoreCAse: booleAn) => booleAn): void {
 
-		// corner cases
-		assert(testMethod('', '', true));
-		assert(!testMethod(null!, '', true));
-		assert(!testMethod(undefined!, '', true));
+		// corner cAses
+		Assert(testMethod('', '', true));
+		Assert(!testMethod(null!, '', true));
+		Assert(!testMethod(undefined!, '', true));
 
-		// basics (string)
-		assert(testMethod('/', '/', true));
-		assert(testMethod('/some', '/some', true));
-		assert(testMethod('/some/path', '/some/path', true));
+		// bAsics (string)
+		Assert(testMethod('/', '/', true));
+		Assert(testMethod('/some', '/some', true));
+		Assert(testMethod('/some/pAth', '/some/pAth', true));
 
-		assert(testMethod('c:\\', 'c:\\', true));
-		assert(testMethod('c:\\some', 'c:\\some', true));
-		assert(testMethod('c:\\some\\path', 'c:\\some\\path', true));
+		Assert(testMethod('c:\\', 'c:\\', true));
+		Assert(testMethod('c:\\some', 'c:\\some', true));
+		Assert(testMethod('c:\\some\\pAth', 'c:\\some\\pAth', true));
 
-		assert(testMethod('/someöäü/path', '/someöäü/path', true));
-		assert(testMethod('c:\\someöäü\\path', 'c:\\someöäü\\path', true));
+		Assert(testMethod('/someöäü/pAth', '/someöäü/pAth', true));
+		Assert(testMethod('c:\\someöäü\\pAth', 'c:\\someöäü\\pAth', true));
 
-		assert(!testMethod('/some/path', '/some/other/path', true));
-		assert(!testMethod('c:\\some\\path', 'c:\\some\\other\\path', true));
-		assert(!testMethod('c:\\some\\path', 'd:\\some\\path', true));
+		Assert(!testMethod('/some/pAth', '/some/other/pAth', true));
+		Assert(!testMethod('c:\\some\\pAth', 'c:\\some\\other\\pAth', true));
+		Assert(!testMethod('c:\\some\\pAth', 'd:\\some\\pAth', true));
 
-		assert(testMethod('/some/path', '/some/PATH', true));
-		assert(testMethod('/someöäü/path', '/someÖÄÜ/PATH', true));
-		assert(testMethod('c:\\some\\path', 'c:\\some\\PATH', true));
-		assert(testMethod('c:\\someöäü\\path', 'c:\\someÖÄÜ\\PATH', true));
-		assert(testMethod('c:\\some\\path', 'C:\\some\\PATH', true));
+		Assert(testMethod('/some/pAth', '/some/PATH', true));
+		Assert(testMethod('/someöäü/pAth', '/someÖÄÜ/PATH', true));
+		Assert(testMethod('c:\\some\\pAth', 'c:\\some\\PATH', true));
+		Assert(testMethod('c:\\someöäü\\pAth', 'c:\\someÖÄÜ\\PATH', true));
+		Assert(testMethod('c:\\some\\pAth', 'C:\\some\\PATH', true));
 	}
 
-	test('isEqual (ignoreCase)', function () {
-		testIsEqual(isEqual);
+	test('isEquAl (ignoreCAse)', function () {
+		testIsEquAl(isEquAl);
 
-		// basics (uris)
-		assert(isEqual(URI.file('/some/path').fsPath, URI.file('/some/path').fsPath, true));
-		assert(isEqual(URI.file('c:\\some\\path').fsPath, URI.file('c:\\some\\path').fsPath, true));
+		// bAsics (uris)
+		Assert(isEquAl(URI.file('/some/pAth').fsPAth, URI.file('/some/pAth').fsPAth, true));
+		Assert(isEquAl(URI.file('c:\\some\\pAth').fsPAth, URI.file('c:\\some\\pAth').fsPAth, true));
 
-		assert(isEqual(URI.file('/someöäü/path').fsPath, URI.file('/someöäü/path').fsPath, true));
-		assert(isEqual(URI.file('c:\\someöäü\\path').fsPath, URI.file('c:\\someöäü\\path').fsPath, true));
+		Assert(isEquAl(URI.file('/someöäü/pAth').fsPAth, URI.file('/someöäü/pAth').fsPAth, true));
+		Assert(isEquAl(URI.file('c:\\someöäü\\pAth').fsPAth, URI.file('c:\\someöäü\\pAth').fsPAth, true));
 
-		assert(!isEqual(URI.file('/some/path').fsPath, URI.file('/some/other/path').fsPath, true));
-		assert(!isEqual(URI.file('c:\\some\\path').fsPath, URI.file('c:\\some\\other\\path').fsPath, true));
+		Assert(!isEquAl(URI.file('/some/pAth').fsPAth, URI.file('/some/other/pAth').fsPAth, true));
+		Assert(!isEquAl(URI.file('c:\\some\\pAth').fsPAth, URI.file('c:\\some\\other\\pAth').fsPAth, true));
 
-		assert(isEqual(URI.file('/some/path').fsPath, URI.file('/some/PATH').fsPath, true));
-		assert(isEqual(URI.file('/someöäü/path').fsPath, URI.file('/someÖÄÜ/PATH').fsPath, true));
-		assert(isEqual(URI.file('c:\\some\\path').fsPath, URI.file('c:\\some\\PATH').fsPath, true));
-		assert(isEqual(URI.file('c:\\someöäü\\path').fsPath, URI.file('c:\\someÖÄÜ\\PATH').fsPath, true));
-		assert(isEqual(URI.file('c:\\some\\path').fsPath, URI.file('C:\\some\\PATH').fsPath, true));
+		Assert(isEquAl(URI.file('/some/pAth').fsPAth, URI.file('/some/PATH').fsPAth, true));
+		Assert(isEquAl(URI.file('/someöäü/pAth').fsPAth, URI.file('/someÖÄÜ/PATH').fsPAth, true));
+		Assert(isEquAl(URI.file('c:\\some\\pAth').fsPAth, URI.file('c:\\some\\PATH').fsPAth, true));
+		Assert(isEquAl(URI.file('c:\\someöäü\\pAth').fsPAth, URI.file('c:\\someÖÄÜ\\PATH').fsPAth, true));
+		Assert(isEquAl(URI.file('c:\\some\\pAth').fsPAth, URI.file('C:\\some\\PATH').fsPAth, true));
 	});
 
-	test('isParent (ignorecase)', function () {
+	test('isPArent (ignorecAse)', function () {
 		if (isWindows) {
-			assert(isParent('c:\\some\\path', 'c:\\', true));
-			assert(isParent('c:\\some\\path', 'c:\\some', true));
-			assert(isParent('c:\\some\\path', 'c:\\some\\', true));
-			assert(isParent('c:\\someöäü\\path', 'c:\\someöäü', true));
-			assert(isParent('c:\\someöäü\\path', 'c:\\someöäü\\', true));
-			assert(isParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar', true));
-			assert(isParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar\\', true));
+			Assert(isPArent('c:\\some\\pAth', 'c:\\', true));
+			Assert(isPArent('c:\\some\\pAth', 'c:\\some', true));
+			Assert(isPArent('c:\\some\\pAth', 'c:\\some\\', true));
+			Assert(isPArent('c:\\someöäü\\pAth', 'c:\\someöäü', true));
+			Assert(isPArent('c:\\someöäü\\pAth', 'c:\\someöäü\\', true));
+			Assert(isPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr', true));
+			Assert(isPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr\\', true));
 
-			assert(isParent('c:\\some\\path', 'C:\\', true));
-			assert(isParent('c:\\some\\path', 'c:\\SOME', true));
-			assert(isParent('c:\\some\\path', 'c:\\SOME\\', true));
+			Assert(isPArent('c:\\some\\pAth', 'C:\\', true));
+			Assert(isPArent('c:\\some\\pAth', 'c:\\SOME', true));
+			Assert(isPArent('c:\\some\\pAth', 'c:\\SOME\\', true));
 
-			assert(!isParent('c:\\some\\path', 'd:\\', true));
-			assert(!isParent('c:\\some\\path', 'c:\\some\\path', true));
-			assert(!isParent('c:\\some\\path', 'd:\\some\\path', true));
-			assert(!isParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\barr', true));
-			assert(!isParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar\\test', true));
+			Assert(!isPArent('c:\\some\\pAth', 'd:\\', true));
+			Assert(!isPArent('c:\\some\\pAth', 'c:\\some\\pAth', true));
+			Assert(!isPArent('c:\\some\\pAth', 'd:\\some\\pAth', true));
+			Assert(!isPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bArr', true));
+			Assert(!isPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr\\test', true));
 		}
 
-		if (isMacintosh || isLinux) {
-			assert(isParent('/some/path', '/', true));
-			assert(isParent('/some/path', '/some', true));
-			assert(isParent('/some/path', '/some/', true));
-			assert(isParent('/someöäü/path', '/someöäü', true));
-			assert(isParent('/someöäü/path', '/someöäü/', true));
-			assert(isParent('/foo/bar/test.ts', '/foo/bar', true));
-			assert(isParent('/foo/bar/test.ts', '/foo/bar/', true));
+		if (isMAcintosh || isLinux) {
+			Assert(isPArent('/some/pAth', '/', true));
+			Assert(isPArent('/some/pAth', '/some', true));
+			Assert(isPArent('/some/pAth', '/some/', true));
+			Assert(isPArent('/someöäü/pAth', '/someöäü', true));
+			Assert(isPArent('/someöäü/pAth', '/someöäü/', true));
+			Assert(isPArent('/foo/bAr/test.ts', '/foo/bAr', true));
+			Assert(isPArent('/foo/bAr/test.ts', '/foo/bAr/', true));
 
-			assert(isParent('/some/path', '/SOME', true));
-			assert(isParent('/some/path', '/SOME/', true));
-			assert(isParent('/someöäü/path', '/SOMEÖÄÜ', true));
-			assert(isParent('/someöäü/path', '/SOMEÖÄÜ/', true));
+			Assert(isPArent('/some/pAth', '/SOME', true));
+			Assert(isPArent('/some/pAth', '/SOME/', true));
+			Assert(isPArent('/someöäü/pAth', '/SOMEÖÄÜ', true));
+			Assert(isPArent('/someöäü/pAth', '/SOMEÖÄÜ/', true));
 
-			assert(!isParent('/some/path', '/some/path', true));
-			assert(!isParent('/foo/bar/test.ts', '/foo/barr', true));
-			assert(!isParent('/foo/bar/test.ts', '/foo/bar/test', true));
+			Assert(!isPArent('/some/pAth', '/some/pAth', true));
+			Assert(!isPArent('/foo/bAr/test.ts', '/foo/bArr', true));
+			Assert(!isPArent('/foo/bAr/test.ts', '/foo/bAr/test', true));
 		}
 	});
 
-	test('isEqualOrParent (ignorecase)', function () {
+	test('isEquAlOrPArent (ignorecAse)', function () {
 
-		// same assertions apply as with isEqual()
-		testIsEqual(isEqualOrParent); //
+		// sAme Assertions Apply As with isEquAl()
+		testIsEquAl(isEquAlOrPArent); //
 
 		if (isWindows) {
-			assert(isEqualOrParent('c:\\some\\path', 'c:\\', true));
-			assert(isEqualOrParent('c:\\some\\path', 'c:\\some', true));
-			assert(isEqualOrParent('c:\\some\\path', 'c:\\some\\', true));
-			assert(isEqualOrParent('c:\\someöäü\\path', 'c:\\someöäü', true));
-			assert(isEqualOrParent('c:\\someöäü\\path', 'c:\\someöäü\\', true));
-			assert(isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar', true));
-			assert(isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar\\', true));
-			assert(isEqualOrParent('c:\\some\\path', 'c:\\some\\path', true));
-			assert(isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar\\test.ts', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'c:\\', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'c:\\some', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'c:\\some\\', true));
+			Assert(isEquAlOrPArent('c:\\someöäü\\pAth', 'c:\\someöäü', true));
+			Assert(isEquAlOrPArent('c:\\someöäü\\pAth', 'c:\\someöäü\\', true));
+			Assert(isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr', true));
+			Assert(isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr\\', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'c:\\some\\pAth', true));
+			Assert(isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr\\test.ts', true));
 
-			assert(isEqualOrParent('c:\\some\\path', 'C:\\', true));
-			assert(isEqualOrParent('c:\\some\\path', 'c:\\SOME', true));
-			assert(isEqualOrParent('c:\\some\\path', 'c:\\SOME\\', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'C:\\', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'c:\\SOME', true));
+			Assert(isEquAlOrPArent('c:\\some\\pAth', 'c:\\SOME\\', true));
 
-			assert(!isEqualOrParent('c:\\some\\path', 'd:\\', true));
-			assert(!isEqualOrParent('c:\\some\\path', 'd:\\some\\path', true));
-			assert(!isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\barr', true));
-			assert(!isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar\\test', true));
-			assert(!isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\bar\\test.', true));
-			assert(!isEqualOrParent('c:\\foo\\bar\\test.ts', 'c:\\foo\\BAR\\test.', true));
+			Assert(!isEquAlOrPArent('c:\\some\\pAth', 'd:\\', true));
+			Assert(!isEquAlOrPArent('c:\\some\\pAth', 'd:\\some\\pAth', true));
+			Assert(!isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bArr', true));
+			Assert(!isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr\\test', true));
+			Assert(!isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\bAr\\test.', true));
+			Assert(!isEquAlOrPArent('c:\\foo\\bAr\\test.ts', 'c:\\foo\\BAR\\test.', true));
 		}
 
-		if (isMacintosh || isLinux) {
-			assert(isEqualOrParent('/some/path', '/', true));
-			assert(isEqualOrParent('/some/path', '/some', true));
-			assert(isEqualOrParent('/some/path', '/some/', true));
-			assert(isEqualOrParent('/someöäü/path', '/someöäü', true));
-			assert(isEqualOrParent('/someöäü/path', '/someöäü/', true));
-			assert(isEqualOrParent('/foo/bar/test.ts', '/foo/bar', true));
-			assert(isEqualOrParent('/foo/bar/test.ts', '/foo/bar/', true));
-			assert(isEqualOrParent('/some/path', '/some/path', true));
+		if (isMAcintosh || isLinux) {
+			Assert(isEquAlOrPArent('/some/pAth', '/', true));
+			Assert(isEquAlOrPArent('/some/pAth', '/some', true));
+			Assert(isEquAlOrPArent('/some/pAth', '/some/', true));
+			Assert(isEquAlOrPArent('/someöäü/pAth', '/someöäü', true));
+			Assert(isEquAlOrPArent('/someöäü/pAth', '/someöäü/', true));
+			Assert(isEquAlOrPArent('/foo/bAr/test.ts', '/foo/bAr', true));
+			Assert(isEquAlOrPArent('/foo/bAr/test.ts', '/foo/bAr/', true));
+			Assert(isEquAlOrPArent('/some/pAth', '/some/pAth', true));
 
-			assert(isEqualOrParent('/some/path', '/SOME', true));
-			assert(isEqualOrParent('/some/path', '/SOME/', true));
-			assert(isEqualOrParent('/someöäü/path', '/SOMEÖÄÜ', true));
-			assert(isEqualOrParent('/someöäü/path', '/SOMEÖÄÜ/', true));
+			Assert(isEquAlOrPArent('/some/pAth', '/SOME', true));
+			Assert(isEquAlOrPArent('/some/pAth', '/SOME/', true));
+			Assert(isEquAlOrPArent('/someöäü/pAth', '/SOMEÖÄÜ', true));
+			Assert(isEquAlOrPArent('/someöäü/pAth', '/SOMEÖÄÜ/', true));
 
-			assert(!isEqualOrParent('/foo/bar/test.ts', '/foo/barr', true));
-			assert(!isEqualOrParent('/foo/bar/test.ts', '/foo/bar/test', true));
-			assert(!isEqualOrParent('foo/bar/test.ts', 'foo/bar/test.', true));
-			assert(!isEqualOrParent('foo/bar/test.ts', 'foo/BAR/test.', true));
+			Assert(!isEquAlOrPArent('/foo/bAr/test.ts', '/foo/bArr', true));
+			Assert(!isEquAlOrPArent('/foo/bAr/test.ts', '/foo/bAr/test', true));
+			Assert(!isEquAlOrPArent('foo/bAr/test.ts', 'foo/bAr/test.', true));
+			Assert(!isEquAlOrPArent('foo/bAr/test.ts', 'foo/BAR/test.', true));
 		}
 	});
 });

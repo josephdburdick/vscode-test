@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
 
-export class ViewEventHandler extends Disposable {
+export clAss ViewEventHAndler extends DisposAble {
 
-	private _shouldRender: boolean;
+	privAte _shouldRender: booleAn;
 
 	constructor() {
 		super();
 		this._shouldRender = true;
 	}
 
-	public shouldRender(): boolean {
+	public shouldRender(): booleAn {
 		return this._shouldRender;
 	}
 
@@ -28,169 +28,169 @@ export class ViewEventHandler extends Disposable {
 	}
 
 	public onDidRender(): void {
-		this._shouldRender = false;
+		this._shouldRender = fAlse;
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		return false;
-	}
-
-	public onCursorStateChanged(e: viewEvents.ViewCursorStateChangedEvent): boolean {
-		return false;
-	}
-	public onDecorationsChanged(e: viewEvents.ViewDecorationsChangedEvent): boolean {
-		return false;
-	}
-	public onFlushed(e: viewEvents.ViewFlushedEvent): boolean {
-		return false;
-	}
-	public onFocusChanged(e: viewEvents.ViewFocusChangedEvent): boolean {
-		return false;
-	}
-	public onLanguageConfigurationChanged(e: viewEvents.ViewLanguageConfigurationEvent): boolean {
-		return false;
-	}
-	public onLineMappingChanged(e: viewEvents.ViewLineMappingChangedEvent): boolean {
-		return false;
-	}
-	public onLinesChanged(e: viewEvents.ViewLinesChangedEvent): boolean {
-		return false;
-	}
-	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): boolean {
-		return false;
-	}
-	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): boolean {
-		return false;
-	}
-	public onRevealRangeRequest(e: viewEvents.ViewRevealRangeRequestEvent): boolean {
-		return false;
-	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return false;
-	}
-	public onThemeChanged(e: viewEvents.ViewThemeChangedEvent): boolean {
-		return false;
-	}
-	public onTokensChanged(e: viewEvents.ViewTokensChangedEvent): boolean {
-		return false;
-	}
-	public onTokensColorsChanged(e: viewEvents.ViewTokensColorsChangedEvent): boolean {
-		return false;
-	}
-	public onZonesChanged(e: viewEvents.ViewZonesChangedEvent): boolean {
-		return false;
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		return fAlse;
 	}
 
-	// --- end event handlers
+	public onCursorStAteChAnged(e: viewEvents.ViewCursorStAteChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onDecorAtionsChAnged(e: viewEvents.ViewDecorAtionsChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onFlushed(e: viewEvents.ViewFlushedEvent): booleAn {
+		return fAlse;
+	}
+	public onFocusChAnged(e: viewEvents.ViewFocusChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onLAnguAgeConfigurAtionChAnged(e: viewEvents.ViewLAnguAgeConfigurAtionEvent): booleAn {
+		return fAlse;
+	}
+	public onLineMAppingChAnged(e: viewEvents.ViewLineMAppingChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onLinesChAnged(e: viewEvents.ViewLinesChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onLinesDeleted(e: viewEvents.ViewLinesDeletedEvent): booleAn {
+		return fAlse;
+	}
+	public onLinesInserted(e: viewEvents.ViewLinesInsertedEvent): booleAn {
+		return fAlse;
+	}
+	public onReveAlRAngeRequest(e: viewEvents.ViewReveAlRAngeRequestEvent): booleAn {
+		return fAlse;
+	}
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onThemeChAnged(e: viewEvents.ViewThemeChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onTokensChAnged(e: viewEvents.ViewTokensChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onTokensColorsChAnged(e: viewEvents.ViewTokensColorsChAngedEvent): booleAn {
+		return fAlse;
+	}
+	public onZonesChAnged(e: viewEvents.ViewZonesChAngedEvent): booleAn {
+		return fAlse;
+	}
 
-	public handleEvents(events: viewEvents.ViewEvent[]): void {
+	// --- end event hAndlers
 
-		let shouldRender = false;
+	public hAndleEvents(events: viewEvents.ViewEvent[]): void {
+
+		let shouldRender = fAlse;
 
 		for (let i = 0, len = events.length; i < len; i++) {
 			let e = events[i];
 
 			switch (e.type) {
 
-				case viewEvents.ViewEventType.ViewConfigurationChanged:
-					if (this.onConfigurationChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewConfigurAtionChAnged:
+					if (this.onConfigurAtionChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewCursorStateChanged:
-					if (this.onCursorStateChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewCursorStAteChAnged:
+					if (this.onCursorStAteChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewDecorationsChanged:
-					if (this.onDecorationsChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewDecorAtionsChAnged:
+					if (this.onDecorAtionsChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewFlushed:
+				cAse viewEvents.ViewEventType.ViewFlushed:
 					if (this.onFlushed(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewFocusChanged:
-					if (this.onFocusChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewFocusChAnged:
+					if (this.onFocusChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewLanguageConfigurationChanged:
-					if (this.onLanguageConfigurationChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewLAnguAgeConfigurAtionChAnged:
+					if (this.onLAnguAgeConfigurAtionChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewLineMappingChanged:
-					if (this.onLineMappingChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewLineMAppingChAnged:
+					if (this.onLineMAppingChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewLinesChanged:
-					if (this.onLinesChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewLinesChAnged:
+					if (this.onLinesChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewLinesDeleted:
+				cAse viewEvents.ViewEventType.ViewLinesDeleted:
 					if (this.onLinesDeleted(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewLinesInserted:
+				cAse viewEvents.ViewEventType.ViewLinesInserted:
 					if (this.onLinesInserted(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewRevealRangeRequest:
-					if (this.onRevealRangeRequest(e)) {
+				cAse viewEvents.ViewEventType.ViewReveAlRAngeRequest:
+					if (this.onReveAlRAngeRequest(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewScrollChanged:
-					if (this.onScrollChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewScrollChAnged:
+					if (this.onScrollChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewTokensChanged:
-					if (this.onTokensChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewTokensChAnged:
+					if (this.onTokensChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewThemeChanged:
-					if (this.onThemeChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewThemeChAnged:
+					if (this.onThemeChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewTokensColorsChanged:
-					if (this.onTokensColorsChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewTokensColorsChAnged:
+					if (this.onTokensColorsChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				case viewEvents.ViewEventType.ViewZonesChanged:
-					if (this.onZonesChanged(e)) {
+				cAse viewEvents.ViewEventType.ViewZonesChAnged:
+					if (this.onZonesChAnged(e)) {
 						shouldRender = true;
 					}
-					break;
+					breAk;
 
-				default:
+				defAult:
 					console.info('View received unknown event: ');
 					console.info(e);
 			}

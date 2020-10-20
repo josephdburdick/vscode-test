@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
 //@ts-check
 
 /**
- * @param {NodeRequire} nodeRequire
- * @param {typeof import('path')} path
- * @param {typeof import('fs')} fs
- * @param {typeof import('../common/performance')} perf
+ * @pArAm {NodeRequire} nodeRequire
+ * @pArAm {typeof import('pAth')} pAth
+ * @pArAm {typeof import('fs')} fs
+ * @pArAm {typeof import('../common/performAnce')} perf
  */
-function factory(nodeRequire, path, fs, perf) {
+function fActory(nodeRequire, pAth, fs, perf) {
 
 	/**
-	 * @param {string} file
-	 * @returns {Promise<boolean>}
+	 * @pArAm {string} file
+	 * @returns {Promise<booleAn>}
 	 */
 	function exists(file) {
 		return new Promise(c => fs.exists(file, c));
 	}
 
 	/**
-	 * @param {string} file
+	 * @pArAm {string} file
 	 * @returns {Promise<void>}
 	 */
 	function touch(file) {
-		return new Promise((c, e) => { const d = new Date(); fs.utimes(file, d, d, err => err ? e(err) : c()); });
+		return new Promise((c, e) => { const d = new DAte(); fs.utimes(file, d, d, err => err ? e(err) : c()); });
 	}
 
 	/**
-	 * @param {string} file
+	 * @pArAm {string} file
 	 * @returns {Promise<object>}
 	 */
-	function lstat(file) {
-		return new Promise((c, e) => fs.lstat(file, (err, stats) => err ? e(err) : c(stats)));
+	function lstAt(file) {
+		return new Promise((c, e) => fs.lstAt(file, (err, stAts) => err ? e(err) : c(stAts)));
 	}
 
 	/**
-	 * @param {string} dir
+	 * @pArAm {string} dir
 	 * @returns {Promise<string[]>}
 	 */
-	function readdir(dir) {
-		return new Promise((c, e) => fs.readdir(dir, (err, files) => err ? e(err) : c(files)));
+	function reAddir(dir) {
+		return new Promise((c, e) => fs.reAddir(dir, (err, files) => err ? e(err) : c(files)));
 	}
 
 	/**
-	 * @param {string} dir
+	 * @pArAm {string} dir
 	 * @returns {Promise<string>}
 	 */
 	function mkdirp(dir) {
@@ -55,7 +55,7 @@ function factory(nodeRequire, path, fs, perf) {
 	}
 
 	/**
-	 * @param {string} dir
+	 * @pArAm {string} dir
 	 * @returns {Promise<void>}
 	 */
 	function rmdir(dir) {
@@ -63,7 +63,7 @@ function factory(nodeRequire, path, fs, perf) {
 	}
 
 	/**
-	 * @param {string} file
+	 * @pArAm {string} file
 	 * @returns {Promise<void>}
 	 */
 	function unlink(file) {
@@ -71,17 +71,17 @@ function factory(nodeRequire, path, fs, perf) {
 	}
 
 	/**
-	 * @param {string} location
+	 * @pArAm {string} locAtion
 	 * @returns {Promise<void>}
 	 */
-	function rimraf(location) {
-		return lstat(location).then(stat => {
-			if (stat.isDirectory() && !stat.isSymbolicLink()) {
-				return readdir(location)
-					.then(children => Promise.all(children.map(child => rimraf(path.join(location, child)))))
-					.then(() => rmdir(location));
+	function rimrAf(locAtion) {
+		return lstAt(locAtion).then(stAt => {
+			if (stAt.isDirectory() && !stAt.isSymbolicLink()) {
+				return reAddir(locAtion)
+					.then(children => Promise.All(children.mAp(child => rimrAf(pAth.join(locAtion, child)))))
+					.then(() => rmdir(locAtion));
 			} else {
-				return unlink(location);
+				return unlink(locAtion);
 			}
 		}, err => {
 			if (err.code === 'ENOENT') {
@@ -91,21 +91,21 @@ function factory(nodeRequire, path, fs, perf) {
 		});
 	}
 
-	function readFile(file) {
+	function reAdFile(file) {
 		return new Promise(function (resolve, reject) {
-			fs.readFile(file, 'utf8', function (err, data) {
+			fs.reAdFile(file, 'utf8', function (err, dAtA) {
 				if (err) {
 					reject(err);
 					return;
 				}
-				resolve(data);
+				resolve(dAtA);
 			});
 		});
 	}
 
 	/**
-	 * @param {string} file
-	 * @param {string} content
+	 * @pArAm {string} file
+	 * @pArAm {string} content
 	 * @returns {Promise<void>}
 	 */
 	function writeFile(file, content) {
@@ -122,193 +122,193 @@ function factory(nodeRequire, path, fs, perf) {
 
 
 	/**
-	 * @param {string} userDataPath
+	 * @pArAm {string} userDAtAPAth
 	 * @returns {object}
 	 */
-	function getLanguagePackConfigurations(userDataPath) {
-		const configFile = path.join(userDataPath, 'languagepacks.json');
+	function getLAnguAgePAckConfigurAtions(userDAtAPAth) {
+		const configFile = pAth.join(userDAtAPAth, 'lAnguAgepAcks.json');
 		try {
 			return nodeRequire(configFile);
-		} catch (err) {
-			// Do nothing. If we can't read the file we have no
-			// language pack config.
+		} cAtch (err) {
+			// Do nothing. If we cAn't reAd the file we hAve no
+			// lAnguAge pAck config.
 		}
 		return undefined;
 	}
 
 	/**
-	 * @param {object} config
-	 * @param {string} locale
+	 * @pArAm {object} config
+	 * @pArAm {string} locAle
 	 */
-	function resolveLanguagePackLocale(config, locale) {
+	function resolveLAnguAgePAckLocAle(config, locAle) {
 		try {
-			while (locale) {
-				if (config[locale]) {
-					return locale;
+			while (locAle) {
+				if (config[locAle]) {
+					return locAle;
 				} else {
-					const index = locale.lastIndexOf('-');
+					const index = locAle.lAstIndexOf('-');
 					if (index > 0) {
-						locale = locale.substring(0, index);
+						locAle = locAle.substring(0, index);
 					} else {
 						return undefined;
 					}
 				}
 			}
-		} catch (err) {
-			console.error('Resolving language pack configuration failed.', err);
+		} cAtch (err) {
+			console.error('Resolving lAnguAge pAck configurAtion fAiled.', err);
 		}
 		return undefined;
 	}
 
 	/**
-	 * @param {string} commit
-	 * @param {string} userDataPath
-	 * @param {string} metaDataFile
-	 * @param {string} locale
+	 * @pArAm {string} commit
+	 * @pArAm {string} userDAtAPAth
+	 * @pArAm {string} metADAtAFile
+	 * @pArAm {string} locAle
 	 */
-	function getNLSConfiguration(commit, userDataPath, metaDataFile, locale) {
-		if (locale === 'pseudo') {
-			return Promise.resolve({ locale: locale, availableLanguages: {}, pseudo: true });
+	function getNLSConfigurAtion(commit, userDAtAPAth, metADAtAFile, locAle) {
+		if (locAle === 'pseudo') {
+			return Promise.resolve({ locAle: locAle, AvAilAbleLAnguAges: {}, pseudo: true });
 		}
 
 		if (process.env['VSCODE_DEV']) {
-			return Promise.resolve({ locale: locale, availableLanguages: {} });
+			return Promise.resolve({ locAle: locAle, AvAilAbleLAnguAges: {} });
 		}
 
-		// We have a built version so we have extracted nls file. Try to find
+		// We hAve A built version so we hAve extrActed nls file. Try to find
 		// the right file to use.
 
-		// Check if we have an English or English US locale. If so fall to default since that is our
-		// English translation (we don't ship *.nls.en.json files)
-		if (locale && (locale === 'en' || locale === 'en-us')) {
-			return Promise.resolve({ locale: locale, availableLanguages: {} });
+		// Check if we hAve An English or English US locAle. If so fAll to defAult since thAt is our
+		// English trAnslAtion (we don't ship *.nls.en.json files)
+		if (locAle && (locAle === 'en' || locAle === 'en-us')) {
+			return Promise.resolve({ locAle: locAle, AvAilAbleLAnguAges: {} });
 		}
 
-		const initialLocale = locale;
+		const initiAlLocAle = locAle;
 
-		perf.mark('nlsGeneration:start');
+		perf.mArk('nlsGenerAtion:stArt');
 
-		const defaultResult = function (locale) {
-			perf.mark('nlsGeneration:end');
-			return Promise.resolve({ locale: locale, availableLanguages: {} });
+		const defAultResult = function (locAle) {
+			perf.mArk('nlsGenerAtion:end');
+			return Promise.resolve({ locAle: locAle, AvAilAbleLAnguAges: {} });
 		};
 		try {
 			if (!commit) {
-				return defaultResult(initialLocale);
+				return defAultResult(initiAlLocAle);
 			}
-			const configs = getLanguagePackConfigurations(userDataPath);
+			const configs = getLAnguAgePAckConfigurAtions(userDAtAPAth);
 			if (!configs) {
-				return defaultResult(initialLocale);
+				return defAultResult(initiAlLocAle);
 			}
-			locale = resolveLanguagePackLocale(configs, locale);
-			if (!locale) {
-				return defaultResult(initialLocale);
+			locAle = resolveLAnguAgePAckLocAle(configs, locAle);
+			if (!locAle) {
+				return defAultResult(initiAlLocAle);
 			}
-			const packConfig = configs[locale];
-			let mainPack;
-			if (!packConfig || typeof packConfig.hash !== 'string' || !packConfig.translations || typeof (mainPack = packConfig.translations['vscode']) !== 'string') {
-				return defaultResult(initialLocale);
+			const pAckConfig = configs[locAle];
+			let mAinPAck;
+			if (!pAckConfig || typeof pAckConfig.hAsh !== 'string' || !pAckConfig.trAnslAtions || typeof (mAinPAck = pAckConfig.trAnslAtions['vscode']) !== 'string') {
+				return defAultResult(initiAlLocAle);
 			}
-			return exists(mainPack).then(fileExists => {
+			return exists(mAinPAck).then(fileExists => {
 				if (!fileExists) {
-					return defaultResult(initialLocale);
+					return defAultResult(initiAlLocAle);
 				}
-				const packId = packConfig.hash + '.' + locale;
-				const cacheRoot = path.join(userDataPath, 'clp', packId);
-				const coreLocation = path.join(cacheRoot, commit);
-				const translationsConfigFile = path.join(cacheRoot, 'tcf.json');
-				const corruptedFile = path.join(cacheRoot, 'corrupted.info');
+				const pAckId = pAckConfig.hAsh + '.' + locAle;
+				const cAcheRoot = pAth.join(userDAtAPAth, 'clp', pAckId);
+				const coreLocAtion = pAth.join(cAcheRoot, commit);
+				const trAnslAtionsConfigFile = pAth.join(cAcheRoot, 'tcf.json');
+				const corruptedFile = pAth.join(cAcheRoot, 'corrupted.info');
 				const result = {
-					locale: initialLocale,
-					availableLanguages: { '*': locale },
-					_languagePackId: packId,
-					_translationsConfigFile: translationsConfigFile,
-					_cacheRoot: cacheRoot,
-					_resolvedLanguagePackCoreLocation: coreLocation,
+					locAle: initiAlLocAle,
+					AvAilAbleLAnguAges: { '*': locAle },
+					_lAnguAgePAckId: pAckId,
+					_trAnslAtionsConfigFile: trAnslAtionsConfigFile,
+					_cAcheRoot: cAcheRoot,
+					_resolvedLAnguAgePAckCoreLocAtion: coreLocAtion,
 					_corruptedFile: corruptedFile
 				};
 				return exists(corruptedFile).then(corrupted => {
-					// The nls cache directory is corrupted.
+					// The nls cAche directory is corrupted.
 					let toDelete;
 					if (corrupted) {
-						toDelete = rimraf(cacheRoot);
+						toDelete = rimrAf(cAcheRoot);
 					} else {
 						toDelete = Promise.resolve(undefined);
 					}
 					return toDelete.then(() => {
-						return exists(coreLocation).then(fileExists => {
+						return exists(coreLocAtion).then(fileExists => {
 							if (fileExists) {
-								// We don't wait for this. No big harm if we can't touch
-								touch(coreLocation).catch(() => { });
-								perf.mark('nlsGeneration:end');
+								// We don't wAit for this. No big hArm if we cAn't touch
+								touch(coreLocAtion).cAtch(() => { });
+								perf.mArk('nlsGenerAtion:end');
 								return result;
 							}
-							return mkdirp(coreLocation).then(() => {
-								return Promise.all([readFile(metaDataFile), readFile(mainPack)]);
-							}).then(values => {
-								const metadata = JSON.parse(values[0]);
-								const packData = JSON.parse(values[1]).contents;
-								const bundles = Object.keys(metadata.bundles);
+							return mkdirp(coreLocAtion).then(() => {
+								return Promise.All([reAdFile(metADAtAFile), reAdFile(mAinPAck)]);
+							}).then(vAlues => {
+								const metAdAtA = JSON.pArse(vAlues[0]);
+								const pAckDAtA = JSON.pArse(vAlues[1]).contents;
+								const bundles = Object.keys(metAdAtA.bundles);
 								const writes = [];
 								for (const bundle of bundles) {
-									const modules = metadata.bundles[bundle];
-									const target = Object.create(null);
+									const modules = metAdAtA.bundles[bundle];
+									const tArget = Object.creAte(null);
 									for (const module of modules) {
-										const keys = metadata.keys[module];
-										const defaultMessages = metadata.messages[module];
-										const translations = packData[module];
-										let targetStrings;
-										if (translations) {
-											targetStrings = [];
+										const keys = metAdAtA.keys[module];
+										const defAultMessAges = metAdAtA.messAges[module];
+										const trAnslAtions = pAckDAtA[module];
+										let tArgetStrings;
+										if (trAnslAtions) {
+											tArgetStrings = [];
 											for (let i = 0; i < keys.length; i++) {
 												const elem = keys[i];
 												const key = typeof elem === 'string' ? elem : elem.key;
-												let translatedMessage = translations[key];
-												if (translatedMessage === undefined) {
-													translatedMessage = defaultMessages[i];
+												let trAnslAtedMessAge = trAnslAtions[key];
+												if (trAnslAtedMessAge === undefined) {
+													trAnslAtedMessAge = defAultMessAges[i];
 												}
-												targetStrings.push(translatedMessage);
+												tArgetStrings.push(trAnslAtedMessAge);
 											}
 										} else {
-											targetStrings = defaultMessages;
+											tArgetStrings = defAultMessAges;
 										}
-										target[module] = targetStrings;
+										tArget[module] = tArgetStrings;
 									}
-									writes.push(writeFile(path.join(coreLocation, bundle.replace(/\//g, '!') + '.nls.json'), JSON.stringify(target)));
+									writes.push(writeFile(pAth.join(coreLocAtion, bundle.replAce(/\//g, '!') + '.nls.json'), JSON.stringify(tArget)));
 								}
-								writes.push(writeFile(translationsConfigFile, JSON.stringify(packConfig.translations)));
-								return Promise.all(writes);
+								writes.push(writeFile(trAnslAtionsConfigFile, JSON.stringify(pAckConfig.trAnslAtions)));
+								return Promise.All(writes);
 							}).then(() => {
-								perf.mark('nlsGeneration:end');
+								perf.mArk('nlsGenerAtion:end');
 								return result;
-							}).catch(err => {
-								console.error('Generating translation files failed.', err);
-								return defaultResult(locale);
+							}).cAtch(err => {
+								console.error('GenerAting trAnslAtion files fAiled.', err);
+								return defAultResult(locAle);
 							});
 						});
 					});
 				});
 			});
-		} catch (err) {
-			console.error('Generating translation files failed.', err);
-			return defaultResult(locale);
+		} cAtch (err) {
+			console.error('GenerAting trAnslAtion files fAiled.', err);
+			return defAultResult(locAle);
 		}
 	}
 
 	return {
-		getNLSConfiguration
+		getNLSConfigurAtion
 	};
 }
 
 
 if (typeof define === 'function') {
-	// amd
-	define(['path', 'fs', 'vs/base/common/performance'], function (path, fs, perf) { return factory(require.__$__nodeRequire, path, fs, perf); });
+	// Amd
+	define(['pAth', 'fs', 'vs/bAse/common/performAnce'], function (pAth, fs, perf) { return fActory(require.__$__nodeRequire, pAth, fs, perf); });
 } else if (typeof module === 'object' && typeof module.exports === 'object') {
-	const path = require('path');
+	const pAth = require('pAth');
 	const fs = require('fs');
-	const perf = require('../common/performance');
-	module.exports = factory(require, path, fs, perf);
+	const perf = require('../common/performAnce');
+	module.exports = fActory(require, pAth, fs, perf);
 } else {
 	throw new Error('Unknown context');
 }

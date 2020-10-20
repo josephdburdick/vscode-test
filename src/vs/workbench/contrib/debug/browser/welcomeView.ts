@@ -1,145 +1,145 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IContextKeyService, RawContextKey, IContextKey, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { localize } from 'vs/nls';
-import { StartAction, ConfigureAction, SelectAndStartAction } from 'vs/workbench/contrib/debug/browser/debugActions';
+import { IViewletViewOptions } from 'vs/workbench/browser/pArts/views/viewsViewlet';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IContextKeyService, RAwContextKey, IContextKey, ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { locAlize } from 'vs/nls';
+import { StArtAction, ConfigureAction, SelectAndStArtAction } from 'vs/workbench/contrib/debug/browser/debugActions';
 import { IDebugService, CONTEXT_DEBUGGERS_AVAILABLE } from 'vs/workbench/contrib/debug/common/debug';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { ViewPane } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { ViewPAne } from 'vs/workbench/browser/pArts/views/viewPAneContAiner';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 import { IViewDescriptorService, IViewsRegistry, Extensions, ViewContentGroups } from 'vs/workbench/common/views';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { WorkbenchStateContext } from 'vs/workbench/browser/contextkeys';
-import { OpenFolderAction, OpenFileAction, OpenFileFolderAction } from 'vs/workbench/browser/actions/workspaceActions';
-import { isMacintosh } from 'vs/base/common/platform';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { WorkbenchStAteContext } from 'vs/workbench/browser/contextkeys';
+import { OpenFolderAction, OpenFileAction, OpenFileFolderAction } from 'vs/workbench/browser/Actions/workspAceActions';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
 import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 
-const debugStartLanguageKey = 'debugStartLanguage';
-const CONTEXT_DEBUG_START_LANGUAGE = new RawContextKey<string>(debugStartLanguageKey, undefined);
-const CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR = new RawContextKey<boolean>('debuggerInterestedInActiveEditor', false);
+const debugStArtLAnguAgeKey = 'debugStArtLAnguAge';
+const CONTEXT_DEBUG_START_LANGUAGE = new RAwContextKey<string>(debugStArtLAnguAgeKey, undefined);
+const CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR = new RAwContextKey<booleAn>('debuggerInterestedInActiveEditor', fAlse);
 
-export class WelcomeView extends ViewPane {
+export clAss WelcomeView extends ViewPAne {
 
-	static ID = 'workbench.debug.welcome';
-	static LABEL = localize('run', "Run");
+	stAtic ID = 'workbench.debug.welcome';
+	stAtic LABEL = locAlize('run', "Run");
 
-	private debugStartLanguageContext: IContextKey<string | undefined>;
-	private debuggerInterestedContext: IContextKey<boolean>;
+	privAte debugStArtLAnguAgeContext: IContextKey<string | undefined>;
+	privAte debuggerInterestedContext: IContextKey<booleAn>;
 
 	constructor(
 		options: IViewletViewOptions,
 		@IThemeService themeService: IThemeService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@IContextMenuService contextMenuService: IContextMenuService,
-		@IConfigurationService configurationService: IConfigurationService,
+		@IConfigurAtionService configurAtionService: IConfigurAtionService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IDebugService private readonly debugService: IDebugService,
-		@IEditorService private readonly editorService: IEditorService,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IDebugService privAte reAdonly debugService: IDebugService,
+		@IEditorService privAte reAdonly editorService: IEditorService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IOpenerService openerService: IOpenerService,
-		@IStorageService storageSevice: IStorageService,
+		@IStorAgeService storAgeSevice: IStorAgeService,
 		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
+		super(options, keybindingService, contextMenuService, configurAtionService, contextKeyService, viewDescriptorService, instAntiAtionService, openerService, themeService, telemetryService);
 
-		this.debugStartLanguageContext = CONTEXT_DEBUG_START_LANGUAGE.bindTo(contextKeyService);
+		this.debugStArtLAnguAgeContext = CONTEXT_DEBUG_START_LANGUAGE.bindTo(contextKeyService);
 		this.debuggerInterestedContext = CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.bindTo(contextKeyService);
-		const lastSetLanguage = storageSevice.get(debugStartLanguageKey, StorageScope.WORKSPACE);
-		this.debugStartLanguageContext.set(lastSetLanguage);
+		const lAstSetLAnguAge = storAgeSevice.get(debugStArtLAnguAgeKey, StorAgeScope.WORKSPACE);
+		this.debugStArtLAnguAgeContext.set(lAstSetLAnguAge);
 
 		const setContextKey = () => {
-			const editorControl = this.editorService.activeTextEditorControl;
+			const editorControl = this.editorService.ActiveTextEditorControl;
 			if (isCodeEditor(editorControl)) {
 				const model = editorControl.getModel();
-				const language = model ? model.getLanguageIdentifier().language : undefined;
-				if (language && this.debugService.getConfigurationManager().isDebuggerInterestedInLanguage(language)) {
-					this.debugStartLanguageContext.set(language);
+				const lAnguAge = model ? model.getLAnguAgeIdentifier().lAnguAge : undefined;
+				if (lAnguAge && this.debugService.getConfigurAtionMAnAger().isDebuggerInterestedInLAnguAge(lAnguAge)) {
+					this.debugStArtLAnguAgeContext.set(lAnguAge);
 					this.debuggerInterestedContext.set(true);
-					storageSevice.store(debugStartLanguageKey, language, StorageScope.WORKSPACE);
+					storAgeSevice.store(debugStArtLAnguAgeKey, lAnguAge, StorAgeScope.WORKSPACE);
 					return;
 				}
 			}
-			this.debuggerInterestedContext.set(false);
+			this.debuggerInterestedContext.set(fAlse);
 		};
 
-		const disposables = new DisposableStore();
-		this._register(disposables);
+		const disposAbles = new DisposAbleStore();
+		this._register(disposAbles);
 
-		this._register(editorService.onDidActiveEditorChange(() => {
-			disposables.clear();
+		this._register(editorService.onDidActiveEditorChAnge(() => {
+			disposAbles.cleAr();
 
-			const editorControl = this.editorService.activeTextEditorControl;
+			const editorControl = this.editorService.ActiveTextEditorControl;
 			if (isCodeEditor(editorControl)) {
-				disposables.add(editorControl.onDidChangeModelLanguage(setContextKey));
+				disposAbles.Add(editorControl.onDidChAngeModelLAnguAge(setContextKey));
 			}
 
 			setContextKey();
 		}));
-		this._register(this.debugService.getConfigurationManager().onDidRegisterDebugger(setContextKey));
-		this._register(this.onDidChangeBodyVisibility(visible => {
+		this._register(this.debugService.getConfigurAtionMAnAger().onDidRegisterDebugger(setContextKey));
+		this._register(this.onDidChAngeBodyVisibility(visible => {
 			if (visible) {
 				setContextKey();
 			}
 		}));
 		setContextKey();
 
-		const debugKeybinding = this.keybindingService.lookupKeybinding(StartAction.ID);
-		debugKeybindingLabel = debugKeybinding ? ` (${debugKeybinding.getLabel()})` : '';
+		const debugKeybinding = this.keybindingService.lookupKeybinding(StArtAction.ID);
+		debugKeybindingLAbel = debugKeybinding ? ` (${debugKeybinding.getLAbel()})` : '';
 	}
 
-	shouldShowWelcome(): boolean {
+	shouldShowWelcome(): booleAn {
 		return true;
 	}
 }
 
-const viewsRegistry = Registry.as<IViewsRegistry>(Extensions.ViewsRegistry);
+const viewsRegistry = Registry.As<IViewsRegistry>(Extensions.ViewsRegistry);
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'openAFileWhichCanBeDebugged', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"[Open a file](command:{0}) which can be debugged or run.", isMacintosh ? OpenFileFolderAction.ID : OpenFileAction.ID),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.toNegated()),
+	content: locAlize({ key: 'openAFileWhichCAnBeDebugged', comment: ['PleAse do not trAnslAte the word "commmAnd", it is pArt of our internAl syntAx which must not chAnge'] },
+		"[Open A file](commAnd:{0}) which cAn be debugged or run.", isMAcintosh ? OpenFileFolderAction.ID : OpenFileAction.ID),
+	when: ContextKeyExpr.And(CONTEXT_DEBUGGERS_AVAILABLE, CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR.toNegAted()),
 	group: ViewContentGroups.Open
 });
 
-let debugKeybindingLabel = '';
+let debugKeybindingLAbel = '';
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'runAndDebugAction', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"[Run and Debug{0}](command:{1})", debugKeybindingLabel, StartAction.ID),
+	content: locAlize({ key: 'runAndDebugAction', comment: ['PleAse do not trAnslAte the word "commmAnd", it is pArt of our internAl syntAx which must not chAnge'] },
+		"[Run And Debug{0}](commAnd:{1})", debugKeybindingLAbel, StArtAction.ID),
 	preconditions: [CONTEXT_DEBUGGER_INTERESTED_IN_ACTIVE_EDITOR],
 	when: CONTEXT_DEBUGGERS_AVAILABLE,
 	group: ViewContentGroups.Debug
 });
 
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'detectThenRunAndDebug', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"[Show](command:{0}) all automatic debug configurations.", SelectAndStartAction.ID),
+	content: locAlize({ key: 'detectThenRunAndDebug', comment: ['PleAse do not trAnslAte the word "commmAnd", it is pArt of our internAl syntAx which must not chAnge'] },
+		"[Show](commAnd:{0}) All AutomAtic debug configurAtions.", SelectAndStArtAction.ID),
 	when: CONTEXT_DEBUGGERS_AVAILABLE,
 	group: ViewContentGroups.Debug,
 	order: 10
 });
 
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'customizeRunAndDebug', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"To customize Run and Debug [create a launch.json file](command:{0}).", ConfigureAction.ID),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.notEqualsTo('empty')),
+	content: locAlize({ key: 'customizeRunAndDebug', comment: ['PleAse do not trAnslAte the word "commmAnd", it is pArt of our internAl syntAx which must not chAnge'] },
+		"To customize Run And Debug [creAte A lAunch.json file](commAnd:{0}).", ConfigureAction.ID),
+	when: ContextKeyExpr.And(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStAteContext.notEquAlsTo('empty')),
 	group: ViewContentGroups.Debug
 });
 
 viewsRegistry.registerViewWelcomeContent(WelcomeView.ID, {
-	content: localize({ key: 'customizeRunAndDebugOpenFolder', comment: ['Please do not translate the word "commmand", it is part of our internal syntax which must not change'] },
-		"To customize Run and Debug, [open a folder](command:{0}) and create a launch.json file.", isMacintosh ? OpenFileFolderAction.ID : OpenFolderAction.ID),
-	when: ContextKeyExpr.and(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStateContext.isEqualTo('empty')),
+	content: locAlize({ key: 'customizeRunAndDebugOpenFolder', comment: ['PleAse do not trAnslAte the word "commmAnd", it is pArt of our internAl syntAx which must not chAnge'] },
+		"To customize Run And Debug, [open A folder](commAnd:{0}) And creAte A lAunch.json file.", isMAcintosh ? OpenFileFolderAction.ID : OpenFolderAction.ID),
+	when: ContextKeyExpr.And(CONTEXT_DEBUGGERS_AVAILABLE, WorkbenchStAteContext.isEquAlTo('empty')),
 	group: ViewContentGroups.Debug
 });

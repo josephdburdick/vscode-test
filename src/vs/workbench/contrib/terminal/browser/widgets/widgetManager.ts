@@ -1,42 +1,42 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { ITerminalWidget } from 'vs/workbench/contrib/terminal/browser/widgets/widgets';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ITerminAlWidget } from 'vs/workbench/contrib/terminAl/browser/widgets/widgets';
 
-export class TerminalWidgetManager implements IDisposable {
-	private _container: HTMLElement | undefined;
-	private _attached: Map<string, ITerminalWidget> = new Map();
+export clAss TerminAlWidgetMAnAger implements IDisposAble {
+	privAte _contAiner: HTMLElement | undefined;
+	privAte _AttAched: MAp<string, ITerminAlWidget> = new MAp();
 
-	attachToElement(terminalWrapper: HTMLElement) {
-		if (!this._container) {
-			this._container = document.createElement('div');
-			this._container.classList.add('terminal-widget-container');
-			terminalWrapper.appendChild(this._container);
+	AttAchToElement(terminAlWrApper: HTMLElement) {
+		if (!this._contAiner) {
+			this._contAiner = document.creAteElement('div');
+			this._contAiner.clAssList.Add('terminAl-widget-contAiner');
+			terminAlWrApper.AppendChild(this._contAiner);
 		}
 	}
 
 	dispose(): void {
-		if (this._container && this._container.parentElement) {
-			this._container.parentElement.removeChild(this._container);
-			this._container = undefined;
+		if (this._contAiner && this._contAiner.pArentElement) {
+			this._contAiner.pArentElement.removeChild(this._contAiner);
+			this._contAiner = undefined;
 		}
 	}
 
-	attachWidget(widget: ITerminalWidget): IDisposable | undefined {
-		if (!this._container) {
+	AttAchWidget(widget: ITerminAlWidget): IDisposAble | undefined {
+		if (!this._contAiner) {
 			return;
 		}
-		this._attached.get(widget.id)?.dispose();
-		widget.attach(this._container);
-		this._attached.set(widget.id, widget);
+		this._AttAched.get(widget.id)?.dispose();
+		widget.AttAch(this._contAiner);
+		this._AttAched.set(widget.id, widget);
 		return {
 			dispose: () => {
-				const current = this._attached.get(widget.id);
+				const current = this._AttAched.get(widget.id);
 				if (current === widget) {
-					this._attached.delete(widget.id);
+					this._AttAched.delete(widget.id);
 					widget.dispose();
 				}
 			}

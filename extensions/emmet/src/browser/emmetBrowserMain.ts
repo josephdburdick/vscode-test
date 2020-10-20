@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { activateEmmetExtension } from '../emmetCommon';
+import * As vscode from 'vscode';
+import { ActivAteEmmetExtension } from '../emmetCommon';
 
-export function activate(context: vscode.ExtensionContext) {
-	activateEmmetExtension(context);
+export function ActivAte(context: vscode.ExtensionContext) {
+	ActivAteEmmetExtension(context);
 }

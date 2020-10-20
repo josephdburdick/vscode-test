@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
-import { Emitter } from 'vs/base/common/event';
-import * as path from 'vs/base/common/path';
+import { ExtensionIdentifier, IExtensionDescription } from 'vs/plAtform/extensions/common/extensions';
+import { Emitter } from 'vs/bAse/common/event';
+import * As pAth from 'vs/bAse/common/pAth';
 
-export class DeltaExtensionsResult {
+export clAss DeltAExtensionsResult {
 	constructor(
-		public readonly removedDueToLooping: IExtensionDescription[]
+		public reAdonly removedDueToLooping: IExtensionDescription[]
 	) { }
 }
 
-export class ExtensionDescriptionRegistry {
-	private readonly _onDidChange = new Emitter<void>();
-	public readonly onDidChange = this._onDidChange.event;
+export clAss ExtensionDescriptionRegistry {
+	privAte reAdonly _onDidChAnge = new Emitter<void>();
+	public reAdonly onDidChAnge = this._onDidChAnge.event;
 
-	private _extensionDescriptions: IExtensionDescription[];
-	private _extensionsMap!: Map<string, IExtensionDescription>;
-	private _extensionsArr!: IExtensionDescription[];
-	private _activationMap!: Map<string, IExtensionDescription[]>;
+	privAte _extensionDescriptions: IExtensionDescription[];
+	privAte _extensionsMAp!: MAp<string, IExtensionDescription>;
+	privAte _extensionsArr!: IExtensionDescription[];
+	privAte _ActivAtionMAp!: MAp<string, IExtensionDescription[]>;
 
 	constructor(extensionDescriptions: IExtensionDescription[]) {
 		this._extensionDescriptions = extensionDescriptions;
-		this._initialize();
+		this._initiAlize();
 	}
 
-	private _initialize(): void {
-		// Ensure extensions are stored in the order: builtin, user, under development
+	privAte _initiAlize(): void {
+		// Ensure extensions Are stored in the order: builtin, user, under development
 		this._extensionDescriptions.sort(extensionCmp);
 
-		this._extensionsMap = new Map<string, IExtensionDescription>();
+		this._extensionsMAp = new MAp<string, IExtensionDescription>();
 		this._extensionsArr = [];
-		this._activationMap = new Map<string, IExtensionDescription[]>();
+		this._ActivAtionMAp = new MAp<string, IExtensionDescription[]>();
 
 		for (const extensionDescription of this._extensionDescriptions) {
-			if (this._extensionsMap.has(ExtensionIdentifier.toKey(extensionDescription.identifier))) {
-				// No overwriting allowed!
-				console.error('Extension `' + extensionDescription.identifier.value + '` is already registered');
+			if (this._extensionsMAp.hAs(ExtensionIdentifier.toKey(extensionDescription.identifier))) {
+				// No overwriting Allowed!
+				console.error('Extension `' + extensionDescription.identifier.vAlue + '` is AlreAdy registered');
 				continue;
 			}
 
-			this._extensionsMap.set(ExtensionIdentifier.toKey(extensionDescription.identifier), extensionDescription);
+			this._extensionsMAp.set(ExtensionIdentifier.toKey(extensionDescription.identifier), extensionDescription);
 			this._extensionsArr.push(extensionDescription);
 
-			if (Array.isArray(extensionDescription.activationEvents)) {
-				for (let activationEvent of extensionDescription.activationEvents) {
-					// TODO@joao: there's no easy way to contribute this
-					if (activationEvent === 'onUri') {
-						activationEvent = `onUri:${ExtensionIdentifier.toKey(extensionDescription.identifier)}`;
+			if (ArrAy.isArrAy(extensionDescription.ActivAtionEvents)) {
+				for (let ActivAtionEvent of extensionDescription.ActivAtionEvents) {
+					// TODO@joAo: there's no eAsy wAy to contribute this
+					if (ActivAtionEvent === 'onUri') {
+						ActivAtionEvent = `onUri:${ExtensionIdentifier.toKey(extensionDescription.identifier)}`;
 					}
 
-					if (!this._activationMap.has(activationEvent)) {
-						this._activationMap.set(activationEvent, []);
+					if (!this._ActivAtionMAp.hAs(ActivAtionEvent)) {
+						this._ActivAtionMAp.set(ActivAtionEvent, []);
 					}
-					this._activationMap.get(activationEvent)!.push(extensionDescription);
+					this._ActivAtionMAp.get(ActivAtionEvent)!.push(extensionDescription);
 				}
 			}
 		}
@@ -63,68 +63,68 @@ export class ExtensionDescriptionRegistry {
 
 	public keepOnly(extensionIds: ExtensionIdentifier[]): void {
 		const toKeep = new Set<string>();
-		extensionIds.forEach(extensionId => toKeep.add(ExtensionIdentifier.toKey(extensionId)));
-		this._extensionDescriptions = this._extensionDescriptions.filter(extension => toKeep.has(ExtensionIdentifier.toKey(extension.identifier)));
-		this._initialize();
-		this._onDidChange.fire(undefined);
+		extensionIds.forEAch(extensionId => toKeep.Add(ExtensionIdentifier.toKey(extensionId)));
+		this._extensionDescriptions = this._extensionDescriptions.filter(extension => toKeep.hAs(ExtensionIdentifier.toKey(extension.identifier)));
+		this._initiAlize();
+		this._onDidChAnge.fire(undefined);
 	}
 
-	public deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): DeltaExtensionsResult {
+	public deltAExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): DeltAExtensionsResult {
 		if (toAdd.length > 0) {
-			this._extensionDescriptions = this._extensionDescriptions.concat(toAdd);
+			this._extensionDescriptions = this._extensionDescriptions.concAt(toAdd);
 		}
 
-		// Immediately remove looping extensions!
+		// ImmediAtely remove looping extensions!
 		const looping = ExtensionDescriptionRegistry._findLoopingExtensions(this._extensionDescriptions);
-		toRemove = toRemove.concat(looping.map(ext => ext.identifier));
+		toRemove = toRemove.concAt(looping.mAp(ext => ext.identifier));
 
 		if (toRemove.length > 0) {
 			const toRemoveSet = new Set<string>();
-			toRemove.forEach(extensionId => toRemoveSet.add(ExtensionIdentifier.toKey(extensionId)));
-			this._extensionDescriptions = this._extensionDescriptions.filter(extension => !toRemoveSet.has(ExtensionIdentifier.toKey(extension.identifier)));
+			toRemove.forEAch(extensionId => toRemoveSet.Add(ExtensionIdentifier.toKey(extensionId)));
+			this._extensionDescriptions = this._extensionDescriptions.filter(extension => !toRemoveSet.hAs(ExtensionIdentifier.toKey(extension.identifier)));
 		}
 
-		this._initialize();
-		this._onDidChange.fire(undefined);
-		return new DeltaExtensionsResult(looping);
+		this._initiAlize();
+		this._onDidChAnge.fire(undefined);
+		return new DeltAExtensionsResult(looping);
 	}
 
-	private static _findLoopingExtensions(extensionDescriptions: IExtensionDescription[]): IExtensionDescription[] {
-		const G = new class {
+	privAte stAtic _findLoopingExtensions(extensionDescriptions: IExtensionDescription[]): IExtensionDescription[] {
+		const G = new clAss {
 
-			private _arcs = new Map<string, string[]>();
-			private _nodesSet = new Set<string>();
-			private _nodesArr: string[] = [];
+			privAte _Arcs = new MAp<string, string[]>();
+			privAte _nodesSet = new Set<string>();
+			privAte _nodesArr: string[] = [];
 
-			addNode(id: string): void {
-				if (!this._nodesSet.has(id)) {
-					this._nodesSet.add(id);
+			AddNode(id: string): void {
+				if (!this._nodesSet.hAs(id)) {
+					this._nodesSet.Add(id);
 					this._nodesArr.push(id);
 				}
 			}
 
-			addArc(from: string, to: string): void {
-				this.addNode(from);
-				this.addNode(to);
-				if (this._arcs.has(from)) {
-					this._arcs.get(from)!.push(to);
+			AddArc(from: string, to: string): void {
+				this.AddNode(from);
+				this.AddNode(to);
+				if (this._Arcs.hAs(from)) {
+					this._Arcs.get(from)!.push(to);
 				} else {
-					this._arcs.set(from, [to]);
+					this._Arcs.set(from, [to]);
 				}
 			}
 
 			getArcs(id: string): string[] {
-				if (this._arcs.has(id)) {
-					return this._arcs.get(id)!;
+				if (this._Arcs.hAs(id)) {
+					return this._Arcs.get(id)!;
 				}
 				return [];
 			}
 
-			hasOnlyGoodArcs(id: string, good: Set<string>): boolean {
+			hAsOnlyGoodArcs(id: string, good: Set<string>): booleAn {
 				const dependencies = G.getArcs(id);
 				for (let i = 0; i < dependencies.length; i++) {
-					if (!good.has(dependencies[i])) {
-						return false;
+					if (!good.hAs(dependencies[i])) {
+						return fAlse;
 					}
 				}
 				return true;
@@ -135,56 +135,56 @@ export class ExtensionDescriptionRegistry {
 			}
 		};
 
-		let descs = new Map<string, IExtensionDescription>();
+		let descs = new MAp<string, IExtensionDescription>();
 		for (let extensionDescription of extensionDescriptions) {
 			const extensionId = ExtensionIdentifier.toKey(extensionDescription.identifier);
 			descs.set(extensionId, extensionDescription);
 			if (extensionDescription.extensionDependencies) {
 				for (let _depId of extensionDescription.extensionDependencies) {
 					const depId = ExtensionIdentifier.toKey(_depId);
-					G.addArc(extensionId, depId);
+					G.AddArc(extensionId, depId);
 				}
 			}
 		}
 
-		// initialize with all extensions with no dependencies.
+		// initiAlize with All extensions with no dependencies.
 		let good = new Set<string>();
-		G.getNodes().filter(id => G.getArcs(id).length === 0).forEach(id => good.add(id));
+		G.getNodes().filter(id => G.getArcs(id).length === 0).forEAch(id => good.Add(id));
 
-		// all other extensions will be processed below.
-		let nodes = G.getNodes().filter(id => !good.has(id));
+		// All other extensions will be processed below.
+		let nodes = G.getNodes().filter(id => !good.hAs(id));
 
-		let madeProgress: boolean;
+		let mAdeProgress: booleAn;
 		do {
-			madeProgress = false;
+			mAdeProgress = fAlse;
 
-			// find one extension which has only good deps
+			// find one extension which hAs only good deps
 			for (let i = 0; i < nodes.length; i++) {
 				const id = nodes[i];
 
-				if (G.hasOnlyGoodArcs(id, good)) {
+				if (G.hAsOnlyGoodArcs(id, good)) {
 					nodes.splice(i, 1);
 					i--;
-					good.add(id);
-					madeProgress = true;
+					good.Add(id);
+					mAdeProgress = true;
 				}
 			}
-		} while (madeProgress);
+		} while (mAdeProgress);
 
-		// The remaining nodes are bad and have loops
-		return nodes.map(id => descs.get(id)!);
+		// The remAining nodes Are bAd And hAve loops
+		return nodes.mAp(id => descs.get(id)!);
 	}
 
-	public containsActivationEvent(activationEvent: string): boolean {
-		return this._activationMap.has(activationEvent);
+	public contAinsActivAtionEvent(ActivAtionEvent: string): booleAn {
+		return this._ActivAtionMAp.hAs(ActivAtionEvent);
 	}
 
-	public containsExtension(extensionId: ExtensionIdentifier): boolean {
-		return this._extensionsMap.has(ExtensionIdentifier.toKey(extensionId));
+	public contAinsExtension(extensionId: ExtensionIdentifier): booleAn {
+		return this._extensionsMAp.hAs(ExtensionIdentifier.toKey(extensionId));
 	}
 
-	public getExtensionDescriptionsForActivationEvent(activationEvent: string): IExtensionDescription[] {
-		const extensions = this._activationMap.get(activationEvent);
+	public getExtensionDescriptionsForActivAtionEvent(ActivAtionEvent: string): IExtensionDescription[] {
+		const extensions = this._ActivAtionMAp.get(ActivAtionEvent);
 		return extensions ? extensions.slice(0) : [];
 	}
 
@@ -193,7 +193,7 @@ export class ExtensionDescriptionRegistry {
 	}
 
 	public getExtensionDescription(extensionId: ExtensionIdentifier | string): IExtensionDescription | undefined {
-		const extension = this._extensionsMap.get(ExtensionIdentifier.toKey(extensionId));
+		const extension = this._extensionsMAp.get(ExtensionIdentifier.toKey(extensionId));
 		return extension ? extension : undefined;
 	}
 }
@@ -205,25 +205,25 @@ const enum SortBucket {
 }
 
 /**
- * Ensure that:
- * - first are builtin extensions
- * - second are user extensions
- * - third are extensions under development
+ * Ensure thAt:
+ * - first Are builtin extensions
+ * - second Are user extensions
+ * - third Are extensions under development
  *
- * In each bucket, extensions must be sorted alphabetically by their folder name.
+ * In eAch bucket, extensions must be sorted AlphAbeticAlly by their folder nAme.
  */
-function extensionCmp(a: IExtensionDescription, b: IExtensionDescription): number {
-	const aSortBucket = (a.isBuiltin ? SortBucket.Builtin : a.isUnderDevelopment ? SortBucket.Dev : SortBucket.User);
+function extensionCmp(A: IExtensionDescription, b: IExtensionDescription): number {
+	const ASortBucket = (A.isBuiltin ? SortBucket.Builtin : A.isUnderDevelopment ? SortBucket.Dev : SortBucket.User);
 	const bSortBucket = (b.isBuiltin ? SortBucket.Builtin : b.isUnderDevelopment ? SortBucket.Dev : SortBucket.User);
-	if (aSortBucket !== bSortBucket) {
-		return aSortBucket - bSortBucket;
+	if (ASortBucket !== bSortBucket) {
+		return ASortBucket - bSortBucket;
 	}
-	const aLastSegment = path.posix.basename(a.extensionLocation.path);
-	const bLastSegment = path.posix.basename(b.extensionLocation.path);
-	if (aLastSegment < bLastSegment) {
+	const ALAstSegment = pAth.posix.bAsenAme(A.extensionLocAtion.pAth);
+	const bLAstSegment = pAth.posix.bAsenAme(b.extensionLocAtion.pAth);
+	if (ALAstSegment < bLAstSegment) {
 		return -1;
 	}
-	if (aLastSegment > bLastSegment) {
+	if (ALAstSegment > bLAstSegment) {
 		return 1;
 	}
 	return 0;

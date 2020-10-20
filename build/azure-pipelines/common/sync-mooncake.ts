@@ -1,51 +1,51 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as url from 'url';
-import * as azure from 'azure-storage';
-import * as mime from 'mime';
-import { CosmosClient } from '@azure/cosmos';
+import * As url from 'url';
+import * As Azure from 'Azure-storAge';
+import * As mime from 'mime';
+import { CosmosClient } from '@Azure/cosmos';
 
-function log(...args: any[]) {
-	console.log(...[`[${new Date().toISOString()}]`, ...args]);
+function log(...Args: Any[]) {
+	console.log(...[`[${new DAte().toISOString()}]`, ...Args]);
 }
 
-function error(...args: any[]) {
-	console.error(...[`[${new Date().toISOString()}]`, ...args]);
+function error(...Args: Any[]) {
+	console.error(...[`[${new DAte().toISOString()}]`, ...Args]);
 }
 
-if (process.argv.length < 3) {
-	error('Usage: node sync-mooncake.js <quality>');
+if (process.Argv.length < 3) {
+	error('UsAge: node sync-mooncAke.js <quAlity>');
 	process.exit(-1);
 }
 
-interface Build {
-	assets: Asset[];
+interfAce Build {
+	Assets: Asset[];
 }
 
-interface Asset {
-	platform: string;
+interfAce Asset {
+	plAtform: string;
 	type: string;
 	url: string;
-	mooncakeUrl: string;
-	hash: string;
-	sha256hash: string;
+	mooncAkeUrl: string;
+	hAsh: string;
+	shA256hAsh: string;
 	size: number;
-	supportsFastUpdate?: boolean;
+	supportsFAstUpdAte?: booleAn;
 }
 
-async function sync(commit: string, quality: string): Promise<void> {
-	log(`Synchronizing Mooncake assets for ${quality}, ${commit}...`);
+Async function sync(commit: string, quAlity: string): Promise<void> {
+	log(`Synchronizing MooncAke Assets for ${quAlity}, ${commit}...`);
 
 	const client = new CosmosClient({ endpoint: process.env['AZURE_DOCUMENTDB_ENDPOINT']!, key: process.env['AZURE_DOCUMENTDB_MASTERKEY'] });
-	const container = client.database('builds').container(quality);
+	const contAiner = client.dAtAbAse('builds').contAiner(quAlity);
 
 	const query = `SELECT TOP 1 * FROM c WHERE c.id = "${commit}"`;
-	const res = await container.items.query<Build>(query, {}).fetchAll();
+	const res = AwAit contAiner.items.query<Build>(query, {}).fetchAll();
 
 	if (res.resources.length !== 1) {
 		throw new Error(`No builds found for ${commit}`);
@@ -53,57 +53,57 @@ async function sync(commit: string, quality: string): Promise<void> {
 
 	const build = res.resources[0];
 
-	log(`Found build for ${commit}, with ${build.assets.length} assets`);
+	log(`Found build for ${commit}, with ${build.Assets.length} Assets`);
 
-	const storageAccount = process.env['AZURE_STORAGE_ACCOUNT_2']!;
+	const storAgeAccount = process.env['AZURE_STORAGE_ACCOUNT_2']!;
 
-	const blobService = azure.createBlobService(storageAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
-		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
+	const blobService = Azure.creAteBlobService(storAgeAccount, process.env['AZURE_STORAGE_ACCESS_KEY_2']!)
+		.withFilter(new Azure.ExponentiAlRetryPolicyFilter(20));
 
-	const mooncakeBlobService = azure.createBlobService(storageAccount, process.env['MOONCAKE_STORAGE_ACCESS_KEY']!, `${storageAccount}.blob.core.chinacloudapi.cn`)
-		.withFilter(new azure.ExponentialRetryPolicyFilter(20));
+	const mooncAkeBlobService = Azure.creAteBlobService(storAgeAccount, process.env['MOONCAKE_STORAGE_ACCESS_KEY']!, `${storAgeAccount}.blob.core.chinAcloudApi.cn`)
+		.withFilter(new Azure.ExponentiAlRetryPolicyFilter(20));
 
-	// mooncake is fussy and far away, this is needed!
-	blobService.defaultClientRequestTimeoutInMs = 10 * 60 * 1000;
-	mooncakeBlobService.defaultClientRequestTimeoutInMs = 10 * 60 * 1000;
+	// mooncAke is fussy And fAr AwAy, this is needed!
+	blobService.defAultClientRequestTimeoutInMs = 10 * 60 * 1000;
+	mooncAkeBlobService.defAultClientRequestTimeoutInMs = 10 * 60 * 1000;
 
-	for (const asset of build.assets) {
+	for (const Asset of build.Assets) {
 		try {
-			const blobPath = url.parse(asset.url).path;
+			const blobPAth = url.pArse(Asset.url).pAth;
 
-			if (!blobPath) {
-				throw new Error(`Failed to parse URL: ${asset.url}`);
+			if (!blobPAth) {
+				throw new Error(`FAiled to pArse URL: ${Asset.url}`);
 			}
 
-			const blobName = blobPath.replace(/^\/\w+\//, '');
+			const blobNAme = blobPAth.replAce(/^\/\w+\//, '');
 
-			log(`Found ${blobName}`);
+			log(`Found ${blobNAme}`);
 
-			if (asset.mooncakeUrl) {
-				log(`  Already in Mooncake ✔️`);
+			if (Asset.mooncAkeUrl) {
+				log(`  AlreAdy in MooncAke ✔️`);
 				continue;
 			}
 
-			const readStream = blobService.createReadStream(quality, blobName, undefined!);
-			const blobOptions: azure.BlobService.CreateBlockBlobRequestOptions = {
+			const reAdStreAm = blobService.creAteReAdStreAm(quAlity, blobNAme, undefined!);
+			const blobOptions: Azure.BlobService.CreAteBlockBlobRequestOptions = {
 				contentSettings: {
-					contentType: mime.lookup(blobPath),
-					cacheControl: 'max-age=31536000, public'
+					contentType: mime.lookup(blobPAth),
+					cAcheControl: 'mAx-Age=31536000, public'
 				}
 			};
 
-			const writeStream = mooncakeBlobService.createWriteStreamToBlockBlob(quality, blobName, blobOptions, undefined);
+			const writeStreAm = mooncAkeBlobService.creAteWriteStreAmToBlockBlob(quAlity, blobNAme, blobOptions, undefined);
 
-			log(`  Uploading to Mooncake...`);
-			await new Promise((c, e) => readStream.pipe(writeStream).on('finish', c).on('error', e));
+			log(`  UploAding to MooncAke...`);
+			AwAit new Promise((c, e) => reAdStreAm.pipe(writeStreAm).on('finish', c).on('error', e));
 
-			log(`  Updating build in DB...`);
-			const mooncakeUrl = `${process.env['MOONCAKE_CDN_URL']}${blobPath}`;
-			await container.scripts.storedProcedure('setAssetMooncakeUrl')
-				.execute('', [commit, asset.platform, asset.type, mooncakeUrl]);
+			log(`  UpdAting build in DB...`);
+			const mooncAkeUrl = `${process.env['MOONCAKE_CDN_URL']}${blobPAth}`;
+			AwAit contAiner.scripts.storedProcedure('setAssetMooncAkeUrl')
+				.execute('', [commit, Asset.plAtform, Asset.type, mooncAkeUrl]);
 
 			log(`  Done ✔️`);
-		} catch (err) {
+		} cAtch (err) {
 			error(err);
 		}
 	}
@@ -111,7 +111,7 @@ async function sync(commit: string, quality: string): Promise<void> {
 	log(`All done ✔️`);
 }
 
-function main(): void {
+function mAin(): void {
 	const commit = process.env['BUILD_SOURCEVERSION'];
 
 	if (!commit) {
@@ -119,12 +119,12 @@ function main(): void {
 		return;
 	}
 
-	const quality = process.argv[2];
+	const quAlity = process.Argv[2];
 
-	sync(commit, quality).catch(err => {
+	sync(commit, quAlity).cAtch(err => {
 		error(err);
 		process.exit(1);
 	});
 }
 
-main();
+mAin();

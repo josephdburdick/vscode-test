@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { EditorInput, EditorModel, ITextEditorModel } from 'vs/workbench/common/editor';
-import { URI } from 'vs/base/common/uri';
-import { IReference } from 'vs/base/common/lifecycle';
+import { URI } from 'vs/bAse/common/uri';
+import { IReference } from 'vs/bAse/common/lifecycle';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import * as marked from 'vs/base/common/marked/marked';
-import { Schemas } from 'vs/base/common/network';
-import { isEqual } from 'vs/base/common/resources';
-import { requireToContent } from 'vs/workbench/contrib/welcome/walkThrough/common/walkThroughContentProvider';
+import * As mArked from 'vs/bAse/common/mArked/mArked';
+import { SchemAs } from 'vs/bAse/common/network';
+import { isEquAl } from 'vs/bAse/common/resources';
+import { requireToContent } from 'vs/workbench/contrib/welcome/wAlkThrough/common/wAlkThroughContentProvider';
 
-export class WalkThroughModel extends EditorModel {
+export clAss WAlkThroughModel extends EditorModel {
 
 	constructor(
-		private mainRef: string,
-		private snippetRefs: IReference<ITextEditorModel>[]
+		privAte mAinRef: string,
+		privAte snippetRefs: IReference<ITextEditorModel>[]
 	) {
 		super();
 	}
 
-	get main() {
-		return this.mainRef;
+	get mAin() {
+		return this.mAinRef;
 	}
 
 	get snippets() {
-		return this.snippetRefs.map(snippet => snippet.object);
+		return this.snippetRefs.mAp(snippet => snippet.object);
 	}
 
 	dispose() {
-		this.snippetRefs.forEach(ref => ref.dispose());
+		this.snippetRefs.forEAch(ref => ref.dispose());
 		super.dispose();
 	}
 }
 
-export interface WalkThroughInputOptions {
-	readonly typeId: string;
-	readonly name: string;
-	readonly description?: string;
-	readonly resource: URI;
-	readonly telemetryFrom: string;
-	readonly onReady?: (container: HTMLElement) => void;
+export interfAce WAlkThroughInputOptions {
+	reAdonly typeId: string;
+	reAdonly nAme: string;
+	reAdonly description?: string;
+	reAdonly resource: URI;
+	reAdonly telemetryFrom: string;
+	reAdonly onReAdy?: (contAiner: HTMLElement) => void;
 }
 
-export class WalkThroughInput extends EditorInput {
+export clAss WAlkThroughInput extends EditorInput {
 
-	private promise: Promise<WalkThroughModel> | null = null;
+	privAte promise: Promise<WAlkThroughModel> | null = null;
 
-	private maxTopScroll = 0;
-	private maxBottomScroll = 0;
+	privAte mAxTopScroll = 0;
+	privAte mAxBottomScroll = 0;
 
 	get resource() { return this.options.resource; }
 
 	constructor(
-		private readonly options: WalkThroughInputOptions,
-		@ITextModelService private readonly textModelResolverService: ITextModelService
+		privAte reAdonly options: WAlkThroughInputOptions,
+		@ITextModelService privAte reAdonly textModelResolverService: ITextModelService
 	) {
 		super();
 	}
@@ -64,8 +64,8 @@ export class WalkThroughInput extends EditorInput {
 		return this.options.typeId;
 	}
 
-	getName(): string {
-		return this.options.name;
+	getNAme(): string {
+		return this.options.nAme;
 	}
 
 	getDescription(): string {
@@ -78,59 +78,59 @@ export class WalkThroughInput extends EditorInput {
 
 	getTelemetryDescriptor(): { [key: string]: unknown; } {
 		const descriptor = super.getTelemetryDescriptor();
-		descriptor['target'] = this.getTelemetryFrom();
+		descriptor['tArget'] = this.getTelemetryFrom();
 		/* __GDPR__FRAGMENT__
 			"EditorTelemetryDescriptor" : {
-				"target" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+				"tArget" : { "clAssificAtion": "SystemMetADAtA", "purpose": "FeAtureInsight" }
 			}
 		*/
 		return descriptor;
 	}
 
-	get onReady() {
-		return this.options.onReady;
+	get onReAdy() {
+		return this.options.onReAdy;
 	}
 
-	resolve(): Promise<WalkThroughModel> {
+	resolve(): Promise<WAlkThroughModel> {
 		if (!this.promise) {
 			this.promise = requireToContent(this.options.resource)
 				.then(content => {
-					if (this.resource.path.endsWith('.html')) {
-						return new WalkThroughModel(content, []);
+					if (this.resource.pAth.endsWith('.html')) {
+						return new WAlkThroughModel(content, []);
 					}
 
 					const snippets: Promise<IReference<ITextEditorModel>>[] = [];
 					let i = 0;
-					const renderer = new marked.Renderer();
-					renderer.code = (code, lang) => {
-						const resource = this.options.resource.with({ scheme: Schemas.walkThroughSnippet, fragment: `${i++}.${lang}` });
-						snippets.push(this.textModelResolverService.createModelReference(resource));
+					const renderer = new mArked.Renderer();
+					renderer.code = (code, lAng) => {
+						const resource = this.options.resource.with({ scheme: SchemAs.wAlkThroughSnippet, frAgment: `${i++}.${lAng}` });
+						snippets.push(this.textModelResolverService.creAteModelReference(resource));
 						return '';
 					};
 
-					marked(content, { renderer });
+					mArked(content, { renderer });
 
-					return Promise.all(snippets)
-						.then(refs => new WalkThroughModel(content, refs));
+					return Promise.All(snippets)
+						.then(refs => new WAlkThroughModel(content, refs));
 				});
 		}
 
 		return this.promise;
 	}
 
-	matches(otherInput: unknown): boolean {
-		if (super.matches(otherInput) === true) {
+	mAtches(otherInput: unknown): booleAn {
+		if (super.mAtches(otherInput) === true) {
 			return true;
 		}
 
-		if (otherInput instanceof WalkThroughInput) {
-			let otherResourceEditorInput = <WalkThroughInput>otherInput;
+		if (otherInput instAnceof WAlkThroughInput) {
+			let otherResourceEditorInput = <WAlkThroughInput>otherInput;
 
-			// Compare by properties
-			return isEqual(otherResourceEditorInput.options.resource, this.options.resource);
+			// CompAre by properties
+			return isEquAl(otherResourceEditorInput.options.resource, this.options.resource);
 		}
 
-		return false;
+		return fAlse;
 	}
 
 	dispose(): void {
@@ -142,8 +142,8 @@ export class WalkThroughInput extends EditorInput {
 		super.dispose();
 	}
 
-	public relativeScrollPosition(topScroll: number, bottomScroll: number) {
-		this.maxTopScroll = Math.max(this.maxTopScroll, topScroll);
-		this.maxBottomScroll = Math.max(this.maxBottomScroll, bottomScroll);
+	public relAtiveScrollPosition(topScroll: number, bottomScroll: number) {
+		this.mAxTopScroll = MAth.mAx(this.mAxTopScroll, topScroll);
+		this.mAxBottomScroll = MAth.mAx(this.mAxBottomScroll, bottomScroll);
 	}
 }

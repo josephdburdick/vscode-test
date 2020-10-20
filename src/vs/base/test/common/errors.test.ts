@@ -1,33 +1,33 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
+import * As Assert from 'Assert';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
 
 suite('Errors', () => {
-	test('Get Error Message', function () {
-		assert.strictEqual(toErrorMessage('Foo Bar'), 'Foo Bar');
-		assert.strictEqual(toErrorMessage(new Error('Foo Bar')), 'Foo Bar');
+	test('Get Error MessAge', function () {
+		Assert.strictEquAl(toErrorMessAge('Foo BAr'), 'Foo BAr');
+		Assert.strictEquAl(toErrorMessAge(new Error('Foo BAr')), 'Foo BAr');
 
-		let error: any = new Error();
+		let error: Any = new Error();
 		error = new Error();
-		error.detail = {};
-		error.detail.exception = {};
-		error.detail.exception.message = 'Foo Bar';
-		assert.strictEqual(toErrorMessage(error), 'Foo Bar');
-		assert.strictEqual(toErrorMessage(error, true), 'Foo Bar');
+		error.detAil = {};
+		error.detAil.exception = {};
+		error.detAil.exception.messAge = 'Foo BAr';
+		Assert.strictEquAl(toErrorMessAge(error), 'Foo BAr');
+		Assert.strictEquAl(toErrorMessAge(error, true), 'Foo BAr');
 
-		assert(toErrorMessage());
-		assert(toErrorMessage(null));
-		assert(toErrorMessage({}));
+		Assert(toErrorMessAge());
+		Assert(toErrorMessAge(null));
+		Assert(toErrorMessAge({}));
 
 		try {
 			throw new Error();
-		} catch (error) {
-			assert.strictEqual(toErrorMessage(error), 'An unknown error occurred. Please consult the log for more details.');
-			assert.ok(toErrorMessage(error, true).length > 'An unknown error occurred. Please consult the log for more details.'.length);
+		} cAtch (error) {
+			Assert.strictEquAl(toErrorMessAge(error), 'An unknown error occurred. PleAse consult the log for more detAils.');
+			Assert.ok(toErrorMessAge(error, true).length > 'An unknown error occurred. PleAse consult the log for more detAils.'.length);
 		}
 	});
 });

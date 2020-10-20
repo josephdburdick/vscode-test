@@ -1,29 +1,29 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainContext, MainThreadBulkEditsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
-import { ExtHostNotebookController } from 'vs/workbench/api/common/extHostNotebook';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { WorkspaceEdit } from 'vs/workbench/api/common/extHostTypeConverters';
-import type * as vscode from 'vscode';
+import { MAinContext, MAinThreAdBulkEditsShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { ExtHostDocumentsAndEditors } from 'vs/workbench/Api/common/extHostDocumentsAndEditors';
+import { ExtHostNotebookController } from 'vs/workbench/Api/common/extHostNotebook';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { WorkspAceEdit } from 'vs/workbench/Api/common/extHostTypeConverters';
+import type * As vscode from 'vscode';
 
-export class ExtHostBulkEdits {
+export clAss ExtHostBulkEdits {
 
-	private readonly _proxy: MainThreadBulkEditsShape;
+	privAte reAdonly _proxy: MAinThreAdBulkEditsShApe;
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
-		private readonly _extHostDocumentsAndEditors: ExtHostDocumentsAndEditors,
-		private readonly _extHostNotebooks: ExtHostNotebookController,
+		privAte reAdonly _extHostDocumentsAndEditors: ExtHostDocumentsAndEditors,
+		privAte reAdonly _extHostNotebooks: ExtHostNotebookController,
 	) {
-		this._proxy = extHostRpc.getProxy(MainContext.MainThreadBulkEdits);
+		this._proxy = extHostRpc.getProxy(MAinContext.MAinThreAdBulkEdits);
 	}
 
-	applyWorkspaceEdit(edit: vscode.WorkspaceEdit): Promise<boolean> {
-		const dto = WorkspaceEdit.from(edit, this._extHostDocumentsAndEditors, this._extHostNotebooks);
-		return this._proxy.$tryApplyWorkspaceEdit(dto);
+	ApplyWorkspAceEdit(edit: vscode.WorkspAceEdit): Promise<booleAn> {
+		const dto = WorkspAceEdit.from(edit, this._extHostDocumentsAndEditors, this._extHostNotebooks);
+		return this._proxy.$tryApplyWorkspAceEdit(dto);
 	}
 }

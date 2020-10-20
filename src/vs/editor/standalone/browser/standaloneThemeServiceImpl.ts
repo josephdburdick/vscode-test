@@ -1,81 +1,81 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as dom from 'vs/base/browser/dom';
-import { Color } from 'vs/base/common/color';
-import { Emitter } from 'vs/base/common/event';
-import { FontStyle, TokenizationRegistry, TokenMetadata } from 'vs/editor/common/modes';
-import { ITokenThemeRule, TokenTheme, generateTokensCSSForColorMap } from 'vs/editor/common/modes/supports/tokenization';
-import { BuiltinTheme, IStandaloneTheme, IStandaloneThemeData, IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
-import { hc_black, vs, vs_dark } from 'vs/editor/standalone/common/themes';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ColorIdentifier, Extensions, IColorRegistry } from 'vs/platform/theme/common/colorRegistry';
-import { Extensions as ThemingExtensions, ICssStyleCollector, IFileIconTheme, IThemingRegistry, ITokenStyle } from 'vs/platform/theme/common/themeService';
-import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
-import { CodiconStyles } from 'vs/base/browser/ui/codicons/codiconStyles';
+import * As dom from 'vs/bAse/browser/dom';
+import { Color } from 'vs/bAse/common/color';
+import { Emitter } from 'vs/bAse/common/event';
+import { FontStyle, TokenizAtionRegistry, TokenMetAdAtA } from 'vs/editor/common/modes';
+import { ITokenThemeRule, TokenTheme, generAteTokensCSSForColorMAp } from 'vs/editor/common/modes/supports/tokenizAtion';
+import { BuiltinTheme, IStAndAloneTheme, IStAndAloneThemeDAtA, IStAndAloneThemeService } from 'vs/editor/stAndAlone/common/stAndAloneThemeService';
+import { hc_blAck, vs, vs_dArk } from 'vs/editor/stAndAlone/common/themes';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { ColorIdentifier, Extensions, IColorRegistry } from 'vs/plAtform/theme/common/colorRegistry';
+import { Extensions As ThemingExtensions, ICssStyleCollector, IFileIconTheme, IThemingRegistry, ITokenStyle } from 'vs/plAtform/theme/common/themeService';
+import { IDisposAble, DisposAble } from 'vs/bAse/common/lifecycle';
+import { ColorScheme } from 'vs/plAtform/theme/common/theme';
+import { CodiconStyles } from 'vs/bAse/browser/ui/codicons/codiconStyles';
 
 const VS_THEME_NAME = 'vs';
-const VS_DARK_THEME_NAME = 'vs-dark';
-const HC_BLACK_THEME_NAME = 'hc-black';
+const VS_DARK_THEME_NAME = 'vs-dArk';
+const HC_BLACK_THEME_NAME = 'hc-blAck';
 
-const colorRegistry = Registry.as<IColorRegistry>(Extensions.ColorContribution);
-const themingRegistry = Registry.as<IThemingRegistry>(ThemingExtensions.ThemingContribution);
+const colorRegistry = Registry.As<IColorRegistry>(Extensions.ColorContribution);
+const themingRegistry = Registry.As<IThemingRegistry>(ThemingExtensions.ThemingContribution);
 
-class StandaloneTheme implements IStandaloneTheme {
+clAss StAndAloneTheme implements IStAndAloneTheme {
 
-	public readonly id: string;
-	public readonly themeName: string;
+	public reAdonly id: string;
+	public reAdonly themeNAme: string;
 
-	private readonly themeData: IStandaloneThemeData;
-	private colors: Map<string, Color> | null;
-	private readonly defaultColors: { [colorId: string]: Color | undefined; };
-	private _tokenTheme: TokenTheme | null;
+	privAte reAdonly themeDAtA: IStAndAloneThemeDAtA;
+	privAte colors: MAp<string, Color> | null;
+	privAte reAdonly defAultColors: { [colorId: string]: Color | undefined; };
+	privAte _tokenTheme: TokenTheme | null;
 
-	constructor(name: string, standaloneThemeData: IStandaloneThemeData) {
-		this.themeData = standaloneThemeData;
-		let base = standaloneThemeData.base;
-		if (name.length > 0) {
-			this.id = base + ' ' + name;
-			this.themeName = name;
+	constructor(nAme: string, stAndAloneThemeDAtA: IStAndAloneThemeDAtA) {
+		this.themeDAtA = stAndAloneThemeDAtA;
+		let bAse = stAndAloneThemeDAtA.bAse;
+		if (nAme.length > 0) {
+			this.id = bAse + ' ' + nAme;
+			this.themeNAme = nAme;
 		} else {
-			this.id = base;
-			this.themeName = base;
+			this.id = bAse;
+			this.themeNAme = bAse;
 		}
 		this.colors = null;
-		this.defaultColors = Object.create(null);
+		this.defAultColors = Object.creAte(null);
 		this._tokenTheme = null;
 	}
 
-	public get label(): string {
-		return this.themeName;
+	public get lAbel(): string {
+		return this.themeNAme;
 	}
 
-	public get base(): string {
-		return this.themeData.base;
+	public get bAse(): string {
+		return this.themeDAtA.bAse;
 	}
 
-	public notifyBaseUpdated() {
-		if (this.themeData.inherit) {
+	public notifyBAseUpdAted() {
+		if (this.themeDAtA.inherit) {
 			this.colors = null;
 			this._tokenTheme = null;
 		}
 	}
 
-	private getColors(): Map<string, Color> {
+	privAte getColors(): MAp<string, Color> {
 		if (!this.colors) {
-			const colors = new Map<string, Color>();
-			for (let id in this.themeData.colors) {
-				colors.set(id, Color.fromHex(this.themeData.colors[id]));
+			const colors = new MAp<string, Color>();
+			for (let id in this.themeDAtA.colors) {
+				colors.set(id, Color.fromHex(this.themeDAtA.colors[id]));
 			}
-			if (this.themeData.inherit) {
-				let baseData = getBuiltinRules(this.themeData.base);
-				for (let id in baseData.colors) {
-					if (!colors.has(id)) {
-						colors.set(id, Color.fromHex(baseData.colors[id]));
+			if (this.themeDAtA.inherit) {
+				let bAseDAtA = getBuiltinRules(this.themeDAtA.bAse);
+				for (let id in bAseDAtA.colors) {
+					if (!colors.hAs(id)) {
+						colors.set(id, Color.fromHex(bAseDAtA.colors[id]));
 					}
 				}
 			}
@@ -84,36 +84,36 @@ class StandaloneTheme implements IStandaloneTheme {
 		return this.colors;
 	}
 
-	public getColor(colorId: ColorIdentifier, useDefault?: boolean): Color | undefined {
+	public getColor(colorId: ColorIdentifier, useDefAult?: booleAn): Color | undefined {
 		const color = this.getColors().get(colorId);
 		if (color) {
 			return color;
 		}
-		if (useDefault !== false) {
-			return this.getDefault(colorId);
+		if (useDefAult !== fAlse) {
+			return this.getDefAult(colorId);
 		}
 		return undefined;
 	}
 
-	private getDefault(colorId: ColorIdentifier): Color | undefined {
-		let color = this.defaultColors[colorId];
+	privAte getDefAult(colorId: ColorIdentifier): Color | undefined {
+		let color = this.defAultColors[colorId];
 		if (color) {
 			return color;
 		}
-		color = colorRegistry.resolveDefaultColor(colorId, this);
-		this.defaultColors[colorId] = color;
+		color = colorRegistry.resolveDefAultColor(colorId, this);
+		this.defAultColors[colorId] = color;
 		return color;
 	}
 
-	public defines(colorId: ColorIdentifier): boolean {
-		return Object.prototype.hasOwnProperty.call(this.getColors(), colorId);
+	public defines(colorId: ColorIdentifier): booleAn {
+		return Object.prototype.hAsOwnProperty.cAll(this.getColors(), colorId);
 	}
 
 	public get type(): ColorScheme {
-		switch (this.base) {
-			case VS_THEME_NAME: return ColorScheme.LIGHT;
-			case HC_BLACK_THEME_NAME: return ColorScheme.HIGH_CONTRAST;
-			default: return ColorScheme.DARK;
+		switch (this.bAse) {
+			cAse VS_THEME_NAME: return ColorScheme.LIGHT;
+			cAse HC_BLACK_THEME_NAME: return ColorScheme.HIGH_CONTRAST;
+			defAult: return ColorScheme.DARK;
 		}
 	}
 
@@ -121,127 +121,127 @@ class StandaloneTheme implements IStandaloneTheme {
 		if (!this._tokenTheme) {
 			let rules: ITokenThemeRule[] = [];
 			let encodedTokensColors: string[] = [];
-			if (this.themeData.inherit) {
-				let baseData = getBuiltinRules(this.themeData.base);
-				rules = baseData.rules;
-				if (baseData.encodedTokensColors) {
-					encodedTokensColors = baseData.encodedTokensColors;
+			if (this.themeDAtA.inherit) {
+				let bAseDAtA = getBuiltinRules(this.themeDAtA.bAse);
+				rules = bAseDAtA.rules;
+				if (bAseDAtA.encodedTokensColors) {
+					encodedTokensColors = bAseDAtA.encodedTokensColors;
 				}
 			}
-			rules = rules.concat(this.themeData.rules);
-			if (this.themeData.encodedTokensColors) {
-				encodedTokensColors = this.themeData.encodedTokensColors;
+			rules = rules.concAt(this.themeDAtA.rules);
+			if (this.themeDAtA.encodedTokensColors) {
+				encodedTokensColors = this.themeDAtA.encodedTokensColors;
 			}
-			this._tokenTheme = TokenTheme.createFromRawTokenTheme(rules, encodedTokensColors);
+			this._tokenTheme = TokenTheme.creAteFromRAwTokenTheme(rules, encodedTokensColors);
 		}
 		return this._tokenTheme;
 	}
 
-	public getTokenStyleMetadata(type: string, modifiers: string[], modelLanguage: string): ITokenStyle | undefined {
-		// use theme rules match
-		const style = this.tokenTheme._match([type].concat(modifiers).join('.'));
-		const metadata = style.metadata;
-		const foreground = TokenMetadata.getForeground(metadata);
-		const fontStyle = TokenMetadata.getFontStyle(metadata);
+	public getTokenStyleMetAdAtA(type: string, modifiers: string[], modelLAnguAge: string): ITokenStyle | undefined {
+		// use theme rules mAtch
+		const style = this.tokenTheme._mAtch([type].concAt(modifiers).join('.'));
+		const metAdAtA = style.metAdAtA;
+		const foreground = TokenMetAdAtA.getForeground(metAdAtA);
+		const fontStyle = TokenMetAdAtA.getFontStyle(metAdAtA);
 		return {
 			foreground: foreground,
-			italic: Boolean(fontStyle & FontStyle.Italic),
-			bold: Boolean(fontStyle & FontStyle.Bold),
-			underline: Boolean(fontStyle & FontStyle.Underline)
+			itAlic: BooleAn(fontStyle & FontStyle.ItAlic),
+			bold: BooleAn(fontStyle & FontStyle.Bold),
+			underline: BooleAn(fontStyle & FontStyle.Underline)
 		};
 	}
 
-	public get tokenColorMap(): string[] {
+	public get tokenColorMAp(): string[] {
 		return [];
 	}
 
-	public readonly semanticHighlighting = false;
+	public reAdonly semAnticHighlighting = fAlse;
 }
 
-function isBuiltinTheme(themeName: string): themeName is BuiltinTheme {
+function isBuiltinTheme(themeNAme: string): themeNAme is BuiltinTheme {
 	return (
-		themeName === VS_THEME_NAME
-		|| themeName === VS_DARK_THEME_NAME
-		|| themeName === HC_BLACK_THEME_NAME
+		themeNAme === VS_THEME_NAME
+		|| themeNAme === VS_DARK_THEME_NAME
+		|| themeNAme === HC_BLACK_THEME_NAME
 	);
 }
 
-function getBuiltinRules(builtinTheme: BuiltinTheme): IStandaloneThemeData {
+function getBuiltinRules(builtinTheme: BuiltinTheme): IStAndAloneThemeDAtA {
 	switch (builtinTheme) {
-		case VS_THEME_NAME:
+		cAse VS_THEME_NAME:
 			return vs;
-		case VS_DARK_THEME_NAME:
-			return vs_dark;
-		case HC_BLACK_THEME_NAME:
-			return hc_black;
+		cAse VS_DARK_THEME_NAME:
+			return vs_dArk;
+		cAse HC_BLACK_THEME_NAME:
+			return hc_blAck;
 	}
 }
 
-function newBuiltInTheme(builtinTheme: BuiltinTheme): StandaloneTheme {
-	let themeData = getBuiltinRules(builtinTheme);
-	return new StandaloneTheme(builtinTheme, themeData);
+function newBuiltInTheme(builtinTheme: BuiltinTheme): StAndAloneTheme {
+	let themeDAtA = getBuiltinRules(builtinTheme);
+	return new StAndAloneTheme(builtinTheme, themeDAtA);
 }
 
-export class StandaloneThemeServiceImpl extends Disposable implements IStandaloneThemeService {
+export clAss StAndAloneThemeServiceImpl extends DisposAble implements IStAndAloneThemeService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly _onColorThemeChange = this._register(new Emitter<IStandaloneTheme>());
-	public readonly onDidColorThemeChange = this._onColorThemeChange.event;
+	privAte reAdonly _onColorThemeChAnge = this._register(new Emitter<IStAndAloneTheme>());
+	public reAdonly onDidColorThemeChAnge = this._onColorThemeChAnge.event;
 
-	private readonly _onFileIconThemeChange = this._register(new Emitter<IFileIconTheme>());
-	public readonly onDidFileIconThemeChange = this._onFileIconThemeChange.event;
+	privAte reAdonly _onFileIconThemeChAnge = this._register(new Emitter<IFileIconTheme>());
+	public reAdonly onDidFileIconThemeChAnge = this._onFileIconThemeChAnge.event;
 
-	private readonly _environment: IEnvironmentService = Object.create(null);
-	private readonly _knownThemes: Map<string, StandaloneTheme>;
-	private _codiconCSS: string;
-	private _themeCSS: string;
-	private _allCSS: string;
-	private _globalStyleElement: HTMLStyleElement | null;
-	private _styleElements: HTMLStyleElement[];
-	private _theme!: IStandaloneTheme;
+	privAte reAdonly _environment: IEnvironmentService = Object.creAte(null);
+	privAte reAdonly _knownThemes: MAp<string, StAndAloneTheme>;
+	privAte _codiconCSS: string;
+	privAte _themeCSS: string;
+	privAte _AllCSS: string;
+	privAte _globAlStyleElement: HTMLStyleElement | null;
+	privAte _styleElements: HTMLStyleElement[];
+	privAte _theme!: IStAndAloneTheme;
 
 	constructor() {
 		super();
 
-		this._knownThemes = new Map<string, StandaloneTheme>();
+		this._knownThemes = new MAp<string, StAndAloneTheme>();
 		this._knownThemes.set(VS_THEME_NAME, newBuiltInTheme(VS_THEME_NAME));
 		this._knownThemes.set(VS_DARK_THEME_NAME, newBuiltInTheme(VS_DARK_THEME_NAME));
 		this._knownThemes.set(HC_BLACK_THEME_NAME, newBuiltInTheme(HC_BLACK_THEME_NAME));
 		this._codiconCSS = CodiconStyles.getCSS();
 		this._themeCSS = '';
-		this._allCSS = `${this._codiconCSS}\n${this._themeCSS}`;
-		this._globalStyleElement = null;
+		this._AllCSS = `${this._codiconCSS}\n${this._themeCSS}`;
+		this._globAlStyleElement = null;
 		this._styleElements = [];
 		this.setTheme(VS_THEME_NAME);
 
-		CodiconStyles.onDidChange(() => {
+		CodiconStyles.onDidChAnge(() => {
 			this._codiconCSS = CodiconStyles.getCSS();
-			this._updateCSS();
+			this._updAteCSS();
 		});
 	}
 
-	public registerEditorContainer(domNode: HTMLElement): IDisposable {
-		if (dom.isInShadowDOM(domNode)) {
-			return this._registerShadowDomContainer(domNode);
+	public registerEditorContAiner(domNode: HTMLElement): IDisposAble {
+		if (dom.isInShAdowDOM(domNode)) {
+			return this._registerShAdowDomContAiner(domNode);
 		}
-		return this._registerRegularEditorContainer();
+		return this._registerRegulArEditorContAiner();
 	}
 
-	private _registerRegularEditorContainer(): IDisposable {
-		if (!this._globalStyleElement) {
-			this._globalStyleElement = dom.createStyleSheet();
-			this._globalStyleElement.className = 'monaco-colors';
-			this._globalStyleElement.textContent = this._allCSS;
-			this._styleElements.push(this._globalStyleElement);
+	privAte _registerRegulArEditorContAiner(): IDisposAble {
+		if (!this._globAlStyleElement) {
+			this._globAlStyleElement = dom.creAteStyleSheet();
+			this._globAlStyleElement.clAssNAme = 'monAco-colors';
+			this._globAlStyleElement.textContent = this._AllCSS;
+			this._styleElements.push(this._globAlStyleElement);
 		}
-		return Disposable.None;
+		return DisposAble.None;
 	}
 
-	private _registerShadowDomContainer(domNode: HTMLElement): IDisposable {
-		const styleElement = dom.createStyleSheet(domNode);
-		styleElement.className = 'monaco-colors';
-		styleElement.textContent = this._allCSS;
+	privAte _registerShAdowDomContAiner(domNode: HTMLElement): IDisposAble {
+		const styleElement = dom.creAteStyleSheet(domNode);
+		styleElement.clAssNAme = 'monAco-colors';
+		styleElement.textContent = this._AllCSS;
 		this._styleElements.push(styleElement);
 		return {
 			dispose: () => {
@@ -255,36 +255,36 @@ export class StandaloneThemeServiceImpl extends Disposable implements IStandalon
 		};
 	}
 
-	public defineTheme(themeName: string, themeData: IStandaloneThemeData): void {
-		if (!/^[a-z0-9\-]+$/i.test(themeName)) {
-			throw new Error('Illegal theme name!');
+	public defineTheme(themeNAme: string, themeDAtA: IStAndAloneThemeDAtA): void {
+		if (!/^[A-z0-9\-]+$/i.test(themeNAme)) {
+			throw new Error('IllegAl theme nAme!');
 		}
-		if (!isBuiltinTheme(themeData.base) && !isBuiltinTheme(themeName)) {
-			throw new Error('Illegal theme base!');
+		if (!isBuiltinTheme(themeDAtA.bAse) && !isBuiltinTheme(themeNAme)) {
+			throw new Error('IllegAl theme bAse!');
 		}
-		// set or replace theme
-		this._knownThemes.set(themeName, new StandaloneTheme(themeName, themeData));
+		// set or replAce theme
+		this._knownThemes.set(themeNAme, new StAndAloneTheme(themeNAme, themeDAtA));
 
-		if (isBuiltinTheme(themeName)) {
-			this._knownThemes.forEach(theme => {
-				if (theme.base === themeName) {
-					theme.notifyBaseUpdated();
+		if (isBuiltinTheme(themeNAme)) {
+			this._knownThemes.forEAch(theme => {
+				if (theme.bAse === themeNAme) {
+					theme.notifyBAseUpdAted();
 				}
 			});
 		}
-		if (this._theme && this._theme.themeName === themeName) {
-			this.setTheme(themeName); // refresh theme
+		if (this._theme && this._theme.themeNAme === themeNAme) {
+			this.setTheme(themeNAme); // refresh theme
 		}
 	}
 
-	public getColorTheme(): IStandaloneTheme {
+	public getColorTheme(): IStAndAloneTheme {
 		return this._theme;
 	}
 
-	public setTheme(themeName: string): string {
-		let theme: StandaloneTheme;
-		if (this._knownThemes.has(themeName)) {
-			theme = this._knownThemes.get(themeName)!;
+	public setTheme(themeNAme: string): string {
+		let theme: StAndAloneTheme;
+		if (this._knownThemes.hAs(themeNAme)) {
+			theme = this._knownThemes.get(themeNAme)!;
 		} else {
 			theme = this._knownThemes.get(VS_THEME_NAME)!;
 		}
@@ -295,40 +295,40 @@ export class StandaloneThemeServiceImpl extends Disposable implements IStandalon
 		this._theme = theme;
 
 		let cssRules: string[] = [];
-		let hasRule: { [rule: string]: boolean; } = {};
+		let hAsRule: { [rule: string]: booleAn; } = {};
 		let ruleCollector: ICssStyleCollector = {
-			addRule: (rule: string) => {
-				if (!hasRule[rule]) {
+			AddRule: (rule: string) => {
+				if (!hAsRule[rule]) {
 					cssRules.push(rule);
-					hasRule[rule] = true;
+					hAsRule[rule] = true;
 				}
 			}
 		};
-		themingRegistry.getThemingParticipants().forEach(p => p(theme, ruleCollector, this._environment));
+		themingRegistry.getThemingPArticipAnts().forEAch(p => p(theme, ruleCollector, this._environment));
 
 		let tokenTheme = theme.tokenTheme;
-		let colorMap = tokenTheme.getColorMap();
-		ruleCollector.addRule(generateTokensCSSForColorMap(colorMap));
+		let colorMAp = tokenTheme.getColorMAp();
+		ruleCollector.AddRule(generAteTokensCSSForColorMAp(colorMAp));
 
 		this._themeCSS = cssRules.join('\n');
-		this._updateCSS();
+		this._updAteCSS();
 
-		TokenizationRegistry.setColorMap(colorMap);
-		this._onColorThemeChange.fire(theme);
+		TokenizAtionRegistry.setColorMAp(colorMAp);
+		this._onColorThemeChAnge.fire(theme);
 
 		return theme.id;
 	}
 
-	private _updateCSS(): void {
-		this._allCSS = `${this._codiconCSS}\n${this._themeCSS}`;
-		this._styleElements.forEach(styleElement => styleElement.textContent = this._allCSS);
+	privAte _updAteCSS(): void {
+		this._AllCSS = `${this._codiconCSS}\n${this._themeCSS}`;
+		this._styleElements.forEAch(styleElement => styleElement.textContent = this._AllCSS);
 	}
 
 	public getFileIconTheme(): IFileIconTheme {
 		return {
-			hasFileIcons: false,
-			hasFolderIcons: false,
-			hidesExplorerArrows: false
+			hAsFileIcons: fAlse,
+			hAsFolderIcons: fAlse,
+			hidesExplorerArrows: fAlse
 		};
 	}
 }

@@ -1,109 +1,109 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event } from 'vs/base/common/event';
-import { IJSONSchema } from 'vs/base/common/jsonSchema';
-import { Keybinding, KeyCode, ResolvedKeybinding } from 'vs/base/common/keyCodes';
-import { IContextKeyServiceTarget } from 'vs/platform/contextkey/common/contextkey';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IResolveResult } from 'vs/platform/keybinding/common/keybindingResolver';
-import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
+import { Event } from 'vs/bAse/common/event';
+import { IJSONSchemA } from 'vs/bAse/common/jsonSchemA';
+import { Keybinding, KeyCode, ResolvedKeybinding } from 'vs/bAse/common/keyCodes';
+import { IContextKeyServiceTArget } from 'vs/plAtform/contextkey/common/contextkey';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IResolveResult } from 'vs/plAtform/keybinding/common/keybindingResolver';
+import { ResolvedKeybindingItem } from 'vs/plAtform/keybinding/common/resolvedKeybindingItem';
 
-export interface IUserFriendlyKeybinding {
+export interfAce IUserFriendlyKeybinding {
 	key: string;
-	command: string;
-	args?: any;
+	commAnd: string;
+	Args?: Any;
 	when?: string;
 }
 
 export const enum KeybindingSource {
-	Default = 1,
+	DefAult = 1,
 	User
 }
 
-export interface IKeybindingEvent {
+export interfAce IKeybindingEvent {
 	source: KeybindingSource;
 	keybindings?: IUserFriendlyKeybinding[];
 }
 
-export interface IKeyboardEvent {
-	readonly _standardKeyboardEventBrand: true;
+export interfAce IKeyboArdEvent {
+	reAdonly _stAndArdKeyboArdEventBrAnd: true;
 
-	readonly ctrlKey: boolean;
-	readonly shiftKey: boolean;
-	readonly altKey: boolean;
-	readonly metaKey: boolean;
-	readonly keyCode: KeyCode;
-	readonly code: string;
+	reAdonly ctrlKey: booleAn;
+	reAdonly shiftKey: booleAn;
+	reAdonly AltKey: booleAn;
+	reAdonly metAKey: booleAn;
+	reAdonly keyCode: KeyCode;
+	reAdonly code: string;
 }
 
-export interface KeybindingsSchemaContribution {
-	readonly onDidChange?: Event<void>;
+export interfAce KeybindingsSchemAContribution {
+	reAdonly onDidChAnge?: Event<void>;
 
-	getSchemaAdditions(): IJSONSchema[];
+	getSchemAAdditions(): IJSONSchemA[];
 }
 
-export const IKeybindingService = createDecorator<IKeybindingService>('keybindingService');
+export const IKeybindingService = creAteDecorAtor<IKeybindingService>('keybindingService');
 
-export interface IKeybindingService {
-	readonly _serviceBrand: undefined;
+export interfAce IKeybindingService {
+	reAdonly _serviceBrAnd: undefined;
 
-	readonly inChordMode: boolean;
+	reAdonly inChordMode: booleAn;
 
-	onDidUpdateKeybindings: Event<IKeybindingEvent>;
+	onDidUpdAteKeybindings: Event<IKeybindingEvent>;
 
 	/**
-	 * Returns none, one or many (depending on keyboard layout)!
+	 * Returns none, one or mAny (depending on keyboArd lAyout)!
 	 */
 	resolveKeybinding(keybinding: Keybinding): ResolvedKeybinding[];
 
-	resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding;
+	resolveKeyboArdEvent(keyboArdEvent: IKeyboArdEvent): ResolvedKeybinding;
 
 	resolveUserBinding(userBinding: string): ResolvedKeybinding[];
 
 	/**
-	 * Resolve and dispatch `keyboardEvent` and invoke the command.
+	 * Resolve And dispAtch `keyboArdEvent` And invoke the commAnd.
 	 */
-	dispatchEvent(e: IKeyboardEvent, target: IContextKeyServiceTarget): boolean;
+	dispAtchEvent(e: IKeyboArdEvent, tArget: IContextKeyServiceTArget): booleAn;
 
 	/**
-	 * Resolve and dispatch `keyboardEvent`, but do not invoke the command or change inner state.
+	 * Resolve And dispAtch `keyboArdEvent`, but do not invoke the commAnd or chAnge inner stAte.
 	 */
-	softDispatch(keyboardEvent: IKeyboardEvent, target: IContextKeyServiceTarget): IResolveResult | null;
+	softDispAtch(keyboArdEvent: IKeyboArdEvent, tArget: IContextKeyServiceTArget): IResolveResult | null;
 
-	dispatchByUserSettingsLabel(userSettingsLabel: string, target: IContextKeyServiceTarget): void;
+	dispAtchByUserSettingsLAbel(userSettingsLAbel: string, tArget: IContextKeyServiceTArget): void;
 
 	/**
-	 * Look up keybindings for a command.
-	 * Use `lookupKeybinding` if you are interested in the preferred keybinding.
+	 * Look up keybindings for A commAnd.
+	 * Use `lookupKeybinding` if you Are interested in the preferred keybinding.
 	 */
-	lookupKeybindings(commandId: string): ResolvedKeybinding[];
+	lookupKeybindings(commAndId: string): ResolvedKeybinding[];
 
 	/**
-	 * Look up the preferred (last defined) keybinding for a command.
-	 * @returns The preferred keybinding or null if the command is not bound.
+	 * Look up the preferred (lAst defined) keybinding for A commAnd.
+	 * @returns The preferred keybinding or null if the commAnd is not bound.
 	 */
-	lookupKeybinding(commandId: string): ResolvedKeybinding | undefined;
+	lookupKeybinding(commAndId: string): ResolvedKeybinding | undefined;
 
-	getDefaultKeybindingsContent(): string;
+	getDefAultKeybindingsContent(): string;
 
-	getDefaultKeybindings(): readonly ResolvedKeybindingItem[];
+	getDefAultKeybindings(): reAdonly ResolvedKeybindingItem[];
 
-	getKeybindings(): readonly ResolvedKeybindingItem[];
+	getKeybindings(): reAdonly ResolvedKeybindingItem[];
 
 	customKeybindingsCount(): number;
 
 	/**
-	 * Will the given key event produce a character that's rendered on screen, e.g. in a
-	 * text box. *Note* that the results of this function can be incorrect.
+	 * Will the given key event produce A chArActer thAt's rendered on screen, e.g. in A
+	 * text box. *Note* thAt the results of this function cAn be incorrect.
 	 */
-	mightProducePrintableCharacter(event: IKeyboardEvent): boolean;
+	mightProducePrintAbleChArActer(event: IKeyboArdEvent): booleAn;
 
-	registerSchemaContribution(contribution: KeybindingsSchemaContribution): void;
+	registerSchemAContribution(contribution: KeybindingsSchemAContribution): void;
 
-	toggleLogging(): boolean;
+	toggleLogging(): booleAn;
 
 	_dumpDebugInfo(): string;
 	_dumpDebugInfoJSON(): string;

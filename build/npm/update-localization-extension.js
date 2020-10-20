@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
@@ -8,125 +8,125 @@
 let i18n = require("../lib/i18n");
 
 let fs = require("fs");
-let path = require("path");
+let pAth = require("pAth");
 
 let gulp = require('gulp');
 let vfs = require("vinyl-fs");
-let rimraf = require('rimraf');
+let rimrAf = require('rimrAf');
 let minimist = require('minimist');
 
-function update(options) {
-	let idOrPath = options._;
-	if (!idOrPath) {
-		throw new Error('Argument must be the location of the localization extension.');
+function updAte(options) {
+	let idOrPAth = options._;
+	if (!idOrPAth) {
+		throw new Error('Argument must be the locAtion of the locAlizAtion extension.');
 	}
-	let transifex = options.transifex;
-	let location = options.location;
-	if (transifex === true && location !== undefined) {
-		throw new Error('Either --transifex or --location can be specified, but not both.');
+	let trAnsifex = options.trAnsifex;
+	let locAtion = options.locAtion;
+	if (trAnsifex === true && locAtion !== undefined) {
+		throw new Error('Either --trAnsifex or --locAtion cAn be specified, but not both.');
 	}
-	if (!transifex && !location) {
-		transifex = true;
+	if (!trAnsifex && !locAtion) {
+		trAnsifex = true;
 	}
-	if (location !== undefined && !fs.existsSync(location)) {
-		throw new Error(`${location} doesn't exist.`);
+	if (locAtion !== undefined && !fs.existsSync(locAtion)) {
+		throw new Error(`${locAtion} doesn't exist.`);
 	}
-	let locExtFolder = idOrPath;
-	if (/^\w{2}(-\w+)?$/.test(idOrPath)) {
-		locExtFolder = path.join('..', 'vscode-loc', 'i18n', `vscode-language-pack-${idOrPath}`);
+	let locExtFolder = idOrPAth;
+	if (/^\w{2}(-\w+)?$/.test(idOrPAth)) {
+		locExtFolder = pAth.join('..', 'vscode-loc', 'i18n', `vscode-lAnguAge-pAck-${idOrPAth}`);
 	}
-	let locExtStat = fs.statSync(locExtFolder);
-	if (!locExtStat || !locExtStat.isDirectory) {
-		throw new Error('No directory found at ' + idOrPath);
+	let locExtStAt = fs.stAtSync(locExtFolder);
+	if (!locExtStAt || !locExtStAt.isDirectory) {
+		throw new Error('No directory found At ' + idOrPAth);
 	}
-	let packageJSON = JSON.parse(fs.readFileSync(path.join(locExtFolder, 'package.json')).toString());
-	let contributes = packageJSON['contributes'];
+	let pAckAgeJSON = JSON.pArse(fs.reAdFileSync(pAth.join(locExtFolder, 'pAckAge.json')).toString());
+	let contributes = pAckAgeJSON['contributes'];
 	if (!contributes) {
-		throw new Error('The extension must define a "localizations" contribution in the "package.json"');
+		throw new Error('The extension must define A "locAlizAtions" contribution in the "pAckAge.json"');
 	}
-	let localizations = contributes['localizations'];
-	if (!localizations) {
-		throw new Error('The extension must define a "localizations" contribution of type array in the "package.json"');
+	let locAlizAtions = contributes['locAlizAtions'];
+	if (!locAlizAtions) {
+		throw new Error('The extension must define A "locAlizAtions" contribution of type ArrAy in the "pAckAge.json"');
 	}
 
-	localizations.forEach(function (localization) {
-		if (!localization.languageId || !localization.languageName || !localization.localizedLanguageName) {
-			throw new Error('Each localization contribution must define "languageId", "languageName" and "localizedLanguageName" properties.');
+	locAlizAtions.forEAch(function (locAlizAtion) {
+		if (!locAlizAtion.lAnguAgeId || !locAlizAtion.lAnguAgeNAme || !locAlizAtion.locAlizedLAnguAgeNAme) {
+			throw new Error('EAch locAlizAtion contribution must define "lAnguAgeId", "lAnguAgeNAme" And "locAlizedLAnguAgeNAme" properties.');
 		}
-		let server = localization.server || 'www.transifex.com';
-		let userName = localization.userName || 'api';
-		let apiToken = process.env.TRANSIFEX_API_TOKEN;
-		let languageId = localization.transifexId || localization.languageId;
-		let translationDataFolder = path.join(locExtFolder, 'translations');
-		if (languageId === "zh-cn") {
-			languageId = "zh-hans";
+		let server = locAlizAtion.server || 'www.trAnsifex.com';
+		let userNAme = locAlizAtion.userNAme || 'Api';
+		let ApiToken = process.env.TRANSIFEX_API_TOKEN;
+		let lAnguAgeId = locAlizAtion.trAnsifexId || locAlizAtion.lAnguAgeId;
+		let trAnslAtionDAtAFolder = pAth.join(locExtFolder, 'trAnslAtions');
+		if (lAnguAgeId === "zh-cn") {
+			lAnguAgeId = "zh-hAns";
 		}
-		if (languageId === "zh-tw") {
-			languageId = "zh-hant";
+		if (lAnguAgeId === "zh-tw") {
+			lAnguAgeId = "zh-hAnt";
 		}
-		if (fs.existsSync(translationDataFolder) && fs.existsSync(path.join(translationDataFolder, 'main.i18n.json'))) {
-			console.log('Clearing  \'' + translationDataFolder + '\'...');
-			rimraf.sync(translationDataFolder);
+		if (fs.existsSync(trAnslAtionDAtAFolder) && fs.existsSync(pAth.join(trAnslAtionDAtAFolder, 'mAin.i18n.json'))) {
+			console.log('CleAring  \'' + trAnslAtionDAtAFolder + '\'...');
+			rimrAf.sync(trAnslAtionDAtAFolder);
 		}
 
-		if (transifex) {
-			console.log(`Downloading translations for ${languageId} to '${translationDataFolder}' ...`);
-			let translationPaths = [];
-			i18n.pullI18nPackFiles(server, userName, apiToken, { id: languageId }, translationPaths)
+		if (trAnsifex) {
+			console.log(`DownloAding trAnslAtions for ${lAnguAgeId} to '${trAnslAtionDAtAFolder}' ...`);
+			let trAnslAtionPAths = [];
+			i18n.pullI18nPAckFiles(server, userNAme, ApiToken, { id: lAnguAgeId }, trAnslAtionPAths)
 				.on('error', (error) => {
-					console.log(`Error occurred while importing translations:`);
-					translationPaths = undefined;
-					if (Array.isArray(error)) {
-						error.forEach(console.log);
+					console.log(`Error occurred while importing trAnslAtions:`);
+					trAnslAtionPAths = undefined;
+					if (ArrAy.isArrAy(error)) {
+						error.forEAch(console.log);
 					} else if (error) {
 						console.log(error);
 					} else {
 						console.log('Unknown error');
 					}
 				})
-				.pipe(vfs.dest(translationDataFolder))
+				.pipe(vfs.dest(trAnslAtionDAtAFolder))
 				.on('end', function () {
-					if (translationPaths !== undefined) {
-						localization.translations = [];
-						for (let tp of translationPaths) {
-							localization.translations.push({ id: tp.id, path: `./translations/${tp.resourceName}`});
+					if (trAnslAtionPAths !== undefined) {
+						locAlizAtion.trAnslAtions = [];
+						for (let tp of trAnslAtionPAths) {
+							locAlizAtion.trAnslAtions.push({ id: tp.id, pAth: `./trAnslAtions/${tp.resourceNAme}`});
 						}
-						fs.writeFileSync(path.join(locExtFolder, 'package.json'), JSON.stringify(packageJSON, null, '\t'));
+						fs.writeFileSync(pAth.join(locExtFolder, 'pAckAge.json'), JSON.stringify(pAckAgeJSON, null, '\t'));
 					}
 				});
 		} else {
-			console.log(`Importing translations for ${languageId} form '${location}' to '${translationDataFolder}' ...`);
-			let translationPaths = [];
-			gulp.src(path.join(location, languageId, '**', '*.xlf'))
-				.pipe(i18n.prepareI18nPackFiles(i18n.externalExtensionsWithTranslations, translationPaths, languageId === 'ps'))
+			console.log(`Importing trAnslAtions for ${lAnguAgeId} form '${locAtion}' to '${trAnslAtionDAtAFolder}' ...`);
+			let trAnslAtionPAths = [];
+			gulp.src(pAth.join(locAtion, lAnguAgeId, '**', '*.xlf'))
+				.pipe(i18n.prepAreI18nPAckFiles(i18n.externAlExtensionsWithTrAnslAtions, trAnslAtionPAths, lAnguAgeId === 'ps'))
 				.on('error', (error) => {
-					console.log(`Error occurred while importing translations:`);
-					translationPaths = undefined;
-					if (Array.isArray(error)) {
-						error.forEach(console.log);
+					console.log(`Error occurred while importing trAnslAtions:`);
+					trAnslAtionPAths = undefined;
+					if (ArrAy.isArrAy(error)) {
+						error.forEAch(console.log);
 					} else if (error) {
 						console.log(error);
 					} else {
 						console.log('Unknown error');
 					}
 				})
-				.pipe(vfs.dest(translationDataFolder))
+				.pipe(vfs.dest(trAnslAtionDAtAFolder))
 				.on('end', function () {
-					if (translationPaths !== undefined) {
-						localization.translations = [];
-						for (let tp of translationPaths) {
-							localization.translations.push({ id: tp.id, path: `./translations/${tp.resourceName}`});
+					if (trAnslAtionPAths !== undefined) {
+						locAlizAtion.trAnslAtions = [];
+						for (let tp of trAnslAtionPAths) {
+							locAlizAtion.trAnslAtions.push({ id: tp.id, pAth: `./trAnslAtions/${tp.resourceNAme}`});
 						}
-						fs.writeFileSync(path.join(locExtFolder, 'package.json'), JSON.stringify(packageJSON, null, '\t'));
+						fs.writeFileSync(pAth.join(locExtFolder, 'pAckAge.json'), JSON.stringify(pAckAgeJSON, null, '\t'));
 					}
 				});
 		}
 	});
 }
-if (path.basename(process.argv[1]) === 'update-localization-extension.js') {
-	var options = minimist(process.argv.slice(2), {
-		boolean: 'transifex',
-		string: 'location'
+if (pAth.bAsenAme(process.Argv[1]) === 'updAte-locAlizAtion-extension.js') {
+	vAr options = minimist(process.Argv.slice(2), {
+		booleAn: 'trAnsifex',
+		string: 'locAtion'
 	});
-	update(options);
+	updAte(options);
 }

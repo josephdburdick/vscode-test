@@ -1,159 +1,159 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 
 // #######################################################################
 // ###                                                                 ###
-// ###      electron.d.ts types we expose from electron-sandbox        ###
+// ###      electron.d.ts types we expose from electron-sAndbox        ###
 // ###                    (copied from Electron 9.x)                   ###
 // ###                                                                 ###
 // #######################################################################
 
 
-export interface IpcRenderer {
+export interfAce IpcRenderer {
 	/**
-	 * Listens to `channel`, when a new message arrives `listener` would be called with
-	 * `listener(event, args...)`.
+	 * Listens to `chAnnel`, when A new messAge Arrives `listener` would be cAlled with
+	 * `listener(event, Args...)`.
 	 */
-	on(channel: string, listener: (event: unknown, ...args: any[]) => void): void;
+	on(chAnnel: string, listener: (event: unknown, ...Args: Any[]) => void): void;
 
 	/**
-	 * Adds a one time `listener` function for the event. This `listener` is invoked
-	 * only the next time a message is sent to `channel`, after which it is removed.
+	 * Adds A one time `listener` function for the event. This `listener` is invoked
+	 * only the next time A messAge is sent to `chAnnel`, After which it is removed.
 	 */
-	once(channel: string, listener: (event: unknown, ...args: any[]) => void): void;
+	once(chAnnel: string, listener: (event: unknown, ...Args: Any[]) => void): void;
 
 	/**
-	 * Removes the specified `listener` from the listener array for the specified
-	 * `channel`.
+	 * Removes the specified `listener` from the listener ArrAy for the specified
+	 * `chAnnel`.
 	 */
-	removeListener(channel: string, listener: (event: unknown, ...args: any[]) => void): void;
+	removeListener(chAnnel: string, listener: (event: unknown, ...Args: Any[]) => void): void;
 
 	/**
-	 * Send an asynchronous message to the main process via `channel`, along with
-	 * arguments. Arguments will be serialized with the Structured Clone Algorithm,
-	 * just like `postMessage`, so prototype chains will not be included. Sending
-	 * Functions, Promises, Symbols, WeakMaps, or WeakSets will throw an exception.
+	 * Send An Asynchronous messAge to the mAin process viA `chAnnel`, Along with
+	 * Arguments. Arguments will be seriAlized with the Structured Clone Algorithm,
+	 * just like `postMessAge`, so prototype chAins will not be included. Sending
+	 * Functions, Promises, Symbols, WeAkMAps, or WeAkSets will throw An exception.
 	 *
-	 * > **NOTE**: Sending non-standard JavaScript types such as DOM objects or special
-	 * Electron objects is deprecated, and will begin throwing an exception starting
+	 * > **NOTE**: Sending non-stAndArd JAvAScript types such As DOM objects or speciAl
+	 * Electron objects is deprecAted, And will begin throwing An exception stArting
 	 * with Electron 9.
 	 *
-	 * The main process handles it by listening for `channel` with the `ipcMain`
+	 * The mAin process hAndles it by listening for `chAnnel` with the `ipcMAin`
 	 * module.
 	 */
-	send(channel: string, ...args: any[]): void;
+	send(chAnnel: string, ...Args: Any[]): void;
 }
 
-export interface WebFrame {
+export interfAce WebFrAme {
 	/**
-	 * Changes the zoom level to the specified level. The original size is 0 and each
-	 * increment above or below represents zooming 20% larger or smaller to default
-	 * limits of 300% and 50% of original size, respectively.
+	 * ChAnges the zoom level to the specified level. The originAl size is 0 And eAch
+	 * increment Above or below represents zooming 20% lArger or smAller to defAult
+	 * limits of 300% And 50% of originAl size, respectively.
 	 */
 	setZoomLevel(level: number): void;
 }
 
-export interface CrashReporter {
+export interfAce CrAshReporter {
 	/**
-	 * Set an extra parameter to be sent with the crash report. The values specified
-	 * here will be sent in addition to any values set via the `extra` option when
-	 * `start` was called.
+	 * Set An extrA pArAmeter to be sent with the crAsh report. The vAlues specified
+	 * here will be sent in Addition to Any vAlues set viA the `extrA` option when
+	 * `stArt` wAs cAlled.
 	 *
-	 * Parameters added in this fashion (or via the `extra` parameter to
-	 * `crashReporter.start`) are specific to the calling process. Adding extra
-	 * parameters in the main process will not cause those parameters to be sent along
-	 * with crashes from renderer or other child processes. Similarly, adding extra
-	 * parameters in a renderer process will not result in those parameters being sent
-	 * with crashes that occur in other renderer processes or in the main process.
+	 * PArAmeters Added in this fAshion (or viA the `extrA` pArAmeter to
+	 * `crAshReporter.stArt`) Are specific to the cAlling process. Adding extrA
+	 * pArAmeters in the mAin process will not cAuse those pArAmeters to be sent Along
+	 * with crAshes from renderer or other child processes. SimilArly, Adding extrA
+	 * pArAmeters in A renderer process will not result in those pArAmeters being sent
+	 * with crAshes thAt occur in other renderer processes or in the mAin process.
 	 *
-	 * **Note:** Parameters have limits on the length of the keys and values. Key names
-	 * must be no longer than 39 bytes, and values must be no longer than 127 bytes.
-	 * Keys with names longer than the maximum will be silently ignored. Key values
-	 * longer than the maximum length will be truncated.
+	 * **Note:** PArAmeters hAve limits on the length of the keys And vAlues. Key nAmes
+	 * must be no longer thAn 39 bytes, And vAlues must be no longer thAn 127 bytes.
+	 * Keys with nAmes longer thAn the mAximum will be silently ignored. Key vAlues
+	 * longer thAn the mAximum length will be truncAted.
 	 */
-	addExtraParameter(key: string, value: string): void;
+	AddExtrAPArAmeter(key: string, vAlue: string): void;
 }
 
-export interface ProcessMemoryInfo {
+export interfAce ProcessMemoryInfo {
 
-	// Docs: http://electronjs.org/docs/api/structures/process-memory-info
+	// Docs: http://electronjs.org/docs/Api/structures/process-memory-info
 
 	/**
-	 * The amount of memory not shared by other processes, such as JS heap or HTML
+	 * The Amount of memory not shAred by other processes, such As JS heAp or HTML
 	 * content in Kilobytes.
 	 */
-	private: number;
+	privAte: number;
 	/**
-	 * The amount of memory currently pinned to actual physical RAM in Kilobytes.
+	 * The Amount of memory currently pinned to ActuAl physicAl RAM in Kilobytes.
 	 *
-	 * @platform linux,win32
+	 * @plAtform linux,win32
 	 */
 	residentSet: number;
 	/**
-	 * The amount of memory shared between processes, typically memory consumed by the
+	 * The Amount of memory shAred between processes, typicAlly memory consumed by the
 	 * Electron code itself in Kilobytes.
 	 */
-	shared: number;
+	shAred: number;
 }
 
-export interface CrashReporterStartOptions {
+export interfAce CrAshReporterStArtOptions {
 	/**
-	 * URL that crash reports will be sent to as POST.
+	 * URL thAt crAsh reports will be sent to As POST.
 	 */
 	submitURL: string;
 	/**
-	 * Defaults to `app.name`.
+	 * DefAults to `App.nAme`.
 	 */
-	productName?: string;
+	productNAme?: string;
 	/**
-	 * Deprecated alias for `{ globalExtra: { _companyName: ... } }`.
+	 * DeprecAted AliAs for `{ globAlExtrA: { _compAnyNAme: ... } }`.
 	 *
-	 * @deprecated
+	 * @deprecAted
 	 */
-	companyName?: string;
+	compAnyNAme?: string;
 	/**
-	 * Whether crash reports should be sent to the server. If false, crash reports will
-	 * be collected and stored in the crashes directory, but not uploaded. Default is
+	 * Whether crAsh reports should be sent to the server. If fAlse, crAsh reports will
+	 * be collected And stored in the crAshes directory, but not uploAded. DefAult is
 	 * `true`.
 	 */
-	uploadToServer?: boolean;
+	uploAdToServer?: booleAn;
 	/**
-	 * If true, crashes generated in the main process will not be forwarded to the
-	 * system crash handler. Default is `false`.
+	 * If true, crAshes generAted in the mAin process will not be forwArded to the
+	 * system crAsh hAndler. DefAult is `fAlse`.
 	 */
-	ignoreSystemCrashHandler?: boolean;
+	ignoreSystemCrAshHAndler?: booleAn;
 	/**
-	 * If true, limit the number of crashes uploaded to 1/hour. Default is `false`.
+	 * If true, limit the number of crAshes uploAded to 1/hour. DefAult is `fAlse`.
 	 *
-	 * @platform darwin,win32
+	 * @plAtform dArwin,win32
 	 */
-	rateLimit?: boolean;
+	rAteLimit?: booleAn;
 	/**
-	 * If true, crash reports will be compressed and uploaded with `Content-Encoding:
-	 * gzip`. Not all collection servers support compressed payloads. Default is
-	 * `false`.
+	 * If true, crAsh reports will be compressed And uploAded with `Content-Encoding:
+	 * gzip`. Not All collection servers support compressed pAyloAds. DefAult is
+	 * `fAlse`.
 	 *
-	 * @platform darwin,win32
+	 * @plAtform dArwin,win32
 	 */
-	compress?: boolean;
+	compress?: booleAn;
 	/**
-	 * Extra string key/value annotations that will be sent along with crash reports
-	 * that are generated in the main process. Only string values are supported.
-	 * Crashes generated in child processes will not contain these extra parameters to
-	 * crash reports generated from child processes, call `addExtraParameter` from the
+	 * ExtrA string key/vAlue AnnotAtions thAt will be sent Along with crAsh reports
+	 * thAt Are generAted in the mAin process. Only string vAlues Are supported.
+	 * CrAshes generAted in child processes will not contAin these extrA pArAmeters to
+	 * crAsh reports generAted from child processes, cAll `AddExtrAPArAmeter` from the
 	 * child process.
 	 */
-	extra?: Record<string, string>;
+	extrA?: Record<string, string>;
 	/**
-	 * Extra string key/value annotations that will be sent along with any crash
-	 * reports generated in any process. These annotations cannot be changed once the
-	 * crash reporter has been started. If a key is present in both the global extra
-	 * parameters and the process-specific extra parameters, then the global one will
-	 * take precedence. By default, `productName` and the app version are included, as
-	 * well as the Electron version.
+	 * ExtrA string key/vAlue AnnotAtions thAt will be sent Along with Any crAsh
+	 * reports generAted in Any process. These AnnotAtions cAnnot be chAnged once the
+	 * crAsh reporter hAs been stArted. If A key is present in both the globAl extrA
+	 * pArAmeters And the process-specific extrA pArAmeters, then the globAl one will
+	 * tAke precedence. By defAult, `productNAme` And the App version Are included, As
+	 * well As the Electron version.
 	 */
-	globalExtra?: Record<string, string>;
+	globAlExtrA?: Record<string, string>;
 }

@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ok } from 'vs/base/common/assert';
-import { Schemas } from 'vs/base/common/network';
-import { regExpLeadsToEndlessLoop } from 'vs/base/common/strings';
-import { URI } from 'vs/base/common/uri';
+import { ok } from 'vs/bAse/common/Assert';
+import { SchemAs } from 'vs/bAse/common/network';
+import { regExpLeAdsToEndlessLoop } from 'vs/bAse/common/strings';
+import { URI } from 'vs/bAse/common/uri';
 import { MirrorTextModel } from 'vs/editor/common/model/mirrorTextModel';
-import { ensureValidWordDefinition, getWordAtText } from 'vs/editor/common/model/wordHelper';
-import { MainThreadDocumentsShape } from 'vs/workbench/api/common/extHost.protocol';
-import { EndOfLine, Position, Range } from 'vs/workbench/api/common/extHostTypes';
-import type * as vscode from 'vscode';
-import { equals } from 'vs/base/common/arrays';
+import { ensureVAlidWordDefinition, getWordAtText } from 'vs/editor/common/model/wordHelper';
+import { MAinThreAdDocumentsShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { EndOfLine, Position, RAnge } from 'vs/workbench/Api/common/extHostTypes';
+import type * As vscode from 'vscode';
+import { equAls } from 'vs/bAse/common/ArrAys';
 
-const _modeId2WordDefinition = new Map<string, RegExp>();
+const _modeId2WordDefinition = new MAp<string, RegExp>();
 export function setWordDefinitionFor(modeId: string, wordDefinition: RegExp | undefined): void {
 	if (!wordDefinition) {
 		_modeId2WordDefinition.delete(modeId);
@@ -27,230 +27,230 @@ export function getWordDefinitionFor(modeId: string): RegExp | undefined {
 	return _modeId2WordDefinition.get(modeId);
 }
 
-export class ExtHostDocumentData extends MirrorTextModel {
+export clAss ExtHostDocumentDAtA extends MirrorTextModel {
 
-	private _document?: vscode.TextDocument;
-	private _isDisposed: boolean = false;
+	privAte _document?: vscode.TextDocument;
+	privAte _isDisposed: booleAn = fAlse;
 
 	constructor(
-		private readonly _proxy: MainThreadDocumentsShape,
+		privAte reAdonly _proxy: MAinThreAdDocumentsShApe,
 		uri: URI, lines: string[], eol: string, versionId: number,
-		private _languageId: string,
-		private _isDirty: boolean,
-		private readonly _notebook?: vscode.NotebookDocument | undefined
+		privAte _lAnguAgeId: string,
+		privAte _isDirty: booleAn,
+		privAte reAdonly _notebook?: vscode.NotebookDocument | undefined
 	) {
 		super(uri, lines, eol, versionId);
 	}
 
 	dispose(): void {
-		// we don't really dispose documents but let
-		// extensions still read from them. some
-		// operations, live saving, will now error tho
+		// we don't reAlly dispose documents but let
+		// extensions still reAd from them. some
+		// operAtions, live sAving, will now error tho
 		ok(!this._isDisposed);
 		this._isDisposed = true;
-		this._isDirty = false;
+		this._isDirty = fAlse;
 	}
 
-	equalLines(lines: readonly string[]): boolean {
-		return equals(this._lines, lines);
+	equAlLines(lines: reAdonly string[]): booleAn {
+		return equAls(this._lines, lines);
 	}
 
 	get document(): vscode.TextDocument {
 		if (!this._document) {
-			const that = this;
+			const thAt = this;
 			this._document = {
-				get uri() { return that._uri; },
-				get fileName() { return that._uri.fsPath; },
-				get isUntitled() { return that._uri.scheme === Schemas.untitled; },
-				get languageId() { return that._languageId; },
-				get version() { return that._versionId; },
-				get isClosed() { return that._isDisposed; },
-				get isDirty() { return that._isDirty; },
-				get notebook() { return that._notebook; },
-				save() { return that._save(); },
-				getText(range?) { return range ? that._getTextInRange(range) : that.getText(); },
-				get eol() { return that._eol === '\n' ? EndOfLine.LF : EndOfLine.CRLF; },
-				get lineCount() { return that._lines.length; },
-				lineAt(lineOrPos: number | vscode.Position) { return that._lineAt(lineOrPos); },
-				offsetAt(pos) { return that._offsetAt(pos); },
-				positionAt(offset) { return that._positionAt(offset); },
-				validateRange(ran) { return that._validateRange(ran); },
-				validatePosition(pos) { return that._validatePosition(pos); },
-				getWordRangeAtPosition(pos, regexp?) { return that._getWordRangeAtPosition(pos, regexp); },
+				get uri() { return thAt._uri; },
+				get fileNAme() { return thAt._uri.fsPAth; },
+				get isUntitled() { return thAt._uri.scheme === SchemAs.untitled; },
+				get lAnguAgeId() { return thAt._lAnguAgeId; },
+				get version() { return thAt._versionId; },
+				get isClosed() { return thAt._isDisposed; },
+				get isDirty() { return thAt._isDirty; },
+				get notebook() { return thAt._notebook; },
+				sAve() { return thAt._sAve(); },
+				getText(rAnge?) { return rAnge ? thAt._getTextInRAnge(rAnge) : thAt.getText(); },
+				get eol() { return thAt._eol === '\n' ? EndOfLine.LF : EndOfLine.CRLF; },
+				get lineCount() { return thAt._lines.length; },
+				lineAt(lineOrPos: number | vscode.Position) { return thAt._lineAt(lineOrPos); },
+				offsetAt(pos) { return thAt._offsetAt(pos); },
+				positionAt(offset) { return thAt._positionAt(offset); },
+				vAlidAteRAnge(rAn) { return thAt._vAlidAteRAnge(rAn); },
+				vAlidAtePosition(pos) { return thAt._vAlidAtePosition(pos); },
+				getWordRAngeAtPosition(pos, regexp?) { return thAt._getWordRAngeAtPosition(pos, regexp); },
 			};
 		}
 		return Object.freeze(this._document);
 	}
 
-	_acceptLanguageId(newLanguageId: string): void {
+	_AcceptLAnguAgeId(newLAnguAgeId: string): void {
 		ok(!this._isDisposed);
-		this._languageId = newLanguageId;
+		this._lAnguAgeId = newLAnguAgeId;
 	}
 
-	_acceptIsDirty(isDirty: boolean): void {
+	_AcceptIsDirty(isDirty: booleAn): void {
 		ok(!this._isDisposed);
 		this._isDirty = isDirty;
 	}
 
-	private _save(): Promise<boolean> {
+	privAte _sAve(): Promise<booleAn> {
 		if (this._isDisposed) {
-			return Promise.reject(new Error('Document has been closed'));
+			return Promise.reject(new Error('Document hAs been closed'));
 		}
-		return this._proxy.$trySaveDocument(this._uri);
+		return this._proxy.$trySAveDocument(this._uri);
 	}
 
-	private _getTextInRange(_range: vscode.Range): string {
-		const range = this._validateRange(_range);
+	privAte _getTextInRAnge(_rAnge: vscode.RAnge): string {
+		const rAnge = this._vAlidAteRAnge(_rAnge);
 
-		if (range.isEmpty) {
+		if (rAnge.isEmpty) {
 			return '';
 		}
 
-		if (range.isSingleLine) {
-			return this._lines[range.start.line].substring(range.start.character, range.end.character);
+		if (rAnge.isSingleLine) {
+			return this._lines[rAnge.stArt.line].substring(rAnge.stArt.chArActer, rAnge.end.chArActer);
 		}
 
 		const lineEnding = this._eol,
-			startLineIndex = range.start.line,
-			endLineIndex = range.end.line,
+			stArtLineIndex = rAnge.stArt.line,
+			endLineIndex = rAnge.end.line,
 			resultLines: string[] = [];
 
-		resultLines.push(this._lines[startLineIndex].substring(range.start.character));
-		for (let i = startLineIndex + 1; i < endLineIndex; i++) {
+		resultLines.push(this._lines[stArtLineIndex].substring(rAnge.stArt.chArActer));
+		for (let i = stArtLineIndex + 1; i < endLineIndex; i++) {
 			resultLines.push(this._lines[i]);
 		}
-		resultLines.push(this._lines[endLineIndex].substring(0, range.end.character));
+		resultLines.push(this._lines[endLineIndex].substring(0, rAnge.end.chArActer));
 
 		return resultLines.join(lineEnding);
 	}
 
-	private _lineAt(lineOrPosition: number | vscode.Position): vscode.TextLine {
+	privAte _lineAt(lineOrPosition: number | vscode.Position): vscode.TextLine {
 
 		let line: number | undefined;
-		if (lineOrPosition instanceof Position) {
+		if (lineOrPosition instAnceof Position) {
 			line = lineOrPosition.line;
 		} else if (typeof lineOrPosition === 'number') {
 			line = lineOrPosition;
 		}
 
-		if (typeof line !== 'number' || line < 0 || line >= this._lines.length || Math.floor(line) !== line) {
-			throw new Error('Illegal value for `line`');
+		if (typeof line !== 'number' || line < 0 || line >= this._lines.length || MAth.floor(line) !== line) {
+			throw new Error('IllegAl vAlue for `line`');
 		}
 
 		return new ExtHostDocumentLine(line, this._lines[line], line === this._lines.length - 1);
 	}
 
-	private _offsetAt(position: vscode.Position): number {
-		position = this._validatePosition(position);
-		this._ensureLineStarts();
-		return this._lineStarts!.getAccumulatedValue(position.line - 1) + position.character;
+	privAte _offsetAt(position: vscode.Position): number {
+		position = this._vAlidAtePosition(position);
+		this._ensureLineStArts();
+		return this._lineStArts!.getAccumulAtedVAlue(position.line - 1) + position.chArActer;
 	}
 
-	private _positionAt(offset: number): vscode.Position {
-		offset = Math.floor(offset);
-		offset = Math.max(0, offset);
+	privAte _positionAt(offset: number): vscode.Position {
+		offset = MAth.floor(offset);
+		offset = MAth.mAx(0, offset);
 
-		this._ensureLineStarts();
-		const out = this._lineStarts!.getIndexOf(offset);
+		this._ensureLineStArts();
+		const out = this._lineStArts!.getIndexOf(offset);
 
 		const lineLength = this._lines[out.index].length;
 
-		// Ensure we return a valid position
-		return new Position(out.index, Math.min(out.remainder, lineLength));
+		// Ensure we return A vAlid position
+		return new Position(out.index, MAth.min(out.remAinder, lineLength));
 	}
 
-	// ---- range math
+	// ---- rAnge mAth
 
-	private _validateRange(range: vscode.Range): vscode.Range {
-		if (!(range instanceof Range)) {
-			throw new Error('Invalid argument');
+	privAte _vAlidAteRAnge(rAnge: vscode.RAnge): vscode.RAnge {
+		if (!(rAnge instAnceof RAnge)) {
+			throw new Error('InvAlid Argument');
 		}
 
-		const start = this._validatePosition(range.start);
-		const end = this._validatePosition(range.end);
+		const stArt = this._vAlidAtePosition(rAnge.stArt);
+		const end = this._vAlidAtePosition(rAnge.end);
 
-		if (start === range.start && end === range.end) {
-			return range;
+		if (stArt === rAnge.stArt && end === rAnge.end) {
+			return rAnge;
 		}
-		return new Range(start.line, start.character, end.line, end.character);
+		return new RAnge(stArt.line, stArt.chArActer, end.line, end.chArActer);
 	}
 
-	private _validatePosition(position: vscode.Position): vscode.Position {
-		if (!(position instanceof Position)) {
-			throw new Error('Invalid argument');
+	privAte _vAlidAtePosition(position: vscode.Position): vscode.Position {
+		if (!(position instAnceof Position)) {
+			throw new Error('InvAlid Argument');
 		}
 
 		if (this._lines.length === 0) {
 			return position.with(0, 0);
 		}
 
-		let { line, character } = position;
-		let hasChanged = false;
+		let { line, chArActer } = position;
+		let hAsChAnged = fAlse;
 
 		if (line < 0) {
 			line = 0;
-			character = 0;
-			hasChanged = true;
+			chArActer = 0;
+			hAsChAnged = true;
 		}
 		else if (line >= this._lines.length) {
 			line = this._lines.length - 1;
-			character = this._lines[line].length;
-			hasChanged = true;
+			chArActer = this._lines[line].length;
+			hAsChAnged = true;
 		}
 		else {
-			const maxCharacter = this._lines[line].length;
-			if (character < 0) {
-				character = 0;
-				hasChanged = true;
+			const mAxChArActer = this._lines[line].length;
+			if (chArActer < 0) {
+				chArActer = 0;
+				hAsChAnged = true;
 			}
-			else if (character > maxCharacter) {
-				character = maxCharacter;
-				hasChanged = true;
+			else if (chArActer > mAxChArActer) {
+				chArActer = mAxChArActer;
+				hAsChAnged = true;
 			}
 		}
 
-		if (!hasChanged) {
+		if (!hAsChAnged) {
 			return position;
 		}
-		return new Position(line, character);
+		return new Position(line, chArActer);
 	}
 
-	private _getWordRangeAtPosition(_position: vscode.Position, regexp?: RegExp): vscode.Range | undefined {
-		const position = this._validatePosition(_position);
+	privAte _getWordRAngeAtPosition(_position: vscode.Position, regexp?: RegExp): vscode.RAnge | undefined {
+		const position = this._vAlidAtePosition(_position);
 
 		if (!regexp) {
-			// use default when custom-regexp isn't provided
-			regexp = getWordDefinitionFor(this._languageId);
+			// use defAult when custom-regexp isn't provided
+			regexp = getWordDefinitionFor(this._lAnguAgeId);
 
-		} else if (regExpLeadsToEndlessLoop(regexp)) {
-			// use default when custom-regexp is bad
-			throw new Error(`[getWordRangeAtPosition]: ignoring custom regexp '${regexp.source}' because it matches the empty string.`);
+		} else if (regExpLeAdsToEndlessLoop(regexp)) {
+			// use defAult when custom-regexp is bAd
+			throw new Error(`[getWordRAngeAtPosition]: ignoring custom regexp '${regexp.source}' becAuse it mAtches the empty string.`);
 		}
 
 		const wordAtText = getWordAtText(
-			position.character + 1,
-			ensureValidWordDefinition(regexp),
+			position.chArActer + 1,
+			ensureVAlidWordDefinition(regexp),
 			this._lines[position.line],
 			0
 		);
 
 		if (wordAtText) {
-			return new Range(position.line, wordAtText.startColumn - 1, position.line, wordAtText.endColumn - 1);
+			return new RAnge(position.line, wordAtText.stArtColumn - 1, position.line, wordAtText.endColumn - 1);
 		}
 		return undefined;
 	}
 }
 
-export class ExtHostDocumentLine implements vscode.TextLine {
+export clAss ExtHostDocumentLine implements vscode.TextLine {
 
-	private readonly _line: number;
-	private readonly _text: string;
-	private readonly _isLastLine: boolean;
+	privAte reAdonly _line: number;
+	privAte reAdonly _text: string;
+	privAte reAdonly _isLAstLine: booleAn;
 
-	constructor(line: number, text: string, isLastLine: boolean) {
+	constructor(line: number, text: string, isLAstLine: booleAn) {
 		this._line = line;
 		this._text = text;
-		this._isLastLine = isLastLine;
+		this._isLAstLine = isLAstLine;
 	}
 
 	public get lineNumber(): number {
@@ -261,23 +261,23 @@ export class ExtHostDocumentLine implements vscode.TextLine {
 		return this._text;
 	}
 
-	public get range(): Range {
-		return new Range(this._line, 0, this._line, this._text.length);
+	public get rAnge(): RAnge {
+		return new RAnge(this._line, 0, this._line, this._text.length);
 	}
 
-	public get rangeIncludingLineBreak(): Range {
-		if (this._isLastLine) {
-			return this.range;
+	public get rAngeIncludingLineBreAk(): RAnge {
+		if (this._isLAstLine) {
+			return this.rAnge;
 		}
-		return new Range(this._line, 0, this._line + 1, 0);
+		return new RAnge(this._line, 0, this._line + 1, 0);
 	}
 
-	public get firstNonWhitespaceCharacterIndex(): number {
-		//TODO@api, rename to 'leadingWhitespaceLength'
+	public get firstNonWhitespAceChArActerIndex(): number {
+		//TODO@Api, renAme to 'leAdingWhitespAceLength'
 		return /^(\s*)/.exec(this._text)![1].length;
 	}
 
-	public get isEmptyOrWhitespace(): boolean {
-		return this.firstNonWhitespaceCharacterIndex === this._text.length;
+	public get isEmptyOrWhitespAce(): booleAn {
+		return this.firstNonWhitespAceChArActerIndex === this._text.length;
 	}
 }

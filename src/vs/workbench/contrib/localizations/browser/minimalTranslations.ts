@@ -1,16 +1,16 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
+import { locAlize } from 'vs/nls';
 
-// The strings localized in this file will get pulled into the manifest of the language packs.
-// So that they are available for VS Code to use without downloading the entire language pack.
+// The strings locAlized in this file will get pulled into the mAnifest of the lAnguAge pAcks.
+// So thAt they Are AvAilAble for VS Code to use without downloAding the entire lAnguAge pAck.
 
-export const minimumTranslatedStrings: { [key: string]: string } = {
-	showLanguagePackExtensions: localize('showLanguagePackExtensions', "Search language packs in the Marketplace to change the display language to {0}."),
-	searchMarketplace: localize('searchMarketplace', "Search Marketplace"),
-	installAndRestartMessage: localize('installAndRestartMessage', "Install language pack to change the display language to {0}."),
-	installAndRestart: localize('installAndRestart', "Install and Restart")
+export const minimumTrAnslAtedStrings: { [key: string]: string } = {
+	showLAnguAgePAckExtensions: locAlize('showLAnguAgePAckExtensions', "SeArch lAnguAge pAcks in the MArketplAce to chAnge the displAy lAnguAge to {0}."),
+	seArchMArketplAce: locAlize('seArchMArketplAce', "SeArch MArketplAce"),
+	instAllAndRestArtMessAge: locAlize('instAllAndRestArtMessAge', "InstAll lAnguAge pAck to chAnge the displAy lAnguAge to {0}."),
+	instAllAndRestArt: locAlize('instAllAndRestArt', "InstAll And RestArt")
 };

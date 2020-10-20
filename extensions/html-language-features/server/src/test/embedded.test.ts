@@ -1,126 +1,126 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import 'mocha';
-import * as assert from 'assert';
-import * as embeddedSupport from '../modes/embeddedSupport';
-import { getLanguageService } from 'vscode-html-languageservice';
-import { TextDocument } from '../modes/languageModes';
+import 'mochA';
+import * As Assert from 'Assert';
+import * As embeddedSupport from '../modes/embeddedSupport';
+import { getLAnguAgeService } from 'vscode-html-lAnguAgeservice';
+import { TextDocument } from '../modes/lAnguAgeModes';
 
 suite('HTML Embedded Support', () => {
 
-	const htmlLanguageService = getLanguageService();
+	const htmlLAnguAgeService = getLAnguAgeService();
 
-	function assertLanguageId(value: string, expectedLanguageId: string | undefined): void {
-		const offset = value.indexOf('|');
-		value = value.substr(0, offset) + value.substr(offset + 1);
+	function AssertLAnguAgeId(vAlue: string, expectedLAnguAgeId: string | undefined): void {
+		const offset = vAlue.indexOf('|');
+		vAlue = vAlue.substr(0, offset) + vAlue.substr(offset + 1);
 
-		const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+		const document = TextDocument.creAte('test://test/test.html', 'html', 0, vAlue);
 
 		const position = document.positionAt(offset);
 
-		const docRegions = embeddedSupport.getDocumentRegions(htmlLanguageService, document);
-		const languageId = docRegions.getLanguageAtPosition(position);
+		const docRegions = embeddedSupport.getDocumentRegions(htmlLAnguAgeService, document);
+		const lAnguAgeId = docRegions.getLAnguAgeAtPosition(position);
 
-		assert.equal(languageId, expectedLanguageId);
+		Assert.equAl(lAnguAgeId, expectedLAnguAgeId);
 	}
 
-	function assertEmbeddedLanguageContent(value: string, languageId: string, expectedContent: string): void {
-		const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+	function AssertEmbeddedLAnguAgeContent(vAlue: string, lAnguAgeId: string, expectedContent: string): void {
+		const document = TextDocument.creAte('test://test/test.html', 'html', 0, vAlue);
 
-		const docRegions = embeddedSupport.getDocumentRegions(htmlLanguageService, document);
-		const content = docRegions.getEmbeddedDocument(languageId);
-		assert.equal(content.getText(), expectedContent);
+		const docRegions = embeddedSupport.getDocumentRegions(htmlLAnguAgeService, document);
+		const content = docRegions.getEmbeddedDocument(lAnguAgeId);
+		Assert.equAl(content.getText(), expectedContent);
 	}
 
-	test('Styles', function (): any {
-		assertLanguageId('|<html><style>foo { }</style></html>', 'html');
-		assertLanguageId('<html|><style>foo { }</style></html>', 'html');
-		assertLanguageId('<html><st|yle>foo { }</style></html>', 'html');
-		assertLanguageId('<html><style>|foo { }</style></html>', 'css');
-		assertLanguageId('<html><style>foo| { }</style></html>', 'css');
-		assertLanguageId('<html><style>foo { }|</style></html>', 'css');
-		assertLanguageId('<html><style>foo { }</sty|le></html>', 'html');
+	test('Styles', function (): Any {
+		AssertLAnguAgeId('|<html><style>foo { }</style></html>', 'html');
+		AssertLAnguAgeId('<html|><style>foo { }</style></html>', 'html');
+		AssertLAnguAgeId('<html><st|yle>foo { }</style></html>', 'html');
+		AssertLAnguAgeId('<html><style>|foo { }</style></html>', 'css');
+		AssertLAnguAgeId('<html><style>foo| { }</style></html>', 'css');
+		AssertLAnguAgeId('<html><style>foo { }|</style></html>', 'css');
+		AssertLAnguAgeId('<html><style>foo { }</sty|le></html>', 'html');
 	});
 
-	test('Styles - Incomplete HTML', function (): any {
-		assertLanguageId('|<html><style>foo { }', 'html');
-		assertLanguageId('<html><style>fo|o { }', 'css');
-		assertLanguageId('<html><style>foo { }|', 'css');
+	test('Styles - Incomplete HTML', function (): Any {
+		AssertLAnguAgeId('|<html><style>foo { }', 'html');
+		AssertLAnguAgeId('<html><style>fo|o { }', 'css');
+		AssertLAnguAgeId('<html><style>foo { }|', 'css');
 	});
 
-	test('Style in attribute', function (): any {
-		assertLanguageId('<div id="xy" |style="color: red"/>', 'html');
-		assertLanguageId('<div id="xy" styl|e="color: red"/>', 'html');
-		assertLanguageId('<div id="xy" style=|"color: red"/>', 'html');
-		assertLanguageId('<div id="xy" style="|color: red"/>', 'css');
-		assertLanguageId('<div id="xy" style="color|: red"/>', 'css');
-		assertLanguageId('<div id="xy" style="color: red|"/>', 'css');
-		assertLanguageId('<div id="xy" style="color: red"|/>', 'html');
-		assertLanguageId('<div id="xy" style=\'color: r|ed\'/>', 'css');
-		assertLanguageId('<div id="xy" style|=color:red/>', 'html');
-		assertLanguageId('<div id="xy" style=|color:red/>', 'css');
-		assertLanguageId('<div id="xy" style=color:r|ed/>', 'css');
-		assertLanguageId('<div id="xy" style=color:red|/>', 'css');
-		assertLanguageId('<div id="xy" style=color:red/|>', 'html');
+	test('Style in Attribute', function (): Any {
+		AssertLAnguAgeId('<div id="xy" |style="color: red"/>', 'html');
+		AssertLAnguAgeId('<div id="xy" styl|e="color: red"/>', 'html');
+		AssertLAnguAgeId('<div id="xy" style=|"color: red"/>', 'html');
+		AssertLAnguAgeId('<div id="xy" style="|color: red"/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style="color|: red"/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style="color: red|"/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style="color: red"|/>', 'html');
+		AssertLAnguAgeId('<div id="xy" style=\'color: r|ed\'/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style|=color:red/>', 'html');
+		AssertLAnguAgeId('<div id="xy" style=|color:red/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style=color:r|ed/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style=color:red|/>', 'css');
+		AssertLAnguAgeId('<div id="xy" style=color:red/|>', 'html');
 	});
 
-	test('Style content', function (): any {
-		assertEmbeddedLanguageContent('<html><style>foo { }</style></html>', 'css', '             foo { }               ');
-		assertEmbeddedLanguageContent('<html><script>var i = 0;</script></html>', 'css', '                                        ');
-		assertEmbeddedLanguageContent('<html><style>foo { }</style>Hello<style>foo { }</style></html>', 'css', '             foo { }                    foo { }               ');
-		assertEmbeddedLanguageContent('<html>\n  <style>\n    foo { }  \n  </style>\n</html>\n', 'css', '\n         \n    foo { }  \n  \n\n');
+	test('Style content', function (): Any {
+		AssertEmbeddedLAnguAgeContent('<html><style>foo { }</style></html>', 'css', '             foo { }               ');
+		AssertEmbeddedLAnguAgeContent('<html><script>vAr i = 0;</script></html>', 'css', '                                        ');
+		AssertEmbeddedLAnguAgeContent('<html><style>foo { }</style>Hello<style>foo { }</style></html>', 'css', '             foo { }                    foo { }               ');
+		AssertEmbeddedLAnguAgeContent('<html>\n  <style>\n    foo { }  \n  </style>\n</html>\n', 'css', '\n         \n    foo { }  \n  \n\n');
 
-		assertEmbeddedLanguageContent('<div style="color: red"></div>', 'css', '         __{color: red}       ');
-		assertEmbeddedLanguageContent('<div style=color:red></div>', 'css', '        __{color:red}      ');
+		AssertEmbeddedLAnguAgeContent('<div style="color: red"></div>', 'css', '         __{color: red}       ');
+		AssertEmbeddedLAnguAgeContent('<div style=color:red></div>', 'css', '        __{color:red}      ');
 	});
 
-	test('Scripts', function (): any {
-		assertLanguageId('|<html><script>var i = 0;</script></html>', 'html');
-		assertLanguageId('<html|><script>var i = 0;</script></html>', 'html');
-		assertLanguageId('<html><scr|ipt>var i = 0;</script></html>', 'html');
-		assertLanguageId('<html><script>|var i = 0;</script></html>', 'javascript');
-		assertLanguageId('<html><script>var| i = 0;</script></html>', 'javascript');
-		assertLanguageId('<html><script>var i = 0;|</script></html>', 'javascript');
-		assertLanguageId('<html><script>var i = 0;</scr|ipt></html>', 'html');
+	test('Scripts', function (): Any {
+		AssertLAnguAgeId('|<html><script>vAr i = 0;</script></html>', 'html');
+		AssertLAnguAgeId('<html|><script>vAr i = 0;</script></html>', 'html');
+		AssertLAnguAgeId('<html><scr|ipt>vAr i = 0;</script></html>', 'html');
+		AssertLAnguAgeId('<html><script>|vAr i = 0;</script></html>', 'jAvAscript');
+		AssertLAnguAgeId('<html><script>vAr| i = 0;</script></html>', 'jAvAscript');
+		AssertLAnguAgeId('<html><script>vAr i = 0;|</script></html>', 'jAvAscript');
+		AssertLAnguAgeId('<html><script>vAr i = 0;</scr|ipt></html>', 'html');
 
-		assertLanguageId('<script type="text/javascript">var| i = 0;</script>', 'javascript');
-		assertLanguageId('<script type="text/ecmascript">var| i = 0;</script>', 'javascript');
-		assertLanguageId('<script type="application/javascript">var| i = 0;</script>', 'javascript');
-		assertLanguageId('<script type="application/ecmascript">var| i = 0;</script>', 'javascript');
-		assertLanguageId('<script type="application/typescript">var| i = 0;</script>', undefined);
-		assertLanguageId('<script type=\'text/javascript\'>var| i = 0;</script>', 'javascript');
+		AssertLAnguAgeId('<script type="text/jAvAscript">vAr| i = 0;</script>', 'jAvAscript');
+		AssertLAnguAgeId('<script type="text/ecmAscript">vAr| i = 0;</script>', 'jAvAscript');
+		AssertLAnguAgeId('<script type="ApplicAtion/jAvAscript">vAr| i = 0;</script>', 'jAvAscript');
+		AssertLAnguAgeId('<script type="ApplicAtion/ecmAscript">vAr| i = 0;</script>', 'jAvAscript');
+		AssertLAnguAgeId('<script type="ApplicAtion/typescript">vAr| i = 0;</script>', undefined);
+		AssertLAnguAgeId('<script type=\'text/jAvAscript\'>vAr| i = 0;</script>', 'jAvAscript');
 	});
 
-	test('Scripts in attribute', function (): any {
-		assertLanguageId('<div |onKeyUp="foo()" onkeydown=\'bar()\'/>', 'html');
-		assertLanguageId('<div onKeyUp=|"foo()" onkeydown=\'bar()\'/>', 'html');
-		assertLanguageId('<div onKeyUp="|foo()" onkeydown=\'bar()\'/>', 'javascript');
-		assertLanguageId('<div onKeyUp="foo(|)" onkeydown=\'bar()\'/>', 'javascript');
-		assertLanguageId('<div onKeyUp="foo()|" onkeydown=\'bar()\'/>', 'javascript');
-		assertLanguageId('<div onKeyUp="foo()"| onkeydown=\'bar()\'/>', 'html');
-		assertLanguageId('<div onKeyUp="foo()" onkeydown=|\'bar()\'/>', 'html');
-		assertLanguageId('<div onKeyUp="foo()" onkeydown=\'|bar()\'/>', 'javascript');
-		assertLanguageId('<div onKeyUp="foo()" onkeydown=\'bar()|\'/>', 'javascript');
-		assertLanguageId('<div onKeyUp="foo()" onkeydown=\'bar()\'|/>', 'html');
+	test('Scripts in Attribute', function (): Any {
+		AssertLAnguAgeId('<div |onKeyUp="foo()" onkeydown=\'bAr()\'/>', 'html');
+		AssertLAnguAgeId('<div onKeyUp=|"foo()" onkeydown=\'bAr()\'/>', 'html');
+		AssertLAnguAgeId('<div onKeyUp="|foo()" onkeydown=\'bAr()\'/>', 'jAvAscript');
+		AssertLAnguAgeId('<div onKeyUp="foo(|)" onkeydown=\'bAr()\'/>', 'jAvAscript');
+		AssertLAnguAgeId('<div onKeyUp="foo()|" onkeydown=\'bAr()\'/>', 'jAvAscript');
+		AssertLAnguAgeId('<div onKeyUp="foo()"| onkeydown=\'bAr()\'/>', 'html');
+		AssertLAnguAgeId('<div onKeyUp="foo()" onkeydown=|\'bAr()\'/>', 'html');
+		AssertLAnguAgeId('<div onKeyUp="foo()" onkeydown=\'|bAr()\'/>', 'jAvAscript');
+		AssertLAnguAgeId('<div onKeyUp="foo()" onkeydown=\'bAr()|\'/>', 'jAvAscript');
+		AssertLAnguAgeId('<div onKeyUp="foo()" onkeydown=\'bAr()\'|/>', 'html');
 
-		assertLanguageId('<DIV ONKEYUP|=foo()</DIV>', 'html');
-		assertLanguageId('<DIV ONKEYUP=|foo()</DIV>', 'javascript');
-		assertLanguageId('<DIV ONKEYUP=f|oo()</DIV>', 'javascript');
-		assertLanguageId('<DIV ONKEYUP=foo(|)</DIV>', 'javascript');
-		assertLanguageId('<DIV ONKEYUP=foo()|</DIV>', 'javascript');
-		assertLanguageId('<DIV ONKEYUP=foo()<|/DIV>', 'html');
+		AssertLAnguAgeId('<DIV ONKEYUP|=foo()</DIV>', 'html');
+		AssertLAnguAgeId('<DIV ONKEYUP=|foo()</DIV>', 'jAvAscript');
+		AssertLAnguAgeId('<DIV ONKEYUP=f|oo()</DIV>', 'jAvAscript');
+		AssertLAnguAgeId('<DIV ONKEYUP=foo(|)</DIV>', 'jAvAscript');
+		AssertLAnguAgeId('<DIV ONKEYUP=foo()|</DIV>', 'jAvAscript');
+		AssertLAnguAgeId('<DIV ONKEYUP=foo()<|/DIV>', 'html');
 
-		assertLanguageId('<label data-content="|Checkbox"/>', 'html');
-		assertLanguageId('<label on="|Checkbox"/>', 'html');
+		AssertLAnguAgeId('<lAbel dAtA-content="|Checkbox"/>', 'html');
+		AssertLAnguAgeId('<lAbel on="|Checkbox"/>', 'html');
 	});
 
-	test('Script content', function (): any {
-		assertEmbeddedLanguageContent('<html><script>var i = 0;</script></html>', 'javascript', '              var i = 0;                ');
-		assertEmbeddedLanguageContent('<script type="text/javascript">var i = 0;</script>', 'javascript', '                               var i = 0;         ');
+	test('Script content', function (): Any {
+		AssertEmbeddedLAnguAgeContent('<html><script>vAr i = 0;</script></html>', 'jAvAscript', '              vAr i = 0;                ');
+		AssertEmbeddedLAnguAgeContent('<script type="text/jAvAscript">vAr i = 0;</script>', 'jAvAscript', '                               vAr i = 0;         ');
 
-		assertEmbeddedLanguageContent('<div onKeyUp="foo()" onkeydown="bar()"/>', 'javascript', '              foo();            bar();  ');
+		AssertEmbeddedLAnguAgeContent('<div onKeyUp="foo()" onkeydown="bAr()"/>', 'jAvAscript', '              foo();            bAr();  ');
 	});
 
 });

@@ -1,57 +1,57 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { IAddress } from 'vs/platform/remote/common/remoteAgentConnection';
-import { extractLocalHostUriMetaDataForPortMapping, ITunnelService, RemoteTunnel } from 'vs/platform/remote/common/tunnel';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { IAddress } from 'vs/plAtform/remote/common/remoteAgentConnection';
+import { extrActLocAlHostUriMetADAtAForPortMApping, ITunnelService, RemoteTunnel } from 'vs/plAtform/remote/common/tunnel';
 
-export interface IWebviewPortMapping {
+export interfAce IWebviewPortMApping {
 	webviewPort: number;
 	extensionHostPort: number;
 }
 
 /**
- * Manages port mappings for a single webview.
+ * MAnAges port mAppings for A single webview.
  */
-export class WebviewPortMappingManager implements IDisposable {
+export clAss WebviewPortMAppingMAnAger implements IDisposAble {
 
-	private readonly _tunnels = new Map<number, Promise<RemoteTunnel>>();
+	privAte reAdonly _tunnels = new MAp<number, Promise<RemoteTunnel>>();
 
 	constructor(
-		private readonly _getExtensionLocation: () => URI | undefined,
-		private readonly _getMappings: () => readonly IWebviewPortMapping[],
-		private readonly tunnelService: ITunnelService
+		privAte reAdonly _getExtensionLocAtion: () => URI | undefined,
+		privAte reAdonly _getMAppings: () => reAdonly IWebviewPortMApping[],
+		privAte reAdonly tunnelService: ITunnelService
 	) { }
 
-	public async getRedirect(resolveAuthority: IAddress | null | undefined, url: string): Promise<string | undefined> {
-		const uri = URI.parse(url);
-		const requestLocalHostInfo = extractLocalHostUriMetaDataForPortMapping(uri);
-		if (!requestLocalHostInfo) {
+	public Async getRedirect(resolveAuthority: IAddress | null | undefined, url: string): Promise<string | undefined> {
+		const uri = URI.pArse(url);
+		const requestLocAlHostInfo = extrActLocAlHostUriMetADAtAForPortMApping(uri);
+		if (!requestLocAlHostInfo) {
 			return undefined;
 		}
 
-		for (const mapping of this._getMappings()) {
-			if (mapping.webviewPort === requestLocalHostInfo.port) {
-				const extensionLocation = this._getExtensionLocation();
-				if (extensionLocation && extensionLocation.scheme === Schemas.vscodeRemote) {
-					const tunnel = resolveAuthority && await this.getOrCreateTunnel(resolveAuthority, mapping.extensionHostPort);
+		for (const mApping of this._getMAppings()) {
+			if (mApping.webviewPort === requestLocAlHostInfo.port) {
+				const extensionLocAtion = this._getExtensionLocAtion();
+				if (extensionLocAtion && extensionLocAtion.scheme === SchemAs.vscodeRemote) {
+					const tunnel = resolveAuthority && AwAit this.getOrCreAteTunnel(resolveAuthority, mApping.extensionHostPort);
 					if (tunnel) {
-						if (tunnel.tunnelLocalPort === mapping.webviewPort) {
+						if (tunnel.tunnelLocAlPort === mApping.webviewPort) {
 							return undefined;
 						}
 						return encodeURI(uri.with({
-							authority: `127.0.0.1:${tunnel.tunnelLocalPort}`,
+							Authority: `127.0.0.1:${tunnel.tunnelLocAlPort}`,
 						}).toString(true));
 					}
 				}
 
-				if (mapping.webviewPort !== mapping.extensionHostPort) {
+				if (mApping.webviewPort !== mApping.extensionHostPort) {
 					return encodeURI(uri.with({
-						authority: `${requestLocalHostInfo.address}:${mapping.extensionHostPort}`
+						Authority: `${requestLocAlHostInfo.Address}:${mApping.extensionHostPort}`
 					}).toString(true));
 				}
 			}
@@ -61,18 +61,18 @@ export class WebviewPortMappingManager implements IDisposable {
 	}
 
 	dispose() {
-		for (const tunnel of this._tunnels.values()) {
+		for (const tunnel of this._tunnels.vAlues()) {
 			tunnel.then(tunnel => tunnel.dispose());
 		}
-		this._tunnels.clear();
+		this._tunnels.cleAr();
 	}
 
-	private getOrCreateTunnel(remoteAuthority: IAddress, remotePort: number): Promise<RemoteTunnel> | undefined {
+	privAte getOrCreAteTunnel(remoteAuthority: IAddress, remotePort: number): Promise<RemoteTunnel> | undefined {
 		const existing = this._tunnels.get(remotePort);
 		if (existing) {
 			return existing;
 		}
-		const tunnel = this.tunnelService.openTunnel({ getAddress: async () => remoteAuthority }, undefined, remotePort);
+		const tunnel = this.tunnelService.openTunnel({ getAddress: Async () => remoteAuthority }, undefined, remotePort);
 		if (tunnel) {
 			this._tunnels.set(remotePort, tunnel);
 		}

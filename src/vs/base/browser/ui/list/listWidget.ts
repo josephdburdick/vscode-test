@@ -1,85 +1,85 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./list';
-import { IDisposable, dispose, DisposableStore } from 'vs/base/common/lifecycle';
-import { isNumber } from 'vs/base/common/types';
-import { range, binarySearch } from 'vs/base/common/arrays';
-import { memoize } from 'vs/base/common/decorators';
-import * as platform from 'vs/base/common/platform';
-import { Gesture } from 'vs/base/browser/touch';
-import { KeyCode } from 'vs/base/common/keyCodes';
-import { StandardKeyboardEvent, IKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { Event, Emitter, EventBufferer } from 'vs/base/common/event';
-import { domEvent } from 'vs/base/browser/event';
-import { IListVirtualDelegate, IListRenderer, IListEvent, IListContextMenuEvent, IListMouseEvent, IListTouchEvent, IListGestureEvent, IIdentityProvider, IKeyboardNavigationLabelProvider, IListDragAndDrop, IListDragOverReaction, ListError, IKeyboardNavigationDelegate } from './list';
-import { ListView, IListViewOptions, IListViewDragAndDrop, IListViewAccessibilityProvider, IListViewOptionsUpdate } from './listView';
-import { Color } from 'vs/base/common/color';
-import { mixin } from 'vs/base/common/objects';
-import { ScrollbarVisibility, ScrollEvent } from 'vs/base/common/scrollable';
-import { ISpliceable } from 'vs/base/common/sequence';
-import { CombinedSpliceable } from 'vs/base/browser/ui/list/splice';
-import { clamp } from 'vs/base/common/numbers';
-import { matchesPrefix } from 'vs/base/common/filters';
-import { IDragAndDropData } from 'vs/base/browser/dnd';
-import { alert } from 'vs/base/browser/ui/aria/aria';
-import { IThemable } from 'vs/base/common/styler';
-import { createStyleSheet } from 'vs/base/browser/dom';
+import { IDisposAble, dispose, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isNumber } from 'vs/bAse/common/types';
+import { rAnge, binArySeArch } from 'vs/bAse/common/ArrAys';
+import { memoize } from 'vs/bAse/common/decorAtors';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { Gesture } from 'vs/bAse/browser/touch';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
+import { StAndArdKeyboArdEvent, IKeyboArdEvent } from 'vs/bAse/browser/keyboArdEvent';
+import { Event, Emitter, EventBufferer } from 'vs/bAse/common/event';
+import { domEvent } from 'vs/bAse/browser/event';
+import { IListVirtuAlDelegAte, IListRenderer, IListEvent, IListContextMenuEvent, IListMouseEvent, IListTouchEvent, IListGestureEvent, IIdentityProvider, IKeyboArdNAvigAtionLAbelProvider, IListDrAgAndDrop, IListDrAgOverReAction, ListError, IKeyboArdNAvigAtionDelegAte } from './list';
+import { ListView, IListViewOptions, IListViewDrAgAndDrop, IListViewAccessibilityProvider, IListViewOptionsUpdAte } from './listView';
+import { Color } from 'vs/bAse/common/color';
+import { mixin } from 'vs/bAse/common/objects';
+import { ScrollbArVisibility, ScrollEvent } from 'vs/bAse/common/scrollAble';
+import { ISpliceAble } from 'vs/bAse/common/sequence';
+import { CombinedSpliceAble } from 'vs/bAse/browser/ui/list/splice';
+import { clAmp } from 'vs/bAse/common/numbers';
+import { mAtchesPrefix } from 'vs/bAse/common/filters';
+import { IDrAgAndDropDAtA } from 'vs/bAse/browser/dnd';
+import { Alert } from 'vs/bAse/browser/ui/AriA/AriA';
+import { IThemAble } from 'vs/bAse/common/styler';
+import { creAteStyleSheet } from 'vs/bAse/browser/dom';
 
-interface ITraitChangeEvent {
+interfAce ITrAitChAngeEvent {
 	indexes: number[];
 	browserEvent?: UIEvent;
 }
 
-type ITraitTemplateData = HTMLElement;
+type ITrAitTemplAteDAtA = HTMLElement;
 
-interface IRenderedContainer {
-	templateData: ITraitTemplateData;
+interfAce IRenderedContAiner {
+	templAteDAtA: ITrAitTemplAteDAtA;
 	index: number;
 }
 
-class TraitRenderer<T> implements IListRenderer<T, ITraitTemplateData>
+clAss TrAitRenderer<T> implements IListRenderer<T, ITrAitTemplAteDAtA>
 {
-	private renderedElements: IRenderedContainer[] = [];
+	privAte renderedElements: IRenderedContAiner[] = [];
 
-	constructor(private trait: Trait<T>) { }
+	constructor(privAte trAit: TrAit<T>) { }
 
-	get templateId(): string {
-		return `template:${this.trait.trait}`;
+	get templAteId(): string {
+		return `templAte:${this.trAit.trAit}`;
 	}
 
-	renderTemplate(container: HTMLElement): ITraitTemplateData {
-		return container;
+	renderTemplAte(contAiner: HTMLElement): ITrAitTemplAteDAtA {
+		return contAiner;
 	}
 
-	renderElement(element: T, index: number, templateData: ITraitTemplateData): void {
-		const renderedElementIndex = this.renderedElements.findIndex(el => el.templateData === templateData);
+	renderElement(element: T, index: number, templAteDAtA: ITrAitTemplAteDAtA): void {
+		const renderedElementIndex = this.renderedElements.findIndex(el => el.templAteDAtA === templAteDAtA);
 
 		if (renderedElementIndex >= 0) {
 			const rendered = this.renderedElements[renderedElementIndex];
-			this.trait.unrender(templateData);
+			this.trAit.unrender(templAteDAtA);
 			rendered.index = index;
 		} else {
-			const rendered = { index, templateData };
+			const rendered = { index, templAteDAtA };
 			this.renderedElements.push(rendered);
 		}
 
-		this.trait.renderIndex(index, templateData);
+		this.trAit.renderIndex(index, templAteDAtA);
 	}
 
-	splice(start: number, deleteCount: number, insertCount: number): void {
-		const rendered: IRenderedContainer[] = [];
+	splice(stArt: number, deleteCount: number, insertCount: number): void {
+		const rendered: IRenderedContAiner[] = [];
 
 		for (const renderedElement of this.renderedElements) {
 
-			if (renderedElement.index < start) {
+			if (renderedElement.index < stArt) {
 				rendered.push(renderedElement);
-			} else if (renderedElement.index >= start + deleteCount) {
+			} else if (renderedElement.index >= stArt + deleteCount) {
 				rendered.push({
 					index: renderedElement.index + insertCount - deleteCount,
-					templateData: renderedElement.templateData
+					templAteDAtA: renderedElement.templAteDAtA
 				});
 			}
 		}
@@ -88,15 +88,15 @@ class TraitRenderer<T> implements IListRenderer<T, ITraitTemplateData>
 	}
 
 	renderIndexes(indexes: number[]): void {
-		for (const { index, templateData } of this.renderedElements) {
+		for (const { index, templAteDAtA } of this.renderedElements) {
 			if (indexes.indexOf(index) > -1) {
-				this.trait.renderIndex(index, templateData);
+				this.trAit.renderIndex(index, templAteDAtA);
 			}
 		}
 	}
 
-	disposeTemplate(templateData: ITraitTemplateData): void {
-		const index = this.renderedElements.findIndex(el => el.templateData === templateData);
+	disposeTemplAte(templAteDAtA: ITrAitTemplAteDAtA): void {
+		const index = this.renderedElements.findIndex(el => el.templAteDAtA === templAteDAtA);
 
 		if (index < 0) {
 			return;
@@ -106,55 +106,55 @@ class TraitRenderer<T> implements IListRenderer<T, ITraitTemplateData>
 	}
 }
 
-class Trait<T> implements ISpliceable<boolean>, IDisposable {
+clAss TrAit<T> implements ISpliceAble<booleAn>, IDisposAble {
 
-	private indexes: number[] = [];
-	private sortedIndexes: number[] = [];
+	privAte indexes: number[] = [];
+	privAte sortedIndexes: number[] = [];
 
-	private readonly _onChange = new Emitter<ITraitChangeEvent>();
-	readonly onChange: Event<ITraitChangeEvent> = this._onChange.event;
+	privAte reAdonly _onChAnge = new Emitter<ITrAitChAngeEvent>();
+	reAdonly onChAnge: Event<ITrAitChAngeEvent> = this._onChAnge.event;
 
-	get trait(): string { return this._trait; }
+	get trAit(): string { return this._trAit; }
 
 	@memoize
-	get renderer(): TraitRenderer<T> {
-		return new TraitRenderer<T>(this);
+	get renderer(): TrAitRenderer<T> {
+		return new TrAitRenderer<T>(this);
 	}
 
-	constructor(private _trait: string) { }
+	constructor(privAte _trAit: string) { }
 
-	splice(start: number, deleteCount: number, elements: boolean[]): void {
+	splice(stArt: number, deleteCount: number, elements: booleAn[]): void {
 		const diff = elements.length - deleteCount;
-		const end = start + deleteCount;
+		const end = stArt + deleteCount;
 		const indexes = [
-			...this.sortedIndexes.filter(i => i < start),
-			...elements.map((hasTrait, i) => hasTrait ? i + start : -1).filter(i => i !== -1),
-			...this.sortedIndexes.filter(i => i >= end).map(i => i + diff)
+			...this.sortedIndexes.filter(i => i < stArt),
+			...elements.mAp((hAsTrAit, i) => hAsTrAit ? i + stArt : -1).filter(i => i !== -1),
+			...this.sortedIndexes.filter(i => i >= end).mAp(i => i + diff)
 		];
 
-		this.renderer.splice(start, deleteCount, elements.length);
+		this.renderer.splice(stArt, deleteCount, elements.length);
 		this._set(indexes, indexes);
 	}
 
-	renderIndex(index: number, container: HTMLElement): void {
-		container.classList.toggle(this._trait, this.contains(index));
+	renderIndex(index: number, contAiner: HTMLElement): void {
+		contAiner.clAssList.toggle(this._trAit, this.contAins(index));
 	}
 
-	unrender(container: HTMLElement): void {
-		container.classList.remove(this._trait);
+	unrender(contAiner: HTMLElement): void {
+		contAiner.clAssList.remove(this._trAit);
 	}
 
 	/**
-	 * Sets the indexes which should have this trait.
+	 * Sets the indexes which should hAve this trAit.
 	 *
-	 * @param indexes Indexes which should have this trait.
-	 * @return The old indexes which had this trait.
+	 * @pArAm indexes Indexes which should hAve this trAit.
+	 * @return The old indexes which hAd this trAit.
 	 */
 	set(indexes: number[], browserEvent?: UIEvent): number[] {
 		return this._set(indexes, [...indexes].sort(numericSort), browserEvent);
 	}
 
-	private _set(indexes: number[], sortedIndexes: number[], browserEvent?: UIEvent): number[] {
+	privAte _set(indexes: number[], sortedIndexes: number[], browserEvent?: UIEvent): number[] {
 		const result = this.indexes;
 		const sortedResult = this.sortedIndexes;
 
@@ -164,7 +164,7 @@ class Trait<T> implements ISpliceable<boolean>, IDisposable {
 		const toRender = disjunction(sortedResult, indexes);
 		this.renderer.renderIndexes(toRender);
 
-		this._onChange.fire({ indexes, browserEvent });
+		this._onChAnge.fire({ indexes, browserEvent });
 		return result;
 	}
 
@@ -172,172 +172,172 @@ class Trait<T> implements ISpliceable<boolean>, IDisposable {
 		return this.indexes;
 	}
 
-	contains(index: number): boolean {
-		return binarySearch(this.sortedIndexes, index, numericSort) >= 0;
+	contAins(index: number): booleAn {
+		return binArySeArch(this.sortedIndexes, index, numericSort) >= 0;
 	}
 
 	dispose() {
-		dispose(this._onChange);
+		dispose(this._onChAnge);
 	}
 }
 
-class SelectionTrait<T> extends Trait<T> {
+clAss SelectionTrAit<T> extends TrAit<T> {
 
-	constructor(private setAriaSelected: boolean) {
+	constructor(privAte setAriASelected: booleAn) {
 		super('selected');
 	}
 
-	renderIndex(index: number, container: HTMLElement): void {
-		super.renderIndex(index, container);
+	renderIndex(index: number, contAiner: HTMLElement): void {
+		super.renderIndex(index, contAiner);
 
-		if (this.setAriaSelected) {
-			if (this.contains(index)) {
-				container.setAttribute('aria-selected', 'true');
+		if (this.setAriASelected) {
+			if (this.contAins(index)) {
+				contAiner.setAttribute('AriA-selected', 'true');
 			} else {
-				container.setAttribute('aria-selected', 'false');
+				contAiner.setAttribute('AriA-selected', 'fAlse');
 			}
 		}
 	}
 }
 
 /**
- * The TraitSpliceable is used as a util class to be able
- * to preserve traits across splice calls, given an identity
+ * The TrAitSpliceAble is used As A util clAss to be Able
+ * to preserve trAits Across splice cAlls, given An identity
  * provider.
  */
-class TraitSpliceable<T> implements ISpliceable<T> {
+clAss TrAitSpliceAble<T> implements ISpliceAble<T> {
 
 	constructor(
-		private trait: Trait<T>,
-		private view: ListView<T>,
-		private identityProvider?: IIdentityProvider<T>
+		privAte trAit: TrAit<T>,
+		privAte view: ListView<T>,
+		privAte identityProvider?: IIdentityProvider<T>
 	) { }
 
-	splice(start: number, deleteCount: number, elements: T[]): void {
+	splice(stArt: number, deleteCount: number, elements: T[]): void {
 		if (!this.identityProvider) {
-			return this.trait.splice(start, deleteCount, elements.map(() => false));
+			return this.trAit.splice(stArt, deleteCount, elements.mAp(() => fAlse));
 		}
 
-		const pastElementsWithTrait = this.trait.get().map(i => this.identityProvider!.getId(this.view.element(i)).toString());
-		const elementsWithTrait = elements.map(e => pastElementsWithTrait.indexOf(this.identityProvider!.getId(e).toString()) > -1);
+		const pAstElementsWithTrAit = this.trAit.get().mAp(i => this.identityProvider!.getId(this.view.element(i)).toString());
+		const elementsWithTrAit = elements.mAp(e => pAstElementsWithTrAit.indexOf(this.identityProvider!.getId(e).toString()) > -1);
 
-		this.trait.splice(start, deleteCount, elementsWithTrait);
+		this.trAit.splice(stArt, deleteCount, elementsWithTrAit);
 	}
 }
 
-export function isInputElement(e: HTMLElement): boolean {
-	return e.tagName === 'INPUT' || e.tagName === 'TEXTAREA';
+export function isInputElement(e: HTMLElement): booleAn {
+	return e.tAgNAme === 'INPUT' || e.tAgNAme === 'TEXTAREA';
 }
 
-export function isMonacoEditor(e: HTMLElement): boolean {
-	if (e.classList.contains('monaco-editor')) {
+export function isMonAcoEditor(e: HTMLElement): booleAn {
+	if (e.clAssList.contAins('monAco-editor')) {
 		return true;
 	}
 
-	if (e.classList.contains('monaco-list')) {
-		return false;
+	if (e.clAssList.contAins('monAco-list')) {
+		return fAlse;
 	}
 
-	if (!e.parentElement) {
-		return false;
+	if (!e.pArentElement) {
+		return fAlse;
 	}
 
-	return isMonacoEditor(e.parentElement);
+	return isMonAcoEditor(e.pArentElement);
 }
 
-class KeyboardController<T> implements IDisposable {
+clAss KeyboArdController<T> implements IDisposAble {
 
-	private readonly disposables = new DisposableStore();
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
 	constructor(
-		private list: List<T>,
-		private view: ListView<T>,
+		privAte list: List<T>,
+		privAte view: ListView<T>,
 		options: IListOptions<T>
 	) {
-		const multipleSelectionSupport = options.multipleSelectionSupport !== false;
+		const multipleSelectionSupport = options.multipleSelectionSupport !== fAlse;
 
-		const onKeyDown = Event.chain(domEvent(view.domNode, 'keydown'))
-			.filter(e => !isInputElement(e.target as HTMLElement))
-			.map(e => new StandardKeyboardEvent(e));
+		const onKeyDown = Event.chAin(domEvent(view.domNode, 'keydown'))
+			.filter(e => !isInputElement(e.tArget As HTMLElement))
+			.mAp(e => new StAndArdKeyboArdEvent(e));
 
-		onKeyDown.filter(e => e.keyCode === KeyCode.Enter).on(this.onEnter, this, this.disposables);
-		onKeyDown.filter(e => e.keyCode === KeyCode.UpArrow).on(this.onUpArrow, this, this.disposables);
-		onKeyDown.filter(e => e.keyCode === KeyCode.DownArrow).on(this.onDownArrow, this, this.disposables);
-		onKeyDown.filter(e => e.keyCode === KeyCode.PageUp).on(this.onPageUpArrow, this, this.disposables);
-		onKeyDown.filter(e => e.keyCode === KeyCode.PageDown).on(this.onPageDownArrow, this, this.disposables);
-		onKeyDown.filter(e => e.keyCode === KeyCode.Escape).on(this.onEscape, this, this.disposables);
+		onKeyDown.filter(e => e.keyCode === KeyCode.Enter).on(this.onEnter, this, this.disposAbles);
+		onKeyDown.filter(e => e.keyCode === KeyCode.UpArrow).on(this.onUpArrow, this, this.disposAbles);
+		onKeyDown.filter(e => e.keyCode === KeyCode.DownArrow).on(this.onDownArrow, this, this.disposAbles);
+		onKeyDown.filter(e => e.keyCode === KeyCode.PAgeUp).on(this.onPAgeUpArrow, this, this.disposAbles);
+		onKeyDown.filter(e => e.keyCode === KeyCode.PAgeDown).on(this.onPAgeDownArrow, this, this.disposAbles);
+		onKeyDown.filter(e => e.keyCode === KeyCode.EscApe).on(this.onEscApe, this, this.disposAbles);
 
 		if (multipleSelectionSupport) {
-			onKeyDown.filter(e => (platform.isMacintosh ? e.metaKey : e.ctrlKey) && e.keyCode === KeyCode.KEY_A).on(this.onCtrlA, this, this.disposables);
+			onKeyDown.filter(e => (plAtform.isMAcintosh ? e.metAKey : e.ctrlKey) && e.keyCode === KeyCode.KEY_A).on(this.onCtrlA, this, this.disposAbles);
 		}
 	}
 
-	private onEnter(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
+	privAte onEnter(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
 		this.list.setSelection(this.list.getFocus(), e.browserEvent);
 	}
 
-	private onUpArrow(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
-		this.list.focusPrevious(1, false, e.browserEvent);
-		this.list.reveal(this.list.getFocus()[0]);
+	privAte onUpArrow(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
+		this.list.focusPrevious(1, fAlse, e.browserEvent);
+		this.list.reveAl(this.list.getFocus()[0]);
 		this.view.domNode.focus();
 	}
 
-	private onDownArrow(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
-		this.list.focusNext(1, false, e.browserEvent);
-		this.list.reveal(this.list.getFocus()[0]);
+	privAte onDownArrow(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
+		this.list.focusNext(1, fAlse, e.browserEvent);
+		this.list.reveAl(this.list.getFocus()[0]);
 		this.view.domNode.focus();
 	}
 
-	private onPageUpArrow(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
-		this.list.focusPreviousPage(e.browserEvent);
-		this.list.reveal(this.list.getFocus()[0]);
+	privAte onPAgeUpArrow(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
+		this.list.focusPreviousPAge(e.browserEvent);
+		this.list.reveAl(this.list.getFocus()[0]);
 		this.view.domNode.focus();
 	}
 
-	private onPageDownArrow(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
-		this.list.focusNextPage(e.browserEvent);
-		this.list.reveal(this.list.getFocus()[0]);
+	privAte onPAgeDownArrow(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
+		this.list.focusNextPAge(e.browserEvent);
+		this.list.reveAl(this.list.getFocus()[0]);
 		this.view.domNode.focus();
 	}
 
-	private onCtrlA(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
-		this.list.setSelection(range(this.list.length), e.browserEvent);
+	privAte onCtrlA(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
+		this.list.setSelection(rAnge(this.list.length), e.browserEvent);
 		this.view.domNode.focus();
 	}
 
-	private onEscape(e: StandardKeyboardEvent): void {
-		e.preventDefault();
-		e.stopPropagation();
+	privAte onEscApe(e: StAndArdKeyboArdEvent): void {
+		e.preventDefAult();
+		e.stopPropAgAtion();
 		this.list.setSelection([], e.browserEvent);
 		this.view.domNode.focus();
 	}
 
 	dispose() {
-		this.disposables.dispose();
+		this.disposAbles.dispose();
 	}
 }
 
-enum TypeLabelControllerState {
+enum TypeLAbelControllerStAte {
 	Idle,
 	Typing
 }
 
-export const DefaultKeyboardNavigationDelegate = new class implements IKeyboardNavigationDelegate {
-	mightProducePrintableCharacter(event: IKeyboardEvent): boolean {
-		if (event.ctrlKey || event.metaKey || event.altKey) {
-			return false;
+export const DefAultKeyboArdNAvigAtionDelegAte = new clAss implements IKeyboArdNAvigAtionDelegAte {
+	mightProducePrintAbleChArActer(event: IKeyboArdEvent): booleAn {
+		if (event.ctrlKey || event.metAKey || event.AltKey) {
+			return fAlse;
 		}
 
 		return (event.keyCode >= KeyCode.KEY_A && event.keyCode <= KeyCode.KEY_Z)
@@ -347,38 +347,38 @@ export const DefaultKeyboardNavigationDelegate = new class implements IKeyboardN
 	}
 };
 
-class TypeLabelController<T> implements IDisposable {
+clAss TypeLAbelController<T> implements IDisposAble {
 
-	private enabled = false;
-	private state: TypeLabelControllerState = TypeLabelControllerState.Idle;
+	privAte enAbled = fAlse;
+	privAte stAte: TypeLAbelControllerStAte = TypeLAbelControllerStAte.Idle;
 
-	private automaticKeyboardNavigation = true;
-	private triggered = false;
-	private previouslyFocused = -1;
+	privAte AutomAticKeyboArdNAvigAtion = true;
+	privAte triggered = fAlse;
+	privAte previouslyFocused = -1;
 
-	private readonly enabledDisposables = new DisposableStore();
-	private readonly disposables = new DisposableStore();
+	privAte reAdonly enAbledDisposAbles = new DisposAbleStore();
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
 	constructor(
-		private list: List<T>,
-		private view: ListView<T>,
-		private keyboardNavigationLabelProvider: IKeyboardNavigationLabelProvider<T>,
-		private delegate: IKeyboardNavigationDelegate
+		privAte list: List<T>,
+		privAte view: ListView<T>,
+		privAte keyboArdNAvigAtionLAbelProvider: IKeyboArdNAvigAtionLAbelProvider<T>,
+		privAte delegAte: IKeyboArdNAvigAtionDelegAte
 	) {
-		this.updateOptions(list.options);
+		this.updAteOptions(list.options);
 	}
 
-	updateOptions(options: IListOptions<T>): void {
-		const enableKeyboardNavigation = typeof options.enableKeyboardNavigation === 'undefined' ? true : !!options.enableKeyboardNavigation;
+	updAteOptions(options: IListOptions<T>): void {
+		const enAbleKeyboArdNAvigAtion = typeof options.enAbleKeyboArdNAvigAtion === 'undefined' ? true : !!options.enAbleKeyboArdNAvigAtion;
 
-		if (enableKeyboardNavigation) {
-			this.enable();
+		if (enAbleKeyboArdNAvigAtion) {
+			this.enAble();
 		} else {
-			this.disable();
+			this.disAble();
 		}
 
-		if (typeof options.automaticKeyboardNavigation !== 'undefined') {
-			this.automaticKeyboardNavigation = options.automaticKeyboardNavigation;
+		if (typeof options.AutomAticKeyboArdNAvigAtion !== 'undefined') {
+			this.AutomAticKeyboArdNAvigAtion = options.AutomAticKeyboArdNAvigAtion;
 		}
 	}
 
@@ -386,104 +386,104 @@ class TypeLabelController<T> implements IDisposable {
 		this.triggered = !this.triggered;
 	}
 
-	private enable(): void {
-		if (this.enabled) {
+	privAte enAble(): void {
+		if (this.enAbled) {
 			return;
 		}
 
-		const onChar = Event.chain(domEvent(this.view.domNode, 'keydown'))
-			.filter(e => !isInputElement(e.target as HTMLElement))
-			.filter(() => this.automaticKeyboardNavigation || this.triggered)
-			.map(event => new StandardKeyboardEvent(event))
-			.filter(e => this.delegate.mightProducePrintableCharacter(e))
-			.forEach(e => { e.stopPropagation(); e.preventDefault(); })
-			.map(event => event.browserEvent.key)
+		const onChAr = Event.chAin(domEvent(this.view.domNode, 'keydown'))
+			.filter(e => !isInputElement(e.tArget As HTMLElement))
+			.filter(() => this.AutomAticKeyboArdNAvigAtion || this.triggered)
+			.mAp(event => new StAndArdKeyboArdEvent(event))
+			.filter(e => this.delegAte.mightProducePrintAbleChArActer(e))
+			.forEAch(e => { e.stopPropAgAtion(); e.preventDefAult(); })
+			.mAp(event => event.browserEvent.key)
 			.event;
 
-		const onClear = Event.debounce<string, null>(onChar, () => null, 800);
-		const onInput = Event.reduce<string | null, string | null>(Event.any(onChar, onClear), (r, i) => i === null ? null : ((r || '') + i));
+		const onCleAr = Event.debounce<string, null>(onChAr, () => null, 800);
+		const onInput = Event.reduce<string | null, string | null>(Event.Any(onChAr, onCleAr), (r, i) => i === null ? null : ((r || '') + i));
 
-		onInput(this.onInput, this, this.enabledDisposables);
-		onClear(this.onClear, this, this.enabledDisposables);
+		onInput(this.onInput, this, this.enAbledDisposAbles);
+		onCleAr(this.onCleAr, this, this.enAbledDisposAbles);
 
-		this.enabled = true;
-		this.triggered = false;
+		this.enAbled = true;
+		this.triggered = fAlse;
 	}
 
-	private disable(): void {
-		if (!this.enabled) {
+	privAte disAble(): void {
+		if (!this.enAbled) {
 			return;
 		}
 
-		this.enabledDisposables.clear();
-		this.enabled = false;
-		this.triggered = false;
+		this.enAbledDisposAbles.cleAr();
+		this.enAbled = fAlse;
+		this.triggered = fAlse;
 	}
 
-	private onClear(): void {
+	privAte onCleAr(): void {
 		const focus = this.list.getFocus();
 		if (focus.length > 0 && focus[0] === this.previouslyFocused) {
-			// List: re-anounce element on typing end since typed keys will interupt aria label of focused element
-			// Do not announce if there was a focus change at the end to prevent duplication https://github.com/microsoft/vscode/issues/95961
-			const ariaLabel = this.list.options.accessibilityProvider?.getAriaLabel(this.list.element(focus[0]));
-			if (ariaLabel) {
-				alert(ariaLabel);
+			// List: re-Anounce element on typing end since typed keys will interupt AriA lAbel of focused element
+			// Do not Announce if there wAs A focus chAnge At the end to prevent duplicAtion https://github.com/microsoft/vscode/issues/95961
+			const AriALAbel = this.list.options.AccessibilityProvider?.getAriALAbel(this.list.element(focus[0]));
+			if (AriALAbel) {
+				Alert(AriALAbel);
 			}
 		}
 		this.previouslyFocused = -1;
 	}
 
-	private onInput(word: string | null): void {
+	privAte onInput(word: string | null): void {
 		if (!word) {
-			this.state = TypeLabelControllerState.Idle;
-			this.triggered = false;
+			this.stAte = TypeLAbelControllerStAte.Idle;
+			this.triggered = fAlse;
 			return;
 		}
 
 		const focus = this.list.getFocus();
-		const start = focus.length > 0 ? focus[0] : 0;
-		const delta = this.state === TypeLabelControllerState.Idle ? 1 : 0;
-		this.state = TypeLabelControllerState.Typing;
+		const stArt = focus.length > 0 ? focus[0] : 0;
+		const deltA = this.stAte === TypeLAbelControllerStAte.Idle ? 1 : 0;
+		this.stAte = TypeLAbelControllerStAte.Typing;
 
 		for (let i = 0; i < this.list.length; i++) {
-			const index = (start + i + delta) % this.list.length;
-			const label = this.keyboardNavigationLabelProvider.getKeyboardNavigationLabel(this.view.element(index));
-			const labelStr = label && label.toString();
+			const index = (stArt + i + deltA) % this.list.length;
+			const lAbel = this.keyboArdNAvigAtionLAbelProvider.getKeyboArdNAvigAtionLAbel(this.view.element(index));
+			const lAbelStr = lAbel && lAbel.toString();
 
-			if (typeof labelStr === 'undefined' || matchesPrefix(word, labelStr)) {
-				this.previouslyFocused = start;
+			if (typeof lAbelStr === 'undefined' || mAtchesPrefix(word, lAbelStr)) {
+				this.previouslyFocused = stArt;
 				this.list.setFocus([index]);
-				this.list.reveal(index);
+				this.list.reveAl(index);
 				return;
 			}
 		}
 	}
 
 	dispose() {
-		this.disable();
-		this.enabledDisposables.dispose();
-		this.disposables.dispose();
+		this.disAble();
+		this.enAbledDisposAbles.dispose();
+		this.disposAbles.dispose();
 	}
 }
 
-class DOMFocusController<T> implements IDisposable {
+clAss DOMFocusController<T> implements IDisposAble {
 
-	private readonly disposables = new DisposableStore();
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
 	constructor(
-		private list: List<T>,
-		private view: ListView<T>
+		privAte list: List<T>,
+		privAte view: ListView<T>
 	) {
-		const onKeyDown = Event.chain(domEvent(view.domNode, 'keydown'))
-			.filter(e => !isInputElement(e.target as HTMLElement))
-			.map(e => new StandardKeyboardEvent(e));
+		const onKeyDown = Event.chAin(domEvent(view.domNode, 'keydown'))
+			.filter(e => !isInputElement(e.tArget As HTMLElement))
+			.mAp(e => new StAndArdKeyboArdEvent(e));
 
-		onKeyDown.filter(e => e.keyCode === KeyCode.Tab && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey)
-			.on(this.onTab, this, this.disposables);
+		onKeyDown.filter(e => e.keyCode === KeyCode.TAb && !e.ctrlKey && !e.metAKey && !e.shiftKey && !e.AltKey)
+			.on(this.onTAb, this, this.disposAbles);
 	}
 
-	private onTab(e: StandardKeyboardEvent): void {
-		if (e.target !== this.view.domNode) {
+	privAte onTAb(e: StAndArdKeyboArdEvent): void {
+		if (e.tArget !== this.view.domNode) {
 			return;
 		}
 
@@ -499,106 +499,106 @@ class DOMFocusController<T> implements IDisposable {
 			return;
 		}
 
-		const tabIndexElement = focusedDomElement.querySelector('[tabIndex]');
+		const tAbIndexElement = focusedDomElement.querySelector('[tAbIndex]');
 
-		if (!tabIndexElement || !(tabIndexElement instanceof HTMLElement) || tabIndexElement.tabIndex === -1) {
+		if (!tAbIndexElement || !(tAbIndexElement instAnceof HTMLElement) || tAbIndexElement.tAbIndex === -1) {
 			return;
 		}
 
-		const style = window.getComputedStyle(tabIndexElement);
-		if (style.visibility === 'hidden' || style.display === 'none') {
+		const style = window.getComputedStyle(tAbIndexElement);
+		if (style.visibility === 'hidden' || style.displAy === 'none') {
 			return;
 		}
 
-		e.preventDefault();
-		e.stopPropagation();
-		tabIndexElement.focus();
+		e.preventDefAult();
+		e.stopPropAgAtion();
+		tAbIndexElement.focus();
 	}
 
 	dispose() {
-		this.disposables.dispose();
+		this.disposAbles.dispose();
 	}
 }
 
-export function isSelectionSingleChangeEvent(event: IListMouseEvent<any> | IListTouchEvent<any>): boolean {
-	return platform.isMacintosh ? event.browserEvent.metaKey : event.browserEvent.ctrlKey;
+export function isSelectionSingleChAngeEvent(event: IListMouseEvent<Any> | IListTouchEvent<Any>): booleAn {
+	return plAtform.isMAcintosh ? event.browserEvent.metAKey : event.browserEvent.ctrlKey;
 }
 
-export function isSelectionRangeChangeEvent(event: IListMouseEvent<any> | IListTouchEvent<any>): boolean {
+export function isSelectionRAngeChAngeEvent(event: IListMouseEvent<Any> | IListTouchEvent<Any>): booleAn {
 	return event.browserEvent.shiftKey;
 }
 
-function isMouseRightClick(event: UIEvent): boolean {
-	return event instanceof MouseEvent && event.button === 2;
+function isMouseRightClick(event: UIEvent): booleAn {
+	return event instAnceof MouseEvent && event.button === 2;
 }
 
-const DefaultMultipleSelectionController = {
-	isSelectionSingleChangeEvent,
-	isSelectionRangeChangeEvent
+const DefAultMultipleSelectionController = {
+	isSelectionSingleChAngeEvent,
+	isSelectionRAngeChAngeEvent
 };
 
-export class MouseController<T> implements IDisposable {
+export clAss MouseController<T> implements IDisposAble {
 
-	private multipleSelectionSupport: boolean;
-	readonly multipleSelectionController: IMultipleSelectionController<T> | undefined;
-	private mouseSupport: boolean;
-	private readonly disposables = new DisposableStore();
+	privAte multipleSelectionSupport: booleAn;
+	reAdonly multipleSelectionController: IMultipleSelectionController<T> | undefined;
+	privAte mouseSupport: booleAn;
+	privAte reAdonly disposAbles = new DisposAbleStore();
 
-	private _onPointer = new Emitter<IListMouseEvent<T>>();
-	readonly onPointer: Event<IListMouseEvent<T>> = this._onPointer.event;
+	privAte _onPointer = new Emitter<IListMouseEvent<T>>();
+	reAdonly onPointer: Event<IListMouseEvent<T>> = this._onPointer.event;
 
 	constructor(protected list: List<T>) {
-		this.multipleSelectionSupport = !(list.options.multipleSelectionSupport === false);
+		this.multipleSelectionSupport = !(list.options.multipleSelectionSupport === fAlse);
 
 		if (this.multipleSelectionSupport) {
-			this.multipleSelectionController = list.options.multipleSelectionController || DefaultMultipleSelectionController;
+			this.multipleSelectionController = list.options.multipleSelectionController || DefAultMultipleSelectionController;
 		}
 
 		this.mouseSupport = typeof list.options.mouseSupport === 'undefined' || !!list.options.mouseSupport;
 
 		if (this.mouseSupport) {
-			list.onMouseDown(this.onMouseDown, this, this.disposables);
-			list.onContextMenu(this.onContextMenu, this, this.disposables);
-			list.onMouseDblClick(this.onDoubleClick, this, this.disposables);
-			list.onTouchStart(this.onMouseDown, this, this.disposables);
-			this.disposables.add(Gesture.addTarget(list.getHTMLElement()));
+			list.onMouseDown(this.onMouseDown, this, this.disposAbles);
+			list.onContextMenu(this.onContextMenu, this, this.disposAbles);
+			list.onMouseDblClick(this.onDoubleClick, this, this.disposAbles);
+			list.onTouchStArt(this.onMouseDown, this, this.disposAbles);
+			this.disposAbles.Add(Gesture.AddTArget(list.getHTMLElement()));
 		}
 
-		Event.any(list.onMouseClick, list.onMouseMiddleClick, list.onTap)(this.onViewPointer, this, this.disposables);
+		Event.Any(list.onMouseClick, list.onMouseMiddleClick, list.onTAp)(this.onViewPointer, this, this.disposAbles);
 	}
 
-	protected isSelectionSingleChangeEvent(event: IListMouseEvent<any> | IListTouchEvent<any>): boolean {
+	protected isSelectionSingleChAngeEvent(event: IListMouseEvent<Any> | IListTouchEvent<Any>): booleAn {
 		if (this.multipleSelectionController) {
-			return this.multipleSelectionController.isSelectionSingleChangeEvent(event);
+			return this.multipleSelectionController.isSelectionSingleChAngeEvent(event);
 		}
 
-		return platform.isMacintosh ? event.browserEvent.metaKey : event.browserEvent.ctrlKey;
+		return plAtform.isMAcintosh ? event.browserEvent.metAKey : event.browserEvent.ctrlKey;
 	}
 
-	protected isSelectionRangeChangeEvent(event: IListMouseEvent<any> | IListTouchEvent<any>): boolean {
+	protected isSelectionRAngeChAngeEvent(event: IListMouseEvent<Any> | IListTouchEvent<Any>): booleAn {
 		if (this.multipleSelectionController) {
-			return this.multipleSelectionController.isSelectionRangeChangeEvent(event);
+			return this.multipleSelectionController.isSelectionRAngeChAngeEvent(event);
 		}
 
 		return event.browserEvent.shiftKey;
 	}
 
-	private isSelectionChangeEvent(event: IListMouseEvent<any> | IListTouchEvent<any>): boolean {
-		return this.isSelectionSingleChangeEvent(event) || this.isSelectionRangeChangeEvent(event);
+	privAte isSelectionChAngeEvent(event: IListMouseEvent<Any> | IListTouchEvent<Any>): booleAn {
+		return this.isSelectionSingleChAngeEvent(event) || this.isSelectionRAngeChAngeEvent(event);
 	}
 
-	private onMouseDown(e: IListMouseEvent<T> | IListTouchEvent<T>): void {
-		if (isMonacoEditor(e.browserEvent.target as HTMLElement)) {
+	privAte onMouseDown(e: IListMouseEvent<T> | IListTouchEvent<T>): void {
+		if (isMonAcoEditor(e.browserEvent.tArget As HTMLElement)) {
 			return;
 		}
 
-		if (document.activeElement !== e.browserEvent.target) {
+		if (document.ActiveElement !== e.browserEvent.tArget) {
 			this.list.domFocus();
 		}
 	}
 
-	private onContextMenu(e: IListContextMenuEvent<T>): void {
-		if (isMonacoEditor(e.browserEvent.target as HTMLElement)) {
+	privAte onContextMenu(e: IListContextMenuEvent<T>): void {
+		if (isMonAcoEditor(e.browserEvent.tArget As HTMLElement)) {
 			return;
 		}
 
@@ -611,7 +611,7 @@ export class MouseController<T> implements IDisposable {
 			return;
 		}
 
-		if (isInputElement(e.browserEvent.target as HTMLElement) || isMonacoEditor(e.browserEvent.target as HTMLElement)) {
+		if (isInputElement(e.browserEvent.tArget As HTMLElement) || isMonAcoEditor(e.browserEvent.tArget As HTMLElement)) {
 			return;
 		}
 
@@ -627,12 +627,12 @@ export class MouseController<T> implements IDisposable {
 			return;
 		}
 
-		if (this.multipleSelectionSupport && this.isSelectionRangeChangeEvent(e)) {
-			return this.changeSelection(e, reference);
+		if (this.multipleSelectionSupport && this.isSelectionRAngeChAngeEvent(e)) {
+			return this.chAngeSelection(e, reference);
 		}
 
-		if (this.multipleSelectionSupport && this.isSelectionChangeEvent(e)) {
-			return this.changeSelection(e, reference);
+		if (this.multipleSelectionSupport && this.isSelectionChAngeEvent(e)) {
+			return this.chAngeSelection(e, reference);
 		}
 
 		this.list.setFocus([focus], e.browserEvent);
@@ -645,11 +645,11 @@ export class MouseController<T> implements IDisposable {
 	}
 
 	protected onDoubleClick(e: IListMouseEvent<T>): void {
-		if (isInputElement(e.browserEvent.target as HTMLElement) || isMonacoEditor(e.browserEvent.target as HTMLElement)) {
+		if (isInputElement(e.browserEvent.tArget As HTMLElement) || isMonAcoEditor(e.browserEvent.tArget As HTMLElement)) {
 			return;
 		}
 
-		if (this.multipleSelectionSupport && this.isSelectionChangeEvent(e)) {
+		if (this.multipleSelectionSupport && this.isSelectionChAngeEvent(e)) {
 			return;
 		}
 
@@ -657,24 +657,24 @@ export class MouseController<T> implements IDisposable {
 		this.list.setSelection(focus, e.browserEvent);
 	}
 
-	private changeSelection(e: IListMouseEvent<T> | IListTouchEvent<T>, reference: number | undefined): void {
+	privAte chAngeSelection(e: IListMouseEvent<T> | IListTouchEvent<T>, reference: number | undefined): void {
 		const focus = e.index!;
 
-		if (this.isSelectionRangeChangeEvent(e) && reference !== undefined) {
-			const min = Math.min(reference, focus);
-			const max = Math.max(reference, focus);
-			const rangeSelection = range(min, max + 1);
+		if (this.isSelectionRAngeChAngeEvent(e) && reference !== undefined) {
+			const min = MAth.min(reference, focus);
+			const mAx = MAth.mAx(reference, focus);
+			const rAngeSelection = rAnge(min, mAx + 1);
 			const selection = this.list.getSelection();
-			const contiguousRange = getContiguousRangeContaining(disjunction(selection, [reference]), reference);
+			const contiguousRAnge = getContiguousRAngeContAining(disjunction(selection, [reference]), reference);
 
-			if (contiguousRange.length === 0) {
+			if (contiguousRAnge.length === 0) {
 				return;
 			}
 
-			const newSelection = disjunction(rangeSelection, relativeComplement(selection, contiguousRange));
+			const newSelection = disjunction(rAngeSelection, relAtiveComplement(selection, contiguousRAnge));
 			this.list.setSelection(newSelection, e.browserEvent);
 
-		} else if (this.isSelectionSingleChangeEvent(e)) {
+		} else if (this.isSelectionSingleChAngeEvent(e)) {
 			const selection = this.list.getSelection();
 			const newSelection = selection.filter(i => i !== focus);
 
@@ -689,224 +689,224 @@ export class MouseController<T> implements IDisposable {
 	}
 
 	dispose() {
-		this.disposables.dispose();
+		this.disposAbles.dispose();
 	}
 }
 
-export interface IMultipleSelectionController<T> {
-	isSelectionSingleChangeEvent(event: IListMouseEvent<T> | IListTouchEvent<T>): boolean;
-	isSelectionRangeChangeEvent(event: IListMouseEvent<T> | IListTouchEvent<T>): boolean;
+export interfAce IMultipleSelectionController<T> {
+	isSelectionSingleChAngeEvent(event: IListMouseEvent<T> | IListTouchEvent<T>): booleAn;
+	isSelectionRAngeChAngeEvent(event: IListMouseEvent<T> | IListTouchEvent<T>): booleAn;
 }
 
-export interface IStyleController {
+export interfAce IStyleController {
 	style(styles: IListStyles): void;
 }
 
-export interface IListAccessibilityProvider<T> extends IListViewAccessibilityProvider<T> {
-	getAriaLabel(element: T): string | null;
-	getWidgetAriaLabel(): string;
+export interfAce IListAccessibilityProvider<T> extends IListViewAccessibilityProvider<T> {
+	getAriALAbel(element: T): string | null;
+	getWidgetAriALAbel(): string;
 	getWidgetRole?(): string;
-	getAriaLevel?(element: T): number | undefined;
-	onDidChangeActiveDescendant?: Event<void>;
-	getActiveDescendantId?(element: T): string | undefined;
+	getAriALevel?(element: T): number | undefined;
+	onDidChAngeActiveDescendAnt?: Event<void>;
+	getActiveDescendAntId?(element: T): string | undefined;
 }
 
-export class DefaultStyleController implements IStyleController {
+export clAss DefAultStyleController implements IStyleController {
 
-	constructor(private styleElement: HTMLStyleElement, private selectorSuffix: string) { }
+	constructor(privAte styleElement: HTMLStyleElement, privAte selectorSuffix: string) { }
 
 	style(styles: IListStyles): void {
 		const suffix = this.selectorSuffix && `.${this.selectorSuffix}`;
 		const content: string[] = [];
 
-		if (styles.listBackground) {
-			if (styles.listBackground.isOpaque()) {
-				content.push(`.monaco-list${suffix} .monaco-list-rows { background: ${styles.listBackground}; }`);
-			} else if (!platform.isMacintosh) { // subpixel AA doesn't exist in macOS
-				console.warn(`List with id '${this.selectorSuffix}' was styled with a non-opaque background color. This will break sub-pixel antialiasing.`);
+		if (styles.listBAckground) {
+			if (styles.listBAckground.isOpAque()) {
+				content.push(`.monAco-list${suffix} .monAco-list-rows { bAckground: ${styles.listBAckground}; }`);
+			} else if (!plAtform.isMAcintosh) { // subpixel AA doesn't exist in mAcOS
+				console.wArn(`List with id '${this.selectorSuffix}' wAs styled with A non-opAque bAckground color. This will breAk sub-pixel AntiAliAsing.`);
 			}
 		}
 
-		if (styles.listFocusBackground) {
-			content.push(`.monaco-list${suffix}:focus .monaco-list-row.focused { background-color: ${styles.listFocusBackground}; }`);
-			content.push(`.monaco-list${suffix}:focus .monaco-list-row.focused:hover { background-color: ${styles.listFocusBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listFocusBAckground) {
+			content.push(`.monAco-list${suffix}:focus .monAco-list-row.focused { bAckground-color: ${styles.listFocusBAckground}; }`);
+			content.push(`.monAco-list${suffix}:focus .monAco-list-row.focused:hover { bAckground-color: ${styles.listFocusBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
 		if (styles.listFocusForeground) {
-			content.push(`.monaco-list${suffix}:focus .monaco-list-row.focused { color: ${styles.listFocusForeground}; }`);
+			content.push(`.monAco-list${suffix}:focus .monAco-list-row.focused { color: ${styles.listFocusForeground}; }`);
 		}
 
-		if (styles.listActiveSelectionBackground) {
-			content.push(`.monaco-list${suffix}:focus .monaco-list-row.selected { background-color: ${styles.listActiveSelectionBackground}; }`);
-			content.push(`.monaco-list${suffix}:focus .monaco-list-row.selected:hover { background-color: ${styles.listActiveSelectionBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listActiveSelectionBAckground) {
+			content.push(`.monAco-list${suffix}:focus .monAco-list-row.selected { bAckground-color: ${styles.listActiveSelectionBAckground}; }`);
+			content.push(`.monAco-list${suffix}:focus .monAco-list-row.selected:hover { bAckground-color: ${styles.listActiveSelectionBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
 		if (styles.listActiveSelectionForeground) {
-			content.push(`.monaco-list${suffix}:focus .monaco-list-row.selected { color: ${styles.listActiveSelectionForeground}; }`);
+			content.push(`.monAco-list${suffix}:focus .monAco-list-row.selected { color: ${styles.listActiveSelectionForeground}; }`);
 		}
 
-		if (styles.listFocusAndSelectionBackground) {
+		if (styles.listFocusAndSelectionBAckground) {
 			content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus .monaco-list-row.selected.focused { background-color: ${styles.listFocusAndSelectionBackground}; }
+				.monAco-drAg-imAge,
+				.monAco-list${suffix}:focus .monAco-list-row.selected.focused { bAckground-color: ${styles.listFocusAndSelectionBAckground}; }
 			`);
 		}
 
 		if (styles.listFocusAndSelectionForeground) {
 			content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus .monaco-list-row.selected.focused { color: ${styles.listFocusAndSelectionForeground}; }
+				.monAco-drAg-imAge,
+				.monAco-list${suffix}:focus .monAco-list-row.selected.focused { color: ${styles.listFocusAndSelectionForeground}; }
 			`);
 		}
 
-		if (styles.listInactiveFocusBackground) {
-			content.push(`.monaco-list${suffix} .monaco-list-row.focused { background-color:  ${styles.listInactiveFocusBackground}; }`);
-			content.push(`.monaco-list${suffix} .monaco-list-row.focused:hover { background-color:  ${styles.listInactiveFocusBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listInActiveFocusBAckground) {
+			content.push(`.monAco-list${suffix} .monAco-list-row.focused { bAckground-color:  ${styles.listInActiveFocusBAckground}; }`);
+			content.push(`.monAco-list${suffix} .monAco-list-row.focused:hover { bAckground-color:  ${styles.listInActiveFocusBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
-		if (styles.listInactiveSelectionBackground) {
-			content.push(`.monaco-list${suffix} .monaco-list-row.selected { background-color:  ${styles.listInactiveSelectionBackground}; }`);
-			content.push(`.monaco-list${suffix} .monaco-list-row.selected:hover { background-color:  ${styles.listInactiveSelectionBackground}; }`); // overwrite :hover style in this case!
+		if (styles.listInActiveSelectionBAckground) {
+			content.push(`.monAco-list${suffix} .monAco-list-row.selected { bAckground-color:  ${styles.listInActiveSelectionBAckground}; }`);
+			content.push(`.monAco-list${suffix} .monAco-list-row.selected:hover { bAckground-color:  ${styles.listInActiveSelectionBAckground}; }`); // overwrite :hover style in this cAse!
 		}
 
-		if (styles.listInactiveSelectionForeground) {
-			content.push(`.monaco-list${suffix} .monaco-list-row.selected { color: ${styles.listInactiveSelectionForeground}; }`);
+		if (styles.listInActiveSelectionForeground) {
+			content.push(`.monAco-list${suffix} .monAco-list-row.selected { color: ${styles.listInActiveSelectionForeground}; }`);
 		}
 
-		if (styles.listHoverBackground) {
-			content.push(`.monaco-list${suffix}:not(.drop-target) .monaco-list-row:hover:not(.selected):not(.focused) { background-color:  ${styles.listHoverBackground}; }`);
+		if (styles.listHoverBAckground) {
+			content.push(`.monAco-list${suffix}:not(.drop-tArget) .monAco-list-row:hover:not(.selected):not(.focused) { bAckground-color:  ${styles.listHoverBAckground}; }`);
 		}
 
 		if (styles.listHoverForeground) {
-			content.push(`.monaco-list${suffix} .monaco-list-row:hover:not(.selected):not(.focused) { color:  ${styles.listHoverForeground}; }`);
+			content.push(`.monAco-list${suffix} .monAco-list-row:hover:not(.selected):not(.focused) { color:  ${styles.listHoverForeground}; }`);
 		}
 
 		if (styles.listSelectionOutline) {
-			content.push(`.monaco-list${suffix} .monaco-list-row.selected { outline: 1px dotted ${styles.listSelectionOutline}; outline-offset: -1px; }`);
+			content.push(`.monAco-list${suffix} .monAco-list-row.selected { outline: 1px dotted ${styles.listSelectionOutline}; outline-offset: -1px; }`);
 		}
 
 		if (styles.listFocusOutline) {
 			content.push(`
-				.monaco-drag-image,
-				.monaco-list${suffix}:focus .monaco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
+				.monAco-drAg-imAge,
+				.monAco-list${suffix}:focus .monAco-list-row.focused { outline: 1px solid ${styles.listFocusOutline}; outline-offset: -1px; }
 			`);
 		}
 
-		if (styles.listInactiveFocusOutline) {
-			content.push(`.monaco-list${suffix} .monaco-list-row.focused { outline: 1px dotted ${styles.listInactiveFocusOutline}; outline-offset: -1px; }`);
+		if (styles.listInActiveFocusOutline) {
+			content.push(`.monAco-list${suffix} .monAco-list-row.focused { outline: 1px dotted ${styles.listInActiveFocusOutline}; outline-offset: -1px; }`);
 		}
 
 		if (styles.listHoverOutline) {
-			content.push(`.monaco-list${suffix} .monaco-list-row:hover { outline: 1px dashed ${styles.listHoverOutline}; outline-offset: -1px; }`);
+			content.push(`.monAco-list${suffix} .monAco-list-row:hover { outline: 1px dAshed ${styles.listHoverOutline}; outline-offset: -1px; }`);
 		}
 
-		if (styles.listDropBackground) {
+		if (styles.listDropBAckground) {
 			content.push(`
-				.monaco-list${suffix}.drop-target,
-				.monaco-list${suffix} .monaco-list-rows.drop-target,
-				.monaco-list${suffix} .monaco-list-row.drop-target { background-color: ${styles.listDropBackground} !important; color: inherit !important; }
+				.monAco-list${suffix}.drop-tArget,
+				.monAco-list${suffix} .monAco-list-rows.drop-tArget,
+				.monAco-list${suffix} .monAco-list-row.drop-tArget { bAckground-color: ${styles.listDropBAckground} !importAnt; color: inherit !importAnt; }
 			`);
 		}
 
-		if (styles.listFilterWidgetBackground) {
-			content.push(`.monaco-list-type-filter { background-color: ${styles.listFilterWidgetBackground} }`);
+		if (styles.listFilterWidgetBAckground) {
+			content.push(`.monAco-list-type-filter { bAckground-color: ${styles.listFilterWidgetBAckground} }`);
 		}
 
 		if (styles.listFilterWidgetOutline) {
-			content.push(`.monaco-list-type-filter { border: 1px solid ${styles.listFilterWidgetOutline}; }`);
+			content.push(`.monAco-list-type-filter { border: 1px solid ${styles.listFilterWidgetOutline}; }`);
 		}
 
-		if (styles.listFilterWidgetNoMatchesOutline) {
-			content.push(`.monaco-list-type-filter.no-matches { border: 1px solid ${styles.listFilterWidgetNoMatchesOutline}; }`);
+		if (styles.listFilterWidgetNoMAtchesOutline) {
+			content.push(`.monAco-list-type-filter.no-mAtches { border: 1px solid ${styles.listFilterWidgetNoMAtchesOutline}; }`);
 		}
 
-		if (styles.listMatchesShadow) {
-			content.push(`.monaco-list-type-filter { box-shadow: 1px 1px 1px ${styles.listMatchesShadow}; }`);
+		if (styles.listMAtchesShAdow) {
+			content.push(`.monAco-list-type-filter { box-shAdow: 1px 1px 1px ${styles.listMAtchesShAdow}; }`);
 		}
 
 		this.styleElement.textContent = content.join('\n');
 	}
 }
 
-export interface IListOptions<T> {
-	readonly identityProvider?: IIdentityProvider<T>;
-	readonly dnd?: IListDragAndDrop<T>;
-	readonly enableKeyboardNavigation?: boolean;
-	readonly automaticKeyboardNavigation?: boolean;
-	readonly keyboardNavigationLabelProvider?: IKeyboardNavigationLabelProvider<T>;
-	readonly keyboardNavigationDelegate?: IKeyboardNavigationDelegate;
-	readonly keyboardSupport?: boolean;
-	readonly multipleSelectionSupport?: boolean;
-	readonly multipleSelectionController?: IMultipleSelectionController<T>;
-	readonly styleController?: (suffix: string) => IStyleController;
-	readonly accessibilityProvider?: IListAccessibilityProvider<T>;
+export interfAce IListOptions<T> {
+	reAdonly identityProvider?: IIdentityProvider<T>;
+	reAdonly dnd?: IListDrAgAndDrop<T>;
+	reAdonly enAbleKeyboArdNAvigAtion?: booleAn;
+	reAdonly AutomAticKeyboArdNAvigAtion?: booleAn;
+	reAdonly keyboArdNAvigAtionLAbelProvider?: IKeyboArdNAvigAtionLAbelProvider<T>;
+	reAdonly keyboArdNAvigAtionDelegAte?: IKeyboArdNAvigAtionDelegAte;
+	reAdonly keyboArdSupport?: booleAn;
+	reAdonly multipleSelectionSupport?: booleAn;
+	reAdonly multipleSelectionController?: IMultipleSelectionController<T>;
+	reAdonly styleController?: (suffix: string) => IStyleController;
+	reAdonly AccessibilityProvider?: IListAccessibilityProvider<T>;
 
 	// list view options
-	readonly useShadows?: boolean;
-	readonly verticalScrollMode?: ScrollbarVisibility;
-	readonly setRowLineHeight?: boolean;
-	readonly setRowHeight?: boolean;
-	readonly supportDynamicHeights?: boolean;
-	readonly mouseSupport?: boolean;
-	readonly horizontalScrolling?: boolean;
-	readonly additionalScrollHeight?: number;
-	readonly transformOptimization?: boolean;
-	readonly smoothScrolling?: boolean;
+	reAdonly useShAdows?: booleAn;
+	reAdonly verticAlScrollMode?: ScrollbArVisibility;
+	reAdonly setRowLineHeight?: booleAn;
+	reAdonly setRowHeight?: booleAn;
+	reAdonly supportDynAmicHeights?: booleAn;
+	reAdonly mouseSupport?: booleAn;
+	reAdonly horizontAlScrolling?: booleAn;
+	reAdonly AdditionAlScrollHeight?: number;
+	reAdonly trAnsformOptimizAtion?: booleAn;
+	reAdonly smoothScrolling?: booleAn;
 }
 
-export interface IListStyles {
-	listBackground?: Color;
-	listFocusBackground?: Color;
+export interfAce IListStyles {
+	listBAckground?: Color;
+	listFocusBAckground?: Color;
 	listFocusForeground?: Color;
-	listActiveSelectionBackground?: Color;
+	listActiveSelectionBAckground?: Color;
 	listActiveSelectionForeground?: Color;
-	listFocusAndSelectionBackground?: Color;
+	listFocusAndSelectionBAckground?: Color;
 	listFocusAndSelectionForeground?: Color;
-	listInactiveSelectionBackground?: Color;
-	listInactiveSelectionForeground?: Color;
-	listInactiveFocusBackground?: Color;
-	listHoverBackground?: Color;
+	listInActiveSelectionBAckground?: Color;
+	listInActiveSelectionForeground?: Color;
+	listInActiveFocusBAckground?: Color;
+	listHoverBAckground?: Color;
 	listHoverForeground?: Color;
-	listDropBackground?: Color;
+	listDropBAckground?: Color;
 	listFocusOutline?: Color;
-	listInactiveFocusOutline?: Color;
+	listInActiveFocusOutline?: Color;
 	listSelectionOutline?: Color;
 	listHoverOutline?: Color;
-	listFilterWidgetBackground?: Color;
+	listFilterWidgetBAckground?: Color;
 	listFilterWidgetOutline?: Color;
-	listFilterWidgetNoMatchesOutline?: Color;
-	listMatchesShadow?: Color;
+	listFilterWidgetNoMAtchesOutline?: Color;
+	listMAtchesShAdow?: Color;
 	treeIndentGuidesStroke?: Color;
 }
 
-const defaultStyles: IListStyles = {
-	listFocusBackground: Color.fromHex('#7FB0D0'),
-	listActiveSelectionBackground: Color.fromHex('#0E639C'),
+const defAultStyles: IListStyles = {
+	listFocusBAckground: Color.fromHex('#7FB0D0'),
+	listActiveSelectionBAckground: Color.fromHex('#0E639C'),
 	listActiveSelectionForeground: Color.fromHex('#FFFFFF'),
-	listFocusAndSelectionBackground: Color.fromHex('#094771'),
+	listFocusAndSelectionBAckground: Color.fromHex('#094771'),
 	listFocusAndSelectionForeground: Color.fromHex('#FFFFFF'),
-	listInactiveSelectionBackground: Color.fromHex('#3F3F46'),
-	listHoverBackground: Color.fromHex('#2A2D2E'),
-	listDropBackground: Color.fromHex('#383B3D'),
-	treeIndentGuidesStroke: Color.fromHex('#a9a9a9')
+	listInActiveSelectionBAckground: Color.fromHex('#3F3F46'),
+	listHoverBAckground: Color.fromHex('#2A2D2E'),
+	listDropBAckground: Color.fromHex('#383B3D'),
+	treeIndentGuidesStroke: Color.fromHex('#A9A9A9')
 };
 
-const DefaultOptions: IListOptions<any> = {
-	keyboardSupport: true,
+const DefAultOptions: IListOptions<Any> = {
+	keyboArdSupport: true,
 	mouseSupport: true,
 	multipleSelectionSupport: true,
 	dnd: {
-		getDragURI() { return null; },
-		onDragStart(): void { },
-		onDragOver() { return false; },
+		getDrAgURI() { return null; },
+		onDrAgStArt(): void { },
+		onDrAgOver() { return fAlse; },
 		drop() { }
 	}
 };
 
-// TODO@Joao: move these utils into a SortedArray class
+// TODO@JoAo: move these utils into A SortedArrAy clAss
 
-function getContiguousRangeContaining(range: number[], value: number): number[] {
-	const index = range.indexOf(value);
+function getContiguousRAngeContAining(rAnge: number[], vAlue: number): number[] {
+	const index = rAnge.indexOf(vAlue);
 
 	if (index === -1) {
 		return [];
@@ -914,14 +914,14 @@ function getContiguousRangeContaining(range: number[], value: number): number[] 
 
 	const result: number[] = [];
 	let i = index - 1;
-	while (i >= 0 && range[i] === value - (index - i)) {
-		result.push(range[i--]);
+	while (i >= 0 && rAnge[i] === vAlue - (index - i)) {
+		result.push(rAnge[i--]);
 	}
 
 	result.reverse();
 	i = index;
-	while (i < range.length && range[i] === value + (i - index)) {
-		result.push(range[i++]);
+	while (i < rAnge.length && rAnge[i] === vAlue + (i - index)) {
+		result.push(rAnge[i++]);
 	}
 
 	return result;
@@ -956,10 +956,10 @@ function disjunction(one: number[], other: number[]): number[] {
 }
 
 /**
- * Given two sorted collections of numbers, returns the relative
+ * Given two sorted collections of numbers, returns the relAtive
  * complement between them (XOR).
  */
-function relativeComplement(one: number[], other: number[]): number[] {
+function relAtiveComplement(one: number[], other: number[]): number[] {
 	const result: number[] = [];
 	let i = 0, j = 0;
 
@@ -982,154 +982,154 @@ function relativeComplement(one: number[], other: number[]): number[] {
 	return result;
 }
 
-const numericSort = (a: number, b: number) => a - b;
+const numericSort = (A: number, b: number) => A - b;
 
-class PipelineRenderer<T> implements IListRenderer<T, any> {
+clAss PipelineRenderer<T> implements IListRenderer<T, Any> {
 
 	constructor(
-		private _templateId: string,
-		private renderers: IListRenderer<any /* TODO@joao */, any>[]
+		privAte _templAteId: string,
+		privAte renderers: IListRenderer<Any /* TODO@joAo */, Any>[]
 	) { }
 
-	get templateId(): string {
-		return this._templateId;
+	get templAteId(): string {
+		return this._templAteId;
 	}
 
-	renderTemplate(container: HTMLElement): any[] {
-		return this.renderers.map(r => r.renderTemplate(container));
+	renderTemplAte(contAiner: HTMLElement): Any[] {
+		return this.renderers.mAp(r => r.renderTemplAte(contAiner));
 	}
 
-	renderElement(element: T, index: number, templateData: any[], height: number | undefined): void {
+	renderElement(element: T, index: number, templAteDAtA: Any[], height: number | undefined): void {
 		let i = 0;
 
 		for (const renderer of this.renderers) {
-			renderer.renderElement(element, index, templateData[i++], height);
+			renderer.renderElement(element, index, templAteDAtA[i++], height);
 		}
 	}
 
-	disposeElement(element: T, index: number, templateData: any[], height: number | undefined): void {
+	disposeElement(element: T, index: number, templAteDAtA: Any[], height: number | undefined): void {
 		let i = 0;
 
 		for (const renderer of this.renderers) {
 			if (renderer.disposeElement) {
-				renderer.disposeElement(element, index, templateData[i], height);
+				renderer.disposeElement(element, index, templAteDAtA[i], height);
 			}
 
 			i += 1;
 		}
 	}
 
-	disposeTemplate(templateData: any[]): void {
+	disposeTemplAte(templAteDAtA: Any[]): void {
 		let i = 0;
 
 		for (const renderer of this.renderers) {
-			renderer.disposeTemplate(templateData[i++]);
+			renderer.disposeTemplAte(templAteDAtA[i++]);
 		}
 	}
 }
 
-class AccessibiltyRenderer<T> implements IListRenderer<T, HTMLElement> {
+clAss AccessibiltyRenderer<T> implements IListRenderer<T, HTMLElement> {
 
-	templateId: string = 'a18n';
+	templAteId: string = 'A18n';
 
-	constructor(private accessibilityProvider: IListAccessibilityProvider<T>) { }
+	constructor(privAte AccessibilityProvider: IListAccessibilityProvider<T>) { }
 
-	renderTemplate(container: HTMLElement): HTMLElement {
-		return container;
+	renderTemplAte(contAiner: HTMLElement): HTMLElement {
+		return contAiner;
 	}
 
-	renderElement(element: T, index: number, container: HTMLElement): void {
-		const ariaLabel = this.accessibilityProvider.getAriaLabel(element);
+	renderElement(element: T, index: number, contAiner: HTMLElement): void {
+		const AriALAbel = this.AccessibilityProvider.getAriALAbel(element);
 
-		if (ariaLabel) {
-			container.setAttribute('aria-label', ariaLabel);
+		if (AriALAbel) {
+			contAiner.setAttribute('AriA-lAbel', AriALAbel);
 		} else {
-			container.removeAttribute('aria-label');
+			contAiner.removeAttribute('AriA-lAbel');
 		}
 
-		const ariaLevel = this.accessibilityProvider.getAriaLevel && this.accessibilityProvider.getAriaLevel(element);
+		const AriALevel = this.AccessibilityProvider.getAriALevel && this.AccessibilityProvider.getAriALevel(element);
 
-		if (typeof ariaLevel === 'number') {
-			container.setAttribute('aria-level', `${ariaLevel}`);
+		if (typeof AriALevel === 'number') {
+			contAiner.setAttribute('AriA-level', `${AriALevel}`);
 		} else {
-			container.removeAttribute('aria-level');
+			contAiner.removeAttribute('AriA-level');
 		}
 	}
 
-	disposeTemplate(templateData: any): void {
+	disposeTemplAte(templAteDAtA: Any): void {
 		// noop
 	}
 }
 
-class ListViewDragAndDrop<T> implements IListViewDragAndDrop<T> {
+clAss ListViewDrAgAndDrop<T> implements IListViewDrAgAndDrop<T> {
 
-	constructor(private list: List<T>, private dnd: IListDragAndDrop<T>) { }
+	constructor(privAte list: List<T>, privAte dnd: IListDrAgAndDrop<T>) { }
 
-	getDragElements(element: T): T[] {
+	getDrAgElements(element: T): T[] {
 		const selection = this.list.getSelectedElements();
 		const elements = selection.indexOf(element) > -1 ? selection : [element];
 		return elements;
 	}
 
-	getDragURI(element: T): string | null {
-		return this.dnd.getDragURI(element);
+	getDrAgURI(element: T): string | null {
+		return this.dnd.getDrAgURI(element);
 	}
 
-	getDragLabel?(elements: T[], originalEvent: DragEvent): string | undefined {
-		if (this.dnd.getDragLabel) {
-			return this.dnd.getDragLabel(elements, originalEvent);
+	getDrAgLAbel?(elements: T[], originAlEvent: DrAgEvent): string | undefined {
+		if (this.dnd.getDrAgLAbel) {
+			return this.dnd.getDrAgLAbel(elements, originAlEvent);
 		}
 
 		return undefined;
 	}
 
-	onDragStart(data: IDragAndDropData, originalEvent: DragEvent): void {
-		if (this.dnd.onDragStart) {
-			this.dnd.onDragStart(data, originalEvent);
+	onDrAgStArt(dAtA: IDrAgAndDropDAtA, originAlEvent: DrAgEvent): void {
+		if (this.dnd.onDrAgStArt) {
+			this.dnd.onDrAgStArt(dAtA, originAlEvent);
 		}
 	}
 
-	onDragOver(data: IDragAndDropData, targetElement: T, targetIndex: number, originalEvent: DragEvent): boolean | IListDragOverReaction {
-		return this.dnd.onDragOver(data, targetElement, targetIndex, originalEvent);
+	onDrAgOver(dAtA: IDrAgAndDropDAtA, tArgetElement: T, tArgetIndex: number, originAlEvent: DrAgEvent): booleAn | IListDrAgOverReAction {
+		return this.dnd.onDrAgOver(dAtA, tArgetElement, tArgetIndex, originAlEvent);
 	}
 
-	onDragEnd(originalEvent: DragEvent): void {
-		if (this.dnd.onDragEnd) {
-			this.dnd.onDragEnd(originalEvent);
+	onDrAgEnd(originAlEvent: DrAgEvent): void {
+		if (this.dnd.onDrAgEnd) {
+			this.dnd.onDrAgEnd(originAlEvent);
 		}
 	}
 
-	drop(data: IDragAndDropData, targetElement: T, targetIndex: number, originalEvent: DragEvent): void {
-		this.dnd.drop(data, targetElement, targetIndex, originalEvent);
+	drop(dAtA: IDrAgAndDropDAtA, tArgetElement: T, tArgetIndex: number, originAlEvent: DrAgEvent): void {
+		this.dnd.drop(dAtA, tArgetElement, tArgetIndex, originAlEvent);
 	}
 }
 
-export interface IListOptionsUpdate extends IListViewOptionsUpdate {
-	readonly enableKeyboardNavigation?: boolean;
-	readonly automaticKeyboardNavigation?: boolean;
+export interfAce IListOptionsUpdAte extends IListViewOptionsUpdAte {
+	reAdonly enAbleKeyboArdNAvigAtion?: booleAn;
+	reAdonly AutomAticKeyboArdNAvigAtion?: booleAn;
 }
 
-export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
+export clAss List<T> implements ISpliceAble<T>, IThemAble, IDisposAble {
 
-	private focus: Trait<T>;
-	private selection: Trait<T>;
-	private eventBufferer = new EventBufferer();
+	privAte focus: TrAit<T>;
+	privAte selection: TrAit<T>;
+	privAte eventBufferer = new EventBufferer();
 	protected view: ListView<T>;
-	private spliceable: ISpliceable<T>;
-	private styleController: IStyleController;
-	private typeLabelController?: TypeLabelController<T>;
-	private accessibilityProvider?: IListAccessibilityProvider<T>;
-	private mouseController: MouseController<T>;
-	private _ariaLabel: string = '';
+	privAte spliceAble: ISpliceAble<T>;
+	privAte styleController: IStyleController;
+	privAte typeLAbelController?: TypeLAbelController<T>;
+	privAte AccessibilityProvider?: IListAccessibilityProvider<T>;
+	privAte mouseController: MouseController<T>;
+	privAte _AriALAbel: string = '';
 
-	protected readonly disposables = new DisposableStore();
+	protected reAdonly disposAbles = new DisposAbleStore();
 
-	@memoize get onDidChangeFocus(): Event<IListEvent<T>> {
-		return Event.map(this.eventBufferer.wrapEvent(this.focus.onChange), e => this.toListEvent(e));
+	@memoize get onDidChAngeFocus(): Event<IListEvent<T>> {
+		return Event.mAp(this.eventBufferer.wrApEvent(this.focus.onChAnge), e => this.toListEvent(e));
 	}
 
-	@memoize get onDidChangeSelection(): Event<IListEvent<T>> {
-		return Event.map(this.eventBufferer.wrapEvent(this.selection.onChange), e => this.toListEvent(e));
+	@memoize get onDidChAngeSelection(): Event<IListEvent<T>> {
+		return Event.mAp(this.eventBufferer.wrApEvent(this.selection.onChAnge), e => this.toListEvent(e));
 	}
 
 	get domId(): string { return this.view.domId; }
@@ -1143,173 +1143,173 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 	get onMouseOver(): Event<IListMouseEvent<T>> { return this.view.onMouseOver; }
 	get onMouseMove(): Event<IListMouseEvent<T>> { return this.view.onMouseMove; }
 	get onMouseOut(): Event<IListMouseEvent<T>> { return this.view.onMouseOut; }
-	get onTouchStart(): Event<IListTouchEvent<T>> { return this.view.onTouchStart; }
-	get onTap(): Event<IListGestureEvent<T>> { return this.view.onTap; }
+	get onTouchStArt(): Event<IListTouchEvent<T>> { return this.view.onTouchStArt; }
+	get onTAp(): Event<IListGestureEvent<T>> { return this.view.onTAp; }
 
-	private didJustPressContextMenuKey: boolean = false;
+	privAte didJustPressContextMenuKey: booleAn = fAlse;
 	@memoize get onContextMenu(): Event<IListContextMenuEvent<T>> {
-		const fromKeydown = Event.chain(domEvent(this.view.domNode, 'keydown'))
-			.map(e => new StandardKeyboardEvent(e))
+		const fromKeydown = Event.chAin(domEvent(this.view.domNode, 'keydown'))
+			.mAp(e => new StAndArdKeyboArdEvent(e))
 			.filter(e => this.didJustPressContextMenuKey = e.keyCode === KeyCode.ContextMenu || (e.shiftKey && e.keyCode === KeyCode.F10))
-			.filter(e => { e.preventDefault(); e.stopPropagation(); return false; })
-			.event as Event<any>;
+			.filter(e => { e.preventDefAult(); e.stopPropAgAtion(); return fAlse; })
+			.event As Event<Any>;
 
-		const fromKeyup = Event.chain(domEvent(this.view.domNode, 'keyup'))
+		const fromKeyup = Event.chAin(domEvent(this.view.domNode, 'keyup'))
 			.filter(() => {
 				const didJustPressContextMenuKey = this.didJustPressContextMenuKey;
-				this.didJustPressContextMenuKey = false;
+				this.didJustPressContextMenuKey = fAlse;
 				return didJustPressContextMenuKey;
 			})
 			.filter(() => this.getFocus().length > 0 && !!this.view.domElement(this.getFocus()[0]))
-			.map(browserEvent => {
+			.mAp(browserEvent => {
 				const index = this.getFocus()[0];
 				const element = this.view.element(index);
-				const anchor = this.view.domElement(index) as HTMLElement;
-				return { index, element, anchor, browserEvent };
+				const Anchor = this.view.domElement(index) As HTMLElement;
+				return { index, element, Anchor, browserEvent };
 			})
 			.event;
 
-		const fromMouse = Event.chain(this.view.onContextMenu)
+		const fromMouse = Event.chAin(this.view.onContextMenu)
 			.filter(() => !this.didJustPressContextMenuKey)
-			.map(({ element, index, browserEvent }) => ({ element, index, anchor: { x: browserEvent.clientX + 1, y: browserEvent.clientY }, browserEvent }))
+			.mAp(({ element, index, browserEvent }) => ({ element, index, Anchor: { x: browserEvent.clientX + 1, y: browserEvent.clientY }, browserEvent }))
 			.event;
 
-		return Event.any<IListContextMenuEvent<T>>(fromKeydown, fromKeyup, fromMouse);
+		return Event.Any<IListContextMenuEvent<T>>(fromKeydown, fromKeyup, fromMouse);
 	}
 
-	get onKeyDown(): Event<KeyboardEvent> { return domEvent(this.view.domNode, 'keydown'); }
-	get onKeyUp(): Event<KeyboardEvent> { return domEvent(this.view.domNode, 'keyup'); }
-	get onKeyPress(): Event<KeyboardEvent> { return domEvent(this.view.domNode, 'keypress'); }
+	get onKeyDown(): Event<KeyboArdEvent> { return domEvent(this.view.domNode, 'keydown'); }
+	get onKeyUp(): Event<KeyboArdEvent> { return domEvent(this.view.domNode, 'keyup'); }
+	get onKeyPress(): Event<KeyboArdEvent> { return domEvent(this.view.domNode, 'keypress'); }
 
-	readonly onDidFocus: Event<void>;
-	readonly onDidBlur: Event<void>;
+	reAdonly onDidFocus: Event<void>;
+	reAdonly onDidBlur: Event<void>;
 
-	private readonly _onDidDispose = new Emitter<void>();
-	readonly onDidDispose: Event<void> = this._onDidDispose.event;
+	privAte reAdonly _onDidDispose = new Emitter<void>();
+	reAdonly onDidDispose: Event<void> = this._onDidDispose.event;
 
 	constructor(
-		private user: string,
-		container: HTMLElement,
-		virtualDelegate: IListVirtualDelegate<T>,
-		renderers: IListRenderer<any /* TODO@joao */, any>[],
-		private _options: IListOptions<T> = DefaultOptions
+		privAte user: string,
+		contAiner: HTMLElement,
+		virtuAlDelegAte: IListVirtuAlDelegAte<T>,
+		renderers: IListRenderer<Any /* TODO@joAo */, Any>[],
+		privAte _options: IListOptions<T> = DefAultOptions
 	) {
-		const role = this._options.accessibilityProvider && this._options.accessibilityProvider.getWidgetRole ? this._options.accessibilityProvider?.getWidgetRole() : 'list';
-		this.selection = new SelectionTrait(role !== 'listbox');
-		this.focus = new Trait('focused');
+		const role = this._options.AccessibilityProvider && this._options.AccessibilityProvider.getWidgetRole ? this._options.AccessibilityProvider?.getWidgetRole() : 'list';
+		this.selection = new SelectionTrAit(role !== 'listbox');
+		this.focus = new TrAit('focused');
 
-		mixin(_options, defaultStyles, false);
+		mixin(_options, defAultStyles, fAlse);
 
-		const baseRenderers: IListRenderer<T, ITraitTemplateData>[] = [this.focus.renderer, this.selection.renderer];
+		const bAseRenderers: IListRenderer<T, ITrAitTemplAteDAtA>[] = [this.focus.renderer, this.selection.renderer];
 
-		this.accessibilityProvider = _options.accessibilityProvider;
+		this.AccessibilityProvider = _options.AccessibilityProvider;
 
-		if (this.accessibilityProvider) {
-			baseRenderers.push(new AccessibiltyRenderer<T>(this.accessibilityProvider));
+		if (this.AccessibilityProvider) {
+			bAseRenderers.push(new AccessibiltyRenderer<T>(this.AccessibilityProvider));
 
-			if (this.accessibilityProvider.onDidChangeActiveDescendant) {
-				this.accessibilityProvider.onDidChangeActiveDescendant(this.onDidChangeActiveDescendant, this, this.disposables);
+			if (this.AccessibilityProvider.onDidChAngeActiveDescendAnt) {
+				this.AccessibilityProvider.onDidChAngeActiveDescendAnt(this.onDidChAngeActiveDescendAnt, this, this.disposAbles);
 			}
 		}
 
-		renderers = renderers.map(r => new PipelineRenderer(r.templateId, [...baseRenderers, r]));
+		renderers = renderers.mAp(r => new PipelineRenderer(r.templAteId, [...bAseRenderers, r]));
 
 		const viewOptions: IListViewOptions<T> = {
 			..._options,
-			dnd: _options.dnd && new ListViewDragAndDrop(this, _options.dnd)
+			dnd: _options.dnd && new ListViewDrAgAndDrop(this, _options.dnd)
 		};
 
-		this.view = new ListView(container, virtualDelegate, renderers, viewOptions);
+		this.view = new ListView(contAiner, virtuAlDelegAte, renderers, viewOptions);
 		this.view.domNode.setAttribute('role', role);
 
 		if (_options.styleController) {
 			this.styleController = _options.styleController(this.view.domId);
 		} else {
-			const styleElement = createStyleSheet(this.view.domNode);
-			this.styleController = new DefaultStyleController(styleElement, this.view.domId);
+			const styleElement = creAteStyleSheet(this.view.domNode);
+			this.styleController = new DefAultStyleController(styleElement, this.view.domId);
 		}
 
-		this.spliceable = new CombinedSpliceable([
-			new TraitSpliceable(this.focus, this.view, _options.identityProvider),
-			new TraitSpliceable(this.selection, this.view, _options.identityProvider),
+		this.spliceAble = new CombinedSpliceAble([
+			new TrAitSpliceAble(this.focus, this.view, _options.identityProvider),
+			new TrAitSpliceAble(this.selection, this.view, _options.identityProvider),
 			this.view
 		]);
 
-		this.disposables.add(this.focus);
-		this.disposables.add(this.selection);
-		this.disposables.add(this.view);
-		this.disposables.add(this._onDidDispose);
+		this.disposAbles.Add(this.focus);
+		this.disposAbles.Add(this.selection);
+		this.disposAbles.Add(this.view);
+		this.disposAbles.Add(this._onDidDispose);
 
-		this.onDidFocus = Event.map(domEvent(this.view.domNode, 'focus', true), () => null!);
-		this.onDidBlur = Event.map(domEvent(this.view.domNode, 'blur', true), () => null!);
+		this.onDidFocus = Event.mAp(domEvent(this.view.domNode, 'focus', true), () => null!);
+		this.onDidBlur = Event.mAp(domEvent(this.view.domNode, 'blur', true), () => null!);
 
-		this.disposables.add(new DOMFocusController(this, this.view));
+		this.disposAbles.Add(new DOMFocusController(this, this.view));
 
-		if (typeof _options.keyboardSupport !== 'boolean' || _options.keyboardSupport) {
-			const controller = new KeyboardController(this, this.view, _options);
-			this.disposables.add(controller);
+		if (typeof _options.keyboArdSupport !== 'booleAn' || _options.keyboArdSupport) {
+			const controller = new KeyboArdController(this, this.view, _options);
+			this.disposAbles.Add(controller);
 		}
 
-		if (_options.keyboardNavigationLabelProvider) {
-			const delegate = _options.keyboardNavigationDelegate || DefaultKeyboardNavigationDelegate;
-			this.typeLabelController = new TypeLabelController(this, this.view, _options.keyboardNavigationLabelProvider, delegate);
-			this.disposables.add(this.typeLabelController);
+		if (_options.keyboArdNAvigAtionLAbelProvider) {
+			const delegAte = _options.keyboArdNAvigAtionDelegAte || DefAultKeyboArdNAvigAtionDelegAte;
+			this.typeLAbelController = new TypeLAbelController(this, this.view, _options.keyboArdNAvigAtionLAbelProvider, delegAte);
+			this.disposAbles.Add(this.typeLAbelController);
 		}
 
-		this.mouseController = this.createMouseController(_options);
-		this.disposables.add(this.mouseController);
+		this.mouseController = this.creAteMouseController(_options);
+		this.disposAbles.Add(this.mouseController);
 
-		this.onDidChangeFocus(this._onFocusChange, this, this.disposables);
-		this.onDidChangeSelection(this._onSelectionChange, this, this.disposables);
+		this.onDidChAngeFocus(this._onFocusChAnge, this, this.disposAbles);
+		this.onDidChAngeSelection(this._onSelectionChAnge, this, this.disposAbles);
 
-		if (this.accessibilityProvider) {
-			this.ariaLabel = this.accessibilityProvider.getWidgetAriaLabel();
+		if (this.AccessibilityProvider) {
+			this.AriALAbel = this.AccessibilityProvider.getWidgetAriALAbel();
 		}
 		if (_options.multipleSelectionSupport) {
-			this.view.domNode.setAttribute('aria-multiselectable', 'true');
+			this.view.domNode.setAttribute('AriA-multiselectAble', 'true');
 		}
 	}
 
-	protected createMouseController(options: IListOptions<T>): MouseController<T> {
+	protected creAteMouseController(options: IListOptions<T>): MouseController<T> {
 		return new MouseController(this);
 	}
 
-	updateOptions(optionsUpdate: IListOptionsUpdate = {}): void {
-		this._options = { ...this._options, ...optionsUpdate };
+	updAteOptions(optionsUpdAte: IListOptionsUpdAte = {}): void {
+		this._options = { ...this._options, ...optionsUpdAte };
 
-		if (this.typeLabelController) {
-			this.typeLabelController.updateOptions(this._options);
+		if (this.typeLAbelController) {
+			this.typeLAbelController.updAteOptions(this._options);
 		}
 
-		this.view.updateOptions(optionsUpdate);
+		this.view.updAteOptions(optionsUpdAte);
 	}
 
 	get options(): IListOptions<T> {
 		return this._options;
 	}
 
-	splice(start: number, deleteCount: number, elements: T[] = []): void {
-		if (start < 0 || start > this.view.length) {
-			throw new ListError(this.user, `Invalid start index: ${start}`);
+	splice(stArt: number, deleteCount: number, elements: T[] = []): void {
+		if (stArt < 0 || stArt > this.view.length) {
+			throw new ListError(this.user, `InvAlid stArt index: ${stArt}`);
 		}
 
 		if (deleteCount < 0) {
-			throw new ListError(this.user, `Invalid delete count: ${deleteCount}`);
+			throw new ListError(this.user, `InvAlid delete count: ${deleteCount}`);
 		}
 
 		if (deleteCount === 0 && elements.length === 0) {
 			return;
 		}
 
-		this.eventBufferer.bufferEvents(() => this.spliceable.splice(start, deleteCount, elements));
+		this.eventBufferer.bufferEvents(() => this.spliceAble.splice(stArt, deleteCount, elements));
 	}
 
-	updateWidth(index: number): void {
-		this.view.updateWidth(index);
+	updAteWidth(index: number): void {
+		this.view.updAteWidth(index);
 	}
 
-	updateElementHeight(index: number, size: number): void {
-		this.view.updateElementHeight(index, size, null);
+	updAteElementHeight(index: number, size: number): void {
+		this.view.updAteElementHeight(index, size, null);
 	}
 
 	rerender(): void {
@@ -1332,8 +1332,8 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 		return this.view.contentHeight;
 	}
 
-	get onDidChangeContentHeight(): Event<number> {
-		return this.view.onDidChangeContentHeight;
+	get onDidChAngeContentHeight(): Event<number> {
+		return this.view.onDidChAngeContentHeight;
 	}
 
 	get scrollTop(): number {
@@ -1364,37 +1364,37 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 		return this.view.firstVisibleIndex;
 	}
 
-	get lastVisibleIndex(): number {
-		return this.view.lastVisibleIndex;
+	get lAstVisibleIndex(): number {
+		return this.view.lAstVisibleIndex;
 	}
 
-	get ariaLabel(): string {
-		return this._ariaLabel;
+	get AriALAbel(): string {
+		return this._AriALAbel;
 	}
 
-	set ariaLabel(value: string) {
-		this._ariaLabel = value;
-		this.view.domNode.setAttribute('aria-label', value);
+	set AriALAbel(vAlue: string) {
+		this._AriALAbel = vAlue;
+		this.view.domNode.setAttribute('AriA-lAbel', vAlue);
 	}
 
 	domFocus(): void {
 		this.view.domNode.focus();
 	}
 
-	layout(height?: number, width?: number): void {
-		this.view.layout(height, width);
+	lAyout(height?: number, width?: number): void {
+		this.view.lAyout(height, width);
 	}
 
-	toggleKeyboardNavigation(): void {
-		if (this.typeLabelController) {
-			this.typeLabelController.toggle();
+	toggleKeyboArdNAvigAtion(): void {
+		if (this.typeLAbelController) {
+			this.typeLAbelController.toggle();
 		}
 	}
 
 	setSelection(indexes: number[], browserEvent?: UIEvent): void {
 		for (const index of indexes) {
 			if (index < 0 || index >= this.length) {
-				throw new ListError(this.user, `Invalid index ${index}`);
+				throw new ListError(this.user, `InvAlid index ${index}`);
 			}
 		}
 
@@ -1406,20 +1406,20 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 	}
 
 	getSelectedElements(): T[] {
-		return this.getSelection().map(i => this.view.element(i));
+		return this.getSelection().mAp(i => this.view.element(i));
 	}
 
 	setFocus(indexes: number[], browserEvent?: UIEvent): void {
 		for (const index of indexes) {
 			if (index < 0 || index >= this.length) {
-				throw new ListError(this.user, `Invalid index ${index}`);
+				throw new ListError(this.user, `InvAlid index ${index}`);
 			}
 		}
 
 		this.focus.set(indexes, browserEvent);
 	}
 
-	focusNext(n = 1, loop = false, browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
+	focusNext(n = 1, loop = fAlse, browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
 		if (this.length === 0) { return; }
 
 		const focus = this.focus.get();
@@ -1430,7 +1430,7 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 		}
 	}
 
-	focusPrevious(n = 1, loop = false, browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
+	focusPrevious(n = 1, loop = fAlse, browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
 		if (this.length === 0) { return; }
 
 		const focus = this.focus.get();
@@ -1441,51 +1441,51 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 		}
 	}
 
-	focusNextPage(browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
-		let lastPageIndex = this.view.indexAt(this.view.getScrollTop() + this.view.renderHeight);
-		lastPageIndex = lastPageIndex === 0 ? 0 : lastPageIndex - 1;
-		const lastPageElement = this.view.element(lastPageIndex);
+	focusNextPAge(browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
+		let lAstPAgeIndex = this.view.indexAt(this.view.getScrollTop() + this.view.renderHeight);
+		lAstPAgeIndex = lAstPAgeIndex === 0 ? 0 : lAstPAgeIndex - 1;
+		const lAstPAgeElement = this.view.element(lAstPAgeIndex);
 		const currentlyFocusedElement = this.getFocusedElements()[0];
 
-		if (currentlyFocusedElement !== lastPageElement) {
-			const lastGoodPageIndex = this.findPreviousIndex(lastPageIndex, false, filter);
+		if (currentlyFocusedElement !== lAstPAgeElement) {
+			const lAstGoodPAgeIndex = this.findPreviousIndex(lAstPAgeIndex, fAlse, filter);
 
-			if (lastGoodPageIndex > -1 && currentlyFocusedElement !== this.view.element(lastGoodPageIndex)) {
-				this.setFocus([lastGoodPageIndex], browserEvent);
+			if (lAstGoodPAgeIndex > -1 && currentlyFocusedElement !== this.view.element(lAstGoodPAgeIndex)) {
+				this.setFocus([lAstGoodPAgeIndex], browserEvent);
 			} else {
-				this.setFocus([lastPageIndex], browserEvent);
+				this.setFocus([lAstPAgeIndex], browserEvent);
 			}
 		} else {
 			const previousScrollTop = this.view.getScrollTop();
-			this.view.setScrollTop(previousScrollTop + this.view.renderHeight - this.view.elementHeight(lastPageIndex));
+			this.view.setScrollTop(previousScrollTop + this.view.renderHeight - this.view.elementHeight(lAstPAgeIndex));
 
 			if (this.view.getScrollTop() !== previousScrollTop) {
 				// Let the scroll event listener run
-				setTimeout(() => this.focusNextPage(browserEvent, filter), 0);
+				setTimeout(() => this.focusNextPAge(browserEvent, filter), 0);
 			}
 		}
 	}
 
-	focusPreviousPage(browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
-		let firstPageIndex: number;
+	focusPreviousPAge(browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
+		let firstPAgeIndex: number;
 		const scrollTop = this.view.getScrollTop();
 
 		if (scrollTop === 0) {
-			firstPageIndex = this.view.indexAt(scrollTop);
+			firstPAgeIndex = this.view.indexAt(scrollTop);
 		} else {
-			firstPageIndex = this.view.indexAfter(scrollTop - 1);
+			firstPAgeIndex = this.view.indexAfter(scrollTop - 1);
 		}
 
-		const firstPageElement = this.view.element(firstPageIndex);
+		const firstPAgeElement = this.view.element(firstPAgeIndex);
 		const currentlyFocusedElement = this.getFocusedElements()[0];
 
-		if (currentlyFocusedElement !== firstPageElement) {
-			const firstGoodPageIndex = this.findNextIndex(firstPageIndex, false, filter);
+		if (currentlyFocusedElement !== firstPAgeElement) {
+			const firstGoodPAgeIndex = this.findNextIndex(firstPAgeIndex, fAlse, filter);
 
-			if (firstGoodPageIndex > -1 && currentlyFocusedElement !== this.view.element(firstGoodPageIndex)) {
-				this.setFocus([firstGoodPageIndex], browserEvent);
+			if (firstGoodPAgeIndex > -1 && currentlyFocusedElement !== this.view.element(firstGoodPAgeIndex)) {
+				this.setFocus([firstGoodPAgeIndex], browserEvent);
 			} else {
-				this.setFocus([firstPageIndex], browserEvent);
+				this.setFocus([firstPAgeIndex], browserEvent);
 			}
 		} else {
 			const previousScrollTop = scrollTop;
@@ -1493,36 +1493,36 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 
 			if (this.view.getScrollTop() !== previousScrollTop) {
 				// Let the scroll event listener run
-				setTimeout(() => this.focusPreviousPage(browserEvent, filter), 0);
+				setTimeout(() => this.focusPreviousPAge(browserEvent, filter), 0);
 			}
 		}
 	}
 
-	focusLast(browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
+	focusLAst(browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
 		if (this.length === 0) { return; }
 
-		const index = this.findPreviousIndex(this.length - 1, false, filter);
+		const index = this.findPreviousIndex(this.length - 1, fAlse, filter);
 
 		if (index > -1) {
 			this.setFocus([index], browserEvent);
 		}
 	}
 
-	focusFirst(browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
+	focusFirst(browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
 		this.focusNth(0, browserEvent, filter);
 	}
 
-	focusNth(n: number, browserEvent?: UIEvent, filter?: (element: T) => boolean): void {
+	focusNth(n: number, browserEvent?: UIEvent, filter?: (element: T) => booleAn): void {
 		if (this.length === 0) { return; }
 
-		const index = this.findNextIndex(n, false, filter);
+		const index = this.findNextIndex(n, fAlse, filter);
 
 		if (index > -1) {
 			this.setFocus([index], browserEvent);
 		}
 	}
 
-	private findNextIndex(index: number, loop = false, filter?: (element: T) => boolean): number {
+	privAte findNextIndex(index: number, loop = fAlse, filter?: (element: T) => booleAn): number {
 		for (let i = 0; i < this.length; i++) {
 			if (index >= this.length && !loop) {
 				return -1;
@@ -1540,7 +1540,7 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 		return -1;
 	}
 
-	private findPreviousIndex(index: number, loop = false, filter?: (element: T) => boolean): number {
+	privAte findPreviousIndex(index: number, loop = fAlse, filter?: (element: T) => booleAn): number {
 		for (let i = 0; i < this.length; i++) {
 			if (index < 0 && !loop) {
 				return -1;
@@ -1563,43 +1563,43 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 	}
 
 	getFocusedElements(): T[] {
-		return this.getFocus().map(i => this.view.element(i));
+		return this.getFocus().mAp(i => this.view.element(i));
 	}
 
-	reveal(index: number, relativeTop?: number): void {
+	reveAl(index: number, relAtiveTop?: number): void {
 		if (index < 0 || index >= this.length) {
-			throw new ListError(this.user, `Invalid index ${index}`);
+			throw new ListError(this.user, `InvAlid index ${index}`);
 		}
 
 		const scrollTop = this.view.getScrollTop();
 		const elementTop = this.view.elementTop(index);
 		const elementHeight = this.view.elementHeight(index);
 
-		if (isNumber(relativeTop)) {
+		if (isNumber(relAtiveTop)) {
 			// y = mx + b
 			const m = elementHeight - this.view.renderHeight;
-			this.view.setScrollTop(m * clamp(relativeTop, 0, 1) + elementTop);
+			this.view.setScrollTop(m * clAmp(relAtiveTop, 0, 1) + elementTop);
 		} else {
 			const viewItemBottom = elementTop + elementHeight;
-			const wrapperBottom = scrollTop + this.view.renderHeight;
+			const wrApperBottom = scrollTop + this.view.renderHeight;
 
-			if (elementTop < scrollTop && viewItemBottom >= wrapperBottom) {
-				// The element is already overflowing the viewport, no-op
+			if (elementTop < scrollTop && viewItemBottom >= wrApperBottom) {
+				// The element is AlreAdy overflowing the viewport, no-op
 			} else if (elementTop < scrollTop) {
 				this.view.setScrollTop(elementTop);
-			} else if (viewItemBottom >= wrapperBottom) {
+			} else if (viewItemBottom >= wrApperBottom) {
 				this.view.setScrollTop(viewItemBottom - this.view.renderHeight);
 			}
 		}
 	}
 
 	/**
-	 * Returns the relative position of an element rendered in the list.
+	 * Returns the relAtive position of An element rendered in the list.
 	 * Returns `null` if the element isn't *entirely* in the visible viewport.
 	 */
-	getRelativeTop(index: number): number | null {
+	getRelAtiveTop(index: number): number | null {
 		if (index < 0 || index >= this.length) {
-			throw new ListError(this.user, `Invalid index ${index}`);
+			throw new ListError(this.user, `InvAlid index ${index}`);
 		}
 
 		const scrollTop = this.view.getScrollTop();
@@ -1612,11 +1612,11 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 
 		// y = mx + b
 		const m = elementHeight - this.view.renderHeight;
-		return Math.abs((scrollTop - elementTop) / m);
+		return MAth.Abs((scrollTop - elementTop) / m);
 	}
 
-	isDOMFocused(): boolean {
-		return this.view.domNode === document.activeElement;
+	isDOMFocused(): booleAn {
+		return this.view.domNode === document.ActiveElement;
 	}
 
 	getHTMLElement(): HTMLElement {
@@ -1627,43 +1627,43 @@ export class List<T> implements ISpliceable<T>, IThemable, IDisposable {
 		this.styleController.style(styles);
 	}
 
-	private toListEvent({ indexes, browserEvent }: ITraitChangeEvent) {
-		return { indexes, elements: indexes.map(i => this.view.element(i)), browserEvent };
+	privAte toListEvent({ indexes, browserEvent }: ITrAitChAngeEvent) {
+		return { indexes, elements: indexes.mAp(i => this.view.element(i)), browserEvent };
 	}
 
-	private _onFocusChange(): void {
+	privAte _onFocusChAnge(): void {
 		const focus = this.focus.get();
-		this.view.domNode.classList.toggle('element-focused', focus.length > 0);
-		this.onDidChangeActiveDescendant();
+		this.view.domNode.clAssList.toggle('element-focused', focus.length > 0);
+		this.onDidChAngeActiveDescendAnt();
 	}
 
-	private onDidChangeActiveDescendant(): void {
+	privAte onDidChAngeActiveDescendAnt(): void {
 		const focus = this.focus.get();
 
 		if (focus.length > 0) {
 			let id: string | undefined;
 
-			if (this.accessibilityProvider?.getActiveDescendantId) {
-				id = this.accessibilityProvider.getActiveDescendantId(this.view.element(focus[0]));
+			if (this.AccessibilityProvider?.getActiveDescendAntId) {
+				id = this.AccessibilityProvider.getActiveDescendAntId(this.view.element(focus[0]));
 			}
 
-			this.view.domNode.setAttribute('aria-activedescendant', id || this.view.getElementDomId(focus[0]));
+			this.view.domNode.setAttribute('AriA-ActivedescendAnt', id || this.view.getElementDomId(focus[0]));
 		} else {
-			this.view.domNode.removeAttribute('aria-activedescendant');
+			this.view.domNode.removeAttribute('AriA-ActivedescendAnt');
 		}
 	}
 
-	private _onSelectionChange(): void {
+	privAte _onSelectionChAnge(): void {
 		const selection = this.selection.get();
 
-		this.view.domNode.classList.toggle('selection-none', selection.length === 0);
-		this.view.domNode.classList.toggle('selection-single', selection.length === 1);
-		this.view.domNode.classList.toggle('selection-multiple', selection.length > 1);
+		this.view.domNode.clAssList.toggle('selection-none', selection.length === 0);
+		this.view.domNode.clAssList.toggle('selection-single', selection.length === 1);
+		this.view.domNode.clAssList.toggle('selection-multiple', selection.length > 1);
 	}
 
 	dispose(): void {
 		this._onDidDispose.fire();
-		this.disposables.dispose();
+		this.disposAbles.dispose();
 
 		this._onDidDispose.dispose();
 	}

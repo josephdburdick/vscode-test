@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createMemoizer } from 'vs/base/common/decorators';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { creAteMemoizer } from 'vs/bAse/common/decorAtors';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { EDITOR_FONT_DEFAULTS, IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import * as colorRegistry from 'vs/platform/theme/common/colorRegistry';
-import { IColorTheme, IThemeService } from 'vs/platform/theme/common/themeService';
-import { Emitter } from 'vs/base/common/event';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import * As colorRegistry from 'vs/plAtform/theme/common/colorRegistry';
+import { IColorTheme, IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { Emitter } from 'vs/bAse/common/event';
 import { DEFAULT_FONT_FAMILY } from 'vs/workbench/browser/style';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
+import { ColorScheme } from 'vs/plAtform/theme/common/theme';
 
-interface WebviewThemeData {
-	readonly activeTheme: string;
-	readonly themeLabel: string;
-	readonly styles: { readonly [key: string]: string | number; };
+interfAce WebviewThemeDAtA {
+	reAdonly ActiveTheme: string;
+	reAdonly themeLAbel: string;
+	reAdonly styles: { reAdonly [key: string]: string | number; };
 }
 
-export class WebviewThemeDataProvider extends Disposable {
+export clAss WebviewThemeDAtAProvider extends DisposAble {
 
 
-	private static readonly MEMOIZER = createMemoizer();
+	privAte stAtic reAdonly MEMOIZER = creAteMemoizer();
 
-	private readonly _onThemeDataChanged = this._register(new Emitter<void>());
-	public readonly onThemeDataChanged = this._onThemeDataChanged.event;
+	privAte reAdonly _onThemeDAtAChAnged = this._register(new Emitter<void>());
+	public reAdonly onThemeDAtAChAnged = this._onThemeDAtAChAnged.event;
 
 	constructor(
-		@IThemeService private readonly _themeService: IThemeService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
 	) {
 		super();
 
-		this._register(this._themeService.onDidColorThemeChange(() => {
+		this._register(this._themeService.onDidColorThemeChAnge(() => {
 			this.reset();
 		}));
 
-		const webviewConfigurationKeys = ['editor.fontFamily', 'editor.fontWeight', 'editor.fontSize'];
-		this._register(this._configurationService.onDidChangeConfiguration(e => {
-			if (webviewConfigurationKeys.some(key => e.affectsConfiguration(key))) {
+		const webviewConfigurAtionKeys = ['editor.fontFAmily', 'editor.fontWeight', 'editor.fontSize'];
+		this._register(this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (webviewConfigurAtionKeys.some(key => e.AffectsConfigurAtion(key))) {
 				this.reset();
 			}
 		}));
@@ -49,54 +49,54 @@ export class WebviewThemeDataProvider extends Disposable {
 		return this._themeService.getColorTheme();
 	}
 
-	@WebviewThemeDataProvider.MEMOIZER
-	public getWebviewThemeData(): WebviewThemeData {
-		const configuration = this._configurationService.getValue<IEditorOptions>('editor');
-		const editorFontFamily = configuration.fontFamily || EDITOR_FONT_DEFAULTS.fontFamily;
-		const editorFontWeight = configuration.fontWeight || EDITOR_FONT_DEFAULTS.fontWeight;
-		const editorFontSize = configuration.fontSize || EDITOR_FONT_DEFAULTS.fontSize;
+	@WebviewThemeDAtAProvider.MEMOIZER
+	public getWebviewThemeDAtA(): WebviewThemeDAtA {
+		const configurAtion = this._configurAtionService.getVAlue<IEditorOptions>('editor');
+		const editorFontFAmily = configurAtion.fontFAmily || EDITOR_FONT_DEFAULTS.fontFAmily;
+		const editorFontWeight = configurAtion.fontWeight || EDITOR_FONT_DEFAULTS.fontWeight;
+		const editorFontSize = configurAtion.fontSize || EDITOR_FONT_DEFAULTS.fontSize;
 
 		const theme = this._themeService.getColorTheme();
 		const exportedColors = colorRegistry.getColorRegistry().getColors().reduce((colors, entry) => {
 			const color = theme.getColor(entry.id);
 			if (color) {
-				colors['vscode-' + entry.id.replace('.', '-')] = color.toString();
+				colors['vscode-' + entry.id.replAce('.', '-')] = color.toString();
 			}
 			return colors;
-		}, {} as { [key: string]: string; });
+		}, {} As { [key: string]: string; });
 
 		const styles = {
-			'vscode-font-family': DEFAULT_FONT_FAMILY,
-			'vscode-font-weight': 'normal',
+			'vscode-font-fAmily': DEFAULT_FONT_FAMILY,
+			'vscode-font-weight': 'normAl',
 			'vscode-font-size': '13px',
-			'vscode-editor-font-family': editorFontFamily,
+			'vscode-editor-font-fAmily': editorFontFAmily,
 			'vscode-editor-font-weight': editorFontWeight,
 			'vscode-editor-font-size': editorFontSize + 'px',
 			...exportedColors
 		};
 
-		const activeTheme = ApiThemeClassName.fromTheme(theme);
-		return { styles, activeTheme, themeLabel: theme.label, };
+		const ActiveTheme = ApiThemeClAssNAme.fromTheme(theme);
+		return { styles, ActiveTheme, themeLAbel: theme.lAbel, };
 	}
 
-	private reset() {
-		WebviewThemeDataProvider.MEMOIZER.clear();
-		this._onThemeDataChanged.fire();
+	privAte reset() {
+		WebviewThemeDAtAProvider.MEMOIZER.cleAr();
+		this._onThemeDAtAChAnged.fire();
 	}
 }
 
-enum ApiThemeClassName {
+enum ApiThemeClAssNAme {
 	light = 'vscode-light',
-	dark = 'vscode-dark',
-	highContrast = 'vscode-high-contrast'
+	dArk = 'vscode-dArk',
+	highContrAst = 'vscode-high-contrAst'
 }
 
-namespace ApiThemeClassName {
-	export function fromTheme(theme: IColorTheme): ApiThemeClassName {
+nAmespAce ApiThemeClAssNAme {
+	export function fromTheme(theme: IColorTheme): ApiThemeClAssNAme {
 		switch (theme.type) {
-			case ColorScheme.LIGHT: return ApiThemeClassName.light;
-			case ColorScheme.DARK: return ApiThemeClassName.dark;
-			default: return ApiThemeClassName.highContrast;
+			cAse ColorScheme.LIGHT: return ApiThemeClAssNAme.light;
+			cAse ColorScheme.DARK: return ApiThemeClAssNAme.dArk;
+			defAult: return ApiThemeClAssNAme.highContrAst;
 		}
 	}
 }

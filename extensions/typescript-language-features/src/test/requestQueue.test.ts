@@ -1,121 +1,121 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import 'mocha';
+import * As Assert from 'Assert';
+import 'mochA';
 import { RequestQueue, RequestQueueingType } from '../tsServer/requestQueue';
 
 suite('RequestQueue', () => {
-	test('should be empty on creation', async () => {
+	test('should be empty on creAtion', Async () => {
 		const queue = new RequestQueue();
-		assert.strictEqual(queue.length, 0);
-		assert.strictEqual(queue.dequeue(), undefined);
+		Assert.strictEquAl(queue.length, 0);
+		Assert.strictEquAl(queue.dequeue(), undefined);
 	});
 
-	suite('RequestQueue.createRequest', () => {
-		test('should create items with increasing sequence numbers', async () => {
+	suite('RequestQueue.creAteRequest', () => {
+		test('should creAte items with increAsing sequence numbers', Async () => {
 			const queue = new RequestQueue();
 
 			for (let i = 0; i < 100; ++i) {
-				const command = `command-${i}`;
-				const request = queue.createRequest(command, i);
-				assert.strictEqual(request.seq, i);
-				assert.strictEqual(request.command, command);
-				assert.strictEqual(request.arguments, i);
+				const commAnd = `commAnd-${i}`;
+				const request = queue.creAteRequest(commAnd, i);
+				Assert.strictEquAl(request.seq, i);
+				Assert.strictEquAl(request.commAnd, commAnd);
+				Assert.strictEquAl(request.Arguments, i);
 			}
 		});
 	});
 
-	test('should queue normal requests in first in first out order', async () => {
+	test('should queue normAl requests in first in first out order', Async () => {
 		const queue = new RequestQueue();
-		assert.strictEqual(queue.length, 0);
+		Assert.strictEquAl(queue.length, 0);
 
-		const request1 = queue.createRequest('a', 1);
-		queue.enqueue({ request: request1, expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
-		assert.strictEqual(queue.length, 1);
+		const request1 = queue.creAteRequest('A', 1);
+		queue.enqueue({ request: request1, expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.NormAl });
+		Assert.strictEquAl(queue.length, 1);
 
-		const request2 = queue.createRequest('b', 2);
-		queue.enqueue({ request: request2, expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
-		assert.strictEqual(queue.length, 2);
+		const request2 = queue.creAteRequest('b', 2);
+		queue.enqueue({ request: request2, expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.NormAl });
+		Assert.strictEquAl(queue.length, 2);
 
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 1);
-			assert.strictEqual(item!.request.command, 'a');
+			Assert.strictEquAl(queue.length, 1);
+			Assert.strictEquAl(item!.request.commAnd, 'A');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 0);
-			assert.strictEqual(item!.request.command, 'b');
+			Assert.strictEquAl(queue.length, 0);
+			Assert.strictEquAl(item!.request.commAnd, 'b');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(item, undefined);
-			assert.strictEqual(queue.length, 0);
+			Assert.strictEquAl(item, undefined);
+			Assert.strictEquAl(queue.length, 0);
 		}
 	});
 
-	test('should put normal requests in front of low priority requests', async () => {
+	test('should put normAl requests in front of low priority requests', Async () => {
 		const queue = new RequestQueue();
-		assert.strictEqual(queue.length, 0);
+		Assert.strictEquAl(queue.length, 0);
 
-		queue.enqueue({ request: queue.createRequest('low-1', 1), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.LowPriority });
-		queue.enqueue({ request: queue.createRequest('low-2', 1), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.LowPriority });
-		queue.enqueue({ request: queue.createRequest('normal-1', 2), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
-		queue.enqueue({ request: queue.createRequest('normal-2', 2), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
+		queue.enqueue({ request: queue.creAteRequest('low-1', 1), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.LowPriority });
+		queue.enqueue({ request: queue.creAteRequest('low-2', 1), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.LowPriority });
+		queue.enqueue({ request: queue.creAteRequest('normAl-1', 2), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.NormAl });
+		queue.enqueue({ request: queue.creAteRequest('normAl-2', 2), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.NormAl });
 
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 3);
-			assert.strictEqual(item!.request.command, 'normal-1');
+			Assert.strictEquAl(queue.length, 3);
+			Assert.strictEquAl(item!.request.commAnd, 'normAl-1');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 2);
-			assert.strictEqual(item!.request.command, 'normal-2');
+			Assert.strictEquAl(queue.length, 2);
+			Assert.strictEquAl(item!.request.commAnd, 'normAl-2');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 1);
-			assert.strictEqual(item!.request.command, 'low-1');
+			Assert.strictEquAl(queue.length, 1);
+			Assert.strictEquAl(item!.request.commAnd, 'low-1');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 0);
-			assert.strictEqual(item!.request.command, 'low-2');
+			Assert.strictEquAl(queue.length, 0);
+			Assert.strictEquAl(item!.request.commAnd, 'low-2');
 		}
 	});
 
-	test('should not push fence requests front of low priority requests', async () => {
+	test('should not push fence requests front of low priority requests', Async () => {
 		const queue = new RequestQueue();
-		assert.strictEqual(queue.length, 0);
+		Assert.strictEquAl(queue.length, 0);
 
-		queue.enqueue({ request: queue.createRequest('low-1', 0), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.LowPriority });
-		queue.enqueue({ request: queue.createRequest('fence', 0), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Fence });
-		queue.enqueue({ request: queue.createRequest('low-2', 0), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.LowPriority });
-		queue.enqueue({ request: queue.createRequest('normal', 0), expectsResponse: true, isAsync: false, queueingType: RequestQueueingType.Normal });
+		queue.enqueue({ request: queue.creAteRequest('low-1', 0), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.LowPriority });
+		queue.enqueue({ request: queue.creAteRequest('fence', 0), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.Fence });
+		queue.enqueue({ request: queue.creAteRequest('low-2', 0), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.LowPriority });
+		queue.enqueue({ request: queue.creAteRequest('normAl', 0), expectsResponse: true, isAsync: fAlse, queueingType: RequestQueueingType.NormAl });
 
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 3);
-			assert.strictEqual(item!.request.command, 'low-1');
+			Assert.strictEquAl(queue.length, 3);
+			Assert.strictEquAl(item!.request.commAnd, 'low-1');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 2);
-			assert.strictEqual(item!.request.command, 'fence');
+			Assert.strictEquAl(queue.length, 2);
+			Assert.strictEquAl(item!.request.commAnd, 'fence');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 1);
-			assert.strictEqual(item!.request.command, 'normal');
+			Assert.strictEquAl(queue.length, 1);
+			Assert.strictEquAl(item!.request.commAnd, 'normAl');
 		}
 		{
 			const item = queue.dequeue();
-			assert.strictEqual(queue.length, 0);
-			assert.strictEqual(item!.request.command, 'low-2');
+			Assert.strictEquAl(queue.length, 0);
+			Assert.strictEquAl(item!.request.commAnd, 'low-2');
 		}
 	});
 });

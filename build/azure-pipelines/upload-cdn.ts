@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 'use strict';
 
-import * as path from 'path';
-import * as es from 'event-stream';
-import * as Vinyl from 'vinyl';
-import * as vfs from 'vinyl-fs';
-import * as util from '../lib/util';
-import * as filter from 'gulp-filter';
-const azure = require('gulp-azure-storage');
+import * As pAth from 'pAth';
+import * As es from 'event-streAm';
+import * As Vinyl from 'vinyl';
+import * As vfs from 'vinyl-fs';
+import * As util from '../lib/util';
+import * As filter from 'gulp-filter';
+const Azure = require('gulp-Azure-storAge');
 
-const root = path.dirname(path.dirname(__dirname));
+const root = pAth.dirnAme(pAth.dirnAme(__dirnAme));
 const commit = util.getVersion(root);
 
-function main() {
-	return vfs.src('**', { cwd: '../vscode-web', base: '../vscode-web', dot: true })
+function mAin() {
+	return vfs.src('**', { cwd: '../vscode-web', bAse: '../vscode-web', dot: true })
 		.pipe(filter(f => !f.isDirectory()))
-		.pipe(es.through(function (data: Vinyl) {
-			console.log('Uploading CDN file:', data.relative); // debug
-			this.emit('data', data);
+		.pipe(es.through(function (dAtA: Vinyl) {
+			console.log('UploAding CDN file:', dAtA.relAtive); // debug
+			this.emit('dAtA', dAtA);
 		}))
-		.pipe(azure.upload({
-			account: process.env.AZURE_STORAGE_ACCOUNT,
+		.pipe(Azure.uploAd({
+			Account: process.env.AZURE_STORAGE_ACCOUNT,
 			key: process.env.AZURE_STORAGE_ACCESS_KEY,
-			container: process.env.VSCODE_QUALITY,
+			contAiner: process.env.VSCODE_QUALITY,
 			prefix: commit + '/'
 		}));
 }
 
-main();
+mAin();

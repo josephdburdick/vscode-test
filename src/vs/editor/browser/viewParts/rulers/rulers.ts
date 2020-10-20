@@ -1,60 +1,60 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./rulers';
-import { FastDomNode, createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { ViewPart } from 'vs/editor/browser/view/viewPart';
+import { FAstDomNode, creAteFAstDomNode } from 'vs/bAse/browser/fAstDomNode';
+import { ViewPArt } from 'vs/editor/browser/view/viewPArt';
 import { editorRuler } from 'vs/editor/common/view/editorColorRegistry';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import * as viewEvents from 'vs/editor/common/view/viewEvents';
-import { registerThemingParticipant } from 'vs/platform/theme/common/themeService';
+import * As viewEvents from 'vs/editor/common/view/viewEvents';
+import { registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
 import { EditorOption, IRulerOption } from 'vs/editor/common/config/editorOptions';
 
-export class Rulers extends ViewPart {
+export clAss Rulers extends ViewPArt {
 
-	public domNode: FastDomNode<HTMLElement>;
-	private readonly _renderedRulers: FastDomNode<HTMLElement>[];
-	private _rulers: IRulerOption[];
-	private _typicalHalfwidthCharacterWidth: number;
+	public domNode: FAstDomNode<HTMLElement>;
+	privAte reAdonly _renderedRulers: FAstDomNode<HTMLElement>[];
+	privAte _rulers: IRulerOption[];
+	privAte _typicAlHAlfwidthChArActerWidth: number;
 
 	constructor(context: ViewContext) {
 		super(context);
-		this.domNode = createFastDomNode<HTMLElement>(document.createElement('div'));
-		this.domNode.setAttribute('role', 'presentation');
-		this.domNode.setAttribute('aria-hidden', 'true');
-		this.domNode.setClassName('view-rulers');
+		this.domNode = creAteFAstDomNode<HTMLElement>(document.creAteElement('div'));
+		this.domNode.setAttribute('role', 'presentAtion');
+		this.domNode.setAttribute('AriA-hidden', 'true');
+		this.domNode.setClAssNAme('view-rulers');
 		this._renderedRulers = [];
-		const options = this._context.configuration.options;
+		const options = this._context.configurAtion.options;
 		this._rulers = options.get(EditorOption.rulers);
-		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
+		this._typicAlHAlfwidthChArActerWidth = options.get(EditorOption.fontInfo).typicAlHAlfwidthChArActerWidth;
 	}
 
 	public dispose(): void {
 		super.dispose();
 	}
 
-	// --- begin event handlers
+	// --- begin event hAndlers
 
-	public onConfigurationChanged(e: viewEvents.ViewConfigurationChangedEvent): boolean {
-		const options = this._context.configuration.options;
+	public onConfigurAtionChAnged(e: viewEvents.ViewConfigurAtionChAngedEvent): booleAn {
+		const options = this._context.configurAtion.options;
 		this._rulers = options.get(EditorOption.rulers);
-		this._typicalHalfwidthCharacterWidth = options.get(EditorOption.fontInfo).typicalHalfwidthCharacterWidth;
+		this._typicAlHAlfwidthChArActerWidth = options.get(EditorOption.fontInfo).typicAlHAlfwidthChArActerWidth;
 		return true;
 	}
-	public onScrollChanged(e: viewEvents.ViewScrollChangedEvent): boolean {
-		return e.scrollHeightChanged;
+	public onScrollChAnged(e: viewEvents.ViewScrollChAngedEvent): booleAn {
+		return e.scrollHeightChAnged;
 	}
 
-	// --- end event handlers
+	// --- end event hAndlers
 
-	public prepareRender(ctx: RenderingContext): void {
-		// Nothing to read
+	public prepAreRender(ctx: RenderingContext): void {
+		// Nothing to reAd
 	}
 
-	private _ensureRulersCount(): void {
+	privAte _ensureRulersCount(): void {
 		const currentCount = this._renderedRulers.length;
 		const desiredCount = this._rulers.length;
 
@@ -64,16 +64,16 @@ export class Rulers extends ViewPart {
 		}
 
 		if (currentCount < desiredCount) {
-			const { tabSize } = this._context.model.getTextModelOptions();
-			const rulerWidth = tabSize;
-			let addCount = desiredCount - currentCount;
-			while (addCount > 0) {
-				const node = createFastDomNode(document.createElement('div'));
-				node.setClassName('view-ruler');
+			const { tAbSize } = this._context.model.getTextModelOptions();
+			const rulerWidth = tAbSize;
+			let AddCount = desiredCount - currentCount;
+			while (AddCount > 0) {
+				const node = creAteFAstDomNode(document.creAteElement('div'));
+				node.setClAssNAme('view-ruler');
 				node.setWidth(rulerWidth);
-				this.domNode.appendChild(node);
+				this.domNode.AppendChild(node);
 				this._renderedRulers.push(node);
-				addCount--;
+				AddCount--;
 			}
 			return;
 		}
@@ -94,16 +94,16 @@ export class Rulers extends ViewPart {
 			const node = this._renderedRulers[i];
 			const ruler = this._rulers[i];
 
-			node.setBoxShadow(ruler.color ? `1px 0 0 0 ${ruler.color} inset` : ``);
-			node.setHeight(Math.min(ctx.scrollHeight, 1000000));
-			node.setLeft(ruler.column * this._typicalHalfwidthCharacterWidth);
+			node.setBoxShAdow(ruler.color ? `1px 0 0 0 ${ruler.color} inset` : ``);
+			node.setHeight(MAth.min(ctx.scrollHeight, 1000000));
+			node.setLeft(ruler.column * this._typicAlHAlfwidthChArActerWidth);
 		}
 	}
 }
 
-registerThemingParticipant((theme, collector) => {
+registerThemingPArticipAnt((theme, collector) => {
 	const rulerColor = theme.getColor(editorRuler);
 	if (rulerColor) {
-		collector.addRule(`.monaco-editor .view-ruler { box-shadow: 1px 0 0 0 ${rulerColor} inset; }`);
+		collector.AddRule(`.monAco-editor .view-ruler { box-shAdow: 1px 0 0 0 ${rulerColor} inset; }`);
 	}
 });

@@ -1,245 +1,245 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { ReplacePattern, ReplacePiece, parseReplaceString } from 'vs/editor/contrib/find/replacePattern';
-import { buildReplaceStringWithCasePreserved } from 'vs/base/common/search';
+import * As Assert from 'Assert';
+import { ReplAcePAttern, ReplAcePiece, pArseReplAceString } from 'vs/editor/contrib/find/replAcePAttern';
+import { buildReplAceStringWithCAsePreserved } from 'vs/bAse/common/seArch';
 
-suite('Replace Pattern test', () => {
+suite('ReplAce PAttern test', () => {
 
-	test('parse replace string', () => {
-		let testParse = (input: string, expectedPieces: ReplacePiece[]) => {
-			let actual = parseReplaceString(input);
-			let expected = new ReplacePattern(expectedPieces);
-			assert.deepEqual(actual, expected, 'Parsing ' + input);
+	test('pArse replAce string', () => {
+		let testPArse = (input: string, expectedPieces: ReplAcePiece[]) => {
+			let ActuAl = pArseReplAceString(input);
+			let expected = new ReplAcePAttern(expectedPieces);
+			Assert.deepEquAl(ActuAl, expected, 'PArsing ' + input);
 		};
 
-		// no backslash => no treatment
-		testParse('hello', [ReplacePiece.staticValue('hello')]);
+		// no bAckslAsh => no treAtment
+		testPArse('hello', [ReplAcePiece.stAticVAlue('hello')]);
 
 		// \t => TAB
-		testParse('\\thello', [ReplacePiece.staticValue('\thello')]);
-		testParse('h\\tello', [ReplacePiece.staticValue('h\tello')]);
-		testParse('hello\\t', [ReplacePiece.staticValue('hello\t')]);
+		testPArse('\\thello', [ReplAcePiece.stAticVAlue('\thello')]);
+		testPArse('h\\tello', [ReplAcePiece.stAticVAlue('h\tello')]);
+		testPArse('hello\\t', [ReplAcePiece.stAticVAlue('hello\t')]);
 
 		// \n => LF
-		testParse('\\nhello', [ReplacePiece.staticValue('\nhello')]);
+		testPArse('\\nhello', [ReplAcePiece.stAticVAlue('\nhello')]);
 
 		// \\t => \t
-		testParse('\\\\thello', [ReplacePiece.staticValue('\\thello')]);
-		testParse('h\\\\tello', [ReplacePiece.staticValue('h\\tello')]);
-		testParse('hello\\\\t', [ReplacePiece.staticValue('hello\\t')]);
+		testPArse('\\\\thello', [ReplAcePiece.stAticVAlue('\\thello')]);
+		testPArse('h\\\\tello', [ReplAcePiece.stAticVAlue('h\\tello')]);
+		testPArse('hello\\\\t', [ReplAcePiece.stAticVAlue('hello\\t')]);
 
 		// \\\t => \TAB
-		testParse('\\\\\\thello', [ReplacePiece.staticValue('\\\thello')]);
+		testPArse('\\\\\\thello', [ReplAcePiece.stAticVAlue('\\\thello')]);
 
 		// \\\\t => \\t
-		testParse('\\\\\\\\thello', [ReplacePiece.staticValue('\\\\thello')]);
+		testPArse('\\\\\\\\thello', [ReplAcePiece.stAticVAlue('\\\\thello')]);
 
-		// \ at the end => no treatment
-		testParse('hello\\', [ReplacePiece.staticValue('hello\\')]);
+		// \ At the end => no treAtment
+		testPArse('hello\\', [ReplAcePiece.stAticVAlue('hello\\')]);
 
-		// \ with unknown char => no treatment
-		testParse('hello\\x', [ReplacePiece.staticValue('hello\\x')]);
+		// \ with unknown chAr => no treAtment
+		testPArse('hello\\x', [ReplAcePiece.stAticVAlue('hello\\x')]);
 
-		// \ with back reference => no treatment
-		testParse('hello\\0', [ReplacePiece.staticValue('hello\\0')]);
+		// \ with bAck reference => no treAtment
+		testPArse('hello\\0', [ReplAcePiece.stAticVAlue('hello\\0')]);
 
-		testParse('hello$&', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(0)]);
-		testParse('hello$0', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(0)]);
-		testParse('hello$02', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(0), ReplacePiece.staticValue('2')]);
-		testParse('hello$1', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(1)]);
-		testParse('hello$2', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(2)]);
-		testParse('hello$9', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(9)]);
-		testParse('$9hello', [ReplacePiece.matchIndex(9), ReplacePiece.staticValue('hello')]);
+		testPArse('hello$&', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(0)]);
+		testPArse('hello$0', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(0)]);
+		testPArse('hello$02', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(0), ReplAcePiece.stAticVAlue('2')]);
+		testPArse('hello$1', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(1)]);
+		testPArse('hello$2', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(2)]);
+		testPArse('hello$9', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(9)]);
+		testPArse('$9hello', [ReplAcePiece.mAtchIndex(9), ReplAcePiece.stAticVAlue('hello')]);
 
-		testParse('hello$12', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(12)]);
-		testParse('hello$99', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(99)]);
-		testParse('hello$99a', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(99), ReplacePiece.staticValue('a')]);
-		testParse('hello$1a', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(1), ReplacePiece.staticValue('a')]);
-		testParse('hello$100', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(10), ReplacePiece.staticValue('0')]);
-		testParse('hello$100a', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(10), ReplacePiece.staticValue('0a')]);
-		testParse('hello$10a0', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(10), ReplacePiece.staticValue('a0')]);
-		testParse('hello$$', [ReplacePiece.staticValue('hello$')]);
-		testParse('hello$$0', [ReplacePiece.staticValue('hello$0')]);
+		testPArse('hello$12', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(12)]);
+		testPArse('hello$99', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(99)]);
+		testPArse('hello$99A', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(99), ReplAcePiece.stAticVAlue('A')]);
+		testPArse('hello$1A', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(1), ReplAcePiece.stAticVAlue('A')]);
+		testPArse('hello$100', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(10), ReplAcePiece.stAticVAlue('0')]);
+		testPArse('hello$100A', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(10), ReplAcePiece.stAticVAlue('0A')]);
+		testPArse('hello$10A0', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(10), ReplAcePiece.stAticVAlue('A0')]);
+		testPArse('hello$$', [ReplAcePiece.stAticVAlue('hello$')]);
+		testPArse('hello$$0', [ReplAcePiece.stAticVAlue('hello$0')]);
 
-		testParse('hello$`', [ReplacePiece.staticValue('hello$`')]);
-		testParse('hello$\'', [ReplacePiece.staticValue('hello$\'')]);
+		testPArse('hello$`', [ReplAcePiece.stAticVAlue('hello$`')]);
+		testPArse('hello$\'', [ReplAcePiece.stAticVAlue('hello$\'')]);
 	});
 
-	test('parse replace string with case modifiers', () => {
-		let testParse = (input: string, expectedPieces: ReplacePiece[]) => {
-			let actual = parseReplaceString(input);
-			let expected = new ReplacePattern(expectedPieces);
-			assert.deepEqual(actual, expected, 'Parsing ' + input);
+	test('pArse replAce string with cAse modifiers', () => {
+		let testPArse = (input: string, expectedPieces: ReplAcePiece[]) => {
+			let ActuAl = pArseReplAceString(input);
+			let expected = new ReplAcePAttern(expectedPieces);
+			Assert.deepEquAl(ActuAl, expected, 'PArsing ' + input);
 		};
-		function assertReplace(target: string, search: RegExp, replaceString: string, expected: string): void {
-			let replacePattern = parseReplaceString(replaceString);
-			let m = search.exec(target);
-			let actual = replacePattern.buildReplaceString(m);
+		function AssertReplAce(tArget: string, seArch: RegExp, replAceString: string, expected: string): void {
+			let replAcePAttern = pArseReplAceString(replAceString);
+			let m = seArch.exec(tArget);
+			let ActuAl = replAcePAttern.buildReplAceString(m);
 
-			assert.equal(actual, expected, `${target}.replace(${search}, ${replaceString}) === ${expected}`);
+			Assert.equAl(ActuAl, expected, `${tArget}.replAce(${seArch}, ${replAceString}) === ${expected}`);
 		}
 
-		// \U, \u => uppercase  \L, \l => lowercase  \E => cancel
+		// \U, \u => uppercAse  \L, \l => lowercAse  \E => cAncel
 
-		testParse('hello\\U$1', [ReplacePiece.staticValue('hello'), ReplacePiece.caseOps(1, ['U'])]);
-		assertReplace('func privateFunc(', /func (\w+)\(/, 'func \\U$1(', 'func PRIVATEFUNC(');
+		testPArse('hello\\U$1', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.cAseOps(1, ['U'])]);
+		AssertReplAce('func privAteFunc(', /func (\w+)\(/, 'func \\U$1(', 'func PRIVATEFUNC(');
 
-		testParse('hello\\u$1', [ReplacePiece.staticValue('hello'), ReplacePiece.caseOps(1, ['u'])]);
-		assertReplace('func privateFunc(', /func (\w+)\(/, 'func \\u$1(', 'func PrivateFunc(');
+		testPArse('hello\\u$1', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.cAseOps(1, ['u'])]);
+		AssertReplAce('func privAteFunc(', /func (\w+)\(/, 'func \\u$1(', 'func PrivAteFunc(');
 
-		testParse('hello\\L$1', [ReplacePiece.staticValue('hello'), ReplacePiece.caseOps(1, ['L'])]);
-		assertReplace('func privateFunc(', /func (\w+)\(/, 'func \\L$1(', 'func privatefunc(');
+		testPArse('hello\\L$1', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.cAseOps(1, ['L'])]);
+		AssertReplAce('func privAteFunc(', /func (\w+)\(/, 'func \\L$1(', 'func privAtefunc(');
 
-		testParse('hello\\l$1', [ReplacePiece.staticValue('hello'), ReplacePiece.caseOps(1, ['l'])]);
-		assertReplace('func PrivateFunc(', /func (\w+)\(/, 'func \\l$1(', 'func privateFunc(');
+		testPArse('hello\\l$1', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.cAseOps(1, ['l'])]);
+		AssertReplAce('func PrivAteFunc(', /func (\w+)\(/, 'func \\l$1(', 'func privAteFunc(');
 
-		testParse('hello$1\\u\\u\\U$4goodbye', [ReplacePiece.staticValue('hello'), ReplacePiece.matchIndex(1), ReplacePiece.caseOps(4, ['u', 'u', 'U']), ReplacePiece.staticValue('goodbye')]);
-		assertReplace('hellogooDbye', /hello(\w+)/, 'hello\\u\\u\\l\\l\\U$1', 'helloGOodBYE');
+		testPArse('hello$1\\u\\u\\U$4goodbye', [ReplAcePiece.stAticVAlue('hello'), ReplAcePiece.mAtchIndex(1), ReplAcePiece.cAseOps(4, ['u', 'u', 'U']), ReplAcePiece.stAticVAlue('goodbye')]);
+		AssertReplAce('hellogooDbye', /hello(\w+)/, 'hello\\u\\u\\l\\l\\U$1', 'helloGOodBYE');
 	});
 
-	test('replace has JavaScript semantics', () => {
-		let testJSReplaceSemantics = (target: string, search: RegExp, replaceString: string, expected: string) => {
-			let replacePattern = parseReplaceString(replaceString);
-			let m = search.exec(target);
-			let actual = replacePattern.buildReplaceString(m);
+	test('replAce hAs JAvAScript semAntics', () => {
+		let testJSReplAceSemAntics = (tArget: string, seArch: RegExp, replAceString: string, expected: string) => {
+			let replAcePAttern = pArseReplAceString(replAceString);
+			let m = seArch.exec(tArget);
+			let ActuAl = replAcePAttern.buildReplAceString(m);
 
-			assert.deepEqual(actual, expected, `${target}.replace(${search}, ${replaceString})`);
+			Assert.deepEquAl(ActuAl, expected, `${tArget}.replAce(${seArch}, ${replAceString})`);
 		};
 
-		testJSReplaceSemantics('hi', /hi/, 'hello', 'hi'.replace(/hi/, 'hello'));
-		testJSReplaceSemantics('hi', /hi/, '\\t', 'hi'.replace(/hi/, '\t'));
-		testJSReplaceSemantics('hi', /hi/, '\\n', 'hi'.replace(/hi/, '\n'));
-		testJSReplaceSemantics('hi', /hi/, '\\\\t', 'hi'.replace(/hi/, '\\t'));
-		testJSReplaceSemantics('hi', /hi/, '\\\\n', 'hi'.replace(/hi/, '\\n'));
+		testJSReplAceSemAntics('hi', /hi/, 'hello', 'hi'.replAce(/hi/, 'hello'));
+		testJSReplAceSemAntics('hi', /hi/, '\\t', 'hi'.replAce(/hi/, '\t'));
+		testJSReplAceSemAntics('hi', /hi/, '\\n', 'hi'.replAce(/hi/, '\n'));
+		testJSReplAceSemAntics('hi', /hi/, '\\\\t', 'hi'.replAce(/hi/, '\\t'));
+		testJSReplAceSemAntics('hi', /hi/, '\\\\n', 'hi'.replAce(/hi/, '\\n'));
 
-		// implicit capture group 0
-		testJSReplaceSemantics('hi', /hi/, 'hello$&', 'hi'.replace(/hi/, 'hello$&'));
-		testJSReplaceSemantics('hi', /hi/, 'hello$0', 'hi'.replace(/hi/, 'hello$&'));
-		testJSReplaceSemantics('hi', /hi/, 'hello$&1', 'hi'.replace(/hi/, 'hello$&1'));
-		testJSReplaceSemantics('hi', /hi/, 'hello$01', 'hi'.replace(/hi/, 'hello$&1'));
+		// implicit cApture group 0
+		testJSReplAceSemAntics('hi', /hi/, 'hello$&', 'hi'.replAce(/hi/, 'hello$&'));
+		testJSReplAceSemAntics('hi', /hi/, 'hello$0', 'hi'.replAce(/hi/, 'hello$&'));
+		testJSReplAceSemAntics('hi', /hi/, 'hello$&1', 'hi'.replAce(/hi/, 'hello$&1'));
+		testJSReplAceSemAntics('hi', /hi/, 'hello$01', 'hi'.replAce(/hi/, 'hello$&1'));
 
-		// capture groups have funny semantics in replace strings
-		// the replace string interprets $nn as a captured group only if it exists in the search regex
-		testJSReplaceSemantics('hi', /(hi)/, 'hello$10', 'hi'.replace(/(hi)/, 'hello$10'));
-		testJSReplaceSemantics('hi', /(hi)()()()()()()()()()/, 'hello$10', 'hi'.replace(/(hi)()()()()()()()()()/, 'hello$10'));
-		testJSReplaceSemantics('hi', /(hi)/, 'hello$100', 'hi'.replace(/(hi)/, 'hello$100'));
-		testJSReplaceSemantics('hi', /(hi)/, 'hello$20', 'hi'.replace(/(hi)/, 'hello$20'));
+		// cApture groups hAve funny semAntics in replAce strings
+		// the replAce string interprets $nn As A cAptured group only if it exists in the seArch regex
+		testJSReplAceSemAntics('hi', /(hi)/, 'hello$10', 'hi'.replAce(/(hi)/, 'hello$10'));
+		testJSReplAceSemAntics('hi', /(hi)()()()()()()()()()/, 'hello$10', 'hi'.replAce(/(hi)()()()()()()()()()/, 'hello$10'));
+		testJSReplAceSemAntics('hi', /(hi)/, 'hello$100', 'hi'.replAce(/(hi)/, 'hello$100'));
+		testJSReplAceSemAntics('hi', /(hi)/, 'hello$20', 'hi'.replAce(/(hi)/, 'hello$20'));
 	});
 
-	test('get replace string if given text is a complete match', () => {
-		function assertReplace(target: string, search: RegExp, replaceString: string, expected: string): void {
-			let replacePattern = parseReplaceString(replaceString);
-			let m = search.exec(target);
-			let actual = replacePattern.buildReplaceString(m);
+	test('get replAce string if given text is A complete mAtch', () => {
+		function AssertReplAce(tArget: string, seArch: RegExp, replAceString: string, expected: string): void {
+			let replAcePAttern = pArseReplAceString(replAceString);
+			let m = seArch.exec(tArget);
+			let ActuAl = replAcePAttern.buildReplAceString(m);
 
-			assert.equal(actual, expected, `${target}.replace(${search}, ${replaceString}) === ${expected}`);
+			Assert.equAl(ActuAl, expected, `${tArget}.replAce(${seArch}, ${replAceString}) === ${expected}`);
 		}
 
-		assertReplace('bla', /bla/, 'hello', 'hello');
-		assertReplace('bla', /(bla)/, 'hello', 'hello');
-		assertReplace('bla', /(bla)/, 'hello$0', 'hellobla');
+		AssertReplAce('blA', /blA/, 'hello', 'hello');
+		AssertReplAce('blA', /(blA)/, 'hello', 'hello');
+		AssertReplAce('blA', /(blA)/, 'hello$0', 'helloblA');
 
-		let searchRegex = /let\s+(\w+)\s*=\s*require\s*\(\s*['"]([\w\.\-/]+)\s*['"]\s*\)\s*/;
-		assertReplace('let fs = require(\'fs\')', searchRegex, 'import * as $1 from \'$2\';', 'import * as fs from \'fs\';');
-		assertReplace('let something = require(\'fs\')', searchRegex, 'import * as $1 from \'$2\';', 'import * as something from \'fs\';');
-		assertReplace('let something = require(\'fs\')', searchRegex, 'import * as $1 from \'$1\';', 'import * as something from \'something\';');
-		assertReplace('let something = require(\'fs\')', searchRegex, 'import * as $2 from \'$1\';', 'import * as fs from \'something\';');
-		assertReplace('let something = require(\'fs\')', searchRegex, 'import * as $0 from \'$0\';', 'import * as let something = require(\'fs\') from \'let something = require(\'fs\')\';');
-		assertReplace('let fs = require(\'fs\')', searchRegex, 'import * as $1 from \'$2\';', 'import * as fs from \'fs\';');
-		assertReplace('for ()', /for(.*)/, 'cat$1', 'cat ()');
+		let seArchRegex = /let\s+(\w+)\s*=\s*require\s*\(\s*['"]([\w\.\-/]+)\s*['"]\s*\)\s*/;
+		AssertReplAce('let fs = require(\'fs\')', seArchRegex, 'import * As $1 from \'$2\';', 'import * As fs from \'fs\';');
+		AssertReplAce('let something = require(\'fs\')', seArchRegex, 'import * As $1 from \'$2\';', 'import * As something from \'fs\';');
+		AssertReplAce('let something = require(\'fs\')', seArchRegex, 'import * As $1 from \'$1\';', 'import * As something from \'something\';');
+		AssertReplAce('let something = require(\'fs\')', seArchRegex, 'import * As $2 from \'$1\';', 'import * As fs from \'something\';');
+		AssertReplAce('let something = require(\'fs\')', seArchRegex, 'import * As $0 from \'$0\';', 'import * As let something = require(\'fs\') from \'let something = require(\'fs\')\';');
+		AssertReplAce('let fs = require(\'fs\')', seArchRegex, 'import * As $1 from \'$2\';', 'import * As fs from \'fs\';');
+		AssertReplAce('for ()', /for(.*)/, 'cAt$1', 'cAt ()');
 
 		// issue #18111
-		assertReplace('HRESULT OnAmbientPropertyChange(DISPID   dispid);', /\b\s{3}\b/, ' ', ' ');
+		AssertReplAce('HRESULT OnAmbientPropertyChAnge(DISPID   dispid);', /\b\s{3}\b/, ' ', ' ');
 	});
 
-	test('get replace string if match is sub-string of the text', () => {
-		function assertReplace(target: string, search: RegExp, replaceString: string, expected: string): void {
-			let replacePattern = parseReplaceString(replaceString);
-			let m = search.exec(target);
-			let actual = replacePattern.buildReplaceString(m);
+	test('get replAce string if mAtch is sub-string of the text', () => {
+		function AssertReplAce(tArget: string, seArch: RegExp, replAceString: string, expected: string): void {
+			let replAcePAttern = pArseReplAceString(replAceString);
+			let m = seArch.exec(tArget);
+			let ActuAl = replAcePAttern.buildReplAceString(m);
 
-			assert.equal(actual, expected, `${target}.replace(${search}, ${replaceString}) === ${expected}`);
+			Assert.equAl(ActuAl, expected, `${tArget}.replAce(${seArch}, ${replAceString}) === ${expected}`);
 		}
-		assertReplace('this is a bla text', /bla/, 'hello', 'hello');
-		assertReplace('this is a bla text', /this(?=.*bla)/, 'that', 'that');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, '$1at', 'that');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, '$1e', 'the');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, '$1ere', 'there');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, '$1', 'th');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, 'ma$1', 'math');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, 'ma$1s', 'maths');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, '$0', 'this');
-		assertReplace('this is a bla text', /(th)is(?=.*bla)/, '$0$1', 'thisth');
-		assertReplace('this is a bla text', /bla(?=\stext$)/, 'foo', 'foo');
-		assertReplace('this is a bla text', /b(la)(?=\stext$)/, 'f$1', 'fla');
-		assertReplace('this is a bla text', /b(la)(?=\stext$)/, 'f$0', 'fbla');
-		assertReplace('this is a bla text', /b(la)(?=\stext$)/, '$0ah', 'blaah');
+		AssertReplAce('this is A blA text', /blA/, 'hello', 'hello');
+		AssertReplAce('this is A blA text', /this(?=.*blA)/, 'thAt', 'thAt');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, '$1At', 'thAt');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, '$1e', 'the');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, '$1ere', 'there');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, '$1', 'th');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, 'mA$1', 'mAth');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, 'mA$1s', 'mAths');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, '$0', 'this');
+		AssertReplAce('this is A blA text', /(th)is(?=.*blA)/, '$0$1', 'thisth');
+		AssertReplAce('this is A blA text', /blA(?=\stext$)/, 'foo', 'foo');
+		AssertReplAce('this is A blA text', /b(lA)(?=\stext$)/, 'f$1', 'flA');
+		AssertReplAce('this is A blA text', /b(lA)(?=\stext$)/, 'f$0', 'fblA');
+		AssertReplAce('this is A blA text', /b(lA)(?=\stext$)/, '$0Ah', 'blAAh');
 	});
 
-	test('issue #19740 Find and replace capture group/backreference inserts `undefined` instead of empty string', () => {
-		let replacePattern = parseReplaceString('a{$1}');
-		let matches = /a(z)?/.exec('abcd');
-		let actual = replacePattern.buildReplaceString(matches);
-		assert.equal(actual, 'a{}');
+	test('issue #19740 Find And replAce cApture group/bAckreference inserts `undefined` insteAd of empty string', () => {
+		let replAcePAttern = pArseReplAceString('A{$1}');
+		let mAtches = /A(z)?/.exec('Abcd');
+		let ActuAl = replAcePAttern.buildReplAceString(mAtches);
+		Assert.equAl(ActuAl, 'A{}');
 	});
 
-	test('buildReplaceStringWithCasePreserved test', () => {
-		function assertReplace(target: string[], replaceString: string, expected: string): void {
-			let actual: string = '';
-			actual = buildReplaceStringWithCasePreserved(target, replaceString);
-			assert.equal(actual, expected);
-		}
-
-		assertReplace(['abc'], 'Def', 'def');
-		assertReplace(['Abc'], 'Def', 'Def');
-		assertReplace(['ABC'], 'Def', 'DEF');
-		assertReplace(['abc', 'Abc'], 'Def', 'def');
-		assertReplace(['Abc', 'abc'], 'Def', 'Def');
-		assertReplace(['ABC', 'abc'], 'Def', 'DEF');
-		assertReplace(['AbC'], 'Def', 'Def');
-		assertReplace(['aBC'], 'Def', 'Def');
-		assertReplace(['Foo-Bar'], 'newfoo-newbar', 'Newfoo-Newbar');
-		assertReplace(['Foo-Bar-Abc'], 'newfoo-newbar-newabc', 'Newfoo-Newbar-Newabc');
-		assertReplace(['Foo-Bar-abc'], 'newfoo-newbar', 'Newfoo-newbar');
-		assertReplace(['foo-Bar'], 'newfoo-newbar', 'newfoo-Newbar');
-		assertReplace(['foo-BAR'], 'newfoo-newbar', 'newfoo-NEWBAR');
-		assertReplace(['Foo_Bar'], 'newfoo_newbar', 'Newfoo_Newbar');
-		assertReplace(['Foo_Bar_Abc'], 'newfoo_newbar_newabc', 'Newfoo_Newbar_Newabc');
-		assertReplace(['Foo_Bar_abc'], 'newfoo_newbar', 'Newfoo_newbar');
-		assertReplace(['Foo_Bar-abc'], 'newfoo_newbar-abc', 'Newfoo_newbar-abc');
-		assertReplace(['foo_Bar'], 'newfoo_newbar', 'newfoo_Newbar');
-		assertReplace(['Foo_BAR'], 'newfoo_newbar', 'Newfoo_NEWBAR');
-	});
-
-	test('preserve case', () => {
-		function assertReplace(target: string[], replaceString: string, expected: string): void {
-			let replacePattern = parseReplaceString(replaceString);
-			let actual = replacePattern.buildReplaceString(target, true);
-			assert.equal(actual, expected);
+	test('buildReplAceStringWithCAsePreserved test', () => {
+		function AssertReplAce(tArget: string[], replAceString: string, expected: string): void {
+			let ActuAl: string = '';
+			ActuAl = buildReplAceStringWithCAsePreserved(tArget, replAceString);
+			Assert.equAl(ActuAl, expected);
 		}
 
-		assertReplace(['abc'], 'Def', 'def');
-		assertReplace(['Abc'], 'Def', 'Def');
-		assertReplace(['ABC'], 'Def', 'DEF');
-		assertReplace(['abc', 'Abc'], 'Def', 'def');
-		assertReplace(['Abc', 'abc'], 'Def', 'Def');
-		assertReplace(['ABC', 'abc'], 'Def', 'DEF');
-		assertReplace(['AbC'], 'Def', 'Def');
-		assertReplace(['aBC'], 'Def', 'Def');
-		assertReplace(['Foo-Bar'], 'newfoo-newbar', 'Newfoo-Newbar');
-		assertReplace(['Foo-Bar-Abc'], 'newfoo-newbar-newabc', 'Newfoo-Newbar-Newabc');
-		assertReplace(['Foo-Bar-abc'], 'newfoo-newbar', 'Newfoo-newbar');
-		assertReplace(['foo-Bar'], 'newfoo-newbar', 'newfoo-Newbar');
-		assertReplace(['foo-BAR'], 'newfoo-newbar', 'newfoo-NEWBAR');
-		assertReplace(['Foo_Bar'], 'newfoo_newbar', 'Newfoo_Newbar');
-		assertReplace(['Foo_Bar_Abc'], 'newfoo_newbar_newabc', 'Newfoo_Newbar_Newabc');
-		assertReplace(['Foo_Bar_abc'], 'newfoo_newbar', 'Newfoo_newbar');
-		assertReplace(['Foo_Bar-abc'], 'newfoo_newbar-abc', 'Newfoo_newbar-abc');
-		assertReplace(['foo_Bar'], 'newfoo_newbar', 'newfoo_Newbar');
-		assertReplace(['foo_BAR'], 'newfoo_newbar', 'newfoo_NEWBAR');
+		AssertReplAce(['Abc'], 'Def', 'def');
+		AssertReplAce(['Abc'], 'Def', 'Def');
+		AssertReplAce(['ABC'], 'Def', 'DEF');
+		AssertReplAce(['Abc', 'Abc'], 'Def', 'def');
+		AssertReplAce(['Abc', 'Abc'], 'Def', 'Def');
+		AssertReplAce(['ABC', 'Abc'], 'Def', 'DEF');
+		AssertReplAce(['AbC'], 'Def', 'Def');
+		AssertReplAce(['ABC'], 'Def', 'Def');
+		AssertReplAce(['Foo-BAr'], 'newfoo-newbAr', 'Newfoo-NewbAr');
+		AssertReplAce(['Foo-BAr-Abc'], 'newfoo-newbAr-newAbc', 'Newfoo-NewbAr-NewAbc');
+		AssertReplAce(['Foo-BAr-Abc'], 'newfoo-newbAr', 'Newfoo-newbAr');
+		AssertReplAce(['foo-BAr'], 'newfoo-newbAr', 'newfoo-NewbAr');
+		AssertReplAce(['foo-BAR'], 'newfoo-newbAr', 'newfoo-NEWBAR');
+		AssertReplAce(['Foo_BAr'], 'newfoo_newbAr', 'Newfoo_NewbAr');
+		AssertReplAce(['Foo_BAr_Abc'], 'newfoo_newbAr_newAbc', 'Newfoo_NewbAr_NewAbc');
+		AssertReplAce(['Foo_BAr_Abc'], 'newfoo_newbAr', 'Newfoo_newbAr');
+		AssertReplAce(['Foo_BAr-Abc'], 'newfoo_newbAr-Abc', 'Newfoo_newbAr-Abc');
+		AssertReplAce(['foo_BAr'], 'newfoo_newbAr', 'newfoo_NewbAr');
+		AssertReplAce(['Foo_BAR'], 'newfoo_newbAr', 'Newfoo_NEWBAR');
+	});
+
+	test('preserve cAse', () => {
+		function AssertReplAce(tArget: string[], replAceString: string, expected: string): void {
+			let replAcePAttern = pArseReplAceString(replAceString);
+			let ActuAl = replAcePAttern.buildReplAceString(tArget, true);
+			Assert.equAl(ActuAl, expected);
+		}
+
+		AssertReplAce(['Abc'], 'Def', 'def');
+		AssertReplAce(['Abc'], 'Def', 'Def');
+		AssertReplAce(['ABC'], 'Def', 'DEF');
+		AssertReplAce(['Abc', 'Abc'], 'Def', 'def');
+		AssertReplAce(['Abc', 'Abc'], 'Def', 'Def');
+		AssertReplAce(['ABC', 'Abc'], 'Def', 'DEF');
+		AssertReplAce(['AbC'], 'Def', 'Def');
+		AssertReplAce(['ABC'], 'Def', 'Def');
+		AssertReplAce(['Foo-BAr'], 'newfoo-newbAr', 'Newfoo-NewbAr');
+		AssertReplAce(['Foo-BAr-Abc'], 'newfoo-newbAr-newAbc', 'Newfoo-NewbAr-NewAbc');
+		AssertReplAce(['Foo-BAr-Abc'], 'newfoo-newbAr', 'Newfoo-newbAr');
+		AssertReplAce(['foo-BAr'], 'newfoo-newbAr', 'newfoo-NewbAr');
+		AssertReplAce(['foo-BAR'], 'newfoo-newbAr', 'newfoo-NEWBAR');
+		AssertReplAce(['Foo_BAr'], 'newfoo_newbAr', 'Newfoo_NewbAr');
+		AssertReplAce(['Foo_BAr_Abc'], 'newfoo_newbAr_newAbc', 'Newfoo_NewbAr_NewAbc');
+		AssertReplAce(['Foo_BAr_Abc'], 'newfoo_newbAr', 'Newfoo_newbAr');
+		AssertReplAce(['Foo_BAr-Abc'], 'newfoo_newbAr-Abc', 'Newfoo_newbAr-Abc');
+		AssertReplAce(['foo_BAr'], 'newfoo_newbAr', 'newfoo_NewbAr');
+		AssertReplAce(['foo_BAR'], 'newfoo_newbAr', 'newfoo_NEWBAR');
 	});
 });

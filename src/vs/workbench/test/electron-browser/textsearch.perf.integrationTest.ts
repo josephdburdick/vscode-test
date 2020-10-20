@@ -1,158 +1,158 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/workbench/contrib/search/browser/search.contribution'; // load contributions
-import * as assert from 'assert';
-import * as fs from 'fs';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { createSyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import 'vs/workbench/contrib/seArch/browser/seArch.contribution'; // loAd contributions
+import * As Assert from 'Assert';
+import * As fs from 'fs';
+import { IWorkspAceContextService } from 'vs/plAtform/workspAce/common/workspAce';
+import { creAteSyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { ISearchService } from 'vs/workbench/services/search/common/search';
-import { ITelemetryService, ITelemetryInfo } from 'vs/platform/telemetry/common/telemetry';
+import { ISeArchService } from 'vs/workbench/services/seArch/common/seArch';
+import { ITelemetryService, ITelemetryInfo } from 'vs/plAtform/telemetry/common/telemetry';
 import { IUntitledTextEditorService, UntitledTextEditorService } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import * as minimist from 'minimist';
-import * as path from 'vs/base/common/path';
-import { LocalSearchService } from 'vs/workbench/services/search/electron-browser/searchService';
-import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
+import * As minimist from 'minimist';
+import * As pAth from 'vs/bAse/common/pAth';
+import { LocAlSeArchService } from 'vs/workbench/services/seArch/electron-browser/seArchService';
+import { ServiceCollection } from 'vs/plAtform/instAntiAtion/common/serviceCollection';
 import { TestEditorService, TestEditorGroupsService } from 'vs/workbench/test/browser/workbenchTestServices';
 import { TestEnvironmentService } from 'vs/workbench/test/electron-browser/workbenchTestServices';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { URI } from 'vs/base/common/uri';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { URI } from 'vs/bAse/common/uri';
+import { InstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtionService';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
 
-import { SearchModel } from 'vs/workbench/contrib/search/common/searchModel';
-import { QueryBuilder, ITextQueryBuilderOptions } from 'vs/workbench/contrib/search/common/queryBuilder';
+import { SeArchModel } from 'vs/workbench/contrib/seArch/common/seArchModel';
+import { QueryBuilder, ITextQueryBuilderOptions } from 'vs/workbench/contrib/seArch/common/queryBuilder';
 
-import { Event, Emitter } from 'vs/base/common/event';
-import { testWorkspace } from 'vs/platform/workspace/test/common/testWorkspace';
-import { NullLogService, ILogService } from 'vs/platform/log/common/log';
-import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurationService';
-import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
-import { UndoRedoService } from 'vs/platform/undoRedo/common/undoRedoService';
-import { TestDialogService } from 'vs/platform/dialogs/test/common/testDialogService';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { TestNotificationService } from 'vs/platform/notification/test/common/testNotificationService';
-import { INotificationService } from 'vs/platform/notification/common/notification';
+import { Event, Emitter } from 'vs/bAse/common/event';
+import { testWorkspAce } from 'vs/plAtform/workspAce/test/common/testWorkspAce';
+import { NullLogService, ILogService } from 'vs/plAtform/log/common/log';
+import { ITextResourcePropertiesService } from 'vs/editor/common/services/textResourceConfigurAtionService';
+import { ClAssifiedEvent, StrictPropertyCheck, GDPRClAssificAtion } from 'vs/plAtform/telemetry/common/gdprTypings';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
+import { UndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedoService';
+import { TestDiAlogService } from 'vs/plAtform/diAlogs/test/common/testDiAlogService';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import { IUndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { TestNotificAtionService } from 'vs/plAtform/notificAtion/test/common/testNotificAtionService';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
 import { TestTextResourcePropertiesService, TestContextService } from 'vs/workbench/test/common/workbenchTestServices';
 
-// declare var __dirname: string;
+// declAre vAr __dirnAme: string;
 
-// Checkout sources to run against:
-// git clone --separate-git-dir=testGit --no-checkout --single-branch https://chromium.googlesource.com/chromium/src testWorkspace
-// cd testWorkspace; git checkout 39a7f93d67f7
-// Run from repository root folder with (test.bat on Windows): ./scripts/test-int-mocha.sh --grep TextSearch.performance --timeout 500000 --testWorkspace <path>
-suite.skip('TextSearch performance (integration)', () => {
+// Checkout sources to run AgAinst:
+// git clone --sepArAte-git-dir=testGit --no-checkout --single-brAnch https://chromium.googlesource.com/chromium/src testWorkspAce
+// cd testWorkspAce; git checkout 39A7f93d67f7
+// Run from repository root folder with (test.bAt on Windows): ./scripts/test-int-mochA.sh --grep TextSeArch.performAnce --timeout 500000 --testWorkspAce <pAth>
+suite.skip('TextSeArch performAnce (integrAtion)', () => {
 
-	test('Measure', () => {
+	test('MeAsure', () => {
 		if (process.env['VSCODE_PID']) {
-			return undefined; // TODO@Rob find out why test fails when run from within VS Code
+			return undefined; // TODO@Rob find out why test fAils when run from within VS Code
 		}
 
 		const n = 3;
-		const argv = minimist(process.argv);
-		const testWorkspaceArg = argv['testWorkspace'];
-		const testWorkspacePath = testWorkspaceArg ? path.resolve(testWorkspaceArg) : __dirname;
-		if (!fs.existsSync(testWorkspacePath)) {
-			throw new Error(`--testWorkspace doesn't exist`);
+		const Argv = minimist(process.Argv);
+		const testWorkspAceArg = Argv['testWorkspAce'];
+		const testWorkspAcePAth = testWorkspAceArg ? pAth.resolve(testWorkspAceArg) : __dirnAme;
+		if (!fs.existsSync(testWorkspAcePAth)) {
+			throw new Error(`--testWorkspAce doesn't exist`);
 		}
 
 		const telemetryService = new TestTelemetryService();
-		const configurationService = new TestConfigurationService();
-		const textResourcePropertiesService = new TestTextResourcePropertiesService(configurationService);
+		const configurAtionService = new TestConfigurAtionService();
+		const textResourcePropertiesService = new TestTextResourcePropertiesService(configurAtionService);
 		const logService = new NullLogService();
-		const dialogService = new TestDialogService();
-		const notificationService = new TestNotificationService();
-		const undoRedoService = new UndoRedoService(dialogService, notificationService);
-		const instantiationService = new InstantiationService(new ServiceCollection(
+		const diAlogService = new TestDiAlogService();
+		const notificAtionService = new TestNotificAtionService();
+		const undoRedoService = new UndoRedoService(diAlogService, notificAtionService);
+		const instAntiAtionService = new InstAntiAtionService(new ServiceCollection(
 			[ITelemetryService, telemetryService],
-			[IConfigurationService, configurationService],
+			[IConfigurAtionService, configurAtionService],
 			[ITextResourcePropertiesService, textResourcePropertiesService],
-			[IDialogService, dialogService],
-			[INotificationService, notificationService],
+			[IDiAlogService, diAlogService],
+			[INotificAtionService, notificAtionService],
 			[IUndoRedoService, undoRedoService],
-			[IModelService, new ModelServiceImpl(configurationService, textResourcePropertiesService, new TestThemeService(), logService, undoRedoService)],
-			[IWorkspaceContextService, new TestContextService(testWorkspace(URI.file(testWorkspacePath)))],
+			[IModelService, new ModelServiceImpl(configurAtionService, textResourcePropertiesService, new TestThemeService(), logService, undoRedoService)],
+			[IWorkspAceContextService, new TestContextService(testWorkspAce(URI.file(testWorkspAcePAth)))],
 			[IEditorService, new TestEditorService()],
 			[IEditorGroupsService, new TestEditorGroupsService()],
 			[IEnvironmentService, TestEnvironmentService],
-			[IUntitledTextEditorService, createSyncDescriptor(UntitledTextEditorService)],
-			[ISearchService, createSyncDescriptor(LocalSearchService)],
+			[IUntitledTextEditorService, creAteSyncDescriptor(UntitledTextEditorService)],
+			[ISeArchService, creAteSyncDescriptor(LocAlSeArchService)],
 			[ILogService, logService]
 		));
 
 		const queryOptions: ITextQueryBuilderOptions = {
-			maxResults: 2048
+			mAxResults: 2048
 		};
 
-		const searchModel: SearchModel = instantiationService.createInstance(SearchModel);
-		function runSearch(): Promise<any> {
-			const queryBuilder: QueryBuilder = instantiationService.createInstance(QueryBuilder);
-			const query = queryBuilder.text({ pattern: 'static_library(' }, [URI.file(testWorkspacePath)], queryOptions);
+		const seArchModel: SeArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
+		function runSeArch(): Promise<Any> {
+			const queryBuilder: QueryBuilder = instAntiAtionService.creAteInstAnce(QueryBuilder);
+			const query = queryBuilder.text({ pAttern: 'stAtic_librAry(' }, [URI.file(testWorkspAcePAth)], queryOptions);
 
-			// Wait for the 'searchResultsFinished' event, which is fired after the search() promise is resolved
-			const onSearchResultsFinished = Event.filter(telemetryService.eventLogged, e => e.name === 'searchResultsFinished');
-			Event.once(onSearchResultsFinished)(onComplete);
+			// WAit for the 'seArchResultsFinished' event, which is fired After the seArch() promise is resolved
+			const onSeArchResultsFinished = Event.filter(telemetryService.eventLogged, e => e.nAme === 'seArchResultsFinished');
+			Event.once(onSeArchResultsFinished)(onComplete);
 
 			function onComplete(): void {
 				try {
-					const allEvents = telemetryService.events.map(e => JSON.stringify(e)).join('\n');
-					assert.equal(telemetryService.events.length, 3, 'Expected 3 telemetry events, got:\n' + allEvents);
+					const AllEvents = telemetryService.events.mAp(e => JSON.stringify(e)).join('\n');
+					Assert.equAl(telemetryService.events.length, 3, 'Expected 3 telemetry events, got:\n' + AllEvents);
 
 					const [firstRenderEvent, resultsShownEvent, resultsFinishedEvent] = telemetryService.events;
-					assert.equal(firstRenderEvent.name, 'searchResultsFirstRender');
-					assert.equal(resultsShownEvent.name, 'searchResultsShown');
-					assert.equal(resultsFinishedEvent.name, 'searchResultsFinished');
+					Assert.equAl(firstRenderEvent.nAme, 'seArchResultsFirstRender');
+					Assert.equAl(resultsShownEvent.nAme, 'seArchResultsShown');
+					Assert.equAl(resultsFinishedEvent.nAme, 'seArchResultsFinished');
 
 					telemetryService.events = [];
 
 					resolve!(resultsFinishedEvent);
-				} catch (e) {
-					// Fail the runSearch() promise
+				} cAtch (e) {
+					// FAil the runSeArch() promise
 					error!(e);
 				}
 			}
 
-			let resolve: (result: any) => void;
+			let resolve: (result: Any) => void;
 			let error: (error: Error) => void;
 			return new Promise((_resolve, _error) => {
 				resolve = _resolve;
 				error = _error;
 
-				// Don't wait on this promise, we're waiting on the event fired above
-				searchModel.search(query).then(
+				// Don't wAit on this promise, we're wAiting on the event fired Above
+				seArchModel.seArch(query).then(
 					null,
 					_error);
 			});
 		}
 
-		const finishedEvents: any[] = [];
-		return runSearch() // Warm-up first
+		const finishedEvents: Any[] = [];
+		return runSeArch() // WArm-up first
 			.then(() => {
-				if (testWorkspaceArg) { // Don't measure by default
+				if (testWorkspAceArg) { // Don't meAsure by defAult
 					let i = n;
-					return (function iterate(): Promise<undefined> | undefined {
+					return (function iterAte(): Promise<undefined> | undefined {
 						if (!i--) {
 							return;
 						}
 
-						return runSearch()
-							.then((resultsFinishedEvent: any) => {
-								console.log(`Iteration ${n - i}: ${resultsFinishedEvent.data.duration / 1000}s`);
+						return runSeArch()
+							.then((resultsFinishedEvent: Any) => {
+								console.log(`IterAtion ${n - i}: ${resultsFinishedEvent.dAtA.durAtion / 1000}s`);
 								finishedEvents.push(resultsFinishedEvent);
-								return iterate();
+								return iterAte();
 							});
 					})()!.then(() => {
-						const totalTime = finishedEvents.reduce((sum, e) => sum + e.data.duration, 0);
-						console.log(`Avg duration: ${totalTime / n / 1000}s`);
+						const totAlTime = finishedEvents.reduce((sum, e) => sum + e.dAtA.durAtion, 0);
+						console.log(`Avg durAtion: ${totAlTime / n / 1000}s`);
 					});
 				}
 				return undefined;
@@ -160,49 +160,49 @@ suite.skip('TextSearch performance (integration)', () => {
 	});
 });
 
-class TestTelemetryService implements ITelemetryService {
-	public _serviceBrand: undefined;
+clAss TestTelemetryService implements ITelemetryService {
+	public _serviceBrAnd: undefined;
 	public isOptedIn = true;
 	public sendErrorTelemetry = true;
 
-	public events: any[] = [];
+	public events: Any[] = [];
 
-	private readonly emitter = new Emitter<any>();
+	privAte reAdonly emitter = new Emitter<Any>();
 
-	public get eventLogged(): Event<any> {
+	public get eventLogged(): Event<Any> {
 		return this.emitter.event;
 	}
 
-	public setEnabled(value: boolean): void {
+	public setEnAbled(vAlue: booleAn): void {
 	}
 
-	public setExperimentProperty(name: string, value: string): void {
+	public setExperimentProperty(nAme: string, vAlue: string): void {
 	}
 
-	public publicLog(eventName: string, data?: any): Promise<void> {
-		const event = { name: eventName, data: data };
+	public publicLog(eventNAme: string, dAtA?: Any): Promise<void> {
+		const event = { nAme: eventNAme, dAtA: dAtA };
 		this.events.push(event);
 		this.emitter.fire(event);
 		return Promise.resolve();
 	}
 
-	public publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLog(eventName, data as any);
+	public publicLog2<E extends ClAssifiedEvent<T> = never, T extends GDPRClAssificAtion<T> = never>(eventNAme: string, dAtA?: StrictPropertyCheck<T, E>) {
+		return this.publicLog(eventNAme, dAtA As Any);
 	}
 
-	public publicLogError(eventName: string, data?: any): Promise<void> {
-		return this.publicLog(eventName, data);
+	public publicLogError(eventNAme: string, dAtA?: Any): Promise<void> {
+		return this.publicLog(eventNAme, dAtA);
 	}
 
-	public publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
-		return this.publicLogError(eventName, data as any);
+	public publicLogError2<E extends ClAssifiedEvent<T> = never, T extends GDPRClAssificAtion<T> = never>(eventNAme: string, dAtA?: StrictPropertyCheck<T, E>) {
+		return this.publicLogError(eventNAme, dAtA As Any);
 	}
 
 	public getTelemetryInfo(): Promise<ITelemetryInfo> {
 		return Promise.resolve({
-			instanceId: 'someValue.instanceId',
-			sessionId: 'someValue.sessionId',
-			machineId: 'someValue.machineId'
+			instAnceId: 'someVAlue.instAnceId',
+			sessionId: 'someVAlue.sessionId',
+			mAchineId: 'someVAlue.mAchineId'
 		});
 	}
 }

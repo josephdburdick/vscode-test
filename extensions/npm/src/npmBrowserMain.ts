@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as httpRequest from 'request-light';
-import * as vscode from 'vscode';
-import { addJSONProviders } from './features/jsonContributions';
+import * As httpRequest from 'request-light';
+import * As vscode from 'vscode';
+import { AddJSONProviders } from './feAtures/jsonContributions';
 
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
-	context.subscriptions.push(addJSONProviders(httpRequest.xhr, false));
+export Async function ActivAte(context: vscode.ExtensionContext): Promise<void> {
+	context.subscriptions.push(AddJSONProviders(httpRequest.xhr, fAlse));
 }
 
-export function deactivate(): void {
+export function deActivAte(): void {
 }

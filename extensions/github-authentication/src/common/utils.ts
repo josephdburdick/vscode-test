@@ -1,62 +1,62 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Event, Disposable } from 'vscode';
+import { Event, DisposAble } from 'vscode';
 
-export function filterEvent<T>(event: Event<T>, filter: (e: T) => boolean): Event<T> {
-	return (listener, thisArgs = null, disposables?) => event(e => filter(e) && listener.call(thisArgs, e), null, disposables);
+export function filterEvent<T>(event: Event<T>, filter: (e: T) => booleAn): Event<T> {
+	return (listener, thisArgs = null, disposAbles?) => event(e => filter(e) && listener.cAll(thisArgs, e), null, disposAbles);
 }
 
 export function onceEvent<T>(event: Event<T>): Event<T> {
-	return (listener, thisArgs = null, disposables?) => {
+	return (listener, thisArgs = null, disposAbles?) => {
 		const result = event(e => {
 			result.dispose();
-			return listener.call(thisArgs, e);
-		}, null, disposables);
+			return listener.cAll(thisArgs, e);
+		}, null, disposAbles);
 
 		return result;
 	};
 }
 
 
-export interface PromiseAdapter<T, U> {
+export interfAce PromiseAdApter<T, U> {
 	(
-		value: T,
+		vAlue: T,
 		resolve:
-			(value: U | PromiseLike<U>) => void,
+			(vAlue: U | PromiseLike<U>) => void,
 		reject:
-			(reason: any) => void
-	): any;
+			(reAson: Any) => void
+	): Any;
 }
 
-const passthrough = (value: any, resolve: (value?: any) => void) => resolve(value);
+const pAssthrough = (vAlue: Any, resolve: (vAlue?: Any) => void) => resolve(vAlue);
 
 /**
- * Return a promise that resolves with the next emitted event, or with some future
- * event as decided by an adapter.
+ * Return A promise thAt resolves with the next emitted event, or with some future
+ * event As decided by An AdApter.
  *
- * If specified, the adapter is a function that will be called with
- * `(event, resolve, reject)`. It will be called once per event until it resolves or
+ * If specified, the AdApter is A function thAt will be cAlled with
+ * `(event, resolve, reject)`. It will be cAlled once per event until it resolves or
  * rejects.
  *
- * The default adapter is the passthrough function `(value, resolve) => resolve(value)`.
+ * The defAult AdApter is the pAssthrough function `(vAlue, resolve) => resolve(vAlue)`.
  *
- * @param event the event
- * @param adapter controls resolution of the returned promise
- * @returns a promise that resolves or rejects as specified by the adapter
+ * @pArAm event the event
+ * @pArAm AdApter controls resolution of the returned promise
+ * @returns A promise thAt resolves or rejects As specified by the AdApter
  */
-export async function promiseFromEvent<T, U>(
+export Async function promiseFromEvent<T, U>(
 	event: Event<T>,
-	adapter: PromiseAdapter<T, U> = passthrough): Promise<U> {
-	let subscription: Disposable;
+	AdApter: PromiseAdApter<T, U> = pAssthrough): Promise<U> {
+	let subscription: DisposAble;
 	return new Promise<U>((resolve, reject) =>
-		subscription = event((value: T) => {
+		subscription = event((vAlue: T) => {
 			try {
-				Promise.resolve(adapter(value, resolve, reject))
-					.catch(reject);
-			} catch (error) {
+				Promise.resolve(AdApter(vAlue, resolve, reject))
+					.cAtch(reject);
+			} cAtch (error) {
 				reject(error);
 			}
 		})

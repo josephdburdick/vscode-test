@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { URI } from 'vs/base/common/uri';
-import { parse, stringify } from 'vs/base/common/marshalling';
+import * As Assert from 'Assert';
+import { URI } from 'vs/bAse/common/uri';
+import { pArse, stringify } from 'vs/bAse/common/mArshAlling';
 
-suite('Marshalling', () => {
+suite('MArshAlling', () => {
 
 	test('RegExp', () => {
-		let value = /foo/img;
-		let raw = stringify(value);
-		let clone = <RegExp>parse(raw);
+		let vAlue = /foo/img;
+		let rAw = stringify(vAlue);
+		let clone = <RegExp>pArse(rAw);
 
-		assert.equal(value.source, clone.source);
-		assert.equal(value.global, clone.global);
-		assert.equal(value.ignoreCase, clone.ignoreCase);
-		assert.equal(value.multiline, clone.multiline);
+		Assert.equAl(vAlue.source, clone.source);
+		Assert.equAl(vAlue.globAl, clone.globAl);
+		Assert.equAl(vAlue.ignoreCAse, clone.ignoreCAse);
+		Assert.equAl(vAlue.multiline, clone.multiline);
 	});
 
 	test('URI', () => {
-		const value = URI.from({ scheme: 'file', authority: 'server', path: '/shares/c#files', query: 'q', fragment: 'f' });
-		const raw = stringify(value);
-		const clone = <URI>parse(raw);
+		const vAlue = URI.from({ scheme: 'file', Authority: 'server', pAth: '/shAres/c#files', query: 'q', frAgment: 'f' });
+		const rAw = stringify(vAlue);
+		const clone = <URI>pArse(rAw);
 
-		assert.equal(value.scheme, clone.scheme);
-		assert.equal(value.authority, clone.authority);
-		assert.equal(value.path, clone.path);
-		assert.equal(value.query, clone.query);
-		assert.equal(value.fragment, clone.fragment);
+		Assert.equAl(vAlue.scheme, clone.scheme);
+		Assert.equAl(vAlue.Authority, clone.Authority);
+		Assert.equAl(vAlue.pAth, clone.pAth);
+		Assert.equAl(vAlue.query, clone.query);
+		Assert.equAl(vAlue.frAgment, clone.frAgment);
 	});
 
-	test('Bug 16793:# in folder name => mirror models get out of sync', () => {
+	test('Bug 16793:# in folder nAme => mirror models get out of sync', () => {
 		const uri1 = URI.file('C:\\C#\\file.txt');
-		assert.equal(parse(stringify(uri1)).toString(), uri1.toString());
+		Assert.equAl(pArse(stringify(uri1)).toString(), uri1.toString());
 	});
 });

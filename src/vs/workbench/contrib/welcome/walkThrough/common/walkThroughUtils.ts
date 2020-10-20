@@ -1,23 +1,23 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IColorTheme } from 'vs/platform/theme/common/themeService';
-import { editorBackground, ColorDefaults, ColorValue } from 'vs/platform/theme/common/colorRegistry';
+import { IColorTheme } from 'vs/plAtform/theme/common/themeService';
+import { editorBAckground, ColorDefAults, ColorVAlue } from 'vs/plAtform/theme/common/colorRegistry';
 
-export function getExtraColor(theme: IColorTheme, colorId: string, defaults: ColorDefaults & { extra_dark: string }): ColorValue | null {
+export function getExtrAColor(theme: IColorTheme, colorId: string, defAults: ColorDefAults & { extrA_dArk: string }): ColorVAlue | null {
 	const color = theme.getColor(colorId);
 	if (color) {
 		return color;
 	}
 
-	if (theme.type === 'dark') {
-		const background = theme.getColor(editorBackground);
-		if (background && background.getRelativeLuminance() < 0.004) {
-			return defaults.extra_dark;
+	if (theme.type === 'dArk') {
+		const bAckground = theme.getColor(editorBAckground);
+		if (bAckground && bAckground.getRelAtiveLuminAnce() < 0.004) {
+			return defAults.extrA_dArk;
 		}
 	}
 
-	return defaults[theme.type];
+	return defAults[theme.type];
 }

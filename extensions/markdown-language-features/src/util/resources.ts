@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export interface WebviewResourceProvider {
-	asWebviewUri(resource: vscode.Uri): vscode.Uri;
+export interfAce WebviewResourceProvider {
+	AsWebviewUri(resource: vscode.Uri): vscode.Uri;
 
-	readonly cspSource: string;
+	reAdonly cspSource: string;
 }
 
-export function normalizeResource(
-	base: vscode.Uri,
+export function normAlizeResource(
+	bAse: vscode.Uri,
 	resource: vscode.Uri
 ): vscode.Uri {
-	// If we  have a windows path and are loading a workspace with an authority,
-	// make sure we use a unc path with an explicit localhost authority.
+	// If we  hAve A windows pAth And Are loAding A workspAce with An Authority,
+	// mAke sure we use A unc pAth with An explicit locAlhost Authority.
 	//
-	// Otherwise, the `<base>` rule will insert the authority into the resolved resource
+	// Otherwise, the `<bAse>` rule will insert the Authority into the resolved resource
 	// URI incorrectly.
-	if (base.authority && !resource.authority) {
-		const driveMatch = resource.path.match(/^\/(\w):\//);
-		if (driveMatch) {
-			return vscode.Uri.file(`\\\\localhost\\${driveMatch[1]}$\\${resource.fsPath.replace(/^\w:\\/, '')}`).with({
-				fragment: resource.fragment,
+	if (bAse.Authority && !resource.Authority) {
+		const driveMAtch = resource.pAth.mAtch(/^\/(\w):\//);
+		if (driveMAtch) {
+			return vscode.Uri.file(`\\\\locAlhost\\${driveMAtch[1]}$\\${resource.fsPAth.replAce(/^\w:\\/, '')}`).with({
+				frAgment: resource.frAgment,
 				query: resource.query
 			});
 		}

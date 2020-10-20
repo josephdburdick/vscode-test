@@ -1,132 +1,132 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import type { IViewportRange, IBufferRange, IBufferLine, IBuffer, IBufferCellPosition } from 'xterm';
-import { IRange } from 'vs/editor/common/core/range';
+import type { IViewportRAnge, IBufferRAnge, IBufferLine, IBuffer, IBufferCellPosition } from 'xterm';
+import { IRAnge } from 'vs/editor/common/core/rAnge';
 
-export function convertLinkRangeToBuffer(lines: IBufferLine[], bufferWidth: number, range: IRange, startLine: number) {
-	const bufferRange: IBufferRange = {
-		start: {
-			x: range.startColumn,
-			y: range.startLineNumber + startLine
+export function convertLinkRAngeToBuffer(lines: IBufferLine[], bufferWidth: number, rAnge: IRAnge, stArtLine: number) {
+	const bufferRAnge: IBufferRAnge = {
+		stArt: {
+			x: rAnge.stArtColumn,
+			y: rAnge.stArtLineNumber + stArtLine
 		},
 		end: {
-			x: range.endColumn - 1,
-			y: range.endLineNumber + startLine
+			x: rAnge.endColumn - 1,
+			y: rAnge.endLineNumber + stArtLine
 		}
 	};
 
-	// Shift start range right for each wide character before the link
-	let startOffset = 0;
-	const startWrappedLineCount = Math.ceil(range.startColumn / bufferWidth);
-	for (let y = 0; y < Math.min(startWrappedLineCount); y++) {
-		const lineLength = Math.min(bufferWidth, range.startColumn - y * bufferWidth);
+	// Shift stArt rAnge right for eAch wide chArActer before the link
+	let stArtOffset = 0;
+	const stArtWrAppedLineCount = MAth.ceil(rAnge.stArtColumn / bufferWidth);
+	for (let y = 0; y < MAth.min(stArtWrAppedLineCount); y++) {
+		const lineLength = MAth.min(bufferWidth, rAnge.stArtColumn - y * bufferWidth);
 		let lineOffset = 0;
 		const line = lines[y];
-		// Sanity check for line, apparently this can happen but it's not clear under what
-		// circumstances this happens. Continue on, skipping the remainder of start offset if this
-		// happens to minimize impact.
+		// SAnity check for line, AppArently this cAn hAppen but it's not cleAr under whAt
+		// circumstAnces this hAppens. Continue on, skipping the remAinder of stArt offset if this
+		// hAppens to minimize impAct.
 		if (!line) {
-			break;
+			breAk;
 		}
-		for (let x = 0; x < Math.min(bufferWidth, lineLength + lineOffset); x++) {
+		for (let x = 0; x < MAth.min(bufferWidth, lineLength + lineOffset); x++) {
 			const cell = line.getCell(x)!;
 			const width = cell.getWidth();
 			if (width === 2) {
 				lineOffset++;
 			}
-			const char = cell.getChars();
-			if (char.length > 1) {
-				lineOffset -= char.length - 1;
+			const chAr = cell.getChArs();
+			if (chAr.length > 1) {
+				lineOffset -= chAr.length - 1;
 			}
 		}
-		startOffset += lineOffset;
+		stArtOffset += lineOffset;
 	}
 
-	// Shift end range right for each wide character inside the link
+	// Shift end rAnge right for eAch wide chArActer inside the link
 	let endOffset = 0;
-	const endWrappedLineCount = Math.ceil(range.endColumn / bufferWidth);
-	for (let y = Math.max(0, startWrappedLineCount - 1); y < endWrappedLineCount; y++) {
-		const start = (y === startWrappedLineCount - 1 ? (range.startColumn + startOffset) % bufferWidth : 0);
-		const lineLength = Math.min(bufferWidth, range.endColumn + startOffset - y * bufferWidth);
-		const startLineOffset = (y === startWrappedLineCount - 1 ? startOffset : 0);
+	const endWrAppedLineCount = MAth.ceil(rAnge.endColumn / bufferWidth);
+	for (let y = MAth.mAx(0, stArtWrAppedLineCount - 1); y < endWrAppedLineCount; y++) {
+		const stArt = (y === stArtWrAppedLineCount - 1 ? (rAnge.stArtColumn + stArtOffset) % bufferWidth : 0);
+		const lineLength = MAth.min(bufferWidth, rAnge.endColumn + stArtOffset - y * bufferWidth);
+		const stArtLineOffset = (y === stArtWrAppedLineCount - 1 ? stArtOffset : 0);
 		let lineOffset = 0;
 		const line = lines[y];
-		// Sanity check for line, apparently this can happen but it's not clear under what
-		// circumstances this happens. Continue on, skipping the remainder of start offset if this
-		// happens to minimize impact.
+		// SAnity check for line, AppArently this cAn hAppen but it's not cleAr under whAt
+		// circumstAnces this hAppens. Continue on, skipping the remAinder of stArt offset if this
+		// hAppens to minimize impAct.
 		if (!line) {
-			break;
+			breAk;
 		}
-		for (let x = start; x < Math.min(bufferWidth, lineLength + lineOffset + startLineOffset); x++) {
+		for (let x = stArt; x < MAth.min(bufferWidth, lineLength + lineOffset + stArtLineOffset); x++) {
 			const cell = line.getCell(x)!;
 			const width = cell.getWidth();
-			// Offset for 0 cells following wide characters
+			// Offset for 0 cells following wide chArActers
 			if (width === 2) {
 				lineOffset++;
 			}
-			// Offset for early wrapping when the last cell in row is a wide character
-			if (x === bufferWidth - 1 && cell.getChars() === '') {
+			// Offset for eArly wrApping when the lAst cell in row is A wide chArActer
+			if (x === bufferWidth - 1 && cell.getChArs() === '') {
 				lineOffset++;
 			}
 		}
 		endOffset += lineOffset;
 	}
 
-	// Apply the width character offsets to the result
-	bufferRange.start.x += startOffset;
-	bufferRange.end.x += startOffset + endOffset;
+	// Apply the width chArActer offsets to the result
+	bufferRAnge.stArt.x += stArtOffset;
+	bufferRAnge.end.x += stArtOffset + endOffset;
 
-	// Convert back to wrapped lines
-	while (bufferRange.start.x > bufferWidth) {
-		bufferRange.start.x -= bufferWidth;
-		bufferRange.start.y++;
+	// Convert bAck to wrApped lines
+	while (bufferRAnge.stArt.x > bufferWidth) {
+		bufferRAnge.stArt.x -= bufferWidth;
+		bufferRAnge.stArt.y++;
 	}
-	while (bufferRange.end.x > bufferWidth) {
-		bufferRange.end.x -= bufferWidth;
-		bufferRange.end.y++;
+	while (bufferRAnge.end.x > bufferWidth) {
+		bufferRAnge.end.x -= bufferWidth;
+		bufferRAnge.end.y++;
 	}
 
-	return bufferRange;
+	return bufferRAnge;
 }
 
-export function convertBufferRangeToViewport(bufferRange: IBufferRange, viewportY: number): IViewportRange {
+export function convertBufferRAngeToViewport(bufferRAnge: IBufferRAnge, viewportY: number): IViewportRAnge {
 	return {
-		start: {
-			x: bufferRange.start.x - 1,
-			y: bufferRange.start.y - viewportY - 1
+		stArt: {
+			x: bufferRAnge.stArt.x - 1,
+			y: bufferRAnge.stArt.y - viewportY - 1
 		},
 		end: {
-			x: bufferRange.end.x - 1,
-			y: bufferRange.end.y - viewportY - 1
+			x: bufferRAnge.end.x - 1,
+			y: bufferRAnge.end.y - viewportY - 1
 		}
 	};
 }
 
-export function getXtermLineContent(buffer: IBuffer, lineStart: number, lineEnd: number, cols: number): string {
+export function getXtermLineContent(buffer: IBuffer, lineStArt: number, lineEnd: number, cols: number): string {
 	let content = '';
-	for (let i = lineStart; i <= lineEnd; i++) {
-		// Make sure only 0 to cols are considered as resizing when windows mode is enabled will
-		// retain buffer data outside of the terminal width as reflow is disabled.
+	for (let i = lineStArt; i <= lineEnd; i++) {
+		// MAke sure only 0 to cols Are considered As resizing when windows mode is enAbled will
+		// retAin buffer dAtA outside of the terminAl width As reflow is disAbled.
 		const line = buffer.getLine(i);
 		if (line) {
-			content += line.translateToString(true, 0, cols);
+			content += line.trAnslAteToString(true, 0, cols);
 		}
 	}
 	return content;
 }
 
-export function positionIsInRange(position: IBufferCellPosition, range: IBufferRange): boolean {
-	if (position.y < range.start.y || position.y > range.end.y) {
-		return false;
+export function positionIsInRAnge(position: IBufferCellPosition, rAnge: IBufferRAnge): booleAn {
+	if (position.y < rAnge.stArt.y || position.y > rAnge.end.y) {
+		return fAlse;
 	}
-	if (position.y === range.start.y && position.x < range.start.x) {
-		return false;
+	if (position.y === rAnge.stArt.y && position.x < rAnge.stArt.x) {
+		return fAlse;
 	}
-	if (position.y === range.end.y && position.x > range.end.x) {
-		return false;
+	if (position.y === rAnge.end.y && position.x > rAnge.end.x) {
+		return fAlse;
 	}
 	return true;
 }

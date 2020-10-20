@@ -1,782 +1,782 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { URI as uri } from 'vs/base/common/uri';
-import severity from 'vs/base/common/severity';
-import { Event } from 'vs/base/common/event';
-import { IJSONSchemaSnippet } from 'vs/base/common/jsonSchema';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import * as editorCommon from 'vs/editor/common/editorCommon';
-import { ITextModel as EditorIModel } from 'vs/editor/common/model';
-import { IEditorPane, ITextEditorPane } from 'vs/workbench/common/editor';
+import * As nls from 'vs/nls';
+import { URI As uri } from 'vs/bAse/common/uri';
+import severity from 'vs/bAse/common/severity';
+import { Event } from 'vs/bAse/common/event';
+import { IJSONSchemASnippet } from 'vs/bAse/common/jsonSchemA';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import * As editorCommon from 'vs/editor/common/editorCommon';
+import { ITextModel As EditorIModel } from 'vs/editor/common/model';
+import { IEditorPAne, ITextEditorPAne } from 'vs/workbench/common/editor';
 import { Position, IPosition } from 'vs/editor/common/core/position';
 import { Source } from 'vs/workbench/contrib/debug/common/debugSource';
-import { Range, IRange } from 'vs/editor/common/core/range';
-import { RawContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+import { RAnge, IRAnge } from 'vs/editor/common/core/rAnge';
+import { RAwContextKey } from 'vs/plAtform/contextkey/common/contextkey';
+import { IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { TaskIdentifier } from 'vs/workbench/contrib/tasks/common/tasks';
-import { TelemetryService } from 'vs/platform/telemetry/common/telemetryService';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { DebugConfigurationProviderTriggerKind } from 'vs/workbench/api/common/extHostTypes';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { TAskIdentifier } from 'vs/workbench/contrib/tAsks/common/tAsks';
+import { TelemetryService } from 'vs/plAtform/telemetry/common/telemetryService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { DebugConfigurAtionProviderTriggerKind } from 'vs/workbench/Api/common/extHostTypes';
 import { DebugCompoundRoot } from 'vs/workbench/contrib/debug/common/debugCompoundRoot';
 
 export const VIEWLET_ID = 'workbench.view.debug';
 
-export const VARIABLES_VIEW_ID = 'workbench.debug.variablesView';
-export const WATCH_VIEW_ID = 'workbench.debug.watchExpressionsView';
-export const CALLSTACK_VIEW_ID = 'workbench.debug.callStackView';
-export const LOADED_SCRIPTS_VIEW_ID = 'workbench.debug.loadedScriptsView';
-export const BREAKPOINTS_VIEW_ID = 'workbench.debug.breakPointsView';
-export const DEBUG_PANEL_ID = 'workbench.panel.repl';
-export const REPL_VIEW_ID = 'workbench.panel.repl.view';
+export const VARIABLES_VIEW_ID = 'workbench.debug.vAriAblesView';
+export const WATCH_VIEW_ID = 'workbench.debug.wAtchExpressionsView';
+export const CALLSTACK_VIEW_ID = 'workbench.debug.cAllStAckView';
+export const LOADED_SCRIPTS_VIEW_ID = 'workbench.debug.loAdedScriptsView';
+export const BREAKPOINTS_VIEW_ID = 'workbench.debug.breAkPointsView';
+export const DEBUG_PANEL_ID = 'workbench.pAnel.repl';
+export const REPL_VIEW_ID = 'workbench.pAnel.repl.view';
 export const DEBUG_SERVICE_ID = 'debugService';
-export const CONTEXT_DEBUG_TYPE = new RawContextKey<string>('debugType', undefined);
-export const CONTEXT_DEBUG_CONFIGURATION_TYPE = new RawContextKey<string>('debugConfigurationType', undefined);
-export const CONTEXT_DEBUG_STATE = new RawContextKey<string>('debugState', 'inactive');
+export const CONTEXT_DEBUG_TYPE = new RAwContextKey<string>('debugType', undefined);
+export const CONTEXT_DEBUG_CONFIGURATION_TYPE = new RAwContextKey<string>('debugConfigurAtionType', undefined);
+export const CONTEXT_DEBUG_STATE = new RAwContextKey<string>('debugStAte', 'inActive');
 export const CONTEXT_DEBUG_UX_KEY = 'debugUx';
-export const CONTEXT_DEBUG_UX = new RawContextKey<string>(CONTEXT_DEBUG_UX_KEY, 'default');
-export const CONTEXT_IN_DEBUG_MODE = new RawContextKey<boolean>('inDebugMode', false);
-export const CONTEXT_IN_DEBUG_REPL = new RawContextKey<boolean>('inDebugRepl', false);
-export const CONTEXT_BREAKPOINT_WIDGET_VISIBLE = new RawContextKey<boolean>('breakpointWidgetVisible', false);
-export const CONTEXT_IN_BREAKPOINT_WIDGET = new RawContextKey<boolean>('inBreakpointWidget', false);
-export const CONTEXT_BREAKPOINTS_FOCUSED = new RawContextKey<boolean>('breakpointsFocused', true);
-export const CONTEXT_WATCH_EXPRESSIONS_FOCUSED = new RawContextKey<boolean>('watchExpressionsFocused', true);
-export const CONTEXT_VARIABLES_FOCUSED = new RawContextKey<boolean>('variablesFocused', true);
-export const CONTEXT_EXPRESSION_SELECTED = new RawContextKey<boolean>('expressionSelected', false);
-export const CONTEXT_BREAKPOINT_SELECTED = new RawContextKey<boolean>('breakpointSelected', false);
-export const CONTEXT_CALLSTACK_ITEM_TYPE = new RawContextKey<string>('callStackItemType', undefined);
-export const CONTEXT_LOADED_SCRIPTS_SUPPORTED = new RawContextKey<boolean>('loadedScriptsSupported', false);
-export const CONTEXT_LOADED_SCRIPTS_ITEM_TYPE = new RawContextKey<string>('loadedScriptsItemType', undefined);
-export const CONTEXT_FOCUSED_SESSION_IS_ATTACH = new RawContextKey<boolean>('focusedSessionIsAttach', false);
-export const CONTEXT_STEP_BACK_SUPPORTED = new RawContextKey<boolean>('stepBackSupported', false);
-export const CONTEXT_RESTART_FRAME_SUPPORTED = new RawContextKey<boolean>('restartFrameSupported', false);
-export const CONTEXT_JUMP_TO_CURSOR_SUPPORTED = new RawContextKey<boolean>('jumpToCursorSupported', false);
-export const CONTEXT_STEP_INTO_TARGETS_SUPPORTED = new RawContextKey<boolean>('stepIntoTargetsSupported', false);
-export const CONTEXT_BREAKPOINTS_EXIST = new RawContextKey<boolean>('breakpointsExist', false);
-export const CONTEXT_DEBUGGERS_AVAILABLE = new RawContextKey<boolean>('debuggersAvailable', false);
-export const CONTEXT_DEBUG_PROTOCOL_VARIABLE_MENU_CONTEXT = new RawContextKey<string>('debugProtocolVariableMenuContext', undefined);
-export const CONTEXT_SET_VARIABLE_SUPPORTED = new RawContextKey<boolean>('debugSetVariableSupported', false);
-export const CONTEXT_BREAK_WHEN_VALUE_CHANGES_SUPPORTED = new RawContextKey<boolean>('breakWhenValueChangesSupported', false);
-export const CONTEXT_VARIABLE_EVALUATE_NAME_PRESENT = new RawContextKey<boolean>('variableEvaluateNamePresent', false);
+export const CONTEXT_DEBUG_UX = new RAwContextKey<string>(CONTEXT_DEBUG_UX_KEY, 'defAult');
+export const CONTEXT_IN_DEBUG_MODE = new RAwContextKey<booleAn>('inDebugMode', fAlse);
+export const CONTEXT_IN_DEBUG_REPL = new RAwContextKey<booleAn>('inDebugRepl', fAlse);
+export const CONTEXT_BREAKPOINT_WIDGET_VISIBLE = new RAwContextKey<booleAn>('breAkpointWidgetVisible', fAlse);
+export const CONTEXT_IN_BREAKPOINT_WIDGET = new RAwContextKey<booleAn>('inBreAkpointWidget', fAlse);
+export const CONTEXT_BREAKPOINTS_FOCUSED = new RAwContextKey<booleAn>('breAkpointsFocused', true);
+export const CONTEXT_WATCH_EXPRESSIONS_FOCUSED = new RAwContextKey<booleAn>('wAtchExpressionsFocused', true);
+export const CONTEXT_VARIABLES_FOCUSED = new RAwContextKey<booleAn>('vAriAblesFocused', true);
+export const CONTEXT_EXPRESSION_SELECTED = new RAwContextKey<booleAn>('expressionSelected', fAlse);
+export const CONTEXT_BREAKPOINT_SELECTED = new RAwContextKey<booleAn>('breAkpointSelected', fAlse);
+export const CONTEXT_CALLSTACK_ITEM_TYPE = new RAwContextKey<string>('cAllStAckItemType', undefined);
+export const CONTEXT_LOADED_SCRIPTS_SUPPORTED = new RAwContextKey<booleAn>('loAdedScriptsSupported', fAlse);
+export const CONTEXT_LOADED_SCRIPTS_ITEM_TYPE = new RAwContextKey<string>('loAdedScriptsItemType', undefined);
+export const CONTEXT_FOCUSED_SESSION_IS_ATTACH = new RAwContextKey<booleAn>('focusedSessionIsAttAch', fAlse);
+export const CONTEXT_STEP_BACK_SUPPORTED = new RAwContextKey<booleAn>('stepBAckSupported', fAlse);
+export const CONTEXT_RESTART_FRAME_SUPPORTED = new RAwContextKey<booleAn>('restArtFrAmeSupported', fAlse);
+export const CONTEXT_JUMP_TO_CURSOR_SUPPORTED = new RAwContextKey<booleAn>('jumpToCursorSupported', fAlse);
+export const CONTEXT_STEP_INTO_TARGETS_SUPPORTED = new RAwContextKey<booleAn>('stepIntoTArgetsSupported', fAlse);
+export const CONTEXT_BREAKPOINTS_EXIST = new RAwContextKey<booleAn>('breAkpointsExist', fAlse);
+export const CONTEXT_DEBUGGERS_AVAILABLE = new RAwContextKey<booleAn>('debuggersAvAilAble', fAlse);
+export const CONTEXT_DEBUG_PROTOCOL_VARIABLE_MENU_CONTEXT = new RAwContextKey<string>('debugProtocolVAriAbleMenuContext', undefined);
+export const CONTEXT_SET_VARIABLE_SUPPORTED = new RAwContextKey<booleAn>('debugSetVAriAbleSupported', fAlse);
+export const CONTEXT_BREAK_WHEN_VALUE_CHANGES_SUPPORTED = new RAwContextKey<booleAn>('breAkWhenVAlueChAngesSupported', fAlse);
+export const CONTEXT_VARIABLE_EVALUATE_NAME_PRESENT = new RAwContextKey<booleAn>('vAriAbleEvAluAteNAmePresent', fAlse);
 
 export const EDITOR_CONTRIBUTION_ID = 'editor.contrib.debug';
-export const BREAKPOINT_EDITOR_CONTRIBUTION_ID = 'editor.contrib.breakpoint';
+export const BREAKPOINT_EDITOR_CONTRIBUTION_ID = 'editor.contrib.breAkpoint';
 export const DEBUG_SCHEME = 'debug';
 export const INTERNAL_CONSOLE_OPTIONS_SCHEMA = {
-	enum: ['neverOpen', 'openOnSessionStart', 'openOnFirstSessionStart'],
-	default: 'openOnFirstSessionStart',
-	description: nls.localize('internalConsoleOptions', "Controls when the internal debug console should open.")
+	enum: ['neverOpen', 'openOnSessionStArt', 'openOnFirstSessionStArt'],
+	defAult: 'openOnFirstSessionStArt',
+	description: nls.locAlize('internAlConsoleOptions', "Controls when the internAl debug console should open.")
 };
 
-// raw
+// rAw
 
-export interface IRawModelUpdate {
+export interfAce IRAwModelUpdAte {
 	sessionId: string;
-	threads: DebugProtocol.Thread[];
-	stoppedDetails?: IRawStoppedDetails;
+	threAds: DebugProtocol.ThreAd[];
+	stoppedDetAils?: IRAwStoppedDetAils;
 }
 
-export interface IRawStoppedDetails {
-	reason?: string;
+export interfAce IRAwStoppedDetAils {
+	reAson?: string;
 	description?: string;
-	threadId?: number;
+	threAdId?: number;
 	text?: string;
-	totalFrames?: number;
-	allThreadsStopped?: boolean;
-	framesErrorMessage?: string;
+	totAlFrAmes?: number;
+	AllThreAdsStopped?: booleAn;
+	frAmesErrorMessAge?: string;
 }
 
 // model
 
-export interface ITreeElement {
+export interfAce ITreeElement {
 	getId(): string;
 }
 
-export interface IReplElement extends ITreeElement {
+export interfAce IReplElement extends ITreeElement {
 	toString(): string;
-	readonly sourceData?: IReplElementSource;
+	reAdonly sourceDAtA?: IReplElementSource;
 }
 
-export interface IReplElementSource {
-	readonly source: Source;
-	readonly lineNumber: number;
-	readonly column: number;
+export interfAce IReplElementSource {
+	reAdonly source: Source;
+	reAdonly lineNumber: number;
+	reAdonly column: number;
 }
 
-export interface IExpressionContainer extends ITreeElement {
-	readonly hasChildren: boolean;
+export interfAce IExpressionContAiner extends ITreeElement {
+	reAdonly hAsChildren: booleAn;
 	getChildren(): Promise<IExpression[]>;
-	readonly reference?: number;
-	readonly value: string;
-	readonly type?: string;
-	valueChanged?: boolean;
+	reAdonly reference?: number;
+	reAdonly vAlue: string;
+	reAdonly type?: string;
+	vAlueChAnged?: booleAn;
 }
 
-export interface IExpression extends IExpressionContainer {
-	name: string;
+export interfAce IExpression extends IExpressionContAiner {
+	nAme: string;
 }
 
-export interface IDebugger {
-	createDebugAdapter(session: IDebugSession): Promise<IDebugAdapter>;
-	runInTerminal(args: DebugProtocol.RunInTerminalRequestArguments): Promise<number | undefined>;
+export interfAce IDebugger {
+	creAteDebugAdApter(session: IDebugSession): Promise<IDebugAdApter>;
+	runInTerminAl(Args: DebugProtocol.RunInTerminAlRequestArguments): Promise<number | undefined>;
 	getCustomTelemetryService(): Promise<TelemetryService | undefined>;
 }
 
-export const enum State {
-	Inactive,
-	Initializing,
+export const enum StAte {
+	InActive,
+	InitiAlizing,
 	Stopped,
 	Running
 }
 
-export function getStateLabel(state: State): string {
-	switch (state) {
-		case State.Initializing: return 'initializing';
-		case State.Stopped: return 'stopped';
-		case State.Running: return 'running';
-		default: return 'inactive';
+export function getStAteLAbel(stAte: StAte): string {
+	switch (stAte) {
+		cAse StAte.InitiAlizing: return 'initiAlizing';
+		cAse StAte.Stopped: return 'stopped';
+		cAse StAte.Running: return 'running';
+		defAult: return 'inActive';
 	}
 }
 
-export interface AdapterEndEvent {
+export interfAce AdApterEndEvent {
 	error?: Error;
 	sessionLengthInSeconds: number;
-	emittedStopped: boolean;
+	emittedStopped: booleAn;
 }
 
-export interface LoadedSourceEvent {
-	reason: 'new' | 'changed' | 'removed';
+export interfAce LoAdedSourceEvent {
+	reAson: 'new' | 'chAnged' | 'removed';
 	source: Source;
 }
 
-export type IDebugSessionReplMode = 'separate' | 'mergeWithParent';
+export type IDebugSessionReplMode = 'sepArAte' | 'mergeWithPArent';
 
-export interface IDebugSessionOptions {
-	noDebug?: boolean;
-	parentSession?: IDebugSession;
+export interfAce IDebugSessionOptions {
+	noDebug?: booleAn;
+	pArentSession?: IDebugSession;
 	repl?: IDebugSessionReplMode;
 	compoundRoot?: DebugCompoundRoot;
-	compact?: boolean;
+	compAct?: booleAn;
 }
 
-export interface IDataBreakpointInfoResponse {
-	dataId: string | null;
+export interfAce IDAtABreAkpointInfoResponse {
+	dAtAId: string | null;
 	description: string;
-	canPersist?: boolean,
-	accessTypes?: DebugProtocol.DataBreakpointAccessType[];
+	cAnPersist?: booleAn,
+	AccessTypes?: DebugProtocol.DAtABreAkpointAccessType[];
 }
 
-export interface IDebugSession extends ITreeElement {
+export interfAce IDebugSession extends ITreeElement {
 
-	readonly configuration: IConfig;
-	readonly unresolvedConfiguration: IConfig | undefined;
-	readonly state: State;
-	readonly root: IWorkspaceFolder | undefined;
-	readonly parentSession: IDebugSession | undefined;
-	readonly subId: string | undefined;
-	readonly compact: boolean;
-	readonly compoundRoot: DebugCompoundRoot | undefined;
+	reAdonly configurAtion: IConfig;
+	reAdonly unresolvedConfigurAtion: IConfig | undefined;
+	reAdonly stAte: StAte;
+	reAdonly root: IWorkspAceFolder | undefined;
+	reAdonly pArentSession: IDebugSession | undefined;
+	reAdonly subId: string | undefined;
+	reAdonly compAct: booleAn;
+	reAdonly compoundRoot: DebugCompoundRoot | undefined;
 
 	setSubId(subId: string | undefined): void;
 
-	setName(name: string): void;
-	readonly onDidChangeName: Event<string>;
-	getLabel(): string;
+	setNAme(nAme: string): void;
+	reAdonly onDidChAngeNAme: Event<string>;
+	getLAbel(): string;
 
 	getSourceForUri(modelUri: uri): Source | undefined;
-	getSource(raw?: DebugProtocol.Source): Source;
+	getSource(rAw?: DebugProtocol.Source): Source;
 
-	setConfiguration(configuration: { resolved: IConfig, unresolved: IConfig | undefined }): void;
-	rawUpdate(data: IRawModelUpdate): void;
+	setConfigurAtion(configurAtion: { resolved: IConfig, unresolved: IConfig | undefined }): void;
+	rAwUpdAte(dAtA: IRAwModelUpdAte): void;
 
-	getThread(threadId: number): IThread | undefined;
-	getAllThreads(): IThread[];
-	clearThreads(removeThreads: boolean, reference?: number): void;
+	getThreAd(threAdId: number): IThreAd | undefined;
+	getAllThreAds(): IThreAd[];
+	cleArThreAds(removeThreAds: booleAn, reference?: number): void;
 
 	getReplElements(): IReplElement[];
-	hasSeparateRepl(): boolean;
+	hAsSepArAteRepl(): booleAn;
 	removeReplExpressions(): void;
-	addReplExpression(stackFrame: IStackFrame | undefined, name: string): Promise<void>;
-	appendToRepl(data: string | IExpression, severity: severity, source?: IReplElementSource): void;
-	logToRepl(sev: severity, args: any[], frame?: { uri: uri, line: number, column: number }): void;
+	AddReplExpression(stAckFrAme: IStAckFrAme | undefined, nAme: string): Promise<void>;
+	AppendToRepl(dAtA: string | IExpression, severity: severity, source?: IReplElementSource): void;
+	logToRepl(sev: severity, Args: Any[], frAme?: { uri: uri, line: number, column: number }): void;
 
 	// session events
-	readonly onDidEndAdapter: Event<AdapterEndEvent | undefined>;
-	readonly onDidChangeState: Event<void>;
-	readonly onDidChangeReplElements: Event<void>;
+	reAdonly onDidEndAdApter: Event<AdApterEndEvent | undefined>;
+	reAdonly onDidChAngeStAte: Event<void>;
+	reAdonly onDidChAngeReplElements: Event<void>;
 
-	// DA capabilities
-	readonly capabilities: DebugProtocol.Capabilities;
+	// DA cApAbilities
+	reAdonly cApAbilities: DebugProtocol.CApAbilities;
 
 	// DAP events
 
-	readonly onDidLoadedSource: Event<LoadedSourceEvent>;
-	readonly onDidCustomEvent: Event<DebugProtocol.Event>;
-	readonly onDidProgressStart: Event<DebugProtocol.ProgressStartEvent>;
-	readonly onDidProgressUpdate: Event<DebugProtocol.ProgressUpdateEvent>;
-	readonly onDidProgressEnd: Event<DebugProtocol.ProgressEndEvent>;
+	reAdonly onDidLoAdedSource: Event<LoAdedSourceEvent>;
+	reAdonly onDidCustomEvent: Event<DebugProtocol.Event>;
+	reAdonly onDidProgressStArt: Event<DebugProtocol.ProgressStArtEvent>;
+	reAdonly onDidProgressUpdAte: Event<DebugProtocol.ProgressUpdAteEvent>;
+	reAdonly onDidProgressEnd: Event<DebugProtocol.ProgressEndEvent>;
 
 	// DAP request
 
-	initialize(dbgr: IDebugger): Promise<void>;
-	launchOrAttach(config: IConfig): Promise<void>;
-	restart(): Promise<void>;
-	terminate(restart?: boolean /* false */): Promise<void>;
-	disconnect(restart?: boolean /* false */): Promise<void>;
+	initiAlize(dbgr: IDebugger): Promise<void>;
+	lAunchOrAttAch(config: IConfig): Promise<void>;
+	restArt(): Promise<void>;
+	terminAte(restArt?: booleAn /* fAlse */): Promise<void>;
+	disconnect(restArt?: booleAn /* fAlse */): Promise<void>;
 
-	sendBreakpoints(modelUri: uri, bpts: IBreakpoint[], sourceModified: boolean): Promise<void>;
-	sendFunctionBreakpoints(fbps: IFunctionBreakpoint[]): Promise<void>;
-	dataBreakpointInfo(name: string, variablesReference?: number): Promise<IDataBreakpointInfoResponse | undefined>;
-	sendDataBreakpoints(dbps: IDataBreakpoint[]): Promise<void>;
-	sendExceptionBreakpoints(exbpts: IExceptionBreakpoint[]): Promise<void>;
-	breakpointsLocations(uri: uri, lineNumber: number): Promise<IPosition[]>;
-	getDebugProtocolBreakpoint(breakpointId: string): DebugProtocol.Breakpoint | undefined;
+	sendBreAkpoints(modelUri: uri, bpts: IBreAkpoint[], sourceModified: booleAn): Promise<void>;
+	sendFunctionBreAkpoints(fbps: IFunctionBreAkpoint[]): Promise<void>;
+	dAtABreAkpointInfo(nAme: string, vAriAblesReference?: number): Promise<IDAtABreAkpointInfoResponse | undefined>;
+	sendDAtABreAkpoints(dbps: IDAtABreAkpoint[]): Promise<void>;
+	sendExceptionBreAkpoints(exbpts: IExceptionBreAkpoint[]): Promise<void>;
+	breAkpointsLocAtions(uri: uri, lineNumber: number): Promise<IPosition[]>;
+	getDebugProtocolBreAkpoint(breAkpointId: string): DebugProtocol.BreAkpoint | undefined;
 
-	stackTrace(threadId: number, startFrame: number, levels: number, token: CancellationToken): Promise<DebugProtocol.StackTraceResponse | undefined>;
-	exceptionInfo(threadId: number): Promise<IExceptionInfo | undefined>;
-	scopes(frameId: number, threadId: number): Promise<DebugProtocol.ScopesResponse | undefined>;
-	variables(variablesReference: number, threadId: number | undefined, filter: 'indexed' | 'named' | undefined, start: number | undefined, count: number | undefined): Promise<DebugProtocol.VariablesResponse | undefined>;
-	evaluate(expression: string, frameId?: number, context?: string): Promise<DebugProtocol.EvaluateResponse | undefined>;
-	customRequest(request: string, args: any): Promise<DebugProtocol.Response | undefined>;
-	cancel(progressId: string): Promise<DebugProtocol.CancelResponse | undefined>;
+	stAckTrAce(threAdId: number, stArtFrAme: number, levels: number, token: CAncellAtionToken): Promise<DebugProtocol.StAckTrAceResponse | undefined>;
+	exceptionInfo(threAdId: number): Promise<IExceptionInfo | undefined>;
+	scopes(frAmeId: number, threAdId: number): Promise<DebugProtocol.ScopesResponse | undefined>;
+	vAriAbles(vAriAblesReference: number, threAdId: number | undefined, filter: 'indexed' | 'nAmed' | undefined, stArt: number | undefined, count: number | undefined): Promise<DebugProtocol.VAriAblesResponse | undefined>;
+	evAluAte(expression: string, frAmeId?: number, context?: string): Promise<DebugProtocol.EvAluAteResponse | undefined>;
+	customRequest(request: string, Args: Any): Promise<DebugProtocol.Response | undefined>;
+	cAncel(progressId: string): Promise<DebugProtocol.CAncelResponse | undefined>;
 
-	restartFrame(frameId: number, threadId: number): Promise<void>;
-	next(threadId: number): Promise<void>;
-	stepIn(threadId: number, targetId?: number): Promise<void>;
-	stepInTargets(frameId: number): Promise<{ id: number, label: string }[] | undefined>;
-	stepOut(threadId: number): Promise<void>;
-	stepBack(threadId: number): Promise<void>;
-	continue(threadId: number): Promise<void>;
-	reverseContinue(threadId: number): Promise<void>;
-	pause(threadId: number): Promise<void>;
-	terminateThreads(threadIds: number[]): Promise<void>;
+	restArtFrAme(frAmeId: number, threAdId: number): Promise<void>;
+	next(threAdId: number): Promise<void>;
+	stepIn(threAdId: number, tArgetId?: number): Promise<void>;
+	stepInTArgets(frAmeId: number): Promise<{ id: number, lAbel: string }[] | undefined>;
+	stepOut(threAdId: number): Promise<void>;
+	stepBAck(threAdId: number): Promise<void>;
+	continue(threAdId: number): Promise<void>;
+	reverseContinue(threAdId: number): Promise<void>;
+	pAuse(threAdId: number): Promise<void>;
+	terminAteThreAds(threAdIds: number[]): Promise<void>;
 
-	completions(frameId: number | undefined, threadId: number, text: string, position: Position, overwriteBefore: number, token: CancellationToken): Promise<DebugProtocol.CompletionsResponse | undefined>;
-	setVariable(variablesReference: number | undefined, name: string, value: string): Promise<DebugProtocol.SetVariableResponse | undefined>;
-	loadSource(resource: uri): Promise<DebugProtocol.SourceResponse | undefined>;
-	getLoadedSources(): Promise<Source[]>;
+	completions(frAmeId: number | undefined, threAdId: number, text: string, position: Position, overwriteBefore: number, token: CAncellAtionToken): Promise<DebugProtocol.CompletionsResponse | undefined>;
+	setVAriAble(vAriAblesReference: number | undefined, nAme: string, vAlue: string): Promise<DebugProtocol.SetVAriAbleResponse | undefined>;
+	loAdSource(resource: uri): Promise<DebugProtocol.SourceResponse | undefined>;
+	getLoAdedSources(): Promise<Source[]>;
 
-	gotoTargets(source: DebugProtocol.Source, line: number, column?: number): Promise<DebugProtocol.GotoTargetsResponse | undefined>;
-	goto(threadId: number, targetId: number): Promise<DebugProtocol.GotoResponse | undefined>;
+	gotoTArgets(source: DebugProtocol.Source, line: number, column?: number): Promise<DebugProtocol.GotoTArgetsResponse | undefined>;
+	goto(threAdId: number, tArgetId: number): Promise<DebugProtocol.GotoResponse | undefined>;
 }
 
-export interface IThread extends ITreeElement {
+export interfAce IThreAd extends ITreeElement {
 
 	/**
-	 * Process the thread belongs to
+	 * Process the threAd belongs to
 	 */
-	readonly session: IDebugSession;
+	reAdonly session: IDebugSession;
 
 	/**
-	 * Id of the thread generated by the debug adapter backend.
+	 * Id of the threAd generAted by the debug AdApter bAckend.
 	 */
-	readonly threadId: number;
+	reAdonly threAdId: number;
 
 	/**
-	 * Name of the thread.
+	 * NAme of the threAd.
 	 */
-	readonly name: string;
+	reAdonly nAme: string;
 
 	/**
-	 * Information about the current thread stop event. Undefined if thread is not stopped.
+	 * InformAtion About the current threAd stop event. Undefined if threAd is not stopped.
 	 */
-	readonly stoppedDetails: IRawStoppedDetails | undefined;
+	reAdonly stoppedDetAils: IRAwStoppedDetAils | undefined;
 
 	/**
-	 * Information about the exception if an 'exception' stopped event raised and DA supports the 'exceptionInfo' request, otherwise undefined.
+	 * InformAtion About the exception if An 'exception' stopped event rAised And DA supports the 'exceptionInfo' request, otherwise undefined.
 	 */
-	readonly exceptionInfo: Promise<IExceptionInfo | undefined>;
+	reAdonly exceptionInfo: Promise<IExceptionInfo | undefined>;
 
-	readonly stateLabel: string;
+	reAdonly stAteLAbel: string;
 
 	/**
-	 * Gets the callstack if it has already been received from the debug
-	 * adapter.
+	 * Gets the cAllstAck if it hAs AlreAdy been received from the debug
+	 * AdApter.
 	 */
-	getCallStack(): ReadonlyArray<IStackFrame>;
+	getCAllStAck(): ReAdonlyArrAy<IStAckFrAme>;
 
 
 	/**
-	 * Gets the top stack frame that is not hidden if the callstack has already been received from the debug adapter
+	 * Gets the top stAck frAme thAt is not hidden if the cAllstAck hAs AlreAdy been received from the debug AdApter
 	 */
-	getTopStackFrame(): IStackFrame | undefined;
+	getTopStAckFrAme(): IStAckFrAme | undefined;
 
 	/**
-	 * Invalidates the callstack cache
+	 * InvAlidAtes the cAllstAck cAche
 	 */
-	clearCallStack(): void;
+	cleArCAllStAck(): void;
 
 	/**
-	 * Indicates whether this thread is stopped. The callstack for stopped
-	 * threads can be retrieved from the debug adapter.
+	 * IndicAtes whether this threAd is stopped. The cAllstAck for stopped
+	 * threAds cAn be retrieved from the debug AdApter.
 	 */
-	readonly stopped: boolean;
+	reAdonly stopped: booleAn;
 
-	next(): Promise<any>;
-	stepIn(): Promise<any>;
-	stepOut(): Promise<any>;
-	stepBack(): Promise<any>;
-	continue(): Promise<any>;
-	pause(): Promise<any>;
-	terminate(): Promise<any>;
-	reverseContinue(): Promise<any>;
+	next(): Promise<Any>;
+	stepIn(): Promise<Any>;
+	stepOut(): Promise<Any>;
+	stepBAck(): Promise<Any>;
+	continue(): Promise<Any>;
+	pAuse(): Promise<Any>;
+	terminAte(): Promise<Any>;
+	reverseContinue(): Promise<Any>;
 }
 
-export interface IScope extends IExpressionContainer {
-	readonly name: string;
-	readonly expensive: boolean;
-	readonly range?: IRange;
-	readonly hasChildren: boolean;
+export interfAce IScope extends IExpressionContAiner {
+	reAdonly nAme: string;
+	reAdonly expensive: booleAn;
+	reAdonly rAnge?: IRAnge;
+	reAdonly hAsChildren: booleAn;
 }
 
-export interface IStackFrame extends ITreeElement {
-	readonly thread: IThread;
-	readonly name: string;
-	readonly presentationHint: string | undefined;
-	readonly frameId: number;
-	readonly range: IRange;
-	readonly source: Source;
+export interfAce IStAckFrAme extends ITreeElement {
+	reAdonly threAd: IThreAd;
+	reAdonly nAme: string;
+	reAdonly presentAtionHint: string | undefined;
+	reAdonly frAmeId: number;
+	reAdonly rAnge: IRAnge;
+	reAdonly source: Source;
 	getScopes(): Promise<IScope[]>;
-	getMostSpecificScopes(range: IRange): Promise<ReadonlyArray<IScope>>;
+	getMostSpecificScopes(rAnge: IRAnge): Promise<ReAdonlyArrAy<IScope>>;
 	forgetScopes(): void;
-	restart(): Promise<any>;
+	restArt(): Promise<Any>;
 	toString(): string;
-	openInEditor(editorService: IEditorService, preserveFocus?: boolean, sideBySide?: boolean): Promise<ITextEditorPane | undefined>;
-	equals(other: IStackFrame): boolean;
+	openInEditor(editorService: IEditorService, preserveFocus?: booleAn, sideBySide?: booleAn): Promise<ITextEditorPAne | undefined>;
+	equAls(other: IStAckFrAme): booleAn;
 }
 
-export interface IEnablement extends ITreeElement {
-	readonly enabled: boolean;
+export interfAce IEnAblement extends ITreeElement {
+	reAdonly enAbled: booleAn;
 }
 
-export interface IBreakpointData {
-	readonly id?: string;
-	readonly lineNumber: number;
-	readonly column?: number;
-	readonly enabled?: boolean;
-	readonly condition?: string;
-	readonly logMessage?: string;
-	readonly hitCondition?: string;
+export interfAce IBreAkpointDAtA {
+	reAdonly id?: string;
+	reAdonly lineNumber: number;
+	reAdonly column?: number;
+	reAdonly enAbled?: booleAn;
+	reAdonly condition?: string;
+	reAdonly logMessAge?: string;
+	reAdonly hitCondition?: string;
 }
 
-export interface IBreakpointUpdateData {
-	readonly condition?: string;
-	readonly hitCondition?: string;
-	readonly logMessage?: string;
-	readonly lineNumber?: number;
-	readonly column?: number;
+export interfAce IBreAkpointUpdAteDAtA {
+	reAdonly condition?: string;
+	reAdonly hitCondition?: string;
+	reAdonly logMessAge?: string;
+	reAdonly lineNumber?: number;
+	reAdonly column?: number;
 }
 
-export interface IBaseBreakpoint extends IEnablement {
-	readonly condition?: string;
-	readonly hitCondition?: string;
-	readonly logMessage?: string;
-	readonly verified: boolean;
-	readonly supported: boolean;
-	getIdFromAdapter(sessionId: string): number | undefined;
+export interfAce IBAseBreAkpoint extends IEnAblement {
+	reAdonly condition?: string;
+	reAdonly hitCondition?: string;
+	reAdonly logMessAge?: string;
+	reAdonly verified: booleAn;
+	reAdonly supported: booleAn;
+	getIdFromAdApter(sessionId: string): number | undefined;
 }
 
-export interface IBreakpoint extends IBaseBreakpoint {
-	readonly uri: uri;
-	readonly lineNumber: number;
-	readonly endLineNumber?: number;
-	readonly column?: number;
-	readonly endColumn?: number;
-	readonly message?: string;
-	readonly adapterData: any;
-	readonly sessionAgnosticData: { lineNumber: number, column: number | undefined };
+export interfAce IBreAkpoint extends IBAseBreAkpoint {
+	reAdonly uri: uri;
+	reAdonly lineNumber: number;
+	reAdonly endLineNumber?: number;
+	reAdonly column?: number;
+	reAdonly endColumn?: number;
+	reAdonly messAge?: string;
+	reAdonly AdApterDAtA: Any;
+	reAdonly sessionAgnosticDAtA: { lineNumber: number, column: number | undefined };
 }
 
-export interface IFunctionBreakpoint extends IBaseBreakpoint {
-	readonly name: string;
+export interfAce IFunctionBreAkpoint extends IBAseBreAkpoint {
+	reAdonly nAme: string;
 }
 
-export interface IExceptionBreakpoint extends IEnablement {
-	readonly filter: string;
-	readonly label: string;
+export interfAce IExceptionBreAkpoint extends IEnAblement {
+	reAdonly filter: string;
+	reAdonly lAbel: string;
 }
 
-export interface IDataBreakpoint extends IBaseBreakpoint {
-	readonly description: string;
-	readonly dataId: string;
-	readonly canPersist: boolean;
+export interfAce IDAtABreAkpoint extends IBAseBreAkpoint {
+	reAdonly description: string;
+	reAdonly dAtAId: string;
+	reAdonly cAnPersist: booleAn;
 }
 
-export interface IExceptionInfo {
-	readonly id?: string;
-	readonly description?: string;
-	readonly breakMode: string | null;
-	readonly details?: DebugProtocol.ExceptionDetails;
+export interfAce IExceptionInfo {
+	reAdonly id?: string;
+	reAdonly description?: string;
+	reAdonly breAkMode: string | null;
+	reAdonly detAils?: DebugProtocol.ExceptionDetAils;
 }
 
-// model interfaces
+// model interfAces
 
-export interface IViewModel extends ITreeElement {
+export interfAce IViewModel extends ITreeElement {
 	/**
 	 * Returns the focused debug session or undefined if no session is stopped.
 	 */
-	readonly focusedSession: IDebugSession | undefined;
+	reAdonly focusedSession: IDebugSession | undefined;
 
 	/**
-	 * Returns the focused thread or undefined if no thread is stopped.
+	 * Returns the focused threAd or undefined if no threAd is stopped.
 	 */
-	readonly focusedThread: IThread | undefined;
+	reAdonly focusedThreAd: IThreAd | undefined;
 
 	/**
-	 * Returns the focused stack frame or undefined if there are no stack frames.
+	 * Returns the focused stAck frAme or undefined if there Are no stAck frAmes.
 	 */
-	readonly focusedStackFrame: IStackFrame | undefined;
+	reAdonly focusedStAckFrAme: IStAckFrAme | undefined;
 
 	getSelectedExpression(): IExpression | undefined;
-	getSelectedFunctionBreakpoint(): IFunctionBreakpoint | undefined;
+	getSelectedFunctionBreAkpoint(): IFunctionBreAkpoint | undefined;
 	setSelectedExpression(expression: IExpression | undefined): void;
-	setSelectedFunctionBreakpoint(functionBreakpoint: IFunctionBreakpoint | undefined): void;
-	updateViews(): void;
+	setSelectedFunctionBreAkpoint(functionBreAkpoint: IFunctionBreAkpoint | undefined): void;
+	updAteViews(): void;
 
-	isMultiSessionView(): boolean;
+	isMultiSessionView(): booleAn;
 
 	onDidFocusSession: Event<IDebugSession | undefined>;
-	onDidFocusStackFrame: Event<{ stackFrame: IStackFrame | undefined, explicit: boolean }>;
+	onDidFocusStAckFrAme: Event<{ stAckFrAme: IStAckFrAme | undefined, explicit: booleAn }>;
 	onDidSelectExpression: Event<IExpression | undefined>;
-	onWillUpdateViews: Event<void>;
+	onWillUpdAteViews: Event<void>;
 }
 
-export interface IEvaluate {
-	evaluate(session: IDebugSession, stackFrame: IStackFrame, context: string): Promise<void>;
+export interfAce IEvAluAte {
+	evAluAte(session: IDebugSession, stAckFrAme: IStAckFrAme, context: string): Promise<void>;
 }
 
-export interface IDebugModel extends ITreeElement {
-	getSession(sessionId: string | undefined, includeInactive?: boolean): IDebugSession | undefined;
-	getSessions(includeInactive?: boolean): IDebugSession[];
-	getBreakpoints(filter?: { uri?: uri, lineNumber?: number, column?: number, enabledOnly?: boolean }): ReadonlyArray<IBreakpoint>;
-	areBreakpointsActivated(): boolean;
-	getFunctionBreakpoints(): ReadonlyArray<IFunctionBreakpoint>;
-	getDataBreakpoints(): ReadonlyArray<IDataBreakpoint>;
-	getExceptionBreakpoints(): ReadonlyArray<IExceptionBreakpoint>;
-	getWatchExpressions(): ReadonlyArray<IExpression & IEvaluate>;
+export interfAce IDebugModel extends ITreeElement {
+	getSession(sessionId: string | undefined, includeInActive?: booleAn): IDebugSession | undefined;
+	getSessions(includeInActive?: booleAn): IDebugSession[];
+	getBreAkpoints(filter?: { uri?: uri, lineNumber?: number, column?: number, enAbledOnly?: booleAn }): ReAdonlyArrAy<IBreAkpoint>;
+	AreBreAkpointsActivAted(): booleAn;
+	getFunctionBreAkpoints(): ReAdonlyArrAy<IFunctionBreAkpoint>;
+	getDAtABreAkpoints(): ReAdonlyArrAy<IDAtABreAkpoint>;
+	getExceptionBreAkpoints(): ReAdonlyArrAy<IExceptionBreAkpoint>;
+	getWAtchExpressions(): ReAdonlyArrAy<IExpression & IEvAluAte>;
 
-	onDidChangeBreakpoints: Event<IBreakpointsChangeEvent | undefined>;
-	onDidChangeCallStack: Event<void>;
-	onDidChangeWatchExpressions: Event<IExpression | undefined>;
+	onDidChAngeBreAkpoints: Event<IBreAkpointsChAngeEvent | undefined>;
+	onDidChAngeCAllStAck: Event<void>;
+	onDidChAngeWAtchExpressions: Event<IExpression | undefined>;
 }
 
 /**
- * An event describing a change to the set of [breakpoints](#debug.Breakpoint).
+ * An event describing A chAnge to the set of [breAkpoints](#debug.BreAkpoint).
  */
-export interface IBreakpointsChangeEvent {
-	added?: Array<IBreakpoint | IFunctionBreakpoint | IDataBreakpoint>;
-	removed?: Array<IBreakpoint | IFunctionBreakpoint | IDataBreakpoint>;
-	changed?: Array<IBreakpoint | IFunctionBreakpoint | IDataBreakpoint>;
-	sessionOnly: boolean;
+export interfAce IBreAkpointsChAngeEvent {
+	Added?: ArrAy<IBreAkpoint | IFunctionBreAkpoint | IDAtABreAkpoint>;
+	removed?: ArrAy<IBreAkpoint | IFunctionBreAkpoint | IDAtABreAkpoint>;
+	chAnged?: ArrAy<IBreAkpoint | IFunctionBreAkpoint | IDAtABreAkpoint>;
+	sessionOnly: booleAn;
 }
 
-// Debug configuration interfaces
+// Debug configurAtion interfAces
 
-export interface IDebugConfiguration {
-	allowBreakpointsEverywhere: boolean;
-	openDebug: 'neverOpen' | 'openOnSessionStart' | 'openOnFirstSessionStart' | 'openOnDebugBreak';
-	openExplorerOnEnd: boolean;
-	inlineValues: boolean;
-	toolBarLocation: 'floating' | 'docked' | 'hidden';
-	showInStatusBar: 'never' | 'always' | 'onFirstSessionStart';
-	internalConsoleOptions: 'neverOpen' | 'openOnSessionStart' | 'openOnFirstSessionStart';
-	extensionHostDebugAdapter: boolean;
-	enableAllHovers: boolean;
-	showSubSessionsInToolBar: boolean;
+export interfAce IDebugConfigurAtion {
+	AllowBreAkpointsEverywhere: booleAn;
+	openDebug: 'neverOpen' | 'openOnSessionStArt' | 'openOnFirstSessionStArt' | 'openOnDebugBreAk';
+	openExplorerOnEnd: booleAn;
+	inlineVAlues: booleAn;
+	toolBArLocAtion: 'floAting' | 'docked' | 'hidden';
+	showInStAtusBAr: 'never' | 'AlwAys' | 'onFirstSessionStArt';
+	internAlConsoleOptions: 'neverOpen' | 'openOnSessionStArt' | 'openOnFirstSessionStArt';
+	extensionHostDebugAdApter: booleAn;
+	enAbleAllHovers: booleAn;
+	showSubSessionsInToolBAr: booleAn;
 	console: {
 		fontSize: number;
-		fontFamily: string;
+		fontFAmily: string;
 		lineHeight: number;
-		wordWrap: boolean;
-		closeOnEnd: boolean;
-		historySuggestions: boolean;
+		wordWrAp: booleAn;
+		closeOnEnd: booleAn;
+		historySuggestions: booleAn;
 	};
-	focusWindowOnBreak: boolean;
-	onTaskErrors: 'debugAnyway' | 'showErrors' | 'prompt' | 'abort';
-	showBreakpointsInOverviewRuler: boolean;
-	showInlineBreakpointCandidates: boolean;
+	focusWindowOnBreAk: booleAn;
+	onTAskErrors: 'debugAnywAy' | 'showErrors' | 'prompt' | 'Abort';
+	showBreAkpointsInOverviewRuler: booleAn;
+	showInlineBreAkpointCAndidAtes: booleAn;
 }
 
-export interface IGlobalConfig {
+export interfAce IGlobAlConfig {
 	version: string;
 	compounds: ICompound[];
-	configurations: IConfig[];
+	configurAtions: IConfig[];
 }
 
-export interface IEnvConfig {
-	internalConsoleOptions?: 'neverOpen' | 'openOnSessionStart' | 'openOnFirstSessionStart';
-	preRestartTask?: string | TaskIdentifier;
-	postRestartTask?: string | TaskIdentifier;
-	preLaunchTask?: string | TaskIdentifier;
-	postDebugTask?: string | TaskIdentifier;
+export interfAce IEnvConfig {
+	internAlConsoleOptions?: 'neverOpen' | 'openOnSessionStArt' | 'openOnFirstSessionStArt';
+	preRestArtTAsk?: string | TAskIdentifier;
+	postRestArtTAsk?: string | TAskIdentifier;
+	preLAunchTAsk?: string | TAskIdentifier;
+	postDebugTAsk?: string | TAskIdentifier;
 	debugServer?: number;
-	noDebug?: boolean;
+	noDebug?: booleAn;
 }
 
-export interface IConfigPresentation {
-	hidden?: boolean;
+export interfAce IConfigPresentAtion {
+	hidden?: booleAn;
 	group?: string;
 	order?: number;
 }
 
-export interface IConfig extends IEnvConfig {
+export interfAce IConfig extends IEnvConfig {
 
-	// fundamental attributes
+	// fundAmentAl Attributes
 	type: string;
 	request: string;
-	name: string;
-	presentation?: IConfigPresentation;
-	// platform specifics
+	nAme: string;
+	presentAtion?: IConfigPresentAtion;
+	// plAtform specifics
 	windows?: IEnvConfig;
 	osx?: IEnvConfig;
 	linux?: IEnvConfig;
 
-	// internals
+	// internAls
 	__sessionId?: string;
-	__restart?: any;
-	__autoAttach?: boolean;
+	__restArt?: Any;
+	__AutoAttAch?: booleAn;
 	port?: number; // TODO
 }
 
-export interface ICompound {
-	name: string;
-	stopAll?: boolean;
-	preLaunchTask?: string | TaskIdentifier;
-	configurations: (string | { name: string, folder: string })[];
-	presentation?: IConfigPresentation;
+export interfAce ICompound {
+	nAme: string;
+	stopAll?: booleAn;
+	preLAunchTAsk?: string | TAskIdentifier;
+	configurAtions: (string | { nAme: string, folder: string })[];
+	presentAtion?: IConfigPresentAtion;
 }
 
-export interface IDebugAdapter extends IDisposable {
-	readonly onError: Event<Error>;
-	readonly onExit: Event<number | null>;
-	onRequest(callback: (request: DebugProtocol.Request) => void): void;
-	onEvent(callback: (event: DebugProtocol.Event) => void): void;
-	startSession(): Promise<void>;
-	sendMessage(message: DebugProtocol.ProtocolMessage): void;
+export interfAce IDebugAdApter extends IDisposAble {
+	reAdonly onError: Event<Error>;
+	reAdonly onExit: Event<number | null>;
+	onRequest(cAllbAck: (request: DebugProtocol.Request) => void): void;
+	onEvent(cAllbAck: (event: DebugProtocol.Event) => void): void;
+	stArtSession(): Promise<void>;
+	sendMessAge(messAge: DebugProtocol.ProtocolMessAge): void;
 	sendResponse(response: DebugProtocol.Response): void;
-	sendRequest(command: string, args: any, clb: (result: DebugProtocol.Response) => void, timeout?: number): number;
+	sendRequest(commAnd: string, Args: Any, clb: (result: DebugProtocol.Response) => void, timeout?: number): number;
 	stopSession(): Promise<void>;
 }
 
-export interface IDebugAdapterFactory extends ITerminalLauncher {
-	createDebugAdapter(session: IDebugSession): IDebugAdapter;
-	substituteVariables(folder: IWorkspaceFolder | undefined, config: IConfig): Promise<IConfig>;
+export interfAce IDebugAdApterFActory extends ITerminAlLAuncher {
+	creAteDebugAdApter(session: IDebugSession): IDebugAdApter;
+	substituteVAriAbles(folder: IWorkspAceFolder | undefined, config: IConfig): Promise<IConfig>;
 }
 
-export interface IDebugAdapterExecutableOptions {
+export interfAce IDebugAdApterExecutAbleOptions {
 	cwd?: string;
 	env?: { [key: string]: string };
 }
 
-export interface IDebugAdapterExecutable {
-	readonly type: 'executable';
-	readonly command: string;
-	readonly args: string[];
-	readonly options?: IDebugAdapterExecutableOptions;
+export interfAce IDebugAdApterExecutAble {
+	reAdonly type: 'executAble';
+	reAdonly commAnd: string;
+	reAdonly Args: string[];
+	reAdonly options?: IDebugAdApterExecutAbleOptions;
 }
 
-export interface IDebugAdapterServer {
-	readonly type: 'server';
-	readonly port: number;
-	readonly host?: string;
+export interfAce IDebugAdApterServer {
+	reAdonly type: 'server';
+	reAdonly port: number;
+	reAdonly host?: string;
 }
 
-export interface IDebugAdapterNamedPipeServer {
-	readonly type: 'pipeServer';
-	readonly path: string;
+export interfAce IDebugAdApterNAmedPipeServer {
+	reAdonly type: 'pipeServer';
+	reAdonly pAth: string;
 }
 
-export interface IDebugAdapterInlineImpl extends IDisposable {
-	readonly onDidSendMessage: Event<DebugProtocol.Message>;
-	handleMessage(message: DebugProtocol.Message): void;
+export interfAce IDebugAdApterInlineImpl extends IDisposAble {
+	reAdonly onDidSendMessAge: Event<DebugProtocol.MessAge>;
+	hAndleMessAge(messAge: DebugProtocol.MessAge): void;
 }
 
-export interface IDebugAdapterImpl {
-	readonly type: 'implementation';
-	readonly implementation: IDebugAdapterInlineImpl;
+export interfAce IDebugAdApterImpl {
+	reAdonly type: 'implementAtion';
+	reAdonly implementAtion: IDebugAdApterInlineImpl;
 }
 
-export type IAdapterDescriptor = IDebugAdapterExecutable | IDebugAdapterServer | IDebugAdapterNamedPipeServer | IDebugAdapterImpl;
+export type IAdApterDescriptor = IDebugAdApterExecutAble | IDebugAdApterServer | IDebugAdApterNAmedPipeServer | IDebugAdApterImpl;
 
-export interface IPlatformSpecificAdapterContribution {
-	program?: string;
-	args?: string[];
+export interfAce IPlAtformSpecificAdApterContribution {
+	progrAm?: string;
+	Args?: string[];
 	runtime?: string;
 	runtimeArgs?: string[];
 }
 
-export interface IDebuggerContribution extends IPlatformSpecificAdapterContribution {
+export interfAce IDebuggerContribution extends IPlAtformSpecificAdApterContribution {
 	type: string;
-	label?: string;
-	// debug adapter executable
-	adapterExecutableCommand?: string;
-	win?: IPlatformSpecificAdapterContribution;
-	winx86?: IPlatformSpecificAdapterContribution;
-	windows?: IPlatformSpecificAdapterContribution;
-	osx?: IPlatformSpecificAdapterContribution;
-	linux?: IPlatformSpecificAdapterContribution;
+	lAbel?: string;
+	// debug AdApter executAble
+	AdApterExecutAbleCommAnd?: string;
+	win?: IPlAtformSpecificAdApterContribution;
+	winx86?: IPlAtformSpecificAdApterContribution;
+	windows?: IPlAtformSpecificAdApterContribution;
+	osx?: IPlAtformSpecificAdApterContribution;
+	linux?: IPlAtformSpecificAdApterContribution;
 
-	// internal
-	aiKey?: string;
+	// internAl
+	AiKey?: string;
 
-	// supported languages
-	languages?: string[];
-	enableBreakpointsFor?: { languageIds: string[] };
+	// supported lAnguAges
+	lAnguAges?: string[];
+	enAbleBreAkpointsFor?: { lAnguAgeIds: string[] };
 
-	// debug configuration support
-	configurationAttributes?: any;
-	initialConfigurations?: any[];
-	configurationSnippets?: IJSONSchemaSnippet[];
-	variables?: { [key: string]: string };
+	// debug configurAtion support
+	configurAtionAttributes?: Any;
+	initiAlConfigurAtions?: Any[];
+	configurAtionSnippets?: IJSONSchemASnippet[];
+	vAriAbles?: { [key: string]: string };
 }
 
-export interface IDebugConfigurationProvider {
-	readonly type: string;
-	readonly triggerKind: DebugConfigurationProviderTriggerKind;
-	resolveDebugConfiguration?(folderUri: uri | undefined, debugConfiguration: IConfig, token: CancellationToken): Promise<IConfig | null | undefined>;
-	resolveDebugConfigurationWithSubstitutedVariables?(folderUri: uri | undefined, debugConfiguration: IConfig, token: CancellationToken): Promise<IConfig | null | undefined>;
-	provideDebugConfigurations?(folderUri: uri | undefined, token: CancellationToken): Promise<IConfig[]>;
-	debugAdapterExecutable?(folderUri: uri | undefined): Promise<IAdapterDescriptor>;		// TODO@AW legacy
+export interfAce IDebugConfigurAtionProvider {
+	reAdonly type: string;
+	reAdonly triggerKind: DebugConfigurAtionProviderTriggerKind;
+	resolveDebugConfigurAtion?(folderUri: uri | undefined, debugConfigurAtion: IConfig, token: CAncellAtionToken): Promise<IConfig | null | undefined>;
+	resolveDebugConfigurAtionWithSubstitutedVAriAbles?(folderUri: uri | undefined, debugConfigurAtion: IConfig, token: CAncellAtionToken): Promise<IConfig | null | undefined>;
+	provideDebugConfigurAtions?(folderUri: uri | undefined, token: CAncellAtionToken): Promise<IConfig[]>;
+	debugAdApterExecutAble?(folderUri: uri | undefined): Promise<IAdApterDescriptor>;		// TODO@AW legAcy
 }
 
-export interface IDebugAdapterDescriptorFactory {
-	readonly type: string;
-	createDebugAdapterDescriptor(session: IDebugSession): Promise<IAdapterDescriptor>;
+export interfAce IDebugAdApterDescriptorFActory {
+	reAdonly type: string;
+	creAteDebugAdApterDescriptor(session: IDebugSession): Promise<IAdApterDescriptor>;
 }
 
-export interface IDebugAdapterTrackerFactory {
-	readonly type: string;
+export interfAce IDebugAdApterTrAckerFActory {
+	reAdonly type: string;
 }
 
-export interface ITerminalLauncher {
-	runInTerminal(args: DebugProtocol.RunInTerminalRequestArguments): Promise<number | undefined>;
+export interfAce ITerminAlLAuncher {
+	runInTerminAl(Args: DebugProtocol.RunInTerminAlRequestArguments): Promise<number | undefined>;
 }
 
-export interface IConfigurationManager {
+export interfAce IConfigurAtionMAnAger {
 	/**
-	 * Returns true if breakpoints can be set for a given editor model. Depends on mode.
+	 * Returns true if breAkpoints cAn be set for A given editor model. Depends on mode.
 	 */
-	canSetBreakpointsIn(model: EditorIModel): boolean;
+	cAnSetBreAkpointsIn(model: EditorIModel): booleAn;
 
 	/**
-	 * Returns an object containing the selected launch configuration and the selected configuration name. Both these fields can be null (no folder workspace).
+	 * Returns An object contAining the selected lAunch configurAtion And the selected configurAtion nAme. Both these fields cAn be null (no folder workspAce).
 	 */
-	readonly selectedConfiguration: {
-		launch: ILaunch | undefined;
+	reAdonly selectedConfigurAtion: {
+		lAunch: ILAunch | undefined;
 		config: IConfig | undefined;
-		name: string | undefined;
-		// Type is used when matching dynamic configurations to their corresponding provider
+		nAme: string | undefined;
+		// Type is used when mAtching dynAmic configurAtions to their corresponding provider
 		type: string | undefined;
 	};
 
-	selectConfiguration(launch: ILaunch | undefined, name?: string, config?: IConfig, type?: string): Promise<void>;
+	selectConfigurAtion(lAunch: ILAunch | undefined, nAme?: string, config?: IConfig, type?: string): Promise<void>;
 
-	getLaunches(): ReadonlyArray<ILaunch>;
+	getLAunches(): ReAdonlyArrAy<ILAunch>;
 
-	hasDebuggers(): boolean;
+	hAsDebuggers(): booleAn;
 
-	getLaunch(workspaceUri: uri | undefined): ILaunch | undefined;
+	getLAunch(workspAceUri: uri | undefined): ILAunch | undefined;
 
-	getAllConfigurations(): { launch: ILaunch, name: string, presentation?: IConfigPresentation }[];
+	getAllConfigurAtions(): { lAunch: ILAunch, nAme: string, presentAtion?: IConfigPresentAtion }[];
 
 	/**
-	 * Allows to register on change of selected debug configuration.
+	 * Allows to register on chAnge of selected debug configurAtion.
 	 */
-	onDidSelectConfiguration: Event<void>;
+	onDidSelectConfigurAtion: Event<void>;
 
 	onDidRegisterDebugger: Event<void>;
 
-	activateDebuggers(activationEvent: string, debugType?: string): Promise<void>;
+	ActivAteDebuggers(ActivAtionEvent: string, debugType?: string): Promise<void>;
 
-	isDebuggerInterestedInLanguage(language: string): boolean;
-	hasDebugConfigurationProvider(debugType: string): boolean;
-	getDynamicProviders(): Promise<{ label: string, provider: IDebugConfigurationProvider | undefined, pick: () => Promise<{ launch: ILaunch, config: IConfig } | undefined> }[]>;
+	isDebuggerInterestedInLAnguAge(lAnguAge: string): booleAn;
+	hAsDebugConfigurAtionProvider(debugType: string): booleAn;
+	getDynAmicProviders(): Promise<{ lAbel: string, provider: IDebugConfigurAtionProvider | undefined, pick: () => Promise<{ lAunch: ILAunch, config: IConfig } | undefined> }[]>;
 
-	registerDebugConfigurationProvider(debugConfigurationProvider: IDebugConfigurationProvider): IDisposable;
-	unregisterDebugConfigurationProvider(debugConfigurationProvider: IDebugConfigurationProvider): void;
+	registerDebugConfigurAtionProvider(debugConfigurAtionProvider: IDebugConfigurAtionProvider): IDisposAble;
+	unregisterDebugConfigurAtionProvider(debugConfigurAtionProvider: IDebugConfigurAtionProvider): void;
 
-	registerDebugAdapterDescriptorFactory(debugAdapterDescriptorFactory: IDebugAdapterDescriptorFactory): IDisposable;
-	unregisterDebugAdapterDescriptorFactory(debugAdapterDescriptorFactory: IDebugAdapterDescriptorFactory): void;
+	registerDebugAdApterDescriptorFActory(debugAdApterDescriptorFActory: IDebugAdApterDescriptorFActory): IDisposAble;
+	unregisterDebugAdApterDescriptorFActory(debugAdApterDescriptorFActory: IDebugAdApterDescriptorFActory): void;
 
-	resolveConfigurationByProviders(folderUri: uri | undefined, type: string | undefined, debugConfiguration: any, token: CancellationToken): Promise<any>;
-	getDebugAdapterDescriptor(session: IDebugSession): Promise<IAdapterDescriptor | undefined>;
-	getDebuggerLabel(type: string): string | undefined;
+	resolveConfigurAtionByProviders(folderUri: uri | undefined, type: string | undefined, debugConfigurAtion: Any, token: CAncellAtionToken): Promise<Any>;
+	getDebugAdApterDescriptor(session: IDebugSession): Promise<IAdApterDescriptor | undefined>;
+	getDebuggerLAbel(type: string): string | undefined;
 
-	registerDebugAdapterFactory(debugTypes: string[], debugAdapterFactory: IDebugAdapterFactory): IDisposable;
-	createDebugAdapter(session: IDebugSession): IDebugAdapter | undefined;
+	registerDebugAdApterFActory(debugTypes: string[], debugAdApterFActory: IDebugAdApterFActory): IDisposAble;
+	creAteDebugAdApter(session: IDebugSession): IDebugAdApter | undefined;
 
-	substituteVariables(debugType: string, folder: IWorkspaceFolder | undefined, config: IConfig): Promise<IConfig>;
-	runInTerminal(debugType: string, args: DebugProtocol.RunInTerminalRequestArguments): Promise<number | undefined>;
+	substituteVAriAbles(debugType: string, folder: IWorkspAceFolder | undefined, config: IConfig): Promise<IConfig>;
+	runInTerminAl(debugType: string, Args: DebugProtocol.RunInTerminAlRequestArguments): Promise<number | undefined>;
 }
 
-export interface ILaunch {
+export interfAce ILAunch {
 
 	/**
-	 * Resource pointing to the launch.json this object is wrapping.
+	 * Resource pointing to the lAunch.json this object is wrApping.
 	 */
-	readonly uri: uri;
+	reAdonly uri: uri;
 
 	/**
-	 * Name of the launch.
+	 * NAme of the lAunch.
 	 */
-	readonly name: string;
+	reAdonly nAme: string;
 
 	/**
-	 * Workspace of the launch. Can be undefined.
+	 * WorkspAce of the lAunch. CAn be undefined.
 	 */
-	readonly workspace: IWorkspaceFolder | undefined;
+	reAdonly workspAce: IWorkspAceFolder | undefined;
 
 	/**
-	 * Should this launch be shown in the debug dropdown.
+	 * Should this lAunch be shown in the debug dropdown.
 	 */
-	readonly hidden: boolean;
+	reAdonly hidden: booleAn;
 
 	/**
-	 * Returns a configuration with the specified name.
-	 * Returns undefined if there is no configuration with the specified name.
+	 * Returns A configurAtion with the specified nAme.
+	 * Returns undefined if there is no configurAtion with the specified nAme.
 	 */
-	getConfiguration(name: string): IConfig | undefined;
+	getConfigurAtion(nAme: string): IConfig | undefined;
 
 	/**
-	 * Returns a compound with the specified name.
-	 * Returns undefined if there is no compound with the specified name.
+	 * Returns A compound with the specified nAme.
+	 * Returns undefined if there is no compound with the specified nAme.
 	 */
-	getCompound(name: string): ICompound | undefined;
+	getCompound(nAme: string): ICompound | undefined;
 
 	/**
-	 * Returns the names of all configurations and compounds.
-	 * Ignores configurations which are invalid.
+	 * Returns the nAmes of All configurAtions And compounds.
+	 * Ignores configurAtions which Are invAlid.
 	 */
-	getConfigurationNames(ignoreCompoundsAndPresentation?: boolean): string[];
+	getConfigurAtionNAmes(ignoreCompoundsAndPresentAtion?: booleAn): string[];
 
 	/**
-	 * Opens the launch.json file. Creates if it does not exist.
+	 * Opens the lAunch.json file. CreAtes if it does not exist.
 	 */
-	openConfigFile(preserveFocus: boolean, type?: string, token?: CancellationToken): Promise<{ editor: IEditorPane | null, created: boolean }>;
+	openConfigFile(preserveFocus: booleAn, type?: string, token?: CAncellAtionToken): Promise<{ editor: IEditorPAne | null, creAted: booleAn }>;
 }
 
-// Debug service interfaces
+// Debug service interfAces
 
-export const IDebugService = createDecorator<IDebugService>(DEBUG_SERVICE_ID);
+export const IDebugService = creAteDecorAtor<IDebugService>(DEBUG_SERVICE_ID);
 
-export interface IDebugService {
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Gets the current debug state.
-	 */
-	readonly state: State;
+export interfAce IDebugService {
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Allows to register on debug state changes.
+	 * Gets the current debug stAte.
 	 */
-	onDidChangeState: Event<State>;
+	reAdonly stAte: StAte;
+
+	/**
+	 * Allows to register on debug stAte chAnges.
+	 */
+	onDidChAngeStAte: Event<StAte>;
 
 	/**
 	 * Allows to register on new session events.
@@ -784,7 +784,7 @@ export interface IDebugService {
 	onDidNewSession: Event<IDebugSession>;
 
 	/**
-	 * Allows to register on sessions about to be created (not yet fully initialised)
+	 * Allows to register on sessions About to be creAted (not yet fully initiAlised)
 	 */
 	onWillNewSession: Event<IDebugSession>;
 
@@ -794,121 +794,121 @@ export interface IDebugService {
 	onDidEndSession: Event<IDebugSession>;
 
 	/**
-	 * Gets the current configuration manager.
+	 * Gets the current configurAtion mAnAger.
 	 */
-	getConfigurationManager(): IConfigurationManager;
+	getConfigurAtionMAnAger(): IConfigurAtionMAnAger;
 
 	/**
-	 * Sets the focused stack frame and evaluates all expressions against the newly focused stack frame,
+	 * Sets the focused stAck frAme And evAluAtes All expressions AgAinst the newly focused stAck frAme,
 	 */
-	focusStackFrame(focusedStackFrame: IStackFrame | undefined, thread?: IThread, session?: IDebugSession, explicit?: boolean): Promise<void>;
+	focusStAckFrAme(focusedStAckFrAme: IStAckFrAme | undefined, threAd?: IThreAd, session?: IDebugSession, explicit?: booleAn): Promise<void>;
 
 	/**
-	 * Adds new breakpoints to the model for the file specified with the uri. Notifies debug adapter of breakpoint changes.
+	 * Adds new breAkpoints to the model for the file specified with the uri. Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	addBreakpoints(uri: uri, rawBreakpoints: IBreakpointData[], ariaAnnounce?: boolean): Promise<IBreakpoint[]>;
+	AddBreAkpoints(uri: uri, rAwBreAkpoints: IBreAkpointDAtA[], AriAAnnounce?: booleAn): Promise<IBreAkpoint[]>;
 
 	/**
-	 * Updates the breakpoints.
+	 * UpdAtes the breAkpoints.
 	 */
-	updateBreakpoints(uri: uri, data: Map<string, IBreakpointUpdateData>, sendOnResourceSaved: boolean): Promise<void>;
+	updAteBreAkpoints(uri: uri, dAtA: MAp<string, IBreAkpointUpdAteDAtA>, sendOnResourceSAved: booleAn): Promise<void>;
 
 	/**
-	 * Enables or disables all breakpoints. If breakpoint is passed only enables or disables the passed breakpoint.
-	 * Notifies debug adapter of breakpoint changes.
+	 * EnAbles or disAbles All breAkpoints. If breAkpoint is pAssed only enAbles or disAbles the pAssed breAkpoint.
+	 * Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	enableOrDisableBreakpoints(enable: boolean, breakpoint?: IEnablement): Promise<void>;
+	enAbleOrDisAbleBreAkpoints(enAble: booleAn, breAkpoint?: IEnAblement): Promise<void>;
 
 	/**
-	 * Sets the global activated property for all breakpoints.
-	 * Notifies debug adapter of breakpoint changes.
+	 * Sets the globAl ActivAted property for All breAkpoints.
+	 * Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	setBreakpointsActivated(activated: boolean): Promise<void>;
+	setBreAkpointsActivAted(ActivAted: booleAn): Promise<void>;
 
 	/**
-	 * Removes all breakpoints. If id is passed only removes the breakpoint associated with that id.
-	 * Notifies debug adapter of breakpoint changes.
+	 * Removes All breAkpoints. If id is pAssed only removes the breAkpoint AssociAted with thAt id.
+	 * Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	removeBreakpoints(id?: string): Promise<any>;
+	removeBreAkpoints(id?: string): Promise<Any>;
 
 	/**
-	 * Adds a new function breakpoint for the given name.
+	 * Adds A new function breAkpoint for the given nAme.
 	 */
-	addFunctionBreakpoint(name?: string, id?: string): void;
+	AddFunctionBreAkpoint(nAme?: string, id?: string): void;
 
 	/**
-	 * Renames an already existing function breakpoint.
-	 * Notifies debug adapter of breakpoint changes.
+	 * RenAmes An AlreAdy existing function breAkpoint.
+	 * Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	renameFunctionBreakpoint(id: string, newFunctionName: string): Promise<void>;
+	renAmeFunctionBreAkpoint(id: string, newFunctionNAme: string): Promise<void>;
 
 	/**
-	 * Removes all function breakpoints. If id is passed only removes the function breakpoint with the passed id.
-	 * Notifies debug adapter of breakpoint changes.
+	 * Removes All function breAkpoints. If id is pAssed only removes the function breAkpoint with the pAssed id.
+	 * Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	removeFunctionBreakpoints(id?: string): Promise<void>;
+	removeFunctionBreAkpoints(id?: string): Promise<void>;
 
 	/**
-	 * Adds a new data breakpoint.
+	 * Adds A new dAtA breAkpoint.
 	 */
-	addDataBreakpoint(label: string, dataId: string, canPersist: boolean, accessTypes: DebugProtocol.DataBreakpointAccessType[] | undefined): Promise<void>;
+	AddDAtABreAkpoint(lAbel: string, dAtAId: string, cAnPersist: booleAn, AccessTypes: DebugProtocol.DAtABreAkpointAccessType[] | undefined): Promise<void>;
 
 	/**
-	 * Removes all data breakpoints. If id is passed only removes the data breakpoint with the passed id.
-	 * Notifies debug adapter of breakpoint changes.
+	 * Removes All dAtA breAkpoints. If id is pAssed only removes the dAtA breAkpoint with the pAssed id.
+	 * Notifies debug AdApter of breAkpoint chAnges.
 	 */
-	removeDataBreakpoints(id?: string): Promise<void>;
+	removeDAtABreAkpoints(id?: string): Promise<void>;
 
 	/**
-	 * Sends all breakpoints to the passed session.
-	 * If session is not passed, sends all breakpoints to each session.
+	 * Sends All breAkpoints to the pAssed session.
+	 * If session is not pAssed, sends All breAkpoints to eAch session.
 	 */
-	sendAllBreakpoints(session?: IDebugSession): Promise<any>;
+	sendAllBreAkpoints(session?: IDebugSession): Promise<Any>;
 
 	/**
-	 * Adds a new watch expression and evaluates it against the debug adapter.
+	 * Adds A new wAtch expression And evAluAtes it AgAinst the debug AdApter.
 	 */
-	addWatchExpression(name?: string): void;
+	AddWAtchExpression(nAme?: string): void;
 
 	/**
-	 * Renames a watch expression and evaluates it against the debug adapter.
+	 * RenAmes A wAtch expression And evAluAtes it AgAinst the debug AdApter.
 	 */
-	renameWatchExpression(id: string, newName: string): void;
+	renAmeWAtchExpression(id: string, newNAme: string): void;
 
 	/**
-	 * Moves a watch expression to a new possition. Used for reordering watch expressions.
+	 * Moves A wAtch expression to A new possition. Used for reordering wAtch expressions.
 	 */
-	moveWatchExpression(id: string, position: number): void;
+	moveWAtchExpression(id: string, position: number): void;
 
 	/**
-	 * Removes all watch expressions. If id is passed only removes the watch expression with the passed id.
+	 * Removes All wAtch expressions. If id is pAssed only removes the wAtch expression with the pAssed id.
 	 */
-	removeWatchExpressions(id?: string): void;
+	removeWAtchExpressions(id?: string): void;
 
 	/**
-	 * Starts debugging. If the configOrName is not passed uses the selected configuration in the debug dropdown.
-	 * Also saves all files, manages if compounds are present in the configuration
-	 * and resolveds configurations via DebugConfigurationProviders.
+	 * StArts debugging. If the configOrNAme is not pAssed uses the selected configurAtion in the debug dropdown.
+	 * Also sAves All files, mAnAges if compounds Are present in the configurAtion
+	 * And resolveds configurAtions viA DebugConfigurAtionProviders.
 	 *
-	 * Returns true if the start debugging was successfull. For compound launches, all configurations have to start successfuly for it to return success.
-	 * On errors the startDebugging will throw an error, however some error and cancelations are handled and in that case will simply return false.
+	 * Returns true if the stArt debugging wAs successfull. For compound lAunches, All configurAtions hAve to stArt successfuly for it to return success.
+	 * On errors the stArtDebugging will throw An error, however some error And cAncelAtions Are hAndled And in thAt cAse will simply return fAlse.
 	 */
-	startDebugging(launch: ILaunch | undefined, configOrName?: IConfig | string, options?: IDebugSessionOptions): Promise<boolean>;
+	stArtDebugging(lAunch: ILAunch | undefined, configOrNAme?: IConfig | string, options?: IDebugSessionOptions): Promise<booleAn>;
 
 	/**
-	 * Restarts a session or creates a new one if there is no active session.
+	 * RestArts A session or creAtes A new one if there is no Active session.
 	 */
-	restartSession(session: IDebugSession, restartData?: any): Promise<any>;
+	restArtSession(session: IDebugSession, restArtDAtA?: Any): Promise<Any>;
 
 	/**
-	 * Stops the session. If no session is specified then all sessions are stopped.
+	 * Stops the session. If no session is specified then All sessions Are stopped.
 	 */
-	stopSession(session: IDebugSession | undefined): Promise<any>;
+	stopSession(session: IDebugSession | undefined): Promise<Any>;
 
 	/**
-	 * Makes unavailable all sources with the passed uri. Source will appear as grayed out in callstack view.
+	 * MAkes unAvAilAble All sources with the pAssed uri. Source will AppeAr As grAyed out in cAllstAck view.
 	 */
-	sourceIsNotAvailable(uri: uri): void;
+	sourceIsNotAvAilAble(uri: uri): void;
 
 	/**
 	 * Gets the current debug model.
@@ -921,30 +921,30 @@ export interface IDebugService {
 	getViewModel(): IViewModel;
 }
 
-// Editor interfaces
-export const enum BreakpointWidgetContext {
+// Editor interfAces
+export const enum BreAkpointWidgetContext {
 	CONDITION = 0,
 	HIT_COUNT = 1,
 	LOG_MESSAGE = 2
 }
 
-export interface IDebugEditorContribution extends editorCommon.IEditorContribution {
-	showHover(range: Range, focus: boolean): Promise<void>;
-	addLaunchConfiguration(): Promise<any>;
+export interfAce IDebugEditorContribution extends editorCommon.IEditorContribution {
+	showHover(rAnge: RAnge, focus: booleAn): Promise<void>;
+	AddLAunchConfigurAtion(): Promise<Any>;
 }
 
-export interface IBreakpointEditorContribution extends editorCommon.IEditorContribution {
-	showBreakpointWidget(lineNumber: number, column: number | undefined, context?: BreakpointWidgetContext): void;
-	closeBreakpointWidget(): void;
+export interfAce IBreAkpointEditorContribution extends editorCommon.IEditorContribution {
+	showBreAkpointWidget(lineNumber: number, column: number | undefined, context?: BreAkpointWidgetContext): void;
+	closeBreAkpointWidget(): void;
 }
 
-// temporary debug helper service
+// temporAry debug helper service
 
 export const DEBUG_HELPER_SERVICE_ID = 'debugHelperService';
-export const IDebugHelperService = createDecorator<IDebugHelperService>(DEBUG_HELPER_SERVICE_ID);
+export const IDebugHelperService = creAteDecorAtor<IDebugHelperService>(DEBUG_HELPER_SERVICE_ID);
 
-export interface IDebugHelperService {
-	readonly _serviceBrand: undefined;
+export interfAce IDebugHelperService {
+	reAdonly _serviceBrAnd: undefined;
 
-	createTelemetryService(configurationService: IConfigurationService, args: string[]): TelemetryService | undefined;
+	creAteTelemetryService(configurAtionService: IConfigurAtionService, Args: string[]): TelemetryService | undefined;
 }

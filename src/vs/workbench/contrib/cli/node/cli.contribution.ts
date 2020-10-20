@@ -1,83 +1,83 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import * as path from 'vs/base/common/path';
-import * as cp from 'child_process';
-import * as pfs from 'vs/base/node/pfs';
-import * as extpath from 'vs/base/node/extpath';
-import * as platform from 'vs/base/common/platform';
+import * As nls from 'vs/nls';
+import * As pAth from 'vs/bAse/common/pAth';
+import * As cp from 'child_process';
+import * As pfs from 'vs/bAse/node/pfs';
+import * As extpAth from 'vs/bAse/node/extpAth';
+import * As plAtform from 'vs/bAse/common/plAtform';
 import { promisify } from 'util';
-import { Action } from 'vs/base/common/actions';
-import { IWorkbenchActionRegistry, Extensions as ActionExtensions } from 'vs/workbench/common/actions';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import product from 'vs/platform/product/common/product';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
-import Severity from 'vs/base/common/severity';
-import { ILogService } from 'vs/platform/log/common/log';
-import { FileAccess } from 'vs/base/common/network';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { Action } from 'vs/bAse/common/Actions';
+import { IWorkbenchActionRegistry, Extensions As ActionExtensions } from 'vs/workbench/common/Actions';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { SyncActionDescriptor } from 'vs/plAtform/Actions/common/Actions';
+import product from 'vs/plAtform/product/common/product';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IDiAlogService } from 'vs/plAtform/diAlogs/common/diAlogs';
+import Severity from 'vs/bAse/common/severity';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { FileAccess } from 'vs/bAse/common/network';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 
-function ignore<T>(code: string, value: T): (err: any) => Promise<T> {
-	return err => err.code === code ? Promise.resolve<T>(value) : Promise.reject<T>(err);
+function ignore<T>(code: string, vAlue: T): (err: Any) => Promise<T> {
+	return err => err.code === code ? Promise.resolve<T>(vAlue) : Promise.reject<T>(err);
 }
 
 let _source: string | null = null;
 function getSource(): string {
 	if (!_source) {
-		const root = FileAccess.asFileUri('', require).fsPath;
-		_source = path.resolve(root, '..', 'bin', 'code');
+		const root = FileAccess.AsFileUri('', require).fsPAth;
+		_source = pAth.resolve(root, '..', 'bin', 'code');
 	}
 	return _source;
 }
 
-function isAvailable(): Promise<boolean> {
+function isAvAilAble(): Promise<booleAn> {
 	return Promise.resolve(pfs.exists(getSource()));
 }
 
-class InstallAction extends Action {
+clAss InstAllAction extends Action {
 
-	static readonly ID = 'workbench.action.installCommandLine';
-	static readonly LABEL = nls.localize('install', "Install '{0}' command in PATH", product.applicationName);
+	stAtic reAdonly ID = 'workbench.Action.instAllCommAndLine';
+	stAtic reAdonly LABEL = nls.locAlize('instAll', "InstAll '{0}' commAnd in PATH", product.ApplicAtionNAme);
 
 	constructor(
 		id: string,
-		label: string,
-		@INotificationService private readonly notificationService: INotificationService,
-		@IDialogService private readonly dialogService: IDialogService,
-		@ILogService private readonly logService: ILogService,
-		@IProductService private readonly productService: IProductService
+		lAbel: string,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IProductService privAte reAdonly productService: IProductService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	private get target(): string {
-		return `/usr/local/bin/${this.productService.applicationName}`;
+	privAte get tArget(): string {
+		return `/usr/locAl/bin/${this.productService.ApplicAtionNAme}`;
 	}
 
 	run(): Promise<void> {
-		return isAvailable().then(isAvailable => {
-			if (!isAvailable) {
-				const message = nls.localize('not available', "This command is not available");
-				this.notificationService.info(message);
+		return isAvAilAble().then(isAvAilAble => {
+			if (!isAvAilAble) {
+				const messAge = nls.locAlize('not AvAilAble', "This commAnd is not AvAilAble");
+				this.notificAtionService.info(messAge);
 				return undefined;
 			}
 
-			return this.isInstalled()
-				.then(isInstalled => {
-					if (!isAvailable || isInstalled) {
+			return this.isInstAlled()
+				.then(isInstAlled => {
+					if (!isAvAilAble || isInstAlled) {
 						return Promise.resolve(null);
 					} else {
-						return pfs.unlink(this.target)
+						return pfs.unlink(this.tArget)
 							.then(undefined, ignore('ENOENT', null))
-							.then(() => pfs.symlink(getSource(), this.target))
+							.then(() => pfs.symlink(getSource(), this.tArget))
 							.then(undefined, err => {
 								if (err.code === 'EACCES' || err.code === 'ENOENT') {
-									return this.createBinFolderAndSymlinkAsAdmin();
+									return this.creAteBinFolderAndSymlinkAsAdmin();
 								}
 
 								return Promise.reject(err);
@@ -85,113 +85,113 @@ class InstallAction extends Action {
 					}
 				})
 				.then(() => {
-					this.logService.trace('cli#install', this.target);
-					this.notificationService.info(nls.localize('successIn', "Shell command '{0}' successfully installed in PATH.", this.productService.applicationName));
+					this.logService.trAce('cli#instAll', this.tArget);
+					this.notificAtionService.info(nls.locAlize('successIn', "Shell commAnd '{0}' successfully instAlled in PATH.", this.productService.ApplicAtionNAme));
 				});
 		});
 	}
 
-	private isInstalled(): Promise<boolean> {
-		return pfs.lstat(this.target)
-			.then(stat => stat.isSymbolicLink())
-			.then(() => extpath.realpath(this.target))
+	privAte isInstAlled(): Promise<booleAn> {
+		return pfs.lstAt(this.tArget)
+			.then(stAt => stAt.isSymbolicLink())
+			.then(() => extpAth.reAlpAth(this.tArget))
 			.then(link => link === getSource())
-			.then(undefined, ignore('ENOENT', false));
+			.then(undefined, ignore('ENOENT', fAlse));
 	}
 
-	private createBinFolderAndSymlinkAsAdmin(): Promise<void> {
+	privAte creAteBinFolderAndSymlinkAsAdmin(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			const buttons = [nls.localize('ok', "OK"), nls.localize('cancel2', "Cancel")];
+			const buttons = [nls.locAlize('ok', "OK"), nls.locAlize('cAncel2', "CAncel")];
 
-			this.dialogService.show(Severity.Info, nls.localize('warnEscalation', "Code will now prompt with 'osascript' for Administrator privileges to install the shell command."), buttons, { cancelId: 1 }).then(result => {
+			this.diAlogService.show(Severity.Info, nls.locAlize('wArnEscAlAtion', "Code will now prompt with 'osAscript' for AdministrAtor privileges to instAll the shell commAnd."), buttons, { cAncelId: 1 }).then(result => {
 				switch (result.choice) {
-					case 0 /* OK */:
-						const command = 'osascript -e "do shell script \\"mkdir -p /usr/local/bin && ln -sf \'' + getSource() + '\' \'' + this.target + '\'\\" with administrator privileges"';
+					cAse 0 /* OK */:
+						const commAnd = 'osAscript -e "do shell script \\"mkdir -p /usr/locAl/bin && ln -sf \'' + getSource() + '\' \'' + this.tArget + '\'\\" with AdministrAtor privileges"';
 
-						promisify(cp.exec)(command, {})
-							.then(undefined, _ => Promise.reject(new Error(nls.localize('cantCreateBinFolder', "Unable to create '/usr/local/bin'."))))
+						promisify(cp.exec)(commAnd, {})
+							.then(undefined, _ => Promise.reject(new Error(nls.locAlize('cAntCreAteBinFolder', "UnAble to creAte '/usr/locAl/bin'."))))
 							.then(() => resolve(), reject);
-						break;
-					case 1 /* Cancel */:
-						reject(new Error(nls.localize('aborted', "Aborted")));
-						break;
+						breAk;
+					cAse 1 /* CAncel */:
+						reject(new Error(nls.locAlize('Aborted', "Aborted")));
+						breAk;
 				}
 			});
 		});
 	}
 }
 
-class UninstallAction extends Action {
+clAss UninstAllAction extends Action {
 
-	static readonly ID = 'workbench.action.uninstallCommandLine';
-	static readonly LABEL = nls.localize('uninstall', "Uninstall '{0}' command from PATH", product.applicationName);
+	stAtic reAdonly ID = 'workbench.Action.uninstAllCommAndLine';
+	stAtic reAdonly LABEL = nls.locAlize('uninstAll', "UninstAll '{0}' commAnd from PATH", product.ApplicAtionNAme);
 
 	constructor(
 		id: string,
-		label: string,
-		@INotificationService private readonly notificationService: INotificationService,
-		@ILogService private readonly logService: ILogService,
-		@IDialogService private readonly dialogService: IDialogService,
-		@IProductService private readonly productService: IProductService
+		lAbel: string,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IDiAlogService privAte reAdonly diAlogService: IDiAlogService,
+		@IProductService privAte reAdonly productService: IProductService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	private get target(): string {
-		return `/usr/local/bin/${this.productService.applicationName}`;
+	privAte get tArget(): string {
+		return `/usr/locAl/bin/${this.productService.ApplicAtionNAme}`;
 	}
 
 	run(): Promise<void> {
-		return isAvailable().then(isAvailable => {
-			if (!isAvailable) {
-				const message = nls.localize('not available', "This command is not available");
-				this.notificationService.info(message);
+		return isAvAilAble().then(isAvAilAble => {
+			if (!isAvAilAble) {
+				const messAge = nls.locAlize('not AvAilAble', "This commAnd is not AvAilAble");
+				this.notificAtionService.info(messAge);
 				return undefined;
 			}
 
-			const uninstall = () => {
-				return pfs.unlink(this.target)
+			const uninstAll = () => {
+				return pfs.unlink(this.tArget)
 					.then(undefined, ignore('ENOENT', null));
 			};
 
-			return uninstall().then(undefined, err => {
+			return uninstAll().then(undefined, err => {
 				if (err.code === 'EACCES') {
 					return this.deleteSymlinkAsAdmin();
 				}
 
 				return Promise.reject(err);
 			}).then(() => {
-				this.logService.trace('cli#uninstall', this.target);
-				this.notificationService.info(nls.localize('successFrom', "Shell command '{0}' successfully uninstalled from PATH.", this.productService.applicationName));
+				this.logService.trAce('cli#uninstAll', this.tArget);
+				this.notificAtionService.info(nls.locAlize('successFrom', "Shell commAnd '{0}' successfully uninstAlled from PATH.", this.productService.ApplicAtionNAme));
 			});
 		});
 	}
 
-	private deleteSymlinkAsAdmin(): Promise<void> {
-		return new Promise<void>(async (resolve, reject) => {
-			const buttons = [nls.localize('ok', "OK"), nls.localize('cancel2', "Cancel")];
+	privAte deleteSymlinkAsAdmin(): Promise<void> {
+		return new Promise<void>(Async (resolve, reject) => {
+			const buttons = [nls.locAlize('ok', "OK"), nls.locAlize('cAncel2', "CAncel")];
 
-			const { choice } = await this.dialogService.show(Severity.Info, nls.localize('warnEscalationUninstall', "Code will now prompt with 'osascript' for Administrator privileges to uninstall the shell command."), buttons, { cancelId: 1 });
+			const { choice } = AwAit this.diAlogService.show(Severity.Info, nls.locAlize('wArnEscAlAtionUninstAll', "Code will now prompt with 'osAscript' for AdministrAtor privileges to uninstAll the shell commAnd."), buttons, { cAncelId: 1 });
 			switch (choice) {
-				case 0 /* OK */:
-					const command = 'osascript -e "do shell script \\"rm \'' + this.target + '\'\\" with administrator privileges"';
+				cAse 0 /* OK */:
+					const commAnd = 'osAscript -e "do shell script \\"rm \'' + this.tArget + '\'\\" with AdministrAtor privileges"';
 
-					promisify(cp.exec)(command, {})
-						.then(undefined, _ => Promise.reject(new Error(nls.localize('cantUninstall', "Unable to uninstall the shell command '{0}'.", this.target))))
+					promisify(cp.exec)(commAnd, {})
+						.then(undefined, _ => Promise.reject(new Error(nls.locAlize('cAntUninstAll', "UnAble to uninstAll the shell commAnd '{0}'.", this.tArget))))
 						.then(() => resolve(), reject);
-					break;
-				case 1 /* Cancel */:
-					reject(new Error(nls.localize('aborted', "Aborted")));
-					break;
+					breAk;
+				cAse 1 /* CAncel */:
+					reject(new Error(nls.locAlize('Aborted', "Aborted")));
+					breAk;
 			}
 		});
 	}
 }
 
-if (platform.isMacintosh) {
-	const category = nls.localize('shellCommand', "Shell Command");
+if (plAtform.isMAcintosh) {
+	const cAtegory = nls.locAlize('shellCommAnd', "Shell CommAnd");
 
-	const workbenchActionsRegistry = Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
-	workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(InstallAction), `Shell Command: Install \'${product.applicationName}\' command in PATH`, category);
-	workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(UninstallAction), `Shell Command: Uninstall \'${product.applicationName}\' command from PATH`, category);
+	const workbenchActionsRegistry = Registry.As<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions);
+	workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(InstAllAction), `Shell CommAnd: InstAll \'${product.ApplicAtionNAme}\' commAnd in PATH`, cAtegory);
+	workbenchActionsRegistry.registerWorkbenchAction(SyncActionDescriptor.from(UninstAllAction), `Shell CommAnd: UninstAll \'${product.ApplicAtionNAme}\' commAnd from PATH`, cAtegory);
 }

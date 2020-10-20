@@ -1,224 +1,224 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { IEnvConfiguration } from 'vs/editor/common/config/commonEditorConfig';
-import { IEditorHoverOptions, EditorOption, ConfigurationChangedEvent, IQuickSuggestionsOptions } from 'vs/editor/common/config/editorOptions';
+import * As Assert from 'Assert';
+import { IEnvConfigurAtion } from 'vs/editor/common/config/commonEditorConfig';
+import { IEditorHoverOptions, EditorOption, ConfigurAtionChAngedEvent, IQuickSuggestionsOptions } from 'vs/editor/common/config/editorOptions';
 import { EditorZoom } from 'vs/editor/common/config/editorZoom';
-import { TestConfiguration } from 'vs/editor/test/common/mocks/testConfiguration';
-import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
+import { TestConfigurAtion } from 'vs/editor/test/common/mocks/testConfigurAtion';
+import { AccessibilitySupport } from 'vs/plAtform/Accessibility/common/Accessibility';
 
 suite('Common Editor Config', () => {
 	test('Zoom Level', () => {
 
-		//Zoom levels are defined to go between -5, 20 inclusive
+		//Zoom levels Are defined to go between -5, 20 inclusive
 		const zoom = EditorZoom;
 
 		zoom.setZoomLevel(0);
-		assert.equal(zoom.getZoomLevel(), 0);
+		Assert.equAl(zoom.getZoomLevel(), 0);
 
 		zoom.setZoomLevel(-0);
-		assert.equal(zoom.getZoomLevel(), 0);
+		Assert.equAl(zoom.getZoomLevel(), 0);
 
 		zoom.setZoomLevel(5);
-		assert.equal(zoom.getZoomLevel(), 5);
+		Assert.equAl(zoom.getZoomLevel(), 5);
 
 		zoom.setZoomLevel(-1);
-		assert.equal(zoom.getZoomLevel(), -1);
+		Assert.equAl(zoom.getZoomLevel(), -1);
 
 		zoom.setZoomLevel(9);
-		assert.equal(zoom.getZoomLevel(), 9);
+		Assert.equAl(zoom.getZoomLevel(), 9);
 
 		zoom.setZoomLevel(-9);
-		assert.equal(zoom.getZoomLevel(), -5);
+		Assert.equAl(zoom.getZoomLevel(), -5);
 
 		zoom.setZoomLevel(20);
-		assert.equal(zoom.getZoomLevel(), 20);
+		Assert.equAl(zoom.getZoomLevel(), 20);
 
 		zoom.setZoomLevel(-10);
-		assert.equal(zoom.getZoomLevel(), -5);
+		Assert.equAl(zoom.getZoomLevel(), -5);
 
 		zoom.setZoomLevel(9.1);
-		assert.equal(zoom.getZoomLevel(), 9.1);
+		Assert.equAl(zoom.getZoomLevel(), 9.1);
 
 		zoom.setZoomLevel(-9.1);
-		assert.equal(zoom.getZoomLevel(), -5);
+		Assert.equAl(zoom.getZoomLevel(), -5);
 
 		zoom.setZoomLevel(Infinity);
-		assert.equal(zoom.getZoomLevel(), 20);
+		Assert.equAl(zoom.getZoomLevel(), 20);
 
 		zoom.setZoomLevel(Number.NEGATIVE_INFINITY);
-		assert.equal(zoom.getZoomLevel(), -5);
+		Assert.equAl(zoom.getZoomLevel(), -5);
 	});
 
-	class TestWrappingConfiguration extends TestConfiguration {
-		protected _getEnvConfiguration(): IEnvConfiguration {
+	clAss TestWrAppingConfigurAtion extends TestConfigurAtion {
+		protected _getEnvConfigurAtion(): IEnvConfigurAtion {
 			return {
-				extraEditorClassName: '',
+				extrAEditorClAssNAme: '',
 				outerWidth: 1000,
 				outerHeight: 100,
-				emptySelectionClipboard: true,
-				pixelRatio: 1,
+				emptySelectionClipboArd: true,
+				pixelRAtio: 1,
 				zoomLevel: 0,
-				accessibilitySupport: AccessibilitySupport.Unknown
+				AccessibilitySupport: AccessibilitySupport.Unknown
 			};
 		}
 	}
 
-	function assertWrapping(config: TestConfiguration, isViewportWrapping: boolean, wrappingColumn: number): void {
+	function AssertWrApping(config: TestConfigurAtion, isViewportWrApping: booleAn, wrAppingColumn: number): void {
 		const options = config.options;
-		const wrappingInfo = options.get(EditorOption.wrappingInfo);
-		assert.equal(wrappingInfo.isViewportWrapping, isViewportWrapping);
-		assert.equal(wrappingInfo.wrappingColumn, wrappingColumn);
+		const wrAppingInfo = options.get(EditorOption.wrAppingInfo);
+		Assert.equAl(wrAppingInfo.isViewportWrApping, isViewportWrApping);
+		Assert.equAl(wrAppingInfo.wrAppingColumn, wrAppingColumn);
 	}
 
-	test('wordWrap default', () => {
-		let config = new TestWrappingConfiguration({});
-		assertWrapping(config, false, -1);
+	test('wordWrAp defAult', () => {
+		let config = new TestWrAppingConfigurAtion({});
+		AssertWrApping(config, fAlse, -1);
 	});
 
-	test('wordWrap compat false', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: <any>false
+	test('wordWrAp compAt fAlse', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: <Any>fAlse
 		});
-		assertWrapping(config, false, -1);
+		AssertWrApping(config, fAlse, -1);
 	});
 
-	test('wordWrap compat true', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: <any>true
+	test('wordWrAp compAt true', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: <Any>true
 		});
-		assertWrapping(config, true, 80);
+		AssertWrApping(config, true, 80);
 	});
 
-	test('wordWrap on', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'on'
+	test('wordWrAp on', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'on'
 		});
-		assertWrapping(config, true, 80);
+		AssertWrApping(config, true, 80);
 	});
 
-	test('wordWrap on without minimap', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'on',
-			minimap: {
-				enabled: false
+	test('wordWrAp on without minimAp', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'on',
+			minimAp: {
+				enAbled: fAlse
 			}
 		});
-		assertWrapping(config, true, 88);
+		AssertWrApping(config, true, 88);
 	});
 
-	test('wordWrap on does not use wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'on',
-			wordWrapColumn: 10
+	test('wordWrAp on does not use wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'on',
+			wordWrApColumn: 10
 		});
-		assertWrapping(config, true, 80);
+		AssertWrApping(config, true, 80);
 	});
 
-	test('wordWrap off', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'off'
+	test('wordWrAp off', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'off'
 		});
-		assertWrapping(config, false, -1);
+		AssertWrApping(config, fAlse, -1);
 	});
 
-	test('wordWrap off does not use wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'off',
-			wordWrapColumn: 10
+	test('wordWrAp off does not use wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'off',
+			wordWrApColumn: 10
 		});
-		assertWrapping(config, false, -1);
+		AssertWrApping(config, fAlse, -1);
 	});
 
-	test('wordWrap wordWrapColumn uses default wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'wordWrapColumn'
+	test('wordWrAp wordWrApColumn uses defAult wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'wordWrApColumn'
 		});
-		assertWrapping(config, false, 80);
+		AssertWrApping(config, fAlse, 80);
 	});
 
-	test('wordWrap wordWrapColumn uses wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'wordWrapColumn',
-			wordWrapColumn: 100
+	test('wordWrAp wordWrApColumn uses wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'wordWrApColumn',
+			wordWrApColumn: 100
 		});
-		assertWrapping(config, false, 100);
+		AssertWrApping(config, fAlse, 100);
 	});
 
-	test('wordWrap wordWrapColumn validates wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'wordWrapColumn',
-			wordWrapColumn: -1
+	test('wordWrAp wordWrApColumn vAlidAtes wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'wordWrApColumn',
+			wordWrApColumn: -1
 		});
-		assertWrapping(config, false, 1);
+		AssertWrApping(config, fAlse, 1);
 	});
 
-	test('wordWrap bounded uses default wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'bounded'
+	test('wordWrAp bounded uses defAult wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'bounded'
 		});
-		assertWrapping(config, true, 80);
+		AssertWrApping(config, true, 80);
 	});
 
-	test('wordWrap bounded uses wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'bounded',
-			wordWrapColumn: 40
+	test('wordWrAp bounded uses wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'bounded',
+			wordWrApColumn: 40
 		});
-		assertWrapping(config, true, 40);
+		AssertWrApping(config, true, 40);
 	});
 
-	test('wordWrap bounded validates wordWrapColumn', () => {
-		let config = new TestWrappingConfiguration({
-			wordWrap: 'bounded',
-			wordWrapColumn: -1
+	test('wordWrAp bounded vAlidAtes wordWrApColumn', () => {
+		let config = new TestWrAppingConfigurAtion({
+			wordWrAp: 'bounded',
+			wordWrApColumn: -1
 		});
-		assertWrapping(config, true, 1);
+		AssertWrApping(config, true, 1);
 	});
 
-	test('issue #53152: Cannot assign to read only property \'enabled\' of object', () => {
+	test('issue #53152: CAnnot Assign to reAd only property \'enAbled\' of object', () => {
 		let hoverOptions: IEditorHoverOptions = {};
-		Object.defineProperty(hoverOptions, 'enabled', {
-			writable: false,
-			value: true
+		Object.defineProperty(hoverOptions, 'enAbled', {
+			writAble: fAlse,
+			vAlue: true
 		});
-		let config = new TestConfiguration({ hover: hoverOptions });
+		let config = new TestConfigurAtion({ hover: hoverOptions });
 
-		assert.equal(config.options.get(EditorOption.hover).enabled, true);
-		config.updateOptions({ hover: { enabled: false } });
-		assert.equal(config.options.get(EditorOption.hover).enabled, false);
+		Assert.equAl(config.options.get(EditorOption.hover).enAbled, true);
+		config.updAteOptions({ hover: { enAbled: fAlse } });
+		Assert.equAl(config.options.get(EditorOption.hover).enAbled, fAlse);
 	});
 
-	test('does not emit event when nothing changes', () => {
-		const config = new TestConfiguration({ glyphMargin: true, roundedSelection: false });
-		let event: ConfigurationChangedEvent | null = null;
-		config.onDidChange(e => event = e);
-		assert.equal(config.options.get(EditorOption.glyphMargin), true);
+	test('does not emit event when nothing chAnges', () => {
+		const config = new TestConfigurAtion({ glyphMArgin: true, roundedSelection: fAlse });
+		let event: ConfigurAtionChAngedEvent | null = null;
+		config.onDidChAnge(e => event = e);
+		Assert.equAl(config.options.get(EditorOption.glyphMArgin), true);
 
-		config.updateOptions({ glyphMargin: true });
-		config.updateOptions({ roundedSelection: false });
-		assert.equal(event, null);
+		config.updAteOptions({ glyphMArgin: true });
+		config.updAteOptions({ roundedSelection: fAlse });
+		Assert.equAl(event, null);
 	});
 
-	test('issue #94931: Unable to open source file', () => {
-		const config = new TestConfiguration({ quickSuggestions: null! });
-		const actual = <Readonly<Required<IQuickSuggestionsOptions>>>config.options.get(EditorOption.quickSuggestions);
-		assert.deepEqual(actual, {
+	test('issue #94931: UnAble to open source file', () => {
+		const config = new TestConfigurAtion({ quickSuggestions: null! });
+		const ActuAl = <ReAdonly<Required<IQuickSuggestionsOptions>>>config.options.get(EditorOption.quickSuggestions);
+		Assert.deepEquAl(ActuAl, {
 			other: true,
-			comments: false,
-			strings: false
+			comments: fAlse,
+			strings: fAlse
 		});
 	});
 
-	test('issue #102920: Can\'t snap or split view with JSON files', () => {
-		const config = new TestConfiguration({ quickSuggestions: null! });
-		config.updateOptions({ quickSuggestions: { strings: true } });
-		const actual = <Readonly<Required<IQuickSuggestionsOptions>>>config.options.get(EditorOption.quickSuggestions);
-		assert.deepEqual(actual, {
+	test('issue #102920: CAn\'t snAp or split view with JSON files', () => {
+		const config = new TestConfigurAtion({ quickSuggestions: null! });
+		config.updAteOptions({ quickSuggestions: { strings: true } });
+		const ActuAl = <ReAdonly<Required<IQuickSuggestionsOptions>>>config.options.get(EditorOption.quickSuggestions);
+		Assert.deepEquAl(ActuAl, {
 			other: true,
-			comments: false,
+			comments: fAlse,
 			strings: true
 		});
 	});

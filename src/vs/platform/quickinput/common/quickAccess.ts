@@ -1,204 +1,204 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IQuickPick, IQuickPickItem, IQuickNavigateConfiguration } from 'vs/platform/quickinput/common/quickInput';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { coalesce } from 'vs/base/common/arrays';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
-import { ItemActivation } from 'vs/base/parts/quickinput/common/quickInput';
+import { IQuickPick, IQuickPickItem, IQuickNAvigAteConfigurAtion } from 'vs/plAtform/quickinput/common/quickInput';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
+import { ItemActivAtion } from 'vs/bAse/pArts/quickinput/common/quickInput';
 
-export interface IQuickAccessOptions {
-
-	/**
-	 * Allows to enable quick navigate support in quick input.
-	 */
-	quickNavigateConfiguration?: IQuickNavigateConfiguration;
+export interfAce IQuickAccessOptions {
 
 	/**
-	 * Allows to configure a different item activation strategy.
-	 * By default the first item in the list will get activated.
+	 * Allows to enAble quick nAvigAte support in quick input.
 	 */
-	itemActivation?: ItemActivation;
+	quickNAvigAteConfigurAtion?: IQuickNAvigAteConfigurAtion;
 
 	/**
-	 * Whether to take the input value as is and not restore it
-	 * from any existing value if quick access is visible.
+	 * Allows to configure A different item ActivAtion strAtegy.
+	 * By defAult the first item in the list will get ActivAted.
 	 */
-	preserveValue?: boolean;
+	itemActivAtion?: ItemActivAtion;
+
+	/**
+	 * Whether to tAke the input vAlue As is And not restore it
+	 * from Any existing vAlue if quick Access is visible.
+	 */
+	preserveVAlue?: booleAn;
 }
 
-export interface IQuickAccessController {
+export interfAce IQuickAccessController {
 
 	/**
-	 * Open the quick access picker with the optional value prefilled.
+	 * Open the quick Access picker with the optionAl vAlue prefilled.
 	 */
-	show(value?: string, options?: IQuickAccessOptions): void;
+	show(vAlue?: string, options?: IQuickAccessOptions): void;
 }
 
-export enum DefaultQuickAccessFilterValue {
+export enum DefAultQuickAccessFilterVAlue {
 
 	/**
-	 * Keep the value as it is given to quick access.
+	 * Keep the vAlue As it is given to quick Access.
 	 */
 	PRESERVE = 0,
 
 	/**
-	 * Use the value that was used last time something was accepted from the picker.
+	 * Use the vAlue thAt wAs used lAst time something wAs Accepted from the picker.
 	 */
 	LAST = 1
 }
 
-export interface IQuickAccessProvider {
+export interfAce IQuickAccessProvider {
 
 	/**
-	 * Allows to set a default filter value when the provider opens. This can be:
-	 * - `undefined` to not specify any default value
-	 * - `DefaultFilterValues.PRESERVE` to use the value that was last typed
-	 * - `string` for the actual value to use
+	 * Allows to set A defAult filter vAlue when the provider opens. This cAn be:
+	 * - `undefined` to not specify Any defAult vAlue
+	 * - `DefAultFilterVAlues.PRESERVE` to use the vAlue thAt wAs lAst typed
+	 * - `string` for the ActuAl vAlue to use
 	 *
-	 * Note: the default filter will only be used if quick access was opened with
-	 * the exact prefix of the provider. Otherwise the filter value is preserved.
+	 * Note: the defAult filter will only be used if quick Access wAs opened with
+	 * the exAct prefix of the provider. Otherwise the filter vAlue is preserved.
 	 */
-	readonly defaultFilterValue?: string | DefaultQuickAccessFilterValue;
+	reAdonly defAultFilterVAlue?: string | DefAultQuickAccessFilterVAlue;
 
 	/**
-	 * Called whenever a prefix was typed into quick pick that matches the provider.
+	 * CAlled whenever A prefix wAs typed into quick pick thAt mAtches the provider.
 	 *
-	 * @param picker the picker to use for showing provider results. The picker is
-	 * automatically shown after the method returns, no need to call `show()`.
-	 * @param token providers have to check the cancellation token everytime after
-	 * a long running operation or from event handlers because it could be that the
-	 * picker has been closed or changed meanwhile. The token can be used to find out
-	 * that the picker was closed without picking an entry (e.g. was canceled by the user).
-	 * @return a disposable that will automatically be disposed when the picker
-	 * closes or is replaced by another picker.
+	 * @pArAm picker the picker to use for showing provider results. The picker is
+	 * AutomAticAlly shown After the method returns, no need to cAll `show()`.
+	 * @pArAm token providers hAve to check the cAncellAtion token everytime After
+	 * A long running operAtion or from event hAndlers becAuse it could be thAt the
+	 * picker hAs been closed or chAnged meAnwhile. The token cAn be used to find out
+	 * thAt the picker wAs closed without picking An entry (e.g. wAs cAnceled by the user).
+	 * @return A disposAble thAt will AutomAticAlly be disposed when the picker
+	 * closes or is replAced by Another picker.
 	 */
-	provide(picker: IQuickPick<IQuickPickItem>, token: CancellationToken): IDisposable;
+	provide(picker: IQuickPick<IQuickPickItem>, token: CAncellAtionToken): IDisposAble;
 }
 
-export interface IQuickAccessProviderHelp {
+export interfAce IQuickAccessProviderHelp {
 
 	/**
 	 * The prefix to show for the help entry. If not provided,
-	 * the prefix used for registration will be taken.
+	 * the prefix used for registrAtion will be tAken.
 	 */
 	prefix?: string;
 
 	/**
-	 * A description text to help understand the intent of the provider.
+	 * A description text to help understAnd the intent of the provider.
 	 */
 	description: string;
 
 	/**
-	 * Separation between provider for editors and global ones.
+	 * SepArAtion between provider for editors And globAl ones.
 	 */
-	needsEditor: boolean;
+	needsEditor: booleAn;
 }
 
-export interface IQuickAccessProviderDescriptor {
+export interfAce IQuickAccessProviderDescriptor {
 
 	/**
-	 * The actual provider that will be instantiated as needed.
+	 * The ActuAl provider thAt will be instAntiAted As needed.
 	 */
-	readonly ctor: { new(...services: any /* TS BrandedService but no clue how to type this properly */[]): IQuickAccessProvider };
+	reAdonly ctor: { new(...services: Any /* TS BrAndedService but no clue how to type this properly */[]): IQuickAccessProvider };
 
 	/**
-	 * The prefix for quick access picker to use the provider for.
+	 * The prefix for quick Access picker to use the provider for.
 	 */
-	readonly prefix: string;
+	reAdonly prefix: string;
 
 	/**
-	 * A placeholder to use for the input field when the provider is active.
-	 * This will also be read out by screen readers and thus helps for
-	 * accessibility.
+	 * A plAceholder to use for the input field when the provider is Active.
+	 * This will Also be reAd out by screen reAders And thus helps for
+	 * Accessibility.
 	 */
-	readonly placeholder?: string;
+	reAdonly plAceholder?: string;
 
 	/**
-	 * Documentation for the provider in the quick access help.
+	 * DocumentAtion for the provider in the quick Access help.
 	 */
-	readonly helpEntries: IQuickAccessProviderHelp[];
+	reAdonly helpEntries: IQuickAccessProviderHelp[];
 
 	/**
-	 * A context key that will be set automatically when the
+	 * A context key thAt will be set AutomAticAlly when the
 	 * picker for the provider is showing.
 	 */
-	readonly contextKey?: string;
+	reAdonly contextKey?: string;
 }
 
 export const Extensions = {
-	Quickaccess: 'workbench.contributions.quickaccess'
+	QuickAccess: 'workbench.contributions.quickAccess'
 };
 
-export interface IQuickAccessRegistry {
+export interfAce IQuickAccessRegistry {
 
 	/**
-	 * Registers a quick access provider to the platform.
+	 * Registers A quick Access provider to the plAtform.
 	 */
-	registerQuickAccessProvider(provider: IQuickAccessProviderDescriptor): IDisposable;
+	registerQuickAccessProvider(provider: IQuickAccessProviderDescriptor): IDisposAble;
 
 	/**
-	 * Get all registered quick access providers.
+	 * Get All registered quick Access providers.
 	 */
 	getQuickAccessProviders(): IQuickAccessProviderDescriptor[];
 
 	/**
-	 * Get a specific quick access provider for a given prefix.
+	 * Get A specific quick Access provider for A given prefix.
 	 */
 	getQuickAccessProvider(prefix: string): IQuickAccessProviderDescriptor | undefined;
 }
 
-export class QuickAccessRegistry implements IQuickAccessRegistry {
-	private providers: IQuickAccessProviderDescriptor[] = [];
-	private defaultProvider: IQuickAccessProviderDescriptor | undefined = undefined;
+export clAss QuickAccessRegistry implements IQuickAccessRegistry {
+	privAte providers: IQuickAccessProviderDescriptor[] = [];
+	privAte defAultProvider: IQuickAccessProviderDescriptor | undefined = undefined;
 
-	registerQuickAccessProvider(provider: IQuickAccessProviderDescriptor): IDisposable {
+	registerQuickAccessProvider(provider: IQuickAccessProviderDescriptor): IDisposAble {
 
-		// Extract the default provider when no prefix is present
+		// ExtrAct the defAult provider when no prefix is present
 		if (provider.prefix.length === 0) {
-			this.defaultProvider = provider;
+			this.defAultProvider = provider;
 		} else {
 			this.providers.push(provider);
 		}
 
-		// sort the providers by decreasing prefix length, such that longer
-		// prefixes take priority: 'ext' vs 'ext install' - the latter should win
+		// sort the providers by decreAsing prefix length, such thAt longer
+		// prefixes tAke priority: 'ext' vs 'ext instAll' - the lAtter should win
 		this.providers.sort((providerA, providerB) => providerB.prefix.length - providerA.prefix.length);
 
-		return toDisposable(() => {
+		return toDisposAble(() => {
 			this.providers.splice(this.providers.indexOf(provider), 1);
 
-			if (this.defaultProvider === provider) {
-				this.defaultProvider = undefined;
+			if (this.defAultProvider === provider) {
+				this.defAultProvider = undefined;
 			}
 		});
 	}
 
 	getQuickAccessProviders(): IQuickAccessProviderDescriptor[] {
-		return coalesce([this.defaultProvider, ...this.providers]);
+		return coAlesce([this.defAultProvider, ...this.providers]);
 	}
 
 	getQuickAccessProvider(prefix: string): IQuickAccessProviderDescriptor | undefined {
-		const result = prefix ? (this.providers.find(provider => prefix.startsWith(provider.prefix)) || undefined) : undefined;
+		const result = prefix ? (this.providers.find(provider => prefix.stArtsWith(provider.prefix)) || undefined) : undefined;
 
-		return result || this.defaultProvider;
+		return result || this.defAultProvider;
 	}
 
-	clear(): Function {
+	cleAr(): Function {
 		const providers = [...this.providers];
-		const defaultProvider = this.defaultProvider;
+		const defAultProvider = this.defAultProvider;
 
 		this.providers = [];
-		this.defaultProvider = undefined;
+		this.defAultProvider = undefined;
 
 		return () => {
 			this.providers = providers;
-			this.defaultProvider = defaultProvider;
+			this.defAultProvider = defAultProvider;
 		};
 	}
 }
 
-Registry.add(Extensions.Quickaccess, new QuickAccessRegistry());
+Registry.Add(Extensions.QuickAccess, new QuickAccessRegistry());

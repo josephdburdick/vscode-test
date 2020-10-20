@@ -1,148 +1,148 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { asPromise } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { Emitter } from 'vs/base/common/event';
-import { dispose, IDisposable } from 'vs/base/common/lifecycle';
-import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { IExtHostWorkspaceProvider } from 'vs/workbench/api/common/extHostWorkspace';
-import { InputBox, InputBoxOptions, QuickInput, QuickInputButton, QuickPick, QuickPickItem, QuickPickOptions, WorkspaceFolder, WorkspaceFolderPickOptions } from 'vscode';
-import { ExtHostQuickOpenShape, IMainContext, MainContext, MainThreadQuickOpenShape, TransferQuickPickItems, TransferQuickInput, TransferQuickInputButton } from './extHost.protocol';
-import { URI } from 'vs/base/common/uri';
-import { ThemeIcon, QuickInputButtons } from 'vs/workbench/api/common/extHostTypes';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { coalesce } from 'vs/base/common/arrays';
+import { AsPromise } from 'vs/bAse/common/Async';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { Emitter } from 'vs/bAse/common/event';
+import { dispose, IDisposAble } from 'vs/bAse/common/lifecycle';
+import { ExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { IExtHostWorkspAceProvider } from 'vs/workbench/Api/common/extHostWorkspAce';
+import { InputBox, InputBoxOptions, QuickInput, QuickInputButton, QuickPick, QuickPickItem, QuickPickOptions, WorkspAceFolder, WorkspAceFolderPickOptions } from 'vscode';
+import { ExtHostQuickOpenShApe, IMAinContext, MAinContext, MAinThreAdQuickOpenShApe, TrAnsferQuickPickItems, TrAnsferQuickInput, TrAnsferQuickInputButton } from './extHost.protocol';
+import { URI } from 'vs/bAse/common/uri';
+import { ThemeIcon, QuickInputButtons } from 'vs/workbench/Api/common/extHostTypes';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { coAlesce } from 'vs/bAse/common/ArrAys';
 
 export type Item = string | QuickPickItem;
 
-export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
+export clAss ExtHostQuickOpen implements ExtHostQuickOpenShApe {
 
-	private _proxy: MainThreadQuickOpenShape;
-	private _workspace: IExtHostWorkspaceProvider;
-	private _commands: ExtHostCommands;
+	privAte _proxy: MAinThreAdQuickOpenShApe;
+	privAte _workspAce: IExtHostWorkspAceProvider;
+	privAte _commAnds: ExtHostCommAnds;
 
-	private _onDidSelectItem?: (handle: number) => void;
-	private _validateInput?: (input: string) => string | undefined | null | Thenable<string | undefined | null>;
+	privAte _onDidSelectItem?: (hAndle: number) => void;
+	privAte _vAlidAteInput?: (input: string) => string | undefined | null | ThenAble<string | undefined | null>;
 
-	private _sessions = new Map<number, ExtHostQuickInput>();
+	privAte _sessions = new MAp<number, ExtHostQuickInput>();
 
-	private _instances = 0;
+	privAte _instAnces = 0;
 
-	constructor(mainContext: IMainContext, workspace: IExtHostWorkspaceProvider, commands: ExtHostCommands) {
-		this._proxy = mainContext.getProxy(MainContext.MainThreadQuickOpen);
-		this._workspace = workspace;
-		this._commands = commands;
+	constructor(mAinContext: IMAinContext, workspAce: IExtHostWorkspAceProvider, commAnds: ExtHostCommAnds) {
+		this._proxy = mAinContext.getProxy(MAinContext.MAinThreAdQuickOpen);
+		this._workspAce = workspAce;
+		this._commAnds = commAnds;
 	}
 
-	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enableProposedApi: boolean, options: QuickPickOptions & { canPickMany: true; }, token?: CancellationToken): Promise<QuickPickItem[] | undefined>;
-	showQuickPick(itemsOrItemsPromise: string[] | Promise<string[]>, enableProposedApi: boolean, options?: QuickPickOptions, token?: CancellationToken): Promise<string | undefined>;
-	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enableProposedApi: boolean, options?: QuickPickOptions, token?: CancellationToken): Promise<QuickPickItem | undefined>;
-	showQuickPick(itemsOrItemsPromise: Item[] | Promise<Item[]>, enableProposedApi: boolean, options?: QuickPickOptions, token: CancellationToken = CancellationToken.None): Promise<Item | Item[] | undefined> {
+	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enAbleProposedApi: booleAn, options: QuickPickOptions & { cAnPickMAny: true; }, token?: CAncellAtionToken): Promise<QuickPickItem[] | undefined>;
+	showQuickPick(itemsOrItemsPromise: string[] | Promise<string[]>, enAbleProposedApi: booleAn, options?: QuickPickOptions, token?: CAncellAtionToken): Promise<string | undefined>;
+	showQuickPick(itemsOrItemsPromise: QuickPickItem[] | Promise<QuickPickItem[]>, enAbleProposedApi: booleAn, options?: QuickPickOptions, token?: CAncellAtionToken): Promise<QuickPickItem | undefined>;
+	showQuickPick(itemsOrItemsPromise: Item[] | Promise<Item[]>, enAbleProposedApi: booleAn, options?: QuickPickOptions, token: CAncellAtionToken = CAncellAtionToken.None): Promise<Item | Item[] | undefined> {
 
-		// clear state from last invocation
+		// cleAr stAte from lAst invocAtion
 		this._onDidSelectItem = undefined;
 
 		const itemsPromise = <Promise<Item[]>>Promise.resolve(itemsOrItemsPromise);
 
-		const instance = ++this._instances;
+		const instAnce = ++this._instAnces;
 
-		const quickPickWidget = this._proxy.$show(instance, {
-			placeHolder: options && options.placeHolder,
-			matchOnDescription: options && options.matchOnDescription,
-			matchOnDetail: options && options.matchOnDetail,
+		const quickPickWidget = this._proxy.$show(instAnce, {
+			plAceHolder: options && options.plAceHolder,
+			mAtchOnDescription: options && options.mAtchOnDescription,
+			mAtchOnDetAil: options && options.mAtchOnDetAil,
 			ignoreFocusLost: options && options.ignoreFocusOut,
-			canPickMany: options && options.canPickMany
+			cAnPickMAny: options && options.cAnPickMAny
 		}, token);
 
-		const widgetClosedMarker = {};
-		const widgetClosedPromise = quickPickWidget.then(() => widgetClosedMarker);
+		const widgetClosedMArker = {};
+		const widgetClosedPromise = quickPickWidget.then(() => widgetClosedMArker);
 
-		return Promise.race([widgetClosedPromise, itemsPromise]).then(result => {
-			if (result === widgetClosedMarker) {
+		return Promise.rAce([widgetClosedPromise, itemsPromise]).then(result => {
+			if (result === widgetClosedMArker) {
 				return undefined;
 			}
 
 			return itemsPromise.then(items => {
 
-				const pickItems: TransferQuickPickItems[] = [];
-				for (let handle = 0; handle < items.length; handle++) {
+				const pickItems: TrAnsferQuickPickItems[] = [];
+				for (let hAndle = 0; hAndle < items.length; hAndle++) {
 
-					const item = items[handle];
-					let label: string;
+					const item = items[hAndle];
+					let lAbel: string;
 					let description: string | undefined;
-					let detail: string | undefined;
-					let picked: boolean | undefined;
-					let alwaysShow: boolean | undefined;
+					let detAil: string | undefined;
+					let picked: booleAn | undefined;
+					let AlwAysShow: booleAn | undefined;
 
 					if (typeof item === 'string') {
-						label = item;
+						lAbel = item;
 					} else {
-						label = item.label;
+						lAbel = item.lAbel;
 						description = item.description;
-						detail = item.detail;
+						detAil = item.detAil;
 						picked = item.picked;
-						alwaysShow = item.alwaysShow;
+						AlwAysShow = item.AlwAysShow;
 					}
 					pickItems.push({
-						label,
+						lAbel,
 						description,
-						handle,
-						detail,
+						hAndle,
+						detAil,
 						picked,
-						alwaysShow
+						AlwAysShow
 					});
 				}
 
-				// handle selection changes
+				// hAndle selection chAnges
 				if (options && typeof options.onDidSelectItem === 'function') {
-					this._onDidSelectItem = (handle) => {
-						options.onDidSelectItem!(items[handle]);
+					this._onDidSelectItem = (hAndle) => {
+						options.onDidSelectItem!(items[hAndle]);
 					};
 				}
 
 				// show items
-				this._proxy.$setItems(instance, pickItems);
+				this._proxy.$setItems(instAnce, pickItems);
 
-				return quickPickWidget.then(handle => {
-					if (typeof handle === 'number') {
-						return items[handle];
-					} else if (Array.isArray(handle)) {
-						return handle.map(h => items[h]);
+				return quickPickWidget.then(hAndle => {
+					if (typeof hAndle === 'number') {
+						return items[hAndle];
+					} else if (ArrAy.isArrAy(hAndle)) {
+						return hAndle.mAp(h => items[h]);
 					}
 					return undefined;
 				});
 			});
 		}).then(undefined, err => {
-			if (isPromiseCanceledError(err)) {
+			if (isPromiseCAnceledError(err)) {
 				return undefined;
 			}
 
-			this._proxy.$setError(instance, err);
+			this._proxy.$setError(instAnce, err);
 
 			return Promise.reject(err);
 		});
 	}
 
-	$onItemSelected(handle: number): void {
+	$onItemSelected(hAndle: number): void {
 		if (this._onDidSelectItem) {
-			this._onDidSelectItem(handle);
+			this._onDidSelectItem(hAndle);
 		}
 	}
 
 	// ---- input
 
-	showInput(options?: InputBoxOptions, token: CancellationToken = CancellationToken.None): Promise<string | undefined> {
+	showInput(options?: InputBoxOptions, token: CAncellAtionToken = CAncellAtionToken.None): Promise<string | undefined> {
 
-		// global validate fn used in callback below
-		this._validateInput = options ? options.validateInput : undefined;
+		// globAl vAlidAte fn used in cAllbAck below
+		this._vAlidAteInput = options ? options.vAlidAteInput : undefined;
 
-		return this._proxy.$input(options, typeof this._validateInput === 'function', token)
+		return this._proxy.$input(options, typeof this._vAlidAteInput === 'function', token)
 			.then(undefined, err => {
-				if (isPromiseCanceledError(err)) {
+				if (isPromiseCAnceledError(err)) {
 					return undefined;
 				}
 
@@ -150,45 +150,45 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 			});
 	}
 
-	$validateInput(input: string): Promise<string | null | undefined> {
-		if (this._validateInput) {
-			return asPromise(() => this._validateInput!(input));
+	$vAlidAteInput(input: string): Promise<string | null | undefined> {
+		if (this._vAlidAteInput) {
+			return AsPromise(() => this._vAlidAteInput!(input));
 		}
 		return Promise.resolve(undefined);
 	}
 
-	// ---- workspace folder picker
+	// ---- workspAce folder picker
 
-	async showWorkspaceFolderPick(options?: WorkspaceFolderPickOptions, token = CancellationToken.None): Promise<WorkspaceFolder | undefined> {
-		const selectedFolder = await this._commands.executeCommand<WorkspaceFolder>('_workbench.pickWorkspaceFolder', [options]);
+	Async showWorkspAceFolderPick(options?: WorkspAceFolderPickOptions, token = CAncellAtionToken.None): Promise<WorkspAceFolder | undefined> {
+		const selectedFolder = AwAit this._commAnds.executeCommAnd<WorkspAceFolder>('_workbench.pickWorkspAceFolder', [options]);
 		if (!selectedFolder) {
 			return undefined;
 		}
-		const workspaceFolders = await this._workspace.getWorkspaceFolders2();
-		if (!workspaceFolders) {
+		const workspAceFolders = AwAit this._workspAce.getWorkspAceFolders2();
+		if (!workspAceFolders) {
 			return undefined;
 		}
-		return workspaceFolders.find(folder => folder.uri.toString() === selectedFolder.uri.toString());
+		return workspAceFolders.find(folder => folder.uri.toString() === selectedFolder.uri.toString());
 	}
 
 	// ---- QuickInput
 
-	createQuickPick<T extends QuickPickItem>(extensionId: ExtensionIdentifier, enableProposedApi: boolean): QuickPick<T> {
-		const session: ExtHostQuickPick<T> = new ExtHostQuickPick(this._proxy, extensionId, enableProposedApi, () => this._sessions.delete(session._id));
+	creAteQuickPick<T extends QuickPickItem>(extensionId: ExtensionIdentifier, enAbleProposedApi: booleAn): QuickPick<T> {
+		const session: ExtHostQuickPick<T> = new ExtHostQuickPick(this._proxy, extensionId, enAbleProposedApi, () => this._sessions.delete(session._id));
 		this._sessions.set(session._id, session);
 		return session;
 	}
 
-	createInputBox(extensionId: ExtensionIdentifier): InputBox {
+	creAteInputBox(extensionId: ExtensionIdentifier): InputBox {
 		const session: ExtHostInputBox = new ExtHostInputBox(this._proxy, extensionId, () => this._sessions.delete(session._id));
 		this._sessions.set(session._id, session);
 		return session;
 	}
 
-	$onDidChangeValue(sessionId: number, value: string): void {
+	$onDidChAngeVAlue(sessionId: number, vAlue: string): void {
 		const session = this._sessions.get(sessionId);
 		if (session) {
-			session._fireDidChangeValue(value);
+			session._fireDidChAngeVAlue(vAlue);
 		}
 	}
 
@@ -199,24 +199,24 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 		}
 	}
 
-	$onDidChangeActive(sessionId: number, handles: number[]): void {
+	$onDidChAngeActive(sessionId: number, hAndles: number[]): void {
 		const session = this._sessions.get(sessionId);
-		if (session instanceof ExtHostQuickPick) {
-			session._fireDidChangeActive(handles);
+		if (session instAnceof ExtHostQuickPick) {
+			session._fireDidChAngeActive(hAndles);
 		}
 	}
 
-	$onDidChangeSelection(sessionId: number, handles: number[]): void {
+	$onDidChAngeSelection(sessionId: number, hAndles: number[]): void {
 		const session = this._sessions.get(sessionId);
-		if (session instanceof ExtHostQuickPick) {
-			session._fireDidChangeSelection(handles);
+		if (session instAnceof ExtHostQuickPick) {
+			session._fireDidChAngeSelection(hAndles);
 		}
 	}
 
-	$onDidTriggerButton(sessionId: number, handle: number): void {
+	$onDidTriggerButton(sessionId: number, hAndle: number): void {
 		const session = this._sessions.get(sessionId);
 		if (session) {
-			session._fireDidTriggerButton(handle);
+			session._fireDidTriggerButton(hAndle);
 		}
 	}
 
@@ -228,39 +228,39 @@ export class ExtHostQuickOpen implements ExtHostQuickOpenShape {
 	}
 }
 
-class ExtHostQuickInput implements QuickInput {
+clAss ExtHostQuickInput implements QuickInput {
 
-	private static _nextId = 1;
+	privAte stAtic _nextId = 1;
 	_id = ExtHostQuickPick._nextId++;
 
-	private _title: string | undefined;
-	private _steps: number | undefined;
-	private _totalSteps: number | undefined;
-	private _visible = false;
-	private _expectingHide = false;
-	private _enabled = true;
-	private _busy = false;
-	private _ignoreFocusOut = true;
-	private _value = '';
-	private _placeholder: string | undefined;
-	private _buttons: QuickInputButton[] = [];
-	private _handlesToButtons = new Map<number, QuickInputButton>();
-	private readonly _onDidAcceptEmitter = new Emitter<void>();
-	private readonly _onDidChangeValueEmitter = new Emitter<string>();
-	private readonly _onDidTriggerButtonEmitter = new Emitter<QuickInputButton>();
-	private readonly _onDidHideEmitter = new Emitter<void>();
-	private _updateTimeout: any;
-	private _pendingUpdate: TransferQuickInput = { id: this._id };
+	privAte _title: string | undefined;
+	privAte _steps: number | undefined;
+	privAte _totAlSteps: number | undefined;
+	privAte _visible = fAlse;
+	privAte _expectingHide = fAlse;
+	privAte _enAbled = true;
+	privAte _busy = fAlse;
+	privAte _ignoreFocusOut = true;
+	privAte _vAlue = '';
+	privAte _plAceholder: string | undefined;
+	privAte _buttons: QuickInputButton[] = [];
+	privAte _hAndlesToButtons = new MAp<number, QuickInputButton>();
+	privAte reAdonly _onDidAcceptEmitter = new Emitter<void>();
+	privAte reAdonly _onDidChAngeVAlueEmitter = new Emitter<string>();
+	privAte reAdonly _onDidTriggerButtonEmitter = new Emitter<QuickInputButton>();
+	privAte reAdonly _onDidHideEmitter = new Emitter<void>();
+	privAte _updAteTimeout: Any;
+	privAte _pendingUpdAte: TrAnsferQuickInput = { id: this._id };
 
-	private _disposed = false;
-	protected _disposables: IDisposable[] = [
+	privAte _disposed = fAlse;
+	protected _disposAbles: IDisposAble[] = [
 		this._onDidTriggerButtonEmitter,
 		this._onDidHideEmitter,
 		this._onDidAcceptEmitter,
-		this._onDidChangeValueEmitter
+		this._onDidChAngeVAlueEmitter
 	];
 
-	constructor(protected _proxy: MainThreadQuickOpenShape, protected _extensionId: ExtensionIdentifier, private _onDidDispose: () => void) {
+	constructor(protected _proxy: MAinThreAdQuickOpenShApe, protected _extensionId: ExtensionIdentifier, privAte _onDidDispose: () => void) {
 	}
 
 	get title() {
@@ -269,7 +269,7 @@ class ExtHostQuickInput implements QuickInput {
 
 	set title(title: string | undefined) {
 		this._title = title;
-		this.update({ title });
+		this.updAte({ title });
 	}
 
 	get step() {
@@ -278,64 +278,64 @@ class ExtHostQuickInput implements QuickInput {
 
 	set step(step: number | undefined) {
 		this._steps = step;
-		this.update({ step });
+		this.updAte({ step });
 	}
 
-	get totalSteps() {
-		return this._totalSteps;
+	get totAlSteps() {
+		return this._totAlSteps;
 	}
 
-	set totalSteps(totalSteps: number | undefined) {
-		this._totalSteps = totalSteps;
-		this.update({ totalSteps });
+	set totAlSteps(totAlSteps: number | undefined) {
+		this._totAlSteps = totAlSteps;
+		this.updAte({ totAlSteps });
 	}
 
-	get enabled() {
-		return this._enabled;
+	get enAbled() {
+		return this._enAbled;
 	}
 
-	set enabled(enabled: boolean) {
-		this._enabled = enabled;
-		this.update({ enabled });
+	set enAbled(enAbled: booleAn) {
+		this._enAbled = enAbled;
+		this.updAte({ enAbled });
 	}
 
 	get busy() {
 		return this._busy;
 	}
 
-	set busy(busy: boolean) {
+	set busy(busy: booleAn) {
 		this._busy = busy;
-		this.update({ busy });
+		this.updAte({ busy });
 	}
 
 	get ignoreFocusOut() {
 		return this._ignoreFocusOut;
 	}
 
-	set ignoreFocusOut(ignoreFocusOut: boolean) {
+	set ignoreFocusOut(ignoreFocusOut: booleAn) {
 		this._ignoreFocusOut = ignoreFocusOut;
-		this.update({ ignoreFocusOut });
+		this.updAte({ ignoreFocusOut });
 	}
 
-	get value() {
-		return this._value;
+	get vAlue() {
+		return this._vAlue;
 	}
 
-	set value(value: string) {
-		this._value = value;
-		this.update({ value });
+	set vAlue(vAlue: string) {
+		this._vAlue = vAlue;
+		this.updAte({ vAlue });
 	}
 
-	get placeholder() {
-		return this._placeholder;
+	get plAceholder() {
+		return this._plAceholder;
 	}
 
-	set placeholder(placeholder: string | undefined) {
-		this._placeholder = placeholder;
-		this.update({ placeholder });
+	set plAceholder(plAceholder: string | undefined) {
+		this._plAceholder = plAceholder;
+		this.updAte({ plAceholder });
 	}
 
-	onDidChangeValue = this._onDidChangeValueEmitter.event;
+	onDidChAngeVAlue = this._onDidChAngeVAlueEmitter.event;
 
 	onDidAccept = this._onDidAcceptEmitter.event;
 
@@ -345,16 +345,16 @@ class ExtHostQuickInput implements QuickInput {
 
 	set buttons(buttons: QuickInputButton[]) {
 		this._buttons = buttons.slice();
-		this._handlesToButtons.clear();
-		buttons.forEach((button, i) => {
-			const handle = button === QuickInputButtons.Back ? -1 : i;
-			this._handlesToButtons.set(handle, button);
+		this._hAndlesToButtons.cleAr();
+		buttons.forEAch((button, i) => {
+			const hAndle = button === QuickInputButtons.BAck ? -1 : i;
+			this._hAndlesToButtons.set(hAndle, button);
 		});
-		this.update({
-			buttons: buttons.map<TransferQuickInputButton>((button, i) => ({
-				iconPath: getIconUris(button.iconPath),
+		this.updAte({
+			buttons: buttons.mAp<TrAnsferQuickInputButton>((button, i) => ({
+				iconPAth: getIconUris(button.iconPAth),
 				tooltip: button.tooltip,
-				handle: button === QuickInputButtons.Back ? -1 : i,
+				hAndle: button === QuickInputButtons.BAck ? -1 : i,
 			}))
 		});
 	}
@@ -364,12 +364,12 @@ class ExtHostQuickInput implements QuickInput {
 	show(): void {
 		this._visible = true;
 		this._expectingHide = true;
-		this.update({ visible: true });
+		this.updAte({ visible: true });
 	}
 
 	hide(): void {
-		this._visible = false;
-		this.update({ visible: false });
+		this._visible = fAlse;
+		this.updAte({ visible: fAlse });
 	}
 
 	onDidHide = this._onDidHideEmitter.event;
@@ -378,13 +378,13 @@ class ExtHostQuickInput implements QuickInput {
 		this._onDidAcceptEmitter.fire();
 	}
 
-	_fireDidChangeValue(value: string) {
-		this._value = value;
-		this._onDidChangeValueEmitter.fire(value);
+	_fireDidChAngeVAlue(vAlue: string) {
+		this._vAlue = vAlue;
+		this._onDidChAngeVAlueEmitter.fire(vAlue);
 	}
 
-	_fireDidTriggerButton(handle: number) {
-		const button = this._handlesToButtons.get(handle);
+	_fireDidTriggerButton(hAndle: number) {
+		const button = this._hAndlesToButtons.get(hAndle);
 		if (button) {
 			this._onDidTriggerButtonEmitter.fire(button);
 		}
@@ -392,7 +392,7 @@ class ExtHostQuickInput implements QuickInput {
 
 	_fireDidHide() {
 		if (this._expectingHide) {
-			this._expectingHide = false;
+			this._expectingHide = fAlse;
 			this._onDidHideEmitter.fire();
 		}
 	}
@@ -403,90 +403,90 @@ class ExtHostQuickInput implements QuickInput {
 		}
 		this._disposed = true;
 		this._fireDidHide();
-		this._disposables = dispose(this._disposables);
-		if (this._updateTimeout) {
-			clearTimeout(this._updateTimeout);
-			this._updateTimeout = undefined;
+		this._disposAbles = dispose(this._disposAbles);
+		if (this._updAteTimeout) {
+			cleArTimeout(this._updAteTimeout);
+			this._updAteTimeout = undefined;
 		}
 		this._onDidDispose();
 		this._proxy.$dispose(this._id);
 	}
 
-	protected update(properties: Record<string, any>): void {
+	protected updAte(properties: Record<string, Any>): void {
 		if (this._disposed) {
 			return;
 		}
 		for (const key of Object.keys(properties)) {
-			const value = properties[key];
-			this._pendingUpdate[key] = value === undefined ? null : value;
+			const vAlue = properties[key];
+			this._pendingUpdAte[key] = vAlue === undefined ? null : vAlue;
 		}
 
-		if ('visible' in this._pendingUpdate) {
-			if (this._updateTimeout) {
-				clearTimeout(this._updateTimeout);
-				this._updateTimeout = undefined;
+		if ('visible' in this._pendingUpdAte) {
+			if (this._updAteTimeout) {
+				cleArTimeout(this._updAteTimeout);
+				this._updAteTimeout = undefined;
 			}
-			this.dispatchUpdate();
-		} else if (this._visible && !this._updateTimeout) {
-			// Defer the update so that multiple changes to setters dont cause a redraw each
-			this._updateTimeout = setTimeout(() => {
-				this._updateTimeout = undefined;
-				this.dispatchUpdate();
+			this.dispAtchUpdAte();
+		} else if (this._visible && !this._updAteTimeout) {
+			// Defer the updAte so thAt multiple chAnges to setters dont cAuse A redrAw eAch
+			this._updAteTimeout = setTimeout(() => {
+				this._updAteTimeout = undefined;
+				this.dispAtchUpdAte();
 			}, 0);
 		}
 	}
 
-	private dispatchUpdate() {
-		this._proxy.$createOrUpdate(this._pendingUpdate);
-		this._pendingUpdate = { id: this._id };
+	privAte dispAtchUpdAte() {
+		this._proxy.$creAteOrUpdAte(this._pendingUpdAte);
+		this._pendingUpdAte = { id: this._id };
 	}
 }
 
-function getIconUris(iconPath: QuickInputButton['iconPath']): { dark: URI, light?: URI } | { id: string } {
-	if (iconPath instanceof ThemeIcon) {
-		return { id: iconPath.id };
+function getIconUris(iconPAth: QuickInputButton['iconPAth']): { dArk: URI, light?: URI } | { id: string } {
+	if (iconPAth instAnceof ThemeIcon) {
+		return { id: iconPAth.id };
 	}
-	const dark = getDarkIconUri(iconPath as any);
-	const light = getLightIconUri(iconPath as any);
-	return { dark, light };
+	const dArk = getDArkIconUri(iconPAth As Any);
+	const light = getLightIconUri(iconPAth As Any);
+	return { dArk, light };
 }
 
-function getLightIconUri(iconPath: string | URI | { light: URI; dark: URI; }) {
-	return getIconUri(typeof iconPath === 'object' && 'light' in iconPath ? iconPath.light : iconPath);
+function getLightIconUri(iconPAth: string | URI | { light: URI; dArk: URI; }) {
+	return getIconUri(typeof iconPAth === 'object' && 'light' in iconPAth ? iconPAth.light : iconPAth);
 }
 
-function getDarkIconUri(iconPath: string | URI | { light: URI; dark: URI; }) {
-	return getIconUri(typeof iconPath === 'object' && 'dark' in iconPath ? iconPath.dark : iconPath);
+function getDArkIconUri(iconPAth: string | URI | { light: URI; dArk: URI; }) {
+	return getIconUri(typeof iconPAth === 'object' && 'dArk' in iconPAth ? iconPAth.dArk : iconPAth);
 }
 
-function getIconUri(iconPath: string | URI) {
-	if (URI.isUri(iconPath)) {
-		return iconPath;
+function getIconUri(iconPAth: string | URI) {
+	if (URI.isUri(iconPAth)) {
+		return iconPAth;
 	}
-	return URI.file(iconPath);
+	return URI.file(iconPAth);
 }
 
-class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implements QuickPick<T> {
+clAss ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implements QuickPick<T> {
 
-	private _items: T[] = [];
-	private _handlesToItems = new Map<number, T>();
-	private _itemsToHandles = new Map<T, number>();
-	private _canSelectMany = false;
-	private _matchOnDescription = true;
-	private _matchOnDetail = true;
-	private _sortByLabel = true;
-	private _activeItems: T[] = [];
-	private readonly _onDidChangeActiveEmitter = new Emitter<T[]>();
-	private _selectedItems: T[] = [];
-	private readonly _onDidChangeSelectionEmitter = new Emitter<T[]>();
+	privAte _items: T[] = [];
+	privAte _hAndlesToItems = new MAp<number, T>();
+	privAte _itemsToHAndles = new MAp<T, number>();
+	privAte _cAnSelectMAny = fAlse;
+	privAte _mAtchOnDescription = true;
+	privAte _mAtchOnDetAil = true;
+	privAte _sortByLAbel = true;
+	privAte _ActiveItems: T[] = [];
+	privAte reAdonly _onDidChAngeActiveEmitter = new Emitter<T[]>();
+	privAte _selectedItems: T[] = [];
+	privAte reAdonly _onDidChAngeSelectionEmitter = new Emitter<T[]>();
 
-	constructor(proxy: MainThreadQuickOpenShape, extensionId: ExtensionIdentifier, enableProposedApi: boolean, onDispose: () => void) {
+	constructor(proxy: MAinThreAdQuickOpenShApe, extensionId: ExtensionIdentifier, enAbleProposedApi: booleAn, onDispose: () => void) {
 		super(proxy, extensionId, onDispose);
-		this._disposables.push(
-			this._onDidChangeActiveEmitter,
-			this._onDidChangeSelectionEmitter,
+		this._disposAbles.push(
+			this._onDidChAngeActiveEmitter,
+			this._onDidChAngeSelectionEmitter,
 		);
-		this.update({ type: 'quickPick' });
+		this.updAte({ type: 'quickPick' });
 	}
 
 	get items() {
@@ -495,113 +495,113 @@ class ExtHostQuickPick<T extends QuickPickItem> extends ExtHostQuickInput implem
 
 	set items(items: T[]) {
 		this._items = items.slice();
-		this._handlesToItems.clear();
-		this._itemsToHandles.clear();
-		items.forEach((item, i) => {
-			this._handlesToItems.set(i, item);
-			this._itemsToHandles.set(item, i);
+		this._hAndlesToItems.cleAr();
+		this._itemsToHAndles.cleAr();
+		items.forEAch((item, i) => {
+			this._hAndlesToItems.set(i, item);
+			this._itemsToHAndles.set(item, i);
 		});
-		this.update({
-			items: items.map((item, i) => ({
-				label: item.label,
+		this.updAte({
+			items: items.mAp((item, i) => ({
+				lAbel: item.lAbel,
 				description: item.description,
-				handle: i,
-				detail: item.detail,
+				hAndle: i,
+				detAil: item.detAil,
 				picked: item.picked,
-				alwaysShow: item.alwaysShow
+				AlwAysShow: item.AlwAysShow
 			}))
 		});
 	}
 
-	get canSelectMany() {
-		return this._canSelectMany;
+	get cAnSelectMAny() {
+		return this._cAnSelectMAny;
 	}
 
-	set canSelectMany(canSelectMany: boolean) {
-		this._canSelectMany = canSelectMany;
-		this.update({ canSelectMany });
+	set cAnSelectMAny(cAnSelectMAny: booleAn) {
+		this._cAnSelectMAny = cAnSelectMAny;
+		this.updAte({ cAnSelectMAny });
 	}
 
-	get matchOnDescription() {
-		return this._matchOnDescription;
+	get mAtchOnDescription() {
+		return this._mAtchOnDescription;
 	}
 
-	set matchOnDescription(matchOnDescription: boolean) {
-		this._matchOnDescription = matchOnDescription;
-		this.update({ matchOnDescription });
+	set mAtchOnDescription(mAtchOnDescription: booleAn) {
+		this._mAtchOnDescription = mAtchOnDescription;
+		this.updAte({ mAtchOnDescription });
 	}
 
-	get matchOnDetail() {
-		return this._matchOnDetail;
+	get mAtchOnDetAil() {
+		return this._mAtchOnDetAil;
 	}
 
-	set matchOnDetail(matchOnDetail: boolean) {
-		this._matchOnDetail = matchOnDetail;
-		this.update({ matchOnDetail });
+	set mAtchOnDetAil(mAtchOnDetAil: booleAn) {
+		this._mAtchOnDetAil = mAtchOnDetAil;
+		this.updAte({ mAtchOnDetAil });
 	}
 
-	get sortByLabel() {
-		return this._sortByLabel;
+	get sortByLAbel() {
+		return this._sortByLAbel;
 	}
 
-	set sortByLabel(sortByLabel: boolean) {
-		this._sortByLabel = sortByLabel;
-		this.update({ sortByLabel });
+	set sortByLAbel(sortByLAbel: booleAn) {
+		this._sortByLAbel = sortByLAbel;
+		this.updAte({ sortByLAbel });
 	}
 
-	get activeItems() {
-		return this._activeItems;
+	get ActiveItems() {
+		return this._ActiveItems;
 	}
 
-	set activeItems(activeItems: T[]) {
-		this._activeItems = activeItems.filter(item => this._itemsToHandles.has(item));
-		this.update({ activeItems: this._activeItems.map(item => this._itemsToHandles.get(item)) });
+	set ActiveItems(ActiveItems: T[]) {
+		this._ActiveItems = ActiveItems.filter(item => this._itemsToHAndles.hAs(item));
+		this.updAte({ ActiveItems: this._ActiveItems.mAp(item => this._itemsToHAndles.get(item)) });
 	}
 
-	onDidChangeActive = this._onDidChangeActiveEmitter.event;
+	onDidChAngeActive = this._onDidChAngeActiveEmitter.event;
 
 	get selectedItems() {
 		return this._selectedItems;
 	}
 
 	set selectedItems(selectedItems: T[]) {
-		this._selectedItems = selectedItems.filter(item => this._itemsToHandles.has(item));
-		this.update({ selectedItems: this._selectedItems.map(item => this._itemsToHandles.get(item)) });
+		this._selectedItems = selectedItems.filter(item => this._itemsToHAndles.hAs(item));
+		this.updAte({ selectedItems: this._selectedItems.mAp(item => this._itemsToHAndles.get(item)) });
 	}
 
-	onDidChangeSelection = this._onDidChangeSelectionEmitter.event;
+	onDidChAngeSelection = this._onDidChAngeSelectionEmitter.event;
 
-	_fireDidChangeActive(handles: number[]) {
-		const items = coalesce(handles.map(handle => this._handlesToItems.get(handle)));
-		this._activeItems = items;
-		this._onDidChangeActiveEmitter.fire(items);
+	_fireDidChAngeActive(hAndles: number[]) {
+		const items = coAlesce(hAndles.mAp(hAndle => this._hAndlesToItems.get(hAndle)));
+		this._ActiveItems = items;
+		this._onDidChAngeActiveEmitter.fire(items);
 	}
 
-	_fireDidChangeSelection(handles: number[]) {
-		const items = coalesce(handles.map(handle => this._handlesToItems.get(handle)));
+	_fireDidChAngeSelection(hAndles: number[]) {
+		const items = coAlesce(hAndles.mAp(hAndle => this._hAndlesToItems.get(hAndle)));
 		this._selectedItems = items;
-		this._onDidChangeSelectionEmitter.fire(items);
+		this._onDidChAngeSelectionEmitter.fire(items);
 	}
 }
 
-class ExtHostInputBox extends ExtHostQuickInput implements InputBox {
+clAss ExtHostInputBox extends ExtHostQuickInput implements InputBox {
 
-	private _password = false;
-	private _prompt: string | undefined;
-	private _validationMessage: string | undefined;
+	privAte _pAssword = fAlse;
+	privAte _prompt: string | undefined;
+	privAte _vAlidAtionMessAge: string | undefined;
 
-	constructor(proxy: MainThreadQuickOpenShape, extensionId: ExtensionIdentifier, onDispose: () => void) {
+	constructor(proxy: MAinThreAdQuickOpenShApe, extensionId: ExtensionIdentifier, onDispose: () => void) {
 		super(proxy, extensionId, onDispose);
-		this.update({ type: 'inputBox' });
+		this.updAte({ type: 'inputBox' });
 	}
 
-	get password() {
-		return this._password;
+	get pAssword() {
+		return this._pAssword;
 	}
 
-	set password(password: boolean) {
-		this._password = password;
-		this.update({ password });
+	set pAssword(pAssword: booleAn) {
+		this._pAssword = pAssword;
+		this.updAte({ pAssword });
 	}
 
 	get prompt() {
@@ -610,15 +610,15 @@ class ExtHostInputBox extends ExtHostQuickInput implements InputBox {
 
 	set prompt(prompt: string | undefined) {
 		this._prompt = prompt;
-		this.update({ prompt });
+		this.updAte({ prompt });
 	}
 
-	get validationMessage() {
-		return this._validationMessage;
+	get vAlidAtionMessAge() {
+		return this._vAlidAtionMessAge;
 	}
 
-	set validationMessage(validationMessage: string | undefined) {
-		this._validationMessage = validationMessage;
-		this.update({ validationMessage });
+	set vAlidAtionMessAge(vAlidAtionMessAge: string | undefined) {
+		this._vAlidAtionMessAge = vAlidAtionMessAge;
+		this.updAte({ vAlidAtionMessAge });
 	}
 }

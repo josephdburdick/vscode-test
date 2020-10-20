@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as strings from 'vs/base/common/strings';
-import { IPatternInfo } from 'vs/workbench/services/search/common/search';
-import { CharCode } from 'vs/base/common/charCode';
-import { buildReplaceStringWithCasePreserved } from 'vs/base/common/search';
+import * As strings from 'vs/bAse/common/strings';
+import { IPAtternInfo } from 'vs/workbench/services/seArch/common/seArch';
+import { ChArCode } from 'vs/bAse/common/chArCode';
+import { buildReplAceStringWithCAsePreserved } from 'vs/bAse/common/seArch';
 
-export class ReplacePattern {
+export clAss ReplAcePAttern {
 
-	private _replacePattern: string;
-	private _hasParameters: boolean = false;
-	private _regExp: RegExp;
-	private _caseOpsRegExp: RegExp;
+	privAte _replAcePAttern: string;
+	privAte _hAsPArAmeters: booleAn = fAlse;
+	privAte _regExp: RegExp;
+	privAte _cAseOpsRegExp: RegExp;
 
-	constructor(replaceString: string, searchPatternInfo: IPatternInfo)
-	constructor(replaceString: string, parseParameters: boolean, regEx: RegExp)
-	constructor(replaceString: string, arg2: any, arg3?: any) {
-		this._replacePattern = replaceString;
-		let searchPatternInfo: IPatternInfo;
-		let parseParameters: boolean;
-		if (typeof arg2 === 'boolean') {
-			parseParameters = arg2;
-			this._regExp = arg3;
+	constructor(replAceString: string, seArchPAtternInfo: IPAtternInfo)
+	constructor(replAceString: string, pArsePArAmeters: booleAn, regEx: RegExp)
+	constructor(replAceString: string, Arg2: Any, Arg3?: Any) {
+		this._replAcePAttern = replAceString;
+		let seArchPAtternInfo: IPAtternInfo;
+		let pArsePArAmeters: booleAn;
+		if (typeof Arg2 === 'booleAn') {
+			pArsePArAmeters = Arg2;
+			this._regExp = Arg3;
 
 		} else {
-			searchPatternInfo = arg2;
-			parseParameters = !!searchPatternInfo.isRegExp;
-			this._regExp = strings.createRegExp(searchPatternInfo.pattern, !!searchPatternInfo.isRegExp, { matchCase: searchPatternInfo.isCaseSensitive, wholeWord: searchPatternInfo.isWordMatch, multiline: searchPatternInfo.isMultiline, global: false, unicode: true });
+			seArchPAtternInfo = Arg2;
+			pArsePArAmeters = !!seArchPAtternInfo.isRegExp;
+			this._regExp = strings.creAteRegExp(seArchPAtternInfo.pAttern, !!seArchPAtternInfo.isRegExp, { mAtchCAse: seArchPAtternInfo.isCAseSensitive, wholeWord: seArchPAtternInfo.isWordMAtch, multiline: seArchPAtternInfo.isMultiline, globAl: fAlse, unicode: true });
 		}
 
-		if (parseParameters) {
-			this.parseReplaceString(replaceString);
+		if (pArsePArAmeters) {
+			this.pArseReplAceString(replAceString);
 		}
 
-		if (this._regExp.global) {
-			this._regExp = strings.createRegExp(this._regExp.source, true, { matchCase: !this._regExp.ignoreCase, wholeWord: false, multiline: this._regExp.multiline, global: false });
+		if (this._regExp.globAl) {
+			this._regExp = strings.creAteRegExp(this._regExp.source, true, { mAtchCAse: !this._regExp.ignoreCAse, wholeWord: fAlse, multiline: this._regExp.multiline, globAl: fAlse });
 		}
 
-		this._caseOpsRegExp = new RegExp(/([^\\]*?)((?:\\[uUlL])+?|)(\$[0-9]+)(.*?)/g);
+		this._cAseOpsRegExp = new RegExp(/([^\\]*?)((?:\\[uUlL])+?|)(\$[0-9]+)(.*?)/g);
 	}
 
-	get hasParameters(): boolean {
-		return this._hasParameters;
+	get hAsPArAmeters(): booleAn {
+		return this._hAsPArAmeters;
 	}
 
-	get pattern(): string {
-		return this._replacePattern;
+	get pAttern(): string {
+		return this._replAcePAttern;
 	}
 
 	get regExp(): RegExp {
@@ -55,109 +55,109 @@ export class ReplacePattern {
 	}
 
 	/**
-	* Returns the replace string for the first match in the given text.
-	* If text has no matches then returns null.
+	* Returns the replAce string for the first mAtch in the given text.
+	* If text hAs no mAtches then returns null.
 	*/
-	getReplaceString(text: string, preserveCase?: boolean): string | null {
-		this._regExp.lastIndex = 0;
-		const match = this._regExp.exec(text);
-		if (match) {
-			if (this.hasParameters) {
-				const replaceString = this.replaceWithCaseOperations(text, this._regExp, this.buildReplaceString(match, preserveCase));
-				if (match[0] === text) {
-					return replaceString;
+	getReplAceString(text: string, preserveCAse?: booleAn): string | null {
+		this._regExp.lAstIndex = 0;
+		const mAtch = this._regExp.exec(text);
+		if (mAtch) {
+			if (this.hAsPArAmeters) {
+				const replAceString = this.replAceWithCAseOperAtions(text, this._regExp, this.buildReplAceString(mAtch, preserveCAse));
+				if (mAtch[0] === text) {
+					return replAceString;
 				}
-				return replaceString.substr(match.index, match[0].length - (text.length - replaceString.length));
+				return replAceString.substr(mAtch.index, mAtch[0].length - (text.length - replAceString.length));
 			}
-			return this.buildReplaceString(match, preserveCase);
+			return this.buildReplAceString(mAtch, preserveCAse);
 		}
 
 		return null;
 	}
 
 	/**
-	 * replaceWithCaseOperations applies case operations to relevant replacement strings and applies
-	 * the affected $N arguments. It then passes unaffected $N arguments through to string.replace().
+	 * replAceWithCAseOperAtions Applies cAse operAtions to relevAnt replAcement strings And Applies
+	 * the Affected $N Arguments. It then pAsses unAffected $N Arguments through to string.replAce().
 	 *
-	 * \u			=> upper-cases one character in a match.
-	 * \U			=> upper-cases ALL remaining characters in a match.
-	 * \l			=> lower-cases one character in a match.
-	 * \L			=> lower-cases ALL remaining characters in a match.
+	 * \u			=> upper-cAses one chArActer in A mAtch.
+	 * \U			=> upper-cAses ALL remAining chArActers in A mAtch.
+	 * \l			=> lower-cAses one chArActer in A mAtch.
+	 * \L			=> lower-cAses ALL remAining chArActers in A mAtch.
 	 */
-	private replaceWithCaseOperations(text: string, regex: RegExp, replaceString: string): string {
-		// Short-circuit the common path.
-		if (!/\\[uUlL]/.test(replaceString)) {
-			return text.replace(regex, replaceString);
+	privAte replAceWithCAseOperAtions(text: string, regex: RegExp, replAceString: string): string {
+		// Short-circuit the common pAth.
+		if (!/\\[uUlL]/.test(replAceString)) {
+			return text.replAce(regex, replAceString);
 		}
-		// Store the values of the search parameters.
-		const firstMatch = regex.exec(text);
-		if (firstMatch === null) {
-			return text.replace(regex, replaceString);
+		// Store the vAlues of the seArch pArAmeters.
+		const firstMAtch = regex.exec(text);
+		if (firstMAtch === null) {
+			return text.replAce(regex, replAceString);
 		}
 
-		let patMatch: RegExpExecArray | null;
-		let newReplaceString = '';
-		let lastIndex = 0;
-		let lastMatch = '';
-		// For each annotated $N, perform text processing on the parameters and perform the substitution.
-		while ((patMatch = this._caseOpsRegExp.exec(replaceString)) !== null) {
-			lastIndex = patMatch.index;
-			const fullMatch = patMatch[0];
-			lastMatch = fullMatch;
-			let caseOps = patMatch[2]; // \u, \l\u, etc.
-			const money = patMatch[3]; // $1, $2, etc.
+		let pAtMAtch: RegExpExecArrAy | null;
+		let newReplAceString = '';
+		let lAstIndex = 0;
+		let lAstMAtch = '';
+		// For eAch AnnotAted $N, perform text processing on the pArAmeters And perform the substitution.
+		while ((pAtMAtch = this._cAseOpsRegExp.exec(replAceString)) !== null) {
+			lAstIndex = pAtMAtch.index;
+			const fullMAtch = pAtMAtch[0];
+			lAstMAtch = fullMAtch;
+			let cAseOps = pAtMAtch[2]; // \u, \l\u, etc.
+			const money = pAtMAtch[3]; // $1, $2, etc.
 
-			if (!caseOps) {
-				newReplaceString += fullMatch;
+			if (!cAseOps) {
+				newReplAceString += fullMAtch;
 				continue;
 			}
-			const replacement = firstMatch[parseInt(money.slice(1))];
-			if (!replacement) {
-				newReplaceString += fullMatch;
+			const replAcement = firstMAtch[pArseInt(money.slice(1))];
+			if (!replAcement) {
+				newReplAceString += fullMAtch;
 				continue;
 			}
-			const replacementLen = replacement.length;
+			const replAcementLen = replAcement.length;
 
-			newReplaceString += patMatch[1]; // prefix
-			caseOps = caseOps.replace(/\\/g, '');
+			newReplAceString += pAtMAtch[1]; // prefix
+			cAseOps = cAseOps.replAce(/\\/g, '');
 			let i = 0;
-			for (; i < caseOps.length; i++) {
-				switch (caseOps[i]) {
-					case 'U':
-						newReplaceString += replacement.slice(i).toUpperCase();
-						i = replacementLen;
-						break;
-					case 'u':
-						newReplaceString += replacement[i].toUpperCase();
-						break;
-					case 'L':
-						newReplaceString += replacement.slice(i).toLowerCase();
-						i = replacementLen;
-						break;
-					case 'l':
-						newReplaceString += replacement[i].toLowerCase();
-						break;
+			for (; i < cAseOps.length; i++) {
+				switch (cAseOps[i]) {
+					cAse 'U':
+						newReplAceString += replAcement.slice(i).toUpperCAse();
+						i = replAcementLen;
+						breAk;
+					cAse 'u':
+						newReplAceString += replAcement[i].toUpperCAse();
+						breAk;
+					cAse 'L':
+						newReplAceString += replAcement.slice(i).toLowerCAse();
+						i = replAcementLen;
+						breAk;
+					cAse 'l':
+						newReplAceString += replAcement[i].toLowerCAse();
+						breAk;
 				}
 			}
-			// Append any remaining replacement string content not covered by case operations.
-			if (i < replacementLen) {
-				newReplaceString += replacement.slice(i);
+			// Append Any remAining replAcement string content not covered by cAse operAtions.
+			if (i < replAcementLen) {
+				newReplAceString += replAcement.slice(i);
 			}
 
-			newReplaceString += patMatch[4]; // suffix
+			newReplAceString += pAtMAtch[4]; // suffix
 		}
 
-		// Append any remaining trailing content after the final regex match.
-		newReplaceString += replaceString.slice(lastIndex + lastMatch.length);
+		// Append Any remAining trAiling content After the finAl regex mAtch.
+		newReplAceString += replAceString.slice(lAstIndex + lAstMAtch.length);
 
-		return text.replace(regex, newReplaceString);
+		return text.replAce(regex, newReplAceString);
 	}
 
-	public buildReplaceString(matches: string[] | null, preserveCase?: boolean): string {
-		if (preserveCase) {
-			return buildReplaceStringWithCasePreserved(matches, this._replacePattern);
+	public buildReplAceString(mAtches: string[] | null, preserveCAse?: booleAn): string {
+		if (preserveCAse) {
+			return buildReplAceStringWithCAsePreserved(mAtches, this._replAcePAttern);
 		} else {
-			return this._replacePattern;
+			return this._replAcePAttern;
 		}
 	}
 
@@ -165,119 +165,119 @@ export class ReplacePattern {
 	 * \n => LF
 	 * \t => TAB
 	 * \\ => \
-	 * $0 => $& (see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#Specifying_a_string_as_a_parameter)
-	 * everything else stays untouched
+	 * $0 => $& (see https://developer.mozillA.org/en-US/docs/Web/JAvAScript/Reference/GlobAl_Objects/String/replAce#Specifying_A_string_As_A_pArAmeter)
+	 * everything else stAys untouched
 	 */
-	private parseReplaceString(replaceString: string): void {
-		if (!replaceString || replaceString.length === 0) {
+	privAte pArseReplAceString(replAceString: string): void {
+		if (!replAceString || replAceString.length === 0) {
 			return;
 		}
 
 		let substrFrom = 0, result = '';
-		for (let i = 0, len = replaceString.length; i < len; i++) {
-			const chCode = replaceString.charCodeAt(i);
+		for (let i = 0, len = replAceString.length; i < len; i++) {
+			const chCode = replAceString.chArCodeAt(i);
 
-			if (chCode === CharCode.Backslash) {
+			if (chCode === ChArCode.BAckslAsh) {
 
-				// move to next char
+				// move to next chAr
 				i++;
 
 				if (i >= len) {
-					// string ends with a \
-					break;
+					// string ends with A \
+					breAk;
 				}
 
-				const nextChCode = replaceString.charCodeAt(i);
-				let replaceWithCharacter: string | null = null;
+				const nextChCode = replAceString.chArCodeAt(i);
+				let replAceWithChArActer: string | null = null;
 
 				switch (nextChCode) {
-					case CharCode.Backslash:
+					cAse ChArCode.BAckslAsh:
 						// \\ => \
-						replaceWithCharacter = '\\';
-						break;
-					case CharCode.n:
+						replAceWithChArActer = '\\';
+						breAk;
+					cAse ChArCode.n:
 						// \n => LF
-						replaceWithCharacter = '\n';
-						break;
-					case CharCode.t:
+						replAceWithChArActer = '\n';
+						breAk;
+					cAse ChArCode.t:
 						// \t => TAB
-						replaceWithCharacter = '\t';
-						break;
+						replAceWithChArActer = '\t';
+						breAk;
 				}
 
-				if (replaceWithCharacter) {
-					result += replaceString.substring(substrFrom, i - 1) + replaceWithCharacter;
+				if (replAceWithChArActer) {
+					result += replAceString.substring(substrFrom, i - 1) + replAceWithChArActer;
 					substrFrom = i + 1;
 				}
 			}
 
-			if (chCode === CharCode.DollarSign) {
+			if (chCode === ChArCode.DollArSign) {
 
-				// move to next char
+				// move to next chAr
 				i++;
 
 				if (i >= len) {
-					// string ends with a $
-					break;
+					// string ends with A $
+					breAk;
 				}
 
-				const nextChCode = replaceString.charCodeAt(i);
-				let replaceWithCharacter: string | null = null;
+				const nextChCode = replAceString.chArCodeAt(i);
+				let replAceWithChArActer: string | null = null;
 
 				switch (nextChCode) {
-					case CharCode.Digit0:
+					cAse ChArCode.Digit0:
 						// $0 => $&
-						replaceWithCharacter = '$&';
-						this._hasParameters = true;
-						break;
-					case CharCode.BackTick:
-					case CharCode.SingleQuote:
-						this._hasParameters = true;
-						break;
-					default:
-						// check if it is a valid string parameter $n (0 <= n <= 99). $0 is already handled by now.
-						if (!this.between(nextChCode, CharCode.Digit1, CharCode.Digit9)) {
-							break;
+						replAceWithChArActer = '$&';
+						this._hAsPArAmeters = true;
+						breAk;
+					cAse ChArCode.BAckTick:
+					cAse ChArCode.SingleQuote:
+						this._hAsPArAmeters = true;
+						breAk;
+					defAult:
+						// check if it is A vAlid string pArAmeter $n (0 <= n <= 99). $0 is AlreAdy hAndled by now.
+						if (!this.between(nextChCode, ChArCode.Digit1, ChArCode.Digit9)) {
+							breAk;
 						}
-						if (i === replaceString.length - 1) {
-							this._hasParameters = true;
-							break;
+						if (i === replAceString.length - 1) {
+							this._hAsPArAmeters = true;
+							breAk;
 						}
-						let charCode = replaceString.charCodeAt(++i);
-						if (!this.between(charCode, CharCode.Digit0, CharCode.Digit9)) {
-							this._hasParameters = true;
+						let chArCode = replAceString.chArCodeAt(++i);
+						if (!this.between(chArCode, ChArCode.Digit0, ChArCode.Digit9)) {
+							this._hAsPArAmeters = true;
 							--i;
-							break;
+							breAk;
 						}
-						if (i === replaceString.length - 1) {
-							this._hasParameters = true;
-							break;
+						if (i === replAceString.length - 1) {
+							this._hAsPArAmeters = true;
+							breAk;
 						}
-						charCode = replaceString.charCodeAt(++i);
-						if (!this.between(charCode, CharCode.Digit0, CharCode.Digit9)) {
-							this._hasParameters = true;
+						chArCode = replAceString.chArCodeAt(++i);
+						if (!this.between(chArCode, ChArCode.Digit0, ChArCode.Digit9)) {
+							this._hAsPArAmeters = true;
 							--i;
-							break;
+							breAk;
 						}
-						break;
+						breAk;
 				}
 
-				if (replaceWithCharacter) {
-					result += replaceString.substring(substrFrom, i - 1) + replaceWithCharacter;
+				if (replAceWithChArActer) {
+					result += replAceString.substring(substrFrom, i - 1) + replAceWithChArActer;
 					substrFrom = i + 1;
 				}
 			}
 		}
 
 		if (substrFrom === 0) {
-			// no replacement occurred
+			// no replAcement occurred
 			return;
 		}
 
-		this._replacePattern = result + replaceString.substring(substrFrom);
+		this._replAcePAttern = result + replAceString.substring(substrFrom);
 	}
 
-	private between(value: number, from: number, to: number): boolean {
-		return from <= value && value <= to;
+	privAte between(vAlue: number, from: number, to: number): booleAn {
+		return from <= vAlue && vAlue <= to;
 	}
 }

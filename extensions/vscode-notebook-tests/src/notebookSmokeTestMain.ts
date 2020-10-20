@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as child_process from 'child_process';
-import * as path from 'path';
+import * As vscode from 'vscode';
+import * As child_process from 'child_process';
+import * As pAth from 'pAth';
 
-function wait(ms: number): Promise<void> {
+function wAit(ms: number): Promise<void> {
 	return new Promise(r => setTimeout(r, ms));
 }
 
-export function smokeTestActivate(context: vscode.ExtensionContext): any {
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-notebook-tests.createNewNotebook', async () => {
-		const workspacePath = vscode.workspace.workspaceFolders![0].uri.fsPath;
-		const notebookPath = path.join(workspacePath, 'test.smoke-nb');
-		child_process.execSync('echo \'\' > ' + notebookPath);
-		await wait(500);
-		await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(notebookPath));
+export function smokeTestActivAte(context: vscode.ExtensionContext): Any {
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('vscode-notebook-tests.creAteNewNotebook', Async () => {
+		const workspAcePAth = vscode.workspAce.workspAceFolders![0].uri.fsPAth;
+		const notebookPAth = pAth.join(workspAcePAth, 'test.smoke-nb');
+		child_process.execSync('echo \'\' > ' + notebookPAth);
+		AwAit wAit(500);
+		AwAit vscode.commAnds.executeCommAnd('vscode.open', vscode.Uri.file(notebookPAth));
 	}));
 
 	context.subscriptions.push(vscode.notebook.registerNotebookContentProvider('notebookSmokeTest', {
-		onDidChangeNotebook: new vscode.EventEmitter<vscode.NotebookDocumentEditEvent>().event,
-		openNotebook: async (_resource: vscode.Uri) => {
-			const dto: vscode.NotebookData = {
-				languages: ['typescript'],
-				metadata: {},
+		onDidChAngeNotebook: new vscode.EventEmitter<vscode.NotebookDocumentEditEvent>().event,
+		openNotebook: Async (_resource: vscode.Uri) => {
+			const dto: vscode.NotebookDAtA = {
+				lAnguAges: ['typescript'],
+				metAdAtA: {},
 				cells: [
 					{
 						source: 'code()',
-						language: 'typescript',
+						lAnguAge: 'typescript',
 						cellKind: vscode.CellKind.Code,
 						outputs: [],
-						metadata: {
-							custom: { testCellMetadata: 123 }
+						metAdAtA: {
+							custom: { testCellMetAdAtA: 123 }
 						}
 					},
 					{
-						source: 'Markdown Cell',
-						language: 'markdown',
-						cellKind: vscode.CellKind.Markdown,
+						source: 'MArkdown Cell',
+						lAnguAge: 'mArkdown',
+						cellKind: vscode.CellKind.MArkdown,
 						outputs: [],
-						metadata: {
-							custom: { testCellMetadata: 123 }
+						metAdAtA: {
+							custom: { testCellMetAdAtA: 123 }
 						}
 					}
 				]
@@ -50,16 +50,16 @@ export function smokeTestActivate(context: vscode.ExtensionContext): any {
 
 			return dto;
 		},
-		resolveNotebook: async (_document: vscode.NotebookDocument) => {
+		resolveNotebook: Async (_document: vscode.NotebookDocument) => {
 			return;
 		},
-		saveNotebook: async (_document: vscode.NotebookDocument, _cancellation: vscode.CancellationToken) => {
+		sAveNotebook: Async (_document: vscode.NotebookDocument, _cAncellAtion: vscode.CAncellAtionToken) => {
 			return;
 		},
-		saveNotebookAs: async (_targetResource: vscode.Uri, _document: vscode.NotebookDocument, _cancellation: vscode.CancellationToken) => {
+		sAveNotebookAs: Async (_tArgetResource: vscode.Uri, _document: vscode.NotebookDocument, _cAncellAtion: vscode.CAncellAtionToken) => {
 			return;
 		},
-		backupNotebook: async (_document: vscode.NotebookDocument, _context: vscode.NotebookDocumentBackupContext, _cancellation: vscode.CancellationToken) => {
+		bAckupNotebook: Async (_document: vscode.NotebookDocument, _context: vscode.NotebookDocumentBAckupContext, _cAncellAtion: vscode.CAncellAtionToken) => {
 			return {
 				id: '1',
 				delete: () => { }
@@ -68,47 +68,47 @@ export function smokeTestActivate(context: vscode.ExtensionContext): any {
 	}));
 
 	const kernel: vscode.NotebookKernel = {
-		label: 'notebookSmokeTest',
+		lAbel: 'notebookSmokeTest',
 		isPreferred: true,
-		executeAllCells: async (_document: vscode.NotebookDocument) => {
+		executeAllCells: Async (_document: vscode.NotebookDocument) => {
 			for (let i = 0; i < _document.cells.length; i++) {
 				_document.cells[i].outputs = [{
 					outputKind: vscode.CellOutputKind.Rich,
-					data: {
+					dAtA: {
 						'text/html': ['test output']
 					}
 				}];
 			}
 		},
-		cancelAllCellsExecution: async () => { },
-		executeCell: async (_document: vscode.NotebookDocument, _cell: vscode.NotebookCell | undefined) => {
+		cAncelAllCellsExecution: Async () => { },
+		executeCell: Async (_document: vscode.NotebookDocument, _cell: vscode.NotebookCell | undefined) => {
 			if (!_cell) {
 				_cell = _document.cells[0];
 			}
 
 			_cell.outputs = [{
 				outputKind: vscode.CellOutputKind.Rich,
-				data: {
+				dAtA: {
 					'text/html': ['test output']
 				}
 			}];
 			return;
 		},
-		cancelCellExecution: async () => { }
+		cAncelCellExecution: Async () => { }
 	};
 
-	context.subscriptions.push(vscode.notebook.registerNotebookKernelProvider({ filenamePattern: '*.smoke-nb' }, {
-		provideKernels: async () => {
+	context.subscriptions.push(vscode.notebook.registerNotebookKernelProvider({ filenAmePAttern: '*.smoke-nb' }, {
+		provideKernels: Async () => {
 			return [kernel];
 		}
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-notebook-tests.debugAction', async (cell: vscode.NotebookCell) => {
+	context.subscriptions.push(vscode.commAnds.registerCommAnd('vscode-notebook-tests.debugAction', Async (cell: vscode.NotebookCell) => {
 		if (cell) {
-			const edit = new vscode.WorkspaceEdit();
-			const fullRange = new vscode.Range(0, 0, cell.document.lineCount - 1, cell.document.lineAt(cell.document.lineCount - 1).range.end.character);
-			edit.replace(cell.document.uri, fullRange, 'test');
-			await vscode.workspace.applyEdit(edit);
+			const edit = new vscode.WorkspAceEdit();
+			const fullRAnge = new vscode.RAnge(0, 0, cell.document.lineCount - 1, cell.document.lineAt(cell.document.lineCount - 1).rAnge.end.chArActer);
+			edit.replAce(cell.document.uri, fullRAnge, 'test');
+			AwAit vscode.workspAce.ApplyEdit(edit);
 		} else {
 			throw new Error('Cell not set correctly');
 		}

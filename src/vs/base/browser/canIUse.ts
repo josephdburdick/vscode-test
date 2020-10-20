@@ -1,58 +1,58 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as browser from 'vs/base/browser/browser';
-import * as platform from 'vs/base/common/platform';
+import * As browser from 'vs/bAse/browser/browser';
+import * As plAtform from 'vs/bAse/common/plAtform';
 
-export const enum KeyboardSupport {
-	Always,
+export const enum KeyboArdSupport {
+	AlwAys,
 	FullScreen,
 	None
 }
 
 /**
- * Browser feature we can support in current platform, browser and environment.
+ * Browser feAture we cAn support in current plAtform, browser And environment.
  */
-export const BrowserFeatures = {
-	clipboard: {
+export const BrowserFeAtures = {
+	clipboArd: {
 		writeText: (
-			platform.isNative
-			|| (document.queryCommandSupported && document.queryCommandSupported('copy'))
-			|| !!(navigator && navigator.clipboard && navigator.clipboard.writeText)
+			plAtform.isNAtive
+			|| (document.queryCommAndSupported && document.queryCommAndSupported('copy'))
+			|| !!(nAvigAtor && nAvigAtor.clipboArd && nAvigAtor.clipboArd.writeText)
 		),
-		readText: (
-			platform.isNative
-			|| !!(navigator && navigator.clipboard && navigator.clipboard.readText)
+		reAdText: (
+			plAtform.isNAtive
+			|| !!(nAvigAtor && nAvigAtor.clipboArd && nAvigAtor.clipboArd.reAdText)
 		),
 		richText: (() => {
 			if (browser.isEdge) {
-				let index = navigator.userAgent.indexOf('Edge/');
-				let version = parseInt(navigator.userAgent.substring(index + 5, navigator.userAgent.indexOf('.', index)), 10);
+				let index = nAvigAtor.userAgent.indexOf('Edge/');
+				let version = pArseInt(nAvigAtor.userAgent.substring(index + 5, nAvigAtor.userAgent.indexOf('.', index)), 10);
 
 				if (!version || (version >= 12 && version <= 16)) {
-					return false;
+					return fAlse;
 				}
 			}
 
 			return true;
 		})()
 	},
-	keyboard: (() => {
-		if (platform.isNative || browser.isStandalone) {
-			return KeyboardSupport.Always;
+	keyboArd: (() => {
+		if (plAtform.isNAtive || browser.isStAndAlone) {
+			return KeyboArdSupport.AlwAys;
 		}
 
-		if ((<any>navigator).keyboard || browser.isSafari) {
-			return KeyboardSupport.FullScreen;
+		if ((<Any>nAvigAtor).keyboArd || browser.isSAfAri) {
+			return KeyboArdSupport.FullScreen;
 		}
 
-		return KeyboardSupport.None;
+		return KeyboArdSupport.None;
 	})(),
 
-	// 'ontouchstart' in window always evaluates to true with typescript's modern typings. This causes `window` to be
-	// `never` later in `window.navigator`. That's why we need the explicit `window as Window` cast
-	touch: 'ontouchstart' in window || navigator.maxTouchPoints > 0 || (window as Window).navigator.msMaxTouchPoints > 0,
-	pointerEvents: window.PointerEvent && ('ontouchstart' in window || (window as Window).navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0 || (window as Window).navigator.msMaxTouchPoints > 0)
+	// 'ontouchstArt' in window AlwAys evAluAtes to true with typescript's modern typings. This cAuses `window` to be
+	// `never` lAter in `window.nAvigAtor`. ThAt's why we need the explicit `window As Window` cAst
+	touch: 'ontouchstArt' in window || nAvigAtor.mAxTouchPoints > 0 || (window As Window).nAvigAtor.msMAxTouchPoints > 0,
+	pointerEvents: window.PointerEvent && ('ontouchstArt' in window || (window As Window).nAvigAtor.mAxTouchPoints > 0 || nAvigAtor.mAxTouchPoints > 0 || (window As Window).nAvigAtor.msMAxTouchPoints > 0)
 };

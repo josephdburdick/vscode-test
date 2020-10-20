@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from 'vs/base/common/lifecycle';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { MainThreadCustomEditors } from 'vs/workbench/api/browser/mainThreadCustomEditors';
-import { MainThreadWebviewPanels } from 'vs/workbench/api/browser/mainThreadWebviewPanels';
-import { MainThreadWebviews } from 'vs/workbench/api/browser/mainThreadWebviews';
-import { MainThreadWebviewsViews } from 'vs/workbench/api/browser/mainThreadWebviewViews';
-import * as extHostProtocol from 'vs/workbench/api/common/extHost.protocol';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { MAinThreAdCustomEditors } from 'vs/workbench/Api/browser/mAinThreAdCustomEditors';
+import { MAinThreAdWebviewPAnels } from 'vs/workbench/Api/browser/mAinThreAdWebviewPAnels';
+import { MAinThreAdWebviews } from 'vs/workbench/Api/browser/mAinThreAdWebviews';
+import { MAinThreAdWebviewsViews } from 'vs/workbench/Api/browser/mAinThreAdWebviewViews';
+import * As extHostProtocol from 'vs/workbench/Api/common/extHost.protocol';
 import { extHostCustomer } from '../common/extHostCustomers';
 
 @extHostCustomer
-export class MainThreadWebviewManager extends Disposable {
+export clAss MAinThreAdWebviewMAnAger extends DisposAble {
 	constructor(
 		context: extHostProtocol.IExtHostContext,
-		@IInstantiationService instantiationService: IInstantiationService,
+		@IInstAntiAtionService instAntiAtionService: IInstAntiAtionService,
 	) {
 		super();
 
-		const webviews = this._register(instantiationService.createInstance(MainThreadWebviews, context));
-		context.set(extHostProtocol.MainContext.MainThreadWebviews, webviews);
+		const webviews = this._register(instAntiAtionService.creAteInstAnce(MAinThreAdWebviews, context));
+		context.set(extHostProtocol.MAinContext.MAinThreAdWebviews, webviews);
 
-		const webviewPanels = this._register(instantiationService.createInstance(MainThreadWebviewPanels, context, webviews));
-		context.set(extHostProtocol.MainContext.MainThreadWebviewPanels, webviewPanels);
+		const webviewPAnels = this._register(instAntiAtionService.creAteInstAnce(MAinThreAdWebviewPAnels, context, webviews));
+		context.set(extHostProtocol.MAinContext.MAinThreAdWebviewPAnels, webviewPAnels);
 
-		const customEditors = this._register(instantiationService.createInstance(MainThreadCustomEditors, context, webviews, webviewPanels));
-		context.set(extHostProtocol.MainContext.MainThreadCustomEditors, customEditors);
+		const customEditors = this._register(instAntiAtionService.creAteInstAnce(MAinThreAdCustomEditors, context, webviews, webviewPAnels));
+		context.set(extHostProtocol.MAinContext.MAinThreAdCustomEditors, customEditors);
 
-		const webviewViews = this._register(instantiationService.createInstance(MainThreadWebviewsViews, context, webviews));
-		context.set(extHostProtocol.MainContext.MainThreadWebviewViews, webviewViews);
+		const webviewViews = this._register(instAntiAtionService.creAteInstAnce(MAinThreAdWebviewsViews, context, webviews));
+		context.set(extHostProtocol.MAinContext.MAinThreAdWebviewViews, webviewViews);
 	}
 }

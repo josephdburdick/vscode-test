@@ -1,65 +1,65 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { normalizeGitHubUrl } from 'vs/platform/issue/common/issueReporterUtil';
-import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { IProductService } from 'vs/platform/product/common/productService';
+import { URI } from 'vs/bAse/common/uri';
+import { normAlizeGitHubUrl } from 'vs/plAtform/issue/common/issueReporterUtil';
+import { IExtensionMAnAgementService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { ExtensionType } from 'vs/plAtform/extensions/common/extensions';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { IProductService } from 'vs/plAtform/product/common/productService';
 
-export const IWebIssueService = createDecorator<IWebIssueService>('webIssueService');
+export const IWebIssueService = creAteDecorAtor<IWebIssueService>('webIssueService');
 
-export interface IIssueReporterOptions {
+export interfAce IIssueReporterOptions {
 	extensionId?: string;
 }
 
-export interface IWebIssueService {
-	readonly _serviceBrand: undefined;
+export interfAce IWebIssueService {
+	reAdonly _serviceBrAnd: undefined;
 	openReporter(options?: IIssueReporterOptions): Promise<void>;
 }
 
-export class WebIssueService implements IWebIssueService {
-	declare readonly _serviceBrand: undefined;
+export clAss WebIssueService implements IWebIssueService {
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@IProductService private readonly productService: IProductService
+		@IExtensionMAnAgementService privAte reAdonly extensionMAnAgementService: IExtensionMAnAgementService,
+		@IOpenerService privAte reAdonly openerService: IOpenerService,
+		@IProductService privAte reAdonly productService: IProductService
 	) { }
 
-	async openReporter(options: IIssueReporterOptions): Promise<void> {
+	Async openReporter(options: IIssueReporterOptions): Promise<void> {
 		let repositoryUrl = this.productService.reportIssueUrl;
 		if (options.extensionId) {
-			const extensionGitHubUrl = await this.getExtensionGitHubUrl(options.extensionId);
+			const extensionGitHubUrl = AwAit this.getExtensionGitHubUrl(options.extensionId);
 			if (extensionGitHubUrl) {
 				repositoryUrl = extensionGitHubUrl + '/issues/new';
 			}
 		}
 
 		if (repositoryUrl) {
-			return this.openerService.open(URI.parse(repositoryUrl)).then(_ => { });
+			return this.openerService.open(URI.pArse(repositoryUrl)).then(_ => { });
 		} else {
-			throw new Error(`Unable to find issue reporting url for ${options.extensionId}`);
+			throw new Error(`UnAble to find issue reporting url for ${options.extensionId}`);
 		}
 	}
 
-	private async getExtensionGitHubUrl(extensionId: string): Promise<string> {
+	privAte Async getExtensionGitHubUrl(extensionId: string): Promise<string> {
 		let repositoryUrl = '';
 
-		const extensions = await this.extensionManagementService.getInstalled(ExtensionType.User);
+		const extensions = AwAit this.extensionMAnAgementService.getInstAlled(ExtensionType.User);
 		const selectedExtension = extensions.filter(ext => ext.identifier.id === extensionId)[0];
-		const bugsUrl = selectedExtension?.manifest.bugs?.url;
-		const extensionUrl = selectedExtension?.manifest.repository?.url;
+		const bugsUrl = selectedExtension?.mAnifest.bugs?.url;
+		const extensionUrl = selectedExtension?.mAnifest.repository?.url;
 
-		// If given, try to match the extension's bug url
-		if (bugsUrl && bugsUrl.match(/^https?:\/\/github\.com\/(.*)/)) {
-			repositoryUrl = normalizeGitHubUrl(bugsUrl);
-		} else if (extensionUrl && extensionUrl.match(/^https?:\/\/github\.com\/(.*)/)) {
-			repositoryUrl = normalizeGitHubUrl(extensionUrl);
+		// If given, try to mAtch the extension's bug url
+		if (bugsUrl && bugsUrl.mAtch(/^https?:\/\/github\.com\/(.*)/)) {
+			repositoryUrl = normAlizeGitHubUrl(bugsUrl);
+		} else if (extensionUrl && extensionUrl.mAtch(/^https?:\/\/github\.com\/(.*)/)) {
+			repositoryUrl = normAlizeGitHubUrl(extensionUrl);
 		}
 
 		return repositoryUrl;

@@ -1,241 +1,241 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { equals } from 'vs/base/common/arrays';
-import { TimeoutTimer } from 'vs/base/common/async';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore } from 'vs/base/common/lifecycle';
-import { isEqual, dirname } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+import { equAls } from 'vs/bAse/common/ArrAys';
+import { TimeoutTimer } from 'vs/bAse/common/Async';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isEquAl, dirnAme } from 'vs/bAse/common/resources';
+import { URI } from 'vs/bAse/common/uri';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IPosition } from 'vs/editor/common/core/position';
 import { DocumentSymbolProviderRegistry } from 'vs/editor/common/modes';
 import { OutlineElement, OutlineGroup, OutlineModel, TreeElement } from 'vs/editor/contrib/documentSymbols/outlineModel';
-import { IWorkspaceContextService, IWorkspaceFolder, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { Schemas } from 'vs/base/common/network';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { BreadcrumbsConfig } from 'vs/workbench/browser/parts/editor/breadcrumbs';
-import { FileKind } from 'vs/platform/files/common/files';
-import { withNullAsUndefined } from 'vs/base/common/types';
+import { IWorkspAceContextService, IWorkspAceFolder, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { SchemAs } from 'vs/bAse/common/network';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { BreAdcrumbsConfig } from 'vs/workbench/browser/pArts/editor/breAdcrumbs';
+import { FileKind } from 'vs/plAtform/files/common/files';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
 import { OutlineFilter } from 'vs/editor/contrib/documentSymbols/outlineTree';
 import { ITextModel } from 'vs/editor/common/model';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
+import { ITextResourceConfigurAtionService } from 'vs/editor/common/services/textResourceConfigurAtionService';
 
-export class FileElement {
+export clAss FileElement {
 	constructor(
-		readonly uri: URI,
-		readonly kind: FileKind
+		reAdonly uri: URI,
+		reAdonly kind: FileKind
 	) { }
 }
 
-export type BreadcrumbElement = FileElement | OutlineModel | OutlineGroup | OutlineElement;
+export type BreAdcrumbElement = FileElement | OutlineModel | OutlineGroup | OutlineElement;
 
-type FileInfo = { path: FileElement[], folder?: IWorkspaceFolder };
+type FileInfo = { pAth: FileElement[], folder?: IWorkspAceFolder };
 
-export class EditorBreadcrumbsModel {
+export clAss EditorBreAdcrumbsModel {
 
-	private readonly _disposables = new DisposableStore();
-	private readonly _fileInfo: FileInfo;
+	privAte reAdonly _disposAbles = new DisposAbleStore();
+	privAte reAdonly _fileInfo: FileInfo;
 
-	private readonly _cfgEnabled: BreadcrumbsConfig<boolean>;
-	private readonly _cfgFilePath: BreadcrumbsConfig<'on' | 'off' | 'last'>;
-	private readonly _cfgSymbolPath: BreadcrumbsConfig<'on' | 'off' | 'last'>;
+	privAte reAdonly _cfgEnAbled: BreAdcrumbsConfig<booleAn>;
+	privAte reAdonly _cfgFilePAth: BreAdcrumbsConfig<'on' | 'off' | 'lAst'>;
+	privAte reAdonly _cfgSymbolPAth: BreAdcrumbsConfig<'on' | 'off' | 'lAst'>;
 
-	private _outlineElements: Array<OutlineModel | OutlineGroup | OutlineElement> = [];
-	private _outlineDisposables = new DisposableStore();
+	privAte _outlineElements: ArrAy<OutlineModel | OutlineGroup | OutlineElement> = [];
+	privAte _outlineDisposAbles = new DisposAbleStore();
 
-	private readonly _onDidUpdate = new Emitter<this>();
-	readonly onDidUpdate: Event<this> = this._onDidUpdate.event;
+	privAte reAdonly _onDidUpdAte = new Emitter<this>();
+	reAdonly onDidUpdAte: Event<this> = this._onDidUpdAte.event;
 
 	constructor(
 		fileInfoUri: URI,
-		private readonly _uri: URI,
-		private readonly _editor: ICodeEditor | undefined,
-		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@ITextResourceConfigurationService private readonly _textResourceConfigurationService: ITextResourceConfigurationService,
-		@IWorkspaceContextService workspaceService: IWorkspaceContextService,
+		privAte reAdonly _uri: URI,
+		privAte reAdonly _editor: ICodeEditor | undefined,
+		@IConfigurAtionService privAte reAdonly _configurAtionService: IConfigurAtionService,
+		@ITextResourceConfigurAtionService privAte reAdonly _textResourceConfigurAtionService: ITextResourceConfigurAtionService,
+		@IWorkspAceContextService workspAceService: IWorkspAceContextService,
 	) {
-		this._cfgEnabled = BreadcrumbsConfig.IsEnabled.bindTo(_configurationService);
-		this._cfgFilePath = BreadcrumbsConfig.FilePath.bindTo(_configurationService);
-		this._cfgSymbolPath = BreadcrumbsConfig.SymbolPath.bindTo(_configurationService);
+		this._cfgEnAbled = BreAdcrumbsConfig.IsEnAbled.bindTo(_configurAtionService);
+		this._cfgFilePAth = BreAdcrumbsConfig.FilePAth.bindTo(_configurAtionService);
+		this._cfgSymbolPAth = BreAdcrumbsConfig.SymbolPAth.bindTo(_configurAtionService);
 
-		this._disposables.add(this._cfgFilePath.onDidChange(_ => this._onDidUpdate.fire(this)));
-		this._disposables.add(this._cfgSymbolPath.onDidChange(_ => this._onDidUpdate.fire(this)));
-		this._fileInfo = EditorBreadcrumbsModel._initFilePathInfo(fileInfoUri, workspaceService);
+		this._disposAbles.Add(this._cfgFilePAth.onDidChAnge(_ => this._onDidUpdAte.fire(this)));
+		this._disposAbles.Add(this._cfgSymbolPAth.onDidChAnge(_ => this._onDidUpdAte.fire(this)));
+		this._fileInfo = EditorBreAdcrumbsModel._initFilePAthInfo(fileInfoUri, workspAceService);
 		this._bindToEditor();
-		this._onDidUpdate.fire(this);
+		this._onDidUpdAte.fire(this);
 	}
 
 	dispose(): void {
-		this._cfgEnabled.dispose();
-		this._cfgFilePath.dispose();
-		this._cfgSymbolPath.dispose();
-		this._outlineDisposables.dispose();
-		this._disposables.dispose();
-		this._onDidUpdate.dispose();
+		this._cfgEnAbled.dispose();
+		this._cfgFilePAth.dispose();
+		this._cfgSymbolPAth.dispose();
+		this._outlineDisposAbles.dispose();
+		this._disposAbles.dispose();
+		this._onDidUpdAte.dispose();
 	}
 
-	isRelative(): boolean {
-		return Boolean(this._fileInfo.folder);
+	isRelAtive(): booleAn {
+		return BooleAn(this._fileInfo.folder);
 	}
 
-	getElements(): ReadonlyArray<BreadcrumbElement> {
-		let result: BreadcrumbElement[] = [];
+	getElements(): ReAdonlyArrAy<BreAdcrumbElement> {
+		let result: BreAdcrumbElement[] = [];
 
-		// file path elements
-		if (this._cfgFilePath.getValue() === 'on') {
-			result = result.concat(this._fileInfo.path);
-		} else if (this._cfgFilePath.getValue() === 'last' && this._fileInfo.path.length > 0) {
-			result = result.concat(this._fileInfo.path.slice(-1));
+		// file pAth elements
+		if (this._cfgFilePAth.getVAlue() === 'on') {
+			result = result.concAt(this._fileInfo.pAth);
+		} else if (this._cfgFilePAth.getVAlue() === 'lAst' && this._fileInfo.pAth.length > 0) {
+			result = result.concAt(this._fileInfo.pAth.slice(-1));
 		}
 
-		// symbol path elements
-		if (this._cfgSymbolPath.getValue() === 'on') {
-			result = result.concat(this._outlineElements);
-		} else if (this._cfgSymbolPath.getValue() === 'last' && this._outlineElements.length > 0) {
-			result = result.concat(this._outlineElements.slice(-1));
+		// symbol pAth elements
+		if (this._cfgSymbolPAth.getVAlue() === 'on') {
+			result = result.concAt(this._outlineElements);
+		} else if (this._cfgSymbolPAth.getVAlue() === 'lAst' && this._outlineElements.length > 0) {
+			result = result.concAt(this._outlineElements.slice(-1));
 		}
 
 		return result;
 	}
 
-	private static _initFilePathInfo(uri: URI, workspaceService: IWorkspaceContextService): FileInfo {
+	privAte stAtic _initFilePAthInfo(uri: URI, workspAceService: IWorkspAceContextService): FileInfo {
 
-		if (uri.scheme === Schemas.untitled) {
+		if (uri.scheme === SchemAs.untitled) {
 			return {
 				folder: undefined,
-				path: []
+				pAth: []
 			};
 		}
 
 		let info: FileInfo = {
-			folder: withNullAsUndefined(workspaceService.getWorkspaceFolder(uri)),
-			path: []
+			folder: withNullAsUndefined(workspAceService.getWorkspAceFolder(uri)),
+			pAth: []
 		};
 
 		let uriPrefix: URI | null = uri;
-		while (uriPrefix && uriPrefix.path !== '/') {
-			if (info.folder && isEqual(info.folder.uri, uriPrefix)) {
-				break;
+		while (uriPrefix && uriPrefix.pAth !== '/') {
+			if (info.folder && isEquAl(info.folder.uri, uriPrefix)) {
+				breAk;
 			}
-			info.path.unshift(new FileElement(uriPrefix, info.path.length === 0 ? FileKind.FILE : FileKind.FOLDER));
-			let prevPathLength = uriPrefix.path.length;
-			uriPrefix = dirname(uriPrefix);
-			if (uriPrefix.path.length === prevPathLength) {
-				break;
+			info.pAth.unshift(new FileElement(uriPrefix, info.pAth.length === 0 ? FileKind.FILE : FileKind.FOLDER));
+			let prevPAthLength = uriPrefix.pAth.length;
+			uriPrefix = dirnAme(uriPrefix);
+			if (uriPrefix.pAth.length === prevPAthLength) {
+				breAk;
 			}
 		}
 
-		if (info.folder && workspaceService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			info.path.unshift(new FileElement(info.folder.uri, FileKind.ROOT_FOLDER));
+		if (info.folder && workspAceService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			info.pAth.unshift(new FileElement(info.folder.uri, FileKind.ROOT_FOLDER));
 		}
 		return info;
 	}
 
-	private _bindToEditor(): void {
+	privAte _bindToEditor(): void {
 		if (!this._editor) {
 			return;
 		}
-		// update as language, model, providers changes
-		this._disposables.add(DocumentSymbolProviderRegistry.onDidChange(_ => this._updateOutline()));
-		this._disposables.add(this._editor.onDidChangeModel(_ => this._updateOutline()));
-		this._disposables.add(this._editor.onDidChangeModelLanguage(_ => this._updateOutline()));
+		// updAte As lAnguAge, model, providers chAnges
+		this._disposAbles.Add(DocumentSymbolProviderRegistry.onDidChAnge(_ => this._updAteOutline()));
+		this._disposAbles.Add(this._editor.onDidChAngeModel(_ => this._updAteOutline()));
+		this._disposAbles.Add(this._editor.onDidChAngeModelLAnguAge(_ => this._updAteOutline()));
 
-		// update when config changes (re-render)
-		this._disposables.add(this._configurationService.onDidChangeConfiguration(e => {
-			if (!this._cfgEnabled.getValue()) {
-				// breadcrumbs might be disabled (also via a setting/config) and that is
+		// updAte when config chAnges (re-render)
+		this._disposAbles.Add(this._configurAtionService.onDidChAngeConfigurAtion(e => {
+			if (!this._cfgEnAbled.getVAlue()) {
+				// breAdcrumbs might be disAbled (Also viA A setting/config) And thAt is
 				// something we must check before proceeding.
 				return;
 			}
-			if (e.affectsConfiguration('breadcrumbs')) {
-				this._updateOutline(true);
+			if (e.AffectsConfigurAtion('breAdcrumbs')) {
+				this._updAteOutline(true);
 				return;
 			}
 			if (this._editor && this._editor.getModel()) {
-				const editorModel = this._editor.getModel() as ITextModel;
-				const languageName = editorModel.getLanguageIdentifier().language;
+				const editorModel = this._editor.getModel() As ITextModel;
+				const lAnguAgeNAme = editorModel.getLAnguAgeIdentifier().lAnguAge;
 
-				// Checking for changes in the current language override config.
-				// We can't be more specific than this because the ConfigurationChangeEvent(e) only includes the first part of the root path
-				if (e.affectsConfiguration(`[${languageName}]`)) {
-					this._updateOutline(true);
+				// Checking for chAnges in the current lAnguAge override config.
+				// We cAn't be more specific thAn this becAuse the ConfigurAtionChAngeEvent(e) only includes the first pArt of the root pAth
+				if (e.AffectsConfigurAtion(`[${lAnguAgeNAme}]`)) {
+					this._updAteOutline(true);
 				}
 			}
 		}));
 
 
-		// update soon'ish as model content change
-		const updateSoon = new TimeoutTimer();
-		this._disposables.add(updateSoon);
-		this._disposables.add(this._editor.onDidChangeModelContent(_ => {
-			const timeout = OutlineModel.getRequestDelay(this._editor!.getModel());
-			updateSoon.cancelAndSet(() => this._updateOutline(true), timeout);
+		// updAte soon'ish As model content chAnge
+		const updAteSoon = new TimeoutTimer();
+		this._disposAbles.Add(updAteSoon);
+		this._disposAbles.Add(this._editor.onDidChAngeModelContent(_ => {
+			const timeout = OutlineModel.getRequestDelAy(this._editor!.getModel());
+			updAteSoon.cAncelAndSet(() => this._updAteOutline(true), timeout);
 		}));
-		this._updateOutline();
+		this._updAteOutline();
 
 		// stop when editor dies
-		this._disposables.add(this._editor.onDidDispose(() => this._outlineDisposables.clear()));
+		this._disposAbles.Add(this._editor.onDidDispose(() => this._outlineDisposAbles.cleAr()));
 	}
 
-	private _updateOutline(didChangeContent?: boolean): void {
+	privAte _updAteOutline(didChAngeContent?: booleAn): void {
 
-		this._outlineDisposables.clear();
-		if (!didChangeContent) {
-			this._updateOutlineElements([]);
+		this._outlineDisposAbles.cleAr();
+		if (!didChAngeContent) {
+			this._updAteOutlineElements([]);
 		}
 
 		const editor = this._editor!;
 
 		const buffer = editor.getModel();
-		if (!buffer || !DocumentSymbolProviderRegistry.has(buffer) || !isEqual(buffer.uri, this._uri)) {
+		if (!buffer || !DocumentSymbolProviderRegistry.hAs(buffer) || !isEquAl(buffer.uri, this._uri)) {
 			return;
 		}
 
-		const source = new CancellationTokenSource();
+		const source = new CAncellAtionTokenSource();
 		const versionIdThen = buffer.getVersionId();
 		const timeout = new TimeoutTimer();
 
-		this._outlineDisposables.add({
+		this._outlineDisposAbles.Add({
 			dispose: () => {
 				source.dispose(true);
 				timeout.dispose();
 			}
 		});
 
-		OutlineModel.create(buffer, source.token).then(model => {
-			if (source.token.isCancellationRequested) {
-				// cancelled -> do nothing
+		OutlineModel.creAte(buffer, source.token).then(model => {
+			if (source.token.isCAncellAtionRequested) {
+				// cAncelled -> do nothing
 				return;
 			}
 			if (TreeElement.empty(model)) {
 				// empty -> no outline elements
-				this._updateOutlineElements([]);
+				this._updAteOutlineElements([]);
 
 			} else {
 				// copy the model
-				model = model.adopt();
+				model = model.Adopt();
 
-				this._updateOutlineElements(this._getOutlineElements(model, editor.getPosition()));
-				this._outlineDisposables.add(editor.onDidChangeCursorPosition(_ => {
-					timeout.cancelAndSet(() => {
+				this._updAteOutlineElements(this._getOutlineElements(model, editor.getPosition()));
+				this._outlineDisposAbles.Add(editor.onDidChAngeCursorPosition(_ => {
+					timeout.cAncelAndSet(() => {
 						if (!buffer.isDisposed() && versionIdThen === buffer.getVersionId() && editor.getModel()) {
-							this._updateOutlineElements(this._getOutlineElements(model, editor.getPosition()));
+							this._updAteOutlineElements(this._getOutlineElements(model, editor.getPosition()));
 						}
 					}, 150);
 				}));
 			}
-		}).catch(err => {
-			this._updateOutlineElements([]);
+		}).cAtch(err => {
+			this._updAteOutlineElements([]);
 			onUnexpectedError(err);
 		});
 	}
 
-	private _getOutlineElements(model: OutlineModel, position: IPosition | null): Array<OutlineModel | OutlineGroup | OutlineElement> {
+	privAte _getOutlineElements(model: OutlineModel, position: IPosition | null): ArrAy<OutlineModel | OutlineGroup | OutlineElement> {
 		if (!model || !position) {
 			return [];
 		}
@@ -243,23 +243,23 @@ export class EditorBreadcrumbsModel {
 		if (!item) {
 			return this._getOutlineElementsRoot(model);
 		}
-		let chain: Array<OutlineGroup | OutlineElement> = [];
+		let chAin: ArrAy<OutlineGroup | OutlineElement> = [];
 		while (item) {
-			chain.push(item);
-			let parent: any = item.parent;
-			if (parent instanceof OutlineModel) {
-				break;
+			chAin.push(item);
+			let pArent: Any = item.pArent;
+			if (pArent instAnceof OutlineModel) {
+				breAk;
 			}
-			if (parent instanceof OutlineGroup && parent.parent && parent.parent.children.size === 1) {
-				break;
+			if (pArent instAnceof OutlineGroup && pArent.pArent && pArent.pArent.children.size === 1) {
+				breAk;
 			}
-			item = parent;
+			item = pArent;
 		}
-		let result: Array<OutlineGroup | OutlineElement> = [];
-		for (let i = chain.length - 1; i >= 0; i--) {
-			let element = chain[i];
+		let result: ArrAy<OutlineGroup | OutlineElement> = [];
+		for (let i = chAin.length - 1; i >= 0; i--) {
+			let element = chAin[i];
 			if (this._isFiltered(element)) {
-				break;
+				breAk;
 			}
 			result.push(element);
 		}
@@ -269,8 +269,8 @@ export class EditorBreadcrumbsModel {
 		return result;
 	}
 
-	private _getOutlineElementsRoot(model: OutlineModel): (OutlineModel | OutlineGroup | OutlineElement)[] {
-		for (const child of model.children.values()) {
+	privAte _getOutlineElementsRoot(model: OutlineModel): (OutlineModel | OutlineGroup | OutlineElement)[] {
+		for (const child of model.children.vAlues()) {
 			if (!this._isFiltered(child)) {
 				return [model];
 			}
@@ -278,33 +278,33 @@ export class EditorBreadcrumbsModel {
 		return [];
 	}
 
-	private _isFiltered(element: TreeElement): boolean {
-		if (element instanceof OutlineElement) {
-			const key = `breadcrumbs.${OutlineFilter.kindToConfigName[element.symbol.kind]}`;
+	privAte _isFiltered(element: TreeElement): booleAn {
+		if (element instAnceof OutlineElement) {
+			const key = `breAdcrumbs.${OutlineFilter.kindToConfigNAme[element.symbol.kind]}`;
 			let uri: URI | undefined;
 			if (this._editor && this._editor.getModel()) {
-				const model = this._editor.getModel() as ITextModel;
+				const model = this._editor.getModel() As ITextModel;
 				uri = model.uri;
 			}
-			return !this._textResourceConfigurationService.getValue<boolean>(uri, key);
+			return !this._textResourceConfigurAtionService.getVAlue<booleAn>(uri, key);
 		}
-		return false;
+		return fAlse;
 	}
 
-	private _updateOutlineElements(elements: Array<OutlineModel | OutlineGroup | OutlineElement>): void {
-		if (!equals(elements, this._outlineElements, EditorBreadcrumbsModel._outlineElementEquals)) {
+	privAte _updAteOutlineElements(elements: ArrAy<OutlineModel | OutlineGroup | OutlineElement>): void {
+		if (!equAls(elements, this._outlineElements, EditorBreAdcrumbsModel._outlineElementEquAls)) {
 			this._outlineElements = elements;
-			this._onDidUpdate.fire(this);
+			this._onDidUpdAte.fire(this);
 		}
 	}
 
-	private static _outlineElementEquals(a: OutlineModel | OutlineGroup | OutlineElement, b: OutlineModel | OutlineGroup | OutlineElement): boolean {
-		if (a === b) {
+	privAte stAtic _outlineElementEquAls(A: OutlineModel | OutlineGroup | OutlineElement, b: OutlineModel | OutlineGroup | OutlineElement): booleAn {
+		if (A === b) {
 			return true;
-		} else if (!a || !b) {
-			return false;
+		} else if (!A || !b) {
+			return fAlse;
 		} else {
-			return a.id === b.id;
+			return A.id === b.id;
 		}
 	}
 }

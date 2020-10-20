@@ -1,40 +1,40 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Extensions as ThemeingExtensions, IColorRegistry, ColorIdentifier } from 'vs/platform/theme/common/colorRegistry';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { ansiColorIdentifiers, registerColors } from 'vs/workbench/contrib/terminal/common/terminalColorRegistry';
-import { IColorTheme } from 'vs/platform/theme/common/themeService';
-import { Color } from 'vs/base/common/color';
-import { ColorScheme } from 'vs/platform/theme/common/theme';
+import * As Assert from 'Assert';
+import { Extensions As ThemeingExtensions, IColorRegistry, ColorIdentifier } from 'vs/plAtform/theme/common/colorRegistry';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { AnsiColorIdentifiers, registerColors } from 'vs/workbench/contrib/terminAl/common/terminAlColorRegistry';
+import { IColorTheme } from 'vs/plAtform/theme/common/themeService';
+import { Color } from 'vs/bAse/common/color';
+import { ColorScheme } from 'vs/plAtform/theme/common/theme';
 
 registerColors();
 
-let themingRegistry = Registry.as<IColorRegistry>(ThemeingExtensions.ColorContribution);
+let themingRegistry = Registry.As<IColorRegistry>(ThemeingExtensions.ColorContribution);
 function getMockTheme(type: ColorScheme): IColorTheme {
 	let theme = {
 		selector: '',
-		label: '',
+		lAbel: '',
 		type: type,
-		getColor: (colorId: ColorIdentifier): Color | undefined => themingRegistry.resolveDefaultColor(colorId, theme),
+		getColor: (colorId: ColorIdentifier): Color | undefined => themingRegistry.resolveDefAultColor(colorId, theme),
 		defines: () => true,
-		getTokenStyleMetadata: () => undefined,
-		tokenColorMap: [],
-		semanticHighlighting: false
+		getTokenStyleMetAdAtA: () => undefined,
+		tokenColorMAp: [],
+		semAnticHighlighting: fAlse
 	};
 	return theme;
 }
 
-suite('Workbench - TerminalColorRegistry', () => {
+suite('Workbench - TerminAlColorRegistry', () => {
 
 	test('hc colors', function () {
 		let theme = getMockTheme(ColorScheme.HIGH_CONTRAST);
-		let colors = ansiColorIdentifiers.map(colorId => Color.Format.CSS.formatHexA(theme.getColor(colorId)!, true));
+		let colors = AnsiColorIdentifiers.mAp(colorId => Color.FormAt.CSS.formAtHexA(theme.getColor(colorId)!, true));
 
-		assert.deepEqual(colors, [
+		Assert.deepEquAl(colors, [
 			'#000000',
 			'#cd0000',
 			'#00cd00',
@@ -51,56 +51,56 @@ suite('Workbench - TerminalColorRegistry', () => {
 			'#ff00ff',
 			'#00ffff',
 			'#ffffff'
-		], 'The high contrast terminal colors should be used when the hc theme is active');
+		], 'The high contrAst terminAl colors should be used when the hc theme is Active');
 
 	});
 
 	test('light colors', function () {
 		let theme = getMockTheme(ColorScheme.LIGHT);
-		let colors = ansiColorIdentifiers.map(colorId => Color.Format.CSS.formatHexA(theme.getColor(colorId)!, true));
+		let colors = AnsiColorIdentifiers.mAp(colorId => Color.FormAt.CSS.formAtHexA(theme.getColor(colorId)!, true));
 
-		assert.deepEqual(colors, [
+		Assert.deepEquAl(colors, [
 			'#000000',
 			'#cd3131',
 			'#00bc00',
 			'#949800',
-			'#0451a5',
+			'#0451A5',
 			'#bc05bc',
 			'#0598bc',
 			'#555555',
 			'#666666',
 			'#cd3131',
 			'#14ce14',
-			'#b5ba00',
-			'#0451a5',
+			'#b5bA00',
+			'#0451A5',
 			'#bc05bc',
 			'#0598bc',
-			'#a5a5a5'
-		], 'The light terminal colors should be used when the light theme is active');
+			'#A5A5A5'
+		], 'The light terminAl colors should be used when the light theme is Active');
 
 	});
 
-	test('dark colors', function () {
+	test('dArk colors', function () {
 		let theme = getMockTheme(ColorScheme.DARK);
-		let colors = ansiColorIdentifiers.map(colorId => Color.Format.CSS.formatHexA(theme.getColor(colorId)!, true));
+		let colors = AnsiColorIdentifiers.mAp(colorId => Color.FormAt.CSS.formAtHexA(theme.getColor(colorId)!, true));
 
-		assert.deepEqual(colors, [
+		Assert.deepEquAl(colors, [
 			'#000000',
 			'#cd3131',
 			'#0dbc79',
 			'#e5e510',
 			'#2472c8',
 			'#bc3fbc',
-			'#11a8cd',
+			'#11A8cd',
 			'#e5e5e5',
 			'#666666',
 			'#f14c4c',
 			'#23d18b',
 			'#f5f543',
-			'#3b8eea',
+			'#3b8eeA',
 			'#d670d6',
 			'#29b8db',
 			'#e5e5e5'
-		], 'The dark terminal colors should be used when a dark theme is active');
+		], 'The dArk terminAl colors should be used when A dArk theme is Active');
 	});
 });

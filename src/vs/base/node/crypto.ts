@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as crypto from 'crypto';
-import { once } from 'vs/base/common/functional';
+import * As fs from 'fs';
+import * As crypto from 'crypto';
+import { once } from 'vs/bAse/common/functionAl';
 
-export async function checksum(path: string, sha1hash: string | undefined): Promise<void> {
+export Async function checksum(pAth: string, shA1hAsh: string | undefined): Promise<void> {
 	const checksumPromise = new Promise<string | undefined>((resolve, reject) => {
-		const input = fs.createReadStream(path);
-		const hash = crypto.createHash('sha1');
-		input.pipe(hash);
+		const input = fs.creAteReAdStreAm(pAth);
+		const hAsh = crypto.creAteHAsh('shA1');
+		input.pipe(hAsh);
 
 		const done = once((err?: Error, result?: string) => {
 			input.removeAllListeners();
-			hash.removeAllListeners();
+			hAsh.removeAllListeners();
 
 			if (err) {
 				reject(err);
@@ -26,13 +26,13 @@ export async function checksum(path: string, sha1hash: string | undefined): Prom
 
 		input.once('error', done);
 		input.once('end', done);
-		hash.once('error', done);
-		hash.once('data', (data: Buffer) => done(undefined, data.toString('hex')));
+		hAsh.once('error', done);
+		hAsh.once('dAtA', (dAtA: Buffer) => done(undefined, dAtA.toString('hex')));
 	});
 
-	const hash = await checksumPromise;
+	const hAsh = AwAit checksumPromise;
 
-	if (hash !== sha1hash) {
-		throw new Error('Hash mismatch');
+	if (hAsh !== shA1hAsh) {
+		throw new Error('HAsh mismAtch');
 	}
 }

@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'vs/css!./media/extensionsWidgets';
-import { Disposable, toDisposable, DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { IExtension, IExtensionsWorkbenchService, IExtensionContainer } from 'vs/workbench/contrib/extensions/common/extensions';
-import { append, $ } from 'vs/base/browser/dom';
-import * as platform from 'vs/base/common/platform';
-import { localize } from 'vs/nls';
-import { IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IExtensionRecommendationsService } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { extensionButtonProminentBackground, extensionButtonProminentForeground, ExtensionToolTipAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
-import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
+import 'vs/css!./mediA/extensionsWidgets';
+import { DisposAble, toDisposAble, DisposAbleStore, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { IExtension, IExtensionsWorkbenchService, IExtensionContAiner } from 'vs/workbench/contrib/extensions/common/extensions';
+import { Append, $ } from 'vs/bAse/browser/dom';
+import * As plAtform from 'vs/bAse/common/plAtform';
+import { locAlize } from 'vs/nls';
+import { IExtensionMAnAgementServerService } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { IExtensionRecommendAtionsService } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { extensionButtonProminentBAckground, extensionButtonProminentForeground, ExtensionToolTipAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { IThemeService, IColorTheme } from 'vs/plAtform/theme/common/themeService';
 import { EXTENSION_BADGE_REMOTE_BACKGROUND, EXTENSION_BADGE_REMOTE_FOREGROUND } from 'vs/workbench/common/theme';
-import { Emitter, Event } from 'vs/base/common/event';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { CountBAdge } from 'vs/bAse/browser/ui/countBAdge/countBAdge';
 
-export abstract class ExtensionWidget extends Disposable implements IExtensionContainer {
-	private _extension: IExtension | null = null;
+export AbstrAct clAss ExtensionWidget extends DisposAble implements IExtensionContAiner {
+	privAte _extension: IExtension | null = null;
 	get extension(): IExtension | null { return this._extension; }
-	set extension(extension: IExtension | null) { this._extension = extension; this.update(); }
-	update(): void { this.render(); }
-	abstract render(): void;
+	set extension(extension: IExtension | null) { this._extension = extension; this.updAte(); }
+	updAte(): void { this.render(); }
+	AbstrAct render(): void;
 }
 
-export class Label extends ExtensionWidget {
+export clAss LAbel extends ExtensionWidget {
 
 	constructor(
-		private element: HTMLElement,
-		private fn: (extension: IExtension) => string,
+		privAte element: HTMLElement,
+		privAte fn: (extension: IExtension) => string,
 		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
 	) {
 		super();
@@ -43,300 +43,300 @@ export class Label extends ExtensionWidget {
 	}
 }
 
-export class InstallCountWidget extends ExtensionWidget {
+export clAss InstAllCountWidget extends ExtensionWidget {
 
 	constructor(
-		private container: HTMLElement,
-		private small: boolean,
+		privAte contAiner: HTMLElement,
+		privAte smAll: booleAn,
 		@IExtensionsWorkbenchService extensionsWorkbenchService: IExtensionsWorkbenchService
 	) {
 		super();
-		container.classList.add('extension-install-count');
+		contAiner.clAssList.Add('extension-instAll-count');
 		this.render();
 	}
 
 	render(): void {
-		this.container.innerText = '';
+		this.contAiner.innerText = '';
 
 		if (!this.extension) {
 			return;
 		}
 
-		const installCount = this.extension.installCount;
+		const instAllCount = this.extension.instAllCount;
 
-		if (installCount === undefined) {
+		if (instAllCount === undefined) {
 			return;
 		}
 
-		let installLabel: string;
+		let instAllLAbel: string;
 
-		if (this.small) {
-			if (installCount > 1000000) {
-				installLabel = `${Math.floor(installCount / 100000) / 10}M`;
-			} else if (installCount > 1000) {
-				installLabel = `${Math.floor(installCount / 1000)}K`;
+		if (this.smAll) {
+			if (instAllCount > 1000000) {
+				instAllLAbel = `${MAth.floor(instAllCount / 100000) / 10}M`;
+			} else if (instAllCount > 1000) {
+				instAllLAbel = `${MAth.floor(instAllCount / 1000)}K`;
 			} else {
-				installLabel = String(installCount);
+				instAllLAbel = String(instAllCount);
 			}
 		}
 		else {
-			installLabel = installCount.toLocaleString(platform.locale);
+			instAllLAbel = instAllCount.toLocAleString(plAtform.locAle);
 		}
 
-		append(this.container, $('span.codicon.codicon-cloud-download'));
-		const count = append(this.container, $('span.count'));
-		count.textContent = installLabel;
+		Append(this.contAiner, $('spAn.codicon.codicon-cloud-downloAd'));
+		const count = Append(this.contAiner, $('spAn.count'));
+		count.textContent = instAllLAbel;
 	}
 }
 
-export class RatingsWidget extends ExtensionWidget {
+export clAss RAtingsWidget extends ExtensionWidget {
 
 	constructor(
-		private container: HTMLElement,
-		private small: boolean
+		privAte contAiner: HTMLElement,
+		privAte smAll: booleAn
 	) {
 		super();
-		container.classList.add('extension-ratings');
+		contAiner.clAssList.Add('extension-rAtings');
 
-		if (this.small) {
-			container.classList.add('small');
+		if (this.smAll) {
+			contAiner.clAssList.Add('smAll');
 		}
 
 		this.render();
 	}
 
 	render(): void {
-		this.container.innerText = '';
+		this.contAiner.innerText = '';
 
 		if (!this.extension) {
 			return;
 		}
 
-		if (this.extension.rating === undefined) {
+		if (this.extension.rAting === undefined) {
 			return;
 		}
 
-		if (this.small && !this.extension.ratingCount) {
+		if (this.smAll && !this.extension.rAtingCount) {
 			return;
 		}
 
-		const rating = Math.round(this.extension.rating * 2) / 2;
+		const rAting = MAth.round(this.extension.rAting * 2) / 2;
 
-		if (this.small) {
-			append(this.container, $('span.codicon.codicon-star-full'));
+		if (this.smAll) {
+			Append(this.contAiner, $('spAn.codicon.codicon-stAr-full'));
 
-			const count = append(this.container, $('span.count'));
-			count.textContent = String(rating);
+			const count = Append(this.contAiner, $('spAn.count'));
+			count.textContent = String(rAting);
 		} else {
 			for (let i = 1; i <= 5; i++) {
-				if (rating >= i) {
-					append(this.container, $('span.codicon.codicon-star-full'));
-				} else if (rating >= i - 0.5) {
-					append(this.container, $('span.codicon.codicon-star-half'));
+				if (rAting >= i) {
+					Append(this.contAiner, $('spAn.codicon.codicon-stAr-full'));
+				} else if (rAting >= i - 0.5) {
+					Append(this.contAiner, $('spAn.codicon.codicon-stAr-hAlf'));
 				} else {
-					append(this.container, $('span.codicon.codicon-star-empty'));
+					Append(this.contAiner, $('spAn.codicon.codicon-stAr-empty'));
 				}
 			}
 		}
-		this.container.title = this.extension.ratingCount === 1 ? localize('ratedBySingleUser', "Rated by 1 user")
-			: typeof this.extension.ratingCount === 'number' && this.extension.ratingCount > 1 ? localize('ratedByUsers', "Rated by {0} users", this.extension.ratingCount) : localize('noRating', "No rating");
+		this.contAiner.title = this.extension.rAtingCount === 1 ? locAlize('rAtedBySingleUser', "RAted by 1 user")
+			: typeof this.extension.rAtingCount === 'number' && this.extension.rAtingCount > 1 ? locAlize('rAtedByUsers', "RAted by {0} users", this.extension.rAtingCount) : locAlize('noRAting', "No rAting");
 	}
 }
 
-export class TooltipWidget extends ExtensionWidget {
+export clAss TooltipWidget extends ExtensionWidget {
 
 	constructor(
-		private readonly parent: HTMLElement,
-		private readonly tooltipAction: ExtensionToolTipAction,
-		private readonly recommendationWidget: RecommendationWidget,
-		@ILabelService private readonly labelService: ILabelService
+		privAte reAdonly pArent: HTMLElement,
+		privAte reAdonly tooltipAction: ExtensionToolTipAction,
+		privAte reAdonly recommendAtionWidget: RecommendAtionWidget,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService
 	) {
 		super();
-		this._register(Event.any<any>(
-			this.tooltipAction.onDidChange,
-			this.recommendationWidget.onDidChangeTooltip,
-			this.labelService.onDidChangeFormatters
+		this._register(Event.Any<Any>(
+			this.tooltipAction.onDidChAnge,
+			this.recommendAtionWidget.onDidChAngeTooltip,
+			this.lAbelService.onDidChAngeFormAtters
 		)(() => this.render()));
 	}
 
 	render(): void {
-		this.parent.title = this.getTooltip();
+		this.pArent.title = this.getTooltip();
 	}
 
-	private getTooltip(): string {
+	privAte getTooltip(): string {
 		if (!this.extension) {
 			return '';
 		}
-		if (this.tooltipAction.label) {
-			return this.tooltipAction.label;
+		if (this.tooltipAction.lAbel) {
+			return this.tooltipAction.lAbel;
 		}
-		return this.recommendationWidget.tooltip;
+		return this.recommendAtionWidget.tooltip;
 	}
 
 }
 
-export class RecommendationWidget extends ExtensionWidget {
+export clAss RecommendAtionWidget extends ExtensionWidget {
 
-	private element?: HTMLElement;
-	private readonly disposables = this._register(new DisposableStore());
+	privAte element?: HTMLElement;
+	privAte reAdonly disposAbles = this._register(new DisposAbleStore());
 
-	private _tooltip: string = '';
+	privAte _tooltip: string = '';
 	get tooltip(): string { return this._tooltip; }
 	set tooltip(tooltip: string) {
 		if (this._tooltip !== tooltip) {
 			this._tooltip = tooltip;
-			this._onDidChangeTooltip.fire();
+			this._onDidChAngeTooltip.fire();
 		}
 	}
-	private _onDidChangeTooltip: Emitter<void> = this._register(new Emitter<void>());
-	readonly onDidChangeTooltip: Event<void> = this._onDidChangeTooltip.event;
+	privAte _onDidChAngeTooltip: Emitter<void> = this._register(new Emitter<void>());
+	reAdonly onDidChAngeTooltip: Event<void> = this._onDidChAngeTooltip.event;
 
 	constructor(
-		private parent: HTMLElement,
-		@IThemeService private readonly themeService: IThemeService,
-		@IExtensionRecommendationsService private readonly extensionRecommendationsService: IExtensionRecommendationsService
+		privAte pArent: HTMLElement,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IExtensionRecommendAtionsService privAte reAdonly extensionRecommendAtionsService: IExtensionRecommendAtionsService
 	) {
 		super();
 		this.render();
-		this._register(toDisposable(() => this.clear()));
-		this._register(this.extensionRecommendationsService.onDidChangeRecommendations(() => this.render()));
+		this._register(toDisposAble(() => this.cleAr()));
+		this._register(this.extensionRecommendAtionsService.onDidChAngeRecommendAtions(() => this.render()));
 	}
 
-	private clear(): void {
+	privAte cleAr(): void {
 		this.tooltip = '';
 		if (this.element) {
-			this.parent.removeChild(this.element);
+			this.pArent.removeChild(this.element);
 		}
 		this.element = undefined;
-		this.disposables.clear();
+		this.disposAbles.cleAr();
 	}
 
 	render(): void {
-		this.clear();
+		this.cleAr();
 		if (!this.extension) {
 			return;
 		}
-		const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
-		if (extRecommendations[this.extension.identifier.id.toLowerCase()]) {
-			this.element = append(this.parent, $('div.extension-bookmark'));
-			const recommendation = append(this.element, $('.recommendation'));
-			append(recommendation, $('span.codicon.codicon-star'));
-			const applyBookmarkStyle = (theme: IColorTheme) => {
-				const bgColor = theme.getColor(extensionButtonProminentBackground);
+		const extRecommendAtions = this.extensionRecommendAtionsService.getAllRecommendAtionsWithReAson();
+		if (extRecommendAtions[this.extension.identifier.id.toLowerCAse()]) {
+			this.element = Append(this.pArent, $('div.extension-bookmArk'));
+			const recommendAtion = Append(this.element, $('.recommendAtion'));
+			Append(recommendAtion, $('spAn.codicon.codicon-stAr'));
+			const ApplyBookmArkStyle = (theme: IColorTheme) => {
+				const bgColor = theme.getColor(extensionButtonProminentBAckground);
 				const fgColor = theme.getColor(extensionButtonProminentForeground);
-				recommendation.style.borderTopColor = bgColor ? bgColor.toString() : 'transparent';
-				recommendation.style.color = fgColor ? fgColor.toString() : 'white';
+				recommendAtion.style.borderTopColor = bgColor ? bgColor.toString() : 'trAnspArent';
+				recommendAtion.style.color = fgColor ? fgColor.toString() : 'white';
 			};
-			applyBookmarkStyle(this.themeService.getColorTheme());
-			this.themeService.onDidColorThemeChange(applyBookmarkStyle, this, this.disposables);
-			this.tooltip = extRecommendations[this.extension.identifier.id.toLowerCase()].reasonText;
+			ApplyBookmArkStyle(this.themeService.getColorTheme());
+			this.themeService.onDidColorThemeChAnge(ApplyBookmArkStyle, this, this.disposAbles);
+			this.tooltip = extRecommendAtions[this.extension.identifier.id.toLowerCAse()].reAsonText;
 		}
 	}
 
 }
 
-export class RemoteBadgeWidget extends ExtensionWidget {
+export clAss RemoteBAdgeWidget extends ExtensionWidget {
 
-	private readonly remoteBadge = this._register(new MutableDisposable<RemoteBadge>());
+	privAte reAdonly remoteBAdge = this._register(new MutAbleDisposAble<RemoteBAdge>());
 
-	private element: HTMLElement;
+	privAte element: HTMLElement;
 
 	constructor(
-		parent: HTMLElement,
-		private readonly tooltip: boolean,
-		@IExtensionManagementServerService private readonly extensionManagementServerService: IExtensionManagementServerService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService
+		pArent: HTMLElement,
+		privAte reAdonly tooltip: booleAn,
+		@IExtensionMAnAgementServerService privAte reAdonly extensionMAnAgementServerService: IExtensionMAnAgementServerService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService
 	) {
 		super();
-		this.element = append(parent, $('.extension-remote-badge-container'));
+		this.element = Append(pArent, $('.extension-remote-bAdge-contAiner'));
 		this.render();
-		this._register(toDisposable(() => this.clear()));
+		this._register(toDisposAble(() => this.cleAr()));
 	}
 
-	private clear(): void {
-		if (this.remoteBadge.value) {
-			this.element.removeChild(this.remoteBadge.value.element);
+	privAte cleAr(): void {
+		if (this.remoteBAdge.vAlue) {
+			this.element.removeChild(this.remoteBAdge.vAlue.element);
 		}
-		this.remoteBadge.clear();
+		this.remoteBAdge.cleAr();
 	}
 
 	render(): void {
-		this.clear();
-		if (!this.extension || !this.extension.local || !this.extension.server || !(this.extensionManagementServerService.localExtensionManagementServer && this.extensionManagementServerService.remoteExtensionManagementServer) || this.extension.server !== this.extensionManagementServerService.remoteExtensionManagementServer) {
+		this.cleAr();
+		if (!this.extension || !this.extension.locAl || !this.extension.server || !(this.extensionMAnAgementServerService.locAlExtensionMAnAgementServer && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) || this.extension.server !== this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
 			return;
 		}
-		this.remoteBadge.value = this.instantiationService.createInstance(RemoteBadge, this.tooltip);
-		append(this.element, this.remoteBadge.value.element);
+		this.remoteBAdge.vAlue = this.instAntiAtionService.creAteInstAnce(RemoteBAdge, this.tooltip);
+		Append(this.element, this.remoteBAdge.vAlue.element);
 	}
 }
 
-class RemoteBadge extends Disposable {
+clAss RemoteBAdge extends DisposAble {
 
-	readonly element: HTMLElement;
+	reAdonly element: HTMLElement;
 
 	constructor(
-		private readonly tooltip: boolean,
-		@ILabelService private readonly labelService: ILabelService,
-		@IThemeService private readonly themeService: IThemeService,
-		@IExtensionManagementServerService private readonly extensionManagementServerService: IExtensionManagementServerService
+		privAte reAdonly tooltip: booleAn,
+		@ILAbelService privAte reAdonly lAbelService: ILAbelService,
+		@IThemeService privAte reAdonly themeService: IThemeService,
+		@IExtensionMAnAgementServerService privAte reAdonly extensionMAnAgementServerService: IExtensionMAnAgementServerService
 	) {
 		super();
-		this.element = $('div.extension-badge.extension-remote-badge');
+		this.element = $('div.extension-bAdge.extension-remote-bAdge');
 		this.render();
 	}
 
-	private render(): void {
-		append(this.element, $('span.codicon.codicon-remote'));
+	privAte render(): void {
+		Append(this.element, $('spAn.codicon.codicon-remote'));
 
-		const applyBadgeStyle = () => {
+		const ApplyBAdgeStyle = () => {
 			if (!this.element) {
 				return;
 			}
 			const bgColor = this.themeService.getColorTheme().getColor(EXTENSION_BADGE_REMOTE_BACKGROUND);
 			const fgColor = this.themeService.getColorTheme().getColor(EXTENSION_BADGE_REMOTE_FOREGROUND);
-			this.element.style.backgroundColor = bgColor ? bgColor.toString() : '';
+			this.element.style.bAckgroundColor = bgColor ? bgColor.toString() : '';
 			this.element.style.color = fgColor ? fgColor.toString() : '';
 		};
-		applyBadgeStyle();
-		this._register(this.themeService.onDidColorThemeChange(() => applyBadgeStyle()));
+		ApplyBAdgeStyle();
+		this._register(this.themeService.onDidColorThemeChAnge(() => ApplyBAdgeStyle()));
 
 		if (this.tooltip) {
-			const updateTitle = () => {
-				if (this.element && this.extensionManagementServerService.remoteExtensionManagementServer) {
-					this.element.title = localize('remote extension title', "Extension in {0}", this.extensionManagementServerService.remoteExtensionManagementServer.label);
+			const updAteTitle = () => {
+				if (this.element && this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer) {
+					this.element.title = locAlize('remote extension title', "Extension in {0}", this.extensionMAnAgementServerService.remoteExtensionMAnAgementServer.lAbel);
 				}
 			};
-			this._register(this.labelService.onDidChangeFormatters(() => updateTitle()));
-			updateTitle();
+			this._register(this.lAbelService.onDidChAngeFormAtters(() => updAteTitle()));
+			updAteTitle();
 		}
 	}
 }
 
-export class ExtensionPackCountWidget extends ExtensionWidget {
+export clAss ExtensionPAckCountWidget extends ExtensionWidget {
 
-	private element: HTMLElement | undefined;
+	privAte element: HTMLElement | undefined;
 
 	constructor(
-		private readonly parent: HTMLElement,
+		privAte reAdonly pArent: HTMLElement,
 	) {
 		super();
 		this.render();
-		this._register(toDisposable(() => this.clear()));
+		this._register(toDisposAble(() => this.cleAr()));
 	}
 
-	private clear(): void {
+	privAte cleAr(): void {
 		if (this.element) {
 			this.element.remove();
 		}
 	}
 
 	render(): void {
-		this.clear();
-		if (!this.extension || !this.extension.extensionPack.length) {
+		this.cleAr();
+		if (!this.extension || !this.extension.extensionPAck.length) {
 			return;
 		}
-		this.element = append(this.parent, $('.extension-badge.extension-pack-badge'));
-		const countBadge = new CountBadge(this.element);
-		countBadge.setCount(this.extension.extensionPack.length);
+		this.element = Append(this.pArent, $('.extension-bAdge.extension-pAck-bAdge'));
+		const countBAdge = new CountBAdge(this.element);
+		countBAdge.setCount(this.extension.extensionPAck.length);
 	}
 }

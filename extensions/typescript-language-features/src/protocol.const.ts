@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-export class Kind {
-	public static readonly alias = 'alias';
-	public static readonly callSignature = 'call';
-	public static readonly class = 'class';
-	public static readonly const = 'const';
-	public static readonly constructorImplementation = 'constructor';
-	public static readonly constructSignature = 'construct';
-	public static readonly directory = 'directory';
-	public static readonly enum = 'enum';
-	public static readonly enumMember = 'enum member';
-	public static readonly externalModuleName = 'external module name';
-	public static readonly function = 'function';
-	public static readonly indexSignature = 'index';
-	public static readonly interface = 'interface';
-	public static readonly keyword = 'keyword';
-	public static readonly let = 'let';
-	public static readonly localFunction = 'local function';
-	public static readonly localVariable = 'local var';
-	public static readonly method = 'method';
-	public static readonly memberGetAccessor = 'getter';
-	public static readonly memberSetAccessor = 'setter';
-	public static readonly memberVariable = 'property';
-	public static readonly module = 'module';
-	public static readonly primitiveType = 'primitive type';
-	public static readonly script = 'script';
-	public static readonly type = 'type';
-	public static readonly variable = 'var';
-	public static readonly warning = 'warning';
-	public static readonly string = 'string';
-	public static readonly parameter = 'parameter';
-	public static readonly typeParameter = 'type parameter';
+export clAss Kind {
+	public stAtic reAdonly AliAs = 'AliAs';
+	public stAtic reAdonly cAllSignAture = 'cAll';
+	public stAtic reAdonly clAss = 'clAss';
+	public stAtic reAdonly const = 'const';
+	public stAtic reAdonly constructorImplementAtion = 'constructor';
+	public stAtic reAdonly constructSignAture = 'construct';
+	public stAtic reAdonly directory = 'directory';
+	public stAtic reAdonly enum = 'enum';
+	public stAtic reAdonly enumMember = 'enum member';
+	public stAtic reAdonly externAlModuleNAme = 'externAl module nAme';
+	public stAtic reAdonly function = 'function';
+	public stAtic reAdonly indexSignAture = 'index';
+	public stAtic reAdonly interfAce = 'interfAce';
+	public stAtic reAdonly keyword = 'keyword';
+	public stAtic reAdonly let = 'let';
+	public stAtic reAdonly locAlFunction = 'locAl function';
+	public stAtic reAdonly locAlVAriAble = 'locAl vAr';
+	public stAtic reAdonly method = 'method';
+	public stAtic reAdonly memberGetAccessor = 'getter';
+	public stAtic reAdonly memberSetAccessor = 'setter';
+	public stAtic reAdonly memberVAriAble = 'property';
+	public stAtic reAdonly module = 'module';
+	public stAtic reAdonly primitiveType = 'primitive type';
+	public stAtic reAdonly script = 'script';
+	public stAtic reAdonly type = 'type';
+	public stAtic reAdonly vAriAble = 'vAr';
+	public stAtic reAdonly wArning = 'wArning';
+	public stAtic reAdonly string = 'string';
+	public stAtic reAdonly pArAmeter = 'pArAmeter';
+	public stAtic reAdonly typePArAmeter = 'type pArAmeter';
 }
 
 
-export class DiagnosticCategory {
-	public static readonly error = 'error';
-	public static readonly warning = 'warning';
-	public static readonly suggestion = 'suggestion';
+export clAss DiAgnosticCAtegory {
+	public stAtic reAdonly error = 'error';
+	public stAtic reAdonly wArning = 'wArning';
+	public stAtic reAdonly suggestion = 'suggestion';
 }
 
-export class KindModifiers {
-	public static readonly optional = 'optional';
-	public static readonly depreacted = 'deprecated';
-	public static readonly color = 'color';
+export clAss KindModifiers {
+	public stAtic reAdonly optionAl = 'optionAl';
+	public stAtic reAdonly depreActed = 'deprecAted';
+	public stAtic reAdonly color = 'color';
 
-	public static readonly dtsFile = '.d.ts';
-	public static readonly tsFile = '.ts';
-	public static readonly tsxFile = '.tsx';
-	public static readonly jsFile = '.js';
-	public static readonly jsxFile = '.jsx';
-	public static readonly jsonFile = '.json';
+	public stAtic reAdonly dtsFile = '.d.ts';
+	public stAtic reAdonly tsFile = '.ts';
+	public stAtic reAdonly tsxFile = '.tsx';
+	public stAtic reAdonly jsFile = '.js';
+	public stAtic reAdonly jsxFile = '.jsx';
+	public stAtic reAdonly jsonFile = '.json';
 
-	public static readonly fileExtensionKindModifiers = [
+	public stAtic reAdonly fileExtensionKindModifiers = [
 		KindModifiers.dtsFile,
 		KindModifiers.tsFile,
 		KindModifiers.tsxFile,
@@ -65,27 +65,27 @@ export class KindModifiers {
 	];
 }
 
-export class DisplayPartKind {
-	public static readonly functionName = 'functionName';
-	public static readonly methodName = 'methodName';
-	public static readonly parameterName = 'parameterName';
-	public static readonly propertyName = 'propertyName';
-	public static readonly punctuation = 'punctuation';
-	public static readonly text = 'text';
+export clAss DisplAyPArtKind {
+	public stAtic reAdonly functionNAme = 'functionNAme';
+	public stAtic reAdonly methodNAme = 'methodNAme';
+	public stAtic reAdonly pArAmeterNAme = 'pArAmeterNAme';
+	public stAtic reAdonly propertyNAme = 'propertyNAme';
+	public stAtic reAdonly punctuAtion = 'punctuAtion';
+	public stAtic reAdonly text = 'text';
 }
 
-export enum EventName {
-	syntaxDiag = 'syntaxDiag',
-	semanticDiag = 'semanticDiag',
-	suggestionDiag = 'suggestionDiag',
-	configFileDiag = 'configFileDiag',
+export enum EventNAme {
+	syntAxDiAg = 'syntAxDiAg',
+	semAnticDiAg = 'semAnticDiAg',
+	suggestionDiAg = 'suggestionDiAg',
+	configFileDiAg = 'configFileDiAg',
 	telemetry = 'telemetry',
-	projectLanguageServiceState = 'projectLanguageServiceState',
-	projectsUpdatedInBackground = 'projectsUpdatedInBackground',
-	beginInstallTypes = 'beginInstallTypes',
-	endInstallTypes = 'endInstallTypes',
-	typesInstallerInitializationFailed = 'typesInstallerInitializationFailed',
-	surveyReady = 'surveyReady',
-	projectLoadingStart = 'projectLoadingStart',
-	projectLoadingFinish = 'projectLoadingFinish',
+	projectLAnguAgeServiceStAte = 'projectLAnguAgeServiceStAte',
+	projectsUpdAtedInBAckground = 'projectsUpdAtedInBAckground',
+	beginInstAllTypes = 'beginInstAllTypes',
+	endInstAllTypes = 'endInstAllTypes',
+	typesInstAllerInitiAlizAtionFAiled = 'typesInstAllerInitiAlizAtionFAiled',
+	surveyReAdy = 'surveyReAdy',
+	projectLoAdingStArt = 'projectLoAdingStArt',
+	projectLoAdingFinish = 'projectLoAdingFinish',
 }

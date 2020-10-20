@@ -1,44 +1,44 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Emitter } from 'vs/base/common/event';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { Emitter } from 'vs/bAse/common/event';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-import { Disposable } from 'vs/base/common/lifecycle';
+import { DisposAble } from 'vs/bAse/common/lifecycle';
 import { IHostColorSchemeService } from 'vs/workbench/services/themes/common/hostColorSchemeService';
 
-export class NativeHostColorSchemeService extends Disposable implements IHostColorSchemeService {
+export clAss NAtiveHostColorSchemeService extends DisposAble implements IHostColorSchemeService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@IWorkbenchEnvironmentService privAte reAdonly environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 
 		this.registerListeners();
 	}
 
-	private registerListeners(): void {
+	privAte registerListeners(): void {
 
 		// Color Scheme
-		this._register(this.nativeHostService.onDidChangeColorScheme(({ highContrast, dark }) => {
-			this.dark = dark;
-			this.highContrast = highContrast;
-			this._onDidChangeColorScheme.fire();
+		this._register(this.nAtiveHostService.onDidChAngeColorScheme(({ highContrAst, dArk }) => {
+			this.dArk = dArk;
+			this.highContrAst = highContrAst;
+			this._onDidChAngeColorScheme.fire();
 		}));
 	}
 
-	private readonly _onDidChangeColorScheme = this._register(new Emitter<void>());
-	readonly onDidChangeColorScheme = this._onDidChangeColorScheme.event;
+	privAte reAdonly _onDidChAngeColorScheme = this._register(new Emitter<void>());
+	reAdonly onDidChAngeColorScheme = this._onDidChAngeColorScheme.event;
 
-	public dark: boolean = this.environmentService.configuration.colorScheme.dark;
-	public highContrast: boolean = this.environmentService.configuration.colorScheme.highContrast;
+	public dArk: booleAn = this.environmentService.configurAtion.colorScheme.dArk;
+	public highContrAst: booleAn = this.environmentService.configurAtion.colorScheme.highContrAst;
 
 }
 
-registerSingleton(IHostColorSchemeService, NativeHostColorSchemeService, true);
+registerSingleton(IHostColorSchemeService, NAtiveHostColorSchemeService, true);

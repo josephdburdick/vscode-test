@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEnvironmentVariableCollection, EnvironmentVariableMutatorType, IMergedEnvironmentVariableCollection, IMergedEnvironmentVariableCollectionDiff, IExtensionOwnedEnvironmentVariableMutator } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { IProcessEnvironment, isWindows } from 'vs/base/common/platform';
+import { IEnvironmentVAriAbleCollection, EnvironmentVAriAbleMutAtorType, IMergedEnvironmentVAriAbleCollection, IMergedEnvironmentVAriAbleCollectionDiff, IExtensionOwnedEnvironmentVAriAbleMutAtor } from 'vs/workbench/contrib/terminAl/common/environmentVAriAble';
+import { IProcessEnvironment, isWindows } from 'vs/bAse/common/plAtform';
 
-export class MergedEnvironmentVariableCollection implements IMergedEnvironmentVariableCollection {
-	readonly map: Map<string, IExtensionOwnedEnvironmentVariableMutator[]> = new Map();
+export clAss MergedEnvironmentVAriAbleCollection implements IMergedEnvironmentVAriAbleCollection {
+	reAdonly mAp: MAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]> = new MAp();
 
-	constructor(collections: Map<string, IEnvironmentVariableCollection>) {
-		collections.forEach((collection, extensionIdentifier) => {
-			const it = collection.map.entries();
+	constructor(collections: MAp<string, IEnvironmentVAriAbleCollection>) {
+		collections.forEAch((collection, extensionIdentifier) => {
+			const it = collection.mAp.entries();
 			let next = it.next();
 			while (!next.done) {
-				const variable = next.value[0];
-				let entry = this.map.get(variable);
+				const vAriAble = next.vAlue[0];
+				let entry = this.mAp.get(vAriAble);
 				if (!entry) {
 					entry = [];
-					this.map.set(variable, entry);
+					this.mAp.set(vAriAble, entry);
 				}
 
-				// If the first item in the entry is replace ignore any other entries as they would
-				// just get replaced by this one.
-				if (entry.length > 0 && entry[0].type === EnvironmentVariableMutatorType.Replace) {
+				// If the first item in the entry is replAce ignore Any other entries As they would
+				// just get replAced by this one.
+				if (entry.length > 0 && entry[0].type === EnvironmentVAriAbleMutAtorType.ReplAce) {
 					next = it.next();
 					continue;
 				}
 
-				// Mutators get applied in the reverse order than they are created
-				const mutator = next.value[1];
+				// MutAtors get Applied in the reverse order thAn they Are creAted
+				const mutAtor = next.vAlue[1];
 				entry.unshift({
 					extensionIdentifier,
-					value: mutator.value,
-					type: mutator.type
+					vAlue: mutAtor.vAlue,
+					type: mutAtor.type
 				});
 
 				next = it.next();
@@ -41,114 +41,114 @@ export class MergedEnvironmentVariableCollection implements IMergedEnvironmentVa
 		});
 	}
 
-	applyToProcessEnvironment(env: IProcessEnvironment): void {
-		let lowerToActualVariableNames: { [lowerKey: string]: string | undefined } | undefined;
+	ApplyToProcessEnvironment(env: IProcessEnvironment): void {
+		let lowerToActuAlVAriAbleNAmes: { [lowerKey: string]: string | undefined } | undefined;
 		if (isWindows) {
-			lowerToActualVariableNames = {};
-			Object.keys(env).forEach(e => lowerToActualVariableNames![e.toLowerCase()] = e);
+			lowerToActuAlVAriAbleNAmes = {};
+			Object.keys(env).forEAch(e => lowerToActuAlVAriAbleNAmes![e.toLowerCAse()] = e);
 		}
-		this.map.forEach((mutators, variable) => {
-			const actualVariable = isWindows ? lowerToActualVariableNames![variable.toLowerCase()] || variable : variable;
-			mutators.forEach(mutator => {
-				switch (mutator.type) {
-					case EnvironmentVariableMutatorType.Append:
-						env[actualVariable] = (env[actualVariable] || '') + mutator.value;
-						break;
-					case EnvironmentVariableMutatorType.Prepend:
-						env[actualVariable] = mutator.value + (env[actualVariable] || '');
-						break;
-					case EnvironmentVariableMutatorType.Replace:
-						env[actualVariable] = mutator.value;
-						break;
+		this.mAp.forEAch((mutAtors, vAriAble) => {
+			const ActuAlVAriAble = isWindows ? lowerToActuAlVAriAbleNAmes![vAriAble.toLowerCAse()] || vAriAble : vAriAble;
+			mutAtors.forEAch(mutAtor => {
+				switch (mutAtor.type) {
+					cAse EnvironmentVAriAbleMutAtorType.Append:
+						env[ActuAlVAriAble] = (env[ActuAlVAriAble] || '') + mutAtor.vAlue;
+						breAk;
+					cAse EnvironmentVAriAbleMutAtorType.Prepend:
+						env[ActuAlVAriAble] = mutAtor.vAlue + (env[ActuAlVAriAble] || '');
+						breAk;
+					cAse EnvironmentVAriAbleMutAtorType.ReplAce:
+						env[ActuAlVAriAble] = mutAtor.vAlue;
+						breAk;
 				}
 			});
 		});
 	}
 
-	diff(other: IMergedEnvironmentVariableCollection): IMergedEnvironmentVariableCollectionDiff | undefined {
-		const added: Map<string, IExtensionOwnedEnvironmentVariableMutator[]> = new Map();
-		const changed: Map<string, IExtensionOwnedEnvironmentVariableMutator[]> = new Map();
-		const removed: Map<string, IExtensionOwnedEnvironmentVariableMutator[]> = new Map();
+	diff(other: IMergedEnvironmentVAriAbleCollection): IMergedEnvironmentVAriAbleCollectionDiff | undefined {
+		const Added: MAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]> = new MAp();
+		const chAnged: MAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]> = new MAp();
+		const removed: MAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor[]> = new MAp();
 
-		// Find added
-		other.map.forEach((otherMutators, variable) => {
-			const currentMutators = this.map.get(variable);
-			const result = getMissingMutatorsFromArray(otherMutators, currentMutators);
+		// Find Added
+		other.mAp.forEAch((otherMutAtors, vAriAble) => {
+			const currentMutAtors = this.mAp.get(vAriAble);
+			const result = getMissingMutAtorsFromArrAy(otherMutAtors, currentMutAtors);
 			if (result) {
-				added.set(variable, result);
+				Added.set(vAriAble, result);
 			}
 		});
 
 		// Find removed
-		this.map.forEach((currentMutators, variable) => {
-			const otherMutators = other.map.get(variable);
-			const result = getMissingMutatorsFromArray(currentMutators, otherMutators);
+		this.mAp.forEAch((currentMutAtors, vAriAble) => {
+			const otherMutAtors = other.mAp.get(vAriAble);
+			const result = getMissingMutAtorsFromArrAy(currentMutAtors, otherMutAtors);
 			if (result) {
-				removed.set(variable, result);
+				removed.set(vAriAble, result);
 			}
 		});
 
-		// Find changed
-		this.map.forEach((currentMutators, variable) => {
-			const otherMutators = other.map.get(variable);
-			const result = getChangedMutatorsFromArray(currentMutators, otherMutators);
+		// Find chAnged
+		this.mAp.forEAch((currentMutAtors, vAriAble) => {
+			const otherMutAtors = other.mAp.get(vAriAble);
+			const result = getChAngedMutAtorsFromArrAy(currentMutAtors, otherMutAtors);
 			if (result) {
-				changed.set(variable, result);
+				chAnged.set(vAriAble, result);
 			}
 		});
 
-		if (added.size === 0 && changed.size === 0 && removed.size === 0) {
+		if (Added.size === 0 && chAnged.size === 0 && removed.size === 0) {
 			return undefined;
 		}
 
-		return { added, changed, removed };
+		return { Added, chAnged, removed };
 	}
 }
 
-function getMissingMutatorsFromArray(
-	current: IExtensionOwnedEnvironmentVariableMutator[],
-	other: IExtensionOwnedEnvironmentVariableMutator[] | undefined
-): IExtensionOwnedEnvironmentVariableMutator[] | undefined {
-	// If it doesn't exist, all are removed
+function getMissingMutAtorsFromArrAy(
+	current: IExtensionOwnedEnvironmentVAriAbleMutAtor[],
+	other: IExtensionOwnedEnvironmentVAriAbleMutAtor[] | undefined
+): IExtensionOwnedEnvironmentVAriAbleMutAtor[] | undefined {
+	// If it doesn't exist, All Are removed
 	if (!other) {
 		return current;
 	}
 
-	// Create a map to help
-	const otherMutatorExtensions = new Set<string>();
-	other.forEach(m => otherMutatorExtensions.add(m.extensionIdentifier));
+	// CreAte A mAp to help
+	const otherMutAtorExtensions = new Set<string>();
+	other.forEAch(m => otherMutAtorExtensions.Add(m.extensionIdentifier));
 
 	// Find entries removed from other
-	const result: IExtensionOwnedEnvironmentVariableMutator[] = [];
-	current.forEach(mutator => {
-		if (!otherMutatorExtensions.has(mutator.extensionIdentifier)) {
-			result.push(mutator);
+	const result: IExtensionOwnedEnvironmentVAriAbleMutAtor[] = [];
+	current.forEAch(mutAtor => {
+		if (!otherMutAtorExtensions.hAs(mutAtor.extensionIdentifier)) {
+			result.push(mutAtor);
 		}
 	});
 
 	return result.length === 0 ? undefined : result;
 }
 
-function getChangedMutatorsFromArray(
-	current: IExtensionOwnedEnvironmentVariableMutator[],
-	other: IExtensionOwnedEnvironmentVariableMutator[] | undefined
-): IExtensionOwnedEnvironmentVariableMutator[] | undefined {
-	// If it doesn't exist, none are changed (they are removed)
+function getChAngedMutAtorsFromArrAy(
+	current: IExtensionOwnedEnvironmentVAriAbleMutAtor[],
+	other: IExtensionOwnedEnvironmentVAriAbleMutAtor[] | undefined
+): IExtensionOwnedEnvironmentVAriAbleMutAtor[] | undefined {
+	// If it doesn't exist, none Are chAnged (they Are removed)
 	if (!other) {
 		return undefined;
 	}
 
-	// Create a map to help
-	const otherMutatorExtensions = new Map<string, IExtensionOwnedEnvironmentVariableMutator>();
-	other.forEach(m => otherMutatorExtensions.set(m.extensionIdentifier, m));
+	// CreAte A mAp to help
+	const otherMutAtorExtensions = new MAp<string, IExtensionOwnedEnvironmentVAriAbleMutAtor>();
+	other.forEAch(m => otherMutAtorExtensions.set(m.extensionIdentifier, m));
 
-	// Find entries that exist in both but are not equal
-	const result: IExtensionOwnedEnvironmentVariableMutator[] = [];
-	current.forEach(mutator => {
-		const otherMutator = otherMutatorExtensions.get(mutator.extensionIdentifier);
-		if (otherMutator && (mutator.type !== otherMutator.type || mutator.value !== otherMutator.value)) {
+	// Find entries thAt exist in both but Are not equAl
+	const result: IExtensionOwnedEnvironmentVAriAbleMutAtor[] = [];
+	current.forEAch(mutAtor => {
+		const otherMutAtor = otherMutAtorExtensions.get(mutAtor.extensionIdentifier);
+		if (otherMutAtor && (mutAtor.type !== otherMutAtor.type || mutAtor.vAlue !== otherMutAtor.vAlue)) {
 			// Return the new result, not the old one
-			result.push(otherMutator);
+			result.push(otherMutAtor);
 		}
 	});
 

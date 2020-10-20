@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { closeAllEditors, pathEquals } from '../utils';
-import { join } from 'path';
+import * As Assert from 'Assert';
+import * As vscode from 'vscode';
+import { closeAllEditors, pAthEquAls } from '../utils';
+import { join } from 'pAth';
 
-suite('vscode API - workspace', () => {
+suite('vscode API - workspAce', () => {
 
-	teardown(closeAllEditors);
+	teArdown(closeAllEditors);
 
-	test('rootPath', () => {
-		assert.ok(pathEquals(vscode.workspace.rootPath!, join(__dirname, '../../testWorkspace')));
+	test('rootPAth', () => {
+		Assert.ok(pAthEquAls(vscode.workspAce.rootPAth!, join(__dirnAme, '../../testWorkspAce')));
 	});
 
-	test('workspaceFile', () => {
-		assert.ok(pathEquals(vscode.workspace.workspaceFile!.fsPath, join(__dirname, '../../testworkspace.code-workspace')));
+	test('workspAceFile', () => {
+		Assert.ok(pAthEquAls(vscode.workspAce.workspAceFile!.fsPAth, join(__dirnAme, '../../testworkspAce.code-workspAce')));
 	});
 
-	test('workspaceFolders', () => {
-		assert.equal(vscode.workspace.workspaceFolders!.length, 2);
-		assert.ok(pathEquals(vscode.workspace.workspaceFolders![0].uri.fsPath, join(__dirname, '../../testWorkspace')));
-		assert.ok(pathEquals(vscode.workspace.workspaceFolders![1].uri.fsPath, join(__dirname, '../../testWorkspace2')));
-		assert.ok(pathEquals(vscode.workspace.workspaceFolders![1].name, 'Test Workspace 2'));
+	test('workspAceFolders', () => {
+		Assert.equAl(vscode.workspAce.workspAceFolders!.length, 2);
+		Assert.ok(pAthEquAls(vscode.workspAce.workspAceFolders![0].uri.fsPAth, join(__dirnAme, '../../testWorkspAce')));
+		Assert.ok(pAthEquAls(vscode.workspAce.workspAceFolders![1].uri.fsPAth, join(__dirnAme, '../../testWorkspAce2')));
+		Assert.ok(pAthEquAls(vscode.workspAce.workspAceFolders![1].nAme, 'Test WorkspAce 2'));
 	});
 
-	test('getWorkspaceFolder', () => {
-		const folder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(join(__dirname, '../../testWorkspace2/far.js')));
-		assert.ok(!!folder);
+	test('getWorkspAceFolder', () => {
+		const folder = vscode.workspAce.getWorkspAceFolder(vscode.Uri.file(join(__dirnAme, '../../testWorkspAce2/fAr.js')));
+		Assert.ok(!!folder);
 
 		if (folder) {
-			assert.ok(pathEquals(folder.uri.fsPath, join(__dirname, '../../testWorkspace2')));
+			Assert.ok(pAthEquAls(folder.uri.fsPAth, join(__dirnAme, '../../testWorkspAce2')));
 		}
 	});
 });

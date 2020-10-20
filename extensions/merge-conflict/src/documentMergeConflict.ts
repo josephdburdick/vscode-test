@@ -1,78 +1,78 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as interfaces from './interfaces';
-import * as vscode from 'vscode';
+import * As interfAces from './interfAces';
+import * As vscode from 'vscode';
 
-export class DocumentMergeConflict implements interfaces.IDocumentMergeConflict {
+export clAss DocumentMergeConflict implements interfAces.IDocumentMergeConflict {
 
-	public range: vscode.Range;
-	public current: interfaces.IMergeRegion;
-	public incoming: interfaces.IMergeRegion;
-	public commonAncestors: interfaces.IMergeRegion[];
-	public splitter: vscode.Range;
+	public rAnge: vscode.RAnge;
+	public current: interfAces.IMergeRegion;
+	public incoming: interfAces.IMergeRegion;
+	public commonAncestors: interfAces.IMergeRegion[];
+	public splitter: vscode.RAnge;
 
-	constructor(descriptor: interfaces.IDocumentMergeConflictDescriptor) {
-		this.range = descriptor.range;
+	constructor(descriptor: interfAces.IDocumentMergeConflictDescriptor) {
+		this.rAnge = descriptor.rAnge;
 		this.current = descriptor.current;
 		this.incoming = descriptor.incoming;
 		this.commonAncestors = descriptor.commonAncestors;
 		this.splitter = descriptor.splitter;
 	}
 
-	public commitEdit(type: interfaces.CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): Thenable<boolean> {
+	public commitEdit(type: interfAces.CommitType, editor: vscode.TextEditor, edit?: vscode.TextEditorEdit): ThenAble<booleAn> {
 
 		if (edit) {
 
-			this.applyEdit(type, editor.document, edit);
+			this.ApplyEdit(type, editor.document, edit);
 			return Promise.resolve(true);
 		}
 
-		return editor.edit((edit) => this.applyEdit(type, editor.document, edit));
+		return editor.edit((edit) => this.ApplyEdit(type, editor.document, edit));
 	}
 
-	public applyEdit(type: interfaces.CommitType, document: vscode.TextDocument, edit: { replace(range: vscode.Range, newText: string): void; }): void {
+	public ApplyEdit(type: interfAces.CommitType, document: vscode.TextDocument, edit: { replAce(rAnge: vscode.RAnge, newText: string): void; }): void {
 
-		// Each conflict is a set of ranges as follows, note placements or newlines
-		// which may not in spans
-		// [ Conflict Range             -- (Entire content below)
-		//   [ Current Header ]\n       -- >>>>> Header
+		// EAch conflict is A set of rAnges As follows, note plAcements or newlines
+		// which mAy not in spAns
+		// [ Conflict RAnge             -- (Entire content below)
+		//   [ Current HeAder ]\n       -- >>>>> HeAder
 		//   [ Current Content ]        -- (content)
 		//   [ Splitter ]\n             -- =====
 		//   [ Incoming Content ]       -- (content)
-		//   [ Incoming Header ]\n      -- <<<<< Incoming
+		//   [ Incoming HeAder ]\n      -- <<<<< Incoming
 		// ]
-		if (type === interfaces.CommitType.Current) {
-			// Replace [ Conflict Range ] with [ Current Content ]
+		if (type === interfAces.CommitType.Current) {
+			// ReplAce [ Conflict RAnge ] with [ Current Content ]
 			let content = document.getText(this.current.content);
-			this.replaceRangeWithContent(content, edit);
+			this.replAceRAngeWithContent(content, edit);
 		}
-		else if (type === interfaces.CommitType.Incoming) {
+		else if (type === interfAces.CommitType.Incoming) {
 			let content = document.getText(this.incoming.content);
-			this.replaceRangeWithContent(content, edit);
+			this.replAceRAngeWithContent(content, edit);
 		}
-		else if (type === interfaces.CommitType.Both) {
-			// Replace [ Conflict Range ] with [ Current Content ] + \n + [ Incoming Content ]
+		else if (type === interfAces.CommitType.Both) {
+			// ReplAce [ Conflict RAnge ] with [ Current Content ] + \n + [ Incoming Content ]
 
 			const currentContent = document.getText(this.current.content);
 			const incomingContent = document.getText(this.incoming.content);
 
-			edit.replace(this.range, currentContent.concat(incomingContent));
+			edit.replAce(this.rAnge, currentContent.concAt(incomingContent));
 		}
 	}
 
-	private replaceRangeWithContent(content: string, edit: { replace(range: vscode.Range, newText: string): void; }) {
+	privAte replAceRAngeWithContent(content: string, edit: { replAce(rAnge: vscode.RAnge, newText: string): void; }) {
 		if (this.isNewlineOnly(content)) {
-			edit.replace(this.range, '');
+			edit.replAce(this.rAnge, '');
 			return;
 		}
 
-		// Replace [ Conflict Range ] with [ Current Content ]
-		edit.replace(this.range, content);
+		// ReplAce [ Conflict RAnge ] with [ Current Content ]
+		edit.replAce(this.rAnge, content);
 	}
 
-	private isNewlineOnly(text: string) {
+	privAte isNewlineOnly(text: string) {
 		return text === '\n' || text === '\r\n';
 	}
 }

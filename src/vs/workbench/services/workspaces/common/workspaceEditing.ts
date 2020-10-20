@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { IWorkspaceIdentifier, IWorkspaceFolderCreationData } from 'vs/platform/workspaces/common/workspaces';
-import { URI } from 'vs/base/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IWorkspAceIdentifier, IWorkspAceFolderCreAtionDAtA } from 'vs/plAtform/workspAces/common/workspAces';
+import { URI } from 'vs/bAse/common/uri';
 
-export const IWorkspaceEditingService = createDecorator<IWorkspaceEditingService>('workspaceEditingService');
+export const IWorkspAceEditingService = creAteDecorAtor<IWorkspAceEditingService>('workspAceEditingService');
 
-export interface IWorkspaceEditingService {
+export interfAce IWorkspAceEditingService {
 
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * Add folders to the existing workspace.
-	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service handles the error with proper message and action
-	 */
-	addFolders(folders: IWorkspaceFolderCreationData[], donotNotifyError?: boolean): Promise<void>;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Remove folders from the existing workspace
-	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service handles the error with proper message and action
+	 * Add folders to the existing workspAce.
+	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service hAndles the error with proper messAge And Action
 	 */
-	removeFolders(folders: URI[], donotNotifyError?: boolean): Promise<void>;
+	AddFolders(folders: IWorkspAceFolderCreAtionDAtA[], donotNotifyError?: booleAn): Promise<void>;
 
 	/**
-	 * Allows to add and remove folders to the existing workspace at once.
-	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service handles the error with proper message and action
+	 * Remove folders from the existing workspAce
+	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service hAndles the error with proper messAge And Action
 	 */
-	updateFolders(index: number, deleteCount?: number, foldersToAdd?: IWorkspaceFolderCreationData[], donotNotifyError?: boolean): Promise<void>;
+	removeFolders(folders: URI[], donotNotifyError?: booleAn): Promise<void>;
 
 	/**
-	 * enters the workspace with the provided path.
+	 * Allows to Add And remove folders to the existing workspAce At once.
+	 * When `donotNotifyError` is `true`, error will be bubbled up otherwise, the service hAndles the error with proper messAge And Action
 	 */
-	enterWorkspace(path: URI): Promise<void>;
+	updAteFolders(index: number, deleteCount?: number, foldersToAdd?: IWorkspAceFolderCreAtionDAtA[], donotNotifyError?: booleAn): Promise<void>;
 
 	/**
-	 * creates a new workspace with the provided folders and opens it. if path is provided
-	 * the workspace will be saved into that location.
+	 * enters the workspAce with the provided pAth.
 	 */
-	createAndEnterWorkspace(folders: IWorkspaceFolderCreationData[], path?: URI): Promise<void>;
+	enterWorkspAce(pAth: URI): Promise<void>;
 
 	/**
-	 * saves the current workspace to the provided path and opens it. requires a workspace to be opened.
+	 * creAtes A new workspAce with the provided folders And opens it. if pAth is provided
+	 * the workspAce will be sAved into thAt locAtion.
 	 */
-	saveAndEnterWorkspace(path: URI): Promise<void>;
+	creAteAndEnterWorkspAce(folders: IWorkspAceFolderCreAtionDAtA[], pAth?: URI): Promise<void>;
 
 	/**
-	 * copies current workspace settings to the target workspace.
+	 * sAves the current workspAce to the provided pAth And opens it. requires A workspAce to be opened.
 	 */
-	copyWorkspaceSettings(toWorkspace: IWorkspaceIdentifier): Promise<void>;
+	sAveAndEnterWorkspAce(pAth: URI): Promise<void>;
 
 	/**
-	 * picks a new workspace path
+	 * copies current workspAce settings to the tArget workspAce.
 	 */
-	pickNewWorkspacePath(): Promise<URI | undefined>;
+	copyWorkspAceSettings(toWorkspAce: IWorkspAceIdentifier): Promise<void>;
+
+	/**
+	 * picks A new workspAce pAth
+	 */
+	pickNewWorkspAcePAth(): Promise<URI | undefined>;
 }

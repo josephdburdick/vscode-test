@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
 
-export const IStateService = createDecorator<IStateService>('stateService');
+export const IStAteService = creAteDecorAtor<IStAteService>('stAteService');
 
-export interface IStateService {
-	readonly _serviceBrand: undefined;
+export interfAce IStAteService {
+	reAdonly _serviceBrAnd: undefined;
 
-	getItem<T>(key: string, defaultValue: T): T;
-	getItem<T>(key: string, defaultValue?: T): T | undefined;
-	setItem(key: string, data?: object | string | number | boolean | undefined | null): void;
+	getItem<T>(key: string, defAultVAlue: T): T;
+	getItem<T>(key: string, defAultVAlue?: T): T | undefined;
+	setItem(key: string, dAtA?: object | string | number | booleAn | undefined | null): void;
 	removeItem(key: string): void;
 }

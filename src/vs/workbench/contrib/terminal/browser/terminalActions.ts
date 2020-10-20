@@ -1,96 +1,96 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Action, IAction } from 'vs/base/common/actions';
+import { Action, IAction } from 'vs/bAse/common/Actions';
 import { EndOfLinePreference } from 'vs/editor/common/model';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { TERMINAL_VIEW_ID, ITerminalConfigHelper, TitleEventSource, TERMINAL_COMMAND_ID, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED, TERMINAL_ACTION_CATEGORY, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED } from 'vs/workbench/contrib/terminal/common/terminal';
-import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { attachSelectBoxStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IQuickInputService, IPickOptions, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
-import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IContextViewService } from 'vs/platform/contextview/browser/contextView';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { IWorkspaceContextService, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { PICK_WORKSPACE_FOLDER_COMMAND_ID } from 'vs/workbench/browser/actions/workspaceCommands';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ISelectOptionItem } from 'vs/base/browser/ui/selectBox/selectBox';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
+import { TERMINAL_VIEW_ID, ITerminAlConfigHelper, TitleEventSource, TERMINAL_COMMAND_ID, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED, TERMINAL_ACTION_CATEGORY, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE, KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED } from 'vs/workbench/contrib/terminAl/common/terminAl';
+import { IWorkbenchLAyoutService } from 'vs/workbench/services/lAyout/browser/lAyoutService';
+import { AttAchSelectBoxStyler, AttAchStylerCAllbAck } from 'vs/plAtform/theme/common/styler';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { IQuickInputService, IPickOptions, IQuickPickItem } from 'vs/plAtform/quickinput/common/quickInput';
+import { ServicesAccessor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IContextViewService } from 'vs/plAtform/contextview/browser/contextView';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { IWorkspAceContextService, IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { PICK_WORKSPACE_FOLDER_COMMAND_ID } from 'vs/workbench/browser/Actions/workspAceCommAnds';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ISelectOptionItem } from 'vs/bAse/browser/ui/selectBox/selectBox';
+import { IConfigurAtionResolverService } from 'vs/workbench/services/configurAtionResolver/common/configurAtionResolver';
 import { IHistoryService } from 'vs/workbench/services/history/common/history';
-import { Schemas } from 'vs/base/common/network';
-import { URI } from 'vs/base/common/uri';
-import { isWindows } from 'vs/base/common/platform';
-import { withNullAsUndefined } from 'vs/base/common/types';
-import { ITerminalInstance, ITerminalService, Direction } from 'vs/workbench/contrib/terminal/browser/terminal';
-import { Action2, registerAction2, ILocalizedString } from 'vs/platform/actions/common/actions';
-import { TerminalQuickAccessProvider } from 'vs/workbench/contrib/terminal/browser/terminalQuickAccess';
-import { ToggleViewAction } from 'vs/workbench/browser/actions/layoutActions';
+import { SchemAs } from 'vs/bAse/common/network';
+import { URI } from 'vs/bAse/common/uri';
+import { isWindows } from 'vs/bAse/common/plAtform';
+import { withNullAsUndefined } from 'vs/bAse/common/types';
+import { ITerminAlInstAnce, ITerminAlService, Direction } from 'vs/workbench/contrib/terminAl/browser/terminAl';
+import { Action2, registerAction2, ILocAlizedString } from 'vs/plAtform/Actions/common/Actions';
+import { TerminAlQuickAccessProvider } from 'vs/workbench/contrib/terminAl/browser/terminAlQuickAccess';
+import { ToggleViewAction } from 'vs/workbench/browser/Actions/lAyoutActions';
 import { IViewsService, IViewDescriptorService } from 'vs/workbench/common/views';
-import { IContextKeyService, ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { addClass } from 'vs/base/browser/dom';
-import { selectBorder } from 'vs/platform/theme/common/colorRegistry';
-import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { localize } from 'vs/nls';
-import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessibility/common/accessibility';
-import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { ITerminalContributionService } from 'vs/workbench/contrib/terminal/common/terminalExtensionPoints';
-import { SelectActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { FindInFilesCommand, IFindInFilesArgs } from 'vs/workbench/contrib/search/browser/searchActions';
+import { IContextKeyService, ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
+import { AddClAss } from 'vs/bAse/browser/dom';
+import { selectBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { KeyMod, KeyCode } from 'vs/bAse/common/keyCodes';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { locAlize } from 'vs/nls';
+import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { IOpenerService } from 'vs/plAtform/opener/common/opener';
+import { ITerminAlContributionService } from 'vs/workbench/contrib/terminAl/common/terminAlExtensionPoints';
+import { SelectActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { FindInFilesCommAnd, IFindInFilesArgs } from 'vs/workbench/contrib/seArch/browser/seArchActions';
 
-async function getCwdForSplit(configHelper: ITerminalConfigHelper, instance: ITerminalInstance, folders?: IWorkspaceFolder[], commandService?: ICommandService): Promise<string | URI | undefined> {
+Async function getCwdForSplit(configHelper: ITerminAlConfigHelper, instAnce: ITerminAlInstAnce, folders?: IWorkspAceFolder[], commAndService?: ICommAndService): Promise<string | URI | undefined> {
 	switch (configHelper.config.splitCwd) {
-		case 'workspaceRoot':
-			if (folders !== undefined && commandService !== undefined) {
+		cAse 'workspAceRoot':
+			if (folders !== undefined && commAndService !== undefined) {
 				if (folders.length === 1) {
 					return folders[0].uri;
 				} else if (folders.length > 1) {
-					// Only choose a path when there's more than 1 folder
+					// Only choose A pAth when there's more thAn 1 folder
 					const options: IPickOptions<IQuickPickItem> = {
-						placeHolder: localize('workbench.action.terminal.newWorkspacePlaceholder', "Select current working directory for new terminal")
+						plAceHolder: locAlize('workbench.Action.terminAl.newWorkspAcePlAceholder', "Select current working directory for new terminAl")
 					};
-					const workspace = await commandService.executeCommand(PICK_WORKSPACE_FOLDER_COMMAND_ID, [options]);
-					if (!workspace) {
-						// Don't split the instance if the workspace picker was canceled
+					const workspAce = AwAit commAndService.executeCommAnd(PICK_WORKSPACE_FOLDER_COMMAND_ID, [options]);
+					if (!workspAce) {
+						// Don't split the instAnce if the workspAce picker wAs cAnceled
 						return undefined;
 					}
-					return Promise.resolve(workspace.uri);
+					return Promise.resolve(workspAce.uri);
 				}
 			}
 			return '';
-		case 'initial':
-			return instance.getInitialCwd();
-		case 'inherited':
-			return instance.getCwd();
+		cAse 'initiAl':
+			return instAnce.getInitiAlCwd();
+		cAse 'inherited':
+			return instAnce.getCwd();
 	}
 }
 
-export class ToggleTerminalAction extends ToggleViewAction {
+export clAss ToggleTerminAlAction extends ToggleViewAction {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.TOGGLE;
-	public static readonly LABEL = localize('workbench.action.terminal.toggleTerminal', "Toggle Integrated Terminal");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.TOGGLE;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.toggleTerminAl', "Toggle IntegrAted TerminAl");
 
 	constructor(
-		id: string, label: string,
+		id: string, lAbel: string,
 		@IViewsService viewsService: IViewsService,
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
-		@ITerminalService private readonly terminalService: ITerminalService
+		@IWorkbenchLAyoutService lAyoutService: IWorkbenchLAyoutService,
+		@ITerminAlService privAte reAdonly terminAlService: ITerminAlService
 	) {
-		super(id, label, TERMINAL_VIEW_ID, viewsService, viewDescriptorService, contextKeyService, layoutService);
+		super(id, lAbel, TERMINAL_VIEW_ID, viewsService, viewDescriptorService, contextKeyService, lAyoutService);
 	}
 
-	async run() {
-		if (this.terminalService.isProcessSupportRegistered && this.terminalService.terminalInstances.length === 0) {
-			// If there is not yet an instance attempt to create it here so that we can suggest a
-			// new shell on Windows (and not do so when the panel is restored on reload).
-			const newTerminalInstance = this.terminalService.createTerminal(undefined);
-			const toDispose = newTerminalInstance.onProcessIdReady(() => {
-				newTerminalInstance.focus();
+	Async run() {
+		if (this.terminAlService.isProcessSupportRegistered && this.terminAlService.terminAlInstAnces.length === 0) {
+			// If there is not yet An instAnce Attempt to creAte it here so thAt we cAn suggest A
+			// new shell on Windows (And not do so when the pAnel is restored on reloAd).
+			const newTerminAlInstAnce = this.terminAlService.creAteTerminAl(undefined);
+			const toDispose = newTerminAlInstAnce.onProcessIdReAdy(() => {
+				newTerminAlInstAnce.focus();
 				toDispose.dispose();
 			});
 		}
@@ -98,376 +98,376 @@ export class ToggleTerminalAction extends ToggleViewAction {
 	}
 }
 
-export class KillTerminalAction extends Action {
+export clAss KillTerminAlAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.KILL;
-	public static readonly LABEL = localize('workbench.action.terminal.kill', "Kill the Active Terminal Instance");
-	public static readonly PANEL_LABEL = localize('workbench.action.terminal.kill.short', "Kill Terminal");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.KILL;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.kill', "Kill the Active TerminAl InstAnce");
+	public stAtic reAdonly PANEL_LABEL = locAlize('workbench.Action.terminAl.kill.short', "Kill TerminAl");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label, 'terminal-action codicon-trash');
+		super(id, lAbel, 'terminAl-Action codicon-trAsh');
 	}
 
-	async run() {
-		await this._terminalService.doWithActiveInstance(async t => {
+	Async run() {
+		AwAit this._terminAlService.doWithActiveInstAnce(Async t => {
 			t.dispose(true);
-			if (this._terminalService.terminalInstances.length > 0) {
-				await this._terminalService.showPanel(true);
+			if (this._terminAlService.terminAlInstAnces.length > 0) {
+				AwAit this._terminAlService.showPAnel(true);
 			}
 		});
 	}
 }
 
 /**
- * Copies the terminal selection. Note that since the command palette takes focus from the terminal,
- * this cannot be triggered through the command palette.
+ * Copies the terminAl selection. Note thAt since the commAnd pAlette tAkes focus from the terminAl,
+ * this cAnnot be triggered through the commAnd pAlette.
  */
-export class CopyTerminalSelectionAction extends Action {
+export clAss CopyTerminAlSelectionAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.COPY_SELECTION;
-	public static readonly LABEL = localize('workbench.action.terminal.copySelection', "Copy Selection");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.copySelection.short', "Copy");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.COPY_SELECTION;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.copySelection', "Copy Selection");
+	public stAtic reAdonly SHORT_LABEL = locAlize('workbench.Action.terminAl.copySelection.short', "Copy");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run() {
-		await this._terminalService.getActiveInstance()?.copySelection();
+	Async run() {
+		AwAit this._terminAlService.getActiveInstAnce()?.copySelection();
 	}
 }
 
-export class SelectAllTerminalAction extends Action {
+export clAss SelectAllTerminAlAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.SELECT_ALL;
-	public static readonly LABEL = localize('workbench.action.terminal.selectAll', "Select All");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.SELECT_ALL;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.selectAll', "Select All");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run() {
-		this._terminalService.getActiveInstance()?.selectAll();
+	Async run() {
+		this._terminAlService.getActiveInstAnce()?.selectAll();
 	}
 }
 
-export const terminalSendSequenceCommand = (accessor: ServicesAccessor, args: { text?: string } | undefined) => {
-	accessor.get(ITerminalService).doWithActiveInstance(t => {
-		if (!args?.text) {
+export const terminAlSendSequenceCommAnd = (Accessor: ServicesAccessor, Args: { text?: string } | undefined) => {
+	Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+		if (!Args?.text) {
 			return;
 		}
-		const configurationResolverService = accessor.get(IConfigurationResolverService);
-		const workspaceContextService = accessor.get(IWorkspaceContextService);
-		const historyService = accessor.get(IHistoryService);
-		const activeWorkspaceRootUri = historyService.getLastActiveWorkspaceRoot(Schemas.file);
-		const lastActiveWorkspaceRoot = activeWorkspaceRootUri ? withNullAsUndefined(workspaceContextService.getWorkspaceFolder(activeWorkspaceRootUri)) : undefined;
-		const resolvedText = configurationResolverService.resolve(lastActiveWorkspaceRoot, args.text);
-		t.sendText(resolvedText, false);
+		const configurAtionResolverService = Accessor.get(IConfigurAtionResolverService);
+		const workspAceContextService = Accessor.get(IWorkspAceContextService);
+		const historyService = Accessor.get(IHistoryService);
+		const ActiveWorkspAceRootUri = historyService.getLAstActiveWorkspAceRoot(SchemAs.file);
+		const lAstActiveWorkspAceRoot = ActiveWorkspAceRootUri ? withNullAsUndefined(workspAceContextService.getWorkspAceFolder(ActiveWorkspAceRootUri)) : undefined;
+		const resolvedText = configurAtionResolverService.resolve(lAstActiveWorkspAceRoot, Args.text);
+		t.sendText(resolvedText, fAlse);
 	});
 };
 
 
-export class CreateNewTerminalAction extends Action {
+export clAss CreAteNewTerminAlAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.NEW;
-	public static readonly LABEL = localize('workbench.action.terminal.new', "Create New Integrated Terminal");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.new.short', "New Terminal");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.NEW;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.new', "CreAte New IntegrAted TerminAl");
+	public stAtic reAdonly SHORT_LABEL = locAlize('workbench.Action.terminAl.new.short', "New TerminAl");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@ICommandService private readonly _commandService: ICommandService,
-		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@ICommAndService privAte reAdonly _commAndService: ICommAndService,
+		@IWorkspAceContextService privAte reAdonly _workspAceContextService: IWorkspAceContextService
 	) {
-		super(id, label, 'terminal-action codicon-add');
+		super(id, lAbel, 'terminAl-Action codicon-Add');
 	}
 
-	async run(event?: any) {
-		const folders = this._workspaceContextService.getWorkspace().folders;
-		if (event instanceof MouseEvent && (event.altKey || event.ctrlKey)) {
-			const activeInstance = this._terminalService.getActiveInstance();
-			if (activeInstance) {
-				const cwd = await getCwdForSplit(this._terminalService.configHelper, activeInstance);
-				this._terminalService.splitInstance(activeInstance, { cwd });
+	Async run(event?: Any) {
+		const folders = this._workspAceContextService.getWorkspAce().folders;
+		if (event instAnceof MouseEvent && (event.AltKey || event.ctrlKey)) {
+			const ActiveInstAnce = this._terminAlService.getActiveInstAnce();
+			if (ActiveInstAnce) {
+				const cwd = AwAit getCwdForSplit(this._terminAlService.configHelper, ActiveInstAnce);
+				this._terminAlService.splitInstAnce(ActiveInstAnce, { cwd });
 				return;
 			}
 		}
 
-		if (this._terminalService.isProcessSupportRegistered) {
-			let instance: ITerminalInstance | undefined;
+		if (this._terminAlService.isProcessSupportRegistered) {
+			let instAnce: ITerminAlInstAnce | undefined;
 			if (folders.length <= 1) {
-				// Allow terminal service to handle the path when there is only a
+				// Allow terminAl service to hAndle the pAth when there is only A
 				// single root
-				instance = this._terminalService.createTerminal(undefined);
+				instAnce = this._terminAlService.creAteTerminAl(undefined);
 			} else {
 				const options: IPickOptions<IQuickPickItem> = {
-					placeHolder: localize('workbench.action.terminal.newWorkspacePlaceholder', "Select current working directory for new terminal")
+					plAceHolder: locAlize('workbench.Action.terminAl.newWorkspAcePlAceholder', "Select current working directory for new terminAl")
 				};
-				const workspace = await this._commandService.executeCommand(PICK_WORKSPACE_FOLDER_COMMAND_ID, [options]);
-				if (!workspace) {
-					// Don't create the instance if the workspace picker was canceled
+				const workspAce = AwAit this._commAndService.executeCommAnd(PICK_WORKSPACE_FOLDER_COMMAND_ID, [options]);
+				if (!workspAce) {
+					// Don't creAte the instAnce if the workspAce picker wAs cAnceled
 					return;
 				}
-				instance = this._terminalService.createTerminal({ cwd: workspace.uri });
+				instAnce = this._terminAlService.creAteTerminAl({ cwd: workspAce.uri });
 			}
-			this._terminalService.setActiveInstance(instance);
+			this._terminAlService.setActiveInstAnce(instAnce);
 		}
-		await this._terminalService.showPanel(true);
+		AwAit this._terminAlService.showPAnel(true);
 	}
 }
 
-export class SplitTerminalAction extends Action {
-	public static readonly ID = TERMINAL_COMMAND_ID.SPLIT;
-	public static readonly LABEL = localize('workbench.action.terminal.split', "Split Terminal");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.split.short', "Split");
-	public static readonly HORIZONTAL_CLASS = 'terminal-action codicon-split-horizontal';
-	public static readonly VERTICAL_CLASS = 'terminal-action codicon-split-vertical';
+export clAss SplitTerminAlAction extends Action {
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.SPLIT;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.split', "Split TerminAl");
+	public stAtic reAdonly SHORT_LABEL = locAlize('workbench.Action.terminAl.split.short', "Split");
+	public stAtic reAdonly HORIZONTAL_CLASS = 'terminAl-Action codicon-split-horizontAl';
+	public stAtic reAdonly VERTICAL_CLASS = 'terminAl-Action codicon-split-verticAl';
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@ICommandService private readonly _commandService: ICommandService,
-		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@ICommAndService privAte reAdonly _commAndService: ICommAndService,
+		@IWorkspAceContextService privAte reAdonly _workspAceContextService: IWorkspAceContextService
 	) {
-		super(id, label, SplitTerminalAction.HORIZONTAL_CLASS);
+		super(id, lAbel, SplitTerminAlAction.HORIZONTAL_CLASS);
 	}
 
-	public async run(): Promise<any> {
-		await this._terminalService.doWithActiveInstance(async t => {
-			const cwd = await getCwdForSplit(this._terminalService.configHelper, t, this._workspaceContextService.getWorkspace().folders, this._commandService);
+	public Async run(): Promise<Any> {
+		AwAit this._terminAlService.doWithActiveInstAnce(Async t => {
+			const cwd = AwAit getCwdForSplit(this._terminAlService.configHelper, t, this._workspAceContextService.getWorkspAce().folders, this._commAndService);
 			if (cwd === undefined) {
 				return undefined;
 			}
-			this._terminalService.splitInstance(t, { cwd });
-			return this._terminalService.showPanel(true);
+			this._terminAlService.splitInstAnce(t, { cwd });
+			return this._terminAlService.showPAnel(true);
 		});
 	}
 }
 
-export class SplitInActiveWorkspaceTerminalAction extends Action {
-	public static readonly ID = TERMINAL_COMMAND_ID.SPLIT_IN_ACTIVE_WORKSPACE;
-	public static readonly LABEL = localize('workbench.action.terminal.splitInActiveWorkspace', "Split Terminal (In Active Workspace)");
+export clAss SplitInActiveWorkspAceTerminAlAction extends Action {
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.SPLIT_IN_ACTIVE_WORKSPACE;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.splitInActiveWorkspAce', "Split TerminAl (In Active WorkspAce)");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run() {
-		await this._terminalService.doWithActiveInstance(async t => {
-			const cwd = await getCwdForSplit(this._terminalService.configHelper, t);
-			this._terminalService.splitInstance(t, { cwd });
-			await this._terminalService.showPanel(true);
+	Async run() {
+		AwAit this._terminAlService.doWithActiveInstAnce(Async t => {
+			const cwd = AwAit getCwdForSplit(this._terminAlService.configHelper, t);
+			this._terminAlService.splitInstAnce(t, { cwd });
+			AwAit this._terminAlService.showPAnel(true);
 		});
 	}
 }
 
-export class TerminalPasteAction extends Action {
+export clAss TerminAlPAsteAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.PASTE;
-	public static readonly LABEL = localize('workbench.action.terminal.paste', "Paste into Active Terminal");
-	public static readonly SHORT_LABEL = localize('workbench.action.terminal.paste.short', "Paste");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.PASTE;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.pAste', "PAste into Active TerminAl");
+	public stAtic reAdonly SHORT_LABEL = locAlize('workbench.Action.terminAl.pAste.short', "PAste");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run() {
-		this._terminalService.getActiveOrCreateInstance()?.paste();
+	Async run() {
+		this._terminAlService.getActiveOrCreAteInstAnce()?.pAste();
 	}
 }
 
-export class SelectDefaultShellWindowsTerminalAction extends Action {
+export clAss SelectDefAultShellWindowsTerminAlAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.SELECT_DEFAULT_SHELL;
-	public static readonly LABEL = localize('workbench.action.terminal.selectDefaultShell', "Select Default Shell");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.SELECT_DEFAULT_SHELL;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.selectDefAultShell', "Select DefAult Shell");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run() {
-		this._terminalService.selectDefaultShell();
+	Async run() {
+		this._terminAlService.selectDefAultShell();
 	}
 }
 
-const terminalIndexRe = /^([0-9]+): /;
+const terminAlIndexRe = /^([0-9]+): /;
 
-export class SwitchTerminalAction extends Action {
+export clAss SwitchTerminAlAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.SWITCH_TERMINAL;
-	public static readonly LABEL = localize('workbench.action.terminal.switchTerminal', "Switch Terminal");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.SWITCH_TERMINAL;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.switchTerminAl', "Switch TerminAl");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@ITerminalContributionService private readonly _contributions: ITerminalContributionService,
-		@ICommandService private readonly _commands: ICommandService,
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@ITerminAlContributionService privAte reAdonly _contributions: ITerminAlContributionService,
+		@ICommAndService privAte reAdonly _commAnds: ICommAndService,
 	) {
-		super(id, label, 'terminal-action switch-terminal');
+		super(id, lAbel, 'terminAl-Action switch-terminAl');
 	}
 
-	public run(item?: string): Promise<any> {
+	public run(item?: string): Promise<Any> {
 		if (!item || !item.split) {
 			return Promise.resolve(null);
 		}
-		if (item === SwitchTerminalActionViewItem.SEPARATOR) {
-			this._terminalService.refreshActiveTab();
+		if (item === SwitchTerminAlActionViewItem.SEPARATOR) {
+			this._terminAlService.refreshActiveTAb();
 			return Promise.resolve(null);
 		}
-		if (item === SelectDefaultShellWindowsTerminalAction.LABEL) {
-			this._terminalService.refreshActiveTab();
-			return this._terminalService.selectDefaultShell();
+		if (item === SelectDefAultShellWindowsTerminAlAction.LABEL) {
+			this._terminAlService.refreshActiveTAb();
+			return this._terminAlService.selectDefAultShell();
 		}
 
-		const indexMatches = terminalIndexRe.exec(item);
-		if (indexMatches) {
-			this._terminalService.setActiveTabByIndex(Number(indexMatches[1]) - 1);
-			return this._terminalService.showPanel(true);
+		const indexMAtches = terminAlIndexRe.exec(item);
+		if (indexMAtches) {
+			this._terminAlService.setActiveTAbByIndex(Number(indexMAtches[1]) - 1);
+			return this._terminAlService.showPAnel(true);
 		}
 
-		const customType = this._contributions.terminalTypes.find(t => t.title === item);
+		const customType = this._contributions.terminAlTypes.find(t => t.title === item);
 		if (customType) {
-			return this._commands.executeCommand(customType.command);
+			return this._commAnds.executeCommAnd(customType.commAnd);
 		}
 
-		console.warn(`Unmatched terminal item: "${item}"`);
+		console.wArn(`UnmAtched terminAl item: "${item}"`);
 		return Promise.resolve();
 	}
 }
 
-export class SwitchTerminalActionViewItem extends SelectActionViewItem {
+export clAss SwitchTerminAlActionViewItem extends SelectActionViewItem {
 
-	public static readonly SEPARATOR = '─────────';
+	public stAtic reAdonly SEPARATOR = '─────────';
 
 	constructor(
-		action: IAction,
-		@ITerminalService private readonly _terminalService: ITerminalService,
-		@IThemeService private readonly _themeService: IThemeService,
-		@ITerminalContributionService private readonly _contributions: ITerminalContributionService,
+		Action: IAction,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService,
+		@IThemeService privAte reAdonly _themeService: IThemeService,
+		@ITerminAlContributionService privAte reAdonly _contributions: ITerminAlContributionService,
 		@IContextViewService contextViewService: IContextViewService,
 	) {
-		super(null, action, getTerminalSelectOpenItems(_terminalService, _contributions), _terminalService.activeTabIndex, contextViewService, { ariaLabel: localize('terminals', 'Open Terminals.'), optionsAsChildren: true });
+		super(null, Action, getTerminAlSelectOpenItems(_terminAlService, _contributions), _terminAlService.ActiveTAbIndex, contextViewService, { AriALAbel: locAlize('terminAls', 'Open TerminAls.'), optionsAsChildren: true });
 
-		this._register(_terminalService.onInstancesChanged(this._updateItems, this));
-		this._register(_terminalService.onActiveTabChanged(this._updateItems, this));
-		this._register(_terminalService.onInstanceTitleChanged(this._updateItems, this));
-		this._register(_terminalService.onTabDisposed(this._updateItems, this));
-		this._register(attachSelectBoxStyler(this.selectBox, this._themeService));
+		this._register(_terminAlService.onInstAncesChAnged(this._updAteItems, this));
+		this._register(_terminAlService.onActiveTAbChAnged(this._updAteItems, this));
+		this._register(_terminAlService.onInstAnceTitleChAnged(this._updAteItems, this));
+		this._register(_terminAlService.onTAbDisposed(this._updAteItems, this));
+		this._register(AttAchSelectBoxStyler(this.selectBox, this._themeService));
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
-		addClass(container, 'switch-terminal');
-		this._register(attachStylerCallback(this._themeService, { selectBorder }, colors => {
-			container.style.borderColor = colors.selectBorder ? `${colors.selectBorder}` : '';
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
+		AddClAss(contAiner, 'switch-terminAl');
+		this._register(AttAchStylerCAllbAck(this._themeService, { selectBorder }, colors => {
+			contAiner.style.borderColor = colors.selectBorder ? `${colors.selectBorder}` : '';
 		}));
 	}
 
-	private _updateItems(): void {
-		this.setOptions(getTerminalSelectOpenItems(this._terminalService, this._contributions), this._terminalService.activeTabIndex);
+	privAte _updAteItems(): void {
+		this.setOptions(getTerminAlSelectOpenItems(this._terminAlService, this._contributions), this._terminAlService.ActiveTAbIndex);
 	}
 }
 
-function getTerminalSelectOpenItems(terminalService: ITerminalService, contributions: ITerminalContributionService): ISelectOptionItem[] {
-	const items = terminalService.getTabLabels().map(label => <ISelectOptionItem>{ text: label });
-	items.push({ text: SwitchTerminalActionViewItem.SEPARATOR, isDisabled: true });
+function getTerminAlSelectOpenItems(terminAlService: ITerminAlService, contributions: ITerminAlContributionService): ISelectOptionItem[] {
+	const items = terminAlService.getTAbLAbels().mAp(lAbel => <ISelectOptionItem>{ text: lAbel });
+	items.push({ text: SwitchTerminAlActionViewItem.SEPARATOR, isDisAbled: true });
 
-	for (const contributed of contributions.terminalTypes) {
+	for (const contributed of contributions.terminAlTypes) {
 		items.push({ text: contributed.title });
 	}
 
-	items.push({ text: SelectDefaultShellWindowsTerminalAction.LABEL });
+	items.push({ text: SelectDefAultShellWindowsTerminAlAction.LABEL });
 	return items;
 }
 
-export class ClearTerminalAction extends Action {
+export clAss CleArTerminAlAction extends Action {
 
-	public static readonly ID = TERMINAL_COMMAND_ID.CLEAR;
-	public static readonly LABEL = localize('workbench.action.terminal.clear', "Clear");
+	public stAtic reAdonly ID = TERMINAL_COMMAND_ID.CLEAR;
+	public stAtic reAdonly LABEL = locAlize('workbench.Action.terminAl.cleAr', "CleAr");
 
 	constructor(
-		id: string, label: string,
-		@ITerminalService private readonly _terminalService: ITerminalService
+		id: string, lAbel: string,
+		@ITerminAlService privAte reAdonly _terminAlService: ITerminAlService
 	) {
-		super(id, label);
+		super(id, lAbel);
 	}
 
-	async run() {
-		this._terminalService.doWithActiveInstance(t => {
-			t.clear();
+	Async run() {
+		this._terminAlService.doWithActiveInstAnce(t => {
+			t.cleAr();
 			t.focus();
 		});
 	}
 }
 
-export class TerminalLaunchHelpAction extends Action {
+export clAss TerminAlLAunchHelpAction extends Action {
 
 	constructor(
-		@IOpenerService private readonly _openerService: IOpenerService
+		@IOpenerService privAte reAdonly _openerService: IOpenerService
 	) {
-		super('workbench.action.terminal.launchHelp', localize('terminalLaunchHelp', "Open Help"));
+		super('workbench.Action.terminAl.lAunchHelp', locAlize('terminAlLAunchHelp', "Open Help"));
 	}
 
-	async run(): Promise<void> {
-		this._openerService.open('https://aka.ms/vscode-troubleshoot-terminal-launch');
+	Async run(): Promise<void> {
+		this._openerService.open('https://AkA.ms/vscode-troubleshoot-terminAl-lAunch');
 	}
 }
 
-export function registerTerminalActions() {
-	const category: ILocalizedString = { value: TERMINAL_ACTION_CATEGORY, original: 'Terminal' };
+export function registerTerminAlActions() {
+	const cAtegory: ILocAlizedString = { vAlue: TERMINAL_ACTION_CATEGORY, originAl: 'TerminAl' };
 
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NEW_IN_ACTIVE_WORKSPACE,
-				title: { value: localize('workbench.action.terminal.newInActiveWorkspace', "Create New Integrated Terminal (In Active Workspace)"), original: 'Create New Integrated Terminal (In Active Workspace)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.newInActiveWorkspAce', "CreAte New IntegrAted TerminAl (In Active WorkspAce)"), originAl: 'CreAte New IntegrAted TerminAl (In Active WorkspAce)' },
 				f1: true,
-				category
+				cAtegory
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			if (terminalService.isProcessSupportRegistered) {
-				const instance = terminalService.createTerminal(undefined);
-				if (!instance) {
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			if (terminAlService.isProcessSupportRegistered) {
+				const instAnce = terminAlService.creAteTerminAl(undefined);
+				if (!instAnce) {
 					return;
 				}
-				terminalService.setActiveInstance(instance);
+				terminAlService.setActiveInstAnce(instAnce);
 			}
-			await terminalService.showPanel(true);
+			AwAit terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_PREVIOUS_PANE,
-				title: { value: localize('workbench.action.terminal.focusPreviousPane', "Focus Previous Pane"), original: 'Focus Previous Pane' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.focusPreviousPAne', "Focus Previous PAne"), originAl: 'Focus Previous PAne' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Alt | KeyCode.LeftArrow,
-					secondary: [KeyMod.Alt | KeyCode.UpArrow],
-					mac: {
-						primary: KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.LeftArrow,
-						secondary: [KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.UpArrow]
+					primAry: KeyMod.Alt | KeyCode.LeftArrow,
+					secondAry: [KeyMod.Alt | KeyCode.UpArrow],
+					mAc: {
+						primAry: KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.LeftArrow,
+						secondAry: [KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.UpArrow]
 					},
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
@@ -475,25 +475,25 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			terminalService.getActiveTab()?.focusPreviousPane();
-			await terminalService.showPanel(true);
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			terminAlService.getActiveTAb()?.focusPreviousPAne();
+			AwAit terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_NEXT_PANE,
-				title: { value: localize('workbench.action.terminal.focusNextPane', "Focus Next Pane"), original: 'Focus Next Pane' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.focusNextPAne', "Focus Next PAne"), originAl: 'Focus Next PAne' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Alt | KeyCode.RightArrow,
-					secondary: [KeyMod.Alt | KeyCode.DownArrow],
-					mac: {
-						primary: KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.RightArrow,
-						secondary: [KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.DownArrow]
+					primAry: KeyMod.Alt | KeyCode.RightArrow,
+					secondAry: [KeyMod.Alt | KeyCode.DownArrow],
+					mAc: {
+						primAry: KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.RightArrow,
+						secondAry: [KeyMod.Alt | KeyMod.CtrlCmd | KeyCode.DownArrow]
 					},
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
@@ -501,650 +501,650 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			terminalService.getActiveTab()?.focusNextPane();
-			await terminalService.showPanel(true);
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			terminAlService.getActiveTAb()?.focusNextPAne();
+			AwAit terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_LEFT,
-				title: { value: localize('workbench.action.terminal.resizePaneLeft', "Resize Pane Left"), original: 'Resize Pane Left' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.resizePAneLeft', "Resize PAne Left"), originAl: 'Resize PAne Left' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow },
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.LeftArrow },
+					linux: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow },
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.LeftArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Left);
+		Async run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveTAb()?.resizePAne(Direction.Left);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_RIGHT,
-				title: { value: localize('workbench.action.terminal.resizePaneRight', "Resize Pane Right"), original: 'Resize Pane Right' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.resizePAneRight', "Resize PAne Right"), originAl: 'Resize PAne Right' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow },
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.RightArrow },
+					linux: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow },
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.RightArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Right);
+		Async run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveTAb()?.resizePAne(Direction.Right);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_UP,
-				title: { value: localize('workbench.action.terminal.resizePaneUp', "Resize Pane Up"), original: 'Resize Pane Up' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.resizePAneUp', "Resize PAne Up"), originAl: 'Resize PAne Up' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.UpArrow },
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.UpArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Up);
+		Async run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveTAb()?.resizePAne(Direction.Up);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RESIZE_PANE_DOWN,
-				title: { value: localize('workbench.action.terminal.resizePaneDown', "Resize Pane Down"), original: 'Resize Pane Down' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.resizePAneDown', "Resize PAne Down"), originAl: 'Resize PAne Down' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.DownArrow },
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.DownArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveTab()?.resizePane(Direction.Down);
+		Async run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveTAb()?.resizePAne(Direction.Down);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS,
-				title: { value: localize('workbench.action.terminal.focus', "Focus Terminal"), original: 'Focus Terminal' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.focus', "Focus TerminAl"), originAl: 'Focus TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			const instance = terminalService.getActiveOrCreateInstance();
-			if (!instance) {
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			const instAnce = terminAlService.getActiveOrCreAteInstAnce();
+			if (!instAnce) {
 				return;
 			}
-			terminalService.setActiveInstance(instance);
-			return terminalService.showPanel(true);
+			terminAlService.setActiveInstAnce(instAnce);
+			return terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_NEXT,
-				title: { value: localize('workbench.action.terminal.focusNext', "Focus Next Terminal"), original: 'Focus Next Terminal' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.focusNext', "Focus Next TerminAl"), originAl: 'Focus Next TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			terminalService.setActiveTabToNext();
-			await terminalService.showPanel(true);
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			terminAlService.setActiveTAbToNext();
+			AwAit terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FOCUS_PREVIOUS,
-				title: { value: localize('workbench.action.terminal.focusPrevious', "Focus Previous Terminal"), original: 'Focus Previous Terminal' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.focusPrevious', "Focus Previous TerminAl"), originAl: 'Focus Previous TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			terminalService.setActiveTabToPrevious();
-			await terminalService.showPanel(true);
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			terminAlService.setActiveTAbToPrevious();
+			AwAit terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RUN_SELECTED_TEXT,
-				title: { value: localize('workbench.action.terminal.runSelectedText', "Run Selected Text In Active Terminal"), original: 'Run Selected Text In Active Terminal' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.runSelectedText', "Run Selected Text In Active TerminAl"), originAl: 'Run Selected Text In Active TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			const codeEditorService = accessor.get(ICodeEditorService);
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			const codeEditorService = Accessor.get(ICodeEditorService);
 
-			const instance = terminalService.getActiveOrCreateInstance();
+			const instAnce = terminAlService.getActiveOrCreAteInstAnce();
 			let editor = codeEditorService.getActiveCodeEditor();
-			if (!editor || !editor.hasModel()) {
+			if (!editor || !editor.hAsModel()) {
 				return;
 			}
 			let selection = editor.getSelection();
 			let text: string;
 			if (selection.isEmpty()) {
-				text = editor.getModel().getLineContent(selection.selectionStartLineNumber).trim();
+				text = editor.getModel().getLineContent(selection.selectionStArtLineNumber).trim();
 			} else {
 				const endOfLinePreference = isWindows ? EndOfLinePreference.LF : EndOfLinePreference.CRLF;
-				text = editor.getModel().getValueInRange(selection, endOfLinePreference);
+				text = editor.getModel().getVAlueInRAnge(selection, endOfLinePreference);
 			}
-			instance.sendText(text, true);
-			return terminalService.showPanel();
+			instAnce.sendText(text, true);
+			return terminAlService.showPAnel();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RUN_ACTIVE_FILE,
-				title: { value: localize('workbench.action.terminal.runActiveFile', "Run Active File In Active Terminal"), original: 'Run Active File In Active Terminal' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.runActiveFile', "Run Active File In Active TerminAl"), originAl: 'Run Active File In Active TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			const terminalService = accessor.get(ITerminalService);
-			const codeEditorService = accessor.get(ICodeEditorService);
-			const notificationService = accessor.get(INotificationService);
+		Async run(Accessor: ServicesAccessor) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			const codeEditorService = Accessor.get(ICodeEditorService);
+			const notificAtionService = Accessor.get(INotificAtionService);
 
-			const instance = terminalService.getActiveOrCreateInstance();
-			await instance.processReady;
+			const instAnce = terminAlService.getActiveOrCreAteInstAnce();
+			AwAit instAnce.processReAdy;
 
 			const editor = codeEditorService.getActiveCodeEditor();
-			if (!editor || !editor.hasModel()) {
+			if (!editor || !editor.hAsModel()) {
 				return;
 			}
 
 			const uri = editor.getModel().uri;
-			if (uri.scheme !== Schemas.file) {
-				notificationService.warn(localize('workbench.action.terminal.runActiveFile.noFile', 'Only files on disk can be run in the terminal'));
+			if (uri.scheme !== SchemAs.file) {
+				notificAtionService.wArn(locAlize('workbench.Action.terminAl.runActiveFile.noFile', 'Only files on disk cAn be run in the terminAl'));
 				return;
 			}
 
 			// TODO: Convert this to ctrl+c, ctrl+v for pwsh?
-			const path = await terminalService.preparePathForTerminalAsync(uri.fsPath, instance.shellLaunchConfig.executable, instance.title, instance.shellType);
-			instance.sendText(path, true);
-			return terminalService.showPanel();
+			const pAth = AwAit terminAlService.prepArePAthForTerminAlAsync(uri.fsPAth, instAnce.shellLAunchConfig.executAble, instAnce.title, instAnce.shellType);
+			instAnce.sendText(pAth, true);
+			return terminAlService.showPAnel();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_DOWN_LINE,
-				title: { value: localize('workbench.action.terminal.scrollDown', "Scroll Down (Line)"), original: 'Scroll Down (Line)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollDown', "Scroll Down (Line)"), originAl: 'Scroll Down (Line)' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.PageDown,
-					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.DownArrow },
+					primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.PAgeDown,
+					linux: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.DownArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.scrollDownLine();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.scrollDownLine();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_DOWN_PAGE,
-				title: { value: localize('workbench.action.terminal.scrollDownPage', "Scroll Down (Page)"), original: 'Scroll Down (Page)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollDownPAge', "Scroll Down (PAge)"), originAl: 'Scroll Down (PAge)' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Shift | KeyCode.PageDown,
-					mac: { primary: KeyCode.PageDown },
+					primAry: KeyMod.Shift | KeyCode.PAgeDown,
+					mAc: { primAry: KeyCode.PAgeDown },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.scrollDownPage();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.scrollDownPAge();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_BOTTOM,
-				title: { value: localize('workbench.action.terminal.scrollToBottom', "Scroll to Bottom"), original: 'Scroll to Bottom' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollToBottom', "Scroll to Bottom"), originAl: 'Scroll to Bottom' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyCode.End,
-					linux: { primary: KeyMod.Shift | KeyCode.End },
+					primAry: KeyMod.CtrlCmd | KeyCode.End,
+					linux: { primAry: KeyMod.Shift | KeyCode.End },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.scrollToBottom();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.scrollToBottom();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_UP_LINE,
-				title: { value: localize('workbench.action.terminal.scrollUp', "Scroll Up (Line)"), original: 'Scroll Up (Line)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollUp', "Scroll Up (Line)"), originAl: 'Scroll Up (Line)' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.PageUp,
-					linux: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow },
+					primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.PAgeUp,
+					linux: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.scrollUpLine();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.scrollUpLine();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_UP_PAGE,
-				title: { value: localize('workbench.action.terminal.scrollUpPage', "Scroll Up (Page)"), original: 'Scroll Up (Page)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollUpPAge', "Scroll Up (PAge)"), originAl: 'Scroll Up (PAge)' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Shift | KeyCode.PageUp,
-					mac: { primary: KeyCode.PageUp },
+					primAry: KeyMod.Shift | KeyCode.PAgeUp,
+					mAc: { primAry: KeyCode.PAgeUp },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.scrollUpPage();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.scrollUpPAge();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_TOP,
-				title: { value: localize('workbench.action.terminal.scrollToTop', "Scroll to Top"), original: 'Scroll to Top' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollToTop', "Scroll to Top"), originAl: 'Scroll to Top' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyCode.Home,
-					linux: { primary: KeyMod.Shift | KeyCode.Home },
+					primAry: KeyMod.CtrlCmd | KeyCode.Home,
+					linux: { primAry: KeyMod.Shift | KeyCode.Home },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.scrollToTop();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.scrollToTop();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NAVIGATION_MODE_EXIT,
-				title: { value: localize('workbench.action.terminal.navigationModeExit', "Exit Navigation Mode"), original: 'Exit Navigation Mode' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.nAvigAtionModeExit', "Exit NAvigAtion Mode"), originAl: 'Exit NAvigAtion Mode' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyCode.Escape,
-					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+					primAry: KeyCode.EscApe,
+					when: ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.navigationMode?.exitNavigationMode();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.nAvigAtionMode?.exitNAvigAtionMode();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NAVIGATION_MODE_FOCUS_PREVIOUS,
-				title: { value: localize('workbench.action.terminal.navigationModeFocusPrevious', "Focus Previous Line (Navigation Mode)"), original: 'Focus Previous Line (Navigation Mode)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.nAvigAtionModeFocusPrevious', "Focus Previous Line (NAvigAtion Mode)"), originAl: 'Focus Previous Line (NAvigAtion Mode)' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyCode.UpArrow,
+					primAry: KeyMod.CtrlCmd | KeyCode.UpArrow,
 					when: ContextKeyExpr.or(
-						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED)
+						ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+						ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED)
 					),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.navigationMode?.focusPreviousLine();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.nAvigAtionMode?.focusPreviousLine();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.NAVIGATION_MODE_FOCUS_NEXT,
-				title: { value: localize('workbench.action.terminal.navigationModeFocusNext', "Focus Next Line (Navigation Mode)"), original: 'Focus Next Line (Navigation Mode)' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.nAvigAtionModeFocusNext', "Focus Next Line (NAvigAtion Mode)"), originAl: 'Focus Next Line (NAvigAtion Mode)' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyCode.DownArrow,
+					primAry: KeyMod.CtrlCmd | KeyCode.DownArrow,
 					when: ContextKeyExpr.or(
-						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-						ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED)
+						ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_A11Y_TREE_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+						ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED)
 					),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.navigationMode?.focusNextLine();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.nAvigAtionMode?.focusNextLine();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.CLEAR_SELECTION,
-				title: { value: localize('workbench.action.terminal.clearSelection', "Clear Selection"), original: 'Clear Selection' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.cleArSelection', "CleAr Selection"), originAl: 'CleAr Selection' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyCode.Escape,
-					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE),
+					primAry: KeyCode.EscApe,
+					when: ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED, KEYBINDING_CONTEXT_TERMINAL_FIND_NOT_VISIBLE),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			const terminalInstance = accessor.get(ITerminalService).getActiveInstance();
-			if (terminalInstance && terminalInstance.hasSelection()) {
-				terminalInstance.clearSelection();
+		run(Accessor: ServicesAccessor) {
+			const terminAlInstAnce = Accessor.get(ITerminAlService).getActiveInstAnce();
+			if (terminAlInstAnce && terminAlInstAnce.hAsSelection()) {
+				terminAlInstAnce.cleArSelection();
 			}
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.MANAGE_WORKSPACE_SHELL_PERMISSIONS,
-				title: { value: localize('workbench.action.terminal.manageWorkspaceShellPermissions', "Manage Workspace Shell Permissions"), original: 'Manage Workspace Shell Permissions' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.mAnAgeWorkspAceShellPermissions', "MAnAge WorkspAce Shell Permissions"), originAl: 'MAnAge WorkspAce Shell Permissions' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).manageWorkspaceShellPermissions();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).mAnAgeWorkspAceShellPermissions();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RENAME,
-				title: { value: localize('workbench.action.terminal.rename', "Rename"), original: 'Rename' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.renAme', "RenAme"), originAl: 'RenAme' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor) {
-			await accessor.get(ITerminalService).doWithActiveInstance(async t => {
-				const name = await accessor.get(IQuickInputService).input({
-					value: t.title,
-					prompt: localize('workbench.action.terminal.rename.prompt', "Enter terminal name"),
+		Async run(Accessor: ServicesAccessor) {
+			AwAit Accessor.get(ITerminAlService).doWithActiveInstAnce(Async t => {
+				const nAme = AwAit Accessor.get(IQuickInputService).input({
+					vAlue: t.title,
+					prompt: locAlize('workbench.Action.terminAl.renAme.prompt', "Enter terminAl nAme"),
 				});
-				if (name) {
-					t.setTitle(name, TitleEventSource.Api);
+				if (nAme) {
+					t.setTitle(nAme, TitleEventSource.Api);
 				}
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_FOCUS,
-				title: { value: localize('workbench.action.terminal.focusFind', "Focus Find"), original: 'Focus Find' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.focusFind', "Focus Find"), originAl: 'Focus Find' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.CtrlCmd | KeyCode.KEY_F,
+					primAry: KeyMod.CtrlCmd | KeyCode.KEY_F,
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED, KEYBINDING_CONTEXT_TERMINAL_FOCUS),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).focusFindWidget();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).focusFindWidget();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_HIDE,
-				title: { value: localize('workbench.action.terminal.hideFind', "Hide Find"), original: 'Hide Find' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.hideFind', "Hide Find"), originAl: 'Hide Find' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyCode.Escape,
-					secondary: [KeyMod.Shift | KeyCode.Escape],
-					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE),
+					primAry: KeyCode.EscApe,
+					secondAry: [KeyMod.Shift | KeyCode.EscApe],
+					when: ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_VISIBLE),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).hideFindWidget();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).hideFindWidget();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.QUICK_OPEN_TERM,
-				title: { value: localize('quickAccessTerminal', "Switch Active Terminal"), original: 'Switch Active Terminal' },
+				title: { vAlue: locAlize('quickAccessTerminAl', "Switch Active TerminAl"), originAl: 'Switch Active TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(IQuickInputService).quickAccess.show(TerminalQuickAccessProvider.PREFIX);
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(IQuickInputService).quickAccess.show(TerminAlQuickAccessProvider.PREFIX);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_PREVIOUS_COMMAND,
-				title: { value: localize('workbench.action.terminal.scrollToPreviousCommand', "Scroll To Previous Command"), original: 'Scroll To Previous Command' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollToPreviousCommAnd', "Scroll To Previous CommAnd"), originAl: 'Scroll To Previous CommAnd' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					mac: { primary: KeyMod.CtrlCmd | KeyCode.UpArrow },
-					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED.negate()),
+					mAc: { primAry: KeyMod.CtrlCmd | KeyCode.UpArrow },
+					when: ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED.negAte()),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).doWithActiveInstance(t => {
-				t.commandTracker?.scrollToPreviousCommand();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+				t.commAndTrAcker?.scrollToPreviousCommAnd();
 				t.focus();
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SCROLL_TO_NEXT_COMMAND,
-				title: { value: localize('workbench.action.terminal.scrollToNextCommand', "Scroll To Next Command"), original: 'Scroll To Next Command' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.scrollToNextCommAnd', "Scroll To Next CommAnd"), originAl: 'Scroll To Next CommAnd' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					mac: { primary: KeyMod.CtrlCmd | KeyCode.DownArrow },
-					when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED.negate()),
+					mAc: { primAry: KeyMod.CtrlCmd | KeyCode.DownArrow },
+					when: ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_FOCUS, CONTEXT_ACCESSIBILITY_MODE_ENABLED.negAte()),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).doWithActiveInstance(t => {
-				t.commandTracker?.scrollToNextCommand();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+				t.commAndTrAcker?.scrollToNextCommAnd();
 				t.focus();
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_PREVIOUS_COMMAND,
-				title: { value: localize('workbench.action.terminal.selectToPreviousCommand', "Select To Previous Command"), original: 'Select To Previous Command' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.selectToPreviousCommAnd', "Select To Previous CommAnd"), originAl: 'Select To Previous CommAnd' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow },
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.UpArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).doWithActiveInstance(t => {
-				t.commandTracker?.selectToPreviousCommand();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+				t.commAndTrAcker?.selectToPreviousCommAnd();
 				t.focus();
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_NEXT_COMMAND,
-				title: { value: localize('workbench.action.terminal.selectToNextCommand', "Select To Next Command"), original: 'Select To Next Command' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.selectToNextCommAnd', "Select To Next CommAnd"), originAl: 'Select To Next CommAnd' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.DownArrow },
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.DownArrow },
 					when: KEYBINDING_CONTEXT_TERMINAL_FOCUS,
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).doWithActiveInstance(t => {
-				t.commandTracker?.selectToNextCommand();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+				t.commAndTrAcker?.selectToNextCommAnd();
 				t.focus();
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_PREVIOUS_LINE,
-				title: { value: localize('workbench.action.terminal.selectToPreviousLine', "Select To Previous Line"), original: 'Select To Previous Line' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.selectToPreviousLine', "Select To Previous Line"), originAl: 'Select To Previous Line' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).doWithActiveInstance(t => {
-				t.commandTracker?.selectToPreviousLine();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+				t.commAndTrAcker?.selectToPreviousLine();
 				t.focus();
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SELECT_TO_NEXT_LINE,
-				title: { value: localize('workbench.action.terminal.selectToNextLine', "Select To Next Line"), original: 'Select To Next Line' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.selectToNextLine', "Select To Next Line"), originAl: 'Select To Next Line' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).doWithActiveInstance(t => {
-				t.commandTracker?.selectToNextLine();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).doWithActiveInstAnce(t => {
+				t.commAndTrAcker?.selectToNextLine();
 				t.focus();
 			});
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_ESCAPE_SEQUENCE_LOGGING,
-				title: { value: localize('workbench.action.terminal.toggleEscapeSequenceLogging', "Toggle Escape Sequence Logging"), original: 'Toggle Escape Sequence Logging' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.toggleEscApeSequenceLogging', "Toggle EscApe Sequence Logging"), originAl: 'Toggle EscApe Sequence Logging' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.toggleEscapeSequenceLogging();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.toggleEscApeSequenceLogging();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
-			const title = localize('workbench.action.terminal.sendSequence', "Send Custom Sequence To Terminal");
+			const title = locAlize('workbench.Action.terminAl.sendSequence', "Send Custom Sequence To TerminAl");
 			super({
 				id: TERMINAL_COMMAND_ID.SEND_SEQUENCE,
-				title: { value: title, original: 'Send Custom Sequence To Terminal' },
-				category,
+				title: { vAlue: title, originAl: 'Send Custom Sequence To TerminAl' },
+				cAtegory,
 				description: {
 					description: title,
-					args: [{
-						name: 'args',
-						schema: {
+					Args: [{
+						nAme: 'Args',
+						schemA: {
 							type: 'object',
 							required: ['text'],
 							properties: {
@@ -1156,27 +1156,27 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor, args?: { text?: string }) {
-			terminalSendSequenceCommand(accessor, args);
+		run(Accessor: ServicesAccessor, Args?: { text?: string }) {
+			terminAlSendSequenceCommAnd(Accessor, Args);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
-			const title = localize('workbench.action.terminal.newWithCwd', "Create New Integrated Terminal Starting in a Custom Working Directory");
+			const title = locAlize('workbench.Action.terminAl.newWithCwd', "CreAte New IntegrAted TerminAl StArting in A Custom Working Directory");
 			super({
 				id: TERMINAL_COMMAND_ID.NEW_WITH_CWD,
-				title: { value: title, original: 'Create New Integrated Terminal Starting in a Custom Working Directory' },
-				category,
+				title: { vAlue: title, originAl: 'CreAte New IntegrAted TerminAl StArting in A Custom Working Directory' },
+				cAtegory,
 				description: {
 					description: title,
-					args: [{
-						name: 'args',
-						schema: {
+					Args: [{
+						nAme: 'Args',
+						schemA: {
 							type: 'object',
 							required: ['cwd'],
 							properties: {
 								cwd: {
-									description: localize('workbench.action.terminal.newWithCwd.cwd', "The directory to start the terminal at"),
+									description: locAlize('workbench.Action.terminAl.newWithCwd.cwd', "The directory to stArt the terminAl At"),
 									type: 'string'
 								}
 							},
@@ -1186,35 +1186,35 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		async run(accessor: ServicesAccessor, args?: { cwd?: string }) {
-			const terminalService = accessor.get(ITerminalService);
-			if (terminalService.isProcessSupportRegistered) {
-				const instance = terminalService.createTerminal({ cwd: args?.cwd });
-				if (!instance) {
+		Async run(Accessor: ServicesAccessor, Args?: { cwd?: string }) {
+			const terminAlService = Accessor.get(ITerminAlService);
+			if (terminAlService.isProcessSupportRegistered) {
+				const instAnce = terminAlService.creAteTerminAl({ cwd: Args?.cwd });
+				if (!instAnce) {
 					return;
 				}
-				terminalService.setActiveInstance(instance);
+				terminAlService.setActiveInstAnce(instAnce);
 			}
-			return terminalService.showPanel(true);
+			return terminAlService.showPAnel(true);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
-			const title = localize('workbench.action.terminal.renameWithArg', "Rename the Currently Active Terminal");
+			const title = locAlize('workbench.Action.terminAl.renAmeWithArg', "RenAme the Currently Active TerminAl");
 			super({
 				id: TERMINAL_COMMAND_ID.RENAME_WITH_ARG,
-				title: { value: title, original: 'Rename the Currently Active Terminal' },
-				category,
+				title: { vAlue: title, originAl: 'RenAme the Currently Active TerminAl' },
+				cAtegory,
 				description: {
 					description: title,
-					args: [{
-						name: 'args',
-						schema: {
+					Args: [{
+						nAme: 'Args',
+						schemA: {
 							type: 'object',
-							required: ['name'],
+							required: ['nAme'],
 							properties: {
-								name: {
-									description: localize('workbench.action.terminal.renameWithArg.name', "The new name for the terminal"),
+								nAme: {
+									description: locAlize('workbench.Action.terminAl.renAmeWithArg.nAme', "The new nAme for the terminAl"),
 									type: 'string',
 									minLength: 1
 								}
@@ -1225,94 +1225,94 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor, args?: { name?: string }) {
-			const notificationService = accessor.get(INotificationService);
-			if (!args?.name) {
-				notificationService.warn(localize('workbench.action.terminal.renameWithArg.noName', "No name argument provided"));
+		run(Accessor: ServicesAccessor, Args?: { nAme?: string }) {
+			const notificAtionService = Accessor.get(INotificAtionService);
+			if (!Args?.nAme) {
+				notificAtionService.wArn(locAlize('workbench.Action.terminAl.renAmeWithArg.noNAme', "No nAme Argument provided"));
 				return;
 			}
-			accessor.get(ITerminalService).getActiveInstance()?.setTitle(args.name, TitleEventSource.Api);
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.setTitle(Args.nAme, TitleEventSource.Api);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_FIND_REGEX,
-				title: { value: localize('workbench.action.terminal.toggleFindRegex', "Toggle Find Using Regex"), original: 'Toggle Find Using Regex' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.toggleFindRegex', "Toggle Find Using Regex"), originAl: 'Toggle Find Using Regex' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Alt | KeyCode.KEY_R,
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_R },
+					primAry: KeyMod.Alt | KeyCode.KEY_R,
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_R },
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			const state = accessor.get(ITerminalService).getFindState();
-			state.change({ isRegex: !state.isRegex }, false);
+		run(Accessor: ServicesAccessor) {
+			const stAte = Accessor.get(ITerminAlService).getFindStAte();
+			stAte.chAnge({ isRegex: !stAte.isRegex }, fAlse);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_FIND_WHOLE_WORD,
-				title: { value: localize('workbench.action.terminal.toggleFindWholeWord', "Toggle Find Using Whole Word"), original: 'Toggle Find Using Whole Word' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.toggleFindWholeWord', "Toggle Find Using Whole Word"), originAl: 'Toggle Find Using Whole Word' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Alt | KeyCode.KEY_W,
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_W },
+					primAry: KeyMod.Alt | KeyCode.KEY_W,
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_W },
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			const state = accessor.get(ITerminalService).getFindState();
-			state.change({ wholeWord: !state.wholeWord }, false);
+		run(Accessor: ServicesAccessor) {
+			const stAte = Accessor.get(ITerminAlService).getFindStAte();
+			stAte.chAnge({ wholeWord: !stAte.wholeWord }, fAlse);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.TOGGLE_FIND_CASE_SENSITIVE,
-				title: { value: localize('workbench.action.terminal.toggleFindCaseSensitive', "Toggle Find Using Case Sensitive"), original: 'Toggle Find Using Case Sensitive' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.toggleFindCAseSensitive', "Toggle Find Using CAse Sensitive"), originAl: 'Toggle Find Using CAse Sensitive' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: {
-					primary: KeyMod.Alt | KeyCode.KEY_C,
-					mac: { primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_C },
+					primAry: KeyMod.Alt | KeyCode.KEY_C,
+					mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_C },
 					when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
 					weight: KeybindingWeight.WorkbenchContrib
 				},
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			const state = accessor.get(ITerminalService).getFindState();
-			state.change({ matchCase: !state.matchCase }, false);
+		run(Accessor: ServicesAccessor) {
+			const stAte = Accessor.get(ITerminAlService).getFindStAte();
+			stAte.chAnge({ mAtchCAse: !stAte.mAtchCAse }, fAlse);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_NEXT,
-				title: { value: localize('workbench.action.terminal.findNext', "Find Next"), original: 'Find Next' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.findNext', "Find Next"), originAl: 'Find Next' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: [
 					{
-						primary: KeyCode.F3,
-						mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_G, secondary: [KeyCode.F3] },
+						primAry: KeyCode.F3,
+						mAc: { primAry: KeyMod.CtrlCmd | KeyCode.KEY_G, secondAry: [KeyCode.F3] },
 						when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
 						weight: KeybindingWeight.WorkbenchContrib
 					},
 					{
-						primary: KeyMod.Shift | KeyCode.Enter,
+						primAry: KeyMod.Shift | KeyCode.Enter,
 						when: KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED,
 						weight: KeybindingWeight.WorkbenchContrib
 					}
@@ -1320,26 +1320,26 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).findNext();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).findNext();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.FIND_PREVIOUS,
-				title: { value: localize('workbench.action.terminal.findPrevious', "Find Previous"), original: 'Find Previous' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.findPrevious', "Find Previous"), originAl: 'Find Previous' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: [
 					{
-						primary: KeyMod.Shift | KeyCode.F3,
-						mac: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_G, secondary: [KeyMod.Shift | KeyCode.F3] },
+						primAry: KeyMod.Shift | KeyCode.F3,
+						mAc: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_G, secondAry: [KeyMod.Shift | KeyCode.F3] },
 						when: ContextKeyExpr.or(KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED),
 						weight: KeybindingWeight.WorkbenchContrib
 					},
 					{
-						primary: KeyCode.Enter,
+						primAry: KeyCode.Enter,
 						when: KEYBINDING_CONTEXT_TERMINAL_FIND_FOCUSED,
 						weight: KeybindingWeight.WorkbenchContrib
 					}
@@ -1347,58 +1347,58 @@ export function registerTerminalActions() {
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).findPrevious();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).findPrevious();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SEARCH_WORKSPACE,
-				title: { value: localize('workbench.action.terminal.searchWorkspace', "Search Workspace"), original: 'Search Workspace' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.seArchWorkspAce', "SeArch WorkspAce"), originAl: 'SeArch WorkspAce' },
 				f1: true,
-				category,
+				cAtegory,
 				keybinding: [
 					{
-						primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F,
-						when: ContextKeyExpr.and(KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED),
+						primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_F,
+						when: ContextKeyExpr.And(KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED, KEYBINDING_CONTEXT_TERMINAL_FOCUS, KEYBINDING_CONTEXT_TERMINAL_TEXT_SELECTED),
 						weight: KeybindingWeight.WorkbenchContrib
 					}
 				],
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			const query = accessor.get(ITerminalService).getActiveInstance()?.selection;
-			FindInFilesCommand(accessor, { query } as IFindInFilesArgs);
+		run(Accessor: ServicesAccessor) {
+			const query = Accessor.get(ITerminAlService).getActiveInstAnce()?.selection;
+			FindInFilesCommAnd(Accessor, { query } As IFindInFilesArgs);
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.RELAUNCH,
-				title: { value: localize('workbench.action.terminal.relaunch', "Relaunch Active Terminal"), original: 'Relaunch Active Terminal' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.relAunch', "RelAunch Active TerminAl"), originAl: 'RelAunch Active TerminAl' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.relaunch();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.relAunch();
 		}
 	});
-	registerAction2(class extends Action2 {
+	registerAction2(clAss extends Action2 {
 		constructor() {
 			super({
 				id: TERMINAL_COMMAND_ID.SHOW_ENVIRONMENT_INFORMATION,
-				title: { value: localize('workbench.action.terminal.showEnvironmentInformation', "Show Environment Information"), original: 'Show Environment Information' },
+				title: { vAlue: locAlize('workbench.Action.terminAl.showEnvironmentInformAtion', "Show Environment InformAtion"), originAl: 'Show Environment InformAtion' },
 				f1: true,
-				category,
+				cAtegory,
 				precondition: KEYBINDING_CONTEXT_TERMINAL_PROCESS_SUPPORTED
 			});
 		}
-		run(accessor: ServicesAccessor) {
-			accessor.get(ITerminalService).getActiveInstance()?.showEnvironmentInfoHover();
+		run(Accessor: ServicesAccessor) {
+			Accessor.get(ITerminAlService).getActiveInstAnce()?.showEnvironmentInfoHover();
 		}
 	});
 }

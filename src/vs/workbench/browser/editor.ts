@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { EditorInput } from 'vs/workbench/common/editor';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { EditorPane } from 'vs/workbench/browser/parts/editor/editorPane';
-import { IConstructorSignature0, IInstantiationService, BrandedService } from 'vs/platform/instantiation/common/instantiation';
-import { insert } from 'vs/base/common/arrays';
-import { IDisposable, toDisposable } from 'vs/base/common/lifecycle';
+import { SyncDescriptor } from 'vs/plAtform/instAntiAtion/common/descriptors';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { EditorPAne } from 'vs/workbench/browser/pArts/editor/editorPAne';
+import { IConstructorSignAture0, IInstAntiAtionService, BrAndedService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { insert } from 'vs/bAse/common/ArrAys';
+import { IDisposAble, toDisposAble } from 'vs/bAse/common/lifecycle';
 
-export interface IEditorDescriptor {
+export interfAce IEditorDescriptor {
 
 	getId(): string;
-	getName(): string;
+	getNAme(): string;
 
-	instantiate(instantiationService: IInstantiationService): EditorPane;
+	instAntiAte(instAntiAtionService: IInstAntiAtionService): EditorPAne;
 
-	describes(obj: unknown): boolean;
+	describes(obj: unknown): booleAn;
 }
 
-export interface IEditorRegistry {
+export interfAce IEditorRegistry {
 
 	/**
-	 * Registers an editor to the platform for the given input type. The second parameter also supports an
-	 * array of input classes to be passed in. If the more than one editor is registered for the same editor
-	 * input, the input itself will be asked which editor it prefers if this method is provided. Otherwise
+	 * Registers An editor to the plAtform for the given input type. The second pArAmeter Also supports An
+	 * ArrAy of input clAsses to be pAssed in. If the more thAn one editor is registered for the sAme editor
+	 * input, the input itself will be Asked which editor it prefers if this method is provided. Otherwise
 	 * the first editor in the list will be returned.
 	 *
-	 * @param inputDescriptors A set of constructor functions that return an instance of EditorInput for which the
+	 * @pArAm inputDescriptors A set of constructor functions thAt return An instAnce of EditorInput for which the
 	 * registered editor should be used for.
 	 */
-	registerEditor(descriptor: IEditorDescriptor, inputDescriptors: readonly SyncDescriptor<EditorInput>[]): IDisposable;
+	registerEditor(descriptor: IEditorDescriptor, inputDescriptors: reAdonly SyncDescriptor<EditorInput>[]): IDisposAble;
 
 	/**
 	 * Returns the editor descriptor for the given input or `undefined` if none.
@@ -45,104 +45,104 @@ export interface IEditorRegistry {
 	getEditorById(editorId: string): IEditorDescriptor | undefined;
 
 	/**
-	 * Returns an array of registered editors known to the platform.
+	 * Returns An ArrAy of registered editors known to the plAtform.
 	 */
-	getEditors(): readonly IEditorDescriptor[];
+	getEditors(): reAdonly IEditorDescriptor[];
 }
 
 /**
- * A lightweight descriptor of an editor. The descriptor is deferred so that heavy editors
- * can load lazily in the workbench.
+ * A lightweight descriptor of An editor. The descriptor is deferred so thAt heAvy editors
+ * cAn loAd lAzily in the workbench.
  */
-export class EditorDescriptor implements IEditorDescriptor {
+export clAss EditorDescriptor implements IEditorDescriptor {
 
-	static create<Services extends BrandedService[]>(
-		ctor: { new(...services: Services): EditorPane },
+	stAtic creAte<Services extends BrAndedService[]>(
+		ctor: { new(...services: Services): EditorPAne },
 		id: string,
-		name: string
+		nAme: string
 	): EditorDescriptor {
-		return new EditorDescriptor(ctor as IConstructorSignature0<EditorPane>, id, name);
+		return new EditorDescriptor(ctor As IConstructorSignAture0<EditorPAne>, id, nAme);
 	}
 
 	constructor(
-		private readonly ctor: IConstructorSignature0<EditorPane>,
-		private readonly id: string,
-		private readonly name: string
+		privAte reAdonly ctor: IConstructorSignAture0<EditorPAne>,
+		privAte reAdonly id: string,
+		privAte reAdonly nAme: string
 	) { }
 
-	instantiate(instantiationService: IInstantiationService): EditorPane {
-		return instantiationService.createInstance(this.ctor);
+	instAntiAte(instAntiAtionService: IInstAntiAtionService): EditorPAne {
+		return instAntiAtionService.creAteInstAnce(this.ctor);
 	}
 
 	getId(): string {
 		return this.id;
 	}
 
-	getName(): string {
-		return this.name;
+	getNAme(): string {
+		return this.nAme;
 	}
 
-	describes(obj: unknown): boolean {
-		return obj instanceof EditorPane && obj.getId() === this.id;
+	describes(obj: unknown): booleAn {
+		return obj instAnceof EditorPAne && obj.getId() === this.id;
 	}
 }
 
-class EditorRegistry implements IEditorRegistry {
+clAss EditorRegistry implements IEditorRegistry {
 
-	private readonly editors: EditorDescriptor[] = [];
-	private readonly mapEditorToInputs = new Map<EditorDescriptor, readonly SyncDescriptor<EditorInput>[]>();
+	privAte reAdonly editors: EditorDescriptor[] = [];
+	privAte reAdonly mApEditorToInputs = new MAp<EditorDescriptor, reAdonly SyncDescriptor<EditorInput>[]>();
 
-	registerEditor(descriptor: EditorDescriptor, inputDescriptors: readonly SyncDescriptor<EditorInput>[]): IDisposable {
-		this.mapEditorToInputs.set(descriptor, inputDescriptors);
+	registerEditor(descriptor: EditorDescriptor, inputDescriptors: reAdonly SyncDescriptor<EditorInput>[]): IDisposAble {
+		this.mApEditorToInputs.set(descriptor, inputDescriptors);
 
 		const remove = insert(this.editors, descriptor);
 
-		return toDisposable(() => {
-			this.mapEditorToInputs.delete(descriptor);
+		return toDisposAble(() => {
+			this.mApEditorToInputs.delete(descriptor);
 			remove();
 		});
 	}
 
 	getEditor(input: EditorInput): EditorDescriptor | undefined {
-		const findEditorDescriptors = (input: EditorInput, byInstanceOf?: boolean): EditorDescriptor[] => {
-			const matchingDescriptors: EditorDescriptor[] = [];
+		const findEditorDescriptors = (input: EditorInput, byInstAnceOf?: booleAn): EditorDescriptor[] => {
+			const mAtchingDescriptors: EditorDescriptor[] = [];
 
 			for (const editor of this.editors) {
-				const inputDescriptors = this.mapEditorToInputs.get(editor) || [];
+				const inputDescriptors = this.mApEditorToInputs.get(editor) || [];
 				for (const inputDescriptor of inputDescriptors) {
-					const inputClass = inputDescriptor.ctor;
+					const inputClAss = inputDescriptor.ctor;
 
-					// Direct check on constructor type (ignores prototype chain)
-					if (!byInstanceOf && input.constructor === inputClass) {
-						matchingDescriptors.push(editor);
-						break;
+					// Direct check on constructor type (ignores prototype chAin)
+					if (!byInstAnceOf && input.constructor === inputClAss) {
+						mAtchingDescriptors.push(editor);
+						breAk;
 					}
 
-					// Normal instanceof check
-					else if (byInstanceOf && input instanceof inputClass) {
-						matchingDescriptors.push(editor);
-						break;
+					// NormAl instAnceof check
+					else if (byInstAnceOf && input instAnceof inputClAss) {
+						mAtchingDescriptors.push(editor);
+						breAk;
 					}
 				}
 			}
 
-			// If no descriptors found, continue search using instanceof and prototype chain
-			if (!byInstanceOf && matchingDescriptors.length === 0) {
+			// If no descriptors found, continue seArch using instAnceof And prototype chAin
+			if (!byInstAnceOf && mAtchingDescriptors.length === 0) {
 				return findEditorDescriptors(input, true);
 			}
 
-			if (byInstanceOf) {
-				return matchingDescriptors;
+			if (byInstAnceOf) {
+				return mAtchingDescriptors;
 			}
 
-			return matchingDescriptors;
+			return mAtchingDescriptors;
 		};
 
 		const descriptors = findEditorDescriptors(input);
 		if (descriptors.length > 0) {
 
 			// Ask the input for its preferred Editor
-			const preferredEditorId = input.getPreferredEditorId(descriptors.map(d => d.getId()));
+			const preferredEditorId = input.getPreferredEditorId(descriptors.mAp(d => d.getId()));
 			if (preferredEditorId) {
 				return this.getEditorById(preferredEditorId);
 			}
@@ -158,20 +158,20 @@ class EditorRegistry implements IEditorRegistry {
 		return this.editors.find(editor => editor.getId() === editorId);
 	}
 
-	getEditors(): readonly EditorDescriptor[] {
+	getEditors(): reAdonly EditorDescriptor[] {
 		return this.editors.slice(0);
 	}
 
 	getEditorInputs(): SyncDescriptor<EditorInput>[] {
-		const inputClasses: SyncDescriptor<EditorInput>[] = [];
+		const inputClAsses: SyncDescriptor<EditorInput>[] = [];
 		for (const editor of this.editors) {
-			const editorInputDescriptors = this.mapEditorToInputs.get(editor);
+			const editorInputDescriptors = this.mApEditorToInputs.get(editor);
 			if (editorInputDescriptors) {
-				inputClasses.push(...editorInputDescriptors.map(descriptor => descriptor.ctor));
+				inputClAsses.push(...editorInputDescriptors.mAp(descriptor => descriptor.ctor));
 			}
 		}
 
-		return inputClasses;
+		return inputClAsses;
 	}
 }
 
@@ -179,4 +179,4 @@ export const Extensions = {
 	Editors: 'workbench.contributions.editors'
 };
 
-Registry.add(Extensions.Editors, new EditorRegistry());
+Registry.Add(Extensions.Editors, new EditorRegistry());

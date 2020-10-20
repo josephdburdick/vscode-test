@@ -1,39 +1,39 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 //
-import { IUserDataSyncService, IUserDataSyncLogService, IUserDataSyncResourceEnablementService, IUserDataSyncStoreService, IUserDataSyncStoreManagementService } from 'vs/platform/userDataSync/common/userDataSync';
-import { Event } from 'vs/base/common/event';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
-import { UserDataAutoSyncService as BaseUserDataAutoSyncService } from 'vs/platform/userDataSync/common/userDataAutoSyncService';
-import { IUserDataSyncAccountService } from 'vs/platform/userDataSync/common/userDataSyncAccount';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageService } from 'vs/platform/storage/common/storage';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { IUserDataSyncMachinesService } from 'vs/platform/userDataSync/common/userDataSyncMachines';
+import { IUserDAtASyncService, IUserDAtASyncLogService, IUserDAtASyncResourceEnAblementService, IUserDAtASyncStoreService, IUserDAtASyncStoreMAnAgementService } from 'vs/plAtform/userDAtASync/common/userDAtASync';
+import { Event } from 'vs/bAse/common/event';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
+import { UserDAtAAutoSyncService As BAseUserDAtAAutoSyncService } from 'vs/plAtform/userDAtASync/common/userDAtAAutoSyncService';
+import { IUserDAtASyncAccountService } from 'vs/plAtform/userDAtASync/common/userDAtASyncAccount';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeService } from 'vs/plAtform/storAge/common/storAge';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
+import { IUserDAtASyncMAchinesService } from 'vs/plAtform/userDAtASync/common/userDAtASyncMAchines';
 
-export class UserDataAutoSyncService extends BaseUserDataAutoSyncService {
+export clAss UserDAtAAutoSyncService extends BAseUserDAtAAutoSyncService {
 
 	constructor(
-		@IUserDataSyncStoreManagementService userDataSyncStoreManagementService: IUserDataSyncStoreManagementService,
-		@IUserDataSyncStoreService userDataSyncStoreService: IUserDataSyncStoreService,
-		@IUserDataSyncResourceEnablementService userDataSyncResourceEnablementService: IUserDataSyncResourceEnablementService,
-		@IUserDataSyncService userDataSyncService: IUserDataSyncService,
-		@INativeHostService nativeHostService: INativeHostService,
-		@IUserDataSyncLogService logService: IUserDataSyncLogService,
-		@IUserDataSyncAccountService authTokenService: IUserDataSyncAccountService,
+		@IUserDAtASyncStoreMAnAgementService userDAtASyncStoreMAnAgementService: IUserDAtASyncStoreMAnAgementService,
+		@IUserDAtASyncStoreService userDAtASyncStoreService: IUserDAtASyncStoreService,
+		@IUserDAtASyncResourceEnAblementService userDAtASyncResourceEnAblementService: IUserDAtASyncResourceEnAblementService,
+		@IUserDAtASyncService userDAtASyncService: IUserDAtASyncService,
+		@INAtiveHostService nAtiveHostService: INAtiveHostService,
+		@IUserDAtASyncLogService logService: IUserDAtASyncLogService,
+		@IUserDAtASyncAccountService AuthTokenService: IUserDAtASyncAccountService,
 		@ITelemetryService telemetryService: ITelemetryService,
-		@IUserDataSyncMachinesService userDataSyncMachinesService: IUserDataSyncMachinesService,
-		@IStorageService storageService: IStorageService,
+		@IUserDAtASyncMAchinesService userDAtASyncMAchinesService: IUserDAtASyncMAchinesService,
+		@IStorAgeService storAgeService: IStorAgeService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 	) {
-		super(userDataSyncStoreManagementService, userDataSyncStoreService, userDataSyncResourceEnablementService, userDataSyncService, logService, authTokenService, telemetryService, userDataSyncMachinesService, storageService, environmentService);
+		super(userDAtASyncStoreMAnAgementService, userDAtASyncStoreService, userDAtASyncResourceEnAblementService, userDAtASyncService, logService, AuthTokenService, telemetryService, userDAtASyncMAchinesService, storAgeService, environmentService);
 
-		this._register(Event.debounce<string, string[]>(Event.any<string>(
-			Event.map(nativeHostService.onDidFocusWindow, () => 'windowFocus'),
-			Event.map(nativeHostService.onDidOpenWindow, () => 'windowOpen'),
-		), (last, source) => last ? [...last, source] : [source], 1000)(sources => this.triggerSync(sources, true, false)));
+		this._register(Event.debounce<string, string[]>(Event.Any<string>(
+			Event.mAp(nAtiveHostService.onDidFocusWindow, () => 'windowFocus'),
+			Event.mAp(nAtiveHostService.onDidOpenWindow, () => 'windowOpen'),
+		), (lAst, source) => lAst ? [...lAst, source] : [source], 1000)(sources => this.triggerSync(sources, true, fAlse)));
 	}
 
 }

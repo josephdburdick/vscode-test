@@ -1,48 +1,48 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { FoldingRangeProvider, FoldingRange, FoldingContext } from 'vs/editor/common/modes';
-import { onUnexpectedExternalError } from 'vs/base/common/errors';
+import { FoldingRAngeProvider, FoldingRAnge, FoldingContext } from 'vs/editor/common/modes';
+import { onUnexpectedExternAlError } from 'vs/bAse/common/errors';
 import { ITextModel } from 'vs/editor/common/model';
-import { RangeProvider } from './folding';
-import { MAX_LINE_NUMBER, FoldingRegions } from './foldingRanges';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { DisposableStore } from 'vs/base/common/lifecycle';
+import { RAngeProvider } from './folding';
+import { MAX_LINE_NUMBER, FoldingRegions } from './foldingRAnges';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { DisposAbleStore } from 'vs/bAse/common/lifecycle';
 
 const MAX_FOLDING_REGIONS = 5000;
 
-export interface IFoldingRangeData extends FoldingRange {
-	rank: number;
+export interfAce IFoldingRAngeDAtA extends FoldingRAnge {
+	rAnk: number;
 }
 
 const foldingContext: FoldingContext = {
 };
 
-export const ID_SYNTAX_PROVIDER = 'syntax';
+export const ID_SYNTAX_PROVIDER = 'syntAx';
 
-export class SyntaxRangeProvider implements RangeProvider {
+export clAss SyntAxRAngeProvider implements RAngeProvider {
 
-	readonly id = ID_SYNTAX_PROVIDER;
+	reAdonly id = ID_SYNTAX_PROVIDER;
 
-	readonly disposables: DisposableStore | undefined;
+	reAdonly disposAbles: DisposAbleStore | undefined;
 
-	constructor(private readonly editorModel: ITextModel, private providers: FoldingRangeProvider[], handleFoldingRangesChange: () => void, private limit = MAX_FOLDING_REGIONS) {
+	constructor(privAte reAdonly editorModel: ITextModel, privAte providers: FoldingRAngeProvider[], hAndleFoldingRAngesChAnge: () => void, privAte limit = MAX_FOLDING_REGIONS) {
 		for (const provider of providers) {
-			if (typeof provider.onDidChange === 'function') {
-				if (!this.disposables) {
-					this.disposables = new DisposableStore();
+			if (typeof provider.onDidChAnge === 'function') {
+				if (!this.disposAbles) {
+					this.disposAbles = new DisposAbleStore();
 				}
-				this.disposables.add(provider.onDidChange(handleFoldingRangesChange));
+				this.disposAbles.Add(provider.onDidChAnge(hAndleFoldingRAngesChAnge));
 			}
 		}
 	}
 
-	compute(cancellationToken: CancellationToken): Promise<FoldingRegions | null> {
-		return collectSyntaxRanges(this.providers, this.editorModel, cancellationToken).then(ranges => {
-			if (ranges) {
-				let res = sanitizeRanges(ranges, this.limit);
+	compute(cAncellAtionToken: CAncellAtionToken): Promise<FoldingRegions | null> {
+		return collectSyntAxRAnges(this.providers, this.editorModel, cAncellAtionToken).then(rAnges => {
+			if (rAnges) {
+				let res = sAnitizeRAnges(rAnges, this.limit);
 				return res;
 			}
 			return null;
@@ -50,60 +50,60 @@ export class SyntaxRangeProvider implements RangeProvider {
 	}
 
 	dispose() {
-		this.disposables?.dispose();
+		this.disposAbles?.dispose();
 	}
 }
 
-function collectSyntaxRanges(providers: FoldingRangeProvider[], model: ITextModel, cancellationToken: CancellationToken): Promise<IFoldingRangeData[] | null> {
-	let rangeData: IFoldingRangeData[] | null = null;
-	let promises = providers.map((provider, i) => {
-		return Promise.resolve(provider.provideFoldingRanges(model, foldingContext, cancellationToken)).then(ranges => {
-			if (cancellationToken.isCancellationRequested) {
+function collectSyntAxRAnges(providers: FoldingRAngeProvider[], model: ITextModel, cAncellAtionToken: CAncellAtionToken): Promise<IFoldingRAngeDAtA[] | null> {
+	let rAngeDAtA: IFoldingRAngeDAtA[] | null = null;
+	let promises = providers.mAp((provider, i) => {
+		return Promise.resolve(provider.provideFoldingRAnges(model, foldingContext, cAncellAtionToken)).then(rAnges => {
+			if (cAncellAtionToken.isCAncellAtionRequested) {
 				return;
 			}
-			if (Array.isArray(ranges)) {
-				if (!Array.isArray(rangeData)) {
-					rangeData = [];
+			if (ArrAy.isArrAy(rAnges)) {
+				if (!ArrAy.isArrAy(rAngeDAtA)) {
+					rAngeDAtA = [];
 				}
 				let nLines = model.getLineCount();
-				for (let r of ranges) {
-					if (r.start > 0 && r.end > r.start && r.end <= nLines) {
-						rangeData.push({ start: r.start, end: r.end, rank: i, kind: r.kind });
+				for (let r of rAnges) {
+					if (r.stArt > 0 && r.end > r.stArt && r.end <= nLines) {
+						rAngeDAtA.push({ stArt: r.stArt, end: r.end, rAnk: i, kind: r.kind });
 					}
 				}
 			}
-		}, onUnexpectedExternalError);
+		}, onUnexpectedExternAlError);
 	});
-	return Promise.all(promises).then(_ => {
-		return rangeData;
+	return Promise.All(promises).then(_ => {
+		return rAngeDAtA;
 	});
 }
 
-export class RangesCollector {
-	private readonly _startIndexes: number[];
-	private readonly _endIndexes: number[];
-	private readonly _nestingLevels: number[];
-	private readonly _nestingLevelCounts: number[];
-	private readonly _types: Array<string | undefined>;
-	private _length: number;
-	private readonly _foldingRangesLimit: number;
+export clAss RAngesCollector {
+	privAte reAdonly _stArtIndexes: number[];
+	privAte reAdonly _endIndexes: number[];
+	privAte reAdonly _nestingLevels: number[];
+	privAte reAdonly _nestingLevelCounts: number[];
+	privAte reAdonly _types: ArrAy<string | undefined>;
+	privAte _length: number;
+	privAte reAdonly _foldingRAngesLimit: number;
 
-	constructor(foldingRangesLimit: number) {
-		this._startIndexes = [];
+	constructor(foldingRAngesLimit: number) {
+		this._stArtIndexes = [];
 		this._endIndexes = [];
 		this._nestingLevels = [];
 		this._nestingLevelCounts = [];
 		this._types = [];
 		this._length = 0;
-		this._foldingRangesLimit = foldingRangesLimit;
+		this._foldingRAngesLimit = foldingRAngesLimit;
 	}
 
-	public add(startLineNumber: number, endLineNumber: number, type: string | undefined, nestingLevel: number) {
-		if (startLineNumber > MAX_LINE_NUMBER || endLineNumber > MAX_LINE_NUMBER) {
+	public Add(stArtLineNumber: number, endLineNumber: number, type: string | undefined, nestingLevel: number) {
+		if (stArtLineNumber > MAX_LINE_NUMBER || endLineNumber > MAX_LINE_NUMBER) {
 			return;
 		}
 		let index = this._length;
-		this._startIndexes[index] = startLineNumber;
+		this._stArtIndexes[index] = stArtLineNumber;
 		this._endIndexes[index] = endLineNumber;
 		this._nestingLevels[index] = nestingLevel;
 		this._types[index] = type;
@@ -113,85 +113,85 @@ export class RangesCollector {
 		}
 	}
 
-	public toIndentRanges() {
-		if (this._length <= this._foldingRangesLimit) {
-			let startIndexes = new Uint32Array(this._length);
-			let endIndexes = new Uint32Array(this._length);
+	public toIndentRAnges() {
+		if (this._length <= this._foldingRAngesLimit) {
+			let stArtIndexes = new Uint32ArrAy(this._length);
+			let endIndexes = new Uint32ArrAy(this._length);
 			for (let i = 0; i < this._length; i++) {
-				startIndexes[i] = this._startIndexes[i];
+				stArtIndexes[i] = this._stArtIndexes[i];
 				endIndexes[i] = this._endIndexes[i];
 			}
-			return new FoldingRegions(startIndexes, endIndexes, this._types);
+			return new FoldingRegions(stArtIndexes, endIndexes, this._types);
 		} else {
 			let entries = 0;
-			let maxLevel = this._nestingLevelCounts.length;
+			let mAxLevel = this._nestingLevelCounts.length;
 			for (let i = 0; i < this._nestingLevelCounts.length; i++) {
 				let n = this._nestingLevelCounts[i];
 				if (n) {
-					if (n + entries > this._foldingRangesLimit) {
-						maxLevel = i;
-						break;
+					if (n + entries > this._foldingRAngesLimit) {
+						mAxLevel = i;
+						breAk;
 					}
 					entries += n;
 				}
 			}
 
-			let startIndexes = new Uint32Array(this._foldingRangesLimit);
-			let endIndexes = new Uint32Array(this._foldingRangesLimit);
-			let types: Array<string | undefined> = [];
+			let stArtIndexes = new Uint32ArrAy(this._foldingRAngesLimit);
+			let endIndexes = new Uint32ArrAy(this._foldingRAngesLimit);
+			let types: ArrAy<string | undefined> = [];
 			for (let i = 0, k = 0; i < this._length; i++) {
 				let level = this._nestingLevels[i];
-				if (level < maxLevel || (level === maxLevel && entries++ < this._foldingRangesLimit)) {
-					startIndexes[k] = this._startIndexes[i];
+				if (level < mAxLevel || (level === mAxLevel && entries++ < this._foldingRAngesLimit)) {
+					stArtIndexes[k] = this._stArtIndexes[i];
 					endIndexes[k] = this._endIndexes[i];
 					types[k] = this._types[i];
 					k++;
 				}
 			}
-			return new FoldingRegions(startIndexes, endIndexes, types);
+			return new FoldingRegions(stArtIndexes, endIndexes, types);
 		}
 
 	}
 
 }
 
-export function sanitizeRanges(rangeData: IFoldingRangeData[], limit: number): FoldingRegions {
+export function sAnitizeRAnges(rAngeDAtA: IFoldingRAngeDAtA[], limit: number): FoldingRegions {
 
-	let sorted = rangeData.sort((d1, d2) => {
-		let diff = d1.start - d2.start;
+	let sorted = rAngeDAtA.sort((d1, d2) => {
+		let diff = d1.stArt - d2.stArt;
 		if (diff === 0) {
-			diff = d1.rank - d2.rank;
+			diff = d1.rAnk - d2.rAnk;
 		}
 		return diff;
 	});
-	let collector = new RangesCollector(limit);
+	let collector = new RAngesCollector(limit);
 
-	let top: IFoldingRangeData | undefined = undefined;
-	let previous: IFoldingRangeData[] = [];
+	let top: IFoldingRAngeDAtA | undefined = undefined;
+	let previous: IFoldingRAngeDAtA[] = [];
 	for (let entry of sorted) {
 		if (!top) {
 			top = entry;
-			collector.add(entry.start, entry.end, entry.kind && entry.kind.value, previous.length);
+			collector.Add(entry.stArt, entry.end, entry.kind && entry.kind.vAlue, previous.length);
 		} else {
-			if (entry.start > top.start) {
+			if (entry.stArt > top.stArt) {
 				if (entry.end <= top.end) {
 					previous.push(top);
 					top = entry;
-					collector.add(entry.start, entry.end, entry.kind && entry.kind.value, previous.length);
+					collector.Add(entry.stArt, entry.end, entry.kind && entry.kind.vAlue, previous.length);
 				} else {
-					if (entry.start > top.end) {
+					if (entry.stArt > top.end) {
 						do {
 							top = previous.pop();
-						} while (top && entry.start > top.end);
+						} while (top && entry.stArt > top.end);
 						if (top) {
 							previous.push(top);
 						}
 						top = entry;
 					}
-					collector.add(entry.start, entry.end, entry.kind && entry.kind.value, previous.length);
+					collector.Add(entry.stArt, entry.end, entry.kind && entry.kind.vAlue, previous.length);
 				}
 			}
 		}
 	}
-	return collector.toIndentRanges();
+	return collector.toIndentRAnges();
 }

@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * As vscode from 'vscode';
 
-export class InMemoryDocument implements vscode.TextDocument {
-	private readonly _lines: string[];
+export clAss InMemoryDocument implements vscode.TextDocument {
+	privAte reAdonly _lines: string[];
 
 	constructor(
-		public readonly uri: vscode.Uri,
-		private readonly _contents: string,
-		public readonly version = 1,
+		public reAdonly uri: vscode.Uri,
+		privAte reAdonly _contents: string,
+		public reAdonly version = 1,
 	) {
 		this._lines = this._contents.split(/\n/g);
 	}
 
 
-	isUntitled: boolean = false;
-	languageId: string = '';
-	isDirty: boolean = false;
-	isClosed: boolean = false;
+	isUntitled: booleAn = fAlse;
+	lAnguAgeId: string = '';
+	isDirty: booleAn = fAlse;
+	isClosed: booleAn = fAlse;
 	eol: vscode.EndOfLine = vscode.EndOfLine.LF;
 	notebook: undefined;
 
-	get fileName(): string {
-		return this.uri.fsPath;
+	get fileNAme(): string {
+		return this.uri.fsPAth;
 	}
 
 	get lineCount(): number {
 		return this._lines.length;
 	}
 
-	lineAt(line: any): vscode.TextLine {
+	lineAt(line: Any): vscode.TextLine {
 		return {
 			lineNumber: line,
 			text: this._lines[line],
-			range: new vscode.Range(0, 0, 0, 0),
-			firstNonWhitespaceCharacterIndex: 0,
-			rangeIncludingLineBreak: new vscode.Range(0, 0, 0, 0),
-			isEmptyOrWhitespace: false
+			rAnge: new vscode.RAnge(0, 0, 0, 0),
+			firstNonWhitespAceChArActerIndex: 0,
+			rAngeIncludingLineBreAk: new vscode.RAnge(0, 0, 0, 0),
+			isEmptyOrWhitespAce: fAlse
 		};
 	}
 	offsetAt(_position: vscode.Position): never {
@@ -47,24 +47,24 @@ export class InMemoryDocument implements vscode.TextDocument {
 	}
 	positionAt(offset: number): vscode.Position {
 		const before = this._contents.slice(0, offset);
-		const newLines = before.match(/\n/g);
+		const newLines = before.mAtch(/\n/g);
 		const line = newLines ? newLines.length : 0;
-		const preCharacters = before.match(/(\n|^).*$/g);
-		return new vscode.Position(line, preCharacters ? preCharacters[0].length : 0);
+		const preChArActers = before.mAtch(/(\n|^).*$/g);
+		return new vscode.Position(line, preChArActers ? preChArActers[0].length : 0);
 	}
-	getText(_range?: vscode.Range | undefined): string {
+	getText(_rAnge?: vscode.RAnge | undefined): string {
 		return this._contents;
 	}
-	getWordRangeAtPosition(_position: vscode.Position, _regex?: RegExp | undefined): never {
+	getWordRAngeAtPosition(_position: vscode.Position, _regex?: RegExp | undefined): never {
 		throw new Error('Method not implemented.');
 	}
-	validateRange(_range: vscode.Range): never {
+	vAlidAteRAnge(_rAnge: vscode.RAnge): never {
 		throw new Error('Method not implemented.');
 	}
-	validatePosition(_position: vscode.Position): never {
+	vAlidAtePosition(_position: vscode.Position): never {
 		throw new Error('Method not implemented.');
 	}
-	save(): never {
+	sAve(): never {
 		throw new Error('Method not implemented.');
 	}
 }

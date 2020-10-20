@@ -1,50 +1,50 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { AbstractCommandsQuickAccessProvider, ICommandQuickPick, ICommandsQuickAccessOptions } from 'vs/platform/quickinput/browser/commandsQuickAccess';
+import { AbstrActCommAndsQuickAccessProvider, ICommAndQuickPick, ICommAndsQuickAccessOptions } from 'vs/plAtform/quickinput/browser/commAndsQuickAccess';
 import { IEditor } from 'vs/editor/common/editorCommon';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ICommandService } from 'vs/platform/commands/common/commands';
-import { stripCodicons } from 'vs/base/common/codicons';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ICommAndService } from 'vs/plAtform/commAnds/common/commAnds';
+import { stripCodicons } from 'vs/bAse/common/codicons';
 
-export abstract class AbstractEditorCommandsQuickAccessProvider extends AbstractCommandsQuickAccessProvider {
+export AbstrAct clAss AbstrActEditorCommAndsQuickAccessProvider extends AbstrActCommAndsQuickAccessProvider {
 
 	constructor(
-		options: ICommandsQuickAccessOptions,
-		instantiationService: IInstantiationService,
+		options: ICommAndsQuickAccessOptions,
+		instAntiAtionService: IInstAntiAtionService,
 		keybindingService: IKeybindingService,
-		commandService: ICommandService,
+		commAndService: ICommAndService,
 		telemetryService: ITelemetryService,
-		notificationService: INotificationService
+		notificAtionService: INotificAtionService
 	) {
-		super(options, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		super(options, instAntiAtionService, keybindingService, commAndService, telemetryService, notificAtionService);
 	}
 
 	/**
-	 * Subclasses to provide the current active editor control.
+	 * SubclAsses to provide the current Active editor control.
 	 */
-	protected abstract activeTextEditorControl: IEditor | undefined;
+	protected AbstrAct ActiveTextEditorControl: IEditor | undefined;
 
-	protected getCodeEditorCommandPicks(): ICommandQuickPick[] {
-		const activeTextEditorControl = this.activeTextEditorControl;
-		if (!activeTextEditorControl) {
+	protected getCodeEditorCommAndPicks(): ICommAndQuickPick[] {
+		const ActiveTextEditorControl = this.ActiveTextEditorControl;
+		if (!ActiveTextEditorControl) {
 			return [];
 		}
 
-		const editorCommandPicks: ICommandQuickPick[] = [];
-		for (const editorAction of activeTextEditorControl.getSupportedActions()) {
-			editorCommandPicks.push({
-				commandId: editorAction.id,
-				commandAlias: editorAction.alias,
-				label: stripCodicons(editorAction.label) || editorAction.id,
+		const editorCommAndPicks: ICommAndQuickPick[] = [];
+		for (const editorAction of ActiveTextEditorControl.getSupportedActions()) {
+			editorCommAndPicks.push({
+				commAndId: editorAction.id,
+				commAndAliAs: editorAction.AliAs,
+				lAbel: stripCodicons(editorAction.lAbel) || editorAction.id,
 			});
 		}
 
-		return editorCommandPicks;
+		return editorCommAndPicks;
 	}
 }

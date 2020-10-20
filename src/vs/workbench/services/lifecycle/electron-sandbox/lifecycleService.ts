@@ -1,119 +1,119 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { handleVetos } from 'vs/platform/lifecycle/common/lifecycle';
-import { ShutdownReason, StartupKind, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
-import { IStorageService, StorageScope, WillSaveStateReason } from 'vs/platform/storage/common/storage';
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { ILogService } from 'vs/platform/log/common/log';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { AbstractLifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycleService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import Severity from 'vs/base/common/severity';
-import { INativeHostService } from 'vs/platform/native/electron-sandbox/native';
+import { locAlize } from 'vs/nls';
+import { toErrorMessAge } from 'vs/bAse/common/errorMessAge';
+import { hAndleVetos } from 'vs/plAtform/lifecycle/common/lifecycle';
+import { ShutdownReAson, StArtupKind, ILifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycle';
+import { IStorAgeService, StorAgeScope, WillSAveStAteReAson } from 'vs/plAtform/storAge/common/storAge';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { ILogService } from 'vs/plAtform/log/common/log';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { AbstrActLifecycleService } from 'vs/workbench/services/lifecycle/common/lifecycleService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import Severity from 'vs/bAse/common/severity';
+import { INAtiveHostService } from 'vs/plAtform/nAtive/electron-sAndbox/nAtive';
 
-export class NativeLifecycleService extends AbstractLifecycleService {
+export clAss NAtiveLifecycleService extends AbstrActLifecycleService {
 
-	private static readonly LAST_SHUTDOWN_REASON_KEY = 'lifecyle.lastShutdownReason';
+	privAte stAtic reAdonly LAST_SHUTDOWN_REASON_KEY = 'lifecyle.lAstShutdownReAson';
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private shutdownReason: ShutdownReason | undefined;
+	privAte shutdownReAson: ShutdownReAson | undefined;
 
 	constructor(
-		@INotificationService private readonly notificationService: INotificationService,
-		@INativeHostService private readonly nativeHostService: INativeHostService,
-		@IStorageService readonly storageService: IStorageService,
-		@ILogService readonly logService: ILogService
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@INAtiveHostService privAte reAdonly nAtiveHostService: INAtiveHostService,
+		@IStorAgeService reAdonly storAgeService: IStorAgeService,
+		@ILogService reAdonly logService: ILogService
 	) {
 		super(logService);
 
-		this._startupKind = this.resolveStartupKind();
+		this._stArtupKind = this.resolveStArtupKind();
 
 		this.registerListeners();
 	}
 
-	private resolveStartupKind(): StartupKind {
-		const lastShutdownReason = this.storageService.getNumber(NativeLifecycleService.LAST_SHUTDOWN_REASON_KEY, StorageScope.WORKSPACE);
-		this.storageService.remove(NativeLifecycleService.LAST_SHUTDOWN_REASON_KEY, StorageScope.WORKSPACE);
+	privAte resolveStArtupKind(): StArtupKind {
+		const lAstShutdownReAson = this.storAgeService.getNumber(NAtiveLifecycleService.LAST_SHUTDOWN_REASON_KEY, StorAgeScope.WORKSPACE);
+		this.storAgeService.remove(NAtiveLifecycleService.LAST_SHUTDOWN_REASON_KEY, StorAgeScope.WORKSPACE);
 
-		let startupKind: StartupKind;
-		if (lastShutdownReason === ShutdownReason.RELOAD) {
-			startupKind = StartupKind.ReloadedWindow;
-		} else if (lastShutdownReason === ShutdownReason.LOAD) {
-			startupKind = StartupKind.ReopenedWindow;
+		let stArtupKind: StArtupKind;
+		if (lAstShutdownReAson === ShutdownReAson.RELOAD) {
+			stArtupKind = StArtupKind.ReloAdedWindow;
+		} else if (lAstShutdownReAson === ShutdownReAson.LOAD) {
+			stArtupKind = StArtupKind.ReopenedWindow;
 		} else {
-			startupKind = StartupKind.NewWindow;
+			stArtupKind = StArtupKind.NewWindow;
 		}
 
-		this.logService.trace(`lifecycle: starting up (startup kind: ${this._startupKind})`);
+		this.logService.trAce(`lifecycle: stArting up (stArtup kind: ${this._stArtupKind})`);
 
-		return startupKind;
+		return stArtupKind;
 	}
 
-	private registerListeners(): void {
-		const windowId = this.nativeHostService.windowId;
+	privAte registerListeners(): void {
+		const windowId = this.nAtiveHostService.windowId;
 
-		// Main side indicates that window is about to unload, check for vetos
-		ipcRenderer.on('vscode:onBeforeUnload', (event: unknown, reply: { okChannel: string, cancelChannel: string, reason: ShutdownReason }) => {
-			this.logService.trace(`lifecycle: onBeforeUnload (reason: ${reply.reason})`);
+		// MAin side indicAtes thAt window is About to unloAd, check for vetos
+		ipcRenderer.on('vscode:onBeforeUnloAd', (event: unknown, reply: { okChAnnel: string, cAncelChAnnel: string, reAson: ShutdownReAson }) => {
+			this.logService.trAce(`lifecycle: onBeforeUnloAd (reAson: ${reply.reAson})`);
 
-			// trigger onBeforeShutdown events and veto collecting
-			this.handleBeforeShutdown(reply.reason).then(veto => {
+			// trigger onBeforeShutdown events And veto collecting
+			this.hAndleBeforeShutdown(reply.reAson).then(veto => {
 				if (veto) {
-					this.logService.trace('lifecycle: onBeforeUnload prevented via veto');
+					this.logService.trAce('lifecycle: onBeforeUnloAd prevented viA veto');
 
-					ipcRenderer.send(reply.cancelChannel, windowId);
+					ipcRenderer.send(reply.cAncelChAnnel, windowId);
 				} else {
-					this.logService.trace('lifecycle: onBeforeUnload continues without veto');
+					this.logService.trAce('lifecycle: onBeforeUnloAd continues without veto');
 
-					this.shutdownReason = reply.reason;
-					ipcRenderer.send(reply.okChannel, windowId);
+					this.shutdownReAson = reply.reAson;
+					ipcRenderer.send(reply.okChAnnel, windowId);
 				}
 			});
 		});
 
-		// Main side indicates that we will indeed shutdown
-		ipcRenderer.on('vscode:onWillUnload', async (event: unknown, reply: { replyChannel: string, reason: ShutdownReason }) => {
-			this.logService.trace(`lifecycle: onWillUnload (reason: ${reply.reason})`);
+		// MAin side indicAtes thAt we will indeed shutdown
+		ipcRenderer.on('vscode:onWillUnloAd', Async (event: unknown, reply: { replyChAnnel: string, reAson: ShutdownReAson }) => {
+			this.logService.trAce(`lifecycle: onWillUnloAd (reAson: ${reply.reAson})`);
 
-			// trigger onWillShutdown events and joining
-			await this.handleWillShutdown(reply.reason);
+			// trigger onWillShutdown events And joining
+			AwAit this.hAndleWillShutdown(reply.reAson);
 
-			// trigger onShutdown event now that we know we will quit
+			// trigger onShutdown event now thAt we know we will quit
 			this._onShutdown.fire();
 
-			// acknowledge to main side
-			ipcRenderer.send(reply.replyChannel, windowId);
+			// Acknowledge to mAin side
+			ipcRenderer.send(reply.replyChAnnel, windowId);
 		});
 
-		// Save shutdown reason to retrieve on next startup
-		this.storageService.onWillSaveState(e => {
-			if (e.reason === WillSaveStateReason.SHUTDOWN) {
-				this.storageService.store(NativeLifecycleService.LAST_SHUTDOWN_REASON_KEY, this.shutdownReason, StorageScope.WORKSPACE);
+		// SAve shutdown reAson to retrieve on next stArtup
+		this.storAgeService.onWillSAveStAte(e => {
+			if (e.reAson === WillSAveStAteReAson.SHUTDOWN) {
+				this.storAgeService.store(NAtiveLifecycleService.LAST_SHUTDOWN_REASON_KEY, this.shutdownReAson, StorAgeScope.WORKSPACE);
 			}
 		});
 	}
 
-	private handleBeforeShutdown(reason: ShutdownReason): Promise<boolean> {
-		const vetos: (boolean | Promise<boolean>)[] = [];
+	privAte hAndleBeforeShutdown(reAson: ShutdownReAson): Promise<booleAn> {
+		const vetos: (booleAn | Promise<booleAn>)[] = [];
 
 		this._onBeforeShutdown.fire({
-			veto(value) {
-				vetos.push(value);
+			veto(vAlue) {
+				vetos.push(vAlue);
 			},
-			reason
+			reAson
 		});
 
-		return handleVetos(vetos, error => this.onShutdownError(reason, error));
+		return hAndleVetos(vetos, error => this.onShutdownError(reAson, error));
 	}
 
-	private async handleWillShutdown(reason: ShutdownReason): Promise<void> {
+	privAte Async hAndleWillShutdown(reAson: ShutdownReAson): Promise<void> {
 		const joiners: Promise<void>[] = [];
 
 		this._onWillShutdown.fire({
@@ -122,36 +122,36 @@ export class NativeLifecycleService extends AbstractLifecycleService {
 					joiners.push(promise);
 				}
 			},
-			reason
+			reAson
 		});
 
 		try {
-			await Promise.all(joiners);
-		} catch (error) {
-			this.onShutdownError(reason, error);
+			AwAit Promise.All(joiners);
+		} cAtch (error) {
+			this.onShutdownError(reAson, error);
 		}
 	}
 
-	private onShutdownError(reason: ShutdownReason, error: Error): void {
-		let message: string;
-		switch (reason) {
-			case ShutdownReason.CLOSE:
-				message = localize('errorClose', "An unexpected error was thrown while attempting to close the window ({0}).", toErrorMessage(error));
-				break;
-			case ShutdownReason.QUIT:
-				message = localize('errorQuit', "An unexpected error was thrown while attempting to quit the application ({0}).", toErrorMessage(error));
-				break;
-			case ShutdownReason.RELOAD:
-				message = localize('errorReload', "An unexpected error was thrown while attempting to reload the window ({0}).", toErrorMessage(error));
-				break;
-			case ShutdownReason.LOAD:
-				message = localize('errorLoad', "An unexpected error was thrown while attempting to change the workspace of the window ({0}).", toErrorMessage(error));
-				break;
+	privAte onShutdownError(reAson: ShutdownReAson, error: Error): void {
+		let messAge: string;
+		switch (reAson) {
+			cAse ShutdownReAson.CLOSE:
+				messAge = locAlize('errorClose', "An unexpected error wAs thrown while Attempting to close the window ({0}).", toErrorMessAge(error));
+				breAk;
+			cAse ShutdownReAson.QUIT:
+				messAge = locAlize('errorQuit', "An unexpected error wAs thrown while Attempting to quit the ApplicAtion ({0}).", toErrorMessAge(error));
+				breAk;
+			cAse ShutdownReAson.RELOAD:
+				messAge = locAlize('errorReloAd', "An unexpected error wAs thrown while Attempting to reloAd the window ({0}).", toErrorMessAge(error));
+				breAk;
+			cAse ShutdownReAson.LOAD:
+				messAge = locAlize('errorLoAd', "An unexpected error wAs thrown while Attempting to chAnge the workspAce of the window ({0}).", toErrorMessAge(error));
+				breAk;
 		}
 
-		this.notificationService.notify({
+		this.notificAtionService.notify({
 			severity: Severity.Error,
-			message,
+			messAge,
 			sticky: true
 		});
 
@@ -159,8 +159,8 @@ export class NativeLifecycleService extends AbstractLifecycleService {
 	}
 
 	shutdown(): void {
-		this.nativeHostService.closeWindow();
+		this.nAtiveHostService.closeWindow();
 	}
 }
 
-registerSingleton(ILifecycleService, NativeLifecycleService);
+registerSingleton(ILifecycleService, NAtiveLifecycleService);

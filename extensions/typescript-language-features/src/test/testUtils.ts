@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as fs from 'fs';
-import * as os from 'os';
-import { join } from 'path';
-import * as vscode from 'vscode';
+import * As Assert from 'Assert';
+import * As fs from 'fs';
+import * As os from 'os';
+import { join } from 'pAth';
+import * As vscode from 'vscode';
 
-function rndName() {
-	return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10);
+function rndNAme() {
+	return MAth.rAndom().toString(36).replAce(/[^A-z]+/g, '').substr(0, 10);
 }
 
-export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable<vscode.Uri> {
+export function creAteRAndomFile(contents = '', fileExtension = 'txt'): ThenAble<vscode.Uri> {
 	return new Promise((resolve, reject) => {
-		const tmpFile = join(os.tmpdir(), rndName() + '.' + fileExtension);
+		const tmpFile = join(os.tmpdir(), rndNAme() + '.' + fileExtension);
 		fs.writeFile(tmpFile, contents, (error) => {
 			if (error) {
 				return reject(error);
@@ -27,9 +27,9 @@ export function createRandomFile(contents = '', fileExtension = 'txt'): Thenable
 }
 
 
-export function deleteFile(file: vscode.Uri): Thenable<boolean> {
+export function deleteFile(file: vscode.Uri): ThenAble<booleAn> {
 	return new Promise((resolve, reject) => {
-		fs.unlink(file.fsPath, (err) => {
+		fs.unlink(file.fsPAth, (err) => {
 			if (err) {
 				reject(err);
 			} else {
@@ -41,14 +41,14 @@ export function deleteFile(file: vscode.Uri): Thenable<boolean> {
 
 export const CURSOR = '$$CURSOR$$';
 
-export function withRandomFileEditor(
+export function withRAndomFileEditor(
 	contents: string,
 	fileExtension: string,
-	run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => Thenable<void>
-): Thenable<boolean> {
+	run: (editor: vscode.TextEditor, doc: vscode.TextDocument) => ThenAble<void>
+): ThenAble<booleAn> {
 	const cursorIndex = contents.indexOf(CURSOR);
-	return createRandomFile(contents.replace(CURSOR, ''), fileExtension).then(file => {
-		return vscode.workspace.openTextDocument(file).then(doc => {
+	return creAteRAndomFile(contents.replAce(CURSOR, ''), fileExtension).then(file => {
+		return vscode.workspAce.openTextDocument(file).then(doc => {
 			return vscode.window.showTextDocument(doc).then((editor) => {
 				if (cursorIndex >= 0) {
 					const pos = doc.positionAt(cursorIndex);
@@ -56,7 +56,7 @@ export function withRandomFileEditor(
 				}
 				return run(editor, doc).then(_ => {
 					if (doc.isDirty) {
-						return doc.save().then(() => {
+						return doc.sAve().then(() => {
 							return deleteFile(file);
 						});
 					} else {
@@ -68,103 +68,103 @@ export function withRandomFileEditor(
 	});
 }
 
-export const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
+export const wAit = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms));
 
-export const joinLines = (...args: string[]) => args.join(os.platform() === 'win32' ? '\r\n' : '\n');
+export const joinLines = (...Args: string[]) => Args.join(os.plAtform() === 'win32' ? '\r\n' : '\n');
 
-export async function createTestEditor(uri: vscode.Uri, ...lines: string[]) {
-	const document = await vscode.workspace.openTextDocument(uri);
-	const editor = await vscode.window.showTextDocument(document);
-	await editor.insertSnippet(new vscode.SnippetString(joinLines(...lines)), new vscode.Range(0, 0, 1000, 0));
+export Async function creAteTestEditor(uri: vscode.Uri, ...lines: string[]) {
+	const document = AwAit vscode.workspAce.openTextDocument(uri);
+	const editor = AwAit vscode.window.showTextDocument(document);
+	AwAit editor.insertSnippet(new vscode.SnippetString(joinLines(...lines)), new vscode.RAnge(0, 0, 1000, 0));
 	return editor;
 }
 
-export function assertEditorContents(editor: vscode.TextEditor, expectedDocContent: string, message?: string): void {
+export function AssertEditorContents(editor: vscode.TextEditor, expectedDocContent: string, messAge?: string): void {
 	const cursorIndex = expectedDocContent.indexOf(CURSOR);
 
-	assert.strictEqual(
+	Assert.strictEquAl(
 		editor.document.getText(),
-		expectedDocContent.replace(CURSOR, ''),
-		message);
+		expectedDocContent.replAce(CURSOR, ''),
+		messAge);
 
 	if (cursorIndex >= 0) {
 		const expectedCursorPos = editor.document.positionAt(cursorIndex);
-		assert.deepEqual(
-			{ line: editor.selection.active.line, character: editor.selection.active.line },
-			{ line: expectedCursorPos.line, character: expectedCursorPos.line },
+		Assert.deepEquAl(
+			{ line: editor.selection.Active.line, chArActer: editor.selection.Active.line },
+			{ line: expectedCursorPos.line, chArActer: expectedCursorPos.line },
 			'Cursor position'
 		);
 	}
 }
 
-export type VsCodeConfiguration = { [key: string]: any };
+export type VsCodeConfigurAtion = { [key: string]: Any };
 
-export async function updateConfig(documentUri: vscode.Uri, newConfig: VsCodeConfiguration): Promise<VsCodeConfiguration> {
-	const oldConfig: VsCodeConfiguration = {};
-	const config = vscode.workspace.getConfiguration(undefined, documentUri);
+export Async function updAteConfig(documentUri: vscode.Uri, newConfig: VsCodeConfigurAtion): Promise<VsCodeConfigurAtion> {
+	const oldConfig: VsCodeConfigurAtion = {};
+	const config = vscode.workspAce.getConfigurAtion(undefined, documentUri);
 
 	for (const configKey of Object.keys(newConfig)) {
 		oldConfig[configKey] = config.get(configKey);
-		await new Promise<void>((resolve, reject) =>
-			config.update(configKey, newConfig[configKey], vscode.ConfigurationTarget.Global)
+		AwAit new Promise<void>((resolve, reject) =>
+			config.updAte(configKey, newConfig[configKey], vscode.ConfigurAtionTArget.GlobAl)
 				.then(() => resolve(), reject));
 	}
 	return oldConfig;
 }
 
 export const Config = Object.freeze({
-	autoClosingBrackets: 'editor.autoClosingBrackets',
-	typescriptCompleteFunctionCalls: 'typescript.suggest.completeFunctionCalls',
+	AutoClosingBrAckets: 'editor.AutoClosingBrAckets',
+	typescriptCompleteFunctionCAlls: 'typescript.suggest.completeFunctionCAlls',
 	insertMode: 'editor.suggest.insertMode',
 	snippetSuggestions: 'editor.snippetSuggestions',
 	suggestSelection: 'editor.suggestSelection',
-	javascriptQuoteStyle: 'javascript.preferences.quoteStyle',
+	jAvAscriptQuoteStyle: 'jAvAscript.preferences.quoteStyle',
 	typescriptQuoteStyle: 'typescript.preferences.quoteStyle',
-} as const);
+} As const);
 
-export const insertModesValues = Object.freeze(['insert', 'replace']);
+export const insertModesVAlues = Object.freeze(['insert', 'replAce']);
 
-export async function enumerateConfig(
+export Async function enumerAteConfig(
 	documentUri: vscode.Uri,
 	configKey: string,
-	values: readonly string[],
-	f: (message: string) => Promise<void>
+	vAlues: reAdonly string[],
+	f: (messAge: string) => Promise<void>
 ): Promise<void> {
-	for (const value of values) {
-		const newConfig = { [configKey]: value };
-		await updateConfig(documentUri, newConfig);
-		await f(JSON.stringify(newConfig));
+	for (const vAlue of vAlues) {
+		const newConfig = { [configKey]: vAlue };
+		AwAit updAteConfig(documentUri, newConfig);
+		AwAit f(JSON.stringify(newConfig));
 	}
 }
 
 
-export function onChangedDocument(documentUri: vscode.Uri, disposables: vscode.Disposable[]) {
-	return new Promise<vscode.TextDocument>(resolve => vscode.workspace.onDidChangeTextDocument(e => {
+export function onChAngedDocument(documentUri: vscode.Uri, disposAbles: vscode.DisposAble[]) {
+	return new Promise<vscode.TextDocument>(resolve => vscode.workspAce.onDidChAngeTextDocument(e => {
 		if (e.document.uri.toString() === documentUri.toString()) {
 			resolve(e.document);
 		}
-	}, undefined, disposables));
+	}, undefined, disposAbles));
 }
 
-export async function retryUntilDocumentChanges(
+export Async function retryUntilDocumentChAnges(
 	documentUri: vscode.Uri,
 	options: { retries: number, timeout: number },
-	disposables: vscode.Disposable[],
-	exec: () => Thenable<unknown>,
+	disposAbles: vscode.DisposAble[],
+	exec: () => ThenAble<unknown>,
 ) {
-	const didChangeDocument = onChangedDocument(documentUri, disposables);
+	const didChAngeDocument = onChAngedDocument(documentUri, disposAbles);
 
-	let done = false;
+	let done = fAlse;
 
-	const result = await Promise.race([
-		didChangeDocument,
-		(async () => {
+	const result = AwAit Promise.rAce([
+		didChAngeDocument,
+		(Async () => {
 			for (let i = 0; i < options.retries; ++i) {
-				await wait(options.timeout);
+				AwAit wAit(options.timeout);
 				if (done) {
 					return;
 				}
-				await exec();
+				AwAit exec();
 			}
 		})(),
 	]);

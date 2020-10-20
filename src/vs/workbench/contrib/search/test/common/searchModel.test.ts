@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as sinon from 'sinon';
-import { timeout } from 'vs/base/common/async';
-import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { URI } from 'vs/base/common/uri';
-import { DeferredPromise } from 'vs/base/test/common/utils';
-import { Range } from 'vs/editor/common/core/range';
+import * As Assert from 'Assert';
+import * As sinon from 'sinon';
+import { timeout } from 'vs/bAse/common/Async';
+import { CAncellAtionToken, CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
+import { URI } from 'vs/bAse/common/uri';
+import { DeferredPromise } from 'vs/bAse/test/common/utils';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
-import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
-import { TestInstantiationService } from 'vs/platform/instantiation/test/common/instantiationServiceMock';
-import { IFileMatch, IFileSearchStats, IFolderQuery, ISearchComplete, ISearchProgressItem, ISearchQuery, ISearchService, ITextSearchMatch, OneLineRange, TextSearchMatch } from 'vs/workbench/services/search/common/search';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { SearchModel } from 'vs/workbench/contrib/search/common/searchModel';
-import * as process from 'vs/base/common/process';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
+import { IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { TestConfigurAtionService } from 'vs/plAtform/configurAtion/test/common/testConfigurAtionService';
+import { TestInstAntiAtionService } from 'vs/plAtform/instAntiAtion/test/common/instAntiAtionServiceMock';
+import { IFileMAtch, IFileSeArchStAts, IFolderQuery, ISeArchComplete, ISeArchProgressItem, ISeArchQuery, ISeArchService, ITextSeArchMAtch, OneLineRAnge, TextSeArchMAtch } from 'vs/workbench/services/seArch/common/seArch';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { NullTelemetryService } from 'vs/plAtform/telemetry/common/telemetryUtils';
+import { SeArchModel } from 'vs/workbench/contrib/seArch/common/seArchModel';
+import * As process from 'vs/bAse/common/process';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
 
-const nullEvent = new class {
+const nullEvent = new clAss {
 	id: number = -1;
 	topic!: string;
-	name!: string;
+	nAme!: string;
 	description!: string;
-	data: any;
+	dAtA: Any;
 
-	startTime!: Date;
-	stopTime!: Date;
+	stArtTime!: DAte;
+	stopTime!: DAte;
 
 	stop(): void {
 		return;
 	}
 
-	timeTaken(): number {
+	timeTAken(): number {
 		return -1;
 	}
 };
 
-const lineOneRange = new OneLineRange(1, 0, 1);
+const lineOneRAnge = new OneLineRAnge(1, 0, 1);
 
-suite('SearchModel', () => {
+suite('SeArchModel', () => {
 
-	let instantiationService: TestInstantiationService;
+	let instAntiAtionService: TestInstAntiAtionService;
 	let restoreStubs: sinon.SinonStub[];
 
-	const testSearchStats: IFileSearchStats = {
-		fromCache: false,
+	const testSeArchStAts: IFileSeArchStAts = {
+		fromCAche: fAlse,
 		resultCount: 1,
-		type: 'searchProcess',
-		detailStats: {
-			fileWalkTime: 0,
+		type: 'seArchProcess',
+		detAilStAts: {
+			fileWAlkTime: 0,
 			cmdTime: 0,
 			cmdResultCount: 0,
-			directoriesWalked: 2,
-			filesWalked: 3
+			directoriesWAlked: 2,
+			filesWAlked: 3
 		}
 	};
 
 	const folderQueries: IFolderQuery[] = [
-		{ folder: URI.parse('file://c:/') }
+		{ folder: URI.pArse('file://c:/') }
 	];
 
 	setup(() => {
 		restoreStubs = [];
-		instantiationService = new TestInstantiationService();
-		instantiationService.stub(ITelemetryService, NullTelemetryService);
-		instantiationService.stub(IModelService, stubModelService(instantiationService));
-		instantiationService.stub(ISearchService, {});
-		instantiationService.stub(ISearchService, 'textSearch', Promise.resolve({ results: [] }));
+		instAntiAtionService = new TestInstAntiAtionService();
+		instAntiAtionService.stub(ITelemetryService, NullTelemetryService);
+		instAntiAtionService.stub(IModelService, stubModelService(instAntiAtionService));
+		instAntiAtionService.stub(ISeArchService, {});
+		instAntiAtionService.stub(ISeArchService, 'textSeArch', Promise.resolve({ results: [] }));
 
-		const config = new TestConfigurationService();
-		config.setUserConfiguration('search', { searchOnType: true });
-		instantiationService.stub(IConfigurationService, config);
+		const config = new TestConfigurAtionService();
+		config.setUserConfigurAtion('seArch', { seArchOnType: true });
+		instAntiAtionService.stub(IConfigurAtionService, config);
 	});
 
-	teardown(() => {
-		restoreStubs.forEach(element => {
+	teArdown(() => {
+		restoreStubs.forEAch(element => {
 			element.restore();
 		});
 	});
 
-	function searchServiceWithResults(results: IFileMatch[], complete: ISearchComplete | null = null): ISearchService {
-		return <ISearchService>{
-			textSearch(query: ISearchQuery, token?: CancellationToken, onProgress?: (result: ISearchProgressItem) => void): Promise<ISearchComplete> {
+	function seArchServiceWithResults(results: IFileMAtch[], complete: ISeArchComplete | null = null): ISeArchService {
+		return <ISeArchService>{
+			textSeArch(query: ISeArchQuery, token?: CAncellAtionToken, onProgress?: (result: ISeArchProgressItem) => void): Promise<ISeArchComplete> {
 				return new Promise(resolve => {
 					process.nextTick(() => {
-						results.forEach(onProgress!);
+						results.forEAch(onProgress!);
 						resolve(complete!);
 					});
 				});
@@ -97,9 +97,9 @@ suite('SearchModel', () => {
 		};
 	}
 
-	function searchServiceWithError(error: Error): ISearchService {
-		return <ISearchService>{
-			textSearch(query: ISearchQuery, token?: CancellationToken, onProgress?: (result: ISearchProgressItem) => void): Promise<ISearchComplete> {
+	function seArchServiceWithError(error: Error): ISeArchService {
+		return <ISeArchService>{
+			textSeArch(query: ISeArchQuery, token?: CAncellAtionToken, onProgress?: (result: ISeArchProgressItem) => void): Promise<ISeArchComplete> {
 				return new Promise((resolve, reject) => {
 					reject(error);
 				});
@@ -107,231 +107,231 @@ suite('SearchModel', () => {
 		};
 	}
 
-	function canceleableSearchService(tokenSource: CancellationTokenSource): ISearchService {
-		return <ISearchService>{
-			textSearch(query: ISearchQuery, token?: CancellationToken, onProgress?: (result: ISearchProgressItem) => void): Promise<ISearchComplete> {
+	function cAnceleAbleSeArchService(tokenSource: CAncellAtionTokenSource): ISeArchService {
+		return <ISeArchService>{
+			textSeArch(query: ISeArchQuery, token?: CAncellAtionToken, onProgress?: (result: ISeArchProgressItem) => void): Promise<ISeArchComplete> {
 				if (token) {
-					token.onCancellationRequested(() => tokenSource.cancel());
+					token.onCAncellAtionRequested(() => tokenSource.cAncel());
 				}
 
 				return new Promise(resolve => {
 					process.nextTick(() => {
-						resolve(<any>{});
+						resolve(<Any>{});
 					});
 				});
 			}
 		};
 	}
 
-	test('Search Model: Search adds to results', async () => {
+	test('SeArch Model: SeArch Adds to results', Async () => {
 		const results = [
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
-				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
-			aRawMatch('file://c:/2', new TextSearchMatch('preview 2', lineOneRange))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 1, 4)),
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 4, 11))),
+			ARAwMAtch('file://c:/2', new TextSeArchMAtch('preview 2', lineOneRAnge))];
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults(results));
 
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testObject: SeArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
-		const actual = testObject.searchResult.matches();
+		const ActuAl = testObject.seArchResult.mAtches();
 
-		assert.equal(2, actual.length);
-		assert.equal('file://c:/1', actual[0].resource.toString());
+		Assert.equAl(2, ActuAl.length);
+		Assert.equAl('file://c:/1', ActuAl[0].resource.toString());
 
-		let actuaMatches = actual[0].matches();
-		assert.equal(2, actuaMatches.length);
-		assert.equal('preview 1', actuaMatches[0].text());
-		assert.ok(new Range(2, 2, 2, 5).equalsRange(actuaMatches[0].range()));
-		assert.equal('preview 1', actuaMatches[1].text());
-		assert.ok(new Range(2, 5, 2, 12).equalsRange(actuaMatches[1].range()));
+		let ActuAMAtches = ActuAl[0].mAtches();
+		Assert.equAl(2, ActuAMAtches.length);
+		Assert.equAl('preview 1', ActuAMAtches[0].text());
+		Assert.ok(new RAnge(2, 2, 2, 5).equAlsRAnge(ActuAMAtches[0].rAnge()));
+		Assert.equAl('preview 1', ActuAMAtches[1].text());
+		Assert.ok(new RAnge(2, 5, 2, 12).equAlsRAnge(ActuAMAtches[1].rAnge()));
 
-		actuaMatches = actual[1].matches();
-		assert.equal(1, actuaMatches.length);
-		assert.equal('preview 2', actuaMatches[0].text());
-		assert.ok(new Range(2, 1, 2, 2).equalsRange(actuaMatches[0].range()));
+		ActuAMAtches = ActuAl[1].mAtches();
+		Assert.equAl(1, ActuAMAtches.length);
+		Assert.equAl('preview 2', ActuAMAtches[0].text());
+		Assert.ok(new RAnge(2, 1, 2, 2).equAlsRAnge(ActuAMAtches[0].rAnge()));
 	});
 
-	test('Search Model: Search reports telemetry on search completed', async () => {
-		const target = instantiationService.spy(ITelemetryService, 'publicLog');
+	test('SeArch Model: SeArch reports telemetry on seArch completed', Async () => {
+		const tArget = instAntiAtionService.spy(ITelemetryService, 'publicLog');
 		const results = [
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
-				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
-			aRawMatch('file://c:/2',
-				new TextSearchMatch('preview 2', lineOneRange))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 1, 4)),
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 4, 11))),
+			ARAwMAtch('file://c:/2',
+				new TextSeArchMAtch('preview 2', lineOneRAnge))];
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults(results));
 
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testObject: SeArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
-		assert.ok(target.calledThrice);
-		const data = target.args[0];
-		data[1].duration = -1;
-		assert.deepEqual(['searchResultsFirstRender', { duration: -1 }], data);
+		Assert.ok(tArget.cAlledThrice);
+		const dAtA = tArget.Args[0];
+		dAtA[1].durAtion = -1;
+		Assert.deepEquAl(['seArchResultsFirstRender', { durAtion: -1 }], dAtA);
 	});
 
-	test('Search Model: Search reports timed telemetry on search when progress is not called', () => {
-		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+	test('SeArch Model: SeArch reports timed telemetry on seArch when progress is not cAlled', () => {
+		const tArget2 = sinon.spy();
+		stub(nullEvent, 'stop', tArget2);
+		const tArget1 = sinon.stub().returns(nullEvent);
+		instAntiAtionService.stub(ITelemetryService, 'publicLog', tArget1);
 
-		instantiationService.stub(ISearchService, searchServiceWithResults([]));
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults([]));
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testObject = instAntiAtionService.creAteInstAnce(SeArchModel);
+		const result = testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
 		return result.then(() => {
 			return timeout(1).then(() => {
-				assert.ok(target1.calledWith('searchResultsFirstRender'));
-				assert.ok(target1.calledWith('searchResultsFinished'));
+				Assert.ok(tArget1.cAlledWith('seArchResultsFirstRender'));
+				Assert.ok(tArget1.cAlledWith('seArchResultsFinished'));
 			});
 		});
 	});
 
-	test('Search Model: Search reports timed telemetry on search when progress is called', () => {
-		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+	test('SeArch Model: SeArch reports timed telemetry on seArch when progress is cAlled', () => {
+		const tArget2 = sinon.spy();
+		stub(nullEvent, 'stop', tArget2);
+		const tArget1 = sinon.stub().returns(nullEvent);
+		instAntiAtionService.stub(ITelemetryService, 'publicLog', tArget1);
 
-		instantiationService.stub(ISearchService, searchServiceWithResults(
-			[aRawMatch('file://c:/1', new TextSearchMatch('some preview', lineOneRange))],
-			{ results: [], stats: testSearchStats }));
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults(
+			[ARAwMAtch('file://c:/1', new TextSeArchMAtch('some preview', lineOneRAnge))],
+			{ results: [], stAts: testSeArchStAts }));
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testObject = instAntiAtionService.creAteInstAnce(SeArchModel);
+		const result = testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
 		return result.then(() => {
 			return timeout(1).then(() => {
-				// timeout because promise handlers may run in a different order. We only care that these
-				// are fired at some point.
-				assert.ok(target1.calledWith('searchResultsFirstRender'));
-				assert.ok(target1.calledWith('searchResultsFinished'));
-				// assert.equal(1, target2.callCount);
+				// timeout becAuse promise hAndlers mAy run in A different order. We only cAre thAt these
+				// Are fired At some point.
+				Assert.ok(tArget1.cAlledWith('seArchResultsFirstRender'));
+				Assert.ok(tArget1.cAlledWith('seArchResultsFinished'));
+				// Assert.equAl(1, tArget2.cAllCount);
 			});
 		});
 	});
 
-	test('Search Model: Search reports timed telemetry on search when error is called', () => {
-		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+	test('SeArch Model: SeArch reports timed telemetry on seArch when error is cAlled', () => {
+		const tArget2 = sinon.spy();
+		stub(nullEvent, 'stop', tArget2);
+		const tArget1 = sinon.stub().returns(nullEvent);
+		instAntiAtionService.stub(ITelemetryService, 'publicLog', tArget1);
 
-		instantiationService.stub(ISearchService, searchServiceWithError(new Error('error')));
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithError(new Error('error')));
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testObject = instAntiAtionService.creAteInstAnce(SeArchModel);
+		const result = testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
 		return result.then(() => { }, () => {
 			return timeout(1).then(() => {
-				assert.ok(target1.calledWith('searchResultsFirstRender'));
-				assert.ok(target1.calledWith('searchResultsFinished'));
-				// assert.ok(target2.calledOnce);
+				Assert.ok(tArget1.cAlledWith('seArchResultsFirstRender'));
+				Assert.ok(tArget1.cAlledWith('seArchResultsFinished'));
+				// Assert.ok(tArget2.cAlledOnce);
 			});
 		});
 	});
 
-	test('Search Model: Search reports timed telemetry on search when error is cancelled error', () => {
-		const target2 = sinon.spy();
-		stub(nullEvent, 'stop', target2);
-		const target1 = sinon.stub().returns(nullEvent);
-		instantiationService.stub(ITelemetryService, 'publicLog', target1);
+	test('SeArch Model: SeArch reports timed telemetry on seArch when error is cAncelled error', () => {
+		const tArget2 = sinon.spy();
+		stub(nullEvent, 'stop', tArget2);
+		const tArget1 = sinon.stub().returns(nullEvent);
+		instAntiAtionService.stub(ITelemetryService, 'publicLog', tArget1);
 
-		const deferredPromise = new DeferredPromise<ISearchComplete>();
-		instantiationService.stub(ISearchService, 'textSearch', deferredPromise.p);
+		const deferredPromise = new DeferredPromise<ISeArchComplete>();
+		instAntiAtionService.stub(ISeArchService, 'textSeArch', deferredPromise.p);
 
-		const testObject = instantiationService.createInstance(SearchModel);
-		const result = testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		const testObject = instAntiAtionService.creAteInstAnce(SeArchModel);
+		const result = testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
-		deferredPromise.cancel();
+		deferredPromise.cAncel();
 
 		return result.then(() => { }, () => {
 			return timeout(1).then(() => {
-				assert.ok(target1.calledWith('searchResultsFirstRender'));
-				assert.ok(target1.calledWith('searchResultsFinished'));
-				// assert.ok(target2.calledOnce);
+				Assert.ok(tArget1.cAlledWith('seArchResultsFirstRender'));
+				Assert.ok(tArget1.cAlledWith('seArchResultsFinished'));
+				// Assert.ok(tArget2.cAlledOnce);
 			});
 		});
 	});
 
-	test('Search Model: Search results are cleared during search', async () => {
+	test('SeArch Model: SeArch results Are cleAred during seArch', Async () => {
 		const results = [
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
-				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11))),
-			aRawMatch('file://c:/2',
-				new TextSearchMatch('preview 2', lineOneRange))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
-		assert.ok(!testObject.searchResult.isEmpty());
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 1, 4)),
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 4, 11))),
+			ARAwMAtch('file://c:/2',
+				new TextSeArchMAtch('preview 2', lineOneRAnge))];
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults(results));
+		const testObject: SeArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
+		Assert.ok(!testObject.seArchResult.isEmpty());
 
-		instantiationService.stub(ISearchService, searchServiceWithResults([]));
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults([]));
 
-		testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
-		assert.ok(testObject.searchResult.isEmpty());
+		testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
+		Assert.ok(testObject.seArchResult.isEmpty());
 	});
 
-	test('Search Model: Previous search is cancelled when new search is called', async () => {
-		const tokenSource = new CancellationTokenSource();
-		instantiationService.stub(ISearchService, canceleableSearchService(tokenSource));
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
+	test('SeArch Model: Previous seArch is cAncelled when new seArch is cAlled', Async () => {
+		const tokenSource = new CAncellAtionTokenSource();
+		instAntiAtionService.stub(ISeArchService, cAnceleAbleSeArchService(tokenSource));
+		const testObject: SeArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
 
-		testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
-		instantiationService.stub(ISearchService, searchServiceWithResults([]));
-		testObject.search({ contentPattern: { pattern: 'somestring' }, type: 1, folderQueries });
+		testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults([]));
+		testObject.seArch({ contentPAttern: { pAttern: 'somestring' }, type: 1, folderQueries });
 
-		assert.ok(tokenSource.token.isCancellationRequested);
+		Assert.ok(tokenSource.token.isCAncellAtionRequested);
 	});
 
-	test('getReplaceString returns proper replace string for regExpressions', async () => {
+	test('getReplAceString returns proper replAce string for regExpressions', Async () => {
 		const results = [
-			aRawMatch('file://c:/1',
-				new TextSearchMatch('preview 1', new OneLineRange(1, 1, 4)),
-				new TextSearchMatch('preview 1', new OneLineRange(1, 4, 11)))];
-		instantiationService.stub(ISearchService, searchServiceWithResults(results));
+			ARAwMAtch('file://c:/1',
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 1, 4)),
+				new TextSeArchMAtch('preview 1', new OneLineRAnge(1, 4, 11)))];
+		instAntiAtionService.stub(ISeArchService, seArchServiceWithResults(results));
 
-		const testObject: SearchModel = instantiationService.createInstance(SearchModel);
-		await testObject.search({ contentPattern: { pattern: 're' }, type: 1, folderQueries });
-		testObject.replaceString = 'hello';
-		let match = testObject.searchResult.matches()[0].matches()[0];
-		assert.equal('hello', match.replaceString);
+		const testObject: SeArchModel = instAntiAtionService.creAteInstAnce(SeArchModel);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 're' }, type: 1, folderQueries });
+		testObject.replAceString = 'hello';
+		let mAtch = testObject.seArchResult.mAtches()[0].mAtches()[0];
+		Assert.equAl('hello', mAtch.replAceString);
 
-		await testObject.search({ contentPattern: { pattern: 're', isRegExp: true }, type: 1, folderQueries });
-		match = testObject.searchResult.matches()[0].matches()[0];
-		assert.equal('hello', match.replaceString);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 're', isRegExp: true }, type: 1, folderQueries });
+		mAtch = testObject.seArchResult.mAtches()[0].mAtches()[0];
+		Assert.equAl('hello', mAtch.replAceString);
 
-		await testObject.search({ contentPattern: { pattern: 're(?:vi)', isRegExp: true }, type: 1, folderQueries });
-		match = testObject.searchResult.matches()[0].matches()[0];
-		assert.equal('hello', match.replaceString);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 're(?:vi)', isRegExp: true }, type: 1, folderQueries });
+		mAtch = testObject.seArchResult.mAtches()[0].mAtches()[0];
+		Assert.equAl('hello', mAtch.replAceString);
 
-		await testObject.search({ contentPattern: { pattern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
-		match = testObject.searchResult.matches()[0].matches()[0];
-		assert.equal('hello', match.replaceString);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
+		mAtch = testObject.seArchResult.mAtches()[0].mAtches()[0];
+		Assert.equAl('hello', mAtch.replAceString);
 
-		await testObject.search({ contentPattern: { pattern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
-		testObject.replaceString = 'hello$1';
-		match = testObject.searchResult.matches()[0].matches()[0];
-		assert.equal('helloe', match.replaceString);
+		AwAit testObject.seArch({ contentPAttern: { pAttern: 'r(e)(?:vi)', isRegExp: true }, type: 1, folderQueries });
+		testObject.replAceString = 'hello$1';
+		mAtch = testObject.seArchResult.mAtches()[0].mAtches()[0];
+		Assert.equAl('helloe', mAtch.replAceString);
 	});
 
-	function aRawMatch(resource: string, ...results: ITextSearchMatch[]): IFileMatch {
-		return { resource: URI.parse(resource), results };
+	function ARAwMAtch(resource: string, ...results: ITextSeArchMAtch[]): IFileMAtch {
+		return { resource: URI.pArse(resource), results };
 	}
 
-	function stub(arg1: any, arg2: any, arg3: any): sinon.SinonStub {
-		const stub = sinon.stub(arg1, arg2, arg3);
+	function stub(Arg1: Any, Arg2: Any, Arg3: Any): sinon.SinonStub {
+		const stub = sinon.stub(Arg1, Arg2, Arg3);
 		restoreStubs.push(stub);
 		return stub;
 	}
 
-	function stubModelService(instantiationService: TestInstantiationService): IModelService {
-		instantiationService.stub(IConfigurationService, new TestConfigurationService());
-		instantiationService.stub(IThemeService, new TestThemeService());
-		return instantiationService.createInstance(ModelServiceImpl);
+	function stubModelService(instAntiAtionService: TestInstAntiAtionService): IModelService {
+		instAntiAtionService.stub(IConfigurAtionService, new TestConfigurAtionService());
+		instAntiAtionService.stub(IThemeService, new TestThemeService());
+		return instAntiAtionService.creAteInstAnce(ModelServiceImpl);
 	}
 
 });

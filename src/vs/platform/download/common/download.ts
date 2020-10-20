@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { CancellationToken } from 'vs/base/common/cancellation';
+import { URI } from 'vs/bAse/common/uri';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
 
-export const IDownloadService = createDecorator<IDownloadService>('downloadService');
+export const IDownloAdService = creAteDecorAtor<IDownloAdService>('downloAdService');
 
-export interface IDownloadService {
+export interfAce IDownloAdService {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	download(uri: URI, to: URI, cancellationToken?: CancellationToken): Promise<void>;
+	downloAd(uri: URI, to: URI, cAncellAtionToken?: CAncellAtionToken): Promise<void>;
 
 }

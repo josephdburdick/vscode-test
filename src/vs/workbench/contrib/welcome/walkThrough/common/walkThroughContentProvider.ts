@@ -1,34 +1,34 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
+import { URI } from 'vs/bAse/common/uri';
 import { ITextModelService, ITextModelContentProvider } from 'vs/editor/common/services/resolverService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ITextModel, DefaultEndOfLine, EndOfLinePreference } from 'vs/editor/common/model';
+import { ITextModel, DefAultEndOfLine, EndOfLinePreference } from 'vs/editor/common/model';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
-import * as marked from 'vs/base/common/marked/marked';
-import { Schemas } from 'vs/base/common/network';
-import { Range } from 'vs/editor/common/core/range';
-import { createTextBufferFactory } from 'vs/editor/common/model/textModel';
+import * As mArked from 'vs/bAse/common/mArked/mArked';
+import { SchemAs } from 'vs/bAse/common/network';
+import { RAnge } from 'vs/editor/common/core/rAnge';
+import { creAteTextBufferFActory } from 'vs/editor/common/model/textModel';
 
 export function requireToContent(resource: URI): Promise<string> {
 	if (!resource.query) {
-		throw new Error('Welcome: invalid resource');
+		throw new Error('Welcome: invAlid resource');
 	}
 
-	const query = JSON.parse(resource.query);
+	const query = JSON.pArse(resource.query);
 	if (!query.moduleId) {
-		throw new Error('Welcome: invalid resource');
+		throw new Error('Welcome: invAlid resource');
 	}
 
 	const content: Promise<string> = new Promise<string>((resolve, reject) => {
 		require([query.moduleId], content => {
 			try {
-				resolve(content.default());
-			} catch (err) {
+				resolve(content.defAult());
+			} cAtch (err) {
 				reject(err);
 			}
 		});
@@ -37,46 +37,46 @@ export function requireToContent(resource: URI): Promise<string> {
 	return content;
 }
 
-export class WalkThroughSnippetContentProvider implements ITextModelContentProvider, IWorkbenchContribution {
+export clAss WAlkThroughSnippetContentProvider implements ITextModelContentProvider, IWorkbenchContribution {
 
 	constructor(
-		@ITextModelService private readonly textModelResolverService: ITextModelService,
-		@IModeService private readonly modeService: IModeService,
-		@IModelService private readonly modelService: IModelService,
+		@ITextModelService privAte reAdonly textModelResolverService: ITextModelService,
+		@IModeService privAte reAdonly modeService: IModeService,
+		@IModelService privAte reAdonly modelService: IModelService,
 	) {
-		this.textModelResolverService.registerTextModelContentProvider(Schemas.walkThroughSnippet, this);
+		this.textModelResolverService.registerTextModelContentProvider(SchemAs.wAlkThroughSnippet, this);
 	}
 
-	public async provideTextContent(resource: URI): Promise<ITextModel> {
-		const factory = createTextBufferFactory(await requireToContent(resource));
+	public Async provideTextContent(resource: URI): Promise<ITextModel> {
+		const fActory = creAteTextBufferFActory(AwAit requireToContent(resource));
 
 		let codeEditorModel = this.modelService.getModel(resource);
 		if (!codeEditorModel) {
-			const j = parseInt(resource.fragment);
+			const j = pArseInt(resource.frAgment);
 
 			let codeSnippet = '';
-			let languageName = '';
+			let lAnguAgeNAme = '';
 			let i = 0;
-			const renderer = new marked.Renderer();
-			renderer.code = (code, lang) => {
+			const renderer = new mArked.Renderer();
+			renderer.code = (code, lAng) => {
 				if (i++ === j) {
 					codeSnippet = code;
-					languageName = lang;
+					lAnguAgeNAme = lAng;
 				}
 				return '';
 			};
 
-			const textBuffer = factory.create(DefaultEndOfLine.LF);
+			const textBuffer = fActory.creAte(DefAultEndOfLine.LF);
 			const lineCount = textBuffer.getLineCount();
-			const range = new Range(1, 1, lineCount, textBuffer.getLineLength(lineCount) + 1);
-			const markdown = textBuffer.getValueInRange(range, EndOfLinePreference.TextDefined);
-			marked(markdown, { renderer });
+			const rAnge = new RAnge(1, 1, lineCount, textBuffer.getLineLength(lineCount) + 1);
+			const mArkdown = textBuffer.getVAlueInRAnge(rAnge, EndOfLinePreference.TextDefined);
+			mArked(mArkdown, { renderer });
 
-			const languageId = this.modeService.getModeIdForLanguageName(languageName) || '';
-			const languageSelection = this.modeService.create(languageId);
-			codeEditorModel = this.modelService.createModel(codeSnippet, languageSelection, resource);
+			const lAnguAgeId = this.modeService.getModeIdForLAnguAgeNAme(lAnguAgeNAme) || '';
+			const lAnguAgeSelection = this.modeService.creAte(lAnguAgeId);
+			codeEditorModel = this.modelService.creAteModel(codeSnippet, lAnguAgeSelection, resource);
 		} else {
-			this.modelService.updateModel(codeEditorModel, factory);
+			this.modelService.updAteModel(codeEditorModel, fActory);
 		}
 
 		return codeEditorModel;

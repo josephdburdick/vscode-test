@@ -1,28 +1,28 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { WorkbenchState, IWorkspace } from 'vs/platform/workspace/common/workspace';
-import { URI } from 'vs/base/common/uri';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
+import { WorkbenchStAte, IWorkspAce } from 'vs/plAtform/workspAce/common/workspAce';
+import { URI } from 'vs/bAse/common/uri';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
+import { IWorkspAceTAgsService, TAgs } from 'vs/workbench/contrib/tAgs/common/workspAceTAgs';
 
-export class NoOpWorkspaceTagsService implements IWorkspaceTagsService {
+export clAss NoOpWorkspAceTAgsService implements IWorkspAceTAgsService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	getTags(): Promise<Tags> {
+	getTAgs(): Promise<TAgs> {
 		return Promise.resolve({});
 	}
 
-	getTelemetryWorkspaceId(workspace: IWorkspace, state: WorkbenchState): string | undefined {
+	getTelemetryWorkspAceId(workspAce: IWorkspAce, stAte: WorkbenchStAte): string | undefined {
 		return undefined;
 	}
 
-	getHashedRemotesFromUri(workspaceUri: URI, stripEndingDotGit?: boolean): Promise<string[]> {
+	getHAshedRemotesFromUri(workspAceUri: URI, stripEndingDotGit?: booleAn): Promise<string[]> {
 		return Promise.resolve([]);
 	}
 }
 
-registerSingleton(IWorkspaceTagsService, NoOpWorkspaceTagsService, true);
+registerSingleton(IWorkspAceTAgsService, NoOpWorkspAceTAgsService, true);

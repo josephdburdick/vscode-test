@@ -1,146 +1,146 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createRandomIPCHandle } from 'vs/base/parts/ipc/node/ipc.net';
-import * as http from 'http';
-import * as fs from 'fs';
-import { IExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { IWindowOpenable, IOpenWindowOptions } from 'vs/platform/windows/common/windows';
-import { URI } from 'vs/base/common/uri';
-import { hasWorkspaceFileExtension } from 'vs/platform/workspaces/common/workspaces';
-import { ILogService } from 'vs/platform/log/common/log';
+import { creAteRAndomIPCHAndle } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import * As http from 'http';
+import * As fs from 'fs';
+import { IExtHostCommAnds } from 'vs/workbench/Api/common/extHostCommAnds';
+import { IWindowOpenAble, IOpenWindowOptions } from 'vs/plAtform/windows/common/windows';
+import { URI } from 'vs/bAse/common/uri';
+import { hAsWorkspAceFileExtension } from 'vs/plAtform/workspAces/common/workspAces';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
-export interface OpenCommandPipeArgs {
+export interfAce OpenCommAndPipeArgs {
 	type: 'open';
 	fileURIs?: string[];
 	folderURIs: string[];
-	forceNewWindow?: boolean;
-	diffMode?: boolean;
-	addMode?: boolean;
-	gotoLineMode?: boolean;
-	forceReuseWindow?: boolean;
-	waitMarkerFilePath?: string;
+	forceNewWindow?: booleAn;
+	diffMode?: booleAn;
+	AddMode?: booleAn;
+	gotoLineMode?: booleAn;
+	forceReuseWindow?: booleAn;
+	wAitMArkerFilePAth?: string;
 }
 
-export interface StatusPipeArgs {
-	type: 'status';
+export interfAce StAtusPipeArgs {
+	type: 'stAtus';
 }
 
-export interface RunCommandPipeArgs {
-	type: 'command';
-	command: string;
-	args: any[];
+export interfAce RunCommAndPipeArgs {
+	type: 'commAnd';
+	commAnd: string;
+	Args: Any[];
 }
 
-export interface ICommandsExecuter {
-	executeCommand<T>(id: string, ...args: any[]): Promise<T>;
+export interfAce ICommAndsExecuter {
+	executeCommAnd<T>(id: string, ...Args: Any[]): Promise<T>;
 }
 
-export class CLIServerBase {
-	private readonly _server: http.Server;
+export clAss CLIServerBAse {
+	privAte reAdonly _server: http.Server;
 
 	constructor(
-		private readonly _commands: ICommandsExecuter,
-		private readonly logService: ILogService,
-		private readonly _ipcHandlePath: string,
+		privAte reAdonly _commAnds: ICommAndsExecuter,
+		privAte reAdonly logService: ILogService,
+		privAte reAdonly _ipcHAndlePAth: string,
 	) {
-		this._server = http.createServer((req, res) => this.onRequest(req, res));
-		this.setup().catch(err => {
+		this._server = http.creAteServer((req, res) => this.onRequest(req, res));
+		this.setup().cAtch(err => {
 			logService.error(err);
 			return '';
 		});
 	}
 
-	public get ipcHandlePath() {
-		return this._ipcHandlePath;
+	public get ipcHAndlePAth() {
+		return this._ipcHAndlePAth;
 	}
 
-	private async setup(): Promise<string> {
+	privAte Async setup(): Promise<string> {
 		try {
-			this._server.listen(this.ipcHandlePath);
+			this._server.listen(this.ipcHAndlePAth);
 			this._server.on('error', err => this.logService.error(err));
-		} catch (err) {
-			this.logService.error('Could not start open from terminal server.');
+		} cAtch (err) {
+			this.logService.error('Could not stArt open from terminAl server.');
 		}
 
-		return this._ipcHandlePath;
+		return this._ipcHAndlePAth;
 	}
 
-	private onRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
+	privAte onRequest(req: http.IncomingMessAge, res: http.ServerResponse): void {
 		const chunks: string[] = [];
 		req.setEncoding('utf8');
-		req.on('data', (d: string) => chunks.push(d));
+		req.on('dAtA', (d: string) => chunks.push(d));
 		req.on('end', () => {
-			const data: OpenCommandPipeArgs | StatusPipeArgs | RunCommandPipeArgs | any = JSON.parse(chunks.join(''));
-			switch (data.type) {
-				case 'open':
-					this.open(data, res);
-					break;
-				case 'status':
-					this.getStatus(data, res);
-					break;
-				case 'command':
-					this.runCommand(data, res)
-						.catch(this.logService.error);
-					break;
-				default:
-					res.writeHead(404);
-					res.write(`Unknown message type: ${data.type}`, err => {
+			const dAtA: OpenCommAndPipeArgs | StAtusPipeArgs | RunCommAndPipeArgs | Any = JSON.pArse(chunks.join(''));
+			switch (dAtA.type) {
+				cAse 'open':
+					this.open(dAtA, res);
+					breAk;
+				cAse 'stAtus':
+					this.getStAtus(dAtA, res);
+					breAk;
+				cAse 'commAnd':
+					this.runCommAnd(dAtA, res)
+						.cAtch(this.logService.error);
+					breAk;
+				defAult:
+					res.writeHeAd(404);
+					res.write(`Unknown messAge type: ${dAtA.type}`, err => {
 						if (err) {
 							this.logService.error(err);
 						}
 					});
 					res.end();
-					break;
+					breAk;
 			}
 		});
 	}
 
-	private open(data: OpenCommandPipeArgs, res: http.ServerResponse) {
-		let { fileURIs, folderURIs, forceNewWindow, diffMode, addMode, forceReuseWindow, gotoLineMode, waitMarkerFilePath } = data;
-		const urisToOpen: IWindowOpenable[] = [];
-		if (Array.isArray(folderURIs)) {
+	privAte open(dAtA: OpenCommAndPipeArgs, res: http.ServerResponse) {
+		let { fileURIs, folderURIs, forceNewWindow, diffMode, AddMode, forceReuseWindow, gotoLineMode, wAitMArkerFilePAth } = dAtA;
+		const urisToOpen: IWindowOpenAble[] = [];
+		if (ArrAy.isArrAy(folderURIs)) {
 			for (const s of folderURIs) {
 				try {
-					urisToOpen.push({ folderUri: URI.parse(s) });
-				} catch (e) {
+					urisToOpen.push({ folderUri: URI.pArse(s) });
+				} cAtch (e) {
 					// ignore
 				}
 			}
 		}
-		if (Array.isArray(fileURIs)) {
+		if (ArrAy.isArrAy(fileURIs)) {
 			for (const s of fileURIs) {
 				try {
-					if (hasWorkspaceFileExtension(s)) {
-						urisToOpen.push({ workspaceUri: URI.parse(s) });
+					if (hAsWorkspAceFileExtension(s)) {
+						urisToOpen.push({ workspAceUri: URI.pArse(s) });
 					} else {
-						urisToOpen.push({ fileUri: URI.parse(s) });
+						urisToOpen.push({ fileUri: URI.pArse(s) });
 					}
-				} catch (e) {
+				} cAtch (e) {
 					// ignore
 				}
 			}
 		}
 		if (urisToOpen.length) {
-			const waitMarkerFileURI = waitMarkerFilePath ? URI.file(waitMarkerFilePath) : undefined;
-			const preferNewWindow = !forceReuseWindow && !waitMarkerFileURI && !addMode;
-			const windowOpenArgs: IOpenWindowOptions = { forceNewWindow, diffMode, addMode, gotoLineMode, forceReuseWindow, preferNewWindow, waitMarkerFileURI };
-			this._commands.executeCommand('_files.windowOpen', urisToOpen, windowOpenArgs);
+			const wAitMArkerFileURI = wAitMArkerFilePAth ? URI.file(wAitMArkerFilePAth) : undefined;
+			const preferNewWindow = !forceReuseWindow && !wAitMArkerFileURI && !AddMode;
+			const windowOpenArgs: IOpenWindowOptions = { forceNewWindow, diffMode, AddMode, gotoLineMode, forceReuseWindow, preferNewWindow, wAitMArkerFileURI };
+			this._commAnds.executeCommAnd('_files.windowOpen', urisToOpen, windowOpenArgs);
 		}
-		res.writeHead(200);
+		res.writeHeAd(200);
 		res.end();
 	}
 
-	private async getStatus(data: StatusPipeArgs, res: http.ServerResponse) {
+	privAte Async getStAtus(dAtA: StAtusPipeArgs, res: http.ServerResponse) {
 		try {
-			const status = await this._commands.executeCommand('_issues.getSystemStatus');
-			res.writeHead(200);
-			res.write(status);
+			const stAtus = AwAit this._commAnds.executeCommAnd('_issues.getSystemStAtus');
+			res.writeHeAd(200);
+			res.write(stAtus);
 			res.end();
-		} catch (err) {
-			res.writeHead(500);
+		} cAtch (err) {
+			res.writeHeAd(500);
 			res.write(String(err), err => {
 				if (err) {
 					this.logService.error(err);
@@ -150,19 +150,19 @@ export class CLIServerBase {
 		}
 	}
 
-	private async runCommand(data: RunCommandPipeArgs, res: http.ServerResponse) {
+	privAte Async runCommAnd(dAtA: RunCommAndPipeArgs, res: http.ServerResponse) {
 		try {
-			const { command, args } = data;
-			const result = await this._commands.executeCommand(command, ...args);
-			res.writeHead(200);
+			const { commAnd, Args } = dAtA;
+			const result = AwAit this._commAnds.executeCommAnd(commAnd, ...Args);
+			res.writeHeAd(200);
 			res.write(JSON.stringify(result), err => {
 				if (err) {
 					this.logService.error(err);
 				}
 			});
 			res.end();
-		} catch (err) {
-			res.writeHead(500);
+		} cAtch (err) {
+			res.writeHeAd(500);
 			res.write(String(err), err => {
 				if (err) {
 					this.logService.error(err);
@@ -175,17 +175,17 @@ export class CLIServerBase {
 	dispose(): void {
 		this._server.close();
 
-		if (this._ipcHandlePath && process.platform !== 'win32' && fs.existsSync(this._ipcHandlePath)) {
-			fs.unlinkSync(this._ipcHandlePath);
+		if (this._ipcHAndlePAth && process.plAtform !== 'win32' && fs.existsSync(this._ipcHAndlePAth)) {
+			fs.unlinkSync(this._ipcHAndlePAth);
 		}
 	}
 }
 
-export class CLIServer extends CLIServerBase {
+export clAss CLIServer extends CLIServerBAse {
 	constructor(
-		@IExtHostCommands commands: IExtHostCommands,
+		@IExtHostCommAnds commAnds: IExtHostCommAnds,
 		@ILogService logService: ILogService
 	) {
-		super(commands, logService, createRandomIPCHandle());
+		super(commAnds, logService, creAteRAndomIPCHAndle());
 	}
 }

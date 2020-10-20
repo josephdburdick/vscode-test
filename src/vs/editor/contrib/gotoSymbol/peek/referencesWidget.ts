@@ -1,110 +1,110 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./referencesWidget';
-import * as dom from 'vs/base/browser/dom';
-import { IMouseEvent } from 'vs/base/browser/mouseEvent';
-import { Orientation } from 'vs/base/browser/ui/sash/sash';
-import { Color } from 'vs/base/common/color';
-import { Emitter, Event } from 'vs/base/common/event';
-import { dispose, IDisposable, IReference, DisposableStore } from 'vs/base/common/lifecycle';
-import { Schemas } from 'vs/base/common/network';
-import { basenameOrAuthority, dirname } from 'vs/base/common/resources';
+import * As dom from 'vs/bAse/browser/dom';
+import { IMouseEvent } from 'vs/bAse/browser/mouseEvent';
+import { OrientAtion } from 'vs/bAse/browser/ui/sAsh/sAsh';
+import { Color } from 'vs/bAse/common/color';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { dispose, IDisposAble, IReference, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { SchemAs } from 'vs/bAse/common/network';
+import { bAsenAmeOrAuthority, dirnAme } from 'vs/bAse/common/resources';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { EmbeddedCodeEditorWidget } from 'vs/editor/browser/widget/embeddedCodeEditorWidget';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { ScrollType } from 'vs/editor/common/editorCommon';
-import { IModelDeltaDecoration, TrackedRangeStickiness } from 'vs/editor/common/model';
-import { ModelDecorationOptions, TextModel } from 'vs/editor/common/model/textModel';
-import { Location } from 'vs/editor/common/modes';
+import { IModelDeltADecorAtion, TrAckedRAngeStickiness } from 'vs/editor/common/model';
+import { ModelDecorAtionOptions, TextModel } from 'vs/editor/common/model/textModel';
+import { LocAtion } from 'vs/editor/common/modes';
 import { ITextEditorModel, ITextModelService } from 'vs/editor/common/services/resolverService';
-import { AccessibilityProvider, DataSource, Delegate, FileReferencesRenderer, OneReferenceRenderer, TreeElement, StringRepresentationProvider, IdentityProvider } from 'vs/editor/contrib/gotoSymbol/peek/referencesTree';
-import * as nls from 'vs/nls';
-import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ILabelService } from 'vs/platform/label/common/label';
-import { WorkbenchAsyncDataTree, IWorkbenchAsyncDataTreeOptions } from 'vs/platform/list/browser/listService';
-import { activeContrastBorder } from 'vs/platform/theme/common/colorRegistry';
-import { IColorTheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
-import * as peekView from 'vs/editor/contrib/peekView/peekView';
+import { AccessibilityProvider, DAtASource, DelegAte, FileReferencesRenderer, OneReferenceRenderer, TreeElement, StringRepresentAtionProvider, IdentityProvider } from 'vs/editor/contrib/gotoSymbol/peek/referencesTree';
+import * As nls from 'vs/nls';
+import { IInstAntiAtionService } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ILAbelService } from 'vs/plAtform/lAbel/common/lAbel';
+import { WorkbenchAsyncDAtATree, IWorkbenchAsyncDAtATreeOptions } from 'vs/plAtform/list/browser/listService';
+import { ActiveContrAstBorder } from 'vs/plAtform/theme/common/colorRegistry';
+import { IColorTheme, IThemeService, registerThemingPArticipAnt } from 'vs/plAtform/theme/common/themeService';
+import * As peekView from 'vs/editor/contrib/peekView/peekView';
 import { FileReferences, OneReference, ReferencesModel } from '../referencesModel';
-import { FuzzyScore } from 'vs/base/common/filters';
-import { SplitView, Sizing } from 'vs/base/browser/ui/splitview/splitview';
-import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { KeyCode } from 'vs/base/common/keyCodes';
+import { FuzzyScore } from 'vs/bAse/common/filters';
+import { SplitView, Sizing } from 'vs/bAse/browser/ui/splitview/splitview';
+import { IUndoRedoService } from 'vs/plAtform/undoRedo/common/undoRedo';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { KeyCode } from 'vs/bAse/common/keyCodes';
 
 
-class DecorationsManager implements IDisposable {
+clAss DecorAtionsMAnAger implements IDisposAble {
 
-	private static readonly DecorationOptions = ModelDecorationOptions.register({
-		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-		className: 'reference-decoration'
+	privAte stAtic reAdonly DecorAtionOptions = ModelDecorAtionOptions.register({
+		stickiness: TrAckedRAngeStickiness.NeverGrowsWhenTypingAtEdges,
+		clAssNAme: 'reference-decorAtion'
 	});
 
-	private _decorations = new Map<string, OneReference>();
-	private _decorationIgnoreSet = new Set<string>();
-	private readonly _callOnDispose = new DisposableStore();
-	private readonly _callOnModelChange = new DisposableStore();
+	privAte _decorAtions = new MAp<string, OneReference>();
+	privAte _decorAtionIgnoreSet = new Set<string>();
+	privAte reAdonly _cAllOnDispose = new DisposAbleStore();
+	privAte reAdonly _cAllOnModelChAnge = new DisposAbleStore();
 
-	constructor(private _editor: ICodeEditor, private _model: ReferencesModel) {
-		this._callOnDispose.add(this._editor.onDidChangeModel(() => this._onModelChanged()));
-		this._onModelChanged();
+	constructor(privAte _editor: ICodeEditor, privAte _model: ReferencesModel) {
+		this._cAllOnDispose.Add(this._editor.onDidChAngeModel(() => this._onModelChAnged()));
+		this._onModelChAnged();
 	}
 
 	dispose(): void {
-		this._callOnModelChange.dispose();
-		this._callOnDispose.dispose();
-		this.removeDecorations();
+		this._cAllOnModelChAnge.dispose();
+		this._cAllOnDispose.dispose();
+		this.removeDecorAtions();
 	}
 
-	private _onModelChanged(): void {
-		this._callOnModelChange.clear();
+	privAte _onModelChAnged(): void {
+		this._cAllOnModelChAnge.cleAr();
 		const model = this._editor.getModel();
 		if (!model) {
 			return;
 		}
 		for (let ref of this._model.references) {
 			if (ref.uri.toString() === model.uri.toString()) {
-				this._addDecorations(ref.parent);
+				this._AddDecorAtions(ref.pArent);
 				return;
 			}
 		}
 	}
 
-	private _addDecorations(reference: FileReferences): void {
-		if (!this._editor.hasModel()) {
+	privAte _AddDecorAtions(reference: FileReferences): void {
+		if (!this._editor.hAsModel()) {
 			return;
 		}
-		this._callOnModelChange.add(this._editor.getModel().onDidChangeDecorations(() => this._onDecorationChanged()));
+		this._cAllOnModelChAnge.Add(this._editor.getModel().onDidChAngeDecorAtions(() => this._onDecorAtionChAnged()));
 
-		const newDecorations: IModelDeltaDecoration[] = [];
-		const newDecorationsActualIndex: number[] = [];
+		const newDecorAtions: IModelDeltADecorAtion[] = [];
+		const newDecorAtionsActuAlIndex: number[] = [];
 
 		for (let i = 0, len = reference.children.length; i < len; i++) {
 			let oneReference = reference.children[i];
-			if (this._decorationIgnoreSet.has(oneReference.id)) {
+			if (this._decorAtionIgnoreSet.hAs(oneReference.id)) {
 				continue;
 			}
 			if (oneReference.uri.toString() !== this._editor.getModel().uri.toString()) {
 				continue;
 			}
-			newDecorations.push({
-				range: oneReference.range,
-				options: DecorationsManager.DecorationOptions
+			newDecorAtions.push({
+				rAnge: oneReference.rAnge,
+				options: DecorAtionsMAnAger.DecorAtionOptions
 			});
-			newDecorationsActualIndex.push(i);
+			newDecorAtionsActuAlIndex.push(i);
 		}
 
-		const decorations = this._editor.deltaDecorations([], newDecorations);
-		for (let i = 0; i < decorations.length; i++) {
-			this._decorations.set(decorations[i], reference.children[newDecorationsActualIndex[i]]);
+		const decorAtions = this._editor.deltADecorAtions([], newDecorAtions);
+		for (let i = 0; i < decorAtions.length; i++) {
+			this._decorAtions.set(decorAtions[i], reference.children[newDecorAtionsActuAlIndex[i]]);
 		}
 	}
 
-	private _onDecorationChanged(): void {
+	privAte _onDecorAtionChAnged(): void {
 		const toRemove: string[] = [];
 
 		const model = this._editor.getModel();
@@ -112,26 +112,26 @@ class DecorationsManager implements IDisposable {
 			return;
 		}
 
-		for (let [decorationId, reference] of this._decorations) {
+		for (let [decorAtionId, reference] of this._decorAtions) {
 
-			const newRange = model.getDecorationRange(decorationId);
+			const newRAnge = model.getDecorAtionRAnge(decorAtionId);
 
-			if (!newRange) {
+			if (!newRAnge) {
 				continue;
 			}
 
-			let ignore = false;
-			if (Range.equalsRange(newRange, reference.range)) {
+			let ignore = fAlse;
+			if (RAnge.equAlsRAnge(newRAnge, reference.rAnge)) {
 				continue;
 
 			}
 
-			if (Range.spansMultipleLines(newRange)) {
+			if (RAnge.spAnsMultipleLines(newRAnge)) {
 				ignore = true;
 
 			} else {
-				const lineLength = reference.range.endColumn - reference.range.startColumn;
-				const newLineLength = newRange.endColumn - newRange.startColumn;
+				const lineLength = reference.rAnge.endColumn - reference.rAnge.stArtColumn;
+				const newLineLength = newRAnge.endColumn - newRAnge.stArtColumn;
 
 				if (lineLength !== newLineLength) {
 					ignore = true;
@@ -139,124 +139,124 @@ class DecorationsManager implements IDisposable {
 			}
 
 			if (ignore) {
-				this._decorationIgnoreSet.add(reference.id);
-				toRemove.push(decorationId);
+				this._decorAtionIgnoreSet.Add(reference.id);
+				toRemove.push(decorAtionId);
 			} else {
-				reference.range = newRange;
+				reference.rAnge = newRAnge;
 			}
 		}
 
 		for (let i = 0, len = toRemove.length; i < len; i++) {
-			this._decorations.delete(toRemove[i]);
+			this._decorAtions.delete(toRemove[i]);
 		}
-		this._editor.deltaDecorations(toRemove, []);
+		this._editor.deltADecorAtions(toRemove, []);
 	}
 
-	removeDecorations(): void {
-		this._editor.deltaDecorations([...this._decorations.keys()], []);
-		this._decorations.clear();
+	removeDecorAtions(): void {
+		this._editor.deltADecorAtions([...this._decorAtions.keys()], []);
+		this._decorAtions.cleAr();
 	}
 }
 
-export class LayoutData {
-	ratio: number = 0.7;
+export clAss LAyoutDAtA {
+	rAtio: number = 0.7;
 	heightInLines: number = 18;
 
-	static fromJSON(raw: string): LayoutData {
-		let ratio: number | undefined;
+	stAtic fromJSON(rAw: string): LAyoutDAtA {
+		let rAtio: number | undefined;
 		let heightInLines: number | undefined;
 		try {
-			const data = <LayoutData>JSON.parse(raw);
-			ratio = data.ratio;
-			heightInLines = data.heightInLines;
-		} catch {
+			const dAtA = <LAyoutDAtA>JSON.pArse(rAw);
+			rAtio = dAtA.rAtio;
+			heightInLines = dAtA.heightInLines;
+		} cAtch {
 			//
 		}
 		return {
-			ratio: ratio || 0.7,
+			rAtio: rAtio || 0.7,
 			heightInLines: heightInLines || 18
 		};
 	}
 }
 
-export interface SelectionEvent {
-	readonly kind: 'goto' | 'show' | 'side' | 'open';
-	readonly source: 'editor' | 'tree' | 'title';
-	readonly element?: Location;
+export interfAce SelectionEvent {
+	reAdonly kind: 'goto' | 'show' | 'side' | 'open';
+	reAdonly source: 'editor' | 'tree' | 'title';
+	reAdonly element?: LocAtion;
 }
 
-class ReferencesTree extends WorkbenchAsyncDataTree<ReferencesModel | FileReferences, TreeElement, FuzzyScore> { }
+clAss ReferencesTree extends WorkbenchAsyncDAtATree<ReferencesModel | FileReferences, TreeElement, FuzzyScore> { }
 
 /**
- * ZoneWidget that is shown inside the editor
+ * ZoneWidget thAt is shown inside the editor
  */
-export class ReferenceWidget extends peekView.PeekViewWidget {
+export clAss ReferenceWidget extends peekView.PeekViewWidget {
 
-	private _model?: ReferencesModel;
-	private _decorationsManager?: DecorationsManager;
+	privAte _model?: ReferencesModel;
+	privAte _decorAtionsMAnAger?: DecorAtionsMAnAger;
 
-	private readonly _disposeOnNewModel = new DisposableStore();
-	private readonly _callOnDispose = new DisposableStore();
+	privAte reAdonly _disposeOnNewModel = new DisposAbleStore();
+	privAte reAdonly _cAllOnDispose = new DisposAbleStore();
 
-	private readonly _onDidSelectReference = new Emitter<SelectionEvent>();
-	readonly onDidSelectReference = this._onDidSelectReference.event;
+	privAte reAdonly _onDidSelectReference = new Emitter<SelectionEvent>();
+	reAdonly onDidSelectReference = this._onDidSelectReference.event;
 
-	private _tree!: ReferencesTree;
-	private _treeContainer!: HTMLElement;
-	private _splitView!: SplitView;
-	private _preview!: ICodeEditor;
-	private _previewModelReference!: IReference<ITextEditorModel>;
-	private _previewNotAvailableMessage!: TextModel;
-	private _previewContainer!: HTMLElement;
-	private _messageContainer!: HTMLElement;
-	private _dim: dom.Dimension = { height: 0, width: 0 };
+	privAte _tree!: ReferencesTree;
+	privAte _treeContAiner!: HTMLElement;
+	privAte _splitView!: SplitView;
+	privAte _preview!: ICodeEditor;
+	privAte _previewModelReference!: IReference<ITextEditorModel>;
+	privAte _previewNotAvAilAbleMessAge!: TextModel;
+	privAte _previewContAiner!: HTMLElement;
+	privAte _messAgeContAiner!: HTMLElement;
+	privAte _dim: dom.Dimension = { height: 0, width: 0 };
 
 	constructor(
 		editor: ICodeEditor,
-		private _defaultTreeKeyboardSupport: boolean,
-		public layoutData: LayoutData,
+		privAte _defAultTreeKeyboArdSupport: booleAn,
+		public lAyoutDAtA: LAyoutDAtA,
 		@IThemeService themeService: IThemeService,
-		@ITextModelService private readonly _textModelResolverService: ITextModelService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
-		@peekView.IPeekViewService private readonly _peekViewService: peekView.IPeekViewService,
-		@ILabelService private readonly _uriLabel: ILabelService,
-		@IUndoRedoService private readonly _undoRedoService: IUndoRedoService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
+		@ITextModelService privAte reAdonly _textModelResolverService: ITextModelService,
+		@IInstAntiAtionService privAte reAdonly _instAntiAtionService: IInstAntiAtionService,
+		@peekView.IPeekViewService privAte reAdonly _peekViewService: peekView.IPeekViewService,
+		@ILAbelService privAte reAdonly _uriLAbel: ILAbelService,
+		@IUndoRedoService privAte reAdonly _undoRedoService: IUndoRedoService,
+		@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService,
 	) {
-		super(editor, { showFrame: false, showArrow: true, isResizeable: true, isAccessible: true }, _instantiationService);
+		super(editor, { showFrAme: fAlse, showArrow: true, isResizeAble: true, isAccessible: true }, _instAntiAtionService);
 
-		this._applyTheme(themeService.getColorTheme());
-		this._callOnDispose.add(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
-		this._peekViewService.addExclusiveWidget(editor, this);
-		this.create();
+		this._ApplyTheme(themeService.getColorTheme());
+		this._cAllOnDispose.Add(themeService.onDidColorThemeChAnge(this._ApplyTheme.bind(this)));
+		this._peekViewService.AddExclusiveWidget(editor, this);
+		this.creAte();
 	}
 
 	dispose(): void {
 		this.setModel(undefined);
-		this._callOnDispose.dispose();
+		this._cAllOnDispose.dispose();
 		this._disposeOnNewModel.dispose();
 		dispose(this._preview);
-		dispose(this._previewNotAvailableMessage);
+		dispose(this._previewNotAvAilAbleMessAge);
 		dispose(this._tree);
 		dispose(this._previewModelReference);
 		this._splitView.dispose();
 		super.dispose();
 	}
 
-	private _applyTheme(theme: IColorTheme) {
-		const borderColor = theme.getColor(peekView.peekViewBorder) || Color.transparent;
+	privAte _ApplyTheme(theme: IColorTheme) {
+		const borderColor = theme.getColor(peekView.peekViewBorder) || Color.trAnspArent;
 		this.style({
-			arrowColor: borderColor,
-			frameColor: borderColor,
-			headerBackgroundColor: theme.getColor(peekView.peekViewTitleBackground) || Color.transparent,
-			primaryHeadingColor: theme.getColor(peekView.peekViewTitleForeground),
-			secondaryHeadingColor: theme.getColor(peekView.peekViewTitleInfoForeground)
+			ArrowColor: borderColor,
+			frAmeColor: borderColor,
+			heAderBAckgroundColor: theme.getColor(peekView.peekViewTitleBAckground) || Color.trAnspArent,
+			primAryHeAdingColor: theme.getColor(peekView.peekViewTitleForeground),
+			secondAryHeAdingColor: theme.getColor(peekView.peekViewTitleInfoForeground)
 		});
 	}
 
-	show(where: IRange) {
-		this.editor.revealRangeInCenterIfOutsideViewport(where, ScrollType.Smooth);
-		super.show(where, this.layoutData.heightInLines || 18);
+	show(where: IRAnge) {
+		this.editor.reveAlRAngeInCenterIfOutsideViewport(where, ScrollType.Smooth);
+		super.show(where, this.lAyoutDAtA.heightInLines || 18);
 	}
 
 	focusOnReferenceTree(): void {
@@ -267,120 +267,120 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		this._preview.focus();
 	}
 
-	isPreviewEditorFocused(): boolean {
-		return this._preview.hasTextFocus();
+	isPreviewEditorFocused(): booleAn {
+		return this._preview.hAsTextFocus();
 	}
 
 	protected _onTitleClick(e: IMouseEvent): void {
 		if (this._preview && this._preview.getModel()) {
 			this._onDidSelectReference.fire({
 				element: this._getFocusedReference(),
-				kind: e.ctrlKey || e.metaKey || e.altKey ? 'side' : 'open',
+				kind: e.ctrlKey || e.metAKey || e.AltKey ? 'side' : 'open',
 				source: 'title'
 			});
 		}
 	}
 
-	protected _fillBody(containerElement: HTMLElement): void {
-		this.setCssClass('reference-zone-widget');
+	protected _fillBody(contAinerElement: HTMLElement): void {
+		this.setCssClAss('reference-zone-widget');
 
-		// message pane
-		this._messageContainer = dom.append(containerElement, dom.$('div.messages'));
-		dom.hide(this._messageContainer);
+		// messAge pAne
+		this._messAgeContAiner = dom.Append(contAinerElement, dom.$('div.messAges'));
+		dom.hide(this._messAgeContAiner);
 
-		this._splitView = new SplitView(containerElement, { orientation: Orientation.HORIZONTAL });
+		this._splitView = new SplitView(contAinerElement, { orientAtion: OrientAtion.HORIZONTAL });
 
 		// editor
-		this._previewContainer = dom.append(containerElement, dom.$('div.preview.inline'));
+		this._previewContAiner = dom.Append(contAinerElement, dom.$('div.preview.inline'));
 		let options: IEditorOptions = {
-			scrollBeyondLastLine: false,
-			scrollbar: {
-				verticalScrollbarSize: 14,
-				horizontal: 'auto',
-				useShadows: true,
-				verticalHasArrows: false,
-				horizontalHasArrows: false,
-				alwaysConsumeMouseWheel: false
+			scrollBeyondLAstLine: fAlse,
+			scrollbAr: {
+				verticAlScrollbArSize: 14,
+				horizontAl: 'Auto',
+				useShAdows: true,
+				verticAlHAsArrows: fAlse,
+				horizontAlHAsArrows: fAlse,
+				AlwAysConsumeMouseWheel: fAlse
 			},
-			overviewRulerLanes: 2,
+			overviewRulerLAnes: 2,
 			fixedOverflowWidgets: true,
-			minimap: {
-				enabled: false
+			minimAp: {
+				enAbled: fAlse
 			}
 		};
-		this._preview = this._instantiationService.createInstance(EmbeddedCodeEditorWidget, this._previewContainer, options, this.editor);
-		dom.hide(this._previewContainer);
-		this._previewNotAvailableMessage = new TextModel(nls.localize('missingPreviewMessage', "no preview available"), TextModel.DEFAULT_CREATION_OPTIONS, null, null, this._undoRedoService);
+		this._preview = this._instAntiAtionService.creAteInstAnce(EmbeddedCodeEditorWidget, this._previewContAiner, options, this.editor);
+		dom.hide(this._previewContAiner);
+		this._previewNotAvAilAbleMessAge = new TextModel(nls.locAlize('missingPreviewMessAge', "no preview AvAilAble"), TextModel.DEFAULT_CREATION_OPTIONS, null, null, this._undoRedoService);
 
 		// tree
-		this._treeContainer = dom.append(containerElement, dom.$('div.ref-tree.inline'));
-		const treeOptions: IWorkbenchAsyncDataTreeOptions<TreeElement, FuzzyScore> = {
-			keyboardSupport: this._defaultTreeKeyboardSupport,
-			accessibilityProvider: new AccessibilityProvider(),
-			keyboardNavigationLabelProvider: this._instantiationService.createInstance(StringRepresentationProvider),
+		this._treeContAiner = dom.Append(contAinerElement, dom.$('div.ref-tree.inline'));
+		const treeOptions: IWorkbenchAsyncDAtATreeOptions<TreeElement, FuzzyScore> = {
+			keyboArdSupport: this._defAultTreeKeyboArdSupport,
+			AccessibilityProvider: new AccessibilityProvider(),
+			keyboArdNAvigAtionLAbelProvider: this._instAntiAtionService.creAteInstAnce(StringRepresentAtionProvider),
 			identityProvider: new IdentityProvider(),
 			openOnSingleClick: true,
 			openOnFocus: true,
 			overrideStyles: {
-				listBackground: peekView.peekViewResultsBackground
+				listBAckground: peekView.peekViewResultsBAckground
 			}
 		};
-		if (this._defaultTreeKeyboardSupport) {
-			// the tree will consume `Escape` and prevent the widget from closing
-			this._callOnDispose.add(dom.addStandardDisposableListener(this._treeContainer, 'keydown', (e) => {
-				if (e.equals(KeyCode.Escape)) {
-					this._keybindingService.dispatchEvent(e, e.target);
-					e.stopPropagation();
+		if (this._defAultTreeKeyboArdSupport) {
+			// the tree will consume `EscApe` And prevent the widget from closing
+			this._cAllOnDispose.Add(dom.AddStAndArdDisposAbleListener(this._treeContAiner, 'keydown', (e) => {
+				if (e.equAls(KeyCode.EscApe)) {
+					this._keybindingService.dispAtchEvent(e, e.tArget);
+					e.stopPropAgAtion();
 				}
 			}, true));
 		}
-		this._tree = this._instantiationService.createInstance(
+		this._tree = this._instAntiAtionService.creAteInstAnce(
 			ReferencesTree,
 			'ReferencesWidget',
-			this._treeContainer,
-			new Delegate(),
+			this._treeContAiner,
+			new DelegAte(),
 			[
-				this._instantiationService.createInstance(FileReferencesRenderer),
-				this._instantiationService.createInstance(OneReferenceRenderer),
+				this._instAntiAtionService.creAteInstAnce(FileReferencesRenderer),
+				this._instAntiAtionService.creAteInstAnce(OneReferenceRenderer),
 			],
-			this._instantiationService.createInstance(DataSource),
+			this._instAntiAtionService.creAteInstAnce(DAtASource),
 			treeOptions,
 		);
 
 		// split stuff
-		this._splitView.addView({
-			onDidChange: Event.None,
-			element: this._previewContainer,
+		this._splitView.AddView({
+			onDidChAnge: Event.None,
+			element: this._previewContAiner,
 			minimumSize: 200,
-			maximumSize: Number.MAX_VALUE,
-			layout: (width) => {
-				this._preview.layout({ height: this._dim.height, width });
+			mAximumSize: Number.MAX_VALUE,
+			lAyout: (width) => {
+				this._preview.lAyout({ height: this._dim.height, width });
 			}
 		}, Sizing.Distribute);
 
-		this._splitView.addView({
-			onDidChange: Event.None,
-			element: this._treeContainer,
+		this._splitView.AddView({
+			onDidChAnge: Event.None,
+			element: this._treeContAiner,
 			minimumSize: 100,
-			maximumSize: Number.MAX_VALUE,
-			layout: (width) => {
-				this._treeContainer.style.height = `${this._dim.height}px`;
-				this._treeContainer.style.width = `${width}px`;
-				this._tree.layout(this._dim.height, width);
+			mAximumSize: Number.MAX_VALUE,
+			lAyout: (width) => {
+				this._treeContAiner.style.height = `${this._dim.height}px`;
+				this._treeContAiner.style.width = `${width}px`;
+				this._tree.lAyout(this._dim.height, width);
 			}
 		}, Sizing.Distribute);
 
-		this._disposables.add(this._splitView.onDidSashChange(() => {
+		this._disposAbles.Add(this._splitView.onDidSAshChAnge(() => {
 			if (this._dim.width) {
-				this.layoutData.ratio = this._splitView.getViewSize(0) / this._dim.width;
+				this.lAyoutDAtA.rAtio = this._splitView.getViewSize(0) / this._dim.width;
 			}
 		}, undefined));
 
-		// listen on selection and focus
-		let onEvent = (element: any, kind: 'show' | 'goto' | 'side') => {
-			if (element instanceof OneReference) {
+		// listen on selection And focus
+		let onEvent = (element: Any, kind: 'show' | 'goto' | 'side') => {
+			if (element instAnceof OneReference) {
 				if (kind === 'show') {
-					this._revealReference(element, false);
+					this._reveAlReference(element, fAlse);
 				}
 				this._onDidSelectReference.fire({ element, kind, source: 'tree' });
 			}
@@ -395,25 +395,25 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 			}
 		});
 
-		dom.hide(this._treeContainer);
+		dom.hide(this._treeContAiner);
 	}
 
 	protected _onWidth(width: number) {
 		if (this._dim) {
-			this._doLayoutBody(this._dim.height, width);
+			this._doLAyoutBody(this._dim.height, width);
 		}
 	}
 
-	protected _doLayoutBody(heightInPixel: number, widthInPixel: number): void {
-		super._doLayoutBody(heightInPixel, widthInPixel);
+	protected _doLAyoutBody(heightInPixel: number, widthInPixel: number): void {
+		super._doLAyoutBody(heightInPixel, widthInPixel);
 		this._dim = { height: heightInPixel, width: widthInPixel };
-		this.layoutData.heightInLines = this._viewZone ? this._viewZone.heightInLines : this.layoutData.heightInLines;
-		this._splitView.layout(widthInPixel);
-		this._splitView.resizeView(0, widthInPixel * this.layoutData.ratio);
+		this.lAyoutDAtA.heightInLines = this._viewZone ? this._viewZone.heightInLines : this.lAyoutDAtA.heightInLines;
+		this._splitView.lAyout(widthInPixel);
+		this._splitView.resizeView(0, widthInPixel * this.lAyoutDAtA.rAtio);
 	}
 
-	setSelection(selection: OneReference): Promise<any> {
-		return this._revealReference(selection, true).then(() => {
+	setSelection(selection: OneReference): Promise<Any> {
+		return this._reveAlReference(selection, true).then(() => {
 			if (!this._model) {
 				// disposed
 				return;
@@ -424,9 +424,9 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		});
 	}
 
-	setModel(newModel: ReferencesModel | undefined): Promise<any> {
-		// clean up
-		this._disposeOnNewModel.clear();
+	setModel(newModel: ReferencesModel | undefined): Promise<Any> {
+		// cleAn up
+		this._disposeOnNewModel.cleAr();
 		this._model = newModel;
 		if (this._model) {
 			return this._onNewModel();
@@ -434,29 +434,29 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		return Promise.resolve();
 	}
 
-	private _onNewModel(): Promise<any> {
+	privAte _onNewModel(): Promise<Any> {
 		if (!this._model) {
 			return Promise.resolve(undefined);
 		}
 
 		if (this._model.isEmpty) {
 			this.setTitle('');
-			this._messageContainer.innerText = nls.localize('noResults', "No results");
-			dom.show(this._messageContainer);
+			this._messAgeContAiner.innerText = nls.locAlize('noResults', "No results");
+			dom.show(this._messAgeContAiner);
 			return Promise.resolve(undefined);
 		}
 
-		dom.hide(this._messageContainer);
-		this._decorationsManager = new DecorationsManager(this._preview, this._model);
-		this._disposeOnNewModel.add(this._decorationsManager);
+		dom.hide(this._messAgeContAiner);
+		this._decorAtionsMAnAger = new DecorAtionsMAnAger(this._preview, this._model);
+		this._disposeOnNewModel.Add(this._decorAtionsMAnAger);
 
-		// listen on model changes
-		this._disposeOnNewModel.add(this._model.onDidChangeReferenceRange(reference => this._tree.rerender(reference)));
+		// listen on model chAnges
+		this._disposeOnNewModel.Add(this._model.onDidChAngeReferenceRAnge(reference => this._tree.rerender(reference)));
 
 		// listen on editor
-		this._disposeOnNewModel.add(this._preview.onMouseDown(e => {
-			const { event, target } = e;
-			if (event.detail !== 2) {
+		this._disposeOnNewModel.Add(this._preview.onMouseDown(e => {
+			const { event, tArget } = e;
+			if (event.detAil !== 2) {
 				return;
 			}
 			const element = this._getFocusedReference();
@@ -464,28 +464,28 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 				return;
 			}
 			this._onDidSelectReference.fire({
-				element: { uri: element.uri, range: target.range! },
-				kind: (event.ctrlKey || event.metaKey || event.altKey) ? 'side' : 'open',
+				element: { uri: element.uri, rAnge: tArget.rAnge! },
+				kind: (event.ctrlKey || event.metAKey || event.AltKey) ? 'side' : 'open',
 				source: 'editor'
 			});
 		}));
 
-		// make sure things are rendered
-		this.container!.classList.add('results-loaded');
-		dom.show(this._treeContainer);
-		dom.show(this._previewContainer);
-		this._splitView.layout(this._dim.width);
+		// mAke sure things Are rendered
+		this.contAiner!.clAssList.Add('results-loAded');
+		dom.show(this._treeContAiner);
+		dom.show(this._previewContAiner);
+		this._splitView.lAyout(this._dim.width);
 		this.focusOnReferenceTree();
 
-		// pick input and a reference to begin with
+		// pick input And A reference to begin with
 		return this._tree.setInput(this._model.groups.length === 1 ? this._model.groups[0] : this._model);
 	}
 
-	private _getFocusedReference(): OneReference | undefined {
+	privAte _getFocusedReference(): OneReference | undefined {
 		const [element] = this._tree.getFocus();
-		if (element instanceof OneReference) {
+		if (element instAnceof OneReference) {
 			return element;
-		} else if (element instanceof FileReferences) {
+		} else if (element instAnceof FileReferences) {
 			if (element.children.length > 0) {
 				return element.children[0];
 			}
@@ -493,41 +493,41 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		return undefined;
 	}
 
-	async revealReference(reference: OneReference): Promise<void> {
-		await this._revealReference(reference, false);
+	Async reveAlReference(reference: OneReference): Promise<void> {
+		AwAit this._reveAlReference(reference, fAlse);
 		this._onDidSelectReference.fire({ element: reference, kind: 'goto', source: 'tree' });
 	}
 
-	private _revealedReference?: OneReference;
+	privAte _reveAledReference?: OneReference;
 
-	private async _revealReference(reference: OneReference, revealParent: boolean): Promise<void> {
+	privAte Async _reveAlReference(reference: OneReference, reveAlPArent: booleAn): Promise<void> {
 
-		// check if there is anything to do...
-		if (this._revealedReference === reference) {
+		// check if there is Anything to do...
+		if (this._reveAledReference === reference) {
 			return;
 		}
-		this._revealedReference = reference;
+		this._reveAledReference = reference;
 
-		// Update widget header
-		if (reference.uri.scheme !== Schemas.inMemory) {
-			this.setTitle(basenameOrAuthority(reference.uri), this._uriLabel.getUriLabel(dirname(reference.uri)));
+		// UpdAte widget heAder
+		if (reference.uri.scheme !== SchemAs.inMemory) {
+			this.setTitle(bAsenAmeOrAuthority(reference.uri), this._uriLAbel.getUriLAbel(dirnAme(reference.uri)));
 		} else {
-			this.setTitle(nls.localize('peekView.alternateTitle', "References"));
+			this.setTitle(nls.locAlize('peekView.AlternAteTitle', "References"));
 		}
 
-		const promise = this._textModelResolverService.createModelReference(reference.uri);
+		const promise = this._textModelResolverService.creAteModelReference(reference.uri);
 
-		if (this._tree.getInput() === reference.parent) {
-			this._tree.reveal(reference);
+		if (this._tree.getInput() === reference.pArent) {
+			this._tree.reveAl(reference);
 		} else {
-			if (revealParent) {
-				this._tree.reveal(reference.parent);
+			if (reveAlPArent) {
+				this._tree.reveAl(reference.pArent);
 			}
-			await this._tree.expand(reference.parent);
-			this._tree.reveal(reference);
+			AwAit this._tree.expAnd(reference.pArent);
+			this._tree.reveAl(reference);
 		}
 
-		const ref = await promise;
+		const ref = AwAit promise;
 
 		if (!this._model) {
 			// disposed
@@ -540,14 +540,14 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 		// show in editor
 		const model = ref.object;
 		if (model) {
-			const scrollType = this._preview.getModel() === model.textEditorModel ? ScrollType.Smooth : ScrollType.Immediate;
-			const sel = Range.lift(reference.range).collapseToStart();
+			const scrollType = this._preview.getModel() === model.textEditorModel ? ScrollType.Smooth : ScrollType.ImmediAte;
+			const sel = RAnge.lift(reference.rAnge).collApseToStArt();
 			this._previewModelReference = ref;
 			this._preview.setModel(model.textEditorModel);
 			this._preview.setSelection(sel);
-			this._preview.revealRangeInCenter(sel, scrollType);
+			this._preview.reveAlRAngeInCenter(sel, scrollType);
 		} else {
-			this._preview.setModel(this._previewNotAvailableMessage);
+			this._preview.setModel(this._previewNotAvAilAbleMessAge);
 			ref.dispose();
 		}
 	}
@@ -556,56 +556,56 @@ export class ReferenceWidget extends peekView.PeekViewWidget {
 // theming
 
 
-registerThemingParticipant((theme, collector) => {
-	const findMatchHighlightColor = theme.getColor(peekView.peekViewResultsMatchHighlight);
-	if (findMatchHighlightColor) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .referenceMatch .highlight { background-color: ${findMatchHighlightColor}; }`);
+registerThemingPArticipAnt((theme, collector) => {
+	const findMAtchHighlightColor = theme.getColor(peekView.peekViewResultsMAtchHighlight);
+	if (findMAtchHighlightColor) {
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree .referenceMAtch .highlight { bAckground-color: ${findMAtchHighlightColor}; }`);
 	}
-	const referenceHighlightColor = theme.getColor(peekView.peekViewEditorMatchHighlight);
+	const referenceHighlightColor = theme.getColor(peekView.peekViewEditorMAtchHighlight);
 	if (referenceHighlightColor) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .preview .reference-decoration { background-color: ${referenceHighlightColor}; }`);
+		collector.AddRule(`.monAco-editor .reference-zone-widget .preview .reference-decorAtion { bAckground-color: ${referenceHighlightColor}; }`);
 	}
-	const referenceHighlightBorder = theme.getColor(peekView.peekViewEditorMatchHighlightBorder);
+	const referenceHighlightBorder = theme.getColor(peekView.peekViewEditorMAtchHighlightBorder);
 	if (referenceHighlightBorder) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .preview .reference-decoration { border: 2px solid ${referenceHighlightBorder}; box-sizing: border-box; }`);
+		collector.AddRule(`.monAco-editor .reference-zone-widget .preview .reference-decorAtion { border: 2px solid ${referenceHighlightBorder}; box-sizing: border-box; }`);
 	}
-	const hcOutline = theme.getColor(activeContrastBorder);
+	const hcOutline = theme.getColor(ActiveContrAstBorder);
 	if (hcOutline) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .referenceMatch .highlight { border: 1px dotted ${hcOutline}; box-sizing: border-box; }`);
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree .referenceMAtch .highlight { border: 1px dotted ${hcOutline}; box-sizing: border-box; }`);
 	}
-	const resultsBackground = theme.getColor(peekView.peekViewResultsBackground);
-	if (resultsBackground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree { background-color: ${resultsBackground}; }`);
+	const resultsBAckground = theme.getColor(peekView.peekViewResultsBAckground);
+	if (resultsBAckground) {
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree { bAckground-color: ${resultsBAckground}; }`);
 	}
-	const resultsMatchForeground = theme.getColor(peekView.peekViewResultsMatchForeground);
-	if (resultsMatchForeground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree { color: ${resultsMatchForeground}; }`);
+	const resultsMAtchForeground = theme.getColor(peekView.peekViewResultsMAtchForeground);
+	if (resultsMAtchForeground) {
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree { color: ${resultsMAtchForeground}; }`);
 	}
 	const resultsFileForeground = theme.getColor(peekView.peekViewResultsFileForeground);
 	if (resultsFileForeground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .reference-file { color: ${resultsFileForeground}; }`);
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree .reference-file { color: ${resultsFileForeground}; }`);
 	}
-	const resultsSelectedBackground = theme.getColor(peekView.peekViewResultsSelectionBackground);
-	if (resultsSelectedBackground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .monaco-list:focus .monaco-list-rows > .monaco-list-row.selected:not(.highlighted) { background-color: ${resultsSelectedBackground}; }`);
+	const resultsSelectedBAckground = theme.getColor(peekView.peekViewResultsSelectionBAckground);
+	if (resultsSelectedBAckground) {
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree .monAco-list:focus .monAco-list-rows > .monAco-list-row.selected:not(.highlighted) { bAckground-color: ${resultsSelectedBAckground}; }`);
 	}
 	const resultsSelectedForeground = theme.getColor(peekView.peekViewResultsSelectionForeground);
 	if (resultsSelectedForeground) {
-		collector.addRule(`.monaco-editor .reference-zone-widget .ref-tree .monaco-list:focus .monaco-list-rows > .monaco-list-row.selected:not(.highlighted) { color: ${resultsSelectedForeground} !important; }`);
+		collector.AddRule(`.monAco-editor .reference-zone-widget .ref-tree .monAco-list:focus .monAco-list-rows > .monAco-list-row.selected:not(.highlighted) { color: ${resultsSelectedForeground} !importAnt; }`);
 	}
-	const editorBackground = theme.getColor(peekView.peekViewEditorBackground);
-	if (editorBackground) {
-		collector.addRule(
-			`.monaco-editor .reference-zone-widget .preview .monaco-editor .monaco-editor-background,` +
-			`.monaco-editor .reference-zone-widget .preview .monaco-editor .inputarea.ime-input {` +
-			`	background-color: ${editorBackground};` +
+	const editorBAckground = theme.getColor(peekView.peekViewEditorBAckground);
+	if (editorBAckground) {
+		collector.AddRule(
+			`.monAco-editor .reference-zone-widget .preview .monAco-editor .monAco-editor-bAckground,` +
+			`.monAco-editor .reference-zone-widget .preview .monAco-editor .inputAreA.ime-input {` +
+			`	bAckground-color: ${editorBAckground};` +
 			`}`);
 	}
-	const editorGutterBackground = theme.getColor(peekView.peekViewEditorGutterBackground);
-	if (editorGutterBackground) {
-		collector.addRule(
-			`.monaco-editor .reference-zone-widget .preview .monaco-editor .margin {` +
-			`	background-color: ${editorGutterBackground};` +
+	const editorGutterBAckground = theme.getColor(peekView.peekViewEditorGutterBAckground);
+	if (editorGutterBAckground) {
+		collector.AddRule(
+			`.monAco-editor .reference-zone-widget .preview .monAco-editor .mArgin {` +
+			`	bAckground-color: ${editorGutterBAckground};` +
 			`}`);
 	}
 });

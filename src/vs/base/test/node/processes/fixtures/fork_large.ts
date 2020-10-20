@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as processes from 'vs/base/node/processes';
+import * As processes from 'vs/bAse/node/processes';
 
-const sender = processes.createQueuedSender(<any>process);
+const sender = processes.creAteQueuedSender(<Any>process);
 
-process.on('message', msg => {
+process.on('messAge', msg => {
 	sender.send(msg);
 	sender.send(msg);
 	sender.send(msg);
 	sender.send('done');
 });
 
-sender.send('ready');
+sender.send('reAdy');

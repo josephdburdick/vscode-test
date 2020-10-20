@@ -1,37 +1,37 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDownloadService } from 'vs/platform/download/common/download';
-import { URI } from 'vs/base/common/uri';
-import { IRequestService, asText } from 'vs/platform/request/common/request';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { IFileService } from 'vs/platform/files/common/files';
-import { Schemas } from 'vs/base/common/network';
+import { IDownloAdService } from 'vs/plAtform/downloAd/common/downloAd';
+import { URI } from 'vs/bAse/common/uri';
+import { IRequestService, AsText } from 'vs/plAtform/request/common/request';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { IFileService } from 'vs/plAtform/files/common/files';
+import { SchemAs } from 'vs/bAse/common/network';
 
-export class DownloadService implements IDownloadService {
+export clAss DownloAdService implements IDownloAdService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
 	constructor(
-		@IRequestService private readonly requestService: IRequestService,
-		@IFileService private readonly fileService: IFileService
+		@IRequestService privAte reAdonly requestService: IRequestService,
+		@IFileService privAte reAdonly fileService: IFileService
 	) { }
 
-	async download(resource: URI, target: URI, cancellationToken: CancellationToken = CancellationToken.None): Promise<void> {
-		if (resource.scheme === Schemas.file || resource.scheme === Schemas.vscodeRemote) {
-			// Intentionally only support this for file|remote<->file|remote scenarios
-			await this.fileService.copy(resource, target);
+	Async downloAd(resource: URI, tArget: URI, cAncellAtionToken: CAncellAtionToken = CAncellAtionToken.None): Promise<void> {
+		if (resource.scheme === SchemAs.file || resource.scheme === SchemAs.vscodeRemote) {
+			// IntentionAlly only support this for file|remote<->file|remote scenArios
+			AwAit this.fileService.copy(resource, tArget);
 			return;
 		}
 		const options = { type: 'GET', url: resource.toString() };
-		const context = await this.requestService.request(options, cancellationToken);
-		if (context.res.statusCode === 200) {
-			await this.fileService.writeFile(target, context.stream);
+		const context = AwAit this.requestService.request(options, cAncellAtionToken);
+		if (context.res.stAtusCode === 200) {
+			AwAit this.fileService.writeFile(tArget, context.streAm);
 		} else {
-			const message = await asText(context);
-			throw new Error(`Expected 200, got back ${context.res.statusCode} instead.\n\n${message}`);
+			const messAge = AwAit AsText(context);
+			throw new Error(`Expected 200, got bAck ${context.res.stAtusCode} insteAd.\n\n${messAge}`);
 		}
 	}
 }

@@ -1,30 +1,30 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { Event } from 'vs/base/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { Event } from 'vs/bAse/common/event';
 
-export const ITitleService = createDecorator<ITitleService>('titleService');
+export const ITitleService = creAteDecorAtor<ITitleService>('titleService');
 
-export interface ITitleProperties {
-	isPure?: boolean;
-	isAdmin?: boolean;
+export interfAce ITitleProperties {
+	isPure?: booleAn;
+	isAdmin?: booleAn;
 	prefix?: string;
 }
 
-export interface ITitleService {
+export interfAce ITitleService {
 
-	readonly _serviceBrand: undefined;
-
-	/**
-	 * An event when the menubar visibility changes.
-	 */
-	readonly onMenubarVisibilityChange: Event<boolean>;
+	reAdonly _serviceBrAnd: undefined;
 
 	/**
-	 * Update some environmental title properties.
+	 * An event when the menubAr visibility chAnges.
 	 */
-	updateProperties(properties: ITitleProperties): void;
+	reAdonly onMenubArVisibilityChAnge: Event<booleAn>;
+
+	/**
+	 * UpdAte some environmentAl title properties.
+	 */
+	updAteProperties(properties: ITitleProperties): void;
 }

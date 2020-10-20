@@ -1,49 +1,49 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as semver from 'semver';
-import * as nls from 'vscode-nls';
+import * As semver from 'semver';
+import * As nls from 'vscode-nls';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-export default class API {
-	public static fromSimpleString(value: string): API {
-		return new API(value, value, value);
+export defAult clAss API {
+	public stAtic fromSimpleString(vAlue: string): API {
+		return new API(vAlue, vAlue, vAlue);
 	}
 
-	public static readonly defaultVersion = API.fromSimpleString('1.0.0');
-	public static readonly v240 = API.fromSimpleString('2.4.0');
-	public static readonly v250 = API.fromSimpleString('2.5.0');
-	public static readonly v260 = API.fromSimpleString('2.6.0');
-	public static readonly v270 = API.fromSimpleString('2.7.0');
-	public static readonly v280 = API.fromSimpleString('2.8.0');
-	public static readonly v290 = API.fromSimpleString('2.9.0');
-	public static readonly v291 = API.fromSimpleString('2.9.1');
-	public static readonly v292 = API.fromSimpleString('2.9.2');
-	public static readonly v300 = API.fromSimpleString('3.0.0');
-	public static readonly v310 = API.fromSimpleString('3.1.0');
-	public static readonly v314 = API.fromSimpleString('3.1.4');
-	public static readonly v320 = API.fromSimpleString('3.2.0');
-	public static readonly v330 = API.fromSimpleString('3.3.0');
-	public static readonly v333 = API.fromSimpleString('3.3.3');
-	public static readonly v340 = API.fromSimpleString('3.4.0');
-	public static readonly v345 = API.fromSimpleString('3.4.5');
-	public static readonly v350 = API.fromSimpleString('3.5.0');
-	public static readonly v380 = API.fromSimpleString('3.8.0');
-	public static readonly v381 = API.fromSimpleString('3.8.1');
-	public static readonly v390 = API.fromSimpleString('3.9.0');
-	public static readonly v400 = API.fromSimpleString('4.0.0');
-	public static readonly v401 = API.fromSimpleString('4.0.1');
+	public stAtic reAdonly defAultVersion = API.fromSimpleString('1.0.0');
+	public stAtic reAdonly v240 = API.fromSimpleString('2.4.0');
+	public stAtic reAdonly v250 = API.fromSimpleString('2.5.0');
+	public stAtic reAdonly v260 = API.fromSimpleString('2.6.0');
+	public stAtic reAdonly v270 = API.fromSimpleString('2.7.0');
+	public stAtic reAdonly v280 = API.fromSimpleString('2.8.0');
+	public stAtic reAdonly v290 = API.fromSimpleString('2.9.0');
+	public stAtic reAdonly v291 = API.fromSimpleString('2.9.1');
+	public stAtic reAdonly v292 = API.fromSimpleString('2.9.2');
+	public stAtic reAdonly v300 = API.fromSimpleString('3.0.0');
+	public stAtic reAdonly v310 = API.fromSimpleString('3.1.0');
+	public stAtic reAdonly v314 = API.fromSimpleString('3.1.4');
+	public stAtic reAdonly v320 = API.fromSimpleString('3.2.0');
+	public stAtic reAdonly v330 = API.fromSimpleString('3.3.0');
+	public stAtic reAdonly v333 = API.fromSimpleString('3.3.3');
+	public stAtic reAdonly v340 = API.fromSimpleString('3.4.0');
+	public stAtic reAdonly v345 = API.fromSimpleString('3.4.5');
+	public stAtic reAdonly v350 = API.fromSimpleString('3.5.0');
+	public stAtic reAdonly v380 = API.fromSimpleString('3.8.0');
+	public stAtic reAdonly v381 = API.fromSimpleString('3.8.1');
+	public stAtic reAdonly v390 = API.fromSimpleString('3.9.0');
+	public stAtic reAdonly v400 = API.fromSimpleString('4.0.0');
+	public stAtic reAdonly v401 = API.fromSimpleString('4.0.1');
 
-	public static fromVersionString(versionString: string): API {
-		let version = semver.valid(versionString);
+	public stAtic fromVersionString(versionString: string): API {
+		let version = semver.vAlid(versionString);
 		if (!version) {
-			return new API(localize('invalidVersion', 'invalid version'), '1.0.0', '1.0.0');
+			return new API(locAlize('invAlidVersion', 'invAlid version'), '1.0.0', '1.0.0');
 		}
 
-		// Cut off any prerelease tag since we sometimes consume those on purpose.
+		// Cut off Any prereleAse tAg since we sometimes consume those on purpose.
 		const index = versionString.indexOf('-');
 		if (index >= 0) {
 			version = version.substr(0, index);
@@ -51,32 +51,32 @@ export default class API {
 		return new API(versionString, version, versionString);
 	}
 
-	private constructor(
+	privAte constructor(
 		/**
-		 * Human readable string for the current version. Displayed in the UI
+		 * HumAn reAdAble string for the current version. DisplAyed in the UI
 		 */
-		public readonly displayName: string,
+		public reAdonly displAyNAme: string,
 
 		/**
 		 * Semver version, e.g. '3.9.0'
 		 */
-		public readonly version: string,
+		public reAdonly version: string,
 
 		/**
-		 * Full version string including pre-release tags, e.g. '3.9.0-beta'
+		 * Full version string including pre-releAse tAgs, e.g. '3.9.0-betA'
 		 */
-		public readonly fullVersionString: string,
+		public reAdonly fullVersionString: string,
 	) { }
 
-	public eq(other: API): boolean {
+	public eq(other: API): booleAn {
 		return semver.eq(this.version, other.version);
 	}
 
-	public gte(other: API): boolean {
+	public gte(other: API): booleAn {
 		return semver.gte(this.version, other.version);
 	}
 
-	public lt(other: API): boolean {
+	public lt(other: API): booleAn {
 		return !this.gte(other);
 	}
 }

@@ -1,106 +1,106 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// keytar depends on a native module shipped in vscode, so this is
-// how we load it
-import * as keytarType from 'keytar';
-import * as vscode from 'vscode';
+// keytAr depends on A nAtive module shipped in vscode, so this is
+// how we loAd it
+import * As keytArType from 'keytAr';
+import * As vscode from 'vscode';
 import Logger from './logger';
-import * as nls from 'vscode-nls';
+import * As nls from 'vscode-nls';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-function getKeytar(): Keytar | undefined {
+function getKeytAr(): KeytAr | undefined {
 	try {
-		return require('keytar');
-	} catch (err) {
+		return require('keytAr');
+	} cAtch (err) {
 		console.log(err);
 	}
 
 	return undefined;
 }
 
-export type Keytar = {
-	getPassword: typeof keytarType['getPassword'];
-	setPassword: typeof keytarType['setPassword'];
-	deletePassword: typeof keytarType['deletePassword'];
+export type KeytAr = {
+	getPAssword: typeof keytArType['getPAssword'];
+	setPAssword: typeof keytArType['setPAssword'];
+	deletePAssword: typeof keytArType['deletePAssword'];
 };
 
 const OLD_SERVICE_ID = `${vscode.env.uriScheme}-microsoft.login`;
 const SERVICE_ID = `microsoft.login`;
-const ACCOUNT_ID = 'account';
+const ACCOUNT_ID = 'Account';
 
-export class Keychain {
-	private keytar: Keytar;
+export clAss KeychAin {
+	privAte keytAr: KeytAr;
 
 	constructor() {
-		const keytar = getKeytar();
-		if (!keytar) {
-			throw new Error('System keychain unavailable');
+		const keytAr = getKeytAr();
+		if (!keytAr) {
+			throw new Error('System keychAin unAvAilAble');
 		}
 
-		this.keytar = keytar;
+		this.keytAr = keytAr;
 	}
 
 
-	async setToken(token: string): Promise<void> {
+	Async setToken(token: string): Promise<void> {
 		try {
-			return await vscode.authentication.setPassword(SERVICE_ID, token);
-		} catch (e) {
-			Logger.error(`Setting token failed: ${e}`);
+			return AwAit vscode.AuthenticAtion.setPAssword(SERVICE_ID, token);
+		} cAtch (e) {
+			Logger.error(`Setting token fAiled: ${e}`);
 
-			// Temporary fix for #94005
-			// This happens when processes write simulatenously to the keychain, most
-			// likely when trying to refresh the token. Ignore the error since additional
-			// writes after the first one do not matter. Should actually be fixed upstream.
-			if (e.message === 'The specified item already exists in the keychain.') {
+			// TemporAry fix for #94005
+			// This hAppens when processes write simulAtenously to the keychAin, most
+			// likely when trying to refresh the token. Ignore the error since AdditionAl
+			// writes After the first one do not mAtter. Should ActuAlly be fixed upstreAm.
+			if (e.messAge === 'The specified item AlreAdy exists in the keychAin.') {
 				return;
 			}
 
-			const troubleshooting = localize('troubleshooting', "Troubleshooting Guide");
-			const result = await vscode.window.showErrorMessage(localize('keychainWriteError', "Writing login information to the keychain failed with error '{0}'.", e.message), troubleshooting);
+			const troubleshooting = locAlize('troubleshooting', "Troubleshooting Guide");
+			const result = AwAit vscode.window.showErrorMessAge(locAlize('keychAinWriteError', "Writing login informAtion to the keychAin fAiled with error '{0}'.", e.messAge), troubleshooting);
 			if (result === troubleshooting) {
-				vscode.env.openExternal(vscode.Uri.parse('https://code.visualstudio.com/docs/editor/settings-sync#_troubleshooting-keychain-issues'));
+				vscode.env.openExternAl(vscode.Uri.pArse('https://code.visuAlstudio.com/docs/editor/settings-sync#_troubleshooting-keychAin-issues'));
 			}
 		}
 	}
 
-	async getToken(): Promise<string | null | undefined> {
+	Async getToken(): Promise<string | null | undefined> {
 		try {
-			return await vscode.authentication.getPassword(SERVICE_ID);
-		} catch (e) {
+			return AwAit vscode.AuthenticAtion.getPAssword(SERVICE_ID);
+		} cAtch (e) {
 			// Ignore
-			Logger.error(`Getting token failed: ${e}`);
+			Logger.error(`Getting token fAiled: ${e}`);
 			return Promise.resolve(undefined);
 		}
 	}
 
-	async deleteToken(): Promise<void> {
+	Async deleteToken(): Promise<void> {
 		try {
-			return await vscode.authentication.deletePassword(SERVICE_ID);
-		} catch (e) {
+			return AwAit vscode.AuthenticAtion.deletePAssword(SERVICE_ID);
+		} cAtch (e) {
 			// Ignore
-			Logger.error(`Deleting token failed: ${e}`);
+			Logger.error(`Deleting token fAiled: ${e}`);
 			return Promise.resolve(undefined);
 		}
 	}
 
-	async tryMigrate(): Promise<string | null> {
+	Async tryMigrAte(): Promise<string | null> {
 		try {
-			const oldValue = await this.keytar.getPassword(OLD_SERVICE_ID, ACCOUNT_ID);
-			if (oldValue) {
-				await this.setToken(oldValue);
-				await this.keytar.deletePassword(OLD_SERVICE_ID, ACCOUNT_ID);
+			const oldVAlue = AwAit this.keytAr.getPAssword(OLD_SERVICE_ID, ACCOUNT_ID);
+			if (oldVAlue) {
+				AwAit this.setToken(oldVAlue);
+				AwAit this.keytAr.deletePAssword(OLD_SERVICE_ID, ACCOUNT_ID);
 			}
 
-			return oldValue;
-		} catch (_) {
+			return oldVAlue;
+		} cAtch (_) {
 			// Ignore
 			return Promise.resolve(null);
 		}
 	}
 }
 
-export const keychain = new Keychain();
+export const keychAin = new KeychAin();

@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-const vscode = acquireVsCodeApi();
+const vscode = AcquireVsCodeApi();
 
-vscode.postMessage({
-	type: 'custom_renderer_initialize',
-	payload: {
-		firstMessage: true
+vscode.postMessAge({
+	type: 'custom_renderer_initiAlize',
+	pAyloAd: {
+		firstMessAge: true
 	}
 });
 
-const notebook = acquireNotebookRendererApi('notebookCoreTestRenderer');
+const notebook = AcquireNotebookRendererApi('notebookCoreTestRenderer');
 
-notebook.onDidCreateOutput(({ element, mimeType }) => {
-	const div = document.createElement('div');
+notebook.onDidCreAteOutput(({ element, mimeType }) => {
+	const div = document.creAteElement('div');
 	div.innerText = `Hello ${mimeType}!`;
-	element.appendChild(div);
+	element.AppendChild(div);
 });

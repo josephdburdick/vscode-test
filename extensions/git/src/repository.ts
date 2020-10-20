@@ -1,35 +1,35 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { CancellationToken, Command, Disposable, Event, EventEmitter, Memento, OutputChannel, ProgressLocation, ProgressOptions, scm, SourceControl, SourceControlInputBox, SourceControlInputBoxValidation, SourceControlInputBoxValidationType, SourceControlResourceDecorations, SourceControlResourceGroup, SourceControlResourceState, ThemeColor, Uri, window, workspace, WorkspaceEdit, FileDecoration, commands } from 'vscode';
-import * as nls from 'vscode-nls';
-import { Branch, Change, GitErrorCodes, LogOptions, Ref, RefType, Remote, Status, CommitOptions, BranchQuery } from './api/git';
-import { AutoFetcher } from './autofetch';
-import { debounce, memoize, throttle } from './decorators';
-import { Commit, ForcePushMode, GitError, Repository as BaseRepository, Stash, Submodule, LogFileOptions } from './git';
-import { StatusBarCommands } from './statusbar';
+import * As fs from 'fs';
+import * As pAth from 'pAth';
+import { CAncellAtionToken, CommAnd, DisposAble, Event, EventEmitter, Memento, OutputChAnnel, ProgressLocAtion, ProgressOptions, scm, SourceControl, SourceControlInputBox, SourceControlInputBoxVAlidAtion, SourceControlInputBoxVAlidAtionType, SourceControlResourceDecorAtions, SourceControlResourceGroup, SourceControlResourceStAte, ThemeColor, Uri, window, workspAce, WorkspAceEdit, FileDecorAtion, commAnds } from 'vscode';
+import * As nls from 'vscode-nls';
+import { BrAnch, ChAnge, GitErrorCodes, LogOptions, Ref, RefType, Remote, StAtus, CommitOptions, BrAnchQuery } from './Api/git';
+import { AutoFetcher } from './Autofetch';
+import { debounce, memoize, throttle } from './decorAtors';
+import { Commit, ForcePushMode, GitError, Repository As BAseRepository, StAsh, Submodule, LogFileOptions } from './git';
+import { StAtusBArCommAnds } from './stAtusbAr';
 import { toGitUri } from './uri';
-import { anyEvent, combinedDisposable, debounceEvent, dispose, EmptyDisposable, eventToPromise, filterEvent, find, IDisposable, isDescendant, onceEvent } from './util';
-import { IFileWatcher, watch } from './watch';
+import { AnyEvent, combinedDisposAble, debounceEvent, dispose, EmptyDisposAble, eventToPromise, filterEvent, find, IDisposAble, isDescendAnt, onceEvent } from './util';
+import { IFileWAtcher, wAtch } from './wAtch';
 import { Log, LogLevel } from './log';
 import { IRemoteSourceProviderRegistry } from './remoteProvider';
-import { IPushErrorHandlerRegistry } from './pushError';
-import { ApiRepository } from './api/api1';
+import { IPushErrorHAndlerRegistry } from './pushError';
+import { ApiRepository } from './Api/Api1';
 
 const timeout = (millis: number) => new Promise(c => setTimeout(c, millis));
 
-const localize = nls.loadMessageBundle();
-const iconsRootPath = path.join(path.dirname(__dirname), 'resources', 'icons');
+const locAlize = nls.loAdMessAgeBundle();
+const iconsRootPAth = pAth.join(pAth.dirnAme(__dirnAme), 'resources', 'icons');
 
-function getIconUri(iconName: string, theme: string): Uri {
-	return Uri.file(path.join(iconsRootPath, theme, `${iconName}.svg`));
+function getIconUri(iconNAme: string, theme: string): Uri {
+	return Uri.file(pAth.join(iconsRootPAth, theme, `${iconNAme}.svg`));
 }
 
-export const enum RepositoryState {
+export const enum RepositoryStAte {
 	Idle,
 	Disposed
 }
@@ -38,255 +38,255 @@ export const enum ResourceGroupType {
 	Merge,
 	Index,
 	WorkingTree,
-	Untracked
+	UntrAcked
 }
 
-export class Resource implements SourceControlResourceState {
+export clAss Resource implements SourceControlResourceStAte {
 
-	static getStatusText(type: Status) {
+	stAtic getStAtusText(type: StAtus) {
 		switch (type) {
-			case Status.INDEX_MODIFIED: return localize('index modified', "Index Modified");
-			case Status.MODIFIED: return localize('modified', "Modified");
-			case Status.INDEX_ADDED: return localize('index added', "Index Added");
-			case Status.INDEX_DELETED: return localize('index deleted', "Index Deleted");
-			case Status.DELETED: return localize('deleted', "Deleted");
-			case Status.INDEX_RENAMED: return localize('index renamed', "Index Renamed");
-			case Status.INDEX_COPIED: return localize('index copied', "Index Copied");
-			case Status.UNTRACKED: return localize('untracked', "Untracked");
-			case Status.IGNORED: return localize('ignored', "Ignored");
-			case Status.INTENT_TO_ADD: return localize('intent to add', "Intent to Add");
-			case Status.BOTH_DELETED: return localize('both deleted', "Both Deleted");
-			case Status.ADDED_BY_US: return localize('added by us', "Added By Us");
-			case Status.DELETED_BY_THEM: return localize('deleted by them', "Deleted By Them");
-			case Status.ADDED_BY_THEM: return localize('added by them', "Added By Them");
-			case Status.DELETED_BY_US: return localize('deleted by us', "Deleted By Us");
-			case Status.BOTH_ADDED: return localize('both added', "Both Added");
-			case Status.BOTH_MODIFIED: return localize('both modified', "Both Modified");
-			default: return '';
+			cAse StAtus.INDEX_MODIFIED: return locAlize('index modified', "Index Modified");
+			cAse StAtus.MODIFIED: return locAlize('modified', "Modified");
+			cAse StAtus.INDEX_ADDED: return locAlize('index Added', "Index Added");
+			cAse StAtus.INDEX_DELETED: return locAlize('index deleted', "Index Deleted");
+			cAse StAtus.DELETED: return locAlize('deleted', "Deleted");
+			cAse StAtus.INDEX_RENAMED: return locAlize('index renAmed', "Index RenAmed");
+			cAse StAtus.INDEX_COPIED: return locAlize('index copied', "Index Copied");
+			cAse StAtus.UNTRACKED: return locAlize('untrAcked', "UntrAcked");
+			cAse StAtus.IGNORED: return locAlize('ignored', "Ignored");
+			cAse StAtus.INTENT_TO_ADD: return locAlize('intent to Add', "Intent to Add");
+			cAse StAtus.BOTH_DELETED: return locAlize('both deleted', "Both Deleted");
+			cAse StAtus.ADDED_BY_US: return locAlize('Added by us', "Added By Us");
+			cAse StAtus.DELETED_BY_THEM: return locAlize('deleted by them', "Deleted By Them");
+			cAse StAtus.ADDED_BY_THEM: return locAlize('Added by them', "Added By Them");
+			cAse StAtus.DELETED_BY_US: return locAlize('deleted by us', "Deleted By Us");
+			cAse StAtus.BOTH_ADDED: return locAlize('both Added', "Both Added");
+			cAse StAtus.BOTH_MODIFIED: return locAlize('both modified', "Both Modified");
+			defAult: return '';
 		}
 	}
 
 	@memoize
 	get resourceUri(): Uri {
-		if (this.renameResourceUri && (this._type === Status.MODIFIED || this._type === Status.DELETED || this._type === Status.INDEX_RENAMED || this._type === Status.INDEX_COPIED)) {
-			return this.renameResourceUri;
+		if (this.renAmeResourceUri && (this._type === StAtus.MODIFIED || this._type === StAtus.DELETED || this._type === StAtus.INDEX_RENAMED || this._type === StAtus.INDEX_COPIED)) {
+			return this.renAmeResourceUri;
 		}
 
 		return this._resourceUri;
 	}
 
 	@memoize
-	get command(): Command {
+	get commAnd(): CommAnd {
 		return {
-			command: 'git.openResource',
-			title: localize('open', "Open"),
-			arguments: [this]
+			commAnd: 'git.openResource',
+			title: locAlize('open', "Open"),
+			Arguments: [this]
 		};
 	}
 
 	get resourceGroupType(): ResourceGroupType { return this._resourceGroupType; }
-	get type(): Status { return this._type; }
-	get original(): Uri { return this._resourceUri; }
-	get renameResourceUri(): Uri | undefined { return this._renameResourceUri; }
+	get type(): StAtus { return this._type; }
+	get originAl(): Uri { return this._resourceUri; }
+	get renAmeResourceUri(): Uri | undefined { return this._renAmeResourceUri; }
 
-	private static Icons: any = {
+	privAte stAtic Icons: Any = {
 		light: {
-			Modified: getIconUri('status-modified', 'light'),
-			Added: getIconUri('status-added', 'light'),
-			Deleted: getIconUri('status-deleted', 'light'),
-			Renamed: getIconUri('status-renamed', 'light'),
-			Copied: getIconUri('status-copied', 'light'),
-			Untracked: getIconUri('status-untracked', 'light'),
-			Ignored: getIconUri('status-ignored', 'light'),
-			Conflict: getIconUri('status-conflict', 'light'),
+			Modified: getIconUri('stAtus-modified', 'light'),
+			Added: getIconUri('stAtus-Added', 'light'),
+			Deleted: getIconUri('stAtus-deleted', 'light'),
+			RenAmed: getIconUri('stAtus-renAmed', 'light'),
+			Copied: getIconUri('stAtus-copied', 'light'),
+			UntrAcked: getIconUri('stAtus-untrAcked', 'light'),
+			Ignored: getIconUri('stAtus-ignored', 'light'),
+			Conflict: getIconUri('stAtus-conflict', 'light'),
 		},
-		dark: {
-			Modified: getIconUri('status-modified', 'dark'),
-			Added: getIconUri('status-added', 'dark'),
-			Deleted: getIconUri('status-deleted', 'dark'),
-			Renamed: getIconUri('status-renamed', 'dark'),
-			Copied: getIconUri('status-copied', 'dark'),
-			Untracked: getIconUri('status-untracked', 'dark'),
-			Ignored: getIconUri('status-ignored', 'dark'),
-			Conflict: getIconUri('status-conflict', 'dark')
+		dArk: {
+			Modified: getIconUri('stAtus-modified', 'dArk'),
+			Added: getIconUri('stAtus-Added', 'dArk'),
+			Deleted: getIconUri('stAtus-deleted', 'dArk'),
+			RenAmed: getIconUri('stAtus-renAmed', 'dArk'),
+			Copied: getIconUri('stAtus-copied', 'dArk'),
+			UntrAcked: getIconUri('stAtus-untrAcked', 'dArk'),
+			Ignored: getIconUri('stAtus-ignored', 'dArk'),
+			Conflict: getIconUri('stAtus-conflict', 'dArk')
 		}
 	};
 
-	private getIconPath(theme: string): Uri {
+	privAte getIconPAth(theme: string): Uri {
 		switch (this.type) {
-			case Status.INDEX_MODIFIED: return Resource.Icons[theme].Modified;
-			case Status.MODIFIED: return Resource.Icons[theme].Modified;
-			case Status.INDEX_ADDED: return Resource.Icons[theme].Added;
-			case Status.INDEX_DELETED: return Resource.Icons[theme].Deleted;
-			case Status.DELETED: return Resource.Icons[theme].Deleted;
-			case Status.INDEX_RENAMED: return Resource.Icons[theme].Renamed;
-			case Status.INDEX_COPIED: return Resource.Icons[theme].Copied;
-			case Status.UNTRACKED: return Resource.Icons[theme].Untracked;
-			case Status.IGNORED: return Resource.Icons[theme].Ignored;
-			case Status.INTENT_TO_ADD: return Resource.Icons[theme].Added;
-			case Status.BOTH_DELETED: return Resource.Icons[theme].Conflict;
-			case Status.ADDED_BY_US: return Resource.Icons[theme].Conflict;
-			case Status.DELETED_BY_THEM: return Resource.Icons[theme].Conflict;
-			case Status.ADDED_BY_THEM: return Resource.Icons[theme].Conflict;
-			case Status.DELETED_BY_US: return Resource.Icons[theme].Conflict;
-			case Status.BOTH_ADDED: return Resource.Icons[theme].Conflict;
-			case Status.BOTH_MODIFIED: return Resource.Icons[theme].Conflict;
-			default: throw new Error('Unknown git status: ' + this.type);
+			cAse StAtus.INDEX_MODIFIED: return Resource.Icons[theme].Modified;
+			cAse StAtus.MODIFIED: return Resource.Icons[theme].Modified;
+			cAse StAtus.INDEX_ADDED: return Resource.Icons[theme].Added;
+			cAse StAtus.INDEX_DELETED: return Resource.Icons[theme].Deleted;
+			cAse StAtus.DELETED: return Resource.Icons[theme].Deleted;
+			cAse StAtus.INDEX_RENAMED: return Resource.Icons[theme].RenAmed;
+			cAse StAtus.INDEX_COPIED: return Resource.Icons[theme].Copied;
+			cAse StAtus.UNTRACKED: return Resource.Icons[theme].UntrAcked;
+			cAse StAtus.IGNORED: return Resource.Icons[theme].Ignored;
+			cAse StAtus.INTENT_TO_ADD: return Resource.Icons[theme].Added;
+			cAse StAtus.BOTH_DELETED: return Resource.Icons[theme].Conflict;
+			cAse StAtus.ADDED_BY_US: return Resource.Icons[theme].Conflict;
+			cAse StAtus.DELETED_BY_THEM: return Resource.Icons[theme].Conflict;
+			cAse StAtus.ADDED_BY_THEM: return Resource.Icons[theme].Conflict;
+			cAse StAtus.DELETED_BY_US: return Resource.Icons[theme].Conflict;
+			cAse StAtus.BOTH_ADDED: return Resource.Icons[theme].Conflict;
+			cAse StAtus.BOTH_MODIFIED: return Resource.Icons[theme].Conflict;
+			defAult: throw new Error('Unknown git stAtus: ' + this.type);
 		}
 	}
 
-	private get tooltip(): string {
-		return Resource.getStatusText(this.type);
+	privAte get tooltip(): string {
+		return Resource.getStAtusText(this.type);
 	}
 
-	private get strikeThrough(): boolean {
+	privAte get strikeThrough(): booleAn {
 		switch (this.type) {
-			case Status.DELETED:
-			case Status.BOTH_DELETED:
-			case Status.DELETED_BY_THEM:
-			case Status.DELETED_BY_US:
-			case Status.INDEX_DELETED:
+			cAse StAtus.DELETED:
+			cAse StAtus.BOTH_DELETED:
+			cAse StAtus.DELETED_BY_THEM:
+			cAse StAtus.DELETED_BY_US:
+			cAse StAtus.INDEX_DELETED:
 				return true;
-			default:
-				return false;
+			defAult:
+				return fAlse;
 		}
 	}
 
 	@memoize
-	private get faded(): boolean {
-		// TODO@joao
-		return false;
-		// const workspaceRootPath = this.workspaceRoot.fsPath;
-		// return this.resourceUri.fsPath.substr(0, workspaceRootPath.length) !== workspaceRootPath;
+	privAte get fAded(): booleAn {
+		// TODO@joAo
+		return fAlse;
+		// const workspAceRootPAth = this.workspAceRoot.fsPAth;
+		// return this.resourceUri.fsPAth.substr(0, workspAceRootPAth.length) !== workspAceRootPAth;
 	}
 
-	get decorations(): SourceControlResourceDecorations {
-		const light = this._useIcons ? { iconPath: this.getIconPath('light') } : undefined;
-		const dark = this._useIcons ? { iconPath: this.getIconPath('dark') } : undefined;
+	get decorAtions(): SourceControlResourceDecorAtions {
+		const light = this._useIcons ? { iconPAth: this.getIconPAth('light') } : undefined;
+		const dArk = this._useIcons ? { iconPAth: this.getIconPAth('dArk') } : undefined;
 		const tooltip = this.tooltip;
 		const strikeThrough = this.strikeThrough;
-		const faded = this.faded;
-		return { strikeThrough, faded, tooltip, light, dark };
+		const fAded = this.fAded;
+		return { strikeThrough, fAded, tooltip, light, dArk };
 	}
 
 	get letter(): string {
 		switch (this.type) {
-			case Status.INDEX_MODIFIED:
-			case Status.MODIFIED:
+			cAse StAtus.INDEX_MODIFIED:
+			cAse StAtus.MODIFIED:
 				return 'M';
-			case Status.INDEX_ADDED:
-			case Status.INTENT_TO_ADD:
+			cAse StAtus.INDEX_ADDED:
+			cAse StAtus.INTENT_TO_ADD:
 				return 'A';
-			case Status.INDEX_DELETED:
-			case Status.DELETED:
+			cAse StAtus.INDEX_DELETED:
+			cAse StAtus.DELETED:
 				return 'D';
-			case Status.INDEX_RENAMED:
+			cAse StAtus.INDEX_RENAMED:
 				return 'R';
-			case Status.UNTRACKED:
+			cAse StAtus.UNTRACKED:
 				return 'U';
-			case Status.IGNORED:
+			cAse StAtus.IGNORED:
 				return 'I';
-			case Status.DELETED_BY_THEM:
+			cAse StAtus.DELETED_BY_THEM:
 				return 'D';
-			case Status.DELETED_BY_US:
+			cAse StAtus.DELETED_BY_US:
 				return 'D';
-			case Status.INDEX_COPIED:
-			case Status.BOTH_DELETED:
-			case Status.ADDED_BY_US:
-			case Status.ADDED_BY_THEM:
-			case Status.BOTH_ADDED:
-			case Status.BOTH_MODIFIED:
+			cAse StAtus.INDEX_COPIED:
+			cAse StAtus.BOTH_DELETED:
+			cAse StAtus.ADDED_BY_US:
+			cAse StAtus.ADDED_BY_THEM:
+			cAse StAtus.BOTH_ADDED:
+			cAse StAtus.BOTH_MODIFIED:
 				return 'C';
-			default:
-				throw new Error('Unknown git status: ' + this.type);
+			defAult:
+				throw new Error('Unknown git stAtus: ' + this.type);
 		}
 	}
 
 	get color(): ThemeColor {
 		switch (this.type) {
-			case Status.INDEX_MODIFIED:
-				return new ThemeColor('gitDecoration.stageModifiedResourceForeground');
-			case Status.MODIFIED:
-				return new ThemeColor('gitDecoration.modifiedResourceForeground');
-			case Status.INDEX_DELETED:
-				return new ThemeColor('gitDecoration.stageDeletedResourceForeground');
-			case Status.DELETED:
-				return new ThemeColor('gitDecoration.deletedResourceForeground');
-			case Status.INDEX_ADDED:
-			case Status.INTENT_TO_ADD:
-				return new ThemeColor('gitDecoration.addedResourceForeground');
-			case Status.INDEX_RENAMED:
-			case Status.UNTRACKED:
-				return new ThemeColor('gitDecoration.untrackedResourceForeground');
-			case Status.IGNORED:
-				return new ThemeColor('gitDecoration.ignoredResourceForeground');
-			case Status.INDEX_COPIED:
-			case Status.BOTH_DELETED:
-			case Status.ADDED_BY_US:
-			case Status.DELETED_BY_THEM:
-			case Status.ADDED_BY_THEM:
-			case Status.DELETED_BY_US:
-			case Status.BOTH_ADDED:
-			case Status.BOTH_MODIFIED:
-				return new ThemeColor('gitDecoration.conflictingResourceForeground');
-			default:
-				throw new Error('Unknown git status: ' + this.type);
+			cAse StAtus.INDEX_MODIFIED:
+				return new ThemeColor('gitDecorAtion.stAgeModifiedResourceForeground');
+			cAse StAtus.MODIFIED:
+				return new ThemeColor('gitDecorAtion.modifiedResourceForeground');
+			cAse StAtus.INDEX_DELETED:
+				return new ThemeColor('gitDecorAtion.stAgeDeletedResourceForeground');
+			cAse StAtus.DELETED:
+				return new ThemeColor('gitDecorAtion.deletedResourceForeground');
+			cAse StAtus.INDEX_ADDED:
+			cAse StAtus.INTENT_TO_ADD:
+				return new ThemeColor('gitDecorAtion.AddedResourceForeground');
+			cAse StAtus.INDEX_RENAMED:
+			cAse StAtus.UNTRACKED:
+				return new ThemeColor('gitDecorAtion.untrAckedResourceForeground');
+			cAse StAtus.IGNORED:
+				return new ThemeColor('gitDecorAtion.ignoredResourceForeground');
+			cAse StAtus.INDEX_COPIED:
+			cAse StAtus.BOTH_DELETED:
+			cAse StAtus.ADDED_BY_US:
+			cAse StAtus.DELETED_BY_THEM:
+			cAse StAtus.ADDED_BY_THEM:
+			cAse StAtus.DELETED_BY_US:
+			cAse StAtus.BOTH_ADDED:
+			cAse StAtus.BOTH_MODIFIED:
+				return new ThemeColor('gitDecorAtion.conflictingResourceForeground');
+			defAult:
+				throw new Error('Unknown git stAtus: ' + this.type);
 		}
 	}
 
 	get priority(): number {
 		switch (this.type) {
-			case Status.INDEX_MODIFIED:
-			case Status.MODIFIED:
+			cAse StAtus.INDEX_MODIFIED:
+			cAse StAtus.MODIFIED:
 				return 2;
-			case Status.IGNORED:
+			cAse StAtus.IGNORED:
 				return 3;
-			case Status.INDEX_COPIED:
-			case Status.BOTH_DELETED:
-			case Status.ADDED_BY_US:
-			case Status.DELETED_BY_THEM:
-			case Status.ADDED_BY_THEM:
-			case Status.DELETED_BY_US:
-			case Status.BOTH_ADDED:
-			case Status.BOTH_MODIFIED:
+			cAse StAtus.INDEX_COPIED:
+			cAse StAtus.BOTH_DELETED:
+			cAse StAtus.ADDED_BY_US:
+			cAse StAtus.DELETED_BY_THEM:
+			cAse StAtus.ADDED_BY_THEM:
+			cAse StAtus.DELETED_BY_US:
+			cAse StAtus.BOTH_ADDED:
+			cAse StAtus.BOTH_MODIFIED:
 				return 4;
-			default:
+			defAult:
 				return 1;
 		}
 	}
 
-	get resourceDecoration(): FileDecoration {
-		const res = new FileDecoration(this.letter, this.tooltip, this.color);
-		res.propagate = this.type !== Status.DELETED && this.type !== Status.INDEX_DELETED;
+	get resourceDecorAtion(): FileDecorAtion {
+		const res = new FileDecorAtion(this.letter, this.tooltip, this.color);
+		res.propAgAte = this.type !== StAtus.DELETED && this.type !== StAtus.INDEX_DELETED;
 		return res;
 	}
 
 	constructor(
-		private _resourceGroupType: ResourceGroupType,
-		private _resourceUri: Uri,
-		private _type: Status,
-		private _useIcons: boolean,
-		private _renameResourceUri?: Uri
+		privAte _resourceGroupType: ResourceGroupType,
+		privAte _resourceUri: Uri,
+		privAte _type: StAtus,
+		privAte _useIcons: booleAn,
+		privAte _renAmeResourceUri?: Uri
 	) { }
 }
 
-export const enum Operation {
-	Status = 'Status',
+export const enum OperAtion {
+	StAtus = 'StAtus',
 	Config = 'Config',
 	Diff = 'Diff',
-	MergeBase = 'MergeBase',
+	MergeBAse = 'MergeBAse',
 	Add = 'Add',
 	Remove = 'Remove',
 	RevertFiles = 'RevertFiles',
 	Commit = 'Commit',
-	Clean = 'Clean',
-	Branch = 'Branch',
-	GetBranch = 'GetBranch',
-	GetBranches = 'GetBranches',
-	SetBranchUpstream = 'SetBranchUpstream',
-	HashObject = 'HashObject',
+	CleAn = 'CleAn',
+	BrAnch = 'BrAnch',
+	GetBrAnch = 'GetBrAnch',
+	GetBrAnches = 'GetBrAnches',
+	SetBrAnchUpstreAm = 'SetBrAnchUpstreAm',
+	HAshObject = 'HAshObject',
 	Checkout = 'Checkout',
-	CheckoutTracking = 'CheckoutTracking',
+	CheckoutTrAcking = 'CheckoutTrAcking',
 	Reset = 'Reset',
 	Remote = 'Remote',
 	Fetch = 'Fetch',
@@ -294,377 +294,377 @@ export const enum Operation {
 	Push = 'Push',
 	Sync = 'Sync',
 	Show = 'Show',
-	Stage = 'Stage',
-	GetCommitTemplate = 'GetCommitTemplate',
-	DeleteBranch = 'DeleteBranch',
-	RenameBranch = 'RenameBranch',
+	StAge = 'StAge',
+	GetCommitTemplAte = 'GetCommitTemplAte',
+	DeleteBrAnch = 'DeleteBrAnch',
+	RenAmeBrAnch = 'RenAmeBrAnch',
 	DeleteRef = 'DeleteRef',
 	Merge = 'Merge',
 	Ignore = 'Ignore',
-	Tag = 'Tag',
-	DeleteTag = 'DeleteTag',
-	Stash = 'Stash',
+	TAg = 'TAg',
+	DeleteTAg = 'DeleteTAg',
+	StAsh = 'StAsh',
 	CheckIgnore = 'CheckIgnore',
-	GetObjectDetails = 'GetObjectDetails',
-	SubmoduleUpdate = 'SubmoduleUpdate',
-	RebaseAbort = 'RebaseAbort',
-	RebaseContinue = 'RebaseContinue',
-	FindTrackingBranches = 'GetTracking',
+	GetObjectDetAils = 'GetObjectDetAils',
+	SubmoduleUpdAte = 'SubmoduleUpdAte',
+	RebAseAbort = 'RebAseAbort',
+	RebAseContinue = 'RebAseContinue',
+	FindTrAckingBrAnches = 'GetTrAcking',
 	Apply = 'Apply',
-	Blame = 'Blame',
+	BlAme = 'BlAme',
 	Log = 'Log',
 	LogFile = 'LogFile',
 }
 
-function isReadOnly(operation: Operation): boolean {
-	switch (operation) {
-		case Operation.Blame:
-		case Operation.CheckIgnore:
-		case Operation.Diff:
-		case Operation.FindTrackingBranches:
-		case Operation.GetBranch:
-		case Operation.GetCommitTemplate:
-		case Operation.GetObjectDetails:
-		case Operation.Log:
-		case Operation.LogFile:
-		case Operation.MergeBase:
-		case Operation.Show:
+function isReAdOnly(operAtion: OperAtion): booleAn {
+	switch (operAtion) {
+		cAse OperAtion.BlAme:
+		cAse OperAtion.CheckIgnore:
+		cAse OperAtion.Diff:
+		cAse OperAtion.FindTrAckingBrAnches:
+		cAse OperAtion.GetBrAnch:
+		cAse OperAtion.GetCommitTemplAte:
+		cAse OperAtion.GetObjectDetAils:
+		cAse OperAtion.Log:
+		cAse OperAtion.LogFile:
+		cAse OperAtion.MergeBAse:
+		cAse OperAtion.Show:
 			return true;
-		default:
-			return false;
+		defAult:
+			return fAlse;
 	}
 }
 
-function shouldShowProgress(operation: Operation): boolean {
-	switch (operation) {
-		case Operation.Fetch:
-		case Operation.CheckIgnore:
-		case Operation.GetObjectDetails:
-		case Operation.Show:
-			return false;
-		default:
+function shouldShowProgress(operAtion: OperAtion): booleAn {
+	switch (operAtion) {
+		cAse OperAtion.Fetch:
+		cAse OperAtion.CheckIgnore:
+		cAse OperAtion.GetObjectDetAils:
+		cAse OperAtion.Show:
+			return fAlse;
+		defAult:
 			return true;
 	}
 }
 
-export interface Operations {
-	isIdle(): boolean;
-	shouldShowProgress(): boolean;
-	isRunning(operation: Operation): boolean;
+export interfAce OperAtions {
+	isIdle(): booleAn;
+	shouldShowProgress(): booleAn;
+	isRunning(operAtion: OperAtion): booleAn;
 }
 
-class OperationsImpl implements Operations {
+clAss OperAtionsImpl implements OperAtions {
 
-	private operations = new Map<Operation, number>();
+	privAte operAtions = new MAp<OperAtion, number>();
 
-	start(operation: Operation): void {
-		this.operations.set(operation, (this.operations.get(operation) || 0) + 1);
+	stArt(operAtion: OperAtion): void {
+		this.operAtions.set(operAtion, (this.operAtions.get(operAtion) || 0) + 1);
 	}
 
-	end(operation: Operation): void {
-		const count = (this.operations.get(operation) || 0) - 1;
+	end(operAtion: OperAtion): void {
+		const count = (this.operAtions.get(operAtion) || 0) - 1;
 
 		if (count <= 0) {
-			this.operations.delete(operation);
+			this.operAtions.delete(operAtion);
 		} else {
-			this.operations.set(operation, count);
+			this.operAtions.set(operAtion, count);
 		}
 	}
 
-	isRunning(operation: Operation): boolean {
-		return this.operations.has(operation);
+	isRunning(operAtion: OperAtion): booleAn {
+		return this.operAtions.hAs(operAtion);
 	}
 
-	isIdle(): boolean {
-		const operations = this.operations.keys();
+	isIdle(): booleAn {
+		const operAtions = this.operAtions.keys();
 
-		for (const operation of operations) {
-			if (!isReadOnly(operation)) {
-				return false;
+		for (const operAtion of operAtions) {
+			if (!isReAdOnly(operAtion)) {
+				return fAlse;
 			}
 		}
 
 		return true;
 	}
 
-	shouldShowProgress(): boolean {
-		const operations = this.operations.keys();
+	shouldShowProgress(): booleAn {
+		const operAtions = this.operAtions.keys();
 
-		for (const operation of operations) {
-			if (shouldShowProgress(operation)) {
+		for (const operAtion of operAtions) {
+			if (shouldShowProgress(operAtion)) {
 				return true;
 			}
 		}
 
-		return false;
+		return fAlse;
 	}
 }
 
-export interface GitResourceGroup extends SourceControlResourceGroup {
-	resourceStates: Resource[];
+export interfAce GitResourceGroup extends SourceControlResourceGroup {
+	resourceStAtes: Resource[];
 }
 
-export interface OperationResult {
-	operation: Operation;
-	error: any;
+export interfAce OperAtionResult {
+	operAtion: OperAtion;
+	error: Any;
 }
 
-class ProgressManager {
+clAss ProgressMAnAger {
 
-	private enabled = false;
-	private disposable: IDisposable = EmptyDisposable;
+	privAte enAbled = fAlse;
+	privAte disposAble: IDisposAble = EmptyDisposAble;
 
-	constructor(private repository: Repository) {
-		const onDidChange = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git', Uri.file(this.repository.root)));
-		onDidChange(_ => this.updateEnablement());
-		this.updateEnablement();
+	constructor(privAte repository: Repository) {
+		const onDidChAnge = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git', Uri.file(this.repository.root)));
+		onDidChAnge(_ => this.updAteEnAblement());
+		this.updAteEnAblement();
 	}
 
-	private updateEnablement(): void {
-		const config = workspace.getConfiguration('git', Uri.file(this.repository.root));
+	privAte updAteEnAblement(): void {
+		const config = workspAce.getConfigurAtion('git', Uri.file(this.repository.root));
 
-		if (config.get<boolean>('showProgress')) {
-			this.enable();
+		if (config.get<booleAn>('showProgress')) {
+			this.enAble();
 		} else {
-			this.disable();
+			this.disAble();
 		}
 	}
 
-	private enable(): void {
-		if (this.enabled) {
+	privAte enAble(): void {
+		if (this.enAbled) {
 			return;
 		}
 
-		const start = onceEvent(filterEvent(this.repository.onDidChangeOperations, () => this.repository.operations.shouldShowProgress()));
-		const end = onceEvent(filterEvent(debounceEvent(this.repository.onDidChangeOperations, 300), () => !this.repository.operations.shouldShowProgress()));
+		const stArt = onceEvent(filterEvent(this.repository.onDidChAngeOperAtions, () => this.repository.operAtions.shouldShowProgress()));
+		const end = onceEvent(filterEvent(debounceEvent(this.repository.onDidChAngeOperAtions, 300), () => !this.repository.operAtions.shouldShowProgress()));
 
 		const setup = () => {
-			this.disposable = start(() => {
+			this.disposAble = stArt(() => {
 				const promise = eventToPromise(end).then(() => setup());
-				window.withProgress({ location: ProgressLocation.SourceControl }, () => promise);
+				window.withProgress({ locAtion: ProgressLocAtion.SourceControl }, () => promise);
 			});
 		};
 
 		setup();
-		this.enabled = true;
+		this.enAbled = true;
 	}
 
-	private disable(): void {
-		if (!this.enabled) {
+	privAte disAble(): void {
+		if (!this.enAbled) {
 			return;
 		}
 
-		this.disposable.dispose();
-		this.disposable = EmptyDisposable;
-		this.enabled = false;
+		this.disposAble.dispose();
+		this.disposAble = EmptyDisposAble;
+		this.enAbled = fAlse;
 	}
 
 	dispose(): void {
-		this.disable();
+		this.disAble();
 	}
 }
 
-class FileEventLogger {
+clAss FileEventLogger {
 
-	private eventDisposable: IDisposable = EmptyDisposable;
-	private logLevelDisposable: IDisposable = EmptyDisposable;
+	privAte eventDisposAble: IDisposAble = EmptyDisposAble;
+	privAte logLevelDisposAble: IDisposAble = EmptyDisposAble;
 
 	constructor(
-		private onWorkspaceWorkingTreeFileChange: Event<Uri>,
-		private onDotGitFileChange: Event<Uri>,
-		private outputChannel: OutputChannel
+		privAte onWorkspAceWorkingTreeFileChAnge: Event<Uri>,
+		privAte onDotGitFileChAnge: Event<Uri>,
+		privAte outputChAnnel: OutputChAnnel
 	) {
-		this.logLevelDisposable = Log.onDidChangeLogLevel(this.onDidChangeLogLevel, this);
-		this.onDidChangeLogLevel(Log.logLevel);
+		this.logLevelDisposAble = Log.onDidChAngeLogLevel(this.onDidChAngeLogLevel, this);
+		this.onDidChAngeLogLevel(Log.logLevel);
 	}
 
-	private onDidChangeLogLevel(level: LogLevel): void {
-		this.eventDisposable.dispose();
+	privAte onDidChAngeLogLevel(level: LogLevel): void {
+		this.eventDisposAble.dispose();
 
 		if (level > LogLevel.Debug) {
 			return;
 		}
 
-		this.eventDisposable = combinedDisposable([
-			this.onWorkspaceWorkingTreeFileChange(uri => this.outputChannel.appendLine(`[debug] [wt] Change: ${uri.fsPath}`)),
-			this.onDotGitFileChange(uri => this.outputChannel.appendLine(`[debug] [.git] Change: ${uri.fsPath}`))
+		this.eventDisposAble = combinedDisposAble([
+			this.onWorkspAceWorkingTreeFileChAnge(uri => this.outputChAnnel.AppendLine(`[debug] [wt] ChAnge: ${uri.fsPAth}`)),
+			this.onDotGitFileChAnge(uri => this.outputChAnnel.AppendLine(`[debug] [.git] ChAnge: ${uri.fsPAth}`))
 		]);
 	}
 
 	dispose(): void {
-		this.eventDisposable.dispose();
-		this.logLevelDisposable.dispose();
+		this.eventDisposAble.dispose();
+		this.logLevelDisposAble.dispose();
 	}
 }
 
-class DotGitWatcher implements IFileWatcher {
+clAss DotGitWAtcher implements IFileWAtcher {
 
-	readonly event: Event<Uri>;
+	reAdonly event: Event<Uri>;
 
-	private emitter = new EventEmitter<Uri>();
-	private transientDisposables: IDisposable[] = [];
-	private disposables: IDisposable[] = [];
+	privAte emitter = new EventEmitter<Uri>();
+	privAte trAnsientDisposAbles: IDisposAble[] = [];
+	privAte disposAbles: IDisposAble[] = [];
 
 	constructor(
-		private repository: Repository,
-		private outputChannel: OutputChannel
+		privAte repository: Repository,
+		privAte outputChAnnel: OutputChAnnel
 	) {
-		const rootWatcher = watch(repository.dotGit);
-		this.disposables.push(rootWatcher);
+		const rootWAtcher = wAtch(repository.dotGit);
+		this.disposAbles.push(rootWAtcher);
 
-		const filteredRootWatcher = filterEvent(rootWatcher.event, uri => !/\/\.git(\/index\.lock)?$/.test(uri.path));
-		this.event = anyEvent(filteredRootWatcher, this.emitter.event);
+		const filteredRootWAtcher = filterEvent(rootWAtcher.event, uri => !/\/\.git(\/index\.lock)?$/.test(uri.pAth));
+		this.event = AnyEvent(filteredRootWAtcher, this.emitter.event);
 
-		repository.onDidRunGitStatus(this.updateTransientWatchers, this, this.disposables);
-		this.updateTransientWatchers();
+		repository.onDidRunGitStAtus(this.updAteTrAnsientWAtchers, this, this.disposAbles);
+		this.updAteTrAnsientWAtchers();
 	}
 
-	private updateTransientWatchers() {
-		this.transientDisposables = dispose(this.transientDisposables);
+	privAte updAteTrAnsientWAtchers() {
+		this.trAnsientDisposAbles = dispose(this.trAnsientDisposAbles);
 
-		if (!this.repository.HEAD || !this.repository.HEAD.upstream) {
+		if (!this.repository.HEAD || !this.repository.HEAD.upstreAm) {
 			return;
 		}
 
-		this.transientDisposables = dispose(this.transientDisposables);
+		this.trAnsientDisposAbles = dispose(this.trAnsientDisposAbles);
 
-		const { name, remote } = this.repository.HEAD.upstream;
-		const upstreamPath = path.join(this.repository.dotGit, 'refs', 'remotes', remote, name);
+		const { nAme, remote } = this.repository.HEAD.upstreAm;
+		const upstreAmPAth = pAth.join(this.repository.dotGit, 'refs', 'remotes', remote, nAme);
 
 		try {
-			const upstreamWatcher = watch(upstreamPath);
-			this.transientDisposables.push(upstreamWatcher);
-			upstreamWatcher.event(this.emitter.fire, this.emitter, this.transientDisposables);
-		} catch (err) {
+			const upstreAmWAtcher = wAtch(upstreAmPAth);
+			this.trAnsientDisposAbles.push(upstreAmWAtcher);
+			upstreAmWAtcher.event(this.emitter.fire, this.emitter, this.trAnsientDisposAbles);
+		} cAtch (err) {
 			if (Log.logLevel <= LogLevel.Error) {
-				this.outputChannel.appendLine(`Warning: Failed to watch ref '${upstreamPath}', is most likely packed.`);
+				this.outputChAnnel.AppendLine(`WArning: FAiled to wAtch ref '${upstreAmPAth}', is most likely pAcked.`);
 			}
 		}
 	}
 
 	dispose() {
 		this.emitter.dispose();
-		this.transientDisposables = dispose(this.transientDisposables);
-		this.disposables = dispose(this.disposables);
+		this.trAnsientDisposAbles = dispose(this.trAnsientDisposAbles);
+		this.disposAbles = dispose(this.disposAbles);
 	}
 }
 
-export class Repository implements Disposable {
+export clAss Repository implements DisposAble {
 
-	private _onDidChangeRepository = new EventEmitter<Uri>();
-	readonly onDidChangeRepository: Event<Uri> = this._onDidChangeRepository.event;
+	privAte _onDidChAngeRepository = new EventEmitter<Uri>();
+	reAdonly onDidChAngeRepository: Event<Uri> = this._onDidChAngeRepository.event;
 
-	private _onDidChangeState = new EventEmitter<RepositoryState>();
-	readonly onDidChangeState: Event<RepositoryState> = this._onDidChangeState.event;
+	privAte _onDidChAngeStAte = new EventEmitter<RepositoryStAte>();
+	reAdonly onDidChAngeStAte: Event<RepositoryStAte> = this._onDidChAngeStAte.event;
 
-	private _onDidChangeStatus = new EventEmitter<void>();
-	readonly onDidRunGitStatus: Event<void> = this._onDidChangeStatus.event;
+	privAte _onDidChAngeStAtus = new EventEmitter<void>();
+	reAdonly onDidRunGitStAtus: Event<void> = this._onDidChAngeStAtus.event;
 
-	private _onDidChangeOriginalResource = new EventEmitter<Uri>();
-	readonly onDidChangeOriginalResource: Event<Uri> = this._onDidChangeOriginalResource.event;
+	privAte _onDidChAngeOriginAlResource = new EventEmitter<Uri>();
+	reAdonly onDidChAngeOriginAlResource: Event<Uri> = this._onDidChAngeOriginAlResource.event;
 
-	private _onRunOperation = new EventEmitter<Operation>();
-	readonly onRunOperation: Event<Operation> = this._onRunOperation.event;
+	privAte _onRunOperAtion = new EventEmitter<OperAtion>();
+	reAdonly onRunOperAtion: Event<OperAtion> = this._onRunOperAtion.event;
 
-	private _onDidRunOperation = new EventEmitter<OperationResult>();
-	readonly onDidRunOperation: Event<OperationResult> = this._onDidRunOperation.event;
+	privAte _onDidRunOperAtion = new EventEmitter<OperAtionResult>();
+	reAdonly onDidRunOperAtion: Event<OperAtionResult> = this._onDidRunOperAtion.event;
 
 	@memoize
-	get onDidChangeOperations(): Event<void> {
-		return anyEvent(this.onRunOperation as Event<any>, this.onDidRunOperation as Event<any>);
+	get onDidChAngeOperAtions(): Event<void> {
+		return AnyEvent(this.onRunOperAtion As Event<Any>, this.onDidRunOperAtion As Event<Any>);
 	}
 
-	private _sourceControl: SourceControl;
+	privAte _sourceControl: SourceControl;
 	get sourceControl(): SourceControl { return this._sourceControl; }
 
 	get inputBox(): SourceControlInputBox { return this._sourceControl.inputBox; }
 
-	private _mergeGroup: SourceControlResourceGroup;
-	get mergeGroup(): GitResourceGroup { return this._mergeGroup as GitResourceGroup; }
+	privAte _mergeGroup: SourceControlResourceGroup;
+	get mergeGroup(): GitResourceGroup { return this._mergeGroup As GitResourceGroup; }
 
-	private _indexGroup: SourceControlResourceGroup;
-	get indexGroup(): GitResourceGroup { return this._indexGroup as GitResourceGroup; }
+	privAte _indexGroup: SourceControlResourceGroup;
+	get indexGroup(): GitResourceGroup { return this._indexGroup As GitResourceGroup; }
 
-	private _workingTreeGroup: SourceControlResourceGroup;
-	get workingTreeGroup(): GitResourceGroup { return this._workingTreeGroup as GitResourceGroup; }
+	privAte _workingTreeGroup: SourceControlResourceGroup;
+	get workingTreeGroup(): GitResourceGroup { return this._workingTreeGroup As GitResourceGroup; }
 
-	private _untrackedGroup: SourceControlResourceGroup;
-	get untrackedGroup(): GitResourceGroup { return this._untrackedGroup as GitResourceGroup; }
+	privAte _untrAckedGroup: SourceControlResourceGroup;
+	get untrAckedGroup(): GitResourceGroup { return this._untrAckedGroup As GitResourceGroup; }
 
-	private _HEAD: Branch | undefined;
-	get HEAD(): Branch | undefined {
+	privAte _HEAD: BrAnch | undefined;
+	get HEAD(): BrAnch | undefined {
 		return this._HEAD;
 	}
 
-	private _refs: Ref[] = [];
+	privAte _refs: Ref[] = [];
 	get refs(): Ref[] {
 		return this._refs;
 	}
 
-	get headShortName(): string | undefined {
+	get heAdShortNAme(): string | undefined {
 		if (!this.HEAD) {
 			return;
 		}
 
 		const HEAD = this.HEAD;
 
-		if (HEAD.name) {
-			return HEAD.name;
+		if (HEAD.nAme) {
+			return HEAD.nAme;
 		}
 
-		const tag = this.refs.filter(iref => iref.type === RefType.Tag && iref.commit === HEAD.commit)[0];
-		const tagName = tag && tag.name;
+		const tAg = this.refs.filter(iref => iref.type === RefType.TAg && iref.commit === HEAD.commit)[0];
+		const tAgNAme = tAg && tAg.nAme;
 
-		if (tagName) {
-			return tagName;
+		if (tAgNAme) {
+			return tAgNAme;
 		}
 
 		return (HEAD.commit || '').substr(0, 8);
 	}
 
-	private _remotes: Remote[] = [];
+	privAte _remotes: Remote[] = [];
 	get remotes(): Remote[] {
 		return this._remotes;
 	}
 
-	private _submodules: Submodule[] = [];
+	privAte _submodules: Submodule[] = [];
 	get submodules(): Submodule[] {
 		return this._submodules;
 	}
 
-	private _rebaseCommit: Commit | undefined = undefined;
+	privAte _rebAseCommit: Commit | undefined = undefined;
 
-	set rebaseCommit(rebaseCommit: Commit | undefined) {
-		if (this._rebaseCommit && !rebaseCommit) {
-			this.inputBox.value = '';
-		} else if (rebaseCommit && (!this._rebaseCommit || this._rebaseCommit.hash !== rebaseCommit.hash)) {
-			this.inputBox.value = rebaseCommit.message;
+	set rebAseCommit(rebAseCommit: Commit | undefined) {
+		if (this._rebAseCommit && !rebAseCommit) {
+			this.inputBox.vAlue = '';
+		} else if (rebAseCommit && (!this._rebAseCommit || this._rebAseCommit.hAsh !== rebAseCommit.hAsh)) {
+			this.inputBox.vAlue = rebAseCommit.messAge;
 		}
 
-		this._rebaseCommit = rebaseCommit;
-		commands.executeCommand('setContext', 'gitRebaseInProgress', !!this._rebaseCommit);
+		this._rebAseCommit = rebAseCommit;
+		commAnds.executeCommAnd('setContext', 'gitRebAseInProgress', !!this._rebAseCommit);
 	}
 
-	get rebaseCommit(): Commit | undefined {
-		return this._rebaseCommit;
+	get rebAseCommit(): Commit | undefined {
+		return this._rebAseCommit;
 	}
 
-	private _operations = new OperationsImpl();
-	get operations(): Operations { return this._operations; }
+	privAte _operAtions = new OperAtionsImpl();
+	get operAtions(): OperAtions { return this._operAtions; }
 
-	private _state = RepositoryState.Idle;
-	get state(): RepositoryState { return this._state; }
-	set state(state: RepositoryState) {
-		this._state = state;
-		this._onDidChangeState.fire(state);
+	privAte _stAte = RepositoryStAte.Idle;
+	get stAte(): RepositoryStAte { return this._stAte; }
+	set stAte(stAte: RepositoryStAte) {
+		this._stAte = stAte;
+		this._onDidChAngeStAte.fire(stAte);
 
 		this._HEAD = undefined;
 		this._refs = [];
 		this._remotes = [];
-		this.mergeGroup.resourceStates = [];
-		this.indexGroup.resourceStates = [];
-		this.workingTreeGroup.resourceStates = [];
-		this.untrackedGroup.resourceStates = [];
+		this.mergeGroup.resourceStAtes = [];
+		this.indexGroup.resourceStAtes = [];
+		this.workingTreeGroup.resourceStAtes = [];
+		this.untrAckedGroup.resourceStAtes = [];
 		this._sourceControl.count = 0;
 	}
 
@@ -676,135 +676,135 @@ export class Repository implements Disposable {
 		return this.repository.dotGit;
 	}
 
-	private isRepositoryHuge = false;
-	private didWarnAboutLimit = false;
+	privAte isRepositoryHuge = fAlse;
+	privAte didWArnAboutLimit = fAlse;
 
-	private disposables: Disposable[] = [];
+	privAte disposAbles: DisposAble[] = [];
 
 	constructor(
-		private readonly repository: BaseRepository,
+		privAte reAdonly repository: BAseRepository,
 		remoteSourceProviderRegistry: IRemoteSourceProviderRegistry,
-		private pushErrorHandlerRegistry: IPushErrorHandlerRegistry,
-		globalState: Memento,
-		outputChannel: OutputChannel
+		privAte pushErrorHAndlerRegistry: IPushErrorHAndlerRegistry,
+		globAlStAte: Memento,
+		outputChAnnel: OutputChAnnel
 	) {
-		const workspaceWatcher = workspace.createFileSystemWatcher('**');
-		this.disposables.push(workspaceWatcher);
+		const workspAceWAtcher = workspAce.creAteFileSystemWAtcher('**');
+		this.disposAbles.push(workspAceWAtcher);
 
-		const onWorkspaceFileChange = anyEvent(workspaceWatcher.onDidChange, workspaceWatcher.onDidCreate, workspaceWatcher.onDidDelete);
-		const onWorkspaceRepositoryFileChange = filterEvent(onWorkspaceFileChange, uri => isDescendant(repository.root, uri.fsPath));
-		const onWorkspaceWorkingTreeFileChange = filterEvent(onWorkspaceRepositoryFileChange, uri => !/\/\.git($|\/)/.test(uri.path));
+		const onWorkspAceFileChAnge = AnyEvent(workspAceWAtcher.onDidChAnge, workspAceWAtcher.onDidCreAte, workspAceWAtcher.onDidDelete);
+		const onWorkspAceRepositoryFileChAnge = filterEvent(onWorkspAceFileChAnge, uri => isDescendAnt(repository.root, uri.fsPAth));
+		const onWorkspAceWorkingTreeFileChAnge = filterEvent(onWorkspAceRepositoryFileChAnge, uri => !/\/\.git($|\/)/.test(uri.pAth));
 
-		let onDotGitFileChange: Event<Uri>;
+		let onDotGitFileChAnge: Event<Uri>;
 
 		try {
-			const dotGitFileWatcher = new DotGitWatcher(this, outputChannel);
-			onDotGitFileChange = dotGitFileWatcher.event;
-			this.disposables.push(dotGitFileWatcher);
-		} catch (err) {
+			const dotGitFileWAtcher = new DotGitWAtcher(this, outputChAnnel);
+			onDotGitFileChAnge = dotGitFileWAtcher.event;
+			this.disposAbles.push(dotGitFileWAtcher);
+		} cAtch (err) {
 			if (Log.logLevel <= LogLevel.Error) {
-				outputChannel.appendLine(`Failed to watch '${this.dotGit}', reverting to legacy API file watched. Some events might be lost.\n${err.stack || err}`);
+				outputChAnnel.AppendLine(`FAiled to wAtch '${this.dotGit}', reverting to legAcy API file wAtched. Some events might be lost.\n${err.stAck || err}`);
 			}
 
-			onDotGitFileChange = filterEvent(onWorkspaceRepositoryFileChange, uri => /\/\.git($|\/)/.test(uri.path));
+			onDotGitFileChAnge = filterEvent(onWorkspAceRepositoryFileChAnge, uri => /\/\.git($|\/)/.test(uri.pAth));
 		}
 
-		// FS changes should trigger `git status`:
-		// 	- any change inside the repository working tree
-		//	- any change whithin the first level of the `.git` folder, except the folder itself and `index.lock`
-		const onFileChange = anyEvent(onWorkspaceWorkingTreeFileChange, onDotGitFileChange);
-		onFileChange(this.onFileChange, this, this.disposables);
+		// FS chAnges should trigger `git stAtus`:
+		// 	- Any chAnge inside the repository working tree
+		//	- Any chAnge whithin the first level of the `.git` folder, except the folder itself And `index.lock`
+		const onFileChAnge = AnyEvent(onWorkspAceWorkingTreeFileChAnge, onDotGitFileChAnge);
+		onFileChAnge(this.onFileChAnge, this, this.disposAbles);
 
-		// Relevate repository changes should trigger virtual document change events
-		onDotGitFileChange(this._onDidChangeRepository.fire, this._onDidChangeRepository, this.disposables);
+		// RelevAte repository chAnges should trigger virtuAl document chAnge events
+		onDotGitFileChAnge(this._onDidChAngeRepository.fire, this._onDidChAngeRepository, this.disposAbles);
 
-		this.disposables.push(new FileEventLogger(onWorkspaceWorkingTreeFileChange, onDotGitFileChange, outputChannel));
+		this.disposAbles.push(new FileEventLogger(onWorkspAceWorkingTreeFileChAnge, onDotGitFileChAnge, outputChAnnel));
 
 		const root = Uri.file(repository.root);
-		this._sourceControl = scm.createSourceControl('git', 'Git', root);
+		this._sourceControl = scm.creAteSourceControl('git', 'Git', root);
 
-		this._sourceControl.acceptInputCommand = { command: 'git.commit', title: localize('commit', "Commit"), arguments: [this._sourceControl] };
+		this._sourceControl.AcceptInputCommAnd = { commAnd: 'git.commit', title: locAlize('commit', "Commit"), Arguments: [this._sourceControl] };
 		this._sourceControl.quickDiffProvider = this;
-		this._sourceControl.inputBox.validateInput = this.validateInput.bind(this);
-		this.disposables.push(this._sourceControl);
+		this._sourceControl.inputBox.vAlidAteInput = this.vAlidAteInput.bind(this);
+		this.disposAbles.push(this._sourceControl);
 
-		this.updateInputBoxPlaceholder();
-		this.disposables.push(this.onDidRunGitStatus(() => this.updateInputBoxPlaceholder()));
+		this.updAteInputBoxPlAceholder();
+		this.disposAbles.push(this.onDidRunGitStAtus(() => this.updAteInputBoxPlAceholder()));
 
-		this._mergeGroup = this._sourceControl.createResourceGroup('merge', localize('merge changes', "Merge Changes"));
-		this._indexGroup = this._sourceControl.createResourceGroup('index', localize('staged changes', "Staged Changes"));
-		this._workingTreeGroup = this._sourceControl.createResourceGroup('workingTree', localize('changes', "Changes"));
-		this._untrackedGroup = this._sourceControl.createResourceGroup('untracked', localize('untracked changes', "Untracked Changes"));
+		this._mergeGroup = this._sourceControl.creAteResourceGroup('merge', locAlize('merge chAnges', "Merge ChAnges"));
+		this._indexGroup = this._sourceControl.creAteResourceGroup('index', locAlize('stAged chAnges', "StAged ChAnges"));
+		this._workingTreeGroup = this._sourceControl.creAteResourceGroup('workingTree', locAlize('chAnges', "ChAnges"));
+		this._untrAckedGroup = this._sourceControl.creAteResourceGroup('untrAcked', locAlize('untrAcked chAnges', "UntrAcked ChAnges"));
 
-		const updateIndexGroupVisibility = () => {
-			const config = workspace.getConfiguration('git', root);
-			this.indexGroup.hideWhenEmpty = !config.get<boolean>('alwaysShowStagedChangesResourceGroup');
+		const updAteIndexGroupVisibility = () => {
+			const config = workspAce.getConfigurAtion('git', root);
+			this.indexGroup.hideWhenEmpty = !config.get<booleAn>('AlwAysShowStAgedChAngesResourceGroup');
 		};
 
-		const onConfigListener = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.alwaysShowStagedChangesResourceGroup', root));
-		onConfigListener(updateIndexGroupVisibility, this, this.disposables);
-		updateIndexGroupVisibility();
+		const onConfigListener = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git.AlwAysShowStAgedChAngesResourceGroup', root));
+		onConfigListener(updAteIndexGroupVisibility, this, this.disposAbles);
+		updAteIndexGroupVisibility();
 
-		const onConfigListenerForBranchSortOrder = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.branchSortOrder', root));
-		onConfigListenerForBranchSortOrder(this.updateModelState, this, this.disposables);
+		const onConfigListenerForBrAnchSortOrder = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git.brAnchSortOrder', root));
+		onConfigListenerForBrAnchSortOrder(this.updAteModelStAte, this, this.disposAbles);
 
-		const onConfigListenerForUntracked = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.untrackedChanges', root));
-		onConfigListenerForUntracked(this.updateModelState, this, this.disposables);
+		const onConfigListenerForUntrAcked = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git.untrAckedChAnges', root));
+		onConfigListenerForUntrAcked(this.updAteModelStAte, this, this.disposAbles);
 
-		const updateInputBoxVisibility = () => {
-			const config = workspace.getConfiguration('git', root);
-			this._sourceControl.inputBox.visible = config.get<boolean>('showCommitInput', true);
+		const updAteInputBoxVisibility = () => {
+			const config = workspAce.getConfigurAtion('git', root);
+			this._sourceControl.inputBox.visible = config.get<booleAn>('showCommitInput', true);
 		};
 
-		const onConfigListenerForInputBoxVisibility = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.showCommitInput', root));
-		onConfigListenerForInputBoxVisibility(updateInputBoxVisibility, this, this.disposables);
-		updateInputBoxVisibility();
+		const onConfigListenerForInputBoxVisibility = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git.showCommitInput', root));
+		onConfigListenerForInputBoxVisibility(updAteInputBoxVisibility, this, this.disposAbles);
+		updAteInputBoxVisibility();
 
 		this.mergeGroup.hideWhenEmpty = true;
-		this.untrackedGroup.hideWhenEmpty = true;
+		this.untrAckedGroup.hideWhenEmpty = true;
 
-		this.disposables.push(this.mergeGroup);
-		this.disposables.push(this.indexGroup);
-		this.disposables.push(this.workingTreeGroup);
-		this.disposables.push(this.untrackedGroup);
+		this.disposAbles.push(this.mergeGroup);
+		this.disposAbles.push(this.indexGroup);
+		this.disposAbles.push(this.workingTreeGroup);
+		this.disposAbles.push(this.untrAckedGroup);
 
-		this.disposables.push(new AutoFetcher(this, globalState));
+		this.disposAbles.push(new AutoFetcher(this, globAlStAte));
 
 		// https://github.com/microsoft/vscode/issues/39039
-		const onSuccessfulPush = filterEvent(this.onDidRunOperation, e => e.operation === Operation.Push && !e.error);
+		const onSuccessfulPush = filterEvent(this.onDidRunOperAtion, e => e.operAtion === OperAtion.Push && !e.error);
 		onSuccessfulPush(() => {
-			const gitConfig = workspace.getConfiguration('git');
+			const gitConfig = workspAce.getConfigurAtion('git');
 
-			if (gitConfig.get<boolean>('showPushSuccessNotification')) {
-				window.showInformationMessage(localize('push success', "Successfully pushed."));
+			if (gitConfig.get<booleAn>('showPushSuccessNotificAtion')) {
+				window.showInformAtionMessAge(locAlize('push success', "Successfully pushed."));
 			}
-		}, null, this.disposables);
+		}, null, this.disposAbles);
 
-		const statusBar = new StatusBarCommands(this, remoteSourceProviderRegistry);
-		this.disposables.push(statusBar);
-		statusBar.onDidChange(() => this._sourceControl.statusBarCommands = statusBar.commands, null, this.disposables);
-		this._sourceControl.statusBarCommands = statusBar.commands;
+		const stAtusBAr = new StAtusBArCommAnds(this, remoteSourceProviderRegistry);
+		this.disposAbles.push(stAtusBAr);
+		stAtusBAr.onDidChAnge(() => this._sourceControl.stAtusBArCommAnds = stAtusBAr.commAnds, null, this.disposAbles);
+		this._sourceControl.stAtusBArCommAnds = stAtusBAr.commAnds;
 
-		const progressManager = new ProgressManager(this);
-		this.disposables.push(progressManager);
+		const progressMAnAger = new ProgressMAnAger(this);
+		this.disposAbles.push(progressMAnAger);
 
-		const onDidChangeCountBadge = filterEvent(workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git.countBadge', root));
-		onDidChangeCountBadge(this.setCountBadge, this, this.disposables);
-		this.setCountBadge();
+		const onDidChAngeCountBAdge = filterEvent(workspAce.onDidChAngeConfigurAtion, e => e.AffectsConfigurAtion('git.countBAdge', root));
+		onDidChAngeCountBAdge(this.setCountBAdge, this, this.disposAbles);
+		this.setCountBAdge();
 	}
 
-	validateInput(text: string, position: number): SourceControlInputBoxValidation | undefined {
-		if (this.rebaseCommit) {
-			if (this.rebaseCommit.message !== text) {
+	vAlidAteInput(text: string, position: number): SourceControlInputBoxVAlidAtion | undefined {
+		if (this.rebAseCommit) {
+			if (this.rebAseCommit.messAge !== text) {
 				return {
-					message: localize('commit in rebase', "It's not possible to change the commit message in the middle of a rebase. Please complete the rebase operation and use interactive rebase instead."),
-					type: SourceControlInputBoxValidationType.Warning
+					messAge: locAlize('commit in rebAse', "It's not possible to chAnge the commit messAge in the middle of A rebAse. PleAse complete the rebAse operAtion And use interActive rebAse insteAd."),
+					type: SourceControlInputBoxVAlidAtionType.WArning
 				};
 			}
 		}
 
-		const config = workspace.getConfiguration('git');
-		const setting = config.get<'always' | 'warn' | 'off'>('inputValidation');
+		const config = workspAce.getConfigurAtion('git');
+		const setting = config.get<'AlwAys' | 'wArn' | 'off'>('inputVAlidAtion');
 
 		if (setting === 'off') {
 			return;
@@ -812,464 +812,464 @@ export class Repository implements Disposable {
 
 		if (/^\s+$/.test(text)) {
 			return {
-				message: localize('commitMessageWhitespacesOnlyWarning', "Current commit message only contains whitespace characters"),
-				type: SourceControlInputBoxValidationType.Warning
+				messAge: locAlize('commitMessAgeWhitespAcesOnlyWArning', "Current commit messAge only contAins whitespAce chArActers"),
+				type: SourceControlInputBoxVAlidAtionType.WArning
 			};
 		}
 
 		let lineNumber = 0;
-		let start = 0, end;
-		let match: RegExpExecArray | null;
+		let stArt = 0, end;
+		let mAtch: RegExpExecArrAy | null;
 		const regex = /\r?\n/g;
 
-		while ((match = regex.exec(text)) && position > match.index) {
-			start = match.index + match[0].length;
+		while ((mAtch = regex.exec(text)) && position > mAtch.index) {
+			stArt = mAtch.index + mAtch[0].length;
 			lineNumber++;
 		}
 
-		end = match ? match.index : text.length;
+		end = mAtch ? mAtch.index : text.length;
 
-		const line = text.substring(start, end);
+		const line = text.substring(stArt, end);
 
-		let threshold = config.get<number>('inputValidationLength', 50);
+		let threshold = config.get<number>('inputVAlidAtionLength', 50);
 
 		if (lineNumber === 0) {
-			const inputValidationSubjectLength = config.get<number | null>('inputValidationSubjectLength', null);
+			const inputVAlidAtionSubjectLength = config.get<number | null>('inputVAlidAtionSubjectLength', null);
 
-			if (inputValidationSubjectLength !== null) {
-				threshold = inputValidationSubjectLength;
+			if (inputVAlidAtionSubjectLength !== null) {
+				threshold = inputVAlidAtionSubjectLength;
 			}
 		}
 
 		if (line.length <= threshold) {
-			if (setting !== 'always') {
+			if (setting !== 'AlwAys') {
 				return;
 			}
 
 			return {
-				message: localize('commitMessageCountdown', "{0} characters left in current line", threshold - line.length),
-				type: SourceControlInputBoxValidationType.Information
+				messAge: locAlize('commitMessAgeCountdown', "{0} chArActers left in current line", threshold - line.length),
+				type: SourceControlInputBoxVAlidAtionType.InformAtion
 			};
 		} else {
 			return {
-				message: localize('commitMessageWarning', "{0} characters over {1} in current line", line.length - threshold, threshold),
-				type: SourceControlInputBoxValidationType.Warning
+				messAge: locAlize('commitMessAgeWArning', "{0} chArActers over {1} in current line", line.length - threshold, threshold),
+				type: SourceControlInputBoxVAlidAtionType.WArning
 			};
 		}
 	}
 
-	provideOriginalResource(uri: Uri): Uri | undefined {
+	provideOriginAlResource(uri: Uri): Uri | undefined {
 		if (uri.scheme !== 'file') {
 			return;
 		}
 
-		return toGitUri(uri, '', { replaceFileExtension: true });
+		return toGitUri(uri, '', { replAceFileExtension: true });
 	}
 
-	async getInputTemplate(): Promise<string> {
-		const commitMessage = (await Promise.all([this.repository.getMergeMessage(), this.repository.getSquashMessage()])).find(msg => !!msg);
+	Async getInputTemplAte(): Promise<string> {
+		const commitMessAge = (AwAit Promise.All([this.repository.getMergeMessAge(), this.repository.getSquAshMessAge()])).find(msg => !!msg);
 
-		if (commitMessage) {
-			return commitMessage;
+		if (commitMessAge) {
+			return commitMessAge;
 		}
 
-		return await this.repository.getCommitTemplate();
+		return AwAit this.repository.getCommitTemplAte();
 	}
 
-	getConfigs(): Promise<{ key: string; value: string; }[]> {
-		return this.run(Operation.Config, () => this.repository.getConfigs('local'));
+	getConfigs(): Promise<{ key: string; vAlue: string; }[]> {
+		return this.run(OperAtion.Config, () => this.repository.getConfigs('locAl'));
 	}
 
 	getConfig(key: string): Promise<string> {
-		return this.run(Operation.Config, () => this.repository.config('local', key));
+		return this.run(OperAtion.Config, () => this.repository.config('locAl', key));
 	}
 
-	getGlobalConfig(key: string): Promise<string> {
-		return this.run(Operation.Config, () => this.repository.config('global', key));
+	getGlobAlConfig(key: string): Promise<string> {
+		return this.run(OperAtion.Config, () => this.repository.config('globAl', key));
 	}
 
-	setConfig(key: string, value: string): Promise<string> {
-		return this.run(Operation.Config, () => this.repository.config('local', key, value));
+	setConfig(key: string, vAlue: string): Promise<string> {
+		return this.run(OperAtion.Config, () => this.repository.config('locAl', key, vAlue));
 	}
 
 	log(options?: LogOptions): Promise<Commit[]> {
-		return this.run(Operation.Log, () => this.repository.log(options));
+		return this.run(OperAtion.Log, () => this.repository.log(options));
 	}
 
 	logFile(uri: Uri, options?: LogFileOptions): Promise<Commit[]> {
-		// TODO: This probably needs per-uri granularity
-		return this.run(Operation.LogFile, () => this.repository.logFile(uri, options));
+		// TODO: This probAbly needs per-uri grAnulArity
+		return this.run(OperAtion.LogFile, () => this.repository.logFile(uri, options));
 	}
 
 	@throttle
-	async status(): Promise<void> {
-		await this.run(Operation.Status);
+	Async stAtus(): Promise<void> {
+		AwAit this.run(OperAtion.StAtus);
 	}
 
-	diff(cached?: boolean): Promise<string> {
-		return this.run(Operation.Diff, () => this.repository.diff(cached));
+	diff(cAched?: booleAn): Promise<string> {
+		return this.run(OperAtion.Diff, () => this.repository.diff(cAched));
 	}
 
-	diffWithHEAD(): Promise<Change[]>;
-	diffWithHEAD(path: string): Promise<string>;
-	diffWithHEAD(path?: string | undefined): Promise<string | Change[]>;
-	diffWithHEAD(path?: string | undefined): Promise<string | Change[]> {
-		return this.run(Operation.Diff, () => this.repository.diffWithHEAD(path));
+	diffWithHEAD(): Promise<ChAnge[]>;
+	diffWithHEAD(pAth: string): Promise<string>;
+	diffWithHEAD(pAth?: string | undefined): Promise<string | ChAnge[]>;
+	diffWithHEAD(pAth?: string | undefined): Promise<string | ChAnge[]> {
+		return this.run(OperAtion.Diff, () => this.repository.diffWithHEAD(pAth));
 	}
 
-	diffWith(ref: string): Promise<Change[]>;
-	diffWith(ref: string, path: string): Promise<string>;
-	diffWith(ref: string, path?: string | undefined): Promise<string | Change[]>;
-	diffWith(ref: string, path?: string): Promise<string | Change[]> {
-		return this.run(Operation.Diff, () => this.repository.diffWith(ref, path));
+	diffWith(ref: string): Promise<ChAnge[]>;
+	diffWith(ref: string, pAth: string): Promise<string>;
+	diffWith(ref: string, pAth?: string | undefined): Promise<string | ChAnge[]>;
+	diffWith(ref: string, pAth?: string): Promise<string | ChAnge[]> {
+		return this.run(OperAtion.Diff, () => this.repository.diffWith(ref, pAth));
 	}
 
-	diffIndexWithHEAD(): Promise<Change[]>;
-	diffIndexWithHEAD(path: string): Promise<string>;
-	diffIndexWithHEAD(path?: string | undefined): Promise<string | Change[]>;
-	diffIndexWithHEAD(path?: string): Promise<string | Change[]> {
-		return this.run(Operation.Diff, () => this.repository.diffIndexWithHEAD(path));
+	diffIndexWithHEAD(): Promise<ChAnge[]>;
+	diffIndexWithHEAD(pAth: string): Promise<string>;
+	diffIndexWithHEAD(pAth?: string | undefined): Promise<string | ChAnge[]>;
+	diffIndexWithHEAD(pAth?: string): Promise<string | ChAnge[]> {
+		return this.run(OperAtion.Diff, () => this.repository.diffIndexWithHEAD(pAth));
 	}
 
-	diffIndexWith(ref: string): Promise<Change[]>;
-	diffIndexWith(ref: string, path: string): Promise<string>;
-	diffIndexWith(ref: string, path?: string | undefined): Promise<string | Change[]>;
-	diffIndexWith(ref: string, path?: string): Promise<string | Change[]> {
-		return this.run(Operation.Diff, () => this.repository.diffIndexWith(ref, path));
+	diffIndexWith(ref: string): Promise<ChAnge[]>;
+	diffIndexWith(ref: string, pAth: string): Promise<string>;
+	diffIndexWith(ref: string, pAth?: string | undefined): Promise<string | ChAnge[]>;
+	diffIndexWith(ref: string, pAth?: string): Promise<string | ChAnge[]> {
+		return this.run(OperAtion.Diff, () => this.repository.diffIndexWith(ref, pAth));
 	}
 
 	diffBlobs(object1: string, object2: string): Promise<string> {
-		return this.run(Operation.Diff, () => this.repository.diffBlobs(object1, object2));
+		return this.run(OperAtion.Diff, () => this.repository.diffBlobs(object1, object2));
 	}
 
-	diffBetween(ref1: string, ref2: string): Promise<Change[]>;
-	diffBetween(ref1: string, ref2: string, path: string): Promise<string>;
-	diffBetween(ref1: string, ref2: string, path?: string | undefined): Promise<string | Change[]>;
-	diffBetween(ref1: string, ref2: string, path?: string): Promise<string | Change[]> {
-		return this.run(Operation.Diff, () => this.repository.diffBetween(ref1, ref2, path));
+	diffBetween(ref1: string, ref2: string): Promise<ChAnge[]>;
+	diffBetween(ref1: string, ref2: string, pAth: string): Promise<string>;
+	diffBetween(ref1: string, ref2: string, pAth?: string | undefined): Promise<string | ChAnge[]>;
+	diffBetween(ref1: string, ref2: string, pAth?: string): Promise<string | ChAnge[]> {
+		return this.run(OperAtion.Diff, () => this.repository.diffBetween(ref1, ref2, pAth));
 	}
 
-	getMergeBase(ref1: string, ref2: string): Promise<string> {
-		return this.run(Operation.MergeBase, () => this.repository.getMergeBase(ref1, ref2));
+	getMergeBAse(ref1: string, ref2: string): Promise<string> {
+		return this.run(OperAtion.MergeBAse, () => this.repository.getMergeBAse(ref1, ref2));
 	}
 
-	async hashObject(data: string): Promise<string> {
-		return this.run(Operation.HashObject, () => this.repository.hashObject(data));
+	Async hAshObject(dAtA: string): Promise<string> {
+		return this.run(OperAtion.HAshObject, () => this.repository.hAshObject(dAtA));
 	}
 
-	async add(resources: Uri[], opts?: { update?: boolean }): Promise<void> {
-		await this.run(Operation.Add, () => this.repository.add(resources.map(r => r.fsPath), opts));
+	Async Add(resources: Uri[], opts?: { updAte?: booleAn }): Promise<void> {
+		AwAit this.run(OperAtion.Add, () => this.repository.Add(resources.mAp(r => r.fsPAth), opts));
 	}
 
-	async rm(resources: Uri[]): Promise<void> {
-		await this.run(Operation.Remove, () => this.repository.rm(resources.map(r => r.fsPath)));
+	Async rm(resources: Uri[]): Promise<void> {
+		AwAit this.run(OperAtion.Remove, () => this.repository.rm(resources.mAp(r => r.fsPAth)));
 	}
 
-	async stage(resource: Uri, contents: string): Promise<void> {
-		const relativePath = path.relative(this.repository.root, resource.fsPath).replace(/\\/g, '/');
-		await this.run(Operation.Stage, () => this.repository.stage(relativePath, contents));
-		this._onDidChangeOriginalResource.fire(resource);
+	Async stAge(resource: Uri, contents: string): Promise<void> {
+		const relAtivePAth = pAth.relAtive(this.repository.root, resource.fsPAth).replAce(/\\/g, '/');
+		AwAit this.run(OperAtion.StAge, () => this.repository.stAge(relAtivePAth, contents));
+		this._onDidChAngeOriginAlResource.fire(resource);
 	}
 
-	async revert(resources: Uri[]): Promise<void> {
-		await this.run(Operation.RevertFiles, () => this.repository.revert('HEAD', resources.map(r => r.fsPath)));
+	Async revert(resources: Uri[]): Promise<void> {
+		AwAit this.run(OperAtion.RevertFiles, () => this.repository.revert('HEAD', resources.mAp(r => r.fsPAth)));
 	}
 
-	async commit(message: string, opts: CommitOptions = Object.create(null)): Promise<void> {
-		if (this.rebaseCommit) {
-			await this.run(Operation.RebaseContinue, async () => {
-				if (opts.all) {
-					const addOpts = opts.all === 'tracked' ? { update: true } : {};
-					await this.repository.add([], addOpts);
+	Async commit(messAge: string, opts: CommitOptions = Object.creAte(null)): Promise<void> {
+		if (this.rebAseCommit) {
+			AwAit this.run(OperAtion.RebAseContinue, Async () => {
+				if (opts.All) {
+					const AddOpts = opts.All === 'trAcked' ? { updAte: true } : {};
+					AwAit this.repository.Add([], AddOpts);
 				}
 
-				await this.repository.rebaseContinue();
+				AwAit this.repository.rebAseContinue();
 			});
 		} else {
-			await this.run(Operation.Commit, async () => {
-				if (opts.all) {
-					const addOpts = opts.all === 'tracked' ? { update: true } : {};
-					await this.repository.add([], addOpts);
+			AwAit this.run(OperAtion.Commit, Async () => {
+				if (opts.All) {
+					const AddOpts = opts.All === 'trAcked' ? { updAte: true } : {};
+					AwAit this.repository.Add([], AddOpts);
 				}
 
-				delete opts.all;
-				await this.repository.commit(message, opts);
+				delete opts.All;
+				AwAit this.repository.commit(messAge, opts);
 			});
 		}
 	}
 
-	async clean(resources: Uri[]): Promise<void> {
-		await this.run(Operation.Clean, async () => {
-			const toClean: string[] = [];
+	Async cleAn(resources: Uri[]): Promise<void> {
+		AwAit this.run(OperAtion.CleAn, Async () => {
+			const toCleAn: string[] = [];
 			const toCheckout: string[] = [];
-			const submodulesToUpdate: string[] = [];
-			const resourceStates = [...this.workingTreeGroup.resourceStates, ...this.untrackedGroup.resourceStates];
+			const submodulesToUpdAte: string[] = [];
+			const resourceStAtes = [...this.workingTreeGroup.resourceStAtes, ...this.untrAckedGroup.resourceStAtes];
 
-			resources.forEach(r => {
-				const fsPath = r.fsPath;
+			resources.forEAch(r => {
+				const fsPAth = r.fsPAth;
 
 				for (const submodule of this.submodules) {
-					if (path.join(this.root, submodule.path) === fsPath) {
-						submodulesToUpdate.push(fsPath);
+					if (pAth.join(this.root, submodule.pAth) === fsPAth) {
+						submodulesToUpdAte.push(fsPAth);
 						return;
 					}
 				}
 
-				const raw = r.toString();
-				const scmResource = find(resourceStates, sr => sr.resourceUri.toString() === raw);
+				const rAw = r.toString();
+				const scmResource = find(resourceStAtes, sr => sr.resourceUri.toString() === rAw);
 
 				if (!scmResource) {
 					return;
 				}
 
 				switch (scmResource.type) {
-					case Status.UNTRACKED:
-					case Status.IGNORED:
-						toClean.push(fsPath);
-						break;
+					cAse StAtus.UNTRACKED:
+					cAse StAtus.IGNORED:
+						toCleAn.push(fsPAth);
+						breAk;
 
-					default:
-						toCheckout.push(fsPath);
-						break;
+					defAult:
+						toCheckout.push(fsPAth);
+						breAk;
 				}
 			});
 
-			await this.repository.clean(toClean);
-			await this.repository.checkout('', toCheckout);
-			await this.repository.updateSubmodules(submodulesToUpdate);
+			AwAit this.repository.cleAn(toCleAn);
+			AwAit this.repository.checkout('', toCheckout);
+			AwAit this.repository.updAteSubmodules(submodulesToUpdAte);
 		});
 	}
 
-	async branch(name: string, _checkout: boolean, _ref?: string): Promise<void> {
-		await this.run(Operation.Branch, () => this.repository.branch(name, _checkout, _ref));
+	Async brAnch(nAme: string, _checkout: booleAn, _ref?: string): Promise<void> {
+		AwAit this.run(OperAtion.BrAnch, () => this.repository.brAnch(nAme, _checkout, _ref));
 	}
 
-	async deleteBranch(name: string, force?: boolean): Promise<void> {
-		await this.run(Operation.DeleteBranch, () => this.repository.deleteBranch(name, force));
+	Async deleteBrAnch(nAme: string, force?: booleAn): Promise<void> {
+		AwAit this.run(OperAtion.DeleteBrAnch, () => this.repository.deleteBrAnch(nAme, force));
 	}
 
-	async renameBranch(name: string): Promise<void> {
-		await this.run(Operation.RenameBranch, () => this.repository.renameBranch(name));
+	Async renAmeBrAnch(nAme: string): Promise<void> {
+		AwAit this.run(OperAtion.RenAmeBrAnch, () => this.repository.renAmeBrAnch(nAme));
 	}
 
-	async getBranch(name: string): Promise<Branch> {
-		return await this.run(Operation.GetBranch, () => this.repository.getBranch(name));
+	Async getBrAnch(nAme: string): Promise<BrAnch> {
+		return AwAit this.run(OperAtion.GetBrAnch, () => this.repository.getBrAnch(nAme));
 	}
 
-	async getBranches(query: BranchQuery): Promise<Ref[]> {
-		return await this.run(Operation.GetBranches, () => this.repository.getBranches(query));
+	Async getBrAnches(query: BrAnchQuery): Promise<Ref[]> {
+		return AwAit this.run(OperAtion.GetBrAnches, () => this.repository.getBrAnches(query));
 	}
 
-	async setBranchUpstream(name: string, upstream: string): Promise<void> {
-		await this.run(Operation.SetBranchUpstream, () => this.repository.setBranchUpstream(name, upstream));
+	Async setBrAnchUpstreAm(nAme: string, upstreAm: string): Promise<void> {
+		AwAit this.run(OperAtion.SetBrAnchUpstreAm, () => this.repository.setBrAnchUpstreAm(nAme, upstreAm));
 	}
 
-	async merge(ref: string): Promise<void> {
-		await this.run(Operation.Merge, () => this.repository.merge(ref));
+	Async merge(ref: string): Promise<void> {
+		AwAit this.run(OperAtion.Merge, () => this.repository.merge(ref));
 	}
 
-	async tag(name: string, message?: string): Promise<void> {
-		await this.run(Operation.Tag, () => this.repository.tag(name, message));
+	Async tAg(nAme: string, messAge?: string): Promise<void> {
+		AwAit this.run(OperAtion.TAg, () => this.repository.tAg(nAme, messAge));
 	}
 
-	async deleteTag(name: string): Promise<void> {
-		await this.run(Operation.DeleteTag, () => this.repository.deleteTag(name));
+	Async deleteTAg(nAme: string): Promise<void> {
+		AwAit this.run(OperAtion.DeleteTAg, () => this.repository.deleteTAg(nAme));
 	}
 
-	async checkout(treeish: string): Promise<void> {
-		await this.run(Operation.Checkout, () => this.repository.checkout(treeish, []));
+	Async checkout(treeish: string): Promise<void> {
+		AwAit this.run(OperAtion.Checkout, () => this.repository.checkout(treeish, []));
 	}
 
-	async checkoutTracking(treeish: string): Promise<void> {
-		await this.run(Operation.CheckoutTracking, () => this.repository.checkout(treeish, [], { track: true }));
+	Async checkoutTrAcking(treeish: string): Promise<void> {
+		AwAit this.run(OperAtion.CheckoutTrAcking, () => this.repository.checkout(treeish, [], { trAck: true }));
 	}
 
-	async findTrackingBranches(upstreamRef: string): Promise<Branch[]> {
-		return await this.run(Operation.FindTrackingBranches, () => this.repository.findTrackingBranches(upstreamRef));
+	Async findTrAckingBrAnches(upstreAmRef: string): Promise<BrAnch[]> {
+		return AwAit this.run(OperAtion.FindTrAckingBrAnches, () => this.repository.findTrAckingBrAnches(upstreAmRef));
 	}
 
-	async getCommit(ref: string): Promise<Commit> {
-		return await this.repository.getCommit(ref);
+	Async getCommit(ref: string): Promise<Commit> {
+		return AwAit this.repository.getCommit(ref);
 	}
 
-	async reset(treeish: string, hard?: boolean): Promise<void> {
-		await this.run(Operation.Reset, () => this.repository.reset(treeish, hard));
+	Async reset(treeish: string, hArd?: booleAn): Promise<void> {
+		AwAit this.run(OperAtion.Reset, () => this.repository.reset(treeish, hArd));
 	}
 
-	async deleteRef(ref: string): Promise<void> {
-		await this.run(Operation.DeleteRef, () => this.repository.deleteRef(ref));
+	Async deleteRef(ref: string): Promise<void> {
+		AwAit this.run(OperAtion.DeleteRef, () => this.repository.deleteRef(ref));
 	}
 
-	async addRemote(name: string, url: string): Promise<void> {
-		await this.run(Operation.Remote, () => this.repository.addRemote(name, url));
+	Async AddRemote(nAme: string, url: string): Promise<void> {
+		AwAit this.run(OperAtion.Remote, () => this.repository.AddRemote(nAme, url));
 	}
 
-	async removeRemote(name: string): Promise<void> {
-		await this.run(Operation.Remote, () => this.repository.removeRemote(name));
+	Async removeRemote(nAme: string): Promise<void> {
+		AwAit this.run(OperAtion.Remote, () => this.repository.removeRemote(nAme));
 	}
 
-	async renameRemote(name: string, newName: string): Promise<void> {
-		await this.run(Operation.Remote, () => this.repository.renameRemote(name, newName));
-	}
-
-	@throttle
-	async fetchDefault(options: { silent?: boolean } = {}): Promise<void> {
-		await this.run(Operation.Fetch, () => this.repository.fetch(options));
+	Async renAmeRemote(nAme: string, newNAme: string): Promise<void> {
+		AwAit this.run(OperAtion.Remote, () => this.repository.renAmeRemote(nAme, newNAme));
 	}
 
 	@throttle
-	async fetchPrune(): Promise<void> {
-		await this.run(Operation.Fetch, () => this.repository.fetch({ prune: true }));
+	Async fetchDefAult(options: { silent?: booleAn } = {}): Promise<void> {
+		AwAit this.run(OperAtion.Fetch, () => this.repository.fetch(options));
 	}
 
 	@throttle
-	async fetchAll(): Promise<void> {
-		await this.run(Operation.Fetch, () => this.repository.fetch({ all: true }));
-	}
-
-	async fetch(remote?: string, ref?: string, depth?: number): Promise<void> {
-		await this.run(Operation.Fetch, () => this.repository.fetch({ remote, ref, depth }));
+	Async fetchPrune(): Promise<void> {
+		AwAit this.run(OperAtion.Fetch, () => this.repository.fetch({ prune: true }));
 	}
 
 	@throttle
-	async pullWithRebase(head: Branch | undefined): Promise<void> {
+	Async fetchAll(): Promise<void> {
+		AwAit this.run(OperAtion.Fetch, () => this.repository.fetch({ All: true }));
+	}
+
+	Async fetch(remote?: string, ref?: string, depth?: number): Promise<void> {
+		AwAit this.run(OperAtion.Fetch, () => this.repository.fetch({ remote, ref, depth }));
+	}
+
+	@throttle
+	Async pullWithRebAse(heAd: BrAnch | undefined): Promise<void> {
 		let remote: string | undefined;
-		let branch: string | undefined;
+		let brAnch: string | undefined;
 
-		if (head && head.name && head.upstream) {
-			remote = head.upstream.remote;
-			branch = `${head.upstream.name}`;
+		if (heAd && heAd.nAme && heAd.upstreAm) {
+			remote = heAd.upstreAm.remote;
+			brAnch = `${heAd.upstreAm.nAme}`;
 		}
 
-		return this.pullFrom(true, remote, branch);
+		return this.pullFrom(true, remote, brAnch);
 	}
 
 	@throttle
-	async pull(head?: Branch, unshallow?: boolean): Promise<void> {
+	Async pull(heAd?: BrAnch, unshAllow?: booleAn): Promise<void> {
 		let remote: string | undefined;
-		let branch: string | undefined;
+		let brAnch: string | undefined;
 
-		if (head && head.name && head.upstream) {
-			remote = head.upstream.remote;
-			branch = `${head.upstream.name}`;
+		if (heAd && heAd.nAme && heAd.upstreAm) {
+			remote = heAd.upstreAm.remote;
+			brAnch = `${heAd.upstreAm.nAme}`;
 		}
 
-		return this.pullFrom(false, remote, branch, unshallow);
+		return this.pullFrom(fAlse, remote, brAnch, unshAllow);
 	}
 
-	async pullFrom(rebase?: boolean, remote?: string, branch?: string, unshallow?: boolean): Promise<void> {
-		await this.run(Operation.Pull, async () => {
-			await this.maybeAutoStash(async () => {
-				const config = workspace.getConfiguration('git', Uri.file(this.root));
-				const fetchOnPull = config.get<boolean>('fetchOnPull');
-				const tags = config.get<boolean>('pullTags');
+	Async pullFrom(rebAse?: booleAn, remote?: string, brAnch?: string, unshAllow?: booleAn): Promise<void> {
+		AwAit this.run(OperAtion.Pull, Async () => {
+			AwAit this.mAybeAutoStAsh(Async () => {
+				const config = workspAce.getConfigurAtion('git', Uri.file(this.root));
+				const fetchOnPull = config.get<booleAn>('fetchOnPull');
+				const tAgs = config.get<booleAn>('pullTAgs');
 
 				if (fetchOnPull) {
-					await this.repository.pull(rebase, undefined, undefined, { unshallow, tags });
+					AwAit this.repository.pull(rebAse, undefined, undefined, { unshAllow, tAgs });
 				} else {
-					await this.repository.pull(rebase, remote, branch, { unshallow, tags });
+					AwAit this.repository.pull(rebAse, remote, brAnch, { unshAllow, tAgs });
 				}
 			});
 		});
 	}
 
 	@throttle
-	async push(head: Branch, forcePushMode?: ForcePushMode): Promise<void> {
+	Async push(heAd: BrAnch, forcePushMode?: ForcePushMode): Promise<void> {
 		let remote: string | undefined;
-		let branch: string | undefined;
+		let brAnch: string | undefined;
 
-		if (head && head.name && head.upstream) {
-			remote = head.upstream.remote;
-			branch = `${head.name}:${head.upstream.name}`;
+		if (heAd && heAd.nAme && heAd.upstreAm) {
+			remote = heAd.upstreAm.remote;
+			brAnch = `${heAd.nAme}:${heAd.upstreAm.nAme}`;
 		}
 
-		await this.run(Operation.Push, () => this._push(remote, branch, undefined, undefined, forcePushMode));
+		AwAit this.run(OperAtion.Push, () => this._push(remote, brAnch, undefined, undefined, forcePushMode));
 	}
 
-	async pushTo(remote?: string, name?: string, setUpstream: boolean = false, forcePushMode?: ForcePushMode): Promise<void> {
-		await this.run(Operation.Push, () => this._push(remote, name, setUpstream, undefined, forcePushMode));
+	Async pushTo(remote?: string, nAme?: string, setUpstreAm: booleAn = fAlse, forcePushMode?: ForcePushMode): Promise<void> {
+		AwAit this.run(OperAtion.Push, () => this._push(remote, nAme, setUpstreAm, undefined, forcePushMode));
 	}
 
-	async pushFollowTags(remote?: string, forcePushMode?: ForcePushMode): Promise<void> {
-		await this.run(Operation.Push, () => this._push(remote, undefined, false, true, forcePushMode));
+	Async pushFollowTAgs(remote?: string, forcePushMode?: ForcePushMode): Promise<void> {
+		AwAit this.run(OperAtion.Push, () => this._push(remote, undefined, fAlse, true, forcePushMode));
 	}
 
-	async blame(path: string): Promise<string> {
-		return await this.run(Operation.Blame, () => this.repository.blame(path));
+	Async blAme(pAth: string): Promise<string> {
+		return AwAit this.run(OperAtion.BlAme, () => this.repository.blAme(pAth));
 	}
 
 	@throttle
-	sync(head: Branch): Promise<void> {
-		return this._sync(head, false);
+	sync(heAd: BrAnch): Promise<void> {
+		return this._sync(heAd, fAlse);
 	}
 
 	@throttle
-	async syncRebase(head: Branch): Promise<void> {
-		return this._sync(head, true);
+	Async syncRebAse(heAd: BrAnch): Promise<void> {
+		return this._sync(heAd, true);
 	}
 
-	private async _sync(head: Branch, rebase: boolean): Promise<void> {
-		let remoteName: string | undefined;
-		let pullBranch: string | undefined;
-		let pushBranch: string | undefined;
+	privAte Async _sync(heAd: BrAnch, rebAse: booleAn): Promise<void> {
+		let remoteNAme: string | undefined;
+		let pullBrAnch: string | undefined;
+		let pushBrAnch: string | undefined;
 
-		if (head.name && head.upstream) {
-			remoteName = head.upstream.remote;
-			pullBranch = `${head.upstream.name}`;
-			pushBranch = `${head.name}:${head.upstream.name}`;
+		if (heAd.nAme && heAd.upstreAm) {
+			remoteNAme = heAd.upstreAm.remote;
+			pullBrAnch = `${heAd.upstreAm.nAme}`;
+			pushBrAnch = `${heAd.nAme}:${heAd.upstreAm.nAme}`;
 		}
 
-		await this.run(Operation.Sync, async () => {
-			await this.maybeAutoStash(async () => {
-				const config = workspace.getConfiguration('git', Uri.file(this.root));
-				const fetchOnPull = config.get<boolean>('fetchOnPull');
-				const tags = config.get<boolean>('pullTags');
-				const supportCancellation = config.get<boolean>('supportCancellation');
+		AwAit this.run(OperAtion.Sync, Async () => {
+			AwAit this.mAybeAutoStAsh(Async () => {
+				const config = workspAce.getConfigurAtion('git', Uri.file(this.root));
+				const fetchOnPull = config.get<booleAn>('fetchOnPull');
+				const tAgs = config.get<booleAn>('pullTAgs');
+				const supportCAncellAtion = config.get<booleAn>('supportCAncellAtion');
 
 				const fn = fetchOnPull
-					? async (cancellationToken?: CancellationToken) => await this.repository.pull(rebase, undefined, undefined, { tags, cancellationToken })
-					: async (cancellationToken?: CancellationToken) => await this.repository.pull(rebase, remoteName, pullBranch, { tags, cancellationToken });
+					? Async (cAncellAtionToken?: CAncellAtionToken) => AwAit this.repository.pull(rebAse, undefined, undefined, { tAgs, cAncellAtionToken })
+					: Async (cAncellAtionToken?: CAncellAtionToken) => AwAit this.repository.pull(rebAse, remoteNAme, pullBrAnch, { tAgs, cAncellAtionToken });
 
-				if (supportCancellation) {
+				if (supportCAncellAtion) {
 					const opts: ProgressOptions = {
-						location: ProgressLocation.Notification,
-						title: localize('sync is unpredictable', "Syncing. Cancelling may cause serious damages to the repository"),
-						cancellable: true
+						locAtion: ProgressLocAtion.NotificAtion,
+						title: locAlize('sync is unpredictAble', "Syncing. CAncelling mAy cAuse serious dAmAges to the repository"),
+						cAncellAble: true
 					};
 
-					await window.withProgress(opts, (_, token) => fn(token));
+					AwAit window.withProgress(opts, (_, token) => fn(token));
 				} else {
-					await fn();
+					AwAit fn();
 				}
 
-				const remote = this.remotes.find(r => r.name === remoteName);
+				const remote = this.remotes.find(r => r.nAme === remoteNAme);
 
-				if (remote && remote.isReadOnly) {
+				if (remote && remote.isReAdOnly) {
 					return;
 				}
 
-				const shouldPush = this.HEAD && (typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true);
+				const shouldPush = this.HEAD && (typeof this.HEAD.AheAd === 'number' ? this.HEAD.AheAd > 0 : true);
 
 				if (shouldPush) {
-					await this._push(remoteName, pushBranch);
+					AwAit this._push(remoteNAme, pushBrAnch);
 				}
 			});
 		});
 	}
 
-	async show(ref: string, filePath: string): Promise<string> {
-		return await this.run(Operation.Show, async () => {
-			const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
-			const configFiles = workspace.getConfiguration('files', Uri.file(filePath));
-			const defaultEncoding = configFiles.get<string>('encoding');
-			const autoGuessEncoding = configFiles.get<boolean>('autoGuessEncoding');
+	Async show(ref: string, filePAth: string): Promise<string> {
+		return AwAit this.run(OperAtion.Show, Async () => {
+			const relAtivePAth = pAth.relAtive(this.repository.root, filePAth).replAce(/\\/g, '/');
+			const configFiles = workspAce.getConfigurAtion('files', Uri.file(filePAth));
+			const defAultEncoding = configFiles.get<string>('encoding');
+			const AutoGuessEncoding = configFiles.get<booleAn>('AutoGuessEncoding');
 
 			try {
-				return await this.repository.bufferString(`${ref}:${relativePath}`, defaultEncoding, autoGuessEncoding);
-			} catch (err) {
-				if (err.gitErrorCode === GitErrorCodes.WrongCase) {
-					const gitRelativePath = await this.repository.getGitRelativePath(ref, relativePath);
-					return await this.repository.bufferString(`${ref}:${gitRelativePath}`, defaultEncoding, autoGuessEncoding);
+				return AwAit this.repository.bufferString(`${ref}:${relAtivePAth}`, defAultEncoding, AutoGuessEncoding);
+			} cAtch (err) {
+				if (err.gitErrorCode === GitErrorCodes.WrongCAse) {
+					const gitRelAtivePAth = AwAit this.repository.getGitRelAtivePAth(ref, relAtivePAth);
+					return AwAit this.repository.bufferString(`${ref}:${gitRelAtivePAth}`, defAultEncoding, AutoGuessEncoding);
 				}
 
 				throw err;
@@ -1277,118 +1277,118 @@ export class Repository implements Disposable {
 		});
 	}
 
-	async buffer(ref: string, filePath: string): Promise<Buffer> {
-		return this.run(Operation.Show, () => {
-			const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
-			return this.repository.buffer(`${ref}:${relativePath}`);
+	Async buffer(ref: string, filePAth: string): Promise<Buffer> {
+		return this.run(OperAtion.Show, () => {
+			const relAtivePAth = pAth.relAtive(this.repository.root, filePAth).replAce(/\\/g, '/');
+			return this.repository.buffer(`${ref}:${relAtivePAth}`);
 		});
 	}
 
-	getObjectDetails(ref: string, filePath: string): Promise<{ mode: string, object: string, size: number }> {
-		return this.run(Operation.GetObjectDetails, () => this.repository.getObjectDetails(ref, filePath));
+	getObjectDetAils(ref: string, filePAth: string): Promise<{ mode: string, object: string, size: number }> {
+		return this.run(OperAtion.GetObjectDetAils, () => this.repository.getObjectDetAils(ref, filePAth));
 	}
 
 	detectObjectType(object: string): Promise<{ mimetype: string, encoding?: string }> {
-		return this.run(Operation.Show, () => this.repository.detectObjectType(object));
+		return this.run(OperAtion.Show, () => this.repository.detectObjectType(object));
 	}
 
-	async apply(patch: string, reverse?: boolean): Promise<void> {
-		return await this.run(Operation.Apply, () => this.repository.apply(patch, reverse));
+	Async Apply(pAtch: string, reverse?: booleAn): Promise<void> {
+		return AwAit this.run(OperAtion.Apply, () => this.repository.Apply(pAtch, reverse));
 	}
 
-	async getStashes(): Promise<Stash[]> {
-		return await this.repository.getStashes();
+	Async getStAshes(): Promise<StAsh[]> {
+		return AwAit this.repository.getStAshes();
 	}
 
-	async createStash(message?: string, includeUntracked?: boolean): Promise<void> {
-		return await this.run(Operation.Stash, () => this.repository.createStash(message, includeUntracked));
+	Async creAteStAsh(messAge?: string, includeUntrAcked?: booleAn): Promise<void> {
+		return AwAit this.run(OperAtion.StAsh, () => this.repository.creAteStAsh(messAge, includeUntrAcked));
 	}
 
-	async popStash(index?: number): Promise<void> {
-		return await this.run(Operation.Stash, () => this.repository.popStash(index));
+	Async popStAsh(index?: number): Promise<void> {
+		return AwAit this.run(OperAtion.StAsh, () => this.repository.popStAsh(index));
 	}
 
-	async dropStash(index?: number): Promise<void> {
-		return await this.run(Operation.Stash, () => this.repository.dropStash(index));
+	Async dropStAsh(index?: number): Promise<void> {
+		return AwAit this.run(OperAtion.StAsh, () => this.repository.dropStAsh(index));
 	}
 
-	async applyStash(index?: number): Promise<void> {
-		return await this.run(Operation.Stash, () => this.repository.applyStash(index));
+	Async ApplyStAsh(index?: number): Promise<void> {
+		return AwAit this.run(OperAtion.StAsh, () => this.repository.ApplyStAsh(index));
 	}
 
-	async getCommitTemplate(): Promise<string> {
-		return await this.run(Operation.GetCommitTemplate, async () => this.repository.getCommitTemplate());
+	Async getCommitTemplAte(): Promise<string> {
+		return AwAit this.run(OperAtion.GetCommitTemplAte, Async () => this.repository.getCommitTemplAte());
 	}
 
-	async ignore(files: Uri[]): Promise<void> {
-		return await this.run(Operation.Ignore, async () => {
-			const ignoreFile = `${this.repository.root}${path.sep}.gitignore`;
+	Async ignore(files: Uri[]): Promise<void> {
+		return AwAit this.run(OperAtion.Ignore, Async () => {
+			const ignoreFile = `${this.repository.root}${pAth.sep}.gitignore`;
 			const textToAppend = files
-				.map(uri => path.relative(this.repository.root, uri.fsPath).replace(/\\/g, '/'))
+				.mAp(uri => pAth.relAtive(this.repository.root, uri.fsPAth).replAce(/\\/g, '/'))
 				.join('\n');
 
-			const document = await new Promise(c => fs.exists(ignoreFile, c))
-				? await workspace.openTextDocument(ignoreFile)
-				: await workspace.openTextDocument(Uri.file(ignoreFile).with({ scheme: 'untitled' }));
+			const document = AwAit new Promise(c => fs.exists(ignoreFile, c))
+				? AwAit workspAce.openTextDocument(ignoreFile)
+				: AwAit workspAce.openTextDocument(Uri.file(ignoreFile).with({ scheme: 'untitled' }));
 
-			await window.showTextDocument(document);
+			AwAit window.showTextDocument(document);
 
-			const edit = new WorkspaceEdit();
-			const lastLine = document.lineAt(document.lineCount - 1);
-			const text = lastLine.isEmptyOrWhitespace ? `${textToAppend}\n` : `\n${textToAppend}\n`;
+			const edit = new WorkspAceEdit();
+			const lAstLine = document.lineAt(document.lineCount - 1);
+			const text = lAstLine.isEmptyOrWhitespAce ? `${textToAppend}\n` : `\n${textToAppend}\n`;
 
-			edit.insert(document.uri, lastLine.range.end, text);
-			await workspace.applyEdit(edit);
-			await document.save();
+			edit.insert(document.uri, lAstLine.rAnge.end, text);
+			AwAit workspAce.ApplyEdit(edit);
+			AwAit document.sAve();
 		});
 	}
 
-	async rebaseAbort(): Promise<void> {
-		await this.run(Operation.RebaseAbort, async () => await this.repository.rebaseAbort());
+	Async rebAseAbort(): Promise<void> {
+		AwAit this.run(OperAtion.RebAseAbort, Async () => AwAit this.repository.rebAseAbort());
 	}
 
-	checkIgnore(filePaths: string[]): Promise<Set<string>> {
-		return this.run(Operation.CheckIgnore, () => {
+	checkIgnore(filePAths: string[]): Promise<Set<string>> {
+		return this.run(OperAtion.CheckIgnore, () => {
 			return new Promise<Set<string>>((resolve, reject) => {
 
-				filePaths = filePaths
-					.filter(filePath => isDescendant(this.root, filePath));
+				filePAths = filePAths
+					.filter(filePAth => isDescendAnt(this.root, filePAth));
 
-				if (filePaths.length === 0) {
+				if (filePAths.length === 0) {
 					// nothing left
 					return resolve(new Set<string>());
 				}
 
 				// https://git-scm.com/docs/git-check-ignore#git-check-ignore--z
-				const child = this.repository.stream(['check-ignore', '-v', '-z', '--stdin'], { stdio: [null, null, null] });
-				child.stdin!.end(filePaths.join('\0'), 'utf8');
+				const child = this.repository.streAm(['check-ignore', '-v', '-z', '--stdin'], { stdio: [null, null, null] });
+				child.stdin!.end(filePAths.join('\0'), 'utf8');
 
 				const onExit = (exitCode: number) => {
 					if (exitCode === 1) {
 						// nothing ignored
 						resolve(new Set<string>());
 					} else if (exitCode === 0) {
-						resolve(new Set<string>(this.parseIgnoreCheck(data)));
+						resolve(new Set<string>(this.pArseIgnoreCheck(dAtA)));
 					} else {
 						if (/ is in submodule /.test(stderr)) {
-							reject(new GitError({ stdout: data, stderr, exitCode, gitErrorCode: GitErrorCodes.IsInSubmodule }));
+							reject(new GitError({ stdout: dAtA, stderr, exitCode, gitErrorCode: GitErrorCodes.IsInSubmodule }));
 						} else {
-							reject(new GitError({ stdout: data, stderr, exitCode }));
+							reject(new GitError({ stdout: dAtA, stderr, exitCode }));
 						}
 					}
 				};
 
-				let data = '';
-				const onStdoutData = (raw: string) => {
-					data += raw;
+				let dAtA = '';
+				const onStdoutDAtA = (rAw: string) => {
+					dAtA += rAw;
 				};
 
 				child.stdout!.setEncoding('utf8');
-				child.stdout!.on('data', onStdoutData);
+				child.stdout!.on('dAtA', onStdoutDAtA);
 
 				let stderr: string = '';
 				child.stderr!.setEncoding('utf8');
-				child.stderr!.on('data', raw => stderr += raw);
+				child.stderr!.on('dAtA', rAw => stderr += rAw);
 
 				child.on('error', reject);
 				child.on('exit', onExit);
@@ -1396,40 +1396,40 @@ export class Repository implements Disposable {
 		});
 	}
 
-	// Parses output of `git check-ignore -v -z` and returns only those paths
-	// that are actually ignored by git.
-	// Matches to a negative pattern (starting with '!') are filtered out.
-	// See also https://git-scm.com/docs/git-check-ignore#_output.
-	private parseIgnoreCheck(raw: string): string[] {
+	// PArses output of `git check-ignore -v -z` And returns only those pAths
+	// thAt Are ActuAlly ignored by git.
+	// MAtches to A negAtive pAttern (stArting with '!') Are filtered out.
+	// See Also https://git-scm.com/docs/git-check-ignore#_output.
+	privAte pArseIgnoreCheck(rAw: string): string[] {
 		const ignored = [];
-		const elements = raw.split('\0');
+		const elements = rAw.split('\0');
 		for (let i = 0; i < elements.length; i += 4) {
-			const pattern = elements[i + 2];
-			const path = elements[i + 3];
-			if (pattern && !pattern.startsWith('!')) {
-				ignored.push(path);
+			const pAttern = elements[i + 2];
+			const pAth = elements[i + 3];
+			if (pAttern && !pAttern.stArtsWith('!')) {
+				ignored.push(pAth);
 			}
 		}
 		return ignored;
 	}
 
-	private async _push(remote?: string, refspec?: string, setUpstream: boolean = false, tags = false, forcePushMode?: ForcePushMode): Promise<void> {
+	privAte Async _push(remote?: string, refspec?: string, setUpstreAm: booleAn = fAlse, tAgs = fAlse, forcePushMode?: ForcePushMode): Promise<void> {
 		try {
-			await this.repository.push(remote, refspec, setUpstream, tags, forcePushMode);
-		} catch (err) {
+			AwAit this.repository.push(remote, refspec, setUpstreAm, tAgs, forcePushMode);
+		} cAtch (err) {
 			if (!remote || !refspec) {
 				throw err;
 			}
 
 			const repository = new ApiRepository(this);
-			const remoteObj = repository.state.remotes.find(r => r.name === remote);
+			const remoteObj = repository.stAte.remotes.find(r => r.nAme === remote);
 
 			if (!remoteObj) {
 				throw err;
 			}
 
-			for (const handler of this.pushErrorHandlerRegistry.getPushErrorHandlers()) {
-				if (await handler.handlePushError(repository, remoteObj, refspec, err)) {
+			for (const hAndler of this.pushErrorHAndlerRegistry.getPushErrorHAndlers()) {
+				if (AwAit hAndler.hAndlePushError(repository, remoteObj, refspec, err)) {
 					return;
 				}
 			}
@@ -1438,54 +1438,54 @@ export class Repository implements Disposable {
 		}
 	}
 
-	private async run<T>(operation: Operation, runOperation: () => Promise<T> = () => Promise.resolve<any>(null)): Promise<T> {
-		if (this.state !== RepositoryState.Idle) {
-			throw new Error('Repository not initialized');
+	privAte Async run<T>(operAtion: OperAtion, runOperAtion: () => Promise<T> = () => Promise.resolve<Any>(null)): Promise<T> {
+		if (this.stAte !== RepositoryStAte.Idle) {
+			throw new Error('Repository not initiAlized');
 		}
 
-		let error: any = null;
+		let error: Any = null;
 
-		this._operations.start(operation);
-		this._onRunOperation.fire(operation);
+		this._operAtions.stArt(operAtion);
+		this._onRunOperAtion.fire(operAtion);
 
 		try {
-			const result = await this.retryRun(operation, runOperation);
+			const result = AwAit this.retryRun(operAtion, runOperAtion);
 
-			if (!isReadOnly(operation)) {
-				await this.updateModelState();
+			if (!isReAdOnly(operAtion)) {
+				AwAit this.updAteModelStAte();
 			}
 
 			return result;
-		} catch (err) {
+		} cAtch (err) {
 			error = err;
 
 			if (err.gitErrorCode === GitErrorCodes.NotAGitRepository) {
-				this.state = RepositoryState.Disposed;
+				this.stAte = RepositoryStAte.Disposed;
 			}
 
 			throw err;
-		} finally {
-			this._operations.end(operation);
-			this._onDidRunOperation.fire({ operation, error });
+		} finAlly {
+			this._operAtions.end(operAtion);
+			this._onDidRunOperAtion.fire({ operAtion, error });
 		}
 	}
 
-	private async retryRun<T>(operation: Operation, runOperation: () => Promise<T> = () => Promise.resolve<any>(null)): Promise<T> {
-		let attempt = 0;
+	privAte Async retryRun<T>(operAtion: OperAtion, runOperAtion: () => Promise<T> = () => Promise.resolve<Any>(null)): Promise<T> {
+		let Attempt = 0;
 
 		while (true) {
 			try {
-				attempt++;
-				return await runOperation();
-			} catch (err) {
-				const shouldRetry = attempt <= 10 && (
+				Attempt++;
+				return AwAit runOperAtion();
+			} cAtch (err) {
+				const shouldRetry = Attempt <= 10 && (
 					(err.gitErrorCode === GitErrorCodes.RepositoryIsLocked)
-					|| ((operation === Operation.Pull || operation === Operation.Sync || operation === Operation.Fetch) && (err.gitErrorCode === GitErrorCodes.CantLockRef || err.gitErrorCode === GitErrorCodes.CantRebaseMultipleBranches))
+					|| ((operAtion === OperAtion.Pull || operAtion === OperAtion.Sync || operAtion === OperAtion.Fetch) && (err.gitErrorCode === GitErrorCodes.CAntLockRef || err.gitErrorCode === GitErrorCodes.CAntRebAseMultipleBrAnches))
 				);
 
 				if (shouldRetry) {
-					// quatratic backoff
-					await timeout(Math.pow(attempt, 2) * 50);
+					// quAtrAtic bAckoff
+					AwAit timeout(MAth.pow(Attempt, 2) * 50);
 				} else {
 					throw err;
 				}
@@ -1493,220 +1493,220 @@ export class Repository implements Disposable {
 		}
 	}
 
-	private static KnownHugeFolderNames = ['node_modules'];
+	privAte stAtic KnownHugeFolderNAmes = ['node_modules'];
 
-	private async findKnownHugeFolderPathsToIgnore(): Promise<string[]> {
-		const folderPaths: string[] = [];
+	privAte Async findKnownHugeFolderPAthsToIgnore(): Promise<string[]> {
+		const folderPAths: string[] = [];
 
-		for (const folderName of Repository.KnownHugeFolderNames) {
-			const folderPath = path.join(this.repository.root, folderName);
+		for (const folderNAme of Repository.KnownHugeFolderNAmes) {
+			const folderPAth = pAth.join(this.repository.root, folderNAme);
 
-			if (await new Promise<boolean>(c => fs.exists(folderPath, c))) {
-				folderPaths.push(folderPath);
+			if (AwAit new Promise<booleAn>(c => fs.exists(folderPAth, c))) {
+				folderPAths.push(folderPAth);
 			}
 		}
 
-		const ignored = await this.checkIgnore(folderPaths);
+		const ignored = AwAit this.checkIgnore(folderPAths);
 
-		return folderPaths.filter(p => !ignored.has(p));
+		return folderPAths.filter(p => !ignored.hAs(p));
 	}
 
 	@throttle
-	private async updateModelState(): Promise<void> {
-		const { status, didHitLimit } = await this.repository.getStatus();
-		const config = workspace.getConfiguration('git');
-		const scopedConfig = workspace.getConfiguration('git', Uri.file(this.repository.root));
-		const shouldIgnore = config.get<boolean>('ignoreLimitWarning') === true;
-		const useIcons = !config.get<boolean>('decorations.enabled', true);
+	privAte Async updAteModelStAte(): Promise<void> {
+		const { stAtus, didHitLimit } = AwAit this.repository.getStAtus();
+		const config = workspAce.getConfigurAtion('git');
+		const scopedConfig = workspAce.getConfigurAtion('git', Uri.file(this.repository.root));
+		const shouldIgnore = config.get<booleAn>('ignoreLimitWArning') === true;
+		const useIcons = !config.get<booleAn>('decorAtions.enAbled', true);
 		this.isRepositoryHuge = didHitLimit;
 
-		if (didHitLimit && !shouldIgnore && !this.didWarnAboutLimit) {
-			const knownHugeFolderPaths = await this.findKnownHugeFolderPathsToIgnore();
-			const gitWarn = localize('huge', "The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled.", this.repository.root);
-			const neverAgain = { title: localize('neveragain', "Don't Show Again") };
+		if (didHitLimit && !shouldIgnore && !this.didWArnAboutLimit) {
+			const knownHugeFolderPAths = AwAit this.findKnownHugeFolderPAthsToIgnore();
+			const gitWArn = locAlize('huge', "The git repository At '{0}' hAs too mAny Active chAnges, only A subset of Git feAtures will be enAbled.", this.repository.root);
+			const neverAgAin = { title: locAlize('neverAgAin', "Don't Show AgAin") };
 
-			if (knownHugeFolderPaths.length > 0) {
-				const folderPath = knownHugeFolderPaths[0];
-				const folderName = path.basename(folderPath);
+			if (knownHugeFolderPAths.length > 0) {
+				const folderPAth = knownHugeFolderPAths[0];
+				const folderNAme = pAth.bAsenAme(folderPAth);
 
-				const addKnown = localize('add known', "Would you like to add '{0}' to .gitignore?", folderName);
-				const yes = { title: localize('yes', "Yes") };
+				const AddKnown = locAlize('Add known', "Would you like to Add '{0}' to .gitignore?", folderNAme);
+				const yes = { title: locAlize('yes', "Yes") };
 
-				const result = await window.showWarningMessage(`${gitWarn} ${addKnown}`, yes, neverAgain);
+				const result = AwAit window.showWArningMessAge(`${gitWArn} ${AddKnown}`, yes, neverAgAin);
 
-				if (result === neverAgain) {
-					config.update('ignoreLimitWarning', true, false);
-					this.didWarnAboutLimit = true;
+				if (result === neverAgAin) {
+					config.updAte('ignoreLimitWArning', true, fAlse);
+					this.didWArnAboutLimit = true;
 				} else if (result === yes) {
-					this.ignore([Uri.file(folderPath)]);
+					this.ignore([Uri.file(folderPAth)]);
 				}
 			} else {
-				const result = await window.showWarningMessage(gitWarn, neverAgain);
+				const result = AwAit window.showWArningMessAge(gitWArn, neverAgAin);
 
-				if (result === neverAgain) {
-					config.update('ignoreLimitWarning', true, false);
+				if (result === neverAgAin) {
+					config.updAte('ignoreLimitWArning', true, fAlse);
 				}
 
-				this.didWarnAboutLimit = true;
+				this.didWArnAboutLimit = true;
 			}
 		}
 
-		let HEAD: Branch | undefined;
+		let HEAD: BrAnch | undefined;
 
 		try {
-			HEAD = await this.repository.getHEAD();
+			HEAD = AwAit this.repository.getHEAD();
 
-			if (HEAD.name) {
+			if (HEAD.nAme) {
 				try {
-					HEAD = await this.repository.getBranch(HEAD.name);
-				} catch (err) {
+					HEAD = AwAit this.repository.getBrAnch(HEAD.nAme);
+				} cAtch (err) {
 					// noop
 				}
 			}
-		} catch (err) {
+		} cAtch (err) {
 			// noop
 		}
 
-		const sort = config.get<'alphabetically' | 'committerdate'>('branchSortOrder') || 'alphabetically';
-		const [refs, remotes, submodules, rebaseCommit] = await Promise.all([this.repository.getRefs({ sort }), this.repository.getRemotes(), this.repository.getSubmodules(), this.getRebaseCommit()]);
+		const sort = config.get<'AlphAbeticAlly' | 'committerdAte'>('brAnchSortOrder') || 'AlphAbeticAlly';
+		const [refs, remotes, submodules, rebAseCommit] = AwAit Promise.All([this.repository.getRefs({ sort }), this.repository.getRemotes(), this.repository.getSubmodules(), this.getRebAseCommit()]);
 
 		this._HEAD = HEAD;
 		this._refs = refs!;
 		this._remotes = remotes!;
 		this._submodules = submodules!;
-		this.rebaseCommit = rebaseCommit;
+		this.rebAseCommit = rebAseCommit;
 
-		const untrackedChanges = scopedConfig.get<'mixed' | 'separate' | 'hidden'>('untrackedChanges');
+		const untrAckedChAnges = scopedConfig.get<'mixed' | 'sepArAte' | 'hidden'>('untrAckedChAnges');
 		const index: Resource[] = [];
 		const workingTree: Resource[] = [];
 		const merge: Resource[] = [];
-		const untracked: Resource[] = [];
+		const untrAcked: Resource[] = [];
 
-		status.forEach(raw => {
-			const uri = Uri.file(path.join(this.repository.root, raw.path));
-			const renameUri = raw.rename
-				? Uri.file(path.join(this.repository.root, raw.rename))
+		stAtus.forEAch(rAw => {
+			const uri = Uri.file(pAth.join(this.repository.root, rAw.pAth));
+			const renAmeUri = rAw.renAme
+				? Uri.file(pAth.join(this.repository.root, rAw.renAme))
 				: undefined;
 
-			switch (raw.x + raw.y) {
-				case '??': switch (untrackedChanges) {
-					case 'mixed': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.UNTRACKED, useIcons));
-					case 'separate': return untracked.push(new Resource(ResourceGroupType.Untracked, uri, Status.UNTRACKED, useIcons));
-					default: return undefined;
+			switch (rAw.x + rAw.y) {
+				cAse '??': switch (untrAckedChAnges) {
+					cAse 'mixed': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, StAtus.UNTRACKED, useIcons));
+					cAse 'sepArAte': return untrAcked.push(new Resource(ResourceGroupType.UntrAcked, uri, StAtus.UNTRACKED, useIcons));
+					defAult: return undefined;
 				}
-				case '!!': switch (untrackedChanges) {
-					case 'mixed': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.IGNORED, useIcons));
-					case 'separate': return untracked.push(new Resource(ResourceGroupType.Untracked, uri, Status.IGNORED, useIcons));
-					default: return undefined;
+				cAse '!!': switch (untrAckedChAnges) {
+					cAse 'mixed': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, StAtus.IGNORED, useIcons));
+					cAse 'sepArAte': return untrAcked.push(new Resource(ResourceGroupType.UntrAcked, uri, StAtus.IGNORED, useIcons));
+					defAult: return undefined;
 				}
-				case 'DD': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_DELETED, useIcons));
-				case 'AU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.ADDED_BY_US, useIcons));
-				case 'UD': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.DELETED_BY_THEM, useIcons));
-				case 'UA': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.ADDED_BY_THEM, useIcons));
-				case 'DU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.DELETED_BY_US, useIcons));
-				case 'AA': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_ADDED, useIcons));
-				case 'UU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_MODIFIED, useIcons));
+				cAse 'DD': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.BOTH_DELETED, useIcons));
+				cAse 'AU': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.ADDED_BY_US, useIcons));
+				cAse 'UD': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.DELETED_BY_THEM, useIcons));
+				cAse 'UA': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.ADDED_BY_THEM, useIcons));
+				cAse 'DU': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.DELETED_BY_US, useIcons));
+				cAse 'AA': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.BOTH_ADDED, useIcons));
+				cAse 'UU': return merge.push(new Resource(ResourceGroupType.Merge, uri, StAtus.BOTH_MODIFIED, useIcons));
 			}
 
-			switch (raw.x) {
-				case 'M': index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_MODIFIED, useIcons)); break;
-				case 'A': index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_ADDED, useIcons)); break;
-				case 'D': index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_DELETED, useIcons)); break;
-				case 'R': index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_RENAMED, useIcons, renameUri)); break;
-				case 'C': index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_COPIED, useIcons, renameUri)); break;
+			switch (rAw.x) {
+				cAse 'M': index.push(new Resource(ResourceGroupType.Index, uri, StAtus.INDEX_MODIFIED, useIcons)); breAk;
+				cAse 'A': index.push(new Resource(ResourceGroupType.Index, uri, StAtus.INDEX_ADDED, useIcons)); breAk;
+				cAse 'D': index.push(new Resource(ResourceGroupType.Index, uri, StAtus.INDEX_DELETED, useIcons)); breAk;
+				cAse 'R': index.push(new Resource(ResourceGroupType.Index, uri, StAtus.INDEX_RENAMED, useIcons, renAmeUri)); breAk;
+				cAse 'C': index.push(new Resource(ResourceGroupType.Index, uri, StAtus.INDEX_COPIED, useIcons, renAmeUri)); breAk;
 			}
 
-			switch (raw.y) {
-				case 'M': workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.MODIFIED, useIcons, renameUri)); break;
-				case 'D': workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.DELETED, useIcons, renameUri)); break;
-				case 'A': workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.INTENT_TO_ADD, useIcons, renameUri)); break;
+			switch (rAw.y) {
+				cAse 'M': workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, StAtus.MODIFIED, useIcons, renAmeUri)); breAk;
+				cAse 'D': workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, StAtus.DELETED, useIcons, renAmeUri)); breAk;
+				cAse 'A': workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, StAtus.INTENT_TO_ADD, useIcons, renAmeUri)); breAk;
 			}
 
 			return undefined;
 		});
 
 		// set resource groups
-		this.mergeGroup.resourceStates = merge;
-		this.indexGroup.resourceStates = index;
-		this.workingTreeGroup.resourceStates = workingTree;
-		this.untrackedGroup.resourceStates = untracked;
+		this.mergeGroup.resourceStAtes = merge;
+		this.indexGroup.resourceStAtes = index;
+		this.workingTreeGroup.resourceStAtes = workingTree;
+		this.untrAckedGroup.resourceStAtes = untrAcked;
 
-		// set count badge
-		this.setCountBadge();
+		// set count bAdge
+		this.setCountBAdge();
 
-		this._onDidChangeStatus.fire();
+		this._onDidChAngeStAtus.fire();
 
-		this._sourceControl.commitTemplate = await this.getInputTemplate();
+		this._sourceControl.commitTemplAte = AwAit this.getInputTemplAte();
 	}
 
-	private setCountBadge(): void {
-		const config = workspace.getConfiguration('git', Uri.file(this.repository.root));
-		const countBadge = config.get<'all' | 'tracked' | 'off'>('countBadge');
-		const untrackedChanges = config.get<'mixed' | 'separate' | 'hidden'>('untrackedChanges');
+	privAte setCountBAdge(): void {
+		const config = workspAce.getConfigurAtion('git', Uri.file(this.repository.root));
+		const countBAdge = config.get<'All' | 'trAcked' | 'off'>('countBAdge');
+		const untrAckedChAnges = config.get<'mixed' | 'sepArAte' | 'hidden'>('untrAckedChAnges');
 
 		let count =
-			this.mergeGroup.resourceStates.length +
-			this.indexGroup.resourceStates.length +
-			this.workingTreeGroup.resourceStates.length;
+			this.mergeGroup.resourceStAtes.length +
+			this.indexGroup.resourceStAtes.length +
+			this.workingTreeGroup.resourceStAtes.length;
 
-		switch (countBadge) {
-			case 'off': count = 0; break;
-			case 'tracked':
-				if (untrackedChanges === 'mixed') {
-					count -= this.workingTreeGroup.resourceStates.filter(r => r.type === Status.UNTRACKED || r.type === Status.IGNORED).length;
+		switch (countBAdge) {
+			cAse 'off': count = 0; breAk;
+			cAse 'trAcked':
+				if (untrAckedChAnges === 'mixed') {
+					count -= this.workingTreeGroup.resourceStAtes.filter(r => r.type === StAtus.UNTRACKED || r.type === StAtus.IGNORED).length;
 				}
-				break;
-			case 'all':
-				if (untrackedChanges === 'separate') {
-					count += this.untrackedGroup.resourceStates.length;
+				breAk;
+			cAse 'All':
+				if (untrAckedChAnges === 'sepArAte') {
+					count += this.untrAckedGroup.resourceStAtes.length;
 				}
-				break;
+				breAk;
 		}
 
 		this._sourceControl.count = count;
 	}
 
-	private async getRebaseCommit(): Promise<Commit | undefined> {
-		const rebaseHeadPath = path.join(this.repository.root, '.git', 'REBASE_HEAD');
-		const rebaseApplyPath = path.join(this.repository.root, '.git', 'rebase-apply');
-		const rebaseMergePath = path.join(this.repository.root, '.git', 'rebase-merge');
+	privAte Async getRebAseCommit(): Promise<Commit | undefined> {
+		const rebAseHeAdPAth = pAth.join(this.repository.root, '.git', 'REBASE_HEAD');
+		const rebAseApplyPAth = pAth.join(this.repository.root, '.git', 'rebAse-Apply');
+		const rebAseMergePAth = pAth.join(this.repository.root, '.git', 'rebAse-merge');
 
 		try {
-			const [rebaseApplyExists, rebaseMergePathExists, rebaseHead] = await Promise.all([
-				new Promise<boolean>(c => fs.exists(rebaseApplyPath, c)),
-				new Promise<boolean>(c => fs.exists(rebaseMergePath, c)),
-				new Promise<string>((c, e) => fs.readFile(rebaseHeadPath, 'utf8', (err, result) => err ? e(err) : c(result)))
+			const [rebAseApplyExists, rebAseMergePAthExists, rebAseHeAd] = AwAit Promise.All([
+				new Promise<booleAn>(c => fs.exists(rebAseApplyPAth, c)),
+				new Promise<booleAn>(c => fs.exists(rebAseMergePAth, c)),
+				new Promise<string>((c, e) => fs.reAdFile(rebAseHeAdPAth, 'utf8', (err, result) => err ? e(err) : c(result)))
 			]);
-			if (!rebaseApplyExists && !rebaseMergePathExists) {
+			if (!rebAseApplyExists && !rebAseMergePAthExists) {
 				return undefined;
 			}
-			return await this.getCommit(rebaseHead.trim());
-		} catch (err) {
+			return AwAit this.getCommit(rebAseHeAd.trim());
+		} cAtch (err) {
 			return undefined;
 		}
 	}
 
-	private async maybeAutoStash<T>(runOperation: () => Promise<T>): Promise<T> {
-		const config = workspace.getConfiguration('git', Uri.file(this.root));
-		const shouldAutoStash = config.get<boolean>('autoStash')
-			&& this.workingTreeGroup.resourceStates.some(r => r.type !== Status.UNTRACKED && r.type !== Status.IGNORED);
+	privAte Async mAybeAutoStAsh<T>(runOperAtion: () => Promise<T>): Promise<T> {
+		const config = workspAce.getConfigurAtion('git', Uri.file(this.root));
+		const shouldAutoStAsh = config.get<booleAn>('AutoStAsh')
+			&& this.workingTreeGroup.resourceStAtes.some(r => r.type !== StAtus.UNTRACKED && r.type !== StAtus.IGNORED);
 
-		if (!shouldAutoStash) {
-			return await runOperation();
+		if (!shouldAutoStAsh) {
+			return AwAit runOperAtion();
 		}
 
-		await this.repository.createStash(undefined, true);
-		const result = await runOperation();
-		await this.repository.popStash();
+		AwAit this.repository.creAteStAsh(undefined, true);
+		const result = AwAit runOperAtion();
+		AwAit this.repository.popStAsh();
 
 		return result;
 	}
 
-	private onFileChange(_uri: Uri): void {
-		const config = workspace.getConfiguration('git');
-		const autorefresh = config.get<boolean>('autorefresh');
+	privAte onFileChAnge(_uri: Uri): void {
+		const config = workspAce.getConfigurAtion('git');
+		const Autorefresh = config.get<booleAn>('Autorefresh');
 
-		if (!autorefresh) {
+		if (!Autorefresh) {
 			return;
 		}
 
@@ -1714,35 +1714,35 @@ export class Repository implements Disposable {
 			return;
 		}
 
-		if (!this.operations.isIdle()) {
+		if (!this.operAtions.isIdle()) {
 			return;
 		}
 
-		this.eventuallyUpdateWhenIdleAndWait();
+		this.eventuAllyUpdAteWhenIdleAndWAit();
 	}
 
 	@debounce(1000)
-	private eventuallyUpdateWhenIdleAndWait(): void {
-		this.updateWhenIdleAndWait();
+	privAte eventuAllyUpdAteWhenIdleAndWAit(): void {
+		this.updAteWhenIdleAndWAit();
 	}
 
 	@throttle
-	private async updateWhenIdleAndWait(): Promise<void> {
-		await this.whenIdleAndFocused();
-		await this.status();
-		await timeout(5000);
+	privAte Async updAteWhenIdleAndWAit(): Promise<void> {
+		AwAit this.whenIdleAndFocused();
+		AwAit this.stAtus();
+		AwAit timeout(5000);
 	}
 
-	async whenIdleAndFocused(): Promise<void> {
+	Async whenIdleAndFocused(): Promise<void> {
 		while (true) {
-			if (!this.operations.isIdle()) {
-				await eventToPromise(this.onDidRunOperation);
+			if (!this.operAtions.isIdle()) {
+				AwAit eventToPromise(this.onDidRunOperAtion);
 				continue;
 			}
 
-			if (!window.state.focused) {
-				const onDidFocusWindow = filterEvent(window.onDidChangeWindowState, e => e.focused);
-				await eventToPromise(onDidFocusWindow);
+			if (!window.stAte.focused) {
+				const onDidFocusWindow = filterEvent(window.onDidChAngeWindowStAte, e => e.focused);
+				AwAit eventToPromise(onDidFocusWindow);
 				continue;
 			}
 
@@ -1750,55 +1750,55 @@ export class Repository implements Disposable {
 		}
 	}
 
-	get headLabel(): string {
+	get heAdLAbel(): string {
 		const HEAD = this.HEAD;
 
 		if (!HEAD) {
 			return '';
 		}
 
-		const tag = this.refs.filter(iref => iref.type === RefType.Tag && iref.commit === HEAD.commit)[0];
-		const tagName = tag && tag.name;
-		const head = HEAD.name || tagName || (HEAD.commit || '').substr(0, 8);
+		const tAg = this.refs.filter(iref => iref.type === RefType.TAg && iref.commit === HEAD.commit)[0];
+		const tAgNAme = tAg && tAg.nAme;
+		const heAd = HEAD.nAme || tAgNAme || (HEAD.commit || '').substr(0, 8);
 
-		return head
-			+ (this.workingTreeGroup.resourceStates.length + this.untrackedGroup.resourceStates.length > 0 ? '*' : '')
-			+ (this.indexGroup.resourceStates.length > 0 ? '+' : '')
-			+ (this.mergeGroup.resourceStates.length > 0 ? '!' : '');
+		return heAd
+			+ (this.workingTreeGroup.resourceStAtes.length + this.untrAckedGroup.resourceStAtes.length > 0 ? '*' : '')
+			+ (this.indexGroup.resourceStAtes.length > 0 ? '+' : '')
+			+ (this.mergeGroup.resourceStAtes.length > 0 ? '!' : '');
 	}
 
-	get syncLabel(): string {
+	get syncLAbel(): string {
 		if (!this.HEAD
-			|| !this.HEAD.name
+			|| !this.HEAD.nAme
 			|| !this.HEAD.commit
-			|| !this.HEAD.upstream
-			|| !(this.HEAD.ahead || this.HEAD.behind)
+			|| !this.HEAD.upstreAm
+			|| !(this.HEAD.AheAd || this.HEAD.behind)
 		) {
 			return '';
 		}
 
-		const remoteName = this.HEAD && this.HEAD.remote || this.HEAD.upstream.remote;
-		const remote = this.remotes.find(r => r.name === remoteName);
+		const remoteNAme = this.HEAD && this.HEAD.remote || this.HEAD.upstreAm.remote;
+		const remote = this.remotes.find(r => r.nAme === remoteNAme);
 
-		if (remote && remote.isReadOnly) {
+		if (remote && remote.isReAdOnly) {
 			return `${this.HEAD.behind}↓`;
 		}
 
-		return `${this.HEAD.behind}↓ ${this.HEAD.ahead}↑`;
+		return `${this.HEAD.behind}↓ ${this.HEAD.AheAd}↑`;
 	}
 
-	private updateInputBoxPlaceholder(): void {
-		const branchName = this.headShortName;
+	privAte updAteInputBoxPlAceholder(): void {
+		const brAnchNAme = this.heAdShortNAme;
 
-		if (branchName) {
-			// '{0}' will be replaced by the corresponding key-command later in the process, which is why it needs to stay.
-			this._sourceControl.inputBox.placeholder = localize('commitMessageWithHeadLabel', "Message ({0} to commit on '{1}')", '{0}', branchName);
+		if (brAnchNAme) {
+			// '{0}' will be replAced by the corresponding key-commAnd lAter in the process, which is why it needs to stAy.
+			this._sourceControl.inputBox.plAceholder = locAlize('commitMessAgeWithHeAdLAbel', "MessAge ({0} to commit on '{1}')", '{0}', brAnchNAme);
 		} else {
-			this._sourceControl.inputBox.placeholder = localize('commitMessage', "Message ({0} to commit)");
+			this._sourceControl.inputBox.plAceholder = locAlize('commitMessAge', "MessAge ({0} to commit)");
 		}
 	}
 
 	dispose(): void {
-		this.disposables = dispose(this.disposables);
+		this.disposAbles = dispose(this.disposAbles);
 	}
 }

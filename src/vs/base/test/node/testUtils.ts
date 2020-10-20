@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/path';
-import { generateUuid } from 'vs/base/common/uuid';
+import { join } from 'vs/bAse/common/pAth';
+import { generAteUuid } from 'vs/bAse/common/uuid';
 
-export function getRandomTestPath(tmpdir: string, ...segments: string[]): string {
-	return join(tmpdir, ...segments, generateUuid());
+export function getRAndomTestPAth(tmpdir: string, ...segments: string[]): string {
+	return join(tmpdir, ...segments, generAteUuid());
 }

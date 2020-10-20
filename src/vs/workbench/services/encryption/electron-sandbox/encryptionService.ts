@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IMainProcessService } from 'vs/platform/ipc/electron-sandbox/mainProcessService';
-import { createChannelSender } from 'vs/base/parts/ipc/common/ipc';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import { IMAinProcessService } from 'vs/plAtform/ipc/electron-sAndbox/mAinProcessService';
+import { creAteChAnnelSender } from 'vs/bAse/pArts/ipc/common/ipc';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 import { IEncryptionService } from 'vs/workbench/services/encryption/common/encryptionService';
 
-export class EncryptionService {
+export clAss EncryptionService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(@IMainProcessService mainProcessService: IMainProcessService) {
-		return createChannelSender<IEncryptionService>(mainProcessService.getChannel('encryption'));
+	constructor(@IMAinProcessService mAinProcessService: IMAinProcessService) {
+		return creAteChAnnelSender<IEncryptionService>(mAinProcessService.getChAnnel('encryption'));
 	}
 }
 

@@ -1,25 +1,25 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { Part } from 'vs/workbench/browser/part';
-import * as Types from 'vs/base/common/types';
-import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
-import { append, $, hide } from 'vs/base/browser/dom';
-import { TestLayoutService } from 'vs/workbench/test/browser/workbenchTestServices';
-import { StorageScope } from 'vs/platform/storage/common/storage';
-import { TestStorageService } from 'vs/workbench/test/common/workbenchTestServices';
+import * As Assert from 'Assert';
+import { PArt } from 'vs/workbench/browser/pArt';
+import * As Types from 'vs/bAse/common/types';
+import { TestThemeService } from 'vs/plAtform/theme/test/common/testThemeService';
+import { Append, $, hide } from 'vs/bAse/browser/dom';
+import { TestLAyoutService } from 'vs/workbench/test/browser/workbenchTestServices';
+import { StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { TestStorAgeService } from 'vs/workbench/test/common/workbenchTestServices';
 
-class SimplePart extends Part {
+clAss SimplePArt extends PArt {
 
 	minimumWidth: number = 50;
-	maximumWidth: number = 50;
+	mAximumWidth: number = 50;
 	minimumHeight: number = 50;
-	maximumHeight: number = 50;
+	mAximumHeight: number = 50;
 
-	layout(width: number, height: number): void {
+	lAyout(width: number, height: number): void {
 		throw new Error('Method not implemented.');
 	}
 
@@ -28,148 +28,148 @@ class SimplePart extends Part {
 	}
 }
 
-class MyPart extends SimplePart {
+clAss MyPArt extends SimplePArt {
 
-	constructor(private expectedParent: HTMLElement) {
-		super('myPart', { hasTitle: true }, new TestThemeService(), new TestStorageService(), new TestLayoutService());
+	constructor(privAte expectedPArent: HTMLElement) {
+		super('myPArt', { hAsTitle: true }, new TestThemeService(), new TestStorAgeService(), new TestLAyoutService());
 	}
 
-	createTitleArea(parent: HTMLElement): HTMLElement {
-		assert.strictEqual(parent, this.expectedParent);
-		return super.createTitleArea(parent)!;
+	creAteTitleAreA(pArent: HTMLElement): HTMLElement {
+		Assert.strictEquAl(pArent, this.expectedPArent);
+		return super.creAteTitleAreA(pArent)!;
 	}
 
-	createContentArea(parent: HTMLElement): HTMLElement {
-		assert.strictEqual(parent, this.expectedParent);
-		return super.createContentArea(parent)!;
+	creAteContentAreA(pArent: HTMLElement): HTMLElement {
+		Assert.strictEquAl(pArent, this.expectedPArent);
+		return super.creAteContentAreA(pArent)!;
 	}
 
-	getMemento(scope: StorageScope) {
+	getMemento(scope: StorAgeScope) {
 		return super.getMemento(scope);
 	}
 
-	saveState(): void {
-		return super.saveState();
+	sAveStAte(): void {
+		return super.sAveStAte();
 	}
 }
 
-class MyPart2 extends SimplePart {
+clAss MyPArt2 extends SimplePArt {
 
 	constructor() {
-		super('myPart2', { hasTitle: true }, new TestThemeService(), new TestStorageService(), new TestLayoutService());
+		super('myPArt2', { hAsTitle: true }, new TestThemeService(), new TestStorAgeService(), new TestLAyoutService());
 	}
 
-	createTitleArea(parent: HTMLElement): HTMLElement {
-		const titleContainer = append(parent, $('div'));
-		const titleLabel = append(titleContainer, $('span'));
-		titleLabel.id = 'myPart.title';
-		titleLabel.innerText = 'Title';
+	creAteTitleAreA(pArent: HTMLElement): HTMLElement {
+		const titleContAiner = Append(pArent, $('div'));
+		const titleLAbel = Append(titleContAiner, $('spAn'));
+		titleLAbel.id = 'myPArt.title';
+		titleLAbel.innerText = 'Title';
 
-		return titleContainer;
+		return titleContAiner;
 	}
 
-	createContentArea(parent: HTMLElement): HTMLElement {
-		const contentContainer = append(parent, $('div'));
-		const contentSpan = append(contentContainer, $('span'));
-		contentSpan.id = 'myPart.content';
-		contentSpan.innerText = 'Content';
+	creAteContentAreA(pArent: HTMLElement): HTMLElement {
+		const contentContAiner = Append(pArent, $('div'));
+		const contentSpAn = Append(contentContAiner, $('spAn'));
+		contentSpAn.id = 'myPArt.content';
+		contentSpAn.innerText = 'Content';
 
-		return contentContainer;
+		return contentContAiner;
 	}
 }
 
-class MyPart3 extends SimplePart {
+clAss MyPArt3 extends SimplePArt {
 
 	constructor() {
-		super('myPart2', { hasTitle: false }, new TestThemeService(), new TestStorageService(), new TestLayoutService());
+		super('myPArt2', { hAsTitle: fAlse }, new TestThemeService(), new TestStorAgeService(), new TestLAyoutService());
 	}
 
-	createTitleArea(parent: HTMLElement): HTMLElement {
+	creAteTitleAreA(pArent: HTMLElement): HTMLElement {
 		return null!;
 	}
 
-	createContentArea(parent: HTMLElement): HTMLElement {
-		const contentContainer = append(parent, $('div'));
-		const contentSpan = append(contentContainer, $('span'));
-		contentSpan.id = 'myPart.content';
-		contentSpan.innerText = 'Content';
+	creAteContentAreA(pArent: HTMLElement): HTMLElement {
+		const contentContAiner = Append(pArent, $('div'));
+		const contentSpAn = Append(contentContAiner, $('spAn'));
+		contentSpAn.id = 'myPArt.content';
+		contentSpAn.innerText = 'Content';
 
-		return contentContainer;
+		return contentContAiner;
 	}
 }
 
-suite('Workbench parts', () => {
+suite('Workbench pArts', () => {
 	let fixture: HTMLElement;
-	let fixtureId = 'workbench-part-fixture';
+	let fixtureId = 'workbench-pArt-fixture';
 
 	setup(() => {
-		fixture = document.createElement('div');
+		fixture = document.creAteElement('div');
 		fixture.id = fixtureId;
-		document.body.appendChild(fixture);
+		document.body.AppendChild(fixture);
 	});
 
-	teardown(() => {
+	teArdown(() => {
 		document.body.removeChild(fixture);
 	});
 
-	test('Creation', () => {
-		let b = document.createElement('div');
-		document.getElementById(fixtureId)!.appendChild(b);
+	test('CreAtion', () => {
+		let b = document.creAteElement('div');
+		document.getElementById(fixtureId)!.AppendChild(b);
 		hide(b);
 
-		let part = new MyPart(b);
-		part.create(b);
+		let pArt = new MyPArt(b);
+		pArt.creAte(b);
 
-		assert.strictEqual(part.getId(), 'myPart');
+		Assert.strictEquAl(pArt.getId(), 'myPArt');
 
 		// Memento
-		let memento = part.getMemento(StorageScope.GLOBAL) as any;
-		assert(memento);
-		memento.foo = 'bar';
-		memento.bar = [1, 2, 3];
+		let memento = pArt.getMemento(StorAgeScope.GLOBAL) As Any;
+		Assert(memento);
+		memento.foo = 'bAr';
+		memento.bAr = [1, 2, 3];
 
-		part.saveState();
+		pArt.sAveStAte();
 
-		// Re-Create to assert memento contents
-		part = new MyPart(b);
+		// Re-CreAte to Assert memento contents
+		pArt = new MyPArt(b);
 
-		memento = part.getMemento(StorageScope.GLOBAL);
-		assert(memento);
-		assert.strictEqual(memento.foo, 'bar');
-		assert.strictEqual(memento.bar.length, 3);
+		memento = pArt.getMemento(StorAgeScope.GLOBAL);
+		Assert(memento);
+		Assert.strictEquAl(memento.foo, 'bAr');
+		Assert.strictEquAl(memento.bAr.length, 3);
 
 		// Empty Memento stores empty object
 		delete memento.foo;
-		delete memento.bar;
+		delete memento.bAr;
 
-		part.saveState();
-		part = new MyPart(b);
-		memento = part.getMemento(StorageScope.GLOBAL);
-		assert(memento);
-		assert.strictEqual(Types.isEmptyObject(memento), true);
+		pArt.sAveStAte();
+		pArt = new MyPArt(b);
+		memento = pArt.getMemento(StorAgeScope.GLOBAL);
+		Assert(memento);
+		Assert.strictEquAl(Types.isEmptyObject(memento), true);
 	});
 
-	test('Part Layout with Title and Content', function () {
-		let b = document.createElement('div');
-		document.getElementById(fixtureId)!.appendChild(b);
+	test('PArt LAyout with Title And Content', function () {
+		let b = document.creAteElement('div');
+		document.getElementById(fixtureId)!.AppendChild(b);
 		hide(b);
 
-		let part = new MyPart2();
-		part.create(b);
+		let pArt = new MyPArt2();
+		pArt.creAte(b);
 
-		assert(document.getElementById('myPart.title'));
-		assert(document.getElementById('myPart.content'));
+		Assert(document.getElementById('myPArt.title'));
+		Assert(document.getElementById('myPArt.content'));
 	});
 
-	test('Part Layout with Content only', function () {
-		let b = document.createElement('div');
-		document.getElementById(fixtureId)!.appendChild(b);
+	test('PArt LAyout with Content only', function () {
+		let b = document.creAteElement('div');
+		document.getElementById(fixtureId)!.AppendChild(b);
 		hide(b);
 
-		let part = new MyPart3();
-		part.create(b);
+		let pArt = new MyPArt3();
+		pArt.creAte(b);
 
-		assert(!document.getElementById('myPart.title'));
-		assert(document.getElementById('myPart.content'));
+		Assert(!document.getElementById('myPArt.title'));
+		Assert(document.getElementById('myPArt.content'));
 	});
 });

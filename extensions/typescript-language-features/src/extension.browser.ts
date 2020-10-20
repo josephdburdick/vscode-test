@@ -1,80 +1,80 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import { Api, getExtensionApi } from './api';
-import { registerBaseCommands } from './commands/index';
-import { LanguageConfigurationManager } from './languageFeatures/languageConfiguration';
-import { createLazyClientHost, lazilyActivateClient } from './lazyClientHost';
-import { noopRequestCancellerFactory } from './tsServer/cancellation';
+import * As vscode from 'vscode';
+import { Api, getExtensionApi } from './Api';
+import { registerBAseCommAnds } from './commAnds/index';
+import { LAnguAgeConfigurAtionMAnAger } from './lAnguAgeFeAtures/lAnguAgeConfigurAtion';
+import { creAteLAzyClientHost, lAzilyActivAteClient } from './lAzyClientHost';
+import { noopRequestCAncellerFActory } from './tsServer/cAncellAtion';
 import { noopLogDirectoryProvider } from './tsServer/logDirectoryProvider';
 import { ITypeScriptVersionProvider, TypeScriptVersion, TypeScriptVersionSource } from './tsServer/versionProvider';
 import { WorkerServerProcess } from './tsServer/serverProcess.browser';
-import API from './utils/api';
-import { CommandManager } from './commands/commandManager';
-import { TypeScriptServiceConfiguration } from './utils/configuration';
-import { PluginManager } from './utils/plugins';
+import API from './utils/Api';
+import { CommAndMAnAger } from './commAnds/commAndMAnAger';
+import { TypeScriptServiceConfigurAtion } from './utils/configurAtion';
+import { PluginMAnAger } from './utils/plugins';
 
-class StaticVersionProvider implements ITypeScriptVersionProvider {
+clAss StAticVersionProvider implements ITypeScriptVersionProvider {
 
 	constructor(
-		private readonly _version: TypeScriptVersion
+		privAte reAdonly _version: TypeScriptVersion
 	) { }
 
-	updateConfiguration(_configuration: TypeScriptServiceConfiguration): void {
+	updAteConfigurAtion(_configurAtion: TypeScriptServiceConfigurAtion): void {
 		// noop
 	}
 
-	get defaultVersion() { return this._version; }
+	get defAultVersion() { return this._version; }
 	get bundledVersion() { return this._version; }
 
-	readonly globalVersion = undefined;
-	readonly localVersion = undefined;
-	readonly localVersions = [];
+	reAdonly globAlVersion = undefined;
+	reAdonly locAlVersion = undefined;
+	reAdonly locAlVersions = [];
 }
 
-export function activate(
+export function ActivAte(
 	context: vscode.ExtensionContext
 ): Api {
-	const pluginManager = new PluginManager();
-	context.subscriptions.push(pluginManager);
+	const pluginMAnAger = new PluginMAnAger();
+	context.subscriptions.push(pluginMAnAger);
 
-	const commandManager = new CommandManager();
-	context.subscriptions.push(commandManager);
+	const commAndMAnAger = new CommAndMAnAger();
+	context.subscriptions.push(commAndMAnAger);
 
-	context.subscriptions.push(new LanguageConfigurationManager());
+	context.subscriptions.push(new LAnguAgeConfigurAtionMAnAger());
 
 	const onCompletionAccepted = new vscode.EventEmitter<vscode.CompletionItem>();
 	context.subscriptions.push(onCompletionAccepted);
 
-	const versionProvider = new StaticVersionProvider(
+	const versionProvider = new StAticVersionProvider(
 		new TypeScriptVersion(
 			TypeScriptVersionSource.Bundled,
-			vscode.Uri.joinPath(context.extensionUri, 'dist/browser/typescript-web/tsserver.web.js').toString(),
+			vscode.Uri.joinPAth(context.extensionUri, 'dist/browser/typescript-web/tsserver.web.js').toString(),
 			API.fromSimpleString('4.0.3')));
 
-	const lazyClientHost = createLazyClientHost(context, false, {
-		pluginManager,
-		commandManager,
+	const lAzyClientHost = creAteLAzyClientHost(context, fAlse, {
+		pluginMAnAger,
+		commAndMAnAger,
 		logDirectoryProvider: noopLogDirectoryProvider,
-		cancellerFactory: noopRequestCancellerFactory,
+		cAncellerFActory: noopRequestCAncellerFActory,
 		versionProvider,
-		processFactory: WorkerServerProcess
+		processFActory: WorkerServerProcess
 	}, item => {
 		onCompletionAccepted.fire(item);
 	});
 
-	registerBaseCommands(commandManager, lazyClientHost, pluginManager);
+	registerBAseCommAnds(commAndMAnAger, lAzyClientHost, pluginMAnAger);
 
-	// context.subscriptions.push(task.register(lazyClientHost.map(x => x.serviceClient)));
+	// context.subscriptions.push(tAsk.register(lAzyClientHost.mAp(x => x.serviceClient)));
 
-	import('./languageFeatures/tsconfig').then(module => {
+	import('./lAnguAgeFeAtures/tsconfig').then(module => {
 		context.subscriptions.push(module.register());
 	});
 
-	context.subscriptions.push(lazilyActivateClient(lazyClientHost, pluginManager));
+	context.subscriptions.push(lAzilyActivAteClient(lAzyClientHost, pluginMAnAger));
 
-	return getExtensionApi(onCompletionAccepted.event, pluginManager);
+	return getExtensionApi(onCompletionAccepted.event, pluginMAnAger);
 }

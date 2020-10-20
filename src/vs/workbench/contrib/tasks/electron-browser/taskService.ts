@@ -1,133 +1,133 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as Objects from 'vs/base/common/objects';
-import * as semver from 'semver-umd';
-import { IStringDictionary } from 'vs/base/common/collections';
-import { WorkbenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { ITaskSystem } from 'vs/workbench/contrib/tasks/common/taskSystem';
-import { ExecutionEngine, TaskRunSource } from 'vs/workbench/contrib/tasks/common/tasks';
-import * as TaskConfig from '../common/taskConfiguration';
-import { ProcessTaskSystem } from 'vs/workbench/contrib/tasks/node/processTaskSystem';
-import { ProcessRunnerDetector } from 'vs/workbench/contrib/tasks/node/processRunnerDetector';
-import { AbstractTaskService } from 'vs/workbench/contrib/tasks/browser/abstractTaskService';
-import { TaskFilter, ITaskService } from 'vs/workbench/contrib/tasks/common/taskService';
-import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
+import * As Objects from 'vs/bAse/common/objects';
+import * As semver from 'semver-umd';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import { WorkbenchStAte, IWorkspAceFolder } from 'vs/plAtform/workspAce/common/workspAce';
+import { ITAskSystem } from 'vs/workbench/contrib/tAsks/common/tAskSystem';
+import { ExecutionEngine, TAskRunSource } from 'vs/workbench/contrib/tAsks/common/tAsks';
+import * As TAskConfig from '../common/tAskConfigurAtion';
+import { ProcessTAskSystem } from 'vs/workbench/contrib/tAsks/node/processTAskSystem';
+import { ProcessRunnerDetector } from 'vs/workbench/contrib/tAsks/node/processRunnerDetector';
+import { AbstrActTAskService } from 'vs/workbench/contrib/tAsks/browser/AbstrActTAskService';
+import { TAskFilter, ITAskService } from 'vs/workbench/contrib/tAsks/common/tAskService';
+import { registerSingleton } from 'vs/plAtform/instAntiAtion/common/extensions';
 
-interface WorkspaceFolderConfigurationResult {
-	workspaceFolder: IWorkspaceFolder;
-	config: TaskConfig.ExternalTaskRunnerConfiguration | undefined;
-	hasErrors: boolean;
+interfAce WorkspAceFolderConfigurAtionResult {
+	workspAceFolder: IWorkspAceFolder;
+	config: TAskConfig.ExternAlTAskRunnerConfigurAtion | undefined;
+	hAsErrors: booleAn;
 }
 
-export class TaskService extends AbstractTaskService {
-	private _configHasErrors: boolean = false;
+export clAss TAskService extends AbstrActTAskService {
+	privAte _configHAsErrors: booleAn = fAlse;
 
-	protected getTaskSystem(): ITaskSystem {
-		if (this._taskSystem) {
-			return this._taskSystem;
+	protected getTAskSystem(): ITAskSystem {
+		if (this._tAskSystem) {
+			return this._tAskSystem;
 		}
-		if (this.executionEngine === ExecutionEngine.Terminal) {
-			this._taskSystem = this.createTerminalTaskSystem();
+		if (this.executionEngine === ExecutionEngine.TerminAl) {
+			this._tAskSystem = this.creAteTerminAlTAskSystem();
 		} else {
-			let system = new ProcessTaskSystem(
-				this.markerService, this.modelService, this.telemetryService, this.outputService,
-				this.configurationResolverService, TaskService.OutputChannelId,
+			let system = new ProcessTAskSystem(
+				this.mArkerService, this.modelService, this.telemetryService, this.outputService,
+				this.configurAtionResolverService, TAskService.OutputChAnnelId,
 			);
-			system.hasErrors(this._configHasErrors);
-			this._taskSystem = system;
+			system.hAsErrors(this._configHAsErrors);
+			this._tAskSystem = system;
 		}
-		this._taskSystemListener = this._taskSystem!.onDidStateChange((event) => {
-			if (this._taskSystem) {
-				this._taskRunningState.set(this._taskSystem.isActiveSync());
+		this._tAskSystemListener = this._tAskSystem!.onDidStAteChAnge((event) => {
+			if (this._tAskSystem) {
+				this._tAskRunningStAte.set(this._tAskSystem.isActiveSync());
 			}
-			this._onDidStateChange.fire(event);
+			this._onDidStAteChAnge.fire(event);
 		});
-		return this._taskSystem!;
+		return this._tAskSystem!;
 	}
 
-	protected updateWorkspaceTasks(runSource: TaskRunSource = TaskRunSource.User): void {
-		this._workspaceTasksPromise = this.computeWorkspaceTasks(runSource).then(value => {
-			if (this.executionEngine === ExecutionEngine.Process && this._taskSystem instanceof ProcessTaskSystem) {
-				// We can only have a process engine if we have one folder.
-				value.forEach((value) => {
-					this._configHasErrors = value.hasErrors;
-					(this._taskSystem as ProcessTaskSystem).hasErrors(this._configHasErrors);
+	protected updAteWorkspAceTAsks(runSource: TAskRunSource = TAskRunSource.User): void {
+		this._workspAceTAsksPromise = this.computeWorkspAceTAsks(runSource).then(vAlue => {
+			if (this.executionEngine === ExecutionEngine.Process && this._tAskSystem instAnceof ProcessTAskSystem) {
+				// We cAn only hAve A process engine if we hAve one folder.
+				vAlue.forEAch((vAlue) => {
+					this._configHAsErrors = vAlue.hAsErrors;
+					(this._tAskSystem As ProcessTAskSystem).hAsErrors(this._configHAsErrors);
 				});
 			}
-			return value;
+			return vAlue;
 		});
 	}
 
-	private hasDetectorSupport(config: TaskConfig.ExternalTaskRunnerConfiguration): boolean {
-		if (!config.command || this.contextService.getWorkbenchState() === WorkbenchState.EMPTY) {
-			return false;
+	privAte hAsDetectorSupport(config: TAskConfig.ExternAlTAskRunnerConfigurAtion): booleAn {
+		if (!config.commAnd || this.contextService.getWorkbenchStAte() === WorkbenchStAte.EMPTY) {
+			return fAlse;
 		}
-		return ProcessRunnerDetector.supports(TaskConfig.CommandString.value(config.command));
+		return ProcessRunnerDetector.supports(TAskConfig.CommAndString.vAlue(config.commAnd));
 	}
 
-	protected computeLegacyConfiguration(workspaceFolder: IWorkspaceFolder): Promise<WorkspaceFolderConfigurationResult> {
-		let { config, hasParseErrors } = this.getConfiguration(workspaceFolder);
-		if (hasParseErrors) {
-			return Promise.resolve({ workspaceFolder: workspaceFolder, hasErrors: true, config: undefined });
+	protected computeLegAcyConfigurAtion(workspAceFolder: IWorkspAceFolder): Promise<WorkspAceFolderConfigurAtionResult> {
+		let { config, hAsPArseErrors } = this.getConfigurAtion(workspAceFolder);
+		if (hAsPArseErrors) {
+			return Promise.resolve({ workspAceFolder: workspAceFolder, hAsErrors: true, config: undefined });
 		}
 		if (config) {
-			if (this.hasDetectorSupport(config)) {
-				return new ProcessRunnerDetector(workspaceFolder, this.fileService, this.contextService, this.configurationResolverService, config).detect(true).then((value): WorkspaceFolderConfigurationResult => {
-					let hasErrors = this.printStderr(value.stderr);
-					let detectedConfig = value.config;
+			if (this.hAsDetectorSupport(config)) {
+				return new ProcessRunnerDetector(workspAceFolder, this.fileService, this.contextService, this.configurAtionResolverService, config).detect(true).then((vAlue): WorkspAceFolderConfigurAtionResult => {
+					let hAsErrors = this.printStderr(vAlue.stderr);
+					let detectedConfig = vAlue.config;
 					if (!detectedConfig) {
-						return { workspaceFolder, config, hasErrors };
+						return { workspAceFolder, config, hAsErrors };
 					}
-					let result: TaskConfig.ExternalTaskRunnerConfiguration = Objects.deepClone(config)!;
-					let configuredTasks: IStringDictionary<TaskConfig.CustomTask> = Object.create(null);
-					const resultTasks = result.tasks;
-					if (!resultTasks) {
-						if (detectedConfig.tasks) {
-							result.tasks = detectedConfig.tasks;
+					let result: TAskConfig.ExternAlTAskRunnerConfigurAtion = Objects.deepClone(config)!;
+					let configuredTAsks: IStringDictionAry<TAskConfig.CustomTAsk> = Object.creAte(null);
+					const resultTAsks = result.tAsks;
+					if (!resultTAsks) {
+						if (detectedConfig.tAsks) {
+							result.tAsks = detectedConfig.tAsks;
 						}
 					} else {
-						resultTasks.forEach(task => {
-							if (task.taskName) {
-								configuredTasks[task.taskName] = task;
+						resultTAsks.forEAch(tAsk => {
+							if (tAsk.tAskNAme) {
+								configuredTAsks[tAsk.tAskNAme] = tAsk;
 							}
 						});
-						if (detectedConfig.tasks) {
-							detectedConfig.tasks.forEach((task) => {
-								if (task.taskName && !configuredTasks[task.taskName]) {
-									resultTasks.push(task);
+						if (detectedConfig.tAsks) {
+							detectedConfig.tAsks.forEAch((tAsk) => {
+								if (tAsk.tAskNAme && !configuredTAsks[tAsk.tAskNAme]) {
+									resultTAsks.push(tAsk);
 								}
 							});
 						}
 					}
-					return { workspaceFolder, config: result, hasErrors };
+					return { workspAceFolder, config: result, hAsErrors };
 				});
 			} else {
-				return Promise.resolve({ workspaceFolder, config, hasErrors: false });
+				return Promise.resolve({ workspAceFolder, config, hAsErrors: fAlse });
 			}
 		} else {
-			return new ProcessRunnerDetector(workspaceFolder, this.fileService, this.contextService, this.configurationResolverService).detect(true).then((value) => {
-				let hasErrors = this.printStderr(value.stderr);
-				return { workspaceFolder, config: value.config!, hasErrors };
+			return new ProcessRunnerDetector(workspAceFolder, this.fileService, this.contextService, this.configurAtionResolverService).detect(true).then((vAlue) => {
+				let hAsErrors = this.printStderr(vAlue.stderr);
+				return { workspAceFolder, config: vAlue.config!, hAsErrors };
 			});
 		}
 	}
 
-	protected versionAndEngineCompatible(filter?: TaskFilter): boolean {
-		let range = filter && filter.version ? filter.version : undefined;
+	protected versionAndEngineCompAtible(filter?: TAskFilter): booleAn {
+		let rAnge = filter && filter.version ? filter.version : undefined;
 		let engine = this.executionEngine;
 
-		return (range === undefined) || ((semver.satisfies('0.1.0', range) && engine === ExecutionEngine.Process) || (semver.satisfies('2.0.0', range) && engine === ExecutionEngine.Terminal));
+		return (rAnge === undefined) || ((semver.sAtisfies('0.1.0', rAnge) && engine === ExecutionEngine.Process) || (semver.sAtisfies('2.0.0', rAnge) && engine === ExecutionEngine.TerminAl));
 	}
 
-	private printStderr(stderr: string[]): boolean {
-		let result = false;
+	privAte printStderr(stderr: string[]): booleAn {
+		let result = fAlse;
 		if (stderr && stderr.length > 0) {
-			stderr.forEach((line) => {
+			stderr.forEAch((line) => {
 				result = true;
-				this._outputChannel.append(line + '\n');
+				this._outputChAnnel.Append(line + '\n');
 			});
 			this.showOutput();
 		}
@@ -135,4 +135,4 @@ export class TaskService extends AbstractTaskService {
 	}
 }
 
-registerSingleton(ITaskService, TaskService, true);
+registerSingleton(ITAskService, TAskService, true);

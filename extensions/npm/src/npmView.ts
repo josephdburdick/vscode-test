@@ -1,148 +1,148 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { JSONVisitor, visit } from 'jsonc-parser';
-import * as path from 'path';
+import { JSONVisitor, visit } from 'jsonc-pArser';
+import * As pAth from 'pAth';
 import {
-	commands, Event, EventEmitter, ExtensionContext,
-	Selection, Task,
-	TaskGroup, tasks, TextDocument, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Uri,
-	window, workspace, WorkspaceFolder
+	commAnds, Event, EventEmitter, ExtensionContext,
+	Selection, TAsk,
+	TAskGroup, tAsks, TextDocument, ThemeIcon, TreeDAtAProvider, TreeItem, TreeItemCollApsibleStAte, Uri,
+	window, workspAce, WorkspAceFolder
 } from 'vscode';
-import * as nls from 'vscode-nls';
+import * As nls from 'vscode-nls';
 import {
-	createTask, getTaskName, isAutoDetectionEnabled, isWorkspaceFolder, NpmTaskDefinition,
-	startDebugging
-} from './tasks';
+	creAteTAsk, getTAskNAme, isAutoDetectionEnAbled, isWorkspAceFolder, NpmTAskDefinition,
+	stArtDebugging
+} from './tAsks';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-class Folder extends TreeItem {
-	packages: PackageJSON[] = [];
-	workspaceFolder: WorkspaceFolder;
+clAss Folder extends TreeItem {
+	pAckAges: PAckAgeJSON[] = [];
+	workspAceFolder: WorkspAceFolder;
 
-	constructor(folder: WorkspaceFolder) {
-		super(folder.name, TreeItemCollapsibleState.Expanded);
-		this.contextValue = 'folder';
+	constructor(folder: WorkspAceFolder) {
+		super(folder.nAme, TreeItemCollApsibleStAte.ExpAnded);
+		this.contextVAlue = 'folder';
 		this.resourceUri = folder.uri;
-		this.workspaceFolder = folder;
-		this.iconPath = ThemeIcon.Folder;
+		this.workspAceFolder = folder;
+		this.iconPAth = ThemeIcon.Folder;
 	}
 
-	addPackage(packageJson: PackageJSON) {
-		this.packages.push(packageJson);
+	AddPAckAge(pAckAgeJson: PAckAgeJSON) {
+		this.pAckAges.push(pAckAgeJson);
 	}
 }
 
-const packageName = 'package.json';
+const pAckAgeNAme = 'pAckAge.json';
 
-class PackageJSON extends TreeItem {
-	path: string;
+clAss PAckAgeJSON extends TreeItem {
+	pAth: string;
 	folder: Folder;
 	scripts: NpmScript[] = [];
 
-	static getLabel(_folderName: string, relativePath: string): string {
-		if (relativePath.length > 0) {
-			return path.join(relativePath, packageName);
+	stAtic getLAbel(_folderNAme: string, relAtivePAth: string): string {
+		if (relAtivePAth.length > 0) {
+			return pAth.join(relAtivePAth, pAckAgeNAme);
 		}
-		return packageName;
+		return pAckAgeNAme;
 	}
 
-	constructor(folder: Folder, relativePath: string) {
-		super(PackageJSON.getLabel(folder.label!, relativePath), TreeItemCollapsibleState.Expanded);
+	constructor(folder: Folder, relAtivePAth: string) {
+		super(PAckAgeJSON.getLAbel(folder.lAbel!, relAtivePAth), TreeItemCollApsibleStAte.ExpAnded);
 		this.folder = folder;
-		this.path = relativePath;
-		this.contextValue = 'packageJSON';
-		if (relativePath) {
-			this.resourceUri = Uri.file(path.join(folder!.resourceUri!.fsPath, relativePath, packageName));
+		this.pAth = relAtivePAth;
+		this.contextVAlue = 'pAckAgeJSON';
+		if (relAtivePAth) {
+			this.resourceUri = Uri.file(pAth.join(folder!.resourceUri!.fsPAth, relAtivePAth, pAckAgeNAme));
 		} else {
-			this.resourceUri = Uri.file(path.join(folder!.resourceUri!.fsPath, packageName));
+			this.resourceUri = Uri.file(pAth.join(folder!.resourceUri!.fsPAth, pAckAgeNAme));
 		}
-		this.iconPath = ThemeIcon.File;
+		this.iconPAth = ThemeIcon.File;
 	}
 
-	addScript(script: NpmScript) {
+	AddScript(script: NpmScript) {
 		this.scripts.push(script);
 	}
 }
 
-type ExplorerCommands = 'open' | 'run';
+type ExplorerCommAnds = 'open' | 'run';
 
-class NpmScript extends TreeItem {
-	task: Task;
-	package: PackageJSON;
+clAss NpmScript extends TreeItem {
+	tAsk: TAsk;
+	pAckAge: PAckAgeJSON;
 
-	constructor(_context: ExtensionContext, packageJson: PackageJSON, task: Task) {
-		super(task.name, TreeItemCollapsibleState.None);
-		const command: ExplorerCommands = workspace.getConfiguration('npm').get<ExplorerCommands>('scriptExplorerAction') || 'open';
+	constructor(_context: ExtensionContext, pAckAgeJson: PAckAgeJSON, tAsk: TAsk) {
+		super(tAsk.nAme, TreeItemCollApsibleStAte.None);
+		const commAnd: ExplorerCommAnds = workspAce.getConfigurAtion('npm').get<ExplorerCommAnds>('scriptExplorerAction') || 'open';
 
-		const commandList = {
+		const commAndList = {
 			'open': {
 				title: 'Edit Script',
-				command: 'npm.openScript',
-				arguments: [this]
+				commAnd: 'npm.openScript',
+				Arguments: [this]
 			},
 			'run': {
 				title: 'Run Script',
-				command: 'npm.runScript',
-				arguments: [this]
+				commAnd: 'npm.runScript',
+				Arguments: [this]
 			}
 		};
-		this.contextValue = 'script';
-		this.package = packageJson;
-		this.task = task;
-		this.command = commandList[command];
+		this.contextVAlue = 'script';
+		this.pAckAge = pAckAgeJson;
+		this.tAsk = tAsk;
+		this.commAnd = commAndList[commAnd];
 
-		if (task.group && task.group === TaskGroup.Clean) {
-			this.iconPath = new ThemeIcon('wrench-subaction');
+		if (tAsk.group && tAsk.group === TAskGroup.CleAn) {
+			this.iconPAth = new ThemeIcon('wrench-subAction');
 		} else {
-			this.iconPath = new ThemeIcon('wrench');
+			this.iconPAth = new ThemeIcon('wrench');
 		}
-		if (task.detail) {
-			this.tooltip = task.detail;
+		if (tAsk.detAil) {
+			this.tooltip = tAsk.detAil;
 		}
 	}
 
-	getFolder(): WorkspaceFolder {
-		return this.package.folder.workspaceFolder;
+	getFolder(): WorkspAceFolder {
+		return this.pAckAge.folder.workspAceFolder;
 	}
 }
 
-class NoScripts extends TreeItem {
-	constructor(message: string) {
-		super(message, TreeItemCollapsibleState.None);
-		this.contextValue = 'noscripts';
+clAss NoScripts extends TreeItem {
+	constructor(messAge: string) {
+		super(messAge, TreeItemCollApsibleStAte.None);
+		this.contextVAlue = 'noscripts';
 	}
 }
 
-export class NpmScriptsTreeDataProvider implements TreeDataProvider<TreeItem> {
-	private taskTree: Folder[] | PackageJSON[] | NoScripts[] | null = null;
-	private extensionContext: ExtensionContext;
-	private _onDidChangeTreeData: EventEmitter<TreeItem | null> = new EventEmitter<TreeItem | null>();
-	readonly onDidChangeTreeData: Event<TreeItem | null> = this._onDidChangeTreeData.event;
+export clAss NpmScriptsTreeDAtAProvider implements TreeDAtAProvider<TreeItem> {
+	privAte tAskTree: Folder[] | PAckAgeJSON[] | NoScripts[] | null = null;
+	privAte extensionContext: ExtensionContext;
+	privAte _onDidChAngeTreeDAtA: EventEmitter<TreeItem | null> = new EventEmitter<TreeItem | null>();
+	reAdonly onDidChAngeTreeDAtA: Event<TreeItem | null> = this._onDidChAngeTreeDAtA.event;
 
 	constructor(context: ExtensionContext) {
 		const subscriptions = context.subscriptions;
 		this.extensionContext = context;
-		subscriptions.push(commands.registerCommand('npm.runScript', this.runScript, this));
-		subscriptions.push(commands.registerCommand('npm.debugScript', this.debugScript, this));
-		subscriptions.push(commands.registerCommand('npm.openScript', this.openScript, this));
-		subscriptions.push(commands.registerCommand('npm.runInstall', this.runInstall, this));
+		subscriptions.push(commAnds.registerCommAnd('npm.runScript', this.runScript, this));
+		subscriptions.push(commAnds.registerCommAnd('npm.debugScript', this.debugScript, this));
+		subscriptions.push(commAnds.registerCommAnd('npm.openScript', this.openScript, this));
+		subscriptions.push(commAnds.registerCommAnd('npm.runInstAll', this.runInstAll, this));
 	}
 
-	private async runScript(script: NpmScript) {
-		tasks.executeTask(script.task);
+	privAte Async runScript(script: NpmScript) {
+		tAsks.executeTAsk(script.tAsk);
 	}
 
-	private async debugScript(script: NpmScript) {
-		startDebugging(script.task.definition.script, path.dirname(script.package.resourceUri!.fsPath), script.getFolder());
+	privAte Async debugScript(script: NpmScript) {
+		stArtDebugging(script.tAsk.definition.script, pAth.dirnAme(script.pAckAge.resourceUri!.fsPAth), script.getFolder());
 	}
 
-	private findScript(document: TextDocument, script?: NpmScript): number {
+	privAte findScript(document: TextDocument, script?: NpmScript): number {
 		let scriptOffset = 0;
-		let inScripts = false;
+		let inScripts = fAlse;
 
 		let visitor: JSONVisitor = {
 			onError() {
@@ -150,7 +150,7 @@ export class NpmScriptsTreeDataProvider implements TreeDataProvider<TreeItem> {
 			},
 			onObjectEnd() {
 				if (inScripts) {
-					inScripts = false;
+					inScripts = fAlse;
 				}
 			},
 			onObjectProperty(property: string, offset: number, _length: number) {
@@ -161,8 +161,8 @@ export class NpmScriptsTreeDataProvider implements TreeDataProvider<TreeItem> {
 					}
 				}
 				else if (inScripts && script) {
-					let label = getTaskName(property, script.task.definition.path);
-					if (script.task.name === label) {
+					let lAbel = getTAskNAme(property, script.tAsk.definition.pAth);
+					if (script.tAsk.nAme === lAbel) {
 						scriptOffset = offset;
 					}
 				}
@@ -173,128 +173,128 @@ export class NpmScriptsTreeDataProvider implements TreeDataProvider<TreeItem> {
 
 	}
 
-	private async runInstall(selection: PackageJSON) {
+	privAte Async runInstAll(selection: PAckAgeJSON) {
 		let uri: Uri | undefined = undefined;
-		if (selection instanceof PackageJSON) {
+		if (selection instAnceof PAckAgeJSON) {
 			uri = selection.resourceUri;
 		}
 		if (!uri) {
 			return;
 		}
-		let task = await createTask('install', 'install', selection.folder.workspaceFolder, uri, undefined, []);
-		tasks.executeTask(task);
+		let tAsk = AwAit creAteTAsk('instAll', 'instAll', selection.folder.workspAceFolder, uri, undefined, []);
+		tAsks.executeTAsk(tAsk);
 	}
 
-	private async openScript(selection: PackageJSON | NpmScript) {
+	privAte Async openScript(selection: PAckAgeJSON | NpmScript) {
 		let uri: Uri | undefined = undefined;
-		if (selection instanceof PackageJSON) {
+		if (selection instAnceof PAckAgeJSON) {
 			uri = selection.resourceUri!;
-		} else if (selection instanceof NpmScript) {
-			uri = selection.package.resourceUri;
+		} else if (selection instAnceof NpmScript) {
+			uri = selection.pAckAge.resourceUri;
 		}
 		if (!uri) {
 			return;
 		}
-		let document: TextDocument = await workspace.openTextDocument(uri);
-		let offset = this.findScript(document, selection instanceof NpmScript ? selection : undefined);
+		let document: TextDocument = AwAit workspAce.openTextDocument(uri);
+		let offset = this.findScript(document, selection instAnceof NpmScript ? selection : undefined);
 		let position = document.positionAt(offset);
-		await window.showTextDocument(document, { preserveFocus: true, selection: new Selection(position, position) });
+		AwAit window.showTextDocument(document, { preserveFocus: true, selection: new Selection(position, position) });
 	}
 
 	public refresh() {
-		this.taskTree = null;
-		this._onDidChangeTreeData.fire(null);
+		this.tAskTree = null;
+		this._onDidChAngeTreeDAtA.fire(null);
 	}
 
 	getTreeItem(element: TreeItem): TreeItem {
 		return element;
 	}
 
-	getParent(element: TreeItem): TreeItem | null {
-		if (element instanceof Folder) {
+	getPArent(element: TreeItem): TreeItem | null {
+		if (element instAnceof Folder) {
 			return null;
 		}
-		if (element instanceof PackageJSON) {
+		if (element instAnceof PAckAgeJSON) {
 			return element.folder;
 		}
-		if (element instanceof NpmScript) {
-			return element.package;
+		if (element instAnceof NpmScript) {
+			return element.pAckAge;
 		}
-		if (element instanceof NoScripts) {
+		if (element instAnceof NoScripts) {
 			return null;
 		}
 		return null;
 	}
 
-	async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-		if (!this.taskTree) {
-			let taskItems = await tasks.fetchTasks({ type: 'npm' });
-			if (taskItems) {
-				this.taskTree = this.buildTaskTree(taskItems);
-				if (this.taskTree.length === 0) {
-					let message = localize('noScripts', 'No scripts found.');
-					if (!isAutoDetectionEnabled()) {
-						message = localize('autoDetectIsOff', 'The setting "npm.autoDetect" is "off".');
+	Async getChildren(element?: TreeItem): Promise<TreeItem[]> {
+		if (!this.tAskTree) {
+			let tAskItems = AwAit tAsks.fetchTAsks({ type: 'npm' });
+			if (tAskItems) {
+				this.tAskTree = this.buildTAskTree(tAskItems);
+				if (this.tAskTree.length === 0) {
+					let messAge = locAlize('noScripts', 'No scripts found.');
+					if (!isAutoDetectionEnAbled()) {
+						messAge = locAlize('AutoDetectIsOff', 'The setting "npm.AutoDetect" is "off".');
 					}
-					this.taskTree = [new NoScripts(message)];
+					this.tAskTree = [new NoScripts(messAge)];
 				}
 			}
 		}
-		if (element instanceof Folder) {
-			return element.packages;
+		if (element instAnceof Folder) {
+			return element.pAckAges;
 		}
-		if (element instanceof PackageJSON) {
+		if (element instAnceof PAckAgeJSON) {
 			return element.scripts;
 		}
-		if (element instanceof NpmScript) {
+		if (element instAnceof NpmScript) {
 			return [];
 		}
-		if (element instanceof NoScripts) {
+		if (element instAnceof NoScripts) {
 			return [];
 		}
 		if (!element) {
-			if (this.taskTree) {
-				return this.taskTree;
+			if (this.tAskTree) {
+				return this.tAskTree;
 			}
 		}
 		return [];
 	}
 
-	private isInstallTask(task: Task): boolean {
-		let fullName = getTaskName('install', task.definition.path);
-		return fullName === task.name;
+	privAte isInstAllTAsk(tAsk: TAsk): booleAn {
+		let fullNAme = getTAskNAme('instAll', tAsk.definition.pAth);
+		return fullNAme === tAsk.nAme;
 	}
 
-	private buildTaskTree(tasks: Task[]): Folder[] | PackageJSON[] | NoScripts[] {
-		let folders: Map<String, Folder> = new Map();
-		let packages: Map<String, PackageJSON> = new Map();
+	privAte buildTAskTree(tAsks: TAsk[]): Folder[] | PAckAgeJSON[] | NoScripts[] {
+		let folders: MAp<String, Folder> = new MAp();
+		let pAckAges: MAp<String, PAckAgeJSON> = new MAp();
 
 		let folder = null;
-		let packageJson = null;
+		let pAckAgeJson = null;
 
-		tasks.forEach(each => {
-			if (isWorkspaceFolder(each.scope) && !this.isInstallTask(each)) {
-				folder = folders.get(each.scope.name);
+		tAsks.forEAch(eAch => {
+			if (isWorkspAceFolder(eAch.scope) && !this.isInstAllTAsk(eAch)) {
+				folder = folders.get(eAch.scope.nAme);
 				if (!folder) {
-					folder = new Folder(each.scope);
-					folders.set(each.scope.name, folder);
+					folder = new Folder(eAch.scope);
+					folders.set(eAch.scope.nAme, folder);
 				}
-				let definition: NpmTaskDefinition = <NpmTaskDefinition>each.definition;
-				let relativePath = definition.path ? definition.path : '';
-				let fullPath = path.join(each.scope.name, relativePath);
-				packageJson = packages.get(fullPath);
-				if (!packageJson) {
-					packageJson = new PackageJSON(folder, relativePath);
-					folder.addPackage(packageJson);
-					packages.set(fullPath, packageJson);
+				let definition: NpmTAskDefinition = <NpmTAskDefinition>eAch.definition;
+				let relAtivePAth = definition.pAth ? definition.pAth : '';
+				let fullPAth = pAth.join(eAch.scope.nAme, relAtivePAth);
+				pAckAgeJson = pAckAges.get(fullPAth);
+				if (!pAckAgeJson) {
+					pAckAgeJson = new PAckAgeJSON(folder, relAtivePAth);
+					folder.AddPAckAge(pAckAgeJson);
+					pAckAges.set(fullPAth, pAckAgeJson);
 				}
-				let script = new NpmScript(this.extensionContext, packageJson, each);
-				packageJson.addScript(script);
+				let script = new NpmScript(this.extensionContext, pAckAgeJson, eAch);
+				pAckAgeJson.AddScript(script);
 			}
 		});
 		if (folders.size === 1) {
-			return [...packages.values()];
+			return [...pAckAges.vAlues()];
 		}
-		return [...folders.values()];
+		return [...folders.vAlues()];
 	}
 }

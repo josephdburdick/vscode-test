@@ -1,312 +1,312 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { IAction } from 'vs/base/common/actions';
-import { distinct } from 'vs/base/common/arrays';
-import { CancelablePromise, createCancelablePromise, raceCancellablePromises, raceCancellation, timeout } from 'vs/base/common/async';
-import { CancellationToken } from 'vs/base/common/cancellation';
-import { isPromiseCanceledError } from 'vs/base/common/errors';
-import { Emitter, Event } from 'vs/base/common/event';
-import { DisposableStore, MutableDisposable } from 'vs/base/common/lifecycle';
-import { localize } from 'vs/nls';
-import { ConfigurationTarget, IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { IExtensionRecommendationNotificationService, RecommendationsNotificationResult, RecommendationSource } from 'vs/platform/extensionRecommendations/common/extensionRecommendations';
-import { IInstantiationService, optional } from 'vs/platform/instantiation/common/instantiation';
-import { INotificationHandle, INotificationService, IPromptChoice, Severity } from 'vs/platform/notification/common/notification';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { SearchExtensionsAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { IAction } from 'vs/bAse/common/Actions';
+import { distinct } from 'vs/bAse/common/ArrAys';
+import { CAncelAblePromise, creAteCAncelAblePromise, rAceCAncellAblePromises, rAceCAncellAtion, timeout } from 'vs/bAse/common/Async';
+import { CAncellAtionToken } from 'vs/bAse/common/cAncellAtion';
+import { isPromiseCAnceledError } from 'vs/bAse/common/errors';
+import { Emitter, Event } from 'vs/bAse/common/event';
+import { DisposAbleStore, MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { locAlize } from 'vs/nls';
+import { ConfigurAtionTArget, IConfigurAtionService } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IExtensionMAnAgementService } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgement';
+import { AreSAmeExtensions } from 'vs/plAtform/extensionMAnAgement/common/extensionMAnAgementUtil';
+import { IExtensionRecommendAtionNotificAtionService, RecommendAtionsNotificAtionResult, RecommendAtionSource } from 'vs/plAtform/extensionRecommendAtions/common/extensionRecommendAtions';
+import { IInstAntiAtionService, optionAl } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { INotificAtionHAndle, INotificAtionService, IPromptChoice, Severity } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { IStorAgeService, StorAgeScope } from 'vs/plAtform/storAge/common/storAge';
+import { ITelemetryService } from 'vs/plAtform/telemetry/common/telemetry';
+import { IStorAgeKeysSyncRegistryService } from 'vs/plAtform/userDAtASync/common/storAgeKeys';
+import { SeArchExtensionsAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
 import { IExtension, IExtensionsWorkbenchService } from 'vs/workbench/contrib/extensions/common/extensions';
 import { ITASExperimentService } from 'vs/workbench/services/experiment/common/experimentService';
-import { EnablementState, IWorkbenchExtensionEnablementService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
-import { IExtensionIgnoredRecommendationsService } from 'vs/workbench/services/extensionRecommendations/common/extensionRecommendations';
+import { EnAblementStAte, IWorkbenchExtensionEnAblementService } from 'vs/workbench/services/extensionMAnAgement/common/extensionMAnAgement';
+import { IExtensionIgnoredRecommendAtionsService } from 'vs/workbench/services/extensionRecommendAtions/common/extensionRecommendAtions';
 
-interface IExtensionsConfiguration {
-	autoUpdate: boolean;
-	autoCheckUpdates: boolean;
-	ignoreRecommendations: boolean;
-	showRecommendationsOnlyOnDemand: boolean;
-	closeExtensionDetailsOnViewChange: boolean;
+interfAce IExtensionsConfigurAtion {
+	AutoUpdAte: booleAn;
+	AutoCheckUpdAtes: booleAn;
+	ignoreRecommendAtions: booleAn;
+	showRecommendAtionsOnlyOnDemAnd: booleAn;
+	closeExtensionDetAilsOnViewChAnge: booleAn;
 }
 
-type ExtensionRecommendationsNotificationClassification = {
-	userReaction: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-	extensionId?: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
+type ExtensionRecommendAtionsNotificAtionClAssificAtion = {
+	userReAction: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
+	extensionId?: { clAssificAtion: 'PublicNonPersonAlDAtA', purpose: 'FeAtureInsight' };
 };
 
-type ExtensionWorkspaceRecommendationsNotificationClassification = {
-	userReaction: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
+type ExtensionWorkspAceRecommendAtionsNotificAtionClAssificAtion = {
+	userReAction: { clAssificAtion: 'SystemMetADAtA', purpose: 'FeAtureInsight' };
 };
 
-const ignoreImportantExtensionRecommendationStorageKey = 'extensionsAssistant/importantRecommendationsIgnore';
-const donotShowWorkspaceRecommendationsStorageKey = 'extensionsAssistant/workspaceRecommendationsIgnore';
-const choiceNever = localize('neverShowAgain', "Don't Show Again");
+const ignoreImportAntExtensionRecommendAtionStorAgeKey = 'extensionsAssistAnt/importAntRecommendAtionsIgnore';
+const donotShowWorkspAceRecommendAtionsStorAgeKey = 'extensionsAssistAnt/workspAceRecommendAtionsIgnore';
+const choiceNever = locAlize('neverShowAgAin', "Don't Show AgAin");
 
-type RecommendationsNotificationActions = {
-	onDidInstallRecommendedExtensions(extensions: IExtension[]): void;
+type RecommendAtionsNotificAtionActions = {
+	onDidInstAllRecommendedExtensions(extensions: IExtension[]): void;
 	onDidShowRecommendedExtensions(extensions: IExtension[]): void;
-	onDidCancelRecommendedExtensions(extensions: IExtension[]): void;
-	onDidNeverShowRecommendedExtensionsAgain(extensions: IExtension[]): void;
+	onDidCAncelRecommendedExtensions(extensions: IExtension[]): void;
+	onDidNeverShowRecommendedExtensionsAgAin(extensions: IExtension[]): void;
 };
 
-class RecommendationsNotification {
+clAss RecommendAtionsNotificAtion {
 
-	private _onDidClose = new Emitter<void>();
-	readonly onDidClose = this._onDidClose.event;
+	privAte _onDidClose = new Emitter<void>();
+	reAdonly onDidClose = this._onDidClose.event;
 
-	private _onDidChangeVisibility = new Emitter<boolean>();
-	readonly onDidChangeVisibility = this._onDidChangeVisibility.event;
+	privAte _onDidChAngeVisibility = new Emitter<booleAn>();
+	reAdonly onDidChAngeVisibility = this._onDidChAngeVisibility.event;
 
-	private notificationHandle: INotificationHandle | undefined;
-	private cancelled: boolean = false;
+	privAte notificAtionHAndle: INotificAtionHAndle | undefined;
+	privAte cAncelled: booleAn = fAlse;
 
 	constructor(
-		private readonly severity: Severity,
-		private readonly message: string,
-		private readonly choices: IPromptChoice[],
-		private readonly notificationService: INotificationService
+		privAte reAdonly severity: Severity,
+		privAte reAdonly messAge: string,
+		privAte reAdonly choices: IPromptChoice[],
+		privAte reAdonly notificAtionService: INotificAtionService
 	) { }
 
 	show(): void {
-		if (!this.notificationHandle) {
-			this.updateNotificationHandle(this.notificationService.prompt(this.severity, this.message, this.choices, { sticky: true, onCancel: () => this.cancelled = true }));
+		if (!this.notificAtionHAndle) {
+			this.updAteNotificAtionHAndle(this.notificAtionService.prompt(this.severity, this.messAge, this.choices, { sticky: true, onCAncel: () => this.cAncelled = true }));
 		}
 	}
 
 	hide(): void {
-		if (this.notificationHandle) {
-			this.onDidCloseDisposable.clear();
-			this.notificationHandle.close();
-			this.cancelled = false;
-			this.updateNotificationHandle(this.notificationService.prompt(this.severity, this.message, this.choices, { silent: true, sticky: false, onCancel: () => this.cancelled = true }));
+		if (this.notificAtionHAndle) {
+			this.onDidCloseDisposAble.cleAr();
+			this.notificAtionHAndle.close();
+			this.cAncelled = fAlse;
+			this.updAteNotificAtionHAndle(this.notificAtionService.prompt(this.severity, this.messAge, this.choices, { silent: true, sticky: fAlse, onCAncel: () => this.cAncelled = true }));
 		}
 	}
 
-	isCancelled(): boolean {
-		return this.cancelled;
+	isCAncelled(): booleAn {
+		return this.cAncelled;
 	}
 
-	private onDidCloseDisposable = new MutableDisposable();
-	private onDidChangeVisibilityDisposable = new MutableDisposable();
-	private updateNotificationHandle(notificationHandle: INotificationHandle) {
-		this.onDidCloseDisposable.clear();
-		this.onDidChangeVisibilityDisposable.clear();
-		this.notificationHandle = notificationHandle;
+	privAte onDidCloseDisposAble = new MutAbleDisposAble();
+	privAte onDidChAngeVisibilityDisposAble = new MutAbleDisposAble();
+	privAte updAteNotificAtionHAndle(notificAtionHAndle: INotificAtionHAndle) {
+		this.onDidCloseDisposAble.cleAr();
+		this.onDidChAngeVisibilityDisposAble.cleAr();
+		this.notificAtionHAndle = notificAtionHAndle;
 
-		this.onDidCloseDisposable.value = this.notificationHandle.onDidClose(() => {
-			this.onDidCloseDisposable.dispose();
-			this.onDidChangeVisibilityDisposable.dispose();
+		this.onDidCloseDisposAble.vAlue = this.notificAtionHAndle.onDidClose(() => {
+			this.onDidCloseDisposAble.dispose();
+			this.onDidChAngeVisibilityDisposAble.dispose();
 
 			this._onDidClose.fire();
 
 			this._onDidClose.dispose();
-			this._onDidChangeVisibility.dispose();
+			this._onDidChAngeVisibility.dispose();
 		});
-		this.onDidChangeVisibilityDisposable.value = this.notificationHandle.onDidChangeVisibility((e) => this._onDidChangeVisibility.fire(e));
+		this.onDidChAngeVisibilityDisposAble.vAlue = this.notificAtionHAndle.onDidChAngeVisibility((e) => this._onDidChAngeVisibility.fire(e));
 	}
 }
 
-type PendingRecommendationsNotification = { recommendationsNotification: RecommendationsNotification, source: RecommendationSource, token: CancellationToken };
-type VisibleRecommendationsNotification = { recommendationsNotification: RecommendationsNotification, source: RecommendationSource, from: number };
+type PendingRecommendAtionsNotificAtion = { recommendAtionsNotificAtion: RecommendAtionsNotificAtion, source: RecommendAtionSource, token: CAncellAtionToken };
+type VisibleRecommendAtionsNotificAtion = { recommendAtionsNotificAtion: RecommendAtionsNotificAtion, source: RecommendAtionSource, from: number };
 
-export class ExtensionRecommendationNotificationService implements IExtensionRecommendationNotificationService {
+export clAss ExtensionRecommendAtionNotificAtionService implements IExtensionRecommendAtionNotificAtionService {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	private readonly tasExperimentService: ITASExperimentService | undefined;
+	privAte reAdonly tAsExperimentService: ITASExperimentService | undefined;
 
-	// Ignored Important Recommendations
-	get ignoredRecommendations(): string[] {
-		return distinct([...(<string[]>JSON.parse(this.storageService.get(ignoreImportantExtensionRecommendationStorageKey, StorageScope.GLOBAL, '[]')))].map(i => i.toLowerCase()));
+	// Ignored ImportAnt RecommendAtions
+	get ignoredRecommendAtions(): string[] {
+		return distinct([...(<string[]>JSON.pArse(this.storAgeService.get(ignoreImportAntExtensionRecommendAtionStorAgeKey, StorAgeScope.GLOBAL, '[]')))].mAp(i => i.toLowerCAse()));
 	}
 
-	private recommendedExtensions: string[] = [];
-	private recommendationSources: RecommendationSource[] = [];
+	privAte recommendedExtensions: string[] = [];
+	privAte recommendAtionSources: RecommendAtionSource[] = [];
 
-	private hideVisibleNotificationPromise: CancelablePromise<void> | undefined;
-	private visibleNotification: VisibleRecommendationsNotification | undefined;
-	private pendingNotificaitons: PendingRecommendationsNotification[] = [];
+	privAte hideVisibleNotificAtionPromise: CAncelAblePromise<void> | undefined;
+	privAte visibleNotificAtion: VisibleRecommendAtionsNotificAtion | undefined;
+	privAte pendingNotificAitons: PendingRecommendAtionsNotificAtion[] = [];
 
 	constructor(
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IStorageService private readonly storageService: IStorageService,
-		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IExtensionsWorkbenchService private readonly extensionsWorkbenchService: IExtensionsWorkbenchService,
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
-		@IExtensionIgnoredRecommendationsService private readonly extensionIgnoredRecommendationsService: IExtensionIgnoredRecommendationsService,
-		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
-		@optional(ITASExperimentService) tasExperimentService: ITASExperimentService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IStorAgeService privAte reAdonly storAgeService: IStorAgeService,
+		@INotificAtionService privAte reAdonly notificAtionService: INotificAtionService,
+		@ITelemetryService privAte reAdonly telemetryService: ITelemetryService,
+		@IInstAntiAtionService privAte reAdonly instAntiAtionService: IInstAntiAtionService,
+		@IExtensionsWorkbenchService privAte reAdonly extensionsWorkbenchService: IExtensionsWorkbenchService,
+		@IExtensionMAnAgementService privAte reAdonly extensionMAnAgementService: IExtensionMAnAgementService,
+		@IWorkbenchExtensionEnAblementService privAte reAdonly extensionEnAblementService: IWorkbenchExtensionEnAblementService,
+		@IExtensionIgnoredRecommendAtionsService privAte reAdonly extensionIgnoredRecommendAtionsService: IExtensionIgnoredRecommendAtionsService,
+		@IStorAgeKeysSyncRegistryService storAgeKeysSyncRegistryService: IStorAgeKeysSyncRegistryService,
+		@optionAl(ITASExperimentService) tAsExperimentService: ITASExperimentService,
 	) {
-		storageKeysSyncRegistryService.registerStorageKey({ key: ignoreImportantExtensionRecommendationStorageKey, version: 1 });
-		this.tasExperimentService = tasExperimentService;
+		storAgeKeysSyncRegistryService.registerStorAgeKey({ key: ignoreImportAntExtensionRecommendAtionStorAgeKey, version: 1 });
+		this.tAsExperimentService = tAsExperimentService;
 	}
 
-	hasToIgnoreRecommendationNotifications(): boolean {
-		const config = this.configurationService.getValue<IExtensionsConfiguration>('extensions');
-		return config.ignoreRecommendations || config.showRecommendationsOnlyOnDemand;
+	hAsToIgnoreRecommendAtionNotificAtions(): booleAn {
+		const config = this.configurAtionService.getVAlue<IExtensionsConfigurAtion>('extensions');
+		return config.ignoreRecommendAtions || config.showRecommendAtionsOnlyOnDemAnd;
 	}
 
-	async promptImportantExtensionsInstallNotification(extensionIds: string[], message: string, searchValue: string, source: RecommendationSource): Promise<RecommendationsNotificationResult> {
-		const ignoredRecommendations = [...this.extensionIgnoredRecommendationsService.ignoredRecommendations, ...this.ignoredRecommendations];
-		extensionIds = extensionIds.filter(id => !ignoredRecommendations.includes(id));
+	Async promptImportAntExtensionsInstAllNotificAtion(extensionIds: string[], messAge: string, seArchVAlue: string, source: RecommendAtionSource): Promise<RecommendAtionsNotificAtionResult> {
+		const ignoredRecommendAtions = [...this.extensionIgnoredRecommendAtionsService.ignoredRecommendAtions, ...this.ignoredRecommendAtions];
+		extensionIds = extensionIds.filter(id => !ignoredRecommendAtions.includes(id));
 		if (!extensionIds.length) {
-			return RecommendationsNotificationResult.Ignored;
+			return RecommendAtionsNotificAtionResult.Ignored;
 		}
 
-		return this.promptRecommendationsNotification(extensionIds, message, searchValue, source, {
-			onDidInstallRecommendedExtensions: (extensions: IExtension[]) => extensions.forEach(extension => this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'install', extensionId: extension.identifier.id })),
-			onDidShowRecommendedExtensions: (extensions: IExtension[]) => extensions.forEach(extension => this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'show', extensionId: extension.identifier.id })),
-			onDidCancelRecommendedExtensions: (extensions: IExtension[]) => extensions.forEach(extension => this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId: extension.identifier.id })),
-			onDidNeverShowRecommendedExtensionsAgain: (extensions: IExtension[]) => {
+		return this.promptRecommendAtionsNotificAtion(extensionIds, messAge, seArchVAlue, source, {
+			onDidInstAllRecommendedExtensions: (extensions: IExtension[]) => extensions.forEAch(extension => this.telemetryService.publicLog2<{ userReAction: string, extensionId: string }, ExtensionRecommendAtionsNotificAtionClAssificAtion>('extensionRecommendAtions:popup', { userReAction: 'instAll', extensionId: extension.identifier.id })),
+			onDidShowRecommendedExtensions: (extensions: IExtension[]) => extensions.forEAch(extension => this.telemetryService.publicLog2<{ userReAction: string, extensionId: string }, ExtensionRecommendAtionsNotificAtionClAssificAtion>('extensionRecommendAtions:popup', { userReAction: 'show', extensionId: extension.identifier.id })),
+			onDidCAncelRecommendedExtensions: (extensions: IExtension[]) => extensions.forEAch(extension => this.telemetryService.publicLog2<{ userReAction: string, extensionId: string }, ExtensionRecommendAtionsNotificAtionClAssificAtion>('extensionRecommendAtions:popup', { userReAction: 'cAncelled', extensionId: extension.identifier.id })),
+			onDidNeverShowRecommendedExtensionsAgAin: (extensions: IExtension[]) => {
 				for (const extension of extensions) {
-					this.addToImportantRecommendationsIgnore(extension.identifier.id);
-					this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId: extension.identifier.id });
+					this.AddToImportAntRecommendAtionsIgnore(extension.identifier.id);
+					this.telemetryService.publicLog2<{ userReAction: string, extensionId: string }, ExtensionRecommendAtionsNotificAtionClAssificAtion>('extensionRecommendAtions:popup', { userReAction: 'neverShowAgAin', extensionId: extension.identifier.id });
 				}
-				this.notificationService.prompt(
+				this.notificAtionService.prompt(
 					Severity.Info,
-					localize('ignoreExtensionRecommendations', "Do you want to ignore all extension recommendations?"),
+					locAlize('ignoreExtensionRecommendAtions', "Do you wAnt to ignore All extension recommendAtions?"),
 					[{
-						label: localize('ignoreAll', "Yes, Ignore All"),
-						run: () => this.setIgnoreRecommendationsConfig(true)
+						lAbel: locAlize('ignoreAll', "Yes, Ignore All"),
+						run: () => this.setIgnoreRecommendAtionsConfig(true)
 					}, {
-						label: localize('no', "No"),
-						run: () => this.setIgnoreRecommendationsConfig(false)
+						lAbel: locAlize('no', "No"),
+						run: () => this.setIgnoreRecommendAtionsConfig(fAlse)
 					}]
 				);
 			},
 		});
 	}
 
-	async promptWorkspaceRecommendations(recommendations: string[]): Promise<void> {
-		if (this.storageService.getBoolean(donotShowWorkspaceRecommendationsStorageKey, StorageScope.WORKSPACE, false)) {
+	Async promptWorkspAceRecommendAtions(recommendAtions: string[]): Promise<void> {
+		if (this.storAgeService.getBooleAn(donotShowWorkspAceRecommendAtionsStorAgeKey, StorAgeScope.WORKSPACE, fAlse)) {
 			return;
 		}
 
-		let installed = await this.extensionManagementService.getInstalled();
-		installed = installed.filter(l => this.extensionEnablementService.getEnablementState(l) !== EnablementState.DisabledByExtensionKind); // Filter extensions disabled by kind
-		recommendations = recommendations.filter(extensionId => installed.every(local => !areSameExtensions({ id: extensionId }, local.identifier)));
-		if (!recommendations.length) {
+		let instAlled = AwAit this.extensionMAnAgementService.getInstAlled();
+		instAlled = instAlled.filter(l => this.extensionEnAblementService.getEnAblementStAte(l) !== EnAblementStAte.DisAbledByExtensionKind); // Filter extensions disAbled by kind
+		recommendAtions = recommendAtions.filter(extensionId => instAlled.every(locAl => !AreSAmeExtensions({ id: extensionId }, locAl.identifier)));
+		if (!recommendAtions.length) {
 			return;
 		}
 
-		const result = await this.promptRecommendationsNotification(recommendations, localize('workspaceRecommended', "Do you want to install the recommended extensions for this repository?"), '@recommended ', RecommendationSource.WORKSPACE, {
-			onDidInstallRecommendedExtensions: () => this.telemetryService.publicLog2<{ userReaction: string }, ExtensionWorkspaceRecommendationsNotificationClassification>('extensionWorkspaceRecommendations:popup', { userReaction: 'install' }),
-			onDidShowRecommendedExtensions: () => this.telemetryService.publicLog2<{ userReaction: string }, ExtensionWorkspaceRecommendationsNotificationClassification>('extensionWorkspaceRecommendations:popup', { userReaction: 'show' }),
-			onDidCancelRecommendedExtensions: () => this.telemetryService.publicLog2<{ userReaction: string }, ExtensionWorkspaceRecommendationsNotificationClassification>('extensionWorkspaceRecommendations:popup', { userReaction: 'cancelled' }),
-			onDidNeverShowRecommendedExtensionsAgain: () => this.telemetryService.publicLog2<{ userReaction: string }, ExtensionWorkspaceRecommendationsNotificationClassification>('extensionWorkspaceRecommendations:popup', { userReaction: 'neverShowAgain' }),
+		const result = AwAit this.promptRecommendAtionsNotificAtion(recommendAtions, locAlize('workspAceRecommended', "Do you wAnt to instAll the recommended extensions for this repository?"), '@recommended ', RecommendAtionSource.WORKSPACE, {
+			onDidInstAllRecommendedExtensions: () => this.telemetryService.publicLog2<{ userReAction: string }, ExtensionWorkspAceRecommendAtionsNotificAtionClAssificAtion>('extensionWorkspAceRecommendAtions:popup', { userReAction: 'instAll' }),
+			onDidShowRecommendedExtensions: () => this.telemetryService.publicLog2<{ userReAction: string }, ExtensionWorkspAceRecommendAtionsNotificAtionClAssificAtion>('extensionWorkspAceRecommendAtions:popup', { userReAction: 'show' }),
+			onDidCAncelRecommendedExtensions: () => this.telemetryService.publicLog2<{ userReAction: string }, ExtensionWorkspAceRecommendAtionsNotificAtionClAssificAtion>('extensionWorkspAceRecommendAtions:popup', { userReAction: 'cAncelled' }),
+			onDidNeverShowRecommendedExtensionsAgAin: () => this.telemetryService.publicLog2<{ userReAction: string }, ExtensionWorkspAceRecommendAtionsNotificAtionClAssificAtion>('extensionWorkspAceRecommendAtions:popup', { userReAction: 'neverShowAgAin' }),
 		});
 
-		if (result === RecommendationsNotificationResult.Accepted) {
-			this.storageService.store(donotShowWorkspaceRecommendationsStorageKey, true, StorageScope.WORKSPACE);
+		if (result === RecommendAtionsNotificAtionResult.Accepted) {
+			this.storAgeService.store(donotShowWorkspAceRecommendAtionsStorAgeKey, true, StorAgeScope.WORKSPACE);
 		}
 
 	}
 
-	private async promptRecommendationsNotification(extensionIds: string[], message: string, searchValue: string, source: RecommendationSource, recommendationsNotificationActions: RecommendationsNotificationActions): Promise<RecommendationsNotificationResult> {
+	privAte Async promptRecommendAtionsNotificAtion(extensionIds: string[], messAge: string, seArchVAlue: string, source: RecommendAtionSource, recommendAtionsNotificAtionActions: RecommendAtionsNotificAtionActions): Promise<RecommendAtionsNotificAtionResult> {
 
-		if (this.hasToIgnoreRecommendationNotifications()) {
-			return RecommendationsNotificationResult.Ignored;
+		if (this.hAsToIgnoreRecommendAtionNotificAtions()) {
+			return RecommendAtionsNotificAtionResult.Ignored;
 		}
 
-		// Ignore exe recommendation if the window
-		// 		=> has shown an exe based recommendation already
-		// 		=> or has shown any two recommendations already
-		if (source === RecommendationSource.EXE && (this.recommendationSources.includes(RecommendationSource.EXE) || this.recommendationSources.length >= 2)) {
-			return RecommendationsNotificationResult.TooMany;
+		// Ignore exe recommendAtion if the window
+		// 		=> hAs shown An exe bAsed recommendAtion AlreAdy
+		// 		=> or hAs shown Any two recommendAtions AlreAdy
+		if (source === RecommendAtionSource.EXE && (this.recommendAtionSources.includes(RecommendAtionSource.EXE) || this.recommendAtionSources.length >= 2)) {
+			return RecommendAtionsNotificAtionResult.TooMAny;
 		}
 
-		// Ignore exe recommendation if recommendations are already shown
-		if (source === RecommendationSource.EXE && extensionIds.every(id => this.recommendedExtensions.includes(id))) {
-			return RecommendationsNotificationResult.Ignored;
+		// Ignore exe recommendAtion if recommendAtions Are AlreAdy shown
+		if (source === RecommendAtionSource.EXE && extensionIds.every(id => this.recommendedExtensions.includes(id))) {
+			return RecommendAtionsNotificAtionResult.Ignored;
 		}
 
-		const extensions = await this.getInstallableExtensions(extensionIds);
+		const extensions = AwAit this.getInstAllAbleExtensions(extensionIds);
 		if (!extensions.length) {
-			return RecommendationsNotificationResult.Ignored;
+			return RecommendAtionsNotificAtionResult.Ignored;
 		}
 
-		if (this.tasExperimentService && extensionIds.indexOf('ms-vscode-remote.remote-wsl') !== -1) {
-			await this.tasExperimentService.getTreatment<boolean>('wslpopupaa');
+		if (this.tAsExperimentService && extensionIds.indexOf('ms-vscode-remote.remote-wsl') !== -1) {
+			AwAit this.tAsExperimentService.getTreAtment<booleAn>('wslpopupAA');
 		}
 
 		this.recommendedExtensions = distinct([...this.recommendedExtensions, ...extensionIds]);
 
-		return raceCancellablePromises([
-			this.showRecommendationsNotification(extensions, message, searchValue, source, recommendationsNotificationActions),
-			this.waitUntilRecommendationsAreInstalled(extensions)
+		return rAceCAncellAblePromises([
+			this.showRecommendAtionsNotificAtion(extensions, messAge, seArchVAlue, source, recommendAtionsNotificAtionActions),
+			this.wAitUntilRecommendAtionsAreInstAlled(extensions)
 		]);
 
 	}
 
-	private showRecommendationsNotification(extensions: IExtension[], message: string, searchValue: string, source: RecommendationSource,
-		{ onDidInstallRecommendedExtensions, onDidShowRecommendedExtensions, onDidCancelRecommendedExtensions, onDidNeverShowRecommendedExtensionsAgain }: RecommendationsNotificationActions): CancelablePromise<RecommendationsNotificationResult> {
-		return createCancelablePromise<RecommendationsNotificationResult>(async token => {
-			let accepted = false;
+	privAte showRecommendAtionsNotificAtion(extensions: IExtension[], messAge: string, seArchVAlue: string, source: RecommendAtionSource,
+		{ onDidInstAllRecommendedExtensions, onDidShowRecommendedExtensions, onDidCAncelRecommendedExtensions, onDidNeverShowRecommendedExtensionsAgAin }: RecommendAtionsNotificAtionActions): CAncelAblePromise<RecommendAtionsNotificAtionResult> {
+		return creAteCAncelAblePromise<RecommendAtionsNotificAtionResult>(Async token => {
+			let Accepted = fAlse;
 			try {
-				accepted = await this.doShowRecommendationsNotification(
-					Severity.Info, message,
+				Accepted = AwAit this.doShowRecommendAtionsNotificAtion(
+					Severity.Info, messAge,
 					[{
-						label: localize('install', "Install"),
-						run: async () => {
-							this.runAction(this.instantiationService.createInstance(SearchExtensionsAction, searchValue));
-							onDidInstallRecommendedExtensions(extensions);
-							await Promise.all(extensions.map(async extension => {
+						lAbel: locAlize('instAll', "InstAll"),
+						run: Async () => {
+							this.runAction(this.instAntiAtionService.creAteInstAnce(SeArchExtensionsAction, seArchVAlue));
+							onDidInstAllRecommendedExtensions(extensions);
+							AwAit Promise.All(extensions.mAp(Async extension => {
 								this.extensionsWorkbenchService.open(extension, { pinned: true });
-								await this.extensionManagementService.installFromGallery(extension.gallery!);
+								AwAit this.extensionMAnAgementService.instAllFromGAllery(extension.gAllery!);
 							}));
 						}
 					}, {
-						label: localize('show recommendations', "Show Recommendations"),
-						run: async () => {
+						lAbel: locAlize('show recommendAtions', "Show RecommendAtions"),
+						run: Async () => {
 							onDidShowRecommendedExtensions(extensions);
 							for (const extension of extensions) {
 								this.extensionsWorkbenchService.open(extension, { pinned: true });
 							}
-							this.runAction(this.instantiationService.createInstance(SearchExtensionsAction, searchValue));
+							this.runAction(this.instAntiAtionService.creAteInstAnce(SeArchExtensionsAction, seArchVAlue));
 						}
 					}, {
-						label: choiceNever,
-						isSecondary: true,
+						lAbel: choiceNever,
+						isSecondAry: true,
 						run: () => {
-							onDidNeverShowRecommendedExtensionsAgain(extensions);
+							onDidNeverShowRecommendedExtensionsAgAin(extensions);
 						}
 					}],
 					source, token);
 
-			} catch (error) {
-				if (!isPromiseCanceledError(error)) {
+			} cAtch (error) {
+				if (!isPromiseCAnceledError(error)) {
 					throw error;
 				}
 			}
 
-			if (accepted) {
-				return RecommendationsNotificationResult.Accepted;
+			if (Accepted) {
+				return RecommendAtionsNotificAtionResult.Accepted;
 			} else {
-				onDidCancelRecommendedExtensions(extensions);
-				return RecommendationsNotificationResult.Cancelled;
+				onDidCAncelRecommendedExtensions(extensions);
+				return RecommendAtionsNotificAtionResult.CAncelled;
 			}
 
 		});
 	}
 
-	private waitUntilRecommendationsAreInstalled(extensions: IExtension[]): CancelablePromise<RecommendationsNotificationResult.Accepted> {
-		const installedExtensions: string[] = [];
-		const disposables = new DisposableStore();
-		return createCancelablePromise(async token => {
-			disposables.add(token.onCancellationRequested(e => disposables.dispose()));
-			return new Promise<RecommendationsNotificationResult.Accepted>((c, e) => {
-				disposables.add(this.extensionManagementService.onInstallExtension(e => {
-					installedExtensions.push(e.identifier.id.toLowerCase());
-					if (extensions.every(e => installedExtensions.includes(e.identifier.id.toLowerCase()))) {
-						c(RecommendationsNotificationResult.Accepted);
+	privAte wAitUntilRecommendAtionsAreInstAlled(extensions: IExtension[]): CAncelAblePromise<RecommendAtionsNotificAtionResult.Accepted> {
+		const instAlledExtensions: string[] = [];
+		const disposAbles = new DisposAbleStore();
+		return creAteCAncelAblePromise(Async token => {
+			disposAbles.Add(token.onCAncellAtionRequested(e => disposAbles.dispose()));
+			return new Promise<RecommendAtionsNotificAtionResult.Accepted>((c, e) => {
+				disposAbles.Add(this.extensionMAnAgementService.onInstAllExtension(e => {
+					instAlledExtensions.push(e.identifier.id.toLowerCAse());
+					if (extensions.every(e => instAlledExtensions.includes(e.identifier.id.toLowerCAse()))) {
+						c(RecommendAtionsNotificAtionResult.Accepted);
 					}
 				}));
 			});
@@ -314,61 +314,61 @@ export class ExtensionRecommendationNotificationService implements IExtensionRec
 	}
 
 	/**
-	 * Show recommendations in Queue
-	 * At any time only one recommendation is shown
-	 * If a new recommendation comes in
-	 * 		=> If no recommendation is visible, show it immediately
-	 *		=> Otherwise, add to the pending queue
-	 * 			=> If it is not exe based and has higher or same priority as current, hide the current notification after showing it for 3s.
-	 * 			=> Otherwise wait until the current notification is hidden.
+	 * Show recommendAtions in Queue
+	 * At Any time only one recommendAtion is shown
+	 * If A new recommendAtion comes in
+	 * 		=> If no recommendAtion is visible, show it immediAtely
+	 *		=> Otherwise, Add to the pending queue
+	 * 			=> If it is not exe bAsed And hAs higher or sAme priority As current, hide the current notificAtion After showing it for 3s.
+	 * 			=> Otherwise wAit until the current notificAtion is hidden.
 	 */
-	private async doShowRecommendationsNotification(severity: Severity, message: string, choices: IPromptChoice[], source: RecommendationSource, token: CancellationToken): Promise<boolean> {
-		const disposables = new DisposableStore();
+	privAte Async doShowRecommendAtionsNotificAtion(severity: Severity, messAge: string, choices: IPromptChoice[], source: RecommendAtionSource, token: CAncellAtionToken): Promise<booleAn> {
+		const disposAbles = new DisposAbleStore();
 		try {
-			this.recommendationSources.push(source);
-			const recommendationsNotification = new RecommendationsNotification(severity, message, choices, this.notificationService);
-			Event.once(Event.filter(recommendationsNotification.onDidChangeVisibility, e => !e))(() => this.showNextNotification());
-			if (this.visibleNotification) {
-				const index = this.pendingNotificaitons.length;
-				token.onCancellationRequested(() => this.pendingNotificaitons.splice(index, 1), disposables);
-				this.pendingNotificaitons.push({ recommendationsNotification, source, token });
-				if (source !== RecommendationSource.EXE && source <= this.visibleNotification!.source) {
-					this.hideVisibleNotification(3000);
+			this.recommendAtionSources.push(source);
+			const recommendAtionsNotificAtion = new RecommendAtionsNotificAtion(severity, messAge, choices, this.notificAtionService);
+			Event.once(Event.filter(recommendAtionsNotificAtion.onDidChAngeVisibility, e => !e))(() => this.showNextNotificAtion());
+			if (this.visibleNotificAtion) {
+				const index = this.pendingNotificAitons.length;
+				token.onCAncellAtionRequested(() => this.pendingNotificAitons.splice(index, 1), disposAbles);
+				this.pendingNotificAitons.push({ recommendAtionsNotificAtion, source, token });
+				if (source !== RecommendAtionSource.EXE && source <= this.visibleNotificAtion!.source) {
+					this.hideVisibleNotificAtion(3000);
 				}
 			} else {
-				this.visibleNotification = { recommendationsNotification, source, from: Date.now() };
-				recommendationsNotification.show();
+				this.visibleNotificAtion = { recommendAtionsNotificAtion, source, from: DAte.now() };
+				recommendAtionsNotificAtion.show();
 			}
-			await raceCancellation(Event.toPromise(recommendationsNotification.onDidClose), token);
-			return !recommendationsNotification.isCancelled();
-		} finally {
-			disposables.dispose();
+			AwAit rAceCAncellAtion(Event.toPromise(recommendAtionsNotificAtion.onDidClose), token);
+			return !recommendAtionsNotificAtion.isCAncelled();
+		} finAlly {
+			disposAbles.dispose();
 		}
 	}
 
-	private showNextNotification(): void {
-		const index = this.getNextPendingNotificationIndex();
-		const [nextNotificaiton] = index > -1 ? this.pendingNotificaitons.splice(index, 1) : [];
+	privAte showNextNotificAtion(): void {
+		const index = this.getNextPendingNotificAtionIndex();
+		const [nextNotificAiton] = index > -1 ? this.pendingNotificAitons.splice(index, 1) : [];
 
-		// Show the next notification after a delay of 500ms (after the current notification is dismissed)
-		timeout(nextNotificaiton ? 500 : 0)
+		// Show the next notificAtion After A delAy of 500ms (After the current notificAtion is dismissed)
+		timeout(nextNotificAiton ? 500 : 0)
 			.then(() => {
-				this.unsetVisibileNotification();
-				if (nextNotificaiton) {
-					this.visibleNotification = { recommendationsNotification: nextNotificaiton.recommendationsNotification, source: nextNotificaiton.source, from: Date.now() };
-					nextNotificaiton.recommendationsNotification.show();
+				this.unsetVisibileNotificAtion();
+				if (nextNotificAiton) {
+					this.visibleNotificAtion = { recommendAtionsNotificAtion: nextNotificAiton.recommendAtionsNotificAtion, source: nextNotificAiton.source, from: DAte.now() };
+					nextNotificAiton.recommendAtionsNotificAtion.show();
 				}
 			});
 	}
 
 	/**
-	 * Return the recent high priroity pending notification
+	 * Return the recent high priroity pending notificAtion
 	 */
-	private getNextPendingNotificationIndex(): number {
-		let index = this.pendingNotificaitons.length - 1;
-		if (this.pendingNotificaitons.length) {
-			for (let i = 0; i < this.pendingNotificaitons.length; i++) {
-				if (this.pendingNotificaitons[i].source <= this.pendingNotificaitons[index].source) {
+	privAte getNextPendingNotificAtionIndex(): number {
+		let index = this.pendingNotificAitons.length - 1;
+		if (this.pendingNotificAitons.length) {
+			for (let i = 0; i < this.pendingNotificAitons.length; i++) {
+				if (this.pendingNotificAitons[i].source <= this.pendingNotificAitons[index].source) {
 					index = i;
 				}
 			}
@@ -376,26 +376,26 @@ export class ExtensionRecommendationNotificationService implements IExtensionRec
 		return index;
 	}
 
-	private hideVisibleNotification(timeInMillis: number): void {
-		if (this.visibleNotification && !this.hideVisibleNotificationPromise) {
-			const visibleNotification = this.visibleNotification;
-			this.hideVisibleNotificationPromise = timeout(Math.max(timeInMillis - (Date.now() - visibleNotification.from), 0));
-			this.hideVisibleNotificationPromise.then(() => visibleNotification!.recommendationsNotification.hide());
+	privAte hideVisibleNotificAtion(timeInMillis: number): void {
+		if (this.visibleNotificAtion && !this.hideVisibleNotificAtionPromise) {
+			const visibleNotificAtion = this.visibleNotificAtion;
+			this.hideVisibleNotificAtionPromise = timeout(MAth.mAx(timeInMillis - (DAte.now() - visibleNotificAtion.from), 0));
+			this.hideVisibleNotificAtionPromise.then(() => visibleNotificAtion!.recommendAtionsNotificAtion.hide());
 		}
 	}
 
-	private unsetVisibileNotification(): void {
-		this.hideVisibleNotificationPromise?.cancel();
-		this.hideVisibleNotificationPromise = undefined;
-		this.visibleNotification = undefined;
+	privAte unsetVisibileNotificAtion(): void {
+		this.hideVisibleNotificAtionPromise?.cAncel();
+		this.hideVisibleNotificAtionPromise = undefined;
+		this.visibleNotificAtion = undefined;
 	}
 
-	private async getInstallableExtensions(extensionIds: string[]): Promise<IExtension[]> {
+	privAte Async getInstAllAbleExtensions(extensionIds: string[]): Promise<IExtension[]> {
 		const extensions: IExtension[] = [];
 		if (extensionIds.length) {
-			const pager = await this.extensionsWorkbenchService.queryGallery({ names: extensionIds, pageSize: extensionIds.length, source: 'install-recommendations' }, CancellationToken.None);
-			for (const extension of pager.firstPage) {
-				if (extension.gallery && (await this.extensionManagementService.canInstall(extension.gallery))) {
+			const pAger = AwAit this.extensionsWorkbenchService.queryGAllery({ nAmes: extensionIds, pAgeSize: extensionIds.length, source: 'instAll-recommendAtions' }, CAncellAtionToken.None);
+			for (const extension of pAger.firstPAge) {
+				if (extension.gAllery && (AwAit this.extensionMAnAgementService.cAnInstAll(extension.gAllery))) {
 					extensions.push(extension);
 				}
 			}
@@ -403,23 +403,23 @@ export class ExtensionRecommendationNotificationService implements IExtensionRec
 		return extensions;
 	}
 
-	private async runAction(action: IAction): Promise<void> {
+	privAte Async runAction(Action: IAction): Promise<void> {
 		try {
-			await action.run();
-		} finally {
-			action.dispose();
+			AwAit Action.run();
+		} finAlly {
+			Action.dispose();
 		}
 	}
 
-	private addToImportantRecommendationsIgnore(id: string) {
-		const importantRecommendationsIgnoreList = [...this.ignoredRecommendations];
-		if (!importantRecommendationsIgnoreList.includes(id.toLowerCase())) {
-			importantRecommendationsIgnoreList.push(id.toLowerCase());
-			this.storageService.store(ignoreImportantExtensionRecommendationStorageKey, JSON.stringify(importantRecommendationsIgnoreList), StorageScope.GLOBAL);
+	privAte AddToImportAntRecommendAtionsIgnore(id: string) {
+		const importAntRecommendAtionsIgnoreList = [...this.ignoredRecommendAtions];
+		if (!importAntRecommendAtionsIgnoreList.includes(id.toLowerCAse())) {
+			importAntRecommendAtionsIgnoreList.push(id.toLowerCAse());
+			this.storAgeService.store(ignoreImportAntExtensionRecommendAtionStorAgeKey, JSON.stringify(importAntRecommendAtionsIgnoreList), StorAgeScope.GLOBAL);
 		}
 	}
 
-	private setIgnoreRecommendationsConfig(configVal: boolean) {
-		this.configurationService.updateValue('extensions.ignoreRecommendations', configVal, ConfigurationTarget.USER);
+	privAte setIgnoreRecommendAtionsConfig(configVAl: booleAn) {
+		this.configurAtionService.updAteVAlue('extensions.ignoreRecommendAtions', configVAl, ConfigurAtionTArget.USER);
 	}
 }

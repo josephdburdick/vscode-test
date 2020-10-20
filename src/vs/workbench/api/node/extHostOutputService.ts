@@ -1,102 +1,102 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainThreadOutputServiceShape } from '../common/extHost.protocol';
-import type * as vscode from 'vscode';
-import { URI } from 'vs/base/common/uri';
-import { join } from 'vs/base/common/path';
+import { MAinThreAdOutputServiceShApe } from '../common/extHost.protocol';
+import type * As vscode from 'vscode';
+import { URI } from 'vs/bAse/common/uri';
+import { join } from 'vs/bAse/common/pAth';
 import { OutputAppender } from 'vs/workbench/services/output/node/outputAppender';
-import { toLocalISOString } from 'vs/base/common/date';
-import { dirExists, mkdirp } from 'vs/base/node/pfs';
-import { AbstractExtHostOutputChannel, ExtHostPushOutputChannel, ExtHostOutputService, LazyOutputChannel } from 'vs/workbench/api/common/extHostOutput';
-import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { MutableDisposable } from 'vs/base/common/lifecycle';
-import { ILogService } from 'vs/platform/log/common/log';
+import { toLocAlISOString } from 'vs/bAse/common/dAte';
+import { dirExists, mkdirp } from 'vs/bAse/node/pfs';
+import { AbstrActExtHostOutputChAnnel, ExtHostPushOutputChAnnel, ExtHostOutputService, LAzyOutputChAnnel } from 'vs/workbench/Api/common/extHostOutput';
+import { IExtHostInitDAtAService } from 'vs/workbench/Api/common/extHostInitDAtAService';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { MutAbleDisposAble } from 'vs/bAse/common/lifecycle';
+import { ILogService } from 'vs/plAtform/log/common/log';
 
-export class ExtHostOutputChannelBackedByFile extends AbstractExtHostOutputChannel {
+export clAss ExtHostOutputChAnnelBAckedByFile extends AbstrActExtHostOutputChAnnel {
 
-	private _appender: OutputAppender;
+	privAte _Appender: OutputAppender;
 
-	constructor(name: string, appender: OutputAppender, proxy: MainThreadOutputServiceShape) {
-		super(name, false, URI.file(appender.file), proxy);
-		this._appender = appender;
+	constructor(nAme: string, Appender: OutputAppender, proxy: MAinThreAdOutputServiceShApe) {
+		super(nAme, fAlse, URI.file(Appender.file), proxy);
+		this._Appender = Appender;
 	}
 
-	append(value: string): void {
-		super.append(value);
-		this._appender.append(value);
+	Append(vAlue: string): void {
+		super.Append(vAlue);
+		this._Appender.Append(vAlue);
 		this._onDidAppend.fire();
 	}
 
-	update(): void {
-		this._appender.flush();
-		super.update();
+	updAte(): void {
+		this._Appender.flush();
+		super.updAte();
 	}
 
-	show(columnOrPreserveFocus?: vscode.ViewColumn | boolean, preserveFocus?: boolean): void {
-		this._appender.flush();
+	show(columnOrPreserveFocus?: vscode.ViewColumn | booleAn, preserveFocus?: booleAn): void {
+		this._Appender.flush();
 		super.show(columnOrPreserveFocus, preserveFocus);
 	}
 
-	clear(): void {
-		this._appender.flush();
-		super.clear();
+	cleAr(): void {
+		this._Appender.flush();
+		super.cleAr();
 	}
 }
 
-export class ExtHostOutputService2 extends ExtHostOutputService {
+export clAss ExtHostOutputService2 extends ExtHostOutputService {
 
-	private _logsLocation: URI;
-	private _namePool: number = 1;
-	private readonly _channels: Map<string, AbstractExtHostOutputChannel> = new Map<string, AbstractExtHostOutputChannel>();
-	private readonly _visibleChannelDisposable = new MutableDisposable();
+	privAte _logsLocAtion: URI;
+	privAte _nAmePool: number = 1;
+	privAte reAdonly _chAnnels: MAp<string, AbstrActExtHostOutputChAnnel> = new MAp<string, AbstrActExtHostOutputChAnnel>();
+	privAte reAdonly _visibleChAnnelDisposAble = new MutAbleDisposAble();
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
-		@ILogService private readonly logService: ILogService,
-		@IExtHostInitDataService initData: IExtHostInitDataService,
+		@ILogService privAte reAdonly logService: ILogService,
+		@IExtHostInitDAtAService initDAtA: IExtHostInitDAtAService,
 	) {
 		super(extHostRpc);
-		this._logsLocation = initData.logsLocation;
+		this._logsLocAtion = initDAtA.logsLocAtion;
 	}
 
-	$setVisibleChannel(channelId: string): void {
-		if (channelId) {
-			const channel = this._channels.get(channelId);
-			if (channel) {
-				this._visibleChannelDisposable.value = channel.onDidAppend(() => channel.update());
+	$setVisibleChAnnel(chAnnelId: string): void {
+		if (chAnnelId) {
+			const chAnnel = this._chAnnels.get(chAnnelId);
+			if (chAnnel) {
+				this._visibleChAnnelDisposAble.vAlue = chAnnel.onDidAppend(() => chAnnel.updAte());
 			}
 		}
 	}
 
-	createOutputChannel(name: string): vscode.OutputChannel {
-		name = name.trim();
-		if (!name) {
-			throw new Error('illegal argument `name`. must not be falsy');
+	creAteOutputChAnnel(nAme: string): vscode.OutputChAnnel {
+		nAme = nAme.trim();
+		if (!nAme) {
+			throw new Error('illegAl Argument `nAme`. must not be fAlsy');
 		}
-		const extHostOutputChannel = this._doCreateOutChannel(name);
-		extHostOutputChannel.then(channel => channel._id.then(id => this._channels.set(id, channel)));
-		return new LazyOutputChannel(name, extHostOutputChannel);
+		const extHostOutputChAnnel = this._doCreAteOutChAnnel(nAme);
+		extHostOutputChAnnel.then(chAnnel => chAnnel._id.then(id => this._chAnnels.set(id, chAnnel)));
+		return new LAzyOutputChAnnel(nAme, extHostOutputChAnnel);
 	}
 
-	private async _doCreateOutChannel(name: string): Promise<AbstractExtHostOutputChannel> {
+	privAte Async _doCreAteOutChAnnel(nAme: string): Promise<AbstrActExtHostOutputChAnnel> {
 		try {
-			const outputDirPath = join(this._logsLocation.fsPath, `output_logging_${toLocalISOString(new Date()).replace(/-|:|\.\d+Z$/g, '')}`);
-			const exists = await dirExists(outputDirPath);
+			const outputDirPAth = join(this._logsLocAtion.fsPAth, `output_logging_${toLocAlISOString(new DAte()).replAce(/-|:|\.\d+Z$/g, '')}`);
+			const exists = AwAit dirExists(outputDirPAth);
 			if (!exists) {
-				await mkdirp(outputDirPath);
+				AwAit mkdirp(outputDirPAth);
 			}
-			const fileName = `${this._namePool++}-${name.replace(/[\\/:\*\?"<>\|]/g, '')}`;
-			const file = URI.file(join(outputDirPath, `${fileName}.log`));
-			const appender = new OutputAppender(fileName, file.fsPath);
-			return new ExtHostOutputChannelBackedByFile(name, appender, this._proxy);
-		} catch (error) {
-			// Do not crash if logger cannot be created
+			const fileNAme = `${this._nAmePool++}-${nAme.replAce(/[\\/:\*\?"<>\|]/g, '')}`;
+			const file = URI.file(join(outputDirPAth, `${fileNAme}.log`));
+			const Appender = new OutputAppender(fileNAme, file.fsPAth);
+			return new ExtHostOutputChAnnelBAckedByFile(nAme, Appender, this._proxy);
+		} cAtch (error) {
+			// Do not crAsh if logger cAnnot be creAted
 			this.logService.error(error);
-			return new ExtHostPushOutputChannel(name, this._proxy);
+			return new ExtHostPushOutputChAnnel(nAme, this._proxy);
 		}
 	}
 }

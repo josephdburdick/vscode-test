@@ -1,61 +1,61 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { TableOfContentsProviderRegistry, ITableOfContentsProvider, ITableOfContentsEntry } from 'vs/workbench/contrib/codeEditor/browser/quickaccess/gotoSymbolQuickAccess';
+import { TAbleOfContentsProviderRegistry, ITAbleOfContentsProvider, ITAbleOfContentsEntry } from 'vs/workbench/contrib/codeEditor/browser/quickAccess/gotoSymbolQuickAccess';
 import { NotebookEditor } from 'vs/workbench/contrib/notebook/browser/notebookEditor';
 import { CellKind } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { Codicon } from 'vs/base/common/codicons';
-import { DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
+import { Codicon } from 'vs/bAse/common/codicons';
+import { DisposAbleStore, toDisposAble } from 'vs/bAse/common/lifecycle';
 
-TableOfContentsProviderRegistry.register(NotebookEditor.ID, new class implements ITableOfContentsProvider {
-	async provideTableOfContents(editor: NotebookEditor, context: { disposables: DisposableStore }) {
+TAbleOfContentsProviderRegistry.register(NotebookEditor.ID, new clAss implements ITAbleOfContentsProvider {
+	Async provideTAbleOfContents(editor: NotebookEditor, context: { disposAbles: DisposAbleStore }) {
 		if (!editor.viewModel) {
 			return undefined;
 		}
-		// return an entry per markdown header
+		// return An entry per mArkdown heAder
 		const notebookWidget = editor.getControl();
 		if (!notebookWidget) {
 			return undefined;
 		}
 
-		// restore initial view state when no item was picked
-		let didPickOne = false;
-		const viewState = notebookWidget.getEditorViewState();
-		context.disposables.add(toDisposable(() => {
+		// restore initiAl view stAte when no item wAs picked
+		let didPickOne = fAlse;
+		const viewStAte = notebookWidget.getEditorViewStAte();
+		context.disposAbles.Add(toDisposAble(() => {
 			if (!didPickOne) {
-				notebookWidget.restoreListViewState(viewState);
+				notebookWidget.restoreListViewStAte(viewStAte);
 			}
 		}));
 
-		let lastDecorationId: string[] = [];
-		const result: ITableOfContentsEntry[] = [];
+		let lAstDecorAtionId: string[] = [];
+		const result: ITAbleOfContentsEntry[] = [];
 		for (const cell of editor.viewModel.viewCells) {
 			const content = cell.getText();
-			const regexp = cell.cellKind === CellKind.Markdown
-				? /^[ \t]*(\#+)(.+)$/gm // md: header
+			const regexp = cell.cellKind === CellKind.MArkdown
+				? /^[ \t]*(\#+)(.+)$/gm // md: heAder
 				: /^.*\w+.*\w*$/m;		// code: none empty line
 
-			const matches = content.match(regexp);
-			if (matches && matches.length) {
-				for (let j = 0; j < matches.length; j++) {
+			const mAtches = content.mAtch(regexp);
+			if (mAtches && mAtches.length) {
+				for (let j = 0; j < mAtches.length; j++) {
 					result.push({
-						icon: cell.cellKind === CellKind.Markdown ? Codicon.markdown : Codicon.code,
-						label: matches[j].replace(/^[ \t]*(\#+)/, ''),
+						icon: cell.cellKind === CellKind.MArkdown ? Codicon.mArkdown : Codicon.code,
+						lAbel: mAtches[j].replAce(/^[ \t]*(\#+)/, ''),
 						pick() {
 							didPickOne = true;
-							notebookWidget.revealInCenterIfOutsideViewport(cell);
+							notebookWidget.reveAlInCenterIfOutsideViewport(cell);
 							notebookWidget.selectElement(cell);
-							notebookWidget.focusNotebookCell(cell, cell.cellKind === CellKind.Markdown ? 'container' : 'editor');
-							lastDecorationId = notebookWidget.deltaCellDecorations(lastDecorationId, []);
+							notebookWidget.focusNotebookCell(cell, cell.cellKind === CellKind.MArkdown ? 'contAiner' : 'editor');
+							lAstDecorAtionId = notebookWidget.deltACellDecorAtions(lAstDecorAtionId, []);
 						},
 						preview() {
-							notebookWidget.revealInCenterIfOutsideViewport(cell);
+							notebookWidget.reveAlInCenterIfOutsideViewport(cell);
 							notebookWidget.selectElement(cell);
-							lastDecorationId = notebookWidget.deltaCellDecorations(lastDecorationId, [{
-								handle: cell.handle,
-								options: { className: 'nb-symbolHighlight', outputClassName: 'nb-symbolHighlight' }
+							lAstDecorAtionId = notebookWidget.deltACellDecorAtions(lAstDecorAtionId, [{
+								hAndle: cell.hAndle,
+								options: { clAssNAme: 'nb-symbolHighlight', outputClAssNAme: 'nb-symbolHighlight' }
 							}]);
 						}
 					});
@@ -63,8 +63,8 @@ TableOfContentsProviderRegistry.register(NotebookEditor.ID, new class implements
 			}
 		}
 
-		context.disposables.add(toDisposable(() => {
-			notebookWidget.deltaCellDecorations(lastDecorationId, []);
+		context.disposAbles.Add(toDisposAble(() => {
+			notebookWidget.deltACellDecorAtions(lAstDecorAtionId, []);
 		}));
 
 		return result;

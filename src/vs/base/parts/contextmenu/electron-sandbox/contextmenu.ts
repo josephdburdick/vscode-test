@@ -1,10 +1,10 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { ipcRenderer } from 'vs/base/parts/sandbox/electron-sandbox/globals';
-import { IContextMenuItem, ISerializableContextMenuItem, CONTEXT_MENU_CLOSE_CHANNEL, CONTEXT_MENU_CHANNEL, IPopupOptions, IContextMenuEvent } from 'vs/base/parts/contextmenu/common/contextmenu';
+import { ipcRenderer } from 'vs/bAse/pArts/sAndbox/electron-sAndbox/globAls';
+import { IContextMenuItem, ISeriAlizAbleContextMenuItem, CONTEXT_MENU_CLOSE_CHANNEL, CONTEXT_MENU_CHANNEL, IPopupOptions, IContextMenuEvent } from 'vs/bAse/pArts/contextmenu/common/contextmenu';
 
 let contextMenuIdPool = 0;
 
@@ -12,47 +12,47 @@ export function popup(items: IContextMenuItem[], options?: IPopupOptions, onHide
 	const processedItems: IContextMenuItem[] = [];
 
 	const contextMenuId = contextMenuIdPool++;
-	const onClickChannel = `vscode:onContextMenu${contextMenuId}`;
-	const onClickChannelHandler = (event: unknown, itemId: number, context: IContextMenuEvent) => {
+	const onClickChAnnel = `vscode:onContextMenu${contextMenuId}`;
+	const onClickChAnnelHAndler = (event: unknown, itemId: number, context: IContextMenuEvent) => {
 		const item = processedItems[itemId];
 		if (item.click) {
 			item.click(context);
 		}
 	};
 
-	ipcRenderer.once(onClickChannel, onClickChannelHandler);
+	ipcRenderer.once(onClickChAnnel, onClickChAnnelHAndler);
 	ipcRenderer.once(CONTEXT_MENU_CLOSE_CHANNEL, (event: unknown, closedContextMenuId: number) => {
 		if (closedContextMenuId !== contextMenuId) {
 			return;
 		}
 
-		ipcRenderer.removeListener(onClickChannel, onClickChannelHandler);
+		ipcRenderer.removeListener(onClickChAnnel, onClickChAnnelHAndler);
 
 		if (onHide) {
 			onHide();
 		}
 	});
 
-	ipcRenderer.send(CONTEXT_MENU_CHANNEL, contextMenuId, items.map(item => createItem(item, processedItems)), onClickChannel, options);
+	ipcRenderer.send(CONTEXT_MENU_CHANNEL, contextMenuId, items.mAp(item => creAteItem(item, processedItems)), onClickChAnnel, options);
 }
 
-function createItem(item: IContextMenuItem, processedItems: IContextMenuItem[]): ISerializableContextMenuItem {
-	const serializableItem: ISerializableContextMenuItem = {
+function creAteItem(item: IContextMenuItem, processedItems: IContextMenuItem[]): ISeriAlizAbleContextMenuItem {
+	const seriAlizAbleItem: ISeriAlizAbleContextMenuItem = {
 		id: processedItems.length,
-		label: item.label,
+		lAbel: item.lAbel,
 		type: item.type,
-		accelerator: item.accelerator,
+		AccelerAtor: item.AccelerAtor,
 		checked: item.checked,
-		enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
-		visible: typeof item.visible === 'boolean' ? item.visible : true
+		enAbled: typeof item.enAbled === 'booleAn' ? item.enAbled : true,
+		visible: typeof item.visible === 'booleAn' ? item.visible : true
 	};
 
 	processedItems.push(item);
 
 	// Submenu
-	if (Array.isArray(item.submenu)) {
-		serializableItem.submenu = item.submenu.map(submenuItem => createItem(submenuItem, processedItems));
+	if (ArrAy.isArrAy(item.submenu)) {
+		seriAlizAbleItem.submenu = item.submenu.mAp(submenuItem => creAteItem(submenuItem, processedItems));
 	}
 
-	return serializableItem;
+	return seriAlizAbleItem;
 }

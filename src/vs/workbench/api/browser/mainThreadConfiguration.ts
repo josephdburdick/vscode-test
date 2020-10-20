@@ -1,92 +1,92 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { Registry } from 'vs/platform/registry/common/platform';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope, getScopes } from 'vs/platform/configuration/common/configurationRegistry';
-import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
-import { MainThreadConfigurationShape, MainContext, ExtHostContext, IExtHostContext, IConfigurationInitData } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ConfigurationTarget, IConfigurationService, IConfigurationOverrides } from 'vs/platform/configuration/common/configuration';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { URI } from 'vs/bAse/common/uri';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { Registry } from 'vs/plAtform/registry/common/plAtform';
+import { IConfigurAtionRegistry, Extensions As ConfigurAtionExtensions, ConfigurAtionScope, getScopes } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
+import { IWorkspAceContextService, WorkbenchStAte } from 'vs/plAtform/workspAce/common/workspAce';
+import { MAinThreAdConfigurAtionShApe, MAinContext, ExtHostContext, IExtHostContext, IConfigurAtionInitDAtA } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ConfigurAtionTArget, IConfigurAtionService, IConfigurAtionOverrides } from 'vs/plAtform/configurAtion/common/configurAtion';
+import { IEnvironmentService } from 'vs/plAtform/environment/common/environment';
 
-@extHostNamedCustomer(MainContext.MainThreadConfiguration)
-export class MainThreadConfiguration implements MainThreadConfigurationShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdConfigurAtion)
+export clAss MAinThreAdConfigurAtion implements MAinThreAdConfigurAtionShApe {
 
-	private readonly _configurationListener: IDisposable;
+	privAte reAdonly _configurAtionListener: IDisposAble;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IWorkspaceContextService private readonly _workspaceContextService: IWorkspaceContextService,
-		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IEnvironmentService private readonly _environmentService: IEnvironmentService,
+		@IWorkspAceContextService privAte reAdonly _workspAceContextService: IWorkspAceContextService,
+		@IConfigurAtionService privAte reAdonly configurAtionService: IConfigurAtionService,
+		@IEnvironmentService privAte reAdonly _environmentService: IEnvironmentService,
 	) {
-		const proxy = extHostContext.getProxy(ExtHostContext.ExtHostConfiguration);
+		const proxy = extHostContext.getProxy(ExtHostContext.ExtHostConfigurAtion);
 
-		proxy.$initializeConfiguration(this._getConfigurationData());
-		this._configurationListener = configurationService.onDidChangeConfiguration(e => {
-			proxy.$acceptConfigurationChanged(this._getConfigurationData(), e.change);
+		proxy.$initiAlizeConfigurAtion(this._getConfigurAtionDAtA());
+		this._configurAtionListener = configurAtionService.onDidChAngeConfigurAtion(e => {
+			proxy.$AcceptConfigurAtionChAnged(this._getConfigurAtionDAtA(), e.chAnge);
 		});
 	}
 
-	private _getConfigurationData(): IConfigurationInitData {
-		const configurationData: IConfigurationInitData = { ...(this.configurationService.getConfigurationData()!), configurationScopes: [] };
-		// Send configurations scopes only in development mode.
+	privAte _getConfigurAtionDAtA(): IConfigurAtionInitDAtA {
+		const configurAtionDAtA: IConfigurAtionInitDAtA = { ...(this.configurAtionService.getConfigurAtionDAtA()!), configurAtionScopes: [] };
+		// Send configurAtions scopes only in development mode.
 		if (!this._environmentService.isBuilt || this._environmentService.isExtensionDevelopment) {
-			configurationData.configurationScopes = getScopes();
+			configurAtionDAtA.configurAtionScopes = getScopes();
 		}
-		return configurationData;
+		return configurAtionDAtA;
 	}
 
 	public dispose(): void {
-		this._configurationListener.dispose();
+		this._configurAtionListener.dispose();
 	}
 
-	$updateConfigurationOption(target: ConfigurationTarget | null, key: string, value: any, overrides: IConfigurationOverrides | undefined, scopeToLanguage: boolean | undefined): Promise<void> {
+	$updAteConfigurAtionOption(tArget: ConfigurAtionTArget | null, key: string, vAlue: Any, overrides: IConfigurAtionOverrides | undefined, scopeToLAnguAge: booleAn | undefined): Promise<void> {
 		overrides = { resource: overrides?.resource ? URI.revive(overrides.resource) : undefined, overrideIdentifier: overrides?.overrideIdentifier };
-		return this.writeConfiguration(target, key, value, overrides, scopeToLanguage);
+		return this.writeConfigurAtion(tArget, key, vAlue, overrides, scopeToLAnguAge);
 	}
 
-	$removeConfigurationOption(target: ConfigurationTarget | null, key: string, overrides: IConfigurationOverrides | undefined, scopeToLanguage: boolean | undefined): Promise<void> {
+	$removeConfigurAtionOption(tArget: ConfigurAtionTArget | null, key: string, overrides: IConfigurAtionOverrides | undefined, scopeToLAnguAge: booleAn | undefined): Promise<void> {
 		overrides = { resource: overrides?.resource ? URI.revive(overrides.resource) : undefined, overrideIdentifier: overrides?.overrideIdentifier };
-		return this.writeConfiguration(target, key, undefined, overrides, scopeToLanguage);
+		return this.writeConfigurAtion(tArget, key, undefined, overrides, scopeToLAnguAge);
 	}
 
-	private writeConfiguration(target: ConfigurationTarget | null, key: string, value: any, overrides: IConfigurationOverrides, scopeToLanguage: boolean | undefined): Promise<void> {
-		target = target !== null && target !== undefined ? target : this.deriveConfigurationTarget(key, overrides);
-		const configurationValue = this.configurationService.inspect(key, overrides);
-		switch (target) {
-			case ConfigurationTarget.MEMORY:
-				return this._updateValue(key, value, target, configurationValue?.memory?.override, overrides, scopeToLanguage);
-			case ConfigurationTarget.WORKSPACE_FOLDER:
-				return this._updateValue(key, value, target, configurationValue?.workspaceFolder?.override, overrides, scopeToLanguage);
-			case ConfigurationTarget.WORKSPACE:
-				return this._updateValue(key, value, target, configurationValue?.workspace?.override, overrides, scopeToLanguage);
-			case ConfigurationTarget.USER_REMOTE:
-				return this._updateValue(key, value, target, configurationValue?.userRemote?.override, overrides, scopeToLanguage);
-			default:
-				return this._updateValue(key, value, target, configurationValue?.userLocal?.override, overrides, scopeToLanguage);
+	privAte writeConfigurAtion(tArget: ConfigurAtionTArget | null, key: string, vAlue: Any, overrides: IConfigurAtionOverrides, scopeToLAnguAge: booleAn | undefined): Promise<void> {
+		tArget = tArget !== null && tArget !== undefined ? tArget : this.deriveConfigurAtionTArget(key, overrides);
+		const configurAtionVAlue = this.configurAtionService.inspect(key, overrides);
+		switch (tArget) {
+			cAse ConfigurAtionTArget.MEMORY:
+				return this._updAteVAlue(key, vAlue, tArget, configurAtionVAlue?.memory?.override, overrides, scopeToLAnguAge);
+			cAse ConfigurAtionTArget.WORKSPACE_FOLDER:
+				return this._updAteVAlue(key, vAlue, tArget, configurAtionVAlue?.workspAceFolder?.override, overrides, scopeToLAnguAge);
+			cAse ConfigurAtionTArget.WORKSPACE:
+				return this._updAteVAlue(key, vAlue, tArget, configurAtionVAlue?.workspAce?.override, overrides, scopeToLAnguAge);
+			cAse ConfigurAtionTArget.USER_REMOTE:
+				return this._updAteVAlue(key, vAlue, tArget, configurAtionVAlue?.userRemote?.override, overrides, scopeToLAnguAge);
+			defAult:
+				return this._updAteVAlue(key, vAlue, tArget, configurAtionVAlue?.userLocAl?.override, overrides, scopeToLAnguAge);
 		}
 	}
 
-	private _updateValue(key: string, value: any, configurationTarget: ConfigurationTarget, overriddenValue: any | undefined, overrides: IConfigurationOverrides, scopeToLanguage: boolean | undefined): Promise<void> {
-		overrides = scopeToLanguage === true ? overrides
-			: scopeToLanguage === false ? { resource: overrides.resource }
-				: overrides.overrideIdentifier && overriddenValue !== undefined ? overrides
+	privAte _updAteVAlue(key: string, vAlue: Any, configurAtionTArget: ConfigurAtionTArget, overriddenVAlue: Any | undefined, overrides: IConfigurAtionOverrides, scopeToLAnguAge: booleAn | undefined): Promise<void> {
+		overrides = scopeToLAnguAge === true ? overrides
+			: scopeToLAnguAge === fAlse ? { resource: overrides.resource }
+				: overrides.overrideIdentifier && overriddenVAlue !== undefined ? overrides
 					: { resource: overrides.resource };
-		return this.configurationService.updateValue(key, value, overrides, configurationTarget, true);
+		return this.configurAtionService.updAteVAlue(key, vAlue, overrides, configurAtionTArget, true);
 	}
 
-	private deriveConfigurationTarget(key: string, overrides: IConfigurationOverrides): ConfigurationTarget {
-		if (overrides.resource && this._workspaceContextService.getWorkbenchState() === WorkbenchState.WORKSPACE) {
-			const configurationProperties = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).getConfigurationProperties();
-			if (configurationProperties[key] && (configurationProperties[key].scope === ConfigurationScope.RESOURCE || configurationProperties[key].scope === ConfigurationScope.LANGUAGE_OVERRIDABLE)) {
-				return ConfigurationTarget.WORKSPACE_FOLDER;
+	privAte deriveConfigurAtionTArget(key: string, overrides: IConfigurAtionOverrides): ConfigurAtionTArget {
+		if (overrides.resource && this._workspAceContextService.getWorkbenchStAte() === WorkbenchStAte.WORKSPACE) {
+			const configurAtionProperties = Registry.As<IConfigurAtionRegistry>(ConfigurAtionExtensions.ConfigurAtion).getConfigurAtionProperties();
+			if (configurAtionProperties[key] && (configurAtionProperties[key].scope === ConfigurAtionScope.RESOURCE || configurAtionProperties[key].scope === ConfigurAtionScope.LANGUAGE_OVERRIDABLE)) {
+				return ConfigurAtionTArget.WORKSPACE_FOLDER;
 			}
 		}
-		return ConfigurationTarget.WORKSPACE;
+		return ConfigurAtionTArget.WORKSPACE;
 	}
 }

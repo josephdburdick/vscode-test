@@ -1,76 +1,76 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { FastDomNode } from 'vs/base/browser/fastDomNode';
+import { FAstDomNode } from 'vs/bAse/browser/fAstDomNode';
 import { RenderingContext, RestrictedRenderingContext } from 'vs/editor/common/view/renderingContext';
 import { ViewContext } from 'vs/editor/common/view/viewContext';
-import { ViewEventHandler } from 'vs/editor/common/viewModel/viewEventHandler';
+import { ViewEventHAndler } from 'vs/editor/common/viewModel/viewEventHAndler';
 
-export abstract class ViewPart extends ViewEventHandler {
+export AbstrAct clAss ViewPArt extends ViewEventHAndler {
 
 	_context: ViewContext;
 
 	constructor(context: ViewContext) {
 		super();
 		this._context = context;
-		this._context.addEventHandler(this);
+		this._context.AddEventHAndler(this);
 	}
 
 	public dispose(): void {
-		this._context.removeEventHandler(this);
+		this._context.removeEventHAndler(this);
 		super.dispose();
 	}
 
-	public abstract prepareRender(ctx: RenderingContext): void;
-	public abstract render(ctx: RestrictedRenderingContext): void;
+	public AbstrAct prepAreRender(ctx: RenderingContext): void;
+	public AbstrAct render(ctx: RestrictedRenderingContext): void;
 }
 
-export const enum PartFingerprint {
+export const enum PArtFingerprint {
 	None,
 	ContentWidgets,
 	OverflowingContentWidgets,
-	OverflowGuard,
-	OverlayWidgets,
-	ScrollableElement,
-	TextArea,
+	OverflowGuArd,
+	OverlAyWidgets,
+	ScrollAbleElement,
+	TextAreA,
 	ViewLines,
-	Minimap
+	MinimAp
 }
 
-export class PartFingerprints {
+export clAss PArtFingerprints {
 
-	public static write(target: Element | FastDomNode<HTMLElement>, partId: PartFingerprint) {
-		if (target instanceof FastDomNode) {
-			target.setAttribute('data-mprt', String(partId));
+	public stAtic write(tArget: Element | FAstDomNode<HTMLElement>, pArtId: PArtFingerprint) {
+		if (tArget instAnceof FAstDomNode) {
+			tArget.setAttribute('dAtA-mprt', String(pArtId));
 		} else {
-			target.setAttribute('data-mprt', String(partId));
+			tArget.setAttribute('dAtA-mprt', String(pArtId));
 		}
 	}
 
-	public static read(target: Element): PartFingerprint {
-		const r = target.getAttribute('data-mprt');
+	public stAtic reAd(tArget: Element): PArtFingerprint {
+		const r = tArget.getAttribute('dAtA-mprt');
 		if (r === null) {
-			return PartFingerprint.None;
+			return PArtFingerprint.None;
 		}
-		return parseInt(r, 10);
+		return pArseInt(r, 10);
 	}
 
-	public static collect(child: Element | null, stopAt: Element): Uint8Array {
-		let result: PartFingerprint[] = [], resultLen = 0;
+	public stAtic collect(child: Element | null, stopAt: Element): Uint8ArrAy {
+		let result: PArtFingerprint[] = [], resultLen = 0;
 
 		while (child && child !== document.body) {
 			if (child === stopAt) {
-				break;
+				breAk;
 			}
 			if (child.nodeType === child.ELEMENT_NODE) {
-				result[resultLen++] = this.read(child);
+				result[resultLen++] = this.reAd(child);
 			}
-			child = child.parentElement;
+			child = child.pArentElement;
 		}
 
-		const r = new Uint8Array(resultLen);
+		const r = new Uint8ArrAy(resultLen);
 		for (let i = 0; i < resultLen; i++) {
 			r[i] = result[resultLen - i - 1];
 		}

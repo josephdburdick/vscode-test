@@ -1,192 +1,192 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { join, basename } from 'vs/base/common/path';
-import { watch } from 'fs';
-import { isMacintosh } from 'vs/base/common/platform';
-import { normalizeNFC } from 'vs/base/common/normalization';
-import { toDisposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { exists, readdir } from 'vs/base/node/pfs';
+import { join, bAsenAme } from 'vs/bAse/common/pAth';
+import { wAtch } from 'fs';
+import { isMAcintosh } from 'vs/bAse/common/plAtform';
+import { normAlizeNFC } from 'vs/bAse/common/normAlizAtion';
+import { toDisposAble, IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { exists, reAddir } from 'vs/bAse/node/pfs';
 
-export function watchFile(path: string, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposable {
-	return doWatchNonRecursive({ path, isDirectory: false }, onChange, onError);
+export function wAtchFile(pAth: string, onChAnge: (type: 'Added' | 'chAnged' | 'deleted', pAth: string) => void, onError: (error: string) => void): IDisposAble {
+	return doWAtchNonRecursive({ pAth, isDirectory: fAlse }, onChAnge, onError);
 }
 
-export function watchFolder(path: string, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposable {
-	return doWatchNonRecursive({ path, isDirectory: true }, onChange, onError);
+export function wAtchFolder(pAth: string, onChAnge: (type: 'Added' | 'chAnged' | 'deleted', pAth: string) => void, onError: (error: string) => void): IDisposAble {
+	return doWAtchNonRecursive({ pAth, isDirectory: true }, onChAnge, onError);
 }
 
 export const CHANGE_BUFFER_DELAY = 100;
 
-function doWatchNonRecursive(file: { path: string, isDirectory: boolean }, onChange: (type: 'added' | 'changed' | 'deleted', path: string) => void, onError: (error: string) => void): IDisposable {
-	const originalFileName = basename(file.path);
-	const mapPathToStatDisposable = new Map<string, IDisposable>();
+function doWAtchNonRecursive(file: { pAth: string, isDirectory: booleAn }, onChAnge: (type: 'Added' | 'chAnged' | 'deleted', pAth: string) => void, onError: (error: string) => void): IDisposAble {
+	const originAlFileNAme = bAsenAme(file.pAth);
+	const mApPAthToStAtDisposAble = new MAp<string, IDisposAble>();
 
-	let disposed = false;
-	let watcherDisposables: IDisposable[] = [toDisposable(() => {
-		mapPathToStatDisposable.forEach(disposable => dispose(disposable));
-		mapPathToStatDisposable.clear();
+	let disposed = fAlse;
+	let wAtcherDisposAbles: IDisposAble[] = [toDisposAble(() => {
+		mApPAthToStAtDisposAble.forEAch(disposAble => dispose(disposAble));
+		mApPAthToStAtDisposAble.cleAr();
 	})];
 
 	try {
 
-		// Creating watcher can fail with an exception
-		const watcher = watch(file.path);
-		watcherDisposables.push(toDisposable(() => {
-			watcher.removeAllListeners();
-			watcher.close();
+		// CreAting wAtcher cAn fAil with An exception
+		const wAtcher = wAtch(file.pAth);
+		wAtcherDisposAbles.push(toDisposAble(() => {
+			wAtcher.removeAllListeners();
+			wAtcher.close();
 		}));
 
 		// Folder: resolve children to emit proper events
 		const folderChildren: Set<string> = new Set<string>();
 		if (file.isDirectory) {
-			readdir(file.path).then(children => children.forEach(child => folderChildren.add(child)));
+			reAddir(file.pAth).then(children => children.forEAch(child => folderChildren.Add(child)));
 		}
 
-		watcher.on('error', (code: number, signal: string) => {
+		wAtcher.on('error', (code: number, signAl: string) => {
 			if (!disposed) {
-				onError(`Failed to watch ${file.path} for changes using fs.watch() (${code}, ${signal})`);
+				onError(`FAiled to wAtch ${file.pAth} for chAnges using fs.wAtch() (${code}, ${signAl})`);
 			}
 		});
 
-		watcher.on('change', (type, raw) => {
+		wAtcher.on('chAnge', (type, rAw) => {
 			if (disposed) {
-				return; // ignore if already disposed
+				return; // ignore if AlreAdy disposed
 			}
 
-			// Normalize file name
-			let changedFileName: string = '';
-			if (raw) { // https://github.com/microsoft/vscode/issues/38191
-				changedFileName = raw.toString();
-				if (isMacintosh) {
-					// Mac: uses NFD unicode form on disk, but we want NFC
-					// See also https://github.com/nodejs/node/issues/2165
-					changedFileName = normalizeNFC(changedFileName);
+			// NormAlize file nAme
+			let chAngedFileNAme: string = '';
+			if (rAw) { // https://github.com/microsoft/vscode/issues/38191
+				chAngedFileNAme = rAw.toString();
+				if (isMAcintosh) {
+					// MAc: uses NFD unicode form on disk, but we wAnt NFC
+					// See Also https://github.com/nodejs/node/issues/2165
+					chAngedFileNAme = normAlizeNFC(chAngedFileNAme);
 				}
 			}
 
-			if (!changedFileName || (type !== 'change' && type !== 'rename')) {
+			if (!chAngedFileNAme || (type !== 'chAnge' && type !== 'renAme')) {
 				return; // ignore unexpected events
 			}
 
-			// File path: use path directly for files and join with changed file name otherwise
-			const changedFilePath = file.isDirectory ? join(file.path, changedFileName) : file.path;
+			// File pAth: use pAth directly for files And join with chAnged file nAme otherwise
+			const chAngedFilePAth = file.isDirectory ? join(file.pAth, chAngedFileNAme) : file.pAth;
 
 			// File
 			if (!file.isDirectory) {
-				if (type === 'rename' || changedFileName !== originalFileName) {
-					// The file was either deleted or renamed. Many tools apply changes to files in an
-					// atomic way ("Atomic Save") by first renaming the file to a temporary name and then
-					// renaming it back to the original name. Our watcher will detect this as a rename
-					// and then stops to work on Mac and Linux because the watcher is applied to the
-					// inode and not the name. The fix is to detect this case and trying to watch the file
-					// again after a certain delay.
-					// In addition, we send out a delete event if after a timeout we detect that the file
-					// does indeed not exist anymore.
+				if (type === 'renAme' || chAngedFileNAme !== originAlFileNAme) {
+					// The file wAs either deleted or renAmed. MAny tools Apply chAnges to files in An
+					// Atomic wAy ("Atomic SAve") by first renAming the file to A temporAry nAme And then
+					// renAming it bAck to the originAl nAme. Our wAtcher will detect this As A renAme
+					// And then stops to work on MAc And Linux becAuse the wAtcher is Applied to the
+					// inode And not the nAme. The fix is to detect this cAse And trying to wAtch the file
+					// AgAin After A certAin delAy.
+					// In Addition, we send out A delete event if After A timeout we detect thAt the file
+					// does indeed not exist Anymore.
 
-					const timeoutHandle = setTimeout(async () => {
-						const fileExists = await exists(changedFilePath);
+					const timeoutHAndle = setTimeout(Async () => {
+						const fileExists = AwAit exists(chAngedFilePAth);
 
 						if (disposed) {
 							return; // ignore if disposed by now
 						}
 
-						// File still exists, so emit as change event and reapply the watcher
+						// File still exists, so emit As chAnge event And reApply the wAtcher
 						if (fileExists) {
-							onChange('changed', changedFilePath);
+							onChAnge('chAnged', chAngedFilePAth);
 
-							watcherDisposables = [doWatchNonRecursive(file, onChange, onError)];
+							wAtcherDisposAbles = [doWAtchNonRecursive(file, onChAnge, onError)];
 						}
 
-						// File seems to be really gone, so emit a deleted event
+						// File seems to be reAlly gone, so emit A deleted event
 						else {
-							onChange('deleted', changedFilePath);
+							onChAnge('deleted', chAngedFilePAth);
 						}
 					}, CHANGE_BUFFER_DELAY);
 
-					// Very important to dispose the watcher which now points to a stale inode
-					// and wire in a new disposable that tracks our timeout that is installed
-					dispose(watcherDisposables);
-					watcherDisposables = [toDisposable(() => clearTimeout(timeoutHandle))];
+					// Very importAnt to dispose the wAtcher which now points to A stAle inode
+					// And wire in A new disposAble thAt trAcks our timeout thAt is instAlled
+					dispose(wAtcherDisposAbles);
+					wAtcherDisposAbles = [toDisposAble(() => cleArTimeout(timeoutHAndle))];
 				} else {
-					onChange('changed', changedFilePath);
+					onChAnge('chAnged', chAngedFilePAth);
 				}
 			}
 
 			// Folder
 			else {
 
-				// Children add/delete
-				if (type === 'rename') {
+				// Children Add/delete
+				if (type === 'renAme') {
 
-					// Cancel any previous stats for this file path if existing
-					const statDisposable = mapPathToStatDisposable.get(changedFilePath);
-					if (statDisposable) {
-						dispose(statDisposable);
+					// CAncel Any previous stAts for this file pAth if existing
+					const stAtDisposAble = mApPAthToStAtDisposAble.get(chAngedFilePAth);
+					if (stAtDisposAble) {
+						dispose(stAtDisposAble);
 					}
 
-					// Wait a bit and try see if the file still exists on disk to decide on the resulting event
-					const timeoutHandle = setTimeout(async () => {
-						mapPathToStatDisposable.delete(changedFilePath);
+					// WAit A bit And try see if the file still exists on disk to decide on the resulting event
+					const timeoutHAndle = setTimeout(Async () => {
+						mApPAthToStAtDisposAble.delete(chAngedFilePAth);
 
-						const fileExists = await exists(changedFilePath);
+						const fileExists = AwAit exists(chAngedFilePAth);
 
 						if (disposed) {
 							return; // ignore if disposed by now
 						}
 
 						// Figure out the correct event type:
-						// File Exists: either 'added' or 'changed' if known before
-						// File Does not Exist: always 'deleted'
-						let type: 'added' | 'deleted' | 'changed';
+						// File Exists: either 'Added' or 'chAnged' if known before
+						// File Does not Exist: AlwAys 'deleted'
+						let type: 'Added' | 'deleted' | 'chAnged';
 						if (fileExists) {
-							if (folderChildren.has(changedFileName)) {
-								type = 'changed';
+							if (folderChildren.hAs(chAngedFileNAme)) {
+								type = 'chAnged';
 							} else {
-								type = 'added';
-								folderChildren.add(changedFileName);
+								type = 'Added';
+								folderChildren.Add(chAngedFileNAme);
 							}
 						} else {
-							folderChildren.delete(changedFileName);
+							folderChildren.delete(chAngedFileNAme);
 							type = 'deleted';
 						}
 
-						onChange(type, changedFilePath);
+						onChAnge(type, chAngedFilePAth);
 					}, CHANGE_BUFFER_DELAY);
 
-					mapPathToStatDisposable.set(changedFilePath, toDisposable(() => clearTimeout(timeoutHandle)));
+					mApPAthToStAtDisposAble.set(chAngedFilePAth, toDisposAble(() => cleArTimeout(timeoutHAndle)));
 				}
 
 				// Other events
 				else {
 
 					// Figure out the correct event type: if this is the
-					// first time we see this child, it can only be added
-					let type: 'added' | 'changed';
-					if (folderChildren.has(changedFileName)) {
-						type = 'changed';
+					// first time we see this child, it cAn only be Added
+					let type: 'Added' | 'chAnged';
+					if (folderChildren.hAs(chAngedFileNAme)) {
+						type = 'chAnged';
 					} else {
-						type = 'added';
-						folderChildren.add(changedFileName);
+						type = 'Added';
+						folderChildren.Add(chAngedFileNAme);
 					}
 
-					onChange(type, changedFilePath);
+					onChAnge(type, chAngedFilePAth);
 				}
 			}
 		});
-	} catch (error) {
-		exists(file.path).then(exists => {
+	} cAtch (error) {
+		exists(file.pAth).then(exists => {
 			if (exists && !disposed) {
-				onError(`Failed to watch ${file.path} for changes using fs.watch() (${error.toString()})`);
+				onError(`FAiled to wAtch ${file.pAth} for chAnges using fs.wAtch() (${error.toString()})`);
 			}
 		});
 	}
 
-	return toDisposable(() => {
+	return toDisposAble(() => {
 		disposed = true;
 
-		watcherDisposables = dispose(watcherDisposables);
+		wAtcherDisposAbles = dispose(wAtcherDisposAbles);
 	});
 }

@@ -1,21 +1,21 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-// Entry file for webpack bunlding.
+// Entry file for webpAck bunlding.
 
-import * as monaco from 'monaco-editor-core';
+import * As monAco from 'monAco-editor-core';
 
-self.MonacoEnvironment = {
-	getWorkerUrl: function (moduleId, label) {
+self.MonAcoEnvironment = {
+	getWorkerUrl: function (moduleId, lAbel) {
 		return './editor.worker.bundle.js';
 	}
 };
 
-monaco.editor.create(document.getElementById('container'), {
-	value: [
-		'var hello = "hello world";'
+monAco.editor.creAte(document.getElementById('contAiner'), {
+	vAlue: [
+		'vAr hello = "hello world";'
 	].join('\n'),
-	language: 'javascript'
+	lAnguAge: 'jAvAscript'
 });

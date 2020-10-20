@@ -1,111 +1,111 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import * as objects from 'vs/base/common/objects';
+import * As Assert from 'Assert';
+import * As objects from 'vs/bAse/common/objects';
 
-let check = (one: any, other: any, msg: string) => {
-	assert(objects.equals(one, other), msg);
-	assert(objects.equals(other, one), '[reverse] ' + msg);
+let check = (one: Any, other: Any, msg: string) => {
+	Assert(objects.equAls(one, other), msg);
+	Assert(objects.equAls(other, one), '[reverse] ' + msg);
 };
 
-let checkNot = (one: any, other: any, msg: string) => {
-	assert(!objects.equals(one, other), msg);
-	assert(!objects.equals(other, one), '[reverse] ' + msg);
+let checkNot = (one: Any, other: Any, msg: string) => {
+	Assert(!objects.equAls(one, other), msg);
+	Assert(!objects.equAls(other, one), '[reverse] ' + msg);
 };
 
 suite('Objects', () => {
 
-	test('equals', () => {
+	test('equAls', () => {
 		check(null, null, 'null');
 		check(undefined, undefined, 'undefined');
 		check(1234, 1234, 'numbers');
 		check('', '', 'empty strings');
 		check('1234', '1234', 'strings');
-		check([], [], 'empty arrays');
-		// check(['', 123], ['', 123], 'arrays');
-		check([[1, 2, 3], [4, 5, 6]], [[1, 2, 3], [4, 5, 6]], 'nested arrays');
+		check([], [], 'empty ArrAys');
+		// check(['', 123], ['', 123], 'ArrAys');
+		check([[1, 2, 3], [4, 5, 6]], [[1, 2, 3], [4, 5, 6]], 'nested ArrAys');
 		check({}, {}, 'empty objects');
-		check({ a: 1, b: '123' }, { a: 1, b: '123' }, 'objects');
-		check({ a: 1, b: '123' }, { b: '123', a: 1 }, 'objects (key order)');
-		check({ a: { b: 1, c: 2 }, b: 3 }, { a: { b: 1, c: 2 }, b: 3 }, 'nested objects');
+		check({ A: 1, b: '123' }, { A: 1, b: '123' }, 'objects');
+		check({ A: 1, b: '123' }, { b: '123', A: 1 }, 'objects (key order)');
+		check({ A: { b: 1, c: 2 }, b: 3 }, { A: { b: 1, c: 2 }, b: 3 }, 'nested objects');
 
 		checkNot(null, undefined, 'null != undefined');
 		checkNot(null, '', 'null != empty string');
-		checkNot(null, [], 'null != empty array');
+		checkNot(null, [], 'null != empty ArrAy');
 		checkNot(null, {}, 'null != empty object');
 		checkNot(null, 0, 'null != zero');
 		checkNot(undefined, '', 'undefined != empty string');
-		checkNot(undefined, [], 'undefined != empty array');
+		checkNot(undefined, [], 'undefined != empty ArrAy');
 		checkNot(undefined, {}, 'undefined != empty object');
 		checkNot(undefined, 0, 'undefined != zero');
-		checkNot('', [], 'empty string != empty array');
+		checkNot('', [], 'empty string != empty ArrAy');
 		checkNot('', {}, 'empty string != empty object');
 		checkNot('', 0, 'empty string != zero');
-		checkNot([], {}, 'empty array != empty object');
-		checkNot([], 0, 'empty array != zero');
-		checkNot(0, [], 'zero != empty array');
+		checkNot([], {}, 'empty ArrAy != empty object');
+		checkNot([], 0, 'empty ArrAy != zero');
+		checkNot(0, [], 'zero != empty ArrAy');
 
 		checkNot('1234', 1234, 'string !== number');
 
-		checkNot([[1, 2, 3], [4, 5, 6]], [[1, 2, 3], [4, 5, 6000]], 'arrays');
-		checkNot({ a: { b: 1, c: 2 }, b: 3 }, { b: 3, a: { b: 9, c: 2 } }, 'objects');
+		checkNot([[1, 2, 3], [4, 5, 6]], [[1, 2, 3], [4, 5, 6000]], 'ArrAys');
+		checkNot({ A: { b: 1, c: 2 }, b: 3 }, { b: 3, A: { b: 9, c: 2 } }, 'objects');
 	});
 
-	test('mixin - array', function () {
+	test('mixin - ArrAy', function () {
 
-		let foo: any = {};
-		objects.mixin(foo, { bar: [1, 2, 3] });
+		let foo: Any = {};
+		objects.mixin(foo, { bAr: [1, 2, 3] });
 
-		assert(foo.bar);
-		assert(Array.isArray(foo.bar));
-		assert.equal(foo.bar.length, 3);
-		assert.equal(foo.bar[0], 1);
-		assert.equal(foo.bar[1], 2);
-		assert.equal(foo.bar[2], 3);
+		Assert(foo.bAr);
+		Assert(ArrAy.isArrAy(foo.bAr));
+		Assert.equAl(foo.bAr.length, 3);
+		Assert.equAl(foo.bAr[0], 1);
+		Assert.equAl(foo.bAr[1], 2);
+		Assert.equAl(foo.bAr[2], 3);
 	});
 
 	test('mixin - no overwrite', function () {
-		let foo: any = {
-			bar: '123'
+		let foo: Any = {
+			bAr: '123'
 		};
 
-		let bar: any = {
-			bar: '456'
+		let bAr: Any = {
+			bAr: '456'
 		};
 
-		objects.mixin(foo, bar, false);
+		objects.mixin(foo, bAr, fAlse);
 
-		assert.equal(foo.bar, '123');
+		Assert.equAl(foo.bAr, '123');
 	});
 
-	test('cloneAndChange', () => {
+	test('cloneAndChAnge', () => {
 		let o1 = { something: 'hello' };
 		let o = {
 			o1: o1,
 			o2: o1
 		};
-		assert.deepEqual(objects.cloneAndChange(o, () => { }), o);
+		Assert.deepEquAl(objects.cloneAndChAnge(o, () => { }), o);
 	});
 
-	test('safeStringify', () => {
-		let obj1: any = {
+	test('sAfeStringify', () => {
+		let obj1: Any = {
 			friend: null
 		};
 
-		let obj2: any = {
+		let obj2: Any = {
 			friend: null
 		};
 
 		obj1.friend = obj2;
 		obj2.friend = obj1;
 
-		let arr: any = [1];
-		arr.push(arr);
+		let Arr: Any = [1];
+		Arr.push(Arr);
 
-		let circular: any = {
-			a: 42,
+		let circulAr: Any = {
+			A: 42,
 			b: null,
 			c: [
 				obj1, obj2
@@ -113,64 +113,64 @@ suite('Objects', () => {
 			d: null
 		};
 
-		arr.push(circular);
+		Arr.push(circulAr);
 
 
-		circular.b = circular;
-		circular.d = arr;
+		circulAr.b = circulAr;
+		circulAr.d = Arr;
 
-		let result = objects.safeStringify(circular);
+		let result = objects.sAfeStringify(circulAr);
 
-		assert.deepEqual(JSON.parse(result), {
-			a: 42,
-			b: '[Circular]',
+		Assert.deepEquAl(JSON.pArse(result), {
+			A: 42,
+			b: '[CirculAr]',
 			c: [
 				{
 					friend: {
-						friend: '[Circular]'
+						friend: '[CirculAr]'
 					}
 				},
-				'[Circular]'
+				'[CirculAr]'
 			],
-			d: [1, '[Circular]', '[Circular]']
+			d: [1, '[CirculAr]', '[CirculAr]']
 		});
 	});
 
 	test('distinct', () => {
-		let base = {
+		let bAse = {
 			one: 'one',
 			two: 2,
 			three: {
 				3: true
 			},
-			four: false
+			four: fAlse
 		};
 
-		let diff = objects.distinct(base, base);
-		assert.deepEqual(diff, {});
+		let diff = objects.distinct(bAse, bAse);
+		Assert.deepEquAl(diff, {});
 
 		let obj = {};
 
-		diff = objects.distinct(base, obj);
-		assert.deepEqual(diff, {});
+		diff = objects.distinct(bAse, obj);
+		Assert.deepEquAl(diff, {});
 
 		obj = {
 			one: 'one',
 			two: 2
 		};
 
-		diff = objects.distinct(base, obj);
-		assert.deepEqual(diff, {});
+		diff = objects.distinct(bAse, obj);
+		Assert.deepEquAl(diff, {});
 
 		obj = {
 			three: {
 				3: true
 			},
-			four: false
+			four: fAlse
 		};
 
-		diff = objects.distinct(base, obj);
-		assert.deepEqual(diff, {});
+		diff = objects.distinct(bAse, obj);
+		Assert.deepEquAl(diff, {});
 
 		obj = {
 			one: 'two',
@@ -181,8 +181,8 @@ suite('Objects', () => {
 			four: true
 		};
 
-		diff = objects.distinct(base, obj);
-		assert.deepEqual(diff, {
+		diff = objects.distinct(bAse, obj);
+		Assert.deepEquAl(diff, {
 			one: 'two',
 			four: true
 		});
@@ -196,8 +196,8 @@ suite('Objects', () => {
 			four: undefined
 		};
 
-		diff = objects.distinct(base, obj);
-		assert.deepEqual(diff, {
+		diff = objects.distinct(bAse, obj);
+		Assert.deepEquAl(diff, {
 			one: null,
 			four: undefined
 		});
@@ -205,11 +205,11 @@ suite('Objects', () => {
 		obj = {
 			one: 'two',
 			two: 3,
-			three: { 3: false },
+			three: { 3: fAlse },
 			four: true
 		};
 
-		diff = objects.distinct(base, obj);
-		assert.deepEqual(diff, obj);
+		diff = objects.distinct(bAse, obj);
+		Assert.deepEquAl(diff, obj);
 	});
 });

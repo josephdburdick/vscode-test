@@ -1,183 +1,183 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { URI } from 'vs/base/common/uri';
-import { Event } from 'vs/base/common/event';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { localize } from 'vs/nls';
-import Severity from 'vs/base/common/severity';
+import { URI } from 'vs/bAse/common/uri';
+import { Event } from 'vs/bAse/common/event';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { locAlize } from 'vs/nls';
+import Severity from 'vs/bAse/common/severity';
 
-export interface IMarkerService {
-	readonly _serviceBrand: undefined;
+export interfAce IMArkerService {
+	reAdonly _serviceBrAnd: undefined;
 
-	getStatistics(): MarkerStatistics;
+	getStAtistics(): MArkerStAtistics;
 
-	changeOne(owner: string, resource: URI, markers: IMarkerData[]): void;
+	chAngeOne(owner: string, resource: URI, mArkers: IMArkerDAtA[]): void;
 
-	changeAll(owner: string, data: IResourceMarker[]): void;
+	chAngeAll(owner: string, dAtA: IResourceMArker[]): void;
 
 	remove(owner: string, resources: URI[]): void;
 
-	read(filter?: { owner?: string; resource?: URI; severities?: number, take?: number; }): IMarker[];
+	reAd(filter?: { owner?: string; resource?: URI; severities?: number, tAke?: number; }): IMArker[];
 
-	readonly onMarkerChanged: Event<readonly URI[]>;
+	reAdonly onMArkerChAnged: Event<reAdonly URI[]>;
 }
 
 /**
  *
  */
-export interface IRelatedInformation {
+export interfAce IRelAtedInformAtion {
 	resource: URI;
-	message: string;
-	startLineNumber: number;
-	startColumn: number;
+	messAge: string;
+	stArtLineNumber: number;
+	stArtColumn: number;
 	endLineNumber: number;
 	endColumn: number;
 }
 
-export const enum MarkerTag {
-	Unnecessary = 1,
-	Deprecated = 2
+export const enum MArkerTAg {
+	UnnecessAry = 1,
+	DeprecAted = 2
 }
 
-export enum MarkerSeverity {
+export enum MArkerSeverity {
 	Hint = 1,
 	Info = 2,
-	Warning = 4,
+	WArning = 4,
 	Error = 8,
 }
 
-export namespace MarkerSeverity {
+export nAmespAce MArkerSeverity {
 
-	export function compare(a: MarkerSeverity, b: MarkerSeverity): number {
-		return b - a;
+	export function compAre(A: MArkerSeverity, b: MArkerSeverity): number {
+		return b - A;
 	}
 
-	const _displayStrings: { [value: number]: string; } = Object.create(null);
-	_displayStrings[MarkerSeverity.Error] = localize('sev.error', "Error");
-	_displayStrings[MarkerSeverity.Warning] = localize('sev.warning', "Warning");
-	_displayStrings[MarkerSeverity.Info] = localize('sev.info', "Info");
+	const _displAyStrings: { [vAlue: number]: string; } = Object.creAte(null);
+	_displAyStrings[MArkerSeverity.Error] = locAlize('sev.error', "Error");
+	_displAyStrings[MArkerSeverity.WArning] = locAlize('sev.wArning', "WArning");
+	_displAyStrings[MArkerSeverity.Info] = locAlize('sev.info', "Info");
 
-	export function toString(a: MarkerSeverity): string {
-		return _displayStrings[a] || '';
+	export function toString(A: MArkerSeverity): string {
+		return _displAyStrings[A] || '';
 	}
 
-	export function fromSeverity(severity: Severity): MarkerSeverity {
+	export function fromSeverity(severity: Severity): MArkerSeverity {
 		switch (severity) {
-			case Severity.Error: return MarkerSeverity.Error;
-			case Severity.Warning: return MarkerSeverity.Warning;
-			case Severity.Info: return MarkerSeverity.Info;
-			case Severity.Ignore: return MarkerSeverity.Hint;
+			cAse Severity.Error: return MArkerSeverity.Error;
+			cAse Severity.WArning: return MArkerSeverity.WArning;
+			cAse Severity.Info: return MArkerSeverity.Info;
+			cAse Severity.Ignore: return MArkerSeverity.Hint;
 		}
 	}
 
-	export function toSeverity(severity: MarkerSeverity): Severity {
+	export function toSeverity(severity: MArkerSeverity): Severity {
 		switch (severity) {
-			case MarkerSeverity.Error: return Severity.Error;
-			case MarkerSeverity.Warning: return Severity.Warning;
-			case MarkerSeverity.Info: return Severity.Info;
-			case MarkerSeverity.Hint: return Severity.Ignore;
+			cAse MArkerSeverity.Error: return Severity.Error;
+			cAse MArkerSeverity.WArning: return Severity.WArning;
+			cAse MArkerSeverity.Info: return Severity.Info;
+			cAse MArkerSeverity.Hint: return Severity.Ignore;
 		}
 	}
 }
 
 /**
- * A structure defining a problem/warning/etc.
+ * A structure defining A problem/wArning/etc.
  */
-export interface IMarkerData {
-	code?: string | { value: string; target: URI };
-	severity: MarkerSeverity;
-	message: string;
+export interfAce IMArkerDAtA {
+	code?: string | { vAlue: string; tArget: URI };
+	severity: MArkerSeverity;
+	messAge: string;
 	source?: string;
-	startLineNumber: number;
-	startColumn: number;
+	stArtLineNumber: number;
+	stArtColumn: number;
 	endLineNumber: number;
 	endColumn: number;
-	relatedInformation?: IRelatedInformation[];
-	tags?: MarkerTag[];
+	relAtedInformAtion?: IRelAtedInformAtion[];
+	tAgs?: MArkerTAg[];
 }
 
-export interface IResourceMarker {
+export interfAce IResourceMArker {
 	resource: URI;
-	marker: IMarkerData;
+	mArker: IMArkerDAtA;
 }
 
-export interface IMarker {
+export interfAce IMArker {
 	owner: string;
 	resource: URI;
-	severity: MarkerSeverity;
-	code?: string | { value: string; target: URI };
-	message: string;
+	severity: MArkerSeverity;
+	code?: string | { vAlue: string; tArget: URI };
+	messAge: string;
 	source?: string;
-	startLineNumber: number;
-	startColumn: number;
+	stArtLineNumber: number;
+	stArtColumn: number;
 	endLineNumber: number;
 	endColumn: number;
-	relatedInformation?: IRelatedInformation[];
-	tags?: MarkerTag[];
+	relAtedInformAtion?: IRelAtedInformAtion[];
+	tAgs?: MArkerTAg[];
 }
 
-export interface MarkerStatistics {
+export interfAce MArkerStAtistics {
 	errors: number;
-	warnings: number;
+	wArnings: number;
 	infos: number;
 	unknowns: number;
 }
 
-export namespace IMarkerData {
+export nAmespAce IMArkerDAtA {
 	const emptyString = '';
-	export function makeKey(markerData: IMarkerData): string {
-		return makeKeyOptionalMessage(markerData, true);
+	export function mAkeKey(mArkerDAtA: IMArkerDAtA): string {
+		return mAkeKeyOptionAlMessAge(mArkerDAtA, true);
 	}
 
-	export function makeKeyOptionalMessage(markerData: IMarkerData, useMessage: boolean): string {
+	export function mAkeKeyOptionAlMessAge(mArkerDAtA: IMArkerDAtA, useMessAge: booleAn): string {
 		let result: string[] = [emptyString];
-		if (markerData.source) {
-			result.push(markerData.source.replace('¦', '\\¦'));
+		if (mArkerDAtA.source) {
+			result.push(mArkerDAtA.source.replAce('¦', '\\¦'));
 		} else {
 			result.push(emptyString);
 		}
-		if (markerData.code) {
-			if (typeof markerData.code === 'string') {
-				result.push(markerData.code.replace('¦', '\\¦'));
+		if (mArkerDAtA.code) {
+			if (typeof mArkerDAtA.code === 'string') {
+				result.push(mArkerDAtA.code.replAce('¦', '\\¦'));
 			} else {
-				result.push(markerData.code.value.replace('¦', '\\¦'));
+				result.push(mArkerDAtA.code.vAlue.replAce('¦', '\\¦'));
 			}
 		} else {
 			result.push(emptyString);
 		}
-		if (markerData.severity !== undefined && markerData.severity !== null) {
-			result.push(MarkerSeverity.toString(markerData.severity));
+		if (mArkerDAtA.severity !== undefined && mArkerDAtA.severity !== null) {
+			result.push(MArkerSeverity.toString(mArkerDAtA.severity));
 		} else {
 			result.push(emptyString);
 		}
 
-		// Modifed to not include the message as part of the marker key to work around
+		// Modifed to not include the messAge As pArt of the mArker key to work Around
 		// https://github.com/microsoft/vscode/issues/77475
-		if (markerData.message && useMessage) {
-			result.push(markerData.message.replace('¦', '\\¦'));
+		if (mArkerDAtA.messAge && useMessAge) {
+			result.push(mArkerDAtA.messAge.replAce('¦', '\\¦'));
 		} else {
 			result.push(emptyString);
 		}
-		if (markerData.startLineNumber !== undefined && markerData.startLineNumber !== null) {
-			result.push(markerData.startLineNumber.toString());
+		if (mArkerDAtA.stArtLineNumber !== undefined && mArkerDAtA.stArtLineNumber !== null) {
+			result.push(mArkerDAtA.stArtLineNumber.toString());
 		} else {
 			result.push(emptyString);
 		}
-		if (markerData.startColumn !== undefined && markerData.startColumn !== null) {
-			result.push(markerData.startColumn.toString());
+		if (mArkerDAtA.stArtColumn !== undefined && mArkerDAtA.stArtColumn !== null) {
+			result.push(mArkerDAtA.stArtColumn.toString());
 		} else {
 			result.push(emptyString);
 		}
-		if (markerData.endLineNumber !== undefined && markerData.endLineNumber !== null) {
-			result.push(markerData.endLineNumber.toString());
+		if (mArkerDAtA.endLineNumber !== undefined && mArkerDAtA.endLineNumber !== null) {
+			result.push(mArkerDAtA.endLineNumber.toString());
 		} else {
 			result.push(emptyString);
 		}
-		if (markerData.endColumn !== undefined && markerData.endColumn !== null) {
-			result.push(markerData.endColumn.toString());
+		if (mArkerDAtA.endColumn !== undefined && mArkerDAtA.endColumn !== null) {
+			result.push(mArkerDAtA.endColumn.toString());
 		} else {
 			result.push(emptyString);
 		}
@@ -186,4 +186,4 @@ export namespace IMarkerData {
 	}
 }
 
-export const IMarkerService = createDecorator<IMarkerService>('markerService');
+export const IMArkerService = creAteDecorAtor<IMArkerService>('mArkerService');

@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
 import { ColorTheme, ColorThemeKind } from './extHostTypes';
-import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
-import { ExtHostThemingShape } from 'vs/workbench/api/common/extHost.protocol';
-import { Emitter, Event } from 'vs/base/common/event';
+import { IExtHostRpcService } from 'vs/workbench/Api/common/extHostRpcService';
+import { ExtHostThemingShApe } from 'vs/workbench/Api/common/extHost.protocol';
+import { Emitter, Event } from 'vs/bAse/common/event';
 
-export class ExtHostTheming implements ExtHostThemingShape {
+export clAss ExtHostTheming implements ExtHostThemingShApe {
 
-	readonly _serviceBrand: undefined;
+	reAdonly _serviceBrAnd: undefined;
 
-	private _actual: ColorTheme;
-	private _onDidChangeActiveColorTheme: Emitter<ColorTheme>;
+	privAte _ActuAl: ColorTheme;
+	privAte _onDidChAngeActiveColorTheme: Emitter<ColorTheme>;
 
 	constructor(
 		@IExtHostRpcService _extHostRpc: IExtHostRpcService
 	) {
-		this._actual = new ColorTheme(ColorThemeKind.Dark);
-		this._onDidChangeActiveColorTheme = new Emitter<ColorTheme>();
+		this._ActuAl = new ColorTheme(ColorThemeKind.DArk);
+		this._onDidChAngeActiveColorTheme = new Emitter<ColorTheme>();
 	}
 
-	public get activeColorTheme(): ColorTheme {
-		return this._actual;
+	public get ActiveColorTheme(): ColorTheme {
+		return this._ActuAl;
 	}
 
-	$onColorThemeChange(type: string): void {
-		let kind = type === 'light' ? ColorThemeKind.Light : type === 'dark' ? ColorThemeKind.Dark : ColorThemeKind.HighContrast;
-		this._actual = new ColorTheme(kind);
-		this._onDidChangeActiveColorTheme.fire(this._actual);
+	$onColorThemeChAnge(type: string): void {
+		let kind = type === 'light' ? ColorThemeKind.Light : type === 'dArk' ? ColorThemeKind.DArk : ColorThemeKind.HighContrAst;
+		this._ActuAl = new ColorTheme(kind);
+		this._onDidChAngeActiveColorTheme.fire(this._ActuAl);
 	}
 
-	public get onDidChangeActiveColorTheme(): Event<ColorTheme> {
-		return this._onDidChangeActiveColorTheme.event;
+	public get onDidChAngeActiveColorTheme(): Event<ColorTheme> {
+		return this._onDidChAngeActiveColorTheme.event;
 	}
 }

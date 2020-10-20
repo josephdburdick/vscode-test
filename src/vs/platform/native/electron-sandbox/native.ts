@@ -1,18 +1,18 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ICommonNativeHostService } from 'vs/platform/native/common/native';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICommonNAtiveHostService } from 'vs/plAtform/nAtive/common/nAtive';
 
-export const INativeHostService = createDecorator<INativeHostService>('nativeHostService');
+export const INAtiveHostService = creAteDecorAtor<INAtiveHostService>('nAtiveHostService');
 
 /**
- * A set of methods specific to a native host, i.e. unsupported in web
+ * A set of methods specific to A nAtive host, i.e. unsupported in web
  * environments.
  *
- * @see `IHostService` for methods that can be used in native and web
+ * @see `IHostService` for methods thAt cAn be used in nAtive And web
  * hosts.
  */
-export interface INativeHostService extends ICommonNativeHostService { }
+export interfAce INAtiveHostService extends ICommonNAtiveHostService { }

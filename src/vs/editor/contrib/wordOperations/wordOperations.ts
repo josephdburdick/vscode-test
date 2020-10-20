@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
+import { KeyCode, KeyMod } from 'vs/bAse/common/keyCodes';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
-import { EditorCommand, ICommandOptions, ServicesAccessor, registerEditorCommand } from 'vs/editor/browser/editorExtensions';
-import { ReplaceCommand } from 'vs/editor/common/commands/replaceCommand';
-import { CursorState } from 'vs/editor/common/controller/cursorCommon';
-import { CursorChangeReason } from 'vs/editor/common/controller/cursorEvents';
-import { DeleteWordContext, WordNavigationType, WordOperations } from 'vs/editor/common/controller/cursorWordOperations';
-import { WordCharacterClassifier, getMapForWordSeparators } from 'vs/editor/common/controller/wordCharacterClassifier';
+import { EditorCommAnd, ICommAndOptions, ServicesAccessor, registerEditorCommAnd } from 'vs/editor/browser/editorExtensions';
+import { ReplAceCommAnd } from 'vs/editor/common/commAnds/replAceCommAnd';
+import { CursorStAte } from 'vs/editor/common/controller/cursorCommon';
+import { CursorChAngeReAson } from 'vs/editor/common/controller/cursorEvents';
+import { DeleteWordContext, WordNAvigAtionType, WordOperAtions } from 'vs/editor/common/controller/cursorWordOperAtions';
+import { WordChArActerClAssifier, getMApForWordSepArAtors } from 'vs/editor/common/controller/wordChArActerClAssifier';
 import { Position } from 'vs/editor/common/core/position';
-import { Range } from 'vs/editor/common/core/range';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { Selection } from 'vs/editor/common/core/selection';
 import { ScrollType } from 'vs/editor/common/editorCommon';
 import { EditorContextKeys } from 'vs/editor/common/editorContextKeys';
 import { ITextModel } from 'vs/editor/common/model';
-import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/platform/accessibility/common/accessibility';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
+import { KeybindingWeight } from 'vs/plAtform/keybinding/common/keybindingsRegistry';
+import { CONTEXT_ACCESSIBILITY_MODE_ENABLED } from 'vs/plAtform/Accessibility/common/Accessibility';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
 import { EditorOption, EditorOptions } from 'vs/editor/common/config/editorOptions';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
+import { LAnguAgeConfigurAtionRegistry } from 'vs/editor/common/modes/lAnguAgeConfigurAtionRegistry';
 
-export interface MoveWordOptions extends ICommandOptions {
-	inSelectionMode: boolean;
-	wordNavigationType: WordNavigationType;
+export interfAce MoveWordOptions extends ICommAndOptions {
+	inSelectionMode: booleAn;
+	wordNAvigAtionType: WordNAvigAtionType;
 }
 
-export abstract class MoveWordCommand extends EditorCommand {
+export AbstrAct clAss MoveWordCommAnd extends EditorCommAnd {
 
-	private readonly _inSelectionMode: boolean;
-	private readonly _wordNavigationType: WordNavigationType;
+	privAte reAdonly _inSelectionMode: booleAn;
+	privAte reAdonly _wordNAvigAtionType: WordNAvigAtionType;
 
 	constructor(opts: MoveWordOptions) {
 		super(opts);
 		this._inSelectionMode = opts.inSelectionMode;
-		this._wordNavigationType = opts.wordNavigationType;
+		this._wordNAvigAtionType = opts.wordNAvigAtionType;
 	}
 
-	public runEditorCommand(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
-		if (!editor.hasModel()) {
+	public runEditorCommAnd(Accessor: ServicesAccessor, editor: ICodeEditor, Args: Any): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
-		const wordSeparators = getMapForWordSeparators(editor.getOption(EditorOption.wordSeparators));
+		const wordSepArAtors = getMApForWordSepArAtors(editor.getOption(EditorOption.wordSepArAtors));
 		const model = editor.getModel();
 		const selections = editor.getSelections();
 
-		const result = selections.map((sel) => {
+		const result = selections.mAp((sel) => {
 			const inPosition = new Position(sel.positionLineNumber, sel.positionColumn);
-			const outPosition = this._move(wordSeparators, model, inPosition, this._wordNavigationType);
+			const outPosition = this._move(wordSepArAtors, model, inPosition, this._wordNAvigAtionType);
 			return this._moveTo(sel, outPosition, this._inSelectionMode);
 		});
 
-		model.pushStackElement();
-		editor._getViewModel().setCursorStates('moveWordCommand', CursorChangeReason.NotSet, result.map(r => CursorState.fromModelSelection(r)));
+		model.pushStAckElement();
+		editor._getViewModel().setCursorStAtes('moveWordCommAnd', CursorChAngeReAson.NotSet, result.mAp(r => CursorStAte.fromModelSelection(r)));
 		if (result.length === 1) {
 			const pos = new Position(result[0].positionLineNumber, result[0].positionColumn);
-			editor.revealPosition(pos, ScrollType.Smooth);
+			editor.reveAlPosition(pos, ScrollType.Smooth);
 		}
 	}
 
-	private _moveTo(from: Selection, to: Position, inSelectionMode: boolean): Selection {
+	privAte _moveTo(from: Selection, to: Position, inSelectionMode: booleAn): Selection {
 		if (inSelectionMode) {
 			// move just position
 			return new Selection(
-				from.selectionStartLineNumber,
-				from.selectionStartColumn,
+				from.selectionStArtLineNumber,
+				from.selectionStArtColumn,
 				to.lineNumber,
 				to.column
 			);
@@ -81,424 +81,424 @@ export abstract class MoveWordCommand extends EditorCommand {
 		}
 	}
 
-	protected abstract _move(wordSeparators: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position;
+	protected AbstrAct _move(wordSepArAtors: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position;
 }
 
-export class WordLeftCommand extends MoveWordCommand {
-	protected _move(wordSeparators: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position {
-		return WordOperations.moveWordLeft(wordSeparators, model, position, wordNavigationType);
+export clAss WordLeftCommAnd extends MoveWordCommAnd {
+	protected _move(wordSepArAtors: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position {
+		return WordOperAtions.moveWordLeft(wordSepArAtors, model, position, wordNAvigAtionType);
 	}
 }
 
-export class WordRightCommand extends MoveWordCommand {
-	protected _move(wordSeparators: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position {
-		return WordOperations.moveWordRight(wordSeparators, model, position, wordNavigationType);
+export clAss WordRightCommAnd extends MoveWordCommAnd {
+	protected _move(wordSepArAtors: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position {
+		return WordOperAtions.moveWordRight(wordSepArAtors, model, position, wordNAvigAtionType);
 	}
 }
 
-export class CursorWordStartLeft extends WordLeftCommand {
+export clAss CursorWordStArtLeft extends WordLeftCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordStart,
-			id: 'cursorWordStartLeft',
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
+			id: 'cursorWordStArtLeft',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordEndLeft extends WordLeftCommand {
+export clAss CursorWordEndLeft extends WordLeftCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordEnd,
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'cursorWordEndLeft',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordLeft extends WordLeftCommand {
+export clAss CursorWordLeft extends WordLeftCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordStartFast,
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArtFAst,
 			id: 'cursorWordLeft',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: KeyMod.CtrlCmd | KeyCode.LeftArrow,
-				mac: { primary: KeyMod.Alt | KeyCode.LeftArrow },
+				primAry: KeyMod.CtrlCmd | KeyCode.LeftArrow,
+				mAc: { primAry: KeyMod.Alt | KeyCode.LeftArrow },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-export class CursorWordStartLeftSelect extends WordLeftCommand {
+export clAss CursorWordStArtLeftSelect extends WordLeftCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordStart,
-			id: 'cursorWordStartLeftSelect',
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
+			id: 'cursorWordStArtLeftSelect',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordEndLeftSelect extends WordLeftCommand {
+export clAss CursorWordEndLeftSelect extends WordLeftCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordEnd,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'cursorWordEndLeftSelect',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordLeftSelect extends WordLeftCommand {
+export clAss CursorWordLeftSelect extends WordLeftCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordStartFast,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArtFAst,
 			id: 'cursorWordLeftSelect',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow,
-				mac: { primary: KeyMod.Alt | KeyMod.Shift | KeyCode.LeftArrow },
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow,
+				mAc: { primAry: KeyMod.Alt | KeyMod.Shift | KeyCode.LeftArrow },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-// Accessibility navigation commands should only be enabled on windows since they are tuned to what NVDA expects
-export class CursorWordAccessibilityLeft extends WordLeftCommand {
+// Accessibility nAvigAtion commAnds should only be enAbled on windows since they Are tuned to whAt NVDA expects
+export clAss CursorWordAccessibilityLeft extends WordLeftCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordAccessibility,
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordAccessibility,
 			id: 'cursorWordAccessibilityLeft',
 			precondition: undefined,
 			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-				win: { primary: KeyMod.CtrlCmd | KeyCode.LeftArrow },
+				kbExpr: ContextKeyExpr.And(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+				win: { primAry: KeyMod.CtrlCmd | KeyCode.LeftArrow },
 				weight: KeybindingWeight.EditorContrib + 1
 			}
 		});
 	}
 
-	protected _move(_: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position {
-		return super._move(getMapForWordSeparators(EditorOptions.wordSeparators.defaultValue), model, position, wordNavigationType);
+	protected _move(_: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position {
+		return super._move(getMApForWordSepArAtors(EditorOptions.wordSepArAtors.defAultVAlue), model, position, wordNAvigAtionType);
 	}
 }
 
-export class CursorWordAccessibilityLeftSelect extends WordLeftCommand {
+export clAss CursorWordAccessibilityLeftSelect extends WordLeftCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordAccessibility,
+			wordNAvigAtionType: WordNAvigAtionType.WordAccessibility,
 			id: 'cursorWordAccessibilityLeftSelect',
 			precondition: undefined,
 			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-				win: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow },
+				kbExpr: ContextKeyExpr.And(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+				win: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.LeftArrow },
 				weight: KeybindingWeight.EditorContrib + 1
 			}
 		});
 	}
 
-	protected _move(_: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position {
-		return super._move(getMapForWordSeparators(EditorOptions.wordSeparators.defaultValue), model, position, wordNavigationType);
+	protected _move(_: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position {
+		return super._move(getMApForWordSepArAtors(EditorOptions.wordSepArAtors.defAultVAlue), model, position, wordNAvigAtionType);
 	}
 }
 
-export class CursorWordStartRight extends WordRightCommand {
+export clAss CursorWordStArtRight extends WordRightCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordStart,
-			id: 'cursorWordStartRight',
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
+			id: 'cursorWordStArtRight',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordEndRight extends WordRightCommand {
+export clAss CursorWordEndRight extends WordRightCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordEnd,
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'cursorWordEndRight',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: KeyMod.CtrlCmd | KeyCode.RightArrow,
-				mac: { primary: KeyMod.Alt | KeyCode.RightArrow },
+				primAry: KeyMod.CtrlCmd | KeyCode.RightArrow,
+				mAc: { primAry: KeyMod.Alt | KeyCode.RightArrow },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-export class CursorWordRight extends WordRightCommand {
+export clAss CursorWordRight extends WordRightCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordEnd,
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'cursorWordRight',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordStartRightSelect extends WordRightCommand {
+export clAss CursorWordStArtRightSelect extends WordRightCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordStart,
-			id: 'cursorWordStartRightSelect',
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
+			id: 'cursorWordStArtRightSelect',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordEndRightSelect extends WordRightCommand {
+export clAss CursorWordEndRightSelect extends WordRightCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordEnd,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'cursorWordEndRightSelect',
 			precondition: undefined,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow,
-				mac: { primary: KeyMod.Alt | KeyMod.Shift | KeyCode.RightArrow },
+				primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow,
+				mAc: { primAry: KeyMod.Alt | KeyMod.Shift | KeyCode.RightArrow },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-export class CursorWordRightSelect extends WordRightCommand {
+export clAss CursorWordRightSelect extends WordRightCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordEnd,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'cursorWordRightSelect',
 			precondition: undefined
 		});
 	}
 }
 
-export class CursorWordAccessibilityRight extends WordRightCommand {
+export clAss CursorWordAccessibilityRight extends WordRightCommAnd {
 	constructor() {
 		super({
-			inSelectionMode: false,
-			wordNavigationType: WordNavigationType.WordAccessibility,
+			inSelectionMode: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordAccessibility,
 			id: 'cursorWordAccessibilityRight',
 			precondition: undefined,
 			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-				win: { primary: KeyMod.CtrlCmd | KeyCode.RightArrow },
+				kbExpr: ContextKeyExpr.And(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+				win: { primAry: KeyMod.CtrlCmd | KeyCode.RightArrow },
 				weight: KeybindingWeight.EditorContrib + 1
 			}
 		});
 	}
 
-	protected _move(_: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position {
-		return super._move(getMapForWordSeparators(EditorOptions.wordSeparators.defaultValue), model, position, wordNavigationType);
+	protected _move(_: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position {
+		return super._move(getMApForWordSepArAtors(EditorOptions.wordSepArAtors.defAultVAlue), model, position, wordNAvigAtionType);
 	}
 }
 
-export class CursorWordAccessibilityRightSelect extends WordRightCommand {
+export clAss CursorWordAccessibilityRightSelect extends WordRightCommAnd {
 	constructor() {
 		super({
 			inSelectionMode: true,
-			wordNavigationType: WordNavigationType.WordAccessibility,
+			wordNAvigAtionType: WordNAvigAtionType.WordAccessibility,
 			id: 'cursorWordAccessibilityRightSelect',
 			precondition: undefined,
 			kbOpts: {
-				kbExpr: ContextKeyExpr.and(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
-				win: { primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow },
+				kbExpr: ContextKeyExpr.And(EditorContextKeys.textInputFocus, CONTEXT_ACCESSIBILITY_MODE_ENABLED),
+				win: { primAry: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.RightArrow },
 				weight: KeybindingWeight.EditorContrib + 1
 			}
 		});
 	}
 
-	protected _move(_: WordCharacterClassifier, model: ITextModel, position: Position, wordNavigationType: WordNavigationType): Position {
-		return super._move(getMapForWordSeparators(EditorOptions.wordSeparators.defaultValue), model, position, wordNavigationType);
+	protected _move(_: WordChArActerClAssifier, model: ITextModel, position: Position, wordNAvigAtionType: WordNAvigAtionType): Position {
+		return super._move(getMApForWordSepArAtors(EditorOptions.wordSepArAtors.defAultVAlue), model, position, wordNAvigAtionType);
 	}
 }
 
-export interface DeleteWordOptions extends ICommandOptions {
-	whitespaceHeuristics: boolean;
-	wordNavigationType: WordNavigationType;
+export interfAce DeleteWordOptions extends ICommAndOptions {
+	whitespAceHeuristics: booleAn;
+	wordNAvigAtionType: WordNAvigAtionType;
 }
 
-export abstract class DeleteWordCommand extends EditorCommand {
-	private readonly _whitespaceHeuristics: boolean;
-	private readonly _wordNavigationType: WordNavigationType;
+export AbstrAct clAss DeleteWordCommAnd extends EditorCommAnd {
+	privAte reAdonly _whitespAceHeuristics: booleAn;
+	privAte reAdonly _wordNAvigAtionType: WordNAvigAtionType;
 
 	constructor(opts: DeleteWordOptions) {
 		super(opts);
-		this._whitespaceHeuristics = opts.whitespaceHeuristics;
-		this._wordNavigationType = opts.wordNavigationType;
+		this._whitespAceHeuristics = opts.whitespAceHeuristics;
+		this._wordNAvigAtionType = opts.wordNAvigAtionType;
 	}
 
-	public runEditorCommand(accessor: ServicesAccessor, editor: ICodeEditor, args: any): void {
-		if (!editor.hasModel()) {
+	public runEditorCommAnd(Accessor: ServicesAccessor, editor: ICodeEditor, Args: Any): void {
+		if (!editor.hAsModel()) {
 			return;
 		}
-		const wordSeparators = getMapForWordSeparators(editor.getOption(EditorOption.wordSeparators));
+		const wordSepArAtors = getMApForWordSepArAtors(editor.getOption(EditorOption.wordSepArAtors));
 		const model = editor.getModel();
 		const selections = editor.getSelections();
-		const autoClosingBrackets = editor.getOption(EditorOption.autoClosingBrackets);
-		const autoClosingQuotes = editor.getOption(EditorOption.autoClosingQuotes);
-		const autoClosingPairs = LanguageConfigurationRegistry.getAutoClosingPairs(model.getLanguageIdentifier().id);
+		const AutoClosingBrAckets = editor.getOption(EditorOption.AutoClosingBrAckets);
+		const AutoClosingQuotes = editor.getOption(EditorOption.AutoClosingQuotes);
+		const AutoClosingPAirs = LAnguAgeConfigurAtionRegistry.getAutoClosingPAirs(model.getLAnguAgeIdentifier().id);
 
-		const commands = selections.map((sel) => {
-			const deleteRange = this._delete({
-				wordSeparators,
+		const commAnds = selections.mAp((sel) => {
+			const deleteRAnge = this._delete({
+				wordSepArAtors,
 				model,
 				selection: sel,
-				whitespaceHeuristics: this._whitespaceHeuristics,
-				autoClosingBrackets,
-				autoClosingQuotes,
-				autoClosingPairs,
-			}, this._wordNavigationType);
-			return new ReplaceCommand(deleteRange, '');
+				whitespAceHeuristics: this._whitespAceHeuristics,
+				AutoClosingBrAckets,
+				AutoClosingQuotes,
+				AutoClosingPAirs,
+			}, this._wordNAvigAtionType);
+			return new ReplAceCommAnd(deleteRAnge, '');
 		});
 
 		editor.pushUndoStop();
-		editor.executeCommands(this.id, commands);
+		editor.executeCommAnds(this.id, commAnds);
 		editor.pushUndoStop();
 	}
 
-	protected abstract _delete(ctx: DeleteWordContext, wordNavigationType: WordNavigationType): Range;
+	protected AbstrAct _delete(ctx: DeleteWordContext, wordNAvigAtionType: WordNAvigAtionType): RAnge;
 }
 
-export class DeleteWordLeftCommand extends DeleteWordCommand {
-	protected _delete(ctx: DeleteWordContext, wordNavigationType: WordNavigationType): Range {
-		let r = WordOperations.deleteWordLeft(ctx, wordNavigationType);
+export clAss DeleteWordLeftCommAnd extends DeleteWordCommAnd {
+	protected _delete(ctx: DeleteWordContext, wordNAvigAtionType: WordNAvigAtionType): RAnge {
+		let r = WordOperAtions.deleteWordLeft(ctx, wordNAvigAtionType);
 		if (r) {
 			return r;
 		}
-		return new Range(1, 1, 1, 1);
+		return new RAnge(1, 1, 1, 1);
 	}
 }
 
-export class DeleteWordRightCommand extends DeleteWordCommand {
-	protected _delete(ctx: DeleteWordContext, wordNavigationType: WordNavigationType): Range {
-		let r = WordOperations.deleteWordRight(ctx, wordNavigationType);
+export clAss DeleteWordRightCommAnd extends DeleteWordCommAnd {
+	protected _delete(ctx: DeleteWordContext, wordNAvigAtionType: WordNAvigAtionType): RAnge {
+		let r = WordOperAtions.deleteWordRight(ctx, wordNAvigAtionType);
 		if (r) {
 			return r;
 		}
 		const lineCount = ctx.model.getLineCount();
-		const maxColumn = ctx.model.getLineMaxColumn(lineCount);
-		return new Range(lineCount, maxColumn, lineCount, maxColumn);
+		const mAxColumn = ctx.model.getLineMAxColumn(lineCount);
+		return new RAnge(lineCount, mAxColumn, lineCount, mAxColumn);
 	}
 }
 
-export class DeleteWordStartLeft extends DeleteWordLeftCommand {
+export clAss DeleteWordStArtLeft extends DeleteWordLeftCommAnd {
 	constructor() {
 		super({
-			whitespaceHeuristics: false,
-			wordNavigationType: WordNavigationType.WordStart,
-			id: 'deleteWordStartLeft',
-			precondition: EditorContextKeys.writable
+			whitespAceHeuristics: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
+			id: 'deleteWordStArtLeft',
+			precondition: EditorContextKeys.writAble
 		});
 	}
 }
 
-export class DeleteWordEndLeft extends DeleteWordLeftCommand {
+export clAss DeleteWordEndLeft extends DeleteWordLeftCommAnd {
 	constructor() {
 		super({
-			whitespaceHeuristics: false,
-			wordNavigationType: WordNavigationType.WordEnd,
+			whitespAceHeuristics: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'deleteWordEndLeft',
-			precondition: EditorContextKeys.writable
+			precondition: EditorContextKeys.writAble
 		});
 	}
 }
 
-export class DeleteWordLeft extends DeleteWordLeftCommand {
+export clAss DeleteWordLeft extends DeleteWordLeftCommAnd {
 	constructor() {
 		super({
-			whitespaceHeuristics: true,
-			wordNavigationType: WordNavigationType.WordStart,
+			whitespAceHeuristics: true,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
 			id: 'deleteWordLeft',
-			precondition: EditorContextKeys.writable,
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: KeyMod.CtrlCmd | KeyCode.Backspace,
-				mac: { primary: KeyMod.Alt | KeyCode.Backspace },
+				primAry: KeyMod.CtrlCmd | KeyCode.BAckspAce,
+				mAc: { primAry: KeyMod.Alt | KeyCode.BAckspAce },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-export class DeleteWordStartRight extends DeleteWordRightCommand {
+export clAss DeleteWordStArtRight extends DeleteWordRightCommAnd {
 	constructor() {
 		super({
-			whitespaceHeuristics: false,
-			wordNavigationType: WordNavigationType.WordStart,
-			id: 'deleteWordStartRight',
-			precondition: EditorContextKeys.writable
+			whitespAceHeuristics: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordStArt,
+			id: 'deleteWordStArtRight',
+			precondition: EditorContextKeys.writAble
 		});
 	}
 }
 
-export class DeleteWordEndRight extends DeleteWordRightCommand {
+export clAss DeleteWordEndRight extends DeleteWordRightCommAnd {
 	constructor() {
 		super({
-			whitespaceHeuristics: false,
-			wordNavigationType: WordNavigationType.WordEnd,
+			whitespAceHeuristics: fAlse,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'deleteWordEndRight',
-			precondition: EditorContextKeys.writable
+			precondition: EditorContextKeys.writAble
 		});
 	}
 }
 
-export class DeleteWordRight extends DeleteWordRightCommand {
+export clAss DeleteWordRight extends DeleteWordRightCommAnd {
 	constructor() {
 		super({
-			whitespaceHeuristics: true,
-			wordNavigationType: WordNavigationType.WordEnd,
+			whitespAceHeuristics: true,
+			wordNAvigAtionType: WordNAvigAtionType.WordEnd,
 			id: 'deleteWordRight',
-			precondition: EditorContextKeys.writable,
+			precondition: EditorContextKeys.writAble,
 			kbOpts: {
 				kbExpr: EditorContextKeys.textInputFocus,
-				primary: KeyMod.CtrlCmd | KeyCode.Delete,
-				mac: { primary: KeyMod.Alt | KeyCode.Delete },
+				primAry: KeyMod.CtrlCmd | KeyCode.Delete,
+				mAc: { primAry: KeyMod.Alt | KeyCode.Delete },
 				weight: KeybindingWeight.EditorContrib
 			}
 		});
 	}
 }
 
-registerEditorCommand(new CursorWordStartLeft());
-registerEditorCommand(new CursorWordEndLeft());
-registerEditorCommand(new CursorWordLeft());
-registerEditorCommand(new CursorWordStartLeftSelect());
-registerEditorCommand(new CursorWordEndLeftSelect());
-registerEditorCommand(new CursorWordLeftSelect());
-registerEditorCommand(new CursorWordStartRight());
-registerEditorCommand(new CursorWordEndRight());
-registerEditorCommand(new CursorWordRight());
-registerEditorCommand(new CursorWordStartRightSelect());
-registerEditorCommand(new CursorWordEndRightSelect());
-registerEditorCommand(new CursorWordRightSelect());
-registerEditorCommand(new CursorWordAccessibilityLeft());
-registerEditorCommand(new CursorWordAccessibilityLeftSelect());
-registerEditorCommand(new CursorWordAccessibilityRight());
-registerEditorCommand(new CursorWordAccessibilityRightSelect());
-registerEditorCommand(new DeleteWordStartLeft());
-registerEditorCommand(new DeleteWordEndLeft());
-registerEditorCommand(new DeleteWordLeft());
-registerEditorCommand(new DeleteWordStartRight());
-registerEditorCommand(new DeleteWordEndRight());
-registerEditorCommand(new DeleteWordRight());
+registerEditorCommAnd(new CursorWordStArtLeft());
+registerEditorCommAnd(new CursorWordEndLeft());
+registerEditorCommAnd(new CursorWordLeft());
+registerEditorCommAnd(new CursorWordStArtLeftSelect());
+registerEditorCommAnd(new CursorWordEndLeftSelect());
+registerEditorCommAnd(new CursorWordLeftSelect());
+registerEditorCommAnd(new CursorWordStArtRight());
+registerEditorCommAnd(new CursorWordEndRight());
+registerEditorCommAnd(new CursorWordRight());
+registerEditorCommAnd(new CursorWordStArtRightSelect());
+registerEditorCommAnd(new CursorWordEndRightSelect());
+registerEditorCommAnd(new CursorWordRightSelect());
+registerEditorCommAnd(new CursorWordAccessibilityLeft());
+registerEditorCommAnd(new CursorWordAccessibilityLeftSelect());
+registerEditorCommAnd(new CursorWordAccessibilityRight());
+registerEditorCommAnd(new CursorWordAccessibilityRightSelect());
+registerEditorCommAnd(new DeleteWordStArtLeft());
+registerEditorCommAnd(new DeleteWordEndLeft());
+registerEditorCommAnd(new DeleteWordLeft());
+registerEditorCommAnd(new DeleteWordStArtRight());
+registerEditorCommAnd(new DeleteWordEndRight());
+registerEditorCommAnd(new DeleteWordRight());

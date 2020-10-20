@@ -1,1241 +1,1241 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
-import * as assert from 'assert';
-import { LinesLayout, EditorWhitespace } from 'vs/editor/common/viewLayout/linesLayout';
+import * As Assert from 'Assert';
+import { LinesLAyout, EditorWhitespAce } from 'vs/editor/common/viewLAyout/linesLAyout';
 
-suite('Editor ViewLayout - LinesLayout', () => {
+suite('Editor ViewLAyout - LinesLAyout', () => {
 
-	function insertWhitespace(linesLayout: LinesLayout, afterLineNumber: number, ordinal: number, heightInPx: number, minWidth: number): string {
+	function insertWhitespAce(linesLAyout: LinesLAyout, AfterLineNumber: number, ordinAl: number, heightInPx: number, minWidth: number): string {
 		let id: string;
-		linesLayout.changeWhitespace((accessor) => {
-			id = accessor.insertWhitespace(afterLineNumber, ordinal, heightInPx, minWidth);
+		linesLAyout.chAngeWhitespAce((Accessor) => {
+			id = Accessor.insertWhitespAce(AfterLineNumber, ordinAl, heightInPx, minWidth);
 		});
 		return id!;
 	}
 
-	function changeOneWhitespace(linesLayout: LinesLayout, id: string, newAfterLineNumber: number, newHeight: number): void {
-		linesLayout.changeWhitespace((accessor) => {
-			accessor.changeOneWhitespace(id, newAfterLineNumber, newHeight);
+	function chAngeOneWhitespAce(linesLAyout: LinesLAyout, id: string, newAfterLineNumber: number, newHeight: number): void {
+		linesLAyout.chAngeWhitespAce((Accessor) => {
+			Accessor.chAngeOneWhitespAce(id, newAfterLineNumber, newHeight);
 		});
 	}
 
-	function removeWhitespace(linesLayout: LinesLayout, id: string): void {
-		linesLayout.changeWhitespace((accessor) => {
-			accessor.removeWhitespace(id);
+	function removeWhitespAce(linesLAyout: LinesLAyout, id: string): void {
+		linesLAyout.chAngeWhitespAce((Accessor) => {
+			Accessor.removeWhitespAce(id);
 		});
 	}
 
-	test('LinesLayout 1', () => {
+	test('LinesLAyout 1', () => {
 
-		// Start off with 10 lines
-		let linesLayout = new LinesLayout(10, 10, 0, 0);
+		// StArt off with 10 lines
+		let linesLAyout = new LinesLAyout(10, 10, 0, 0);
 
 		// lines: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-		// whitespace: -
-		assert.equal(linesLayout.getLinesTotalHeight(), 100);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 30);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 40);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 50);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 60);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 70);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 80);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 90);
+		// whitespAce: -
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 100);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 30);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 40);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 50);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 60);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 70);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 80);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 90);
 
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(1), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(5), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(9), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(10), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(11), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(15), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(19), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(20), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(21), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(29), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(1), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(5), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(9), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(10), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(11), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(15), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(19), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(20), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(21), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(29), 3);
 
-		// Add whitespace of height 5px after 2nd line
-		insertWhitespace(linesLayout, 2, 0, 5, 0);
+		// Add whitespAce of height 5px After 2nd line
+		insertWhitespAce(linesLAyout, 2, 0, 5, 0);
 		// lines: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-		// whitespace: a(2,5)
-		assert.equal(linesLayout.getLinesTotalHeight(), 105);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 25);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 35);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 45);
+		// whitespAce: A(2,5)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 105);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 25);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 35);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 45);
 
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(1), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(9), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(10), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(20), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(21), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(24), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(25), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(35), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(45), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(104), 10);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(105), 10);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(1), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(9), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(10), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(20), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(21), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(24), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(25), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(35), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(45), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(104), 10);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(105), 10);
 
-		// Add two more whitespaces of height 5px
-		insertWhitespace(linesLayout, 3, 0, 5, 0);
-		insertWhitespace(linesLayout, 4, 0, 5, 0);
+		// Add two more whitespAces of height 5px
+		insertWhitespAce(linesLAyout, 3, 0, 5, 0);
+		insertWhitespAce(linesLAyout, 4, 0, 5, 0);
 		// lines: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-		// whitespace: a(2,5), b(3, 5), c(4, 5)
-		assert.equal(linesLayout.getLinesTotalHeight(), 115);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 25);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 40);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 55);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 65);
+		// whitespAce: A(2,5), b(3, 5), c(4, 5)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 115);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 25);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 40);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 55);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 65);
 
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(1), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(9), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(10), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(19), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(20), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(34), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(35), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(49), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(50), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(64), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(65), 6);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(1), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(9), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(10), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(19), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(20), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(34), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(35), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(49), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(50), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(64), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(65), 6);
 
-		assert.equal(linesLayout.getVerticalOffsetForWhitespaceIndex(0), 20); // 20 -> 25
-		assert.equal(linesLayout.getVerticalOffsetForWhitespaceIndex(1), 35); // 35 -> 40
-		assert.equal(linesLayout.getVerticalOffsetForWhitespaceIndex(2), 50);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForWhitespAceIndex(0), 20); // 20 -> 25
+		Assert.equAl(linesLAyout.getVerticAlOffsetForWhitespAceIndex(1), 35); // 35 -> 40
+		Assert.equAl(linesLAyout.getVerticAlOffsetForWhitespAceIndex(2), 50);
 
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(0), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(19), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(20), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(21), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(22), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(23), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(24), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(25), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(26), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(34), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(35), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(36), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(39), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(40), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(41), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(49), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(50), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(51), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(54), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(55), -1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(1000), -1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(0), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(19), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(20), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(21), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(22), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(23), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(24), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(25), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(26), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(34), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(35), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(36), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(39), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(40), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(41), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(49), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(50), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(51), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(54), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(55), -1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(1000), -1);
 
 	});
 
-	test('LinesLayout 2', () => {
+	test('LinesLAyout 2', () => {
 
-		// Start off with 10 lines and one whitespace after line 2, of height 5
-		let linesLayout = new LinesLayout(10, 1, 0, 0);
-		let a = insertWhitespace(linesLayout, 2, 0, 5, 0);
+		// StArt off with 10 lines And one whitespAce After line 2, of height 5
+		let linesLAyout = new LinesLAyout(10, 1, 0, 0);
+		let A = insertWhitespAce(linesLAyout, 2, 0, 5, 0);
 
 		// 10 lines
-		// whitespace: - a(2,5)
-		assert.equal(linesLayout.getLinesTotalHeight(), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 7);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 8);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 9);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 11);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 12);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 13);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 14);
+		// whitespAce: - A(2,5)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 7);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 8);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 9);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 11);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 12);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 13);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 14);
 
-		// Change whitespace height
+		// ChAnge whitespAce height
 		// 10 lines
-		// whitespace: - a(2,10)
-		changeOneWhitespace(linesLayout, a, 2, 10);
-		assert.equal(linesLayout.getLinesTotalHeight(), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 12);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 13);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 14);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 16);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 17);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 18);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 19);
+		// whitespAce: - A(2,10)
+		chAngeOneWhitespAce(linesLAyout, A, 2, 10);
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 12);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 13);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 14);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 16);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 17);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 18);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 19);
 
-		// Change whitespace position
+		// ChAnge whitespAce position
 		// 10 lines
-		// whitespace: - a(5,10)
-		changeOneWhitespace(linesLayout, a, 5, 10);
-		assert.equal(linesLayout.getLinesTotalHeight(), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 2);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 3);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 4);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 16);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 17);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 18);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 19);
+		// whitespAce: - A(5,10)
+		chAngeOneWhitespAce(linesLAyout, A, 5, 10);
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 2);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 3);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 4);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 16);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 17);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 18);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 19);
 
-		// Pretend that lines 5 and 6 were deleted
+		// Pretend thAt lines 5 And 6 were deleted
 		// 8 lines
-		// whitespace: - a(4,10)
-		linesLayout.onLinesDeleted(5, 6);
-		assert.equal(linesLayout.getLinesTotalHeight(), 18);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 2);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 3);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 14);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 16);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 17);
+		// whitespAce: - A(4,10)
+		linesLAyout.onLinesDeleted(5, 6);
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 18);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 2);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 3);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 14);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 16);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 17);
 
-		// Insert two lines at the beginning
+		// Insert two lines At the beginning
 		// 10 lines
-		// whitespace: - a(6,10)
-		linesLayout.onLinesInserted(1, 2);
-		assert.equal(linesLayout.getLinesTotalHeight(), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 2);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 3);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 4);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 5);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 16);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 17);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 18);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 19);
+		// whitespAce: - A(6,10)
+		linesLAyout.onLinesInserted(1, 2);
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 2);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 3);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 4);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 5);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 16);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 17);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 18);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 19);
 
-		// Remove whitespace
+		// Remove whitespAce
 		// 10 lines
-		removeWhitespace(linesLayout, a);
-		assert.equal(linesLayout.getLinesTotalHeight(), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 2);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 3);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 4);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 5);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 6);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 7);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 8);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 9);
+		removeWhitespAce(linesLAyout, A);
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 2);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 3);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 4);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 5);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 6);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 7);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 8);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 9);
 	});
 
-	test('LinesLayout Padding', () => {
-		// Start off with 10 lines
-		let linesLayout = new LinesLayout(10, 10, 15, 20);
+	test('LinesLAyout PAdding', () => {
+		// StArt off with 10 lines
+		let linesLAyout = new LinesLAyout(10, 10, 15, 20);
 
 		// lines: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-		// whitespace: -
-		assert.equal(linesLayout.getLinesTotalHeight(), 135);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 25);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 35);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 45);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 55);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 65);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 75);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 85);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 95);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 105);
+		// whitespAce: -
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 135);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 25);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 35);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 45);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 55);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 65);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 75);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 85);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 95);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 105);
 
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(10), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(15), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(24), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(25), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(34), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(35), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(10), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(15), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(24), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(25), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(34), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(35), 3);
 
-		// Add whitespace of height 5px after 2nd line
-		insertWhitespace(linesLayout, 2, 0, 5, 0);
+		// Add whitespAce of height 5px After 2nd line
+		insertWhitespAce(linesLAyout, 2, 0, 5, 0);
 		// lines: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-		// whitespace: a(2,5)
-		assert.equal(linesLayout.getLinesTotalHeight(), 140);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 25);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 40);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 50);
+		// whitespAce: A(2,5)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 140);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 25);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 40);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 50);
 
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(10), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(25), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(34), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(35), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(39), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(40), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(41), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(49), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(50), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(10), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(25), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(34), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(35), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(39), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(40), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(41), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(49), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(50), 4);
 
-		// Add two more whitespaces of height 5px
-		insertWhitespace(linesLayout, 3, 0, 5, 0);
-		insertWhitespace(linesLayout, 4, 0, 5, 0);
+		// Add two more whitespAces of height 5px
+		insertWhitespAce(linesLAyout, 3, 0, 5, 0);
+		insertWhitespAce(linesLAyout, 4, 0, 5, 0);
 		// lines: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-		// whitespace: a(2,5), b(3, 5), c(4, 5)
-		assert.equal(linesLayout.getLinesTotalHeight(), 150);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 15);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 25);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 40);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 55);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 70);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 80);
+		// whitespAce: A(2,5), b(3, 5), c(4, 5)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 150);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 15);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 25);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 40);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 55);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 70);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 80);
 
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(15), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(24), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(30), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(35), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(39), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(40), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(49), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(50), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(54), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(55), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(64), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(65), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(69), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(70), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(80), 6);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(15), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(24), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(30), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(35), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(39), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(40), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(49), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(50), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(54), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(55), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(64), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(65), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(69), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(70), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(80), 6);
 
-		assert.equal(linesLayout.getVerticalOffsetForWhitespaceIndex(0), 35); // 35 -> 40
-		assert.equal(linesLayout.getVerticalOffsetForWhitespaceIndex(1), 50); // 50 -> 55
-		assert.equal(linesLayout.getVerticalOffsetForWhitespaceIndex(2), 65);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForWhitespAceIndex(0), 35); // 35 -> 40
+		Assert.equAl(linesLAyout.getVerticAlOffsetForWhitespAceIndex(1), 50); // 50 -> 55
+		Assert.equAl(linesLAyout.getVerticAlOffsetForWhitespAceIndex(2), 65);
 
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(0), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(34), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(35), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(39), 0);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(40), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(49), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(50), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(54), 1);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(55), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(64), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(65), 2);
-		assert.equal(linesLayout.getWhitespaceIndexAtOrAfterVerticallOffset(70), -1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(0), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(34), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(35), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(39), 0);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(40), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(49), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(50), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(54), 1);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(55), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(64), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(65), 2);
+		Assert.equAl(linesLAyout.getWhitespAceIndexAtOrAfterVerticAllOffset(70), -1);
 	});
 
-	test('LinesLayout getLineNumberAtOrAfterVerticalOffset', () => {
-		let linesLayout = new LinesLayout(10, 1, 0, 0);
-		insertWhitespace(linesLayout, 6, 0, 10, 0);
+	test('LinesLAyout getLineNumberAtOrAfterVerticAlOffset', () => {
+		let linesLAyout = new LinesLAyout(10, 1, 0, 0);
+		insertWhitespAce(linesLAyout, 6, 0, 10, 0);
 
 		// 10 lines
-		// whitespace: - a(6,10)
-		assert.equal(linesLayout.getLinesTotalHeight(), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 2);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 3);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 4);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 5);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 16);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 17);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 18);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 19);
+		// whitespAce: - A(6,10)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 2);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 3);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 4);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 5);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 16);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 17);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 18);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 19);
 
 		// Do some hit testing
 		// line      [1, 2, 3, 4, 5, 6,  7,  8,  9, 10]
-		// vertical: [0, 1, 2, 3, 4, 5, 16, 17, 18, 19]
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(-100), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(-1), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(0), 1);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(1), 2);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(2), 3);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(3), 4);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(4), 5);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(5), 6);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(6), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(7), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(8), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(9), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(10), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(11), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(12), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(13), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(14), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(15), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(16), 7);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(17), 8);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(18), 9);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(19), 10);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(20), 10);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(21), 10);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(22), 10);
-		assert.equal(linesLayout.getLineNumberAtOrAfterVerticalOffset(23), 10);
+		// verticAl: [0, 1, 2, 3, 4, 5, 16, 17, 18, 19]
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(-100), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(-1), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(0), 1);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(1), 2);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(2), 3);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(3), 4);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(4), 5);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(5), 6);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(6), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(7), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(8), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(9), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(10), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(11), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(12), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(13), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(14), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(15), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(16), 7);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(17), 8);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(18), 9);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(19), 10);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(20), 10);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(21), 10);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(22), 10);
+		Assert.equAl(linesLAyout.getLineNumberAtOrAfterVerticAlOffset(23), 10);
 	});
 
-	test('LinesLayout getCenteredLineInViewport', () => {
-		let linesLayout = new LinesLayout(10, 1, 0, 0);
-		insertWhitespace(linesLayout, 6, 0, 10, 0);
+	test('LinesLAyout getCenteredLineInViewport', () => {
+		let linesLAyout = new LinesLAyout(10, 1, 0, 0);
+		insertWhitespAce(linesLAyout, 6, 0, 10, 0);
 
 		// 10 lines
-		// whitespace: - a(6,10)
-		assert.equal(linesLayout.getLinesTotalHeight(), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 1);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 2);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 3);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 4);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 5);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 16);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 17);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 18);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 19);
+		// whitespAce: - A(6,10)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 1);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 2);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 3);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 4);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 5);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 16);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 17);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 18);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 19);
 
 		// Find centered line in viewport 1
 		// line      [1, 2, 3, 4, 5, 6,  7,  8,  9, 10]
-		// vertical: [0, 1, 2, 3, 4, 5, 16, 17, 18, 19]
-		assert.equal(linesLayout.getLinesViewportData(0, 1).centeredLineNumber, 1);
-		assert.equal(linesLayout.getLinesViewportData(0, 2).centeredLineNumber, 2);
-		assert.equal(linesLayout.getLinesViewportData(0, 3).centeredLineNumber, 2);
-		assert.equal(linesLayout.getLinesViewportData(0, 4).centeredLineNumber, 3);
-		assert.equal(linesLayout.getLinesViewportData(0, 5).centeredLineNumber, 3);
-		assert.equal(linesLayout.getLinesViewportData(0, 6).centeredLineNumber, 4);
-		assert.equal(linesLayout.getLinesViewportData(0, 7).centeredLineNumber, 4);
-		assert.equal(linesLayout.getLinesViewportData(0, 8).centeredLineNumber, 5);
-		assert.equal(linesLayout.getLinesViewportData(0, 9).centeredLineNumber, 5);
-		assert.equal(linesLayout.getLinesViewportData(0, 10).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 11).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 12).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 13).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 14).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 15).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 16).centeredLineNumber, 6);
-		assert.equal(linesLayout.getLinesViewportData(0, 17).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 18).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 19).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 21).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 22).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 23).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 24).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 25).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 26).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 27).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 28).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 29).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 30).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 31).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 32).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(0, 33).centeredLineNumber, 7);
+		// verticAl: [0, 1, 2, 3, 4, 5, 16, 17, 18, 19]
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 1).centeredLineNumber, 1);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 2).centeredLineNumber, 2);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 3).centeredLineNumber, 2);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 4).centeredLineNumber, 3);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 5).centeredLineNumber, 3);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 6).centeredLineNumber, 4);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 7).centeredLineNumber, 4);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 8).centeredLineNumber, 5);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 9).centeredLineNumber, 5);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 10).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 11).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 12).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 13).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 14).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 15).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 16).centeredLineNumber, 6);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 17).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 18).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 19).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 21).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 22).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 23).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 24).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 25).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 26).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 27).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 28).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 29).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 30).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 31).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 32).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 33).centeredLineNumber, 7);
 
 		// Find centered line in viewport 2
 		// line      [1, 2, 3, 4, 5, 6,  7,  8,  9, 10]
-		// vertical: [0, 1, 2, 3, 4, 5, 16, 17, 18, 19]
-		assert.equal(linesLayout.getLinesViewportData(0, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(1, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(2, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(3, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(4, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(5, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(6, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(7, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(8, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(9, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(10, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(11, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(12, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(13, 20).centeredLineNumber, 7);
-		assert.equal(linesLayout.getLinesViewportData(14, 20).centeredLineNumber, 8);
-		assert.equal(linesLayout.getLinesViewportData(15, 20).centeredLineNumber, 8);
-		assert.equal(linesLayout.getLinesViewportData(16, 20).centeredLineNumber, 9);
-		assert.equal(linesLayout.getLinesViewportData(17, 20).centeredLineNumber, 9);
-		assert.equal(linesLayout.getLinesViewportData(18, 20).centeredLineNumber, 10);
-		assert.equal(linesLayout.getLinesViewportData(19, 20).centeredLineNumber, 10);
-		assert.equal(linesLayout.getLinesViewportData(20, 23).centeredLineNumber, 10);
-		assert.equal(linesLayout.getLinesViewportData(21, 23).centeredLineNumber, 10);
-		assert.equal(linesLayout.getLinesViewportData(22, 23).centeredLineNumber, 10);
+		// verticAl: [0, 1, 2, 3, 4, 5, 16, 17, 18, 19]
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(0, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(1, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(2, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(3, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(4, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(5, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(6, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(7, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(8, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(9, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(10, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(11, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(12, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(13, 20).centeredLineNumber, 7);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(14, 20).centeredLineNumber, 8);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(15, 20).centeredLineNumber, 8);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(16, 20).centeredLineNumber, 9);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(17, 20).centeredLineNumber, 9);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(18, 20).centeredLineNumber, 10);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(19, 20).centeredLineNumber, 10);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(20, 23).centeredLineNumber, 10);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(21, 23).centeredLineNumber, 10);
+		Assert.equAl(linesLAyout.getLinesViewportDAtA(22, 23).centeredLineNumber, 10);
 	});
 
-	test('LinesLayout getLinesViewportData 1', () => {
-		let linesLayout = new LinesLayout(10, 10, 0, 0);
-		insertWhitespace(linesLayout, 6, 0, 100, 0);
+	test('LinesLAyout getLinesViewportDAtA 1', () => {
+		let linesLAyout = new LinesLAyout(10, 10, 0, 0);
+		insertWhitespAce(linesLAyout, 6, 0, 100, 0);
 
 		// 10 lines
-		// whitespace: - a(6,100)
-		assert.equal(linesLayout.getLinesTotalHeight(), 200);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 30);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 40);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 50);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 160);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 170);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 180);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 190);
+		// whitespAce: - A(6,100)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 200);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 30);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 40);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 50);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 160);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 170);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 180);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 190);
 
 		// viewport 0->50
-		let viewportData = linesLayout.getLinesViewportData(0, 50);
-		assert.equal(viewportData.startLineNumber, 1);
-		assert.equal(viewportData.endLineNumber, 5);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 1);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 5);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [0, 10, 20, 30, 40]);
+		let viewportDAtA = linesLAyout.getLinesViewportDAtA(0, 50);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 1);
+		Assert.equAl(viewportDAtA.endLineNumber, 5);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 1);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 5);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [0, 10, 20, 30, 40]);
 
 		// viewport 1->51
-		viewportData = linesLayout.getLinesViewportData(1, 51);
-		assert.equal(viewportData.startLineNumber, 1);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 2);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 5);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [0, 10, 20, 30, 40, 50]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(1, 51);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 1);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 2);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 5);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [0, 10, 20, 30, 40, 50]);
 
 		// viewport 5->55
-		viewportData = linesLayout.getLinesViewportData(5, 55);
-		assert.equal(viewportData.startLineNumber, 1);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 2);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 5);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [0, 10, 20, 30, 40, 50]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(5, 55);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 1);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 2);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 5);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [0, 10, 20, 30, 40, 50]);
 
 		// viewport 10->60
-		viewportData = linesLayout.getLinesViewportData(10, 60);
-		assert.equal(viewportData.startLineNumber, 2);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 2);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 6);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [10, 20, 30, 40, 50]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(10, 60);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 2);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 2);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 6);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [10, 20, 30, 40, 50]);
 
 		// viewport 50->100
-		viewportData = linesLayout.getLinesViewportData(50, 100);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 6);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 100);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 6);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50]);
 
 		// viewport 60->110
-		viewportData = linesLayout.getLinesViewportData(60, 110);
-		assert.equal(viewportData.startLineNumber, 7);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(60, 110);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [160]);
 
 		// viewport 65->115
-		viewportData = linesLayout.getLinesViewportData(65, 115);
-		assert.equal(viewportData.startLineNumber, 7);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(65, 115);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [160]);
 
 		// viewport 50->159
-		viewportData = linesLayout.getLinesViewportData(50, 159);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 6);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 159);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 6);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50]);
 
 		// viewport 50->160
-		viewportData = linesLayout.getLinesViewportData(50, 160);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 6);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 160);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 6);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50]);
 
 		// viewport 51->161
-		viewportData = linesLayout.getLinesViewportData(51, 161);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50, 160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(51, 161);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50, 160]);
 
 
 		// viewport 150->169
-		viewportData = linesLayout.getLinesViewportData(150, 169);
-		assert.equal(viewportData.startLineNumber, 7);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(150, 169);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [160]);
 
 		// viewport 159->169
-		viewportData = linesLayout.getLinesViewportData(159, 169);
-		assert.equal(viewportData.startLineNumber, 7);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(159, 169);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [160]);
 
 		// viewport 160->169
-		viewportData = linesLayout.getLinesViewportData(160, 169);
-		assert.equal(viewportData.startLineNumber, 7);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(160, 169);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [160]);
 
 
 		// viewport 160->1000
-		viewportData = linesLayout.getLinesViewportData(160, 1000);
-		assert.equal(viewportData.startLineNumber, 7);
-		assert.equal(viewportData.endLineNumber, 10);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 10);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [160, 170, 180, 190]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(160, 1000);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.endLineNumber, 10);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 10);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [160, 170, 180, 190]);
 	});
 
-	test('LinesLayout getLinesViewportData 2 & getWhitespaceViewportData', () => {
-		let linesLayout = new LinesLayout(10, 10, 0, 0);
-		let a = insertWhitespace(linesLayout, 6, 0, 100, 0);
-		let b = insertWhitespace(linesLayout, 7, 0, 50, 0);
+	test('LinesLAyout getLinesViewportDAtA 2 & getWhitespAceViewportDAtA', () => {
+		let linesLAyout = new LinesLAyout(10, 10, 0, 0);
+		let A = insertWhitespAce(linesLAyout, 6, 0, 100, 0);
+		let b = insertWhitespAce(linesLAyout, 7, 0, 50, 0);
 
 		// 10 lines
-		// whitespace: - a(6,100), b(7, 50)
-		assert.equal(linesLayout.getLinesTotalHeight(), 250);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(1), 0);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(2), 10);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(3), 20);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(4), 30);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(5), 40);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(6), 50);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(7), 160);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(8), 220);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(9), 230);
-		assert.equal(linesLayout.getVerticalOffsetForLineNumber(10), 240);
+		// whitespAce: - A(6,100), b(7, 50)
+		Assert.equAl(linesLAyout.getLinesTotAlHeight(), 250);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(2), 10);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(3), 20);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(4), 30);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(5), 40);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(6), 50);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(7), 160);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(8), 220);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(9), 230);
+		Assert.equAl(linesLAyout.getVerticAlOffsetForLineNumber(10), 240);
 
 		// viewport 50->160
-		let viewportData = linesLayout.getLinesViewportData(50, 160);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 6);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50]);
-		let whitespaceData = linesLayout.getWhitespaceViewportData(50, 160);
-		assert.deepEqual(whitespaceData, [{
-			id: a,
-			afterLineNumber: 6,
-			verticalOffset: 60,
+		let viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 160);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 6);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50]);
+		let whitespAceDAtA = linesLAyout.getWhitespAceViewportDAtA(50, 160);
+		Assert.deepEquAl(whitespAceDAtA, [{
+			id: A,
+			AfterLineNumber: 6,
+			verticAlOffset: 60,
 			height: 100
 		}]);
 
 		// viewport 50->219
-		viewportData = linesLayout.getLinesViewportData(50, 219);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50, 160]);
-		whitespaceData = linesLayout.getWhitespaceViewportData(50, 219);
-		assert.deepEqual(whitespaceData, [{
-			id: a,
-			afterLineNumber: 6,
-			verticalOffset: 60,
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 219);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50, 160]);
+		whitespAceDAtA = linesLAyout.getWhitespAceViewportDAtA(50, 219);
+		Assert.deepEquAl(whitespAceDAtA, [{
+			id: A,
+			AfterLineNumber: 6,
+			verticAlOffset: 60,
 			height: 100
 		}, {
 			id: b,
-			afterLineNumber: 7,
-			verticalOffset: 170,
+			AfterLineNumber: 7,
+			verticAlOffset: 170,
 			height: 50
 		}]);
 
 		// viewport 50->220
-		viewportData = linesLayout.getLinesViewportData(50, 220);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 7);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 7);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50, 160]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 220);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 7);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 7);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50, 160]);
 
 		// viewport 50->250
-		viewportData = linesLayout.getLinesViewportData(50, 250);
-		assert.equal(viewportData.startLineNumber, 6);
-		assert.equal(viewportData.endLineNumber, 10);
-		assert.equal(viewportData.completelyVisibleStartLineNumber, 6);
-		assert.equal(viewportData.completelyVisibleEndLineNumber, 10);
-		assert.deepEqual(viewportData.relativeVerticalOffset, [50, 160, 220, 230, 240]);
+		viewportDAtA = linesLAyout.getLinesViewportDAtA(50, 250);
+		Assert.equAl(viewportDAtA.stArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.endLineNumber, 10);
+		Assert.equAl(viewportDAtA.completelyVisibleStArtLineNumber, 6);
+		Assert.equAl(viewportDAtA.completelyVisibleEndLineNumber, 10);
+		Assert.deepEquAl(viewportDAtA.relAtiveVerticAlOffset, [50, 160, 220, 230, 240]);
 	});
 
-	test('LinesLayout getWhitespaceAtVerticalOffset', () => {
-		let linesLayout = new LinesLayout(10, 10, 0, 0);
-		let a = insertWhitespace(linesLayout, 6, 0, 100, 0);
-		let b = insertWhitespace(linesLayout, 7, 0, 50, 0);
+	test('LinesLAyout getWhitespAceAtVerticAlOffset', () => {
+		let linesLAyout = new LinesLAyout(10, 10, 0, 0);
+		let A = insertWhitespAce(linesLAyout, 6, 0, 100, 0);
+		let b = insertWhitespAce(linesLAyout, 7, 0, 50, 0);
 
-		let whitespace = linesLayout.getWhitespaceAtVerticalOffset(0);
-		assert.equal(whitespace, null);
+		let whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(0);
+		Assert.equAl(whitespAce, null);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(59);
-		assert.equal(whitespace, null);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(59);
+		Assert.equAl(whitespAce, null);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(60);
-		assert.equal(whitespace!.id, a);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(60);
+		Assert.equAl(whitespAce!.id, A);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(61);
-		assert.equal(whitespace!.id, a);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(61);
+		Assert.equAl(whitespAce!.id, A);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(159);
-		assert.equal(whitespace!.id, a);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(159);
+		Assert.equAl(whitespAce!.id, A);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(160);
-		assert.equal(whitespace, null);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(160);
+		Assert.equAl(whitespAce, null);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(161);
-		assert.equal(whitespace, null);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(161);
+		Assert.equAl(whitespAce, null);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(169);
-		assert.equal(whitespace, null);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(169);
+		Assert.equAl(whitespAce, null);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(170);
-		assert.equal(whitespace!.id, b);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(170);
+		Assert.equAl(whitespAce!.id, b);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(171);
-		assert.equal(whitespace!.id, b);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(171);
+		Assert.equAl(whitespAce!.id, b);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(219);
-		assert.equal(whitespace!.id, b);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(219);
+		Assert.equAl(whitespAce!.id, b);
 
-		whitespace = linesLayout.getWhitespaceAtVerticalOffset(220);
-		assert.equal(whitespace, null);
+		whitespAce = linesLAyout.getWhitespAceAtVerticAlOffset(220);
+		Assert.equAl(whitespAce, null);
 	});
 
-	test('LinesLayout', () => {
+	test('LinesLAyout', () => {
 
-		const linesLayout = new LinesLayout(100, 20, 0, 0);
+		const linesLAyout = new LinesLAyout(100, 20, 0, 0);
 
-		// Insert a whitespace after line number 2, of height 10
-		const a = insertWhitespace(linesLayout, 2, 0, 10, 0);
-		// whitespaces: a(2, 10)
-		assert.equal(linesLayout.getWhitespacesCount(), 1);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 10);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 10);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 10);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 10);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 10);
+		// Insert A whitespAce After line number 2, of height 10
+		const A = insertWhitespAce(linesLAyout, 2, 0, 10, 0);
+		// whitespAces: A(2, 10)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 1);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 10);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 10);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 10);
 
-		// Insert a whitespace again after line number 2, of height 20
-		let b = insertWhitespace(linesLayout, 2, 0, 20, 0);
-		// whitespaces: a(2, 10), b(2, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 10);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 10);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 30);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 30);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 30);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 30);
+		// Insert A whitespAce AgAin After line number 2, of height 20
+		let b = insertWhitespAce(linesLAyout, 2, 0, 20, 0);
+		// whitespAces: A(2, 10), b(2, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 10);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 30);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 30);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 30);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 30);
 
-		// Change last inserted whitespace height to 30
-		changeOneWhitespace(linesLayout, b, 2, 30);
-		// whitespaces: a(2, 10), b(2, 30)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 10);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 30);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 10);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 40);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 40);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 40);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 40);
+		// ChAnge lAst inserted whitespAce height to 30
+		chAngeOneWhitespAce(linesLAyout, b, 2, 30);
+		// whitespAces: A(2, 10), b(2, 30)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 10);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 30);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 40);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 40);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 40);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 40);
 
-		// Remove last inserted whitespace
-		removeWhitespace(linesLayout, b);
-		// whitespaces: a(2, 10)
-		assert.equal(linesLayout.getWhitespacesCount(), 1);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 10);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 10);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 10);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 10);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 10);
+		// Remove lAst inserted whitespAce
+		removeWhitespAce(linesLAyout, b);
+		// whitespAces: A(2, 10)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 1);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 10);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 10);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 10);
 
-		// Add a whitespace before the first line of height 50
-		b = insertWhitespace(linesLayout, 0, 0, 50, 0);
-		// whitespaces: b(0, 50), a(2, 10)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 0);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 50);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 10);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 50);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 60);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 60);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 60);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 60);
+		// Add A whitespAce before the first line of height 50
+		b = insertWhitespAce(linesLAyout, 0, 0, 50, 0);
+		// whitespAces: b(0, 50), A(2, 10)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 0);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 50);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 10);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 60);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 60);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 60);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 60);
 
-		// Add a whitespace after line 4 of height 20
-		insertWhitespace(linesLayout, 4, 0, 20, 0);
-		// whitespaces: b(0, 50), a(2, 10), c(4, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 3);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 0);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 50);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 10);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 4);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(2), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 50);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 60);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(2), 80);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 80);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 60);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 60);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 80);
+		// Add A whitespAce After line 4 of height 20
+		insertWhitespAce(linesLAyout, 4, 0, 20, 0);
+		// whitespAces: b(0, 50), A(2, 10), c(4, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 3);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 0);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 50);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 10);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 4);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(2), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 60);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(2), 80);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 80);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 60);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 60);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 80);
 
-		// Add a whitespace after line 3 of height 30
-		insertWhitespace(linesLayout, 3, 0, 30, 0);
-		// whitespaces: b(0, 50), a(2, 10), d(3, 30), c(4, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 4);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 0);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 50);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 10);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(2), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(3), 4);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(3), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 50);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 60);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(2), 90);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(3), 110);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 110);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 60);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 90);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 110);
+		// Add A whitespAce After line 3 of height 30
+		insertWhitespAce(linesLAyout, 3, 0, 30, 0);
+		// whitespAces: b(0, 50), A(2, 10), d(3, 30), c(4, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 4);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 0);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 50);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 10);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(2), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(3), 4);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(3), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 60);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(2), 90);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(3), 110);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 110);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 60);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 90);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 110);
 
-		// Change whitespace after line 2 to height of 100
-		changeOneWhitespace(linesLayout, a, 2, 100);
-		// whitespaces: b(0, 50), a(2, 100), d(3, 30), c(4, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 4);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 0);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 50);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 100);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(2), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(3), 4);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(3), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 50);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 150);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(2), 180);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(3), 200);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 200);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 150);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 180);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 200);
+		// ChAnge whitespAce After line 2 to height of 100
+		chAngeOneWhitespAce(linesLAyout, A, 2, 100);
+		// whitespAces: b(0, 50), A(2, 100), d(3, 30), c(4, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 4);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 0);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 50);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 100);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(2), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(3), 4);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(3), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 150);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(2), 180);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(3), 200);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 200);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 150);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 180);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 200);
 
-		// Remove whitespace after line 2
-		removeWhitespace(linesLayout, a);
-		// whitespaces: b(0, 50), d(3, 30), c(4, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 3);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 0);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 50);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 4);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(2), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 50);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 80);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(2), 100);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 100);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 80);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 100);
+		// Remove whitespAce After line 2
+		removeWhitespAce(linesLAyout, A);
+		// whitespAces: b(0, 50), d(3, 30), c(4, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 3);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 0);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 50);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 4);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(2), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 80);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(2), 100);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 100);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 80);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 100);
 
-		// Remove whitespace before line 1
-		removeWhitespace(linesLayout, b);
-		// whitespaces: d(3, 30), c(4, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 4);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 30);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 50);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 30);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 50);
+		// Remove whitespAce before line 1
+		removeWhitespAce(linesLAyout, b);
+		// whitespAces: d(3, 30), c(4, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 4);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 30);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 30);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 50);
 
 		// Delete line 1
-		linesLayout.onLinesDeleted(1, 1);
-		// whitespaces: d(2, 30), c(3, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 2);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 30);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 50);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 30);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 50);
+		linesLAyout.onLinesDeleted(1, 1);
+		// whitespAces: d(2, 30), c(3, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 2);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 30);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 30);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 50);
 
-		// Insert a line before line 1
-		linesLayout.onLinesInserted(1, 1);
-		// whitespaces: d(3, 30), c(4, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 4);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 30);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 50);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 30);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 50);
+		// Insert A line before line 1
+		linesLAyout.onLinesInserted(1, 1);
+		// whitespAces: d(3, 30), c(4, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 4);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 30);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 30);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 50);
 
 		// Delete line 4
-		linesLayout.onLinesDeleted(4, 4);
-		// whitespaces: d(3, 30), c(3, 20)
-		assert.equal(linesLayout.getWhitespacesCount(), 2);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(0), 30);
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getHeightForWhitespaceIndex(1), 20);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(0), 30);
-		assert.equal(linesLayout.getWhitespacesAccumulatedHeight(1), 50);
-		assert.equal(linesLayout.getWhitespacesTotalHeight(), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(1), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(2), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(3), 0);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(4), 50);
-		assert.equal(linesLayout.getWhitespaceAccumulatedHeightBeforeLineNumber(5), 50);
+		linesLAyout.onLinesDeleted(4, 4);
+		// whitespAces: d(3, 30), c(3, 20)
+		Assert.equAl(linesLAyout.getWhitespAcesCount(), 2);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(0), 30);
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getHeightForWhitespAceIndex(1), 20);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(0), 30);
+		Assert.equAl(linesLAyout.getWhitespAcesAccumulAtedHeight(1), 50);
+		Assert.equAl(linesLAyout.getWhitespAcesTotAlHeight(), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(1), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(2), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(3), 0);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(4), 50);
+		Assert.equAl(linesLAyout.getWhitespAceAccumulAtedHeightBeforeLineNumber(5), 50);
 	});
 
-	test('LinesLayout findInsertionIndex', () => {
+	test('LinesLAyout findInsertionIndex', () => {
 
-		const makeInternalWhitespace = (afterLineNumbers: number[], ordinal: number = 0) => {
-			return afterLineNumbers.map((afterLineNumber) => new EditorWhitespace('', afterLineNumber, ordinal, 0, 0));
+		const mAkeInternAlWhitespAce = (AfterLineNumbers: number[], ordinAl: number = 0) => {
+			return AfterLineNumbers.mAp((AfterLineNumber) => new EditorWhitespAce('', AfterLineNumber, ordinAl, 0, 0));
 		};
 
-		let arr: EditorWhitespace[];
+		let Arr: EditorWhitespAce[];
 
-		arr = makeInternalWhitespace([]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 0);
+		Arr = mAkeInternAlWhitespAce([]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 0);
 
-		arr = makeInternalWhitespace([1]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
+		Arr = mAkeInternAlWhitespAce([1]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
 
-		arr = makeInternalWhitespace([1, 3]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
+		Arr = mAkeInternAlWhitespAce([1, 3]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
 
-		arr = makeInternalWhitespace([1, 3, 5]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
 
-		arr = makeInternalWhitespace([1, 3, 5], 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5], 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
 
-		arr = makeInternalWhitespace([1, 3, 5, 7]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 7, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 8, 0), 4);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5, 7]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 7, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 8, 0), 4);
 
-		arr = makeInternalWhitespace([1, 3, 5, 7, 9]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 7, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 8, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 9, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 10, 0), 5);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5, 7, 9]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 7, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 8, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 9, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 10, 0), 5);
 
-		arr = makeInternalWhitespace([1, 3, 5, 7, 9, 11]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 7, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 8, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 9, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 10, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 11, 0), 6);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 12, 0), 6);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5, 7, 9, 11]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 7, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 8, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 9, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 10, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 11, 0), 6);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 12, 0), 6);
 
-		arr = makeInternalWhitespace([1, 3, 5, 7, 9, 11, 13]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 7, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 8, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 9, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 10, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 11, 0), 6);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 12, 0), 6);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 13, 0), 7);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 14, 0), 7);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5, 7, 9, 11, 13]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 7, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 8, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 9, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 10, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 11, 0), 6);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 12, 0), 6);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 13, 0), 7);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 14, 0), 7);
 
-		arr = makeInternalWhitespace([1, 3, 5, 7, 9, 11, 13, 15]);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 0, 0), 0);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 1, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 2, 0), 1);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 3, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 4, 0), 2);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 5, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 6, 0), 3);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 7, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 8, 0), 4);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 9, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 10, 0), 5);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 11, 0), 6);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 12, 0), 6);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 13, 0), 7);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 14, 0), 7);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 15, 0), 8);
-		assert.equal(LinesLayout.findInsertionIndex(arr, 16, 0), 8);
+		Arr = mAkeInternAlWhitespAce([1, 3, 5, 7, 9, 11, 13, 15]);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 0, 0), 0);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 1, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 2, 0), 1);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 3, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 4, 0), 2);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 5, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 6, 0), 3);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 7, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 8, 0), 4);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 9, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 10, 0), 5);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 11, 0), 6);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 12, 0), 6);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 13, 0), 7);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 14, 0), 7);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 15, 0), 8);
+		Assert.equAl(LinesLAyout.findInsertionIndex(Arr, 16, 0), 8);
 	});
 
-	test('LinesLayout changeWhitespaceAfterLineNumber & getFirstWhitespaceIndexAfterLineNumber', () => {
-		const linesLayout = new LinesLayout(100, 20, 0, 0);
+	test('LinesLAyout chAngeWhitespAceAfterLineNumber & getFirstWhitespAceIndexAfterLineNumber', () => {
+		const linesLAyout = new LinesLAyout(100, 20, 0, 0);
 
-		const a = insertWhitespace(linesLayout, 0, 0, 1, 0);
-		const b = insertWhitespace(linesLayout, 7, 0, 1, 0);
-		const c = insertWhitespace(linesLayout, 3, 0, 1, 0);
+		const A = insertWhitespAce(linesLAyout, 0, 0, 1, 0);
+		const b = insertWhitespAce(linesLAyout, 7, 0, 1, 0);
+		const c = insertWhitespAce(linesLAyout, 3, 0, 1, 0);
 
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 0);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), c); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), b); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 7);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 0);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), c); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), b); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 7);
 
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(1), 1); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(2), 1); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(3), 1); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(4), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(5), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(6), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(7), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(8), -1); // --
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(1), 1); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(2), 1); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(3), 1); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(4), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(5), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(6), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(7), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(8), -1); // --
 
-		// Do not really move a
-		changeOneWhitespace(linesLayout, a, 1, 1);
+		// Do not reAlly move A
+		chAngeOneWhitespAce(linesLAyout, A, 1, 1);
 
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 1
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 1);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), c); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), b); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 7);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 1
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 1);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), c); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), b); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 7);
 
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(1), 0); // a
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(2), 1); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(3), 1); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(4), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(5), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(6), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(7), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(8), -1); // --
-
-
-		// Do not really move a
-		changeOneWhitespace(linesLayout, a, 2, 1);
-
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 2
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 2);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), c); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), b); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 7);
-
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(1), 0); // a
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(2), 0); // a
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(3), 1); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(4), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(5), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(6), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(7), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(8), -1); // --
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(1), 0); // A
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(2), 1); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(3), 1); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(4), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(5), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(6), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(7), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(8), -1); // --
 
 
-		// Change a to conflict with c => a gets placed after c
-		changeOneWhitespace(linesLayout, a, 3, 1);
+		// Do not reAlly move A
+		chAngeOneWhitespAce(linesLAyout, A, 2, 1);
 
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), c); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), a); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), b); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 7);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 2
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 2);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), c); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), b); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 7);
 
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(1), 0); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(2), 0); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(3), 0); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(4), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(5), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(6), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(7), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(8), -1); // --
-
-
-		// Make a no-op
-		changeOneWhitespace(linesLayout, c, 3, 1);
-
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), c); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), a); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), b); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 7);
-
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(1), 0); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(2), 0); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(3), 0); // c
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(4), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(5), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(6), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(7), 2); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(8), -1); // --
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(1), 0); // A
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(2), 0); // A
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(3), 1); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(4), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(5), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(6), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(7), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(8), -1); // --
 
 
+		// ChAnge A to conflict with c => A gets plAced After c
+		chAngeOneWhitespAce(linesLAyout, A, 3, 1);
 
-		// Conflict c with b => c gets placed after b
-		changeOneWhitespace(linesLayout, c, 7, 1);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), c); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), A); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), b); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 7);
 
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 3
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(0), 3);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), b); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(1), 7);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), c); // 7
-		assert.equal(linesLayout.getAfterLineNumberForWhitespaceIndex(2), 7);
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(1), 0); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(2), 0); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(3), 0); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(4), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(5), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(6), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(7), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(8), -1); // --
 
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(1), 0); // a
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(2), 0); // a
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(3), 0); // a
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(4), 1); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(5), 1); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(6), 1); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(7), 1); // b
-		assert.equal(linesLayout.getFirstWhitespaceIndexAfterLineNumber(8), -1); // --
+
+		// MAke A no-op
+		chAngeOneWhitespAce(linesLAyout, c, 3, 1);
+
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), c); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), A); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), b); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 7);
+
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(1), 0); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(2), 0); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(3), 0); // c
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(4), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(5), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(6), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(7), 2); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(8), -1); // --
+
+
+
+		// Conflict c with b => c gets plAced After b
+		chAngeOneWhitespAce(linesLAyout, c, 7, 1);
+
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 3
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(0), 3);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), b); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(1), 7);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), c); // 7
+		Assert.equAl(linesLAyout.getAfterLineNumberForWhitespAceIndex(2), 7);
+
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(1), 0); // A
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(2), 0); // A
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(3), 0); // A
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(4), 1); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(5), 1); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(6), 1); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(7), 1); // b
+		Assert.equAl(linesLAyout.getFirstWhitespAceIndexAfterLineNumber(8), -1); // --
 	});
 
-	test('LinesLayout Bug', () => {
-		const linesLayout = new LinesLayout(100, 20, 0, 0);
+	test('LinesLAyout Bug', () => {
+		const linesLAyout = new LinesLAyout(100, 20, 0, 0);
 
-		const a = insertWhitespace(linesLayout, 0, 0, 1, 0);
-		const b = insertWhitespace(linesLayout, 7, 0, 1, 0);
+		const A = insertWhitespAce(linesLAyout, 0, 0, 1, 0);
+		const b = insertWhitespAce(linesLAyout, 7, 0, 1, 0);
 
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), b); // 7
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), b); // 7
 
-		const c = insertWhitespace(linesLayout, 3, 0, 1, 0);
+		const c = insertWhitespAce(linesLAyout, 3, 0, 1, 0);
 
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), c); // 3
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), b); // 7
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), c); // 3
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), b); // 7
 
-		const d = insertWhitespace(linesLayout, 2, 0, 1, 0);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), d); // 2
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), c); // 3
-		assert.equal(linesLayout.getIdForWhitespaceIndex(3), b); // 7
+		const d = insertWhitespAce(linesLAyout, 2, 0, 1, 0);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), d); // 2
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), c); // 3
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(3), b); // 7
 
-		const e = insertWhitespace(linesLayout, 8, 0, 1, 0);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), d); // 2
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), c); // 3
-		assert.equal(linesLayout.getIdForWhitespaceIndex(3), b); // 7
-		assert.equal(linesLayout.getIdForWhitespaceIndex(4), e); // 8
+		const e = insertWhitespAce(linesLAyout, 8, 0, 1, 0);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), d); // 2
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), c); // 3
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(3), b); // 7
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(4), e); // 8
 
-		const f = insertWhitespace(linesLayout, 11, 0, 1, 0);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), d); // 2
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), c); // 3
-		assert.equal(linesLayout.getIdForWhitespaceIndex(3), b); // 7
-		assert.equal(linesLayout.getIdForWhitespaceIndex(4), e); // 8
-		assert.equal(linesLayout.getIdForWhitespaceIndex(5), f); // 11
+		const f = insertWhitespAce(linesLAyout, 11, 0, 1, 0);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), d); // 2
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), c); // 3
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(3), b); // 7
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(4), e); // 8
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(5), f); // 11
 
-		const g = insertWhitespace(linesLayout, 10, 0, 1, 0);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), d); // 2
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), c); // 3
-		assert.equal(linesLayout.getIdForWhitespaceIndex(3), b); // 7
-		assert.equal(linesLayout.getIdForWhitespaceIndex(4), e); // 8
-		assert.equal(linesLayout.getIdForWhitespaceIndex(5), g); // 10
-		assert.equal(linesLayout.getIdForWhitespaceIndex(6), f); // 11
+		const g = insertWhitespAce(linesLAyout, 10, 0, 1, 0);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), d); // 2
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), c); // 3
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(3), b); // 7
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(4), e); // 8
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(5), g); // 10
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(6), f); // 11
 
-		const h = insertWhitespace(linesLayout, 0, 0, 1, 0);
-		assert.equal(linesLayout.getIdForWhitespaceIndex(0), a); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(1), h); // 0
-		assert.equal(linesLayout.getIdForWhitespaceIndex(2), d); // 2
-		assert.equal(linesLayout.getIdForWhitespaceIndex(3), c); // 3
-		assert.equal(linesLayout.getIdForWhitespaceIndex(4), b); // 7
-		assert.equal(linesLayout.getIdForWhitespaceIndex(5), e); // 8
-		assert.equal(linesLayout.getIdForWhitespaceIndex(6), g); // 10
-		assert.equal(linesLayout.getIdForWhitespaceIndex(7), f); // 11
+		const h = insertWhitespAce(linesLAyout, 0, 0, 1, 0);
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(0), A); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(1), h); // 0
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(2), d); // 2
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(3), c); // 3
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(4), b); // 7
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(5), e); // 8
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(6), g); // 10
+		Assert.equAl(linesLAyout.getIdForWhitespAceIndex(7), f); // 11
 	});
 });

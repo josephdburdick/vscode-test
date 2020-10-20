@@ -1,19 +1,19 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { MainContext, IExtHostContext, ExtHostThemingShape, ExtHostContext, MainThreadThemingShape } from '../common/extHost.protocol';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
+import { MAinContext, IExtHostContext, ExtHostThemingShApe, ExtHostContext, MAinThreAdThemingShApe } from '../common/extHost.protocol';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { IDisposAble } from 'vs/bAse/common/lifecycle';
+import { IThemeService } from 'vs/plAtform/theme/common/themeService';
 
-@extHostNamedCustomer(MainContext.MainThreadTheming)
-export class MainThreadTheming implements MainThreadThemingShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdTheming)
+export clAss MAinThreAdTheming implements MAinThreAdThemingShApe {
 
-	private readonly _themeService: IThemeService;
-	private readonly _proxy: ExtHostThemingShape;
-	private readonly _themeChangeListener: IDisposable;
+	privAte reAdonly _themeService: IThemeService;
+	privAte reAdonly _proxy: ExtHostThemingShApe;
+	privAte reAdonly _themeChAngeListener: IDisposAble;
 
 	constructor(
 		extHostContext: IExtHostContext,
@@ -22,13 +22,13 @@ export class MainThreadTheming implements MainThreadThemingShape {
 		this._themeService = themeService;
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostTheming);
 
-		this._themeChangeListener = this._themeService.onDidColorThemeChange(e => {
-			this._proxy.$onColorThemeChange(this._themeService.getColorTheme().type);
+		this._themeChAngeListener = this._themeService.onDidColorThemeChAnge(e => {
+			this._proxy.$onColorThemeChAnge(this._themeService.getColorTheme().type);
 		});
-		this._proxy.$onColorThemeChange(this._themeService.getColorTheme().type);
+		this._proxy.$onColorThemeChAnge(this._themeService.getColorTheme().type);
 	}
 
 	dispose(): void {
-		this._themeChangeListener.dispose();
+		this._themeChAngeListener.dispose();
 	}
 }

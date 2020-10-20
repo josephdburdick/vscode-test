@@ -1,89 +1,89 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as nls from 'vscode-nls';
-import type * as Proto from '../../protocol';
-import * as PConst from '../../protocol.const';
-import { CachedResponse } from '../../tsServer/cachedResponse';
-import { ClientCapability, ITypeScriptServiceClient } from '../../typescriptService';
-import { conditionalRegistration, requireSomeCapability, requireConfiguration } from '../../utils/dependentRegistration';
+import * As vscode from 'vscode';
+import * As nls from 'vscode-nls';
+import type * As Proto from '../../protocol';
+import * As PConst from '../../protocol.const';
+import { CAchedResponse } from '../../tsServer/cAchedResponse';
+import { ClientCApAbility, ITypeScriptServiceClient } from '../../typescriptService';
+import { conditionAlRegistrAtion, requireSomeCApAbility, requireConfigurAtion } from '../../utils/dependentRegistrAtion';
 import { DocumentSelector } from '../../utils/documentSelector';
-import * as typeConverters from '../../utils/typeConverters';
-import { getSymbolRange, ReferencesCodeLens, TypeScriptBaseCodeLensProvider } from './baseCodeLensProvider';
+import * As typeConverters from '../../utils/typeConverters';
+import { getSymbolRAnge, ReferencesCodeLens, TypeScriptBAseCodeLensProvider } from './bAseCodeLensProvider';
 
-const localize = nls.loadMessageBundle();
+const locAlize = nls.loAdMessAgeBundle();
 
-export default class TypeScriptImplementationsCodeLensProvider extends TypeScriptBaseCodeLensProvider {
+export defAult clAss TypeScriptImplementAtionsCodeLensProvider extends TypeScriptBAseCodeLensProvider {
 
-	public async resolveCodeLens(
+	public Async resolveCodeLens(
 		inputCodeLens: vscode.CodeLens,
-		token: vscode.CancellationToken,
+		token: vscode.CAncellAtionToken,
 	): Promise<vscode.CodeLens> {
-		const codeLens = inputCodeLens as ReferencesCodeLens;
+		const codeLens = inputCodeLens As ReferencesCodeLens;
 
-		const args = typeConverters.Position.toFileLocationRequestArgs(codeLens.file, codeLens.range.start);
-		const response = await this.client.execute('implementation', args, token, { lowPriority: true, cancelOnResourceChange: codeLens.document });
+		const Args = typeConverters.Position.toFileLocAtionRequestArgs(codeLens.file, codeLens.rAnge.stArt);
+		const response = AwAit this.client.execute('implementAtion', Args, token, { lowPriority: true, cAncelOnResourceChAnge: codeLens.document });
 		if (response.type !== 'response' || !response.body) {
-			codeLens.command = response.type === 'cancelled'
-				? TypeScriptBaseCodeLensProvider.cancelledCommand
-				: TypeScriptBaseCodeLensProvider.errorCommand;
+			codeLens.commAnd = response.type === 'cAncelled'
+				? TypeScriptBAseCodeLensProvider.cAncelledCommAnd
+				: TypeScriptBAseCodeLensProvider.errorCommAnd;
 			return codeLens;
 		}
 
-		const locations = response.body
-			.map(reference =>
-				// Only take first line on implementation: https://github.com/microsoft/vscode/issues/23924
-				new vscode.Location(this.client.toResource(reference.file),
-					reference.start.line === reference.end.line
-						? typeConverters.Range.fromTextSpan(reference)
-						: new vscode.Range(
-							typeConverters.Position.fromLocation(reference.start),
-							new vscode.Position(reference.start.line, 0))))
-			// Exclude original from implementations
-			.filter(location =>
-				!(location.uri.toString() === codeLens.document.toString() &&
-					location.range.start.line === codeLens.range.start.line &&
-					location.range.start.character === codeLens.range.start.character));
+		const locAtions = response.body
+			.mAp(reference =>
+				// Only tAke first line on implementAtion: https://github.com/microsoft/vscode/issues/23924
+				new vscode.LocAtion(this.client.toResource(reference.file),
+					reference.stArt.line === reference.end.line
+						? typeConverters.RAnge.fromTextSpAn(reference)
+						: new vscode.RAnge(
+							typeConverters.Position.fromLocAtion(reference.stArt),
+							new vscode.Position(reference.stArt.line, 0))))
+			// Exclude originAl from implementAtions
+			.filter(locAtion =>
+				!(locAtion.uri.toString() === codeLens.document.toString() &&
+					locAtion.rAnge.stArt.line === codeLens.rAnge.stArt.line &&
+					locAtion.rAnge.stArt.chArActer === codeLens.rAnge.stArt.chArActer));
 
-		codeLens.command = this.getCommand(locations, codeLens);
+		codeLens.commAnd = this.getCommAnd(locAtions, codeLens);
 		return codeLens;
 	}
 
-	private getCommand(locations: vscode.Location[], codeLens: ReferencesCodeLens): vscode.Command | undefined {
+	privAte getCommAnd(locAtions: vscode.LocAtion[], codeLens: ReferencesCodeLens): vscode.CommAnd | undefined {
 		return {
-			title: this.getTitle(locations),
-			command: locations.length ? 'editor.action.showReferences' : '',
-			arguments: [codeLens.document, codeLens.range.start, locations]
+			title: this.getTitle(locAtions),
+			commAnd: locAtions.length ? 'editor.Action.showReferences' : '',
+			Arguments: [codeLens.document, codeLens.rAnge.stArt, locAtions]
 		};
 	}
 
-	private getTitle(locations: vscode.Location[]): string {
-		return locations.length === 1
-			? localize('oneImplementationLabel', '1 implementation')
-			: localize('manyImplementationLabel', '{0} implementations', locations.length);
+	privAte getTitle(locAtions: vscode.LocAtion[]): string {
+		return locAtions.length === 1
+			? locAlize('oneImplementAtionLAbel', '1 implementAtion')
+			: locAlize('mAnyImplementAtionLAbel', '{0} implementAtions', locAtions.length);
 	}
 
-	protected extractSymbol(
+	protected extrActSymbol(
 		document: vscode.TextDocument,
-		item: Proto.NavigationTree,
-		_parent: Proto.NavigationTree | null
-	): vscode.Range | null {
+		item: Proto.NAvigAtionTree,
+		_pArent: Proto.NAvigAtionTree | null
+	): vscode.RAnge | null {
 		switch (item.kind) {
-			case PConst.Kind.interface:
-				return getSymbolRange(document, item);
+			cAse PConst.Kind.interfAce:
+				return getSymbolRAnge(document, item);
 
-			case PConst.Kind.class:
-			case PConst.Kind.method:
-			case PConst.Kind.memberVariable:
-			case PConst.Kind.memberGetAccessor:
-			case PConst.Kind.memberSetAccessor:
-				if (item.kindModifiers.match(/\babstract\b/g)) {
-					return getSymbolRange(document, item);
+			cAse PConst.Kind.clAss:
+			cAse PConst.Kind.method:
+			cAse PConst.Kind.memberVAriAble:
+			cAse PConst.Kind.memberGetAccessor:
+			cAse PConst.Kind.memberSetAccessor:
+				if (item.kindModifiers.mAtch(/\bAbstrAct\b/g)) {
+					return getSymbolRAnge(document, item);
 				}
-				break;
+				breAk;
 		}
 		return null;
 	}
@@ -93,13 +93,13 @@ export function register(
 	selector: DocumentSelector,
 	modeId: string,
 	client: ITypeScriptServiceClient,
-	cachedResponse: CachedResponse<Proto.NavTreeResponse>,
+	cAchedResponse: CAchedResponse<Proto.NAvTreeResponse>,
 ) {
-	return conditionalRegistration([
-		requireConfiguration(modeId, 'implementationsCodeLens.enabled'),
-		requireSomeCapability(client, ClientCapability.Semantic),
+	return conditionAlRegistrAtion([
+		requireConfigurAtion(modeId, 'implementAtionsCodeLens.enAbled'),
+		requireSomeCApAbility(client, ClientCApAbility.SemAntic),
 	], () => {
-		return vscode.languages.registerCodeLensProvider(selector.semantic,
-			new TypeScriptImplementationsCodeLensProvider(client, cachedResponse));
+		return vscode.lAnguAges.registerCodeLensProvider(selector.semAntic,
+			new TypeScriptImplementAtionsCodeLensProvider(client, cAchedResponse));
 	});
 }

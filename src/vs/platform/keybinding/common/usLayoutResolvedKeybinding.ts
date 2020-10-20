@@ -1,95 +1,95 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { KeyCode, KeyCodeUtils, Keybinding, SimpleKeybinding } from 'vs/base/common/keyCodes';
-import { OperatingSystem } from 'vs/base/common/platform';
-import { BaseResolvedKeybinding } from 'vs/platform/keybinding/common/baseResolvedKeybinding';
+import { KeyCode, KeyCodeUtils, Keybinding, SimpleKeybinding } from 'vs/bAse/common/keyCodes';
+import { OperAtingSystem } from 'vs/bAse/common/plAtform';
+import { BAseResolvedKeybinding } from 'vs/plAtform/keybinding/common/bAseResolvedKeybinding';
 
 /**
- * Do not instantiate. Use KeybindingService to get a ResolvedKeybinding seeded with information about the current kb layout.
+ * Do not instAntiAte. Use KeybindingService to get A ResolvedKeybinding seeded with informAtion About the current kb lAyout.
  */
-export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<SimpleKeybinding> {
+export clAss USLAyoutResolvedKeybinding extends BAseResolvedKeybinding<SimpleKeybinding> {
 
-	constructor(actual: Keybinding, os: OperatingSystem) {
-		super(os, actual.parts);
+	constructor(ActuAl: Keybinding, os: OperAtingSystem) {
+		super(os, ActuAl.pArts);
 	}
 
-	private _keyCodeToUILabel(keyCode: KeyCode): string {
-		if (this._os === OperatingSystem.Macintosh) {
+	privAte _keyCodeToUILAbel(keyCode: KeyCode): string {
+		if (this._os === OperAtingSystem.MAcintosh) {
 			switch (keyCode) {
-				case KeyCode.LeftArrow:
+				cAse KeyCode.LeftArrow:
 					return '←';
-				case KeyCode.UpArrow:
+				cAse KeyCode.UpArrow:
 					return '↑';
-				case KeyCode.RightArrow:
+				cAse KeyCode.RightArrow:
 					return '→';
-				case KeyCode.DownArrow:
+				cAse KeyCode.DownArrow:
 					return '↓';
 			}
 		}
 		return KeyCodeUtils.toString(keyCode);
 	}
 
-	protected _getLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getLAbel(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
-		return this._keyCodeToUILabel(keybinding.keyCode);
+		return this._keyCodeToUILAbel(keybinding.keyCode);
 	}
 
-	protected _getAriaLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getAriALAbel(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
 		return KeyCodeUtils.toString(keybinding.keyCode);
 	}
 
-	private _keyCodeToElectronAccelerator(keyCode: KeyCode): string | null {
+	privAte _keyCodeToElectronAccelerAtor(keyCode: KeyCode): string | null {
 		if (keyCode >= KeyCode.NUMPAD_0 && keyCode <= KeyCode.NUMPAD_DIVIDE) {
-			// Electron cannot handle numpad keys
+			// Electron cAnnot hAndle numpAd keys
 			return null;
 		}
 
 		switch (keyCode) {
-			case KeyCode.UpArrow:
+			cAse KeyCode.UpArrow:
 				return 'Up';
-			case KeyCode.DownArrow:
+			cAse KeyCode.DownArrow:
 				return 'Down';
-			case KeyCode.LeftArrow:
+			cAse KeyCode.LeftArrow:
 				return 'Left';
-			case KeyCode.RightArrow:
+			cAse KeyCode.RightArrow:
 				return 'Right';
 		}
 
 		return KeyCodeUtils.toString(keyCode);
 	}
 
-	protected _getElectronAccelerator(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getElectronAccelerAtor(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return null;
 		}
-		return this._keyCodeToElectronAccelerator(keybinding.keyCode);
+		return this._keyCodeToElectronAccelerAtor(keybinding.keyCode);
 	}
 
-	protected _getUserSettingsLabel(keybinding: SimpleKeybinding): string | null {
-		if (keybinding.isDuplicateModifierCase()) {
+	protected _getUserSettingsLAbel(keybinding: SimpleKeybinding): string | null {
+		if (keybinding.isDuplicAteModifierCAse()) {
 			return '';
 		}
 		const result = KeyCodeUtils.toUserSettingsUS(keybinding.keyCode);
-		return (result ? result.toLowerCase() : result);
+		return (result ? result.toLowerCAse() : result);
 	}
 
-	protected _isWYSIWYG(): boolean {
+	protected _isWYSIWYG(): booleAn {
 		return true;
 	}
 
-	protected _getDispatchPart(keybinding: SimpleKeybinding): string | null {
-		return USLayoutResolvedKeybinding.getDispatchStr(keybinding);
+	protected _getDispAtchPArt(keybinding: SimpleKeybinding): string | null {
+		return USLAyoutResolvedKeybinding.getDispAtchStr(keybinding);
 	}
 
-	public static getDispatchStr(keybinding: SimpleKeybinding): string | null {
+	public stAtic getDispAtchStr(keybinding: SimpleKeybinding): string | null {
 		if (keybinding.isModifierKey()) {
 			return null;
 		}
@@ -101,11 +101,11 @@ export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<SimpleKey
 		if (keybinding.shiftKey) {
 			result += 'shift+';
 		}
-		if (keybinding.altKey) {
-			result += 'alt+';
+		if (keybinding.AltKey) {
+			result += 'Alt+';
 		}
-		if (keybinding.metaKey) {
-			result += 'meta+';
+		if (keybinding.metAKey) {
+			result += 'metA+';
 		}
 		result += KeyCodeUtils.toString(keybinding.keyCode);
 

@@ -1,96 +1,96 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { onUnexpectedError } from 'vs/base/common/errors';
-import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { URI, UriComponents } from 'vs/base/common/uri';
-import { EditOperation } from 'vs/editor/common/core/editOperation';
-import { Range } from 'vs/editor/common/core/range';
+import { onUnexpectedError } from 'vs/bAse/common/errors';
+import { IDisposAble, dispose } from 'vs/bAse/common/lifecycle';
+import { URI, UriComponents } from 'vs/bAse/common/uri';
+import { EditOperAtion } from 'vs/editor/common/core/editOperAtion';
+import { RAnge } from 'vs/editor/common/core/rAnge';
 import { ITextModel } from 'vs/editor/common/model';
 import { IEditorWorkerService } from 'vs/editor/common/services/editorWorkerService';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
-import { ExtHostContext, ExtHostDocumentContentProvidersShape, IExtHostContext, MainContext, MainThreadDocumentContentProvidersShape } from '../common/extHost.protocol';
-import { CancellationTokenSource } from 'vs/base/common/cancellation';
+import { extHostNAmedCustomer } from 'vs/workbench/Api/common/extHostCustomers';
+import { ExtHostContext, ExtHostDocumentContentProvidersShApe, IExtHostContext, MAinContext, MAinThreAdDocumentContentProvidersShApe } from '../common/extHost.protocol';
+import { CAncellAtionTokenSource } from 'vs/bAse/common/cAncellAtion';
 
-@extHostNamedCustomer(MainContext.MainThreadDocumentContentProviders)
-export class MainThreadDocumentContentProviders implements MainThreadDocumentContentProvidersShape {
+@extHostNAmedCustomer(MAinContext.MAinThreAdDocumentContentProviders)
+export clAss MAinThreAdDocumentContentProviders implements MAinThreAdDocumentContentProvidersShApe {
 
-	private readonly _resourceContentProvider = new Map<number, IDisposable>();
-	private readonly _pendingUpdate = new Map<string, CancellationTokenSource>();
-	private readonly _proxy: ExtHostDocumentContentProvidersShape;
+	privAte reAdonly _resourceContentProvider = new MAp<number, IDisposAble>();
+	privAte reAdonly _pendingUpdAte = new MAp<string, CAncellAtionTokenSource>();
+	privAte reAdonly _proxy: ExtHostDocumentContentProvidersShApe;
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@ITextModelService private readonly _textModelResolverService: ITextModelService,
-		@IModeService private readonly _modeService: IModeService,
-		@IModelService private readonly _modelService: IModelService,
-		@IEditorWorkerService private readonly _editorWorkerService: IEditorWorkerService
+		@ITextModelService privAte reAdonly _textModelResolverService: ITextModelService,
+		@IModeService privAte reAdonly _modeService: IModeService,
+		@IModelService privAte reAdonly _modelService: IModelService,
+		@IEditorWorkerService privAte reAdonly _editorWorkerService: IEditorWorkerService
 	) {
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostDocumentContentProviders);
 	}
 
 	dispose(): void {
-		dispose(this._resourceContentProvider.values());
-		dispose(this._pendingUpdate.values());
+		dispose(this._resourceContentProvider.vAlues());
+		dispose(this._pendingUpdAte.vAlues());
 	}
 
-	$registerTextContentProvider(handle: number, scheme: string): void {
-		const registration = this._textModelResolverService.registerTextModelContentProvider(scheme, {
+	$registerTextContentProvider(hAndle: number, scheme: string): void {
+		const registrAtion = this._textModelResolverService.registerTextModelContentProvider(scheme, {
 			provideTextContent: (uri: URI): Promise<ITextModel | null> => {
-				return this._proxy.$provideTextDocumentContent(handle, uri).then(value => {
-					if (typeof value === 'string') {
-						const firstLineText = value.substr(0, 1 + value.search(/\r?\n/));
-						const languageSelection = this._modeService.createByFilepathOrFirstLine(uri, firstLineText);
-						return this._modelService.createModel(value, languageSelection, uri);
+				return this._proxy.$provideTextDocumentContent(hAndle, uri).then(vAlue => {
+					if (typeof vAlue === 'string') {
+						const firstLineText = vAlue.substr(0, 1 + vAlue.seArch(/\r?\n/));
+						const lAnguAgeSelection = this._modeService.creAteByFilepAthOrFirstLine(uri, firstLineText);
+						return this._modelService.creAteModel(vAlue, lAnguAgeSelection, uri);
 					}
 					return null;
 				});
 			}
 		});
-		this._resourceContentProvider.set(handle, registration);
+		this._resourceContentProvider.set(hAndle, registrAtion);
 	}
 
-	$unregisterTextContentProvider(handle: number): void {
-		const registration = this._resourceContentProvider.get(handle);
-		if (registration) {
-			registration.dispose();
-			this._resourceContentProvider.delete(handle);
+	$unregisterTextContentProvider(hAndle: number): void {
+		const registrAtion = this._resourceContentProvider.get(hAndle);
+		if (registrAtion) {
+			registrAtion.dispose();
+			this._resourceContentProvider.delete(hAndle);
 		}
 	}
 
-	$onVirtualDocumentChange(uri: UriComponents, value: string): void {
+	$onVirtuAlDocumentChAnge(uri: UriComponents, vAlue: string): void {
 		const model = this._modelService.getModel(URI.revive(uri));
 		if (!model) {
 			return;
 		}
 
-		// cancel and dispose an existing update
-		const pending = this._pendingUpdate.get(model.id);
+		// cAncel And dispose An existing updAte
+		const pending = this._pendingUpdAte.get(model.id);
 		if (pending) {
-			pending.cancel();
+			pending.cAncel();
 		}
 
-		// create and keep update token
-		const myToken = new CancellationTokenSource();
-		this._pendingUpdate.set(model.id, myToken);
+		// creAte And keep updAte token
+		const myToken = new CAncellAtionTokenSource();
+		this._pendingUpdAte.set(model.id, myToken);
 
-		this._editorWorkerService.computeMoreMinimalEdits(model.uri, [{ text: value, range: model.getFullModelRange() }]).then(edits => {
+		this._editorWorkerService.computeMoreMinimAlEdits(model.uri, [{ text: vAlue, rAnge: model.getFullModelRAnge() }]).then(edits => {
 			// remove token
-			this._pendingUpdate.delete(model.id);
+			this._pendingUpdAte.delete(model.id);
 
-			if (myToken.token.isCancellationRequested) {
+			if (myToken.token.isCAncellAtionRequested) {
 				// ignore this
 				return;
 			}
 			if (edits && edits.length > 0) {
-				// use the evil-edit as these models show in readonly-editor only
-				model.applyEdits(edits.map(edit => EditOperation.replace(Range.lift(edit.range), edit.text)));
+				// use the evil-edit As these models show in reAdonly-editor only
+				model.ApplyEdits(edits.mAp(edit => EditOperAtion.replAce(RAnge.lift(edit.rAnge), edit.text)));
 			}
-		}).catch(onUnexpectedError);
+		}).cAtch(onUnexpectedError);
 	}
 }

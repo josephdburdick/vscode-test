@@ -1,175 +1,175 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vs/nls';
-import { IJSONSchema, IJSONSchemaMap } from 'vs/base/common/jsonSchema';
-import { IStringDictionary } from 'vs/base/common/collections';
-import * as Types from 'vs/base/common/types';
-import * as Objects from 'vs/base/common/objects';
+import * As nls from 'vs/nls';
+import { IJSONSchemA, IJSONSchemAMAp } from 'vs/bAse/common/jsonSchemA';
+import { IStringDictionAry } from 'vs/bAse/common/collections';
+import * As Types from 'vs/bAse/common/types';
+import * As Objects from 'vs/bAse/common/objects';
 
-import { ExtensionsRegistry, ExtensionMessageCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
+import { ExtensionsRegistry, ExtensionMessAgeCollector } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 
-import * as Tasks from 'vs/workbench/contrib/tasks/common/tasks';
-import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
+import * As TAsks from 'vs/workbench/contrib/tAsks/common/tAsks';
+import { ExtensionIdentifier } from 'vs/plAtform/extensions/common/extensions';
+import { ContextKeyExpr } from 'vs/plAtform/contextkey/common/contextkey';
 
 
-const taskDefinitionSchema: IJSONSchema = {
+const tAskDefinitionSchemA: IJSONSchemA = {
 	type: 'object',
-	additionalProperties: false,
+	AdditionAlProperties: fAlse,
 	properties: {
 		type: {
 			type: 'string',
-			description: nls.localize('TaskDefinition.description', 'The actual task type. Please note that types starting with a \'$\' are reserved for internal usage.')
+			description: nls.locAlize('TAskDefinition.description', 'The ActuAl tAsk type. PleAse note thAt types stArting with A \'$\' Are reserved for internAl usAge.')
 		},
 		required: {
-			type: 'array',
+			type: 'ArrAy',
 			items: {
 				type: 'string'
 			}
 		},
 		properties: {
 			type: 'object',
-			description: nls.localize('TaskDefinition.properties', 'Additional properties of the task type'),
-			additionalProperties: {
-				$ref: 'http://json-schema.org/draft-07/schema#'
+			description: nls.locAlize('TAskDefinition.properties', 'AdditionAl properties of the tAsk type'),
+			AdditionAlProperties: {
+				$ref: 'http://json-schemA.org/drAft-07/schemA#'
 			}
 		},
 		when: {
 			type: 'string',
-			markdownDescription: nls.localize('TaskDefinition.when', 'Condition which must be true to enable this type of task. Consider using `shellExecutionSupported`, `processExecutionSupported`, and `customExecutionSupported` as appropriate for this task definition.'),
-			default: ''
+			mArkdownDescription: nls.locAlize('TAskDefinition.when', 'Condition which must be true to enAble this type of tAsk. Consider using `shellExecutionSupported`, `processExecutionSupported`, And `customExecutionSupported` As AppropriAte for this tAsk definition.'),
+			defAult: ''
 		}
 	}
 };
 
-namespace Configuration {
-	export interface TaskDefinition {
+nAmespAce ConfigurAtion {
+	export interfAce TAskDefinition {
 		type?: string;
 		required?: string[];
-		properties?: IJSONSchemaMap;
+		properties?: IJSONSchemAMAp;
 		when?: string;
 	}
 
-	export function from(value: TaskDefinition, extensionId: ExtensionIdentifier, messageCollector: ExtensionMessageCollector): Tasks.TaskDefinition | undefined {
-		if (!value) {
+	export function from(vAlue: TAskDefinition, extensionId: ExtensionIdentifier, messAgeCollector: ExtensionMessAgeCollector): TAsks.TAskDefinition | undefined {
+		if (!vAlue) {
 			return undefined;
 		}
-		let taskType = Types.isString(value.type) ? value.type : undefined;
-		if (!taskType || taskType.length === 0) {
-			messageCollector.error(nls.localize('TaskTypeConfiguration.noType', 'The task type configuration is missing the required \'taskType\' property'));
+		let tAskType = Types.isString(vAlue.type) ? vAlue.type : undefined;
+		if (!tAskType || tAskType.length === 0) {
+			messAgeCollector.error(nls.locAlize('TAskTypeConfigurAtion.noType', 'The tAsk type configurAtion is missing the required \'tAskType\' property'));
 			return undefined;
 		}
 		let required: string[] = [];
-		if (Array.isArray(value.required)) {
-			for (let element of value.required) {
+		if (ArrAy.isArrAy(vAlue.required)) {
+			for (let element of vAlue.required) {
 				if (Types.isString(element)) {
 					required.push(element);
 				}
 			}
 		}
 		return {
-			extensionId: extensionId.value,
-			taskType, required: required,
-			properties: value.properties ? Objects.deepClone(value.properties) : {},
-			when: value.when ? ContextKeyExpr.deserialize(value.when) : undefined
+			extensionId: extensionId.vAlue,
+			tAskType, required: required,
+			properties: vAlue.properties ? Objects.deepClone(vAlue.properties) : {},
+			when: vAlue.when ? ContextKeyExpr.deseriAlize(vAlue.when) : undefined
 		};
 	}
 }
 
 
-const taskDefinitionsExtPoint = ExtensionsRegistry.registerExtensionPoint<Configuration.TaskDefinition[]>({
-	extensionPoint: 'taskDefinitions',
-	jsonSchema: {
-		description: nls.localize('TaskDefinitionExtPoint', 'Contributes task kinds'),
-		type: 'array',
-		items: taskDefinitionSchema
+const tAskDefinitionsExtPoint = ExtensionsRegistry.registerExtensionPoint<ConfigurAtion.TAskDefinition[]>({
+	extensionPoint: 'tAskDefinitions',
+	jsonSchemA: {
+		description: nls.locAlize('TAskDefinitionExtPoint', 'Contributes tAsk kinds'),
+		type: 'ArrAy',
+		items: tAskDefinitionSchemA
 	}
 });
 
-export interface ITaskDefinitionRegistry {
-	onReady(): Promise<void>;
+export interfAce ITAskDefinitionRegistry {
+	onReAdy(): Promise<void>;
 
-	get(key: string): Tasks.TaskDefinition;
-	all(): Tasks.TaskDefinition[];
-	getJsonSchema(): IJSONSchema;
+	get(key: string): TAsks.TAskDefinition;
+	All(): TAsks.TAskDefinition[];
+	getJsonSchemA(): IJSONSchemA;
 }
 
-class TaskDefinitionRegistryImpl implements ITaskDefinitionRegistry {
+clAss TAskDefinitionRegistryImpl implements ITAskDefinitionRegistry {
 
-	private taskTypes: IStringDictionary<Tasks.TaskDefinition>;
-	private readyPromise: Promise<void>;
-	private _schema: IJSONSchema | undefined;
+	privAte tAskTypes: IStringDictionAry<TAsks.TAskDefinition>;
+	privAte reAdyPromise: Promise<void>;
+	privAte _schemA: IJSONSchemA | undefined;
 
 	constructor() {
-		this.taskTypes = Object.create(null);
-		this.readyPromise = new Promise<void>((resolve, reject) => {
-			taskDefinitionsExtPoint.setHandler((extensions, delta) => {
+		this.tAskTypes = Object.creAte(null);
+		this.reAdyPromise = new Promise<void>((resolve, reject) => {
+			tAskDefinitionsExtPoint.setHAndler((extensions, deltA) => {
 				try {
-					for (let extension of delta.removed) {
-						let taskTypes = extension.value;
-						for (let taskType of taskTypes) {
-							if (this.taskTypes && taskType.type && this.taskTypes[taskType.type]) {
-								delete this.taskTypes[taskType.type];
+					for (let extension of deltA.removed) {
+						let tAskTypes = extension.vAlue;
+						for (let tAskType of tAskTypes) {
+							if (this.tAskTypes && tAskType.type && this.tAskTypes[tAskType.type]) {
+								delete this.tAskTypes[tAskType.type];
 							}
 						}
 					}
-					for (let extension of delta.added) {
-						let taskTypes = extension.value;
-						for (let taskType of taskTypes) {
-							let type = Configuration.from(taskType, extension.description.identifier, extension.collector);
+					for (let extension of deltA.Added) {
+						let tAskTypes = extension.vAlue;
+						for (let tAskType of tAskTypes) {
+							let type = ConfigurAtion.from(tAskType, extension.description.identifier, extension.collector);
 							if (type) {
-								this.taskTypes[type.taskType] = type;
+								this.tAskTypes[type.tAskType] = type;
 							}
 						}
 					}
-				} catch (error) {
+				} cAtch (error) {
 				}
 				resolve(undefined);
 			});
 		});
 	}
 
-	public onReady(): Promise<void> {
-		return this.readyPromise;
+	public onReAdy(): Promise<void> {
+		return this.reAdyPromise;
 	}
 
-	public get(key: string): Tasks.TaskDefinition {
-		return this.taskTypes[key];
+	public get(key: string): TAsks.TAskDefinition {
+		return this.tAskTypes[key];
 	}
 
-	public all(): Tasks.TaskDefinition[] {
-		return Object.keys(this.taskTypes).map(key => this.taskTypes[key]);
+	public All(): TAsks.TAskDefinition[] {
+		return Object.keys(this.tAskTypes).mAp(key => this.tAskTypes[key]);
 	}
 
-	public getJsonSchema(): IJSONSchema {
-		if (this._schema === undefined) {
-			let schemas: IJSONSchema[] = [];
-			for (let definition of this.all()) {
-				let schema: IJSONSchema = {
+	public getJsonSchemA(): IJSONSchemA {
+		if (this._schemA === undefined) {
+			let schemAs: IJSONSchemA[] = [];
+			for (let definition of this.All()) {
+				let schemA: IJSONSchemA = {
 					type: 'object',
-					additionalProperties: false
+					AdditionAlProperties: fAlse
 				};
 				if (definition.required.length > 0) {
-					schema.required = definition.required.slice(0);
+					schemA.required = definition.required.slice(0);
 				}
 				if (definition.properties !== undefined) {
-					schema.properties = Objects.deepClone(definition.properties);
+					schemA.properties = Objects.deepClone(definition.properties);
 				} else {
-					schema.properties = Object.create(null);
+					schemA.properties = Object.creAte(null);
 				}
-				schema.properties!.type = {
+				schemA.properties!.type = {
 					type: 'string',
-					enum: [definition.taskType]
+					enum: [definition.tAskType]
 				};
-				schemas.push(schema);
+				schemAs.push(schemA);
 			}
-			this._schema = { oneOf: schemas };
+			this._schemA = { oneOf: schemAs };
 		}
-		return this._schema;
+		return this._schemA;
 	}
 }
 
-export const TaskDefinitionRegistry: ITaskDefinitionRegistry = new TaskDefinitionRegistryImpl();
+export const TAskDefinitionRegistry: ITAskDefinitionRegistry = new TAskDefinitionRegistryImpl();

@@ -1,38 +1,38 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable, ExtensionContext, extensions } from 'vscode';
+import { DisposAble, ExtensionContext, extensions } from 'vscode';
 import { GithubRemoteSourceProvider } from './remoteSourceProvider';
 import { GitExtension } from './typings/git';
-import { registerCommands } from './commands';
-import { GithubCredentialProviderManager } from './credentialProvider';
-import { dispose, combinedDisposable } from './util';
-import { GithubPushErrorHandler } from './pushErrorHandler';
+import { registerCommAnds } from './commAnds';
+import { GithubCredentiAlProviderMAnAger } from './credentiAlProvider';
+import { dispose, combinedDisposAble } from './util';
+import { GithubPushErrorHAndler } from './pushErrorHAndler';
 
-export function activate(context: ExtensionContext): void {
-	const disposables = new Set<Disposable>();
-	context.subscriptions.push(combinedDisposable(disposables));
+export function ActivAte(context: ExtensionContext): void {
+	const disposAbles = new Set<DisposAble>();
+	context.subscriptions.push(combinedDisposAble(disposAbles));
 
 	const init = () => {
 		try {
 			const gitAPI = gitExtension.getAPI(1);
 
-			disposables.add(registerCommands(gitAPI));
-			disposables.add(gitAPI.registerRemoteSourceProvider(new GithubRemoteSourceProvider(gitAPI)));
-			disposables.add(new GithubCredentialProviderManager(gitAPI));
-			disposables.add(gitAPI.registerPushErrorHandler(new GithubPushErrorHandler()));
-		} catch (err) {
-			console.error('Could not initialize GitHub extension');
-			console.warn(err);
+			disposAbles.Add(registerCommAnds(gitAPI));
+			disposAbles.Add(gitAPI.registerRemoteSourceProvider(new GithubRemoteSourceProvider(gitAPI)));
+			disposAbles.Add(new GithubCredentiAlProviderMAnAger(gitAPI));
+			disposAbles.Add(gitAPI.registerPushErrorHAndler(new GithubPushErrorHAndler()));
+		} cAtch (err) {
+			console.error('Could not initiAlize GitHub extension');
+			console.wArn(err);
 		}
 	};
 
-	const onDidChangeGitExtensionEnablement = (enabled: boolean) => {
-		if (!enabled) {
-			dispose(disposables);
-			disposables.clear();
+	const onDidChAngeGitExtensionEnAblement = (enAbled: booleAn) => {
+		if (!enAbled) {
+			dispose(disposAbles);
+			disposAbles.cleAr();
 		} else {
 			init();
 		}
@@ -40,6 +40,6 @@ export function activate(context: ExtensionContext): void {
 
 
 	const gitExtension = extensions.getExtension<GitExtension>('vscode.git')!.exports;
-	context.subscriptions.push(gitExtension.onDidChangeEnablement(onDidChangeGitExtensionEnablement));
-	onDidChangeGitExtensionEnablement(gitExtension.enabled);
+	context.subscriptions.push(gitExtension.onDidChAngeEnAblement(onDidChAngeGitExtensionEnAblement));
+	onDidChAngeGitExtensionEnAblement(gitExtension.enAbled);
 }

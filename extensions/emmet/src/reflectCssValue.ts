@@ -1,53 +1,53 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Range, window, TextEditor } from 'vscode';
+import { RAnge, window, TextEditor } from 'vscode';
 import { getCssPropertyFromRule, getCssPropertyFromDocument } from './util';
 import { Property, Rule } from 'EmmetNode';
 
 const vendorPrefixes = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
 
-export function reflectCssValue(): Thenable<boolean> | undefined {
-	let editor = window.activeTextEditor;
+export function reflectCssVAlue(): ThenAble<booleAn> | undefined {
+	let editor = window.ActiveTextEditor;
 	if (!editor) {
-		window.showInformationMessage('No editor is active.');
+		window.showInformAtionMessAge('No editor is Active.');
 		return;
 	}
 
-	let node = getCssPropertyFromDocument(editor, editor.selection.active);
+	let node = getCssPropertyFromDocument(editor, editor.selection.Active);
 	if (!node) {
 		return;
 	}
 
-	return updateCSSNode(editor, node);
+	return updAteCSSNode(editor, node);
 }
 
-function updateCSSNode(editor: TextEditor, property: Property): Thenable<boolean> {
-	const rule: Rule = property.parent;
+function updAteCSSNode(editor: TextEditor, property: Property): ThenAble<booleAn> {
+	const rule: Rule = property.pArent;
 	let currentPrefix = '';
 
 	// Find vendor prefix of given property node
 	for (const prefix of vendorPrefixes) {
-		if (property.name.startsWith(prefix)) {
+		if (property.nAme.stArtsWith(prefix)) {
 			currentPrefix = prefix;
-			break;
+			breAk;
 		}
 	}
 
-	const propertyName = property.name.substr(currentPrefix.length);
-	const propertyValue = property.value;
+	const propertyNAme = property.nAme.substr(currentPrefix.length);
+	const propertyVAlue = property.vAlue;
 
 	return editor.edit(builder => {
-		// Find properties with vendor prefixes, update each
-		vendorPrefixes.forEach(prefix => {
+		// Find properties with vendor prefixes, updAte eAch
+		vendorPrefixes.forEAch(prefix => {
 			if (prefix === currentPrefix) {
 				return;
 			}
-			let vendorProperty = getCssPropertyFromRule(rule, prefix + propertyName);
+			let vendorProperty = getCssPropertyFromRule(rule, prefix + propertyNAme);
 			if (vendorProperty) {
-				builder.replace(new Range(vendorProperty.valueToken.start, vendorProperty.valueToken.end), propertyValue);
+				builder.replAce(new RAnge(vendorProperty.vAlueToken.stArt, vendorProperty.vAlueToken.end), propertyVAlue);
 			}
 		});
 	});

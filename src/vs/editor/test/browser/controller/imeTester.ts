@@ -1,20 +1,20 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createFastDomNode } from 'vs/base/browser/fastDomNode';
-import { ITextAreaInputHost, TextAreaInput } from 'vs/editor/browser/controller/textAreaInput';
-import { ISimpleModel, PagedScreenReaderStrategy, TextAreaState } from 'vs/editor/browser/controller/textAreaState';
+import { creAteFAstDomNode } from 'vs/bAse/browser/fAstDomNode';
+import { ITextAreAInputHost, TextAreAInput } from 'vs/editor/browser/controller/textAreAInput';
+import { ISimpleModel, PAgedScreenReAderStrAtegy, TextAreAStAte } from 'vs/editor/browser/controller/textAreAStAte';
 import { Position } from 'vs/editor/common/core/position';
-import { IRange, Range } from 'vs/editor/common/core/range';
+import { IRAnge, RAnge } from 'vs/editor/common/core/rAnge';
 import { EndOfLinePreference } from 'vs/editor/common/model';
 
 // To run this test, open imeTester.html
 
-class SingleLineTestModel implements ISimpleModel {
+clAss SingleLineTestModel implements ISimpleModel {
 
-	private _line: string;
+	privAte _line: string;
 
 	constructor(line: string) {
 		this._line = line;
@@ -24,12 +24,12 @@ class SingleLineTestModel implements ISimpleModel {
 		this._line = text;
 	}
 
-	getLineMaxColumn(lineNumber: number): number {
+	getLineMAxColumn(lineNumber: number): number {
 		return this._line.length + 1;
 	}
 
-	getValueInRange(range: IRange, eol: EndOfLinePreference): string {
-		return this._line.substring(range.startColumn - 1, range.endColumn - 1);
+	getVAlueInRAnge(rAnge: IRAnge, eol: EndOfLinePreference): string {
+		return this._line.substring(rAnge.stArtColumn - 1, rAnge.endColumn - 1);
 	}
 
 	getModelLineContent(lineNumber: number): string {
@@ -41,15 +41,15 @@ class SingleLineTestModel implements ISimpleModel {
 	}
 }
 
-class TestView {
+clAss TestView {
 
-	private readonly _model: SingleLineTestModel;
+	privAte reAdonly _model: SingleLineTestModel;
 
 	constructor(model: SingleLineTestModel) {
 		this._model = model;
 	}
 
-	public paint(output: HTMLElement) {
+	public pAint(output: HTMLElement) {
 		let r = '';
 		for (let i = 1; i <= this._model.getLineCount(); i++) {
 			let content = this._model.getModelLineContent(i);
@@ -59,122 +59,122 @@ class TestView {
 	}
 }
 
-function doCreateTest(description: string, inputStr: string, expectedStr: string): HTMLElement {
+function doCreAteTest(description: string, inputStr: string, expectedStr: string): HTMLElement {
 	let cursorOffset: number = 0;
 	let cursorLength: number = 0;
 
-	let container = document.createElement('div');
-	container.className = 'container';
+	let contAiner = document.creAteElement('div');
+	contAiner.clAssNAme = 'contAiner';
 
-	let title = document.createElement('div');
-	title.className = 'title';
+	let title = document.creAteElement('div');
+	title.clAssNAme = 'title';
 
 	title.innerHTML = description + '. Type <strong>' + inputStr + '</strong>';
-	container.appendChild(title);
+	contAiner.AppendChild(title);
 
-	let startBtn = document.createElement('button');
-	startBtn.innerText = 'Start';
-	container.appendChild(startBtn);
+	let stArtBtn = document.creAteElement('button');
+	stArtBtn.innerText = 'StArt';
+	contAiner.AppendChild(stArtBtn);
 
 
-	let input = document.createElement('textarea');
+	let input = document.creAteElement('textAreA');
 	input.setAttribute('rows', '10');
 	input.setAttribute('cols', '40');
-	container.appendChild(input);
+	contAiner.AppendChild(input);
 
 	let model = new SingleLineTestModel('some  text');
 
-	const textAreaInputHost: ITextAreaInputHost = {
-		getDataToCopy: () => {
+	const textAreAInputHost: ITextAreAInputHost = {
+		getDAtAToCopy: () => {
 			return {
-				isFromEmptySelection: false,
+				isFromEmptySelection: fAlse,
 				multicursorText: null,
 				text: '',
 				html: undefined,
 				mode: null
 			};
 		},
-		getScreenReaderContent: (currentState: TextAreaState): TextAreaState => {
-			const selection = new Range(1, 1 + cursorOffset, 1, 1 + cursorOffset + cursorLength);
+		getScreenReAderContent: (currentStAte: TextAreAStAte): TextAreAStAte => {
+			const selection = new RAnge(1, 1 + cursorOffset, 1, 1 + cursorOffset + cursorLength);
 
-			return PagedScreenReaderStrategy.fromEditorSelection(currentState, model, selection, 10, true);
+			return PAgedScreenReAderStrAtegy.fromEditorSelection(currentStAte, model, selection, 10, true);
 		},
-		deduceModelPosition: (viewAnchorPosition: Position, deltaOffset: number, lineFeedCnt: number): Position => {
+		deduceModelPosition: (viewAnchorPosition: Position, deltAOffset: number, lineFeedCnt: number): Position => {
 			return null!;
 		}
 	};
 
-	let handler = new TextAreaInput(textAreaInputHost, createFastDomNode(input));
+	let hAndler = new TextAreAInput(textAreAInputHost, creAteFAstDomNode(input));
 
-	let output = document.createElement('pre');
-	output.className = 'output';
-	container.appendChild(output);
+	let output = document.creAteElement('pre');
+	output.clAssNAme = 'output';
+	contAiner.AppendChild(output);
 
-	let check = document.createElement('pre');
-	check.className = 'check';
-	container.appendChild(check);
+	let check = document.creAteElement('pre');
+	check.clAssNAme = 'check';
+	contAiner.AppendChild(check);
 
-	let br = document.createElement('br');
-	br.style.clear = 'both';
-	container.appendChild(br);
+	let br = document.creAteElement('br');
+	br.style.cleAr = 'both';
+	contAiner.AppendChild(br);
 
 	let view = new TestView(model);
 
-	let updatePosition = (off: number, len: number) => {
+	let updAtePosition = (off: number, len: number) => {
 		cursorOffset = off;
 		cursorLength = len;
-		handler.writeScreenReaderContent('selection changed');
-		handler.focusTextArea();
+		hAndler.writeScreenReAderContent('selection chAnged');
+		hAndler.focusTextAreA();
 	};
 
-	let updateModelAndPosition = (text: string, off: number, len: number) => {
+	let updAteModelAndPosition = (text: string, off: number, len: number) => {
 		model._setText(text);
-		updatePosition(off, len);
-		view.paint(output);
+		updAtePosition(off, len);
+		view.pAint(output);
 
 		let expected = 'some ' + expectedStr + ' text';
 		if (text === expected) {
 			check.innerText = '[GOOD]';
-			check.className = 'check good';
+			check.clAssNAme = 'check good';
 		} else {
 			check.innerText = '[BAD]';
-			check.className = 'check bad';
+			check.clAssNAme = 'check bAd';
 		}
 		check.innerHTML += expected;
 	};
 
-	handler.onType((e) => {
-		console.log('type text: ' + e.text + ', replaceCharCnt: ' + e.replaceCharCnt);
+	hAndler.onType((e) => {
+		console.log('type text: ' + e.text + ', replAceChArCnt: ' + e.replAceChArCnt);
 		let text = model.getModelLineContent(1);
-		let preText = text.substring(0, cursorOffset - e.replaceCharCnt);
+		let preText = text.substring(0, cursorOffset - e.replAceChArCnt);
 		let postText = text.substring(cursorOffset + cursorLength);
 		let midText = e.text;
 
-		updateModelAndPosition(preText + midText + postText, (preText + midText).length, 0);
+		updAteModelAndPosition(preText + midText + postText, (preText + midText).length, 0);
 	});
 
-	view.paint(output);
+	view.pAint(output);
 
-	startBtn.onclick = function () {
-		updateModelAndPosition('some  text', 5, 0);
+	stArtBtn.onclick = function () {
+		updAteModelAndPosition('some  text', 5, 0);
 		input.focus();
 	};
 
-	return container;
+	return contAiner;
 }
 
 const TESTS = [
-	{ description: 'Japanese IME 1', in: 'sennsei [Enter]', out: 'せんせい' },
-	{ description: 'Japanese IME 2', in: 'konnichiha [Enter]', out: 'こんいちは' },
-	{ description: 'Japanese IME 3', in: 'mikann [Enter]', out: 'みかん' },
-	{ description: 'Korean IME 1', in: 'gksrmf [Space]', out: '한글 ' },
+	{ description: 'JApAnese IME 1', in: 'sennsei [Enter]', out: 'せんせい' },
+	{ description: 'JApAnese IME 2', in: 'konnichihA [Enter]', out: 'こんいちは' },
+	{ description: 'JApAnese IME 3', in: 'mikAnn [Enter]', out: 'みかん' },
+	{ description: 'KoreAn IME 1', in: 'gksrmf [SpAce]', out: '한글 ' },
 	{ description: 'Chinese IME 1', in: '.,', out: '。，' },
-	{ description: 'Chinese IME 2', in: 'ni [Space] hao [Space]', out: '你好' },
-	{ description: 'Chinese IME 3', in: 'hazni [Space]', out: '哈祝你' },
-	{ description: 'Mac dead key 1', in: '`.', out: '`.' },
-	{ description: 'Mac hold key 1', in: 'e long press and 1', out: 'é' }
+	{ description: 'Chinese IME 2', in: 'ni [SpAce] hAo [SpAce]', out: '你好' },
+	{ description: 'Chinese IME 3', in: 'hAzni [SpAce]', out: '哈祝你' },
+	{ description: 'MAc deAd key 1', in: '`.', out: '`.' },
+	{ description: 'MAc hold key 1', in: 'e long press And 1', out: 'é' }
 ];
 
-TESTS.forEach((t) => {
-	document.body.appendChild(doCreateTest(t.description, t.in, t.out));
+TESTS.forEAch((t) => {
+	document.body.AppendChild(doCreAteTest(t.description, t.in, t.out));
 });

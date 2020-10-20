@@ -1,59 +1,59 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import { withRandomFileEditor } from './testUtils';
-import * as vscode from 'vscode';
-import { parsePartialStylesheet, getNode } from '../util';
-import { isValidLocationForEmmetAbbreviation } from '../abbreviationActions';
+import 'mochA';
+import * As Assert from 'Assert';
+import { withRAndomFileEditor } from './testUtils';
+import * As vscode from 'vscode';
+import { pArsePArtiAlStylesheet, getNode } from '../util';
+import { isVAlidLocAtionForEmmetAbbreviAtion } from '../AbbreviAtionActions';
 
-suite('Tests for partial parse of Stylesheets', () => {
+suite('Tests for pArtiAl pArse of Stylesheets', () => {
 
-	function isValid(doc: vscode.TextDocument, range: vscode.Range, syntax: string): boolean {
-		const rootNode = parsePartialStylesheet(doc, range.end);
-		const currentNode = getNode(rootNode, range.end, true);
-		return isValidLocationForEmmetAbbreviation(doc, rootNode, currentNode, syntax, range.end, range);
+	function isVAlid(doc: vscode.TextDocument, rAnge: vscode.RAnge, syntAx: string): booleAn {
+		const rootNode = pArsePArtiAlStylesheet(doc, rAnge.end);
+		const currentNode = getNode(rootNode, rAnge.end, true);
+		return isVAlidLocAtionForEmmetAbbreviAtion(doc, rootNode, currentNode, syntAx, rAnge.end, rAnge);
 	}
 
-	test('Ignore block comment inside rule', function (): any {
+	test('Ignore block comment inside rule', function (): Any {
 		const cssContents = `
 p {
-	margin: p ;
+	mArgin: p ;
 	/*dn: none; p */ p
 	p
 	p.
 } p
 `;
-		return withRandomFileEditor(cssContents, '.css', (_, doc) => {
-			let rangesForEmmet = [
-				new vscode.Range(3, 18, 3, 19),		// Same line after block comment
-				new vscode.Range(4, 1, 4, 2),		// p after block comment
-				new vscode.Range(5, 1, 5, 3)		// p. after block comment
+		return withRAndomFileEditor(cssContents, '.css', (_, doc) => {
+			let rAngesForEmmet = [
+				new vscode.RAnge(3, 18, 3, 19),		// SAme line After block comment
+				new vscode.RAnge(4, 1, 4, 2),		// p After block comment
+				new vscode.RAnge(5, 1, 5, 3)		// p. After block comment
 			];
-			let rangesNotEmmet = [
-				new vscode.Range(1, 0, 1, 1),		// Selector
-				new vscode.Range(2, 9, 2, 10),		// Property value
-				new vscode.Range(3, 3, 3, 5),		// dn inside block comment
-				new vscode.Range(3, 13, 3, 14),		// p just before ending of block comment
-				new vscode.Range(6, 2, 6, 3)		// p after ending of block
+			let rAngesNotEmmet = [
+				new vscode.RAnge(1, 0, 1, 1),		// Selector
+				new vscode.RAnge(2, 9, 2, 10),		// Property vAlue
+				new vscode.RAnge(3, 3, 3, 5),		// dn inside block comment
+				new vscode.RAnge(3, 13, 3, 14),		// p just before ending of block comment
+				new vscode.RAnge(6, 2, 6, 3)		// p After ending of block
 
 			];
-			rangesForEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'css'), true);
+			rAngesForEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'css'), true);
 			});
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'css'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'css'), fAlse);
 			});
 
 			return Promise.resolve();
 		});
 	});
 
-	test('Ignore commented braces', function (): any {
-		const sassContents = `
+	test('Ignore commented brAces', function (): Any {
+		const sAssContents = `
 .foo
 // .foo { brs
 /* .foo { op.3
@@ -62,164 +62,164 @@ dn	{
 	@
 } bg
 `;
-		return withRandomFileEditor(sassContents, '.scss', (_, doc) => {
-			let rangesNotEmmet = [
-				new vscode.Range(1, 0, 1, 4),		// Selector
-				new vscode.Range(2, 3, 2, 7),		// Line commented selector
-				new vscode.Range(3, 3, 3, 7),		// Block commented selector
-				new vscode.Range(4, 0, 4, 2),		// dn inside block comment
-				new vscode.Range(6, 1, 6, 2),		// @ inside a rule whose opening brace is commented
-				new vscode.Range(7, 2, 7, 4)		// bg after ending of badly constructed block
+		return withRAndomFileEditor(sAssContents, '.scss', (_, doc) => {
+			let rAngesNotEmmet = [
+				new vscode.RAnge(1, 0, 1, 4),		// Selector
+				new vscode.RAnge(2, 3, 2, 7),		// Line commented selector
+				new vscode.RAnge(3, 3, 3, 7),		// Block commented selector
+				new vscode.RAnge(4, 0, 4, 2),		// dn inside block comment
+				new vscode.RAnge(6, 1, 6, 2),		// @ inside A rule whose opening brAce is commented
+				new vscode.RAnge(7, 2, 7, 4)		// bg After ending of bAdly constructed block
 			];
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), fAlse);
 			});
 			return Promise.resolve();
 		});
 	});
 
-	test('Block comment between selector and open brace', function (): any {
+	test('Block comment between selector And open brAce', function (): Any {
 		const cssContents = `
 p
 /* First line
-of a multiline
+of A multiline
 comment */
 {
-	margin: p ;
+	mArgin: p ;
 	/*dn: none; p */ p
 	p
 	p.
 } p
 `;
-		return withRandomFileEditor(cssContents, '.css', (_, doc) => {
-			let rangesForEmmet = [
-				new vscode.Range(7, 18, 7, 19),		// Same line after block comment
-				new vscode.Range(8, 1, 8, 2),		// p after block comment
-				new vscode.Range(9, 1, 9, 3)		// p. after block comment
+		return withRAndomFileEditor(cssContents, '.css', (_, doc) => {
+			let rAngesForEmmet = [
+				new vscode.RAnge(7, 18, 7, 19),		// SAme line After block comment
+				new vscode.RAnge(8, 1, 8, 2),		// p After block comment
+				new vscode.RAnge(9, 1, 9, 3)		// p. After block comment
 			];
-			let rangesNotEmmet = [
-				new vscode.Range(1, 2, 1, 3),		// Selector
-				new vscode.Range(3, 3, 3, 4),		// Inside multiline comment
-				new vscode.Range(5, 0, 5, 1),		// Opening Brace
-				new vscode.Range(6, 9, 6, 10),		// Property value
-				new vscode.Range(7, 3, 7, 5),		// dn inside block comment
-				new vscode.Range(7, 13, 7, 14),		// p just before ending of block comment
-				new vscode.Range(10, 2, 10, 3)		// p after ending of block
+			let rAngesNotEmmet = [
+				new vscode.RAnge(1, 2, 1, 3),		// Selector
+				new vscode.RAnge(3, 3, 3, 4),		// Inside multiline comment
+				new vscode.RAnge(5, 0, 5, 1),		// Opening BrAce
+				new vscode.RAnge(6, 9, 6, 10),		// Property vAlue
+				new vscode.RAnge(7, 3, 7, 5),		// dn inside block comment
+				new vscode.RAnge(7, 13, 7, 14),		// p just before ending of block comment
+				new vscode.RAnge(10, 2, 10, 3)		// p After ending of block
 			];
-			rangesForEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'css'), true);
+			rAngesForEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'css'), true);
 			});
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'css'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'css'), fAlse);
 			});
 			return Promise.resolve();
 		});
 	});
 
-	test('Nested and consecutive rulesets with errors', function (): any {
-		const sassContents = `
+	test('Nested And consecutive rulesets with errors', function (): Any {
+		const sAssContents = `
 .foo{
-	a
-	a
+	A
+	A
 }}{ p
 }
-.bar{
+.bAr{
 	@
 	.rudi {
 		@
 	}
 }}}
 `;
-		return withRandomFileEditor(sassContents, '.scss', (_, doc) => {
-			let rangesForEmmet = [
-				new vscode.Range(2, 1, 2, 2),		// Inside a ruleset before errors
-				new vscode.Range(3, 1, 3, 2),		// Inside a ruleset after no serious error
-				new vscode.Range(7, 1, 7, 2),		// @ inside a so far well structured ruleset
-				new vscode.Range(9, 2, 9, 3),		// @ inside a so far well structured nested ruleset
+		return withRAndomFileEditor(sAssContents, '.scss', (_, doc) => {
+			let rAngesForEmmet = [
+				new vscode.RAnge(2, 1, 2, 2),		// Inside A ruleset before errors
+				new vscode.RAnge(3, 1, 3, 2),		// Inside A ruleset After no serious error
+				new vscode.RAnge(7, 1, 7, 2),		// @ inside A so fAr well structured ruleset
+				new vscode.RAnge(9, 2, 9, 3),		// @ inside A so fAr well structured nested ruleset
 			];
-			let rangesNotEmmet = [
-				new vscode.Range(4, 4, 4, 5),		// p inside ruleset without proper selector
-				new vscode.Range(6, 3, 6, 4)		// In selector
+			let rAngesNotEmmet = [
+				new vscode.RAnge(4, 4, 4, 5),		// p inside ruleset without proper selector
+				new vscode.RAnge(6, 3, 6, 4)		// In selector
 			];
-			rangesForEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), true);
+			rAngesForEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), true);
 			});
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), fAlse);
 			});
 			return Promise.resolve();
 		});
 	});
 
-	test('One liner sass', function (): any {
-		const sassContents = `
-.foo{dn}.bar{.boo{dn}dn}.comd{/*{dn*/p{div{dn}} }.foo{.other{dn}} dn
+	test('One liner sAss', function (): Any {
+		const sAssContents = `
+.foo{dn}.bAr{.boo{dn}dn}.comd{/*{dn*/p{div{dn}} }.foo{.other{dn}} dn
 `;
-		return withRandomFileEditor(sassContents, '.scss', (_, doc) => {
-			let rangesForEmmet = [
-				new vscode.Range(1, 5, 1, 7),		// Inside a ruleset
-				new vscode.Range(1, 18, 1, 20),		// Inside a nested ruleset
-				new vscode.Range(1, 21, 1, 23),		// Inside ruleset after nested one.
-				new vscode.Range(1, 43, 1, 45),		// Inside nested ruleset after comment
-				new vscode.Range(1, 61, 1, 63)		// Inside nested ruleset
+		return withRAndomFileEditor(sAssContents, '.scss', (_, doc) => {
+			let rAngesForEmmet = [
+				new vscode.RAnge(1, 5, 1, 7),		// Inside A ruleset
+				new vscode.RAnge(1, 18, 1, 20),		// Inside A nested ruleset
+				new vscode.RAnge(1, 21, 1, 23),		// Inside ruleset After nested one.
+				new vscode.RAnge(1, 43, 1, 45),		// Inside nested ruleset After comment
+				new vscode.RAnge(1, 61, 1, 63)		// Inside nested ruleset
 			];
-			let rangesNotEmmet = [
-				new vscode.Range(1, 3, 1, 4),		// In foo selector
-				new vscode.Range(1, 10, 1, 11),		// In bar selector
-				new vscode.Range(1, 15, 1, 16),		// In boo selector
-				new vscode.Range(1, 28, 1, 29),		// In comd selector
-				new vscode.Range(1, 33, 1, 34),		// In commented dn
-				new vscode.Range(1, 37, 1, 38),		// In p selector
-				new vscode.Range(1, 39, 1, 42),		// In div selector
-				new vscode.Range(1, 66, 1, 68)		// Outside any ruleset
+			let rAngesNotEmmet = [
+				new vscode.RAnge(1, 3, 1, 4),		// In foo selector
+				new vscode.RAnge(1, 10, 1, 11),		// In bAr selector
+				new vscode.RAnge(1, 15, 1, 16),		// In boo selector
+				new vscode.RAnge(1, 28, 1, 29),		// In comd selector
+				new vscode.RAnge(1, 33, 1, 34),		// In commented dn
+				new vscode.RAnge(1, 37, 1, 38),		// In p selector
+				new vscode.RAnge(1, 39, 1, 42),		// In div selector
+				new vscode.RAnge(1, 66, 1, 68)		// Outside Any ruleset
 			];
-			rangesForEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), true);
+			rAngesForEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), true);
 			});
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), fAlse);
 			});
 			return Promise.resolve();
 		});
 	});
 
-	test('Variables and interpolation', function (): any {
-		const sassContents = `
+	test('VAriAbles And interpolAtion', function (): Any {
+		const sAssContents = `
 p.#{dn} {
 	p.3
-	#{$attr}-color: blue;
+	#{$Attr}-color: blue;
 	dn
 } op
 .foo{nes{ted}} {
 	dn
 }
 `;
-		return withRandomFileEditor(sassContents, '.scss', (_, doc) => {
-			let rangesForEmmet = [
-				new vscode.Range(2, 1, 2, 4),		// p.3 inside a ruleset whose selector uses interpolation
-				new vscode.Range(4, 1, 4, 3)		// dn inside ruleset after property with variable
+		return withRAndomFileEditor(sAssContents, '.scss', (_, doc) => {
+			let rAngesForEmmet = [
+				new vscode.RAnge(2, 1, 2, 4),		// p.3 inside A ruleset whose selector uses interpolAtion
+				new vscode.RAnge(4, 1, 4, 3)		// dn inside ruleset After property with vAriAble
 			];
-			let rangesNotEmmet = [
-				new vscode.Range(1, 0, 1, 1),		// In p in selector
-				new vscode.Range(1, 2, 1, 3),		// In # in selector
-				new vscode.Range(1, 4, 1, 6),		// In dn inside variable in selector
-				new vscode.Range(3, 7, 3, 8),		// r of attr inside variable
-				new vscode.Range(5, 2, 5, 4),		// op after ruleset
-				new vscode.Range(7, 1, 7, 3),		// dn inside ruleset whose selector uses nested interpolation
-				new vscode.Range(3, 1, 3, 2),		// # inside ruleset
+			let rAngesNotEmmet = [
+				new vscode.RAnge(1, 0, 1, 1),		// In p in selector
+				new vscode.RAnge(1, 2, 1, 3),		// In # in selector
+				new vscode.RAnge(1, 4, 1, 6),		// In dn inside vAriAble in selector
+				new vscode.RAnge(3, 7, 3, 8),		// r of Attr inside vAriAble
+				new vscode.RAnge(5, 2, 5, 4),		// op After ruleset
+				new vscode.RAnge(7, 1, 7, 3),		// dn inside ruleset whose selector uses nested interpolAtion
+				new vscode.RAnge(3, 1, 3, 2),		// # inside ruleset
 			];
-			rangesForEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), true);
+			rAngesForEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), true);
 			});
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), fAlse);
 			});
 			return Promise.resolve();
 		});
 	});
 
-	test('Comments in sass', function (): any {
-		const sassContents = `
+	test('Comments in sAss', function (): Any {
+		const sAssContents = `
 .foo{
 	/* p // p */ brs6-2p
 	dn
@@ -234,23 +234,23 @@ ment */{
 	op.3
 }
 `;
-		return withRandomFileEditor(sassContents, '.scss', (_, doc) => {
-			let rangesForEmmet = [
-				new vscode.Range(2, 14, 2, 21),		// brs6-2p with a block commented line comment ('/* */' overrides '//')
-				new vscode.Range(3, 1, 3, 3),		// dn after a line with combined comments inside a ruleset
-				new vscode.Range(9, 1, 9, 4),		// m10 inside ruleset whose selector is before a comment
-				new vscode.Range(12, 1, 12, 5)		// op3 inside a ruleset with commented extra braces
+		return withRAndomFileEditor(sAssContents, '.scss', (_, doc) => {
+			let rAngesForEmmet = [
+				new vscode.RAnge(2, 14, 2, 21),		// brs6-2p with A block commented line comment ('/* */' overrides '//')
+				new vscode.RAnge(3, 1, 3, 3),		// dn After A line with combined comments inside A ruleset
+				new vscode.RAnge(9, 1, 9, 4),		// m10 inside ruleset whose selector is before A comment
+				new vscode.RAnge(12, 1, 12, 5)		// op3 inside A ruleset with commented extrA brAces
 			];
-			let rangesNotEmmet = [
-				new vscode.Range(2, 4, 2, 5),		// In p inside block comment
-				new vscode.Range(2, 9, 2, 10),		// In p inside block comment and after line comment
-				new vscode.Range(6, 3, 6, 4)		// In c inside block comment
+			let rAngesNotEmmet = [
+				new vscode.RAnge(2, 4, 2, 5),		// In p inside block comment
+				new vscode.RAnge(2, 9, 2, 10),		// In p inside block comment And After line comment
+				new vscode.RAnge(6, 3, 6, 4)		// In c inside block comment
 			];
-			rangesForEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), true);
+			rAngesForEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), true);
 			});
-			rangesNotEmmet.forEach(range => {
-				assert.equal(isValid(doc, range, 'scss'), false);
+			rAngesNotEmmet.forEAch(rAnge => {
+				Assert.equAl(isVAlid(doc, rAnge, 'scss'), fAlse);
 			});
 			return Promise.resolve();
 		});

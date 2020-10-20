@@ -1,230 +1,230 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { Client } from 'vs/base/parts/ipc/common/ipc.net';
-import { connect as connectNet } from 'vs/base/parts/ipc/node/ipc.net';
-import { IChannel, IServerChannel } from 'vs/base/parts/ipc/common/ipc';
-import { Event } from 'vs/base/common/event';
-import { IDriver, IElement, IWindowDriver } from 'vs/platform/driver/common/driver';
+import { Client } from 'vs/bAse/pArts/ipc/common/ipc.net';
+import { connect As connectNet } from 'vs/bAse/pArts/ipc/node/ipc.net';
+import { IChAnnel, IServerChAnnel } from 'vs/bAse/pArts/ipc/common/ipc';
+import { Event } from 'vs/bAse/common/event';
+import { IDriver, IElement, IWindowDriver } from 'vs/plAtform/driver/common/driver';
 
-export class DriverChannel implements IServerChannel {
+export clAss DriverChAnnel implements IServerChAnnel {
 
-	constructor(private driver: IDriver) { }
+	constructor(privAte driver: IDriver) { }
 
 	listen<T>(_: unknown, event: string): Event<T> {
 		throw new Error('No event found');
 	}
 
-	call(_: unknown, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'getWindowIds': return this.driver.getWindowIds();
-			case 'capturePage': return this.driver.capturePage(arg);
-			case 'reloadWindow': return this.driver.reloadWindow(arg);
-			case 'exitApplication': return this.driver.exitApplication();
-			case 'dispatchKeybinding': return this.driver.dispatchKeybinding(arg[0], arg[1]);
-			case 'click': return this.driver.click(arg[0], arg[1], arg[2], arg[3]);
-			case 'doubleClick': return this.driver.doubleClick(arg[0], arg[1]);
-			case 'setValue': return this.driver.setValue(arg[0], arg[1], arg[2]);
-			case 'getTitle': return this.driver.getTitle(arg[0]);
-			case 'isActiveElement': return this.driver.isActiveElement(arg[0], arg[1]);
-			case 'getElements': return this.driver.getElements(arg[0], arg[1], arg[2]);
-			case 'getElementXY': return this.driver.getElementXY(arg[0], arg[1], arg[2]);
-			case 'typeInEditor': return this.driver.typeInEditor(arg[0], arg[1], arg[2]);
-			case 'getTerminalBuffer': return this.driver.getTerminalBuffer(arg[0], arg[1]);
-			case 'writeInTerminal': return this.driver.writeInTerminal(arg[0], arg[1], arg[2]);
+	cAll(_: unknown, commAnd: string, Arg?: Any): Promise<Any> {
+		switch (commAnd) {
+			cAse 'getWindowIds': return this.driver.getWindowIds();
+			cAse 'cApturePAge': return this.driver.cApturePAge(Arg);
+			cAse 'reloAdWindow': return this.driver.reloAdWindow(Arg);
+			cAse 'exitApplicAtion': return this.driver.exitApplicAtion();
+			cAse 'dispAtchKeybinding': return this.driver.dispAtchKeybinding(Arg[0], Arg[1]);
+			cAse 'click': return this.driver.click(Arg[0], Arg[1], Arg[2], Arg[3]);
+			cAse 'doubleClick': return this.driver.doubleClick(Arg[0], Arg[1]);
+			cAse 'setVAlue': return this.driver.setVAlue(Arg[0], Arg[1], Arg[2]);
+			cAse 'getTitle': return this.driver.getTitle(Arg[0]);
+			cAse 'isActiveElement': return this.driver.isActiveElement(Arg[0], Arg[1]);
+			cAse 'getElements': return this.driver.getElements(Arg[0], Arg[1], Arg[2]);
+			cAse 'getElementXY': return this.driver.getElementXY(Arg[0], Arg[1], Arg[2]);
+			cAse 'typeInEditor': return this.driver.typeInEditor(Arg[0], Arg[1], Arg[2]);
+			cAse 'getTerminAlBuffer': return this.driver.getTerminAlBuffer(Arg[0], Arg[1]);
+			cAse 'writeInTerminAl': return this.driver.writeInTerminAl(Arg[0], Arg[1], Arg[2]);
 		}
 
-		throw new Error(`Call not found: ${command}`);
+		throw new Error(`CAll not found: ${commAnd}`);
 	}
 }
 
-export class DriverChannelClient implements IDriver {
+export clAss DriverChAnnelClient implements IDriver {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(private channel: IChannel) { }
+	constructor(privAte chAnnel: IChAnnel) { }
 
 	getWindowIds(): Promise<number[]> {
-		return this.channel.call('getWindowIds');
+		return this.chAnnel.cAll('getWindowIds');
 	}
 
-	capturePage(windowId: number): Promise<string> {
-		return this.channel.call('capturePage', windowId);
+	cApturePAge(windowId: number): Promise<string> {
+		return this.chAnnel.cAll('cApturePAge', windowId);
 	}
 
-	reloadWindow(windowId: number): Promise<void> {
-		return this.channel.call('reloadWindow', windowId);
+	reloAdWindow(windowId: number): Promise<void> {
+		return this.chAnnel.cAll('reloAdWindow', windowId);
 	}
 
-	exitApplication(): Promise<void> {
-		return this.channel.call('exitApplication');
+	exitApplicAtion(): Promise<void> {
+		return this.chAnnel.cAll('exitApplicAtion');
 	}
 
-	dispatchKeybinding(windowId: number, keybinding: string): Promise<void> {
-		return this.channel.call('dispatchKeybinding', [windowId, keybinding]);
+	dispAtchKeybinding(windowId: number, keybinding: string): Promise<void> {
+		return this.chAnnel.cAll('dispAtchKeybinding', [windowId, keybinding]);
 	}
 
 	click(windowId: number, selector: string, xoffset: number | undefined, yoffset: number | undefined): Promise<void> {
-		return this.channel.call('click', [windowId, selector, xoffset, yoffset]);
+		return this.chAnnel.cAll('click', [windowId, selector, xoffset, yoffset]);
 	}
 
 	doubleClick(windowId: number, selector: string): Promise<void> {
-		return this.channel.call('doubleClick', [windowId, selector]);
+		return this.chAnnel.cAll('doubleClick', [windowId, selector]);
 	}
 
-	setValue(windowId: number, selector: string, text: string): Promise<void> {
-		return this.channel.call('setValue', [windowId, selector, text]);
+	setVAlue(windowId: number, selector: string, text: string): Promise<void> {
+		return this.chAnnel.cAll('setVAlue', [windowId, selector, text]);
 	}
 
 	getTitle(windowId: number): Promise<string> {
-		return this.channel.call('getTitle', [windowId]);
+		return this.chAnnel.cAll('getTitle', [windowId]);
 	}
 
-	isActiveElement(windowId: number, selector: string): Promise<boolean> {
-		return this.channel.call('isActiveElement', [windowId, selector]);
+	isActiveElement(windowId: number, selector: string): Promise<booleAn> {
+		return this.chAnnel.cAll('isActiveElement', [windowId, selector]);
 	}
 
-	getElements(windowId: number, selector: string, recursive: boolean): Promise<IElement[]> {
-		return this.channel.call('getElements', [windowId, selector, recursive]);
+	getElements(windowId: number, selector: string, recursive: booleAn): Promise<IElement[]> {
+		return this.chAnnel.cAll('getElements', [windowId, selector, recursive]);
 	}
 
 	getElementXY(windowId: number, selector: string, xoffset: number | undefined, yoffset: number | undefined): Promise<{ x: number, y: number }> {
-		return this.channel.call('getElementXY', [windowId, selector, xoffset, yoffset]);
+		return this.chAnnel.cAll('getElementXY', [windowId, selector, xoffset, yoffset]);
 	}
 
 	typeInEditor(windowId: number, selector: string, text: string): Promise<void> {
-		return this.channel.call('typeInEditor', [windowId, selector, text]);
+		return this.chAnnel.cAll('typeInEditor', [windowId, selector, text]);
 	}
 
-	getTerminalBuffer(windowId: number, selector: string): Promise<string[]> {
-		return this.channel.call('getTerminalBuffer', [windowId, selector]);
+	getTerminAlBuffer(windowId: number, selector: string): Promise<string[]> {
+		return this.chAnnel.cAll('getTerminAlBuffer', [windowId, selector]);
 	}
 
-	writeInTerminal(windowId: number, selector: string, text: string): Promise<void> {
-		return this.channel.call('writeInTerminal', [windowId, selector, text]);
+	writeInTerminAl(windowId: number, selector: string, text: string): Promise<void> {
+		return this.chAnnel.cAll('writeInTerminAl', [windowId, selector, text]);
 	}
 }
 
-export interface IDriverOptions {
-	verbose: boolean;
+export interfAce IDriverOptions {
+	verbose: booleAn;
 }
 
-export interface IWindowDriverRegistry {
+export interfAce IWindowDriverRegistry {
 	registerWindowDriver(windowId: number): Promise<IDriverOptions>;
-	reloadWindowDriver(windowId: number): Promise<void>;
+	reloAdWindowDriver(windowId: number): Promise<void>;
 }
 
-export class WindowDriverRegistryChannel implements IServerChannel {
+export clAss WindowDriverRegistryChAnnel implements IServerChAnnel {
 
-	constructor(private registry: IWindowDriverRegistry) { }
+	constructor(privAte registry: IWindowDriverRegistry) { }
 
 	listen<T>(_: unknown, event: string): Event<T> {
 		throw new Error(`Event not found: ${event}`);
 	}
 
-	call(_: unknown, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'registerWindowDriver': return this.registry.registerWindowDriver(arg);
-			case 'reloadWindowDriver': return this.registry.reloadWindowDriver(arg);
+	cAll(_: unknown, commAnd: string, Arg?: Any): Promise<Any> {
+		switch (commAnd) {
+			cAse 'registerWindowDriver': return this.registry.registerWindowDriver(Arg);
+			cAse 'reloAdWindowDriver': return this.registry.reloAdWindowDriver(Arg);
 		}
 
-		throw new Error(`Call not found: ${command}`);
+		throw new Error(`CAll not found: ${commAnd}`);
 	}
 }
 
-export class WindowDriverRegistryChannelClient implements IWindowDriverRegistry {
+export clAss WindowDriverRegistryChAnnelClient implements IWindowDriverRegistry {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(private channel: IChannel) { }
+	constructor(privAte chAnnel: IChAnnel) { }
 
 	registerWindowDriver(windowId: number): Promise<IDriverOptions> {
-		return this.channel.call('registerWindowDriver', windowId);
+		return this.chAnnel.cAll('registerWindowDriver', windowId);
 	}
 
-	reloadWindowDriver(windowId: number): Promise<void> {
-		return this.channel.call('reloadWindowDriver', windowId);
+	reloAdWindowDriver(windowId: number): Promise<void> {
+		return this.chAnnel.cAll('reloAdWindowDriver', windowId);
 	}
 }
 
-export class WindowDriverChannel implements IServerChannel {
+export clAss WindowDriverChAnnel implements IServerChAnnel {
 
-	constructor(private driver: IWindowDriver) { }
+	constructor(privAte driver: IWindowDriver) { }
 
 	listen<T>(_: unknown, event: string): Event<T> {
 		throw new Error(`No event found: ${event}`);
 	}
 
-	call(_: unknown, command: string, arg?: any): Promise<any> {
-		switch (command) {
-			case 'click': return this.driver.click(arg[0], arg[1], arg[2]);
-			case 'doubleClick': return this.driver.doubleClick(arg);
-			case 'setValue': return this.driver.setValue(arg[0], arg[1]);
-			case 'getTitle': return this.driver.getTitle();
-			case 'isActiveElement': return this.driver.isActiveElement(arg);
-			case 'getElements': return this.driver.getElements(arg[0], arg[1]);
-			case 'getElementXY': return this.driver.getElementXY(arg[0], arg[1], arg[2]);
-			case 'typeInEditor': return this.driver.typeInEditor(arg[0], arg[1]);
-			case 'getTerminalBuffer': return this.driver.getTerminalBuffer(arg);
-			case 'writeInTerminal': return this.driver.writeInTerminal(arg[0], arg[1]);
+	cAll(_: unknown, commAnd: string, Arg?: Any): Promise<Any> {
+		switch (commAnd) {
+			cAse 'click': return this.driver.click(Arg[0], Arg[1], Arg[2]);
+			cAse 'doubleClick': return this.driver.doubleClick(Arg);
+			cAse 'setVAlue': return this.driver.setVAlue(Arg[0], Arg[1]);
+			cAse 'getTitle': return this.driver.getTitle();
+			cAse 'isActiveElement': return this.driver.isActiveElement(Arg);
+			cAse 'getElements': return this.driver.getElements(Arg[0], Arg[1]);
+			cAse 'getElementXY': return this.driver.getElementXY(Arg[0], Arg[1], Arg[2]);
+			cAse 'typeInEditor': return this.driver.typeInEditor(Arg[0], Arg[1]);
+			cAse 'getTerminAlBuffer': return this.driver.getTerminAlBuffer(Arg);
+			cAse 'writeInTerminAl': return this.driver.writeInTerminAl(Arg[0], Arg[1]);
 		}
 
-		throw new Error(`Call not found: ${command}`);
+		throw new Error(`CAll not found: ${commAnd}`);
 	}
 }
 
-export class WindowDriverChannelClient implements IWindowDriver {
+export clAss WindowDriverChAnnelClient implements IWindowDriver {
 
-	declare readonly _serviceBrand: undefined;
+	declAre reAdonly _serviceBrAnd: undefined;
 
-	constructor(private channel: IChannel) { }
+	constructor(privAte chAnnel: IChAnnel) { }
 
 	click(selector: string, xoffset?: number, yoffset?: number): Promise<void> {
-		return this.channel.call('click', [selector, xoffset, yoffset]);
+		return this.chAnnel.cAll('click', [selector, xoffset, yoffset]);
 	}
 
 	doubleClick(selector: string): Promise<void> {
-		return this.channel.call('doubleClick', selector);
+		return this.chAnnel.cAll('doubleClick', selector);
 	}
 
-	setValue(selector: string, text: string): Promise<void> {
-		return this.channel.call('setValue', [selector, text]);
+	setVAlue(selector: string, text: string): Promise<void> {
+		return this.chAnnel.cAll('setVAlue', [selector, text]);
 	}
 
 	getTitle(): Promise<string> {
-		return this.channel.call('getTitle');
+		return this.chAnnel.cAll('getTitle');
 	}
 
-	isActiveElement(selector: string): Promise<boolean> {
-		return this.channel.call('isActiveElement', selector);
+	isActiveElement(selector: string): Promise<booleAn> {
+		return this.chAnnel.cAll('isActiveElement', selector);
 	}
 
-	getElements(selector: string, recursive: boolean): Promise<IElement[]> {
-		return this.channel.call('getElements', [selector, recursive]);
+	getElements(selector: string, recursive: booleAn): Promise<IElement[]> {
+		return this.chAnnel.cAll('getElements', [selector, recursive]);
 	}
 
 	getElementXY(selector: string, xoffset?: number, yoffset?: number): Promise<{ x: number, y: number }> {
-		return this.channel.call('getElementXY', [selector, xoffset, yoffset]);
+		return this.chAnnel.cAll('getElementXY', [selector, xoffset, yoffset]);
 	}
 
 	typeInEditor(selector: string, text: string): Promise<void> {
-		return this.channel.call('typeInEditor', [selector, text]);
+		return this.chAnnel.cAll('typeInEditor', [selector, text]);
 	}
 
-	getTerminalBuffer(selector: string): Promise<string[]> {
-		return this.channel.call('getTerminalBuffer', selector);
+	getTerminAlBuffer(selector: string): Promise<string[]> {
+		return this.chAnnel.cAll('getTerminAlBuffer', selector);
 	}
 
-	writeInTerminal(selector: string, text: string): Promise<void> {
-		return this.channel.call('writeInTerminal', [selector, text]);
+	writeInTerminAl(selector: string, text: string): Promise<void> {
+		return this.chAnnel.cAll('writeInTerminAl', [selector, text]);
 	}
 }
 
-export async function connect(handle: string): Promise<{ client: Client, driver: IDriver }> {
-	const client = await connectNet(handle, 'driverClient');
-	const channel = client.getChannel('driver');
-	const driver = new DriverChannelClient(channel);
+export Async function connect(hAndle: string): Promise<{ client: Client, driver: IDriver }> {
+	const client = AwAit connectNet(hAndle, 'driverClient');
+	const chAnnel = client.getChAnnel('driver');
+	const driver = new DriverChAnnelClient(chAnnel);
 	return { client, driver };
 }

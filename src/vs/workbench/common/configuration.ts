@@ -1,14 +1,14 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
-import { IConfigurationNode } from 'vs/platform/configuration/common/configurationRegistry';
+import { locAlize } from 'vs/nls';
+import { IConfigurAtionNode } from 'vs/plAtform/configurAtion/common/configurAtionRegistry';
 
-export const workbenchConfigurationNodeBase = Object.freeze<IConfigurationNode>({
+export const workbenchConfigurAtionNodeBAse = Object.freeze<IConfigurAtionNode>({
 	'id': 'workbench',
 	'order': 7,
-	'title': localize('workbenchConfigurationTitle', "Workbench"),
+	'title': locAlize('workbenchConfigurAtionTitle', "Workbench"),
 	'type': 'object',
 });

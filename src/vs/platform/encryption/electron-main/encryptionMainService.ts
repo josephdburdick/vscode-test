@@ -1,45 +1,45 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ICommonEncryptionService } from 'vs/platform/encryption/common/encryptionService';
+import { creAteDecorAtor } from 'vs/plAtform/instAntiAtion/common/instAntiAtion';
+import { ICommonEncryptionService } from 'vs/plAtform/encryption/common/encryptionService';
 
-export const IEncryptionMainService = createDecorator<IEncryptionMainService>('encryptionMainService');
+export const IEncryptionMAinService = creAteDecorAtor<IEncryptionMAinService>('encryptionMAinService');
 
-export interface IEncryptionMainService extends ICommonEncryptionService { }
+export interfAce IEncryptionMAinService extends ICommonEncryptionService { }
 
-export interface Encryption {
-	encrypt(salt: string, value: string): Promise<string>;
-	decrypt(salt: string, value: string): Promise<string>;
+export interfAce Encryption {
+	encrypt(sAlt: string, vAlue: string): Promise<string>;
+	decrypt(sAlt: string, vAlue: string): Promise<string>;
 }
-export class EncryptionMainService implements ICommonEncryptionService {
-	declare readonly _serviceBrand: undefined;
+export clAss EncryptionMAinService implements ICommonEncryptionService {
+	declAre reAdonly _serviceBrAnd: undefined;
 	constructor(
-		private machineId: string) {
+		privAte mAchineId: string) {
 
 	}
 
-	private encryption(): Promise<Encryption> {
+	privAte encryption(): Promise<Encryption> {
 		return new Promise((resolve, reject) => require(['vscode-encrypt'], resolve, reject));
 	}
 
-	async encrypt(value: string): Promise<string> {
+	Async encrypt(vAlue: string): Promise<string> {
 		try {
-			const encryption = await this.encryption();
-			return encryption.encrypt(this.machineId, value);
-		} catch (e) {
-			return value;
+			const encryption = AwAit this.encryption();
+			return encryption.encrypt(this.mAchineId, vAlue);
+		} cAtch (e) {
+			return vAlue;
 		}
 	}
 
-	async decrypt(value: string): Promise<string> {
+	Async decrypt(vAlue: string): Promise<string> {
 		try {
-			const encryption = await this.encryption();
-			return encryption.decrypt(this.machineId, value);
-		} catch (e) {
-			return value;
+			const encryption = AwAit this.encryption();
+			return encryption.decrypt(this.mAchineId, vAlue);
+		} cAtch (e) {
+			return vAlue;
 		}
 	}
 }

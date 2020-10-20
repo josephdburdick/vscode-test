@@ -1,75 +1,75 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import { createCSSRule, asCSSUrl } from 'vs/base/browser/dom';
-import { domEvent } from 'vs/base/browser/event';
-import { IAction, Separator } from 'vs/base/common/actions';
-import { Emitter } from 'vs/base/common/event';
-import { IdGenerator } from 'vs/base/common/idGenerator';
-import { IDisposable, toDisposable, MutableDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { isLinux, isWindows } from 'vs/base/common/platform';
-import { localize } from 'vs/nls';
-import { ICommandAction, IMenu, IMenuActionOptions, MenuItemAction, SubmenuItemAction, Icon } from 'vs/platform/actions/common/actions';
-import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ThemeIcon } from 'vs/platform/theme/common/themeService';
-import { ActionViewItem } from 'vs/base/browser/ui/actionbar/actionViewItems';
-import { DropdownMenuActionViewItem } from 'vs/base/browser/ui/dropdown/dropdownActionViewItem';
+import { creAteCSSRule, AsCSSUrl } from 'vs/bAse/browser/dom';
+import { domEvent } from 'vs/bAse/browser/event';
+import { IAction, SepArAtor } from 'vs/bAse/common/Actions';
+import { Emitter } from 'vs/bAse/common/event';
+import { IdGenerAtor } from 'vs/bAse/common/idGenerAtor';
+import { IDisposAble, toDisposAble, MutAbleDisposAble, DisposAbleStore } from 'vs/bAse/common/lifecycle';
+import { isLinux, isWindows } from 'vs/bAse/common/plAtform';
+import { locAlize } from 'vs/nls';
+import { ICommAndAction, IMenu, IMenuActionOptions, MenuItemAction, SubmenuItemAction, Icon } from 'vs/plAtform/Actions/common/Actions';
+import { IContextMenuService } from 'vs/plAtform/contextview/browser/contextView';
+import { IKeybindingService } from 'vs/plAtform/keybinding/common/keybinding';
+import { INotificAtionService } from 'vs/plAtform/notificAtion/common/notificAtion';
+import { ThemeIcon } from 'vs/plAtform/theme/common/themeService';
+import { ActionViewItem } from 'vs/bAse/browser/ui/ActionbAr/ActionViewItems';
+import { DropdownMenuActionViewItem } from 'vs/bAse/browser/ui/dropdown/dropdownActionViewItem';
 
-// The alternative key on all platforms is alt. On windows we also support shift as an alternative key #44136
-class AlternativeKeyEmitter extends Emitter<boolean> {
+// The AlternAtive key on All plAtforms is Alt. On windows we Also support shift As An AlternAtive key #44136
+clAss AlternAtiveKeyEmitter extends Emitter<booleAn> {
 
-	private readonly _subscriptions = new DisposableStore();
-	private _isPressed: boolean = false;
-	private static instance: AlternativeKeyEmitter;
-	private _suppressAltKeyUp: boolean = false;
+	privAte reAdonly _subscriptions = new DisposAbleStore();
+	privAte _isPressed: booleAn = fAlse;
+	privAte stAtic instAnce: AlternAtiveKeyEmitter;
+	privAte _suppressAltKeyUp: booleAn = fAlse;
 
-	private constructor(contextMenuService: IContextMenuService) {
+	privAte constructor(contextMenuService: IContextMenuService) {
 		super();
 
-		this._subscriptions.add(domEvent(document.body, 'keydown')(e => {
-			this.isPressed = e.altKey || ((isWindows || isLinux) && e.shiftKey);
+		this._subscriptions.Add(domEvent(document.body, 'keydown')(e => {
+			this.isPressed = e.AltKey || ((isWindows || isLinux) && e.shiftKey);
 		}));
-		this._subscriptions.add(domEvent(document.body, 'keyup')(e => {
+		this._subscriptions.Add(domEvent(document.body, 'keyup')(e => {
 			if (this.isPressed) {
 				if (this._suppressAltKeyUp) {
-					e.preventDefault();
+					e.preventDefAult();
 				}
 			}
 
-			this._suppressAltKeyUp = false;
-			this.isPressed = false;
+			this._suppressAltKeyUp = fAlse;
+			this.isPressed = fAlse;
 		}));
-		this._subscriptions.add(domEvent(document.body, 'mouseleave')(e => this.isPressed = false));
-		this._subscriptions.add(domEvent(document.body, 'blur')(e => this.isPressed = false));
-		// Workaround since we do not get any events while a context menu is shown
-		this._subscriptions.add(contextMenuService.onDidContextMenu(() => this.isPressed = false));
+		this._subscriptions.Add(domEvent(document.body, 'mouseleAve')(e => this.isPressed = fAlse));
+		this._subscriptions.Add(domEvent(document.body, 'blur')(e => this.isPressed = fAlse));
+		// WorkAround since we do not get Any events while A context menu is shown
+		this._subscriptions.Add(contextMenuService.onDidContextMenu(() => this.isPressed = fAlse));
 	}
 
-	get isPressed(): boolean {
+	get isPressed(): booleAn {
 		return this._isPressed;
 	}
 
-	set isPressed(value: boolean) {
-		this._isPressed = value;
+	set isPressed(vAlue: booleAn) {
+		this._isPressed = vAlue;
 		this.fire(this._isPressed);
 	}
 
 	suppressAltKeyUp() {
-		// Sometimes the native alt behavior needs to be suppresed since the alt was already used as an alternative key
-		// Example: windows behavior to toggle tha top level menu #44396
+		// Sometimes the nAtive Alt behAvior needs to be suppresed since the Alt wAs AlreAdy used As An AlternAtive key
+		// ExAmple: windows behAvior to toggle thA top level menu #44396
 		this._suppressAltKeyUp = true;
 	}
 
-	static getInstance(contextMenuService: IContextMenuService) {
-		if (!AlternativeKeyEmitter.instance) {
-			AlternativeKeyEmitter.instance = new AlternativeKeyEmitter(contextMenuService);
+	stAtic getInstAnce(contextMenuService: IContextMenuService) {
+		if (!AlternAtiveKeyEmitter.instAnce) {
+			AlternAtiveKeyEmitter.instAnce = new AlternAtiveKeyEmitter(contextMenuService);
 		}
 
-		return AlternativeKeyEmitter.instance;
+		return AlternAtiveKeyEmitter.instAnce;
 	}
 
 	dispose() {
@@ -78,195 +78,195 @@ class AlternativeKeyEmitter extends Emitter<boolean> {
 	}
 }
 
-export function createAndFillInContextMenuActions(menu: IMenu, options: IMenuActionOptions | undefined, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, contextMenuService: IContextMenuService, isPrimaryGroup?: (group: string) => boolean): IDisposable {
+export function creAteAndFillInContextMenuActions(menu: IMenu, options: IMenuActionOptions | undefined, tArget: IAction[] | { primAry: IAction[]; secondAry: IAction[]; }, contextMenuService: IContextMenuService, isPrimAryGroup?: (group: string) => booleAn): IDisposAble {
 	const groups = menu.getActions(options);
-	const useAlternativeActions = AlternativeKeyEmitter.getInstance(contextMenuService).isPressed;
-	fillInActions(groups, target, useAlternativeActions, isPrimaryGroup);
-	return asDisposable(groups);
+	const useAlternAtiveActions = AlternAtiveKeyEmitter.getInstAnce(contextMenuService).isPressed;
+	fillInActions(groups, tArget, useAlternAtiveActions, isPrimAryGroup);
+	return AsDisposAble(groups);
 }
 
-export function createAndFillInActionBarActions(menu: IMenu, options: IMenuActionOptions | undefined, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, isPrimaryGroup?: (group: string) => boolean): IDisposable {
+export function creAteAndFillInActionBArActions(menu: IMenu, options: IMenuActionOptions | undefined, tArget: IAction[] | { primAry: IAction[]; secondAry: IAction[]; }, isPrimAryGroup?: (group: string) => booleAn): IDisposAble {
 	const groups = menu.getActions(options);
-	// Action bars handle alternative actions on their own so the alternative actions should be ignored
-	fillInActions(groups, target, false, isPrimaryGroup);
-	return asDisposable(groups);
+	// Action bArs hAndle AlternAtive Actions on their own so the AlternAtive Actions should be ignored
+	fillInActions(groups, tArget, fAlse, isPrimAryGroup);
+	return AsDisposAble(groups);
 }
 
-function asDisposable(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SubmenuItemAction>]>): IDisposable {
-	const disposables = new DisposableStore();
-	for (const [, actions] of groups) {
-		for (const action of actions) {
-			disposables.add(action);
+function AsDisposAble(groups: ReAdonlyArrAy<[string, ReAdonlyArrAy<MenuItemAction | SubmenuItemAction>]>): IDisposAble {
+	const disposAbles = new DisposAbleStore();
+	for (const [, Actions] of groups) {
+		for (const Action of Actions) {
+			disposAbles.Add(Action);
 		}
 	}
-	return disposables;
+	return disposAbles;
 }
 
-function fillInActions(groups: ReadonlyArray<[string, ReadonlyArray<MenuItemAction | SubmenuItemAction>]>, target: IAction[] | { primary: IAction[]; secondary: IAction[]; }, useAlternativeActions: boolean, isPrimaryGroup: (group: string) => boolean = group => group === 'navigation'): void {
+function fillInActions(groups: ReAdonlyArrAy<[string, ReAdonlyArrAy<MenuItemAction | SubmenuItemAction>]>, tArget: IAction[] | { primAry: IAction[]; secondAry: IAction[]; }, useAlternAtiveActions: booleAn, isPrimAryGroup: (group: string) => booleAn = group => group === 'nAvigAtion'): void {
 	for (let tuple of groups) {
-		let [group, actions] = tuple;
-		if (useAlternativeActions) {
-			actions = actions.map(a => (a instanceof MenuItemAction) && !!a.alt ? a.alt : a);
+		let [group, Actions] = tuple;
+		if (useAlternAtiveActions) {
+			Actions = Actions.mAp(A => (A instAnceof MenuItemAction) && !!A.Alt ? A.Alt : A);
 		}
 
-		if (isPrimaryGroup(group)) {
-			const to = Array.isArray(target) ? target : target.primary;
+		if (isPrimAryGroup(group)) {
+			const to = ArrAy.isArrAy(tArget) ? tArget : tArget.primAry;
 
-			to.unshift(...actions);
+			to.unshift(...Actions);
 		} else {
-			const to = Array.isArray(target) ? target : target.secondary;
+			const to = ArrAy.isArrAy(tArget) ? tArget : tArget.secondAry;
 
 			if (to.length > 0) {
-				to.push(new Separator());
+				to.push(new SepArAtor());
 			}
 
-			to.push(...actions);
+			to.push(...Actions);
 		}
 	}
 }
 
-const ids = new IdGenerator('menu-item-action-item-icon-');
+const ids = new IdGenerAtor('menu-item-Action-item-icon-');
 
-const ICON_PATH_TO_CSS_RULES = new Map<string /* path*/, string /* CSS rule */>();
+const ICON_PATH_TO_CSS_RULES = new MAp<string /* pAth*/, string /* CSS rule */>();
 
-export class MenuEntryActionViewItem extends ActionViewItem {
+export clAss MenuEntryActionViewItem extends ActionViewItem {
 
-	private _wantsAltCommand: boolean = false;
-	private readonly _itemClassDispose = this._register(new MutableDisposable());
-	private readonly _altKey: AlternativeKeyEmitter;
+	privAte _wAntsAltCommAnd: booleAn = fAlse;
+	privAte reAdonly _itemClAssDispose = this._register(new MutAbleDisposAble());
+	privAte reAdonly _AltKey: AlternAtiveKeyEmitter;
 
 	constructor(
-		readonly _action: MenuItemAction,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService,
-		@INotificationService protected _notificationService: INotificationService,
+		reAdonly _Action: MenuItemAction,
+		@IKeybindingService privAte reAdonly _keybindingService: IKeybindingService,
+		@INotificAtionService protected _notificAtionService: INotificAtionService,
 		@IContextMenuService _contextMenuService: IContextMenuService
 	) {
-		super(undefined, _action, { icon: !!(_action.class || _action.item.icon), label: !_action.class && !_action.item.icon });
-		this._altKey = AlternativeKeyEmitter.getInstance(_contextMenuService);
+		super(undefined, _Action, { icon: !!(_Action.clAss || _Action.item.icon), lAbel: !_Action.clAss && !_Action.item.icon });
+		this._AltKey = AlternAtiveKeyEmitter.getInstAnce(_contextMenuService);
 	}
 
-	protected get _commandAction(): IAction {
-		return this._wantsAltCommand && (<MenuItemAction>this._action).alt || this._action;
+	protected get _commAndAction(): IAction {
+		return this._wAntsAltCommAnd && (<MenuItemAction>this._Action).Alt || this._Action;
 	}
 
 	onClick(event: MouseEvent): void {
-		event.preventDefault();
-		event.stopPropagation();
+		event.preventDefAult();
+		event.stopPropAgAtion();
 
-		if (this._altKey.isPressed) {
-			this._altKey.suppressAltKeyUp();
+		if (this._AltKey.isPressed) {
+			this._AltKey.suppressAltKeyUp();
 		}
 
-		this.actionRunner.run(this._commandAction, this._context)
-			.then(undefined, err => this._notificationService.error(err));
+		this.ActionRunner.run(this._commAndAction, this._context)
+			.then(undefined, err => this._notificAtionService.error(err));
 	}
 
-	render(container: HTMLElement): void {
-		super.render(container);
+	render(contAiner: HTMLElement): void {
+		super.render(contAiner);
 
-		this._updateItemClass(this._action.item);
+		this._updAteItemClAss(this._Action.item);
 
-		let mouseOver = false;
+		let mouseOver = fAlse;
 
-		let alternativeKeyDown = this._altKey.isPressed;
+		let AlternAtiveKeyDown = this._AltKey.isPressed;
 
-		const updateAltState = () => {
-			const wantsAltCommand = mouseOver && alternativeKeyDown;
-			if (wantsAltCommand !== this._wantsAltCommand) {
-				this._wantsAltCommand = wantsAltCommand;
-				this.updateLabel();
-				this.updateTooltip();
-				this.updateClass();
+		const updAteAltStAte = () => {
+			const wAntsAltCommAnd = mouseOver && AlternAtiveKeyDown;
+			if (wAntsAltCommAnd !== this._wAntsAltCommAnd) {
+				this._wAntsAltCommAnd = wAntsAltCommAnd;
+				this.updAteLAbel();
+				this.updAteTooltip();
+				this.updAteClAss();
 			}
 		};
 
-		if (this._action.alt) {
-			this._register(this._altKey.event(value => {
-				alternativeKeyDown = value;
-				updateAltState();
+		if (this._Action.Alt) {
+			this._register(this._AltKey.event(vAlue => {
+				AlternAtiveKeyDown = vAlue;
+				updAteAltStAte();
 			}));
 		}
 
-		this._register(domEvent(container, 'mouseleave')(_ => {
-			mouseOver = false;
-			updateAltState();
+		this._register(domEvent(contAiner, 'mouseleAve')(_ => {
+			mouseOver = fAlse;
+			updAteAltStAte();
 		}));
 
-		this._register(domEvent(container, 'mouseenter')(e => {
+		this._register(domEvent(contAiner, 'mouseenter')(e => {
 			mouseOver = true;
-			updateAltState();
+			updAteAltStAte();
 		}));
 	}
 
-	updateLabel(): void {
-		if (this.options.label && this.label) {
-			this.label.textContent = this._commandAction.label;
+	updAteLAbel(): void {
+		if (this.options.lAbel && this.lAbel) {
+			this.lAbel.textContent = this._commAndAction.lAbel;
 		}
 	}
 
-	updateTooltip(): void {
-		if (this.label) {
-			const keybinding = this._keybindingService.lookupKeybinding(this._commandAction.id);
-			const keybindingLabel = keybinding && keybinding.getLabel();
+	updAteTooltip(): void {
+		if (this.lAbel) {
+			const keybinding = this._keybindingService.lookupKeybinding(this._commAndAction.id);
+			const keybindingLAbel = keybinding && keybinding.getLAbel();
 
-			const tooltip = this._commandAction.tooltip || this._commandAction.label;
-			this.label.title = keybindingLabel
-				? localize('titleAndKb', "{0} ({1})", tooltip, keybindingLabel)
+			const tooltip = this._commAndAction.tooltip || this._commAndAction.lAbel;
+			this.lAbel.title = keybindingLAbel
+				? locAlize('titleAndKb', "{0} ({1})", tooltip, keybindingLAbel)
 				: tooltip;
 		}
 	}
 
-	updateClass(): void {
+	updAteClAss(): void {
 		if (this.options.icon) {
-			if (this._commandAction !== this._action) {
-				if (this._action.alt) {
-					this._updateItemClass(this._action.alt.item);
+			if (this._commAndAction !== this._Action) {
+				if (this._Action.Alt) {
+					this._updAteItemClAss(this._Action.Alt.item);
 				}
-			} else if ((<MenuItemAction>this._action).alt) {
-				this._updateItemClass(this._action.item);
+			} else if ((<MenuItemAction>this._Action).Alt) {
+				this._updAteItemClAss(this._Action.item);
 			}
 		}
 	}
 
-	private _updateItemClass(item: ICommandAction): void {
-		this._itemClassDispose.value = undefined;
+	privAte _updAteItemClAss(item: ICommAndAction): void {
+		this._itemClAssDispose.vAlue = undefined;
 
-		const icon = this._commandAction.checked && (item.toggled as { icon?: Icon })?.icon ? (item.toggled as { icon: Icon }).icon : item.icon;
+		const icon = this._commAndAction.checked && (item.toggled As { icon?: Icon })?.icon ? (item.toggled As { icon: Icon }).icon : item.icon;
 
 		if (ThemeIcon.isThemeIcon(icon)) {
 			// theme icons
-			const iconClass = ThemeIcon.asClassName(icon);
-			if (this.label && iconClass) {
-				this.label.classList.add(...iconClass.split(' '));
-				this._itemClassDispose.value = toDisposable(() => {
-					if (this.label) {
-						this.label.classList.remove(...iconClass.split(' '));
+			const iconClAss = ThemeIcon.AsClAssNAme(icon);
+			if (this.lAbel && iconClAss) {
+				this.lAbel.clAssList.Add(...iconClAss.split(' '));
+				this._itemClAssDispose.vAlue = toDisposAble(() => {
+					if (this.lAbel) {
+						this.lAbel.clAssList.remove(...iconClAss.split(' '));
 					}
 				});
 			}
 
 		} else if (icon) {
-			// icon path
-			let iconClass: string;
+			// icon pAth
+			let iconClAss: string;
 
-			if (icon.dark?.scheme) {
+			if (icon.dArk?.scheme) {
 
-				const iconPathMapKey = icon.dark.toString();
+				const iconPAthMApKey = icon.dArk.toString();
 
-				if (ICON_PATH_TO_CSS_RULES.has(iconPathMapKey)) {
-					iconClass = ICON_PATH_TO_CSS_RULES.get(iconPathMapKey)!;
+				if (ICON_PATH_TO_CSS_RULES.hAs(iconPAthMApKey)) {
+					iconClAss = ICON_PATH_TO_CSS_RULES.get(iconPAthMApKey)!;
 				} else {
-					iconClass = ids.nextId();
-					createCSSRule(`.icon.${iconClass}`, `background-image: ${asCSSUrl(icon.light || icon.dark)}`);
-					createCSSRule(`.vs-dark .icon.${iconClass}, .hc-black .icon.${iconClass}`, `background-image: ${asCSSUrl(icon.dark)}`);
-					ICON_PATH_TO_CSS_RULES.set(iconPathMapKey, iconClass);
+					iconClAss = ids.nextId();
+					creAteCSSRule(`.icon.${iconClAss}`, `bAckground-imAge: ${AsCSSUrl(icon.light || icon.dArk)}`);
+					creAteCSSRule(`.vs-dArk .icon.${iconClAss}, .hc-blAck .icon.${iconClAss}`, `bAckground-imAge: ${AsCSSUrl(icon.dArk)}`);
+					ICON_PATH_TO_CSS_RULES.set(iconPAthMApKey, iconClAss);
 				}
 
-				if (this.label) {
-					this.label.classList.add('icon', ...iconClass.split(' '));
-					this._itemClassDispose.value = toDisposable(() => {
-						if (this.label) {
-							this.label.classList.remove('icon', ...iconClass.split(' '));
+				if (this.lAbel) {
+					this.lAbel.clAssList.Add('icon', ...iconClAss.split(' '));
+					this._itemClAssDispose.vAlue = toDisposAble(() => {
+						if (this.lAbel) {
+							this.lAbel.clAssList.remove('icon', ...iconClAss.split(' '));
 						}
 					});
 				}
@@ -275,33 +275,33 @@ export class MenuEntryActionViewItem extends ActionViewItem {
 	}
 }
 
-export class SubmenuEntryActionViewItem extends DropdownMenuActionViewItem {
+export clAss SubmenuEntryActionViewItem extends DropdownMenuActionViewItem {
 
 	constructor(
-		action: SubmenuItemAction,
-		@INotificationService _notificationService: INotificationService,
+		Action: SubmenuItemAction,
+		@INotificAtionService _notificAtionService: INotificAtionService,
 		@IContextMenuService _contextMenuService: IContextMenuService
 	) {
-		let classNames: string | string[] | undefined;
+		let clAssNAmes: string | string[] | undefined;
 
-		if (action.item.icon) {
-			if (ThemeIcon.isThemeIcon(action.item.icon)) {
-				classNames = ThemeIcon.asClassName(action.item.icon)!;
-			} else if (action.item.icon.dark?.scheme) {
-				const iconPathMapKey = action.item.icon.dark.toString();
+		if (Action.item.icon) {
+			if (ThemeIcon.isThemeIcon(Action.item.icon)) {
+				clAssNAmes = ThemeIcon.AsClAssNAme(Action.item.icon)!;
+			} else if (Action.item.icon.dArk?.scheme) {
+				const iconPAthMApKey = Action.item.icon.dArk.toString();
 
-				if (ICON_PATH_TO_CSS_RULES.has(iconPathMapKey)) {
-					classNames = ['icon', ICON_PATH_TO_CSS_RULES.get(iconPathMapKey)!];
+				if (ICON_PATH_TO_CSS_RULES.hAs(iconPAthMApKey)) {
+					clAssNAmes = ['icon', ICON_PATH_TO_CSS_RULES.get(iconPAthMApKey)!];
 				} else {
-					const className = ids.nextId();
-					classNames = ['icon', className];
-					createCSSRule(`.icon.${className}`, `background-image: ${asCSSUrl(action.item.icon.light || action.item.icon.dark)}`);
-					createCSSRule(`.vs-dark .icon.${className}, .hc-black .icon.${className}`, `background-image: ${asCSSUrl(action.item.icon.dark)}`);
-					ICON_PATH_TO_CSS_RULES.set(iconPathMapKey, className);
+					const clAssNAme = ids.nextId();
+					clAssNAmes = ['icon', clAssNAme];
+					creAteCSSRule(`.icon.${clAssNAme}`, `bAckground-imAge: ${AsCSSUrl(Action.item.icon.light || Action.item.icon.dArk)}`);
+					creAteCSSRule(`.vs-dArk .icon.${clAssNAme}, .hc-blAck .icon.${clAssNAme}`, `bAckground-imAge: ${AsCSSUrl(Action.item.icon.dArk)}`);
+					ICON_PATH_TO_CSS_RULES.set(iconPAthMApKey, clAssNAme);
 				}
 			}
 		}
 
-		super(action, action.actions, _contextMenuService, { classNames: classNames });
+		super(Action, Action.Actions, _contextMenuService, { clAssNAmes: clAssNAmes });
 	}
 }

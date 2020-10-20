@@ -1,72 +1,72 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Copyright (c) Microsoft CorporAtion. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license informAtion.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { parseLinkedText } from 'vs/base/common/linkedText';
+import * As Assert from 'Assert';
+import { pArseLinkedText } from 'vs/bAse/common/linkedText';
 
 suite('LinkedText', () => {
-	test('parses correctly', () => {
-		assert.deepEqual(parseLinkedText('').nodes, []);
-		assert.deepEqual(parseLinkedText('hello').nodes, ['hello']);
-		assert.deepEqual(parseLinkedText('hello there').nodes, ['hello there']);
-		assert.deepEqual(parseLinkedText('Some message with [link text](http://link.href).').nodes, [
-			'Some message with ',
-			{ label: 'link text', href: 'http://link.href' },
+	test('pArses correctly', () => {
+		Assert.deepEquAl(pArseLinkedText('').nodes, []);
+		Assert.deepEquAl(pArseLinkedText('hello').nodes, ['hello']);
+		Assert.deepEquAl(pArseLinkedText('hello there').nodes, ['hello there']);
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [link text](http://link.href).').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'link text', href: 'http://link.href' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [link text](http://link.href "and a title").').nodes, [
-			'Some message with ',
-			{ label: 'link text', href: 'http://link.href', title: 'and a title' },
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [link text](http://link.href "And A title").').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'link text', href: 'http://link.href', title: 'And A title' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [link text](http://link.href \'and a title\').').nodes, [
-			'Some message with ',
-			{ label: 'link text', href: 'http://link.href', title: 'and a title' },
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [link text](http://link.href \'And A title\').').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'link text', href: 'http://link.href', title: 'And A title' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [link text](http://link.href "and a \'title\'").').nodes, [
-			'Some message with ',
-			{ label: 'link text', href: 'http://link.href', title: 'and a \'title\'' },
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [link text](http://link.href "And A \'title\'").').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'link text', href: 'http://link.href', title: 'And A \'title\'' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [link text](http://link.href \'and a "title"\').').nodes, [
-			'Some message with ',
-			{ label: 'link text', href: 'http://link.href', title: 'and a "title"' },
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [link text](http://link.href \'And A "title"\').').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'link text', href: 'http://link.href', title: 'And A "title"' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [link text](random stuff).').nodes, [
-			'Some message with [link text](random stuff).'
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [link text](rAndom stuff).').nodes, [
+			'Some messAge with [link text](rAndom stuff).'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [https link](https://link.href).').nodes, [
-			'Some message with ',
-			{ label: 'https link', href: 'https://link.href' },
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [https link](https://link.href).').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'https link', href: 'https://link.href' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [https link](https:).').nodes, [
-			'Some message with [https link](https:).'
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [https link](https:).').nodes, [
+			'Some messAge with [https link](https:).'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [a command](command:foobar).').nodes, [
-			'Some message with ',
-			{ label: 'a command', href: 'command:foobar' },
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [A commAnd](commAnd:foobAr).').nodes, [
+			'Some messAge with ',
+			{ lAbel: 'A commAnd', href: 'commAnd:foobAr' },
 			'.'
 		]);
-		assert.deepEqual(parseLinkedText('Some message with [a command](command:).').nodes, [
-			'Some message with [a command](command:).'
+		Assert.deepEquAl(pArseLinkedText('Some messAge with [A commAnd](commAnd:).').nodes, [
+			'Some messAge with [A commAnd](commAnd:).'
 		]);
-		assert.deepEqual(parseLinkedText('link [one](command:foo "nice") and link [two](http://foo)...').nodes, [
+		Assert.deepEquAl(pArseLinkedText('link [one](commAnd:foo "nice") And link [two](http://foo)...').nodes, [
 			'link ',
-			{ label: 'one', href: 'command:foo', title: 'nice' },
-			' and link ',
-			{ label: 'two', href: 'http://foo' },
+			{ lAbel: 'one', href: 'commAnd:foo', title: 'nice' },
+			' And link ',
+			{ lAbel: 'two', href: 'http://foo' },
 			'...'
 		]);
-		assert.deepEqual(parseLinkedText('link\n[one](command:foo "nice")\nand link [two](http://foo)...').nodes, [
+		Assert.deepEquAl(pArseLinkedText('link\n[one](commAnd:foo "nice")\nAnd link [two](http://foo)...').nodes, [
 			'link\n',
-			{ label: 'one', href: 'command:foo', title: 'nice' },
-			'\nand link ',
-			{ label: 'two', href: 'http://foo' },
+			{ lAbel: 'one', href: 'commAnd:foo', title: 'nice' },
+			'\nAnd link ',
+			{ lAbel: 'two', href: 'http://foo' },
 			'...'
 		]);
 	});
